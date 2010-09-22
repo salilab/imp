@@ -26,7 +26,7 @@ class ToParticlesTest(IMP.test.TestCase):
         # Disabled
         m = IMP.Model()
         ps = IMP.em.density2particles(self.scene1,self.scene1.get_min_value()+0.1,m)
-        self.assert_(ps.size() > 0)
+        self.assertGreater(ps.size(), 0)
 
     def test_density2particles_map2(self):
         """Test conversion of a density map into a set of particles
@@ -34,7 +34,7 @@ class ToParticlesTest(IMP.test.TestCase):
         m = IMP.Model()
         self.scene1.get_header().show()
         ps=IMP.em.density2particles(self.scene2,9.0,m)
-        self.assert_(len(ps) > 0)
+        self.assertGreater(len(ps), 0)
 
 if __name__ == '__main__':
     IMP.test.main()

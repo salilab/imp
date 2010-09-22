@@ -54,7 +54,7 @@ class SimpleExcludedVolumeTests(IMP.test.TestCase):
             for sb in sbs:
                 if sa != sb:
                     d = IMP.core.get_distance(sa, sb)
-                    self.assert_(d > -.1,
+                    self.assertGreater(d, -.1,
                                  "Excluded volume did not separate spheres "
                                  "%s and %s (surface-surface distance = %f)" \
                                  % (sa, sb, d))

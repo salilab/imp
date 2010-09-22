@@ -21,7 +21,7 @@ class DistanceTests(IMP.test.TestCase):
         d0.set_coordinates(IMP.algebra.Vector3D(2,3,4))
         d1.set_coordinates(IMP.algebra.Vector3D(2,2,4))
         self.assertEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0)
-        self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
+        self.assertNotEqual(tps.evaluate(IMP.ParticlePair(p1, p0), None), 0)
 
         print "test rotation"
         rot= IMP.algebra.get_rotation_from_matrix(0, 0,-1,
@@ -31,7 +31,7 @@ class DistanceTests(IMP.test.TestCase):
         tps.set_transformation(tr)
         d1.set_coordinates(IMP.algebra.Vector3D(4, 2, -2))
         self.assertAlmostEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, delta=.01)
-        self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
+        self.assertNotEqual(tps.evaluate(IMP.ParticlePair(p1, p0), None), 0)
         t=IMP.algebra.Vector3D(0,0,0)
         rot= IMP.algebra.get_rotation_from_matrix(0,-1, 0,
                                                   1, 0, 0,
@@ -49,10 +49,10 @@ class DistanceTests(IMP.test.TestCase):
         print d1.get_derivative(0)
         print d1.get_derivative(1)
         print d1.get_derivative(2)
-        self.assert_(d0.get_derivative(0) > 0)
+        self.assertGreater(d0.get_derivative(0), 0)
         self.assertAlmostEqual(d0.get_derivative(1), 0, delta=.1)
         self.assertAlmostEqual(d0.get_derivative(2), 0, delta=.1)
-        self.assert_(d1.get_derivative(1) > 0)
+        self.assertGreater(d1.get_derivative(1), 0)
         self.assertAlmostEqual(d1.get_derivative(0), 0, delta=.1)
         self.assertAlmostEqual(d1.get_derivative(2), 0, delta=.1)
     def test_symmetry2(self):

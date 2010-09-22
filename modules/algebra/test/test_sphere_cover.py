@@ -13,7 +13,7 @@ class SphereTests(IMP.test.TestCase):
         points=IMP.algebra.get_uniform_surface_cover(sph,numpts)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assert_(len(points)>=numpts)
+        self.assertGreaterEqual(len(points), numpts)
 
         print "the sample 1"
         for p in points:
@@ -39,7 +39,7 @@ class SphereTests(IMP.test.TestCase):
         points=IMP.algebra.get_uniform_surface_cover(sph,nump)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assert_(len(points)>=nump)
+        self.assertGreaterEqual(len(points), nump)
         print "the sample"
         for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]

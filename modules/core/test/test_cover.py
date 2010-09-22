@@ -32,6 +32,6 @@ class TestREFCover(IMP.test.TestCase):
         for i in range(0,n):
             d= IMP.core.XYZ(hd.get_child(i).get_particle())
             bb+=IMP.algebra.BoundingBox3D(d.get_coordinates())
-        self.assert_(bb.get_contains(cd.get_coordinates()))
+        self.assertTrue(bb.get_contains(cd.get_coordinates()))
 if __name__ == '__main__':
     IMP.test.main()

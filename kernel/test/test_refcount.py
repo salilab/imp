@@ -175,7 +175,7 @@ class RefCountTests(IMP.test.TestCase):
         m.remove_particle(p)
         # Particle should not disappear yet since Python still has a reference
         refcnt.assert_number(3)
-        self.assert_(not p.get_is_active(), "Removed particle is still active")
+        self.assertFalse(p.get_is_active(), "Removed particle is still active")
         del p
         refcnt.assert_number(2)
         del m

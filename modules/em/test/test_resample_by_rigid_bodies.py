@@ -143,7 +143,7 @@ class ResamplingTest(IMP.test.TestCase):
         score_after=IMP.em.compute_fitting_score(ps,d_map)
         print "score_after:",score_after," score_before:",score_before
         self.assertAlmostEqual(score_after,score_before, delta=0.05)
-        self.assert_(fs.get_number_of_solutions()>0)
+        self.assertGreater(fs.get_number_of_solutions(),0)
         print fs.get_score(0)
 if __name__ == '__main__':
     IMP.test.main()

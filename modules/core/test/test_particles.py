@@ -66,16 +66,16 @@ class ParticleTests(IMP.test.TestCase):
         """Check particle identity"""
         p0 = self.particles[0]
         p1 = self.particles[1]
-        self.assert_(p0 != p1)
-        self.assert_(p0 == p0)
+        self.assertTrue(p0 != p1)
+        self.assertTrue(p0 == p0)
         # Different SWIG proxies for the same underlying Particle should
         # report equality:
         [m_p0, m_p1] = self.model.get_particles()
-        self.assert_(m_p0 == p0)
+        self.assertTrue(m_p0 == p0)
         # Even particles with equal attributes should not count as equal:
         p0 = self.create_point_particle(self.model, 0, 0, 0)
         p1 = self.create_point_particle(self.model, 0, 0, 0)
-        self.assert_(p0 != p1)
+        self.assertTrue(p0 != p1)
 
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an exception"""
@@ -97,21 +97,21 @@ class ParticleTests(IMP.test.TestCase):
 
     def _test_add_remove(self, p, ak, v):
         p.add_attribute(ak, v)
-        self.assert_(p.has_attribute(ak))
+        self.assertTrue(p.has_attribute(ak))
         p.remove_attribute(ak)
-        self.assert_(not p.has_attribute(ak))
+        self.assertFalse(p.has_attribute(ak))
 
     def test_remove_attributes(self):
         """Test that attributes can be removed"""
         p=self.particles[0]
         fk= IMP.FloatKey("to_remove")
         p.add_attribute(fk, 0, False)
-        self.assert_(p.has_attribute(fk))
-        self.assert_(not p.get_is_optimized(fk))
+        self.assertTrue(p.has_attribute(fk))
+        self.assertFalse(p.get_is_optimized(fk))
         p.set_is_optimized(fk, True)
-        self.assert_(p.get_is_optimized(fk))
+        self.assertTrue(p.get_is_optimized(fk))
         p.set_is_optimized(fk, False)
-        self.assert_(not p.get_is_optimized(fk))
+        self.assertFalse(p.get_is_optimized(fk))
         self._test_add_remove(p, IMP.FloatKey("something"), 1.0)
         self._test_add_remove(p, IMP.StringKey("something"), "Hello")
         self._test_add_remove(p, IMP.IntKey("something"), 1)
@@ -147,11 +147,11 @@ class ParticleTests(IMP.test.TestCase):
     def test_particles(self):
         """Test that particle attributes are available and correct"""
         for (i, p) in enumerate(self.particles):
-            self.assert_(p.has_attribute(xkey))
+            self.assertTrue(p.has_attribute(xkey))
             # A Float "x" exists; make sure that has_attribute doesn't get
             # confused between different types of attribute:
-            self.assert_(not p.has_attribute(IMP.IntKey("x")))
-            self.assert_(not p.has_attribute(IMP.IntKey("notexist")))
+            self.assertFalse(p.has_attribute(IMP.IntKey("x")))
+            self.assertFalse(p.has_attribute(IMP.IntKey("notexist")))
             self.assertEqual(p.get_value(xkey), i * 2)
             self.assertEqual(p.get_value(ykey), i * 3)
             self.assertEqual(p.get_value(zkey), i * 4)

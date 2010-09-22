@@ -57,14 +57,14 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
             self.radius_key,self.weight_key,
             ts,False)
         #check that the functions calculated 20 scores
-        self.assert_(scores_fast.get_number_of_solutions()==len(ts))
-        self.assert_(scores_slow.get_number_of_solutions()==len(ts))
+        self.assertEqual(scores_fast.get_number_of_solutions(), len(ts))
+        self.assertEqual(scores_slow.get_number_of_solutions(), len(ts))
         #check that the scores are similar
         for i in range(scores_fast.get_number_of_solutions()):
             print i, " fast:",scores_fast.get_score(i)
             print i, " slow:",scores_slow.get_score(i)
-            self.assert_(abs(scores_fast.get_score(i)-
-                                    scores_slow.get_score(i))<0.15)
+            self.assertLess_(abs(scores_fast.get_score(i)-
+                                 scores_slow.get_score(i)),0.15)
         #check that scores make sense, we use the slow scores are
         #they are more accurate
         mp_xyz=IMP.core.XYZs(IMP.core.get_leaves(self.mp))
@@ -86,7 +86,7 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
             if score<best_score[1]:
                 best_score=[i,score,rmsd]
         print "best score:",best_score
-        self.assert_(best_score[2]<5)
+        self.assertLess(best_score[2],5)
 
 if __name__ == '__main__':
     IMP.test.main()

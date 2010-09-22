@@ -64,7 +64,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         for i in range(0,10):
             opt.optimize(100);
             print "intesections:", self.count_hits(ps), "score:", m.evaluate(False)
-        self.assert_(m.evaluate(False) < .01)
+        self.assertLess(m.evaluate(False), .01)
     def test_rcor(self):
         """Test basic ResolveCollision optimization with restraints"""
         (m, bb, ps)= self.create()

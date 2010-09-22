@@ -42,7 +42,7 @@ class DOMINOTests(IMP.test.TestCase):
                     print [x.get_name() for x in jt.get_vertex_name(v)]
                     for i in intersection:
                         print i.get_name()
-                        self.assert_(i in set)
+                        self.assertIn(i, set)
     def _test_global_min2(self):
         """Testing random junction tree"""
         m= IMP.Model()

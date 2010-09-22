@@ -22,7 +22,7 @@ class ResidueTypeTest(IMP.test.TestCase):
         at1= IMP.atom.ResidueType(0)
         at2= IMP.atom.ResidueType(1)
         self.assertEqual(at0, at1)
-        self.assert_(at0!=at2)
+        self.assertNotEqual(at0, at2)
 
 if __name__ == '__main__':
     IMP.test.main()

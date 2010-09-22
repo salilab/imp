@@ -26,7 +26,8 @@ class SampleTests(IMP.test.TestCase):
         shell_key= IMP.FloatKey("surf_ind")
         for p in self.particles:
             #print p.get_particle().get_value(shell_key)
-            self.assert_(p.get_particle().get_value(shell_key)>3.,"map was not sampled correctly")
+            self.assertGreater(p.get_particle().get_value(shell_key), 3.,
+                               "map was not sampled correctly")
 
 
 if __name__ == '__main__':

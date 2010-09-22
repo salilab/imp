@@ -39,7 +39,7 @@ class ChargedDecoratorTests(IMP.test.TestCase):
         p = IMP.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
-        self.assert_(' charge= ' in str(c))
+        self.assertIn(' charge= ', str(c))
 
 if __name__ == '__main__':
     IMP.test.main()

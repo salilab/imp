@@ -43,14 +43,14 @@ class KMeansTests(IMP.test.TestCase):
         for i in xrange(len(self.cluster_points)):
             for j in xrange(len(self.cluster_points[i])):
                 for k in xrange(j+1,len(self.cluster_points[i])):
-                    self.assert_(km.get_particle_assignment(self.cluster_points[i][j]) ==
+                    self.assertEqual(km.get_particle_assignment(self.cluster_points[i][j]),
                                  km.get_particle_assignment(self.cluster_points[i][k]),
                                      "particles should be part of the same cluster ")
         #now check that the points that should be of different cluster do indeed belong
         #to different clusters
         for i in xrange(len(self.cluster_points)):
             for j in xrange(i+1,len(self.cluster_points)):
-                self.assert_(not(km.get_particle_assignment(self.cluster_points[i][0]) ==
+                self.assertNotEqual((km.get_particle_assignment(self.cluster_points[i][0]),
                                  km.get_particle_assignment(self.cluster_points[j][0])),
                              "particles should not be part of the same cluster ")
 

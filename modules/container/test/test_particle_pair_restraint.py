@@ -206,7 +206,7 @@ class PairContainerTest(IMP.test.TestCase):
                 l.add_particle_pair(t)
                 cs.append(t)
         for p in cs:
-            self.assert_(c.get_contains_particle_pair(p))
+            self.assertTrue(c.get_contains_particle_pair(p))
         ret=[]
         for i in range(0, len(cs)):
             ret.append(c.get_particle_pair(i))

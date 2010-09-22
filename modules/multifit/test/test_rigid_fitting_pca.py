@@ -56,7 +56,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         fs = IMP.multifit.pca_based_rigid_fitting(
                self.rb,self.refiner,self.scene,0.15)
         #check that the rmsd to the reference is low
-        self.assert_(fs.get_number_of_solutions()==24)
+        self.assertEqual(fs.get_number_of_solutions(), 24)
         print "number of solutions:",fs.get_number_of_solutions()
         best_rmsd=999.
         for i in range(fs.get_number_of_solutions()):

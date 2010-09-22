@@ -42,10 +42,12 @@ class DOMINOTests(IMP.test.TestCase):
         print "optimized restraints"
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         #dg.show()
-        self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) > 1)
+        self.assertGreater(len(IMP.get_restraints(m.get_root_restraint_set())),
+                           1)
         del dor
         print "after delete"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
-        self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) == 1)
+        self.assertEqual(len(IMP.get_restraints(m.get_root_restraint_set())),
+                         1)
 if __name__ == '__main__':
     IMP.test.main()

@@ -61,7 +61,7 @@ class TransformationUtilsTests(IMP.test.TestCase):
                 self.tu.move2state(self.rbs[i].get_particle(),state_p)
             self.mdl.evaluate(False) #to make sure that the rigid bodies score states are updated
             #check that the rmsd is 0
-            self.assert_(IMP.atom.get_rmsd(xyz_copy,xyz_orig) < 0.001,
+            self.assertLess(IMP.atom.get_rmsd(xyz_copy,xyz_orig), 0.001,
                          "the molecules are expected to have the same placement")
             #return the copy to ref for the next round
             for xyz in xyz_copy:

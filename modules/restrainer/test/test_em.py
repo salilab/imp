@@ -32,7 +32,7 @@ class RestraintTest(IMP.test.TestCase):
         r.imp_restraint.evaluate(False)
         score = self.Model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
-        self.assert_(score < 0.05, "the correlation score is not correct")
+        self.assertLess(score, 0.05, "the correlation score is not correct")
 
         self.Model.show()
         self.Model.evaluate(False)

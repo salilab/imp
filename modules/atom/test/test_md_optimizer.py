@@ -130,7 +130,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         keys = [IMP.FloatKey(x) for x in ("vx", "vy", "vz")]
         for p in self.model.get_particles():
             for key in keys:
-                self.assert_(p.has_attribute(key))
+                self.assertTrue(p.has_attribute(key))
 
     def _check_temperature(self, desired, tolerance):
         """Check the temperature of the system"""
@@ -176,7 +176,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         m = self.md.get_optimizer_states()
         self.assertEqual(len(m), 2)
         for a in m:
-            self.assert_(isinstance(a, IMP.OptimizerState))
+            self.assertIsInstance(a, IMP.OptimizerState)
 
     def test_rescaling(self):
         """Test thermostatting by velocity rescaling"""

@@ -32,7 +32,8 @@ class RestraintTest(IMP.test.TestCase):
 
         restraint_name = 'distance_restraint_1'
         r = self.restraint.get_restraint_by_name(restraint_name)
-        self.assert_(r.imp_restraint.evaluate(False) < 10, "unexpected distance score")
+        self.assertLess(r.imp_restraint.evaluate(False), 10,
+                        "unexpected distance score")
 
 
         self.Model.show()

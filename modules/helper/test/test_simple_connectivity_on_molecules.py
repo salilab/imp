@@ -73,12 +73,12 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         print d13
         print d23
         score= self.m.evaluate(False)
-        self.assert_(sum >= 3, "Wrong number of close pairs")
-        self.assert_(ok01 or ok02 or ok03, "Point 0 is not connected")
-        self.assert_(ok01 or ok12 or ok13, "Point 1 is not connected")
-        self.assert_(ok02 or ok12 or ok23, "Point 2 is not connected")
-        self.assert_(ok03 or ok13 or ok23, "Point 3 is not connected")
-        self.assert_(score < 10, "Score too high")
+        self.assertGreaterEqual(sum, 3, "Wrong number of close pairs")
+        self.assertTrue(ok01 or ok02 or ok03, "Point 0 is not connected")
+        self.assertTrue(ok01 or ok12 or ok13, "Point 1 is not connected")
+        self.assertTrue(ok02 or ok12 or ok23, "Point 2 is not connected")
+        self.assertTrue(ok03 or ok13 or ok23, "Point 3 is not connected")
+        self.assertLess(score, 10, "Score too high")
         pps= r.get_connected_pairs()
         lscore=0
         for p in pps:

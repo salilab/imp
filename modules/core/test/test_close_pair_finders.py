@@ -46,8 +46,8 @@ class TestCPFL(IMP.test.TestCase):
         print "testing results with "
         print " ".join([str((x[0].get_name(), x[1].get_name())) for x in cps])
         for f in cps:
-            self.assert_(IMP.ParticlePair(f[1], f[0]) not in cps)
-            self.assert_(f[0] != f[1])
+            self.assertNotIn(IMP.ParticlePair(f[1], f[0]), cps)
+            self.assertNotEqual(f[0], f[1])
         sides=[bb.get_corner(1)[i]-bb.get_corner(0)[i] for i in [0,1,2]]
         steps=[[-sides[i], 0, sides[i]] for i in [0,1,2]]
         for i in range(0, len(ps)):
@@ -68,7 +68,7 @@ class TestCPFL(IMP.test.TestCase):
                     #print "searching for "+str(ps[i].get_name()) + " "\
                     #    + str(ps[j].get_name())
                     #XYZ(ps[
-                    self.assert_(IMP.ParticlePair(ps[i],ps[j]) in cps
+                    self.assertTrue(IMP.ParticlePair(ps[i],ps[j]) in cps
                                  or
                                  IMP.ParticlePair(ps[j],ps[i]) in cps,
                                  "Pair " +str(ps[i].get_name()) + " " +ps[j].get_name()
@@ -135,8 +135,8 @@ class TestCPFL(IMP.test.TestCase):
         print " ".join([str((x[0].get_name(), x[1].get_name())) for x in out.get_particle_pairs()])
         found= out.get_particle_pairs()
         for f in found:
-            self.assert_(IMP.ParticlePair(f[1], f[0]) not in found)
-            self.assert_(f[0] != f[1])
+            self.assertNotIn(IMP.ParticlePair(f[1], f[0]), found)
+            self.assertNotEqual(f[0], f[1])
         for i in range(0, len(ps)):
             for j in range(0,i):
                 d= self.get_distance(rk, ps[i], ps[j])
@@ -145,7 +145,7 @@ class TestCPFL(IMP.test.TestCase):
                     #print "searching for "+str(ps[i].get_name()) + " "\
                     #    + str(ps[j].get_name())
                     #XYZ(ps[
-                    self.assert_(IMP.ParticlePair(ps[i],ps[j]) in found
+                    self.assertTrue(IMP.ParticlePair(ps[i],ps[j]) in found
                                  or
                                  IMP.ParticlePair(ps[j],ps[i]) in found,
                                  "Pair " +str(ps[i].get_name()) + " " +ps[j].get_name()
@@ -160,7 +160,7 @@ class TestCPFL(IMP.test.TestCase):
                 d= self.get_distance(rk, ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
+                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
                                                                                  ps2[j])),
                                   "Pair " +str(ps[i]) + " " +str(ps2[j])
                                  + " not found " + str(d) + " " + str(dist))
@@ -174,7 +174,7 @@ class TestCPFL(IMP.test.TestCase):
                 d= self.get_distance(rk, ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
+                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
                                                                                  ps2[j]))
                                  or out.get_contains_particle_pair(IMP.ParticlePair(ps2[j],
                                                                                  ps[i])),

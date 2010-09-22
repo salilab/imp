@@ -23,7 +23,7 @@ class TestBL(IMP.test.TestCase):
         for a in pc0:
             for b in pc1:
                 if self._are_close(a,b, IMP.core.XYZR.get_default_radius_key(), d):
-                    self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(a,b)))
+                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(a,b)))
 
     def test_it(self):
         """Test CloseBipartitePairContainer"""

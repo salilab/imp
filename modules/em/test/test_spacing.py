@@ -42,9 +42,9 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         for i,score in enumerate(scores):
             print "score for spacing:",spacings[i]," is:",score
         for ind in [0,1,2,4,5,6]:
-            self.assert_(scores[i] > scores[3], "wrong spacing:"+str(spacings[ind])+" has better value than spacing=2.")
+            self.assertGreater(scores[i], scores[3], "wrong spacing:"+str(spacings[ind])+" has better value than spacing=2.")
         for i in range(6):
-            self.assert_(abs(scores[i]-scores[i+1])<0.3, "scores should be similar")
+            self.assertLess(abs(scores[i]-scores[i+1]),0.3, "scores should be similar")
 
 if __name__ == '__main__':
     IMP.test.main()

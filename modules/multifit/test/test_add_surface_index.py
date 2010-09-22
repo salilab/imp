@@ -35,6 +35,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             p=ph.get_particle()
             if p.get_value(self.surf_key)>3.:
                 ps_3.append(p)
-        self.assert_(len(ps_3)>130, "wrong surface index assignment to particles")
+        self.assertGreater(len(ps_3), 130,
+                           "wrong surface index assignment to particles")
 if __name__ == '__main__':
     IMP.test.main()

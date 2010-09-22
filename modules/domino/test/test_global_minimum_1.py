@@ -17,19 +17,27 @@ class DOMINOTests(IMP.test.TestCase):
     def test_global_min(self):
         try:
             min_score2 = self.sampler.exhaustive_search()
-            self.assert_(self.infered_score == min_score2,
+            self.assertEqual(self.infered_score, min_score2,
                        "the minimum score as calculated by the inference " \
                        + "differs from the one calculated by the exhaustive " \
                        + "search " + str(self.infered_score) + " != " \
                        + str(min_score2))
-            self.assert_( self.infered_score == min_score2 , "the score of the minimum configuration as calculated by the inference differs from the one calculated by the model " + str(self.infered_score) + " != " + str(min_score2))
+            self.assertEqual(self.infered_score, min_score2,
+                             "the score of the minimum configuration as "
+                             "calculated by the inference differs from the one "
+                             "calculated by the model " \
+                             + str(self.infered_score) + " != " \
+                             + str(min_score2))
         except NotImplementedError, detail:
             print >> sys.stderr, detail
 
 
     def test_inference_1(self):
         score = -148.600001335
-        self.assert_( abs(self.infered_score -score) < 0.1 , "the score of the minimum configuration as calculated by the inference is wrong " + str(self.infered_score) + " != " + str(score))
+        self.assertLess(abs(self.infered_score -score), 0.1,
+                        "the score of the minimum configuration as calculated "
+                        "by the inference is wrong " + str(self.infered_score) \
+                        + " != " + str(score))
 
 
 if __name__ == '__main__':

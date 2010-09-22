@@ -15,11 +15,11 @@ class DecoratorTests(IMP.test.TestCase):
         rs.append(2)
         rs.append(6)
         f.set_residue_indexes(rs)
-        self.assert_(f.get_contains_residue(0))
-        self.assert_(f.get_contains_residue(1))
-        self.assert_(f.get_contains_residue(2))
-        self.assert_(f.get_contains_residue(6))
-        self.assert_(not f.get_contains_residue(5))
+        self.assertTrue(f.get_contains_residue(0))
+        self.assertTrue(f.get_contains_residue(1))
+        self.assertTrue(f.get_contains_residue(2))
+        self.assertTrue(f.get_contains_residue(6))
+        self.assertFalse(f.get_contains_residue(5))
 
 if __name__ == '__main__':
     IMP.test.main()

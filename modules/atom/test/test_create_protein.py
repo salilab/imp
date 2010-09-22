@@ -33,7 +33,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         for c in p.get_children():
             d= IMP.core.XYZR(c.get_particle())
             w.add_geometry(IMP.display.XYZRGeometry(d))
-        self.assert_(score < 1)
+        self.assertLess(score, 1)
 
 if __name__ == '__main__':
     IMP.test.main()

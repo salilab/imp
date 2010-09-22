@@ -6,8 +6,8 @@ class ExceptionTests(IMP.test.TestCase):
     """Check IMP exceptions"""
 
     def assertSubclass(self, derived, base):
-        self.assert_(issubclass(derived, base),
-                     "%s is not a subclass of %s" % (derived, base))
+        self.assertTrue(issubclass(derived, base),
+                        "%s is not a subclass of %s" % (derived, base))
 
     def test_hierarchy(self):
         """Test class hierarchy of IMP exceptions"""

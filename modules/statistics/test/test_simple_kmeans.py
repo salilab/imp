@@ -32,7 +32,7 @@ class KMeansTests(IMP.test.TestCase):
                 print d
                 if d < 2:
                     found=True
-            self.assert_(found)
+            self.assertTrue(found)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -38,7 +38,7 @@ class AllPairsContainerTest(IMP.test.TestCase):
             else: dp= (n1, n0)
             print dp
             #print psl
-            self.assert_(not dp in psl, "Pair " + n0 + " and " +n1\
+            self.assertNotIn(dp, psl, "Pair " + n0 + " and " +n1\
                              +" is already in list "+ str(psl))
             psl=psl.union([dp])
         print psl

@@ -39,7 +39,7 @@ class MRCWriteTest(IMP.test.TestCase):
         em_map.calcRMS()
         rms2 = em_map.get_header().rms
         print "RMSD of file = " + str(rms2)
-        self.assert_(abs(rms2 - self.rms) < 0.00001, "rms values differ!")
+        self.assertLess(abs(rms2 - self.rms), 0.00001, "rms values differ!")
 
 
 class ReadWriteMapsTests(IMP.test.TestCase):

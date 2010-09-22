@@ -17,7 +17,7 @@ class TestREFCover(IMP.test.TestCase):
             dc.show()
             #d.get_sphere().get_center().show()
             #dc.get_sphere().get_center().show()
-            self.assert_(s.get_contains(dc.get_sphere()))
+            self.assertTrue(s.get_contains(dc.get_sphere()))
     def test_it(self):
         """Test cover refined decorator"""
         m= IMP.Model()

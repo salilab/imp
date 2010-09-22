@@ -16,10 +16,10 @@ class Test(IMP.test.TestCase):
         ps= IMP.Particles()
         ps.append(p)
         tpr.add_particle(p, ps)
-        self.assert_(tpr.get_can_refine(p))
-        self.assert_(tpr.get_refined(p)[0] == p)
+        self.assertTrue(tpr.get_can_refine(p))
+        self.assertEqual(tpr.get_refined(p)[0], p)
         tpr.remove_particle(p)
-        self.assert_(not tpr.get_can_refine(p))
+        self.assertFalse(tpr.get_can_refine(p))
 
 
 

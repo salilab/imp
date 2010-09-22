@@ -100,7 +100,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(debug_function_cutoff=(.010, 0.010, 0.01),
                                       detailed_debugging=True)
-        self.assert_(nviol < 1, "at least one partial derivative is wrong!")
+        self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print " derivs done ..."
         os.unlink("xxx.em")
 
@@ -189,7 +189,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.atmsel.randomize_xyz(1.0)
         nviol = self.atmsel.debug_function(debug_function_cutoff=(.010, 0.010, 0.01),
                                       detailed_debugging=True)
-        self.assert_(nviol < 1, "at least one partial derivative is wrong!")
+        self.assertLess(nviol, 1, "at least one partial derivative is wrong!")
         print " derivs done ..."
         os.unlink("xxx.em")
 

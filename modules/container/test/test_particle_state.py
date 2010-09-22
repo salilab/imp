@@ -125,7 +125,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         m.add_score_state(s)
         m.evaluate(False)
         for p in cs:
-            self.assert_(particle_has_attribute(p, k))
+            self.assertTrue(particle_has_attribute(p, k))
         print "done"
 
     def test_sset(self):
@@ -145,7 +145,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         m.add_score_state(s)
         print "add"
         m.evaluate(False)
-        self.assert_(particle_has_attribute(t, k))
+        self.assertTrue(particle_has_attribute(t, k))
         print "done"
 
 if __name__ == '__main__':

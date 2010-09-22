@@ -24,8 +24,8 @@ class DistanceTests(IMP.test.TestCase):
         o.set_model(m)
         o.optimize(100)
         for i in range(0,3):
-            self.assert_(d.get_coordinate(i) >9.9)
-            self.assert_(d.get_coordinate(i) <20.1)
+            self.assertGreater(d.get_coordinate(i), 9.9)
+            self.assertLess(d.get_coordinate(i), 20.1)
         d.get_coordinates().show()
 if __name__ == '__main__':
     IMP.test.main()

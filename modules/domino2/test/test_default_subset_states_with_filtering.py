@@ -17,7 +17,7 @@ class DOMINOTests(IMP.test.TestCase):
         for i in range(0, ss.get_number_of_subset_states()):
             state= ss.get_subset_state(i)
             #print all_states
-            self.assert_(state not in all_states)
+            self.assertNotIn(state, all_states)
             all_states.append(state)
         return all_states
 
@@ -73,11 +73,11 @@ class DOMINOTests(IMP.test.TestCase):
             print s
             found_states.append(s)
             self.assertEqual((s[1]-s[2])**2, 1)
-            self.assert_(s in all_states)
+            self.assertIn(s, all_states)
         for s in all_states:
             if (s[1]-s[2])**2==1:
                 print s
-                self.assert_(s in found_states)
+                self.assertIn(s, found_states)
 
 if __name__ == '__main__':
     IMP.test.main()

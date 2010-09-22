@@ -65,12 +65,12 @@ class AngleRestraintTests(IMP.test.TestCase):
                     #print pa
                     #print pb
                     d= IMP.core.get_distance(pa, pb)
-                    self.assert_(d > -.1)
+                    self.assertGreater(d, -.1)
     def test_isolated_ev(self):
         """Testing isolated evaluation of ev restraint"""
         (m,r)= self._setup_ev_restraint()
         IMP.set_log_level(IMP.VERBOSE)
         v= r.evaluate(False)
-        self.assert_(v != 0)
+        self.assertNotEqual(v, 0)
 if __name__ == '__main__':
     IMP.test.main()

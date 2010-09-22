@@ -12,7 +12,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         print "score is ", s
         for p0 in lsc.get_particles():
             p0.show()
-        self.assert_(s <= max_score)
+        self.assertLessEqual(s, max_score)
         for p0 in lsc.get_particles():
             for p1 in lsc.get_particles():
                 if p0 != p1:
@@ -23,7 +23,7 @@ class CGOptimizerTests(IMP.test.TestCase):
                             or lpc.get_contains_particle_pair(IMP.ParticlePair(p1,p0)) :
                         self.assertAlmostEqual(d, 0, delta=.2)
                     else:
-                        self.assert_(d >= -.2);
+                        self.assertGreaterEqual(d, -.2)
     def test_cg_woods_func(self):
         """Check that MCCG can make spheres connect not penetrate"""
         m= IMP.Model()

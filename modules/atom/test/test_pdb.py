@@ -15,7 +15,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         p2= IMP.atom.read_pdb(sin, m, selector)
         n2= len(IMP.atom.get_by_type(p2, IMP.atom.ATOM_TYPE))
         self.assertEqual(n1, n2)
-        self.assert_(n1 > 0)
+        self.assertGreater(n1, 0)
     def test_bad_read(self):
         """Check that read_pdb behaves OK on invalid files"""
         m= IMP.Model()

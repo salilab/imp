@@ -17,7 +17,8 @@ class Vector3DTests(IMP.test.TestCase):
             #print ".cylinder " + str(chain[i]
         for i in range(0, len(chain)):
             for j in range(0,i-1):
-                self.assert_(IMP.algebra.get_distance(chain[i], chain[j]) > .9*2*r)
+                self.assertGreater(IMP.algebra.get_distance(chain[i], chain[j]),
+                                   .9*2*r)
 
     def test_random_chain_obst(self):
         """Testing the creation of a random chain with obstacles"""
@@ -42,9 +43,10 @@ class Vector3DTests(IMP.test.TestCase):
             #print ".cylinder " + str(chain[i]
         for i in range(0, len(chain)):
             for j in range(0,i-1):
-                self.assert_(IMP.algebra.get_distance(chain[i], chain[j]) > .9*2*r)
+                self.assertGreater(IMP.algebra.get_distance(chain[i], chain[j]),
+                                   .9*2*r)
         for i in range(0, len(ss)):
             for c in chain:
-                self.assert_(not IMP.algebra.get_interiors_intersect(ss[i],IMP.algebra.Sphere3D(c, .9*r)))
+                self.assertFalse(IMP.algebra.get_interiors_intersect(ss[i],IMP.algebra.Sphere3D(c, .9*r)))
 if __name__ == '__main__':
     IMP.test.main()

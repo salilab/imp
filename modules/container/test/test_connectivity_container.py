@@ -49,7 +49,7 @@ class TunnelTest(IMP.test.TestCase):
                     print d0
                     print d1
                     print IMP.ParticlePair(p0.get_particle(), p1.get_particle())
-                    self.assert_(IMP.core.get_distance(d0, d1) <= 0.1)
+                    self.assertLessEqual(IMP.core.get_distance(d0, d1), 0.1)
                     #self.assert_(cpc.get_contains_particle_pair(IMP.ParticlePair(p0.get_particle(), p1.get_particle()))
                                  #or cpc.get_contains_particle_pair(IMP.ParticlePair(p1.get_particle(), p0.get_particle())))
 

@@ -87,7 +87,7 @@ class DOMINOTests(IMP.test.TestCase):
     def test_inference_1(self):
         print "infered_score1: " + str(self.infered_score1)
         print "infered_score: " + str(self.infered_score)
-        self.assert_( abs(self.infered_score - self.infered_score1) < 0.001 , "the score of the minimum configuration as calculated by the inference is wrong " + str(self.infered_score) + " != " + str(self.infered_score1))
+        self.assertLess(abs(self.infered_score - self.infered_score1), 0.001 , "the score of the minimum configuration as calculated by the inference is wrong " + str(self.infered_score) + " != " + str(self.infered_score1))
 
 
 if __name__ == '__main__':
