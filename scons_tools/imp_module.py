@@ -831,6 +831,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     if module_failure is not None:
         print "IMP."+env['IMP_MODULE']+" is disabled due to", str(module_failure)
         #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
+        test.disabled_modules.append(module)
         preclone[module+"_ok"]=False
         Return()
     else:

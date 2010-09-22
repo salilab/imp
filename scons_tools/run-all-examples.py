@@ -1,6 +1,7 @@
 import sys
 import time
 import os
+import re
 import traceback
 
 def format_exc(limit=None):
@@ -14,11 +15,11 @@ def format_exc(limit=None):
         etype = value = tb = None
 
 
-def main(files):
+def main(disabled_modules, files):
     starttime = time.time()
     errs = []
     for f in files:
-        run_example(f, errs)
+        run_example(f, disabled_modules, errs)
     runtime = time.time() - starttime
     for e in errs:
         print_error(e)
@@ -44,12 +45,41 @@ def print_error(e):
     else:
         print >> sys.stderr, str(e[1])
 
-def run_example(f, errs):
+def get_unmet_module_deps(f, disabled_modules):
+    unmet_deps = []
+    def check_disabled(modname):
+        if modname.startswith("IMP.") and modname[4:] in disabled_modules:
+            unmet_deps.append(modname[4:])
+    import_re = re.compile('\s*import\s+(.*)\s*')
+    from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*)\s*')
+    for line in open(f):
+        # Parse lines of the form 'import a.b, a.c'
+        m = import_re.match(line)
+        if m:
+            for modname in [x.strip() for x in m.group(1).split(',')]:
+                check_disabled(modname)
+        # Parse lines of the form 'from a import b, c'
+        m = from_re.match(line)
+        if m:
+            for modname in [x.strip() for x in m.group(2).split(',')]:
+                check_disabled(m.group(1) + '.' + modname)
+    return unmet_deps
+
+def run_example(f, disabled_modules, errs):
+    unmet_deps = get_unmet_module_deps(f, disabled_modules)
     example_name = "example %s" % os.path.basename(f)
     def handle_error(e, errs):
         sys.stderr.write("ERROR\n")
         errs.append((example_name, e, format_exc()))
     sys.stderr.write("Running %s ... " % example_name)
+    if len(unmet_deps) > 0:
+        if len(unmet_deps) == 1:
+            sys.stderr.write("skipped since module '%s' is disabled\n" \
+                             % unmet_deps[0])
+        else:
+            sys.stderr.write("skipped since modules %s are disabled\n" \
+                             % ", ".join(["'%s'" % x for x in unmet_deps]))
+        return
     try:
         exec open(f) in {}
         sys.stderr.write("ok\n")
@@ -69,4 +99,4 @@ def run_example(f, errs):
         return
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv[1].split(":"), sys.argv[2:])
