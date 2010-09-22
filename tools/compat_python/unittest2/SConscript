@@ -1,0 +1,7 @@
+Import('env')
+
+files = []
+for f in Glob('*.py'):
+    files.append(env.LinkInstall('#/build/lib/compat_python/unittest2', f))
+
+Return('files')
