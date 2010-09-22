@@ -29,6 +29,7 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 
+
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
               Restraints,
               {
@@ -53,6 +54,16 @@ void RestraintSet::set_weight(double w) {
   if (get_is_part_of_model()) {
     get_model()->reset_dependencies();
   }
+}
+
+double
+RestraintSet::evaluate(bool deriv) const
+{
+  RestraintsTemp restraints;
+  std::vector<double> weights;
+  boost::tie(restraints, weights)=
+    get_restraints_and_weights(this);
+  return get_model()->evaluate(restraints, weights, deriv);
 }
 
 double
@@ -94,7 +105,7 @@ RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,
 }
 
 
-RestraintsAndWeights get_restraints_and_weights(RestraintSet *rs) {
+RestraintsAndWeights get_restraints_and_weights(const RestraintSet *rs) {
   return get_restraints_and_weights(rs->restraints_begin(),
                                     rs->restraints_end(),
                                     rs->get_weight());
@@ -105,7 +116,7 @@ RestraintsTemp get_restraints(const RestraintsTemp &rs) {
 }
 
 
-RestraintsTemp get_restraints(RestraintSet *rs) {
+RestraintsTemp get_restraints(const RestraintSet *rs) {
   return get_restraints(rs->restraints_begin(), rs->restraints_end());
 }
 

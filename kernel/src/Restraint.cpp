@@ -38,7 +38,8 @@ double Restraint::evaluate(bool calc_derivs) const {
   IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
             "Restraint::evaluate() cannot be called during model evaluation");
   RestraintsTemp rr(1, const_cast<Restraint*>(this));
-  return get_model()->evaluate(rr, calc_derivs);
+  std::vector<double> ws(1, 1.0);
+  return get_model()->evaluate(rr, ws, calc_derivs);
 }
 
 IMP_END_NAMESPACE

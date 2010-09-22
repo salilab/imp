@@ -455,14 +455,19 @@ double Model::evaluate(bool calc_derivs) {
   return ret;
 }
 
-double Model::evaluate(const RestraintsTemp &inrestraints, bool calc_derivs)
+double Model::evaluate( RestraintsTemp restraints,
+                        std::vector<double> weights,
+                       bool calc_derivs)
 {
   IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
-  RestraintsTemp restraints;
-  std::vector<double> weights;
-  boost::tie(restraints, weights)=
-    get_restraints_and_weights(inrestraints.begin(), inrestraints.end());
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< restraints.size(); ++i) {
+      Restraint *r= restraints[i];
+      IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
+                      "Cannot pass RestraintSets to Model::evaluate().");
+    }
+  }
   filter_restraints_and_weights(restraints, weights);
   if (!get_has_dependencies()) {
     compute_dependencies();
