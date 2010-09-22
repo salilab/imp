@@ -9,6 +9,7 @@ import IMP.test
 import sys
 import IMP.em
 import os
+from IMP.test import unittest
 
 def copy_to_modeller(env, particles):
     fh = open("temp_particles.pdb", "w")
@@ -23,11 +24,10 @@ def copy_to_modeller(env, particles):
 class DerivativesTest(IMP.test.TestCase):
     """check the agreement of numerical and analytical
        derivatives"""
+
+    @unittest.skipIf(modeller is None, "modeller module unavailable")
     def test_deriv(self):
         """Test calculated derivatives for a distorted model's map"""
-        if modeller is None:
-            sys.stderr.write("test skipped: modeller module unavailable: ")
-            return
         modeller.log.level= (0,0,0,0,1)
         self.env = modeller.environ()
         self.env.edat.dynamic_sphere = False
@@ -105,12 +105,10 @@ class DerivativesTest(IMP.test.TestCase):
         os.unlink("xxx.em")
 
 
+    @unittest.skipIf(modeller is None, "modeller module unavailable")
     def test_deriv_to_pull_particles_into_density(self):
         """Test if the derivatives can pull the particles back into the density"""
         """Test calculated derivatives for a distorted model's map"""
-        if modeller is None:
-            sys.stderr.write("test skipped: modeller module unavailable: ")
-            return
         modeller.log.level= (0,0,0,0,1)
         self.env = modeller.environ()
         self.env.edat.dynamic_sphere = False

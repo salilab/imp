@@ -23,8 +23,7 @@ class my_optimizer:
 
     def exhaustive_search(self):
         if not annotation_enumeration:
-            raise NotImplementedError("Test skipped: " + \
-                                      "probstat module unavailable")
+            raise NotImplementedError("probstat module unavailable")
         l=[] #number of states of each component
         for p in self.particles:
             l.append(self.discrete_sampler.get_space_size(p))

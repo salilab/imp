@@ -24,7 +24,7 @@ class DOMINOTests(IMP.test.TestCase):
                        + str(min_score2))
             self.assertEqual(self.infered_score, min_score2 , "the score of the minimum configuration as calculated by the inference differs from the one calculated by the model " + str(self.infered_score) + " != " + str(min_score2))
         except NotImplementedError, detail:
-            print >> sys.stderr, detail
+            self.skipTest(detail)
 
 
     def test_inference_1(self):
