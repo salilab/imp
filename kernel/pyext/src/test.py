@@ -21,7 +21,7 @@ def __load_unittest_package():
                               ('unittest2', []),
                               ('compat_python.unittest2', ['unittest2'])):
         try:
-            u = __import__(modname, fromlist=fromlist)
+            u = __import__(modname, {}, {}, fromlist)
             if hasattr(u, 'skip'):
                 return u
             else:
