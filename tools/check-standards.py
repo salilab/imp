@@ -78,7 +78,7 @@ def check_python_file(filename, errors):
     fh = file(filename, "r")
     r = Reindenter(fh)
     try:
-        if r.run():
+        if 'compat_python' not in filename and r.run():
             errors.append('Python file ' + filename + ' has odd indentation; ' \
                           + 'please run through tools/reindent.py first.')
     except Exception:

@@ -76,7 +76,7 @@ def check_python_file(filename, txn, repos, errors):
     p1 = Popen(cmd, shell=False, stdout=PIPE).stdout
     r = Reindenter(p1)
     try:
-        if r.run():
+        if 'compat_python' not in filename and r.run():
             errors.append('Python file ' + filename + ' has odd indentation; ' \
                           + 'please run through reindent.py first.')
     except Exception:

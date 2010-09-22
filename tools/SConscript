@@ -1,6 +1,8 @@
 Import('env')
 import sys
 
+compat_python = env.SConscript('compat_python/SConscript')
+
 # Custom builder to generate file:
 def builder_script_file(target, source, env):
     infile = file(source[0].abspath, 'r')
@@ -75,6 +77,6 @@ bin = env.ScriptFile("imppy.sh",
                       env.Value(ldpath),
                       env.Value(prec),
                       env.Value(env['ENV']['PATH'])])
-
+env.Requires(bin, compat_python)
 
 Return('bin')

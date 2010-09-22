@@ -3,13 +3,38 @@
    @ingroup python
 """
 
-import re, math, unittest
+import re, math
 import sys
 import os
 import random
 import IMP
 import time
 import shutil
+
+# Load a new enough unittest package (should have the 'skip' decorator)
+# - On Python 2.7 or 3.2, the standard 'unittest' package will work.
+# - On older Pythons, use the 'unittest2' package if available, otherwise use
+#   our bundled version of this package.
+def __load_unittest_package():
+    errors = []
+    for modname, fromlist in (('unittest', []),
+                              ('unittest2', []),
+                              ('compat_python.unittest2', ['unittest2'])):
+        try:
+            u = __import__(modname, fromlist=fromlist)
+            if hasattr(u, 'skip'):
+                return u
+            else:
+                errors.append("'%s' does not have the 'skip' decorator" \
+                              % modname)
+        except ImportError, e:
+            errors.append(str(e))
+    raise ImportError("IMP.test requires a newer version of Python's unittest "
+                      "package than is available. Either upgrade to a new "
+                      "enough Python (at least 2.7 or 3.2) or install the "
+                      "unittest2 package. Encountered errors: %s" \
+                      % "; ".join(errors))
+unittest = __load_unittest_package()
 
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
