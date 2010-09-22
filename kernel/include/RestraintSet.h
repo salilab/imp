@@ -90,6 +90,7 @@ namespace {
                                            double initial_weight,
                                            RestraintsAndWeights &ret,
                                      internal::Map<Restraint*, int> &index) {
+    if (initial_weight ==0) return;
     for (It c=b; c!= e; ++c) {
       RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
       if (rs) {
