@@ -19,11 +19,15 @@ IMP_BEGIN_NAMESPACE
 //! Container used to hold a set of restraints
 /** RestraintSets allow one to define a tree of restraints
     and to weight various restraints. Upon evaluation,
-    all of the restraints in the RestraintSet are evaluated
+    all of the restraints in RestraintSets that have been
+    added to the model are evaluated
     using the provided weight (weights are multiplicative
     when RestraintSets are nested).
 
     If the weight is 0, the restraints are not evaluated.
+
+    \note Restraints can belong to multiple RestraintSets.
+    The total effect is simply one of adding up the weights.
 
     \advanceddoc
 
@@ -51,6 +55,7 @@ class IMPEXPORT RestraintSet : public Restraint
  public:
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
+  double evaluate(bool deriv) const;
  protected:
   friend class Model;
   void set_model(Model *m);
@@ -71,11 +76,12 @@ IMPEXPORT RestraintsAndWeights
 get_restraints_and_weights(const RestraintsTemp &rs,
                            double initial_weight=1);
 
-IMPEXPORT RestraintsAndWeights get_restraints_and_weights(RestraintSet *rs);
+IMPEXPORT RestraintsAndWeights
+get_restraints_and_weights(const RestraintSet *rs);
 
 IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
 
-IMPEXPORT RestraintsTemp get_restraints(RestraintSet *rs);
+IMPEXPORT RestraintsTemp get_restraints(const RestraintSet *rs);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {

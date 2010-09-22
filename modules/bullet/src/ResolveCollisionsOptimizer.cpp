@@ -362,9 +362,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
     }
     IMP_LOG(TERSE, std::endl);
   }
+  RestraintsTemp utrestraints;
+  std::vector<double> weights;
+  boost::tie(utrestraints, weights)
+    = get_restraints_and_weights(rs_.begin(), rs_.end());
   for (unsigned int i=0; i< iter; ++i) {
     if (rrs >0) {
-      get_model()->evaluate(RestraintsTemp(rs_.begin(), rs_.end()), true);
+      get_model()->evaluate(utrestraints, weights, true);
       for (unsigned int j=0; j< ps.size(); ++j) {
         core::XYZ d(ps[j]);
         if (d.get_coordinates_are_optimized()) {
@@ -382,7 +386,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
     }
     update_states();
   }
-  return get_model()->evaluate(RestraintsTemp(rs_.begin(), rs_.end()), true);
+  return get_model()->evaluate(utrestraints, weights, true);
 }
 
 

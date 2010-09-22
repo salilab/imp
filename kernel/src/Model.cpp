@@ -175,6 +175,7 @@ bool Model::get_has_good_score() const {
   for (unsigned int i=0; i< rs.size(); ++i) {
     if (max_scores_.find(rs[i]) != max_scores_.end()) {
       double e= const_cast<Model*>(this)->evaluate(RestraintsTemp(1, rs[i]),
+                                                   std::vector<double>(1, 1.0),
                                                    false);
       if (e > max_scores_.find(rs[i])->second) {
         return false;

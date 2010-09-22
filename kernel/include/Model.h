@@ -367,7 +367,8 @@ public:
 
 #ifndef IMP_DOXYGEN
   //! Evaluate a subset of the restraints
-  /** The passed restraints must have been added to this model already.
+  /** The passed restraints must have been added to this model already
+      and must not be RestraintSets.
 
       \note Not all ScoreStates are updated during this call, only the
       ones which are needed to make sure the particles read by the
@@ -376,7 +377,9 @@ public:
       score states are added, but not when the dependencies of
       Restraints or ScoreStates change. This can be fixed if requested.
   */
-  double evaluate(const RestraintsTemp &restraints, bool calc_derivs);
+  double evaluate( RestraintsTemp restraints,
+                   std::vector<double> weights,
+                  bool calc_derivs);
 #endif
 
  //! Sometimes it is useful to be able to make sure the model is up to date
