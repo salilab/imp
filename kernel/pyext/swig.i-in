@@ -276,5 +276,5 @@ namespace IMP {
 used_modules=[]
 def show_used_modules():
     for m in used_modules:
-        print "{0:<20}{1}".format(m.get_module(), m.get_version())
+        print "%-20s %s" % (m.get_module(), m.get_version())
 %}
