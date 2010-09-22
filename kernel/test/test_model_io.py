@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import StringIO
 import sys
-from IMP.test import unittest
 
 class YamlTests(IMP.test.TestCase):
     def _create_hetero_model(self):
@@ -80,9 +79,10 @@ class YamlTests(IMP.test.TestCase):
         print s.getvalue()
         self.assertEqual(first, s.getvalue())
 
-    @unittest.skipIf(not IMP.has_netcdf, "NetCDF support not included")
     def test_netcdf(self):
         """Check writing to netcdf with attributes"""
+        if not IMP.has_netcdf:
+            self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
         IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test0.bimp"))
@@ -92,9 +92,10 @@ class YamlTests(IMP.test.TestCase):
         IMP.read_binary_model(self.get_tmp_file_name("test0.bimp"), ps, fks)
         self.assertEqual(first, ps[0].get_value(IMP.FloatKey("x")))
 
-    @unittest.skipIf(not IMP.has_netcdf, "NetCDF support not included")
     def test_netcdf_multiple(self):
         """Check writing multiple to netcdf with attributes"""
+        if not IMP.has_netcdf:
+            self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
         IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.bimp"), False)
@@ -107,9 +108,10 @@ class YamlTests(IMP.test.TestCase):
             self.assertEqual(i, ps[0].get_value(IMP.FloatKey("x")))
         self.assertRaises(IOError, IMP.read_binary_model, self.get_tmp_file_name("test1.bimp"), ps, fks, 10)
 
-    @unittest.skipIf(not IMP.has_netcdf, "NetCDF support not included")
     def test_cs(self):
         """Check reading a configuration set"""
+        if not IMP.has_netcdf:
+            self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
         for i in range(0,10):

@@ -4,8 +4,6 @@ import IMP.core
 import IMP.container
 import sys
 import random
-from IMP.test import unittest
-
 
 class TestCPFL(IMP.test.TestCase):
     def setUp(self):
@@ -193,10 +191,10 @@ class TestCPFL(IMP.test.TestCase):
         print "quadratic"
         self.do_test_one(IMP.core.NearestNeighborsClosePairsFinder())
 
-    @unittest.skipIf(not hasattr(IMP.core, 'BoxSweepClosePairsFinder'),
-                     "no CGAL support")
     def test_sweep(self):
         """Testing BoxSweepClosePairsFinder"""
+        if not hasattr(IMP.core, 'BoxSweepClosePairsFinder'):
+            self.skipTest("no CGAL support")
         self.do_test_one(IMP.core.BoxSweepClosePairsFinder())
 
     def test_grid(self):
