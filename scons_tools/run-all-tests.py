@@ -1,9 +1,12 @@
-import unittest
 import sys
 import os
 import re
 import imp
 import os.path
+
+# Make sure we use the same version of unittest as the IMP testcases themselves
+from IMP.test import unittest
+
 global files
 
 class _TestModuleImporter(object):

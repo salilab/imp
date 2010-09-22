@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -65,4 +64,4 @@ class CGOptimizerTests(IMP.test.TestCase):
         self.assertAlmostEqual(e, 0.0, places=2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

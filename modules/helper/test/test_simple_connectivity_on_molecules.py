@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.test
@@ -109,4 +108,4 @@ class SimpleConnectivityTests(IMP.test.TestCase):
         self.m.evaluate(False)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

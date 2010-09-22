@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -74,4 +73,4 @@ class RBDTests(IMP.test.TestCase):
         self._check_not_distance(ps[1], ps[2], 1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

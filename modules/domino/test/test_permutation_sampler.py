@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino
@@ -81,4 +80,4 @@ class DOMINOTests(IMP.test.TestCase):
             score_inf = rg.get_opt_combination(i).get_total_score()
             self.assertAlmostEqual(score_inf,scores[i],places=1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

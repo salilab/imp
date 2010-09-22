@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.domino
@@ -20,4 +19,4 @@ class RestraintTests(IMP.test.TestCase):
         os.unlink(fname)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

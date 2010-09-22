@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -137,4 +136,4 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         print "scores:",score1,":",score2
         self.assertInTolerance(score1,score2,0.05)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import my_optimizer
@@ -26,4 +25,4 @@ class DOMINOTests(IMP.test.TestCase):
         self.assert_( abs(self.infered_score -score) < 0.1 , "the score of the minimum configuration as calculated by the inference is wrong " + str(self.infered_score) + " != " + str(score))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -289,4 +288,4 @@ class TestCPFL(IMP.test.TestCase):
                                   IMP.core.XYZR.get_default_radius_key(), out)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

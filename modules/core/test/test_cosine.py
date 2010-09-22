@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -32,4 +31,4 @@ class CosineTests(IMP.test.TestCase):
                         self.assertInTolerance(expscore, score, 0.1)
                         self.assertInTolerance(expderiv, deriv, 0.1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

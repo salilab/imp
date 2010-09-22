@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -58,4 +57,4 @@ class RigidTransformationTests(IMP.test.TestCase):
         self.assertAlmostEqual(q_id[3],0.0)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -4,7 +4,6 @@ import sys
 import IMP.em
 import IMP.multifit
 import IMP.helper
-import unittest
 import os
 import time
 
@@ -112,4 +111,4 @@ class SingleDominoRunTests(IMP.test.TestCase):
         #for i in range(5):
         #    aa.set_configuration(i)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

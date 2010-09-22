@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -74,4 +73,4 @@ class AngleRestraintTests(IMP.test.TestCase):
         v= r.evaluate(False)
         self.assert_(v != 0)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

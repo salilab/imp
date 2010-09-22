@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import sys
 import IMP.em
-import unittest
 import os
 
 class SampleTests(IMP.test.TestCase):
@@ -47,4 +46,4 @@ class SampleTests(IMP.test.TestCase):
             self.assertEqual(val>9.1 and val<10.1,True)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

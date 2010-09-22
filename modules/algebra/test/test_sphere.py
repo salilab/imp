@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -39,4 +38,4 @@ class SphereTests(IMP.test.TestCase):
                 self.assert_(d+ cs.get_radius()- es.get_radius() < .5)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

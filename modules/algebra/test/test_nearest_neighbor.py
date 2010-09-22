@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -52,4 +51,4 @@ class ConeTests(IMP.test.TestCase):
             self.assert_(rnn.index(cnn) != -1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

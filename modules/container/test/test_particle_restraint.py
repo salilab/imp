@@ -1,7 +1,6 @@
 # NOTE: This file is generated from modules/core/tools/container_tempates/test.py
 # do not edit.
 
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -220,4 +219,4 @@ class SingletonContainerTest(IMP.test.TestCase):
         self.assertEqual(c.get_number_of_particles(), len(cs))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

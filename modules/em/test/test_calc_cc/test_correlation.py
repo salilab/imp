@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.em
 import IMP.test
@@ -125,4 +124,4 @@ class CrossCorrelationTests(IMP.test.TestCase):
             self.assertEqual(result,scores_intervals[i],2)
 
 if __name__=='__main__':
-    unittest.main()
+    IMP.test.main()

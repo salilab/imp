@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.misc
@@ -16,4 +15,4 @@ class WLCTests(IMP.test.TestCase):
         self.assert_(wlc.evaluate_with_derivative(180)[1] > 4.2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

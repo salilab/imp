@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -22,4 +21,4 @@ class BoundingBoxTests(IMP.test.TestCase):
         self.assertAlmostEqual(IMP.algebra.get_distance(bb.get_corner(0),IMP.algebra.Vector3D(0,0,0)),0.001,places=1)
         self.assertAlmostEqual(IMP.algebra.get_distance(bb.get_corner(1),IMP.algebra.Vector3D(10,10,10)),0.001,places=1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

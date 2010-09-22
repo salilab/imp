@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.core
 import IMP.test
@@ -106,4 +105,4 @@ class DistanceTests(IMP.test.TestCase):
         self.assert_(self.rsrs[0].evaluate(False) == self.rsrs[2].evaluate(False) == 0.0, "unexpected distance score")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

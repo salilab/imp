@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino2
@@ -30,4 +29,4 @@ class DOMINOTests(IMP.test.TestCase):
         execfile(spo, vars)
         self.assertEqual(vars['cs'].get_number_of_configurations(), 1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

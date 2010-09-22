@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -134,4 +133,4 @@ class CorrelationDecompistionTest(IMP.test.TestCase):
         self.assertAlmostEqual(decomposed_score-(len(self.mhs)-1),full_score,2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

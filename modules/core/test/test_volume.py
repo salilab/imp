@@ -1,4 +1,3 @@
-import unittest
 from IMP import *
 from IMP.algebra import *
 from IMP.core import *
@@ -60,4 +59,4 @@ class Volume(IMP.test.TestCase):
         self.assertInTolerance(d.get_radius(), 5, .1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

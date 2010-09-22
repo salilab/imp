@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.restrainer
@@ -16,4 +15,4 @@ class RepresentationTest(IMP.test.TestCase):
         self.assertEqual(len(M.get_particles()), 356)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

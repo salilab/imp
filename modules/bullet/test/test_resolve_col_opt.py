@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.bullet
@@ -81,4 +80,4 @@ class AngleRestraintTests(IMP.test.TestCase):
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

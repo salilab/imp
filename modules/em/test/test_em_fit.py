@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -109,4 +108,4 @@ class FittingTest(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

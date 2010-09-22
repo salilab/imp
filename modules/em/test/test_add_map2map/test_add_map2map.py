@@ -1,6 +1,5 @@
 #test that impEM is able to sample IMP particles on a grid.
 
-import unittest
 import IMP.em
 import IMP.test
 import os
@@ -68,4 +67,4 @@ class AddParticlesTest(IMP.test.TestCase):
                 expected_val+=grid2.get_value(loc)
             self.assertInTolerance(expected_val,merged_grid.get_value(i),0.001)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

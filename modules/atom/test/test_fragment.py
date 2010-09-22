@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -23,4 +22,4 @@ class DecoratorTests(IMP.test.TestCase):
         self.assert_(not f.get_contains_residue(5))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import sys
 import IMP
 import IMP.test
@@ -80,4 +79,4 @@ class TestScoreState(IMP.test.TestCase):
         ss.show()
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -96,4 +95,4 @@ class DistanceTests(IMP.test.TestCase):
         self.assertInTolerance(vt[2], d0.get_coordinate(2), .1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -56,4 +55,4 @@ class TestREFCover(IMP.test.TestCase):
         self.assertEqual(p0.get_derivative(ks[1]), 10)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

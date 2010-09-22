@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -38,4 +37,4 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
                 ps_3.append(p)
         self.assert_(len(ps_3)>130, "wrong surface index assignment to particles")
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

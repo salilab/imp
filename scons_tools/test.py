@@ -52,7 +52,6 @@ def _action_cpp_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null"
     out= open(target[0].abspath, "w")
     print >> out, """
-import unittest
 import IMP
 import IMP.test
 import sys
@@ -80,7 +79,7 @@ class DirectoriesTests(IMP.test.TestCase):
 """ %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
     print >> out, """
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()
 """
 
 

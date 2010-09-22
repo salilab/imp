@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.atom
@@ -85,4 +84,4 @@ class HierarchyTests(IMP.test.TestCase):
         self.assert_(at0!=at2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

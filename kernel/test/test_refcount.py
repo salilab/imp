@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import sys
@@ -209,4 +208,4 @@ class RefCountTests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -137,4 +136,4 @@ class RotationTests(IMP.test.TestCase):
         self.assertInTolerance((r1.get_quaternion()-r1p.get_quaternion()).get_squared_magnitude(), 0, .1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

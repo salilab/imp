@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -46,4 +45,4 @@ class LennardJonesDecoratorTests(IMP.test.TestCase):
         self.assert_(' well depth= ' in str(c))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

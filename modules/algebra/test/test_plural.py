@@ -1,4 +1,3 @@
-import unittest
 import IMP.algebra
 import IMP.test
 
@@ -13,4 +12,4 @@ class PluralTests(IMP.test.TestCase):
         return self.assertShow(IMP.algebra, ['AxisAnglePair', 'Matrix3D', 'MultiArray3D', 'NearestNeighbor2D', 'NearestNeighbor3D', 'NearestNeighbor4D','BoundedGridStorage3D', 'UnboundedGridStorage3D'])
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

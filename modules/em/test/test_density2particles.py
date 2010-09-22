@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -38,4 +37,4 @@ class ToParticlesTest(IMP.test.TestCase):
         self.assert_(len(ps) > 0)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -116,4 +115,4 @@ class ProjectTests(IMP.test.TestCase):
                           "Noisy projections generated and stored are different")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

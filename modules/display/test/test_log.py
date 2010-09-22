@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -55,4 +54,4 @@ class TestBL(IMP.test.TestCase):
         self._testit("testbild", "bild", IMP.display.BildWriter())
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

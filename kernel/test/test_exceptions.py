@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import os.path
@@ -24,4 +23,4 @@ class ExceptionTests(IMP.test.TestCase):
         self.assertSubclass(IMP.ValueException, ValueError)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

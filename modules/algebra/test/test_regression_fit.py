@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -36,4 +35,4 @@ class RegressionTests(IMP.test.TestCase):
         self.assertInTolerance(pf.get_c(), 5.0, 0.01)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

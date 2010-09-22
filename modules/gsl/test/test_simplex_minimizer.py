@@ -1,4 +1,3 @@
-import unittest
 import IMP, IMP.test
 import IMP.core
 import IMP.gsl
@@ -57,4 +56,4 @@ class CGOptimizerTests(IMP.test.TestCase):
         self.probabilistic_test("self._test_it", .5)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

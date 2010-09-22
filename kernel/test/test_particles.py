@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -168,4 +167,4 @@ class ParticleTests(IMP.test.TestCase):
                 print i
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

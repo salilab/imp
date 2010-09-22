@@ -3,7 +3,6 @@ import IMP.test
 import IMP.em
 import sys
 import os
-import unittest
 
 class MRCWriteTest(IMP.test.TestCase):
     """Test MRC write function on sampled map"""
@@ -103,4 +102,4 @@ class ReadWriteMapsTests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

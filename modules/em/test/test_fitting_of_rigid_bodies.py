@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -69,4 +68,4 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.assert_(start_score>end_score)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

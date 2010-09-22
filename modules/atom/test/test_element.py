@@ -1,4 +1,3 @@
-import unittest
 from StringIO import StringIO
 import IMP
 import IMP.test
@@ -57,4 +56,4 @@ class ElementTableTest(IMP.test.TestCase):
         self.assertEqual(IMP.atom.Atom(ps[12].get_particle()).get_element(), IMP.atom.Na)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

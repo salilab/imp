@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino2
@@ -92,4 +91,4 @@ class DOMINOTests(IMP.test.TestCase):
         self._check_jt_property(jt)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

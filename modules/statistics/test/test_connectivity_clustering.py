@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP
 import IMP.statistics
@@ -50,4 +49,4 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
             self.assert_(found)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

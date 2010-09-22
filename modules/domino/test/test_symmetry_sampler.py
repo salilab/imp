@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino
@@ -117,4 +116,4 @@ class DOMINOTests(IMP.test.TestCase):
         for j in range(2):
             self.assertAlmostEqual(IMP.algebra.get_distance(rot120.get_transformed(cendtroids[j]),cendtroids[j+1]),0.0,2)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino2
@@ -49,4 +48,4 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         self.assert_(len(IMP.get_restraints(m.get_root_restraint_set())) == 1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

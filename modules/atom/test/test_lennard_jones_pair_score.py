@@ -1,4 +1,3 @@
-import unittest
 import StringIO
 import random
 import math
@@ -99,4 +98,4 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
         self.assertNotEqual(m.evaluate(False), 0.0)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

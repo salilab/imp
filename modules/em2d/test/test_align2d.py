@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -107,4 +106,4 @@ class ProjectTests(IMP.test.TestCase):
         "ccc %f less than 0.97" % (cross_correlation_coefficient))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

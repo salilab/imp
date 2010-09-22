@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.em
 import os
@@ -33,4 +32,4 @@ class VolumeTest(IMP.test.TestCase):
         self._test_min_max(m, ret)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

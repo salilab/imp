@@ -1,4 +1,3 @@
-import unittest
 import IMP.algebra
 import IMP.test
 import math
@@ -100,4 +99,4 @@ class Vector4DTests(IMP.test.TestCase):
         r2= IMP.algebra.get_rotation_from_vector4d(v2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

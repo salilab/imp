@@ -1,4 +1,3 @@
-import unittest
 import modeller
 import modeller.scripts
 import IMP
@@ -97,4 +96,4 @@ class ModelLoaderTests(IMP.test.TestCase):
                          "Wrong number of particles created")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

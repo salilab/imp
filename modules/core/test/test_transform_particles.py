@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.core
 import IMP.algebra
@@ -40,4 +39,4 @@ class ParticleTransformationTests(IMP.test.TestCase):
             self.assertInTolerance((v-t.get_transformed(coords[i])).get_magnitude(), 0, 0.01)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

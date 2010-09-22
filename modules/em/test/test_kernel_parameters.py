@@ -1,4 +1,3 @@
-import unittest
 import os,math
 import IMP
 import IMP.em
@@ -45,4 +44,4 @@ class KernelParametersTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         self.kp=IMP.em.KernelParameters(10.)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -101,4 +100,4 @@ class MCOptimizerTest(IMP.test.TestCase):
         self.assertInTolerance(e, 0.0, .01)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

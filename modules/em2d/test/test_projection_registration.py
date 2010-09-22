@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -90,4 +89,4 @@ class ProjectTests(IMP.test.TestCase):
         # os.remove(fn_registration_results)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

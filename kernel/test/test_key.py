@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import os.path
@@ -15,4 +14,4 @@ class DirectoriesTests(IMP.test.TestCase):
         self.assert_(k2 != ak1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

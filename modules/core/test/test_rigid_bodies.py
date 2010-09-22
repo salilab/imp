@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -125,4 +124,4 @@ class RBDTests(IMP.test.TestCase):
     # test setting things to be optimized or not
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

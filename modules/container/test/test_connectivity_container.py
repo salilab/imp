@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.atom
@@ -57,4 +56,4 @@ class TunnelTest(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

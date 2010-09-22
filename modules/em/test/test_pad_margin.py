@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -40,4 +39,4 @@ class PadMarginTest(IMP.test.TestCase):
         padded_scene_center = IMP.algebra.Vector3D(padded_h.get_xorigin(),padded_h.get_yorigin(),padded_h.get_zorigin())+IMP.algebra.Vector3D(padded_h.get_nx()/2.*apix,padded_h.get_ny()/2.*apix,padded_h.get_nz()/2.*apix)
         self.assertAlmostEqual(IMP.algebra.get_distance(padded_scene_center,scene_center),0,2)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

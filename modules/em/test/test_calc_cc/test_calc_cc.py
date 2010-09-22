@@ -1,5 +1,4 @@
 #test that impEM is able to sample IMP particles on a grid.
-import unittest
 import IMP
 import IMP.test
 import IMP.em
@@ -64,4 +63,4 @@ class SampleParticlesTests(IMP.test.TestCase):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

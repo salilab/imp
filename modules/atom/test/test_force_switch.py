@@ -1,4 +1,3 @@
-import unittest
 import StringIO
 import IMP
 import IMP.test
@@ -46,4 +45,4 @@ class ForceSwitchTests(IMP.test.TestCase):
             self.assertInTolerance(deriv, num_deriv, 1e-4)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

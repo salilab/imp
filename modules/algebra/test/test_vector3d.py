@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.algebra
 import StringIO
@@ -149,4 +148,4 @@ class Vector3DTests(IMP.test.TestCase):
         v= IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP
 import IMP.statistics
@@ -44,4 +43,4 @@ class HistogramTests(IMP.test.TestCase):
         self.assert_(hist.get_top(0.99)>9)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

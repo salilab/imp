@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.core
 import IMP.test
@@ -33,4 +32,4 @@ class DistanceTests(IMP.test.TestCase):
         self.probabilistic_test("self._test_diameter()", .002)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

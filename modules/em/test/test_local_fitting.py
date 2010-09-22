@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -56,4 +55,4 @@ class LocalFittingTest(IMP.test.TestCase):
         print "fast:",fr_fast.get_score(0)," slow:",fr_slow.get_score(0)
         self.assert_(abs(fr_fast.get_score(0)-fr_slow.get_score(0))<0.1)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

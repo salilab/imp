@@ -10,7 +10,6 @@
 import IMP
 import IMP.em
 import IMP.test
-import unittest
 
 class ResamplingTest(IMP.test.TestCase):
     """Class to test transforming EM maps without resampling"""
@@ -150,4 +149,4 @@ class ResamplingTest(IMP.test.TestCase):
         self.assert_(fs.get_number_of_solutions()>0)
         print fs.get_score(0)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

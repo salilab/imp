@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.test
@@ -76,4 +75,4 @@ class ConnectivityTests(IMP.test.TestCase):
         self.assertInTolerance(score, lscore, .1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

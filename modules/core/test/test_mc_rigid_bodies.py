@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -73,4 +72,4 @@ class MCOptimizerTest(IMP.test.TestCase):
         print "all done"
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

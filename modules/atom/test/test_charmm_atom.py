@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -41,4 +40,4 @@ class CHARMMAtomTests(IMP.test.TestCase):
         self.assert_(' CHARMM type= ' in str(c))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

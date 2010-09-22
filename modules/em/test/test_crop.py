@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -78,4 +77,4 @@ class CropTest(IMP.test.TestCase):
         cropped_scene=self.scene.get_cropped(mh_bb)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

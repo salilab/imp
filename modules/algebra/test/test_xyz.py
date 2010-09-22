@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -33,4 +32,4 @@ class XYZTests(IMP.test.TestCase):
         self.assertInTolerance(q[3],0.,.1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()
