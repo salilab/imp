@@ -8,6 +8,7 @@
 #define IMPEM2D_FILENAMES_MANIPULATION_H
 
 #include "IMP/exception.h"
+#include <boost/filesystem/path.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -16,13 +17,25 @@ IMPEM2D_BEGIN_NAMESPACE
 IMPEM2DEXPORT inline Strings read_selection_file(String fn) {
   String name;
   Strings names;
+  boost::filesystem::path dir= boost::filesystem::path(fn).remove_filename();
   std::ifstream in;
   int not_ignored;
   in.open(fn.c_str(), std::ios::in);
-  IMP_USAGE_CHECK(in,"read_selection_file: No such file "+fn);
+  if (!in) {
+    IMP_THROW("Unable to read file " << fn,
+              IOException);
+  }
 
   while(in >> name >> not_ignored) {
-    if(not_ignored) names.push_back(name);
+    if (not_ignored) {
+      boost::filesystem::path path=dir/boost::filesystem::path(name);
+#if BOOST_VERSION >= 103400
+      std::string str= path.file_string();
+#else
+      std::string str= path.native_file_string();
+#endif
+      names.push_back(str);
+    }
   }
   in.close();
   return names;
