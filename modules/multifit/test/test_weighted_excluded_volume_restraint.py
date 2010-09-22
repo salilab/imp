@@ -4,7 +4,6 @@ import sys
 import IMP.em
 import IMP.multifit
 import IMP.helper
-import unittest
 import os
 import time
 
@@ -90,4 +89,4 @@ class SampleTests(IMP.test.TestCase):
             #print "connectivity "+str(conn_r) + " | excluded-volume " + str(w_exc_vol_r)
             xyz.set_coordinates(t.get_inverse().get_transformed(xyz.get_coordinates()))
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -14,4 +13,4 @@ class TestBL(IMP.test.TestCase):
         #wvrml= IMP.display.create_writer(self.get_tmp_file_name("test.vrml"))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

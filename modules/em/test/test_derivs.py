@@ -8,7 +8,6 @@ import IMP
 import IMP.test
 import sys
 import IMP.em
-import unittest
 import os
 
 def copy_to_modeller(env, particles):
@@ -195,4 +194,4 @@ class DerivativesTest(IMP.test.TestCase):
         os.unlink("xxx.em")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

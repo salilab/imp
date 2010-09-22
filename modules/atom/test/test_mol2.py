@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.atom
@@ -87,4 +86,4 @@ class Mol2ReadTest(IMP.test.TestCase):
         self.assertEqual(out.getvalue(), testout)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

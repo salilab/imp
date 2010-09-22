@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -44,4 +43,4 @@ class ProteinFittingTest(IMP.test.TestCase):
         self.particles.append(self.mh)
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

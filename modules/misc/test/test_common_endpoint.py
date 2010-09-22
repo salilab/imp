@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.misc
@@ -30,4 +29,4 @@ class TunnelTest(IMP.test.TestCase):
                                                                   bonds[2].get_particle())))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -42,4 +41,4 @@ class ConvertersTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.load_density_map()
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

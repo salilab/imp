@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP
 import IMP.statistics
@@ -56,4 +55,4 @@ class KMeansTests(IMP.test.TestCase):
                              "particles should not be part of the same cluster ")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

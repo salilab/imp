@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.restrainer
@@ -26,4 +25,4 @@ class RestraintTest(IMP.test.TestCase):
         self.Model.evaluate(False)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

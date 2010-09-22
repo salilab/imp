@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.em
@@ -72,4 +71,4 @@ class FittingTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.mrw = IMP.em.MRCReaderWriter()
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

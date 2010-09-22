@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -48,4 +47,4 @@ class ParticleTupleTests(IMP.test.TestCase):
         #self.assert_(isinstance(p.get_name(), str))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

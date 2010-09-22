@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -55,4 +54,4 @@ class DistanceTests(IMP.test.TestCase):
         self.assertXYZDerivativesInTolerance(m, d1, 2.0, 5.0)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

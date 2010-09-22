@@ -3,7 +3,6 @@
 import IMP
 import IMP.test
 import IMP.em
-import unittest
 import os
 
 class SampleParticlesTest(IMP.test.TestCase):
@@ -46,4 +45,4 @@ class SampleParticlesTest(IMP.test.TestCase):
         self.assert_(scene.get_header().rms == 1.0, "unexpected rms for the map")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

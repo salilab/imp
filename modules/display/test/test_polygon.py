@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -29,4 +28,4 @@ class TestBL(IMP.test.TestCase):
         w.add_geometry(pg)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

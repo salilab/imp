@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import os.path
@@ -55,4 +54,4 @@ class DirectoriesTests(IMP.test.TestCase):
         # shouldn't raise
         IMP._test_ifile_overloaded(s, "hi")
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

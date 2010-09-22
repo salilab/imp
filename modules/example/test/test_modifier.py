@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -29,4 +28,4 @@ class DistanceTests(IMP.test.TestCase):
             self.assert_(d.get_coordinate(i) <= sbb.get_corner(1)[i])
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

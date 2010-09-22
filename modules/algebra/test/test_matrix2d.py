@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.algebra
 import os.path
@@ -149,4 +148,4 @@ class Matrix2DTests(IMP.test.TestCase):
         os.remove(name)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

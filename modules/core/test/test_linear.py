@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -37,4 +36,4 @@ class LinearTests(IMP.test.TestCase):
         func.show()
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

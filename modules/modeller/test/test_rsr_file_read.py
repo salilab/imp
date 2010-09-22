@@ -1,4 +1,3 @@
-import unittest
 import os
 from modeller import *
 import IMP
@@ -275,4 +274,4 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         assertSimilarModellerIMPScores(self, modmodel, protein)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -169,4 +168,4 @@ class ParticleTests(IMP.test.TestCase):
             self.assertEqual(val, 3.5 * i)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

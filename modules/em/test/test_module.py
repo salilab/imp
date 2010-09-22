@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -19,4 +18,4 @@ class ModuleTest(IMP.test.TestCase):
             print p
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import sys
 import os
@@ -25,4 +24,4 @@ class SAXSProfileApplicationTest(IMP.test.ApplicationTestCase):
             os.unlink(self.get_input_file_name(out))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

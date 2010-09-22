@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -48,4 +47,4 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             self.assert_(abs(scores[i]-scores[i+1])<0.3, "scores should be similar")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

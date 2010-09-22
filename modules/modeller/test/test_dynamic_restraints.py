@@ -1,4 +1,3 @@
-import unittest
 import os
 from modeller import *
 import IMP
@@ -73,4 +72,4 @@ class ModellerDynamicRestraintsTests(IMP.test.TestCase):
         self.assertInTolerance(imp_score, modenergy, 1e-3)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

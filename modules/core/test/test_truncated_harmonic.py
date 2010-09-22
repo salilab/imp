@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -68,4 +67,4 @@ class LinearTests(IMP.test.TestCase):
         self.check_unary_function_deriv(h, -10, 10, .1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

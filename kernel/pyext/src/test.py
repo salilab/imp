@@ -267,6 +267,13 @@ class TestCase(unittest.TestCase):
                           "Classes %s do not have show methods" \
                           % str(not_found))
 
+def main(*args, **keys):
+    """Run a set of tests; essentially the same as IMP.test.main(). Obviates
+       the need to separately import the 'unittest' module, and ensures that
+       main() is from the same unittest module that the IMP.test testcases
+       are."""
+    return IMP.test.main(*args, **keys)
+
 try:
     import subprocess
     class _SubprocessWrapper(subprocess.Popen):

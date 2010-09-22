@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.em
 import os
@@ -65,4 +64,4 @@ class VolumeTest(IMP.test.TestCase):
         os.unlink('test.xmp')
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

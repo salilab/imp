@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -129,4 +128,4 @@ class ModelTests(IMP.test.TestCase):
         self._check_evaluate(m, ps, True)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

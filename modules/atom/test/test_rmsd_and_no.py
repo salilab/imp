@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -55,4 +54,4 @@ class MeasuresTest(IMP.test.TestCase):
         self.assertAlmostEqual(nat_ove,100, 2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

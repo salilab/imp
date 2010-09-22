@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -73,4 +72,4 @@ class SimpleExcludedVolumeTests(IMP.test.TestCase):
                 IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.atom
@@ -33,4 +32,4 @@ class SurfaceTest(IMP.test.TestCase):
         self.assertInTolerance(total_area, 37.728, 0.1)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

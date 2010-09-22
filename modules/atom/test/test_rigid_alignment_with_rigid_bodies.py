@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -69,4 +68,4 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         #we acpect a rmsd of 0
         self.assertInTolerance(IMP.atom.get_rmsd(xyz1,xyz2),0.,.01)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

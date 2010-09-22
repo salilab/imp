@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -46,4 +45,4 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(m.evaluate(False), 3)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

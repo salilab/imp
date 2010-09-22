@@ -1,4 +1,3 @@
-import unittest
 import modeller
 import IMP
 import IMP.test
@@ -32,4 +31,4 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         self.assertInTolerance(m.evaluate(False), 5.7837, 1e-3)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

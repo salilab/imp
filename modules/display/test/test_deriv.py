@@ -4,7 +4,6 @@ import IMP.display
 import IMP.core
 import IMP.test
 import IMP.helper
-import unittest
 
 class TestBL(IMP.test.TestCase):
     def setUp(self):
@@ -54,4 +53,4 @@ class TestBL(IMP.test.TestCase):
         del w
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

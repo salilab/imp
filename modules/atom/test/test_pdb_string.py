@@ -1,4 +1,3 @@
-import unittest
 from StringIO import StringIO
 import IMP
 import IMP.test
@@ -22,4 +21,4 @@ class PDBReadWriteTest(IMP.test.TestCase):
         os.unlink(name)
         self.assertEqual(len(IMP.core.get_leaves(mp)),5)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

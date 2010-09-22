@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import StringIO
@@ -194,4 +193,4 @@ class ModelTests(IMP.test.TestCase):
             s.show()
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

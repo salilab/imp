@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -43,4 +42,4 @@ class ChargedDecoratorTests(IMP.test.TestCase):
         self.assert_(' charge= ' in str(c))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

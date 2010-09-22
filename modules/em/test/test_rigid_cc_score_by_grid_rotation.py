@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -90,4 +89,4 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         self.assert_(best_score[2]<5)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

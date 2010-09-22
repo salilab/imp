@@ -1,5 +1,4 @@
 import sys
-import unittest
 import IMP
 import IMP.test
 import IMP.domino
@@ -108,4 +107,4 @@ class DOMINOTests(IMP.test.TestCase):
                           "the score of the minimum configuration as calculated by the inference is wrong " + str(score_inf) + " != " + str(scores[i]))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

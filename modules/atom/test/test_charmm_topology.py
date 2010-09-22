@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.atom
@@ -399,4 +398,4 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(atoms), 0)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

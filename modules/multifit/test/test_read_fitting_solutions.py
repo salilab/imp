@@ -4,7 +4,6 @@ import sys
 import IMP.em
 import IMP.multifit
 import IMP.helper
-import unittest
 import os
 import time
 
@@ -52,4 +51,4 @@ class ReadFittingSolutionsTests(IMP.test.TestCase):
         self.assertInTolerance(sols[2].get_rmsd_to_reference(),19.05,0.01)
         os.unlink("temp.txt")
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

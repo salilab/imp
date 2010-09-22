@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.container
@@ -47,4 +46,4 @@ class AllPairsContainerTest(IMP.test.TestCase):
                          lp.get_number_of_particles()*(lp.get_number_of_particles()-1)/2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

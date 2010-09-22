@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -85,4 +84,4 @@ class StereoPairFilterTests(IMP.test.TestCase):
             self.assertEqual(a, b)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

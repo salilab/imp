@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -63,4 +62,4 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             self.assert_(fr.get_score(i) < 1.0, "wrong CC values")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

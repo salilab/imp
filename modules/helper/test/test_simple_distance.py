@@ -1,4 +1,3 @@
-import unittest
 import os
 import IMP
 import IMP.core
@@ -67,4 +66,4 @@ class SimpleDistanceTest(IMP.test.TestCase):
         self.imp_model.evaluate(False)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

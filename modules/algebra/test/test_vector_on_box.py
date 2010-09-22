@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.algebra
 import math
@@ -33,4 +32,4 @@ class Vector3DTests(IMP.test.TestCase):
                 self.assert_(not in_box(ilb, iub, rv))
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -23,4 +22,4 @@ class DirectoriesTests(IMP.test.TestCase):
         return self.assertShow(IMP, show_exceptions)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -42,4 +41,4 @@ class TypedPairScoreTests(IMP.test.TestCase):
         ps2 = IMP.core.TypedPairScore(typekey, False)
         self.assertRaises(ValueError, ps2.evaluate, IMP.ParticlePair(pa, pb), da)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

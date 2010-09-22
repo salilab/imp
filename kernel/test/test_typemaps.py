@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import StringIO
@@ -252,4 +251,4 @@ class ParticleTests(IMP.test.TestCase):
                 self.assert_(False, m+" not found")
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

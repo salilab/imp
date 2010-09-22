@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.em
 
@@ -69,4 +68,4 @@ class SurfaceTests(IMP.test.TestCase):
         print "SCORE BAD : " + str(score)
 
 if __name__=='__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -71,4 +70,4 @@ class EigenAnalysisTests(IMP.test.TestCase):
         self.assertInTolerance(ed1.get_principal_value(2),ed2.get_principal_value(2),0.2)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

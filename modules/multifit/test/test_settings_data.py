@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -24,4 +23,4 @@ class SettingsDataTest(IMP.test.TestCase):
         self.assert_(header.get_assembly_header().get_resolution()==20.)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

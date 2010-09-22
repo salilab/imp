@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -31,4 +30,4 @@ class TestREFCover(IMP.test.TestCase):
         m.evaluate(True)
         self.check_cover(p, ps)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

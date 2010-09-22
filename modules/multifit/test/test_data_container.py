@@ -1,4 +1,3 @@
-import unittest
 import sys,os
 import IMP
 import IMP.em
@@ -23,4 +22,4 @@ class SettingsDataTest(IMP.test.TestCase):
         self.assert_(data.get_density_map().get_header().get_resolution()==20.)
         self.assertEqual(data.get_junction_tree().get_number_of_nodes(),2)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

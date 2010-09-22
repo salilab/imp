@@ -1,4 +1,3 @@
-import unittest
 import IMP.test
 import IMP.algebra
 import math
@@ -48,4 +47,4 @@ class Vector3DTests(IMP.test.TestCase):
             for c in chain:
                 self.assert_(not IMP.algebra.get_interiors_intersect(ss[i],IMP.algebra.Sphere3D(c, .9*r)))
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.core
@@ -55,4 +54,4 @@ class DihedralRestraintTests(IMP.test.TestCase):
             self.assert_(opt.optimize(50) < 1e-6)
             self.assert_(model.evaluate(False) < 1e-6)
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

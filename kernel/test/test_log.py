@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import sys
@@ -40,4 +39,4 @@ class LogTests(IMP.test.TestCase):
         IMP.set_log_level(log_level)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

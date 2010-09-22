@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 import IMP.algebra
@@ -26,4 +25,4 @@ class InverseTests(IMP.test.TestCase):
         self.assertEqual((v2_t_inv- self.v2).get_magnitude() < 0.01,True)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()

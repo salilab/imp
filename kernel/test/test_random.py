@@ -1,4 +1,3 @@
-import unittest
 import IMP
 import IMP.test
 
@@ -19,4 +18,4 @@ class RandomTests(IMP.test.TestCase):
         self.assertEqual(a2, a4)
 
 if __name__ == '__main__':
-    unittest.main()
+    IMP.test.main()
