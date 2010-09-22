@@ -3,6 +3,8 @@ import pyscanner
 import os
 import os.path
 
+# List of all disabled IMP modules (populated at configure time)
+disabled_modules = []
 
 def _get_name(env):
     if env.has_key('IMP_APPLICATION'):
@@ -11,14 +13,23 @@ def _get_name(env):
         return "IMP." + env['IMP_MODULE']
 
 def _action_unit_test(target, source, env):
+    global disabled_modules
     #app = "cd %s; %s %s %s -v > /dev/null"
     fsource=[]
     for x in source[2:]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
-    app = "mkdir -p %s; cd %s; %s %s %s %s > /dev/null" \
+    if env['TEST_TYPE'] == 'example':
+        # Quote list of modules so that the shell passes an empty parameter
+        # to the script if there are no disabled modules (rather than the
+        # script treating the first file as the list of disabled modules)
+        disab = ' "%s"' % ":".join(disabled_modules)
+    else:
+        disab = ''
+
+    app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
           % (Dir("#/build/tmp").abspath, Dir("#/build/tmp").abspath, source[0].abspath, env['PYTHON'],
-             source[1].abspath,
+             source[1].abspath, disab,
              " ".join(fsource))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
