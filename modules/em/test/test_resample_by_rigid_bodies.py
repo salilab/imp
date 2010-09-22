@@ -66,8 +66,7 @@ class ResamplingTest(IMP.test.TestCase):
         score2=self.restr_rb_all_fast.evaluate(False)
         print "evaluate ps_all before transform: ",score1
         print "evaluate rb_all before transform fast: ",score2
-        self.assertInTolerance(score1,score2,
-                               0.05)
+        self.assertAlmostEqual(score1,score2, delta=0.05)
         for j in range(5):
             rand_t=[]
             for i in range(3):
@@ -85,8 +84,7 @@ class ResamplingTest(IMP.test.TestCase):
             score2=self.restr_rb_all_fast.evaluate(False)
             print "evaluate ps_all after transform: ", j , " : ", score1
             print "evaluate rb_all after transform fast: ",j , " : ", score2
-            self.assertInTolerance(score1,score2,
-                                   0.1)
+            self.assertAlmostEqual(score1,score2, delta=0.1)
             for i in range(3):
                 for x in IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs[i])):
                     x.set_coordinates(rand_t[i].get_inverse().get_transformed(x.get_coordinates()))
@@ -110,8 +108,7 @@ class ResamplingTest(IMP.test.TestCase):
         self.imp_model.add_restraint(self.restr_rb_all_slow)
         score1=self.restr_ps_all.evaluate(True)
         score2=self.restr_rb_all_fast.evaluate(True)
-        self.assertInTolerance(score1,score2,
-                               0.05)
+        self.assertAlmostEqual(score1,score2, delta=0.05)
         self.imp_model.remove_restraint(self.restr_ps_all)
         self.imp_model.remove_restraint(self.restr_rb_all_fast)
 
@@ -145,7 +142,7 @@ class ResamplingTest(IMP.test.TestCase):
                                       None,3,5,20,2,3,True)
         score_after=IMP.em.compute_fitting_score(ps,d_map)
         print "score_after:",score_after," score_before:",score_before
-        self.assertInTolerance(score_after,score_before,0.05)
+        self.assertAlmostEqual(score_after,score_before, delta=0.05)
         self.assert_(fs.get_number_of_solutions()>0)
         print fs.get_score(0)
 if __name__ == '__main__':

@@ -18,8 +18,8 @@ class VolumeTest(IMP.test.TestCase):
     def _test_min_max(self, ma, mb):
         (mina, maxa) = self._get_min_max(ma)
         (minb, maxb) = self._get_min_max(mb)
-        self.assertInTolerance(mina, minb, .1*(mina+minb)+.1)
-        self.assertInTolerance(maxa, maxb, .1*(maxa+maxb)+.1)
+        self.assertAlmostEqual(mina, minb, delta=.1*(mina+minb)+.1)
+        self.assertAlmostEqual(maxa, maxb, delta=.1*(maxa+maxb)+.1)
     def test_imag2e(self):
         """Check resampling of maps"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))

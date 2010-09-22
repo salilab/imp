@@ -28,8 +28,8 @@ class FFToperationsTests(IMP.test.TestCase):
         cols=stored_corr.get_data().get_number_of_columns()
         for i in xrange(0,rows):
             for j in xrange(0,cols):
-                self.assertInTolerance(corr(i,j),stored_corr(i,j),0.001,
-                                "Autocorrelation image is different than stored")
+                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
+                         msg="Autocorrelation image is different than stored")
 
 
     def test_correlation2D(self):
@@ -53,13 +53,8 @@ class FFToperationsTests(IMP.test.TestCase):
         cols=stored_corr.get_data().get_number_of_columns()
         for i in xrange(0,rows):
             for j in xrange(0,cols):
-                self.assertInTolerance(corr(i,j),stored_corr(i,j),0.001,
-                                "Correlation image is different than stored")
-
-
-
-
-
+                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
+                            msg="Correlation image is different than stored")
 
 
 if __name__ == '__main__':

@@ -23,7 +23,7 @@ class VolumeTest(IMP.test.TestCase):
                     mval= m.get_value(m.xyz_ind2voxel(i,j,k))
                     if i%4==0 and j%4==0 and k%4==0:
                         print i,j,k, v, val, mval
-                    self.assertInTolerance(val, mval, (val+mval)*.1+.1)
+                    self.assertAlmostEqual(val, mval, delta=(val+mval)*.1+.1)
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(wid[0],0,0)), 0)
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(0,wid[1],0)), 0)
                     self.assertEqual(IMP.em.get_density(m, self.get_center(m, i,j,k) +IMP.algebra.Vector3D(0,0,wid[2])), 0)

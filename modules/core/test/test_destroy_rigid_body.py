@@ -13,7 +13,7 @@ class RBDTests(IMP.test.TestCase):
         dist= IMP.core.get_distance(IMP.core.XYZ(pa),
                                 IMP.core.XYZ(pb))
         print dist
-        self.assertInTolerance(dist, idist, .1)
+        self.assertAlmostEqual(dist, idist, delta=.1)
     def _check_not_distance(self, pa, pb, idist):
         dist= IMP.core.get_distance(IMP.core.XYZ(pa),
                                 IMP.core.XYZ(pb))

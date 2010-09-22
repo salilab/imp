@@ -26,10 +26,10 @@ class XYZTests(IMP.test.TestCase):
         id_mat = r*r2.get_inverse()
         q = id_mat.get_quaternion()
         #check that the composed matrix is the identity matrix.
-        self.assertInTolerance(q[0],1.,.1)
-        self.assertInTolerance(q[1],0.,.1)
-        self.assertInTolerance(q[2],0.,.1)
-        self.assertInTolerance(q[3],0.,.1)
+        self.assertAlmostEqual(q[0],1., delta=.1)
+        self.assertAlmostEqual(q[1],0., delta=.1)
+        self.assertAlmostEqual(q[2],0., delta=.1)
+        self.assertAlmostEqual(q[3],0., delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

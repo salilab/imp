@@ -29,7 +29,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         align_t=IMP.algebra.get_transformation_taking_first_to_second(vec1,vec2)
         for xyz in xyz1:
             xyz.set_coordinates(align_t.get_transformed(xyz.get_coordinates()))
-        self.assertInTolerance(IMP.atom.get_rmsd(xyz1,xyz2),0.,.01)
+        self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1,xyz2),0., delta=.01)
     def test_alignment_with_rigid_body(self):
         """Rigid aligment with rigid bodies"""
         mdl=IMP.Model()
@@ -66,6 +66,6 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         mdl.set_log_level(IMP.SILENT)
         #mdl.update()
         #we acpect a rmsd of 0
-        self.assertInTolerance(IMP.atom.get_rmsd(xyz1,xyz2),0.,.01)
+        self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1,xyz2),0., delta=.01)
 if __name__ == '__main__':
     IMP.test.main()

@@ -28,7 +28,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
                                                         atoms))
 
         assertSimilarModellerIMPScores(self, modmodel, protein)
-        self.assertInTolerance(m.evaluate(False), 5.7837, 1e-3)
+        self.assertAlmostEqual(m.evaluate(False), 5.7837, delta=1e-3)
 
 if __name__ == '__main__':
     IMP.test.main()

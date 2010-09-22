@@ -80,12 +80,12 @@ class ProjectTests(IMP.test.TestCase):
                                         correct_parameters[i])
             angle_tolerance=0.05
             distance_tolerance = 1
-            self.assertInTolerance(angle,0,angle_tolerance,
-             "Rotation error %8.3f higher than tolerance %8.3f "\
-             "for subject %d " % (angle,angle_tolerance,i))
-            self.assertInTolerance(dist,0,distance_tolerance,
-                 "Translation error %8.3f higher than tolerance %8.3f "\
-                 "for subject %d " % (dist,distance_tolerance,i))
+            self.assertAlmostEqual(angle,0, delta=angle_tolerance,
+                 msg="Rotation error %8.3f higher than tolerance %8.3f "
+                     "for subject %d " % (angle,angle_tolerance,i))
+            self.assertAlmostEqual(dist,0, delta=distance_tolerance,
+                 msg="Translation error %8.3f higher than tolerance %8.3f "
+                     "for subject %d " % (dist,distance_tolerance,i))
         # os.remove(fn_registration_results)
 
 if __name__ == '__main__':

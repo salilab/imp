@@ -72,7 +72,7 @@ class ConnectivityTests(IMP.test.TestCase):
         lscore=0
         for p in pps:
             lscore= lscore+ss.evaluate(IMP.ParticlePair(p[0], p[1]), None)
-        self.assertInTolerance(score, lscore, .1)
+        self.assertAlmostEqual(score, lscore, delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

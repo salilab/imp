@@ -21,7 +21,7 @@ class ParticleTransformationTests(IMP.test.TestCase):
             r = tf.apply(p.get_particle())
         for i in range(0,len(particles)):
             v = particles[i].get_coordinates()
-            self.assertInTolerance((v-t.get_transformed(coords[i])).get_magnitude(), 0, 0.01)
+            self.assertAlmostEqual((v-t.get_transformed(coords[i])).get_magnitude(), 0, delta=0.01)
 
     def test_transformation2(self):
         """Test the TransformationFunction class with map"""
@@ -36,7 +36,7 @@ class ParticleTransformationTests(IMP.test.TestCase):
         map( IMP.SingletonFunctor(tf), [x.get_particle() for x in particles])
         for i in range(0,len(particles)):
             v = particles[i].get_coordinates()
-            self.assertInTolerance((v-t.get_transformed(coords[i])).get_magnitude(), 0, 0.01)
+            self.assertAlmostEqual((v-t.get_transformed(coords[i])).get_magnitude(), 0, delta=0.01)
 
 if __name__ == '__main__':
     IMP.test.main()

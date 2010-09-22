@@ -59,7 +59,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(header.voltage, 0.)
         self.assertEqual(header.Cs, 0.)
         self.assertEqual(header.get_spacing(), 1.)
-        self.assertInTolerance(scene.calcRMS(), 404.5, 1.0)
+        self.assertAlmostEqual(scene.calcRMS(), 404.5, delta=1.0)
         IMP.em.write_map(scene, out_filename,xrw);
         scene2 = IMP.em.read_map(out_filename, xrw)
         header2 = scene2.get_header()
@@ -67,7 +67,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(header2.get_ny(), header.get_ny())
         self.assertEqual(header2.get_nz(), header.get_nz())
         self.assertEqual(header2.magic, header.magic)
-        self.assertInTolerance(scene2.calcRMS(), 404.5, 1.0)
+        self.assertAlmostEqual(scene2.calcRMS(), 404.5, delta=1.0)
         os.unlink(out_filename)
 
     #todo - add assert functions
@@ -84,7 +84,7 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         self.assertEqual(98,scene.get_header().get_ny())
         self.assertEqual(84,scene.get_header().get_nz())
         print "rms: " + str(scene.calcRMS())
-        self.assertInTolerance(scene.calcRMS(), 0.00688, 1.0)
+        self.assertAlmostEqual(scene.calcRMS(), 0.00688, delta=1.0)
         IMP.em.write_map(scene, out_filename,mrc_rw)
         os.unlink(out_filename)
 
@@ -97,8 +97,9 @@ class ReadWriteMapsTests(IMP.test.TestCase):
         scene= IMP.em.read_map(in_filename, em_rw)
         pixsize = scene.get_header().get_spacing()
         print "ObjectPixelsize = " + str(pixsize)
-        self.assertInTolerance(3.0, scene.get_header().get_spacing(), 0.0001)
-        self.assertInTolerance(300., scene.get_header().voltage, 0.0001)
+        self.assertAlmostEqual(3.0, scene.get_header().get_spacing(),
+                               delta=0.0001)
+        self.assertAlmostEqual(300., scene.get_header().voltage, delta=0.0001)
 
 
 if __name__ == '__main__':

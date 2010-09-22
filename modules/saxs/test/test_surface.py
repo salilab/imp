@@ -29,7 +29,7 @@ class SurfaceTest(IMP.test.TestCase):
         for area in surface_area:
             total_area += area
         print 'Area = ' + str(total_area)
-        self.assertInTolerance(total_area, 37.728, 0.1)
+        self.assertAlmostEqual(total_area, 37.728, delta=0.1)
 
 if __name__ == '__main__':
     IMP.test.main()

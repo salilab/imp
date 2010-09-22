@@ -16,8 +16,8 @@ class RegressionTests(IMP.test.TestCase):
         vs.append(v3)
         lf = IMP.algebra.LinearFit(vs)
         lf.show()
-        self.assertInTolerance(lf.get_a(), 1.0, 0.01)
-        self.assertInTolerance(lf.get_b(), 3.0, 0.01)
+        self.assertAlmostEqual(lf.get_a(), 1.0, delta=0.01)
+        self.assertAlmostEqual(lf.get_b(), 3.0, delta=0.01)
 
     def test_parabolic(self):
         """Check Parabolic Fit"""
@@ -30,9 +30,9 @@ class RegressionTests(IMP.test.TestCase):
         vs.append(v3)
         pf = IMP.algebra.ParabolicFit(vs)
         pf.show()
-        self.assertInTolerance(pf.get_a(), 1.0, 0.01)
-        self.assertInTolerance(pf.get_b(), 3.0, 0.01)
-        self.assertInTolerance(pf.get_c(), 5.0, 0.01)
+        self.assertAlmostEqual(pf.get_a(), 1.0, delta=0.01)
+        self.assertAlmostEqual(pf.get_b(), 3.0, delta=0.01)
+        self.assertAlmostEqual(pf.get_c(), 5.0, delta=0.01)
 
 if __name__ == '__main__':
     IMP.test.main()

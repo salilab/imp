@@ -23,8 +23,8 @@ class SphereTests(IMP.test.TestCase):
         sampled_centroid.show()
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
-        self.assertInTolerance((sampled_centroid-center).get_magnitude(),0,
-                               4*radius/numpts**.5)
+        self.assertAlmostEqual((sampled_centroid-center).get_magnitude(),0,
+                               delta=4*radius/numpts**.5)
 
 
     def test_get_uniform_surface_cover_not_on_000(self):
@@ -48,7 +48,8 @@ class SphereTests(IMP.test.TestCase):
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
         center.show()
-        self.assertInTolerance((sampled_centroid-center).get_magnitude(), 0, 1.0)
+        self.assertAlmostEqual((sampled_centroid-center).get_magnitude(), 0,
+                               delta=1.0)
 
 
 if __name__ == '__main__':

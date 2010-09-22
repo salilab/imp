@@ -34,9 +34,9 @@ class LennardJonesDecoratorTests(IMP.test.TestCase):
         """Check get/set methods of LennardJones decorators"""
         m = IMP.Model()
         c = _make_test_decorator(m)
-        self.assertInTolerance(c.get_well_depth(), 0.5, 1e-6)
+        self.assertAlmostEqual(c.get_well_depth(), 0.5, delta=1e-6)
         c.set_well_depth(2.5)
-        self.assertInTolerance(c.get_well_depth(), 2.5, 1e-6)
+        self.assertAlmostEqual(c.get_well_depth(), 2.5, delta=1e-6)
 
     def test_show(self):
         """Check show method of LennardJones decorators"""

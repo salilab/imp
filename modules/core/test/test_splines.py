@@ -57,10 +57,10 @@ class CubicSplineTests(IMP.test.TestCase):
             val = minrange + test_spacing * i
             scoreonly = spline.evaluate(val)
             score, deriv = spline.evaluate_with_derivative(val)
-            self.assertInTolerance(score, scoreonly, .01)
+            self.assertAlmostEqual(score, scoreonly, delta=.01)
             expscore, expderiv = test_func(val)
-            self.assertInTolerance(score, expscore, 0.1)
-            self.assertInTolerance(deriv, expderiv, 0.6)
+            self.assertAlmostEqual(score, expscore, delta=0.1)
+            self.assertAlmostEqual(deriv, expderiv, delta=0.6)
 
     def test_show(self):
         """Check cubic spline show() methods"""

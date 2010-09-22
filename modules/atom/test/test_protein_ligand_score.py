@@ -35,7 +35,7 @@ class ScoreTest(IMP.test.TestCase):
         m.add_restraint(r)
         raw=m.evaluate(False)
         deriv= m.evaluate(True)
-        self.assertInTolerance(raw, deriv, .1*(raw+deriv))
+        self.assertAlmostEqual(raw, deriv, delta=.1*(raw+deriv))
         print r.evaluate(False)
     def test_score_2(self):
         """Test protein ligand restraint 2"""
@@ -61,8 +61,8 @@ class ScoreTest(IMP.test.TestCase):
         m.add_restraint(r1)
         print r0.evaluate(False)
         print r1.evaluate(False)
-        self.assertInTolerance(r0.evaluate(False), 99, 1)
-        self.assertInTolerance(r1.evaluate(False), 88, 1)
+        self.assertAlmostEqual(r0.evaluate(False), 99, delta=1)
+        self.assertAlmostEqual(r1.evaluate(False), 88, delta=1)
 
 
 if __name__ == '__main__':

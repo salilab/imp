@@ -56,7 +56,7 @@ class Volume(IMP.test.TestCase):
         c.set_score_threshold(.1)
         c.optimize(1000)
         print d
-        self.assertInTolerance(d.get_radius(), 5, .1)
+        self.assertAlmostEqual(d.get_radius(), 5, delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

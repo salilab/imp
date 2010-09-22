@@ -77,12 +77,12 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         for (num, step) in enumerate(traj):
             for n in range(len(coor)):
                 coor[n][0] += vx * timestep
-                self.assertInTolerance(vx, step[n][3], 1e-3,
-                                       velmsg % (vx, step[n][3], num, n))
+                self.assertAlmostEqual(vx, step[n][3], delta=1e-3,
+                                       msg=velmsg % (vx, step[n][3], num, n))
                 for d in range(3):
-                    self.assertInTolerance(coor[n][d], step[n][d], 1e-3,
-                                           msg % (coor[n][d], step[n][d], num,
-                                                  n, d))
+                    self.assertAlmostEqual(coor[n][d], step[n][d], delta=1e-3,
+                                           msg=msg % (coor[n][d], step[n][d],
+                                                      num, n, d))
             vx = vxfunc(vx)
 
     def _optimize_model(self, timestep):
@@ -136,9 +136,10 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         """Check the temperature of the system"""
         ekinetic = self.md.get_kinetic_energy()
         tkinetic = self.md.get_kinetic_temperature(ekinetic)
-        self.assertInTolerance(tkinetic, desired, tolerance,
-                     "Temperature %f does not match expected %f within %f" \
-                     % (tkinetic, desired, tolerance))
+        self.assertAlmostEqual(tkinetic, desired,
+                     msg="Temperature %f does not match expected %f within %f" \
+                         % (tkinetic, desired, tolerance),
+                     delta=tolerance)
 
     def test_temperature(self):
         """Check temperature"""

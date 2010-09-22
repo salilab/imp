@@ -21,9 +21,9 @@ class CylinderTests(IMP.test.TestCase):
         print e.get_rot()
         print e.get_tilt()
         print e.get_psi()
-        self.assertInTolerance(rot, e.get_rot(), .1)
-        self.assertInTolerance(tilt, e.get_tilt(), .1)
-        self.assertInTolerance(psi, e.get_psi(), .1)
+        self.assertAlmostEqual(rot, e.get_rot(), delta=.1)
+        self.assertAlmostEqual(tilt, e.get_tilt(), delta=.1)
+        self.assertAlmostEqual(psi, e.get_psi(), delta=.1)
 
 
 

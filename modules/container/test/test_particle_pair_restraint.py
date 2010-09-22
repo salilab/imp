@@ -57,11 +57,11 @@ class PairContainerTest(IMP.test.TestCase):
             r= IMP.container.PairsRestraint(gs, c)
             r.set_was_used(True)
         m.add_restraint(r)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
         p=self.create_particle_pair(m)
         f= f+ gs.evaluate(p,None)
         c.add_particle_pair(p)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
 
 
     def test_irestraint(self):
@@ -85,14 +85,14 @@ class PairContainerTest(IMP.test.TestCase):
         r= IMP.container.PairsRestraint(gs, c)
         m.add_restraint(r)
         m.set_is_incremental(True)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
         ps= ps+ps2
         f=0
         for p in ps:
             f=f+ gs.evaluate(p,None)
         c.set_particle_pairs(ps)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
 
 
     def test_srestraint(self):
@@ -104,7 +104,7 @@ class PairContainerTest(IMP.test.TestCase):
         r= self.create_pair_restraint(gs, p)
         r.set_was_used(True)
         m.add_restraint(r)
-        self.assertInTolerance(m.evaluate(False), f, .1*f)
+        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
 
     def test_min_restraint(self):
         """Test the MinimumPairRestraint"""
@@ -135,7 +135,7 @@ class PairContainerTest(IMP.test.TestCase):
         for i in range(0, 4):
             mt = mt+ ms[i]
         print mt
-        self.assertInTolerance(mt, f, .1*f)
+        self.assertAlmostEqual(mt, f, delta=.1*f)
 
     def test_max_restraint(self):
         """Test the MaximumPairRestraint"""
@@ -166,7 +166,7 @@ class PairContainerTest(IMP.test.TestCase):
         for i in range(0, 4):
             mt = mt+ ms[-i-1]
         print mt
-        self.assertInTolerance(mt, f, .1*f)
+        self.assertAlmostEqual(mt, f, delta=.1*f)
     def test_max_score(self):
         """Test the MaximumPairScore"""
         m= IMP.Model()

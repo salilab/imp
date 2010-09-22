@@ -61,8 +61,8 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
                                     score = m.evaluate(False)
                                     expected = wd * (rep * (rmin/r)**12
                                                      - 2.0 * att * (rmin/r)**6)
-                                    self.assertInTolerance(score, expected,
-                                                           1e-2)
+                                    self.assertAlmostEqual(score, expected,
+                                                           delta=1e-2)
 
     def test_derivatives(self):
         """Check derivatives of LennardJonesPairScore"""
@@ -90,7 +90,8 @@ class LennardJonesPairScoreTests(IMP.test.TestCase):
         # For dist <= min_distance, scores should be identical
         for dist in (3.0, 3.5, 4.0):
             place_all(dist)
-            self.assertInTolerance(m.evaluate(False), smm.evaluate(False), 1e-6)
+            self.assertAlmostEqual(m.evaluate(False), smm.evaluate(False),
+                                   delta=1e-6)
 
         # For dist > max_distance, smoothed score should be zero
         place_all(5.5)

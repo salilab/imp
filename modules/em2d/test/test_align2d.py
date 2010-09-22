@@ -40,9 +40,9 @@ class ProjectTests(IMP.test.TestCase):
         difference=get_angle_difference_from_rotation(angle,determined_angle)
         # approximately 25 degrees tolerance, 0.5 rad. Some extreme cases go
         # to that but most of them are below 0.1
-        self.assertInTolerance(difference,0,0.5,
-        "Angles applied %f and determined %f are different, "\
-          "difference %f" % (angle,determined_angle,difference))
+        self.assertAlmostEqual(difference,0, delta=0.5,
+             msg="Angles applied %f and determined %f are different, "\
+                 "difference %f" % (angle,determined_angle,difference))
 
 
     def test_translational_alignment(self):
@@ -66,13 +66,12 @@ class ProjectTests(IMP.test.TestCase):
         # Result contains the translation required for align the second matrix
         determined_trans= (-1)*result[0].get_translation()
         # Tolerate 1 pixel error
-        self.assertInTolerance(abs(determined_trans[0]-trans[0]),0,1,
-        "1st coordinate is incorrect: Applied %f Determined %f" % (trans[0],
-                                                          determined_trans[0]))
-        self.assertInTolerance(abs(determined_trans[1]-trans[1]),0,1,
-        "2nd coordinate is incorrect: Applied %f Determined %f" % (trans[1],
-                                                          determined_trans[1]))
-
+        self.assertAlmostEqual(abs(determined_trans[0]-trans[0]),0, delta=1,
+                msg="1st coordinate is incorrect: Applied %f Determined %f" \
+                    % (trans[0], determined_trans[0]))
+        self.assertAlmostEqual(abs(determined_trans[1]-trans[1]),0, delta=1,
+                msg="2nd coordinate is incorrect: Applied %f Determined %f" \
+                    % (trans[1], determined_trans[1]))
 
 
     def test_complete_alignment(self):
@@ -101,9 +100,9 @@ class ProjectTests(IMP.test.TestCase):
         cross_correlation_coefficient = result.second
 
         # Tolerate 1 pixel error
-        self.assertInTolerance(cross_correlation_coefficient,1,0.03,
-        "Error in the complete aligment routine,"\
-        "ccc %f less than 0.97" % (cross_correlation_coefficient))
+        self.assertAlmostEqual(cross_correlation_coefficient,1, delta=0.03,
+              msg="Error in the complete aligment routine,"
+                  "ccc %f less than 0.97" % (cross_correlation_coefficient))
 
 if __name__ == '__main__':
     IMP.test.main()

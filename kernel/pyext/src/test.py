@@ -142,14 +142,6 @@ class TestCase(unittest.TestCase):
             os.mkdir(dirpath)
         return os.path.join(dirpath, filename)
 
-    def assertInTolerance(self, num1, num2, tolerance, msg=None):
-        """Assert that the difference between num1 and num2 is less than
-           tolerance"""
-        diff = abs(num1 - num2)
-        if msg is None:
-            msg = "%f != %f within %g" % (num1, num2, tolerance)
-        self.assert_(diff < tolerance, msg)
-
     def assertXYZDerivativesInTolerance(self, model, xyz, tolerance,
                                         percentage):
         """Assert that x,y,z analytical derivatives match numerical within
@@ -159,12 +151,12 @@ class TestCase(unittest.TestCase):
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
         pct = percentage / 100.0
-        self.assertInTolerance(derivs[0], num_derivs[0],
-                               max(tolerance, abs(derivs[0]) * pct))
-        self.assertInTolerance(derivs[1], num_derivs[1],
-                               max(tolerance, abs(derivs[1]) * pct))
-        self.assertInTolerance(derivs[2], num_derivs[2],
-                               max(tolerance, abs(derivs[2]) * pct))
+        self.assertAlmostEqual(derivs[0], num_derivs[0],
+                               delta=max(tolerance, abs(derivs[0]) * pct))
+        self.assertAlmostEqual(derivs[1], num_derivs[1],
+                               delta=max(tolerance, abs(derivs[1]) * pct))
+        self.assertAlmostEqual(derivs[2], num_derivs[2],
+                               delta=max(tolerance, abs(derivs[2]) * pct))
 
     def create_point_particle(self, model, x, y, z):
         """Make a particle with optimizable x, y and z attributes, and
@@ -234,7 +226,7 @@ class TestCase(unittest.TestCase):
         for f in [lb + i * step for i in range(1, int((ub-lb)/step))]:
             (v,d)= func.evaluate_with_derivative(f)
             da = numerical_derivative(func.evaluate, f, step / 10.)
-            self.assertInTolerance(d, da, max(abs(.1 *d), 0.01))
+            self.assertAlmostEqual(d, da, delta=max(abs(.1 *d), 0.01))
 
     def check_unary_function_min(self, func, lb, ub, step, expected_fmin):
         """Make sure that the minimum of the unary function func over the
@@ -244,7 +236,7 @@ class TestCase(unittest.TestCase):
             v = func.evaluate(f)
             if v < vmin:
                 fmin, vmin = f, v
-        self.assertInTolerance(fmin, expected_fmin, step)
+        self.assertAlmostEqual(fmin, expected_fmin, delta=step)
 
     def create_particles_in_box(self, model, num=10,
                                 lb= [0,0,0],

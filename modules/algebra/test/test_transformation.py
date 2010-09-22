@@ -40,9 +40,12 @@ class Transformation2DTests(IMP.test.TestCase):
         set1[0]=x1; set1[1]=x2;
         set2[0]=y1; set2[1]=y2;
         T = IMP.algebra.get_transformation_aligning_pair(set1,set2);
-        self.assertInTolerance(angle_applied,T.get_rotation().get_angle(),.01)
-        self.assertInTolerance(shift_applied[0],T.get_translation()[0],.01)
-        self.assertInTolerance(shift_applied[1],T.get_translation()[1],.01)
+        self.assertAlmostEqual(angle_applied,T.get_rotation().get_angle(),
+                               delta=.01)
+        self.assertAlmostEqual(shift_applied[0],T.get_translation()[0],
+                               delta=.01)
+        self.assertAlmostEqual(shift_applied[1],T.get_translation()[1],
+                               delta=.01)
 
 
 
@@ -59,7 +62,7 @@ class Transformation2DTests(IMP.test.TestCase):
         t3d=IMP.algebra.get_transformation_3d(t2d)
         v1 = t3d.get_transformed(v)
         print "V1: " + str(v1)
-        self.assertInTolerance(v1[2],0.0,.01)
+        self.assertAlmostEqual(v1[2],0.0, delta=.01)
 
     def test_transformation_between_two_reference_frames(self):
         """Check calculating a transformation between two reference frames"""
@@ -84,9 +87,9 @@ class Transformation2DTests(IMP.test.TestCase):
         second_to_first=IMP.algebra.get_transformation_from_first_to_second(r1, r2)
         #preform test
         dist=IMP.algebra.get_distance(first_to_second.get_rotation(),second_to_first.get_inverse().get_rotation())
-        self.assertInTolerance(dist,0.0,0.001)
+        self.assertAlmostEqual(dist,0.0, delta=0.001)
         dist=IMP.algebra.get_distance(first_to_second.get_translation(),second_to_first.get_inverse().get_translation())
-        self.assertInTolerance(dist,0.0,0.001)
+        self.assertAlmostEqual(dist,0.0, delta=0.001)
 
 class Transformation3DTests(IMP.test.TestCase):
 
@@ -102,9 +105,9 @@ class Transformation3DTests(IMP.test.TestCase):
         p3d = IMP.algebra.Vector3D(9,10.5,0.0)
         q3d = r3d.get_rotated(p3d) + t3d.get_translation();
         q2d = r2d.get_rotated(p2d) + shift_applied;
-        self.assertInTolerance(q2d[0],q3d[0],.05)
-        self.assertInTolerance(q2d[1],q3d[1],.05)
-        self.assertInTolerance(0.0   ,q3d[2],.05)
+        self.assertAlmostEqual(q2d[0],q3d[0], delta=.05)
+        self.assertAlmostEqual(q2d[1],q3d[1], delta=.05)
+        self.assertAlmostEqual(0.0   ,q3d[2], delta=.05)
 
 
 if __name__ == '__main__':

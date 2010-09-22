@@ -34,8 +34,8 @@ class SpherePatch3DTests(IMP.test.TestCase):
             sampled_centroid = sampled_centroid + p
         sampled_centroid = sampled_centroid * (1.0/len(points))
         sampled_centroid.show()
-        self.assertInTolerance((sampled_centroid-expected_sampled_centroid).get_magnitude(),0,
-                               4*radius/numpts**.5)
+        self.assertAlmostEqual((sampled_centroid-expected_sampled_centroid).get_magnitude(),0,
+                               delta=4*radius/numpts**.5)
 
 
 if __name__ == '__main__':

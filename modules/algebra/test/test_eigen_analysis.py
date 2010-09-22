@@ -24,8 +24,8 @@ class EigenAnalysisTests(IMP.test.TestCase):
         """Testing eigen analysis """
         vs = self._produce_point_set()
         ed = IMP.algebra.get_principal_components(vs)
-        self.assertInTolerance(ed.get_principal_value(0),1.28,.1)
-        self.assertInTolerance(ed.get_principal_value(1),0.049,.1)
+        self.assertAlmostEqual(ed.get_principal_value(0),1.28, delta=.1)
+        self.assertAlmostEqual(ed.get_principal_value(1),0.049, delta=.1)
         ed.show()
 
     def test_pca_from_random_points(self):
@@ -44,7 +44,7 @@ class EigenAnalysisTests(IMP.test.TestCase):
         ed = IMP.algebra.get_principal_components(vs)
         self.assert_(ed.get_principal_value(0)>ed.get_principal_value(1))
         self.assert_(ed.get_principal_value(1)>ed.get_principal_value(2))
-        self.assertInTolerance(IMP.algebra.get_distance(vs_mean,ed.get_centroid()),0.,.1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(vs_mean,ed.get_centroid()),0., delta=.1)
 
 
     def test_that_pca_is_invariante_to_rotation(self):
@@ -65,9 +65,9 @@ class EigenAnalysisTests(IMP.test.TestCase):
         for i in range(50):
             vs[i] = rand_trans.get_transformed(vs[i])
         ed2 = IMP.algebra.get_principal_components(vs)
-        self.assertInTolerance(ed1.get_principal_value(0),ed2.get_principal_value(0),0.2)
-        self.assertInTolerance(ed1.get_principal_value(1),ed2.get_principal_value(1),0.2)
-        self.assertInTolerance(ed1.get_principal_value(2),ed2.get_principal_value(2),0.2)
+        self.assertAlmostEqual(ed1.get_principal_value(0),ed2.get_principal_value(0), delta=0.2)
+        self.assertAlmostEqual(ed1.get_principal_value(1),ed2.get_principal_value(1), delta=0.2)
+        self.assertAlmostEqual(ed1.get_principal_value(2),ed2.get_principal_value(2), delta=0.2)
 
 if __name__ == '__main__':
     IMP.test.main()
