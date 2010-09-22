@@ -17,10 +17,10 @@ class Vector3DTests(IMP.test.TestCase):
             v= IMP.algebra.get_random_vector_in(bb)
             if g.get_has_index(v):
                 g[v]=g[v]+1
-                self.assert_(g[v] >1)
+                self.assertGreater(g[v], 1)
             else:
                 g.add_voxel(g.get_extended_index(v), 1)
-                self.assert_(g[v] ==1)
+                self.assertEqual(g[v], 1)
             vs.append(v)
         count=0
         print "list"
@@ -37,7 +37,7 @@ class Vector3DTests(IMP.test.TestCase):
             cbb+=-.1
             for v in vs:
                 if cbb.get_contains(vs):
-                    self.assert_(g[g.get_index(i)]>0)
+                    self.assertGreater(g[g.get_index(i)], 0)
             if g.get_has_index(i):
                 print "adding", i, g[g.get_index(i)]
                 count= count+ g[g.get_index(i)]

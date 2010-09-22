@@ -43,15 +43,15 @@ class DOMINOTests(IMP.test.TestCase):
         print "getting sample"
         cs= sampler.get_sample()
         print "done"
-        self.assert_(cs.get_number_of_configurations() > 0)
+        self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):
             print "loading ", i
             cs.load_configuration(i)
             print "testing"
             dist=IMP.core.get_distance(ds[0],ds[1])
             print dist
-            self.assert_((dist-1)**2 < .1)
-            self.assert_((IMP.core.get_distance(ds[1],ds[2])-1)**2 < .1)
+            self.assertLess((dist-1)**2, .1)
+            self.assertLess((IMP.core.get_distance(ds[1],ds[2])-1)**2, .1)
 
         # test that they are the right distance
 if __name__ == '__main__':

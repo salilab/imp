@@ -42,8 +42,8 @@ class EigenAnalysisTests(IMP.test.TestCase):
         vs_mean = vs_mean/50
 
         ed = IMP.algebra.get_principal_components(vs)
-        self.assert_(ed.get_principal_value(0)>ed.get_principal_value(1))
-        self.assert_(ed.get_principal_value(1)>ed.get_principal_value(2))
+        self.assertGreater(ed.get_principal_value(0), ed.get_principal_value(1))
+        self.assertGreater(ed.get_principal_value(1), ed.get_principal_value(2))
         self.assertAlmostEqual(IMP.algebra.get_distance(vs_mean,ed.get_centroid()),0., delta=.1)
 
 

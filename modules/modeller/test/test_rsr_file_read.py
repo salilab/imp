@@ -142,7 +142,7 @@ class ModellerRestraintsTests(IMP.test.TestCase):
         loader = IMP.modeller.ModelLoader(modmodel)
         protein = loader.load_atoms(m)
         r = IMP.modeller.load_restraints_file('test.rsr', protein)
-        self.assert_(isinstance(r, list))
+        self.assertIsInstance(r, list)
         for rsr in r:
             m.add_restraint(rsr)
         assertSimilarModellerIMPScores(self, modmodel, protein)

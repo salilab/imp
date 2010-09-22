@@ -37,7 +37,7 @@ class ConeTests(IMP.test.TestCase):
         nn= IMP.algebra.NearestNeighbor3D(vs)
         for i in range(0, nump):
             cnn= nn.get_nearest_neighbor(i)
-            self.assert_(cnn!= i)
+            self.assertNotEqual(cnn, i)
             rnn= get_nn(vs, i)
             #print i
             print "start", i
@@ -48,7 +48,7 @@ class ConeTests(IMP.test.TestCase):
             for x in rnn:
                 print vs[x], (vs[x]-vs[i]).get_magnitude()
             #print
-            self.assert_(rnn.index(cnn) != -1)
+            self.assertNotEqual(rnn.index(cnn), -1)
 
 if __name__ == '__main__':
     IMP.test.main()

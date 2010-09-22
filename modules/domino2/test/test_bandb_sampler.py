@@ -50,7 +50,7 @@ class DOMINOTests(IMP.test.TestCase):
                 s.append(p.get_value(IMP.IntKey("hi")))
             ss= IMP.domino2.SubsetState(s)
             #print all_states
-            self.assert_(s not in all_states)
+            self.assertNotIn(s, all_states)
             all_states.append(s)
 
 if __name__ == '__main__':

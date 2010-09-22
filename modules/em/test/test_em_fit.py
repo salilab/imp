@@ -84,7 +84,7 @@ class FittingTest(IMP.test.TestCase):
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
-        self.assert_(score < 0.05, "the correlation score is not correct")
+        self.assertLess(score, 0.05, "the correlation score is not correct")
 
     def test_cast(self):
         """Make sure that we can cast Restraint* to FitRestraint*"""
@@ -97,14 +97,14 @@ class FittingTest(IMP.test.TestCase):
         m.add_restraint(r2)
         r1 = m.get_restraint(0)
         r2 = m.get_restraint(1)
-        self.assert_(isinstance(IMP.em.FitRestraint.cast(r1),
-                                IMP.em.FitRestraint))
-        self.assert_(IMP.em.FitRestraint.cast(r2) is None)
+        self.assertIsInstance(IMP.em.FitRestraint.cast(r1),
+                              IMP.em.FitRestraint)
+        self.assertIsNone(IMP.em.FitRestraint.cast(r2))
     def test_get_methods(self):
         """Check FitRestraint's get methods"""
         r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
-        self.assert_(isinstance(r1.get_model_dens_map(),
-                                IMP.em.SampledDensityMap))
+        self.assertIsInstance(r1.get_model_dens_map(),
+                              IMP.em.SampledDensityMap)
 
 
 if __name__ == '__main__':

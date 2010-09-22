@@ -28,7 +28,8 @@ class DecoratorTests(IMP.test.TestCase):
         self.assertEqual(da.get_number_of_bonds(), 0,
                          "Expected not to find a bond")
         for p in m.get_particles():
-            self.assert_(IMP.atom.Bond.decorate_particle(p) == IMP.atom.Bond())
+            self.assertEqual(IMP.atom.Bond.decorate_particle(p),
+                             IMP.atom.Bond())
 
 
 

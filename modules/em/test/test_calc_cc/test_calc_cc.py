@@ -58,7 +58,7 @@ class SampleParticlesTests(IMP.test.TestCase):
                 0
                 )
         print 'test_sample ' + str(score)
-        self.assert_(score < 0.1, "unexpected cross correlation score")
+        self.assertLess(score, 0.1, "unexpected cross correlation score")
 
 
 

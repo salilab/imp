@@ -43,15 +43,15 @@ class DihedralRestraintTests(IMP.test.TestCase):
             # Score of model with the same angle as the scoring function's mean
             # should be zero:
             model, rsr = self._setup_particles(angles[i], angles[i])
-            self.assert_(model.evaluate(False) < 1e-6)
+            self.assertLess(model.evaluate(False), 1e-6)
             # When the angle is different, score should be far from zero:
             model, rsr = self._setup_particles(angles[i], angles[-i-1])
-            self.assert_(model.evaluate(False) > 10.0)
+            self.assertGreater(model.evaluate(False), 10.0)
             # Optimizing should reduce the score to zero:
             opt = IMP.core.ConjugateGradients()
             opt.set_model(model)
             opt.optimize(50)
-            self.assert_(opt.optimize(50) < 1e-6)
-            self.assert_(model.evaluate(False) < 1e-6)
+            self.assertLess(opt.optimize(50), 1e-6)
+            self.assertLess(model.evaluate(False), 1e-6)
 if __name__ == '__main__':
     IMP.test.main()

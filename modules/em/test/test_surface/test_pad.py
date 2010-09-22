@@ -33,10 +33,10 @@ class PadTests(IMP.test.TestCase):
         self.d1.pad(nx,ny,nz)
         self.d2.pad(nx,ny,nz)
 
-        self.assert_(min1 == self.d1.get_min_value(), "wrong map values after padding")
-        self.assert_(min2 == self.d2.get_min_value(), "wrong map values after padding")
-        self.assert_(max1 == self.d1.get_max_value(), "wrong map values after padding")
-        self.assert_(max2 == self.d2.get_max_value(), "wrong map values after padding")
+        self.assertEqual(min1, self.d1.get_min_value(), "wrong map values after padding")
+        self.assertEqual(min2, self.d2.get_min_value(), "wrong map values after padding")
+        self.assertEqual(max1, self.d1.get_max_value(), "wrong map values after padding")
+        self.assertEqual(max2, self.d2.get_max_value(), "wrong map values after padding")
 
 
 if __name__=='__main__':

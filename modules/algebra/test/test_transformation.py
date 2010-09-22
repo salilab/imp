@@ -21,7 +21,7 @@ class ConeTests(IMP.test.TestCase):
         x.show()
         dbx.show()
         ax.show()
-        self.assert_((ax-dbx).get_squared_magnitude() < .1)
+        self.assertLess((ax-dbx).get_squared_magnitude(), .1)
 
 
 class Transformation2DTests(IMP.test.TestCase):

@@ -15,10 +15,10 @@ class PDBReadWriteTest(IMP.test.TestCase):
                               m, IMP.atom.NonWaterPDBSelector())
         chain= mp.get_child(0)
         r= IMP.atom.get_residue(chain, 10)
-        self.assert_(r != IMP.atom.Hierarchy())
+        self.assertNotEqual(r, IMP.atom.Hierarchy())
         r.show()
         rr= IMP.atom.Residue(r.get_particle())
-        self.assert_(rr.get_index() == 10)
+        self.assertEqual(rr.get_index(), 10)
 
     def test_chain(self):
         """Check getting a residue from a cg protein"""
@@ -28,7 +28,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         mp=IMP.atom.create_protein(m, 10, 100)
         r = IMP.atom.get_residue(mp, 10)
         r.show()
-        self.assert_(r != IMP.atom.Hierarchy())
+        self.assertNotEqual(r, IMP.atom.Hierarchy())
 
 if __name__ == '__main__':
     IMP.test.main()

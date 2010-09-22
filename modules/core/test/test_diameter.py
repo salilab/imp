@@ -25,7 +25,7 @@ class DistanceTests(IMP.test.TestCase):
             for p1 in lc.get_particles():
                 d=IMP.core.get_distance(IMP.core.XYZ(p0),
                                     IMP.core.XYZ(p1))
-                self.assert_(d < 1.1*diameter)
+                self.assertLess(d, 1.1*diameter)
 
     def test_diameter(self):
         """Test that diameter restraints are reasonable"""

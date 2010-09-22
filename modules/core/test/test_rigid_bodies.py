@@ -60,7 +60,7 @@ class RBDTests(IMP.test.TestCase):
             cg.optimize(1000)
             if m.evaluate(False) < .1:
                 success=success+1
-        self.assert_(success > count/2)
+        self.assertGreater(success, count/2)
 
     def _test_create_many(self):
         count=10
@@ -83,7 +83,7 @@ class RBDTests(IMP.test.TestCase):
             cg.optimize(1000)
             if m.evaluate(False) < .1:
                 success=success+1
-        self.assert_(success > count/2)
+        self.assertGreater(success, count/2)
 
 
     def test_create_one(self):
@@ -118,7 +118,7 @@ class RBDTests(IMP.test.TestCase):
         ntr= rb.get_transformation()
         print ntr
         print tr
-        self.assert_((ntr.get_translation()- tr.get_translation()).get_magnitude() < 1)
+        self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 1)
 
     # test one with snap and non-snap
     # test setting things to be optimized or not

@@ -48,7 +48,7 @@ class SampleTests(IMP.test.TestCase):
             st=IMP.em.create_density_map(IMP.atom.get_bounding_box(self.mhs[1]),
                                          self.voxel_size)
             IMP.em.get_transformed_into(mh2_surface,tt,st,False)
-            self.assert_(IMP.algebra.get_distance(IMP.core.get_centroid(IMP.core.get_leaves(self.mhs[1])),st.get_centroid())<3.)
+            self.assertLess(IMP.algebra.get_distance(IMP.core.get_centroid(IMP.core.get_leaves(self.mhs[1])),st.get_centroid()), 3.)
             IMP.core.transform(self.rbs[1],tt.get_inverse())
             #notice that get_transformed_into provides a different grid
 
@@ -73,7 +73,8 @@ class SampleTests(IMP.test.TestCase):
             IMP.core.transform(self.rbs[1],t.get_inverse())
         #test that score makes sense
         for i in range(2):
-            self.assert_(scores[i]<scores[2],"Penetration should be scored badly")
+            self.assertLess(scores[i], scores[2],
+                            "Penetration should be scored badly")
         self.assertAlmostEqual(scores[3],0., delta=.1)
         #test that the restraint returns the same scores
         for i in range(4):

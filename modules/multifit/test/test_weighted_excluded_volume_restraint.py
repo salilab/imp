@@ -45,7 +45,8 @@ class SampleTests(IMP.test.TestCase):
     def test_weighted_excluded_volume_restraint(self):
 
         """Check that weighted excluded volume restraint works"""
-        self.assert_(self.mdl.get_number_of_restraints()==2,"the excluded volume restraint was not added")
+        self.assertEqual(self.mdl.get_number_of_restraints(), 2,
+                         "the excluded volume restraint was not added")
         #IMP.set_log_level(IMP.VERBOSE)
         rotations=[[0.960739,0.177613,-0.196201,0.0833023],
                    [0.98373,-0.0268444,-0.115434,-0.135015],
@@ -84,7 +85,7 @@ class SampleTests(IMP.test.TestCase):
             print "Time elapsed for PairRestraint evaluatation = ", end - start, "seconds"
             conn_r=self.c_r.evaluate(False)
             w_exc_vol_r=self.wev_r.evaluate(False)
-            self.assert_(((conn_r==0.)and(w_exc_vol_r>0.))or((conn_r>0.)and(w_exc_vol_r==0.)),
+            self.assertTrue(((conn_r==0.)and(w_exc_vol_r>0.))or((conn_r>0.)and(w_exc_vol_r==0.)),
                          "inconsistency between connectivity and excluded volume restraint")
             #print "connectivity "+str(conn_r) + " | excluded-volume " + str(w_exc_vol_r)
             xyz.set_coordinates(t.get_inverse().get_transformed(xyz.get_coordinates()))

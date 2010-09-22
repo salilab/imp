@@ -35,7 +35,7 @@ class SphereTests(IMP.test.TestCase):
             for cs in css:
                 d= (cs.get_center()-es.get_center()).get_magnitude()
                 cs.show(); print
-                self.assert_(d+ cs.get_radius()- es.get_radius() < .5)
+                self.assertLess(d+ cs.get_radius()- es.get_radius(), .5)
 
 if __name__ == '__main__':
     IMP.test.main()

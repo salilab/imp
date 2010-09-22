@@ -206,7 +206,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
                 l.add_FUNCTIONNAME(t)
                 cs.append(t)
         for p in cs:
-            self.assert_(c.get_contains_FUNCTIONNAME(p))
+            self.assertTrue(c.get_contains_FUNCTIONNAME(p))
         ret=[]
         for i in range(0, len(cs)):
             ret.append(c.get_FUNCTIONNAME(i))

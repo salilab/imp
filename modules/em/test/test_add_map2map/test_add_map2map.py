@@ -39,7 +39,9 @@ class AddParticlesTest(IMP.test.TestCase):
             x = self.scene1.get_location_in_dim_by_voxel(i,0)
             y = self.scene1.get_location_in_dim_by_voxel(i,1)
             z = self.scene1.get_location_in_dim_by_voxel(i,2)
-            self.assert_(self.scene1.get_value(x,y,z) == 2 * self.scene2.get_value(x,y,z), "unexpected value after addition")
+            self.assertEqual(self.scene1.get_value(x,y,z),
+                             2 * self.scene2.get_value(x,y,z),
+                             "unexpected value after addition")
 
     def test_boundary_conditions(self):
         """Check the last index is included"""

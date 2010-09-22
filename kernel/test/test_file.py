@@ -26,7 +26,7 @@ class DirectoriesTests(IMP.test.TestCase):
         IMP._test_ofile(f)
         s = StringIO()
         IMP._test_ofile(s)
-        self.assert_(s.getvalue().startswith("hi\n"))
+        self.assertTrue(s.getvalue().startswith("hi\n"))
         self.assertRaises(TypeError, IMP._test_ofile, 1)
         class NoMethods(object):
             pass
@@ -41,11 +41,11 @@ class DirectoriesTests(IMP.test.TestCase):
         print simple.get_name()
         prefix = IMP.create_temporary_file("imp")
         print prefix.get_name()
-        self.assert_("imp" in prefix.get_name())
+        self.assertIn("imp", prefix.get_name())
         suffix = IMP.create_temporary_file("imp", ".py")
         print suffix.get_name()
-        self.assert_("imp" in suffix.get_name())
-        self.assert_(".py" in suffix.get_name())
+        self.assertIn("imp", suffix.get_name())
+        self.assertIn(".py", suffix.get_name())
 
     def test_bad(self):
         """Test bad paths trigger IO exceptions with overloads"""

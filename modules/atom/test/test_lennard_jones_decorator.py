@@ -42,7 +42,7 @@ class LennardJonesDecoratorTests(IMP.test.TestCase):
         """Check show method of LennardJones decorators"""
         m = IMP.Model()
         c = _make_test_decorator(m)
-        self.assert_(' well depth= ' in str(c))
+        self.assertIn(' well depth= ', str(c))
 
 if __name__ == '__main__':
     IMP.test.main()

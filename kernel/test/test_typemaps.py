@@ -248,7 +248,7 @@ class ParticleTests(IMP.test.TestCase):
         for m in dir(IMP.Particle):
             if not m in md and m not in exclusions:
                 print m
-                self.assert_(False, m+" not found")
+                self.fail(m+" not found")
 
 if __name__ == '__main__':
     IMP.test.main()

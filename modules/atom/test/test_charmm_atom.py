@@ -37,7 +37,7 @@ class CHARMMAtomTests(IMP.test.TestCase):
         IMP.atom.Atom.setup_particle(p, IMP.atom.AT_CA)
         c = IMP.atom.CHARMMAtom.setup_particle(p, 'CT1')
 
-        self.assert_(' CHARMM type= ' in str(c))
+        self.assertIn(' CHARMM type= ', str(c))
 
 if __name__ == '__main__':
     IMP.test.main()

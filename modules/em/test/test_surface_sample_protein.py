@@ -22,7 +22,7 @@ class SampleTests(IMP.test.TestCase):
         voxel_size=1.
         model_map = IMP.em.SurfaceShellDensityMap(self.particles, voxel_size)
         for p in self.particles:
-            self.assert_(model_map.get_value(IMP.core.XYZ(p.get_particle()).get_coordinates())>3.,"map was not sampled correctly")
+            self.assertGreater(model_map.get_value(IMP.core.XYZ(p.get_particle()).get_coordinates()),3.,"map was not sampled correctly")
 
         erw = IMP.em.MRCReaderWriter()
 

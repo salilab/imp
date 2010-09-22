@@ -21,7 +21,7 @@ class AllPairsContainerTest(IMP.test.TestCase):
             ps.remove(p)
         for p0 in lp.get_particles():
             for pr in psr:
-                self.assert_(p0 != pr)
+                self.assertNotEqual(p0, pr)
         print "bye0"
 
     def test_allp2(self):

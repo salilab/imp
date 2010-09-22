@@ -50,10 +50,10 @@ class Test(IMP.test.TestCase):
                 if (IMP.core.get_distance(d0, d1) < threshold):
                     print l0.get_particle().get_name() + " " \
                         + l1.get_particle().get_name()
-                    self.assert_(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                    self.assertTrue(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
                                                                    l1.get_particle())))
                 else:
-                    self.assert_(not lps.get_contains(IMP.ParticlePair(l0.get_particle(),
+                    self.assertFalse(lps.get_contains(IMP.ParticlePair(l0.get_particle(),
                                                                        l1.get_particle())))
 
 

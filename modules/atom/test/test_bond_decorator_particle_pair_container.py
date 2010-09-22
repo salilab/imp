@@ -18,14 +18,14 @@ class TestBL(IMP.test.TestCase):
 
         pc= IMP.atom.BondedPairFilter()
         print pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0))
-        self.assert_(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)))
+        self.assertTrue(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)))
         print 0
-        self.assert_(not pc.get_contains_particle_pair(IMP.ParticlePair(p2,p0)))
+        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p2,p0)))
         print 1
-        self.assert_(not pc.get_contains_particle_pair(IMP.ParticlePair(p2,p2)))
+        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p2,p2)))
         print 2
-        self.assert_(not pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0)))
-        self.assert_(not pc.get_contains_particle_pair(IMP.ParticlePair(p0,p3)))
+        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0)))
+        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p3)))
 
 
 if __name__ == '__main__':

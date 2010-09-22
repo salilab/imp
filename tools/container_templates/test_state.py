@@ -125,7 +125,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         m.add_score_state(s)
         m.evaluate(False)
         for p in cs:
-            self.assert_(FUNCTIONNAME_has_attribute(p, k))
+            self.assertTrue(FUNCTIONNAME_has_attribute(p, k))
         print "done"
 
     def test_sset(self):
@@ -145,7 +145,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         m.add_score_state(s)
         print "add"
         m.evaluate(False)
-        self.assert_(FUNCTIONNAME_has_attribute(t, k))
+        self.assertTrue(FUNCTIONNAME_has_attribute(t, k))
         print "done"
 
 if __name__ == '__main__':

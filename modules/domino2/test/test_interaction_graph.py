@@ -42,7 +42,7 @@ class DOMINOTests(IMP.test.TestCase):
             print v
             l= g.get_vertex_name(v)
             print l.get_name()
-            self.assert_(l in ps)
+            self.assertIn(l, ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
         g.show()
     def test_global_min3(self):
@@ -111,7 +111,7 @@ class DOMINOTests(IMP.test.TestCase):
             print v
             l= g.get_vertex_name(v)
             print l.get_name()
-            self.assert_(l in ps)
+            self.assertIn(l, ps)
             self.assertEqual(len(g.get_out_neighbors(v)), 2)
         g.show()
 

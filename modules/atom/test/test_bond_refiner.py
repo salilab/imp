@@ -18,9 +18,9 @@ class AllPairsContainerTest(IMP.test.TestCase):
         b= IMP.atom.create_custom_bond(b0, b1, 1)
         print "creating r"
         r= IMP.atom.BondEndpointsRefiner()
-        self.assert_(not r.get_can_refine(p0))
-        self.assert_(not r.get_can_refine(p1))
-        self.assert_(r.get_can_refine(b.get_particle()))
+        self.assertFalse(r.get_can_refine(p0))
+        self.assertFalse(r.get_can_refine(p1))
+        self.assertTrue(r.get_can_refine(b.get_particle()))
         print "get"
         ps= r.get_refined(b.get_particle())
         print "post get"

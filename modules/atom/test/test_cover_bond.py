@@ -19,7 +19,7 @@ class TestREFCover(IMP.test.TestCase):
             dc.show()
             #d.get_sphere().get_center().show()
             #dc.get_sphere().get_center().show()
-            self.assert_(cs.get_contains(dc.get_sphere()))
+            self.assertTrue(cs.get_contains(dc.get_sphere()))
 
     def test_it(self):
         """Test cover bond"""

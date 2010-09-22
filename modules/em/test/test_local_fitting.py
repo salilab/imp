@@ -53,6 +53,6 @@ class LocalFittingTest(IMP.test.TestCase):
              self.radius_key, self.weight_key,
              self.scene,None,1,2,50,2.,.3,False)
         print "fast:",fr_fast.get_score(0)," slow:",fr_slow.get_score(0)
-        self.assert_(abs(fr_fast.get_score(0)-fr_slow.get_score(0))<0.1)
+        self.assertLess(abs(fr_fast.get_score(0)-fr_slow.get_score(0)),0.1)
 if __name__ == '__main__':
     IMP.test.main()

@@ -16,7 +16,7 @@ class ProteinFittingTest(IMP.test.TestCase):
             self.imp_model.add_restraint(r)
             score = self.imp_model.evaluate(False)
             print "EM score (1-CC) = "+str(score), " filename:",fn," res:", res
-            self.assert_(score < 0.05, "the correlation score is not correct")
+            self.assertLess(score, 0.05, "the correlation score is not correct")
             self.imp_model.remove_restraint(r)
 
     def test_compare_fit_score_to_imp_generated_maps(self):

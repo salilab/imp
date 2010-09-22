@@ -35,7 +35,7 @@ class SimpleDistanceTest(IMP.test.TestCase):
         self.assertEqual(r.get_ref_count(), 1)
         self.imp_model.add_restraint(r)
         self.opt.optimize(1000)
-        self.assert_(r.evaluate(False) == 0.0, "unexpected distance score")
+        self.assertEqual(r.evaluate(False), 0.0, "unexpected distance score")
 
 
     def test_methods(self):

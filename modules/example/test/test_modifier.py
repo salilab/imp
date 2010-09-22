@@ -24,8 +24,8 @@ class DistanceTests(IMP.test.TestCase):
         print "applying"
         mod.apply(d.get_particle())
         for i in range(0,3):
-            self.assert_(d.get_coordinate(i) >= sbb.get_corner(0)[i])
-            self.assert_(d.get_coordinate(i) <= sbb.get_corner(1)[i])
+            self.assertGreaterEqual(d.get_coordinate(i), sbb.get_corner(0)[i])
+            self.assertLessEqual(d.get_coordinate(i), sbb.get_corner(1)[i])
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -41,8 +41,10 @@ class SampleParticlesTest(IMP.test.TestCase):
 
 
         # the mean and std are not correct
-        self.assert_(scene.get_header().dmean == 0.0, "unexpected mean for the map")
-        self.assert_(scene.get_header().rms == 1.0, "unexpected rms for the map")
+        self.assertEqual(scene.get_header().dmean, 0.0,
+                         "unexpected mean for the map")
+        self.assertEqual(scene.get_header().rms, 1.0,
+                         "unexpected rms for the map")
 
 if __name__ == '__main__':
     IMP.test.main()

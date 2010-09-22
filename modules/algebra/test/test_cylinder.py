@@ -58,7 +58,7 @@ class CylinderTests(IMP.test.TestCase):
         for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
-        self.assert_((sampled_centroid-center).get_magnitude() < .1)
+        self.assertLess((sampled_centroid-center).get_magnitude(), .1)
 
     def test_get_grid_surface_cover_with_direction_not_on_Z(self):
         """Check grid cover when the direction of the
@@ -76,7 +76,7 @@ class CylinderTests(IMP.test.TestCase):
         for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))
-        self.assert_((sampled_centroid-center).get_magnitude() < .1)
+        self.assertLess((sampled_centroid-center).get_magnitude(), .1)
 
 
     def test_get_uniform_surface_cover_with_direction_not_on_Z(self):
@@ -90,7 +90,7 @@ class CylinderTests(IMP.test.TestCase):
         points=IMP.algebra.get_uniform_surface_cover(cyl,1000)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
-        self.assert_(len(points)>=1000)
+        self.assertGreaterEqual(len(points), 1000)
         for i in range(len(points)):
             sampled_centroid = sampled_centroid + points[i]
         sampled_centroid = sampled_centroid * (1.0/len(points))

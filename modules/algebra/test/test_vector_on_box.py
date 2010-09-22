@@ -28,8 +28,8 @@ class Vector3DTests(IMP.test.TestCase):
             rv= IMP.algebra.get_random_vector_on(IMP.algebra.BoundingBox3D(lb, ub))
             print ".dotat "+str(rv[0])+" "+str(rv[1])+" "+str(rv[2])
             for i in range(0, 3):
-                self.assert_(in_box(olb, oub, rv))
-                self.assert_(not in_box(ilb, iub, rv))
+                self.assertTrue(in_box(olb, oub, rv))
+                self.assertFalse(in_box(ilb, iub, rv))
 
 if __name__ == '__main__':
     IMP.test.main()

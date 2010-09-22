@@ -29,7 +29,7 @@ class TestBL(IMP.test.TestCase):
                     print IMP.core.XYZR(a)
                     print IMP.core.XYZR(b)
                     print IMP.core.get_distance(IMP.core.XYZR(a), IMP.core.XYZR(b))
-                    self.assert_(out.get_contains_particle_pair(IMP.ParticlePair(a,b))
+                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(a,b))
                                  or out.get_contains_particle_pair(IMP.ParticlePair(b,a)))
     def test_it(self):
         """Test ClosePairContainer"""

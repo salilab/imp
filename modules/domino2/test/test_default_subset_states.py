@@ -41,7 +41,7 @@ class DOMINOTests(IMP.test.TestCase):
             state= ss.get_subset_state(i)
             print state
             #print all_states
-            self.assert_(state not in all_states)
+            self.assertNotIn(state, all_states)
             all_states.append(state)
 
     def test_global_min2(self):
@@ -70,7 +70,7 @@ class DOMINOTests(IMP.test.TestCase):
             state= ss.get_subset_state(i)
             print state
             #print all_states
-            self.assert_(state not in all_states)
+            self.assertNotIn(state, all_states)
             all_states.append(state)
 
     def test_global_min3(self):
@@ -99,7 +99,7 @@ class DOMINOTests(IMP.test.TestCase):
             state= ss.get_subset_state(i)
             print state
             #print all_states
-            self.assert_(state not in all_states)
+            self.assertNotIn(state, all_states)
             all_states.append(state)
 
 if __name__ == '__main__':

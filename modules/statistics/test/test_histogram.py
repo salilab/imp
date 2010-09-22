@@ -38,9 +38,9 @@ class HistogramTests(IMP.test.TestCase):
             hist.add(random.uniform(7,8.9))
         for i in range(10):
             hist.add(random.uniform(9,end))
-        self.assert_(hist.get_top(0.49)<7.1)
-        self.assert_(hist.get_top(0.89)<9.1)
-        self.assert_(hist.get_top(0.99)>9)
+        self.assertLess(hist.get_top(0.49), 7.1)
+        self.assertLess(hist.get_top(0.89), 9.1)
+        self.assertGreater(hist.get_top(0.99), 9)
 
 if __name__ == '__main__':
     IMP.test.main()

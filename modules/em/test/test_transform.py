@@ -36,7 +36,7 @@ class DensityTransformTest(IMP.test.TestCase):
             nval= IMP.em.get_density(mtit, pt)
             if abs(oval-nval)>(oval+nval+1)*.3:
                 errors=errors+1
-        self.assert_(errors <.1 *m.get_number_of_voxels(), errors)
+        self.assertLess(errors, .1 *m.get_number_of_voxels(), errors)
 
     def test_tramsfromed_into(self):
         """Check functionality of the get_transformed_into function"""
@@ -61,7 +61,7 @@ class DensityTransformTest(IMP.test.TestCase):
             nval= IMP.em.get_density(back_m, pt)
             if abs(oval-nval)>(oval+nval+1)*.3:
                 errors=errors+1
-        self.assert_(errors <.1 *from_m.get_number_of_voxels(), errors)
+        self.assertLess(errors,.1 *from_m.get_number_of_voxels(), errors)
 
 
 if __name__ == '__main__':

@@ -93,7 +93,7 @@ class ModelTests(IMP.test.TestCase):
         # Output should work for a direct call (in which the filehandle is
         # just the Python file-like object) or via a C++ proxy (in which case
         # the filehandle is a std::ostream adapter)
-        self.assert_(len(sio.getvalue())>0)
+        self.assertGreater(len(sio.getvalue()), 0)
 
     def test_score_state(self):
         """Check score state methods"""
@@ -103,7 +103,7 @@ class ModelTests(IMP.test.TestCase):
         s = DummyScoreState()
         m.add_score_state(s)
         news = m.get_score_state(0)
-        self.assert_(isinstance(news, IMP.ScoreState))
+        self.assertIsInstance(news, IMP.ScoreState)
         #self.assertRaises(IndexError, m.get_score_state,
         #                  1);
         for s in m.get_score_states():
@@ -119,7 +119,7 @@ class ModelTests(IMP.test.TestCase):
         self.assertRaises(AttributeError, m.show, None)
         s = StringIO.StringIO()
         m.show(s)
-        self.assert_(len(s.getvalue()) > 0)
+        self.assertGreater(len(s.getvalue()), 0)
 
     def test_refcount_director_score_state(self):
         """Refcounting should prevent director ScoreStates from being deleted"""
@@ -161,7 +161,7 @@ class ModelTests(IMP.test.TestCase):
         m.add_restraint(r)
         self.assertEqual(m.get_number_of_restraints(), 1)
         newr = m.get_restraint(0)
-        self.assert_(isinstance(newr, IMP.Restraint))
+        self.assertIsInstance(newr, IMP.Restraint)
         #self.assertRaises(IndexError, m.get_restraint,1);
         for s in m.get_restraints():
             s.show()

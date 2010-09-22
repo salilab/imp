@@ -42,15 +42,15 @@ class SampleTests(IMP.test.TestCase):
         IMP.em.write_map(model_map,"a.em",erw)
         for p in self.particles:
             v=IMP.core.XYZ(p).get_coordinates()
-            self.assert_(model_map.get_value(v)>0.6,
+            self.assertGreater(model_map.get_value(v), 0.6,
                          "map was not sampled correctly")
         model_map.calcRMS()
         IMP.em.write_map(model_map, "xxx.em",erw)
         em_map = IMP.em.DensityMap()
         em_map= IMP.em.read_map("xxx.em",erw)
         em_map.calcRMS()
-        self.assert_(abs(em_map.get_header().rms - \
-                         model_map.get_header().rms) < .000001,
+        self.assertLess(abs(em_map.get_header().rms - \
+                            model_map.get_header().rms), .000001,
                      "standard deviations of maps differ")
         os.unlink("xxx.em")
 
@@ -69,11 +69,11 @@ class SampleTests(IMP.test.TestCase):
         reloaded_model_map = IMP.em.DensityMap()
         reloaded_model_map= IMP.em.read_map("xxx.mrc",mrw)
         reloaded_model_map.calcRMS()
-        self.assert_(IMP.algebra.get_distance(reloaded_model_map.get_origin(),
-                                          model_map.get_origin()) < .001,
+        self.assertLess(IMP.algebra.get_distance(reloaded_model_map.get_origin(),
+                                          model_map.get_origin()), .001,
                      "the reloaded and the original map should have the same origin")
-        self.assert_(abs(reloaded_model_map.get_header().rms - \
-                         model_map.get_header().rms) < .001,
+        self.assertLess(abs(reloaded_model_map.get_header().rms - \
+                         model_map.get_header().rms), .001,
                      "standard deviations of maps differ")
 
         #now test sampling in a different way
@@ -89,8 +89,8 @@ class SampleTests(IMP.test.TestCase):
               reloaded_model_map.get_header().rms , " : " ,\
               model_map2.get_header().rms
 
-        self.assert_(abs(reloaded_model_map.get_header().rms - \
-                         model_map2.get_header().rms) < .001,
+        self.assertLess(abs(reloaded_model_map.get_header().rms - \
+                         model_map2.get_header().rms), .001,
                      "standard deviations of maps differ")
         os.unlink("xxx.mrc")
         #os.unlink("yyy.mrc")
