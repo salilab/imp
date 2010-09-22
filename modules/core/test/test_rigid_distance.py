@@ -38,7 +38,7 @@ class Test(IMP.test.TestCase):
         self.assertInTolerance(v, dm, .1)
 
 
-    def test_rops(self):
+    def test_rops_against_one(self):
         """Checking rigid distance pair score against one"""
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()

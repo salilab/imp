@@ -26,7 +26,7 @@ class DOMINOTests(IMP.test.TestCase):
                 min_comb=comb
         self.assert_( abs(self.infered_score -min_score) < 0.1 , "the score of the minimum configuration as calculated by the inference is wrong " + str(self.infered_score) + " != " + str(min_score))
 
-    def test_inference_2(self):
+    def test_inference_3(self):
         self.sampler.d_opt.set_sampling_space(self.sampler.discrete_sampler)
         combs=IMP.domino.CombStates()
         self.sampler.d_opt.exhaustive_enumeration(combs,True,True)
