@@ -1,3 +1,7 @@
 Import('env')
 env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
-                      data_files=env.IMPModuleGetExampleData())
+                      data_files=env.IMPModuleGetExampleData()\
+                      +['all-1z5s-projections.sel',
+                        '1z5s-projection-0.spi',
+                        '1z5s-projection-1.spi',
+                        '1z5s-projection-2.spi'])
