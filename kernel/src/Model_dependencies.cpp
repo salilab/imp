@@ -51,17 +51,6 @@ namespace {
     return c;
   }
 
-  void filter_restraints_and_weights(RestraintsTemp &restraints,
-                                     Floats &weights) {
-    for (int i=0; i< static_cast<int>(restraints.size()); ++i) {
-      if (weights[i]<=0) {
-        weights.erase(weights.begin()+i);
-        restraints.erase(restraints.begin()+i);
-      }
-    }
-  }
-
-
   bool get_has_edge(const DependencyGraph &graph,
                     DGTraits::vertex_descriptor va,
                     DGTraits::vertex_descriptor vb) {
@@ -374,8 +363,6 @@ void Model::compute_dependencies() const {
              restraint_weights_)
     = get_restraints_and_weights(restraints_begin(),
                                  restraints_end());
-  filter_restraints_and_weights(ordered_restraints_,
-                                restraint_weights_);
   for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
     restraint_index_[ordered_restraints_[i]]= i;
   }
@@ -437,6 +424,7 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
   if (irs.empty()) return ScoreStatesTemp();
   RestraintsTemp rs= get_restraints(irs.begin(),
                                     irs.end());
+  if (rs.empty()) return ScoreStatesTemp();
   return rs[0]->get_model()->get_score_states(rs);
 }
 
@@ -468,7 +456,6 @@ double Model::evaluate( RestraintsTemp restraints,
                       "Cannot pass RestraintSets to Model::evaluate().");
     }
   }
-  filter_restraints_and_weights(restraints, weights);
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
