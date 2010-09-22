@@ -111,7 +111,12 @@ public:
       IMP_THROW("Error reading from Spider Image " << filename,IOException);
     }
     //! The header format is already in Spider format, just read it
-    header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
+    bool success=header.read(in,skip_type_check_,force_reversed_,
+                             skip_extra_checkings_);
+    if (!success) {
+      IMP_THROW("Error reading header from Spider Image "
+                << filename,IOException);
+    }
     IMP_LOG(IMP::VERBOSE,"Header of image " << filename << std::endl
             << header << std::endl);
     // Adjust size of the matrix according to the header
