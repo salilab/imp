@@ -2,5 +2,5 @@ Import('env')
 
 env.IMPModuleBuild(version='SVN',
     required_modules=['container','core','atom','algebra','em','display','gsl'],
-    required_dependencies=['FFTW3','Boost.ProgramOptions']
+    required_dependencies=['FFTW3','Boost.ProgramOptions','Boost.FileSystem']
     )
