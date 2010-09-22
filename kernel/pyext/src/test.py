@@ -268,11 +268,11 @@ class TestCase(unittest.TestCase):
                           % str(not_found))
 
 def main(*args, **keys):
-    """Run a set of tests; essentially the same as IMP.test.main(). Obviates
+    """Run a set of tests; essentially the same as unittest.main(). Obviates
        the need to separately import the 'unittest' module, and ensures that
        main() is from the same unittest module that the IMP.test testcases
        are."""
-    return IMP.test.main(*args, **keys)
+    return unittest.main(*args, **keys)
 
 try:
     import subprocess
