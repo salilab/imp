@@ -51,8 +51,8 @@ UnitTest = Builder(action=Action(_action_unit_test,
 def _action_cpp_test(target, source, env):
     #app = "cd %s; %s %s %s -v > /dev/null"
     out= open(target[0].abspath, "w")
-    print >> out, """
-import IMP
+    print >> out, \
+"""import IMP
 import IMP.test
 import sys
 try:
@@ -60,27 +60,25 @@ try:
 except ImportError:
     subprocess = None
 
-class DirectoriesTests(IMP.test.TestCase):
-"""
+class TestCppProgram(IMP.test.TestCase):"""
     for t in source:
         nm= os.path.split(str(t))[1].replace(".", "_")
-        print >> out, """
-    def test_%(name)s(self):
-       \"\"\"Running C++ test %(name)s\"\"\"
-       if subprocess is None:
-           sys.stderr.write("test skipped: subprocess module unavailable: ")
-           return
-       # Note: Windows binaries look for needed DLLs in the current
-       # directory. So we need to change into the directory where the DLLs have
-       # been installed for the binary to load correctly.
-       p = subprocess.Popen(["%(path)s"],
-                            shell=False, cwd="%(libdir)s")
-       self.assertEqual(p.wait(), 0)
-""" %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
+        print >> out, \
+"""    def test_%(name)s(self):
+        \"\"\"Running C++ test %(name)s\"\"\"
+        if subprocess is None:
+            sys.stderr.write("test skipped: subprocess module unavailable: ")
+            return
+        # Note: Windows binaries look for needed DLLs in the current
+        # directory. So we need to change into the directory where the DLLs have
+        # been installed for the binary to load correctly.
+        p = subprocess.Popen(["%(path)s"],
+                             shell=False, cwd="%(libdir)s")
+        self.assertEqual(p.wait(), 0)""" \
+       %{'name':nm, 'path':t.abspath, 'libdir':env.Dir('#/build/lib').abspath}
     print >> out, """
 if __name__ == '__main__':
-    IMP.test.main()
-"""
+    IMP.test.main()"""
 
 
 def _print_cpp_test(target, source, env):
