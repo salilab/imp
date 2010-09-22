@@ -12,8 +12,8 @@ class Vector3DTests(IMP.test.TestCase):
         chain= IMP.algebra.get_random_chain(n,r)
         self.assertEqual(len(chain), n);
         for i in range(0, len(chain)-1):
-            self.assertInTolerance(IMP.algebra.get_distance(chain[i], chain[i+1]),
-                                   2*r, .1*2*r)
+            self.assertAlmostEqual(IMP.algebra.get_distance(chain[i], chain[i+1]),
+                                   2*r, delta=.1*2*r)
             #print ".cylinder " + str(chain[i]
         for i in range(0, len(chain)):
             for j in range(0,i-1):
@@ -33,12 +33,12 @@ class Vector3DTests(IMP.test.TestCase):
             ss.append(IMP.algebra.Sphere3D(c,cr))
         chain= IMP.algebra.get_random_chain(n,r, v, ss)
         self.assertEqual(len(chain), n)
-        self.assertInTolerance(v[0], chain[0][0], .01)
-        self.assertInTolerance(v[1], chain[0][1], .01)
-        self.assertInTolerance(v[2], chain[0][2], .01)
+        self.assertAlmostEqual(v[0], chain[0][0], delta=.01)
+        self.assertAlmostEqual(v[1], chain[0][1], delta=.01)
+        self.assertAlmostEqual(v[2], chain[0][2], delta=.01)
         for i in range(0, len(chain)-1):
-            self.assertInTolerance(IMP.algebra.get_distance(chain[i], chain[i+1]),
-                                   2*r, .1*2*r)
+            self.assertAlmostEqual(IMP.algebra.get_distance(chain[i], chain[i+1]),
+                                   2*r, delta=.1*2*r)
             #print ".cylinder " + str(chain[i]
         for i in range(0, len(chain)):
             for j in range(0,i-1):

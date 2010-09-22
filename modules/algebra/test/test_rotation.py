@@ -42,10 +42,11 @@ class RotationTests(IMP.test.TestCase):
                 vt= r.get_rotated(vt)
                 if i==0:
                     vti= ri.get_rotated(vt)
-            self.assertInTolerance(IMP.algebra.get_distance(v_start,vt),0., .1)
-            self.assertInTolerance(vti[0], v_start[0], .1)
-            self.assertInTolerance(vti[1], v_start[1], .1)
-            self.assertInTolerance(vti[2], v_start[2], .1)
+            self.assertAlmostEqual(IMP.algebra.get_distance(v_start,vt),0.,
+                                   delta=.1)
+            self.assertAlmostEqual(vti[0], v_start[0], delta=.1)
+            self.assertAlmostEqual(vti[1], v_start[1], delta=.1)
+            self.assertAlmostEqual(vti[2], v_start[2], delta=.1)
 
 
 
@@ -66,9 +67,9 @@ class RotationTests(IMP.test.TestCase):
         v.show()
         vti.show()
         vt.show()
-        self.assertInTolerance(vti[0], v[0], .1)
-        self.assertInTolerance(vti[1], v[1], .1)
-        self.assertInTolerance(vti[2], v[2], .1)
+        self.assertAlmostEqual(vti[0], v[0], delta=.1)
+        self.assertAlmostEqual(vti[1], v[1], delta=.1)
+        self.assertAlmostEqual(vti[2], v[2], delta=.1)
 
     def test_deriv(self):
         """Check the quaternion derivatives"""
@@ -84,7 +85,7 @@ class RotationTests(IMP.test.TestCase):
                 print d
                 ad= tf.get_analytic_deriv()
                 print ad
-                self.assertInTolerance(d, ad, .05)
+                self.assertAlmostEqual(d, ad, delta=.05)
 
     def test_rotation_between_vectors(self):
         """Check that the rotation between two vectors is correct"""
@@ -106,18 +107,18 @@ class RotationTests(IMP.test.TestCase):
         aa = IMP.algebra.get_axis_and_angle(r0)
         axis=aa[0];angle=aa[1]
         r1 = IMP.algebra.get_rotation_about_axis(axis,angle)
-        self.assertInTolerance((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, .1)
+        self.assertAlmostEqual((r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude(), 0, delta=.1)
 
     def test_is_equal_between_rotations(self):
         """Check that two rotations are equal"""
         t1 = IMP.algebra.get_random_rotation_3d()
         t2 = t1
         t3 = t1.get_inverse()
-        self.assertInTolerance(IMP.algebra.get_distance(t1,t2), 0, .05)
+        self.assertAlmostEqual(IMP.algebra.get_distance(t1,t2), 0, delta=.05)
         # hard to say anything about a rotation and its inverse
         # self.assert_(IMP.algebra.get_distance(t1,t3), .5, .05)
-        self.assertInTolerance(IMP.algebra.get_distance(IMP.algebra.Rotation3D(1,0,0,0),
-                                                        IMP.algebra.Rotation3D(0,0,0,1)), 1, .05)
+        self.assertAlmostEqual(IMP.algebra.get_distance(IMP.algebra.Rotation3D(1,0,0,0),
+                                                        IMP.algebra.Rotation3D(0,0,0,1)), 1, delta=.05)
 
     def test_interpolate(self):
         """Check that rotations can be interpolated"""
@@ -133,7 +134,7 @@ class RotationTests(IMP.test.TestCase):
         r1.show()
         print "out"
         r1p.show()
-        self.assertInTolerance((r1.get_quaternion()-r1p.get_quaternion()).get_squared_magnitude(), 0, .1)
+        self.assertAlmostEqual((r1.get_quaternion()-r1p.get_quaternion()).get_squared_magnitude(), 0, delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

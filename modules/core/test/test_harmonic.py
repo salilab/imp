@@ -25,8 +25,8 @@ class HarmonicTests(IMP.test.TestCase):
             score, deriv = func.evaluate_with_derivative(val)
             scoreonly = func.evaluate(val)
             self.assertEqual(score, scoreonly)
-            self.assertInTolerance(expscore, score, 0.1)
-            self.assertInTolerance(expderiv, deriv, 0.1)
+            self.assertAlmostEqual(expscore, score, delta=0.1)
+            self.assertAlmostEqual(expderiv, deriv, delta=0.1)
 
     def test_accessors(self):
         """Test Harmonic accessors"""

@@ -41,7 +41,7 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(len(va)):
             print va[i]
             print vb[i]
-            self.assertInTolerance(va[i], vb[i], .01)
+            self.assertAlmostEqual(va[i], vb[i], delta=.01)
     def test_a(self):
         """Check float typemaps"""
         vs=IMP.Floats([1.1, 2.1, 3])
@@ -126,13 +126,13 @@ class ParticleTests(IMP.test.TestCase):
         op= IMP._pass_pair(p)
         print p
         print op
-        self.assertInTolerance(p[0], op[0], .01)
-        self.assertInTolerance(p[1], op[1], .01)
+        self.assertAlmostEqual(p[0], op[0], delta=.01)
+        self.assertAlmostEqual(p[1], op[1], delta=.01)
         op= IMP._pass_plain_pair(p)
         print p
         print op
-        self.assertInTolerance(p[0], op[0], .01)
-        self.assertInTolerance(p[1], op[1], .01)
+        self.assertAlmostEqual(p[0], op[0], delta=.01)
+        self.assertAlmostEqual(p[1], op[1], delta=.01)
     def test_overload(self):
         """Checking that overloading works"""
         m= IMP.Model()

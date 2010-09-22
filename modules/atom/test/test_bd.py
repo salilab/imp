@@ -53,12 +53,12 @@ class MCOptimizerTest(IMP.test.TestCase):
         print big_moments
         for i in range(0,3):
             print i
-            self.assertInTolerance(big_moments[i], moments[i],
-                                   len(ps)**.5)
+            self.assertAlmostEqual(big_moments[i], moments[i],
+                                   delta=len(ps)**.5)
         for i in range(3,6):
             print i
-            self.assertInTolerance(big_moments[i], moments[i],
-                                   .1*(big_moments[i]+ moments[i]))
+            self.assertAlmostEqual(big_moments[i], moments[i],
+                                   delta=.1*(big_moments[i]+ moments[i]))
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -38,8 +38,10 @@ class ReadFittingSolutionsTests(IMP.test.TestCase):
         sols = IMP.multifit.read_fitting_solutions(self.fitting_solutions_fns[0]);
         self.assertEqual(len(sols),3)
         self.assertEqual(sols[0].get_match_size(),9)
-        self.assertInTolerance(sols[1].get_match_average_distance(),5.407,0.01)
-        self.assertInTolerance(sols[2].get_rmsd_to_reference(),19.05,0.01)
+        self.assertAlmostEqual(sols[1].get_match_average_distance(),5.407,
+                               delta=0.01)
+        self.assertAlmostEqual(sols[2].get_rmsd_to_reference(),19.05,
+                               delta=0.01)
     def test_writing_and_reading_fitting_solutions(self):
         """Check the fitting solutions writer"""
         sols = IMP.multifit.read_fitting_solutions(self.fitting_solutions_fns[0]);
@@ -47,8 +49,10 @@ class ReadFittingSolutionsTests(IMP.test.TestCase):
         sols = IMP.multifit.read_fitting_solutions("temp.txt");
         self.assertEqual(len(sols),3)
         self.assertEqual(sols[0].get_match_size(),9)
-        self.assertInTolerance(sols[1].get_match_average_distance(),5.407,0.01)
-        self.assertInTolerance(sols[2].get_rmsd_to_reference(),19.05,0.01)
+        self.assertAlmostEqual(sols[1].get_match_average_distance(),5.407,
+                               delta=0.01)
+        self.assertAlmostEqual(sols[2].get_rmsd_to_reference(),19.05,
+                               delta=0.01)
         os.unlink("temp.txt")
 if __name__ == '__main__':
     IMP.test.main()

@@ -30,7 +30,7 @@ class DistanceTests(IMP.test.TestCase):
         tr= IMP.algebra.Transformation3D(rot, t)
         tps.set_transformation(tr)
         d1.set_coordinates(IMP.algebra.Vector3D(4, 2, -2))
-        self.assertInTolerance(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, .01)
+        self.assertAlmostEqual(tps.evaluate(IMP.ParticlePair(p0, p1), None), 0, delta=.01)
         self.assert_(tps.evaluate(IMP.ParticlePair(p1, p0), None) != 0)
         t=IMP.algebra.Vector3D(0,0,0)
         rot= IMP.algebra.get_rotation_from_matrix(0,-1, 0,
@@ -50,11 +50,11 @@ class DistanceTests(IMP.test.TestCase):
         print d1.get_derivative(1)
         print d1.get_derivative(2)
         self.assert_(d0.get_derivative(0) > 0)
-        self.assertInTolerance(d0.get_derivative(1), 0, .1)
-        self.assertInTolerance(d0.get_derivative(2), 0, .1)
+        self.assertAlmostEqual(d0.get_derivative(1), 0, delta=.1)
+        self.assertAlmostEqual(d0.get_derivative(2), 0, delta=.1)
         self.assert_(d1.get_derivative(1) > 0)
-        self.assertInTolerance(d1.get_derivative(0), 0, .1)
-        self.assertInTolerance(d1.get_derivative(2), 0, .1)
+        self.assertAlmostEqual(d1.get_derivative(0), 0, delta=.1)
+        self.assertAlmostEqual(d1.get_derivative(2), 0, delta=.1)
     def test_symmetry2(self):
         """Test the transform pair score optimization"""
         IMP.set_log_level(IMP.VERBOSE)
@@ -90,9 +90,9 @@ class DistanceTests(IMP.test.TestCase):
                                      * IMP.algebra.Vector3D(0,1,0)+0)
         print "trans"
         print str(vt[0]) + " " + str(vt[1])+" " + str(vt[2])
-        self.assertInTolerance(vt[0], d0.get_coordinate(0), .1)
-        self.assertInTolerance(vt[1], d0.get_coordinate(1), .1)
-        self.assertInTolerance(vt[2], d0.get_coordinate(2), .1)
+        self.assertAlmostEqual(vt[0], d0.get_coordinate(0), delta=.1)
+        self.assertAlmostEqual(vt[1], d0.get_coordinate(1), delta=.1)
+        self.assertAlmostEqual(vt[2], d0.get_coordinate(2), delta=.1)
 
 if __name__ == '__main__':
     IMP.test.main()

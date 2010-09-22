@@ -96,8 +96,8 @@ class MCOptimizerTest(IMP.test.TestCase):
 
         for p in model.get_particles():
             val = p.get_value(self.xkey)
-            self.assertInTolerance(val, 1.0, .1)
-        self.assertInTolerance(e, 0.0, .01)
+            self.assertAlmostEqual(val, 1.0, delta=.1)
+        self.assertAlmostEqual(e, 0.0, delta=.01)
 
 if __name__ == '__main__':
     IMP.test.main()

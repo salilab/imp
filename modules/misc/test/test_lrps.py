@@ -36,7 +36,8 @@ class Test(IMP.test.TestCase):
         cps= IMP.core.Linear(0,1)
         dps= IMP.core.DistancePairScore(cps)
         rps= IMP.misc.LowestRefinedPairScore(pr, dps)
-        self.assertInTolerance(rps.evaluate(IMP.ParticlePair(pp0, pp1), None), .9*md, 1.1*md)
+        self.assertAlmostEqual(rps.evaluate(IMP.ParticlePair(pp0, pp1),
+                                            None), .9*md, delta=1.1*md)
 
 
 

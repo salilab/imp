@@ -12,14 +12,14 @@ class RegistrationResultTests(IMP.test.TestCase):
         rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
         rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-1,-3)
         angle = IMP.em2d.rotation_error(rr1,rr2)
-        self.assertInTolerance(angle,0.2, 0.0001)
+        self.assertAlmostEqual(angle,0.2, delta=0.0001)
 
     def test_translation_error(self):
         """ test the shift error between 2 RegistrationResults classes"""
         rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
         rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-8,6)
         dist = IMP.em2d.shift_error(rr1,rr2)
-        self.assertInTolerance(dist,11.4017, 0.0001)
+        self.assertAlmostEqual(dist,11.4017, delta=0.0001)
 
     def test_registration_quaternion(self):
         """ test back a forth of the Rotation in RegistrationResult class"""
@@ -36,8 +36,8 @@ class RegistrationResultTests(IMP.test.TestCase):
         q1=R1.get_quaternion()
         q2=R2.get_quaternion()
         for i in xrange(0,4):
-            self.assertInTolerance(q1[i],q2[i],0.001,
-                  "Error in Registration rotation back and forth")
+            self.assertAlmostEqual(q1[i],q2[i], delta=0.001,
+                   msg="Error in Registration rotation back and forth")
 
     def test_even_registration_results(self):
         """ Test the generation of evenly distributed RegistrationResults"""
@@ -49,8 +49,9 @@ class RegistrationResultTests(IMP.test.TestCase):
             q1=Regs1[j].get_rotation().get_quaternion()
             q2=Regs2[j].get_rotation().get_quaternion()
             for i in xrange(0,4):
-                self.assertInTolerance(q1[i],q2[i],0.001,
-                      "Error in generation of evenly distributed RegistrationResults")
+                self.assertAlmostEqual(q1[i],q2[i], delta=0.001,
+                      msg="Error in generation of evenly distributed "
+                          "RegistrationResults")
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ class SAXSProfileTest(IMP.test.TestCase):
         saxs_score = IMP.saxs.Score(exp_profile)
         chi = saxs_score.compute_chi_score(model_profile)
         print 'Chi = ' + str(chi)
-        self.assertInTolerance(chi, 0.5, 0.1)
+        self.assertAlmostEqual(chi, 0.5, delta=0.1)
 
         t_start = time.clock()
         #! calculate derivatives of chi-square per particle

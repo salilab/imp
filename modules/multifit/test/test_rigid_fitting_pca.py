@@ -69,7 +69,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             if best_rmsd>rmsd:
                 best_rmsd=rmsd
             IMP.core.transform(self.rb,fit_t_inv)
-        self.assertInTolerance(best_rmsd,0.,1.)
+        self.assertAlmostEqual(best_rmsd,0., delta=1.)
 
 
 if __name__ == '__main__':

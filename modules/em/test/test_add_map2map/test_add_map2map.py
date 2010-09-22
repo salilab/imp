@@ -65,6 +65,7 @@ class AddParticlesTest(IMP.test.TestCase):
                 expected_val+=grid1.get_value(loc)
             if grid2.is_part_of_volume(loc):
                 expected_val+=grid2.get_value(loc)
-            self.assertInTolerance(expected_val,merged_grid.get_value(i),0.001)
+            self.assertAlmostEqual(expected_val,merged_grid.get_value(i),
+                                   delta=0.001)
 if __name__ == '__main__':
     IMP.test.main()

@@ -18,7 +18,8 @@ class Matrix2DTests(IMP.test.TestCase):
     def assert_matrix_in_tolerance(self, m, expected, tol):
         for row in range(len(expected)):
             for col in range(len(expected[0])):
-                self.assertInTolerance(m[row,col], expected[row][col], tol)
+                self.assertAlmostEqual(m[row,col], expected[row][col],
+                                       delta=tol)
 
     def test_sizes(self):
         """Check proper creation and resizing"""
@@ -129,7 +130,7 @@ class Matrix2DTests(IMP.test.TestCase):
         m1 = self.make_matrix([[1,2,3], [3,4,8]])
         m2 = self.make_matrix([[1,2,3], [3,4,8]])
         ccc = m1.cross_correlation_coefficient(m2)
-        self.assertInTolerance(1.0,ccc, 0.001)
+        self.assertAlmostEqual(1.0,ccc, delta=0.001)
 
     def test_correlation_different_origins(self):
         """Check cross_correlation matrices with different origins"""
@@ -138,7 +139,7 @@ class Matrix2DTests(IMP.test.TestCase):
         m1.set_start(0,-1)
         m1.set_start(1,-1)
         ccc = m1.cross_correlation_coefficient(m2)
-        self.assertInTolerance(1.0,ccc, 0.001)
+        self.assertAlmostEqual(1.0,ccc, delta=0.001)
 
     def test_write(self):
         """Check writing an empty matrix"""

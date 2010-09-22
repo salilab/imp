@@ -23,11 +23,11 @@ class RestraintTest(IMP.test.TestCase):
         r = self.restraint.get_restraint_by_name('em_restraint')
         dmap_header = r.dmap_header
 
-        self.assertInTolerance (dmap_header.get_xorigin(), -6.0, 1e-4)
-        self.assertInTolerance (dmap_header.get_yorigin(), -6.0, 1e-4)
-        self.assertInTolerance (dmap_header.get_zorigin(), -6.0, 1e-4)
-        self.assertInTolerance (dmap_header.get_spacing(), 1.0, 1e-4)
-        self.assertInTolerance (dmap_header.get_resolution(), 3.0, 1e-4)
+        self.assertAlmostEqual(dmap_header.get_xorigin(), -6.0, delta=1e-4)
+        self.assertAlmostEqual(dmap_header.get_yorigin(), -6.0, delta=1e-4)
+        self.assertAlmostEqual(dmap_header.get_zorigin(), -6.0, delta=1e-4)
+        self.assertAlmostEqual(dmap_header.get_spacing(), 1.0, delta=1e-4)
+        self.assertAlmostEqual(dmap_header.get_resolution(), 3.0, delta=1e-4)
 
         r.imp_restraint.evaluate(False)
         score = self.Model.evaluate(False)

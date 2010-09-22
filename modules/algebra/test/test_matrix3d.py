@@ -20,7 +20,8 @@ class Matrix3DTests(IMP.test.TestCase):
         for z in range(len(expected)):
             for y in range(len(expected[0])):
                 for x in range(len(expected[0][0])):
-                    self.assertInTolerance(m[z,y,x], expected[z][y][x], tol)
+                    self.assertAlmostEqual(m[z,y,x], expected[z][y][x],
+                                           delta=tol)
 
     def test_sizes(self):
         """Check proper creation and resizing"""
@@ -151,7 +152,7 @@ class Matrix3DTests(IMP.test.TestCase):
         m1 = self.make_matrix([[[1,2,3], [3,4,8]],[[7,9,3], [9,1,2]]])
         m2 = self.make_matrix([[[1,2,3], [3,4,8]],[[7,9,3], [9,1,2]]])
         ccc = m1.cross_correlation_coefficient(m2)
-        self.assertInTolerance(1.0,ccc, 0.001)
+        self.assertAlmostEqual(1.0,ccc, delta=0.001)
         m3 = IMP.algebra.Matrix2D(2,3)
 
     def test_correlation_different_origins(self):
@@ -163,7 +164,7 @@ class Matrix3DTests(IMP.test.TestCase):
         m1.set_start(1,-1)
         m1.set_start(2,-1)
         ccc = m1.cross_correlation_coefficient(m2)
-        self.assertInTolerance(1.0,ccc, 0.001)
+        self.assertAlmostEqual(1.0,ccc, delta=0.001)
 
 
 if __name__ == '__main__':

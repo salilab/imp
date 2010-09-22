@@ -24,7 +24,7 @@ class RestraintTest(IMP.test.TestCase):
         r = self.restraint.get_restraint_by_name(restraint_name)
 
         score = r.imp_restraint.evaluate(False)
-        self.assertInTolerance(score, 0.277968, 1e-2)
+        self.assertAlmostEqual(score, 0.277968, delta=1e-2)
 
         self.Model.show()
         self.Model.evaluate(False)

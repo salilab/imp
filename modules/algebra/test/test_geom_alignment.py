@@ -46,7 +46,8 @@ class RigidTransformationTests(IMP.test.TestCase):
         q1=r.get_quaternion()
         print "other is ", q1
         print
-        self.assertInTolerance(IMP.algebra.get_distance(tr.get_rotation(), r), 0, .1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
+                               0, delta=.1)
 
     def test_full_align(self):
         """Testing rigid alignment of point sets"""
@@ -71,8 +72,8 @@ class RigidTransformationTests(IMP.test.TestCase):
         #    tr.get_transformed(vs[i]).show()
         #    print
         #    print
-        self.assertInTolerance(IMP.algebra.get_distance(tr.get_rotation()
-                                , r), 0, .1)
+        self.assertAlmostEqual(IMP.algebra.get_distance(tr.get_rotation(), r),
+                               0, delta=.1)
 
 
 if __name__ == '__main__':

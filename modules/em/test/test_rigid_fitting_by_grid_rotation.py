@@ -84,7 +84,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         t_inv = t.get_inverse()
         for p in self.particles:
             IMP.core.XYZ(p).set_coordinates(t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
-        self.assertInTolerance(score1,score2,0.05) #because rotation the grid changes the density a bit
+        self.assertAlmostEqual(score1,score2, delta=0.05) #because rotation the grid changes the density a bit
 
     def test_cc_with_sampled_grid_rotation(self):
         """Check that CC score does not change after grid and protein rotation"""
@@ -134,6 +134,6 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         for p in self.particles:
             IMP.core.XYZ(p).set_coordinates(t_inv.get_transformed(IMP.core.XYZ(p).get_coordinates()))
         print "scores:",score1,":",score2
-        self.assertInTolerance(score1,score2,0.05)
+        self.assertAlmostEqual(score1,score2, delta=0.05)
 if __name__ == '__main__':
     IMP.test.main()

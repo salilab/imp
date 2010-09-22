@@ -29,9 +29,9 @@ class ChargedDecoratorTests(IMP.test.TestCase):
         p = IMP.Particle(m)
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         c = IMP.atom.Charged.setup_particle(p, v, -0.5)
-        self.assertInTolerance(c.get_charge(), -0.5, 1e-6)
+        self.assertAlmostEqual(c.get_charge(), -0.5, delta=1e-6)
         c.set_charge(2.5)
-        self.assertInTolerance(c.get_charge(), 2.5, 1e-6)
+        self.assertAlmostEqual(c.get_charge(), 2.5, delta=1e-6)
 
     def test_show(self):
         """Check show method of Charged decorators"""

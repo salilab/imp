@@ -80,7 +80,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
         interval=1
         score= self.ccc.calc_score(self.EM_map,self.model_map,1.0)
         score2 = 1.-score
-        self.assertInTolerance(score1,score2,.05*(score1+score2))
+        self.assertAlmostEqual(score1,score2, delta=.05*(score1+score2))
 
     # Here we change the origin of the model map ( but not the particles position). We then resample the particles,
     # we made sure that all information is inside the translated map. Here we test that the correlation value does not change.

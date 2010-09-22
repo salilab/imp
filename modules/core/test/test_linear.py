@@ -16,8 +16,9 @@ class LinearTests(IMP.test.TestCase):
                     scoreonly = func.evaluate(val)
                     score, deriv = func.evaluate_with_derivative(val)
                     self.assertEqual(score, scoreonly)
-                    self.assertInTolerance(score, (val - offset) * slope, 0.001)
-                    self.assertInTolerance(deriv, slope, 0.001)
+                    self.assertAlmostEqual(score, (val - offset) * slope,
+                                           delta=0.001)
+                    self.assertAlmostEqual(deriv, slope, delta=0.001)
 
     def test_accessors(self):
         """Test Linear accessors"""

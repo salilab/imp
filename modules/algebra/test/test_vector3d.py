@@ -28,7 +28,7 @@ class Vector3DTests(IMP.test.TestCase):
         self.assertEqual(len(rpts), len(vs1))
         for i in range(0, len(rpts)):
             for j in range(0,3):
-                self.assertInTolerance(rpts[i][j], vs1[i][j], .01)
+                self.assertAlmostEqual(rpts[i][j], vs1[i][j], delta=.01)
 
     def test_component(self):
         """Check Vector3D components"""
@@ -43,12 +43,12 @@ class Vector3DTests(IMP.test.TestCase):
         """Check Vector3D scalar product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         v2 = IMP.algebra.Vector3D(10.0, 1.0, 2.0)
-        self.assertInTolerance(v1.get_scalar_product(v2), v2 * v1,
-                               .1)
-        self.assertInTolerance(v1.get_scalar_product(v2), v1 * v2,
-                               .1)
-        self.assertInTolerance(v1.get_scalar_product(v2), v2 * v1, .1)
-        self.assertInTolerance(v1.get_scalar_product(v2), 18.0, .1)
+        self.assertAlmostEqual(v1.get_scalar_product(v2), v2 * v1,
+                               delta=.1)
+        self.assertAlmostEqual(v1.get_scalar_product(v2), v1 * v2,
+                               delta=.1)
+        self.assertAlmostEqual(v1.get_scalar_product(v2), v2 * v1, delta=.1)
+        self.assertAlmostEqual(v1.get_scalar_product(v2), 18.0, delta=.1)
 
     def test_product_scalar(self):
         """Check that multiplying vectors by scalars works"""
@@ -71,8 +71,8 @@ class Vector3DTests(IMP.test.TestCase):
         v21 = IMP.algebra.get_vector_product(v2, v1)
         expected_v12 = (1.0, 28.0, -19.0)
         for i in range(3):
-            self.assertInTolerance(v12[i], -v21[i], .1)
-            self.assertInTolerance(v12[i], expected_v12[i],.1)
+            self.assertAlmostEqual(v12[i], -v21[i], delta=.1)
+            self.assertAlmostEqual(v12[i], expected_v12[i], delta=.1)
 
     def test_difference(self):
         """Check Vector3D difference"""
@@ -81,10 +81,10 @@ class Vector3DTests(IMP.test.TestCase):
         diff = v1 - v2
         v1 -= v2
         expected_diff = IMP.algebra.Vector3D(-9.0, 1.0, 1.0)
-        self.assertInTolerance((diff-expected_diff).get_magnitude(),
-                               0, .1)
-        self.assertInTolerance((v1-expected_diff).get_magnitude(),
-                               0, .1)
+        self.assertAlmostEqual((diff-expected_diff).get_magnitude(),
+                               0, delta=.1)
+        self.assertAlmostEqual((v1-expected_diff).get_magnitude(),
+                               0, delta=.1)
 
     def test_addition(self):
         """Check Vector3D addition"""
@@ -99,10 +99,10 @@ class Vector3DTests(IMP.test.TestCase):
         # The underlying C++ object pointer should be unchanged too:
         self.assertEqual(str(v1.this), cppobj)
         expected_sum = IMP.algebra.Vector3D(11.0, 3.0, 5.0)
-        self.assertInTolerance((sum-expected_sum).get_magnitude(),
-                               0, .1)
-        self.assertInTolerance((v1-expected_sum).get_magnitude(),
-                               0, .1)
+        self.assertAlmostEqual((sum-expected_sum).get_magnitude(),
+                               0, delta=.1)
+        self.assertAlmostEqual((v1-expected_sum).get_magnitude(),
+                               0, delta=.1)
 
     def test_scalar_multiplication(self):
         """Check Vector3D multiplication by a scalar"""
@@ -115,10 +115,10 @@ class Vector3DTests(IMP.test.TestCase):
         self.assertEqual(id(v1), idv1)
         expected_prod = (3.0, 6.0, 9.0)
         for i in range(3):
-            self.assertInTolerance(prod[i], expected_prod[i],
-                                   .1)
-            self.assertInTolerance(v1[i], expected_prod[i],
-                                   .1)
+            self.assertAlmostEqual(prod[i], expected_prod[i],
+                                   delta=.1)
+            self.assertAlmostEqual(v1[i], expected_prod[i],
+                                   delta=.1)
 
     def test_scalar_division(self):
         """Check Vector3D division by a scalar"""
@@ -139,7 +139,8 @@ class Vector3DTests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector3D(3.0, 6.0, 9.0)
         v2 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         self.assertEqual(IMP.algebra.get_squared_distance(v1, v2), 56)
-        self.assertInTolerance(IMP.algebra.get_distance(v1, v2), 7.4833, 0.01)
+        self.assertAlmostEqual(IMP.algebra.get_distance(v1, v2), 7.4833,
+                               delta=0.01)
 
     def test_generators(self):
         """Check the Vector3D generators"""

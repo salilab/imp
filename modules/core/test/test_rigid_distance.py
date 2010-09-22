@@ -34,7 +34,7 @@ class Test(IMP.test.TestCase):
                 d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), l1.get_particle()), None)
                 if d< dm:
                     dm=d
-        self.assertInTolerance(v, dm, .1)
+        self.assertAlmostEqual(v, dm, delta=.1)
 
 
     def test_rops_against_one(self):
@@ -55,7 +55,7 @@ class Test(IMP.test.TestCase):
             d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), p1), None)
             if d< dm:
                 dm=d
-        self.assertInTolerance(v, dm, .1)
+        self.assertAlmostEqual(v, dm, delta=.1)
 
 
 if __name__ == '__main__':

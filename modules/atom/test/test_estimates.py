@@ -16,7 +16,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         rc= 0.726*m**.333 # from Frank's paper
         print r
         print rc
-        self.assertInTolerance(r, rc, .1*r)
+        self.assertAlmostEqual(r, rc, delta=.1*r)
 
 if __name__ == '__main__':
     IMP.test.main()

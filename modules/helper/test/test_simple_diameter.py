@@ -54,13 +54,13 @@ class SimpleDiameterTest(IMP.test.TestCase):
         h = sd.get_harmonic_upper_bound()
 
         sd.set_mean(10.0)
-        self.assertInTolerance (h.get_mean(), 10.0, 1e-4)
+        self.assertAlmostEqual(h.get_mean(), 10.0, delta=1e-4)
 
         sd.set_stddev(3.5)
-        self.assertInTolerance (h.get_k(),
-                                h.k_from_standard_deviation(3.5), 1e-4)
+        self.assertAlmostEqual(h.get_k(),
+                               h.k_from_standard_deviation(3.5), delta=1e-4)
         sd.set_k(0.1)
-        self.assertInTolerance (h.get_k(), 0.1, 1e-4)
+        self.assertAlmostEqual(h.get_k(), 0.1, delta=1e-4)
 
         r.set_was_used(True)
         r.show()

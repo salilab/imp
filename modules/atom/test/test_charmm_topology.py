@@ -22,8 +22,9 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             other = bonded1.get_bonded(i)
             if other == bonded2:
                 bond = bonded1.get_bond(i)
-                self.assertInTolerance(bond.get_length(), bondlen, 1e-4)
-                self.assertInTolerance(bond.get_stiffness(), forcecon, 1e-3)
+                self.assertAlmostEqual(bond.get_length(), bondlen, delta=1e-4)
+                self.assertAlmostEqual(bond.get_stiffness(), forcecon,
+                                       delta=1e-3)
                 return
         self.fail("No bond defined between %s and %s" % (a1, a2))
 
@@ -32,7 +33,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         at = _make_test_atom()
         self.assertEqual(at.get_name(), 'CA')
         self.assertEqual(at.get_charmm_type(), 'CT1')
-        self.assertInTolerance(at.get_charge(), 0.8, 1e-6)
+        self.assertAlmostEqual(at.get_charge(), 0.8, delta=1e-6)
 
     def test_add_get_atom(self):
         """Check add/get atom from CHARMM residues"""
@@ -135,7 +136,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                     ('O', 'O',  -0.51)]:
             at = res.get_atom(name)
             self.assertEqual(at.get_charmm_type(), typ)
-            self.assertInTolerance(at.get_charge(), charge, 1e-3)
+            self.assertAlmostEqual(at.get_charge(), charge, delta=1e-3)
 
         self.assertRaises(ValueError, ff.get_patch, 'CYS')
         patch = ff.get_patch('CTER')
@@ -143,7 +144,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                     ('OXT', 'OC', -0.67)]:
             at = patch.get_atom(name)
             self.assertEqual(at.get_charmm_type(), typ)
-            self.assertInTolerance(at.get_charge(), charge, 1e-3)
+            self.assertAlmostEqual(at.get_charge(), charge, delta=1e-3)
 
         for (name, first, last) in [('ALA', 'NTER', 'CTER'),
                                     ('GLY', 'GLYP', 'CTER'),
@@ -291,12 +292,12 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
                                   get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
-        self.assertInTolerance(d.get_stiffness(), 0.7746, 1e-4)
+        self.assertAlmostEqual(d.get_stiffness(), 0.7746, delta=1e-4)
         d = IMP.atom.Dihedral(dihedrals[6])
         self.assertEqual([IMP.atom.CHARMMAtom(d.get_particle(x)).
                                   get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
-        self.assertInTolerance(d.get_stiffness(), -0.7746, 1e-4)
+        self.assertAlmostEqual(d.get_stiffness(), -0.7746, delta=1e-4)
 
     def test_make_topology(self):
         """Test construction of topology"""
@@ -319,8 +320,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_atom_types(pdb)
         self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
         topology.add_charges(pdb)
-        self.assertInTolerance(IMP.atom.Charged(last_atom).get_charge(),
-                               -0.67, 1e-3)
+        self.assertAlmostEqual(IMP.atom.Charged(last_atom).get_charge(),
+                               -0.67, delta=1e-3)
         bonds = topology.add_bonds(pdb, ff)
         self.assertEqual(len(bonds), 1215)
         angles = ff.create_angles(bonds)
@@ -347,13 +348,14 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
         ff.add_radii(pdb, 1.2)
         ff.add_well_depths(pdb)
-        self.assertInTolerance(IMP.core.XYZR(last_atom).get_radius(),
-                               2.04, 1e-3)
-        self.assertInTolerance(
-              IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12, 1e-3)
+        self.assertAlmostEqual(IMP.core.XYZR(last_atom).get_radius(),
+                               2.04, delta=1e-3)
+        self.assertAlmostEqual(
+              IMP.atom.LennardJones(last_atom).get_well_depth(), 0.12,
+              delta=1e-3)
         last_cg1 = atoms[-3].get_particle()
-        self.assertInTolerance(IMP.core.XYZR(last_cg1).get_radius(),
-                               2.472, 1e-3)
+        self.assertAlmostEqual(IMP.core.XYZR(last_cg1).get_radius(),
+                               2.472, delta=1e-3)
 
     def test_make_hierarchy(self):
         """Test construction of hierarchy from topology"""

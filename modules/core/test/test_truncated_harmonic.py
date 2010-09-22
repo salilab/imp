@@ -22,7 +22,7 @@ class LinearTests(IMP.test.TestCase):
         h= IMP.core.TruncatedHarmonicLowerBound(c, k, t, l)
         self.check_unary_function_deriv(h, -10, 10, .1)
         self.assertEqual(h.evaluate(c+1), 0)
-        self.assertInTolerance(h.evaluate(c-t-1000), l, .1)
+        self.assertAlmostEqual(h.evaluate(c-t-1000), l, delta=.1)
 
     def test_uvalues(self):
         """Check TruncatedHarmonicUpperBound"""
@@ -41,7 +41,7 @@ class LinearTests(IMP.test.TestCase):
         h= IMP.core.TruncatedHarmonicUpperBound(c, k, t, l)
         self.check_unary_function_deriv(h, -10, 10, .1)
         self.assertEqual(h.evaluate(c-1), 0)
-        self.assertInTolerance(h.evaluate(c+t+1000), l, .1)
+        self.assertAlmostEqual(h.evaluate(c+t+1000), l, delta=.1)
 
     def test_values(self):
         """Check TruncatedHarmonicBound"""
@@ -61,8 +61,8 @@ class LinearTests(IMP.test.TestCase):
         for x in range(-200,200):
             print str(x/10.0) +", "+str(h.evaluate(x/10.0))
 
-        self.assertInTolerance(h.evaluate(c+t+1000), l, .1)
-        self.assertInTolerance(h.evaluate(c-t-1000), l, .1)
+        self.assertAlmostEqual(h.evaluate(c+t+1000), l, delta=.1)
+        self.assertAlmostEqual(h.evaluate(c-t-1000), l, delta=.1)
         self.check_unary_function_min(h, -10, 10, .1, c)
         self.check_unary_function_deriv(h, -10, 10, .1)
 

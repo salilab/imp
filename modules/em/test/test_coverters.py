@@ -18,11 +18,11 @@ class ConvertersTest(IMP.test.TestCase):
     def test_covert_to_particles(self):
         mdl = IMP.Model()
         ps = IMP.em.density2particles(self.scene,self.scene_threshold,mdl)
-        self.assertInTolerance(
+        self.assertAlmostEqual(
             IMP.algebra.get_distance(IMP.core.get_centroid(IMP.core.XYZsTemp(ps)),
                                      self.scene_centroid),
             0,
-            0.1)
+            delta=0.1)
 
 
     def test_covert_to_vectors(self):
@@ -32,9 +32,9 @@ class ConvertersTest(IMP.test.TestCase):
         for v in vecs:
             vecs_mean = vecs_mean+v
         vecs_mean=vecs_mean/len(vecs)
-        self.assertInTolerance(IMP.algebra.get_distance(
+        self.assertAlmostEqual(IMP.algebra.get_distance(
             vecs_mean,
-            self.scene_centroid),0.,0.1)
+            self.scene_centroid),0., delta=0.1)
 
     def setUp(self):
         """Build test model and optimizer"""

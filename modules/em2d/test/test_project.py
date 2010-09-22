@@ -65,9 +65,9 @@ class ProjectTests(IMP.test.TestCase):
         for n in xrange(0,n_projections):
             for i in xrange(0,rows):
                 for j in xrange(0,cols):
-                    self.assertInTolerance(projections[n](i,j),
-                                           stored_projections[n](i,j),0.001,
-                                    "Projections generated and stored are different")
+                    self.assertAlmostEqual(projections[n](i,j),
+                           stored_projections[n](i,j), delta=0.001,
+                           msg="Projections generated and stored are different")
 
     def test_noisy_projections(self):
         """ Test the generation of noisy projections"""
@@ -111,8 +111,8 @@ class ProjectTests(IMP.test.TestCase):
             matrix2=stored_images[n].get_data()
             ccc=matrix1.cross_correlation_coefficient(matrix2)
              # allow 3% difference in cross-correlation
-            self.assertInTolerance(theoretical_ccc,ccc,0.03,
-                          "Noisy projections generated and stored are different")
+            self.assertAlmostEqual(theoretical_ccc,ccc, delta=0.03,
+                    msg="Noisy projections generated and stored are different")
 
 if __name__ == '__main__':
     IMP.test.main()

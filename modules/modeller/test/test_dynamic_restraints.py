@@ -25,7 +25,7 @@ class ModellerDynamicRestraintsTests(IMP.test.TestCase):
 
         modenergy = selection(modmodel).energy()[0]
         imp_score = m.evaluate(True)
-        self.assertInTolerance(imp_score, modenergy, 1e-3)
+        self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
     def test_lennard_jones(self):
         """Check loading of Modeller Lennard-Jones restraints"""
@@ -47,7 +47,7 @@ class ModellerDynamicRestraintsTests(IMP.test.TestCase):
 
         modenergy = selection(modmodel).energy()[0]
         imp_score = m.evaluate(True)
-        self.assertInTolerance(imp_score, modenergy, 1e-3)
+        self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
     def test_coulomb(self):
         """Check loading of Modeller electrostatic restraints"""
@@ -69,7 +69,7 @@ class ModellerDynamicRestraintsTests(IMP.test.TestCase):
 
         modenergy = selection(modmodel).energy()[0]
         imp_score = m.evaluate(True)
-        self.assertInTolerance(imp_score, modenergy, 1e-3)
+        self.assertAlmostEqual(imp_score, modenergy, delta=1e-3)
 
 if __name__ == '__main__':
     IMP.test.main()
