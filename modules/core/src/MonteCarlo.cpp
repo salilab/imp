@@ -194,8 +194,9 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       IMP_CHECK_CODE(double e=) get_model()->evaluate(false);
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       IMP_INTERNAL_CHECK(std::abs(best_energy - e)
-                 < .01+.1* (best_energy +e), "Energies do not match "
-                 << best_energy << " vs " << e << std::endl);
+                         < .01+.1* std::abs(best_energy +e),
+                         "Energies do not match "
+                         << best_energy << " vs " << e << std::endl);
     }
     return best_energy;
   } else {
