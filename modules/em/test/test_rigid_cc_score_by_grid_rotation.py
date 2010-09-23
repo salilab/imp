@@ -63,8 +63,8 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         for i in range(scores_fast.get_number_of_solutions()):
             print i, " fast:",scores_fast.get_score(i)
             print i, " slow:",scores_slow.get_score(i)
-            self.assertLess(abs(scores_fast.get_score(i)-
-                                scores_slow.get_score(i)),0.15)
+            self.assertAlmostEqual(scores_fast.get_score(i),
+                                   scores_slow.get_score(i), delta=0.15)
         #check that scores make sense, we use the slow scores are
         #they are more accurate
         mp_xyz=IMP.core.XYZs(IMP.core.get_leaves(self.mp))
