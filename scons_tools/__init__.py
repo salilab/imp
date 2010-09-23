@@ -104,8 +104,10 @@ def _get_python_include(env):
     elif pythoninclude:
         return pythoninclude
     else:
+        oldpath = os.environ['PATH']
         os.environ['PATH']=env['ENV']['PATH']
         p = MyPopen('python')
+        os.environ['PATH'] = oldpath
         print >> p.stdin, """
 import distutils.sysconfig
 print distutils.sysconfig.get_python_inc()
