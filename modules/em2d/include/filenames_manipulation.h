@@ -15,7 +15,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Reads a selection file, first column is a file name second is 1 if the
 //! file is selected, 0 if ignored
-IMPEM2DEXPORT inline Strings read_selection_file(String fn) {
+inline Strings read_selection_file(String fn) {
   String name;
   Strings names;
   boost::filesystem::path fnp(fn);
@@ -48,9 +48,8 @@ IMPEM2DEXPORT inline Strings read_selection_file(String fn) {
 }
 
 //! generates consecutive filenames: basic_name-i.extension
-IMPEM2DEXPORT inline Strings generate_filenames(unsigned long number,
-                                            String basic_name,
-                                            String extension) {
+inline Strings generate_filenames(unsigned long number,
+                                  String basic_name, String extension) {
   Strings proj_names(number);
   for (unsigned int i=0;i<number;++i) {
     std::ostringstream  strm;
