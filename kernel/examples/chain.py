@@ -10,13 +10,14 @@ import IMP.display
 
 IMP.set_log_level(IMP.TERSE)
 m= IMP.Model()
+m.set_log_level(IMP.SILENT)
 # The particles in the chain
-ps=IMP.core.create_xyzr_particles(m, 2, 1.0)
+ps=IMP.core.create_xyzr_particles(m, 10, 1.0)
 chain= IMP.container.ListSingletonContainer(ps, "chain")
 
 # create a spring between successive particles
 bonds= IMP.container.ConsecutivePairContainer(ps)
-hdps=IMP.core.HarmonicDistancePairScore(4,1)
+hdps=IMP.core.HarmonicDistancePairScore(2,1)
 chainr= IMP.container.PairsRestraint(hdps,bonds)
 chainr.set_name("The chain restraint")
 m.add_restraint(chainr)
@@ -42,7 +43,16 @@ m.add_restraint(tie)
 
 s= IMP.core.MCCGSampler(m) # sample using MC and CG
 s.set_number_of_attempts(10)
+m.set_maximum_score(1)
+try:
+    import IMP.bullet
+    bos= IMP.bullet.ResolveCollisionsOptimizer(m)
+    s.set_local_optimizer(bos)
+except:
+    # bullet module disabled
+    pass
 confs= s.get_sample()
+print "Found", confs.get_number_of_configurations(), "configurations"
 for i in range(0, confs.get_number_of_configurations()):
     confs.load_configuration(i)
     d=IMP.display.ChimeraWriter("solution"+str(i)+".py")
