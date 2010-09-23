@@ -3,7 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.atom
-import IMP.helper
 
 
 class RBDTests(IMP.test.TestCase):
@@ -96,7 +95,7 @@ class RBDTests(IMP.test.TestCase):
         m= IMP.Model()
         h= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
-        rs= IMP.helper.setup_as_rigid_body(h)
+        rs= IMP.atom.setup_as_rigid_body(h)
         IMP.core.RigidBody(h.get_particle()).set_coordinates_are_optimized(True)
         print "done setting up"
         m.add_score_state(rs)
