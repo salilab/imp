@@ -53,7 +53,7 @@ namespace {
   }
 }
 
-SubsetStatesList get_best_conformations(const SubsetGraph &jt,
+SubsetStates get_best_conformations(const SubsetGraph &jt,
                                       int root,
                                       const Subset& all_particles,
                                       const SubsetFilterTables &filters,

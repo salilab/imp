@@ -102,7 +102,7 @@ public:
 #endif
 };
 
-IMP_VALUES(SubsetState, SubsetStatesList);
+IMP_VALUES(SubsetState, SubsetStates);
 
 IMP_OUTPUT_OPERATOR(SubsetState);
 

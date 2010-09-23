@@ -89,12 +89,12 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
 }
 
 struct NodeData {
-  SubsetStatesList subset_states;
+  SubsetStates subset_states;
 };
 
 
 inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
-  for (SubsetStatesList::const_iterator it = nd.subset_states.begin();
+  for (SubsetStates::const_iterator it = nd.subset_states.begin();
        it != nd.subset_states.end(); ++it) {
     out << *it << std::endl;
   }
@@ -103,7 +103,7 @@ inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
 
 inline NodeData get_node_data(const Subset &s, const SubsetStatesTable *sst) {
   NodeData ret;
-  ret.subset_states= sst->get_subset_states(s)->get_subset_states();
+  ret.subset_states= sst->get_subset_states(s);
   return ret;
 }
 

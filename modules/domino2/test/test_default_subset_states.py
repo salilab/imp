@@ -35,10 +35,9 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino2.Subset(ps)
         ss= dsst.get_subset_states(lsc)
-        self.assertEqual(ss.get_number_of_subset_states(), ns**len(ps))
+        self.assertEqual(len(ss), ns**len(ps))
         all_states=[]
-        for i in range(0, ss.get_number_of_subset_states()):
-            state= ss.get_subset_state(i)
+        for state in ss:
             print state
             #print all_states
             self.assertNotIn(state, all_states)
@@ -63,11 +62,10 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.domino2.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         ss= dsst.get_subset_states(lsc)
-        self.assertEqual(ss.get_number_of_subset_states(), ns**(len(ps)-2)*(ns)*(ns-1))
+        self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
         print "testing"
-        for i in range(0, ss.get_number_of_subset_states()):
-            state= ss.get_subset_state(i)
+        for state in ss:
             print state
             #print all_states
             self.assertNotIn(state, all_states)
@@ -92,11 +90,10 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.domino2.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         ss= dsst.get_subset_states(lsc)
-        self.assertEqual(ss.get_number_of_subset_states(), ns**(len(ps)-2)*(ns)*(ns-1))
+        self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
         print "testing"
-        for i in range(0, ss.get_number_of_subset_states()):
-            state= ss.get_subset_state(i)
+        for state in ss:
             print state
             #print all_states
             self.assertNotIn(state, all_states)

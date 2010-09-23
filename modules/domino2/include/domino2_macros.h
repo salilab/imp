@@ -21,24 +21,14 @@
  virtual void load_particle_state(unsigned int, Particle*) const;       \
  IMP_OBJECT(Name)
 
-/** This macro declares
-    - IMP::domino2::SubsetStates::get_number_of_states()
-    - IMP::domino2::SubsetStates::get_state()
-*/
-#define IMP_SUBSET_STATES(Name)                                \
-  public:                                                      \
-  unsigned int get_number_of_subset_states() const;            \
-  SubsetState get_subset_state(unsigned int i) const;          \
- IMP_OBJECT(Name)
 
 /** This macro declares
-    - IMP::domino2::SubsetStateEnumerator::get_number_of_states()
-    - IMP::domino2::SubsetStateEnumerator::get_state()
+    - IMP::domino2::SubsetStateTable::get_subset_states()
 */
 #define IMP_SUBSET_STATES_TABLE(Name)                                   \
   public:                                                               \
-  virtual SubsetStates* get_subset_states(const Subset&s) const;        \
- IMP_OBJECT(Name)
+  virtual SubsetStates get_subset_states(const Subset&s) const;        \
+  IMP_OBJECT(Name)
 
 
 /** This macro declares
@@ -85,7 +75,7 @@
 */
 #define IMP_DISCRETE_SAMPLER(Name)                              \
   public:                                                       \
-  SubsetStatesList do_get_sample_states(const Subset &known) const; \
+  SubsetStates do_get_sample_states(const Subset &known) const; \
   IMP_OBJECT(Name)
 
 

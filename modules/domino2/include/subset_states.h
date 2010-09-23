@@ -29,36 +29,9 @@
 IMPDOMINO2_BEGIN_NAMESPACE
 class DominoSampler;
 
-
-/** Allow enumeration of the states of a particular subset.
-    Straight forward examples
-    would just return the product of the number of states returned by
-    the StateEnumerator for each of the particles, while a permutation
-    based one would have methods to define equivalency sets and only return
-    permutations of the states of these sets.
-*/
-class IMPDOMINO2EXPORT SubsetStates: public Object {
-public:
-  SubsetStates(std::string name="SubsetStates %1%"): Object(name){}
-  virtual unsigned int get_number_of_subset_states() const=0;
-  /** i can be anything in [0, get_number_of_states())
-   */
-  virtual SubsetState get_subset_state(unsigned int i) const=0;
-
-  virtual SubsetStatesList get_subset_states() const {
-    SubsetStatesList ret(get_number_of_subset_states());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= get_subset_state(i);
-    }
-    return ret;
-  }
-  virtual ~SubsetStates();
-};
-
 /** The base class for classes that create SubsetStates, one per
     subset. The main method of interest is get_subset_states()
-    which returns a SubsetStates object which can enumerate
-    the states of a provided subset.
+    which returns a SubsetStates containing the valid states.
 */
 class IMPDOMINO2EXPORT SubsetStatesTable: public Object {
   WeakPointer<const DominoSampler> sampler_;
@@ -73,7 +46,7 @@ public:
   }
 #endif
   SubsetStatesTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
-  virtual SubsetStates *get_subset_states(const Subset &s) const=0;
+  virtual SubsetStates get_subset_states(const Subset &s) const=0;
   ~SubsetStatesTable();
 };
 
@@ -111,42 +84,19 @@ public:
 typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
 
 
-/** Store a list of SubsetState objects and return them on demand. To be
-    used with the ListSubsetStatesTable.
-    \untested{ListSubsetStates}
-*/
-class IMPDOMINO2EXPORT ListSubsetStates: public SubsetStates {
-  SubsetStatesList states_;
- public:
-  ListSubsetStates(const SubsetStatesList &states=SubsetStatesList(),
-                   std::string name="ListSubsetStates %1%");
-  void add_subset_state(const SubsetState& s);
-  void set_subset_states(const SubsetStatesList &s) {
-    states_=s;
-  }
-  SubsetStatesList get_subset_states() const {return states_;}
-  IMP_SUBSET_STATES(ListSubsetStates);
-};
-
-// yikes :-)
-IMP_OBJECTS(ListSubsetStates, ListSubsetStatesList);
-
-
-/** Store a map of SubsetStates objects and return them on demand. To be
-    used with the SubsetStatesTable.
+/** Store a map of SubsetStates objects and return them on demand.
     \untested{ListSubsetStatesTable}
 */
 class IMPDOMINO2EXPORT ListSubsetStatesTable: public SubsetStatesTable {
-  IMP::internal::Map<Subset, Pointer<SubsetStates> > states_;
+  IMP::internal::Map<Subset, SubsetStates> states_;
  public:
   ListSubsetStatesTable(std::string name="ListSubsetStatesTable %1%");
-  void set_subset_states(const Subset &s, SubsetStates *lsc) {
+  void set_subset_states(const Subset &s, const SubsetStates &lsc) {
     states_[s]=lsc;
   }
   IMP_SUBSET_STATES_TABLE(ListSubsetStatesTable);
 };
 
-// yikes :-)
 IMP_OBJECTS(ListSubsetStatesTable, ListSubsetStatesTables);
 
 IMPDOMINO2_END_NAMESPACE

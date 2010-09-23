@@ -17,7 +17,6 @@
 
 
 IMPDOMINO2_BEGIN_NAMESPACE
-SubsetStates::~SubsetStates(){}
 SubsetStatesTable::~SubsetStatesTable(){}
 
 typedef std::vector<int> Ints;
@@ -176,7 +175,7 @@ void setup_filters(const Subset &s,
   void fill_states_list(const Subset &s,
                         ParticleStatesTable *table,
                         const SubsetFilterTables &sft,
-                        SubsetStatesList &states_) {
+                        SubsetStates &states_) {
     //std::cout << "Searching order for " << s << std::endl;
     Ints order;
     std::vector<SubsetFilters> filters;
@@ -331,50 +330,27 @@ BranchAndBoundSubsetStatesTable
   pst_(pst), sft_(sft){}
 
 
-SubsetStates* BranchAndBoundSubsetStatesTable
+SubsetStates BranchAndBoundSubsetStatesTable
 ::get_subset_states(const Subset&s) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  Pointer<ListSubsetStates> ret= new ListSubsetStates();
-  SubsetStatesList ssl;
+  SubsetStates ssl;
   fill_states_list(s, pst_, sft_, ssl);
-  ret->set_log_level(get_log_level());
-  ret->set_subset_states(ssl);
-  return ret.release();
+  return ssl;
 }
 
 void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
 }
 
 
-
-// List.....
-ListSubsetStates::ListSubsetStates(const SubsetStatesList &states,
-                                   std::string name): SubsetStates(name),
-                                                      states_(states){
-}
-
-unsigned int ListSubsetStates::get_number_of_subset_states() const {
-  return states_.size();
-}
-SubsetState ListSubsetStates::get_subset_state(unsigned int i) const {
-  return states_[i];
-}
-
-
-void ListSubsetStates::add_subset_state(const SubsetState& s) {
-  states_.push_back(s);
-}
-
-void ListSubsetStates::do_show(std::ostream &out) const{}
-
-
 ListSubsetStatesTable
 ::ListSubsetStatesTable(std::string name): SubsetStatesTable(name) {}
 
-SubsetStates *ListSubsetStatesTable
+SubsetStates ListSubsetStatesTable
 ::get_subset_states(const Subset &s) const {
   set_was_used(true);
+  IMP_USAGE_CHECK(states_.find(s) != states_.end(),
+                  "I don't know anything about subset " << s);
   return states_.find(s)->second;
 }
 
