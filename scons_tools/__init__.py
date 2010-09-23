@@ -11,6 +11,8 @@ import standards
 import compilation
 import gcc
 import swig
+import tempfile
+import subprocess
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment"]
@@ -91,16 +93,28 @@ class WineEnvironment(Environment):
             return # Older versions of scons don't have this module
         SCons.Tool.MSCommon.common.read_reg = _wine_read_reg
 
+
+pythoninclude=None
 def _get_python_include(env):
+    global pythoninclude
     """Get the directory containing Python.h"""
     if env['python_include']:
         return env['python_include']
     elif env['wine']:
         return '/usr/lib/w32comp/w32python/2.6/include/'
+    elif pythoninclude:
+        return pythoninclude
     else:
-        import distutils.sysconfig
-        return distutils.sysconfig.get_python_inc()
-
+        tf=tempfile.NamedTemporaryFile(delete=False, suffix=".py")
+        tname= tf.name
+        print >> tf, """import distutils.sysconfig
+print distutils.sysconfig.get_python_inc()
+"""
+        tf.close()
+        os.environ['PATH']=env['ENV']['PATH']
+        out=os.popen(" ".join(['python', tname])).read()
+        pythoninclude=out.split('\n')[0]
+        return pythoninclude
 def _add_build_flags(env):
     """Add compiler flags for release builds, if requested"""
     #make sure they are all there
