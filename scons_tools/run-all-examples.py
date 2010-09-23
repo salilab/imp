@@ -50,8 +50,12 @@ def get_unmet_module_deps(f, disabled_modules):
     def check_disabled(modname):
         if modname.startswith("IMP.") and modname[4:] in disabled_modules:
             unmet_deps.append(modname[4:])
-    import_re = re.compile('\s*import\s+(.*)\s*')
-    from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*)\s*')
+    # Note that we currently only match import lines with no indentation. It is
+    # assumed that indented imports are within try/except blocks, and thus
+    # these examples should *not* be skipped if the module is disabled (the
+    # script will take appropriate action in this case)
+    import_re = re.compile('import\s+(.*)\s*')
+    from_re = re.compile('from\s+(\S+)\s+import\s+(.*)\s*')
     for line in open(f):
         # Parse lines of the form 'import a.b, a.c'
         m = import_re.match(line)
