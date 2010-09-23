@@ -11,8 +11,7 @@ import standards
 import compilation
 import gcc
 import swig
-import tempfile
-import subprocess
+from mypopen import MyPopen
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
            "get_sharedlib_environment"]
@@ -105,15 +104,16 @@ def _get_python_include(env):
     elif pythoninclude:
         return pythoninclude
     else:
-        tf=tempfile.NamedTemporaryFile(delete=False, suffix=".py")
-        tname= tf.name
-        print >> tf, """import distutils.sysconfig
+        os.environ['PATH']=env['ENV']['PATH']
+        p = MyPopen('python')
+        print >> p.stdin, """
+import distutils.sysconfig
 print distutils.sysconfig.get_python_inc()
 """
-        tf.close()
-        os.environ['PATH']=env['ENV']['PATH']
-        out=os.popen(" ".join(['python', tname])).read()
-        pythoninclude=out.split('\n')[0]
+        p.stdin.close()
+        p.wait()
+
+        pythoninclude = p.stdout.read().split('\n')[0]
         return pythoninclude
 def _add_build_flags(env):
     """Add compiler flags for release builds, if requested"""
