@@ -21,7 +21,7 @@ class FFToperationsTests(IMP.test.TestCase):
         corr=IMP.em.Image()
         IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
         IMP.em.normalize(corr)
-        name=self.get_input_file_name("autocorrrelation_img.spi")
+        name=self.get_input_file_name("autocorrelation_img.spi")
         stored_corr=IMP.em.Image()
         stored_corr.read_from_floats(name,srw)
         rows=stored_corr.get_data().get_number_of_rows()
@@ -46,7 +46,7 @@ class FFToperationsTests(IMP.test.TestCase):
         IMP.em2d.correlation2D(images[0].get_data(), images[1].get_data(),
                                                corr.get_data() )
         IMP.em.normalize(corr)
-        name=self.get_input_file_name("corrrelation_img.spi")
+        name=self.get_input_file_name("correlation_img.spi")
         stored_corr=IMP.em.Image()
         stored_corr.read_from_floats(name,srw)
         rows=stored_corr.get_data().get_number_of_rows()
