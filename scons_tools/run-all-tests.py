@@ -54,8 +54,20 @@ def regressionTest():
     tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
     return unittest.TestSuite(tests)
 
+
+class _TextResult(unittest.TextTestResult):
+    def getDescription(self, test):
+        doc_first_line = test.shortDescription()
+        if self.descriptions and doc_first_line:
+            return doc_first_line
+        else:
+            return str(test)
+
+
 if __name__ == "__main__":
     files = sys.argv[1:]
     print files
     sys.argv=[sys.argv[0], "-v"]
-    unittest.main(defaultTest="regressionTest")
+    unittest.main(defaultTest="regressionTest",
+                  testRunner=unittest.TextTestRunner(resultclass=_TextResult,
+                                                     verbosity=2))
