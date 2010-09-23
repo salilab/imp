@@ -74,6 +74,7 @@ private:
   unsigned int n_;
   Float radius_;
   ParticlesTemp moved_;
+  algebra::Vector3Ds old_coords_;
   std::vector<std::pair<Restraint*, Ints> > deps_;
 };
 
@@ -143,6 +144,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
     };*/
   // if the score is tiny, give up
   moved_.clear();
+  old_coords_.clear();
   if (total < .0001) return;
   for (unsigned int i=0; i< weights.size(); ++i) {
     weights[i]/=(total/n_);
@@ -160,6 +162,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
       if (rand(random_number_generator) < weights[i]) {
         moved_.push_back(ps_[i]);
         XYZ d(ps_[i]);
+        old_coords_.push_back(d.get_coordinates());
         IMP_USAGE_CHECK(d.get_coordinates_are_optimized(),
                         "Particles passed to "
                         << "ScoreWeightedIncrementalBallMover must have "
@@ -192,9 +195,8 @@ void ScoreWeightedIncrementalBallMover::accept_move() {
 
 void ScoreWeightedIncrementalBallMover::reject_move() {
   for (unsigned int i=0; i< moved_.size(); ++i) {
-    XYZ od(moved_[i]->get_prechange_particle());
     XYZ cd(moved_[i]);
-    cd.set_coordinates(od.get_coordinates());
+    cd.set_coordinates(old_coords_[i]);
   }
 }
 
@@ -210,7 +212,7 @@ void ScoreWeightedIncrementalBallMover::do_show(std::ostream &out) const {
 #define ZK XYZ::get_xyz_keys()[2]
 
 MCCGSampler::Parameters::Parameters(){
-  cg_steps_=10;
+  cg_steps_=100;
   attempts_=1000;
   mc_steps_=10000;
 }
@@ -318,20 +320,26 @@ MCCGSampler::Parameters MCCGSampler::fill_in_parameters() const {
       pms.ball_sizes_[it->first]=l;
     }
   }
+  if (! pms.local_opt_) {
+    pms.local_opt_= new ConjugateGradients(get_model());
+  }
   return pms;
 }
+void MCCGSampler::set_local_optimizer(Optimizer *opt) {
+  default_parameters_.local_opt_=opt;
+}
+
 
 ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  get_model()->set_is_incremental(true);
+  //get_model()->set_is_incremental(true);
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
   IMP_NEW(MonteCarlo, mc, (get_model()));
   mc->add_optimizer_states(OptimizerStatesTemp(optimizer_states_begin(),
                                                optimizer_states_end()));
-  IMP_NEW(ConjugateGradients, cg, (get_model()));
-  mc->set_local_optimizer(cg);
+  mc->set_local_optimizer(pms.local_opt_);
   mc->set_local_steps(pms.cg_steps_);
   mc->set_score_threshold(get_maximum_score()/2.0);
   mc->set_return_best(true);
@@ -382,7 +390,6 @@ ConfigurationSet *MCCGSampler::do_sample() const {
             << std::endl);
   }
   IMP_CHECK_OBJECT(mc);
-  IMP_CHECK_OBJECT(cg);
   IMP_CHECK_OBJECT(sc);
   return ret.release();
 }
