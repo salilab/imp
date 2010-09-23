@@ -21,8 +21,8 @@ import bug_fixes
 import os
 import re
 
-import_re = re.compile('\s*import\s+(.*)\s*')
-from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*)\s*')
+import_re = re.compile('\s*import\s+(.*?)(\s+as\s+.+)?\s*$')
+from_re = re.compile('\s*from\s+(\S+)\s+import\s+(.*?)(\s+as\s+.+)?\s*$')
 
 def _find_python_module(env, modname, dirs):
     """Given a Python module name of the form a.b, return a list of Nodes
@@ -58,12 +58,12 @@ def _scanfile(node, env, path):
     dirs = FindPathDirs('PYTHONPATH')(env) + (Dir(dir),)
     modules = []
     for line in file(node.path, 'r'):
-        # Parse lines of the form 'import a.b, a.c'
+        # Parse lines of the form 'import a.b, a.c (as foo)'
         m = import_re.match(line)
         if m:
             for modname in [x.strip() for x in m.group(1).split(',')]:
                 modules.extend(_find_python_module(env, modname, dirs))
-        # Parse lines of the form 'from a import b, c'
+        # Parse lines of the form 'from a import b, c (as foo)'
         m = from_re.match(line)
         if m:
             for modname in [x.strip() for x in m.group(2).split(',')]:

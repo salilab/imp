@@ -54,15 +54,15 @@ def get_unmet_module_deps(f, disabled_modules):
     # assumed that indented imports are within try/except blocks, and thus
     # these examples should *not* be skipped if the module is disabled (the
     # script will take appropriate action in this case)
-    import_re = re.compile('import\s+(.*)\s*')
-    from_re = re.compile('from\s+(\S+)\s+import\s+(.*)\s*')
+    import_re = re.compile('import\s+(.*?)(\s+as\s+.+)?\s*$')
+    from_re = re.compile('from\s+(\S+)\s+import\s+(.*?)(\s+as\s+.+)?\s*$')
     for line in open(f):
-        # Parse lines of the form 'import a.b, a.c'
+        # Parse lines of the form 'import a.b, a.c (as foo)'
         m = import_re.match(line)
         if m:
             for modname in [x.strip() for x in m.group(1).split(',')]:
                 check_disabled(modname)
-        # Parse lines of the form 'from a import b, c'
+        # Parse lines of the form 'from a import b, c (as foo)'
         m = from_re.match(line)
         if m:
             for modname in [x.strip() for x in m.group(2).split(',')]:
