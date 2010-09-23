@@ -5,6 +5,7 @@
 */
 
 #include <IMP/cgal/internal/polyhedrons.h>
+#include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include <CGAL/Polyhedron_3.h>
@@ -28,11 +29,19 @@ namespace CGAL {
     unsigned int hash_value(Polyhedron::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
     }
+    bool operator<(Polyhedron::Vertex_handle vh0,
+                   Polyhedron::Vertex_handle vh1) {
+      return &*vh0 < &*vh1;
+    }
   }
   // older CGAL
   namespace CGALi {
     unsigned int hash_value(Polyhedron::Vertex_handle vh) {
       return CGAL::Handle_hash_function()(vh);
+    }
+    bool operator<(Polyhedron::Vertex_handle vh0,
+                   Polyhedron::Vertex_handle vh1) {
+      return &*vh0 < &*vh1;
     }
   }
 }
@@ -90,6 +99,7 @@ get_indexed_facets(  Nef_polyhedron &np) {
   std::vector<Ints> faces;
   std::vector<algebra::VectorD<3> > coords;
   IMP::internal::Map<Polyhedron::Vertex_handle, int> vertices;
+  //std::map<Polyhedron::Vertex_handle, int> vertices;
   for (Polyhedron::Face_iterator it= p.facets_begin();
        it != p.facets_end(); ++it) {
     faces.push_back(Ints());
