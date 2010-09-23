@@ -25,8 +25,8 @@ class ParticleStatesTable;
     to statistics::ParticleEmbedding which has a method
     which takes a particle.
  */
-IMPDOMINO2EXPORT SubsetStatesList get_state_clusters(const Subset &subset,
-                                                 const SubsetStatesList &states,
+IMPDOMINO2EXPORT SubsetStates get_state_clusters(const Subset &subset,
+                                                 const SubsetStates &states,
                                                  ParticleStatesTable *pst,
                                                  double resolution);
 

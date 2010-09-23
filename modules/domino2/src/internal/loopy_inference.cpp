@@ -140,7 +140,7 @@ namespace {
   }
 
 }
-SubsetStatesList loopy_get_best_conformations(const SubsetGraph &sg,
+SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
                                               const Subset& all_particles,
                                               const SubsetFilterTables &filters,
                                               const SubsetStatesTable *sst) {
@@ -313,7 +313,7 @@ namespace {
     }
   }
 }
-SubsetStatesList fast_loopy_get_best_conformations(const SubsetGraph &sg,
+SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
                                                    const Subset& all_particles,
                                              const SubsetFilterTables &filters,
                                                const SubsetStatesTable *sst) {

@@ -49,7 +49,7 @@ namespace {
   }
 }
 
-SubsetStatesList DominoSampler
+SubsetStates DominoSampler
 ::do_get_sample_states(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
@@ -79,7 +79,7 @@ SubsetStatesList DominoSampler
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
-  SubsetStatesList final_solutions;
+  SubsetStates final_solutions;
   if (get_is_tree(jt)) {
     final_solutions
       = internal::get_best_conformations(jt, 0,

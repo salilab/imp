@@ -20,7 +20,7 @@ IMPDOMINO2_END_NAMESPACE
 IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINO2EXPORT
-SubsetStatesList loopy_get_best_conformations(const SubsetGraph &sg,
+SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
                                           const Subset& all_particles,
                                           const SubsetFilterTables &filters,
                                               const SubsetStatesTable *sst);
