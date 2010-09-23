@@ -224,6 +224,7 @@ namespace {
     btRigidBody::btRigidBodyConstructionInfo
       fallRigidBodyCI(mass,fallMotionState,shape,fallInertia);
     btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
+    fallRigidBody->setDamping(1,1);
     map[p]= fallRigidBody;
     dynamicsWorld->addRigidBody(fallRigidBody);
     rigid_bodies.push_back(fallRigidBody);
@@ -280,6 +281,7 @@ namespace {
  */
 
 double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
+  {
   IMP_OBJECT_LOG;
   // http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
   IMP_BNEW(btDbvtBroadphase, broadphase, ());
@@ -337,37 +339,39 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
                     obstacles, meshes, motion_states, dynamicsWorld.get(),
                     rigid_bodies);
   }
-  ScoreStatesTemp sst
-    = get_required_score_states(RestraintsTemp(rs_.begin(), rs_.end()));
   IMP_IF_LOG(TERSE) {
-    IMP_LOG(TERSE, "Score states are ");
-    for (unsigned int i=0; i< sst.size(); ++i) {
-      IMP_LOG(TERSE, sst[i]->get_name() << " ");
-    }
-    IMP_LOG(TERSE, std::endl);
-  }
-  IMP_LOG(TERSE, "Special cased " << restraints.size()
-          << " restraint." << std::endl);
-  unsigned int rrs=0;
-  for (unsigned int i=0; i< rs_.size(); ++i) {
-    rrs+=get_restraints(rs_[i]).size();
-  }
-  IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
-  IMP_IF_LOG(TERSE) {
-    for (unsigned int i=0; i< rs_.size(); ++i) {
-      Restraints crs= get_restraints(rs_[i]);
-      for (unsigned int j=0; j< crs.size(); ++j) {
-        IMP_LOG(TERSE, crs[j]->get_name() <<" ");
+    ScoreStatesTemp sst
+      = get_required_score_states(RestraintsTemp(rs_.begin(), rs_.end()));
+    {
+      IMP_LOG(TERSE, "Score states are ");
+      for (unsigned int i=0; i< sst.size(); ++i) {
+        IMP_LOG(TERSE, sst[i]->get_name() << " ");
       }
+      IMP_LOG(TERSE, std::endl);
     }
-    IMP_LOG(TERSE, std::endl);
+    IMP_LOG(TERSE, "Special cased " << restraints.size()
+            << " restraint." << std::endl);
+    unsigned int rrs=0;
+    for (unsigned int i=0; i< rs_.size(); ++i) {
+      rrs+=get_restraints(rs_[i]).size();
+    }
+    IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
+    {
+      for (unsigned int i=0; i< rs_.size(); ++i) {
+        Restraints crs= get_restraints(rs_[i]);
+        for (unsigned int j=0; j< crs.size(); ++j) {
+          IMP_LOG(TERSE, crs[j]->get_name() <<" ");
+        }
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
   }
   RestraintsTemp utrestraints;
   std::vector<double> weights;
   boost::tie(utrestraints, weights)
     = get_restraints_and_weights(rs_.begin(), rs_.end());
   for (unsigned int i=0; i< iter; ++i) {
-    if (rrs >0) {
+    if (utrestraints.size() >0) {
       get_model()->evaluate(utrestraints, weights, true);
       for (unsigned int j=0; j< ps.size(); ++j) {
         core::XYZ d(ps[j]);
@@ -377,7 +381,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       }
     }
     dynamicsWorld->stepSimulation(1/60.f,10);
-    if (iter== i+1 || rrs >0) {
+    if (iter== i+1 || utrestraints.size() >0) {
       for (unsigned int j=0; j< ps.size(); ++j) {
         btTransform trans;
         rigid_bodies[j].getMotionState()->getWorldTransform(trans);
@@ -386,7 +390,8 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
     }
     update_states();
   }
-  return get_model()->evaluate(utrestraints, weights, true);
+  }
+  return get_model()->evaluate(false);
 }
 
 
