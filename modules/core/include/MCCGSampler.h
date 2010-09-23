@@ -13,6 +13,7 @@
 
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
+#include <IMP/Optimizer.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include "internal/CoreListSingletonContainer.h"
 
@@ -44,6 +45,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
     Bounds bounds_;
     unsigned int attempts_;
     FloatKeys opt_keys_;
+    IMP::internal::OwnerPointer<Optimizer> local_opt_;
     Parameters();
   };
   Parameters default_parameters_;
@@ -81,6 +83,9 @@ public:
   //! if set to true, then do not randomize the configuration before
   //! sampling.
   void set_is_refining(bool tf);
+
+  //! Set a local optimizer to use instead of ConjugateGradients
+  void set_local_optimizer(Optimizer *opt);
 
   /** \name Optimizer states
       The optimizer states will be added to the MonteCarlo optimizer
