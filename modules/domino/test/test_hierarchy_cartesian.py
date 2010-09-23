@@ -103,8 +103,11 @@ class DOMINOTests(IMP.test.TestCase):
         scores=[self.opt_score,39.3363,65.1026,75.7, 91.8]
         for i in range(num_sol):
             score_inf = rg.get_opt_combination(i).get_total_score()
-            self.assertLess(abs(score_inf -scores[i]), 0.2,
-                          "the score of the minimum configuration as calculated by the inference is wrong " + str(score_inf) + " != " + str(scores[i]))
+            self.assertAlmostEqual(score_inf, scores[i], delta=0.2,
+                                   msg="the score of the minimum configuration "
+                                       "as calculated by the inference is "
+                                       "wrong " + str(score_inf) + " != " \
+                                       + str(scores[i]))
 
 if __name__ == '__main__':
     IMP.test.main()
