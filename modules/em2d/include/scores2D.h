@@ -33,6 +33,8 @@ IMPEM2DEXPORT double average_shift_error(RegistrationResults correct_RRs,
 IMPEM2DEXPORT double ccc_to_em2d(double ccc);
 IMPEM2DEXPORT double em2d_to_ccc(double em2d);
 
+
+
 IMPEM2D_END_NAMESPACE
 
 #endif /* IMPEM2D_SCORES_2D_H */
