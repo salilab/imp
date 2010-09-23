@@ -6,10 +6,6 @@ import IMP.em2d
 import IMP.em
 import os
 
-#- test generation of projections
-#- even projections
-#- noise
-#
 
 class FFToperationsTests(IMP.test.TestCase):
     def test_autocorrelation2D(self):
@@ -17,7 +13,7 @@ class FFToperationsTests(IMP.test.TestCase):
         name=self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em.SpiderImageReaderWriter()
         image=IMP.em.Image()
-        image.read(name,srw)
+        image.read_from_floats(name,srw)
         corr=IMP.em.Image()
         IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
         IMP.em.normalize(corr)

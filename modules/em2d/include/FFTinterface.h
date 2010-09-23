@@ -86,12 +86,12 @@ private:
 class IFFT2D {
 public:
   IFFT2D() {};
-  IFFT2D(const algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
+  IFFT2D(algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
     prepare(in,out);
   }
   ~IFFT2D() { fftw_destroy_plan(IFFT_); }
 
-  inline void prepare(const algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
+  inline void prepare(algebra::Matrix2D_c &in,algebra::Matrix2D_d &out) {
     // Prepare plan
     unsigned int rows=out.get_number_of_rows();
     unsigned int cols=out.get_number_of_columns();
@@ -99,8 +99,7 @@ public:
       IMP_THROW("IFFT2D: output matrix has no rows or columns ",ValueException);
     }
 
-    IFFT_ = fftw_plan_dft_c2r_2d(out.get_number_of_rows(),
-              out.get_number_of_columns(),
+    IFFT_ = fftw_plan_dft_c2r_2d(rows,cols,
               (fftw_complex *)in.data(),
               out.data(),
               FFTW_ESTIMATE);
