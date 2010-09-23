@@ -17,7 +17,12 @@ IMPEM2D_BEGIN_NAMESPACE
 IMPEM2DEXPORT inline Strings read_selection_file(String fn) {
   String name;
   Strings names;
-  boost::filesystem::path dir= boost::filesystem::path(fn).remove_filename();
+  boost::filesystem::path fnp(fn);
+#if BOOST_VERSION >= 103400
+  boost::filesystem::path dir= fnp.remove_filename();
+#else
+  boost::filesystem::path dir= fnp.branch_path();
+#endif
   std::ifstream in;
   int not_ignored;
   in.open(fn.c_str(), std::ios::in);
