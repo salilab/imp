@@ -109,6 +109,12 @@ IMP_VALUES(SubsetState, SubsetStates);
 IMP_OUTPUT_OPERATOR(SubsetState);
 
 
+#ifndef IMP_DOXYGEN
+inline std::size_t hash_value(const SubsetState &t) {
+  return t.__hash__();
+}
+#endif
+
 IMPDOMINO2_END_NAMESPACE
 
 #endif  /* IMPDOMINO2_SUBSET_STATE_H */
