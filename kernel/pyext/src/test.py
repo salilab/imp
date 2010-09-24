@@ -284,12 +284,27 @@ class TestCase(unittest.TestCase):
                           "Classes %s do not have show methods" \
                           % str(not_found))
 
+
+class _TestResult(unittest.TextTestResult):
+    def getDescription(self, test):
+        doc_first_line = test.shortDescription()
+        if self.descriptions and doc_first_line:
+            return doc_first_line
+        else:
+            return str(test)
+
+
+class _TestRunner(unittest.TextTestRunner):
+    def _makeResult(self):
+        return _TestResult(self.stream, self.descriptions, self.verbosity)
+
+
 def main(*args, **keys):
     """Run a set of tests; essentially the same as unittest.main(). Obviates
        the need to separately import the 'unittest' module, and ensures that
        main() is from the same unittest module that the IMP.test testcases
        are."""
-    return unittest.main(*args, **keys)
+    return unittest.main(testRunner=_TestRunner, *args, **keys)
 
 try:
     import subprocess
