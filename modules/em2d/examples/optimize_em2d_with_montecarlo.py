@@ -112,8 +112,12 @@ em2d_restraint.set_name("em2d restraint")
 container = IMP.container.ListSingletonContainer(core.get_leaves(prot))
 em2d_restraint.set_particles(container)
 em2d_restraints_set=IMP.RestraintSet()
-em2d_restraints_set.add_restraint(em2d_restraint)
-em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
+
+# The next two lines are commented, because the optimization of the example
+# is expensive. To run the full example, uncomment them (It can take a few
+# hours).
+#em2d_restraints_set.add_restraint(em2d_restraint)
+#em2d_restraints_set.set_weight(1000) # weight for the em2D restraint
 
 print "adding em2d restraint "
 m.add_restraint(em2d_restraints_set)
@@ -138,9 +142,9 @@ ostate2 = WriteStatisticsOptimizerScore()
 s.add_optimizer_state(ostate2)
 
 # Perform optimization
-m.set_gather_statistics(True)
+# m.set_gather_statistics(True) # Writes a lot of information!
 temperatures=[200,100,60,40,20,5]
-optimization_steps = 2000
+optimization_steps = 200
 for temp in temperatures:
     s.optimize(optimization_steps)
 atom.write_pdb(prot,"solution.pdb")
