@@ -62,6 +62,20 @@ class ParticleTests(IMP.test.TestCase):
         p1 = self.create_point_particle(self.model, 0, 0, 0)
         self.assertTrue(p0 != p1)
 
+    def test_hashing(self):
+        """Check that particles and decorators hash in python"""
+        p0 = self.particles[0]
+        p1 = self.particles[1]
+        d={}
+        d[p0]=1
+        d[p1]=2
+        print p0.__hash__()
+        td= IMP._TrivialDecorator.setup_particle(p0)
+        print td.__hash__()
+        print td.get_particle().__hash__()
+        d[td]=3
+        self.assertEqual(d[p0], 3)
+
     def test_bad_attributes(self):
         """Asking for non-existent attributes should cause an exception"""
         p1 = self.particles[0]

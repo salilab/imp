@@ -906,6 +906,9 @@ protection:                                                             \
     \c void \c show(std::ostream&).
 */
 #define IMP_OUTPUT_OPERATOR_D(name)
+
+//! Implement a hash function for the class
+#define IMP_HASHABLE_INLINE(name, hashret)
 /** @} */
 
 
@@ -935,6 +938,11 @@ protection:                                                             \
     return std::string(#Name) + "("+__str__()+")";      \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
+
+#define IMP_HASHABLE_INLINE(name, hashret)\
+  std::size_t __hash__() const {          \
+    hashret;                              \
+  }
 
 #if !defined(SWIG)
 #define IMP_OUTPUT_OPERATOR_1(name)                                     \

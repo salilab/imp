@@ -45,7 +45,8 @@ class IMPDOMINO2EXPORT Subset {
  public:
   typedef Subset This;
 #ifndef IMP_DOXYGEN
-  Subset(const ParticlesTemp &ps, bool are_sorted):
+  // only use this if particles are sorted already
+  Subset(const ParticlesTemp &ps, bool):
     ps_(new Particle*[ps.size()]),
     sz_(ps.size()){
     std::copy(ps.begin(), ps.end(), ps_.get());
@@ -106,17 +107,13 @@ class IMPDOMINO2EXPORT Subset {
 #endif
   IMP_SHOWABLE(Subset);
   std::string get_name() const;
+  IMP_HASHABLE_INLINE(Subset, return boost::hash_range(begin(),
+                                                       end()););
   IMP_COMPARISONS;
 };
 
 IMP_VALUES(Subset, Subsets);
 IMP_OUTPUT_OPERATOR(Subset);
-
-#ifndef IMP_DOXYGEN
-inline std::size_t hash_value(const Subset &s) {
-  return boost::hash_range(s.begin(), s.end());
-}
-#endif
 
 IMPDOMINO2_END_NAMESPACE
 

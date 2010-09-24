@@ -15,6 +15,8 @@
 #include "VersionInfo.h"
 #include "macros.h"
 #include "log.h"
+#include <boost/functional/hash.hpp>
+#include <boost/functional/hash/hash.hpp>
 
 #include <vector>
 
@@ -108,6 +110,8 @@ public:
     do_show(out);
   }
 
+
+  IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
 #ifndef IMP_DOXYGEN
   std::string __str__() const {

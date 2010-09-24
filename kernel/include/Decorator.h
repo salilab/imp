@@ -194,6 +194,7 @@ private:
   IMP_ONLY_DOXYGEN(int blah_);
   //! @}
 public:
+  IMP_HASHABLE_INLINE(Decorator, return boost::hash_value(get_particle()););
 #ifdef IMP_DOXYGEN
 
   /** \name Methods that all decorators must have
