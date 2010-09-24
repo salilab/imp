@@ -111,6 +111,13 @@ BOOST_STATIC_ASSERT(0
 #endif
 #endif
 
+#ifndef IMP_DOXYGEN
+template <class T>
+inline std::size_t hash_value(const T &t) {
+  return t.__hash__();
+}
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_BASE_TYPES_H */

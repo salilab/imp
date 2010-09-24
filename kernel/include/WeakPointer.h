@@ -106,14 +106,9 @@ public:
   operator O*() const {
     return o_;
   }
-};
 
-#ifndef IMP_DOXYGEN
-template <class T>
-inline std::size_t hash_value(WeakPointer<T> p) {
-  return boost::hash_value(p.get());
-}
-#endif
+  IMP_HASHABLE_INLINE(WeakPointer, return boost::hash_value(o_););
+};
 
 IMP_END_NAMESPACE
 

@@ -140,7 +140,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 struct ReadLock{
   Particles p_;
-  std::set<Object *> allowed_;
+  internal::Set<Object *> allowed_;
 public:
   template <class It, class It1>
   ReadLock(It1 pa, It1 pb,
@@ -166,7 +166,7 @@ public:
 
 struct WriteLock{
   Particles p_;
-  std::set<Object *> allowed_;
+  internal::Set<Object *> allowed_;
 public:
   template <class It, class It1>
   WriteLock(It1 pa, It1 pb,
@@ -463,6 +463,7 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
   IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
   cur_stage_=NOT_EVALUATING;
   ++eval_count_;
+  first_call_=false;
   return score;
 }
 
