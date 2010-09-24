@@ -29,6 +29,16 @@
   %set_output(SWIG_NewPointerObj(%new_copy(*$1, $*ltype), $descriptor, SWIG_POINTER_OWN | %newpointer_flags));
  }
 
+/* size_t is an unsigned type, but Python only has signed integer types.
+   Thus a large size_t can overflow a regular Python 'int'. SWIG is
+   conservative and so converts such large values to Python 'long's instead.
+   This causes hashing to fail on Python < 2.5 though, since hash values must
+   be ints rather than longs. But for a hash value we don't actually care
+   whether it's signed or not. So we override the default here and force the
+   hash value into a signed type, so it will always fit into a Python 'int'. */
+%typemap(out) std::size_t __hash__ {
+  $result = PyInt_FromLong(static_cast<long>($1));
+}
 
 /* Add additional IMP_CONTAINER methods for scripting languages */
 %define IMP_SWIG_CONTAINER(Namespace, ContainedNamespace, type, Ucname, lcname)
