@@ -122,6 +122,8 @@ public:
 
   IMP_COMPARISONS_1(str_);
 
+  IMP_HASHABLE_INLINE(Key, return str_;)
+
   IMP_SHOWABLE_INLINE(Key, out << "\"" << get_string() << "\"";);
 
   //! Make new_name an alias for old_key
