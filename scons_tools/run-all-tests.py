@@ -3,6 +3,7 @@ import os
 import re
 import imp
 import os.path
+import IMP.test
 
 # Make sure we use the same version of unittest as the IMP testcases themselves
 from IMP.test import unittest
@@ -55,19 +56,8 @@ def regressionTest():
     return unittest.TestSuite(tests)
 
 
-class _TextResult(unittest.TextTestResult):
-    def getDescription(self, test):
-        doc_first_line = test.shortDescription()
-        if self.descriptions and doc_first_line:
-            return doc_first_line
-        else:
-            return str(test)
-
-
 if __name__ == "__main__":
     files = sys.argv[1:]
     print files
     sys.argv=[sys.argv[0], "-v"]
-    unittest.main(defaultTest="regressionTest",
-                  testRunner=unittest.TextTestRunner(resultclass=_TextResult,
-                                                     verbosity=2))
+    unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
