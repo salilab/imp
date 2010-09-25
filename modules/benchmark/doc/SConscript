@@ -13,7 +13,7 @@ Each benchmark is shown first in a "fast" build and second in a
 comparison. The benchmark source codes can be found in the bin
 directory of the benchmark module.
 
-See the \ref benchmarkr "Benchmark Results" page for historical
+See the \\ref benchmarkr "Benchmark Results" page for historical
 benchmark results.
 
 
