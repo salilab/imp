@@ -3,6 +3,7 @@ from imp_module import dependencies_to_libs
 from imp_module import check_libraries_and_headers
 from imp_module import process_dependencies
 from imp_module import expand_dependencies
+from imp_module import clean_libs
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 
@@ -23,7 +24,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
                 env.Append(LINKFLAGS=['-limp_'+l])
             else:
                 env.Append(LINKFLAGS=['-limp'])
-    env.Prepend(LIBS=dependencies_to_libs(env, required_modules))
+    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, required_modules)))
     env.Prepend(CPPPATH=["#/build/include"])
     env.Prepend(LIBPATH=["#/build/lib"])
     try:
@@ -32,7 +33,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
         print "Application", str(target), "cannot be built due to missing dependencies."
         return
     op= process_dependencies(env, optional_dependencies)
-    env.Append(LIBS=rp+op)
+    env.Append(LIBS=clean_libs(rp+op))
     if len(required_libraries)+len(required_headers) > 0:
         check_libraries_and_headers(env, required_libraries, required_headers)
     prog= env.Program(target=target, source=source)
