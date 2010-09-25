@@ -565,7 +565,7 @@ def IMPModuleDoc(env, files, authors,
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
-            b=env.InstallAs("#/doc/html/"+str(f), f)
+            b=env.InstallAs("#/build/doc/html/"+str(f), f)
             #print str(b)
             build.append(b)
             #install.append(env.Install(f, docdir))
