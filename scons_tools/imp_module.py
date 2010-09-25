@@ -147,7 +147,12 @@ def dependencies_to_libs(env, deps, is_kernel=False):
             pass
     return libs
 
-
+def clean_libs(libs):
+    ret=[]
+    for i,l in enumerate(libs):
+        if l not in libs[i+1:]:
+            ret.append(l)
+    return ret
 
 def do_mac_name_thing(env, source, target):
     """Set the names and paths for the mac libraries based on the current locations
@@ -233,9 +238,9 @@ def IMPModuleLib(envi, files):
                                            env.Value(env.subst(os.path.join(env['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     files =files+ config
-    env.Prepend(LIBS=dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
+    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
                                           env['IMP_MODULE'] == 'kernel')\
-                    +env[env['IMP_MODULE']+"_libs"])
+                    +env[env['IMP_MODULE']+"_libs"]))
     build=[]
     if env['IMP_BUILD_STATIC']:
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
@@ -325,7 +330,7 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
             env.Prepend(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
         else:
             env.Prepend(LINKFLAGS=['-limp'])
-    env.Prepend(LIBS=(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
+    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
                                                     +required_modules,
                                                 env['IMP_MODULE'] == 'kernel')\
                           +env[env['IMP_MODULE']+"_libs"]))
@@ -386,9 +391,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         penv['LIBS']=[]
     else:
         # windows needs all of the IMP modules linked in explicitly
-        penv.Prepend(LIBS=dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
+        penv.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
                                                env['IMP_MODULE'] == 'kernel')\
-                         +env[env['IMP_MODULE']+"_libs"])
+                         +env[env['IMP_MODULE']+"_libs"]))
     penv.Prepend(LIBS=['imp%s' % module_suffix])
     swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
@@ -565,7 +570,7 @@ def IMPModuleDoc(env, files, authors,
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
-            b=env.InstallAs("#/build/doc/html/"+str(f), f)
+            b=env.InstallAs("#/doc/html/"+str(f), f)
             #print str(b)
             build.append(b)
             #install.append(env.Install(f, docdir))
