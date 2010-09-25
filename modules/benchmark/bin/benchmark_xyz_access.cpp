@@ -189,6 +189,27 @@ double compute_distances_direct_access(
 }
 
 
+// TEST 3.5
+struct VV{
+  double x, y, z;
+};
+double compute_distances_direct_access(
+                   const std::vector<VV >& coordinates) ATTRIBUTES;
+
+double compute_distances_direct_access(
+   const std::vector<VV >& coordinates){
+  double tdist=0;
+  for (unsigned int i = 0; i < coordinates.size(); i++) {
+    for (unsigned int j = 0; j < coordinates.size(); j++) {
+      tdist+= std::sqrt(IMP::square(coordinates[i].x- coordinates[j].x)
+                        +IMP::square(coordinates[i].y- coordinates[j].y)
+                        +IMP::square(coordinates[i].z- coordinates[j].z));
+    }
+  }
+  return tdist;
+}
+
+
 
 // TEST 4
 struct VectorHolder {
@@ -213,7 +234,7 @@ double compute_distances_direct_access_space(
 }
 
 
-void do_benchmark(std::string descr, std::string fname, double *targets) {
+void do_benchmark(std::string descr, std::string fname) {
   // read pdb, prepare particles
   Model *model = new IMP::Model();
   atom::Hierarchy mhd
@@ -310,6 +331,25 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz vector "+descr, runtime, dist);
   }
+  {
+    std::vector<VV > coordinates;
+    for (unsigned int i = 0; i < particles.size(); i++) {
+      coordinates.push_back(VV());
+      coordinates.back().x=IMP::core::XYZ(particles[i]).get_x();
+      coordinates.back().y=IMP::core::XYZ(particles[i]).get_y();
+      coordinates.back().z=IMP::core::XYZ(particles[i]).get_z();
+    }
+    double runtime, dist=0;
+    // measure time
+    IMP_TIME(
+             {
+               dist+=compute_distances_direct_access(coordinates);
+               dist+=compute_distances_direct_access(coordinates);
+             }, runtime);
+    /*std::cout << "TEST3 (direct access) took " << runtime
+      << " (" << dist << ")"<< std::endl;*/
+    IMP::benchmark::report("xyz struct "+descr, runtime, dist);
+  }
   // TEST 4
   {
     std::vector<VectorHolder> coordinates;
@@ -354,38 +394,28 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
 }
 
 int main(int argc, char **argv) {
-  double stargets[]={5.299032, 5.257143, 2*2.716663, 5.278088};
-  double ltargets[]={2*83.569721, 2*84.302789, 2*83.814077, 2*83.569721};
-  double htargets[]={2*6710.501992, 2*6711.968127, 2*6245.737052,
-                     2*6242.804781};
   if (argc >1) {
     switch (argv[1][0]) {
     case 's':
       do_benchmark("small",
-                   IMP::benchmark::get_data_path("small_protein.pdb"),
-                   stargets);
+                   IMP::benchmark::get_data_path("small_protein.pdb"));
       break;
     case 'l':
       do_benchmark("large",
-                   IMP::benchmark::get_data_path("large_protein.pdb"),
-                   ltargets);
+                   IMP::benchmark::get_data_path("large_protein.pdb"));
       break;
     case 'h':
       do_benchmark("huge",
-                   IMP::benchmark::get_data_path("huge_protein.pdb"),
-                   htargets);
+                   IMP::benchmark::get_data_path("huge_protein.pdb"));
       break;
     }
   } else {
     do_benchmark("small",
-                 IMP::benchmark::get_data_path("small_protein.pdb"),
-                 stargets);
+                 IMP::benchmark::get_data_path("small_protein.pdb"));
     do_benchmark("large",
-                 IMP::benchmark::get_data_path("large_protein.pdb"),
-                 ltargets);
+                 IMP::benchmark::get_data_path("large_protein.pdb"));
     do_benchmark("huge",
-                 IMP::benchmark::get_data_path("huge_protein.pdb"),
-                 htargets);
+                 IMP::benchmark::get_data_path("huge_protein.pdb"));
   }
   return IMP::benchmark::get_return_value();
 }
