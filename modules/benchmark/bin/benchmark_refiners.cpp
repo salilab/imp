@@ -35,7 +35,7 @@ void do_benchmark(std::string name, Model *,
                  total+=nps.size();
                }
              }, runtime);
-  IMP::benchmark::report(std::string("refiner ")+name, runtime, target, total);
+  IMP::benchmark::report(std::string("refiner ")+name, runtime, total);
 }
 
 

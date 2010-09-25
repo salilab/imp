@@ -15,8 +15,7 @@ template <class KNN>
 void test(std::string name,
           const std::vector<VectorD<3> > &pts,
           const KNN &knn,
-          double eps,
-          double target) {
+          double eps) {
   double result=0;
   double runtime;
   IMP_TIME({
@@ -28,7 +27,7 @@ void test(std::string name,
     }, runtime);
   std::ostringstream oss;
   oss << "knn " << name << " " << knn.get_number_of_points() << " " << eps;
-  report(oss.str(), runtime, target, result/pts.size());
+  report(oss.str(), runtime, result/pts.size());
 }
 
 template <class KNN>
@@ -43,7 +42,7 @@ void test_uniform(std::string name,
     pts.push_back(get_random_vector_in(bb));
   }
   KNN knn(pts.begin(), pts.end());
-  test(name+" uniform", pts, knn, eps, target);
+  test(name+" uniform", pts, knn, eps);
 }
 
 int main() {

@@ -69,7 +69,7 @@ void test_one(std::string name,
     }, runtime);
   std::ostringstream oss;
   oss << name << " " << n << " " << rmax;
-  report(oss.str(), runtime-setuptime, target, result);
+  report(oss.str(), runtime-setuptime, result);
 }
 
 int main() {

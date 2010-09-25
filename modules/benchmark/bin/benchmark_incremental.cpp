@@ -27,7 +27,7 @@ double update_coordinates(Model *m, const Particles &ps) {
   return t;
 }
 
-void benchmark_baseline(double *targets) {
+void benchmark_baseline() {
   IMP_NEW(Model, m, ());
   unsigned int nump=100;
   Particles ps(nump);
@@ -42,11 +42,11 @@ void benchmark_baseline(double *targets) {
     double t=0, ti=0;
     IMP_TIME(t+=update_coordinates(m, ps), nonincremental_time);
     benchmark::report("changing nonincremental",
-                      nonincremental_time, targets[0], t);
+                      nonincremental_time, t);
     m->set_is_incremental(true);
     IMP_TIME(ti+=update_coordinates(m, ps), incremental_time);
     benchmark::report("changing incremental",
-                      incremental_time, targets[1], t);
+                      incremental_time, t);
   }
   ParticlePairs pps(ps.size()-1);
   for (unsigned int i=1; i< ps.size(); ++i) {
@@ -64,17 +64,16 @@ void benchmark_baseline(double *targets) {
     m->set_is_incremental(false);
     IMP_TIME(scored_t+=update_coordinates(m, ps), scored_nonincremental_time);
     benchmark::report("changing nonincremental score",
-                      scored_nonincremental_time, targets[2], scored_t);
+                      scored_nonincremental_time, scored_t);
     m->set_is_incremental(true);
     IMP_TIME(scored_ti+=update_coordinates(m, ps), scored_incremental_time);
     benchmark::report("changing incremental score",
-                      scored_incremental_time, targets[3], scored_ti);
+                      scored_incremental_time, scored_ti);
   }
 }
 
 int main() {
   set_log_level(SILENT);
-  double targets[]={0.000451, 0.000689, 0.000725, 0.001281};
-  benchmark_baseline(targets);
+  benchmark_baseline();
   return IMP::benchmark::get_return_value();
 }

@@ -30,8 +30,7 @@ inline double my_accumulate(It b, It e, F f) {
   return ret;
 }
 
-void time_both(PairContainer *pc, PairScore *ps, std::string name,
-               double *targets) {
+void time_both(PairContainer *pc, PairScore *ps, std::string name) {
   {
     const ParticlePairsTemp pps= pc->get_particle_pairs();
     double runtime=0, total=0;
@@ -44,7 +43,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container direct " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[0], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -59,7 +58,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container ssps direct " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[1], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -75,7 +74,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container ssps direct call " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[2], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -91,7 +90,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container ssps direct bind " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[3], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
     SoftSpherePairScore *ssps= dynamic_cast<SoftSpherePairScore*>(ps);
@@ -107,7 +106,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container direct bind " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[4], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
     double runtime=0, total=0;
@@ -118,7 +117,7 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container " << name << " in "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[5], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
   {
    double runtime=0, total=0;
@@ -132,11 +131,11 @@ void time_both(PairContainer *pc, PairScore *ps, std::string name,
     std::ostringstream oss;
     oss << "container " << name << " out "
         << pc->get_number_of_particle_pairs();
-    IMP::benchmark::report(oss.str(), runtime, targets[6], total);
+    IMP::benchmark::report(oss.str(), runtime, total);
   }
 }
 
-void test(int n, double *targets) {
+void test(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
@@ -147,10 +146,10 @@ void test(int n, double *targets) {
     }
   }
   IMP_NEW(SoftSpherePairScore, dps, (1));
-  time_both(lpc, dps, "list", targets);
+  time_both(lpc, dps, "list");
 }
 
-void test_set(int n, double *targets) {
+void test_set(int n) {
   set_log_level(SILENT);
   IMP_NEW(Model, m, ());
   Particles ps= create_xyzr_particles(m, n, .1);
@@ -172,31 +171,23 @@ void test_set(int n, double *targets) {
   pcs->add_pair_container(lpc1);
 
   IMP_NEW(SoftSpherePairScore, dps, (1));
-  time_both(pcs, dps, "set", targets);
+  time_both(pcs, dps, "set");
 }
 
 
 
 int main(int , char **) {
   {
-    double targets[]={0.005960, 0.005930, 0.006022, 0.005563,
-                      0.005571, 0.005869, 0.007210};
-    test(100, targets);
+    test(100);
   }
   {
-    double targets[]={0.634483, 0.630137, 0.636678, 0.595469,
-                      0.593548, 0.619529, 0.773109};
-    test(1000, targets);
+    test(1000);
   }
   {
-    double targets[]={0.002984, 0.002973, 0.003014, 0.002807,
-                      0.002793, 0.002918, 0.006555};
-    test_set(100, targets);
+    test_set(100);
   }
   {
-    double targets[]={0.308208, 0.306156, 0.310287, 0.288401,
-                      0.286159, 0.300654, 0.669091};
-    test_set(1000, targets);
+    test_set(1000);
   }
   return IMP::benchmark::get_return_value();
 }
