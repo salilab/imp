@@ -10,18 +10,19 @@
 
 #include "VectorD.h"
 #include <IMP/base_types.h>
-#include "internal/ann.h"
 #ifdef IMP_USE_CGAL
 #include <IMP/cgal/internal/knn.h>
+#endif
+#ifdef IMP_USE_ANN
+#include "internal/ann.h"
 #endif
 #include "internal/linear_knn.h"
 #include <fstream>
 
-#ifdef IMP_USE_CGAL
-#include <IMP/cgal/internal/knn.h>
-#define IMP_KNN_DATA IMP::cgal::internal::KNNData
-#elif defined(IMP_USE_ANN)
+#ifdef IMP_USE_ANN
 #define IMP_KNN_DATA internal::ANNData
+#elif defined(IMP_USE_CGAL)
+#define IMP_KNN_DATA IMP::cgal::internal::KNNData
 #else
 #define IMP_KNN_DATA internal::LinearKNNData
 #endif
