@@ -11,7 +11,7 @@ using namespace IMP::benchmark;
 using namespace IMP::algebra;
 
 
-void do_benchmark(double *targets) {
+void do_benchmark() {
   IMP::Pointer<DensityMap> m[3];
   for (unsigned int i=0; i< 3; ++i) {
     m[i]= new DensityMap();
@@ -47,7 +47,7 @@ void do_benchmark(double *targets) {
                    }
                  }
                }, runtime, N);
-    IMP::benchmark::report("uncached density loop", runtime, targets[0], dist);
+    IMP::benchmark::report("uncached density loop", runtime, dist);
   }
   {
     double runtime, dist=0;
@@ -62,7 +62,7 @@ void do_benchmark(double *targets) {
                    }
                  }
                }, runtime, N);
-    IMP::benchmark::report("cached density loop", runtime, targets[1], dist);
+    IMP::benchmark::report("cached density loop", runtime, dist);
   }
 }
 
@@ -71,7 +71,6 @@ void do_benchmark(double *targets) {
 
 
 int main(int , char **) {
-  double targets[]={1.393333, 4.180000};
-  do_benchmark(targets);
+  do_benchmark();
   return IMP::benchmark::get_return_value();
 }

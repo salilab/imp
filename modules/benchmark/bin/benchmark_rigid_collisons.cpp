@@ -52,7 +52,7 @@ void test_one(std::string name,
     << " and value " << value << std::endl;*/
   std::ostringstream oss;
   oss << "rigid " << name << " " << side;
-  IMP::benchmark::report(oss.str(), runtime-inittime, target, value);
+  IMP::benchmark::report(oss.str(), runtime-inittime, value);
 }
 
 

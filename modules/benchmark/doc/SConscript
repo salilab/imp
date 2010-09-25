@@ -13,54 +13,8 @@ Each benchmark is shown first in a "fast" build and second in a
 comparison. The benchmark source codes can be found in the bin
 directory of the benchmark module.
 
-A simple Brownian dynamics simulation with the specified number of
-particles
-\\image html "benchmark/doc/bdfast.png"
-\\image html "benchmark/doc/bdrelease.png"
-
-A simple test modifying the particles and (for the 'score' entries)
-evaluating a simple, incremental, score.
-\\image html "benchmark/doc/changingfast.png"
-\\image html "benchmark/doc/changingrelease.png"
-
-The various IMP::core::ClosePairFinder implementations are benchmarked
-on random sets of particles. The benchmarks for the quadratic one are listed as
-taking 10x less time than they did.
-\\image html "benchmark/doc/cpffast.png"
-\\image html "benchmark/doc/cpfrelease.png"
-
-
-A benchmark of the various close pairs finders in the context of
-a simulation. The benchmarks for the quadratic one are listed as
-taking 10x less time than they did.
-\\image html "benchmark/doc/colfast.png"
-\\image html "benchmark/doc/colrelease.png"
-
-A special close pair finder is provided for rigid bodies, name
-IMP::core::RigidClosePairsFinder. Here it is compared against
-using all the member particles.
-\\image html "benchmark/doc/rigidfast.png"
-\\image html "benchmark/doc/rigidrelease.png"
-
-
-There are several ways of doing connectivity restraints in \imp:
-IMP::misc::ConnectedPairContainer and IMP::core::ConnectivityRestraint.
-They are benchmarked here.
-\\image html "benchmark/doc/connectivityfast.png"
-\\image html "benchmark/doc/connectivityrelease.png"
-
-The next benchmark looks at evaluating restraints on various sorts
-of containers, namely IMP::core::ListSingletonContainer and
-IMP::core::SingletonContainerSet.
-\\image html "benchmark/doc/containerfast.png"
-\\image html "benchmark/doc/containerrelease.png"
-
-When peforming lots of operations on a set of cartesian coordinates
-and is faster to copy them into a IMP::algebra::Vector3Ds than
-to access them in the IMP::core::XYZ decorator each time. This
-benchmark gives an idea of the speed tradeoffs involved.
-\\image html "benchmark/doc/xyzfast.png"
-\\image html "benchmark/doc/xyzrelease.png"
+See the \ref benchmarkr "Benchmark Results" page for historical
+benchmark results.
 
 
 """)

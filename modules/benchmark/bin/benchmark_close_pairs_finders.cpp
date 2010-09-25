@@ -18,8 +18,6 @@ using namespace IMP::container;
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax,
-              // assume by and non-bi are close enough for now
-              double target,
               bool nobi=false) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
@@ -42,7 +40,7 @@ void test_one(std::string name,
       }, runtime);
     std::ostringstream oss;
     oss << "cpf " << name << " " << n << " " << rmax;
-    report(oss.str(), runtime, target, result);
+    report(oss.str(), runtime, result);
   }
   if (!nobi) {
     VectorD<3> minc(0,0,0), maxc(10,10,10);
@@ -70,7 +68,7 @@ void test_one(std::string name,
       }, runtime);
     std::ostringstream oss;
     oss << "bcpf " << name << " " << n << " " << rmax;
-    report(oss.str(), runtime, target, result);
+    report(oss.str(), runtime, result);
   }
 }
 
@@ -81,12 +79,12 @@ int main() {
     cpf->set_log_level(IMP::VERBOSE);
 #endif
     std::string name="grid";
-    test_one(name, cpf, 1000, 0, .1, 0.097368, true);
-    test_one(name, cpf, 1000, 0, .5, 0.372233, true);
-    test_one(name, cpf, 1000, 0, 5, 1.697248, true);
-    test_one(name, cpf, 10000, 0, .1, 1.156250, true);
-    test_one(name, cpf, 10000, 0, .5, 4.353953, true);
-    test_one(name, cpf, 10000, 0, 5, 141.340000, true);
+    test_one(name, cpf, 1000, 0, .1, true);
+    test_one(name, cpf, 1000, 0, .5, true);
+    test_one(name, cpf, 1000, 0, 5, true);
+    test_one(name, cpf, 10000, 0, .1, true);
+    test_one(name, cpf, 10000, 0, .5, true);
+    test_one(name, cpf, 10000, 0, 5, true);
     //test_one(name, cpf, 100000, 0, .01, 18.648000, true);
     //test_one(name, cpf, 100000, 0, .1, 23.217500, true);
     //test_one(name, cpf, 100000, 0, .3, 51.800000, true);
@@ -94,11 +92,11 @@ int main() {
   {
     IMP_NEW(NearestNeighborsClosePairsFinder, cpf, ());
     std::string name="nn";
-    test_one(name, cpf, 1000, 0, .1, 0.247989);
-    test_one(name, cpf, 1000, 0, .5, 0.478036);
-    test_one(name, cpf, 1000, 0, 5, 5.628485);
-    test_one(name, cpf, 10000, 0, .1, 3.869583);
-    test_one(name, cpf, 10000, 0, .5, 13.848571);
+    test_one(name, cpf, 1000, 0, .1);
+    test_one(name, cpf, 1000, 0, .5);
+    test_one(name, cpf, 1000, 0, 5);
+    test_one(name, cpf, 10000, 0, .1);
+    test_one(name, cpf, 10000, 0, .5);
     //test_one(name, cpf, 10000, 0, 5);
     //test_one(name, cpf, 100000, 0, .01, 42.624000);
     //test_one(name, cpf, 100000, 0, .1, 85.593333);
@@ -109,12 +107,12 @@ int main() {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     std::string name="box";
     // bi takes twice as long as non-bi
-    test_one(name, cpf, 1000, 0, .1, 0.103064);
-    test_one(name, cpf, 1000, 0, .5, 0.287714);
-    test_one(name, cpf, 1000, 0, 5, 2.681159);
-    test_one(name, cpf, 10000, 0, .1, 3.805714);
-    test_one(name, cpf, 10000, 0, .5, 9.324000);
-    test_one(name, cpf, 10000, 0, 5, 190.920000);
+    test_one(name, cpf, 1000, 0, .1);
+    test_one(name, cpf, 1000, 0, .5);
+    test_one(name, cpf, 1000, 0, 5);
+    test_one(name, cpf, 10000, 0, .1);
+    test_one(name, cpf, 10000, 0, .5);
+    test_one(name, cpf, 10000, 0, 5);
     //test_one(name, cpf, 100000, 0, .01, 44.696000);
     //test_one(name, cpf, 100000, 0, .1, 95.830000);
     //test_one(name, cpf, 100000, 0, .3, 198.320000);
@@ -124,12 +122,12 @@ int main() {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;
     // bi also twice as as slow
-    test_one("quadratic", cpf, 1000, 0, .1, 0.653710);
-    test_one("quadratic", cpf, 1000, 0, .5, 0.790598);
-    test_one("quadratic", cpf, 1000, 0, 5, 2.636901);
-    test_one("quadratic", cpf, 10000, 0, .1, 65.613333);
-    test_one("quadratic", cpf, 10000, 0, .5, 79.673333);
-    test_one("quadratic", cpf, 10000, 0, 5, 300.440000);
+    test_one("quadratic", cpf, 1000, 0, .1);
+    test_one("quadratic", cpf, 1000, 0, .5);
+    test_one("quadratic", cpf, 1000, 0, 5);
+    test_one("quadratic", cpf, 10000, 0, .1);
+    test_one("quadratic", cpf, 10000, 0, .5);
+    test_one("quadratic", cpf, 10000, 0, 5);
   }
   return IMP::benchmark::get_return_value();
 }

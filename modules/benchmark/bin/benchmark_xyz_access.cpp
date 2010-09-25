@@ -234,7 +234,7 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz decorator "+descr, runtime, targets[0], dist);
+    IMP::benchmark::report("xyz decorator "+descr, runtime, dist);
   }
   // TEST 1.5
   {
@@ -247,7 +247,7 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
              }, runtime);
     /*std::cout << "TEST1 (decorator_access)  took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz particle "+descr, runtime, targets[1], dist);
+    IMP::benchmark::report("xyz particle "+descr, runtime, dist);
   }
   /*if (0) {
     // TEST 2
@@ -308,7 +308,7 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
              }, runtime);
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
-    IMP::benchmark::report("xyz vector "+descr, runtime, targets[2], dist);
+    IMP::benchmark::report("xyz vector "+descr, runtime, dist);
   }
   // TEST 4
   {
@@ -328,7 +328,7 @@ void do_benchmark(std::string descr, std::string fname, double *targets) {
     /*std::cout << "TEST3 (direct access) took " << runtime
       << " (" << dist << ")"<< std::endl;*/
     IMP::benchmark::report("xyz vector space "+descr, runtime,
-                           targets[3], dist);
+                           dist);
   }
   /*
   // TEST 5
