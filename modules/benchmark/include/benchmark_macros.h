@@ -18,16 +18,15 @@
   {                                             \
     boost::timer imp_timer;                     \
     unsigned int imp_reps=0;                    \
-    do {                                        \
-      try {                                     \
+    try {                                       \
+      do {                                      \
         block;                                  \
-      } catch (const IMP::Exception &e) {       \
-        std::cerr<< "Caught exception "         \
+        ++imp_reps;                             \
+      } while (imp_timer.elapsed() < 2.5);      \
+    } catch (const IMP::Exception &e) {         \
+      std::cerr<< "Caught exception "           \
                << e.what() << std::endl;        \
-        break;                                  \
-      }                                         \
-      ++imp_reps;                               \
-    } while (imp_timer.elapsed() < 2.5);        \
+    }                                           \
     timev= imp_timer.elapsed()/imp_reps;        \
   }
 
