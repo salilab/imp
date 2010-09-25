@@ -1,8 +1,6 @@
 date,  07/15/09,
 mode,fast,
 connectivity slow,0.825,57.0167
-col quadratic 10000 0.1,0.000294585,0
-col quadratic 10000 0.5,0.000344069,0
 rigid quadratic 100,0.352644,0
 rigid quadratic 1000,0.333796,0
 rigid hierarchy 100,0.059368,0
@@ -19,8 +17,6 @@ xyz *internal large,147.55,1.56E+11
 xyz vector large,42.72,1.56E+11
 mode,release,
 connectivity slow,0.97,44.9068
-col quadratic 10000 0.1,5.88801,33.1283
-col quadratic 10000 0.5,6.488,18041.7
 rigid quadratic 100,2.31704,0
 rigid quadratic 1000,2.26205,0
 rigid hierarchy 100,0.180128,0
@@ -38,8 +34,6 @@ xyz vector large,126.42,1.56E+11
 date,  07/16/09,
 mode,fast,
 connectivity slow,0.8225,58.6575
-col quadratic 10000 0.1,0.000470818,2092.05
-col quadratic 10000 0.5,0.00057686,239359
 rigid quadratic 100,0.347652,0
 rigid quadratic 1000,0.3439,0
 rigid hierarchy 100,0.0535882,0
@@ -56,8 +50,6 @@ xyz *internal large,129.41,1.56E+11
 xyz vector large,42.7,1.56E+11
 mode,release,
 connectivity slow,0.97,44.9068
-col quadratic 10000 0.1,5.88801,33.1283
-col quadratic 10000 0.5,6.488,18041.7
 rigid quadratic 100,2.31704,0
 rigid quadratic 1000,2.26205,0
 rigid hierarchy 100,0.180128,0
@@ -75,8 +67,6 @@ xyz vector large,126.42,1.56E+11
 date,  07/17/09,
 mode,fast,
 connectivity slow,0.8275,5.53E+01
-col quadratic 10000 0.1,0.0003,2.07E+03
-col quadratic 10000 0.5,0.000338,2.41E+05
 rigid quadratic 100,0.342664,0.00E+00
 rigid quadratic 1000,0.331414,0.00E+00
 rigid hierarchy 100,0.066863,0.00E+00
@@ -93,8 +83,6 @@ xyz *internal large,140.05,1.56E+11
 xyz vector large,42.72,1.56E+11
 mode,release,
 connectivity slow,0.953333,4.41E+01
-col quadratic 10000 0.1,5.778054,3.40E+01
-col quadratic 10000 0.5,6.20805,1.80E+04
 rigid quadratic 100,2.261566,0.00E+00
 rigid quadratic 1000,2.251749,0.00E+00
 rigid hierarchy 100,0.182862,0.00E+00
@@ -112,8 +100,6 @@ xyz vector large,127.8,1.56E+11
 date,  07/18/09,
 mode,fast,
 connectivity slow,0.8275,5.91E+01
-col quadratic 10000 0.1,0.000304,1.98E+03
-col quadratic 10000 0.5,0.000345,2.35E+05
 rigid quadratic 100,0.342849,0.00E+00
 rigid quadratic 1000,0.334097,0.00E+00
 rigid hierarchy 100,0.061005,0.00E+00
@@ -130,8 +116,6 @@ xyz *internal large,145.29,1.56E+11
 xyz vector large,42.77,1.56E+11
 mode,release,
 connectivity slow,0.953333,4.12E+01
-col quadratic 10000 0.1,5.778064,3.16E+01
-col quadratic 10000 0.5,6.228064,1.87E+04
 rigid quadratic 100,2.272017,0.00E+00
 rigid quadratic 1000,2.211823,0.00E+00
 rigid hierarchy 100,0.135062,0.00E+00
@@ -149,8 +133,6 @@ xyz vector large,127.31,1.56E+11
 date,  07/19/09,
 mode,fast,
 connectivity slow,0.843333,4.81E+01
-col quadratic 10000 0.1,0.000326,2.31E+03
-col quadratic 10000 0.5,0.000366,2.42E+05
 rigid quadratic 100,0.344104,0.00E+00
 rigid quadratic 1000,0.347841,0.00E+00
 rigid hierarchy 100,0.054741,0.00E+00
@@ -167,8 +149,6 @@ xyz *internal large,158.38,1.56E+11
 xyz vector large,42.77,1.56E+11
 mode,release,
 connectivity slow,0.95,4.40E+01
-col quadratic 10000 0.1,5.708061,3.06E+01
-col quadratic 10000 0.5,6.488047,1.87E+04
 rigid quadratic 100,2.936599,0.00E+00
 rigid quadratic 1000,2.876898,0.00E+00
 rigid hierarchy 100,0.090251,0.00E+00
@@ -186,8 +166,6 @@ xyz vector large,127.47,1.56E+11
 date,  07/20/09,
 mode,fast,
 connectivity slow,0.843333,4.03E+01
-col quadratic 10000 0.1,0.000354,2.04E+03
-col quadratic 10000 0.5,0.000598,2.42E+05
 rigid quadratic 100,0.342846,0.00E+00
 rigid quadratic 1000,0.332843,0.00E+00
 rigid hierarchy 100,0.062592,0.00E+00
@@ -204,8 +182,6 @@ xyz *internal large,136.94,1.56E+11
 xyz vector large,42.73,1.56E+11
 mode,release,
 connectivity slow,0.993333,4.18E+01
-col quadratic 10000 0.1,6.028041,3.31E+01
-col quadratic 10000 0.5,6.118064,1.85E+04
 rigid quadratic 100,2.271973,0.00E+00
 rigid quadratic 1000,2.251635,0.00E+00
 rigid hierarchy 100,0.135541,0.00E+00
@@ -223,8 +199,6 @@ xyz vector large,127.32,1.56E+11
 date,  07/21/09,
 mode,fast,
 connectivity slow,0.936667,4.55E+01
-col quadratic 10000 0.1,0.00031,1.96E+03
-col quadratic 10000 0.5,0.00038,2.43E+05
 rigid quadratic 100,0.358895,0.00E+00
 rigid quadratic 1000,0.338968,0.00E+00
 rigid hierarchy 100,0.075554,0.00E+00
@@ -241,8 +215,6 @@ xyz *internal large,155.9,1.56E+11
 xyz vector large,42.81,1.56E+11
 mode,release,
 connectivity slow,0.963333,4.21E+01
-col quadratic 10000 0.1,6.89801,3.28E+01
-col quadratic 10000 0.5,6.288045,1.88E+04
 rigid quadratic 100,2.527013,0.00E+00
 rigid quadratic 1000,2.337106,0.00E+00
 rigid hierarchy 100,0.137429,0.00E+00
@@ -260,8 +232,6 @@ xyz vector large,127.52,1.56E+11
 date,  07/22/09,
 mode,fast,
 connectivity slow,0.856667,4.22E+01
-col quadratic 10000 0.1,0.000291,1.91E+03
-col quadratic 10000 0.5,0.000337,2.42E+05
 rigid quadratic 100,0.381882,0.00E+00
 rigid quadratic 1000,0.343902,0.00E+00
 rigid hierarchy 100,0.075676,0.00E+00
@@ -278,8 +248,6 @@ xyz *internal large,151.96,1.56E+11
 xyz vector large,42.77,1.56E+11
 mode,release,
 connectivity slow,1,4.10E+01
-col quadratic 10000 0.1,5.827639,3.41E+01
-col quadratic 10000 0.5,6.788027,1.84E+04
 rigid quadratic 100,2.241635,0.00E+00
 rigid quadratic 1000,2.177182,0.00E+00
 rigid hierarchy 100,0.141372,0.00E+00
@@ -297,8 +265,6 @@ xyz vector large,127.51,1.56E+11
 date,  07/23/09,
 mode,fast,
 connectivity slow,0.943333,4.37E+01
-col quadratic 10000 0.1,0.00031,2.07E+03
-col quadratic 10000 0.5,0.000348,2.46E+05
 rigid quadratic 100,0.354048,0.00E+00
 rigid quadratic 1000,0.347784,0.00E+00
 rigid hierarchy 100,0.051085,0.00E+00
@@ -315,8 +281,6 @@ xyz *internal large,172.06,1.56E+11
 xyz vector large,43.09,1.56E+11
 mode,release,
 connectivity slow,1.086667,4.07E+01
-col quadratic 10000 0.1,6.287897,3.03E+01
-col quadratic 10000 0.5,6.768014,1.85E+04
 rigid quadratic 100,2.595922,0.00E+00
 rigid quadratic 1000,2.481617,0.00E+00
 rigid hierarchy 100,0.114767,0.00E+00
@@ -334,8 +298,6 @@ xyz vector large,127.75,1.56E+11
 date,  07/29/09,
 mode,fast,
 connectivity slow,0.846667,4.53E+01
-col quadratic 10000 0.1,0.000088,2.09E+03
-col quadratic 10000 0.5,0.000119,2.36E+05
 rigid quadratic 100,0.335234,0.00E+00
 rigid quadratic 1000,0.329109,0.00E+00
 rigid hierarchy 1000,0.000657,0.00E+00
@@ -351,8 +313,6 @@ xyz *internal large,98.22,1.56E+11
 xyz vector large,42.72,1.56E+11
 mode,release,
 connectivity slow,0.913333,3.99E+01
-col quadratic 10000 0.1,6.008017,3.06E+01
-col quadratic 10000 0.5,5.888048,1.85E+04
 rigid quadratic 100,2.207096,0.00E+00
 rigid quadratic 1000,2.167103,0.00E+00
 rigid hierarchy 100,0.180715,0.00E+00
@@ -370,8 +330,6 @@ xyz vector large,126.26,1.56E+11
 date,  07/30/09,
 mode,fast,
 connectivity slow,0.83,5.51E+01
-col quadratic 10000 0.1,0.000084,2.19E+03
-col quadratic 10000 0.5,0.000116,2.38E+05
 rigid quadratic 100,0.341624,0.00E+00
 rigid quadratic 1000,0.325273,0.00E+00
 rotation (cache),0.000087,-3.28E+06
@@ -386,8 +344,6 @@ xyz *internal large,99.59,1.56E+11
 xyz vector large,42.7,1.56E+11
 mode,release,
 connectivity slow,0.91,4.19E+01
-col quadratic 10000 0.1,5.528016,3.01E+01
-col quadratic 10000 0.5,6.198017,1.82E+04
 rigid quadratic 100,2.127213,0.00E+00
 rigid quadratic 1000,2.137207,0.00E+00
 rigid hierarchy 100,0.11852,0.00E+00
@@ -404,10 +360,6 @@ xyz vector large,126.58,1.56E+11
 date,  07/31/09,
 mode,fast,
 connectivity slow,0.896667,4.42E+01
-col quadratic 10000 0.1,0.000082,2.11E+03
-col quadratic 10000 0.5,0.000106,2.39E+05
-col box 10000 0.1,0.000002,1.97E+03
-col grid 10000 0.1,0.000005,1.86E+03
 rigid quadratic 100,0.331537,0.00E+00
 rigid quadratic 1000,0.331502,0.00E+00
 rotation (cache),0.000087,2.14E+05
@@ -422,10 +374,6 @@ xyz *internal large,98.14,1.56E+11
 xyz vector large,42.59,1.56E+11
 mode,release,
 connectivity slow,0.91,4.60E+01
-col quadratic 10000 0.1,5.807752,3.04E+01
-col quadratic 10000 0.5,5.917976,1.84E+04
-col box 10000 0.1,0.000338,1.99E+03
-col grid 10000 0.1,0.000502,2.02E+03
 rigid quadratic 100,2.2672,0.00E+00
 rigid quadratic 1000,2.136977,0.00E+00
 rigid hierarchy 100,0.114404,0.00E+00
@@ -442,10 +390,6 @@ xyz vector large,126.17,1.56E+11
 date,  08/02/09,
 mode,fast,
 connectivity slow,0.836667,4.44E+01
-col quadratic 10000 0.1,0.000083,1.89E+03
-col quadratic 10000 0.5,0.000117,2.40E+05
-col box 10000 0.1,0,1.94E+03
-col grid 10000 0.1,0.000006,1.91E+03
 rigid quadratic 100,0.337787,0.00E+00
 rigid quadratic 1000,0.326629,0.00E+00
 rotation (cache),0.000087,6.44E+04
@@ -460,10 +404,6 @@ xyz *internal large,93.73,1.56E+11
 xyz vector large,42.58,1.56E+11
 mode,release,
 connectivity slow,0.886667,4.43E+01
-col quadratic 10000 0.1,5.587963,3.47E+01
-col quadratic 10000 0.5,5.837904,1.90E+04
-col box 10000 0.1,0.00019,2.14E+03
-col grid 10000 0.1,0.000195,2.10E+03
 rigid quadratic 100,2.11221,0.00E+00
 rigid quadratic 1000,2.127219,0.00E+00
 rigid hierarchy 100,0.103613,0.00E+00
@@ -480,10 +420,6 @@ xyz vector large,126.2,1.56E+11
 date,  08/03/09,
 mode,fast,
 connectivity slow,0.8325,5.74E+01
-col quadratic 10000 0.1,0.000081,1.92E+03
-col quadratic 10000 0.5,0.000105,2.41E+05
-col box 10000 0.1,0.000002,1.80E+03
-col grid 10000 0.1,0.000006,1.89E+03
 rigid quadratic 100,0.332793,0.00E+00
 rigid quadratic 1000,0.324132,0.00E+00
 rotation (cache),0.000087,-1.96E+05
@@ -498,10 +434,6 @@ xyz *internal large,94.95,1.56E+11
 xyz vector large,42.58,1.56E+11
 mode,release,
 connectivity slow,0.896667,4.44E+01
-col quadratic 10000 0.1,5.937949,3.15E+01
-col quadratic 10000 0.5,6.147949,1.80E+04
-col box 10000 0.1,0.000194,2.09E+03
-col grid 10000 0.1,0.000359,1.92E+03
 rigid quadratic 100,2.22213,0.00E+00
 rigid quadratic 1000,2.121947,0.00E+00
 rigid hierarchy 100,0.103219,0.00E+00
@@ -518,10 +450,6 @@ xyz vector large,126.14,1.56E+11
 date,  08/04/09,
 mode,fast,
 connectivity slow,0.863333,4.45E+01
-col quadratic 10000 0.1,0.000071,2.03E+03
-col quadratic 10000 0.5,0.000088,2.48E+05
-col box 10000 0.1,0.000002,2.01E+03
-col grid 10000 0.1,0.000005,1.91E+03
 rigid quadratic 100,0.335331,0.00E+00
 rigid quadratic 1000,0.339107,0.00E+00
 rotation (cache),0.000087,-6.39E+05
@@ -548,10 +476,6 @@ cpf grid 10000 0.1,0.056667,1.34E+04
 cpf grid 100000 0.01,1.013333,9.30E+01
 mode,release,
 connectivity slow,0.973333,4.56E+01
-col quadratic 10000 0.1,5.818059,3.11E+01
-col quadratic 10000 0.5,5.728059,1.88E+04
-col box 10000 0.1,0.000158,2.11E+03
-col grid 10000 0.1,0.000366,1.86E+03
 rigid quadratic 100,2.207166,0.00E+00
 rigid quadratic 1000,2.222146,0.00E+00
 rigid hierarchy 100,0.132534,0.00E+00
@@ -594,12 +518,6 @@ cpf grid 1000 0.5,0.003956,1.98E+05
 cpf grid 10000 0.1,0.051837,1.26E+04
 cpf grid 100000 0.01,0.7575,1.08E+02
 connectivity slow,0.81,6.07E+01
-col quadratic 10000 0.1,0.000073,3.34E+06
-col quadratic 10000 0.5,0.000092,3.56E+08
-col box 10000 0.1,0.000004,4.90E+06
-col box 100000 0.01,0.001282,7.10E+03
-col grid 10000 0.1,0.000006,4.07E+06
-col grid 100000 0.01,0.00366,5.80E+03
 rigid quadratic 100,0.33911,0.00E+00
 rigid quadratic 1000,0.329107,0.00E+00
 rotation (cache),0.000086,-1.72E+05
@@ -628,12 +546,6 @@ cpf grid 1000 0.5,0.016667,4.46E+04
 cpf grid 10000 0.1,0.361429,1.90E+03
 cpf grid 100000 0.01,4.09,3.00E+01
 connectivity slow,0.94,4.40E+01
-col quadratic 10000 0.1,5.878011,3.17E+02
-col quadratic 10000 0.5,6.218019,3.65E+04
-col box 10000 0.1,0.000164,3.62E+05
-col box 100000 0.01,0.036607,9.84E+02
-col grid 10000 0.1,0.000253,2.95E+05
-col grid 100000 0.01,3.255728,2.90E+01
 rigid quadratic 100,2.142079,0.00E+00
 rigid quadratic 1000,2.097126,0.00E+00
 rigid hierarchy 100,0.169359,0.00E+00
@@ -665,12 +577,6 @@ cpf grid 1000 0.5,0.004098,1.90E+05
 cpf grid 10000 0.1,0.055778,1.35E+04
 cpf grid 100000 0.01,0.7325,1.16E+02
 connectivity slow,0.8175,5.77E+01
-col quadratic 10000 0.1,0.000073,2.82E+06
-col quadratic 10000 0.5,0.000093,3.51E+08
-col box 10000 0.1,0.000005,4.67E+06
-col box 100000 0.01,0.001765,5.06E+03
-col grid 10000 0.1,0.000004,4.04E+06
-col grid 100000 0.01,0.004321,5.63E+03
 rigid quadratic 100,0.334109,0.00E+00
 rigid quadratic 1000,0.325362,0.00E+00
 rigid hierarchy 100,0.043146,0.00E+00
@@ -701,12 +607,6 @@ cpf grid 1000 0.5,0.021453,3.31E+04
 cpf grid 10000 0.1,0.277,2.55E+03
 cpf grid 100000 0.01,3.41,2.50E+01
 connectivity slow,0.903333,4.47E+01
-col quadratic 10000 0.1,5.268027,2.99E+02
-col quadratic 10000 0.5,5.638017,3.59E+04
-col box 10000 0.1,0.000133,3.62E+05
-col box 100000 0.01,0.036948,1.15E+03
-col grid 10000 0.1,0.00032,2.96E+05
-col grid 100000 0.01,4.665865,2.90E+01
 rigid quadratic 100,2.122153,0.00E+00
 rigid quadratic 1000,2.082162,0.00E+00
 rigid hierarchy 100,0.124425,0.00E+00
@@ -746,12 +646,6 @@ container set in 2450,0.000092,0.00E+00
 container set out 2450,0.000186,0.00E+00
 container set in 249500,0.009363,0.00E+00
 container set out 249500,0.020161,0.00E+00
-col quadratic 10000 0.1,0.000088,2.77E+06
-col quadratic 10000 0.5,0.000109,3.25E+08
-col box 10000 0.1,0.000004,4.06E+06
-col box 100000 0.01,0.001538,8.11E+03
-col grid 10000 0.1,0.000004,3.80E+06
-col grid 100000 0.01,0.006442,3.92E+03
 rigid quadratic 100,0.329057,0.00E+00
 rigid quadratic 1000,0.317806,0.00E+00
 rigid hierarchy 100,0.037855,0.00E+00
@@ -792,12 +686,6 @@ container set in 2450,0.000091,0.00E+00
 container set out 2450,0.000188,0.00E+00
 container set in 249500,0.00947,0.00E+00
 container set out 249500,0.020325,0.00E+00
-col quadratic 10000 0.1,0.000083,2.92E+06
-col quadratic 10000 0.5,0.000112,3.30E+08
-col box 10000 0.1,0.000002,4.08E+06
-col box 100000 0.01,0.001471,6.60E+03
-col grid 10000 0.1,0.000005,3.74E+06
-col grid 100000 0.01,0.006315,4.51E+03
 rigid quadratic 100,0.325351,0.00E+00
 rigid quadratic 1000,0.31785,0.00E+00
 rigid hierarchy 100,0.032601,0.00E+00
@@ -836,12 +724,6 @@ container set in 2450,0.001598,0.00E+00
 container set out 2450,0.001686,0.00E+00
 container set in 249500,0.1625,0.00E+00
 container set out 249500,0.172667,0.00E+00
-col quadratic 10000 0.1,5.288003,3.16E+02
-col quadratic 10000 0.5,5.658005,3.71E+04
-col box 10000 0.1,0.000153,3.67E+05
-col box 100000 0.01,0.046074,7.68E+02
-col grid 10000 0.1,0.000285,3.02E+05
-col grid 100000 0.01,3.617949,4.10E+01
 rigid quadratic 100,2.092027,0.00E+00
 rigid quadratic 1000,2.036977,0.00E+00
 rigid hierarchy 100,0.103178,0.00E+00
@@ -881,12 +763,6 @@ container set in 2450,0.000093,0.00E+00
 container set out 2450,0.000185,0.00E+00
 container set in 249500,0.009398,0.00E+00
 container set out 249500,0.020161,0.00E+00
-col quadratic 10000 0.1,0.000091,2.95E+06
-col quadratic 10000 0.5,0.000104,3.28E+08
-col box 10000 0.1,0.000003,4.28E+06
-col box 100000 0.01,0.001471,6.40E+03
-col grid 10000 0.1,0.000004,4.48E+06
-col grid 100000 0.01,0.008303,3.97E+03
 rigid quadratic 100,0.325351,0.00E+00
 rigid quadratic 1000,0.317854,0.00E+00
 rigid hierarchy 100,0.038163,0.00E+00
@@ -925,12 +801,6 @@ container set in 2450,0.001585,0.00E+00
 container set out 2450,0.001691,0.00E+00
 container set in 249500,0.1625,0.00E+00
 container set out 249500,0.172667,0.00E+00
-col quadratic 10000 0.1,5.337858,2.94E+02
-col quadratic 10000 0.5,5.697966,3.68E+04
-col box 10000 0.1,0.000155,3.66E+05
-col box 100000 0.01,0.04866,1.18E+03
-col grid 10000 0.1,0.000381,3.26E+05
-col grid 100000 0.01,3.537949,3.80E+01
 rigid quadratic 100,2.0672,0.00E+00
 rigid quadratic 1000,2.037207,0.00E+00
 rigid hierarchy 100,0.1327,0.00E+00
@@ -970,12 +840,6 @@ container set in 2450,0.000099,0.00E+00
 container set out 2450,0.000192,0.00E+00
 container set in 249500,0.01004,0.00E+00
 container set out 249500,0.020574,0.00E+00
-col quadratic 10000 0.1,0.000085,2.80E+06
-col quadratic 10000 0.5,0.000111,3.16E+08
-col box 10000 0.1,0,3.99E+06
-col box 100000 0.01,0.002332,6.20E+03
-col grid 10000 0.1,0.000003,4.02E+06
-col grid 100000 0.01,0.006175,4.62E+03
 rigid quadratic 100,0.339034,0.00E+00
 rigid quadratic 1000,0.31778,0.00E+00
 rigid hierarchy 100,0.046127,0.00E+00
@@ -1014,12 +878,6 @@ container set in 2450,0.00217,0.00E+00
 container set out 2450,0.002044,0.00E+00
 container set in 249500,0.22,0.00E+00
 container set out 249500,0.209167,0.00E+00
-col quadratic 10000 0.1,6.047987,3.36E+02
-col quadratic 10000 0.5,6.428002,3.64E+04
-col box 10000 0.1,0.000095,3.73E+05
-col box 100000 0.01,0.063897,9.88E+02
-col grid 10000 0.1,0.000475,2.72E+05
-col grid 100000 0.01,5.356081,2.60E+01
 rigid quadratic 100,2.346851,0.00E+00
 rigid quadratic 1000,2.346835,0.00E+00
 rigid hierarchy 100,0.110444,0.00E+00
@@ -1059,12 +917,6 @@ container set in 2450,0.000112,0.00E+00
 container set out 2450,0.000213,0.00E+00
 container set in 249500,0.011468,0.00E+00
 container set out 249500,0.020574,0.00E+00
-col quadratic 10000 0.1,0.000078,3.23E+06
-col quadratic 10000 0.5,0.000095,3.66E+08
-col box 10000 0.1,0.000003,4.72E+06
-col box 100000 0.01,0.001131,9.23E+03
-col grid 10000 0.1,0.000006,4.51E+06
-col grid 100000 0.01,0.00416,5.47E+03
 rigid quadratic 100,0.345309,0.00E+00
 rigid quadratic 1000,0.336642,0.00E+00
 rigid hierarchy 100,0.045281,0.00E+00
@@ -1103,12 +955,6 @@ container set in 2450,0.001922,0.00E+00
 container set out 2450,0.002054,0.00E+00
 container set in 249500,0.195385,0.00E+00
 container set out 249500,0.207692,0.00E+00
-col quadratic 10000 0.1,6.258077,3.33E+02
-col quadratic 10000 0.5,6.658078,3.69E+04
-col box 10000 0.1,0.000086,3.69E+05
-col box 100000 0.01,0.041421,1.14E+03
-col grid 10000 0.1,0.000316,3.23E+05
-col grid 100000 0.01,3.68549,4.30E+01
 rigid quadratic 100,2.416917,0.00E+00
 rigid quadratic 1000,2.386917,0.00E+00
 rigid hierarchy 100,0.135876,0.00E+00
@@ -1148,12 +994,6 @@ container set in 2450,0.000099,0.00E+00
 container set out 2450,0.000191,0.00E+00
 container set in 249500,0.010081,0.00E+00
 container set out 249500,0.021092,0.00E+00
-col quadratic 10000 0.1,0.000084,2.97E+06
-col quadratic 10000 0.5,0.000104,3.28E+08
-col box 10000 0.1,0.000002,4.26E+06
-col box 100000 0.01,0.001466,6.15E+03
-col grid 10000 0.1,0.000005,3.75E+06
-col grid 100000 0.01,0.007151,4.00E+03
 rigid quadratic 100,0.347542,0.00E+00
 rigid quadratic 1000,0.350294,0.00E+00
 rigid hierarchy 100,0.049551,0.00E+00
@@ -1192,12 +1032,6 @@ container set in 2450,0.001953,0.00E+00
 container set out 2450,0.002041,0.00E+00
 container set in 249500,0.201538,0.00E+00
 container set out 249500,0.21,0.00E+00
-col quadratic 10000 0.1,6.467998,3.45E+02
-col quadratic 10000 0.5,6.868003,3.56E+04
-col box 10000 0.1,0.000114,4.03E+05
-col box 100000 0.01,0.068354,6.50E+02
-col grid 10000 0.1,0.000222,3.24E+05
-col grid 100000 0.01,4.057403,3.10E+01
 rigid quadratic 100,2.45194,0.00E+00
 rigid quadratic 1000,2.381947,0.00E+00
 rigid hierarchy 100,0.135833,0.00E+00
@@ -1237,12 +1071,6 @@ container set in 2450,0.0001,0.00E+00
 container set out 2450,0.000205,0.00E+00
 container set in 249500,0.01004,0.00E+00
 container set out 249500,0.020574,0.00E+00
-col quadratic 10000 0.1,0.000084,2.89E+06
-col quadratic 10000 0.5,0.000103,3.27E+08
-col box 10000 0.1,0.000002,4.93E+06
-col box 100000 0.01,0.001484,6.83E+03
-col grid 10000 0.1,0.000005,3.80E+06
-col grid 100000 0.01,0.004558,5.45E+03
 rigid quadratic 100,0.332835,0.00E+00
 rigid quadratic 1000,0.31908,0.00E+00
 rigid hierarchy 100,0.043727,0.00E+00
@@ -1283,12 +1111,6 @@ container set in 2450,0.001936,0.00E+00
 container set out 2450,0.002029,0.00E+00
 container set in 249500,0.199231,0.00E+00
 container set out 249500,0.208333,0.00E+00
-col quadratic 10000 0.1,6.497967,3.12E+02
-col quadratic 10000 0.5,6.887958,3.62E+04
-col box 10000 0.1,0.000126,3.46E+05
-col box 100000 0.01,0.068501,7.75E+02
-col grid 10000 0.1,0.000276,2.86E+05
-col grid 100000 0.01,4.378101,3.00E+01
 rigid quadratic 100,2.477006,0.00E+00
 rigid quadratic 1000,2.382002,0.00E+00
 rigid hierarchy 100,0.117958,0.00E+00
@@ -1330,12 +1152,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.000191,0.00E+00
 container set in 249500,0.010081,0.00E+00
 container set out 249500,0.020744,0.00E+00
-col quadratic 10000 0.1,0.000084,3.24E+06
-col quadratic 10000 0.5,0.000103,3.25E+08
-col box 10000 0.1,0.000001,4.25E+06
-col box 100000 0.01,0.001426,5.82E+03
-col grid 10000 0.1,0.000004,3.59E+06
-col grid 100000 0.01,0.004647,6.93E+03
 rigid quadratic 100,0.328821,0.00E+00
 rigid quadratic 1000,0.318823,0.00E+00
 rigid hierarchy 100,0.036695,0.00E+00
@@ -1376,12 +1192,6 @@ container set in 2450,0.001955,0.00E+00
 container set out 2450,0.002248,0.00E+00
 container set in 249500,0.199231,0.00E+00
 container set out 249500,0.230909,0.00E+00
-col quadratic 10000 0.1,6.507959,3.02E+02
-col quadratic 10000 0.5,6.888,3.60E+04
-col box 10000 0.1,0.00012,3.39E+05
-col box 100000 0.01,0.068354,7.75E+02
-col grid 10000 0.1,0.000281,3.45E+05
-col grid 100000 0.01,3.398354,2.90E+01
 rigid quadratic 100,2.442062,0.00E+00
 rigid quadratic 1000,2.382066,0.00E+00
 rigid hierarchy 100,0.162363,0.00E+00
@@ -1423,12 +1233,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.000191,0.00E+00
 container set in 249500,0.01,0.00E+00
 container set out 249500,0.020574,0.00E+00
-col quadratic 10000 0.1,0.000085,2.65E+06
-col quadratic 10000 0.5,0.000107,3.21E+08
-col box 10000 0.1,0.000002,4.32E+06
-col box 100000 0.01,0.001532,6.42E+03
-col grid 10000 0.1,0.000005,4.17E+06
-col grid 100000 0.01,0.007219,4.62E+03
 rigid quadratic 100,0.326594,0.00E+00
 rigid quadratic 1000,0.317838,0.00E+00
 rigid hierarchy 100,0.043732,0.00E+00
@@ -1469,12 +1273,6 @@ container set in 2450,0.001933,0.00E+00
 container set out 2450,0.002044,0.00E+00
 container set in 249500,0.198462,0.00E+00
 container set out 249500,0.211667,0.00E+00
-col quadratic 10000 0.1,6.49799,3.05E+02
-col quadratic 10000 0.5,6.917952,3.66E+04
-col box 10000 0.1,0.000116,3.74E+05
-col box 100000 0.01,0.065278,7.28E+02
-col grid 10000 0.1,0.000329,3.32E+05
-col grid 100000 0.01,3.328354,3.10E+01
 rigid quadratic 100,2.436929,0.00E+00
 rigid quadratic 1000,2.376936,0.00E+00
 rigid hierarchy 100,0.120731,0.00E+00
@@ -1516,12 +1314,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.000191,0.00E+00
 container set in 249500,0.010081,0.00E+00
 container set out 249500,0.020744,0.00E+00
-col quadratic 10000 0.1,0.000083,3.07E+06
-col quadratic 10000 0.5,0.000103,3.19E+08
-col box 10000 0.1,0.000002,4.25E+06
-col box 100000 0.01,0.001439,6.62E+03
-col grid 10000 0.1,0.000005,3.79E+06
-col grid 100000 0.01,0.0056,4.19E+03
 rigid quadratic 100,0.32909,0.00E+00
 rigid quadratic 1000,0.320337,0.00E+00
 rigid hierarchy 100,0.043661,0.00E+00
@@ -1562,12 +1354,6 @@ container set in 2450,0.002155,0.00E+00
 container set out 2450,0.002024,0.00E+00
 container set in 249500,0.220833,0.00E+00
 container set out 249500,0.208333,0.00E+00
-col quadratic 10000 0.1,6.527939,2.96E+02
-col quadratic 10000 0.5,6.907934,3.64E+04
-col box 10000 0.1,0.000118,3.81E+05
-col box 100000 0.01,0.068221,8.75E+02
-col grid 10000 0.1,0.000323,3.09E+05
-col grid 100000 0.01,4.147821,4.30E+01
 rigid quadratic 100,2.442052,0.00E+00
 rigid quadratic 1000,2.387055,0.00E+00
 rigid hierarchy 100,0.085328,0.00E+00
@@ -1609,12 +1395,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.000191,0.00E+00
 container set in 249500,0.01004,0.00E+00
 container set out 249500,0.020744,0.00E+00
-col quadratic 10000 0.1,0.000083,2.90E+06
-col quadratic 10000 0.5,0.000103,3.20E+08
-col box 10000 0.1,0.000001,4.76E+06
-col box 100000 0.01,0.001543,7.42E+03
-col grid 10000 0.1,0.000004,4.68E+06
-col grid 100000 0.01,0.007392,5.42E+03
 rigid quadratic 100,0.32784,0.00E+00
 rigid quadratic 1000,0.316591,0.00E+00
 rigid hierarchy 100,0.040756,0.00E+00
@@ -1655,12 +1435,6 @@ container set in 2450,0.001953,0.00E+00
 container set out 2450,0.002036,0.00E+00
 container set in 249500,0.2,0.00E+00
 container set out 249500,0.210833,0.00E+00
-col quadratic 10000 0.1,6.217989,2.76E+02
-col quadratic 10000 0.5,6.607994,3.68E+04
-col box 10000 0.1,0.000109,3.56E+05
-col box 100000 0.01,0.064766,5.98E+02
-col grid 10000 0.1,0.000285,3.27E+05
-col grid 100000 0.01,3.468101,4.10E+01
 rigid quadratic 100,2.446697,0.00E+00
 rigid quadratic 1000,2.396715,0.00E+00
 rigid hierarchy 100,0.15024,0.00E+00
@@ -1702,12 +1476,6 @@ container set in 2450,0.000099,0.00E+00
 container set out 2450,0.00019,0.00E+00
 container set in 249500,0.01,0.00E+00
 container set out 249500,0.020744,0.00E+00
-col quadratic 10000 0.1,0.000086,2.96E+06
-col quadratic 10000 0.5,0.000104,3.31E+08
-col box 10000 0.1,0.000001,4.07E+06
-col box 100000 0.01,0.001543,4.53E+03
-col grid 10000 0.1,0.000005,4.73E+06
-col grid 100000 0.01,0.004712,4.43E+03
 rigid quadratic 100,0.3291,0.00E+00
 rigid quadratic 1000,0.317854,0.00E+00
 rigid hierarchy 100,0.037129,0.00E+00
@@ -1748,12 +1516,6 @@ container set in 2450,0.001929,0.00E+00
 container set out 2450,0.002041,0.00E+00
 container set in 249500,0.2,0.00E+00
 container set out 249500,0.21,0.00E+00
-col quadratic 10000 0.1,6.198,3.01E+02
-col quadratic 10000 0.5,6.597998,3.55E+04
-col box 10000 0.1,0.000114,3.54E+05
-col box 100000 0.01,0.068754,6.25E+02
-col grid 10000 0.1,0.000275,3.04E+05
-col grid 100000 0.01,4.888354,4.20E+01
 rigid quadratic 100,2.427079,0.00E+00
 rigid quadratic 1000,2.387076,0.00E+00
 rigid hierarchy 100,0.116127,0.00E+00
@@ -1795,12 +1557,6 @@ container set in 2450,0.000099,0.00E+00
 container set out 2450,0.00019,0.00E+00
 container set in 249500,0.010081,0.00E+00
 container set out 249500,0.020661,0.00E+00
-col quadratic 10000 0.1,0.000085,2.83E+06
-col quadratic 10000 0.5,0.000104,3.28E+08
-col box 10000 0.1,0.000001,5.05E+06
-col box 100000 0.01,0.001439,6.42E+03
-col grid 10000 0.1,0.000004,3.86E+06
-col grid 100000 0.01,0.005899,5.17E+03
 rigid quadratic 100,0.329113,0.00E+00
 rigid quadratic 1000,0.316614,0.00E+00
 rigid hierarchy 100,0.043934,0.00E+00
@@ -1888,12 +1644,6 @@ container set in 2450,0.000099,0.00E+00
 container set out 2450,0.000192,0.00E+00
 container set in 249500,0.010204,0.00E+00
 container set out 249500,0.021186,0.00E+00
-col quadratic 10000 0.1,0.000087,2.97E+06
-col quadratic 10000 0.5,0.000114,3.08E+08
-col box 10000 0.1,0.000005,3.84E+06
-col box 100000 0.01,0.001905,7.73E+03
-col grid 10000 0.1,0.000005,4.15E+06
-col grid 100000 0.01,0.009612,4.37E+03
 rotation (cache),0.000086,-1.56E+06
 rotation (nocache),0.000153,-1.84E+05
 mode,release,
@@ -1953,12 +1703,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.000192,0.00E+00
 container set in 249500,0.01004,0.00E+00
 container set out 249500,0.020661,0.00E+00
-col quadratic 10000 0.1,0.000082,3.29E+06
-col quadratic 10000 0.5,0.000104,3.27E+08
-col box 10000 0.1,0,4.24E+06
-col box 100000 0.01,0.001466,7.59E+03
-col grid 10000 0.1,0.000005,3.95E+06
-col grid 100000 0.01,0.007047,3.24E+03
 rotation (cache),0.000086,-1.11E+05
 rotation (nocache),0.000152,-4.13E+05
 mode,release,
@@ -1985,12 +1729,6 @@ container set in 2450,0.001919,0.00E+00
 container set out 2450,0.002037,0.00E+00
 container set in 249500,0.199231,0.00E+00
 container set out 249500,0.207692,0.00E+00
-col quadratic 10000 0.1,6.107835,3.57E+02
-col quadratic 10000 0.5,6.497839,3.58E+04
-col box 10000 0.1,0.000118,3.20E+05
-col box 100000 0.01,0.06415,8.58E+02
-col grid 10000 0.1,0.000641,2.99E+05
-col grid 100000 0.01,3.816711,3.50E+01
 rotation (cache),0.00049,-1.32E+05
 rotation (nocache),0.006631,-1.69E+03
 date,  09/06/09,
@@ -2018,12 +1756,6 @@ container set in 2450,0.000098,0.00E+00
 container set out 2450,0.00019,0.00E+00
 container set in 249500,0.01004,0.00E+00
 container set out 249500,0.021008,0.00E+00
-col quadratic 10000 0.1,0.000084,3.50E+06
-col quadratic 10000 0.5,0.000127,2.95E+08
-col box 10000 0.1,0.000002,4.53E+06
-col box 100000 0.01,0.002099,7.07E+03
-col grid 10000 0.1,0.000051,3.15E+06
-col grid 100000 0.01,0.011344,4.25E+03
 rotation (cache),0.000086,-2.85E+06
 rotation (nocache),0.000152,-3.09E+05
 xyz decorator small,0.018519,1.50E+07
@@ -2063,12 +1795,6 @@ container set in 2450,0.001497,0.00E+00
 container set out 2450,0.001591,0.00E+00
 container set in 249500,0.151765,0.00E+00
 container set out 249500,0.163125,0.00E+00
-col quadratic 10000 0.1,5.208042,3.15E+02
-col quadratic 10000 0.5,6.187664,3.65E+04
-col box 10000 0.1,0.000054,2.94E+05
-col box 100000 0.01,0.04329,8.25E+02
-col grid 10000 0.1,0.000138,3.18E+05
-col grid 100000 0.01,3.998101,3.40E+01
 rotation (cache),0.000479,5.30E+04
 rotation (nocache),0.007862,-4.32E+03
 xyz decorator small,0.109565,1.50E+07
@@ -2109,11 +1835,6 @@ container set in 2450,0.000106,0.00E+00
 container set out 2450,0.000197,0.00E+00
 container set in 249500,0.010819,0.00E+00
 container set out 249500,0.02008,0.00E+00
-col quadratic 10000 0.1,0.000064,3.51E+06
-col quadratic 10000 0.5,0.000076,3.93E+08
-col box 10000 0.1,0.000002,4.86E+06
-col box 100000 0.01,0.000879,9.24E+03
-col grid 10000 0.1,0.000003,4.55E+06
 rigid quadratic 100,0.288386,0.00E+00
 rigid quadratic 1000,0.280608,0.00E+00
 rigid hierarchy 100,0.03919,0.00E+00
@@ -2155,11 +1876,6 @@ container set in 2450,0.000105,0.00E+00
 container set out 2450,0.000193,0.00E+00
 container set in 249500,0.010684,0.00E+00
 container set out 249500,0.019531,0.00E+00
-col quadratic 10000 0.1,0.000061,3.99E+06
-col quadratic 10000 0.5,0.000074,3.98E+08
-col box 10000 0.1,0.000002,4.78E+06
-col box 100000 0.01,0.000921,8.38E+03
-col grid 10000 0.1,0.000003,4.75E+06
 rigid quadratic 100,0.285048,0.00E+00
 rigid quadratic 1000,0.278384,0.00E+00
 rigid hierarchy 100,0.039646,0.00E+00
@@ -2201,11 +1917,6 @@ container set in 2450,0.000105,0.00E+00
 container set out 2450,0.000192,0.00E+00
 container set in 249500,0.010819,0.00E+00
 container set out 249500,0.019609,0.00E+00
-col quadratic 10000 0.1,0.000063,4.15E+06
-col quadratic 10000 0.5,0.000077,4.02E+08
-col box 10000 0.1,0.000002,4.96E+06
-col box 100000 0.01,0.000915,5.26E+03
-col grid 10000 0.1,0.000003,4.87E+06
 rigid quadratic 100,0.285048,0.00E+00
 rigid quadratic 1000,0.278381,0.00E+00
 rigid hierarchy 100,0.041032,0.00E+00
@@ -7870,4 +7581,110 @@ xyz vector space large,       2.28e+00,           6.8e+09
 xyz decorator huge,           1.81e+02,           6.3e+11
 xyz particle huge,            1.81e+02,           6.3e+11
 xyz vector huge,              1.70e+02,           6.3e+11
+xyz vector space huge,        1.70e+02,           6.3e+11
+date,  09/25/10
+mode,fast
+bd custom,                    5.25e+00,           5.4e+07
+bd scores,                    5.11e+00,           1.9e+08
+bd generic,                   1.23e+01,           1.9e+08
+cpf grid 1000 0.1,            1.83e-03,           1.4e+03
+cpf grid 1000 0.5,            6.81e-03,           1.4e+05
+cpf grid 1000 5,              3.71e-02,           9.9e+06
+cpf grid 10000 0.1,           2.14e-02,           3.6e+04
+cpf grid 10000 0.5,           9.11e-02,           1.0e+06
+cpf grid 10000 5,             3.31e+00,           1.6e+07
+cpf nn 1000 0.1,              5.00e-03,           3.0e+03
+bcpf nn 1000 0.1,             4.66e-03,           9.1e+03
+cpf nn 1000 0.5,              5.25e-03,           4.4e+05
+bcpf nn 1000 0.5,             4.92e-03,           9.1e+05
+cpf nn 1000 5,                3.60e-02,           2.2e+07
+bcpf nn 1000 5,               5.32e-02,           2.9e+07
+cpf nn 10000 0.1,             4.82e-01,           4.5e+03
+bcpf nn 10000 0.1,            4.58e-01,           1.0e+04
+cpf nn 10000 0.5,             4.98e-01,           5.4e+05
+bcpf nn 10000 0.5,            4.78e-01,           1.1e+06
+cpf quadratic 1000 0.1,       1.14e-02,           8.8e+02
+bcpf quadratic 1000 0.1,      2.24e-02,           9.0e+02
+cpf quadratic 1000 0.5,       1.24e-02,           7.0e+04
+bcpf quadratic 1000 0.5,      2.45e-02,           7.4e+04
+cpf quadratic 1000 5,         2.49e-02,           1.6e+07
+bcpf quadratic 1000 5,        5.06e-02,           1.6e+07
+cpf quadratic 10000 0.1,      1.14e+00,           8.9e+02
+bcpf quadratic 10000 0.1,     2.23e+00,           1.1e+03
+cpf quadratic 10000 0.5,      1.24e+00,           1.1e+05
+bcpf quadratic 10000 0.5,     2.45e+00,           1.4e+05
+cpf quadratic 10000 5,        2.76e+00,           1.5e+07
+bcpf quadratic 10000 5,       5.51e+00,           3.1e+07
+connectivity slow,            8.40e-01,           6.8e-03
+connectivity fast,            2.41e-02,           9.1e+01
+connectivity fast mst,        2.13e-02,           9.7e-01
+uncached density loop,        1.83e-02,           5.3e+08
+cached density loop,          1.92e-01,           5.4e+08
+container direct list in 4950, 1.54e-04,          0.0e+00
+container ssps direct list in 4950, 1.54e-04,     0.0e+00
+container ssps direct call list in 4950, 1.53e-04, 0.0e+00
+container ssps direct bind list in 4950, 1.47e-04, 0.0e+00
+container direct bind list in 4950, 1.47e-04,     0.0e+00
+container list in 4950,       1.49e-04,           0.0e+00
+container list out 4950,      3.08e-04,           0.0e+00
+container direct list in 499500, 1.57e-02,        0.0e+00
+container ssps direct list in 499500, 1.58e-02,   0.0e+00
+container ssps direct call list in 499500, 1.57e-02, 0.0e+00
+container ssps direct bind list in 499500, 1.51e-02, 0.0e+00
+container direct bind list in 499500, 1.52e-02,   0.0e+00
+container list in 499500,     1.54e-02,           0.0e+00
+container list out 499500,    3.12e-02,           0.0e+00
+container direct set in 2450, 7.69e-05,           0.0e+00
+container ssps direct set in 2450, 7.68e-05,      0.0e+00
+container ssps direct call set in 2450, 7.59e-05, 0.0e+00
+container ssps direct bind set in 2450, 7.29e-05, 0.0e+00
+container direct bind set in 2450, 7.30e-05,      0.0e+00
+container set in 2450,        7.38e-05,           0.0e+00
+container set out 2450,       3.65e-04,           0.0e+00
+container direct set in 249500, 7.74e-03,         2.4e+00
+container ssps direct set in 249500, 7.76e-03,    2.4e+00
+container ssps direct call set in 249500, 7.72e-03, 2.4e+00
+container ssps direct bind set in 249500, 7.46e-03, 2.5e+00
+container direct bind set in 249500, 7.44e-03,    2.5e+00
+container set in 249500,      7.58e-03,           2.5e+00
+container set out 249500,     3.72e-02,           5.1e-01
+changing nonincremental,      1.19e-05,           3.1e+08
+changing incremental,         1.48e-05,           3.1e+08
+changing nonincremental score, 1.91e-05,          5.2e+08
+changing incremental score,   3.19e-05,           3.1e+08
+knn linear uniform 10 0,      4.57e-06,           2.0e+06
+knn linear uniform 10 0.1,    4.99e-06,           2.0e+06
+knn linear uniform 10 0.5,    5.04e-06,           2.4e+06
+knn linear uniform 100 0,     1.21e-04,           1.0e+06
+knn linear uniform 100 0.1,   1.18e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.24e-04,           1.0e+06
+knn linear uniform 1000 0,    6.49e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.54e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.51e-03,           2.0e+05
+col quadratic 10000 0.1,      1.85e+00,           3.0e+06
+col quadratic 10000 0.5,      2.02e+00,           4.9e+06
+col grid 10000 0.1,           5.53e-01,           7.6e+06
+col grid 10000 0.5,           1.10e+00,           7.4e+06
+refiner children,             1.39e-02,           1.1e+08
+refiner leaves,               1.18e-03,           1.2e+09
+rigid quadratic 10,           6.56e-02,           0.0e+00
+rigid quadratic 30,           4.53e-02,           0.0e+00
+rigid hierarchy 10,           5.04e-01,           0.0e+00
+rigid hierarchy 30,           2.40e-01,           0.0e+00
+rotation (cache),             8.27e-05,           -3.1e+05
+rotation (nocache),           1.51e-04,           -5.0e+04
+xyz decorator small,          7.17e-02,           2.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz vector small,             7.41e-02,           2.0e+09
+xyz struct small,             7.17e-02,           2.1e+09
+xyz vector space small,       7.17e-02,           2.1e+09
+xyz decorator large,          2.29e+00,           6.8e+09
+xyz particle large,           2.28e+00,           6.8e+09
+xyz vector large,             2.29e+00,           6.8e+09
+xyz struct large,             2.29e+00,           6.8e+09
+xyz vector space large,       2.28e+00,           6.8e+09
+xyz decorator huge,           1.82e+02,           6.3e+11
+xyz particle huge,            1.82e+02,           6.3e+11
+xyz vector huge,              1.70e+02,           6.3e+11
+xyz struct huge,              1.70e+02,           6.3e+11
 xyz vector space huge,        1.70e+02,           6.3e+11
