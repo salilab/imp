@@ -224,7 +224,7 @@ namespace {
     btRigidBody::btRigidBodyConstructionInfo
       fallRigidBodyCI(mass,fallMotionState,shape,fallInertia);
     btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-    fallRigidBody->setDamping(1,1);
+    fallRigidBody->setDamping(.5, .5);
     map[p]= fallRigidBody;
     dynamicsWorld->addRigidBody(fallRigidBody);
     rigid_bodies.push_back(fallRigidBody);
