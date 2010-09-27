@@ -19,9 +19,11 @@
 #include <IMP/scoped.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/internal/map.h>
+#include <IMP/core/internal/SpecialCaseRestraints.h>
 
 #include <btBulletDynamicsCommon.h>
 #include <boost/ptr_container/ptr_vector.hpp>
+#include <boost/bind.hpp>
 IMPBULLET_BEGIN_NAMESPACE
 
 typedef IMP::internal::Map<double, btCollisionShape*> Spheres;
@@ -100,93 +102,45 @@ void ResolveCollisionsOptimizer
 }
 
 
-namespace {
-  void handle_restraints(const DependencyGraph &dg,
-                         const ParticlesTemp &ps,
-                         RestraintSet *rs,double weight,
-                         btDiscreteDynamicsWorld *world,
+
+// not anon due to bind issues
+  bool handle_harmonic(btDiscreteDynamicsWorld *world,
                    const IMP::internal::Map<Particle*, btRigidBody *> &map,
-                    boost::ptr_vector< btGeneric6DofSpringConstraint> &springs,
-                       boost::ptr_vector< ScopedRemoveRestraint> &restraints) {
-    Restraints rss(rs->restraints_begin(), rs->restraints_end());
-    for (unsigned int i=0; i < rss.size(); ++i) {
-      IMP_LOG(VERBOSE, "Inspecting restraint " << rss[i]->get_name()
-              << std::endl);
-      Restraint *r= rss[i];
-      if (dynamic_cast<PairScoreRestraint*>(r)) {
-        PairScoreRestraint*pr= dynamic_cast<PairScoreRestraint*>(r);
-        PairScore *ps= pr->get_score();
-        core::HarmonicDistancePairScore *hdps
-          = dynamic_cast<core::HarmonicDistancePairScore*>(ps);
-        if (hdps) {
-          IMP_LOG(TERSE, "Handling restraint " << pr->get_name() << std::endl);
-          double x0= hdps->get_rest_length();
-          Particle *p0= pr->get_argument()[0];
-          Particle *p1= pr->get_argument()[1];
-          btRigidBody *r0= map.find(p0)->second;
-          btRigidBody *r1= map.find(p1)->second;
-          // assume center is coordinates of particle
-          btTransform it; it.setIdentity();
-          btTransform it1; it1.setIdentity();
-          it1.setOrigin(btVector3(x0, 0,0));
-          springs.push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
-                                                                 it, it1,
-                                                                 true));
-          for (unsigned int i=0; i< 3; ++i) {
-            springs.back().enableSpring(i, true);
-            springs.back().setStiffness(i, hdps->get_k());
-          }
-          world->addConstraint(&springs.back());
-          restraints.push_back(new ScopedRemoveRestraint(pr,rs));
-        }
-      } else if (dynamic_cast<PairsScoreRestraint*>(r)) {
-        PairsScoreRestraint*pr
-          = dynamic_cast<PairsScoreRestraint*>(r);
-        ContainersTemp ct= pr->get_input_containers();
-        PairScore *pscore= pr->get_score();
-        if (ct.size()==1 && domino2::get_is_static_container(ct[0], dg, ps)) {
-          core::HarmonicDistancePairScore *hdps
-            = dynamic_cast<core::HarmonicDistancePairScore*>(pscore);
-          if (hdps) {
-            IMP_LOG(TERSE, "Handling restraint " << pr->get_name()
-                    << std::endl);
-            double x0= hdps->get_rest_length();
-            ParticlePairsTemp ppt= pr->get_arguments();
-            for (unsigned int i=0; i< ppt.size(); ++i) {
-              Particle *p0= ppt[i][0];
-              Particle *p1= ppt[i][1];
-              btRigidBody *r0= map.find(p0)->second;
-              btRigidBody *r1= map.find(p1)->second;
-              // assume center is coordinates of particle
-              btTransform it; it.setIdentity();
-              btTransform it1; it1.setIdentity();
-              it1.setOrigin(btVector3(x0, 0,0));
-              springs.push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
-                                                                  it, it1,
-                                                                  true));
-              for (unsigned int i=0; i< 3; ++i) {
-                springs.back().enableSpring(i, true);
-                springs.back().setStiffness(i, hdps->get_k());
-              }
-              world->addConstraint(&springs.back());
-            }
-            restraints.push_back(new ScopedRemoveRestraint(pr,rs));
-          }
-        } else {
-          if (dynamic_cast<core::SoftSpherePairScore*>(pscore)) {
-            IMP_LOG(TERSE, "Handling restraint " << pr->get_name()
-                    << std::endl);
-            restraints.push_back(new ScopedRemoveRestraint(pr,rs));
-          }
-        }
-      } else if (dynamic_cast<RestraintSet*>(r)){
-        RestraintSet *rsc=
-          dynamic_cast<RestraintSet*>(r);
-        handle_restraints(dg, ps, rsc, weight*rsc->get_weight(),
-                          world, map, springs, restraints);
-      }
+                    boost::ptr_vector< btGeneric6DofSpringConstraint> *springs,
+                       const ParticlePair &pp,
+                       double x0, double k) {
+    btRigidBody *r0= map.find(pp[0])->second;
+    btRigidBody *r1= map.find(pp[1])->second;
+    // assume center is coordinates of particle
+    btTransform it; it.setIdentity();
+    btTransform it1; it1.setIdentity();
+    it1.setOrigin(btVector3(x0, 0,0));
+    springs->push_back(new btGeneric6DofSpringConstraint(*r0, *r1,
+                                                        it, it1,
+                                                        true));
+    for (unsigned int i=0; i< 3; ++i) {
+      springs->back().enableSpring(i, true);
+      springs->back().setStiffness(i,k);
     }
+    world->addConstraint(&springs->back());
+    return true;
   }
+  bool handle_harmonics(btDiscreteDynamicsWorld *world,
+                   const IMP::internal::Map<Particle*, btRigidBody *> &map,
+                    boost::ptr_vector< btGeneric6DofSpringConstraint> *springs,
+                       const ParticlePairsTemp &ppt,
+                        double x0, double k) {
+    for (unsigned int i=0; i< ppt.size(); ++i) {
+      handle_harmonic(world, map, springs, ppt[i], x0, k);
+    }
+    return true;
+  }
+  bool handle_ev() {
+    return true;
+  }
+
+namespace {
+
 
   void handle_xyzr(Particle *p,
                    boost::ptr_vector<btCollisionShape > &shapes,
@@ -320,19 +274,23 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
                   dynamicsWorld.get(), rigid_bodies);
     }
   }
-  {
-    DependencyGraph dg= get_dependency_graph(RestraintsTemp(rs_.begin(),
-                                                            rs_.end()));
-    /*IMP_IF_LOG(VERBOSE) {
-      std::ofstream dgs("dg.dot");
-      IMP::internal::show_as_graphviz(dg, dgs);
-      }*/
-    ParticlesTemp pst(ps.begin(), ps.end());
-    for (unsigned int i=0; i< rs_.size(); ++i) {
-      handle_restraints(dg, pst, rs_[i], rs_[i]->get_weight(),
-                        dynamicsWorld.get(),
-                        map, springs, restraints);
-    }
+  /**
+                               dynamicsWorld.get(),
+                               map, springs
+
+                               boost::bind(static_cast<double
+                                                (TripletScore::*)
+                        (const ParticleTriplet&,DerivativeAccumulator*) const>
+                               (&TripletScore::evaluate), s, _1, da))
+   */
+  IMP::core::internal::SpecialCaseRestraints scr(get_model(), ps);
+  for (unsigned int i=0; i< rs_.size(); ++i) {
+    scr.add_restraint_set(rs_[i],
+                          boost::bind(handle_harmonic, dynamicsWorld.get(),
+                                      map, &springs, _1, _2, _3),
+                          boost::bind(handle_harmonics, dynamicsWorld.get(),
+                                      map, &springs, _1, _2, _3),
+                          handle_ev);
   }
   for (unsigned int i=0; i< obstacles_.size(); ++i) {
     handle_obstacle(obstacles_[i].first, obstacles_[i].second,
