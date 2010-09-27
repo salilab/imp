@@ -19,7 +19,7 @@ inline Strings read_selection_file(String fn) {
   String name;
   Strings names;
   boost::filesystem::path fnp(fn);
-#if BOOST_VERSION >= 103400
+#if BOOST_VERSION >= 103600
   boost::filesystem::path dir= fnp.remove_filename();
 #else
   boost::filesystem::path dir= fnp.branch_path();
