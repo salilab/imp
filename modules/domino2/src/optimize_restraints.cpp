@@ -17,16 +17,14 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/domino2/particle_states.h>
-#include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/reverse_graph.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
 
 
+IMP_BEGIN_NAMESPACE
+bool
+get_is_static_container(Container *c,
+                        const DependencyGraph &dg,
+                        const ParticlesTemp &pst);
+IMP_END_NAMESPACE
 IMPDOMINO2_BEGIN_NAMESPACE
 
 
@@ -40,82 +38,6 @@ namespace {
   DGConstVertexMap;
 }
 
-struct AncestorException{
-  Object *o;
-  AncestorException(Object *oi): o(oi){};
-};
-
-// gcc 4.2 objects if this does not have external linkage
-template <class Graph>
-class AncestorVisitor: public boost::default_dfs_visitor {
-  std::set<Particle*> pst_;
-  typename boost::property_map<Graph,
-                               boost::vertex_name_t>::const_type vm_;
-public:
-  AncestorVisitor(){}
-  AncestorVisitor(const ParticlesTemp& pst,
-                  const Graph&g): pst_(pst.begin(), pst.end()),
-                                  vm_(boost::get(boost::vertex_name, g)){}
-  void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph& g) {
-    Object *o= vm_[u];
-    //std::cout << "Visiting " << o->get_name() << std::endl;
-    if (pst_.find(dynamic_cast<Particle*>(o)) != pst_.end()) {
-      throw AncestorException(o);
-    }
-  }
-  /*template <class Edge>
-  void tree_edge(Edge e, const Graph &g) {
-    typename boost::graph_traits<Graph>::vertex_descriptor s=
-      = boost::source(e, g);
-    typename boost::graph_traits<Graph>::vertex_descriptor t
-      = boost::target(e, g);
-    std::cout << "Tree edge " << vm_[s]->get_name()
-      << "->" << vm_[t]->get_name() << std::endl;
-      }*/
-};
-
-  bool get_has_ancestor(const DependencyGraph &g,
-                        unsigned int v,
-                        const ParticlesTemp &pst) {
-    typedef boost::reverse_graph<DependencyGraph>  RG;
-    RG rg(g);
-    AncestorVisitor<RG> av(pst,g);
-    boost::vector_property_map<int> color(boost::num_vertices(g));
-    try {
-      //std::cout << "Searching for dependents of " << v << std::endl;
-      boost::depth_first_visit(rg, v, av, color);
-      return false;
-    } catch (AncestorException e) {
-      /*IMP_LOG(VERBOSE, "Vertex has ancestor \"" << e.o->get_name()
-        << "\"" << std::endl);*/
-      return true;
-    }
-  }
-
-bool
-get_is_static_container(Container *c,
-                        const DependencyGraph &dg,
-                        const ParticlesTemp &pst) {
-  typedef DGTraits::in_edge_iterator IEIt;
-  typedef DGTraits::vertex_iterator DVIt;
-  DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
-  int cv=-1;
-  for (std::pair<DVIt, DVIt> be= boost::vertices(dg);
-       be.first != be.second; ++be.first) {
-    if (boost::get(pm, *be.first)== c) {
-      cv=*be.first;
-      break;
-    }
-  }
-  if (cv==-1) {
-    IMP_THROW("Container \"" << c->get_name()
-              << "\" not in graph.", ValueException);
-  }
-  return !get_has_ancestor(dg, cv, pst);
-}
-
-
 namespace {
   void optimize_restraint(Restraint *r, RestraintSet *p,
                           const DependencyGraph &dg,
@@ -126,7 +48,7 @@ namespace {
                           boost::ptr_vector<ScopedRestraint> &added) {
     ContainersTemp ic= r->get_input_containers();
     for (unsigned int i=0; i< ic.size(); ++i) {
-      if (get_has_ancestor(dg, index.find(ic[i])->second, pst)) {
+      if (IMP::internal::get_has_ancestor(dg, index.find(ic[i])->second, pst)) {
         return;
       }
     }
@@ -217,7 +139,7 @@ namespace {
            = boost::vertices(dg); be.first != be.second; ++be.first) {
       core::internal::CoreClosePairContainer *cpc
         = dynamic_cast<core::internal::CoreClosePairContainer*>(pm[*be.first]);
-      if (cpc && get_has_ancestor(dg, *be.first, particles)) {
+      if (cpc && IMP::internal::get_has_ancestor(dg, *be.first, particles)) {
         make_static_cpc(cpc, optimized,pst, staticed);
       }
     }
