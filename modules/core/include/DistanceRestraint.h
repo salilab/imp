@@ -11,6 +11,7 @@
 #include "core_config.h"
 #include "DistancePairScore.h"
 #include "XYZ.h"
+#include "generic.h"
 
 #include <IMP/Restraint.h>
 
@@ -27,7 +28,12 @@ IMPCORE_BEGIN_NAMESPACE
    \see DistancePairScore
    \see SphereDistancePairScore
  */
-class IMPCOREEXPORT DistanceRestraint : public Restraint
+class IMPCOREEXPORT DistanceRestraint :
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  public Restraint
+#else
+  public TupleRestraint<DistancePairScore>
+#endif
 {
 public:
   //! Create the distance restraint.
@@ -38,14 +44,9 @@ public:
   DistanceRestraint(UnaryFunction* score_func,
                     Particle *a, Particle *b);
 
-  DistanceRestraint(UnaryFunction *score_func,
-                    XYZ a, XYZ b);
-
+#ifdef SWIG
   IMP_RESTRAINT(DistanceRestraint);
-
-private:
-  IMP::internal::OwnerPointer<DistancePairScore> dp_;
-  RefCountingDecorator<XYZ> p_[2];
+#endif
 };
 
 IMPCORE_END_NAMESPACE
