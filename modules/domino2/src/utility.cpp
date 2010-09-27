@@ -107,11 +107,6 @@ void load_particle_states(const Subset &s,
                           const ParticleStatesTable *pst) {
   internal::load_particle_states(s.begin(), s.end(), ss, pst);
 }
-// lazily defined in optimize_restraints.cpp
-bool get_has_ancestor(const DependencyGraph &g,
-                      unsigned int v,
-                      const ParticlesTemp &pst);
-
 namespace {
 RestraintsAndWeights get_restraints_and_weights(const Subset &s,
                               const ParticleStatesTable *pst,
@@ -128,7 +123,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
     = IMP::internal::get_graph_index<Restraint>(dg);
   Ints to_remove;
   for (unsigned int i=0; i< rw.first.size(); ++i) {
-    if (get_has_ancestor(dg, index[rw.first[i]], oms)) {
+    if (IMP::internal::get_has_ancestor(dg, index[rw.first[i]], oms)) {
       to_remove.push_back(i);
     }
   }
