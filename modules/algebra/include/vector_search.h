@@ -65,7 +65,7 @@ class NearestNeighborD {
   }
 public:
   template <class It>
-  NearestNeighborD(It b, It e, double epsilon):
+  NearestNeighborD(It b, It e, double epsilon=0):
     data_(b,e), eps_(epsilon){
     instantiate(b,e);
   }
@@ -117,6 +117,17 @@ public:
 #endif
     Ints ret(k+1);
     data_.fill_nearest_neighbors(data_.get_point(i), k+1, eps_, ret);
+    return Ints(++ret.begin(), ret.end());
+  }
+  Ints get_nearest_neighbors(const algebra::VectorD<D> &v,
+                             unsigned int k) const {
+#if IMP_BUILD < IMP_FAST
+    if (query_log_) {
+      query_log_ << v << " " << k << std::endl;
+    }
+#endif
+    Ints ret(k+1);
+    data_.fill_nearest_neighbors(v, k, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
   /** Find all points within the provided distance. */
