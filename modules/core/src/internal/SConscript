@@ -11,6 +11,7 @@ files = [
          'CoreTripletsRestraint.cpp',
          'DifferenceSingletonContainer.cpp',
          'MovedSingletonContainer.cpp',
+         'SpecialCaseRestraints.cpp',
          'evaluate_distance_pair_score.cpp',
          'graph_base.cpp',
          'pair_helpers.cpp',
