@@ -109,10 +109,11 @@ Float MonteCarlo::optimize(unsigned int max_steps)
             next_energy =cg_->optimize(num_local_steps_);
             IMP_IF_CHECK(USAGE) {
               double me= get_model()->evaluate(false);
-              IMP_USAGE_CHECK((next_energy-me) < .01*(next_energy+me),
+              IMP_USAGE_CHECK((next_energy-me) < .01*(next_energy+me)+.01,
                               "Energies don't match after local opt. "
                               << "Got " << me << " but computed "
-                              << next_energy);
+                              << next_energy << (next_energy-me)
+                              << .01*(next_energy+me)+.01);
             }
           }
         } catch (const ModelException &e) {
