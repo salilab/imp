@@ -107,7 +107,8 @@ public:
 #ifndef IMP_DOXYGEN
   unsigned int __len__() const { return 3;}
 #endif
-
+  IMP_HASHABLE_INLINE(ExtendedGridIndex3D,
+                      return boost::hash_range(begin(), end()));
   ExtendedGridIndex3D get_offset(int i, int j, int k) const {
     return ExtendedGridIndex3D(d_[0]+i, d_[1]+j, d_[2]+k);
   }
@@ -116,7 +117,7 @@ public:
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 inline std::size_t hash_value(const ExtendedGridIndex3D &ind) {
-  return boost::hash_range(ind.begin(), ind.end());
+  return ind.__hash__();
 }
 #endif
 
@@ -175,12 +176,14 @@ public:
 typedef GridIndex3D This;
 #endif
   IMP_COMPARISONS_3(d_[0], d_[1], d_[2]);
+  IMP_HASHABLE_INLINE(ExtendedGridIndex3D,
+                      return boost::hash_range(begin(), end()));
 };
 
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 inline std::size_t hash_value(const GridIndex3D &ind) {
-  return boost::hash_range(ind.begin(), ind.end());
+  return ind.__hash__();
 }
 #endif
 IMP_VALUES(GridIndex3D, GridIndex3Ds);
