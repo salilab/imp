@@ -221,47 +221,50 @@ def IMPModuleLib(envi, files):
     """Build, and optionally also install, an IMP module's C++
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
-    from scons_tools import get_sharedlib_environment
+    from scons_tools import get_sharedlib_environment, get_staticlib_environment
     vars= make_vars(envi)
-    env = get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
-                                    cplusplus=True)
-    module = env['IMP_MODULE']
-    module_suffix = env['IMP_MODULE_SUFFIX']
-    vars= make_vars(env)
-    if env['build']=="debug" and env['linktest']:
-        link= env.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
+    module = envi['IMP_MODULE']
+    module_suffix = envi['IMP_MODULE_SUFFIX']
+    vars= make_vars(envi)
+    if envi['build']=="debug" and envi['linktest']:
+        link= envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
-    version= env['IMP_MODULE_VERSION']
-    config= env.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
-                                   source=[env.Value(version),
-                                           env.Value(env.subst(env['datadir'])),
-                                           env.Value(env.subst(os.path.join(env['docdir'], "examples")))])
+    version= envi['IMP_MODULE_VERSION']
+    config= envi.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
+                                   source=[envi.Value(version),
+                                           envi.Value(envi.subst(envi['datadir'])),
+                                           envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     files =files+ config
-    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
-                                          env['IMP_MODULE'] == 'kernel')\
-                    +env[env['IMP_MODULE']+"_libs"]))
+    deps=clean_libs(dependencies_to_libs(envi, envi[envi['IMP_MODULE']+"_required_modules"],
+                                          envi['IMP_MODULE'] == 'kernel')\
+                    +envi[envi['IMP_MODULE']+"_libs"])
     build=[]
-    if env['IMP_BUILD_STATIC']:
+    if envi['IMP_BUILD_STATIC']:
+        env= get_staticlib_environment(envi)
+        env.Prepend(LIBS=deps)
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files)))
-    if env['IMP_BUILD_DYNAMIC']:
+    if envi['IMP_BUILD_DYNAMIC']:
+        env = get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
+                                    cplusplus=True)
+        env.Prepend(LIBS=deps)
         build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                        list(files) ) )
         postprocess_lib(env, build[-1])
     install=[]
     for b in build:
-        install.append(env.Install(env.GetInstallDirectory('libdir'), b) )
-    postprocess_lib(env, install[-1])
-    module_requires(env, build, 'include')
-    module_requires(env, build, 'data')
-    module_alias(env, 'lib', build, True)
-    add_to_global_alias(env, 'all', 'lib')
-    module_alias(env, 'install-lib', install)
-    add_to_module_alias(env, 'install', 'install-lib')
-    module_deps_requires(env, build, 'include', [])
-    module_deps_requires(env, build, 'lib', [])
-    module_deps_requires(env, install, 'install-lib', [])
+        install.append(envi.Install(env.GetInstallDirectory('libdir'), b) )
+    postprocess_lib(envi, install[-1])
+    module_requires(envi, build, 'include')
+    module_requires(envi, build, 'data')
+    module_alias(envi, 'lib', build, True)
+    add_to_global_alias(envi, 'all', 'lib')
+    module_alias(envi, 'install-lib', install)
+    add_to_module_alias(envi, 'install', 'install-lib')
+    module_deps_requires(envi, build, 'include', [])
+    module_deps_requires(envi, build, 'lib', [])
+    module_deps_requires(envi, install, 'install-lib', [])
     env.Requires(build, '#/tools/imppy.sh')
 
 
@@ -422,7 +425,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
                        source=['#/build/src/%(module)s_wrap.h-in'%vars])
     lpenv= bug_fixes.clone_env(penv)
-    if env['use_pch']:
+    if env['IMP_USE_PCH']:
         if module=='kernel':
             pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
             bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
@@ -435,7 +438,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
                                     patched)
     #print "Environment", env['CXXFLAGS']
-    if env['use_pch']:
+    if env['IMP_USE_PCH']:
         env.Depends(patched, env.Alias('pch'))
     installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                           vars['module_include_path'],

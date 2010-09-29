@@ -3,28 +3,41 @@ import os
 import sys
 import re
 
+def _flatten(strorlist, delim):
+    if type(strorlist)== type(""):
+        return strorlist
+    elif type(strorlist) == type(True):
+        return str(strorlist)
+    else:
+        return delim.join([_flatten(x, delim) for x in list(strorlist)])
 
 def _action_config_py(target, source, env):
     config= source[0].get_contents().split("#")
-    def _export_to_config(name, ename, env):
-        if env.get(ename, None):
-            if type(env[ename]) == type([]):
-                val=":".join(env[v])
-                print val
-                config.append(name+"='"+val+"'")
-            else:
-                config.append(name+"='"+str(env[ename])+"'")
-    for v in ['build', 'repository', 'cxxflags', 'linkflags',
+    def _export_to_config(name, ename, env, opt=False, delim=":"):
+        if opt and not env.get(ename, None):
+            return
+        #config.append("# "+str(type(env[ename])))
+        #config.append( "# "+repr(env[ename]))
+        config.append(name+"='"+_flatten(env.subst(env[ename]), delim)+"'")
+    for v in ['build', 'repository',
               'precommand', 'includepath', 'modeller',
-              'prefix', 'path', 'libpath']:
-        _export_to_config(v, v, env)
-
-    for vp in [('cxxcompiler', 'CXX'),
-               ('python', 'IMP_PROVIDE_PYTHON'),
-               ('rpath', 'IMP_USE_RPATH'),
-               ('platformflags', 'IMP_USE_PLATFORM_FLAGS'),
-               ('static', 'IMP_BUILD_STATIC')]:
-        _export_to_config(vp[0], vp[1], env)
+              'prefix', 'libpath', 'localmodules',
+              'pythonpath', 'python_include', 'ldlibpath']:
+        _export_to_config(v, v, env, True)
+    config.append('platformflags=False')
+    for vp in [('cxxcompiler', 'CXX', " "),
+               ('cxxflags', 'CXXFLAGS', " "),
+               ('pythoncxxflags', 'IMP_PYTHON_CXXFLAGS', " "),
+               ('shliblinkflags', 'IMP_SHLIB_LINKFLAGS', " "),
+               ('arliblinkflags', 'IMP_ARLIB_LINKFLAGS', " "),
+               ('binlinkflags', 'IMP_BIN_LINKFLAGS', " "),
+               ('pythonlinkflags', 'IMP_PYTHON_LINKFLAGS', " "),
+               ('python', 'IMP_PROVIDE_PYTHON', " "),
+               ('rpath', 'IMP_USE_RPATH', " "),
+               ('static', 'IMP_BUILD_STATIC', " "),
+               ('pythonsosuffix', 'IMP_PYTHON_SO', " ")]:
+        _export_to_config(vp[0], vp[1], env, delim=vp[2])
+    config.append('path="'+_flatten(os.environ['PATH'], ":")+'"')
     #print "opening h at " +target[0].abspath + " for module %(module)s"%vars
     h = file(target[0].abspath, 'w')
     #print "Generating "+str(h)
