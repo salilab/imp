@@ -49,12 +49,12 @@ int main(void)
     return res
 
 def configure_check_hash(env):
-    if not (platform.system() == 'Linux' and env['linksysv']):
-        return
-    custom_tests = {'CheckGNUHash':CheckGNUHash}
-    conf = env.Configure(custom_tests=custom_tests)
-    conf.CheckGNUHash()
-    conf.Finish()
+    if env['IMP_USE_PLATFORM_FLAGS'] and (platform.system() == 'Linux'
+                                          and env['linksysv']):
+        custom_tests = {'CheckGNUHash':CheckGNUHash}
+        conf = env.Configure(custom_tests=custom_tests)
+        conf.CheckGNUHash()
+        conf.Finish()
 
 
 def get_version(env):
