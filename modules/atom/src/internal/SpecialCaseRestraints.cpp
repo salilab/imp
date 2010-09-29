@@ -6,13 +6,13 @@
  */
 
 
-#include <IMP/core/internal/SpecialCaseRestraints.h>
+#include <IMP/atom/internal/SpecialCaseRestraints.h>
 
-IMPCORE_BEGIN_INTERNAL_NAMESPACE
+IMPATOM_BEGIN_INTERNAL_NAMESPACE
 SpecialCaseRestraints::SpecialCaseRestraints(Model *m,
                                              const ParticlesTemp &ps): ps_(ps) {
   RestraintsTemp rs= get_restraints(m->get_root_restraint_set());
   dg_=get_dependency_graph(rs);
 }
 
-IMPCORE_END_INTERNAL_NAMESPACE
+IMPATOM_END_INTERNAL_NAMESPACE

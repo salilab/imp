@@ -19,11 +19,13 @@
 #include <IMP/scoped.h>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/internal/map.h>
-#include <IMP/core/internal/SpecialCaseRestraints.h>
+#include <IMP/atom/internal/SpecialCaseRestraints.h>
 
 #include <btBulletDynamicsCommon.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/bind.hpp>
+
+
 IMPBULLET_BEGIN_NAMESPACE
 
 typedef IMP::internal::Map<double, btCollisionShape*> Spheres;
@@ -123,16 +125,6 @@ void ResolveCollisionsOptimizer
       springs->back().setStiffness(i,k);
     }
     world->addConstraint(&springs->back());
-    return true;
-  }
-  bool handle_harmonics(btDiscreteDynamicsWorld *world,
-                   const IMP::internal::Map<Particle*, btRigidBody *> &map,
-                    boost::ptr_vector< btGeneric6DofSpringConstraint> *springs,
-                       const ParticlePairsTemp &ppt,
-                        double x0, double k) {
-    for (unsigned int i=0; i< ppt.size(); ++i) {
-      handle_harmonic(world, map, springs, ppt[i], x0, k);
-    }
     return true;
   }
   bool handle_ev() {
@@ -283,12 +275,10 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
                         (const ParticleTriplet&,DerivativeAccumulator*) const>
                                (&TripletScore::evaluate), s, _1, da))
    */
-  IMP::core::internal::SpecialCaseRestraints scr(get_model(), ps);
+  IMP::atom::internal::SpecialCaseRestraints scr(get_model(), ps);
   for (unsigned int i=0; i< rs_.size(); ++i) {
     scr.add_restraint_set(rs_[i],
                           boost::bind(handle_harmonic, dynamicsWorld.get(),
-                                      map, &springs, _1, _2, _3),
-                          boost::bind(handle_harmonics, dynamicsWorld.get(),
                                       map, &springs, _1, _2, _3),
                           handle_ev);
   }

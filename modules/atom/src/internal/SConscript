@@ -1,4 +1,5 @@
 files = [
+         'SpecialCaseRestraints.cpp',
          'mol2.cpp',
          'pdb.cpp',
         ]
