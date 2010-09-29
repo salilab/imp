@@ -11,31 +11,113 @@ import standards
 import compilation
 import gcc
 import swig
+import platform
 from mypopen import MyPopen
 
 __all__ = ["add_common_variables", "MyEnvironment", "get_pyext_environment",
-           "get_sharedlib_environment"]
+           "get_sharedlib_environment", "get_staticlib_environment"]
 
 import SCons
 
-def _reconcile_common_variables(env):
+def _propagate_variables(env):
     """enforce dependencies between variables"""
     env['IMP_BUILD_STATIC']= env['static']
     env['IMP_BUILD_DYNAMIC']= env['dynamic']
     env['IMP_PROVIDE_PYTHON']= env['python']
     env['IMP_USE_PLATFORM_FLAGS']= env['platformflags']
     env['IMP_USE_RPATH']= env['rpath']
+    if env['pythonsosuffix'] != 'default':
+        env['IMP_PYTHON_SO']=env['pythonsosuffix']
+    elif env['IMP_PROVIDE_PYTHON'] and not env['IMP_USE_PLATFORM_FLAGS']:
+        print >> sys.stderr, "Do not know suffix for python lib, please provide pythonsosuffix"
+        env.Exit(1)
     if env['wine']:
-        env['IMP_USE_PLATFORM_FLAGS']=False
         env['IMP_BUILD_STATIC']=False
-    if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin':
+        env['IMP_PYTHON_SO']='.pyd'
+
+    if env['PLATFORM']!= 'posix' and env['PLATFORM'] != 'darwin' and env['IMP_USE_RPATH']:
         env['IMP_USE_RPATH']=False
         print >> sys.stderr, "WARNING rpath not supported on platform "+ env['PLATFORM']
+
     if not env['IMP_BUILD_DYNAMIC']:
         env['IMP_PROVIDE_PYTHON']=False
     if not env['IMP_BUILD_DYNAMIC'] and not env['IMP_BUILD_STATIC']:
         print >> sys.stderr, "One of dynamic or static libraries must be supported."
         env.Exit(1)
+    if gcc.get_is_gcc(env):
+        env['IMP_USE_PCH']=env['precompiledheader']
+    else:
+        env['IMP_USE_PCH']=False
+    if env.get('pythonpath', None):
+        env['PYTHONPATH'] = env['pythonpath']
+    else:
+        env['PYTHONPATH']=''
+    if env.get('cxxcompiler', None):
+        env['CXX']=env['cxxcompiler']
+    if env.get('ar', None):
+        env['AR']= env['ar']
+    if env.get('ranlib', None):
+        env['RANLIB']= env['ranlib']
+    if env.get("swigprogram", None):
+        env['SWIG']= env["swigprogram"]
+    if env.get('cxxflags', None):
+        env.Append(CXXFLAGS = env['cxxflags'].split())
+    else:
+        env.Append(CXXFLAGS=[])
+
+    if env.get('pythoncxxflags', None):
+        env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
+    elif env.get('cxxflags', None):
+        env.Append(IMP_PYTHON_CXXFLAGS = env['cxxflags'].split())
+    else:
+        env.Append(IMP_PYTHON_CXXFLAGS=[])
+
+    if env.get('linkflags', None):
+        env.Append(IMP_LINKFLAGS=env['linkflags'].split())
+    else:
+        env.Append(IMP_LINKFLAGS=[])
+    if env.get('pythonlinkflags', None):
+        env.Append(IMP_PYTHON_LINKFLAGS=env['pythonlinkflags'].split())
+    else:
+        env.Append(IMP_PYTHON_LINKFLAGS=[])
+
+    if env.get('shliblinkflags', None):
+        env.Append(IMP_SHLIB_LINKFLAGS=env['shliblinkflags'].split())
+    else:
+        env.Append(IMP_SHLIB_LINKFLAGS=[])
+
+    if env.get('arliblinkflags', None):
+        env.Append(IMP_ARLIB_LINKFLAGS=env['arliblinkflags'].split())
+    else:
+        env.Append(IMP_ARLIB_LINKFLAGS=[])
+
+
+    if env.get('binlinkflags', None):
+        env.Append(IMP_BIN_LINKFLAGS=env['binlinkflags'].split())
+    else:
+        env.Append(IMP_BIN_LINKFLAGS=[])
+
+    if env.get('includepath') is not None:
+        env['includepath'] = [os.path.abspath(x) for x in \
+                          env['includepath'].split(os.path.pathsep)]
+        env.Prepend(CPPPATH=env['includepath'])
+    else:
+        env.Append(CPPPATH=[])
+
+    if env.get('libpath') is not None:
+        env.Prepend(LIBPATH=[os.path.abspath(x) for x in \
+                             env['libpath'].split(os.path.pathsep)])
+    else:
+        env.Append(LIBPATH=[])
+    if env.get('libs') is not None:
+        libs= env['libs'].split(":")
+        env.Append(LIBS=libs)
+    else:
+        env.Append(LIBS=[])
+
+    if env.get('ldlibpath') is not None:
+        env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
+
 
 def GetInstallDirectory(env, varname, *subdirs):
     """Get a directory to install files in. The top directory is env[varname],
@@ -73,13 +155,13 @@ class WineEnvironment(Environment):
         self['SHELL'] = posix_env['SHELL']
         self['ENV'] = posix_env['ENV']
         self['PYTHON'] = 'w32python'
-        self['PATHSEP'] = ';'
         # Use / rather than \ path separator:
         self['LINKCOM'] = self['LINKCOM'].replace('.windows', '')
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
-        self.Append(CXXFLAGS="/MD /GR /GX")
+        self.Append(CXXFLAGS=["/MD", "/GR", "/GX"])
+        self.Append(IMP_PYTHON_CXXFLAGS=["/MD", "/GR", "/GX"])
 
     def _fix_scons_msvc_detect(self):
         """Ensure that MSVC auto-detection finds tools on Wine builds"""
@@ -97,8 +179,8 @@ pythoninclude=None
 def _get_python_include(env):
     global pythoninclude
     """Get the directory containing Python.h"""
-    if env['python_include']:
-        return env['python_include']
+    if env['pythoninclude']:
+        return env['pythoninclude']
     elif env['wine']:
         return '/usr/lib/w32comp/w32python/2.6/include/'
     elif pythoninclude:
@@ -117,21 +199,47 @@ print distutils.sysconfig.get_python_inc()
 
         pythoninclude = p.stdout.read().split('\n')[0]
         return pythoninclude
-def _add_build_flags(env):
+
+
+def _add_platform_flags(env):
     """Add compiler flags for release builds, if requested"""
+    if not env['IMP_USE_PLATFORM_FLAGS']:
+        raise ValueError("platform flags is false")
+
     #make sure they are all there
     env.Append(CPPPATH=[])
     env.Append(CXXFLAGS=[])
     env.Append(LINKFLAGS=[])
     env.Append(LIBPATH=[])
-    if gcc.get_is_gcc(env) and env['IMP_USE_PLATFORM_FLAGS']:
+
+    if not env.get('wine', None):
+        from distutils.sysconfig import get_config_vars
+        # The compile and link programs used by python must both produce outputs
+        # that are compatible with the compiler we are already using as well
+        # as much take all command line options we are already using. As a
+        # result, we might as well used the same compiler as before. It would
+        # be great to check if they match, but that is kind of hard.
+        (opt, cflags, so) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
+        env['IMP_PYTHON_SO']=so
+        if gcc.get_is_gcc(env):
+            basecflags=[x for x in opt.split()+cflags.split() \
+                        if x not in ['-Werror', '-Wall','-O2', '-O3',
+                                     '-fstack-protector', '-Wstrict-prototypes',
+                                     '-g', '-dynamic', '-DNDEBUG',
+                                     "-fwrapv", "-fno-strict-aliasing"]]
+                    #total.append(v)
+        else:
+            basecflags= opt.split()+cflags.split()
+        env.Append(CXXFLAGS=basecflags)
+
+    if env['PLATFORM'] == 'darwin':
+        env.Append(IMP_PYTHON_LINKFLAGS=
+                ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
+
+
+    if gcc.get_is_gcc(env):
         env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
-    if gcc.get_is_gcc(env):
-        env['use_pch']=env['precompiledheader']
-    else:
-        env['use_pch']=False
-    if gcc.get_is_gcc(env) and  env['IMP_USE_PLATFORM_FLAGS']:
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
                                  "-ffast-math", "-ftree-vectorize",
@@ -149,27 +257,37 @@ def _add_build_flags(env):
         elif env['build'] == 'debug':
             env.Append(CXXFLAGS=["-g"])
             env.Append(LINKFLAGS=["-g"])
-
-
-
-def _add_rpath(env):
-    # when supported, change the rpath so that libraries can be found at runtime
-    # also, add to the rpath used when linking so the linux linker can resolve
-    # inter-library dependencies
-    if env['PLATFORM'] == 'posix':
+        try:
+            env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
+        except ValueError:
+            pass
+        env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
+                                     if x not in ['-Wall', '-Wextra', '-Wformat', '-O3', '-O2']])
+    if env['IMP_USE_RPATH']:
         dylinkflags=[]
         for p in env['LIBPATH']:
             if p[0] is not '#':
-                # append/prepend must match other uses
-                if  env['IMP_USE_RPATH']:
-                    env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
-                env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+p])
-        env.Prepend(LINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+                env.Prepend(IMP_SHLIB_LINKFLAGS=['-Wl,-rpath,'+p])
+                env.Prepend(IMP_BIN_LINKFLAGS=['-Wl,-rpath,'+p])
+        #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
+    env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
+    env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
+    env.Prepend(IMP_SHLIB_LINKFLAGS=env['IMP_LINKFLAGS'])
+    env.Prepend(IMP_SHLIB_LINKFLAGS=env['SHLINKFLAGS'])
+    if env['IMP_BUILD_STATIC']:
+        env.Prepend(IMP_ARLIB_LINKFLAGS=env['IMP_LINKFLAGS'])
+        env.Prepend(IMP_ARLIB_LINKFLAGS=env['LINKFLAGS'])
+        env.Append(IMP_BIN_LINKFLAGS=['-static'])
+    env.Prepend(IMP_PYTHON_LINKFLAGS=env['IMP_LINKFLAGS'])
+    env.Prepend(IMP_PYTHON_LINKFLAGS=env['LDMODULEFLAGS'])
+    if env['PLATFORM'] == 'darwin':
+        env.Append(IMP_SHLIB_LINKFLAGS=['-headerpad_max_install_names'])
+        env.Append(IMP_PYTHON_LINKFLAGS=['-headerpad_max_install_names'])
+        env.Append(IMP_BIN_LINKFLAGS=['-headerpad_max_install_names'])
 
 
 def MyEnvironment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
-    import platform
     #import colorizer
     # First make a dummy environment in order to evaluate all variables, since
     # env['wine'] will tell us which 'real' environment to create:
@@ -188,74 +306,22 @@ def MyEnvironment(variables=None, *args, **kw):
                           ENV = {'PATH':newpath},
                           *args, **kw)
         env['PYTHON'] = 'python'
-        env['PATHSEP'] = os.path.pathsep
     variables.Update(env)
-    if env.get('cxxcompiler', None):
-        env['CXX']=env['cxxcompiler']
-    if env.get('ar', None):
-        env['AR']= env['ar']
-    if env.get('ranlib', None):
-        env['RANLIB']= env['ranlib']
-    _reconcile_common_variables(env)
-    try:
-        env['SHLINKFLAGS'] = [ x.replace('-no_archive', '') for x in env['SHLINKFLAGS']]
-    except ValueError:
-        pass
-    if env.get("swigprogram", None):
-        env['SWIG']= env["swigprogram"]
-    #col = colorizer.colorizer()
-    #col.colorize(env)
-    env['PYTHONPATH'] = '#/build/lib'
-    env['all_modules']=[]
-    env.Decider('MD5-timestamp')
+    _propagate_variables(env)
+    if env['IMP_USE_PLATFORM_FLAGS']:
+        _add_platform_flags(env)
+
     env.AddMethod(symlinks.LinkInstall)
     env.AddMethod(symlinks.LinkInstallAs)
     env.AddMethod(hierarchy.InstallHierarchy)
     env.AddMethod(GetInstallDirectory)
-    env['IMP_PYTHON_SO']="so"
-    if env['IMP_USE_PLATFORM_FLAGS']:
-        from distutils.sysconfig import get_config_vars
-        # The compile and link programs used by python must both produce outputs
-        # that are compatible with the compiler we are already using as well
-        # as much take all command line options we are already using. As a
-        # result, we might as well used the same compiler as before. It would
-        # be great to check if they match, but that is kind of hard.
-        (opt, cflags, so)\
-            = get_config_vars('OPT', 'BASECFLAGS', 'SO')
-        env['IMP_PYTHON_SO']=so
-        sopt= opt.split()
-        scflags= cflags.split()
-        total=[]
-        total=[x for x in sopt+scflags if x not in ['-Werror', '-Wall','-O2', '-O3',
-                 '-fstack-protector', '-Wstrict-prototypes',
-                 '-DNDEBUG', '-g',
-                 "-fwrapv", "-fno-strict-aliasing"]]
-        #total.append(v)
-        env.Append(CXXFLAGS=total)
-    if env.get('cxxflags'):
-        env.Append(CXXFLAGS = env['cxxflags'].split(" "))
-    if env.get('linkflags'):
-        env.Append(LINKFLAGS=[env['linkflags'].split(" ")])
+    #col = colorizer.colorizer()
+    #col.colorize(env)
+    if env.get('pythonpath', None):
+        env['PYTHONPATH'] = os.path.pathsep.join(['#/build/lib']+[env['PYTHONPATH']])
+    env['all_modules']=[]
+    env.Decider('MD5-timestamp')
 
-    if env.get('includepath') is not None:
-        env['includepath'] = [os.path.abspath(x) for x in \
-                          env['includepath'].split(os.path.pathsep)]
-        env.Prepend(CPPPATH=env['includepath'])
-    # make sure it is there
-    env.Append(LIBPATH=[])
-    if env.get('libpath') is not None:
-        env['libpath'] = [os.path.abspath(x) for x in \
-                      env['libpath'].split(os.path.pathsep)]
-        env.Prepend(LIBPATH=env['libpath'])
-    else:
-        env['libpath'] = []
-    if env.get('libs') is not None:
-        libs= env['libs'].split(":")
-        env.Append(LIBS=libs);
-    _add_build_flags(env)
-
-    if env.get('ldlibpath') is not None:
-        env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
     # Make Modeller exetype variable available:
     if os.environ.has_key('EXECUTABLE_TYPESVN'):
         env['ENV']['EXECUTABLE_TYPESVN'] = os.environ['EXECUTABLE_TYPESVN']
@@ -272,7 +338,6 @@ def MyEnvironment(variables=None, *args, **kw):
         # Make sure compilers are in the PATH, so that Python's script for
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
-    _add_rpath(env)
     #print "cxx", env['CXXFLAGS']
     return env
 
@@ -297,19 +362,28 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
     e = bug_fixes.clone_env(env)
     e.Append(CPPDEFINES=[cppdefine, '${VIS_CPPDEFINES}'],
              CXXFLAGS='${VIS_CXXFLAGS}')
-    if env['PLATFORM'] == 'darwin' and env['IMP_USE_PLATFORM_FLAGS']:
-        env.Append(LINKFLAGS=['-headerpad_max_install_names'])
+    e.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+    return e
+
+
+def get_staticlib_environment(env):
+    """Get a modified environment suitable for building shared libraries
+       (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
+       to mark dynamic symbols as exported or private). `cppdefine` should be
+       the name of a cpp symbol to define to tell MSVC that we are building the
+       library (by convention something of the form FOO_EXPORTS).
+       If `cplusplus` is True, additional configuration suitable for a C++
+       shared library is done."""
+    e = bug_fixes.clone_env(env)
+    e.Replace(LIBLINKFLAGS=env['IMP_ARLIB_LINKFLAGS'])
+    _fix_aix_cpp_link(e, True, 'LINKFLAGS')
     return e
 
 
 def get_bin_environment(envi):
     env= bug_fixes.clone_env(envi)
-    if env['IMP_BUILD_STATIC']:
-        if gcc.get_is_gcc(env):
-            env.Append(LINKFLAGS=['-static'])
-        else:
-            pass
+    env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
     return env
 
 
@@ -318,7 +392,6 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
        `mod_prefix` should be a unique prefix for this module.
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
-    from platform import system
     import copy
     e = bug_fixes.clone_env(env)
 
@@ -328,49 +401,21 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     e['no_import_lib'] = 1
     platform = e['PLATFORM']
     if e['wine']:
+        # Directory containing python26.lib:
+        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.6/lib/'])
+        e['SHLIBSUFFIX']=e['IMP_PYTHON_SO']
         # Have to set SHLIBSUFFIX and PREFIX on Windows otherwise the
         # mslink tool complains
         e['SHLIBPREFIX'] = ''
-        e['LDMODULESUFFIX'] = e['SHLIBSUFFIX'] = '.pyd'
-        # Directory containing python26.lib:
-        e.Append(LIBPATH=['/usr/lib/w32comp/w32python/2.6/lib/'])
-    else:
-        # distutils on AIX can get confused if AIX C but GNU C++ is installed:
-        #if platform == 'aix' and cxx == '':
-        #    cxx = 'g++'
-        #    ldshared = ldshared.replace(' cc_r', ' g++')
-        e.Replace(LDMODULESUFFIX=e['IMP_PYTHON_SO'])
-        #e.Replace(CXX=cxx, LDMODULE=ldshared, SHLINK=ldshared)
-        if platform == 'darwin' and env['IMP_USE_PLATFORM_FLAGS']:
-            e.Replace(LDMODULEFLAGS= \
-                      '$LINKFLAGS -bundle -flat_namespace -undefined suppress')
-        # Don't set link flags on Linux, as that would negate our GNU_HASH check
-        elif system() != "Linux":
-            e['LDMODULEFLAGS'] = []
-            #e['SHLINK'] = e['LDMODULE'] = ldshared
-    cpps=e['CPPDEFINES']
-    try:
-        cpps.remove("NDEBUG")
-    except:
-        pass
-    e.Replace(CPPDEFINES=cpps)
-    cxxs=e['CXXFLAGS']
-    for x in cxxs:
-        if x== "-DNDEBUG":
-            cxxs.remove(x)
-        elif x=='-Wall':
-            cxxs.remove(x)
-        elif x=='-Wextra':
-            cxxs.remove(x)
-        elif x.startswith("-Wformat"):
-            cxxs.remove(x)
-        elif x=='-O3' or  x=='-O2':
-            cxxs.remove(x)
-    e.Replace(CXXFLAGS=cxxs)
+    e.Replace(LDMODULEFLAGS=env['IMP_PYTHON_LINKFLAGS'])
+    e['LDMODULESUFFIX'] =e['IMP_PYTHON_SO']
+    #print e['LDMODULEFLAGS']
+    e.Replace(CXXFLAGS=e['IMP_PYTHON_CXXFLAGS'])
     #e['CXXFLAGS']=cxxs
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
     e.Append(CPPPATH=[_get_python_include(e)])
-    _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+    _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
+    #print env['LDMODULEFLAGS']
     return e
 
 def add_common_variables(vars, package):
@@ -414,7 +459,7 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('destdir',
                           'String to prepend to every installed filename',
                           '', PathVariable.PathAccept))
-    vars.Add(PackageVariable('python_include',
+    vars.Add(PackageVariable('pythoninclude',
                              'Directory holding Python include files ' + \
                              '(if unspecified, distutils location is used)',
                              'no'))
@@ -455,9 +500,16 @@ def add_common_variables(vars, package):
     vars.Add('ldlibpath', 'Add to the runtime library search path ' +\
              '(LD_LIBRARY_PATH on linux-like systems) for various ' + \
              'build tools and the test cases', None)
-    vars.Add('cxxflags', 'Extra cxx flags (e.g. "-fno-rounding -DFOOBAR")',
+    vars.Add('cxxflags', 'C++ flags for all C++ builds (e.g. "-fno-rounding:-DFOOBAR"). See pythoncxxflags.',
              None)
-    vars.Add('linkflags', 'Extra link flags (e.g. "-lefence")', None)
+    vars.Add('pythoncxxflags', 'C++ flags for building the python libraries (e.g. "-fno-rounding:-DFOOBAR")',
+             None)
+
+    vars.Add('linkflags', 'Link flags for all linking (e.g. "-lefence"). See pythonlinkflags, arliblinkflags, shliblinkflags.', None)
+    vars.Add('pythonlinkflags', 'Link flags for linking python libraries (e.g. "-lefence")', "")
+    vars.Add('arliblinkflags', 'Link flags for linking static libraries (e.g. "-lefence")', "")
+    vars.Add('shliblinkflags', 'Link flags for linking shared libraries (e.g. "-lefence")', "")
+    vars.Add('binlinkflags', 'Link flags for linking executables (e.g. "-lefence")', "")
     vars.Add('path', 'Extra executable path ' + \
              '(e.g. "/opt/local/bin/") to search for build tools', None)
     vars.Add('precommand',
@@ -467,11 +519,11 @@ def add_common_variables(vars, package):
              '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
     vars.Add('boostversion', 'The version of boost. If this is not none, the passed version is used and checks are not done. The version should look like "104200" for Boost "1.42".', None)
     vars.Add(BoolVariable('platformflags',
-                          'If true, use compiler and linker flags from platform config files. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
+                          'If true, add any compiler and linker arguments that might be needed/desired. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
-
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', True))
+    vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
     vars.Add(BoolVariable('dot',
                           'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
                           True))
