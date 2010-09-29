@@ -29,6 +29,9 @@ class IMPCOREEXPORT SphereDistancePairScore : public PairScore
 public:
   SphereDistancePairScore(UnaryFunction *f,
                           FloatKey radius=FloatKey("radius"));
+  UnaryFunction* get_unary_function() const {
+    return f_;
+  }
   IMP_SIMPLE_PAIR_SCORE(SphereDistancePairScore);
 };
 
