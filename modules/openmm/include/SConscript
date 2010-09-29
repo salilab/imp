@@ -1,0 +1,8 @@
+Import('env')
+
+files = [
+         'BrownianDynamics.h',
+        ]
+
+# Install the include files:
+env.IMPModuleInclude(files)
