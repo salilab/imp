@@ -1,7 +1,6 @@
 # include IMP build utility functions:
 import scons_tools
 import scons_tools.boost
-import scons_tools.cgal
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
@@ -72,9 +71,6 @@ scons_tools.checks.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
                                        "netcdfcpp.h")
 scons_tools.checks.add_external_library(env, "FFTW3", "fftw3",
                                        "fftw3.h")
-scons_tools.checks.add_external_library(env, "GSL", ["gsl",'gslcblas'],
-                                        "gsl/gsl_sf_bessel.h",
-                                        body='gsl_sf_bessel_J0(1.0);')
 scons_tools.checks.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
                                        ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                        body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
@@ -92,8 +88,8 @@ scons_tools.checks.add_external_library(env, "Boost.ProgramOptions", "boost_prog
 
 if not env.GetOption('help'):
     # various flags depending on compiler versions and things
-    scons_tools.cgal.configure_check(env)
     scons_tools.swig.configure_check(env)
+    scons_tools.boost.configure_tr1_check(env)
     scons_tools.modeller_test.configure_check(env)
     scons_tools.endian.configure_check(env)
     scons_tools.doxygen.configure_check_doxygen(env)
@@ -104,9 +100,6 @@ if not env.GetOption('help'):
     scons_tools.standards.setup_standards(env)
 
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
-    config_py=env.IMPConfigPY(target=["#/config.py"],
-                              source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
-
 
 SConscript('kernel/SConscript')
 SConscript('modules/SConscript')
@@ -141,6 +134,9 @@ if not env.GetOption('help'):
             print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
             Exit(1)
     scons_tools.build_summary.setup(env)
+    config_py=env.IMPConfigPY(target=["#/config.py"],
+                              source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
+
 else:
     tenv= Environment(variables=vars)
     Help("""
