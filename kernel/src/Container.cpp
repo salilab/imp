@@ -37,7 +37,7 @@ namespace {
   DGConstVertexMap;
 }
 
-IMPEXPORT bool
+bool
 get_is_static_container(Container *c,
                         const DependencyGraph &dg,
                         const ParticlesTemp &pst) {

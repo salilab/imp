@@ -523,7 +523,16 @@ get_pruned_dependency_graph(const RestraintsTemp &rs);
 IMPEXPORT ScoreStatesTemp
 get_required_score_states(const RestraintsTemp &rs);
 
-
+#ifndef IMP_DOXYGEN
+class Container;
+/** Return true if the contents of the container doesn't depend on any
+    of the passed particles.
+*/
+IMPEXPORT bool
+get_is_static_container(Container *c,
+                        const DependencyGraph &dg,
+                        const ParticlesTemp &pst);
+#endif
 
 IMP_END_NAMESPACE
 
