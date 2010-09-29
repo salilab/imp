@@ -30,6 +30,9 @@ class IMPATOMEXPORT BondSingletonScore : public SingletonScore
 public:
   //! Use f to penalize deviations in length
   BondSingletonScore(UnaryFunction *f);
+  UnaryFunction *get_unary_function() const {
+    return f_;
+  }
   IMP_SINGLETON_SCORE(BondSingletonScore);
 };
 
