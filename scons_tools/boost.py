@@ -2,6 +2,7 @@
 
 from SCons.Script import Exit
 import checks
+import gcc
 
 def _check(context, version):
     # Boost versions are in format major.minor.subminor
@@ -27,7 +28,10 @@ def _check(context, version):
         """ % version_n, '.cpp')
     if ret[0]:
         context.Result(ret[1].replace("_", ".").split('\n')[0])
-        context.env['BOOST_VERSION']= ret[1].split('\n')[1]
+        try:
+            context.env['BOOST_VERSION']= ret[1].split('\n')[1]
+        except:
+            print "Bad boost version", repr(ret)
     return ret[0]
 
 def configure_check(env, version):
@@ -40,3 +44,27 @@ def configure_check(env, version):
         if env.get('BOOST_VERSION', None):
             env.Append(IMP_CONFIGURATION=["boostversion='"+env['BOOST_VERSION']+"'"])
         conf.Finish()
+
+
+def _tr1check(context):
+    context.Message('Checking if Boost and gcc tr1 coexist ...')
+    rett = context.TryCompile("""
+#include <tr1/tuple>
+#include <boost/tuple.hpp>
+    int main()
+    {
+    return 0;
+    }
+    """, '.cpp')
+    context.Result(rett)
+    return rett
+
+
+def configure_tr1_check(env):
+    custom_tests = {'CheckTR1':_tr1check}
+    conf = env.Configure(custom_tests=custom_tests)
+    if not conf.CheckTR1():
+        env['IMP_HAS_BOOST_TR1_BUG']=True
+    else:
+        pass
+    conf.Finish()
