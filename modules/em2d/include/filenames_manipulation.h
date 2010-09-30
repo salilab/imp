@@ -9,6 +9,7 @@
 
 #include "IMP/exception.h"
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem/exception.hpp>
 #include <boost/version.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
