@@ -18,12 +18,24 @@ IMPEM2D_BEGIN_NAMESPACE
 inline Strings read_selection_file(String fn) {
   String name;
   Strings names;
-  boost::filesystem::path fnp(fn);
+  boost::filesystem::path fnp;
+  try {
+    fnp=boost::filesystem::path(fn);
+  } catch (boost::filesystem::filesystem_error e) {
+    IMP_THROW("Error processing file name \"" << fn
+              << "\" got " << e.what(), IOException);
+  }
+  boost::filesystem::path dir;
+  try {
 #if BOOST_VERSION >= 103600
-  boost::filesystem::path dir= fnp.remove_filename();
+    dir= fnp.remove_filename();
 #else
-  boost::filesystem::path dir= fnp.branch_path();
+    dir= fnp.branch_path();
 #endif
+  } catch (boost::filesystem::filesystem_error e) {
+    IMP_THROW("Error splitting file name \"" << fnp
+              << "\" got " << e.what(), IOException);
+  }
   std::ifstream in;
   int not_ignored;
   in.open(fn.c_str(), std::ios::in);
@@ -34,13 +46,19 @@ inline Strings read_selection_file(String fn) {
 
   while(in >> name >> not_ignored) {
     if (not_ignored) {
-      boost::filesystem::path path=dir/boost::filesystem::path(name);
+      try {
+        boost::filesystem::path path=dir/boost::filesystem::path(name);
 #if BOOST_VERSION >= 103400
-      std::string str= path.file_string();
+        std::string str= path.file_string();
 #else
-      std::string str= path.native_file_string();
+        std::string str= path.native_file_string();
 #endif
-      names.push_back(str);
+        names.push_back(str);
+      } catch (boost::filesystem::filesystem_error e) {
+        IMP_THROW("Error processing entry \"" << name
+                  << "\" in file \"" <<  fnp
+                  << "\" got " << e.what(), IOException);
+      }
     }
   }
   in.close();
