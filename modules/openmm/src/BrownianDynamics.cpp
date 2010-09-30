@@ -34,7 +34,7 @@ SingletonContainer *BrownianDynamics::setup_particles() const
   if (sc_) {
     // check them
     atom::Diffusions(sc_->particles_begin(),
-                    sc_->particles_end());
+                     sc_->particles_end());
     return sc_;
   } else {
     container::ListSingletonContainer *lsc
@@ -81,75 +81,78 @@ bool handle_ev() {
 
 double BrownianDynamics::optimize(unsigned int ns) {
   try {
-  std::auto_ptr<OpenMM::System> system(new OpenMM::System());
+    std::auto_ptr<OpenMM::System> system(new OpenMM::System());
 
-  OpenMM::Platform::loadPluginsFromDirectory
-       (OpenMM::Platform::getDefaultPluginsDirectory());
+    OpenMM::Platform::loadPluginsFromDirectory
+      (OpenMM::Platform::getDefaultPluginsDirectory());
 
-  OpenMM::NonbondedForce* nonbond     = new OpenMM::NonbondedForce();
-  OpenMM::HarmonicBondForce* bondStretch = new OpenMM::HarmonicBondForce();
-  system->addForce(nonbond);
-  system->addForce(bondStretch);
-  using OpenMM::Vec3;
-  IMP::internal::OwnerPointer<SingletonContainer> sc= get_diffusing_particles();
-
-  std::vector<Vec3> initialPosInNm;
-  IMP_FOREACH_SINGLETON(sc, {
-      system->addParticle(atom::Mass(_1).get_mass());
-      nonbond->addParticle(0,
-                          core::XYZR(_1).get_radius()*OpenMM::NmPerAngstrom
-                          * OpenMM::SigmaPerVdwRadius,
-                          0      * OpenMM::KJPerKcal);// vdw energy
+    OpenMM::NonbondedForce* nonbond     = new OpenMM::NonbondedForce();
+    OpenMM::HarmonicBondForce* bondStretch = new OpenMM::HarmonicBondForce();
+    system->addForce(nonbond);
+    system->addForce(bondStretch);
+    using OpenMM::Vec3;
+    IMP::internal::OwnerPointer<SingletonContainer> sc
+      = get_diffusing_particles();
+    IMP_LOG(TERSE, "Performing BD on " << sc->get_number_of_particles()
+            << " particles." << std::endl);
+    std::vector<Vec3> initialPosInNm;
+    IMP_FOREACH_SINGLETON(sc, {
+        system->addParticle(atom::Mass(_1).get_mass());
+        nonbond->addParticle(0,
+                             core::XYZR(_1).get_radius()*OpenMM::NmPerAngstrom
+                             * OpenMM::SigmaPerVdwRadius,
+                             0      * OpenMM::KJPerKcal);// vdw energy
         // Convert the initial position to nm and append to the array.
-      algebra::Vector3D v= core::XYZ(_1).get_coordinates();
-      const Vec3 posInNm(v[0] * OpenMM::NmPerAngstrom,
-                         v[1] * OpenMM::NmPerAngstrom,
-                         v[2] * OpenMM::NmPerAngstrom);
-      initialPosInNm.push_back(posInNm);
-    });
-  IMP::internal::Map<Particle*, int> index;
-  IMP_FOREACH_SINGLETON(sc, {index[_1]= index.size();});
-  atom::internal::SpecialCaseRestraints scr(get_model(),sc->get_particles());
-  std::vector< std::pair<int,int> > bondPairs;
-  scr.add_restraint_set(get_model()->get_root_restraint_set(),
-                        boost::bind(handle_harmonic, index, bondPairs,
-                                    bondStretch,
-                                    _1, _2, _3),
-                        handle_ev);
-  nonbond->createExceptionsFromBonds(bondPairs, 1, 1);
-  //(bondPairs, Coulomb14Scale, LennardJones14Scale)
-  std::auto_ptr<OpenMM::BrownianIntegrator>
-    integrator(new OpenMM::BrownianIntegrator(si_.get_temperature(), 1,
-                                              si_.get_maximum_time_step()
-                                              * OpenMM::PsPerFs));
-  std::auto_ptr<OpenMM::Context>
-    context(new OpenMM::Context(*system, *integrator));
-  context->setPositions(initialPosInNm);
-  integrator->step(ns);
+        algebra::Vector3D v= core::XYZ(_1).get_coordinates();
+        const Vec3 posInNm(v[0] * OpenMM::NmPerAngstrom,
+                           v[1] * OpenMM::NmPerAngstrom,
+                           v[2] * OpenMM::NmPerAngstrom);
+        initialPosInNm.push_back(posInNm);
+      });
+    IMP::internal::Map<Particle*, int> index;
+    IMP_FOREACH_SINGLETON(sc, {index[_1]= index.size();});
+    get_model()->update();
+    atom::internal::SpecialCaseRestraints scr(get_model(),sc->get_particles());
+    std::vector< std::pair<int,int> > bondPairs;
+    scr.add_restraint_set(get_model()->get_root_restraint_set(),
+                          boost::bind(handle_harmonic, index, bondPairs,
+                                      bondStretch,
+                                      _1, _2, _3),
+                          handle_ev);
+    nonbond->createExceptionsFromBonds(bondPairs, 1, 1);
+    //(bondPairs, Coulomb14Scale, LennardJones14Scale)
+    std::auto_ptr<OpenMM::BrownianIntegrator>
+      integrator(new OpenMM::BrownianIntegrator(si_.get_temperature(), 1,
+                                                si_.get_maximum_time_step()
+                                                * OpenMM::PsPerFs));
+    std::auto_ptr<OpenMM::Context>
+      context(new OpenMM::Context(*system, *integrator));
+    context->setPositions(initialPosInNm);
+    integrator->step(ns);
 
-  int infoMask = 0;
-  infoMask = OpenMM::State::Positions;
-  // Forces are also available (and cheap).
+    int infoMask = 0;
+    infoMask = OpenMM::State::Positions;
+    // Forces are also available (and cheap).
 
-  const OpenMM::State state = context->getState(infoMask);
-  double timeInPs = state.getTime(); // OpenMM time is in ps already
-  si_.set_current_time(si_.get_current_time()+ timeInPs/OpenMM::PsPerFs);
-  // Copy OpenMM positions into atoms array and change units from nm
-  // to Angstroms.
-  const std::vector<Vec3>& positionsInNm = state.getPositions();
-  unsigned int i=0;
-  IMP_FOREACH_SINGLETON(sc, {
-      core::XYZ d(_1);
-      for (unsigned int j=0; j< 3; ++j) {
-        d.set_coordinate(j, positionsInNm[i][j] * OpenMM::AngstromsPerNm);
-      }
-      ++i;
-    });
+    const OpenMM::State state = context->getState(infoMask);
+    double timeInPs = state.getTime(); // OpenMM time is in ps already
+    si_.set_current_time(si_.get_current_time()+ timeInPs/OpenMM::PsPerFs);
+    // Copy OpenMM positions into atoms array and change units from nm
+    // to Angstroms.
+    const std::vector<Vec3>& positionsInNm = state.getPositions();
+    unsigned int i=0;
+    IMP_FOREACH_SINGLETON(sc, {
+        core::XYZ d(_1);
+        for (unsigned int j=0; j< 3; ++j) {
+          d.set_coordinate(j, positionsInNm[i][j] * OpenMM::AngstromsPerNm);
+        }
+        ++i;
+      });
   } catch (const std::exception& e) {
     IMP_THROW("OpenMM exception " << e.what(),
               ValueException);
   }
-    //platformName = omm->context->getPlatform().getName();
+  //platformName = omm->context->getPlatform().getName();
   return get_model()->evaluate(false);
 }
 

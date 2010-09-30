@@ -266,15 +266,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
                   dynamicsWorld.get(), rigid_bodies);
     }
   }
-  /**
-                               dynamicsWorld.get(),
-                               map, springs
-
-                               boost::bind(static_cast<double
-                                                (TripletScore::*)
-                        (const ParticleTriplet&,DerivativeAccumulator*) const>
-                               (&TripletScore::evaluate), s, _1, da))
-   */
+  get_model()->update();
   IMP::atom::internal::SpecialCaseRestraints scr(get_model(), ps);
   for (unsigned int i=0; i< rs_.size(); ++i) {
     scr.add_restraint_set(rs_[i],
