@@ -14,6 +14,17 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+namespace {
+  inline std::string
+  get_string_from_path(const boost::filesystem::path &path) {
+#if BOOST_VERSION >= 103400
+        return path.file_string();
+#else
+        return path.native_file_string();
+#endif
+  }
+}
+
 //! Reads a selection file, first column is a file name second is 1 if the
 //! file is selected, 0 if ignored
 inline Strings read_selection_file(String fn) {
@@ -34,7 +45,8 @@ inline Strings read_selection_file(String fn) {
     dir= fnp.branch_path();
 #endif
   } catch (boost::filesystem::filesystem_error e) {
-    IMP_THROW("Error splitting file name \"" << fnp
+    IMP_THROW("Error splitting file name \""
+              << get_string_from_path(fnp)
               << "\" got " << e.what(), IOException);
   }
   std::ifstream in;
@@ -49,15 +61,10 @@ inline Strings read_selection_file(String fn) {
     if (not_ignored) {
       try {
         boost::filesystem::path path=dir/boost::filesystem::path(name);
-#if BOOST_VERSION >= 103400
-        std::string str= path.file_string();
-#else
-        std::string str= path.native_file_string();
-#endif
-        names.push_back(str);
+        names.push_back(get_string_from_path(path));
       } catch (boost::filesystem::filesystem_error e) {
         IMP_THROW("Error processing entry \"" << name
-                  << "\" in file \"" <<  fnp
+                  << "\" in file \"" <<  get_string_from_path(fnp)
                   << "\" got " << e.what(), IOException);
       }
     }
