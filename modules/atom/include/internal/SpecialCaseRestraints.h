@@ -103,7 +103,8 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     PairScore *ps= pr->get_score();
     double x0, k;
     if (get_harmonic_info(ps, pr->get_argument(), x0, k)) {
-      if (fh(pr->get_argument(), x0, k)) {
+      ParticlePair pp=pr->get_argument();
+      if (fh(pp, x0, k)) {
         restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
       }
     }
