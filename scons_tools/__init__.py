@@ -317,6 +317,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(GetInstallDirectory)
     #col = colorizer.colorizer()
     #col.colorize(env)
+    env['PYTHONPATH'] = '#/build/lib'
     if env.get('pythonpath', None):
         env['PYTHONPATH'] = os.path.pathsep.join(['#/build/lib']+[env['PYTHONPATH']])
     env['all_modules']=[]
