@@ -13,6 +13,7 @@
 
 #ifdef IMP_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
+#include <boost/filesystem/exception.hpp>
 #include <boost/version.hpp>
 #endif
 
@@ -120,6 +121,34 @@ std::string get_example_path(std::string module, std::string file_name)
               IOException);
   }
   return path;
+}
+
+
+std::string get_directory_path(std::string fileordirectory) {
+#ifdef IMP_USE_BOOST_FILESYSTEM
+  try {
+    boost::filesystem::path fnp(fileordirectory);
+    boost::filesystem::path dir=
+#if BOOST_VERSION >= 103600
+      fnp.remove_filename();
+#else
+      fnp.branch_path();
+#endif
+    return to_string(dir);
+  } catch (boost::filesystem::filesystem_error e) {
+    IMP_THROW("Error splitting file name \""
+              << fileordirectory
+              << "\" got " << e.what(), IOException);
+  }
+#else
+  for (int i = fileordirectory.size()-1; i>=0; --i) {
+    if (fileordirectory[i] == '/'
+        || fileordirectory[i] == '\\') {
+      return std::string(fileordirectory, 0, i);
+    }
+  }
+  return std::string();
+#endif
 }
 
 IMP_END_INTERNAL_NAMESPACE

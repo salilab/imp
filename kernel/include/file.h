@@ -174,6 +174,17 @@ IMP_VALUES(TextOutput,TextOutputs);
 IMPEXPORT TextOutput create_temporary_file(std::string prefix="imp_temp",
                                            std::string suffix="");
 
+
+/** Return a path to a file relative to another file. For example
+    if base is path/to/config.file and relative is data/image0.jpg
+    then the return value would be path/to/data/image0.jpg. This
+    function should be used when processing configuration files so
+    that the meaning of the configuration file does not change if
+    current working directory changes.
+*/
+IMPEXPORT std::string get_relative_path(std::string base,
+                                   std::string relative);
+
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */

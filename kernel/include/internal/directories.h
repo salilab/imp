@@ -33,6 +33,7 @@ IMPEXPORT void set_backup_data_path(std::string path) ;
 IMPEXPORT std::string get_concatenated_path(std::string part0,
                                              std::string part1);
 
+IMPEXPORT std::string get_directory_path(std::string fileordirectory);
 
 IMP_END_INTERNAL_NAMESPACE
 

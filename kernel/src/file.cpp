@@ -7,10 +7,10 @@
  */
 
 #include <IMP/file.h>
+#include <IMP/internal/directories.h>
 #include <cstdlib>
 //#include <unistd.h>
 #include <boost/scoped_array.hpp>
-#include <IMP/internal/directories.h>
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
@@ -187,5 +187,14 @@ TextOutput create_temporary_file(std::string prefix,
 #endif
 }
 
+namespace {
+
+}
+
+std::string get_relative_path(std::string base,
+                                   std::string relative) {
+  std::string dir= internal::get_directory_path(base);
+  return internal::get_concatenated_path(dir, relative);
+}
 
 IMP_END_NAMESPACE
