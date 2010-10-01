@@ -19,6 +19,9 @@ ExampleRestraint::ExampleRestraint(PairScore* score_func,
   f_->set_was_used(true);
 }
 
+
+/* Apply the pair score to each particle pair listed in the container.
+ */
 double
 ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
@@ -32,8 +35,8 @@ ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-/* We also need to know which particles are used (as some are
-   used, but don't create interactions). */
+/* Return all particles whose attributes are read by the restraints. To
+   do this, ask the pair score what particles it uses.*/
 ParticlesTemp ExampleRestraint::get_input_particles() const
 {
   ParticlesTemp ret;
@@ -49,6 +52,7 @@ ParticlesTemp ExampleRestraint::get_input_particles() const
   return ret;
 }
 
+/* The only container used is pc_. */
 ContainersTemp ExampleRestraint::get_input_containers() const
 {
   return ContainersTemp(1, pc_);
