@@ -1133,7 +1133,7 @@ private:                                                        \
 #endif
 
 //! Define the basic things you need for a Restraint.
-/** In addition to the methods defined by IMP::Object
+/** In addition to the methods defined by IMP_OBJECT
     it declares
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::get_input_containers()
