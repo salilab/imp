@@ -297,9 +297,16 @@ void setup_filters(const Subset &s,
     }
     {
       current_digit=0;
+      unsigned int sz= states_.size();
       SubsetState to_push(cur);
       IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
-      states_.push_back(to_push);
+      try {
+        states_.push_back(to_push);
+      } catch (std::bad_alloc) {
+        IMP_THROW("Ran out of memory when enumerating states for " << s
+                  << " with " << sz << " states found so far."
+                  << " Last state is " << to_push, ValueException);
+      }
     }
   increment:
     //std::cout << "Incrementing " << cur << " on "
@@ -318,7 +325,16 @@ void setup_filters(const Subset &s,
     }
     //done:
     std::sort(states_.begin(), states_.end());
-    IMP_LOG(TERSE, "found " << states_.size() << std::endl);
+    IMP_IF_LOG(TERSE) {
+      std::size_t possible=1;
+      for (unsigned int i=0; i< s.size(); ++i) {
+        Pointer<ParticleStates> ps= table->get_particle_states(s[i]);
+        possible= possible*ps->get_number_of_particle_states();
+      }
+      IMP_LOG(TERSE, "In total found " << states_.size()
+              << " for subset " << s << " of " << possible
+              << " possible states." << std::endl);
+    }
   }
 
 }
@@ -327,7 +343,14 @@ void setup_filters(const Subset &s,
 BranchAndBoundSubsetStatesTable
 ::BranchAndBoundSubsetStatesTable(ParticleStatesTable *pst,
                                   const SubsetFilterTables &sft):
-  pst_(pst), sft_(sft){}
+  pst_(pst), sft_(sft){
+  IMP_LOG(TERSE, "Created BranchAndBoundSubsetStates with filters: ");
+  IMP_IF_LOG(TERSE) {
+    for (unsigned int i=0; i< sft.size(); ++i) {
+      IMP_LOG(TERSE, *sft[i] << std::endl);
+    }
+  }
+}
 
 
 SubsetStates BranchAndBoundSubsetStatesTable
