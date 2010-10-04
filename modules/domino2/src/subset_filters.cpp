@@ -46,7 +46,7 @@ namespace {
   bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
     IMP_OBJECT_LOG;
     set_was_used(true);
-    const bool ok=data_.get_is_ok(state);
+    const bool ok=data_.get_is_ok(state, max_);
     IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
             << (ok?" accepted":" rejected")
             << " state " << state << std::endl);
