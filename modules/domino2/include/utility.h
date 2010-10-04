@@ -53,15 +53,6 @@ get_dependent_particles(Particle *p,
 
 
 class ParticleStatesTable;
-/** A static container is one such as a container::ListSingletonContainer, whose
-    contents will not change as optimized particles are moved around. More
-    technically, it is one which either is not written by any score state or,
-    any score state which writes it does not depend on optimized particles.
- */
-IMPDOMINO2EXPORT bool
-get_is_static_container(Container *c,
-                        const DependencyGraph &dg,
-                        const ParticlesTemp &particles);
 
 
 /** Load the appropriate state for each particle in a Subset. */
