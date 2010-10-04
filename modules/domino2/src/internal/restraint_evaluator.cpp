@@ -132,9 +132,11 @@ double SubsetData::get_score(const SubsetState &state) const {
   return score;
 }
 
-bool SubsetData::get_is_ok(const SubsetState &state) const {
+bool SubsetData::get_is_ok(const SubsetState &state,
+                           double total_max) const {
   /*std::cout << "For subset " << s_ << " got state "
     << state << std::endl;*/
+  double total=0;
   for (unsigned int i=0; i< ris_.size(); ++i) {
     Ints ssi(indices_[i].size());
     for (unsigned int j=0; j< ssi.size();++j) {
@@ -150,7 +152,13 @@ bool SubsetData::get_is_ok(const SubsetState &state) const {
     if (ms >= std::numeric_limits<double>::max()) {
       return false;
     }
+    total+=ms;
+    if (total > total_max) {
+      return false;
+    }
   }
+  std::cout << "Total score is " << total << " max is " << total_max
+            << " for state " << state << std::endl;
   return true;
 }
 

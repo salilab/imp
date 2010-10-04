@@ -106,7 +106,7 @@ public:
              std::vector<Ints> indices,
              const Subset &s): md_(md), ris_(ris), indices_(indices), s_(s){}
   double get_score(const SubsetState &state) const;
-  bool get_is_ok(const SubsetState &state) const;
+  bool get_is_ok(const SubsetState &state, double max) const;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
