@@ -55,7 +55,6 @@ namespace {
 DensityMap *create_density_map(int nx,int ny,int nz,
                                  double spacing) {
     Pointer<DensityMap> ret(new DensityMap());
-    unsigned int n[3];
     ret->set_void_map(nx,ny,nz);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
@@ -1113,7 +1112,6 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   const DensityHeader *from_header = from_map->get_header();
   int from_nx=from_header->get_nx();
   int from_ny=from_header->get_ny();
-  int from_nz=from_header->get_nz();
   int to_nx=nx_end-nx_start+1;
   int to_ny=ny_end-ny_start+1;
   int to_nz=nz_end-nz_start+1;
@@ -1132,6 +1130,9 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   //create a new map
   DensityMap * to_map =
     create_density_map(to_nx,to_ny,to_nz,from_header->get_spacing());
+  to_map->set_origin(
+   from_map->get_location_by_voxel(
+                from_map->xyz_ind2voxel(nx_start,ny_start,nz_start)));
   emreal *to_data=to_map->get_data();
   emreal *from_data=from_map->get_data();
   //copy data
