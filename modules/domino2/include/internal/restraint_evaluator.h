@@ -97,18 +97,26 @@ class ModelData;
 class IMPDOMINO2EXPORT SubsetData {
   const ModelData *md_;
   Ints ris_;
+  Ints total_ris_;
   std::vector<Ints> indices_;
+  std::vector<Ints> total_indices_;
   Subset s_;
 public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
+             const Ints &total_ris,
              std::vector<Ints> indices,
-             const Subset &s): md_(md), ris_(ris), indices_(indices), s_(s){}
+             std::vector<Ints> total_indices,
+             const Subset &s): md_(md), ris_(ris), total_ris_(total_ris),
+    indices_(indices), total_indices_(total_indices), s_(s){}
   double get_score(const SubsetState &state) const;
   bool get_is_ok(const SubsetState &state, double max) const;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
+  }
+  unsigned int get_number_of_total_restraints() const {
+    return ris_.size() + total_ris_.size();
   }
   Subset get_subset() const {return s_;}
 };
