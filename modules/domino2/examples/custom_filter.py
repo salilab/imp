@@ -54,6 +54,12 @@ class MyFilterTable(IMP.domino2.SubsetFilterTable):
         def get_strength(self):
             # return the maximum value since it dictates the position
             return 1
+        def get_version_info(self):
+            return IMP.domino2.get_module_version_info()
+        def get_type_name(self):
+            return "MyFilter"
+        def do_show(self, stream):
+            pass
     def __init__(self, p, s):
         IMP.domino2.SubsetFilterTable.__init__(self, "MFT"+p.get_name()+" at "+str(s))
         self.p=p
@@ -65,6 +71,14 @@ class MyFilterTable(IMP.domino2.SubsetFilterTable):
             return self.MyFilter(list(subset).index(self.p), self.s)
         else:
             return None
+    def get_version_info(self):
+        return IMP.domino2.get_module_version_info()
+    def get_type_name(self):
+        return "MyFilterTable"
+    def do_show(self, stream):
+        pass
+
+
 
 def create_sampler(m, ps, pst):
     s=IMP.domino2.DominoSampler(m, pst)
