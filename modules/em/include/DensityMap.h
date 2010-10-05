@@ -462,6 +462,10 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
 IMPEMEXPORT DensityMap *create_density_map(
                                            const algebra::BoundingBox3D &bb,
                                            double spacing);
+//! Create an empty density map
+IMPEMEXPORT DensityMap *create_density_map(
+                                           int nx,int ny,int nz,
+                                           double spacing);
  //! Calculate a bounding box around a 3D point within the EM grid
  /**
 \param[in] d_map the density map
@@ -559,6 +563,19 @@ inline bool get_interiors_intersect(const DensityMap *d1,
 */
 // IMPEMEXPORT statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);
+
+
+//! Get a segment of the map according to xyz indexes
+/**
+\note the output map will be cover
+the region [[nx_start,nx_end],[]ny_start,ny_end,[nz_start,nz_end]]
+ */
+IMPEMEXPORT DensityMap* get_segment(DensityMap *map_to_segment,
+                                    int nx_start,int nx_end,
+                                    int ny_start,int ny_end,
+                                    int nz_start,int nz_end);
+
+
 
 IMPEM_END_NAMESPACE
 
