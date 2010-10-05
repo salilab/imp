@@ -157,8 +157,6 @@ bool SubsetData::get_is_ok(const SubsetState &state,
       return false;
     }
   }
-  std::cout << "Total score is " << total << " max is " << total_max
-            << " for state " << state << std::endl;
   return true;
 }
 
