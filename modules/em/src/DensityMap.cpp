@@ -10,9 +10,10 @@
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/XplorReaderWriter.h>
 #include <IMP/em/EMReaderWriter.h>
+#include <IMP/em/SpiderReaderWriter.h>
 #include <IMP/Pointer.h>
-#include <boost/algorithm/string/predicate.hpp>
-#include <climits>
+//#include <boost/algorithm/string/predicate.hpp>
+//#include <climits>
 
 IMPEM_BEGIN_NAMESPACE
 namespace {
@@ -42,6 +43,20 @@ namespace {
     }
     ret->set_void_map(n[0], n[1], n[2]);
     ret->set_origin(bb.get_corner(0));
+    ret->update_voxel_size(spacing);
+    ret->get_header_writable()->compute_xyz_top();
+    IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
+            << " " << n[2] << " and spacing " << ret->get_spacing()
+            << std::endl);
+    return ret.release();
+  }
+
+
+DensityMap *create_density_map(int nx,int ny,int nz,
+                                 double spacing) {
+    Pointer<DensityMap> ret(new DensityMap());
+    unsigned int n[3];
+    ret->set_void_map(nx,ny,nz);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
     IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
@@ -136,13 +151,17 @@ void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
 
 DensityMap* read_map(const char *filename) {
   std::string name(filename);
-  if (boost::algorithm::ends_with(name, std::string(".mrc"))) {
+  std::string suf=name.substr(name.length()-4,4);
+  if (suf.compare(std::string(".mrc"))==0) {
     MRCReaderWriter rw;
     return read_map(filename, rw);
-  } else if (boost::algorithm::ends_with(name, std::string(".em"))) {
+  } else if (suf.compare(std::string(".em"))==0) {
     EMReaderWriter rw;
     return read_map(filename, rw);
-  } else if (boost::algorithm::ends_with(name, std::string(".xplor"))) {
+  } else if (suf.compare(std::string(".vol"))==0) {
+    SpiderMapReaderWriter rw;
+    return read_map(filename, rw);
+  } else if (suf.compare(std::string(".xplor"))==0) {
     XplorReaderWriter rw;
     return read_map(filename, rw);
   } else {
@@ -1085,6 +1104,52 @@ int DensityMap::get_dim_index_by_location(const algebra::VectorD<3> &v,
   IMP_INTERNAL_CHECK(is_part_of_volume(v),
                      "location outside of map boundaries\n");
   return get_dim_index_by_location(v[ind],ind);
+}
+
+IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
+                                    int nx_start,int nx_end,
+                                    int ny_start,int ny_end,
+                                    int nz_start,int nz_end) {
+  const DensityHeader *from_header = from_map->get_header();
+  int from_nx=from_header->get_nx();
+  int from_ny=from_header->get_ny();
+  int from_nz=from_header->get_nz();
+  int to_nx=nx_end-nx_start+1;
+  int to_ny=ny_end-ny_start+1;
+  int to_nz=nz_end-nz_start+1;
+  IMP_USAGE_CHECK(nx_start>=0 && nx_start<from_nx,
+                  "nx start index is out of boundaries\n");
+  IMP_USAGE_CHECK(nx_end>=0   && nx_end<from_nx,
+                  "nx end index is out of boundaries\n");
+  IMP_USAGE_CHECK(ny_start>=0 && ny_start<from_ny,
+                  "ny start index is out of boundaries\n");
+  IMP_USAGE_CHECK(ny_end>=0   && ny_end<from_ny,
+                  "ny end index is out of boundaries\n");
+  IMP_USAGE_CHECK(nz_start>=0 && nz_start<from_nz,
+                  "nz start index is out of boundaries\n");
+  IMP_USAGE_CHECK(nz_end>=0   && nz_end<from_nz,
+                  "nz end index is out of boundaries\n");
+  //create a new map
+  DensityMap * to_map =
+    create_density_map(to_nx,to_ny,to_nz,from_header->get_spacing());
+  emreal *to_data=to_map->get_data();
+  emreal *from_data=from_map->get_data();
+  //copy data
+  long from_ind_z,to_ind_z;
+  long from_ind,to_ind;
+  for(int iz=nz_start;iz<=nz_end;iz++){
+    from_ind_z=iz*from_nx*from_ny;
+    to_ind_z=(iz-nz_start)*to_nx*to_ny;
+    for(int iy=ny_start;iy<=ny_end;iy++){
+      from_ind=from_ind_z+iy*from_nx+nx_start;
+      to_ind=to_ind_z+(iy-ny_start)*to_nx;
+      for(int ix=nx_start;ix<=nx_end;ix++){
+        to_data[to_ind]=from_data[from_ind];
+        ++to_ind;++from_ind;
+      }
+    }
+  }
+  return to_map;
 }
 
 IMPEM_END_NAMESPACE
