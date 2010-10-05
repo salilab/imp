@@ -81,6 +81,8 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
     ParticleIndex pi= get_index(s);
     Ints ris;
     std::vector<Ints> inds;
+    Ints total_ris;
+    std::vector<Ints> total_inds;
     //std::cout << "Find data for subset " << s << std::endl;
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
@@ -101,10 +103,16 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
           for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
             inds.back().push_back(pi.find(dependencies_[i][j])->second);
           }
+        } else {
+          total_ris.push_back(i);
+          total_inds.push_back(Ints());
+          for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
+            total_inds.back().push_back(pi.find(dependencies_[i][j])->second);
+          }
         }
       }
     }
-    sdata_[id]= SubsetData(this, ris, inds, s);
+    sdata_[id]= SubsetData(this, ris, total_ris, inds,total_inds, s);
   }
   return sdata_.find(id)->second;
 }
@@ -157,6 +165,27 @@ bool SubsetData::get_is_ok(const SubsetState &state,
       return false;
     }
   }
+  if (total_max < std::numeric_limits<double>::max()) {
+    for (unsigned int i=0; i< total_ris_.size(); ++i) {
+      Ints ssi(total_indices_[i].size());
+      for (unsigned int j=0; j< ssi.size();++j) {
+        ssi[j]= state[total_indices_[i][j]];
+      }
+      SubsetState ss(ssi);
+      ParticlesTemp ps(ss.size());
+      for (unsigned int j=0; j< ss.size(); ++j) {
+        ps[j]= s_[total_indices_[i][j]];
+      }
+      double ms=md_->rdata_[total_ris_[i]].get_score<true>(md_->pst_,
+                                                           ps, ss);
+      total+=ms;
+      if (total > total_max) {
+        return false;
+      }
+    }
+  }
+  std::cout << "Total score is " << total << " max is " << total_max
+            << " for state " << state << " with subset " << s_ << std::endl;
   return true;
 }
 

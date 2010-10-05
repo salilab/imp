@@ -71,6 +71,9 @@ class IMPDOMINO2EXPORT ModelSubsetEvaluatorTable:
   ModelSubsetEvaluatorTable(Model *m, ParticleStatesTable *pst);
   //! Only evaluate the restraints in rs
   ModelSubsetEvaluatorTable(RestraintSet *rs, ParticleStatesTable *pst);
+  Model *get_model() const {
+    return data_.get_model();
+  }
   IMP_SUBSET_EVALUATOR_TABLE(ModelSubsetEvaluatorTable);
 };
 
