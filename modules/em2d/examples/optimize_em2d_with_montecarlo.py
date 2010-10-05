@@ -100,10 +100,18 @@ em_images =em.read_images(images_to_read_names,srw)
 print len(em_images),"images read"
 
 em2d_restraint = em2d.Em2DRestraint()
-apix=1.5
+apix=1.5 # sampling rate of the available EM images
+# resolution at which you want to generate the projections of the model
+# In principle you want "perfect" projections, so use the highest resolution
 resolution=1
+# Number of projections to use for the initial registration
+#  (coarse registration) to estimate the registration parameters
 n_projections=20
+# This method (recommended) uses preprocessing of the images and projections
+# to speed-up the registration
 coarse_registration_method = 1
+# use true if you want to save the projections from the model that best
+# match the Em images
 save_match_images = False
 em2d_restraint.initialize(apix,resolution,n_projections,
                 coarse_registration_method,save_match_images)
