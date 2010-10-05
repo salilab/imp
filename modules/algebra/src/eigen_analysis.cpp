@@ -76,5 +76,35 @@ Transformation3Ds get_alignments_from_first_to_second(
   }//i1
   return all_trans;
 }
-
+void PrincipalComponentAnalysis::show(std::ostream& out) const {
+  algebra::Vector3D v1,v2;
+  out << "<marker_set>" << std::endl;
+  out<<"<!-- PCA with eigen values: ("<<
+    std::sqrt(eigen_values_[0])<<","<<std::sqrt(eigen_values_[1])<<","
+     <<std::sqrt(eigen_values_[2])<<") and centroid ("<<centroid_[0]<<","
+     <<centroid_[1]<<","<<centroid_[2]<<") -->"<<std::endl;
+  int ind=1;
+  float radius=2.;
+  for (unsigned int i=0;i<3;i++) {
+    float val=std::sqrt(eigen_values_[i]);
+    v1=centroid_-val*eigen_vecs_[i];
+    v2=centroid_+val*eigen_vecs_[i];
+    out << "<marker id=\"" << ind++ << "\""
+        << " x=\"" << v1[0] << "\""
+        << " y=\"" << v1[1] << "\""
+        << " z=\"" << v1[2] << "\""
+        << " radius=\"" << radius << "\"/>" << std::endl;
+    out << "<marker id=\"" << ind++ << "\""
+        << " x=\"" << v2[0] << "\""
+        << " y=\"" << v2[1] << "\""
+        << " z=\"" << v2[2] << "\""
+        << " radius=\"" << radius << "\"/>" << std::endl;
+  }
+  for (unsigned int i=1;i<4;i++) {
+    out << "<link id1= \"" << i*2-1
+        << "\" id2=\""     << i*2
+        << "\" radius=\""<<radius<<"\"/>" << std::endl;
+  }
+  out << "</marker_set>" << std::endl;
+}
 IMPALGEBRA_END_NAMESPACE
