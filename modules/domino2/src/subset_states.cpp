@@ -286,6 +286,9 @@ void setup_filters(const Subset &s,
         }
         IMP_CHECK_OBJECT(filters[i][j]);
         if (!filters[i][j]->get_is_ok(state)) {
+          IMP_LOG(VERBOSE, "Rejected state " << state
+                  << " on prefix subset " << subset << " due to filter "
+                  << *filters[i][j] << std::endl);
           goto bad;
         }
       }
