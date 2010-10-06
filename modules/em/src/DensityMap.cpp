@@ -58,8 +58,8 @@ DensityMap *create_density_map(int nx,int ny,int nz,
     ret->set_void_map(nx,ny,nz);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
-    IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
-            << " " << n[2] << " and spacing " << ret->get_spacing()
+    IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
+            << " " << nz << " and spacing " << ret->get_spacing()
             << std::endl);
     return ret.release();
   }
