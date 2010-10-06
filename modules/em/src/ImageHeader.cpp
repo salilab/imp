@@ -128,6 +128,9 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
 
   unsigned long usfNcol = (unsigned long) header_.fNcol;
   unsigned long usfNrow = (unsigned long) header_.fNrow;
+  if (usfNcol==0 || usfNrow==0) {
+    IMP_THROW("Zero size read for image", IOException);
+  }
   unsigned long usfNslice = (unsigned long) header_.fNslice;
   unsigned long usfHeader = (unsigned long) get_header_size();
 
