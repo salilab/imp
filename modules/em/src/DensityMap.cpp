@@ -1115,6 +1115,9 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   int to_nx=nx_end-nx_start+1;
   int to_ny=ny_end-ny_start+1;
   int to_nz=nz_end-nz_start+1;
+  IMP_IF_CHECK(USAGE) {
+  int from_nz=from_header->get_nz();
+
   IMP_USAGE_CHECK(nx_start>=0 && nx_start<from_nx,
                   "nx start index is out of boundaries\n");
   IMP_USAGE_CHECK(nx_end>=0   && nx_end<from_nx,
@@ -1127,6 +1130,7 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
                   "nz start index is out of boundaries\n");
   IMP_USAGE_CHECK(nz_end>=0   && nz_end<from_nz,
                   "nz end index is out of boundaries\n");
+  }
   //create a new map
   DensityMap * to_map =
     create_density_map(to_nx,to_ny,to_nz,from_header->get_spacing());
