@@ -58,7 +58,11 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   //! Open a new file with the given name
   /** Set it to "" to close. */
   virtual void set_file_name(std::string name) {
-    set_output(TextOutput(name));
+    if (!name.empty()) {
+      set_output(TextOutput(name));
+    } else {
+      set_output(TextOutput());
+    }
   }
 
   virtual void set_output(TextOutput f) {
