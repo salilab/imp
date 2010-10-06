@@ -38,14 +38,22 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
   core::XYZRs ps_;
   typedef std::pair<std::vector<btScalar>, Ints > Obstacle;
   mutable std::vector<Obstacle> obstacles_;
+  void set_xyzrs_internal(const core::XYZRsTemp &ps);
+  double local_;
 public:
   ResolveCollisionsOptimizer(Model *m);
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
-
-  void set_xyzrs(const core::XYZRsTemp &ps);
+  void set_xyzrs(const ParticlesTemp &ps) {
+    set_xyzrs_internal(core::XYZRsTemp(ps,
+                  IMP::core::XYZR::get_default_radius_key()));
+  }
 
   void add_obstacle(const algebra::Vector3Ds &vertices,
                     const std::vector<Ints > &tris);
+
+  void set_local_stiffness(double tf) {
+    local_= tf;
+  }
 
   IMP_OPTIMIZER(ResolveCollisionsOptimizer);
 };
