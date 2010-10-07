@@ -644,6 +644,22 @@ void DensityMap::add(const DensityMap &other) {
   }
 }
 
+void DensityMap::pick_max(const DensityMap &other) {
+  //check that the two maps have the same dimensions
+  IMP_USAGE_CHECK(same_voxel_size(other),
+            "The voxel sizes of the two maps differ ( "
+            << header_.get_spacing() << " != "
+            << other.header_.get_spacing());
+  //TODO - add dimension test
+  long size = header_.get_number_of_voxels();
+  emreal *other_data = other.get_data();
+  for (long i=0;i<size;i++){
+    if (data_[i]<other_data[i]) {
+      data_[i]=other_data[i];
+    }
+  }
+}
+
 
 void DensityMap::pad(int nx, int ny, int nz,float val) {
 

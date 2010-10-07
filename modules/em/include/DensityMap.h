@@ -304,6 +304,13 @@ public:
    */
   void add(const DensityMap &other);
 
+  //! Pick the max value between two corresponding voxels between two maps
+  //! The result is kept in the map.
+  /** \param[in] other the other map
+      \note The two maps should have the same voxelsize and the same dimensions
+   */
+  void pick_max(const DensityMap &other);
+
   long get_number_of_voxels() const;
 
   //! Set the map dimension and reset all voxels to 0
