@@ -179,6 +179,18 @@ IMP_SWIG_VALUE_CHECKS(Namespace, PluralName);
 
 %define IMP_SWIG_BASE_OBJECT(Namespace, Name, PluralName)
 IMP_SWIG_OBJECT(Namespace, Name, PluralName);
+%extend Namespace::Name {
+  %pythoncode %{
+    def get_type_name(self):
+        return self.__class__.__name__
+    def do_show(self, out):
+        pass
+    def get_version_info(self):
+        if #Namespace == "IMP":
+          return VersionInfo("python", "0")
+        else:
+          return IMP.VersionInfo("python", "0")%}
+}
 IMP_SWIG_DIRECTOR(Namespace, Name);
 %enddef
 

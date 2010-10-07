@@ -6,10 +6,6 @@ class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
     def unprotected_evaluate(self, accum):
         return 0.
-    def do_show(self, fh):
-        fh.write("DummyRestraint")
-    def get_type_name(self):
-        return "DummyRestraint"
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
@@ -25,10 +21,6 @@ class FailingRestraint(IMP.Restraint):
     """Restraint that fails in evaluate"""
     def unprotected_evaluate(self, accum):
         raise CustomError("Custom error message")
-    def do_show(self, fh):
-        fh.write("FailingRestraint")
-    def get_type_name(self):
-        return "FailingRestraint"
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
@@ -42,12 +34,6 @@ class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
     def update(self):
         pass
-    def do_show(self, fh):
-        fh.write("DummyScoreState")
-    def get_type_name(self):
-        return "DummyScoreState"
-    def get_version_info(self):
-        return IMP.get_module_version_info()
     def get_input_particles(self):
         return IMP.ParticlesTemp()
     def get_output_particles(self):
