@@ -37,7 +37,9 @@ namespace IMP {
 %warnfilter(403) Constraint;
 %warnfilter(473) Sampler;
 }
-IMP_SWIG_BASE_OBJECT(IMP,Object, Objects);
+// to avoid extend clash
+IMP_SWIG_OBJECT(IMP, Object, Objects);
+IMP_SWIG_DIRECTOR(IMP, Object);
 IMP_SWIG_BASE_OBJECT(IMP,Constraint, Constraints);
 IMP_SWIG_BASE_OBJECT(IMP,Container, Containers);
 IMP_SWIG_BASE_OBJECT(IMP,FailureHandler, FailureHandlers);

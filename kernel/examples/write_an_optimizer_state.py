@@ -6,12 +6,6 @@ class MyOptimizerState(IMP.OptimizerState):
         IMP.OptimizerState.__init__(self)
     def update(self):
         self.get_optimizer().get_model().show_restraint_score_statistics()
-    def get_version_info(self):
-        return IMP.VersionInfo("no module", "no version")
-    def get_type_name(self):
-        return "MyRestraint"
-    def do_show(self, stream):
-        print >> stream, ps
 
 # some code to create and evaluate it
 k= IMP.FloatKey("a key")
