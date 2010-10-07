@@ -65,9 +65,6 @@ class IMPEXPORT Optimizer: public Object
   double get_score_threshold() const {return min_score_;}
   /** @} */
 
-  //! \return version and authorship information.
-  virtual VersionInfo get_version_info() const = 0;
-
   //! Get the model being optimized
   Model *get_model() const {
     return model_.get();
