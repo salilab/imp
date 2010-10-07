@@ -81,7 +81,7 @@ public:
       level to the local one for this object and increase
       the current indent.
    */
-  void set_log_level(LogLevel l) {
+  virtual void set_log_level(LogLevel l) {
     IMP_USAGE_CHECK(l <= MEMORY && l >= DEFAULT, "Setting to invalid log level "
               << l);
 #if IMP_BUILD < IMP_FAST
@@ -137,7 +137,7 @@ public:
 #endif // IMP_DOXYGEN
 
   //! Get information about the module and version of the object
-  virtual VersionInfo get_version_info() const=0;
+  virtual IMP::VersionInfo get_version_info() const=0;
 
  /** @name Names
       All objects have names to aid in debugging and inspection
