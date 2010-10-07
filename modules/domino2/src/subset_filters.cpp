@@ -88,8 +88,6 @@ RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
   set_was_used(true);
-  bool has_max=(mset_->get_model()->get_maximum_score()
-    < std::numeric_limits<double>::max());
   // if there are no restraints just here, the total score can't change
   if (mset_->data_.get_subset_data(s, excluded)
       .get_number_of_restraints() ==0) return NULL;
