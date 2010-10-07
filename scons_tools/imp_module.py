@@ -610,6 +610,9 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
     add_to_global_alias(env, 'test', 'test')
+    # Ensure that examples are installed before tests are run, since some
+    # tests exercise the examples
+    env.Requires(test, '#/build/doc/examples/' + env['IMP_MODULE'])
 
 def check_libraries_and_headers(env, libraries, headers):
     rlibraries=[x for x in libraries]
