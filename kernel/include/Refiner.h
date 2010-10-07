@@ -61,9 +61,6 @@ public:
   /** @} */
 #endif
 
-  //! Get information about the author and version
-  virtual IMP::VersionInfo get_version_info() const =0;
-
   //! Return the set of particles used when refining particle p
   virtual ParticlesTemp get_input_particles(Particle *) const=0;
 
