@@ -38,6 +38,9 @@ def _action_patch_swig_wrap(target, source, env):
         line = line.replace('"swig::SwigPyIterator *"', repl2)
         line = line.replace(orig, repl)
         line = line.replace("wrap.h-in", "wrap.h")
+        # for some reason swig has issues with directors and VersionInfo
+        # when %extend is used
+        line = line.replace(" VersionInfo ", " IMP::VersionInfo ")
         line = line.replace("<:", "< :") # swig generates bad C++ code
         fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
     fh.close()
