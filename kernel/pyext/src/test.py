@@ -284,6 +284,24 @@ class TestCase(unittest.TestCase):
                           "Classes %s do not have show methods" \
                           % str(not_found))
 
+    def run_example(self, filename):
+        """Run the named example script.
+           A dictionary of all the script's global variables is returned.
+           This can be queried in a test case to make sure the example
+           performed correctly."""
+        class _FatalError(Exception): pass
+
+        vars = {}
+        try:
+            exec open(filename) in vars
+        # Catch sys.exit() called from within the example; a non-zero exit
+        # value should cause the test case to fail
+        except SystemExit, e:
+            if e.code != 0 and e.code is not None:
+                raise _FatalError("Example exit with code %s" % str(e.code))
+
+        return vars
+
 
 class _TestResult(unittest.TextTestResult):
     def getDescription(self, test):

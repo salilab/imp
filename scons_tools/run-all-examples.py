@@ -1,49 +1,8 @@
+import IMP.test
+from IMP.test import unittest
 import sys
-import time
 import os
 import re
-import traceback
-
-def format_exc(limit=None):
-    # Note that the traceback module in Python 2.3 does not have the format_exc
-    # function. We thus provide our own (ported from Python 2.6) so that the
-    # build functions correctly on Python 2.3.
-    try:
-        etype, value, tb = sys.exc_info()
-        return ''.join(traceback.format_exception(etype, value, tb, limit))
-    finally:
-        etype = value = tb = None
-
-
-def main(disabled_modules, files):
-    starttime = time.time()
-    errs = []
-    for f in files:
-        run_example(f, disabled_modules, errs)
-    runtime = time.time() - starttime
-    for e in errs:
-        print_error(e)
-
-    print >> sys.stderr, "\n" + "-" * 70
-    suffix = ""
-    if len(files) != 1:
-        suffix = "s"
-    print >> sys.stderr, "Ran %d example%s in %.3fs" % (len(files), suffix,
-                                                        runtime)
-    if len(errs) > 0:
-        print >> sys.stderr, "\nFAILED (errors=%d)" % len(errs)
-        sys.exit(1)
-    else:
-        print >> sys.stderr, "\nOK"
-
-def print_error(e):
-    print >> sys.stderr, "\n" + "=" * 70
-    print >> sys.stderr, "ERROR: " + e[0]
-    print >> sys.stderr, "-" * 70
-    if e[2]:
-        sys.stderr.write(e[2])
-    else:
-        print >> sys.stderr, str(e[1])
 
 def get_unmet_module_deps(f, disabled_modules):
     unmet_deps = []
@@ -69,38 +28,62 @@ def get_unmet_module_deps(f, disabled_modules):
                 check_disabled(m.group(1) + '.' + modname)
     return unmet_deps
 
-def run_example(f, disabled_modules, errs):
-    unmet_deps = get_unmet_module_deps(f, disabled_modules)
-    example_name = "example %s" % os.path.basename(f)
-    def handle_error(e, errs):
-        sys.stderr.write("ERROR\n")
-        errs.append((example_name, e, format_exc()))
-    sys.stderr.write("Running %s ... " % example_name)
+def scan_tested_examples(filename, tested_examples):
+    # Not a great regex; could miss some examples, or those in subdirs
+    r = re.compile('get_example_path\(\"([^"]+)\"\)')
+    for line in open(filename):
+        m = r.search(line)
+        if m:
+            tested_examples[m.group(1)] = None
+
+def test_example(filename, shortname, disabled_modules):
+    skip = "pass"
+    unmet_deps = get_unmet_module_deps(filename, disabled_modules)
     if len(unmet_deps) > 0:
         if len(unmet_deps) == 1:
-            sys.stderr.write("skipped since module '%s' is disabled\n" \
-                             % unmet_deps[0])
+            skip = "self.skipTest(\"module '%s' is disabled\")" % unmet_deps[0]
         else:
-            sys.stderr.write("skipped since modules %s are disabled\n" \
-                             % ", ".join(["'%s'" % x for x in unmet_deps]))
-        return
-    try:
-        exec open(f) in {}
-        sys.stderr.write("ok\n")
-        return
-    # SystemExit was moved in the Exception class hierarchy between Python
-    # versions, so the only way to catch *all* exceptions on all Python versions
-    # is to first catch SystemExit, then Exception.
-    except SystemExit, e:
-        if e.code == 0 or e.code is None:
-            sys.stderr.write("ok\n")
-            return
-        else:
-            handle_error(e, errs)
-            return
-    except Exception, e:
-        handle_error(e, errs)
-        return
+            skip = "self.skipTest(\"modules %s are disabled\")" \
+                   % ", ".join(["'%s'" % x for x in unmet_deps])
+    exec(
+"""class RunExample(IMP.test.TestCase):
+        def test_run_example(self):
+            "Run example %s"
+            %s
+            self.run_example("%s")
+            return""" % (shortname, skip, filename))
+    return RunExample("test_run_example")
+
+global files
+global excluded_modules
+def regressionTest():
+    modobjs = []
+    tested_examples = {}
+    for f in files:
+        nm= os.path.split(f)[1]
+        dir= os.path.split(f)[0]
+        if nm.startswith("test_"):
+            scan_tested_examples(f, tested_examples)
+            modname = os.path.splitext(nm)[0]
+            sys.path.insert(0, dir)
+            modobjs.append(__import__(modname))
+            sys.path.pop(0)
+    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+    suite = unittest.TestSuite(tests)
+
+    # For all examples that don't have an explicit test to exercise them,
+    # just run them to make sure they don't crash
+    for f in files:
+        nm= os.path.split(f)[1]
+        dir= os.path.split(f)[0]
+        if not nm.startswith("test_") and not nm in tested_examples:
+            suite.addTest(test_example(f, nm, excluded_modules))
+
+    return suite
+
 
 if __name__ == "__main__":
-    main(sys.argv[1].split(":"), sys.argv[2:])
+    excluded_modules = sys.argv[1]
+    files = sys.argv[2:]
+    sys.argv=[sys.argv[0], "-v"]
+    unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
