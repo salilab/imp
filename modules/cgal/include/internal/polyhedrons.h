@@ -10,6 +10,7 @@
 #include "../cgal_config.h"
 #include <IMP/base_types.h>
 #include <IMP/algebra/VectorD.h>
+#include <IMP/algebra/SphereD.h>
 #include <IMP/algebra/Plane3D.h>
 #include <vector>
 
@@ -35,6 +36,11 @@ std::pair<std::vector<algebra::VectorD<3> >,std::vector<Ints> >
 get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
                               const std::vector< algebra::Plane3D > &outer,
                               const std::vector< algebra::Plane3D > &hole);
+
+
+IMPCGALEXPORT
+std::pair<std::vector<algebra::VectorD<3> >,std::vector<Ints> >
+get_skin_surface(const std::vector<algebra::SphereD<3> > &ss);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
