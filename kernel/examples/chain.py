@@ -44,13 +44,6 @@ m.add_restraint(tie)
 s= IMP.core.MCCGSampler(m) # sample using MC and CG
 s.set_number_of_attempts(10)
 m.set_maximum_score(1)
-try:
-    import IMP.bullet
-    bos= IMP.bullet.ResolveCollisionsOptimizer(m)
-    s.set_local_optimizer(bos)
-except:
-    # bullet module disabled
-    pass
 confs= s.get_sample()
 print "Found", confs.get_number_of_configurations(), "configurations"
 for i in range(0, confs.get_number_of_configurations()):
