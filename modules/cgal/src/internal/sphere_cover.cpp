@@ -5,6 +5,15 @@
 */
 
 #include <IMP/cgal/internal/sphere_cover.h>
+
+#ifdef IMP_HAS_BOOST_TR1_BUG
+#define BOOST_HAS_GCC_TR1
+#include <boost/tr1/detail/config.hpp>
+ #if defined(BOOST_HAS_GCC_TR1) && defined(BOOST_HAS_INCLUDE_NEXT)
+   #undef BOOST_HAS_INCLUDE_NEXT
+#endif
+#endif
+
 #include <IMP/algebra/vector_generators.h>
 #include <CGAL/Cartesian_d.h>
 #include <CGAL/Convex_hull_d.h>
