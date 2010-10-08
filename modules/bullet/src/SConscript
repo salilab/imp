@@ -2,7 +2,8 @@ Import('env')
 
 files = [
          'ResolveCollisionsOptimizer.cpp',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Build and install the shared library:
 env.IMPModuleLib(files)
