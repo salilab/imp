@@ -15,16 +15,16 @@ IMPCORE_BEGIN_NAMESPACE
 RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
                                                        Refiner *r):
   r0_(r), r1_(r), ps_(ps),
-  k0_(internal::get_rigid_body_hierarchy_key(r0_)),
-  k1_(internal::get_rigid_body_hierarchy_key(r1_)){
+  k0_(internal::get_rigid_body_hierarchy_key()),
+  k1_(internal::get_rigid_body_hierarchy_key()){
 }
 
 RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
                                                        Refiner *r0,
                                                        Refiner *r1):
   r0_(r0), r1_(r1), ps_(ps),
-  k0_(internal::get_rigid_body_hierarchy_key(r0_)),
-  k1_(internal::get_rigid_body_hierarchy_key(r1_)){
+  k0_(internal::get_rigid_body_hierarchy_key()),
+  k1_(internal::get_rigid_body_hierarchy_key()){
 }
 
 void RigidBodyDistancePairScore::do_show(std::ostream &out) const {
@@ -39,21 +39,31 @@ namespace {
                                 ObjectKey kb) {
     internal::RigidBodyHierarchy *da=NULL, *db=NULL;
     if (RigidBody::particle_is_instance(a)) {
-      da= internal::get_rigid_body_hierarchy(RigidBody(a), ra, ka);
+      da= internal::get_rigid_body_hierarchy(RigidBody(a), ka);
     }
     if (RigidBody::particle_is_instance(b)) {
-      db= internal::get_rigid_body_hierarchy(RigidBody(b), rb, kb);
+      db= internal::get_rigid_body_hierarchy(RigidBody(b), kb);
     }
     if (!da && !db) {
       return ParticlePair(a,b);
     } else if (!da) {
-      Particle *p= internal::closest_particle(db, XYZR(a));
+      ParticlesTemp psb=rb->get_refined(b);
+      IMP::internal::Set<Particle*> pb(psb.begin(), psb.end());
+      Particle *p= internal::closest_particle(db, pb,
+                                              XYZR(a));
       return ParticlePair(a,p);
     } else if (!db) {
-      Particle *p= internal::closest_particle(da, XYZR(b));
+      ParticlesTemp psa=ra->get_refined(a);
+      IMP::internal::Set<Particle*> pa(psa.begin(), psa.end());
+      Particle *p= internal::closest_particle(da, pa, XYZR(b));
       return ParticlePair(p,b);
     } else {
-      ParticlePair pp= internal::closest_pair(da, db);
+      ParticlesTemp psa=ra->get_refined(a);
+      IMP::internal::Set<Particle*> pa(psa.begin(), psa.end());
+      ParticlesTemp psb=rb->get_refined(b);
+      IMP::internal::Set<Particle*> pb(psb.begin(), psb.end());
+      ParticlePair pp= internal::closest_pair(da, pa,
+                                              db, pb);
       return pp;
     }
   }
