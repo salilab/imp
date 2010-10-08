@@ -36,6 +36,13 @@ def __load_unittest_package():
                       % "; ".join(errors))
 unittest = __load_unittest_package()
 
+# Expose some unittest decorators for convenience
+expectedFailure = unittest.expectedFailure
+skip = unittest.skip
+skipIf = unittest.skipIf
+skipUnless = unittest.skipUnless
+
+
 def numerical_derivative(func, val, step):
     """Calculate the derivative of the single-value function `func` at
        point `val`. The derivative is calculated using simple finite
