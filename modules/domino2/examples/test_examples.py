@@ -28,5 +28,12 @@ class DOMINOTests(IMP.test.TestCase):
            IMP.domino2.get_example_path("custom_filter.py"))
         self.assertEqual(vars['cs'].get_number_of_configurations(), 1)
 
+    def test_domino_approach(self):
+        """Test example domino_approach.py"""
+        vars = self.run_example(
+           IMP.domino2.get_example_path("domino_approach.py"))
+    # This test is not yet fully implemented, so we expect it to fail
+    test_domino_approach = IMP.test.expectedFailure(test_domino_approach)
+
 if __name__ == '__main__':
     IMP.test.main()
