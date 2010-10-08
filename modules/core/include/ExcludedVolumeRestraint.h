@@ -40,14 +40,15 @@ class IMPCOREEXPORT ExcludedVolumeRestraint:
 {
   Pointer<SingletonContainer> sc_;
 public:
+#ifndef IMP_DOXYGEN
   /** The SingletonContainer contains a set of XYZR particles and RigidBody
       particles. The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainer *sc,
                           Refiner *r,
                           double k=1);
+#endif
 
-  /** The SingletonContainer contains a set of XYZR particles. Rigid bodies
-      are not supported.
+  /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainer *sc,
@@ -56,6 +57,8 @@ public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   double unprotected_evaluate(DerivativeAccumulator *) const;
 #endif
+
+  void set_log_level(LogLevel l);
 
 #ifdef SWIG
   IMP_RESTRAINT(ExcludedVolumeRestraint);

@@ -85,22 +85,21 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
    is itself). Encode being a leaf by having a negative last index, that being
    the index into the array of particles.
 */
-RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
-                                       Refiner *r): rb_(d), r_(r) {
+RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d): rb_(d) {
   set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
-          << d.get_particle()->get_name() << " with refiner "
-          << r->get_name() << " and particles " << Particles(r->get_refined(d))
+          << d.get_particle()->get_name()
+          << " and particles " << Particles(rb_.get_members())
           << std::endl);
   tree_.push_back(Data());
   set_name(std::string("Rigid body hierachy for particle "
                        + d.get_particle()->get_name()));
   // build spheres on internal coordinates
-  IMP_USAGE_CHECK(r->get_number_of_refined(d) > 0,
-                  "Refiner cannot produce any particles for rigid body.");
-  std::vector<algebra::SphereD<3> > spheres(r->get_number_of_refined(d));
+  IMP_USAGE_CHECK(rb_.get_number_of_members() > 0,
+                  "Rigid body has no members.");
+  std::vector<algebra::SphereD<3> > spheres(rb_.get_number_of_members());
   for (unsigned int i=0; i< spheres.size(); ++i) {
-    Particle *rp= r->get_refined(d, i);
+    Particle *rp= rb_.get_member(i);
     double r =XYZR(rp).get_radius();
     algebra::VectorD<3> v= RigidMember(rp).get_internal_coordinates();
     // make sure they are relative to this rigid body
@@ -214,7 +213,7 @@ Particle* RigidBodyHierarchy::get_particle(unsigned int ni,
   IMP_INTERNAL_CHECK(tree_[ni].children_[i] < 0,
              "Not a leaf node");
   int index= std::abs(tree_[ni].children_[i])-1;
-  return r_->get_refined(rb_, index);
+  return rb_.get_member(index);
 }
 
 ParticlesTemp RigidBodyHierarchy::get_particles(unsigned int i) const {
@@ -263,8 +262,8 @@ RigidBodyHierarchy::get_tree() const {
   return ret;
 }
 
-ObjectKey get_rigid_body_hierarchy_key(Refiner *r) {
-  ObjectKey ok(std::string("rigid body hierachy ")+typeid(r).name());
+ObjectKey get_rigid_body_hierarchy_key() {
+  ObjectKey ok(std::string("rigid body hierachy"));
   return ok;
 }
 
@@ -329,7 +328,8 @@ distance_bound(const RigidBodyHierarchy *da, unsigned int i,
 }
 
 Particle* closest_particle(const RigidBodyHierarchy *da,
-                                  XYZR pt) {
+                           const IMP::internal::Set<Particle*> &psa,
+                           XYZR pt) {
   typedef std::pair<double, int> QP;
   std::multimap<double, int> queue;
   double d= distance_bound(da, 0, pt);
@@ -344,11 +344,13 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
       for (unsigned int i=0; i< da->get_number_of_particles(v.second);
            ++i) {
         Particle *p= da->get_particle(v.second, i);
-        XYZR dd(p);
-        double d= distance_bound(dd, pt);
-        if (d < best_d) {
-          best_d= d;
-          bp= p;
+        if (psa.find(p) != psa.end()) {
+          XYZR dd(p);
+          double d= distance_bound(dd, pt);
+          if (d < best_d) {
+            best_d= d;
+            bp= p;
+          }
         }
       }
     } else {
@@ -367,7 +369,9 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
 
 
 ParticlePair closest_pair(const RigidBodyHierarchy *da,
-                                 const RigidBodyHierarchy *db) {
+                          const IMP::internal::Set<Particle*> &psa,
+                          const RigidBodyHierarchy *db,
+                          const IMP::internal::Set<Particle*> &psb) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::multimap<double, IP> queue;
@@ -384,9 +388,13 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
       for (unsigned int i=0;
            i< da->get_number_of_particles(v.second.first); ++i) {
+        if (psa.find(da->get_particle(v.second.first, i))
+            == psa.end()) continue;
+        XYZR deca(da->get_particle(v.second.first, i));
         for (unsigned int j=0;
              j< db->get_number_of_particles(v.second.second); ++j) {
-          XYZR deca(da->get_particle(v.second.first, i));
+          if (psb.find(db->get_particle(v.second.second, j))
+              == psb.end()) continue;
           XYZR decb(db->get_particle(v.second.second, j));
           double d= get_distance(deca, decb);
           if (d < best_d) {
@@ -394,6 +402,8 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
             /*IMP_LOG(VERBOSE, "Updating threshold to " << best_d
               << " due to pair " << bp << std::endl);*/
             best_d= d;
+            std::cout << "Updating threshold to " << best_d
+                      << " due to pair " << bp << std::endl;
           }
         }
       }

@@ -30,8 +30,9 @@ namespace {
       IMP_NEW(RigidClosePairsFinder, rcpf, (r));
       return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 1.0);
     } else {
+      IMP_NEW(RigidClosePairsFinder, rcpf, ());
       return new internal::CoreClosePairContainer(sc, 0.0,
-                                                  internal::default_cpf(), 1.0);
+                                                  rcpf, 1.0);
     }
   }
   PairScore* get_sphere_distance_pair_score(double k) {
@@ -52,6 +53,11 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
   internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
                                get_close_pairs_container(sc, NULL),
                                "ExcludedVolumeRestraint %d"), sc_(sc){
+}
+
+void ExcludedVolumeRestraint::set_log_level(LogLevel l) {
+  sc_->set_log_level(l);
+  Object::set_log_level(l);
 }
 
 double ExcludedVolumeRestraint::

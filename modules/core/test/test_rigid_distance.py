@@ -10,7 +10,6 @@ class Test(IMP.test.TestCase):
     """Tests for bond refiner"""
 
 
-
     def test_rops(self):
         """Checking rigid distance pair score"""
         IMP.set_log_level(IMP.VERBOSE)
@@ -21,7 +20,8 @@ class Test(IMP.test.TestCase):
         IMP.atom.add_radii(p1)
         rb0= IMP.atom.setup_as_rigid_body(p0)
         rb1= IMP.atom.setup_as_rigid_body(p1)
-        IMP.core.RigidBody(p0.get_particle()).set_transformation(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), IMP.algebra.Vector3D(100,100,100)))
+        randt=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(), IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(100,100,100))))
+        IMP.core.RigidBody(p0.get_particle()).set_transformation(randt)
         sdps= IMP.core.SphereDistancePairScore(IMP.core.Linear(0,1))
         rdps= IMP.core.RigidBodyDistancePairScore(sdps, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         v= rdps.evaluate((p0.get_particle(), p1.get_particle()), None)
@@ -41,7 +41,8 @@ class Test(IMP.test.TestCase):
         m= IMP.Model()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         p1= IMP.Particle(m)
-        IMP.core.XYZR.setup_particle(p1, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(100,100,100), 3))
+        randt=IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(100,100,100)))
+        IMP.core.XYZR.setup_particle(p1, IMP.algebra.Sphere3D(randt, 3))
         IMP.atom.add_radii(p0)
         IMP.atom.setup_as_rigid_body(p0)
         sdps= IMP.core.SphereDistancePairScore(IMP.core.Linear(0,1))

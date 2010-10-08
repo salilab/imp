@@ -17,7 +17,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   RigidBody rb_;
-  IMP::internal::OwnerPointer<Refiner> r_;
   struct Data {
     std::vector<int> children_;
     algebra::SphereD<3> s_;
@@ -45,7 +44,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   unsigned int get_child(unsigned int ni, unsigned int i) const;
   Particle* get_particle(unsigned int ni, unsigned int i) const;
   std::vector<algebra::SphereD<3> > get_all_spheres() const;
-  RigidBodyHierarchy(RigidBody rb, Refiner *r);
+  RigidBodyHierarchy(RigidBody rb);
   std::vector<algebra::SphereD<3> > get_tree() const;
   IMP_OBJECT(RigidBodyHierarchy);
   // for testing
@@ -184,22 +183,25 @@ void apply_to_nearby(const RigidBodyHierarchy *da,
 }
 
 IMPCOREEXPORT Particle* closest_particle(const RigidBodyHierarchy *da,
+                              const IMP::internal::Set<Particle*> &psa,
                                          XYZR pt);
 
 
 IMPCOREEXPORT ParticlePair closest_pair(const RigidBodyHierarchy *da,
-                                        const RigidBodyHierarchy *db);
+                            const IMP::internal::Set<Particle*> &psa,
+                                        const RigidBodyHierarchy *db,
+                            const IMP::internal::Set<Particle*> &psb);
 
 
-IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key(Refiner *r);
+IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key();
 
 inline
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
-                                             Refiner*r, ObjectKey k) {
+                                             ObjectKey k) {
   if (rb.get_particle()->has_attribute(k)) {
     return object_cast<RigidBodyHierarchy>(rb.get_particle()->get_value(k));
   } else {
-    RigidBodyHierarchy *h= new RigidBodyHierarchy(rb, r);
+    RigidBodyHierarchy *h= new RigidBodyHierarchy(rb);
     rb.get_particle()->add_cache_attribute(k, h);
     return h;
   }

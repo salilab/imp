@@ -57,13 +57,18 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   IMP::internal::OwnerPointer<Refiner> r_;
   ObjectKey k_;
  public:
+#ifndef IMP_DOXYGEN
   //! Use the default choice for the ClosePairsFinder
   /** Use rep to generate the list of representation particles. */
   RigidClosePairsFinder(Refiner *r);
   RigidClosePairsFinder(ClosePairsFinder *cpf,
                         Refiner *r);
+#endif
+  RigidClosePairsFinder(ClosePairsFinder *cpf=NULL);
 
-  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b) const;
+  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
+                                    const ParticlesTemp &pa,
+                                    const ParticlesTemp &pb) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);
