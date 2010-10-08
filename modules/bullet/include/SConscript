@@ -2,7 +2,8 @@ Import('env')
 
 files = [
          'ResolveCollisionsOptimizer.h',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)
