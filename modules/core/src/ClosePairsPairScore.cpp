@@ -10,94 +10,125 @@
 
 #include <IMP/exception.h>
 #include <IMP/log.h>
-
+#include <IMP/algebra/vector_search.h>
+#include <IMP/core/internal/rigid_body_tree.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosePairsPairScore::ClosePairsPairScore(Refiner *r,
-                                         PairScore *f,
-                                         Float thre,
-                                         FloatKey rk): r_(r), f_(f),
-                                                       th_(thre), rk_(rk){
+ClosePairsPairScore::ClosePairsPairScore(PairScore *f,
+                                         Refiner *r,
+                                         Float thre): r_(r), f_(f),
+                                                      th_(thre), k_(0){
+  k_=0;
   IMP_USAGE_CHECK(thre >= 0, "The threshold must be non-negative.");
-  IMP_USAGE_CHECK(rk != FloatKey(), "The radius-key must be non-default. "
-            << "This is primarily a matter of laziness.");
 }
 
+
+ClosePairsPairScore::ClosePairsPairScore(PairScore *f,
+                                         Refiner *r,
+                                         int k): r_(r), f_(f),
+                                                 k_(k)
+{
+}
+
+
+
 namespace {
-  ParticlePairsTemp get_close_pairs(Particle *a, Particle *b, double threshold,
-                                    Refiner *r) {
-    ParticlePairsTemp queue;
-    ParticlePairsTemp ret;
-    queue.push_back(ParticlePair(a,b));
-    do {
-      ParticlePair pp= queue.back();
-      queue.pop_back();
-      XYZR d0(pp[0]), d1(pp[1]);
-      if (get_distance(d0, d1) > threshold) {
-        IMP_LOG(VERBOSE, "Particles "
-                << d0 << " and " << d1
-                << " are too far apart to refine "
-                << " > " << threshold<< std::endl);
-        continue;
-      }
-    // may want to just refined 1 is th_ is nonzero
-    ParticlesTemp ps0, ps1;
-    if (!r->get_can_refine(pp[0])
-        && !r->get_can_refine(pp[1])) {
-      ret.push_back(pp);
-    } else {
-      if (r->get_can_refine(pp[0])) {
-        ps0= r->get_refined(pp[0]);
-      } else {
-        ps0.push_back(pp[0]);
-      }
-      if (r->get_can_refine(pp[1])) {
-        ps1= r->get_refined(pp[1]);
-      } else {
-        ps1.push_back(pp[1]);
-      }
-      for (unsigned int i=0; i< ps0.size(); ++i) {
-        for (unsigned int j=0; j< ps1.size(); ++j) {
-          queue.push_back(ParticlePair(ps0[i], ps1[j]));
-        }
-      }
+  ParticlePair get_closest_pair(Particle *a, Particle *b,
+                                Refiner* ra, Refiner *rb, ObjectKey ka,
+                                ObjectKey kb) {
+    internal::RigidBodyHierarchy *da=NULL, *db=NULL;
+    if (RigidBody::particle_is_instance(a)) {
+      da= internal::get_rigid_body_hierarchy(RigidBody(a), ka);
     }
-  } while (!queue.empty());
-    return ret;
+    if (RigidBody::particle_is_instance(b)) {
+      db= internal::get_rigid_body_hierarchy(RigidBody(b), kb);
+    }
+    if (!da && !db) {
+      return ParticlePair(a,b);
+    } else if (!da) {
+      ParticlesTemp psb=rb->get_refined(b);
+      IMP::internal::Set<Particle*> pb(psb.begin(), psb.end());
+      Particle *p= internal::closest_particle(db, pb,
+                                              XYZR(a));
+      return ParticlePair(a,p);
+    } else if (!db) {
+      ParticlesTemp psa=ra->get_refined(a);
+      IMP::internal::Set<Particle*> pa(psa.begin(), psa.end());
+      Particle *p= internal::closest_particle(da, pa, XYZR(b));
+      return ParticlePair(p,b);
+    } else {
+      ParticlesTemp psa=ra->get_refined(a);
+      IMP::internal::Set<Particle*> pa(psa.begin(), psa.end());
+      ParticlesTemp psb=rb->get_refined(b);
+      IMP::internal::Set<Particle*> pb(psb.begin(), psb.end());
+      ParticlePair pp= internal::closest_pair(da, pa,
+                                              db, pb);
+      return pp;
+    }
+  }
+  ParticlesTemp expand(Particle *p, Refiner *r) {
+    if (r->get_can_refine(p)) {
+      return r->get_refined(p);
+    } else {
+      return ParticlesTemp(1,p);
+    }
   }
 }
 
 double ClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const
 {
-  ParticlePairsTemp ppt= get_close_pairs(p[0], p[1], th_, r_);
-  double ret=0;
-  for (unsigned int i=0; i< ppt.size(); ++i) {
-    ret+= f_->evaluate(ppt[i], da);
-  }
-  return ret;
-}
-
-namespace {
-  ParticlesTemp expand(Particle* a, Refiner *r) {
-    ParticlesTemp ret;
-    ret.push_back(a);
-    ParticlesTemp queue;
-    queue.push_back(a);
-    while (!queue.empty()) {
-      Particle *p=queue.back();
-      queue.pop_back();
-      if (r->get_can_refine(p)) {
-        ParticlesTemp rr= r->get_refined(p);
-        queue.insert(queue.end(), rr.begin(), rr.end());
-        ret.insert(ret.end(), rr.begin(), rr.end());
+  if (k_==1 && RigidBody::particle_is_instance(p[0])
+      && RigidBody::particle_is_instance(p[1])) {
+    ParticlePair pp= get_closest_pair(p[0], p[1], r_, r_,
+                                      internal::get_rigid_body_hierarchy_key(),
+                                      internal::get_rigid_body_hierarchy_key());
+    IMP_LOG(VERBOSE, "Closest rigid body pair for bodies "
+            << p[0]->get_name() << " and " << p[1]->get_name()
+            << " is " << pp[0]->get_name() << " and " << pp[1]->get_name()
+            << " with coordinates " << XYZ(pp[0]) << " and " << XYZ(pp[1])
+            << std::endl);
+    return f_->evaluate(pp, da);
+  } else {
+    XYZsTemp xyzs0(expand(p[0], r_));
+    XYZsTemp xyzs1(expand(p[1], r_));
+    algebra::NearestNeighborD<3> nn(xyzs0.begin(),
+                                    xyzs0.end());
+    ParticlePairsTemp ppt;
+    if (k_>0) {
+      algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
+      for (unsigned int i=0; i< xyzs1.size(); ++i) {
+        Ints is= nn.get_nearest_neighbors(xyzs1[i].get_coordinates(),
+                                          k_);
+        for (unsigned int j=0; j< is.size(); ++j) {
+          double d= get_distance(xyzs0[is[j]], xyzs1[i]);
+          if (ms.can_insert(d)) {
+          ms.insert(d, ParticlePair(xyzs0[is[j]], xyzs1[i]));
+          }
+        }
       }
+      for (unsigned int i=0; i< ms.size(); ++i) {
+        ppt.push_back(ms[i].second);
+      }
+    } else {
+      for (unsigned int i=0; i< xyzs1.size(); ++i) {
+        Ints is= nn.get_in_ball(xyzs1[i].get_coordinates(),
+                                th_);
+        for (unsigned int j=0; j< is.size(); ++j) {
+          ppt.push_back(ParticlePair(xyzs0[is[j]], xyzs1[i]));
+        }
+      }
+    }
+    double ret=0;
+    for (unsigned int i=0; i< ppt.size(); ++i) {
+      ret+=f_->evaluate(ppt[i], da);
     }
     return ret;
   }
 }
+
 
 ParticlesTemp ClosePairsPairScore
 ::get_input_particles(Particle *p) const {

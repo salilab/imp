@@ -9,6 +9,7 @@
 #define IMPCORE_RIGID_BODY_DISTANCE_PAIR_SCORE_H
 
 #include "core_config.h"
+#include "ClosePairsPairScore.h"
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/PairScore.h>
@@ -25,18 +26,11 @@ IMPCORE_BEGIN_NAMESPACE
     PairScore is then applied to this minimal pair to give the returned
     score.
  */
-class IMPCOREEXPORT RigidBodyDistancePairScore: public PairScore
+class IMPCOREEXPORT RigidBodyDistancePairScore: public ClosePairsPairScore
 {
-  IMP::internal::OwnerPointer<Refiner> r0_, r1_;
-  IMP::internal::OwnerPointer<PairScore> ps_;
-  ObjectKey k0_, k1_;
 public:
   /** Use the passed refiner for both particles. */
   RigidBodyDistancePairScore(PairScore *ps, Refiner *r);
-  /** Use r0 for the first passed particle and r1 for the second. */
-  RigidBodyDistancePairScore(PairScore *ps, Refiner *r0, Refiner *r1);
-
-  IMP_PAIR_SCORE(RigidBodyDistancePairScore);
 };
 
 
