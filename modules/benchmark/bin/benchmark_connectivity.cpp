@@ -8,12 +8,10 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/algebra.h>
-#include <IMP/misc.h>
 #include <IMP/container.h>
 
 using namespace IMP;
 using namespace IMP::core;
-using namespace IMP::misc;
 using namespace IMP::algebra;
 using namespace IMP::container;
 
