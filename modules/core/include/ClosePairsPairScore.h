@@ -19,19 +19,20 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Traverse the Refiner hierarchy to find all pairs which are close
-/** The Refiner implicitly defines a tree rooted at each particle.
-    This PairScore applies another PairScore to all pairs of leaves, one
-    taken from each tree such that the leaves are closer than the threshold.
-    \note All particles in the tree must be XYZR particles for the
-    passed radius. In addition, the ball defined by a particle must contain
-    the balls of all its leaves.
+/** Apply the score to either the k closest pairs or all pairs whose
+    centers are within a certain distance threshold.
+
+    \note Either CGAL or ANN must be installed for this to be efficient
+   (except when used with non-rigid bodies with k=1)
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore
 {
-  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<Refiner> r0_;
+  IMP::internal::OwnerPointer<Refiner> r1_;
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
+  int k_;
   FloatKey rk_;
 public:
   /** \param[in] r The Refiner to call on each particle
@@ -40,9 +41,13 @@ public:
       the max_distance
       \param[in] rk The key to use for the radius.
    */
-  ClosePairsPairScore(Refiner *r, PairScore *f,
-                      Float max_distance,
-                      FloatKey rk= XYZR::get_default_radius_key());
+  ClosePairsPairScore(PairScore *f, Refiner *r,
+                      Float max_distance);
+  /** only score the k closest pairs.
+   */
+  ClosePairsPairScore(PairScore *f, Refiner *r,
+                      int k=1);
+
   IMP_PAIR_SCORE(ClosePairsPairScore);
 };
 

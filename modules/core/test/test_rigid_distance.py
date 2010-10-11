@@ -31,6 +31,7 @@ class Test(IMP.test.TestCase):
             for l1 in IMP.core.get_leaves(p1):
                 d= sdps.evaluate(IMP.ParticlePair(l0.get_particle(), l1.get_particle()), None)
                 if d< dm:
+                    print "found ", l0.get_name(), l1.get_name(), d
                     dm=d
         self.assertAlmostEqual(v, dm, delta=.1)
 
@@ -47,7 +48,7 @@ class Test(IMP.test.TestCase):
         IMP.atom.setup_as_rigid_body(p0)
         sdps= IMP.core.SphereDistancePairScore(IMP.core.Linear(0,1))
         rdps= IMP.core.RigidBodyDistancePairScore(sdps, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-        v= rdps.evaluate(IMP.ParticlePair(p0.get_particle(), p1), None)
+        v= rdps.evaluate((p0, p1), None)
         dm= 1000000
         bp=None
         for l0 in IMP.core.get_leaves(p0):
