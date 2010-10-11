@@ -42,8 +42,8 @@ namespace {
     // check connected components too
     if  (boost::num_edges(g)+1 != boost::num_vertices(g)) return false;
     else {
-      boost::vector_property_map<int> comp(boost::num_vertices(g));
-      int cc= boost::connected_components(g, comp);
+      std::vector<int> comp(boost::num_vertices(g));
+      int cc= boost::connected_components(g, &comp[0]);
       return cc==1;
     }
   }
