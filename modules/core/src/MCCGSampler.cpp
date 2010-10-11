@@ -134,7 +134,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
       weights[deps_[i].second[j]]+= v;
     }
   }
-  double total=std::accumulate(weights.begin(), weights.end(), 0);
+  double total=std::accumulate(weights.begin(), weights.end(), 0.);
   /*IMP_IF_LOG(SILENT) {
     IMP_LOG(SILENT, "scores are ");
     for (unsigned int i=0; i< weights.size(); ++i) {
