@@ -696,6 +696,10 @@ Below are a suggestions prompted by bugs found in code submitted to \imp.
   variables instead. Preprocessor symbols don't have scope or type
   and so can have unexpected effects.
 
+- Don't expect names to be unique, they are there for human viewing. If
+  you need a unique identifier associated with an object or non-geometric
+  value, just use the object or value itself.
+
     - Pass other objects by value or by \c const & (if the object is
       large) and store copies of them.
 
