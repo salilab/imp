@@ -6,7 +6,6 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
-#include <IMP/helper.h>
 #include <boost/timer.hpp>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
@@ -16,7 +15,6 @@ using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::atom;
-using namespace IMP::helper;
 using namespace IMP::container;
 
 void test_one(std::string name,
