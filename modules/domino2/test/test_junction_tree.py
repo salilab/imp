@@ -67,7 +67,7 @@ class DOMINOTests(IMP.test.TestCase):
         self._check_jt_property(jt)
 
     def test_global_min0(self):
-        """Testing junction tree algoritm"""
+        """Testing junction tree algorithm"""
         m= IMP.Model()
         ps=[]
         ig= IMP.domino2.InteractionGraph()
