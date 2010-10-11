@@ -97,9 +97,19 @@ class RotationTests(IMP.test.TestCase):
         axis.append(IMP.algebra.Vector3D(0.0,0.0,-1.0))#to check the antiparallel case
         axis.append(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()))
         axis.append(IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d()))
+
+        # Check the very nearly parallel case
+        for xpow in range(1, 7):
+            x = math.pow(10, -xpow)
+            for ypow in range(1, 7):
+                y = math.pow(10, -ypow)
+                axis.append(IMP.algebra.Vector3D(0.0,0.0,-1.0))
+                axis.append(IMP.algebra.Vector3D(x,y,-1.0))
         for i in range(len(axis)-1):
             rot = IMP.algebra.get_rotation_taking_first_to_second(axis[i],axis[i+1])
-            self.assertAlmostEqual(IMP.algebra.get_distance(rot*axis[i],axis[i+1]),0.0)
+            self.assertAlmostEqual(IMP.algebra.get_distance(rot*axis[i],
+                                                            axis[i+1]),
+                                   0.0, delta=0.01)
 
     def test_get_axis_and_angle(self):
         """Check that the function get_axis_and_angle is correct"""
