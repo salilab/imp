@@ -1,3 +1,5 @@
+# This example is still under development, and does not yet run correctly.
+
 #load the representation file
 #load the restraints file
 #build a junction tree from a restraint file
@@ -73,7 +75,7 @@ domino_smp.set_maximum_score(50.)
 print "here3"
 domino_smp.show()
 print "here4"
-#set_sample currently fails
+#get_sample currently fails
 cs=domino_smp.get_sample()
 print "here5"
 # #    numbers.append(len(data.get_fitting_solutions(p)))
