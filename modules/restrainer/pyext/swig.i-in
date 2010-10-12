@@ -4,6 +4,8 @@ import _representation
 import _restraint
 import _xml_parser
 import _display
+import _optimization
+import _main
 
 class Representation(_representation.Representation):
     """Store Representation."""
@@ -97,6 +99,12 @@ class XMLRestraint(_xml_parser.XMLRestraint):
            corresponds to the node in the XML nodes"""
         return _xml_parser.XMLRestraint.run(self)
 
+class XMLOptimization(_xml_parser.XMLOptimization):
+    def __init__(self, filename):
+        _xml_parser.XMLOptimization.__init__(self, filename)
+    def run(self):
+        return _xml_parser.XMLOptimization.run(self)
+
 class Display(_display.Display):
     """A class to display the configuration"""
     def __init__(self):
@@ -109,5 +117,21 @@ class Display(_display.Display):
            @param log_name Log name
            @return IMP::dispay::WriteOptimizerState"""
        return _display.Display.create_log(self, repr, log_name)
+
+class Main(_main.Main):
+    def __init__(self):
+        _main.Main.__init__(self)
+    def add_representation(self, fname):
+        return _main.Main.add_representation(self, fname)
+    def add_restraint(self, fname):
+        return _main.Main.add_restraint(self, fname)
+    def add_optimization(self, fname):
+        return _main.Main.add_optimization(self, fname)
+    def add_display(self, fname, logname=None):
+        return _main.Main.add_display(self, fname, logname)
+    def optimize(self):
+        _main.Main.optimize(self)
+    def model(self):
+        return _main.Main.model(self)
 
 %}

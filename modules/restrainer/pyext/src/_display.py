@@ -29,6 +29,10 @@ class Display(object):
             child.attach_parent()
         return log
 
+    def __str__(self):
+        return '<Display>\n%s\n</Display>' %\
+            ('\n'.join([child._to_str(1) for child in self._children]))
+
 class _DisplayNode(object):
     counter = 0
     def __init__(self, attributes):
@@ -91,6 +95,23 @@ class _DisplayNode(object):
         for child in self._children:
             child.create_xyz(r, g, b, log)
 
+    def _attr_to_str(self):
+        return ('DisplayNode', 'id="%s"' % self.id)
+
+    def _to_str(self, level):
+        indent = '  '*level
+        name, strattr = self._attr_to_str()
+        if not self._children:
+            return '%s<%s %s/>' % (indent, name, strattr)
+        else:
+            return '%s<%s %s>\n%s\n%s</%s>' %\
+                (indent, name, strattr,
+                '\n'.join([child._to_str(level + 1)
+                  for child in self._children]), indent, name)
+
+    def __str__(self):
+        return self._to_str(0)
+
 
 class _DisplayColor(_DisplayNode):
     def __init__(self, attributes):
@@ -99,44 +120,79 @@ class _DisplayColor(_DisplayNode):
         self.g = float(attributes.get('g', 0))
         self.b = float(attributes.get('b', 0))
 
+    def _attr_to_str(self):
+        return ('Color', 'id="%s" r="%s" g="%s" b="%s"' %
+            (self.id, self.r, self.g, self.b))
+
 class _DisplayResidue(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
         self.start = int(attributes.get('start', -1))
         self.end = int(attributes.get('end', -1))
 
+    def _attr_to_str(self):
+        return ('Residue', 'id="%s" start="%s" end="%s"' %
+            (self.id, self.start, self.end))
+
 class _DisplayUniverse(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Universe', 'id="%s"' % self.id)
 
 class _DisplayCollection(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Collection', 'id="%s"' % self.id)
+
 class _DisplayAssembly(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Assembly', 'id="%s"' % self.id)
 
 class _DisplaySegment(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Segment', 'id="%s"' % self.id)
+
 class _DisplayMolecule(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Molecule', 'id="%s"' % self.id)
 
 class _DisplayProtein(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Protein', 'id="%s"' % self.id)
+
 class _DisplayNucleicAcid(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('NucleicAcid', 'id="%s"' % self.id)
 
 class _DisplayChain(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Chain', 'id="%s"' % self.id)
+
 class _DisplayFragment(_DisplayNode):
     def __init__(self, attributes):
         _DisplayNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Fragment', 'id="%s"' % self.id)
