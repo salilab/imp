@@ -324,7 +324,7 @@ external code,
 
 - each module now has a version, eg IMP::get_module_version_info() which is also returned by the various restraions of the module. The Python code checkes that loaded libraries have the expected version numbers to try to provide better messages when runtime linking problems occur.
 
-- the various ::bounding_box() methods have been renamed to ::get_bounding_box() to be more consistent with the other names.
+- the various bounding_box methods have been renamed to ::get_bounding_box() to be more consistent with the other names.
 
 - Python documentation is now parsed by doxygen
 
