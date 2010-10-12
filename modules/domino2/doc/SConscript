@@ -7,48 +7,24 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="MODULENAME provides a divide and conquer sampler. It provides a simpler interface and (hopefully) faster performance than the original IMP.domino module.",
                  # Provide a longer description of what the module does
                  # This description can have multiple paragraphs and all sorts of markup
-                 overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is, given a scoring function encoded in the model and a list of possible states for each particle of the model that is allowed to change, encoded in a ParticleStates object, it finds all configurations of the model that have less than a certain score.
+                 overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is given
+- a set of criteria for defining a good model (encoded via IMP::domino2::SubsetFilter objects)
+- and a list of possible states for each particle of the model that is allowed to change, (encoded via IMP::domino2::ParticleStates)
+.
+it finds all configurations of the model that can be expressed as a combination of the provided particle states and are accepted by the filters.
 
-The process works by dividing the set of all optimized particles into subsets (represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
+The criteria that can be filtered on can be any aspect that can be measured on a subset of the particles. Provided examples include
+- accepting only models where a certain restraint has a score that is less than a threshold (IMP::domino2::RestraintScoreSubsetFilterTable)
+- accepting only models where no two particles are in the same state (IMP::domino2::PermutationSubsetFilterTable)
 
-The central class is the DominoSampler which does the actual computation of good configruation. The computation is parameterized by a objects of several other types:
-- each particle which is allowed to change must have a corresponding ParticleStates stored in
-  the ParticleStatesTable made available to the DominoSampler.
-- a SubsetEvaluatorTable parameterizes how a given configuration of a subset is scored. By
-  default, the Model is used.
-- a SubsetStatesTable parameterizes how the set of states of a subset are generated from the states of the constituent particle. The default one skips conformations which assign two particles to the same state and conformations which do not score well.
+The key idea underpinning all the sampling is that of dividing the set of all optimized particles into subsets (each represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
 
-These classes are structured as tables which return the objects which act on
-a particle subset or particle when asked. For example, a SubsetEvaluatorTable
-has one main method SubsetEvaluatorTable::get_subset_evaluator() which takes
-a Subset and returns a SubsetEvaluator. The SubsetEvaluator has a method
-SubsetEvaluator::get_score() which can return the score for any conformation
-(SubsetState) of the previously provided subset.
+The idea of a Table is used in several places in the module. A Table, here, is an object which, for example, knows how to create a an object which can filter the subset states of a particular subset. That is, a SubsetFilterTable knows how to create a SubsetFilter (via the SubsetFilterTable::get_subset_filter()) which can answer queries about whether a particular SubsetState is OK (via the SubsetFilter::get_is_ok() method). This makes it easy to perform preprocessing to make the SubsetFilter::get_is_ok() calls faster. The table idea is usedf with ParticleStatesTable, SubsetStatesTable and SubsetFilterTable.
 
 Implementation todo list:
-- avoid rebuilding indexes repeatedly
-- better filtering of states based on
-   - lower bounds on the score of the rest of the model
-- perhaps compact represetnation of incomplete states
-- reduce looping through lists for reconciliation
 - replace Subset with something that uses a memory pool if allocation becomes an issue
 - have a central table which lists dofs left for each particle, if any node can't find a state with the particle in a given state, it is removed from the list
 - make things work with particles that are a function of multiple optimized particles (eg centroids). Lots of things will have to change.
-
-Handling of compound restraints:
-- define a static container as one which does not depend on any particles
-- general case: if the input container is static, decompose the restraint
-- general case: if it is not static, I don't know what to do. Restraint needs to
-  get all possible particles from container and produce input over those. Throw
-  exception for now
-- special case 1: close pairs container, figure out a superset of all interactions
-
-changes to IMP:
-- remove get_interacting_particles()
-- add get_subrestraints() method to restraint
-- remove the partial evaluate support
-- fix evaluation of individual restraints: make sure not incremental
-- fix benchmarks
 """,
                  publications=env.StandardPublications(),
                  license="Being worked out (currently have some code from Afra)"
