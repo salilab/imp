@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Summer 2010
+- The IMP::core::RigidDistancePairScore and IMP::core::ClosePairsPairScore have been revised to remove certain inconsistencies and ambiguities and to make them faster. Existing code using them will need to be minorly tweaked to work.
 - Javi added his 2D EM scoring functionality as IMP::em2D
 - some new ways to speed up scons have been added. See IMP::core::HarmonicDistancePairScore, IMP::core::SoftSpherePairScore and, for C++ users, the generic restraint support IMP::container::create_restraint() and IMP::core::create_restraint(). These each offer between 2x and 1.2x speedup when using simple scores (like harmonics on distances). In addition, a function IMP::container::get_slack_estimate() has been added which will estimate the correct slack to use with a IMP::container::ClosePairContainer. This will be extended to support IMP::core::ExcludedVolumeRestraint eventually.
 - support for dense and sparse grids have been added to IMP::algebra. See the IMP::algebra module page (I'm still working on how to make the docs clearer).
