@@ -96,9 +96,9 @@ namespace {
         });
       insc->set_particles(simple);
     }
-    std::cout << "Found " << members.size() << " rigid bodies and "
+    /*std::cout << "Found " << members.size() << " rigid bodies and "
               << insc->get_number_of_particles()
-              << " total particles" << std::endl;
+              << " total particles" << std::endl;*/
   }
 
   void check_particles(SingletonContainer *sc) {
