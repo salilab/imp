@@ -45,15 +45,18 @@ def StandardPublications(env):
 def _action_make_module_page(target, source, env):
     fh= file(target[0].path, 'w')
     print >> fh, '/** \\namespace '+env['IMP_MODULE_NAMESPACE']
+    print >> fh, "    \\nosubgrouping"
     #print str(source[0])
     #print source[0].get_contents()
     #print type(source[0].get_contents())
-    print >> fh, "\n\\author " + ", ".join(unmangle(source[0]))
-    print >> fh, "\n\\version \n"+str(env['IMP_MODULE_VERSION'])
-    print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
+    #print >> fh, "\n\\version \n"+str(env['IMP_MODULE_VERSION'])
+    #print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
     if source[2].get_contents() != "None":
-        print >> fh, "\n\\overview "+filter(env, source[2].get_contents())
-    print >> fh, '\n\par Examples\nExamples can be found on the \\ref IMP_'+env['IMP_MODULE']+'_examples "IMP.'+env['IMP_MODULE']+' examples" page.\n'
+        print >> fh, "\n"+filter(env, source[2].get_contents())
+    print >> fh, '\n\nExamples can be found on the \\ref IMP_'+env['IMP_MODULE']+'_examples "IMP.'+env['IMP_MODULE']+' examples" page.\n'
+    print >> fh, "\n\\section auth Authorship\nVersion " + str(env['IMP_MODULE_VERSION'])\
+          + " by "+", ".join(unmangle(source[0]))
+
     if source[4].get_contents() != "None":
         print >> fh, "\n\\license "+source[4].get_contents()
     pubs= unmangle(source[3])
