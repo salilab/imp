@@ -402,8 +402,8 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
             /*IMP_LOG(VERBOSE, "Updating threshold to " << best_d
               << " due to pair " << bp << std::endl);*/
             best_d= d;
-            std::cout << "Updating threshold to " << best_d
-                      << " due to pair " << bp << std::endl;
+            /*std::cout << "Updating threshold to " << best_d
+              << " due to pair " << bp << std::endl;*/
           }
         }
       }
