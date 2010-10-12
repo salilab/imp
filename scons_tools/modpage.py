@@ -54,8 +54,8 @@ def _action_make_module_page(target, source, env):
     if source[2].get_contents() != "None":
         print >> fh, "\n"+filter(env, source[2].get_contents())
     print >> fh, '\n\nExamples can be found on the \\ref IMP_'+env['IMP_MODULE']+'_examples "IMP.'+env['IMP_MODULE']+' examples" page.\n'
-    print >> fh, "\n\\section auth Authorship\nVersion " + str(env['IMP_MODULE_VERSION'])\
-          + " by "+", ".join(unmangle(source[0]))
+    print >> fh, "\n\\section auth Author(s)\n"+", ".join(unmangle(source[0]))
+    print >> fh, "\n\\section vers Version\n"+ str(env['IMP_MODULE_VERSION'])+"\n"
 
     if source[4].get_contents() != "None":
         print >> fh, "\n\\license "+source[4].get_contents()
