@@ -58,7 +58,6 @@ public:
       \param[in] f The pair score to apply to the generated pairs
       \param[in] max_distance Only score pairs which are close than
       the max_distance
-      \param[in] rk The key to use for the radius.
    */
   ClosePairsPairScore(PairScore *f, Refiner *r,
                       Float max_distance);
