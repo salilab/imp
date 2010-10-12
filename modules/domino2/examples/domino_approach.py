@@ -15,7 +15,7 @@ def optimize_subsets(subsets):
 
 def get_subsets(ps):
     mdl=ps[0].get_model()
-    inter_graph=IMP.domino2.get_interaction_graph(ps,mdl.get_root_restraint_set())
+    inter_graph=IMP.domino2.get_interaction_graph(mdl.get_root_restraint_set(), ps)
     jt=IMP.domino2.get_junction_tree(inter_graph)
     return IMP.domino2.get_subsets(jt)
 
