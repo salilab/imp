@@ -40,6 +40,8 @@ IMPDOMINO2_BEGIN_NAMESPACE
 class IMPDOMINO2EXPORT SubsetFilter: public Object {
 public:
   SubsetFilter(std::string name= "SubsetFilter %1%");
+  //! Return true if the given state passes this filter for the Subset
+  //! it was created with
   virtual bool get_is_ok(const SubsetState& state) const=0;
   //! The strength is a rough metric of how this filter restricts the subset
   /** It is still kind of nebulous, but as a rough guide, it should be
@@ -66,6 +68,9 @@ IMP_OBJECTS(SubsetFilter, SubsetFilters);
 class IMPDOMINO2EXPORT SubsetFilterTable: public Object {
  public:
   SubsetFilterTable(std::string name="SubsetFilterTable%1%"): Object(name){}
+  /** Return a SubsetFilter which acts on the Subset s, given that all
+      the prior_subsets have already been filtered.
+   */
   virtual SubsetFilter* get_subset_filter(const Subset &s,
                                           const Subsets &prior_subsets) const=0;
   virtual ~SubsetFilterTable();
