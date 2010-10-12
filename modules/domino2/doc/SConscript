@@ -2,20 +2,20 @@ Import('env')
 
 # All .dox, .pdf and .pdb files are installed
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
-                 authors=["Keren Lasker", "Daniel Russel"],
+                 authors=["Daniel Russel", "Keren Lasker"],
                  # Provide a brief description of what the module does
                  brief="MODULENAME provides a divide and conquer sampler. It provides a simpler interface and (hopefully) faster performance than the original IMP.domino module.",
                  # Provide a longer description of what the module does
                  # This description can have multiple paragraphs and all sorts of markup
                  overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is given
 - a set of criteria for defining a good model (encoded via IMP::domino2::SubsetFilter objects)
-- and a list of possible states for each particle of the model that is allowed to change, (encoded via IMP::domino2::ParticleStates)
+- and a list of possible states for each particle of the model that is allowed to change (encoded via IMP::domino2::ParticleStates),
 .
 it finds all configurations of the model that can be expressed as a combination of the provided particle states and are accepted by the filters.
 
 The criteria that can be filtered on can be any aspect that can be measured on a subset of the particles. Provided examples include
-- accepting only models where a certain restraint has a score that is less than a threshold (IMP::domino2::RestraintScoreSubsetFilterTable)
-- accepting only models where no two particles are in the same state (IMP::domino2::PermutationSubsetFilterTable)
+- accepting only models where a certain restraint has a score that is less than the threshold specified for it in the Model (RestraintScoreSubsetFilterTable)
+- accepting only models where no two particles are in the same state (PermutationSubsetFilterTable)
 
 The key idea underpinning all the sampling is that of dividing the set of all optimized particles into subsets (each represented using a Subset object). Good conformations for these subsets are found which are then combined together to produce the score for the whole model. A conformation is represented using a SubsetState object.
 
@@ -27,6 +27,6 @@ Implementation todo list:
 - make things work with particles that are a function of multiple optimized particles (eg centroids). Lots of things will have to change.
 """,
                  publications=env.StandardPublications(),
-                 license="Being worked out (currently have some code from Afra)"
+                 license="LGPL"
 #env.StandardLicense()
 )
