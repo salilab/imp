@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
     PairScore is then applied to this minimal pair to give the returned
     score.
  */
-class IMPCOREEXPORT RigidBodyDistancePairScore: public ClosePairsPairScore
+class IMPCOREEXPORT RigidBodyDistancePairScore: public KClosePairsPairScore
 {
 public:
   /** Use the passed refiner for both particles. */

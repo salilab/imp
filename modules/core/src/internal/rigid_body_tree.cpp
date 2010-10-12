@@ -346,7 +346,7 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
         Particle *p= da->get_particle(v.second, i);
         if (psa.find(p) != psa.end()) {
           XYZR dd(p);
-          double d= distance_bound(dd, pt);
+          double d= get_distance(dd, pt);
           if (d < best_d) {
             best_d= d;
             bp= p;

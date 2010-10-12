@@ -14,7 +14,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 RigidBodyDistancePairScore::RigidBodyDistancePairScore(PairScore *ps,
                                                        Refiner *r):
-  ClosePairsPairScore(ps, r, 1) {
+  KClosePairsPairScore(ps, r, 1) {
 }
 
 

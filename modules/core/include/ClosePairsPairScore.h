@@ -10,6 +10,8 @@
 
 #include "core_config.h"
 #include "XYZR.h"
+#include "ClosePairsFinder.h"
+#include "internal/CoreListSingletonContainer.h"
 
 #include <IMP/PairScore.h>
 #include <IMP/UnaryFunction.h>
@@ -17,13 +19,31 @@
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
+/** Apply the score to either the k closest pairs (sphere distance).
+    \see ClosePairsScoreState
+ */
+class IMPCOREEXPORT KClosePairsPairScore : public PairScore
+{
+  IMP::internal::OwnerPointer<Refiner> r_;
+  IMP::internal::OwnerPointer<PairScore> f_;
+  int k_;
+  mutable double last_distance_;
+  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
+public:
+  /** only score the k closest pairs.
+   */
+  KClosePairsPairScore(PairScore *f, Refiner *r,
+                      int k=1);
 
-//! Traverse the Refiner hierarchy to find all pairs which are close
-/** Apply the score to either the k closest pairs or all pairs whose
-    centers are within a certain distance threshold.
+  IMP_PAIR_SCORE(KClosePairsPairScore);
+};
 
-    \note Either CGAL or ANN must be installed for this to be efficient
-   (except when used with non-rigid bodies with k=1)
+
+
+/** Apply the score to all pairs whose
+    spheres are within a certain distance threshold.
+
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT ClosePairsPairScore : public PairScore
@@ -31,8 +51,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<Refiner> r_;
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
-  int k_;
-  FloatKey rk_;
+  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
@@ -42,10 +62,6 @@ public:
    */
   ClosePairsPairScore(PairScore *f, Refiner *r,
                       Float max_distance);
-  /** only score the k closest pairs.
-   */
-  ClosePairsPairScore(PairScore *f, Refiner *r,
-                      int k=1);
 
   IMP_PAIR_SCORE(ClosePairsPairScore);
 };
