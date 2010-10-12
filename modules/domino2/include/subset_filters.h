@@ -27,9 +27,16 @@
 IMPDOMINO2_BEGIN_NAMESPACE
 
 /** An instance of this type is created by the
-    SubsetFilterTable::get_subset_filter method().  It has one
+    SubsetFilterTable::get_subset_filter method(). It's job
+    is to reject some of the SubsetStates correspinding to the
+    Subset it was created with. It has one
     method of interest, get_is_ok() which true if the state
-    passes the filter.*/
+    passes the filter.
+
+    The passed SubsetState has the particles ordered in the
+    same order as they were in the Subset that was passed to the
+    table in order to create the filter.
+*/
 class IMPDOMINO2EXPORT SubsetFilter: public Object {
 public:
   SubsetFilter(std::string name= "SubsetFilter %1%");
@@ -45,11 +52,17 @@ public:
 IMP_OBJECTS(SubsetFilter, SubsetFilters);
 
 
-/** A class which produces SubsetFilter objects upon
-    demand. The passed prior_subsets list is subsets of
-    s which have already been filtered. These objects are
-    used to reject partial states which, in some way,
-    aren't good enough to be passed on to the final solution.*/
+/** A SubsetFilterTable class which produces SubsetFilter objects upon
+    demand. When the get_subset_filter() method is called, it is passed
+    the Subset that is to be filtered. It is also passed subsets of
+    that Subset which have previously been filtered (and so don't need
+    to be checked again).
+
+    For example, if the passed set is {a,b,c} and the prior_subsets
+    are {a,b} and {b,c}, then only properties than involve a and c need
+    to be checked, as ones involve a and b and b and c have already been
+    checked previously.
+*/
 class IMPDOMINO2EXPORT SubsetFilterTable: public Object {
  public:
   SubsetFilterTable(std::string name="SubsetFilterTable%1%"): Object(name){}
@@ -61,7 +74,10 @@ class IMPDOMINO2EXPORT SubsetFilterTable: public Object {
 IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
 
 
-//! Filter a configuration of the subset using the Model
+//! Filter a configuration of the subset using the Model thresholds
+/** This filter table creates filters using the maximum scores
+    set in the Model for various restraints.
+ */
 class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
   struct StatsPrinter:public Pointer<ModelSubsetEvaluatorTable>{
@@ -84,7 +100,7 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable,
     If a ParticleStatesTable is passed, then two particles cannot
     be in the same state if they have the same ParticleStates,
     otherwise, if a ParticlePairs is passed then pairs found in the
-    list are excluded.
+    list are not allowed to have the same state index.
  */
 class IMPDOMINO2EXPORT PermutationSubsetFilterTable:
   public SubsetFilterTable {
