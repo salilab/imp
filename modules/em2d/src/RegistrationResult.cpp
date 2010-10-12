@@ -45,15 +45,13 @@ RegistrationResults evenly_distributed_registration_results(
 
 void  write_registration_results(String filename, RegistrationResults results) {
   std::ofstream f(filename.c_str(),std::ios::out | std::ios::binary);
+  results[0].write_comment_line(f);
   f << results.size() << std::endl;
   for (unsigned long i=0;i<results.size();++i) {
     results[i].write(f);
   }
   f.close();
 }
-
-
-
 
 void RegistrationResult::set_random_registration(unsigned long index,
                                 double maximum_shift) {

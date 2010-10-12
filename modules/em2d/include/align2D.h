@@ -20,10 +20,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-typedef std::vector< std::vector<double> > double_rings;
-typedef std::vector< std::complex<double> > complex_ring;
-typedef std::vector< complex_ring > complex_rings;
-// typedef std::vector< std::vector< std::complex<double> > > complex_rings;
 typedef std::pair<algebra::Transformation2D,double> ResultAlign2D;
 
 

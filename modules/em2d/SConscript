@@ -1,6 +1,16 @@
-Import('env')
+Import("env")
+import scons_tools.checks
 
-env.IMPModuleBuild(version='SVN',
-    required_modules=['container','core','atom','algebra','em','display','gsl'],
-    required_dependencies=['FFTW3','Boost.ProgramOptions','Boost.FileSystem']
+scons_tools.checks.add_external_library(env, "OpenCV",["cv","cxcore"],
+                                        "opencv/cv.h",
+                  """cv::Mat *m = new cv::Mat();""",
+                extra_libs=[])
+
+env.IMPModuleBuild(version="SVN",
+    required_modules=["container","core","atom","algebra","em","display","gsl"],
+    required_dependencies=["FFTW3","Boost.ProgramOptions",
+      "Boost.FileSystem","OpenCV"]
     )
+
+
+#

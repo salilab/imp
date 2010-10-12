@@ -1,23 +1,24 @@
-Import('env')
+Import("env")
 
 files = [
 
-  'align2D.cpp' ,
-  'labeling_algorithm.cpp' ,
-  'ProjectionFinder.cpp' ,
-  'model_interaction.cpp' ,
-  'project.cpp' ,
-  'image_processing.cpp' ,
-  'pca_features_extraction.cpp' ,
-  'RegistrationResult.cpp' ,
-  'FFToperations.cpp' ,
-  'ProjectionMask.cpp' ,
-  'Fine2DRegistrationRestraint.cpp' ,
-  'ProjectionParameters.cpp' ,
-  'scores2D.cpp' ,
-  'Em2DRestraint.cpp',
+  "align2D.cpp" ,
+  "labeling_algorithm.cpp" ,
+  "ProjectionFinder.cpp" ,
+  "model_interaction.cpp" ,
+  "project.cpp" ,
+  "image_processing.cpp" ,
+  "pca_features_extraction.cpp" ,
+  "RegistrationResult.cpp" ,
+  "FFToperations.cpp" ,
+  "ProjectionMask.cpp" ,
+  "Fine2DRegistrationRestraint.cpp" ,
+  "ProjectionParameters.cpp" ,
+  "scores2D.cpp" ,
+  "Em2DRestraint.cpp",
+  "Image.cpp",
         ]\
-        + SConscript('internal/SConscript')
+        + SConscript("internal/SConscript")
 
 # Build and install the shared library:
 env.IMPModuleLib(files)
