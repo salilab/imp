@@ -1,8 +1,6 @@
 import IMP
 import IMP.test
-import IMP.misc
 import IMP.core
-import IMP.helper
 
 rk = IMP.FloatKey("radius")
 

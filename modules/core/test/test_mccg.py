@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.core
-import IMP.display
 import os
 
 max_score=.02
@@ -75,11 +74,11 @@ class CGOptimizerTests(IMP.test.TestCase):
         for i in range(0, cs.get_number_of_configurations()):
             cs.load_configuration(i)
             nm= "config"+str(i)+".pym"
-            w= IMP.display.ChimeraWriter(nm)
-            for p in lsc.get_particles():
-                d= IMP.core.XYZR(p)
-                g= IMP.display.XYZRGeometry(d)
-                w.add_geometry(g)
+            #w= IMP.display.ChimeraWriter(nm)
+            #for p in lsc.get_particles():
+            #    d= IMP.core.XYZR(p)
+            #    g= IMP.display.XYZRGeometry(d)
+            #    w.add_geometry(g)
             self.check_model(m, lsc, lpc)
         os.unlink( self.get_tmp_file_name("mccg.0.imp"))
 
