@@ -1,3 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version='SVN', required_modules=['saxs', 'em', 'atom', 'core'])
+env.IMPModuleBuild(version='SVN', required_modules=['saxs', 'em', 'atom', 'core'],
+                   python_docs=True)

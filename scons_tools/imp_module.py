@@ -675,7 +675,7 @@ def IMPModuleBuild(env, version, required_modules=[],
                    required_dependencies=[],
                    variabsle=None,
                    required_libraries=[], required_headers=[],
-                   cxxflags=[], cppdefines=[]):
+                   cxxflags=[], cppdefines=[], python_docs=False):
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
     if module_suffix is None:
@@ -690,6 +690,8 @@ def IMPModuleBuild(env, version, required_modules=[],
         module_namespace="IMP::"+module
     if module_nicename is None:
         module_nicename= "IMP."+module
+    if python_docs:
+        env.Append(IMP_PYTHON_DOCS=[module])
     env['IMP_MODULE'] = module
     env['IMP_MODULE_SUFFIX'] = module_suffix
     env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
