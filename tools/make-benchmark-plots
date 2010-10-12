@@ -249,16 +249,20 @@ def data_from_text(text):
     curdata={}
     curmode=None
     for l in text:
-        if l[0]=="date":
-            dt= l[1].split("/")
-            curdate=datetime.date(int(dt[2]), int(dt[0]), int(dt[1]))
-        elif l[0]=="mode":
-            if curdata != {} and curmode == "fast":
-                ret.append(Data(curmode, curdate, curdata))
-            curmode=l[1]
-            curdata={}
-        else:
-            curdata[l[0]]=l[1]
+        try:
+            if l[0]=="date":
+                dt= l[1].split("/")
+                curdate=datetime.date(int(dt[2]), int(dt[0]), int(dt[1]))
+            elif l[0]=="mode":
+                if curdata != {} and curmode == "fast":
+                    ret.append(Data(curmode, curdate, curdata))
+                curmode=l[1]
+                curdata={}
+            else:
+                curdata[l[0]]=l[1]
+        except:
+            print "Error on line", l
+            exit(1)
     return ret
 
 def add_data_to_plots(plots, data):
