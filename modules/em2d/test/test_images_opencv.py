@@ -15,11 +15,6 @@ class ProjectTests(IMP.test.TestCase):
     def test_read_and_write_opencv_images(self):
         """Test read/write for the images using OpenCV data storage"""
         srw = IMP.em2d.SpiderImageReaderWriter()
-############
-        img_names = [self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi")]
-        imgs=IMP.em2d.read_images(img_names,srw)
-
-############
         img=IMP.em2d.Image()
         img.read_from_floats(
               self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi"),srw);
