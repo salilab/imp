@@ -48,6 +48,9 @@ from _display import _DisplayProtein
 from _display import _DisplayNucleicAcid
 from _display import _DisplayChain
 from _display import _DisplayFragment
+from _optimization import Optimization
+from _optimization import _OptimizationConjugateGradients
+from _optimization import _OptimizationRestraint
 
 class XMLRepresentation(object):
     """Construct Representation from XML file"""
@@ -774,6 +777,75 @@ class XMLRestraint(object):
         attrs = self._get_attributes(node)
         text  = self._get_text(node)
         result = _RestraintYear(attrs, text)
+        for child in node.childNodes:
+            r = self._handle_node(child)
+            if r:
+                result._children.append(r)
+        self.depth -= 1
+        return result
+
+
+class XMLOptimization(object):
+    """Construct Optimization from XML file"""
+    def __init__(self, filename):
+        self.handlers = {
+            'ConjugateGradients':self._handle_conjugate_gradients,
+            'Restraint':self._handle_restraint}
+        _document = open(filename).read()
+        self.dom = xml.dom.minidom.parseString(_document)
+        self.depth = 0
+
+    def run(self):
+        opt_dom = self.dom.getElementsByTagName('Optimization')[0]
+        result = Optimization()
+        for node in opt_dom.childNodes:
+            r = self._handle_node(node)
+            if r:
+                result._children.append(r)
+        return result
+
+    def _handle_node(self, node):
+        handler = self.handlers.get(node.nodeName, self._handle_nothing)
+        return handler(node)
+
+    def _get_attributes(self, node):
+        attr_dict = dict()
+        attr_map = node.attributes
+        if attr_map:
+            for i in xrange(attr_map.length):
+                attr = attr_map.item(i)
+                attr_dict[str(attr.name)] = str(attr.value)
+        return attr_dict
+
+    def _get_text(self, node):
+        return ''
+
+    def _print_node_info(self, node):
+        attrs = self._get_attributes(node)
+        attr_list = ['%s=%s' %
+            (at_name, at_val) for (at_name, at_val) in attrs.iteritems()]
+        print '%s%s' % ('  '*(self.depth + 1), ','.join(attr_list))
+
+    def _handle_nothing(self, node):
+        pass
+
+    def _handle_conjugate_gradients(self, node):
+        self.depth += 1
+        attrs = self._get_attributes(node)
+        text  = self._get_text(node)
+        result = _OptimizationConjugateGradients(attrs, text)
+        for child in node.childNodes:
+            r = self._handle_node(child)
+            if r:
+                result._children.append(r)
+        self.depth -= 1
+        return result
+
+    def _handle_restraint(self, node):
+        self.depth += 1
+        attrs = self._get_attributes(node)
+        text  = self._get_text(node)
+        result = _OptimizationRestraint(attrs, text)
         for child in node.childNodes:
             r = self._handle_node(child)
             if r:

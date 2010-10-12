@@ -61,6 +61,8 @@ class Representation(object):
             model = self._model
             if model is None:
                 self._model = model = IMP.Model()
+            else:
+                return model
         else:
             self._model = model
         repr_particle = IMP.Particle(model)
@@ -71,6 +73,10 @@ class Representation(object):
         for child in self._children:
             child.add_as_child(decorator, model)
         return model
+
+    def __str__(self):
+        return '<Representation>\n%s\n</Representation>' %\
+            ('\n'.join([child._to_str(1) for child in self._children]))
 
 
 class _RepresentationNode(object):
@@ -85,6 +91,7 @@ class _RepresentationNode(object):
         self._children = list()
         self.model_decorator = None
         self.parent = None
+        self.force_field = 0
 
     def set_parent(self, parent):
         self.parent = parent
@@ -110,39 +117,78 @@ class _RepresentationNode(object):
         decorator = IMP.atom.Hierarchy.setup_particle(self.this_particle)
         return decorator
 
+    def _attr_to_str(self):
+        return ('RepresentationNode', 'id="%s"' % self.id)
+
+    def _to_str(self, level):
+        indent = '  '*level
+        name, strattr = self._attr_to_str()
+        if not self._children:
+            return '%s<%s %s/>' % (indent, name, strattr)
+        else:
+            return '%s<%s %s>\n%s\n%s</%s>' %\
+                (indent, name, strattr,
+                '\n'.join([child._to_str(level + 1)
+                  for child in self._children]), indent, name)
+
+    def __str__(self):
+        return self._to_str(0)
+
+
 class _RepUniverse(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Universe', 'id="%s"' % self.id)
 
 
 class _RepCollection(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Collection', 'id="%s"' % self.id)
+
 
 class _RepAssembly(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Assembly', 'id="%s"' % self.id)
 
 
 class _RepSegment(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Segment', 'id="%s"' % self.id)
+
 
 class _RepMolecule(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Molecule', 'id="%s"' % self.id)
 
 
 class _RepProtein(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
 
+    def _attr_to_str(self):
+        return ('Protein', 'id="%s"' % self.id)
+
 
 class _RepNucleicAcid(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('NucleicAcid', 'id="%s"' % self.id)
 
 
 class _RepChain(_RepresentationNode):
@@ -151,6 +197,17 @@ class _RepChain(_RepresentationNode):
         self.filename = attributes.get('filename', '')
         self.chain_label = attributes.get('chain_label', '')
         self.selector =  attributes.get('selector', '')
+        if self.filename:
+            self.force_field = int(attributes.get('force_field', '1'))
+        else:
+            self.force_field = 0
+        self.topology_file = attributes.get('topology_filename', IMP.atom.get_data_path('top_heav.lib'))
+        self.param_file = attributes.get('param_filename', IMP.atom.get_data_path('par.lib'))
+
+    def _attr_to_str(self):
+        return ('Chain',
+            'id="%s" filename="%s" chain_label="%s" selector="%s"' %
+            (self.id, self.filename, self.chain_label, self.selector))
 
     def to_particle(self, model):
         if self.filename:
@@ -199,6 +256,9 @@ class _RepChain(_RepresentationNode):
 class _RepFragment(_RepresentationNode):
     def __init__(self, attributes):
         _RepresentationNode.__init__(self, attributes)
+
+    def _attr_to_str(self):
+        return ('Fragment', 'id="%s"' % self.id)
 
     def to_particle(self, model):
         if len(self._children) != 1:
@@ -253,6 +313,11 @@ class _RepAtomicRep(_RepresentationNode):
         if self.start_residue < 0 or self.end_residue < 0:
             raise Exception, "AtomicRep %s must have both start_(residue|nucleotide) and end_(residue|nucleotide)" % self.id
 
+    def _attr_to_str(self):
+        return ('AtomicRep',
+          'id="%s" start_residue="%s" end_residue="%s"' %
+          (self.id, self.start_residue, self.end_residue))
+
     def to_particle(self, model):
         return None
 
@@ -276,6 +341,11 @@ class _RepGeometricShapeRep(_RepresentationNode):
             self.start_residue >= 0:
             if self.total_residue != self.end_residue + 1 - self.start_residue:
                 raise Exception, "Total residues dubious consistency in Geometric Shape _Rep %s" % self.id
+
+    def _attr_to_str(self):
+        return ('GeometricShapeRep',
+          'id="%s" start_residue="%s" end_residue="%s" total_residue="%s"' %
+          (self.id, self.start_residue, self.end_residue, self.total_residue))
 
     def to_particle(self, model):
         return None
@@ -304,6 +374,11 @@ class _RepSphere(_RepresentationNode):
         self.weight = float(attributes.get('weight', 0))
         self.__initial_position = None
 
+    def _attr_to_str(self):
+        return ('Sphere',
+          'id="%s" radius="%s" weight="%s"' %
+          (self.id, self.radius, self.weight))
+
     def initial_position(self):
         if self.__initial_position is None:
             for child in self._children:
@@ -329,6 +404,11 @@ class _RepInitialPosition(_RepresentationNode):
         self.x = float(attributes['x'])
         self.y = float(attributes['y'])
         self.z = float(attributes['z'])
+
+    def _attr_to_str(self):
+        return ('InitialPosition',
+          'id="%s" x="%s" y="%s" z="%s" optimize="%s"' %
+          (self.id, self.x, self.y, self.z, self.optimize))
 
     def to_particle(self, model):
         return None
