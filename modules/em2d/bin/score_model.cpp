@@ -251,12 +251,13 @@ int main(int argc, char **argv) {
 
 
   *std::cin.tie() << "REGISTRATION RESULTS " << std::endl;
+  registration_results[0].write_comment_line(*std::cin.tie());
   for (unsigned int i=0;i<registration_results.size();++i) {
     *std::cin.tie() << "fine_reg>> ";
     registration_results[i].write(*std::cin.tie());
   }
 
-  // parseable result
+  // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
   *std::cin.tie() << ">>" << fn_model <<c<< resolution <<c<< apix

@@ -8,12 +8,6 @@ import os
 from math import *
 
 
-
-
-#- test parametros de registro
-#- test solucion con Fine2DREgistrationRestraint
-
-
 class ProjectTests(IMP.test.TestCase):
 
     def test_registration(self):

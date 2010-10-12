@@ -99,7 +99,6 @@ public:
   }
 
   //! Writes a result line to a file
-//  inline void write(std::ofstream& out) const {
   inline void write(std::ostream& out = std::cout) const {
     algebra::VectorD<4> quaternion=R_.get_quaternion();
     char c='|';
@@ -107,6 +106,14 @@ public:
     <<c<< quaternion[0] <<c<< quaternion[1] <<c<< quaternion[2]
     <<c<< quaternion[3] <<c<< get_shift()[0] <<c<< get_shift()[1]
     <<c<< get_ccc() <<c<< std::endl;
+  }
+  //! Writes an info line to with the contents of a result line
+  inline void write_comment_line(std::ostream& out = std::cout) const {
+    char c='|';
+    out << "# id_number" <<c<< "Phi" <<c<< "Theta" <<c<< "Psi"
+    <<c<< "quaternion q1" <<c<< "q2" <<c<< "q3"
+    <<c<< "q3" <<c<< "shift x" <<c<< "shift y"
+    <<c<< "ccc" <<c<< std::endl;
   }
 
   //! read

@@ -1,0 +1,145 @@
+/**
+ *  \file SpiderImageReaderWriter.h
+ *  \brief Management of Images in Spider format
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+*/
+
+#ifndef IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
+#define IMPEM2D_SPIDER_IMAGE_READER_WRITER_H
+
+#include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/ImageReaderWriter.h"
+#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em/ImageHeader.h"
+#include "IMP/em/header_converters.h"
+#include <IMP/algebra/utility.h>
+#include <IMP/algebra/endian.h>
+#include <IMP/exception.h>
+#include <IMP/log.h>
+#include <typeinfo>
+#include <complex>
+#include <string>
+#include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <cstring>
+
+IMPEM2D_BEGIN_NAMESPACE
+
+//! Class to read and write EM images in Spider format. They are stored in
+//! the header and data passed as arguments
+template <typename T>
+class SpiderImageReaderWriter: public ImageReaderWriter<T>
+{
+public:
+  String filename_;
+  bool skip_type_check_;
+  bool force_reversed_;
+  bool skip_extra_checkings_;
+
+  //! Empty constructor. It does not force reversed header and does not
+  //! skip any of the tests
+  /**
+   *  \note reversed is only used in case that the type_check is skipped
+   */
+  SpiderImageReaderWriter() {
+    skip_type_check_=false;
+    force_reversed_=false;
+    skip_extra_checkings_=false;
+  }
+
+  //! Full constructor.
+  /**
+   *  \param[in] filename file to read
+   *  \param[in] skip_type_check if true, the check for type of image is skipped
+   *  \param[in] force_reversed if true, the reverse mode is enforced
+   * for reading and writting
+   *  \param[in] skip_extra_checkings if true, the most stringent
+   * tests for consistency of images are skipped when reading
+   */
+  SpiderImageReaderWriter(String filename,bool skip_type_check,
+                        bool force_reversed,bool skip_extra_checkings) {
+    filename_=filename;
+    skip_type_check_=skip_type_check;
+    force_reversed_=force_reversed;
+    skip_extra_checkings_=skip_extra_checkings;
+  }
+
+
+  //! Reads an image file in Spider format and stores the content
+  //! int the header and data parameters
+  /**
+    \param[in] filename file to read
+    \param[in] header header to store the info
+    \param[in] data a matrix to store the grid of data of the image
+  **/
+  void read_from_floats(String filename,
+                          em::ImageHeader &header,cv::Mat &data) {
+    IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
+    std::ifstream in;
+    in.open(filename.c_str(), std::ios::in | std::ios::binary);
+    if (in.bad()) {
+      IMP_THROW("Error reading from Spider Image " << filename,IOException);
+    }
+    //! The header format is already in Spider format, just read it
+    bool success=header.read(in,skip_type_check_,force_reversed_,
+                             skip_extra_checkings_);
+    if (!success) {
+      IMP_THROW("Error reading header from Spider Image "
+                << filename,IOException);
+    }
+    IMP_LOG(IMP::VERBOSE,"Header of image " << filename << std::endl
+            << header << std::endl);
+    // Adjust size of the matrix according to the header
+    unsigned int rows = (int)header.get_number_of_rows();
+    unsigned int cols = (int)header.get_number_of_columns();
+    data.create(rows,cols,CV_64FC1);
+    // Read with casting
+    float aux;
+    for (CVDoubleMatIterator it=data.begin<double>();
+                                it!=data.end<double>();++it) {
+      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
+        in.read(reinterpret_cast< char* >(&aux), sizeof(float));
+      } else {
+        algebra::reversed_read(reinterpret_cast< char* >(&aux),
+                                              sizeof(float),1,in,true);
+      }
+      *it = (double)aux;
+    }
+    in.close();
+  }
+
+
+  //! Writes an EM image in Spider format
+  /**
+   *  \param[in] filename file to write
+   *  \param[in] header header with the image info
+   *  \param[in] data a matrix with the grid of data of the image
+   */
+  void write_to_floats(String filename, em::ImageHeader& header,
+                                                    cv::Mat &data) {
+    std::ofstream out;
+    out.open(filename.c_str(), std::ios::out | std::ios::binary);
+    //! The image header is already in Spider format, just write it
+    header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
+
+    float aux;
+    for (CVDoubleMatIterator it=data.begin<double>();
+                                it!=data.end<double>();++it) {
+      aux = (float)(*it);
+      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
+        out.write(reinterpret_cast< char* >(&aux), sizeof(float));
+      } else {
+        algebra::reversed_write(reinterpret_cast< char* >(&aux),
+                       sizeof(float),1,out,true);
+      }
+    }
+    out.close();
+  }
+
+};
+
+
+IMPEM2D_END_NAMESPACE
+
+#endif /* IMPEM2D_SPIDER_IMAGE_READER_WRITER_H */
