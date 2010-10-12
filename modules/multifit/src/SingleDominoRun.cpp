@@ -62,7 +62,6 @@ void SingleDominoRun::set_restraints(
   //set pair restraints
   ParticlePairs pairs = get_pairs_of_interacting_components(anchor_comp_pairs);
   //Float pairwise_weight=0.2;
-  Float single_weight=1.;
   RestraintFilenameGenerator rg(path_);
   for(ParticlePairs::iterator it = pairs.begin(); it != pairs.end(); it++)
     {
