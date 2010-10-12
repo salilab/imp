@@ -25,6 +25,7 @@ Implementation todo list:
 - replace Subset with something that uses a memory pool if allocation becomes an issue
 - have a central table which lists dofs left for each particle, if any node can't find a state with the particle in a given state, it is removed from the list
 - make things work with particles that are a function of multiple optimized particles (eg centroids). Lots of things will have to change.
+- provide a means to filter a node based on already enumerated tables for adjacent nodes
 """,
                  publications=env.StandardPublications(),
                  license="LGPL"

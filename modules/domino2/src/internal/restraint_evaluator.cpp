@@ -45,7 +45,7 @@ void ModelData::initialize() {
     }
     std::sort(oip.begin(), oip.end());
     oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
-    dependencies_.push_back(oip);
+    dependencies_.push_back(Subset(oip, true));
     rdata_.push_back(RestraintData(*rit, rs_->get_model()->get_weight(*rit)));
   }
   for (unsigned int i=0; i< rdata_.size(); ++i) {
@@ -94,6 +94,7 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
                               dependencies_[i].begin(),
                               dependencies_[i].end())) {
               exclude=true;
+              break;
             }
           }}
         if(!exclude) {

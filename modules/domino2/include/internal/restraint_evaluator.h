@@ -146,7 +146,7 @@ struct IMPDOMINO2EXPORT ModelData {
   mutable Pointer<RestraintSet> rs_;
 
   std::vector<RestraintData> rdata_;
-  std::vector<ParticlesTemp> dependencies_;
+  std::vector<Subset> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
 
