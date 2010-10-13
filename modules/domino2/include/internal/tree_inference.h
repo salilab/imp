@@ -23,10 +23,11 @@ IMPDOMINO2_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINO2EXPORT
 SubsetStates get_best_conformations(const SubsetGraph &jt,
-                                      int root,
-                                      const Subset& all_particles,
-                                      const SubsetFilterTables &filters,
-                                      const SubsetStatesTable *states);
+                                    int root,
+                                    const Subset& all_particles,
+                                    const SubsetFilterTables &filters,
+                                    const SubsetStatesTable *states,
+                                    ListSubsetFilterTable *lsft);
 
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

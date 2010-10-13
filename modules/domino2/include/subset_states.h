@@ -91,7 +91,14 @@ class IMPDOMINO2EXPORT ListSubsetStatesTable: public SubsetStatesTable {
   IMP::internal::Map<Subset, SubsetStates> states_;
  public:
   ListSubsetStatesTable(std::string name="ListSubsetStatesTable %1%");
+  /** There must not be any duplicates in the list */
   void set_subset_states(const Subset &s, const SubsetStates &lsc) {
+    IMP_IF_CHECK(USAGE) {
+      SubsetStates l= lsc;
+      std::sort(l.begin(), l.end());
+      IMP_USAGE_CHECK(std::unique(l.begin(), l.end())== l.end(),
+                      "There are duplicated subset states in the passed list");
+    }
     states_[s]=lsc;
   }
   IMP_SUBSET_STATES_TABLE(ListSubsetStatesTable);

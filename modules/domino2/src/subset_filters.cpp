@@ -54,7 +54,9 @@ namespace {
                       == called_.end(),
                       "Already called with " << state << " for "
                       << data_.get_subset());
+#if IMP_BUILD < IMP_FAST
       called_.insert(state);
+#endif
     }
     IMP_OBJECT_LOG;
     set_was_used(true);
@@ -296,5 +298,96 @@ EqualitySubsetFilterTable::get_subset_filter(const Subset &s,
 void EqualitySubsetFilterTable::do_show(std::ostream &out) const {
 }
 
+
+
+
+// **************************************** List ********************
+
+
+namespace {
+
+  class  ListSubsetFilter: public SubsetFilter {
+    Pointer<const ListSubsetFilterTable> keepalive_;
+    Ints pos_;
+    Ints indexes_;
+  public:
+    ListSubsetFilter(const ListSubsetFilterTable *ka,
+                     const Ints pos, const Ints indexes):
+      SubsetFilter("List score filter"),
+      keepalive_(ka), pos_(pos), indexes_(indexes) {
+    }
+    IMP_SUBSET_FILTER(ListSubsetFilter);
+  };
+
+  bool ListSubsetFilter::get_is_ok(const SubsetState &state) const{
+    ++keepalive_->num_test_;
+    for (unsigned int i=0; i < pos_.size(); ++i) {
+      if (!keepalive_->states_[indexes_[i]].test(state[pos_[i]])) {
+        IMP_LOG(VERBOSE, "Rejecting state " << state
+                << " due to particle " << pos_[i] << std::endl);
+        return false;
+      }
+    }
+    ++keepalive_->num_ok_;
+    return true;
+  }
+
+  void ListSubsetFilter::do_show(std::ostream &out) const{}
+}
+
+double ListSubsetFilter::get_strength() const {
+  return 1-std::pow(.5, static_cast<int>(pos_.size()));
+}
+
+
+
+ListSubsetFilterTable
+::ListSubsetFilterTable(ParticleStatesTable *pst): pst_(pst)
+{
+  num_ok_=0;
+  num_test_=0;
+}
+
+int ListSubsetFilterTable
+::get_index(Particle*p) const {
+  if (map_.find(p) == map_.end()) {
+    map_[p]= states_.size();
+    Pointer<ParticleStates> ps= pst_->get_particle_states(p);
+    const int num=ps->get_number_of_particle_states();
+    states_.push_back(boost::dynamic_bitset<>(num);
+    states_.back().set();
+    return states_.size()-1;
+  } else {
+    return map_.find(p)->second;
+  }
+}
+
+SubsetFilter*
+ListSubsetFilterTable
+::get_subset_filter(const Subset &s,
+                    const Subsets &excluded) const {
+  ParticlesTemp cur(s.begin(), s.end());
+  Ints pos(cur.size());
+  Ints indexes(cur.size());
+  for (unsigned int i=0; i< cur.size(); ++i) {
+    for (unsigned int j=0; j< s.size(); ++j) {
+      if (s[j]== cur[i]) {
+        pos[i]=j;
+        break;
+      }
+    }
+    indexes[i]= get_index(cur[i]);
+  }
+  return new ListSubsetFilter(this, pos, indexes);
+}
+
+void ListSubsetFilterTable::intersect(Particle*p,
+                                      const boost::dynamic_bitset<> &s) {
+  int index= get_index(p);
+  states_[index] &= s;
+}
+
+void ListSubsetFilterTable::do_show(std::ostream &out) const {
+}
 
 IMPDOMINO2_END_NAMESPACE

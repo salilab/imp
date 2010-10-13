@@ -171,6 +171,20 @@ get_union(const Subset &s0, const Subset &s1,
           const NodeData &nd0, const NodeData &nd1,
           const EdgeData &ed);
 
+inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
+                                     const Subset &s,
+                                     const SubsetStates &states) {
+  for (unsigned int i=0; i< s.size(); ++i) {
+    boost::dynamic_bitset<> bs(lsft->get_number_of_particle_states(s[i]));
+    bs.reset();
+    for (unsigned int j=0; j< states.size(); ++j) {
+      bs.set(states[j][i]);
+    }
+    lsft->intersect(s[i], bs);
+  }
+}
+
+
 IMPDOMINO2_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPDOMINO2_INTERNAL_INFERENCE_UTILITY_H */
