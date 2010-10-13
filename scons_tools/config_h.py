@@ -244,7 +244,7 @@ namespace internal {
  const char* imp_data_path="%s";
  const char* imp_example_path="%s";
 }
-"""%(source[0].get_contents(), source[1].get_contents())
+"""%(source[1].get_contents(), source[2].get_contents())
 
     print >> cpp, "\n%(PREPROC)s_END_NAMESPACE" % vars
 
