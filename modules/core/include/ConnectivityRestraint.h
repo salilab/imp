@@ -21,11 +21,13 @@
 IMPCORE_BEGIN_NAMESPACE
 
 //! Ensure that a set of particles remains connected with one another.
-/** The restraint takes several particles and ensures that they remain
-    connected. If you wish to restraint the connectivity of sets of
+/** The restraint implements ambiguous connectivity. That is, it takes
+    several particles and ensures that they remain
+    connected, but allows how they are connected to change. If you wish
+    to restraint the connectivity of sets of
     particles (i.e. each protein is represented using a set of balls)
     use an appropriate PairScore which calls a Refiner (such
-    as LowestRefinedPairScore).
+    as ClosePairsPairScore).
 
     \verbinclude connectivity_restraint.py
 
