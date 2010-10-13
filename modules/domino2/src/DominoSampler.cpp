@@ -81,10 +81,16 @@ SubsetStates DominoSampler
 
   SubsetStates final_solutions;
   if (get_is_tree(jt)) {
+    IMP::internal::OwnerPointer<ListSubsetFilterTable>
+      lsft(new ListSubsetFilterTable(get_particle_states_table()));
+    sfts.push_back(lsft);
     final_solutions
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
-                                         sfts, sst);
+                                         sfts, sst, lsft);
+    IMP_LOG(TERSE, lsft->get_ok_rate()
+            << " were ok with the cross set filtering"
+            << std::endl);
   } else {
     final_solutions
       = internal::loopy_get_best_conformations(jt, known_particles,

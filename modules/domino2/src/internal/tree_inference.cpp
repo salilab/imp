@@ -24,12 +24,14 @@ namespace {
                                   unsigned int parent,
                                   const Subset& all,
                                   const SubsetFilterTables &filters,
-                                  const SubsetStatesTable *states) {
+                                  const SubsetStatesTable *states,
+                                  ListSubsetFilterTable *lsft) {
     SubsetMap subset_map= boost::get(boost::vertex_name, jt);
     Subset s= boost::get(subset_map, root);
     IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
     IncreaseIndent ii;
     NodeData nd= get_node_data(s, states);
+    if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
     IMP_LOG(VERBOSE, "Subset data is\n" << nd << std::endl);
     for (std::pair<NeighborIterator, NeighborIterator> be
            = boost::adjacent_vertices(root, jt);
@@ -42,10 +44,11 @@ namespace {
       std::pair<Subset, NodeData> cpd
         = get_best_conformations_internal(jt, *be.first, root, all,
                                           filters,
-                                          states);
+                                          states, lsft);
       EdgeData ed= get_edge_data(s, cpd.first, filters);
       nd= get_union(s, cpd.first, nd, cpd.second, ed);
       s= ed.union_subset;
+      if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
       IMP_LOG(VERBOSE, "After merge, set is " << s
               << " and data is\n" << nd << std::endl);
     }
@@ -54,14 +57,15 @@ namespace {
 }
 
 SubsetStates get_best_conformations(const SubsetGraph &jt,
-                                      int root,
-                                      const Subset& all_particles,
-                                      const SubsetFilterTables &filters,
-                                      const SubsetStatesTable *states) {
+                                    int root,
+                                    const Subset& all_particles,
+                                    const SubsetFilterTables &filters,
+                                    const SubsetStatesTable *states,
+                                    ListSubsetFilterTable *lsft) {
   return get_best_conformations_internal(jt, root, root,
                                          all_particles,
                                          filters,
-                                         states).second.subset_states;
+                                         states, lsft).second.subset_states;
 }
 
 

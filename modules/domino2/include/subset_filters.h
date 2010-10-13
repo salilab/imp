@@ -19,9 +19,11 @@
 #include "domino2_config.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
+#include <IMP/internal/map.h>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
+#include <boost/dynamic_bitset.hpp>
 
 
 IMPDOMINO2_BEGIN_NAMESPACE
@@ -140,6 +142,39 @@ public:
 
 IMP_OBJECTS(EqualitySubsetFilterTable,
             EqualitySubsetFilterTables);
+
+
+/** \brief Maintain an explicit list of what states each particle
+    is allowed to have.
+
+    This filter maintains a list for each particle storing whether
+    that particle is allowed to be in a certain state or not.
+ */
+class IMPDOMINO2EXPORT ListSubsetFilterTable:
+  public SubsetFilterTable {
+ public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  mutable IMP::internal::Map<Particle*,int > map_;
+  mutable std::vector< boost::dynamic_bitset<> > states_;
+  Pointer<ParticleStatesTable> pst_;
+  mutable double num_ok_, num_test_;
+  int get_index(Particle*p) const;
+  void intersect(Particle*p, const boost::dynamic_bitset<> &s);
+#endif
+ public:
+  ListSubsetFilterTable(ParticleStatesTable *pst);
+  double get_ok_rate() const {
+    return num_ok_/num_test_;
+  }
+  unsigned int get_number_of_particle_states(Particle *p) const {
+    int i= get_index(p);
+    return states_[i].size();
+  }
+  IMP_SUBSET_FILTER_TABLE(ListSubsetFilterTable);
+};
+
+IMP_OBJECTS(ListSubsetFilterTable,
+            ListSubsetFilterTables);
 
 
 IMPDOMINO2_END_NAMESPACE
