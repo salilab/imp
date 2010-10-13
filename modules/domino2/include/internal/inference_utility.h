@@ -126,11 +126,9 @@ inline EdgeData get_edge_data(const Subset&s0,
   EdgeData ret;
   ret.union_subset= get_union(s0, s1);
   ret.intersection_subset= get_intersection(s0,s1);
-  Subset diff0= get_difference(s0, ret.intersection_subset);
-  Subset diff1= get_difference(s1, ret.intersection_subset);
   Subsets excluded;
-  excluded.push_back(diff0);
-  excluded.push_back(diff1);
+  excluded.push_back(s0);
+  excluded.push_back(s1);
   for (unsigned int i=0; i< sft.size(); ++i) {
     SubsetFilter* sf= sft[i]->get_subset_filter(ret.union_subset,
                                                 excluded);
