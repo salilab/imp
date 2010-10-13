@@ -3,40 +3,32 @@
 import IMP
 import IMP.restrainer
 
-# Load molecular hierarchy definition
-rep_parser = IMP.restrainer.XMLRepresentation(
-                IMP.restrainer.get_example_path('input/eg2_representation.xml'))
-representation = rep_parser.run()
+# Create restrainer object
+restrainer = IMP.restrainer.Main()
 
-# Load the restraint set
-restraint_parser = IMP.restrainer.XMLRestraint(
-                      IMP.restrainer.get_example_path('input/eg2_restraint.xml'))
-restraint = restraint_parser.run()
-
-# Place representation into IMP model
-model = representation.to_model()
-
-# Place restraint into IMP model
-restraint.add_to_representation(representation)
-
+# Add representation and restraint to restrainer
+rep = restrainer.add_representation(IMP.restrainer.get_example_path('input/eg2_representation.xml'))
+rsr = restrainer.add_restraint(IMP.restrainer.get_example_path('input/eg2_restraint.xml'))
 
 ###=======================================================================###
 #  At this point all data from XML files have been placed into the model.
 #  Now it is possible to perform various operations on the IMP model.
 ###=======================================================================###
 
+# Get the IMP model object used by restrainer
+model = restrainer.model()
 
 # Find the IMP data structure with the given id
-protein1_hierarchy = representation.get_imp_hierarchy_by_id('Protein1')
+protein1_hierarchy = rep.get_imp_hierarchy_by_id('Protein1')
 
 # Get root hierarchy
-root_hierarchy = representation.get_root_imp_hierarchy()
+root_hierarchy = rep.get_root_imp_hierarchy()
 
 # Get the rigid body with the given id
-protein1_rb = restraint.get_rigid_body_by_id ("Protein1")
+protein1_rb = rsr.get_rigid_body_by_id ("Protein1")
 
 # Get all rigid bodies
-rbs = restraint.get_all_rigid_bodies()
+rbs = rsr.get_all_rigid_bodies()
 
 # Define transformation
 ub = IMP.algebra.Vector3D(-50.0,-50.0,-50.0)
