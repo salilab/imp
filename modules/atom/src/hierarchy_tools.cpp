@@ -19,7 +19,11 @@
 #include <IMP/atom/estimates.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/Harmonic.h>
+#include <IMP/core/SphereDistancePairScore.h>
+#include <IMP/core/PairRestraint.h>
+#include <IMP/core/TableRefiner.h>
 #include <algorithm>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -215,6 +219,171 @@ create_simplified_along_backbone(Chain in,
   return root;
 }
 
+
+std::string get_molecule_name(Hierarchy h) {
+  do {
+    if (!Residue::particle_is_instance(h)
+        && !Atom::particle_is_instance(h)
+        && !Chain::particle_is_instance(h)) {
+      return h->get_name();
+    }
+  } while (h=h.get_parent());
+  IMP_THROW("Hierarchy " << h << " has no molecule name.",
+            ValueException);
+}
+Ints get_residue_indexes(Hierarchy h) {
+    do {
+      if (Residue::particle_is_instance(h)) {
+        return Ints(1,Residue(h).get_index());
+      } else if (Domain::particle_is_instance(h)) {
+        Ints ret;
+        for ( int i=Domain(h).get_begin_index();
+             i< Domain(h).get_end_index(); ++ i) {
+          ret.push_back(i);
+        }
+        return ret;
+      } else if (Fragment::particle_is_instance(h)) {
+        return Fragment(h).get_residue_indexes();
+      }
+    } while (h=h.get_parent());
+    IMP_THROW("Hierarchy " << h << " has no residue index.",
+              ValueException);
+}
+ResidueType get_residue_type(Hierarchy h) {
+  do {
+    if (Residue::particle_is_instance(h)) {
+      return Residue(h).get_residue_type();
+    }
+  } while (h=h.get_parent());
+    IMP_THROW("Hierarchy " << h << " has no residue type.",
+              ValueException);
+}
+char get_chain(Hierarchy h) {
+  do {
+    if (Chain::particle_is_instance(h)) {
+      return Chain(h).get_id();
+    }
+  } while (h=h.get_parent());
+    IMP_THROW("Hierarchy " << h << " has no chain.",
+              ValueException);
+}
+AtomType get_atom_type(Hierarchy h) {
+  do {
+    if (Atom::particle_is_instance(h)) {
+      return Atom(h).get_atom_type();
+    }
+  } while (h=h.get_parent());
+    IMP_THROW("Hierarchy " << h << " has no atom type.",
+              ValueException);
+}
+std::string get_domain_name(Hierarchy h) {
+  do {
+    if (Domain::particle_is_instance(h)) {
+      return Domain(h)->get_name();
+    }
+  } while (h=h.get_parent());
+    IMP_THROW("Hierarchy " << h << " has no domain name.",
+              ValueException);
+}
+
+
+bool Named::check_nonradius(Hierarchy h) const {
+  try {
+    if (!molecules_.empty()) {
+      std::string molname= get_molecule_name(h);
+      if (!std::binary_search(molecules_.begin(), molecules_.end(),
+                              molname)) return false;
+    }
+    if (!residue_indices_.empty()) {
+      Ints ris= get_residue_indexes(h);
+      std::sort(ris.begin(), ris.end());
+      Ints intersect;
+      std::set_intersection(ris.begin(), ris.end(),
+                            residue_indices_.begin(), residue_indices_.end(),
+                            std::back_inserter(intersect));
+      if (intersect.empty()) return false;
+    }
+    if (!residue_types_.empty()) {
+      ResidueType rt= get_residue_type(h);
+      if (!std::binary_search(residue_types_.begin(), residue_types_.end(),
+                              rt)) return false;
+    }
+    if (!chains_.empty()) {
+      char chain= get_chain(h);
+      if (!std::binary_search(chains_.begin(), chains_.end(),
+                              chain)) return false;
+    }
+    if (!atom_types_.empty()) {
+      AtomType chain= get_atom_type(h);
+      if (!std::binary_search(atom_types_.begin(), atom_types_.end(),
+                              chain)) return false;
+    }
+    if (!domains_.empty()) {
+      std::string chain= get_domain_name(h);
+      if (!std::binary_search(domains_.begin(), domains_.end(),
+                              chain)) return false;
+    }
+  } catch (ValueException) {
+    return false;
+  }
+  return true;
+}
+
+bool Named::operator()(Hierarchy h) const
+{
+  try {
+    if (!check_nonradius(h)) return false;
+    if (!core::XYZ::particle_is_instance(h)) return false;
+    bool found=false;
+    for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+      if (check_nonradius(h.get_child(i))) {
+        if (core::XYZR::particle_is_instance(h)
+            && core::XYZR(h).get_radius() >radius_) {
+          found=true;
+          break;
+        }
+      }
+    }
+    if (found) return false;
+  } catch (ValueException) {
+    return false;
+  }
+  return true;
+}
+ParticlesTemp Named::get_particles() const {
+  ParticlesTemp ret;
+  core::gather_slice(h_, boost::bind(&IMP::atom::Named::operator(),
+                               this, _1), std::back_inserter(ret));
+  return ret;
+}
+
+
+Restraint* create_distance_restraint(const Named &n0,
+                                     const Named &n1,
+                                     double x0, double k) {
+  ParticlesTemp p0= n0.get_particles();
+  ParticlesTemp p1= n1.get_particles();
+  Pointer<Restraint> ret;
+  if (p0.empty() || p1.empty()) {
+    IMP_THROW("Named does not refer to any particles.", ValueException);
+  } else if (p1.size() ==1 && p0.size()==1) {
+    double d= core::XYZR(p0[0]).get_radius()
+      + core::XYZR(p1[0]).get_radius() + x0;
+    ret= new core::PairRestraint(new core::HarmonicDistancePairScore(d, k),
+                           ParticlePair(p0[0], p1[0]));
+  } else {
+    Pointer<core::TableRefiner> r= new core::TableRefiner();
+    r->add_particle(n0.get_hierarchy(), p0);
+    r->add_particle(n1.get_hierarchy(), p1);
+    Pointer<PairScore> ps
+      = new core::KClosePairsPairScore(
+               new core::HarmonicSphereDistancePairScore(x0, k),
+                                       r, 1);
+    ret= new core::PairRestraint(ps, ParticlePair(n0.get_hierarchy(),
+                                                  n1.get_hierarchy()));
+  }
+  return ret.release();
+}
 
 
 IMPATOM_END_NAMESPACE
