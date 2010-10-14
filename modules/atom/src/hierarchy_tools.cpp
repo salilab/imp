@@ -231,20 +231,38 @@ std::string get_molecule_name(Hierarchy h) {
   IMP_THROW("Hierarchy " << h << " has no molecule name.",
             ValueException);
 }
+
+namespace {
+  Ints get_tree_residue_indexes(Hierarchy h) {
+    if (Residue::particle_is_instance(h)) {
+      return Ints(1,Residue(h).get_index());
+    }
+    Ints ret;
+    if (Domain::particle_is_instance(h)) {
+      for ( int i=Domain(h).get_begin_index();
+            i< Domain(h).get_end_index(); ++ i) {
+        ret.push_back(i);
+      }
+    } else if (Fragment::particle_is_instance(h)) {
+      Ints cur= Fragment(h).get_residue_indexes();
+      ret.insert(ret.end(), cur.begin(), cur.end());
+    }
+    if (ret.empty()) {
+      if (h.get_number_of_children() >0) {
+        for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+          Ints cur= get_tree_residue_indexes(h.get_child(0));
+          ret.insert(ret.end(), cur.begin(), cur.end());
+        }
+      }
+    }
+    return ret;
+  }
+}
+
 Ints get_residue_indexes(Hierarchy h) {
     do {
-      if (Residue::particle_is_instance(h)) {
-        return Ints(1,Residue(h).get_index());
-      } else if (Domain::particle_is_instance(h)) {
-        Ints ret;
-        for ( int i=Domain(h).get_begin_index();
-             i< Domain(h).get_end_index(); ++ i) {
-          ret.push_back(i);
-        }
-        return ret;
-      } else if (Fragment::particle_is_instance(h)) {
-        return Fragment(h).get_residue_indexes();
-      }
+      Ints ret= get_tree_residue_indexes(h);
+      if (!ret.empty()) return ret;
     } while (h=h.get_parent());
     IMP_THROW("Hierarchy " << h << " has no residue index.",
               ValueException);
@@ -345,6 +363,28 @@ bool Named::operator()(Hierarchy h) const
       }
     }
     if (found) return false;
+    // check terminus
+    if (terminus_!= NONE) {
+      Hierarchy cur=h;
+      bool fail=false;
+      do {
+        Hierarchy p= cur.get_parent();
+        if (!p) break;
+        unsigned int i= p.get_child_index(cur);
+        if (terminus_==C && i+1 != p.get_number_of_children()){
+          fail=true;
+          break;
+        } else if (terminus_==N && i != 0) {
+          fail=true;
+          break;
+        }
+        cur=p;
+        if (!Fragment::particle_is_instance(cur)
+            || !Domain::particle_is_instance(cur)
+            || !Residue::particle_is_instance(cur)) break;
+      } while (true);
+      if (fail) return false;
+    }
   } catch (ValueException) {
     return false;
   }
@@ -352,8 +392,10 @@ bool Named::operator()(Hierarchy h) const
 }
 ParticlesTemp Named::get_particles() const {
   ParticlesTemp ret;
-  core::gather_slice(h_, boost::bind(&IMP::atom::Named::operator(),
-                               this, _1), std::back_inserter(ret));
+  for (unsigned int i=0; i< h_.size(); ++i) {
+    core::gather_slice(h_[i], boost::bind(&IMP::atom::Named::operator(),
+                                       this, _1), std::back_inserter(ret));
+  }
   return ret;
 }
 
@@ -373,14 +415,14 @@ Restraint* create_distance_restraint(const Named &n0,
                            ParticlePair(p0[0], p1[0]));
   } else {
     Pointer<core::TableRefiner> r= new core::TableRefiner();
-    r->add_particle(n0.get_hierarchy(), p0);
-    r->add_particle(n1.get_hierarchy(), p1);
+    r->add_particle(n0.get_hierarchies()[0], p0);
+    r->add_particle(n1.get_hierarchies()[0], p1);
     Pointer<PairScore> ps
       = new core::KClosePairsPairScore(
                new core::HarmonicSphereDistancePairScore(x0, k),
                                        r, 1);
-    ret= new core::PairRestraint(ps, ParticlePair(n0.get_hierarchy(),
-                                                  n1.get_hierarchy()));
+    ret= new core::PairRestraint(ps, ParticlePair(n0.get_hierarchies()[0],
+                                                  n1.get_hierarchies()[0]));
   }
   return ret.release();
 }
