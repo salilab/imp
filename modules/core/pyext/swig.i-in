@@ -37,6 +37,7 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicWell, HarmonicWells);
 IMP_SWIG_OBJECT( IMP::core, HarmonicLowerBound, HarmonicLowerBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
+IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, IncrementalBallMover, IncrementalBallMovers);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
