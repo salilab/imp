@@ -82,8 +82,22 @@ IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 /** @} */
 
+
+/** A part of an atom.Hiearchy or atom.Hierarchies that is identified
+    by the biological name. For example (in python)
+    \code
+    Named(hierarchy=h, molecule="myprotein", terminus=Named.C)
+    Named(hierarchy=h, molecule="myprotein", residue=133)
+    Named(hierarchy=h, molecule="myprotein", residues=[(133,134)])
+    \endcode
+    each get the C-terminus of the protein "myprotein" (assuming the last
+    residue index is 133).
+*/
 class IMPATOMEXPORT Named {
-  Hierarchy h_;
+ public:
+  enum Terminus {NONE, C,N};
+ private:
+  Hierarchies h_;
   Strings molecules_;
   Ints residue_indices_;
   ResidueTypes residue_types_;
@@ -91,20 +105,49 @@ class IMPATOMEXPORT Named {
   AtomTypes atom_types_;
   Strings domains_;
   double radius_;
+  Terminus terminus_;
   bool check_nonradius(Hierarchy h) const;
   bool operator()(Hierarchy h) const;
  public:
-  Named(Hierarchy h): h_(h){
+#ifdef IMP_DOXYGEN
+  /** When using python, you have much more control over
+      construction due to the use of keyword arguments. You
+      can provide any subset of the arguments (although one
+      of hierarchy or hierarchies must be provided).
+  */
+  Named(Hierarchy hierarchy=None,
+        Hierarchies hierarchies=[],
+        Strings molecules=[],
+        Ints residue_indexes=[],
+        Strings chains=[],
+        AtomTypes atom_types=[],
+        ResidueTypes residue_types=[],
+        Strings domains=[],
+        double target_radius=-1,
+        std::string molecule=None,
+        int residue_index=None,
+        char chain=None,
+        AtomType atom_type=None,
+        ResidueType residue_type=None,
+        Terminus terminus=None,
+        std::string domain=None);
+#endif
+  Named(Hierarchy h): h_(1, h){
     radius_=-1;
+    terminus_=NONE;
+  }
+  Named(Hierarchies h): h_(h){
+    radius_=-1;
+    terminus_=NONE;
   }
   // for C++
   Named(Hierarchy h,
         std::string molname,
         int residue_index): h_(h), molecules_(1,molname),
     residue_indices_(1, residue_index),
-    radius_(-1){
+    radius_(-1), terminus_(NONE){
   }
-  Hierarchy get_hierarchy() const {
+  Hierarchies get_hierarchies() const {
     return h_;
   }
   void set_molecules(Strings mols) {
@@ -113,6 +156,9 @@ class IMPATOMEXPORT Named {
   }
   void set_target_radius(double r) {
     radius_=r;
+  }
+  void set_terminus(Terminus t) {
+    terminus_=t;
   }
   void set_chains(std::string chains) {
     chains_= chains;

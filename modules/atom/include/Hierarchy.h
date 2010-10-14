@@ -182,6 +182,15 @@ typedef IMP::Decorators< Hierarchy,
     - any Atom with a non-heterogen atom type is part of a protein,
     DNA or RNA molecule.
 
+    The information contained at a given level is assumed to be a
+    a more detailed representation of higher up the tree. That is,
+    the nodes under a Domain node must contain all the residue indexes
+    listed for the Domain. And a given residue must not be
+    represented in more than one of a set of sibling nodes. Likewise,
+    if a Domain node has a ball associated with it, that is assumed
+    to be a coarser representation of the domain the that of all
+    the leaves of the subtree.
+
     The get_is_valid() method checks some of these.
 
     A number of decorator types are associated with the Hierarchy
