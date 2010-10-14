@@ -354,7 +354,7 @@ int ListSubsetFilterTable
     map_[p]= states_.size();
     Pointer<ParticleStates> ps= pst_->get_particle_states(p);
     const int num=ps->get_number_of_particle_states();
-    states_.push_back(boost::dynamic_bitset<>(num);
+    states_.push_back(boost::dynamic_bitset<>(num));
     states_.back().set();
     return states_.size()-1;
   } else {
