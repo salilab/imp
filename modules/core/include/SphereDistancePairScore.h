@@ -18,6 +18,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A score on the distance between the surfaces of two spheres.
 /** \see XYZR
+    \see SphereDistancePairScore
     \see DistancePairScore
     \see SoftSpherePairScore
     \see NormalizedSphereDistancePairScore
@@ -35,6 +36,55 @@ public:
   IMP_SIMPLE_PAIR_SCORE(SphereDistancePairScore);
 };
 
+
+//!A harmonic score on the distance between two spheres
+/** \see XYZR
+    \see SpherePairScore
+    \see SoftSpherePairScore
+    \see NormalizedSphereDistancePairScore
+ */
+class IMPCOREEXPORT HarmonicSphereDistancePairScore : public PairScore
+{
+  double x0_, k_;
+public:
+  HarmonicSphereDistancePairScore(double d0, double k);
+  double get_rest_length() const {
+    return x0_;
+  }
+  double get_stiffness() const {
+    return k_;
+  }
+  IMP_SIMPLE_PAIR_SCORE(HarmonicSphereDistancePairScore);
+};
+
+IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
+
+
+
+#ifndef IMP_DOXYGEN
+inline double HarmonicSphereDistancePairScore::evaluate(const ParticlePair &p,
+                            DerivativeAccumulator *da) const {
+  XYZR d0(p[0]), d1(p[1]);
+  algebra::VectorD<3> delta;
+  for (int i = 0; i < 3; ++i) {
+    delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
+  }
+  static const double MIN_DISTANCE = .00001;
+  double distance2= delta.get_squared_magnitude();
+  double distance=std::sqrt(distance2);
+  double shifted_distance = distance- x0_- d0.get_radius() - d1.get_radius();
+  double score= .5*k_*square(shifted_distance);
+  if (!da || distance < MIN_DISTANCE) return score;
+  double deriv= k_*shifted_distance;
+  algebra::Vector3D uv= delta/distance;
+  if (da) {
+    d0.add_to_derivatives(uv*deriv, *da);
+    d1.add_to_derivatives(-uv*deriv, *da);
+  }
+
+  return score;
+}
+#endif
 
 //! A score on the normalized distance between the surfaces of two spheres
 /** The distance between the surfaces of the two spheres is divided by the
