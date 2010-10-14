@@ -285,7 +285,7 @@ public:
 
 #if !defined (SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-template <class F, class Out>
+  template <class F, class Out, bool Slice=false>
 struct Gather: public HierarchyVisitor
 {
   //! initialize with the function and the container
@@ -294,6 +294,7 @@ struct Gather: public HierarchyVisitor
     if (f_(p)) {
       *out_=p;
       ++out_;
+      if (Slice) return false;
     }
     return true;
   }
@@ -305,6 +306,7 @@ private:
   F f_;
   Out out_;
 };
+
 
 }
 #endif
@@ -491,6 +493,23 @@ Out gather(Hierarchy h, F f, Out out)
   depth_first_traversal(h, gather);
   return gather.get_out();
 }
+
+
+//! Gather all the particles in the hierarchy which meet some criteria
+/** Descent in the tree terminates when a node is gathered so that
+    none of its children are explored.
+
+    \ingroup hierarchy
+    \relatesalso Hierarchy
+ */
+template <class Out, class F>
+Out gather_slice(Hierarchy h, F f, Out out)
+{
+  internal::Gather<F,Out,true> gather(f,out);
+  depth_first_traversal(h, gather);
+  return gather.get_out();
+}
+
 
 //! Gather all the particles in the hierarchy which match on an attribute
 /** \ingroup hierarchy
