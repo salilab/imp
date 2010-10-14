@@ -69,6 +69,13 @@ class IMPATOMEXPORT SpecialCaseRestraints {
           + core::XYZR(pp[1]).get_radius();
         return true;
       }
+    } else if (dynamic_cast<core::HarmonicSphereDistancePairScore*>(ps))  {
+      core::HarmonicSphereDistancePairScore *dps
+        = dynamic_cast<core::HarmonicSphereDistancePairScore*>(ps);
+      k= dps->get_stiffness();
+      x0= dps->get_rest_length()+ core::XYZR(pp[0]).get_radius()
+        + core::XYZR(pp[1]).get_radius();
+      return true;
     }
     return false;
   }
