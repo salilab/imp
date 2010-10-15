@@ -20,7 +20,7 @@ const Domain::Data& Domain::get_data() {
 
 void Domain::show(std::ostream &out) const {
   out << "Domain: " << get_begin_index()
-      << " to " << get_end_index() << std::endl;
+      << " to " << get_end_index();
 }
 
 IMPATOM_END_NAMESPACE
