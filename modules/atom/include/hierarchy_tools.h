@@ -39,11 +39,20 @@ IMPATOM_BEGIN_NAMESPACE
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy create_protein(Model *m,
+                                       std::string name,
                                        double resolution,
                                        int number_of_residues,
                                        int first_residue_index=0,
-                                       double volume=-1,
-                                       double spring_strength=1);
+                                       double volume=-1);
+/** Like the former create_protein(), but it enforces domain splits
+    at the provide domain boundairs. The domain boundaries should be
+    the start of the first domain, any boundies, and then one past
+    the end of the last domain.
+ */
+IMPATOMEXPORT Hierarchy create_protein(Model *m,
+                                       std::string name,
+                                       double resolution,
+                                       const Ints domain_boundaries);
 
 
 /** \name Simplification along backbone
@@ -86,14 +95,14 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 /** A part of an atom.Hiearchy or atom.Hierarchies that is identified
     by the biological name. For example (in python)
     \code
-    Named(hierarchy=h, molecule="myprotein", terminus=Named.C)
-    Named(hierarchy=h, molecule="myprotein", residue=133)
-    Named(hierarchy=h, molecule="myprotein", residues=[(133,134)])
+    Selection(hierarchy=h, molecule="myprotein", terminus=Selection.C)
+    Selection(hierarchy=h, molecule="myprotein", residue=133)
+    Selection(hierarchy=h, molecule="myprotein", residues=[(133,134)])
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133).
 */
-class IMPATOMEXPORT Named {
+class IMPATOMEXPORT Selection {
  public:
   enum Terminus {NONE, C,N};
  private:
@@ -115,7 +124,7 @@ class IMPATOMEXPORT Named {
       can provide any subset of the arguments (although one
       of hierarchy or hierarchies must be provided).
   */
-  Named(Hierarchy hierarchy=None,
+  Selection(Hierarchy hierarchy=None,
         Hierarchies hierarchies=[],
         Strings molecules=[],
         Ints residue_indexes=[],
@@ -132,16 +141,20 @@ class IMPATOMEXPORT Named {
         Terminus terminus=None,
         std::string domain=None);
 #endif
-  Named(Hierarchy h): h_(1, h){
+  Selection(){
     radius_=-1;
     terminus_=NONE;
   }
-  Named(Hierarchies h): h_(h){
+  Selection(Hierarchy h): h_(1, h){
+    radius_=-1;
+    terminus_=NONE;
+  }
+  Selection(Hierarchies h): h_(h){
     radius_=-1;
     terminus_=NONE;
   }
   // for C++
-  Named(Hierarchy h,
+  Selection(Hierarchy h,
         std::string molname,
         int residue_index): h_(h), molecules_(1,molname),
     residue_indices_(1, residue_index),
@@ -199,13 +212,32 @@ class IMPATOMEXPORT Named {
     domains_= Strings(1, name);
   }
   ParticlesTemp get_particles() const;
+  IMP_SHOWABLE(Selection);
 };
 
-IMP_VALUES(Named, Nameds);
+IMP_VALUES(Selection, Selections);
+IMP_OUTPUT_OPERATOR(Selection);
 
-IMPATOMEXPORT Restraint* create_distance_restraint(const Named &n0,
-                                                   const Named &n1,
+/** Create a distance restraint between the selections.
+ */
+IMPATOMEXPORT Restraint* create_distance_restraint(const Selection &n0,
+                                                   const Selection &n1,
                                                    double x0, double k);
+
+
+/** Create a restraint connecting the selections.*/
+IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
+                                                       double k);
+
+
+/** Create an excluded volume restraint for the included molecules. If a
+    value is provided for resolution, then something less than the full
+    resolution representation will be used.
+ */
+IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
+                                                          double resolution=-1);
+
+
 
 
 IMPATOM_END_NAMESPACE
