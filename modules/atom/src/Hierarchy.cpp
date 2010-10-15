@@ -71,7 +71,7 @@ void Hierarchy::show(std::ostream &out) const
   }
   if (!found) {
     out << "Hierarchy \"" <<  get_particle()->get_name()
-        << "\"" << std::endl;
+        << "\"";
   }
 }
 
