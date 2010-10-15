@@ -256,8 +256,6 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
     }
 public:
   void set_traits(typename WrappedDecorator::DecoratorTraits tr) {
-    IMP_INTERNAL_CHECK(tr != typename WrappedDecorator::DecoratorTraits(),
-                       "Traits must not be default");
     tr_=tr;
     has_traits_=true;
   }
