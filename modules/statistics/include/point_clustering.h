@@ -48,10 +48,12 @@ public:
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   mutable Pointer<ConfigurationSet> cs_;
-  Pointer<SingletonContainer> sc_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  bool align_;
 public:
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
-                               SingletonContainer *sc);
+                               SingletonContainer *sc,
+                               bool align=false);
   IMP_EMBEDDING(ConfigurationSetXYZEmbedding);
 };
 

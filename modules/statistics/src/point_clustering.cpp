@@ -11,6 +11,7 @@
 #include <IMP/statistics/KMTerminationCondition.h>
 #include <IMP/statistics/KMLocalSearchLloyd.h>
 #include <IMP/algebra/vector_search.h>
+#include <IMP/algebra/geometric_alignment.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -26,17 +27,35 @@ Embedding::~Embedding(){}
 
 ConfigurationSetXYZEmbedding
 ::ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
-                               SingletonContainer *sc):
+                               SingletonContainer *sc,
+                               bool align):
   Embedding("ConfiguringEmbedding"),
-  cs_(cs), sc_(sc){}
+  cs_(cs), sc_(sc), align_(align){}
 
 Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
-  cs_->load_configuration(a);
+  algebra::Transformation3D tr= algebra::get_identity_transformation_3d();
+  if (align_) {
+    cs_->load_configuration(0);
+    algebra::Vector3Ds vs0;
+    for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+      vs0.push_back(core::XYZ(sc_->get_particle(i)).get_coordinates());
+    }
+    cs_->load_configuration(a);
+    algebra::Vector3Ds vsc;
+    for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+      vsc.push_back(core::XYZ(sc_->get_particle(i)).get_coordinates());
+    }
+    tr= get_transformation_aligning_first_to_second(vsc, vs0);
+  } else {
+    cs_->load_configuration(a);
+  }
   Floats ret(sc_->get_number_of_particles()*3);
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-    ret[3*i]= core::XYZ(sc_->get_particle(i)).get_coordinates()[0];
-    ret[3*i+1]= core::XYZ(sc_->get_particle(i)).get_coordinates()[1];
-    ret[3*i+2]= core::XYZ(sc_->get_particle(i)).get_coordinates()[2];
+    algebra::Vector3D v
+      = tr.get_transformed(core::XYZ(sc_->get_particle(i)).get_coordinates());
+    ret[3*i]= v[0];
+    ret[3*i+1]= v[1];
+    ret[3*i+2]= v[2];
   }
   return ret;
 }
