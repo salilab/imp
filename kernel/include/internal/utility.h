@@ -60,16 +60,16 @@ struct Counter {
       queue.pop_back();                                                 \
       stream << prefix0;                                                \
       unsigned int nc= num_children;                                    \
-      if (nc>0) stream << "+ ";                                         \
-      else stream << "- ";                                              \
+      if (nc>0) stream << " + ";                                        \
+      else stream << " - ";                                             \
       show;                                                             \
       stream  << std::endl;                                             \
       for (unsigned int i=0; i< nc; ++i) {                              \
         if (i != nc-1) {                                                \
-          queue.push_back(boost::make_tuple(prefix1+"|",                \
-                                         prefix1+"|", get_child(i)));   \
+          queue.push_back(boost::make_tuple(prefix1+" ",                \
+                                         prefix1+" ", get_child(i)));   \
         } else {                                                        \
-          queue.push_back(boost::make_tuple(prefix1+"|",                \
+          queue.push_back(boost::make_tuple(prefix1+" ",                \
                                          prefix1+" ", get_child(i)));   \
         }                                                               \
       }                                                                 \
