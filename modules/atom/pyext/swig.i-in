@@ -39,63 +39,75 @@ IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
-IMP_SWIG_VALUE(IMP::atom, Named, Nameds);
+IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
 IMP_SWIG_VALUE(IMP::atom, ResidueType, ResidueTypes);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 
-%extend IMP::atom::Named {
+%extend IMP::atom::Selection {
 %pythoncode %{
   def __init__(self, hierarchy=None,
-               hierarchies=[],
-               molecules=[],
-               residue_indexes=[],
-               chains=[],
-               atom_types=[],
-               residue_types=[],
-               domains=[],
-               target_radius=-1,
-               molecule=None,
-               residue_index=None,
-               chain=None,
-               atom_type=None,
-               residue_type=None,
-               terminus=None,
-               domain=None):
-    if hierarchy:
-      this = _IMP_atom.new_Named(hierarchy)
-      try: self.this.append(this)
-      except: self.this = this
-    else:
-      this = _IMP_atom.new_Named(hierarchies)
-      try: self.this.append(this)
-      except: self.this = this
-    if molecule:
-       molecules.append(molecule)
-    if residue_index:
-       residue_indexes.append(residue_index)
-    if chain:
-       chains.append(chain)
-    if atom_type:
-       atom_types.append(atom_type)
-    if residue_type:
-       residue_types.append(residue_type)
-    if domain:
-       domains.append(domain)
-    if terminus:
-       self.set_terminus(terminus)
-    presidue_indexes=[]
-    for ri in residue_indexes:
-       if type(ri) == type(()):
-           presidue_indexes= presidue_indexes+ range(ri[0], ri[1])
-       else:
-           presidue_indexes.append(ri)
-    self.set_molecules(molecules);
-    self.set_chains("".join(chains));
-    self.set_residue_indexes(presidue_indexes);
-    self.set_atom_types(atom_types);
-    self.set_residue_types(residue_types);
-    self.set_domains(domains);
-    self.set_target_radius(target_radius);
+                 hierarchies=None,
+                 molecules=None,
+                 residue_indexes=None,
+                 chains=None,
+                 atom_types=None,
+                 residue_types=None,
+                 domains=None,
+                 target_radius=-1,
+                 molecule=None,
+                 residue_index=None,
+                 chain=None,
+                 atom_type=None,
+                 residue_type=None,
+                 terminus=None,
+                 domain=None):
+      if hierarchy:
+        this = _IMP_atom.new_Selection(hierarchy)
+        try: self.this.append(this)
+        except: self.this = this
+      else:
+        this = _IMP_atom.new_Selection(hierarchies)
+        try: self.this.append(this)
+        except: self.this = this
+      if not molecules:
+          molecules=[]
+      if not residue_indexes:
+          residue_indexes=[]
+      if not chains:
+          chains=[]
+      if not atom_types:
+          atom_types=[]
+      if not residue_types:
+          residue_types=[]
+      if not domains:
+          domains=[]
+      if molecule:
+         molecules.append(molecule)
+      if residue_index:
+         residue_indexes.append(residue_index)
+      if chain:
+         chains.append(chain)
+      if atom_type:
+         atom_types.append(atom_type)
+      if residue_type:
+         residue_types.append(residue_type)
+      if domain:
+         domains.append(domain)
+      if terminus:
+         self.set_terminus(terminus)
+      presidue_indexes=[]
+      for ri in residue_indexes:
+         if type(ri) == type(()):
+             presidue_indexes= presidue_indexes+ range(ri[0], ri[1])
+         else:
+             presidue_indexes.append(ri)
+      self.set_molecules(molecules);
+      self.set_chains("".join(chains));
+      self.set_residue_indexes(presidue_indexes);
+      self.set_atom_types(atom_types);
+      self.set_residue_types(residue_types);
+      self.set_domains(domains);
+      self.set_target_radius(target_radius);
 %}
 }
 
