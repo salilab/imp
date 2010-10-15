@@ -25,7 +25,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
         p= IMP.Particle(m)
-        mp=IMP.atom.create_protein(m, 10, 100)
+        mp=IMP.atom.create_protein(m, "a protein", 10, 100)
         r = IMP.atom.get_residue(mp, 10)
         r.show()
         self.assertNotEqual(r, IMP.atom.Hierarchy())
