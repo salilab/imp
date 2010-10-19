@@ -326,6 +326,7 @@ namespace {
                            std::map<Particle*,
                            Particle*> &map, bool recurse) {
     Particle *p= new Particle(d.get_model());
+    p->set_name(d->get_name());
     map[d.get_particle()]=p;
     Hierarchy nd;
     if (Atom::particle_is_instance(d.get_particle())) {
