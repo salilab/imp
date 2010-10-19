@@ -64,8 +64,8 @@ struct Counter {
       else stream << " - ";                                             \
       show;                                                             \
       stream  << std::endl;                                             \
-      for (unsigned int i=0; i< nc; ++i) {                              \
-        if (i != nc-1) {                                                \
+      for (int i=static_cast<int>(nc-1); i>=0; --i) {                   \
+        if (i != static_cast<int>(nc-1)) {                              \
           queue.push_back(boost::make_tuple(prefix1+" ",                \
                                          prefix1+" ", get_child(i)));   \
         } else {                                                        \
