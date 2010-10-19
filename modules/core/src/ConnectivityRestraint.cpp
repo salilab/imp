@@ -172,7 +172,6 @@ ParticlesTemp ConnectivityRestraint::get_input_particles() const {
   IMP_FOREACH_SINGLETON(sc_, {
       ParticlesTemp cs = ps_->get_input_particles(_1);
       ret.insert(ret.end(), cs.begin(), cs.end());
-      ret.push_back(_1);
     });
   return ret;
 }
