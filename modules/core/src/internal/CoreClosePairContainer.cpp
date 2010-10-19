@@ -165,9 +165,34 @@ void CoreClosePairContainer::do_before_evaluate() {
       }
     }
   } catch (std::bad_alloc&) {
-    IMP_THROW("Ran out of memory when computing close pairs. Try to reduce the "
+    IMP_THROW("Ran out of memory bwhen computing close pairs."
+              << " Try to reduce the "
               << "slack or reformulate the problem.", ValueException);
   }
+  /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    std::set<ParticlePair> existings(particle_pairs_begin(),
+                                               particle_pairs_end());
+    for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
+      for (unsigned int j=0; j< i; ++j) {
+        XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
+        double d= get_distance(a,b);
+        if (d < .98*distance_) {
+          if (RigidMember::particle_is_instance(a)
+              && RigidMember::particle_is_instance(b)
+              && RigidMember(a).get_rigid_body()
+              == RigidMember(b).get_rigid_body())
+            continue;
+          ParticlePair pp(a,b);
+          IMP_INTERNAL_CHECK(existings.find(pp) != existings.end()
+                             || existings.find(ParticlePair(pp[1], pp[0]))
+                             != existings.end(), "Particle pair "
+                             << a->get_name()
+                             << " and " << b->get_name()
+                             << " not found in list.");
+        }
+      }
+    }
+    }*/
 }
 
 
