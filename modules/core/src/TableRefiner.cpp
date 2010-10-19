@@ -15,7 +15,7 @@ TableRefiner::TableRefiner( ): Refiner("TableRefiner%d"){
 }
 
 void TableRefiner::do_show(std::ostream &out) const {
-  out << map_.size() << " entries" << std::endl;
+  out << "\n  " << map_.size() << " entries";
 }
 
 void TableRefiner::add_particle(Particle *p,
