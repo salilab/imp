@@ -174,6 +174,9 @@ namespace {
     }
     Model *mm= t[0]->get_model();
     Particle *p= new Particle(mm);
+    std::ostringstream oss;
+    oss << "Fragment " << inds[0];
+    p->set_name(oss.str());
     Fragment f= Fragment::setup_particle(p);
     f.set_residue_indexes(inds);
     Mass::setup_particle(p, m);
@@ -204,6 +207,8 @@ IMPATOMEXPORT Hierarchy
 create_simplified_along_backbone(Chain in,
                             const IntRanges& residue_segments) {
   if (in.get_number_of_children() ==0 || residue_segments.empty()) {
+    IMP_LOG(TERSE, "Nothing to simplify in " << (in? in->get_name(): "NULL")
+            << " with " << residue_segments.size() << " segments.\n");
     return Hierarchy();
   }
   for (unsigned int i=0; i< residue_segments.size(); ++i) {
@@ -229,7 +234,7 @@ create_simplified_along_backbone(Chain in,
     if (index >= residue_segments[cur_segment].first
         && index < residue_segments[cur_segment].second) {
     } else if (!cur.empty()) {
-      IMP_LOG(TERSE, "Added particle for "
+      IMP_LOG(VERBOSE, "Added particle for "
               << residue_segments[cur_segment].first
               << "..." << residue_segments[cur_segment].second
               << std::endl);
@@ -441,32 +446,41 @@ Restraint* create_distance_restraint(const Selection &n0,
                                      double x0, double k) {
   ParticlesTemp p0= n0.get_particles();
   ParticlesTemp p1= n1.get_particles();
+  IMP_IF_CHECK(USAGE) {
+    IMP::internal::Set<Particle*> all(p0.begin(), p0.end());
+    all.insert(p1.begin(), p1.end());
+    IMP_USAGE_CHECK(all.size() == p0.size()+p1.size(),
+                    "The two selections cannot overlap.");
+  }
   Pointer<Restraint> ret;
-  if (p0.empty() || p1.empty()) {
-    IMP_THROW("Selection does not refer to any particles.", ValueException);
-  } else if (p1.size() ==1 && p0.size()==1) {
+  IMP_USAGE_CHECK(!p0.empty(), "Selection " << n0
+                  << " does not refer to any particles.");
+  IMP_USAGE_CHECK(!p1.empty(), "Selection " << n1
+                  << " does not refer to any particles.");
+  if (p1.size() ==1 && p0.size()==1) {
     IMP_LOG(TERSE, "Creating distance restraint between "
             << p0[0]->get_name() << " and "
             << p1[0]->get_name() << std::endl);
     double d= core::XYZR(p0[0]).get_radius()
       + core::XYZR(p1[0]).get_radius() + x0;
     ret= new core::PairRestraint(new core::HarmonicDistancePairScore(d, k),
-                           ParticlePair(p0[0], p1[0]));
+                                 ParticlePair(p0[0], p1[0]),
+                                 "Atom distance restraint %1%");
   } else {
     IMP_LOG(TERSE, "Creating distance restraint between "
-            << p0.size() << " and "
-            << p1.size() << std::endl);
+            << n0 << " and "
+            << n1 << std::endl);
     Pointer<core::TableRefiner> r= new core::TableRefiner();
-    r->add_particle(n0.get_hierarchies()[0], p0);
-    r->add_particle(n1.get_hierarchies()[0], p1);
+    r->add_particle(p0[0], p0);
+    r->add_particle(p1[0], p1);
     Pointer<PairScore> ps
       = new core::KClosePairsPairScore(
                new core::HarmonicSphereDistancePairScore(x0, k),
                                        r, 1);
-    ret= new core::PairRestraint(ps, ParticlePair(n0.get_hierarchies()[0],
-                                                  n1.get_hierarchies()[0]));
+    ret= new core::PairRestraint(ps, ParticlePair(p0[0],
+                                                  p1[0]),
+                                 "Atom k distance restraint %1%");
   }
-  ret->set_name("Atom distance restraint");
   return ret.release();
 }
 
@@ -474,22 +488,28 @@ Restraint* create_distance_restraint(const Selection &n0,
 
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
                                                        double k) {
-  IMP_NEW(core::TableRefiner, tr, ());
-  ParticlesTemp rps;
-  for (unsigned int i=0; i< s.size(); ++i) {
-    ParticlesTemp ps= s[i].get_particles();
-    tr->add_particle(ps[0], ps);
-    rps.push_back(ps[0]);
+  if (s.size() < 2) return NULL;
+  if (s.size() ==2) {
+    return create_distance_restraint(s[0], s[1], 0, k);
+  } else {
+    IMP_NEW(core::TableRefiner, tr, ());
+    ParticlesTemp rps;
+    for (unsigned int i=0; i< s.size(); ++i) {
+      ParticlesTemp ps= s[i].get_particles();
+      IMP_USAGE_CHECK(!ps.empty(), "Selection " << s[i]
+                      << " does not contain any particles.");
+      tr->add_particle(ps[0], ps);
+      rps.push_back(ps[0]);
+    }
+    IMP_NEW(core::HarmonicDistancePairScore, hdps, (0,k));
+    IMP_NEW(core::KClosePairsPairScore, ps, (hdps, tr));
+    IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
+            (rps[0]->get_model(), "Connectivity particles"));
+    lsc->set_particles(rps);
+    IMP_NEW(core::ConnectivityRestraint, cr, (ps, lsc));
+    return cr.release();
   }
-  IMP_NEW(core::HarmonicDistancePairScore, hdps, (0,k));
-  IMP_NEW(core::KClosePairsPairScore, ps, (hdps, tr));
-  IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
-          (rps[0]->get_model(), "CRLSC"));
-  lsc->set_particles(rps);
-  IMP_NEW(core::ConnectivityRestraint, cr, (ps, lsc));
-  return cr.release();
 }
-
 
 IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
                                                           double resolution) {
@@ -497,13 +517,24 @@ IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
   for (unsigned int i=0; i< hs.size(); ++i) {
     Selection s(hs[i]);
     s.set_target_radius(resolution);
+    IMP_LOG(TERSE, "Looking for particles for excluded volume in "
+            << hs[i]->get_name()
+            << " with resolution " << resolution << std::endl);
     ParticlesTemp cps= s.get_particles();
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Found ");
+      for (unsigned int i=0; i< cps.size(); ++i) {
+        IMP_LOG(TERSE, cps[i]->get_name() << " ");
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
     ps.insert(ps.end(), cps.begin(), cps.end());
   }
   IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
-          (ps[0]->get_model(), "EVLSC"));
+          (ps[0]->get_model(), "Hierarchy EV particles"));
   lsc->set_particles(ps);
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
+  evr->set_name("Hierarchy EV");
   return evr.release();
 }
 
@@ -525,8 +556,27 @@ void Selection::show(std::ostream &out) const {
   }
   if (!residue_indices_.empty()) {
     out << "  Residues: ";
+    int start_run=-1000;
+    int last_run = -1000;
     for (unsigned int i=0; i< residue_indices_.size(); ++i) {
-      out << residue_indices_[i] << " ";
+      int c= residue_indices_[i];
+      if (c== last_run+1) {
+      } else {
+        if (start_run != -1000) {
+          if (last_run != start_run) {
+            out << "[" << start_run << "..." << last_run << "] ";
+          } else {
+            out << start_run << " ";
+          }
+        }
+        start_run=c;
+      }
+      last_run=c;
+    }
+    if (last_run != start_run) {
+      out << "[" << start_run << "..." << last_run << "] ";
+    } else {
+      out << start_run;
     }
     out << std::endl;
   }
@@ -552,6 +602,8 @@ void Selection::show(std::ostream &out) const {
     out << std::endl;
   }
 }
+
+
 
 
 IMPATOM_END_NAMESPACE
