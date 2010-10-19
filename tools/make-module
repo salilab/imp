@@ -19,14 +19,16 @@ def copy_dir(source, dest, modname):
         if x == ".svn": continue
         if x.endswith(".pyc"): continue
         if x.endswith(".old"): continue
-        fx= x
         xspath= os.path.join(source, x)
-        xdpath= os.path.join(dest, fx)
-        print "handling "+ xspath +"->"+xdpath
+        print "handling "+ xspath,
         if os.path.isdir(xspath):
+            xdpath= os.path.join(dest, x)
+            print "->"+xdpath
             os.mkdir(xdpath)
             copy_dir(xspath, xdpath, modname)
         else:
+            xdpath= os.path.join(dest, fix_string(x, modname))
+            print "->"+xdpath
             input= file(xspath, 'r').read()
             if xspath.endswith(".cpp") or xspath.endswith(".h") \
                     or xspath.endswith(".i-in") or xspath.endswith(".py"):
