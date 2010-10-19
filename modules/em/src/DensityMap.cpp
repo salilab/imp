@@ -1173,4 +1173,75 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   return to_map;
 }
 
+DensityMap* binarize(DensityMap *orig_map,
+                     float threshold) {
+  const DensityHeader *header = orig_map->get_header();
+  //create a new map
+  DensityMap * bin_map =
+    create_density_map(header->get_nx(),
+                       header->get_ny(),header->get_nz(),
+                       header->get_spacing());
+  bin_map->set_origin(orig_map->get_origin());
+  emreal *orig_data=orig_map->get_data();
+  emreal *bin_data=bin_map->get_data();
+  for(long i=0;i<header->get_number_of_voxels();i++){
+    if (orig_data[i]<threshold) {
+      bin_data[i]=0.;
+    }
+    else {
+      bin_data[i]=1.;
+    }
+  }
+  return bin_map;
+}
+
+double convolute(const DensityMap *m1,const DensityMap *m2){
+  const DensityHeader *h1=m1->get_header();
+  const DensityHeader *h2=m2->get_header();
+  emreal *d1=m1->get_data();
+  emreal *d2=m2->get_data();
+  float voxel_size = m1->get_spacing();
+  int ivoxx_shift = (int)floor((h2->get_xorigin()
+                                - h1->get_xorigin())
+                               / voxel_size);
+  int ivoxy_shift = (int)floor((h2->get_yorigin()
+                                - h1->get_yorigin())
+                               / voxel_size);
+  int ivoxz_shift = (int)floor((h2->get_zorigin()
+                                - h1->get_zorigin())
+                               / voxel_size);
+  long j; // m1 index
+  long i; // m2 index
+  long nvox=m1->get_number_of_voxels();
+  // calculate the shift in index of the origin of m2 in m1
+  // ( j can be negative)
+  j = ivoxz_shift * h1->get_nx() * h1->get_ny()
+    + ivoxy_shift * h1->get_nx() + ivoxx_shift;
+  double conv=0.;
+  for (i=0;i<nvox;i++) {
+    if (j + i >= 0 && j + i < nvox)  {
+      conv += d1[j+i] * d2[i];
+    }
+  }
+  return conv;
+}
+
+DensityMap* multiply(const DensityMap *m1,
+                     const DensityMap *m2){
+  const DensityHeader *header = m1->get_header();
+  //create a new map
+  DensityMap * m_map =
+    create_density_map(header->get_nx(),
+                       header->get_ny(),header->get_nz(),
+                       header->get_spacing());
+  m_map->set_origin(m1->get_origin());
+  emreal *data1=m1->get_data();
+  emreal *data2=m2->get_data();
+  emreal *new_data=m_map->get_data();
+  for(long i=0;i<header->get_number_of_voxels();i++){
+    new_data[i]=data1[i]*data2[i];
+  }
+  return m_map;
+}
+
 IMPEM_END_NAMESPACE
