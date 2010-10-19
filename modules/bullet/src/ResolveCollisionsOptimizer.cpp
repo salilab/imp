@@ -36,6 +36,8 @@ IMPBULLET_BEGIN_NAMESPACE
 
 #define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
 namespace {
+
+  const double damping=.5;
   btRigidBody *add_endpoint(btRigidBody *rb,
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
@@ -81,7 +83,7 @@ namespace {
     for (unsigned int i=1; i< 2; ++i) {
       spring->enableSpring(i, true);
       spring->setStiffness(i, 10*k);
-      spring->setDamping(i,.5);
+      spring->setDamping(i,damping);
     }
     world->addConstraint(spring);
   }
@@ -109,7 +111,7 @@ namespace {
     for (unsigned int i=0; i< 6; ++i) {
       spring->enableSpring(i, true);
       spring->setStiffness(i, k);
-      spring->setDamping(i,.5);
+      spring->setDamping(i,damping);
     }
     world->addConstraint(spring, true);
   }
@@ -169,7 +171,8 @@ namespace {
     core::RigidBody d(p);
     btScalar mass;
     if (d.get_coordinates_are_optimized()) {
-      if (atom::Mass::particle_is_instance(p)) {
+      mass=1;
+      /*if (atom::Mass::particle_is_instance(p)) {
         mass= atom::Mass(p).get_mass();
       } else {
         mass=0;
@@ -180,7 +183,7 @@ namespace {
             mass += 1;
           }
         }
-      }
+        }*/
     } else {
       mass=0;
     }
@@ -338,8 +341,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
 
   ParticlesTemp ps;
   if (ps_.empty()) {
-    ps= internal::get_particles(ParticlesTemp(get_model()->particles_begin(),
-                                    get_model()->particles_end()));
+    for (Model::ParticleIterator pit= get_model()->particles_begin();
+         pit != get_model()->particles_end(); ++pit) {
+      if (core::XYZR::particle_is_instance(*pit)
+          && !core::RigidBody::particle_is_instance(*pit)) {
+        ps.push_back(*pit);
+      }
+    }
   } else {
     ps= ps_;
   }
@@ -347,7 +355,6 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
 
   internal::RigidBodyMap map;
   internal::TransformMap initial_transforms;
-  boost::ptr_vector< ScopedRemoveRestraint> restraints;
   boost::ptr_vector<btCollisionShape> obstacles;
   internal::Memory memory;
   IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
@@ -392,8 +399,6 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
       }
       IMP_LOG(TERSE, std::endl);
     }
-    IMP_LOG(TERSE, "Special cased " << restraints.size()
-            << " restraint." << std::endl);
     unsigned int rrs=0;
     for (unsigned int i=0; i< rs_.size(); ++i) {
       rrs+=get_restraints(rs_[i]).size();
@@ -415,20 +420,18 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
     = get_restraints_and_weights(rs_.begin(), rs_.end());
   for (unsigned int i=0; i< iter; ++i) {
     if (utrestraints.size() >0) {
-      get_model()->evaluate(utrestraints, weights, true);
+      get_model()->evaluate(true);
       for (internal::RigidBodyMap::const_iterator
              it = map.begin(); it != map.end(); ++it) {
         // need to handle rigid bodies
-        if (core::RigidBody::particle_is_instance(it->first)) {
-          core::RigidBody d(it->first);
-          if (d.get_coordinates_are_optimized()) {
-            it->second->applyCentralForce(internal::tr(-d.get_derivatives()));
-          }
-        } else {
-          core::XYZ d(it->first);
-          if (d.get_coordinates_are_optimized()) {
-            it->second->applyCentralForce(internal::tr(-d.get_derivatives()));
-          }
+        btTransform xform;
+        it->second->getMotionState()->getWorldTransform (xform);
+        core::XYZ d(it->first);
+        if (d.get_coordinates_are_optimized()
+            && d.get_derivatives().get_squared_magnitude() >0) {
+          it->second->applyCentralForce(xform.inverse()
+                                        *internal::tr(-100
+                                                      *d.get_derivatives()));
         }
       }
     }
