@@ -62,7 +62,7 @@ template <class Score>
 void TupleRestraint<Score>::do_show(std::ostream& out) const
 {
   out << "score " << *ss_ << std::endl;
-  out << "data " << IMP::internal::streamable(v_).get_name() << std::endl;
+  out << "data " << IMP::internal::streamable(v_) << std::endl;
 }
 #ifndef IMP_DOXYGEN
 template <class Score>
