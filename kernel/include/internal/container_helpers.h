@@ -102,8 +102,8 @@ inline const ParticlesTemp& flatten(const Particles &in) {
 
 
 
-inline const Particle& streamable(Particle *p) {
-  return *p;
+inline std::string streamable(Particle *p) {
+  return p->get_name();
 }
 
 template <unsigned int D>
