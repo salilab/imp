@@ -17,12 +17,8 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-//! Apply a PairScore to a list of particle pairs
-/** This restraint could be used, in conjunction with a
-    ClosePairsScoreState and a SphereDistancePairScore,
-    to prevent particles from interpenetrating.
-
-    \note Be sure to check out the swig wrapper file and how it
+//! Constraint a particle to be in the x,y plane
+/** \note Be sure to check out the swig wrapper file and how it
     wraps this class.
 
     The source code is as follows:
@@ -31,20 +27,14 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 */
 class IMPEXAMPLEEXPORT ExampleRestraint : public Restraint
 {
-  /** IMP::Objects should be stored using Pointer objects
-      to make sure that they are reference counted properly.
-  */
-  Pointer<PairContainer> pc_;
-  Pointer<PairScore> f_;
+  Pointer<Particle> p_;
+  double k_;
 public:
   //! Create the restraint.
   /** Restraints should store the particles they are to act on,
       preferably in a Singleton or PairContainer as appropriate.
-      They should also take a score function or a UnaryFunction
-      allowing the form of the scoring function to be changed.
    */
-  ExampleRestraint(PairScore* score_func,
-                   PairContainer *pc);
+  ExampleRestraint(Particle *p, double k);
 
   /** This macro declares the basic needed methods: evaluate and show
    */

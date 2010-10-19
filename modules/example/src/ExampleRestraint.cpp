@@ -7,16 +7,13 @@
  */
 
 #include <IMP/example/ExampleRestraint.h>
-#include <IMP/PairScore.h>
-#include <IMP/log.h>
+#include <IMP/core/XYZ.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleRestraint::ExampleRestraint(PairScore* score_func,
-                                   PairContainer *pc) : pc_(pc),
-                                          f_(score_func) {
-  pc_->set_was_used(true);
-  f_->set_was_used(true);
+ExampleRestraint::ExampleRestraint(Particle *p,
+                                   double k) : p_(p),
+                                          k_(k) {
 }
 
 
@@ -25,13 +22,14 @@ ExampleRestraint::ExampleRestraint(PairScore* score_func,
 double
 ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-  double score=0;
-  for (PairContainer::ParticlePairIterator
-       it= pc_->particle_pairs_begin();
-       it != pc_->particle_pairs_end(); ++it) {
-    score += f_->evaluate(*it, accum);
+  core::XYZ d(p_);
+  IMP_LOG(VERBOSE, "The z coordinate of " << d->get_name()
+          << " is " << d.get_z() << std::endl);
+  double score= .5*k_*square(d.get_z());
+  if (accum) {
+    double deriv= k_*d.get_z();
+    d.add_to_derivative(2, deriv, *accum);
   }
-
   return score;
 }
 
@@ -39,29 +37,19 @@ ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ParticlesTemp ExampleRestraint::get_input_particles() const
 {
-  ParticlesTemp ret;
-  for (PairContainer::ParticlePairIterator it
-       = pc_->particle_pairs_begin();
-       it != pc_->particle_pairs_end(); ++it) {
-    ParticlePair pp= *it;
-    ParticlesTemp t= f_->get_input_particles(pp[0]);
-    ret.insert(ret.end(), t.begin(), t.end());
-    ParticlesTemp t2= f_->get_input_particles(pp[1]);
-    ret.insert(ret.end(), t2.begin(), t2.end());
-  }
-  return ret;
+  return ParticlesTemp(1,p_);
 }
 
 /* The only container used is pc_. */
 ContainersTemp ExampleRestraint::get_input_containers() const
 {
-  return ContainersTemp(1, pc_);
+  return ContainersTemp();
 }
 
 void ExampleRestraint::do_show(std::ostream& out) const
 {
-  out << "function " << *f_ << std::endl;
-  out << "container " << *pc_ << std::endl;
+  out << "particle= " << p_->get_name() << std::endl;
+  out << "k= " << k_ << std::endl;
 }
 
 IMPEXAMPLE_END_NAMESPACE
