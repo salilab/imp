@@ -26,6 +26,10 @@ TripletRestraint
   v_(vt),
   score_(std::numeric_limits<double>::quiet_NaN())
 {
+  IMP_IF_CHECK(USAGE) {
+    // check the arguments are OK
+    ss_->evaluate(v_, NULL);
+  }
 }
 
 double TripletRestraint
@@ -59,8 +63,8 @@ ContainersTemp TripletRestraint::get_input_containers() const
 
 void TripletRestraint::do_show(std::ostream& out) const
 {
-  out << "score " << *ss_ << std::endl;
-  out << "data " << IMP::internal::streamable(v_).get_name() << std::endl;
+  out << "score " << ss_->get_name() << std::endl;
+  out << "data " << IMP::internal::streamable(v_) << std::endl;
 }
 
 IMPCORE_END_NAMESPACE

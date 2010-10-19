@@ -109,7 +109,7 @@ ParticlesTemp PairConstraint::get_output_particles() const {
 }
 
 void PairConstraint::do_show(std::ostream &out) const {
-  out << "on " << IMP::internal::streamable(v_).get_name() << std::endl;
+  out << "on " << IMP::internal::streamable(v_) << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
   if (af_) out << "after " << *af_ << std::endl;
 }
