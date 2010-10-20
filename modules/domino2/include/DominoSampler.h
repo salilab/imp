@@ -30,6 +30,7 @@ class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
   Pointer<SubsetStatesTable> sst_;
   SubsetGraph sg_;
   bool has_sg_;
+  bool csf_;
  public:
   DominoSampler(Model *m, std::string name= "DominoSampler %1%");
   DominoSampler(Model*m, ParticleStatesTable *pst,
@@ -44,6 +45,13 @@ class IMPDOMINO2EXPORT DominoSampler : public DiscreteSampler
   */
   void set_subset_graph(const SubsetGraph &sg);
   /** @} */
+
+  /** perform filtering between subsets based by eliminating states
+      that cannot be realized in a subset.
+  */
+  void set_use_cross_subset_filtering(bool tf) {
+    csf_=tf;
+  }
 };
 
 
