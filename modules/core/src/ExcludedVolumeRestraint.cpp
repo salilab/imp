@@ -26,14 +26,13 @@ IMPCORE_BEGIN_NAMESPACE
 namespace {
   PairContainer* get_close_pairs_container(SingletonContainer *sc,
                                            Refiner *r) {
+    Pointer<RigidClosePairsFinder> rcpf;
     if (r) {
-      IMP_NEW(RigidClosePairsFinder, rcpf, (r));
-      return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 1.0);
+      rcpf= new RigidClosePairsFinder(r);
     } else {
-      IMP_NEW(RigidClosePairsFinder, rcpf, ());
-      return new internal::CoreClosePairContainer(sc, 0.0,
-                                                  rcpf, 1.0);
+      rcpf= new RigidClosePairsFinder();
     }
+    return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 1.0);
   }
   PairScore* get_sphere_distance_pair_score(double k) {
     return new SoftSpherePairScore(k);
