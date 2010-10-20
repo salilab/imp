@@ -10,7 +10,7 @@
 
 #include "core_config.h"
 #include "XYZR.h"
-#include "ClosePairsFinder.h"
+#include "RigidClosePairsFinder.h"
 #include "internal/CoreListSingletonContainer.h"
 
 #include <IMP/PairScore.h>
@@ -28,7 +28,7 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<PairScore> f_;
   int k_;
   mutable double last_distance_;
-  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
   IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
 public:
   /** only score the k closest pairs.
@@ -51,7 +51,7 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<Refiner> r_;
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
-  IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
+  IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
   IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
 public:
   /** \param[in] r The Refiner to call on each particle
