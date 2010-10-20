@@ -494,15 +494,24 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
   } else {
     IMP_NEW(core::TableRefiner, tr, ());
     ParticlesTemp rps;
+    bool multiple=false;
     for (unsigned int i=0; i< s.size(); ++i) {
       ParticlesTemp ps= s[i].get_particles();
       IMP_USAGE_CHECK(!ps.empty(), "Selection " << s[i]
                       << " does not contain any particles.");
       tr->add_particle(ps[0], ps);
+      if (ps.size() > 0) multiple=true;
       rps.push_back(ps[0]);
     }
-    IMP_NEW(core::HarmonicDistancePairScore, hdps, (0,k));
-    IMP_NEW(core::KClosePairsPairScore, ps, (hdps, tr));
+    IMP_NEW(core::HarmonicSphereDistancePairScore, hdps, (0,k));
+    Pointer<PairScore> ps;
+    if (multiple) {
+      IMP_LOG(TERSE, "Using closest pair score." << std::endl);
+      ps=new core::KClosePairsPairScore(hdps, tr);
+    } else {
+      IMP_LOG(TERSE, "Using distance pair score." << std::endl);
+      ps= hdps;
+    }
     IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
             (rps[0]->get_model(), "Connectivity particles"));
     lsc->set_particles(rps);
