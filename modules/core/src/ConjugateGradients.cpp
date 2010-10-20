@@ -326,6 +326,7 @@ Float ConjugateGradients::optimize(unsigned int max_steps)
 g20:
   f = get_score(float_indices, x, dx);
   if (f < get_score_threshold()) {
+    estimate=x;
     goto end;
   }
   ifun++;
