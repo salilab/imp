@@ -51,137 +51,6 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   ParticlesTemp get_particles(unsigned int i) const;
 };
 
-namespace {
-  template <class F>
-  void
-  process_one(const RigidBodyHierarchy *da,
-              const RigidBodyHierarchy *db,
-              const F &f,
-              unsigned int ci,
-              unsigned int cj,
-              std::vector<std::pair<int, int> > &stack,
-              double distance) {
-    if (da->get_is_leaf(ci) && db->get_is_leaf(cj)) {
-      for (unsigned int k=0; k< da->get_number_of_particles(ci); ++k) {
-        Particle *pk=da->get_particle(ci, k);
-        algebra::SphereD<3> sk(XYZ(pk).get_coordinates(),
-                             XYZR(pk).get_radius()+distance*.5);
-        for (unsigned int l=0; l< db->get_number_of_particles(cj); ++l) {
-          Particle *pl=db->get_particle(cj, l);
-          algebra::SphereD<3> sl(XYZ(pl).get_coordinates(),
-                               XYZR(pl).get_radius()+distance*.5);
-          /*IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
-            << " and " << pl->get_name() << std::endl);*/
-          if (get_interiors_intersect(sk, sl)) {
-            f(pk, pl);
-          } else {
-            /*IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
-              << std::endl);*/
-          }
-        }
-      }
-    } else {
-      stack.push_back(std::make_pair(ci, cj));
-    }
-  }
-
-
-  template <class F, bool SWAP>
-  void
-  process_one(const RigidBodyHierarchy *da,
-              XYZR db,
-              const F &f,
-              unsigned int ci,
-              std::vector<int > &stack,
-              double distance)
-  {
-    if (da->get_is_leaf(ci)) {
-      for (unsigned int k=0; k< da->get_number_of_particles(ci); ++k) {
-        Particle *pk=da->get_particle(ci, k);
-        algebra::SphereD<3> sk(XYZ(pk).get_coordinates(),
-                             XYZR(pk).get_radius()+distance*.5);
-        algebra::SphereD<3> sl(db.get_coordinates(),
-                             db.get_radius()+distance*.5);
-        /*IMP_LOG(VERBOSE, "Trying member particles " << pk->get_name()
-          << " and " << pl->get_name() << std::endl);*/
-        if (get_interiors_intersect(sk, sl)) {
-          if (SWAP) {
-            f(db, pk);
-          } else {
-            f(pk, db);
-          }
-        } else {
-          /*IMP_LOG(VERBOSE, "Spheres do not interesct " << sk << " | " << sl
-            << std::endl);*/
-        }
-      }
-    } else {
-      stack.push_back(ci);
-    }
-  }
-}
-
-
-template <class F>
-void apply_to_nearby(const RigidBodyHierarchy *da,
-                     const RigidBodyHierarchy *db,
-                     double distance, const F&f) {
-  std::vector<std::pair<int, int> > stack;
-  process_one(da,db,f, 0,0,stack, distance);
-  while (!stack.empty()) {
-    std::pair<int, int> cur= stack.back();
-    stack.pop_back();
-    /*IMP_LOG(VERBOSE, "Processing pair " << cur.first << " "
-      << cur.second << std::endl);*/
-    for (unsigned int i=0; i< da->get_number_of_children(cur.first);
-         ++i) {
-      int ci=da->get_child(cur.first, i);
-      algebra::SphereD<3> si(da->get_sphere(ci).get_center(),
-                           da->get_sphere(ci).get_radius()+distance);
-      for (unsigned int j=0;
-           j< db->get_number_of_children(cur.second); ++j) {
-        int cj=db->get_child(cur.second, j);
-        algebra::SphereD<3> sj = db->get_sphere(cj);
-        if (get_interiors_intersect(si, sj)) {
-          process_one(da, db, f, ci, cj, stack, distance);
-        } else {
-          /*IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
-            << si << " | " << sj << std::endl);*/
-        }
-      }
-    }
-  }
-}
-
-
-template <class F, bool SWAP>
-void apply_to_nearby(const RigidBodyHierarchy *da,
-                     XYZR db,
-                     double distance, const F&f) {
-  std::vector<int> stack;
-  process_one<F, SWAP>(da,db,f, 0,stack, distance);
-  while (!stack.empty()) {
-    int cur= stack.back();
-    stack.pop_back();
-    /*IMP_LOG(VERBOSE, "Processing pair " << cur.first << " "
-      << cur.second << std::endl);*/
-    for (unsigned int i=0; i< da->get_number_of_children(cur);
-         ++i) {
-      int ci=da->get_child(cur, i);
-      algebra::SphereD<3> si(da->get_sphere(ci).get_center(),
-                           da->get_sphere(ci).get_radius()
-                           + distance); // check which tree
-      algebra::SphereD<3> sj = db.get_sphere();
-      if (get_interiors_intersect(si, sj)) {
-        process_one<F, SWAP>(da, db, f, ci, stack, distance);
-      } else {
-        /*IMP_LOG(VERBOSE, "Rejected " << ci << " " << cj << ": "
-          << si << " | " << sj << std::endl);*/
-      }
-    }
-  }
-}
-
 IMPCOREEXPORT Particle* closest_particle(const RigidBodyHierarchy *da,
                               const IMP::internal::Set<Particle*> &psa,
                                          XYZR pt);
@@ -192,6 +61,16 @@ IMPCOREEXPORT ParticlePair closest_pair(const RigidBodyHierarchy *da,
                                         const RigidBodyHierarchy *db,
                             const IMP::internal::Set<Particle*> &psb);
 
+IMPCOREEXPORT
+ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
+                              const IMP::internal::Set<Particle*> &psa,
+                              const RigidBodyHierarchy *db,
+                              const IMP::internal::Set<Particle*> &psb,
+                              double dist);
+IMPCOREEXPORT
+ParticlesTemp close_particles(const RigidBodyHierarchy *da,
+                              const IMP::internal::Set<Particle*> &psa,
+                              XYZR pt, double dist);
 
 IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key();
 
