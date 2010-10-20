@@ -36,9 +36,6 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
 
 Float MonteCarlo::optimize(unsigned int max_steps)
 {
-  // this->set_log_level(IMP::VERBOSE);
-  //cg_->set_log_level(IMP::SILENT);
-  //get_model()->set_log_level(IMP::SILENT);
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
   if (get_number_of_movers() ==0) {
@@ -52,7 +49,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
 
   int failures=0;
   if (cg_) {
-    cg_->set_score_threshold(get_score_threshold());
+    //cg_->set_score_threshold(get_score_threshold());
     IMP_CHECK_OBJECT(cg_.get());
     IMP_USAGE_CHECK(cg_->get_model() == get_model(),
                "The model used by the local optimizer does not match "\
@@ -60,7 +57,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   }
   update_states();
   double prior_energy =get_model()->evaluate(false);
-  if (prior_energy < get_score_threshold()) return prior_energy;
+  //if (prior_energy < get_score_threshold()) return prior_energy;
 
   IMP_LOG(TERSE, "MC Initial energy is " << prior_energy << std::endl);
 
@@ -159,11 +156,6 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       if (return_best_ && next_energy < best_energy) {
         best_energy= next_energy;
         IMP_LOG(TERSE, "Saving state with energy " << best_energy << std::endl);
-        /*for (Model::ParticleIterator it = get_model()->particles_begin();
-             it != get_model()->particles_end(); ++it) {
-          if (XYZ::particle_is_instance(*it)) std::cout
-          << XYZ(*it) << std::endl;
-          }*/
         //std::cout << "best energy is first " << best_energy << std::endl;
         best_state= new Configuration(get_model());
         //best_state->load_configuration();
@@ -174,7 +166,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
           }*/
       }
       update_states();
-      if (next_energy < get_score_threshold()) break;
+      //if (next_energy < get_score_threshold()) break;
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
@@ -188,19 +180,9 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   IMP_LOG(TERSE, "MC Final energy is " << prior_energy
           << " after " << failures << " failures" << std::endl);
   if (return_best_) {
-    /*std::cout << "model was ";
-    for (Model::ParticleIterator it = get_model()->particles_begin();
-         it != get_model()->particles_end(); ++it) {
-      if (XYZ::particle_is_instance(*it)) std::cout << XYZ(*it) << std::endl;
-      }*/
     //std::cout << "Final score is " << get_model()->evaluate(false)
     //<< std::endl;
     best_state->load_configuration();
-    /*std::cout << "model is ";
-    for (Model::ParticleIterator it = get_model()->particles_begin();
-         it != get_model()->particles_end(); ++it) {
-      if (XYZ::particle_is_instance(*it)) std::cout << XYZ(*it) << std::endl;
-      }*/
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e= get_model()->evaluate(false));
