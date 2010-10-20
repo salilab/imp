@@ -214,7 +214,7 @@ void ScoreWeightedIncrementalBallMover::do_show(std::ostream &out) const {
 MCCGSampler::Parameters::Parameters(){
   cg_steps_=100;
   attempts_=1000;
-  mc_steps_=10000;
+  mc_steps_=100;
 }
 
 MCCGSampler::MCCGSampler(Model *m, std::string name): Sampler(m, name),
@@ -341,7 +341,7 @@ ConfigurationSet *MCCGSampler::do_sample() const {
                                                optimizer_states_end()));
   mc->set_local_optimizer(pms.local_opt_);
   mc->set_local_steps(pms.cg_steps_);
-  mc->set_score_threshold(get_maximum_score()/2.0);
+  //mc->set_score_threshold(get_maximum_score()/2.0);
   mc->set_return_best(true);
   Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
   if (sc->get_number_of_particles()==0) {
