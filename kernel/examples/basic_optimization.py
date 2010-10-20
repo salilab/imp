@@ -16,6 +16,7 @@ s= IMP.core.MCCGSampler(m)
 s.set_number_of_attempts(10)
 # but we do want something to watch
 s.set_log_level(IMP.TERSE)
+s.set_number_of_monte_carlo_steps(10)
 # find some configurations which move the particles far apart
 configs= s.get_sample();
 for i in range(0, configs.get_number_of_configurations()):
