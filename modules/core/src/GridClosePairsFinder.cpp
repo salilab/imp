@@ -537,6 +537,11 @@ namespace {
       }
       for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
         if (bin_contents_g[i].empty()) continue;
+        if (bin_contents_g[i].size() < 5) {
+            do_fill_close_pairs_from_list(bin_contents_g[i].begin(),
+                                           bin_contents_g[i].end(),
+                                           close, out);
+          } else
         {
           Grid gg = create_grid(bbs[i], distance+2*bin_ubs[i]);
           fill_grid(bin_contents_g[i], ps.c_, gg);
@@ -628,6 +633,13 @@ namespace {
         for (unsigned int j=0; j< bin_contents_q.size(); ++j) {
           if (bin_contents_q[j].empty()) continue;
           algebra::BoundingBox3D bb= bbs_g[i]+bbs_q[j];
+          if (bin_contents_g[i].size() < 5 && bin_contents_q[j].size() < 5) {
+            do_fill_close_pairs_from_lists(bin_contents_g[i].begin(),
+                                           bin_contents_g[i].end(),
+                                           bin_contents_q[j].begin(),
+                                           bin_contents_q[j].end(),
+                                           close, out);
+          } else {
           IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
                   << " with bb " << bb << " and side "
                   << distance+bin_ubs[i]+bin_ubs[j]
@@ -657,6 +669,7 @@ namespace {
                                   false, close, out);
             }
           }
+        }
         }
       }
     }
