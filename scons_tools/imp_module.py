@@ -279,7 +279,7 @@ def IMPModuleInclude(env, files):
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
     configinstall=env.Install(includedir+"/"+vars['module_include_path'],config)
     install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
-                                         list(files))
+                                         list(files))+[configinstall]
     build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                                      list(files), True)+[config]
     env['IMP_MODULE_HEADERS']= [str(x) for x in files if str(x).find("internal") == -1]
