@@ -368,6 +368,46 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
 }
 
 
+ParticlesTemp close_particles(const RigidBodyHierarchy *da,
+                              const IMP::internal::Set<Particle*> &psa,
+                              XYZR pt, double dist) {
+  typedef std::pair<double, int> QP;
+  ParticlesTemp ret;
+  std::multimap<double, int> queue;
+  double d= distance_bound(da, 0, pt);
+  queue.insert(QP(d, 0));
+  double best_d=std::numeric_limits<double>::max();
+  do {
+    std::pair<double, int> v= *queue.begin();
+    queue.erase(queue.begin());
+    if (v.first > dist) break;
+    if (da->get_is_leaf(v.second)) {
+      for (unsigned int i=0; i< da->get_number_of_particles(v.second);
+           ++i) {
+        Particle *p= da->get_particle(v.second, i);
+        if (psa.find(p) != psa.end()) {
+          XYZR dd(p);
+          double d= get_distance(dd, pt);
+          if (d < dist) {
+            ret.push_back(p);
+          }
+        }
+      }
+    } else {
+      for (unsigned int i=0; i< da->get_number_of_children(v.second);
+           ++i) {
+        unsigned int c= da->get_child(v.second, i);
+        double d= distance_bound(da, c, pt);
+        if (d < best_d) {
+          queue.insert(QP(d, c));
+        }
+      }
+    }
+  } while (!queue.empty());
+  return ret;
+}
+
+
 ParticlePair closest_pair(const RigidBodyHierarchy *da,
                           const IMP::internal::Set<Particle*> &psa,
                           const RigidBodyHierarchy *db,
@@ -445,5 +485,86 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
   } while (!queue.empty());
   return bp;
 }
+
+
+
+
+
+ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
+                              const IMP::internal::Set<Particle*> &psa,
+                              const RigidBodyHierarchy *db,
+                              const IMP::internal::Set<Particle*> &psb,
+                              double dist) {
+  typedef std::pair<int,int> IP;
+  typedef std::pair<double, IP> QP;
+  std::multimap<double, IP> queue;
+  double d= distance_bound(da, 0, db, 0);
+  queue.insert(QP(d, IP(0,0)));
+  double best_d=std::numeric_limits<double>::max();
+  ParticlePairsTemp ret;
+  do {
+    QP v= *queue.begin();
+    queue.erase(queue.begin());
+    if (v.first > best_d) break;
+    /*IMP_LOG(TERSE, "Trying pair " << v.second.first << " " << v.second.second
+      << std::endl);*/
+    if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
+      for (unsigned int i=0;
+           i< da->get_number_of_particles(v.second.first); ++i) {
+        if (psa.find(da->get_particle(v.second.first, i))
+            == psa.end()) continue;
+        XYZR deca(da->get_particle(v.second.first, i));
+        for (unsigned int j=0;
+             j< db->get_number_of_particles(v.second.second); ++j) {
+          if (psb.find(db->get_particle(v.second.second, j))
+              == psb.end()) continue;
+          XYZR decb(db->get_particle(v.second.second, j));
+          double d= get_distance(deca, decb);
+          if (d < dist) {
+            ret.push_back(ParticlePair(deca, decb));
+            /*std::cout << "Updating threshold to " << best_d
+              << " due to pair " << bp << std::endl;*/
+          }
+        }
+      }
+    } else if (da->get_is_leaf(v.second.first)) {
+        for (unsigned int j=0;
+             j< db->get_number_of_children(v.second.second); ++j) {
+          unsigned int child = db->get_child(v.second.second, j);
+          double d= distance_bound(da, v.second.first,
+                                                     db, child);
+          if (d < dist) {
+            queue.insert(QP(d, IP(v.second.first, child)));
+          }
+        }
+    } else if (db->get_is_leaf(v.second.second)) {
+      for (unsigned int i=0;
+           i< da->get_number_of_children(v.second.first); ++i) {
+        unsigned int child = da->get_child(v.second.first, i);
+          double d= distance_bound(da, child,
+                                   db, v.second.second);
+          if (d < dist) {
+            queue.insert(QP(d, IP(child, v.second.second)));
+          }
+        }
+    } else {
+      for (unsigned int i=0;
+           i< da->get_number_of_children(v.second.first); ++i) {
+        unsigned int childa = da->get_child(v.second.first, i);
+        for (unsigned int j=0;
+             j< db->get_number_of_children(v.second.second); ++j) {
+          unsigned int childb = db->get_child(v.second.second, j);
+          double d= distance_bound(da, childa,
+                                   db, childb);
+          if (d < dist) {
+            queue.insert(QP(d, IP(childa, childb)));
+          }
+        }
+      }
+    }
+  } while (!queue.empty());
+  return ret;
+}
+
 
 IMPCORE_END_INTERNAL_NAMESPACE
