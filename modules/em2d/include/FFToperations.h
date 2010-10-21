@@ -9,6 +9,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/FFTinterface.h"
+#include "IMP/em2d/opencv_interface.h"
 #include "IMP/algebra/Matrix2D.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -101,6 +102,59 @@ void matrix_to_image_interpretation(algebra::Matrix2D<T> &m) {
     }
   }
 }
+
+
+//! Transforms a matrix as is given by FFT functions, into a image
+//! interpretation. Works the opposite way.
+IMPEM2DEXPORT void matrix_to_image_flip(cv::Mat &m);
+
+////! Returns the correlation matrix between two 2D matrices using FFT
+///
+//  \param[in] A first matrix
+//  \param[in] B second matrix
+//  \param[out] corr matrix of results
+//**/
+//IMPEM2DEXPORT void correlation2D(const cv::Mat& A, const cv::Mat& B,
+//                                 cv::Mat& corr);
+//
+
+//! Computes the autocorrelation without preprocessing
+/**
+  \param[in] M Matrix containing a Fourier Transform (it is not checked that
+               the matrix actually contains the trasnform)
+  \param[out] corr matrix of results
+**/
+IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(
+                                      const cv::Mat& M, cv::Mat& corr);
+
+//! Returns the autocorrelation matrix
+/**
+  \param[in] m first matrix
+  \param[out] corr matrix of results
+**/
+IMPEM2DEXPORT void autocorrelation2D(const cv::Mat& m, cv::Mat& corr);
+
+//! Correlation matrix between two 2D matrices using FFT
+/**
+  \param[in] A first matrix
+  \param[in] B second matrix
+  \param[out] corr matrix of results
+**/
+IMPEM2DEXPORT void correlation2D(const cv::Mat& A,
+                                 const cv::Mat& B, cv::Mat& corr);
+
+
+//! Returns the correlation matrix between two 2D matrices using FFT
+/**
+  \param[in] M1 FFT transform of the first matrix
+  \param[in] M2 FFT transform of the second matrix
+  \param[out] corr matrix of results (It MUST have the right size in advance)
+**/
+IMPEM2DEXPORT void correlation2D_no_preprocessing(const cv::Mat& M1,
+                                    const cv::Mat& M2, cv::Mat& corr);
+
+
+
 
 IMPEM2D_END_NAMESPACE
 

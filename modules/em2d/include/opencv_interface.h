@@ -7,10 +7,10 @@
 #ifndef IMPEM2D_OPENCV_INTERFACE_H
 #define IMPEM2D_OPENCV_INTERFACE_H
 
+#include "IMP/em2d/em2d_config.h"
 #include "opencv/cv.h"
 
 IMPEM2D_BEGIN_NAMESPACE
-
 
 typedef cv::MatIterator_<double> CVDoubleMatIterator;
 

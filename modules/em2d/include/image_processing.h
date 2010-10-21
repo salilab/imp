@@ -9,8 +9,10 @@
 #define IMPEM2D_IMAGE_PROCESSING_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Pixel.h"
 #include "IMP/em/Image.h"
+#include "IMP/em2d/Image.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Matrix2D.h"
 #include <algorithm>
@@ -24,7 +26,7 @@ IMPEM2D_BEGIN_NAMESPACE
               of the filter
   \note
 **/
-IMPEM2DEXPORT void wiener_filter_2D(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void wiener_filter_2D(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
                       const unsigned int kernel_rows=3,
                       const unsigned int kernel_cols=3);
@@ -39,7 +41,7 @@ IMPEM2DEXPORT void wiener_filter_2D(algebra::Matrix2D_d &m,
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
              doing the morphological reconstruction (values: 4, 8).
 **/
-IMPEM2DEXPORT void morphological_reconstruction(algebra::Matrix2D_d &mask,
+ IMPEM2DEXPORT void morphological_reconstruction(algebra::Matrix2D_d &mask,
                       algebra::Matrix2D_d &marker,
                       int neighbors_mode=4);
 
@@ -61,7 +63,7 @@ IMPEM2DEXPORT void morphological_reconstruction(algebra::Matrix2D_d &mask,
               initial column. If this parameter is false (default) the
               neighbors outside the matrix are removed.
 **/
-IMPEM2DEXPORT Pixels compute_neighbors_2D(
+ IMPEM2DEXPORT Pixels compute_neighbors_2D(
                             const Pixel &p,const algebra::Matrix2D_d &m,
                             const int mode=4,
                             const int sign=0,
@@ -70,18 +72,18 @@ IMPEM2DEXPORT Pixels compute_neighbors_2D(
 
 
 //! Fills the holes in the matrix m of height h
-IMPEM2DEXPORT void fill_holes(
+ IMPEM2DEXPORT void fill_holes(
             algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
 
 //! Gets the domes of m with height h
-IMPEM2DEXPORT void get_domes(
+ IMPEM2DEXPORT void get_domes(
                   algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
 
 
-IMPEM2DEXPORT void preprocess_em2d_image(
-                        em::Image &img,em::Image &result,double n_stddevs);
+// IMPEM2DEXPORT void preprocess_em2d_image(
+//                        em::Image &img,em::Image &result,double n_stddevs);
 
-IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs);
 
@@ -94,7 +96,7 @@ IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 **/
-IMPEM2DEXPORT void dilation(const algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void dilation(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
@@ -123,7 +125,7 @@ IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 **/
-IMPEM2DEXPORT void closing(const algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void closing(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
@@ -133,7 +135,7 @@ IMPEM2DEXPORT void closing(const algebra::Matrix2D_d &m,
   \param[in] mode if 1 the values higher than the threshold are given value 1.
                   If the mode is -1, the values lower the threshold are given 1.
 **/
-IMPEM2DEXPORT void thresholding(
+ IMPEM2DEXPORT void thresholding(
                   const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
                   const double threshold,const int mode);
 
@@ -158,7 +160,7 @@ IMPEM2DEXPORT void masking(
   \param [in] beta contribution of diffusion versus edge enhancement.
               0 - pure reaction, 90 - pure diffusion
 **/
-IMPEM2DEXPORT void diffusion_filtering(
+ IMPEM2DEXPORT void diffusion_filtering(
              const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
              const double beta,
@@ -239,13 +241,42 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
 **/
-IMPEM2DEXPORT void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
                             const algebra::Matrix2D_d &greyscale,
                             algebra::Matrix2D_d &kernel);
 
 
-IMPEM2DEXPORT void histogram_stretching(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void histogram_stretching(algebra::Matrix2D_d &m,
                           int boxes,int offset);
+
+
+//! Computes the histogram of a matrix.
+/**
+  \param[in] m Matrix with the data
+  \param[out] Matrix of dimensions 1xbins with the histogram
+  \param[in] bins Number of bins to use in the histogram
+**/
+IMPEM2DEXPORT void get_histogram(const cv::Mat &m, cv::MatND &hist, int bins);
+
+
+
+
+
+
+//! Variance filter for an image. Computes the variance for each pixel
+/**
+  \param[in] input image with the data
+  \param[out] filtered result of the filtering
+  \param[in] kernelsize The variance is computed using kernelsize x kernelsize
+              pixels around each one. Kernelsize can only be odd.
+**/
+IMPEM2DEXPORT void apply_variance_filter(em2d::Image &input,
+                                   em2d::Image &filtered,int kernelsize);
+
+IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
+                                   cv::Mat &filtered,int kernelsize);
+
+
 IMPEM2D_END_NAMESPACE
 
 #endif /* IMPEM2D_IMAGE_PROCESSING_H */

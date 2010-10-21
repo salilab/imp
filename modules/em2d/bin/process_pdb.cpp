@@ -38,6 +38,7 @@ namespace alg = IMP::algebra;
 namespace core = IMP::core;
 namespace atom = IMP::atom;
 typedef std::string str;
+typedef std::string str;
 
 
 po::variables_map get_parameters(int argc,char **argv) {

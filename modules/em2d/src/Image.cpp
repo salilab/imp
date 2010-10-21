@@ -26,4 +26,13 @@ void save_images(Images images, Strings names,
   }
 }
 
+
+void subtract_images(Image &first,em2d::Image &second,
+                                  Image &result) {
+
+  cv::Mat result_matrix;
+  cv::subtract(first.get_data(),second.get_data(),result_matrix);
+  result.set_data(result_matrix);
+}
+
 IMPEM2D_END_NAMESPACE
