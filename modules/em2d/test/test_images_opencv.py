@@ -49,8 +49,17 @@ class ProjectTests(IMP.test.TestCase):
         filtered=IMP.em2d.Image()
         kernelsize=7
         IMP.em2d.apply_variance_filter(img,filtered,kernelsize)
-        filtered_name=self.get_input_file_name("filtered_image.spi")
-        img.write_to_floats(filtered_name,srw)
+
+        saved=IMP.em2d.Image()
+        saved.read_from_floats(
+              self.get_input_file_name("filtered_image.spi"),srw)
+
+        rows = img.get_header().get_number_of_rows()
+        cols = img.get_header().get_number_of_columns()
+        for i in range(0,rows):
+            for j in range(0,cols):
+                self.assertAlmostEqual(saved(i,j),filtered(i,j),delta=0.001,
+                         msg="Generated image is different than stored")
 
     def test_substract(self):
         """Test subtracting images"""
