@@ -33,6 +33,9 @@ IMP_SWIG_OBJECT(IMP::em2d, Image, Images);
 %include "IMP/em2d/align2D.h"
 %include "IMP/em2d/ProjectionFinder.h"
 %include "IMP/em2d/Em2DRestraint.h"
+%include "IMP/em2d/Pixel.h"
+%include "IMP/em2d/image_processing.h"
+
 
 namespace IMP {
   namespace em2d {
@@ -43,7 +46,6 @@ namespace IMP {
 
     %template(_SpiderImageReaderWriter)
                           ::IMP::em2d::SpiderImageReaderWriter<double>;
-
   }
 }
 

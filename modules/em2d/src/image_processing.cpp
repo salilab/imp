@@ -5,6 +5,7 @@
 **/
 
 #include "IMP/em2d/image_processing.h"
+//#include "IMP/em2d/internal/radon.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/filters.h"
@@ -22,6 +23,7 @@
 
 
 IMPEM2D_BEGIN_NAMESPACE
+
 
 void wiener_filter_2D(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
@@ -586,5 +588,77 @@ void histogram_stretching(algebra::Matrix2D_d &m,
     m.data()[i] = ((double)boxes-1)*val;
   }
 }
+
+
+void get_histogram(const cv::Mat &m, cv::MatND &hist, int bins) {
+
+  const int histSize[] = {bins};
+  hist.create(1,histSize,CV_64F);
+//  hist.create(3, histSize, CV_32F);
+
+
+  // and clear it
+  hist = cv::Scalar(0);
+  // Step
+  double min,max;
+  cv::minMaxLoc(m, &min,&max,NULL,NULL);
+  double step = (max-min)/(double)bins;
+  double n_points= (double)m.rows*(double)m.cols;
+
+  for(cv::MatConstIterator_<double> it = m.begin<double>();
+    it != m.end<double>(); ++it ) {
+      double aux = *it;
+      hist.at<double>((aux-min)/step) += 1.f/n_points;
+  }
+
+//  for(unsigned int i = 0; i<hist.size[0]; ++i) {
+//    double var = min+i*step;
+//    std::cout << "variance = "  << var << " freq = "
+//      << hist.at<double>(i) << std::endl;
+//  }
+}
+
+
+
+
+void apply_variance_filter(em2d::Image &input,
+                           em2d::Image &filtered,int kernelsize) {
+  apply_variance_filter(input.get_data(),filtered.get_data(),kernelsize);
+}
+
+
+void apply_variance_filter(
+            const cv::Mat &input,cv::Mat &filtered,int kernelsize) {
+  // Compute the mean for each value with a filter
+  cv::Size ksize(kernelsize,kernelsize);
+  cv::Point anchor(-1,-1);
+//  cv::boxFilter(input, filtered,input.depth(),
+//                ksize,anchor,true,cv::BORDER_WRAP);
+  // Get the squared means
+ IMP_LOG(IMP::VERBOSE,"Getting squared means" << std::endl);
+
+  cv::Mat means;
+  cv::boxFilter(input, means,input.depth(),ksize,anchor,true);
+  cv::Mat squared_means = means.mul(means);
+
+  // Get the the means of squares
+  IMP_LOG(IMP::VERBOSE,"Getting means of the squares" << std::endl );
+
+  cv::Mat squares = input.mul(input);
+  // make filtered contain the means of the squares
+  cv::boxFilter(squares, filtered,squares.depth(),ksize,anchor,true);
+  // Variance
+  filtered = filtered - squared_means;
+
+  IMP_LOG(IMP::VERBOSE,
+          "Adjusting variance for numerical instability " << std::endl);
+  for (CVDoubleMatIterator it=filtered.begin<double>();
+                                it!=filtered.end<double>();++it) {
+    if(*it < 0) {
+      *it = 0;
+    }
+  }
+}
+
 
 IMPEM2D_END_NAMESPACE

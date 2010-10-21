@@ -51,24 +51,34 @@ public:
   //! Sets the entire matrix of data
   void set_data(cv::Mat &mat) {
     mat.copyTo(data_);
-    this->adjust_header();
+    adjust_header();
   }
 
 ////////////////////////// TO DO
   //! Set the value of one LOGICAL element of the matrix of data
-  void set_value(int i, int j,double val) const {
+  void set_value(int i, int j,double val) {
     // data_(i,j)=val;
+    data_.at<double>(i,j) = val;
   }
 
 ////////////////////////// TO DO
-  //! Access to one LOGICAL element of the matrix of data
+//  //! Access to one LOGICAL element of the matrix of data
+//  double operator()(int i, int j) const {
+//    // return data_(i,j);
+//    return 0;
+//  }
+
+
+  //! Access to one PHYSICAL element of the matrix of data
   double operator()(int i, int j) const {
-    // return data_(i,j);
+    return data_.at<double>(i,j);
     return 0;
   }
 
+
   //! Access to the header
   inline em::ImageHeader& get_header() {
+    adjust_header();
     return header_;
   }
 
@@ -91,9 +101,6 @@ public:
     header_.set_number_of_slices(1.0);
     header_.set_number_of_rows(data_.rows);
     header_.set_number_of_columns(data_.cols);
-    header_.set_time();
-    header_.set_date();
-    header_.set_title(name_);
     header_.set_header(); // Initialize header
   }
 
@@ -136,6 +143,17 @@ IMP_OBJECTS(Image,Images);
 
 IMP_OUTPUT_OPERATOR(Image);
 
+
+
+
+//! Substract images.
+/**
+  \param[in] first
+  \param[in] second
+  \param[out] result The image first-second
+**/
+IMPEMEXPORT void subtract_images(Image &first,em2d::Image &second,
+                                  Image &result);
 
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)

@@ -250,17 +250,17 @@ int main(int argc, char **argv) {
   double total_time=projection_time+registration_time;
 
 
-  *std::cin.tie() << "REGISTRATION RESULTS " << std::endl;
+  *std::cin.tie() << "# REGISTRATION RESULTS " << std::endl;
   registration_results[0].write_comment_line(*std::cin.tie());
   for (unsigned int i=0;i<registration_results.size();++i) {
-    *std::cin.tie() << "fine_reg>> ";
+    *std::cin.tie() << "Registration for image " << i << ">> ";
     registration_results[i].write(*std::cin.tie());
   }
 
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
-  *std::cin.tie() << ">>" << fn_model <<c<< resolution <<c<< apix
+  *std::cin.tie() << "Global result>>" << fn_model <<c<< resolution <<c<< apix
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
     *std::cin.tie() <<c<<
