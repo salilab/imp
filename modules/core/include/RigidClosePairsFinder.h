@@ -55,8 +55,6 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
   mutable IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
-  mutable IMP::internal::OwnerPointer<internal::CoreListSingletonContainer>
-    fa_, fb_;
   IMP::internal::OwnerPointer<Refiner> r_;
   ObjectKey k_;
  public:

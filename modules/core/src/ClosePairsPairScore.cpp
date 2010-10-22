@@ -27,8 +27,6 @@ ClosePairsPairScore::ClosePairsPairScore(PairScore *f,
   IMP_USAGE_CHECK(thre >= 0, "The threshold must be non-negative.");
 
   cpf_=new RigidClosePairsFinder();
-  ca_= new internal::CoreListSingletonContainer();
-  cb_= new internal::CoreListSingletonContainer();
 }
 
 
@@ -39,8 +37,6 @@ KClosePairsPairScore::KClosePairsPairScore(PairScore *f,
 {
   last_distance_=1;
   cpf_= new RigidClosePairsFinder();
-  ca_= new internal::CoreListSingletonContainer();
-  cb_= new internal::CoreListSingletonContainer();
 }
 
 
@@ -54,18 +50,13 @@ namespace {
     }
   }
   void fill_close_pairs(ClosePairsFinder* cpf,
-                        internal::CoreListSingletonContainer* ca,
-                        internal::CoreListSingletonContainer* cb,
                         double dist,
                         const ParticlePair &p,
-                        Refiner* r,
+                        const ParticlesTemp &pa,
+                        const ParticlesTemp &pb,
                         ParticlePairsTemp &pairs) {
-    ParticlesTemp pa= expand(p[0], r);
-    ParticlesTemp pb= expand(p[1], r);
-    ca->set_particles(pa);
-    cb->set_particles(pb);
     cpf->set_distance(dist);
-    pairs= cpf->get_close_pairs(ca, cb);
+    pairs= cpf->get_close_pairs(pa, pb);
     /*for (unsigned int i=0; i< ppt.size(); ++i) {
       double d=get_distance(XYZR(ppt[i][0]), XYZR(ppt[i][1]));
       if (d < dist) {
@@ -98,7 +89,8 @@ double ClosePairsPairScore::evaluate(const ParticlePair &p,
 {
   ParticlePairsTemp ppt;
   Floats dists;
-  fill_close_pairs(cpf_, ca_, cb_, th_, p, r_, ppt);
+  ParticlesTemp ps0= expand(p[0], r_), ps1= expand(p[1], r_);
+  fill_close_pairs(cpf_, th_, p, ps0, ps1, ppt);
   return do_evaluate(ppt, f_, da);
 }
 
@@ -107,12 +99,13 @@ double KClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const {
   //double mr= std::max(max_radius(psa), max_radius(psb));
   ParticlePairsTemp ppt;
+  ParticlesTemp ps0= expand(p[0],r_), ps1= expand(p[1], r_);
   Floats dists;
   double dist=last_distance_;
   do {
     IMP_LOG(VERBOSE, "Searching for close pairs "
             << dist << std::endl);
-    fill_close_pairs(cpf_, ca_, cb_, dist, p, r_, ppt);
+    fill_close_pairs(cpf_, dist, p, ps0, ps1, ppt);
     dist*=2;
   } while (ppt.size() < static_cast<unsigned int>(k_));
   algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
@@ -138,10 +131,10 @@ double KClosePairsPairScore::evaluate(const ParticlePair &p,
     if (k_==1) {
       double distance= get_distance(XYZR(retps[0][0]),
                                     XYZR(retps[0][1]));
-      for (unsigned int i=0; i< r_->get_number_of_refined(p[0]); ++i) {
-        for (unsigned int j=0; j< r_->get_number_of_refined(p[1]); ++j) {
-          double cdistance= get_distance(XYZR(r_->get_refined(p[0], i)),
-                                         XYZR(r_->get_refined(p[1], j)));
+      for (unsigned int i=0; i< ps0.size(); ++i) {
+        for (unsigned int j=0; j< ps1.size(); ++j) {
+          double cdistance= get_distance(XYZR(ps0[i]),
+                                         XYZR(ps1[j]));
           IMP_USAGE_CHECK(cdistance >= distance-.1, "Missed shortest distance."
                           << " Got " << distance << " but just found "
                           << cdistance);
@@ -155,8 +148,7 @@ namespace {
   ParticlesTemp do_get_input_particles(Particle *p,
                                        Refiner *r,
                                        PairScore *f,
-                                       ClosePairsFinder *cpf,
-                                   internal::CoreListSingletonContainer *ca) {
+                                       ClosePairsFinder *cpf) {
   ParticlesTemp ret;
   ParticlesTemp ea=expand(p, r);
   for (unsigned int i=0; i< ea.size(); ++i) {
@@ -166,8 +158,7 @@ namespace {
   ret.push_back(p);
   ParticlesTemp rp= r->get_input_particles(p);
   ret.insert(ret.end(), rp.begin(), rp.end());
-  ca->set_particles(ea);
-  ParticlesTemp cpfr= cpf->get_input_particles(ca);
+  ParticlesTemp cpfr= cpf->get_input_particles(ea);
   ret.insert(ret.end(), cpfr.begin(), cpfr.end());
   return ret;
   }
@@ -175,7 +166,7 @@ namespace {
 
 ParticlesTemp ClosePairsPairScore
 ::get_input_particles(Particle *p) const {
-  return do_get_input_particles(p, r_, f_, cpf_, ca_);
+  return do_get_input_particles(p, r_, f_, cpf_);
 }
 
 ContainersTemp ClosePairsPairScore
@@ -205,7 +196,7 @@ void ClosePairsPairScore::do_show(std::ostream &out) const
 
 ParticlesTemp KClosePairsPairScore
 ::get_input_particles(Particle *p) const {
-  return do_get_input_particles(p, r_, f_, cpf_, ca_);
+  return do_get_input_particles(p, r_, f_, cpf_);
 }
 
 ContainersTemp KClosePairsPairScore

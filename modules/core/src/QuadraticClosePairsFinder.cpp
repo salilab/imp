@@ -18,16 +18,14 @@ QuadraticClosePairsFinder::QuadraticClosePairsFinder():
   ClosePairsFinder("QuadraticCPF"){}
 
 ParticlePairsTemp QuadraticClosePairsFinder
-::get_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb) const {
+::get_close_pairs(const ParticlesTemp &pta,
+                  const ParticlesTemp &ptb) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Quadratic add_close_pairs called with "
-          << ca->get_number_of_particles() << " and "
-          << cb->get_number_of_particles() << std::endl);
+          << pta.size() << " and "
+          << ptb.size() << std::endl);
   ParticlePairsTemp ret;
-  ParticlesTemp pta= ca->get_particles();
-  ParticlesTemp ptb= cb->get_particles();
   for (unsigned int i=0; i < pta.size(); ++i) {
     for (unsigned int j=0; j < ptb.size(); ++j) {
       if (get_are_close(pta[i], ptb[j])) {
@@ -39,14 +37,13 @@ ParticlePairsTemp QuadraticClosePairsFinder
 }
 
 ParticlePairsTemp QuadraticClosePairsFinder
-::get_close_pairs(SingletonContainer *c) const {
+::get_close_pairs(const ParticlesTemp &pt) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Adding close pairs from "
-          << c->get_number_of_particles() << " particles with threshold "
+          << pt.size() << " particles with threshold "
           << get_distance() << std::endl);
   ParticlePairsTemp ret;
-  ParticlesTemp pt= c->get_particles();
   for (unsigned int i=0; i< pt.size(); ++i) {
     for (unsigned int j=0; j < i; ++j) {
       if (get_are_close(pt[i], pt[j])) {
@@ -126,34 +123,16 @@ void QuadraticClosePairsFinder::do_show(std::ostream &out) const {
 
 
 ParticlesTemp
-QuadraticClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
-  ParticlesTemp ret= sc->get_particles();
-  return ret;
+QuadraticClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
+  return ps;
 }
 
-ParticlesTemp
-QuadraticClosePairsFinder::get_input_particles(SingletonContainer *a,
-                                               SingletonContainer *b) const {
-  ParticlesTemp ret0= a->get_particles();
-  ParticlesTemp ret1= b->get_particles();
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  return ret0;
-}
 
 
 ContainersTemp
-QuadraticClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
-  ContainersTemp ret(1,sc);
-  return ret;
+QuadraticClosePairsFinder::get_input_containers(const ParticlesTemp &ps) const {
+  return ContainersTemp();
 }
 
-ContainersTemp
-QuadraticClosePairsFinder::get_input_containers(SingletonContainer *a,
-                                                SingletonContainer *b) const {
-  ContainersTemp ret(2);
-  ret[0]= a;
-  ret[1]= b;
-  return ret;
-}
 
 IMPCORE_END_NAMESPACE

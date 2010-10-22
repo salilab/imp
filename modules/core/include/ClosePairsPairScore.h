@@ -29,7 +29,6 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore
   int k_;
   mutable double last_distance_;
   IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
-  IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
 public:
   /** only score the k closest pairs.
    */
@@ -52,7 +51,6 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
   IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
-  IMP::internal::OwnerPointer<internal::CoreListSingletonContainer> ca_, cb_;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs

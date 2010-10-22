@@ -694,24 +694,22 @@ GridClosePairsFinder::GridClosePairsFinder(const algebra::BoundingBox3D &bb,
 
 
 ParticlePairsTemp GridClosePairsFinder
-::get_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb) const {
+::get_close_pairs(const ParticlesTemp &ca,
+                  const ParticlesTemp &cb) const {
   IMP_OBJECT_LOG;
-  ca->set_was_used(true);
-  cb->set_was_used(true);
   set_was_used(true);
   ParticlePairsTemp out;
   if (merged_) {
     PParticleHelper
       ::fill_close_pairs(PParticleHelper
-                         ::get_particle_set(ca->particles_begin(),
-                                            ca->particles_end(),
+                         ::get_particle_set(ca.begin(),
+                                            ca.end(),
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
                          PParticleHelper
-                         ::get_particle_set(cb->particles_begin(),
-                                            cb->particles_end(),
+                         ::get_particle_set(cb.begin(),
+                                            cb.end(),
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
@@ -722,14 +720,14 @@ ParticlePairsTemp GridClosePairsFinder
   } else {
     ParticleHelper
       ::fill_close_pairs(ParticleHelper
-                         ::get_particle_set(ca->particles_begin(),
-                                            ca->particles_end(),
+                         ::get_particle_set(ca.begin(),
+                                            ca.end(),
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
                          ParticleHelper
-                         ::get_particle_set(cb->particles_begin(),
-                                            cb->particles_end(),
+                         ::get_particle_set(cb.begin(),
+                                            cb.end(),
                                             ParticleID(),
                                             ParticleCenter(),
                                             ParticleRadius()),
@@ -741,17 +739,16 @@ ParticlePairsTemp GridClosePairsFinder
 }
 
 ParticlePairsTemp GridClosePairsFinder
-::get_close_pairs(SingletonContainer *c) const {
+::get_close_pairs(const ParticlesTemp &c) const {
   IMP_OBJECT_LOG;
-  c->set_was_used(true);
   set_was_used(true);
   IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
           << get_distance() << std::endl );
   ParticlePairsTemp out;
   if (merged_) {
     PParticleHelper
-      ::fill_close_pairs(PParticleHelper::get_particle_set(c->particles_begin(),
-                                                           c->particles_end(),
+      ::fill_close_pairs(PParticleHelper::get_particle_set(c.begin(),
+                                                           c.end(),
                                                            ParticleID(),
                                                            ParticleCenter(),
                                                            ParticleRadius()),
@@ -760,8 +757,8 @@ ParticlePairsTemp GridClosePairsFinder
                          out);
   } else {
     ParticleHelper
-      ::fill_close_pairs(ParticleHelper::get_particle_set(c->particles_begin(),
-                                                          c->particles_end(),
+      ::fill_close_pairs(ParticleHelper::get_particle_set(c.begin(),
+                                                          c.end(),
                                                           ParticleID(),
                                                           ParticleCenter(),
                                                           ParticleRadius()),
@@ -846,33 +843,13 @@ void GridClosePairsFinder::do_show(std::ostream &out) const {
 
 
 ParticlesTemp
-GridClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
-  ParticlesTemp ret= sc->get_particles();
-  return ret;
-}
-
-ParticlesTemp
-GridClosePairsFinder::get_input_particles(SingletonContainer *a,
-                                          SingletonContainer *b) const {
-  ParticlesTemp ret0= a->get_particles();
-  ParticlesTemp ret1= b->get_particles();
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  return ret0;
+GridClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
+  return ps;
 }
 
 ContainersTemp
-GridClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
-  ContainersTemp ret(1,sc);
-  return ret;
-}
-
-ContainersTemp
-GridClosePairsFinder::get_input_containers(SingletonContainer *a,
-                                           SingletonContainer *b) const {
-  ContainersTemp ret(2);
-  ret[0]= a;
-  ret[1]= b;
-  return ret;
+GridClosePairsFinder::get_input_containers(const ParticlesTemp &ps) const {
+  return ContainersTemp();
 }
 
 IMPCORE_END_NAMESPACE
