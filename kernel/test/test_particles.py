@@ -165,6 +165,15 @@ class ParticleTests(IMP.test.TestCase):
         for i in range(0,6):
             val = p.get_value(IMP.FloatKey("attr_" + str(i)))
             self.assertEqual(val, 3.5 * i)
+    def test_comparisons(self):
+        """Test comparisons of particles and decorators"""
+        p0a= self.particles[0]
+        p0b= self.model.get_particles()[0]
+        self.assertEqual(p0a, p0b)
+        td0a= IMP._TrivialDecorator.setup_particle(p0a)
+        td0b= IMP._TrivialDecorator(p0b)
+        self.assertEqual(td0a, td0b)
+        self.assertEqual(td0a, p0a)
     def test_many_particle(self):
         """Test that we can allocate many particles"""
         m= IMP.Model()
