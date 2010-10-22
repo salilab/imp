@@ -25,6 +25,7 @@ files = [
          'LennardJonesPairScore.h',
          'Mass.h',
          'MolecularDynamics.h',
+         'Molecule.h',
          'Residue.h',
          'SimulationParameters.h',
          'StereochemistryPairFilter.h',

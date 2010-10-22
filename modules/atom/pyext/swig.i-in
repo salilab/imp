@@ -7,6 +7,7 @@ namespace atom {
 
 IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
+IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
 IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
 IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
@@ -160,6 +161,7 @@ namespace IMP {
 %include "IMP/atom/element.h"
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
+%include "IMP/atom/Molecule.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/charmm_topology.h"
 %include "IMP/atom/CHARMMAtom.h"

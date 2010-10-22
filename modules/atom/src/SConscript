@@ -25,6 +25,7 @@ files = [
          'LennardJonesPairScore.cpp',
          'Mass.cpp',
          'MolecularDynamics.cpp',
+         'Molecule.cpp',
          'Residue.cpp',
          'SimulationParameters.cpp',
          'StereochemistryPairFilter.cpp',
