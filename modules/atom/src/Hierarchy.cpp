@@ -16,9 +16,7 @@
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/estimates.h>
-#include <IMP/core/Harmonic.h>
-#include <IMP/core/ConnectivityRestraint.h>
-#include <IMP/core/DistancePairScore.h>
+#include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
 
 #include <boost/random/uniform_int.hpp>
@@ -53,6 +51,9 @@ void Hierarchy::show(std::ostream &out) const
   if (get_as_chain()) {
     found=true;
     out << get_as_chain();
+  } else if (get_as_molecule()) {
+    found=true;
+    out << get_as_molecule();
   }
   if (get_as_fragment()) {
     found=true;
@@ -340,6 +341,9 @@ namespace {
     }
     if (Chain::particle_is_instance(d.get_particle())) {
       nd= Chain::setup_particle(p, Chain(d.get_particle()));
+    }
+    if (Molecule::particle_is_instance(d.get_particle())) {
+      nd= Molecule::setup_particle(p, Molecule(d.get_particle()));
     }
     if (Fragment::particle_is_instance(d.get_particle())) {
       nd= Fragment::setup_particle(p, Fragment(d.get_particle()));
