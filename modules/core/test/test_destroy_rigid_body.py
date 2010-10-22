@@ -16,7 +16,7 @@ class RBDTests(IMP.test.TestCase):
         dist= IMP.core.get_distance(IMP.core.XYZ(pa),
                                 IMP.core.XYZ(pb))
         print "not", dist
-        self.assertGreater((dist-idist)**2, .1)
+        self.assertGreater((dist-idist)**2, .01)
     def _perturb_rb(self, rb):
         r= IMP.algebra.get_random_rotation_3d()
         t= IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
