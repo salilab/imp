@@ -40,14 +40,13 @@ IMP::Restraint *create_weighted_excluded_volume_restraint(
    FloatKey shell_key) {
   IMP::Model* mdl=rb1.get_particle()->get_model();
   //generate the list singleton contrainers
-  Particles ps1,ps2;
-  ps1.push_back(rb1.get_particle());
-  ps2.push_back(rb2.get_particle());
+  IMP_NEW(core::LeavesRefiner,leaves_refiner,(atom::Hierarchy::get_traits()));
+  Particles ps1= leaves_refiner->get_refined(rb1),
+    ps2= leaves_refiner->get_refined(rb2);
   IMP_NEW(container::ListSingletonContainer,ls1,(ps1));
   IMP_NEW(container::ListSingletonContainer,ls2,(ps2));
   //set up the nonbonded list
-  IMP_NEW(core::LeavesRefiner,leaves_refiner,(atom::Hierarchy::get_traits()));
-  IMP_NEW(core::RigidClosePairsFinder, close_pair_finder,(leaves_refiner));
+  IMP_NEW(core::RigidClosePairsFinder, close_pair_finder,());
   IMP_NEW(container::CloseBipartitePairContainer,nbl,
           (ls1,ls2,2.,close_pair_finder));
   //Set up excluded volume
