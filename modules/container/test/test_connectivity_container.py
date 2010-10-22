@@ -44,8 +44,8 @@ class TunnelTest(IMP.test.TestCase):
         for p0 in ps:
             for p1 in ps:
                 if p0 != p1:
-                    d0= IMP.core.XYZ(p0.get_particle())
-                    d1= IMP.core.XYZ(p1.get_particle())
+                    d0= IMP.core.XYZR(p0.get_particle())
+                    d1= IMP.core.XYZR(p1.get_particle())
                     print d0
                     print d1
                     print IMP.ParticlePair(p0.get_particle(), p1.get_particle())
