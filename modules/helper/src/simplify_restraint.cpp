@@ -132,9 +132,15 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 
   /****** Set the restraint ******/
 
-  IMP_NEW(container::ListSingletonContainer, lsc, (rbs));
+  ParticlesTemp all;
+  for (unsigned int i=0; i< rbs.size(); ++i) {
+    ParticlesTemp cur= ref->get_refined(rbs[i]);
+    all.insert(all.end(), cur.begin(), cur.end());
+  }
 
-  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, ref));
+  IMP_NEW(container::ListSingletonContainer, lsc, (all));
+
+  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
 
   /****** Add restraint to the model ******/
 
@@ -153,19 +159,19 @@ SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
-  Particles ps;
+  ParticlesTemp ps;
 
-  for ( size_t i=0; i<mhs_size; ++i )
+  for ( size_t i=0; i<mhs.size(); ++i )
   {
-    ps.push_back(mhs[i].get_particle());
+    ParticlesTemp leaves= IMP::atom::get_leaves(mhs[i]);
+    ps.insert(ps.end(), leaves.begin(), leaves.end());
   }
 
   /****** Set the restraint ******/
 
   IMP_NEW(container::ListSingletonContainer, lsc, (ps));
 
-  IMP_NEW(core::LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
-  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, lr));
+  IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
 
   /****** Add restraint to the model ******/
 
