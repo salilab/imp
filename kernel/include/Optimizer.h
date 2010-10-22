@@ -55,6 +55,7 @@ class IMPEXPORT Optimizer: public Object
   */
   virtual Float optimize(unsigned int max_steps) = 0;
 
+#ifndef IMP_DOXYGEN
   /** \name Score threshold
       Optimizers can be set to stop if they achieve a score below
       a score threshold. This is useful so that they don't spend time
@@ -64,6 +65,16 @@ class IMPEXPORT Optimizer: public Object
   void set_score_threshold(double s) {min_score_=s;}
   double get_score_threshold() const {return min_score_;}
   /** @} */
+#endif
+
+  /** Optimization can be stopped if all the thresholds in the Model are
+      satisfied. */
+  void set_stop_on_good_score(bool tf) {
+    stop_on_good_score_=tf;
+  }
+  bool get_stop_on_good_score() const {
+    return stop_on_good_score_;
+  }
 
   //! Get the model being optimized
   Model *get_model() const {
@@ -292,6 +303,7 @@ class IMPEXPORT Optimizer: public Object
   mutable FloatTable widths_;
   WeakPointer<Model> model_;
   double min_score_;
+  bool stop_on_good_score_;
 };
 
 

@@ -378,6 +378,15 @@ void Model::compute_dependencies() const {
   compute_restraint_dependencies(dg, ordered_restraints_,
                                  ordered_score_states_,
                                  restraint_dependencies_);
+  restraint_max_scores_.resize(ordered_restraints_.size());
+  for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
+    if (max_scores_.find(ordered_restraints_[i]) == max_scores_.end()) {
+      restraint_max_scores_[i]= std::numeric_limits<double>::max();
+    } else {
+      restraint_max_scores_[i]
+        = max_scores_.find(ordered_restraints_[i])->second;
+    }
+  }
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ScoreStates(ordered_score_states_) << std::endl);
   IMP_INTERNAL_CHECK(restraint_dependencies_.size()
@@ -432,11 +441,13 @@ ScoreStatesTemp get_required_score_states(const RestraintsTemp &irs) {
 double Model::evaluate(bool calc_derivs) {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
+  has_good_score_=true;
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
   double ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
+                          restraint_max_scores_,
                      ordered_score_states_,
                      calc_derivs);
   first_call_=false;
@@ -470,7 +481,16 @@ double Model::evaluate( RestraintsTemp restraints,
     }
   }
   ScoreStatesTemp ss= get_score_states(restraints);
-  return do_evaluate(restraints, weights, ss, calc_derivs);
+  std::vector<double> max_scores(restraints.size());
+  for (unsigned int i=0; i< max_scores.size(); ++i) {
+    if (max_scores_.find(restraints[i]) == max_scores_.end()) {
+      max_scores[i]= std::numeric_limits<double>::max();
+    } else {
+      max_scores[i]= max_scores_.find(restraints[i])->second;
+    }
+  }
+  return do_evaluate(restraints, weights, max_scores,
+                     ss, calc_derivs);
 }
 
 
