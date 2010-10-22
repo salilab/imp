@@ -20,14 +20,11 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-
 RigidClosePairsFinder::RigidClosePairsFinder(Refiner *r):
   ClosePairsFinder("RigidCPF"),
   r_(r){
   cpf_=Pointer<ClosePairsFinder>(new GridClosePairsFinder());
   k_= internal::get_rigid_body_hierarchy_key();
-  fa_= new internal::CoreListSingletonContainer();
-  fb_= new internal::CoreListSingletonContainer();
 }
 RigidClosePairsFinder
 ::RigidClosePairsFinder(ClosePairsFinder *cpf, Refiner *r):
@@ -35,8 +32,6 @@ RigidClosePairsFinder
   cpf_(cpf),
   r_(r){
   k_= internal::get_rigid_body_hierarchy_key();
-  fa_= new internal::CoreListSingletonContainer();
-  fb_= new internal::CoreListSingletonContainer();
 }
 
 
@@ -48,21 +43,19 @@ RigidClosePairsFinder
     cpf_=cpf;
   } else {
     cpf_=Pointer<ClosePairsFinder>(new GridClosePairsFinder());
-    fa_= new internal::CoreListSingletonContainer();
-    fb_= new internal::CoreListSingletonContainer();
   }
 }
 
 
 
 namespace {
-  ParticlesTemp get_rigid_bodies(SingletonContainer *sc) {
+  ParticlesTemp get_rigid_bodies(const ParticlesTemp &sc) {
     IMP::internal::Set<Particle*> rets;
-    IMP_FOREACH_SINGLETON(sc, {
-        if (RigidMember::particle_is_instance(_1)) {
-          rets.insert(RigidMember(_1).get_rigid_body());
-        }
-      });
+    for (unsigned int i=0; i< sc.size(); ++i) {
+      if (RigidMember::particle_is_instance(sc[i])) {
+        rets.insert(RigidMember(sc[i]).get_rigid_body());
+      }
+    };
     return ParticlesTemp(rets.begin(), rets.end());
   }
 
@@ -76,41 +69,39 @@ namespace {
     return ret;
   }
   typedef IMP::internal::Map<Particle*, ParticlesTemp> RBM;
-  void divvy_up_particles(SingletonContainer *sc,
+  void divvy_up_particles(const ParticlesTemp &ps,
                           Refiner *r,
-                          internal::CoreListSingletonContainer *insc,
+                          ParticlesTemp &out,
                           RBM &members) {
     if (r) {
-      insc->set_particles(sc->get_particles());
-      IMP_FOREACH_SINGLETON(sc, {
-          if (RigidBody::particle_is_instance(_1)) {
-            members[_1]= r->get_refined(_1);
+      out=ps;
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        if (RigidBody::particle_is_instance(ps[i])) {
+            members[ps[i]]= r->get_refined(ps[i]);
           }
-        });
+      }
     } else {
-      ParticlesTemp simple;
-      IMP_FOREACH_SINGLETON(sc, {
-          if (RigidMember::particle_is_instance(_1)) {
-            if (members.find(RigidMember(_1).get_rigid_body())
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        if (RigidMember::particle_is_instance(ps[i])) {
+            if (members.find(RigidMember(ps[i]).get_rigid_body())
                 == members.end()) {
-              simple.push_back(RigidMember(_1).get_rigid_body());
+              out.push_back(RigidMember(ps[i]).get_rigid_body());
             }
-            members[RigidMember(_1).get_rigid_body()].push_back(_1);
+            members[RigidMember(ps[i]).get_rigid_body()].push_back(ps[i]);
           } else {
-            simple.push_back(_1);
+            out.push_back(ps[i]);
           }
-        });
-      insc->set_particles(simple);
+        }
     }
     /*std::cout << "Found " << members.size() << " rigid bodies and "
               << insc->get_number_of_particles()
               << " total particles" << std::endl;*/
   }
 
-  void check_particles(SingletonContainer *sc) {
+  void check_particles(const ParticlesTemp &ps) {
     IMP_IF_CHECK(USAGE) {
-      for (SingletonContainer::ParticleIterator it= sc->particles_begin();
-         it != sc->particles_end(); ++it) {
+      for (ParticlesTemp::const_iterator it= ps.begin();
+           it != ps.end(); ++it) {
         if (RigidBody::particle_is_instance(*it)
             && !(*it)->has_attribute(XYZR::get_default_radius_key())) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
@@ -125,17 +116,18 @@ namespace {
 
 
 ParticlePairsTemp RigidClosePairsFinder
-::get_close_pairs(SingletonContainer *ca,
-                  SingletonContainer *cb) const {
+::get_close_pairs(const ParticlesTemp &pa,
+                  const ParticlesTemp &pb) const {
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
-          << ca->get_number_of_particles() << " and "
-          << cb->get_number_of_particles() << std::endl);
-  check_particles(ca);
-  check_particles(cb);
+          << pa.size() << " and "
+          << pb.size() << std::endl);
+  check_particles(pa);
+  check_particles(pb);
   IMP::internal::Map<Particle*, ParticlesTemp> ma, mb;
-  divvy_up_particles(ca, r_, fa_, ma);
-  divvy_up_particles(cb, r_, fb_, mb);
-  ParticlePairsTemp ppt= cpf_->get_close_pairs(fa_,fb_);
+  ParticlesTemp fa, fb;
+  divvy_up_particles(pa, r_, fa, ma);
+  divvy_up_particles(pb, r_, fb, mb);
+  ParticlePairsTemp ppt= cpf_->get_close_pairs(fa,fb);
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator
          it= ppt.begin();
@@ -160,13 +152,14 @@ ParticlePairsTemp RigidClosePairsFinder
 }
 
 ParticlePairsTemp RigidClosePairsFinder
-::get_close_pairs(SingletonContainer *c) const {
+::get_close_pairs(const ParticlesTemp &pa) const {
   IMP_LOG(TERSE, "Adding close pairs from "
-          << c->get_number_of_particles() << " particles." << std::endl);
-  check_particles(c);
+          << pa.size() << " particles." << std::endl);
+  check_particles(pa);
   IMP::internal::Map<Particle*, ParticlesTemp> m;
-  divvy_up_particles(c, r_, fa_, m);
-  ParticlePairsTemp ppt= cpf_->get_close_pairs(fa_);
+  ParticlesTemp fa;
+  divvy_up_particles(pa, r_, fa, m);
+  ParticlePairsTemp ppt= cpf_->get_close_pairs(fa);
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
        it != ppt.end(); ++it) {
@@ -260,8 +253,7 @@ void RigidClosePairsFinder::do_show(std::ostream &out) const {
 }
 
 namespace {
-  ParticlesTemp fill_list(Refiner *r, SingletonContainer *sc) {
-    ParticlesTemp ret=sc->get_particles();
+  ParticlesTemp fill_list(Refiner *r,  ParticlesTemp ret) {
     ParticlesTemp ret2;
     for (unsigned int i=0; i< ret.size(); ++i) {
       if (RigidBody::particle_is_instance(ret[i])) {
@@ -280,48 +272,32 @@ namespace {
     return ret;
   }
 
-  ContainersTemp fill_containers(Refiner *r, SingletonContainer *sc) {
-    ContainersTemp ret(1, sc);
-    IMP_FOREACH_SINGLETON(sc, {
-        if (RigidBody::particle_is_instance(_1)) {
-          ContainersTemp m= r->get_input_containers(_1);
+  ContainersTemp fill_containers(Refiner *r, const ParticlesTemp &pa) {
+    ContainersTemp ret;
+    for (unsigned int i=0; i< pa.size(); ++i) {
+        if (RigidBody::particle_is_instance(pa[i])) {
+          ContainersTemp m= r->get_input_containers(pa[i]);
           ret.insert(ret.end(), m.begin(), m.end());
         }
-      });
+    };
     IMP_LOG(VERBOSE, "Input containers are " << Containers(ret) << std::endl);
     return ret;
   }
 }
 
 ParticlesTemp
-RigidClosePairsFinder::get_input_particles(SingletonContainer *sc) const {
+RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
   if (r_) {
-    ParticlesTemp ret= fill_list(r_, sc);
+    ParticlesTemp ret= fill_list(r_, pa);
     return ret;
   } else {
-    ParticlesTemp ret(sc->particles_begin(), sc->particles_end());
-    ParticlesTemp rbs= get_rigid_bodies(sc);
+    ParticlesTemp ret= pa;
+    ParticlesTemp rbs= get_rigid_bodies(pa);
     ret.insert(ret.end(), rbs.begin(), rbs.end());
-    return ret;
-  }
-}
-
-ParticlesTemp
-RigidClosePairsFinder::get_input_particles(SingletonContainer *a,
-                                           SingletonContainer *b) const {
-  if (r_) {
-    ParticlesTemp ret0= fill_list(r_, a);
-    ParticlesTemp ret1= fill_list(r_, b);
-    ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-    return ret0;
-  } else {
-    ParticlesTemp ret(a->particles_begin(), a->particles_end());
-    ParticlesTemp rbs= get_rigid_bodies(a);
-    ret.insert(ret.end(), rbs.begin(), rbs.end());
-    ParticlesTemp retb(b->particles_begin(), b->particles_end());
-    ParticlesTemp rbsb= get_rigid_bodies(b);
-    ret.insert(ret.end(), rbsb.begin(), rbsb.end());
-    ret.insert(ret.end(), retb.begin(), retb.end());
+    for (unsigned int i=0; i< rbs.size(); ++i) {
+      ParticlesTemp rm= RigidBody(rbs[i]).get_members();
+      ret.insert(ret.end(), rm.begin(), rm.end());
+    }
     return ret;
   }
 }
@@ -346,33 +322,13 @@ RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
 
 
 ContainersTemp
-RigidClosePairsFinder::get_input_containers(SingletonContainer *sc) const {
+RigidClosePairsFinder::get_input_containers(const ParticlesTemp &pa) const {
   if (r_) {
-    ContainersTemp ret= fill_containers(r_, sc);
+    ContainersTemp ret= fill_containers(r_, pa);
     return ret;
   } else {
-    ParticlesTemp rbs= get_rigid_bodies(sc);
+    ParticlesTemp rbs= get_rigid_bodies(pa);
     ContainersTemp ret(rbs.begin(), rbs.end());
-    ret.push_back(sc);
-    return ret;
-  }
-}
-
-ContainersTemp
-RigidClosePairsFinder::get_input_containers(SingletonContainer *a,
-                                           SingletonContainer *b) const {
-  if (r_) {
-    ContainersTemp ret= fill_containers(r_, a);
-    ContainersTemp retp= fill_containers(r_, b);
-    ret.insert(ret.end(), retp.begin(), retp.end());
-    return ret;
-  } else {
-    ParticlesTemp rba= get_rigid_bodies(a);
-    ParticlesTemp rbb= get_rigid_bodies(b);
-    ContainersTemp ret(rba.begin(), rbb.end());
-    ret.insert(ret.end(), rbb.begin(), rbb.end());
-    ret.push_back(a);
-    ret.push_back(b);
     return ret;
   }
 }

@@ -50,10 +50,18 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       indexing the input list(s).
       @{
    */
-  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const =0;
+  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {
+    return get_close_pairs(pc->get_particles());
+  }
 
   virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
-                                            SingletonContainer *pcb) const =0;
+                                    SingletonContainer *pcb) {
+    return get_close_pairs(pca->get_particles(),
+                           pcb->get_particles());
+  }
+  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const =0;
+  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
+                                            const ParticlesTemp &pcb) const =0;
 
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const=0;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
@@ -77,12 +85,8 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       Return all the particles touched in processing the passed ones.
       @{
   */
-  virtual ParticlesTemp get_input_particles(SingletonContainer *pc) const=0;
-  virtual ParticlesTemp get_input_particles(SingletonContainer *a,
-                                            SingletonContainer *b) const=0;
-  virtual ContainersTemp get_input_containers(SingletonContainer *pc) const=0;
-  virtual ContainersTemp get_input_containers(SingletonContainer *a,
-                                              SingletonContainer *b) const=0;
+  virtual ParticlesTemp get_input_particles(const ParticlesTemp &ps) const=0;
+  virtual ContainersTemp get_input_containers(const ParticlesTemp &ps) const=0;
   /** @} */
 #ifndef SWIG
   /** \brief Return a container which lists all particles which moved more

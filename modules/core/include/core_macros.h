@@ -27,18 +27,22 @@
     - IMP::core::get_close_pairs()
 */
 #define IMP_CLOSE_PAIRS_FINDER(Name)                                    \
-  ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const;      \
-  ParticlePairsTemp get_close_pairs(SingletonContainer *pca,            \
-                                    SingletonContainer *pcb) const;     \
-  ParticlesTemp get_input_particles(SingletonContainer *pc) const;      \
-  ParticlesTemp get_input_particles(SingletonContainer *a,              \
-                                   SingletonContainer *b) const;        \
-  ContainersTemp get_input_containers(SingletonContainer *pc) const;    \
-  ContainersTemp get_input_containers(SingletonContainer *a,            \
-                                   SingletonContainer *b) const;        \
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pa) const;     \
+  ParticlePairsTemp get_close_pairs(const ParticlesTemp &pa,            \
+                                    const ParticlesTemp &pb) const;     \
+  ParticlesTemp get_input_particles(const ParticlesTemp &ps) const;     \
+  ContainersTemp get_input_containers(const ParticlesTemp &ps) const;   \
   IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const;   \
   IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,          \
                            const algebra::BoundingBox3Ds &bbs) const;   \
+  ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {     \
+    return get_close_pairs(pc->get_particles());                        \
+  } /* swig doesn't support using */                                    \
+  ParticlePairsTemp get_close_pairs(SingletonContainer *pca,            \
+                                    SingletonContainer *pcb) {          \
+  return get_close_pairs(pca->get_particles(),                          \
+                         pcb->get_particles());                         \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 #endif  /* IMPCORE_MACROS_H */

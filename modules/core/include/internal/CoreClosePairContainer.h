@@ -30,7 +30,6 @@ public internal::ListLikePairContainer
   IMP::internal::OwnerPointer<internal::MovedSingletonContainer> moved_;
   bool first_call_;
   double distance_, slack_;
-  ParticlePairsTemp data_;
   bool is_static_;
   IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,

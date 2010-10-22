@@ -93,7 +93,7 @@ void CoreClosePairContainer::set_is_static(bool t,
 ContainersTemp CoreClosePairContainer
 ::get_state_input_containers() const {
   if (is_static_) return ContainersTemp();
-  ContainersTemp ret= cpf_->get_input_containers(c_);
+  ContainersTemp ret= cpf_->get_input_containers(c_->get_particles());
   ret.push_back(c_);
   ret.push_back(moved_);
   return ret;
@@ -102,7 +102,7 @@ ContainersTemp CoreClosePairContainer
 
 ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
   if (is_static_) return ParticlesTemp();
-  ParticlesTemp ret(cpf_->get_input_particles(c_));
+  ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
   if (get_number_of_pair_filters() >0) {
     ParticlePairsTemp all_pairs;
     for (unsigned int i=0; i< ret.size(); ++i) {
@@ -132,7 +132,7 @@ void CoreClosePairContainer::do_before_evaluate() {
   try {
     if (first_call_) {
       IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
-      ParticlePairsTemp c= cpf_->get_close_pairs(c_);
+      ParticlePairsTemp c= cpf_->get_close_pairs(c_->get_particles());
       internal::filter_close_pairs(this, c);
       moved_->reset();
       IMP_LOG(TERSE, "Found " << c.size() << " pairs." << std::endl);
@@ -145,7 +145,8 @@ void CoreClosePairContainer::do_before_evaluate() {
         if (moved_->get_particles().size() < c_->get_number_of_particles()*.1) {
           IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
                   << std::endl);
-          ParticlePairsTemp ret= cpf_->get_close_pairs(c_, moved_);
+          ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles(),
+                                                       moved_->get_particles());
           internal::filter_close_pairs(this, ret);
           internal::filter_same(ret);
           IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
@@ -154,45 +155,52 @@ void CoreClosePairContainer::do_before_evaluate() {
         } else {
           IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
                   << std::endl);
-          ParticlePairsTemp ret= cpf_->get_close_pairs(c_);
+          ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles());
           internal::filter_close_pairs(this, ret);
           IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
           update_list(ret);
           moved_->reset();
         }
       } else {
+
         IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
       }
     }
   } catch (std::bad_alloc&) {
-    IMP_THROW("Ran out of memory bwhen computing close pairs."
+    IMP_THROW("Ran out of memory when computing close pairs."
               << " Try to reduce the "
               << "slack or reformulate the problem.", ValueException);
   }
-  /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::set<ParticlePair> existings(particle_pairs_begin(),
-                                               particle_pairs_end());
+                                     particle_pairs_end());
+    std::cout << existings.size() << std::endl;
     for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
         XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
         double d= get_distance(a,b);
-        if (d < .98*distance_) {
+        if (d < distance_-.1) {
           if (RigidMember::particle_is_instance(a)
               && RigidMember::particle_is_instance(b)
               && RigidMember(a).get_rigid_body()
               == RigidMember(b).get_rigid_body())
             continue;
           ParticlePair pp(a,b);
-          IMP_INTERNAL_CHECK(existings.find(pp) != existings.end()
+          ParticlePairsTemp pps(1, pp);
+          internal::filter_close_pairs(this, pps);
+          IMP_INTERNAL_CHECK(pps.empty()
+                             || existings.find(pp) != existings.end()
                              || existings.find(ParticlePair(pp[1], pp[0]))
                              != existings.end(), "Particle pair "
                              << a->get_name()
                              << " and " << b->get_name()
-                             << " not found in list.");
+                             << " not found in list: "
+                             << *pp[0] << std::endl
+                             << *pp[1]);
         }
       }
     }
-    }*/
+  }
 }
 
 
@@ -209,7 +217,7 @@ void CoreClosePairContainer::do_show(std::ostream &out) const {
 
 ParticlesTemp CoreClosePairContainer::get_contained_particles() const {
   ParticlesTemp ret= c_->get_contained_particles();
-  ParticlesTemp nret =cpf_->get_input_particles(c_);
+  ParticlesTemp nret =cpf_->get_input_particles(c_->get_particles());
   ret.insert(ret.end(), nret.begin(), nret.end());
   return ret;
 }

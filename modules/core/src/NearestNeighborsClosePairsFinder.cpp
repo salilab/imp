@@ -35,39 +35,39 @@ NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder():
   ClosePairsFinder("NearestNeighborsCPF") {}
 
 ParticlePairsTemp NearestNeighborsClosePairsFinder
-::get_close_pairs(IMP_RESTRICT SingletonContainer *ca,
-                  IMP_RESTRICT SingletonContainer *cb) const {
-  algebra::NearestNeighborD<3> nn(ca->particles_begin(),
-                                  ca->particles_end(), 0);
-  double rm= max_radius(ca->particles_begin(), ca->particles_end());
+::get_close_pairs(IMP_RESTRICT const ParticlesTemp &pa,
+                  IMP_RESTRICT const ParticlesTemp &pb) const {
+  algebra::NearestNeighborD<3> nn(pa.begin(),
+                                  pa.end(), 0);
+  double rm= max_radius(pa.begin(), pa.end());
   ParticlePairsTemp ret;
-  IMP_FOREACH_SINGLETON(cb, {
-      XYZR d(_1);
+  for (unsigned int i=0; i< pb.size(); ++i) {
+      XYZR d(pb[i]);
       Ints cur= nn.get_in_ball(d.get_coordinates(),
                                rm + get_distance()+ d.get_radius());
       for (unsigned int j=0; j< cur.size(); ++j) {
-        ret.push_back(ParticlePair(ca->get_particle(cur[j]),
+        ret.push_back(ParticlePair(pa[cur[j]],
                                    d));
       }
-    });
+  };
   return ret;
 }
 ParticlePairsTemp NearestNeighborsClosePairsFinder
-::get_close_pairs(IMP_RESTRICT SingletonContainer *c) const {
-  algebra::NearestNeighborD<3> nn(c->particles_begin(), c->particles_end(), 0);
-  double rm= max_radius(c->particles_begin(), c->particles_end());
+::get_close_pairs(IMP_RESTRICT const ParticlesTemp &c) const {
+  algebra::NearestNeighborD<3> nn(c.begin(), c.end(), 0);
+  double rm= max_radius(c.begin(), c.end());
   ParticlePairsTemp ret;
-  IMP_FOREACH_SINGLETON(c, {
-    XYZR d(_1);
+  for (unsigned int i=0; i< c.size(); ++i) {
+    XYZR d(c[i]);
     Ints cur=nn.get_in_ball(d.get_coordinates(),
                             rm + get_distance()+ d.get_radius());
     for (unsigned int j=0; j< cur.size(); ++j) {
-      if (d < c->get_particle(cur[j])) {
-        ret.push_back(ParticlePair(c->get_particle(cur[j]),
+      if (d < c[cur[j]]) {
+        ret.push_back(ParticlePair(c[cur[j]],
                                    d));
       }
     }
-    });
+    }
   return ret;
 }
 
@@ -122,34 +122,15 @@ void NearestNeighborsClosePairsFinder::do_show(std::ostream &out) const {
 
 ParticlesTemp
 NearestNeighborsClosePairsFinder
-::get_input_particles(SingletonContainer *sc) const {
-  ParticlesTemp ret= sc->get_particles();
-  return ret;
-}
-
-ParticlesTemp
-NearestNeighborsClosePairsFinder::get_input_particles(SingletonContainer *a,
-                                             SingletonContainer *b) const {
-  ParticlesTemp ret0= a->get_particles();
-  ParticlesTemp ret1= b->get_particles();
-  ret0.insert(ret0.end(), ret1.begin(), ret1.end());
-  return ret0;
+::get_input_particles(const ParticlesTemp &ps) const {
+  return ps;
 }
 
 ContainersTemp
 NearestNeighborsClosePairsFinder
-::get_input_containers(SingletonContainer *sc) const {
-  ContainersTemp ret(1,sc);
-  return ret;
+::get_input_containers(const ParticlesTemp &ps) const {
+  return ContainersTemp();
 }
 
-ContainersTemp
-NearestNeighborsClosePairsFinder::get_input_containers(SingletonContainer *a,
-                                              SingletonContainer *b) const {
-  ContainersTemp ret(2);
-  ret[0]= a;
-  ret[1]= b;
-  return ret;
-}
 
 IMPCORE_END_NAMESPACE
