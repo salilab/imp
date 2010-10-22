@@ -83,6 +83,7 @@ private:
   double max_score_;
   typedef internal::Map<Restraint*, double> Maxes;
   Maxes max_scores_;
+  mutable bool has_good_score_;
 
 
   // statistics
@@ -104,10 +105,12 @@ private:
   void zero_derivatives(bool shadow_too=false) const;
   double do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
+                      const std::vector<double> &maxs,
                      const ScoreStatesTemp &states, bool calc_derivs);
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
   double do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
+                                const std::vector<double> &maxs,
                                 bool calc_derivs,
                                 WhichRestraints incremental_restraints,
                                 bool incremental_evaluation) const;
@@ -120,6 +123,7 @@ private:
   mutable std::vector<boost::dynamic_bitset<> > restraint_dependencies_;
   mutable std::vector<double> restraint_weights_;
   mutable ScoreStatesTemp ordered_score_states_;
+  mutable std::vector<double> restraint_max_scores_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
     return (!ordered_restraints_.empty()
@@ -245,6 +249,7 @@ public:
   }
   void set_maximum_score(Restraint *r, double s) {
      max_scores_[r]=s;
+     reset_dependencies();
   }
   void set_maximum_score(double s) {
     max_score_=s;
@@ -252,6 +257,7 @@ public:
   double get_maximum_score() const {
     return max_score_;
   }
+  //! Return true if thelast evaluate satisfied the thresholds
   bool get_has_good_score() const;
   /** @} */
 

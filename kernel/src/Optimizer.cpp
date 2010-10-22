@@ -18,6 +18,7 @@ Optimizer::Optimizer(Model *m, std::string name): Object(name)
   if (m) set_model(m);
   set_was_used(true);
   min_score_= -std::numeric_limits<double>::max();
+  stop_on_good_score_=false;
 }
 
 Optimizer::~Optimizer()

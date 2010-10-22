@@ -95,7 +95,7 @@ namespace {
     }                                                                   \
   }
 
-#define WRAP_EVALUATE_CALL(restraint, expr)                             \
+#define WRAP_EVALUATE_CALL(restraint, expr)                         \
   {                                                                     \
     IMP_IF_CHECK(first_call_ && USAGE_AND_INTERNAL) {                   \
       ParticlesTemp rpl= (restraint)->get_input_particles();            \
@@ -133,6 +133,7 @@ namespace {
 #else
 #define WRAP_UPDATE_CALL(restraint, expr, exchange) expr
 #define WRAP_EVALUATE_CALL(restraint, expr) expr
+
 #endif
 
 
@@ -254,6 +255,7 @@ void Model::zero_derivatives(bool st) const {
 
 double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
+                                     const std::vector<double> &maxs,
                                      bool calc_derivs,
                                      WhichRestraints incremental_restraints,
                                      bool incremental_evaluation) const {
@@ -301,9 +303,15 @@ double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     if (gather_statistics_) {
       add_to_restraint_evaluate(restraints[i], timer.elapsed(), wvalue);
     }
+    if (value > restraint_max_scores_[i]) {
+      has_good_score_=false;
+    }
     score+= wvalue;
   }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
+  if (score > max_score_) {
+    has_good_score_=false;
+  }
   return score;
 }
 
@@ -326,8 +334,11 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
     }
     bool ogather_stats=gather_statistics_;
     gather_statistics_=false;
+    // junk
+    std::vector<double> mx(restraints.size(),
+                           std::numeric_limits<double>::max());
     double nscore=
-      do_evaluate_restraints(restraints, weights,
+      do_evaluate_restraints(restraints, weights, mx,
                              calc_derivs, ALL, false);
     gather_statistics_= ogather_stats;
     if (std::abs(nscore -score)
@@ -335,7 +346,7 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
       if (gather_statistics_) {
         std::cerr << "Incremental:\n";
         show_restraint_score_statistics(std::cerr);
-        do_evaluate_restraints(restraints, weights,
+        do_evaluate_restraints(restraints, weights, mx,
                                calc_derivs, ALL, false);
         std::cerr << "Non-incremental:\n";
         show_restraint_score_statistics(std::cerr);
@@ -391,6 +402,7 @@ void Model::validate_computed_derivatives() const {
 
 double Model::do_evaluate(const RestraintsTemp &restraints,
                           const std::vector<double> &weights,
+                          const std::vector<double> &maxs,
                           const ScoreStatesTemp &states,
                           bool calc_derivs) {
   // make sure stage is restored on an exception
@@ -418,7 +430,7 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
   if (get_is_incremental()) {
     score = 0.0;
     if (calc_derivs) zero_derivatives(first_incremental_);
-    score+= do_evaluate_restraints(restraints, weights,
+    score+= do_evaluate_restraints(restraints, weights, maxs,
                                    calc_derivs, INCREMENTAL,
                                    !first_incremental_);
     if (calc_derivs) {
@@ -427,7 +439,7 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
         (*pit)->move_derivatives_to_shadow();
       }
     }
-    score+=do_evaluate_restraints(restraints, weights,
+    score+=do_evaluate_restraints(restraints, weights, maxs,
                                   calc_derivs, NONINCREMENTAL, false);
     if (calc_derivs) {
       for (ParticleConstIterator pit = particles_begin();
@@ -443,7 +455,7 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
     if (calc_derivs) {
       zero_derivatives();
     }
-    score= do_evaluate_restraints(restraints, weights,
+    score= do_evaluate_restraints(restraints, weights, maxs,
                                   calc_derivs, ALL, false);
   }
 
