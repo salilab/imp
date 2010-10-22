@@ -58,6 +58,9 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   update_states();
   double prior_energy =get_model()->evaluate(false);
   //if (prior_energy < get_score_threshold()) return prior_energy;
+  if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
+    return prior_energy;
+  }
 
   IMP_LOG(TERSE, "MC Initial energy is " << prior_energy << std::endl);
 
@@ -166,7 +169,9 @@ Float MonteCarlo::optimize(unsigned int max_steps)
           }*/
       }
       update_states();
-      //if (next_energy < get_score_threshold()) break;
+      if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
+        break;
+      }
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
