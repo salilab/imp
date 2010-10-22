@@ -1,0 +1,42 @@
+vars = Variables('config.py')
+vars.Add(PathVariable('libpath',
+                      'Directory where IMP libraries are installed', None))
+vars.Add(PathVariable('cpppath',
+                      'Directory where IMP headers are installed', None))
+vars.Add(PathVariable('pypath',
+                      'Directory where IMP Python wrappers are installed',
+                      None))
+vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
+         'python')
+
+env = Environment(variables=vars)
+Help(vars.GenerateHelpText(env))
+
+libpath = '/salilab/diva1/home/modeller/.SVN-new/lib/x86_64-intel8/'
+cpppath = '/salilab/diva1/home/modeller/.SVN-new/src/include/'
+pypath = '/salilab/diva1/home/modeller/.SVN-new/modlib/'
+python = 'python2.5'
+
+libpath = env.get('libpath', None)
+cpppath = env.get('cpppath', None)
+pypath = env.get('pypath', None)
+python = env['python']
+
+# Set dynamic library search path on all platforms
+env['ENV']['LD_LIBRARY_PATH'] = libpath     # Linux/Sun
+env['ENV']['DYLD_LIBRARY_PATH'] = libpath   # Mac
+env['ENV']['LIBPATH'] = libpath             # AIX
+
+# Set Python search path
+env['ENV']['PYTHONPATH'] = '%s:%s' % (pypath, libpath)
+
+# Test compiling and running a C++ program that links against IMP
+testcpp = env.Program('test.cpp', CPPPATH=cpppath, LIBPATH=libpath,
+                      LIBS=['imp', 'imp_core', 'imp_algebra', 'imp_example',
+                            'imp_container'])
+runcpp = env.Command('cpp.out', testcpp, "./$SOURCES > $TARGET")
+
+# Test running a Python unittest program that uses IMP
+runpy = env.Command('py.out', 'test.py', "%s $SOURCES -v > $TARGET" % python)
+
+env.Default([runcpp, runpy])
