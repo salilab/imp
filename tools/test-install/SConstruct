@@ -4,8 +4,8 @@ vars.Add(PathVariable('libpath',
 vars.Add(PathVariable('cpppath',
                       'Directory where IMP headers are installed', None))
 vars.Add(PathVariable('pypath',
-                      'Directory where IMP Python wrappers are installed',
-                      None))
+                      'Directory/ies where IMP Python wrappers are installed',
+                      None, PathVariable.PathAccept))
 vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
          'python')
 
