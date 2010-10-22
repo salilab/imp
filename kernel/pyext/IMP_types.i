@@ -290,7 +290,44 @@ IMP_SWIG_VOID_FORWARD_2(set_is_optimized, IMP::FloatKey, bool);
 IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
 }
 %pythonprepend Namespace::Name {
-
+}
+%extend Namespace::Name {
+  bool __eq__(Name o) const {
+     return *self ==o;
+  }
+  bool __ne__(Name o) const {
+     return *self !=o;
+  }
+  bool __le__(Name o) const {
+     return *self <= o;
+  }
+  bool __lt__(Name o) const {
+     return *self < o;
+  }
+  bool __ge__(Name o) const {
+     return *self >= o;
+  }
+  bool __gt__(Name o) const {
+     return *self > o;
+  }
+  bool __eq__(Particle *d) const {
+    return self->get_particle() == d;
+  }
+  bool __ne__(Particle *d) const {
+     return self->get_particle() != d;
+  }
+  bool __le__(Particle *d) const {
+     return self->get_particle() <= d;
+  }
+  bool __lt__(Particle *d) const {
+     return self->get_particle() < d;
+  }
+  bool __ge__(Particle *d) const {
+     return self->get_particle() >= d;
+  }
+  bool __gt__(Particle *d) const {
+     return self->get_particle() > d;
+  }
 }
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
