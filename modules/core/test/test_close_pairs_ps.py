@@ -2,7 +2,6 @@ import IMP
 import IMP.test
 import IMP.misc
 import IMP.core
-import itertools
 
 rk = IMP.FloatKey("radius")
 
@@ -76,9 +75,9 @@ class Test(IMP.test.TestCase):
         print str(len(lps.get_particle_pairs())) +" pairs", "in", k
         for pp in lps.get_particle_pairs():
             print pp[0].get_name(), pp[1].get_name()
-        ap= itertools.product(ls0, ls1)
-        apd= [(IMP.core.get_distance(IMP.core.XYZR(x[0]), IMP.core.XYZR(x[1])), x)\
-              for x in ap]
+        apd= [(IMP.core.get_distance(IMP.core.XYZR(p0),
+                                     IMP.core.XYZR(p1)),
+               (p0,p1)) for p0 in ls0 for p1 in ls1]
         apd.sort(lambda a, b: cmp(a[0], b[0]))
         #print apd
         for p in lps.get_particle_pairs():
