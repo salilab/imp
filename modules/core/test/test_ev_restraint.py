@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import IMP.container
 import math
 
 class AngleRestraintTests(IMP.test.TestCase):
@@ -34,8 +35,8 @@ class AngleRestraintTests(IMP.test.TestCase):
             d= IMP.core.XYZ(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                                                IMP.algebra.Vector3D(5,5,5))))
-        sc.add_particle(rb0.get_particle())
-        r= IMP.core.ExcludedVolumeRestraint(sc, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+        sc.add_particles(IMP.core.get_leaves(p0))
+        r= IMP.core.ExcludedVolumeRestraint(sc)
         r.set_log_level(IMP.SILENT)
         m.add_restraint(r)
         return (m, r, sc)
@@ -49,29 +50,20 @@ class AngleRestraintTests(IMP.test.TestCase):
         o.add_mover(bm)
         o.set_model(m)
         print "opt"
-        o.optimize(10)
+        print o.optimize(10)
         print "inspect"
-        balls=[]
-        members=[]
         for p in sc.get_particles():
-            if IMP.atom.Hierarchy.particle_is_instance(p):
-                balls=balls+IMP.core.get_leaves(IMP.atom.Hierarchy(p))
-                members.append(IMP.core.get_leaves(IMP.atom.Hierarchy(p)))
-            else:
-                balls.append(p)
-        for pa in balls:
-            for pb in balls:
-                if pa == pb: continue
-                else:
-                    found=False
-                    for ml in members:
-                        if pa in ml and pb in ml:
-                            found=True
-                    #print pa
-                    #print pb
-                    if not found:
-                        d= IMP.core.get_distance(IMP.core.XYZR(pa), IMP.core.XYZR(pb))
-                        self.assertGreater(d, -.1)
+            for q in sc.get_particles():
+                if p==q:
+                    continue
+                if IMP.core.RigidMember.particle_is_instance(p) \
+                   and IMP.core.RigidMember.particle_is_instance(q) \
+                   and IMP.core.RigidMember(p).get_rigid_body()\
+                   == IMP.core.RigidMember(q).get_rigid_body():
+                    continue
+                print p.get_name(), q.get_name()
+                d= IMP.core.get_distance(IMP.core.XYZR(p), IMP.core.XYZR(q))
+                self.assertGreater(d, -.1)
     def test_isolated_ev(self):
         """Testing isolated evaluation of ev restraint"""
         (m,r, sc)= self._setup_ev_restraint()
