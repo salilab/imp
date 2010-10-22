@@ -454,8 +454,8 @@ void RigidBody::add_member(RigidBody d) {
   hd.add_child(hc);
   // want tr*ltr= btr, so ltr= tr-1*btr
   algebra::Transformation3D tr
-    =algebra::get_transformation_from_first_to_second(r,
-                                                      d.get_reference_frame());
+    =r.get_transformation_from()
+    *d.get_reference_frame().get_transformation_to();
   cm.set_internal_transformation(tr);
   cover_rigid_body(*this, get_members());
 }
