@@ -223,21 +223,23 @@ class TestCPFL(IMP.test.TestCase):
         rbpsa= IMP.Particles()
         rbpsb= IMP.Particles()
         fps= IMP.Particles()
+        free_ps=[]
         for i in range(0, len(ps)):
             if i%3==0:
-                rbpsa.append(ps[i].get_particle())
-                ps[i].get_particle().set_name("rbpa"+str(i))
+                rbpsa.append(ps[i])
+                ps[i].set_name("rbpa"+str(i))
             elif i%3==1:
-                rbpsb.append(ps[i].get_particle())
-                ps[i].get_particle().set_name("rbpb"+str(i))
+                rbpsb.append(ps[i])
+                ps[i].set_name("rbpb"+str(i))
             else:
-                fps.append(ps[i].get_particle())
+                fps.append(ps[i])
+                free_ps.append(ps[i])
         rba= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsa))
         rbb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsb))
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
-        fps.append(rba.get_members())
-        fps.append(rbb.get_members())
+        fps=fps+rba.get_members()
+        fps=fps+rbb.get_members()
         pc= IMP.container.ListSingletonContainer(fps)
         pc.show()
         out= IMP.container.ListPairContainer(m)
@@ -246,11 +248,11 @@ class TestCPFL(IMP.test.TestCase):
         cpf.set_distance(dist)
         cps=cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
-        self._check_abiclose_pairs(fps[0:-2], fps[0:-2], dist,
+        self._check_abiclose_pairs(free_ps, free_ps, dist,
                                    IMP.core.XYZR.get_default_radius_key(), out)
-        self._check_abiclose_pairs(fps[0:-2], rbpsa, dist,
+        self._check_abiclose_pairs(free_ps, rbpsa, dist,
                                    IMP.core.XYZR.get_default_radius_key(), out)
-        self._check_abiclose_pairs(fps[0:-2], rbpsb, dist,
+        self._check_abiclose_pairs(free_ps, rbpsb, dist,
                                    IMP.core.XYZR.get_default_radius_key(), out)
         self._check_abiclose_pairs(rbpsa, rbpsb, dist,
                                    IMP.core.XYZR.get_default_radius_key(), out)
