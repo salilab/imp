@@ -17,6 +17,7 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/estimates.h>
+#include <IMP/atom/Molecule.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/ClosePairsPairScore.h>
@@ -47,7 +48,8 @@ Hierarchy create_protein(Model *m,
                          double resolution,
                          int number_of_residues,
                          int first_residue_index,
-                         double volume) {
+                         double volume,
+                         bool ismol) {
   double mass= atom::get_mass_from_number_of_residues(number_of_residues)/1000;
   if (volume < 0) {
     volume= atom::get_volume_from_mass(mass*1000);
@@ -56,6 +58,7 @@ Hierarchy create_protein(Model *m,
   double overlap_frac=.2;
   std::pair<int, double> nr= compute_n(volume, resolution, overlap_frac);
   Hierarchy pd=Hierarchy::setup_particle(new Particle(m));
+  if (ismol) Molecule::setup_particle(pd);
   pd->set_name(name);
   Particles ps;
   for (int i=0; i< nr.first; ++i) {
@@ -97,13 +100,16 @@ Hierarchy create_protein(Model *m,
     std::ostringstream oss;
     oss << name << i;
     Hierarchy cur= create_protein(m, oss.str(), resolution,
-                                  db[i]-db[i-1], db[i-1]);
+                                  db[i]-db[i-1], db[i-1],
+                                  atom::get_volume_from_mass(
+      atom::get_mass_from_number_of_residues(db[i]-db[i-1])),
+                                  false);
     root.add_child(cur);
   }
+  Molecule::setup_particle(root);
   root->set_name(name);
   return root;
 }
-
 
 
 namespace {
@@ -253,18 +259,6 @@ create_simplified_along_backbone(Chain in,
 }
 
 
-std::string get_molecule_name(Hierarchy h) {
-  do {
-    if (!Residue::particle_is_instance(h)
-        && !Atom::particle_is_instance(h)
-        && !Chain::particle_is_instance(h)) {
-      return h->get_name();
-    }
-  } while (h=h.get_parent());
-  IMP_THROW("Hierarchy " << h << " has no molecule name.",
-            ValueException);
-}
-
 namespace {
   Ints get_tree_residue_indexes(Hierarchy h) {
     if (Residue::particle_is_instance(h)) {
@@ -290,6 +284,16 @@ namespace {
     }
     return ret;
   }
+}
+
+std::string get_molecule_name(Hierarchy h) {
+  do {
+    if (Molecule::particle_is_instance(h)) {
+      return h->get_name();
+    }
+  } while (h=h.get_parent());
+  IMP_THROW("Hierarchy " << h << " has no residue index.",
+            ValueException);
 }
 
 Ints get_residue_indexes(Hierarchy h) {
@@ -341,17 +345,9 @@ std::string get_domain_name(Hierarchy h) {
 bool Selection::check_nonradius(Hierarchy h) const {
   try {
     if (!molecules_.empty()) {
-      bool found=false;
-      Hierarchy cur=h;
-      do {
-        std::string nm= cur->get_name();
-        if (std::binary_search(molecules_.begin(), molecules_.end(),
-                                nm)) {
-          found=true;
-          break;
-        }
-      } while (cur=cur.get_parent());
-      if (!found) return false;
+      std::string name= get_molecule_name(h);
+      if (!std::binary_search(molecules_.begin(), molecules_.end(),
+                              name)) return false;
     }
     if (!residue_indices_.empty()) {
       Ints ris= get_residue_indexes(h);

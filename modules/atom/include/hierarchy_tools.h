@@ -43,7 +43,11 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m,
                                        double resolution,
                                        int number_of_residues,
                                        int first_residue_index=0,
-                                       double volume=-1);
+                                       double volume=-1
+#ifndef IMP_DOXYGEN
+                                       , bool ismol=true
+#endif
+);
 /** Like the former create_protein(), but it enforces domain splits
     at the provide domain boundairs. The domain boundaries should be
     the start of the first domain, any boundies, and then one past
