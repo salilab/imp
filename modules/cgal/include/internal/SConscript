@@ -4,6 +4,7 @@ files = [
          'polygons.h',
          'polyhedrons.h',
          'sphere_cover.h',
+         'union_of_balls.h',
         ]
 
 files = [File(x) for x in files]
