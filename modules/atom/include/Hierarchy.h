@@ -43,6 +43,7 @@
   macro(Atom, atom, ATOM_TYPE),                     \
     macro(Residue, residue, RESIDUE_TYPE),          \
     macro(Chain, chain, CHAIN_TYPE),                \
+    macro(Molecule, molecule, MOLECULE_TYPE),       \
     macro(Domain, domain, DOMAIN_TYPE),             \
     macro(Fragment, fragment, FRAGMENT_TYPE),       \
     macro(core::XYZ, xyz, XYZ_TYPE),                \
@@ -55,6 +56,7 @@
   macro(Atom, atom, ATOM_TYPE);                \
   macro(Residue, residue, RESIDUE_TYPE);       \
   macro(Chain, chain, CHAIN_TYPE);             \
+  macro(Molecule, molecule, MOLECULE_TYPE);    \
   macro(Domain, domain, DOMAIN_TYPE);          \
   macro(Fragment, fragment, FRAGMENT_TYPE);    \
   macro(core::XYZ, xyz, XYZ_TYPE);             \
@@ -67,6 +69,7 @@
   macro(Atom, atom, ATOM_TYPE)                         \
   macro(Residue, residue, RESIDUE_TYPE)                \
   macro(Chain, chain, CHAIN_TYPE)                      \
+  macro(Molecule, molecule, MOLECULE_TYPE)             \
   macro(Domain, domain, DOMAIN_TYPE)                   \
   macro(Fragment, fragment, FRAGMENT_TYPE)             \
   macro(core::XYZ, xyz, XYZ_TYPE)                      \
@@ -85,6 +88,7 @@ class Residue;
 class Domain;
 class Fragment;
 class Chain;
+class Molecule;
 class Mass;
 
 class Hierarchy;
@@ -207,6 +211,7 @@ typedef IMP::Decorators< Hierarchy,
     \see Atom
     \see Residue
     \see Chain
+    \see Molecule
     \see Domain
     \see Fragment
     \see Mass
@@ -341,7 +346,8 @@ IMP_OUTPUT_OPERATOR(Hierarchy);
 #ifdef IMP_DOXYGEN
 /** The different types which can be passed to get_by_type()
  */
-enum GetByType {ATOM_TYPE, RESIDUE_TYPE, CHAIN_TYPE, DOMAIN_TYPE, FRAGMENT_TYPE,
+enum GetByType {ATOM_TYPE, RESIDUE_TYPE, CHAIN_TYPE, MOLECULE_TYPE.
+                DOMAIN_TYPE, FRAGMENT_TYPE,
                 XYZ_TYPE,XYZR_TYPE,MASS_TYPE};
 #else
 enum GetByType {

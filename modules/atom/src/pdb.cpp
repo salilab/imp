@@ -11,6 +11,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Chain.h>
+#include <IMP/atom/Molecule.h>
 #include <IMP/atom/element.h>
 #include <boost/algorithm/string.hpp>
 #include <locale>
@@ -171,6 +172,7 @@ Particle* chain_particle(Model *m, char chain_id)
   Particle* p = new Particle(m);
   Chain::setup_particle(p, chain_id);
   p->set_name(std::string("Chain "+std::string(1, chain_id)));
+  Molecule::setup_particle(p);
   return p;
 }
 
