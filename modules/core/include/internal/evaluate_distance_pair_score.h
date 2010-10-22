@@ -14,6 +14,7 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/utility.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/vector_generators.h>
 
 #include <boost/tuple/tuple.hpp>
 
@@ -104,7 +105,11 @@ double compute_distance_pair_score(const algebra::VectorD<D> &delta,
   } else {
     // calculate the score based on the distance feature
     dp.first = f->evaluate(shifted_distance);
-    if (d) *d= algebra::get_zero_vector_d<D>();
+    if (d) {
+      *d= dp.second
+       *IMP::algebra
+        ::get_random_vector_on(IMP::algebra::get_unit_sphere_d<3>());
+    }
   }
   return dp.first;
 }
