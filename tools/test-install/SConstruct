@@ -12,11 +12,6 @@ vars.Add('python', 'The Python executable to use to execute IMP Python scripts',
 env = Environment(variables=vars)
 Help(vars.GenerateHelpText(env))
 
-libpath = '/salilab/diva1/home/modeller/.SVN-new/lib/x86_64-intel8/'
-cpppath = '/salilab/diva1/home/modeller/.SVN-new/src/include/'
-pypath = '/salilab/diva1/home/modeller/.SVN-new/modlib/'
-python = 'python2.5'
-
 libpath = env.get('libpath', None)
 cpppath = env.get('cpppath', None)
 pypath = env.get('pypath', None)
