@@ -3,6 +3,7 @@
 import os
 import os.path
 import sys
+import subprocess
 
 def main():
     if len(sys.argv) != 2:
@@ -11,7 +12,7 @@ The program will setup things in the current directory.""" % sys.argv[0])
         return
     imppath= os.path.split(os.path.split(sys.argv[0])[0])[0]
     try:
-        imppath= os.path.relpath(imppath, sys.argv[1])
+        relimppath= os.path.relpath(imppath, sys.argv[1])
     except:
         print "Platform does not support os.path.relpath, links will be made using absolute paths. Sorry. You can replace the SConstruct and scons_tools links and the repository line in the config.py with relative paths by hand."
     path_to_build= sys.argv[1]
@@ -20,11 +21,17 @@ The program will setup things in the current directory.""" % sys.argv[0])
     if os.path.isfile("SConstruct"):
         print "SConstruct file already exists in this directory."
         return
-    os.symlink(os.path.join(imppath, "SConstruct"), os.path.join(path_to_build, "SConstruct"))
-    os.symlink(os.path.join(imppath, "scons_tools"), os.path.join(path_to_build,  "scons_tools"))
+    os.symlink(os.path.join(relimppath, "SConstruct"), os.path.join(path_to_build, "SConstruct"))
+    os.symlink(os.path.join(relimppath, "scons_tools"), os.path.join(path_to_build,  "scons_tools"))
     config= open(os.path.join(os.path.split(sys.argv[0])[0], "sample_config.py"), "r").read()
-    config=config.replace("path_to_source", imppath)
+    config=config.replace("path_to_source", relimppath)
     open(os.path.join(path_to_build,"config.py"), "w").write(config)
+    oldconfig="cxxcompiler='/dev/null'\n"
+    cmd="cd "+imppath+"; scons -c"
+    print "Cleaning up source directory:", cmd
+    sp=subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT)
+    ret=sp.wait()
+    open(os.path.join(imppath, "config.py"), "w").write(oldconfig)
 
 if __name__ == '__main__':
     main()
