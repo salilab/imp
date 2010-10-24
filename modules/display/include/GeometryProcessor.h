@@ -46,6 +46,10 @@ protected:
                        Color, std::string) {
     return false;
   }
+  virtual bool process(LabelGeometry *,
+                       Color, std::string) {
+    return false;
+  }
   virtual bool process(EllipsoidGeometry *,
                        Color, std::string) {
     return false;
