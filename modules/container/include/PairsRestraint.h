@@ -62,6 +62,8 @@ public:
   //! Get the container used to store Particles
   ParticlePairsTemp get_arguments() const;
 
+  PairContainer* get_container() const;
+
   PairScore* get_score() const;
 #else
   IMP_OBJECT(PairsRestraint);

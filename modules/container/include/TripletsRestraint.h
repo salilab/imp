@@ -62,6 +62,8 @@ public:
   //! Get the container used to store Particles
   ParticleTripletsTemp get_arguments() const;
 
+  TripletContainer* get_container() const;
+
   TripletScore* get_score() const;
 #else
   IMP_OBJECT(TripletsRestraint);
