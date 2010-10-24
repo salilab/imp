@@ -174,7 +174,6 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::set<ParticlePair> existings(particle_pairs_begin(),
                                      particle_pairs_end());
-    std::cout << existings.size() << std::endl;
     for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
         XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
