@@ -12,6 +12,7 @@ files = [
          'Writer.cpp',
          'geometry.cpp',
          'particle_geometry.cpp',
+         'restraint_geometry.cpp',
         ] \
         + SConscript('internal/SConscript')
 
