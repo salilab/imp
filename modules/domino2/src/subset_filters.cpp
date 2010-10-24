@@ -31,9 +31,9 @@ namespace {
     Pointer<const ModelSubsetEvaluatorTable> keepalive_;
     const internal::SubsetData &data_;
     double max_;
-#if IMP_BUILD < IMP_FAST
+    /*#if IMP_BUILD < IMP_FAST
     mutable IMP::internal::Set<SubsetState> called_;
-#endif
+    #endif*/
   public:
     RestraintScoreSubsetFilter(const ModelSubsetEvaluatorTable *t,
                                const internal::SubsetData &data,
@@ -49,7 +49,7 @@ namespace {
   };
 
   bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
-    IMP_IF_CHECK(USAGE) {
+    /*IMP_IF_CHECK(USAGE) {
       IMP_USAGE_CHECK(called_.find(state)
                       == called_.end(),
                       "Already called with " << state << " for "
@@ -57,7 +57,7 @@ namespace {
 #if IMP_BUILD < IMP_FAST
       called_.insert(state);
 #endif
-    }
+}*/
     IMP_OBJECT_LOG;
     set_was_used(true);
     const bool ok=data_.get_is_ok(state, max_);
