@@ -288,7 +288,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   RigidBody ret=internal_setup_particle(p, rms);
   rms[0].get_rigid_body().add_member(ret);
   set_constraint(new UpdateRigidBodyMembers(),
-                  new AccumulateRigidBodyDerivatives(), p);
+                 new AccumulateRigidBodyDerivatives(), p);
   return ret;
 }
 
@@ -381,6 +381,11 @@ void RigidBody::update_members() {
     RigidBody rb(rm);
     rb.lazy_set_reference_frame(algebra::ReferenceFrame3D(tr
                                      *rm.get_internal_transformation()));
+  }
+  for (unsigned int i=0; i< 3; ++i) {
+    get_particle()->set_value(internal::rigid_body_data().torque_[0], 0);
+    get_particle()->set_value(internal::rigid_body_data().torque_[1], 0);
+    get_particle()->set_value(internal::rigid_body_data().torque_[2], 0);
   }
 }
 
@@ -522,6 +527,15 @@ void RigidBody
   }
 }
 
+algebra::Vector3D RigidBody::get_torque() const {
+  algebra::Vector3D ret;
+  for (unsigned int i=0; i< 3; ++i) {
+    ret[i]
+      =get_particle()->get_derivative(internal::rigid_body_data().torque_[i]);
+  }
+  return ret;
+}
+
 void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
@@ -531,12 +545,18 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv,
   algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int j=0; j< 4; ++j) {
     algebra::VectorD<3> v= rot.get_derivative(local, j);
-    q[j]+= deriv*v;
+    q[j]= deriv*v;
   }
   XYZ::add_to_derivatives(deriv, da);
   for (unsigned int j=0; j< 4; ++j) {
     get_particle()->add_to_derivative(internal::rigid_body_data()
                                          .quaternion_[j], q[j],da);
+  }
+  algebra::Vector3D torque= algebra::get_vector_product(local, deriv)
+    + get_torque();
+  for (unsigned int i=0; i< 3; ++i) {
+    get_particle()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                      torque[i], da);
   }
 }
 
