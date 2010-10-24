@@ -93,4 +93,19 @@ IMP_DISPLAY_GEOMETRY_DEF(PolygonGeometry, std::vector<algebra::VectorD<3> >);
 IMP_DISPLAY_GEOMETRY_DEF(TriangleGeometry, std::vector<algebra::VectorD<3> >);
 
 
+Geometries LabelGeometry::get_components() const {
+  return Geometries(1, const_cast<LabelGeometry*>(this));
+}
+
+LabelGeometry::LabelGeometry(const algebra::Sphere3D &loc,
+                             std::string text): Geometry(""),
+                                                loc_(loc), text_(text){}
+LabelGeometry::LabelGeometry(const algebra::Vector3D &loc,
+                             std::string text): Geometry(""),
+                                                loc_(loc, 0),
+                                                text_(text){}
+
+void LabelGeometry::do_show(std::ostream &out) const {
+  out << "label: " << get_text() << std::endl;
+}
 IMPDISPLAY_END_NAMESPACE
