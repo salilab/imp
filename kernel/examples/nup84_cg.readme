@@ -1,1 +1,1 @@
-A somewhat more involved example than chain which uses the atom module to manipulate and restraint coarse grained representations of proteins.
+Use connectivity data taken from the Nup84 complex to provide coarse grained structure models of the complex. This example shows a (simple) full IMP modeling protocol from choice of representation and scoring to sampling and clustering and analysis of the solutions. The data and representation is similar to that of the \ref nup84_complex_in_bead_representation "Nup845 example" in IMP.restrainer.
