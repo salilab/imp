@@ -76,6 +76,21 @@ IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
                                        algebra::BoundingBoxD<3>);
 
+//! A text label for a ball in space
+/* You can use the offset if the thing being labeled has a radius.
+ */
+class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
+  algebra::Sphere3D loc_;
+  std::string text_;
+ public:
+  LabelGeometry(const algebra::Sphere3D &loc,
+                std::string text);
+  LabelGeometry(const algebra::Vector3D &loc,
+                std::string text);
+  std::string get_text() const {return text_;}
+  const algebra::Sphere3D& get_location() const {return loc_;}
+  IMP_GEOMETRY(LabelGeometry);
+};
 
 IMPDISPLAY_END_NAMESPACE
 
