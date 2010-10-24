@@ -61,6 +61,10 @@ public:
     return ss_;
   }
 
+  TripletContainer* get_container() const {
+    return pc_;
+  }
+
   Restraints get_decomposition() const;
 };
 

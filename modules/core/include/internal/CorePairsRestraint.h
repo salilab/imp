@@ -61,6 +61,10 @@ public:
     return ss_;
   }
 
+  PairContainer* get_container() const {
+    return pc_;
+  }
+
   Restraints get_decomposition() const;
 };
 
