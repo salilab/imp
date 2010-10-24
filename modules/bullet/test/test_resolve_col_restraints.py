@@ -40,8 +40,10 @@ class AngleRestraintTests(IMP.test.TestCase):
 
     def create(self):
         m= IMP.Model()
-        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                                      IMP.algebra.Vector3D(5,5,5))
+        m.set_log_level(IMP.SILENT)
+        m.set_gather_statistics(True)
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(2,2,2),
+                                      IMP.algebra.Vector3D(4,4,4))
         ps=[]
         rps=[]
         for i in range(0,0):
@@ -53,7 +55,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             rps.append(p)
             d.set_radius(2)
             print d
-        for i in range(0,1):
+        for i in range(0,3):
             rbp= IMP.Particle(m)
             rbp.set_name("rb"+str(i))
             rbps=[]
@@ -76,16 +78,25 @@ class AngleRestraintTests(IMP.test.TestCase):
             IMP.core.RigidBody.setup_particle(rbp, rbps).set_coordinates_are_optimized(True)
         r= IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(ps))
         m.add_restraint(r)
-        return (m, bb, ps)
-    def display(self, ps, i):
+        return (m, bb, ps, rps)
+    def display(self, ps, i, cr=None):
         w= IMP.display.PymolWriter(self.get_tmp_file_name("rigcol."+str(i)+".pym"))
         for i,p in enumerate(ps):
             g= IMP.display.XYZRGeometry(IMP.core.XYZR(p))
             g.set_color(IMP.display.get_display_color(i))
             w.add_geometry(g)
-    def test_rcor(self):
+        g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 6))
+        g.set_name("inner")
+        w.add_geometry(g)
+        g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 18))
+        g.set_name("outer")
+        w.add_geometry(g)
+        if cr:
+            g= IMP.display.ConnectivityRestraintGeometry(cr)
+            w.add_geometry(g)
+    def test_rcor2(self):
         """Test basic ResolveCollision optimization with rigid bodies and restraints"""
-        (m, bb, ps)= self.create()
+        (m, bb, ps, rps)= self.create()
         l= IMP.container.ListSingletonContainer(ps)
         inner= IMP.container.SingletonsRestraint(IMP.core.DistanceToSingletonScore(IMP.core.HarmonicLowerBound(6, 1), IMP.algebra.Vector3D(0,0,0)), l)
         m.add_restraint(inner)
@@ -96,7 +107,38 @@ class AngleRestraintTests(IMP.test.TestCase):
         opt.set_xyzrs(ps)
         for i in range(0,100):
             self.display(ps, i)
-            opt.optimize(1);
+            opt.optimize(10);
+            m.show_restraint_score_statistics()
+            print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
+        self.assertEqual(self.count_hits(ps), 0)
+    def test_rcor(self):
+        """Test basic ResolveCollision optimization with rigid bodies and more restraints"""
+        (m, bb, ps, rps)= self.create()
+        l= IMP.container.ListSingletonContainer(ps)
+        inner= IMP.container.SingletonsRestraint(IMP.core.DistanceToSingletonScore(IMP.core.HarmonicLowerBound(6, 1), IMP.algebra.Vector3D(0,0,0)), l)
+        m.add_restraint(inner)
+        outer= IMP.container.SingletonsRestraint(IMP.core.DistanceToSingletonScore(IMP.core.HarmonicUpperBound(18, 1), IMP.algebra.Vector3D(0,0,0)), l)
+        m.add_restraint(outer)
+        #r= IMP.core.PairRestraint(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0, 10)),
+        #                          (IMP.core.RigidBody(rps[-1]).get_members()[0],
+        #                           IMP.core.RigidBody(rps[-1]).get_members()[1]))
+
+        #hps= IMP.core.HarmonicSphereDistancePairScore(0,1)
+        hps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))
+        tr= IMP.core.TableRefiner()
+        tr.add_particle(rps[-1], IMP.core.RigidBody(rps[-1]).get_members())
+        tr.add_particle(rps[-2], IMP.core.RigidBody(rps[-2]).get_members())
+        sc= IMP.container.ListSingletonContainer([rps[-1], rps[-2]])
+        r= IMP.core.ConnectivityRestraint(IMP.core.KClosePairsPairScore(hps, tr, 1),
+                                         sc)
+        m.add_restraint(r)
+        print "intesections:", self.count_hits(ps),"annulus:",self.count_annulus(ps)
+        opt= IMP.bullet.ResolveCollisionsOptimizer(m)
+        opt.set_xyzrs(ps)
+        for i in range(0,100):
+            self.display(ps, i, r)
+            opt.optimize(10);
+            m.show_restraint_score_statistics()
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
         self.assertEqual(self.count_hits(ps), 0)
 
