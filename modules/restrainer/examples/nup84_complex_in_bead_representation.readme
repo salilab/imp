@@ -1,4 +1,4 @@
-This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display.
+This example shows basic modeling of Nup84 complex using bead representation. On the following figures, we see XML input files for the representation, restraint, optimization and display. See \ref nup84_cg "Nup84 coarse grained" example in the kernel for a non-restrainer version of this example.
 
 \include nup84_representation.xml
 
