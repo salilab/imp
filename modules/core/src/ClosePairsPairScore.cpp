@@ -84,19 +84,25 @@ namespace {
   }
 }
 
-double ClosePairsPairScore::evaluate(const ParticlePair &p,
-                                     DerivativeAccumulator *da) const
-{
+
+ParticlePairsTemp
+ClosePairsPairScore::get_close_pairs(const ParticlePair &p) const {
   ParticlePairsTemp ppt;
   Floats dists;
   ParticlesTemp ps0= expand(p[0], r_), ps1= expand(p[1], r_);
   fill_close_pairs(cpf_, th_, p, ps0, ps1, ppt);
-  return do_evaluate(ppt, f_, da);
+  return ppt;
+}
+
+double ClosePairsPairScore::evaluate(const ParticlePair &p,
+                                     DerivativeAccumulator *da) const
+{
+  return do_evaluate(get_close_pairs(p), f_, da);
 }
 
 
-double KClosePairsPairScore::evaluate(const ParticlePair &p,
-                                     DerivativeAccumulator *da) const {
+ParticlePairsTemp KClosePairsPairScore::
+get_close_pairs(const ParticlePair &p) const {
   //double mr= std::max(max_radius(psa), max_radius(psb));
   ParticlePairsTemp ppt;
   ParticlesTemp ps0= expand(p[0],r_), ps1= expand(p[1], r_);
@@ -121,7 +127,7 @@ double KClosePairsPairScore::evaluate(const ParticlePair &p,
     last_distance_= dist*.5;
   }
   ParticlePairsTemp retps;
-  for (unsigned int i=0; i < ms.size(); ++i) {
+  for (int i=0; i < k_; ++i) {
     retps.push_back(ms[i].second);
   }
   IMP_INTERNAL_CHECK(retps.size()==static_cast<unsigned int>(k_),
@@ -142,7 +148,12 @@ double KClosePairsPairScore::evaluate(const ParticlePair &p,
       }
     }
   }
-  return do_evaluate(retps, f_, da);
+  return retps;
+}
+
+double KClosePairsPairScore::evaluate(const ParticlePair &p,
+                                     DerivativeAccumulator *da) const {
+  return do_evaluate(get_close_pairs(p), f_, da);
 }
 namespace {
   ParticlesTemp do_get_input_particles(Particle *p,
