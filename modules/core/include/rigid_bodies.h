@@ -161,6 +161,8 @@ public:
   void add_to_derivatives(const algebra::Vector3D &derivative,
                           const algebra::Vector3D &local_location,
                           DerivativeAccumulator &da);
+
+  algebra::Vector3D get_torque() const;
 #endif
 
   bool get_coordinates_are_optimized() const;
