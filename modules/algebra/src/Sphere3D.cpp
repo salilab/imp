@@ -9,6 +9,7 @@
 #include <cmath>
 #ifdef IMP_USE_CGAL
 #include <IMP/cgal/internal/bounding_sphere.h>
+#include <IMP/cgal/internal/union_of_balls.h>
 #endif
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -41,5 +42,13 @@ SphereD<3> get_enclosing_sphere(const std::vector<VectorD<3> > &vs) {
   }
   return get_enclosing_sphere(ss);
 }
+
+#ifdef IMP_USE_CGAL
+std::pair<double, double>
+get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
+  return IMP::cgal::internal::get_surface_area_and_volume(ss);
+}
+#endif
+
 
 IMPALGEBRA_END_NAMESPACE
