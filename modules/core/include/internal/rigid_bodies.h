@@ -18,6 +18,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 struct RigidBodyData {
   FloatKeys child_keys_;
   FloatKeys quaternion_;
+  FloatKeys torque_;
   FloatKeys lquaternion_;
   HierarchyTraits htraits_;
   HierarchyTraits hbtraits_;
@@ -34,6 +35,10 @@ struct RigidBodyData {
     quaternion_[1]= FloatKey((pre+"quaternion_1").c_str());
     quaternion_[2]= FloatKey((pre+"quaternion_2").c_str());
     quaternion_[3]= FloatKey((pre+"quaternion_3").c_str());
+    torque_.resize(3);
+    torque_[0]= FloatKey((pre+"torque_0").c_str());
+    torque_[1]= FloatKey((pre+"torque_1").c_str());
+    torque_[2]= FloatKey((pre+"torque_2").c_str());
     lquaternion_.resize(4);
     lquaternion_[0]= FloatKey((pre+"local_quaternion_0").c_str());
     lquaternion_[1]= FloatKey((pre+"local_quaternion_1").c_str());
@@ -92,6 +97,9 @@ get_has_required_attributes_for_body_member(Particle *p) {
 inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().quaternion_[i], 0);
+  }
+  for (unsigned int i=0; i< 3; ++i) {
+    p->add_attribute(rigid_body_data().torque_[i], 0);
   }
   if (!Hierarchy::particle_is_instance(p, rigid_body_data().htraits_)) {
     Hierarchy::setup_particle(p, rigid_body_data().htraits_);
