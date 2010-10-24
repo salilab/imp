@@ -33,7 +33,7 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
 {
   friend class CGOAnimationWriter;
   void setup(std::string name);
-  void cleanup(std::string name);
+  void cleanup(std::string name, bool close=true);
   bool process(SphereGeometry *g,
                Color color, std::string name);
   bool process(CylinderGeometry *g,
@@ -45,6 +45,8 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
   bool process(PolygonGeometry *g,
                Color color, std::string name);
   bool process(TriangleGeometry *g,
+               Color color, std::string name);
+  bool process(LabelGeometry *g,
                Color color, std::string name);
 
 public:

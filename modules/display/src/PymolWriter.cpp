@@ -22,7 +22,7 @@ namespace {
 
 void PymolWriter::on_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
-  get_stream() << "data= {}\n";
+  get_stream() << "from pymol.vfont import plain\ndata= {}\n";
 }
 
 void PymolWriter::on_close() {
@@ -30,14 +30,17 @@ void PymolWriter::on_close() {
 }
 
 
-void PymolWriter::cleanup(std::string name){
-  get_stream() << "]\n";
+void PymolWriter::cleanup(std::string name, bool close){
+  if (close) get_stream() << "]\n";
   get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
   get_stream() << "if k in data.keys():\n"
                << "  data[k]= data[k]+curdata\nelse:\n"
                << "  data[k]= curdata\n\n";
 }
 void PymolWriter::setup(std::string name){
+  if (name.empty()) {
+    name="unnamed";
+  }
   get_stream() << "k= '" << strip_quotes(name) << "'\n";
   get_stream() << "if not k in data.keys():\n"
                << "   data[k]=[]\n";
@@ -60,6 +63,23 @@ bool PymolWriter::process(SphereGeometry *g,
                << g->get_radius() << ",\n";
   cleanup(name);
 
+  return true;
+}
+bool PymolWriter::process(LabelGeometry *g,
+                          Color color, std::string name) {
+  setup(name);
+  write_color(get_stream(), color);
+  get_stream() << "  ]\ncyl_text(curdata,plain, ["
+               << g->get_location().get_center()[0]
+    + g->get_location().get_radius() << ", "
+               << g->get_location().get_center()[1]
+    +g->get_location().get_radius() << ", "
+               << g->get_location().get_center()[2]
+    + g->get_location().get_radius()
+               << "], '" << g->get_text() << "', 0.05,"
+               << " axes=[[1,0,0],[0,1,0],[0,0,1]])"
+               << "\n";
+  cleanup(name, false);
   return true;
 }
 bool PymolWriter::process(CylinderGeometry *g,
