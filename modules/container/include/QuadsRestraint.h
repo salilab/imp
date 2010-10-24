@@ -62,6 +62,8 @@ public:
   //! Get the container used to store Particles
   ParticleQuadsTemp get_arguments() const;
 
+  QuadContainer* get_container() const;
+
   QuadScore* get_score() const;
 #else
   IMP_OBJECT(QuadsRestraint);
