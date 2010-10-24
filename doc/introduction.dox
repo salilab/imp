@@ -204,13 +204,24 @@ close pairs. Constraints are updated as part of the IMP::Model::evaluate().
 score evaluation.</em> In order to ensure that all constraints hold, call
 IMP::Model::evaluate() before inspecting the particles.
 
-Once the representation and scoring are set up, one needs to find good conformations of
-the model. This is done via IMP::Optimizer and IMP::Sampler-derived classes. The former
-takes the current state of the model and tries to change it so that the score improves. The latter, run more involved sampling algorithms and return an IMP::ConfigurationSet which
-allows one to inspect the found conformations. The process of optimization or sampling
-can be observed and influenced via IMP::OptimizerState objects. The most generally useful
-of these write the optimization steps to files so that the process can be observed (eg
-IMP::atom::WritePDBOptimizerState).
+Once the representation and scoring are set up, one needs to find good
+conformations of the model. This is done via IMP::Optimizer and
+IMP::Sampler-derived classes. The former takes the current state of
+the model and tries to change the optimized attributes it so that the
+score improves (an optimized attribute is a float attribute where
+IMP::Particle::get_is_optimized() returns true). The latter, run more
+involved sampling algorithms and return an IMP::ConfigurationSet which
+allows one to inspect the found conformations. The process of
+optimization or sampling can be observed and influenced via
+IMP::OptimizerState objects. The most generally useful of these write
+the optimization steps to files so that the process can be observed
+(eg IMP::atom::WritePDBOptimizerState). The set of attributes which
+are manipulated by the optimizers are controlled by setting the
+optimized flag using IMP::Particle::set_is_optimized() or a decorator
+method such as IMP::core::XZYR::set_coordinates_are_optimized(). Certain
+attributes which are computed as functions of other attributes should
+never be set as optimized. Examples include the x,y,z coordinates of
+members of a rigid body.
 
 Finally, the found conformations should be analyzed. These conformations would typically be stored in an IMP::ConformationSet. The conformations can be clustered via the
 IMP::statistics::get_lloyds_kmeans() function coupled with an IMP::statistics::ConfigurationSetXYZEmbedding. Alternatively, they can be exported
