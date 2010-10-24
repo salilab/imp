@@ -61,6 +61,10 @@ public:
     return ss_;
   }
 
+  CLASSNAMEContainer* get_container() const {
+    return pc_;
+  }
+
   Restraints get_decomposition() const;
 };
 

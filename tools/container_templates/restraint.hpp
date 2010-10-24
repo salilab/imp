@@ -62,6 +62,8 @@ public:
   //! Get the container used to store Particles
   PLURALVARIABLETYPE get_arguments() const;
 
+  CLASSNAMEContainer* get_container() const;
+
   CLASSNAMEScore* get_score() const;
 #else
   IMP_OBJECT(CLASSNAMEsRestraint);
