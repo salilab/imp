@@ -35,6 +35,8 @@ public:
   KClosePairsPairScore(PairScore *f, Refiner *r,
                       int k=1);
 
+  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
+
   IMP_PAIR_SCORE(KClosePairsPairScore);
 };
 
@@ -59,6 +61,8 @@ public:
    */
   ClosePairsPairScore(PairScore *f, Refiner *r,
                       Float max_distance);
+
+  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
 
   IMP_PAIR_SCORE(ClosePairsPairScore);
 };
