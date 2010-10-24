@@ -31,7 +31,7 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
     c= g->get_color();
     has_color=true;
   }
-  if (name == std::string()) {
+  if (name.empty()) {
     name= g->get_name();
   }
   HANDLE(SphereGeometry);
@@ -42,6 +42,7 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
   HANDLE(SegmentGeometry);
   HANDLE(PolygonGeometry);
   HANDLE(TriangleGeometry);
+  HANDLE(LabelGeometry);
   HANDLE(Geometry);
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
