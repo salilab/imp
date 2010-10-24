@@ -15,6 +15,7 @@ files = [
          'display_macros.h',
          'geometry.h',
          'particle_geometry.h',
+         'restraint_geometry.h',
         ] \
         + SConscript('internal/SConscript')
 
