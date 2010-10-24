@@ -37,7 +37,7 @@ IMPBULLET_BEGIN_NAMESPACE
 #define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
 namespace {
 
-  const double damping=.5;
+  const double damping=.8;
   btRigidBody *add_endpoint(btRigidBody *rb,
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
@@ -426,12 +426,19 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
         // need to handle rigid bodies
         btTransform xform;
         it->second->getMotionState()->getWorldTransform (xform);
+        if (core::RigidBody::particle_is_instance(it->first)) {
+          core::RigidBody d(it->first);
+          if (d.get_coordinates_are_optimized()
+              && d.get_torque().get_squared_magnitude() >0) {
+            it->second->applyTorque(xform
+                                    *internal::tr(-d.get_torque()));
+          }
+          }
         core::XYZ d(it->first);
         if (d.get_coordinates_are_optimized()
             && d.get_derivatives().get_squared_magnitude() >0) {
-          it->second->applyCentralForce(xform.inverse()
-                                        *internal::tr(-100
-                                                      *d.get_derivatives()));
+          it->second->applyCentralForce(xform
+                                        *internal::tr(-d.get_derivatives()));
         }
       }
     }
