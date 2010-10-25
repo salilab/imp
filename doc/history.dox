@@ -1,5 +1,16 @@
 /** \page recent Change History
 
+\par Fall 2010
+- IMP::atom::Selection was added to allow specification of parts of IMP::atom::Hierarchy using biological sorts of names. A few functions to create restraints from them were added too.
+- a new example was added in the kernel to show \imp used on a biological system
+- IMP::display::PymolWriter now supports adding labels to things
+- IMP::display::PairRestraintGeometry and IMP::display::ConnectivityRestraintGeometry were added to aid in visualizing those restraints.
+- IMP::bullet was added with an optimizer to use hard body physics to resolve local collisions.
+- IMP::atom::setup_as_rigid_body() has been deprecated and replaced by IMP::atom::create_rigid_body(). The latter creates the rigid body as a separtate particle so that the molecular hierarchy doesn't have to worry about having its bounding sphere large enough to enclose all the members.
+- IMP::core::KClosePairsPairScore was added to have count based cutoffs for close pair scoring.
+- IMP::algebra::get_surface_area_and_volume() was added to compute the two numbers for a set of balls
+- Two examples were added to the kernel, \ref nup84_cg "Nup84 CG" and \ref nup84_rb "Nup84 RB" which illustrate the usage of many aspects of \imp.
+
 \par Summer 2010
 - The IMP::core::RigidDistancePairScore and IMP::core::ClosePairsPairScore have been revised to remove certain inconsistencies and ambiguities and to make them faster. Existing code using them will need to be minorly tweaked to work.
 - Javi added his 2D EM scoring functionality as IMP::em2D
