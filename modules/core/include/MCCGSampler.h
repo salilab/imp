@@ -50,6 +50,7 @@ class IMPCOREEXPORT MCCGSampler : public Sampler
   };
   Parameters default_parameters_;
   bool is_refining_;
+  Pointer<ConfigurationSet> rejected_;
 
   Parameters fill_in_parameters() const;
   void randomize(const Parameters &pms,
@@ -86,6 +87,15 @@ public:
 
   //! Set a local optimizer to use instead of ConjugateGradients
   void set_local_optimizer(Optimizer *opt);
+
+  //! Whether or not to save rejected conformations
+  /**
+     Saving these can be useful if the sampling is not finding
+     any good conformations.
+   */
+  void set_save_rejected_configurations(bool tf);
+
+  ConfigurationSet* get_rejected_configurations() const;
 
   /** \name Optimizer states
       The optimizer states will be added to the MonteCarlo optimizer

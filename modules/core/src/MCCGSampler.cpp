@@ -330,18 +330,33 @@ void MCCGSampler::set_local_optimizer(Optimizer *opt) {
   default_parameters_.local_opt_=opt;
 }
 
+void MCCGSampler::set_save_rejected_configurations(bool tf) {
+  if (tf && !rejected_) {
+    rejected_= new ConfigurationSet(get_model(), "Rejected");
+  } else if (!tf) {
+    rejected_=NULL;
+  }
+}
+
+ConfigurationSet* MCCGSampler::get_rejected_configurations() const {
+  return rejected_;
+}
+
 
 ConfigurationSet *MCCGSampler::do_sample() const {
   IMP_OBJECT_LOG;
+  LogLevel mll(static_cast<LogLevel>(std::max(0, IMP::get_log_level()-1)));
   set_was_used(true);
   //get_model()->set_is_incremental(true);
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
   IMP_NEW(MonteCarlo, mc, (get_model()));
+  //mc->set_log_level(mll);
   mc->set_stop_on_good_score(true);
   mc->add_optimizer_states(OptimizerStatesTemp(optimizer_states_begin(),
                                                optimizer_states_end()));
   mc->set_local_optimizer(pms.local_opt_);
+  pms.local_opt_->set_log_level(mll);
   mc->set_local_steps(pms.cg_steps_);
   mc->set_return_best(true);
   Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
@@ -383,6 +398,9 @@ ConfigurationSet *MCCGSampler::do_sample() const {
     } else {
       IMP_LOG(TERSE, "Rejected configuration with score "
               << get_model()->evaluate(false) << std::endl);
+      if (rejected_) {
+        rejected_->save_configuration();
+      }
     }
   }
   if (failures != 0) {
