@@ -185,6 +185,10 @@ typedef IMP::Decorators< Hierarchy,
     - all Atoms has a Residue for as parent
     - any Atom with a non-heterogen atom type is part of a protein,
     DNA or RNA molecule.
+    - all Residue children of a particle appear in order based
+      on their index
+    - all Atom children in of a particle appear in order of their
+      AtomType
 
     The information contained at a given level is assumed to be a
     a more detailed representation of higher up the tree. That is,
@@ -430,13 +434,14 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 /** The rigid body created has all the leaves as members and a
     member rigid body for each internal node in the tree.
 
-    \note any existing coordinates and radii for internal nodes
-    are overwritten.
-
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
+IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
+
+#ifndef IMP_DOXYGEN
 IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
+#endif
 
 //! Return true if the piece of hierarchy should be classified as a heterogen
 /** For the purposes of classification, a heterogen is anything that

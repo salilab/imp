@@ -191,6 +191,50 @@ namespace {
             TEST_FAIL("Atom " << a << " is not part of residue");
           }
         }
+        /*if (h.get_parent_index()==0) {
+          Hierarchy p= h.get_parent();
+          if (p) {
+            AtomType last=AT_UNKNOWN;
+            for (unsigned int i=0; i< p.get_number_of_children(); ++i) {
+              Hierarchy c= p.get_child(i);
+              if (!c.get_as_atom()) {
+                TEST_FAIL("Child " << c << " is not an atom but should be.");
+              }
+              Atom ac= c.get_as_atom();
+              AtomType cur= ac.get_atom_type();
+              if (cur < last) {
+                TEST_FAIL("Atoms out of order in residue " << p);
+              }
+              last=cur;
+            }
+          }
+          }*/
+      }
+      if (h.get_as_residue()) {
+        if (h.get_parent_index()==0
+            && (Residue(h).get_is_protein()
+                || Residue(h).get_is_dna()
+                || Residue(h).get_is_rna())){
+          Hierarchy p= h.get_parent();
+          if (p) {
+            int last_index= std::numeric_limits<int>::min();
+            for (unsigned int i=0; i< p.get_number_of_children(); ++i) {
+              Hierarchy c= p.get_child(i);
+              if (!c.get_as_residue()) {
+                TEST_FAIL("Sibling of residue is not residue at " << c);
+              }
+              Residue rc(c);
+              if (Residue(h).get_is_protein()
+                || Residue(h).get_is_dna()
+                  || Residue(h).get_is_rna()) {
+                if (rc.get_index() <= last_index) {
+                  TEST_FAIL("Residue indexes out of order at " << rc);
+                }
+                last_index=rc.get_index();
+              }
+            }
+          }
+        }
       }
       if (h.get_parent() != Hierarchy()) {
         Hierarchy p = h.get_parent();
@@ -311,6 +355,25 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
       if (!leaves.empty()) {
         core::RigidBody::setup_particle(internal[i], rbd, leaves);
       }
+    }
+  }
+  return rbd;
+}
+
+core::RigidBody create_rigid_body(Hierarchy h) {
+  core::XYZs leaves(get_leaves(h));
+  Particle *rbp= new Particle(h->get_model());
+  rbp->set_name(h->get_name()+" rigid body");
+  core::RigidBody rbd
+    = core::RigidBody::setup_particle(rbp, leaves);
+  rbd.set_coordinates_are_optimized(true);
+  Particles internal= core::get_internal(h);
+  for (unsigned int i=0; i< internal.size(); ++i) {
+    core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
+    if (!leaves.empty()) {
+      Particle *rbp= new Particle(h->get_model());
+      rbp->set_name(internal[i]->get_name()+" rigid body");
+      core::RigidBody::setup_particle(rbp, rbd, leaves);
     }
   }
   return rbd;
