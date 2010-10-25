@@ -27,7 +27,7 @@ IMP.atom.destroy(mp0)
 mp1= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 
 # make this one rigid
-IMP.atom.setup_as_rigid_body(mp1)
+IMP.atom.create_rigid_body(mp1)
 
 # create a hierarchy which contains the two proteins
 p = IMP.Particle(m)
