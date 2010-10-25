@@ -28,8 +28,9 @@ class Volume(IMP.test.TestCase):
         mc= MonteCarlo(m)
         mc.add_mover(BallMover(sc, 4))
         mc.set_local_optimizer( ConjugateGradients(m))
+        mc.set_local_steps(10)
         mc.set_score_threshold(.2)
-        mc.optimize(1000)
+        mc.optimize(10)
         self.assertLess(m.evaluate(False), .2)
     def test_volume_2(self):
         """Testing that volume restraint can change radius"""
@@ -54,7 +55,7 @@ class Volume(IMP.test.TestCase):
         #c.set_threshold(1)
         c= ConjugateGradients(m)
         c.set_score_threshold(.1)
-        c.optimize(1000)
+        c.optimize(20)
         print d
         self.assertAlmostEqual(d.get_radius(), 5, delta=.1)
 
