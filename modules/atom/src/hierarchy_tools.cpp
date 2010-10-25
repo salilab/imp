@@ -212,6 +212,8 @@ IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
 IMPATOMEXPORT Hierarchy
 create_simplified_along_backbone(Chain in,
                             const IntRanges& residue_segments) {
+  IMP_USAGE_CHECK(in.get_is_valid(true), "Chain " << in
+                  << " is not valid.");
   if (in.get_number_of_children() ==0 || residue_segments.empty()) {
     IMP_LOG(TERSE, "Nothing to simplify in " << (in? in->get_name(): "NULL")
             << " with " << residue_segments.size() << " segments.\n");
