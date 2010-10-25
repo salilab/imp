@@ -38,7 +38,50 @@ namespace {
 
 PDBSelector::~PDBSelector(){}
 
+struct IndexCompare {
+  bool operator()(Particle* a, Particle* b) const {
+    return Residue(a).get_index() < Residue(b).get_index();
+  }
+};
+
+struct TypeCompare {
+  bool operator()(Particle* a, Particle* b) const {
+    return Atom(a).get_atom_type() < Atom(b).get_atom_type();
+  }
+};
+
 namespace {
+
+  void sort_residues(Chain c) {
+    HierarchiesTemp dchildren =c.get_children();
+    ParticlesTemp children(dchildren.begin(), dchildren.end());
+    std::sort(children.begin(), children.end(), IndexCompare());
+    c.clear_children();
+    for (unsigned int i=0; i< children.size(); ++i) {
+      c.add_child(Hierarchy(children[i]));
+    }
+  }
+  void sort_atoms(Residue c) {
+    HierarchiesTemp dchildren =c.get_children();
+    ParticlesTemp children(dchildren.begin(), dchildren.end());
+    std::sort(children.begin(), children.end(), TypeCompare());
+    c.clear_children();
+    for (unsigned int i=0; i< children.size(); ++i) {
+      c.add_child(Hierarchy(children[i]));
+    }
+  }
+
+  void canonicalize(Hierarchy h) {
+    for (unsigned int i=0; i < h.get_number_of_children(); ++i) {
+      canonicalize(h.get_child(i));
+    }
+    if (h.get_as_chain()) {
+      sort_residues(h.get_as_chain());
+    }
+    /*if (h.get_as_residue()) {
+      sort_atoms(h.get_as_residue());
+      }*/
+  }
 
   // try putting the numbers after
   std::string try_rename(std::string str) {
@@ -279,6 +322,9 @@ namespace {
     IMP_WARN("Sorry, unable to read atoms from PDB file."
              " Thanks for the effort.");
     return Hierarchies();
+  }
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    canonicalize(ret[i]);
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< ret.size(); ++i) {
