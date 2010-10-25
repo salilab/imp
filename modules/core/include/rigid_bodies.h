@@ -71,6 +71,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
                            const algebra::ReferenceFrame3D &rf, bool cover);
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
+  void on_change();
   IMP_CONSTRAINT_DECORATOR_DECL(RigidBody);
 public:
 
