@@ -823,6 +823,9 @@ protection:                                                             \
    }                                                                    \
  }                                                                      \
  void clear_##plural() {                                                \
+   for (unsigned int i=0; i< get_number_of_##plural(); ++i) {           \
+     instance_traits.on_remove(get_particle(), get_##name(i));          \
+   }                                                                    \
    instance_traits.clear(get_particle());                               \
  }                                                                      \
  IMP_REQUIRE_SEMICOLON_CLASS(array##Name)
