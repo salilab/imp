@@ -15,6 +15,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/core/FixedRefiner.h>
+#include <IMP/core/internal/rigid_body_tree.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 const RigidBodyData &rigid_body_data() {
@@ -26,25 +27,6 @@ IMPCORE_BEGIN_NAMESPACE
 
 
 namespace {
-
-
-
-  void cover_rigid_body(core::RigidBody d, const XYZs &members) {
-    double md=0;
-    for (unsigned int i=0; i< members.size(); ++i) {
-      double cd= (d.get_coordinates()
-                  -members[i].get_coordinates()).get_magnitude();
-      if (members[i]->has_attribute(XYZR::get_default_radius_key())) {
-        cd+= members[i]->get_value(XYZR::get_default_radius_key());
-      }
-      md=std::max(cd, md);
-    }
-    if (d->has_attribute(XYZR::get_default_radius_key())) {
-      d->set_value(XYZR::get_default_radius_key(), md);
-    } else {
-      d->add_attribute(XYZR::get_default_radius_key(), md);
-    }
-  }
 
 
 
@@ -222,6 +204,27 @@ Matrix compute_I(const XYZs &ds,
 
 IMP_CONSTRAINT_DECORATOR_DEF(RigidBody);
 
+void RigidBody::on_change() {
+   double md=0;
+   for (unsigned int i=0; i< get_number_of_members(); ++i) {
+     double cd= (get_coordinates()
+                 -get_member(i).get_coordinates()).get_magnitude();
+     if (get_member(i)->has_attribute(XYZR::get_default_radius_key())) {
+       cd+= get_member(i)->get_value(XYZR::get_default_radius_key());
+     }
+     md=std::max(cd, md);
+   }
+   if (get_particle()->has_attribute(XYZR::get_default_radius_key())) {
+     get_particle()->set_value(XYZR::get_default_radius_key(), md);
+   } else {
+     get_particle()->add_attribute(XYZR::get_default_radius_key(), md);
+   }
+   if (get_particle()
+       ->has_attribute(internal::get_rigid_body_hierarchy_key())) {
+     get_particle()->remove_attribute(internal::get_rigid_body_hierarchy_key());
+   }
+   get_particle()->get_model()->reset_dependencies();
+}
 
 RigidBody RigidBody::internal_setup_particle(Particle *p,
                                              const XYZs &members) {
@@ -278,7 +281,6 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   d.set_reference_frame(algebra::ReferenceFrame3D(
                                 algebra::Transformation3D(rot, v)));
   IMP_LOG(VERBOSE, "Particle is " << d << std::endl);
-  cover_rigid_body(d, members);
   return d;
 }
 
@@ -289,6 +291,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   rms[0].get_rigid_body().add_member(ret);
   set_constraint(new UpdateRigidBodyMembers(),
                  new AccumulateRigidBodyDerivatives(), p);
+  ret.on_change();
   return ret;
 }
 
@@ -300,7 +303,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
     d.add_member_internal(members[i], d.get_reference_frame(), false);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
-
+  d.on_change();
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     RigidMembers ds(members);
     for (unsigned int i=0; i< ds.size(); ++i) {
@@ -336,6 +339,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
     d.add_member(members[i]);
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
+  d.on_change();
   set_constraint(new UpdateRigidBodyMembers(),
                  new AccumulateRigidBodyDerivatives(), p);
   return d;
@@ -436,6 +440,7 @@ RigidMember RigidBody::get_member(unsigned int i) const {
 
 void RigidBody::add_member(XYZ d) {
   add_member_internal(d, get_reference_frame(), true);
+  on_change();
 }
 
 void RigidBody::add_member_internal(XYZ d, const algebra::ReferenceFrame3D &ref,
@@ -447,7 +452,6 @@ void RigidBody::add_member_internal(XYZ d, const algebra::ReferenceFrame3D &ref,
   hd.add_child(hc);
   algebra::VectorD<3> lc=ref.get_local_coordinates(d.get_coordinates());
   cm.set_internal_coordinates(lc);
-  if (cover) cover_rigid_body(*this, get_members());
 }
 
 void RigidBody::add_member(RigidBody d) {
@@ -462,7 +466,7 @@ void RigidBody::add_member(RigidBody d) {
     =r.get_transformation_from()
     *d.get_reference_frame().get_transformation_to();
   cm.set_internal_transformation(tr);
-  cover_rigid_body(*this, get_members());
+  on_change();
 }
 
 algebra::VectorD<4> RigidBody::get_rotational_derivatives() const {
