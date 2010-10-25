@@ -1,6 +1,6 @@
 /**
  *  \file hierarchy_tools.h
- *  \brief functionality for defining rigid bodies
+ *  \brief A set of useful functionality on IMP::atom::Hierarchy decorators
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -150,10 +150,16 @@ class IMPATOMEXPORT Selection {
     terminus_=NONE;
   }
   Selection(Hierarchy h): h_(1, h){
+    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
+                    << " is not valid.");
     radius_=-1;
     terminus_=NONE;
   }
   Selection(Hierarchies h): h_(h){
+    for (unsigned int i=0; i< h.size(); ++i) {
+      IMP_USAGE_CHECK(h[i].get_is_valid(true), "Hierarchy " << h[i]
+                    << " is not valid.");
+    }
     radius_=-1;
     terminus_=NONE;
   }
@@ -163,6 +169,8 @@ class IMPATOMEXPORT Selection {
         int residue_index): h_(h), molecules_(1,molname),
     residue_indices_(1, residue_index),
     radius_(-1), terminus_(NONE){
+    IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
+                    << " is not valid.");
   }
   Hierarchies get_hierarchies() const {
     return h_;
