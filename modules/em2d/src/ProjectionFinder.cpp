@@ -135,7 +135,7 @@ void ProjectionFinder::get_coarse_registration() {
               has_higher_ccc);
     // Best result
     registration_results_[i]=subject_RRs[0];
-    registration_results_[i].set_in_image(*subjects_[i]);
+    registration_results_[i].set_in_image(subjects_[i]->get_header());
 
     IMP_LOG(IMP::VERBOSE,"Coarse registration results for subject : "
                                                             << std::endl);
@@ -150,7 +150,7 @@ void ProjectionFinder::get_coarse_registration() {
       em::apply_Transformation2D(projections_[index]->get_data(),
                           best_transformation,match->get_data(),true);
       em::normalize(*match,true);
-      registration_results_[i].set_in_image(*match);
+      registration_results_[i].set_in_image(match->get_header());
       std::ostringstream strm;
       strm << "coarse_match-" << i << ".spi";
       match->write_to_floats(strm.str(),srw);
@@ -293,7 +293,7 @@ void ProjectionFinder::get_complete_registration() {
     registration_results_[i]=subject_RRs[0];
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
-      subject_RRs[k].set_in_image(*subjects_[i]);
+      subject_RRs[k].set_in_image(subjects_[i]->get_header());
       fine2d->set_subject_image(*subjects_[i]);
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
@@ -309,10 +309,12 @@ void ProjectionFinder::get_complete_registration() {
     if(save_match_images_) {
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
+//      generate_projection(*match,model_particles_,registration_results_[i],
+//                    resolution_,apix_,srw,&masks_manager_,false,strm.str());
       generate_projection(*match,model_particles_,registration_results_[i],
-                    resolution_,apix_,srw,&masks_manager_,false,strm.str());
+                    resolution_,apix_,srw,false,&masks_manager_,strm.str());
       em::normalize(*match,true);
-      registration_results_[i].set_in_image(*match);
+      registration_results_[i].set_in_image(match->get_header());
       match->write_to_floats(strm.str(),srw);
     }
     // ++show_progress;

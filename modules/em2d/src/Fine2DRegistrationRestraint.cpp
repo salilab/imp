@@ -19,7 +19,7 @@ void Fine2DRegistrationRestraint::initialize(
                        double resolution,
                        double pixelsize,
                        Model *scoring_model,
-                       MasksManager *masks) {
+                       OldMasksManager *masks) {
 
   IMP_LOG(IMP::TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
   ps_ = ps;
@@ -28,7 +28,7 @@ void Fine2DRegistrationRestraint::initialize(
   // Generate all the projection masks for the structure
   if(masks==NULL) {
     // Create the masks
-    masks_ = new MasksManager(resolution,pixelsize);
+    masks_ = new OldMasksManager(resolution,pixelsize);
     masks_->generate_masks(ps);
   } else {
     masks_= masks;

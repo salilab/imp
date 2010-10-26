@@ -120,12 +120,12 @@ void autocorrelation2D_no_preprocessing(const cv::Mat& M, cv::Mat& corr) {
   IMP_LOG(IMP::VERBOSE,
               "Computing 2D autocorrelation no preprocessing" <<std::endl);
   IMP_USAGE_CHECK(((M.rows!=0) && (M.cols !=0)),
-     "em2d:autocorrelation2D: Output matrix has not rows or cols");
+     "em2d:autocorrelation2D: Output matrix is empty");
   cv::Mat temp;
   cv::mulSpectrums(M,M, temp,0,true);
   cv::dft(temp, temp, cv::DFT_INVERSE + cv::DFT_SCALE, corr.rows);
   temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
-  matrix_to_image_flip(corr);
+  //matrix_to_image_flip(corr);
 }
 
 
@@ -206,6 +206,50 @@ void correlation2D_no_preprocessing(const cv::Mat& M1,
   matrix_to_image_flip(corr);
 }
 
+
+void spectrum(const cv::Mat& m, cv::Mat& real,cv::Mat &imag) {
+  cv::Size dftSize;
+  // compute the optimal size for faster DFT transform
+  dftSize.width = cv::getOptimalDFTSize(m.cols);
+  dftSize.height = cv::getOptimalDFTSize(m.rows);
+  // temporary
+
+  cv::Mat real_temp(dftSize, m.type(), cv::Scalar::all(0));
+  cv::Mat roiA(real_temp, cv::Rect(0,0,m.cols,m.rows));
+
+  // Shift to get a centered spectrum
+  for ( int i=0;i<m.rows;++i) {
+    for ( int j=0;j<m.cols;++j) {
+      if((i+j)%2 == 1) { // the sum is an odd number
+        roiA.at<double>(i,j) = (-1) *m.at<double>(i,j);
+      } else {
+        roiA.at<double>(i,j) = m.at<double>(i,j);
+      }
+    }
+  }
+
+  cv::Mat imag_temp(dftSize,m.type(),cv::Scalar::all(0.0));
+  // Merge and dft
+  cv::Mat temp,TEMP;
+  cv::Mat imgs[]= { real_temp,imag_temp };
+  cv::merge(imgs,2,temp);
+  cv::dft(temp, TEMP,cv::DFT_COMPLEX_OUTPUT,m.rows);
+  // Real and imaginary
+  // recover real part from the first channel
+  // both source and destination matrices must be allocateda
+  int rows = temp.rows;
+  int cols=  temp.cols;
+  cv::Mat TEMP_1st_channel(rows,cols,m.type()); // real
+  cv::Mat TEMP_2nd_channel(rows,cols,m.type()); // imag
+  cv::Mat output[] = { TEMP_1st_channel,TEMP_2nd_channel };
+  const int fromTo[] = { 0,0 , 1,1 };// see mixChannels help, continuous numbers
+  cv::mixChannels(&TEMP,1,output,2, fromTo, 2);
+  // resize the output arrays if needed
+  real.create(m.rows,m.cols, m.type());
+  imag.create(m.rows,m.cols, m.type());
+  TEMP_1st_channel(cv::Rect(0, 0, real.cols,real.rows)).copyTo(real);
+  TEMP_2nd_channel(cv::Rect(0, 0, imag.cols,imag.rows)).copyTo(imag);
+}
 
 
 void matrix_to_image_flip(cv::Mat &m) {

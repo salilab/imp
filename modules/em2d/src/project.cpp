@@ -5,6 +5,8 @@
 */
 
 #include "IMP/em2d/project.h"
+#include "IMP/em2d/CenteredMat.h"
+#include "IMP/em2d/Image.h"
 #include "IMP/em2d/internal/rotation_helper.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Vector2D.h"
@@ -38,6 +40,27 @@ em::Images generate_projections(const ParticlesTemp &ps,
                     pixelsize,srw,project_and_save,names);
 }
 
+em2d::Images generate_projections(const ParticlesTemp &ps,
+                    const algebra::SphericalVector3Ds vs,
+                    int rows, int cols,
+                    double resolution, double pixelsize,
+                    em2d::ImageReaderWriter<double> &srw,
+                    bool project_and_save,
+                    Strings names) {
+  IMP_LOG(IMP::VERBOSE,
+            "Generating projections from spherical vectors" << std::endl);
+  unsigned long n_projs= vs.size();
+  RegistrationResults registration_values(n_projs);
+  for (unsigned long i=0;i<n_projs;++i) {
+    algebra::Rotation3D R=
+        em2d::internal::get_rotation_from_projection_direction(vs[i]);
+    algebra::Vector2D shift(0.0,0.0);
+    RegistrationResult rr(R,shift);
+    registration_values[i]=rr;
+  }
+  return generate_projections(ps,registration_values,rows,cols,resolution,
+                    pixelsize,srw,project_and_save,names);
+}
 
 
 em::Images generate_projections(const ParticlesTemp &ps,
@@ -50,7 +73,7 @@ em::Images generate_projections(const ParticlesTemp &ps,
   unsigned long n_projs= registration_values.size();
   em::Images projections(n_projs);
   // Precomputation of all the possible projection masks for the particles
-  MasksManager masks(resolution,pixelsize);
+  OldMasksManager masks(resolution,pixelsize);
   masks.generate_masks(ps);
   for (unsigned long i=0;i<n_projs;++i) {
     IMP_NEW(em::Image,img,());
@@ -58,27 +81,80 @@ em::Images generate_projections(const ParticlesTemp &ps,
     String name="";
     if(project_and_save) { name = names[i]; } // deal with name only if saving
     generate_projection(*img,ps,registration_values[i],
-                resolution,pixelsize,srw,&masks,project_and_save,name);
+                resolution,pixelsize,srw,project_and_save,&masks,name);
+    projections.set(i,img);
+  }
+  return projections;
+}
+
+em2d::Images generate_projections(const ParticlesTemp &ps,
+                    RegistrationResults registration_values,
+                    int rows, int cols,
+                    double resolution, double pixelsize,
+                    em2d::ImageReaderWriter<double> &srw,
+                    bool project_and_save,
+                    Strings names) {
+  IMP_LOG(IMP::VERBOSE,
+          "Generating projections from registraion results" << std::endl);
+
+  unsigned long n_projs= registration_values.size();
+  em2d::Images projections(n_projs);
+  // Precomputation of all the possible projection masks for the particles
+  Masks_Manager masks(resolution,pixelsize);
+  masks.generate_masks(ps);
+  for (unsigned long i=0;i<n_projs;++i) {
+    IMP_NEW(em2d::Image,img,());
+    img->resize(rows,cols);
+    String name="";
+    if(project_and_save) { name = names[i]; } // deal with name only if saving
+    generate_projection(*img,ps,registration_values[i],
+                resolution,pixelsize,srw,project_and_save,&masks,name);
     projections.set(i,img);
   }
   return projections;
 }
 
 
+
 void generate_projection(em::Image &img,const ParticlesTemp &ps,
             RegistrationResult &reg,
             double resolution, double pixelsize,
-           em::ImageReaderWriter<double> &srw,MasksManager *masks,
-           bool save_image,String name) {
+           em::ImageReaderWriter<double> &srw,bool save_image,
+           OldMasksManager *masks,String name) {
   if(masks==NULL) {
-    masks = new MasksManager(resolution,pixelsize);
+    masks = new OldMasksManager(resolution,pixelsize);
     masks->generate_masks(ps);
   }
   algebra::Vector3D translation = pixelsize*reg.get_shift3D();
   algebra::Rotation3D R = reg.get_rotation();
   project_particles(ps,img.get_data(),R,translation,resolution,pixelsize,masks);
   em::normalize(img,true);
-  reg.set_in_image(img);
+  reg.set_in_image(img.get_header());
+  img.get_header().set_object_pixel_size(pixelsize);
+  if(save_image) {
+    img.write_to_floats(name,srw);
+  }
+}
+
+
+void generate_projection(em2d::Image &img,const ParticlesTemp &ps,
+            RegistrationResult &reg,
+            double resolution, double pixelsize,
+           em2d::ImageReaderWriter<double> &srw,bool save_image,
+           Masks_Manager *masks,String name) {
+  IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
+
+  if(masks==NULL) {
+    masks = new Masks_Manager(resolution,pixelsize);
+    masks->generate_masks(ps);
+  }
+  IMP_LOG(IMP::VERBOSE, "Masks generated from generate_projection()"
+                                                                << std::endl);
+  algebra::Vector3D translation = pixelsize*reg.get_shift3D();
+  algebra::Rotation3D R = reg.get_rotation();
+  project_particles(ps,img.get_data(),R,translation,resolution,pixelsize,masks);
+  em2d::normalize(img,true);
+  reg.set_in_image(img.get_header());
   img.get_header().set_object_pixel_size(pixelsize);
   if(save_image) {
     img.write_to_floats(name,srw);
@@ -91,10 +167,10 @@ void project_particles(const ParticlesTemp &ps,
              algebra::Rotation3D &R,
              algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManager *masks) {
+             OldMasksManager *masks) {
   if(masks==NULL) {
     // Create the masks
-    masks = new MasksManager(resolution,pixelsize);
+    masks = new OldMasksManager(resolution,pixelsize);
     masks->generate_masks(ps);
   }
   // clear data before creating a new projection
@@ -124,13 +200,56 @@ void project_particles(const ParticlesTemp &ps,
     double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
     double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
     // Apply mask
-    ProjectionMask* mask = masks->find_mask(xyzr.get_radius());
+    OldProjectionMask* mask = masks->find_mask(xyzr.get_radius());
     algebra::Vector2D pix(pix_x,pix_y);
     mask->apply(m2,pix,mass.get_mass());
   }
   // Restore origin
   m2.set_start(0,orig2D[0]);
   m2.set_start(1,orig2D[1]);
+}
+
+
+void project_particles(const ParticlesTemp &ps,
+             cv::Mat &m2,
+             algebra::Rotation3D &R,
+             algebra::Vector3D &translation,
+             double resolution, double pixelsize,
+             Masks_Manager *masks) {
+  IMP_LOG(IMP::VERBOSE,"Projecting particles in a openCV matrix" << std::endl);
+  if(m2.empty()) {
+    IMP_THROW("Cannot project on a empty matrix",ValueException);
+  }
+  if(masks==NULL) {
+    // Create the masks
+    masks = new Masks_Manager(resolution,pixelsize);
+    masks->generate_masks(ps);
+  }
+  // Centroid
+  unsigned long n_particles = ps.size();
+  algebra::Vector3D centroid(0.0,0.0,0.0);
+  for (unsigned long i=0; i<n_particles; i++) {
+    core::XYZ xyz(ps[i]);
+    centroid += xyz.get_coordinates();
+  }
+  centroid /= n_particles;
+  // clear data before creating a new projection
+  m2.setTo(0.0);
+  // Project
+  for (unsigned long i=0; i<n_particles; i++) {
+    // Coordinates respect to the centroid
+    core::XYZR xyzr(ps[i]);
+    atom::Mass mass(ps[i]);
+    algebra::Vector3D p=xyzr.get_coordinates()-centroid;
+    // Pixel after trasformation to project in Z axis
+    // Not necessary to compute pz, is going to be ignored
+    double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
+    double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
+    // Apply mask
+    Projection_Mask* mask = masks->find_mask(xyzr.get_radius());
+    algebra::Vector2D pix(pix_x,pix_y);
+    mask->apply(m2,pix,mass.get_mass());
+  }
 }
 
 
@@ -189,7 +308,7 @@ em::Images generate_projections(em::DensityMap &map,
     RegistrationResult reg(R,shift);
     project_map(map,img->get_data(),rows,cols,reg,1e-6);
     // Write image
-    reg.set_in_image(*img);
+    reg.set_in_image(img->get_header());
     images.set(i,img);
     if(project_and_save) {
      img->write_to_floats(names[i],srw);
@@ -348,5 +467,7 @@ void project_map(em::DensityMap &map,
   map.update_voxel_size(voxelsize);
   map.set_origin(orig3D);
 }
+
+
 
 IMPEM2D_END_NAMESPACE

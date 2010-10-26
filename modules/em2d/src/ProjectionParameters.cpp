@@ -58,40 +58,41 @@ void ProjectionParameters::set_proper_ranges_for_keys(Model *m,
 }
 
 
-void ProjectionParametersSS::do_before_evaluate() {
+void ProjectionParametersScoreState::do_before_evaluate() {
   // Nothing here
 }
 
 
-void ProjectionParametersSS::do_after_evaluate(DerivativeAccumulator *accpt) {
+void ProjectionParametersScoreState::do_after_evaluate(
+                                                DerivativeAccumulator *accpt) {
   // Nothing here yet
 }
 
-void ProjectionParametersSS::do_show(std::ostream& out) const {
+void ProjectionParametersScoreState::do_show(std::ostream& out) const {
   // Dummy line, nothing here
-  out << "ProjectionParametersSS" << std::endl;
+  out << "ProjectionParametersScoreState" << std::endl;
 }
 
-ParticlesTemp ProjectionParametersSS::get_input_particles() const {
+ParticlesTemp ProjectionParametersScoreState::get_input_particles() const {
   // simply return the particle with the projection parameters
   ParticlesTemp used;
   used.push_back(proj_params_);
   return used;
 }
 
-ParticlesTemp ProjectionParametersSS::get_output_particles() const {
+ParticlesTemp ProjectionParametersScoreState::get_output_particles() const {
   // simply return the particle with the projection parameters
   ParticlesTemp used;
   used.push_back(proj_params_);
   return used;
 }
 
-ContainersTemp ProjectionParametersSS::get_input_containers() const {
+ContainersTemp ProjectionParametersScoreState::get_input_containers() const {
   ContainersTemp ot;
   return ot;
 }
 
-ContainersTemp ProjectionParametersSS::get_output_containers() const {
+ContainersTemp ProjectionParametersScoreState::get_output_containers() const {
   // Nothing here in this case
   ContainersTemp ot;
   return ot;
