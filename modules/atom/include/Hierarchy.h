@@ -105,11 +105,14 @@ typedef IMP::Decorators< Hierarchy,
 
 //! The standard decorator for manipulating molecular structures.
 /** \imp represents molecular structures using the Hierachy decorator.
-    Using it, molecules and collections of molecules are represented
-    using a hierarchy (or tree) where the level of detail increases
-    as you move further from the root. The leaves of the tree have
-    coordinates, as can internal nodes if the molecules are represented
-    at multiple resolutions.
+    Molecules and collections of molecules each are stored as a
+    hierarchy (or tree) where the resolution of the representation increases
+    as you move further from the root. That is, if a parent has
+    some particular property (eg, marks out a volume by having
+    a x,y,z coordinates and a radius), then the children should have
+    a higher resolution form of that information (eg, mark out a more
+    detailed excluded volume by defining a set of balls which having
+    approximately the same total volume).
 
     \section tree_basics Tree Basics
     In a tree you have a set of nodes, represented by Hierarchy particles.
@@ -145,10 +148,9 @@ typedef IMP::Decorators< Hierarchy,
     }
 
 
-    The hierarchy can be used to add extra, not-necessarily
-    biological, structure such as domains or other convenient
-    divisions of the molecule. For example, the protein node could
-    have an intermediate layer between it and the first two residues:
+    The nodes in the hierarchy can correspond to arbitrary bits of a
+    molecule and do not need to have any biological significant. For
+    example we could introduce a fragment containing residues 0 and 1:
     \dotgraph{\dot
     digraph example {
     node [shape=record\, fontname= Helvetica\, fontsize=10]
@@ -190,21 +192,17 @@ typedef IMP::Decorators< Hierarchy,
     - all Atom children in of a particle appear in order of their
       AtomType
 
-    The information contained at a given level is assumed to be a
-    a more detailed representation of higher up the tree. That is,
-    the nodes under a Domain node must contain all the residue indexes
-    listed for the Domain. And a given residue must not be
-    represented in more than one of a set of sibling nodes. Likewise,
-    if a Domain node has a ball associated with it, that is assumed
-    to be a coarser representation of the domain the that of all
-    the leaves of the subtree.
-
-    The get_is_valid() method checks some of these.
+    The get_is_valid() method checks some of these properties. Any
+    method taking a hierarchy as an argument should do
+    \code
+    IMP_USAGE_CHECK(h.get_is_valid(), "Invalid hierarchy as input");
+    \endcode
+    to make sure the hierarchy makes sense.
 
     A number of decorator types are associated with the Hierarchy
     to store the information associated with that node in the
     hierarchy. Examples include Residue, Atom, XYZ, Chain, XYZR,
-    Mass, Domain etc.
+    Mass, Domain, Molecule etc.
     We provide a get_as_x() function for each such decorator which
     returns either X() (a null type) if the node is not a particle
     of type x, or an X decorator wrapping the current particle if
