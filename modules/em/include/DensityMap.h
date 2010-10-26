@@ -590,9 +590,9 @@ IMPEMEXPORT DensityMap* binarize(DensityMap *orig_map,
 //! m1[i]*m2[i]. The function assumes m1 and m2 are of the same dimensions.
 IMPEMEXPORT DensityMap* multiply(const DensityMap *m1,
                                  const DensityMap *m2);
-//! Return a convolution between density maps a and b.
-//! The function assumes a and b are of the same dimensions.
-IMPEMEXPORT double convolute(const DensityMap *a,const DensityMap *b);
+//! Return a convolution between density maps m1 and m2.
+//! The function assumes m1 and m2 are of the same dimensions.
+IMPEMEXPORT double convolute(const DensityMap *m1,const DensityMap *m2);
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_DENSITY_MAP_H */
