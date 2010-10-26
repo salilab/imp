@@ -208,6 +208,9 @@ Atom Atom::setup_particle(Particle *p, AtomType t) {
     Hierarchy::setup_particle(p);
   }
   p->add_attribute(get_element_key(), UNKNOWN_ELEMENT);
+  p->add_attribute(get_occupancy_key(), 1.00);
+  p->add_attribute(get_tempFactor_key(), 0.00);
+
   Atom ret(p);
   Mass::setup_particle(p, 0);
   ret.set_atom_type(t);
@@ -253,6 +256,16 @@ IntKey Atom::get_element_key() {
 
 IntKey Atom::get_input_index_key() {
   static IntKey k("pdb_atom_index");
+  return k;
+}
+
+IntKey Atom::get_occupancy_key() {
+  static IntKey k("occupancy");
+  return k;
+}
+
+IntKey Atom::get_tempFactor_key() {
+  static IntKey k("tempFactor");
   return k;
 }
 

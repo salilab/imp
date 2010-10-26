@@ -418,6 +418,8 @@ void write_pdb(const Particles& ps, TextOutput out)
                                      chain,
                                      rd.get_index(),
                                      rd.get_insertion_code(),
+                                     ad.get_occupancy(),
+                                     ad.get_tempFactor(),
                                      ad.get_element());
 
       if (!out) {
@@ -461,7 +463,8 @@ void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 std::string pdb_string(const algebra::VectorD<3>& v, int index,
                        AtomType at, ResidueType rt,
                        char chain, int res_index,
-                       char res_icode, Element e) {
+                       char res_icode, double occupancy,
+                       double tempFactor,Element e) {
   std::stringstream out;
   std::string atom_name = at.get_string();
   if (atom_name.find("HET:")==0) {
@@ -522,11 +525,11 @@ std::string pdb_string(const algebra::VectorD<3>& v, int index,
   //55:60 occupancy
   out.width(6);
   out.precision(2);
-  out << ""; //TODO
+  out << occupancy;
   //61-66: temp. factor
   out.width(6);
   out.precision(2);
-  out << ""; //TODO
+  out << tempFactor;
   // 73 - 76  LString(4)      Segment identifier, left-justified.
   out.width(10);
   out << ""; //TODO

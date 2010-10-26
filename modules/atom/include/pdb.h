@@ -333,6 +333,8 @@ IMPATOMEXPORT std::string pdb_string(const algebra::VectorD<3>& v,
                                      char chain = ' ',
                                      int res_index = 1,
                                      char res_icode = ' ',
+                                     double occpancy = 1.00,
+                                     double tempFactor = 0.00,
                                      Element e = C);
 
 /**
