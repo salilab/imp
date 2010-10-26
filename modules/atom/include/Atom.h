@@ -262,6 +262,22 @@ public:
   void set_element(Element e);
 #endif
 
+  double get_occupancy() const {
+    return  get_particle()->get_value(get_occupancy_key());
+  }
+
+  void set_occupancy(double occupancy) {
+    get_particle()->set_value(get_occupancy_key(),occupancy);
+  }
+
+  double get_tempFactor() const {
+    return  get_particle()->get_value(get_tempFactor_key());
+  }
+
+  void set_tempFactor(double tempFactor) {
+    get_particle()->set_value(get_tempFactor_key(),tempFactor);
+  }
+
   /** @name The atom index in the input file
       This index is not necessarily unique over any particular
       set of atoms and so should never be used as an atom identifier
@@ -283,6 +299,12 @@ public:
   static IntKey get_element_key();
 
   static IntKey get_input_index_key();
+
+  static IntKey get_occupancy_key();
+
+  static IntKey get_tempFactor_key();
+
+
   //! @}
 };
 
