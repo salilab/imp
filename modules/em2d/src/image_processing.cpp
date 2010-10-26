@@ -590,35 +590,24 @@ void histogram_stretching(algebra::Matrix2D_d &m,
 }
 
 
-void get_histogram(const cv::Mat &m, cv::MatND &hist, int bins) {
+std::vector<double> get_histogram(em2d::Image &img, int bins) {
+  return get_histogram(img.get_data(),bins);
+}
 
-  const int histSize[] = {bins};
-  hist.create(1,histSize,CV_64F);
-//  hist.create(3, histSize, CV_32F);
-
-
-  // and clear it
-  hist = cv::Scalar(0);
+std::vector<double> get_histogram(const cv::Mat &m, int bins) {
+  std::vector<double> histogram(bins);
   // Step
   double min,max;
   cv::minMaxLoc(m, &min,&max,NULL,NULL);
   double step = (max-min)/(double)bins;
   double n_points= (double)m.rows*(double)m.cols;
-
   for(cv::MatConstIterator_<double> it = m.begin<double>();
-    it != m.end<double>(); ++it ) {
-      double aux = *it;
-      hist.at<double>((aux-min)/step) += 1.f/n_points;
+            it != m.end<double>(); ++it ) {
+    int index = floor((*it -min)/step);
+    histogram[index] += 1.f/n_points;
   }
-
-//  for(unsigned int i = 0; i<hist.size[0]; ++i) {
-//    double var = min+i*step;
-//    std::cout << "variance = "  << var << " freq = "
-//      << hist.at<double>(i) << std::endl;
-//  }
+  return histogram;
 }
-
-
 
 
 void apply_variance_filter(em2d::Image &input,

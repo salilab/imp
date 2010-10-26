@@ -35,4 +35,19 @@ void subtract_images(Image &first,em2d::Image &second,
   result.set_data(result_matrix);
 }
 
+
+void normalize(Image &im,bool force) {
+  if(!im.get_header().is_normalized() || force==true ) {
+    normalize(im.get_data());
+    im.get_header().set_fImami(1);
+    im.get_header().set_fAv(0.0);
+    im.get_header().set_fSig(1.0);
+    double minVal,maxVal;
+    cv::minMaxLoc(im.get_data(),&minVal,&maxVal);
+    im.get_header().set_fFmin(minVal);
+    im.get_header().set_fFmax(maxVal);
+  }
+}
+
+
 IMPEM2D_END_NAMESPACE
