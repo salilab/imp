@@ -77,6 +77,17 @@ inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
                          get_zero_vector_d<3>())/ps.size();
 }
 
+//! Return the radius of gyration of a set of points
+inline double get_radius_of_gyration(const std::vector<VectorD<3> > &ps) {
+  algebra::Vector3D centroid= get_centroid(ps);
+  double rg = 0;
+  for (unsigned int i = 0; i < ps.size(); i++) {
+    rg += get_squared_distance(ps[i], centroid);
+  }
+  rg /= ps.size();
+  return sqrt(rg);
+}
+
 /** @} */
 
 IMPALGEBRA_END_NAMESPACE
