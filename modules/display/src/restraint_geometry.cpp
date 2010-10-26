@@ -24,9 +24,9 @@ IMPDISPLAY_BEGIN_NAMESPACE
   }
 
 PairRestraintGeometry::PairRestraintGeometry(Restraint*r):
-  Geometry(r_->get_name()),
+  Geometry(r->get_name()),
   r_(r) {
-  set_name(r_->get_name());
+  IMP_CHECK_OBJECT(r);
   IMP_PROCESS(core::PairRestraint,
               pc_= new container::ListPairContainer(ParticlePairsTemp(1,
                                     cr->get_argument()));)
@@ -40,6 +40,7 @@ PairRestraintGeometry::PairRestraintGeometry(Restraint*r):
 
 
 IMP::display::Geometries PairRestraintGeometry::get_components() const {
+  IMP_CHECK_OBJECT(r_);
   IMP::display::Geometries ret;
   bool non_empty=false;
   algebra::Vector3D mp;
@@ -73,6 +74,7 @@ ConnectivityRestraintGeometry
 
 
 IMP::display::Geometries ConnectivityRestraintGeometry::get_components() const {
+  IMP_CHECK_OBJECT(r_);
   IMP::display::Geometries ret;
   PairScore *ps= r_->get_pair_score();
   ParticlePairsTemp edges= r_->get_connected_pairs();
