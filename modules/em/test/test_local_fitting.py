@@ -4,7 +4,6 @@ import IMP.em
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.helper
 
 class LocalFittingTest(IMP.test.TestCase):
     """Test local fitting functions"""
