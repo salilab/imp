@@ -3,8 +3,6 @@ import IMP.test
 import IMP.core
 import IMP.algebra
 import IMP.atom
-import IMP.helper
-
 
 class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
     def test_alignment_without_rigid_body(self):
