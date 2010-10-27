@@ -30,7 +30,14 @@ class Volume(IMP.test.TestCase):
         mc.set_local_optimizer( ConjugateGradients(m))
         mc.set_local_steps(10)
         mc.set_score_threshold(.2)
-        mc.optimize(10)
+        for i in range(5):
+            try:
+                mc.optimize(10)
+                if m.evaluate(False) < .2:
+                    break
+            except IMP.ValueException:
+                # Catch CG failure
+                pass
         self.assertLess(m.evaluate(False), .2)
     def test_volume_2(self):
         """Testing that volume restraint can change radius"""
