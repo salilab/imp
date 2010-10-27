@@ -8,7 +8,7 @@
 
 #include <IMP/multifit/SingleDominoRun.h>
 #include <IMP/multifit/weighted_excluded_volume.h>
-#include <IMP/helper/simplify_restraint.h>
+#include <IMP/restrainer/simplify_restraint.h>
 #include <IMP/multifit/fitting_tools.h>
 #include <IMP/domino/RestraintEvaluator.h>
 #include <IMP/domino/Transformation.h>
@@ -77,8 +77,8 @@ void SingleDominoRun::set_restraints(
       core::RigidBodies rbs;
       rbs.push_back(core::RigidBody(ps[0]));
       rbs.push_back(core::RigidBody(ps[1]));
-      helper::SimpleExcludedVolume simple_ev =
-        helper::create_simple_excluded_volume_on_rigid_bodies(rbs);
+      restrainer::SimpleExcludedVolume simple_ev =
+        restrainer::create_simple_excluded_volume_on_rigid_bodies(rbs);
       mdl_->add_restraint(simple_ev.get_restraint());
       if (re != NULL) {
         std::string r_fn = rg.get_pairwise_filename(ps[0],ps[1]);
@@ -98,8 +98,8 @@ void SingleDominoRun::set_restraints(
                   p->get_name()<<std::endl);
       Particles ps;
       ps.push_back(p);
-    helper::SimpleEMFit simple_fit=
-       helper::create_simple_em_fit(*it,dmap_);
+    restrainer::SimpleEMFit simple_fit=
+       restrainer::create_simple_em_fit(*it,dmap_);
     mdl_->add_restraint(simple_fit.get_restraint());
     if (re != NULL) {
       std::string r_fn = rg.get_single_filename(p);

@@ -3,7 +3,7 @@ import IMP.test
 import sys
 import IMP.em
 import IMP.multifit
-import IMP.helper
+import IMP.restrainer
 import os
 import time
 
