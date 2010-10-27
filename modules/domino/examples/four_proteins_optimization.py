@@ -1,7 +1,7 @@
 import IMP
 import IMP.domino
 import IMP.core
-import IMP.helper
+import IMP.restrainer
 import random,math
 NUM_STATES=5
 
@@ -44,8 +44,8 @@ def setup_restraints(mhs):
         my_ps.append(mhs[j].get_particle())
         my_rbs.append(IMP.core.RigidBody(my_ps[0]))
         my_rbs.append(IMP.core.RigidBody(my_ps[0]))
-        rsrs.append([IMP.helper.create_simple_distance(my_ps),
-        #rsrs.append([IMP.helper.create_simple_excluded_volume_on_rigid_bodies(my_rbs),
+        rsrs.append([IMP.restrainer.create_simple_distance(my_ps),
+        #rsrs.append([IMP.restrainer.create_simple_excluded_volume_on_rigid_bodies(my_rbs),
                      my_ps])
     return rsrs
 
