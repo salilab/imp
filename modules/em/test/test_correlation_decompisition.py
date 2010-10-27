@@ -4,7 +4,6 @@ import IMP.em
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.helper
 import random
 
 class CorrelationDecompistionTest(IMP.test.TestCase):

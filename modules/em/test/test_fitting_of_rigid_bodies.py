@@ -4,7 +4,6 @@ import IMP.em
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.helper
 import IMP.display
 
 class ProteinRigidFittingTest(IMP.test.TestCase):
