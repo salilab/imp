@@ -1,4 +1,0 @@
-Import('env')
-
-# Install all files in this directory as data
-env.IMPModuleData(env.IMPModuleGetData())
