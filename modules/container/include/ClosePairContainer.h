@@ -97,7 +97,6 @@ IMP_OBJECTS(ClosePairContainer,ClosePairContainers);
 */
 IMPCONTAINEREXPORT double
 get_slack_estimate(const ParticlesTemp& ps,
-                   double distance,
                    double upper_bound,
                    double step,
                    const Restraints &restraints,
