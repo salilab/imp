@@ -121,7 +121,7 @@ public:
   Subset get_subset() const {return s_;}
 };
 
-struct IMPDOMINO2EXPORT ModelData {
+struct IMPDOMINO2EXPORT ModelData: public RefCounted {
   struct SubsetID {
     const Subset s_;
     const Subsets excluded_;
@@ -161,6 +161,7 @@ struct IMPDOMINO2EXPORT ModelData {
   }
   const SubsetData &get_subset_data(const Subset &s,
                                     const Subsets &exclude=Subsets()) const;
+  IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

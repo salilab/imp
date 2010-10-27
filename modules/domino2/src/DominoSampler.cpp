@@ -74,9 +74,8 @@ SubsetStates DominoSampler
     //oss << std::endl;
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
-  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
-    = get_subset_evaluator_table_to_use();
-  SubsetFilterTables sfts= get_subset_filter_tables_to_use(set);
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
+                                             get_particle_states_table());
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 

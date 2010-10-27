@@ -1,7 +1,6 @@
 %include "IMP/domino2/domino2_macros.h"
 namespace IMP {
 namespace domino2 {
-%warnfilter(473) SubsetEvaluatorTable;
 %warnfilter(473) SubsetStatesTable;
 %warnfilter(473) SubsetFilterTable;
 %warnfilter(473,403) DiscreteSampler;
@@ -15,9 +14,6 @@ IMP_SWIG_OBJECT(IMP::domino2, DominoSampler, DominoSamplers);
 IMP_SWIG_VALUE(IMP::domino2, Subset, Subsets);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, ParticleStates, ParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino2, ParticleStatesTable, ParticleStatesTables);
-IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluator, SubsetEvaluators);
-IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetEvaluatorTable, SubsetEvaluatorTables);
-IMP_SWIG_OBJECT(IMP::domino2, ModelSubsetEvaluatorTable, ModelSubsetEvaluatorTables);
 IMP_SWIG_OBJECT(IMP::domino2, XYZsParticleStates, XYZsParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino2, JunctionTreeTable, JunctionTreeTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino2, SubsetFilter, SubsetFilters);
@@ -34,7 +30,6 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStates);
 %include "IMP/domino2/Subset.h"
 %include "IMP/domino2/SubsetState.h"
 %include "IMP/domino2/particle_states.h"
-%include "IMP/domino2/subset_evaluators.h"
 %include "IMP/domino2/subset_filters.h"
 %include "IMP/domino2/subset_states.h"
 %include "IMP/domino2/subset_graphs.h"
@@ -48,5 +43,4 @@ IMP_SWIG_VALUE(IMP::domino2, SubsetState, SubsetStates);
 
 %pythoncode %{
 DefaultSubsetStatesTable=BranchAndBoundSubsetStatesTable;
-DefaultSubsetEnumeratorTable=ModelSubsetEvaluatorTable;
 %}

@@ -27,32 +27,16 @@ IMP_LIST_IMPL(DiscreteSampler, SubsetFilterTable,
               {});
 
 
-SubsetEvaluatorTable*
-DiscreteSampler::get_subset_evaluator_table_to_use() const {
-  if (set_) return set_;
-  else {
-    IMP_NEW(ModelSubsetEvaluatorTable, mset,
-            (get_model(),get_particle_states_table()));
-    mset->set_was_used(true);
-    return mset.release();
-  }
-}
 SubsetFilterTables
 DiscreteSampler
-::get_subset_filter_tables_to_use(SubsetEvaluatorTable *set) const {
+::get_subset_filter_tables_to_use(RestraintSet *rs,
+                                  ParticleStatesTable *pst) const {
   if (get_number_of_subset_filter_tables() > 0) {
     return SubsetFilterTables(subset_filter_tables_begin(),
                               subset_filter_tables_end());
   } else {
     SubsetFilterTables sfts;
-    Pointer<ModelSubsetEvaluatorTable> mset;
-    if (dynamic_cast<ModelSubsetEvaluatorTable*>(set)) {
-      mset=dynamic_cast<ModelSubsetEvaluatorTable*>(set);
-    } else {
-      mset=new ModelSubsetEvaluatorTable(get_model(),
-                                         get_particle_states_table());
-    }
-    sfts.push_back(new RestraintScoreSubsetFilterTable(mset));
+    sfts.push_back(new RestraintScoreSubsetFilterTable(rs, pst));
     sfts.back()->set_was_used(true);
     sfts.push_back(new PermutationSubsetFilterTable
                    (get_particle_states_table()));

@@ -28,14 +28,14 @@ SubsetFilterTable::~SubsetFilterTable(){}
 namespace {
 
   class  RestraintScoreSubsetFilter: public SubsetFilter {
-    Pointer<const ModelSubsetEvaluatorTable> keepalive_;
+    Pointer<const internal::ModelData> keepalive_;
     const internal::SubsetData &data_;
     double max_;
     /*#if IMP_BUILD < IMP_FAST
     mutable IMP::internal::Set<SubsetState> called_;
     #endif*/
   public:
-    RestraintScoreSubsetFilter(const ModelSubsetEvaluatorTable *t,
+    RestraintScoreSubsetFilter(const internal::ModelData *t,
                                const internal::SubsetData &data,
                                double max):
       SubsetFilter("Restraint score filter"),
@@ -77,11 +77,11 @@ double RestraintScoreSubsetFilter::get_strength() const {
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Resraint filtration statistics (attempts, passes):\n");
-    for (unsigned int i=0; i< get()->data_.rdata_.size(); ++i) {
-      std::pair<int,int> stat= get()->data_.rdata_[i].get_statistics();
+    for (unsigned int i=0; i< get()->rdata_.size(); ++i) {
+      std::pair<int,int> stat= get()->rdata_[i].get_statistics();
       if (stat.first >0) {
         IMP_LOG(TERSE, "  \""
-                << get()->data_.rdata_[i].get_restraint()->get_name()
+                << get()->rdata_[i].get_restraint()->get_name()
                 << "\" " << stat.first << " " << stat.second << std::endl);
       }
     }
@@ -89,9 +89,18 @@ RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
 }
 
 
+
 RestraintScoreSubsetFilterTable
-::RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval):
-  mset_(eval)
+::RestraintScoreSubsetFilterTable(RestraintSet *eval,
+                                  ParticleStatesTable *pst):
+  mset_(new internal::ModelData(eval, pst))
+{
+}
+
+RestraintScoreSubsetFilterTable
+::RestraintScoreSubsetFilterTable(Model *m,
+                                  ParticleStatesTable *pst):
+  mset_(new internal::ModelData(m->get_root_restraint_set(), pst))
 {
 }
 
@@ -101,13 +110,13 @@ RestraintScoreSubsetFilterTable
                     const Subsets &excluded) const {
   set_was_used(true);
   // if there are no restraints just here, the total score can't change
-  if (mset_->data_.get_subset_data(s, excluded)
+  if (mset_->get_subset_data(s, excluded)
       .get_number_of_restraints() ==0) return NULL;
   SubsetFilter* ret
     = new RestraintScoreSubsetFilter(mset_,
-                                     mset_->data_.get_subset_data(s,
+                                     mset_->get_subset_data(s,
                                                                   excluded),
-                                     mset_->data_.get_model()
+                                     mset_->get_model()
                                      ->get_maximum_score());
   ret->set_log_level(get_log_level());
   return ret;

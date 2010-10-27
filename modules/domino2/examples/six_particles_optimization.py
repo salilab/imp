@@ -48,14 +48,12 @@ def create_discrete_states(ps):
 def create_sampler(m, pst):
     s=IMP.domino2.DominoSampler(m, pst)
     # the following lines recreate the defaults and so are optional
-    me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
-    s.set_subset_evaluator_table(me)
     filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
     filters.append(IMP.domino2.PermutationSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
-    filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(me))
+    filters.append(IMP.domino2.RestraintScoreSubsetFilterTable(m, pst))
     filters[-1].set_log_level(IMP.SILENT)
     states= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, filters);
     states.set_log_level(IMP.SILENT);

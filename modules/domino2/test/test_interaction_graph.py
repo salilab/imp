@@ -5,7 +5,7 @@ import IMP.domino2
 import IMP.core
 import IMP.atom
 import IMP.display
-import IMP.helper
+import IMP.restrainer
 import time
 
 class NullStates(IMP.domino2.ParticleStates):
