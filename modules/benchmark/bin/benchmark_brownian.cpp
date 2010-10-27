@@ -90,7 +90,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
     = SimulationParameters::setup_particle(new Particle(ret.m));
   ret.bd= new BrownianDynamics(ret.sp);
   //double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
-  ret.sp.set_maximum_time_step(640); // from test below
+  ret.sp.set_maximum_time_step(50000); // from test below is 640
   ret.all.push_back(ret.sp);
   return ret;
 }
@@ -125,7 +125,7 @@ void initialize(It it) {
   {
     std::cout << "Estimating slack " << std::endl;
     SetLogState sl(IMP::VERBOSE);
-    slack= get_slack_estimate(it.all,0, 100, 1,
+    slack= get_slack_estimate(it.all, 100, 1,
                               Restraints(1, it.m->get_root_restraint_set()),
                               true,
                               it.bd,
@@ -172,7 +172,7 @@ void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
   }
   read(in, it);
   double total=0, runtime=0;
-  int ns=1e3;
+  int ns=1000;
   if (argc >1) {
     ns=atoi(argv[1]);
   }
