@@ -132,6 +132,13 @@ IMPATOMEXPORT double get_pairwise_rmsd_score(
       const core::XYZs& mdl1 ,const core::XYZs& mdl2);
 
 
+/** Compute the radius of gyration of a set of particles with (optional)
+    radii and mass and (non-optional) coordinates. Either all particles
+    must have mass or none of them.
+*/
+IMPATOMEXPORT double get_radius_of_gyration(const ParticlesTemp &ps);
+
+
 IMPATOM_END_NAMESPACE
 
 #endif /* IMPATOM_DISTANCE_H */
