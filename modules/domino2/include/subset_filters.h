@@ -12,7 +12,6 @@
 #include "particle_states.h"
 #include "SubsetState.h"
 #include "particle_states.h"
-#include "subset_evaluators.h"
 #include "internal/restraint_evaluator.h"
 #include "Subset.h"
 #include "domino2_macros.h"
@@ -87,15 +86,18 @@ IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
  */
 class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
   public SubsetFilterTable {
-  struct StatsPrinter:public Pointer<ModelSubsetEvaluatorTable>{
+  struct StatsPrinter:public Pointer<internal::ModelData>{
   public:
-    StatsPrinter(ModelSubsetEvaluatorTable *mset):
-      Pointer<ModelSubsetEvaluatorTable>(mset){}
+    StatsPrinter(internal::ModelData *mset):
+      Pointer<internal::ModelData>(mset){}
     ~StatsPrinter();
   };
   StatsPrinter mset_;
  public:
-  RestraintScoreSubsetFilterTable(ModelSubsetEvaluatorTable *eval);
+  RestraintScoreSubsetFilterTable(RestraintSet *rs,
+                                  ParticleStatesTable *pst);
+  RestraintScoreSubsetFilterTable(Model *rs,
+                                  ParticleStatesTable *pst);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 

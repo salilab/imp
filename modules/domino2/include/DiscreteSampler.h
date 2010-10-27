@@ -12,7 +12,6 @@
 #include "domino2_config.h"
 #include "subset_states.h"
 #include "particle_states.h"
-#include "subset_evaluators.h"
 #include "subset_filters.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
@@ -55,12 +54,11 @@ class IMPDOMINO2EXPORT DiscreteSampler : public Sampler
 {
   IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
   IMP::internal::OwnerPointer<SubsetStatesTable> sst_;
-  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set_;
 #ifndef IMP_DOXYGEN
  protected:
-  SubsetEvaluatorTable* get_subset_evaluator_table_to_use() const;
   SubsetFilterTables
-    get_subset_filter_tables_to_use(SubsetEvaluatorTable *set) const;
+    get_subset_filter_tables_to_use(RestraintSet *rs,
+                                    ParticleStatesTable *pst) const;
   SubsetStatesTable*
     get_subset_states_table_to_use(const SubsetFilterTables &sfts) const;
 #endif
@@ -95,17 +93,11 @@ public:
       the module for a general description.
       @{
    */
-  void set_subset_evaluator_table(SubsetEvaluatorTable *eval) {
-    set_=eval;
-  }
   void set_particle_states_table(ParticleStatesTable *cse) {
     pst_= cse;
   }
   void set_subset_states_table(SubsetStatesTable *sst) {
     sst_=sst;
-  }
-  SubsetEvaluatorTable* get_subset_evaluator_table() const {
-    return set_;
   }
   ParticleStatesTable* get_particle_states_table() const {
     return pst_;

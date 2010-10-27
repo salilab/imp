@@ -30,10 +30,10 @@ BranchAndBoundSampler::BranchAndBoundSampler(Model *m,
 
 SubsetStates BranchAndBoundSampler
 ::do_get_sample_states(const Subset &s) const {
-  IMP::internal::OwnerPointer<SubsetEvaluatorTable> set
-    = DiscreteSampler::get_subset_evaluator_table_to_use();
   SubsetFilterTables sfts
-    = DiscreteSampler::get_subset_filter_tables_to_use(set);
+    = DiscreteSampler
+    ::get_subset_filter_tables_to_use(get_model()->get_root_restraint_set(),
+                                      get_particle_states_table());
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
   const SubsetStates ret  = sst->get_subset_states(s);

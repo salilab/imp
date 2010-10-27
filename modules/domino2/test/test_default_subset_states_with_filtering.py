@@ -4,7 +4,7 @@ import IMP.test
 import IMP.domino2
 import IMP.core
 import IMP.atom
-import IMP.helper
+import IMP.restrainer
 import IMP.algebra
 import time
 
@@ -61,8 +61,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r)
         ds= IMP.domino2.DominoSampler(m)
         m.set_maximum_score(.5)
-        me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
-        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me)
+        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(m, pst)
         dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
@@ -104,8 +103,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r1)
         m.set_maximum_score(.6)
         ds= IMP.domino2.DominoSampler(m)
-        me= IMP.domino2.ModelSubsetEvaluatorTable(m, pst)
-        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(me)
+        rssft= IMP.domino2.RestraintScoreSubsetFilterTable(m, pst)
         dsst= IMP.domino2.BranchAndBoundSubsetStatesTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
