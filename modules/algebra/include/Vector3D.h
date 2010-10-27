@@ -78,6 +78,9 @@ inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
 }
 
 //! Return the radius of gyration of a set of points
+/**
+   \see IMP::atom::get_radius_of_gyration()
+ */
 inline double get_radius_of_gyration(const std::vector<VectorD<3> > &ps) {
   algebra::Vector3D centroid= get_centroid(ps);
   double rg = 0;
