@@ -3,7 +3,6 @@ import IMP.algebra
 import IMP.display
 import IMP.core
 import IMP.test
-import IMP.helper
 
 class TestBL(IMP.test.TestCase):
     def setUp(self):
