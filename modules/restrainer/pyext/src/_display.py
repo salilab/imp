@@ -1,4 +1,5 @@
 import IMP
+import IMP.display
 
 class Display(object):
     """Store Display"""

@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-
+         'simplify_restraint.h',
         ]
 
 # Install the include files:
