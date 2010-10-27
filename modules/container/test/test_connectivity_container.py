@@ -4,6 +4,13 @@ import IMP.atom
 import IMP.container
 import math
 
+def nudge_particle(p, sz):
+    d = IMP.core.XYZ(p)
+    bb = IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-sz,-sz,-sz),
+                                   IMP.algebra.Vector3D(sz,sz,sz))
+    v= IMP.algebra.get_random_vector_in(bb)
+    d.set_coordinates(d.get_coordinates() + v)
+
 class TunnelTest(IMP.test.TestCase):
     """Tests for tunnel scores"""
 
@@ -36,8 +43,17 @@ class TunnelTest(IMP.test.TestCase):
         m.add_restraint(pr)
         print "added"
         print pr.evaluate(False)
-        cg.set_threshold(.00001)
-        cg.optimize(1000)
+        cg.set_threshold(.0001)
+        for i in range(10):
+            try:
+                cg.optimize(100)
+            except IMP.ValueException: # Catch CG failure
+                pass
+            if pr.evaluate(False) <= .0001:
+                break
+            # Nudge the particles a little to escape a local minimum
+            for p in ps:
+                nudge_particle(p, 1.0)
         for pp in cpc.get_particle_pairs():
             print pp
             print
