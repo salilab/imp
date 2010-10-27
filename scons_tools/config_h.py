@@ -241,8 +241,8 @@ const VersionInfo& get_module_version_info() {
     if vars['module']=="kernel":
         print >> cpp, """
 namespace internal {
- const char* imp_data_path="%s";
- const char* imp_example_path="%s";
+ std::string imp_data_path="%s";
+ std::string imp_example_path="%s";
 }
 """%(source[1].get_contents(), source[2].get_contents())
 
