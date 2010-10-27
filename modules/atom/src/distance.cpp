@@ -5,6 +5,7 @@
  *
  */
 #include <IMP/atom/distance.h>
+#include <IMP/atom/Mass.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/geometric_alignment.h>
@@ -81,5 +82,43 @@ std::pair<double,double> get_component_placement_score(
    algebra::get_axis_and_angle(t.get_rotation()).second);
 }
 
+
+namespace {
+  double get_weight(bool mass, bool radii, Particle *p) {
+    if (mass) {
+      return Mass(p).get_mass();
+    } else if (radii) {
+      return cube(core::XYZR(p).get_radius());
+    } else {
+      return 1;
+    }
+  }
+}
+
+double get_radius_of_gyration(const ParticlesTemp &ps) {
+  IMP_USAGE_CHECK(ps.size() > 0, "No particles provided");
+  bool mass = Mass::particle_is_instance(ps[0]);
+  bool radii= core::XYZR::particle_is_instance(ps[0]);
+  algebra::Vector3D cm(0,0,0);
+  double total=0;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    double weight=get_weight(mass, radii, ps[i]);
+    total+=weight;
+    cm+= core::XYZ(ps[i]).get_coordinates()*weight;
+  }
+  cm/=total;
+  double ret=0;
+  for (unsigned int i=0; i < ps.size(); ++i) {
+    double c;
+    if (radii) {
+      c= .6*square(core::XYZR(ps[i]).get_radius());
+    } else {
+      c=0;
+    }
+    double d= get_squared_distance(core::XYZ(ps[i]).get_coordinates(),cm);
+    ret+= get_weight(mass, radii, ps[i])*(d+c);
+  }
+  return std::sqrt(ret/total);
+}
 
 IMPATOM_END_NAMESPACE
