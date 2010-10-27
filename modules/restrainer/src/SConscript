@@ -1,7 +1,7 @@
 Import('env')
 
 files = [
-
+         'simplify_restraint.cpp',
         ]
 
 # Build and install the shared library:

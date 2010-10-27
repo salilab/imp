@@ -3,7 +3,7 @@
 import IMP.core
 import IMP.em
 import IMP.saxs
-import IMP.helper
+import IMP.restrainer
 
 class _RestraintSets(object):
     def __init__(self):
@@ -463,7 +463,7 @@ class _RestraintRestraint(_RestraintNode):
                 child.repr_particle.force_field = 0
             mhs = IMP.atom.Hierarchies()
             mhs.append(child_r)
-            rb = IMP.helper.set_rigid_bodies(mhs)
+            rb = IMP.restrainer.set_rigid_bodies(mhs)
             self.rigid_bodies.append(rb[0])
             child.rigid_body = rb[0]
         return None
@@ -537,9 +537,9 @@ class _RestraintRestraint(_RestraintNode):
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
             refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
-            self.sc = IMP.helper.create_simple_connectivity_on_rigid_bodies(rbs, refiner)
+            self.sc = IMP.restrainer.create_simple_connectivity_on_rigid_bodies(rbs, refiner)
         else:
-            self.sc = IMP.helper.create_simple_connectivity_on_molecules(mhs)
+            self.sc = IMP.restrainer.create_simple_connectivity_on_molecules(mhs)
         self.sc.set_k(k)
         connectivity_restraint = self.sc.get_restraint()
         self.imp_restraint = connectivity_restraint
@@ -559,9 +559,9 @@ class _RestraintRestraint(_RestraintNode):
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
-            self.sev = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
+            self.sev = IMP.restrainer.create_simple_excluded_volume_on_rigid_bodies(rbs)
         else:
-            self.sev = IMP.helper.create_simple_excluded_volume_on_molecules(mhs)
+            self.sev = IMP.restrainer.create_simple_excluded_volume_on_molecules(mhs)
         ev_restraint = self.sev.get_restraint()
         self.imp_restraint = ev_restraint
         return ev_restraint
@@ -585,7 +585,7 @@ class _RestraintRestraint(_RestraintNode):
         self.create_force()
         if self.density_filename:
             mhs = IMP.atom.Hierarchies()
-            self.dmap = IMP.helper.load_em_density_map(self.density_filename,
+            self.dmap = IMP.restrainer.load_em_density_map(self.density_filename,
                            self.spacing, self.resolution)
             self.dmap_header = self.dmap.get_header_writable()
 
@@ -596,7 +596,7 @@ class _RestraintRestraint(_RestraintNode):
             for child in self.child_restraints:
                 mhs.append(child)
             if mhs:
-                self.sef = IMP.helper.create_simple_em_fit(mhs, self.dmap)
+                self.sef = IMP.restrainer.create_simple_em_fit(mhs, self.dmap)
                 em_restraint = self.sef.get_restraint()
                 self.imp_restraint = em_restraint
                 return em_restraint
@@ -623,7 +623,7 @@ class _RestraintRestraint(_RestraintNode):
         ps = IMP.Particles()
         for child in self.child_restraints:
             ps.append(child.get_particle())
-        self.diameter_restraint = IMP.helper.create_simple_diameter(
+        self.diameter_restraint = IMP.restrainer.create_simple_diameter(
                                  ps, self.max_diameter)
         self.imp_restraint = self.diameter_restraint.get_restraint()
         return self.imp_restraint

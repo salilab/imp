@@ -135,3 +135,5 @@ class Main(_main.Main):
         return _main.Main.model(self)
 
 %}
+
+%include "IMP/restrainer/simplify_restraint.h"
