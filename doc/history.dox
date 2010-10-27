@@ -1,6 +1,8 @@
 /** \page recent Change History
 
 \par Fall 2010
+- IMP::helper was merged into IMP::restrainer as all the functionality there was primarily to provide support for restrainer
+- IMP::domino2::SubsetEvaluatorTable was removed. Pass the model and IMP::domino2::ParticleStatesTable to the IMP::domino2::RestraintScoreSubsetFilterTable instead.
 - IMP::atom::Selection was added to allow specification of parts of IMP::atom::Hierarchy using biological sorts of names. A few functions to create restraints from them were added too.
 - a new example was added in the kernel to show \imp used on a biological system
 - IMP::display::PymolWriter now supports adding labels to things
