@@ -1,4 +1,4 @@
 Import('env')
 
-env.IMPModuleBuild(version="SVN", required_modules=['helper','core','em','domino','atom'],
+env.IMPModuleBuild(version="SVN", required_modules=['restrainer','core','em','domino','atom'],
                    required_dependencies=["Boost.FileSystem"])

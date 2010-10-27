@@ -16,7 +16,7 @@ def setup_scoring_function(ps):
         rbs=IMP.core.RigidBodies()
         rbs.append(IMP.core.RigidBody(ps[pair[0]]))
         rbs.append(IMP.core.RigidBody(ps[pair[1]]))
-        ex_r=IMP.helper.create_simple_excluded_volume_on_rigid_bodies(
+        ex_r=IMP.restrainer.create_simple_excluded_volume_on_rigid_bodies(
             rbs,
             IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         m.add_restraint(ex_r.get_restraint())

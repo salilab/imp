@@ -3,7 +3,7 @@ import IMP.test
 import sys
 import IMP.em
 import IMP.multifit
-import IMP.helper
+import IMP.restrainer
 import os
 import time
 
@@ -27,7 +27,7 @@ class SampleTests(IMP.test.TestCase):
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.multifit.add_surface_index(mh,self.voxel_size)
-        self.rbs=IMP.helper.set_rigid_bodies(self.mhs)
+        self.rbs=IMP.restrainer.set_rigid_bodies(self.mhs)
         self.trans=[]
         self.trans.append(IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(1.,0.,0.,0.),IMP.algebra.Vector3D(0.,0.,0.)))
         self.trans.append(IMP.algebra.Transformation3D(IMP.algebra.Rotation3D(0.995865,-0.0659049,-0.0582095,-0.0228412),IMP.algebra.Vector3D(5.67356,-7.52739,0.57034)))

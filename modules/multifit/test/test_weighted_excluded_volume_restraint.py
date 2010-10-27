@@ -3,7 +3,7 @@ import IMP.test
 import sys
 import IMP.em
 import IMP.multifit
-import IMP.helper
+import IMP.restrainer
 import os
 import time
 
@@ -25,9 +25,9 @@ class SampleTests(IMP.test.TestCase):
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
             IMP.multifit.add_surface_index(mh,self.voxel_size)
-        self.rbs=IMP.helper.set_rigid_bodies(self.mhs)
+        self.rbs=IMP.restrainer.set_rigid_bodies(self.mhs)
         #set the restraint
-        sr=IMP.helper.create_simple_connectivity_on_rigid_bodies(self.rbs,
+        sr=IMP.restrainer.create_simple_connectivity_on_rigid_bodies(self.rbs,
                                                                  IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
 
         print "going to evaluate 2"

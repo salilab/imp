@@ -7,8 +7,8 @@
  */
 #include <IMP/multifit/DataContainer.h>
 #include <IMP/atom/force_fields.h>
+#include <IMP/restrainer/simplify_restraint.h>
 #include <IMP/atom/pdb.h>
-#include <IMP/helper/simplify_restraint.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 #include <IMP/domino/RestraintGraph.h>
 
@@ -37,7 +37,7 @@ DataContainer::DataContainer(const SettingsData &settings) {
        read_fitting_solutions(comp.get_transformations_fn().c_str());
   }
   AssemblyHeader asmb_h = settings.get_assembly_header();
-  dens_ = helper::load_em_density_map(asmb_h.get_dens_fn().c_str(),
+  dens_ = restrainer::load_em_density_map(asmb_h.get_dens_fn().c_str(),
                                       asmb_h.get_spacing(),
                                       asmb_h.get_resolution());
   dens_ap_ = IMP::core::get_leaves(
