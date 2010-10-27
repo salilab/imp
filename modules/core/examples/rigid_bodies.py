@@ -1,7 +1,6 @@
 import IMP
 import IMP.core
 import IMP.atom
-import IMP.helper
 
 m= IMP.Model()
 
