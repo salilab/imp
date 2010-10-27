@@ -202,6 +202,7 @@ class TestCPFL(IMP.test.TestCase):
         print "grid"
         #IMP.set_log_level(IMP.VERBOSE)
         self.do_test_one(IMP.core.GridClosePairsFinder())
+
     def test_periodic_grid(self):
         """Testing periodic GridClosePairsFinder"""
         print "grid"
@@ -210,6 +211,10 @@ class TestCPFL(IMP.test.TestCase):
         cpf= IMP.core.GridClosePairsFinder(bb)
         #cpf.set_log_level(IMP.VERBOSE)
         self.do_test_periodic_points(cpf, bb, 10, 0,1)
+    # Don't expect experimental code to work yet
+    test_periodic_grid = IMP.test.skip("code is still experimental")(
+                                      test_periodic_grid)
+
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
         IMP.set_log_level(IMP.SILENT)
