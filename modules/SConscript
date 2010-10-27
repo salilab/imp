@@ -10,9 +10,7 @@ modules=['cgal',
          'domino',
          'em',
          'example',
-         'misc',
          'saxs',
-         'helper',
          'statistics',
          'gsl',
          'modeller',
@@ -21,7 +19,8 @@ modules=['cgal',
          'domino2',
          'multifit',
          'bullet',
-         'openmm']
+         'openmm',
+         'misc']
 # always last
 modules.append('benchmark')
 
