@@ -43,6 +43,7 @@ files = [
          'mol2.h',
          'pdb.h',
          'protein_ligand_score.h',
+         'python_only.h',
          'smoothing_functions.h',
         ] \
         + SConscript('internal/SConscript')
