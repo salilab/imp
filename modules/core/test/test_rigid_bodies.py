@@ -61,29 +61,6 @@ class RBDTests(IMP.test.TestCase):
                 success=success+1
         self.assertGreater(success, count/2)
 
-    def _test_create_many(self):
-        count=10
-        success=0
-        for i in range(0, count):
-            m= IMP.Model()
-            IMP.set_log_level(IMP.SILENT)
-            l= IMP.container.ListSingletonContainer()
-            for i in range(0,2):
-                p= self._create_hierarchy(m)
-                l.add_particle(p)
-            ss=IMP.helper.create_rigid_bodies(l, IMP.core.ChildrenRefiner())
-            m.add_score_state(ss)
-            for p in l.get_particles():
-                rbd= IMP.core.RigidBody(p)
-                self._add_rb_restraints(rbd)
-            cg= IMP.core.ConjugateGradients()
-            cg.set_model(m)
-            print "Initial score is " + str(m.evaluate(False))
-            cg.optimize(1000)
-            if m.evaluate(False) < .1:
-                success=success+1
-        self.assertGreater(success, count/2)
-
 
     def test_create_one(self):
         """Testing create_rigid_body"""
