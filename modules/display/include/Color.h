@@ -137,6 +137,23 @@ inline Color operator*(Color c, double d) {
 
 #endif // SWIG
 
+//! Return a color interpolated between a and b in RGB space
+/** If f is 0, then a is returned, if f is 1, b is returned.
+ */
+inline Color get_interpolated_rgb(const Color &a,
+                                  const Color &b,
+                                  double f) {
+  return Color((1-f)*a.get_red()+f*b.get_red(),
+               (1-f)*a.get_green()+f*b.get_green(),
+               (1-f)*a.get_blue()+f*b.get_blue());
+}
+
+
+//! Return the color for f from the jet color map
+/** The argument must be between 0 and 1, inclusive.
+ */
+IMPDISPLAYEXPORT Color get_jet_color(double f);
+
 IMP_VALUES(Color, Colors);
 
 IMPDISPLAY_END_NAMESPACE

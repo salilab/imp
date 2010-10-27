@@ -48,4 +48,22 @@ Color get_display_color(unsigned int i) {
 }
 
 
+Color get_jet_color(double f) {
+  IMP_USAGE_CHECK(f>=0 && f <= 1.0,
+                  "Argument needs to be between 0 and 1.");
+  static Color colors[]={ Color(0,0,1),
+                        Color(0,1,1),
+                        Color(1,1,0),
+                        Color(1,0,0),
+                        Color(1,0,1),
+                        Color(0,0,1)};
+  int lb= static_cast<int>(std::floor(f*6));
+  if (lb==6) lb=5;
+  double rem= f*6-lb;
+  if (rem <0) rem=0;
+  if (rem >1) rem=1;
+  return get_interpolated_rgb(colors[lb], colors[lb+1], f);
+}
+
+
 IMPDISPLAY_END_NAMESPACE
