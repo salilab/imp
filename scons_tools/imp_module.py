@@ -101,7 +101,7 @@ def expand_dependencies(env, deps, is_kernel=False):
         except:
             print >> sys.stderr, "Modules can only depend on modules which are configured before them."
             print >> sys.stderr, "Specifically, module "+str(env['IMP_MODULE']) \
-                  + " cannot depenend on module " +c
+                  + " cannot depend on module " +c
             raise ValueError("Bad module depedency")
         ndeps.reverse()
         to_expand=to_expand[:-1]
@@ -390,6 +390,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     pybuild=[]
     install=[]
     penv = get_pyext_environment(env, module.upper(), cplusplus=True)
+    penv.Decider('timestamp-match')
     if penv['CC'] != 'w32cc':
         penv['LIBS']=[]
     else:
