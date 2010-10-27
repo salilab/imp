@@ -69,6 +69,7 @@ files = [
          'XYZR.h',
          'core_macros.h',
          'generic.h',
+         'python_only.h',
          'rigid_bodies.h',
          'utility.h',
         ] \
