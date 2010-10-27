@@ -21,8 +21,8 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-extern const char* imp_data_path;
-extern const char* imp_example_path;
+extern std::string imp_data_path;
+extern std::string imp_example_path;
 
 namespace {
 /** Boost versions older than 1.35 cannot handle "hidden" paths,

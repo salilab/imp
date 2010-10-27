@@ -14,6 +14,12 @@
 #ifdef _MSC_VER
 #include <windows.h>
 #endif
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+extern std::string imp_data_path;
+extern std::string imp_example_path;
+IMP_END_INTERNAL_NAMESPACE
+
 IMP_BEGIN_NAMESPACE
 
 namespace {
@@ -187,14 +193,18 @@ TextOutput create_temporary_file(std::string prefix,
 #endif
 }
 
-namespace {
-
-}
 
 std::string get_relative_path(std::string base,
                                    std::string relative) {
   std::string dir= internal::get_directory_path(base);
   return internal::get_concatenated_path(dir, relative);
+}
+
+void set_data_path(std::string dp) {
+  internal::imp_data_path= dp;
+}
+void set_example_path(std::string dp) {
+  internal::imp_example_path=dp;
 }
 
 IMP_END_NAMESPACE

@@ -185,6 +185,18 @@ IMPEXPORT TextOutput create_temporary_file(std::string prefix="imp_temp",
 IMPEXPORT std::string get_relative_path(std::string base,
                                    std::string relative);
 
+/** Set the directory where IMP data is to be found. The directory
+    should have a subdirectory for each module containing
+    that module's data.
+*/
+IMPEXPORT void set_data_path(std::string dp);
+
+/** Set the directory where IMP examples are to be found. The directory
+    should have a subdirectory for each module containing
+    that module's examples.
+*/
+IMPEXPORT void set_example_path(std::string dp);
+
 IMP_END_NAMESPACE
 
 #endif /* IMP_FILE_H */
