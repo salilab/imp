@@ -4,7 +4,7 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
-import IMP.helper
+import IMP.restrainer
 import time
 import my_helpers
 

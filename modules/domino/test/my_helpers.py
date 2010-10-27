@@ -1,6 +1,6 @@
 import IMP.atom
 import IMP.core
-import IMP.helper
+import IMP.restrainer
 import random,math
 
 def read_components(fns,mdl):
@@ -12,12 +12,12 @@ def read_components(fns,mdl):
     return mhs
 
 def set_rigid_bodies(mhs,mdl):
-    return IMP.helper.set_rigid_bodies(mhs)
+    return IMP.restrainer.set_rigid_bodies(mhs)
 def set_colision_detection_between_rigid_bodies(rb1,rb2):
     rbs=IMP.core.RigidBodies()
     rbs.append(rb1)
     rbs.append(rb2)
-    simple_r = IMP.helper.create_simple_excluded_volume_on_rigid_bodies(rbs)
+    simple_r = IMP.restrainer.create_simple_excluded_volume_on_rigid_bodies(rbs)
     r = simple_r.get_restraint()
     print r
     rb1.get_model().add_restraint(r)
