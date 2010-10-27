@@ -2,7 +2,6 @@ from StringIO import StringIO
 import IMP
 import IMP.test
 import IMP.atom
-import IMP.helper
 
 class PDBReadWriteTest(IMP.test.TestCase):
 
