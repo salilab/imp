@@ -105,6 +105,10 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133).
+
+    \note Only representational particles are selected. That is, ones
+    with x,y,z coordinates. And the highest resolution representation
+    that fits is returned.
 */
 class IMPATOMEXPORT Selection {
  public:
@@ -172,6 +176,7 @@ class IMPATOMEXPORT Selection {
     IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
                     << " is not valid.");
   }
+  //! Return the hierarchies that the Selection was constructed with
   Hierarchies get_hierarchies() const {
     return h_;
   }
@@ -223,6 +228,7 @@ class IMPATOMEXPORT Selection {
   void set_domain(std::string name) {
     domains_= Strings(1, name);
   }
+  //! Get the selected particles
   ParticlesTemp get_particles() const;
   IMP_SHOWABLE(Selection);
 };
