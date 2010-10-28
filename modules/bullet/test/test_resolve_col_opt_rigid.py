@@ -33,10 +33,10 @@ class AngleRestraintTests(IMP.test.TestCase):
     def create(self):
         m= IMP.Model()
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                                      IMP.algebra.Vector3D(5,5,5))
+                                      IMP.algebra.Vector3D(3,3,3))
         ps=[]
         rps=[]
-        for i in range(0,30):
+        for i in range(0,0):
             p= IMP.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
@@ -45,7 +45,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             rps.append(p)
             d.set_radius(2)
             print d
-        for i in range(0,5):
+        for i in range(0,3):
             rbp= IMP.Particle(m)
             rbp.set_name("rb"+str(i))
             rbps=[]
@@ -75,7 +75,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             g= IMP.display.XYZRGeometry(IMP.core.XYZR(p))
             g.set_color(IMP.display.get_display_color(i))
             w.add_geometry(g)
-    def test_rcos(self):
+    def _test_rcos(self):
         """Test basic ResolveCollision optimization with rigid bodies"""
         (m, bb, ps)= self.create()
         print "intesections:", self.count_hits(ps),"score:", m.evaluate(False)
@@ -93,7 +93,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         (m, bb, ps)= self.create()
         print "intesections:", self.count_hits(ps),"score:", m.evaluate(False)
         opt= IMP.bullet.ResolveCollisionsOptimizer(m)
-        opt.set_local_stiffness(1)
+        opt.set_local_stiffness(.01)
         opt.set_xyzrs(ps)
         self.display(ps, 0)
         opt.optimize(0)
