@@ -208,8 +208,8 @@ Atom Atom::setup_particle(Particle *p, AtomType t) {
     Hierarchy::setup_particle(p);
   }
   p->add_attribute(get_element_key(), UNKNOWN_ELEMENT);
-  p->add_attribute(get_occupancy_key(), 1.00);
-  p->add_attribute(get_tempFactor_key(), 0.00);
+  //p->add_attribute(get_occupancy_key(), 1.00);
+  //p->add_attribute(get_tempFactor_key(), 0.00);
 
   Atom ret(p);
   Mass::setup_particle(p, 0);
@@ -264,7 +264,7 @@ IntKey Atom::get_occupancy_key() {
   return k;
 }
 
-IntKey Atom::get_tempFactor_key() {
+IntKey Atom::get_temperature_factor_key() {
   static IntKey k("tempFactor");
   return k;
 }

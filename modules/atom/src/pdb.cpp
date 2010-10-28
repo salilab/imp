@@ -419,7 +419,7 @@ void write_pdb(const Particles& ps, TextOutput out)
                                      rd.get_index(),
                                      rd.get_insertion_code(),
                                      ad.get_occupancy(),
-                                     ad.get_tempFactor(),
+                                     ad.get_temperature_factor(),
                                      ad.get_element());
 
       if (!out) {
