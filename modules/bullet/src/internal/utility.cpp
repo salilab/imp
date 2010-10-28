@@ -71,7 +71,6 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
   // create rigid body
   btDefaultMotionState* fallMotionState
     = new btDefaultMotionState(tr(center));
-  std::cout << "dms " << fallMotionState << std::endl;
   memory.motion_states.push_back(fallMotionState);
   btVector3 fallInertia(0,0,0);
   if (mass > 0) {
@@ -82,7 +81,6 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
   btRigidBody::btRigidBodyConstructionInfo
     fallRigidBodyCI((mass<0? .0001:mass),fallMotionState,shape,fallInertia);
   btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-  std::cout << "rb " << fallRigidBody << std::endl;
   fallRigidBody->setDamping(.5, .5);
   world->addRigidBody(fallRigidBody);
   memory.rigid_bodies.push_back(fallRigidBody);

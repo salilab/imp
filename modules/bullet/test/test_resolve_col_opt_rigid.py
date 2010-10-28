@@ -75,7 +75,7 @@ class AngleRestraintTests(IMP.test.TestCase):
             g= IMP.display.XYZRGeometry(IMP.core.XYZR(p))
             g.set_color(IMP.display.get_display_color(i))
             w.add_geometry(g)
-    def _test_rcos(self):
+    def test_rcos(self):
         """Test basic ResolveCollision optimization with rigid bodies"""
         (m, bb, ps)= self.create()
         print "intesections:", self.count_hits(ps),"score:", m.evaluate(False)

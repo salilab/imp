@@ -34,8 +34,7 @@
 IMPBULLET_BEGIN_NAMESPACE
 
 
-#define IMP_BNEW(Name, name, args) boost::scoped_ptr<Name> name(new Name args);\
-  std::cout << #name << name.get() << std::endl;
+#define IMP_BNEW(Name, name, args) boost::scoped_ptr<Name> name(new Name args);
 namespace {
 
   const double damping=1;
@@ -45,7 +44,6 @@ namespace {
                             internal::Memory &memory) {
     if (!memory.empty_shape.get()) {
       memory.empty_shape.reset(new btEmptyShape());
-      std::cout << "es0 " << memory.empty_shape.get() << std::endl;
     }
     btRigidBody *fallRigidBody
       = internal::create_rigid_body(memory.empty_shape.get(),
@@ -58,7 +56,6 @@ namespace {
       btPoint2PointConstraint *p2p
         = new btPoint2PointConstraint(*rb, *fallRigidBody,
                                       lc, btVector3(0,0,0));
-      std::cout << "p2p " << p2p << std::endl;
       memory.springs.push_back(p2p);
       world->addConstraint(p2p, true);
     }
@@ -84,7 +81,6 @@ namespace {
     btGeneric6DofSpringConstraint *spring
       =new btGeneric6DofSpringConstraint(*anchor0, *anchor1,
                                          it, it1, true);
-    std::cout << "ospring " << spring << std::endl;
     memory.springs.push_back(spring);
     for (unsigned int i=1; i< 2; ++i) {
       spring->enableSpring(i, true);
@@ -100,7 +96,6 @@ namespace {
                      internal::Memory &memory) {
     if (!memory.empty_shape.get()) {
       memory.empty_shape.reset(new btEmptyShape());
-      std::cout << "es0 " << memory.empty_shape.get() << std::endl;
     }
     btScalar mass =0;
     btRigidBody *anchor
@@ -116,7 +111,6 @@ namespace {
     btGeneric6DofSpringConstraint *spring
       =new btGeneric6DofSpringConstraint(*rb0, *anchor,
                                          it, it, true);
-    std::cout << "springs " << spring << std::endl;
     memory.springs.push_back(spring);
     for (unsigned int i=0; i< 6; ++i) {
       spring->enableSpring(i, true);
@@ -155,7 +149,6 @@ namespace {
       shape= it->second;
     } else {
       shape= new btSphereShape(d.get_radius());
-      std::cout << "sphere " << shape << std::endl;
       memory.spheres[d.get_radius()]= shape;
       memory.shapes.push_back(shape);
     }
