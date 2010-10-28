@@ -130,6 +130,19 @@ inline Transformation3D compose(const Transformation3D &a,
 IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
                                   const Transformation2D &t2d);
 
+//! Get a local transformation
+/**
+  \note randomly select an axis that passes to the input point
+  and rotate around it
+  \param[in] origin the origin of the rotation
+  \param[in] max_translation detault value is 5
+  \param[in] max_angle_in_rad default value is 15 degree in radians
+  **/
+IMPALGEBRAEXPORT Transformation3D get_local_transformation(
+   Vector3D origin,
+   float max_translation=5.,
+   float max_angle_in_rad=0.26);
+
 
 IMPALGEBRA_END_NAMESPACE
 

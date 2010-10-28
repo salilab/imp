@@ -5,6 +5,8 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Transformation3D.h"
+#include "IMP/algebra/Sphere3D.h"
+#include "IMP/algebra/vector_generators.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -20,5 +22,21 @@ Transformation3D get_transformation_3d(const Transformation2D &t2d) {
   VectorD<3> t(t2d.get_translation()[0],t2d.get_translation()[1],0);
   return Transformation3D(R,t);
 }
+Transformation3D get_local_transformation(Vector3D origin,
+                       float max_translation,
+                       float max_angle_in_rad) {
+  algebra::VectorD<3> translation
+    = algebra::get_random_vector_in(algebra::Sphere3D(algebra::Vector3D(0,0,0),
+                                                      max_translation));
+  algebra::VectorD<3> axis =
+    algebra::get_random_vector_on(algebra::Sphere3D(origin,1.));
+  ::boost::uniform_real<> rand(-max_angle_in_rad,
+                               max_angle_in_rad);
+  Float angle =rand(random_number_generator);
+  algebra::Rotation3D r
+    = algebra::get_rotation_about_axis(axis, angle);
+  return algebra::Transformation3D(r, translation);
+}
+
 
 IMPALGEBRA_END_NAMESPACE
