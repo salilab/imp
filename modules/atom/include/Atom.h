@@ -263,19 +263,35 @@ public:
 #endif
 
   double get_occupancy() const {
-    return  get_particle()->get_value(get_occupancy_key());
+    if (!get_particle()->has_attribute(get_occupancy_key())) {
+      return 1;
+    } else {
+      return  get_particle()->get_value(get_occupancy_key());
+    }
   }
 
   void set_occupancy(double occupancy) {
-    get_particle()->set_value(get_occupancy_key(),occupancy);
+    if (!get_particle()->has_attribute(get_occupancy_key())) {
+      get_particle()->add_attribute(get_occupancy_key(),occupancy);
+    } else {
+      get_particle()->set_value(get_occupancy_key(),occupancy);
+    }
   }
 
-  double get_tempFactor() const {
-    return  get_particle()->get_value(get_tempFactor_key());
+  double get_temperature_factor() const {
+    if (!get_particle()->has_attribute(get_temperature_factor_key())) {
+      return 0;
+    } else {
+      return  get_particle()->get_value(get_temperature_factor_key());
+    }
   }
 
-  void set_tempFactor(double tempFactor) {
-    get_particle()->set_value(get_tempFactor_key(),tempFactor);
+  void set_temperature_factor(double tempFactor) {
+    if (!get_particle()->has_attribute(get_temperature_factor_key())) {
+      get_particle()->add_attribute(get_temperature_factor_key(),tempFactor);
+    } else {
+      get_particle()->set_value(get_temperature_factor_key(),tempFactor);
+    }
   }
 
   /** @name The atom index in the input file
@@ -302,9 +318,7 @@ public:
 
   static IntKey get_occupancy_key();
 
-  static IntKey get_tempFactor_key();
-
-
+  static IntKey get_temperature_factor_key();
   //! @}
 };
 
