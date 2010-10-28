@@ -51,7 +51,7 @@ def create_restraints(m, all):
         tr= IMP.core.TableRefiner()
         rps=[]
         for sc in s:
-            ps= sc.get_particles()
+            ps= sc.get_selected_particles()
             rps.append(ps[0])
             tr.add_particle(ps[0], ps)
         # duplicate the IMP.atom.create_connectivity_restraint functionality
