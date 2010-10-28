@@ -59,10 +59,10 @@ Color get_jet_color(double f) {
                         Color(0,0,1)};
   int lb= static_cast<int>(std::floor(f*6));
   if (lb==6) lb=5;
-  double rem= f*6-lb;
+  double rem= 6*f-lb;
   if (rem <0) rem=0;
   if (rem >1) rem=1;
-  return get_interpolated_rgb(colors[lb], colors[lb+1], f);
+  return get_interpolated_rgb(colors[lb], colors[lb+1], rem);
 }
 
 
