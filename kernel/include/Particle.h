@@ -20,7 +20,7 @@
 #include "VectorOfRefCounted.h"
 #include "container_base.h"
 #include <utility>
-#include <memory>
+#include <boost/scoped_ptr.hpp>
 
 
 // should use this once we move to a new enough boost (1.35)
@@ -308,7 +308,7 @@ class IMPEXPORT Particle : public Container
 
  private:
   FloatTable floats_;
-  std::auto_ptr<internal::ParticleStorage> ps_;
+  boost::scoped_ptr<internal::ParticleStorage> ps_;
   bool dirty_;
   bool evaluate_;
 #endif
