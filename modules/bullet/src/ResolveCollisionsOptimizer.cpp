@@ -37,7 +37,7 @@ IMPBULLET_BEGIN_NAMESPACE
 #define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
 namespace {
 
-  const double damping=.8;
+  const double damping=1;
   btRigidBody *add_endpoint(btRigidBody *rb,
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
@@ -320,6 +320,10 @@ bool handle_ev() {
   return true;
 }
 
+/*
+  Must pass rbs + normal particles to special case
+ */
+
 
 double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   {
@@ -358,6 +362,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   boost::ptr_vector<btCollisionShape> obstacles;
   internal::Memory memory;
   IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
+  ParticlesTemp xyzr_particles;
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (core::RigidMember::particle_is_instance(ps[i])) {
       core::RigidBody d= core::RigidMember(ps[i]).get_rigid_body();
@@ -369,6 +374,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
     } else if (core::XYZR::particle_is_instance(ps[i])){
       handle_xyzr(ps[i], local_, map,
                   dynamicsWorld.get(), memory);
+      xyzr_particles.push_back(ps[i]);
     }
   }
   for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
@@ -377,7 +383,12 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
                      dynamicsWorld.get(), initial_transforms, memory);
   }
   get_model()->update();
-  IMP::atom::internal::SpecialCaseRestraints scr(get_model(), ps);
+  ParticlesTemp root_particles= xyzr_particles;
+  for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
+         handled_bodies.begin(); it != handled_bodies.end(); ++it) {
+      root_particles.push_back(it->first);
+  }
+  IMP::atom::internal::SpecialCaseRestraints scr(get_model(), root_particles);
   for (unsigned int i=0; i< rs_.size(); ++i) {
     scr.add_restraint_set(rs_[i],
                           boost::bind(handle_harmonic, dynamicsWorld.get(),
