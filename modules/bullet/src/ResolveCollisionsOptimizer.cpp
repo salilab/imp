@@ -34,7 +34,8 @@
 IMPBULLET_BEGIN_NAMESPACE
 
 
-#define IMP_BNEW(Name, name, args) std::auto_ptr<Name> name(new Name args);
+#define IMP_BNEW(Name, name, args) boost::scoped_ptr<Name> name(new Name args);\
+  std::cout << #name << name.get() << std::endl;
 namespace {
 
   const double damping=1;
@@ -42,9 +43,12 @@ namespace {
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
                             internal::Memory &memory) {
-    static std::auto_ptr<btCollisionShape> es(new btEmptyShape());
+    if (!memory.empty_shape.get()) {
+      memory.empty_shape.reset(new btEmptyShape());
+      std::cout << "es0 " << memory.empty_shape.get() << std::endl;
+    }
     btRigidBody *fallRigidBody
-      = internal::create_rigid_body(es.get(),
+      = internal::create_rigid_body(memory.empty_shape.get(),
                                     algebra::Transformation3D(center),
                                     rb? -1: 0,
                                     world,memory);
@@ -54,6 +58,7 @@ namespace {
       btPoint2PointConstraint *p2p
         = new btPoint2PointConstraint(*rb, *fallRigidBody,
                                       lc, btVector3(0,0,0));
+      std::cout << "p2p " << p2p << std::endl;
       memory.springs.push_back(p2p);
       world->addConstraint(p2p, true);
     }
@@ -79,6 +84,7 @@ namespace {
     btGeneric6DofSpringConstraint *spring
       =new btGeneric6DofSpringConstraint(*anchor0, *anchor1,
                                          it, it1, true);
+    std::cout << "ospring " << spring << std::endl;
     memory.springs.push_back(spring);
     for (unsigned int i=1; i< 2; ++i) {
       spring->enableSpring(i, true);
@@ -92,10 +98,13 @@ namespace {
   void add_rb_anchor(btRigidBody *rb0, double k,
                   btDiscreteDynamicsWorld* world,
                      internal::Memory &memory) {
-    static std::auto_ptr<btCollisionShape> es(new btEmptyShape());
+    if (!memory.empty_shape.get()) {
+      memory.empty_shape.reset(new btEmptyShape());
+      std::cout << "es0 " << memory.empty_shape.get() << std::endl;
+    }
     btScalar mass =0;
     btRigidBody *anchor
-      = internal::create_rigid_body(es.get(),
+      = internal::create_rigid_body(memory.empty_shape.get(),
                      internal::tr(rb0->getCenterOfMassTransform()),
                                     mass,
                                     world,memory);
@@ -107,12 +116,18 @@ namespace {
     btGeneric6DofSpringConstraint *spring
       =new btGeneric6DofSpringConstraint(*rb0, *anchor,
                                          it, it, true);
+    std::cout << "springs " << spring << std::endl;
     memory.springs.push_back(spring);
     for (unsigned int i=0; i< 6; ++i) {
       spring->enableSpring(i, true);
-      spring->setStiffness(i, k);
+      if (i < 3) {
+        spring->setStiffness(i, k);
+      } else {
+        spring->setStiffness(i, .1*k);
+      }
       spring->setDamping(i,damping);
     }
+    spring->setEquilibriumPoint();
     world->addConstraint(spring, true);
   }
 
@@ -140,6 +155,7 @@ namespace {
       shape= it->second;
     } else {
       shape= new btSphereShape(d.get_radius());
+      std::cout << "sphere " << shape << std::endl;
       memory.spheres[d.get_radius()]= shape;
       memory.shapes.push_back(shape);
     }
@@ -202,6 +218,7 @@ namespace {
     memory.geometry.push_back(new std::pair<std::vector<btScalar>,
                                Ints>(internal::get_as_bt(impfaces.first,
                                                          impfaces.second)));
+    std::cout << "ints pair " << &memory.geometry.back() << std::endl;
     btTriangleIndexVertexArray *arr
       =new btTriangleIndexVertexArray(memory.geometry.back().second.size()/3,
                                       &memory.geometry.back().second[0],
@@ -211,6 +228,7 @@ namespace {
                                       3*sizeof(btScalar));
     memory.meshes.push_back(arr);
     btGImpactMeshShape *mesh= new btGImpactMeshShape(&memory.meshes.back());
+    std::cout << "impact mesh " << mesh << std::endl;
     memory.shapes.push_back(mesh);
     mesh->updateBound();
     btRigidBody *fallRigidBody
@@ -245,10 +263,12 @@ namespace {
                                       &faces[0],3*sizeof(int),
                                       pts.size()/3, &pts[0],
                                       3*sizeof(btScalar));
+    std::cout << "arr " << arr << std::endl;
     memory.meshes.push_back(arr);
     btBvhTriangleMeshShape*shape
       =new btBvhTriangleMeshShape(&memory.meshes.back(),
                                   true);
+    std::cout << "tri mesh " << shape << std::endl;
     internal::create_rigid_body(shape,
                    algebra::Transformation3D(algebra::Vector3D(0,0,0)),
                                 0,
@@ -328,6 +348,7 @@ bool handle_ev() {
 double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   {
   IMP_OBJECT_LOG;
+  internal::Memory memory;
   // http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
   // change from btDbvtBroadphase
   IMP_BNEW(btSimpleBroadphase, broadphase, ());
@@ -338,6 +359,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   IMP_BNEW(btDiscreteDynamicsWorld,
            dynamicsWorld, (dispatcher.get(),broadphase.get(),
                            solver.get(),collisionConfiguration.get()));
+
   dynamicsWorld->setGravity(btVector3(0,0,0));
 
   // for concave
@@ -359,8 +381,6 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
 
   internal::RigidBodyMap map;
   internal::TransformMap initial_transforms;
-  boost::ptr_vector<btCollisionShape> obstacles;
-  internal::Memory memory;
   IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
   ParticlesTemp xyzr_particles;
   for (unsigned int i=0; i< ps.size(); ++i) {
