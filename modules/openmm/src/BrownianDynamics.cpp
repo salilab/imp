@@ -81,7 +81,7 @@ bool handle_ev() {
 
 double BrownianDynamics::optimize(unsigned int ns) {
   try {
-    std::auto_ptr<OpenMM::System> system(new OpenMM::System());
+    boost::scoped_ptr<OpenMM::System> system(new OpenMM::System());
 
     OpenMM::Platform::loadPluginsFromDirectory
       (OpenMM::Platform::getDefaultPluginsDirectory());
@@ -121,11 +121,11 @@ double BrownianDynamics::optimize(unsigned int ns) {
                           handle_ev);
     nonbond->createExceptionsFromBonds(bondPairs, 1, 1);
     //(bondPairs, Coulomb14Scale, LennardJones14Scale)
-    std::auto_ptr<OpenMM::BrownianIntegrator>
+    boost::scoped_ptr<OpenMM::BrownianIntegrator>
       integrator(new OpenMM::BrownianIntegrator(si_.get_temperature(), 1,
                                                 si_.get_maximum_time_step()
                                                 * OpenMM::PsPerFs));
-    std::auto_ptr<OpenMM::Context>
+    boost::scoped_ptr<OpenMM::Context>
       context(new OpenMM::Context(*system, *integrator));
     context->setPositions(initialPosInNm);
     integrator->step(ns);
