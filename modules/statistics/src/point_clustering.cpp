@@ -190,7 +190,7 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
   }
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
-  std::auto_ptr<KMPointArray> kmc;
+  boost::scoped_ptr<KMPointArray> kmc;
   IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
   //load the initail guess
   KMData data(metric->get_point(names[0]).size(), names.size());
