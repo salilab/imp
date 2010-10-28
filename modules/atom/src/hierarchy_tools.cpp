@@ -429,7 +429,7 @@ bool Selection::operator()(Hierarchy h) const
   }
   return true;
 }
-ParticlesTemp Selection::get_particles() const {
+ParticlesTemp Selection::get_selected_particles() const {
   ParticlesTemp ret;
   for (unsigned int i=0; i< h_.size(); ++i) {
     core::gather_slice(h_[i], boost::bind(&IMP::atom::Selection::operator(),
@@ -442,8 +442,8 @@ ParticlesTemp Selection::get_particles() const {
 Restraint* create_distance_restraint(const Selection &n0,
                                      const Selection &n1,
                                      double x0, double k) {
-  ParticlesTemp p0= n0.get_particles();
-  ParticlesTemp p1= n1.get_particles();
+  ParticlesTemp p0= n0.get_selected_particles();
+  ParticlesTemp p1= n1.get_selected_particles();
   IMP_IF_CHECK(USAGE) {
     IMP::internal::Set<Particle*> all(p0.begin(), p0.end());
     all.insert(p1.begin(), p1.end());
@@ -494,7 +494,7 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
     ParticlesTemp rps;
     bool multiple=false;
     for (unsigned int i=0; i< s.size(); ++i) {
-      ParticlesTemp ps= s[i].get_particles();
+      ParticlesTemp ps= s[i].get_selected_particles();
       IMP_USAGE_CHECK(!ps.empty(), "Selection " << s[i]
                       << " does not contain any particles.");
       tr->add_particle(ps[0], ps);
@@ -527,7 +527,7 @@ IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
     IMP_LOG(TERSE, "Looking for particles for excluded volume in "
             << hs[i]->get_name()
             << " with resolution " << resolution << std::endl);
-    ParticlesTemp cps= s.get_particles();
+    ParticlesTemp cps= s.get_selected_particles();
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE, "Found ");
       for (unsigned int i=0; i< cps.size(); ++i) {

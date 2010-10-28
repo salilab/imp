@@ -229,7 +229,7 @@ class IMPATOMEXPORT Selection {
     domains_= Strings(1, name);
   }
   //! Get the selected particles
-  ParticlesTemp get_particles() const;
+  ParticlesTemp get_selected_particles() const;
   IMP_SHOWABLE(Selection);
 };
 
