@@ -1,6 +1,7 @@
 import IMP.atom
 
 m = IMP.Model()
+IMP.set_check_level(IMP.NONE)
 protein= IMP.atom.read_pdb(IMP.atom.get_example_path('1d3d-protein.pdb'), m)
 protein_atoms= IMP.atom.get_by_type(protein, IMP.atom.ATOM_TYPE)
 ligands= IMP.atom.read_mol2(IMP.atom.get_example_path('1d3d-ligands.mol2'), m)
@@ -17,7 +18,7 @@ for l in ligands.get_children():
     for pa in protein_atoms:
         for la in ligand_atoms:
             # check if the atoms are close enough together
-            if IMP.core.get_distance(IMP.core.XYZ(pa), IMP.core.XYZ(la)) < 5:
+            if IMP.core.get_distance(IMP.core.XYZ(pa), IMP.core.XYZ(la)) < 15:
                 # score one pair of atoms
                 score+= ps.evaluate((pa, la), None)
     print "score for ", l.get_name(), "is", score
