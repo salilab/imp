@@ -1,13 +1,15 @@
 Import('env')
 files = [
+      'density_analysis.h',
+#         'FFTFitting.h',
          'weighted_excluded_volume.h',
          'sampling_space.h',
-         'FittingSolutionRecord.h'
+         'FittingSolutionRecord.h',
          'SingleDominoRun.h',
          'm_rigid_fitting.h',
          'fitting_solutions_reader_writer.h',
          'fitting_tools.h',
-         'SettingsData.h'
+         'SettingsData.h',
          'DataContainer.h',
          'restraints_utils.h',
          'sampling_space_utils.h',
@@ -15,4 +17,4 @@ files = [
 #         'mc_cg_refinement.h'
         ]
 # Install the include files:
-env.IMPModuleInclude(env.IMPModuleGetHeaders())
+env.IMPModuleInclude(files)

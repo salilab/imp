@@ -8,11 +8,13 @@
 
 #include <IMP/multifit/SingleDominoRun.h>
 #include <IMP/multifit/weighted_excluded_volume.h>
-#include <IMP/restrainer/simplify_restraint.h>
 #include <IMP/multifit/fitting_tools.h>
 #include <IMP/domino/RestraintEvaluator.h>
 #include <IMP/domino/Transformation.h>
 #include <IMP/container/ListSingletonContainer.h>
+#include <IMP/core/ExcludedVolumeRestraint.h>
+#include <IMP/em/FitRestraint.h>
+#include <IMP/core/LeavesRefiner.h>
 #include <IMP/multifit/restraints_utils.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -77,20 +79,18 @@ void SingleDominoRun::set_restraints(
       core::RigidBodies rbs;
       rbs.push_back(core::RigidBody(ps[0]));
       rbs.push_back(core::RigidBody(ps[1]));
-      restrainer::SimpleExcludedVolume simple_ev =
-        restrainer::create_simple_excluded_volume_on_rigid_bodies(rbs);
-      mdl_->add_restraint(simple_ev.get_restraint());
+      IMP_NEW(container::ListSingletonContainer,lc,(rbs));
+      IMP_NEW(core::ExcludedVolumeRestraint,r,(lc));
+      mdl_->add_restraint(r);
       if (re != NULL) {
         std::string r_fn = rg.get_pairwise_filename(ps[0],ps[1]);
         IMP_LOG(TERSE,"adding restraint file:"<<r_fn<<std::endl);
-        re->set_restraint_file(simple_ev.get_restraint(),r_fn.c_str());
+        re->set_restraint_file(r,r_fn.c_str());
       }
-      d_opt_->add_restraint(simple_ev.get_restraint(),ps,ev_weight_);
-      /*          1./((core::get_leaves(atom::Hierarchy(ps[0]))).size()+
-          (core::get_leaves(atom::Hierarchy(ps[1]))).size()));*/
-      //        pairwise_weight);
+      d_opt_->add_restraint(r,ps,ev_weight_);
   }
   //set single restraints
+  IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
   for(atom::Hierarchies::iterator it=components_.begin();
       it != components_.end(); it++) {
     Particle *p = it->get_particle();
@@ -98,15 +98,14 @@ void SingleDominoRun::set_restraints(
                   p->get_name()<<std::endl);
       Particles ps;
       ps.push_back(p);
-    restrainer::SimpleEMFit simple_fit=
-       restrainer::create_simple_em_fit(*it,dmap_);
-    mdl_->add_restraint(simple_fit.get_restraint());
+      IMP_NEW(em::FitRestraint,fit_r,(core::get_leaves(*it),dmap_,leaves_ref));
+      mdl_->add_restraint(fit_r);
     if (re != NULL) {
       std::string r_fn = rg.get_single_filename(p);
       IMP_LOG(TERSE,"adding restraint file:"<<r_fn<<std::endl);
-      re->set_restraint_file(simple_fit.get_restraint(),r_fn.c_str());
+      re->set_restraint_file(fit_r,r_fn.c_str());
     }
-    d_opt_->add_restraint(simple_fit.get_restraint(),
+    d_opt_->add_restraint(fit_r,
                           ps,em_weight_);
   }
   restraints_initialized_=true;
@@ -139,17 +138,17 @@ domino::DominoOptimizer* SingleDominoRun::optimize(int num_solutions) {
 }
 void SingleDominoRun::setup() {
   IMP_INTERNAL_CHECK(!is_setup_,"the class is already initialized\n");
-  IMP_INTERNAL_CHECK(dc_.get_number_of_components()>0,
+  IMP_INTERNAL_CHECK(dc_->get_number_of_components()>0,
                      "no components provided"<<std::endl);
   //setup all of the components
-  for(int i=0;i<dc_.get_number_of_components();i++) {
-    components_.push_back(atom::Hierarchy(dc_.get_component(i)));
+  for(int i=0;i<dc_->get_number_of_components();i++) {
+    components_.push_back(atom::Hierarchy(dc_->get_component(i)));
   }
   mdl_=components_[0]->get_model();
   //setup the junction tree
-  jt_=dc_.get_junction_tree();
+  jt_=dc_->get_junction_tree();
   //setup the density map
-  dmap_=dc_.get_density_map();
+  dmap_=dc_->get_density_map();
   //setup for sampling space
   tu_=domino::TransformationUtils(components_,true);
   discrete_set_ = new domino::TransformationMappedDiscreteSet
@@ -157,10 +156,10 @@ void SingleDominoRun::setup() {
   sampling_space_initialized_=false;
   restraints_initialized_=false;
   //set the name to anchor mapping
-  for(int i=0;i<dc_.get_number_of_density_anchor_points();i++) {
+  for(int i=0;i<dc_->get_number_of_density_anchor_points();i++) {
     std::stringstream name;
     name<<i;
-    anchor_name_map_[dc_.get_density_anchor_point(i)]=name.str();
+    anchor_name_map_[dc_->get_density_anchor_point(i)]=name.str();
   }
   /*
   StringKey name_key("name"); //TODO - have it in a better place, decorator ?
@@ -178,7 +177,7 @@ void SingleDominoRun::setup() {
   is_setup_=true;
 }
 SingleDominoRun::SingleDominoRun(
-   const DataContainer &dc){
+   const DataContainer *dc){
   dc_=dc;
   is_setup_=false;
   d_opt_=NULL;
@@ -263,15 +262,15 @@ void SingleDominoRun::set_sampling_space(
     //the subset of fitting solutions close to the mapped ap
     IMP_LOG(VERBOSE,"getting fits"<<std::endl);
     FittingSolutionRecords ts_pruned =
-      get_close_to_point(dc_.get_fitting_solutions(comp),
+      get_close_to_point(dc_->get_fitting_solutions(comp),
                          atom::Hierarchy(comp),
                          mapped_ap,distance);
     IMP_LOG(VERBOSE,"number of fits for comp:"<<
             comp->get_name()<<" is:"<<ts_pruned.size()<<
-            " out of:"<<dc_.get_fitting_solutions(comp).size()<<std::endl)
+            " out of:"<<dc_->get_fitting_solutions(comp).size()<<std::endl)
       std::cout<<"number of fits for comp:"<<
         comp->get_name()<<" is:"<<ts_pruned.size()<<
-        " out of:"<<dc_.get_fitting_solutions(comp).size()<<std::endl;
+        " out of:"<<dc_->get_fitting_solutions(comp).size()<<std::endl;
     //add these fitting solutions to the sampling space
     for(unsigned int i=0;i<ts_pruned.size();i++) {
       Particle *state_p = new Particle(mdl_);

@@ -13,9 +13,8 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/em/rigid_fitting.h>
+//#include <IMP/em/rigid_fitting.h>
 #include <IMP/Object.h>
-#include <IMP/file.h>
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -63,8 +62,11 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
   Float fitting_score_;
   Float rmsd_to_ref_;
 };
+
 typedef std::vector<FittingSolutionRecord> FittingSolutionRecords;
+/*
 IMPMULTIFITEXPORT FittingSolutionRecords generate_fitting_records(
   const em::FittingSolutions &sols);
+*/
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTION_RECORD_H */
