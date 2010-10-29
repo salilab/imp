@@ -17,7 +17,8 @@ import checks
 import modpage
 import pch
 
-from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy
+from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
+from SCons.Scanner import C as CScanner
 
 #def module_depends(env, target, source):
 #    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
@@ -330,9 +331,9 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
     vars=make_vars(env)
     if env['fastlink']:
         if env['IMP_MODULE'] != "kernel":
-            env.Prepend(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
+            env.Append(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
         else:
-            env.Prepend(LINKFLAGS=['-limp'])
+            env.Append(LINKFLAGS=['-limp'])
     env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
                                                     +required_modules,
                                                 env['IMP_MODULE'] == 'kernel')\
@@ -379,6 +380,21 @@ def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
     module_deps_requires(env, build, 'lib', required_modules)
 
 
+def _fake_scanner_cpp(node, env, path):
+    if env['IMP_MODULE'] == 'kernel':
+        return [File("#/build/include/IMP.h")]
+    else:
+        return [File("#/build/include/IMP/"+env['IMP_MODULE']+".h")]\
+               + [File("#/build/include/IMP/"+x+".h") for x in env[env['IMP_MODULE']+"_required_modules"]]+ [File("#/build/include/IMP.h")]
+
+def _null_scanner(node, env, path):
+    return []
+def _filtered_h(node, env, path):
+    if  node.abspath.find('build') == -1:
+        return []
+    else:
+        return CScanner()(node, env, path)
+
 def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     """Build and install an IMP module's Python extension and the associated
        wrapper file from a SWIG interface file. This is only available from
@@ -390,7 +406,12 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     pybuild=[]
     install=[]
     penv = get_pyext_environment(env, module.upper(), cplusplus=True)
-    penv.Decider('timestamp-match')
+    #penv.Decider('timestamp-match')
+    penv.Replace(SCANNERS=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
+                           Scanner(function=_filtered_h, skeys=['.h']),
+                           #Scanner(function= _fake_scanner_i, skeys=['.i']),
+                           swig.scanner,
+                           Scanner(function=_null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])])
     if penv['CC'] != 'w32cc':
         penv['LIBS']=[]
     else:
@@ -411,16 +432,16 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
             swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
     dest = File('#/build/lib/%(module_include_path)s/__init__.py' % vars)
     produced=File("#/build/src/"+vars['module_include_path'].replace("/",".")+".py")
-    swig=penv._IMPSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
+    swigr=penv._IMPSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
     #print "Moving", produced.path, "to", dest.path
     gen_pymod= env.LinkInstallAs(dest, produced)
     # this appears to be needed for some reason
-    env.Requires(swig, swiglink)
-    module_deps_requires(env, swig, "swig", [])
-    module_deps_requires(env, swig, "include", [])
-    module_requires(env, swig, 'include')
+    env.Requires(swigr, swiglink)
+    module_deps_requires(env, swigr, "swig", [])
+    module_deps_requires(env, swigr, "include", [])
+    module_requires(env, swigr, 'include')
     patched=penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.cpp'%vars],
                                source=['#/build/src/%(module)s_wrap.cpp-in'%vars])
     penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
@@ -742,8 +763,6 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     if env.GetOption('help'):
         return
-
-    env.Prepend(SCANNERS = [swig.scanner, swig.inscanner])
     env['all_modules'].append(module)
     processed_optional_dependencies=process_dependencies(env, optional_dependencies)
     try:
@@ -766,7 +785,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         ed= expand_dependencies(env,env['IMP_REQUIRED_LIB_MODULES'], module=='kernel')
         for m in ed:
             if m != 'kernel':
-                env.Append(LINKFLAGS=['-limp_'+m])
+                env.Append(LINKFLAGS=['-limp_'+m, '-limp'])
             else:
                 env.Append(LINKFLAGS=['-limp'])
     env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
