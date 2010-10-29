@@ -1,6 +1,6 @@
 Import('env')
 files = [
-      'density_analysis.h',
+#      'density_analysis.h',
 #         'FFTFitting.h',
          'weighted_excluded_volume.h',
          'sampling_space.h',

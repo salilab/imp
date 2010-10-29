@@ -1,6 +1,6 @@
 Import('env')
 files = [
-      'density_analysis.cpp',
+#      'density_analysis.cpp',
 #         'FFTFitting.cpp',
          'weighted_excluded_volume.cpp',
          'sampling_space.cpp',
