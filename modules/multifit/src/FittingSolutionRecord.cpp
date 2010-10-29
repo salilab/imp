@@ -78,6 +78,7 @@ void FittingSolutionRecord::show(std::ostream& out) const {
   //if (is_initialized(rmsd_to_ref_)) out<<rmsd_to_ref_;
   if (true) out<<rmsd_to_ref_;
 }
+/*
 FittingSolutionRecords generate_fitting_records(
   const em::FittingSolutions &sols) {
   FittingSolutionRecords fit_records;
@@ -89,5 +90,5 @@ FittingSolutionRecords generate_fitting_records(
   }
   return fit_records;
 }
-
+*/
 IMPMULTIFIT_END_NAMESPACE

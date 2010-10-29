@@ -17,7 +17,8 @@ class SettingsDataTest(IMP.test.TestCase):
         """test correct reading of settings data"""
         data_path = os.path.dirname(self.get_input_file_name("assembly.input"))+"/"
         header = IMP.multifit.read_settings(self.get_input_file_name("assembly.input"),data_path)
-        data = IMP.multifit.DataContainer(header)
+        mdl=IMP.Model()
+        data = IMP.multifit.DataContainer(mdl,header)
         self.assertEqual(data.get_number_of_components(),4)
         self.assertEqual(data.get_density_map().get_header().get_resolution(),
                          20.)

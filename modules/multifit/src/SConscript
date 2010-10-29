@@ -1,5 +1,7 @@
 Import('env')
 files = [
+      'density_analysis.cpp',
+#         'FFTFitting.cpp',
          'weighted_excluded_volume.cpp',
          'sampling_space.cpp',
          'FittingSolutionRecord.cpp',
@@ -13,6 +15,6 @@ files = [
          'sampling_space_utils.cpp',
          'WeightedExcludedVolumeRestraint.cpp',
 #         'mc_cg_refinement.cpp'
-        ]
+        ]\
 # Build and install the shared library:
-env.IMPModuleLib(env.IMPModuleGetSources())
+env.IMPModuleLib(files)

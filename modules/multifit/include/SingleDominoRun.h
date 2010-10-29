@@ -72,7 +72,7 @@ public:
               needed for a MultiFit run
   */
   SingleDominoRun(
-         const DataContainer &dc);
+         const DataContainer *dc);
   //! Optimize
   domino::DominoOptimizer* optimize(int num_solutions);
 
@@ -140,7 +140,7 @@ protected:
   bool restraints_initialized_;
   bool is_setup_;
   em::DensityMap *dmap_;
-  DataContainer dc_;
+  const DataContainer *dc_;
   std::string path_;
   Float ev_weight_ , em_weight_;
 };
