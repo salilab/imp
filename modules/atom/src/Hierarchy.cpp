@@ -18,6 +18,7 @@
 #include <IMP/atom/estimates.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
+#include <IMP/atom/hierarchy_tools.h>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -360,22 +361,24 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
   return rbd;
 }
 
+
+// write approximate function, remove rigid bodies for intermediates
 core::RigidBody create_rigid_body(Hierarchy h) {
   core::XYZs leaves(get_leaves(h));
   Particle *rbp= new Particle(h->get_model());
   rbp->set_name(h->get_name()+" rigid body");
-  core::RigidBody rbd
-    = core::RigidBody::setup_particle(rbp, leaves);
-  rbd.set_coordinates_are_optimized(true);
   Particles internal= core::get_internal(h);
+  Particles all=get_leaves(h);
   for (unsigned int i=0; i< internal.size(); ++i) {
-    core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
-    if (!leaves.empty()) {
-      Particle *rbp= new Particle(h->get_model());
-      rbp->set_name(internal[i]->get_name()+" rigid body");
-      core::RigidBody::setup_particle(rbp, rbd, leaves);
+    ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
+    if (!leaves.empty() && !core::XYZR::particle_is_instance(internal[i])) {
+      setup_as_approximation(internal[i], leaves);
+      all.push_back(internal[i]);
     }
   }
+  core::RigidBody rbd
+    = core::RigidBody::setup_particle(rbp, core::XYZs(all));
+  rbd.set_coordinates_are_optimized(true);
   return rbd;
 }
 
