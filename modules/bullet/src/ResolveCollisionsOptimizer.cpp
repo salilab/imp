@@ -211,7 +211,6 @@ namespace {
     memory.geometry.push_back(new std::pair<std::vector<btScalar>,
                                Ints>(internal::get_as_bt(impfaces.first,
                                                          impfaces.second)));
-    std::cout << "ints pair " << &memory.geometry.back() << std::endl;
     btTriangleIndexVertexArray *arr
       =new btTriangleIndexVertexArray(memory.geometry.back().second.size()/3,
                                       &memory.geometry.back().second[0],
@@ -221,7 +220,6 @@ namespace {
                                       3*sizeof(btScalar));
     memory.meshes.push_back(arr);
     btGImpactMeshShape *mesh= new btGImpactMeshShape(&memory.meshes.back());
-    std::cout << "impact mesh " << mesh << std::endl;
     memory.shapes.push_back(mesh);
     mesh->updateBound();
     btRigidBody *fallRigidBody
@@ -256,12 +254,10 @@ namespace {
                                       &faces[0],3*sizeof(int),
                                       pts.size()/3, &pts[0],
                                       3*sizeof(btScalar));
-    std::cout << "arr " << arr << std::endl;
     memory.meshes.push_back(arr);
     btBvhTriangleMeshShape*shape
       =new btBvhTriangleMeshShape(&memory.meshes.back(),
                                   true);
-    std::cout << "tri mesh " << shape << std::endl;
     internal::create_rigid_body(shape,
                    algebra::Transformation3D(algebra::Vector3D(0,0,0)),
                                 0,
@@ -443,8 +439,11 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   boost::tie(utrestraints, weights)
     = get_restraints_and_weights(rs_.begin(), rs_.end());
   for (unsigned int i=0; i< iter; ++i) {
-    if (utrestraints.size() >0) {
-      get_model()->evaluate(true);
+    if (get_model()->get_number_of_restraints() > 0
+        || get_number_of_optimizer_states() > 0) {
+      internal::copy_back_coordinates(map, initial_transforms);
+      get_model()->evaluate(get_model()->get_number_of_restraints() >0);
+      update_states();
       for (internal::RigidBodyMap::const_iterator
              it = map.begin(); it != map.end(); ++it) {
         // need to handle rigid bodies
@@ -457,7 +456,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
             it->second->applyTorque(xform
                                     *internal::tr(-d.get_torque()));
           }
-          }
+        }
         core::XYZ d(it->first);
         if (d.get_coordinates_are_optimized()
             && d.get_derivatives().get_squared_magnitude() >0) {
@@ -466,15 +465,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
         }
       }
     }
-    dynamicsWorld->stepSimulation(1/60.f,10);
-    if (utrestraints.size() >0) {
-      internal::copy_back_coordinates(map, initial_transforms);
-    }
-    update_states();
+    dynamicsWorld->stepSimulation(5/60.f,10);
   }
   internal::copy_back_coordinates(map, initial_transforms);
   } // clean up restraints
-  return get_model()->evaluate(false);
+  double ret= get_model()->evaluate(false);
+  update_states();
+  return ret;
 }
 
 
