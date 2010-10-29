@@ -46,7 +46,7 @@ inline double get_ball_radius_from_volume_3d(double volume) {
     bounded by the spheres. This method requires CGAL to work.
 */
 IMPALGEBRAEXPORT
-std::pair<double, double>
+FloatPair
 get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss);
 #endif
 
