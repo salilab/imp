@@ -1824,7 +1824,8 @@ get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
                               square(ss[i].get_radius())));
   }
   Alpha_shape A(myPoints.begin(), myPoints.end(), 0, Alpha_shape::GENERAL);
-  return computeVolumetrics(A);
+  std::pair<double, double> dp= computeVolumetrics(A);
+  return std::make_pair(dp.second, dp.first);
 }
 
 IMPCGAL_END_INTERNAL_NAMESPACE
