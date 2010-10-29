@@ -258,6 +258,18 @@ IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
 
 
 
+/** Set the mass, radius, residues, and coordinates to approximate the passed
+    particles.
+ */
+IMPATOMEXPORT void setup_as_approximation(Particle *h,
+                                          const ParticlesTemp &other);
+
+/** Set the mass, radius, residues, and coordinates to approximate the passed
+    particle based on the leaves of h.
+ */
+IMPATOMEXPORT void setup_as_approximation(Hierarchy h);
+
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_HIERARCHY_TOOLS_H */

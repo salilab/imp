@@ -164,32 +164,13 @@ namespace {
     if (t.empty()) {
       return Hierarchy();
     }
-    double m=0, v=0;
-    Ints inds;
-    algebra::VectorD<3> vv(0,0,0);
-    unsigned int n=0;
-    for (unsigned int i=0; i< t.size(); ++i) {
-      m+= get_mass(t[i]);
-      v+= get_volume(t[i]);
-      gather_residue_indices(t[i], inds);
-      core::XYZsTemp ls(get_leaves(t[i]));
-      for (unsigned int i=0; i< ls.size(); ++i) {
-        vv+= ls[i].get_coordinates();
-      }
-      n+= ls.size();
-    }
     Model *mm= t[0]->get_model();
     Particle *p= new Particle(mm);
     std::ostringstream oss;
-    oss << "Fragment " << inds[0];
+    oss << "Fragment";
     p->set_name(oss.str());
-    Fragment f= Fragment::setup_particle(p);
-    f.set_residue_indexes(inds);
-    Mass::setup_particle(p, m);
-    core::XYZR::setup_particle(p,
-                         algebra::SphereD<3>(vv/n,
-                         algebra::get_ball_radius_from_volume_3d(v)));
-    return f;
+    setup_as_approximation(p, ParticlesTemp(t.begin(), t.end()));
+    return Hierarchy(p);
   }
 }
 
@@ -250,7 +231,11 @@ create_simplified_along_backbone(Chain in,
       cur.clear();
       ++cur_segment;
     }
-    cur.push_back(child);
+    HierarchiesTemp children= get_leaves(child);
+    // work around decorator mess
+    for (unsigned int i=0; i < children.size(); ++i) {
+      cur.push_back(children[i]);
+    }
   }
   if (!cur.empty()) {
     root.add_child(create_approximation(cur));
@@ -611,6 +596,43 @@ void Selection::show(std::ostream &out) const {
 }
 
 
+
+
+ void setup_as_approximation(Particle* p,
+                             const ParticlesTemp &other) {
+   IMP_USAGE_CHECK(other.size() >0,
+                   "Must pass particles to approximate");
+   double m=0;
+   algebra::Sphere3Ds ss;
+   Ints inds;
+   algebra::VectorD<3> vv(0,0,0);
+   for (unsigned int i=0; i< other.size(); ++i) {
+     m+= get_mass(Hierarchy(other[i]));
+     gather_residue_indices(Hierarchy(other[i]), inds);
+     ss.push_back(core::XYZR(other[i]).get_sphere());
+     vv+= ss.back().get_center();
+   }
+   Fragment f= Fragment::setup_particle(p);
+   f.set_residue_indexes(inds);
+   if (!Mass::particle_is_instance(p)) {
+     Mass::setup_particle(p, m);
+   } else {
+     Mass(p).set_mass(m);
+   }
+   double v= algebra::get_surface_area_and_volume(ss).second;
+   algebra::SphereD<3> s=algebra::SphereD<3>(vv/other.size(),
+                            algebra::get_ball_radius_from_volume_3d(v));
+   if (core::XYZR::particle_is_instance(p)) {
+     core::XYZR(p).set_sphere(s);
+   } else {
+     core::XYZR::setup_particle(p,s);
+   }
+ }
+
+
+void setup_as_approximation(Hierarchy h) {
+  setup_as_approximation(h, get_leaves(h));
+}
 
 
 IMPATOM_END_NAMESPACE
