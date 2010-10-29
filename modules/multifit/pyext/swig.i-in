@@ -6,7 +6,7 @@ IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolume
 IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
 
 /* Wrap our own classes */
-%include "IMP/multifit/density_analysis.h"
+#%include "IMP/multifit/density_analysis.h"
 %include "IMP/multifit/weighted_excluded_volume.h"
 %include "IMP/multifit/sampling_space.h"
 %include "IMP/multifit/FittingSolutionRecord.h"
