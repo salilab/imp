@@ -619,9 +619,17 @@ void Selection::show(std::ostream &out) const {
    } else {
      Mass(p).set_mass(m);
    }
+#ifdef IMP_USE_CGAL
    double v= algebra::get_surface_area_and_volume(ss).second;
+#else
+   double v=0;
+   for (unsigned int i=0; i< other.size(); ++i) {
+     v+= algebra::get_volume(XYZR(other[i]).get_sphere());
+   }
+#endif
    algebra::SphereD<3> s=algebra::SphereD<3>(vv/other.size(),
                             algebra::get_ball_radius_from_volume_3d(v));
+
    if (core::XYZR::particle_is_instance(p)) {
      core::XYZR(p).set_sphere(s);
    } else {
