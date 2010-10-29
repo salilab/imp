@@ -14,6 +14,7 @@
 #include <IMP/core/Hierarchy.h>
 #include <IMP/Object.h>
 #include <IMP/file.h>
+#include <IMP/em/rigid_fitting.h>
 #include "multifit_config.h"
 #include "FittingSolutionRecord.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -34,5 +35,11 @@ IMPMULTIFITEXPORT void  write_fitting_solutions(
    const char *fitting_fn,
    const FittingSolutionRecords &fit_sols,
    int num_sols=-1);
+
+IMPMULTIFITEXPORT FittingSolutionRecords convert_em_to_multifit_format(
+    em::FittingSolutions em_fits);
+IMPMULTIFITEXPORT em::FittingSolutions convert_multifit_to_em_format(
+    FittingSolutionRecords multifit_fits);
+
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTIONS_READER_WRITER_H */
