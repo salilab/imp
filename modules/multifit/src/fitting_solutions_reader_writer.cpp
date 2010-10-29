@@ -99,4 +99,31 @@ void write_fitting_solutions(const char *fitting_fn,
   out.close();
 }
 
+
+FittingSolutionRecords convert_em_to_multifit_format(
+     const em::FittingSolutions &em_fits) {
+  multifit::FittingSolutionRecords output;
+  for(int i=0;i<em_fits.get_number_of_solutions();i++) {
+    multifit::FittingSolutionRecord rec;
+    rec.set_index(i);
+    rec.set_transformation(em_fits.get_transformation(i));
+    rec.set_fitting_score(em_fits.get_score(i));
+    output.push_back(rec);
+  }
+  return output;
+}
+
+em::FittingSolutions convert_multifit_to_em_format(
+    const FittingSolutionRecords &multifit_fits) {
+  em::FittingSolutions output;
+  for(FittingSolutionRecords::const_iterator it = multifit_fits.begin();
+      it != multifit_fits.end();it++) {
+  for(int i=0;i<multifit_fits.size();i++)
+    output.add_solution(it->get_transformation(),
+                        it->get_fitting_score());
+  }
+  return output;
+}
+
+
 IMPMULTIFIT_END_NAMESPACE
