@@ -99,7 +99,6 @@ void write_fitting_solutions(const char *fitting_fn,
   out.close();
 }
 
-
 FittingSolutionRecords convert_em_to_multifit_format(
      const em::FittingSolutions &em_fits) {
   multifit::FittingSolutionRecords output;

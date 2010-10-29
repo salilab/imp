@@ -37,9 +37,9 @@ IMPMULTIFITEXPORT void  write_fitting_solutions(
    int num_sols=-1);
 
 IMPMULTIFITEXPORT FittingSolutionRecords convert_em_to_multifit_format(
-    em::FittingSolutions em_fits);
+    const em::FittingSolutions &em_fits);
 IMPMULTIFITEXPORT em::FittingSolutions convert_multifit_to_em_format(
-    FittingSolutionRecords multifit_fits);
+    const FittingSolutionRecords &multifit_fits);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTIONS_READER_WRITER_H */
