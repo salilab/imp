@@ -32,7 +32,7 @@ def create_representation():
             m.set_maximum_score(r, k)
     create_protein("Nup85", 570)
     ct= IMP.atom.Selection(all, molecule="Nup85", terminus= IMP.atom.Selection.C)
-    d= IMP.core.XYZ(ct.get_particles()[0])
+    d= IMP.core.XYZ(ct.get_selected_particles()[0])
     # pin NUP85 to remove a degree of freedom
     d.set_coordinates(IMP.algebra.Vector3D(1,0,0))
     d.set_coordinates_are_optimized(False)
