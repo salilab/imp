@@ -82,15 +82,19 @@ protected:
   }
   void add_to_list(ParticlePairsTemp &cur) {
     std::sort(cur.begin(), cur.end());
-    ParticlePairsTemp added;
-    std::set_difference(cur.begin(), cur.end(),
+    ParticlePairsTemp newlist;
+    std::set_union(cur.begin(), cur.end(),
                         data_.begin(), data_.end(),
-                        std::back_inserter(added));
-    data_.insert(data_.end(), added.begin(), added.end());
+                        std::back_inserter(newlist));
     if (get_added()) {
+      ParticlePairsTemp added;
+      std::set_intersection(newlist.begin(), newlist.end(),
+                            cur.begin(), cur.end(),
+                            std::back_inserter(added));
       ListLikePairContainer* ac=get_added();
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
+    swap(data_, newlist);
   }
   void remove_from_list(ParticlePairsTemp &cur) {
     index_.clear();
@@ -106,10 +110,12 @@ protected:
     }
   }
   void add_to_list(const ParticlePair& cur) {
-    data_.push_back(cur);
-    if (get_added()) {
-      ListLikePairContainer* ac=get_added();
-      ac->data_.push_back(cur);
+    if (!std::binary_search(data_.begin(), data_.end(), cur)) {
+      data_.push_back(cur);
+      if (get_added()) {
+        ListLikePairContainer* ac=get_added();
+        ac->data_.push_back(cur);
+      }
     }
   }
   ListLikePairContainer(Model *m, std::string name):
