@@ -32,7 +32,7 @@ namespace {
     } else {
       rcpf= new RigidClosePairsFinder();
     }
-    return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 1.0);
+    return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 10.0);
   }
   PairScore* get_sphere_distance_pair_score(double k) {
     return new SoftSpherePairScore(k);
