@@ -22,7 +22,7 @@ Transformation3D get_transformation_3d(const Transformation2D &t2d) {
   VectorD<3> t(t2d.get_translation()[0],t2d.get_translation()[1],0);
   return Transformation3D(R,t);
 }
-Transformation3D get_local_transformation(Vector3D origin,
+Transformation3D get_random_local_transformation(Vector3D origin,
                        float max_translation,
                        float max_angle_in_rad) {
   algebra::VectorD<3> translation

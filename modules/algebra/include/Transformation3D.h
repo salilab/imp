@@ -138,7 +138,7 @@ IMPALGEBRAEXPORT Transformation3D get_transformation_3d(
   \param[in] max_translation detault value is 5
   \param[in] max_angle_in_rad default value is 15 degree in radians
   **/
-IMPALGEBRAEXPORT Transformation3D get_local_transformation(
+IMPALGEBRAEXPORT Transformation3D get_random_local_transformation(
    Vector3D origin,
    float max_translation=5.,
    float max_angle_in_rad=0.26);
