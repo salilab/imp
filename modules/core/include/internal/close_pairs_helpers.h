@@ -11,6 +11,7 @@
 #include "../core_config.h"
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
+#include "../XYZR.h"
 #include "CoreListPairContainer.h"
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -50,6 +51,39 @@ struct SameParticle {
 inline void filter_same(ParticlePairsTemp &c) {
   c.erase(std::remove_if(c.begin(), c.end(),
                          SameParticle()),
+          c.end());
+}
+
+
+inline bool get_are_close(Particle *a, Particle *b,
+                          double distance) {
+  XYZ da(a);
+  XYZ db(b);
+  Float ra= XYZR(a).get_radius();
+  Float rb= XYZR(b).get_radius();
+  Float sr= ra+rb+distance;
+  for (unsigned int i=0; i< 3; ++i) {
+    double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
+    if (delta >= sr) {
+      return false;
+    }
+  }
+  return get_interiors_intersect(algebra::SphereD<3>(da.get_coordinates(),
+                                                     ra+distance),
+                                 algebra::SphereD<3>(db.get_coordinates(), rb));
+}
+
+struct FarParticle {
+  double d_;
+  FarParticle(double d): d_(d){}
+  bool operator()(ParticlePair pp) const {
+    return !get_are_close(pp[0], pp[1], d_);
+  }
+};
+
+inline void filter_far(ParticlePairsTemp &c, double d) {
+  c.erase(std::remove_if(c.begin(), c.end(),
+                         FarParticle(d)),
           c.end());
 }
 
