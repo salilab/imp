@@ -147,8 +147,10 @@ void CoreClosePairContainer::do_before_evaluate() {
                   << std::endl);
           ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles(),
                                                        moved_->get_particles());
+          // make one pass
           internal::filter_close_pairs(this, ret);
           internal::filter_same(ret);
+          //internal::filter_far(ret, get_distance());
           IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
           add_to_list(ret);
           moved_->reset_moved();
@@ -174,6 +176,12 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::set<ParticlePair> existings(particle_pairs_begin(),
                                      particle_pairs_end());
+    unsigned int num= std::distance(particle_pairs_begin(),
+                                    particle_pairs_end());
+    IMP_INTERNAL_CHECK(existings.size() == num,
+                       "Not all particle pairs in list are unique: "
+                       << num
+                       << " vs " << existings.size() << std::endl);
     for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
         XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
