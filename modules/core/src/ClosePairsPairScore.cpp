@@ -70,7 +70,6 @@ namespace {
                      DerivativeAccumulator *da) {
     double ret=0;
     for (unsigned int i=0; i< ppt.size(); ++i) {
-      IMP_LOG(VERBOSE, "Evaluating on " << ppt[i] << std::endl);
       ret+=ps->evaluate(ppt[i], da);
     }
     return ret;
