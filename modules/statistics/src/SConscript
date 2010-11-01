@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'Histogram.cpp',
          'KMCenters.cpp',
          'KMCentersNode.cpp',
          'KMCentersNodeLeaf.cpp',
@@ -12,9 +13,9 @@ files = [
          'KMLocalSearch.cpp',
          'KMLocalSearchLloyd.cpp',
          'KMRectangle.cpp',
+         'MoveStatisticsScoreState.cpp',
          'PartitionalClustering.cpp',
          'point_clustering.cpp',
-         'Histogram.cpp',
         ]
 
 # Build and install the shared library:

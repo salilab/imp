@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'Histogram.h',
          'KMCenters.h',
          'KMCentersNode.h',
          'KMCentersNodeLeaf.h',
@@ -13,10 +14,10 @@ files = [
          'KMLocalSearchLloyd.h',
          'KMRectangle.h',
          'KMTerminationCondition.h',
+         'MoveStatisticsScoreState.h',
          'PartitionalClustering.h',
          'point_clustering.h',
          'statistics_macros.h',
-         'Histogram.h',
         ] \
         + SConscript('internal/SConscript')
 
