@@ -50,6 +50,8 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
  public:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());
+  ProteinLigandAtomPairScore(double threshold,
+                             TextInput data_file);
   IMP_SIMPLE_PAIR_SCORE(ProteinLigandAtomPairScore);
 };
 
@@ -61,9 +63,14 @@ IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
 class IMPATOMEXPORT ProteinLigandRestraint: public Restraint {
   IMP::internal::OwnerPointer<ProteinLigandAtomPairScore> score_;
   RefCountingDecorator<Hierarchy> protein_, ligand_;
+  void initialize(Hierarchy protein,
+                  Hierarchy ligand);
  public:
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
                          double threshold= std::numeric_limits<double>::max());
+  ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
+                         double threshold,
+                         TextInput data_file);
   IMP_RESTRAINT(ProteinLigandRestraint);
 };
 

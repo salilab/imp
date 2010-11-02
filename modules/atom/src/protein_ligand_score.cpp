@@ -244,6 +244,13 @@ ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
   table_(get_data_path("protein_ligand_score.lib")),
   threshold_(threshold){
   }
+
+ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold,
+                                                       TextInput file):
+  table_(file),
+  threshold_(threshold){
+  }
+
 double ProteinLigandAtomPairScore
 ::evaluate(const algebra::VectorD<3> &protein_v,
            int iptype,
@@ -303,14 +310,10 @@ void ProteinLigandAtomPairScore::do_show(std::ostream &out) const {
   out << "threshold: " << threshold_ << std::endl;
 }
 
-
-
-
-ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
-                                               Hierarchy ligand,
-                                               double threshold):
-  score_(new ProteinLigandAtomPairScore(threshold)),
-  protein_(protein), ligand_(ligand){
+void ProteinLigandRestraint::initialize(Hierarchy protein,
+                                        Hierarchy ligand) {
+  protein_=protein;
+  ligand_=ligand;
   add_protein_ligand_score_data(protein_);
   add_protein_ligand_score_data(ligand_);
   IMP_IF_CHECK(USAGE) {
@@ -328,6 +331,23 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
     }
   }
 }
+
+
+ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
+                                               Hierarchy ligand,
+                                               double threshold):
+  score_(new ProteinLigandAtomPairScore(threshold)) {
+  initialize(protein, ligand);
+}
+
+ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
+                                               Hierarchy ligand,
+                                               double threshold,
+                                               TextInput data):
+  score_(new ProteinLigandAtomPairScore(threshold, data)) {
+  initialize(protein, ligand);
+}
+
 
 
 double ProteinLigandRestraint
