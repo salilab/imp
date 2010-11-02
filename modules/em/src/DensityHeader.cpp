@@ -153,4 +153,32 @@ DensityHeader create_density_header(const algebra::BoundingBoxD<3> &bb,
   header.compute_xyz_top(true);
   return header;
 }
+void DensityHeader::show(std::ostream& out) const {
+    out<< "nx: " << nx_ << " ny: " << ny_ << " nz: " << nz_ << std::endl;
+    out<<"data_type: " << data_type_ << std::endl;
+    out<<"nxstart: " << nxstart << " nystart: " << nystart <<" nzstart: "
+      << nzstart << std::endl;
+    out<<"mx: "<< mx <<" my:" << my << " mz: " << mz << std::endl;
+    out<< "xlen: " << xlen <<" ylen: " << ylen <<" zlen: " << zlen
+      << std::endl;
+    out<<"alpha : " << alpha << " beta: " << beta <<" gamma: "<< gamma
+      << std::endl;
+    out<< "mapc : " << mapc << " mapr: " << mapr <<" maps: " << maps
+      << std::endl;
+    out<< "dmin: " << dmin << " dmax: " << dmax << " dmean: " << dmean
+      << std::endl;
+    out<<"ispg: " << ispg << std::endl;
+    out<<"nsymbt: " << nsymbt << std::endl;
+    out<< "user: " << user << std::endl;
+    out<<"xorigin: " << xorigin_ << " yorigin: "<< yorigin_ <<" zorigin: "
+       << zorigin_ << std::endl;
+    out<<"map: " << map << std::endl;
+    out<< "Objectpixelsize: " << Objectpixelsize_ << std::endl;
+    out<< "Resolution: " << resolution_ << std::endl;
+    out<< "machinestamp: " << machinestamp << std::endl;
+    out<<"rms: " << rms << std::endl;
+    out<<"nlabl: " << nlabl <<std::endl;
+    for(int i=0;i<nlabl;i++)
+      out<< "comments[" << i << "] = ->" <<  comments[i] << "<-" << std::endl;
+  }
 IMPEM_END_NAMESPACE
