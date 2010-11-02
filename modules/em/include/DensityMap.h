@@ -593,6 +593,13 @@ IMPEMEXPORT DensityMap* multiply(const DensityMap *m1,
 //! Return a convolution between density maps m1 and m2.
 //! The function assumes m1 and m2 are of the same dimensions.
 IMPEMEXPORT double convolute(const DensityMap *m1,const DensityMap *m2);
+//!Return a density map for which each voxel is the maximum value from
+//!the input densities.
+/**
+\note all input maps should have the same extent
+ */
+IMPEMEXPORT DensityMap* get_max_map(DensityMaps maps);
+
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_DENSITY_MAP_H */
