@@ -38,6 +38,11 @@ def module_glob(patterns):
     ret.sort()#cmp= file_compare)
     return ret
 
+def recursive_module_glob(patterns):
+    allpatterns=[x for x in patterns]
+    for p in ['*/', '*/*/']:
+        allpatterns+= [p+x for x in patterns]
+    return module_glob(allpatterns)
 def module_requires(env, target, source):
     """Make sure that 'module-source' is built before 'module-target'"""
     for t in target:
@@ -385,12 +390,12 @@ def _fake_scanner_cpp(node, env, path):
         return [File("#/build/include/IMP.h")]
     else:
         return [File("#/build/include/IMP/"+env['IMP_MODULE']+".h")]\
-               + [File("#/build/include/IMP/"+x+".h") for x in env[env['IMP_MODULE']+"_required_modules"]]+ [File("#/build/include/IMP.h")]
+               + [File("#/build/include/IMP/"+x+".h") for x in env[env['IMP_MODULE']+"_required_modules"]]+ [File("#/build/include/IMP.h")].sorted()
 
 def _null_scanner(node, env, path):
     return []
 def _filtered_h(node, env, path):
-    if  node.abspath.find('build') == -1:
+    if  node.abspath.find('build') != -1:
         return []
     else:
         return CScanner()(node, env, path)
@@ -495,9 +500,8 @@ def IMPModuleGetExamples(env):
     return module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
 
 def IMPModuleGetExampleData(env):
-    ret=  module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
-                         "*/*.pdb", "*/*.mrc", "*/*.dat", "*/*.xml", "*/*.em", "*/*.imp", "*/*.impb",
-                       "*/*/*.pdb", "*/*/*.mrc", "*/*/*.dat", "*/*/*.xml", "*/*/*.em","*/*/*.imp", "*/*/*.impb",])
+    ret=  recursive_module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
+                                 "*.mol2"])
     return ret
 
 def IMPModuleGetPythonTests(env):
