@@ -35,9 +35,9 @@
 IMPCONTAINER_BEGIN_NAMESPACE
 
 namespace {
-  typedef boost::vector_property_map<unsigned int> Index;
-  typedef Index Parent;
-  typedef boost::disjoint_sets<Index,Parent> UF;
+  typedef boost::vector_property_map<unsigned int> LIndex;
+  typedef LIndex Parent;
+  typedef boost::disjoint_sets<LIndex,Parent> UF;
   void build_graph(SingletonContainer *sc, ParticlePairsTemp &out, UF &uf) {
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     IMP_FOREACH_SINGLETON(sc,
@@ -159,7 +159,7 @@ void ConnectingPairContainer::fill_list(bool /*first*/) {
   if (mst_) {
     compute_mst(sc_, new_list);
   } else {
-    Index index;
+    LIndex index;
     Parent parent;
     UF uf(index, parent);
     unsigned int sz= sc_->get_number_of_particles();
