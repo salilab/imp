@@ -16,6 +16,8 @@ IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
 %include "IMP/multifit/sampling_space_utils.h"
 %include "IMP/multifit/restraints_utils.h"
 %include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
+%include "IMP/multifit/FFTFitting.h"
+%include "IMP/multifit/density_analysis.h"
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
