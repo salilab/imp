@@ -16,10 +16,6 @@ class AngleRestraintTests(IMP.test.TestCase):
         r0s= IMP.core.RigidBody.setup_particle(p0.get_particle(),
                                         IMP.core.XYZs(IMP.core.get_leaves(p0)))
         print "radius"
-        for p in IMP.core.get_leaves(p0):
-            #print p.get_particle().get_name()
-            d= IMP.core.XYZR.setup_particle(p.get_particle())
-            d.set_radius(1)
         rb0= IMP.core.RigidBody(p0.get_particle())
         rb0.set_coordinates_are_optimized(True)
         sc= IMP.container.ListSingletonContainer(m)
