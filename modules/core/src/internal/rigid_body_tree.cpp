@@ -58,8 +58,6 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
   Grid grid(side, algebra::BoundingBox3D(minc, maxc), SphereIndexes());
   for (unsigned int i=0; i< s.size(); ++i) {
     Grid::Index ix= grid.get_nearest_index(pts[i]);
-    IMP_LOG(TERSE, "Index is " << ix << " and extended is "
-            << grid.get_extended_index(pts[i]) << std::endl);
     grid[ix].push_back(s[i]);
     IMP_INTERNAL_CHECK(grid[ix].back() == s[i], "Failed to push");
   }
