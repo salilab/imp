@@ -6,6 +6,8 @@
 
 #include <IMP/statistics/Histogram.h>
 #include <numeric>
+#include <iostream>
+#include <iomanip>
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 
@@ -17,8 +19,10 @@ Histogram::Histogram(double start, double end,
   freq_.insert(freq_.end(),num_bins,0);
 }
 void Histogram::add(double x) {
-  IMP_INTERNAL_CHECK(!(x<start_ || x>end_),"the value being added to the "<<
-                     "histogram "<<x<<" is out of range"<<std::endl);
+  IMP_INTERNAL_CHECK(!(x<start_ || x>end_),
+                     "the value being added to the "<<
+                     "histogram "<<x<<" is out of range ["<<start_<<
+                     ","<<end_<<"]"<<std::endl);
   const unsigned int i =
     (static_cast<unsigned int>((x-start_)/interval_size_));
   freq_[i]++;
@@ -29,8 +33,20 @@ unsigned int Histogram::get_total_count() const {
 void Histogram::show(std::ostream& out) const {
   out<<"histogram for range:["<<start_<<","<<end_<<"] with step size:"
      <<interval_size_<<std::endl;
+  out.setf(std::ios::fixed, std::ios::floatfield);
+  out.precision(2);
+  out << "|" << std::setw(13) << std::setfill(' ') << "Bin" << "|";
+  out<<std::setw(13)<<std::setfill(' ') << "Num voxels"<< "|";
+  out<<std::setw(15)<<std::setfill(' ')<<"Accumolate Freq "<<std::endl;
+
+  int all_num=accumulate(freq_.begin(),freq_.end(),0);
+  int counter=0;
   for(unsigned int i=0;i<freq_.size();i++) {
-    out<<start_+interval_size_*i<<" | "<<freq_[i]<<std::endl;
+    counter += freq_[i];
+    out << "|" << std::setw(13) << std::setfill(' ') <<
+      start_+interval_size_*i << "|";
+    out<<std::setw(13)<<std::setfill(' ') << freq_[i]<< "|";
+    out<<std::setw(15)<<std::setfill(' ')<<1.*counter/all_num<<std::endl;
   }
 }
 double Histogram::get_top(double percentage) const {
