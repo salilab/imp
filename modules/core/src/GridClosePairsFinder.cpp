@@ -460,6 +460,8 @@ namespace {
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
                 << std::endl);
+        IMP_INTERNAL_CHECK(!half || ids[i] != index,
+                           "Index returned by get nearby");
         do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
                                        gg[ids[i]].end(),
                                        qps.begin(), qps.end(),
@@ -538,11 +540,10 @@ namespace {
       for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
         if (bin_contents_g[i].empty()) continue;
         if (bin_contents_g[i].size() < 5) {
-            do_fill_close_pairs_from_list(bin_contents_g[i].begin(),
-                                           bin_contents_g[i].end(),
-                                           close, out);
-          } else
-        {
+          do_fill_close_pairs_from_list(bin_contents_g[i].begin(),
+                                        bin_contents_g[i].end(),
+                                        close, out);
+        } else {
           Grid gg = create_grid(bbs[i], distance+2*bin_ubs[i]);
           fill_grid(bin_contents_g[i], ps.c_, gg);
           for (typename Grid::AllConstIterator it
