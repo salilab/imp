@@ -25,7 +25,7 @@ particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 ft = IMP.saxs.default_form_factor_table()
 for i in range(0, len(particles)):
     radius = ft.get_radius(particles[i])
-    IMP.core.XYZR.setup_particle(particles[i], radius)
+    IMP.core.XYZR(particles[i]).set_radius(radius)
 # compute surface accessibility
 s = IMP.saxs.SolventAccessibleSurface()
 surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
