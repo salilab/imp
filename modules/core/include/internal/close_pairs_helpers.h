@@ -45,12 +45,17 @@ struct SameParticle {
   SameParticle(const ParticlesTemp &ppt): ppt_(ppt){
     std::sort(ppt_.begin(), ppt_.end());
   }
+  SameParticle(){}
   bool operator()(ParticlePair pp) {
-    if (binary_search(ppt_.begin(), ppt_.end(), pp[0])
-        && binary_search(ppt_.begin(), ppt_.end(), pp[1])) {
-      return !(pp[0] < pp[1]);
+    if (ppt_.empty()) {
+      return pp[0] == pp[1];
     } else {
-      return false;
+      if (binary_search(ppt_.begin(), ppt_.end(), pp[0])
+          && binary_search(ppt_.begin(), ppt_.end(), pp[1])) {
+        return !(pp[0] < pp[1]);
+      } else {
+        return false;
+      }
     }
   }
 };
@@ -61,6 +66,12 @@ inline void filter_same(ParticlePairsTemp &c,
                         const ParticlesTemp &moved) {
   c.erase(std::remove_if(c.begin(), c.end(),
                          SameParticle(moved)),
+          c.end());
+}
+
+inline void filter_same(ParticlePairsTemp &c) {
+  c.erase(std::remove_if(c.begin(), c.end(),
+                         SameParticle()),
           c.end());
 }
 

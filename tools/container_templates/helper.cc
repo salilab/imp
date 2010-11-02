@@ -27,7 +27,7 @@ bool ListLikeCLASSNAMEContainer
 ::get_contains_FUNCTIONNAME(ARGUMENTTYPE vt) const {
   IMP_CHECK_OBJECT(this);
   update_index();
-  return std::binary_search(index_.begin(), index_.end(), vt);
+  return index_.find(vt)!= index_.end();
 }
 
 VARIABLETYPE ListLikeCLASSNAMEContainer
