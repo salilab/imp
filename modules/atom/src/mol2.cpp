@@ -11,6 +11,7 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/Charged.h>
+#include <IMP/atom/force_fields.h>
 
 #include <boost/algorithm/string.hpp>
 
@@ -420,6 +421,7 @@ Hierarchy read_mol2(TextInput mol2_file,
   }
   //Hierarchies mps = get_by_type(root_d, RESIDUE_TYPE);
   //  std::cout << "check " << mps.size() << std::endl;
+  add_radii(root_d);
   IMP_INTERNAL_CHECK(root_d.get_is_valid(true), "Invalid hierarchy produced");
   return root_d;
 }
