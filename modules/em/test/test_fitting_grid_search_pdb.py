@@ -26,7 +26,6 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #add radius and weight attributes
         self.particles = IMP.core.get_leaves(self.mp)
         for p in self.particles:
-            p.get_particle().add_attribute(self.radius_key, 1.5)
             p.get_particle().add_attribute(self.weight_key, 1.0)
 
     def setUp(self):
