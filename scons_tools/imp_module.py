@@ -386,6 +386,7 @@ def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
 
 
 def _fake_scanner_cpp(node, env, path):
+    #print "fake cpp", node.abspath
     if env['IMP_MODULE'] == 'kernel':
         return [File("#/build/include/IMP.h")]
     else:
@@ -393,8 +394,10 @@ def _fake_scanner_cpp(node, env, path):
                + [File("#/build/include/IMP/"+x+".h") for x in env[env['IMP_MODULE']+"_required_modules"]]+ [File("#/build/include/IMP.h")].sorted()
 
 def _null_scanner(node, env, path):
+    #print "null scanning", node.abspath
     return []
 def _filtered_h(node, env, path):
+    #print "filtered scanning", node.abspath
     if  node.abspath.find('build') != -1:
         return []
     else:
@@ -412,11 +415,12 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     install=[]
     penv = get_pyext_environment(env, module.upper(), cplusplus=True)
     #penv.Decider('timestamp-match')
-    penv.Replace(SCANNERS=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
-                           Scanner(function=_filtered_h, skeys=['.h']),
-                           #Scanner(function= _fake_scanner_i, skeys=['.i']),
-                           swig.scanner,
-                           Scanner(function=_null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])])
+    scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
+              Scanner(function=_filtered_h, skeys=['.h']),
+              #Scanner(function= _fake_scanner_i, skeys=['.i']),
+              swig.scanner,
+              Scanner(function=_null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
+    penv.Replace(SCANNERS=scanners)
     if penv['CC'] != 'w32cc':
         penv['LIBS']=[]
     else:
@@ -599,7 +603,7 @@ def IMPModuleDoc(env, files, authors,
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
             pass
         else:
-            b=env.InstallAs("#/doc/html/"+str(f), f)
+            b=env.InstallAs("#/build/doc/html/"+str(f), f)
             #print str(b)
             build.append(b)
             #install.append(env.Install(f, docdir))
@@ -800,7 +804,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'])
     if cxxflags:
-        env.Append(CXXFLAGS=cxxflags)
+        env.Replace(CXXFLAGS=cxxflags)
     if cppdefines:
         env.Append(CPPDEFINES=cppdefines)
     build_config=[]
