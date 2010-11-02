@@ -34,13 +34,13 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeCLASSNAMEContainer: public CLASSNAMEContainer {
 private:
   PLURALSTORAGETYPE data_;
-  mutable PLURALVARIABLETYPE index_;
+  typedef IMP::internal::Set<VARIABLETYPE> Index;
+  mutable Index index_;
   void update_index() const {
     if (index_.size()==data_.size()) return;
-    unsigned int osize=index_.size();
-    index_.insert(index_.end(), data_.begin()+osize, data_.end());
-    std::sort(index_.begin()+osize, index_.end());
-    std::inplace_merge(index_.begin(), index_.begin()+osize, index_.end());
+    else {
+      index_= Index(data_.begin(), data_.end());
+    }
   }
 protected:
   ListLikeCLASSNAMEContainer *get_added() const {
@@ -95,6 +95,44 @@ protected:
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
     swap(data_, newlist);
+  }
+
+  template <class Table>
+    bool has_permutation(const Table &t, Particle *p) const {
+    return t.find(p) != t.end();
+  }
+  template <class Table>
+   bool has_permutation(const Table &t, const ParticlePair &p) const {
+    return t.find(p) != t.end() || t.find(ParticlePair(p[1], p[0])) != t.end();
+  }
+  template <class Table>
+   bool has_permutation(const Table &t, const ParticleTriplet &p) const {
+    return t.find(p) != t.end()
+      || t.find(ParticleTriplet(p[0], p[2], p[1])) != t.end()
+      || t.find(ParticleTriplet(p[1], p[0], p[2])) != t.end()
+      || t.find(ParticleTriplet(p[1], p[2], p[0])) != t.end()
+      || t.find(ParticleTriplet(p[2], p[0], p[1])) != t.end()
+      || t.find(ParticleTriplet(p[2], p[1], p[0])) != t.end();
+  }
+  template <class Table>
+   bool has_permutation(const Table &t, const ParticleQuad &p) const {
+    IMP_NOT_IMPLEMENTED;
+    return false;
+  }
+
+  void add_unordered_to_list(const PLURALVARIABLETYPE &cur) {
+    update_index();
+    PLURALVARIABLETYPE added;
+    for (unsigned int i=0; i<cur.size(); ++i) {
+      if (has_permutation(index_, cur[i])) {
+      } else {
+        index_.insert(cur[i]);
+        data_.push_back(cur[i]);
+        if (get_added()) {
+          added.push_back(cur[i]);
+        }
+      }
+    }
   }
   void remove_from_list(PLURALVARIABLETYPE &cur) {
     index_.clear();

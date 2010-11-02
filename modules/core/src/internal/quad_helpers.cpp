@@ -27,7 +27,7 @@ bool ListLikeQuadContainer
 ::get_contains_particle_quad(const ParticleQuad& vt) const {
   IMP_CHECK_OBJECT(this);
   update_index();
-  return std::binary_search(index_.begin(), index_.end(), vt);
+  return index_.find(vt)!= index_.end();
 }
 
 ParticleQuad ListLikeQuadContainer

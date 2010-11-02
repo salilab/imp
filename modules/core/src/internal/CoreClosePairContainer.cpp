@@ -176,11 +176,17 @@ void CoreClosePairContainer::do_before_evaluate() {
                                                        moved_->get_particles());
           // make one pass
           internal::filter_close_pairs(this, ret);
-          internal::filter_same(ret, moved_->get_particles());
-          //internal::filter_far(ret, get_distance());
-          remove_from_list_if(Found(moved_->get_particles()));
-          IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-          add_to_list(ret);
+          if (false) {
+            internal::filter_same(ret, moved_->get_particles());
+            //internal::filter_far(ret, get_distance());
+            remove_from_list_if(Found(moved_->get_particles()));
+            IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+            add_to_list(ret);
+          } else {
+            internal::filter_same(ret);
+            IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+            add_unordered_to_list(ret);
+          }
           moved_->reset_moved();
           IMP_LOG(TERSE, "Count is now "
                   << std::distance(particle_pairs_begin(),
