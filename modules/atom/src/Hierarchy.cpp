@@ -255,8 +255,7 @@ namespace {
           || (h.get_as_residue() && (h.get_as_domain()
                                      || h.get_as_chain()
                                      || h.get_as_fragment()))
-          || (h.get_as_fragment() && (h.get_as_domain()))
-          || (h.get_as_domain())) {
+          || (h.get_as_fragment() && (h.get_as_domain()))) {
         TEST_FAIL("Node cannot have more than onetype at once "
                   << h << " "
                   << static_cast<bool>(h.get_as_atom())
