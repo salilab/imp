@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.algebra
+import IMP.container
 import IMP.atom
 import random
 
