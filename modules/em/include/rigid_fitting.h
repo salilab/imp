@@ -69,6 +69,16 @@ public:
   void add_solution(const algebra::Transformation3D &t,Float score);
   //! Sort solutions by cross-correlation scores
   void sort();
+  //! Multiply each transformation (T) by t,
+  //!such that the new transformation are T*t
+  void multiply(const algebra::Transformation3D &t) {
+    for(unsigned int i=0;i<fs_.size();i++) fs_[i].first=fs_[i].first*t;
+  }
+  inline algebra::Transformation3Ds get_transformations() const {
+    algebra::Transformation3Ds all_ts;
+    for(unsigned int i=0;i<fs_.size();i++) all_ts.push_back(fs_[i].first);
+    return all_ts;
+  }
 protected:
   std::vector<FittingSolution> fs_;
 };
@@ -265,7 +275,6 @@ inline FittingSolutions compute_fitting_scores(
    const algebra::Transformation3Ds& transformations,
    const FloatKey &rad_key=core::XYZR::get_default_radius_key(),
    const FloatKey &wei_key=atom::Mass::get_mass_key()) {
-
   return compute_fitting_scores(refiner.get_refined(rb),em_map,
                                 rad_key,wei_key,transformations,true);
 }
