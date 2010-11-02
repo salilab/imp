@@ -29,7 +29,6 @@ def create_representation():
             sls=IMP.SetLogState(IMP.NONE)
             t=IMP.atom.read_pdb( IMP.get_example_path("data/"+file), m,
                                  IMP.atom.ATOMPDBSelector())
-            IMP.atom.add_radii(t)
             del sls
             #IMP.atom.show_molecular_hierarchy(t)
             c=IMP.atom.Chain(IMP.atom.get_by_type(t, IMP.atom.CHAIN_TYPE)[0])
