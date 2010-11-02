@@ -107,15 +107,21 @@ recommended q value is 0.2")
       IMP::atom::Hierarchy mhd;
       if(residue_level) // read CA only
         mhd = IMP::atom::read_pdb(files[i], model,
-                                  IMP::atom::CAlphaPDBSelector());
+                                  IMP::atom::CAlphaPDBSelector(),
+                                  // don't add radii
+                                  true, true);
       else
         if(heavy_atoms_only) // read without hydrogens
           mhd = IMP::atom::read_pdb(files[i], model,
-                                   IMP::atom::NonWaterNonHydrogenPDBSelector());
+                                    IMP::atom::NonWaterNonHydrogenPDBSelector(),
+                                    // don't add radii
+                                    true, true);
         else
           // read with hydrogens
           mhd = IMP::atom::read_pdb(files[i], model,
-                                    IMP::atom::NonWaterPDBSelector());
+                                    IMP::atom::NonWaterPDBSelector(),
+                                    // don't add radii
+                                    true, true);
       IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
       if(particles.size() > 0) { // pdb file
         pdb_files.push_back(files[i]);
