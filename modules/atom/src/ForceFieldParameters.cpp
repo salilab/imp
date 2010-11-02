@@ -31,7 +31,11 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
   Particles ps = get_by_type(mhd, ATOM_TYPE);
   for(unsigned int i=0; i<ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i])) * scale;
-    core::XYZR::setup_particle(ps[i], radius, radius_key);
+    if (core::XYZR::particle_is_instance(ps[i], radius_key)) {
+      core::XYZR(ps[i], radius_key).set_radius(radius);
+    } else {
+      core::XYZR::setup_particle(ps[i], radius, radius_key);
+    }
   }
   // TODO: handle N-term and C-term
   warn_context_.dump_warnings();
