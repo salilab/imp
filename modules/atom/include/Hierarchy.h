@@ -182,7 +182,7 @@ typedef IMP::Decorators< Hierarchy,
     A hierarchy can have any tree structure as long as:
     - the type of the parent makes sense for the child: eg a Residue
     cannot be the parent of a Chain.
-    - the leaves always have coordinates and mass
+    - the leaves always have coordinates, radius and mass
     - all particles in hierarchy are from the same model
     - all Atoms has a Residue for as parent
     - any Atom with a non-heterogen atom type is part of a protein,

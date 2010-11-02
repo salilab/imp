@@ -173,7 +173,7 @@ namespace {
     Validator(bool pi): print_info(pi){}
     bool operator()(Hierarchy h, bool) {
       if (h.get_number_of_children() ==0) {
-        if (!h.get_as_xyz()) {
+        if (!h.get_as_xyzr()) {
           TEST_FAIL("Leaf " << h << " does not have coordinates");
         }
         if (!h.get_as_mass()) {
@@ -255,9 +255,8 @@ namespace {
           || (h.get_as_residue() && (h.get_as_domain()
                                      || h.get_as_chain()
                                      || h.get_as_fragment()))
-          || (h.get_as_fragment() && (h.get_as_domain()
-                                     || h.get_as_chain()))
-          || (h.get_as_domain() && h.get_as_chain())) {
+          || (h.get_as_fragment() && (h.get_as_domain()))
+          || (h.get_as_domain())) {
         TEST_FAIL("Node cannot have more than onetype at once "
                   << h << " "
                   << static_cast<bool>(h.get_as_atom())
