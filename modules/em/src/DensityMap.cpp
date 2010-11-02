@@ -1228,13 +1228,12 @@ double convolute(const DensityMap *m1,const DensityMap *m2){
 
 DensityMap* multiply(const DensityMap *m1,
                      const DensityMap *m2){
-  const DensityHeader *header = m1->get_header();
-  //create a new map
-  DensityMap * m_map =
+  const DensityHeader *header=m1->get_header();
+  DensityMap *m_map=
     create_density_map(header->get_nx(),
                        header->get_ny(),header->get_nz(),
                        header->get_spacing());
-  m_map->set_origin(m1->get_origin());
+  m_map->set_origin(m2->get_origin());
   emreal *data1=m1->get_data();
   emreal *data2=m2->get_data();
   emreal *new_data=m_map->get_data();
@@ -1243,5 +1242,34 @@ DensityMap* multiply(const DensityMap *m1,
   }
   return m_map;
 }
+
+
+DensityMap* get_max_map(DensityMaps maps){
+  IMP_USAGE_CHECK(maps.size()>0,"get_max_map should get as input "<<
+                  "at least one map\n");
+  Pointer<DensityMap> max_map(new DensityMap(*(maps[0]->get_header())));
+  max_map->reset_data(-INT_MAX);
+  const em::DensityHeader *max_map_h=max_map->get_header();
+  for(DensityMaps::const_iterator it = maps.begin();
+      it !=maps.end();it++){
+      IMP_USAGE_CHECK(max_map->same_dimensions(**it),
+                      "all maps should have the same extent\n");
+      IMP_USAGE_CHECK(max_map->same_origin(**it),
+                      "all maps should have the same origin\n");
+  }
+  int nx,ny,nz;
+  double *max_map_data=max_map->get_data();
+  nx=max_map_h->get_nx();
+  ny=max_map_h->get_ny();
+  nz=max_map_h->get_nz();
+  for(long ind=0;ind<nx*ny*nz;ind++){
+    for(DensityMaps::const_iterator it = maps.begin();
+        it !=maps.end();it++){
+      if (max_map_data[ind]<(*it)->get_data()[ind]) {
+        max_map_data[ind]=(*it)->get_data()[ind];
+      }}}
+  return max_map.release();
+}
+
 
 IMPEM_END_NAMESPACE
