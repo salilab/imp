@@ -409,13 +409,16 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
     for (HierarchiesTemp::iterator atit = atoms.begin(); atit != atoms.end();
          ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
-      try {
-        CHARMMAtom::setup_particle(*atit,
-                                   it->first->get_atom(typ).get_charmm_type());
-      } catch (ValueException &e) {
-        IMP_WARN_ONCE("Could not determine CHARMM atom type for atom "
-                      << typ << " in residue " << Residue(it->second)
-                      << std::endl, warn_context_);
+      if (!CHARMMAtom::particle_is_instance(*atit)) {
+        try {
+          CHARMMAtom::setup_particle(*atit,
+                                     it->first->get_atom(typ)
+                                     .get_charmm_type());
+        } catch (ValueException &e) {
+          IMP_WARN_ONCE("Could not determine CHARMM atom type for atom "
+                        << typ << " in residue " << Residue(it->second)
+                        << std::endl, warn_context_);
+        }
       }
     }
   }
