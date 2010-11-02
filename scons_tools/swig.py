@@ -288,7 +288,8 @@ def inswig_scanner(node, env, path):
         f= "#/build/swig/"+i
         ret.append(f)
     for m in env['IMP_REQUIRED_PYTHON_MODULES']:
-        ret.append("#/build/swig/IMP_"+m+".i")
+        ret.append("#/modules/"+m+"/pyext/swig.i-in")
+    ret.append('#/kernel/pyext/swig.i-in')
     return ret
 
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
