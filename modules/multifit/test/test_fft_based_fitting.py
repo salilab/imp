@@ -49,7 +49,7 @@ class FFTFittingTest(IMP.test.TestCase):
             IMP.algebra.Vector3D(10.,10.,10.))))
 
         xyz=IMP.core.XYZsTemp(self.ps)
-        #IMP.core.transform(self.rb,rand_t)
+        IMP.core.transform(self.rb,rand_t)
         #IMP.atom.write_pdb(self.mp,"translated.pdb")
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
@@ -149,11 +149,11 @@ class FFTFittingTest(IMP.test.TestCase):
             IMP.algebra.Vector3D(10.,10.,10.))))
 
         xyz=IMP.core.XYZsTemp(refiner.get_refined(rb))
-        #IMP.core.transform(self.rb,rand_t)
+        IMP.core.transform(rb,rand_t)
         xyz_ref=IMP.core.XYZsTemp(refiner_ref.get_refined(rb_ref))
         #fit protein
         fs = IMP.multifit.fft_based_rigid_fitting(
-               rb,refiner,dmap,0,1,200)
+               rb,refiner,dmap,0,1)
         #check that the score makes sense
         sols=fs.get_solutions()
         score=sols.get_score(0)
@@ -162,9 +162,9 @@ class FFTFittingTest(IMP.test.TestCase):
         best_rmsd=9999
         best_score=0
         for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(self.rb,sols.get_transformation(i));
+            IMP.core.transform(rb,sols.get_transformation(i));
             rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-            IMP.core.transform(self.rb,sols.get_transformation(i).get_inverse())
+            IMP.core.transform(rb,sols.get_transformation(i).get_inverse())
             if rmsd<best_rmsd:
                 best_rmsd=rmsd
                 best_score=sols.get_score(i)
@@ -174,6 +174,51 @@ class FFTFittingTest(IMP.test.TestCase):
         IMP.em.write_map(cc_map,"max2.mrc",IMP.em.MRCReaderWriter())
         self.assertAlmostEqual(best_rmsd,0.,delta=1.)
         self.assertAlmostEqual(best_score,1.,delta=1.)
+
+
+    def test_fft_based_rigid_fitting_rotation_translation(self):
+        """test FFT based fitting on 3 particles with 10 rotations"""
+        mdl=IMP.Model()
+        [rb,refiner]=self.create_points(mdl)
+        [rb_ref,refiner_ref]=self.create_points(mdl)
+        #create map
+        dmap=IMP.em.particles2density(refiner.get_refined(rb),3,1)
+        #generate a 3 particle object
+        #randomize protein placement
+        rand_t = IMP.algebra.Transformation3D(
+            IMP.algebra.get_random_rotation_3d(),
+            IMP.algebra.get_random_vector_in(
+            IMP.algebra.BoundingBox3D(
+            IMP.algebra.Vector3D(-10.,-10.,-10.),
+            IMP.algebra.Vector3D(10.,10.,10.))))
+        xyz=IMP.core.XYZsTemp(refiner.get_refined(rb))
+        xyz_ref=IMP.core.XYZsTemp(refiner_ref.get_refined(rb_ref))
+        IMP.core.transform(rb,rand_t)
+        start_rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
+        print "ROT START RMSD:", IMP.atom.get_rmsd(xyz_ref,xyz)
+
+        #fit protein
+        fs = IMP.multifit.fft_based_rigid_fitting(
+               rb,refiner,dmap,0,10)
+        #check that the score makes sense
+        sols=fs.get_solutions()
+        score=sols.get_score(0)
+        #self.assertAlmostEqual(score,1.,
+            #check that the rmsd is low
+        best_rmsd=9999
+        best_score=0
+        for i in range(sols.get_number_of_solutions()):
+            IMP.core.transform(rb,sols.get_transformation(i));
+            rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
+            IMP.core.transform(rb,sols.get_transformation(i).get_inverse())
+            if rmsd<best_rmsd:
+                best_rmsd=rmsd
+                best_score=sols.get_score(i)
+        print "ROT RMSD:",best_rmsd
+        print "ROT SCORE:",best_score
+        cc_map=fs.get_max_cc_map()
+        self.assertLess(best_rmsd,start_rmsd)
+
 
 
 if __name__ == '__main__':
