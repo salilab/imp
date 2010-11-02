@@ -1,6 +1,8 @@
 /** \page recent Change History
 
 \par Fall 2010
+- IMP::atom::Hierarchy requires radii on its leaves
+- IMP::atom::read_pdb add radii to the atoms
 - IMP::helper was merged into IMP::restrainer as all the functionality there was primarily to provide support for restrainer
 - IMP::domino2::SubsetEvaluatorTable was removed. Pass the model and IMP::domino2::ParticleStatesTable to the IMP::domino2::RestraintScoreSubsetFilterTable instead.
 - IMP::atom::Selection was added to allow specification of parts of IMP::atom::Hierarchy using biological sorts of names. A few functions to create restraints from them were added too.
