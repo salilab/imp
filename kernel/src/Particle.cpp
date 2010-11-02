@@ -202,7 +202,18 @@ namespace {
     char particles[num_blocks*sizeof(Particle)];
     std::vector<unsigned int> free_list;
     unsigned int next_to_allocate;
-    Chunk(): next_to_allocate(0){}
+    Chunk(): next_to_allocate(0){
+#if IMP_BUILD == IMP_DEBUG
+      // ramdomize the particle order in debug so that
+      // assuming the particles are ordered will not work
+      // most of the time
+      for (unsigned int i=0; i< num_blocks; ++i) {
+        free_list.push_back(i);
+        next_to_allocate=i+1;
+      }
+      std::random_shuffle(free_list.begin(), free_list.end());
+#endif
+    }
   };
   std::vector<Chunk*> *chunks=NULL;
   unsigned int block_size() {
