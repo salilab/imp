@@ -39,18 +39,28 @@ void filter_close_pairs(C *c, ParticlePairsTemp &ps) {
 }
 
 
-
+// Check that they are unique by checking order
 struct SameParticle {
+  ParticlesTemp ppt_;
+  SameParticle(const ParticlesTemp &ppt): ppt_(ppt){
+    std::sort(ppt_.begin(), ppt_.end());
+  }
   bool operator()(ParticlePair pp) {
-    return pp[0]==pp[1];
+    if (binary_search(ppt_.begin(), ppt_.end(), pp[0])
+        && binary_search(ppt_.begin(), ppt_.end(), pp[1])) {
+      return !(pp[0] < pp[1]);
+    } else {
+      return false;
+    }
   }
 };
 
 
 
-inline void filter_same(ParticlePairsTemp &c) {
+inline void filter_same(ParticlePairsTemp &c,
+                        const ParticlesTemp &moved) {
   c.erase(std::remove_if(c.begin(), c.end(),
-                         SameParticle()),
+                         SameParticle(moved)),
           c.end());
 }
 
