@@ -122,6 +122,23 @@ ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
 }
 
 
+namespace {
+  struct Found {
+    ParticlesTemp ps_;
+    Found(const ParticlesTemp &ps): ps_(ps){
+      std::sort(ps_.begin(), ps_.end());
+    }
+    bool operator()(const ParticlePair &pp) const {
+      if (std::binary_search(ps_.begin(), ps_.end(), pp[0])
+          || std::binary_search(ps_.begin(), ps_.end(), pp[1])) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+}
+
 void CoreClosePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(c_);
@@ -133,6 +150,16 @@ void CoreClosePairContainer::do_before_evaluate() {
     if (first_call_) {
       IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
       ParticlePairsTemp c= cpf_->get_close_pairs(c_->get_particles());
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        ParticlesTemp ps= c_->get_particles();
+        std::sort(ps.begin(), ps.end());
+        IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end())==ps.end(),
+                        "Duplicates in input");
+        for (unsigned int i=0; i< c.size(); ++i) {
+          IMP_INTERNAL_CHECK(c[i][0] != c[i][1],
+                             "Homo pair found");
+        }
+      }
       internal::filter_close_pairs(this, c);
       moved_->reset();
       IMP_LOG(TERSE, "Found " << c.size() << " pairs." << std::endl);
@@ -149,11 +176,15 @@ void CoreClosePairContainer::do_before_evaluate() {
                                                        moved_->get_particles());
           // make one pass
           internal::filter_close_pairs(this, ret);
-          internal::filter_same(ret);
+          internal::filter_same(ret, moved_->get_particles());
           //internal::filter_far(ret, get_distance());
+          remove_from_list_if(Found(moved_->get_particles()));
           IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
           add_to_list(ret);
           moved_->reset_moved();
+          IMP_LOG(TERSE, "Count is now "
+                  << std::distance(particle_pairs_begin(),
+                                   particle_pairs_end()) << std::endl);
         } else {
           IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
                   << std::endl);
@@ -164,7 +195,6 @@ void CoreClosePairContainer::do_before_evaluate() {
           moved_->reset();
         }
       } else {
-
         IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
       }
     }
@@ -178,6 +208,24 @@ void CoreClosePairContainer::do_before_evaluate() {
                                      particle_pairs_end());
     unsigned int num= std::distance(particle_pairs_begin(),
                                     particle_pairs_end());
+    for (ParticlePairIterator it=particle_pairs_begin();
+         it != particle_pairs_end(); ++it) {
+      for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains_particle_pair(*it),
+                           "Pair " << *it
+                           << " should have been filtered by filter "
+                           << get_pair_filter(i)->get_name());
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)
+                           ->get_contains_particle_pair(ParticlePair((*it)[0],
+                                                                     (*it)[1])),
+                           "Filter is not symmetric on pair " << *it
+                           << get_pair_filter(i)->get_name());
+      }
+      IMP_INTERNAL_CHECK(existings.find(ParticlePair((*it)[1], (*it)[0]))
+                         == existings.end(),
+                         "Can't have both a pair and its reverse in the list"
+                         << *it);
+    }
     IMP_INTERNAL_CHECK(existings.size() == num,
                        "Not all particle pairs in list are unique: "
                        << num

@@ -109,6 +109,30 @@ protected:
       ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
     }
   }
+  template <class F>
+    struct AccIf {
+    F f_;
+    mutable ParticlePairsTemp rem_;
+    AccIf(F f, ParticlePairsTemp &rem): f_(f), rem_(rem){}
+    bool operator()(const ParticlePair& cur) const {
+      if (f_(cur)) {
+        rem_.push_back(cur);
+        return true;
+      } return false;
+    }
+  };
+  template <class F>
+  void remove_from_list_if(F f) {
+    index_.clear();
+    if (get_has_added_and_removed_containers()) {
+      ParticlePairsTemp removed;
+      data_.remove_if(AccIf<F>(f, removed));
+      ListLikePairContainer* ac=get_removed();
+      ac->data_.insert(ac->data_.end(), removed.begin(), removed.end());
+    } else {
+      data_.remove_if(f);
+    }
+  }
   void add_to_list(const ParticlePair& cur) {
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
       data_.push_back(cur);
