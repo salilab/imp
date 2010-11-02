@@ -276,7 +276,11 @@ IMPATOMEXPORT Hierarchy
 read_pdb(TextInput in,
          Model* model,
          const PDBSelector& selector,
-         bool select_first_model = true);
+         bool select_first_model = true
+#ifndef IMP_DOXYGEN
+         , bool no_radii=false
+#endif
+         );
 
 
 

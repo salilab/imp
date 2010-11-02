@@ -13,6 +13,7 @@
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/element.h>
+#include <IMP/atom/force_fields.h>
 #include <boost/algorithm/string.hpp>
 #include <locale>
 #include <fstream>
@@ -178,7 +179,11 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
                       internal::atom_zcoord(pdb_line));
   // atom decorator
   Atom d = Atom::setup_particle(p, atom_name);
-  p->set_name(std::string("Atom "+ atom_name.get_string()));
+  int residue_index = internal::atom_residue_number(pdb_line);
+  std::ostringstream oss;
+  oss << "Atom "+ atom_name.get_string() << " of residue "
+      << residue_index;
+  p->set_name(oss.str());
   core::XYZ::setup_particle(p, v).set_coordinates_are_optimized(true);
   d.set_input_index(internal::atom_number(pdb_line));
   d.set_element(e);
@@ -228,7 +233,8 @@ namespace {
                        Model *model,
                        const PDBSelector& selector,
                        bool select_first_model,
-                       bool split_models)
+                       bool split_models,
+                       bool noradii)
 {
   // hierarchy decorator
   Hierarchies ret;
@@ -323,16 +329,19 @@ namespace {
              " Thanks for the effort.");
     return Hierarchies();
   }
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    canonicalize(ret[i]);
-  }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  if (!noradii) {
     for (unsigned int i=0; i< ret.size(); ++i) {
-      if (!ret[i].get_is_valid(true)) {
-        IMP_ERROR("Invalid hierarchy produced ");
-        IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
-        throw InternalException("Bad hierarchy");
-        // should clean up
+      add_radii(ret[i]);
+      canonicalize(ret[i]);
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        if (!ret[i].get_is_valid(true)) {
+          IMP_ERROR("Invalid hierarchy produced ");
+          IMP_ERROR_WRITE(IMP::core::show<Hierarchy>(ret[i], IMP_STREAM));
+          throw InternalException("Bad hierarchy");
+          // should clean up
+        }
       }
     }
   }
@@ -342,7 +351,7 @@ namespace {
 
 Hierarchy read_pdb(TextInput in, Model *model) {
   Hierarchies ret= read_pdb(in,nicename(in.get_name()), model,
-                            NonWaterPDBSelector(), true, false);
+                            NonWaterPDBSelector(), true, false, false);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(),
               ValueException);
@@ -354,10 +363,11 @@ Hierarchy read_pdb(TextInput in, Model *model) {
 
 Hierarchy read_pdb(TextInput in, Model *model,
                    const PDBSelector& selector,
-                   bool select_first_model)
+                   bool select_first_model,
+                   bool no_radii)
 {
   Hierarchies ret= read_pdb(in, nicename(in.get_name()), model, selector,
-                            select_first_model, false);
+                            select_first_model, false, no_radii);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(),
               ValueException);
@@ -370,7 +380,8 @@ Hierarchy read_pdb(TextInput in, Model *model,
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                    const PDBSelector& selector)
 {
-  return read_pdb(in, nicename(in.get_name()), model, selector, false, true);
+  return read_pdb(in, nicename(in.get_name()), model, selector, false,
+                  true, false);
 }
 
 // mol2.cpp
