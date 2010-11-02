@@ -69,6 +69,12 @@ public:
   Particle *get(unsigned int i) const {
     return P::operator[](i);
   }
+  IMP_HASHABLE_INLINE(ParticleTuple<D>, std::size_t seed = 0;
+               for (unsigned int i=0; i< D; ++i) {
+                 boost::hash_combine(seed,
+                                     P::operator[](i));
+               }
+               return seed;);
   IMP_COMPARISONS;
   std::string get_name() const {
     bool first=true;
