@@ -2,20 +2,25 @@ Import('env')
 import scons_tools.gcc
 
 if scons_tools.gcc.get_is_gcc(env):
-    cxxflags=['-fno-finite-math-only',
-              '-ftrapping-math',
-              '-fsignaling-nans',
-              '-fno-float-store',
-              '-frounding-math',
-              '-fno-strict-aliasing',
-              #ensure it can be run in valgrind
-              '-DCGAL_DISABLE_ROUNDING_MATH_CHECK']
+    cxxflags=[]
+    yeslist=['trapping-math',
+             'signaling-nans',
+             'rounding-math']
+    nolist=['finite-math-only',
+            'float-store',
+            'strict-aliasing',
+            'tree-vectorize']
+    if scons_tools.gcc.get_version(env)>= 4.3:
+        yeslist.append('signed-zeros')
+        nolist+=['reciprocal-math', 'associative-math']
+    l=['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
+    for f in env['CXXFLAGS']:
+        if not f in l:
+            cxxflags.append(f)
+    cxxflags.append('-DCGAL_DISABLE_ROUNDING_MATH_CHECK')
+    cxxflags+= ['-f'+x for x in yeslist]+['-fno-'+x for x in nolist]
     if env['build']!= 'debug':
         cxxflag=cxxflags+['-O1', '-DNDEBUG']
-    if scons_tools.gcc.get_version(env)>= 4.3:
-        cxxflags=cxxflags+['-fsigned-zeros',
-                           '-fno-reciprocal-math',
-                           '-fno-associative-math']
 else:
     cxxflags=[]
 env.IMPModuleBuild(version='SVN',
