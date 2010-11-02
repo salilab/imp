@@ -47,7 +47,7 @@ Particles density2particles(DensityMap &dmap, Float threshold,
         ind = dmap.xyz_ind2voxel(i,j,k);
         val = dmap.get_value(ind);
         if (val > threshold) {
-          Particle * p = new Particle(m);
+          IMP_NEW(Particle,p,(m));
           x = dmap.get_location_in_dim_by_voxel(ind,0);
           y = dmap.get_location_in_dim_by_voxel(ind,1);
           z = dmap.get_location_in_dim_by_voxel(ind,2);
