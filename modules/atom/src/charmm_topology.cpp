@@ -185,6 +185,49 @@ namespace {
 
 }
 
+
+CHARMMBondEndpoint::CHARMMBondEndpoint(std::string atom_name,
+                                       CHARMMResidueTopology *residue)
+  : atom_name_(atom_name) {
+  if (residue) {
+    residue_=residue;
+  }
+}
+
+  //! Map the endpoint to an Atom particle.
+Atom CHARMMBondEndpoint::get_atom(const CHARMMResidueTopology *current_residue,
+                const CHARMMResidueTopology *previous_residue,
+                const CHARMMResidueTopology *next_residue,
+                const std::map<const CHARMMResidueTopology *,
+                               Hierarchy> &resmap) const {
+    if (residue_) {
+      CHARMMResidueTopology *res
+        =dynamic_cast<CHARMMResidueTopology*>(residue_.get());
+      return IMP::atom::get_atom(resmap.find(res)->second.get_as_residue(),
+                                 AtomType(atom_name_));
+    } else if (atom_name_[0] == '+') {
+      if (next_residue) {
+        return IMP::atom::get_atom(resmap.find(next_residue)->second.
+                                                         get_as_residue(),
+                                   AtomType(atom_name_.substr(1)));
+      } else {
+        return Atom();
+      }
+    } else if (atom_name_[0] == '-') {
+      if (previous_residue) {
+        return IMP::atom::get_atom(resmap.find(previous_residue)->second.
+                                                           get_as_residue(),
+                                   AtomType(atom_name_.substr(1)));
+      } else {
+        return Atom();
+      }
+    } else {
+      return IMP::atom::get_atom(resmap.find(current_residue)->second.
+                                                          get_as_residue(),
+                                 AtomType(atom_name_));
+    }
+  }
+
 void CHARMMResidueTopologyBase::add_atom(const CHARMMAtomTopology &atom)
 {
   atoms_.push_back(atom);
