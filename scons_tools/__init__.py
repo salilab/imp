@@ -9,6 +9,7 @@ import symlinks
 import bug_fixes
 import standards
 import compilation
+import imp_module
 import gcc
 import swig
 import platform
@@ -340,6 +341,49 @@ def MyEnvironment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
+    env.Prepend(CPPPATH=['#/build/include'])
+    env.Prepend(LIBPATH=['#/build/lib'])
+    env.Append(BUILDERS={'IMPRun': run.Run})
+    env.Append(BUILDERS={'IMPColorizePython': examples.ColorizePython})
+    env.Append(BUILDERS = {'IMPGeneratePCH': pch.GeneratePCH,
+                           'IMPBuildPCH': pch.BuildPCH})
+    env.AddMethod(imp_module.get_module_ok)
+
+    # these should be in the module, but this seems to speed things up
+    env.AddMethod(imp_module.IMPModuleLib)
+    env.AddMethod(imp_module.IMPModuleInclude)
+    env.AddMethod(imp_module.IMPModuleData)
+    env.AddMethod(imp_module.IMPModulePython)
+    env.AddMethod(imp_module.IMPModuleTest)
+    env.AddMethod(imp_module.IMPModuleBuild)
+    env.AddMethod(imp_module.IMPModuleGetHeaders)
+    env.AddMethod(imp_module.IMPModuleGetExamples)
+    env.AddMethod(imp_module.IMPModuleGetExampleData)
+    env.AddMethod(imp_module.IMPModuleGetPythonTests)
+    env.AddMethod(imp_module.IMPModuleGetCPPTests)
+    env.AddMethod(imp_module.IMPModuleGetData)
+    env.AddMethod(imp_module.IMPModuleGetSources)
+    env.AddMethod(imp_module.IMPModuleGetPython)
+    env.AddMethod(imp_module.IMPModuleGetSwigFiles)
+    env.AddMethod(imp_module.IMPModuleGetBins)
+    env.AddMethod(imp_module.IMPModuleBin)
+    env.AddMethod(imp_module.IMPModuleDoc)
+    env.AddMethod(imp_module.IMPModuleExamples)
+    env.AddMethod(imp_module.IMPModuleGetDocs)
+    env.AddMethod(modpage.Publication)
+    env.AddMethod(modpage.Website)
+    env.AddMethod(modpage.StandardPublications)
+    env.AddMethod(modpage.StandardLicense)
+    env.Append(BUILDERS={'IMPModuleTest': test.UnitTest})
+    env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
+    env.Append(BUILDERS={'IMPModuleExamplesDox': examples.MakeDox})
+    env.Append(BUILDERS={'IMPModuleSWIG': swig.SwigIt})
+    env.Append(BUILDERS={'IMPModulePatchSWIG': swig.PatchSwig})
+    env.Append(BUILDERS={'IMPModuleSWIGPreface': swig.SwigPreface})
+    env.Append(BUILDERS={'IMPModuleMakeModPage': modpage.MakeModPage})
+    env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
+                           'IMPModuleConfigCPP': config_h.ConfigCPP,
+                           'IMPModuleLinkTest': link_test.LinkTest})
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
@@ -418,6 +462,8 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
     return e
+
+
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""

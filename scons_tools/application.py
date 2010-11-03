@@ -15,7 +15,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
         return
     env= get_bin_environment(envi)
     for l in required_modules:
-        if not env.get(l+"_ok", False):
+        if not env.get_module_ok(l):
             print "Module",l, "not found or disabled."
             return
     if env['fastlink']:
