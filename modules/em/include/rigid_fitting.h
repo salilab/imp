@@ -68,7 +68,7 @@ public:
   //! Add a solution to the fitting solution set
   void add_solution(const algebra::Transformation3D &t,Float score);
   //! Sort solutions by cross-correlation scores
-  void sort();
+  void sort(bool reverse=false);
   //! Multiply each transformation (T) by t,
   //!such that the new transformation are T*t
   void multiply(const algebra::Transformation3D &t) {
