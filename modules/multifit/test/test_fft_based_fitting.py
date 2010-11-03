@@ -45,8 +45,10 @@ class FFTFittingTest(IMP.test.TestCase):
         #IMP.atom.write_pdb(self.mp,"translated.pdb")
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
+        rots=IMP.algebra.Rotation3Ds()
+        rots.append(IMP.algebra.get_identity_rotation_3d())
         fs = IMP.multifit.fft_based_rigid_fitting(
-               self.rb,self.refiner,self.scene,0.1,1,3)
+               self.rb,self.refiner,self.scene,0.1,rots,3)
         #check that the score makes sense
         sols=fs.get_solutions()
         #self.assertAlmostEqual(score,1.,
@@ -145,8 +147,10 @@ class FFTFittingTest(IMP.test.TestCase):
         IMP.core.transform(rb,rand_t)
         xyz_ref=IMP.core.XYZsTemp(refiner_ref.get_refined(rb_ref))
         #fit protein
+        rots=IMP.algebra.Rotation3Ds()
+        rots.append(IMP.algebra.get_identity_rotation_3d())
         fs = IMP.multifit.fft_based_rigid_fitting(
-               rb,refiner,dmap,0,1)
+               rb,refiner,dmap,0,rots)
         #check that the score makes sense
         sols=fs.get_solutions()
         score=sols.get_score(0)
@@ -192,8 +196,9 @@ class FFTFittingTest(IMP.test.TestCase):
         print "ROT START RMSD:", IMP.atom.get_rmsd(xyz_ref,xyz)
 
         #fit protein
+        rots=IMP.algebra.get_uniform_cover_rotations_3d(10)
         fs = IMP.multifit.fft_based_rigid_fitting(
-               rb,refiner,dmap,0,10)
+               rb,refiner,dmap,0,rots)
         #check that the score makes sense
         sols=fs.get_solutions()
         score=sols.get_score(0)
