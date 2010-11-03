@@ -708,7 +708,6 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
   float density_threshold = std::max(em::EPS,hist.get_top(0.85));
-  // check the best option here (0.75)
   std::cout<<"=======density threshold:"<<density_threshold<<std::endl;
   DensityDataPoints ddp(hit_map,density_threshold);
   VQClustering vq(&ddp,num_solutions);
@@ -738,7 +737,8 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
 
 FFTFittingResults fft_based_rigid_fitting(
    core::RigidBody &rb,Refiner *rb_refiner,
-   em::DensityMap *dmap, Float threshold, int number_of_rotations,
+   em::DensityMap *dmap, Float threshold,
+   const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation, bool local) {
 
   core::XYZsTemp ps_xyz =  core::XYZsTemp(rb_refiner->get_refined(rb));
@@ -752,13 +752,6 @@ FFTFittingResults fft_based_rigid_fitting(
   FFTFitting fft_fit(dmap,rb,rb_refiner);
   fft_fit.prepare(threshold);
   IMP_LOG(TERSE,"==== Going to run FFT on each rotation"<<std::endl);
-  algebra::Rotation3Ds rots;
-  if (number_of_rotations==1) {
-    rots.push_back(algebra::get_identity_rotation_3d());
-  }
-  else{
-    rots = algebra::get_uniform_cover_rotations_3d(number_of_rotations);
-  }
   boost::progress_display show_progress(rots.size());
   em::FittingSolutions temp_fits;
   for(unsigned int i=0;i<rots.size();i++) {

@@ -157,7 +157,8 @@ protected:
 
 IMPMULTIFITEXPORT FFTFittingResults fft_based_rigid_fitting(
    core::RigidBody &rb,Refiner *rb_refiner,
-   em::DensityMap *dmap, Float threshold, int number_of_rotations,
+   em::DensityMap *dmap, Float threshold,
+   const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation=10,
    bool local=false);
 

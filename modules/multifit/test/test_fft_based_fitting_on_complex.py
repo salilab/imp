@@ -66,8 +66,10 @@ class FFTFittingTest(IMP.test.TestCase):
             IMP.core.transform(rb,rand_t)
             xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs_ref[i]))
             #fit protein
+            rots=IMP.algebra.Rotation3Ds()
+            rots.append(IMP.algebra.get_identity_rotation_3d())
             fs = IMP.multifit.fft_based_rigid_fitting(
-                rb,self.refiner,self.scene,0,1,20,True)
+                rb,self.refiner,self.scene,0,rots,20,True)
             #check that the score makes sense
             sols=fs.get_solutions()
             best_rmsd=9999
@@ -85,7 +87,7 @@ class FFTFittingTest(IMP.test.TestCase):
             IMP.em.write_map(cc_map,"comp"+str(i)+"_cc_max.mrc",IMP.em.MRCReaderWriter())
             print "PDB best RMSD for",str(i),"is:",best_rmsd
             print "SCORE:",best_score
-            self.assertLess(best_rmsd,6.)
+            self.assertLess(best_rmsd,8.)
             print "end"
             #self.assertAlmostEqual(best_score,1.,delta=1.)
 
