@@ -11,6 +11,11 @@
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
+IntKey get_subtype_key(){
+  static IntKey k("mol2 subtype");
+  return k;
+}
+
 bool is_mol2file_rec(const String& file_name_type)
 {
   return(file_name_type.find("mol2") != String::npos);
@@ -66,63 +71,21 @@ bool is_ATOM_del(const String& bond_line,
 }
 
 
-bool check_arbond(Particle* atom_p) {
-  Int bond_number, type, i;
-  Int count_ar=0;
-  Bond bond_d;
-  if (!Bonded::particle_is_instance(atom_p)) return false;
-  Bonded bonded_d = Bonded(atom_p);
-  bond_number = bonded_d.get_number_of_bonds();
-  for(i=0; i<bond_number; i++) {
-    bond_d = bonded_d.get_bond(i);
-    type = bond_d.get_type();
-    if(type == Bond::AROMATIC) {
-      count_ar++;
-    }
+std::string get_mol2_name(Atom at) {
+  Subtype st= ST_NONE;
+  if (at->has_attribute(get_subtype_key())) {
+    st= Subtype(at->get_value(get_subtype_key()));
   }
-  if (count_ar > 1) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-bool check_ambond(Particle* atom_p) {
-  Int bond_number, type, i;
-  Int count_ar=0;
-  Bond bond_d;
-  if (!Bonded::particle_is_instance(atom_p)) return false;
-  Bonded bonded_d = Bonded(atom_p);
-  bond_number = bonded_d.get_number_of_bonds();
-  for(i=0; i<bond_number; i++) {
-    bond_d = bonded_d.get_bond(i);
-    type = bond_d.get_type();
-    if(type == Bond::AMIDE) {
-      count_ar++;
-    }
-  }
-  if (count_ar > 1) {
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-IMPATOMEXPORT std::string get_mol2_name(Atom at) {
-  bool isar= check_arbond(at);
-  bool isam= check_ambond(at);
   std::string atom_type = at.get_atom_type().get_string();
   if (atom_type.find("HET:") == 0) {
     atom_type= std::string(atom_type, 4);
   }
   boost::trim(atom_type);
-  if (isar) {
+  if (st==ST_AR) {
     atom_type += ".ar";
   }
-  if (isam) {
-    atom_type += ".ar";
+  if (st==ST_AM) {
+    atom_type += ".am";
   }
   for (unsigned int i=0; i< atom_type.size(); ++i) {
     if (std::isdigit(atom_type[i], std::locale())) {
@@ -134,8 +97,9 @@ IMPATOMEXPORT std::string get_mol2_name(Atom at) {
   return atom_type;
 }
 
-IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
+std::pair<AtomType, Subtype> get_atom_type_from_mol2(std::string name) {
   boost::trim(name);
+  Subtype subtype=ST_NONE;
   std::string element(name, 0, name.find('.'));
   Element e= get_element_table().get_element(element);
   if (e== UNKNOWN_ELEMENT) {
@@ -143,9 +107,11 @@ IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
               IOException);
   }
   if (name.find(".ar") != std::string::npos) {
+    subtype=ST_AR;
     name= std::string(name, 0, name.find('.'));
   }
   if (name.find(".am") != std::string::npos) {
+    subtype=ST_AM;
     name= std::string(name, 0, name.find('.'));
   }
   if (name.find('.') != std::string::npos) {
@@ -166,7 +132,7 @@ IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
   if (!get_atom_type_exists(atom_name)) {
     add_atom_type(atom_name, e);
   }
-  return AtomType(atom_name);
+  return std::make_pair(AtomType(atom_name), subtype);
 }
 
 

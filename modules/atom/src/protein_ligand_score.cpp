@@ -103,7 +103,8 @@ namespace {
     PROTEIN_TYPE(ILE_CB)
     PROTEIN_TYPE(ILE_CG1)
     PROTEIN_TYPE(ILE_CG2)
-    PROTEIN_TYPE(ILE_CD1)
+    PROTEIN_TYPE(ILE_CD)
+    PROTEIN_TYPE_ALIAS(ILE_CD1, ILE_CD)
     PROTEIN_TYPE(LEU_N)
     PROTEIN_TYPE(LEU_CA)
     PROTEIN_TYPE(LEU_C)
@@ -513,11 +514,11 @@ PMFTable::PMFTable(TextInput tin) {
       std::istringstream ins(line);
       std::string pname, lname;
       ins >> pname >> lname;
-      IMP_INTERNAL_CHECK(pname == ProteinType(i).get_string(),
+      IMP_INTERNAL_CHECK(ProteinType(pname) == ProteinType(i),
                          "Expected and found protein types don't match: "
                          << "expected \"" <<  ProteinType(i).get_string()
                          << " got " << pname << " at " << i << " " << j);
-      IMP_INTERNAL_CHECK(lname == LigandType(j).get_string(),
+      IMP_INTERNAL_CHECK(LigandType(lname) == LigandType(j),
                          "Expected and found ligand types don't match: "
                          << "expected \"" <<  LigandType(j).get_string()
                          << " got " << pname << " at " << i << " " << j);
