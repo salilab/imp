@@ -20,8 +20,17 @@ import pch
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
 
-#def module_depends(env, target, source):
-#    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+def get_module_name(env):
+    return env['IMP_MODULE']
+
+def get_module_ok(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env.get("IMP"+module+"_ok", False)
+
+def _set_module_ok(env, module, ok):
+    env["IMP"+module+"_ok"]=ok
+
 
 def file_compare(a, b):
     """Check if two files are the same, by comparing the path"""
@@ -429,7 +438,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                env['IMP_MODULE'] == 'kernel')\
                          +env[env['IMP_MODULE']+"_libs"]))
     penv.Prepend(LIBS=['imp%s' % module_suffix])
-    swigfile= penv._IMPSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
+    swigfile= penv.IMPModuleSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
                                            env.Value(env['IMP_REQUIRED_PYTHON_MODULES']),
                                            env.Value(env['IMP_MODULE_VERSION']),
@@ -441,7 +450,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
             swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
     dest = File('#/build/lib/%(module_include_path)s/__init__.py' % vars)
     produced=File("#/build/src/"+vars['module_include_path'].replace("/",".")+".py")
-    swigr=penv._IMPSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
+    swigr=penv.IMPModuleSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
                                '#/build/src/%(module)s_wrap.h-in'%vars],
                        source=swigfile)
     #print "Moving", produced.path, "to", dest.path
@@ -451,9 +460,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     module_deps_requires(env, swigr, "swig", [])
     module_deps_requires(env, swigr, "include", [])
     module_requires(env, swigr, 'include')
-    patched=penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.cpp'%vars],
+    patched=penv.IMPModulePatchSWIG(target=['#/build/src/%(module)s_wrap.cpp'%vars],
                                source=['#/build/src/%(module)s_wrap.cpp-in'%vars])
-    penv._IMPPatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
+    penv.IMPModulePatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
                        source=['#/build/src/%(module)s_wrap.h-in'%vars])
     lpenv= bug_fixes.clone_env(penv)
     if env['IMP_USE_PCH']:
@@ -592,7 +601,7 @@ def IMPModuleDoc(env, files, authors,
     build=[]
     install=[]
     docdir=env['docdir']+"/"+vars['module_include_path']
-    build.append(env._IMPMakeModPage(source=[env.Value(authors),
+    build.append(env.IMPModuleMakeModPage(source=[env.Value(authors),
                                              env.Value(brief),
                                              env.Value(overview),
                                              env.Value(publications),
@@ -632,10 +641,10 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         (build, install_list)= _make_programs(env, cpp_required_modules, cpp_extra_libs, False, cpp_tests)
-        cpptest= env._IMPModuleCPPTest(target="cpp_test_programs.py",
+        cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= build)
         files.append(cpptest)
-    test = env._IMPModuleTest(target="test.passed", source=files,
+    test = env.IMPModuleTest(target="test.passed", source=files,
                               TEST_TYPE='unit test')
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
@@ -753,7 +762,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     #print module_namespace
     found_optional_modules=[]
     for x in optional_modules:
-        if env.get(x+"_ok", False):
+        if env.get_module_ok(x):
             found_optional_modules.append(x)
     env[module+"_required_modules"]=required_modules+found_optional_modules\
                                      +lib_only_required_modules
@@ -784,7 +793,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         env[module+"_libs"]=m_libs
         env = bug_fixes.clone_env(env)
     for m in required_modules+lib_only_required_modules:
-        if not env.get(m+"_ok", False):
+        if not env.get_module_ok(m):
             module_failure = "module "+m+" not supported"
     env['IMP_REQUIRED_PYTHON_MODULES']= required_modules+found_optional_modules
     env['IMP_REQUIRED_LIB_MODULES']= lib_only_required_modules\
@@ -796,53 +805,13 @@ def IMPModuleBuild(env, version, required_modules=[],
                 env.Append(LINKFLAGS=['-limp_'+m, '-limp'])
             else:
                 env.Append(LINKFLAGS=['-limp'])
-    env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
-                           'IMPModuleConfigCPP': config_h.ConfigCPP,
-                           'IMPModuleLinkTest': link_test.LinkTest,
-                           'IMPGeneratePCH': pch.GeneratePCH,
-                           'IMPBuildPCH': pch.BuildPCH})
-    env.Prepend(CPPPATH=['#/build/include'])
-    env.Prepend(LIBPATH=['#/build/lib'])
+    build_config=[]
     if cxxflags:
         env.Replace(CXXFLAGS=cxxflags)
     if cppdefines:
         env.Append(CPPDEFINES=cppdefines)
-    build_config=[]
     # Generate version information
-    env.AddMethod(IMPModuleLib)
-    env.AddMethod(IMPModuleInclude)
     module_alias(env, 'config', build_config)
-    env.AddMethod(IMPModuleData)
-    env.AddMethod(IMPModulePython)
-    env.AddMethod(IMPModuleTest)
-    env.AddMethod(IMPModuleBuild)
-    env.AddMethod(IMPModuleGetHeaders)
-    env.AddMethod(IMPModuleGetExamples)
-    env.AddMethod(IMPModuleGetExampleData)
-    env.AddMethod(IMPModuleGetPythonTests)
-    env.AddMethod(IMPModuleGetCPPTests)
-    env.AddMethod(IMPModuleGetData)
-    env.AddMethod(IMPModuleGetSources)
-    env.AddMethod(IMPModuleGetPython)
-    env.AddMethod(IMPModuleGetSwigFiles)
-    env.AddMethod(IMPModuleGetBins)
-    env.AddMethod(IMPModuleBin)
-    env.AddMethod(IMPModuleDoc)
-    env.AddMethod(IMPModuleExamples)
-    env.AddMethod(IMPModuleGetDocs)
-    env.AddMethod(modpage.Publication)
-    env.AddMethod(modpage.Website)
-    env.AddMethod(modpage.StandardPublications)
-    env.AddMethod(modpage.StandardLicense)
-    env.Append(BUILDERS={'_IMPModuleTest': test.UnitTest})
-    env.Append(BUILDERS={'_IMPModuleCPPTest': test.CPPTestHarness})
-    env.Append(BUILDERS={'_IMPColorizePython': examples.ColorizePython})
-    env.Append(BUILDERS={'_IMPExamplesDox': examples.MakeDox})
-    env.Append(BUILDERS={'_IMPSWIG': swig.SwigIt})
-    env.Append(BUILDERS={'_IMPPatchSWIG': swig.PatchSwig})
-    env.Append(BUILDERS={'_IMPSWIGPreface': swig.SwigPreface})
-    env.Append(BUILDERS={'_IMPMakeModPage': modpage.MakeModPage})
-    env.Append(BUILDERS={'IMPRun': run.Run})
 
     if version == "SVN" and env['svn'] and env['SVNVERSION']:
         if env.get('repository'):
@@ -870,11 +839,11 @@ def IMPModuleBuild(env, version, required_modules=[],
         print "IMP."+env['IMP_MODULE']+" is disabled due to", str(module_failure)
         #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
         test.disabled_modules.append(module)
-        preclone[module+"_ok"]=False
+        _set_module_ok(preclone, module, False)
         Return()
     else:
         print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION']
-        preclone[module+"_ok"]=True
+        _set_module_ok(preclone, module, True)
 
 
 

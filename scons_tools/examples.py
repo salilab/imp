@@ -62,7 +62,7 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
     exampledir = env.GetInstallDirectory('docdir')+"/examples"
     for f in example_files:
         if str(f).endswith(".py"):
-            c= env._IMPColorizePython(str(inputpath) + '/' \
+            c= env.IMPColorizePython(str(inputpath) + '/' \
                                       + os.path.dirname(str(f)) \
                                       + '/generated/' \
                                       + os.path.basename(str(f))+".html",
@@ -73,7 +73,7 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
         #    install.append(env.Install(exampledir+"/"+prefix, f.abspath))
     install = hierarchy.InstallExampleHierarchy(env, exampledir+"/"+prefix, example_files+data_files, False)
     build = hierarchy.InstallExampleHierarchy(env, "#/build/doc/examples/"+prefix, example_files+data_files, True)
-    test= env._IMPModuleTest('tests.passed',
+    test= env.IMPModuleTest('tests.passed',
                              ["#/tools/imppy.sh",
                               "#/scons_tools/run-all-examples.py"]\
                              +[x for x in example_files
@@ -81,6 +81,6 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
                                and str(x).find("fragment")==-1] + test_files,
                              TEST_TYPE='example')
     env.AlwaysBuild("tests.passed")
-    doxpage= env._IMPExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)
+    doxpage= env.IMPModuleExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)
     dox.append(doxpage)
     return (dox, build, install, test)
