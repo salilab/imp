@@ -11,31 +11,23 @@ import IMP.restrainer
 class FFTFittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
-    def load_density_map(self):
-        mrw = IMP.em.MRCReaderWriter()
-        self.scene = IMP.em.read_map(self.get_input_file_name("1f7dA00_8.mrc"), mrw)
-        self.scene.get_header_writable().set_resolution(8.)
-        self.scene.update_voxel_size(1.5)
-    def load_protein(self,pdb_filename):
-        self.mp= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                              self.imp_model, IMP.atom.NonWaterPDBSelector())
-        IMP.atom.add_radii(self.mp)
-        self.mp_ref= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
-                              self.imp_model, IMP.atom.NonWaterPDBSelector())
-        IMP.atom.add_radii(self.mp_ref)
-
+    def load_data(self):
+        self.mp= IMP.atom.read_pdb(self.open_input_file("1z5s.pdb"),
+                                   self.imp_model)
+        self.mp_ref= IMP.atom.read_pdb(self.open_input_file("1z5s.pdb"),
+                              self.imp_model)
         self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.ps = IMP.Particles(IMP.core.get_leaves(self.mp))
         self.rb=IMP.atom.setup_as_rigid_body(self.mp)
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        self.scene=IMP.em.particles2density(IMP.core.get_leaves(self.mp),6,1.5)
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
         self.imp_model = IMP.Model()
-        self.load_density_map()
-        self.load_protein("1f7dA00.pdb")
+        self.load_data()
 
 
     def test_fft_based_rigid_fitting_translation_for_protein(self):
@@ -54,7 +46,7 @@ class FFTFittingTest(IMP.test.TestCase):
         xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
         #fit protein
         fs = IMP.multifit.fft_based_rigid_fitting(
-               self.rb,self.refiner,self.scene,0.15,1,10)
+               self.rb,self.refiner,self.scene,0.1,1,3)
         #check that the score makes sense
         sols=fs.get_solutions()
         #self.assertAlmostEqual(score,1.,
@@ -76,7 +68,7 @@ class FFTFittingTest(IMP.test.TestCase):
         print "PDB best RMSD:",best_rmsd
         print "SCORE:",best_score
         print "BEST TRANS:",sols.get_transformation(i)
-        self.assertAlmostEqual(best_rmsd,0.,delta=1.)
+        self.assertLess(best_rmsd,3.)
         self.assertAlmostEqual(best_score,1.,delta=1.)
 
 
@@ -109,7 +101,7 @@ class FFTFittingTest(IMP.test.TestCase):
         mdl=IMP.Model()
         [rb,refiner]=self.create_points(mdl)
         ps_xyz =  IMP.core.XYZsTemp(refiner.get_refined(rb))
-        dmap=IMP.em.particles2density(ps_xyz,3,1)
+        dmap=IMP.em.particles2density(ps_xyz,10,2)
         dmap.calcRMS()
         dmap2=IMP.em.SampledDensityMap(dmap.get_header())
         dmap2.set_particles(ps_xyz)
@@ -138,7 +130,8 @@ class FFTFittingTest(IMP.test.TestCase):
         [rb,refiner]=self.create_points(mdl)
         [rb_ref,refiner_ref]=self.create_points(mdl)
         #create map
-        dmap=IMP.em.particles2density(refiner.get_refined(rb),3,1)
+        spacing=1
+        dmap=IMP.em.particles2density(refiner.get_refined(rb),5,spacing)
         #generate a 3 particle object
         #randomize protein placement
         rand_t = IMP.algebra.Transformation3D(
@@ -169,9 +162,10 @@ class FFTFittingTest(IMP.test.TestCase):
                 best_rmsd=rmsd
                 best_score=sols.get_score(i)
         print "RMSD:",best_rmsd
-        print "SCORE:",best_score
+        print "SCORE:",best_score/spacing
         cc_map=fs.get_max_cc_map()
         IMP.em.write_map(cc_map,"max2.mrc",IMP.em.MRCReaderWriter())
+        IMP.em.write_map(dmap,"orig.mrc",IMP.em.MRCReaderWriter())
         self.assertAlmostEqual(best_rmsd,0.,delta=1.)
         self.assertAlmostEqual(best_score,1.,delta=1.)
 
@@ -217,6 +211,7 @@ class FFTFittingTest(IMP.test.TestCase):
         print "ROT RMSD:",best_rmsd
         print "ROT SCORE:",best_score
         cc_map=fs.get_max_cc_map()
+        IMP.em.write_map(cc_map,"max3.mrc",IMP.em.MRCReaderWriter())
         self.assertLess(best_rmsd,start_rmsd)
 
 

@@ -1,5 +1,9 @@
 Import('env')
 files = [
+         'DataPoints.h',
+         'DataPointsAssignment.h',
+         'VQClustering.h',
+         'ClusteringEngine.h',
          'density_analysis.h',
          'FFTFitting.h',
          'weighted_excluded_volume.h',

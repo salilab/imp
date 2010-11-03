@@ -1,6 +1,7 @@
 Import('env')
 
-env.IMPModuleBuild(version="SVN", required_modules=['core','em','domino','atom'],
-                   required_dependencies=['FFTW3','Boost.FileSystem'])
+env.IMPModuleBuild(version="SVN",
+        required_modules=['core','em','algebra','domino','atom','statistics'],
+        required_dependencies=['FFTW3','Boost.ProgramOptions','Boost.FileSystem'])
 #                   required_dependencies=['Boost.FileSystem'])
 #                   required_dependencies=[])
