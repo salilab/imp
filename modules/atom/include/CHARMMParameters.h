@@ -27,6 +27,7 @@ struct CHARMMBondParameters {
   double force_constant;
   double ideal;
 };
+IMP_VALUES(CHARMMBondParameters, CHARMMBondParametersList);
 
 //! The parameters for a CHARMM dihedral or improper.
 struct CHARMMDihedralParameters {
@@ -34,6 +35,7 @@ struct CHARMMDihedralParameters {
   int multiplicity;
   double ideal;
 };
+IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
 
 //! CHARMM force field parameters.
 /** This class reads in topology and parameter files in CHARMM format and
@@ -85,7 +87,8 @@ public:
   void add_residue_topology(CHARMMIdealResidueTopology &res) {
     residue_topologies_.insert(std::make_pair(res.get_type(), res));
   }
-
+#if 0
+  // return of non const-ref values is not allowed
   CHARMMIdealResidueTopology &get_residue_topology(ResidueType type) {
     std::map<std::string, CHARMMIdealResidueTopology>::iterator it
               = residue_topologies_.find(type.get_string());
@@ -95,8 +98,8 @@ public:
       IMP_THROW("Residue " << type << " does not exist", ValueException);
     }
   }
+#endif
 
-#ifndef SWIG
   const CHARMMIdealResidueTopology &get_residue_topology(std::string name) const
   {
     std::map<std::string, CHARMMIdealResidueTopology>::const_iterator it
@@ -107,7 +110,6 @@ public:
       IMP_THROW("Residue " << name << " does not exist", ValueException);
     }
   }
-#endif
 
   /** \name Patches
 
@@ -118,7 +120,8 @@ public:
   void add_patch(CHARMMPatch &patch) {
     patches_.insert(std::make_pair(patch.get_type(), patch));
   }
-
+#if 0
+  // return of non const ref values is not allowed
   CHARMMPatch &get_patch(std::string name) {
     std::map<std::string, CHARMMPatch>::iterator it = patches_.find(name);
     if (it != patches_.end()) {
@@ -127,8 +130,8 @@ public:
       IMP_THROW("Patch " << name << " does not exist", ValueException);
     }
   }
+#endif
 
-#ifndef SWIG
   const CHARMMPatch &get_patch(std::string name) const {
     std::map<std::string, CHARMMPatch>::const_iterator it = patches_.find(name);
     if (it != patches_.end()) {
@@ -137,12 +140,12 @@ public:
       IMP_THROW("Patch " << name << " does not exist", ValueException);
     }
   }
-#endif
   /**@}*/
 
   //! Create topology that corresponds to the primary sequence of the Hierarchy.
   CHARMMTopology *create_topology(Hierarchy hierarchy) const;
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get bond parameters for the bond between the two given CHARMM atom types.
   /** The atom types may match in any order. If no parameters are present,
        NULL is returned.
@@ -156,7 +159,9 @@ public:
       return NULL;
     }
   }
+#endif
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get parameters for the angle between the three given CHARMM atom types.
   /** The atom types may match in either forward or reverse order.
       If no parameters are present, NULL is returned.
@@ -172,6 +177,7 @@ public:
       return NULL;
     }
   }
+#endif
 
   //! Get parameters for the dihedral between the four given CHARMM atom types.
   /** The atom types may match in either forward or reverse order. When
@@ -207,6 +213,7 @@ public:
     return param;
   }
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get parameters for the improper between the four given CHARMM atom types.
   /** The atom types may match in either forward or reverse order. When
       looking for a match in the library, wildcards are considered; an atom
@@ -230,6 +237,7 @@ public:
       return NULL;
     }
   }
+#endif
 
   //! Auto-generate Angle particles from the passed list of Bond particles.
   /** The angles consist of all unique pairs of bonds which share an

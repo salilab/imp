@@ -43,6 +43,8 @@ public:
   void set_charge(double charge) { charge_ = charge; }
 };
 
+IMP_VALUES(CHARMMAtomTopology, CHARMMAtomTopologies);
+
 class CHARMMResidueTopology;
 
 //! The end of a bond, angle, dihedral, or improper.
@@ -61,13 +63,12 @@ class CHARMMResidueTopology;
     1: or 2: prefixes are used by two-residue patches to refer to atoms in
     each residue patched by the patch.
  */
-class CHARMMBondEndpoint {
+class IMPATOMEXPORT CHARMMBondEndpoint {
   std::string atom_name_;
-  CHARMMResidueTopology *residue_;
+  Pointer<Object> residue_;
 public:
   CHARMMBondEndpoint(std::string atom_name,
-                     CHARMMResidueTopology *residue=NULL)
-                    : atom_name_(atom_name), residue_(residue) {}
+                     CHARMMResidueTopology *residue=NULL);
 
   std::string get_atom_name() const { return atom_name_; }
 
@@ -76,33 +77,10 @@ public:
                 const CHARMMResidueTopology *previous_residue,
                 const CHARMMResidueTopology *next_residue,
                 const std::map<const CHARMMResidueTopology *,
-                               Hierarchy> &resmap) const {
-    if (residue_) {
-      return IMP::atom::get_atom(resmap.find(residue_)->second.get_as_residue(),
-                                 AtomType(atom_name_));
-    } else if (atom_name_[0] == '+') {
-      if (next_residue) {
-        return IMP::atom::get_atom(resmap.find(next_residue)->second.
-                                                         get_as_residue(),
-                                   AtomType(atom_name_.substr(1)));
-      } else {
-        return Atom();
-      }
-    } else if (atom_name_[0] == '-') {
-      if (previous_residue) {
-        return IMP::atom::get_atom(resmap.find(previous_residue)->second.
-                                                           get_as_residue(),
-                                   AtomType(atom_name_.substr(1)));
-      } else {
-        return Atom();
-      }
-    } else {
-      return IMP::atom::get_atom(resmap.find(current_residue)->second.
-                                                          get_as_residue(),
-                                 AtomType(atom_name_));
-    }
-  }
+                               Hierarchy> &resmap) const;
 };
+
+IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
 //! A bond, angle, dihedral or improper between some number of endpoints.
 template <unsigned int D>
@@ -177,40 +155,47 @@ public:
   const CHARMMAtomTopology &get_atom(unsigned int i) const { return atoms_[i]; }
 
   void add_atom(const CHARMMAtomTopology &atom);
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   CHARMMAtomTopology &get_atom(std::string name);
+#endif
   const CHARMMAtomTopology &get_atom(AtomType type) const {
     return get_atom(type.get_string());
   }
 
-#ifndef SWIG
   const CHARMMAtomTopology &get_atom(std::string name) const;
-#endif
 
   unsigned int get_number_of_bonds() const { return bonds_.size(); }
   void add_bond(const CHARMMBond<2> &bond) {
     bonds_.push_back(bond);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // cannot return non const ref to swig
   CHARMMBond<2> &get_bond(unsigned int index) { return bonds_[index]; }
+#endif
 
   unsigned int get_number_of_angles() const { return angles_.size(); }
   void add_angle(const CHARMMBond<3> &bond) {
     angles_.push_back(bond);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // cannot return non const ref to swig
   CHARMMBond<3> &get_angle(unsigned int index) { return angles_[index]; }
-
+#endif
   unsigned int get_number_of_dihedrals() const { return dihedrals_.size(); }
   void add_dihedral(const CHARMMBond<4> &bond) {
     dihedrals_.push_back(bond);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  // cannot return non const ref to swig
   CHARMMBond<4> &get_dihedral(unsigned int index) { return dihedrals_[index]; }
-
+#endif
   unsigned int get_number_of_impropers() const { return impropers_.size(); }
   void add_improper(const CHARMMBond<4> &bond) {
     impropers_.push_back(bond);
   }
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   CHARMMBond<4> &get_improper(unsigned int index) { return impropers_[index]; }
-
-#ifndef SWIG
+#endif
   const CHARMMBond<2> &get_bond(unsigned int index) const {
     return bonds_[index];
   }
@@ -223,8 +208,9 @@ public:
   const CHARMMBond<4> &get_improper(unsigned int index) const {
     return impropers_[index];
   }
-#endif
 };
+
+IMP_VALUES(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
 
 //! The ideal topology of a single residue
 /** These residue topologies can be constructed manually (by adding
@@ -253,6 +239,8 @@ public:
   std::string get_default_first_patch() const { return default_first_patch_; }
   std::string get_default_last_patch() const { return default_last_patch_; }
 };
+
+IMP_VALUES(CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
 
 class CHARMMResidueTopology;
 
@@ -290,6 +278,9 @@ public:
   void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2) const;
 };
 
+IMP_VALUES(CHARMMPatch, CHARMMPatches);
+
+
 //! The topology of a single residue in a model.
 /** Each CHARMMResidueTopology object can represent an 'unknown' residue
     (containing no atoms or bonds) or is a copy of an existing
@@ -298,7 +289,12 @@ public:
     bridges, sidechain modifications, etc.
  */
 class IMPATOMEXPORT CHARMMResidueTopology
-     : public CHARMMIdealResidueTopology, public Object {
+     :
+#ifndef SWIG
+  // swig gets confused with memory management
+  public CHARMMIdealResidueTopology,
+#endif
+public Object {
   bool patched_;
 public:
 
