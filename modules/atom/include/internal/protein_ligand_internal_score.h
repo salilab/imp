@@ -29,6 +29,9 @@ struct PMFTable {
     if (dist >= max_) return 0;
     return data_[i][j].get_bin(dist, bin_width_, inverse_bin_width_);
   }
+  double get_max() const {
+    return max_;
+  }
   DerivativePair get_score_with_derivative(unsigned int i,
                                            unsigned int j, double dist) const {
     IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
