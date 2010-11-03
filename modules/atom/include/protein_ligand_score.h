@@ -52,6 +52,7 @@ class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
                              = std::numeric_limits<double>::max());
   ProteinLigandAtomPairScore(double threshold,
                              TextInput data_file);
+  double get_maximum_distance() const;
   IMP_SIMPLE_PAIR_SCORE(ProteinLigandAtomPairScore);
 };
 
