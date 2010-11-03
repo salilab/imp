@@ -53,8 +53,8 @@ public:
    */
   void calculate_local_correlation();
   TransScores search_for_the_best_translation(int num_solutions);
-  //  TransScores gmm_based_search_for_best_translations(
-  //                                                 int num_solutions);
+   TransScores gmm_based_search_for_best_translations(
+                                                  int num_solutions);
   void get_unwrapped_index(int ix,int iy,int iz,
                            int &f_ix,int &f_iy,int &f_iz) const;
   void test_wrapping_correction();

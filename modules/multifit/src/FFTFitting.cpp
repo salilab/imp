@@ -14,6 +14,9 @@
 //#include "../anchor_points/DataPointsAssignment.h"
 //#include "../anchor_points/GMMDensityAnchorPoints.h"
 #include <IMP/multifit/density_analysis.h>
+#include <IMP/multifit/VQClustering.h>
+#include <IMP/multifit/DataPoints.h>
+#include <IMP/multifit/DataPointsAssignment.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -36,7 +39,7 @@ void add_to_max_map(em::DensityMap *max_map,em::DensityMap *new_map) {
 
 float EPS=0.01;
 bool trans_score_comp(const TransScore& a, const TransScore& b) {
- return a.first > b.first;
+ return a.first < b.first;
 }
 bool operator<(const TransScore& a, const TransScore& b) {
   return trans_score_comp(a,b);
@@ -273,7 +276,6 @@ void FFTFitting::resmooth_mol(){
                                map_center_-orig_prot_center_);
   //move the mol to the center
   core::transform(rb_,center_trans_);
-  std::cout<<"Centers transformation:"<<center_trans_<<std::endl;
   mol_map_->resample();
   em::MRCReaderWriter mrw;
   em::write_map(mol_map_,"resampled.mrc", mrw);
@@ -438,7 +440,6 @@ void FFTFitting::create_map_from_array(
   int t_nz=padded_asmb_map_->get_dim_index_by_location(top_asmb,2);
 
   double *r_data=r_map->get_data();
-  int cx,cy,cz;
   int nx=asmb_map_->get_header()->get_nx();
   int ny=asmb_map_->get_header()->get_ny();
   int nz=asmb_map_->get_header()->get_nz();
@@ -451,10 +452,6 @@ void FFTFitting::create_map_from_array(
   for(int iz=0;iz<fftw_nz_;iz++){
     for(int iy=0;iy<fftw_ny_;iy++){
       for(int ix=0;ix<fftw_nx_;ix++){
-        /*get_unwrapped_index(ix,iy,iz,cx,cy,cz);
-        fx=nx/2-cx;
-        fy=ny/2-cy;
-        fz=nz/2-cz;*/
         fx=ix;fy=iy;fz=iz;
         if ((fx>o_nx)&&(fy>o_ny)&&(fz>o_nz)&&
             (fx<t_nx)&&(fy<t_ny)&&(fz<t_nz)){
@@ -495,8 +492,10 @@ void FFTFitting::calculate_correlation() {
   //evecture the molecule plans, as the rotation may change
   fftw_execute(fftw_plan_r2c_mol_);
   //generate the correlation grid in complex space
-  float fftw_scale=1./(fftw_nx_*fftw_ny_*fftw_nz_*fftw_nx_*fftw_ny_*fftw_nz_*
-                       (rb_refiner_->get_refined(rb_).size()));
+  float fftw_scale=1./(fftw_nx_*fftw_ny_*fftw_nz_);
+  //*fftw_nx_*fftw_ny_*fftw_nz_);
+  //*
+  //                       (rb_refiner_->get_refined(rb_).size()));
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     fftw_c_grid_cc_[i][0] =(
             fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
@@ -509,7 +508,7 @@ void FFTFitting::calculate_correlation() {
   fftw_execute(fftw_plan_c2r_cc_);
   //scale
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
-    fftw_r_grid_cc_[i]=fftw_r_grid_cc_[i];
+    fftw_r_grid_cc_[i]=fftw_r_grid_cc_[i]/(fftw_nx_*fftw_ny_*fftw_nz_);
   }
 }
 
@@ -526,6 +525,7 @@ void FFTFitting::calculate_local_stds() {
       num_non_zero += 1;
     }
   }
+  std::cout<<"==========NUMBER OF NON ZERO:"<<num_non_zero<<std::endl;
   double norm=1./num_non_zero;
   double fftw_norm=1./padded_asmb_map_->get_number_of_voxels();
   float ta,tb,ma,mb;//t-target, m-mask
@@ -554,12 +554,17 @@ void FFTFitting::calculate_local_stds() {
       norm*norm*fftw_r_grid_std_lower_[i]*
       fftw_r_grid_std_lower_[i]*fftw_norm*fftw_norm;
   }
-
-  /*  em::DensityMap* std_upper=create_map_from_array(fftw_r_grid_std_upper_);
-  em::DensityMap* std_lower=create_map_from_array(fftw_r_grid_std_lower_);
-  em::MRCReaderWriter mrw;
-  em::write_map(std_upper,"std_upper.mrc",mrw);
-  em::write_map(std_lower,"std_lower.mrc",mrw);*/
+  // Pointer<em::DensityMap> std_upper(
+  //new em::DensityMap(*(asmb_map_->get_header())));
+  // Pointer<em::DensityMap> std_lower(
+  //new em::DensityMap(*(asmb_map_->get_header())));
+  // create_map_from_array(fftw_r_grid_std_upper_,std_upper);
+  // create_map_from_array(fftw_r_grid_std_lower_,std_lower);
+  // em::MRCReaderWriter mrw;
+  // em::write_map(std_upper,"std_upper.mrc",mrw);
+  // em::write_map(std_lower,"std_lower.mrc",mrw);
+  // std_upper=NULL;
+  // std_lower=NULL;
 }
 
 void FFTFitting::mask_norm_mol_map() {
@@ -607,20 +612,21 @@ void FFTFitting::calculate_local_correlation() {
 
   calculate_local_stds();
   //generate the correlation grid in complex space
+  float fftw_scale=1./(fftw_nx_*fftw_ny_*fftw_nz_);
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     fftw_c_grid_cc_[i][0] =
       (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_scale_;
+       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_scale;
     fftw_c_grid_cc_[i][1] =
       (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][1] -
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_scale_;
+       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_scale;
   }
   //inverse to get the correlation in real space
   fftw_execute(fftw_plan_c2r_cc_);
 
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
       fftw_r_grid_cc_[i]=
-        fftw_r_grid_cc_[i]/(sqrt(std_norm_grid_[i])*fftw_nvox_r2c_);
+        (fftw_r_grid_cc_[i]/sqrt(std_norm_grid_[i]))*fftw_scale;
   }
 }
 
@@ -682,42 +688,36 @@ TransScores FFTFitting::search_for_the_best_translation(int num_solutions) {
   for(TransScores::iterator it = best_trans.begin(); it != best_trans.end();
       it++) {
     //    std::cout<<"Left in hash:"<<it->first<<std::endl;
-    it->first=it->first/(max_cc-min_cc);
+    //    it->first=it->first/(max_cc-min_cc);
   }
   return best_trans;
 }
 
-/*
+
+
+
 TransScores FFTFitting::gmm_based_search_for_best_translations(
                                        int num_solutions) {
   TransScores best_trans;
-    em::MRCReaderWriter mrw;
+  em::MRCReaderWriter mrw;
   em::DensityMap *hit_map_orig = get_correlation_hit_map();
-      em::write_map(asmb_map_mask_,"mask.mrc",mrw);
-      hit_map_orig->show();
-      std::cout<<"================"<<std::endl;
-      std::cout<<"================"<<std::endl;
-      asmb_map_mask_->show();
   em::DensityMap* hit_map=em::multiply(hit_map_orig,
                                        asmb_map_mask_);
 
-      em::write_map(hit_map,"hit.mrc",mrw);
-      em::write_map(hit_map_orig,"hit_before.mrc",mrw);
-  statistics::Histogram hist = my_get_density_histogram(hit_map,
+  em::write_map(hit_map,"hit_masked.mrc",mrw);
+  statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
-  float density_threshold = hist.get_top(0.85);
+  float density_threshold = std::max(em::EPS,hist.get_top(0.85));
   // check the best option here (0.75)
-  std::cout<<"density threshold:"<<density_threshold<<std::endl;
+  std::cout<<"=======density threshold:"<<density_threshold<<std::endl;
   DensityDataPoints ddp(hit_map,density_threshold);
-  std::cout<<"Number of anchor points:"<<
-  ddp.get_number_of_data_points()<<std::endl;
-  TRNClustering trn(&ddp,num_solutions);
-  trn.set_fast_clustering();
-  trn.run();
-  DataPointsAssignment asgn(&ddp,&trn);
-  write_cmm("hits.cmm",
-            "cc_hits",
-            asgn);
+  VQClustering vq(&ddp,num_solutions);
+  vq.set_fast_clustering();
+  vq.run();
+  DataPointsAssignment asgn(&ddp,&vq);
+  write_max_cmm("hits.cmm",hit_map,
+                "cc_hits",
+                asgn);
 
   for( int i=0;i<asgn.get_number_of_clusters();i++) {
      Array1DD xyz = asgn.get_cluster_engine()->get_center(i);
@@ -735,7 +735,6 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
   hit_map=NULL;
   return best_trans;
 }
-*/
 
 FFTFittingResults fft_based_rigid_fitting(
    core::RigidBody &rb,Refiner *rb_refiner,
@@ -750,7 +749,6 @@ FFTFittingResults fft_based_rigid_fitting(
   core::transform(rb,shift_to_center);
   Pointer<em::DensityMap> max_map(new em::DensityMap(*(dmap->get_header())));
   max_map->reset_data(0.);
-  max_map->get_header()->show();
   FFTFitting fft_fit(dmap,rb,rb_refiner);
   fft_fit.prepare(threshold);
   IMP_LOG(TERSE,"==== Going to run FFT on each rotation"<<std::endl);
@@ -779,11 +777,17 @@ FFTFittingResults fft_based_rigid_fitting(
       fft_fit.calculate_correlation();
     }
     em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
-    TransScores best_trans=fft_fit.search_for_the_best_translation(
+    // TransScores best_trans=fft_fit.search_for_the_best_translation(
+    //                       num_top_fits_to_store_for_each_rotation);
+    TransScores best_trans=fft_fit.gmm_based_search_for_best_translations(
                           num_top_fits_to_store_for_each_rotation);
     //TODO - move back to the clsutered version
     for(unsigned int i=0;i<best_trans.size();i++) {
-      best_trans[i].first=1.-best_trans[i].first;
+      //      best_trans[i].first=1.-best_trans[i].first;
+      // std::cout<<"THREE TRANSFORMATIONS:"<<std::endl;
+      // std::cout<<shift_to_center<<std::endl;
+      // std::cout<<t1<<std::endl;
+      // std::cout<<best_trans[i].second<<std::endl;
       temp_fits.add_solution(best_trans[i].second*t1*shift_to_center,
                              best_trans[i].first);
     }

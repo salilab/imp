@@ -18,14 +18,6 @@
 #include <IMP/algebra/ReferenceFrame3D.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-/*
-em::FittingSolutions refine_fits(
-  core::RigidBody &rb, Refiner *rb_refiner,
-  em::DensityMap *em_map,
-  const em::FittingSolutions &fits
-  FloatKey rad_key = core::XYZR::get_default_radius_key(),
-  `FloatKey wei_key = atom::Mass::get_mass_key());
-*/
 
 em::FittingSolutions pca_based_rigid_fitting(
   core::RigidBody &rb, Refiner *rb_refiner,

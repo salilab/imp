@@ -1,14 +1,21 @@
-import os
-import os.path
-
 Import('env')
-penv = env.Clone()
-penv.Prepend(LIBS=["imp_multifit"])
 
-fs = Glob("*.cpp")
+# Each .cpp file is built into an application.
+env.IMPModuleBin(env.IMPModuleGetBins(),
+                 # Whether the programs built here should be installed when IMP is installed
+                 install=False)
 
-all=[]
-for f in fs:
-    all.append(penv.Program(f.rstr()))
-env.Default(all)
-Return('all')
+# import os
+# import os.path
+
+# Import('env')
+# penv = env.Clone()
+# penv.Prepend(LIBS=["imp_multifit"])
+
+# fs = Glob("*.cpp")
+
+# all=[]
+# for f in fs:
+#     all.append(penv.Program(f.rstr()))
+# env.Default(all)
+# Return('all')

@@ -22,6 +22,7 @@
 #include <algorithm>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+
 //! Compute fitting scores for a given set of rigid transformations
 /**
 \brief Fit a protein to its density by principle component matching
@@ -42,6 +43,8 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=
    algebra::PrincipalComponentAnalysis());
+
+
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_M_RIGID_FITTING_H */
