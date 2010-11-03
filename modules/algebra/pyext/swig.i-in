@@ -173,6 +173,11 @@ VectorD<3> get_random_vector_on(const SphereD<3> &s) {
 VectorD<3> get_random_vector_on(const BoundingBoxD<3> &s) {
   return get_random_vector_on<3>(s);
 }
+bool get_interiors_intersect(const BoundingBoxD<3>&a,
+                             const BoundingBoxD<3> &b) {
+   return get_interiors_intersect<3>(a,b);
+}
+
 VectorD<4> get_random_vector_on(const SphereD<4> &s) {
   return get_random_vector_on<4>(s);
 }
