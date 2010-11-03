@@ -228,7 +228,7 @@ namespace {
               if (Residue(h).get_is_protein()
                 || Residue(h).get_is_dna()
                   || Residue(h).get_is_rna()) {
-                if (rc.get_index() <= last_index) {
+                if (rc.get_index() < last_index) {
                   TEST_FAIL("Residue indexes out of order at " << rc);
                 }
                 last_index=rc.get_index();
