@@ -293,6 +293,10 @@ double ProteinLigandAtomPairScore
    }
 }
 
+double ProteinLigandAtomPairScore::get_maximum_distance() const {
+  return std::min(threshold_, table_.get_max());
+}
+
 
 double ProteinLigandAtomPairScore::evaluate(const ParticlePair &pp,
                                             DerivativeAccumulator *da) const {
