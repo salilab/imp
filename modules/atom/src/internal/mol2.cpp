@@ -88,14 +88,40 @@ bool check_arbond(Particle* atom_p) {
   }
 }
 
+bool check_ambond(Particle* atom_p) {
+  Int bond_number, type, i;
+  Int count_ar=0;
+  Bond bond_d;
+  if (!Bonded::particle_is_instance(atom_p)) return false;
+  Bonded bonded_d = Bonded(atom_p);
+  bond_number = bonded_d.get_number_of_bonds();
+  for(i=0; i<bond_number; i++) {
+    bond_d = bonded_d.get_bond(i);
+    type = bond_d.get_type();
+    if(type == Bond::AMIDE) {
+      count_ar++;
+    }
+  }
+  if (count_ar > 1) {
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 IMPATOMEXPORT std::string get_mol2_name(Atom at) {
   bool isar= check_arbond(at);
+  bool isam= check_ambond(at);
   std::string atom_type = at.get_atom_type().get_string();
   if (atom_type.find("HET:") == 0) {
     atom_type= std::string(atom_type, 4);
   }
   boost::trim(atom_type);
   if (isar) {
+    atom_type += ".ar";
+  }
+  if (isam) {
     atom_type += ".ar";
   }
   for (unsigned int i=0; i< atom_type.size(); ++i) {
@@ -119,6 +145,9 @@ IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
   if (name.find(".ar") != std::string::npos) {
     name= std::string(name, 0, name.find('.'));
   }
+  if (name.find(".am") != std::string::npos) {
+    name= std::string(name, 0, name.find('.'));
+  }
   if (name.find('.') != std::string::npos) {
     name.erase(name.find('.'), 1);
   }
@@ -132,8 +161,7 @@ IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name) {
       atom_name=std::string("HET:") + name +"  ";
     }
   } else {
-    IMP_THROW("Can't deal with atom name " << name,
-              IOException);
+    atom_name=std::string("HET:") + name;
   }
   if (!get_atom_type_exists(atom_name)) {
     add_atom_type(atom_name, e);
