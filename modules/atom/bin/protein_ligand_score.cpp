@@ -28,11 +28,16 @@ int main(int argc, char *argv[]) {
   }
 
   IMP_NEW(IMP::Model, m, ());
-  IMP::atom::Hierarchy p= IMP::atom::read_pdb(pdbname, m);
-  IMP::atom::Hierarchy l= IMP::atom::read_mol2(mol2name, m);
+  IMP::atom::Hierarchy p, l;
+  {
+    IMP::SetLogState ss(IMP::SILENT);
+    p= IMP::atom::read_pdb(pdbname, m, IMP::atom::ATOMPDBSelector());
+    l= IMP::atom::read_mol2(mol2name, m);
+  }
   IMP::atom::HierarchiesTemp mols
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
   for (unsigned int i=0; i< mols.size(); ++i) {
+    IMP::SetLogState ss(i==0? IMP::TERSE: IMP::SILENT);
     IMP_NEW(IMP::atom::ProteinLigandRestraint, r, (p, mols[i]));
     m->add_restraint(r);
     double s= m->evaluate(false);
