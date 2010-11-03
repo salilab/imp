@@ -144,9 +144,13 @@ namespace {
         >> atom_charge;
     algebra::VectorD<3> v(x_coord, y_coord, z_coord);
 
-    AtomType atom_type = internal::get_atom_type_from_mol2(type_field);
+    std::pair<AtomType, internal::Subtype> atom_type
+      = internal::get_atom_type_from_mol2(type_field);
     // atom decorator
-    Atom d = Atom::setup_particle(p, atom_type);
+    Atom d = Atom::setup_particle(p, atom_type.first);
+    if (atom_type.second != internal::ST_NONE) {
+      p->add_attribute(internal::get_subtype_key(), atom_type.second);
+    }
     d->set_name(atom_name_field);
     core::XYZ::setup_particle(p, v);
     d.set_input_index(atom_number);

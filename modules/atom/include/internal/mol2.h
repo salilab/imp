@@ -49,7 +49,12 @@ IMPATOMEXPORT bool check_arbond(Particle* atom_p);
 
 IMPATOMEXPORT std::string get_mol2_name(Atom at);
 
-IMPATOMEXPORT AtomType get_atom_type_from_mol2(std::string name);
+enum Subtype {ST_NONE=0, ST_AR=1, ST_AM=2};
+
+IMPATOMEXPORT std::pair<AtomType, Subtype>
+get_atom_type_from_mol2(std::string name);
+
+IMPATOMEXPORT IntKey get_subtype_key();
 
 IMPATOM_END_INTERNAL_NAMESPACE
 
