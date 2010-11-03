@@ -10,12 +10,6 @@
 #include "IMP/file.h"
 #include "IMP/internal/static.h"
 
-
-
-IMP_BEGIN_INTERNAL_NAMESPACE
-
-IMP_END_INTERNAL_NAMESPACE
-
 IMP_BEGIN_NAMESPACE
 
 void set_log_level(LogLevel l) {
