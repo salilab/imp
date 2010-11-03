@@ -57,5 +57,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;
   }
+  ps->set_was_used(true);
   return EXIT_SUCCESS;
 }
