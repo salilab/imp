@@ -1,5 +1,6 @@
 Import('env')
 
+
 config=[]
 
 if not env.GetOption('help'):
@@ -35,6 +36,6 @@ if not env.GetOption('help'):
 
 env.IMPModuleBuild(version='SVN', config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
-                   module_src_path="kernel", module_preproc="IMP",
+                   module_preproc="IMP",
                    module_namespace="IMP",
                    optional_dependencies=['Boost.FileSystem', 'netcdf'])
