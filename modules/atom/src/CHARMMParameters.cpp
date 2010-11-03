@@ -146,6 +146,7 @@ CHARMMParameters::CHARMMParameters(const String& top_file_name,
 }
 
 void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
+  IMP_OBJECT_LOG;
   const String DEFA_LINE = "DEFA";
   const String PATC_LINE = "PATC";
   const String RESI_LINE = "RESI";
@@ -397,6 +398,7 @@ void CHARMMParameters::parse_dihedrals_parameters_line(String line,
 }
 
 void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
+  IMP_OBJECT_LOG;
   const String BONDS_LINE = "BONDS";
   const String ANGLES_LINE = "ANGLES";
   const String DIHEDRALS_LINE = "DIHEDRALS";
@@ -460,6 +462,7 @@ void CHARMMParameters::do_show(std::ostream &) const {
 
 String CHARMMParameters::get_force_field_atom_type(Atom atom) const
 {
+  IMP_OBJECT_LOG;
   // Override base class to use CHARMMAtom decorator
   static String empty_atom_type;
   if (CHARMMAtom::particle_is_instance(atom)) {
@@ -473,6 +476,7 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const
 
 CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
 {
+  IMP_OBJECT_LOG;
   IMP_NEW(CHARMMTopology, topology, ());
 
   HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
@@ -512,6 +516,7 @@ CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
                                 const internal::CHARMMDihedralNames &dihedral,
                                 bool allow_wildcards) const
 {
+  IMP_OBJECT_LOG;
   DihedralParameters::const_iterator best = end;
   int best_match = internal::CHARMMDihedralNames::MISMATCH;
   for (DihedralParameters::const_iterator it = begin; it != end; ++it) {
@@ -527,6 +532,7 @@ CHARMMParameters::find_dihedral(DihedralParameters::const_iterator begin,
 
 Particles CHARMMParameters::create_angles(Particles bonds) const
 {
+  IMP_OBJECT_LOG;
   Particles ps;
   BondMap particle_bonds;
   make_bond_map(bonds, particle_bonds);
@@ -564,6 +570,7 @@ Particles CHARMMParameters::create_angles(Particles bonds) const
 void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
                                  Particles &ps) const
 {
+  IMP_OBJECT_LOG;
   Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
                                    core::XYZ(p1), core::XYZ(p2),
                                    core::XYZ(p3));
@@ -583,6 +590,7 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
 
 Particles CHARMMParameters::create_dihedrals(Particles bonds) const
 {
+  IMP_OBJECT_LOG;
   Particles ps;
   BondMap particle_bonds;
   make_bond_map(bonds, particle_bonds);
@@ -621,6 +629,7 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const
 void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
                                     Particle *p4, Particles &ps) const
 {
+  IMP_OBJECT_LOG;
   std::vector<CHARMMDihedralParameters> p
         = get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
                                   CHARMMAtom(p2).get_charmm_type(),
@@ -663,6 +672,7 @@ CHARMMParameters* get_all_atom_CHARMM_parameters() {
   static IMP::Pointer<CHARMMParameters> ret
     =new CHARMMParameters(get_data_path("top.lib"),
                           get_data_path("par.lib"));
+  ret->set_log_level(SILENT);
   return ret;
 }
 
