@@ -50,10 +50,7 @@ int main(int argc, char *argv[]) {
     IMP::SetLogState ss(i==0? IMP::TERSE: IMP::SILENT);
     IMP::ParticlesTemp latoms= IMP::atom::get_leaves(mols[i]);
     IMP::ParticlePairsTemp ppt= gcpf->get_close_pairs(patoms, latoms);
-    double score=0;
-    for (unsigned int j=0; j< ppt.size(); ++j) {
-      score+= ps->evaluate(ppt[j], false);
-    }
+    double score=ps->evaluate(ppt, NULL);
     std::cout << "Score for " << mols[i]->get_name() << " is "
               << score << std::endl;
   }
