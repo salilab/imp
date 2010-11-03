@@ -1079,7 +1079,12 @@ static Name* get_from(Object *o) {                                      \
     return object_cast<Name>(o);                                        \
   }                                                                     \
 IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);          \
-IMP_REF_COUNTED_DESTRUCTOR(Name)
+protected:                                                              \
+template <class T, class E> friend class IMP::internal::RefStuff;       \
+virtual ~Name(){IMP_OBJECT_LOG;}                                        \
+public:                                                                 \
+IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 
 //! Define the basic things needed by any Object
@@ -1098,7 +1103,7 @@ IMP_REF_COUNTED_DESTRUCTOR(Name)
   IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
       show;                                                             \
     });                                                                 \
-  ~Name() {destructor;}                                                 \
+  ~Name() {IMP_OBJECT_LOG; destructor;}                                 \
 public:                                                                 \
  IMP_REQUIRE_SEMICOLON_CLASS(object)
 
