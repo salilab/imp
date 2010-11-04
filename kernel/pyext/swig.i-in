@@ -100,7 +100,8 @@ IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
 IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
 IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
 IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
-IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
+// derivative accumulator is weird
+// IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
 IMP_SWIG_VALUE(IMP, FloatKey, FloatKeys);
 IMP_SWIG_VALUE(IMP, IntKey, IntKeys);
 IMP_SWIG_VALUE(IMP, StringKey, StringKeys);
@@ -109,7 +110,7 @@ IMP_SWIG_VALUE(IMP, ObjectKey, ObjectKeys);
 IMP_SWIG_VALUE(IMP, Float, Floats);
 IMP_SWIG_VALUE(IMP, Int, Ints);
 IMP_SWIG_VALUE(IMP, String, Strings);
-IMP_SWIG_VALUE(IMP, SetLogState, SetLogStates);
+IMP_SWIG_RAII(IMP, SetLogState);
 
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDecorator, _TrivialDecorators);
 IMP_SWIG_DECORATOR(IMP::internal, _TrivialDerivedDecorator, _TrivialDerivedDecorators);
