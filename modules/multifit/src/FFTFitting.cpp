@@ -53,31 +53,49 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,
   asmb_map_->std_normalize(); //TODO - is that correct?
   rb_=rb;
   rb_refiner_=rb_refiner;
+
+  fftw_r_grid_mol_ = NULL;fftw_c_grid_mol_ = NULL;
+  fftw_r_grid_mol_mask_ = NULL;fftw_c_grid_mol_mask_ = NULL;
+  fftw_r_grid_asmb_ = NULL;fftw_c_grid_asmb_ = NULL;
+  fftw_r_grid_asmb_sqr_ = NULL;fftw_c_grid_asmb_sqr_ = NULL;
+  fftw_r_grid_cc_ = NULL;fftw_c_grid_cc_ = NULL;
+  fftw_r_grid_std_upper_ = NULL;fftw_c_grid_std_upper_ = NULL;
+  fftw_r_grid_std_lower_ = NULL;fftw_c_grid_std_lower_ = NULL;
   mol_mask_map_=NULL;
-  fftw_r_grid_std_upper_=NULL;
-  fftw_c_grid_std_upper_=NULL;
-  fftw_r_grid_std_lower_=NULL;
-  fftw_c_grid_std_lower_=NULL;
   set_parameters();
   is_initialized_=false;
 }
 
 FFTFitting::~FFTFitting(){
+  if (fftw_r_grid_mol_ != NULL) fftw_free(fftw_r_grid_mol_);
+  if (fftw_c_grid_mol_ != NULL) fftw_free(fftw_c_grid_mol_);
+  if (fftw_r_grid_mol_mask_ != NULL) fftw_free(fftw_r_grid_mol_mask_);
+  if (fftw_c_grid_mol_mask_ != NULL) fftw_free(fftw_c_grid_mol_mask_);
+  if (fftw_r_grid_asmb_ != NULL) fftw_free(fftw_r_grid_asmb_);
+  if (fftw_c_grid_asmb_ != NULL) fftw_free(fftw_c_grid_asmb_);
+  if (fftw_r_grid_asmb_sqr_ != NULL) fftw_free(fftw_r_grid_asmb_sqr_);
+  if (fftw_c_grid_asmb_sqr_ != NULL)fftw_free(fftw_c_grid_asmb_sqr_);
+  if (fftw_r_grid_cc_ != NULL) fftw_free(fftw_r_grid_cc_);
+  if (fftw_c_grid_cc_ != NULL) fftw_free(fftw_c_grid_cc_);
+  if (fftw_r_grid_std_upper_ != NULL) fftw_free(fftw_r_grid_std_upper_);
+  if (fftw_c_grid_std_upper_ != NULL) fftw_free(fftw_c_grid_std_upper_);
+  if (fftw_r_grid_std_lower_ != NULL) fftw_free(fftw_r_grid_std_lower_);
+  if (fftw_c_grid_std_lower_ != NULL) fftw_free(fftw_c_grid_std_lower_);
+  //After calling fftw_cleanup, all existing plans become undefined,
+  //fftw_cleanup does not deallocate your plans, however.
+  //To prevent memory leaks, you must still call fftw_destroy_plan
+  //before executing fftw_cleanup.
+  fftw_destroy_plan(fftw_plan_r2c_asmb_);
+  fftw_destroy_plan(fftw_plan_r2c_mol_);
+  fftw_destroy_plan(fftw_plan_r2c_cc_);
+  fftw_destroy_plan(fftw_plan_r2c_mol_mask_);
+  fftw_destroy_plan(fftw_plan_r2c_asmb_sqr_);
+  fftw_destroy_plan(fftw_plan_c2r_asmb_);
+  fftw_destroy_plan(fftw_plan_c2r_mol_);
+  fftw_destroy_plan(fftw_plan_c2r_cc_);
+  fftw_destroy_plan(fftw_plan_c2r_std_upper_);
+  fftw_destroy_plan(fftw_plan_c2r_std_lower_);
   fftw_cleanup();
-  fftw_free(fftw_r_grid_mol_);
-  fftw_free(fftw_c_grid_mol_);
-  fftw_free(fftw_r_grid_mol_mask_);
-  fftw_free(fftw_c_grid_mol_mask_);
-  fftw_free(fftw_r_grid_asmb_);
-  fftw_free(fftw_c_grid_asmb_);
-  fftw_free(fftw_r_grid_asmb_sqr_);
-  fftw_free(fftw_c_grid_asmb_sqr_);
-  fftw_free(fftw_r_grid_cc_);
-  fftw_free(fftw_c_grid_cc_);
-  fftw_free(fftw_r_grid_std_upper_);
-  fftw_free(fftw_c_grid_std_upper_);
-  fftw_free(fftw_r_grid_std_lower_);
-  fftw_free(fftw_c_grid_std_lower_);
 }
 //!
 /**
@@ -740,7 +758,8 @@ FFTFittingResults fft_based_rigid_fitting(
    em::DensityMap *dmap, Float threshold,
    const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation, bool local) {
-
+  IMP_USAGE_CHECK(dmap->get_header()->get_has_resolution(),
+                  "Resolution has not been set\n");
   core::XYZsTemp ps_xyz =  core::XYZsTemp(rb_refiner->get_refined(rb));
   //shift the fitted molecule to the center of the map
   algebra::Transformation3D shift_to_center(
