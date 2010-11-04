@@ -68,7 +68,6 @@ public:
     }
     return ret;
   }
-#ifndef IMP_DOXYGEN
   void set_particle_states(Particle *p, ParticleStates *e) {
     IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
                     "Enumerator already set for particle " << p->get_name());
@@ -77,7 +76,6 @@ public:
                     << p->get_name() << "\"\n");
     enumerators_[p]=e;
   }
-#endif
   IMP_OBJECT(ParticleStatesTable);
 };
 
