@@ -258,7 +258,7 @@ public:
   CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {}
 
   void add_removed_atom(std::string name) { deleted_atoms_.push_back(name); }
-
+#ifndef SWIG
   //! Apply the patch to the residue, modifying its topology accordingly.
   /** \note Most CHARMM patches are designed to be applied in isolation;
             it is usually an error to try to apply two different patches
@@ -276,6 +276,7 @@ public:
       \throws ValueException if the patch is not a two-residue patch.
    */
   void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2) const;
+#endif
 };
 
 IMP_VALUES(CHARMMPatch, CHARMMPatches);
