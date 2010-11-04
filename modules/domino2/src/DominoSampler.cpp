@@ -61,7 +61,7 @@ SubsetStates DominoSampler
 ::do_get_sample_states(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
-  IMP_USAGE_CHECK(!known_particles.empty(), "No particles to sample");
+  IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
   OptimizeContainers co(rs, get_particle_states_table());
   OptimizeRestraints ro(rs, get_particle_states_table());
