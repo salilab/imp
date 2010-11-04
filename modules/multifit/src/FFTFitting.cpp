@@ -722,7 +722,7 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
   em::write_map(hit_map,"hit_masked.mrc",mrw);
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
-  float density_threshold = std::max(em::EPS,hist.get_top(0.85));
+  float density_threshold = std::max(em::EPS,hist.get_top(0.85)-EPS);
   std::cout<<"=======density threshold:"<<density_threshold<<std::endl;
   DensityDataPoints ddp(hit_map,density_threshold);
   VQClustering vq(&ddp,num_solutions);
