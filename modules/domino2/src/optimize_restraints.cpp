@@ -46,10 +46,23 @@ namespace {
                           const ParticlesTemp &pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
                           boost::ptr_vector<ScopedRestraint> &added) {
+    // containers can be particles, skip them if they are input particles
     ContainersTemp ic= r->get_input_containers();
     for (unsigned int i=0; i< ic.size(); ++i) {
-      if (IMP::internal::get_has_ancestor(dg, index.find(ic[i])->second, pst)) {
-        return;
+      bool found=false;
+      for (unsigned int j=0; j< pst.size(); ++j){
+        if (pst[j]==ic[i]) {
+          found=true;
+          break;
+        }
+      }
+      if (!found) {
+        int start=index.find(ic[i])->second;
+        if (IMP::internal::get_has_ancestor(dg, start, pst)) {
+          IMP_LOG(TERSE, "Container " << ic[i]->get_name()
+                  << " has an optimized anscestor" << std::endl);
+          return;
+        }
       }
     }
     Restraints rs= r->get_decomposition();
@@ -120,6 +133,10 @@ namespace {
         core::XYZ d(inputs[j]);
         bbs[j]+= d.get_coordinates();
       }
+    }
+    for (unsigned int j=0; j< inputs.size(); ++j) {
+      core::XYZR d(inputs[j]);
+      bbs[j]+= d.get_radius();
     }
     cpc->set_is_static(true, bbs);
     staticed.push_back(cpc);
