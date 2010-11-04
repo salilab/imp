@@ -104,7 +104,7 @@ public:
   const Vector2D get_translation()const{return trans_;}
 
   //! Sets the translation
-  void set_translation(Vector2D &v) {
+  void set_translation(const Vector2D &v) {
     trans_[0]=v[0];
     trans_[1]=v[1];
   }
