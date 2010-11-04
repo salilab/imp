@@ -77,12 +77,10 @@ public:
                return seed;);
   IMP_COMPARISONS;
   std::string get_name() const {
-    bool first=true;
     std::string ret="\"";
     for (unsigned int i=0; i< D; ++i) {
-      if (!first) {
+      if (i>0) {
         ret+= "\" and \"";
-        first=false;
       }
       ret+=P::operator[](i)->get_name();
     }
