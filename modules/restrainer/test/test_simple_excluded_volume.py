@@ -24,7 +24,7 @@ class SimpleExcludedVolumeTests(IMP.test.TestCase):
         rbs = IMP.restrainer.set_rigid_bodies(mhs)
         # Set radius of each atom for excluded volume
         for p in IMP.core.get_leaves(p0)+IMP.core.get_leaves(p1):
-            d= IMP.core.XYZR.setup_particle(p.get_particle())
+            d= IMP.core.XYZR(p.get_particle())
             d.set_radius(1)
 
         # Randomize the position of each chain
