@@ -122,10 +122,10 @@ protected:
     *fftw_c_grid_mol_mask_,*fftw_c_grid_std_upper_,*fftw_c_grid_std_lower_,
     *fftw_c_grid_asmb_sqr_;
   //fftw plans
-  fftw_plan fftw_plan_r2c_asmb_,fftw_plan_r2c_mol_,fftw_plan_r2c_cc_,
+  fftw_plan fftw_plan_r2c_asmb_,fftw_plan_r2c_mol_,
     fftw_plan_r2c_mol_mask_,fftw_plan_r2c_asmb_sqr_;
   //fftw_plan_r2c_std_upper_,fftw_plan_r2c_std_lower_,
-  fftw_plan fftw_plan_c2r_asmb_,fftw_plan_c2r_mol_,fftw_plan_c2r_cc_,
+  fftw_plan fftw_plan_c2r_cc_,
     fftw_plan_c2r_std_upper_,fftw_plan_c2r_std_lower_;
   //normalization grid
   double *std_norm_grid_;

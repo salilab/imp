@@ -87,11 +87,8 @@ FFTFitting::~FFTFitting(){
   //before executing fftw_cleanup.
   fftw_destroy_plan(fftw_plan_r2c_asmb_);
   fftw_destroy_plan(fftw_plan_r2c_mol_);
-  fftw_destroy_plan(fftw_plan_r2c_cc_);
   fftw_destroy_plan(fftw_plan_r2c_mol_mask_);
   fftw_destroy_plan(fftw_plan_r2c_asmb_sqr_);
-  fftw_destroy_plan(fftw_plan_c2r_asmb_);
-  fftw_destroy_plan(fftw_plan_c2r_mol_);
   fftw_destroy_plan(fftw_plan_c2r_cc_);
   fftw_destroy_plan(fftw_plan_c2r_std_upper_);
   fftw_destroy_plan(fftw_plan_c2r_std_lower_);
