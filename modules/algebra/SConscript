@@ -1,5 +1,6 @@
 Import('env')
 
 env.IMPModuleBuild(version='SVN',
+                   required_modules=['kernel'],
                    optional_modules=['cgal'],
                    optional_dependencies=['CGAL', 'ANN'])
