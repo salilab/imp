@@ -15,6 +15,7 @@
 
 #include <IMP/TripletScore.h>
 #include <IMP/log.h>
+#include <sstream>
 
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
@@ -86,6 +87,9 @@ Restraints CoreTripletsRestraint::get_decomposition() const {
     Restraints ret(pc_->get_number());
     for (unsigned int i=0; i< ret.size(); ++i) {
       ret[i]= new TripletRestraint(ss_, pc_->get(i));
+      std::ostringstream oss;
+      oss << get_name() << " on " << IMP::internal::streamable(pc_->get(i));
+      ret[i]->set_name(oss.str());
     }
     return ret;
   }
