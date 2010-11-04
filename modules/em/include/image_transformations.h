@@ -86,7 +86,7 @@ IMPEMEXPORT void rotate(algebra::Matrix2D_d &m,double ang,
   \note the max, min, average and standard deviation values of the header are
   modified accordingly.
 **/
-IMPEMEXPORT void normalize(em::Image &im,bool force=false);
+IMPEMEXPORT void normalize(em::Image *im,bool force=false);
 
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_IMAGE_TRANSFORMATIONS_H */

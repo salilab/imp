@@ -32,7 +32,7 @@ type Float.
 \param[in] step sample every X steps in each direction
 \return particles corresponding to all voxels above the threshold
  */
-IMPEMEXPORT Particles density2particles(DensityMap &dmap, Float threshold,
+IMPEMEXPORT Particles density2particles(DensityMap *dmap, Float threshold,
                                         Model *m,int step=1);
 
 
@@ -47,7 +47,7 @@ type Float.
         above the threshold
  */
 IMPEMEXPORT std::vector<algebra::VectorD<3> >
-    density2vectors(DensityMap &dmap, Float threshold);
+    density2vectors(DensityMap *dmap, Float threshold);
 
 //! Resample a set of particles into a density grid
 /**

@@ -112,7 +112,7 @@ protected:
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb, Refiner &refiner,
+   core::RigidBody rb, Refiner *refiner,
    const FloatKey &radius_key, const FloatKey &weight_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
@@ -150,7 +150,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-   core::RigidBody rb, Refiner &refiner,
+   core::RigidBody rb, Refiner *refiner,
    const FloatKey &radius_key,
    const FloatKey &weight_key,
    DensityMap *dmap,
@@ -161,7 +161,7 @@ inline FittingSolutions local_rigid_fitting(
    bool fast=true) {
   IMP_LOG(VERBOSE,"Start: local_rigid_fitting\n");
    algebra::Vector3D rb_cen=
-     IMP::core::get_centroid(core::XYZsTemp(refiner.get_refined(rb)));
+     IMP::core::get_centroid(core::XYZsTemp(refiner->get_refined(rb)));
    IMP_LOG(VERBOSE,"centroid is:"<<rb_cen<<"\n");
    return local_rigid_fitting_around_point(
      rb, refiner,radius_key, weight_key, dmap,
@@ -192,7 +192,7 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,Refiner &refiner,
+   core::RigidBody rb,Refiner *refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
@@ -271,11 +271,11 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
  */
 inline FittingSolutions compute_fitting_scores(
    DensityMap *em_map,
-   core::RigidBody &rb,Refiner &refiner,
+   core::RigidBody rb,Refiner *refiner,
    const algebra::Transformation3Ds& transformations,
    const FloatKey &rad_key=core::XYZR::get_default_radius_key(),
    const FloatKey &wei_key=atom::Mass::get_mass_key()) {
-  return compute_fitting_scores(refiner.get_refined(rb),em_map,
+  return compute_fitting_scores(refiner->get_refined(rb),em_map,
                                 rad_key,wei_key,transformations,true);
 }
 

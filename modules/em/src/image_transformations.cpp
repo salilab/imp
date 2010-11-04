@@ -61,14 +61,14 @@ void rotate(algebra::Matrix2D_d &m,   double ang,
   apply_Transformation2D(m,t,result,wrap,outside,interp);
 }
 
-void normalize(em::Image &im,bool force) {
-  if(!im.get_header().is_normalized() || force==true ) {
-    im.get_data().normalize();
-    im.get_header().set_fImami(1);
-    im.get_header().set_fAv(0.0);
-    im.get_header().set_fSig(1.0);
-    im.get_header().set_fFmin(im.get_data().compute_min());
-    im.get_header().set_fFmax(im.get_data().compute_max());
+void normalize(em::Image *im,bool force) {
+  if(!im->get_header().is_normalized() || force==true ) {
+    im->get_data().normalize();
+    im->get_header().set_fImami(1);
+    im->get_header().set_fAv(0.0);
+    im->get_header().set_fSig(1.0);
+    im->get_header().set_fFmin(im->get_data().compute_min());
+    im->get_header().set_fFmax(im->get_data().compute_max());
   }
 }
 

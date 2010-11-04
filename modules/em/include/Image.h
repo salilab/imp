@@ -81,9 +81,9 @@ public:
     header_.set_number_of_columns(cols);
   }
 
-  void resize(Image &img) {
-    resize(img.get_data().get_number_of_rows(),
-           img.get_data().get_number_of_columns());
+  void resize(Image *img) {
+    resize(img->get_data().get_number_of_rows(),
+           img->get_data().get_number_of_columns());
   }
 
   //! Adjusts the information of the imager header taking into account the
