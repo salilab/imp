@@ -31,7 +31,7 @@ em::FittingSolutions pca_based_rigid_fitting(
     dens_pca=dens_pca_input;
   }
   else{
-    algebra::Vector3Ds dens_vecs = em::density2vectors(*em_map,threshold);
+    algebra::Vector3Ds dens_vecs = em::density2vectors(em_map,threshold);
     dens_pca = algebra::get_principal_components(dens_vecs);
   }
   //move the rigid body to the center of the map
@@ -56,7 +56,7 @@ em::FittingSolutions pca_based_rigid_fitting(
   algebra::Transformation3Ds all_trans =
     algebra::get_alignments_from_first_to_second(ps_pca,dens_pca);
   em::FittingSolutions fs =
-    em::compute_fitting_scores(em_map,rb,*rb_refiner,all_trans,
+    em::compute_fitting_scores(em_map,rb,rb_refiner,all_trans,
                                rad_key,wei_key);
   fs.sort();
   //compose the center translation to the results
