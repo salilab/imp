@@ -31,7 +31,7 @@ class IMPALGEBRAEXPORT SphericalVector3D
 
   //! Constructor that directly converts to spherical coordinates from a vector
   //! v in Cartesian coordinates
-  SphericalVector3D(VectorD<3> &v) {
+  SphericalVector3D(const VectorD<3> &v) {
     set_cartesian_coordinates(v);
   }
 
@@ -73,7 +73,7 @@ class IMPALGEBRAEXPORT SphericalVector3D
                       << v_[2]);
 
  private:
-  void set_cartesian_coordinates(VectorD<3>& v);
+  void set_cartesian_coordinates(const VectorD<3>& v);
   double v_[3];
 };
 

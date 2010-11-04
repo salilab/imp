@@ -13,7 +13,7 @@ VectorD<3> SphericalVector3D::get_cartesian_coordinates() {
                   v_[0]*cos(v_[1]));
 }
 
-void SphericalVector3D::set_cartesian_coordinates(VectorD<3>& v) {
+void SphericalVector3D::set_cartesian_coordinates(const VectorD<3>& v) {
   v_[0] = v.get_magnitude();
   v_[1] = atan2(sqrt(v[0]*v[0]+v[1]*v[1]),v[2]);
   v_[2] = atan2(v[1],v[0]);
