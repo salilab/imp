@@ -43,7 +43,7 @@ void SimpleDiscreteRestraint::load_restraints(std::string restraint_filename)
   }
 }
 
-SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
+SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model* model_,
     std::string restraint_filename, Particle * p1_, Particle *p2_)
 {
   load_restraints(restraint_filename);
@@ -62,7 +62,7 @@ SimpleDiscreteRestraint::SimpleDiscreteRestraint(Model& model_,
     add_particle(p1);
     key = std::pair<int, int>(p2_ind, p1_ind);
   }
-  model = &model_;
+  model = model_;
 }
 
 IMP_LIST_IMPL(SimpleDiscreteRestraint, Particle, particle,Particle*,
