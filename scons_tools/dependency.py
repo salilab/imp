@@ -42,11 +42,16 @@ def add_dependency_link_flags(env, dependencies):
         env.Append(LIBS=env[_get_libvarname(d)])
 
 def check_lib(context, lib, header, body="", extra_libs=[]):
+    oldflags= context.env.get('LINKFLAGS')
+    context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
+    print "old", oldflags
+    print "new", context.env['LINKFLAGS']
     if type(lib) == list:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
         ret=_search_for_deps(context, lib, [], header, body, extra_libs)
     if not ret[0]:
+        context.env.Replace(LINKFLAGS=oldflags)
         return ret
     if context.env['IMP_BUILD_STATIC']:
         utility.make_static_build(context.env)
@@ -57,9 +62,12 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
         utility.unmake_static_build(context.env)
         # should be the sum of the two
         if bret[0]:
+            context.env.Replace(LINKFLAGS=oldflags)
             return (bret[0], ret[1]+bret[1])
         else:
+            context.env.Replace(LINKFLAGS=oldflags)
             return (False, None)
+    context.env.Replace(LINKFLAGS=oldflags)
     return  (True, ret[1])
 
 def get_dependency_string(name):
