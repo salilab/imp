@@ -24,8 +24,13 @@ int main(int argc, char *argv[]) {
     }
   }
   if (mol2name.empty() || pdbname.empty()) {
-    std::cerr << "Usage: " << argv[0] << " file.mol2 file.pdb" << std::endl;
+    std::cerr << "Usage: " << argv[0]
+              << " file.mol2 file.pdb [libfile]" << std::endl;
     return EXIT_FAILURE;
+  }
+  IMP::TextInput lib;
+  if (argc==4) {
+    lib= IMP::TextInput(argv[3]);
   }
 
   IMP_NEW(IMP::Model, m, ());
@@ -39,7 +44,12 @@ int main(int argc, char *argv[]) {
   }
   IMP::atom::HierarchiesTemp mols
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
-  IMP_NEW(IMP::atom::ProteinLigandAtomPairScore, ps, ());
+  IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
+  if (lib) {
+    ps = new IMP::atom::ProteinLigandAtomPairScore(lib);
+  } else {
+    ps= new IMP::atom::ProteinLigandAtomPairScore();
+  }
   double d= ps->get_maximum_distance();
   IMP_NEW(IMP::core::GridClosePairsFinder, gcpf, ());
   gcpf->set_distance(d);
