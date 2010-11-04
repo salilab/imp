@@ -41,7 +41,7 @@ DensityDataPoints::DensityDataPoints(em::DensityMap *dens,
   max_value_ = dens_->get_max_value();
   min_value_ = dens_->get_min_value();
   std::cout<<"before density2particles"<<std::endl;
-  algebra::Vector3Ds vecs = em::density2vectors(*dens_,threshold_);
+  algebra::Vector3Ds vecs = em::density2vectors(dens_,threshold_);
   std::cout<<"number of vectors:"<<vecs.size()<<std::endl;
   IMP_INTERNAL_CHECK(vecs.size()>0,
            "No data points were found above the input threshold ("<<

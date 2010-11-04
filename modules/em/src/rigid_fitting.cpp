@@ -34,7 +34,7 @@ void FittingSolutions::sort(bool reverse) {
 }
 
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
-                              core::RigidBody &rb,Refiner &leaves_ref,
+                              core::RigidBody rb,Refiner *leaves_ref,
                 const FloatKey &rad_key, const FloatKey &wei_key,
                 bool fast=false) {
   RestraintSet *rsrs = new RestraintSet();
@@ -44,12 +44,12 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    FloatPair no_norm_factors(0.,0.);
    if (fast) {
      fit_rs = new FitRestraint(rb.get_particle(),
-                               dmap,&leaves_ref,no_norm_factors,
+                               dmap,leaves_ref,no_norm_factors,
                                rad_key,wei_key,1.0);
    }
    else {
-     fit_rs = new FitRestraint(leaves_ref.get_refined(rb),
-                               dmap,&leaves_ref,no_norm_factors,
+     fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
+                               dmap,leaves_ref,no_norm_factors,
                                rad_key,wei_key,1.0);
    }
    rsrs->add_restraint(fit_rs);
@@ -57,7 +57,7 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
 }
 
 core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
-   core::RigidBody &rb,
+   core::RigidBody rb,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
   //create a rigid body mover
   core::RigidBodyMover *rb_mover =
@@ -84,10 +84,10 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
 
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::VectorD<3> &anchor_centroid,
-              core::RigidBody *rb, Refiner &refiner, core::MonteCarlo *opt,
+              core::RigidBody *rb, Refiner *refiner, core::MonteCarlo *opt,
               FittingSolutions &fr, Model *mdl) {
   Float e;
-  core::XYZsTemp xyz_t(refiner.get_refined(*rb));
+  core::XYZsTemp xyz_t(refiner->get_refined(*rb));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
   //save starting configuration
   algebra::Transformation3D starting_trans = rb->get_transformation();
@@ -116,7 +116,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 }
 
 FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb,Refiner &refiner,
+   core::RigidBody rb,Refiner *refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
@@ -166,7 +166,7 @@ FittingSolutions local_rigid_fitting_around_point(
 }
 
 FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,Refiner &refiner,
+   core::RigidBody rb,Refiner *refiner,
    const FloatKey &rad_key, const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
