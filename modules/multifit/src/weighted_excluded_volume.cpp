@@ -23,14 +23,15 @@ void add_surface_index(core::Hierarchy mh,Float apix,
                 FloatKey shell_key,
                 FloatKey radius_key,FloatKey weight_key)  {
   Particles ps = core::get_leaves(mh);
-  em::SurfaceShellDensityMap shell_map(ps,apix);
+  Pointer<em::SurfaceShellDensityMap> shell_map
+    = new em::SurfaceShellDensityMap(ps,apix);
 
   for(unsigned int i=0; i<ps.size(); i++) {
     IMP_INTERNAL_CHECK(! ps[i]->has_attribute(shell_key),
      "Particle " << ps[i]->get_name() <<
      " already has shell attribute" << std::endl);
     ps[i]->add_attribute(
-      shell_key,shell_map.get_value(core::XYZ(ps[i]).get_coordinates()));
+      shell_key,shell_map->get_value(core::XYZ(ps[i]).get_coordinates()));
   }
 }
 

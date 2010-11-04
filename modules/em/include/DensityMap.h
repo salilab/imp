@@ -76,10 +76,10 @@ class IMPEMEXPORT DensityMap: public Object
 
 public:
   DensityMap();
-  DensityMap(const DensityMap &other);
+  //DensityMap(const DensityMap &other);
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header);
-  DensityMap&  operator=(const DensityMap &other );
+  //DensityMap&  operator=(const DensityMap &other );
 
 #ifndef IMP_DOXYGEN
 #ifndef IMP_DEPRECATED
@@ -273,19 +273,19 @@ public:
   /** \param[in] other the map to compare with
       \return true if the two maps have the same origin
    */
-  bool same_origin(const DensityMap &other) const;
+  bool same_origin(const DensityMap *other) const;
 
   //! Checks if  two maps have the same dimensions
   /** \param[in] other the map to compare with
       \return true if the two maps have the same dimensions
    */
-  bool same_dimensions(const DensityMap &other) const;
+  bool same_dimensions(const DensityMap *other) const;
 
   //! Checks if  two maps have the same voxel size
   /** \param[in] other the map to compare with
       \return true if the two maps have the same voxel size
    */
-  bool same_voxel_size(const DensityMap &other) const;
+  bool same_voxel_size(const DensityMap *other) const;
   //! Calculates the centroid of all the voxels with
   //! density above a given threshold
   /** \param[in] threshold the input threshold
@@ -302,14 +302,14 @@ public:
       \note The two maps should have the same voxelsize and other
             should be contained within this map
    */
-  void add(const DensityMap &other);
+  void add(const DensityMap *other);
 
   //! Pick the max value between two corresponding voxels between two maps
   //! The result is kept in the map.
   /** \param[in] other the other map
       \note The two maps should have the same voxelsize and the same dimensions
    */
-  void pick_max(const DensityMap &other);
+  void pick_max(const DensityMap *other);
 
   long get_number_of_voxels() const;
 
@@ -396,7 +396,7 @@ public:
 
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),{});
   //! copy map into this map
-  void copy_map(const DensityMap &other);
+  void copy_map(const DensityMap *other);
   //! Convolution a kernel with the map
   /**
 \param[in] kernel an array of kernel values. The data is in ZYX
@@ -486,18 +486,18 @@ IMPEMEXPORT DensityMap *create_density_map(
 \param[out] imaxz the maximum index on the Z axis of the output bounding box
   */
 inline void calc_local_bounding_box(
-                   const em::DensityMap &d_map,
+                   const em::DensityMap *d_map,
                    double x,double y, double z,
                    float kdist,
                    int &iminx,int &iminy, int &iminz,
                    int &imaxx,int &imaxy, int &imaxz) {
-  const DensityHeader *h=d_map.get_header();
-  iminx = d_map.lower_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
-  iminy = d_map.lower_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
-  iminz = d_map.lower_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
-  imaxx = d_map.upper_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
-  imaxy = d_map.upper_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
-  imaxz = d_map.upper_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
+  const DensityHeader *h=d_map->get_header();
+  iminx = d_map->lower_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
+  iminy = d_map->lower_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
+  iminz = d_map->lower_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
+  imaxx = d_map->upper_voxel_shift(x, kdist,h->get_xorigin(),h->get_nx());
+  imaxy = d_map->upper_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
+  imaxz = d_map->upper_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
 }
 
 //! rotate a grid

@@ -81,8 +81,8 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
       if (get_interiors_intersect(resampled_surfaces[i],
                                   resampled_surfaces[j])){
       score += CoarseCC::cross_correlation_coefficient(
-                               *resampled_surfaces[i],
-                               *resampled_surfaces[j],1.,true,FloatPair(0.,0.));
+                               resampled_surfaces[i],
+                               resampled_surfaces[j],1.,true,FloatPair(0.,0.));
       }
     }
   }
@@ -91,9 +91,9 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
     IMP_WARN("WeightedExcludedVolumeRestraint currently"
              <<" does not support derivatives\n");
   }
-  for(int i=resampled_surfaces.size()-1;i<0;i--){
+  /*for(int i=resampled_surfaces.size()-1;i<0;i--){
     delete(resampled_surfaces[i]);
-  }
+    }*/
   return score;
 }
 

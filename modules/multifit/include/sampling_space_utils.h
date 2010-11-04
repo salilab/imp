@@ -22,7 +22,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \return the sampling space
  */
 IMPMULTIFITEXPORT IMP::domino::TransformationCartesianProductSampler *
-set_sampling_space(const DataContainer &data);
+set_sampling_space(const DataContainer *data);
 
 IMPMULTIFIT_END_NAMESPACE
 

@@ -85,7 +85,7 @@ void SurfaceShellDensityMap::binaries(float scene_val) {
       params = kernel_params_.get_params(xyzr_[ii].get_radius());
     }
     // compute the box affected by each particle
-    calc_local_bounding_box(*this,
+    calc_local_bounding_box(this,
      xyzr_[ii].get_x(),xyzr_[ii].get_y(),xyzr_[ii].get_z(),
      params->get_kdist(),
      iminx, iminy, iminz, imaxx, imaxy, imaxz);

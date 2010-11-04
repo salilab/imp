@@ -142,7 +142,7 @@ void FFTFitting::set_mol_mask() {
   //calculate local correlation mask
   //TODO - threshold should be a parameter
   if (mol_mask_map_ != NULL) {
-    delete mol_mask_map_;
+    mol_mask_map_=NULL;
   }
   //  em::MRCReaderWriter mrw;
   mol_mask_map_ = em::binarize(mol_map_,3);
@@ -481,7 +481,7 @@ void FFTFitting::create_map_from_array(
 }
 
 em::DensityMap* FFTFitting::get_variance_map() const {
-  const em::DensityHeader *from_header=asmb_map_->get_header();
+  const em::DensityHeader* from_header=asmb_map_->get_header();
   Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
   create_map_from_array(std_norm_grid_,r_map);
   return r_map.release();
@@ -745,7 +745,6 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
      ts.second=t;
      best_trans.push_back(ts);
   }
-  delete hit_map;
   hit_map=NULL;
   return best_trans;
 }

@@ -13,23 +13,23 @@
 IMPEM_BEGIN_NAMESPACE
 
 float CoarseCC::calc_score(
-         DensityMap &em_map,
-         SampledDensityMap &model_map,
+         DensityMap *em_map,
+         SampledDensityMap *model_map,
          float scalefac,
          bool recalc_rms,bool resample,
          FloatPair norm_factors) {
   //resample the map for the particles provided
   if (resample) {
-     model_map.resample();
+     model_map->resample();
   }
 
   if (recalc_rms) {
-    em_map.calcRMS();
+    em_map->calcRMS();
     //determine a threshold for calculating the CC
-    model_map.calcRMS();   // This function adequately computes the dmin value,
+    model_map->calcRMS();   // This function adequately computes the dmin value,
                           // the safest value for the threshold
   }
-  emreal voxel_data_threshold=model_map.get_header()->dmin-EPS;
+  emreal voxel_data_threshold=model_map->get_header()->dmin-EPS;
   //rmss have already been calculated
   float escore = cross_correlation_coefficient(
                      em_map, model_map,
@@ -46,18 +46,18 @@ float CoarseCC::calc_score(
 
 namespace{
 double cross_correlation_coefficient_internal(
-      const DensityMap &grid1,
-      const DensityMap &grid2,
+      const DensityMap *grid1,
+      const DensityMap *grid2,
       float grid2_voxel_data_threshold,
       FloatPair norm_factors) {
 
-  const DensityHeader *grid2_header = grid2.get_header();
-  const DensityHeader *grid1_header = grid1.get_header();
+  const DensityHeader *grid2_header = grid2->get_header();
+  const DensityHeader *grid1_header = grid1->get_header();
 
-  const emreal *grid1_data = grid1.get_data();
-  const emreal *grid2_data = grid2.get_data();
+  const emreal *grid1_data = grid1->get_data();
+  const emreal *grid2_data = grid2->get_data();
 
-  bool same_origin = grid1.same_origin(grid2);
+  bool same_origin = grid1->same_origin(grid2);
   long  nvox = grid1_header->get_number_of_voxels();
   emreal ccc = 0.0;
 
@@ -130,8 +130,8 @@ double cross_correlation_coefficient_internal(
 }
 
 double CoarseCC::cross_correlation_coefficient(
-                        const DensityMap &grid1,
-                        const DensityMap &grid2,
+                        const DensityMap *grid1,
+                        const DensityMap *grid2,
                         float grid2_voxel_data_threshold,
                         bool allow_padding,
                         FloatPair norm_factors) {
@@ -142,8 +142,8 @@ double CoarseCC::cross_correlation_coefficient(
           " norm factors:"<<norm_factors.first<<","<<norm_factors.second <<
           "\n");
   //run vaildation checks
-  const DensityHeader *grid2_header = grid2.get_header();
-  const DensityHeader *grid1_header = grid1.get_header();
+  const DensityHeader *grid2_header = grid2->get_header();
+  const DensityHeader *grid1_header = grid1->get_header();
 
   IMP_INTERNAL_CHECK(grid2_header->dmax>grid2_voxel_data_threshold,
                      "voxel_data_threshold: " << grid2_voxel_data_threshold <<
@@ -157,17 +157,17 @@ double CoarseCC::cross_correlation_coefficient(
   IMP_INTERNAL_CHECK(grid2_header->is_top_calculated(),
                      "Top should be calculated for grid2\n");
 
-  IMP_INTERNAL_CHECK(grid1.same_voxel_size(grid2),
+  IMP_INTERNAL_CHECK(grid1->same_voxel_size(grid2),
                      "Both grids should have the same spacing\n");
   if (!allow_padding) {
   //additional validity checks
-  IMP_USAGE_CHECK(grid1.same_dimensions(grid2),
+  IMP_USAGE_CHECK(grid1->same_dimensions(grid2),
             "This function cannot handle density maps of different size. "
       << "First map dimensions : " << grid1_header->get_nx() << " x "
       << grid1_header->get_ny() << " x " << grid1_header->get_nz() << "; "
       << "Second map dimensions: " << grid2_header->get_nx() << " x "
       << grid2_header->get_ny() << " x " << grid2_header->get_nz());
-  IMP_USAGE_CHECK(grid1.same_voxel_size(grid2),
+  IMP_USAGE_CHECK(grid1->same_voxel_size(grid2),
             "This function cannot handle density maps of different pixelsize. "
             << "First grid pixelsize : " << grid1_header->get_spacing() << "; "
             << "Second grid pixelsize: " << grid2_header->get_spacing());
@@ -180,61 +180,59 @@ double CoarseCC::cross_correlation_coefficient(
     //create a padded version of the grids
     //copy maps to contain the same extent
     if (!get_interiors_intersect(
-             get_bounding_box(&grid1),
-             get_bounding_box(&grid2,grid2_voxel_data_threshold))){
+             get_bounding_box(grid1),
+             get_bounding_box(grid2,grid2_voxel_data_threshold))){
       return 0.;
     }
     algebra::BoundingBox3D merged_bb=
-      get_bounding_box(&grid1)+get_bounding_box(&grid2);
-    DensityMap* padded_grid1=
+      get_bounding_box(grid1)+get_bounding_box(grid2);
+    Pointer<DensityMap> padded_grid1=
       create_density_map(merged_bb,grid1_header->get_spacing());
     padded_grid1->add(grid1);
-    DensityMap* padded_grid2=
+    Pointer<DensityMap> padded_grid2=
       create_density_map(merged_bb,grid2_header->get_spacing());
     padded_grid2->add(grid2);
     padded_grid1->calcRMS();
     padded_grid2->calcRMS();
     IMP_LOG(VERBOSE,"calcaulte correlation internal");
     double score=cross_correlation_coefficient_internal(
-                                 *padded_grid1,*padded_grid2,
+                                 padded_grid1,padded_grid2,
                                  grid2_voxel_data_threshold,norm_factors);
     //release the padded versions of the grids
-    delete (padded_grid1);
-    delete (padded_grid2);
     return score;
   }
 }
 
 
-float CoarseCC::local_cross_correlation_coefficient(const DensityMap &em_map,
-                                              DensityMap &model_map,
+float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
+                                              DensityMap *model_map,
                                               float voxel_data_threshold,
                                               bool recalc_ccnormfac,
                                               bool divide_by_rms)
 {
-  IMP_INTERNAL_CHECK(model_map.get_header()->dmax>voxel_data_threshold,
+  IMP_INTERNAL_CHECK(model_map->get_header()->dmax>voxel_data_threshold,
                      "voxel_data_threshold: " << voxel_data_threshold <<
                      " is not within the map range: " <<
-                     model_map.get_header()->dmin<<"-"<<
-                     model_map.get_header()->dmax<<std::endl);
-  const DensityHeader *model_header = model_map.get_header();
-  const DensityHeader *em_header = em_map.get_header();
+                     model_map->get_header()->dmin<<"-"<<
+                     model_map->get_header()->dmax<<std::endl);
+  const DensityHeader *model_header = model_map->get_header();
+  const DensityHeader *em_header = em_map->get_header();
 
   if (recalc_ccnormfac) {
-    model_map.calcRMS();
+    model_map->calcRMS();
   }
 
-  const emreal *em_data = em_map.get_data();
-  const emreal *model_data = model_map.get_data();
+  const emreal *em_data = em_map->get_data();
+  const emreal *model_data = model_map->get_data();
 
   //validity checks
-  IMP_USAGE_CHECK(em_map.same_voxel_size(model_map),
+  IMP_USAGE_CHECK(em_map->same_voxel_size(model_map),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << em_header->get_spacing() << "; "
             << "Second map pixelsize: " << model_header->get_spacing());
 
   // Check if the model map has zero RMS
-  if ((fabs(model_map.get_header()->rms-0.0)<EPS) && divide_by_rms) {
+  if ((fabs(model_map->get_header()->rms-0.0)<EPS) && divide_by_rms) {
     IMP_WARN("The model map rms is zero, and the user ask to divide"<<
              " by rms. returning 0!"<<std::endl);
     return 0.0;
@@ -248,14 +246,14 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap &em_map,
   emreal em_rms=0.;
   int num=0;
 IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
-  model_map.get_header_writable()->compute_xyz_top();
+  model_map->get_header_writable()->compute_xyz_top();
 
   // Given the same size of the maps and the dimension order, the difference
   // between two positions in voxels is always the same
 
   // calculate the difference in voxels between the origin of the  model map
   // and the origin of the em map.
-  float voxel_size = em_map.get_header()->get_spacing();
+  float voxel_size = em_map->get_header()->get_spacing();
   int ivoxx_shift = (int)floor((model_header->get_xorigin()
                                   - em_header->get_xorigin())
                                  / voxel_size);
@@ -312,8 +310,8 @@ IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
 }
 
 void CoarseCC::calc_derivatives(
-             const DensityMap &em_map,
-             const DensityMap &model_map,
+             const DensityMap *em_map,
+             const DensityMap *model_map,
              const Particles &model_ps,const FloatKey &w_key,
              KernelParameters *kernel_params,DistanceMask *dist_mask,
              const float &scalefac,
@@ -323,17 +321,17 @@ void CoarseCC::calc_derivatives(
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
-  const DensityHeader *model_header = model_map.get_header();
-  const DensityHeader *em_header = em_map.get_header();
-  const float *x_loc = model_map.get_x_loc();
-  const float *y_loc = model_map.get_y_loc();
-  const float *z_loc = model_map.get_z_loc();
+  const DensityHeader *model_header = model_map->get_header();
+  const DensityHeader *em_header = em_map->get_header();
+  const float *x_loc = model_map->get_x_loc();
+  const float *y_loc = model_map->get_y_loc();
+  const float *z_loc = model_map->get_z_loc();
   IMP_INTERNAL_CHECK(model_ps.size()==dvx.size(),
     "input derivatives array size does not match "<<
     "the number of particles in the model map\n");
   core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
   //this would go away once we have XYZRW decorator
-  const emreal *em_data = em_map.get_data();
+  const emreal *em_data = em_map->get_data();
   float lim = kernel_params->get_lim();
   long nvox = em_header->get_number_of_voxels();
   long ivox;
@@ -346,7 +344,7 @@ void CoarseCC::calc_derivatives(
   // IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
   //           <<" derivatives are not calculated. the model centroid is : " <<
   //           core::get_centroid(core::XYZsTemp(model_ps))<<
-  //           " the map centroid is " << em_map.get_centroid()<<
+  //           " the map centroid is " << em_map->get_centroid()<<
   //                 "number of particles in model:"<<model_ps.size()
   //<<std::endl);
   // return;

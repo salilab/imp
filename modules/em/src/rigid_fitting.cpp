@@ -227,7 +227,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    IMP::em::SampledDensityMap *model_dens_map =
        new IMP::em::SampledDensityMap(*dmap->get_header());
    IMP_INTERNAL_CHECK(
-      model_dens_map->same_dimensions(*dmap),
+      model_dens_map->same_dimensions(dmap),
       "sampled density map is of wrong dimensions"<<std::endl);
    model_dens_map->set_particles(ps,rad_key,wei_key);
    model_dens_map->resample();
@@ -269,7 +269,7 @@ FittingSolutions local_rigid_fitting_grid_search(
               rotated_sampled_map->set_origin(t.get_transformed(origin));
               float threshold = rotated_sampled_map->get_header()->dmin;
               score = 1.-IMP::em::CoarseCC::cross_correlation_coefficient(
-                       *dmap,*rotated_sampled_map,threshold,true);
+                       dmap,rotated_sampled_map,threshold,true);
            fr.add_solution(IMP::algebra::compose(t,t1),score);
            model_dens_map->set_origin(origin);
          }//z
@@ -292,7 +292,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
   model_dens_map->set_particles(ps,rad_key,wei_key);
     model_dens_map->resample();
     model_dens_map->calcRMS();
-    IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(*em_map),
+    IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(em_map),
                        "sampled density map is of wrong dimensions"<<std::endl);
     float score;
     if (!fast_version) {
@@ -318,8 +318,8 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
         model_dens_map2->calcRMS();
         float threshold = model_dens_map2->get_header()->dmin-EPS;
         score  = 1.-
-          CoarseCC::cross_correlation_coefficient(*em_map,
-             *model_dens_map2,threshold,true);
+          CoarseCC::cross_correlation_coefficient(em_map,
+             model_dens_map2,threshold,true);
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it,score);
       }
@@ -340,20 +340,20 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
         Pointer<DensityMap> transformed_sampled_map = get_transformed(
               model_dens_map,*it);
         IMP_INTERNAL_CHECK(
-           transformed_sampled_map->same_dimensions(*model_dens_map),
+           transformed_sampled_map->same_dimensions(model_dens_map),
            "sampled density map changed dimensions after transformation"
            <<std::endl);
         // std::stringstream ss;
         // counter++;
         // ss<<"transformed_map_"<<counter<<".mrc";
         // write_map(transformed_sampled_map,ss.str().c_str(),mrw);
-        IMP_INTERNAL_CHECK(transformed_sampled_map->same_dimensions(*em_map),
+        IMP_INTERNAL_CHECK(transformed_sampled_map->same_dimensions(em_map),
                  "sampled density map is of wrong dimensions"<<std::endl);
         float threshold = transformed_sampled_map->get_header()->dmin;
         std::cout<<"before cc"<<std::endl;
         score  = 1.-
-          CoarseCC::cross_correlation_coefficient(*em_map,
-             *transformed_sampled_map,threshold,true);
+          CoarseCC::cross_correlation_coefficient(em_map,
+             transformed_sampled_map,threshold,true);
         std::cout<<"after cc"<<std::endl;
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it,score);
@@ -371,7 +371,7 @@ Float compute_fitting_score(const Particles &ps,
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
    model_dens_map->set_particles(ps,rad_key,wei_key);
    model_dens_map->resample();
-   return em::CoarseCC::calc_score(*em_map, *model_dens_map,
+   return em::CoarseCC::calc_score(em_map, model_dens_map,
                                  1.0,true,false);
 }
 
