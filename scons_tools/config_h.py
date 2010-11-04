@@ -12,7 +12,7 @@ def _action_config_h(target, source, env):
        and a corresponding SWIG interface, e.g.
        env.IMPModuleConfig(('config.h', 'foo_config.i'), env.Value('foo'))
        generates a configuration header and interface for the 'foo' module."""
-    vars= imp_module.make_vars(env)
+    vars= imp_module.get_module_variables(env)
     #print "opening h at " +target[0].abspath + " for module %(module)s"%vars
     h = file(target[0].abspath, 'w')
     #print "Generating "+str(h)
@@ -204,14 +204,14 @@ inline std::string get_example_path(std::string file_name)  {
 #endif  /* %(PREPROC)s_CONFIG_H */""" % vars
 
 def _print_config_h(target, source, env):
-    vars= imp_module.make_vars(env)
+    vars= imp_module.get_module_variables(env)
     print "Generating %(module)s_config.h"%vars
 
 ConfigH = Builder(action=Action(_action_config_h,
                                 _print_config_h))
 
 def _action_config_cpp(target, source, env):
-    vars= imp_module.make_vars(env)
+    vars= imp_module.get_module_variables(env)
     vars['version']= source[0].get_contents()
     cpp = file(target[0].abspath, 'w')
 
@@ -251,7 +251,7 @@ namespace internal {
 
 
 def _print_config_cpp(target, source, env):
-    vars= imp_module.make_vars(env)
+    vars= imp_module.get_module_variables(env)
     print "Generating  %(module)s_config.cpp"%vars
 
 

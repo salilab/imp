@@ -1,5 +1,4 @@
 """Simple configure checks for graphviz"""
-import checks
 import os
 import sys
 

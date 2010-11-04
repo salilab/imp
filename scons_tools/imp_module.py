@@ -13,15 +13,26 @@ import link_test
 import bug_fixes
 import modeller_test
 import run
-import checks
+import dependency
 import modpage
 import pch
+import utility
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
 
 def get_module_name(env):
-    return env['IMP_MODULE']
+    return env['IMP_MODULE_NAME']
+
+def _set_module_name(env, module):
+    env['IMP_MODULE_NAME']=module
+
+def get_found_modules(env, modules):
+    ret=[]
+    for m in modules:
+        if env.get_module_ok(m):
+            ret.append(m)
+    return ret
 
 def get_module_ok(env, module=None):
     if not module:
@@ -31,62 +42,115 @@ def get_module_ok(env, module=None):
 def _set_module_ok(env, module, ok):
     env["IMP"+module+"_ok"]=ok
 
+def get_module_modules(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env['IMP'+module+'_modules']
 
-def file_compare(a, b):
-    """Check if two files are the same, by comparing the path"""
-    pa= a.abspath
-    pb= b.abspath
-    return cmp(pa,pb)
+def _set_module_modules(env, module, modules):
+    l=[]
+    for m in modules:
+        l+=[m]+ env.get_module_modules(m)
+    fl=[]
+    for i,m in enumerate(l):
+        if not m in l[i+1:]:
+            fl.append(m)
+    env['IMP'+module+'_modules']=fl
 
-def module_glob(patterns):
-    """provide a canonical list of files which match the passed list of patterns.
-    Otherwise changes in the ordering will cause scons to rebuild things."""
-    ret=[]
-    for x in patterns:
-        ret= ret+Glob(x, ondisk=True)
-    ret.sort()#cmp= file_compare)
-    return ret
+def get_module_python_modules(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env['IMP'+module+'_python_modules']
 
-def recursive_module_glob(patterns):
-    allpatterns=[x for x in patterns]
-    for p in ['*/', '*/*/']:
-        allpatterns+= [p+x for x in patterns]
-    return module_glob(allpatterns)
+def _set_module_python_modules(env, module, modules):
+    l=[]
+    for m in modules:
+        l+=[m]+ env.get_module_modules(m)
+    fl=[]
+    for i,m in enumerate(l):
+        if not m in l[i+1:]:
+            fl.append(m)
+    env['IMP'+module+'_python_modules']=fl
+
+def get_module_version(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env['IMP'+module+'_version']
+
+def _set_module_version(env, module, version, deps):
+    if version == "SVN" and env['svn'] and env['SVNVERSION']:
+        if env.get('repository'):
+            rep=env['repository']
+            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
+            pf=Dir(".").abspath[len(dp)+1:]
+            #print pf
+            reppath=Dir("#/"+rep).abspath
+            path=os.path.join(reppath, pf)
+        else:
+            path=Dir(".").abspath
+        try:
+            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
+            version= "SVN "+vr.split("\n")[0]
+        except OSError, detail:
+            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
+
+    if len(deps)>0:
+        version=version+" with "+", ".join(deps)
+    env['IMP'+module+'_version']=version
+
+def get_module_dependencies(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env['IMP'+module+'_dependencies']
+
+def _set_module_dependencies(env, module, deps):
+    l=[]
+    for m in env.get_module_modules(module):
+        l+= env.get_module_dependencies(m)
+    fl=[]
+    for i,m in enumerate(l):
+        if not m in l[i+1:]:
+            fl.append(m)
+    env['IMP'+module+'_dependencies']=deps+fl
+
+
+
 def module_requires(env, target, source):
     """Make sure that 'module-source' is built before 'module-target'"""
     for t in target:
-        env.Requires(t, [env.Alias(env['IMP_MODULE']+"-"+source)])
+        env.Requires(t, [env.Alias(get_module_name(env)+"-"+source)])
 
 
 def module_depends(env, target, source):
     """Make sure that 'module-source' is built before 'module-target'"""
-    env.Depends(target, [env.Alias(env['IMP_MODULE']+"-"+source)])
+    env.Depends(target, [env.Alias(get_module_name(env)+"-"+source)])
 
 def module_alias(env, target, source, is_default=False):
     """Add an alias called 'module-target' which builds source"""
-    a=env.Alias(env['IMP_MODULE']+"-"+target, [source])
+    name=get_module_name(env)+"-"+target
+    #print "created alias", name
+    a=env.Alias(name, [source])
     if is_default:
         env.Default(a)
 
 def add_to_global_alias(env, target, source):
     """Add the module alias 'module-source' to the global alias list 'target'"""
-    env.Alias(env.Alias(target), [env.Alias(env['IMP_MODULE']+'-'+source)])
+    env.Alias(env.Alias(target), [env.Alias(get_module_name(env)+'-'+source)])
 
 
 def add_to_module_alias(env, target, source):
     """Add the alias 'module-source' to the alias 'module-target'"""
-    env.Alias(env.Alias(env['IMP_MODULE']+'-'+target),
-              [env.Alias(env['IMP_MODULE']+'-'+source)])
+    env.Alias(env.Alias(get_module_name(env)+'-'+target),
+              [env.Alias(get_module_name(env)+'-'+source)])
 
 
 def module_deps_requires(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
-    #print "alldeps is " +str(dependencies + env['IMP_REQUIRED_MODULES'])
-    for d in dependencies + env['IMP_REQUIRED_LIB_MODULES']:
+    for d in dependencies + env.get_module_modules():
         #print str(target) + " requires " + d+'-'+source
         env.Requires(target, env.Alias(d+'-'+source))
-    if env['IMP_MODULE'] != 'kernel':
+    if get_module_name(env) != 'kernel':
         env.Requires(target, env.Alias("kernel-"+source))
 
 
@@ -94,142 +158,13 @@ def module_deps_requires(env, target, source, dependencies):
 def module_deps_depends(env, target, source, dependencies):
     """For each of the module dependency make sure that 'moduledep-source'
     is built before 'target'"""
-    #print "alldeps is " +str(dependencies + env['IMP_REQUIRED_MODULES'])
-    for d in dependencies + env['IMP_REQUIRED_LIB_MODULES']:
+    for d in dependencies +env.get_module_modules():
         #print str(target) + " requires " + d+'-'+source
         env.Depends(target, env.Alias(d+'-'+source))
 
-
-def expand_dependencies(env, deps, is_kernel=False):
-    """Recursively expand the list of dependencies. The dependencies are returned in order of the all_modules environment variable."""
-    size=-1
-    all=[]
-    #print "expanding ", deps
-    to_expand=deps
-    expanded={}
-    for i in to_expand:
-        expanded[i]=True
-    while len(to_expand) != 0:
-        c= to_expand[-1]
-        try:
-            ndeps=env[c+"_required_modules"]
-        except:
-            print >> sys.stderr, "Modules can only depend on modules which are configured before them."
-            print >> sys.stderr, "Specifically, module "+str(env['IMP_MODULE']) \
-                  + " cannot depend on module " +c
-            raise ValueError("Bad module depedency")
-        ndeps.reverse()
-        to_expand=to_expand[:-1]
-        for i in ndeps:
-            if not expanded.has_key(i):
-                expanded[i]=True
-                to_expand.append(i)
-        #print c, to_expand, expanded
-        all.append(c)
-    filtered=[]
-    for i in env['all_modules']:
-        try:
-            all.index(i)
-        except:
-            pass
-        else:
-            filtered.append(i)
-    # always depend on kernel
-    filtered.reverse()
-    if not is_kernel:
-        filtered.append("kernel")
-    #all.sort()
-    #print "got", filtered
-    #print "expanded "+str(deps) + " to get "+str(filtered)
-    return filtered
-
-
-def dependencies_to_libs(env, deps, is_kernel=False):
-    libs=[]
-    deps = deps
-    ed=expand_dependencies(env,deps, is_kernel)
-    if not env['fastlink']:
-        for d in ed:
-            if d== 'kernel':
-                libs.append("imp")
-            else:
-                libs.append("imp_"+d)
-    for d in ed:
-        #print "libs for " + d + " are " + str(env[d+"_libs"])
-        try:
-            libs= libs+env[d+"_libs"]
-        except:
-            pass
-    return libs
-
-def clean_libs(libs):
-    ret=[]
-    for i,l in enumerate(libs):
-        if l not in libs[i+1:]:
-            ret.append(l)
-    return ret
-
-def do_mac_name_thing(env, source, target):
-    """Set the names and paths for the mac libraries based on the current locations
-    of the libs."""
-    targetdir= os.path.split(target[0].abspath)[0]
-    sourcedir= os.path.split(source[0].abspath)[0]
-    #print targetdir
-    #print sourcedir
-    env.Execute("install_name_tool -id %s %s"% (target[0].abspath, target[0].abspath))
-    env.Execute("install_name_tool -change %s %s %s"%(os.path.join(sourcedir, 'libimp.dylib'),
-                                                      os.path.join(targetdir, 'libimp.dylib'),
-                                                      target[0].abspath))
-    for m in env['IMP_MODULES_ALL']:
-        oname=os.path.join(sourcedir, "libimp_"+m+".dylib")
-        nname=os.path.join(targetdir, "libimp_"+m+".dylib")
-        #print oname
-        #print nname
-        env.Execute("install_name_tool -change %s %s %s"%(oname,
-                                                          nname,
-                                                          target[0].abspath))
-def postprocess_lib(env, target):
-    """ for now assume that all libs go in the same place"""
-    if env['PLATFORM'] == 'darwin':
-        dir= os.path.split(target[0].abspath)[0]
-        env.AddPostAction(target, do_mac_name_thing)
-
-
-def make_static_build(env):
-    """Make the build static if appropriate"""
-    if env['CC'] == 'gcc':
-        env.Append(LINKFLAGS=['-static'])
-    else:
-        print >> sys.stderr, "WARNING: Static builds only supported with GCC, ignored."
-
-def unmake_static_build(env):
-    """Make the build static if appropriate"""
-    if env['CC'] == 'gcc':
-        lf= env['LINKFLAGS']
-        lf.remove('-static')
-        env.Replace(LINKFLAGS=lf)
-    else:
-        print >> sys.stderr, "WARNING: Static builds only supported with GCC, ignored."
-
-
-def make_vars(env):
+def get_module_variables(env):
     """Make a map which can be used for all string substitutions"""
-    module = env['IMP_MODULE']
-    module_include_path = env['IMP_MODULE_INCLUDE_PATH']
-    module_src_path = env['IMP_MODULE_SRC_PATH']
-    module_preproc = env['IMP_MODULE_PREPROC']
-    module_namespace = env['IMP_MODULE_NAMESPACE']
-    module_suffix = env['IMP_MODULE_SUFFIX']
-    version = env['IMP_MODULE_VERSION']#source[1].get_contents()
-    nicename= env['IMP_MODULE_NICENAME']
-    author = nicename+" development team"
-    vars={'module_include_path':module_include_path,
-          'module_src_path':module_src_path, 'module':module,
-          'PREPROC':module_preproc, 'author':author, 'version':version,
-          'namespace':module_namespace,
-          'module_suffix':module_suffix,
-          'module_nicename':nicename}
-    return vars
+    return env['IMP_MODULE_VARS']
 
 
 def IMPModuleLib(envi, files):
@@ -237,40 +172,38 @@ def IMPModuleLib(envi, files):
        shared library. This is only available from within an environment
        created by `IMPSharedLibraryEnvironment`."""
     from scons_tools import get_sharedlib_environment, get_staticlib_environment
-    vars= make_vars(envi)
-    module = envi['IMP_MODULE']
-    module_suffix = envi['IMP_MODULE_SUFFIX']
-    vars= make_vars(envi)
+    vars= get_module_variables(envi)
+    module = get_module_name(envi)
+    module_suffix = get_module_variables(envi)['module_suffix']
     if envi['build']=="debug" and envi['linktest']:
         link= envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
-    version= envi['IMP_MODULE_VERSION']
+    version= envi.get_module_version()
     config= envi.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
                                    source=[envi.Value(version),
                                            envi.Value(envi.subst(envi['datadir'])),
                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     files =files+ config
-    deps=clean_libs(dependencies_to_libs(envi, envi[envi['IMP_MODULE']+"_required_modules"],
-                                          envi['IMP_MODULE'] == 'kernel')\
-                    +envi[envi['IMP_MODULE']+"_libs"])
     build=[]
     if envi['IMP_BUILD_STATIC']:
         env= get_staticlib_environment(envi)
-        env.Prepend(LIBS=deps)
+        utility.add_link_flags(env, env.get_module_modules(),
+                               env.get_module_dependencies())
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files)))
     if envi['IMP_BUILD_DYNAMIC']:
         env = get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
                                     cplusplus=True)
-        env.Prepend(LIBS=deps)
+        utility.add_link_flags(env,env.get_module_modules(),
+                               env.get_module_dependencies())
         build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                        list(files) ) )
-        postprocess_lib(env, build[-1])
+        utility.postprocess_lib(env, build[-1])
     install=[]
     for b in build:
         install.append(envi.Install(env.GetInstallDirectory('libdir'), b) )
-    postprocess_lib(envi, install[-1])
+    utility.postprocess_lib(envi, install[-1])
     module_requires(envi, build, 'include')
     module_requires(envi, build, 'data')
     module_alias(envi, 'lib', build, True)
@@ -286,7 +219,7 @@ def IMPModuleLib(envi, files):
 def IMPModuleInclude(env, files):
     """Install the given header files, plus any auto-generated files for this
        IMP module."""
-    vars=make_vars(env)
+    vars=get_module_variables(env)
     includedir = env.GetInstallDirectory('includedir')
 
     # Generate config header and SWIG equivalent
@@ -305,7 +238,7 @@ def IMPModuleInclude(env, files):
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
-    vars=make_vars(env)
+    vars=get_module_variables(env)
     datadir = env.GetInstallDirectory('datadir')
     if vars['module']== 'kernel':
         path=""
@@ -320,7 +253,7 @@ def IMPModuleData(env, files):
 
 
 def IMPModuleExamples(env, example_files, data_files):
-    vars=make_vars(env)
+    vars=get_module_variables(env)
     #for f in files:
     #    print f.abspath
     if vars['module']== 'kernel':
@@ -339,22 +272,19 @@ def IMPModuleExamples(env, example_files, data_files):
     add_to_global_alias(env, 'doc', 'dox-examples')
     return test
 
-def _make_programs(envi, required_modules, extra_libs, install, files):
+def _make_programs(envi, required_modules, install, files):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
-    vars=make_vars(env)
+    vars=get_module_variables(env)
     if env['fastlink']:
-        if env['IMP_MODULE'] != "kernel":
-            env.Append(LINKFLAGS=['-limp_'+env['IMP_MODULE']])
+        if get_module_name(env) != "kernel":
+            env.Append(LINKFLAGS=['-limp_'+get_module_name(env)])
         else:
             env.Append(LINKFLAGS=['-limp'])
-    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"]\
-                                                    +required_modules,
-                                                env['IMP_MODULE'] == 'kernel')\
-                          +env[env['IMP_MODULE']+"_libs"]))
+    utility.add_link_flags(env, env.get_module_modules()+required_modules,
+                           env.get_module_dependencies())
     if not env['fastlink']:
         env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
-    env.Append(LIBS=extra_libs);
     build=[]
     install_list=[]
     bindir = env.GetInstallDirectory('bindir')
@@ -380,8 +310,8 @@ def _make_programs(envi, required_modules, extra_libs, install, files):
             env.Requires(build, env.Alias(l+'-lib'))
     return (build, install_list)
 
-def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
-    (build, install_list)= _make_programs(env, required_modules, extra_libs, install, files)
+def IMPModuleBin(env, files, required_modules=[], install=True):
+    (build, install_list)= _make_programs(env, required_modules, install, files)
     env['IMP_MODULE_BINS']= build
     module_alias(env, 'bin', build, True)
     add_to_global_alias(env, 'all', 'bin')
@@ -395,12 +325,12 @@ def IMPModuleBin(env, files, required_modules=[], extra_libs=[], install=True):
 
 
 def _fake_scanner_cpp(node, env, path):
-    #print "fake cpp", node.abspath
-    if env['IMP_MODULE'] == 'kernel':
+    print "fake cpp", node.abspath
+    if get_module_name(env) == 'kernel':
         return [File("#/build/include/IMP.h")]
     else:
-        return [File("#/build/include/IMP/"+env['IMP_MODULE']+".h")]\
-               + [File("#/build/include/IMP/"+x+".h") for x in env[env['IMP_MODULE']+"_required_modules"]]+ [File("#/build/include/IMP.h")].sorted()
+        return ([File("#/build/include/IMP/"+get_module_name(env)+".h")]\
+               + [File("#/build/include/IMP/"+x+".h") for x in env.get_module_modules()]+ [File("#/build/include/IMP.h")]).sorted()
 
 def _null_scanner(node, env, path):
     #print "null scanning", node.abspath
@@ -417,9 +347,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
        wrapper file from a SWIG interface file. This is only available from
        within an environment created by `IMPPythonExtensionEnvironment`."""
     from scons_tools import get_pyext_environment
-    module = env['IMP_MODULE']
-    module_suffix= env['IMP_MODULE_SUFFIX']
-    vars=make_vars(env)
+    module = get_module_name(env)
+    vars=get_module_variables(env)
     pybuild=[]
     install=[]
     penv = get_pyext_environment(env, module.upper(), cplusplus=True)
@@ -430,29 +359,23 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
               swig.scanner,
               Scanner(function=_null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
     penv.Replace(SCANNERS=scanners)
-    if penv['CC'] != 'w32cc':
-        penv['LIBS']=[]
-    else:
-        # windows needs all of the IMP modules linked in explicitly
-        penv.Prepend(LIBS=clean_libs(dependencies_to_libs(env, env[env['IMP_MODULE']+"_required_modules"],
-                                               env['IMP_MODULE'] == 'kernel')\
-                         +env[env['IMP_MODULE']+"_libs"]))
-    penv.Prepend(LIBS=['imp%s' % module_suffix])
+    utility.add_link_flags(penv, [get_module_name(penv)]+penv.get_module_modules(), penv.get_module_dependencies())
     swigfile= penv.IMPModuleSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
-                                           env.Value(env['IMP_REQUIRED_PYTHON_MODULES']),
-                                           env.Value(env['IMP_MODULE_VERSION']),
+                                           env.Value(env.get_module_python_modules()),
+                                           env.Value(env.get_module_version()),
                                            #python supports serialization of object, why on earth do they just convert them to strings?
-                                           env.Value(" ".join(env[module+"_optional_dependencies"])),])
+                                           env.Value(" ".join(env.get_module_dependencies())),])
     swiglink=[]
     for i in swigfiles:
         if str(i).find('/')==-1:
             swiglink.append( env.LinkInstallAs("#/build/swig/"+str(i), i) )
     dest = File('#/build/lib/%(module_include_path)s/__init__.py' % vars)
     produced=File("#/build/src/"+vars['module_include_path'].replace("/",".")+".py")
+    version=get_module_version(penv)
     swigr=penv.IMPModuleSWIG(target=[produced, '#/build/src/%(module)s_wrap.cpp-in'%vars,
                                '#/build/src/%(module)s_wrap.h-in'%vars],
-                       source=swigfile)
+                       source=[swigfile])
     #print "Moving", produced.path, "to", dest.path
     gen_pymod= env.LinkInstallAs(dest, produced)
     # this appears to be needed for some reason
@@ -475,7 +398,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
         lpenv.Prepend(CPPPATH=['#/build/swig'])
         lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
         lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
-    buildlib = lpenv.LoadableModule('#/build/lib/_IMP%s' % module_suffix,
+    buildlib = lpenv.LoadableModule('#/build/lib/_IMP%(module_suffix)s' % get_module_variables(lpenv),
                                     patched)
     #print "Environment", env['CXXFLAGS']
     if env['IMP_USE_PCH']:
@@ -485,7 +408,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                                           '__init__.py'),
                                  gen_pymod)
     installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
-    postprocess_lib(penv, buildlib)
+    utility.postprocess_lib(penv, buildlib)
     #build.append(buildlib)
     pybuild.append(gen_pymod)
     pybuild.append(buildlib)
@@ -510,22 +433,21 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     module_deps_requires(env, install, 'install-python', [])
 
 def IMPModuleGetExamples(env):
-    return module_glob(["*.py", "*/*.py","*.readme","*/*.readme"])
+    return utility.get_matching_recursive(["*.py","*.readme"])
 
 def IMPModuleGetExampleData(env):
-    ret=  recursive_module_glob(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
-                                 "*.mol2"])
+    ret=  utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
+                                          "*.mol2"])
     return ret
 
 def IMPModuleGetPythonTests(env):
-    return module_glob(["test_*.py", "*/test_*.py"])
+    return utility.get_matching_recursive(["test_*.py"])
 def IMPModuleGetCPPTests(env):
-    return module_glob(["test_*.cpp", "*/test_*.cpp"])
+    return utility.get_matching_recursive(["test_*.cpp"])
 
 
 def IMPModuleGetHeaders(env):
-    vars = make_vars(env)
-    raw_files=module_glob(["*.h", "*/*.h"])
+    raw_files=utility.get_matching_recursive(["*.h"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -533,24 +455,21 @@ def IMPModuleGetHeaders(env):
         fname= os.path.split(s)[1]
         if fname.startswith("."):
             continue
-        if s=="%(module)s_config.h"%vars:
+        if s=="%(module)s_config.h"%get_module_variables(env):
             continue
         files.append(f)
     return files
 
 def IMPModuleGetSwigFiles(env):
-    vars = make_vars(env)
-    files=module_glob(["IMP_*.i"])
+    files=utility.get_matching(["IMP_*.i"])
     return files
 
 def IMPModuleGetPython(env):
-    vars = make_vars(env)
-    files=module_glob(["src/*.py"])
+    files=utility.get_matching(["src/*.py"])
     return files
 
 def IMPModuleGetSources(env):
-    vars = make_vars(env)
-    raw_files=module_glob(["*.cpp", "*/*.cpp"])
+    raw_files=utility.get_matching_recursive(["*.cpp"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -562,14 +481,13 @@ def IMPModuleGetSources(env):
             continue
         if s== "internal/link_1.cpp":
             continue
-        if s=="%(module)s_config.cpp"%vars:
+        if s=="%(module)s_config.cpp"%get_module_variables(env):
             continue
         files.append(f)
     return files
 
 def IMPModuleGetData(env):
-    vars = make_vars(env)
-    raw_files=module_glob(["*"])
+    raw_files=utility.get_matching_recursive(["*"])
     files=[]
     for f in [os.path.split(str(x))[1] for x in raw_files]:
         if str(f).endswith("SConscript"):
@@ -584,12 +502,11 @@ def IMPModuleGetData(env):
     return files
 
 def IMPModuleGetBins(env):
-    vars = make_vars(env)
-    raw_files= module_glob(["*.cpp", "*.py"])
+    raw_files= utility.get_matching(["*.cpp", "*.py"])
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=module_glob(["*.dox", "*.pdf", "*.dot", "*.png"])
+    files=utility.get_matching(["*.dox", "*.pdf", "*.dot", "*.png"])
     return files
 
 
@@ -597,10 +514,9 @@ def IMPModuleDoc(env, files, authors,
                  brief, overview,
                  publications=None,
                  license="standard"):
-    vars= make_vars(env)
     build=[]
     install=[]
-    docdir=env['docdir']+"/"+vars['module_include_path']
+    docdir=env['docdir']+"/"+get_module_variables(env)['module_include_path']
     build.append(env.IMPModuleMakeModPage(source=[env.Value(authors),
                                              env.Value(brief),
                                              env.Value(overview),
@@ -627,8 +543,7 @@ def IMPModuleDoc(env, files, authors,
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
-                  cpp_extra_libs=[]):
+def IMPModuleTest(env, python_tests, cpp_tests):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -636,15 +551,15 @@ def IMPModuleTest(env, python_tests, cpp_tests, cpp_required_modules=[],
        all files called test_*.py in the current directory and subdirectories."""
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in python_tests]
-    files.append(env.Alias(env['IMP_MODULE']+"-python"))
+    files.append(env.Alias(get_module_name(env)+"-python"))
     #print files
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
-        (build, install_list)= _make_programs(env, cpp_required_modules, cpp_extra_libs, False, cpp_tests)
+        (build, install_list)= _make_programs(env, [get_module_name(env)]+env.get_module_modules(), False, cpp_tests)
         cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= build)
         files.append(cpptest)
-    test = env.IMPModuleTest(target="test.passed", source=files,
+    test = env.IMPModuleRunTest(target="test.passed", source=files,
                               TEST_TYPE='unit test')
     env.AlwaysBuild("test.passed")
     module_alias(env, 'test', test)
@@ -658,7 +573,7 @@ def check_libraries_and_headers(env, libraries, headers):
     custom_tests={}
     for l in libraries:
         def libtest(context):
-            ret = checks.check_lib(context, header= headers[0], lib=l)
+            ret = dependency.check_lib(context, header= headers[0], lib=l)
             if ret[0]:
                 env.Append(LIBS=[l])
             context.did_show_result=True
@@ -684,43 +599,22 @@ def check_libraries_and_headers(env, libraries, headers):
             raise EnvironmentError("The header "+ h +" is required by module but could "\
                                        + "not be found.")
 
-def process_dependencies(env, dependencies, required=False):
-    m_libs=[]
-    missing=[]
-    for d in dependencies:
-        nd= checks.nicename(d)
-        if d== "modeller":
-            if not env.get('HAS_MODELLER', False):
-                missing.append(d)
-        else:
-            if env.get(nd.upper()+"_LIBS", "not found")=="not found":
-                raise ValueError("Do not understand dependency: " +d)
-            elif env[nd.upper()+"_LIBS"]:
-                m_libs=m_libs+env[nd.upper()+"_LIBS"]
-            else:
-                missing.append(d)
-    if required and len(missing)>0:
-        #print "  (missing "+ ", ".join(missing)+", disabled)"
-        raise EnvironmentError("missing dependency "+", ".join(missing))
-    return (m_libs, missing)
-
 def IMPModuleBuild(env, version, required_modules=[],
                    lib_only_required_modules=[],
                    optional_modules=[],
                    optional_dependencies=[], config_macros=[],
                    module=None, module_suffix=None,
-                   module_include_path=None, module_src_path=None, module_preproc=None,
+                   module_include_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
-                   variabsle=None,
-                   required_libraries=[], required_headers=[],
                    cxxflags=[], cppdefines=[], python_docs=False):
+    if env.GetOption('help'):
+        return
+
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
     if module_suffix is None:
         module_suffix="_"+module
-    if module_src_path is None:
-        module_src_path="modules/"+module
     if module_include_path is None:
         module_include_path="IMP/"+module
     if module_preproc is None:
@@ -731,132 +625,66 @@ def IMPModuleBuild(env, version, required_modules=[],
         module_nicename= "IMP."+module
     if python_docs:
         env.Append(IMP_PYTHON_DOCS=[module])
-    env['IMP_MODULE'] = module
-    env['IMP_MODULE_SUFFIX'] = module_suffix
-    env['IMP_MODULE_INCLUDE_PATH'] = module_include_path
-    env['IMP_MODULE_SRC_PATH'] = module_src_path
-    env['IMP_MODULE_PREPROC'] = module_preproc
-    env['IMP_MODULE_NAMESPACE'] = module_namespace
-    env['IMP_MODULE_NICENAME'] = module_nicename
-    #env['IMP_MODULE_VERSION'] = "SVN"
-    env['IMP_MODULE_AUTHOR'] = "A. Biologist"
-
-    # Check required modules and add kernel
-    for x in required_modules+optional_modules+lib_only_required_modules:
-        if x.startswith("imp_"):
-            print >> sys.stderr, "Required modules should have the name of the module (eg 'algebra'), not the name of the library."
-            print >> sys.stderr, x
-            env.Exit(1)
-        if x=='kernel':
-            print >> sys.stderr, "You do not need to list the kernel as a required module"
-            print >> sys.stderr, x
-            env.Exit(1)
-        #required_modules.append('kernel')
     if module.lower() != module:
         print >> sys.stderr, "Module names must be all lower case. This can change if you complain, but might be complicated to fix. Failed on", module
         env.Exit(1)
-    #print module_suffix
-    #print module_src_path
-    #print module_include_path
-    #print module_preproc
-    #print module_namespace
-    found_optional_modules=[]
-    for x in optional_modules:
-        if env.get_module_ok(x):
-            found_optional_modules.append(x)
-    env[module+"_required_modules"]=required_modules+found_optional_modules\
-                                     +lib_only_required_modules
-    env[module+"_optional_dependencies"]= optional_dependencies
-    env['IMP_MODULES_ALL'].append(module)
 
-    module_failure = None
-    preclone=env
-    #if not env.GetOption('clean') and not env.GetOption('help'):
-    if len(required_libraries)+len(required_headers) > 0:
-        try:
-            check_libraries_and_headers(env, required_libraries, required_headers)
-        except EnvironmentError, e:
-            module_failure = e
-
-    if env.GetOption('help'):
-        return
-    env['all_modules'].append(module)
-    processed_optional_dependencies=process_dependencies(env, optional_dependencies)
-    try:
-        m_libs=processed_optional_dependencies[0]\
-            + process_dependencies(env, required_dependencies, True)[0]
-    except EnvironmentError, e:
-        env[module+"_libs"]=[]
-        env = bug_fixes.clone_env(env)
-        module_failure = e
-    else:
-        env[module+"_libs"]=m_libs
-        env = bug_fixes.clone_env(env)
     for m in required_modules+lib_only_required_modules:
         if not env.get_module_ok(m):
-            module_failure = "module "+m+" not supported"
-    env['IMP_REQUIRED_PYTHON_MODULES']= required_modules+found_optional_modules
-    env['IMP_REQUIRED_LIB_MODULES']= lib_only_required_modules\
-                                     +required_modules+found_optional_modules
-    if env['fastlink']:
-        ed= expand_dependencies(env,env['IMP_REQUIRED_LIB_MODULES'], module=='kernel')
-        for m in ed:
-            if m != 'kernel':
-                env.Append(LINKFLAGS=['-limp_'+m, '-limp'])
-            else:
-                env.Append(LINKFLAGS=['-limp'])
+            print "Module IMP."+module, "disabled due to disabled module "\
+                  "IMP."+m
+            _set_module_ok(env, module, False)
+            return
+    for m in required_dependencies:
+        if not env.get_dependency_ok(m):
+            print "Module IMP."+module, "disabled due to missing dependency "\
+                  +m
+            _set_module_ok(env, module, False)
+            return
+    found_optional_modules=env.get_found_modules(optional_modules)
+    _set_module_modules(env, module,required_modules+found_optional_modules\
+                                     +lib_only_required_modules)
+    _set_module_python_modules(env, module,required_modules+env.get_found_modules(optional_modules))
+    env['IMP_MODULES_ALL'].append(module)
+    _set_module_ok(env, module, True)
+
+    preclone=env
+    found_optional_dependencies=env.get_found_dependencies(optional_dependencies)
+    _set_module_dependencies(env, module, found_optional_dependencies\
+                             +required_dependencies)
+
+    _set_module_version(env, module, version,
+                        found_optional_modules+found_optional_dependencies);
+
+    env = bug_fixes.clone_env(env)
+    _set_module_name(env, module)
+
+    vars={'module_include_path':module_include_path,
+          'module':module,
+          'PREPROC':module_preproc,
+          'namespace':module_namespace,
+          'module_suffix':module_suffix,
+          'module_nicename':module_nicename}
+    env['IMP_MODULE_VARS']=vars
+
+
     build_config=[]
     if cxxflags:
         env.Replace(CXXFLAGS=cxxflags)
     if cppdefines:
         env.Append(CPPDEFINES=cppdefines)
-    # Generate version information
+
     module_alias(env, 'config', build_config)
 
-    if version == "SVN" and env['svn'] and env['SVNVERSION']:
-        if env.get('repository'):
-            rep=env['repository']
-            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
-            pf=Dir(".").abspath[len(dp)+1:]
-            #print pf
-            reppath=Dir("#/"+rep).abspath
-            path=os.path.join(reppath, pf)
-        else:
-            path=Dir(".").abspath
-        try:
-            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
-            version= "SVN "+vr.split("\n")[0]
-        except OSError, detail:
-            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
+    print "Configuring module IMP." + get_module_name(env)+" version "+env.get_module_version()
 
-    deps= ", ".join([x for x in optional_dependencies if env[checks.nicename(x).upper()+"_LIBS"]])
-    if len(deps)>0:
-        version=version+" with "+deps
-    env['IMP_MODULE_VERSION'] = version
-
-
-    if module_failure is not None:
-        print "IMP."+env['IMP_MODULE']+" is disabled due to", str(module_failure)
-        #preclone.Append(IMP_BUILD_SUMMARY=["IMP."+module+" disabled"])
-        test.disabled_modules.append(module)
-        _set_module_ok(preclone, module, False)
-        Return()
-    else:
-        print "Configuring module IMP." + env['IMP_MODULE']+" version "+env['IMP_MODULE_VERSION']
-        _set_module_ok(preclone, module, True)
-
-
-
-    nice_deps = expand_dependencies(env,env['IMP_REQUIRED_LIB_MODULES'], env['IMP_MODULE'] == 'kernel')
-    #print "nice is "+str(nice_deps)
-    all_deps=["IMP."+x for x in nice_deps if x is not "kernel"]+required_libraries
-    if len(all_deps) > 0:
-        nice_deps.remove('kernel')
-        print "  (requires " +", ".join(all_deps) +")"
+    if len(required_modules+required_dependencies)>0:
+        print "  (requires " +", ".join(required_modules+required_dependencies) +")"
+    #if len(found_optional_modules + found_optional_dependencies)>0:
+    #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
 
     env['IMP_MODULE_CONFIG']=config_macros
 
-    vars=make_vars(env)
     env.SConscript('doc/SConscript', exports='env')
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')

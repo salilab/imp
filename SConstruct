@@ -1,10 +1,12 @@
 # include IMP build utility functions:
+
 import scons_tools
 import scons_tools.boost
 import scons_tools.swig
 import scons_tools.standards
 import scons_tools.endian
 import scons_tools.gcc
+import scons_tools.dependency
 import scons_tools.modeller_test
 import scons_tools.doxygen
 import scons_tools.application
@@ -29,7 +31,6 @@ env['IMP_DISABLED']=[]
 env['IMP_BUILD_SUMMARY']=""
 env['IMP_CONFIGURATION']=[]
 env['IMP_VARIABLES']=vars
-env['IMP_EXTERNAL_LIBS']=[]
 
 Export('env')
 
@@ -65,21 +66,21 @@ includepath='/opt/local/include'
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
 
-scons_tools.checks.add_external_library(env, "ANN", "ANN",
+scons_tools.dependency.add_external_library(env, "ANN", "ANN",
                                        "ANN/ANN.h")
-scons_tools.checks.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
+scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
                                        "netcdfcpp.h")
-scons_tools.checks.add_external_library(env, "FFTW3", "fftw3",
+scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
                                        "fftw3.h")
-scons_tools.checks.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
+scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
                                        ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                        body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
                                        extra_libs=['boost_thread-mt', 'boost_thread', 'pthread'])
-scons_tools.checks.add_external_library(env, "Boost.FileSystem", "boost_filesystem",
+scons_tools.dependency.add_external_library(env, "Boost.FileSystem", "boost_filesystem",
                                        'boost/filesystem/path.hpp',
                                        extra_libs=['libboost_system'],
                                        alternate_name='boost_filesystem-mt')
-scons_tools.checks.add_external_library(env, "Boost.ProgramOptions", "boost_program_options",
+scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", "boost_program_options",
                                        'boost/program_options.hpp',
                                        extra_libs=['libboost_system'],
                                        alternate_name='boost_program_options-mt')
@@ -127,7 +128,7 @@ if not env.GetOption('help'):
     if unknown:
         really_unknown=[]
         for u in unknown.keys():
-            if u not in [scons_tools.checks.nicename(x) for x in env['IMP_EXTERNAL_LIBS']]:
+            if u not in [scons_tools.dependency.get_dependency_string(x) for x in env.get_all_known_external_dependencies()]:
                 really_unknown.append(u)
         if len(really_unknown) >0:
             print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())

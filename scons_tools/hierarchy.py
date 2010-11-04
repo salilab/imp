@@ -12,7 +12,7 @@ import imp_module
 
 
 def _build_header(target, source, env):
-    vars= imp_module.make_vars(env);
+    vars= imp_module.get_module_variables(env);
     fh = file(target[0].abspath, 'w')
     print >> fh, "/**\n *  \\file %(module_include_path)s.h   \\brief Include all the headers\n *" \
              % vars

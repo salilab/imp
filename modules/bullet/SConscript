@@ -1,7 +1,7 @@
 Import('env')
-import scons_tools.checks
+import scons_tools.dependency
 
-scons_tools.checks.add_external_library(env, "Bullet", ["BulletDynamics", "BulletCollision",
+scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "BulletCollision",
                                                         "BulletSoftBody",
                                                         "LinearMath"],
                                        "btBulletDynamicsCommon.h",

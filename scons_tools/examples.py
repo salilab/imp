@@ -73,7 +73,7 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
         #    install.append(env.Install(exampledir+"/"+prefix, f.abspath))
     install = hierarchy.InstallExampleHierarchy(env, exampledir+"/"+prefix, example_files+data_files, False)
     build = hierarchy.InstallExampleHierarchy(env, "#/build/doc/examples/"+prefix, example_files+data_files, True)
-    test= env.IMPModuleTest('tests.passed',
+    test= env.IMPModuleRunTest('tests.passed',
                              ["#/tools/imppy.sh",
                               "#/scons_tools/run-all-examples.py"]\
                              +[x for x in example_files
