@@ -164,6 +164,8 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
   }
   for (unsigned int i=0; i < rs.size(); ++i) {
     ParticlesTemp pl= rs[i]->get_input_particles();
+    std::sort(pl.begin(), pl.end());
+    pl.erase(std::unique(pl.begin(), pl.end()), pl.end());
     Subset os(pl);
     for (unsigned int j=0; j< pl.size(); ++j) {
       pl[j]= ps[map[pl[j]]];
