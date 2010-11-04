@@ -1,7 +1,6 @@
 """Simple configure checks for boost"""
 
 from SCons.Script import Exit
-import checks
 import gcc
 
 def _check(context, version):

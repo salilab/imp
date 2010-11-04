@@ -1,6 +1,6 @@
 import atexit
-import checks
 import SCons
+import dependency
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
     in a useful way."""
@@ -26,8 +26,9 @@ def _display_build_summary(env):
         found_deps.append('python')
     else:
         unfound_deps.append('python')
-    for l in env['IMP_EXTERNAL_LIBS']:
-        if env[checks.nicename(l).upper()+"_LIBS"]:
+    found=env.get_found_dependencies(env.get_all_known_dependencies())
+    for l in env.get_all_known_dependencies():
+        if l in found:
             found_deps.append(l)
         else:
             unfound_deps.append(l)

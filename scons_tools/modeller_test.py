@@ -97,6 +97,10 @@ def configure_check(env):
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
     env['HAS_MODELLER'] = conf.CheckModeller()
+    if env['HAS_MODELLER']:
+        env.Append(IMP_ENABLED=['modeller'])
+    else:
+        env.Append(IMP_DISABLED=['modeller'])
     #else:
     #    env['HAS_MODELLER']=False
     conf.Finish()

@@ -1,5 +1,4 @@
 from SCons.Script import Exit
-import checks
 import platform
 
 def CheckGCCVisibility(context):

@@ -10,6 +10,7 @@ import bug_fixes
 import standards
 import compilation
 import imp_module
+import dependency
 import gcc
 import swig
 import platform
@@ -348,6 +349,16 @@ def MyEnvironment(variables=None, *args, **kw):
     env.Append(BUILDERS = {'IMPGeneratePCH': pch.GeneratePCH,
                            'IMPBuildPCH': pch.BuildPCH})
     env.AddMethod(imp_module.get_module_ok)
+    env.AddMethod(imp_module.get_module_modules)
+    env.AddMethod(imp_module.get_module_python_modules)
+    env.AddMethod(imp_module.get_module_dependencies)
+    env.AddMethod(imp_module.get_module_version)
+    env.AddMethod(imp_module.get_found_modules)
+    env.AddMethod(dependency.get_found_dependencies)
+    env.AddMethod(dependency.add_dependency_link_flags)
+    env.AddMethod(dependency.get_dependency_libs)
+    env.AddMethod(dependency.get_all_known_dependencies)
+    env.AddMethod(dependency.get_dependency_ok)
 
     # these should be in the module, but this seems to speed things up
     env.AddMethod(imp_module.IMPModuleLib)
@@ -374,7 +385,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(modpage.Website)
     env.AddMethod(modpage.StandardPublications)
     env.AddMethod(modpage.StandardLicense)
-    env.Append(BUILDERS={'IMPModuleTest': test.UnitTest})
+    env.Append(BUILDERS={'IMPModuleRunTest': test.UnitTest})
     env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
     env.Append(BUILDERS={'IMPModuleExamplesDox': examples.MakeDox})
     env.Append(BUILDERS={'IMPModuleSWIG': swig.SwigIt})

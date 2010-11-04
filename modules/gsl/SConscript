@@ -1,10 +1,10 @@
 Import('env')
 import scons_tools
 
-scons_tools.checks.add_external_library(env, "GSL", ["gsl",'gslcblas'],
+scons_tools.dependency.add_external_library(env, "GSL", ["gsl",'gslcblas'],
                                         "gsl/gsl_sf_bessel.h",
                                         body='gsl_sf_bessel_J0(1.0);')
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['algebra'],
-                   required_dependencies=['gsl'])
+                   required_dependencies=['GSL'])

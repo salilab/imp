@@ -4,7 +4,8 @@ import SCons
 import os
 import sys
 import re
-import checks
+import dependency
+import imp_module
 
 # standard include files
 base_includes= ["IMP_macros.i",
@@ -28,10 +29,11 @@ base_includes= ["IMP_macros.i",
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 def _action_patch_swig_wrap(target, source, env):
     lines = file(source[0].path, 'r').readlines()
-    repl1 = '"swig::%s_PySwigIterator *"' % env['IMP_MODULE_PREPROC']
-    repl2 = '"swig::%s_SwigPyIterator *"' % env['IMP_MODULE_PREPROC']
-    orig = 'SWIG_IMP.%s_WRAP_H_' % env['IMP_MODULE']
-    repl = 'SWIG_IMP_%s_WRAP_H_' % env['IMP_MODULE']
+    vars= imp_module.get_module_variables(env)
+    repl1 = '"swig::%s_PySwigIterator *"' % vars['PREPROC']
+    repl2 = '"swig::%s_SwigPyIterator *"' % vars['PREPROC']
+    orig = 'SWIG_IMP.%s_WRAP_H_' % imp_module.get_module_name(env)
+    repl = 'SWIG_IMP_%s_WRAP_H_' % imp_module.get_module_name(env)
     fh= file(target[0].path, 'w')
     for line in lines:
         line = line.replace('"swig::PySwigIterator *"', repl1)
@@ -41,6 +43,8 @@ def _action_patch_swig_wrap(target, source, env):
         # for some reason swig has issues with directors and VersionInfo
         # when %extend is used
         line = line.replace(" VersionInfo ", " IMP::VersionInfo ")
+        line = line.replace("(VersionInfo ", "(IMP::VersionInfo ")
+        line = line.replace("<VersionInfo ", "<IMP::VersionInfo ")
         line = line.replace("<:", "< :") # swig generates bad C++ code
         fh.write(line.replace('"swig::SwigPyIterator *"', repl2))
     fh.close()
@@ -53,8 +57,8 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 
 def _action_swig_file(target, source, env):
-    vars= imp_module.make_vars(env)
-    deps=(imp_module.expand_dependencies(env, env['IMP_REQUIRED_PYTHON_MODULES']))
+    vars= imp_module.get_module_variables(env)
+    deps= env.get_module_python_modules()
     deps.reverse()
     #print "dependencies are " +str(deps)
     warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
@@ -125,20 +129,20 @@ std::string get_data_path(std::string fname);
 }
 """%vars)
     preface.append(warning)
+    version=source[2].get_contents()
     preface.append("""
-%%pythoncode {
-if get_module_version_info().get_version() != "%(version)s":
-    sys.stderr.write("WARNING: expected version %(version)s, but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n")
+%pythoncode {
+if get_module_version_info().get_version() != '"""+version+"""':
+    sys.stderr.write("WARNING: expected version '"""+version+"""', but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n")
 }"""%vars)
-    optional_deps\
-    = [checks.nicename(x).lower() for x in source[3].get_contents().split(" ") if len(x) > 0]
-    (found, notfound)= imp_module.process_dependencies(env, optional_deps)
+    deps= source[3].get_contents().split(" ")
     preface.append("%pythoncode {")
-    for dep in optional_deps:
-        if dep not in notfound:
-            preface.append("has_"+dep +"=True")
+    for d in deps:
+        nm=dependency.get_dependency_string(d).lower()
+        if env.get_dependency_ok(d):
+            preface.append("has_"+nm +"=True")
         else:
-            preface.append("has_"+dep +"=False")
+            preface.append("has_"+nm +"=False")
     preface.append("}")
     if vars['module'] != "kernel":
         preface.append("""
@@ -160,7 +164,7 @@ SwigPreface = Builder(action=Action(_action_swig_file,
 
 
 def _action_simple_swig(target, source, env):
-    vars= imp_module.make_vars(env)
+    vars= imp_module.get_module_variables(env)
     cppflags= ""
     for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
@@ -177,7 +181,7 @@ def _action_simple_swig(target, source, env):
                "-python", "-c++", "-naturalvar",
                "-fvirtual"]+warnings
     # Signal whether we are building the kernel
-    if env['IMP_MODULE'] == 'kernel':
+    if imp_module.get_module_name(env) == 'kernel':
         command.append('-DIMP_SWIG_KERNEL')
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
@@ -287,10 +291,10 @@ def inswig_scanner(node, env, path):
     for i in base_includes:
         f= "#/build/swig/"+i
         ret.append(f)
-    for m in env['IMP_REQUIRED_PYTHON_MODULES']:
+    for m in env.get_module_python_modules():
         ret.append("#/modules/"+m+"/pyext/swig.i-in")
     ret.append('#/kernel/pyext/swig.i-in')
-    return ret
+    return ret.sorted()
 
 scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=True)
 # scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents

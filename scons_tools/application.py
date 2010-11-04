@@ -1,41 +1,31 @@
-from scons_tools import get_bin_environment
-from imp_module import dependencies_to_libs
-from imp_module import check_libraries_and_headers
-from imp_module import process_dependencies
-from imp_module import expand_dependencies
-from imp_module import clean_libs
+import utility
+import dependency
+import imp_module
+import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 
 def IMPCPPApplication(envi, target, source, required_modules=[],
                       optional_dependencies=[],
-                      required_dependencies=[], required_libraries=[],
-                      required_headers=[]):
+                      required_dependencies=[]):
     if envi.GetOption('help'):
         return
-    env= get_bin_environment(envi)
-    for l in required_modules:
-        if not env.get_module_ok(l):
-            print "Module",l, "not found or disabled."
+    for m in required_modules:
+        if not envi.get_module_ok(m):
+            print target, "disabled due to missing module IMP."+m
             return
-    if env['fastlink']:
-        for l in expand_dependencies(env,required_modules, False):
-            if l != 'kernel':
-                env.Append(LINKFLAGS=['-limp_'+l])
-            else:
-                env.Append(LINKFLAGS=['-limp'])
-    env.Prepend(LIBS=clean_libs(dependencies_to_libs(env, required_modules)))
-    env.Prepend(CPPPATH=["#/build/include"])
-    env.Prepend(LIBPATH=["#/build/lib"])
-    try:
-        rp= process_dependencies(env, required_dependencies, True)
-    except EnvironmentError, e:
-        print "Application", str(target), "cannot be built due to missing dependencies."
-        return
-    op= process_dependencies(env, optional_dependencies)
-    env.Append(LIBS=clean_libs(rp+op))
-    if len(required_libraries)+len(required_headers) > 0:
-        check_libraries_and_headers(env, required_libraries, required_headers)
+    for d in required_dependencies:
+        if not envi.get_dependency_ok(d):
+            print target, "disabled due to missing dependency", d
+            return
+    print "Configuration application", target
+    if len(required_modules+required_dependencies)>0:
+        print "  (requires", ", ".join(required_modules+required_dependencies)+")"
+    env= scons_tools.get_bin_environment(envi)
+
+    utility.add_link_flags(env, required_modules,
+                           required_dependencies+env.get_found_dependencies(optional_dependencies))
+
     prog= env.Program(target=target, source=source)
     bindir = env.GetInstallDirectory('bindir')
     build= env.Install("#/build/bin", prog)
