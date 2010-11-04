@@ -128,16 +128,16 @@ protected:
   fftw_plan fftw_plan_c2r_cc_,
     fftw_plan_c2r_std_upper_,fftw_plan_c2r_std_lower_;
   //normalization grid
-  double *std_norm_grid_;
-  double *std_upper_;
-  double *std_lower_;
-  em::DensityMap *asmb_map_;
-  em::DensityMap *padded_asmb_map_,*asmb_map_mask_;
-  em::DensityMap *padded_asmb_map_sqr_;
-  em::DensityMap *mol_mask_map_;
-  em::SampledDensityMap *mol_map_;
+  double* std_norm_grid_;
+  double* std_upper_;
+  double* std_lower_;
+  Pointer<em::DensityMap> asmb_map_;
+  Pointer<em::DensityMap> padded_asmb_map_,asmb_map_mask_;
+  Pointer<em::DensityMap> padded_asmb_map_sqr_;
+  Pointer<em::DensityMap> mol_mask_map_;
+  Pointer<em::SampledDensityMap> mol_map_;
   core::RigidBody rb_;
-  Refiner *rb_refiner_;
+  Pointer<Refiner> rb_refiner_;
   bool is_initialized_;
   //parameters
   float pad_factor_;//percentage of the extent (x) to be margin;
@@ -145,7 +145,7 @@ protected:
   float low_pass_kernel_ext_; //kernel size for smoothing
   float fftw_scale_;//
   //Gaussian kernel
-  double *gauss_kernel_;
+  boost::scoped_array<double> gauss_kernel_;
   int gauss_ext_;
   //sampling transformations
   algebra::Transformation3D center_trans_;

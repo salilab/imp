@@ -30,18 +30,18 @@ void MapFilterByThreshold::set_parameters(float threshold,int mode) {
   value_ = threshold;
 }
 
-void MapFilterByThreshold::apply(DensityMap& m) {
-  long  nvox = m.get_number_of_voxels();
+void MapFilterByThreshold::apply(DensityMap* m) {
+  long  nvox = m->get_number_of_voxels();
   for (long ii=0;ii<nvox;ii++) {
     switch (mode_) {
     case 0: // Filter all the values BELOW the threshold
-      if(m.get_value(ii)<threshold_) {
-        m.set_value(ii,value_);
+      if(m->get_value(ii)<threshold_) {
+        m->set_value(ii,value_);
       }
       break;
     case 1: // Filter all the values ABOVE the threshold
-      if(m.get_value(ii)>threshold_) {
-        m.set_value(ii,value_);
+      if(m->get_value(ii)>threshold_) {
+        m->set_value(ii,value_);
       }
       break;
     }

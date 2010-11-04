@@ -127,7 +127,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
      IMP_USAGE_CHECK(params, "Parameters shouldn't be NULL");
      // compute the box affected by each particle
      calc_local_bounding_box(
-       *this,
+       this,
        x,y,z,
        params->get_kdist(),
        iminx, iminy, iminz, imaxx, imaxy, imaxz);

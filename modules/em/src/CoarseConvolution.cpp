@@ -11,27 +11,27 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-float CoarseConvolution::convolution(const DensityMap &f, DensityMap &g,
+float CoarseConvolution::convolution(const DensityMap *f, DensityMap *g,
                                      float voxel_data_threshold,
                                      bool recalc_ccnormfac)
 {
-  const DensityHeader *f_header = f.get_header();
-  const DensityHeader *g_header = g.get_header();
-  const emreal *f_data = f.get_data();
-  const emreal *g_data = g.get_data();
+  const DensityHeader *f_header = f->get_header();
+  const DensityHeader *g_header = g->get_header();
+  const emreal *f_data = f->get_data();
+  const emreal *g_data = g->get_data();
 
   //validity checks
-  IMP_USAGE_CHECK(f.same_dimensions(g),
+  IMP_USAGE_CHECK(f->same_dimensions(g),
             "This function cannot handle density maps of different size. "
             << "First map dimensions : " << f_header->get_nx() << " x "
             << f_header->get_ny() << " x " << f_header->get_nz()
             << "; Second map dimensions: " << g_header->get_nx() << " x "
             << g_header->get_ny() << " x " << g_header->get_nz());
-  IMP_USAGE_CHECK(f.same_voxel_size(g),
+  IMP_USAGE_CHECK(f->same_voxel_size(g),
             "This function cannot handle density maps of different pixelsize. "
             << "First map pixelsize : " << f_header->get_spacing()
             << "; Second map pixelsize: " << g_header->get_spacing());
-  bool same_origin = f.same_origin(g);
+  bool same_origin = f->same_origin(g);
   int  nvox = f_header->get_number_of_voxels();
   emreal conv = 0.0;
 

@@ -71,7 +71,7 @@ public:
                  faster, but potentially innacurate
       \return the convolution value between two density maps
    */
-  static float convolution(const DensityMap &em_map,DensityMap &model_map,
+  static float convolution(const DensityMap *em_map,DensityMap *model_map,
                            float voxel_data_threshold,
                            bool recalc_ccnormfac = true);
 };

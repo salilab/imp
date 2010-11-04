@@ -51,7 +51,7 @@ public:
       \relatesalso cross_correlation_coefficient
    */
   static float calc_score(
-   DensityMap &data, SampledDensityMap &model_map,
+   DensityMap *data, SampledDensityMap *model_map,
    float scalefactor,
    bool recalc_rms=true,bool resample=true,
    FloatPair norm_factors=FloatPair(0.,0.));
@@ -72,7 +72,7 @@ public:
  \note: The function assumes that correct RMS are calculated for the densities
 */
   static void calc_derivatives(
-     const DensityMap &em_map, const DensityMap &model_map,
+     const DensityMap *em_map, const DensityMap *model_map,
      const Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
      DistanceMask *dist_mask,
@@ -109,15 +109,15 @@ public:
          this would be wrong. Fix it.
    */
   static double cross_correlation_coefficient(
-     const DensityMap &grid1,
-     const DensityMap &grid2,
+     const DensityMap *grid1,
+     const DensityMap *grid2,
      float grid2_voxel_data_threshold,
      bool allow_padding=false,
      FloatPair norm_factors=FloatPair(0.,0.));
 
 
-static float local_cross_correlation_coefficient(const DensityMap &em_map,
-                                              DensityMap &model_map,
+static float local_cross_correlation_coefficient(const DensityMap *em_map,
+                                              DensityMap *model_map,
                                               float voxel_data_threshold,
                                               bool recalc_ccnormfac,
                                               bool divide_by_rms=true);

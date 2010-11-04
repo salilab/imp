@@ -75,7 +75,7 @@ void resample();
                  in the background
   */
   bool has_background_neighbor(long voxel_ind) const;
-
+  IMP_REF_COUNTED_DESTRUCTOR(SurfaceShellDensityMap);
 protected:
 
 

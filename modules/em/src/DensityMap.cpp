@@ -82,8 +82,19 @@ DensityMap::DensityMap(const DensityHeader &header){
   loc_calculated_=false;
   calc_all_voxel2loc();
 }
+
+
 //TODO - update the copy cons
-DensityMap::DensityMap(const DensityMap &other): Object(other.get_name())
+/*
+
+DensityMap* DensityMap::create_clone() const {
+  Pointer<DensityMap> ret= new DensityMap();
+  ret->set_name(get_name()+" clone");
+  ret->copy_map(this);
+  return ret.release();
+}
+*/
+/*DensityMap::DensityMap(const DensityMap &other): Object(other.get_name())
 {
   header_ = other.header_;
   long size = get_number_of_voxels();
@@ -116,7 +127,7 @@ DensityMap& DensityMap::operator=(const DensityMap& other)
 
   DensityMap *a = new DensityMap(other);
   return *a;
-}
+  }*/
 
 void DensityMap::set_void_map(int nx,int ny,int nz) {
   long nvox = nx*ny*nz;
@@ -510,26 +521,29 @@ void DensityMap::set_origin(float x, float y, float z)
 
 
 
-bool DensityMap::same_origin(const DensityMap &other) const
+bool DensityMap::same_origin(const DensityMap *other) const
 {
-  if( fabs(get_header()->get_xorigin()-other.get_header()->get_xorigin())<EPS &&
-      fabs(get_header()->get_yorigin()-other.get_header()->get_yorigin())<EPS &&
-      fabs(get_header()->get_zorigin()-other.get_header()->get_zorigin())<EPS)
+  if( fabs(get_header()->get_xorigin()
+           -other->get_header()->get_xorigin())<EPS &&
+      fabs(get_header()->get_yorigin()
+           -other->get_header()->get_yorigin())<EPS &&
+      fabs(get_header()->get_zorigin()
+           -other->get_header()->get_zorigin())<EPS)
     return true;
   return false;
 }
 
-bool DensityMap::same_dimensions(const DensityMap &other) const
+bool DensityMap::same_dimensions(const DensityMap *other) const
 {
-  return ((get_header()->get_nx()==other.get_header()->get_nx()) &&
-          (get_header()->get_ny()==other.get_header()->get_ny()) &&
-          (get_header()->get_nz()==other.get_header()->get_nz()));
+  return ((get_header()->get_nx()==other->get_header()->get_nx()) &&
+          (get_header()->get_ny()==other->get_header()->get_ny()) &&
+          (get_header()->get_nz()==other->get_header()->get_nz()));
 }
 
-bool DensityMap::same_voxel_size(const DensityMap &other) const
+bool DensityMap::same_voxel_size(const DensityMap *other) const
 {
   if(fabs(get_header()->get_spacing()
-          - other.get_header()->get_spacing()) < EPS)
+          - other->get_header()->get_spacing()) < EPS)
     return true;
   return false;
 }
@@ -604,20 +618,20 @@ void DensityMap::multiply(float factor) {
   }
 }
 
-void DensityMap::add(const DensityMap &other) {
+void DensityMap::add(const DensityMap *other) {
   //check that the two maps have the same dimensions
   IMP_USAGE_CHECK(same_voxel_size(other),
             "The voxel sizes of the two maps differ ( "
             << header_.get_spacing() << " != "
-            << other.header_.get_spacing());
+            << other->header_.get_spacing());
   IMP_INTERNAL_CHECK(
-          get_bounding_box(this).get_contains(get_bounding_box(&other)),
+          get_bounding_box(this).get_contains(get_bounding_box(other)),
           "Other map should be contained in this map\n");
   //find the extent of other that is in this map
   int x_orig_ind,y_orig_ind,z_orig_ind;
   int x_top_ind,y_top_ind,z_top_ind;
-  algebra::Vector3D other_origin=other.get_origin();
-  algebra::Vector3D other_top=other.get_top();
+  algebra::Vector3D other_origin=other->get_origin();
+  algebra::Vector3D other_top=other->get_top();
   if (is_part_of_volume(other_origin)) {
     x_orig_ind=get_dim_index_by_location(other_origin,0);
     y_orig_ind=get_dim_index_by_location(other_origin,1);
@@ -630,29 +644,30 @@ void DensityMap::add(const DensityMap &other) {
   }
   long my_znxny,other_znxny,my_znxny_ynx,other_znxny_ynx;
   int my_nxny=header_.get_nx()*header_.get_ny();
-  int other_nxny=other.header_.get_nx()*other.header_.get_ny();
+  int other_nxny=other->header_.get_nx()*other->header_.get_ny();
   for(int iz=z_orig_ind;iz<z_top_ind;iz++){
       my_znxny=iz * my_nxny;
       other_znxny=(iz-z_orig_ind) * other_nxny;
     for(int iy=y_orig_ind;iy<y_top_ind;iy++){
        my_znxny_ynx = my_znxny + iy * header_.get_nx();
-       other_znxny_ynx = other_znxny + (iy-y_orig_ind) * other.header_.get_nx();
+       other_znxny_ynx = other_znxny + (iy-y_orig_ind)
+         * other->header_.get_nx();
       for(int ix=x_orig_ind;ix<x_top_ind;ix++){
-        data_[my_znxny_ynx+ix]+=other.data_[other_znxny_ynx+ix-x_orig_ind];
+        data_[my_znxny_ynx+ix]+=other->data_[other_znxny_ynx+ix-x_orig_ind];
       }
     }
   }
 }
 
-void DensityMap::pick_max(const DensityMap &other) {
+void DensityMap::pick_max(const DensityMap *other) {
   //check that the two maps have the same dimensions
   IMP_USAGE_CHECK(same_voxel_size(other),
             "The voxel sizes of the two maps differ ( "
             << header_.get_spacing() << " != "
-            << other.header_.get_spacing());
+            << other->header_.get_spacing());
   //TODO - add dimension test
   long size = header_.get_number_of_voxels();
-  emreal *other_data = other.get_data();
+  emreal *other_data = other->get_data();
   for (long i=0;i<size;i++){
     if (data_[i]<other_data[i]) {
       data_[i]=other_data[i];
@@ -908,34 +923,34 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
   ret->set_name(in->get_name() +" resampled");
   return ret.release();
 }
-void DensityMap::copy_map(const DensityMap &other) {
-  header_ = other.header_;
+void DensityMap::copy_map(const DensityMap *other) {
+  header_ = other->header_;
   long size = get_number_of_voxels();
   data_.reset(new emreal[size]);
-  std::copy(other.data_.get(), other.data_.get()+size, data_.get());
-  loc_calculated_ = other.loc_calculated_;
+  std::copy(other->data_.get(), other->data_.get()+size, data_.get());
+  loc_calculated_ = other->loc_calculated_;
   if (loc_calculated_) {
     x_loc_.reset(new float[size]);
     y_loc_.reset(new float[size]);
     z_loc_.reset(new float[size]);
-    std::copy(other.x_loc_.get(), other.x_loc_.get()+size, x_loc_.get());
-    std::copy(other.y_loc_.get(), other.y_loc_.get()+size, y_loc_.get());
-    std::copy(other.z_loc_.get(), other.z_loc_.get()+size, z_loc_.get());
+    std::copy(other->x_loc_.get(), other->x_loc_.get()+size, x_loc_.get());
+    std::copy(other->y_loc_.get(), other->y_loc_.get()+size, y_loc_.get());
+    std::copy(other->z_loc_.get(), other->z_loc_.get()+size, z_loc_.get());
   } else {
     x_loc_.reset();
     y_loc_.reset();
     z_loc_.reset();
   }
-  data_allocated_ = other.data_allocated_;
-  normalized_ = other.normalized_;
-  rms_calculated_ = other.rms_calculated_;
+  data_allocated_ = other->data_allocated_;
+  normalized_ = other->normalized_;
+  rms_calculated_ = other->rms_calculated_;
 }
 void get_transformed_into(const DensityMap *from,
    const algebra::Transformation3D &tr,
    DensityMap *into,
    bool calc_rms) {
   algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
-  *into = *(create_density_map(obb,into->get_spacing()));
+  into->copy_map(create_density_map(obb,into->get_spacing()));
   get_transformed_internal(from,tr,into);
   into->get_header_writable()->compute_xyz_top();
   if (calc_rms) {
@@ -1252,9 +1267,9 @@ DensityMap* get_max_map(DensityMaps maps){
   const em::DensityHeader *max_map_h=max_map->get_header();
   for(DensityMaps::const_iterator it = maps.begin();
       it !=maps.end();it++){
-      IMP_USAGE_CHECK(max_map->same_dimensions(**it),
+      IMP_USAGE_CHECK(max_map->same_dimensions(*it),
                       "all maps should have the same extent\n");
-      IMP_USAGE_CHECK(max_map->same_origin(**it),
+      IMP_USAGE_CHECK(max_map->same_origin(*it),
                       "all maps should have the same origin\n");
   }
   int nx,ny,nz;

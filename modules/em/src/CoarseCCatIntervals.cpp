@@ -48,8 +48,8 @@ void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
   dv_memory_allocated_ = true;
 }
 
-float CoarseCCatIntervals::evaluate(DensityMap &em_map,
-                                    SampledDensityMap &model_map,
+float CoarseCCatIntervals::evaluate(DensityMap *em_map,
+                                    SampledDensityMap *model_map,
                                     std::vector<float> &dvx,
                                     std::vector<float> &dvy,
                                     std::vector<float> &dvz,
@@ -57,18 +57,18 @@ float CoarseCCatIntervals::evaluate(DensityMap &em_map,
                                     unsigned long eval_interval) {
 // eval_interval is the interval size before recalculating the CC score
 
-  unsigned int number_of_particles=model_map.get_xyzr_particles().size();
+  unsigned int number_of_particles=model_map->get_xyzr_particles().size();
   // If the function requires to be evaluated
   if  (calls_counter_ % eval_interval == 0) {
     // The base evaluate function calculates the derivates of the EM term.
     stored_cc_ = CoarseCC::calc_score(em_map, model_map,
                                     scalefac);
     if (lderiv) {
-      DistanceMask dist_mask(em_map.get_header());
+      DistanceMask dist_mask(em_map->get_header());
       CoarseCC::calc_derivatives(em_map, model_map,
-                                 model_map.get_sampled_particles(),
-                                 model_map.get_weight_key(),
-                                 model_map.get_kernel_params(),
+                                 model_map->get_sampled_particles(),
+                                 model_map->get_weight_key(),
+                                 model_map->get_kernel_params(),
                                  &dist_mask,
                                  scalefac, dvx, dvy, dvz);
     }

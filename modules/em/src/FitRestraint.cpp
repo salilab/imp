@@ -150,17 +150,16 @@ void FitRestraint::initialize_model_density_map(
   }
   //update the total model dens map
   if (not_rb_.size()>0) {
-    model_dens_map_->copy_map(*none_rb_model_dens_map_);
+    model_dens_map_->copy_map(none_rb_model_dens_map_);
   }
   else{
     model_dens_map_->reset_data(0.);
   }
   for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
-      DensityMap *transformed = get_transformed(
+    Pointer<DensityMap> transformed = get_transformed(
          rb_model_dens_map_[rb_i],
          rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
-      model_dens_map_->add(*transformed);
-      delete transformed;
+      model_dens_map_->add(transformed);
   }
 }
 void FitRestraint::resample() const {
@@ -169,7 +168,7 @@ void FitRestraint::resample() const {
   if (not_rb_.size()>0) {
     none_rb_model_dens_map_->resample();
     none_rb_model_dens_map_->calcRMS();
-    model_dens_map_->copy_map(*none_rb_model_dens_map_);
+    model_dens_map_->copy_map(none_rb_model_dens_map_);
   }
   else{
     model_dens_map_->reset_data(0.);
@@ -178,13 +177,12 @@ void FitRestraint::resample() const {
     IMP_LOG(VERBOSE,"Rb model dens map size:"<<
         get_bounding_box(rb_model_dens_map_[rb_i],-1000.)<<
         "\n Target size:"<<get_bounding_box(target_dens_map_,-1000.)<<"\n");
-      DensityMap *transformed = get_transformed(
+    Pointer<DensityMap> transformed = get_transformed(
          rb_model_dens_map_[rb_i],
          rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
       IMP_LOG(VERBOSE,"transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
-      model_dens_map_->add(*transformed);
-      delete transformed;
+      model_dens_map_->add(transformed);
   }
 }
 IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
@@ -219,8 +217,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   //are outside of the density.
 
   escore = CoarseCC::calc_score(
-               const_cast<DensityMap&>(*target_dens_map_),
-               const_cast<SampledDensityMap&>(*model_dens_map_),
+                    const_cast<DensityMap*>(target_dens_map_.get()),
+                    const_cast<SampledDensityMap*>(model_dens_map_.get()),
                scalefac_,true,false,norm_factors_);
   if (calc_deriv) {
     //calculate the derivatives for non rigid bodies
@@ -228,8 +226,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for none_rb_model_dens_map_\n");
       CoarseCC::calc_derivatives(
-             *target_dens_map_,
-             *none_rb_model_dens_map_,
+             target_dens_map_,
+             none_rb_model_dens_map_,
              not_rb_,
              weight_key_,kernel_params_,
              dist_mask_,
@@ -242,21 +240,20 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for rigid body number "<<
               rb_i<<"\n");
-      DensityMap *transformed = get_transformed(
+      Pointer<DensityMap> transformed = get_transformed(
               rb_model_dens_map_[rb_i],
               rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
       write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
       CoarseCC::calc_derivatives(
-              *target_dens_map_,
+              target_dens_map_,
               //*(rb_model_dens_map_[rb_i]),
-              *transformed,
+              transformed,
               rb_refiner_->get_refined(rbs_[rb_i]),
               weight_key_,kernel_params_,dist_mask_,
               scalefac_,
               const_cast<FitRestraint*>(this)->rb_refined_dx_[rb_i],
               const_cast<FitRestraint*>(this)->rb_refined_dy_[rb_i],
               const_cast<FitRestraint*>(this)->rb_refined_dz_[rb_i]);
-      delete transformed;
     }
   }
   Float score=escore;

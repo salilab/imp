@@ -93,7 +93,7 @@ public:
 
   void set_parameters(float threshold,int mode);
 
-  void apply(DensityMap& m);
+  void apply(DensityMap* m);
 
 protected:
   float threshold_;
