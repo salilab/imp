@@ -44,8 +44,6 @@ def add_dependency_link_flags(env, dependencies):
 def check_lib(context, lib, header, body="", extra_libs=[]):
     oldflags= context.env.get('LINKFLAGS')
     context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
-    print "old", oldflags
-    print "new", context.env['LINKFLAGS']
     if type(lib) == list:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
     else:
