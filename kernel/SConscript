@@ -1,13 +1,17 @@
 Import('env')
-
+import dependency
 
 config=[]
 
 if not env.GetOption('help'):
-    for en in env['IMP_ENABLED']:
-        config.append('IMP_USE_'+en)
-    for de in env['IMP_DISABLED']:
-        config.append('IMP_NO_'+de)
+    sen=env['IMP_ENABLED']
+    sen.sort()
+    for en in sen:
+        config.append('IMP_USE_'+dependency.get_dependency_string(en).upper())
+    sdi= env['IMP_DISABLED']
+    sdi.sort()
+    for de in sdi:
+        config.append('IMP_NO_'+dependency.get_dependency_string(de).upper())
     if not env.get('deprecated', True):
         config.append('IMP_NO_DEPRECATED')
     else:
@@ -38,4 +42,4 @@ env.IMPModuleBuild(version='SVN', config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
                    module_preproc="IMP",
                    module_namespace="IMP",
-                   optional_dependencies=['Boost.FileSystem', 'netcdf'])
+                   optional_dependencies=['Boost.FileSystem', 'NetCDF'])
