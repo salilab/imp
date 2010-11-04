@@ -172,6 +172,31 @@ namespace swig {
     }
   };
 
+  // T should not be a pointer to the object
+  template <class T>
+  struct ConvertRAII: public ConvertAllBase<T> {
+    BOOST_STATIC_ASSERT(!is_pointer<T>::value);
+    template <class SwigData>
+    static T* get_cpp_object(PyObject *o, SwigData st, SwigData, SwigData) {
+      void *vp;
+      int res=SWIG_ConvertPtr(o, &vp,st, 0 );
+      if (!SWIG_IsOK(res)) {
+        IMP_THROW( "Wrong type.", ValueException);
+      }
+      if (!vp) {
+        IMP_THROW( "Wrong type.", ValueException);
+      }
+      T* p= reinterpret_cast<T*>(vp);
+      return p;
+    }
+    template <class SwigData>
+    static PyObject* create_python_object( T* t, SwigData st, int OWN) {
+      PyObject *o = SWIG_NewPointerObj(t, st, OWN);
+      internal::ref(t);
+      return o;
+    }
+  };
+
 
   /*
     Provide support for converting from python objects to the appropriate
