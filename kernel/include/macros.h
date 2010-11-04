@@ -306,6 +306,11 @@
   virtual ~Name(){}                             \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
+#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest)              \
+  public:                                                          \
+  virtual ~Name(){dest}                                            \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
   public:                                               \
@@ -318,6 +323,12 @@
   public:                                               \
   virtual ~Name(){}                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
+#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest)              \
+  public:                                                          \
+  virtual ~Name(){dest}                                            \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)     \
   public:                                               \
@@ -354,6 +365,14 @@
   virtual ~Name(){}                                                     \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
+#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest)                   \
+  protected:                                                            \
+  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  virtual ~Name(){dest}                                                 \
+public:                                                                 \
+  IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
   protected:                                                            \
@@ -1079,11 +1098,7 @@ static Name* get_from(Object *o) {                                      \
     return object_cast<Name>(o);                                        \
   }                                                                     \
 IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);          \
-protected:                                                              \
-template <class T, class E> friend class IMP::internal::RefStuff;       \
-virtual ~Name(){IMP_OBJECT_LOG;}                                        \
-public:                                                                 \
-IMP_REQUIRE_SEMICOLON_CLASS(destructor)
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
 
 
 
@@ -1103,9 +1118,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(destructor)
   IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
       show;                                                             \
     });                                                                 \
-  ~Name() {IMP_OBJECT_LOG; destructor;}                                 \
-public:                                                                 \
- IMP_REQUIRE_SEMICOLON_CLASS(object)
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG; destructor;)
 
 
 
@@ -1124,7 +1137,7 @@ public:                                                                 \
 private:                                                        \
  virtual void do_show(std::ostream & =std::cout) const {        \
  }                                                              \
- IMP_REF_COUNTED_DESTRUCTOR(Name)
+ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
 
 
 #ifdef IMP_DOXYGEN
