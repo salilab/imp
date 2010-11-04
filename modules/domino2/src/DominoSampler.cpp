@@ -41,10 +41,17 @@ namespace {
 
   bool get_is_tree(const SubsetGraph &g) {
     // check connected components too
-    if  (boost::num_edges(g)+1 != boost::num_vertices(g)) return false;
-    else {
+    if  (boost::num_edges(g)+1 != boost::num_vertices(g)) {
+      IMP_LOG(TERSE, "Graph has " << boost::num_edges(g)
+              << " and " << boost::num_vertices(g) << " and so is not a tree"
+              << std::endl);
+      return false;
+    } else {
       std::vector<int> comp(boost::num_vertices(g));
       int cc= boost::connected_components(g, &comp[0]);
+      IMP_LOG(TERSE, "Graph has " << cc
+              << " components"
+              << std::endl);
       return cc==1;
     }
   }
@@ -54,6 +61,7 @@ SubsetStates DominoSampler
 ::do_get_sample_states(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
+  IMP_USAGE_CHECK(!known_particles.empty(), "No particles to sample");
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
   OptimizeContainers co(rs, get_particle_states_table());
   OptimizeRestraints ro(rs, get_particle_states_table());
