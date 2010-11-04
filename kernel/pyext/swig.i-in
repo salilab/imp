@@ -11,6 +11,32 @@ def _forward_set_value(self, name, value):
     self.get_particle().set_value(name, value)
 %}
 
+%extend IMP::internal::BoostDigraph {
+%pythoncode %{
+      def show_dotty(self):
+           def clean(name):
+              try:
+                n0=name.get_name()
+              except:
+                n0=str(name)
+              n1= str(n0).replace('"','')
+              n2= n1.replace("\n",'')
+              return n2
+           import altgraph
+           from altgraph import Graph, Dot
+           graph= Graph.Graph()
+           for i,v in enumerate(self.get_vertices()):
+               graph.add_node(i) #, node_data=self.get_vertex_name(v)
+           for i,v in enumerate(self.get_vertices()):
+               for n in self.get_out_neighbors(v):
+                  graph.add_edge(v, n)
+           dot = Dot.Dot(graph) #, graph_type="digraph"
+           for i,v in enumerate(self.get_vertices()):
+               dot.node_style(i, label=clean(self.get_vertex_name(v)))
+           dot.display()
+%}
+}
+
 
 
 #if IMP_BUILD == IMP_FAST
