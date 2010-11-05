@@ -107,20 +107,6 @@ public:
 };
 
 
-
-/** Generate a set of points from the voxels in a em::DensityMap
-    which are above a certain threshold.
- */
-class IMPSTATISTICSEXPORT HighDensityEmbedding: public Embedding {
-  std::vector<algebra::VectorD<3> > points_;
-public:
-  HighDensityEmbedding(em::DensityMap *dm,
-                       double threshold);
-  IMP_EMBEDDING(HighDensityEmbedding);
-};
-
-
-
 /** In addition to the information in the Clustering base class,
     PartitionalClusteringWithCenter stores a cluster center for
     each cluster.

@@ -4,11 +4,11 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/statistics/KMData.h>
+#include <IMP/statistics/internal/KMData.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <IMP/log.h>
 #include <iostream>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 KMData::KMData(int d, int n) : dim_(d) {
   points_ = allocate_points(n,dim_);
 }
@@ -98,4 +98,4 @@ void print_points(const std::string &title,const KMPointArray &ps,
     }
     out << "  )" << std::endl;
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

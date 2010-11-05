@@ -2,21 +2,11 @@ Import('env')
 
 files = [
          'Histogram.cpp',
-         'KMCenters.cpp',
-         'KMCentersNode.cpp',
-         'KMCentersNodeLeaf.cpp',
-         'KMCentersNodeSplit.cpp',
-         'KMCentersTree.cpp',
-         'KMData.cpp',
-         'KMFilterCenters.cpp',
-         'KMLProxy.cpp',
-         'KMLocalSearch.cpp',
-         'KMLocalSearchLloyd.cpp',
-         'KMRectangle.cpp',
          'MoveStatisticsScoreState.cpp',
          'PartitionalClustering.cpp',
          'point_clustering.cpp',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Build and install the shared library:
 env.IMPModuleLib(files)

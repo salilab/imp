@@ -6,10 +6,10 @@
  *
  */
 
-#include <IMP/statistics/KMCentersNodeSplit.h>
+#include <IMP/statistics/internal/KMCentersNodeSplit.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <IMP/log.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 KMCentersNodeSplit::~KMCentersNodeSplit() {
   for(int i=0;i<2;i++) {
@@ -104,4 +104,4 @@ void KMCentersNodeSplit::get_assignments(const std::vector<int> &cands,
     children_[1]->get_assignments(new_cands,close_center);
   }
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

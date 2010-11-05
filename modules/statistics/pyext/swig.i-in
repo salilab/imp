@@ -4,6 +4,9 @@ IMP_SWIG_OBJECT(IMP::statistics, PartitionalClustering, PartitionalClusterings);
 IMP_SWIG_OBJECT(IMP::statistics, PartitionalClusteringWithCenter, PartitionalClusteringWithCenters);
 IMP_SWIG_OBJECT(IMP::statistics, Embedding, Embeddings);
 IMP_SWIG_OBJECT(IMP::statistics, MoveStatisticsScoreState, MoveStatisticsScoreStates);
+IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetXYZEmbeddings);
+IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
+IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
 
 %include "IMP/statistics/statistics_macros.h"
 //%include "IMP/statistics/KMLProxy.h"

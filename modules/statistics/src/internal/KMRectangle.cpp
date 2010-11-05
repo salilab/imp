@@ -4,10 +4,10 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/statistics/KMRectangle.h>
+#include <IMP/statistics/internal/KMRectangle.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <iostream>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 double km_distance2(const KMPoint &p,const KMPoint &q){
   double dist = 0;
   //IMP_INTERNAL_CHECK(); - TODO L add check for high checks level
@@ -47,4 +47,4 @@ KMPoint KMRectangle::sample(){
   return p;
 }
 
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

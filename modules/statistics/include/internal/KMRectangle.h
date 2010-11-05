@@ -5,9 +5,12 @@
  *
  */
 
-#ifndef IMPSTATISTICS_KM_RECTANGLE_H
-#define IMPSTATISTICS_KM_RECTANGLE_H
+#ifndef IMPSTATISTICS_INTERNAL_KM_RECTANGLE_H
+#define IMPSTATISTICS_INTERNAL_KM_RECTANGLE_H
 
+#include "../statistics_config.h"
+#include "KMData.h"
+#include <IMP/base_types.h>
 #include <cstdlib>
 #include <fstream>
 #include <iomanip>
@@ -15,10 +18,8 @@
 #include <ctime>
 #include <string>
 #include <vector>
-#include "statistics_config.h"
-#include "KMData.h"
-#include <IMP/base_types.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 #ifndef IMP_DOXYGEN
 
@@ -111,5 +112,5 @@ protected:
 
 #endif
 
-IMPSTATISTICS_END_NAMESPACE
-#endif /* IMPSTATISTICS_KM_RECTANGLE_H */
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
+#endif /* IMPSTATISTICS_INTERNAL_KM_RECTANGLE_H */

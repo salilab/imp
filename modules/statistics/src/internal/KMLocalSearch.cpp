@@ -6,8 +6,8 @@
  *
  */
 
-#include <IMP/statistics/KMLocalSearch.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+#include <IMP/statistics/internal/KMLocalSearch.h>
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 KMLocalSearch::KMLocalSearch(KMFilterCenters *sol,
   KMTerminationCondition *term) {
   curr_ = sol;
@@ -77,4 +77,4 @@ void KMLocalSearch::log_stage(std::ostream &out) {
      << " > " << std::endl;
   best_.show(out);
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
