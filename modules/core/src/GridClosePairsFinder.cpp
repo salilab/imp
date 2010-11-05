@@ -544,7 +544,10 @@ namespace {
                                         bin_contents_g[i].end(),
                                         close, out);
         } else {
-          Grid gg = create_grid(bbs[i], distance+2*bin_ubs[i]);
+          Grid gg = create_grid(bbs[i], std::max(distance+2*bin_ubs[i],
+                                                 .01*(bbs[i].get_corner(1)
+                                                      -bbs[i].get_corner(0))
+                                                 .get_magnitude()));
           fill_grid(bin_contents_g[i], ps.c_, gg);
           for (typename Grid::AllConstIterator it
                  = gg.all_begin();
