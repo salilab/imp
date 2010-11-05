@@ -35,7 +35,8 @@ def get_all_known_dependencies(env):
     return env.get('IMP_KNOWN_DEPENDENCIES', [])
 
 def get_dependency_libs(env, dependency):
-    return env.get(_get_libvarname(dependency), None)
+    # modeller is all weird and unneccessarily complicated
+    return env.get(_get_libvarname(dependency), [])
 
 def add_dependency_link_flags(env, dependencies):
     for d in dependencies:
