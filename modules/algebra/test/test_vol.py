@@ -26,7 +26,8 @@ class SphereTests(IMP.test.TestCase):
             print ".sphere", s.get_center()[0], s.get_center()[1], s.get_center()[2], s.get_radius()
         print 30*30*30
         sp= IMP.algebra.get_surface_area_and_volume(ss)
-        self.assert_(sp[0] > 6*25*25*25)
+        print sp
+        self.assert_(sp[0] > 6*25*25)
         self.assert_(sp[0] < 6*30*30)
         self.assert_(sp[1] < 30*30*30)
         self.assert_(sp[1] > 25*25*25)
