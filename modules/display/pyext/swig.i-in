@@ -28,6 +28,7 @@ IMP_SWIG_OBJECT(IMP::display, RigidBodyDerivativesGeometry, RigidBodyDerivatives
 IMP_SWIG_OBJECT(IMP::display, EdgePairGeometry, EdgePairGeometries);
 IMP_SWIG_OBJECT(IMP::display, EdgePairsGeometry, EdgePairsGeometries);
 IMP_SWIG_OBJECT(IMP::display, PairRestraintGeometry, PairRestraintGeometries);
+IMP_SWIG_OBJECT(IMP::display, HierarchyGeometry, HierarchyGeometries);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
