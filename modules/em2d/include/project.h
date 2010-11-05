@@ -8,6 +8,7 @@
 #define IMPEM2D_PROJECT_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
@@ -31,7 +32,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-//! Generates projectios using particles and precomputed MasksManager
+//! Generates projectios using particles and precomputed OldMasksManager
  IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds vs,
         int rows, int cols,
@@ -40,12 +41,30 @@ IMPEM2D_BEGIN_NAMESPACE
         bool project_and_save=false,
         Strings names=Strings());
 
-//! Generates projectios using particles precomputed MasksManager
+//! Generates projectios using particles and precomputed OldMasksManager
+ IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+        const algebra::SphericalVector3Ds vs,
+        int rows, int cols,
+        double resolution, double pixelsize,
+        em2d::ImageReaderWriter<double> &srw,
+        bool project_and_save=false,
+        Strings names=Strings());
+
+//! Generates projectios using particles precomputed OldMasksManager
  IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
         em::ImageReaderWriter<double> &srw,
+        bool project_and_save=false,
+        Strings names=Strings());
+
+//! Generates projectios using particles precomputed OldMasksManager
+ IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+        RegistrationResults registration_values,
+        int rows, int cols,
+        double resolution, double pixelsize,
+        em2d::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
@@ -76,14 +95,15 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-
-
 IMPEM2DEXPORT void generate_projection(em::Image &img,const ParticlesTemp &ps,
         RegistrationResult &reg,double resolution,double pixelsize,
-        em::ImageReaderWriter<double> &srw,
-        MasksManager *masks=NULL,
-        bool save_image=false,
-        String name="");
+        em::ImageReaderWriter<double> &srw,bool save_image=false,
+        OldMasksManager *masks=NULL,String name="");
+
+IMPEM2DEXPORT void generate_projection(em2d::Image &img,const ParticlesTemp &ps,
+        RegistrationResult &reg,double resolution,double pixelsize,
+        em2d::ImageReaderWriter<double> &srw,bool save_image=false,
+        Masks_Manager *masks=NULL,String name="");
 
 //! Project particles using projection masks
 /**
@@ -103,7 +123,14 @@ IMPEM2DEXPORT void generate_projection(em::Image &img,const ParticlesTemp &ps,
              algebra::Rotation3D& R,
              algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManager *masks=NULL);
+             OldMasksManager *masks=NULL);
+
+IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
+             cv::Mat &m2,
+             algebra::Rotation3D &R,
+             algebra::Vector3D &translation,
+             double resolution, double pixelsize,
+             Masks_Manager *masks);
 
 
 //! Project the points contained in Vector3Ds
@@ -149,6 +176,10 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
   algebra::Matrix2D_d &m2,const int rows,const int cols,
     RegistrationResult &reg,const double equality_tolerance);
 
+
+
+
 IMPEM2D_END_NAMESPACE
+
 
 #endif /* IMPEM2D_PROJECT_H */

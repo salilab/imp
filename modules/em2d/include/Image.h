@@ -152,8 +152,8 @@ IMP_OUTPUT_OPERATOR(Image);
   \param[in] second
   \param[out] result The image first-second
 **/
-IMPEMEXPORT void subtract_images(Image &first,em2d::Image &second,
-                                  Image &result);
+IMPEMEXPORT void subtract_images(em2d::Image &first,em2d::Image &second,
+                                  em2d::Image &result);
 
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)
@@ -174,6 +174,10 @@ IMPEM2DEXPORT Images read_images(Strings names,
 **/
 IMPEM2DEXPORT void save_images(Images images, Strings names,
                              em2d::ImageReaderWriter<double> &rw);
+
+
+IMPEM2DEXPORT void normalize(em2d::Image &im,bool force);
+
 
 IMPEM2D_END_NAMESPACE
 

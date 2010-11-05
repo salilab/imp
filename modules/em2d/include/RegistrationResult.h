@@ -29,34 +29,13 @@ IMPEM2D_BEGIN_NAMESPACE
 class IMPEM2DEXPORT RegistrationResult {
 public:
 
-  RegistrationResult() {
-    shift_[0]=0.0;   shift_[1]=0.0;
-    ccc_=0.0;
-    name_="";
-    index_=0;
-    set_rotation(0,0,0);
-  }
+  RegistrationResult();
 
   RegistrationResult(double phi,double theta,double psi,double shift_x,
-                  double shift_y,long index=0,double ccc=0.0,String name="") {
-    IMP_LOG(IMP::VERBOSE," initialzing RegistrationResult " << std::endl);
-    shift_[0]=shift_x; shift_[1]=shift_y;
-    ccc_=ccc;
-    name_=name;
-    index_=index;
-    set_rotation(phi,theta,psi);
-    IMP_LOG(IMP::VERBOSE," end init RegistrationResult " << std::endl);
-
-  }
+                  double shift_y,long index=0,double ccc=0.0,String name="");
 
   RegistrationResult(algebra::Rotation3D &R,algebra::Vector2D &shift,
-                      long index=0,double ccc=0.0,String name="") {
-    shift_[0]=shift[0]; shift_[1]=shift[1];
-    ccc_=ccc;
-    name_=name;
-    index_=index;
-    set_rotation(R);
-  }
+                      long index=0,double ccc=0.0,String name="");
 
   inline double get_Phi() const { return phi_;}
   inline double get_Theta() const { return theta_;}
@@ -84,37 +63,18 @@ public:
   inline void set_index(long index) {index_=index;}
   inline void set_name(String name) {name_=name;}
 
-  inline void add_in_plane_transformation(algebra::Transformation2D &t) {
-    set_rotation(phi_,theta_,psi_+t.get_rotation().get_angle());
-    // The translation is understood as a shift (in pixels)
-    shift_ += t.get_translation();
-  }
+  //! adds an in-plane transformation to the result stored
+  //! The translation is understood as a shift (in pixels)
+  void add_in_plane_transformation(algebra::Transformation2D &t);
 
-  void show(std::ostream& out) const {
-    algebra::VectorD<4> quaternion=R_.get_quaternion();
-    out << "Name: "  << get_name() <<  " Index: " << get_index()
-    << " (Phi,Theta,Psi) = ( " << phi_ << " , " << theta_ << " , "
-    << psi_ << " ) | Shift (x,y) " << get_shift()  << " CCC = " << get_ccc()
-    <<  " Quaternion " << quaternion;
-  }
 
-  //! Writes a result line to a file
-  inline void write(std::ostream& out = std::cout) const {
-    algebra::VectorD<4> quaternion=R_.get_quaternion();
-    char c='|';
-    out << get_index() <<c<< phi_ <<c<< theta_ <<c<< psi_
-    <<c<< quaternion[0] <<c<< quaternion[1] <<c<< quaternion[2]
-    <<c<< quaternion[3] <<c<< get_shift()[0] <<c<< get_shift()[1]
-    <<c<< get_ccc() <<c<< std::endl;
-  }
+  void show(std::ostream& out) const;
+
+  //! Writes a parseable result
+  void write(std::ostream& out = std::cout) const;
+
   //! Writes an info line to with the contents of a result line
-  inline void write_comment_line(std::ostream& out = std::cout) const {
-    char c='|';
-    out << "# id_number" <<c<< "Phi" <<c<< "Theta" <<c<< "Psi"
-    <<c<< "quaternion q1" <<c<< "q2" <<c<< "q3"
-    <<c<< "q3" <<c<< "shift x" <<c<< "shift y"
-    <<c<< "ccc" <<c<< std::endl;
-  }
+  void write_comment_line(std::ostream& out = std::cout) const;
 
   //! read
   void read(const String &s);
@@ -128,13 +88,10 @@ public:
   }
 
   //! Sets the registration results to the header of an image
-  void set_in_image(em::Image &im);
+  void set_in_image(em::ImageHeader &header);
 
-  //! Reads the registration parameters from an image and puts it in this class
-  /**
-    \param[in] im the image
-   **/
-  void read_from_image(em::Image &im);
+  //! Reads the registration parameters from an image
+  void read_from_image(const em::ImageHeader &header);
 
 
   ~RegistrationResult();
@@ -173,7 +130,7 @@ IMPEM2DEXPORT RegistrationResults read_registration_results(String filename);
 
 //! Writes a set of registration results
 IMPEM2DEXPORT void  write_registration_results(
-                        String filename,RegistrationResults results);
+                        String filename,const RegistrationResults results);
 
 
 //! Provides a set of random registration results (or parameters)

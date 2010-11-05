@@ -47,7 +47,7 @@ public:
                  double resolution,
                  double pixelsize,
                  Model *scoring_model,
-                 MasksManager *masks=NULL);
+                 OldMasksManager *masks=NULL);
 
 
   //! Sets the images to use by the restraint
@@ -76,7 +76,7 @@ private:
   // Access point for the particles
   ParticlesTemp ps_;
   // Projection masks for the particles
-  mutable MasksManager *masks_;
+  mutable OldMasksManager *masks_;
   double resolution_,pixelsize_;
   IMP::FloatKey Phi_, Theta_, Psi_, yorigin_, xorigin_;
 };
