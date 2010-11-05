@@ -5,9 +5,13 @@ import IMP.display
 import IMP.statistics
 import IMP.example
 
+# the spring constant to use, it doesn't really matter
 k=100
+# the target resolution for the representation
 resolution=100
-
+# the box to perform everything in
+bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                             IMP.algebra.Vector3D(300, 300, 300))
 display_restraints=[]
 
 def create_representation():
@@ -108,6 +112,53 @@ def create_restraints(m, all):
         m.set_maximum_score(.5*resolution**2*k)
 
 
+# find acceptable conformations of the model
+def get_conformations(m, gs):
+    sampler= IMP.core.MCCGSampler(m)
+
+    sampler.set_bounding_box(bb)
+    # magic numbers, experiment with them and make them large enough for things to work
+    sampler.set_number_of_conjugate_gradient_steps(100)
+    sampler.set_number_of_monte_carlo_steps(10)
+    sampler.set_number_of_attempts(20)
+    sampler.set_save_rejected_configurations(True)
+    # We don't care to see the output from the sampler
+    sampler.set_log_level(IMP.SILENT)
+
+    # return the IMP.ConfigurationSet storing all the found configurations that
+    # meet the various restraint maximum scores.
+    cs= sampler.get_sample()
+    # Look at the rejected minimal conformations to understand how the restraints
+    # are failing
+    print "rejected", sampler.get_rejected_configurations().get_number_of_configurations(), "solutions"
+    m.set_gather_statistics(True)
+    for i in range(0, sampler.get_rejected_configurations().get_number_of_configurations()):
+        sampler.get_rejected_configurations().load_configuration(i)
+        m.evaluate(False)
+        # show the score for each restraint to see which restraints were causing the
+        # conformation to be rejected
+        m.show_restraint_score_statistics()
+        w= IMP.display.PymolWriter("rejected.%d.pym"%i)
+        for g in gs:
+            w.add_geometry(g)
+    return cs
+
+# cluster the conformations and write them to a file
+def analyze_conformations(cs, all, gs):
+    # we want to cluster the configurations to make them easier to understand
+    # in the case, the clustering is pretty meaningless
+    embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs, IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
+    cluster= IMP.statistics.get_lloyds_kmeans(embed, 10, 10000)
+    # dump each cluster center to a file so it can be viewed.
+    for i in range(cluster.get_number_of_clusters()):
+        center= cluster.get_cluster_center(i)
+        cs.load_configuration(i)
+        w= IMP.display.PymolWriter("cluster.%d.pym"%i)
+        for g in gs:
+            w.add_geometry(g)
+
+
+# now do the actual work
 (m,all)= create_representation()
 IMP.atom.show_molecular_hierarchy(all)
 create_restraints(m, all)
@@ -133,20 +184,7 @@ for r in display_restraints:
         g= IMP.display.PairRestraintGeometry(r)
         gs.append(g)
 
-
-sampler= IMP.core.MCCGSampler(m)
-IMP.set_log_level(IMP.SILENT)
-bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                             IMP.algebra.Vector3D(1000, 1000, 1000))
-sampler.set_bounding_box(bb)
-# keep track of the configurations which were rejected during sampling
-# inspecting these can be useful to figure out why samping isn't working
-# if it is not
-sampler.set_save_rejected_configurations(True);
-sampler.set_number_of_conjugate_gradient_steps(100)
-sampler.set_number_of_monte_carlo_steps(10)
-sampler.set_number_of_attempts(20)
-cs= sampler.get_sample()
+cs= get_conformations(m, gs)
 
 print "found", cs.get_number_of_configurations(), "solutions"
 for i in range(0, cs.get_number_of_configurations()):
@@ -155,25 +193,4 @@ for i in range(0, cs.get_number_of_configurations()):
     for g in gs:
         w.add_geometry(g)
 
-
-print "rejected", sampler.get_rejected_configurations().get_number_of_configurations(), "solutions"
-m.set_gather_statistics(True)
-for i in range(0, sampler.get_rejected_configurations().get_number_of_configurations()):
-    sampler.get_rejected_configurations().load_configuration(i)
-    m.evaluate(False)
-    # show the score for each restraint to see which restraints were causing the
-    # conformation to be rejected
-    m.show_restraint_score_statistics()
-    w= IMP.display.PymolWriter("rejected.%d.pym"%i)
-    for g in gs:
-        w.add_geometry(g)
-
-
-embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs, IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
-cluster= IMP.statistics.get_lloyds_kmeans(embed, 10, 10000)
-for i in range(cluster.get_number_of_clusters()):
-    center= cluster.get_cluster_center(i)
-    cs.load_configuration(i)
-    w= IMP.display.PymolWriter("cluster.%d.pym"%i)
-    for g in gs:
-        w.add_geometry(g)
+analyze_conformations(cs, all, gs)
