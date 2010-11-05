@@ -61,6 +61,14 @@ void HarmonicSphereDistancePairScore::do_show(std::ostream &out) const {
 }
 
 
+HarmonicUpperBoundSphereDistancePairScore
+::HarmonicUpperBoundSphereDistancePairScore(double d0, double k):
+  x0_(d0), k_(k){}
+
+void HarmonicUpperBoundSphereDistancePairScore
+::do_show(std::ostream &out) const {
+  out << "x0=" << x0_ << " and k=" << k_ << std::endl;
+}
 
 
 NormalizedSphereDistancePairScore
