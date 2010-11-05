@@ -154,7 +154,8 @@ IMPEM2DEXPORT void correlation2D_no_preprocessing(const cv::Mat& M1,
                                     const cv::Mat& M2, cv::Mat& corr);
 
 
-
+//! Computes the fft of a matrix and returns the real and imaginary matrices
+IMPEM2DEXPORT void spectrum(const cv::Mat& m, cv::Mat& real,cv::Mat &imag);
 
 IMPEM2D_END_NAMESPACE
 
