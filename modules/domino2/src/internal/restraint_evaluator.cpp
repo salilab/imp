@@ -163,6 +163,7 @@ bool SubsetData::get_is_ok(const SubsetState &state,
     }
     total+=ms;
     if (total > total_max) {
+      //std::cout << "Rejected by restraint " << i << std::endl;
       return false;
     }
   }
@@ -186,7 +187,7 @@ bool SubsetData::get_is_ok(const SubsetState &state,
     }
   }
   /*std::cout << "Total score is " << total << " max is " << total_max
-    << " for state " << state << " with subset " << s_ << std::endl;*/
+    << " over " << ris_.size() << " and " << total_ris_.size() << std::endl;*/
   return true;
 }
 
