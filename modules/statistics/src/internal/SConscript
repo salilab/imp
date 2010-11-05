@@ -1,5 +1,15 @@
 files = [
-
+         'KMCenters.cpp',
+         'KMCentersNode.cpp',
+         'KMCentersNodeLeaf.cpp',
+         'KMCentersNodeSplit.cpp',
+         'KMCentersTree.cpp',
+         'KMData.cpp',
+         'KMFilterCenters.cpp',
+         'KMLProxy.cpp',
+         'KMLocalSearch.cpp',
+         'KMLocalSearchLloyd.cpp',
+         'KMRectangle.cpp',
         ]
 
 files = [File(x) for x in files]

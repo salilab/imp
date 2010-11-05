@@ -4,9 +4,9 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/statistics/KMCentersTree.h>
+#include <IMP/statistics/internal/KMCentersTree.h>
 #include <IMP/algebra/utility.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 
 KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
@@ -262,4 +262,4 @@ KMCentersTree::limits_along_dimension(int start_ind, int end_ind, int dim) {
   }
   return std::pair<double,double>(min,max);
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

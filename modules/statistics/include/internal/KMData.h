@@ -4,16 +4,16 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
-#ifndef IMPSTATISTICS_KM_DATA_H
-#define IMPSTATISTICS_KM_DATA_H
+#ifndef IMPSTATISTICS_INTERNAL_KM_DATA_H
+#define IMPSTATISTICS_INTERNAL_KM_DATA_H
 
 #include <vector>
 #include <iomanip>
 #include <iostream>
 #include <string>
-#include "statistics_config.h"
+#include "../statistics_config.h"
 
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 #ifndef IMP_DOXYGEN
 
@@ -141,5 +141,5 @@ std::ostream& out = std::cout);
 
 #endif
 
-IMPSTATISTICS_END_NAMESPACE
-#endif /* IMPSTATISTICS_KM_DATA_H */
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
+#endif /* IMPSTATISTICS_INTERNAL_KM_DATA_H */

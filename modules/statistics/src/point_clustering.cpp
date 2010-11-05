@@ -7,9 +7,9 @@
  */
 #include <IMP/statistics/point_clustering.h>
 #include <IMP/core/XYZ.h>
-#include <IMP/statistics/KMData.h>
-#include <IMP/statistics/KMTerminationCondition.h>
-#include <IMP/statistics/KMLocalSearchLloyd.h>
+#include <IMP/statistics/internal/KMData.h>
+#include <IMP/statistics/internal/KMTerminationCondition.h>
+#include <IMP/statistics/internal/KMLocalSearchLloyd.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/geometric_alignment.h>
 #if BOOST_VERSION > 103900
@@ -109,35 +109,6 @@ void ParticleEmbedding::do_show(std::ostream &out) const {
 }
 
 
-HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
-                                           double threshold):
-  Embedding("HighDensityEmbedding of "+dm->get_name()) {
-  for (int i=0; i< dm->get_number_of_voxels(); ++i) {
-    if (dm->get_value(i) > threshold) {
-      algebra::VectorD<3> v(dm->get_location_in_dim_by_voxel(i, 0),
-                          dm->get_location_in_dim_by_voxel(i, 1),
-                          dm->get_location_in_dim_by_voxel(i, 2));
-      points_.push_back(v);
-    }
-  }
-}
-
-Floats HighDensityEmbedding::get_point(unsigned int i) const {
-  return Floats(points_[i].coordinates_begin(),
-                points_[i].coordinates_end());
-}
-
-unsigned int HighDensityEmbedding::get_number_of_points() const {
-  return points_.size();
-}
-
-void HighDensityEmbedding::do_show(std::ostream &out) const {
-  out << points_.size()
-      << " points.";
-  out << std::endl;
-}
-
-
 
 
 unsigned int PartitionalClusteringWithCenter::get_number_of_clusters() const {
@@ -190,29 +161,29 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
   }
   IMP_LOG(VERBOSE,"KMLProxy::run start \n");
   //use the initial centers if provided
-  boost::scoped_ptr<KMPointArray> kmc;
+  boost::scoped_ptr<internal::KMPointArray> kmc;
   IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
   //load the initail guess
-  KMData data(metric->get_point(names[0]).size(), names.size());
+  internal::KMData data(metric->get_point(names[0]).size(), names.size());
   for (unsigned int i=0; i< names.size(); ++i) {
     *(data[i])= metric->get_point(names[i]);
   }
-  KMFilterCenters ctrs(k, &data, NULL, 1.0);
+  internal::KMFilterCenters ctrs(k, &data, NULL, 1.0);
 
   //apply lloyd search
   IMP_LOG(VERBOSE,"KMLProxy::run load lloyd \n");
-  KMTerminationCondition term;
-  KMLocalSearchLloyd la(&ctrs,&term);
+  internal::KMTerminationCondition term;
+  internal::KMLocalSearchLloyd la(&ctrs,&term);
   IMP_LOG(VERBOSE,"KMLProxy::run excute lloyd \n");
   la.execute();
-  KMFilterCentersResults best_clusters = la.get_best();
+  internal::KMFilterCentersResults best_clusters = la.get_best();
   IMP_INTERNAL_CHECK(k
                      == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
   std::vector<Floats> centers(k);
   for (unsigned int i = 0; i < k; i++) {
-    KMPoint *kmp = best_clusters[i];
+    internal::KMPoint *kmp = best_clusters[i];
     centers[i]=*kmp;
   }
   //set the assignment of particles to centers

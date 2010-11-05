@@ -5,10 +5,15 @@
  *
  */
 
-#ifndef IMPSTATISTICS_KML_PROXY_H
-#define IMPSTATISTICS_KML_PROXY_H
+#ifndef IMPSTATISTICS_INTERNAL_KML_PROXY_H
+#define IMPSTATISTICS_INTERNAL_KML_PROXY_H
 
-#include "statistics_config.h"
+#include "../statistics_config.h"
+#include "KMTerminationCondition.h"
+#include "KMData.h"
+#include "KMFilterCenters.h"
+#include "KMLocalSearch.h"
+#include "KMLocalSearchLloyd.h"
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
 #include <vector>
@@ -16,13 +21,7 @@
 #include <ctime>
 #include <cmath>
 #include <string>
-#include "KMTerminationCondition.h"
-#include "KMData.h"
-#include "KMFilterCenters.h"
-#include "KMLocalSearch.h"
-#include "KMLocalSearchLloyd.h"
-
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 #ifndef IMP_DOXYGEN
 inline double elapsed_time(clock_t start) {
@@ -99,5 +98,5 @@ protected:
   std::map<Particle *,unsigned int> assignment_;
   // the assignment of input data to centers
 };
-IMPSTATISTICS_END_NAMESPACE
-#endif /* IMPSTATISTICS_KML_PROXY_H */
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
+#endif /* IMPSTATISTICS_INTERNAL_KML_PROXY_H */

@@ -4,9 +4,9 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#include <IMP/statistics/KMLProxy.h>
-#include <IMP/statistics/KMRectangle.h>
-IMPSTATISTICS_BEGIN_NAMESPACE
+#include <IMP/statistics/internal/KMLProxy.h>
+#include <IMP/statistics/internal/KMRectangle.h>
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 
 KMLProxy::KMLProxy() {
   set_default_values();
@@ -158,4 +158,4 @@ unsigned int KMLProxy::get_particle_assignment(Particle *p) const {
   return assignment_.find(p)->second;
 }
 
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE

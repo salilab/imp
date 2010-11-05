@@ -6,10 +6,10 @@
  *
  */
 
-#include <IMP/statistics/KMCentersNodeLeaf.h>
+#include <IMP/statistics/internal/KMCentersNodeLeaf.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <limits>
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 void KMCentersNodeLeaf::compute_sums() {
  sum_sq_ = 0.;
  KMData *data = centers_->get_data();
@@ -93,4 +93,4 @@ void KMCentersNodeLeaf::get_assignments(const std::vector<int> &cands,
 
 
 
-IMPSTATISTICS_END_NAMESPACE
+IMPSTATISTICS_END_INTERNAL_NAMESPACE
