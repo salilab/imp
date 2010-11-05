@@ -128,7 +128,7 @@ if not env.GetOption('help'):
     if unknown:
         really_unknown=[]
         for u in unknown.keys():
-            if u not in [scons_tools.dependency.get_dependency_string(x) for x in env.get_all_known_external_dependencies()]:
+            if u not in [scons_tools.dependency.get_dependency_string(x) for x in env.get_all_known_dependencies()]:
                 really_unknown.append(u)
         if len(really_unknown) >0:
             print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
