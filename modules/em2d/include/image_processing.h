@@ -250,17 +250,18 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
                           int boxes,int offset);
 
 
+
+
+
 //! Computes the histogram of a matrix.
 /**
   \param[in] m Matrix with the data
-  \param[out] Matrix of dimensions 1xbins with the histogram
   \param[in] bins Number of bins to use in the histogram
+  \param[out] vector with the values for each bin
 **/
-IMPEM2DEXPORT void get_histogram(const cv::Mat &m, cv::MatND &hist, int bins);
+IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
 
-
-
-
+IMPEM2DEXPORT Floats get_histogram(em2d::Image &img,int bins);
 
 
 //! Variance filter for an image. Computes the variance for each pixel
