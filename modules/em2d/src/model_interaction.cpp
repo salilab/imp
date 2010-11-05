@@ -48,11 +48,11 @@ void Vector3Ds_to_pdb(const algebra::Vector3Ds vs, const String filename) {
     int j=i/10000;
     char chain = chains[j];
     int residue = i%10000;
-    out << pdb_string(vs[i],i,atom::AT_CA,atom::ALA,chain,residue,' ',atom::C);
+    out << atom::pdb_string(vs[i],i,
+                    atom::AT_CA,atom::ALA,chain,residue);
   }
   out.close();
 }
-
 
 void Vector2Ds_to_pdb(const algebra::Vector2Ds vs,const  String filename) {
   std::string chains = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -62,8 +62,8 @@ void Vector2Ds_to_pdb(const algebra::Vector2Ds vs,const  String filename) {
     int j=i/10000;
     char chain = chains[j];
     int residue = i%10000;
-    out << pdb_string(algebra::Vector3D(vs[i][0],vs[i][1],0.0),
-            i,atom::AT_CA,atom::ALA,chain,residue,' ',atom::C);
+    out << atom::pdb_string(algebra::Vector3D(vs[i][0],vs[i][1],0.0),
+            i,atom::AT_CA,atom::ALA,chain,residue);
   }
   out.close();
 }
