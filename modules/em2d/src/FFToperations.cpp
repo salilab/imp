@@ -7,6 +7,7 @@
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
+#include "IMP/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -106,12 +107,12 @@ void print_matrix(algebra::Matrix3D<std::complex<double> > &m,
 
 void Matrix2D_c_to_img(algebra::Matrix2D_c &M,String name) {
   em::SpiderImageReaderWriter<double> srw;
-  em::Image img;
-  img.resize(M.get_size(0),M.get_size(1));
+  IMP_NEW(em::Image,img,());
+  img->resize(M.get_size(0),M.get_size(1));
   for(unsigned long i=0;i<M.num_elements();++i) {
-      (img.get_data().data()[i]) = std::norm(M.data()[i]);
+      (img->get_data().data()[i]) = std::norm(M.data()[i]);
   }
-  img.write_to_floats(name,srw);
+  img->write_to_floats(name,srw);
 
 }
 
