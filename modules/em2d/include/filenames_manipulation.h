@@ -52,7 +52,7 @@ inline Strings generate_filenames(unsigned long number,
                                   String basic_name, String extension) {
   // Number of digits to use
   int digits=0;
-  long count=1;
+  unsigned long count=1;
   while(count <= number) {
     digits+=1;
     count*=10;
