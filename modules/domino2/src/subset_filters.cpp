@@ -25,29 +25,6 @@ SubsetFilterTable::~SubsetFilterTable(){}
 
 /***************************SCORE ******************************/
 
-namespace {
-
-  class  RestraintScoreSubsetFilter: public SubsetFilter {
-    Pointer<const internal::ModelData> keepalive_;
-    const internal::SubsetData &data_;
-    double max_;
-    /*#if IMP_BUILD < IMP_FAST
-    mutable IMP::internal::Set<SubsetState> called_;
-    #endif*/
-  public:
-    RestraintScoreSubsetFilter(const internal::ModelData *t,
-                               const internal::SubsetData &data,
-                               double max):
-      SubsetFilter("Restraint score filter"),
-      keepalive_(t), data_(data),
-      max_(max) {
-      /*std::cout << "Found " << data_.get_number_of_restraints()\
-        << " restraints."
-        << std::endl;*/
-    }
-    IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
-  };
-
   bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
     /*IMP_IF_CHECK(USAGE) {
       IMP_USAGE_CHECK(called_.find(state)
@@ -68,7 +45,6 @@ namespace {
   }
 
   void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{}
-}
 
 double RestraintScoreSubsetFilter::get_strength() const {
   return 1-std::pow(.5, static_cast<int>(data_.get_number_of_restraints()));
@@ -93,6 +69,7 @@ RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
 RestraintScoreSubsetFilterTable
 ::RestraintScoreSubsetFilterTable(RestraintSet *eval,
                                   ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   mset_(new internal::ModelData(eval, pst))
 {
 }
@@ -100,6 +77,7 @@ RestraintScoreSubsetFilterTable
 RestraintScoreSubsetFilterTable
 ::RestraintScoreSubsetFilterTable(Model *m,
                                   ParticleStatesTable *pst):
+  SubsetFilterTable("RestraintScoreSubsetFilterTable%1%"),
   mset_(new internal::ModelData(m->get_root_restraint_set(), pst))
 {
 }
@@ -108,18 +86,31 @@ SubsetFilter*
 RestraintScoreSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &excluded) const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "Looking for restraints acting on " << s << " minus ");
+    for (unsigned int i=0; i< excluded.size(); ++i) {
+      IMP_LOG(VERBOSE, excluded[i] << " ");
+    }
+  }
   // if there are no restraints just here, the total score can't change
   if (mset_->get_subset_data(s, excluded)
-      .get_number_of_restraints() ==0) return NULL;
-  SubsetFilter* ret
-    = new RestraintScoreSubsetFilter(mset_,
-                                     mset_->get_subset_data(s,
-                                                                  excluded),
-                                     mset_->get_model()
-                                     ->get_maximum_score());
-  ret->set_log_level(get_log_level());
-  return ret;
+      .get_number_of_total_restraints() ==0) {
+    IMP_LOG(VERBOSE, "none found" << std::endl);
+    return NULL;
+  } else {
+    IMP_LOG(VERBOSE, mset_->get_subset_data(s, excluded)
+            .get_number_of_total_restraints() << " found" << std::endl);
+    SubsetFilter* ret
+      = new RestraintScoreSubsetFilter(mset_,
+                                       mset_->get_subset_data(s,
+                                                              excluded),
+                                       mset_->get_model()
+                                       ->get_maximum_score());
+    ret->set_log_level(get_log_level());
+    return ret;
+  }
 }
 
 void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
@@ -258,12 +249,14 @@ namespace {
 
 
 PermutationSubsetFilterTable
-::PermutationSubsetFilterTable(ParticleStatesTable *pst): pst_(pst)
+::PermutationSubsetFilterTable(ParticleStatesTable *pst):
+  SubsetFilterTable("PermutationSubsetFilterTable%1%"), pst_(pst)
 {
 }
 
 PermutationSubsetFilterTable
 ::PermutationSubsetFilterTable(const ParticlePairsTemp &pairs):
+  SubsetFilterTable("PermutationSubsetFilterTable%1%"),
   pairs_(fixup(pairs))
 {
 }
@@ -351,7 +344,8 @@ double ListSubsetFilter::get_strength() const {
 
 
 ListSubsetFilterTable
-::ListSubsetFilterTable(ParticleStatesTable *pst): pst_(pst)
+::ListSubsetFilterTable(ParticleStatesTable *pst):
+  SubsetFilterTable("ListSubsetFilterTable%1%"), pst_(pst)
 {
   num_ok_=0;
   num_test_=0;
