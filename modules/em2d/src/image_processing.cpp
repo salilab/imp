@@ -590,15 +590,15 @@ void histogram_stretching(algebra::Matrix2D_d &m,
 }
 
 
-std::vector<double> get_histogram(em2d::Image &img, int bins) {
+Floats get_histogram(em2d::Image &img, int bins) {
   return get_histogram(img.get_data(),bins);
 }
 
-std::vector<double> get_histogram(const cv::Mat &m, int bins) {
-  std::vector<double> histogram(bins);
-  // Step
+Floats get_histogram(const cv::Mat &m, int bins) {
+  Floats histogram(bins);
   double min,max;
   cv::minMaxLoc(m, &min,&max,NULL,NULL);
+  // Step
   double step = (max-min)/(double)bins;
   double n_points= (double)m.rows*(double)m.cols;
   for(cv::MatConstIterator_<double> it = m.begin<double>();
@@ -648,6 +648,5 @@ void apply_variance_filter(
     }
   }
 }
-
 
 IMPEM2D_END_NAMESPACE
