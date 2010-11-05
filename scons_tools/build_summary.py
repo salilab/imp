@@ -1,6 +1,7 @@
 import atexit
 import SCons
 import dependency
+import imp_module
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
     in a useful way."""
@@ -39,7 +40,7 @@ def _display_build_summary(env):
     disabledm=[]
     enabledm=[]
     for m in env['IMP_MODULES_ALL']:
-        if not env.get(m+"_ok", False):
+        if not env.get_module_ok(m):
             disabledm.append(m)
         else:
             enabledm.append(m)
