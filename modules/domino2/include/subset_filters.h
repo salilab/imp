@@ -79,6 +79,27 @@ class IMPDOMINO2EXPORT SubsetFilterTable: public Object {
 
 IMP_OBJECTS(SubsetFilterTable, SubsetFilterTables);
 
+class RestraintScoreSubsetFilterTable;
+
+/** A restraint score based SubsetFilter.
+    See RestraintScoreSubsetFilterTable.
+ */
+class IMPDOMINO2EXPORT RestraintScoreSubsetFilter: public SubsetFilter {
+  Pointer<const internal::ModelData> keepalive_;
+  const internal::SubsetData &data_;
+  double max_;
+  friend class RestraintScoreSubsetFilterTable;
+  RestraintScoreSubsetFilter(const internal::ModelData *t,
+                             const internal::SubsetData &data,
+                             double max):
+    SubsetFilter("Restraint score filter"),
+    keepalive_(t), data_(data),
+    max_(max) {
+  }
+public:
+  IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
+};
+
 
 //! Filter a configuration of the subset using the Model thresholds
 /** This filter table creates filters using the maximum scores
