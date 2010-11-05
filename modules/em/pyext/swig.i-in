@@ -14,7 +14,7 @@ IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
 IMP_SWIG_OBJECT(IMP::em, Image, Images);
 IMP_SWIG_VALUE(IMP::em, RadiusDependentKernelParameters, RadiusDependentKernelParametersList);
 IMP_SWIG_VALUE(IMP::em, KernelParameters, KernelParametersList);
-
+IMP_SWIG_OBJECT(IMP::em, HighDensityEmbedding, HighDensityEmbeddings);
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
@@ -43,6 +43,7 @@ IMP_SWIG_VALUE(IMP::em, KernelParameters, KernelParametersList);
 %include "IMP/em/rigid_fitting.h"
 %include "IMP/em/envelope_penetration.h"
 %include "IMP/em/image_transformations.h"
+%include "IMP/em/embedding.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {
