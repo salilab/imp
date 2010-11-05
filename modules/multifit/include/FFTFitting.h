@@ -151,7 +151,7 @@ protected:
   algebra::Transformation3D center_trans_;
   algebra::Vector3D orig_prot_center_;
   algebra::Vector3D map_center_;
-  float orig_avg_;
+  float orig_avg_,orig_std_;
   float input_threshold_;
 };
 

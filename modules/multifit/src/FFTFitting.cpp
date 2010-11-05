@@ -50,6 +50,7 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,
   asmb_map_=dmap;
   asmb_map_->calcRMS();
   orig_avg_ = asmb_map_->get_header()->dmean;
+  orig_std_ = asmb_map_->get_header()->rms;
   asmb_map_->std_normalize(); //TODO - is that correct?
   rb_=rb;
   rb_refiner_=rb_refiner;
@@ -293,7 +294,7 @@ void FFTFitting::resmooth_mol(){
   core::transform(rb_,center_trans_);
   mol_map_->resample();
   em::MRCReaderWriter mrw;
-  em::write_map(mol_map_,"resampled.mrc", mrw);
+  //  em::write_map(mol_map_,"resampled.mrc", mrw);
   mol_map_->std_normalize(); // TODO - return?
 
   //move back mol to the center
@@ -369,7 +370,7 @@ void FFTFitting::prepare(float threshold) {
   IMP_USAGE_CHECK(!is_initialized_,"FFTFitting was already initialized");
   //set the padded assembly map
   create_padded_asmb_map();
-  asmb_map_mask_ = em::binarize(asmb_map_,threshold-orig_avg_);
+  asmb_map_mask_ = em::binarize(asmb_map_,(threshold-orig_avg_)/orig_std_);
   set_fftw_grid_sizes();
   set_fftw_for_asmb();
   //set asmb sqr
@@ -540,7 +541,6 @@ void FFTFitting::calculate_local_stds() {
       num_non_zero += 1;
     }
   }
-  std::cout<<"==========NUMBER OF NON ZERO:"<<num_non_zero<<std::endl;
   double norm=1./num_non_zero;
   double fftw_norm=1./padded_asmb_map_->get_number_of_voxels();
   float ta,tb,ma,mb;//t-target, m-mask
@@ -718,12 +718,10 @@ TransScores FFTFitting::gmm_based_search_for_best_translations(
   em::DensityMap *hit_map_orig = get_correlation_hit_map();
   em::DensityMap* hit_map=em::multiply(hit_map_orig,
                                        asmb_map_mask_);
-
-  em::write_map(hit_map,"hit_masked.mrc",mrw);
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
+
   float density_threshold = std::max(em::EPS,hist.get_top(0.85)-EPS);
-  std::cout<<"=======density threshold:"<<density_threshold<<std::endl;
   DensityDataPoints ddp(hit_map,density_threshold);
   VQClustering vq(&ddp,num_solutions);
   vq.set_fast_clustering();
