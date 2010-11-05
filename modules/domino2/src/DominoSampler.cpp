@@ -84,6 +84,13 @@ SubsetStates DominoSampler
   }
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
                                              get_particle_states_table());
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Filtering with ");
+    for (unsigned int i=0; i< sfts.size(); ++i) {
+      IMP_LOG(TERSE, sfts[i]->get_name() << " ");
+    }
+    IMP_LOG(TERSE, std::endl);
+  }
   IMP::internal::OwnerPointer<SubsetStatesTable> sst
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
