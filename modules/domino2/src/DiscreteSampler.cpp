@@ -78,12 +78,12 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
         =get_particle_states_table()->get_particle_states(p);
       ps->load_particle_state(final_solutions[i][j], p);
     }
-    get_model()->evaluate(false);
-    if (get_model()->get_has_good_score()) {
+    //get_model()->evaluate(false);
+    //if (get_model()->get_has_good_score()) {
       ret->save_configuration();
-    } else {
-      IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);
-    }
+      //} else {
+      //  IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);
+      //}
   }
   return ret.release();
 }
