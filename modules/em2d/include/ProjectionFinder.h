@@ -163,7 +163,7 @@ protected:
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
 
-  MasksManager masks_manager_;
+  OldMasksManager masks_manager_;
 };
 
 

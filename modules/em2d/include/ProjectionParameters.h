@@ -120,12 +120,12 @@ typedef Decorators<ProjectionParameters, Particles> ProjectionParametersList;
 
 
 //! Score state to keep angles and distances
-class IMPEM2DEXPORT ProjectionParametersSS : public ScoreState {
+class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 public:
-  ProjectionParametersSS(Particle *p) {
+  ProjectionParametersScoreState(Particle *p) {
     proj_params_ = p;
   }
-  IMP_SCORE_STATE(ProjectionParametersSS);
+  IMP_SCORE_STATE(ProjectionParametersScoreState);
 
 private:
   // Particle to store the projection params
