@@ -530,10 +530,11 @@ public:
   VertexDescriptors get_in_neighbors(VertexDescriptor);
   VertexDescriptors get_out_neighbors(VertexDescriptor);
   void add_edge(VertexDescriptor, VertexDescriptor);
+  void show_dotty();
   VertexDescriptor add_vertex(VertexName);
 };
 \endcode
-Each vertex has a descriptor which provides a unique identifier for the vertex as well as a name, which need not be unique.
+Each vertex has a descriptor which provides a unique identifier for the vertex as well as a name, which need not be unique. The \c show_dotty() method attempts to display the graphically. It requires the \c altgraph python package be installed and that x-windows be running. Any less primitive replacements are welcome.
 
 The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
 
