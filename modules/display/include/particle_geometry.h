@@ -15,6 +15,8 @@
 #include <IMP/PairContainer.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/bond_decorators.h>
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/atom/hierarchy_tools.h>
 #include <IMP/display/geometry.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/SingletonScore.h>
@@ -195,6 +197,47 @@ IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
     new SegmentGeometry(algebra::Segment3D(d0.get_coordinates(),
                                            d1.get_coordinates())));
   });
+
+
+
+class HierarchyGeometry: public SingletonGeometry {
+  double res_;
+public:
+  HierarchyGeometry(core::Hierarchy d, double resolution=-1):
+    SingletonGeometry(d), res_(resolution){}
+  Geometries get_components() const {
+    Geometries ret;
+    atom::Hierarchy d(get_particle());
+    atom::Selection sel(d);
+    sel.set_target_radius(res_);
+    ParticlesTemp ps= sel.get_selected_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_NEW(XYZRGeometry, g, (ps[i]));
+      ret.push_back(g);
+    }
+    return ret;
+  }
+  IMP_OBJECT_INLINE(HierarchyGeometry,
+                    out <<  atom::Hierarchy(get_particle())<< std::endl;,{});
+};
+class HierarchiesGeometry: public SingletonsGeometry {
+  double res_;
+  public:
+  HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
+    SingletonsGeometry(sc), res_(resolution){}
+  Geometries get_components() const {
+    Geometries ret;
+    for (unsigned int i=0;
+         i< get_container()->get_number_of_particles();
+         ++i) {
+      IMP_NEW(HierarchyGeometry, g, (get_container()->get_particle(i), res_));
+      ret.push_back(g);
+    }
+    return ret;
+  }
+  IMP_OBJECT_INLINE(HierarchiesGeometry,
+                    out <<  get_container() << std::endl;,{});
+};
 
 IMPDISPLAY_END_NAMESPACE
 
