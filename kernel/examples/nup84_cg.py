@@ -7,8 +7,12 @@ import IMP.example
 
 # the spring constant to use, it doesn't really matter
 k=100
-# the target resolution for the representation
-resolution=50
+# the target resolution for the representation, this is used to specify how detailed
+# the representation used should be
+resolution=300
+# the box to perform everything in
+bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                             IMP.algebra.Vector3D(300, 300, 300))
 
 
 # this function creates the molecular hierarchies for the various involved proteins
@@ -89,6 +93,40 @@ def create_restraints(m, all):
     #    m.set_maximum_score(k)
 
 
+# find acceptable conformations of the model
+def get_conformations(m):
+    sampler= IMP.core.MCCGSampler(m)
+
+    sampler.set_bounding_box(bb)
+    # magic numbers, experiment with them and make them large enough for things to work
+    sampler.set_number_of_conjugate_gradient_steps(100)
+    sampler.set_number_of_monte_carlo_steps(10)
+    sampler.set_number_of_attempts(20)
+    # We don't care to see the output from the sampler
+    sampler.set_log_level(IMP.SILENT)
+
+    # return the IMP.ConfigurationSet storing all the found configurations that
+    # meet the various restraint maximum scores.
+    cs= sampler.get_sample()
+    return cs
+
+# cluster the conformations and write them to a file
+def analyze_conformations(cs, all, gs):
+    # we want to cluster the configurations to make them easier to understand
+    # in the case, the clustering is pretty meaningless
+    embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs, IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
+    cluster= IMP.statistics.get_lloyds_kmeans(embed, 10, 10000)
+    # dump each cluster center to a file so it can be viewed.
+    for i in range(cluster.get_number_of_clusters()):
+        center= cluster.get_cluster_center(i)
+        cs.load_configuration(i)
+        w= IMP.display.PymolWriter("cluster.%d.pym"%i)
+        for g in gs:
+            w.add_geometry(g)
+
+
+
+# now do the actual work
 (m,all)= create_representation()
 IMP.atom.show_molecular_hierarchy(all)
 create_restraints(m, all)
@@ -109,22 +147,8 @@ for i in range(all.get_number_of_children()):
         g.set_name(name)
         gs.append(g)
 
-bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
-                             IMP.algebra.Vector3D(300, 300, 300))
+cs= get_conformations(m)
 
-sampler= IMP.core.MCCGSampler(m)
-
-sampler.set_bounding_box(bb)
-# magic numbers, experiment with them and make them large enough for things to work
-sampler.set_number_of_conjugate_gradient_steps(1000)
-sampler.set_number_of_monte_carlo_steps(10)
-sampler.set_number_of_attempts(100)
-# We don't care to see the output from the sampler
-sampler.set_log_level(IMP.SILENT)
-
-# return the IMP.ConfigurationSet storing all the found configurations that
-# meet the various restraint maximum scores.
-cs= sampler.get_sample()
 print "found", cs.get_number_of_configurations(), "solutions"
 
 # for each of the configuration, dump it to a file to view in pymol
@@ -134,16 +158,4 @@ for i in range(0, cs.get_number_of_configurations()):
     for g in gs:
         w.add_geometry(g)
 
-
-# we want to cluster the configurations to make them easier to understand
-# in the case, the clustering is pretty meaningless
-embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs, IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
-cluster= IMP.statistics.get_lloyds_kmeans(embed, 10, 10000)
-
-# dump each cluster center to a file so it can be viewed.
-for i in range(cluster.get_number_of_clusters()):
-    center= cluster.get_cluster_center(i)
-    cs.load_configuration(i)
-    w= IMP.display.PymolWriter("cluster.%d.pym"%i)
-    for g in gs:
-        w.add_geometry(g)
+analyze_conformations(cs, all, gs)
