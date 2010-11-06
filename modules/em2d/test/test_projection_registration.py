@@ -80,7 +80,7 @@ class ProjectTests(IMP.test.TestCase):
             self.assertAlmostEqual(dist,0, delta=distance_tolerance,
                  msg="Translation error %8.3f higher than tolerance %8.3f "
                      "for subject %d " % (dist,distance_tolerance,i))
-        # os.remove(fn_registration_results)
+        os.remove(fn_registration_results)
 
 if __name__ == '__main__':
     IMP.test.main()
