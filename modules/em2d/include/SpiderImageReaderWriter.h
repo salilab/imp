@@ -74,7 +74,7 @@ public:
     \param[in] data a matrix to store the grid of data of the image
   **/
   void read_from_floats(String filename,
-                          em::ImageHeader &header,cv::Mat &data) {
+                          em::ImageHeader &header,cv::Mat &data) const {
     IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
     in.open(filename.c_str(), std::ios::in | std::ios::binary);
@@ -117,7 +117,7 @@ public:
    *  \param[in] data a matrix with the grid of data of the image
    */
   void write_to_floats(String filename, em::ImageHeader& header,
-                                                    cv::Mat &data) {
+                                        cv::Mat &data) const {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it

@@ -20,7 +20,8 @@ class ProjectTests(IMP.test.TestCase):
             os.remove(testfile)
         smodel = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
-        prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"), smodel,ssel)
+        prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
+                                                                 smodel,ssel)
         IMP.atom.add_radii(prot)
         particles=IMP.core.get_leaves(prot)
         rows = 80
@@ -38,11 +39,41 @@ class ProjectTests(IMP.test.TestCase):
                         "Projection image not generated")
         os.remove(testfile)
 
-    def test_generation_of_even_projections(self):
-        """ Generation of evenly distributed projections from a PDB file"""
+
+    def test_random_projection_generation(self):
+        """ Generation of random projection from a PDB file with em2d images"""
+        testfile=self.get_input_file_name("opencv_test.spi")
+        if(os.path.isfile(testfile)):
+            # delete the file to check
+            os.remove(testfile)
         smodel = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
         prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"), smodel,ssel)
+        IMP.atom.add_radii(prot)
+        particles=IMP.core.get_leaves(prot)
+        rows = 80
+        cols = 80
+        resolution = 1
+        apix = 1.5
+        img=IMP.em2d.Image()
+        img.resize(rows,cols)
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        rr=IMP.em2d.RegistrationResult()
+        rr.set_random_registration(0,5)
+        IMP.em2d.generate_projection(img,particles,rr,resolution,apix,srw)
+        img.write_to_floats(testfile,srw)
+        self.assertTrue(os.path.isfile(testfile),
+                        "Projection image not generated")
+        os.remove(testfile)
+
+
+    def test_generation_of_even_projections(self):
+
+        """ Generation of evenly distributed projections from a PDB file"""
+        smodel = IMP.Model()
+        ssel = IMP.atom.ATOMPDBSelector()
+        prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
+                                                                  smodel,ssel)
         IMP.atom.add_radii(prot)
         particles=IMP.core.get_leaves(prot)
         n_projections = 3
@@ -53,8 +84,8 @@ class ProjectTests(IMP.test.TestCase):
         srw = IMP.em.SpiderImageReaderWriter()
         registration_values=IMP.em2d.evenly_distributed_registration_results(
                                                                   n_projections)
-        projections = IMP.em2d.generate_projections(particles,registration_values,
-                               rows,cols,resolution,apix,srw)
+        projections = IMP.em2d.generate_projections(particles,
+                  registration_values,rows,cols,resolution,apix,srw)
         # Read the stored projections
         stored_projection_names= IMP.em2d.generate_filenames(
                                       n_projections,"1z5s-projection","spi")
@@ -70,11 +101,50 @@ class ProjectTests(IMP.test.TestCase):
                            stored_projections[n](i,j), delta=0.001,
                            msg="Projections generated and stored are different")
 
+
+
+    def test_even_projections(self):
+        """ Evenly distributed em2d image projections from a PDB file"""
+        smodel = IMP.Model()
+        ssel = IMP.atom.ATOMPDBSelector()
+        prot =  IMP.atom.read_pdb(self.get_input_file_name("1z5s.pdb"),
+                                                                   smodel,ssel)
+        IMP.atom.add_radii(prot)
+        particles=IMP.core.get_leaves(prot)
+        n_projections = 3
+        rows = 80
+        cols = 80
+        resolution = 1
+        apix = 1.5
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        registration_values=IMP.em2d.evenly_distributed_registration_results(
+                                                                  n_projections)
+        projections = IMP.em2d.generate_projections(particles,
+                  registration_values,rows,cols,resolution,apix,srw)
+        opencv_projection_names= IMP.em2d.generate_filenames(
+                                      n_projections,"cv-projection","spi")
+        IMP.em2d.save_images(projections, opencv_projection_names,srw)
+        # Read the stored projections
+        stored_projection_names= IMP.em2d.generate_filenames(
+                                      n_projections,"1z5s-projection","spi")
+        for n in xrange(0,n_projections):
+            stored_projection_names[n]=self.get_input_file_name(
+                                            stored_projection_names[n])
+        stored_projections=IMP.em2d.read_images(stored_projection_names,srw)
+        # check
+        for n in xrange(0,n_projections):
+            for i in xrange(0,rows):
+                for j in xrange(0,cols):
+                    self.assertAlmostEqual(projections[n](i,j),
+                           stored_projections[n](i,j), delta=0.001,
+                           msg="Projections generated and stored are different")
+
     def test_noisy_projections(self):
         """ Test the generation of noisy projections"""
         smodel = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
-        prot =  IMP.atom.read_pdb(self.get_input_file_name("1e6v.pdb"), smodel,ssel)
+        prot =  IMP.atom.read_pdb(self.get_input_file_name("1e6v.pdb"),
+                                                                 smodel,ssel)
         IMP.atom.add_radii(prot)
         particles=IMP.core.get_leaves(prot)
         n_projections = 16

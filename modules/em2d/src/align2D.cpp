@@ -436,8 +436,8 @@ ResultAlign2D align2D_complete_with_centers(algebra::Matrix2D_d &m1,
 
 
 ResultAlign2D align2D_complete_with_centers_no_preprocessing(
-                      algebra::Vector2D &center1,
-                      algebra::Vector2D &center2,
+                      algebra::Vector2D center1,
+                      algebra::Vector2D center2,
                       algebra::Matrix2D_c &AUTOC_POLAR1,
                       algebra::Matrix2D_c &AUTOC_POLAR2,
                       unsigned int n_rings, unsigned int sampling_points) {

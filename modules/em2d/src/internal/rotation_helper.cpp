@@ -98,7 +98,7 @@ return algebra::get_rotation_about_axis(axis,-v[1]);
 }
 
 
-algebra::Matrix2D_d quaternion_to_matrix(algebra::VectorD<4> &v) {
+algebra::Matrix2D_d quaternion_to_matrix(const algebra::VectorD<4> &v) {
   algebra::Matrix2D_d M(3,3);
   int start[2]; start[0]=0; start[1]=0;
   M.set_start(0,0); M.set_start(1,0);

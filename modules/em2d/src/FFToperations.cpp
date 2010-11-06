@@ -106,7 +106,7 @@ void print_matrix(algebra::Matrix3D<std::complex<double> > &m,
 }
 
 void Matrix2D_c_to_img(algebra::Matrix2D_c &M,String name) {
-  em::SpiderImageReaderWriter<double> srw;
+  const em::SpiderImageReaderWriter<double> srw;
   IMP_NEW(em::Image,img,());
   img->resize(M.get_size(0),M.get_size(1));
   for(unsigned long i=0;i<M.num_elements();++i) {
@@ -117,7 +117,7 @@ void Matrix2D_c_to_img(algebra::Matrix2D_c &M,String name) {
 }
 
 
-void autocorrelation2D_no_preprocessing(const cv::Mat& M, cv::Mat& corr) {
+void autocorrelation2D_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
   IMP_LOG(IMP::VERBOSE,
               "Computing 2D autocorrelation no preprocessing" <<std::endl);
   IMP_USAGE_CHECK(((M.rows!=0) && (M.cols !=0)),
@@ -130,7 +130,7 @@ void autocorrelation2D_no_preprocessing(const cv::Mat& M, cv::Mat& corr) {
 }
 
 
-void autocorrelation2D(const cv::Mat& m, cv::Mat& corr) {
+void autocorrelation2D(const cv::Mat &m, cv::Mat &corr) {
   IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation " <<std::endl);
   // resize the output array if needed
   corr.create(m.rows,m.cols, m.type());
@@ -148,7 +148,7 @@ void autocorrelation2D(const cv::Mat& m, cv::Mat& corr) {
 }
 
 
-void correlation2D(const cv::Mat& A, const cv::Mat& B, cv::Mat& corr) {
+void correlation2D(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 
   IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
 
@@ -191,8 +191,8 @@ void correlation2D(const cv::Mat& A, const cv::Mat& B, cv::Mat& corr) {
   matrix_to_image_flip(corr);
 }
 
-void correlation2D_no_preprocessing(const cv::Mat& M1,
-                                    const cv::Mat& M2, cv::Mat& corr) {
+void correlation2D_no_preprocessing(const cv::Mat &M1,
+                                    const cv::Mat &M2, cv::Mat &corr) {
 
   IMP_LOG(IMP::VERBOSE,"Computing 2D correlation no preprocessing "<<std::endl);
 
@@ -208,7 +208,7 @@ void correlation2D_no_preprocessing(const cv::Mat& M1,
 }
 
 
-void spectrum(const cv::Mat& m, cv::Mat& real,cv::Mat &imag) {
+void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag) {
   cv::Size dftSize;
   // compute the optimal size for faster DFT transform
   dftSize.width = cv::getOptimalDFTSize(m.cols);

@@ -37,17 +37,7 @@ inline Strings read_selection_file(String fn) {
 }
 
 //! generates consecutive filenames: basic_name-i.extension
-//inline Strings generate_filenames(unsigned long number,
-//                                  String basic_name, String extension) {
-//  Strings proj_names(number);
-//  for (unsigned int i=0;i<number;++i) {
-//    std::ostringstream  strm;
-//    strm << basic_name << "-" << i << "." << extension;
-//    proj_names[i]=strm.str();
-//  }
-//  return proj_names;
-//}
-
+//! Adds zeros at the front of the number when neccessary
 inline Strings generate_filenames(unsigned long number,
                                   String basic_name, String extension) {
   // Number of digits to use

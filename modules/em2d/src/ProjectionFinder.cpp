@@ -149,7 +149,7 @@ void ProjectionFinder::get_coarse_registration() {
       int index=registration_results_[i].get_index();
       em::apply_Transformation2D(projections_[index]->get_data(),
                           best_transformation,match->get_data(),true);
-      em::normalize(*match,true);
+      em::normalize(match,true);
       registration_results_[i].set_in_image(match->get_header());
       std::ostringstream strm;
       strm << "coarse_match-" << i << ".spi";
@@ -294,7 +294,7 @@ void ProjectionFinder::get_complete_registration() {
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       subject_RRs[k].set_in_image(subjects_[i]->get_header());
-      fine2d->set_subject_image(*subjects_[i]);
+      fine2d->set_subject_image(subjects_[i]);
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
       double em2d = fine2d->get_final_values(subject_RRs[k]);
@@ -311,9 +311,9 @@ void ProjectionFinder::get_complete_registration() {
       strm << "fine_match-" << i << ".spi";
 //      generate_projection(*match,model_particles_,registration_results_[i],
 //                    resolution_,apix_,srw,&masks_manager_,false,strm.str());
-      generate_projection(*match,model_particles_,registration_results_[i],
+      generate_projection(match,model_particles_,registration_results_[i],
                     resolution_,apix_,srw,false,&masks_manager_,strm.str());
-      em::normalize(*match,true);
+      em::normalize(match,true);
       registration_results_[i].set_in_image(match->get_header());
       match->write_to_floats(strm.str(),srw);
     }

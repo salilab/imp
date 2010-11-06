@@ -28,12 +28,12 @@ IMPEM2DEXPORT void assign_final_labels(
   \param[in] j another node
   \param[out] root the new root
 **/
-IMPEM2DEXPORT int p_union(std::vector<int> &P,const int i,const int j);
+IMPEM2DEXPORT int p_union(std::vector<int> &P, int i, int j);
 
 
 //! Sets a new label for a pixel
 inline int new_label(const Pixel &p,algebra::Matrix2D<int> &L,
-                    std::vector<int> &P,const int label) {
+                    std::vector<int> &P, int label) {
   L(p) = label;
   P.push_back(label);
   int next_label=label+1;
@@ -54,7 +54,7 @@ IMPEM2DEXPORT void d_copy(const Pixel &p, const Pixel &a,const Pixel &c,
   \param[in] i a node
   \param[out] root root of the tree for i
 **/
-inline int find_root(const std::vector<int> &P,const int i) {
+inline int find_root(const std::vector<int> &P, int i) {
   int root = i;
   while(P[root] < root) {
     root = P[root];
@@ -70,7 +70,7 @@ inline int find_root(const std::vector<int> &P,const int i) {
   \param[in] i node of a tree
   \param[out] root root node of the tree of i
 **/
-inline void set_root(std::vector<int> &P,int i,const int root) {
+inline void set_root(std::vector<int> &P,int i, int root) {
   while(P[i]<i) {
     int j = P[i];
     P[i] = root;
@@ -99,7 +99,7 @@ inline void flattenL(std::vector<int> &P) {
 template<typename T>
 int decission_tree(const Pixel &p,
                     Pixels &neighbors,
-                    const int background,
+                    int background,
                     const algebra::Matrix2D<T> &m,
                     algebra::Matrix2D<int> &L,
                     std::vector<int> &P,int label) {

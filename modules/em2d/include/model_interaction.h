@@ -29,7 +29,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Generates a density map from a Molecular Hierarchy by downsampling
 IMPEM2DEXPORT Pointer<em::SampledDensityMap>
-                            generate_map_from_model(Particles &ps,
+                            generate_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize);
 

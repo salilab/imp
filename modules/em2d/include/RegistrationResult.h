@@ -34,7 +34,7 @@ public:
   RegistrationResult(double phi,double theta,double psi,double shift_x,
                   double shift_y,long index=0,double ccc=0.0,String name="");
 
-  RegistrationResult(algebra::Rotation3D &R,algebra::Vector2D &shift,
+  RegistrationResult(algebra::Rotation3D R,algebra::Vector2D shift,
                       long index=0,double ccc=0.0,String name="");
 
   inline double get_Phi() const { return phi_;}
@@ -53,7 +53,7 @@ public:
     R_=algebra::get_rotation_from_fixed_zyz(phi_,theta_,psi_);
   }
 
-  void set_rotation(algebra::Rotation3D &R);
+  void set_rotation(algebra::Rotation3D R);
 
   inline void set_ccc(double ccc) { ccc_=ccc;}
   inline void set_shift(algebra::Vector2D shift) { shift_=shift;}
@@ -65,7 +65,7 @@ public:
 
   //! adds an in-plane transformation to the result stored
   //! The translation is understood as a shift (in pixels)
-  void add_in_plane_transformation(algebra::Transformation2D &t);
+  void add_in_plane_transformation(algebra::Transformation2D t);
 
 
   void show(std::ostream& out) const;
@@ -88,7 +88,7 @@ public:
   }
 
   //! Sets the registration results to the header of an image
-  void set_in_image(em::ImageHeader &header);
+  void set_in_image(em::ImageHeader &header) const;
 
   //! Reads the registration parameters from an image
   void read_from_image(const em::ImageHeader &header);
@@ -116,21 +116,21 @@ protected:
 
 IMP_OUTPUT_OPERATOR(RegistrationResult);
 
-// typedef std::vector<RegistrationResult> RegistrationResults;
 // Does the same as above
 IMP_VALUES(RegistrationResult,RegistrationResults);
 
 //! Checks the best of 2 cross correlation coefficients
-inline bool better_ccc(RegistrationResult &r1,RegistrationResult &r2) {
+inline bool better_ccc(RegistrationResult r1,RegistrationResult r2) {
   return r1.get_ccc()<r2.get_ccc();
 }
 
 //! Reads a set of registration results
-IMPEM2DEXPORT RegistrationResults read_registration_results(String filename);
+IMPEM2DEXPORT RegistrationResults read_registration_results(
+                                                    const String &filename);
 
 //! Writes a set of registration results
 IMPEM2DEXPORT void  write_registration_results(
-                        String filename,const RegistrationResults results);
+                        String filename,const RegistrationResults &results);
 
 
 //! Provides a set of random registration results (or parameters)

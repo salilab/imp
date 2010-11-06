@@ -20,8 +20,8 @@ IMPEM2DEXPORT void center_coordinates(algebra::Vector2Ds &v,
                                     algebra::Matrix2D_d &m);
 
 //! True if the pca features match within a given percentage
-IMPEM2DEXPORT bool pca_features_match(algebra::Vector3D &v1,
-                                    algebra::Vector3D &v2,
+IMPEM2DEXPORT bool pca_features_match(algebra::Vector3D v1,
+                                    algebra::Vector3D v2,
                                     double percentage);
 
 //! PCA analysis for the points of a matrix
@@ -30,7 +30,7 @@ IMPEM2DEXPORT bool pca_features_match(algebra::Vector3D &v1,
             are used.
  \return a vector with the eigenvalues of the covariance matrix
 **/
-IMPEM2DEXPORT algebra::Vector3D pca_features(algebra::Matrix2D_d &m,
+IMPEM2DEXPORT algebra::Vector3D pca_features(const algebra::Matrix2D_d &m,
                             double treshold=0.0);
 
 //! PCA analysis for each matrix of a set of images
@@ -39,7 +39,7 @@ IMPEM2DEXPORT algebra::Vector3D pca_features(algebra::Matrix2D_d &m,
             are used.
  \return a set of vectors with the eigenvalues for each image
 **/
-IMPEM2DEXPORT algebra::Vector3Ds pca_features(em::Images &images,
+IMPEM2DEXPORT algebra::Vector3Ds pca_features(em::Images images,
                             double treshold=0.0);
 
 

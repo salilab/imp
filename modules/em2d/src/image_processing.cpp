@@ -5,7 +5,6 @@
 **/
 
 #include "IMP/em2d/image_processing.h"
-//#include "IMP/em2d/internal/radon.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/filters.h"
@@ -16,9 +15,6 @@
 #include <list>
 #include <queue>
 #include <cmath>
-
-
-
 
 
 
@@ -153,7 +149,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
 
 
 Pixels compute_neighbors_2D(const Pixel &p,const algebra::Matrix2D_d &m,
-                            const int mode,const int sign,const bool cycle) {
+                            int mode,int sign,bool cycle) {
   Pixels neighbors,final_neighbors;
   switch(mode) {
    case 4:
@@ -350,7 +346,7 @@ void closing(const algebra::Matrix2D_d &m,
 
 void thresholding(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &result,
-             const double threshold,const int mode) {
+             double threshold,int mode) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
                   "em2d::thresholding: Matrices have different size.");
@@ -398,7 +394,7 @@ void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
 void diffusion_filtering_partial_der_t(
                       const algebra::Matrix2D_d &I,
                       algebra::Matrix2D_d &It,
-                      const double dx,const double dy,const double ang) {
+                       double dx, double dy, double ang) {
   int init_y = I.get_start(0); int end_y = I.get_finish(0);
   int init_x = I.get_start(1); int end_x = I.get_finish(1);
   double c = cos(ang);
@@ -429,9 +425,9 @@ void diffusion_filtering_partial_der_t(
 
 void diffusion_filtering(const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
-             const double beta,
-             const double pixelsize,
-             const unsigned int t_steps) {
+              double beta,
+              double pixelsize,
+              unsigned int t_steps) {
 
   algebra::Matrix2D_d deriv_t,deriv_x,deriv_y,h;
   deriv_x.reshape(I);
@@ -590,8 +586,8 @@ void histogram_stretching(algebra::Matrix2D_d &m,
 }
 
 
-Floats get_histogram(em2d::Image &img, int bins) {
-  return get_histogram(img.get_data(),bins);
+Floats get_histogram(em2d::Image *img, int bins) {
+  return get_histogram(img->get_data(),bins);
 }
 
 Floats get_histogram(const cv::Mat &m, int bins) {
@@ -610,9 +606,9 @@ Floats get_histogram(const cv::Mat &m, int bins) {
 }
 
 
-void apply_variance_filter(em2d::Image &input,
-                           em2d::Image &filtered,int kernelsize) {
-  apply_variance_filter(input.get_data(),filtered.get_data(),kernelsize);
+void apply_variance_filter(em2d::Image *input,
+                           em2d::Image *filtered,int kernelsize) {
+  apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
 

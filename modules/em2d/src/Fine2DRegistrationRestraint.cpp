@@ -44,9 +44,9 @@ void Fine2DRegistrationRestraint::initialize(
   scoring_model->add_restraint(this);
   }
 
-void Fine2DRegistrationRestraint::set_subject_image(em::Image &subject) {
+void Fine2DRegistrationRestraint::set_subject_image(em::Image *subject) {
   // Set image
-  subject_ = &subject;
+  subject_ = subject;
   // Prepare another image to store projections
 //  IMP_NEW(em::Image,projection_,());
   projection_ = new em::Image();

@@ -16,7 +16,8 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! This version computes the eigen values only
-algebra::Vector3D pca_features(algebra::Matrix2D_d &m,double threshold) {
+algebra::Vector3D pca_features(const algebra::Matrix2D_d &m,
+                               double threshold) {
   // Put the matrix values in a vector
   algebra::Vector3Ds points;
   for(int i=m.get_start(0);i<m.get_finish(0);++i) {
@@ -85,7 +86,7 @@ algebra::Vector3D pca_features(algebra::Matrix2D_d &m,double threshold) {
 
 
 
-algebra::Vector3Ds pca_features(em::Images &images,double threshold) {
+algebra::Vector3Ds pca_features(em::Images images,double threshold) {
   algebra::Vector3Ds pca_eigenvualues;
   for (unsigned int i=0;i<images.size();++i) {
     algebra::Vector3D v=pca_features(images[i]->get_data(),threshold);
@@ -95,7 +96,7 @@ algebra::Vector3Ds pca_features(em::Images &images,double threshold) {
 }
 
 //! Match features with a percentage of tolerance
-bool pca_features_match(algebra::Vector3D &v1,algebra::Vector3D &v2,
+bool pca_features_match(algebra::Vector3D v1,algebra::Vector3D v2,
                         double percentage) {
   double ratio1=sqrt(v1[0]/v1[1]);
   double ratio2=sqrt(v2[0]/v2[1]);

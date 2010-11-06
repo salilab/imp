@@ -209,7 +209,7 @@ int main(int argc, char **argv) {
     if(vm.count("SNR")) {
       double SNR = vm["SNR"].as<double>();
       for (unsigned int i=0;i<np;++i) {
-        em::normalize(*projections[i]);
+        em::normalize(projections[i]);
         // Noise added of mean = 0  and stddev = stddev_signal / sqrt(SNR)
         // As the image is normalized, stddev_signal is 1.0
         em::add_noise(projections[i]->get_data(),0.0,1./sqrt(SNR), "gaussian");
