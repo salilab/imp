@@ -260,6 +260,9 @@ int main(int argc, char **argv) {
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
+  *std::cin.tie() << "# GLOBAL RESULT " << std::endl <<
+  << "model | resolution | A/pix | images_file | Score | Time used | Number "
+   "of subjects | Individual scores "  << std::endl;
   *std::cin.tie() << "Global result>>" << fn_model <<c<< resolution <<c<< apix
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
