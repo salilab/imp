@@ -19,8 +19,8 @@ class ProjectTests(IMP.test.TestCase):
         img.read_from_floats(
               self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi"),srw);
 
-        rows=img.get_header().get_number_of_rows()
-        cols=img.get_header().get_number_of_columns()
+        rows=int(img.get_header().get_number_of_rows())
+        cols=int(img.get_header().get_number_of_columns())
 
         self.assertEqual(rows,128,"Error reading image")
         self.assertEqual(cols,128,"Error reading image")
@@ -54,8 +54,8 @@ class ProjectTests(IMP.test.TestCase):
         saved.read_from_floats(
               self.get_input_file_name("filtered_image.spi"),srw)
 
-        rows = img.get_header().get_number_of_rows()
-        cols = img.get_header().get_number_of_columns()
+        rows =int( img.get_header().get_number_of_rows())
+        cols = int(img.get_header().get_number_of_columns())
         for i in range(0,rows):
             for j in range(0,cols):
                 self.assertAlmostEqual(saved(i,j),filtered(i,j),delta=0.001,

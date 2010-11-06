@@ -14,7 +14,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Pointer<em::SampledDensityMap> generate_map_from_model(Particles &ps,
+Pointer<em::SampledDensityMap> generate_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize) {
   Pointer<em::SampledDensityMap> map =

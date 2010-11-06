@@ -65,9 +65,9 @@ IMPEM2D_BEGIN_NAMESPACE
 **/
  IMPEM2DEXPORT Pixels compute_neighbors_2D(
                             const Pixel &p,const algebra::Matrix2D_d &m,
-                            const int mode=4,
-                            const int sign=0,
-                            const bool cycle=false);
+                             int mode=4,
+                             int sign=0,
+                             bool cycle=false);
 
 
 
@@ -79,9 +79,6 @@ IMPEM2D_BEGIN_NAMESPACE
  IMPEM2DEXPORT void get_domes(
                   algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
 
-
-// IMPEM2DEXPORT void preprocess_em2d_image(
-//                        em::Image &img,em::Image &result,double n_stddevs);
 
  IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
@@ -137,7 +134,7 @@ IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
 **/
  IMPEM2DEXPORT void thresholding(
                   const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-                  const double threshold,const int mode);
+                   double threshold, int mode);
 
 
 //! Applies a binary mask to an image.
@@ -163,9 +160,9 @@ IMPEM2DEXPORT void masking(
  IMPEM2DEXPORT void diffusion_filtering(
              const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
-             const double beta,
-             const double pixelsize,
-             const unsigned int t_steps);
+              double beta,
+              double pixelsize,
+              unsigned int t_steps);
 
 
 
@@ -195,7 +192,7 @@ void transfer_by_casting(algebra::Matrix2D<T> &m,
 **/
 template<typename T>
 void remove_small_objects(algebra::Matrix2D<T> &m,
-           const double percentage,int n_labels=0) {
+            double percentage,int n_labels=0) {
   int background =0;
   int foreground =1;
   // If not given, compute the number of labels. Requires one scan
@@ -261,7 +258,7 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
 **/
 IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
 
-IMPEM2DEXPORT Floats get_histogram(em2d::Image &img,int bins);
+IMPEM2DEXPORT Floats get_histogram(em2d::Image *img,int bins);
 
 
 //! Variance filter for an image. Computes the variance for each pixel
@@ -271,8 +268,8 @@ IMPEM2DEXPORT Floats get_histogram(em2d::Image &img,int bins);
   \param[in] kernelsize The variance is computed using kernelsize x kernelsize
               pixels around each one. Kernelsize can only be odd.
 **/
-IMPEM2DEXPORT void apply_variance_filter(em2d::Image &input,
-                                   em2d::Image &filtered,int kernelsize);
+IMPEM2DEXPORT void apply_variance_filter(em2d::Image *input,
+                                   em2d::Image *filtered,int kernelsize);
 
 IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
                                    cv::Mat &filtered,int kernelsize);

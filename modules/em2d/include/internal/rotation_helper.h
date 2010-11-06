@@ -66,7 +66,7 @@ int previous(int axis);
 
 //! convert a quaternion to a rotation matrix.
 //! Required by get_euler_angles_from_rotation()
-algebra::Matrix2D_d quaternion_to_matrix(algebra::VectorD<4> &v);
+algebra::Matrix2D_d quaternion_to_matrix(const algebra::VectorD<4> &v);
 
 IMPEM2D_END_INTERNAL_NAMESPACE
 

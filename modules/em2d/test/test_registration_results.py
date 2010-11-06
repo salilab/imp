@@ -41,9 +41,12 @@ class RegistrationResultTests(IMP.test.TestCase):
 
     def test_even_registration_results(self):
         """ Test the generation of evenly distributed RegistrationResults"""
+        print "step 1"
         Regs1 = IMP.em2d.evenly_distributed_registration_results(3)
+        print "step 2"
         Regs2 = IMP.em2d.read_registration_results(
                       self.get_input_file_name("1z5s-projections.params"))
+        print "step 3"
 
         for j in xrange(0,len(Regs1)):
             q1=Regs1[j].get_rotation().get_quaternion()

@@ -51,7 +51,7 @@ public:
 
 
   //! Sets the images to use by the restraint
-  void set_subject_image(em::Image &subject);
+  void set_subject_image(em::Image *subject);
 
   //! Get the final values for the parameters after the optimization performed
   //! by this restraint

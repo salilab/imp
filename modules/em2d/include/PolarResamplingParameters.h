@@ -38,7 +38,7 @@ public:
   /**
       \params[in] matrix Matrix that is going to be resampled
   **/
-  PolarResamplingParameters(algebra::Matrix2D_d &matrix) {
+  PolarResamplingParameters(const algebra::Matrix2D_d &matrix) {
     initialize(matrix.get_number_of_rows(),matrix.get_number_of_columns());
   }
 

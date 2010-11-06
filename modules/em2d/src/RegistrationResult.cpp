@@ -53,7 +53,7 @@ RegistrationResults evenly_distributed_registration_results(
 
 
 void  write_registration_results(String filename,
-                                const RegistrationResults results) {
+                                const RegistrationResults &results) {
   std::ofstream f(filename.c_str(),std::ios::out | std::ios::binary);
   results[0].write_comment_line(f);
   f << results.size() << std::endl;
@@ -87,13 +87,13 @@ void RegistrationResult::read_from_image(const em::ImageHeader &header) {
 }
 
 
-void RegistrationResult::set_in_image(em::ImageHeader &header) {
+void RegistrationResult::set_in_image(em::ImageHeader &header) const {
   header.set_euler_angles(phi_,theta_,psi_);
   header.set_origin_offsets(shift_);
-  set_rotation(phi_,theta_,psi_);
+//   set_rotation(phi_,theta_,psi_);
 }
 
-  void RegistrationResult::set_rotation(algebra::Rotation3D &R){
+  void RegistrationResult::set_rotation(algebra::Rotation3D R){
     this->R_=R;
     algebra::Vector3D angles=
                     em2d::internal::get_euler_angles_from_rotation(R,3,2);
@@ -133,7 +133,7 @@ void RegistrationResult::read(const String &line) {
 }
 
 //! Reads a set of registration results
-RegistrationResults read_registration_results(String filename) {
+RegistrationResults read_registration_results(const String &filename) {
   std::ifstream in(filename.c_str(),std::ios::in | std::ios::binary);
   unsigned int n_records=0;
   String line;
@@ -174,8 +174,8 @@ RegistrationResult::RegistrationResult() {
   set_rotation(0,0,0);
 }
 
-RegistrationResult::RegistrationResult(algebra::Rotation3D &R,
-    algebra::Vector2D &shift,long index,double ccc,String name) {
+RegistrationResult::RegistrationResult(algebra::Rotation3D R,
+    algebra::Vector2D shift,long index,double ccc,String name) {
   shift_[0]=shift[0]; shift_[1]=shift[1];
   ccc_=ccc;
   name_=name;
@@ -219,7 +219,7 @@ void RegistrationResult::write(std::ostream& out) const {
 
 
 void RegistrationResult::add_in_plane_transformation(
-                                        algebra::Transformation2D &t) {
+                                        algebra::Transformation2D t) {
   set_rotation(phi_,theta_,psi_+t.get_rotation().get_angle());
   shift_ += t.get_translation();
 }

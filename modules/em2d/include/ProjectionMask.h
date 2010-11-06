@@ -8,8 +8,6 @@
 #define IMPEM2D_PROJECTION_MASK_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em/Image.h"
-#include "IMP/em2d/Image.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/CenteredMat.h"
 #include "IMP/em/exp.h"

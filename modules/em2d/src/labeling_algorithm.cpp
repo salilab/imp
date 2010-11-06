@@ -22,7 +22,7 @@ void assign_final_labels(algebra::Matrix2D<int> &L,std::vector<int> &P) {
 }
 
 
-int p_union(std::vector<int> &P,const int i,const int j) {
+int p_union(std::vector<int> &P,int i,int j) {
   int root = find_root(P,i);
   if(i != j) {
     int root_j = find_root(P,j);

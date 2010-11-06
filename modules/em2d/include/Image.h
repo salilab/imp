@@ -44,7 +44,7 @@ public:
   }
 
   //! Access to the matrix of data
-  cv::Mat& get_data() {
+  cv::Mat &get_data() {
     return data_;
   }
 
@@ -90,8 +90,8 @@ public:
     header_.set_number_of_columns(cols);
   }
 
-  void resize(Image &img) {
-    resize(img.get_data().rows,img.get_data().cols);
+  void resize(Image *img) {
+    resize(img->get_data().rows,img->get_data().cols);
   }
 
   //! Adjusts the information of the imager header taking into account the
@@ -106,15 +106,15 @@ public:
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
-  void read_from_floats(String filename,
-                          em2d::ImageReaderWriter<double>& reader) {
+  void read_from_floats(String filename, const
+                          em2d::ImageReaderWriter<double> &reader) {
     reader.read_from_floats(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
-  void write_to_floats(String filename,
-                          em2d::ImageReaderWriter<double>& writer) {
+  void write_to_floats(String filename, const
+                          em2d::ImageReaderWriter<double> &writer) {
     adjust_header(); // adjust the header to guarantee consistence
     writer.write_to_floats(filename,header_,data_);
   }
@@ -152,8 +152,9 @@ IMP_OUTPUT_OPERATOR(Image);
   \param[in] second
   \param[out] result The image first-second
 **/
-IMPEMEXPORT void subtract_images(em2d::Image &first,em2d::Image &second,
-                                  em2d::Image &result);
+IMPEMEXPORT void subtract_images( em2d::Image *first,
+                                  em2d::Image *second,
+                                  em2d::Image *result);
 
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)
@@ -162,7 +163,7 @@ IMPEMEXPORT void subtract_images(em2d::Image &first,em2d::Image &second,
   \param[in] rw  reader/writer to use
 **/
 IMPEM2DEXPORT Images read_images(Strings names,
-                                  em2d::ImageReaderWriter<double> &rw);
+                                  const em2d::ImageReaderWriter<double> &rw);
 
 
 //! Saves images to files (For compatibility with SPIDER format,
@@ -173,10 +174,10 @@ IMPEM2DEXPORT Images read_images(Strings names,
   \param[in] rw  reader/writer to use
 **/
 IMPEM2DEXPORT void save_images(Images images, Strings names,
-                             em2d::ImageReaderWriter<double> &rw);
+                             const em2d::ImageReaderWriter<double> &rw);
 
 
-IMPEM2DEXPORT void normalize(em2d::Image &im,bool force);
+IMPEM2DEXPORT void normalize(em2d::Image *im,bool force);
 
 
 IMPEM2D_END_NAMESPACE

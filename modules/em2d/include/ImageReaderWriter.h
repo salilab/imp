@@ -20,27 +20,27 @@ public:
   virtual ~ImageReaderWriter() {}
 
   virtual void read(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 
   virtual void read_from_floats(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 
   virtual void read_from_ints(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 
   virtual void write(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 
   virtual void write_to_floats(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 
   virtual void write_to_ints(String filename, em::ImageHeader& header,
-                                     cv::Mat& data) {
+                                     cv::Mat &data) const {
   }
 };
 

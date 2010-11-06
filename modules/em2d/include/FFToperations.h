@@ -114,8 +114,8 @@ IMPEM2DEXPORT void matrix_to_image_flip(cv::Mat &m);
 //  \param[in] B second matrix
 //  \param[out] corr matrix of results
 //**/
-//IMPEM2DEXPORT void correlation2D(const cv::Mat& A, const cv::Mat& B,
-//                                 cv::Mat& corr);
+//IMPEM2DEXPORT void correlation2D(const cv::Mat &A, const cv::Mat &B,
+//                                 cv::Mat &corr);
 //
 
 //! Computes the autocorrelation without preprocessing
@@ -125,14 +125,14 @@ IMPEM2DEXPORT void matrix_to_image_flip(cv::Mat &m);
   \param[out] corr matrix of results
 **/
 IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(
-                                      const cv::Mat& M, cv::Mat& corr);
+                                      const cv::Mat &M, cv::Mat &corr);
 
 //! Returns the autocorrelation matrix
 /**
   \param[in] m first matrix
   \param[out] corr matrix of results
 **/
-IMPEM2DEXPORT void autocorrelation2D(const cv::Mat& m, cv::Mat& corr);
+IMPEM2DEXPORT void autocorrelation2D(const cv::Mat &m, cv::Mat &corr);
 
 //! Correlation matrix between two 2D matrices using FFT
 /**
@@ -140,8 +140,8 @@ IMPEM2DEXPORT void autocorrelation2D(const cv::Mat& m, cv::Mat& corr);
   \param[in] B second matrix
   \param[out] corr matrix of results
 **/
-IMPEM2DEXPORT void correlation2D(const cv::Mat& A,
-                                 const cv::Mat& B, cv::Mat& corr);
+IMPEM2DEXPORT void correlation2D(const cv::Mat &A,
+                                 const cv::Mat &B, cv::Mat &corr);
 
 
 //! Returns the correlation matrix between two 2D matrices using FFT
@@ -150,12 +150,12 @@ IMPEM2DEXPORT void correlation2D(const cv::Mat& A,
   \param[in] M2 FFT transform of the second matrix
   \param[out] corr matrix of results (It MUST have the right size in advance)
 **/
-IMPEM2DEXPORT void correlation2D_no_preprocessing(const cv::Mat& M1,
-                                    const cv::Mat& M2, cv::Mat& corr);
+IMPEM2DEXPORT void correlation2D_no_preprocessing(const cv::Mat &M1,
+                                    const cv::Mat &M2, cv::Mat &corr);
 
 
 //! Computes the fft of a matrix and returns the real and imaginary matrices
-IMPEM2DEXPORT void spectrum(const cv::Mat& m, cv::Mat& real,cv::Mat &imag);
+IMPEM2DEXPORT void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag);
 
 IMPEM2D_END_NAMESPACE
 

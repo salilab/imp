@@ -10,6 +10,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/ProjectionMask.h"
+#include "IMP/em2d/Image.h"
 #include "IMP/em/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/FFTinterface.h"
@@ -34,19 +35,19 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Generates projectios using particles and precomputed OldMasksManager
  IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
-        const algebra::SphericalVector3Ds vs,
+        const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         double resolution, double pixelsize,
-        em::ImageReaderWriter<double> &srw,
+        const em::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
 //! Generates projectios using particles and precomputed OldMasksManager
  IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
-        const algebra::SphericalVector3Ds vs,
+        const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         double resolution, double pixelsize,
-        em2d::ImageReaderWriter<double> &srw,
+        const em2d::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
@@ -55,7 +56,7 @@ IMPEM2D_BEGIN_NAMESPACE
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
-        em::ImageReaderWriter<double> &srw,
+        const em::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
@@ -64,45 +65,19 @@ IMPEM2D_BEGIN_NAMESPACE
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
-        em2d::ImageReaderWriter<double> &srw,
+        const em2d::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
 
-
-
-//! Generates projectios of a density map using ray casting (real space).
-/**
-  \param[in] map Map to project
-  \param[in] vs set of vectors indicating the directions of projection in
-              spherical coordinates
-  \param[in] srw a Reader/Writer for the images to produce
-  \param[in] rows size of the projection images desired (rows)
-  \param[in] cols size of the projection images desired (columns)
-  \param[in] project_and_save if true, the images are saved to files instead
-             of keeping them in memory. Useful when memory is an issue
-  \param[in] project_and_save if true, the images are saved to files instead
-             of keeping them in memory. Useful when memory is an issue
-  \param[in] names of the projections if saved to disk
-**/
- IMPEM2DEXPORT em::Images generate_projections(em::DensityMap &map,
-        const algebra::SphericalVector3Ds &vs,
-        const int rows, const int cols,
-        em::ImageReaderWriter<double> &srw,
-        const bool project_and_save=false,
-        Strings names=Strings());
-
-
-
-
-IMPEM2DEXPORT void generate_projection(em::Image &img,const ParticlesTemp &ps,
-        RegistrationResult &reg,double resolution,double pixelsize,
-        em::ImageReaderWriter<double> &srw,bool save_image=false,
+IMPEM2DEXPORT void generate_projection(em::Image *img,const ParticlesTemp &ps,
+        const RegistrationResult &reg,double resolution,double pixelsize,
+        const em::ImageReaderWriter<double> &srw,bool save_image=false,
         OldMasksManager *masks=NULL,String name="");
 
-IMPEM2DEXPORT void generate_projection(em2d::Image &img,const ParticlesTemp &ps,
-        RegistrationResult &reg,double resolution,double pixelsize,
-        em2d::ImageReaderWriter<double> &srw,bool save_image=false,
+IMPEM2DEXPORT void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
+        const RegistrationResult &reg,double resolution,double pixelsize,
+        const em2d::ImageReaderWriter<double> &srw,bool save_image=false,
         Masks_Manager *masks=NULL,String name="");
 
 //! Project particles using projection masks
@@ -120,15 +95,15 @@ IMPEM2DEXPORT void generate_projection(em2d::Image &img,const ParticlesTemp &ps,
 **/
  IMPEM2DEXPORT void project_particles(const ParticlesTemp &ps,
              algebra::Matrix2D_d& m2,
-             algebra::Rotation3D& R,
-             algebra::Vector3D &translation,
+             const algebra::Rotation3D& R,
+             const algebra::Vector3D &translation,
              double resolution, double pixelsize,
              OldMasksManager *masks=NULL);
 
 IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
-             algebra::Rotation3D &R,
-             algebra::Vector3D &translation,
+             const algebra::Rotation3D &R,
+             const algebra::Vector3D &translation,
              double resolution, double pixelsize,
              Masks_Manager *masks);
 
@@ -159,6 +134,28 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
 
 
 
+//! Generates projectios of a density map using ray casting (real space).
+/**
+  \param[in] map Map to project
+  \param[in] vs set of vectors indicating the directions of projection in
+              spherical coordinates
+  \param[in] srw a Reader/Writer for the images to produce
+  \param[in] rows size of the projection images desired (rows)
+  \param[in] cols size of the projection images desired (columns)
+  \param[in] project_and_save if true, the images are saved to files instead
+             of keeping them in memory. Useful when memory is an issue
+  \param[in] project_and_save if true, the images are saved to files instead
+             of keeping them in memory. Useful when memory is an issue
+  \param[in] names of the projections if saved to disk
+**/
+ IMPEM2DEXPORT em::Images generate_projections(em::DensityMap *map,
+        const algebra::SphericalVector3Ds &vs,
+        int rows, int cols,
+        const em::ImageReaderWriter<double> &srw,
+        bool project_and_save=false,
+        Strings names=Strings());
+
+
 
 
 //! Projects a given DensityMap into a 2D matrix given the rotation and shift
@@ -172,9 +169,9 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
  * \param[in] equality_tolerance tolerance allowed to consider a value in the
  *            direction as zero.
 **/
- IMPEMEXPORT void project_map(em::DensityMap &map,
-  algebra::Matrix2D_d &m2,const int rows,const int cols,
-    RegistrationResult &reg,const double equality_tolerance);
+ IMPEMEXPORT void project_map(em::DensityMap *map,
+  algebra::Matrix2D_d &m2,int rows,int cols,
+    const RegistrationResult &reg,double equality_tolerance);
 
 
 
