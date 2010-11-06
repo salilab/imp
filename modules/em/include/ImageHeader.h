@@ -367,10 +367,10 @@ public:
   void set_origin_offsets(float Xoff, float Yoff, float Zoff) {
     header_.fXoff = Xoff; header_.fYoff = Yoff; header_.fZoff = Zoff;
   }
-  void set_origin_offsets(algebra::Vector2D &v) {
+  void set_origin_offsets(const algebra::Vector2D &v) {
     header_.fXoff=(float)v[0]; header_.fYoff=(float)v[1]; header_.fZoff=0.0;
   }
-  void set_origin_offsets(algebra::Vector3D &v) {
+  void set_origin_offsets(const algebra::Vector3D &v) {
     header_.fXoff=(float)v[0];
     header_.fYoff=(float)v[1];
     header_.fZoff=(float)v[2];

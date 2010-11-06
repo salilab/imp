@@ -9,7 +9,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-Images read_images(Strings names,ImageReaderWriter<double> &rw) {
+Images read_images(Strings names,const ImageReaderWriter<double> &rw) {
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
@@ -21,7 +21,7 @@ Images read_images(Strings names,ImageReaderWriter<double> &rw) {
 
 
 void save_images(Images images, Strings names,
-                      ImageReaderWriter<double> &rw) {
+                      const ImageReaderWriter<double> &rw) {
   for(unsigned long i=0;i<images.size();++i) {
     images[i]->write_to_floats(names[i],rw);
   }

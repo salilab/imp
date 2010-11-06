@@ -100,39 +100,44 @@ public:
   }
 
   //! Reads the image from the file
-  void read(String filename,em::ImageReaderWriter<double> &reader) {
+  void read(String filename,const em::ImageReaderWriter<double> &reader) {
     IMP_LOG(VERBOSE, "reading EM image " << std::endl);
     reader.read(filename,header_,data_);
   }
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
-  void read_from_floats(String filename,em::ImageReaderWriter<double>& reader) {
+  void read_from_floats(String filename,
+                            const em::ImageReaderWriter<double>& reader) {
     reader.read_from_floats(filename,header_,data_);
   }
 
   //! Reads and casts the image from the file (the image matrix
   //!  must be stored as ints)
-  void read_from_ints(String filename,em::ImageReaderWriter<double>& reader) {
+  void read_from_ints(String filename,
+                      const em::ImageReaderWriter<double>& reader) {
     reader.read_from_ints(filename,header_,data_);
   }
 
 
   //! Writes the image to a file
-  void write(String filename, em::ImageReaderWriter<double>& writer) {
+  void write(String filename,
+             const em::ImageReaderWriter<double>& writer) {
     adjust_header(); // adjust the header to guarantee consistence
     writer.write(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
-  void write_to_floats(String filename, em::ImageReaderWriter<double>& writer) {
+  void write_to_floats(String filename,
+                       const em::ImageReaderWriter<double>& writer) {
     adjust_header(); // adjust the header to guarantee consistence
     writer.write_to_floats(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as ints)
-  void write_to_ints(String filename, em::ImageReaderWriter<double>& writer) {
+  void write_to_ints(String filename,
+                     em::ImageReaderWriter<double>& writer) {
     adjust_header(); // adjust the header to guarantee consistence
     writer.write_to_floats(filename,header_,data_);
   }
@@ -164,14 +169,14 @@ IMP_OBJECTS(Image,Images);
 
 IMP_OUTPUT_OPERATOR(Image);
 
-
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)
 /**
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 **/
-IMPEMEXPORT Images read_images(Strings names,ImageReaderWriter<double> &rw);
+IMPEMEXPORT Images read_images(Strings names,
+                              const ImageReaderWriter<double> &rw);
 
 
 //! Saves images to files (For compatibility with SPIDER format,
@@ -182,7 +187,7 @@ IMPEMEXPORT Images read_images(Strings names,ImageReaderWriter<double> &rw);
   \param[in] rw  reader/writer to use
 **/
 IMPEMEXPORT void save_images(Images images, Strings names,
-                             ImageReaderWriter<double> &rw);
+                             const ImageReaderWriter<double> &rw);
 
 IMPEM_END_NAMESPACE
 
