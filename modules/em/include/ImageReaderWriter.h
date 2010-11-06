@@ -20,27 +20,27 @@ public:
   virtual ~ImageReaderWriter() {}
 
   virtual void read(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const {
   }
 
   virtual void read_from_floats(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const  {
   }
 
   virtual void read_from_ints(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const {
   }
 
   virtual void write(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const  {
   }
 
   virtual void write_to_floats(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const {
   }
 
   virtual void write_to_ints(String filename, ImageHeader& header,
-                                     algebra::Matrix2D<T>& data) {
+                                     algebra::Matrix2D<T>& data) const {
   }
 };
 
