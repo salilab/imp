@@ -98,9 +98,9 @@ void project (const Particles &ps,
   inline const Particles & get_sampled_particles() const {return ps_;}
   inline FloatKey  get_weight_key() const {return weight_key_;}
   inline FloatKey  get_radius_key() const {return radius_key_;}
-  // inline Float get_minimum_resampled_value() const {
-  //   return min_resampled_value_;}
 
+  //! Get minimum density value between voxels that correspond to particles
+  float get_minimum_resampled_value();
 
   IMP_REF_COUNTED_DESTRUCTOR(SampledDensityMap);
 protected:
@@ -130,8 +130,6 @@ protected:
   FloatKey weight_key_;
   FloatKey radius_key_;
   FloatKey x_key_,y_key_,z_key_;
-  //  Float min_resampled_value_;
-     //keeps the minimum value of a resampled voxel (larger than a zero voxel)
 };
 IMP_OBJECTS(SampledDensityMap, SampledDensityMaps);
 

@@ -281,5 +281,14 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
              voxel_size,sig_cutoff);
   data_.reset(new emreal[header_.get_number_of_voxels()]);
 }
-
+float SampledDensityMap::get_minimum_resampled_value() {
+  float min_weight=INT_MAX;
+  core::XYZsTemp xyz(ps_);
+  for(int i=0;i<xyz.size();i++) {
+    if (get_value(xyz[i].get_coordinates())<min_weight) {
+      min_weight=get_value(xyz[i].get_coordinates());
+    }
+  }
+  return min_weight;
+}
 IMPEM_END_NAMESPACE
