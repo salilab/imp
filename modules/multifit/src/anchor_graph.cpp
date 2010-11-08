@@ -15,13 +15,13 @@ ProbabilisticAnchorGraph::ProbabilisticAnchorGraph(
   GVertex u;
   for(int i=0;i<anchor_positions.size();i++) {
     u = boost::add_vertex(g_);
-    id2node_[i]=u;
+    id2node_.push_back(u);
   }
   positions_.insert(positions_.end(),anchor_positions.begin(),
                     anchor_positions.end());
 }
 
-void ProbabilisticAnchorGraph::set_vertex_probabilities(
+void ProbabilisticAnchorGraph::set_component_probabilities_on_anchors(
                            int comp_ind,
                            algebra::Vector3D comp_center,
                            FittingSolutionRecords sols) {
@@ -45,6 +45,10 @@ void ProbabilisticAnchorGraph::set_vertex_probabilities(
   for (unsigned int i=0;i<anchor_counters.size();i++) {
    anchor_to_comp_probabilities_[i][comp_ind]=1.*anchor_counters[i]/sols.size();
   }
+}
+void ProbabilisticAnchorGraph::show(std::ostream& out) const {
+  out<<"( nodes:"<<boost::num_vertices(g_)<<", edges:"<<
+    boost::num_edges(g_)<<std::endl;
 }
 
 IMPMULTIFIT_END_NAMESPACE
