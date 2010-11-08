@@ -50,8 +50,9 @@ void write_cmm_helper(std::ostream &out,
   out << "</marker_set>" << std::endl;
 }
 
-bool sort_data_points(const std::pair<float,algebra::Vector3D> &a,
-                      const std::pair<float,algebra::Vector3D> &b) {
+bool sort_data_points_first_larger_than_second(
+            const std::pair<float,algebra::Vector3D> &a,
+            const std::pair<float,algebra::Vector3D> &b) {
   return a.first>b.first;
 }
 DataPointsAssignment::DataPointsAssignment(
@@ -84,10 +85,10 @@ algebra::Vector3Ds
     if (cluster_engine_->is_part_of_cluster(i,cluster_ind)) {
       cluster_set.push_back(data_->get_vector(i));
     }
-    //here we assume properties are only xyz
-    Array1DD cen=cluster_engine_->get_center(cluster_ind);
-    cluster_set.push_back(algebra::Vector3D(cen[0],cen[1],cen[2]));
   }
+  //here we assume properties are only xyz
+  Array1DD cen=cluster_engine_->get_center(cluster_ind);
+  cluster_set.push_back(algebra::Vector3D(cen[0],cen[1],cen[2]));
   IMP_LOG(IMP::VERBOSE,"setting cluster " <<
           cluster_ind << " with " << cluster_set.size()
           << " points " << std::endl);
@@ -164,11 +165,13 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       int segment_id){
   algebra::Vector3Ds vecs =dpa.get_cluster_xyz(segment_id);
   std::vector<std::pair<float,algebra::Vector3D> > data_for_sorting;
-  for(algebra::Vector3Ds::iterator it = vecs.begin(); it != vecs.end(); it++) {
+  for(algebra::Vector3Ds::iterator it = vecs.begin();
+      it != vecs.end(); it++) {
     data_for_sorting.push_back(
        std::pair<float,algebra::Vector3D>(dmap->get_value(*it),*it));
   }
-  std::sort(data_for_sorting.begin(),data_for_sorting.end(),sort_data_points);
+  std::sort(data_for_sorting.begin(),data_for_sorting.end(),
+            sort_data_points_first_larger_than_second);
   return data_for_sorting[0].second;
 }
 

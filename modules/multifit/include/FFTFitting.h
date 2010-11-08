@@ -16,26 +16,17 @@
 #include <IMP/em/rigid_fitting.h>
 #include "fftw3.h"
 #include "multifit_config.h"
-
+#include <IMP/Object.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-typedef std::pair<float,algebra::Transformation3D> TransScore;
+typedef std::pair<algebra::Transformation3D,float> TransScore;
 typedef std::vector<TransScore> TransScores;
-
-class IMPMULTIFITEXPORT FFTFittingResults {
- public:
-  void set_max_cc_map(em::DensityMap* d) {max_cc_map_=d;}
-  em::DensityMap* get_max_cc_map() {return max_cc_map_;}
-  em::FittingSolutions get_solutions() {return sols_;}
-  void set_solutions(em::FittingSolutions &sols) {sols_=sols;}
- private:
-  em::FittingSolutions sols_;
-  em::DensityMap* max_cc_map_;
-};
 
 class IMPMULTIFITEXPORT FFTFitting {
 public:
-  FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,Refiner *rb_refiner);
+  FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,Refiner *rb_refiner,
+     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
+     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
   ~FFTFitting();
   void prepare(float threshold);
   //! The function calcaultes the correlation between the density
@@ -53,7 +44,7 @@ public:
    */
   void calculate_local_correlation();
   TransScores search_for_the_best_translation(int num_solutions);
-   TransScores gmm_based_search_for_best_translations(
+  TransScores gmm_based_search_for_best_translations(
                                                   int num_solutions);
   void get_unwrapped_index(int ix,int iy,int iz,
                            int &f_ix,int &f_iy,int &f_iz) const;
@@ -65,6 +56,9 @@ public:
   //!center of the molecule
   em::DensityMap* get_correlation_hit_map() const;
   em::DensityMap* get_variance_map() const;
+  em::DensityMap* get_padded_asmb_map() const {return padded_asmb_map_;}
+  em::DensityMap* get_padded_mol_map() const {return mol_map_;}
+
   em::DensityMap *test_fftw_round_trip();
 
 protected:
@@ -153,6 +147,22 @@ protected:
   algebra::Vector3D map_center_;
   float orig_avg_,orig_std_;
   float input_threshold_;
+  FloatKey radius_key_,mass_key_;
+};
+
+
+class IMPMULTIFITEXPORT FFTFittingResults {
+ public:
+  FFTFittingResults(){
+    max_cc_map_=NULL;
+  }
+  void set_max_cc_map(em::DensityMap* d) {max_cc_map_=d;}
+  em::DensityMap* get_max_cc_map() {return max_cc_map_;}
+  em::FittingSolutions get_solutions() {return sols_;}
+  void set_solutions(em::FittingSolutions &sols) {sols_=sols;}
+ private:
+  em::FittingSolutions sols_;
+  em::DensityMap *max_cc_map_;
 };
 
 IMPMULTIFITEXPORT FFTFittingResults fft_based_rigid_fitting(
@@ -160,7 +170,8 @@ IMPMULTIFITEXPORT FFTFittingResults fft_based_rigid_fitting(
    em::DensityMap *dmap, Float threshold,
    const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation=10,
-   bool local=false);
+   bool local=false,
+   bool pick_search_by_gmm=true);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_FFT_FITTING_H */

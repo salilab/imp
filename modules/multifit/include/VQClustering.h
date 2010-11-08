@@ -25,25 +25,19 @@ public:
   bool is_part_of_cluster(int data_point_ind,int cluster_ind) const{
     return (get_cluster_assignment(data_point_ind) == cluster_ind);
   }
+
   int get_cluster_assignment(int data_point_ind) const {
-    if (!is_set_) {
-      std::cerr << " the clusters have not been assigned " << std::endl;
-      assert(0);
-    }
-    if (assignment_.size()<(unsigned int)data_point_ind) {
-      std::cerr <<
-        " no cluster has been assigned to data point "
-                <<  data_point_ind << std::endl;
-      assert(0);
-    }
+    IMP_USAGE_CHECK(is_set_,
+                    " the clusters have not been assigned " << std::endl);
+    IMP_USAGE_CHECK((unsigned int)data_point_ind<assignment_.size(),
+                    " no cluster has been assigned to data point "
+                    <<  data_point_ind << std::endl);
     return assignment_[data_point_ind];
   }
 
   Array1DD get_center(int center_ind) const {
-    if (!is_set_) {
-      std::cerr << " the clusters have not been assigned " << std::endl;
-      assert(0);
-    }
+    IMP_USAGE_CHECK(is_set_,
+                    " the clusters have not been assigned " << std::endl);
     return centers_[center_ind];
   }
   int get_number_of_clusters() const {return k_;}

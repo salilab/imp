@@ -64,9 +64,7 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
 };
 
 typedef std::vector<FittingSolutionRecord> FittingSolutionRecords;
-/*
-IMPMULTIFITEXPORT FittingSolutionRecords generate_fitting_records(
-  const em::FittingSolutions &sols);
-*/
+// IMPMULTIFITEXPORT FittingSolutionRecords generate_fitting_records(
+//   const em::FittingSolutions &sols);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTION_RECORD_H */
