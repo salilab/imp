@@ -25,6 +25,7 @@ files = [
          'image_transformations.cpp',
          'masking.cpp',
          'rigid_fitting.cpp',
+         'density_utilities.cpp',
         ]
 
 # Build and install the shared library:
