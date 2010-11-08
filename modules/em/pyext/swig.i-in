@@ -44,6 +44,7 @@ IMP_SWIG_OBJECT(IMP::em, HighDensityEmbedding, HighDensityEmbeddings);
 %include "IMP/em/envelope_penetration.h"
 %include "IMP/em/image_transformations.h"
 %include "IMP/em/embedding.h"
+%include "IMP/em/density_utilities.h"
 
 /* Allow runtime casting of Restraint* objects to FitRestraint* */
 namespace IMP {

@@ -31,6 +31,7 @@ files = [
          'masking.h',
          'noise.h',
          'rigid_fitting.h',
+         'density_utilities.h',
         ]
 
 # Install the include files:

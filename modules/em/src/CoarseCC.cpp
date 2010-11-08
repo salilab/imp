@@ -9,7 +9,6 @@
 #include <IMP/em/CoarseCC.h>
 #include <math.h>
 #include <IMP/core/utility.h>
-
 IMPEM_BEGIN_NAMESPACE
 
 float CoarseCC::calc_score(
@@ -22,7 +21,6 @@ float CoarseCC::calc_score(
   if (resample) {
      model_map->resample();
   }
-
   if (recalc_rms) {
     em_map->calcRMS();
     //determine a threshold for calculating the CC
@@ -42,8 +40,6 @@ float CoarseCC::calc_score(
   return escore;
 }
 
-
-
 namespace{
 double cross_correlation_coefficient_internal(
       const DensityMap *grid1,
@@ -60,14 +56,13 @@ double cross_correlation_coefficient_internal(
   bool same_origin = grid1->same_origin(grid2);
   long  nvox = grid1_header->get_number_of_voxels();
   emreal ccc = 0.0;
-
+  long num_elements=0;
   if(same_origin){ // Fastest version
     IMP_LOG(IMP::VERBOSE,"calc CC with the same origin"<<std::endl);
     for (long i=0;i<nvox;i++) {
       if (grid2_data[i] > grid2_voxel_data_threshold) {
-        if (grid1_data[i] >EPS) {
-          ccc += grid1_data[i]*grid2_data[i];}
-      }
+        num_elements++;
+        ccc += grid1_data[i]*grid2_data[i];}
     }
   }
 
@@ -96,27 +91,32 @@ double cross_correlation_coefficient_internal(
     // ( j can be negative)
     j = ivoxz_shift * grid1_header->get_nx() * grid1_header->get_ny()
       + ivoxy_shift * grid1_header->get_nx() + ivoxx_shift;
-    int num_elements=0;//needed for checks
     for (i=0;i<nvox;i++) {
       // if the voxel of the model is above the threshold
       if (grid2_data[i] > grid2_voxel_data_threshold) {
-        ++num_elements;
         // Check if the voxel belongs to the em map volume, and only then
         // compute the correlation
         if (j + i >= 0 && j + i < nvox)  {
           ccc += grid1_data[j+i] * grid2_data[i];
+          ++num_elements;
         }
       }
     }
-    IMP_INTERNAL_CHECK(num_elements>0,
-                       "No voxels participated in the calculation"<<
-                       " may be that the voxel_data_threshold:" <<
-                       grid2_voxel_data_threshold <<" is off"<<std::endl);
   }
+  IMP_INTERNAL_CHECK(num_elements>0,
+                     "No voxels participated in the calculation"<<
+                     " may be that the voxel_data_threshold:" <<
+                     grid2_voxel_data_threshold <<" is off"<<std::endl);
   if ((norm_factors.first >0.) && (norm_factors.second>0.)){
+    IMP_LOG(VERBOSE, " with norm factors: start ccc : " << ccc <<
+            " first norm factor: "<<norm_factors.first <<
+            " second norm factor: " <<norm_factors.second << std::endl);
     ccc = (ccc-norm_factors.first)/norm_factors.second;
   }
   else{
+    IMP_LOG(VERBOSE, " without norm factors: start ccc : " << ccc <<
+            " grid1 rms: "<<grid1_header->rms <<
+            " grid2 rms: " <<grid2_header->rms << std::endl);
     ccc = (ccc-nvox*grid1_header->dmean*grid2_header->dmean)
       /(nvox*grid1_header->rms * grid2_header->rms);
   }
@@ -194,7 +194,7 @@ double CoarseCC::cross_correlation_coefficient(
     padded_grid2->add(grid2);
     padded_grid1->calcRMS();
     padded_grid2->calcRMS();
-    IMP_LOG(VERBOSE,"calcaulte correlation internal");
+    IMP_LOG(VERBOSE,"calcaulte correlation internal ");
     double score=cross_correlation_coefficient_internal(
                                  padded_grid1,padded_grid2,
                                  grid2_voxel_data_threshold,norm_factors);
@@ -206,9 +206,7 @@ double CoarseCC::cross_correlation_coefficient(
 
 float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
                                               DensityMap *model_map,
-                                              float voxel_data_threshold,
-                                              bool recalc_ccnormfac,
-                                              bool divide_by_rms)
+                                              float voxel_data_threshold)
 {
   IMP_INTERNAL_CHECK(model_map->get_header()->dmax>voxel_data_threshold,
                      "voxel_data_threshold: " << voxel_data_threshold <<
@@ -217,10 +215,6 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
                      model_map->get_header()->dmax<<std::endl);
   const DensityHeader *model_header = model_map->get_header();
   const DensityHeader *em_header = em_map->get_header();
-
-  if (recalc_ccnormfac) {
-    model_map->calcRMS();
-  }
 
   const emreal *em_data = em_map->get_data();
   const emreal *model_data = model_map->get_data();
@@ -232,7 +226,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
             << "Second map pixelsize: " << model_header->get_spacing());
 
   // Check if the model map has zero RMS
-  if ((fabs(model_map->get_header()->rms-0.0)<EPS) && divide_by_rms) {
+  if ((fabs(model_map->get_header()->rms-0.0)<EPS)) {
     IMP_WARN("The model map rms is zero, and the user ask to divide"<<
              " by rms. returning 0!"<<std::endl);
     return 0.0;
@@ -244,8 +238,7 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
   emreal em_mean=0.;
   emreal model_rms=0.;
   emreal em_rms=0.;
-  int num=0;
-IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
+  IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
   model_map->get_header_writable()->compute_xyz_top();
 
   // Given the same size of the maps and the dimension order, the difference
@@ -266,47 +259,51 @@ IMP_LOG(IMP::VERBOSE,"calc local CC with different origins"<<std::endl);
 
 
    long j; // Index for em data
-    long i; // Index for model data
+   long i; // Index for model data
     // calculate the shift in index of the origin of model_map in em_map
     // ( j can be negative)
-    j = ivoxz_shift * em_header->get_nx() * em_header->get_ny() + ivoxy_shift
-      * em_header->get_nx() + ivoxx_shift;
-    int num_elements=0;//needed for checks
-    for (i=0;i<nvox;i++) {
-      // if the voxel of the model is above the threshold
-      if (model_data[i] > voxel_data_threshold) {
-        ++num_elements;
+   j = ivoxz_shift * em_header->get_nx() * em_header->get_ny() + ivoxy_shift
+     * em_header->get_nx() + ivoxx_shift;
+   int num_elements=0;//
+   for (i=0;i<nvox;i++) {
+     // if the voxel of the model is above the threshold
+     if (model_data[i] > voxel_data_threshold) {
         // Check if the voxel belongs to the em map volume, and only then
         // compute the correlation
         if (j + i >= 0 && j + i < nvox)  {
-          ccc += em_data[j+i] * model_data[i];
-          num++;
+          num_elements++;
           em_mean += em_data[j+i] ;
           model_mean += model_data[i];
-          em_rms += em_data[j+i]*em_data[j+i];
-          model_rms = model_data[i]*model_data[i];
         }
       }
     }
-    em_mean = em_mean / num;
-    model_mean = model_mean / num;
-    em_rms = std::sqrt(em_rms/num-em_mean*em_mean);
-    model_rms = std::sqrt(model_rms/num-model_mean*model_mean);
+    em_mean = em_mean / num_elements;
+    model_mean = model_mean / num_elements;
+    em_rms=0.;model_rms=0.;
+    for (i=0;i<nvox;i++) {
+      // if the voxel of the model is above the threshold
+      if (model_data[i] > voxel_data_threshold) {
+        // Check if the voxel belongs to the em map volume, and only then
+        // compute the correlation
+        if (j + i >= 0 && j + i < nvox)  {
+          ccc += (em_data[j+i]-em_mean) * (model_data[i]-model_mean);
+          em_rms += (em_data[j+i]-em_mean) * (em_data[j+i]-em_mean);
+          model_rms += (model_data[i]-model_mean) * (model_data[i]-model_mean);
+        }
+      }
+    }
+    em_rms = std::sqrt(em_rms/num_elements);
+    model_rms = std::sqrt(model_rms/num_elements);
     IMP_INTERNAL_CHECK(num_elements>0,
                        "No voxels participated in the calculation"<<
                        " may be that the voxel_data_threshold:" <<
                        voxel_data_threshold <<" is off"<<std::endl);
-    if (divide_by_rms) {
-      //      ccc = (ccc-nvox*em_header->dmean*model_header->dmean)
-      //    /(nvox*em_header->rms * model_header->rms);
-            ccc = (ccc-num*em_mean*model_mean)
-          /(num*em_rms * model_rms);
-    }
-  IMP_LOG(VERBOSE, " ccc : " << ccc << " voxel# " << num
+    ccc = ccc /(1.*num_elements*em_rms * model_rms);
+    IMP_LOG(VERBOSE, " ccc : " << ccc << " voxel# " << num_elements
           << " norm factors (map,model) " << em_rms
           << "  " <<  model_rms << " means(map,model) "
           << em_mean << " " << model_mean << std::endl);
-  return ccc;
+    return ccc;
 }
 
 void CoarseCC::calc_derivatives(
@@ -317,7 +314,8 @@ void CoarseCC::calc_derivatives(
              const float &scalefac,
              std::vector<float> &dvx, std::vector<float>&dvy,
              std::vector<float>&dvz) {
-
+  //  MRCReaderWriter mrw;
+  //write_map(const_cast<DensityMap*>(&model_map),"deriv.mrc",mrw);
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
@@ -350,6 +348,10 @@ void CoarseCC::calc_derivatives(
   // return;
   // }
   // Compute the derivatives
+  int nx=em_header->get_nx();
+  int ny=em_header->get_ny();
+  int nz=em_header->get_nz();
+  double lower_comp=1.0*nvox * em_header->rms * model_header->rms;
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
     float x,y,z;
     x=model_xyzr[ii].get_x();y=model_xyzr[ii].get_y();
@@ -365,9 +367,12 @@ void CoarseCC::calc_derivatives(
     tdvx = .0;tdvy=.0; tdvz=.0;
     for (int ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
       for (int ivoxy=iminy;ivoxy<=imaxy;ivoxy++) {
-        ivox = ivoxz * em_header->get_nx() * em_header->get_ny()
-          + ivoxy * em_header->get_nx() + iminx;
+        ivox = ivoxz * nx * ny
+          + ivoxy * nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+          if (em_data[ivox]<EPS) {
+            continue;
+          }
           float dx = x_loc[ivox] - x;
           float dy = y_loc[ivox] - y;
           float dz = z_loc[ivox] - z;
@@ -390,6 +395,91 @@ void CoarseCC::calc_derivatives(
       }
       }
     tmp =model_ps[ii]->get_value(w_key) * 2.*params->get_inv_sigsq()
+          * scalefac * params->get_normfac() / lower_comp;
+    dvx[ii] =  tdvx * tmp;
+    dvy[ii] =  tdvy * tmp;
+    dvz[ii] =  tdvz * tmp;
+  }//particles
+}
+
+
+void CoarseCC::calc_derivatives_fast(
+             DensityMap *em_map,
+              DensityMap *model_map,
+             Particles model_ps, FloatKey w_key,
+             KernelParameters *kernel_params,
+             DistanceMask *dist_mask,
+             float scalefac,
+             std::vector<float> &dvx, std::vector<float>&dvy,
+             std::vector<float>&dvz) {
+
+  float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
+
+  const DensityHeader *model_header = model_map->get_header();
+  const DensityHeader *em_header = em_map->get_header();
+  const float *x_loc = model_map->get_x_loc();
+  const float *y_loc = model_map->get_y_loc();
+  const float *z_loc = model_map->get_z_loc();
+  IMP_INTERNAL_CHECK(model_ps.size()==dvx.size(),
+    "input derivatives array size does not match "<<
+    "the number of particles in the model map\n");
+  core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
+  //this would go away once we have XYZRW decorator
+  const emreal *em_data = em_map->get_data();
+  float lim = kernel_params->get_lim();
+  long nvox = em_header->get_number_of_voxels();
+  long ivox,voxel_ind;
+  // validate that the model and em maps are not empty
+  IMP_USAGE_CHECK(em_header->rms >= EPS,
+            "EM map is empty ! em_header->rms = " << em_header->rms);
+  // Compute the derivatives
+  for (unsigned int ii=0; ii<model_ps.size(); ii++) {
+    float x,y,z;
+    x=model_xyzr[ii].get_x();y=model_xyzr[ii].get_y();
+    z=model_xyzr[ii].get_z();
+
+    if (!em_map->is_part_of_volume(x,y,z)){
+      continue;
+    }
+    const RadiusDependentKernelParameters *params =
+      kernel_params->get_params(model_xyzr[ii].get_radius());
+    tdvx = .0;tdvy=.0; tdvz=.0;
+    const RadiusDependentDistanceMask* rad_mask =
+      dist_mask->get_mask(params->get_kdist());
+    if (rad_mask==NULL) {
+      rad_mask=dist_mask->set_mask(params->get_kdist());
+    }
+    const std::vector<double> *neighbor_shift =rad_mask->get_neighbor_shift();
+    //    const std::vector<double> *neighbor_dist =
+    //      rad_mask->get_neighbor_dist();
+    const std::vector<double> *neighbor_dist_exp =
+      rad_mask->get_neighbor_dist_exp();
+
+    voxel_ind=em_map->get_voxel_by_location(x,y,z);
+    for (unsigned int j = 0; j < neighbor_shift->size(); j++) {
+      ivox = voxel_ind + (*neighbor_shift)[j];
+      if (!((ivox>-1)&&(ivox<nvox))) {
+        continue;
+      }
+      if (em_data[ivox]<EPS) {
+        continue;
+      }
+      rsq = (*neighbor_dist_exp)[j];
+      tmp = (x-x_loc[ivox]) * rsq;
+      if (std::abs(tmp) > lim) {
+        tdvx += tmp * em_data[ivox];
+      }
+      tmp = (y-y_loc[ivox]) * rsq;
+      if (std::abs(tmp) > lim) {
+        tdvy += tmp * em_data[ivox];
+      }
+      tmp = (z-z_loc[ivox]) * rsq;
+      if (std::abs(tmp) > lim) {
+        tdvz += tmp * em_data[ivox];
+      }
+    }//j
+    //update particle derivatives
+    tmp =model_ps[ii]->get_value(w_key) * 2.*params->get_inv_sigsq()
           * scalefac
           * params->get_normfac() /
           (1.0*nvox * em_header->rms * model_header->rms);
@@ -398,6 +488,7 @@ void CoarseCC::calc_derivatives(
     dvz[ii] =  tdvz * tmp;
   }//particles
 }
+
 
 
 IMPEM_END_NAMESPACE
