@@ -181,27 +181,9 @@ void FFTFitting::set_mol_mask() {
     mol_mask_map_=NULL;
   }
   //  em::MRCReaderWriter mrw;
-  Particles ps=rb_refiner_->get_refined(rb_);
-  float avg_weight=0.;
-  float avg_radius=0.;
-  float max_weight=0.;
-  for(int i=0;i<ps.size();i++) {
-    avg_weight += ps[i]->get_value(mass_key_);
-    avg_radius+=ps[i]->get_value(radius_key_);
-    if (max_weight<ps[i]->get_value(mass_key_)) {
-      max_weight=ps[i]->get_value(mass_key_);
-    }
-  }
-  avg_weight /= ps.size();
-  avg_radius /= ps.size();
-  em::KernelParameters kernel_params(asmb_map_->get_header()->get_resolution());
-  const em::RadiusDependentKernelParameters *rad_params =
-    kernel_params.set_params(avg_radius);
-  float mol_t=rad_params->get_normfac() *
-    avg_weight;
-  // * em::EXP(-asmb_map_->get_spacing()*asmb_map_->get_spacing()*3*
-  mol_t=max_weight*rad_params->get_inv_sigsq();
-  //  mol_t=3;
+  float mol_t=mol_map_->get_minimum_resampled_value();
+  std::cout<<"==============MIN WEIGHT:"<<mol_t<<" : "<<
+    mol_map_->get_header()->get_resolution()<<std::endl;
   mol_mask_map_ = em::binarize(mol_map_,mol_t);
 //  em::write_map(mol_mask_map_,"mol_mask.mrc",mrw);*/
 }
