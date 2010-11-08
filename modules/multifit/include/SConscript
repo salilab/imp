@@ -18,6 +18,7 @@ files = [
          'restraints_utils.h',
          'sampling_space_utils.h',
          'WeightedExcludedVolumeRestraint.h',
+         'anchor_graph.h',
 #         'mc_cg_refinement.h'
         ]
 # Install the include files:

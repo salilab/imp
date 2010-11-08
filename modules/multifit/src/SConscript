@@ -17,6 +17,7 @@ files = [
          'restraints_utils.cpp',
          'sampling_space_utils.cpp',
          'WeightedExcludedVolumeRestraint.cpp',
+         'anchor_graph.cpp',
 #         'mc_cg_refinement.cpp'
         ]\
 # Build and install the shared library:
