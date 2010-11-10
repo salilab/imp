@@ -1,14 +1,14 @@
 # include IMP build utility functions:
 
 import scons_tools
-import scons_tools.boost
-import scons_tools.swig
-import scons_tools.standards
-import scons_tools.endian
-import scons_tools.gcc
 import scons_tools.dependency
-import scons_tools.modeller_test
-import scons_tools.doxygen
+import scons_tools.dependency.boost
+import scons_tools.dependency.swig
+import scons_tools.standards
+import scons_tools.dependency.endian
+import scons_tools.dependency.gcc
+import scons_tools.dependency.modeller_test
+import scons_tools.dependency.doxygen
 import scons_tools.application
 import scons_tools.test
 import scons_tools.config_py
@@ -38,7 +38,7 @@ if env.get('repository', None) is not None:
     Repository(env['repository'])
 
 env['IMP_MODULES_ALL']=[]
-env.AddMethod(scons_tools.imp_module.IMPModuleBuild)
+env.AddMethod(scons_tools.module.IMPModuleBuild)
 env.AddMethod(scons_tools.application.IMPCPPApplication)
 
 if not env.GetOption('help'):
@@ -53,7 +53,7 @@ compiler recognized by scons can be found in your path and that all
 the passed compiler options (cxxflags, linkflags) are correct.
 """)
 
-    scons_tools.boost.configure_check(env, '1.33')
+    scons_tools.dependency.boost.configure_check(env, '1.33')
     if not env.GetOption('clean'):
         if env.get('BOOST_VERSION', None) == None:
             Exit("""
@@ -89,14 +89,14 @@ scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", "boost_
 
 if not env.GetOption('help'):
     # various flags depending on compiler versions and things
-    scons_tools.swig.configure_check(env)
-    scons_tools.boost.configure_tr1_check(env)
-    scons_tools.modeller_test.configure_check(env)
-    scons_tools.endian.configure_check(env)
-    scons_tools.doxygen.configure_check_doxygen(env)
-    scons_tools.doxygen.configure_check_dot(env)
-    scons_tools.gcc.configure_check_visibility(env)
-    scons_tools.gcc.configure_check_hash(env)
+    scons_tools.dependency.swig.configure_check(env)
+    scons_tools.dependency.boost.configure_tr1_check(env)
+    scons_tools.dependency.modeller_test.configure_check(env)
+    scons_tools.dependency.endian.configure_check(env)
+    scons_tools.dependency.doxygen.configure_check_doxygen(env)
+    scons_tools.dependency.doxygen.configure_check_dot(env)
+    scons_tools.dependency.gcc.configure_check_visibility(env)
+    scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
     scons_tools.standards.setup_standards(env)
 
