@@ -46,9 +46,30 @@ void ProbabilisticAnchorGraph::set_component_probabilities_on_anchors(
    anchor_to_comp_probabilities_[i][comp_ind]=1.*anchor_counters[i]/sols.size();
   }
 }
+
 void ProbabilisticAnchorGraph::show(std::ostream& out) const {
   out<<"( nodes:"<<boost::num_vertices(g_)<<", edges:"<<
     boost::num_edges(g_)<<std::endl;
 }
+
+
+// ConfigurationSet align_anchor_graph_to_proteomics_graph(
+//                ProbabilisticAnchorGraph *anchor_g,
+//                domino2::RestraintGraph *rest_g) {
+//   //setup a domino optimization
+//   IMP_NEW(Model,mdl,());
+
+// }
+IntRanges ProbabilisticAnchorGraph::get_edge_list() const {
+    IntRanges edge_list;
+    GTraits::edge_iterator e, e_end;
+    for (tie(e, e_end) = boost::edges(g_); e != e_end; ++e) {
+      edge_list.push_back(IntRange(
+                    boost::source(*e, g_),
+                    boost::target(*e, g_)));
+    }
+    return edge_list;
+  }
+
 
 IMPMULTIFIT_END_NAMESPACE

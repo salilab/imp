@@ -16,7 +16,6 @@
 #include <IMP/Object.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
 class IMPMULTIFITEXPORT ProbabilisticAnchorGraph : public Object {
 // Property types
 typedef boost::property<boost::edge_weight_t, float> EdgeWeightProperty;
@@ -49,6 +48,8 @@ public:
   void show(std::ostream& out=std::cout) const;
   unsigned int get_number_of_anchors() const {return boost::num_vertices(g_);}
   unsigned int get_number_of_edges() const {return boost::num_edges(g_);}
+  IntRanges get_edge_list() const;
+  algebra::Vector3Ds get_anchors() const {return positions_;}
   IMP_OBJECT_INLINE(ProbabilisticAnchorGraph, show(out),{});
 private:
   AnchorGraph g_;
