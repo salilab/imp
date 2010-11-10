@@ -59,15 +59,15 @@ protected:
   algebra::Vector3Ds vecs_;
 };
 
-class ParticlesDataPoints : public XYZDataPoints {
+class IMPMULTIFITEXPORT ParticlesDataPoints : public XYZDataPoints {
 public:
   ParticlesDataPoints() : XYZDataPoints() {
   }
 
-  ParticlesDataPoints(const Particles &ps) : XYZDataPoints() {
+  ParticlesDataPoints(Particles ps) : XYZDataPoints() {
     populate_data_points(ps);
   }
-  void populate_data_points(const Particles &ps);
+  void populate_data_points(Particles ps);
   ~ParticlesDataPoints(){}
   Particle* get_particle(int i) const { return ps_[i];}
   const Particles  &get_particles() const { return ps_;}
@@ -79,7 +79,7 @@ protected:
 /**
 \note This manipulation is needed for matrix operations.
  */
-class DensityDataPoints: public XYZDataPoints {
+class IMPMULTIFITEXPORT DensityDataPoints: public XYZDataPoints {
 public:
   DensityDataPoints(em::DensityMap *dens,
                     float density_threshold);

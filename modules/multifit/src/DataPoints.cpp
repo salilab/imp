@@ -20,7 +20,7 @@ void XYZDataPoints::populate_data_points(const algebra::Vector3Ds &vecs) {
     }
   }
 }
-void ParticlesDataPoints::populate_data_points(const Particles &ps) {
+void ParticlesDataPoints::populate_data_points(Particles ps) {
   ps_ = ps;
   int dim = atts_.size();
   for(unsigned int i=0;i<ps.size();i++) {

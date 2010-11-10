@@ -14,6 +14,8 @@
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/core/ChildrenRefiner.h>
+#include <IMP/display/particle_geometry.h>
+#include <IMP/display/ChimeraWriter.h>
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>
@@ -21,21 +23,40 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+
+// std::vector<display::SphereGeometry *> display_helper(
+//      const DataPointsAssignment &dpa) {
+//   std::vector<display::SphereGeometry *> gs;
+//   for( int i=0;i<dpa.get_number_of_clusters();i++) {
+//     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
+//     algebra::Sphere3D sph=
+//       algebra::get_enclosing_sphere(dpa.get_cluster_vectors(i));
+//     sph.set_center(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+//     IMP_NEW(display::SphereGeometry,g,(sph));
+//     //    g->set_color(display::get_display_color(10*i));
+//     std::stringstream ss;
+//     ss<<"cluster_"<<i;
+//     g->set_name(ss.str());
+//     gs.push_back(g);
+//   }
+//   return gs;
+// }
+
+
 void write_cmm_helper(std::ostream &out,
                       const std::string &marker_set_name,
                       const IMP::algebra::Vector3Ds &nodes,
-                      const Edges &edges, const IMP::Floats &radii){
-  IMP::Float x,y,z;
+                      const Edges &edges, IMP::Floats radii){
+  Float x,y,z,radius;
   out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
-  IMP::Float radius = 2.;
   for(unsigned int i=0;i<nodes.size();i++) {
     x = nodes[i][0];
     y = nodes[i][1];
     z = nodes[i][2];
     std::string name="";
-    // if(radii.size() >0 ) {
-    //   radius = radii[i];
-    // }
+    if(radii.size() >0 ) {
+      radius = radii[i];
+    }
     out << "<marker id=\"" << i << "\""
         << " x=\"" << x << "\""
         << " y=\"" << y << "\""
@@ -45,7 +66,7 @@ void write_cmm_helper(std::ostream &out,
   for(Edges::const_iterator it = edges.begin(); it != edges.end();it++) {
     out << "<link id1= \"" << it->first
         << "\" id2=\""     << it->second
-        << "\" radius=\"2.0\"/>" << std::endl;
+        << "\" radius=\"1.0\"/>" << std::endl;
   }
   out << "</marker_set>" << std::endl;
 }
@@ -63,11 +84,11 @@ DataPointsAssignment::DataPointsAssignment(
     IMP_USAGE_CHECK(data_->get_number_of_data_points() > 0,
                     "DataPointsAssignment::DataPointsAssignment zero points,"<<
                     "nothing to assign");
-    IMP_LOG(IMP::VERBOSE,"going to set clusters"<< std::endl);
+    IMP_LOG(VERBOSE,"going to set clusters"<< std::endl);
     set_clusters();
-    IMP_LOG(IMP::VERBOSE,"going to set edges"<< std::endl);
+    IMP_LOG(VERBOSE,"going to set edges"<< std::endl);
     set_edges();
-    IMP_LOG(IMP::VERBOSE,"finish assignment"<< std::endl);
+    IMP_LOG(VERBOSE,"finish assignment"<< std::endl);
   }
 
 algebra::Vector3Ds
@@ -89,7 +110,7 @@ algebra::Vector3Ds
   //here we assume properties are only xyz
   Array1DD cen=cluster_engine_->get_center(cluster_ind);
   cluster_set.push_back(algebra::Vector3D(cen[0],cen[1],cen[2]));
-  IMP_LOG(IMP::VERBOSE,"setting cluster " <<
+  IMP_LOG(VERBOSE,"setting cluster " <<
           cluster_ind << " with " << cluster_set.size()
           << " points " << std::endl);
   return cluster_set;
@@ -105,8 +126,19 @@ void DataPointsAssignment::set_clusters() {
 }
 
 void DataPointsAssignment::set_edges() {
-  return;
-  //TODO - return code
+  //create bounding boxes for particles
+  algebra::BoundingBox3Ds bb;
+  for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
+    bb.push_back(algebra::BoundingBox3D(get_cluster_vectors(i)));
+  }
+  //define edges
+  for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
+    for(int j=i+1;j<cluster_engine_->get_number_of_clusters();j++) {
+      if (algebra::get_interiors_intersect(bb[i],bb[j])){
+        edges_.push_back(CPair(i,j));
+      }
+    }
+  }
 }
 
 
@@ -138,8 +170,8 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
   f.open(filename.c_str());
   algebra::Vector3Ds cluster_ps=dpa.get_cluster_vectors(segment_id);
   for(unsigned int i=0;i<cluster_ps.size();i++) {
-    f<<IMP::atom::pdb_string(cluster_ps[i],
-                             i,IMP::atom::AT_CA,IMP::atom::ALA,'A',i);
+    f<<atom::pdb_string(cluster_ps[i],
+                             i,atom::AT_CA,atom::ALA,'A',i);
   }
 }
 
@@ -178,12 +210,15 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
 void write_cmm(const std::string &cmm_filename,
                const std::string &marker_set_name,
                const DataPointsAssignment &dpa) {
-  IMP::algebra::Vector3Ds centers;
-  IMP::Floats radii;
+  algebra::Vector3Ds centers;
+  Floats radii;
+  float sphere_scale=0.8;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
-    centers.push_back(IMP::algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
-    radii.push_back(3);//dpa.get_cluster_xyz_diameter(i)/2);
+    centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+    radii.push_back(
+     algebra::get_enclosing_sphere(dpa.get_cluster_vectors(i)).get_radius()
+     *sphere_scale);
   }
   std::ofstream out;
   out.open(cmm_filename.c_str(),std::ios::out);
@@ -195,8 +230,8 @@ void write_max_cmm(const std::string &cmm_filename,
                    em::DensityMap *dmap,
                    const std::string &marker_set_name,
                    const DataPointsAssignment &dpa) {
-  IMP::algebra::Vector3Ds centers;
-  IMP::Floats radii;
+  algebra::Vector3Ds centers;
+  Floats radii;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     algebra::Vector3D xyz = get_segment_maximum(dpa,dmap,i);
     centers.push_back(xyz);
@@ -210,17 +245,17 @@ void write_max_cmm(const std::string &cmm_filename,
 
 void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa) {
-  IMP_LOG(IMP::VERBOSE,"going to write pdb " <<
+  IMP_LOG(VERBOSE,"going to write pdb " <<
           pdb_filename <<" with : " <<
           dpa.get_number_of_clusters() <<" clusters " << std::endl);
   std::ofstream out;
   out.open(pdb_filename.c_str(),std::ios::out);
-  IMP::algebra::Vector3Ds centers;
+  algebra::Vector3Ds centers;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
-    centers.push_back(IMP::algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+    centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
     out<<atom::pdb_string(centers[i],i,
-                          IMP::atom::AT_CA,IMP::atom::ALA,'A',i);
+                          atom::AT_CA,atom::ALA,'A',i);
   }
   out.close();
 }
@@ -236,11 +271,11 @@ void write_pdb(const std::string &pdb_filename,
 //   }
 // }
 
-IMP::algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
+algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
   const {
   IMP_USAGE_CHECK(cluster_ind<cluster_sets_.size(),
       "DataPointsAssignment::get_cluster_xyz cluster index is out of range\n");
-  IMP::algebra::Vector3Ds xyz;
+  algebra::Vector3Ds xyz;
   for(algebra::Vector3Ds::const_iterator
         it = cluster_sets_[cluster_ind].begin();
       it != cluster_sets_[cluster_ind].end();it++) {
@@ -253,5 +288,17 @@ IMP::algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
 //     return get_diameter(get_cluster_xyz(cluster_ind));
 // }
 
+
+// void write_chimera(
+//      const std::string &chimera_filename,
+//      const DataPointsAssignment &dpa) {
+//   std::vector<display::SphereGeometry *> gs =
+//     display_helper(dpa);
+//   IMP_NEW(display::ChimeraWriter,w,(chimera_filename));
+//   for( int i=0;i<gs.size();i++){
+//     w->add_geometry(gs[i]);
+//   }
+//   w=NULL;
+// }
 
 IMPMULTIFIT_END_NAMESPACE
