@@ -20,12 +20,13 @@
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 typedef std::pair<int, int> CPair;
+typedef std::vector<CPair> CPairs;
 typedef std::map<CPair, int> CEdges;
 typedef std::vector<CPair> Edges;
 
 //! Sets the assignment of particles data points into clusters according
 //! to the clustering engine.
-class DataPointsAssignment {
+class IMPMULTIFITEXPORT DataPointsAssignment {
 public:
   DataPointsAssignment(const XYZDataPoints *data,
                        const ClusteringEngine *cluster_engine);
@@ -52,15 +53,21 @@ protected:
   CEdges edges_map_;
 };
 
-void write_cmm(const std::string &cmm_filename,
+IMPMULTIFITEXPORT void write_chimera(
+           const std::string &chimera_filename,
+           const DataPointsAssignment &dpa);
+
+IMPMULTIFITEXPORT void write_cmm(const std::string &cmm_filename,
                const std::string &marker_set_name,
                const DataPointsAssignment &dpa);
+IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
+                            CEdges> read_cmm(const std::string &cmm_filename);
 
-void write_max_cmm(const std::string &cmm_filename,
+IMPMULTIFITEXPORT void write_max_cmm(const std::string &cmm_filename,
                    em::DensityMap *dmap,
                    const std::string &marker_set_name,
                    const DataPointsAssignment &dpa);
-void write_pdb(const std::string &pdb_filename,
+IMPMULTIFITEXPORT void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa);
 
 void write_segments_as_pdb(const DataPointsAssignment &dpa,
