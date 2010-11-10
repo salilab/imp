@@ -1,7 +1,6 @@
 import IMP
 import IMP.test
 import IMP.algebra
-import IMP.atom
 import math
 
 class SphereTests(IMP.test.TestCase):
