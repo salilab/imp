@@ -193,15 +193,7 @@ void VQClustering::set_assignments(){
   assignment_.clear();
   for(unsigned int j=0;j<data_->size();j++) {
     algebra::Vector3D point((*data_)[j][0],(*data_)[j][1],(*data_)[j][2]);
-    //    int closest_cen = nn.get_nearest_neighbor(point);
-    //TODO- does not work for now, replace once corrected
-    int closest_cen;int min_dist=INT_MAX;
-    for(int l=0;l<all_cen.size();l++){
-      if (algebra::get_squared_distance(all_cen[l],point)<min_dist) {
-        min_dist=algebra::get_squared_distance(all_cen[l],point);
-        closest_cen=l;
-      }
-    }
+    int closest_cen = nn.get_nearest_neighbor(point);
     assignment_.push_back(closest_cen);
   }
 }
