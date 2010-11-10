@@ -1,5 +1,5 @@
 Import('env')
-import dependency
+import scons_tools.dependency
 
 config=[]
 
@@ -7,11 +7,11 @@ if not env.GetOption('help'):
     sen=env['IMP_ENABLED']
     sen.sort()
     for en in sen:
-        config.append('IMP_USE_'+dependency.get_dependency_string(en).upper())
+        config.append('IMP_USE_'+scons_tools.dependency.get_dependency_string(en).upper())
     sdi= env['IMP_DISABLED']
     sdi.sort()
     for de in sdi:
-        config.append('IMP_NO_'+dependency.get_dependency_string(de).upper())
+        config.append('IMP_NO_'+scons_tools.dependency.get_dependency_string(de).upper())
     if not env.get('deprecated', True):
         config.append('IMP_NO_DEPRECATED')
     else:

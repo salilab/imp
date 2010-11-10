@@ -1,7 +1,7 @@
 Import('env')
-import scons_tools.gcc
+import scons_tools.dependency.gcc
 
-if scons_tools.gcc.get_is_gcc(env):
+if scons_tools.dependency.gcc.get_is_gcc(env):
     cxxflags=[]
     yeslist=['trapping-math',
              'signaling-nans',
@@ -10,7 +10,7 @@ if scons_tools.gcc.get_is_gcc(env):
             'float-store',
             'strict-aliasing',
             'tree-vectorize']
-    if scons_tools.gcc.get_version(env)>= 4.3:
+    if scons_tools.dependency.gcc.get_version(env)>= 4.3:
         yeslist.append('signed-zeros')
         nolist+=['reciprocal-math', 'associative-math']
     l=['-f'+x for x in nolist]+['-fno-'+x for x in yeslist]
