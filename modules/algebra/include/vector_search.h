@@ -92,9 +92,9 @@ public:
       query_log_ << spaces_io(q) << " " << 1 << std::endl;
     }
 #endif
-    Ints ret(2);
+    Ints ret(1);
     data_.fill_nearest_neighbors(q, 1U, eps_, ret);
-    return ret[1];
+    return ret[0];
   }
   /** Search using the ith point in the input set. */
   unsigned int get_nearest_neighbor(unsigned int i) const {
