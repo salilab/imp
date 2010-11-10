@@ -70,10 +70,10 @@ class DenseFloatGrid3D;
 */
 /** Equivalent to
 \code
-IMP::algebra::get_transformation_taking_first_to_second(a,b);
+IMP::algebra::get_transformation_aligning_first_to_second(a,b);
 \endcode
  */
-Transformation3D get_transformation_taking_first_to_second(Vector3Ds a,
+Transformation3D get_transformation_aligning_first_to_second(Vector3Ds a,
                                                            Vector3Ds b);
 #endif
 /** @} */
