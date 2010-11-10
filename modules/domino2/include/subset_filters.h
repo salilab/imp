@@ -119,6 +119,9 @@ class IMPDOMINO2EXPORT RestraintScoreSubsetFilterTable:
                                   ParticleStatesTable *pst);
   RestraintScoreSubsetFilterTable(Model *rs,
                                   ParticleStatesTable *pst);
+  /** Add a precomputed score for a restraint.*/
+  void add_score(Restraint *r, const Subset &subset,
+                 const SubsetState &state, double score);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 

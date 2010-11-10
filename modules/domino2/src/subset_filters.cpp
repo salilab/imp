@@ -113,6 +113,12 @@ RestraintScoreSubsetFilterTable
   }
 }
 
+void RestraintScoreSubsetFilterTable
+::add_score(Restraint *r, const Subset &subset,
+               const SubsetState &state, double score) {
+  mset_->add_score(r, subset, state, score);
+}
+
 void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
 }
 

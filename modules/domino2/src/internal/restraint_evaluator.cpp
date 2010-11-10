@@ -47,6 +47,16 @@ void ModelData::initialize() {
     oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
     dependencies_.push_back(Subset(oip, true));
     rdata_.push_back(RestraintData(*rit, rs_->get_model()->get_weight(*rit)));
+    if (preload_.find(*rit) != preload_.end()){
+      const PreloadData &data= preload_.find(*rit)->second;
+      IMP_USAGE_CHECK(dependencies_.back() == data.s,
+                      "Was passed subset " << data.s
+                      << " but expected subset " << dependencies_.back()
+                      << " for restraint " << (*rit)->get_name());
+      for (unsigned int i=0; i< data.scores.size(); ++i) {
+        rdata_.back().set_score(data.sss[i], data.scores[i]);
+      }
+    }
   }
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
@@ -190,5 +200,16 @@ bool SubsetData::get_is_ok(const SubsetState &state,
     << " over " << ris_.size() << " and " << total_ris_.size() << std::endl;*/
   return true;
 }
+void ModelData
+::add_score(Restraint *r, const Subset &subset,
+               const SubsetState &state, double score) {
+  if (preload_.find(r) == preload_.end()) {
+    preload_[r]= PreloadData();
+    preload_[r].s= subset;
+  }
+  preload_[r].sss.push_back(state);
+  preload_[r].scores.push_back(score);
+}
+
 
 IMPDOMINO2_END_INTERNAL_NAMESPACE

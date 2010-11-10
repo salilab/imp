@@ -58,6 +58,12 @@ public:
     filter_attempts_=0;
     filter_passes_=0;
   }
+  void set_score(const SubsetState &ss, double s) {
+    IMP_USAGE_CHECK(scores_.find(ss) == scores_.end(),
+                    "Cannot preload scores twice for state "
+                    << ss);
+    scores_[ss]=s;
+  }
   void set_max(double max) { max_=max;}
   Restraint *get_restraint() const {return r_;}
   template <bool Filter>
@@ -122,6 +128,14 @@ public:
 };
 
 struct IMPDOMINO2EXPORT ModelData: public RefCounted {
+  struct PreloadData {
+    Subset s;
+    SubsetStates sss;
+    Floats scores;
+  };
+  typedef IMP::internal::Map<Restraint*, PreloadData> Preload;
+  Preload preload_;
+
   struct SubsetID {
     const Subset s_;
     const Subsets excluded_;
@@ -161,6 +175,8 @@ struct IMPDOMINO2EXPORT ModelData: public RefCounted {
   }
   const SubsetData &get_subset_data(const Subset &s,
                                     const Subsets &exclude=Subsets()) const;
+  void add_score(Restraint *r, const Subset &subset,
+                 const SubsetState &state, double score);
   IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 
