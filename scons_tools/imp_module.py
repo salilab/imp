@@ -24,6 +24,15 @@ from SCons.Scanner import C as CScanner
 def get_module_name(env):
     return env['IMP_MODULE_NAME']
 
+def get_module_full_name(env):
+    name= env['IMP_MODULE_NAME']
+    if name=="kernel":
+        name="IMP"
+    else:
+        name="IMP."+name
+    return name
+
+
 def _set_module_name(env, module):
     env['IMP_MODULE_NAME']=module
 

@@ -119,3 +119,8 @@ Not listed are
  - IMP::algebra that provides basic geometric and mathematical types and operations
  - IMP::benchmark that provides benchmarks of various usages of other modules
  */
+
+namespace IMP {
+/** \class Model
+- \ref nup84_cg "Nup84 Coarse Grained"
+}

@@ -34,7 +34,6 @@ public:
     return radius_;
   }
   const VectorD<D> &get_center() const {return center_;}
-  void set_center(VectorD<D> c) {center_=c;}
   //! Return true if this sphere contains the other one
   bool get_contains(const SphereD<D> &o) const {
     double d= (get_center()-o.get_center()).get_magnitude();

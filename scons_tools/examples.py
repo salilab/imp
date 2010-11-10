@@ -3,6 +3,7 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 import os.path
+import imp_module
 import hierarchy
 
 
@@ -40,7 +41,7 @@ def write_doxygen(env, name, files, outputname):
 
 
 def _action_make_examples(target, source, env):
-    name= env['IMP_MODULE_NICENAME']
+    name= imp_module.get_module_full_name(env)
     write_doxygen(env, name, source, target[0].path)
 
 def _print_make_examples(target, source, env):
