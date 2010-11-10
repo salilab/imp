@@ -20,7 +20,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         for v in vs:
             p= IMP.Particle(m)
             d= IMP.core.XYZ.setup_particle(p, v)
-            ret.append(v)
+            ret.append(d)
         return ret
 
     def test_align(self):
