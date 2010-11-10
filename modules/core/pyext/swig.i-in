@@ -210,7 +210,21 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/utility.h"
 %include "IMP/core/WriteModelOptimizerState.h"
 
-
+%inline %{
+namespace IMP {
+namespace core {
+algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const ParticlesTemp &b) {
+return IMP::algebra::get_transformation_aligning_first_to_second(XYZsTemp(a),XYZsTemp(b));
+}
+algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const std::vector<algebra::VectorD<3> > &b) {
+return IMP::algebra::get_transformation_aligning_first_to_second(XYZsTemp(a), b);
+}
+algebra::Transformation3D get_transformation_aligning_first_to_second(const std::vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
+return algebra::get_transformation_aligning_first_to_second(a, XYZsTemp(b));
+}
+}
+}
+%}
 
 namespace IMP {
   namespace core {
@@ -219,10 +233,5 @@ namespace IMP {
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
-  }
-  namespace algebra {
-    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<core::XYZsTemp, std::vector<algebra::VectorD<3> > >;
-    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<core::XYZsTemp, core::XYZsTemp>;
-    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second< std::vector<algebra::VectorD<3> >, core::XYZsTemp>;
   }
 }
