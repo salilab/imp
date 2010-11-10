@@ -61,9 +61,9 @@ class NNTests(IMP.test.TestCase):
             rnn= get_nn(vs, i)
             #print i
             print "start", i
-            print vs[i]
-            print cnn
-            print rnn
+            print "vs", vs[i]
+            print "cnn", cnn
+            print "rnn", rnn
             print vs[cnn], (vs[i]-vs[cnn]).get_magnitude()
             for x in rnn:
                 print vs[x], (vs[x]-vs[i]).get_magnitude()
