@@ -128,7 +128,7 @@ namespace IMP {
    //%template(SpherePair3Ds) ::std::vector< ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> > >;
 
    %template(AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
-   %template(get_transformation_taking_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
+   %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
 
    IMP_SWIG_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);

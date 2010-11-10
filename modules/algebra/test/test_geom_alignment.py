@@ -21,7 +21,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         t= IMP.algebra.Vector3D(0,0,0) #IMP.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
-        tr= IMP.algebra.get_transformation_taking_first_to_second(vs, vsr)
+        tr= IMP.algebra.get_transformation_aligning_first_to_second(vs, vsr)
         print "tr"
         tr.show()
         print "tr.r"
@@ -55,7 +55,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         t= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         tr= IMP.algebra.Transformation3D(r, t)
         (vs, vsr)= self._produce_point_sets(tr)
-        tr= IMP.algebra.get_transformation_taking_first_to_second(vs, vsr)
+        tr= IMP.algebra.get_transformation_aligning_first_to_second(vs, vsr)
         print "tr"
         tr.show()
         print "tr.r"
