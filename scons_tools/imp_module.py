@@ -98,6 +98,14 @@ def _set_module_version(env, module, version, deps):
         version=version+" with "+", ".join(deps)
     env['IMP'+module+'_version']=version
 
+def get_module_unfound_dependencies(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    return env['IMP'+module+'_missing_dependencies']
+
+def _set_module_unfound_dependencies(env, module, missing):
+    env['IMP'+module+'_missing_dependencies']=missing
+
 def get_module_dependencies(env, module=None):
     if not module:
         module= get_module_name(env)
@@ -365,7 +373,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                            env.Value(env.get_module_python_modules()),
                                            env.Value(env.get_module_version()),
                                            #python supports serialization of object, why on earth do they just convert them to strings?
-                                           env.Value(" ".join(env.get_module_dependencies())),])
+                                           env.Value(" ".join(env.get_module_dependencies())),
+                                           env.Value(" ".join(env.get_module_unfound_dependencies())),])
     swiglink=[]
     for i in swigfiles:
         if str(i).find('/')==-1:
@@ -650,6 +659,11 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     preclone=env
     found_optional_dependencies=env.get_found_dependencies(optional_dependencies)
+    unfound=[]
+    for d in optional_dependencies:
+        if not d in found_optional_dependencies:
+            unfound.append(d)
+    _set_module_unfound_dependencies(env, module, unfound)
     _set_module_dependencies(env, module, found_optional_dependencies\
                              +required_dependencies)
 

@@ -136,13 +136,14 @@ if get_module_version_info().get_version() != '"""+version+"""':
     sys.stderr.write("WARNING: expected version '"""+version+"""', but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n")
 }"""%vars)
     deps= source[3].get_contents().split(" ")
+    udeps= source[4].get_contents().split(" ")
     preface.append("%pythoncode {")
     for d in deps:
         nm=dependency.get_dependency_string(d).lower()
-        if env.get_dependency_ok(d):
-            preface.append("has_"+nm +"=True")
-        else:
-            preface.append("has_"+nm +"=False")
+        preface.append("has_"+nm +"=True")
+    for d in udeps:
+        nm=dependency.get_dependency_string(d).lower()
+        preface.append("has_"+nm+"=False")
     preface.append("}")
     if vars['module'] != "kernel":
         preface.append("""

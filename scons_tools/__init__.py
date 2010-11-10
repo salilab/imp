@@ -352,6 +352,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(imp_module.get_module_modules)
     env.AddMethod(imp_module.get_module_python_modules)
     env.AddMethod(imp_module.get_module_dependencies)
+    env.AddMethod(imp_module.get_module_unfound_dependencies)
     env.AddMethod(imp_module.get_module_version)
     env.AddMethod(imp_module.get_found_modules)
     env.AddMethod(dependency.get_found_dependencies)
