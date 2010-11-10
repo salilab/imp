@@ -278,7 +278,7 @@ std::string get_molecule_name(Hierarchy h) {
     if (Molecule::particle_is_instance(h)) {
       return h->get_name();
     }
-  } while (h=h.get_parent());
+  } while ((h=h.get_parent()));
   IMP_THROW("Hierarchy " << h << " has no residue index.",
             ValueException);
 }
@@ -287,7 +287,7 @@ Ints get_residue_indexes(Hierarchy h) {
     do {
       Ints ret= get_tree_residue_indexes(h);
       if (!ret.empty()) return ret;
-    } while (h=h.get_parent());
+    } while ((h=h.get_parent()));
     IMP_THROW("Hierarchy " << h << " has no residue index.",
               ValueException);
 }
@@ -296,7 +296,7 @@ ResidueType get_residue_type(Hierarchy h) {
     if (Residue::particle_is_instance(h)) {
       return Residue(h).get_residue_type();
     }
-  } while (h=h.get_parent());
+  } while ((h=h.get_parent()));
     IMP_THROW("Hierarchy " << h << " has no residue type.",
               ValueException);
 }
@@ -305,7 +305,7 @@ char get_chain(Hierarchy h) {
     if (Chain::particle_is_instance(h)) {
       return Chain(h).get_id();
     }
-  } while (h=h.get_parent());
+  } while ((h=h.get_parent()));
     IMP_THROW("Hierarchy " << h << " has no chain.",
               ValueException);
 }
@@ -314,7 +314,7 @@ AtomType get_atom_type(Hierarchy h) {
     if (Atom::particle_is_instance(h)) {
       return Atom(h).get_atom_type();
     }
-  } while (h=h.get_parent());
+  } while ((h=h.get_parent()));
     IMP_THROW("Hierarchy " << h << " has no atom type.",
               ValueException);
 }
@@ -323,7 +323,7 @@ std::string get_domain_name(Hierarchy h) {
     if (Domain::particle_is_instance(h)) {
       return Domain(h)->get_name();
     }
-  } while (h=h.get_parent());
+  } while ((h=h.get_parent()));
     IMP_THROW("Hierarchy " << h << " has no domain name.",
               ValueException);
 }
