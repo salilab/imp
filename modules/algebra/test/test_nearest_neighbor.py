@@ -25,9 +25,29 @@ def get_nn(vs, i):
             bi.append(ci)
     return bi
 
-class ConeTests(IMP.test.TestCase):
+class NNTests(IMP.test.TestCase):
+    def test_nn_query(self):
+        """Check that NN queries work"""
+        bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-50,-50,-50),
+                                     IMP.algebra.Vector3D(50,50,50))
 
-    def test_cone_construction(self):
+        vecs=IMP.algebra.Vector3Ds()
+        for i in range(10):
+            vecs.append(IMP.algebra.get_random_vector_in(bb))
+        nn= IMP.algebra.NearestNeighbor3D(vecs)
+        for i in range(10):
+            v = IMP.algebra.get_random_vector_in(bb)
+            n1 = nn.get_nearest_neighbor(v)
+            #find the closest point
+            closet_v=0
+            min_dist=IMP.algebra.get_distance(v,vecs[closet_v])
+            for j in range(1,10):
+                if min_dist>IMP.algebra.get_distance(v,vecs[j]):
+                    min_dist=IMP.algebra.get_distance(v,vecs[j])
+                    closet_v=j
+            print n1,closet_v
+            self.assertEqual(n1,closet_v)
+    def test_nn_functionality(self):
         """Check that nearest neighbor works"""
         nump=60
         vs= IMP.algebra.Vector3Ds()
