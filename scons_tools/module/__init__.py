@@ -2,21 +2,18 @@
 
 import os.path
 import sys
-import pyscanner
-import examples
-import test
-import swig
-import hierarchy
-import version_info
-import config_h
-import link_test
-import bug_fixes
-import modeller_test
-import run
-import dependency
-import modpage
-import pch
-import utility
+import scons_tools.pyscanner
+import _examples
+import _swig
+import _header
+import _version_info
+import _config_h
+import _link_test
+import scons_tools.bug_fixes
+import scons_tools.run
+import scons_tools.dependency
+import _modpage
+import scons_tools.utility
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
@@ -205,22 +202,22 @@ def IMPModuleLib(envi, files):
     build=[]
     if envi['IMP_BUILD_STATIC']:
         env= get_staticlib_environment(envi)
-        utility.add_link_flags(env, env.get_module_modules(),
+        scons_tools.utility.add_link_flags(env, env.get_module_modules(),
                                env.get_module_dependencies())
         build.append( env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                                       list(files)))
     if envi['IMP_BUILD_DYNAMIC']:
         env = get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
                                     cplusplus=True)
-        utility.add_link_flags(env,env.get_module_modules(),
+        scons_tools.utility.add_link_flags(env,env.get_module_modules(),
                                env.get_module_dependencies())
         build.append(env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                        list(files) ) )
-        utility.postprocess_lib(env, build[-1])
+        scons_tools.utility.postprocess_lib(env, build[-1])
     install=[]
     for b in build:
         install.append(envi.Install(env.GetInstallDirectory('libdir'), b) )
-    utility.postprocess_lib(envi, install[-1])
+    scons_tools.utility.postprocess_lib(envi, install[-1])
     module_requires(envi, build, 'include')
     module_requires(envi, build, 'data')
     module_alias(envi, 'lib', build, True)
@@ -243,10 +240,14 @@ def IMPModuleInclude(env, files):
     config=env.IMPModuleConfigH(target=['#/build/include/%(module_include_path)s/%(module)s_config.h'%vars],
     source=[env.Value(env['IMP_MODULE_CONFIG'])])
     configinstall=env.Install(includedir+"/"+vars['module_include_path'],config)
-    install = hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
+    install = scons_tools.hierarchy.InstallHierarchy(env, includedir+"/"+vars['module_include_path'],
                                          list(files))+[configinstall]
-    build=hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
+    install.append(_header.build_header(env, includedir+"/"+vars['module_include_path'],
+                                         list(files)))
+    build=scons_tools.hierarchy.InstallHierarchy(env, "#/build/include/"+vars['module_include_path'],
                                      list(files), True)+[config]
+    build.append(_header.build_header(env, "#/build/include/"+vars['module_include_path'],
+                                     list(files)))
     env['IMP_MODULE_HEADERS']= [str(x) for x in files if str(x).find("internal") == -1]
     module_alias(env, 'include', build)
     add_to_global_alias(env, 'all', 'include')
@@ -261,8 +262,8 @@ def IMPModuleData(env, files):
         path=""
     else:
         path=vars['module']
-    install = hierarchy.InstallDataHierarchy(env, datadir+"/"+path, files, False)
-    build = hierarchy.InstallDataHierarchy(env, "#/build/data/"+path, files, True)
+    install = scons_tools.hierarchy.InstallHierarchy(env, datadir+"/"+path, files, False)
+    build = scons_tools.hierarchy.InstallHierarchy(env, "#/build/data/"+path, files, True)
     module_alias(env, 'data', build)
     add_to_global_alias(env, 'all', 'data')
     module_alias(env, 'install-data', install)
@@ -277,7 +278,7 @@ def IMPModuleExamples(env, example_files, data_files):
         path=""
     else:
         path=vars['module']
-    (dox, build, install, test)= examples.handle_example_dir(env, Dir("."), vars['module'], path, example_files,data_files)
+    (dox, build, install, test)= _examples.handle_example_dir(env, Dir("."), vars['module'], path, example_files,data_files)
     module_alias(env, 'examples', build)
     add_to_global_alias(env, 'all', 'examples')
     module_alias(env, 'install-examples', install)
@@ -293,15 +294,9 @@ def _make_programs(envi, required_modules, install, files):
     from scons_tools import get_bin_environment
     env= get_bin_environment(envi)
     vars=get_module_variables(env)
-    if env['fastlink']:
-        if get_module_name(env) != "kernel":
-            env.Append(LINKFLAGS=['-limp_'+get_module_name(env)])
-        else:
-            env.Append(LINKFLAGS=['-limp'])
-    utility.add_link_flags(env, env.get_module_modules()+required_modules,
+    scons_tools.utility.add_link_flags(env, env.get_module_modules()+required_modules,
                            env.get_module_dependencies())
-    if not env['fastlink']:
-        env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
+    env.Prepend(LIBS=['imp%(module_suffix)s' % vars])
     build=[]
     install_list=[]
     bindir = env.GetInstallDirectory('bindir')
@@ -321,10 +316,6 @@ def _make_programs(envi, required_modules, install, files):
             if install:
                 ci= env.Install(bindir, f)
                 install_list.append(ci)
-    if env['fastlink']:
-        module_requires(env, build, 'lib')
-        for l in required_modules:
-            env.Requires(build, env.Alias(l+'-lib'))
     return (build, install_list)
 
 def IMPModuleBin(env, files, required_modules=[], install=True):
@@ -373,10 +364,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
               #Scanner(function= _fake_scanner_i, skeys=['.i']),
-              swig.scanner,
+              _swig.scanner,
               Scanner(function=_null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
     penv.Replace(SCANNERS=scanners)
-    utility.add_link_flags(penv, [get_module_name(penv)]+penv.get_module_modules(), penv.get_module_dependencies())
+    scons_tools.utility.add_link_flags(penv, [get_module_name(penv)]+penv.get_module_modules(), penv.get_module_dependencies())
     swigfile= penv.IMPModuleSWIGPreface(target=[File("#/build/swig/IMP_%(module)s.i"%vars)],
                                    source=[File("swig.i-in"),
                                            env.Value(env.get_module_python_modules()),
@@ -405,28 +396,16 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                source=['#/build/src/%(module)s_wrap.cpp-in'%vars])
     penv.IMPModulePatchSWIG(target=['#/build/src/%(module)s_wrap.h'%vars],
                        source=['#/build/src/%(module)s_wrap.h-in'%vars])
-    lpenv= bug_fixes.clone_env(penv)
-    if env['IMP_USE_PCH']:
-        if module=='kernel':
-            pchh= penv.IMPGeneratePCH(target="#/build/swig/pch.h", source=[])
-            bpch= penv.IMPBuildPCH(source=pchh, target="#/build/swig/pch.h.gch")
-            env.Alias('pch', [bpch])
-            env.Requires(pchh, env.Alias('kernel-include'))
-        #lpenv.Prepend(CPPFLAGS=['-include '+env['pch']])
-        lpenv.Prepend(CPPPATH=['#/build/swig'])
-        lpenv.Prepend(CPPFLAGS=['-include', 'pch.h'])
-        lpenv.Prepend(CXXFLAGS=['-Winvalid-pch'])
+    lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule('#/build/lib/_IMP%(module_suffix)s' % get_module_variables(lpenv),
                                     patched)
     #print "Environment", env['CXXFLAGS']
-    if env['IMP_USE_PCH']:
-        env.Depends(patched, env.Alias('pch'))
     installinit = penv.InstallAs(penv.GetInstallDirectory('pythondir',
                                                           vars['module_include_path'],
                                                           '__init__.py'),
                                  gen_pymod)
     installlib = penv.Install(penv.GetInstallDirectory('pyextdir'), buildlib)
-    utility.postprocess_lib(penv, buildlib)
+    scons_tools.utility.postprocess_lib(penv, buildlib)
     #build.append(buildlib)
     pybuild.append(gen_pymod)
     pybuild.append(buildlib)
@@ -451,21 +430,21 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     module_deps_requires(env, install, 'install-python', [])
 
 def IMPModuleGetExamples(env):
-    return utility.get_matching_recursive(["*.py","*.readme"])
+    return scons_tools.utility.get_matching_recursive(["*.py","*.readme"])
 
 def IMPModuleGetExampleData(env):
-    ret=  utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
+    ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
                                           "*.mol2"])
     return ret
 
 def IMPModuleGetPythonTests(env):
-    return utility.get_matching_recursive(["test_*.py"])
+    return scons_tools.utility.get_matching_recursive(["test_*.py"])
 def IMPModuleGetCPPTests(env):
-    return utility.get_matching_recursive(["test_*.cpp"])
+    return scons_tools.utility.get_matching_recursive(["test_*.cpp"])
 
 
 def IMPModuleGetHeaders(env):
-    raw_files=utility.get_matching_recursive(["*.h"])
+    raw_files=scons_tools.utility.get_matching_recursive(["*.h"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -479,15 +458,15 @@ def IMPModuleGetHeaders(env):
     return files
 
 def IMPModuleGetSwigFiles(env):
-    files=utility.get_matching(["IMP_*.i"])
+    files=scons_tools.utility.get_matching(["IMP_*.i"])
     return files
 
 def IMPModuleGetPython(env):
-    files=utility.get_matching(["src/*.py"])
+    files=scons_tools.utility.get_matching(["src/*.py"])
     return files
 
 def IMPModuleGetSources(env):
-    raw_files=utility.get_matching_recursive(["*.cpp"])
+    raw_files=scons_tools.utility.get_matching_recursive(["*.cpp"])
     files=[]
     for f in raw_files:
         s= str(f)
@@ -505,7 +484,7 @@ def IMPModuleGetSources(env):
     return files
 
 def IMPModuleGetData(env):
-    raw_files=utility.get_matching_recursive(["*"])
+    raw_files=scons_tools.utility.get_matching_recursive(["*"])
     files=[]
     for f in [os.path.split(str(x))[1] for x in raw_files]:
         if str(f).endswith("SConscript"):
@@ -520,11 +499,11 @@ def IMPModuleGetData(env):
     return files
 
 def IMPModuleGetBins(env):
-    raw_files= utility.get_matching(["*.cpp", "*.py"])
+    raw_files= scons_tools.utility.get_matching(["*.cpp", "*.py"])
     return raw_files
 
 def IMPModuleGetDocs(env):
-    files=utility.get_matching(["*.dox", "*.pdf", "*.dot", "*.png"])
+    files=scons_tools.utility.get_matching(["*.dox", "*.pdf", "*.dot", "*.png"])
     return files
 
 
@@ -679,7 +658,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     _set_module_version(env, module, version,
                         found_optional_modules+found_optional_dependencies);
 
-    env = bug_fixes.clone_env(env)
+    env = scons_tools.bug_fixes.clone_env(env)
     _set_module_name(env, module)
 
     vars={'module_include_path':module_include_path,

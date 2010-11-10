@@ -1,5 +1,5 @@
 
-import imp_module
+import scons_tools.module
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit
 import os
 import sys
@@ -14,7 +14,7 @@ def _action_version_info_h(target, source, env):
                                 (env.Value('foo'), env.Value('Me'),
                                  env.Value('1.0')))
        generates version information for the 'foo' module."""
-    vars= imp_module.get_module_variables(env)
+    vars= scons_tools.module.get_module_variables(env)
 
     h = file(target[0].abspath, 'w')
 
@@ -68,7 +68,7 @@ def _action_version_info_cpp(target, source, env):
                                 (env.Value('foo'), env.Value('Me'),
                                  env.Value('1.0')))
        generates version information for the 'foo' module."""
-    vars= imp_module.get_module_variables(env)
+    vars= scons_tools.module.get_module_variables(env)
 
     cpp = file(target[0].abspath, 'w')
 

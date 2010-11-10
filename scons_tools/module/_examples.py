@@ -1,14 +1,13 @@
-import colorize_python
+import _colorize_python
 from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 import os.path
-import imp_module
-import hierarchy
+import scons_tools.hierarchy
 
 
 def _action_colorize_python(target, source, env):
-    colorize_python.Parser(open(str(source[0]), "r").read(),
+    _colorize_python.Parser(open(str(source[0]), "r").read(),
                            open(str(target[0]), "w")).format(None, None)
 
 def _print_colorize_python(target, source, env):
@@ -41,7 +40,7 @@ def write_doxygen(env, name, files, outputname):
 
 
 def _action_make_examples(target, source, env):
-    name= imp_module.get_module_full_name(env)
+    name= scons_tools.module.get_module_full_name(env)
     write_doxygen(env, name, source, target[0].path)
 
 def _print_make_examples(target, source, env):
@@ -53,6 +52,7 @@ MakeDox = Builder(action=Action(_action_make_examples,
 
 
 def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
+    env.Append(BUILDERS={'IMPColorizePython': ColorizePython})
     build=[]
     dox=[]
     install=[]
@@ -72,8 +72,8 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
             #install.append(env.Install(exampledir+"/"+prefix, f.abspath))
         #elif str(f).endswith(".readme"):
         #    install.append(env.Install(exampledir+"/"+prefix, f.abspath))
-    install = hierarchy.InstallExampleHierarchy(env, exampledir+"/"+prefix, example_files+data_files, False)
-    build = hierarchy.InstallExampleHierarchy(env, "#/build/doc/examples/"+prefix, example_files+data_files, True)
+    install = scons_tools.hierarchy.InstallHierarchy(env, exampledir+"/"+prefix, example_files+data_files, False)
+    build = scons_tools.hierarchy.InstallHierarchy(env, "#/build/doc/examples/"+prefix, example_files+data_files, True)
     test= env.IMPModuleRunTest('tests.passed',
                              ["#/tools/imppy.sh",
                               "#/scons_tools/run-all-examples.py"]\

@@ -1,11 +1,10 @@
-import imp_module
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner, Move
 import SCons
 import os
 import sys
 import re
-import dependency
-import imp_module
+import scons_tools.dependency
+import scons_tools.module
 
 # standard include files
 base_includes= ["IMP_macros.i",
@@ -29,11 +28,11 @@ base_includes= ["IMP_macros.i",
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 def _action_patch_swig_wrap(target, source, env):
     lines = file(source[0].path, 'r').readlines()
-    vars= imp_module.get_module_variables(env)
+    vars= scons_tools.module.get_module_variables(env)
     repl1 = '"swig::%s_PySwigIterator *"' % vars['PREPROC']
     repl2 = '"swig::%s_SwigPyIterator *"' % vars['PREPROC']
-    orig = 'SWIG_IMP.%s_WRAP_H_' % imp_module.get_module_name(env)
-    repl = 'SWIG_IMP_%s_WRAP_H_' % imp_module.get_module_name(env)
+    orig = 'SWIG_IMP.%s_WRAP_H_' % scons_tools.module.get_module_name(env)
+    repl = 'SWIG_IMP_%s_WRAP_H_' % scons_tools.module.get_module_name(env)
     fh= file(target[0].path, 'w')
     for line in lines:
         line = line.replace('"swig::PySwigIterator *"', repl1)
@@ -57,7 +56,7 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 
 def _action_swig_file(target, source, env):
-    vars= imp_module.get_module_variables(env)
+    vars= scons_tools.module.get_module_variables(env)
     deps= env.get_module_python_modules()
     deps.reverse()
     #print "dependencies are " +str(deps)
@@ -139,10 +138,10 @@ if get_module_version_info().get_version() != '"""+version+"""':
     udeps= source[4].get_contents().split(" ")
     preface.append("%pythoncode {")
     for d in deps:
-        nm=dependency.get_dependency_string(d).lower()
+        nm=scons_tools.dependency.get_dependency_string(d).lower()
         preface.append("has_"+nm +"=True")
     for d in udeps:
-        nm=dependency.get_dependency_string(d).lower()
+        nm=scons_tools.dependency.get_dependency_string(d).lower()
         preface.append("has_"+nm+"=False")
     preface.append("}")
     if vars['module'] != "kernel":
@@ -165,7 +164,7 @@ SwigPreface = Builder(action=Action(_action_swig_file,
 
 
 def _action_simple_swig(target, source, env):
-    vars= imp_module.get_module_variables(env)
+    vars= scons_tools.module.get_module_variables(env)
     cppflags= ""
     for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
@@ -182,7 +181,7 @@ def _action_simple_swig(target, source, env):
                "-python", "-c++", "-naturalvar",
                "-fvirtual"]+warnings
     # Signal whether we are building the kernel
-    if imp_module.get_module_name(env) == 'kernel':
+    if scons_tools.module.get_module_name(env) == 'kernel':
         command.append('-DIMP_SWIG_KERNEL')
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
@@ -217,54 +216,6 @@ def generate(env):
 
 def exists(env):
     return env.Detect(['swig'])
-
-
-def _check(context):
-    needversion = [1,3,40]
-    needversion_str = ".".join([str(x) for x in needversion])
-    failmsg = """
-SWIG version %s or later must be installed to support Python, but
-%s.
-Please make sure 'swig' is found in the path passed to scons.
-
-In particular, if you have SWIG installed in a non-standard location,
-please use the 'path' option to add this location to the search path.
-For example, if you have SWIG installed in /opt/local/bin/, edit (or create)
-config.py and add the line
-
-path='/opt/local/bin'
-
-Since SWIG could not be found, proceeding to build IMP without Python support.
-
-"""
-    context.Message('Checking for SWIG version >= %s... ' % needversion_str)
-    version = context.env['SWIGVERSION']
-    try:
-        v = [int(x) for x in version.split(".")]
-    except ValueError:
-        context.Result('not found')
-        print failmsg % (needversion_str,
-                         "it could not be found on your system")
-        return False
-    if v >= needversion:
-        context.Result('%s' % version)
-        return True
-    else:
-        context.Result('no, %s found' % version)
-        print failmsg % (needversion_str,
-                         "only an older version (%s) " % version + \
-                         "was found on your system")
-        return False
-
-def configure_check(env):
-    custom_tests = {'CheckSWIG':_check}
-    conf = env.Configure(custom_tests=custom_tests)
-    #if not env.GetOption('clean') and not env.GetOption('help') \
-    #   and conf.CheckSWIG() is False:
-    if not conf.CheckSWIG():
-        env['IMP_PROVIDE_PYTHON']=False
-        #env.Append(IMP_BUILD_SUMMARY=["Swig was not found."])
-    conf.Finish()
 
 
 def swig_scanner(node, env, path):
