@@ -3,7 +3,7 @@
 import os
 import os.path
 import re
-from mypopen import MyPopen
+from scons_tools.mypopen import MyPopen
 
 def _check_default(context):
     """Check for MODELLER in the default Python path"""

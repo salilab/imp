@@ -1,4 +1,4 @@
-import utility
+import scons_tools.utility
 import SCons
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 
@@ -18,7 +18,7 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
 def get_dependency_ok(env, dep):
     ret= dep in env['IMP_ENABLED']
     if not ret and dep not in env['IMP_DISABLED']:
-        utility.report_error(env, "Unknown dependency "+dep)
+        scons_tools.utility.report_error(env, "Unknown dependency "+dep)
     return ret
 
 def get_found_dependencies(env, dependencies):
@@ -53,12 +53,12 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
         context.env.Replace(LINKFLAGS=oldflags)
         return ret
     if context.env['IMP_BUILD_STATIC']:
-        utility.make_static_build(context.env)
+        scons_tools.utility.make_static_build(context.env)
         if type(lib) == list:
             bret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
         else:
             bret=_search_for_deps(context, lib, [], header, body, extra_libs)
-        utility.unmake_static_build(context.env)
+        scons_tools.utility.unmake_static_build(context.env)
         # should be the sum of the two
         if bret[0]:
             context.env.Replace(LINKFLAGS=oldflags)

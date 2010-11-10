@@ -1,7 +1,7 @@
 import atexit
 import SCons
 import dependency
-import imp_module
+import scons_tools.module
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
     in a useful way."""

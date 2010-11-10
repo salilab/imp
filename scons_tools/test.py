@@ -2,7 +2,7 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import pyscanner
 import os
 import os.path
-import imp_module
+import scons_tools.module
 
 # List of all disabled IMP modules (populated at configure time)
 disabled_modules = []
@@ -11,7 +11,7 @@ def _get_name(env):
     if env.has_key('IMP_APPLICATION'):
         return env['IMP_APPLICATION']
     else:
-        return "IMP." +imp_module.get_module_name(env)
+        return "IMP." +scons_tools.module.get_module_name(env)
 
 def _action_unit_test(target, source, env):
     global disabled_modules

@@ -1,6 +1,6 @@
-import utility
+import scons_tools.utility
 import dependency
-import imp_module
+import scons_tools.module
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -23,7 +23,7 @@ def IMPCPPApplication(envi, target, source, required_modules=[],
         print "  (requires", ", ".join(required_modules+required_dependencies)+")"
     env= scons_tools.get_bin_environment(envi)
 
-    utility.add_link_flags(env, required_modules,
+    scons_tools.utility.add_link_flags(env, required_modules,
                            required_dependencies+env.get_found_dependencies(optional_dependencies))
 
     prog= env.Program(target=target, source=source)

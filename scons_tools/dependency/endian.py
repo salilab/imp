@@ -1,6 +1,6 @@
 """Simple configure checks for endianness"""
 
-import imp_module
+import scons_tools.module
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit
 import os
 import sys

@@ -8,11 +8,9 @@ import hierarchy
 import symlinks
 import bug_fixes
 import standards
-import compilation
-import imp_module
+import dependency.compilation
+import module
 import dependency
-import gcc
-import swig
 import platform
 from mypopen import MyPopen
 
@@ -46,10 +44,6 @@ def _propagate_variables(env):
     if not env['IMP_BUILD_DYNAMIC'] and not env['IMP_BUILD_STATIC']:
         print >> sys.stderr, "One of dynamic or static libraries must be supported."
         env.Exit(1)
-    if gcc.get_is_gcc(env):
-        env['IMP_USE_PCH']=env['precompiledheader']
-    else:
-        env['IMP_USE_PCH']=False
     if env.get('pythonpath', None):
         env['PYTHONPATH'] = env['pythonpath']
     else:
@@ -223,7 +217,7 @@ def _add_platform_flags(env):
         # be great to check if they match, but that is kind of hard.
         (opt, cflags, so) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         env['IMP_PYTHON_SO']=so
-        if gcc.get_is_gcc(env):
+        if dependency.gcc.get_is_gcc(env):
             basecflags=[x for x in opt.split()+cflags.split() \
                         if x not in ['-Werror', '-Wall','-O2', '-O3',
                                      '-fstack-protector', '-Wstrict-prototypes',
@@ -239,7 +233,7 @@ def _add_platform_flags(env):
                 ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
 
 
-    if gcc.get_is_gcc(env):
+    if dependency.gcc.get_is_gcc(env):
         env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
@@ -250,7 +244,7 @@ def _add_platform_flags(env):
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
                                  '-fno-float-store'])
-            if gcc.get_version(env)>= 4.3:
+            if dependency.gcc.get_version(env)>= 4.3:
                 env.Append(CXXFLAGS=['-fno-signed-zeros',
                                      '-freciprocal-math',
                                      '-fassociative-math'])
@@ -336,7 +330,7 @@ def MyEnvironment(variables=None, *args, **kw):
     env['SVNVERSION'] = env.WhereIs('svnversion')
     if env['svn'] and not env['SVNVERSION']:
         print  >> sys.stderr,"Warning: Could not find 'svnversion' binary in path"
-    compilation.configure_check(env)
+    dependency.compilation.configure_check(env)
     if platform == 'aix':
         # Make sure compilers are in the PATH, so that Python's script for
         # building AIX extension modules can find them:
@@ -345,16 +339,13 @@ def MyEnvironment(variables=None, *args, **kw):
     env.Prepend(CPPPATH=['#/build/include'])
     env.Prepend(LIBPATH=['#/build/lib'])
     env.Append(BUILDERS={'IMPRun': run.Run})
-    env.Append(BUILDERS={'IMPColorizePython': examples.ColorizePython})
-    env.Append(BUILDERS = {'IMPGeneratePCH': pch.GeneratePCH,
-                           'IMPBuildPCH': pch.BuildPCH})
-    env.AddMethod(imp_module.get_module_ok)
-    env.AddMethod(imp_module.get_module_modules)
-    env.AddMethod(imp_module.get_module_python_modules)
-    env.AddMethod(imp_module.get_module_dependencies)
-    env.AddMethod(imp_module.get_module_unfound_dependencies)
-    env.AddMethod(imp_module.get_module_version)
-    env.AddMethod(imp_module.get_found_modules)
+    env.AddMethod(module.get_module_ok)
+    env.AddMethod(module.get_module_modules)
+    env.AddMethod(module.get_module_python_modules)
+    env.AddMethod(module.get_module_dependencies)
+    env.AddMethod(module.get_module_unfound_dependencies)
+    env.AddMethod(module.get_module_version)
+    env.AddMethod(module.get_found_modules)
     env.AddMethod(dependency.get_found_dependencies)
     env.AddMethod(dependency.add_dependency_link_flags)
     env.AddMethod(dependency.get_dependency_libs)
@@ -362,40 +353,40 @@ def MyEnvironment(variables=None, *args, **kw):
     env.AddMethod(dependency.get_dependency_ok)
 
     # these should be in the module, but this seems to speed things up
-    env.AddMethod(imp_module.IMPModuleLib)
-    env.AddMethod(imp_module.IMPModuleInclude)
-    env.AddMethod(imp_module.IMPModuleData)
-    env.AddMethod(imp_module.IMPModulePython)
-    env.AddMethod(imp_module.IMPModuleTest)
-    env.AddMethod(imp_module.IMPModuleBuild)
-    env.AddMethod(imp_module.IMPModuleGetHeaders)
-    env.AddMethod(imp_module.IMPModuleGetExamples)
-    env.AddMethod(imp_module.IMPModuleGetExampleData)
-    env.AddMethod(imp_module.IMPModuleGetPythonTests)
-    env.AddMethod(imp_module.IMPModuleGetCPPTests)
-    env.AddMethod(imp_module.IMPModuleGetData)
-    env.AddMethod(imp_module.IMPModuleGetSources)
-    env.AddMethod(imp_module.IMPModuleGetPython)
-    env.AddMethod(imp_module.IMPModuleGetSwigFiles)
-    env.AddMethod(imp_module.IMPModuleGetBins)
-    env.AddMethod(imp_module.IMPModuleBin)
-    env.AddMethod(imp_module.IMPModuleDoc)
-    env.AddMethod(imp_module.IMPModuleExamples)
-    env.AddMethod(imp_module.IMPModuleGetDocs)
-    env.AddMethod(modpage.Publication)
-    env.AddMethod(modpage.Website)
-    env.AddMethod(modpage.StandardPublications)
-    env.AddMethod(modpage.StandardLicense)
+    env.AddMethod(module.IMPModuleLib)
+    env.AddMethod(module.IMPModuleInclude)
+    env.AddMethod(module.IMPModuleData)
+    env.AddMethod(module.IMPModulePython)
+    env.AddMethod(module.IMPModuleTest)
+    env.AddMethod(module.IMPModuleBuild)
+    env.AddMethod(module.IMPModuleGetHeaders)
+    env.AddMethod(module.IMPModuleGetExamples)
+    env.AddMethod(module.IMPModuleGetExampleData)
+    env.AddMethod(module.IMPModuleGetPythonTests)
+    env.AddMethod(module.IMPModuleGetCPPTests)
+    env.AddMethod(module.IMPModuleGetData)
+    env.AddMethod(module.IMPModuleGetSources)
+    env.AddMethod(module.IMPModuleGetPython)
+    env.AddMethod(module.IMPModuleGetSwigFiles)
+    env.AddMethod(module.IMPModuleGetBins)
+    env.AddMethod(module.IMPModuleBin)
+    env.AddMethod(module.IMPModuleDoc)
+    env.AddMethod(module.IMPModuleExamples)
+    env.AddMethod(module.IMPModuleGetDocs)
+    env.AddMethod(module._modpage.Publication)
+    env.AddMethod(module._modpage.Website)
+    env.AddMethod(module._modpage.StandardPublications)
+    env.AddMethod(module._modpage.StandardLicense)
     env.Append(BUILDERS={'IMPModuleRunTest': test.UnitTest})
     env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
-    env.Append(BUILDERS={'IMPModuleExamplesDox': examples.MakeDox})
-    env.Append(BUILDERS={'IMPModuleSWIG': swig.SwigIt})
-    env.Append(BUILDERS={'IMPModulePatchSWIG': swig.PatchSwig})
-    env.Append(BUILDERS={'IMPModuleSWIGPreface': swig.SwigPreface})
-    env.Append(BUILDERS={'IMPModuleMakeModPage': modpage.MakeModPage})
-    env.Append(BUILDERS = {'IMPModuleConfigH': config_h.ConfigH,
-                           'IMPModuleConfigCPP': config_h.ConfigCPP,
-                           'IMPModuleLinkTest': link_test.LinkTest})
+    env.Append(BUILDERS={'IMPModuleExamplesDox': module._examples.MakeDox})
+    env.Append(BUILDERS={'IMPModuleSWIG': module._swig.SwigIt})
+    env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
+    env.Append(BUILDERS={'IMPModuleSWIGPreface': module._swig.SwigPreface})
+    env.Append(BUILDERS={'IMPModuleMakeModPage': module._modpage.MakeModPage})
+    env.Append(BUILDERS = {'IMPModuleConfigH': module._config_h.ConfigH,
+                           'IMPModuleConfigCPP': module._config_h.ConfigCPP,
+                           'IMPModuleLinkTest': module._link_test.LinkTest})
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
@@ -597,5 +588,4 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('dynamic', 'Whether to build dynamic libraries (needed for python support).', True))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add('disabledmodules', 'A colon-separated list of modules to disable.', '')
-    vars.Add(BoolVariable('fastlink', 'Scons does not handle shared libraries properly by default and relinks everything every time one changes. If fastlink it true, then we work around this. Fastlink can only be set to true when on linux or mac and when there is no static linking. These preconditions are not currently checked. ', False))
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
