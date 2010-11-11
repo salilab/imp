@@ -1,9 +1,21 @@
 import scons_tools.utility
 import dependency
-import scons_tools.module
+import scons_tools.doc
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
+def _get_application_name(env):
+    return env['IMP_APP_NAME']
+
+def IMPApplicationDoc(env, authors,
+                   brief, overview,
+                   publications=None,
+                   license="standard"):
+    scons_tools.doc.add_doc_page(type="\page page_"+_get_application_name(env),
+                                 authors=authors,
+                                 brief=brief, overview=overview,
+                                 publications=publications,
+                                 license=license)
 
 def IMPCPPApplication(envi, target, source, required_modules=[],
                       optional_dependencies=[],

@@ -1,6 +1,6 @@
 Import('env')
 
-d = env.Publication(authors=["Keren Lasker", "Maya Topf",
+d = env.IMPPublication(authors=["Keren Lasker", "Maya Topf",
                              "Andrej Sali", "Haim J. Wolfson"],
                     title="Inferential optimization for simultaneous fitting "
                           "of multiple components into a cryoEM map of "
@@ -19,5 +19,5 @@ the protrusion of components from the map envelope, as well as the
 shape complementarity between pairs of components. The scoring function
 is optimized by an exact inference optimizer DOMINO that efficiently
 finds the global minimum in a discrete sampling space. For more information please see \\salilab{/MultiFit/,the MultiFit website}.""",
-                 publications=env.StandardPublications()+[d],
-                 license=env.StandardLicense())
+                 publications=env.IMPStandardPublications()+[d],
+                 license=env.IMPStandardLicense())

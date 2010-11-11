@@ -27,7 +27,7 @@ Implementation todo list:
 - make things work with particles that are a function of multiple optimized particles (eg centroids). Lots of things will have to change.
 - provide a means to filter a node based on already enumerated tables for adjacent nodes, this can probably be subsumed by the global allowed particle states table
 """,
-                 publications=env.StandardPublications(),
+                 publications=env.IMPStandardPublications(),
                  license="LGPL"
-#env.StandardLicense()
+#env.IMPStandardLicense()
 )

@@ -10,5 +10,5 @@ from \\imp optimizations. The display::Writer classes provides the base class fo
  .
 And display of boxes, points, spheres, segments, ellipsoids are supported.
 """,
-                 publications=env.StandardPublications(),
-                 license=env.StandardLicense())
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())
