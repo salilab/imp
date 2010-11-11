@@ -1,4 +1,3 @@
 Import('env')
 
-env.IMPModuleBin(env.IMPModuleGetBins(), required_modules=[],
-                 install=False)
+env.IMPModuleBin(env.IMPModuleGetBins())
