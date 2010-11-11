@@ -1,0 +1,14 @@
+Import('env')
+
+env= env.IMPApplication(name="EM tools",
+                        authors=["Keren Lasker"],
+                        brief="A variety of tools to manipulate density maps",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=[],
+                        required_modules=['em'],
+                        required_dependencies=[])
+
+env.IMPPythonExecutable('resample_density.py')
+env.IMPPythonExecutable('map2pca.py')
+env.IMPPythonExecutable('simulate_density_from_pdb.py')

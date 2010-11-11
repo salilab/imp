@@ -260,6 +260,7 @@ def IMPEnvironment(variables=None, *args, **kw):
     env.AddMethod(application.IMPApplication)
     env.AddMethod(application.IMPCPPBinary)
     env.AddMethod(application.IMPApplicationTest)
+    env.AddMethod(application.IMPPythonExecutable)
     env.Append(BUILDERS={'IMPApplicationRunTest': test.UnitTest})
 
     # these should be in systems

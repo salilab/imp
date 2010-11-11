@@ -38,29 +38,40 @@ def IMPApplication(env, name,
     env['IMP_APP_NAME']=name
     utility.add_link_flags(env, required_modules,
                            required_dependencies+env.get_found_dependencies(optional_dependencies))
+    dirs = Glob("*/SConscript")
+    for d in dirs:
+        env.SConscript(d, exports=['env'])
     return env
 
-def IMPCPPBinary(envi, target, source, ):
+def IMPCPPBinary(envi, target, source):
     if envi.GetOption('help'):
         return
     env= scons_tools.get_bin_environment(envi)
 
-    prog= env.Program(target=target, source=source)
+    prog= env.Program(target="#build/bin/"+target, source=source)
     bindir = env.GetInstallDirectory('bindir')
-    build= env.Install("#/build/bin", prog)
-    env['IMP_APPLICATION']=str(target)
     install = env.Install(bindir, prog)
-
-    env.SConscript('test/SConscript', exports=['env'])
-    env.Alias(env['IMP_APPLICATION'], build)
-    env.Alias(env['IMP_APPLICATION']+"-install", install)
-    env.Alias("all", build)
+    env.Alias(_get_application_name(env), prog)
+    env.Alias(_get_application_name(env)+"-install", install)
+    env.Alias("all", prog)
     env.Alias("install", install)
+
+
+def IMPPythonExecutable(env, file):
+    if env.GetOption('help'):
+        return
+    bindir = env.GetInstallDirectory('bindir')
+    build= env.Install("#/build/bin", file)
+    install = env.Install(bindir, file)
+    env.Alias(_get_application_name(env), build)
+    env.Alias(_get_application_name(env)+"-install", install)
+
+
 def IMPApplicationTest(env, python_tests=[]):
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [File(x).abspath for x in python_tests]
     test = env.IMPApplicationRunTest(target="test.passed", source=files,
                                      TEST_TYPE='unit test')
     env.AlwaysBuild("test.passed")
-    env.Requires(test, env.Alias(env['IMP_APPLICATION']))
+    env.Requires(test, env.Alias(_get_application_name(env)))
     env.Alias('test', test)

@@ -18,7 +18,7 @@ libpath=':'.join(["/opt/local/lib",os.path.join(prefix, 'lib')])
 path=os.environ['PATH']
 
 ## Build any local module added to the modules directory
-localmodules=True
+local=True
 
 ## The build more can be one of 'debug', 'release' or 'fast'.
 ## It is recommended that you use a 'debug' build for testing and development
