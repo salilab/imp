@@ -1,0 +1,6 @@
+Import('env')
+
+dirs= Glob("*/SConscript")
+
+for d in dirs:
+    SConscript(d)

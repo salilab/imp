@@ -25,11 +25,11 @@ def IMPApplication(env, name,
                                  license)
     for m in required_modules:
         if not env.get_module_ok(m):
-            print target, "disabled due to missing module IMP."+m
+            print name, "disabled due to missing module IMP."+m
             return
     for d in required_dependencies:
         if not env.get_dependency_ok(d):
-            print target, "disabled due to missing dependency", d
+            print name, "disabled due to missing dependency", d
             return
     print "Configuration application", name
     if len(required_modules+required_dependencies)>0:
