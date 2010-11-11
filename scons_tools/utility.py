@@ -105,3 +105,23 @@ def add_link_flags(env, modules, dependencies):
         dependency_libs+=env.get_dependency_libs(d)
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
+
+
+def get_split_into_directories(paths):
+    """Split the input files based on the directory containing them.
+    The result is a dictionary containing list like dirname:[file0, file1...]
+    """
+    retdir={}
+    for p in paths:
+        components= str(p).split("/")
+        if len(components) >1:
+            cd= components[0:-1]
+            fn= components[-1]
+        else:
+            cd="."
+            fn=components[-1]
+        if cd in retdir.keys:
+            retdir[cd].append(fn)
+        else:
+            retdir[cd]=[fn]
+    return retdir
