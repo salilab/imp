@@ -41,9 +41,6 @@ if env.get('repository', None) is not None:
 env['IMP_MODULES_ALL']=[]
 
 if not env.GetOption('help'):
-
-    env.AddMethod(scons_tools.application.IMPApplicationTest)
-    env.Append(BUILDERS={'IMPApplicationRunTest': scons_tools.test.UnitTest})
     if not env.GetOption('clean'):
         if not env.get('COMPILER_OK', None):
             Exit("""
@@ -104,6 +101,7 @@ if not env.GetOption('help'):
 SConscript('kernel/SConscript')
 SConscript('modules/SConscript')
 SConscript('applications/SConscript')
+SConscript('biological_systems/SConscript')
 
 
 if not env.GetOption('help'):

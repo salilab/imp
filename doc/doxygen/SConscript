@@ -185,7 +185,8 @@ sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/kernel/doc/generated/*.dox") \
           + Glob("#/modules/*/doc/generated/*.dox") + modexamples \
           + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")\
-          + Glob("#applications/*/*.dox") + Glob("#applications/*/generated/*.dox")
+          + Glob("#applications/*/*.dox") + Glob("#applications/*/generated/*.dox")\
+          + Glob("#biological_systems/*/*.dox") + Glob("#biological_systems/*/generated/*.dox")\
 
 if env['IMP_PROVIDE_PYTHON']:
     for p in env.get('IMP_PYTHON_DOCS', []):

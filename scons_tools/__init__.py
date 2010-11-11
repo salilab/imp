@@ -12,6 +12,7 @@ import dependency.compilation
 import module
 import dependency
 import platform
+import biology
 import data
 import variables as impvariables
 from mypopen import MyPopen
@@ -258,6 +259,11 @@ def IMPEnvironment(variables=None, *args, **kw):
     # these should be in application, but...
     env.AddMethod(application.IMPApplication)
     env.AddMethod(application.IMPCPPBinary)
+    env.AddMethod(application.IMPApplicationTest)
+    env.Append(BUILDERS={'IMPApplicationRunTest': test.UnitTest})
+
+    # these should be in systems
+    env.AddMethod(biology.IMPSystem)
 
     # these should be in the module, but this seems to speed things up
     env.AddMethod(module.IMPModuleBuild)
