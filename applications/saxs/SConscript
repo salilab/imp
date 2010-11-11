@@ -10,4 +10,4 @@ env= env.IMPApplication(name="foxs", version="SVN",
                         required_dependencies=['Boost.ProgramOptions'])
 
 if env:
-    env.IMPCPPBinary(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
+    env.IMPCPPExecutable(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])

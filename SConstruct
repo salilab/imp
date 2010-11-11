@@ -24,9 +24,9 @@ EnsureSConsVersion(0, 98)
 # Set up build environment:
 vars = Variables(files=[File('#/config.py').abspath])
 scons_tools.variables.add_common_variables(vars, "imp")
-env = scons_tools.IMPEnvironment(variables=vars,
-                                 tools=["default", "swig"],
-                                 toolpath=["scons_tools"])
+env = scons_tools.environment.get_base_environment(variables=vars,
+                                                   tools=["default", "swig"],
+                                                   toolpath=["scons_tools"])
 env['IMP_ENABLED']=[]
 env['IMP_DISABLED']=[]
 env['IMP_BUILD_SUMMARY']=""

@@ -4,10 +4,6 @@ import os.path
 import re
 import sys
 from SCons.Script import *
-import hierarchy
-import symlinks
-import bug_fixes
-import standards
 import dependency.compilation
 import module
 import dependency

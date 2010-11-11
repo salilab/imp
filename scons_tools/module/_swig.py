@@ -16,6 +16,10 @@ base_includes= ["IMP_macros.i",
                 "IMP_streams.i",]
 
 
+def _null_scanner(node, env, path):
+    print "null scanning", node.abspath
+    return []
+
 # 1. Workaround for SWIG bug #1863647: Ensure that the PySwigIterator class
 #    (SwigPyIterator in 1.3.38 or later) is renamed with a module-specific
 #    prefix, to avoid collisions when using multiple modules

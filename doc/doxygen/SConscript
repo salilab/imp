@@ -3,6 +3,7 @@ Import('env')
 import os
 import os.path
 import sys
+import scons_tools.install
 
 def run_doxygen(target, source, env):
     os.environ['PATH']=env['ENV']['PATH']
@@ -130,7 +131,7 @@ env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
 env.Append(BUILDERS = {'MakeDefs': Builder(action=env.Action(make_defs,
                                                                make_defs))})
 
-docdir = env.GetInstallDirectory('docdir', 'html')
+docdir = scons_tools.install.get_install_directory(env, 'docdir', 'html')
 
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)
