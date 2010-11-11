@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPSystem(name="Groel",
+env= env.IMPSystem(name="Groel", version="SVN",
                    authors=["Keren Lasker"],
                    brief="Compute the scattering profile of an assembly",
                    overview="",

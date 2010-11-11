@@ -125,3 +125,48 @@ def get_split_into_directories(paths):
         else:
             retdir[cd]=[fn]
     return retdir
+
+
+def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]):
+    if env['SVNVERSION'] and env['svn']:
+        if env.get('repository'):
+            rep=env['repository']
+            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
+            pf=Dir(".").abspath[len(dp)+1:]
+            #print pf
+            reppath=Dir("#/"+rep).abspath
+            path=os.path.join(reppath, pf)
+        else:
+            path=Dir(".").abspath
+        try:
+            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
+            version= "SVN "+vr.split("\n")[0]
+        except OSError, detail:
+            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
+
+    if len(optional_dependencies+ optional_modules)>0:
+        version=version+" with "+", ".join(optional_dependencies+ optional_modules)
+    return version
+
+def configure(env, name, type, version, required_modules=[],
+              optional_dependencies=[], optional_modules=[],
+              required_dependencies=[]):
+    """Returns ok, version, found_optional_modules, found_optional_dependencies"""
+    for m in required_modules:
+        if not env.get_module_ok(m):
+            print type.capitalize(), name, "disabled due to disabled module "\
+                  "IMP."+m
+            return (False, None, None, None)
+    for m in required_dependencies:
+        if not env.get_dependency_ok(m):
+            print type.capitalize(), name, "disabled due to missing dependency "\
+                  +m
+            return (False, None, None, None)
+    found_optional_modules=env.get_found_modules(optional_modules)
+    found_optional_dependencies=env.get_found_dependencies(optional_dependencies)
+    version= _get_cwd_version(env, version, optional_dependencies=found_optional_dependencies,
+                             optional_modules=found_optional_modules)
+    print "Configuring", type, name,"version", version
+    if len(required_modules+required_dependencies)>0:
+        print "  (requires " +", ".join(required_modules+required_dependencies) +")"
+    return (True, version, found_optional_modules, found_optional_dependencies)

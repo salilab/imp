@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="foxs",
+env= env.IMPApplication(name="foxs", version="SVN",
                         authors=["Dina Schneidman"],
                         brief="Compute the scattering profile of an assembly",
                         overview="",

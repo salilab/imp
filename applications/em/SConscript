@@ -1,6 +1,6 @@
 Import('env')
 
-env= env.IMPApplication(name="EM tools",
+env= env.IMPApplication(name="EM tools", version="SVN",
                         authors=["Keren Lasker"],
                         brief="A variety of tools to manipulate density maps",
                         overview="",
