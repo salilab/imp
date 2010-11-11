@@ -9,7 +9,7 @@ d = env.IMPPublication(authors=["Keren Lasker", "Maya Topf",
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Keren Lasker"],
-                 brief="MODULENAME contains a protocol for fitting proteins to EM maps.",
+                 brief="This module contains a protocol for fitting proteins to EM maps.",
                  overview="""MultiFit is a computational method for
 simultaneously fitting atomic structures of components into their
 assembly density map at resolutions as low as 25A. The

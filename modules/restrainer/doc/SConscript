@@ -2,7 +2,7 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Elina Tjioe", "Keren Lasker", "Jeremy Phillips", "Ben Webb"],
-                 brief="""MODULENAME provides a higher level interface for using experimental proteomics data with \\imp""",
+                 brief="""This module provides a higher level interface for using experimental proteomics data with \\imp""",
                  overview="""\\section i1 Introduction
 
 Restrainer is an IMP module that provides convenient way of inputting molecule

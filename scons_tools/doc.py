@@ -34,7 +34,7 @@ def _unmangle(value):
 
 def _action_make_module_page(target, source, env):
     fh= file(target[0].path, 'w')
-    print >> fh, '/** '+source[0]
+    print >> fh, '/** '+source[0].get_contents()
     print >> fh, "    \\nosubgrouping"
     #print str(source[0])
     #print source[0].get_contents()
@@ -42,14 +42,13 @@ def _action_make_module_page(target, source, env):
     #print >> fh, "\n\\version \n"+str(env['IMP_MODULE_VERSION'])
     #print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
     if source[3].get_contents() != "None":
-        print >> fh, "\n"+filter(env, source[3].get_contents())
-    print >> fh, '\n\nExamples can be found on the \\ref IMP_'+imp_module.get_module_name(env)+'_examples "'+imp_module.get_module_full_name(env)+' examples" page.\n'
+        print >> fh, "\n"+ source[3].get_contents()
     print >> fh, "\n\\section auth Author(s)\n"+", ".join(_unmangle(source[1]))
     print >> fh, "\n\\section vers Version\n"+ str(env.get_module_version())+"\n"
 
     if source[5].get_contents() != "None":
         print >> fh, "\n\\license "+source[5].get_contents()
-    pubs= unmangle(source[4])
+    pubs= _unmangle(source[4])
     if pubs and len(pubs) != 0:
         print >> fh, "\n\\publications\n"+"\n".join([" - "+x for x in pubs])
     print >> fh, "*/"

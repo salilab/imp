@@ -2,7 +2,7 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Dina Schneidman"],
-                 brief="MODULENAME provides benchmarks of a variety of aspects of \\imp",
+                 brief="This module provides benchmarks of a variety of aspects of \\imp",
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense(),
                  overview="""The benchmarks are run daily on
