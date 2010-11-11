@@ -9,4 +9,5 @@ env= env.IMPApplication(name="foxs", version="SVN",
                         required_modules=['saxs'],
                         required_dependencies=['Boost.ProgramOptions'])
 
-env.IMPCPPBinary(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
+if env:
+    env.IMPCPPBinary(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
