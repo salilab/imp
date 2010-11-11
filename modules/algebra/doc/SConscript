@@ -68,5 +68,5 @@ CGAL are licensed under LGPL and QPL and commercial licenses are
 available if needed. More information can be found on the
 \\external{www.cgal.org/license.html, CGAL license page}.
 """,
-                 publications=env.StandardPublications(),
-                 license=env.StandardLicense())
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())

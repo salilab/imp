@@ -11,14 +11,14 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  overview="""The overview section of the module page can contain any doxygen markup as well as references to \\imp classes such as IMP::Model. See \external{http://www.doxygen.org, the doxygen web site} for a full description of what can be done in doxygen.
 
 Remember to escape characters to keep python happy.""",
-                 # Publications can be added using the env.Publication() function
+                 # IMPPublications can be added using the env.IMPPublication() function
                  # The result should be a python list
-                 # env.StandardPublications() defines the general IMP publications
-                 publications=env.StandardPublications()\
-                     + [env.Publication(authors=["Some Person", "Someone Else"],
+                 # env.IMPStandardPublications() defines the general IMP publications
+                 publications=env.IMPStandardPublications()\
+                     + [env.IMPPublication(authors=["Some Person", "Someone Else"],
                                         title="A silly title of no paper",
                                         journal="Dev Null", year=2051),
-                        env.Website(url="http://www.salilab.org/imp", name="IMP")],
-                 # License can be either env.StandardLicense() to be the same as the rest of IMP
+                        env.IMPWebsite(url="http://www.salilab.org/imp", name="IMP")],
+                 # License can be either env.IMPStandardLicense() to be the same as the rest of IMP
                  # or it can be a string describing the license, such as "GPL".
-                 license=env.StandardLicense())
+                 license=env.IMPStandardLicense())

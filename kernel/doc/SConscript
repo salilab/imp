@@ -7,6 +7,6 @@ env.IMPModuleDoc(files=env.IMPModuleGetDocs(),
 base classes for representation, scoring and sampling. In addition it provides basic functionality
 such as I/O, \\ref log "logging" and \\ref assert "Error Reporting"
 support as well as tools to help implement functionality.""",
-                 publications=env.StandardPublications(),
-                 license=env.StandardLicense(),
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense(),
                  )

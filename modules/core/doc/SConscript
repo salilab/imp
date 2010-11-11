@@ -4,5 +4,5 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Ben Webb"],
                  brief= "MODULENAME contains basic functionality that is expected to be used by a wide variety of \\imp users.",
                  overview="""MODULENAME contains basic functionality that is expected to be used by a wide variety of \\imp users. The classes in it should not directly incorporate experimental data and instead should provide basic building blocks for making restraints and manipulating Particle objects. Typical classes are IMP::core::Harmonic, IMP::DistancePairScore, IMP::VolumeRestraint etc.""",
-                 publications=env.StandardPublications(),
-                 license=env.StandardLicense())
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())

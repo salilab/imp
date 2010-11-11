@@ -5,6 +5,6 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="MODULENAME provides a wrapper for the \external{bulletphysics.org, Bullet} physics engine.",
                  overview="""The module provides a collision resolving optimizer.""",
                  publications=[],
-                 # License can be either env.StandardLicense() to be the same as the rest of IMP
+                 # License can be either env.IMPStandardLicense() to be the same as the rest of IMP
                  # or it can be a string describing the license, such as "GPL".
-                 license=env.StandardLicense())
+                 license=env.IMPStandardLicense())

@@ -12,6 +12,7 @@ import _link_test
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
+import scons_tools.doc
 import _modpage
 import scons_tools.utility
 
@@ -517,12 +518,9 @@ def IMPModuleDoc(env, files, authors,
     build=[]
     install=[]
     docdir=env['docdir']+"/"+get_module_variables(env)['module_include_path']
-    build.append(env.IMPModuleMakeModPage(source=[env.Value(authors),
-                                             env.Value(brief),
-                                             env.Value(overview),
-                                             env.Value(publications),
-                                             env.Value(license)],
-                                     target='generated/overview.dox'))
+    build.append(scons_tools.doc.add_doc_page(env,
+                                  "\\namespace "+scons_tools.module.get_module_variables(env)['namespace'],
+                                  authors, brief, overview, publications, license))
     for f in files:
         #print "file", str(f)
         if str(f).endswith(".dox") or str(f).endswith(".dot"):
