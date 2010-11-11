@@ -5,7 +5,7 @@ import os
 import UserList
 from SCons.Script import Action, Entry, File
 import scons_tools.module
-import scons_tools.hierarchy
+import scons_tools.install
 
 # should merge with one in scons_tools.module.py
 
@@ -31,12 +31,9 @@ def _build_header(target, source, env):
     print >> fh, "\n#endif  /* %(PREPROC)s_H */" % vars
 
 def build_header(env, dir, sources):
-    targets=[]
     source_list=[str(x) for x in sources]
     source_list.sort()
-    t = env.Command(dir + '.h', env.Value(" ".join(source_list)),
+    t = env.Command(dir, env.Value(" ".join(source_list)),
                     Action(_build_header,
                                'Auto-generating header ${TARGET}'))
-
-    targets.append(t)
-    return targets
+    return t

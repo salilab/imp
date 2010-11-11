@@ -3,7 +3,8 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import SCons.Node.FS
 import os
 import os.path
-import scons_tools.hierarchy
+import scons_tools.install
+import scons_tools.test
 
 
 def _action_colorize_python(target, source, env):
@@ -55,12 +56,10 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
     env.Append(BUILDERS={'IMPColorizePython': ColorizePython})
     build=[]
     dox=[]
-    install=[]
     example_files= [File(x) for x in example_files]
     test_files = [x for x in example_files if x.name.startswith("test_")]
     example_files = [x for x in example_files if not x.name.startswith("test_")]
     data_files= [File(x) for x in data_files]
-    exampledir = env.GetInstallDirectory('docdir')+"/examples"
     for f in example_files:
         if str(f).endswith(".py"):
             c= env.IMPColorizePython(str(inputpath) + '/' \
@@ -72,16 +71,12 @@ def handle_example_dir(env, inputpath, name, prefix, example_files, data_files):
             #install.append(env.Install(exampledir+"/"+prefix, f.abspath))
         #elif str(f).endswith(".readme"):
         #    install.append(env.Install(exampledir+"/"+prefix, f.abspath))
-    install = scons_tools.hierarchy.InstallHierarchy(env, exampledir+"/"+prefix, example_files+data_files, False)
-    build = scons_tools.hierarchy.InstallHierarchy(env, "#/build/doc/examples/"+prefix, example_files+data_files, True)
-    test= env.IMPModuleRunTest('tests.passed',
-                             ["#/tools/imppy.sh",
-                              "#/scons_tools/run-all-examples.py"]\
-                             +[x for x in example_files
-                               if str(x).endswith(".py") \
-                               and str(x).find("fragment")==-1] + test_files,
-                             TEST_TYPE='example')
-    env.AlwaysBuild("tests.passed")
-    doxpage= env.IMPModuleExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)
-    dox.append(doxpage)
-    return (dox, build, install, test)
+    scons_tools.install.install_hierarchy(env, "docdir/examples/"+prefix, example_files+data_files)
+    test= scons_tools.test.add_test(env,
+                               ["#/tools/imppy.sh",
+                                "#/scons_tools/run-all-examples.py"]\
+                               +[x for x in example_files
+                                 if str(x).endswith(".py") \
+                                 and str(x).find("fragment")==-1] + test_files,
+                               type='example')
+    env.IMPModuleExamplesDox(File(str(inputpath)+"/generated/examples.dox"), example_files)

@@ -2,6 +2,9 @@ import utility
 import dependency
 import doc
 import bug_fixes
+import install
+import test
+import environment
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -30,7 +33,7 @@ def IMPApplication(env, name, version,
                                  brief, overview,
                                  publications,
                                  license)
-    env= bug_fixes.clone_env(env)
+    env= scons_tools.environment.get_named_environment(env, name)
     env['IMP_APP_NAME']=name
     utility.add_link_flags(env, required_modules,
                            required_dependencies+env.get_found_dependencies(optional_dependencies))
@@ -39,35 +42,23 @@ def IMPApplication(env, name, version,
         env.SConscript(d, exports=['env'])
     return env
 
-def IMPCPPBinary(envi, target, source):
+def IMPCPPExecutable(envi, target, source):
     if envi.GetOption('help'):
         return
-    env= scons_tools.get_bin_environment(envi)
+    env= environment.get_bin_environment(envi)
 
-    prog= env.Program(target="#build/bin/"+target, source=source)
-    bindir = env.GetInstallDirectory('bindir')
-    install = env.Install(bindir, prog)
-    env.Alias(_get_application_name(env), prog)
-    env.Alias(_get_application_name(env)+"-install", install)
-    env.Alias("all", prog)
-    env.Alias("install", install)
+    prog= env.Program(target="#/build/bin/"+target, source=source)
+    bindir = install.install(env,'bindir', prog[0])
 
 
 def IMPPythonExecutable(env, file):
     if env.GetOption('help'):
         return
-    bindir = env.GetInstallDirectory('bindir')
-    build= env.Install("#/build/bin", file)
-    install = env.Install(bindir, file)
-    env.Alias(_get_application_name(env), build)
-    env.Alias(_get_application_name(env)+"-install", install)
+    install.install(env, "bindir", file)
 
 
 def IMPApplicationTest(env, python_tests=[]):
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [File(x).abspath for x in python_tests]
-    test = env.IMPApplicationRunTest(target="test.passed", source=files,
-                                     TEST_TYPE='unit test')
-    env.AlwaysBuild("test.passed")
-    env.Requires(test, env.Alias(_get_application_name(env)))
-    env.Alias('test', test)
+    test.add_test(env, source=files,
+                  type='unit test')

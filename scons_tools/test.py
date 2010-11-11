@@ -1,5 +1,6 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
 import pyscanner
+import environment
 import os
 import os.path
 import scons_tools.module
@@ -8,19 +9,16 @@ import scons_tools.module
 disabled_modules = []
 
 def _get_name(env):
-    if env.has_key('IMP_APPLICATION'):
-        return env['IMP_APPLICATION']
-    else:
-        return "IMP." +scons_tools.module.get_module_name(env)
+    return environment.get_current_name(env)
 
 def _action_unit_test(target, source, env):
     global disabled_modules
     #app = "cd %s; %s %s %s -v > /dev/null"
     fsource=[]
-    for x in source[2:]:
+    for x in source[2:-1]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
-    if env['TEST_TYPE'] == 'example':
+    if source[-1] == 'example':
         # Quote list of modules so that the shell passes an empty parameter
         # to the script if there are no disabled modules (rather than the
         # script treating the first file as the list of disabled modules)
@@ -34,19 +32,32 @@ def _action_unit_test(target, source, env):
              " ".join(fsource))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
-        print "%s %ss succeeded" % (_get_name(env), env['TEST_TYPE'])
+        print "%s %ss succeeded" % (_get_name(env), source[-1])
     else:
-        print "%s %ss FAILED" % (_get_name(env), env['TEST_TYPE'])
+        print "%s %ss FAILED" % (_get_name(env), source[-1])
         return 1
 
 
 def _print_unit_test(target, source, env):
-    print "Running %s %ss" % (_get_name(env), env['TEST_TYPE'])
+    print "Running %s %ss" % (_get_name(env), source[-1])
 
 UnitTest = Builder(action=Action(_action_unit_test,
                                 _print_unit_test),
                    source_scanner=pyscanner.PythonScanner)
 
+
+def add_test(env, source, type):
+    test=UnitTest(env, target="test.passed", source=source+[env.Value(type)])
+    env.Requires(test, "#/build/lib/compat_python")
+    env.AlwaysBuild("test.passed")
+    env.Requires(test, env.Alias(environment.get_current_name(env)+"-build"))
+    env.Requires(test, "tools/imppy.sh")
+    if type=='unit test':
+        env.Alias(env.Alias(environment.get_current_name(env)+"-test"), test)
+    elif type=='example':
+        env.Alias(env.Alias(environment.get_current_name(env)+"-test-examples"), test)
+    env.Alias(env.Alias('test'), test)
+    return test
 
 
 def _action_cpp_test(target, source, env):

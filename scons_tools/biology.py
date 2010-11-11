@@ -3,10 +3,8 @@ import dependency
 import doc
 import bug_fixes
 import scons_tools
+import environment
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
-
-def _get_system_name(env):
-    return env['IMP_SYSTEM_NAME']
 
 def IMPSystem(env, name, version,
               authors,
@@ -30,8 +28,7 @@ def IMPSystem(env, name, version,
                                  brief, overview,
                                  publications,
                                  license)
-    env= bug_fixes.clone_env(env)
-    env['IMP_SYSTEM_NAME']=name
+    env= scons_tools.environment.get_named_environment(env, name)
     utility.add_link_flags(env, required_modules,
                            required_dependencies+env.get_found_dependencies(optional_dependencies))
     return env

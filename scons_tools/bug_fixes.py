@@ -21,5 +21,6 @@ def clone_env(env):
                      LDMODULEFLAGS= copy.deepcopy(env.get("LDMODULEFLAGS", [])),
                      LDMODULEPREFIX= copy.deepcopy(env.get("LDMODULEPREFIX", "")),
                      SHLIBPREFIX= copy.deepcopy(env.get("SHLIBPREFIX", "")),
+                     SCANNERS= [x for x in env.get("SCANNERS", [])],
                      LDMODULESUFFIX= copy.deepcopy(env.get("LDMODULESUFFIX", "")),
                      SHLIBSUFFIX= copy.deepcopy(env.get("SHLIBSUFFIX", "")))
