@@ -93,25 +93,7 @@ def get_module_version(env, module=None):
         module= get_module_name(env)
     return env['IMP'+module+'_version']
 
-def _set_module_version(env, module, version, deps):
-    if version == "SVN" and env['svn'] and env['SVNVERSION']:
-        if env.get('repository'):
-            rep=env['repository']
-            dp= os.path.commonprefix([Dir("#/").abspath, Dir(".").abspath])
-            pf=Dir(".").abspath[len(dp)+1:]
-            #print pf
-            reppath=Dir("#/"+rep).abspath
-            path=os.path.join(reppath, pf)
-        else:
-            path=Dir(".").abspath
-        try:
-            vr= os.popen(env['SVNVERSION'] + ' ' + path).read()
-            version= "SVN "+vr.split("\n")[0]
-        except OSError, detail:
-            print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
-
-    if len(deps)>0:
-        version=version+" with "+", ".join(deps)
+def _set_module_version(env, module, version):
     env['IMP'+module+'_version']=version
 
 def get_module_unfound_dependencies(env, module=None):
@@ -628,25 +610,19 @@ def IMPModuleBuild(env, version, required_modules=[],
     if module.lower() != module:
         print >> sys.stderr, "Module names must be all lower case. This can change if you complain, but might be complicated to fix. Failed on", module
         env.Exit(1)
-
-    for m in required_modules+lib_only_required_modules:
-        if not env.get_module_ok(m):
-            print "Module IMP."+module, "disabled due to disabled module "\
-                  "IMP."+m
-            _set_module_ok(env, module, False)
-            return
-    for m in required_dependencies:
-        if not env.get_dependency_ok(m):
-            print "Module IMP."+module, "disabled due to missing dependency "\
-                  +m
-            _set_module_ok(env, module, False)
-            return
-    found_optional_modules=env.get_found_modules(optional_modules)
+    (ok, version, found_optional_modules, found_optional_dependencies)\
+         = scons_tools.utility.configure(env, "IMP."+module, "module", version,
+                             required_modules=required_modules+lib_only_required_modules,
+                             optional_dependencies=optional_dependencies,
+                             optional_modules= optional_modules,
+                             required_dependencies= required_dependencies)
+    _set_module_ok(env, module, ok)
+    if not ok:
+        return
     _set_module_modules(env, module,required_modules+found_optional_modules\
                                      +lib_only_required_modules)
-    _set_module_python_modules(env, module,required_modules+env.get_found_modules(optional_modules))
+    _set_module_python_modules(env, module,required_modules+found_optional_modules)
     env['IMP_MODULES_ALL'].append(module)
-    _set_module_ok(env, module, True)
 
     preclone=env
     found_optional_dependencies=env.get_found_dependencies(optional_dependencies)
@@ -658,8 +634,7 @@ def IMPModuleBuild(env, version, required_modules=[],
     _set_module_dependencies(env, module, found_optional_dependencies\
                              +required_dependencies)
 
-    _set_module_version(env, module, version,
-                        found_optional_modules+found_optional_dependencies);
+    _set_module_version(env, module, version);
 
     env = scons_tools.bug_fixes.clone_env(env)
     _set_module_name(env, module)
@@ -681,10 +656,6 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     module_alias(env, 'config', build_config)
 
-    print "Configuring module IMP." + get_module_name(env)+" version "+env.get_module_version()
-
-    if len(required_modules+required_dependencies)>0:
-        print "  (requires " +", ".join(required_modules+required_dependencies) +")"
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
 
