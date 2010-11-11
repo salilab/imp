@@ -2,7 +2,7 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel"],
-                 brief="MODULENAME provides a wrapper for the \external{bulletphysics.org, Bullet} physics engine.",
+                 brief="This module provides a wrapper for the \external{bulletphysics.org, Bullet} physics engine.",
                  overview="""The module provides a collision resolving optimizer.""",
                  publications=[],
                  # License can be either env.IMPStandardLicense() to be the same as the rest of IMP

@@ -4,7 +4,7 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel", "Keren Lasker"],
                  # Provide a brief description of what the module does
-                 brief="MODULENAME provides a divide and conquer sampler. It provides a simpler interface and (hopefully) faster performance than the original IMP.domino module.",
+                 brief="This module provides a divide and conquer sampler. It provides a simpler interface and (hopefully) faster performance than the original IMP.domino module.",
                  # Provide a longer description of what the module does
                  # This description can have multiple paragraphs and all sorts of markup
                  overview="""This module provides a sampler which finds good solutions over a discrete sampling space. That is given

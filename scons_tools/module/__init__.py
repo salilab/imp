@@ -518,6 +518,7 @@ def IMPModuleDoc(env, files, authors,
     build=[]
     install=[]
     docdir=env['docdir']+"/"+get_module_variables(env)['module_include_path']
+    overview= overview+'\n\nExamples can be found on the \\ref IMP_'+get_module_name(env)+'_examples "'+get_module_full_name(env)+' examples" page.\n'
     build.append(scons_tools.doc.add_doc_page(env,
                                   "\\namespace "+scons_tools.module.get_module_variables(env)['namespace'],
                                   authors, brief, overview, publications, license))

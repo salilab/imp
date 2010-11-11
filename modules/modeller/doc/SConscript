@@ -2,8 +2,8 @@ Import('env')
 
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Ben Webb", "Daniel Russel"],
-                 brief="MODULENAME contains functionality for integrating Modeller with IMP.",
-                 overview="""MODULENAME supports integration of Modeller with IMP. See
+                 brief="This module contains functionality for integrating Modeller with IMP.",
+                 overview="""This module supports integration of Modeller with IMP. See
 \\external{salilab.org/modeller/, the Modeller page} for more information about Modeller.""",
                  publications=[env.IMPPublication(authors=["Andrej Sali", "Tom Blundell"],
                                                title="Comparative protein modelling by satisfaction of spatial restraints",
