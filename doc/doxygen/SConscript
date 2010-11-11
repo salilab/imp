@@ -184,7 +184,8 @@ sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
           + Glob("#/modules/*/examples/*/*.xml") \
           + Glob("#/kernel/doc/generated/*.dox") \
           + Glob("#/modules/*/doc/generated/*.dox") + modexamples \
-          + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")
+          + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")\
+          + Glob("#applications/*/*.dox") + Glob("#applications/*/generated/*.dox")
 
 if env['IMP_PROVIDE_PYTHON']:
     for p in env.get('IMP_PYTHON_DOCS', []):

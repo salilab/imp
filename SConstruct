@@ -39,8 +39,6 @@ if env.get('repository', None) is not None:
     Repository(env['repository'])
 
 env['IMP_MODULES_ALL']=[]
-env.AddMethod(scons_tools.module.IMPModuleBuild)
-env.AddMethod(scons_tools.application.IMPCPPApplication)
 
 if not env.GetOption('help'):
 

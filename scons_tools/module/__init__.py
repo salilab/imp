@@ -521,7 +521,8 @@ def IMPModuleDoc(env, files, authors,
     overview= overview+'\n\nExamples can be found on the \\ref IMP_'+get_module_name(env)+'_examples "'+get_module_full_name(env)+' examples" page.\n'
     build.append(scons_tools.doc.add_doc_page(env,
                                   "\\namespace "+scons_tools.module.get_module_variables(env)['namespace'],
-                                  authors, brief, overview, publications, license))
+                                  authors, get_module_version(env),
+                                              brief, overview, publications, license))
     for f in files:
         #print "file", str(f)
         if str(f).endswith(".dox") or str(f).endswith(".dot"):

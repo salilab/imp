@@ -255,8 +255,12 @@ def IMPEnvironment(variables=None, *args, **kw):
     env.AddMethod(dependency.get_dependency_libs)
     env.AddMethod(dependency.get_all_known_dependencies)
     env.AddMethod(dependency.get_dependency_ok)
+    # these should be in application, but...
+    env.AddMethod(application.IMPApplication)
+    env.AddMethod(application.IMPCPPBinary)
 
     # these should be in the module, but this seems to speed things up
+    env.AddMethod(module.IMPModuleBuild)
     env.AddMethod(module.IMPModuleLib)
     env.AddMethod(module.IMPModuleInclude)
     env.AddMethod(module.IMPModuleData)

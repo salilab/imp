@@ -1,4 +1,12 @@
 Import('env')
-env.IMPCPPApplication(target="foxs", source=["profile.cpp", "Gnuplot.cpp"],
-                      required_modules=['saxs'],
-                      required_dependencies=['Boost.ProgramOptions'])
+
+env= env.IMPApplication(name="foxs",
+                        authors=["Dina Schneidman"],
+                        brief="Compute the scattering profile of an assembly",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=[],
+                        required_modules=['saxs'],
+                        required_dependencies=['Boost.ProgramOptions'])
+
+env.IMPCPPBinary(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])
