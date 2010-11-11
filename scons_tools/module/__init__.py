@@ -29,6 +29,15 @@ def get_module_full_name(env):
         name="IMP."+name
     return name
 
+def get_module_path(env, module=None):
+    if not module:
+        module= get_module_name(env)
+    name=module
+    if name=="kernel":
+        name="IMP"
+    else:
+        name="IMP."+name
+    return name
 
 def _set_module_name(env, module):
     env['IMP_MODULE_NAME']=module
@@ -258,10 +267,7 @@ def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
     vars=get_module_variables(env)
     datadir = env.GetInstallDirectory('datadir')
-    if vars['module']== 'kernel':
-        path=""
-    else:
-        path=vars['module']
+    path= get_module_path(env)
     install = scons_tools.hierarchy.InstallHierarchy(env, datadir+"/"+path, files, False)
     build = scons_tools.hierarchy.InstallHierarchy(env, "#/build/data/"+path, files, True)
     module_alias(env, 'data', build)
@@ -274,10 +280,7 @@ def IMPModuleExamples(env, example_files, data_files):
     vars=get_module_variables(env)
     #for f in files:
     #    print f.abspath
-    if vars['module']== 'kernel':
-        path=""
-    else:
-        path=vars['module']
+    path= get_module_path(env)
     (dox, build, install, test)= _examples.handle_example_dir(env, Dir("."), vars['module'], path, example_files,data_files)
     module_alias(env, 'examples', build)
     add_to_global_alias(env, 'all', 'examples')
