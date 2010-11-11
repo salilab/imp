@@ -7,6 +7,8 @@
  */
 #include <IMP/multifit/anchor_graph.h>
 #include <IMP/algebra/VectorD.h>
+#include <IMP/core/XYZ.h>
+#include <IMP/algebra/vector_search.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -21,30 +23,32 @@ ProbabilisticAnchorGraph::ProbabilisticAnchorGraph(
                     anchor_positions.end());
 }
 
-void ProbabilisticAnchorGraph::set_component_probabilities_on_anchors(
-                           int comp_ind,
-                           algebra::Vector3D comp_center,
-                           FittingSolutionRecords sols) {
-  Floats probs;
+void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
+                         Particle *p,
+                         FittingSolutionRecords sols) {
+  IMP_USAGE_CHECK(sols.size()>0,
+                  "no solutions provided\n");
+  algebra::NearestNeighborD<3> nn(positions_);
   Ints anchor_counters;
   anchor_counters.insert(anchor_counters.end(),positions_.size(),0);
-  //use KNN once it is working
   for (unsigned int i=0;i<sols.size();i++) {
-    //get_closets anchor
-    float max_len=INT_MAX;
-    int closest_anchor=0;
     algebra::Vector3D loc=
-      sols[i].get_transformation().get_transformed(comp_center);
-    for (unsigned int j=0;j<positions_.size();j++) {
-      if (algebra::get_squared_distance(positions_[j],loc)<max_len) {
-        closest_anchor=j;
-      }
-    }
-    anchor_counters[closest_anchor]++;
+      sols[i].get_transformation().get_transformed(
+                               core::XYZ(p).get_coordinates());
+    anchor_counters[nn.get_nearest_neighbor(loc)]++;
   }
+  Floats probs;
   for (unsigned int i=0;i<anchor_counters.size();i++) {
-   anchor_to_comp_probabilities_[i][comp_ind]=1.*anchor_counters[i]/sols.size();
+    probs.push_back(1.*anchor_counters[i]/sols.size());
   }
+  particle_to_anchor_probabilities_[p]=probs;
+}
+Floats
+  ProbabilisticAnchorGraph::get_particle_probabilities(Particle *p) const {
+  IMP_USAGE_CHECK(particle_to_anchor_probabilities_.find(p) !=
+                  particle_to_anchor_probabilities_.end(),
+                    "Particle:"<<p->get_name()<<" is not found\n");
+  return particle_to_anchor_probabilities_.find(p)->second;
 }
 
 void ProbabilisticAnchorGraph::show(std::ostream& out) const {

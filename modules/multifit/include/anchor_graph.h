@@ -41,19 +41,19 @@ public:
      \param[in] comp_cen the position of the component centroid
      \param[in] sols the fitting solutions of the component
    */
-  void set_component_probabilities_on_anchors(
-                                int comp_ind,
-                                algebra::Vector3D comp_center,
-                                multifit::FittingSolutionRecords sols);
+  void set_particle_probabilities_on_anchors(
+             Particle *p,
+             multifit::FittingSolutionRecords sols);
   void show(std::ostream& out=std::cout) const;
   unsigned int get_number_of_anchors() const {return boost::num_vertices(g_);}
   unsigned int get_number_of_edges() const {return boost::num_edges(g_);}
   IntRanges get_edge_list() const;
   algebra::Vector3Ds get_anchors() const {return positions_;}
+  Floats get_particle_probabilities(Particle *p) const;
   IMP_OBJECT_INLINE(ProbabilisticAnchorGraph, show(out),{});
 private:
   AnchorGraph g_;
-  std::vector<Floats> anchor_to_comp_probabilities_;
+  std::map<Particle *,Floats> particle_to_anchor_probabilities_;
   algebra::Vector3Ds positions_;
   std::vector<GVertex> id2node_;
 };

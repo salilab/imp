@@ -23,6 +23,18 @@ class AnchorGraphTest(IMP.test.TestCase):
     def test_anchor_graph_formation(self):
         self.assertEqual(4,self.anchor_graph.get_number_of_anchors())
         self.assertEqual(4,self.anchor_graph.get_number_of_edges())
+    def test_probability_calculation(self):
+        p=IMP.Particle(self.imp_model)
+        IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(0,0,0))
+        sols=IMP.multifit.read_fitting_solutions(
+            self.get_input_file_name("1z5s_A_fitting_solutions.txt"))
+        print sols[0].get_transformation()
+        self.anchor_graph.set_particle_probabilities_on_anchors(p,sols)
+        probs=self.anchor_graph.get_particle_probabilities(p)
+        print probs
+        self.assertAlmostEqual(probs[0],0,1)
+        self.assertAlmostEqual(probs[2],0.62,1)
+        self.anchor_graph.show()
 
 if __name__ == '__main__':
     IMP.test.main()
