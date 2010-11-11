@@ -1,42 +1,49 @@
-import scons_tools.utility
+import utility
 import dependency
-import scons_tools.doc
+import doc
+import bug_fixes
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
 def _get_application_name(env):
     return env['IMP_APP_NAME']
 
-def IMPApplicationDoc(env, authors,
-                   brief, overview,
-                   publications=None,
-                   license="standard"):
-    scons_tools.doc.add_doc_page(type="\page page_"+_get_application_name(env),
-                                 authors=authors,
-                                 brief=brief, overview=overview,
-                                 publications=publications,
-                                 license=license)
-
-def IMPCPPApplication(envi, target, source, required_modules=[],
+def IMPApplication(env, name,
+                   authors,
+                      brief, overview,
+                      publications=None,
+                      license="standard",
+                      required_modules=[],
                       optional_dependencies=[],
                       required_dependencies=[]):
-    if envi.GetOption('help'):
+    if env.GetOption('help'):
         return
+    doc.add_doc_page(env, "\page page_"+name+" "+name,
+                                 authors, "1.0",
+                                 brief, overview,
+                                 publications,
+                                 license)
     for m in required_modules:
-        if not envi.get_module_ok(m):
+        if not env.get_module_ok(m):
             print target, "disabled due to missing module IMP."+m
             return
     for d in required_dependencies:
-        if not envi.get_dependency_ok(d):
+        if not env.get_dependency_ok(d):
             print target, "disabled due to missing dependency", d
             return
-    print "Configuration application", target
+    print "Configuration application", name
     if len(required_modules+required_dependencies)>0:
         print "  (requires", ", ".join(required_modules+required_dependencies)+")"
-    env= scons_tools.get_bin_environment(envi)
-
-    scons_tools.utility.add_link_flags(env, required_modules,
+    env= bug_fixes.clone_env(env)
+    env['IMP_APP_NAME']=name
+    utility.add_link_flags(env, required_modules,
                            required_dependencies+env.get_found_dependencies(optional_dependencies))
+    return env
+
+def IMPCPPBinary(envi, target, source, ):
+    if envi.GetOption('help'):
+        return
+    env= scons_tools.get_bin_environment(envi)
 
     prog= env.Program(target=target, source=source)
     bindir = env.GetInstallDirectory('bindir')

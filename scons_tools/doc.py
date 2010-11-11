@@ -41,14 +41,14 @@ def _action_make_module_page(target, source, env):
     #print type(source[0].get_contents())
     #print >> fh, "\n\\version \n"+str(env['IMP_MODULE_VERSION'])
     #print >> fh, "\n\\brief "+filter(env, source[1].get_contents())
-    if source[3].get_contents() != "None":
-        print >> fh, "\n"+ source[3].get_contents()
+    if source[4].get_contents() != "None":
+        print >> fh, "\n"+ source[4].get_contents()
     print >> fh, "\n\\section auth Author(s)\n"+", ".join(_unmangle(source[1]))
-    print >> fh, "\n\\section vers Version\n"+ str(env.get_module_version())+"\n"
+    print >> fh, "\n\\section vers Version\n"+ source[2].get_contents()+"\n"
 
-    if source[5].get_contents() != "None":
-        print >> fh, "\n\\license "+source[5].get_contents()
-    pubs= _unmangle(source[4])
+    if source[6].get_contents() != "None":
+        print >> fh, "\n\\license "+source[6].get_contents()
+    pubs= _unmangle(source[5])
     if pubs and len(pubs) != 0:
         print >> fh, "\n\\publications\n"+"\n".join([" - "+x for x in pubs])
     print >> fh, "*/"
@@ -61,6 +61,7 @@ def _print_make_module_page(target, source, env):
 
 def add_doc_page(env, type,
                  authors,
+                 version,
                  brief, overview,
                  publications,
                  license):
@@ -70,6 +71,7 @@ def add_doc_page(env, type,
     env.Append(BUILDERS={'IMPModuleMakeModPage': MakeModPage})
     pg=env.IMPModuleMakeModPage(source=[env.Value(type),
                                      env.Value(authors),
+                                        env.Value(version),
                                      env.Value(brief),
                                      env.Value(overview),
                                      env.Value(publications),
