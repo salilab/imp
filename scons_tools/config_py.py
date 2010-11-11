@@ -21,7 +21,7 @@ def _action_config_py(target, source, env):
         config.append(name+"='"+_flatten(env.subst(env[ename]), delim)+"'")
     for v in ['build', 'repository',
               'precommand', 'includepath', 'modeller',
-              'prefix', 'libpath', 'localmodules',
+              'prefix', 'libpath', 'local',
               'pythonpath', 'python_include', 'ldlibpath']:
         _export_to_config(v, v, env, True)
     config.append('platformflags=False')

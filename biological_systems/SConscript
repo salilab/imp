@@ -1,6 +1,12 @@
 Import('env')
 
-dirs= Glob("*/SConscript")
+systems=['groel']
 
-for d in dirs:
-    SConscript(d)
+if env.get('local', False):
+    for d in Glob("*/SConscript"):
+        p= str(d).split("/")[0]
+        if not p in systems:
+            systems.append(p)
+
+for p in systems:
+    SConscript(p+"/SConscript")

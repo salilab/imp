@@ -26,22 +26,15 @@ modules.append('benchmark')
 
 disabled=env.get('disabledmodules', '').split(":")
 
-def skip(m):
-    env[m+"_ok"]=False
-    env[m+"_required_modules"]=[]
+if env.get('local', False):
+    for d in Glob("*/SConscript"):
+        p= str(d).split("/")[0]
+        if not p in modules:
+            modules.append(p)
 
 for p in modules:
     if p in disabled:
-        skip(p)
+        env[p+"_ok"]=False
+        env[p+"_required_modules"]=[]
     else:
         SConscript(p+"/SConscript")
-
-if env.get('localmodules', False):
-    for d in Glob("*/SConscript"):
-        p= str(d).split("/")[0]
-        if p in modules:
-            pass
-        elif p in disabled:
-            skip(p)
-        else:
-            SConscript(p+"/SConscript")

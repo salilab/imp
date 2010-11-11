@@ -1,6 +1,13 @@
 Import('env')
 
-dirs= Glob("*/SConscript")
+applications=['saxs',
+              'em']
 
-for d in dirs:
-    SConscript(d)
+if env.get('local', False):
+    for d in Glob("*/SConscript"):
+        p= str(d).split("/")[0]
+        if not p in applications:
+            applications.append(p)
+
+for p in applications:
+    SConscript(p+"/SConscript")
