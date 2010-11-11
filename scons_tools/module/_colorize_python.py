@@ -101,7 +101,7 @@ class Parser:
             style = ' style="border: solid 1.5pt #FF0000;"'
 
         # send text
-        print toktext
+        #print toktext
         self.out.write('<font color="%s"%s>' % (color, style))
         self.out.write(cgi.escape(toktext))
         self.out.write('</font>')
