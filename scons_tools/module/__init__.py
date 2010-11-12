@@ -3,7 +3,6 @@
 import os.path
 import sys
 import scons_tools.pyscanner
-import _examples
 import _swig
 import _header
 import _version_info
@@ -14,6 +13,7 @@ import scons_tools.run
 import scons_tools.dependency
 import scons_tools.doc
 import scons_tools.environment
+import scons_tools.examples
 import scons_tools.install
 import _modpage
 import scons_tools.utility
@@ -118,6 +118,11 @@ def _set_module_dependencies(env, module, deps):
             fl.append(m)
     env['IMP'+module+'_dependencies']=deps+fl
 
+def _set_module_links(env, links):
+    env['IMP_MDLE_LINKS']=links
+def _get_module_links(env):
+    return env['IMP_MDLE_LINKS']
+
 
 def get_module_variables(env):
     """Make a map which can be used for all string substitutions"""
@@ -193,11 +198,27 @@ def IMPModuleData(env, files):
 
 
 def IMPModuleExamples(env, example_files, data_files):
-    vars=get_module_variables(env)
-    #for f in files:
-    #    print f.abspath
-    _examples.handle_example_dir(env, Dir("."), vars['module'],
-                                       get_module_path(env), example_files,data_files)
+    scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir", example_files+data_files)
+    test= scons_tools.test.add_test(env,
+                                    [x for x in example_files
+                                     if str(x).endswith(".py") \
+                                     and str(x).find("fragment")==-1],
+                                    type='example')
+    split= scons_tools.utility.get_split_into_directories(example_files)
+    links=[]
+    for k in split.keys():
+        if len(k)>0:
+            name = get_module_name(env)+ " example: "+k
+            pre=k+'/'
+        else:
+            name = get_module_name(env)+ " examples"
+            pre=""
+        name=scons_tools.examples.get_display_from_name(name)
+        l= scons_tools.examples.add_page(env, name,
+                                      [pre+x for x in split[k]])
+        links.append(l)
+    _set_module_links(env, links)
+
 def _make_programs(envi, files):
     env= scons_tools.environment.get_bin_environment(envi)
     scons_tools.utility.add_link_flags(env, [get_module_name(env)]+
@@ -292,7 +313,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                          f)
 
 def IMPModuleGetExamples(env):
-    return scons_tools.utility.get_matching_recursive(["*.py","*.readme"])
+    return [x for x in scons_tools.utility.get_matching_recursive(["*.py","*.readme"])
+            if str(x) != "test_examples.py"]
 
 def IMPModuleGetExampleData(env):
     ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
@@ -374,7 +396,11 @@ def IMPModuleDoc(env, files, authors,
                  publications=None,
                  license="standard"):
     docdir=env['docdir']+"/"+get_module_variables(env)['module_include_path']
-    overview= overview+'\n\nExamples can be found on the \\ref IMP_'+get_module_name(env)+'_examples "'+get_module_full_name(env)+' examples" page.\n'
+    links= _get_module_links(env)
+    if len(links) > 0:
+        overview+= '\n\nExamples:\n'
+        for l in links:
+            overview+=' - ' +l +'\n'
     scons_tools.doc.add_doc_page(env,
                                  "\\namespace "\
                                  +scons_tools.module.get_module_variables(env)['namespace'],
@@ -403,6 +429,7 @@ def IMPModuleTest(env, python_tests, cpp_tests):
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= _make_programs(env, cpp_tests)
+        #print [x[0].abspath for x in prgs]
         cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= prgs)
         files.append(cpptest)
@@ -486,8 +513,8 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env['IMP_MODULE_CONFIG']=config_macros
 
-    env.SConscript('doc/SConscript', exports='env')
     env.SConscript('examples/SConscript', exports='env')
+    env.SConscript('doc/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')
 
     env.SConscript('include/SConscript', exports='env')

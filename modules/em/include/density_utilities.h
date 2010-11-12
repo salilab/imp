@@ -21,7 +21,7 @@ IMPEM_BEGIN_NAMESPACE
 /**
 \param[in] dmap the density map to mask
 \param[in] mask the mask
-\param[output] the masked and normalized map
+\param[out] the masked and normalized map
  */
 IMPEMEXPORT DensityMap* mask_and_norm(em::DensityMap *dmap,
                                          em::DensityMap *mask);

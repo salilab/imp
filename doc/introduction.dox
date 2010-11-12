@@ -238,7 +238,7 @@ Each module has an examples page linked from its main page.
 \subsection i7 Creating some particles
 The function creates a bunch of particles and uses the IMP::core::XYZR decorator to
 given them random coordinates and a radius of 1.
-\htmlinclude setup.py.html
+\pythonexample{setup}
 
 \subsection i7 Restrain some distances
 
@@ -246,19 +246,19 @@ Once the particles are created, we have to add some restraints. To do this, you 
 which particles to restraint and then how to restrain them. Given that you create a restraint,
 initializing it with the chosen particles and then add it to the model.
 
-\htmlinclude pair_restraint.py.html
+\pythonexample{pair_restraint}
 
 
 \subsection i8 Preventing collisions
 The IMP::container::ClosePairsContainer maintains a list of all pairs of particles that are closer than a certain distance. The IMP::core::HarmonicLowerBound forces the spheres apart.
-\htmlinclude excluded_volume.py.html
+\pythonexample{excluded_volume}
 
 
 \subsection i9 Restraining bonds
 
 Load a protein and restrain all the bonds to have the correct length. Bond angles is a bit trickier at the moment.
 
-\htmlinclude load_protein_restrain_bonds.py.html
+\pythonexample{load_protein_restrain_bonds}
 
 
 
@@ -271,7 +271,7 @@ conformations. Our basic sampler is the IMP::core::MCCGSampler which uses
 a combination of Monte Carlo and conjugate gradients to find conformations.
 It then returns an object which allows one to load the saved conformations
 for analysis.
-\htmlinclude basic_optimization.py.html
+\pythonexample{basic_optimization}
 
 \subsection i11 Writing a simple restraint
 See IMP::example::ExampleRestraint.

@@ -13,7 +13,7 @@ class Vector3DTests(IMP.test.TestCase):
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-100,-100,-100),
                                       IMP.algebra.Vector3D(100,100,100))
         vs=[]
-        for i in range(20):
+        for i in range(5):
             v= IMP.algebra.get_random_vector_in(bb)
             if g.get_has_index(v):
                 g[v]=g[v]+1

@@ -20,7 +20,7 @@ class HierarchyTraits;
 //! Return the hierarchy children of a particle.
 /** \ingroup hierarchy
     A simple example using is
-    \htmlinclude cover_particles.py.html
+    \pythonexample{cover_particles}
     \see Hierarchy
     \see Hierarchy
 */

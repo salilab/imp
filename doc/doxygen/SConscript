@@ -109,18 +109,6 @@ def generate_doxygen(target, source, env):
     outfile.close()
 
 
-def generate_example_index(target, source, env):
-    print "generating index"
-    outfile= open(target[0].abspath, "w")
-    print >> outfile, """/** \page examples IMP Examples
-Each modules has its own set of examples demonstrating how to use the features of that particular module."""
-    for p in source:
-        contents= open(p.abspath, "r").read()
-        # rather dumb, I think
-        name= contents[contents.find("\page")+6:].split(" ")[0]
-        print >> outfile, " - \\ref "+name +"\n"
-    print >> outfile, "*/"
-    print "done generating examples"
 
 if not env['doxygen']:
     print "Warning: IMP documentation requires doxygen."
@@ -136,23 +124,16 @@ docdir = scons_tools.install.get_install_directory(env, 'docdir', 'html')
 # Install all files from 'dox' directory into the 'docdir' directory (cannot
 # use env.InstallAs() right now, due to scons bug #1751)
 
-input_files=Glob("#/examples/README") +Glob("#/examples/*/README")\
-    +Glob("#/examples/*.py") +Glob("#/examples/*/*.py")\
-    +Glob("#/examples/*.cpp") +Glob("#/examples/*/*.cpp")
-
-env.Append(BUILDERS = {'GenerateDoxygen': Builder(action=env.Action(generate_doxygen,
-                                                                    print_generate_doxygen))})
-env.Append(BUILDERS = {'GenerateDoxygenHeader': Builder(action=env.Action(generate_doxygen_header,
-                                                                          print_generate_doxygen_header))})
+env.Append(BUILDERS = {'GenerateDoxygen':
+                       Builder(action=env.Action(generate_doxygen,
+                                                 print_generate_doxygen))})
+env.Append(BUILDERS = {'GenerateDoxygenHeader':
+                       Builder(action=env.Action(generate_doxygen_header,
+                                                 print_generate_doxygen_header))})
 
 
 
-env.Append(BUILDERS = {'GenerateExamples': Builder(action=generate_example_index)})
 
-modexamples = Glob("#/modules/*/examples/generated/examples.dox",
-                   ondisk=False) \
-              + ['#/kernel/examples/generated/examples.dox']
-example_index = env.GenerateExamples("generated/all_examples.dox", modexamples)
 
 rawheaders=[]
 for h in Glob("#/build/include/*.h", ondisk=False) \
@@ -178,36 +159,33 @@ for m in macros:
     nm='generated/' + m.abspath[m.abspath.rfind("/")+1:]+".def"
     #print nm
     macrodef.append(env.MakeDefs(source=m, target=nm))
-sources = headers + macrodef+ Glob("#/kernel/doc/*.dox") + [example_index] \
-          + Glob("#/doc/*.dox") \
-          + Glob("#/modules/*/doc/*.dox") \
-          + Glob("#/modules/*/examples/*.xml") \
-          + Glob("#/modules/*/examples/*/*.xml") \
-          + Glob("#/kernel/doc/generated/*.dox") \
-          + Glob("#/modules/*/doc/generated/*.dox") + modexamples \
-          + Glob("#/modules/*/doc/*.dot") + Glob("#/kernel/doc/*.dot")\
-          + Glob("#applications/*/*.dox") + Glob("#applications/*/generated/*.dox")\
-          + Glob("#biological_systems/*/*.dox") + Glob("#biological_systems/*/generated/*.dox")\
+sources = headers + macrodef
+for d in ["#/kernel/doc/",
+          "#/modules/*/doc/",
+          "#/kernel/examples/",
+          "#/modules/*/examples/",
+          "#/biolgical_systems/*/",
+          "#/applications/*/",
+          "#/doc/",]:
+    for t in ["dox", "xml", "dot"]:
+        #print "checking fr surces matching",d+"*."+t,"and",d+"generated/*."+t
+        sources+= Glob(d+"*."+t)
+        sources+= Glob(d+"generated/*."+t)
 
 if env['IMP_PROVIDE_PYTHON']:
     for p in env.get('IMP_PYTHON_DOCS', []):
         sources += Glob("#/build/lib/IMP/"+p+"/*.py", ondisk=False) \
                    + Glob("#/build/lib/IMP/"+p+"/*/*.py", ondisk=False)
-examples= Glob("#/modules/example/src/*.cpp") + Glob("#/build/include/IMP/example/*.h")\
-    + Glob("#/modules/*/examples/*.py") + Glob("#/modules/*/examples/*/*.py")\
-    + Glob("#/modules/*/examples/*.cpp") + Glob("#/modules/*/examples/*/*.cpp")\
-    + Glob("#/modules/*/examples/generated/*.html") \
-    + Glob("#/modules/*/examples/*/generated/*.html")\
-    + Glob("#/kernel/examples/*.py") + Glob("#/kernel/examples/*/*.py")\
-    + Glob("#/kernel/examples/*.cpp") + Glob("#/kernel/examples/*/*.cpp")\
-    + Glob("#/kernel/examples/generated/*.html") \
-    + Glob("#/kernel/examples/*/generated/*.html")\
-    + Glob("#/modules/*/doc/*.dox") + Glob("#/modules/*/doc/*/*.dox")\
-    + Glob("#/modules/*/doc/*.png") + Glob("#/modules/*/doc/*/*.png")\
-    + Glob("#/modules/*/doc/*.html") + Glob("#/modules/*/doc/*/*.html")\
-    + Glob("#/kernel/doc/*.dox") + Glob("#/kernel/doc/*/*.dox")\
-    + Glob("#/kernel/doc/*.png") + Glob("#/kernel/doc/*/*.png")\
-    + Glob("#/kernel/doc/*.html") + Glob("#/kernel/doc/*/*.html")\
+examples=[]
+for d in ["#/modules/example/src/",
+          "#/modules/example/include/",
+          "#/modules/*/examples/",
+          "#/kernel/examples/",]:
+    for t in ["py", "cpp", "png", "png", "html", "xml"]:
+        #print "checking fr examples matching",d+"*."+t, d+"*/*."+t
+        cur=Glob(d+"*."+t)+Glob(d+"*/*."+t)
+        #print "fund", [str(x) for x in cur]
+        examples+=cur
 
 #sources.sort()
 examples.sort()

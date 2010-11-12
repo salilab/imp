@@ -51,7 +51,7 @@ IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
 
     It is often desirable to randomize the orientation of a rigid
     body:
-    \verbinclude randomize_rigid_body.py
+    \pythonexample{randomize_rigid_body}
 
     \usesconstraint
 

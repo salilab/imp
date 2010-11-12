@@ -209,6 +209,7 @@ ALIASES                = "command{1}=\code \1 \endcode" \
                          "unimplemented{1}=\warning \1 has not beeen implemented.\n If you want to use it, ask someone to implement it or do it yourself." \
                          "dotgraph{1}=\if graphs \n \1 \else \n \note Example graphs require \external{www.graphviz.org, GraphViz}\n\endif" \
                          "geometry=\note This class is a \ref geometricprimitives \"geometric primitive\". Also, this class is not \ref uninitialized \"not initialized by its default constructor\"."\
+                         "pythonexample{1}=\include \1.py"\
                          "impsvn=\external{svn.salilab.org/imp/, IMP repository}"\
                          "svn=\external{svnbook.red-bean.com/, Subversion}"\
                          "doxygen=\external{www.stack.nl/~dimitri/doxygen/manual.html, Doxygen}"\
