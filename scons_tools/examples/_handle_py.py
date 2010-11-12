@@ -2,8 +2,22 @@ from SCons.Script import Glob, Dir, File, Builder, Action
 import re
 import scons_tools.examples
 
-excluded_classes={"kernel":["Model", "Particle"]}
-excluded_methods={}
+excluded_classes={"kernel":["Model", "Particle", "Particles",
+                            "SILENT", "TERSE", "VERBOSE", "NONE"],
+                  "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp"],
+                  "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE"]}
+included_methods={"kernel":{},
+                  "atom":{"read_pdb":"(TextInput, Model*)",
+                          "create_protein":\
+                          "(Model*,std::string,double,int,int,double)",
+                          "create_simplified_along_backbone":"(Chain,int)",
+                          "create_distance_restraint":\
+                          "(const Selection &,const Selection &,double, double)",
+                          "create_connectivity_restraint":"(const Selections &,double)",
+                          "create_excluded_volume_restraint":"(const Hierarchies &,double)",
+                          "setup_as_approximation":"(Hierarchy)"
+                          }
+                  }
 def _find_used(lines, modules):
     res={}
     method='([a-z_]+)\('
@@ -49,12 +63,13 @@ def _make_used_wrapper( target, source, env):
                 if not k in excluded_classes.keys() or c not in excluded_classes[k]:
                     print >> out, "\\class ", c
                     print >> out, "-", link
-            #for i,m in enumerate(methods[k]):
-            #    if m in methods[k][i+1:]:
-            #        continue
-            #    if not k in excluded_methods.keys() or  m not in excluded_methods[k]:
-            #        print >> out, "\\fn ", m
-            #        print >> out, "-", link
+            if k in included_methods.keys():
+                for i,m in enumerate(methods[k]):
+                    if m in methods[k][i+1:]:
+                        continue
+                    if m in included_methods[k].keys():
+                        print >> out, "\\fn", m+included_methods[k][m]
+                        print >> out, "-", link
             print >> out, "*/"
             if k != "kernel":
                 print >> out, "}"
