@@ -114,9 +114,9 @@ def install(env, target, source, **keys):
     if Dir(installpath).get_abspath() !=\
            Dir("/".join(str(source).split("/")[:-1])).get_abspath():
         inst= _link_install(env, installpath, source, **keys)
-        env.Alias(environment.get_current_name(env)+"-build", inst)
+        env.Alias(environment.get_current_name(env), inst)
     else:
-        env.Alias(environment.get_current_name(env)+"-build", source)
+        env.Alias(environment.get_current_name(env), source)
     if varname=='swigdir' or varname=='srcdir':
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
@@ -132,9 +132,9 @@ def install_as(env, target, source, **keys):
     if File(installpath).get_abspath() !=\
            File(str(source)).get_abspath():
         inst= _link_install_as(env, installpath, source, **keys)
-        env.Alias(environment.get_current_name(env)+"-build", inst)
+        env.Alias(environment.get_current_name(env), inst)
     else:
-        env.Alias(environment.get_current_name(env)+"-build", source)
+        env.Alias(environment.get_current_name(env), source)
     if varname=='swigdir' or varname=='srcdir':
         return
     installpath= _get_path(env, target, env.subst(env[varname]))

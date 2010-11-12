@@ -211,7 +211,7 @@ def _make_programs(envi, files):
 
 def IMPModuleBin(env, files):
     prgs=_make_programs(env, files)
-    env.Alias(env.Alias(get_module_name(env)+'-build'), prgs)
+    env.Alias(env.Alias(get_module_name(env)), prgs)
 
 
 def _fake_scanner_cpp(node, env, path):
@@ -497,9 +497,9 @@ def IMPModuleBuild(env, version, required_modules=[],
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
     env.Alias(env.Alias("install"), module+"-install")
-    env.Alias(env.Alias("build"), module+"-build")
+    env.Alias(env.Alias("all"), module)
     env.Alias(env.Alias("test"), module+"-test")
     for m in get_module_modules(env):
         env.Requires(env.Alias(module+"-install"), m+"-install")
-        env.Requires(env.Alias(module+"-build"), m+"-build")
+        env.Requires(env.Alias(module), m)
     return env

@@ -50,7 +50,7 @@ def add_test(env, source, type):
     test=UnitTest(env, target="test.passed", source=source+[env.Value(type)])
     env.Requires(test, "#/build/lib/compat_python")
     env.AlwaysBuild("test.passed")
-    env.Requires(test, env.Alias(environment.get_current_name(env)+"-build"))
+    env.Requires(test, env.Alias(environment.get_current_name(env)))
     env.Requires(test, "tools/imppy.sh")
     if type=='unit test':
         env.Alias(env.Alias(environment.get_current_name(env)+"-test"), test)
