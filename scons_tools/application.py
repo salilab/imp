@@ -4,21 +4,21 @@ import doc
 import bug_fixes
 import install
 import test
+import data
 import environment
 import scons_tools
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
-def _get_application_name(env):
-    return env['IMP_APP_NAME']
 
 def IMPApplication(env, name, version,
                    authors,
-                      brief, overview,
-                      publications=None,
-                      license="standard",
-                      required_modules=[],
-                      optional_dependencies=[],
-                      required_dependencies=[]):
+                   brief, overview,
+                   publications=None,
+                   license="standard",
+                   required_modules=[],
+                   optional_dependencies=[],
+                   required_dependencies=[],
+                   python=True):
     if env.GetOption('help'):
         return
     (ok, version, found_optional_modules, found_optional_dependencies) =\
@@ -27,16 +27,31 @@ def IMPApplication(env, name, version,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
     if not ok:
+        data.get(env).add_application(name, ok=ok)
         return
+    else:
+        if python:
+            pm=required_modules+found_optional_modules
+        else:
+            pm=[]
+        data.get(env).add_application(name,
+                                      dependencies=required_dependencies\
+                                          +found_optional_dependencies,
+                                      unfound_dependencies=[x for x in optional_dependencies
+                                                            if not x in
+                                                            found_optional_dependencies],
+                                      modules= required_modules+found_optional_modules,
+                                      python_modules=pm,
+                                      version=version)
+
     doc.add_doc_page(env, "\page page_"+name+" "+name,
                                  authors, version,
                                  brief, overview,
                                  publications,
                                  license)
     env= scons_tools.environment.get_named_environment(env, name)
-    env['IMP_APP_NAME']=name
     utility.add_link_flags(env, required_modules,
-                           required_dependencies+env.get_found_dependencies(optional_dependencies))
+                           required_dependencies+found_optional_dependencies)
     dirs = Glob("*/SConscript")
     for d in dirs:
         env.SConscript(d, exports=['env'])

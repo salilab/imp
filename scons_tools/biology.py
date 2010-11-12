@@ -3,6 +3,7 @@ import dependency
 import doc
 import bug_fixes
 import scons_tools
+import data
 import environment
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
@@ -13,7 +14,8 @@ def IMPSystem(env, name, version,
               license="standard",
               required_modules=[],
               optional_dependencies=[],
-              required_dependencies=[]):
+              required_dependencies=[],
+              python=True):
     if env.GetOption('help'):
         return
     (ok, version, found_optional_modules, found_optional_dependencies) =\
@@ -22,7 +24,22 @@ def IMPSystem(env, name, version,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
     if not ok:
+        data.get(env).add_application(name, ok=ok)
         return
+    else:
+        if python:
+            pm=required_modules+found_optional_modules
+        else:
+            pm=[]
+        data.get(env).add_system(name,
+                                 dependencies=required_dependencies\
+                                     +found_optional_dependencies,
+                                 unfound_dependencies=[x for x in optional_dependencies
+                                                       if not x in
+                                                       found_optional_dependencies],
+                                 modules= required_modules+found_optional_modules,
+                                 python_modules=pm,
+                                 version=version)
     doc.add_doc_page(env, "\page page_"+name+" "+name,
                                  authors, version,
                                  brief, overview,
@@ -30,5 +47,5 @@ def IMPSystem(env, name, version,
                                  license)
     env= scons_tools.environment.get_named_environment(env, name)
     utility.add_link_flags(env, required_modules,
-                           required_dependencies+env.get_found_dependencies(optional_dependencies))
+                           required_dependencies+found_optional_dependencies)
     return env

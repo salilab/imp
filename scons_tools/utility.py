@@ -1,4 +1,5 @@
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
+import data
 import os
 import sys
 
@@ -81,19 +82,21 @@ def unmake_static_build(env):
 
 def add_link_flags(env, modules, dependencies):
     all_dependencies=dependencies
-    all_modules=modules
+    d= data.get(env)
+    all_modules=[]
     for m in modules:
-        all_modules+= env.get_module_modules(m)
-    for m in all_modules:
-        all_dependencies+= env.get_module_dependencies(m)
+        if m not in all_modules:
+            all_modules= all_modules+[m]+d.modules[m].modules
     final_modules=[]
     for i,m in enumerate(all_modules):
         if not m in all_modules[i+1:]:
             final_modules.append(m)
+    for m in final_modules:
+        all_dependencies= all_dependencies+d.modules[m].dependencies
     final_dependencies=[]
-    for i,d in enumerate(all_dependencies):
-        if not d in all_dependencies[i+1:]:
-            final_dependencies.append(d)
+    for i,dc in enumerate(all_dependencies):
+        if not dc in all_dependencies[i+1:]:
+            final_dependencies.append(dc)
     module_libs=[]
     for m in final_modules:
         if m=='kernel':
@@ -101,8 +104,8 @@ def add_link_flags(env, modules, dependencies):
         else:
             module_libs.append('imp_'+m)
     dependency_libs=[]
-    for d in final_dependencies:
-        dependency_libs+=env.get_dependency_libs(d)
+    for dc in final_dependencies:
+        dependency_libs+= d.dependencies[dc].libs
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
 
@@ -153,19 +156,20 @@ def configure(env, name, type, version, required_modules=[],
               required_dependencies=[]):
     """Returns ok, version, found_optional_modules, found_optional_dependencies"""
     for m in required_modules:
-        if not env.get_module_ok(m):
+        if not data.get(env).modules[m].ok:
             print type.capitalize(), name, "disabled due to disabled module "\
                   "IMP."+m
             return (False, None, None, None)
     for m in required_dependencies:
-        if not env.get_dependency_ok(m):
+        if not data.get(env).dependencies[m].ok:
             print type.capitalize(), name, "disabled due to missing dependency "\
                   +m
             return (False, None, None, None)
-    found_optional_modules=env.get_found_modules(optional_modules)
-    found_optional_dependencies=env.get_found_dependencies(optional_dependencies)
-    version= _get_cwd_version(env, version, optional_dependencies=found_optional_dependencies,
-                             optional_modules=found_optional_modules)
+    found_optional_modules=data.get(env).get_found_modules(optional_modules)
+    found_optional_dependencies=data.get(env).get_found_dependencies(optional_dependencies)
+    version= _get_cwd_version(env, version,
+                              optional_dependencies=found_optional_dependencies,
+                              optional_modules=found_optional_modules)
     print "Configuring", type, name,"version", version
     if len(required_modules+required_dependencies)>0:
         print "  (requires " +", ".join(required_modules+required_dependencies) +")"
