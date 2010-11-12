@@ -44,7 +44,7 @@ public:
 
     See ConfigurationSet for more information about the input.
 
-    \htmlinclude basic_optimization.py.html
+    \pythonexample{basic_optimization}
 */
 class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   mutable Pointer<ConfigurationSet> cs_;

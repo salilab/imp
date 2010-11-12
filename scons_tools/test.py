@@ -75,6 +75,7 @@ except ImportError:
 class TestCppProgram(IMP.test.TestCase):"""
     for t in source:
         nm= os.path.split(str(t))[1].replace(".", "_")
+        #print "path is ", t.abspath
         print >> out, \
 """    def test_%(name)s(self):
         \"\"\"Running C++ test %(name)s\"\"\"

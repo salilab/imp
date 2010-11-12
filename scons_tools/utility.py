@@ -115,12 +115,12 @@ def get_split_into_directories(paths):
     for p in paths:
         components= str(p).split("/")
         if len(components) >1:
-            cd= components[0:-1]
+            cd= components[0]
             fn= components[-1]
         else:
-            cd="."
+            cd=""
             fn=components[-1]
-        if cd in retdir.keys:
+        if cd in retdir.keys():
             retdir[cd].append(fn)
         else:
             retdir[cd]=[fn]

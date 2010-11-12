@@ -39,7 +39,7 @@ class Hierarchy;
     the same.
 
     This example shows how to make and use a custom hierarchy:
-    \verbinclude custom_hierarchy.py
+    \pythonexample{custom_hierarchy}
     \see Hierarchy
 */
 class IMPCOREEXPORT HierarchyTraits

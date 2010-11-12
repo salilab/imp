@@ -28,8 +28,8 @@ IMPCONTAINER_BEGIN_NAMESPACE
     {add_, set_, clear_}particle_pair{s} methodas can be used.
 
     Examples using various multiplicity containers:
-    \htmlinclude restrain_in_sphere.py.html
-    \htmlinclude nonbonded_interactions.py.html
+    \pythonexample{restrain_in_sphere}
+    \pythonexample{nonbonded_interactions}
 
     \see PairRestraint
  */

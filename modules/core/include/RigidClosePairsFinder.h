@@ -45,7 +45,7 @@ IMPCORE_BEGIN_NAMESPACE
     grid cells to use should be explored. In addition, with highly
     excentric sets of points, there will be too many cells.
 
-    \htmlinclude rigid_collisions.py.html
+    \pythonexample{rigid_collisions}
 
     \uses{class RigidClosePairsFinder, CGAL}
     \see ClosePairsScoreState
