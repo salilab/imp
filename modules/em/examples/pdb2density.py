@@ -7,7 +7,7 @@ sel=IMP.atom.NonWaterPDBSelector()
 mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
 #add radius info to each atom, otherwise the resampling would fail.
 IMP.atom.add_radii(mh)
-ps= IMP.Particles(IMP.core.get_leaves(mh))
+ps= IMP.core.get_leaves(mh)
 #decide on resolution and spacing you would like to simulate to
 resolution=10.
 apix=1.5
