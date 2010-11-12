@@ -29,9 +29,12 @@ def _write_doxygen(env, name, link, files, outputname):
     outfile= file(outputname, 'w')
     outfile.write("/**\n")
     outfile.write("\page "+link+ " " + name+"\n\n")
+    seen=[]
     for f in files:
         if str(f).endswith(".py") or str(f).endswith(".cpp"):
-            rm= open(os.path.splitext(f.abspath)[0]+".readme", "r").read()
+            readme=os.path.splitext(f.abspath)[0]+".readme"
+            seen.append(readme)
+            rm= open(readme, "r").read()
             nm= os.path.splitext(os.path.split(str(f))[1])[0]
             outfile.write("\section " +nm + " " + nm.replace('_', ' ')+"\n\n")
             outfile.write(rm+"\n\n")
@@ -39,7 +42,7 @@ def _write_doxygen(env, name, link, files, outputname):
             outfile.write("\pythonexample{"+ nm+"}\n\n")
         if str(f).endswith(".cpp"):
             outfile.write("\include "+nm+".cpp\n\n")
-        if str(f).endswith(".readme"):
+        if str(f).endswith(".readme") and str(f) not in seen:
             rm= open(os.path.splitext(f.abspath)[0]+".readme", "r").read()
             outfile.write(rm+"\n\n")
     outfile.write("*/\n")
