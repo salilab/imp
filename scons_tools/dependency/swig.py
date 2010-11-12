@@ -23,7 +23,14 @@ Since SWIG could not be found, proceeding to build IMP without Python support.
 
 """
     context.Message('Checking for SWIG version >= %s... ' % needversion_str)
-    version = context.env['SWIGVERSION']
+    try:
+        version = context.env['SWIGVERSION']
+    except:
+        ret= os.popen("swig -version").read()
+        r= re.compile("SWIG Version ([0-9\.]+)")
+        match=r.search(ret)
+        if match:
+            version= match.groups()[0]
     try:
         v = [int(x) for x in version.split(".")]
     except ValueError:
