@@ -32,11 +32,11 @@ def _null_scanner(node, env, path):
 #    https://salilab.org/imp/bugs/show_bug.cgi?id=41
 def _action_patch_swig_wrap(target, source, env):
     lines = file(source[0].path, 'r').readlines()
-    vars= scons_tools.module.get_module_variables(env)
+    vars= scons_tools.module._get_module_variables(env)
     repl1 = '"swig::%s_PySwigIterator *"' % vars['PREPROC']
     repl2 = '"swig::%s_SwigPyIterator *"' % vars['PREPROC']
-    orig = 'SWIG_IMP.%s_WRAP_H_' % scons_tools.module.get_module_name(env)
-    repl = 'SWIG_IMP_%s_WRAP_H_' % scons_tools.module.get_module_name(env)
+    orig = 'SWIG_IMP.%s_WRAP_H_' % scons_tools.module._get_module_name(env)
+    repl = 'SWIG_IMP_%s_WRAP_H_' % scons_tools.module._get_module_name(env)
     fh= file(target[0].path, 'w')
     for line in lines:
         line = line.replace('"swig::PySwigIterator *"', repl1)
@@ -60,8 +60,8 @@ PatchSwig = Builder(action=Action(_action_patch_swig_wrap,
 
 
 def _action_swig_file(target, source, env):
-    vars= scons_tools.module.get_module_variables(env)
-    deps= env.get_module_python_modules()
+    vars= scons_tools.module._get_module_variables(env)
+    deps= scons_tools.module._get_module_python_modules(env)
     deps.reverse()
     #print "dependencies are " +str(deps)
     warning="// WARNING Generated file, do not edit, edit the swig.i-in instead."
@@ -168,7 +168,7 @@ SwigPreface = Builder(action=Action(_action_swig_file,
 
 
 def _action_simple_swig(target, source, env):
-    vars= scons_tools.module.get_module_variables(env)
+    vars= scons_tools.module._get_module_variables(env)
     cppflags= ""
     for x in env.get('CPPFLAGS', []):
         if x.startswith("-I") or x.startswith("-D"):
@@ -185,7 +185,7 @@ def _action_simple_swig(target, source, env):
                "-python", "-c++", "-naturalvar",
                "-fvirtual"]+warnings
     # Signal whether we are building the kernel
-    if scons_tools.module.get_module_name(env) == 'kernel':
+    if scons_tools.module._get_module_name(env) == 'kernel':
         command.append('-DIMP_SWIG_KERNEL')
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
@@ -247,7 +247,7 @@ def inswig_scanner(node, env, path):
     for i in base_includes:
         f= "#/build/swig/"+i
         ret.append(f)
-    for m in env.get_module_python_modules():
+    for m in scons_tools.module._get_module_python_modules(env):
         ret.append("#/modules/"+m+"/pyext/swig.i-in")
     ret.append('#/kernel/pyext/swig.i-in')
     return ret.sorted()

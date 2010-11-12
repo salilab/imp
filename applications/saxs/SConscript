@@ -7,7 +7,8 @@ env= env.IMPApplication(name="foxs", version="SVN",
                         license=env.IMPStandardLicense(),
                         publications=[],
                         required_modules=['saxs'],
-                        required_dependencies=['Boost.ProgramOptions'])
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
 
 if env:
     env.IMPCPPExecutable(target="foxs", source=["profile.cpp", "Gnuplot.cpp"])

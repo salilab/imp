@@ -3,7 +3,8 @@ import re
 import scons_tools.examples
 
 excluded_classes={"kernel":["Model", "Particle", "Particles",
-                            "SILENT", "TERSE", "VERBOSE", "NONE"],
+                            "SILENT", "TERSE", "VERBOSE", "NONE",
+                            "FloatKey", "IntKey", "ParticleKey", "StringKey"],
                   "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp"],
                   "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE"]}
 included_methods={"kernel":{},
@@ -22,10 +23,10 @@ def _find_used(lines, modules):
     res={}
     method='([a-z_]+)\('
     cl='([A-Z_][A-Za-z_]+)'
-    res['kernel']=(re.compile('IMP.'+method), re.compile('IMP.'+cl))
+    res['kernel']=(re.compile('IMP\\.'+method), re.compile('IMP\\.'+cl))
     for m in modules:
-        rm=re.compile('IMP\.'+m+'\.'+method)
-        rc=re.compile('IMP\.'+m+'\.'+cl)
+        rm=re.compile('IMP\\.'+m+'\\.'+method)
+        rc=re.compile('IMP\\.'+m+'\\.'+cl)
         res[m]=(rm, rc)
     methods={}
     classes={}

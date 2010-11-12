@@ -3,6 +3,7 @@
 import os
 import os.path
 import re
+import scons_tools.data
 from scons_tools.mypopen import MyPopen
 
 def _check_default(context):
@@ -96,11 +97,6 @@ def configure_check(env):
     custom_tests = {'CheckModeller':_check}
     conf = env.Configure(custom_tests=custom_tests)
     #if not env.GetOption('clean') and not env.GetOption('help'):
-    env['HAS_MODELLER'] = conf.CheckModeller()
-    if env['HAS_MODELLER']:
-        env.Append(IMP_ENABLED=['modeller'])
-    else:
-        env.Append(IMP_DISABLED=['modeller'])
-    #else:
-    #    env['HAS_MODELLER']=False
+    hm = conf.CheckModeller()
+    scons_tools.data.get(env).add_dependency("modeller", ok=hm)
     conf.Finish()
