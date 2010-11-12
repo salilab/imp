@@ -240,7 +240,7 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(dependency.get_dependency_ok)
     # these should be in application, but...
     env.AddMethod(application.IMPApplication)
-    env.AddMethod(application.IMPCPPBinary)
+    env.AddMethod(application.IMPCPPExecutable)
     env.AddMethod(application.IMPApplicationTest)
     env.AddMethod(application.IMPPythonExecutable)
 
