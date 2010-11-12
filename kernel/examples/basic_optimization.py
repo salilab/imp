@@ -10,7 +10,7 @@ m.set_log_level(IMP.WARNING)
 
 # the container (c) stores a list of particles, which are alse XYZR particles
 # we can construct a list of all the decorated particles
-xyzrs= IMP.core.XYZRsTemp(c.get_particles())
+xyzrs= c.get_particles()
 
 s= IMP.core.MCCGSampler(m)
 s.set_number_of_attempts(10)
