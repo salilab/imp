@@ -31,6 +31,7 @@ protected:                                                              \
 
 //! Define a geometric object using an IMP::algebra one
 #define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
+  /** Display a geometric object.*/                                     \
   class IMPDISPLAYEXPORT Name: public Type,                             \
                                public Geometry {                        \
   public:                                                               \
@@ -60,6 +61,7 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
+  /** Display a compound geometric object.*/                    \
   class IMPDISPLAYEXPORT Name: public Type,                     \
                                public Geometry {                \
   public:                                                       \
@@ -91,6 +93,7 @@ protected:                                                              \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_PARTICLE_GEOMETRY(Name, Decorator, action)                  \
+  /** Display a particle.*/                                             \
   class Name##Geometry: public SingletonGeometry {                      \
   public:                                                               \
   Name##Geometry(Decorator d): SingletonGeometry(d){}                   \
@@ -103,6 +106,7 @@ protected:                                                              \
   IMP_OBJECT_INLINE(Name##Geometry,                                     \
                     out <<  Decorator(get_particle())<< std::endl;,{}); \
   };                                                                    \
+  /** Display multiple particles.*/                                     \
   class Name##sGeometry: public SingletonsGeometry {                    \
   public:                                                               \
   Name##sGeometry(SingletonContainer* sc): SingletonsGeometry(sc){}     \
@@ -123,6 +127,7 @@ protected:                                                              \
 
 #define IMP_PARTICLE_TRAITS_GEOMETRY(Name, Decorator, TraitsName,       \
                                      traits_name,action)                \
+  /** Display a particle.*/                                             \
   class Name##Geometry: public SingletonGeometry {                      \
     TraitsName traits_;                                                 \
   public:                                                               \
@@ -138,6 +143,7 @@ protected:                                                              \
                     out <<  Decorator(get_particle(), traits_)          \
                     << std::endl;,{});                                  \
   };                                                                    \
+  /** Display multiple particles.*/                                     \
   class Name##sGeometry: public SingletonsGeometry {                    \
     TraitsName traits_;                                                 \
   public:                                                               \
@@ -159,6 +165,7 @@ protected:                                                              \
 
 
 #define IMP_PARTICLE_PAIR_GEOMETRY(Name, Decorator, action)             \
+  /** Display a pair of particles.*/                                    \
   class Name##Geometry: public PairGeometry {                           \
   public:                                                               \
   Name##Geometry(Decorator d0, Decorator d1):                           \
@@ -175,6 +182,7 @@ protected:                                                              \
                     << " " << Decorator(get_particle_pair()[1])         \
                     << std::endl;,{});                                  \
   };                                                                    \
+  /** Display multiple pairs of particles.*/                            \
   class Name##sGeometry: public PairsGeometry {                         \
   public:                                                               \
   Name##sGeometry(PairContainer* sc): PairsGeometry(sc){}               \
