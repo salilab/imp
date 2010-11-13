@@ -13,7 +13,7 @@ import scons_tools.install
 
 
 def _build_header(target, source, env):
-    vars= scons_tools.module.get_module_variables(env);
+    vars= scons_tools.module._get_module_variables(env);
     fh = file(target[0].abspath, 'w')
     print >> fh, "/**\n *  \\file %(module_include_path)s.h   \\brief Include all the headers\n *" \
              % vars
