@@ -33,7 +33,7 @@ IMPDOMINO2_BEGIN_NAMESPACE
     DominoSampler. Transformations include
     - replacing certain container::PairsRestraint and
       container::SingletonsRestraint objects by a set a set of
-      core::PairRestraint/core::SingletonRestraint objects
+      core::PairRestraint or core::SingletonRestraint objects
     \throw ModelException if the model contains any non-static
     containers other than container::ClosePairContainer and its
     ilk. Examples include container::ConnectedPairContainer.
