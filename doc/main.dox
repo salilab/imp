@@ -5,7 +5,9 @@
  - \ref introduction "Introduction"
  - \ref devguide "Developers' guide"
  .
- - \ref examples "Examples"
+ - \ref systems_index "Biological systems"
+ - \ref applications_index "Applications"
+ - \ref examples_index "Examples" 
  - \wiki{FAQ, FAQ}
  - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
@@ -118,5 +120,19 @@ An overview of the various modules currently available. Representative classes a
 Not listed are
  - IMP::algebra that provides basic geometric and mathematical types and operations
  - IMP::benchmark that provides benchmarks of various usages of other modules
+
+\code
+import IMP
+import IMP.core
+import IMP.python
+
+m= IMP.Model()
+
+a= 1
+\endcode
+\code
+m= new IMP::Model()
+\endcode
+\include "nup84_cg.py"
  */
 

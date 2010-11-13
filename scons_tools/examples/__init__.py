@@ -1,27 +1,10 @@
 from SCons.Script import Glob, Dir, File, Builder, Action
 import _handle_py
 import os
+import scons_tools.data
+import scons_tools.utility
 
-def _remove_ext(name):
-    if name.rfind('.') == -1:
-        return name
-    else:
-        return name[0:name.rfind('.')]
 
-def get_link_name_from_name(name):
-    base= _remove_ext(name)
-    link=base.replace(' ', '_').replace(':', '_')
-    return link
-
-def get_display_from_name(name):
-    base= _remove_ext(name)
-    text=base.replace('_', ' ')
-    return text
-
-def get_link_from_name(name):
-    link=get_link_name_from_name(name)
-    text=get_display_from_name(name)
-    return "\\ref "+link+' "'+text+'"'
 
 
 def _write_doxygen(env, name, link, files, outputname):
@@ -48,6 +31,7 @@ def _write_doxygen(env, name, link, files, outputname):
     outfile.write("*/\n")
 
 def _action_make_examples(target, source, env):
+    print source[0].get_contents(), target[0].path
     _write_doxygen(env, source[0].get_contents(), source[1].get_contents(),
                   source[2:], target[0].path)
 
@@ -60,11 +44,17 @@ _Page= Builder(action=Action(_action_make_examples,
 
 def add_page(env, name, files):
     #print "adding page", name, "for", [str(x) for x in files]
-    link= get_link_name_from_name(name)
+    linkname= scons_tools.utility.get_link_name_from_name(name)
+    link= scons_tools.utility.get_link_from_name(name)
+    t=File('generated/'+linkname+'.dox')
     page= _Page(env, source=[env.Value(name),
-                             env.Value(link)]+files,
-                target=['generated/'+name.replace(' ', '_')+'.dox'])
-    for f in files:
-        if File(str(f)).abspath.endswith(".py"):
-            _handle_py.handle_python_file(env, f)
-    return get_link_from_name(name)
+                             env.Value(linkname)]+files,
+                target=[t])
+    return link
+
+
+def add_python_example(env, file):
+    scons_tools.data.get(env).add_example(File(file))
+    p=_handle_py.Process(source=file, target=File(str(file)+".parsed"),
+                       env=env)
+    env.AlwaysBuild(p)

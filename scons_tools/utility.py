@@ -174,3 +174,25 @@ def configure(env, name, type, version, required_modules=[],
     if len(required_modules+required_dependencies)>0:
         print "  (requires " +", ".join(required_modules+required_dependencies) +")"
     return (True, version, found_optional_modules, found_optional_dependencies)
+
+
+def get_without_extension(name):
+    if str(name).rfind('.') == -1:
+        return name
+    else:
+        return str(name)[0:str(name).rfind('.')]
+
+def get_link_name_from_name(name):
+    base= get_without_extension(name).split("/")[-1]
+    link=base.replace(' ', '_').replace(':', '_')
+    return link
+
+def get_display_from_name(name):
+    base= get_without_extension(name).split("/")[-1]
+    text=base.replace('_', ' ')
+    return text
+
+def get_link_from_name(name):
+    link=get_link_name_from_name(name)
+    text=get_display_from_name(name)
+    return "\\ref "+link+' "'+text+'"'

@@ -1,5 +1,6 @@
-from SCons.Script import Builder, Action
+from SCons.Script import Builder, Action, File
 import bug_fixes
+import data
 
 def IMPPublication(env, authors, title, journal, year, description=""):
     ret= ", ".join(authors)+", \\quote{"+title+"}, <em>"+journal+"</em>, "+str(year)+"."
@@ -54,10 +55,11 @@ def _action_make_module_page(target, source, env):
     print >> fh, "*/"
     fh.close()
 
-def _print_make_module_page(target, source, env):
+def _print_module_page(target, source, env):
     print "Making main docpage "+str(target[0])
 
-
+_MakeModPage = Builder(action=Action(_action_make_module_page,
+                                        _print_module_page))
 
 def add_doc_page(env, type,
                  authors,
@@ -66,15 +68,105 @@ def add_doc_page(env, type,
                  publications,
                  license):
     env=bug_fixes.clone_env(env)
-    MakeModPage = Builder(action=Action(_action_make_module_page,
-                                        _print_make_module_page))
-    env.Append(BUILDERS={'IMPModuleMakeModPage': MakeModPage})
-    pg=env.IMPModuleMakeModPage(source=[env.Value(type),
-                                     env.Value(authors),
-                                        env.Value(version),
-                                     env.Value(brief),
-                                     env.Value(overview),
-                                     env.Value(publications),
-                                     env.Value(license)],
-                                     target='generated/overview.dox')
+    pg=_MakeModPage(source=[env.Value(type),
+                            env.Value(authors),
+                            env.Value(version),
+                            env.Value(brief),
+                            env.Value(overview),
+                            env.Value(publications),
+                            env.Value(license)],
+                    target='generated/overview.dox', env=env)
     return pg
+
+
+def _make_example_overview(target, source, env):
+    out= open(target[0].abspath, "w")
+    print >> out, "/** \\page example_indexs Example index"
+    dta= data.get(env)
+    for k in dta.examples.keys():
+        print >> out, "  -", dta.examples[k].link
+    print >> out, "*/"
+def _print_example_overview(target, source, env):
+    print "Making example overview"
+_ExamplesOverview = Builder(action=Action(_make_example_overview,
+                                         _print_example_overview))
+
+def _make_example_links(target, source, env):
+    out= open(target[0].abspath, "w")
+    dta= data.get(env)
+    methods={}
+    classes={}
+    for m in dta.modules.keys():
+        methods[m]={}
+        classes[m]={}
+    for k in dta.examples.keys():
+        for m in dta.examples[k].classes:
+            classes[m]= classes[m]+dta.examples[k].classes[m]
+        for m in dta.examples[k].methods:
+            methods[m]= methods[m]+dta.examples[k].methods[m]
+    for m in dta.modules.keys():
+        if len(methods[m])+ len(classes[m]) > 0:
+            print >> out, "namespace IMP {"
+            if k != "kernel":
+                print >> out, "namespace", k, "{"
+            print >> out, "/**"
+            for c in classes[m].keys():
+                print >> out, "\\class", c
+                print >> out, "Examples:"
+                for e in classes[m][c]:
+                    print >> out, " -", dta.examples[e].link
+            for c in methods[m].keys():
+                print >> out, "\\fn", c
+                print >> out, "Examples:"
+                for e in methods[m][c]:
+                    print >> out, " -", dta.examples[e].link
+            print >> out, "*/"
+            if k != "kernel":
+                print >> out, "}"
+            print >> out, "}"
+def _print_example_links(target, source, env):
+    print "Making example links"
+_ExamplesLinks = Builder(action=Action(_make_example_links,
+                                       _print_example_links))
+
+
+def _make_applications_overview(target, source, env):
+    out= open(target[0].abspath, "w")
+    print >> out, "/** \\page applications_index Application index"
+    dta= data.get(env)
+    for k in dta.applications.keys():
+        print >> out, "  -", dta.applications[k].link
+    print >> out, "*/"
+def _print_applications_overview(target, source, env):
+    print "Making applications overview"
+_ApplicationsOverview = Builder(action=Action(_make_applications_overview,
+                                         _print_applications_overview))
+
+
+def _make_systems_overview(target, source, env):
+    out= open(target[0].abspath, "w")
+    print >> out, "/** \\page systems_index Systems index"
+    dta= data.get(env)
+    for k in dta.systems.keys():
+        print >> out, "  -", dta.systems[k].link
+    print >> out, "*/"
+def _print_systems_overview(target, source, env):
+    print "Making systems overview"
+_SystemsOverview = Builder(action=Action(_make_systems_overview,
+                                         _print_systems_overview))
+
+
+def add_overview_pages(env):
+    dta= data.get(env)
+    sources= [File(str(dta.examples[k].file)+".parsed") for k in dta.examples.keys()]
+    #print [str(x) for x in sources]
+    _ExamplesOverview(source=[], target=File("#/doc/generated/example_overview.dox"),
+                     env=env)
+    _ExamplesLinks(source=sources, target=File("#/doc/generated/example_links.dox"),
+                  env=env)
+    _ApplicationsOverview(source=sources,
+                          target=File("#/doc/generated/applications_overview.dox"),
+                          env=env)
+    _SystemsOverview(source=sources,
+                          target=File("#/doc/generated/systems_overview.dox"),
+                          env=env)
