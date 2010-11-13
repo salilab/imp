@@ -93,6 +93,7 @@ _ExamplesOverview = Builder(action=Action(_make_example_overview,
 
 def _make_example_links(target, source, env):
     out= open(target[0].abspath, "w")
+    return
     dta= data.get(env)
     methods={}
     classes={}
