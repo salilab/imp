@@ -4,9 +4,3 @@ Import('env')
 module_env=env.IMPModuleBuild(version="SVN",
                    lib_only_required_modules=['domino2', 'atom', 'em', 'core', 'algebra'],
                    optional_dependencies=['CGAL'])
-
-if not env.GetOption('help'):
-    if env['build']=='fast':
-        module_env.Alias('benchmark-test', module_env.IMPRun(target="benchmarks.passed",
-    source=["#/tools/imppy.sh"]+module_env['IMP_MODULE_BINS']))
-        module_env.AlwaysBuild('benchmarks.passed')
