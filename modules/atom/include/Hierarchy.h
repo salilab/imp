@@ -38,7 +38,6 @@
   }
 
 // DOMAIN is defined to be 1 by a fedora math header
-//! Do an operation for each of the hierarchy types
 #define IMP_FOREACH_HIERARCHY_TYPE_LIST(macro)      \
   macro(Atom, atom, ATOM_TYPE),                     \
     macro(Residue, residue, RESIDUE_TYPE),          \
@@ -51,7 +50,6 @@
     macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-//! Do an operation for each of the hierarchy types
 #define IMP_FOREACH_HIERARCHY_TYPE_STATEMENTS(macro)  \
   macro(Atom, atom, ATOM_TYPE);                \
   macro(Residue, residue, RESIDUE_TYPE);       \
@@ -64,7 +62,6 @@
   macro(Mass, mass, MASS_TYPE)
 
 // DOMAIN is defined to be 1 by a fedora math header
-//! Do an operation for each of the hierarchy types
 #define IMP_FOREACH_HIERARCHY_TYPE_FUNCTIONS(macro)    \
   macro(Atom, atom, ATOM_TYPE)                         \
   macro(Residue, residue, RESIDUE_TYPE)                \
