@@ -59,25 +59,37 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
 
+/** \brief Display a sphere.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::SphereD<3>);
+/** \brief Display a cylinder.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, algebra::Cylinder3D);
+/** \brief Display a ellipsoid.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, algebra::Ellipsoid3D);
-
+/** \brief Display a point.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::VectorD<3>);
+/** \brief Display a segment.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
 /** If CGAL is available, then any simple, planar polygon can be
     used. Otherwise, the polygons should be simple, planar and convex.
 */
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
                           std::vector<algebra::VectorD<3> >);
+/** \brief Display a triangule.
+*/
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
                           std::vector<algebra::VectorD<3> >);
-
+/** \brief Display a bounding box.
+*/
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
                                        algebra::BoundingBoxD<3>);
 
 //! A text label for a ball in space
-/* You can use the offset if the thing being labeled has a radius.
+/** You can use the offset if the thing being labeled has a radius.
  */
 class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
   algebra::Sphere3D loc_;

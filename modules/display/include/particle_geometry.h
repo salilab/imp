@@ -115,7 +115,13 @@ public:
 };
 
 
+/** \class XYZRGeometry
+    \brief Display an IMP::core::XYZR particle as a ball.
 
+    \class XYZRsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::core::XYZR particles
+    as balls.
+*/
 IMP_PARTICLE_TRAITS_GEOMETRY(XYZR, core::XYZR,FloatKey, radius_key,
  {
    SphereGeometry *g= new SphereGeometry(d.get_sphere());
@@ -125,6 +131,14 @@ IMP_PARTICLE_TRAITS_GEOMETRY(XYZR, core::XYZR,FloatKey, radius_key,
    ret.push_back(g);
   });
 
+
+/** \class BondGeometry
+    \brief Display an IMP::atom::Bond particle as a segment.
+
+    \class BondsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::atom::Bond particles
+    as segments.
+*/
 IMP_PARTICLE_GEOMETRY(Bond, atom::Bond,{
     atom::Bonded ep0=  d.get_bonded(0);
     core::XYZ epi0(ep0.get_particle());
@@ -192,6 +206,14 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     }
   });
 
+
+/** \class BondGeometry
+    \brief Display an IMP::atom::Bond particle as a segment.
+
+    \class BondsGeometry
+    \brief Display an IMP::SingletonContainer of IMP::atom::Bond particles
+    as segments.
+*/
 IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
     ret.push_back(
     new SegmentGeometry(algebra::Segment3D(d0.get_coordinates(),
@@ -199,7 +221,13 @@ IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
   });
 
 
+/** \class HierarchyGeometry
+    \brief Display an IMP::atom::Hierarchy particle as balls.
 
+    \class HierarchiesGeometry
+    \brief Display an IMP::SingletonContainer of IMP::atom::Hierarchy particles
+    as balls.
+*/
 class HierarchyGeometry: public SingletonGeometry {
   double res_;
 public:
