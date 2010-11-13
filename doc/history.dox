@@ -1,6 +1,8 @@
 /** \page recent Change History
 
 \par Fall 2010
+- the documentation for classes and some methods now includes a list of all examples which use the class. Please report any incorrect links or phantom classes appearing in the docs. Unfortunately, functions have to be added individually. Please request any functions of particular interest.
+- applications and biological systems now have their own documentatin pages
 - IMP::atom::Hierarchy requires radii on its leaves
 - IMP::atom::read_pdb add radii to the atoms
 - IMP::helper was merged into IMP::restrainer as all the functionality there was primarily to provide support for restrainer

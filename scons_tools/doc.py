@@ -81,7 +81,7 @@ def add_doc_page(env, type,
 
 def _make_example_overview(target, source, env):
     out= open(target[0].abspath, "w")
-    print >> out, "/** \\page example_indexs Example index"
+    print >> out, "/** \\page examples_index Example index"
     dta= data.get(env)
     for k in dta.examples.keys():
         print >> out, "  -", dta.examples[k].link
@@ -101,15 +101,21 @@ def _make_example_links(target, source, env):
         methods[m]={}
         classes[m]={}
     for k in dta.examples.keys():
-        for m in dta.examples[k].classes:
-            classes[m]= classes[m]+dta.examples[k].classes[m]
-        for m in dta.examples[k].methods:
-            methods[m]= methods[m]+dta.examples[k].methods[m]
+        for m in dta.examples[k].classes.keys():
+            for c in dta.examples[k].classes[m]:
+                if not c in classes[m].keys():
+                    classes[m][c]=[]
+                classes[m][c].append(k)
+        for m in dta.examples[k].methods.keys():
+            for c in dta.examples[k].methods[m]:
+                if not c in methods[m].keys():
+                    methods[m][c]=[]
+                methods[m][c].append(k)
     for m in dta.modules.keys():
         if len(methods[m])+ len(classes[m]) > 0:
             print >> out, "namespace IMP {"
-            if k != "kernel":
-                print >> out, "namespace", k, "{"
+            if m != "kernel":
+                print >> out, "namespace", m, "{"
             print >> out, "/**"
             for c in classes[m].keys():
                 print >> out, "\\class", c
@@ -122,7 +128,7 @@ def _make_example_links(target, source, env):
                 for e in methods[m][c]:
                     print >> out, " -", dta.examples[e].link
             print >> out, "*/"
-            if k != "kernel":
+            if m != "kernel":
                 print >> out, "}"
             print >> out, "}"
 def _print_example_links(target, source, env):

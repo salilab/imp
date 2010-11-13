@@ -164,7 +164,7 @@ def IMPModuleExamples(env, example_files, data_files):
     links=[]
     for k in split.keys():
         if len(k)>0:
-            name =_get_module_name(env)+ " example: "+k
+            name =_get_module_name(env)+ " examples: "+k
             pre=k+'/'
         else:
             name =_get_module_name(env)+ " examples"
