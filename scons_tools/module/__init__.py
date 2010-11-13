@@ -149,6 +149,8 @@ def IMPModuleData(env, files):
 
 
 def IMPModuleExamples(env, example_files, data_files):
+    #print "Examples called with",[str(x) for x in example_files],\
+    #    [str(x) for x in data_files]
     scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir", example_files+data_files)
     test= scons_tools.test.add_test(env,
                                     [x for x in example_files
@@ -156,6 +158,9 @@ def IMPModuleExamples(env, example_files, data_files):
                                      and str(x).find("fragment")==-1],
                                     type='example')
     split= scons_tools.utility.get_split_into_directories(example_files)
+    for e in example_files:
+        if str(e).endswith(".py"):
+            scons_tools.examples.add_python_example(env, e)
     links=[]
     for k in split.keys():
         if len(k)>0:
@@ -164,7 +169,7 @@ def IMPModuleExamples(env, example_files, data_files):
         else:
             name =_get_module_name(env)+ " examples"
             pre=""
-        name=scons_tools.examples.get_display_from_name(name)
+        name=scons_tools.utility.get_display_from_name(name)
         l= scons_tools.examples.add_page(env, name,
                                       [pre+x for x in split[k]])
         links.append(l)
@@ -264,8 +269,15 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                          f)
 
 def IMPModuleGetExamples(env):
-    return [x for x in scons_tools.utility.get_matching_recursive(["*.py","*.readme"])
-            if str(x) != "test_examples.py"]
+    rms= scons_tools.utility.get_matching_recursive(["*.readme"])
+    ex= [x for x in scons_tools.utility.get_matching_recursive(["*.py"])
+         if str(x) != "test_examples.py"]
+    rrms=[]
+    for e in rms:
+        pyn= scons_tools.utility.get_without_extension(e)+".py"
+        if not File(pyn) in ex:
+            rrms.append(e)
+    return rrms+ex
 
 def IMPModuleGetExampleData(env):
     ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",

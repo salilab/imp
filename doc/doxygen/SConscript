@@ -164,7 +164,7 @@ for d in ["#/kernel/doc/",
           "#/modules/*/doc/",
           "#/kernel/examples/",
           "#/modules/*/examples/",
-          "#/biolgical_systems/*/",
+          "#/biological_systems/*/",
           "#/applications/*/",
           "#/doc/",]:
     for t in ["dox", "xml", "dot"]:

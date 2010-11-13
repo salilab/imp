@@ -31,7 +31,14 @@ def IMPSystem(env, name, version,
             pm=required_modules+found_optional_modules
         else:
             pm=[]
-        data.get(env).add_system(name,
+        lkname="system_"+name.replace(" ", "_").replace(":", "_")
+        pre="\page "+lkname+" "+name
+        doc.add_doc_page(env, "\page system_"+lkname+" "+name,
+                                 authors, version,
+                                 brief, overview,
+                                 publications,
+                                 license)
+        data.get(env).add_system(name, link="\\ref "+lkname+' "'+name+'"',
                                  dependencies=required_dependencies\
                                      +found_optional_dependencies,
                                  unfound_dependencies=[x for x in optional_dependencies
@@ -40,11 +47,6 @@ def IMPSystem(env, name, version,
                                  modules= required_modules+found_optional_modules,
                                  python_modules=pm,
                                  version=version)
-    doc.add_doc_page(env, "\page page_"+name+" "+name,
-                                 authors, version,
-                                 brief, overview,
-                                 publications,
-                                 license)
     env= scons_tools.environment.get_named_environment(env, name)
     utility.add_link_flags(env, required_modules,
                            required_dependencies+found_optional_dependencies)

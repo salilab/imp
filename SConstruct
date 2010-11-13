@@ -134,6 +134,7 @@ if not env.GetOption('help'):
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
+    scons_tools.doc.add_overview_pages(env)
 
 else:
     tenv= Environment(variables=vars)
