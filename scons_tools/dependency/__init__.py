@@ -57,23 +57,27 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                         alternate_name=None):
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
+    variables=[lcname, lcname+"libs"]
     def _check(context):
         if context.env[lcname] is "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
-            scons_tools.data.get(context.env).add_dependency(name, ok=False)
+            scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                             ok=False)
             return False
         elif context.env[lcname] is "yes":
             context.Message('Checking for '+name+' ...')
             if context.env.get(lcname+"libs", None) is None:
                 context.Result("disabled, libs not specified")
-                scons_tools.data.get(context.env).add_dependency(name, ok=False)
+                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                                 ok=False)
                 return False
             else:
                 val=context.env[lcname+'libs'].split(":")
                 #print val
                 context.Result(" ".join(val))
-                scons_tools.data.get(context.env).add_dependency(name, libs=val)
+                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                                 libs=val)
                 return True
         else:
             ret= check_lib(context, lib=lib, header=header,
@@ -81,21 +85,28 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                            extra_libs=extra_libs)
             context.Message('Checking for '+name+' ...')
             if ret[0]:
-                scons_tools.data.get(context.env).add_dependency(name, libs=ret[1])
+                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                                 libs=ret[1])
                 context.Result(" ".join(ret[1]))
             elif alternate_name:
                 ret= check_lib(context, lib=alternate_name, header=header,
                                   body=body,
                                   extra_libs=extra_libs)
                 if ret[0]:
-                    scons_tools.data.get(context.env).add_dependency(name, libs=ret[1])
+                    scons_tools.data.get(context.env).add_dependency(name,
+                                                                     variables=variables,
+                                                                     libs=ret[1])
                     context.Result(" ".join(ret[1]))
                 else:
                     context.Result(False)
-                    scons_tools.data.get(context.env).add_dependency(name, ok=False)
+                    scons_tools.data.get(context.env).add_dependency(name,
+                                                                     variables=variables,
+                                                                     ok=False)
             else:
                 context.Result(False)
-                scons_tools.data.get(context.env).add_dependency(name, ok=False)
+                scons_tools.data.get(context.env).add_dependency(name,
+                                                                 variables=variables,
+                                                                 ok=False)
             return ret[0]
     from SCons.Script import EnumVariable
     vars = SCons.Variables.Variables(files=[File('#/config.py').abspath])
