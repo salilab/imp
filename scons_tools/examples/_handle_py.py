@@ -7,8 +7,8 @@ import scons_tools.utility
 
 def _find_used(lines, modules):
     res={}
-    method='([a-z_]+)\('
-    cl='([A-Z_][A-Za-z_]+)'
+    method='([a-z_0-9]+)\('
+    cl='([A-Z_][A-Za-z_0-9]+)'
     res['kernel']=(re.compile('IMP\\.'+method), re.compile('IMP\\.'+cl))
     for m in modules:
         rm=re.compile('IMP\\.'+m+'\\.'+method)

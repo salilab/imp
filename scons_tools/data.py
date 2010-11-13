@@ -3,9 +3,11 @@ import utility
 excluded_classes={"kernel":["Model", "Particle", "Particles",
                             "SILENT", "TERSE", "VERBOSE", "NONE",
                             "FloatKey", "IntKey", "ParticleKey", "StringKey"],
-                  "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp"],
-                  "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE"]}
-included_methods={"kernel":{},
+                  "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp", "GenericHierarchies",
+                          "GenericHierarchiesTemp"],
+                  "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
+included_methods={"kernel":{"set_check_level":"(CheckLevel)",
+                            "set_log_level":"(LogLevel)"},
                   "atom":{"read_pdb":"(TextInput, Model*)",
                           "create_protein":\
                           "(Model*,std::string,double,int,int,double)",
@@ -14,7 +16,9 @@ included_methods={"kernel":{},
                           "(const Selection &,const Selection &,double, double)",
                           "create_connectivity_restraint":"(const Selections &,double)",
                           "create_excluded_volume_restraint":"(const Hierarchies &,double)",
-                          "setup_as_approximation":"(Hierarchy)"
+                          "setup_as_approximation":"(Hierarchy)",
+                          "create_clone":"(Hierarchy)",
+                          "destroy":"(Hierarchy)"
                           }
                   }
 
