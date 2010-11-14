@@ -9,24 +9,42 @@ def _find_used(lines, modules):
     res={}
     method='([a-z_0-9]+)\('
     cl='([A-Z_][A-Za-z_0-9]+)'
-    res['kernel']=(re.compile('IMP\\.'+method), re.compile('IMP\\.'+cl))
+
     for m in modules:
-        rm=re.compile('IMP\\.'+m+'\\.'+method)
-        rc=re.compile('IMP\\.'+m+'\\.'+cl)
+        if m=='kernel':
+            rm=re.compile('IMP\\.'+method)
+            rc=re.compile('IMP\\.'+cl)
+        else:
+            rm=re.compile('IMP\\.'+m+'\\.'+method)
+            rc=re.compile('IMP\\.'+m+'\\.'+cl)
         res[m]=(rm, rc)
+        #print m, rm.pattern, rc.pattern
     methods={}
     classes={}
     for k in res.keys():
         methods[k]=[]
         classes[k]=[]
     for l in lines:
+        #print "line", l
         for k in res.keys():
-            mmatch=res[k][0].search(l)
-            if mmatch:
-                methods[k].append(mmatch.groups()[0])
-            cmatch=res[k][1].search(l)
-            if cmatch:
-                classes[k].append(cmatch.groups()[0])
+            mcur=0
+            while True:
+                mmatch=res[k][0].search(l, mcur)
+                if mmatch:
+                    methods[k].append(mmatch.groups()[0])
+                    mcur= mmatch.end()
+                else:
+                    break
+            ccur=0;
+            while True:
+                cmatch=res[k][1].search(l, ccur)
+                if cmatch:
+                    classes[k].append(cmatch.groups()[0])
+                    ccur= cmatch.end()
+                    #print "found",cmatch.groups()[0]
+                else:
+                    break
+    #print "found", methods, classes
     return (methods, classes)
 
 def _make_used_wrapper( target, source, env):
@@ -34,6 +52,7 @@ def _make_used_wrapper( target, source, env):
     data= scons_tools.data.get(env)
     all= open(source[0].abspath, 'r').read()
     lines=all.split('\n')
+    #print "parsing", source[0].abspath
     (methods,classes)=  _find_used(lines, scons_tools.data.get(env).modules.keys())
     #print data.examples.keys()
     name= source[0].abspath

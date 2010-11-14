@@ -73,9 +73,10 @@ IMPATOMEXPORT Hierarchy create_protein(Model *m,
     They return Hierarchy() if the input chain is empty.
     @{
 */
+/** Simplify every num_res into one particle.*/
 IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
-                                                   int num_res);
-
+                                                         int num_res);
+/** Simplify by breaking at the boundaries provided.*/
 IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
            const IntRanges& residue_segments);
 /** @} */
