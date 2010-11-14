@@ -6,8 +6,12 @@ excluded_classes={"kernel":["Model", "Particle", "Particles",
                   "core":["XYZs", "XYZsTemp", "XYZRs", "XYZRsTemp", "GenericHierarchies",
                           "GenericHierarchiesTemp"],
                   "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
+typedef_classes={"algebra":{"Vector3D":"VectorD",
+                            "BoundingBox3D":"BoundingBoxD",
+                            "Sphere3D":"SphereD",}}
 included_methods={"kernel":{"set_check_level":"(CheckLevel)",
-                            "set_log_level":"(LogLevel)"},
+                            "set_log_level":"(LogLevel)",
+                            "add_failure_handler":"(FailureHandler*)"},
                   "atom":{"read_pdb":"(TextInput, Model*)",
                           "create_protein":\
                           "(Model*,std::string,double,int,int,double)",
@@ -70,6 +74,9 @@ class IMPData:
                 for i,c in enumerate(classes[k]):
                     if c in classes[k][i+1:]:
                         continue
+                    if k in typedef_classes.keys() and\
+                       c in typedef_classes[k].keys():
+                        c= typedef_classes[k][c]
                     if not k in excluded_classes.keys() or c not in excluded_classes[k]:
                         fclasses[k].append(c)
             fmethods={}
@@ -82,6 +89,7 @@ class IMPData:
                         continue
                     if m in included_methods[k].keys():
                         fmethods[k].append(m+included_methods[k][m])
+            #print "for", self.file, "got", fclasses, fmethods
             self.classes=fclasses
             self.methods=fmethods
     class SystemData:

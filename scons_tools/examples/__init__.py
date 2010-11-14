@@ -25,6 +25,7 @@ def _write_doxygen(env, name, link, files, outputname):
             nm=scons_tools.utility.get_without_extension(str(dta.examples[ln].file))
             outfile.write("\\pythonexample{"+ nm+"}\n\n")
             outfile.write("</td><td>\n")
+            #print "for example",f,dta.examples[ln].methods, dta.examples[ln].classes
             for m in dta.examples[ln].classes.keys():
                 if m=='kernel':
                     ns="IMP::"
@@ -50,7 +51,7 @@ def _write_doxygen(env, name, link, files, outputname):
     outfile.write("*/\n")
 
 def _action_make_examples(target, source, env):
-    print source[0].get_contents(), target[0].path
+    #print source[0].get_contents(), target[0].path
     _write_doxygen(env, source[0].get_contents(), source[1].get_contents(),
                   source[2:], target[0].path)
 
