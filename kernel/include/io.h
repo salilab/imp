@@ -101,7 +101,12 @@ IMPEXPORT void read_binary_model(std::string filename,
 /** @} */
 #endif
 
+/** \class WriteOptimizerState
+    Write conformations to different text files.
 
+    \class WriteFailureHandler
+    Write the conformatin when an error occurs.
+ */
 IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
                Particles ps_;,
                ps_=ps;,
