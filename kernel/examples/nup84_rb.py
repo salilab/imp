@@ -22,7 +22,8 @@ def create_representation():
         h=IMP.atom.create_protein(m, name, resolution, ds)
         leaves= IMP.atom.get_leaves(h)
         all.add_child(h)
-        r=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c) for c in h.get_children()],
+        r=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c)\
+                                                  for c in h.get_children()],
                                                  k)
         if r:
             m.add_restraint(r)
@@ -54,7 +55,8 @@ def create_representation():
                 c=create_from_pdb(f)
                 h.add_child(c)
                 c.set_name(name+" chain "+str(i))
-            r=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c) for c in h.get_children()],
+            r=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c)\
+                                                      for c in h.get_children()],
                                                      k)
             if r:
                 m.add_restraint(r)
@@ -98,12 +100,15 @@ def create_restraints(m, all):
     add_distance_restraint(S(hierarchy=all, molecule="Nup145C", residue_indexes=[(0,423)]),
                            S(hierarchy=all, molecule="Nup85"))
     add_distance_restraint(S(hierarchy=all, molecule="Nup145C", residue_indexes=[(0,423)]),
-                           S(hierarchy=all, molecule="Nup120", residue_indexes= [(500, 762)]))
+                           S(hierarchy=all, molecule="Nup120",
+                             residue_indexes= [(500, 762)]))
     add_distance_restraint(S(hierarchy=all, molecule="Nup84"),
-                           S(hierarchy=all, molecule="Nup133", residue_indexes=[(778, 1160)]))
+                           S(hierarchy=all, molecule="Nup133",
+                             residue_indexes=[(778, 1160)]))
     add_distance_restraint(S(hierarchy=all, molecule="Nup85"),
                            S(hierarchy=all, molecule="Seh1"))
-    add_distance_restraint(S(hierarchy=all, molecule="Nup145C", residue_indexes=[(0,423)]),
+    add_distance_restraint(S(hierarchy=all, molecule="Nup145C",
+                             residue_indexes=[(0,423)]),
                            S(hierarchy=all, molecule="Sec13"))
     for l in IMP.atom.get_leaves(all):
         r= IMP.example.ExampleRestraint(l, k)
@@ -130,7 +135,8 @@ def get_conformations(m, gs):
     cs= sampler.get_sample()
     # Look at the rejected minimal conformations to understand how the restraints
     # are failing
-    print "rejected", sampler.get_rejected_configurations().get_number_of_configurations(), "solutions"
+    print "rejected", \
+          sampler.get_rejected_configurations().get_number_of_configurations(), "solutions"
     m.set_gather_statistics(True)
     for i in range(0, sampler.get_rejected_configurations().get_number_of_configurations()):
         sampler.get_rejected_configurations().load_configuration(i)
@@ -147,7 +153,8 @@ def get_conformations(m, gs):
 def analyze_conformations(cs, all, gs):
     # we want to cluster the configurations to make them easier to understand
     # in the case, the clustering is pretty meaningless
-    embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs, IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
+    embed= IMP.statistics.ConfigurationSetXYZEmbedding(cs,
+                  IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
     cluster= IMP.statistics.get_lloyds_kmeans(embed, 10, 10000)
     # dump each cluster center to a file so it can be viewed.
     for i in range(cluster.get_number_of_clusters()):
