@@ -91,6 +91,21 @@ def _print_example_overview(target, source, env):
 _ExamplesOverview = Builder(action=Action(_make_example_overview,
                                          _print_example_overview))
 
+def _make_module_example_overview(target, source, env):
+    module= source[0].get_contents()
+    out= open(target[0].abspath, "w")
+    print >> out, "/** \\page "+module+"_all_example_index IMP."+module+" example index"
+    dta= data.get(env)
+    for k in dta.examples.keys():
+        if module in dta.examples[k].classes.keys() \
+           or module in dta.examples[k].methods.keys():
+            print >> out, "  - ", dta.examples[k].link
+    print >> out, "*/"
+def _print_module_example_overview(target, source, env):
+    print "Making IMP."+ source[0].get_contents()+" example overview"
+_ModuleExamplesOverview = Builder(action=Action(_make_module_example_overview,
+                                         _print_module_example_overview))
+
 def _make_example_links(target, source, env):
     out= open(target[0].abspath, "w")
     return
@@ -177,3 +192,7 @@ def add_overview_pages(env):
     _SystemsOverview(source=sources,
                           target=File("#/doc/generated/systems_overview.dox"),
                           env=env)
+    for m in dta.modules.keys():
+        _ModuleExamplesOverview(source=[env.Value(m)]+sources,
+                                target=File("#/doc/generated/"+m+"examples_index.dox"),
+                                env=env)

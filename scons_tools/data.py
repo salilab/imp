@@ -53,12 +53,12 @@ class IMPData:
             self.version=version
             self.ok=ok
     class ExampleData:
-        def __init__(self, name):
+        def __init__(self, name, overview):
             self.processed=False
             self.file=name
             self.name=utility.get_display_from_name(name)
             self.link= utility.get_link_from_name(name)
-            self.overview= utility.get_without_extension(name)+".readme"
+            self.overview= overview
             #print "for", name, "got", self.name, "and", self.overview
         def set_processed(self, classes, methods):
             self.processed=True
@@ -172,8 +172,8 @@ class IMPData:
                                  modules=passmodules,
                                  python_modules=passpythonmodules,
                                  version=version)
-    def add_example(self, name):
-        self.examples[utility.get_link_name_from_name(name)]=self.ExampleData(name)
+    def add_example(self, name, overview):
+        self.examples[utility.get_link_name_from_name(name)]=self.ExampleData(name, overview)
     def get_found_modules(self, modules):
         ret=[]
         for m in modules:
