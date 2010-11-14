@@ -27,6 +27,7 @@ scons_tools.variables.add_common_variables(vars, "imp")
 env = scons_tools.environment.get_base_environment(variables=vars,
                                                    tools=["default", "swig"],
                                                    toolpath=["scons_tools"])
+print env.get('SWIGVERSION', "not there")
 env['IMP_ENABLED']=[]
 env['IMP_DISABLED']=[]
 env['IMP_BUILD_SUMMARY']=""
@@ -125,9 +126,11 @@ if not env.GetOption('help'):
     # scons has a bug with command line arguments that are added late
     if unknown:
         really_unknown=[]
+        depkeys=[]
+        for x in scons_tools.data.get(env).dependencies.keys():
+            depkeys= depkeys+scons_tools.data.get(env).dependencies[x].variables
         for u in unknown.keys():
-            if u not in [scons_tools.data.get(env).dependencies[x].variables \
-                         for x in scons_tools.data.get(env).dependencies.keys()]:
+            if u not in depkeys:
                 really_unknown.append(u)
         if len(really_unknown) >0:
             print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
