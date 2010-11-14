@@ -121,18 +121,5 @@ Not listed are
  - IMP::algebra that provides basic geometric and mathematical types and operations
  - IMP::benchmark that provides benchmarks of various usages of other modules
 
-\code
-import IMP
-import IMP.core
-import IMP.python
-
-m= IMP.Model()
-
-a= 1
-\endcode
-\code
-m= new IMP::Model()
-\endcode
-\include "nup84_cg.py"
  */
 
