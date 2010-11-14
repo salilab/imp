@@ -151,17 +151,28 @@ def IMPModuleData(env, files):
 def IMPModuleExamples(env, example_files, data_files):
     #print "Examples called with",[str(x) for x in example_files],\
     #    [str(x) for x in data_files]
+    example_files= [File(x) for x in example_files]
+    #for f in example_files:
+    #    print f
+    #    print f.abspath
+    #    open(f.abspath, 'r')
     scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir", example_files+data_files)
     test= scons_tools.test.add_test(env,
                                     [x for x in example_files
                                      if str(x).endswith(".py") \
                                      and str(x).find("fragment")==-1],
                                     type='example')
-    split= scons_tools.utility.get_split_into_directories(example_files)
+    seen=[]
     for e in example_files:
         if str(e).endswith(".py"):
-            scons_tools.examples.add_python_example(env, e)
+            for o in example_files:
+                if str(o) == scons_tools.utility.get_without_extension(str(e))+".readme":
+                    seen.append(o)
+                    break
+            scons_tools.examples.add_python_example(env, e, o.get_contents())
     links=[]
+    fexample_files=[x for x in example_files if x not in seen]
+    split= scons_tools.utility.get_split_into_directories(fexample_files)
     for k in split.keys():
         if len(k)>0:
             name =_get_module_name(env)+ " examples: "+k
@@ -272,12 +283,7 @@ def IMPModuleGetExamples(env):
     rms= scons_tools.utility.get_matching_recursive(["*.readme"])
     ex= [x for x in scons_tools.utility.get_matching_recursive(["*.py"])
          if str(x) != "test_examples.py"]
-    rrms=[]
-    for e in rms:
-        pyn= scons_tools.utility.get_without_extension(e)+".py"
-        if not File(pyn) in ex:
-            rrms.append(e)
-    return rrms+ex
+    return rms+ex
 
 def IMPModuleGetExampleData(env):
     ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
@@ -364,6 +370,9 @@ def IMPModuleDoc(env, files, authors,
         overview+= '\n\nExamples:\n'
         for l in links:
             overview+=' - ' +l +'\n'
+        # defined in doc so all examples have been seen
+        overview += ' - \\ref '+_get_module_name(env)\
+                    +'_all_example_index "All examples using IMP.'+_get_module_name(env)+'"\n'
     scons_tools.doc.add_doc_page(env,
                                  "\\namespace "\
                                  +_get_module_variables(env)['namespace'],

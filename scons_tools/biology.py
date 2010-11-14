@@ -33,7 +33,7 @@ def IMPSystem(env, name, version,
             pm=[]
         lkname="system_"+name.replace(" ", "_").replace(":", "_")
         pre="\page "+lkname+" "+name
-        doc.add_doc_page(env, "\page system_"+lkname+" "+name,
+        doc.add_doc_page(env, "\page "+lkname+" "+name,
                                  authors, version,
                                  brief, overview,
                                  publications,
