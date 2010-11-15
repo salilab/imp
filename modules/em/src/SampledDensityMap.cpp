@@ -284,7 +284,7 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
 float SampledDensityMap::get_minimum_resampled_value() {
   float min_weight=INT_MAX;
   core::XYZsTemp xyz(ps_);
-  for(int i=0;i<xyz.size();i++) {
+  for(unsigned int i=0;i<xyz.size();i++) {
     if (get_value(xyz[i].get_coordinates())<min_weight) {
       min_weight=get_value(xyz[i].get_coordinates());
     }
