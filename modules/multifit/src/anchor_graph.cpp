@@ -15,7 +15,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 ProbabilisticAnchorGraph::ProbabilisticAnchorGraph(
                                    algebra::Vector3Ds anchor_positions){
   GVertex u;
-  for(int i=0;i<anchor_positions.size();i++) {
+  for(unsigned int i=0;i<anchor_positions.size();i++) {
     u = boost::add_vertex(g_);
     id2node_.push_back(u);
   }

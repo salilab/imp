@@ -117,7 +117,7 @@ em::FittingSolutions convert_multifit_to_em_format(
   em::FittingSolutions output;
   for(FittingSolutionRecords::const_iterator it = multifit_fits.begin();
       it != multifit_fits.end();it++) {
-  for(int i=0;i<multifit_fits.size();i++)
+  for(unsigned int i=0;i<multifit_fits.size();i++)
     output.add_solution(it->get_transformation(),
                         it->get_fitting_score());
   }

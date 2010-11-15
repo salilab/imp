@@ -94,7 +94,7 @@ DataPointsAssignment::DataPointsAssignment(
 algebra::Vector3Ds
 DataPointsAssignment::get_cluster_vectors(int cluster_id) const {
   IMP_USAGE_CHECK(
-    cluster_id<cluster_sets_.size(),
+    static_cast<unsigned int>(cluster_id)<cluster_sets_.size(),
     "DataPointsAssignment::get_cluster cluster index is out of range");
   return cluster_sets_[cluster_id];
 }
@@ -273,7 +273,7 @@ void write_pdb(const std::string &pdb_filename,
 
 algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
   const {
-  IMP_USAGE_CHECK(cluster_ind<cluster_sets_.size(),
+  IMP_USAGE_CHECK(static_cast<unsigned int>(cluster_ind)<cluster_sets_.size(),
       "DataPointsAssignment::get_cluster_xyz cluster index is out of range\n");
   algebra::Vector3Ds xyz;
   for(algebra::Vector3Ds::const_iterator
