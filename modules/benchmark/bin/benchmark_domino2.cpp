@@ -20,7 +20,7 @@ int main(int, char *[]) {
   m->set_log_level(SILENT);
   ::Hierarchy h= read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"),m);
   add_radii(h);
-  Transformation3Ds vs;
+  ReferenceFrame3Ds vs;
   HierarchiesTemp residues= get_by_type(h, RESIDUE_TYPE);
   while (residues.size() > 80) {
     residues.pop_back();
@@ -34,7 +34,7 @@ int main(int, char *[]) {
   }
   for (unsigned int i=0; i< residues.size(); ++i) {
     RigidBody r= setup_as_rigid_body(residues[i]);
-    vs.push_back(r.get_transformation());
+    vs.push_back(ReferenceFrame3D(r.get_transformation()));
   }
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
 #ifdef IMP_USE_CGAL
