@@ -33,7 +33,7 @@ unsigned int RigidBodyStates::get_number_of_particle_states() const {
 }
 void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
   IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
-  core::RigidBody(p).set_transformation(states_[i]);
+  core::RigidBody(p).set_reference_frame(states_[i]);
 }
 
 void RigidBodyStates::do_show(std::ostream &out) const{}

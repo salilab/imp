@@ -27,9 +27,12 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing finding minima with rigid bodies"""
         m= IMP.Model()
         rbs= [self._create_rb("1",m), self._create_rb("2", m)]
-        trs= [Transformation3D(get_identity_rotation_3d(), Vector3D(0,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(2,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(4,0,0))]
+        trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(0,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(2,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(4,0,0)))]
         ps= IMP.core.HarmonicSphereDistancePairScore(0,1)
         r= IMP.core.PairRestraint(ps, (rbs[0].get_members()[0], rbs[1].get_members()[0]))
         r.set_name("restraint")
@@ -59,9 +62,12 @@ class DOMINOTests(IMP.test.TestCase):
         m= IMP.Model()
         rbs= [self._create_rb("1",m), self._create_rb("2", m),
               self._create_rb("3",m)]
-        trs= [Transformation3D(get_identity_rotation_3d(), Vector3D(0,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(2,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(4,0,0))]
+        trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(0,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(2,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(4,0,0)))]
         ps= IMP.core.HarmonicSphereDistancePairScore(0,1)
         members=[x.get_members()[0] for x in rbs]
         pl=IMP.container.ListPairContainer([(members[0], members[1]), (members[1], members[2])])
@@ -85,9 +91,12 @@ class DOMINOTests(IMP.test.TestCase):
         m= IMP.Model()
         rbs= [self._create_rb("1",m, 4), self._create_rb("2", m, 4),
               self._create_rb("3",m, 4)]
-        trs= [Transformation3D(get_identity_rotation_3d(), Vector3D(0,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(2,0,0)),
-              Transformation3D(get_identity_rotation_3d(), Vector3D(4,0,0))]
+        trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(0,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(2,0,0))),
+              ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                                Vector3D(4,0,0)))]
         lps=IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))
         ps= IMP.core.KClosePairsPairScore(lps, IMP.core.RigidMembersRefiner())
         pl=IMP.container.ListPairContainer([(rbs[0], rbs[1]), (rbs[1], rbs[2])])

@@ -16,7 +16,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/algebra/Transformation3D.h>
+#include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <map>
 
@@ -96,9 +96,9 @@ IMP_OBJECTS(XYZStates, XYZStatesList);
     transformation coordinates of the particle in question.
 */
 class IMPDOMINO2EXPORT RigidBodyStates: public ParticleStates {
-  algebra::Transformation3Ds states_;
+  algebra::ReferenceFrame3Ds states_;
 public:
-  RigidBodyStates(const algebra::Transformation3Ds &states): states_(states){}
+  RigidBodyStates(const algebra::ReferenceFrame3Ds &states): states_(states){}
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 IMP_OBJECTS(RigidBodyStates, RigidBodyStatesList);
