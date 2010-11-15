@@ -375,7 +375,8 @@ def IMPModuleDoc(env, files, authors,
                     +'_all_example_index "All examples using IMP.'+_get_module_name(env)+'"\n'
     scons_tools.doc.add_doc_page(env,
                                  "\\namespace "\
-                                 +_get_module_variables(env)['namespace'],
+                                 +_get_module_variables(env)['namespace']\
+                                 +'\n\\brief '+brief,
                                  authors,_get_module_version(env),
                                  brief, overview, publications, license)
     for f in files:
