@@ -1,6 +1,6 @@
 /**
  *  \file geometry.h
- *  \brief XXXXXXXXXXXXXX
+ *  \brief Implement geometry for the basic shapes from IMP.algebra.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
@@ -20,6 +20,7 @@
 #include <IMP/algebra/Cylinder3D.h>
 #include <IMP/algebra/Ellipsoid3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/algebra/ReferenceFrame3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
@@ -87,6 +88,14 @@ IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
 */
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,
                                        algebra::BoundingBoxD<3>);
+
+/** \brief Display a reference frame.
+
+    x-axis is red, y is green and z is blue.
+*/
+IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(ReferenceFrameGeometry,
+                                       algebra::ReferenceFrame3D);
+
 
 //! A text label for a ball in space
 /** You can use the offset if the thing being labeled has a radius.
