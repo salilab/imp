@@ -8,7 +8,8 @@ excluded_classes={"kernel":["Model", "Particle", "Particles",
                   "atom":["CHAIN_TYPE", "ATOM_TYPE", "RESIDUE_TYPE", "Hierarchies"]}
 typedef_classes={"algebra":{"Vector3D":"VectorD",
                             "BoundingBox3D":"BoundingBoxD",
-                            "Sphere3D":"SphereD",}}
+                            "Sphere3D":"SphereD",
+                            "NearestNeighbor3D":"NearestNeighborD"}}
 included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                             "set_log_level":"(LogLevel)",
                             "add_failure_handler":"(FailureHandler*)"},
@@ -16,6 +17,7 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                           "create_protein":\
                           "(Model*,std::string,double,int,int,double)",
                           "create_simplified_along_backbone":"(Chain,int)",
+                          "get_leaves":"(Hierarchy)",
                           "create_distance_restraint":\
                           "(const Selection &,const Selection &,double, double)",
                           "create_connectivity_restraint":"(const Selections &,double)",
@@ -23,7 +25,15 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                           "setup_as_approximation":"(Hierarchy)",
                           "create_clone":"(Hierarchy)",
                           "destroy":"(Hierarchy)"
-                          }
+                          },
+                  "display":{"get_display_color":"(unsigned int)",
+                             "get_jet_color":"(double)"},
+                  "statistics":{"get_lloyds_kmeans":\
+                                "(Embedding*,unsigned int, unsigned int)",
+                                "get_connectivity_clustering":\
+                                "(Embedding*,double)"},
+                  "algebra":{"get_random_vector_in":"(const SphereD<D>&)",
+                             "get_random_vector_on":"(const SphereD<D>&)"}
                   }
 
 
