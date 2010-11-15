@@ -31,6 +31,9 @@ Since SWIG could not be found, proceeding to build IMP without Python support.
         match=r.search(ret)
         if match:
             version= match.groups()[0]
+            context.env['SWIGVERSION']= version
+        else:
+            version="failed"
     try:
         v = [int(x) for x in version.split(".")]
     except ValueError:
