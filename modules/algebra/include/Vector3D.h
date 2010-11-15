@@ -26,7 +26,7 @@ IMPALGEBRA_EXPORT_TEMPLATE(VectorD<3>);
    Vector3Ds class here; otherwise, both the statistics and display modules
    will attempt to export Vector3Ds (since they both contain exported classes
    that have Vector3Ds members) and then any module that attempts to link
-   against both statistics and display (e.g. domino2) will fail to link with
+   against both statistics and display (e.g. domino) will fail to link with
    LNK2005/LNK1169 errors (multiply defined symbols). See also
    http://support.microsoft.com/kb/q168958/
 
