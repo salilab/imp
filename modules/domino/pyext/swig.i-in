@@ -1,0 +1,46 @@
+%include "IMP/domino/domino_macros.h"
+namespace IMP {
+namespace domino {
+%warnfilter(473) SubsetStatesTable;
+%warnfilter(473) SubsetFilterTable;
+%warnfilter(473,403) DiscreteSampler;
+}
+}
+
+
+
+/* Tell swig how to treat various types when moving them to and from pyton */
+IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);
+IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
+IMP_SWIG_BASE_OBJECT(IMP::domino, ParticleStates, ParticleStatesList);
+IMP_SWIG_OBJECT(IMP::domino, ParticleStatesTable, ParticleStatesTables);
+IMP_SWIG_OBJECT(IMP::domino, XYZsParticleStates, XYZsParticleStatesList);
+IMP_SWIG_OBJECT(IMP::domino, JunctionTreeTable, JunctionTreeTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilter, SubsetFilters);
+IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilterTable, SubsetFilterTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetStatesTable, SubsetStatesTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino, DiscreteSampler, DiscreteSamplers);
+IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundSubsetStatesTable, BranchAndBoundSubsetStatesTables);
+IMP_SWIG_OBJECT(IMP::domino, ListSubsetStatesTable, ListSubsetStatesTables);
+IMP_SWIG_OBJECT(IMP::domino, ListSubsetStates, ListSubsetStatesList);
+IMP_SWIG_GRAPH(IMP::domino, InteractionGraph, InteractionGraph, IMP::Particle*);
+IMP_SWIG_GRAPH(IMP::domino, SubsetGraph, SubsetGraph, IMP::domino::Subset );
+IMP_SWIG_VALUE(IMP::domino, SubsetState, SubsetStates);
+
+%include "IMP/domino/Subset.h"
+%include "IMP/domino/SubsetState.h"
+%include "IMP/domino/particle_states.h"
+%include "IMP/domino/subset_filters.h"
+%include "IMP/domino/subset_states.h"
+%include "IMP/domino/subset_graphs.h"
+%include "IMP/domino/optimize_restraints.h"
+%include "IMP/domino/DiscreteSampler.h"
+%include "IMP/domino/DominoSampler.h"
+%include "IMP/domino/BranchAndBoundSampler.h"
+%include "IMP/domino/utility.h"
+%include "IMP/domino/analysis.h"
+
+
+%pythoncode %{
+DefaultSubsetStatesTable=BranchAndBoundSubsetStatesTable;
+%}

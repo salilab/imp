@@ -15,7 +15,7 @@
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/SphereDistancePairScore.h>
 #include <IMP/container/PairsRestraint.h>
-#include <IMP/domino2/utility.h>
+#include <IMP/domino/utility.h>
 #include <IMP/scoped.h>
 #include <IMP/internal/map.h>
 #include <IMP/atom/internal/SpecialCaseRestraints.h>

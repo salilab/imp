@@ -1,13 +1,13 @@
 /**
  * Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
-#include <IMP/domino2.h>
+#include <IMP/domino.h>
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/benchmark.h>
 #include <IMP/core.h>
 using namespace IMP;
-using namespace IMP::domino2;
+using namespace IMP::domino;
 using namespace IMP::atom;
 using namespace IMP::algebra;
 using namespace IMP::core;
@@ -72,6 +72,6 @@ int main(int, char *[]) {
                Pointer<ConfigurationSet> cs= ds->get_sample();
                num+=cs->get_number_of_configurations();
              }, runtime);
-  IMP::benchmark::report("domino2 small ", runtime, num);
+  IMP::benchmark::report("domino small ", runtime, num);
   return IMP::benchmark::get_return_value();
 }
