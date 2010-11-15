@@ -401,7 +401,7 @@ public:
   /**
 \param[in] kernel an array of kernel values. The data is in ZYX
                    order, Z is the slowest.
-\param[in] lenght the array leght
+\param[in] dim_len the array leght
    */
   void convolute_kernel(double *kernel, int dim_len){
     //todo - add a test that lenght is even
@@ -476,7 +476,9 @@ IMPEMEXPORT DensityMap *create_density_map(
  //! Calculate a bounding box around a 3D point within the EM grid
  /**
 \param[in] d_map the density map
-\param[in] point (x,y,z) coordinates of the point to sample around
+\param[in] x coordinates of the point to sample around
+\param[in] y coordinates of the point to sample around
+\param[in] z coordinates of the point to sample around
 \param[in] kdist the lenght of the box
 \param[out] iminx the minimum index on the X axis of the output bounding box
 \param[out] iminy the minimum index on the Y axis of the output bounding box
@@ -560,6 +562,7 @@ inline bool get_interiors_intersect(const DensityMap *d1,
   return get_interiors_intersect(get_bounding_box(d1),
                                  get_bounding_box(d2));
 }
+#if 0
 //! Get a histrogram of density values
 /**
 \param[in] dmap the density map to analyse
@@ -570,7 +573,7 @@ inline bool get_interiors_intersect(const DensityMap *d1,
 */
 // IMPEMEXPORT statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,int num_bins);
-
+#endif
 
 //! Get a segment of the map according to xyz indexes
 /**
