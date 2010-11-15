@@ -86,7 +86,7 @@ public:
   /** The other variables of the parameters
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
     \param[in] radius the radius
-    \param[out] the radius based parameters
+    \return the radius based parameters
   */
   const RadiusDependentKernelParameters* set_params(float radius);
 
