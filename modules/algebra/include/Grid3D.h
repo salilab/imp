@@ -60,7 +60,8 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-
+/** Implementation choices for the parameterized grids.
+ */
 namespace grids {
 
 //! An index in an infinite grid on space
