@@ -1,0 +1,14 @@
+Import('env')
+
+env= env.IMPApplication(name="ligand_score", version="SVN",
+                        authors=["Hao Fan", "Daniel Russel"],
+                        brief="Compute various ligand scores",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=[],
+                        required_modules=['atom'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="ligand_score", source=["ligand_score.cpp"])
