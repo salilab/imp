@@ -20,9 +20,6 @@ def _action_link_test(target, source, env):
  *
  */
 
- #ifdef _GNU_SOURCE
- #undef _GNU_SOURCE
- #endif
 """ % vars
 
         print >> cpp, """
