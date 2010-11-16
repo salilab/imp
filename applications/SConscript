@@ -1,7 +1,8 @@
 Import('env')
 
-applications=['saxs',
-              'em']
+applications=['foxs',
+              'em',
+              'ligand_score']
 
 if env.get('local', False):
     for d in Glob("*/SConscript"):
