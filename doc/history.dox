@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Fall 2010
+- IMP.domino2 was renamed to IMP.domino and the old IMP.domino was moved to https://svn.salilab.org/imp/branches/salilab/domino1
 - the documentation for classes and some methods now includes a list of all examples which use the class. Please report any incorrect links or phantom classes appearing in the docs. Unfortunately, functions have to be added individually. Please request any functions of particular interest.
 - applications and biological systems now have their own documentatin pages
 - IMP::atom::Hierarchy requires radii on its leaves
