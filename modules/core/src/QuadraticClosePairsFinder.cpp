@@ -7,6 +7,7 @@
  */
 
 #include "IMP/core/QuadraticClosePairsFinder.h"
+#include "IMP/core/internal/close_pairs_helpers.h"
 #include "IMP/core/XYZ.h"
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/core/utility.h>
@@ -100,20 +101,7 @@ get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
 
 
 bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
-  XYZ da(a);
-  XYZ db(b);
-  Float ra= get_radius(a);
-  Float rb= get_radius(b);
-  Float sr= ra+rb+get_distance();
-  for (unsigned int i=0; i< 3; ++i) {
-    double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
-    if (delta >= sr) {
-      return false;
-    }
-  }
-  return get_interiors_intersect(algebra::SphereD<3>(da.get_coordinates(),
-                                               ra+get_distance()),
-                             algebra::SphereD<3>(db.get_coordinates(), rb));
+  return internal::get_are_close(a,b, get_distance());
 }
 
 

@@ -24,7 +24,7 @@ def _check_do_not_commit(line, filename, num, errors):
 
 def check_c_file(filename, errors):
     """Check each modified C file to make sure it adheres to the standards"""
-    fh = file(filename, "r")
+    fh = file(filename, "r").read().split("\n")
     srch = re.compile('\s+$')
     url = re.compile('https?://')
     configh=False
@@ -43,15 +43,21 @@ def check_c_file(filename, errors):
                           % (filename, num+1))
         if not filename.endswith(".cpp") and line.startswith("#define ") \
            and not line.startswith("#define IMP"):
-            errors.append('%s:%d: error: Preprocessor symbols must start with IMP' \
-                          % (filename, num+1))
+            found=False
+            fline=line.replace("#define", "#undef")
+            for (onum, oline) in enumerate(fh):
+                if onum > num and oline.startswith(fline):
+                    found=True
+            if not found:
+                errors.append('%s:%d: error: Preprocessor symbols must start with IMP' \
+                                  % (filename, num+1))
         blank = (len(line) == 0)
         if line.startswith('#include "'):
             configh=True;
         if blank and num == 0:
             errors.append('%s:1: File has leading blank line(s)' % filename)
-    if blank:
-        errors.append('%s:1000: File has trailing blank line(s)' % filename)
+    if len(fh)>0 and len(fh[-2])==0:
+        errors.append('%s:%d: File has trailing blank line(s)' % (filename, len(fh)))
     if not configh and filename.endswith(".h") and not filename.endswith("config.h")\
             and not filename.endswith("macros.h") and filename.find("internal") == -1:
         errors.append('%s: error: Non-internal header files must include config.h at least indirectly, use #include "config.h"' \
