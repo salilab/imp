@@ -1,7 +1,7 @@
 Import('env')
 
 applications=['foxs',
-              'em',
+              'em_tools',
               'ligand_score']
 
 if env.get('local', False):
