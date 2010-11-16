@@ -12,6 +12,7 @@
 #include <IMP/internal/utility.h>
 #include <memory>
 #include <utility>
+#include <numeric>
 
 IMP_BEGIN_NAMESPACE
 
@@ -59,11 +60,22 @@ void RestraintSet::set_weight(double w) {
 double
 RestraintSet::evaluate(bool deriv) const
 {
+  IMP_OBJECT_LOG;
   RestraintsTemp restraints;
   std::vector<double> weights;
   boost::tie(restraints, weights)=
     get_restraints_and_weights(this);
-  return get_model()->evaluate(restraints, weights, deriv);
+  IMP_LOG(TERSE, "Evaluating "<< restraints.size()
+          << " restraints in set.\n");
+  Floats ret= get_model()->evaluate(restraints, weights, deriv);
+  double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Got " << rv << "\n");
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      IMP_LOG(TERSE, ret[i] << " for " << restraints[i]->get_name() << "\n");
+    }
+  }
+  return rv;
 }
 
 double

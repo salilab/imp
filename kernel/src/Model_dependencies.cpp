@@ -18,6 +18,7 @@
 #include "IMP/internal/map.h"
 #include <boost/timer.hpp>
 #include <set>
+#include <numeric>
 
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
@@ -445,16 +446,16 @@ double Model::evaluate(bool calc_derivs) {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  double ret= do_evaluate(ordered_restraints_,
+  Floats ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
                           restraint_max_scores_,
                      ordered_score_states_,
                      calc_derivs);
   first_call_=false;
-  return ret;
+  return std::accumulate(ret.begin(), ret.end(), 0.0);
 }
 
-double Model::evaluate( RestraintsTemp restraints,
+Floats Model::evaluate( RestraintsTemp restraints,
                         std::vector<double> weights,
                        bool calc_derivs)
 {
@@ -489,8 +490,13 @@ double Model::evaluate( RestraintsTemp restraints,
       max_scores[i]= max_scores_.find(restraints[i])->second;
     }
   }
-  return do_evaluate(restraints, weights, max_scores,
+  Floats ret= do_evaluate(restraints, weights, max_scores,
                      ss, calc_derivs);
+  IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
+                     "The number of scores doesn't match the number of"
+                     << " restraints: " << ret.size()
+                     << " vs " << restraints.size());
+  return ret;
 }
 
 
