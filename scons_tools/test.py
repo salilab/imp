@@ -47,7 +47,7 @@ UnitTest = Builder(action=Action(_action_unit_test,
 
 
 def add_test(env, source, type):
-    test=UnitTest(env, target="test.passed", source=source+[env.Value(type)])
+    test=UnitTest(env, target="test.passed", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
     env.Requires(test, "#/build/lib/compat_python")
     env.AlwaysBuild("test.passed")
     env.Requires(test, env.Alias(environment.get_current_name(env)))

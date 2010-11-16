@@ -157,7 +157,7 @@ def IMPModuleExamples(env, example_files, data_files):
     #    open(f.abspath, 'r')
     scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir", example_files+data_files)
     test= scons_tools.test.add_test(env,
-                                    [x for x in example_files
+                                    source=[x for x in example_files
                                      if str(x).endswith(".py") \
                                      and str(x).find("fragment")==-1],
                                     type='example')
@@ -396,7 +396,7 @@ def IMPModuleTest(env, python_tests, cpp_tests):
        source is a Python script to run (usually run-all-tests.py).
        Right now, the assumption is made that run-all-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
-    files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
+    files= ["#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in python_tests]
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
