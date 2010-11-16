@@ -157,7 +157,8 @@ def _make_applications_overview(target, source, env):
     print >> out, "/** \\page applications_index Application index"
     dta= data.get(env)
     for k in dta.applications.keys():
-        print >> out, "  -", dta.applications[k].link
+        if dta.applications[k].ok:
+            print >> out, "  -", dta.applications[k].link
     print >> out, "*/"
 def _print_applications_overview(target, source, env):
     print "Making applications overview"
