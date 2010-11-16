@@ -103,12 +103,12 @@ private:
   void before_evaluate(const ScoreStatesTemp &states) const;
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
   void zero_derivatives(bool shadow_too=false) const;
-  double do_evaluate(const RestraintsTemp &restraints,
+  Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
                       const std::vector<double> &maxs,
                      const ScoreStatesTemp &states, bool calc_derivs);
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
-  double do_evaluate_restraints(const RestraintsTemp &restraints,
+  Floats do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
                                 const std::vector<double> &maxs,
                                 bool calc_derivs,
@@ -383,9 +383,9 @@ public:
       score states are added, but not when the dependencies of
       Restraints or ScoreStates change. This can be fixed if requested.
   */
-  double evaluate( RestraintsTemp restraints,
+  Floats evaluate( RestraintsTemp restraints,
                    std::vector<double> weights,
-                  bool calc_derivs);
+                   bool calc_derivs);
 #endif
 
  //! Sometimes it is useful to be able to make sure the model is up to date

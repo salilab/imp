@@ -12,6 +12,7 @@
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
 #include "IMP/internal/utility.h"
+#include <numeric>
 
 IMP_BEGIN_NAMESPACE
 
@@ -39,7 +40,8 @@ double Restraint::evaluate(bool calc_derivs) const {
             "Restraint::evaluate() cannot be called during model evaluation");
   RestraintsTemp rr(1, const_cast<Restraint*>(this));
   std::vector<double> ws(1, 1.0);
-  return get_model()->evaluate(rr, ws, calc_derivs);
+  Floats v= get_model()->evaluate(rr, ws, calc_derivs);
+  return std::accumulate(v.begin(), v.end(), 0.0);
 }
 
 IMP_END_NAMESPACE

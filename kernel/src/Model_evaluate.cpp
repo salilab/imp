@@ -14,6 +14,7 @@
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
 #include <set>
+#include <numeric>
 
 
 namespace {
@@ -253,7 +254,7 @@ void Model::zero_derivatives(bool st) const {
   }
 }
 
-double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
+Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
                                      const std::vector<double> &maxs,
                                      bool calc_derivs,
@@ -271,7 +272,7 @@ double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
             << (calc_derivs?"with derivatives":"without derivatives")
             << std::endl);
   }
-  double score=0;
+  Floats ret;
   boost::timer timer;
   for (unsigned int i=0; i< restraints.size(); ++i) {
     double value=0;
@@ -306,13 +307,13 @@ double Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     if (value > restraint_max_scores_[i]) {
       has_good_score_=false;
     }
-    score+= wvalue;
+    ret.push_back(wvalue);
   }
   IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
-  if (score > max_score_) {
+  if (std::accumulate(ret.begin(), ret.end(), 0.0) > max_score_) {
     has_good_score_=false;
   }
-  return score;
+  return ret;
 }
 
 
@@ -337,9 +338,10 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
     // junk
     std::vector<double> mx(restraints.size(),
                            std::numeric_limits<double>::max());
-    double nscore=
+    Floats scores=
       do_evaluate_restraints(restraints, weights, mx,
                              calc_derivs, ALL, false);
+    double nscore= std::accumulate(scores.begin(), scores.end(), 0.0);
     gather_statistics_= ogather_stats;
     if (std::abs(nscore -score)
         > .001+.1*std::abs(nscore+score)) {
@@ -400,7 +402,7 @@ void Model::validate_computed_derivatives() const {
 
 
 
-double Model::do_evaluate(const RestraintsTemp &restraints,
+Floats Model::do_evaluate(const RestraintsTemp &restraints,
                           const std::vector<double> &weights,
                           const std::vector<double> &maxs,
                           const ScoreStatesTemp &states,
@@ -426,21 +428,22 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
   before_evaluate(states);
 
   cur_stage_= EVALUATE;
-  double score;
+  Floats ret;
   if (get_is_incremental()) {
-    score = 0.0;
     if (calc_derivs) zero_derivatives(first_incremental_);
-    score+= do_evaluate_restraints(restraints, weights, maxs,
+    Floats scores= do_evaluate_restraints(restraints, weights, maxs,
                                    calc_derivs, INCREMENTAL,
                                    !first_incremental_);
+    ret.insert(ret.end(), scores.begin(), scores.end());
     if (calc_derivs) {
       for (ParticleConstIterator pit = particles_begin();
            pit != particles_end(); ++pit) {
         (*pit)->move_derivatives_to_shadow();
       }
     }
-    score+=do_evaluate_restraints(restraints, weights, maxs,
+    Floats niscores=do_evaluate_restraints(restraints, weights, maxs,
                                   calc_derivs, NONINCREMENTAL, false);
+    ret.insert(ret.end(), niscores.begin(), niscores.end());
     if (calc_derivs) {
       for (ParticleConstIterator pit = particles_begin();
            pit != particles_end(); ++pit) {
@@ -449,13 +452,15 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
     }
     first_incremental_=false;
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      validate_incremental_evaluate(restraints, weights, calc_derivs, score);
+      validate_incremental_evaluate(restraints, weights, calc_derivs,
+                                    std::accumulate(ret.begin(),
+                                                    ret.end(), 0.0));
     }
   } else {
     if (calc_derivs) {
       zero_derivatives();
     }
-    score= do_evaluate_restraints(restraints, weights, maxs,
+    ret= do_evaluate_restraints(restraints, weights, maxs,
                                   calc_derivs, ALL, false);
   }
 
@@ -472,11 +477,12 @@ double Model::do_evaluate(const RestraintsTemp &restraints,
     (*pit)->set_is_not_changed();
   }
   //}
-  IMP_LOG(TERSE, "End Model::evaluate. Final score: " << score << std::endl);
+  IMP_LOG(TERSE, "End Model::evaluate. Final score: "
+          << std::accumulate(ret.begin(), ret.end(), 0.0) << std::endl);
   cur_stage_=NOT_EVALUATING;
   ++eval_count_;
   first_call_=false;
-  return score;
+  return ret;
 }
 
 
