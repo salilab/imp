@@ -259,13 +259,13 @@ IntKey Atom::get_input_index_key() {
   return k;
 }
 
-IntKey Atom::get_occupancy_key() {
-  static IntKey k("occupancy");
+FloatKey Atom::get_occupancy_key() {
+  static FloatKey k("occupancy");
   return k;
 }
 
-IntKey Atom::get_temperature_factor_key() {
-  static IntKey k("tempFactor");
+FloatKey Atom::get_temperature_factor_key() {
+  static FloatKey k("tempFactor");
   return k;
 }
 
