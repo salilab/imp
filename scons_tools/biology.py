@@ -7,14 +7,16 @@ import data
 import environment
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
 
-def IMPSystem(env, name, version,
-              authors,
-              brief, overview,
+def IMPSystem(env, name, version="",
+              authors=[],
+              brief="", overview="",
               publications=None,
               license="standard",
               required_modules=[],
               optional_dependencies=[],
               required_dependencies=[],
+              runable=False,
+              last_imp_version="unknown",
               python=True):
     if env.GetOption('help'):
         return
@@ -33,9 +35,19 @@ def IMPSystem(env, name, version,
             pm=[]
         lkname="system_"+name.replace(" ", "_").replace(":", "_")
         pre="\page "+lkname+" "+name
+        if runable:
+            rtxt= "\n\\section runable Runable\nYes.\n"
+        else:
+            rtxt= "\n\\section runable Runable\nNo.\n"
+        if last_imp_version != "unknown":
+            vtxt= "\n\\section lkgversion Last known good IMP version\n"+\
+                last_imp_version+"\n"
+        else:
+            vtxt=  "\n\\section lkgversion Last known good IMP version\n"+\
+                "unknown"+"\n"
         doc.add_doc_page(env, "\page "+lkname+" "+name,
                                  authors, version,
-                                 brief, overview,
+                                 brief, overview+rtxt+vtxt,
                                  publications,
                                  license)
         data.get(env).add_system(name, link="\\ref "+lkname+' "'+name+'"',
