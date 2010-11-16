@@ -5,7 +5,7 @@
 #build a junction tree from a restraint file
 
 import IMP.multifit
-import IMP.domino2
+import IMP.domino
 
 #returns the restraints
 def setup_scoring_function(ps):
@@ -26,15 +26,15 @@ def setup_scoring_function(ps):
 '''
 def display_scoring_function(ps):
     mdl=ps[0].get_model()
-    inter_g  = IMP.domino2.get_interaction_graph(ps,[mdl.get_root_restraint_set()])
-    inter_g_geo=IMP.domino2.get_interaction_graph_geometry(inter_g)
+    inter_g  = IMP.domino.get_interaction_graph(ps,[mdl.get_root_restraint_set()])
+    inter_g_geo=IMP.domino.get_interaction_graph_geometry(inter_g)
     w = IMP.display.ChimeraWriter("out.py")
     w.add_geometry(inter_g_geo)
     del w
     #TODO - does not really work....
     # w1 = IMP.display.ChimeraWriter("out2.py")
-    # jt=IMP.domino2.get_junction_tree(inter_g)
-    # jt_geo=IMP.domino2.get_subset_graph_geometry(jt)
+    # jt=IMP.domino.get_junction_tree(inter_g)
+    # jt_geo=IMP.domino.get_subset_graph_geometry(jt)
     # w1.add_geometry(jt_geo)
     # del w1
 '''
@@ -53,7 +53,7 @@ restraints=setup_scoring_function(ps)
 #1.1 populate the transformations
 transformations=[]
 states_of_particle=[]
-pst= IMP.domino2.ParticleStatesTable()
+pst= IMP.domino.ParticleStatesTable()
 for i in range(data.get_number_of_components()):
     p=data.get_component(i)
     rb=IMP.core.RigidBody(p)
@@ -65,11 +65,11 @@ for i in range(data.get_number_of_components()):
         print "for ",i," Transformation is: ", rb.get_transformation()
         transformations[i].append(rb.get_transformation())
         IMP.core.transform(rb,t.get_inverse())
-    states_of_particle.append(IMP.domino2.RigidBodyStates(transformations[i]))
+    states_of_particle.append(IMP.domino.RigidBodyStates(transformations[i]))
     pst.set_particle_states(p,states_of_particle[i])
 #set domino
 print "here1"
-domino_smp=IMP.domino2.DominoSampler(data.get_model(),pst)
+domino_smp=IMP.domino.DominoSampler(data.get_model(),pst)
 print "here2"
 domino_smp.set_maximum_score(50.)
 print "here3"
@@ -88,9 +88,9 @@ print "here5"
 # #     ind=ind+numbers[i]+1
 # print "here"
 # print "Found ", cs.get_number_of_configurations(), "solutions"
-# lsc= IMP.domino2.Subset(ps)
+# lsc= IMP.domino.Subset(ps)
 for i,state in enumerate([[0,0,0,0],[0,1,2,3],[1,2,3,4]]):#10):#cs.get_number_of_configurations()):
-    IMP.domino2.load_particle_states(IMP.domino2.Subset(pst.get_particles()),IMP.domino2.SubsetState(state),pst)
+    IMP.domino.load_particle_states(IMP.domino.Subset(pst.get_particles()),IMP.domino.SubsetState(state),pst)
     #print the configuration:
     print "solution number:",i," scored:", mdl.evaluate(False)
     IMP.atom.write_pdb(IMP.atom.Hierarchies(ps),"sol_"+str(i)+".pdb")

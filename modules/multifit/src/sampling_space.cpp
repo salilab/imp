@@ -13,15 +13,15 @@
 #include <IMP/container/ListSingletonContainer.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-domino::TransformationMappedDiscreteSet*
+domino1::TransformationMappedDiscreteSet*
  create_mapped_discrete_set(
-  domino::TransformationMappedDiscreteSet* full_smpl_space,
+  domino1::TransformationMappedDiscreteSet* full_smpl_space,
   const Particles &asmb_ap, const Particles &components,
   const Ints &mapping, Float dist_t) {
 
   Particles ps = full_smpl_space->get_particles();
-  domino::TransformationMappedDiscreteSet *discrete_set =
-    new domino::TransformationMappedDiscreteSet
+  domino1::TransformationMappedDiscreteSet *discrete_set =
+    new domino1::TransformationMappedDiscreteSet
     (new container::ListSingletonContainer(components));
   //add valid transformations for each particle
   Float dist;
@@ -41,7 +41,7 @@ domino::TransformationMappedDiscreteSet*
     for (int j=0;j<full_smpl_space->get_number_of_mapped_states(comp);j++){
       Particle *state_p=full_smpl_space->get_mapped_state(comp,j);
       algebra::Transformation3D t =
-         domino::Transformation(state_p).get_transformation();
+         domino1::Transformation(state_p).get_transformation();
       dist=algebra::get_distance(t.get_transformed(comp_cent),mapped_ap);
       IMP_LOG(VERBOSE,"for component:" <<i <<" trans: " << j<<
               " the distance is : " <<dist<<std::endl);
@@ -56,15 +56,15 @@ domino::TransformationMappedDiscreteSet*
   }
   return discrete_set;
 }
-domino::TransformationCartesianProductSampler*
+domino1::TransformationCartesianProductSampler*
  create_mapped_sampling_space(
-  domino::TransformationMappedDiscreteSet* full_smpl_space,
+  domino1::TransformationMappedDiscreteSet* full_smpl_space,
   const Particles &asmb_anchor_points, const Particles &components,
   const Ints &mapping, Float dist_t) {
-  domino::TransformationMappedDiscreteSet *tm =
+  domino1::TransformationMappedDiscreteSet *tm =
     create_mapped_discrete_set(full_smpl_space,asmb_anchor_points,
                                  components,mapping,dist_t);
-  return new domino::TransformationCartesianProductSampler(tm,components,true);
+  return new domino1::TransformationCartesianProductSampler(tm,components,true);
 }
 
 IMPMULTIFIT_END_NAMESPACE

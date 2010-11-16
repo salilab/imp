@@ -9,8 +9,8 @@
 #include <IMP/multifit/SingleDominoRun.h>
 #include <IMP/multifit/weighted_excluded_volume.h>
 #include <IMP/multifit/fitting_tools.h>
-#include <IMP/domino/RestraintEvaluator.h>
-#include <IMP/domino/Transformation.h>
+#include <IMP/domino1/RestraintEvaluator.h>
+#include <IMP/domino1/Transformation.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/em/FitRestraint.h>
@@ -57,7 +57,7 @@ const ParticlePairs &anchor_comp_pairs) const
 
 void SingleDominoRun::set_restraints(
      const ParticlePairs &anchor_comp_pairs,
-     domino::RestraintEvaluatorFromFile *re) {
+     domino1::RestraintEvaluatorFromFile *re) {
   IMP_INTERNAL_CHECK(restraints_initialized_==false,
               "The restraints have already been initalized"<<std::endl);
   Restraints rsrs;
@@ -112,7 +112,7 @@ void SingleDominoRun::set_restraints(
 }
 
 
-domino::DominoOptimizer* SingleDominoRun::optimize(int num_solutions) {
+domino1::DominoOptimizer* SingleDominoRun::optimize(int num_solutions) {
   IMP_LOG(TERSE,"start single domino run optimization"<<std::endl);
   //  IMP_NEW(ConfigurationSet,conf_set,(mdl_,"conf_set.txt"));
   d_opt_->set_sampling_space(&sampler_);
@@ -128,7 +128,7 @@ domino::DominoOptimizer* SingleDominoRun::optimize(int num_solutions) {
   //move back to the original configuration
   Particle *p = new Particle(mdl_);
   algebra::Transformation3D id_t = algebra::get_identity_transformation_3d();
-  domino::Transformation::setup_particle(p,id_t);
+  domino1::Transformation::setup_particle(p,id_t);
   for(atom::Hierarchies::iterator it = components_.begin();
       it != components_.end(); it++) {
     tu_.move2state(it->get_particle(),p);
@@ -150,8 +150,8 @@ void SingleDominoRun::setup() {
   //setup the density map
   dmap_=dc_->get_density_map();
   //setup for sampling space
-  tu_=domino::TransformationUtils(components_,true);
-  discrete_set_ = new domino::TransformationMappedDiscreteSet
+  tu_=domino1::TransformationUtils(components_,true);
+  discrete_set_ = new domino1::TransformationMappedDiscreteSet
     (new container::ListSingletonContainer(components_));
   sampling_space_initialized_=false;
   restraints_initialized_=false;
@@ -196,7 +196,7 @@ void SingleDominoRun::clear_optimization_data() {
   restraints_initialized_=false;
   sampling_space_initialized_=false;
 }
-domino::DominoOptimizer* SingleDominoRun::run(
+domino1::DominoOptimizer* SingleDominoRun::run(
         ParticlePairs anchor_comp_pairs,
         Float distance,
         int num_solutions,
@@ -207,16 +207,16 @@ domino::DominoOptimizer* SingleDominoRun::run(
   IMP_LOG(TERSE,"SingleDominoRun::run set sampling space\n");
   set_sampling_space(anchor_comp_pairs,distance);
  //is it ok to pass null here ?
-  domino::RestraintEvaluatorI *re;
-  domino::RestraintEvaluatorFromFile *re_ff;
+  domino1::RestraintEvaluatorI *re;
+  domino1::RestraintEvaluatorFromFile *re_ff;
   if (init_restraint_values_from_files) {
-    re_ff = new domino::RestraintEvaluatorFromFile();
+    re_ff = new domino1::RestraintEvaluatorFromFile();
     re =re_ff;
   }
   else {
-    re = new domino::RestraintEvaluator(&sampler_);
+    re = new domino1::RestraintEvaluator(&sampler_);
   }
-  d_opt_ = new domino::DominoOptimizer(jt_,mdl_,re);
+  d_opt_ = new domino1::DominoOptimizer(jt_,mdl_,re);
   IMP_LOG(TERSE,"SingleDominoRun::run set restraints\n");
   if (init_restraint_values_from_files) {
   IMP_LOG(TERSE,
@@ -257,7 +257,7 @@ void SingleDominoRun::set_sampling_space(
             comp->get_name()<<" which is mapped to:"<<
             mapped_ap->get_name()<<std::endl);
     //set the domino name attribute to the mapped anchor point
-    comp->set_value(domino::node_name_key(),
+    comp->set_value(domino1::node_name_key(),
                     anchor_name_map_[mapped_ap]);
     //the subset of fitting solutions close to the mapped ap
     IMP_LOG(VERBOSE,"getting fits"<<std::endl);
@@ -274,14 +274,14 @@ void SingleDominoRun::set_sampling_space(
     //add these fitting solutions to the sampling space
     for(unsigned int i=0;i<ts_pruned.size();i++) {
       Particle *state_p = new Particle(mdl_);
-      domino::Transformation::setup_particle(
+      domino1::Transformation::setup_particle(
         state_p,ts_pruned[i].get_transformation(),i);
       state_p->add_attribute(orig_ind_key,i);//TODO - why is it needed?
       discrete_set_->add_mapped_state(comp,state_p);
     }
     IMP_LOG(VERBOSE,"end setting sampling space for particle"<<std::endl);
   }
-  sampler_ = domino::TransformationCartesianProductSampler(
+  sampler_ = domino1::TransformationCartesianProductSampler(
                discrete_set_,components_,true);
   sampling_space_initialized_=true;
 }

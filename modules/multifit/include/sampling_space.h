@@ -11,8 +11,8 @@
 
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Model.h>
-#include <IMP/domino/TransformationMappedDiscreteSet.h>
-#include <IMP/domino/TransformationCartesianProductSampler.h>
+#include <IMP/domino1/TransformationMappedDiscreteSet.h>
+#include <IMP/domino1/TransformationCartesianProductSampler.h>
 #include "multifit_config.h"
 
 IMPMULTIFIT_BEGIN_NAMESPACE
@@ -26,15 +26,15 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 of a component that are close enough to its mapped anchor point.
 For more details check out Lasker, JMB, 2009
  */
-IMPMULTIFITEXPORT domino::TransformationMappedDiscreteSet*
+IMPMULTIFITEXPORT domino1::TransformationMappedDiscreteSet*
  create_mapped_discrete_set(
-  domino::TransformationMappedDiscreteSet* full_smpl_space,
+  domino1::TransformationMappedDiscreteSet* full_smpl_space,
   const Particles &asmb_anchor_points, const Particles &components,
   const Ints &mapping, Float dist_t=10.);
 
-IMPMULTIFITEXPORT domino::TransformationCartesianProductSampler*
+IMPMULTIFITEXPORT domino1::TransformationCartesianProductSampler*
  create_mapped_sampling_space(
-  domino::TransformationMappedDiscreteSet* full_smpl_space,
+  domino1::TransformationMappedDiscreteSet* full_smpl_space,
   const Particles &asmb_anchor_points, const Particles &components,
   const Ints &mapping, Float dist_t=10.);
 

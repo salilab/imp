@@ -3,13 +3,13 @@ import IMP.test
 import IMP.bullet
 import IMP.core
 import IMP.algebra
-import IMP.domino2
+import IMP.domino
 import StringIO
 import IMP.em
 import math
 
 class MultiFitDominoTests(IMP.test.TestCase):
-    """Test domino2 enumeration of rigid bodies"""
+    """Test domino enumeration of rigid bodies"""
     def local_random(self,rb):
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-5,-5,-5),
                                       IMP.algebra.Vector3D(5,5,5))
@@ -95,7 +95,7 @@ class MultiFitDominoTests(IMP.test.TestCase):
     def get_display(self, ps):
         return IMP.atom.WritePDBOptimizerState(ps,"temp_%03d.pdb")
     def test_rcos(self):
-        """Test domino2 working for multifit"""
+        """Test domino working for multifit"""
         print "===creating"
         (m, ps, rbs,ps_ref)= self.create()
         m.set_log_level(IMP.SILENT)
@@ -107,26 +107,26 @@ class MultiFitDominoTests(IMP.test.TestCase):
         #add restraints
         #setup domino
         #create discrete states
-        pst= IMP.domino2.ParticleStatesTable()
+        pst= IMP.domino.ParticleStatesTable()
         for p in rbs:
             trans=self.load_transformations(p)
-            states=IMP.domino2.RigidBodyStates(trans)
+            states=IMP.domino.RigidBodyStates(trans)
             pst.set_particle_states(IMP.core.RigidBody(p.get_particle()), states)
         #create sampler
-        oc= IMP.domino2.OptimizeContainers(m.get_root_restraint_set(), pst)
-        ocr= IMP.domino2.OptimizeRestraints(m.get_root_restraint_set(), pst)
+        oc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
+        ocr= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         allrs= IMP.get_restraints(m.get_root_restraint_set())
         for r in allrs:
             print r.get_name()
         for p in pst.get_particles():
             print p.get_name()
         print "interaction graph"
-        ig= IMP.domino2.get_interaction_graph(m.get_root_restraint_set(), pst)
+        ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(), pst)
         ig.show()
         print "restraint graph"
-        rg= IMP.domino2.get_restraint_graph(m.get_root_restraint_set(), pst)
+        rg= IMP.domino.get_restraint_graph(m.get_root_restraint_set(), pst)
         rg.show()
-        s=IMP.domino2.DominoSampler(m, pst)
+        s=IMP.domino.DominoSampler(m, pst)
         s.set_log_level(IMP.TERSE)
         print pst
         print "going to sample"

@@ -9,10 +9,10 @@
 #define IMPMULTIFIT_SAMPLING_SPACE_UTILS_H
 
 #include <IMP/multifit/DataContainer.h>
-#include <IMP/domino/TransformationCartesianProductSampler.h>
+#include <IMP/domino1/TransformationCartesianProductSampler.h>
 #include "multifit_config.h"
 #include "multifit_config.h"
-#include <IMP/domino/TransformationCartesianProductSampler.h>
+#include <IMP/domino1/TransformationCartesianProductSampler.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \param[in] data the system data
 \return the sampling space
  */
-IMPMULTIFITEXPORT IMP::domino::TransformationCartesianProductSampler *
+IMPMULTIFITEXPORT IMP::domino1::TransformationCartesianProductSampler *
 set_sampling_space(const DataContainer *data);
 
 IMPMULTIFIT_END_NAMESPACE
