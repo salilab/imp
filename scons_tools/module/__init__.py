@@ -15,7 +15,6 @@ import scons_tools.doc
 import scons_tools.environment
 import scons_tools.examples
 import scons_tools.install
-import _modpage
 import scons_tools.utility
 
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
