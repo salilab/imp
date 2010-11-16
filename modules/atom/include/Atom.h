@@ -316,9 +316,9 @@ public:
 
   static IntKey get_input_index_key();
 
-  static IntKey get_occupancy_key();
+  static FloatKey get_occupancy_key();
 
-  static IntKey get_temperature_factor_key();
+  static FloatKey get_temperature_factor_key();
   //! @}
 };
 
