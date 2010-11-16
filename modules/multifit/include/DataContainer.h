@@ -14,7 +14,7 @@
 #include <IMP/base_types.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/domino/JunctionTree.h>
+#include <IMP/domino1/JunctionTree.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 //! Holds data structures neede for optimization
 class IMPMULTIFITEXPORT DataContainer : public Object{
@@ -35,7 +35,7 @@ class IMPMULTIFITEXPORT DataContainer : public Object{
       return mhs_.size();}
     em::DensityMap* get_density_map() const {
       return dens_;}
-    domino::JunctionTree get_junction_tree() const {
+    domino1::JunctionTree get_junction_tree() const {
       return jt_;}
     FittingSolutionRecords get_fitting_solutions(Particle *p) const {
       IMP_INTERNAL_CHECK(recs_.find(p) != recs_.end(),
@@ -62,7 +62,7 @@ class IMPMULTIFITEXPORT DataContainer : public Object{
     std::map<Particle *,FittingSolutionRecords> recs_;
     IMP::internal::OwnerPointer<em::DensityMap> dens_;
     IMP::Particles dens_ap_;
-    domino::JunctionTree jt_;
+    domino1::JunctionTree jt_;
     SettingsData set_;
 };
 IMP_OBJECTS(DataContainer,DataContainers);

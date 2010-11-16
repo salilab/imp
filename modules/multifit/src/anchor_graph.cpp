@@ -59,7 +59,7 @@ void ProbabilisticAnchorGraph::show(std::ostream& out) const {
 
 // ConfigurationSet align_anchor_graph_to_proteomics_graph(
 //                ProbabilisticAnchorGraph *anchor_g,
-//                domino2::RestraintGraph *rest_g) {
+//                domino1::RestraintGraph *rest_g) {
 //   //setup a domino optimization
 //   IMP_NEW(Model,mdl,());
 

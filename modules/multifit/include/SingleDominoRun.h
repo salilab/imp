@@ -14,18 +14,18 @@
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/atom/distance.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/domino/TransformationUtils.h>
-#include <IMP/domino/TransformationMappedDiscreteSet.h>
-#include <IMP/domino/TransformationCartesianProductSampler.h>
-#include <IMP/domino/JunctionTree.h>
-#include <IMP/domino/DominoOptimizer.h>
+#include <IMP/domino1/TransformationUtils.h>
+#include <IMP/domino1/TransformationMappedDiscreteSet.h>
+#include <IMP/domino1/TransformationCartesianProductSampler.h>
+#include <IMP/domino1/JunctionTree.h>
+#include <IMP/domino1/DominoOptimizer.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/ConfigurationSet.h>
 #include <map>
 #include "multifit_config.h"
 #include "FittingSolutionRecord.h"
 #include "DataContainer.h"
-#include <IMP/domino/RestraintEvaluatorFromFile.h>
+#include <IMP/domino1/RestraintEvaluatorFromFile.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 typedef std::map<Particle *,Particle *> ParticleParticleMapping;
@@ -74,7 +74,7 @@ public:
   SingleDominoRun(
          const DataContainer *dc);
   //! Optimize
-  domino::DominoOptimizer* optimize(int num_solutions);
+  domino1::DominoOptimizer* optimize(int num_solutions);
 
   //! Get pairs of interacting anchor points according to the junction
   //! tree configuration
@@ -89,7 +89,7 @@ public:
    \param[in] init_restraint_values_from_files if True the restraints values
                have been precalculated and kept in files
    */
-  domino::DominoOptimizer* run(ParticlePairs anchor_comp_pairs,
+  domino1::DominoOptimizer* run(ParticlePairs anchor_comp_pairs,
      Float distance,
      int num_solutions,
      bool init_restraint_values_from_files = false);
@@ -121,21 +121,21 @@ protected:
   //! Set Single and pairwise restraints according to
   //! the junction tree configuration
   void set_restraints(const ParticlePairs &anchor_comp_pairs,
-                      domino::RestraintEvaluatorFromFile *re=NULL);
+                      domino1::RestraintEvaluatorFromFile *re=NULL);
   atom::Hierarchies components_;
   //Particles components_ps_;
   //  ParticleParticleMapping anchor_comp_map_;
   //ParticleParticleMapping comp_anchor_map_;
   AnchorPointToNameMapping anchor_name_map_;
-  domino::JunctionTree jt_;
+  domino1::JunctionTree jt_;
   Model *mdl_;
   //managments stuff
-  domino::TransformationUtils tu_;
-  domino::TransformationMappedDiscreteSet *discrete_set_;
-  domino::TransformationCartesianProductSampler sampler_;
+  domino1::TransformationUtils tu_;
+  domino1::TransformationMappedDiscreteSet *discrete_set_;
+  domino1::TransformationCartesianProductSampler sampler_;
   bool sampling_space_initialized_;
   //optimization
-  domino::DominoOptimizer *d_opt_;
+  domino1::DominoOptimizer *d_opt_;
   //restraints
   bool restraints_initialized_;
   bool is_setup_;

@@ -7,10 +7,10 @@
  */
 
 #include <IMP/multifit/sampling_space_utils.h>
-#include <IMP/domino/TransformationMappedDiscreteSet.h>
+#include <IMP/domino1/TransformationMappedDiscreteSet.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-domino::TransformationCartesianProductSampler *
+domino1::TransformationCartesianProductSampler *
   set_sampling_space(const DataContainer *data) {
   IMP_INTERNAL_CHECK(data->get_number_of_components()>0,
                      "no components to sample \n");
@@ -20,9 +20,9 @@ domino::TransformationCartesianProductSampler *
     components.push_back(comp);
   }
   IMP_NEW(container::ListSingletonContainer,comp_cont,(components));
-  //  IMP_NEW(domino::TransformationMappedDiscreteSet, discrete_set,());
-  domino::TransformationMappedDiscreteSet *discrete_set=
-    new domino::TransformationMappedDiscreteSet(comp_cont);
+  //  IMP_NEW(domino1::TransformationMappedDiscreteSet, discrete_set,());
+  domino1::TransformationMappedDiscreteSet *discrete_set=
+    new domino1::TransformationMappedDiscreteSet(comp_cont);
   IntKey orig_ind_key = IntKey("orig_ind");
   Model *mdl = data->get_component(0)->get_model();
   //add valid transformation for each rigid body
@@ -39,17 +39,17 @@ domino::TransformationCartesianProductSampler *
     //add these fitting solutions to the sampling space
     for(unsigned int ts_i=0;ts_i<ts.size();ts_i++) {
       Particle *state_p = new Particle(mdl);
-      domino::Transformation::setup_particle(
+      domino1::Transformation::setup_particle(
         state_p,ts[ts_i].get_transformation(),ts_i);
       state_p->add_attribute(orig_ind_key,ts_i);//TODO - why is it needed?
       discrete_set->add_mapped_state(comp,state_p);
     }
     IMP_LOG(VERBOSE,"end setting sampling space for particle"<<std::endl);
   }
-  domino::TransformationCartesianProductSampler *sampler =
-    new domino::TransformationCartesianProductSampler(
+  domino1::TransformationCartesianProductSampler *sampler =
+    new domino1::TransformationCartesianProductSampler(
            discrete_set,components,true);
-  //  IMP_NEW(domino::TransformationCartesianProductSampler,sampler,
+  //  IMP_NEW(domino1::TransformationCartesianProductSampler,sampler,
   //  (discrete_set,components,true));
   return sampler;
 }

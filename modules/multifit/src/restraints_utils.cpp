@@ -7,20 +7,20 @@
  */
 
 #include <IMP/multifit/restraints_utils.h>
-#include <IMP/domino/RestraintGraph.h>
+#include <IMP/domino1/RestraintGraph.h>
 
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 std::string RestraintFilenameGenerator::get_single_filename(Particle *p) {
   std::stringstream ss;
-  ss<<path_<<"singleton_terms_"<<p->get_value(domino::node_name_key())<<".dat";
+  ss<<path_<<"singleton_terms_"<<p->get_value(domino1::node_name_key())<<".dat";
   return ss.str();
 }
 std::string
   RestraintFilenameGenerator::get_pairwise_filename(Particle *p1,Particle *p2) {
   std::stringstream ss;
-  std::string name1=p1->get_value(domino::node_name_key());
-  std::string name2=p2->get_value(domino::node_name_key());
+  std::string name1=p1->get_value(domino1::node_name_key());
+  std::string name2=p2->get_value(domino1::node_name_key());
   ss<<path_<<"pairwise_terms_";
   if (name1<name2) {
     ss<<name1<<"_"<<name2<<".dat";

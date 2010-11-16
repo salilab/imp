@@ -16,7 +16,6 @@ modules=['cgal',
          'modeller',
          'restrainer',
          'em2d',
-         'multifit',
          'bullet',
          'openmm',
          'misc']
@@ -33,7 +32,6 @@ if env.get('local', False):
 
 for p in modules:
     if p in disabled:
-        env[p+"_ok"]=False
-        env[p+"_required_modules"]=[]
+        pass
     else:
         SConscript(p+"/SConscript")

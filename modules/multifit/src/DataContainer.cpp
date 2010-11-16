@@ -9,7 +9,7 @@
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
-#include <IMP/domino/RestraintGraph.h>
+#include <IMP/domino1/RestraintGraph.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 DataContainer::DataContainer(Model *mdl,
@@ -30,7 +30,7 @@ DataContainer::DataContainer(Model *mdl,
       IMP_WARN("some atoms were not read for file:"<<comp.get_filename()<<"\n");
     }
     atom::add_radii(mh);
-    mh.get_particle()->add_attribute(domino::node_name_key(),
+    mh.get_particle()->add_attribute(domino1::node_name_key(),
            settings.get_component_header(i).get_name());
     atom::setup_as_rigid_body(mh);
     mhs_.push_back(mh);
@@ -51,6 +51,6 @@ DataContainer::DataContainer(Model *mdl,
   dens_ap_ = IMP::core::get_leaves(
                atom::read_pdb(asmb_h.get_pdb_coarse_ap_fn(),mdl_,
                               atom::CAlphaPDBSelector()));
-  domino::read_junction_tree(asmb_h.get_junction_tree_fn(),&jt_);
+  domino1::read_junction_tree(asmb_h.get_junction_tree_fn(),&jt_);
 }
 IMPMULTIFIT_END_NAMESPACE
