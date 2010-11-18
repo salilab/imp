@@ -155,6 +155,11 @@ def configure(env, name, type, version, required_modules=[],
               optional_dependencies=[], optional_modules=[],
               required_dependencies=[]):
     """Returns ok, version, found_optional_modules, found_optional_dependencies"""
+    disabled=["IMP."+x for x in env.get("disabledmodules", '').split(":")]
+    if name in disabled:
+        print type.capitalize(), name, "explicitly disabled "
+        return (False, None, None, None)
+
     for m in required_modules:
         if m not in data.get(env).modules.keys() or not data.get(env).modules[m].ok:
             print type.capitalize(), name, "disabled due to disabled module "\
