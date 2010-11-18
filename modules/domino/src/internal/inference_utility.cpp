@@ -15,6 +15,51 @@
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
+
+InferenceStatistics::InferenceStatistics(){}
+
+void InferenceStatistics::write_data(const Data &data,
+                                     std::ostream &out) const {
+  out << data.subset << ": " << data.size << ": ";
+  for (unsigned int i=0; i< data.sample.size(); ++i) {
+    out << data.sample[i] << " ";
+  }
+  out << std::endl;
+}
+
+InferenceStatistics::Data
+InferenceStatistics::get_data(const Subset &s, SubsetStates ss) const {
+  Data ret;
+  ret.subset=s;
+  ret.size= ss.size();
+  std::random_shuffle(ss.begin(), ss.end());
+  ret.sample=SubsetStates(ss.begin(), ss.begin()
+                          +std::min(ss.size(), size_t(10)));
+  return ret;
+}
+
+void InferenceStatistics::add_graph_subset(const Subset &s,
+                                           const SubsetStates &ss) {
+  graph_subsets_.push_back(get_data(s, ss));
+}
+
+void InferenceStatistics::add_merged_subset(const Subset &s,
+                                            const SubsetStates &ss) {
+  merged_subsets_.push_back(get_data(s, ss));
+}
+
+
+InferenceStatistics::~InferenceStatistics() {
+  for (unsigned int i=0; i< graph_subsets_.size(); ++i) {
+    std::cerr << "Leaf ";
+    write_data(graph_subsets_[i], std::cerr);
+  }
+  for (unsigned int i=0; i< graph_subsets_.size(); ++i) {
+    std::cerr << "Merged ";
+    write_data(graph_subsets_[i], std::cerr);
+  }
+}
+
   SubsetState get_merged_subset_state(const Subset &s,
                                       const SubsetState &ss0,
                                       const Ints &i0,

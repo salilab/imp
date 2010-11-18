@@ -30,6 +30,23 @@ IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
+class InferenceStatistics {
+  struct Data {
+    Subset subset;
+    int size;
+    SubsetStates sample;
+  };
+  void write_data(const Data &data, std::ostream &out) const;
+  Data get_data(const Subset &s, SubsetStates ss) const;
+  std::vector<Data> graph_subsets_;
+  std::vector<Data> merged_subsets_;
+public:
+  InferenceStatistics();
+  void add_graph_subset(const Subset &s, const SubsetStates &ss);
+  void add_merged_subset(const Subset &s, const SubsetStates &ss);
+  ~InferenceStatistics();
+};
+
 
 inline Subset get_intersection(const Subset &a, const Subset &b) {
   ParticlesTemp rs;
@@ -161,9 +178,9 @@ inline bool get_are_equal(const SubsetState &ss0,
 
 IMPDOMINOEXPORT
 SubsetState get_merged_subset_state(const Subset &s,
-                                      const SubsetState &ss0,
-                                      const Ints &i0,
-                                      const SubsetState &ss1,
+                                    const SubsetState &ss0,
+                                    const Ints &i0,
+                                    const SubsetState &ss1,
                                     const Ints &i1) ;
 
 IMPDOMINOEXPORT NodeData

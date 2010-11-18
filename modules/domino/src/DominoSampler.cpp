@@ -101,15 +101,17 @@ SubsetStates DominoSampler
       lsft= new ListSubsetFilterTable(get_particle_states_table());
       sfts.push_back(lsft);
     }
+    internal::InferenceStatistics stats;
     final_solutions
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
-                                         sfts, sst, lsft);
+                                         sfts, sst, lsft, stats);
     if (lsft) {
       IMP_LOG(TERSE, lsft->get_ok_rate()
               << " were ok with the cross set filtering"
               << std::endl);
     }
+    stats=internal::InferenceStatistics();
   } else {
     final_solutions
       = internal::loopy_get_best_conformations(jt, known_particles,
