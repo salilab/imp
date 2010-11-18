@@ -24,9 +24,8 @@ SingletonsGeometry::SingletonsGeometry(SingletonContainer *pc,
   Geometry(c, pc->get_name()+" geometry"), sc_(pc){
 }
 
-PairGeometry::PairGeometry(Particle *p0,
-                           Particle *p1):
-  Geometry(p0->get_name()+" geometry"), p0_(p0), p1_(p1){
+PairGeometry::PairGeometry(const ParticlePair &p):
+  Geometry(p.get_name()+" geometry"), p0_(p[0]), p1_(p[1]){
 }
 
 PairsGeometry::PairsGeometry(PairContainer *pc):
