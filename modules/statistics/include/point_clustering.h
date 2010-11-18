@@ -30,7 +30,7 @@ IMPSTATISTICS_BEGIN_NAMESPACE
  */
 class IMPSTATISTICSEXPORT Embedding: public Object {
 public:
-  Embedding(std::string name): Object(name){}
+  Embedding(std::string name);
   virtual Floats get_point(unsigned int i) const =0;
   virtual unsigned int get_number_of_points() const=0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Embedding);
@@ -60,31 +60,24 @@ public:
 
 
 //! Simply return the coordinates of a VectorD
-template <unsigned int D>
-class VectorDEmbedding: public Embedding {
-  std::vector<algebra::VectorD<D> > vectors_;
+class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
+  std::vector<Floats > vectors_;
 public:
+  template <unsigned int D>
   VectorDEmbedding(const std::vector<algebra::VectorD<D> > &vs):
-    Embedding("VectorDs"), vectors_(vs){}
+    Embedding("VectorDs"){
+    vectors_.resize(vs.size());
+    for (unsigned int i=0; i< vs.size(); ++i) {
+      vectors_[i]= Floats(vs[i].coordinates_begin(), vs[i].coordinates_end());
+    }
+  }
+#ifdef SWIG
+  VectorDEmbedding(const std::vector<algebra::VectorD<3> > &vs);
+#endif
   IMP_EMBEDDING(VectorDEmbedding);
 };
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-template <unsigned int D>
-Floats VectorDEmbedding<D>::get_point(unsigned int i) const {
-  return Floats(vectors_[i].coordinates_begin(),
-                vectors_[i].coordinates_end());
-}
 
-template <unsigned int D>
-unsigned int VectorDEmbedding<D>::get_number_of_points() const {
-  return vectors_.size();
-}
-
-template <unsigned int D>
-void VectorDEmbedding<D>::do_show(std::ostream &out) const {
-}
-#endif
 
 /** Embed particles using the values of some of their attributes.
     By default, the Cartesian coordinates are used, but another

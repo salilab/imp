@@ -23,7 +23,21 @@
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
+Embedding::Embedding(std::string name): Object(name){}
+
 Embedding::~Embedding(){}
+
+
+Floats VectorDEmbedding::get_point(unsigned int i) const {
+  return vectors_[i];
+}
+
+unsigned int VectorDEmbedding::get_number_of_points() const {
+  return vectors_.size();
+}
+
+void VectorDEmbedding::do_show(std::ostream &out) const {
+}
 
 ConfigurationSetXYZEmbedding
 ::ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
