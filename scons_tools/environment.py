@@ -262,9 +262,9 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(doc.IMPStandardPublications)
     env.AddMethod(doc.IMPStandardLicense)
     env.Append(BUILDERS={'IMPModuleCPPTest': test.CPPTestHarness})
-    env.Append(BUILDERS={'IMPModuleSWIG': module.swig.SwigIt})
-    env.Append(BUILDERS={'IMPModulePatchSWIG': module.swig.PatchSwig})
-    env.Append(BUILDERS={'IMPModuleSWIGPreface': module.swig.SwigPreface})
+    env.Append(BUILDERS={'IMPModuleSWIG': module._swig.SwigIt})
+    env.Append(BUILDERS={'IMPModulePatchSWIG': module._swig.PatchSwig})
+    env.Append(BUILDERS={'IMPModuleSWIGPreface': module._swig.SwigPreface})
     env.Append(BUILDERS = {'IMPModuleConfigH': module._config_h.ConfigH,
                            'IMPModuleConfigCPP': module._config_h.ConfigCPP,
                            'IMPModuleLinkTest': module._link_test.LinkTest})
