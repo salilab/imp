@@ -76,7 +76,7 @@ class IMPDISPLAYEXPORT PairGeometry: public Geometry
 {
   IMP::Pointer<Particle> p0_, p1_;
 public:
-  PairGeometry(Particle *p0, Particle *p1);
+  PairGeometry(const ParticlePair &pp);
 
   bool get_has_color() const {
     return Colored::particle_is_instance(p0_)

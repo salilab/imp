@@ -168,8 +168,8 @@ protected:                                                              \
   /** Display a pair of particles.*/                                    \
   class Name##Geometry: public PairGeometry {                           \
   public:                                                               \
-  Name##Geometry(Decorator d0, Decorator d1):                           \
-  PairGeometry(d0, d1){}                                                \
+  Name##Geometry(const ParticlePair &pp):                               \
+  PairGeometry(pp){}                                                    \
   Geometries get_components() const {                                   \
     Geometries ret;                                                     \
     Decorator d0(get_particle_pair()[0]);                               \
@@ -177,7 +177,7 @@ protected:                                                              \
     action;                                                             \
     return ret;                                                         \
   }                                                                     \
-  IMP_OBJECT_INLINE(Name##Geometry,          \
+  IMP_OBJECT_INLINE(Name##Geometry,                                     \
                     out <<  Decorator(get_particle_pair()[0])           \
                     << " " << Decorator(get_particle_pair()[1])         \
                     << std::endl;,{});                                  \
