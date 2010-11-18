@@ -47,6 +47,13 @@ namespace {
 }
 
 
+ParticlePair LowestRefinedPairScore
+::get_lowest_refined_pair(const ParticlePair &p) const {
+  Particles ps[2]={get_set(p[0], r_), get_set(p[1], r_)};
+  std::pair<double, ParticlePair> r= get_lowest(ps, f_);
+  return r.second;
+}
+
 bool LowestRefinedPairScore::get_is_changed(const ParticlePair &p) const {
   for (unsigned int i=0; i< 2; ++i) {
     ParticlesTemp ps=get_set(p[0], r_);
