@@ -12,6 +12,7 @@
 #include "../domino_config.h"
 #include "../utility.h"
 #include "../subset_filters.h"
+#include "inference_utility.h"
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -27,7 +28,8 @@ SubsetStates get_best_conformations(const SubsetGraph &jt,
                                     const Subset& all_particles,
                                     const SubsetFilterTables &filters,
                                     const SubsetStatesTable *states,
-                                    ListSubsetFilterTable *lsft);
+                                    ListSubsetFilterTable *lsft,
+                                    InferenceStatistics &stats);
 
 
 IMPDOMINO_END_INTERNAL_NAMESPACE
