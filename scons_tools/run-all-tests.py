@@ -36,8 +36,9 @@ def regressionTest():
         return unittest.TestSuite([])
     a_file=files[0]
     # evil hack
-    os.environ['TEST_DIRECTORY'] = a_file[0:a_file.find("/test/")+6]
-    print os.environ['TEST_DIRECTORY']
+    print >> sys.stderr, "a file is ", a_file
+    os.environ['TEST_DIRECTORY'] = a_file[0:a_file.rfind("/test/")+6]
+    print >> sys.stderr,  "test dir", os.environ['TEST_DIRECTORY']
     #return 0
     modobjs = []
     for f in files:
@@ -57,7 +58,7 @@ def regressionTest():
 
 
 if __name__ == "__main__":
-    files = sys.argv[1:]
+    files = sys.argv[2:]
     print files
     sys.argv=[sys.argv[0], "-v"]
     unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
