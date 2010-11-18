@@ -3,7 +3,8 @@ import pyscanner
 import environment
 import os
 import os.path
-import scons_tools.module
+import module
+import data
 
 # List of all disabled IMP modules (populated at configure time)
 disabled_modules = []
@@ -15,7 +16,8 @@ def _action_unit_test(target, source, env):
     global disabled_modules
     #app = "cd %s; %s %s %s -v > /dev/null"
     fsource=[]
-    for x in source[2:-1]:
+    type= source[-1].get_contents()
+    for x in source[1:-1]:
         if str(x).endswith(".py"):
             fsource.append(x.abspath)
     if source[-1] == 'example':
@@ -25,11 +27,23 @@ def _action_unit_test(target, source, env):
         disab = ' "%s"' % ":".join(disabled_modules)
     else:
         disab = ''
-
+    tmpdir=Dir("#/build/tmp").abspath
+    if type=="unit test":
+        cmd= File("#/scons_tools/run-all-tests.py").abspath
+        #if len(fsource) > 0:
+        #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
+        #    #print "test dir", os.environ['TEST_DIRECTORY']
+    else:
+        cmd= File("#/scons_tools/run-all-examples.py").abspath
+        dmod=[]
+        for d in data.get(env).modules.keys():
+            if not data.get(env).modules[d].ok:
+                dmod.append(d)
+        cmd= cmd+ " "+":".join(dmod)
     app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
-          % (Dir("#/build/tmp").abspath, Dir("#/build/tmp").abspath, source[0].abspath, env['PYTHON'],
-             source[1].abspath, disab,
-             " ".join(fsource))
+              % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
+                 cmd, disab,
+                 " ".join(fsource))
     if env.Execute(app) == 0:
         file(str(target[0]), 'w').write('PASSED\n')
         print "%s %ss succeeded" % (_get_name(env), source[-1])
