@@ -1,6 +1,4 @@
 Import('env')
-import scons_tools.data
-import scons_tools.utility
 
 # modules must be listed after modules that use them
 modules=['cgal',
