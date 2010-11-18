@@ -3,7 +3,7 @@
 import os.path
 import sys
 import scons_tools.pyscanner
-import swig
+import _swig
 import _header
 import _version_info
 import _config_h
@@ -228,8 +228,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
               #Scanner(function= _fake_scanner_i, skeys=['.i']),
-              swig.scanner,
-              Scanner(function=swig._null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
+              _swig.scanner,
+              Scanner(function=_swig._null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
     penv.Replace(SCANNERS=scanners)
     from scons_tools.install import get_build_path as gbp
     scons_tools.utility.add_link_flags(penv,
