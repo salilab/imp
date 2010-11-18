@@ -15,9 +15,3 @@ IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
 %include "IMP/statistics/point_clustering.h"
 %include "IMP/statistics/Histogram.h"
 %include "IMP/statistics/MoveStatisticsScoreState.h"
-
-namespace IMP {
-namespace statistics {
-   %template(Vector3DEmbedding) VectorDEmbedding<3>;
-}
-}
