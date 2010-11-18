@@ -1,4 +1,6 @@
 Import('env')
+import scons_tools.data
+import scons_tools.utility
 
 # modules must be listed after modules that use them
 modules=['cgal',
@@ -31,7 +33,4 @@ if env.get('local', False):
             modules.append(p)
 
 for p in modules:
-    if p in disabled:
-        pass
-    else:
-        SConscript(p+"/SConscript")
+    SConscript(p+"/SConscript")
