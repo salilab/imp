@@ -1,6 +1,5 @@
 import IMP
 import IMP.core
-import IMP.misc
 import IMP.algebra
 import IMP.atom
 
@@ -22,7 +21,7 @@ for i in range(0,10):
 
 ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(0,1))
 cps= IMP.core.ChildrenRefiner(IMP.atom.Hierarchy.get_traits())
-lrps = IMP.misc.LowestRefinedPairScore(cps,ps)
+lrps = IMP.core.KClosePairsPairScore(ps, cps, 1)
 cr = IMP.core.ConnectivityRestraint(lrps)
 cr.set_particles(hs)
 m.add_restraint(cr)
