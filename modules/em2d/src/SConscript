@@ -1,7 +1,7 @@
 Import("env")
 
 files = [
-
+  "opencv_interface.cpp",
   "align2D.cpp" ,
   "labeling_algorithm.cpp" ,
   "ProjectionFinder.cpp" ,
@@ -16,7 +16,6 @@ files = [
   "ProjectionParameters.cpp" ,
   "scores2D.cpp" ,
   "Em2DRestraint.cpp",
-  "opencv_interface.cpp",
   "Image.cpp",
         ]\
         + SConscript("internal/SConscript")

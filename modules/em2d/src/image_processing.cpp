@@ -5,18 +5,17 @@
 **/
 
 #include "IMP/em2d/image_processing.h"
-#include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/filters.h"
 #include "IMP/algebra/eigen_analysis.h"
 #include "IMP/exception.h"
 #include "IMP/macros.h"
+#include "boost/random.hpp"
+#include "boost/version.hpp"
 #include <deque>
 #include <list>
 #include <queue>
 #include <cmath>
-
-
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -474,11 +473,6 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
   temp.copy(m);
   algebra::Matrix2D_d temp_kernel(3,3);
   temp_kernel.set_zero();
-
-  /********/
-  em::SpiderImageReaderWriter<double> srw;
-  /********/
-
   unsigned int size_in_pixels,new_size_in_pixels;
   do {
     size_in_pixels=0;
@@ -487,11 +481,6 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
     }
     // Dilate to get a new mask
     dilation(temp,kernel,mask);
-    /********/
-//    em::Image xxx;
-//    xxx.set_data(mask);
-//    xxx.write_to_floats("mask.spi",srw);
-    /********/
     // Compute mean of the grayscale inside the mask and its size
     double mean=0.0;
     new_size_in_pixels = 0;
@@ -586,9 +575,6 @@ void histogram_stretching(algebra::Matrix2D_d &m,
 }
 
 
-Floats get_histogram(em2d::Image *img, int bins) {
-  return get_histogram(img->get_data(),bins);
-}
 
 Floats get_histogram(const cv::Mat &m, int bins) {
   Floats histogram(bins);
@@ -603,12 +589,6 @@ Floats get_histogram(const cv::Mat &m, int bins) {
     histogram[index] += 1.f/n_points;
   }
   return histogram;
-}
-
-
-void apply_variance_filter(em2d::Image *input,
-                           em2d::Image *filtered,int kernelsize) {
-  apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
 
@@ -644,5 +624,104 @@ void apply_variance_filter(
     }
   }
 }
+
+
+void add_noise(cv::Mat &v,double op1,double op2, const String &mode, double df)
+{
+  // Generator
+  typedef boost::mt19937 base_generator_type;
+  base_generator_type generator;
+  generator.seed(static_cast<unsigned long>(time(NULL)));
+  // Distribution types
+  typedef boost::uniform_real<> unif_distribution;
+  typedef boost::normal_distribution<> norm_distribution;
+  // Variate generators (put generator and distributions together)
+  typedef boost::variate_generator < base_generator_type&,
+                         unif_distribution  > unif_var_generator;
+  typedef boost::variate_generator < base_generator_type&,
+                         norm_distribution  > norm_var_generator;
+  if (mode == "uniform") {
+    unif_distribution dist(op1, op2);
+    unif_var_generator random_var(generator,dist);
+    // Add the random numbers
+    for (CVDoubleMatIterator it=v.begin<double>();
+                                it!=v.end<double>();++it) {
+      *it += random_var();
+    }
+  } else if (mode == "gaussian") {
+    norm_distribution dist(op1, op2);
+    norm_var_generator random_var(generator, dist);
+    // Add the random numbers
+    for (CVDoubleMatIterator it=v.begin<double>();
+                                it!=v.end<double>();++it) {
+      *it += random_var();
+    }
+  } else {
+    IMP_THROW("Add_noise: Mode " + mode + " not supported.",ValueException);
+  }
+}
+
+
+void resample_polar(const cv::Mat &input, cv::Mat &resampled,
+                    const PolarResamplingParameters &polar_params) {
+
+  cv::Mat map_16SC2,map_16UC1;
+  // If the resampling parameters are not initialized, build a polar map for
+  // the resampling.
+  if(polar_params.get_is_initialized() == false)
+  {
+    PolarResamplingParameters p;
+    p.initialize(input.rows,input.cols);
+    p.set_estimated_number_of_angles(std::min(input.rows,input.cols));
+    p.build_maps_for_resampling();
+    p.get_resampling_maps(map_16SC2,map_16UC1);
+  } else {
+    polar_params.get_resampling_maps(map_16SC2,map_16UC1);
+  }
+  cv::Mat temp,temp2,map2;
+  input.convertTo(temp,CV_32FC1); // remap does not work with doubles, convert
+  cv::remap(temp,temp2,map_16SC2,map_16UC1,cv::INTER_LINEAR,cv::BORDER_WRAP);
+  //std::cout << "Converting CV_64FC1" << std::endl;
+  temp2.convertTo(resampled,CV_64FC1);
+}
+
+
+
+
+void normalize(cv::Mat &m) {
+  cv::Scalar mean,stddev;
+  cv::meanStdDev(m,mean,stddev);
+  IMP_LOG(IMP::VERBOSE, "Matrix of mean: " << mean[0] << " stddev "
+                  << stddev[0] << " normalized. " << std::endl);
+  m = m - mean[0];
+  m = m / stddev[0];
+}
+
+
+//! Transform a matrix (the translation is interpreted as cols,rows)
+void get_transformed(const cv::Mat &input,cv::Mat &transformed,
+                                   const algebra::Transformation2D &T) {
+  cv::Point2f center(input.rows/2.0,input.cols/2.0);
+  double angle = 180.*T.get_rotation().get_angle()/PI;
+  cv::Mat rot_mat = cv::getRotationMatrix2D(center, angle,1.0);
+  // Careful here. OpenCV convention interprets a translation as col,row
+  rot_mat.at<double>(0,2) += T.get_translation()[0];
+  rot_mat.at<double>(1,2) += T.get_translation()[1];
+  cv::Size dsize(input.rows,input.cols);
+  // WarpAffine calls remap, that does not work with doubles (CV_64FC1).
+  // Use floats CV_32FC1
+  cv::Mat temp,temp2;
+  input.convertTo(temp,CV_32FC1);
+  cv::warpAffine(temp,temp2,rot_mat,dsize,
+                 cv::INTER_LINEAR,cv::BORDER_WRAP);
+  temp2.convertTo(transformed,CV_64FC1);
+}
+
+
+
+
+
+
+
 
 IMPEM2D_END_NAMESPACE

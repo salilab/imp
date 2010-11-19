@@ -5,21 +5,13 @@
 */
 
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
+#include "IMP/em2d/Image.h"
+#include "IMP/Pointer.h"
 #include "IMP/log.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
-
-
-// Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
-void normalize(cv::Mat &m) {
-  cv::Scalar mean,stddev;
-  cv::meanStdDev(m,mean,stddev);
-  IMP_LOG(IMP::VERBOSE, "Matrix of mean: " << mean[0] << " stddev "
-                  << stddev[0] << " normalized. " << std::endl);
-  m = m - mean[0];
-  m = m / stddev[0];
-}
 
 
 void show(cv::Mat &m,std::ostream &out) {
@@ -31,6 +23,15 @@ void show(cv::Mat &m,std::ostream &out) {
   }
   out << std::endl;
 }
+
+
+void write_matrix(cv::Mat &m,std::string name) {
+ em2d::SpiderImageReaderWriter<double> srw;
+  IMP_NEW(em2d::Image,output_img,());
+  output_img->set_data(m);
+  output_img->write_to_floats(name,srw);
+}
+
 
 
 IMPEM2D_END_NAMESPACE
