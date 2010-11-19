@@ -8,7 +8,6 @@ import scons_tools.standards
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
 import scons_tools.dependency.modeller_test
-import scons_tools.dependency.doxygen
 import scons_tools.application
 import scons_tools.test
 import scons_tools.config_py
