@@ -20,6 +20,8 @@
 #include <limits>
 /** \namespace IMP::algebra::grids
 
+    \brief Implementation for parameterized grids.
+
     \imp provides support for a variety of spatial grids. The grid support in
     C++ is implemented by combining several different layers to specify
     what capabilities are desired. These layers are:
@@ -60,8 +62,6 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-/** Implementation choices for the parameterized grids.
- */
 namespace grids {
 
 //! An index in an infinite grid on space
@@ -557,9 +557,10 @@ public:
     Base should be one of BoundedGridStorage3D or UnboundedGridStorage3D.
     \see Grid3D
 */
-template <class VT, class Base>
+  template <class VT, class Base,
+          class Map=typename IMP::internal::Map<GridIndex3D, VT> >
 class SparseGridStorage3D: public Base {
-  typedef typename IMP::internal::Map<GridIndex3D, VT> Data;
+  typedef Map Data;
   struct GetIndex {
     typedef GridIndex3D result_type;
     typedef typename Data::const_iterator::value_type argument_type;
