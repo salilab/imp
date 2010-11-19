@@ -12,12 +12,16 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"
+#include "IMP/em2d/Image.h"
 #include "IMP/em/Image.h"
 #include <IMP/Restraint.h>
 #include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+
+
 
 //! This restraint ensures that a set of particles are similar to a set
 //! of EM images
@@ -37,7 +41,7 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
   // mutable because it has to change to get projections while evaluating
   mutable ProjectionFinder finder_;
   //! Projection Masks to fast model projection
-  em::Images em_images_;
+  em2d::Images em_images_;
   unsigned int n_projections_for_coarse_registration_,
                number_of_optimized_projections_;
   double apix_,resolution_;
@@ -59,15 +63,14 @@ public:
                   unsigned n_projections=20,
                  unsigned int coarse_registration_method = 1,
                  bool save_match_images =false,
-                 unsigned int interpolation_method = 0,
-                 unsigned int optimization_steps = 10,
+                 unsigned int optimization_steps = 5,
                  double simplex_initial_length =0.1,
                  double simplex_minimum_size =0.01) {
 
   apix_ =apix;
   resolution_ = resolution;
   finder_.initialize(apix_, resolution_ , coarse_registration_method,
-      save_match_images ,interpolation_method , optimization_steps,
+      save_match_images ,optimization_steps,
       simplex_initial_length,simplex_minimum_size);
   n_projections_for_coarse_registration_ = n_projections;
   fast_optimization_mode_ = false;
@@ -78,15 +81,16 @@ public:
   void set_particles(SingletonContainer *particles_container);
 
   //! Sets the EM images to use as restraints
-  void set_images(const em::Images em_images);
+  void set_images(const em2d::Images em_images);
 
-  //! Sets fast mode for computing the restraint. See ProjectionFinder help
+  //! Sets fast mode for computing the restraint. See OldProjectionFinder help
   void set_fast_mode(unsigned int n);
 
   IMP_RESTRAINT(Em2DRestraint);
 };
 
 IMP_OBJECTS(Em2DRestraint,Em2DRestraints);
+
 
 IMPEM2D_END_NAMESPACE
 

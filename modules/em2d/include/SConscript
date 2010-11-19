@@ -1,6 +1,7 @@
 Import("env")
 
 files = [
+    "opencv_interface.h",
     "align2D.h" ,
     "filenames_manipulation.h" ,
     "FFTinterface.h" ,
@@ -23,7 +24,6 @@ files = [
     "Image.h",
     "SpiderImageReaderWriter.h",
     "ImageReaderWriter.h",
-    "opencv_interface.h",
       ] + SConscript("internal/SConscript")
 
 # Install the include files:
