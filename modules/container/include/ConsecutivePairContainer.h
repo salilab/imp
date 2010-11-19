@@ -48,7 +48,10 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 #endif
 public:
   //! Get the individual particles from the passed SingletonContainer
-  ConsecutivePairContainer(const ParticlesTemp &ps);
+  /** If no overlaps is true, this CPC is assumed not to share any particles
+      with another CPC.
+  */
+  ConsecutivePairContainer(const ParticlesTemp &ps, bool no_overlaps=false);
 
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {

@@ -17,14 +17,19 @@ namespace {
   unsigned int count=0;
 }
 #endif
-ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps):
+ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
+                                                   bool no_overlaps):
   PairContainer(ps[0]->get_model(),"ConsecutivePairContainer %1%"),
   ps_(ps){
 #if IMP_CPC_METHOD==0
-  std::ostringstream oss;
-  oss << "CPC cache " << count;
-  ++count;
-  key_= IntKey(oss.str());
+  if (!no_overlaps) {
+    std::ostringstream oss;
+    oss << "CPC cache " << count;
+    ++count;
+    key_= IntKey(oss.str());
+  } else {
+    key_= IntKey("CPC cache");
+  }
   for (unsigned int i=0; i< ps.size(); ++i) {
     IMP_USAGE_CHECK(!ps[i]->has_attribute(key_),
                     "You must create containers before reading in the "
