@@ -8,36 +8,67 @@ import os
 
 
 class FFToperationsTests(IMP.test.TestCase):
-    def test_autocorrelation2D(self):
-        """ Test autocorrelation of an image using FFT"""
-        name=self.get_input_file_name("1z5s-projection-2.spi")
-        srw = IMP.em.SpiderImageReaderWriter()
-        image=IMP.em.Image()
-        image.read_from_floats(name,srw)
-        corr=IMP.em.Image()
-        IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
-        IMP.em.normalize(corr)
-        name=self.get_input_file_name("autocorrelation_img.spi")
-        stored_corr=IMP.em.Image()
-        stored_corr.read_from_floats(name,srw)
-        rows=stored_corr.get_data().get_number_of_rows()
-        cols=stored_corr.get_data().get_number_of_columns()
-
-
-#    def test_autocorrelation2D_opencv(self):
-#        """ Test autocorrelation of an image using OpenCV"""
-#        name=self.get_input_file_name("lena-256x256.spi")
-#        srw = IMP.em2d.SpiderImageReaderWriter()
-#        image=IMP.em2d.Image()
+#    def test_old_autocorrelation2D(self):
+#        """ Test autocorrelation of an image using FFT"""
+#        name=self.get_input_file_name("1z5s-projection-2.spi")
+#        srw = IMP.em.SpiderImageReaderWriter()
+#        image=IMP.em.Image()
 #        image.read_from_floats(name,srw)
-#        corr=IMP.em2d.Image()
-#        IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data())
-#        corr.write_to_floats("auto_lena.spi",srw)
+#        corr=IMP.em.Image()
+#        IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
+#        IMP.em.normalize(corr)
+#        name=self.get_input_file_name("autocorrelation_img.spi")
+#        stored_corr=IMP.em.Image()
+#        stored_corr.read_from_floats(name,srw)
+#        rows=stored_corr.get_data().get_number_of_rows()
+#        cols=stored_corr.get_data().get_number_of_columns()
+#        for i in xrange(0,int(rows)):
+#            for j in xrange(0,int(cols)):
+#                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
+#                         msg="Autocorrelation image is different than stored")
+#
+
+    def test_autocorrelation2D(self):
+        """ Test autocorrelation of an image using OpenCV"""
+        name=self.get_input_file_name("1z5s-projection-2.spi")
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        image=IMP.em2d.Image(name,srw)
+        corr=IMP.em2d.Image()
+        IMP.em2d.autocorrelation2D(image,corr)
+        IMP.em2d.normalize(corr,True)
+        rows=image.get_header().get_number_of_rows()
+        cols=image.get_header().get_number_of_columns()
+        fn_corr=self.get_input_file_name("autocorrelation_img.spi")
+        stored_corr=IMP.em2d.Image(fn_corr,srw)
+        for i in xrange(0,int(rows)):
+            for j in xrange(0,int(cols)):
+                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
+                         msg="Autocorrelation image is different than stored")
+
+
+#    def test_old_correlation2D(self):
+#        """ Test the correlation between two images using FFT"""
+#        names=[0,0]
+#        names[0]=self.get_input_file_name(
+#                    "1e6v-subject-4-set-16-1.5-apix-0.5-SNR.spi")
+#        names[1]=self.get_input_file_name(
+#                    "1e6v-subject-15-set-16-1.5-apix-0.5-SNR.spi")
+#
+#        srw = IMP.em.SpiderImageReaderWriter()
+#        images=IMP.em.read_images(names,srw)
+#        corr=IMP.em.Image()
+#        IMP.em2d.correlation2D(images[0].get_data(), images[1].get_data(),
+#                                               corr.get_data() )
+#        IMP.em.normalize(corr)
+#        name=self.get_input_file_name("correlation_img.spi")
+#        stored_corr=IMP.em.Image()
+#        stored_corr.read_from_floats(name,srw)
+#        rows=stored_corr.get_data().get_number_of_rows()
+#        cols=stored_corr.get_data().get_number_of_columns()
 #        for i in xrange(0,rows):
 #            for j in xrange(0,cols):
 #                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
-#                         msg="Autocorrelation image is different than stored")
-
+#                            msg="Correlation image is different than stored")
 
     def test_correlation2D(self):
         """ Test the correlation between two images using FFT"""
@@ -47,19 +78,17 @@ class FFToperationsTests(IMP.test.TestCase):
         names[1]=self.get_input_file_name(
                     "1e6v-subject-15-set-16-1.5-apix-0.5-SNR.spi")
 
-        srw = IMP.em.SpiderImageReaderWriter()
-        images=IMP.em.read_images(names,srw)
-        corr=IMP.em.Image()
-        IMP.em2d.correlation2D(images[0].get_data(), images[1].get_data(),
-                                               corr.get_data() )
-        IMP.em.normalize(corr)
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        images=IMP.em2d.read_images(names,srw)
+        corr=IMP.em2d.Image()
+        IMP.em2d.correlation2D(images[0], images[1],corr)
+        IMP.em2d.normalize(corr)
         name=self.get_input_file_name("correlation_img.spi")
-        stored_corr=IMP.em.Image()
-        stored_corr.read_from_floats(name,srw)
-        rows=stored_corr.get_data().get_number_of_rows()
-        cols=stored_corr.get_data().get_number_of_columns()
-        for i in xrange(0,rows):
-            for j in xrange(0,cols):
+        stored_corr=IMP.em2d.Image(name,srw)
+        rows=stored_corr.get_header().get_number_of_rows()
+        cols=stored_corr.get_header().get_number_of_columns()
+        for i in xrange(0,int(rows)):
+            for j in xrange(0,int(cols)):
                 self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
                             msg="Correlation image is different than stored")
 

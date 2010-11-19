@@ -1,10 +1,7 @@
 import IMP
 import IMP.test
-import IMP.algebra
-import IMP.core
-import IMP.em
 import IMP.em2d
-
+import os
 
 class SelectionFilesTest(IMP.test.TestCase):
     def test_reading_selection_files(self):
@@ -17,7 +14,7 @@ class SelectionFilesTest(IMP.test.TestCase):
         for i in range(0,len(names)):
             self.assertEqual(names[i],selection[i],
             "file %s does not match %s" % (names[i],selection[i]))
-
+        os.remove(fn_selection)
 
 if __name__ == '__main__':
     IMP.test.main()
