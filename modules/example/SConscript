@@ -2,7 +2,7 @@ Import('env')
 import scons_tools.dependency
 
 scons_tools.dependency.add_external_library(env, "ExampleLib", "example_lib_name",
-                                       "example_lib_header.h", extra_libs=[])
+                                       "example_lib_header.h")
 
 
 # See IMP.gsl for an example of how to add external dependencies to a module
