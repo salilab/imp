@@ -40,12 +40,15 @@ def _check(context, version):
 def _checks(context, version):
     version=context.env['BOOST_LIB_VERSION']
     for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
-        ret= context.sconf.CheckLib('boost_system'+suffix)
+        ret= context.sconf.CheckLib('boost_filesystem'+suffix, language="c++", autoadd=False)
         if ret:
             context.Message('Checking for Boost lib suffix... ')
             context.env['BOOST_LIBSUFFIX']=suffix
             context.Result(suffix)
             return True
+    context.env['BOOST_LIBSUFFIX']=""
+    context.Message('Checking for Boost lib suffix... ')
+    context.Result('not found')
     return False
 
 
@@ -67,8 +70,7 @@ def configure_check(env, version):
         conf.CheckBoostS(version)
         conf.Finish()
     env.Append(IMP_CONFIGURATION=["boostversion='"+env['BOOST_VERSION']+"'"])
-    env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env['BOOST_LIBSUFFIX']+"'"])
-
+    env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env.get('BOOST_LIBSUFFIX', '')+"'"])
 
 def _tr1check(context):
     context.Message('Checking if Boost and gcc tr1 coexist ...')
