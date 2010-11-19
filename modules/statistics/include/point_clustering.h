@@ -153,7 +153,7 @@ get_lloyds_kmeans(Embedding *embedding,
                   unsigned int k, unsigned int iterations);
 
 /** Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
-    there is a sequence of points \f$\left(p^{ij}_{0}\dotsp^{ij}_k\right)\f$
+    there is a sequence of points \f$\left(p^{ij}_{0}\dots p^{ij}_k\right)\f$
     such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
  */
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
