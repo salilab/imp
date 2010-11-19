@@ -11,7 +11,7 @@
 
 
 IMPCONTAINER_BEGIN_NAMESPACE
-#ifdef IMP_CPC_PARTICLE_CACHE
+#if IMP_CPC_METHOD==0
 namespace {
   // problem with multiple models
   unsigned int count=0;
@@ -20,7 +20,7 @@ namespace {
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps):
   PairContainer(ps[0]->get_model(),"ConsecutivePairContainer %1%"),
   ps_(ps){
-#ifdef IMP_CPC_PARTICLE_CACHE
+#if IMP_CPC_METHOD==0
   std::ostringstream oss;
   oss << "CPC cache " << count;
   ++count;
@@ -30,6 +30,10 @@ ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps):
                     "You must create containers before reading in the "
                     << "saved model");
     ps[i]->add_attribute(key_, i);
+  }
+#elif IMP_CPC_METHOD==1
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    index_[ps[i]]=i;
   }
 #endif
 }
