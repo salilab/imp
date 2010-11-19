@@ -6,6 +6,7 @@
 
 #include "IMP/em2d/ProjectionParameters.h"
 #include "IMP/Model.h" // ParticleIterator
+#include "IMP/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -26,35 +27,33 @@ ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
 }
 
 void ProjectionParameters::show(std::ostream &os) const {
-  os << "(Phi,Theta,Psi) = ( " << get_Phi() << " , " << get_Theta() << " , "
-     << get_Psi() << " ) | Tranlation (x,y,z) = " << get_translation();
+  os << "ProjectionParameters: Rotation " << get_rotation()
+     << " | Tranlation (x,y,z) = " << get_translation();
 }
 
 FloatKey* ProjectionParameters::get_keys() {
-  static FloatKey keys[]= {FloatKey("projection_Phi"),
-                           FloatKey("projection_Theta"),
-                           FloatKey("projection_Psi"),
-                           FloatKey("projection_translation_x"),
-                           FloatKey("projection_translation_y"),
-                           FloatKey("projection_translation_z")};
+  static FloatKey keys[]= {FloatKey("rot_q1"),
+                           FloatKey("rot_q2"),
+                           FloatKey("rot_q3"),
+                           FloatKey("rot_q4"),
+                           FloatKey("translation_x"),
+                           FloatKey("translation_y")};
   return keys;
 }
 
 void ProjectionParameters::set_proper_ranges_for_keys(Model *m,
                                 algebra::Vector3D &min_translation_values,
                                 algebra::Vector3D &max_translation_values) {
-  IMP::FloatRange range_phi(0,2*PI);
-  IMP::FloatRange range_theta(0,PI/2);
-  IMP::FloatRange range_psi(0,2*PI);
-  m->set_range(get_keys()[0],range_phi);
-  m->set_range(get_keys()[1],range_theta);
-  m->set_range(get_keys()[2],range_psi);
+  // Range for the quaternion of the rotation
+  IMP::FloatRange range_q(0,1);
+  for (unsigned int i=0;i<4;++i) {
+    m->set_range(get_keys()[i],range_q);
+  }
+  // Ranges for the translations
   IMP::FloatRange xrange(min_translation_values[0],max_translation_values[0]);
   IMP::FloatRange yrange(min_translation_values[1],max_translation_values[1]);
-  IMP::FloatRange zrange(min_translation_values[2],max_translation_values[2]);
-  m->set_range(get_keys()[3],xrange);
-  m->set_range(get_keys()[4],yrange);
-  m->set_range(get_keys()[5],zrange);
+  m->set_range(get_keys()[4],xrange);
+  m->set_range(get_keys()[5],yrange);
 }
 
 
@@ -65,7 +64,11 @@ void ProjectionParametersScoreState::do_before_evaluate() {
 
 void ProjectionParametersScoreState::do_after_evaluate(
                                                 DerivativeAccumulator *accpt) {
-  // Nothing here yet
+
+  IMP_LOG(IMP::VERBOSE,ProjectionParameters(proj_params_));
+//  if(ProjectionParameters::particle_is_instance(proj_params_)) {
+//    std::cout <<  ProjectionParameters(proj_params_) << std::endl;
+//  }
 }
 
 void ProjectionParametersScoreState::do_show(std::ostream& out) const {
@@ -97,5 +100,6 @@ ContainersTemp ProjectionParametersScoreState::get_output_containers() const {
   ContainersTemp ot;
   return ot;
 }
+
 
 IMPEM2D_END_NAMESPACE

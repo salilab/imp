@@ -6,6 +6,7 @@
  *
  */
 
+#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/Em2DRestraint.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/project.h"
@@ -15,7 +16,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
- void Em2DRestraint::set_images(const em::Images em_images) {
+ void Em2DRestraint::set_images(const em2d::Images em_images) {
    em_images_ = em_images;
    finder_.set_subjects(em_images_);
    for (unsigned int i=0;i<em_images_.size();++i) {
@@ -44,10 +45,10 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   // Project the model
   RegistrationResults evenly_regs=evenly_distributed_registration_results(
                                   n_projections_for_coarse_registration_);
-  unsigned int rows =  em_images_[0]->get_data().get_number_of_rows();
-  unsigned int cols =  em_images_[0]->get_data().get_number_of_columns();
-  em::SpiderImageReaderWriter<double> srw;
-  em::Images projections=generate_projections(
+  unsigned int rows =  em_images_[0]->get_header().get_number_of_rows();
+  unsigned int cols =  em_images_[0]->get_header().get_number_of_columns();
+  em2d::SpiderImageReaderWriter<double> srw;
+  em2d::Images projections=generate_projections(
           particles_container_->get_particles(),evenly_regs,rows,cols,
                                 resolution_,apix_,srw);
   finder_.set_projections(projections);
@@ -85,10 +86,6 @@ void Em2DRestraint::do_show(std::ostream& out) const
   out << "container " << *particles_container_ << std::endl;
 }
 
-
-//
-//Em2DRestraint::get_version_info() {
-//}
 
 
 IMPEM2D_END_NAMESPACE

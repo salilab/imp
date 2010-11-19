@@ -45,7 +45,8 @@ RegistrationResults evenly_distributed_registration_results(
   //! Writes an info line to with the contents of a result line
   void RegistrationResult::write_comment_line(std::ostream& out) const {
     char c='|';
-    out << "# id_number" <<c<< "Phi" <<c<< "Theta" <<c<< "Psi"
+    out << "# image_number"<<c<<"projection_number"
+    <<c<< "Phi" <<c<< "Theta" <<c<< "Psi"
     <<c<< "quaternion q1" <<c<< "q2" <<c<< "q3"
     <<c<< "q3" <<c<< "shift x" <<c<< "shift y"
     <<c<< "ccc" <<c<< std::endl;
@@ -75,9 +76,10 @@ void RegistrationResult::set_random_registration(unsigned long index,
   set_rotation(phi,theta,psi);
   shift_[0] =  maximum_shift*random_between_zero_and_one();
   shift_[1] =  maximum_shift*random_between_zero_and_one();
-  ccc_=0.0;
-  String name_="";
-  index_=index;
+  set_ccc(0.0);
+  set_name("");
+  set_projection_index(index);
+  set_image_index(0);
 }
 
 void RegistrationResult::read_from_image(const em::ImageHeader &header) {
@@ -90,16 +92,15 @@ void RegistrationResult::read_from_image(const em::ImageHeader &header) {
 void RegistrationResult::set_in_image(em::ImageHeader &header) const {
   header.set_euler_angles(phi_,theta_,psi_);
   header.set_origin_offsets(shift_);
-//   set_rotation(phi_,theta_,psi_);
 }
 
   void RegistrationResult::set_rotation(algebra::Rotation3D R){
-    this->R_=R;
+    R_=R;
     algebra::Vector3D angles=
                     em2d::internal::get_euler_angles_from_rotation(R,3,2);
-    this->phi_ = angles[0];
-    this->theta_=angles[1];
-    this->psi_=angles[2];
+    phi_ = angles[0];
+    theta_=angles[1];
+    psi_=angles[2];
   }
 
 
@@ -108,7 +109,9 @@ void RegistrationResult::read(const String &line) {
   String s = line;
   size_t n;
   n=s.find("|");
-  index_=std::atoi(s.substr(0,n).c_str());
+  set_image_index(std::atoi(s.substr(0,n).c_str()));
+  s=s.substr(n+1); n=s.find("|");
+  set_projection_index(std::atoi(s.substr(0,n).c_str()));
   s=s.substr(n+1); n=s.find("|");
   phi_ =std::atof(s.substr(0,n).c_str());
   s=s.substr(n+1); n=s.find("|");
@@ -128,7 +131,7 @@ void RegistrationResult::read(const String &line) {
   s=s.substr(n+1); n=s.find("|");
   shift_[1] =std::atof(s.substr(0,n).c_str());
   s=s.substr(n+1); n=s.find("|");
-  ccc_ =std::atof(s.substr(0,n).c_str());
+  set_ccc(std::atof(s.substr(0,n).c_str()));
   set_rotation(phi_,theta_,psi_);
 }
 
@@ -167,41 +170,45 @@ bool has_higher_ccc(const RegistrationResult &rr1,
 
 
 RegistrationResult::RegistrationResult() {
-  shift_[0]=0.0;   shift_[1]=0.0;
-  ccc_=0.0;
-  name_="";
-  index_=0;
+  set_shift(algebra::Vector2D(0.,0.));
+  set_projection_index(0);
   set_rotation(0,0,0);
+  set_ccc(0.0);
+  set_name("");
+  set_image_index(0);
 }
 
 RegistrationResult::RegistrationResult(algebra::Rotation3D R,
     algebra::Vector2D shift,long index,double ccc,String name) {
-  shift_[0]=shift[0]; shift_[1]=shift[1];
-  ccc_=ccc;
-  name_=name;
-  index_=index;
+  set_shift(shift);
+  set_projection_index(index);
   set_rotation(R);
+  set_ccc(ccc);
+  set_image_index(0);
+  set_name(name);
 }
 
 
 
-  RegistrationResult::RegistrationResult(
-                  double phi,double theta,double psi,double shift_x,
-                  double shift_y,long index,double ccc,String name) {
-    IMP_LOG(IMP::VERBOSE," initialzing RegistrationResult " << std::endl);
-    shift_[0]=shift_x; shift_[1]=shift_y;
-    ccc_=ccc;
-    name_=name;
-    index_=index;
-    set_rotation(phi,theta,psi);
-    IMP_LOG(IMP::VERBOSE," end init RegistrationResult " << std::endl);
-  }
+RegistrationResult::RegistrationResult(
+                  double phi,double theta,double psi,algebra::Vector2D shift,
+                  long index,double ccc,String name) {
+  IMP_LOG(IMP::VERBOSE," initialzing RegistrationResult " << std::endl);
+  set_shift(shift);
+  set_ccc(ccc);
+  set_projection_index(index);
+  set_rotation(phi,theta,psi);
+  set_name("");
+  set_image_index(0);
+  IMP_LOG(IMP::VERBOSE," end init RegistrationResult " << std::endl);
+}
 
 void RegistrationResult::show(std::ostream& out) const {
   algebra::VectorD<4> quaternion=R_.get_quaternion();
-  out << "Name: "  << get_name() <<  " Index: " << get_index()
-  << " (Phi,Theta,Psi) = ( " << phi_ << " , " << theta_ << " , "
-  << psi_ << " ) | Shift (x,y) " << get_shift()  << " CCC = " << get_ccc()
+  out << "Name: "  << get_name() << " Image index: " << get_image_index()
+  << " Projection index: " << get_projection_index()
+  << " (Phi,Theta,Psi) = ( " <<get_Phi() << " , " << get_Theta() << " , "
+  << get_Psi() << " ) | Shift (x,y) " << get_shift()  << " CCC = " << get_ccc()
   <<  " Quaternion " << quaternion;
 }
 
@@ -209,7 +216,8 @@ void RegistrationResult::show(std::ostream& out) const {
 void RegistrationResult::write(std::ostream& out) const {
   algebra::VectorD<4> quaternion=R_.get_quaternion();
   char c='|';
-  out << get_index() <<c<< phi_ <<c<< theta_ <<c<< psi_
+  out << get_image_index() <<c<< get_projection_index()
+  <<c<< get_Phi() <<c<< get_Theta() <<c<< get_Psi()
   <<c<< quaternion[0] <<c<< quaternion[1] <<c<< quaternion[2]
   <<c<< quaternion[3] <<c<< get_shift()[0] <<c<< get_shift()[1]
   <<c<< get_ccc() <<c<< std::endl;
