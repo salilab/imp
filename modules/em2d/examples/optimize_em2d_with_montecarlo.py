@@ -109,7 +109,7 @@ resolution=1
 n_projections=20
 # This method (recommended) uses preprocessing of the images and projections
 # to speed-up the registration
-coarse_registration_method = 1
+coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
 # use true if you want to save the projections from the model that best
 # match the Em images
 save_match_images = False
