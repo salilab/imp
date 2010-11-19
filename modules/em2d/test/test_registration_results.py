@@ -9,17 +9,23 @@ import IMP.em2d
 class RegistrationResultTests(IMP.test.TestCase):
     def test_rotation_error(self):
         """ Test the rotation error between 2 RegistrationResults classes"""
-        rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
-        rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-1,-3)
+        shift = IMP.algebra.Vector2D(-1,3)
+        rot = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.1);
+        rr1=IMP.em2d.RegistrationResult(rot,shift)
+        rot2 = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.3);
+        rr2=IMP.em2d.RegistrationResult(rot2,shift)
         angle = IMP.em2d.rotation_error(rr1,rr2)
         self.assertAlmostEqual(angle,0.2, delta=0.0001)
 
     def test_translation_error(self):
         """ test the shift error between 2 RegistrationResults classes"""
-        rr1=IMP.em2d.RegistrationResult(0.5,0.2,0.1,-1,-3)
-        rr2=IMP.em2d.RegistrationResult(0.5,0.2,0.3,-8,6)
+        rot = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.3)
+        shift = IMP.algebra.Vector2D(-1.,3.)
+        rr1=IMP.em2d.RegistrationResult(rot,shift)
+        shift = IMP.algebra.Vector2D(-8.,6.)
+        rr2=IMP.em2d.RegistrationResult(rot,shift)
         dist = IMP.em2d.shift_error(rr1,rr2)
-        self.assertAlmostEqual(dist,11.4017, delta=0.0001)
+        self.assertAlmostEqual(dist,7.6157, delta=0.0001)
 
     def test_registration_quaternion(self):
         """ test back a forth of the Rotation in RegistrationResult class"""
@@ -41,13 +47,9 @@ class RegistrationResultTests(IMP.test.TestCase):
 
     def test_even_registration_results(self):
         """ Test the generation of evenly distributed RegistrationResults"""
-        print "step 1"
         Regs1 = IMP.em2d.evenly_distributed_registration_results(3)
-        print "step 2"
         Regs2 = IMP.em2d.read_registration_results(
                       self.get_input_file_name("1z5s-projections.params"))
-        print "step 3"
-
         for j in xrange(0,len(Regs1)):
             q1=Regs1[j].get_rotation().get_quaternion()
             q2=Regs2[j].get_rotation().get_quaternion()
