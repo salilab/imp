@@ -1,5 +1,8 @@
 {"bd 100":0.00001,
  "bd 1000":0.0001,
+ "bd custom":2.35,
+ "bd scores":2.35,
+ "bd generic":2.35,
  "cpf quadratic 1000 0.1":0.05,
  "cpf quadratic 1000 0.5":0.05,
  "cpf quadratic 10000 0.1":5,
