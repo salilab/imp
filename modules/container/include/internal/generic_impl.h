@@ -43,12 +43,12 @@ double ContainerRestraint<Score, Container>
   // compute the base for the added ones
   IMP_LOG(VERBOSE, " " << score_);
   // could be better...
-  score_ +=pc_->get_added_container()
+  score_ +=pc_->Container::get_added_container()
     ->evaluate_prechange(ss_, accum);
   IMP_LOG(VERBOSE," " << score_);
   if (accum) {
     DerivativeAccumulator nda(*accum, -1);
-    score_ -=pc_->get_removed_container()
+    score_ -=pc_->Container::get_removed_container()
       ->evaluate_prechange(ss_, &nda);
   } else {
     score_ -=pc_->get_removed_container()
@@ -144,7 +144,7 @@ void ContainerConstraint<Container, Before, After>::do_update_attributes()
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
-    f_->apply(c_->get_access());
+    f_->Before::apply(c_->get_access());
   } else {
     c_->template_apply(f_.get());
   }
@@ -161,7 +161,7 @@ void ContainerConstraint<Container, Before, After>
   IMP_CHECK_OBJECT(af_);
   IMP_CHECK_OBJECT(c_);
   if (c_->get_provides_access()) {
-    af_->apply(c_->get_access(), *da);
+    af_->After::apply(c_->get_access(), *da);
   } else {
     c_->template_apply(af_.get(), *da);
   }
@@ -304,7 +304,7 @@ Constraint *create_constraint(Pointer<Container> c, Before* b,
 template <class Container>
 bool GenericInContainerPairFilter<Container>
 ::get_contains_particle_pair(const ParticlePair& p) const {
-  return c_->get_contains_particle_pair(p);
+  return c_->Container::get_contains_particle_pair(p);
 }
 
 template <class Container>
