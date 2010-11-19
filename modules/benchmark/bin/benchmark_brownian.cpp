@@ -22,7 +22,7 @@ const double r=10;
 const double len=r;
 const double kk=1000;
 const double sigma=.1;
-const double slack=100*sigma;
+const double slack=6;
 
 #ifdef __GNUC__
 #define ATTRIBUTES __attribute ((__noinline__))
@@ -126,7 +126,7 @@ void initialize(It it) {
     std::cout << "Estimating slack " << std::endl;
     SetLogState sl(IMP::VERBOSE);
     slack= get_slack_estimate(it.all, 100, 1,
-                              Restraints(1, it.m->get_root_restraint_set()),
+                              get_restraints(it.m->get_root_restraint_set()),
                               true,
                               it.bd,
                               it.cpc);

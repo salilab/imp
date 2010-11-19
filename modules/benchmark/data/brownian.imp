@@ -15705,7 +15705,7 @@ particle: 1000
     last_time_step: 640
     temperature: 297.15
     maximum_time_step: 640
-    slack: 10
+    slack: 6
   optimized-attributes:
   int-attributes:
   string-attributes:
