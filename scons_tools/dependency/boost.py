@@ -46,7 +46,7 @@ def _checks(context, version):
             context.env['BOOST_LIBSUFFIX']=suffix
             context.Result(suffix)
             return True
-    return false
+    return False
 
 
 def configure_check(env, version):
