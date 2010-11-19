@@ -1,5 +1,5 @@
 /**
- *  \file Image.h
+ *  \file em/Image.h
  *  \brief Management of IMP images for Electron Microscopy
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
