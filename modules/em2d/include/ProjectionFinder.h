@@ -1,4 +1,4 @@
-/**
+/**`
  *  \file ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
@@ -12,6 +12,9 @@
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/align2D.h"
 #include "IMP/em2d/ProjectionMask.h"
+#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Image.h"
+#include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em/Image.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
@@ -22,7 +25,15 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-//! class to perform registration of images
+
+//! Methods for registration used by the finder
+const unsigned int ALIGN2D_NO_PREPROCESSING = 0;
+const unsigned int ALIGN2D_PREPROCESSING = 1;
+const unsigned int ALIGN2D_WITH_CENTERS = 2;
+
+
+
+//! class to perform registration of model projections to images images
 class IMPEM2DEXPORT ProjectionFinder
 {
 public:
@@ -42,22 +53,23 @@ public:
                 1 => FFT alignment with preprocessing (Default and recommended).
                 2 => FFT alginment and centers of gravity
                         (fast, but only works for low noise)
-    \param[in] interpolation_method Default is linear. Fast, enough accuracy
                 during testing.
-    \param[in] optimization steps
-    \param[in] simplex step size
+    \param[in] optimization steps to use by the simplex optimizer. The default
+              value is the one found during the benchmark to perform well
+    \param[in] simplex_initial_length Initial value to start the simplex search
+               The default value is based on the benchmark results
+    \param[in] Value of the simplex length stop the search. The smaller, the
+               more accurate the finder, but slower
   **/
   void initialize(double apix,double resolution =1,
-                 int coarse_registration_method = 1,
+                 int coarse_registration_method = ALIGN2D_PREPROCESSING,
                  bool save_match_images =false,
-                 int interpolation_method = 0,
-                 int optimization_steps = 10,
+                  int optimization_steps = 5,
                  double simplex_initial_length =0.1,
                  double simplex_minimum_size =0.01) {
     resolution_ = resolution;
     apix_ = apix;
     coarse_registration_method_ = coarse_registration_method;
-    interpolation_method_ = interpolation_method;
     simplex_minimum_size_ = simplex_minimum_size;
     optimization_steps_ = optimization_steps;
     save_match_images_ = save_match_images;
@@ -65,13 +77,16 @@ public:
     masks_manager_.init_kernel(resolution_,apix_);
     fast_optimization_mode_ = false;
     parameters_initialized_=true;
+    preprocessing_time_=0.0;
+    coarse_registration_time_=0.0;
+    fine_registration_time_ =0.0;
   }
 
   //! Set EM images to use as restraints
-  void set_subjects(const em::Images subjects);
+  void set_subjects(const em2d::Images &subjects);
 
   //! Set the projections of the model to use for initial coarse correlation
-  void set_projections(em::Images projections);
+  void set_projections(const em2d::Images &projections);
 
   //! Set the particles where the em2D restraint is applied
   void set_model_particles(const ParticlesTemp &ps);
@@ -89,81 +104,88 @@ public:
   bool get_save_match_images() const {
      return save_match_images_;
   }
-
-  //! With this fast mode, only the first the number n of best scoring
-  //! projections are refined using Simplex optimization, saving time with
-  //! some loss in accuracy.
+  //! With this fast mode, only the first number n of best scoring
+  //! projections during the coarse search are refined.
+  //! Saves vast times of computation time with some loss of accuracy.
+  //! Try starting with 1 (risky) or 2, and increased it for get more chances
+  //! of finding the best projection
   void set_fast_mode(unsigned int n);
 
   //! Recover the registration results. Only works if a registration has been
   //! done previously
   RegistrationResults get_registration_results() const;
 
-  //! Coarse registration of projections by enumeration.
-  void get_coarse_registration();
+  //! Coarse registration of all the images using the projections
+  //! Based in 2D alignments of the images
+    void get_coarse_registration();
 
-
-  //! Performs complete registration of projections against subjects in 2D
+  //! Performs complete registration of projections against the images.
+  //! This meaning the coarse registration followed by simplex optimization
   void get_complete_registration();
 
+  //! Get the em2d score for a model after the registration performed:
+  //! coarse or complete.
   double get_em2d_score() const;
 
   void show(std::ostream &out) const;
 
+  //! Time employed for preprocessing
+  double get_preprocessing_time() const;
+
+  //! Time employed for the coarse registration part
+  double get_coarse_registration_time() const;
+
+  //! Time employed for the fine registration part
+  double get_fine_registration_time() const;
+
 protected:
 
+  double preprocessing_time_,coarse_registration_time_,fine_registration_time_;
    //! Coarse registration for one subject
-  algebra::Transformation2D get_coarse_registrations_for_subject(
-                        unsigned int i,RegistrationResults &subject_RRs);
+  void get_coarse_registrations_for_subject(unsigned int i,
+                                            RegistrationResults &coarse_RRs);
 
   void preprocess_projection(unsigned int j);
   void preprocess_subject(unsigned int i);
 
-  //! Preprocess an matrix computing its center of gravity
-  //! and the FFT of the polar-resampled autocorrelation. Calls
-  //! preprocess_autocorrelation2D
-  void preprocess_for_fast_coarse_registration(
-          algebra::Matrix2D_d &m,algebra::Vector2D &center,
-          algebra::Matrix2D_c &POLAR_AUTOC);
-
-  //! Preprocess a matrix computing the autocorrelation,
-  //! resampling to polar, and then computing the FFT.
-  void fft_polar_autocorrelation2D(algebra::Matrix2D_d &m,
-                                    algebra::Matrix2D_c &POLAR_AUTOC);
-
-  // Main parameters
-  em::Images subjects_;
-  em::Images projections_;
+  //! Computes the weighted centroid and the FFT of the polar-resampled
+  //!  autocorrelation.
+  void preprocess_for_fast_coarse_registration(const cv::Mat &m,
+                                               algebra::Vector2D &center,
+                                               cv::Mat &POLAR_AUTOC);
+  //! Main parameters
+  em2d::Images subjects_;
+  em2d::Images projections_;
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
+  //! resolution used to generate projections during the fine registration
+  double resolution_;
+  //! Sampling of the images in Amstrong/pixel
+  double apix_;
+
   bool save_match_images_,
        registration_results_set_,
        particles_set_,
        registration_done_,
        parameters_initialized_,
        fast_optimization_mode_;
-  //! resolution used to generate projections during the fine registration
-  double resolution_;
-  //! Sampling of the images in Amstrong/pixel
-  double apix_;
 
   //! Coarse registration method
   unsigned int coarse_registration_method_;
-  //! Interpolation method for projection generation
-  unsigned int interpolation_method_;
   //! Simplex optimization parameters
   double simplex_minimum_size_,simplex_initial_length_;
   unsigned int optimization_steps_;
   unsigned int number_of_optimized_projections_;
   // FFT of subjects (storing the FFT of projections is not neccessary
-  std::vector< algebra::Matrix2D_c > SUBJECTS_;
+  std::vector< cv::Mat > SUBJECTS_;
   // FFT of the autocorrelation resampled images
-  std::vector< algebra::Matrix2D_c > SUBJECTS_POLAR_AUTOC_;
-  std::vector< algebra::Matrix2D_c > PROJECTIONS_POLAR_AUTOC_;
+  std::vector< cv::Mat > SUBJECTS_POLAR_AUTOC_;
+  std::vector< cv::Mat > PROJECTIONS_POLAR_AUTOC_;
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
+  PolarResamplingParameters polar_params_;
 
-  OldMasksManager masks_manager_;
+  MasksManager masks_manager_;
 };
 
 

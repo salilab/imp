@@ -24,43 +24,69 @@ IMPEM2D_BEGIN_NAMESPACE
 /**
   \note  Stores the rotation and in-plane translation needed to register a
   model
+  Contains:
+  - Rotation in 3D of the model to register its projection with an image
+  - The rotation is understood as ZYZ
+  - shift shift to apply to the projection of the model (after rotation) to
+    align it with the given image
 **/
-
 class IMPEM2DEXPORT RegistrationResult {
 public:
 
   RegistrationResult();
 
-  RegistrationResult(double phi,double theta,double psi,double shift_x,
-                  double shift_y,long index=0,double ccc=0.0,String name="");
+  RegistrationResult(double phi,double theta,double psi,
+                     algebra::Vector2D shift,
+                     long index=0,double ccc=0.0,String name="");
 
   RegistrationResult(algebra::Rotation3D R,algebra::Vector2D shift,
                       long index=0,double ccc=0.0,String name="");
 
   inline double get_Phi() const { return phi_;}
+
   inline double get_Theta() const { return theta_;}
+
   inline double get_Psi() const { return psi_;}
+
   inline algebra::Vector2D get_shift() const { return shift_;}
+
   inline algebra::Vector3D get_shift3D() const {
     return algebra::Vector3D(shift_[0],shift_[1],0.0);
   }
-  inline long get_index() const { return index_;}
+
+  //! Projection that best matches the image after coarse registration
+  inline long get_projection_index() const { return projection_index_;}
+
+  inline void set_projection_index(long index) {projection_index_=index;}
+
+  //! Image that has been registered
+  inline long get_image_index() const { return image_index_;}
+
+  //! Index of the image that is registered
+  inline void set_image_index(long index) {image_index_=index;}
+
+  //! Name of the object
   inline String get_name() const { return name_;}
+
+  //! Cross correlation coefficient between the image and the projection of
+  //! the model after registration
   inline double get_ccc() const { return ccc_;}
 
+  inline void set_ccc(double ccc) { ccc_=ccc;}
+
+  //! Rotation to apply to the model
   inline void set_rotation(double phi,double theta,double psi) {
     phi_=phi; theta_=theta; psi_=psi;
     R_=algebra::get_rotation_from_fixed_zyz(phi_,theta_,psi_);
   }
 
+  //! Rotation to apply to the model
   void set_rotation(algebra::Rotation3D R);
 
-  inline void set_ccc(double ccc) { ccc_=ccc;}
+
+  //! Shift to apply to the projection to register
   inline void set_shift(algebra::Vector2D shift) { shift_=shift;}
-  inline void set_shift(double shift_y,double shift_x) {
-    shift_[0]=shift_y; shift_[1]=shift_x;
-  }
-  inline void set_index(long index) {index_=index;}
+
   inline void set_name(String name) {name_=name;}
 
   //! adds an in-plane transformation to the result stored
@@ -104,7 +130,9 @@ protected:
   //!
   //! name and index of the projection compared
   String name_;
-  long index_;
+  long projection_index_;
+  //! index of the image being registered
+  long image_index_;
   //! Euler angles (ZYZ)
   double phi_;
   double theta_;
@@ -116,10 +144,9 @@ protected:
 
 IMP_OUTPUT_OPERATOR(RegistrationResult);
 
-// Does the same as above
 IMP_VALUES(RegistrationResult,RegistrationResults);
 
-//! Checks the best of 2 cross correlation coefficients
+//! Checks the best of the cross correlation coefficients
 inline bool better_ccc(RegistrationResult r1,RegistrationResult r2) {
   return r1.get_ccc()<r2.get_ccc();
 }

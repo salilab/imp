@@ -9,10 +9,9 @@
 #define IMPEM2D_IMAGE_PROCESSING_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Pixel.h"
-#include "IMP/em/Image.h"
-#include "IMP/em2d/Image.h"
 #include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Matrix2D.h"
 #include <algorithm>
@@ -258,21 +257,61 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
 **/
 IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
 
-IMPEM2DEXPORT Floats get_histogram(em2d::Image *img,int bins);
 
-
-//! Variance filter for an image. Computes the variance for each pixel
-/**
+//! Variance filter for an image. Computes the variance for each pixel using
+//! the surrounding ones.
+ /**
   \param[in] input image with the data
-  \param[out] filtered result of the filtering
+  \param[out] filtered matrix result of the filtering with the variances
   \param[in] kernelsize The variance is computed using kernelsize x kernelsize
               pixels around each one. Kernelsize can only be odd.
 **/
-IMPEM2DEXPORT void apply_variance_filter(em2d::Image *input,
-                                   em2d::Image *filtered,int kernelsize);
-
 IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
                                    cv::Mat &filtered,int kernelsize);
+
+
+//!Add noise to the values of a matrix.
+/**
+    Supported distributions:
+   - uniform distribution, giving the range (lower, upper). DEFAULT
+   - gaussian distribution, giving the mean and the standard deviation
+   \code
+   add_noise(v1,0, 1);
+   // uniform distribution between 0 and 1
+
+   v1.add_noise(0, 1, "uniform");
+   // the same
+
+   v1.add_noise(0, 1, "gaussian");
+  // gaussian distribution with 0 mean and stddev=1
+
+   \endcode
+**/
+IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
+               const String &mode = "uniform", double df = 3);
+
+
+//! Resamples a matrix to polar coordinates.
+/**
+  \param[in] m matrix to resample
+  \param[out] result matrix to contain the resampling
+  \param[in] polar params Parameters used for the resampling. Extremely useful
+            for speeding up the procedure if they are given with the
+            transformation maps, that can be built in the
+            PolarResamplingParameters class
+**/
+IMPEM2DEXPORT void resample_polar(const cv::Mat &input, cv::Mat &resampled,
+                    const PolarResamplingParameters &polar_params);
+
+//! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
+IMPEM2DEXPORT void normalize(cv::Mat &m);
+
+//! Applies a transformation to a matrix. First rotates the matrix using the
+//! matrix center as the origin of the rotation, and then applies
+//! the translation
+IMPEM2DEXPORT void get_transformed(const cv::Mat &input,cv::Mat &transformed,
+                                   const algebra::Transformation2D &T);
+
 
 
 IMPEM2D_END_NAMESPACE

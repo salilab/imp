@@ -32,18 +32,19 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-//! Generates projectios using particles and precomputed OldMasksManager
- IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
-        const algebra::SphericalVector3Ds &vs,
-        int rows, int cols,
-        double resolution, double pixelsize,
-        const em::ImageReaderWriter<double> &srw,
-        bool project_and_save=false,
-        Strings names=Strings());
-
-//! Generates projectios using particles and precomputed OldMasksManager
- IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+//! Generates projectios from particles
+/**
+  \param[in] ps particles to project
+  \param[in] vs set of spherical vectors with the directions of projection
+  \param[in] rows size of the images
+  \param[in] cols
+  \param[in] resolution resolution used to generate the projections
+  \param[in] pixelsize in A/pixel
+  \param[in] srw Reader writer for the images. Currently uses Spider format
+  \param[in] project_and_save if true, save the images
+  \param[in] names names of the images
+**/
+IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -51,17 +52,14 @@ IMPEM2D_BEGIN_NAMESPACE
         bool project_and_save=false,
         Strings names=Strings());
 
-//! Generates projectios using particles precomputed OldMasksManager
- IMPEM2DEXPORT em::Images generate_projections(const ParticlesTemp &ps,
-        RegistrationResults registration_values,
-        int rows, int cols,
-        double resolution, double pixelsize,
-        const em::ImageReaderWriter<double> &srw,
-        bool project_and_save=false,
-        Strings names=Strings());
 
-//! Generates projectios using particles precomputed OldMasksManager
- IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+//! Generates projectios from particles
+/**
+  \param[in] registration_values Registration values with the parameters of
+            the projections to generate
+  \note See the function generate_projections() for the rest of the parameters
+**/
+IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -70,45 +68,37 @@ IMPEM2D_BEGIN_NAMESPACE
         Strings names=Strings());
 
 
-IMPEM2DEXPORT void generate_projection(em::Image *img,const ParticlesTemp &ps,
-        const RegistrationResult &reg,double resolution,double pixelsize,
-        const em::ImageReaderWriter<double> &srw,bool save_image=false,
-        OldMasksManager *masks=NULL,String name="");
-
+//! Generates a projection from particles
+/**
+  \param[in] ps particles to project
+  \param[in] reg Registration value with the parameters of the projection
+  \param[in] masks Precomputed masks for projecting the particles. Very useful
+             for speeding the projection procedure if they are given.
+             If NULL, they are computed
+  \param[out] img the projection will be stored here
+  \note See the function generate_projections() for the rest of the parameters
+**/
 IMPEM2DEXPORT void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
         const RegistrationResult &reg,double resolution,double pixelsize,
         const em2d::ImageReaderWriter<double> &srw,bool save_image=false,
-        Masks_Manager *masks=NULL,String name="");
+        MasksManager *masks=NULL,String name="");
 
-//! Project particles using projection masks
+//! Projects a set of particles. This is the core function that others call
 /**
-  \param[in] ps the particles.
-  \param[in] m2 the matrix where the projection will be stored
-  \param[in] Ydim size of the projection (rows)
-  \param[in] Xdim size of the projection (cols)
-  \param[in] R Rotation to apply to the particles in order to project in the
-             Z axis
-  \param[in] resolution in Angstrom
-  \param[in] pixelsize in A/pixel.
-  \param[in] masks if NULL, they are computed. To avoid the computation, they
-             must be provided
+  \param[in] ps particles to project
+  \param[in] R rotation to apply to the particles (respect to the centroid)
+  \param[in] translation Translation to apply after rotation
+  \note See the function generate_projection() for the rest of the parameters
 **/
- IMPEM2DEXPORT void project_particles(const ParticlesTemp &ps,
-             algebra::Matrix2D_d& m2,
-             const algebra::Rotation3D& R,
-             const algebra::Vector3D &translation,
-             double resolution, double pixelsize,
-             OldMasksManager *masks=NULL);
-
 IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             Masks_Manager *masks);
+             MasksManager *masks);
 
 
-//! Project the points contained in Vector3Ds
+//! Project the points contained in Vector3Ds to gen vectors in 2D
 /**
   \param[in] ps the points
   \param[in] R Rotation to apply to the points to project them in the Z axis
@@ -117,6 +107,7 @@ IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
 **/
 IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
             const algebra::Rotation3D &R,const  algebra::Vector3D &translation);
+
 
 //! Project the points contained in Vector3Ds
 /**

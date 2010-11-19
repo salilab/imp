@@ -15,12 +15,13 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-// Decorator for a cv::Mat to use coordinates respect to a point (the center)
+//! Decorator for a cv::Mat to use coordinates respect to a point
+//! Almost always that point is the center
 class CenteredMat {
 
 public:
-  // If the coordinates of the center pixel are not given, it is assumed
-  // to be the center of the matrix
+  //! If the coordinates of the center pixel are not given, it is assumed
+  //! to be the center of the matrix
   CenteredMat(cv::Mat &m) {
     // m is not copied, just a reference is added.
     if (m.rows == 0 || m.cols == 0) {
@@ -32,7 +33,7 @@ public:
     set_starts_and_ends();
   }
 
-  // The pixel center of the matrix is explicitly established
+  //! Whe the pixel center of the matrix is explicitly established
   CenteredMat(cv::Mat &m, int center_row, int center_col) {
     centered_ = m;
     if(center_row >= 0 && center_row < m.rows && center_col >=0 &&
@@ -45,16 +46,21 @@ public:
      set_starts_and_ends();
   }
 
-  // start in the dimesion i (0 - rows, 1 - columns)
+  //! get the starting value for a  dimesion i (0 - rows, 1 - columns)
+  //! for example, in a matrix of 5x5 centered at the origin (2,2), the
+  //! starting point will be (-2,2)
   int get_start(int i) const {
     return start_[i];
   }
 
+  //! See get_start() function help. In the example of the 5x5 matrix,
+  //! The end values would be (2,2)
   int get_end(int i) const {
     return end_[i];
   }
 
-  // Returns true if the indices are in the matrix
+  //! Returns true if the indices are in the matrix. Remember that the indices
+  //! Are those respect to the center of the matrix
   bool get_is_in_range(int i,int j) const {
     for (unsigned int k=0;k<2;++k) {
       if(i< get_start(k) || j> get_end(k)) {
@@ -64,8 +70,9 @@ public:
     return true;
   }
 
-  // Returns the element (i,j) RELATIVE to the origin. The indices
-  // can be negative. For performance the indices out of range are NOT checked
+  //! Returns the element (i,j) RELATIVE to the origin. Remember then that
+  //! the indices can be negative.
+  //!  For performance the indices out of range are NOT checked
   double& operator()(int i,int j) {
     return centered_.at<double>(center_row_+i,center_col_+j);
   }

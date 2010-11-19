@@ -18,8 +18,9 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-//! Decorator for particles representing the projection parameters
-//! of a 2D-EM image
+//! Decorator for particles representing the parameters
+//! Rotation and tranlation. In this cases, the translation is the translation
+//! to apply to the model in 3D, in order to perform the registration
 class IMPEM2DEXPORT ProjectionParameters: public Decorator {
 public:
 
@@ -56,60 +57,53 @@ public:
     return true;
   }
 
-  //! 2 First coordinates of the translation
-  algebra::Vector2D get_translation2D() const {
-     algebra::Vector2D v(get_translation_x(),get_translation_y());
-     return v;
-  }
-
-  void set_translation2D(algebra::Vector2D &v) {
-    set_translation(v[0],v[1],0.0);
-  }
-
-  void set_translation2D(double x,double y) {
-     set_translation(x,y,0.0);
-  }
-
+  //! Get the current translation value
   algebra::Vector3D get_translation() const {
-    algebra::Vector3D v(
-      get_translation_x(),get_translation_y(),get_translation_z());
-    return v;
+    return algebra::Vector3D(get_translation_x(),
+                             get_translation_y(),
+                             0.0);
+
   }
 
-  void set_translation(algebra::Vector3D &v) {
-    set_translation(v[0],v[1],v[2]);
+  void set_translation(algebra::Vector3D v) {
+    set_translation_x(v[0]);
+    set_translation_y(v[1]);
   }
 
-  void set_translation(double x,double y,double z) {
-    set_translation_x(x); set_translation_y(y); set_translation_z(z);
-  }
-
-   algebra::Rotation3D get_rotation() const {
-     return algebra::get_rotation_from_fixed_zyz(
-                                            get_Phi(),get_Theta(),get_Psi());
+  //! Get the current rotation value
+  algebra::Rotation3D get_rotation() const {
+    return algebra::Rotation3D(get_quaternion_1(),
+                             get_quaternion_2(),
+                             get_quaternion_3(),
+                             get_quaternion_4());
    }
 
-  void set_rotation(double phi,double theta,double psi) {
-    set_Phi(phi);
-    set_Theta(theta);
-    set_Psi(psi);
+  void set_rotation(algebra::Rotation3D R) {
+    set_quaternion_1(R.get_quaternion()[0]);
+    set_quaternion_2(R.get_quaternion()[1]);
+    set_quaternion_3(R.get_quaternion()[2]);
+    set_quaternion_4(R.get_quaternion()[3]);
   }
 
   //! Set whether the parameters are optimized
   inline void set_parameters_optimized(bool tf) const {
-    for(int i=0;i<5;++i) {
+    for(int i=0;i<6;++i) {
       get_particle()->set_is_optimized(get_keys()[i], tf);
     }
   }
+
+
   //! Get and set functions for the parameters
-  IMP_DECORATOR_GET_SET(Phi,get_keys()[0],Float,double);
-  IMP_DECORATOR_GET_SET(Theta,get_keys()[1],Float,double);
-  IMP_DECORATOR_GET_SET(Psi,get_keys()[2],Float,double);
-  // translation_x and translation_y are understood as coordinates,
-  // NOT in matricial form
-  IMP_DECORATOR_GET_SET(translation_x,get_keys()[3],Float,double);
-  IMP_DECORATOR_GET_SET(translation_y,get_keys()[4],Float,double);
-  IMP_DECORATOR_GET_SET(translation_z,get_keys()[5],Float,double);
+  IMP_DECORATOR_GET_SET(quaternion_1,get_keys()[0],Float,double);
+  IMP_DECORATOR_GET_SET(quaternion_2,get_keys()[1],Float,double);
+  IMP_DECORATOR_GET_SET(quaternion_3,get_keys()[2],Float,double);
+  IMP_DECORATOR_GET_SET(quaternion_4,get_keys()[3],Float,double);
+  IMP_DECORATOR_GET_SET(translation_x,get_keys()[4],Float,double);
+  IMP_DECORATOR_GET_SET(translation_y,get_keys()[5],Float,double);
+
+private:
+  algebra::Rotation3D rotation_;
+  algebra::Vector3D translation_;
 };
 
 IMP_OUTPUT_OPERATOR(ProjectionParameters);
@@ -119,7 +113,8 @@ typedef Decorators<ProjectionParameters, Particles> ProjectionParametersList;
 
 
 
-//! Score state to keep angles and distances
+//! Score state to give information about the values of a ProjectionParameters
+//! Decorator
 class IMPEM2DEXPORT ProjectionParametersScoreState : public ScoreState {
 public:
   ProjectionParametersScoreState(Particle *p) {
@@ -131,6 +126,7 @@ private:
   // Particle to store the projection params
   Pointer<Particle> proj_params_;
 };
+
 
 
 IMPEM2D_END_NAMESPACE

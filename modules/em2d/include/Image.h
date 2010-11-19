@@ -8,13 +8,14 @@
 #define IMPEM2D_IMAGE_H
 
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em/ImageHeader.h"
+#include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/ImageReaderWriter.h"
-#include "IMP/VectorOfRefCounted.h"
-#include <IMP/Object.h>
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/image_processing.h"
+#include "IMP/em2d/FFToperations.h"
+#include "IMP/em/ImageHeader.h"
+#include <IMP/Object.h>
 #include "IMP/VectorOfRefCounted.h"
-#include <complex>
 #include <limits>
 #include <typeinfo>
 
@@ -43,6 +44,11 @@ public:
     header_.set_fImami(0);
   }
 
+  //! Constructor that reads the image directly
+  Image(String filename,const em2d::ImageReaderWriter<double> &reader) {
+    read_from_floats(filename,reader);
+  }
+
   //! Access to the matrix of data
   cv::Mat &get_data() {
     return data_;
@@ -54,20 +60,9 @@ public:
     adjust_header();
   }
 
-////////////////////////// TO DO
-  //! Set the value of one LOGICAL element of the matrix of data
   void set_value(int i, int j,double val) {
-    // data_(i,j)=val;
     data_.at<double>(i,j) = val;
   }
-
-////////////////////////// TO DO
-//  //! Access to one LOGICAL element of the matrix of data
-//  double operator()(int i, int j) const {
-//    // return data_(i,j);
-//    return 0;
-//  }
-
 
   //! Access to one PHYSICAL element of the matrix of data
   double operator()(int i, int j) const {
@@ -146,16 +141,6 @@ IMP_OUTPUT_OPERATOR(Image);
 
 
 
-//! Substract images.
-/**
-  \param[in] first
-  \param[in] second
-  \param[out] result The image first-second
-**/
-IMPEMEXPORT void subtract_images( em2d::Image *first,
-                                  em2d::Image *second,
-                                  em2d::Image *result);
-
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)
 /**
@@ -176,8 +161,47 @@ IMPEM2DEXPORT Images read_images(Strings names,
 IMPEM2DEXPORT void save_images(Images images, Strings names,
                              const em2d::ImageReaderWriter<double> &rw);
 
+//! Cross correlation between two images
+IMPEM2DEXPORT double cross_correlation_coefficient(Image *im1,Image *im2);
 
-IMPEM2DEXPORT void normalize(em2d::Image *im,bool force);
+//! Autocorrelation image
+inline void autocorrelation2D(Image *im1,Image *im2) {
+  autocorrelation2D(im1->get_data(),im2->get_data());
+}
+
+//! Cross correlation between two images
+inline void correlation2D(Image *im1,Image *im2,Image *corr) {
+  correlation2D(im1->get_data(),im2->get_data(),corr->get_data());
+}
+
+
+IMPEM2DEXPORT void normalize(em2d::Image *im,bool force=false);
+
+
+inline Floats get_histogram(em2d::Image *img, int bins) {
+  return get_histogram(img->get_data(),bins);
+}
+
+inline void apply_variance_filter(em2d::Image *input,
+                           em2d::Image *filtered,int kernelsize) {
+  apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
+}
+
+inline void subtract_images(em2d::Image *first,em2d::Image *second,
+                                  em2d::Image *result) {
+  cv::Mat result_matrix;
+  cv::subtract(first->get_data(),
+               second->get_data(),
+               result_matrix);
+  result->set_data(result_matrix);
+}
+
+IMPEM2DEXPORT void add_noise(em2d::Image *im1,double op1, double op2,
+               const String &mode = "uniform", double df = 3);
+
+
+IMPEM2DEXPORT void resample_polar(em2d::Image *im1,em2d::Image *im2,
+                const PolarResamplingParameters &polar_params);
 
 
 IMPEM2D_END_NAMESPACE
