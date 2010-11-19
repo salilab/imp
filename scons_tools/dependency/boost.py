@@ -2,6 +2,7 @@
 
 from SCons.Script import Exit
 import gcc
+import scons_tools.utility
 
 def _check(context, version):
     # Boost versions are in format major.minor.subminor
@@ -25,13 +26,28 @@ def _check(context, version):
             return BOOST_VERSION >= %d ? 0 : 1;
         }
         """ % version_n, '.cpp')
+    context.Result(ret[1].replace("_", ".").split('\n')[0])
     if ret[0]:
-        context.Result(ret[1].replace("_", ".").split('\n')[0])
         try:
             context.env['BOOST_VERSION']= ret[1].split('\n')[1]
+            context.env['BOOST_LIB_VERSION']= ret[1].split('\n')[0]
         except:
             print "Bad boost version", repr(ret)
+    else:
+        pass
     return ret[0]
+
+def _checks(context, version):
+    version=context.env['BOOST_LIB_VERSION']
+    for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
+        ret= context.sconf.CheckLib('boost_system'+suffix)
+        if ret:
+            context.Message('Checking for Boost lib suffix... ')
+            context.env['BOOST_LIBSUFFIX']=suffix
+            context.Result(suffix)
+            return True
+    return false
+
 
 def configure_check(env, version):
     if env.get('boostversion', None):
@@ -40,9 +56,18 @@ def configure_check(env, version):
         custom_tests = {'CheckBoost':_check}
         conf = env.Configure(custom_tests=custom_tests)
         conf.CheckBoost(version)
-        if env.get('BOOST_VERSION', None):
-            env.Append(IMP_CONFIGURATION=["boostversion='"+env['BOOST_VERSION']+"'"])
         conf.Finish()
+    if env.get('boostlibsuffix', "auto")!="auto":
+        env['BOOST_LIBSUFFIX']=env['boostlibsuffix']
+    else:
+        if env.get('boostversion', None):
+            scons_tools.utility.report_error(env, "You must specify the boostlibsuffix if you specify the boostversion")
+        custom_tests = {'CheckBoostS':_checks}
+        conf = env.Configure(custom_tests=custom_tests)
+        conf.CheckBoostS(version)
+        conf.Finish()
+    env.Append(IMP_CONFIGURATION=["boostversion='"+env['BOOST_VERSION']+"'"])
+    env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env['BOOST_LIBSUFFIX']+"'"])
 
 
 def _tr1check(context):

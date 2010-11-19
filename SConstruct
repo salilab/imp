@@ -25,7 +25,7 @@ EnsureSConsVersion(0, 98)
 vars = Variables(files=[File('#/config.py').abspath])
 scons_tools.variables.add_common_variables(vars, "imp")
 env = scons_tools.environment.get_base_environment(variables=vars,
-                              tools=["default", "swig"],
+                              tools=["default", "swig", "dot", "doxygen", "cpp"],
                               toolpath=["scons_tools/tools"])
 env['IMP_ENABLED']=[]
 env['IMP_DISABLED']=[]
@@ -62,24 +62,28 @@ includepath='/opt/local/include'
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
 
-scons_tools.dependency.add_external_library(env, "ANN", "ANN",
-                                       "ANN/ANN.h")
-scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
-                                       "netcdfcpp.h")
-scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
-                                       "fftw3.h")
-scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
-                                       ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                                       body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
-                                       extra_libs=['boost_thread-mt', 'boost_thread', 'pthread'])
-scons_tools.dependency.add_external_library(env, "Boost.FileSystem", "boost_filesystem",
-                                       'boost/filesystem/path.hpp',
-                                       extra_libs=['libboost_system'],
-                                       alternate_name='boost_filesystem-mt')
-scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", "boost_program_options",
-                                       'boost/program_options.hpp',
-                                       extra_libs=['libboost_system'],
-                                       alternate_name='boost_program_options-mt')
+    boost_thread="boost_thread"+env.get("BOOST_LIBSUFFIX")
+    boost_program_options="boost_program_options"+env.get("BOOST_LIBSUFFIX")
+    boost_filesystem="boost_filesystem"+env.get("BOOST_LIBSUFFIX")
+    boost_system="boost_system"+env.get("BOOST_LIBSUFFIX")
+
+    scons_tools.dependency.add_external_library(env, "ANN", "ANN",
+                                            "ANN/ANN.h")
+    scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
+                                                    "netcdfcpp.h")
+    scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
+                                                "fftw3.h")
+
+    scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
+                                                ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
+                                                body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
+                                                extra_libs=[boost_thread, 'pthread'])
+    scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
+                                                'boost/filesystem/path.hpp',
+                                                extra_libs=[boost_system])
+    scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", boost_program_options,
+                                                    'boost/program_options.hpp',
+                                                    extra_libs=[boost_system])
 
 
 
@@ -89,8 +93,6 @@ if not env.GetOption('help'):
     scons_tools.dependency.boost.configure_tr1_check(env)
     scons_tools.dependency.modeller_test.configure_check(env)
     scons_tools.dependency.endian.configure_check(env)
-    scons_tools.dependency.doxygen.configure_check_doxygen(env)
-    scons_tools.dependency.doxygen.configure_check_dot(env)
     scons_tools.dependency.gcc.configure_check_visibility(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
@@ -107,9 +109,8 @@ SConscript('biological_systems/SConscript')
 if not env.GetOption('help'):
     SConscript('tools/SConscript')
     # This must be after the other SConscipt calls so that it knows about all the generated files
-    if env['doxygen']:
-        scons_tools.doc.add_overview_pages(env)
-        SConscript('doc/SConscript')
+    scons_tools.doc.add_overview_pages(env)
+    SConscript('doc/SConscript')
 
     env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
