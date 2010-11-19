@@ -12,20 +12,24 @@
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/scores2D.h"
-#include "IMP/em/image_transformations.h"
-#include "IMP/em/Image.h"
-#include "IMP/em/DensityMap.h"
-#include "IMP/em/MRCReaderWriter.h"
-#include "IMP/em/SpiderReaderWriter.h"
+/**/
+#include "IMP/em2d/opencv_interface.h"
+#include "IMP/em2d/Image.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
+/**/
 #include "IMP/atom/Atom.h"
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/force_fields.h"
+
 #include "IMP/algebra/utility.h"
 #include "IMP/algebra/SphericalVector3D.h"
+
 #include "IMP/core/XYZR.h"
 #include "IMP/core.h"
+
 #include "IMP/Pointer.h"
 #include "IMP.h"
+
 #include <boost/program_options.hpp>
 #include <boost/timer.hpp>
 #include <iostream>
@@ -38,6 +42,9 @@ namespace alg = IMP::algebra;
 namespace core = IMP::core;
 namespace atom = IMP::atom;
 typedef std::string str;
+
+const unsigned int ONLY_COARSE_REGISTRATION = 0;
+const unsigned int COMPLETE_REGISTRATION = 1;
 
 po::variables_map get_parameters(int argc,char **argv) {
   // Declare the supported options.
@@ -60,6 +67,9 @@ po::variables_map get_parameters(int argc,char **argv) {
                                         "Simplex size to stop optimization")
     ("n_opt",po::value<unsigned int>()->default_value(10),"Optimization steps "
       "for  Simplex")
+    ("fast",po::value<unsigned int>()->default_value(0),"Fast mode. Optimize "
+      "with Simplex only a given number of coarse results. "
+      " If value is 0, all are optimized")
     ("bm", po::value<std::string>(),
          "file with solution parameters for the subjects (benchmark purposes)")
   ;
@@ -119,12 +129,11 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
 
 int main(int argc, char **argv) {
 
-  IMP::set_log_level(IMP::VERBOSE);
+  IMP::set_log_level(IMP::TERSE);
 
   po::variables_map vm = get_parameters(argc,argv);
-  em::MRCReaderWriter mrw;
-  em::SpiderImageReaderWriter<double> srw;
-  em::Images projections,subjects;
+  em2d::SpiderImageReaderWriter<double> srw;
+  em2d::Images projections,subjects;
   unsigned long n_projections=0;
   double apix=0.0;
   bool save_images=false;
@@ -144,7 +153,7 @@ int main(int argc, char **argv) {
   }
   // Check mandatory parameters
   if( check_parameters(vm,"mod")==false) {
-    std::cerr << "Error: The --mop parameter is missing" << std::endl;
+    std::cerr << "Error: The --mod parameter is missing" << std::endl;
     std::exit(0);
   }
   if( check_parameters(vm,"subjs")==false) {
@@ -166,22 +175,27 @@ int main(int argc, char **argv) {
   unsigned int optimization_steps = vm["n_opt"].as<unsigned int>();
   // Get optional parameters
   if(vm.count("save_i")) { save_images =true; }
+  unsigned int n_coarse_results_optimized = 0;
+  if(vm.count("fast")) {
+    n_coarse_results_optimized=vm["fast"].as<unsigned int>();
+  }
 
  // Read images and get the sizes from the first image
   fn_subjs = vm["subjs"].as<std::string>();
   IMP_LOG(IMP::TERSE,"Reading EM subject images from "
               << fn_subjs << std::endl);
   subjs_names= em2d::read_selection_file(fn_subjs);
-  subjects = em::read_images(subjs_names,srw);
-  int rows=subjects[0]->get_data().get_number_of_rows();
-  int cols=subjects[0]->get_data().get_number_of_columns();
+  subjects = em2d::read_images(subjs_names,srw);
+  int rows=subjects[0]->get_header().get_number_of_rows();
+  int cols=subjects[0]->get_header().get_number_of_columns();
+
   // Read model file
   fn_model = vm["mod"].as<std::string>();
   IMP_NEW(IMP::Model,model, ());
   atom::ATOMPDBSelector sel;
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
   IMP::Particles ps = core::get_leaves(mh);
-  atom::add_radii(mh);
+
   // Deal with the generation of projections
   digest_parameter("projs",vm,opt);
   boost::timer project_timer;
@@ -197,71 +211,86 @@ int main(int argc, char **argv) {
     // Generate evenly distributed projections
     em2d::RegistrationResults evenly_regs=
           em2d::evenly_distributed_registration_results(n_projections);
-
     projections= em2d::generate_projections(ps,evenly_regs,rows,cols,
                                                 resolution,apix,srw);
     if(save_images) {
+      IMP_LOG(IMP::TERSE,"Saving "
+              << n_projections << " projections " <<  std::endl);
       projs_names = em2d::generate_filenames(n_projections,"proj","spi");
-      em::save_images(projections,projs_names,srw);
+      em2d::save_images(projections,projs_names,srw);
     }
   } else if(opt[0]=="read") {
     // Read the projections selection file
     fn_projs = opt[1];
     IMP_LOG(IMP::TERSE,"Reading projections from: " << fn_projs << std::endl);
     projs_names = em2d::read_selection_file(fn_projs);
-    projections = em::read_images(projs_names,srw);
+    projections = em2d::read_images(projs_names,srw);
   }
   double projection_time = project_timer.elapsed();
-  IMP_LOG(IMP::TERSE,"Projections generated: " << projections.size()
-             << " Time: " << projection_time <<std::endl);
+  *std::cin.tie() << "Projections generated: " << projections.size()
+             << " Time: " << projection_time <<std::endl;
 
-
-
-  int coarse_method = 1;
-  unsigned interpolation_method = 0; // linear
+  // Prepare finder
+  int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
-
   em2d::ProjectionFinder finder;
-
-  finder.initialize(apix,resolution,
-                          coarse_method,
-                          save_images,
-                          interpolation_method,
-                          optimization_steps,
-                          simplex_initial_length,
-                          simplex_minimum_size);
+  finder.initialize(apix,
+                    resolution,
+                    coarse_method,
+                    save_images,
+                    optimization_steps,
+                    simplex_initial_length,
+                    simplex_minimum_size);
   finder.set_model_particles(ps);
   finder.set_subjects(subjects);
+  *std::cin.tie() << "Preprocessing images " << subjects.size()
+                  << " Time: " << finder.get_preprocessing_time() <<std::endl;
   finder.set_projections(projections);
+  *std::cin.tie() << "Preprocessing projections: " << projections.size()
+             << " Time: " << finder.get_preprocessing_time() <<std::endl;
+
+  if(n_coarse_results_optimized!=0) {
+    *std::cin.tie() << "Set fast mode, use "
+                    << n_coarse_results_optimized
+                    << " best coarse results " <<std::endl;
+    finder.set_fast_mode(n_coarse_results_optimized);
+  }
 
   boost::timer registration_timer;
-  if(coarse_method==1) {
+  unsigned int registration_option = COMPLETE_REGISTRATION;
+  // unsigned int registration_option = ONLY_COARSE_REGISTRATION;
+
+
+  if(registration_option==COMPLETE_REGISTRATION) {
     finder.get_complete_registration();
-  } else {
+    *std::cin.tie() << "Total registration time: images " << subjects.size()
+        << " projections " << projections.size()
+        << " Time: " << registration_timer.elapsed() <<std::endl;
+  } else if (registration_option == ONLY_COARSE_REGISTRATION) {
     finder.get_coarse_registration();
+    *std::cin.tie() << "Coarse registration: images " << subjects.size()
+        << " projections " << projections.size()
+        << " Time: " << finder.get_coarse_registration_time() <<std::endl;
   }
   double Score = finder.get_em2d_score();
 
   double registration_time=registration_timer.elapsed();
-
+  double total_time=projection_time+registration_time;
 
   em2d::RegistrationResults registration_results=
                       finder.get_registration_results();
-  double total_time=projection_time+registration_time;
-
 
   *std::cin.tie() << "# REGISTRATION RESULTS " << std::endl;
   registration_results[0].write_comment_line(*std::cin.tie());
   for (unsigned int i=0;i<registration_results.size();++i) {
-    *std::cin.tie() << "Registration for image " << i << ">> ";
     registration_results[i].write(*std::cin.tie());
   }
 
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
-  *std::cin.tie() << "# GLOBAL RESULT " << std::endl <<
-  << "model | resolution | A/pix | images_file | Score | Time used | Number "
+  *std::cin.tie() << "# GLOBAL RESULT " << std::endl
+    << "model | resolution | A/pix | images_file | Score | Time used | Number "
    "of subjects | Individual scores "  << std::endl;
   *std::cin.tie() << "Global result>>" << fn_model <<c<< resolution <<c<< apix
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;

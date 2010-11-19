@@ -11,6 +11,9 @@
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/internal/rotation_helper.h"
+#include "IMP/em2d/image_processing.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
+
 #include "IMP/em/image_transformations.h"
 #include "IMP/em/Image.h"
 #include "IMP/em/SampledDensityMap.h"
@@ -151,6 +154,7 @@ em2d::RegistrationResults get_registration_values(
   return registration_values;
 }
 
+
 int main(int argc, char **argv) {
 
   // Parameters
@@ -168,16 +172,16 @@ int main(int argc, char **argv) {
   }
   atom::Hierarchy smh = atom::read_pdb(opt[0],smodel,ssel,true);
   IMP::Particles sps = core::get_leaves(smh);
-  atom::add_radii(smh);
+//  atom::add_radii(smh);
   double resolution = vm["res"].as<double>();
-  em::SpiderImageReaderWriter<double> srw;
+  em2d::SpiderImageReaderWriter<double> srw;
   em::MRCReaderWriter mrw;
 
 
   // Generate a map
   if(digest_parameter("map",vm,opt)) {
     if( check_parameters(vm,"apix") == false) {
-      std::cout << "The requested --map option is missing "
+      std::cerr << "The requested --map option is missing "
                    "additional parameters"  << std::endl;
       std::exit(0);
     }
@@ -189,10 +193,11 @@ int main(int argc, char **argv) {
   }
 
   // Project IMAGES
-  if(vm.count("proj_img")) {
-    IMP::String param_error = "More parameters are required with --proj_img\n";
-    IMP_USAGE_CHECK(check_parameters(vm,"np,apix,size_i",
-                                      "proj_dist,proj_params"),param_error);
+  if( vm.count("proj_img")) {
+    if(check_parameters(vm,"np,apix,size_i,proj_dist,proj_params") == false) {
+      std::cerr << "--proj is missing additional parameters." << std::endl;
+      std::exit(0);
+    }
     // Parameters
     unsigned int np=vm["np"].as<unsigned int>();
     double apix       = vm["apix"].as<double>();
@@ -202,17 +207,18 @@ int main(int argc, char **argv) {
     digest_parameter("proj_dist",vm,opt);
     em2d::RegistrationResults registration_values=
                             get_registration_values(opt,np);
-    em::Images projections = em2d::generate_projections(
+    em2d::Images projections = em2d::generate_projections(
                      sps,registration_values,rows,cols,resolution,apix,srw);
     // Normalize and add noise if requested
     np = registration_values.size(); // for the case when the values are read
     if(vm.count("SNR")) {
       double SNR = vm["SNR"].as<double>();
       for (unsigned int i=0;i<np;++i) {
-        em::normalize(projections[i]);
+        em2d::normalize(projections[i]);
         // Noise added of mean = 0  and stddev = stddev_signal / sqrt(SNR)
         // As the image is normalized, stddev_signal is 1.0
-        em::add_noise(projections[i]->get_data(),0.0,1./sqrt(SNR), "gaussian");
+        em2d::add_noise(
+                  projections[i]->get_data(),0.0,1./sqrt(SNR), "gaussian");
       }
     }
     // Save projections and projection parameters
