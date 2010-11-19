@@ -6,9 +6,8 @@ import sys
 import scons_tools.install
 
 def run_doxygen(target, source, env):
-    os.environ['PATH']=env['ENV']['PATH']
-    env.Execute("doxygen --version")
-    env.Execute("doxygen "+source[0].abspath)
+    print "doxy is ", env['DOXYGEN']
+    env.Execute(env['DOXYGEN']+" "+source[0].abspath)
 def print_doxygen(target, source, env):
     print "running doxygen"
 def print_generate_doxygen(target, source, env):
@@ -18,7 +17,7 @@ def print_generate_doxygen_header(target, source, env):
 
 def make_defs(target, source, env):
     os.environ['PATH']=env['ENV']['PATH']
-    env.Execute("grep -v \"#include\" "+source[0].abspath+"| cpp -C -DIMP_DOXYGEN -dM - | grep -v \"define __\" > "+target[0].abspath)
+    env.Execute("grep -v \"#include\" "+source[0].abspath+"| "+env['CPP'] +" -C -DIMP_DOXYGEN -dM - | grep -v \"define __\" > "+target[0].abspath)
 def print_make_defs(target, source, env):
     print "running cpp ", str(target), str(source)
 
@@ -34,7 +33,7 @@ def generate_doxygen_header(target, source, env):
         if l.find("DOXYGEN STUFF GOES HERE") != -1:
             outfile.write('<link href="tabs.css" rel="stylesheet" type="text/css"/>\n')
             # Older doxygen versions use a PHP search engine instead of JS
-            if env['DOXYGEN_VERSION'] >= (1,6,0):
+            if env['DOXYGENVERSION'] >= (1,6,0):
                 outfile.write("""<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>""");
         else:
@@ -110,8 +109,8 @@ def generate_doxygen(target, source, env):
 
 
 
-if not env['doxygen']:
-    print "Warning: IMP documentation requires doxygen."
+if not env.get('DOXYGEN', None) or not env.get('CPP', None) or not env.get('DOT', None):
+    print "Warning: IMP documentation requires doxygen, cpp and graphviz."
     Return
 
 env.Append(BUILDERS = {'RunDoxygen': Builder(action=env.Action(run_doxygen,
@@ -193,10 +192,13 @@ examples.sort()
 doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/generated/header.txt"],
                                       source=["#/website/header.txt"])
 env.Alias('doxygen-header', doxyheader)
-doxconf=env.GenerateDoxygen("doxygen.conf", ["doxygen.conf-in", env.Value(env['dot'])] +sources+examples)
+doxconf=env.GenerateDoxygen(target="doxygen.conf",
+                            source=["doxygen.conf-in",
+                                    env.Value(env['dot'] and env.get('DOT', None))] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
-dox = env.RunDoxygen("#/build/doc/html/index.html", ["doxygen.conf"]+sources+[doxyheader])
+dox = env.RunDoxygen(target="#/build/doc/html/index.html",
+                     source=["doxygen.conf"]+sources+[doxyheader])
 env.Depends(dox, '#/doc/doxygen/doxypy.py')
 env.Requires(dox, env.Alias("doc-files"))
 
