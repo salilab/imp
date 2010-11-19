@@ -53,8 +53,7 @@ def get_dependency_string(name):
     return nname
 
 
-def add_external_library(env, name, lib, header, body="", extra_libs=[],
-                        alternate_name=None):
+def add_external_library(env, name, lib, header, body="", extra_libs=[]):
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
     variables=[lcname, lcname+"libs"]
@@ -88,20 +87,6 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 scons_tools.data.get(context.env).add_dependency(name, variables=variables,
                                                                  libs=ret[1])
                 context.Result(" ".join(ret[1]))
-            elif alternate_name:
-                ret= check_lib(context, lib=alternate_name, header=header,
-                                  body=body,
-                                  extra_libs=extra_libs)
-                if ret[0]:
-                    scons_tools.data.get(context.env).add_dependency(name,
-                                                                     variables=variables,
-                                                                     libs=ret[1])
-                    context.Result(" ".join(ret[1]))
-                else:
-                    context.Result(False)
-                    scons_tools.data.get(context.env).add_dependency(name,
-                                                                     variables=variables,
-                                                                     ok=False)
             else:
                 context.Result(False)
                 scons_tools.data.get(context.env).add_dependency(name,

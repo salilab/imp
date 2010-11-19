@@ -207,6 +207,7 @@ def add_common_variables(vars, package):
     vars.Add('pythonpath', 'Extra python path ' + \
              '(e.g. "/opt/local/lib/python-2.5/") to use for tests', None)
     vars.Add('boostversion', 'The version of boost. If this is not none, the passed version is used and checks are not done. The version should look like "104200" for Boost "1.42".', None)
+    vars.Add('boostlibsuffix', 'The suffix to add onto the boost library names.', 'auto')
     vars.Add(BoolVariable('platformflags',
                           'If true, add any compiler and linker arguments that might be needed/desired. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
