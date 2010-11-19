@@ -1,5 +1,5 @@
 /**
- *  \file ImageReaderWriter.h
+ *  \file em/ImageReaderWriter.h
  *  \brief Virtual class for reader/writers of images
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
