@@ -507,6 +507,16 @@ public:
     IMP_USAGE_CHECK(false, "Cannot add voxels to dense grid");
   }
 #endif
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+    VT &get_voxel_always(const ExtendedGridIndex3D &i) {
+      GridIndex3D gi(i[0], i[1], i[2]);
+      return operator[](gi);
+    }
+  const VT &get_value_always(const ExtendedGridIndex3D &i) const {
+    GridIndex3D gi(i[0], i[1], i[2]);
+    return operator[](gi);
+  }
+#endif
 
   /** \name All voxel iterators
       The value type is VT.
@@ -614,6 +624,26 @@ public:
                     << "voxel " << i);
     return GridIndex3D(i[0], i[1], i[2]);
   }
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+    VT &get_voxel_always(const ExtendedGridIndex3D &i) {
+      GridIndex3D gi(i[0], i[1], i[2]);
+      typename Map::iterator it= data_.find(gi);
+      if (it == data_.end()) {
+        return data_.insert(std::make_pair(gi, default_)).first->second;
+      } else {
+        return it->second;
+      }
+    }
+    const VT &get_value_always(const ExtendedGridIndex3D &i) const {
+      GridIndex3D gi(i[0], i[1], i[2]);
+      typename Map::const_iterator it= data_.find(gi);
+      if (it == data_.end()) {
+        return default_;
+      } else {
+        return it->second;
+      }
+    }
+#endif
   /** \name Operator []
       Operator[] isn't very useful at the moment as it can only
       be used with a cell which has already been set. This
@@ -931,6 +961,16 @@ public:
     ExtendedGridIndex3D ei= get_extended_index(pt);
     Storage::add_voxel(ei, vt);
   }
+#if !defined IMP_DOXYGEN and !defined(SWIG)
+  VT &get_voxel_always(const VectorD<3>& pt) {
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    return Storage::get_voxel_always(ei);
+  }
+  const VT &get_value_always(const VectorD<3>& pt) const {
+    ExtendedGridIndex3D ei= get_extended_index(pt);
+    return Storage::get_value_always(ei);
+  }
+#endif
 #ifndef SWIG
   using Storage::get_has_index;
   using Storage::get_index;
