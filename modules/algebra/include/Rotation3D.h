@@ -204,18 +204,20 @@ inline Rotation3D get_identity_rotation_3d() {
 
 //! Return a distance between the two rotations
 /** The distance runs between 0 and 1. More precisely,
-    the distance returned is the angle from the origin
-    of the two quaternion vectors (with signs chosen
-    appropriately), divided by pi/2.
+    the distance returned is distance between the two
+    quaternion vectors properly normalized, divided
+    by sqrt(2).
     \relatesalso Rotation3D
 */
 inline double get_distance(const Rotation3D &r0,
                            const Rotation3D &r1) {
-  double dot= std::abs(r0.get_quaternion()*r1.get_quaternion());
-  if (dot >1) dot=1;
-  if (dot < -1) dot=-1;
-  double theta= std::acos(dot);
-  return 2.0*theta/PI;
+  double dot= (r0.get_quaternion()-r1.get_quaternion()).get_squared_magnitude();
+  double odot= (r0.get_quaternion()
+                +r1.get_quaternion()).get_squared_magnitude();
+  double ans= std::min(dot, odot);
+  const double s2=std::sqrt(2.0);
+  double ret= ans/s2;
+  return std::max(std::min(ret, 1.0), 0.0);
 }
 
 //! Generate a Rotation3D object from a rotation around an axis
