@@ -34,8 +34,10 @@ Float FormFactorTable::zero_form_factors_[] = {
   //  Na      Mg     Al     Si      P        S       Cl     Ar
   15.984, 14.9965, 20.984, 21.984, 20.9946, 23.984,
   // K     Ca2+     Cr      Mn      Fe2+      Co
-  24.984, 25.984, 24.9936, 30.9825, 31.984, 49.16, 70.35676, 71.35676, 72.324,
-  // Ni   Cu      Zn2+       Se      Br      I        Ir         Pt      Au
+  24.984, 25.984, 24.9936, 30.9825, 31.984, 49.16,
+  // Ni   Cu      Zn2+       Se      Br      I
+  70.35676, 71.35676, 72.324,  73.35676,
+  // Ir         Pt      Au      Hg
   -0.211907, -0.932054, -1.6522, 5.44279, 4.72265,4.0025,4.22983,3.50968,8.64641
   //  CH        CH2        CH3     NH       NH2       NH3     OH       OH2   SH
 };
@@ -47,8 +49,8 @@ Float FormFactorTable::vacuum_zero_form_factors_[] = {
   //  Na      Mg     Al     Si      P        S       Cl     Ar
   18.99, 18.0025,  23.99, 24.99,  24.0006, 26.99,
   // K     Ca2+     Cr     Mn      Fe2+      Co
-  27.99, 28.99, 27.9996, 33.99, 34.99, 52.99, 76.99, 77.99, 78.9572,
-  // Ni   Cu      Zn2+    Se     Br     I       Ir     Pt      Au
+  27.99, 28.99, 27.9996, 33.99, 34.99, 52.99, 76.99, 77.99, 78.9572, 79.99,
+  // Ni   Cu      Zn2+    Se     Br     I       Ir     Pt      Au     Hg
   6.99915, 7.99911, 8.99906, 7.99455, 8.99451, 9.99446, 8.99935, 9.9993, 16.9998
   //  CH      CH2     CH3     NH       NH2       NH3     OH      OH2      SH
 };
@@ -60,8 +62,8 @@ Float FormFactorTable::dummy_zero_form_factors_[] = {
   // Na     Mg    Al?    Si?      P        S      Cl?    Ar?
   3.006, 3.006, 3.006, 3.006, 3.006, 3.006,
   // K?   Ca2+    Cr?    Mn?   Fe2+   Co?
-  3.006, 3.006, 3.006, 3.006, 3.006, 3.83, 6.63324, 6.63324, 6.63324,
-  // Ni?   Cu?   Zn2+    Se     Br?     I?   Ir?      Pt?       Au
+  3.006, 3.006, 3.006, 3.006, 3.006, 3.83, 6.63324, 6.63324, 6.63324, 6.63324,
+  // Ni?   Cu?   Zn2+    Se     Br?     I?   Ir?      Pt?       Au      Hg
   7.21106, 8.93116, 10.6513, 2.55176, 4.27186, 5.99196, 4.76952, 6.48962,8.35334
   //  CH       CH2      CH3     NH       NH2       NH3     OH       OH2   SH
 };
@@ -170,6 +172,7 @@ void FormFactorTable::init_element_form_factor_map() {
   element_ff_type_map_[atom::Ir] = Ir;
   element_ff_type_map_[atom::Pt] = Pt;
   element_ff_type_map_[atom::Au] = Au;
+  element_ff_type_map_[atom::Hg] = Hg;
 }
 
 void FormFactorTable::init_residue_type_form_factor_map() {
