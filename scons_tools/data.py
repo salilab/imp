@@ -84,20 +84,20 @@ class IMPData:
                 for i,c in enumerate(classes[k]):
                     if c in classes[k][i+1:]:
                         continue
-                    if k in typedef_classes.keys() and\
-                       c in typedef_classes[k].keys():
+                    if typedef_classes.has_key(k) and\
+                       typedef_classes[k].has_key(c):
                         c= typedef_classes[k][c]
-                    if not k in excluded_classes.keys() or c not in excluded_classes[k]:
+                    if not excluded_classes.has_key(k) or c not in excluded_classes[k]:
                         fclasses[k].append(c)
             fmethods={}
             for k in methods.keys():
-                if len(methods[k])==0 or k not in included_methods.keys():
+                if len(methods[k])==0 or not included_methods.has_key(k):
                     continue
                 fmethods[k]=[]
                 for i,m in enumerate(methods[k]):
                     if m in methods[k][i+1:]:
                         continue
-                    if m in included_methods[k].keys():
+                    if included_methods[k].has_key(m):
                         fmethods[k].append(m+included_methods[k][m])
             #print "for", self.file, "got", fclasses, fmethods
             self.classes=fclasses

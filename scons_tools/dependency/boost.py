@@ -33,8 +33,10 @@ def _check(context, version):
             context.env['BOOST_LIB_VERSION']= ret[1].split('\n')[0]
         except:
             print "Bad boost version", repr(ret)
+            env.Exit(1)
     else:
-        pass
+        context.env['BOOST_VERSION']="empty"
+        context.env['BOOST_LIB_VERSION']="empty"
     return ret[0]
 
 def _checks(context, version):

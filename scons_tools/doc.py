@@ -97,8 +97,8 @@ def _make_module_example_overview(target, source, env):
     print >> out, "/** \\page "+module+"_all_example_index IMP."+module+" example index"
     dta= data.get(env)
     for k in dta.examples.keys():
-        if module in dta.examples[k].classes.keys() \
-           or module in dta.examples[k].methods.keys():
+        if dta.examples[k].classes.has_key(module) \
+           or  dta.examples[k].methods.has_key(module):
             print >> out, "  - ", dta.examples[k].link
     print >> out, "*/"
 def _print_module_example_overview(target, source, env):
@@ -118,12 +118,12 @@ def _make_example_links(target, source, env):
     for k in dta.examples.keys():
         for m in dta.examples[k].classes.keys():
             for c in dta.examples[k].classes[m]:
-                if not c in classes[m].keys():
+                if classes[m].has_key(c):
                     classes[m][c]=[]
                 classes[m][c].append(k)
         for m in dta.examples[k].methods.keys():
             for c in dta.examples[k].methods[m]:
-                if not c in methods[m].keys():
+                if not methods[m].has_key(c):
                     methods[m][c]=[]
                 methods[m][c].append(k)
     for m in dta.modules.keys():
