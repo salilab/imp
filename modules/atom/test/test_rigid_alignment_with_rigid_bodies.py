@@ -24,7 +24,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
             vec2.append(xyz.get_coordinates())
 
         #align mh1 onto mh2
-        align_t=IMP.algebra.get_transformation_taking_first_to_second(vec1,vec2)
+        align_t=IMP.algebra.get_transformation_aligning_first_to_second(vec1,vec2)
         for xyz in xyz1:
             xyz.set_coordinates(align_t.get_transformed(xyz.get_coordinates()))
         self.assertAlmostEqual(IMP.atom.get_rmsd(xyz1,xyz2),0., delta=.01)
@@ -48,7 +48,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
         rb1=IMP.atom.setup_as_rigid_body(mh1)
         print "initial rb", rb1.get_reference_frame()
         #align mh1 onto mh2
-        align_t=IMP.algebra.get_transformation_taking_first_to_second(vec1,vec2)
+        align_t=IMP.algebra.get_transformation_aligning_first_to_second(vec1,vec2)
         print "alignment", align_t
         #now transform mh1 accordinly
         rbtr=rb1.get_reference_frame().get_transformation_to()
