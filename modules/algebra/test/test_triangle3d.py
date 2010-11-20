@@ -11,7 +11,7 @@ class TriangleTests(IMP.test.TestCase):
                                   IMP.algebra.Vector3D(0.0,0.0,5.0),
                                    IMP.algebra.Vector3D(0.0,5.0,0.0),
                                    )
-        lens = s.get_edge_lenghts()
+        lens = s.get_edge_lengths()
         self.assertEqual(lens[0],5)
         self.assertEqual(lens[1],5)
         self.assertAlmostEqual(lens[2],7.07,1)

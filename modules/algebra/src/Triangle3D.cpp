@@ -8,6 +8,17 @@
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/log.h>
 IMPALGEBRA_BEGIN_NAMESPACE
+
+//! Return true if the vectors are paralel
+double get_are_parallel(const VectorD<3> &v1,
+                               const VectorD<3> &v2) {
+  float dot_p = v1*v2;
+  float det1 = v1.get_magnitude();
+  float det2 = v2.get_magnitude();
+  return (std::abs(std::abs(dot_p)-std::abs(det1*det2))<0.0001);
+}
+
+
 Triangle3D::Triangle3D(
       const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3) {
   p_[0]=p1;
@@ -16,15 +27,15 @@ Triangle3D::Triangle3D(
   //check that the three points are not on the same line
   algebra::Vector3D v1=p_[0]-p_[1];
   algebra::Vector3D v2=p_[0]-p_[2];
-  IMP_USAGE_CHECK(!algebra::get_are_parallel(v1,v2),
+  IMP_USAGE_CHECK(!get_are_parallel(v1,v2),
                   "Three co-linear points can not form a triangle\n");
 }
-algebra::Vector3D Triangle3D::get_edge_lenghts()const {
+Floats Triangle3D::get_edge_lengths()const {
   Floats lens(3);
   lens[0]=algebra::get_distance(p_[0],p_[1]);
   lens[1]=algebra::get_distance(p_[0],p_[2]);
   lens[2]=algebra::get_distance(p_[1],p_[2]);
-  return algebra::Vector3D(lens[0],lens[1],lens[2]);
+  return lens;
 }
 
 Triangle3D get_bounding_triangle(const Vector3Ds &points) {
