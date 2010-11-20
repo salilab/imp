@@ -5,6 +5,7 @@ import os
 import UserList
 from SCons.Script import Action, Entry, File, Dir
 import module
+import data
 import environment
 import SCons
 import SCons.Errors
@@ -111,17 +112,21 @@ def install(env, target, source, **keys):
     prefix=_get_prefix(varname)
     installpath= _get_path(env, target, prefix)
     #print Dir(installpath).get_abspath(), Dir("/".join(str(source).split("/")[:-1])).get_abspath()
+    ret=[]
     if Dir(installpath).get_abspath() !=\
            Dir("/".join(str(source).split("/")[:-1])).get_abspath():
         inst= _link_install(env, installpath, source, **keys)
-        env.Alias(environment.get_current_name(env), inst)
+        data.get(env).add_to_alias(environment.get_current_name(env), inst)
+        ret.append(inst[0])
     else:
-        env.Alias(environment.get_current_name(env), source)
+        data.get(env).add_to_alias(environment.get_current_name(env), source)
     if varname=='swigdir' or varname=='srcdir':
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
     inst= env.Install(installpath, source, **keys)
-    env.Alias(environment.get_current_name(env)+"-install", inst)
+    ret.append(inst[0])
+    data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
+    return ret
 
 def install_as(env, target, source, **keys):
     #print "in", target, source
@@ -129,18 +134,22 @@ def install_as(env, target, source, **keys):
     prefix=_get_prefix(varname)
     installpath= _get_path(env, target, prefix)
     #print File(installpath).get_abspath(), File(str(source)).get_abspath()
+    ret=[]
     if File(installpath).get_abspath() !=\
            File(str(source)).get_abspath():
         inst= _link_install_as(env, installpath, source, **keys)
-        env.Alias(environment.get_current_name(env), inst)
+        ret.append(inst[0])
+        data.get(env).add_to_alias(environment.get_current_name(env), inst)
     else:
-        env.Alias(environment.get_current_name(env), source)
+        data.get(env).add_to_alias(environment.get_current_name(env), source)
     if varname=='swigdir' or varname=='srcdir':
         return
     installpath= _get_path(env, target, env.subst(env[varname]))
     inst= env.InstallAs(File(installpath), source, **keys)
-    env.Alias(environment.get_current_name(env)+"_install", inst)
-
+    ret.append(inst[0])
+    data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
+    data.get(env).add_to_alias("install", inst)
+    return ret
 def _make_nodes(files):
     nodes = []
     for f in files:

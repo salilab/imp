@@ -46,6 +46,7 @@ class IMPData:
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
                 self.python_modules=python_modules
+                self.data=[]
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"
@@ -118,12 +119,13 @@ class IMPData:
             self.ok=ok
             self.libs=libs
             self.variables=variables
-    def __init__(self):
+    def __init__(self, env):
         self.modules={}
         self.applications={}
         self.systems={}
         self.dependencies={}
         self.examples={}
+        self.env=env
     def _expand_modules(self, modules):
         ml=[]
         for m in modules:
@@ -204,9 +206,17 @@ class IMPData:
             if self.dependencies[d].ok:
                 ret.append(d)
         return ret
+    def add_to_alias(self, name, nodes):
+        #print "add alias", name
+        self.env.Alias(name, nodes)
+    def get_alias(self, name):
+        #print "get alias", name
+        return self.env.Alias(name)
 
 def get(env):
     return env["IMP_DATA"]
 
-def add(env, data= IMPData()):
+def add(env, data= None):
+    if not data:
+        data=IMPData(env)
     env["IMP_DATA"] = data

@@ -17,7 +17,7 @@ import scons_tools.examples
 import scons_tools.install
 import scons_tools.utility
 
-from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, Copy, Scanner
+from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, Scanner
 from SCons.Scanner import C as CScanner
 
 def _get_module_name(env):
@@ -143,8 +143,10 @@ def IMPModuleInclude(env, files):
 
 def IMPModuleData(env, files):
     """Install the given data files for this IMP module."""
-    path=_get_module_path(env)
-    scons_tools.install.install_hierarchy(env, "datadir/"+path, files)
+    data=scons_tools.data.get(env).modules[_get_module_name(env)]
+    for f in files:
+        (build, install)=scons_tools.install.install(env, "datadir/currentdir/", f)
+        data.data.append(build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
@@ -198,7 +200,7 @@ def _make_programs(envi, files):
 
 def IMPModuleBin(env, files):
     prgs=_make_programs(env, files)
-    env.Alias(env.Alias(_get_module_name(env)), prgs)
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env), prgs)
 
 
 def _fake_scanner_cpp(node, env, path):
@@ -485,10 +487,10 @@ def IMPModuleBuild(env, version, required_modules=[],
     if env['IMP_PROVIDE_PYTHON']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
-    env.Alias(env.Alias("install"), module+"-install")
-    env.Alias(env.Alias("all"), module)
-    env.Alias(env.Alias("test"), module+"-test")
+    scons_tools.data.get(env).add_to_alias("all", module)
     for m in _get_module_modules(env):
-        env.Requires(env.Alias(module+"-install"), m+"-install")
-        env.Requires(env.Alias(module), m)
+        env.Requires(scons_tools.data.get(env).get_alias(module+"-install"),
+                     scons_tools.data.get(env).get_alias(m+"-install"))
+        env.Requires(scons_tools.data.get(env).get_alias(module),
+                     scons_tools.data.get(env).get_alias(m))
     return env
