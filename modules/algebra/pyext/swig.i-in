@@ -66,6 +66,7 @@ namespace multi_array_types {
 %include "IMP_spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
+%include "IMP/algebra/Triangle3D.h"
 %include "IMP/algebra/LinearFit.h"
 %include "IMP/algebra/ParabolicFit.h"
 %include "IMP/algebra/Plane3D.h"
