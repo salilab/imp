@@ -31,7 +31,7 @@ class IMPALGEBRAEXPORT Triangle3D
 #endif
     return p_[i];
   }
-  algebra::Vector3D get_edge_lenghts() const;
+  Floats get_edge_lengths() const;
  private:
   VectorD<3> p_[3];
 };
