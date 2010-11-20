@@ -79,9 +79,9 @@ private:
     H, He, Li, Be, B, C, N, O, F, Ne, // periodic table, lines 1-2 (10)
     Na, Mg, Al, Si, P, S, Cl, Ar, // line 3 (8)
     K, Ca, Cr, Mn, Fe, Co, Ni, Cu, Zn, Se, Br, // line 4 (11)
-    I, Ir, Pt, Au, ALL_ATOM_SIZE = 33,
-    CH=33, CH2=34, CH3=35, NH=36, NH2=37, NH3=38, OH=39, OH2=40, SH=41,
-    HEAVY_ATOM_SIZE=42, UNK=43};
+    I, Ir, Pt, Au, Hg, ALL_ATOM_SIZE = 34,
+    CH=34, CH2=35, CH3=36, NH=37, NH2=38, NH3=39, OH=40, OH2=41, SH=42,
+    HEAVY_ATOM_SIZE=43, UNK=44};
 
   // map between atom element and FormFactorAtomType
   static std::map<atom::Element, FormFactorAtomType> element_ff_type_map_;
