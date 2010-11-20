@@ -97,7 +97,7 @@ inline bool get_are_close(Particle *a, Particle *b,
 struct FarParticle {
   double d_;
   FarParticle(double d): d_(d){}
-  bool operator()(ParticlePair pp) const {
+  bool operator()(const ParticlePair& pp) const {
     return !get_are_close(pp[0], pp[1], d_);
   }
 };
@@ -107,6 +107,32 @@ inline void filter_far(ParticlePairsTemp &c, double d) {
                          FarParticle(d)),
           c.end());
 }
+
+
+struct InList {
+  static IntKey key_;
+  const ParticlesTemp &ps_;
+  InList( const ParticlesTemp &ps): ps_(ps){
+  }
+  static InList create( ParticlesTemp &ps) {
+    /*for (unsigned int i=0; i< ps.size(); ++i) {
+      ps[i]->add_attribute(key_, 1);
+      }*/
+    std::sort(ps.begin(), ps.end());
+    return InList(ps);
+  }
+  static void destroy(InList &il) {
+    /*for (unsigned int i=0; i< il.ps_.size(); ++i) {
+      il.ps_[i]->remove_attribute(key_);
+      }*/
+  }
+  bool operator()(const ParticlePair &pp) const {
+    if (std::binary_search(ps_.begin(), ps_.end(), pp[0])) return true;
+    else if (std::binary_search(ps_.begin(), ps_.end(), pp[1])) return true;
+    return false;
+    //return pp[0]->has_attribute(key_) || pp[1]->has_attribute(key_);
+  }
+};
 
 
 IMPCORE_END_INTERNAL_NAMESPACE
