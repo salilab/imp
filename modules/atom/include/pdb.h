@@ -149,7 +149,12 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
     // check that it is indeed H. Note that it may be missing in some files.
     // some programms do not output element, so the ATOM line can be shorter.
     if(elem.length() == 1 && elem[0]=='H') return true;
-    // 2. if no hydrogen is found in the element record, try atom type field.
+    // 2. support elements that starts with H: He, Ho, Hf, Hg
+    if(elem.length() == 2 && elem[0]=='H' &&
+       (elem[1]=='E' || elem[1]=='e' || elem[1]=='O' || elem[1]=='o' ||
+        elem[1]=='F' || elem[1]=='f' || elem[1]=='G' || elem[1]=='g'))
+      return false;
+    // 3. if no hydrogen is found in the element record, try atom type field.
     // some NMR structures have 'D' for labeled hydrogens
     std::string atom_name = internal::atom_type(pdb_line);
     return (// " HXX" or " DXX" or "1HXX" ...
