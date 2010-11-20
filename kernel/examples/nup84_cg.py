@@ -147,12 +147,9 @@ for i in range(all.get_number_of_children()):
     color= IMP.display.get_display_color(i)
     n= all.get_child(i)
     name= n.get_name()
-    for l in IMP.atom.get_leaves(n):
-        g= IMP.display.XYZRGeometry(l)
-        g.set_color(color)
-        # objects with the same name are grouped in pymol
-        g.set_name(name)
-        gs.append(g)
+    g= IMP.display.HierarchyGeometry(n)
+    g.set_color(color)
+    gs.append(g)
 
 cs= get_conformations(m)
 
