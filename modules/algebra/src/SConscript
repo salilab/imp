@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+      'Triangle3D.cpp',
          'Cone3D.cpp',
          'Cylinder3D.cpp',
          'Ellipsoid3D.cpp',
