@@ -200,6 +200,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     IMP_LOG(IMP::VERBOSE,
             "Coarse registration: " << coarse_RRs[j] << std::endl;)
     if(RA.second>max_ccc) {
+      max_ccc = RA.second;
       best_2d_transformation =  RA.first;
       projection_index = j;
     }
@@ -291,6 +292,7 @@ void ProjectionFinder::get_complete_registration() {
   // Computation
 //   boost::progress_display show_progress(
 //                    subjects_.size()*projections_.size());
+  boost::timer fine_registration_timer;
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults coarse_RRs(projections_.size());
     get_coarse_registrations_for_subject(i,coarse_RRs);
@@ -331,6 +333,7 @@ void ProjectionFinder::get_complete_registration() {
     }
     // ++show_progress;
   }
+  fine_registration_time_=fine_registration_timer.elapsed();
   registration_done_=true;
 }
 
