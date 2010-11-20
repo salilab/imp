@@ -323,7 +323,7 @@ namespace {
     static double get_max_radius(const ParticleSet<It> &ps0) {
       double maxr=0;
       for (It c= ps0.b_; c != ps0.e_; ++c) {
-        maxr=std::max(ps0.r_(ps0.id_(*c))+0, maxr);
+        maxr=std::max(ps0.r_(ps0.id_(*c)), maxr);
       }
       return maxr;
     }
