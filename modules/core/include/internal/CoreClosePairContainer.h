@@ -28,6 +28,7 @@ public internal::ListLikePairContainer
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
   IMP::internal::OwnerPointer<internal::MovedSingletonContainer> moved_;
+  ParticlesTemp previous_moved_;
   bool first_call_;
   double distance_, slack_;
   bool is_static_;

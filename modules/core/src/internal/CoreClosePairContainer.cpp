@@ -22,6 +22,8 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
+IntKey InList::key_= IntKey("in list temp");
+
 IMP_LIST_IMPL(CoreClosePairContainer,
               PairFilter,
               pair_filter,
@@ -169,11 +171,12 @@ void CoreClosePairContainer::do_before_evaluate() {
       IMP_INTERNAL_CHECK(moved_->get_is_up_to_date(),
                          "Moved container is not up to date.");
       if (moved_->get_number_of_particles() != 0) {
-        if (moved_->get_particles().size() < c_->get_number_of_particles()*.1) {
+        if (moved_->get_particles().size() < c_->get_number_of_particles()*.2) {
           IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
                   << std::endl);
+          ParticlesTemp moved=moved_->get_particles();
           ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles(),
-                                                       moved_->get_particles());
+                                                       moved);
           // make one pass
           internal::filter_close_pairs(this, ret);
           if (false) {
@@ -184,6 +187,15 @@ void CoreClosePairContainer::do_before_evaluate() {
             add_to_list(ret);
           } else {
             internal::filter_same(ret);
+            previous_moved_.insert(previous_moved_.end(),
+                                   moved.begin(), moved.end());
+            if (previous_moved_.size() > .2 *c_->get_number_of_particles()) {
+              /*InList il= InList::create(moved);
+              remove_from_list_if(il);
+              InList::destroy(il);*/
+              remove_from_list_if(FarParticle(distance_+2*slack_));
+              previous_moved_.clear();
+            }
             IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
             add_unordered_to_list(ret);
           }
