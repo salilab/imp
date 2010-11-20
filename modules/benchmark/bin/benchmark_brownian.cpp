@@ -68,8 +68,9 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
         d.set_coordinates_are_optimized(true);
         d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
       }
-      IMP_NEW(ConsecutivePairContainer, cpc,(ret.chains.back()));
-      pfs.push_back(new Filter(cpc));
+      IMP_NEW(ConsecutivePairContainer, cpc,(ret.chains.back(), true));
+      // since they all use the same key
+      if (i==0 && j==0) pfs.push_back(new Filter(cpc));
       IMP_NEW(PairsRestraint, pr, (link, cpc));
       ret.m->add_restraint(pr);
       ret.all.insert(ret.all.end(),
