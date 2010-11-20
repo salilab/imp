@@ -961,7 +961,7 @@ public:
     ExtendedGridIndex3D ei= get_extended_index(pt);
     Storage::add_voxel(ei, vt);
   }
-#if !defined(IMP_DOXYGEN) and !defined(SWIG)
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   VT &get_voxel_always(const VectorD<3>& pt) {
     ExtendedGridIndex3D ei= get_extended_index(pt);
     return Storage::get_voxel_always(ei);
