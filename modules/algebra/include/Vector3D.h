@@ -13,7 +13,7 @@
 #include <IMP/exception.h>
 
 #include <numeric>
-#include <cmath>
+//#include <cmath>
 
 #include "VectorD.h"
 
@@ -89,6 +89,15 @@ inline double get_radius_of_gyration(const std::vector<VectorD<3> > &ps) {
   }
   rg /= ps.size();
   return sqrt(rg);
+}
+
+//! Return true if the vectors are paralel
+inline double get_are_parallel(const VectorD<3> &v1,
+                               const VectorD<3> &v2) {
+  float dot_p = v1*v2;
+  float det1 = v1.get_magnitude();
+  float det2 = v2.get_magnitude();
+  return (std::abs(std::abs(dot_p)-std::abs(det1*det2))<0.0001);
 }
 
 /** @} */
