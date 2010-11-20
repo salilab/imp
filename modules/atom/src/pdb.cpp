@@ -326,7 +326,7 @@ namespace {
   }
   if (!has_atom) {
     IMP_WARN("Sorry, unable to read atoms from PDB file."
-             " Thanks for the effort.");
+             " Thanks for the effort.\n");
     return Hierarchies();
   }
   if (!noradii) {
