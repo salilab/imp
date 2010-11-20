@@ -15,7 +15,7 @@ The program will setup things in the current directory.""" % sys.argv[0])
         relimppath= os.path.relpath(imppath, sys.argv[1])
     except:
         print "Platform does not support os.path.relpath, links will be made using absolute paths. Sorry. You can replace the SConstruct and scons_tools links and the repository line in the config.py with relative paths by hand."
-    relimppath= os.path.abspath(sys.argv[1])
+        relimppath= os.path.abspath(sys.argv[1])
     path_to_build= sys.argv[1]
     print "IMP source found at ", imppath
     print "Setting up IMP build directory at ", path_to_build
