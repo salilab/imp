@@ -18,6 +18,7 @@
 from SCons.Script import Scanner, Dir, FindPathDirs, File
 import SCons.Node.FS
 import bug_fixes
+import data
 import os
 import re
 
@@ -28,28 +29,30 @@ def _find_python_module(env, modname, dirs):
     """Given a Python module name of the form a.b, return a list of Nodes
        for the actual Python files at each level of the hierarchy
        (e.g. a/__init__.py, a/b/__init.py)."""
-    suffixes = ['.py', os.path.sep + '__init__.py']
-    # Add suffix(es) for binary extension modules:
     if env['wine'] or env['PLATFORM'] == 'win32':
-        suffixes.append('.pyd')
+        suffix='.pyd'
     elif env['PLATFORM'] == 'darwin':
-        suffixes.append('.so')
+        suffix=".so"
     else:
-        suffixes.append(env.subst(env['LDMODULESUFFIX']))
-    spl = modname.split('.')
-    modules = []
-    for i in range(len(spl)):
-        base = os.path.sep.join(spl[:i+1])
-        found = None
-        for suffix in suffixes:
-            path = base + suffix
-            found = found or SCons.Node.FS.find_file(path, dirs)
-        if found:
-            modules.append(found)
-    return modules
+        suffix=env.subst(env['LDMODULESUFFIX'])
+    ret=[]
+    if modname == 'IMP':
+        nm='kernel'
+    else:
+        nm=modname[modname.find('.')+1:]
+    if data.get(env).modules.has_key(nm):
+        if nm=='kernel':
+            ret+= ["#/build/lib/_IMP"+suffix,
+                   "#/build/lib/IMP/__init__.py"]
+        else:
+            ret+= ["#/build/lib/_IMP_"+nm+suffix,
+                   "#/build/lib/IMP/"+nm+"/__init__.py"]
+        ret+= [x.abspath for x in data.get(env).modules[nm].data]
+    return ret
 
 def _scanfile(node, env, path):
     # If file does not yet exist, we cannot scan it:
+    #print "scanning", node.abspath
     node=bug_fixes.fix_node(env, node)
     if not os.path.exists(node.abspath):
         return []

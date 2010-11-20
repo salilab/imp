@@ -67,9 +67,10 @@ def add_test(env, source, type):
     env.Requires(test, env.Alias(environment.get_current_name(env)))
     env.Requires(test, "tools/imppy.sh")
     if type=='unit test':
-        env.Alias(env.Alias(environment.get_current_name(env)+"-test"), test)
+        data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
     elif type=='example':
-        env.Alias(env.Alias(environment.get_current_name(env)+"-test-examples"), test)
+        data.get(env).add_to_alias(environment.get_current_name(env)+"-test-examples",
+                                               test)
     env.Alias(env.Alias('test'), test)
     return test
 

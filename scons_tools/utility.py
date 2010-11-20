@@ -5,8 +5,8 @@ import sys
 
 def file_compare(a, b):
     """Check if two files are the same, by comparing the path"""
-    pa= a.abspath
-    pb= b.abspath
+    pa= a.path
+    pb= b.path
     return cmp(pa,pb)
 
 def get_matching(patterns):
@@ -15,7 +15,7 @@ def get_matching(patterns):
     ret=[]
     for x in patterns:
         ret+=Glob(x, ondisk=True)
-    ret.sort()#cmp= file_compare)
+    ret.sort(cmp= file_compare)
     return ret
 
 def get_matching_recursive(patterns):
