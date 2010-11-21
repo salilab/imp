@@ -31,10 +31,14 @@ class IMPALGEBRAEXPORT Triangle3D
 #endif
     return p_[i];
   }
+  IMP_SHOWABLE_INLINE(Triangle3D, out << "(" << p_[0] << ", "
+                      << p_[1] << ", " << p_[2] << ")");
   Floats get_edge_lengths() const;
  private:
   VectorD<3> p_[3];
 };
+
+IMP_VALUES(Triangle3D, Triangle3Ds);
 
 
 
