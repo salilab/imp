@@ -46,7 +46,7 @@ class IMPData:
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
                 self.python_modules=python_modules
-                self.data=[]
+                self.build=[]
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"
