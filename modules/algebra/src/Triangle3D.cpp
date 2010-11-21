@@ -39,8 +39,7 @@ Floats Triangle3D::get_edge_lengths()const {
 }
 
 Triangle3D get_bounding_triangle(const Vector3Ds &points) {
-   float max_dist = 0;
-   float dist;
+   double max_dist = 0;
    Vector3Ds triple(3);
    for (unsigned int i = 0 ; i < points.size() ; i++) {
      for (unsigned int j = 0 ; j < points.size() ;j++) {
@@ -52,12 +51,10 @@ Triangle3D get_bounding_triangle(const Vector3Ds &points) {
        }
      }
    }
-
-    float maxDist = 0;
     algebra::Segment3D seg(triple[0],triple[1]);
 
     for (unsigned int i = 0 ; i < points.size();i++) {
-       dist = algebra::get_distance(seg,points[i]);
+      double dist = algebra::get_distance(seg,points[i]);
       if (dist > max_dist) {
         max_dist = dist;
         triple[2] =points[i];
