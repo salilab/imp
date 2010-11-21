@@ -18,6 +18,7 @@ IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
 IMP_SWIG_VALUE(IMP::algebra::grids, GridIndex3D, GridIndex3Ds);
 IMP_SWIG_VALUE(IMP::algebra::grids, ExtendedGridIndex3D, ExtendedGridIndex3Ds);
 
