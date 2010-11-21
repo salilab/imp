@@ -78,5 +78,6 @@ def IMPPythonExecutable(env, file):
 def IMPApplicationTest(env, python_tests=[]):
     files= ["#/tools/imppy.sh", "#/scons_tools/run-all-tests.py"]+\
         [File(x).abspath for x in python_tests]
-    test.add_test(env, source=files,
+    tst=test.add_test(env, source=files,
                   type='unit test')
+    env.Requires(tst, env.Alias(environment.get_current_name(env)))

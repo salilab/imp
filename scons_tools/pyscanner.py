@@ -41,13 +41,7 @@ def _find_python_module(env, modname, dirs):
     else:
         nm=modname[modname.find('.')+1:]
     if data.get(env).modules.has_key(nm):
-        if nm=='kernel':
-            ret+= ["#/build/lib/_IMP"+suffix,
-                   "#/build/lib/IMP/__init__.py"]
-        else:
-            ret+= ["#/build/lib/_IMP_"+nm+suffix,
-                   "#/build/lib/IMP/"+nm+"/__init__.py"]
-        ret+= [x.abspath for x in data.get(env).modules[nm].data]
+        ret+= [x.abspath for x in data.get(env).modules[nm].build]
     return ret
 
 def _scanfile(node, env, path):

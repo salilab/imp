@@ -90,6 +90,7 @@ def IMPModuleLib(envi, files):
         link= envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
         files= files+link
     version= _get_module_version(envi)
+    data= scons_tools.data.get(envi).modules[_get_module_name(envi)]
     config= envi.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
                                    source=[envi.Value(version),
                                            envi.Value(envi.subst(envi['datadir'])),
@@ -103,6 +104,7 @@ def IMPModuleLib(envi, files):
                                _get_module_dependencies(env))
         sl= env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                               list(files))
+        data.build.append(sl[0])
         scons_tools.install.install(env, "libdir", sl[0])
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
@@ -111,6 +113,7 @@ def IMPModuleLib(envi, files):
                                _get_module_dependencies(env))
         sl=env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                        list(files) )
+        data.build.append(sl[0])
         scons_tools.utility.postprocess_lib(env, sl)
         scons_tools.install.install(env, "libdir", sl[0])
 
@@ -146,7 +149,7 @@ def IMPModuleData(env, files):
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     for f in files:
         (build, install)=scons_tools.install.install(env, "datadir/currentdir/", f)
-        data.data.append(build)
+        data.build.append(build)
 
 
 def IMPModuleExamples(env, example_files, data_files):
@@ -224,6 +227,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
        within an environment created by `IMPPythonExtensionEnvironment`."""
     module =_get_module_name(env)
     vars=_get_module_variables(env)
+    data=scons_tools.data.get(env).modules[_get_module_name(env)]
     penv = scons_tools.environment.get_pyext_environment(env, module.upper(),
                                                          cplusplus=True)
     #penv.Decider('timestamp-match')
@@ -259,8 +263,9 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                      cppin, hin],
                        source=[swigfile])
     #print "Moving", produced.path, "to", dest.path
-    scons_tools.install.install_as(penv, 'pythondir/IMP/currentdir/__init__.py',
+    (build, install)= scons_tools.install.install_as(penv, 'pythondir/IMP/currentdir/__init__.py',
                                    produced)
+    data.build.append(build)
     cppf=gbp(penv, 'srcdir/currentfile_wrap.cpp')
     hf=gbp(penv, 'srcdir/currentfile_wrap.h')
     patched=penv.IMPModulePatchSWIG(target=[cppf],
@@ -271,14 +276,16 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     buildlib = lpenv.LoadableModule(gbp(penv, 'libdir/_IMP%(module_suffix)s' %
                                        _get_module_variables(lpenv)),
                                     patched)
-    scons_tools.install.install(penv, 'pyextdir', buildlib[0])
+    data.build.append(buildlib[0])
+    inst=scons_tools.install.install(penv, 'pyextdir', buildlib[0])
     scons_tools.utility.postprocess_lib(penv, buildlib)
     for f in pythonfiles:
         #print f
         nm= os.path.split(f.path)[1]
         #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
-        scons_tools.install.install(env, ('pythondir/IMP/currentdir/'),
+        (build, inst)=scons_tools.install.install(env, ('pythondir/IMP/currentdir/'),
                                          f)
+        data.build.append(build)
 
 def IMPModuleGetExamples(env):
     rms= scons_tools.utility.get_matching_recursive(["*.readme"])
