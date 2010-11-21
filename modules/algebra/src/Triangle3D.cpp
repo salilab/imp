@@ -43,7 +43,7 @@ Triangle3D get_bounding_triangle(const Vector3Ds &points) {
    Vector3Ds triple(3);
    for (unsigned int i = 0 ; i < points.size() ; i++) {
      for (unsigned int j = 0 ; j < points.size() ;j++) {
-       dist = algebra::get_squared_distance(points[i],points[j]);
+       double dist = algebra::get_squared_distance(points[i],points[j]);
        if (dist > max_dist) {
          max_dist = dist;
          triple[0] = points[i];
