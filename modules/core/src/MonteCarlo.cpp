@@ -43,7 +43,6 @@ Float MonteCarlo::optimize(unsigned int max_steps)
               << " movers isn't very useful.",
               ValueException);
   }
-  double best_energy= std::numeric_limits<double>::max();
   IMP::internal::OwnerPointer<Configuration> best_state
     = new Configuration(get_model());
 
@@ -57,6 +56,7 @@ Float MonteCarlo::optimize(unsigned int max_steps)
   }
   update_states();
   double prior_energy =get_model()->evaluate(false);
+  double best_energy= prior_energy;
   //if (prior_energy < get_score_threshold()) return prior_energy;
   if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
     return prior_energy;
@@ -199,7 +199,10 @@ Float MonteCarlo::optimize(unsigned int max_steps)
     }
     return best_energy;
   } else {
-    return get_model()->evaluate(false); //force coordinate update
+    double ret= get_model()->evaluate(false); //force coordinate update
+    IMP_INTERNAL_CHECK(ret < std::numeric_limits<double>::max(),
+                       "Don't return rejected conformation");
+    return ret;
   }
 }
 
