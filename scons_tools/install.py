@@ -189,4 +189,4 @@ def _install_hierarchy_internal(env, dir, sources):
 def install_hierarchy(env, dir, sources):
     targets = \
        _install_hierarchy_internal(env, dir, sources)
-    return targets
+    return ([x[0] for x in targets], [x[1] for x in targets])
