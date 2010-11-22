@@ -9,7 +9,6 @@
 #include <IMP/domino/DominoSampler.h>
 #include <map>
 #include <set>
-#include <boost/version.hpp>
 #include <IMP/domino/subset_states.h>
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
@@ -123,190 +122,170 @@ void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
 }
 
 
-/************************************ PERMUTATION *****************************/
+
+// ******************************* Disjoint sets ********************
 
 namespace {
-  template <bool EQ>
-  class  PermutationSubsetFilter: public SubsetFilter {
-    std::vector<std::pair<unsigned int, Ints> > exclusions_;
-  public:
-    PermutationSubsetFilter(const std::vector<std::pair<unsigned int,
-                            Ints> > &excl): exclusions_(excl) {
-    }
-    IMP_SUBSET_FILTER(PermutationSubsetFilter);
-  };
-  template <bool EQ>
-  double PermutationSubsetFilter<EQ>::get_strength() const {
-    double r=1;
-    for (unsigned int i=0; i< exclusions_.size(); ++i) {
-      for (unsigned int j=0; j < exclusions_[i].second.size(); ++j) {
-        r*=(EQ?.1:.9);
+  void logit(LogLevel l, const Ints &is) {
+    IMP_IF_LOG(l) {
+      IMP_LOG(l, "[");
+      for (unsigned int i=0; i< is.size(); ++i) {
+        IMP_LOG(l, is[i] << " ");
       }
+      IMP_LOG(l, "] ");
+    }
+  }
+  void logit(LogLevel l, const ParticlesTemp &is) {
+    IMP_IF_LOG(l) {
+      IMP_LOG(l, "[");
+      for (unsigned int i=0; i< is.size(); ++i) {
+        IMP_LOG(l, is[i]->get_name() << " ");
+      }
+      IMP_LOG(l, "] ");
+    }
+  }
+
+
+template <class Filter>
+class  DisjointSetsSubsetFilter: public SubsetFilter {
+  std::vector<Ints> sets_;
+public:
+  DisjointSetsSubsetFilter(const std::vector<Ints> &sets): sets_(sets) {
+    IMP_LOG(TERSE, "Created filter with ");
+    IMP_IF_LOG(TERSE) {
+      for (unsigned int i=0; i < sets.size(); ++i) {
+        logit(TERSE, sets_[i]);
+      }
+      IMP_LOG(TERSE, std::endl);
+    }
+  }
+  IMP_OBJECT(DisjointSetsSubsetFilter);
+  double get_strength() const {
+    double r=1;
+    for (unsigned int i=0; i< sets_.size(); ++i) {
+      r*= std::pow(.1, static_cast<double>(sets_[i].size()));
     }
     return 1-r;
   }
-  template <bool EQ>
-  bool PermutationSubsetFilter<EQ>::get_is_ok(const SubsetState &state) const{
+  bool get_is_ok(const SubsetState &state) const{
     IMP_OBJECT_LOG;
     set_was_used(true);
-    for (unsigned int i=0; i< exclusions_.size(); ++i) {
-      for (unsigned int j=0; j< exclusions_[i].second.size(); ++j) {
-        int a=state[exclusions_[i].first], b= state[exclusions_[i].second[j]];
-        if ((EQ && a != b) || (!EQ && a==b)) {
-          return false;
-        }
-      }
+    Filter f;
+    for (unsigned int i=0; i< sets_.size(); ++i) {
+      if (!f(state, sets_[i])) return false;
     }
     return true;
   }
-  template <bool EQ>
-  void PermutationSubsetFilter<EQ>::do_show(std::ostream &out) const{}
+};
+template <class Filter>
+void  DisjointSetsSubsetFilter<Filter>::do_show(std::ostream &out) const{}
 
 
-  bool is_excluded(int ia, int ib,
-                   const std::vector<std::vector<bool> > &ebv) {
-    for (unsigned int i=0; i< ebv.size(); ++i) {
-      if (ebv[i][ia] && ebv[i][ib]) return true;
-    }
-    return false;
+}
+
+int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
+  if (index_.find(p) == index_.end()) {
+    index_[p]= elements_.size();
+    disjoint_sets_.make_set(elements_.size());
+    elements_.push_back(p);
   }
+  return index_[p];
+}
 
-  bool get_is_same(int ia, int ib,
-               Particle *a, Particle *b,
-               const ParticleStatesList &pss,
-               const ParticlePairsTemp &pairs) {
-    IMP_USAGE_CHECK( a< b, "Out of order particles");
-    if (!pss.empty()) {
-      return pss[ia] == pss[ib];
-    } else {
-      // could accelerate this if needed
-      for (unsigned int i=0; i< pairs.size(); ++i) {
-        if (pairs[i][0] == a && pairs[i][1]==b) {
-          return true;
+void DisjointSetsSubsetFilterTable::build_sets() const {
+    if (!sets_.empty()) return;
+    if (pst_) {
+      IMP::internal::Map<ParticleStates*, int> map;
+      ParticlesTemp allps= pst_->get_particles();
+      std::vector<ParticlesTemp> allsets;
+      for (unsigned int i=0; i< allps.size(); ++i) {
+        ParticleStates *ps=pst_->get_particle_states(allps[i]);
+        if (map.find(ps) == map.end()){
+          map[pst_->get_particle_states(allps[i])] = allsets.size();
+          allsets.push_back(ParticlesTemp());
         }
+        allsets[map.find(ps)->second].push_back(allps[i]);
       }
-      return false;
-    }
-  }
-
-  std::vector<std::pair<unsigned int, Ints> >
-  get_filters(const Subset &s,
-              const Subsets &excluded,
-              ParticleStatesTable *pst,
-              const ParticlePairsTemp &pairs) {
-    std::vector<std::pair<unsigned int, Ints> > filters;
-    ParticleStatesList pss;
-    if (pst) {
-      pss.resize(s.size());
-      for (unsigned int i=0; i< s.size(); ++i) {
-        pss[i]= pst->get_particle_states(s[i]);
-      }
-    }
-    std::vector<std::vector<bool> > ebv(excluded.size(),
-                                        std::vector<bool>(s.size(), false));
-    {
-      for (unsigned int i=0; i< s.size(); ++i) {
-        for (unsigned int j=0; j< excluded.size(); ++j) {
-          for (unsigned int k=0; k< excluded[j].size(); ++k) {
-            if (s[i] == excluded[j][k]) {
-              ebv[j][i]=true;
-              break;
-            }
-          }
+      for (unsigned int i=0; i< allsets.size(); ++i) {
+        if (allsets[i].size()>1) {
+          sets_.push_back(allsets[i]);
         }
       }
     }
-    for (unsigned int i=0; i< s.size(); ++i) {
-      for (unsigned int j=0; j<i; ++j) {
-        if (get_is_same(j, i, s[j], s[i], pss, pairs)
-            && !is_excluded(i,j, ebv)) {
-          if (!filters.empty() && filters.back().first == i) {
-            filters.back().second.push_back(j);
-          } else {
-            filters.push_back(std::make_pair(i, Ints(1, j)));
-          }
-        }
+
+    std::vector<ParticlesTemp> all(elements_.size());
+    for (unsigned int i=0; i< elements_.size(); ++i) {
+      int set= disjoint_sets_.find_set(i);
+      all[set].push_back(elements_[i]);
+    }
+    for (unsigned int i=0; i< all.size(); ++i) {
+      if (all[i].size() >1 ) sets_.push_back(all[i]);
+    }
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Sets are:\n");
+      for (unsigned int i=0; i< sets_.size(); ++i) {
+        logit(TERSE, sets_[i]);
+        IMP_LOG(TERSE, std::endl);
       }
     }
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      if (pst) {
-        for (unsigned int i=0; i< filters.size(); ++i) {
-          for (unsigned int j=0; j< filters[i].second.size(); ++j) {
-            IMP_INTERNAL_CHECK(pst->get_particle_states(s[filters[i].first])
-                        == pst->get_particle_states(s[filters[i].second[j]]),
-                               "They don't match :-( ");
-          }
-        }
-      }
+}
+
+
+  void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
+    if (ps.empty()) return;
+    int set_index= get_index(ps[0]);
+    for (unsigned int i=1; i< ps.size(); ++i) {
+      int index= get_index(ps[i]);
+      disjoint_sets_.union_set(set_index, index);
     }
-    return filters;
+    sets_.clear();
+  }
+  void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
+    int set_index= get_index(pp[0]);
+    int index= get_index(pp[1]);
+    disjoint_sets_.union_set(set_index, index);
+    sets_.clear();
   }
 
-  ParticlePairsTemp fixup(ParticlePairsTemp ppt) {
-    for (unsigned int i=0; i< ppt.size(); ++i) {
-      if (ppt[i][0] > ppt[i][1]) {
-        ppt[i]= ParticlePair(ppt[i][1], ppt[i][0]);
+
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
+    Ints states;
+    for (unsigned int i=0; i< members.size(); ++i) {
+      if (members[i] != -1) {
+        states.push_back( state[members[i]] );
       }
     }
-    return ppt;
-  }
+    std::sort(states.begin(), states.end());
+    return std::unique(states.begin(), states.end())==states.end();
+  });
 
-}
-
-
-PermutationSubsetFilterTable
-::PermutationSubsetFilterTable(ParticleStatesTable *pst):
-  SubsetFilterTable("PermutationSubsetFilterTable%1%"), pst_(pst)
-{
-}
-
-PermutationSubsetFilterTable
-::PermutationSubsetFilterTable(const ParticlePairsTemp &pairs):
-  SubsetFilterTable("PermutationSubsetFilterTable%1%"),
-  pairs_(fixup(pairs))
-{
-}
-
-SubsetFilter*
-PermutationSubsetFilterTable
-::get_subset_filter(const Subset &s,
-                    const Subsets &excluded) const {
-  set_was_used(true);
-  std::vector<std::pair<unsigned int, Ints> > filters
-    = get_filters(s, excluded, pst_, pairs_);
-  if (filters.empty()) return NULL;
-  return new PermutationSubsetFilter<false>(filters);
-}
-
-void PermutationSubsetFilterTable::do_show(std::ostream &out) const {
-}
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
+    unsigned int base=0;
+    while (base < members.size() && members[base]==-1) ++base;
+    for (unsigned int i=base+1; i< members.size(); ++i) {
+      if (members[i] != -1) {
+        if (state[members[i]] != state[members[base]]) return false;
+      }
+    }
+    return true;
+  });
 
 
-
-
-EqualitySubsetFilterTable
-::EqualitySubsetFilterTable(ParticleStatesTable *pst): pst_(pst)
-{
-}
-
-EqualitySubsetFilterTable
-::EqualitySubsetFilterTable(const ParticlePairsTemp &pairs):
-  pairs_(fixup(pairs))
-{
-}
-
-SubsetFilter*
-EqualitySubsetFilterTable::get_subset_filter(const Subset &s,
-                                             const Subsets &excluded) const {
-  std::vector<std::pair<unsigned int, Ints> > filters
-    = get_filters(s, excluded, pst_, pairs_);
-  return new PermutationSubsetFilter<true>(filters);
-}
-
-void EqualitySubsetFilterTable::do_show(std::ostream &out) const {
-}
-
-
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
+    //IMP_LOG(TERSE, "State is " << state << " and ");
+    //logit(TERSE, members);
+    //IMP_LOG(TERSE, " are the members." << std::endl);
+    unsigned int last=0;
+    while (last < members.size() && members[last]==-1) ++last;
+    for (unsigned int i=last+1; i< members.size(); ++i) {
+      if (members[i] != -1) {
+        if (state[members[last]] > state[members[i]]) return false;
+        last=i;
+      }
+    }
+    //IMP_LOG(TERSE, "ok" << std::endl);
+    return true;
+  });
 
 
 // **************************************** List ********************

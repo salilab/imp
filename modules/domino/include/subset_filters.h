@@ -23,6 +23,15 @@
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
+
+#include <boost/pending/disjoint_sets.hpp>
+
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -128,6 +137,46 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
 IMP_OBJECTS(RestraintScoreSubsetFilterTable,
             RestraintScoreSubsetFilterTables);
 
+
+/** \brief A base class
+
+    A number of filters work on disjoint sets of the input particles.
+    These can be specified in several different ways
+    - implicitly via having the same ParticleStates objects
+    - as a list of particle equivalencies
+    - as a list of disjoint sets of equivalent particles
+ */
+class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
+  public SubsetFilterTable {
+  Pointer<ParticleStatesTable> pst_;
+  ParticlesTemp elements_;
+  boost::vector_property_map<int> parent_, rank_;
+  mutable boost::disjoint_sets<boost::vector_property_map<int>,
+                               boost::vector_property_map<int> > disjoint_sets_;
+  IMP::internal::Map<const Particle*, int> index_;
+  mutable std::vector<ParticlesTemp> sets_;
+
+  int get_index(Particle *p);
+
+  void build_sets() const;
+ protected:
+  unsigned int get_number_of_sets() const {
+    build_sets();
+    return sets_.size();
+  }
+  ParticlesTemp get_set(unsigned int i) const {
+    return sets_[i];
+  }
+  DisjointSetsSubsetFilterTable(ParticleStatesTable *pst):
+    pst_(pst),
+    disjoint_sets_(rank_, parent_){}
+  DisjointSetsSubsetFilterTable(): disjoint_sets_(rank_, parent_){}
+ public:
+  void add_set(const ParticlesTemp &ps);
+  void add_pair(const ParticlePair &pp);
+};
+
+
 /** \brief Do not allow two particles to be in the same state.
 
     If a ParticleStatesTable is passed, then two particles cannot
@@ -135,39 +184,30 @@ IMP_OBJECTS(RestraintScoreSubsetFilterTable,
     otherwise, if a ParticlePairs is passed then pairs found in the
     list are not allowed to have the same state index.
  */
-class IMPDOMINOEXPORT PermutationSubsetFilterTable:
-  public SubsetFilterTable {
-  Pointer<ParticleStatesTable> pst_;
-  const ParticlePairsTemp pairs_;
-public:
-  PermutationSubsetFilterTable(ParticleStatesTable *pst);
-  PermutationSubsetFilterTable(const ParticlePairsTemp &pairs);
-  IMP_SUBSET_FILTER_TABLE(PermutationSubsetFilterTable);
-};
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Exclusion);
 
-IMP_OBJECTS(PermutationSubsetFilterTable,
-            PermutationSubsetFilterTables);
+/** \brief Do not allow two particles to be in the same state.
 
-
-/** \brief Force two particles to be in the same state.
-
-    If a ParticleStatesTable is passed, then two particles must
+    If a ParticleStatesTable is passed, then two particles cannot
     be in the same state if they have the same ParticleStates,
     otherwise, if a ParticlePairs is passed then pairs found in the
-    list are excluded.
+    list are not allowed to have the same state index.
  */
-class IMPDOMINOEXPORT EqualitySubsetFilterTable:
-  public SubsetFilterTable {
-  Pointer<ParticleStatesTable> pst_;
-  const ParticlePairsTemp pairs_;
-public:
-  EqualitySubsetFilterTable(ParticleStatesTable *pst);
-  EqualitySubsetFilterTable(const ParticlePairsTemp &pairs);
-  IMP_SUBSET_FILTER_TABLE(EqualitySubsetFilterTable);
-};
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equality);
 
-IMP_OBJECTS(EqualitySubsetFilterTable,
-            EqualitySubsetFilterTables);
+
+/** \brief Define sets of equivalent particles
+
+    Particles in an equivalency set are assumed to be equivalent under
+    exchange. Given that, one should only generate each of the equivalent
+    conformations once. More specifically, given equivalent particles
+    p0 and p1, if p0 is given state s0 and p1 is given state s1, then
+    p1 will never be given state s0 when p0 is given the state s1.
+*/
+IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equivalence);
+
+
+
 
 
 /** \brief Maintain an explicit list of what states each particle
@@ -201,6 +241,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
 
 IMP_OBJECTS(ListSubsetFilterTable,
             ListSubsetFilterTables);
+
 
 
 IMPDOMINO_END_NAMESPACE

@@ -38,7 +38,7 @@ DiscreteSampler
     SubsetFilterTables sfts;
     sfts.push_back(new RestraintScoreSubsetFilterTable(rs, pst));
     sfts.back()->set_was_used(true);
-    sfts.push_back(new PermutationSubsetFilterTable
+    sfts.push_back(new ExclusionSubsetFilterTable
                    (get_particle_states_table()));
     sfts.back()->set_was_used(true);
     return sfts;
@@ -80,7 +80,8 @@ ConfigurationSet *DiscreteSampler::do_sample() const {
     }
     //get_model()->evaluate(false);
     //if (get_model()->get_has_good_score()) {
-      ret->save_configuration();
+    get_model()->update();
+    ret->save_configuration();
       //} else {
       //  IMP_LOG(TERSE, "Rejected " << final_solutions[i] << std::endl);
       //}
