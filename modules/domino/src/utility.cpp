@@ -144,5 +144,51 @@ RestraintsTemp get_restraints(const Subset &s,
 
 
 
+Ints get_partial_index(const ParticlesTemp &particles,
+               const Subset &subset, const Subsets &excluded) {
+  for (unsigned int i=0; i< excluded.size(); ++i) {
+    bool all=true;
+    for (unsigned int j=0; j< particles.size(); ++j) {
+      if (!std::binary_search(excluded[i].begin(), excluded[i].end(),
+                              particles[j])) {
+        all=false;
+        break;
+      }
+    }
+    if (all) {
+      return Ints();
+    }
+  }
+  Ints ret(particles.size(), -1);
+  for (unsigned int i=0; i< particles.size(); ++i) {
+    Subset::const_iterator it= std::lower_bound(subset.begin(),
+                                                subset.end(), particles[i]);
+    if (it!= subset.end() && *it == particles[i]) {
+      ret[i]= it-subset.begin();
+    }
+  }
+  IMP_IF_LOG(VERBOSE) {
+    IMP_LOG(VERBOSE, "Returning ");
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      IMP_LOG(VERBOSE, ret[i] << " ");
+    }
+    IMP_LOG(VERBOSE, "for ");
+     for (unsigned int i=0; i< particles.size(); ++i) {
+       IMP_LOG(VERBOSE, particles[i]->get_name() << " ");
+     }
+     IMP_LOG(VERBOSE, " subset " << subset << std::endl);
+  }
+  return ret;
+}
+
+Ints get_index(const ParticlesTemp &particles,
+               const Subset &subset, const Subsets &excluded) {
+  Ints pi= get_partial_index(particles, subset, excluded);
+  if (std::find(pi.begin(), pi.end(), -1) != pi.end()) return Ints();
+  else return pi;
+}
+
+
+
 
 IMPDOMINO_END_NAMESPACE

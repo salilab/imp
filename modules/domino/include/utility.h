@@ -71,7 +71,34 @@ IMPDOMINOEXPORT RestraintsTemp get_restraints(const Subset &s,
                                                const DependencyGraph &dg,
                                                RestraintSet *rs);
 
+
 /** @} */
+
+
+/** If the passed particles are all contained in the Subset and are
+    not contained any of the Subsets in excluded, then return a a list
+    of indices given the location of each passed particle in the passed subset.
+    That is
+    \code
+    particles[i]==subset[returned[i]];
+    \endcode
+    Otherwise return an empty list.
+
+    This function is designed to be used for implementing SubsetFilterTable
+    classes.
+*/
+IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
+                               const Subset &subset, const Subsets &excluded);
+
+/** All of the passed particles are not contained in an ofthe Subsets
+    in excluded, then return a a list of indices given the location of
+    each passed particle in the passed subset or -1 if it is missing.
+
+    This function is designed to be used for implementing SubsetFilterTable
+    classes.
+*/
+IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
+                               const Subset &subset, const Subsets &excluded);
 
 
 IMPDOMINO_END_NAMESPACE

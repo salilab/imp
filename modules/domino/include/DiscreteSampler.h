@@ -34,7 +34,7 @@ IMPDOMINO_BEGIN_NAMESPACE
     - if no SubsetEvaluatorTable is provided, then the
     ModelSubsetEvaluatorTable is used.
     - if no SubsetFilterTables are provided, then the
-    PermutationSubsetFilterTable and the
+    ExclusionSubsetFilterTable and the
     RestraintScoreSubsetFilterTable are used.
 
     \note the restraint scores must be non-negative in general.

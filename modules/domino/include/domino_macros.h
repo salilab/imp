@@ -59,6 +59,48 @@
                                           const Subsets &excluded) const; \
   IMP_OBJECT(Name)
 
+/** This macro defines a class NameSubsetFilterTable from a method
+    which is applied to disjoint sets. The code should assume there is
+    a SubsetState state and an Ints members which ordered indices into
+    the SubsetState for the current set.
+*/
+#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Name)                     \
+  class IMPDOMINOEXPORT Name##SubsetFilterTable:                        \
+    public DisjointSetsSubsetFilterTable {                              \
+    typedef DisjointSetsSubsetFilterTable P;                            \
+  public:                                                               \
+    Name##SubsetFilterTable(ParticleStatesTable *pst):                  \
+   P(pst){}                                                             \
+    Name##SubsetFilterTable(){}                                         \
+    IMP_SUBSET_FILTER_TABLE(Name##SubsetFilterTable);                   \
+  };                                                                    \
+  IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
+
+
+#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter)              \
+  struct Name##Filter {                                                 \
+    bool operator()(const SubsetState &state,                           \
+                    const Ints &members) {                              \
+      filter;                                                           \
+    }                                                                   \
+  };                                                                    \
+  void Name##SubsetFilterTable::do_show(std::ostream &out) const {      \
+  }                                                                     \
+  SubsetFilter* Name##SubsetFilterTable::                               \
+  get_subset_filter(const Subset &s,                                    \
+                    const Subsets &excluded) const{                     \
+    set_was_used(true);                                                 \
+    std::vector<Ints> all;                                              \
+    for (unsigned int i=0; i< get_number_of_sets(); ++i) {              \
+      Ints index= IMP::domino::get_partial_index(get_set(i),            \
+                                                  s, excluded);         \
+      if (!index.empty()) {                                             \
+        all.push_back(index);                                           \
+      }                                                                 \
+    }                                                                   \
+    return new DisjointSetsSubsetFilter<Name##Filter>(all);             \
+  }                                                                     \
+
 
 /** This macro declares
     - IMP::domino::SubsetFilter::get_is_ok()
