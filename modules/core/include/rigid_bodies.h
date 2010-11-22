@@ -197,6 +197,13 @@ public:
 IMP_OUTPUT_OPERATOR(RigidBody);
 
 
+/** It is often useful to store precalculated properties of the rigid body
+    for later use. These need to be cleared out when the rigid body changes.
+    To make sure this happens, register the key here.
+*/
+void IMPCOREEXPORT add_rigid_body_cache_key(ObjectKey k);
+
+
 //! A decorator for a particle that is part of a rigid body
 /**
    \see RigidBody

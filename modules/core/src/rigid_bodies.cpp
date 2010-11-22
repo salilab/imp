@@ -25,6 +25,15 @@ const RigidBodyData &rigid_body_data() {
 IMPCORE_END_INTERNAL_NAMESPACE
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
+  ObjectKeys cache_keys;
+}
+void add_rigid_body_cache_key(ObjectKey k) {
+  if (!std::binary_search(cache_keys.begin(), cache_keys.end(), k)) {
+    cache_keys.push_back(k);
+    std::sort(cache_keys.begin(), cache_keys.end());
+  }
+}
 
 namespace {
 
@@ -219,9 +228,11 @@ void RigidBody::on_change() {
    } else {
      get_particle()->add_attribute(XYZR::get_default_radius_key(), md);
    }
-   if (get_particle()
-       ->has_attribute(internal::get_rigid_body_hierarchy_key())) {
-     get_particle()->remove_attribute(internal::get_rigid_body_hierarchy_key());
+   for (unsigned int i=0; i< cache_keys.size(); ++i) {
+     if (get_particle()
+         ->has_attribute(cache_keys[i])) {
+       get_particle()->remove_attribute(cache_keys[i]);
+     }
    }
    get_particle()->get_model()->reset_dependencies();
 }
