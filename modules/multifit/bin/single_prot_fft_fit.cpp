@@ -49,7 +49,7 @@ algebra::Rotation3Ds get_rotations(int num_angles,
       multifit::read_fitting_solutions(pre_calc_rot_filename.c_str());
     for(int i=start_rot;i<std::min(start_rot+num_angles,int(sols.size()));i++)
       {
-        rots.push_back(sols[i].get_transformation().get_rotation());
+        rots.push_back(sols[i].get_fit_transformation().get_rotation());
     }
   }
   return rots;
@@ -326,11 +326,13 @@ int main(int argc, char **argv) {
   // //score by cc
   // std::cout<<"scoring final solutions"<<std::endl;
   em::FittingSolutions all_fit_sols_clustered;
-  // //all_fit_sols_clustered = em::compute_fitting_scores(
-  // //              mh_ps,dmap,
-  // //              core::XYZR::get_default_radius_key(),
-  // //            atom::Mass::get_mass_key(),clust_trans,true);
-  all_fit_sols_clustered=sols.get_solutions();
+  all_fit_sols_clustered = em::compute_fitting_scores(
+              mh_ps,dmap,
+              core::XYZR::get_default_radius_key(),
+              atom::Mass::get_mass_key(),
+              sols.get_solutions().get_transformations() //clust_trans
+              ,true,true);
+  //all_fit_sols_clustered=sols.get_solutions();
   all_fit_sols_clustered.sort(true);
   //save as multifit records
   multifit::FittingSolutionRecords final_fits;
@@ -339,7 +341,9 @@ int main(int argc, char **argv) {
   for(int i=0;i<num_sols;i++){
     multifit::FittingSolutionRecord rec;
     rec.set_index(i);
-    rec.set_transformation(all_fit_sols_clustered.get_transformation(i));
+    rec.set_fit_transformation(all_fit_sols_clustered.get_transformation(i));
+    std::cout<<"=========i:"<<i<<":"<<
+      all_fit_sols_clustered.get_score(i)<<std::endl;
     rec.set_fitting_score(all_fit_sols_clustered.get_score(i));
     core::transform(rb,
                     all_fit_sols_clustered.get_transformation(i));
