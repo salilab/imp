@@ -160,12 +160,16 @@ def IMPModuleExamples(env, example_files, data_files):
     #    print f
     #    print f.abspath
     #    open(f.abspath, 'r')
-    scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir", example_files+data_files)
+    (build, install)=scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir",
+                                                           example_files+data_files)
     test= scons_tools.test.add_test(env,
                                     source=[x for x in example_files
                                      if str(x).endswith(".py") \
                                      and str(x).find("fragment")==-1],
                                     type='example')
+    env.Requires(test, build)
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env), build)
+    scons_tools.data.get(env).add_to_alias(_get_module_name(env)+"-install", install)
     seen=[]
     for e in example_files:
         if str(e).endswith(".py"):
