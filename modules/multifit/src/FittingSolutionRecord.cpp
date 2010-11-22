@@ -41,18 +41,14 @@ namespace {
 }
 IMPMULTIFIT_BEGIN_NAMESPACE
 FittingSolutionRecord::FittingSolutionRecord() {
-  // initialize(index_);
-  // initialize(sol_fn_);
-  // initialize(match_size_);
-  // initialize(match_avg_dist_);
-  // initialize(fitting_score_);
-  // initialize(rmsd_to_ref_);
   index_=0;
   sol_fn_="";
   match_size_=0;
   match_avg_dist_=-1;
   fitting_score_=-1;
   rmsd_to_ref_=-1;
+  fit_transformation_=algebra::get_identity_transformation_3d();
+  dock_transformation_=algebra::get_identity_transformation_3d();
 }
 
 void FittingSolutionRecord::show(std::ostream& out) const {
@@ -62,9 +58,9 @@ void FittingSolutionRecord::show(std::ostream& out) const {
   //if (is_initialized(sol_fn_)) out<<sol_fn_;
   if (true) out<<sol_fn_;
   out<<"|";
-  transformation_.get_rotation().show(out);
+  fit_transformation_.get_rotation().show(out);
   out<<"|";
-  transformation_.get_translation().show(out," ",false);
+  fit_transformation_.get_translation().show(out," ",false);
   out<<"|";
   //if (is_initialized(match_size_)) out<<match_size_;
   if (true) out<<match_size_;
@@ -74,6 +70,10 @@ void FittingSolutionRecord::show(std::ostream& out) const {
   out<<"|";
   //if (is_initialized(fitting_score_)) out<<fitting_score_;
   if (true) out<<fitting_score_;
+  out<<"|";
+  dock_transformation_.get_rotation().show(out);
+  out<<"|";
+  dock_transformation_.get_translation().show(out," ",false);
   out<<"|";
   //if (is_initialized(rmsd_to_ref_)) out<<rmsd_to_ref_;
   if (true) out<<rmsd_to_ref_;
