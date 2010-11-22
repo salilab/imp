@@ -33,7 +33,7 @@ void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
   anchor_counters.insert(anchor_counters.end(),positions_.size(),0);
   for (unsigned int i=0;i<sols.size();i++) {
     algebra::Vector3D loc=
-      sols[i].get_transformation().get_transformed(
+      sols[i].get_fit_transformation().get_transformed(
                                core::XYZ(p).get_coordinates());
     anchor_counters[nn.get_nearest_neighbor(loc)]++;
   }
@@ -42,6 +42,17 @@ void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
     probs.push_back(1.*anchor_counters[i]/sols.size());
   }
   particle_to_anchor_probabilities_[p]=probs;
+}
+algebra::Vector3Ds ProbabilisticAnchorGraph::get_particle_anchors(
+                                         Particle *p,float min_prob) const {
+  Floats probs=get_particle_probabilities(p);
+  algebra::Vector3Ds anchors;
+  for(unsigned int i=0;i<probs.size();i++) {
+    if (probs[i]>=min_prob) {
+      anchors.push_back(positions_[i]);
+    }
+  }
+  return anchors;
 }
 Floats
   ProbabilisticAnchorGraph::get_particle_probabilities(Particle *p) const {
@@ -54,6 +65,12 @@ Floats
 void ProbabilisticAnchorGraph::show(std::ostream& out) const {
   out<<"( nodes:"<<boost::num_vertices(g_)<<", edges:"<<
     boost::num_edges(g_)<<std::endl;
+  out<<"Probabilities:"<<std::endl;
+  for(std::map<Particle *,Floats>::const_iterator
+        it = particle_to_anchor_probabilities_.begin();
+      it != particle_to_anchor_probabilities_.end(); it++) {
+    out<<it->first->get_name();//<<" : "<<it->second<<std::endl;
+  }
 }
 
 
