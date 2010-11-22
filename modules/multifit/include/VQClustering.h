@@ -14,7 +14,7 @@
 #include "ClusteringEngine.h"
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
-class VQClustering : public ClusteringEngine {
+class IMPMULTIFITEXPORT VQClustering : public ClusteringEngine {
 public:
   VQClustering();
   VQClustering(DataPoints *data, int k);

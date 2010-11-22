@@ -3,28 +3,28 @@ namespace IMP::multifit {
 }
 /* Make selected classes extensible in Python */
 IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
-IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
+#IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
 
 /* Wrap our own classes */
 #%include "IMP/multifit/density_analysis.h"
 %include "IMP/multifit/weighted_excluded_volume.h"
-%include "IMP/multifit/sampling_space.h"
+#%include "IMP/multifit/sampling_space.h"
 %include "IMP/multifit/FittingSolutionRecord.h"
 %include "IMP/multifit/m_rigid_fitting.h"
 %include "IMP/multifit/SettingsData.h"
-%include "IMP/multifit/DataContainer.h"
-%include "IMP/multifit/sampling_space_utils.h"
-%include "IMP/multifit/restraints_utils.h"
+#%include "IMP/multifit/DataContainer.h"
+#%include "IMP/multifit/sampling_space_utils.h"
+#%include "IMP/multifit/restraints_utils.h"
 %include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 %include "IMP/multifit/FFTFitting.h"
 %include "IMP/multifit/density_analysis.h"
-%include "IMP/multifit/anchor_graph.h"
+IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
 namespace IMP {
  namespace multifit {
    %template(FittingSolutionRecords) ::std::vector< IMP::multifit::FittingSolutionRecord >;
   }
 }
-%include "IMP/multifit/SingleDominoRun.h"
+#%include "IMP/multifit/SingleDominoRun.h"
 %include "IMP/multifit/fitting_solutions_reader_writer.h"
 %include "IMP/multifit/fitting_tools.h"
-
+%include "IMP/multifit/anchor_graph.h"
