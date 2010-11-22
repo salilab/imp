@@ -36,6 +36,33 @@ IMPBULLET_BEGIN_NAMESPACE
 
 #define IMP_BNEW(Name, name, args) boost::scoped_ptr<Name> name(new Name args);
 namespace {
+  ObjectKey surface_key("bullet rigid body surface");
+  class IMPBULLETEXPORT SurfaceMeshObject: public Object {
+    //const algebra::Vector3Ds vertices_;
+    //const std::vector<Ints> faces_;
+    const std::pair<std::vector<btScalar>, Ints> btg_;
+  public:
+    SurfaceMeshObject(const algebra::Vector3Ds &vertices,
+                      const std::vector<Ints> &faces):
+      Object("Surface mesh for bullet"),
+      btg_(internal::get_as_bt(vertices, faces)){}
+    /*const algebra::Vector3Ds& get_vertices() const {
+      return vertices_;
+    }
+    const std::vector<Ints>& get_faces() const {
+      return faces_;
+      }*/
+    const std::vector<btScalar> &get_coordinates() const {
+      return btg_.first;
+    }
+    const Ints& get_faces() const {
+      return btg_.second;
+    }
+    IMP_OBJECT(SurfaceMeshObject);
+  };
+
+  void SurfaceMeshObject::do_show(std::ostream &out) const {
+  }
 
   const double damping=1;
   btRigidBody *add_endpoint(btRigidBody *rb,
@@ -196,27 +223,33 @@ namespace {
     } else {
       mass=0;
     }
-    //std::cout << "Mass of " << p->get_name() << " is " << mass << std::endl;
-    std::vector<btVector3> centers;
-    std::vector<btScalar> radii;
-    std::vector<algebra::Sphere3D> spheres;
-    for (unsigned int i=0; i< rp.size(); ++i) {
-      core::XYZR dc(rp[i]);
-      centers.push_back(internal::tr(dc.get_coordinates()));
-      radii.push_back(dc.get_radius());
-      spheres.push_back(dc.get_sphere());
+    if (!p->has_attribute(surface_key)) {
+      //std::cout << "Mass of " << p->get_name() << " is " << mass << std::endl;
+      std::vector<btVector3> centers;
+      std::vector<btScalar> radii;
+      std::vector<algebra::Sphere3D> spheres;
+      for (unsigned int i=0; i< rp.size(); ++i) {
+        core::XYZR dc(rp[i]);
+        centers.push_back(internal::tr(dc.get_coordinates()));
+        radii.push_back(dc.get_radius());
+        spheres.push_back(dc.get_sphere());
+      }
+      std::pair<algebra::Vector3Ds, std::vector<Ints> > impfaces
+        = IMP::cgal::internal::get_skin_surface(spheres);
+      Pointer<SurfaceMeshObject> smo= new SurfaceMeshObject(impfaces.first,
+                                                            impfaces.second);
+      p->add_attribute(surface_key, smo);
+      IMP::core::add_rigid_body_cache_key(surface_key);
     }
-    std::pair<algebra::Vector3Ds, std::vector<Ints> > impfaces
-      = IMP::cgal::internal::get_skin_surface(spheres);
-    memory.geometry.push_back(new std::pair<std::vector<btScalar>,
-                               Ints>(internal::get_as_bt(impfaces.first,
-                                                         impfaces.second)));
+    SurfaceMeshObject *smo
+      = dynamic_cast<SurfaceMeshObject*>(p->get_value(surface_key));
+    memory.geometry.push_back( smo );
     btTriangleIndexVertexArray *arr
-      =new btTriangleIndexVertexArray(memory.geometry.back().second.size()/3,
-                                      &memory.geometry.back().second[0],
+      =new btTriangleIndexVertexArray(smo->get_faces().size()/3,
+                                      const_cast<int*>(&smo->get_faces()[0]),
                                       3*sizeof(int),
-                                      memory.geometry.back().first.size()/3,
-                                      &memory.geometry.back().first[0],
+                                      smo->get_coordinates().size()/3,
+                            const_cast<btScalar*>(&smo->get_coordinates()[0]),
                                       3*sizeof(btScalar));
     memory.meshes.push_back(arr);
     btGImpactMeshShape *mesh= new btGImpactMeshShape(&memory.meshes.back());

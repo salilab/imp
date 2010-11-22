@@ -82,6 +82,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   } else {
     RigidBodyHierarchy *h= new RigidBodyHierarchy(rb);
     rb.get_particle()->add_cache_attribute(k, h);
+    add_rigid_body_cache_key(k);
     return h;
   }
 }

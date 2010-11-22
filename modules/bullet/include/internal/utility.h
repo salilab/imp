@@ -63,7 +63,7 @@ typedef IMP::internal::Map<double, btCollisionShape*> SpheresMap;
 
 struct Memory {
   boost::ptr_vector<btTriangleIndexVertexArray> meshes;
-  boost::ptr_vector<std::pair<std::vector<btScalar>, Ints> > geometry;
+  Objects geometry;
   boost::ptr_vector<btCollisionShape > shapes;
   boost::ptr_vector<btMotionState > motion_states;
   boost::ptr_vector<btRigidBody > rigid_bodies;
