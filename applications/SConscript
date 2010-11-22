@@ -1,6 +1,7 @@
 Import('env')
 
 applications=['foxs',
+              'saxs_tools',
               'em_tools',
               'ligand_score']
 
