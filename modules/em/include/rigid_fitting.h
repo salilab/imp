@@ -79,6 +79,12 @@ public:
     for(unsigned int i=0;i<fs_.size();i++) all_ts.push_back(fs_[i].first);
     return all_ts;
   }
+  void show(std::ostream& out=std::cout) const {
+    for(std::vector<FittingSolution>::const_iterator it = fs_.begin();
+        it != fs_.end(); it++) {
+      out<<"("<<it->first<<" , "<<it->second<<")"<<std::endl;
+    }
+  }
 protected:
   std::vector<FittingSolution> fs_;
 };
@@ -246,6 +252,9 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
                         is rotated. This option significantly improves the
                         running times but the returned scores are less accurate
 \param[in] transformations   A set of rigid transformations
+\param[in] fast_version  if true the density map of each transformation
+                         is interpolated
+\param[in] local_score if true a local cross correlation score is used
 \return The scored fitting solutions
 \note the function assumes the density map holds its density
  */
@@ -253,8 +262,7 @@ IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
    DensityMap *em_map,
    const FloatKey &rad_key, const FloatKey &wei_key,
    const algebra::Transformation3Ds& transformations,
-   bool fast_version=false);
-
+   bool fast_version=false, bool local_score=false);
 
 
 //! Compute fitting scores for a given set of rigid transformations

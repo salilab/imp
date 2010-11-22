@@ -285,7 +285,8 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
   const FloatKey &rad_key, const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
-  bool fast_version) {
+                                        bool fast_version,
+                                        bool local) {
   FittingSolutions fr;
   IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
          (*(em_map->get_header())));
@@ -317,9 +318,16 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
         model_dens_map2->resample();
         model_dens_map2->calcRMS();
         float threshold = model_dens_map2->get_header()->dmin-EPS;
+        if (!local) {
         score  = 1.-
           CoarseCC::cross_correlation_coefficient(em_map,
              model_dens_map2,threshold,true);
+        }
+        else {
+        score  = 1.-
+          CoarseCC::local_cross_correlation_coefficient(em_map,
+             model_dens_map2,threshold);
+        }
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it,score);
       }
