@@ -21,7 +21,7 @@ FittingSolutionRecords get_close_to_point(
   for(FittingSolutionRecords::const_iterator it = fit_sols.begin();
       it != fit_sols.end();it++) {
     if (IMP::algebra::get_squared_distance(
-      it->get_transformation().get_transformed(mh_centroid),
+      it->get_fit_transformation().get_transformed(mh_centroid),
       ap_centroid) < dist2) {
       pruned_fit_sols.push_back(*it);
     }
