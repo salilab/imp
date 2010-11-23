@@ -41,12 +41,12 @@ class IMPData:
     class ModuleData:
         def __init__(self, name, dependencies=[], unfound_dependencies=[], modules=[],
                      python_modules=[], version="", ok=True):
+            self.build=[]
             if ok:
                 self.dependencies=dependencies
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
                 self.python_modules=python_modules
-                self.build=[]
                 if name=="kernel":
                     self.path=""
                     self.nicename="IMP"

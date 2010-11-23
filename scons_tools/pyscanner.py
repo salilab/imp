@@ -19,6 +19,7 @@ from SCons.Script import Scanner, Dir, FindPathDirs, File
 import SCons.Node.FS
 import bug_fixes
 import data
+import utility
 import os
 import re
 
@@ -41,7 +42,10 @@ def _find_python_module(env, modname, dirs):
     else:
         nm=modname[modname.find('.')+1:]
     if data.get(env).modules.has_key(nm):
-        ret+= [x.abspath for x in data.get(env).modules[nm].build]
+        if data.get(env).modules[nm].ok:
+            ret+= [x.abspath for x in data.get(env).modules[nm].build]
+        else:
+            pass
     return ret
 
 def _scanfile(node, env, path):
