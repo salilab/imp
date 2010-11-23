@@ -198,7 +198,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     // and store
     coarse_RRs[j]=projection_result;
     IMP_LOG(IMP::VERBOSE,
-            "Coarse registration: " << coarse_RRs[j] << std::endl;)
+            "Coarse registration: " << coarse_RRs[j] << std::endl)
     if(RA.second>max_ccc) {
       max_ccc = RA.second;
       best_2d_transformation =  RA.first;
