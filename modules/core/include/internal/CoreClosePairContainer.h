@@ -31,7 +31,6 @@ public internal::ListLikePairContainer
   ParticlesTemp previous_moved_;
   bool first_call_;
   double distance_, slack_;
-  bool is_static_;
   IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
@@ -44,7 +43,6 @@ public:
            PairFilter*, PairFilters);
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
-    if (is_static_) return true;
     if (get_model()->get_stage() != Model::NOT_EVALUATING) {
       return get_last_update_evaluation() == get_model()->get_evaluation();
     } else {
@@ -58,6 +56,7 @@ public:
   }
 #endif
 public:
+  double get_distance() const {return distance_;}
   virtual std::string get_type_name() const {return "CoreClosePairContainer";}
   virtual ::IMP::VersionInfo get_version_info() const {
     return get_module_version_info();
@@ -66,9 +65,9 @@ public:
     do_before_evaluate();
   }
   SingletonContainer*get_singleton_container() const {return c_;}
-  void set_is_static(bool t, const algebra::BoundingBox3Ds &bbs);
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
+  ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   void set_slack(double d);
   IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CoreClosePairContainer);
