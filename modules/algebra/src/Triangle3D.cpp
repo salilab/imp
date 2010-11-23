@@ -38,7 +38,7 @@ Floats Triangle3D::get_edge_lengths()const {
   return lens;
 }
 
-Triangle3D get_bounding_triangle(const Vector3Ds &points) {
+Triangle3D get_largest_triangle(const Vector3Ds &points) {
    double max_dist = 0;
    Vector3Ds triple(3);
    for (unsigned int i = 0 ; i < points.size() ; i++) {
