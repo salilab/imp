@@ -17,6 +17,11 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/domino/particle_states.h>
+#include <IMP/core/GridClosePairsFinder.h>
+#include <IMP/core/ClosePairsPairScore.h>
+#include <IMP/container/PairsRestraint.h>
+#include <IMP/core/TableRefiner.h>
+#include <IMP/core/PairRestraint.h>
 
 
 IMP_BEGIN_NAMESPACE
@@ -39,29 +44,149 @@ namespace {
 }
 
 namespace {
-  void optimize_restraint(Restraint *r, RestraintSet *p,
+
+  /*
+ParticlesTemp pt= c_->get_particles();
+    // we don't want the slack any more
+    cpf_->set_distance(distance_);
+    IntPairs ips= cpf_->get_close_pairs(bbs);
+    cpf_->set_distance(distance_+2*slack_);
+    ParticlePairsTemp val(ips.size());
+    for (unsigned int i=0; i< ips.size(); ++i) {
+      val[i]= ParticlePair(pt[ips[i].first], pt[ips[i].second]);
+    }
+    update_list(val);
+   */
+
+  ParticlePairsTemp
+  get_static_pairs(core::internal::CoreClosePairContainer *cpc,
+                   const ParticleStatesTable *pst) {
+    const ParticlesTemp optimized= pst->get_particles();
+    ParticleStatesList psl(optimized.size());
+    unsigned int max=0;
+    for (unsigned int i=0; i< optimized.size(); ++i) {
+      psl[i]= pst->get_particle_states(optimized[i]);
+      max= std::max(psl[i]->get_number_of_particle_states(), max);
+    }
+    ParticlesTemp inputs
+      = cpc->get_singleton_container()->get_contained_particles();
+    algebra::BoundingBox3Ds bbs(inputs.size());
+    for (unsigned int i=0; i< max; ++i) {
+      for (unsigned int j=0; j< optimized.size(); ++j) {
+        psl[j]->load_particle_state(std::min(i,
+                       psl[j]->get_number_of_particle_states()-1),
+                                      optimized[j]);
+      }
+      // make sure invariants are updated
+      cpc->get_model()->update();
+      for (unsigned int j=0; j< inputs.size(); ++j) {
+        core::XYZ d(inputs[j]);
+        bbs[j]+= d.get_coordinates();
+      }
+    }
+    for (unsigned int j=0; j< inputs.size(); ++j) {
+      core::XYZR d(inputs[j]);
+      bbs[j]+= d.get_radius() + cpc->get_distance();
+    }
+    IMP_NEW(core::GridClosePairsFinder, gcpf, ());
+    gcpf->set_distance(cpc->get_distance());
+    core::IntPairs ips= gcpf->get_close_pairs(bbs);
+    ParticlePairsTemp ret(ips.size());
+    for (unsigned int i=0; i< ips.size(); ++i) {
+      ret[i]= ParticlePair(inputs[ips[i].first], inputs[ips[i].second]);
+    }
+    return ret;
+  }
+
+  bool handle_nbl(Restraint *r, RestraintSet *p,
                           const DependencyGraph &dg,
                           const IMP::internal::Map<Object*,
                           unsigned int> &index,
-                          const ParticlesTemp &pst,
+                          const ParticleStatesTable *pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
                           boost::ptr_vector<ScopedRestraint> &added) {
+    container::PairsRestraint *pr= dynamic_cast<container::PairsRestraint*>(r);
+    if (!pr) return false;
+    core::internal::CoreClosePairContainer *cpc
+  = dynamic_cast<core::internal::CoreClosePairContainer*>(pr->get_container());
+    if (!cpc) return false;
+    PairScore *ssps= pr->get_score();
+    ParticlePairsTemp pairs= get_static_pairs(cpc, pst);
+
+    IMP::internal::Map<Particle*, ParticlesTemp> rbs;
+    ParticlePairsTemp rb_pairs;
+    ParticlePairsTemp stray_pairs;
+    for (unsigned int i=0; i< pairs.size(); ++i) {
+      bool rb=false;
+      Particle *p0, *p1;
+      if (core::RigidMember::particle_is_instance(pairs[i][0])) {
+        rb=true;
+        p0= core::RigidMember(pairs[i][0]).get_rigid_body();
+        rbs[p0].push_back(pairs[i][0]);
+      } else {
+        p0= pairs[i][0];
+      }
+      if (core::RigidMember::particle_is_instance(pairs[i][1])) {
+        rb=true;
+        p1= core::RigidMember(pairs[i][1]).get_rigid_body();
+        rbs[p1].push_back(pairs[i][1]);
+      } else {
+        p1= pairs[i][1];
+      }
+      if (!rb) {
+        stray_pairs.push_back(ParticlePair(p0, p1));
+      } else {
+        rb_pairs.push_back(ParticlePair(p0, p1));
+      }
+    }
+    if (!rbs.empty()) {
+      IMP_NEW(core::TableRefiner, tr, ());
+      for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator
+             it= rbs.begin();
+           it != rbs.end(); ++it) {
+        tr->add_particle(it->first, it->second);
+      }
+      std::sort(rb_pairs.begin(), rb_pairs.end());
+      rb_pairs.erase(std::unique(rb_pairs.begin(), rb_pairs.end()),
+                     rb_pairs.end());
+      IMP_NEW(core::ClosePairsPairScore, cpps, (ssps, tr, cpc->get_distance()));
+      for (unsigned int i=0; i< rb_pairs.size(); ++i) {
+        std::ostringstream oss;
+        oss << r->get_name() << " rb " << i;
+        IMP_NEW(core::PairRestraint, pr, (cpps, rb_pairs[i]));
+        added.push_back(new ScopedRestraint(pr, p));
+      }
+    }
+
+    for (unsigned int i=0; i< stray_pairs.size(); ++i) {
+      std::ostringstream oss;
+      oss << r->get_name() << " " << i;
+      IMP_NEW(core::PairRestraint, npr, (ssps, stray_pairs[i]));
+      npr->set_name(oss.str());
+      added.push_back(new ScopedRestraint(npr, p));
+    }
+    removed.push_back(new ScopedRemoveRestraint(r, p));
+    return true;
+  }
+
+  bool handle_decomposable(Restraint *r, RestraintSet *p,
+                           const DependencyGraph &dg,
+                           const IMP::internal::Map<Object*,
+                                                    unsigned int> &index,
+                           const ParticleStatesTable *pst,
+                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
+                           boost::ptr_vector<ScopedRestraint> &added) {
     // containers can be particles, skip them if they are input particles
     ContainersTemp ic= r->get_input_containers();
+    ParticlesTemp optimized= pst->get_particles();
+    std::sort(optimized.begin(), optimized.end());
     for (unsigned int i=0; i< ic.size(); ++i) {
-      bool found=false;
-      for (unsigned int j=0; j< pst.size(); ++j){
-        if (pst[j]==ic[i]) {
-          found=true;
-          break;
-        }
-      }
-      if (!found) {
+      if (!std::binary_search(optimized.begin(), optimized.end(), ic[i])) {
         int start=index.find(ic[i])->second;
-        if (IMP::internal::get_has_ancestor(dg, start, pst)) {
+        if (IMP::internal::get_has_ancestor(dg, start, optimized)) {
           IMP_LOG(TERSE, "Container " << ic[i]->get_name()
                   << " has an optimized anscestor" << std::endl);
-          return;
+          return false;
         }
       }
     }
@@ -82,13 +207,32 @@ namespace {
       added.push_back(new ScopedRestraint(rss, p));
     } else {
     }
+    return true;
+  }
+
+
+
+  void optimize_restraint(Restraint *r, RestraintSet *p,
+                          const DependencyGraph &dg,
+                          const IMP::internal::Map<Object*,
+                          unsigned int> &index,
+                          const ParticleStatesTable *pst,
+                          boost::ptr_vector<ScopedRemoveRestraint> &removed,
+                          boost::ptr_vector<ScopedRestraint> &added) {
+    if (handle_nbl(r, p, dg, index, pst, removed, added)) {
+      return;
+    } else if (handle_decomposable(r, p, dg, index, pst, removed, added)) {
+      return;
+    } else {
+      return;
+    }
   }
 
   void optimize_restraint_parent(RestraintSet *p,
                                  const DependencyGraph &dg,
                                  const IMP::internal::Map<Object*,
                                  unsigned int> &index,
-                                 const ParticlesTemp &pst,
+                                 const ParticleStatesTable *pst,
                            boost::ptr_vector<ScopedRemoveRestraint> &removed,
                                  boost::ptr_vector<ScopedRestraint> &added) {
     Restraints all(p->restraints_begin(), p->restraints_end());
@@ -105,67 +249,13 @@ namespace {
       }
     }
   }
-
-  void make_static_cpc(core::internal::CoreClosePairContainer *cpc,
-                       const ParticlesTemp &optimized,
-                       const ParticleStatesTable *pst,
-                       core::internal::CoreClosePairContainers &staticed) {
-    IMP_LOG(TERSE, "Making container \"" << cpc->get_name()
-            << "\" static " << std::endl);
-    ParticleStatesList psl(optimized.size());
-    unsigned int max=0;
-    for (unsigned int i=0; i< optimized.size(); ++i) {
-      psl[i]= pst->get_particle_states(optimized[i]);
-      max= std::max(psl[i]->get_number_of_particle_states(), max);
-    }
-    ParticlesTemp inputs
-      = cpc->get_singleton_container()->get_contained_particles();
-    algebra::BoundingBox3Ds bbs(inputs.size());
-    for (unsigned int i=0; i< max; ++i) {
-      for (unsigned int j=0; j< optimized.size(); ++j) {
-        psl[j]->load_particle_state(std::min(i,
-                    psl[j]->get_number_of_particle_states()-1),
-                           optimized[j]);
-      }
-      // make sure invariants are updated
-      cpc->get_model()->update();
-      for (unsigned int j=0; j< inputs.size(); ++j) {
-        core::XYZ d(inputs[j]);
-        bbs[j]+= d.get_coordinates();
-      }
-    }
-    for (unsigned int j=0; j< inputs.size(); ++j) {
-      core::XYZR d(inputs[j]);
-      bbs[j]+= d.get_radius();
-    }
-    cpc->set_is_static(true, bbs);
-    staticed.push_back(cpc);
-    IMP_LOG(VERBOSE, cpc->get_number_of_particle_pairs()
-            << "pairs" << std::endl);
-  }
-
-  void optimize_container_parent(RestraintSet *p,
-                                 const DependencyGraph &dg,
-                                 const ParticlesTemp &optimized,
-                                 const ParticleStatesTable *pst,
-                   core::internal::CoreClosePairContainers &staticed) {
-    DGConstVertexMap pm=boost::get(boost::vertex_name, dg);
-    ParticlesTemp particles=pst->get_particles();
-    for (std::pair< DGTraits::vertex_iterator,
-            DGTraits::vertex_iterator> be
-           = boost::vertices(dg); be.first != be.second; ++be.first) {
-      core::internal::CoreClosePairContainer *cpc
-        = dynamic_cast<core::internal::CoreClosePairContainer*>(pm[*be.first]);
-      if (cpc && IMP::internal::get_has_ancestor(dg, *be.first, particles)) {
-        make_static_cpc(cpc, optimized,pst, staticed);
-      }
-    }
-  }
 }
 
 
+
+
 void OptimizeRestraints::optimize_model(RestraintSet *m,
-                                        const ParticlesTemp &particles) {
+                                        const ParticleStatesTable *pst) {
   IMP::internal::Map<Object*, unsigned int> index;
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
@@ -178,25 +268,8 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
   }
   optimize_restraint_parent(m,
                             dg, index,
-                            particles, removed_,  added_);
+                            pst, removed_,  added_);
 }
-
-
-
-void OptimizeContainers::optimize_model(RestraintSet *m,
-                                        const ParticleStatesTable *pst) {
-  optimize_container_parent(m,
-                            get_dependency_graph(get_restraints(m)),
-                            pst->get_particles(), pst, staticed_);
-}
-
-void OptimizeContainers::unoptimize_model() {
-  for (unsigned int i=0; i< staticed_.size(); ++i) {
-    staticed_[i]->set_is_static(false, algebra::BoundingBox3Ds());
-  }
-}
-
-
 
 
 IMPDOMINO_END_NAMESPACE

@@ -30,10 +30,6 @@ class DOMINOTests(IMP.test.TestCase):
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         dg.show()
         print "optimizing"
-        doc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
-        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        #dg.show()
-        print "before"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         dor= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         print "after"
@@ -74,10 +70,6 @@ class DOMINOTests(IMP.test.TestCase):
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
         #dg.show_dotty()
         print "optimizing"
-        doc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
-        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        #dg.show_dotty()
-        print "before"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
         dor= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         print "after"
