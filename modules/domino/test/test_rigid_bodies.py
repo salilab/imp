@@ -105,7 +105,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(r)
         m.set_maximum_score(r, .5)
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        dg.show_dotty()
+        #dg.show_dotty()
         pst= IMP.domino.ParticleStatesTable()
         pstate= IMP.domino.RigidBodyStates(trs)
         pst.set_particle_states(rbs[0], pstate)
