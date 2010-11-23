@@ -62,7 +62,7 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 
 
 //! Class for handling density maps.
-/** /note The location of a voxel is its center. That is important
+/** \note The location of a voxel is its center. That is important
      for sampling function as well as for functions
      like get_location_in_dim_by_voxel.
  */

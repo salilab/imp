@@ -959,32 +959,36 @@ void get_transformed_into(const DensityMap *from,
 }
 
 DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
-  DensityMap *new_dmap = new DensityMap(header_);
-  //  IMP_NEW(DensityMap,new_dmap,(header_));
+  Pointer<DensityMap> ret(new DensityMap(header_));
   //calculate the new extent
   int new_ext[3];
   new_ext[0]=header_.get_nx()+mrg_x*2;
   new_ext[1]=header_.get_ny()+mrg_y*2;
   new_ext[2]=header_.get_nz()+mrg_z*2;
-  new_dmap->set_void_map(new_ext[0],new_ext[1],new_ext[2]);
-  new_dmap->set_origin(
+  ret->set_void_map(new_ext[0],new_ext[1],new_ext[2]);
+  ret->set_origin(
     get_origin()-header_.get_spacing()*algebra::Vector3D(mrg_x,mrg_y,mrg_z));
-  const DensityHeader *new_header = new_dmap->get_header();
+  const DensityHeader *new_header = ret->get_header();
   long z_term_curr,z_term_new,zy_term_curr,zy_term_new,curr_ind,new_ind;
+  int nxny=header_.get_nx()*header_.get_ny();
+  int n_nxny=new_header->get_ny()*new_header->get_nx();
+  int nx=header_.get_nx();
+  int n_nx=new_header->get_nx();
+  emreal *new_data = ret->get_data();
   for(int iz=0;iz<header_.get_nz();iz++){ //z slowest
-    z_term_curr = iz*header_.get_nx()*header_.get_ny();
-    z_term_new = (iz+mrg_z)*new_header->get_nx()*new_header->get_ny();
+    z_term_curr = iz*nxny;
+    z_term_new = (iz+mrg_z)*n_nxny;
     for(int iy=0;iy<header_.get_ny();iy++){
-      zy_term_curr = iy*header_.get_nx() + z_term_curr;
-      zy_term_new = (iy+mrg_y)*new_header->get_nx() + z_term_new;
-      for(int ix=0;ix<header_.get_nx();ix++){
+      zy_term_curr = iy*nx + z_term_curr;
+      zy_term_new = (iy+mrg_y)*n_nx + z_term_new;
+      for(int ix=0;ix<nx;ix++){
         curr_ind = zy_term_curr+ix;
         new_ind = zy_term_new+ix+mrg_x;
-        new_dmap->set_value(new_ind,get_value(curr_ind));
+        new_data[new_ind]=data_[curr_ind];
       }
     }
   }
-  return new_dmap;
+  return ret.release();
 }
 // statistics::Histogram
 // get_density_histogram(const DensityMap *dmap, float threshold,
