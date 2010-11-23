@@ -114,29 +114,29 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
     try {
       throw;
     /* Map std:: exceptions to IMP equivalents */
-    } catch (std::out_of_range &e) {
+    } catch (const std::out_of_range &e) {
       PyErr_SetString(imp_index_exception, e.what());
-    } catch (std::domain_error &e) {
+    } catch (const std::domain_error &e) {
       PyErr_SetString(imp_value_exception, e.what());
-    } catch (std::ios::failure &e) {
+    } catch (const std::ios::failure &e) {
       PyErr_SetString(imp_io_exception, e.what());
-    } catch (std::length_error &e) {
+    } catch (const std::length_error &e) {
       /* Internal error, such as attempt to resize a vector beyond max size */
       PyErr_SetString(imp_internal_exception, e.what());
     /* Map IMP exceptions to Python objects */
-    } catch (IMP::IndexException &e) {
+    } catch (const IMP::IndexException &e) {
       PyErr_SetString(imp_index_exception, e.what());
-    } catch (IMP::ValueException &e) {
+    } catch (const IMP::ValueException &e) {
       PyErr_SetString(imp_value_exception, e.what());
-    } catch (IMP::InternalException &e) {
+    } catch (const IMP::InternalException &e) {
       PyErr_SetString(imp_internal_exception, e.what());
-    } catch (IMP::ModelException &e) {
+    } catch (const IMP::ModelException &e) {
       PyErr_SetString(imp_model_exception, e.what());
-    } catch (IMP::UsageException &e) {
+    } catch (const IMP::UsageException &e) {
       PyErr_SetString(imp_usage_exception, e.what());
-    } catch (IMP::IOException &e) {
+    } catch (const IMP::IOException &e) {
       PyErr_SetString(imp_io_exception, e.what());
-    } catch (IMP::Exception &e) {
+    } catch (const IMP::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
     /* Map Boost exceptions to Python exceptions */
 #ifdef IMP_USE_BOOST_FILESYSTEM
@@ -144,9 +144,15 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
       PyErr_SetString(imp_io_exception, e.what());
 #endif
     /* Catch memory allocation errors, if raised */
-    } catch (std::bad_alloc &e) {
+    } catch (const std::bad_alloc &e) {
       PyErr_SetString(PyExc_MemoryError, e.what());
     /* Catch any other exceptions raised */
+    } catch (const std::exception &e) {
+      PyErr_SetString(PyExc_RuntimeError,
+                      e.what());
+    } catch (const boost::exception &e) {
+      PyErr_SetString(PyExc_RuntimeError,
+                      "Unknown error in boost caught by Python wrapper");
     } catch (...) {
       PyErr_SetString(PyExc_RuntimeError,
                       "Unknown error caught by Python wrapper");
