@@ -80,7 +80,6 @@ class DOMINOTests(IMP.test.TestCase):
         pst.set_particle_states(rbs[0], pstate)
         pst.set_particle_states(rbs[1], pstate)
         pst.set_particle_states(rbs[2], pstate)
-        oc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
         occ= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         allr= IMP.get_restraints(m.get_root_restraint_set())
         for r in allr:
@@ -111,7 +110,6 @@ class DOMINOTests(IMP.test.TestCase):
         pst.set_particle_states(rbs[0], pstate)
         pst.set_particle_states(rbs[1], pstate)
         pst.set_particle_states(rbs[2], pstate)
-        oc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
         occ= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         allr= IMP.get_restraints(m.get_root_restraint_set())
         for r in allr:

@@ -126,7 +126,6 @@ Subsets get_subsets(const SubsetGraph &g){
 
 SubsetGraph get_restraint_graph(RestraintSet *irs,
                                 const ParticleStatesTable *pst) {
-  OptimizeContainers co(irs, pst);
   OptimizeRestraints ro(irs, pst);
   RestraintsTemp rs= get_restraints(irs);
   //ScoreStatesTemp ss= get_required_score_states(rs);

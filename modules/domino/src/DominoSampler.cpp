@@ -63,8 +63,7 @@ SubsetStates DominoSampler
           << " particles as " << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
-  OptimizeContainers co(rs, get_particle_states_table());
-  OptimizeRestraints ro(rs, get_particle_states_table());
+    OptimizeRestraints ro(rs, get_particle_states_table());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
   SubsetGraph jt;
   if (has_sg_) {

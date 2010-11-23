@@ -33,23 +33,20 @@ IMPDOMINO_BEGIN_NAMESPACE
     DominoSampler. Transformations include
     - replacing certain container::PairsRestraint and
       container::SingletonsRestraint objects by a set a set of
-      core::PairRestraint or core::SingletonRestraint objects
-    \throw ModelException if the model contains any non-static
-    containers other than container::ClosePairContainer and its
-    ilk. Examples include container::ConnectedPairContainer.
+      core::PairRestraint or core::SingletonRestraint objects.
 */
 class IMPDOMINOEXPORT OptimizeRestraints {
   boost::ptr_vector<ScopedRemoveRestraint> removed_;
   boost::ptr_vector<ScopedRestraint> added_;
   Pointer<RestraintSet> m_;
 
-  void optimize_model(RestraintSet *m, const ParticlesTemp &particles);
+  void optimize_model(RestraintSet *m, const ParticleStatesTable *particles);
 public:
   IMP_RAII(OptimizeRestraints, (RestraintSet *m,
                                 const ParticleStatesTable *pst), {},
            {
              m_=m;
-             optimize_model(m, pst->get_particles());
+             optimize_model(m, pst);
            },
            {
              if (m_&& m_->get_is_part_of_model()) {
@@ -60,36 +57,6 @@ public:
            });
 };
 
-/** The class temporarily transforms the
-    containers in a model to make it better suited for the
-    DominoSampler. Transformations include
-    - replacing container::ClosePairContainer and
-      core::ExcludedVolumeRestraint by a static interaction list based
-      on the ParticleStatesTable.
-    \throw ModelException if the model contains any non-static
-    containers other than container::ClosePairContainer and its
-    ilk. Examples include container::ConnectedPairContainer.
-*/
-class IMPDOMINOEXPORT OptimizeContainers {
-  core::internal::CoreClosePairContainers staticed_;
-  Pointer<RestraintSet> m_;
-
-  void optimize_model(RestraintSet *m, const ParticleStatesTable *pst);
-  void unoptimize_model();
-public:
-  IMP_RAII(OptimizeContainers, (RestraintSet *m,
-                                const ParticleStatesTable *pst), {},
-           {
-             m_=m;
-             optimize_model(m, pst);
-           },
-           {
-             if (m_ && m_->get_is_part_of_model()) {
-               unoptimize_model();
-               m_=NULL;
-             }
-           });
-};
 /**@} */
 
 IMPDOMINO_END_NAMESPACE
