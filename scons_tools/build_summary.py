@@ -22,7 +22,10 @@ def _bf_to_str(bf):
                 return bf.filename
         except:
             pass
-        return 'unknown failure: ' + bf.errstr
+        try:
+            return 'unknown failure: ' + bf.errstr
+        except:
+            return 'really unknown failure: ' + str(bf)
 
 def _list(env, name, table):
     ok=[]
