@@ -250,7 +250,7 @@ get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
   std::vector<Weighted_point> l(ss.size());
   for (unsigned int i=0; i< ss.size(); ++i) {
     l[i]= Weighted_point(tr<IKernel>(ss[i].get_center()),
-                         (ss[i].get_radius()));
+                         square(ss[i].get_radius()));
   }
   CGAL::Polyhedron_3<IKernel> p;
   CGAL::Union_of_balls_3<CGAL::Skin_surface_traits_3<IKernel> >
