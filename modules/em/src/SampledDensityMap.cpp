@@ -80,6 +80,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   ps_=ps;
   xyzr_=IMP::core::XYZRs(ps_,radius_key_);
   determine_grid_size(resolution,voxel_size,sig_cutoff);
+  header_.set_resolution(resolution);
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
   distance_mask_ = DistanceMask(&header_);
