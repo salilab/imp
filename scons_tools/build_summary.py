@@ -11,11 +11,18 @@ def _bf_to_str(bf):
         return '(unknown tgt)'
     elif isinstance(bf, SCons.Errors.StopError):
         return str(bf)
-    elif bf.node:
-        return str(bf.node)
-    elif bf.filename:
-        return bf.filename
-    return 'unknown failure: ' + bf.errstr
+    else:
+        try:
+            if bf.node:
+                return str(bf.node)
+        except:
+            pass
+        try:
+            if bf.filename:
+                return bf.filename
+        except:
+            pass
+        return 'unknown failure: ' + bf.errstr
 
 def _list(env, name, table):
     ok=[]
