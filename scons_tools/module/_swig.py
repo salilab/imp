@@ -69,8 +69,10 @@ def _action_swig_file(target, source, env):
 
 %%module(directors="1") "%s"
 %%{
+#include <boost/exception/all.hpp>
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
+#include <exception>
 #include "IMP.h"
 #include "IMP/internal/swig_helpers.h"
 #include "IMP/internal/swig.h"
