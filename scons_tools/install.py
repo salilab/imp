@@ -126,6 +126,7 @@ def install(env, target, source, **keys):
     inst= env.Install(installpath, source, **keys)
     ret.append(inst[0])
     data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
+    data.get(env).add_to_alias("install", inst)
     return ret
 
 def install_as(env, target, source, **keys):
