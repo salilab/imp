@@ -234,11 +234,14 @@ void ProjectionFinder::get_coarse_registration() {
               ValueException);
   }
   /***** Computation ********/
-  boost::timer coarse_registration_timer;
+  coarse_registration_time_ = 0;
 //  boost::progress_display show_progress(subjects_.size());
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults coarse_RRs(projections_.size());
+    boost::timer timer_coarse_subject;
     get_coarse_registrations_for_subject(i,coarse_RRs);
+    coarse_registration_time_ += timer_coarse_subject.elapsed();
+
     std::sort(coarse_RRs.begin(),coarse_RRs.end(),has_higher_ccc);
     // Best result
     registration_results_[i]=coarse_RRs[0];
@@ -247,7 +250,6 @@ void ProjectionFinder::get_coarse_registration() {
                       << registration_results_[i] << std::endl);
 //    ++show_progress;
   }
-  coarse_registration_time_ = coarse_registration_timer.elapsed();
   registration_done_=true;
 }
 
@@ -292,10 +294,15 @@ void ProjectionFinder::get_complete_registration() {
   // Computation
 //   boost::progress_display show_progress(
 //                    subjects_.size()*projections_.size());
-  boost::timer fine_registration_timer;
+  coarse_registration_time_ = 0;
+  fine_registration_time_ = 0;
   for(unsigned long i=0;i<subjects_.size();++i) {
     RegistrationResults coarse_RRs(projections_.size());
+
+    boost::timer timer_coarse_subject;
     get_coarse_registrations_for_subject(i,coarse_RRs);
+    coarse_registration_time_ += timer_coarse_subject.elapsed();
+
     std::sort(coarse_RRs.begin(),coarse_RRs.end(),has_higher_ccc);
 
     unsigned int n_optimized=projections_.size();
@@ -306,7 +313,7 @@ void ProjectionFinder::get_complete_registration() {
     RegistrationResult best_fine_registration;
     best_fine_registration.set_ccc(0.0);
 
-//    registration_results_[i]=best_coarse_registration;
+    boost::timer timer_fine_subject;
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       coarse_RRs[k].set_in_image(subjects_[i]->get_header());
@@ -318,6 +325,7 @@ void ProjectionFinder::get_complete_registration() {
         best_fine_registration=fine_registration;
       }
     }
+    fine_registration_time_ += timer_fine_subject.elapsed();
     registration_results_[i]=best_fine_registration;
     IMP_LOG(IMP::TERSE,"Fine registration: "
                               << registration_results_[i] << std::endl);
@@ -333,7 +341,6 @@ void ProjectionFinder::get_complete_registration() {
     }
     // ++show_progress;
   }
-  fine_registration_time_=fine_registration_timer.elapsed();
   registration_done_=true;
 }
 

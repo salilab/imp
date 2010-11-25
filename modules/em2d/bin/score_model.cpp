@@ -51,8 +51,8 @@ po::variables_map get_parameters(int argc,char **argv) {
   po::options_description desc("Score a model with em2d.");
   desc.add_options()
     ("help", "This is the help. Variables with * are mandatory")
-    ("mod", po::value<std::string>(), "* PDB file with model")
-    ("subjs", po::value<std::string>(),
+    ("mod", po::value<str>(), "* PDB file with model")
+    ("subjs", po::value<str>(),
                                 "* File with the names of the subject images")
     ("apix", po::value<double>(),"* Pixel size of subjects in Angstroms/pixel")
     ("projs",po::value<str>(),"* Way of generating projections. \"model\" for "
@@ -61,7 +61,7 @@ po::variables_map get_parameters(int argc,char **argv) {
     ("np", po::value<unsigned long>(),"number of projections to generate")
     ("res", po::value<double>()->default_value(1),
                    "resolution for generating projections, in Angstroms")
-    ("o", po::value<std::string>(),"Redirect the screen output to this file")
+    ("o", po::value<str>(),"Redirect the screen output to this file")
     ("save_i", "Use this option to save images and matches ")
     ("simplex_min", po::value<double>()->default_value(1e-3),
                                         "Simplex size to stop optimization")
@@ -70,7 +70,7 @@ po::variables_map get_parameters(int argc,char **argv) {
     ("fast",po::value<unsigned int>()->default_value(0),"Fast mode. Optimize "
       "with Simplex only a given number of coarse results. "
       " If value is 0, all are optimized")
-    ("bm", po::value<std::string>(),
+    ("bm", po::value<str>(),
          "file with solution parameters for the subjects (benchmark purposes)")
   ;
   po::variables_map vm;
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
   }
 
  // Read images and get the sizes from the first image
-  fn_subjs = vm["subjs"].as<std::string>();
+  fn_subjs = vm["subjs"].as<str>();
   IMP_LOG(IMP::TERSE,"Reading EM subject images from "
               << fn_subjs << std::endl);
   subjs_names= em2d::read_selection_file(fn_subjs);
@@ -190,7 +190,7 @@ int main(int argc, char **argv) {
   int cols=subjects[0]->get_header().get_number_of_columns();
 
   // Read model file
-  fn_model = vm["mod"].as<std::string>();
+  fn_model = vm["mod"].as<str>();
   IMP_NEW(IMP::Model,model, ());
   atom::ATOMPDBSelector sel;
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
@@ -231,6 +231,7 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
+  boost::timer registration_timer;
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
   em2d::ProjectionFinder finder;
@@ -243,11 +244,17 @@ int main(int argc, char **argv) {
                     simplex_minimum_size);
   finder.set_model_particles(ps);
   finder.set_subjects(subjects);
-  *std::cin.tie() << "Preprocessing images " << subjects.size()
-                  << " Time: " << finder.get_preprocessing_time() <<std::endl;
+  double time_preprocess_subjects =  finder.get_preprocessing_time();
   finder.set_projections(projections);
+  double time_preprocess_projections = finder.get_preprocessing_time();
+  // Time
+  *std::cin.tie() << "Preprocessing images " << subjects.size()
+                  << " Time: " << time_preprocess_subjects <<std::endl;
   *std::cin.tie() << "Preprocessing projections: " << projections.size()
-             << " Time: " << finder.get_preprocessing_time() <<std::endl;
+             << " Time: " << time_preprocess_projections <<std::endl;
+  *std::cin.tie() << "Total preprocessing Time: "
+                  << time_preprocess_subjects+time_preprocess_projections
+                  << std::endl;
 
   if(n_coarse_results_optimized!=0) {
     *std::cin.tie() << "Set fast mode, use "
@@ -256,16 +263,16 @@ int main(int argc, char **argv) {
     finder.set_fast_mode(n_coarse_results_optimized);
   }
 
-  boost::timer registration_timer;
   unsigned int registration_option = COMPLETE_REGISTRATION;
   // unsigned int registration_option = ONLY_COARSE_REGISTRATION;
 
 
   if(registration_option==COMPLETE_REGISTRATION) {
     finder.get_complete_registration();
-    *std::cin.tie() << "Total registration time: images " << subjects.size()
-        << " projections " << projections.size()
-        << " Time: " << registration_timer.elapsed() <<std::endl;
+    *std::cin.tie() << "Coarse registration Time: "
+                    << finder.get_coarse_registration_time() <<std::endl;
+    *std::cin.tie() << "Fine registration Time: "
+                    << finder.get_fine_registration_time() <<std::endl;
   } else if (registration_option == ONLY_COARSE_REGISTRATION) {
     finder.get_coarse_registration();
     *std::cin.tie() << "Coarse registration: images " << subjects.size()
@@ -274,8 +281,10 @@ int main(int argc, char **argv) {
   }
   double Score = finder.get_em2d_score();
 
-  double registration_time=registration_timer.elapsed();
-  double total_time=projection_time+registration_time;
+  double total_time=registration_timer.elapsed();
+    *std::cin.tie() << "Registration: images " << subjects.size()
+        << " projections " << projections.size()
+        << " Total time: " << total_time <<std::endl;
 
   em2d::RegistrationResults registration_results=
                       finder.get_registration_results();
@@ -302,7 +311,7 @@ int main(int argc, char **argv) {
   // Benchmark
   if(vm.count("bm")) {
     em2d::RegistrationResults correct_RRs=
-              em2d::read_registration_results(vm["bm"].as<std::string>());
+              em2d::read_registration_results(vm["bm"].as<str>());
     *std::cin.tie() << "CORRECT REGISTRATION RESULTS " << std::endl;
     for (unsigned int i=0;i<correct_RRs.size();++i) {
       *std::cin.tie() << correct_RRs[i] << std::endl;
