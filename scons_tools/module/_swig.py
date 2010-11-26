@@ -70,11 +70,14 @@ def _action_swig_file(target, source, env):
 %%module(directors="1") "%s"
 %%{
 #include <boost/version.hpp>
-#if BOOST_VERSION < 103700
-#include <boost/exception.hpp>
-#else
+#if BOOST_VERSION > 103600
+#if BOOST_VERSION > 103800
 #include <boost/exception/all.hpp>
+#else
+#include <boost/exception.hpp>
 #endif
+#endif
+
 #include <boost/type_traits/is_convertible.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <exception>
