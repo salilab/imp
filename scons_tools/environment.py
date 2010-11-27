@@ -234,6 +234,7 @@ def get_base_environment(variables=None, *args, **kw):
 
     # these should be in systems
     env.AddMethod(biology.IMPSystem)
+    env.AddMethod(biology.IMPSystemHelperModuleBuild)
 
     # these should be in the module, but this seems to speed things up
     env.AddMethod(module.IMPModuleBuild)
