@@ -50,7 +50,7 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
     IMP_USAGE_CHECK(std::abs(c1 *c2) < .1,
               "The passed matrix is not a rotation matrix (col 1, col 2).");
     double det = m11*(m22*m33- m23*m32) + m12*(m23*m31-m21*m33)
-      + m12*(m21*m32-m22*m31);
+      + m13*(m21*m32-m22*m31);
     IMP_USAGE_CHECK(std::abs(det-1) < .1, "The determinant of the rotation "
                     "matrix is not 1. Got " << det);
   }
