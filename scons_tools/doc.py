@@ -1,6 +1,7 @@
 from SCons.Script import Builder, Action, File
 import bug_fixes
 import data
+import install
 
 def IMPPublication(env, authors, title, journal, year, description=""):
     ret= ", ".join(authors)+", \\quote{"+title+"}, <em>"+journal+"</em>, "+str(year)+"."
@@ -169,6 +170,24 @@ _ApplicationsOverview = Builder(action=Action(_make_applications_overview,
 def _make_systems_overview(target, source, env):
     out= open(target[0].abspath, "w")
     print >> out, "/** \\page systems_index Systems index"
+    print >> out, """A biological system should have each of a several scripts
+    - configure.py which should be run first in order to set everything up (if it is missing, no setup is required)
+    And then one or move of
+    - sample_i.py: This scripts takes two arguments:
+            - an index
+            - and the total number of independent parts to divide the task in to
+            .
+      That is, running \command{sample_0.py 3 13} divides the job into 13 independent parts and
+      runs part 3 of it. The output will be placed in sampled_0.
+    - analyze_i.py which, after all parts of run_i have have completed, performs analysis
+      on the results. Any output files should be placed in analysis_i
+    .
+    The scripts for a given iteration must have completed before the scripts for the next
+    iteration may be run (although some applications will include intermediate data, allowing
+    users to avoid running all the scripts in order).
+
+    When all scripts have been run, the final structures should appear in structures.
+    """
     dta= data.get(env)
     for k in dta.systems.keys():
         print >> out, "  -", dta.systems[k].link
@@ -177,6 +196,17 @@ def _print_systems_overview(target, source, env):
     print "Making systems overview"
 _SystemsOverview = Builder(action=Action(_make_systems_overview,
                                          _print_systems_overview))
+
+def add_doc_files(env, files):
+    #pass
+    # currently they are all globbed, should fix
+    for f in files:
+        #print f
+        if str(f).endswith(".dox") or str(f).endswith(".dot"):
+            pass
+        else:
+            b=env.Install("#/build/doc/html/", f)
+            data.get(env).add_to_alias('doc-files', [b])
 
 
 def add_overview_pages(env):
