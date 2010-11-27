@@ -279,7 +279,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     lpenv= scons_tools.bug_fixes.clone_env(penv)
     buildlib = lpenv.LoadableModule(gbp(penv, 'libdir/_IMP%(module_suffix)s' %
                                        _get_module_variables(lpenv)),
-                                    patched)
+                                    patched, SCANNERS=scanners)
     data.build.append(buildlib[0])
     inst=scons_tools.install.install(penv, 'pyextdir', buildlib[0])
     scons_tools.utility.postprocess_lib(penv, buildlib)
@@ -391,13 +391,7 @@ def IMPModuleDoc(env, files, authors,
                                  +'\n\\brief '+brief,
                                  authors,_get_module_version(env),
                                  brief, overview, publications, license)
-    for f in files:
-        #print "file", str(f)
-        if str(f).endswith(".dox") or str(f).endswith(".dot"):
-            pass
-        else:
-            b=scons_tools.install.install(env,"docdir/html/", f)
-
+    scons_tools.doc.add_doc_files(env, files)
 
 
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
@@ -407,7 +401,7 @@ def IMPModuleTest(env, python_tests, cpp_tests):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
-       Right now, the assumption is made that run-all-tests.py executes
+       Right now, the assumption is made that run-abll-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
     files= ["#/scons_tools/run-all-tests.py"]+\
         [x.abspath for x in python_tests]
@@ -429,7 +423,8 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_include_path=None, module_preproc=None,
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
-                   cxxflags=[], cppdefines=[], python_docs=False):
+                   cxxflags=[], cppdefines=[], python_docs=False,
+                   helper_module=False):
     if env.GetOption('help'):
         return
 
@@ -490,11 +485,13 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env['IMP_MODULE_CONFIG']=config_macros
     env.SConscript('examples/SConscript', exports='env')
-    env.SConscript('doc/SConscript', exports='env')
+    if not helper_module:
+        env.SConscript('doc/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
-    env.SConscript('bin/SConscript', exports='env')
+    if not helper_module:
+        env.SConscript('bin/SConscript', exports='env')
     if env['IMP_PROVIDE_PYTHON']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
