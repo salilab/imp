@@ -49,9 +49,9 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
               "The passed matrix is not a rotation matrix (col 0, col 2).");
     IMP_USAGE_CHECK(std::abs(c1 *c2) < .1,
               "The passed matrix is not a rotation matrix (col 1, col 2).");
-    double det = m11*(m22*m33- m23*m32) - m12*(m23*m31-m21*m33)
+    double det = m11*(m22*m33- m23*m32) + m12*(m23*m31-m21*m33)
       + m12*(m21*m32-m22*m31);
-    IMP_USAGE_CHECK(std::abs(det-1) < .01, "The determinant of the rotation "
+    IMP_USAGE_CHECK(std::abs(det-1) < .1, "The determinant of the rotation "
                     "matrix is not 1. Got " << det);
   }
   Rotation3D ret;
@@ -72,7 +72,7 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
     if (m32-m23 < 0.0) b=-b;
     if (m13-m31 < 0.0) c=-c;
     if (m21-m12 < 0.0) d=-d;
-    Rotation3D ret(a,b,c,d);
+    ret=Rotation3D(a,b,c,d);
 #if 0
     IMP_IF_LOG(VERBOSE) {
       Vector3D xr= ret.get_rotated(get_basis_vector_d<3>(0));
