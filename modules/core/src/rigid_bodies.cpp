@@ -276,6 +276,13 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   IMP::algebra::internal::JAMA::Eigenvalue<double> eig(I);
   Matrix rm;
   eig.getV(rm);
+  if (IMP::algebra::internal::JAMA::determinant(rm) <0) {
+    for (unsigned int i=0; i< 3; ++i) {
+      for (unsigned int j=0; j< 3; ++j) {
+        rm[i][j]= -rm[i][j];
+      }
+    }
+  }
   // use the R as the initial orientation
   IMP::algebra::Rotation3D rot
     = IMP::algebra::get_rotation_from_matrix(rm[0][0], rm[0][1], rm[0][2],
