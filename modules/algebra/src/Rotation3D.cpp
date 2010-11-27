@@ -49,24 +49,43 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
               "The passed matrix is not a rotation matrix (col 0, col 2).");
     IMP_USAGE_CHECK(std::abs(c1 *c2) < .1,
               "The passed matrix is not a rotation matrix (col 1, col 2).");
+    double det = m11*(m22*m33- m23*m32) - m12*(m23*m31-m21*m33)
+      + m12*(m21*m32-m22*m31);
+    IMP_USAGE_CHECK(std::abs(det-1) < .01, "The determinant of the rotation "
+                    "matrix is not 1. Got " << det);
   }
-  double a,b,c,d;
-  a = fabs(1+m11+m22+m33)/4;
-  b = fabs(1+m11-m22-m33)/4;
-  c = fabs(1-m11+m22-m33)/4;
-  d = fabs(1-m11-m22+m33)/4;
+  Rotation3D ret;
+  {
+    double a,b,c,d;
+    a = std::abs(1+m11+m22+m33)/4;
+    b = std::abs(1+m11-m22-m33)/4;
+    c = std::abs(1-m11+m22-m33)/4;
+    d = std::abs(1-m11-m22+m33)/4;
 
-  // make sure quat is normalized.
-  double sum = a+b+c+d;
-  a = sqrt(a/sum);
-  b = sqrt(b/sum);
-  c = sqrt(c/sum);
-  d = sqrt(d/sum);
+    // make sure quat is normalized.
+    double sum = a+b+c+d;
+    a = std::sqrt(a/sum);
+    b = std::sqrt(b/sum);
+    c = std::sqrt(c/sum);
+    d = std::sqrt(d/sum);
 
-  if (m32-m23 < 0.0) b=-b;
-  if (m13-m31 < 0.0) c=-c;
-  if (m21-m12 < 0.0) d=-d;
-  return Rotation3D(a,b,c,d);
+    if (m32-m23 < 0.0) b=-b;
+    if (m13-m31 < 0.0) c=-c;
+    if (m21-m12 < 0.0) d=-d;
+    Rotation3D ret(a,b,c,d);
+#if 0
+    IMP_IF_LOG(VERBOSE) {
+      Vector3D xr= ret.get_rotated(get_basis_vector_d<3>(0));
+      Vector3D yr= ret.get_rotated(get_basis_vector_d<3>(1));
+      Vector3D zr= ret.get_rotated(get_basis_vector_d<3>(2));
+      IMP_LOG(TERSE, "Got:\n");
+      IMP_LOG(TERSE, xr[0] << " " <<  yr[0] << " " <<  zr[0] << std::endl);
+      IMP_LOG(TERSE, xr[1] << " " <<  yr[1] << " " <<  zr[1] << std::endl);
+      IMP_LOG(TERSE, xr[2] << " " <<  yr[2] << " " <<  zr[2] << std::endl);
+    }
+#endif
+  }
+  return ret;
 }
 
 
