@@ -15,7 +15,7 @@ def get_matching(patterns):
     ret=[]
     for x in patterns:
         ret+=Glob(x, ondisk=True)
-    ret.sort(cmp= file_compare)
+    ret.sort(file_compare)
     return ret
 
 def get_matching_recursive(patterns):
