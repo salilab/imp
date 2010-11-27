@@ -59,7 +59,21 @@ def IMPSystem(env, name, version="",
                                  modules= required_modules+found_optional_modules,
                                  python_modules=pm,
                                  version=version)
-    env= scons_tools.environment.get_named_environment(env, name)
-    utility.add_link_flags(env, required_modules,
-                           required_dependencies+found_optional_dependencies)
-    return env
+        dirs = Glob("*/SConscript")
+        for d in dirs:
+            env.SConscript(d, exports=['env'])
+
+        env= scons_tools.environment.get_named_environment(env, name)
+        utility.add_link_flags(env, required_modules,
+                               required_dependencies+found_optional_dependencies)
+        return env
+
+
+def IMPSystemHelperModuleBuild(env):
+    dta= data.get(env)
+    aname= scons_tools.environment.get_current_name(env)
+    env.IMPModuleBuild(version=dta.systems[aname].version,
+                       required_modules= dta.systems[aname].modules,
+                       required_dependencies= dta.systems[aname].dependencies,
+                       module=aname+"_helper",
+                       helper_module=True)
