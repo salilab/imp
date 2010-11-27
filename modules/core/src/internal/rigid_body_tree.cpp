@@ -30,12 +30,18 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
   }
   algebra::PrincipalComponentAnalysis pca
     = algebra::get_principal_components(pts);
-  const algebra::VectorD<3> &v0=pca.get_principal_component(0),
-    &v1= pca.get_principal_component(1),
-    &v2= pca.get_principal_component(2);
+  algebra::VectorD<3> v0=pca.get_principal_component(0),
+    v1= pca.get_principal_component(1),
+    v2= pca.get_principal_component(2);
+  double det = v0[0]*(v1[1]*v2[2]- v1[2]*v2[1])
+    + v0[1]*(v1[2]*v2[0]-v1[0]*v2[2])
+    + v0[2]*(v1[0]*v2[1]-v1[1]*v2[0]);
+  if (det < 0) {
+    v0= -v0;
+  }
   algebra::Rotation3D r= algebra::get_rotation_from_matrix(v0[0], v0[1], v0[2],
-                                                       v1[0], v1[1], v1[2],
-                                                       v2[0], v2[1], v2[2])
+                                                           v1[0], v1[1], v1[2],
+                                                           v2[0], v2[1], v2[2])
     .get_inverse();
   algebra::VectorD<3> minc(std::numeric_limits<double>::max(),
                          std::numeric_limits<double>::max(),
