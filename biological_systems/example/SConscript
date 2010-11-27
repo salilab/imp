@@ -1,0 +1,11 @@
+Import('env')
+
+env= env.IMPSystem(name="Example Biological System", version="SVN",
+                   authors=["Daniel Russel"],
+                   brief="Solve a simplified Nup84 complex.",
+                   overview="""See \\ref example_sys_callgraphs "Callgraphs" for the callgraphs
+                   of the scripts.
+                   """,
+                   license=env.IMPStandardLicense(),
+                   publications=[],
+                   required_modules=['core', 'atom'])

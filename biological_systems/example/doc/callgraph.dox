@@ -1,0 +1,18 @@
+/**
+\page example_sys_callgraphs Callgraph
+The call graph for the run is:
+
+\inlineimage{example_app_run.png, 1000}
+
+Alternatively, one could suppress the calls to IMP code and one gets
+
+\inlineimage{example_app_run_no_imp.png, 1000}
+                   
+The call graph for analyze is:
+
+\inlineimage{example_app_analyze.png, 1000}
+
+Alternatively, one could suppress the calls to IMP code and one gets
+
+\inlineimage{example_app_analyze_no_imp.png, 1000}
+*/
