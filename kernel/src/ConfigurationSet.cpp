@@ -9,6 +9,7 @@
 
 #include "IMP/ConfigurationSet.h"
 #include "IMP/internal/utility.h"
+#include "IMP/io.h"
 #ifdef IMP_USE_NETCDF
 #include <netcdfcpp.h>
 #endif
@@ -98,8 +99,17 @@ void read_binary_model(NcFile &f,
 ConfigurationSet* read_configuration_set(std::string filename,
                                          const Particles &ps,
                                          const FloatKeys &keys) {
+  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
+  read_configuration_set(filename, ps, keys, ret);
+  return ret.release();
+}
+
+void read_configuration_set(std::string filename,
+                            const Particles &ps,
+                            const FloatKeys &keys,
+                            ConfigurationSet *ret) {
   if (ps.empty()) {
-    return NULL;
+    return;
   }
   NcFile f(filename.c_str(), NcFile::ReadOnly/*,
                     NULL, 0, NcFile::Netcdf4*/);
@@ -107,12 +117,24 @@ ConfigurationSet* read_configuration_set(std::string filename,
     IMP_THROW("Unable to open file " << filename << " for reading",
               IOException);
   }
-  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
   for (int i=0; i< f.num_vars(); ++i) {
     read_binary_model(f, ps, keys, i);
     ret->save_configuration();
   }
-  return ret.release();
+}
+
+
+
+void write_configuration_set(ConfigurationSet *cs,
+                             const Particles &ps,
+                             const FloatKeys &keys,
+                             std::string fname) {
+  IMP_NEW(Configuration, c, (cs->get_model()));
+  for (unsigned int i=0; i< cs->get_number_of_configurations(); ++i) {
+    cs->load_configuration(i);
+    write_binary_model(ps, keys, fname, i!= 0);
+  }
+  c->load_configuration();
 }
 #endif
 
