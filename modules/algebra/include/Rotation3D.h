@@ -169,7 +169,16 @@ class IMPALGEBRAEXPORT Rotation3D {
   const VectorD<4>& get_quaternion() const {
     return v_;
   }
-
+  bool is_valid() const {
+    float sqr_mag=0.;
+    for(int i=0;i<4;i++){
+      sqr_mag+=v_[i]*v_[i];
+      if (is_nan(v_[i])) {
+        return false;
+      }
+    }
+    return abs(sqr_mag-1.)<0.001;
+  }
   //! multiply two rotations
   Rotation3D operator*(const Rotation3D& q) const {
     return compose(*this, q);
@@ -448,7 +457,8 @@ inline Rotation3D get_interpolated(const Rotation3D &a,
   return f*aq+(1-f)*bq;
 }
 
-/** Return the rotation which takes the x and y axes to the given x and y axes.
+/** Return the rotation which takes the native x and y axes to the
+    given x and y axes.
     The two axis must be perpendicular unit vectors.
 */
 IMPALGEBRAEXPORT

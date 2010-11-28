@@ -83,6 +83,10 @@ public:
     }
     );
   Transformation3D get_inverse() const;
+  //! Check if the transformation is valid
+  bool is_valid() const {
+    return rot_.is_valid();
+  }
 private:
   VectorD<3> trans_; //tranlation
   Rotation3D rot_;  //rotation
