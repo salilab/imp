@@ -53,6 +53,9 @@ class IMPEXPORT ConfigurationSet: public Object
   //! Load the ith configuration into the Model
   /** Passing -1 returns it to the base configuration. */
   void load_configuration(int i) const;
+  Model *get_model() const {
+    return model_;
+  }
   IMP_OBJECT(ConfigurationSet);
 };
 
@@ -61,10 +64,32 @@ IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 #if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** Read a set of configurations from a file created by write_binary_model().
     \requires{function read_configuration_set(), NetCDF}
+    \relatesalso ConfigurationSet
  */
 IMPEXPORT ConfigurationSet* read_configuration_set(std::string fname,
                                                    const Particles &ps,
                                                    const FloatKeys &keys);
+
+/** Read a set of configurations from a file created by write_binary_model()
+    into an existing configuration set.
+    \requires{function read_configuration_set(), NetCDF}
+    \relatesalso ConfigurationSet
+ */
+IMPEXPORT  void read_configuration_set(std::string fname,
+                                       const Particles &ps,
+                                       const FloatKeys &keys,
+                                       ConfigurationSet *out);
+
+
+/** Write a configuration set to a file.
+    \requires{function write_configuration_set(), NetCDF}
+    \relatesalso ConfigurationSet
+ */
+IMPEXPORT void write_configuration_set(ConfigurationSet *cs,
+                                       const Particles &ps,
+                                       const FloatKeys &keys,
+                                       std::string fname);
+
 #endif
 
 IMP_MODEL_SAVE(SaveToConfigurationSet,
