@@ -68,6 +68,8 @@ class SparseUnboundedIntGrid3D;
 class DenseDoubleGrid3D;
 class DenseFloatGrid3D;
 */
+
+
 /** Equivalent to
 \code
 IMP::algebra::get_transformation_aligning_first_to_second(a,b);
@@ -75,6 +77,21 @@ IMP::algebra::get_transformation_aligning_first_to_second(a,b);
  */
 Transformation3D get_transformation_aligning_first_to_second(Vector3Ds a,
                                                            Vector3Ds b);
+
+/** A sparse grid of integers over a bounded region of space.
+ */
+typedef Grid3D<int, SparseGridStorage3D<int, BoundedGridStorage3D> >
+SparseIntGrid3D;
+/** A sparse grid of integers over all of space.
+ */
+typedef Grid3D<int, SparseGridStorage3D<int, UnboundedGridStorage3D> >
+SparseUnboundedIntGrid3D;
+/** A grid of doubles over a region of space.
+ */
+typedef Grid3D<double, DenseGridStorage3D<double> > DenseDoubleGrid3D;
+/** A grid of floats over a region of space.
+ */
+typedef Grid3D<float, DenseGridStorage3D<float> > DenseFloatGrid3D;
 #endif
 /** @} */
 
