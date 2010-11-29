@@ -164,6 +164,7 @@ for d in ["#/kernel/doc/",
           "#/kernel/examples/",
           "#/modules/*/examples/",
           "#/biological_systems/*/",
+          "#/biological_systems/*/doc/",
           "#/applications/*/",
           "#/doc/",]:
     for t in ["dox", "xml", "dot"]:
@@ -179,6 +180,8 @@ examples=[]
 for d in ["#/modules/example/src/",
           "#/modules/example/include/",
           "#/modules/*/examples/",
+          "#/biological_systems/*/doc/",
+          "#/biological_systems/*/",
           "#/kernel/examples/",]:
     for t in ["py", "cpp", "png", "png", "html", "xml"]:
         #print "checking fr examples matching",d+"*."+t, d+"*/*."+t
