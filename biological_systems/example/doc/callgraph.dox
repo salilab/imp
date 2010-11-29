@@ -1,18 +1,18 @@
 /**
 \page example_sys_callgraphs Callgraph
-The call graph for the run is:
+The call graph for the sample_0.py, as produced by \c pycallgraph \c sample_0.py is:
 
-\inlineimage{example_app_run.png, 1000}
+\image html example_app_run.png
 
-Alternatively, one could suppress the calls to IMP code and one gets
+Alternatively, one could suppress the calls to IMP code by passing \c --imp=False to the script:
 
-\inlineimage{example_app_sample_no_imp.png, 600}
+\image html example_app_sample_no_imp.png
                    
 The call graph for analyze is:
 
-\inlineimage{example_app_analyze.png, 1000}
+\image html example_app_analyze.png
 
 Alternatively, one could suppress the calls to IMP code and one gets
 
-\inlineimage{example_app_analyze_no_imp.png, 600}
+\image html example_app_analyze_no_imp.png
 */
