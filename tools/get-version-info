@@ -1,0 +1,16 @@
+#!/usr/bin/python
+
+import sys
+
+if len(sys.argv) <2:
+   print "usage:", sys.argv[0], "first_module second_module ..."
+   sys.exit(1)
+
+for m in sys.argv[1:]:
+   if m=='kernel':
+       mn=""
+   else:
+       mn="."+m
+   cmd= "import IMP"+mn+"\n"\
+        +"print IMP"+mn+".get_module_version_info().get_version()"
+   exec(cmd)
