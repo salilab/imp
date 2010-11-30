@@ -12,7 +12,12 @@ env= env.IMPSystem(name="example system", version="SVN",
                    """,
                    license=env.IMPStandardLicense(),
                    publications=[],
-                   required_modules=['core', 'atom'])
+                   required_modules=['core', 'atom'],
+                   last_imp_version="""core SVN 7432M with CGAL
+atom SVN 7432M with CGAL, Boost.FileSystem
+container SVN 7432
+kernel SVN 7432 with Boost.FileSystem, NetCDF
+cgal SVN 7432""")
 if env:
     files= ["setup",
             "sample_0",
