@@ -1,5 +1,5 @@
 /**
- *  \file base_types.h    \brief Basic types used by IMP.
+ *  \file IMP/base_types.h    \brief Basic types used by IMP.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
