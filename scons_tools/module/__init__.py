@@ -211,7 +211,8 @@ def IMPModuleBin(env, files):
 
 
 def _fake_scanner_cpp(node, env, path):
-    print "fake cpp", node.abspath
+    if node.abspath.endswith(".h") or node.abspath.endswith(".cpp"):
+        print "fake scanning", node.abspath
     if _get_module_name(env) == 'kernel':
         return [File("#/build/include/IMP.h")]
     else:
@@ -220,6 +221,8 @@ def _fake_scanner_cpp(node, env, path):
 
 def _filtered_h(node, env, path):
     #print "filtered scanning", node.abspath
+    if node.abspath.endswith(".h") or node.abspath.endswith(".cpp"):
+        print "fake scanning", node.abspath
     if  node.abspath.find('build') != -1:
         return []
     else:
@@ -232,6 +235,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     module =_get_module_name(env)
     vars=_get_module_variables(env)
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
+    alldata= scons_tools.data.get(env).modules
     penv = scons_tools.environment.get_pyext_environment(env, module.upper(),
                                                          cplusplus=True)
     #penv.Decider('timestamp-match')
@@ -245,14 +249,22 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     scons_tools.utility.add_link_flags(penv,
                                        [_get_module_name(penv)]+_get_module_modules(penv),
                                        _get_module_dependencies(penv))
+    versions=[]
+    for m in _get_module_python_modules(env):
+        versions.append(env.Value(m))
+        versions.append(env.Value(alldata[m].version))
+    vc= _swig.VersionCheck(penv, target=[gbp(penv, "libdir/IMP/currentdir/_version_check.py")],
+                           source=[env.Value(_get_module_version(env))]+versions)
+    data.build.append(vc[0])
+    scons_tools.install.install(penv, 'pythondir/IMP/currentdir/', vc[0])
 
     swigfile= \
        penv.IMPModuleSWIGPreface(target=[gbp(penv, "swigdir/IMP_currentfile.i")],
                                  source=[File("swig.i-in"),
                                          env.Value(_get_module_python_modules(env)),
-                                         env.Value(_get_module_version(env)),
                                          env.Value(" ".join(_get_module_dependencies(env))),
-                             env.Value(" ".join(_get_module_unfound_dependencies(env))),])
+                                  env.Value(" ".join(_get_module_unfound_dependencies(env)))])
+    vc
     for i in swigfiles:
         if str(i).endswith('.i'):
             scons_tools.install.install(env,"swigdir", i)
