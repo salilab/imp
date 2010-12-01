@@ -36,21 +36,15 @@ def regressionTest():
         return unittest.TestSuite([])
     a_file=files[0]
     # evil hack
-    print >> sys.stderr, "a file is ", a_file
     os.environ['TEST_DIRECTORY'] = a_file[0:a_file.rfind("/test/")+6]
-    print >> sys.stderr,  "test dir", os.environ['TEST_DIRECTORY']
     #return 0
     modobjs = []
     for f in files:
-        print f
         nm= os.path.split(f)[1]
-        print nm
         dir= os.path.split(f)[0]
-        print dir
         modname = os.path.splitext(nm)[0]
         sys.path.insert(0, dir)
         modobjs.extend([_import_test(modname)])
-        print modobjs
         sys.path.pop(0)
 
     tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
@@ -59,6 +53,5 @@ def regressionTest():
 
 if __name__ == "__main__":
     files = sys.argv[2:]
-    print files
     sys.argv=[sys.argv[0], "-v"]
     unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
