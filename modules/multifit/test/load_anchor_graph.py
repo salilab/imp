@@ -1,8 +1,8 @@
-#!/usr/bin/python
-from xml.dom import minidom , Node
-import sys,os
-import IMP.helper
-import IMP.atom
+from xml.dom import minidom
+import sys
+import IMP.algebra
+import IMP.multifit
+
 class Marker:
     def __init__(self,x,y,z,r,i):
         self.x=x
@@ -34,14 +34,3 @@ def load_anchor_graph(cmm_filename):
         g.add_edge(int(link.attributes["id1"].value),
                    int(link.attributes["id2"].value))
     return g
-def usage():
-    if len(sys.argv) != 2:
-        print sys.argv[0] + "<cmm filename>"
-if __name__=="__main__":
-    usage()
-    [markers,links]=cmm_reader(sys.argv[1])
-    mdl=IMP.Model()
-    mh=load_particles(markers,links,mdl)
-    #for i,f in enumerate(IMP.atom.get_by_type(mh,IMP.atom.Hierarchy.FRAGMENT)):
-    #    IMP.helper.write_cmm(f,"jt","jt_"+str(i)+".cmm")
-    IMP.helper.write_cmm(mh,"jt","jt.cmm")
