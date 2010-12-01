@@ -1,0 +1,8 @@
+Import('env')
+
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="This module provides helper functions for biological systems.",
+                 overview=""" """,
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())

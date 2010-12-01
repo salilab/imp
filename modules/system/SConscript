@@ -1,0 +1,5 @@
+Import('env')
+
+env.IMPModuleBuild(version='SVN',
+                   required_modules=['kernel'],
+                   python_docs=True)
