@@ -228,6 +228,9 @@ public:
       }
     }
   }
+  void clear_warnings() const {
+    data_.clear();
+  }
   void dump_warnings() const {
     for (std::map<std::string, int>::const_iterator it= data_.begin();
          it != data_.end(); ++it) {
