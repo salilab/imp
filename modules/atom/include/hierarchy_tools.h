@@ -271,6 +271,10 @@ IMPATOMEXPORT void setup_as_approximation(Particle *h,
 IMPATOMEXPORT void setup_as_approximation(Hierarchy h);
 
 
+/** Transform a hierarchy. This is aware of rigid bodies.
+ */
+IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_HIERARCHY_TOOLS_H */
