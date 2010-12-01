@@ -502,8 +502,11 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
     }
     topology->add_segment(segment);
   }
-
-  warn_context_.dump_warnings();
+  IMP_IF_LOG(VERBOSE) {
+    warn_context_.dump_warnings();
+  } else {
+    warn_context_.clear_warnings();
+  }
   // Topology objects are not designed to be added into other containers
   topology->set_was_used(true);
   return topology.release();
