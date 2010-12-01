@@ -94,7 +94,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   double ccc = cross_correlation_coefficient(subject_->get_data(),
                                              projection_->get_data());
   double em2d = ccc_to_em2d(ccc);
-  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
+  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << em2d <<std::endl);
   return em2d;
 }
 
