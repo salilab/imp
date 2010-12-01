@@ -61,8 +61,8 @@ class ScoreTest(IMP.test.TestCase):
         m.add_restraint(r1)
         print r0.evaluate(False)
         print r1.evaluate(False)
-        self.assertAlmostEqual(r0.evaluate(False), 99, delta=1)
-        self.assertAlmostEqual(r1.evaluate(False), 88, delta=1)
+        self.assertAlmostEqual(r0.evaluate(False), 8.3, delta=1)
+        self.assertAlmostEqual(r1.evaluate(False), 6.5, delta=1)
 
 
 if __name__ == '__main__':
