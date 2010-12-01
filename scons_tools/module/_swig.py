@@ -5,6 +5,7 @@ import sys
 import re
 import scons_tools.dependency
 import scons_tools.module
+import scons_tools.data
 
 # standard include files
 base_includes= ["IMP_macros.i",
@@ -142,14 +143,8 @@ std::string get_data_path(std::string fname);
 }
 """%vars)
     preface.append(warning)
-    version=source[2].get_contents()
-    preface.append("""
-%pythoncode {
-if get_module_version_info().get_version() != '"""+version+"""':
-    sys.stderr.write("WARNING: expected version '"""+version+"""', but got "+ get_module_version_info().get_version() +" when loading module %(module)s. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n")
-}"""%vars)
-    deps= source[3].get_contents().split(" ")
-    udeps= source[4].get_contents().split(" ")
+    deps= source[2].get_contents().split(" ")
+    udeps= source[3].get_contents().split(" ")
     preface.append("%pythoncode {")
     for d in deps:
         nm=scons_tools.dependency.get_dependency_string(d).lower()
@@ -167,6 +162,11 @@ IMP.used_modules.append(get_module_version_info())
         preface.append("""
 %pythoncode %{
 used_modules.append(get_module_version_info())
+%}""")
+    preface.append("""
+%pythoncode %{
+import _version_check
+_version_check.check_version(get_module_version_info().get_version())
 %}""")
     open(target[0].abspath, "w").write("\n".join(preface))
 
@@ -210,6 +210,35 @@ def _print_simple_swig(target, source, env):
 
 SwigIt = Builder(action=Action(_action_simple_swig,
                                 _print_simple_swig))
+
+def _action_version_check(target, source, env):
+    def get_module(name):
+        if name=='kernel':
+            return "IMP"
+        else:
+            return "IMP."+name
+    out= open(target[0].abspath, "w")
+    print >> out, "def check_version(myversion):"
+    print >> out, "  def _check_one(name, expected, found):"
+    print >> out, "    if expected != found:"
+    print >> out, "      raise RuntimeError('Expected version '+expected+' but got '+ found \\"
+    print >> out, "           +' when loading module '+name\\"
+    print >> out, "            +'. Please make sure IMP is properly built and installed and that matching python and C++ libraries are used.\\n')"
+    myversion= source[0].get_contents()
+    print >> out, "  _check_one('"+scons_tools.module._get_module_name(env)+\
+          "', '"+myversion+"', myversion)"
+    for i in range(1,len(source), 2):
+        mn= source[i].get_contents()
+        ver= source[i+1].get_contents()
+        print >> out, "  import "+get_module(mn)
+        print >> out, "  _check_one('"+mn+\
+          "', '"+ver+"', "+get_module(mn)+".get_module_version_info().get_version())"
+
+def _print_version_check(target, source, env):
+    print "Running building version check "+target[0].abspath
+
+VersionCheck = Builder(action=Action(_action_version_check,
+                                _print_version_check))
 
 
 def swig_scanner(node, env, path):
