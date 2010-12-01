@@ -227,7 +227,7 @@ int main(int argc, char **argv) {
     projections = em2d::read_images(projs_names,srw);
   }
   double projection_time = project_timer.elapsed();
-  *std::cin.tie() << "Projections generated: " << projections.size()
+  *std::cin.tie() << "# Projections generated: " << projections.size()
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
@@ -248,16 +248,16 @@ int main(int argc, char **argv) {
   finder.set_projections(projections);
   double time_preprocess_projections = finder.get_preprocessing_time();
   // Time
-  *std::cin.tie() << "Preprocessing images " << subjects.size()
+  *std::cin.tie() << "# Preprocessing images " << subjects.size()
                   << " Time: " << time_preprocess_subjects <<std::endl;
-  *std::cin.tie() << "Preprocessing projections: " << projections.size()
+  *std::cin.tie() << "# Preprocessing projections: " << projections.size()
              << " Time: " << time_preprocess_projections <<std::endl;
-  *std::cin.tie() << "Total preprocessing Time: "
+  *std::cin.tie() << "# Total preprocessing Time: "
                   << time_preprocess_subjects+time_preprocess_projections
                   << std::endl;
 
   if(n_coarse_results_optimized!=0) {
-    *std::cin.tie() << "Set fast mode, use "
+    *std::cin.tie() << "# Set fast mode, use "
                     << n_coarse_results_optimized
                     << " best coarse results " <<std::endl;
     finder.set_fast_mode(n_coarse_results_optimized);
@@ -269,20 +269,20 @@ int main(int argc, char **argv) {
 
   if(registration_option==COMPLETE_REGISTRATION) {
     finder.get_complete_registration();
-    *std::cin.tie() << "Coarse registration Time: "
+    *std::cin.tie() << "# Coarse registration Time: "
                     << finder.get_coarse_registration_time() <<std::endl;
-    *std::cin.tie() << "Fine registration Time: "
+    *std::cin.tie() << "# Fine registration Time: "
                     << finder.get_fine_registration_time() <<std::endl;
   } else if (registration_option == ONLY_COARSE_REGISTRATION) {
     finder.get_coarse_registration();
-    *std::cin.tie() << "Coarse registration: images " << subjects.size()
+    *std::cin.tie() << "# Coarse registration: images " << subjects.size()
         << " projections " << projections.size()
         << " Time: " << finder.get_coarse_registration_time() <<std::endl;
   }
   double Score = finder.get_em2d_score();
 
   double total_time=registration_timer.elapsed();
-    *std::cin.tie() << "Registration: images " << subjects.size()
+    *std::cin.tie() << "# Registration: images " << subjects.size()
         << " projections " << projections.size()
         << " Total time: " << total_time <<std::endl;
 
@@ -299,7 +299,8 @@ int main(int argc, char **argv) {
   char c='|';
   unsigned int n_subjects=subjects.size();
   *std::cin.tie() << "# GLOBAL RESULT " << std::endl
-    << "model | resolution | A/pix | images_file | Score | Time used | Number "
+    << "# model | resolution | A/pix | images_file | "
+    << "Score | Time used | Number "
    "of subjects | Individual scores "  << std::endl;
   *std::cin.tie() << "Global result>>" << fn_model <<c<< resolution <<c<< apix
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
@@ -312,11 +313,11 @@ int main(int argc, char **argv) {
   if(vm.count("bm")) {
     em2d::RegistrationResults correct_RRs=
               em2d::read_registration_results(vm["bm"].as<str>());
-    *std::cin.tie() << "CORRECT REGISTRATION RESULTS " << std::endl;
+    *std::cin.tie() << "# CORRECT REGISTRATION RESULTS " << std::endl;
     for (unsigned int i=0;i<correct_RRs.size();++i) {
       *std::cin.tie() << correct_RRs[i] << std::endl;
     }
-    *std::cin.tie() << "Benchmark ... " << std::endl;
+    *std::cin.tie() << "# Benchmark ... " << std::endl;
     *std::cin.tie() << "# N.projections Score Av.Rot.Error  Av.Shift.Error"
                     << std::endl;
     double rot_error=average_rotation_error(correct_RRs,registration_results);
