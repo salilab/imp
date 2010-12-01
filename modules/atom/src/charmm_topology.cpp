@@ -465,7 +465,11 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
       }
     }
   }
-  warn_context_.dump_warnings();
+  IMP_IF_LOG(VERBOSE) {
+    warn_context_.dump_warnings();
+  } else {
+    warn_context_.clear_warnings();
+  }
 }
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
@@ -488,7 +492,11 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
       }
     }
   }
-  warn_context_.dump_warnings();
+  IMP_IF_LOG(VERBOSE) {
+    warn_context_.dump_warnings();
+  } else {
+    warn_context_.clear_warnings();
+  }
 }
 
 Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
