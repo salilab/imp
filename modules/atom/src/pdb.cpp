@@ -190,7 +190,8 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   // check if the element matches
   Element e2 = get_element_for_atom_type(atom_name);
   if (e != e2) {
-    IMP_WARN("AtomType element and PDB line elements don't match. AtomType "
+    IMP_LOG(VERBOSE,
+            "AtomType element and PDB line elements don't match. AtomType "
              << e2 << " determined from PDB line " << e
              << " line " << pdb_line << std::endl);
   }
