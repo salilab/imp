@@ -1,12 +1,9 @@
-import sys,os
 import IMP
 import IMP.em
 import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.multifit
-import sys
-sys.path.append("../pyext")
 from load_anchor_graph import *
 
 class AnchorGraphTest(IMP.test.TestCase):
