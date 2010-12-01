@@ -310,9 +310,6 @@ AtomType add_atom_type(std::string name, Element e) {
                                    static_cast<std::size_t>(ret.get_index()+1)),
                           UNKNOWN_ELEMENT);
   added_atom_names[ret.get_index()]=e;
-  if(name != "UNKNOWN" && e == UNKNOWN_ELEMENT) {
-    IMP_WARN("Unknown element for AtomType " << name << std::endl);
-  }
   return ret;
 }
 
