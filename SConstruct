@@ -73,10 +73,10 @@ You can see the produced config.log for more information as to why boost failed 
     scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
                                                 "fftw3.h")
 
-    scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm'],
+    scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm',
+                                                              boost_thread, 'pthread'],
                                                 ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                                                body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;',
-                                                extra_libs=[boost_thread, 'pthread'])
+                                                body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
     scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
                                                 'boost/filesystem/path.hpp',
                                                 extra_libs=[boost_system])
