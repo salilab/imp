@@ -643,4 +643,22 @@ void setup_as_approximation(Hierarchy h) {
 }
 
 
+void transform(Hierarchy h, const algebra::Transformation3D &tr) {
+  std::vector<Hierarchy> stack;
+  stack.push_back(h);
+  do {
+    Hierarchy c= stack.back();
+    stack.pop_back();
+    if (core::RigidBody::particle_is_instance(c)) {
+      core::transform(core::RigidBody(c), tr);
+    } else if (core::XYZ::particle_is_instance(c)) {
+      core::transform(core::XYZ(c), tr);
+    }
+    for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+      stack.push_back(h.get_child(i));
+    }
+  } while (!stack.empty());
+}
+
+
 IMPATOM_END_NAMESPACE
