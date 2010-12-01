@@ -1,0 +1,13 @@
+%pythoncode %{
+import sys
+def get_sample_parameters():
+    """Return the index and the number of parts to divide the job in to."""
+    try:
+       i = int(sys.argv[1])
+       n= int(sys.argv[2])
+       if len(sys.argv) > 3:
+           raise ValueError()
+       return (i,n)
+    except:
+       print >> sys.stderr, "The run scripts must be called with two arguments, i and n."
+%}

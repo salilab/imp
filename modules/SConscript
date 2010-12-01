@@ -19,7 +19,8 @@ modules=['cgal',
          'bullet',
          'openmm',
          'multifit',
-         'misc']
+         'misc',
+         'system']
 # always last
 modules.append('benchmark')
 
