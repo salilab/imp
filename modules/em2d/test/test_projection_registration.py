@@ -83,15 +83,11 @@ class ProjectTests(IMP.test.TestCase):
         angle_tolerance=0.05
         distance_tolerance = 1
         for i in xrange(0,len(registration_parameters)):
-#            angle = IMP.em2d.rotation_error(registration_parameters[i],
-#                                            correct_parameters[i])
-            # Use distance between the quaternions. When rotations are very
-            # close the composed rotation is almost identity and the function
-            # em2d.rotation error does not behave well. Careful: "Angle"
+            # Use distance between the quaternions. Careful: "Angle"
             # here is not a real angle.
             angle = IMP.algebra.get_distance(
-                    registration_parameters[i].get_rotation().get_quaternion(),
-                    correct_parameters[i].get_rotation().get_quaternion())
+                    registration_parameters[i].get_rotation(),
+                    correct_parameters[i].get_rotation())
             print "quaternion distance ",angle
             dist = IMP.em2d.shift_error(registration_parameters[i],
                                         correct_parameters[i])
