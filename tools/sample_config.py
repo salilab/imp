@@ -7,14 +7,21 @@ home=os.environ['HOME']
 ## Where to install IMP
 prefix=home+"/fs"
 
-## Add include paths as CXXFLAGS so scons doesn't treat such headers
-## as dependencies.
-cxxflags=" ".join(['-I'+os.path.join(prefix, 'include'), '-I/opt/local/include'])
-
 ## Add my local environment to that used by scons and tools/imppy.sh
-pythonpath=os.environ['PYTHONPATH']
-ldlibpath=os.environ['LD_LIBRARY_PATH']
-libpath=':'.join(["/opt/local/lib",os.path.join(prefix, 'lib')])
+try:
+    pythonpath=os.environ['PYTHONPATH']
+except:
+    pass
+try:
+    ldlibpath=os.environ['LD_LIBRARY_PATH']
+except:
+    pass
+
+## Uncomment if you use macports
+# libpath=':'.join(["/opt/local/lib",os.path.join(prefix, 'lib')])
+# cxxflags=" ".join(['-I'+os.path.join(prefix, 'include'), '-I/opt/local/include'])
+
+
 path=os.environ['PATH']
 
 ## Build any local module added to the modules directory
@@ -35,4 +42,4 @@ repository="path_to_source"
 #precommand="valgrind --gen-suppressions=yes --db-attach=yes --undef-value-errors=no --suppressions=../svn/tools/valgrind-python.supp"
 
 ## Get modeller's location from an environment variable
-modeller=os.environ['MODINSTALLSVN']
+#modeller=os.environ['MODINSTALLSVN']
