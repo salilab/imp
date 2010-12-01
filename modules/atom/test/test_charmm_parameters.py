@@ -60,6 +60,8 @@ class CHARMMParametersTests(IMP.test.TestCase):
             self.assertAlmostEqual(bond.ideal, 0.0000, delta=1e-5)
         self.assertEqual(p.get_improper_parameters('NPH', 'CPA', 'CPB', 'CPA'),
                          None)
+    test_bond_parameters = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_bond_parameters)
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -118,6 +118,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff.add_residue_topology(res)
         ff.get_residue_topology(IMP.atom.ResidueType('FOO'))
         ff.get_patch('PFOO')
+    test_forcefield_add_get = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_forcefield_add_get)
 
     def test_forcefield_read(self):
         """Test read of topology from files"""
@@ -155,6 +157,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             res = ff.get_residue_topology(IMP.atom.ResidueType(name))
             self.assertEqual(res.get_default_first_patch(), first)
             self.assertEqual(res.get_default_last_patch(), last)
+    test_forcefield_read = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_forcefield_read)
 
     def test_residue_topology(self):
         """Test CHARMM residue topology objects"""
@@ -162,10 +166,11 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
-        self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT1')
+        self.assertEqual(res.get_atom(IMP.atom.CA).get_charmm_type(), 'CT1')
         self.assertEqual(res.get_patched(), False)
         res.set_patched(True)
         self.assertEqual(res.get_patched(), True)
+
 
     def test_single_patching(self):
         """Test application of single-residue patches"""
@@ -195,6 +200,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
         self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
+    test_single_patching = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_single_patching)
 
     def test_double_patching(self):
         """Test application of two-residue patches"""
@@ -229,7 +236,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         bond = res1.get_bond(10)
         self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'SG')
         self.assertEqual(bond.get_endpoint(1).get_atom_name(), 'SG')
-
+    test_double_patching = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_double_patching)
     def test_manual_make_topology(self):
         """Test manual construction of topology"""
         model = IMP.atom.CHARMMTopology()
@@ -267,6 +275,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         a1 = IMP.atom.get_atom(r1, IMP.atom.AT_C)
         a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
         self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
+    test_make_patched_topology = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_make_patched_topology)
 
     def test_dihedral_stiffness(self):
         """Make sure dihedrals can have negative stiffness"""
@@ -298,6 +308,9 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                   get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
         self.assertAlmostEqual(d.get_stiffness(), -0.7746, delta=1e-4)
+    test_dihedral_stiffness = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_dihedral_stiffness)
+
 
     def test_make_topology(self):
         """Test construction of topology"""
@@ -376,6 +389,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(chains), 1)
         self.assertEqual(len(residues), 3)
         self.assertEqual(len(atoms), 42)
+    test_make_hierarchy = IMP.test.skip("functions not supported as they leaked memory")\
+                           (test_make_hierarchy)
 
     def test_empty_residue_make_hierarchy(self):
         """Test construction of hierarchy from empty topology"""
