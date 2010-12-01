@@ -12,5 +12,5 @@ for m in sys.argv[1:]:
    else:
        mn="."+m
    cmd= "import IMP"+mn+"\n"\
-        +"print IMP"+mn+".get_module_version_info().get_version()"
+        +"print '"+m+"', IMP"+mn+".get_module_version_info().get_version()"
    exec(cmd)
