@@ -654,8 +654,8 @@ void transform(Hierarchy h, const algebra::Transformation3D &tr) {
     } else if (core::XYZ::particle_is_instance(c)) {
       core::transform(core::XYZ(c), tr);
     }
-    for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-      stack.push_back(h.get_child(i));
+    for (unsigned int i=0; i< c.get_number_of_children(); ++i) {
+      stack.push_back(c.get_child(i));
     }
   } while (!stack.empty());
 }
