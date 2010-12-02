@@ -71,6 +71,14 @@ namespace internal {
 }
 #endif
 
+//! Push a new log context onto the stack
+/** A log context is, eg, a function name.
+ */
+IMPEXPORT void push_log_context(std::string name);
+
+//! pop the top log context
+IMPEXPORT void pop_log_context();
+
 //! Write a string to the log
 IMPEXPORT void add_to_log(std::string to_write);
 
@@ -268,43 +276,35 @@ public:
 #endif
 
 
-//! Increase the current indent in the log by one level
+//! Create a new log context
 /** The following produces
 
     \verbatim
-    The function is starting:
+    myfunction:
        1
        2
        3
-    Now it is ending.
     \endverbatim
 
     \code
-    IMP_LOG(VERBOSE, "The function is starting:\n");
     {
-        IncreaseIndent ii();
+        CreateLogContext ii("myfunction ");
         IMP_LOG(VERBOSE, 1);
         IMP_LOG(VERBOSE, 2);
         IMP_LOG(VERBOSE, 3);
     }
-    IMP_LOG(VERBOSE, "Now it is ending." << std::endl);
+    IMP_LOG(VERBOSE, "Now it is has ended." << std::endl);
     \endcode
 
     The more interesting use is that you can use it before
     calling a function to ensure that all the output of that
     function is nicely offset.
 */
-struct IncreaseIndent {
-  // can't use macro since there are no arguments
-  IncreaseIndent(){
-    internal::log_indent+=2;
-  }
-  ~IncreaseIndent() {
-    internal::log_indent-=2;
-  }
-private:
-  IncreaseIndent(const IncreaseIndent&){}
-  void operator=(const IncreaseIndent&){}
+struct CreateLogContext {
+public:
+  IMP_RAII(CreateLogContext, (std::string name),,
+           push_log_context(name),
+           pop_log_context());
 };
 
 /** @} */
