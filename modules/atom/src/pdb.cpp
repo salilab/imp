@@ -237,6 +237,7 @@ namespace {
                        bool split_models,
                        bool noradii)
 {
+  IMP_FUNCTION_LOG;
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;
@@ -390,6 +391,7 @@ bool check_arbond(Particle* atom_p);
 
 void write_pdb(const Particles& ps, TextOutput out)
 {
+  IMP_FUNCTION_LOG;
   int last_index=0;
   bool use_input_index=true;  for (unsigned int i=0; i< ps.size(); ++i) {
     if (Atom(ps[i]).get_input_index() != last_index+1) {
