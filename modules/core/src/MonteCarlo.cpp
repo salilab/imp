@@ -78,8 +78,8 @@ Float MonteCarlo::optimize(unsigned int max_steps)
       IMP_LOG(TERSE,
               "MC Performing local optimization from "
               << get_model()->evaluate(false) << std::endl);
+      CreateLogContext clc("mc local optimization");
       {
-        IncreaseIndent ii;
         IMP_CHECK_OBJECT(cg_.get());
 
         // if incremental, turn off non-dirty particles
