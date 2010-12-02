@@ -95,7 +95,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
             return ret[0]
     vars = env['IMP_VARIABLES']
     vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
-    vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
+    vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed if "'+lcname+'" is "yes".', None)
     vars.Update(env)
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
