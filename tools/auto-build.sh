@@ -39,7 +39,8 @@ echo "${rev}" > $verfile
 
 # Write out list of all modules
 modfile="${MODINSTALL}/build/imp-modules"
-python <<ENDdef Import(var): pass
+python <<END
+def Import(var): pass
 def SConscript(var): pass
 env = {}
 exec(open('imp/modules/SConscript').read())
