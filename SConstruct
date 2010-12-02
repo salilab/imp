@@ -61,28 +61,28 @@ includepath='/opt/local/include'
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
 
-    boost_thread="boost_thread"+env.get("BOOST_LIBSUFFIX")
-    boost_program_options="boost_program_options"+env.get("BOOST_LIBSUFFIX")
-    boost_filesystem="boost_filesystem"+env.get("BOOST_LIBSUFFIX")
-    boost_system="boost_system"+env.get("BOOST_LIBSUFFIX")
+boost_thread="boost_thread"+env.get("BOOST_LIBSUFFIX", "")
+boost_program_options="boost_program_options"+env.get("BOOST_LIBSUFFIX", "")
+boost_filesystem="boost_filesystem"+env.get("BOOST_LIBSUFFIX", "")
+boost_system="boost_system"+env.get("BOOST_LIBSUFFIX", "")
 
-    scons_tools.dependency.add_external_library(env, "ANN", "ANN",
+scons_tools.dependency.add_external_library(env, "ANN", "ANN",
                                             "ANN/ANN.h")
-    scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
-                                                    "netcdfcpp.h")
-    scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
-                                                "fftw3.h")
+scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
+                                                "netcdfcpp.h")
+scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
+                                            "fftw3.h")
 
-    scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm',
-                                                              boost_thread, 'pthread'],
-                                                ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                                                body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
-    scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
-                                                'boost/filesystem/path.hpp',
+scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm',
+                                                          boost_thread, 'pthread'],
+                                            ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
+                                            body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
+scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
+                                            'boost/filesystem/path.hpp',
+                                            extra_libs=[boost_system])
+scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", boost_program_options,
+                                                'boost/program_options.hpp',
                                                 extra_libs=[boost_system])
-    scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", boost_program_options,
-                                                    'boost/program_options.hpp',
-                                                    extra_libs=[boost_system])
 
 
 
