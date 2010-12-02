@@ -1,10 +1,6 @@
-
 import IMP
 import IMP.test
-import IMP.core
-import IMP.atom
 import IMP.em2d
-import IMP.em
 import os
 from math import *
 import random
@@ -123,7 +119,7 @@ class ProjectTests(IMP.test.TestCase):
                     "at pixel (%d,%d)" % (i,j))
 
     def test_write_jpg(self):
-        """Test of JPGReaderWriter writting"""
+        """Test of JPGReaderWriter writing"""
         jrw = IMP.em2d.JPGImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=IMP.em2d.Image(fn_img1,jrw)
@@ -143,7 +139,7 @@ class ProjectTests(IMP.test.TestCase):
         os.remove(fn_img2)
 
     def test_write_error_jpg(self):
-        """Test that writting with JPGReaderWriter fails with bad extension"""
+        """Test that writing with JPGReaderWriter fails with bad extension"""
         jrw = IMP.em2d.JPGImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=IMP.em2d.Image(fn_img1,jrw)
