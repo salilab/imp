@@ -39,7 +39,7 @@ public:
 
   //! Empty constructor. It does not force reversed header and does not
   //! skip any of the tests
-  /**
+  /*!
    *  \note reversed is only used in case that the type_check is skipped
    */
   SpiderImageReaderWriter() {
@@ -49,7 +49,7 @@ public:
   }
 
   //! Full constructor.
-  /**
+  /*!
    *  \param[in] filename file to read
    *  \param[in] skip_type_check if true, the check for type of image is skipped
    *  \param[in] force_reversed if true, the reverse mode is enforced
@@ -57,7 +57,7 @@ public:
    *  \param[in] skip_extra_checkings if true, the most stringent
    * tests for consistency of images are skipped when reading
    */
-  SpiderImageReaderWriter(String filename,bool skip_type_check,
+  SpiderImageReaderWriter(const String &filename,bool skip_type_check,
                         bool force_reversed,bool skip_extra_checkings) {
     filename_=filename;
     skip_type_check_=skip_type_check;
@@ -68,12 +68,12 @@ public:
 
   //! Reads an image file in Spider format and stores the content
   //! int the header and data parameters
-  /**
+  /*!
     \param[in] filename file to read
     \param[in] header header to store the info
     \param[in] data a matrix to store the grid of data of the image
-  **/
-  void read_from_floats(String filename,
+  */
+  void read_from_floats(const String &filename,
                           em::ImageHeader &header,cv::Mat &data) const {
     IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
     std::ifstream in;
@@ -111,12 +111,12 @@ public:
 
 
   //! Writes an EM image in Spider format
-  /**
+  /*!
    *  \param[in] filename file to write
    *  \param[in] header header with the image info
    *  \param[in] data a matrix with the grid of data of the image
    */
-  void write_to_floats(String filename, em::ImageHeader& header,
+  void write_to_floats(const String &filename, em::ImageHeader& header,
                                         cv::Mat &data) const {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);

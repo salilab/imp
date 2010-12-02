@@ -1,4 +1,4 @@
-/**
+/*!
  *  \file RegistrationResult.h
  *  \brief Registration results class
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
@@ -21,7 +21,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Class to manage registration results
-/**
+/*!
   \note  Stores the rotation and in-plane translation needed to register a
   model
   Contains:
@@ -29,7 +29,7 @@ IMPEM2D_BEGIN_NAMESPACE
   - The rotation is understood as ZYZ
   - shift shift to apply to the projection of the model (after rotation) to
     align it with the given image
-**/
+*/
 class IMPEM2DEXPORT RegistrationResult {
 public:
 
@@ -161,19 +161,19 @@ IMPEM2DEXPORT void  write_registration_results(
 
 
 //! Provides a set of random registration results (or parameters)
-/**
+/*!
   \param[in] n the number of requested results
   \param[in] maximum_shift shift from the center in pixels
-**/
+*/
 IMPEM2DEXPORT RegistrationResults get_random_registration_results
       (unsigned long n,double maximum_shift=5.0);
 
 
 //! Provides a set of registration results with directions of projection
 //!      evenly distributed in the semisphere
-/**
+/*!
   \param[in] n_projections the number of requested projections
-**/
+*/
 IMPEM2DEXPORT RegistrationResults
     evenly_distributed_registration_results(unsigned long n_projections);
 

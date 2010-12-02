@@ -3,7 +3,7 @@
  *  \brief PDB processing
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
-**/
+*/
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/project.h"
@@ -89,10 +89,10 @@ po::variables_map get_parameters(int argc,char **argv) {
 }
 
 //! Digests a string parameter with boost, checking if it exists.
-/**
+/*!
   If the parameter was found returns true and the vector values contains
   the strings with all the multiple values accompanying the parameter.
-**/
+*/
 bool digest_parameter(const str param,const po::variables_map &vm,
                       std::vector<str> &values) {
   str recovered = vm[param].as<str>();
@@ -106,10 +106,10 @@ bool digest_parameter(const str param,const po::variables_map &vm,
 
 //! Check if all the given parameters are present in a
 //! variables map from boost.
-/**
+/*!
   \param[in] required_params parameters that all have to be present
   \param[in] choosing_params only one parameter from these needs to be present
-**/
+*/
 bool check_parameters(const po::variables_map &vm,
                       const str required_params,
                       const str choosing_params="") {

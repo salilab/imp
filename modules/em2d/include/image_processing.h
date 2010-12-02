@@ -19,12 +19,12 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Adaptive Wiener filter for a 2D matrix m, which is stored in matrix result
-/** \param[in] kernel_rows the total number of rows to use in the kernel
+/*! \param[in] kernel_rows the total number of rows to use in the kernel
                of the filter
     \param[in] kernel_rows the total number of columns to use in the kernel
               of the filter
   \note
-**/
+*/
  IMPEM2DEXPORT void wiener_filter_2D(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
                       const unsigned int kernel_rows=3,
@@ -33,13 +33,13 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Morphological grayscale reconstruction (L Vincent, 1993)
-/**
+/*!
   \param[in] mask image to reconstruct
   \param[out] marker this image contains the initial marker points and will
               contain the final result
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
              doing the morphological reconstruction (values: 4, 8).
-**/
+*/
  IMPEM2DEXPORT void morphological_reconstruction(algebra::Matrix2D_d &mask,
                       algebra::Matrix2D_d &marker,
                       int neighbors_mode=4);
@@ -47,7 +47,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Returns the neighbors for a givel pixel in a given mode
-/**
+/*!
   \ note IMPORTANT: The neighbors are returned in CLOCKWISE order starting
                     with i-1,j+0  (12 o'clock)
   \param[in] p the pixel to get the neighbors for
@@ -61,7 +61,7 @@ IMPEM2D_BEGIN_NAMESPACE
               matrix. Eg. the neighbor to the right of last column, is the
               initial column. If this parameter is false (default) the
               neighbors outside the matrix are removed.
-**/
+*/
  IMPEM2DEXPORT Pixels compute_neighbors_2D(
                             const Pixel &p,const algebra::Matrix2D_d &m,
                              int mode=4,
@@ -87,63 +87,63 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Morphological dilation of a grayscale matrix m.
-/**
+/*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
-**/
+*/
  IMPEM2DEXPORT void dilation(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
 //! Morphological erosion of a grayscale matrix m.
-/**
+/*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
-**/
+*/
 IMPEM2DEXPORT void erosion(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 //! Morphological opening of a grayscale matrix m.
-/**
+/*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
-**/
+*/
 IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
 //! Morphological closing of a grayscale matrix m.
-/**
+/*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
-**/
+*/
  IMPEM2DEXPORT void closing(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
 
 //! Thresholding to get a binary image
-/**
+/*!
   \param[in] mode if 1 the values higher than the threshold are given value 1.
                   If the mode is -1, the values lower the threshold are given 1.
-**/
+*/
  IMPEM2DEXPORT void thresholding(
                   const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
                    double threshold, int mode);
 
 
 //! Applies a binary mask to an image.
-/**
+/*!
   \param[in] mask If the mask is 1, the result has the value of m. Otherwise
              the value is given by the parameter value.
   \param[in] value value to apply when the mask is 0
   \note  m and result can be the same matrix.
 
-**/
+*/
 IMPEM2DEXPORT void masking(
           const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
           const algebra::Matrix2D<int> &mask,double value);
@@ -152,10 +152,10 @@ IMPEM2DEXPORT void masking(
 
 //! Smoothing filter by application of the reaction-diffusion
 //! equation of Beltrami flow. Adiga, JSB, 2005
-/**
+/*!
   \param [in] beta contribution of diffusion versus edge enhancement.
               0 - pure reaction, 90 - pure diffusion
-**/
+*/
  IMPEM2DEXPORT void diffusion_filtering(
              const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
@@ -182,13 +182,13 @@ void transfer_by_casting(algebra::Matrix2D<T> &m,
 
 //! Removes small objects from a labeled image. The background value is assumed
 //! to be 0, and the labels start at 1 up to the number of labels.
-/**
+/*!
   \param[in] m the matrix
   \param[in] percentage The percentage respect to the largest object that
              other objects have to be in order to survive the removal.
   \param[in] n_labels If higher than 0 (default) is the number of labels in the
              image. Otherwise, the function computes the number (slower)
-**/
+*/
 template<typename T>
 void remove_small_objects(algebra::Matrix2D<T> &m,
             double percentage,int n_labels=0) {
@@ -231,12 +231,12 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
 
 
 //! (U. Adiga, 2005)
-/**
+/*!
   \param[in] m binary matrix to dilate and shrink
   \param[in] greyscale greyscale matrix that controls the shrinking
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
-**/
+*/
  IMPEM2DEXPORT void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
                             const algebra::Matrix2D_d &greyscale,
                             algebra::Matrix2D_d &kernel);
@@ -250,28 +250,28 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
 
 
 //! Computes the histogram of a matrix.
-/**
+/*!
   \param[in] m Matrix with the data
   \param[in] bins Number of bins to use in the histogram
   \param[out] vector with the values for each bin
-**/
+*/
 IMPEM2DEXPORT Floats get_histogram(const cv::Mat &m, int bins);
 
 
 //! Variance filter for an image. Computes the variance for each pixel using
 //! the surrounding ones.
- /**
+ /*!
   \param[in] input image with the data
   \param[out] filtered matrix result of the filtering with the variances
   \param[in] kernelsize The variance is computed using kernelsize x kernelsize
               pixels around each one. Kernelsize can only be odd.
-**/
+*/
 IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
                                    cv::Mat &filtered,int kernelsize);
 
 
 //!Add noise to the values of a matrix.
-/**
+/*!
     Supported distributions:
    - uniform distribution, giving the range (lower, upper). DEFAULT
    - gaussian distribution, giving the mean and the standard deviation
@@ -286,20 +286,20 @@ IMPEM2DEXPORT void apply_variance_filter(const cv::Mat &input,
   // gaussian distribution with 0 mean and stddev=1
 
    \endcode
-**/
+*/
 IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
                const String &mode = "uniform", double df = 3);
 
 
 //! Resamples a matrix to polar coordinates.
-/**
+/*!
   \param[in] m matrix to resample
   \param[out] result matrix to contain the resampling
   \param[in] polar params Parameters used for the resampling. Extremely useful
             for speeding up the procedure if they are given with the
             transformation maps, that can be built in the
             PolarResamplingParameters class
-**/
+*/
 IMPEM2DEXPORT void resample_polar(const cv::Mat &input, cv::Mat &resampled,
                     const PolarResamplingParameters &polar_params);
 

@@ -143,21 +143,21 @@ IMP_OUTPUT_OPERATOR(Image);
 
 //! Reads images from files (For compatibility with SPIDER format,
 //! the images are read from floats)
-/**
+/*!
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
-**/
+*/
 IMPEM2DEXPORT Images read_images(Strings names,
                                   const em2d::ImageReaderWriter<double> &rw);
 
 
 //! Saves images to files (For compatibility with SPIDER format,
 //! the images are written to floats)
-/**
+/*!
   \param[in] images Images to save
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
-**/
+*/
 IMPEM2DEXPORT void save_images(Images images, Strings names,
                              const em2d::ImageReaderWriter<double> &rw);
 

@@ -36,9 +36,9 @@ public:
 
   //! Compute the parameters for a polar resampling getting the dimensions from
   //! the matrix
-  /**
+  /*!
       \params[in] matrix Matrix that is going to be resampled
-  **/
+  */
   PolarResamplingParameters(const cv::Mat &m) {
     initialize(m.rows,m.cols);
   }

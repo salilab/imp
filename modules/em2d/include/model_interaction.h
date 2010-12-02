@@ -35,13 +35,13 @@ IMPEM2DEXPORT Pointer<em::SampledDensityMap>
 
 
 //! Generates a density map from a PDB file by downsampling.
-/**
+/*!
   \param[in] fn_model name of the PDB file
   \param[out] fn_map name of the output map
   \param[in] resolution in Angstroms.
   \param[in] voxelsize in Angstroms/pixel
   \param[in] mrw Reader/Writer for the desired format
-**/
+*/
 IMPEM2DEXPORT void generate_map_from_model(String fn_model,
                              String fn_map,
                             double resolution,
@@ -51,9 +51,9 @@ IMPEM2DEXPORT void generate_map_from_model(String fn_model,
 
 //! Generate a PDB file from a set of Vector2D (all the points are C-alpha) and
 //! the Z coordinate is set to 0.
-/**
+/*!
   \note This version deals with the problem of having more than 10000 points
-**/
+*/
 IMPEM2DEXPORT void Vector2Ds_to_pdb(
                   const algebra::Vector2Ds vs, const String filename);
 

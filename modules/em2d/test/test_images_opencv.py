@@ -98,5 +98,63 @@ class ProjectTests(IMP.test.TestCase):
                          msg="Generated polar image is different than stored"\
                          " row %d col %d" % (i,j))
 
+
+    def test_read_jpg(self):
+        """Test of JPGReaderWriter reading"""
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        jrw = IMP.em2d.JPGImageReaderWriter()
+        fn_jpg_img = self.get_input_file_name("lena-256x256.jpg")
+        jpg_img=IMP.em2d.Image(fn_jpg_img,jrw)
+        fn_spider_img = self.get_input_file_name("lena-256x256.spi")
+        spider_img=IMP.em2d.Image(fn_spider_img,srw)
+
+        rows =int( jpg_img.get_header().get_number_of_rows())
+        cols = int(jpg_img.get_header().get_number_of_columns())
+
+        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows);
+        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols);
+
+        for i in range(0,rows):
+            for j in range(0,cols):
+                # due to rounding, integer numbers in the jpg file can vary
+                # to the next integer. Allow delta 1
+                self.assertAlmostEqual(abs(spider_img(i,j)-jpg_img(i,j)),0,
+                delta=1,msg="JPG image is not equal to spider image " \
+                    "at pixel (%d,%d)" % (i,j))
+
+    def test_write_jpg(self):
+        """Test of JPGReaderWriter writting"""
+        jrw = IMP.em2d.JPGImageReaderWriter()
+        fn_img1 = self.get_input_file_name("lena-256x256.jpg")
+        img1=IMP.em2d.Image(fn_img1,jrw)
+        fn_img2 = self.get_input_file_name("temp.jpg")
+        img1.write_to_floats(fn_img2,jrw)
+        img2 = IMP.em2d.Image(fn_img2,jrw)
+
+        rows = int( img1.get_header().get_number_of_rows())
+        cols = int(img1.get_header().get_number_of_columns())
+        for i in range(0,rows):
+            for j in range(0,cols):
+                # due to rounding, integer numbers in the jpg file can vary
+                # to the next integer. Allow delta 1
+                self.assertAlmostEqual(abs(img1(i,j)-img2(i,j)),0,
+                delta=1,msg="Written JPG image is not equal to read " \
+                " at pixel (%d,%d)" % (i,j))
+        os.remove(fn_img2)
+
+    def test_write_error_jpg(self):
+        """Test that writting with JPGReaderWriter fails with bad extension"""
+        jrw = IMP.em2d.JPGImageReaderWriter()
+        fn_img1 = self.get_input_file_name("lena-256x256.jpg")
+        img1=IMP.em2d.Image(fn_img1,jrw)
+        try:
+            fn_img2 = self.get_input_file_name("temp.xxx")
+            img1.write_to_floats(fn_img2,jrw)
+        except:
+            # Make sure a exception is sent
+            self.assertTrue(True);
+            return
+        self.assertTrue(False);
+
 if __name__ == '__main__':
     IMP.test.main()

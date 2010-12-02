@@ -2,7 +2,7 @@
  *  \file image_processing.cpp
  *  \brief image processing for EM
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
-**/
+*/
 
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em/SpiderReaderWriter.h"
@@ -380,7 +380,7 @@ void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
 
 //! Partial derivative with respect to time for an image filtered with
 //! difusion-reaction
-/**
+/*!
   \param[in] I input
   \param[in] deriv output derivative
   \param[in] temp_x temporary matrix to store dI/dx
@@ -389,7 +389,7 @@ void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
   \param[in] dx - step for x
   \param[in] dy - step for y
   \param[in] ang - parameter for weight diffusion and edge detection (90-0)
-**/
+*/
 void diffusion_filtering_partial_der_t(
                       const algebra::Matrix2D_d &I,
                       algebra::Matrix2D_d &It,
@@ -511,10 +511,10 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
       }
     }
     // Now temp contains the new mask with size new_size_in_pixels
-    /********/
+    /*******/
 //    xxx.set_data(temp);
 //    xxx.write_to_floats("temp.spi",srw);
-    /********/
+    /*******/
   } while( abs(new_size_in_pixels-size_in_pixels)>1);
 //  } while( new_size_in_pixels != size_in_pixels);
   m.copy(temp);

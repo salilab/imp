@@ -1,4 +1,4 @@
-/**
+/*!
  *  \file scores2D.h
  *  \brief Scoring functions for 2D
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.

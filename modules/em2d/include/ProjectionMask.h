@@ -35,19 +35,19 @@ public:
             const em::RadiusDependentKernelParameters *params,double voxelsize);
 
   //! Generates the mask
-  /**
+  /*!
     \param[in] KP Kernel parameteres to employ. See the EM module
     \param[in] params Kernel parameteres associated with radius to employ
-  **/
+  */
   void generate(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params);
 
   //! Adds the values of the mask to a matrix at the given pixel
-  /**
+  /*!
     \param[out] m matrix where the values of the mask are added.
     \param[in] v pixel where to apply the values. Currently used as integer.
     \param[in] weight Weight given to the values of the mask.
-  **/
+  */
   void apply(cv::Mat &m,
              const algebra::Vector2D &v,double weight);
 
@@ -82,10 +82,10 @@ public:
   void generate_masks(const ParticlesTemp &ps);
 
   //! Creates the adequate mask for a particle of given radius
-  /**
+  /*!
     \param[in] params Kernel parameters for the particle
     \param[in] radius of the particle
-  **/
+  */
   void create_mask(double radius);
 
   //! Returns the adequate mask for a particle of given radius
