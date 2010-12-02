@@ -189,7 +189,7 @@ void setup_filters(const Subset &s,
                          "Duplicate elements in order "
                          << taken.size() << " " << order.size());
     }
-    IMP_OBJECT_LOG;
+    IMP_FUNCTION_LOG;
     IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::flush);
 
     IMP_CHECK_OBJECT(table);
