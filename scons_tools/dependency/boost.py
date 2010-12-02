@@ -78,7 +78,7 @@ def _tr1check(context):
     context.Message('Checking if Boost and gcc tr1 coexist ...')
     rett = context.TryCompile("""
 #include <tr1/tuple>
-#include <boost/tuple.hpp>
+#include <boost/tuple/tuple.hpp>
     int main()
     {
     return 0;
