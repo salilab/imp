@@ -79,12 +79,15 @@ public:
   PairGeometry(const ParticlePair &pp);
 
   bool get_has_color() const {
-    return Colored::particle_is_instance(p0_)
+    return Geometry::get_has_color()
+      || Colored::particle_is_instance(p0_)
       || Colored::particle_is_instance(p1_);
   }
 
   Color get_color() const {
-    if (Colored::particle_is_instance(p0_))
+    if (Geometry::get_has_color()) {
+      return Geometry::get_color();
+    } else if (Colored::particle_is_instance(p0_))
       return Colored(p0_).get_color();
     else return Colored(p1_).get_color();
   }
