@@ -93,17 +93,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
                                                                  variables=variables,
                                                                  ok=False)
             return ret[0]
-    from SCons.Script import EnumVariable
-    vars = SCons.Variables.Variables(files=[File('#/config.py').abspath])
+    vars = env['IMP_VARIABLES']
     vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
-    tenv= SCons.Environment.Environment(variables=vars)
-    env['IMP_VARIABLES'].Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
-    env['IMP_VARIABLES'].Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed which "'+lcname+'" is "yes".', None)
-    env[lcname]= tenv[lcname]
-    #env['IMP_VARIABLES'].Update(env)
-    if tenv.get(lcname+"libs", None) is not None:
-        env[lcname+"libs"]= tenv[lcname+"libs"]
+    vars.Update(env)
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
         conf = env.Configure(custom_tests=custom_tests)
