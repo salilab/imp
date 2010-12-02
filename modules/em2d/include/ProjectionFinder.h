@@ -44,7 +44,7 @@ public:
   }
 
   //! Initializes the parameters to generate and match projections
-  /**
+  /*!
     \param[in] resolution to employ to generate projections for matching with
               the EM images. Default is the maximum possible, 1.
     \param[in] coarse_registration_method Method for 1st step of projection
@@ -60,7 +60,7 @@ public:
                The default value is based on the benchmark results
     \param[in] Value of the simplex length stop the search. The smaller, the
                more accurate the finder, but slower
-  **/
+  */
   void initialize(double apix,double resolution =1,
                  int coarse_registration_method = ALIGN2D_PREPROCESSING,
                  bool save_match_images =false,
@@ -93,10 +93,10 @@ public:
 
   //! The projections of the model that best match the subject EM images
   //! are saved.
-  /**
+  /*!
     Their name will be: coarse-match-i.spi for coarse registration and
     fine_match-i.spi for full registration.
-  **/
+  */
   void set_save_match_images(bool x) {
     save_match_images_=x;
   }

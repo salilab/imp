@@ -25,7 +25,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! This restraint ensures that a set of particles are similar to a set
 //! of EM images
-/**
+/*!
   This restraint generates projections of the model that
   are compared with the EM images. The projections are generated from
   the radius of its particles. In the case of atoms, the radius is generated
@@ -53,12 +53,12 @@ public:
   Em2DRestraint() {};
 
   //! This function initializes the restraint with the required parameters
-  /**
+  /*!
     \param[in] apix Angstroms per pixel in the images
     \param[in] resolution resolution to use when generating projections
     \param[in] n_projections number of projections to generate to perform
                the initial coarse registration.
-  **/
+  */
   void initialize(double apix,double resolution =1,
                   unsigned n_projections=20,
                  unsigned int coarse_registration_method = 1,
@@ -83,7 +83,7 @@ public:
   //! Sets the EM images to use as restraints
   void set_images(const em2d::Images em_images);
 
-  //! Sets fast mode for computing the restraint. See OldProjectionFinder help
+  //! Sets fast mode for computing the restraint.
   void set_fast_mode(unsigned int n);
 
   IMP_RESTRAINT(Em2DRestraint);

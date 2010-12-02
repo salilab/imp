@@ -233,7 +233,7 @@ void ProjectionFinder::get_coarse_registration() {
     IMP_THROW("get_coarse_registration:There are not projection images",
               ValueException);
   }
-  /***** Computation ********/
+  /***** Computation *******/
   coarse_registration_time_ = 0;
 //  boost::progress_display show_progress(subjects_.size());
   for(unsigned long i=0;i<subjects_.size();++i) {

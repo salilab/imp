@@ -30,7 +30,7 @@ public:
 
   //! Initialization function. To be called after setting the model for the
   //! restraint
-  /**
+  /*!
     \param[in] ps ParticlesTemp
     \param[in] subjects The subject 2D-EM images to register
     \param[in] resolution
@@ -39,7 +39,7 @@ public:
     \param[in] masks - Masks manager with the projection masks por the particles
                 of the model. If not given, it is generated
 
-  **/
+  */
   void initialize(ParticlesTemp &ps,
                  double resolution,
                  double pixelsize,

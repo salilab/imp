@@ -1,4 +1,4 @@
-/**
+/*!
  *  \file FFTinterface.h
  *  \brief Functions to deal with very common math operations
  *  \brief Interface between FFTW and this package.
@@ -20,18 +20,18 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Get the proper size to do fast FFT with fftw3
-/**
+/*!
   \note To save time of computation and memory space, the dimension of
   the FFT transform in fftw3 does not have same dimensions as the input.
   The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of the input (vector, matrix, etc..)
-**/
+*/
 inline unsigned int get_fast_fft_size(unsigned int dim) {
   return floor(dim/2)+1;
 }
 
 //! Interface class between fftw3 and FFTs in 2D
-/**
+/*!
   To use, simply:
   \code
     FFT2D fft(m,M);
@@ -40,7 +40,7 @@ inline unsigned int get_fast_fft_size(unsigned int dim) {
   \note to save time of computation and memory space, M does not have same
   dimensions as m. The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of m.
-**/
+*/
 class FFT2D {
 public:
   FFT2D() {};
@@ -70,7 +70,7 @@ private:
 };
 
 //! Interface class between fftw3 and IFFTs in 2D
-/**
+/*!
   To use, simply:
   \code
     IFFT2D ifft;
@@ -82,7 +82,7 @@ private:
   dimensions as m. The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of m. The output m MUST have correct dimensions in
   advance.
-**/
+*/
 class IFFT2D {
 public:
   IFFT2D() {};
@@ -114,7 +114,7 @@ private:
 
 
 //! Interface class between fftw3 and FFTs in 1D
-/**
+/*!
   To use, simply:
   \code
     FFT1D fft;
@@ -123,7 +123,7 @@ private:
   \endcode
   \note to save time of computation and memory space, the size of M is only
   floor(n/2)+1, being n the size of m.
-**/
+*/
 class FFT1D {
 public:
   FFT1D() {
@@ -162,7 +162,7 @@ private:
 };
 
 //! Interface class between fftw3 and IFFTs in 1D
-/**
+/*!
   To use, simply:
   \code
     IFFT1D ifft(M,m);
@@ -172,7 +172,7 @@ private:
   \note to save time of computation and memory space, the size of M is
   only floor(n/2)+1, being n the size of m. The output m must have the proper
   size in advance
-**/
+*/
 class IFFT1D {
 public:
   IFFT1D() {prepared_=false;};
@@ -206,7 +206,7 @@ private:
 };
 
 //! Interface class between fftw3 and FFTs in 3D
-/**
+/*!
   To use, simply:
   \code
     FFT3D fft(m,M);
@@ -215,7 +215,7 @@ private:
   \note to save time of computation and memory space, M does not have same
   dimensions as m. The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of m.
-**/
+*/
 class FFT3D {
 public:
   FFT3D() {};
@@ -263,7 +263,7 @@ private:
 
 
 //! Interface class between fftw3 and IFFTs in 3D
-/**
+/*!
   To use, simply:
   \code
     IFFT3D fft;
@@ -275,7 +275,7 @@ private:
   dimensions as m. The las dimension is only floor(n/2)+1, being n the size
   of the last dimension of m. The output m must have the proper dimensions
   in advance
-**/
+*/
 class IFFT3D {
 public:
    IFFT3D() {};
@@ -316,14 +316,14 @@ private:
 
 //! Generates the complete FFT2D that would require the use of a general plan
 //! in fftw3 from the results of using the plan fftw_plan_dft_r2c_2d.
-/**
+/*!
   \note Using this function saves the use of the general plan, which is half
   of the computations. The relation between the dimensions:
     rows(in) = rows(out)
     columns(in) = floor(columns(out)/2)+1
   both matrices must have the proper dimensions before applying the function
   \link http://www.fftw.org/fftw3_doc/Multi_002ddimensional-Transforms.html
-**/
+*/
 template <typename T>
 void symmetrize_FFT2D(algebra::Matrix2D<T> &in,algebra::Matrix2D<T> &out) {
   int ny = out.get_size(0);
@@ -342,7 +342,7 @@ void symmetrize_FFT2D(algebra::Matrix2D<T> &in,algebra::Matrix2D<T> &out) {
 
 //! Compresses the "complete" matrix2D that the general plan in fftw3 requires
 //! to the format used by the plan fftw_plan_dft_r2c_2d
-/**
+/*!
   \note Using this function saves the use of the general plan, thus requiring
   only half of the computations when applying IFFT2D. The relation between
   the dimensions:
@@ -350,7 +350,7 @@ void symmetrize_FFT2D(algebra::Matrix2D<T> &in,algebra::Matrix2D<T> &out) {
     columns(out) = floor(columns(in)/2)+1
   \note The input matrix is modified and part of the values are lost
   \link http://www.fftw.org/fftw3_doc/Multi_002ddimensional-Transforms.html
-**/
+*/
 template <typename T>
 void desymmetrize_FFT2D(algebra::Matrix2D<T> &in) {
   in.resize(in.get_number_of_rows(),
@@ -359,7 +359,7 @@ void desymmetrize_FFT2D(algebra::Matrix2D<T> &in) {
 
 //! Generates the complete FFT3D that would require the use of a general plan
 //! in fftw3 from the results of using the plan fftw_plan_dft_r2c_3d.
-/**
+/*!
   \note This function saves using the general plan (half the computations).
   The relation between the dimensions:
     slices(in) = slices(out)
@@ -367,7 +367,7 @@ void desymmetrize_FFT2D(algebra::Matrix2D<T> &in) {
     columns(in) = floor(columns(out)/2)+1
   Both matrices must have the proper dimensions before applying the function
   \link http://www.fftw.org/fftw3_doc/Multi_002ddimensional-Transforms.html
-**/
+*/
 template <typename T>
 void symmetrize_FFT3D(algebra::Matrix3D<T> &in,algebra::Matrix3D<T> &out) {
   int nz = out.get_size(0),ny = out.get_size(1), nx = out.get_size(2);
@@ -388,7 +388,7 @@ void symmetrize_FFT3D(algebra::Matrix3D<T> &in,algebra::Matrix3D<T> &out) {
 
 //! Compresses the "complete" matrix3D that the general plan in fftw3 requires
 //! to the format used by the plan fftw_plan_dft_r2c_3d
-/**
+/*!
   \note Using this function saves the use of the general plan, thus requiring
   only half of the computations when applying IFFT2D. The relation between
   the dimensions:
@@ -396,7 +396,7 @@ void symmetrize_FFT3D(algebra::Matrix3D<T> &in,algebra::Matrix3D<T> &out) {
     rows(out) = rows(in)
     columns(out) = floor(columns(in)/2)+1
   \note The input matrix is modified and part of the values are lost
-**/
+*/
 template <typename T>
 void desymmetrize_FFT3D(algebra::Matrix3D<T> &in) {
   in.resize(in.get_number_of_slices(),

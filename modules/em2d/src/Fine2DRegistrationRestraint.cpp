@@ -2,7 +2,7 @@
  *  \file Fine2DRegistrationRestraint.cpp
  *  \brief Finely refine the angles and translations of a set of subjet images
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
-**/
+*/
 
 
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
@@ -44,13 +44,11 @@ void Fine2DRegistrationRestraint::initialize(
   scoring_model->add_restraint(this);
   // Add an score state to the model
 
-/**/
   IMP_NEW(ProjectionParametersScoreState,
           pp_score_state,
           (subj_params_particle_));
   scoring_model->add_score_state(pp_score_state);
-/**/
-  }
+}
 
 void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   // Set image

@@ -136,50 +136,6 @@ class ProjectTests(IMP.test.TestCase):
                            stored_projections[n](i,j), delta=0.001,
                            msg="Projections generated and stored are different")
 
-#    def test_noisy_old_projections(self):
-#        """ Test the generation of noisy projections"""
-#        smodel = IMP.Model()
-#        ssel = IMP.atom.ATOMPDBSelector()
-#        prot =  IMP.atom.read_pdb(self.get_input_file_name("1e6v.pdb"),
-#                                                                 smodel,ssel)
-#        particles=IMP.core.get_leaves(prot)
-#        n_projections = 16
-#        rows = 100
-#        cols = 100
-#        resolution = 1
-#        apix = 1.5
-#        noise_SNR = 0.5
-#        # read the noisy stored images
-#        stored_names=[]
-#        srw = IMP.em.SpiderImageReaderWriter()
-#        for i in xrange(0,n_projections):
-#            stored_names.append(self.get_input_file_name(
-#                "1e6v-subject-"+str(i)+"-set-"+str(n_projections)+\
-#                    "-"+str(apix)+"-apix-"+str(noise_SNR)+"-SNR.spi") )
-#        stored_images=IMP.em.read_images(stored_names,srw)
-#
-#        # Read registration parameters and generate new images
-#        Regs =IMP.em2d.read_registration_results(
-#          self.get_input_file_name('1e6v-subjects-0.5.params') )
-#        projections = IMP.em2d.generate_projections(particles,Regs,
-#                               rows,cols,resolution,apix,srw)
-#        # Add noise
-#        for i in xrange(0,n_projections):
-#            IMP.em.normalize(projections[i])
-#            IMP.em.add_noise(projections[i].get_data(),
-#                              0.0,1./(noise_SNR**0.5), "gaussian")
-#
-#        # theoretical ccc for same images at a level of noise
-#        theoretical_ccc=noise_SNR/(noise_SNR+1)
-#        # check
-#        for n in xrange(0,n_projections):
-#            matrix1=projections[n].get_data()
-#            matrix2=stored_images[n].get_data()
-#            ccc=matrix1.cross_correlation_coefficient(matrix2)
-#             # allow 3% difference in cross-correlation
-#            self.assertAlmostEqual(theoretical_ccc,ccc, delta=0.03,
-#                    msg="Noisy projections generated and stored are different")
-#
 
     def test_noisy_projections(self):
         """ Test the generation of noisy projections"""

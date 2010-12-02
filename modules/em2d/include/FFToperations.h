@@ -1,4 +1,4 @@
-/**
+/*!
  *  \file FFToperations.h
  *  \brief Operations involving FFT
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
@@ -23,39 +23,39 @@ IMPEM2DEXPORT void matrix_to_image_flip(cv::Mat &m);
 
 
 //! Autocorrelation without preprocessing
-/**
+/*!
   \param[in]  M matrix containing the dft
    \param[out] corr the matrix to store the autocorrelation. Must have the
     proper dimensions when passed
-**/
+*/
 IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(
                                       const cv::Mat &M, cv::Mat &corr);
 
 //! Returns the autocorrelation matrix
-/**
+/*!
   \param[in] m first matrix
   \param[out] corr matrix of results
-**/
+*/
 IMPEM2DEXPORT void autocorrelation2D(const cv::Mat &m, cv::Mat &corr);
 
 
 //! Correlation matrix between two 2D matrices using FFT
-/**
+/*!
   \param[in] A first matrix
   \param[in] B second matrix
   \param[out] corr matrix of results
-**/
+*/
 IMPEM2DEXPORT void correlation2D(const cv::Mat &A,
                                  const cv::Mat &B, cv::Mat &corr);
 
 
 //! Correlation without preprocessing
 //! Returns the correlation matrix between two 2D matrices using FFT
-/**
+/*!
   \param[in]  M1 matrix containing the dft of the first matrix
   \param[in]  M2 matrix containing the dft of the second matrix
    \param[out] corr matrix of results (It MUST have the right size in advance)
-**/
+*/
 IMPEM2DEXPORT void correlation2D_no_preprocessing(const cv::Mat &M1,
                                     const cv::Mat &M2, cv::Mat &corr);
 
@@ -81,7 +81,7 @@ IMPEM2DEXPORT void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag);
 //  \param[in] m1 first matrix
 //  \param[in] m2 second matrix
 //  \param[out] corr matrix of results
-//**/
+//*/
 //IMPEM2DEXPORT void correlation2D(algebra::Matrix2D_d &m1,
 //                          algebra::Matrix2D_d &m2,
 //                          algebra::Matrix2D_d &corr);
@@ -92,7 +92,7 @@ IMPEM2DEXPORT void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag);
 //  \param[in] M1 FFT transform of the first matrix
 //  \param[in] M2 FFT transform of the second matrix
 //  \param[out] corr matrix of results (IT MUST have the right size in advance)
-//**/
+//*/
 //IMPEM2DEXPORT void correlation2D_no_preprocessing(
 //                   algebra::Matrix2D_c &M1,
 //                   algebra::Matrix2D_c &M2,
@@ -102,15 +102,15 @@ IMPEM2DEXPORT void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag);
 ///**
 //  \param[in] m matrix to autocorrelate
 //  \param[out] corr matrix of results
-//**/
+//*/
 //IMPEM2DEXPORT void autocorrelation2D(algebra::Matrix2D_d &m,
 //                               algebra::Matrix2D_d &corr);
 //
 ////! Returns the autocorrelation matrix using FFT
-///**
+///*!
 //  \param[in] M FFT transform of the matrix to autocorrelate
 //  \param[out] corr matrix of results (IT MUST have the right size in advance)
-//**/
+//*!/
 //IMPEM2DEXPORT void autocorrelation2D_no_preprocessing(
 //                               algebra::Matrix2D_c &M,
 //                               algebra::Matrix2D_d &corr);

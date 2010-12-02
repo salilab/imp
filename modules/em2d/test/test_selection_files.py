@@ -14,7 +14,6 @@ class SelectionFilesTest(IMP.test.TestCase):
         for i in range(0,len(names)):
             self.assertEqual(names[i],selection[i],
             "file %s does not match %s" % (names[i],selection[i]))
-        os.remove(fn_selection)
 
 if __name__ == '__main__':
     IMP.test.main()

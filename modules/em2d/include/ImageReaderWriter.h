@@ -19,27 +19,27 @@ class ImageReaderWriter
 public:
   virtual ~ImageReaderWriter() {}
 
-  virtual void read(String filename, em::ImageHeader& header,
+  virtual void read(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 
-  virtual void read_from_floats(String filename, em::ImageHeader& header,
+  virtual void read_from_floats(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 
-  virtual void read_from_ints(String filename, em::ImageHeader& header,
+  virtual void read_from_ints(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 
-  virtual void write(String filename, em::ImageHeader& header,
+  virtual void write(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 
-  virtual void write_to_floats(String filename, em::ImageHeader& header,
+  virtual void write_to_floats(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 
-  virtual void write_to_ints(String filename, em::ImageHeader& header,
+  virtual void write_to_ints(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
   }
 };

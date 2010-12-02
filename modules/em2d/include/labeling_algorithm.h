@@ -22,12 +22,12 @@ IMPEM2DEXPORT void assign_final_labels(
 
 //! union operation. Unites trees containing nodes i and j and returns the
 //! the new root
-/**
+/*!
   \param[in] P vector of labels
   \param[in] i a node
   \param[in] j another node
   \param[out] root the new root
-**/
+*/
 IMPEM2DEXPORT int p_union(std::vector<int> &P, int i, int j);
 
 
@@ -49,11 +49,11 @@ IMPEM2DEXPORT void d_copy(const Pixel &p, const Pixel &a,const Pixel &c,
             algebra::Matrix2D<int> &L,std::vector<int> &P);
 
 //! find root operation
-/**
+/*!
   \param[in] P vector of labels
   \param[in] i a node
   \param[out] root root of the tree for i
-**/
+*/
 inline int find_root(const std::vector<int> &P, int i) {
   int root = i;
   while(P[root] < root) {
@@ -65,11 +65,11 @@ inline int find_root(const std::vector<int> &P, int i) {
 
 
 //! Set root operation
-/**
+/*!
   \param[in] P vector of labels
   \param[in] i node of a tree
   \param[out] root root node of the tree of i
-**/
+*/
 inline void set_root(std::vector<int> &P,int i, int root) {
   while(P[i]<i) {
     int j = P[i];
@@ -144,10 +144,10 @@ int decission_tree(const Pixel &p,
 
 
 //! Scanning function
-/**
+/*!
   \param[in] m binary matrix to scan
   \param[out] L matrix with the labels
-**/
+*/
 template<typename T>
 void scan_SCT1(const algebra::Matrix2D<T> &m,algebra::Matrix2D<int> &L,
               std::vector<int> &P) {
@@ -212,12 +212,12 @@ void scan_SCT1(const algebra::Matrix2D<T> &m,algebra::Matrix2D<int> &L,
 
 
 //! Labeling function for a Matrix2D
-/**
+/*!
   \param[in] m binary matrix to scan. The matrix needs to contain zeros and
              ones but they can be stored as doubles, floats or ints
   \param[out] result matrix it is returned as a matrix of ints
   \param[out] labels The number of labels in the image
-**/
+*/
 template<typename T>
 int labeling(const algebra::Matrix2D<T> &m,algebra::Matrix2D<int> &result) {
   result.reshape(m);

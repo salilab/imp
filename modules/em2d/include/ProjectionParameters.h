@@ -46,7 +46,7 @@ public:
 
 
   //! Get whether the parameters are optimized
-  /** \return true only if all of them are optimized.
+  /*! \return true only if all of them are optimized.
     */
   bool get_parameters_optimized() const {
     for(int i=0;i<6;++i) {

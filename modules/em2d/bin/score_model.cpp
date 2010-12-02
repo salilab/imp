@@ -12,11 +12,10 @@
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
 #include "IMP/em2d/scores2D.h"
-/**/
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
-/**/
+
 #include "IMP/atom/Atom.h"
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/force_fields.h"
@@ -86,10 +85,10 @@ po::variables_map get_parameters(int argc,char **argv) {
 
 
 //! Digests a string parameter with boost, checking if it exists.
-/**
+/*!
   If the parameter was found returns true and the vector values contains
   the strings with all the multiple values accompanying the parameter.
-**/
+*/
 bool digest_parameter(const str param,const po::variables_map &vm,
                       std::vector<str> &values) {
   str recovered = vm[param].as<str>();
@@ -104,10 +103,10 @@ bool digest_parameter(const str param,const po::variables_map &vm,
 
 //! Check if all the given parameters are present in a
 //! variables map from boost.
-/**
+/*!
   \param[in] required_params parameters that all have to be present
   \param[in] choosing_params parameters tha only one needs to be present
-**/
+*/
 bool check_parameters(const po::variables_map &vm,const str required_params,
                       const str choosing_params="") {
   std::vector<str> required,choosing;

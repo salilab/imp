@@ -10,6 +10,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/algebra/Transformation2D.h"
 #include "opencv/cv.h"
+#include "opencv/highgui.h"
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE

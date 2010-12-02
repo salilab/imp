@@ -23,6 +23,7 @@ files = [
     "Em2DRestraint.h",
     "Image.h",
     "SpiderImageReaderWriter.h",
+    "JPGImageReaderWriter.h",
     "ImageReaderWriter.h",
       ] + SConscript("internal/SConscript")
 
