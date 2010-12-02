@@ -8,9 +8,9 @@ plural_exceptions=['Decorator', 'WarningContext', "SetLogTarget", "RefCounted",
             "ScoreStatePointer", "SingletonFunctor", "PairFunctor",
             "TripletFunctor", "QuadFunctor", 'IntPair', 'FloatRange', 'Object',
                    "DependencyGraph", "ScopedRestraint", "ScopedScoreState",
-                   "DerivativeAccumulator","SetLogState"]
+                   "DerivativeAccumulator","SetLogState", "CreateLogContext"]
 
-show_exceptions=["IntRange", "DerivativeAccumulator", "TextInput", "TextOutput",'Decorator', 'IncreaseIndent', 'PairFunctor', 'ParticlesList', 'QuadFunctor', 'RandomNumberGenerator', 'RefCounted', 'ScopedFailureHandler', 'ScoreStatePointer', 'SetLogTarget', 'SingletonFunctor', 'TripletFunctor', 'WarningContext', 'DerivativePair', 'FloatPair', 'FloatRange', 'IntPair', 'ParticlePair', 'ParticleQuad', 'ParticleTriplet', "DependencyGraph"]
+show_exceptions=["IntRange", "DerivativeAccumulator", "TextInput", "TextOutput",'Decorator', 'IncreaseIndent', 'PairFunctor', 'ParticlesList', 'QuadFunctor', 'RandomNumberGenerator', 'RefCounted', 'ScopedFailureHandler', 'ScoreStatePointer', 'SetLogTarget', 'SingletonFunctor', 'TripletFunctor', 'WarningContext', 'DerivativePair', 'FloatPair', 'FloatRange', 'IntPair', 'ParticlePair', 'ParticleQuad', 'ParticleTriplet', "DependencyGraph", "CreateLogContext"]
 
 class DirectoriesTests(IMP.test.TestCase):
 
