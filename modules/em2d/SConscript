@@ -1,10 +1,10 @@
 Import("env")
 import scons_tools.dependency
 
-scons_tools.dependency.add_external_library(env, "OpenCV",["cv","cxcore"],
-                                        "opencv/cv.h",
+scons_tools.dependency.add_external_library(env, "OpenCV",
+                  ["cv","cxcore","highgui"], "opencv/cv.h",
                   """cv::Mat *m = new cv::Mat();""",
-                extra_libs=[])
+                  extra_libs=[])
 
 env.IMPModuleBuild(version="SVN",
     required_modules=["container","core","atom","algebra","em","display","gsl"],
