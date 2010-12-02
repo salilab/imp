@@ -242,7 +242,8 @@ class ParticleTests(IMP.test.TestCase):
                     "get_is_up_to_date",
                     "get_is_scored",
                     "set_is_scored",
-                    "get_from"
+                    "get_from",
+                    "on_destruction"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
