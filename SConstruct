@@ -7,6 +7,7 @@ import scons_tools.dependency.swig
 import scons_tools.standards
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
+import scons_tools.dependency.cgal
 import scons_tools.dependency.modeller_test
 import scons_tools.application
 import scons_tools.test
@@ -73,8 +74,9 @@ scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcd
 scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
                                             "fftw3.h")
 
-scons_tools.dependency.add_external_library(env, "CGAL", ["CGAL",'gmp', 'mpfr', 'm',
-                                                          boost_thread, 'pthread'],
+cgal_libs=scons_tools.dependency.cgal.get_libs(env, boost_thread)
+
+scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
                                             ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
                                             body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
 scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
