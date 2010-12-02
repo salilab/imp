@@ -53,7 +53,6 @@ Object::Object(std::string name)
 
 Object::~Object()
 {
-  IMP_OBJECT_LOG;
   IMP_INTERNAL_CHECK(get_is_valid(), "Object " << this << " previously freed "
                      << "but something is trying to delete it again. Make sure "
                      << "that all C++ code uses IMP::Pointer objects to"

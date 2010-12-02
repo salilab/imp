@@ -1098,7 +1098,7 @@ static Name* get_from(Object *o) {                                      \
     return object_cast<Name>(o);                                        \
   }                                                                     \
 IMP_NO_DOXYGEN(virtual void do_show(std::ostream &out) const);          \
-IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
+IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::on_destruction();)
 
 
 
@@ -1118,7 +1118,8 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
   IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
       show;                                                             \
     });                                                                 \
-  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG; destructor;)
+  IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::on_destruction();     \
+                                    destructor;)
 
 
 
@@ -1137,7 +1138,8 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
 private:                                                        \
  virtual void do_show(std::ostream & =std::cout) const {        \
  }                                                              \
- IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, IMP_OBJECT_LOG;)
+ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name,                        \
+                                   Object::on_destruction();)
 
 
 #ifdef IMP_DOXYGEN
@@ -2331,7 +2333,7 @@ IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
 */
 #define IMP_RAII(Name, args, Initialize, Set, Reset)    \
   Name() {Initialize;}                                  \
-  explicit Name args {Initialize; Set}                  \
+  explicit Name args {Initialize; Set;}                 \
   void set args {reset();                               \
     Set;}                                               \
   void reset() {Reset;}                                 \

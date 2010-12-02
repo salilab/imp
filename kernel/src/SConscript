@@ -29,6 +29,7 @@ files = [
          'RestraintSet.cpp',
          'Sampler.cpp',
          'ScoreState.cpp',
+         'SetLogState.cpp',
          'SingletonContainer.cpp',
          'SingletonFilter.cpp',
          'SingletonModifier.cpp',

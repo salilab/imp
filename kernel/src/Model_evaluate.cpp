@@ -199,10 +199,8 @@ IMP_BEGIN_NAMESPACE
 void Model::before_evaluate(const ScoreStatesTemp &states) const {
   IMP_USAGE_CHECK(cur_stage_== NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
-  IMP_LOG(TERSE,
-          "Begin update ScoreStates " << std::endl);
+  CreateLogContext clc("update_score_states");
   {
-    IncreaseIndent ii;
     cur_stage_= BEFORE_EVALUATE;
     boost::timer timer;
     for (unsigned int i=0; i< states.size(); ++i) {
@@ -217,15 +215,12 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       //IMP_LOG(VERBOSE, "." << std::flush);
     }
   }
-  IMP_LOG(TERSE, "End update ScoreStates." << std::endl);
 }
 
 void Model::after_evaluate(const ScoreStatesTemp &states,
                            bool calc_derivs) const {
-  IMP_LOG(TERSE,
-          "Begin after_evaluate of ScoreStates " << std::endl);
+  CreateLogContext clc("update_derivatives");
   {
-    IncreaseIndent ii;
     DerivativeAccumulator accum;
     cur_stage_= AFTER_EVALUATE;
     boost::timer timer;
@@ -241,7 +236,6 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       //IMP_LOG(VERBOSE, "." << std::flush);
     }
   }
-  IMP_LOG(TERSE, "End after_evaluate of ScoreStates." << std::endl);
 }
 
 void Model::zero_derivatives(bool st) const {
@@ -322,9 +316,8 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
                                           const std::vector<double> &weights,
                                           bool calc_derivs,
                                           double score) {
-  IMP_LOG(TERSE, "Begin checking incremental evaluation"<<std::endl);
+  CreateLogContext clc("validate_incremental");
   {
-    IncreaseIndent ii;
     std::vector<internal::ParticleStorage::DerivativeTable>
       derivs;
     derivs.reserve(get_number_of_particles());
@@ -386,7 +379,6 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
       IMP_INTERNAL_CHECK(i== derivs.size(), "Number of particles changed.");
     }
   }
-  IMP_LOG(TERSE, "End checking incremental evaluation"<<std::endl);
 }
 
 void Model::validate_computed_derivatives() const {

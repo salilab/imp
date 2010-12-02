@@ -9,10 +9,10 @@
 #define IMP_SET_LOG_STATE_H
 
 #include "log.h"
-#include "Object.h"
+#include <vector>
 
 IMP_BEGIN_NAMESPACE
-
+class Object;
 
 //! A class to change and restore log state
 /**
@@ -24,29 +24,16 @@ class IMPEXPORT SetLogState
 {
   LogLevel level_;
   Object* obj_;
+  void do_set(Object *o, LogLevel l);
+  void do_reset();
 public:
   IMP_RAII(SetLogState, (Object *o, LogLevel l),
            {level_= DEFAULT; obj_=NULL;},
            {
-             if (l != DEFAULT) {
-               obj_=o;
-               level_= obj_->get_log_level();
-               obj_->set_log_level(l);
-             } else {
-               obj_=NULL;
-               level_=DEFAULT;
-             }
+             do_set(o, l);
            },
            {
-             if (level_ != DEFAULT) {
-               if (obj_) {
-                 obj_->set_log_level(level_);
-               } else {
-                 set_log_level(level_);
-               }
-               obj_=NULL;
-               level_=DEFAULT;
-             }
+             do_reset();
            });
 
   //! Construct it with the desired level and target
@@ -64,10 +51,7 @@ public:
       level_=DEFAULT;
     }
   }
-  IMP_SHOWABLE_INLINE(SetLogState, out << "Setting from " << level_
-                      << " to "
-                      << (obj_? obj_->get_log_level() : get_log_level())
-                      << std::endl);
+  IMP_SHOWABLE(SetLogState);
 };
 
 

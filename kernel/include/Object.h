@@ -15,6 +15,7 @@
 #include "VersionInfo.h"
 #include "macros.h"
 #include "log.h"
+#include "SetLogState.h"
 #include <boost/functional/hash.hpp>
 #include <boost/functional/hash/hash.hpp>
 
@@ -105,8 +106,7 @@ public:
   //! Print out one or more lines of text describing the object
   void show(std::ostream &out=std::cout) const {
     out << get_name()
-        << "(" << get_type_name() << ", "
-        << get_version_info() << ")";
+        << "(" << get_type_name() << ")\n";
     do_show(out);
   }
 
@@ -169,6 +169,12 @@ public:
 #ifndef IMP_DOXYGEN
   // swig needs to know to wrap this function
   virtual void do_show(std::ostream &out) const =0;
+
+  void on_destruction() {
+#if IMP_BUILD < IMP_FAST
+    for_destruction_.set(log_level_);
+#endif
+  }
 #endif
  private:
   Object(const Object &): RefCounted() {}
@@ -178,6 +184,8 @@ public:
   LogLevel log_level_;
   mutable bool was_owned_;
   double check_value_;
+  // keep this last
+  SetLogState for_destruction_;
 #endif
 };
 
@@ -222,17 +230,42 @@ IMP_END_NAMESPACE
                << " was previously freed");                             \
 } while (false)
 
-#include "SetLogState.h"
-
-#if IMP_BUILD < IMP_FAST
+#ifdef IMP_DOXYGEN
 //! Set the log level to the object's log level.
 /** All non-trivial Object methods should start with this. It creates a
     RAII-style object which sets the log level to the local one,
     if appropriate, until it goes out of scope.
  */
-#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level());\
-  IncreaseIndent object_increase_indent__
+#define IMP_OBJECT_LOG
+
+//! Beginning logging for a non-member function
+/**
+ */
+#define IMP_FUNCTION_LOG
+
+#endif
+
+#if IMP_BUILD < IMP_FAST
+#if __STDC_VERSION__ >= 199901L || defined(_MSC_VER)
+#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level());  \
+  CreateLogContext log_context__(Object::get_name()                     \
+                                 + "::" + __FUNCTION__)
+
+
+#define IMP_FUNCTION_LOG                                                \
+  CreateLogContext log_context__(__FUNCTION__)
+
+#else
+#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level()); \
+  CreateLogContext log_context__(Object::get_name()                    \
+                                 + "::" + __FUNCTION__)
+
+#define IMP_FUNCTION_LOG                        \
+  CreateLogContext log_context__("function")
+
+#endif
 #else
 #define IMP_OBJECT_LOG
+#define IMP_FUNCTION_LOG
 #endif
 #endif  /* IMP_OBJECT_H */
