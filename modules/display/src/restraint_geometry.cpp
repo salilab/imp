@@ -88,7 +88,7 @@ IMP::display::Geometries ConnectivityRestraintGeometry::get_components() const {
   IMP_USAGE_CHECK(all.size() >0, "No particles in connectivity edges");
   for (unsigned int i=0; i< all.size(); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      algebra::Segment3D s(core::XYZ(all[i]).get_coordinates(),
+      algebra::Segment3D s((core::XYZ(all[i]).get_coordinates()),
                            core::XYZ(all[j]).get_coordinates());
       ret.push_back(new SegmentGeometry(s));
       ret.back()->set_name(r_->get_name()+" clique");
@@ -110,7 +110,7 @@ IMP::display::Geometries ConnectivityRestraintGeometry::get_components() const {
   IMP_USAGE_CHECK(edges.size() >0, "No connectivity edges");
   algebra::Vector3D mv;
   for (unsigned int i=0; i< edges.size(); ++i) {
-    algebra::Segment3D s(core::XYZ(edges[i][0]).get_coordinates(),
+    algebra::Segment3D s((core::XYZ(edges[i][0]).get_coordinates()),
                          core::XYZ(edges[i][1]).get_coordinates());
     mv= .5*(s.get_point(0)+ s.get_point(1));
     ret.push_back(new SegmentGeometry(s));
