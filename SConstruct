@@ -122,19 +122,15 @@ if not env.GetOption('help'):
 
 
     unknown = vars.UnknownVariables()
-    # scons has a bug with command line arguments that are added late
+    # Older versions of scons have a bug with command line arguments
+    # that are added late, so remove those we know about from this list
+    for dep, data in scons_tools.data.get(env).dependencies.items():
+        for var in data.variables:
+            unknown.pop(var, None)
     if unknown:
-        really_unknown=[]
-        depkeys=[]
-        for x in scons_tools.data.get(env).dependencies.keys():
-            depkeys= depkeys+scons_tools.data.get(env).dependencies[x].variables
-        for u in unknown.keys():
-            if u not in depkeys:
-                really_unknown.append(u)
-        if len(really_unknown) >0:
-            print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
-            print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
-            Exit(1)
+        print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
+        print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
+        Exit(1)
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
