@@ -154,7 +154,7 @@ def _add_platform_flags(env):
     if env['IMP_USE_RPATH']:
         dylinkflags=[]
         for p in env['LIBPATH']:
-            if p[0] is not '#':
+            if p[0] != '#':
                 env.Prepend(IMP_SHLIB_LINKFLAGS=['-Wl,-rpath,'+p])
                 env.Prepend(IMP_BIN_LINKFLAGS=['-Wl,-rpath,'+p])
         #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])

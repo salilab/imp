@@ -58,13 +58,13 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
     ucname= lcname.upper()
     variables=[lcname, lcname+"libs"]
     def _check(context):
-        if context.env[lcname] is "no":
+        if context.env[lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
             scons_tools.data.get(context.env).add_dependency(name, variables=variables,
                                                              ok=False)
             return False
-        elif context.env[lcname] is "yes":
+        elif context.env[lcname] == "yes":
             context.Message('Checking for '+name+' ...')
             if context.env.get(lcname+"libs", None) is None:
                 context.Result("disabled, libs not specified")

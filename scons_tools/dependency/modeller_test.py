@@ -30,7 +30,7 @@ def _check(context):
     """Find Modeller include and library directories"""
     context.Message('Checking for MODELLER...')
     modeller = context.env['modeller']
-    if modeller is False or modeller is 0:
+    if modeller is False or modeller == 0:
         context.Result("not found")
         return False
     if modeller is True:
