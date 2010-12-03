@@ -342,6 +342,36 @@ RigidBody RigidBody::setup_particle(Particle *p,
 
 
 RigidBody RigidBody::setup_particle(Particle *p,
+                                    const XYZs &members,
+                                    const algebra::ReferenceFrame3D &rf){
+  internal::add_required_attributes_for_body(p);
+  RigidBody d(p);
+  d.set_reference_frame(rf);
+  for (unsigned int i=0; i< members.size(); ++i) {
+    d.add_member_internal(members[i], d.get_reference_frame(), false);
+    //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
+  }
+  d.on_change();
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    RigidMembers ds(members);
+    for (unsigned int i=0; i< ds.size(); ++i) {
+      RigidMember cm= RigidMember(ds[i]);
+      algebra::VectorD<3> v= cm.get_coordinates();
+      algebra::VectorD<3> nv= d.get_coordinates(cm);
+      IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
+                         "Bad initial orientation "
+                         << d.get_reference_frame() << std::endl
+                         << v << std::endl
+                         << nv);
+    }
+  }
+  set_constraint(new UpdateRigidBodyMembers(),
+                  new AccumulateRigidBodyDerivatives(), p);
+  return d;
+}
+
+
+RigidBody RigidBody::setup_particle(Particle *p,
                                     const RigidBodies &members){
   IMP_LOG(VERBOSE, "Creating rigid body from other rigid bodies"<<std::endl);
   IMP_USAGE_CHECK(members.size() > 0, "Must provide members");
