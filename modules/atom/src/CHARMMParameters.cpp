@@ -668,6 +668,7 @@ CHARMMParameters* get_heavy_atom_CHARMM_parameters() {
   static IMP::Pointer<CHARMMParameters> ret
     =new CHARMMParameters(get_data_path("top_heav.lib"),
                           get_data_path("par.lib"));
+  ret->set_log_level(SILENT);
   return ret;
 }
 
