@@ -97,6 +97,20 @@ public:
   static RigidBody setup_particle(Particle *p,
                           const XYZs &members);
 
+  //! Create a new rigid body from a set of particles, specifying the frame
+  /** \param[in] p The particle to make into a rigid body
+      \param[in] members The particles to use as members of the rigid body
+      \param[in] reference_frame The reference frame to use
+
+      The member particles
+      do not already need to be RigidMember particles, only
+      XYZ particles.
+   */
+  static RigidBody setup_particle(Particle *p,
+                                  const XYZs &members,
+                           const algebra::ReferenceFrame3D &reference_frame);
+
+
   //! Create a rigid body based on members of another one
   /** This function creates a rigid body that is part of another
       one. The member particles passed must be part of the other
