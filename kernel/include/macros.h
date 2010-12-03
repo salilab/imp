@@ -358,6 +358,12 @@
 */
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)
 
+/** Like IMP_REF_COUNTED_DESTRUCTOR(), but the destructor is declared
+    inline.
+*/
+#define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, destructor)
+
+
 #else
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)                                \
   protected:                                                            \
