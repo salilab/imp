@@ -428,11 +428,26 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 //! Rigidify a molecule or collection of molecules.
 /** The rigid body created has all the leaves as members and a
     member rigid body for each internal node in the tree.
-
+    \see create_aligned_rigid_body()
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
 IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
+
+
+//! Rigidify a molecule or collection of molecules.
+/** This method is identical to create_rigid_body() except that
+    the chosen reference frame is aligned with that of reference
+    (which must have exactly the same set of particles). This allows
+    one to make sure the rigid body is equivalent when you have several
+    copies of the same molecule.
+
+    \relatesalso Hierarchy
+    \relatesalso IMP::core::RigidBody
+*/
+IMPATOMEXPORT IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
+                                                     Hierarchy reference);
+
 
 #ifndef IMP_DOXYGEN
 IMPATOMEXPORT IMP::core::RigidBody setup_as_rigid_body(Hierarchy h);
