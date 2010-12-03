@@ -41,6 +41,7 @@ def initiate_configuration(domino_smp,ps):
     for p in ps:
         domino_smp.set_particle_states(p,states)
 
+sys.exit()
 #### REPRESENTATION
 #1. setting up the representation (6 particles)
 mdl=IMP.Model()
@@ -65,7 +66,7 @@ sys.exit()
 #subsets=[]
 
 #jt.show()
-sys.exit()
+
 #2. sample each subset
 #3. gathering
 
