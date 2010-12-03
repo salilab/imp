@@ -19,6 +19,7 @@
 #include <IMP/atom/Molecule.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
+#include <IMP/algebra/geometric_alignment.h>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -256,7 +257,7 @@ namespace {
                                      || h.get_as_chain()
                                      || h.get_as_fragment()))
           || (h.get_as_fragment() && (h.get_as_domain()))) {
-        TEST_FAIL("Node cannot have more than onetype at once "
+        TEST_FAIL("Node cannot have more than one type at once "
                   << h << " "
                   << static_cast<bool>(h.get_as_atom())
                   << static_cast<bool>(h.get_as_residue())
@@ -356,31 +357,60 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
       }
     }
   }
+  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
   return rbd;
 }
 
+
+namespace {
+  ParticlesTemp rb_process(Hierarchy h) {
+    Particles internal= core::get_internal(h);
+    Particles all=get_leaves(h);
+    for (unsigned int i=0; i< internal.size(); ++i) {
+      ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
+      if (!leaves.empty() && !core::XYZR::particle_is_instance(internal[i])) {
+        setup_as_approximation(internal[i], leaves);
+        all.push_back(internal[i]);
+      }
+    }
+    return all;
+  }
+}
 
 // write approximate function, remove rigid bodies for intermediates
 core::RigidBody create_rigid_body(Hierarchy h) {
-  core::XYZs leaves(get_leaves(h));
   Particle *rbp= new Particle(h->get_model());
   rbp->set_name(h->get_name()+" rigid body");
-  Particles internal= core::get_internal(h);
-  Particles all=get_leaves(h);
-  for (unsigned int i=0; i< internal.size(); ++i) {
-    ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
-    if (!leaves.empty() && !core::XYZR::particle_is_instance(internal[i])) {
-      setup_as_approximation(internal[i], leaves);
-      all.push_back(internal[i]);
-    }
-  }
+  ParticlesTemp all = rb_process(h);
   core::RigidBody rbd
     = core::RigidBody::setup_particle(rbp, core::XYZs(all));
   rbd.set_coordinates_are_optimized(true);
+  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
   return rbd;
 }
 
 
+IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
+                                               Hierarchy reference) {
+  ParticlesTemp hl= get_leaves(h);
+  ParticlesTemp rl= get_leaves(reference);
+  algebra::Transformation3D tr
+    = algebra::get_transformation_aligning_first_to_second(rl, hl);
+  algebra::Transformation3D rtr
+    = core::RigidMember(reference).get_rigid_body().\
+    get_reference_frame().get_transformation_to();
+  algebra::Transformation3D rbtr= tr*rtr;
+
+  Particle *rbp= new Particle(h->get_model());
+  rbp->set_name(h->get_name()+" rigid body");
+  ParticlesTemp all = rb_process(h);
+  core::RigidBody rbd
+    = core::RigidBody::setup_particle(rbp, core::XYZs(all),
+                                      algebra::ReferenceFrame3D(rbtr));
+  rbd.set_coordinates_are_optimized(true);
+  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
+  return rbd;
+}
 
 
 
