@@ -612,8 +612,13 @@ void Selection::show(std::ostream &out) const {
      ss.push_back(core::XYZR(other[i]).get_sphere());
      vv+= ss.back().get_center();
    }
-   Fragment f= Fragment::setup_particle(p);
-   f.set_residue_indexes(inds);
+   if (!Residue::particle_is_instance(p)
+       && !Fragment::particle_is_instance(p)
+       && !Domain::particle_is_instance(p)
+       && !Chain::particle_is_instance(p)) {
+     Fragment f= Fragment::setup_particle(p);
+     f.set_residue_indexes(inds);
+   }
    if (!Mass::particle_is_instance(p)) {
      Mass::setup_particle(p, m);
    } else {
