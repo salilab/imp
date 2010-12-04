@@ -508,7 +508,7 @@ IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 
 %define IMP_SWIG_RAII(Namespace, Name)
   %typemap(in) Namespace::Name* {
-  BOOST_STATIC_ASSERT($argnum==1 && "RAII objects like "#Namespace"::"#Name" cannot be passed");
+  BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
   $1=IMP::internal::swig::ConvertRAII<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
   } catch (const IMP::Exception &e) {
