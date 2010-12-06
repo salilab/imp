@@ -9,7 +9,7 @@
 #define IMPATOM_PROTEIN_LIGAND_SCORE_H
 
 #include "atom_config.h"
-#include "internal/protein_ligand_internal_score.h"
+#include <IMP/core/internal/PMFTable.h>
 #include "Hierarchy.h"
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
@@ -39,7 +39,7 @@ class ProteinLigandRestraint;
 */
 class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
   friend class ProteinLigandRestraint;
-  internal::PMFTable table_;
+  core::internal::PMFTable<true> table_;
   double threshold_;
   inline double evaluate(const algebra::VectorD<3> &protein_v,
                          int ptype,
