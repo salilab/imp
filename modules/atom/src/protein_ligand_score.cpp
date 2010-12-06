@@ -9,11 +9,12 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/container/CloseBipartitePairContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
-  IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
 
   namespace data {
 
@@ -250,97 +251,28 @@ namespace {
 
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold):
-  table_(ni+1),
-  threshold_(threshold){
- table_.initialize<ProteinLigandType>(get_data_path("protein_ligand_score.lib"),
-                                       ni, nj);
+  P(get_protein_ligand_type_key(), threshold,
+    get_data_path("protein_ligand_score.lib"),
+    ni+1){
   }
 
 ProteinLigandAtomPairScore::ProteinLigandAtomPairScore(double threshold,
                                                        TextInput file):
-  table_(ni+1),
-  threshold_(threshold){
- table_.initialize<ProteinLigandType>(get_data_path("protein_ligand_score.lib"),
-                                       ni, nj);
+  P(get_protein_ligand_type_key(), threshold, file, ni+1){
   }
-
-double ProteinLigandAtomPairScore
-::evaluate(const algebra::VectorD<3> &protein_v,
-           int iptype,
-           const algebra::VectorD<3> &ligand_v,
-           int iltype,
-           core::XYZ pxyz, core::XYZ lxyz,
-           DerivativeAccumulator *da) const {
-  ProteinLigandType ptype(iptype);
-  ProteinLigandType ltype(iltype);
-  double distance = algebra::get_distance(protein_v, ligand_v);
-  if (distance >= threshold_ || distance < 0.001) {
-    return 0;
-  }
-  if (!da) {
-    /*std::cout << "Evaluating pair " << ptype << " " << ltype << std::endl;
-      std::cout << "distance is " << distance << " score is "
-      <<  table_.get_score(ptype, ltype, distance)
-      << std::endl;*/
-    double v= table_.get_score(iptype, iltype, distance);
-    /*std::cout << "Score " << ptype.get_string() << " "
-              << ltype.get_string() << " " << distance
-              << " " << v << " ("
-              << table_.get_score(iptype, iltype, distance-.2)
-              << "..."
-              << table_.get_score(iptype, iltype, distance-.1)
-              << "..."
-              << table_.get_score(iptype, iltype, distance+.1)
-              << "..."
-              << table_.get_score(iptype, iltype, distance+.2)
-              << ")" << std::endl;*/
-    return v;
-  } else {
-     DerivativePair dp= table_.get_score_with_derivative(iptype,
-                                                         iltype, distance);
-     algebra::VectorD<3> diff= protein_v-ligand_v;
-     algebra::VectorD<3> norm= diff.get_unit_vector();
-     pxyz.add_to_derivatives(dp.second*norm, *da);
-     lxyz.add_to_derivatives(-dp.second*norm, *da);
-     return dp.first;
-   }
-}
-
-double ProteinLigandAtomPairScore::get_maximum_distance() const {
-  return std::min(threshold_, table_.get_max());
-}
-
-
-double ProteinLigandAtomPairScore::evaluate(const ParticlePair &pp,
-                                            DerivativeAccumulator *da) const {
-  int pt= get_index(pp[0]);
-  int lt= get_index(pp[1]);
-  core::XYZ pxyz(pp[0]);
-  core::XYZ lxyz(pp[1]);
-  algebra::VectorD<3> pv(pxyz.get_coordinates()),
-    lv(lxyz.get_coordinates());
-  if (pt==-1 || lt==-1) return 0;
-  return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
-}
-
-void ProteinLigandAtomPairScore::do_show(std::ostream &out) const {
-  out << "threshold: " << threshold_ << std::endl;
-}
 
 void ProteinLigandRestraint::initialize(Hierarchy protein,
                                         Hierarchy ligand) {
-  protein_=protein;
-  ligand_=ligand;
-  add_protein_ligand_score_data(protein_);
-  add_protein_ligand_score_data(ligand_);
+  add_protein_ligand_score_data(protein);
+  add_protein_ligand_score_data(ligand);
   IMP_IF_CHECK(USAGE) {
-    HierarchiesTemp pr= get_by_type(protein_, RESIDUE_TYPE);
+    HierarchiesTemp pr= get_by_type(protein, RESIDUE_TYPE);
     for (unsigned int i=0; i< pr.size(); ++i) {
       IMP_USAGE_CHECK(!get_is_heterogen(pr[i]),
                       "Some of protein is actually a heterogen "
                       <<  pr[i]);
     }
-    HierarchiesTemp lr= get_by_type(ligand_, RESIDUE_TYPE);
+    HierarchiesTemp lr= get_by_type(ligand, RESIDUE_TYPE);
     for (unsigned int i=0; i< lr.size(); ++i) {
       IMP_USAGE_CHECK(get_is_heterogen(lr[i]),
                       "Some of ligand is actually protein "
@@ -350,10 +282,28 @@ void ProteinLigandRestraint::initialize(Hierarchy protein,
 }
 
 
+namespace {
+  PairScore* create_pair_score(double threshold) {
+    return new ProteinLigandAtomPairScore(threshold);
+  }
+  PairContainer *create_pair_container(Hierarchy a,
+                                       Hierarchy b,
+                                       double threshold) {
+    Particles aa= get_by_type(a, ATOM_TYPE);
+    Particles ba= get_by_type(b, ATOM_TYPE);
+    IMP_NEW(container::ListSingletonContainer, lsca, (aa));
+    IMP_NEW(container::ListSingletonContainer, lscb, (ba));
+    IMP_NEW(container::CloseBipartitePairContainer,
+            ret, (lsca, lscb, threshold));
+    return ret.release();
+  }
+}
+
 ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
                                                Hierarchy ligand,
                                                double threshold):
-  score_(new ProteinLigandAtomPairScore(threshold)) {
+  container::PairsRestraint(create_pair_score(threshold),
+                            create_pair_container(protein, ligand, threshold)){
   initialize(protein, ligand);
 }
 
@@ -361,70 +311,11 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
                                                Hierarchy ligand,
                                                double threshold,
                                                TextInput data):
-  score_(new ProteinLigandAtomPairScore(threshold, data)) {
+  container::PairsRestraint(create_pair_score(threshold),
+                            create_pair_container(protein, ligand, threshold)) {
   initialize(protein, ligand);
 }
 
-
-
-double ProteinLigandRestraint
-::unprotected_evaluate(DerivativeAccumulator *accum) const {
-  IntKey k= get_protein_ligand_type_key();
-  std::vector<algebra::VectorD<3> > pvs, lvs;
-  std::vector<int> pts;
-  std::vector<int> lts;
-  HierarchiesTemp pas(get_by_type(protein_.get_decorator(), ATOM_TYPE));
-  HierarchiesTemp las(get_by_type(ligand_.get_decorator(), ATOM_TYPE));
-  pvs.resize(pas.size());
-  pts.resize(pas.size());
-  for (unsigned int i=0; i< pas.size(); ++i) {
-    pvs[i]= core::XYZ(pas[i]).get_coordinates();
-    pts[i]= pas[i]->get_value(k);
-  }
-  lvs.resize(las.size());
-  lts.resize(las.size());
-  for (unsigned int i=0; i< las.size(); ++i) {
-    lvs[i]= core::XYZ(las[i]).get_coordinates();
-    lts[i]= las[i]->get_value(k);
-  }
-  double score=0;
-  for (unsigned int i=0; i< las.size(); ++i) {
-    if (lts[i] ==-1) {
-      //std::cout << "Skipping atom " << las[i] << std::endl;
-      continue;
-    }
-    for (unsigned int j=0; j< pas.size(); ++j) {
-      if (pts[j] ==-1) {
-        /*std::cout << "Skipping atom " << j << " "
-                  << " with " << pas[j]->get_value(k)<< " for "
-                  << pas[j] << " in "
-                  << get_residue(Atom(pas[j])) << std::endl;*/
-        continue;
-      }
-      score+= score_->evaluate(pvs[j], pts[j], lvs[i], lts[i],
-                               core::XYZ(pas[j]), core::XYZ(las[i]),
-                               accum);
-    }
-  }
-  return score;
-}
-
-ContainersTemp ProteinLigandRestraint::get_input_containers() const {
-  return ContainersTemp();
-}
-
-ParticlesTemp ProteinLigandRestraint::get_input_particles() const{
-  ParticlesTemp ret(core::get_all_descendants(protein_.get_decorator()));
-  ParticlesTemp retb(core::get_all_descendants(ligand_.get_decorator()));
-  ret.insert(ret.end(), retb.begin(), retb.end());
-  ret.push_back(protein_);
-  ret.push_back(ligand_);
-  return ret;
-}
-
-void ProteinLigandRestraint::do_show(std::ostream &out) const {
-  out << *score_;
-}
 
 
 void add_protein_ligand_score_data(Atom atom) {

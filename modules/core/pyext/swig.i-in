@@ -210,6 +210,7 @@ void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
 %include "IMP/core/WriteModelOptimizerState.h"
+%include "IMP/core/StatisticalPairScore.h"
 
 %inline %{
 namespace IMP {
