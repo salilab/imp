@@ -36,8 +36,7 @@ private:
 public:
   PMFTable(unsigned int split): split_(split){}
   template <class Key>
-  void initialize(TextInput tin,
-                  unsigned int ni, unsigned int nj)  {
+  void initialize(TextInput tin)  {
     std::istream &in =tin;
     double bin;
     std::string line;
@@ -45,15 +44,22 @@ public:
     std::istringstream iss(line);
     iss >> bin;
     unsigned int np, nl;
-    iss >> np >> nl;
-    if (np != ni
+    iss >> np;
+    if (BIPARTITE) {
+      iss >> nl;
+    } else {
+      nl=np;
+    }
+    IMP_LOG(TERSE, "Reading " << np << " by " << nl
+            << " from file " << tin.get_name() << std::endl);
+    /*if (np != ni
         || nl != nj) {
       IMP_THROW("Expected number of protein and ligand types not found. "
                 << "Expected " << ni
                 << " " << nj
                 << " but got " << np << " " << nl,
                 IOException);
-    }
+                }*/
     if (!iss) {
       IMP_THROW("Error reading bin size from line " << line,
                 IOException);
@@ -70,11 +76,12 @@ public:
     bin_width_=bin;
     inverse_bin_width_=1.0/bin;
 
-    data_.resize(ni);
+    data_.resize(np);
     int bins_read=-1;
     for(unsigned int i=0;i<data_.size();i++){
-      data_[i].resize(nj);
+      data_[i].resize(nl);
     }
+    unsigned int read_entries=0;
     while (true) {
       std::string line;
       std::getline(in, line);
@@ -119,8 +126,20 @@ public:
       }
       bins_read= cur_bins_read;
       ins.clear();
+      ++read_entries;
     }
     max_= bin_width_*bins_read;
+    if (BIPARTITE) {
+      if (read_entries != np *nl) {
+        IMP_THROW("Read " << read_entries << " from table, but expected all of"
+                  << np << "x"<< nl << "=" << np*nl, IOException);
+      }
+    } else {
+      if (read_entries != np *(np+1)/2) {
+        IMP_THROW("Read " << read_entries << " from table, but expected all of"
+                  << np << "x"<< np+1 << "/2=" << np*(np+1)/2, IOException);
+      }
+    }
     IMP_LOG(TERSE, "PMF table entries have "
             << bins_read << " bins with width " << bin_width_ << std::endl);
   }

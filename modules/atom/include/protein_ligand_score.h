@@ -9,12 +9,13 @@
 #define IMPATOM_PROTEIN_LIGAND_SCORE_H
 
 #include "atom_config.h"
-#include <IMP/core/internal/PMFTable.h>
 #include "Hierarchy.h"
+#include <IMP/core/StatisticalPairScore.h>
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
 #include <IMP/Restraint.h>
 #include <IMP/PairScore.h>
+#include <IMP/container/PairsRestraint.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/file.h>
 #include <limits>
@@ -33,27 +34,27 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class ProteinLigandRestraint;
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+namespace {
+  IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
+}
+#elif defined(SWIG)
+class ProteinLigandType;
+#endif
+
 /** add_protein_ligand_score_data() must be called on the molecules
     containing the atoms before the PairScore is used in order
     to properly initialize the particles.
 */
-class IMPATOMEXPORT ProteinLigandAtomPairScore: public PairScore {
+class IMPATOMEXPORT ProteinLigandAtomPairScore:
+  public core::StatisticalPairScore<ProteinLigandType, true> {
   friend class ProteinLigandRestraint;
-  core::internal::PMFTable<true> table_;
-  double threshold_;
-  inline double evaluate(const algebra::VectorD<3> &protein_v,
-                         int ptype,
-                         const algebra::VectorD<3> &ligand_v,
-                         int ltype,
-                         core::XYZ pxyz, core::XYZ lxyz,
-                         DerivativeAccumulator *da) const;
+  typedef core::StatisticalPairScore<ProteinLigandType, true>  P;
  public:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());
   ProteinLigandAtomPairScore(double threshold,
                              TextInput data_file);
-  double get_maximum_distance() const;
-  IMP_SIMPLE_PAIR_SCORE(ProteinLigandAtomPairScore);
 };
 
 IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
@@ -61,9 +62,7 @@ IMP_OBJECTS(ProteinLigandAtomPairScore,ProteinLigandAtomPairScores);
 /** Score a pair of molecules. See ProteinLigandAtomPairScore for
     simply scoring the atom pairs.
 */
-class IMPATOMEXPORT ProteinLigandRestraint: public Restraint {
-  IMP::internal::OwnerPointer<ProteinLigandAtomPairScore> score_;
-  RefCountingDecorator<Hierarchy> protein_, ligand_;
+class IMPATOMEXPORT ProteinLigandRestraint: public container::PairsRestraint {
   void initialize(Hierarchy protein,
                   Hierarchy ligand);
  public:
@@ -72,7 +71,6 @@ class IMPATOMEXPORT ProteinLigandRestraint: public Restraint {
   ProteinLigandRestraint(Hierarchy protein, Hierarchy ligand,
                          double threshold,
                          TextInput data_file);
-  IMP_RESTRAINT(ProteinLigandRestraint);
 };
 
 IMP_OBJECTS(ProteinLigandRestraint,ProteinLigandRestraints);
