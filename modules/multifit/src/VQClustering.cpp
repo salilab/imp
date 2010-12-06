@@ -189,7 +189,8 @@ void VQClustering::set_assignments(){
                                         centers_[i][2]));
   }
   algebra::NearestNeighborD<3> nn(all_cen);
-  double min_dist,curr_dist;
+  // double min_dist;
+  // double curr_dist;
   assignment_.clear();
   for(unsigned int j=0;j<data_->size();j++) {
     algebra::Vector3D point((*data_)[j][0],(*data_)[j][1],(*data_)[j][2]);
