@@ -33,7 +33,10 @@ IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter &reader);
 
 /** Read a density map from a file and return it. Guess the file type from the
     file name. The file formats supported are:
-    - .mrc for MRC files
+    - .mrc
+    - .em
+    - .vol
+    - .xplor
     \relatesalso DensityMap
 */
 IMPEMEXPORT DensityMap* read_map(const char *filename);
