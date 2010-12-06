@@ -85,7 +85,7 @@ em::FittingSolutions pca_based_rigid_fitting(
   //move protein to the center of the map
   algebra::Transformation3D move2center_inv =
     move2center_trans.get_inverse();
-  for(int i=0;i< ps_xyz.size();i++){
+  for(unsigned int i=0;i< ps_xyz.size();i++){
     ps_xyz[i].set_coordinates(
              move2center_inv.get_transformed(ps_xyz[i].get_coordinates()));
   }
