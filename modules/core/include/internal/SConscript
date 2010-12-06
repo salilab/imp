@@ -11,6 +11,7 @@ files = [
          'CoreTripletsRestraint.h',
          'DifferenceSingletonContainer.h',
          'MovedSingletonContainer.h',
+         'PMFTable.h',
          'angle_helpers.h',
          'close_pairs_helpers.h',
          'dihedral_helpers.h',
