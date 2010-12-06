@@ -102,7 +102,10 @@ Note that this probably doesn't work on Windows.
 You can update your copy of \imp, by typing
 \command{svn update}
 
-\note When you upgrade your system (eg get a new version of boost), you may need
+\note When you upgrade your system (eg get a new version of boost, or install
+a prerequisite), scons may not detect the package automatically. To force it
+to recheck, add the \c --config=force option when you run scons. In certain
+rare cases, scons may get really confused, and you may need
 to manually clear out the scons state. To do this, in the source directory do
 \command{rm -rf .scon*}
 
