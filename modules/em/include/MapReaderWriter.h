@@ -16,15 +16,21 @@
 
 IMPEM_BEGIN_NAMESPACE
 
+/** \brief The base class to handle reading and writing of density maps.
+
+    They should never be stored, only created immediately and passed to
+    the read or write function.
+ */
 class IMPEMEXPORT MapReaderWriter
 {
 public:
+#ifndef DOXYGEN
   virtual void Read(const char *filename, float **data, DensityHeader &header)
     =0;
   virtual void Write(const char *filename, const float *data,
                      const DensityHeader &header) =0;
   virtual ~MapReaderWriter() {}
-
+#endif
 };
 
 IMPEM_END_NAMESPACE
