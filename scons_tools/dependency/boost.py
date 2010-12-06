@@ -35,8 +35,8 @@ def _check(context, version):
             print "Bad boost version", repr(ret)
             env.Exit(1)
     else:
-        context.env['BOOST_VERSION']="empty"
-        context.env['BOOST_LIB_VERSION']="empty"
+        context.env['BOOST_VERSION']=None
+        context.env['BOOST_LIB_VERSION']=None
     return ret[0]
 
 def _checks(context, version):
@@ -62,6 +62,8 @@ def configure_check(env, version):
         conf = env.Configure(custom_tests=custom_tests)
         conf.CheckBoost(version)
         conf.Finish()
+        if not env.get("BOOST_VERSION", None):
+            return
     if env.get('boostlibsuffix', "auto")!="auto":
         env['BOOST_LIBSUFFIX']=env['boostlibsuffix']
     else:
