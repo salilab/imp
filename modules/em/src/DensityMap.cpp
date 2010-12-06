@@ -372,9 +372,13 @@ bool DensityMap::is_xyz_ind_part_of_volume(int ix,int iy,int iz) const
 
 bool DensityMap::is_part_of_volume(float x,float y,float z) const
 {
-  return( x>=header_.get_xorigin() && x<=header_.get_top(0) &&
-          y>=header_.get_yorigin() && y<=header_.get_top(1) &&
-          z>=header_.get_zorigin() && z<=header_.get_top(2) );
+  int x_ind,y_ind,z_ind;
+  x_ind=get_dim_index_by_location(x,0);
+  y_ind=get_dim_index_by_location(y,1);
+  z_ind=get_dim_index_by_location(z,2);
+  return (x_ind>=0) && (x_ind<header_.get_nx()) &&
+    (y_ind>=0) && (y_ind<header_.get_ny()) &&
+    (z_ind>=0) && (z_ind<header_.get_nz());
 }
 
 emreal DensityMap::get_value(float x, float y, float z) const {
@@ -628,8 +632,10 @@ void DensityMap::add(const DensityMap *other) {
           get_bounding_box(this).get_contains(get_bounding_box(other)),
           "Other map should be contained in this map\n");
   //find the extent of other that is in this map
-  int x_orig_ind,y_orig_ind,z_orig_ind;
-  int x_top_ind,y_top_ind,z_top_ind;
+  int x_orig_ind=0;int y_orig_ind=0;int z_orig_ind=0;
+  int x_top_ind=header_.get_nx();
+  int y_top_ind=header_.get_ny();
+  int z_top_ind=header_.get_nz();
   algebra::Vector3D other_origin=other->get_origin();
   algebra::Vector3D other_top=other->get_top();
   if (is_part_of_volume(other_origin)) {
@@ -1147,11 +1153,11 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   const DensityHeader *from_header = from_map->get_header();
   int from_nx=from_header->get_nx();
   int from_ny=from_header->get_ny();
+  int from_nz=from_header->get_nz();
   int to_nx=nx_end-nx_start+1;
   int to_ny=ny_end-ny_start+1;
   int to_nz=nz_end-nz_start+1;
   IMP_IF_CHECK(USAGE) {
-  int from_nz=from_header->get_nz();
 
   IMP_USAGE_CHECK(nx_start>=0 && nx_start<from_nx,
                   "nx start index is out of boundaries\n");
