@@ -209,6 +209,7 @@ inline Rotation3D get_identity_rotation_3d() {
 
     A vector with distance d from the unit vector
     represents a rotation of
+
     \f$ \theta= \cos^{-1}\left(1-\sqrt{2}d\right)\f$
     \relatesalso Rotation3D
 */
