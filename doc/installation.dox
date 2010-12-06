@@ -85,7 +85,7 @@ other than the one containing the source files). Doing this allows several diffe
 versions of \imp to be built using the same source files. For example, an optimized
 one (using \c build='fast') and a debug one (\c build='debug').
 
-To set this up
+To set this up (in an empty directory) do
   -# make a clean checkout of the source code
     \command{svn co http://svn.salilab.org/imp/trunk src}
   -# make a directory for your debug build
