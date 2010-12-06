@@ -39,7 +39,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
      "(expected 4 blocks and got "<< fit_rotation_split.size()<<")"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[8]<<std::endl);
   boost::split(dock_translation_split, line_split[8], boost::is_any_of(" "));
-  IMP_USAGE_CHECK(dock_translation_split.size() == 9,
+  IMP_USAGE_CHECK(dock_translation_split.size() == 3,
            "Wrong format of input line: wrong translation format"<<std::endl);
   fit_sol.set_index(boost::lexical_cast<int>(line_split[0]));
   fit_sol.set_solution_filename(
