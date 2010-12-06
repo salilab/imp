@@ -206,6 +206,10 @@ inline Rotation3D get_identity_rotation_3d() {
     the distance returned is distance between the two
     quaternion vectors properly normalized, divided
     by sqrt(2).
+
+    A vector with distance d from the unit vector
+    represents a rotation of
+    \f$ \theta= \cos^{-1}\left(1-\sqrt{2}d\right)\f$
     \relatesalso Rotation3D
 */
 inline double get_distance(const Rotation3D &r0,
