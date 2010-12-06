@@ -344,7 +344,7 @@ void FFTFitting::resmooth_mol(){
 void FFTFitting::smooth_mol(){
   //move the protein to the center of the assembly map
   const em::DensityHeader *padded_asmb_h = padded_asmb_map_->get_header();
-  const em::DensityHeader *asmb_h = asmb_map_->get_header();
+  //const em::DensityHeader *asmb_h = asmb_map_->get_header();
   core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
   orig_prot_center_ = IMP::core::get_centroid(xyzs);
   const  em::DensityHeader *h=asmb_map_->get_header();
@@ -671,7 +671,7 @@ TransScores FFTFitting::search_for_the_best_translation(int num_solutions)
   TransScores best_trans;
   algebra::Vector3D max_trans;
   const em::DensityHeader *d_header = asmb_map_->get_header();
-  float spacing = d_header->get_spacing();
+  //float spacing = d_header->get_spacing();
   //make heap
   int heap_size=num_solutions;
   for(int i=0;i<heap_size;i++){
