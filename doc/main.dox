@@ -11,8 +11,8 @@
  - \wiki{FAQ, FAQ}
  - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
- - \salilab{imp/nightly/tests.html,Nightly build status}
- - \ref maillists "Mailing lists"
+ - \salilab{imp/nightly/tests.html,Nightly tests}
+ - \ref maillists "User and developer mailing lists"
 
  Welcome to the \imp library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
