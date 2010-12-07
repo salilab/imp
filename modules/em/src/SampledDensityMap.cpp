@@ -286,6 +286,8 @@ float SampledDensityMap::get_minimum_resampled_value() {
   float min_weight=INT_MAX;
   core::XYZsTemp xyz(ps_);
   for(unsigned int i=0;i<xyz.size();i++) {
+    if(!is_part_of_volume(xyz[i].get_coordinates()))
+       continue;
     if (get_value(xyz[i].get_coordinates())<min_weight) {
       min_weight=get_value(xyz[i].get_coordinates());
     }
