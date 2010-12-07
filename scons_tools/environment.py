@@ -49,6 +49,10 @@ class _WineEnvironment(Environment):
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
         self.Append(CXXFLAGS=["/MD", "/GR", "/EHsc"])
+        # Disable boost auto-linking, since it sometimes gets the names
+        # incorrect or links libraries we didn't use; we manually link
+        # libraries we use anyway.
+        self.Append(CPPDEFINES=["BOOST_ALL_NO_LIB"])
         self.Append(IMP_PYTHON_CXXFLAGS=["/MD", "/GR", "/EHsc"])
 
     def _fix_scons_msvc_detect(self):
