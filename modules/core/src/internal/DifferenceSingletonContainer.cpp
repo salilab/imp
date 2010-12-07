@@ -41,7 +41,9 @@ Particle* DifferenceSingletonContainer::get_particle(unsigned int i) const {
 }
 SingletonContainerPair
 DifferenceSingletonContainer::get_added_and_removed_containers() const {
-    return SingletonContainerPair(NULL, NULL);
+    // MSVC 10 requires an ugly C-style cast to parse this correctly
+    return SingletonContainerPair((SingletonContainer *)NULL,
+                                  (SingletonContainer *)NULL);
   }
 bool
 DifferenceSingletonContainer::get_contains_particle(Particle* vt) const {
