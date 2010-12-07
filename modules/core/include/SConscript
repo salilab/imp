@@ -3,7 +3,6 @@ Import('env')
 files = [
          'AngleRestraint.h',
          'AngleTripletScore.h',
-         'ApproximateRefined.h',
          'AttributeSingletonScore.h',
          'BallMover.h',
          'BoundingBox3DSingletonScore.h',
