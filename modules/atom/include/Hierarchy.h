@@ -432,8 +432,11 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
-IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
+IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(const Hierarchies& h);
 
+/** \see create_rigid_body(const HierarchiesTemp&)
+ */
+IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
 
 //! Rigidify a molecule or collection of molecules.
 /** This method is identical to create_rigid_body() except that

@@ -378,16 +378,31 @@ namespace {
 }
 
 // write approximate function, remove rigid bodies for intermediates
-core::RigidBody create_rigid_body(Hierarchy h) {
-  Particle *rbp= new Particle(h->get_model());
-  rbp->set_name(h->get_name()+" rigid body");
-  ParticlesTemp all = rb_process(h);
+core::RigidBody create_rigid_body(const Hierarchies& h) {
+  if (h.empty()) return core::RigidBody();
+  for (unsigned int i=0; i< h.size(); ++i) {
+    IMP_USAGE_CHECK(h[i].get_is_valid(true), "Invalid hierarchy passed.");
+  }
+  Particle *rbp= new Particle(h[0]->get_model());
+  rbp->set_name(h[0]->get_name()+" rigid body");
+  ParticlesTemp all;
+  for (unsigned int i=0; i< h.size(); ++i) {
+    ParticlesTemp cur= rb_process(h[i]);
+    all.insert(all.end(), cur.begin(), cur.end());
+  }
   core::RigidBody rbd
     = core::RigidBody::setup_particle(rbp, core::XYZs(all));
   rbd.set_coordinates_are_optimized(true);
-  IMP_INTERNAL_CHECK(h.get_is_valid(true), "Invalid hierarchy produced");
+  for (unsigned int i=0; i< h.size(); ++i) {
+    IMP_INTERNAL_CHECK(h[i].get_is_valid(true), "Invalid hierarchy produced");
+  }
   return rbd;
 }
+
+core::RigidBody create_rigid_body(Hierarchy h) {
+  return create_rigid_body(Hierarchies(1,h));
+}
+
 
 
 IMP::core::RigidBody create_compatible_rigid_body(Hierarchy h,
