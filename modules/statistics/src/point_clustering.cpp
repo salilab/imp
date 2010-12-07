@@ -268,8 +268,10 @@ get_connectivity_clustering(Embedding *embed,
   for (unsigned int i=0; i< vs.size(); ++i) {
     Ints ns= nn.get_in_ball(i, dist);
     for (unsigned int j=0; j < ns.size(); ++j) {
-      //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
-      uf.union_set(static_cast<int>(i), ns[j]);
+      if (get_distance(vs[i], vs[ns[j]]) < dist) {
+        //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
+        uf.union_set(static_cast<int>(i), ns[j]);
+      }
     }
   }
   std::map<int,int> cluster_map;
