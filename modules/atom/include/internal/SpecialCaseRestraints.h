@@ -36,7 +36,8 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
   value of true means they have been handled and should be removed.
 */
 class IMPATOMEXPORT SpecialCaseRestraints {
-  boost::ptr_vector< ScopedRemoveRestraint> restraints_;
+  boost::ptr_vector< ScopedRemoveRestraint,
+                     boost::view_clone_allocator> restraints_;
   ParticlesTemp ps_;
   DependencyGraph dg_;
 
