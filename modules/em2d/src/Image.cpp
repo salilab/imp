@@ -9,7 +9,8 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Images read_images(Strings names,const em2d::ImageReaderWriter<double> &rw) {
+Images read_images(Strings names,
+                   const em2d::ImageReaderWriter<double> &rw) {
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
@@ -18,7 +19,6 @@ Images read_images(Strings names,const em2d::ImageReaderWriter<double> &rw) {
   }
   return v;
 }
-
 
 
 void save_images(Images images, Strings names,

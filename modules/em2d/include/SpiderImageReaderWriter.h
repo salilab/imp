@@ -117,14 +117,14 @@ public:
    *  \param[in] data a matrix with the grid of data of the image
    */
   void write_to_floats(const String &filename, em::ImageHeader& header,
-                                        cv::Mat &data) const {
+                                        const cv::Mat &data) const {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it
     header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
 
     float aux;
-    for (CVDoubleMatIterator it=data.begin<double>();
+    for (cv::MatConstIterator_<double> it=data.begin<double>();
                                 it!=data.end<double>();++it) {
       aux = (float)(*it);
       if (!(force_reversed_ ^ algebra::get_is_big_endian())) {

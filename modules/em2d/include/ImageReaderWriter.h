@@ -36,7 +36,7 @@ public:
   }
 
   virtual void write_to_floats(const String &filename, em::ImageHeader& header,
-                                     cv::Mat &data) const {
+                                     const cv::Mat &data) const {
   }
 
   virtual void write_to_ints(const String &filename, em::ImageHeader& header,
