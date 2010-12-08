@@ -25,7 +25,7 @@ int main(int, char *[]) {
   typedef CGAL::Exact_predicates_inexact_constructions_kernel IKernel;
   typedef IKernel::Point_3                                     Bare_point;
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
-  int size=sizeof(pts)/(3*sizeof(double));
+  unsigned int size=sizeof(pts)/(3*sizeof(double));
   std::vector<Weighted_point> l;
   for (unsigned int i=0; i< size; ++i) {
     l.push_back( Weighted_point(Bare_point(pts[i][0], pts[i][1], pts[i][2]),
