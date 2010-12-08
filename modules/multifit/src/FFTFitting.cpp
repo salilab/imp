@@ -670,7 +670,7 @@ TransScores FFTFitting::search_for_the_best_translation(int num_solutions)
 {
   TransScores best_trans;
   algebra::Vector3D max_trans;
-  const em::DensityHeader *d_header = asmb_map_->get_header();
+  //const em::DensityHeader *d_header = asmb_map_->get_header();
   //float spacing = d_header->get_spacing();
   //make heap
   int heap_size=num_solutions;
