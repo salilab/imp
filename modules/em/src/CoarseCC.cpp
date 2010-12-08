@@ -350,7 +350,7 @@ void CoarseCC::calc_derivatives(
   // Compute the derivatives
   int nx=em_header->get_nx();
   int ny=em_header->get_ny();
-  int nz=em_header->get_nz();
+  //int nz=em_header->get_nz();
   double lower_comp=1.0*nvox * em_header->rms * model_header->rms;
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
     float x,y,z;
