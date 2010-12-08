@@ -98,10 +98,11 @@ namespace {
                                                     .quaternion_[j]);
     }
 #endif
-
-     for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
+    algebra::Rotation3D rot= rb.get_reference_frame().get_transformation_from()\
+      .get_rotation();
+    for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
       RigidMember d= rb.get_member(i);
-      algebra::VectorD<3> dv= d.get_derivatives();
+      algebra::VectorD<3> dv= rot*d.get_derivatives();
       rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
     }
     IMP_LOG(TERSE, "Rigid body derivative is "
@@ -163,7 +164,8 @@ namespace {
 #if IMP_BUILD < IMP_FAST
       algebra::Vector3D deltacartesian= rb.get_derivatives()-oldcartesian;
 #endif
-      IMP_INTERNAL_CHECK((deltacartesian-v).get_magnitude() < .1,
+      IMP_INTERNAL_CHECK((deltacartesian-v).get_magnitude()
+                         < .01*(v+deltacartesian).get_magnitude()+.1,
                          "Cartesian derivatives don't match : "
                          << deltacartesian << " vs " << v);
     }
@@ -588,24 +590,24 @@ algebra::Vector3D RigidBody::get_torque() const {
   return ret;
 }
 
-void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv,
+void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
                                    const algebra::Vector3D &local,
                                    DerivativeAccumulator &da) {
   algebra::Rotation3D rot= get_reference_frame()
     .get_transformation_to().get_rotation();
+  const algebra::Vector3D deriv_global= rot*deriv_local;
   //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int j=0; j< 4; ++j) {
     algebra::VectorD<3> v= rot.get_derivative(local, j);
-    q[j]= deriv*v;
+    q[j]= deriv_global*v;
   }
-  XYZ::add_to_derivatives(deriv, da);
+  XYZ::add_to_derivatives(deriv_global, da);
   for (unsigned int j=0; j< 4; ++j) {
     get_particle()->add_to_derivative(internal::rigid_body_data()
                                          .quaternion_[j], q[j],da);
   }
-  algebra::Vector3D torque= algebra::get_vector_product(local, deriv)
-    + get_torque();
+  algebra::Vector3D torque= algebra::get_vector_product(local, deriv_local);
   for (unsigned int i=0; i< 3; ++i) {
     get_particle()->add_to_derivative(internal::rigid_body_data().torque_[i],
                                       torque[i], da);
