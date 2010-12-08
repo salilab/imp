@@ -185,6 +185,8 @@ namespace {
                                     mass,
                                     world,
                                     memory);
+    rb->setCenterOfMassTransform(btTransform(btQuaternion(btVector3(1,0,0), 2),
+                                  rb->getCenterOfMassTransform().getOrigin()));
     map[p]= rb;
     if (local>0) {
       add_spring(rb, NULL,
@@ -201,13 +203,11 @@ namespace {
                         double local,
                         internal::RigidBodyMap& map,
                         btDiscreteDynamicsWorld* dynamicsWorld,
-                        internal::TransformMap
-                        & initial_transforms,
                         internal::Memory &memory) {
     core::RigidBody d(p);
     btScalar mass;
     if (d.get_coordinates_are_optimized()) {
-      mass=1;
+      mass=.01;
       /*if (atom::Mass::particle_is_instance(p)) {
         mass= atom::Mass(p).get_mass();
       } else {
@@ -225,14 +225,16 @@ namespace {
     }
     if (!p->has_attribute(surface_key)) {
       //std::cout << "Mass of " << p->get_name() << " is " << mass << std::endl;
-      std::vector<btVector3> centers;
-      std::vector<btScalar> radii;
       std::vector<algebra::Sphere3D> spheres;
       for (unsigned int i=0; i< rp.size(); ++i) {
         core::XYZR dc(rp[i]);
-        centers.push_back(internal::tr(dc.get_coordinates()));
-        radii.push_back(dc.get_radius());
-        spheres.push_back(dc.get_sphere());
+        core::RigidMember dm(rp[i]);
+        spheres.push_back(algebra::Sphere3D(dm.get_internal_coordinates(),
+                                            dc.get_radius()));
+        //std::cout << spheres.back() << std::endl;
+      }
+      if (spheres.empty()) {
+        std::cout << "Empty: "<< p->get_name() << std::endl;
       }
       std::pair<algebra::Vector3Ds, std::vector<Ints> > impfaces
         = IMP::cgal::internal::get_skin_surface(spheres);
@@ -256,8 +258,9 @@ namespace {
     memory.shapes.push_back(mesh);
     mesh->updateBound();
     btRigidBody *fallRigidBody
-    = internal::create_rigid_body(mesh, algebra::Vector3D(0,0,0),
-                                  mass, dynamicsWorld, memory);
+      = internal::create_rigid_body(mesh,
+                               d.get_reference_frame().get_transformation_to(),
+                                    mass, dynamicsWorld, memory);
 
       /*btCollisionShape* shape= new btMultiSphereShape(&centers[0], &radii[0],
                                                     centers.size());
@@ -268,8 +271,6 @@ namespace {
                                     dynamicsWorld,
                                     memory);*/
     map[p]=fallRigidBody;
-    initial_transforms[p]= d.get_reference_frame().get_transformation_to()
-      *internal::tr(fallRigidBody->getCenterOfMassTransform()).get_inverse();
     if (local > 0) {
       add_rb_anchor(fallRigidBody, local,
                     dynamicsWorld, memory);
@@ -402,7 +403,6 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
 
 
   internal::RigidBodyMap map;
-  internal::TransformMap initial_transforms;
   IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
   ParticlesTemp xyzr_particles;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -422,7 +422,7 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
          handled_bodies.begin(); it != handled_bodies.end(); ++it) {
     handle_rigidbody(it->first, it->second, local_, map,
-                     dynamicsWorld.get(), initial_transforms, memory);
+                     dynamicsWorld.get(), memory);
   }
   get_model()->update();
   ParticlesTemp root_particles= xyzr_particles;
@@ -474,33 +474,39 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
   for (unsigned int i=0; i< iter; ++i) {
     if (get_model()->get_number_of_restraints() > 0
         || get_number_of_optimizer_states() > 0) {
-      internal::copy_back_coordinates(map, initial_transforms);
+      internal::copy_back_coordinates(map);
       get_model()->evaluate(get_model()->get_number_of_restraints() >0);
       update_states();
       for (internal::RigidBodyMap::const_iterator
              it = map.begin(); it != map.end(); ++it) {
         // need to handle rigid bodies
-        btTransform xform;
-        it->second->getMotionState()->getWorldTransform (xform);
+        btTransform full_xform;
+        it->second->getMotionState()->getWorldTransform(full_xform);
+        btTransform xform(full_xform.getRotation());
+        //std::cout << it->first->get_name() << std::endl;
         if (core::RigidBody::particle_is_instance(it->first)) {
           core::RigidBody d(it->first);
+          algebra::Rotation3D out
+            = d.get_reference_frame().get_transformation_from().get_rotation();
           if (d.get_coordinates_are_optimized()
               && d.get_torque().get_squared_magnitude() >0) {
-            it->second->applyTorque(xform
-                                    *internal::tr(-d.get_torque()));
+            algebra::Vector3D torque= d.get_torque();
+            //std::cout << "torque " << torque << std::endl;
+            it->second->applyTorqueImpulse(internal::tr(torque));
           }
         }
         core::XYZ d(it->first);
         if (d.get_coordinates_are_optimized()
             && d.get_derivatives().get_squared_magnitude() >0) {
-          it->second->applyCentralForce(xform
-                                        *internal::tr(-d.get_derivatives()));
+          //std::cout << "force " << -d.get_derivatives() << std::endl;
+          it->second->applyCentralForce(/*xform
+                                        **/internal::tr(-d.get_derivatives()));
         }
       }
     }
     dynamicsWorld->stepSimulation(5/60.f,10);
   }
-  internal::copy_back_coordinates(map, initial_transforms);
+  internal::copy_back_coordinates(map);
   } // clean up restraints
   double ret= get_model()->evaluate(false);
   update_states();

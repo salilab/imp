@@ -57,7 +57,6 @@ ParticlesTemp get_particles(const ParticlesTemp &in);
 
 
 typedef IMP::internal::Map<Particle*, btRigidBody *> RigidBodyMap;
-typedef IMP::internal::Map<Particle*, algebra::Transformation3D> TransformMap;
 typedef IMP::internal::Map<double, btCollisionShape*> SpheresMap;
 
 
@@ -82,8 +81,7 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
 
 
 IMPBULLETEXPORT
-void copy_back_coordinates(const RigidBodyMap &to_copy,
-                           const TransformMap &transforms);
+void copy_back_coordinates(const RigidBodyMap &to_copy);
 
 IMPBULLET_END_INTERNAL_NAMESPACE
 

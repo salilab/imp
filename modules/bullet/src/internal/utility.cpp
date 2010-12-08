@@ -73,31 +73,30 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
     = new btDefaultMotionState(tr(center));
   memory.motion_states.push_back(fallMotionState);
   btVector3 fallInertia(0,0,0);
-  if (mass > 0) {
-    shape->calculateLocalInertia(mass,fallInertia);
-  } else if (mass < 0) {
-    fallInertia= btVector3(.01, .01, .01);
-  }
+  //if (mass > 0) {
+  //shape->calculateLocalInertia(mass,fallInertia);
+  //} else if (mass < 0) {
+  fallInertia= btVector3(.01, .01, .01);
+  //}
   btRigidBody::btRigidBodyConstructionInfo
     fallRigidBodyCI((mass<0? .0001:mass),fallMotionState,shape,fallInertia);
   btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-  fallRigidBody->setDamping(.5, .5);
+  fallRigidBody->setDamping(.8, .8);
   world->addRigidBody(fallRigidBody);
   memory.rigid_bodies.push_back(fallRigidBody);
   return fallRigidBody;
 }
 
 
-void copy_back_coordinates(const RigidBodyMap &map,
-                           const TransformMap &transforms) {
+void copy_back_coordinates(const RigidBodyMap &map) {
   for (internal::RigidBodyMap::const_iterator
          it = map.begin(); it != map.end(); ++it) {
     btTransform trans;
+    Particle *p= it->first;
     it->second->getMotionState()->getWorldTransform(trans);
-    if (core::RigidBody::particle_is_instance(it->first)) {
+    if (core::RigidBody::particle_is_instance(p)) {
       core::RigidBody(it->first)
-        .set_transformation(transforms.find(it->first)->second
-                            *internal::tr(trans));
+        .set_transformation(internal::tr(trans));
     } else {
       core::XYZ(it->first).set_coordinates(internal::tr(trans.getOrigin()));
     }
