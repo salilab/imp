@@ -81,7 +81,12 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
   btRigidBody::btRigidBodyConstructionInfo
     fallRigidBodyCI((mass<0? .0001:mass),fallMotionState,shape,fallInertia);
   btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-  fallRigidBody->setDamping(.8, .8);
+  fallRigidBody->setDamping(.9, .9);
+  {
+    btTransform trans;
+    fallRigidBody->getMotionState()->getWorldTransform(trans);
+    //std::cout << center << " vs " << internal::tr(trans) << std::endl;
+  }
   world->addRigidBody(fallRigidBody);
   memory.rigid_bodies.push_back(fallRigidBody);
   return fallRigidBody;
@@ -95,9 +100,12 @@ void copy_back_coordinates(const RigidBodyMap &map) {
     Particle *p= it->first;
     it->second->getMotionState()->getWorldTransform(trans);
     if (core::RigidBody::particle_is_instance(p)) {
+      //std::cout << "was " << core::RigidBody(it->first)
+      //  .get_transformation() << " is " << internal::tr(trans) << std::endl;
       core::RigidBody(it->first)
         .set_transformation(internal::tr(trans));
     } else {
+      //std::cout << internal::tr(trans.getOrigin()) << std::endl;
       core::XYZ(it->first).set_coordinates(internal::tr(trans.getOrigin()));
     }
   }

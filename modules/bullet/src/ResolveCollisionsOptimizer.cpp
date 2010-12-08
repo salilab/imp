@@ -498,9 +498,13 @@ double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
         core::XYZ d(it->first);
         if (d.get_coordinates_are_optimized()
             && d.get_derivatives().get_squared_magnitude() >0) {
-          //std::cout << "force " << -d.get_derivatives() << std::endl;
+          algebra::Vector3D force=-d.get_derivatives();
+          //std::cout << "force " << force << std::endl;
+          if (force.get_squared_magnitude() > 5) {
+            force= force.get_unit_vector()*5;
+          }
           it->second->applyCentralForce(/*xform
-                                        **/internal::tr(-d.get_derivatives()));
+                                        **/internal::tr(force));
         }
       }
     }
