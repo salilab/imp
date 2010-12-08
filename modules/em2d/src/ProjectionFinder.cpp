@@ -326,6 +326,7 @@ void ProjectionFinder::get_complete_registration() {
       }
     }
     fine_registration_time_ += timer_fine_subject.elapsed();
+    best_fine_registration.set_image_index(i);
     registration_results_[i]=best_fine_registration;
     IMP_LOG(IMP::TERSE,"Fine registration: "
                               << registration_results_[i] << std::endl);

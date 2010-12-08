@@ -37,10 +37,10 @@ public:
 
   RegistrationResult(double phi,double theta,double psi,
                      algebra::Vector2D shift,
-                     long index=0,double ccc=0.0,String name="");
+                     long projection_index=0,double ccc=0.0,String name="");
 
   RegistrationResult(algebra::Rotation3D R,algebra::Vector2D shift,
-                      long index=0,double ccc=0.0,String name="");
+                      long projection_index=0,double ccc=0.0,String name="");
 
   inline double get_Phi() const { return phi_;}
 

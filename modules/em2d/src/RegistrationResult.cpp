@@ -132,7 +132,7 @@ void RegistrationResult::read(const String &line) {
   shift_[1] =std::atof(s.substr(0,n).c_str());
   s=s.substr(n+1); n=s.find("|");
   set_ccc(std::atof(s.substr(0,n).c_str()));
-  set_rotation(phi_,theta_,psi_);
+  R_ = algebra::get_rotation_from_vector4d(quaternion);
 }
 
 //! Reads a set of registration results
@@ -179,9 +179,9 @@ RegistrationResult::RegistrationResult() {
 }
 
 RegistrationResult::RegistrationResult(algebra::Rotation3D R,
-    algebra::Vector2D shift,long index,double ccc,String name) {
+    algebra::Vector2D shift,long projection_index,double ccc,String name) {
   set_shift(shift);
-  set_projection_index(index);
+  set_projection_index(projection_index);
   set_rotation(R);
   set_ccc(ccc);
   set_image_index(0);

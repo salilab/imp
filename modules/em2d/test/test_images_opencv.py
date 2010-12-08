@@ -126,16 +126,13 @@ class ProjectTests(IMP.test.TestCase):
         fn_img2 = self.get_input_file_name("temp.jpg")
         img1.write_to_floats(fn_img2,jrw)
         img2 = IMP.em2d.Image(fn_img2,jrw)
-
-        rows = int( img1.get_header().get_number_of_rows())
-        cols = int(img1.get_header().get_number_of_columns())
-        for i in range(0,rows):
-            for j in range(0,cols):
-                # due to rounding, integer numbers in the jpg file can vary
-                # to the next integer. Allow delta 1
-                self.assertAlmostEqual(abs(img1(i,j)-img2(i,j)),0,
-                delta=1,msg="Written JPG image is not equal to read " \
-                " at pixel (%d,%d)" % (i,j))
+        # Use the ccc for testing instead of the pixel values. The matrix
+        # in img2 is transformed from floats to ints son it can be written.
+        # Values can change, but the ccc has to be very close to 1.
+        ccc= IMP.em2d.cross_correlation_coefficient(img1.get_data(),
+                                           img2.get_data())
+        self.assertAlmostEqual(ccc,1,delta=0.05,
+        msg="Written JPG image is not equal to read ")
         os.remove(fn_img2)
 
     def test_write_error_jpg(self):

@@ -52,7 +52,7 @@ public:
               You might be discarding float information.
    */
   void write_to_floats(const String &filename, em::ImageHeader& header,
-                                        cv::Mat &data) const {
+                                        const cv::Mat &data) const {
     // discard header
     IMP_LOG(IMP::WARNING,"Writing with JPGImageReaderWriter "
                   "discards image header " << std::endl);
@@ -64,11 +64,21 @@ public:
       IMP_THROW("JPGImageReaderWriter: The filename extension is not .jpg "
                 "or .jpeg",IOException);
     }
+
+    // Convert the data value to 8-bit so it can be written as JPG
+    cv::Mat jpg_data;
+    double max,min;
+    cv::minMaxLoc(data,&min,&max);
+    double jpg_max= 255;
+    double jpg_min=0;
+    double alpha = (jpg_max-jpg_min)/(max-min);
+    double beta = jpg_min-alpha*min;
+    data.convertTo(jpg_data,CV_8UC1,alpha,beta);
     // write image
     std::vector<int> flags;
     flags.push_back(CV_IMWRITE_JPEG_QUALITY);
     flags.push_back(100); // 100% quality image
-    cv::imwrite(filename,data,flags);
+    cv::imwrite(filename,jpg_data,flags);
   }
 };
 
