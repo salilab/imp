@@ -46,7 +46,10 @@ env = {}
 exec(open('imp/modules/SConscript').read())
 f = open('$modfile', 'w')
 for m in modules:
-    print >> f, m
+    print >> f, "module\t" + m
+exec(open('imp/applications/SConscript').read())
+for m in applications:
+    print >> f, "application\t" + m
 END
 
 # Write out a tarball:
