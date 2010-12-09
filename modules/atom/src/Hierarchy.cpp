@@ -344,6 +344,11 @@ Bonds get_internal_bonds(Hierarchy mhd)
 
 
 core::RigidBody setup_as_rigid_body(Hierarchy h) {
+  IMP_USAGE_CHECK(h.get_is_valid(true),
+                     "Invalid hierarchy passed to setup_as_rigid_body");
+  IMP_WARN("create_rigid_body should be used instead of setup_as_rigid_body"
+           << " as the former allows one to get volumes correct at coarser"
+           << " levels of detail.");
   core::XYZs leaves(get_leaves(h));
   core::RigidBody rbd
     = core::RigidBody::setup_particle(h, leaves);
