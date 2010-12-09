@@ -59,8 +59,8 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return finder_.get_em2d_score();
 }
 
-/* We also need to know which particles are used (as some are
-   used, but don't create interactions). */
+// We also need to know which particles are used (as some are
+//   used, but don't create interactions).
 ParticlesTemp Em2DRestraint::get_input_particles() const
 {
   ParticlesTemp ret;
@@ -73,7 +73,6 @@ ParticlesTemp Em2DRestraint::get_input_particles() const
 }
 
 
-//! Get the containers of particles
 ContainersTemp Em2DRestraint::get_input_containers() const
 {
   // Returns a vector of one container with the particles

@@ -81,7 +81,7 @@ IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
 IMPEM2DEXPORT void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
         const RegistrationResult &reg,double resolution,double pixelsize,
         const em2d::ImageReaderWriter<double> &srw,bool save_image=false,
-        MasksManager *masks=NULL,String name="");
+        MasksManagerPtr masks=MasksManagerPtr(),String name="");
 
 //! Projects a set of particles. This is the core function that others call
 /*!
@@ -95,8 +95,7 @@ IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManager *masks);
-
+             MasksManagerPtr masks);
 
 //! Project the points contained in Vector3Ds to gen vectors in 2D
 /*!

@@ -57,7 +57,6 @@ public:
     return true;
   }
 
-  //! Get the current translation value
   algebra::Vector3D get_translation() const {
     return algebra::Vector3D(get_translation_x(),
                              get_translation_y(),
@@ -65,20 +64,26 @@ public:
 
   }
 
-  void set_translation(algebra::Vector3D v) {
+  void set_translation(const algebra::Vector3D &v) {
     set_translation_x(v[0]);
     set_translation_y(v[1]);
   }
 
-  //! Get the current rotation value
   algebra::Rotation3D get_rotation() const {
-    return algebra::Rotation3D(get_quaternion_1(),
-                             get_quaternion_2(),
-                             get_quaternion_3(),
-                             get_quaternion_4());
-   }
+    algebra::Vector4D v(get_quaternion_1(),
+                         get_quaternion_2(),
+                         get_quaternion_3(),
+                         get_quaternion_4());
+    // normalize the vector. Given that the numbers generated with
+    // simplex are not necessarily a unit vector.
+    algebra::Vector4D unit=v.get_unit_vector();
+    return algebra::Rotation3D(unit[0],
+                               unit[1],
+                               unit[2],
+                               unit[3]);
+  }
 
-  void set_rotation(algebra::Rotation3D R) {
+  void set_rotation(const algebra::Rotation3D &R) {
     set_quaternion_1(R.get_quaternion()[0]);
     set_quaternion_2(R.get_quaternion()[1]);
     set_quaternion_3(R.get_quaternion()[2]);

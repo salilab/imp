@@ -42,6 +42,34 @@ em2d::Images generate_projections(const ParticlesTemp &ps,
 }
 
 
+//em2d::Images generate_projections(const ParticlesTemp &ps,
+//                    RegistrationResults registration_values,
+//                    int rows, int cols,
+//                    double resolution, double pixelsize,
+//                    const em2d::ImageReaderWriter<double> &srw,
+//                    bool project_and_save,
+//                    Strings names) {
+//  IMP_LOG(IMP::VERBOSE,
+//          "Generating projections from registraion results" << std::endl);
+//
+//  unsigned long n_projs= registration_values.size();
+//  em2d::Images projections(n_projs);
+//  // Precomputation of all the possible projection masks for the particles
+//  MasksManager masks(resolution,pixelsize);
+//  masks.generate_masks(ps);
+//  for (unsigned long i=0;i<n_projs;++i) {
+//    IMP_NEW(em2d::Image,img,());
+//    img->resize(rows,cols);
+//    String name="";
+//    if(project_and_save) { name = names[i]; } // deal with name only if saving
+//    generate_projection(img,ps,registration_values[i],
+//                resolution,pixelsize,srw,project_and_save,&masks,name);
+//    projections.set(i,img);
+//  }
+//  return projections;
+//}
+//
+
 em2d::Images generate_projections(const ParticlesTemp &ps,
                     RegistrationResults registration_values,
                     int rows, int cols,
@@ -55,35 +83,33 @@ em2d::Images generate_projections(const ParticlesTemp &ps,
   unsigned long n_projs= registration_values.size();
   em2d::Images projections(n_projs);
   // Precomputation of all the possible projection masks for the particles
-  MasksManager masks(resolution,pixelsize);
-  masks.generate_masks(ps);
+  MasksManagerPtr masks(new MasksManager(resolution,pixelsize));
+  masks->generate_masks(ps);
   for (unsigned long i=0;i<n_projs;++i) {
     IMP_NEW(em2d::Image,img,());
     img->resize(rows,cols);
     String name="";
     if(project_and_save) { name = names[i]; } // deal with name only if saving
     generate_projection(img,ps,registration_values[i],
-                resolution,pixelsize,srw,project_and_save,&masks,name);
+                resolution,pixelsize,srw,project_and_save,masks,name);
     projections.set(i,img);
   }
   return projections;
 }
 
-
-
 void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
             const RegistrationResult &reg,
             double resolution, double pixelsize,
           const em2d::ImageReaderWriter<double> &srw,bool save_image,
-           MasksManager *masks,String name) {
+           MasksManagerPtr masks,String name) {
   IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
 
-  if(masks==NULL) {
-    masks = new MasksManager(resolution,pixelsize);
+  if(masks==MasksManagerPtr()) {
+    masks =MasksManagerPtr(new MasksManager(resolution,pixelsize));
     masks->generate_masks(ps);
+    IMP_LOG(IMP::VERBOSE, "Masks generated from generate_projection()"
+                                                               << std::endl);
   }
-  IMP_LOG(IMP::VERBOSE, "Masks generated from generate_projection()"
-                                                                << std::endl);
   algebra::Vector3D translation = pixelsize*reg.get_shift3D();
   algebra::Rotation3D R = reg.get_rotation();
   project_particles(ps,img->get_data(),R,
@@ -96,23 +122,26 @@ void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
   }
 }
 
+
 void project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManager *masks) {
+             MasksManagerPtr masks) {
   IMP_LOG(IMP::VERBOSE,"Projecting particles in a openCV matrix" << std::endl);
   if(m2.empty()) {
     IMP_THROW("Cannot project on a empty matrix",ValueException);
   }
-  if(masks==NULL) {
+  if(masks==MasksManagerPtr()) {
     // Create the masks
-    masks = new MasksManager(resolution,pixelsize);
+    masks=MasksManagerPtr(new MasksManager(resolution,pixelsize));
     masks->generate_masks(ps);
   }
   // Centroid
   unsigned long n_particles = ps.size();
+    IMP_LOG(IMP::VERBOSE,"project_particles: " << n_particles << std::endl);
+
   algebra::Vector3D centroid(0.0,0.0,0.0);
   for (unsigned long i=0; i<n_particles; i++) {
     core::XYZ xyz(ps[i]);
@@ -129,13 +158,21 @@ void project_particles(const ParticlesTemp &ps,
     algebra::Vector3D p=xyzr.get_coordinates()-centroid;
     // Pixel after trasformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
+    IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation);
     double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
+    IMP_LOG(IMP::VERBOSE," pix_x "<< pix_x);
     double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
+    IMP_LOG(IMP::VERBOSE," pix_y "<< pix_y << std::endl);
     // Apply mask
-    Projection_Mask* mask = masks->find_mask(xyzr.get_radius());
+/**
+    ProjectionMask* mask = masks->find_mask(xyzr.get_radius());
+/**/
+    ProjectionMaskPtr mask= masks->find_mask(xyzr.get_radius());
     algebra::Vector2D pix(pix_x,pix_y);
     mask->apply(m2,pix,mass.get_mass());
   }
+  IMP_LOG(IMP::VERBOSE,"END of project_particles" << std::endl);
+
 }
 
 

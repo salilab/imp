@@ -66,9 +66,6 @@ void ProjectionParametersScoreState::do_after_evaluate(
                                                 DerivativeAccumulator *accpt) {
 
   IMP_LOG(IMP::VERBOSE,ProjectionParameters(proj_params_));
-//  if(ProjectionParameters::particle_is_instance(proj_params_)) {
-//    std::cout <<  ProjectionParameters(proj_params_) << std::endl;
-//  }
 }
 
 void ProjectionParametersScoreState::do_show(std::ostream& out) const {

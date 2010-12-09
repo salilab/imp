@@ -74,7 +74,10 @@ public:
     optimization_steps_ = optimization_steps;
     save_match_images_ = save_match_images;
     simplex_initial_length_ = simplex_initial_length;
-    masks_manager_.init_kernel(resolution_,apix_);
+    masks_manager_ = MasksManagerPtr(new MasksManager);
+    masks_manager_->init_kernel(resolution_,apix_);
+
+
     fast_optimization_mode_ = false;
     parameters_initialized_=true;
     preprocessing_time_=0.0;
@@ -184,8 +187,10 @@ protected:
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
   PolarResamplingParameters polar_params_;
-
+/**
   MasksManager masks_manager_;
+**/
+  MasksManagerPtr masks_manager_;
 };
 
 
