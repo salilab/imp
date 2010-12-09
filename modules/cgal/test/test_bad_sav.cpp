@@ -11,6 +11,12 @@ int main(int, char *[]) {
   std::pair<double, double> dp
     = IMP::cgal::internal::get_surface_area_and_volume(balls);
   std::cout << dp.first << " and " << dp.second << std::endl;
+  std::cout << IMP::algebra::get_surface_area(balls[0])
+                +IMP::algebra::get_surface_area(balls[1])
+            << " and "
+            << IMP::algebra::get_volume(balls[0])
+                +IMP::algebra::get_volume(balls[1])
+            << std::endl;
   IMP_USAGE_CHECK(dp.first >0, "Surface area must be positive");
   IMP_USAGE_CHECK(dp.second >0, "Volume must be positive");
   return 0;
