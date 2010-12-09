@@ -20,18 +20,24 @@
 #include "IMP/core/XYZR.h"
 #include "IMP/Particle.h"
 #include <complex>
+#include <boost/shared_ptr.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
+class ProjectionMask;
+class MasksManager;
+
+typedef boost::shared_ptr<ProjectionMask> ProjectionMaskPtr;
+typedef boost::shared_ptr<MasksManager> MasksManagerPtr;
 
 
 //! Mask that contains the projection of a given particles. This matrices
 //! speed up projecting because the only have to be computed once for a model
-class IMPEM2DEXPORT Projection_Mask : public cv::Mat {
+class IMPEM2DEXPORT ProjectionMask : public cv::Mat {
 
 public:
 
-  Projection_Mask(const em::KernelParameters &KP,
+  ProjectionMask(const em::KernelParameters &KP,
             const em::RadiusDependentKernelParameters *params,double voxelsize);
 
   //! Generates the mask
@@ -51,13 +57,15 @@ public:
   void apply(cv::Mat &m,
              const algebra::Vector2D &v,double weight);
 
+  ~ProjectionMask();
+
 protected:
   int dim_; // dimension of the mask
   double sq_pixelsize_; // Used to save multiplications
 };
 
 
-IMP_VALUES(Projection_Mask,Projection_Masks);
+IMP_VALUES(ProjectionMask,ProjectionMasks);
 
 //! Manage of projection masks
 class IMPEM2DEXPORT MasksManager {
@@ -89,11 +97,13 @@ public:
   void create_mask(double radius);
 
   //! Returns the adequate mask for a particle of given radius
-  Projection_Mask* find_mask(double radius);
+  ProjectionMaskPtr find_mask(double radius);
+
+  ~MasksManager();
 
 protected:
   // A map to store the masks
-  std::map <double,Projection_Mask* > radii2mask_;
+  std::map <double,ProjectionMaskPtr > radii2mask_;
   // Kernel Params for the particles
   em::KernelParameters kernel_params_;
   // Pixel size for the masks

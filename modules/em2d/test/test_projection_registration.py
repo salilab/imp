@@ -40,7 +40,7 @@ class ProjectTests(IMP.test.TestCase):
         self.assertEqual(len(projections),n_projections,
                                           "Problem generating projections")
         # Prepare registration
-        save_match_images=False
+        save_match_images=True
         coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
         optimization_steps=30
         simplex_initial_length=0.1
@@ -60,9 +60,6 @@ class ProjectTests(IMP.test.TestCase):
         finder.set_projections(projections);
         finder.set_fast_mode(2)
         finder.get_complete_registration();
-#        print "FINE REGISTRATION"
-#        finder.get_coarse_registration();
-#        print "COARSE REGISTRATION"
         # Recover the registration results:
         registration_parameters=finder.get_registration_results()
         fn_registration_results=self.get_input_file_name(
@@ -73,30 +70,25 @@ class ProjectTests(IMP.test.TestCase):
         correct_parameters=IMP.em2d.read_registration_results(
         self.get_input_file_name("1gyt-subjects-0.5-SNR.params") )
 
-        print "determined: "
-        for r in registration_parameters:
-            print r.get_rotation(),r.get_shift()
-        print "correct: "
-        for r in correct_parameters:
-            print r.get_rotation(),r.get_shift()
-
-        angle_tolerance=0.05
-        distance_tolerance = 1
+#        print "determined: "
+#        for r in registration_parameters:
+#            print r.get_rotation(),r.get_shift()
+#        print "correct: "
+#        for r in correct_parameters:
+#            print r.get_rotation(),r.get_shift()
         for i in xrange(0,len(registration_parameters)):
-            # Use distance between the quaternions. Careful: "Angle"
-            # here is not a real angle.
-            angle = IMP.algebra.get_distance(
-                    registration_parameters[i].get_rotation(),
-                    correct_parameters[i].get_rotation())
-            print "quaternion distance ",angle
-            dist = IMP.em2d.shift_error(registration_parameters[i],
-                                        correct_parameters[i])
-            self.assertAlmostEqual(angle,0, delta=angle_tolerance,
-                 msg="Rotation error %8.3f higher than tolerance %8.3f "
-                     "for subject %d " % (angle,angle_tolerance,i))
-            self.assertAlmostEqual(dist,0, delta=distance_tolerance,
-                 msg="Translation error %8.3f higher than tolerance %8.3f "
-                     "for subject %d " % (dist,distance_tolerance,i))
+            # Generate the registered projection
+            imgx=IMP.em2d.Image()
+            imgx.resize(rows,cols)
+            IMP.em2d.generate_projection(imgx,particles,
+                    registration_parameters[i],resolution,pixel_size,srw)
+            ccc=IMP.em2d.cross_correlation_coefficient(subjects[i].get_data(),
+                                                  imgx.get_data())
+            snr=0.5
+            theoretical_ccc = (snr/(1.+snr))**.5
+            self.assertAlmostEqual(ccc,theoretical_ccc, delta=0.02,
+                 msg="Error in registration of subject %d: ccc %8.3f "\
+                    "theoretical_ccc %8.3f "% (i,ccc,theoretical_ccc))
         os.remove(fn_registration_results)
 
 if __name__ == '__main__':

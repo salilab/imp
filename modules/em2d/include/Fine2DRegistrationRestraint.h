@@ -44,7 +44,8 @@ public:
                  double resolution,
                  double pixelsize,
                  Model *scoring_model,
-                 MasksManager *masks=NULL);
+                 MasksManagerPtr masks=MasksManagerPtr());
+
 
 
   //! Sets the image to use by the restraint to perform the fine search of
@@ -69,9 +70,8 @@ private:
   // Access point for the particles
   ParticlesTemp ps_;
   // Projection masks for the particles
-  mutable MasksManager *masks_;
+  MasksManagerPtr  masks_;
   double resolution_,pixelsize_;
-  //IMP::FloatKey Phi_, Theta_, Psi_, yorigin_, xorigin_;
 };
 
 IMP_OBJECTS(Fine2DRegistrationRestraint,Fine2DRegistrationRestraints);

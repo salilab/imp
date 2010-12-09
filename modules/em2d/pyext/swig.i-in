@@ -1,7 +1,7 @@
 IMP_SWIG_VALUE(IMP::em2d, PolarResamplingParameters,
                                           PolarResamplingParametersList);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionFinder, ProjectionFinders);
-IMP_SWIG_VALUE(IMP::em2d, Projection_Mask, Projection_Masks);
+IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
 

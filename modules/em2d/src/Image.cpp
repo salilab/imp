@@ -6,6 +6,7 @@
 
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
+#include "IMP/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -14,7 +15,7 @@ Images read_images(Strings names,
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
-    v[i]= new Image();
+    v[i]=Pointer<Image>(new Image());
     v[i]->read_from_floats(names[i],rw);
   }
   return v;

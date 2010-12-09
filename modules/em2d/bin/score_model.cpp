@@ -230,6 +230,9 @@ int main(int argc, char **argv) {
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
+  IMP::set_log_level(IMP::VERBOSE);
+
+
   boost::timer registration_timer;
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
