@@ -60,18 +60,18 @@ namespace {
         }
         IMP::atom::Bond bd = create_bond(b[0], b[1], IMP::atom::Bond::SINGLE);
 
-        const CHARMMBondParameters *p =
-              ff->get_bond_parameters(CHARMMAtom(as[0]).get_charmm_type(),
-                                      CHARMMAtom(as[1]).get_charmm_type());
-        if (p) {
-          bd.set_length(p->ideal);
+        try {
+          const CHARMMBondParameters &p =
+                ff->get_bond_parameters(CHARMMAtom(as[0]).get_charmm_type(),
+                                        CHARMMAtom(as[1]).get_charmm_type());
+          bd.set_length(p.ideal);
           // Note that CHARMM uses kx^2 rather than (1/2)kx^2 for harmonic
           // restraints, so we need to add a factor of two; stiffness is also
           // incorporated into x, so is the sqrt of the force constant
-          bd.set_stiffness(std::sqrt(p->force_constant * 2.0));
-        } else {
-          IMP_WARN("No parameters found for bond between " << as[0]
-                   << " " << as[1] << std::endl);
+          bd.set_stiffness(std::sqrt(p.force_constant * 2.0));
+        } catch (const IndexException &e) {
+          // If no parameters, warn only
+          IMP_WARN(e.what() << std::endl);
         }
         ps.push_back(bd);
       }
@@ -92,21 +92,24 @@ namespace {
                                    current_residue, previous_residue,
                                    next_residue, resmap);
       if (as.size() > 0) {
-        const CHARMMDihedralParameters *p =
+        try {
+          const CHARMMDihedralParameters &p =
               ff->get_improper_parameters(CHARMMAtom(as[0]).get_charmm_type(),
                                           CHARMMAtom(as[1]).get_charmm_type(),
                                           CHARMMAtom(as[2]).get_charmm_type(),
                                           CHARMMAtom(as[3]).get_charmm_type());
-        if (p) {
-          Dihedral id
-            = Dihedral::setup_particle(new Particle(as[0]->get_model()),
-                                       core::XYZ(as[0]), core::XYZ(as[1]),
-                                       core::XYZ(as[2]), core::XYZ(as[3]));
-          // CHARMM ideal value is in angles; convert to radians
-          id.set_ideal(p->ideal / 180.0 * PI);
-          id.set_multiplicity(p->multiplicity);
-          id.set_stiffness(std::sqrt(p->force_constant * 2.0));
-          ps.push_back(id);
+            Dihedral id
+              = Dihedral::setup_particle(new Particle(as[0]->get_model()),
+                                         core::XYZ(as[0]), core::XYZ(as[1]),
+                                         core::XYZ(as[2]), core::XYZ(as[3]));
+            // CHARMM ideal value is in angles; convert to radians
+            id.set_ideal(p.ideal / 180.0 * PI);
+            id.set_multiplicity(p.multiplicity);
+            id.set_stiffness(std::sqrt(p.force_constant * 2.0));
+            ps.push_back(id);
+        } catch (const IndexException &e) {
+          // if no parameters, simply swallow the exception; do not
+          // create an improper
         }
       }
     }

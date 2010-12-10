@@ -11,21 +11,22 @@ class CHARMMParametersTests(IMP.test.TestCase):
         """Check extraction of bond parameters"""
         p = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'),
                                       IMP.atom.get_data_path('par.lib'))
-        self.assertEqual(p.get_bond_parameters('garbage', 'CT2'), None)
+        self.assertRaises(IndexError, p.get_bond_parameters, 'garbage', 'CT2')
         for types in [('CT1', 'CT2'), ('CT2', 'CT1')]:
             bond = p.get_bond_parameters(*types)
             self.assertAlmostEqual(bond.force_constant, 222.500, delta=1e-4)
             self.assertAlmostEqual(bond.ideal, 1.5380, delta=1e-5)
 
-        self.assertEqual(p.get_angle_parameters('garbage', 'CT2', 'CT3'), None)
+        self.assertRaises(IndexError, p.get_angle_parameters,
+                          'garbage', 'CT2', 'CT3')
         for types in [('OM', 'CM', 'FE'), ('FE', 'CM', 'OM')]:
             bond = p.get_angle_parameters(*types)
             self.assertAlmostEqual(bond.force_constant, 35.000, delta=1e-4)
             self.assertAlmostEqual(bond.ideal, 180.0000, delta=1e-5)
-        self.assertEqual(p.get_angle_parameters('OM', 'FE', 'CM'), None)
+        self.assertRaises(IndexError, p.get_angle_parameters, 'OM', 'FE', 'CM')
 
-        self.assertEqual(len(p.get_dihedral_parameters('garbage', 'C',
-                                                       'CT2', 'CT3')), 0)
+        self.assertRaises(IndexError, p.get_dihedral_parameters,
+                          'garbage', 'C', 'CT2', 'CT3')
         # Check multiple dihedrals
         bonds = p.get_dihedral_parameters('CP1', 'C', 'N', 'CP1')
         self.assertEqual(len(bonds), 2)
@@ -43,8 +44,8 @@ class CHARMMParametersTests(IMP.test.TestCase):
         self.assertEqual(bonds[0].multiplicity, 3)
         self.assertAlmostEqual(bonds[0].ideal, 0.00, delta=1e-5)
 
-        self.assertEqual(p.get_improper_parameters('garbage', 'C',
-                                                   'CT2', 'CT3'), None)
+        self.assertRaises(IndexError, p.get_improper_parameters,
+                          'garbage', 'C', 'CT2', 'CT3')
         for types in [('CPB', 'CPA', 'NPH', 'CPA'),
                       ('CPA', 'NPH', 'CPA', 'CPB')]:
             bond = p.get_improper_parameters(*types)
@@ -58,10 +59,8 @@ class CHARMMParametersTests(IMP.test.TestCase):
             self.assertAlmostEqual(bond.force_constant, 90.000, delta=1e-4)
             self.assertEqual(bond.multiplicity, 0)
             self.assertAlmostEqual(bond.ideal, 0.0000, delta=1e-5)
-        self.assertEqual(p.get_improper_parameters('NPH', 'CPA', 'CPB', 'CPA'),
-                         None)
-    test_bond_parameters = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_bond_parameters)
+        self.assertRaises(IndexError, p.get_improper_parameters,
+                          'NPH', 'CPA', 'CPB', 'CPA')
 
 if __name__ == '__main__':
     IMP.test.main()

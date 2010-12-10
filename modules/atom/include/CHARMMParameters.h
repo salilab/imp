@@ -152,39 +152,37 @@ public:
   //! Create topology that corresponds to the primary sequence of the Hierarchy.
   CHARMMTopology *create_topology(Hierarchy hierarchy) const;
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get bond parameters for the bond between the two given CHARMM atom types.
-  /** The atom types may match in any order. If no parameters are present,
-       NULL is returned.
+  /** The atom types may match in any order.
+      \throws IndexException if no parameters are present.
    */
-  const CHARMMBondParameters *get_bond_parameters(std::string type1,
+  const CHARMMBondParameters &get_bond_parameters(std::string type1,
                                                   std::string type2) const {
     internal::CHARMMBondNames types = internal::CHARMMBondNames(type1, type2);
     if (bond_parameters_.find(types) != bond_parameters_.end()) {
-      return &bond_parameters_.find(types)->second;
+      return bond_parameters_.find(types)->second;
     } else {
-      return NULL;
+      IMP_THROW("No CHARMM parameters found for bond "
+                << type1 << "-" << type2, IndexException);
     }
   }
-#endif
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get parameters for the angle between the three given CHARMM atom types.
   /** The atom types may match in either forward or reverse order.
-      If no parameters are present, NULL is returned.
+      \throws IndexException if no parameters are present.
    */
-  const CHARMMBondParameters *get_angle_parameters(std::string type1,
+  const CHARMMBondParameters &get_angle_parameters(std::string type1,
                                                    std::string type2,
                                                    std::string type3) const {
     internal::CHARMMAngleNames types = internal::CHARMMAngleNames(type1, type2,
                                                                   type3);
     if (angle_parameters_.find(types) != angle_parameters_.end()) {
-      return &angle_parameters_.find(types)->second;
+      return angle_parameters_.find(types)->second;
     } else {
-      return NULL;
+      IMP_THROW("No CHARMM parameters found for angle "
+                << type1 << "-" << type2 << "-" << type3, IndexException);
     }
   }
-#endif
 
   //! Get parameters for the dihedral between the four given CHARMM atom types.
   /** The atom types may match in either forward or reverse order. When
@@ -195,7 +193,7 @@ public:
       Multiple sets of parameters can be specified for the same combination
       of atom types in the library, in which case all of them are returned.
 
-      If no parameters are present, an empty vector is returned.
+      \throws IndexException if no parameters are present.
    */
   std::vector<CHARMMDihedralParameters> get_dihedral_parameters(
              std::string type1, std::string type2, std::string type3,
@@ -217,19 +215,24 @@ public:
         param.push_back(match->second);
       }
     }
-    return param;
+    if (param.size() == 0) {
+      IMP_THROW("No CHARMM parameters found for dihedral "
+                << type1 << "-" << type2 << "-" << type3 << "-" << type4,
+                IndexException);
+    } else {
+      return param;
+    }
   }
 
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Get parameters for the improper between the four given CHARMM atom types.
   /** The atom types may match in either forward or reverse order. When
       looking for a match in the library, wildcards are considered; an atom
       type of X in the library will match any atom type. The most specific
       match from the library is returned.
 
-      If no parameters are present, NULL is returned.
+      \throws IndexException if no parameters are present.
    */
-  const CHARMMDihedralParameters *get_improper_parameters(
+  const CHARMMDihedralParameters &get_improper_parameters(
              std::string type1, std::string type2, std::string type3,
              std::string type4) const {
     internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
@@ -239,12 +242,13 @@ public:
         find_dihedral(improper_parameters_.begin(),
                       improper_parameters_.end(), types, true);
     if (it != improper_parameters_.end()) {
-      return &it->second;
+      return it->second;
     } else {
-      return NULL;
+      IMP_THROW("No CHARMM parameters found for improper "
+                << type1 << "-" << type2 << "-" << type3 << "-" << type4,
+                IndexException);
     }
   }
-#endif
 
   //! Auto-generate Angle particles from the passed list of Bond particles.
   /** The angles consist of all unique pairs of bonds which share an
