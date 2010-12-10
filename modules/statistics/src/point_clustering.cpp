@@ -239,6 +239,9 @@ PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
   for (unsigned int i=0; i< names.size(); ++i) {
     names[i]=i;
   }
+  if (names.empty()) {
+    IMP_THROW("No points to cluster", ValueException);
+  }
   return get_lloyds_kmeans(names, metric, k, iterations);
 }
 
