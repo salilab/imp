@@ -356,9 +356,10 @@ try:
                 os.unlink(self.__appcopy)
             self.__appcopy = None
         def wait(self):
+            err = self.stderr.read()
             ret = subprocess.Popen.wait(self)
             self.__delete_copy()
-            return ret
+            return ret, err
 except ImportError:
     # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
     class _SubprocessWrapper(object):
@@ -366,7 +367,7 @@ except ImportError:
             self.stdin, self.stdout, self.stderr = \
                              os.popen3(app + " " + " ".join(args))
         def wait(self):
-            return 0
+            return (0, "")
 
 class ApplicationTestCase(TestCase):
     """Super class for simple IMP application test cases"""
@@ -389,14 +390,24 @@ class ApplicationTestCase(TestCase):
         print "running ", filename
         return _SubprocessWrapper(filename, args)
 
-    def assertApplicationExitedCleanly(self, ret):
+    def run_script(self, app, args):
+        """Run an application with the given list of arguments.
+           @return a subprocess.Popen-like object containing the child stdin,
+                   stdout and stderr.
+        """
+        print "running ", app
+        return _SubprocessWrapper("python", [app]+args)
+
+    def assertApplicationExitedCleanly(self, ret, error):
         """Assert that the application exited cleanly, i.e. that the
            return value is zero."""
         if ret < 0:
-            raise OSError("Application exited with signal %d" % -ret)
+            raise OSError("Application exited with signal %d\n" % -ret\
+                          +error)
         else:
             self.assertEqual(ret, 0,
-                       "Application exited uncleanly, with exit code %d" % ret)
+                       "Application exited uncleanly, with exit code %d\n" % ret\
+                             + error)
 
 
 
