@@ -138,7 +138,8 @@ public:
 };
 
 //! Base class for all CHARMM residue-based topology
-class IMPATOMEXPORT CHARMMResidueTopologyBase {
+class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
+{
   std::string type_;
 protected:
   std::vector<CHARMMAtomTopology> atoms_;
@@ -208,9 +209,11 @@ public:
   const CHARMMBond<4> &get_improper(unsigned int index) const {
     return impropers_[index];
   }
+
+  IMP_OBJECT(CHARMMResidueTopologyBase);
 };
 
-IMP_VALUES(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
+IMP_OBJECTS(CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
 
 //! The ideal topology of a single residue
 /** These residue topologies can be constructed manually (by adding
@@ -222,6 +225,8 @@ class IMPATOMEXPORT CHARMMIdealResidueTopology
     : public CHARMMResidueTopologyBase {
   std::string default_first_patch_, default_last_patch_;
 public:
+  CHARMMIdealResidueTopology(std::string type)
+      : CHARMMResidueTopologyBase(type) {}
   CHARMMIdealResidueTopology(ResidueType type)
       : CHARMMResidueTopologyBase(type.get_string()) {}
 
@@ -238,9 +243,10 @@ public:
   }
   std::string get_default_first_patch() const { return default_first_patch_; }
   std::string get_default_last_patch() const { return default_last_patch_; }
+  IMP_OBJECT(CHARMMIdealResidueTopology);
 };
 
-IMP_VALUES(CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
+IMP_OBJECTS(CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
 
 class CHARMMResidueTopology;
 
@@ -255,10 +261,9 @@ class CHARMMResidueTopology;
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
-  CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {}
+  CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {};
 
   void add_removed_atom(std::string name) { deleted_atoms_.push_back(name); }
-#ifndef SWIG
   //! Apply the patch to the residue, modifying its topology accordingly.
   /** \note Most CHARMM patches are designed to be applied in isolation;
             it is usually an error to try to apply two different patches
@@ -266,7 +271,7 @@ public:
             To allow an already-patched residue to be re-patched, first
             call CHARMMResidueTopology::set_patched(false).
    */
-  void apply(CHARMMResidueTopology &res) const;
+  void apply(CHARMMResidueTopology *res) const;
 
   //! Apply the patch to the given pair of residues.
   /** This can only be used for special two-residue patches, such as
@@ -275,11 +280,11 @@ public:
 
       \throws ValueException if the patch is not a two-residue patch.
    */
-  void apply(CHARMMResidueTopology &res1, CHARMMResidueTopology &res2) const;
-#endif
+  void apply(CHARMMResidueTopology *res1, CHARMMResidueTopology *res2) const;
+  IMP_OBJECT(CHARMMPatch);
 };
 
-IMP_VALUES(CHARMMPatch, CHARMMPatches);
+IMP_OBJECTS(CHARMMPatch, CHARMMPatches);
 
 
 //! The topology of a single residue in a model.
@@ -289,13 +294,8 @@ IMP_VALUES(CHARMMPatch, CHARMMPatches);
     residues (see CHARMMPatch::apply()) to add N- or C-termini, disulfide
     bridges, sidechain modifications, etc.
  */
-class IMPATOMEXPORT CHARMMResidueTopology
-     :
-#ifndef SWIG
-  // swig gets confused with memory management
-  public CHARMMIdealResidueTopology,
-#endif
-public Object {
+class IMPATOMEXPORT CHARMMResidueTopology : public CHARMMIdealResidueTopology
+{
   bool patched_;
 public:
 
@@ -304,8 +304,29 @@ public:
     : CHARMMIdealResidueTopology(type), patched_(false) {}
 
   //! Construct residue topology as a copy of an existing topology.
-  CHARMMResidueTopology(const CHARMMIdealResidueTopology &ideal)
-    : CHARMMIdealResidueTopology(ideal), patched_(false) {}
+  CHARMMResidueTopology(CHARMMIdealResidueTopology *ideal)
+    : CHARMMIdealResidueTopology(ideal->get_type()), patched_(false) {
+    set_default_first_patch(ideal->get_default_first_patch());
+    set_default_last_patch(ideal->get_default_last_patch());
+
+    // Add atoms from existing topology
+    for (unsigned int i = 0; i < ideal->get_number_of_atoms(); ++i) {
+      add_atom(ideal->get_atom(i));
+    }
+    // Add angles/bonds/dihedrals/impropers
+    for (unsigned int i = 0; i < ideal->get_number_of_bonds(); ++i) {
+      add_bond(ideal->get_bond(i));
+    }
+    for (unsigned int i = 0; i < ideal->get_number_of_angles(); ++i) {
+      add_angle(ideal->get_angle(i));
+    }
+    for (unsigned int i = 0; i < ideal->get_number_of_dihedrals(); ++i) {
+      add_dihedral(ideal->get_dihedral(i));
+    }
+    for (unsigned int i = 0; i < ideal->get_number_of_impropers(); ++i) {
+      add_improper(ideal->get_improper(i));
+    }
+  }
 
   bool get_patched() const { return patched_; }
   void set_patched(bool patched) { patched_ = patched; }

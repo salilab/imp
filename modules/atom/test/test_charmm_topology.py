@@ -46,10 +46,11 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         # Modifying our copy after it was inserted should have no effect
         at.set_charmm_type('CT2')
         self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT1')
-        # Modifying the residue copy should work, however
-        at = res.get_atom('CA')
-        at.set_charmm_type('CT2')
-        self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT2')
+        # Should be possible to modify atom type after construction though
+        at2 = IMP.atom.CHARMMAtomTopology('CB')
+        at2.set_charmm_type('CT2')
+        res.add_atom(at2)
+        self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
 
     def test_delete_atom(self):
         """Check delete atom from CHARMM residues"""
@@ -118,8 +119,6 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff.add_residue_topology(res)
         ff.get_residue_topology(IMP.atom.ResidueType('FOO'))
         ff.get_patch('PFOO')
-    test_forcefield_add_get = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_forcefield_add_get)
 
     def test_forcefield_read(self):
         """Test read of topology from files"""
@@ -157,8 +156,6 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             res = ff.get_residue_topology(IMP.atom.ResidueType(name))
             self.assertEqual(res.get_default_first_patch(), first)
             self.assertEqual(res.get_default_last_patch(), last)
-    test_forcefield_read = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_forcefield_read)
 
     def test_residue_topology(self):
         """Test CHARMM residue topology objects"""
@@ -166,11 +163,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         at = _make_test_atom()
         ideal.add_atom(at)
         res = IMP.atom.CHARMMResidueTopology(ideal)
-        self.assertEqual(res.get_atom(IMP.atom.CA).get_charmm_type(), 'CT1')
+        self.assertEqual(res.get_atom('CA').get_charmm_type(), 'CT1')
         self.assertEqual(res.get_patched(), False)
         res.set_patched(True)
         self.assertEqual(res.get_patched(), True)
-
 
     def test_single_patching(self):
         """Test application of single-residue patches"""
@@ -200,8 +196,6 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_atom('CB').get_charmm_type(), 'CT2')
         patch.apply(res)
         self.assertRaises(IMP.ValueException, res.get_atom, 'CB')
-    test_single_patching = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_single_patching)
 
     def test_double_patching(self):
         """Test application of two-residue patches"""
@@ -236,8 +230,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         bond = res1.get_bond(10)
         self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'SG')
         self.assertEqual(bond.get_endpoint(1).get_atom_name(), 'SG')
-    test_double_patching = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_double_patching)
+
     def test_manual_make_topology(self):
         """Test manual construction of topology"""
         model = IMP.atom.CHARMMTopology()
@@ -275,8 +268,6 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         a1 = IMP.atom.get_atom(r1, IMP.atom.AT_C)
         a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
         self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
-    test_make_patched_topology = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_make_patched_topology)
 
     def test_dihedral_stiffness(self):
         """Make sure dihedrals can have negative stiffness"""
@@ -308,14 +299,17 @@ class CHARMMTopologyTests(IMP.test.TestCase):
                                   get_charmm_type() for x in range(4)],
                          ['NH1', 'C', 'CP1', 'N'])
         self.assertAlmostEqual(d.get_stiffness(), -0.7746, delta=1e-4)
-    test_dihedral_stiffness = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_dihedral_stiffness)
-
 
     def test_make_topology(self):
         """Test construction of topology"""
         m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('1z5s_C.pdb'), m)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
+        last_atom = atoms[-1].get_particle()
+        # PDB reader will have already set radii and CHARMM types
+        for typ in (IMP.atom.CHARMMAtom, IMP.core.XYZR):
+            self.assertEqual(typ.particle_is_instance(last_atom), True)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
@@ -324,11 +318,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
         self.assertRaises(IMP.ValueException, segment.apply_default_patches, ff)
-        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
-        residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
-        last_atom = atoms[-1].get_particle()
-        for typ in (IMP.atom.CHARMMAtom, IMP.core.XYZR, IMP.atom.Charged,
-                    IMP.atom.LennardJones):
+        for typ in (IMP.atom.Charged, IMP.atom.LennardJones):
             self.assertEqual(typ.particle_is_instance(last_atom), False)
         topology.add_atom_types(pdb)
         self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
@@ -389,8 +379,6 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(chains), 1)
         self.assertEqual(len(residues), 3)
         self.assertEqual(len(atoms), 42)
-    test_make_hierarchy = IMP.test.skip("functions not supported as they leaked memory")\
-                           (test_make_hierarchy)
 
     def test_empty_residue_make_hierarchy(self):
         """Test construction of hierarchy from empty topology"""
