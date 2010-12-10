@@ -577,16 +577,16 @@ void CHARMMParameters::add_angle(Particle *p1, Particle *p2, Particle *p3,
   Angle ad = Angle::setup_particle(new Particle(p1->get_model()),
                                    core::XYZ(p1), core::XYZ(p2),
                                    core::XYZ(p3));
-  const CHARMMBondParameters *p
-        = get_angle_parameters(CHARMMAtom(p1).get_charmm_type(),
-                               CHARMMAtom(p2).get_charmm_type(),
-                               CHARMMAtom(p3).get_charmm_type());
-  if (p) {
-    ad.set_ideal(p->ideal / 180.0 * PI);
-    ad.set_stiffness(std::sqrt(p->force_constant * 2.0));
-  } else {
-    IMP_WARN("No parameters found for angle between " << p1 << " "
-             << p2 << " " << p3 << std::endl);
+  try {
+    const CHARMMBondParameters &p
+          = get_angle_parameters(CHARMMAtom(p1).get_charmm_type(),
+                                 CHARMMAtom(p2).get_charmm_type(),
+                                 CHARMMAtom(p3).get_charmm_type());
+    ad.set_ideal(p.ideal / 180.0 * PI);
+    ad.set_stiffness(std::sqrt(p.force_constant * 2.0));
+  } catch (const IndexException &e) {
+    // If no parameters, warn only
+    IMP_WARN(e.what() << std::endl);
   }
   ps.push_back(ad);
 }
@@ -633,29 +633,29 @@ void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
                                     Particle *p4, Particles &ps) const
 {
   IMP_OBJECT_LOG;
-  std::vector<CHARMMDihedralParameters> p
-        = get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
-                                  CHARMMAtom(p2).get_charmm_type(),
-                                  CHARMMAtom(p3).get_charmm_type(),
-                                  CHARMMAtom(p4).get_charmm_type());
-  for (std::vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
-       it != p.end(); ++it) {
-    Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
-                                           core::XYZ(p1), core::XYZ(p2),
-                                           core::XYZ(p3), core::XYZ(p4));
-    dd.set_ideal(it->ideal / 180.0 * PI);
-    dd.set_multiplicity(it->multiplicity);
-    if (it->force_constant < 0.0) {
-      dd.set_stiffness(-std::sqrt(-it->force_constant * 2.0));
-    } else {
-      dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+  try {
+    std::vector<CHARMMDihedralParameters> p
+          = get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
+                                    CHARMMAtom(p2).get_charmm_type(),
+                                    CHARMMAtom(p3).get_charmm_type(),
+                                    CHARMMAtom(p4).get_charmm_type());
+    for (std::vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
+         it != p.end(); ++it) {
+      Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
+                                             core::XYZ(p1), core::XYZ(p2),
+                                             core::XYZ(p3), core::XYZ(p4));
+      dd.set_ideal(it->ideal / 180.0 * PI);
+      dd.set_multiplicity(it->multiplicity);
+      if (it->force_constant < 0.0) {
+        dd.set_stiffness(-std::sqrt(-it->force_constant * 2.0));
+      } else {
+        dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
+      }
+      ps.push_back(dd);
     }
-    ps.push_back(dd);
-  }
-
-  if (p.size() == 0) {
-    IMP_WARN("No parameters found for dihedral between " << p1 << " "
-             << p2 << " " << p3 << " " << p4 << std::endl);
+  } catch (const IndexException &e) {
+    // If no parameters, warn, and create an empty dihedral
+    IMP_WARN(e.what() << std::endl);
     Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
                                            core::XYZ(p1), core::XYZ(p2),
                                            core::XYZ(p3), core::XYZ(p4));
