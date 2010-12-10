@@ -86,6 +86,7 @@ public:
    */
   /**@{*/
   void add_residue_topology(CHARMMIdealResidueTopology *res) {
+    res->set_was_used(true);
     residue_topologies_.insert(std::make_pair(res->get_type(), res));
   }
 #if 0
@@ -122,6 +123,7 @@ public:
    */
   /**@{*/
   void add_patch(CHARMMPatch *patch) {
+    patch->set_was_used(true);
     patches_.insert(std::make_pair(patch->get_type(), patch));
   }
 #if 0
