@@ -53,8 +53,9 @@ IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
     used to assign atomic radii, bonds, etc.
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
-  std::map<std::string, CHARMMIdealResidueTopology> residue_topologies_;
-  std::map<std::string, CHARMMPatch> patches_;
+  std::map<std::string, Pointer<CHARMMIdealResidueTopology> >
+      residue_topologies_;
+  std::map<std::string, Pointer<CHARMMPatch> > patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
   std::map<internal::CHARMMAngleNames, CHARMMBondParameters> angle_parameters_;
 
@@ -84,8 +85,8 @@ public:
       topology file, as a set of CHARMMIdealResidueTopology objects.
    */
   /**@{*/
-  void add_residue_topology(CHARMMIdealResidueTopology &res) {
-    residue_topologies_.insert(std::make_pair(res.get_type(), res));
+  void add_residue_topology(CHARMMIdealResidueTopology *res) {
+    residue_topologies_.insert(std::make_pair(res->get_type(), res));
   }
 #if 0
   // return of non const-ref values is not allowed
@@ -100,10 +101,10 @@ public:
   }
 #endif
 
-  const CHARMMIdealResidueTopology &get_residue_topology(std::string name) const
+  CHARMMIdealResidueTopology *get_residue_topology(std::string name) const
   {
-    std::map<std::string, CHARMMIdealResidueTopology>::const_iterator it
-              = residue_topologies_.find(name);
+    std::map<std::string, Pointer<CHARMMIdealResidueTopology> >::const_iterator
+        it = residue_topologies_.find(name);
     if (it != residue_topologies_.end()) {
       return it->second;
     } else {
@@ -111,14 +112,17 @@ public:
     }
   }
 
+  CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const
+  { return get_residue_topology(type.get_string()); }
+
   /** \name Patches
 
       The class stores patches as defined in the topology file, as a set of
       CHARMMPatch objects.
    */
   /**@{*/
-  void add_patch(CHARMMPatch &patch) {
-    patches_.insert(std::make_pair(patch.get_type(), patch));
+  void add_patch(CHARMMPatch *patch) {
+    patches_.insert(std::make_pair(patch->get_type(), patch));
   }
 #if 0
   // return of non const ref values is not allowed
@@ -132,8 +136,9 @@ public:
   }
 #endif
 
-  const CHARMMPatch &get_patch(std::string name) const {
-    std::map<std::string, CHARMMPatch>::const_iterator it = patches_.find(name);
+  CHARMMPatch *get_patch(std::string name) const {
+    std::map<std::string, Pointer<CHARMMPatch> >::const_iterator it
+        = patches_.find(name);
     if (it != patches_.end()) {
       return it->second;
     } else {
@@ -286,9 +291,9 @@ private:
 
   ResidueType parse_residue_line(const String& line);
   void parse_atom_line(const String& line, ResidueType curr_res_type,
-                       CHARMMResidueTopologyBase &residue);
+                       CHARMMResidueTopologyBase *residue);
   void parse_bond_line(const String& line, ResidueType curr_res_type,
-                       CHARMMResidueTopologyBase &residue);
+                       CHARMMResidueTopologyBase *residue);
 
   void parse_nonbonded_parameters_line(String line);
   void parse_bonds_parameters_line(String line);

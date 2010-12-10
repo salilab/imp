@@ -113,16 +113,16 @@ namespace {
   }
 
   CHARMMResidueTopology *get_two_patch_residue(std::string &name,
-                                               CHARMMResidueTopology &res1,
-                                               CHARMMResidueTopology &res2)
+                                               CHARMMResidueTopology *res1,
+                                               CHARMMResidueTopology *res2)
   {
     if (name.size() > 2 && name[1] == ':') {
       if (name[0] == '1') {
         name.erase(0, 2);
-        return &res1;
+        return res1;
       } else if (name[0] == '2') {
         name.erase(0, 2);
-        return &res2;
+        return res2;
       }
     }
     IMP_THROW("Patching residue atom " << name
@@ -131,40 +131,40 @@ namespace {
 
   std::pair<CHARMMResidueTopology *, CHARMMAtomTopology>
   handle_two_patch_atom(const CHARMMAtomTopology &atom,
-                        CHARMMResidueTopology &res1,
-                        CHARMMResidueTopology &res2)
+                        CHARMMResidueTopology *res1,
+                        CHARMMResidueTopology *res2)
   {
     std::string name = atom.get_name();
     CHARMMResidueTopology *res = get_two_patch_residue(name, res1, res2);
-    if (res == &res1) {
-      return std::make_pair(&res1, CHARMMAtomTopology(name, atom));
+    if (res == res1) {
+      return std::make_pair(res1, CHARMMAtomTopology(name, atom));
     } else {
-      return std::make_pair(&res2, CHARMMAtomTopology(name, atom));
+      return std::make_pair(res2, CHARMMAtomTopology(name, atom));
     }
   }
 
   template <unsigned int D>
   CHARMMResidueTopology *get_two_patch_residue_for_bond(
                                  const CHARMMBond<D> &bond,
-                                 CHARMMResidueTopology &res1,
-                                 CHARMMResidueTopology &res2)
+                                 CHARMMResidueTopology *res1,
+                                 CHARMMResidueTopology *res2)
   {
     for (unsigned int i = 0; i < D; ++i) {
       std::string name = bond.get_endpoint(i).get_atom_name();
       CHARMMResidueTopology *res = get_two_patch_residue(name, res1, res2);
-      if (res == &res1) {
+      if (res == res1) {
         // prefer to create bonds originating in the first residue, unless
         // all atoms in the bond live in the second residue
-        return &res1;
+        return res1;
       }
     }
-    return &res2;
+    return res2;
   }
 
   template <unsigned int D>
   CHARMMBond<D> handle_two_patch_bond(const CHARMMBond<D> &bond,
-                                 CHARMMResidueTopology &res1,
-                                 CHARMMResidueTopology &res2,
+                                 CHARMMResidueTopology *res1,
+                                 CHARMMResidueTopology *res2,
                                  CHARMMResidueTopology *first_res)
   {
     std::vector<CHARMMBondEndpoint> endpoints;
@@ -177,7 +177,7 @@ namespace {
       if (res == first_res) {
         endpoints.push_back(CHARMMBondEndpoint(name));
       } else {
-        endpoints.push_back(CHARMMBondEndpoint(name, &res2));
+        endpoints.push_back(CHARMMBondEndpoint(name, res2));
       }
     }
     return CHARMMBond<D>(endpoints);
@@ -282,9 +282,9 @@ void CHARMMIdealResidueTopology::remove_atom(std::string name)
                                   bond_has_atom<4>(name)), impropers_.end());
 }
 
-void CHARMMPatch::apply(CHARMMResidueTopology &res) const
+void CHARMMPatch::apply(CHARMMResidueTopology *res) const
 {
-  if (res.get_patched()) {
+  if (res->get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
   }
 
@@ -292,9 +292,9 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res) const
   for (std::vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
     try {
-      res.get_atom(it->get_name()) = *it;
+      res->get_atom(it->get_name()) = *it;
     } catch (ValueException &e) {
-      res.add_atom(*it);
+      res->add_atom(*it);
     }
   }
 
@@ -302,7 +302,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res) const
   for (std::vector<std::string>::const_iterator it = deleted_atoms_.begin();
        it != deleted_atoms_.end(); ++it) {
     try {
-      res.remove_atom(*it);
+      res->remove_atom(*it);
     } catch (ValueException &e) {
       // ignore atoms that don't exist to start with
     }
@@ -310,28 +310,28 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res) const
 
   // Add angles/bonds/dihedrals/impropers
   for (unsigned int i = 0; i < get_number_of_bonds(); ++i) {
-    res.add_bond(get_bond(i));
+    res->add_bond(get_bond(i));
   }
   for (unsigned int i = 0; i < get_number_of_angles(); ++i) {
-    res.add_angle(get_angle(i));
+    res->add_angle(get_angle(i));
   }
   for (unsigned int i = 0; i < get_number_of_dihedrals(); ++i) {
-    res.add_dihedral(get_dihedral(i));
+    res->add_dihedral(get_dihedral(i));
   }
   for (unsigned int i = 0; i < get_number_of_impropers(); ++i) {
-    res.add_improper(get_improper(i));
+    res->add_improper(get_improper(i));
   }
 
-  res.set_patched(true);
+  res->set_patched(true);
 }
 
-void CHARMMPatch::apply(CHARMMResidueTopology &res1,
-                        CHARMMResidueTopology &res2) const
+void CHARMMPatch::apply(CHARMMResidueTopology *res1,
+                        CHARMMResidueTopology *res2) const
 {
-  if (res1.get_patched()) {
+  if (res1->get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
   }
-  if (res2.get_patched()) {
+  if (res2->get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
   }
 
@@ -381,8 +381,20 @@ void CHARMMPatch::apply(CHARMMResidueTopology &res1,
     res->add_improper(handle_two_patch_bond(get_improper(i), res1, res2, res));
   }
 
-  res1.set_patched(true);
-  res2.set_patched(true);
+  res1->set_patched(true);
+  res2->set_patched(true);
+}
+
+void CHARMMResidueTopologyBase::do_show(std::ostream &) const
+{
+}
+
+void CHARMMIdealResidueTopology::do_show(std::ostream &) const
+{
+}
+
+void CHARMMPatch::do_show(std::ostream &) const
+{
 }
 
 void CHARMMResidueTopology::do_show(std::ostream &) const
@@ -401,7 +413,7 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff)
   CHARMMResidueTopology *last = get_residue(get_number_of_residues() - 1);
 
   if (first->get_default_first_patch() != "") {
-    ff->get_patch(first->get_default_first_patch()).apply(*first);
+    ff->get_patch(first->get_default_first_patch())->apply(first);
   }
 
   if (last->get_default_first_patch() != "") {
@@ -412,7 +424,7 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff)
       first->set_patched(false);
     }
 
-    ff->get_patch(last->get_default_last_patch()).apply(*last);
+    ff->get_patch(last->get_default_last_patch())->apply(last);
   }
 }
 
@@ -462,6 +474,10 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
                         << typ << " in residue " << Residue(it->second)
                         << std::endl, warn_context_);
         }
+      } else {
+        // Override existing type if present
+        CHARMMAtom(*atit).set_charmm_type(it->first->get_atom(typ)
+                                          .get_charmm_type());
       }
     }
   }
