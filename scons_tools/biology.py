@@ -5,7 +5,21 @@ import bug_fixes
 import scons_tools
 import data
 import environment
+import test
 from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir
+
+def _run_sample(target, source, env):
+    print "hi"
+    env.Execute("cd "+source[0].abspath + ";"+source[1].abspath+ " python " +source[2].abspath+" 1 1000>/dev/null")
+
+def _print_sample(target, source, env):
+    print "sampling", source[2].abspath
+
+def _run_analysis(target, source, env):
+    env.Execute("cd "+source[0].abspath + ";"+source[1].abspath+ " python " +source[2].abspath +">/dev/null")
+
+def _print_analysis(target, source, env):
+    print "analyzing", source[2].abspath
 
 def IMPSystem(env, name, version="",
               authors=[],
@@ -15,7 +29,7 @@ def IMPSystem(env, name, version="",
               required_modules=[],
               optional_dependencies=[],
               required_dependencies=[],
-              runable=False,
+              testable=False,
               last_imp_version="unknown",
               python=True):
     if env.GetOption('help'):
@@ -35,10 +49,10 @@ def IMPSystem(env, name, version="",
             pm=[]
         lkname="system_"+name.replace(" ", "_").replace(":", "_")
         pre="\page "+lkname+" "+name
-        if runable:
-            rtxt= "\n\\section runable Runable\nYes.\n"
+        if testable:
+            rtxt= "\n\\section testable Testable\nYes.\n"
         else:
-            rtxt= "\n\\section runable Runable\nNo.\n"
+            rtxt= "\n\\section testable Testable\nNo.\n"
         if last_imp_version != "unknown":
             vtxt= "\n\\section lkgversion Last known good IMP version\n"+\
                 last_imp_version+"\n"
@@ -66,6 +80,13 @@ def IMPSystem(env, name, version="",
         env= scons_tools.environment.get_named_environment(env, name)
         utility.add_link_flags(env, required_modules,
                                required_dependencies+found_optional_dependencies)
+        if testable:
+            samples= Glob("sample_[0123456789]*.py")
+            samples.sort(utility.file_compare)
+            analysis= Glob("analyze_[0123456789]*.py")
+            analysis.sort(utility.file_compare)
+            tt= []
+            test.add_test(env, samples+analysis, "system")
         return env
 
 
