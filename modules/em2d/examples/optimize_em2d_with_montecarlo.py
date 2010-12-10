@@ -92,11 +92,11 @@ for r in [r01,r12,r23,r30]:
 print "model has ",m.get_number_of_restraints(),"restraints"
 
 # set em2D restraint
-srw = em.SpiderImageReaderWriter()
+srw = em2d.SpiderImageReaderWriter()
 selection_file=em2d.get_example_path("all-1z5s-projections.sel")
 images_to_read_names=[IMP.get_relative_path(selection_file, x) for x in
         em2d.read_selection_file(selection_file)]
-em_images =em.read_images(images_to_read_names,srw)
+em_images =em2d.read_images(images_to_read_names,srw)
 print len(em_images),"images read"
 
 em2d_restraint = em2d.Em2DRestraint()
