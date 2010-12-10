@@ -7,6 +7,7 @@ import IMP.example
 import parameters
 import setup
 import glob
+import os.path
 
 # cluster the conformations and write them to a file
 def analyze_conformations(cs, all, gs):
@@ -22,7 +23,7 @@ def analyze_conformations(cs, all, gs):
     for i in range(cluster.get_number_of_clusters()):
         center= cluster.get_cluster_center(i)
         cs.load_configuration(i)
-        w= IMP.display.PymolWriter("structures/cluster.%d.pym"%i)
+        w= IMP.display.PymolWriter(IMP.system.get_output_path("cluster.%d.pym"%i))
         for g in gs:
             w.add_geometry(g)
 
@@ -32,7 +33,8 @@ def analyze_conformations(cs, all, gs):
 gs= setup.create_geometry(all)
 
 cs= IMP.ConfigurationSet(m)
-for f in glob.glob("sampled_0/configurations_*.bimp"):
+for f in glob.glob(IMP.system.get_input_path("configurations_*.bimp")):
+    print f
     IMP.read_configuration_set(f, IMP.atom.get_leaves(all), IMP.core.XYZ.get_xyz_keys(), cs)
 
 analyze_conformations(cs, all, gs)
