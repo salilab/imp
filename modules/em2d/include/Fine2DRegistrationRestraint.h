@@ -26,7 +26,12 @@ class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint
 {
 public:
 
-  Fine2DRegistrationRestraint() {};
+  Fine2DRegistrationRestraint() {
+    projection_ = new Image();
+    projection_->set_name("projection-in-fine2d");
+    subject_ = new Image();
+    subject_->set_name("subject-in-fine2d");
+  };
 
   //! Initialization function. To be called after setting the model for the
   //! restraint
@@ -61,8 +66,8 @@ public:
   ObjectsTemp get_input_objects() const;
 
 private:
-  mutable Pointer<em2d::Image> projection_;
-  mutable Pointer<em2d::Image> subject_;
+  Pointer<Image> subject_;
+  mutable Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
   mutable Pointer<Particle> subj_params_particle_;
   // Decorator for the subject particle

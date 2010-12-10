@@ -43,6 +43,10 @@ public:
     registration_done_=false;
   }
 
+  ~ProjectionFinder() {
+    IMP_LOG(IMP::VERBOSE, "ProjectionFinder destroyed " << std::endl);
+  }
+
   //! Initializes the parameters to generate and match projections
   /*!
     \param[in] resolution to employ to generate projections for matching with

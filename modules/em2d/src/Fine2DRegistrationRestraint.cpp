@@ -8,6 +8,7 @@
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/scores2D.h"
+#include "IMP/em2d/opencv_interface.h"
 #include "IMP/container_macros.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/log.h"
@@ -52,15 +53,21 @@ void Fine2DRegistrationRestraint::initialize(
 
 
 void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
-  // Set image
-  subject_ = subject;
-  // Prepare another image to store projections
-//  projection_ = new em2d::Image();
-  projection_ = Pointer<Image>(new Image());
+  // Read the registration parameters from the subject images
+  algebra::Rotation3D R=
+      algebra::get_rotation_from_fixed_zyz(subject->get_header().get_Phi(),
+                                           subject->get_header().get_Theta(),
+                                           subject->get_header().get_Psi());
+  algebra::Vector3D translation(subject->get_header().get_xorigin()*pixelsize_,
+                                subject->get_header().get_yorigin()*pixelsize_,
+                                0.0);
+
+
+  subject_->set_data(subject->get_data()); // deep copy, avoids leaks
   int rows = subject_->get_header().get_number_of_rows();
   int cols = subject_->get_header().get_number_of_columns();
   projection_->resize(rows,cols);
-
+/**
   algebra::Rotation3D R=
       algebra::get_rotation_from_fixed_zyz(subject_->get_header().get_Phi(),
                                            subject_->get_header().get_Theta(),
@@ -68,6 +75,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   algebra::Vector3D translation(subject_->get_header().get_xorigin()*pixelsize_,
                                 subject_->get_header().get_yorigin()*pixelsize_,
                                 0.0);
+**/
   PP_.set_rotation(R);
   PP_.set_translation(translation);
 
@@ -84,6 +92,9 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   IMP_USAGE_CHECK(accum==NULL,
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");
+
+  // projection needs to be mutable, son this const function can change it.
+  // project_particles changes the matrix of projection_
   em2d::project_particles(ps_,
                           projection_->get_data(),
                           PP_.get_rotation(),
@@ -91,6 +102,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                           resolution_,
                           pixelsize_,
                           masks_);
+
   double ccc = cross_correlation_coefficient(subject_->get_data(),
                                              projection_->get_data());
   double em2d = ccc_to_em2d(ccc);

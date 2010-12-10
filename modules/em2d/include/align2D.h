@@ -113,9 +113,6 @@ IMPEM2DEXPORT algebra::Vector2D peak_search(cv::Mat &m,double *value);
 IMPEM2DEXPORT algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
 
-IMPEM2DEXPORT void print_vector(std::vector< std::complex<double> > &v);
-
-
 //! Aligns two matrices (rotation and translation) using centers and
 //! no preprocessing. Preprocessed data must be provided.
 /*!

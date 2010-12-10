@@ -160,7 +160,6 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
   algebra::Transformation2D best_2d_transformation;
   double max_ccc=0.0;
   unsigned int projection_index = 0;
-
   coarse_RRs.resize(projections_.size());
   for(unsigned long j=0;j<projections_.size();++j) {
     ResultAlign2D RA;
@@ -216,18 +215,28 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
       best_2d_transformation =  RA.first;
       projection_index = j;
     }
+///******/
+//    cv::Mat xx;
+//    get_transformed(projections_[j]->get_data(),xx,RA.first);
+//    std::ostringstream strmm;
+//    strmm << "individual-" << i << "-" << j << ".spi";
+//    write_matrix(xx,strmm.str());
+///******/
   }
 
   if(save_match_images_) {
     IMP_NEW(em2d::Image,match,());
+
     get_transformed(projections_[projection_index]->get_data(),
                     match->get_data(),
                     best_2d_transformation);
     normalize(match,true);
     coarse_RRs[projection_index].set_in_image(match->get_header());
     std::ostringstream strm;
+
     strm << "coarse_match-" << i << ".spi";
     em2d::SpiderImageReaderWriter<double> srw;
+    match->set_name(strm.str()); ////
     match->write_to_floats(strm.str(),srw);
   }
 
@@ -292,13 +301,7 @@ void ProjectionFinder::get_complete_registration() {
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
-/**
-  fine2d->initialize(model_particles_,
-                     resolution_,
-                     apix_,
-                     scoring_model,
-                     &masks_manager_);
-**/
+
   fine2d->initialize(model_particles_,
                      resolution_,
                      apix_,
@@ -308,7 +311,6 @@ void ProjectionFinder::get_complete_registration() {
   simplex_optimizer->set_initial_length(simplex_initial_length_);
   simplex_optimizer->set_minimum_size(simplex_minimum_size_);
   IMP::SetLogState log_state(fine2d,IMP::TERSE);
-
 
   // Computation
 //   boost::progress_display show_progress(
@@ -357,6 +359,7 @@ void ProjectionFinder::get_complete_registration() {
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
       registration_results_[i].set_in_image(match->get_header());
+      match->set_name(strm.str()); //
       match->write_to_floats(strm.str(),srw);
     }
     // ++show_progress;
