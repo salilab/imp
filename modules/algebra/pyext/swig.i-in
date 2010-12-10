@@ -76,6 +76,7 @@ namespace multi_array_types {
 %include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
 %include "IMP/algebra/Grid3D.h"
+%include "IMP_GeometricHash.i"
 namespace IMP {
  namespace algebra {
    %template(Sphere2D) SphereD<2>;

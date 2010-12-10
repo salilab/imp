@@ -38,6 +38,7 @@ files = [
          'utility.h',
          'vector_generators.h',
          'vector_search.h',
+         'GeometricHash.h',
         ] \
         + SConscript('internal/SConscript')
 
