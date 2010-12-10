@@ -314,16 +314,6 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
 }
 
 
-
-
-void print_vector(std::vector< std::complex<double> > &v) {
-  for (unsigned int i=0;i<v.size();++i) {
-     std::cout << "i " << i << " v[i] =" << v[i] << std::endl;
-  }
-}
-
-
-
 ResultAlign2D align2D_complete_with_centers_no_preprocessing(
                   const algebra::Vector2D &center1,
                   const algebra::Vector2D &center2,

@@ -159,10 +159,10 @@ public:
   //! Obtain the resampling map of type CV_32FC2 (floats, slower that those
   //! obtained with   get_resampling_maps()
   void get_resampling_map(cv::Mat &m1) const {
-//    std::cout << "returning resampling map "
-//                << polar_map_.rows <<"x" << polar_map_.cols
-//             << " depth " << polar_map_.depth()
-//                      << " type " << polar_map_.type() << std::endl;
+  IMP_LOG(IMP::VERBOSE,"returning resampling map "
+                       << polar_map_.rows <<"x" << polar_map_.cols
+                       << " depth " << polar_map_.depth()
+                       << " type " << polar_map_.type() << std::endl);
     m1 = polar_map_;
   }
 

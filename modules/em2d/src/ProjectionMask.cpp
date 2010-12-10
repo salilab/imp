@@ -12,7 +12,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 ProjectionMask::~ProjectionMask() {
   IMP_LOG(IMP::VERBOSE," Projection mask destroyed." << std::endl);
-
 }
 
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,

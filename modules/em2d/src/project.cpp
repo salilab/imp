@@ -140,7 +140,6 @@ void project_particles(const ParticlesTemp &ps,
   }
   // Centroid
   unsigned long n_particles = ps.size();
-    IMP_LOG(IMP::VERBOSE,"project_particles: " << n_particles << std::endl);
 
   algebra::Vector3D centroid(0.0,0.0,0.0);
   for (unsigned long i=0; i<n_particles; i++) {
@@ -158,11 +157,17 @@ void project_particles(const ParticlesTemp &ps,
     algebra::Vector3D p=xyzr.get_coordinates()-centroid;
     // Pixel after trasformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
-    IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation);
     double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
-    IMP_LOG(IMP::VERBOSE," pix_x "<< pix_x);
     double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
-    IMP_LOG(IMP::VERBOSE," pix_y "<< pix_y << std::endl);
+    if(is_nan(pix_x) || is_nan(pix_y)) {
+      IMP_LOG(IMP::VERBOSE,"project_particles: " << n_particles
+              << " resolution "  << resolution << " pixelsize "
+              << pixelsize << std::endl);
+      IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation
+              << " pix_x "<< pix_x << " pix_y "<< pix_y << std::endl);
+      IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation
+              << " pix_x "<< pix_x << " pix_y "<< pix_y << std::endl);
+    }
     // Apply mask
 /**
     ProjectionMask* mask = masks->find_mask(xyzr.get_radius());

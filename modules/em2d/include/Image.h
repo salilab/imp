@@ -26,25 +26,12 @@ class IMPEM2DEXPORT Image : public Object
 {
 public:
 
-  //! Empty constructor
-  Image() {
-    name_ = "";
-    header_.set_image_type(em::ImageHeader::IMG_IMPEM);
-    // Stats not computed
-    header_.set_fSig(-1);
-    header_.set_fImami(0);
-  }
+  Image();
 
-  //! Constructor with size
-  Image(Int rows, Int cols) {
-    data_.create(rows,cols,CV_64FC1);
-    header_.set_header();
-    header_.set_image_type(em::ImageHeader::IMG_IMPEM);
-    header_.set_fSig(-1);
-    header_.set_fImami(0);
-  }
+  //! Create image of the proper size
+  Image(int rows, int cols);
 
-  //! Constructor that reads the image directly
+  //! Create the image reading from a file
   Image(String filename,const em2d::ImageReaderWriter<double> &reader) {
     read_from_floats(filename,reader);
   }
@@ -55,16 +42,12 @@ public:
   }
 
   //! Sets the entire matrix of data
-  void set_data(cv::Mat &mat) {
-    mat.copyTo(data_);
-    adjust_header();
-  }
+  void set_data(const cv::Mat &mat);
 
   void set_value(int i, int j,double val) {
     data_.at<double>(i,j) = val;
   }
 
-  //! Access to one PHYSICAL element of the matrix of data
   double operator()(int i, int j) const {
     return data_.at<double>(i,j);
     return 0;
@@ -77,27 +60,14 @@ public:
     return header_;
   }
 
+  void resize(int rows,int cols);
 
-  void resize(int rows,int cols) {
-    data_.create(rows,cols,CV_64FC1);
-    header_.set_number_of_slices(1.0);
-    header_.set_number_of_rows(rows);
-    header_.set_number_of_columns(cols);
-  }
-
-  void resize(Image *img) {
-    resize(img->get_data().rows,img->get_data().cols);
-  }
+  //! Resize to the same size of the parameter image
+  void resize(Image *img);
 
   //! Adjusts the information of the imager header taking into account the
   //! dimensions of the data and setting the time, date, type, etc ...
-  void adjust_header() {
-    header_.set_image_type(em::ImageHeader::IMG_IMPEM);
-    header_.set_number_of_slices(1.0);
-    header_.set_number_of_rows(data_.rows);
-    header_.set_number_of_columns(data_.cols);
-    header_.set_header(); // Initialize header
-  }
+  void adjust_header();
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
@@ -120,9 +90,23 @@ public:
   }
 
   //! Define the basic things needed by any Object
-  IMP_OBJECT_INLINE(Image, show(out), {});
+//  IMP_OBJECT_INLINE(Image, show(out), {});
+  IMP_OBJECT_INLINE(Image, show(out), destroyed_msg());
+
+  void destroyed_msg() {
+    IMP_LOG(IMP::VERBOSE, "Image destroyed " << this->name_ << std::endl);
+  }
+
+  void set_name(const String &name) {
+    name_=name;
+  }
+
+  String get_name() const {
+    return name_;
+  }
 
 protected:
+  void resize_data(int rows,int cols);
 
   //! Name of the image. Frequently it will be the name of the file
   String name_;
@@ -147,10 +131,8 @@ IMP_OUTPUT_OPERATOR(Image);
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 */
-IMPEM2DEXPORT Images read_images(Strings names,
+IMPEM2DEXPORT Images read_images(const Strings &names,
                                   const em2d::ImageReaderWriter<double> &rw);
-
-
 
 //! Saves images to files (For compatibility with SPIDER format,
 //! the images are written to floats)
@@ -159,7 +141,7 @@ IMPEM2DEXPORT Images read_images(Strings names,
   \param[in] names filenames of the images
   \param[in] rw  reader/writer to use
 */
-IMPEM2DEXPORT void save_images(Images images, Strings names,
+IMPEM2DEXPORT void save_images(Images images, const Strings &names,
                              const em2d::ImageReaderWriter<double> &rw);
 
 //! Cross correlation between two images
@@ -188,14 +170,8 @@ inline void apply_variance_filter(em2d::Image *input,
   apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
-inline void subtract_images(em2d::Image *first,em2d::Image *second,
-                                  em2d::Image *result) {
-  cv::Mat result_matrix;
-  cv::subtract(first->get_data(),
-               second->get_data(),
-               result_matrix);
-  result->set_data(result_matrix);
-}
+IMPEM2DEXPORT void subtract_images(em2d::Image *first,em2d::Image *second,
+                                  em2d::Image *result);
 
 IMPEM2DEXPORT void add_noise(em2d::Image *im1,double op1, double op2,
                const String &mode = "uniform", double df = 3);

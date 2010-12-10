@@ -296,10 +296,10 @@ int main(int argc, char **argv) {
   for (unsigned int i=0;i<registration_results.size();++i) {
     registration_results[i].write(*std::cin.tie());
   }
-
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
+
   *std::cin.tie() << "# GLOBAL RESULT " << std::endl
     << "# model | resolution | A/pix | images_file | "
     << "Score | Time used | Number "

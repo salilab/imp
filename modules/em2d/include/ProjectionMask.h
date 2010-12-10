@@ -101,6 +101,7 @@ public:
 
   ~MasksManager();
 
+
 protected:
   // A map to store the masks
   std::map <double,ProjectionMaskPtr > radii2mask_;

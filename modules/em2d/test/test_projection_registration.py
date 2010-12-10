@@ -70,12 +70,12 @@ class ProjectTests(IMP.test.TestCase):
         correct_parameters=IMP.em2d.read_registration_results(
         self.get_input_file_name("1gyt-subjects-0.5-SNR.params") )
 
-#        print "determined: "
-#        for r in registration_parameters:
-#            print r.get_rotation(),r.get_shift()
-#        print "correct: "
-#        for r in correct_parameters:
-#            print r.get_rotation(),r.get_shift()
+        print "determined: "
+        for r in registration_parameters:
+            print r.get_rotation(),r.get_shift()
+        print "correct: "
+        for r in correct_parameters:
+            print r.get_rotation(),r.get_shift()
         for i in xrange(0,len(registration_parameters)):
             # Generate the registered projection
             imgx=IMP.em2d.Image()
@@ -84,6 +84,7 @@ class ProjectTests(IMP.test.TestCase):
                     registration_parameters[i],resolution,pixel_size,srw)
             ccc=IMP.em2d.cross_correlation_coefficient(subjects[i].get_data(),
                                                   imgx.get_data())
+            print i,"ccc",ccc
             snr=0.5
             theoretical_ccc = (snr/(1.+snr))**.5
             self.assertAlmostEqual(ccc,theoretical_ccc, delta=0.02,
