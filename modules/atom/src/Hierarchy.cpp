@@ -222,9 +222,9 @@ namespace {
             int last_index= std::numeric_limits<int>::min();
             for (unsigned int i=0; i< p.get_number_of_children(); ++i) {
               Hierarchy c= p.get_child(i);
-              if (!c.get_as_residue()) {
+              /*if (!c.get_as_residue()) {
                 TEST_FAIL("Sibling of residue is not residue at " << c);
-              }
+                }*/
               Residue rc(c);
               if (Residue(h).get_is_protein()
                 || Residue(h).get_is_dna()
