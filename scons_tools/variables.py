@@ -135,7 +135,7 @@ def add_common_variables(vars, package):
     vars.Add(PathVariable('includedir', 'Include file installation directory',
                           '${prefix}/include', PathVariable.PathAccept))
     vars.Add(PathVariable('pythondir', 'Python module installation directory',
-                          libdir + '/python%d.%d/site-packages' \
+                          '${libdir}/python%d.%d/site-packages' \
                           % sys.version_info[0:2], PathVariable.PathAccept))
     vars.Add(PathVariable('pyextdir',
                           'Python extension module installation directory',
