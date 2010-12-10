@@ -171,22 +171,30 @@ def _make_systems_overview(target, source, env):
     out= open(target[0].abspath, "w")
     print >> out, "/** \\page systems_index Systems index"
     print >> out, """A biological system should have each of a several scripts
-    - configure.py which should be run first in order to set everything up (if it is missing, no setup is required)
+    - \c setup.py which should be run first in order to set everything up (if it is missing, no setup is required)
     And then one or move of
-    - sample_i.py: This scripts takes two arguments:
-            - an index
-            - and the total number of independent parts to divide the task in to
+    - \c sample_i.py: These scripts can take the following arguments:
+            - \c -j \c i: an index
+            - \c -n \c i: the total number of independent parts to divide the task in to
+            - \c -i \c path_to_directory: where to find the outputs of the last script (if there was one)
+            - \c -o \c path_to_directory: where to write output files
+            - \c -d \c path_to_data: where to find input data (defaults to the 'data' directory in the directory containing the script
             .
-      That is, running \command{sample_0.py 3 13} divides the job into 13 independent parts and
-      runs part 3 of it. The output will be placed in sampled_0.
-    - analyze_i.py which, after all parts of run_i have have completed, performs analysis
-      on the results. Any output files should be placed in analysis_i
+      That is, running \command{sample_0.py 3 13 output_0} divides the job into 13 independent parts and
+      runs part 3 of it. The output will be placed in output_0.
+    - \c analyze_i.py which, after all parts of run_i have have completed, performs analysis
+      on the results. These scripts also take the -i, -o, and -d arguments.
     .
     The scripts for a given iteration must have completed before the scripts for the next
     iteration may be run (although some applications will include intermediate data, allowing
     users to avoid running all the scripts in order).
 
-    When all scripts have been run, the final structures should appear in structures.
+    An application can be marked as testable meaning that it can be run with only partial sampling.
+    That is, if it has scripts \c sample_0.py, \c sample_1.py and \c analyze_0.py, the following should
+    work (from any directory):
+    - \command{path_to_application/sample_0.py -j 1 -n 1000 -o output_0}
+    - \command{path_to_application/sample_1.py -j 1 -n 1000 -o output_1 -i output_0}
+    - \command{path_to_application/analyze_0.py -i output_1 -o structures}
     """
     dta= data.get(env)
     for k in dta.systems.keys():
