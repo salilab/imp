@@ -1,6 +1,6 @@
 /**
  *  \file isd/JeffreysRestraint.cpp
- *  \brief Restrain a nuisance particle with 1/nuisance
+ *  \brief Restrain a nuisance particle with log(nuisance)
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -8,6 +8,7 @@
 
 #include <IMP/isd/Nuisance.h>
 #include <IMP/isd/JeffreysRestraint.h>
+#include <math.h>
 
 IMPISD_BEGIN_NAMESPACE
 
@@ -25,13 +26,7 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   }
   Nuisance sig(p_);
   double score;
-  if (sig.get_nuisance()!=0.0) {
-    score=1.0/Float(sig.get_nuisance());
-  }
-  else {
-    score=-1;
-  }
-
+  score=log(Float(sig.get_nuisance()));
   return score;
 }
 
