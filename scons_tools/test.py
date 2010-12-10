@@ -4,6 +4,7 @@ import environment
 import os
 import os.path
 import module
+import utility
 import data
 
 # List of all disabled IMP modules (populated at configure time)
@@ -33,13 +34,17 @@ def _action_unit_test(target, source, env):
         #if len(fsource) > 0:
         #    env.Append(ENV={'TEST_DIRECTORY':fsource[0][0:fsource[0].find("/test/")+6]})
         #    #print "test dir", os.environ['TEST_DIRECTORY']
-    else:
+    elif type=='example':
         cmd= File("#/scons_tools/run-all-examples.py").abspath
         dmod=[]
         for d in data.get(env).modules.keys():
             if not data.get(env).modules[d].ok:
                 dmod.append(d)
         cmd= cmd+ " "+":".join(dmod)
+    elif type=='system':
+        cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
+    else:
+        utility.report_error(env, "Unknown test type "+type)
     app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
                  cmd, disab,
@@ -65,12 +70,14 @@ def add_test(env, source, type):
     env.Requires(test, "#/build/lib/compat_python")
     env.AlwaysBuild("test.passed")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
-    env.Requires(test, "tools/imppy.sh")
+    #env.Requires(test, "tools/imppy.sh")
     if type=='unit test':
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
     elif type=='example':
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test-examples",
                                                test)
+    elif type=="system":
+        data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
     env.Alias(env.Alias('test'), test)
     return test
 
