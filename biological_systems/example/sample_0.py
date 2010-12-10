@@ -7,9 +7,14 @@ import IMP.example
 import IMP.system
 import parameters
 import setup
+import os.path
 
 display_restraints=[]
 
+
+import sys
+print "hi"
+print sys.argv
 
 # find acceptable conformations of the model
 def get_conformations(m, gs, n):
@@ -38,7 +43,7 @@ def get_conformations(m, gs, n):
         # show the score for each restraint to see which restraints were causing the
         # conformation to be rejected
         m.show_restraint_score_statistics()
-        w= IMP.display.PymolWriter("rejected.%d.pym"%i)
+        w= IMP.display.PymolWriter(IMP.system.get_output_path("rejected.%d.pym"%i))
         for g in gs:
             w.add_geometry(g)
     return cs
@@ -60,9 +65,9 @@ IMP.set_log_level(IMP.TERSE)
 print "found", cs.get_number_of_configurations(), "solutions"
 for i in range(0, cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    w= IMP.display.PymolWriter("sampled_0/struct.%d.pym"%i)
+    w= IMP.display.PymolWriter(IMP.system.get_output_path("struct.%d.pym"%i))
     for g in gs:
         w.add_geometry(g)
 keys=IMP.core.XYZ.get_xyz_keys()
 IMP.write_configuration_set(cs, IMP.atom.get_leaves(all), keys,
-                            "sampled_0/configurations_"+str(i)+".bimp")
+                            IMP.system.get_output_path("configurations_"+str(i)+".bimp"))
