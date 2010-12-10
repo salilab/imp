@@ -1,13 +1,83 @@
 %pythoncode %{
 import sys
+import re
+import os
+from optparse import OptionParser
+
+def _is_sample():
+    ptn="sample_.*.py"
+    r= re.compile(ptn)
+    nm= os.path.split(sys.argv[0])[1]
+    #print nm, r.match(nm), ptn
+    return r.search(nm)
+
+def _is_sample_0():
+    return sys.argv[0].endswith("sample_0.py")
+
+
+
+def _create_parser():
+  parser = OptionParser(usage='%prog [options]')
+  parser.add_option(
+      '-o', '--output-dir', dest='output_dir', default='output',
+      help='Where to put the output for the script',
+      )
+  if not _is_sample_0():
+    parser.add_option(
+        '-i', '--input-dir', dest='input_dir', default='input',
+        help='Where to find input for the script',
+        )
+  parser.add_option(
+      '-d', '--data-dir', dest='data_dir', default='auto',
+      help='Where to find data for the script',
+      )
+  if _is_sample():
+     parser.add_option(
+      '-j', '--job', dest='job_index', default='0',
+      help='The index for the current job',
+      )
+     parser.add_option(
+      '-n', '--num-jobs', dest='num_jobs', default='1000',
+      help='The total number of jobs to divide things into',
+      )
+  return parser
+
+parser=_create_parser()
+(options, args) = parser.parse_args()
+
+def _argument_error():
+    print >> sys.stderr, parser
+    os.exit(2)
+
+
 def get_sample_parameters():
     """Return the index and the number of parts to divide the job in to."""
     try:
-       i = int(sys.argv[1])
-       n= int(sys.argv[2])
-       if len(sys.argv) > 3:
-           raise ValueError()
-       return (i,n)
+       return (int(options.job_index),int(options.num_jobs))
     except:
-       print >> sys.stderr, "The run scripts must be called with two arguments, i and n."
+       _argument_error()
+
+def get_input_path(name):
+    """Get the path where the current script should find output of the last script"""
+    try:
+       return os.path.join(options.input_dir, name)
+    except:
+       _argument_error()
+
+def get_output_path(name):
+    """Get the path to where the current script should write output files"""
+    out=options.output_dir
+    os.system("mkdir -p "+out)
+    try:
+       return os.path.join(out, name)
+    except:
+       _argument_error()
+
+def get_data_path(name):
+    """Get the path where the current script should find data files"""
+    da= options.data_dir
+    if da=="auto":
+       sd= os.path.split(sys.argv[0])[0]
+       da= os.path.join(sd, "data")
+    return da
 %}
