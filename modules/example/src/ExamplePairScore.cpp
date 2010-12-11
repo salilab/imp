@@ -19,9 +19,13 @@ ExamplePairScore::ExamplePairScore(double x0, double k): x0_(x0), k_(k) {}
 Float ExamplePairScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
 {
+  // turn on logging for this method
+  IMP_OBJECT_LOG;
   // assume they have coordinates
   core::XYZ d0(p[0]);
   core::XYZ d1(p[1]);
+  // log something
+  IMP_LOG(VERBOSE, "The distance off from x0 is " << diff << std::endl);
   double diff = (d0.get_coordinates()-d1.get_coordinates()).get_magnitude()-x0_;
   double score= .5*k_*square(diff);
   if (da) {
