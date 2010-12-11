@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Fall 2010
+- the IMP::algebra::Grid3D has been changed to make it support any (fixed) dimension when used with sparse storage. The template arguments have also been changed to remove a redundant one. See IMP::algebra::GridD.
 - the biological systems specification has been improved a little adding ability to run some rudamentary tests to make sure the scripts are ok and to not require that everything be run from the svn directory.
 - A new method IMP::atom::create_compatible_rigid_body() which creates a rigid body from a hierarchy which has the same internal coordinates as another rigid body. A way to make the rigid body construction more canonical would be nice (so we don't need this function), but I'm not sure how to do that.
 - Logging has been improved to better report the name of methods producing the log messages
