@@ -419,7 +419,7 @@ void CHARMMSegmentTopology::apply_default_patches(const CHARMMParameters *ff)
     ff->get_patch(first->get_default_first_patch())->apply(first);
   }
 
-  if (last->get_default_first_patch() != "") {
+  if (last->get_default_last_patch() != "") {
     // If chain contains only a single residue, allow both the first and last
     // patch to be applied to it
     if (get_number_of_residues() == 1
