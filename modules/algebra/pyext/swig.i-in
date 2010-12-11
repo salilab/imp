@@ -19,8 +19,6 @@ IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
-IMP_SWIG_VALUE(IMP::algebra::grids, GridIndex3D, GridIndex3Ds);
-IMP_SWIG_VALUE(IMP::algebra::grids, ExtendedGridIndex3D, ExtendedGridIndex3Ds);
 
 IMP_SWIG_VALUE(IMP::algebra,  AxisAnglePair, AxisAnglePairs);
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
@@ -41,6 +39,10 @@ IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<2>, BoundingBox2Ds);
 IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<3>, BoundingBox3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<4>, BoundingBox4Ds);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
+
+IMP_SWIG_VALUE(IMP::algebra::grids,  GridIndexD<3>, GridIndex3Ds);
+IMP_SWIG_VALUE(IMP::algebra::grids,  ExtendedGridIndexD<3>, ExtendedGridIndex3Ds);
+
 
 namespace boost {
 template <class T, int D> class multi_array{};
@@ -75,6 +77,21 @@ namespace multi_array_types {
 %include "IMP/algebra/Ellipsoid3D.h"
 %include "IMP/algebra/SphereD.h"
 %include "IMP/algebra/Sphere3D.h"
+%include "IMP/algebra/GridD.h"
+namespace IMP {
+ namespace algebra {
+   namespace grids {
+     %template(GridIndex3D) GridIndexD<3>;
+     %template(ExtendedGridIndex3D) ExtendedGridIndexD<3>;
+     %template(_UnboundedGridStorage3D) UnboundedGridStorageD<3>;
+     %template(_UnboundedGridStorage4D) UnboundedGridStorageD<4>;
+     %template(_UnboundedGridStorage5D) UnboundedGridStorageD<5>;
+     %template(_UnboundedGridStorage6D) UnboundedGridStorageD<6>;
+     %template(GridIndex3Ds) ::std::vector<GridIndexD<3> >;
+     %template(ExtendedGridIndex3Ds) ::std::vector<ExtendedGridIndexD<3> >;
+   }
+ }
+}
 %include "IMP/algebra/Grid3D.h"
 %include "IMP_GeometricHash.i"
 namespace IMP {
@@ -116,14 +133,14 @@ namespace IMP {
    %template(get_unit_bounding_box_3d) get_unit_bounding_box_d<3>;
    %template(get_unit_bounding_box_4d) get_unit_bounding_box_d<4>;
    namespace grids {
-   %template(_SparseIntStorage) SparseGridStorage3D<int, BoundedGridStorage3D>;
-   %template(_SparseUBIntStorage) grids::SparseGridStorage3D<int, UnboundedGridStorage3D>;
+   %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorage3D>;
+   %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
    %template(_DenseDoubleStorage) DenseGridStorage3D<double>;
    %template(_DenseFloatStorage) DenseGridStorage3D<float>;
-   %template(SparseIntGrid3D) Grid3D<int, SparseGridStorage3D<int, BoundedGridStorage3D> >;
-   %template(SparseUnboundedIntGrid3D) Grid3D<int, SparseGridStorage3D<int, UnboundedGridStorage3D> >;
-   %template(DenseDoubleGrid3D) Grid3D<double, DenseGridStorage3D<double> >;
-   %template(DenseFloatGrid3D) Grid3D<float, DenseGridStorage3D<float> >;
+   %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridStorage3D> >;
+   %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridStorageD<3> > >;
+   %template(DenseDoubleGrid3D) GridD<3, DenseGridStorage3D<double> >;
+   %template(DenseFloatGrid3D) GridD<3, DenseGridStorage3D<float> >;
    }
 
    // for debugging
