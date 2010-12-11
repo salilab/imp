@@ -420,7 +420,7 @@ private:
       if ( p != gmap_.end() )
       {
         const PointList &v = p->second;
-        if ( v.size() > (1<<D) and cube_inside_sphere(ins, tmp) )
+        if ( v.size() > (1<<D) && cube_inside_sphere(ins, tmp) )
         {
           for ( typename PointList::const_iterator q = v.begin();
               q != v.end(); ++q )
