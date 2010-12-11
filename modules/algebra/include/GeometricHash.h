@@ -6,11 +6,8 @@
  */
 #ifndef IMPALGEBRA_GEOMETRIC_HASH_H
 #define IMPALGEBRA_GEOMETRIC_HASH_H
-#pragma once
 
-#include <stdint.h>
 #include <vector>
-//#include <boost/unordered_map.hpp>
 #include <map>
 
 #include <ostream>
