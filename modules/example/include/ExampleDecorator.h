@@ -45,6 +45,9 @@ public:
       make sure there is a non-empty name).
    */
   static ExampleDecorator setup_particle(Particle *p, std::string name) {
+    // use the object check macro to check that the particle is valid
+    IMP_CHECK_OBJECT(p);
+    // use the usage check macro to make sure that arguments are correct
     IMP_USAGE_CHECK(!name.empty(), "The name cannot be empty.");
     p->add_attribute(get_name_key(), name);
     ExampleDecorator ret(p);
@@ -63,6 +66,8 @@ public:
 
   //! Set the name added to the particle
   void set_decorator_name(std::string nm) {
+    // use the usage check macro to check that functions are called properly
+    IMP_USAGE_CHECK(!nm.empty(), "The name cannot be empty");
     get_particle()->set_value(get_name_key(), nm);
   }
 
