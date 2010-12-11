@@ -15,7 +15,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Score a nuisance parameter with 1/nuisance
+//! Score a nuisance parameter with log(nuisance)
+//! the probability is 1/nuisance
 
 class IMPISDEXPORT JeffreysRestraint : public Restraint
 {
