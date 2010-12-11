@@ -13,6 +13,26 @@
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 
+template <class A, class B>
+bool get_is_non_empty(const A &a, const B &b) {
+  for (unsigned int i=0; i< A::get_d(); ++i) {
+    if (a[i] >= b[i]) return false;
+  }
+  return true;
+}
+
+template <class It>
+int  lexicographical_compare(It b0, It e0, It b1, It e1) {
+  while (b0 != e0) {
+    if (*b0 < *b1) return -1;
+    else if (*b0 > *b1) return 1;
+    ++b0;
+    ++b1;
+  }
+  return 0;
+}
+
+
 template <class BI, class IsVI>
 class GridIndexIterator
 {
@@ -22,9 +42,9 @@ class GridIndexIterator
                        "Incrementing invalid iterator");
     IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
     IMP_INTERNAL_CHECK(cur_ < ub_, "cur out of range");
-    int r[3];
+    int r[BI::get_d()];
     unsigned int carry=1;
-    for (int i=2; i>=0; --i) {
+    for (int i=BI::get_d()-1; i>=0; --i) {
       r[i]= cur_[i]+carry;
       if ( r[i] == ub_[i]) {
         r[i]= lb_[i];
@@ -36,10 +56,12 @@ class GridIndexIterator
     if (carry==1) {
       cur_= BI();
     } else {
-      BI nc= BI(r[0], r[1], r[2]);
+      BI nc= BI(r, r+BI::get_d());
       IMP_INTERNAL_CHECK(nc > cur_, "Nonfunctional increment");
       IMP_INTERNAL_CHECK(nc > lb_, "Problems advancing");
-      IMP_INTERNAL_CHECK(ub_.strictly_larger_than(nc), "Problems advancing");
+      IMP_INTERNAL_CHECK(get_is_non_empty(nc, ub_), "Problems advancing");
+      /*std::cout << "was " << cur_ << " is " << nc
+        << " (" << lb_ << ", " << ub_ << ")" << std::endl;*/
       cur_= nc;
     }
   }
@@ -59,7 +81,7 @@ public:
                     IsVI isvi=IsVI()): lb_(lb),
                                 ub_(ub), cur_(lb),
                                 isvi_(isvi) {
-    IMP_INTERNAL_CHECK(ub_.strictly_larger_than(lb_),
+    IMP_INTERNAL_CHECK(get_is_non_empty(lb_, ub_),
                "Invalid range in GridIndexIterator");
     check_and_advance();
   }
@@ -142,7 +164,8 @@ struct AllItHelp {
     return true;
   }
   R get_return(const E&v) const {
-    return R(v[0], v[1], v[2]);
+    R ret(v.begin(), v.end());
+    return ret;
   }
 };
 

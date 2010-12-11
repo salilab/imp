@@ -7,6 +7,7 @@ files = [
          'Cylinder3D.h',
          'Ellipsoid3D.h',
          'Grid3D.h',
+         'GridD.h',
          'LinearFit.h',
          'Matrix2D.h',
          'Matrix3D.h',

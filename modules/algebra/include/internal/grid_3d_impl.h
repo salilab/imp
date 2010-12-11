@@ -12,8 +12,8 @@
 IMPALGEBRA_BEGIN_NAMESPACE
 namespace {
   // trilerp helper
-  template <class Voxel, class Storage>
-  void compute_voxel(const grids::Grid3D<Voxel, Storage> &g,
+  template <class Storage>
+  void compute_voxel(const grids::GridD<3, Storage> &g,
                      const VectorD<3> &v,
                      int *ivox,
                      VectorD<3> &remainder) {
@@ -32,11 +32,11 @@ namespace {
                          << " " << fvox);
     }
   }
-  template <class Voxel, class Storage>
-  Voxel get_value(const grids::Grid3D<Voxel, Storage> &g,
+  template <class Storage>
+  typename Storage::Value get_value(const grids::GridD<3, Storage> &g,
                   int xi,
                   int yi, int zi,
-                  const Voxel &outside) {
+                  const typename Storage::Value &outside) {
     //std::cout << "getting " << xi << ' ' << yi << ' ' << zi << std::endl;
     if (xi < 0 || yi < 0 || zi < 0) return outside;
     else if (xi >= g.get_number_of_voxels(0)
@@ -48,11 +48,11 @@ namespace {
   }
 }
 
-template <class Voxel, class Storage>
-const Voxel &
-get_trilinearly_interpolated(const grids::Grid3D<Voxel, Storage> &g,
+template <class Storage>
+const typename Storage::Value &
+get_trilinearly_interpolated(const grids::GridD<3, Storage> &g,
                              const VectorD<3> &v,
-                             const Voxel& outside) {
+                             const typename Storage::Value& outside) {
   // trilirp in z, y, x
   const VectorD<3> halfside= g.get_unit_cell()*.5;
   const VectorD<3> bottom_sample= g.get_bounding_box().get_corner(0)+halfside;
@@ -67,7 +67,7 @@ get_trilinearly_interpolated(const grids::Grid3D<Voxel, Storage> &g,
   int ivox[3];
   algebra::VectorD<3> r;
   compute_voxel(g, v, ivox, r);
-  Voxel is[4];
+  typename Storage::Value is[4];
   for (unsigned int i=0; i< 4; ++i) {
     // operator >> has high precidence compared. Go fig.
     unsigned int bx= ((i&2) >> 1);
@@ -79,7 +79,7 @@ get_trilinearly_interpolated(const grids::Grid3D<Voxel, Storage> &g,
                                     get_value(g, ivox[0]+bx, ivox[1]+by,
                                               ivox[2]+1U, outside));
   }
-  Voxel js[2];
+  typename Storage::Value js[2];
   for (unsigned int i=0; i< 2; ++i) {
     js[i]= get_linearly_interpolated(r[1], is[i*2],is[i*2+1]);
   }
