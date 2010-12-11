@@ -148,7 +148,9 @@ protected:
   std::vector<CHARMMBond<4> > dihedrals_;
   std::vector<CHARMMBond<4> > impropers_;
 
-  CHARMMResidueTopologyBase(std::string type) : type_(type) {}
+  CHARMMResidueTopologyBase(std::string type) : type_(type) {
+    set_name(std::string("CHARMM residue ") + type);
+  }
 public:
   std::string get_type() const { return type_; }
 
@@ -261,7 +263,9 @@ class CHARMMResidueTopology;
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
-  CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {};
+  CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {
+    set_name(std::string("CHARMM patching residue ") + type);
+  }
 
   void add_removed_atom(std::string name) { deleted_atoms_.push_back(name); }
   //! Apply the patch to the residue, modifying its topology accordingly.
@@ -393,6 +397,10 @@ private:
   void map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                          ResMap &resmap) const;
 public:
+  CHARMMTopology(std::string name = "CHARMM topology %1%") : Object(name) {
+    set_was_used(true);
+  }
+
   //! Call CHARMMSegmentTopology::apply_default_patches() for all segments.
   void apply_default_patches(const CHARMMParameters *ff) {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
