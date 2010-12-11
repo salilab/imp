@@ -26,7 +26,7 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   }
   Nuisance sig(p_);
   double score;
-  IMP_USAGE_CHECK(sig.get_nuisance() <= 0, 
+  IMP_USAGE_CHECK(sig.get_nuisance() > 0, 
           "cannot use jeffreys prior on negative or zero nuisance");
   score=log(Float(sig.get_nuisance()));
   return score;
@@ -40,7 +40,7 @@ JeffreysRestraint::unprotected_probability() const
   }
   Nuisance sig(p_);
   double prob;
-  IMP_USAGE_CHECK(sig.get_nuisance() <= 0, 
+  IMP_USAGE_CHECK(sig.get_nuisance() > 0, 
           "cannot use jeffreys prior on negative or zero nuisance");
   prob=1.0/Float(sig.get_nuisance());
   return prob;

@@ -10,6 +10,7 @@
 #include "isd_config.h"
 
 #include <IMP/UnaryFunction.h>
+#include <IMP/constants.h>
 #include <math.h>
 
 IMPISD_BEGIN_NAMESPACE

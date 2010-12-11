@@ -6,14 +6,10 @@
    %include lines as well as any inline C++ code (or at least any such code which uses
    the types in question).
   */
-IMP_SWIG_OBJECT(IMP::isd, ExampleRestraint, ExampleRestraints);
-IMP_SWIG_OBJECT(IMP::isd, ExampleUnaryFunction, ExampleUnaryFunctions);
-IMP_SWIG_OBJECT(IMP::isd, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, NOEPairScore, NOEPairScores);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
-IMP_SWIG_DECORATOR(IMP::isd, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
@@ -34,12 +30,6 @@ def create_model_and_particles():
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include "IMP/isd/ExampleRestraint.h"
-%include "IMP/isd/ExampleDecorator.h"
-%include "IMP/isd/ExampleUnaryFunction.h"
-%include "IMP/isd/ExampleRefCounted.h"
-%include "IMP/isd/ExampleSingletonModifier.h"
-%include "IMP/isd/ExampleTemplateClass.h"
 %include "IMP/isd/Nuisance.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/FNormal.h"
@@ -51,6 +41,5 @@ namespace IMP {
   /* Python doesn't natively support C++ templates, so you have to manually
      choose which template parameters you want to intantiate a template with.
    */
-   %template(ExampleTemplateClass3D) ExampleTemplateClass<3>;
   }
 }
