@@ -22,6 +22,7 @@ ExampleRestraint::ExampleRestraint(Particle *p,
 double
 ExampleRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
+  IMP_OBJECT_LOG;
   core::XYZ d(p_);
   IMP_LOG(VERBOSE, "The z coordinate of " << d->get_name()
           << " is " << d.get_z() << std::endl);
