@@ -29,6 +29,7 @@ public:
   /** This macro declares the basic needed methods: evaluate and show
    */
   IMP_RESTRAINT(JeffreysRestraint);
+  virtual double unprotected_probability() const;
 };
 
 IMPISD_END_NAMESPACE
