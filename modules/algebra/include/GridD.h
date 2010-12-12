@@ -81,7 +81,7 @@ namespace grids {
         out << ")";
       });
 #ifndef IMP_DOXYGEN
-    static unsigned int get_d() {return D;}
+    static const unsigned int DIMENSION=D;
 #endif
 
 #ifndef SWIG
@@ -187,6 +187,7 @@ namespace grids {
 #endif
     unsigned int __len__() const { return D;}
     typedef GridIndexD This;
+    static const unsigned int DIMENSION=D;
 #endif
     IMP_COMPARISONS;
     IMP_HASHABLE_INLINE(GridIndexD,
