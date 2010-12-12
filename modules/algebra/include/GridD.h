@@ -487,6 +487,7 @@ namespace grids {
   */
   template <unsigned int D,
             class Storage,
+            // swig needs this for some reason
             class Value=typename Storage::Value>
   class GridD: public Storage
   {
