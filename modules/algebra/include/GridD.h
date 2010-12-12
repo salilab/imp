@@ -486,7 +486,8 @@ namespace grids {
       \see SparseGridStorageD
   */
   template <unsigned int D,
-            class Storage >
+            class Storage,
+            class Value=typename Storage::Value>
   class GridD: public Storage
   {
   private:
@@ -499,7 +500,7 @@ namespace grids {
     struct GetVoxel {
       mutable GridD<D, Storage> *home_;
       GetVoxel(GridD<D, Storage> *home): home_(home) {}
-      typedef typename Storage::Value& result_type;
+      typedef Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
         std::cout << i << std::endl;
@@ -510,7 +511,7 @@ namespace grids {
     struct ConstGetVoxel {
       const GridD<D, Storage> *home_;
       ConstGetVoxel(const GridD<D, Storage> *home): home_(home) {}
-      typedef const typename Storage::Value& result_type;
+      typedef const Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
         std::cout << i << std::endl;
@@ -560,7 +561,7 @@ namespace grids {
    */
   GridD(int xd, int yd, int zd,
          const BoundingBoxD<3> &bb,
-         typename Storage::Value def=typename Storage::Value()):
+         Value def=Value()):
     Storage(xd, yd, zd, def),
     origin_(bb.get_corner(0)) {
     IMP_USAGE_CHECK(xd > 0 && yd>0 && zd>0,
@@ -579,7 +580,7 @@ namespace grids {
    */
   GridD(double side,
          const BoundingBoxD<D> &bb,
-         const typename Storage::Value& def=typename Storage::Value()):
+         const Value& def=Value()):
     Storage(def) {
     IMP_USAGE_CHECK(Storage::get_is_bounded(),
               "This grid constructor can only be used with bounded grids.");
@@ -614,13 +615,13 @@ namespace grids {
     */
     GridD(double side,
           const VectorD<D> &origin=get_zero_vector_d<D>(),
-          const typename Storage::Value& def= typename Storage::Value()):
+          const Value& def= Value()):
       Storage(def),
       origin_(origin){
       set_unit_cell(get_ones_vector_d<D>()*side);
     }
     //! An empty, undefined grid.
-    GridD(): Storage(typename Storage::Value()){
+    GridD(): Storage(Value()){
     }
     const VectorD<D> get_origin() const {
       return origin_;
@@ -640,14 +641,14 @@ namespace grids {
        the volume of the grid to set.
        @{
     */
-    IMP_BRACKET(typename Storage::Value, VectorD<D>,
+    IMP_BRACKET(Value, VectorD<D>,
                 Storage::get_has_index(get_extended_index(i)),
                 Storage::operator[](get_index(i)));
     /** @} */
 
 #ifdef SWIG
-    const typename Storage::Value& __getitem__(const GridIndexD<D> &i) const;
-    void __setitem__(const GridIndexD<D> &i, const typename Storage::Value &vt);
+    const Value& __getitem__(const GridIndexD<D> &i) const;
+    void __setitem__(const GridIndexD<D> &i, const Value &vt);
 #else
     using Storage::__getitem__;
     using Storage::__setitem__;
@@ -673,18 +674,18 @@ namespace grids {
       return Storage::get_index(ei);
     }
     // ! Add a voxel to a sparse grid.
-    void add_voxel(const VectorD<D>& pt, const typename Storage::Value &vt) {
+    void add_voxel(const VectorD<D>& pt, const Value &vt) {
       IMP_USAGE_CHECK(!Storage::get_is_dense(),
                       "add_voxel() only works on sparse grids.");
       ExtendedGridIndexD<D> ei= get_extended_index(pt);
       Storage::add_voxel(ei, vt);
     }
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-    typename Storage::Value &get_voxel_always(const VectorD<D>& pt) {
+    Value &get_voxel_always(const VectorD<D>& pt) {
       ExtendedGridIndexD<D> ei= get_extended_index(pt);
       return Storage::get_voxel_always(ei);
     }
-    const typename Storage::Value &
+    const Value &
     get_value_always(const VectorD<D>& pt) const {
       ExtendedGridIndexD<D> ei= get_extended_index(pt);
       return Storage::get_value_always(ei);
@@ -698,7 +699,7 @@ namespace grids {
     bool get_has_index(const ExtendedGridIndexD<D>&i) const;
     GridIndex3D get_index(const ExtendedGridIndexD<D> &i) const;
     void add_voxel(const ExtendedGridIndexD<D> &i,
-                   const typename Storage::Value &vt);
+                   const Value &vt);
 #endif
 
 
