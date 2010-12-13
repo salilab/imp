@@ -179,6 +179,8 @@ def add_common_variables(vars, package):
                           'binary compatibility', False))
     vars.Add('includepath', 'Include search path ' + \
              '(e.g. "/usr/local/include:/opt/local/include")', None)
+    vars.Add('swigpath', 'Swig search path ' + \
+             '(e.g. "/usr/local/share/swig")', None)
     vars.Add('libpath', 'Library search path ' + \
              '(e.g. "/usr/local/lib:/opt/local/lib")', None)
     vars.Add('libs', 'Extra libs to add to link commands ' + \
