@@ -14,6 +14,7 @@ import scons_tools.test
 import scons_tools.config_py
 import scons_tools.build_summary
 import scons_tools.variables
+import scons_tools.imppy
 import sys
 import atexit
 from SCons import Script
@@ -100,8 +101,9 @@ if not env.GetOption('help'):
     scons_tools.standards.setup_standards(env)
 
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
+    imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
 
-first=["tools", "kernel", "modules", "applications", "biological_systems"]
+first=["kernel", "modules", "applications", "biological_systems"]
 last=["doc"]
 reordered=[]
 reordered_last=[]
@@ -149,6 +151,11 @@ if not env.GetOption('help'):
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
+    senv= scons_tools.environment.get_named_environment(env, "scons")
+    scons_tools.install.install(senv, "datadir/scons", "SConstruct")
+    scons_tools.install.install_hierarchy(senv, "datadir/scons/scons_tools", "scons_tools",
+                                          Glob("scons_tools/*.py")+
+                                          Glob("scons_tools/*/*.py"))
 
 else:
     tenv= Environment(variables=vars)
