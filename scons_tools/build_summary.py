@@ -27,18 +27,22 @@ def _bf_to_str(bf):
         except:
             return 'really unknown failure: ' + str(bf)
 
-def _list(env, name, table):
+def _list(env, name, table, check_external=False):
     ok=[]
     notok=[]
     for k in table.keys():
+        if check_external and table[k].external:
+            continue
         if table[k].ok:
             ok.append(k)
         else:
             notok.append(k)
-    print "Enabled", name+": ", ", ".join(ok)
+    if len(ok) > 0:
+        print "Enabled", name+": ", ", ".join(ok)
     if len(notok) >0:
         print "Disabled", name+":", ", ".join(notok)
-    print
+    if len(ok) >0 or len(notok) > 0:
+        print
 
 def _display_build_summary(env):
     print
@@ -47,7 +51,7 @@ def _display_build_summary(env):
         print x
     d= data.get(env)
     _list(env, "dependencies", d.dependencies)
-    _list(env, "modules", d.modules)
+    _list(env, "modules", d.modules, True)
     _list(env, "applications", d.applications)
     _list(env, "systems", d.systems)
 
