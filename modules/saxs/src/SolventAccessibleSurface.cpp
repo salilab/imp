@@ -28,7 +28,7 @@ IMP::Floats SolventAccessibleSurface::get_solvent_accessibility(
   IMP::algebra::BoundingBox3D bb(coordinates);
   Grid grid(2.0, bb);
   for(unsigned int i=0; i<coordinates.size(); i++) {
-    Grid::Index grid_index = grid.get_index(coordinates[i]);
+    Grid::Index grid_index = grid.get_nearest_index(coordinates[i]);
     grid[grid_index].push_back(i);
   }
 
