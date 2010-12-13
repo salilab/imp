@@ -89,6 +89,7 @@ public:
   }
   IMP_SIMPLE_PAIR_SCORE(StatisticalPairScore);
 };
+#ifndef IMP_DOXYGEN
 
 template <class Key, bool BIPARTITE>
 void StatisticalPairScore<Key, BIPARTITE>::do_show(std::ostream &out) const {
@@ -106,6 +107,7 @@ double StatisticalPairScore<Key, BIPARTITE>::evaluate(const ParticlePair &pp,
   if (pt==-1 || lt==-1) return 0;
   return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);
 }
+#endif
 IMPCORE_END_NAMESPACE
 
 #endif /* IMPCORE_STATISTICAL_PAIR_SCORE_H */
