@@ -6,5 +6,5 @@ if sys.argv[0].endswith("__main__.py"):
 
 __unittest = True
 
-from compat_python.unittest2.main import main_
+from IMP.test._compat_python.unittest2.main import main_
 main_()

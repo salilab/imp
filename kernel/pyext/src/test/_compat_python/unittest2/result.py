@@ -6,8 +6,8 @@ import unittest
 
 from StringIO import StringIO
 
-from compat_python.unittest2 import util
-from compat_python.unittest2.compatibility import wraps
+from IMP.test._compat_python.unittest2 import util
+from IMP.test._compat_python.unittest2.compatibility import wraps
 
 __unittest = True
 

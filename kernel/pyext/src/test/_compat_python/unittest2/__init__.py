@@ -37,22 +37,22 @@ __version__ = '0.5.1'
 __all__.extend(['getTestCaseNames', 'makeSuite', 'findTestCases'])
 
 
-from compat_python.unittest2.collector import collector
-from compat_python.unittest2.result import TestResult
-from compat_python.unittest2.case import \
+from IMP.test._compat_python.unittest2.collector import collector
+from IMP.test._compat_python.unittest2.result import TestResult
+from IMP.test._compat_python.unittest2.case import \
     TestCase, FunctionTestCase, SkipTest, skip, skipIf,\
     skipUnless, expectedFailure
 
-from compat_python.unittest2.suite import BaseTestSuite, TestSuite
-from compat_python.unittest2.loader import \
+from IMP.test._compat_python.unittest2.suite import BaseTestSuite, TestSuite
+from IMP.test._compat_python.unittest2.loader import \
     TestLoader, defaultTestLoader, makeSuite, getTestCaseNames,\
     findTestCases
 
-from compat_python.unittest2.main import TestProgram, main, main_
-from compat_python.unittest2.runner import TextTestRunner, TextTestResult
+from IMP.test._compat_python.unittest2.main import TestProgram, main, main_
+from IMP.test._compat_python.unittest2.runner import TextTestRunner, TextTestResult
 
 try:
-    from compat_python.unittest2.signals import\
+    from IMP.test._compat_python.unittest2.signals import\
         installHandler, registerResult, removeResult, removeHandler
 except ImportError:
     # Compatibility with platforms that don't have the signal module

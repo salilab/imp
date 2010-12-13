@@ -4,9 +4,9 @@ import sys
 import os
 import types
 
-from compat_python.unittest2 import loader, runner
+from IMP.test._compat_python.unittest2 import loader, runner
 try:
-    from compat_python.unittest2.signals import installHandler
+    from IMP.test._compat_python.unittest2.signals import installHandler
 except ImportError:
     installHandler = None
 

@@ -11,12 +11,12 @@ if sys.version_info[:2] == (2,3):
     from sets import Set as set
     from sets import ImmutableSet as frozenset
 
-from compat_python.unittest2 import result
-from compat_python.unittest2.util import\
+from IMP.test._compat_python.unittest2 import result
+from IMP.test._compat_python.unittest2.util import\
     safe_repr, safe_str, strclass,\
     unorderable_list_difference
 
-from compat_python.unittest2.compatibility import wraps
+from IMP.test._compat_python.unittest2.compatibility import wraps
 
 __unittest = True
 

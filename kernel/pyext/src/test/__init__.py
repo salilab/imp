@@ -10,6 +10,8 @@ import random
 import IMP
 import time
 import shutil
+import _compat_python
+import _compat_python.unittest2
 
 # Load a new enough unittest package (should have the 'skip' decorator)
 # - On Python 2.7 or 3.2, the standard 'unittest' package will work.
@@ -19,7 +21,7 @@ def __load_unittest_package():
     errors = []
     for modname, fromlist in (('unittest', []),
                               ('unittest2', []),
-                              ('compat_python.unittest2', ['unittest2'])):
+                              ):
         try:
             u = __import__(modname, {}, {}, fromlist)
             if hasattr(u, 'skip'):
@@ -29,6 +31,8 @@ def __load_unittest_package():
                               % modname)
         except ImportError, e:
             errors.append(str(e))
+        #u = __import__("_compat_python.unittest2
+        return _compat_python.unittest2
     raise ImportError("IMP.test requires a newer version of Python's unittest "
                       "package than is available. Either upgrade to a new "
                       "enough Python (at least 2.7 or 3.2) or install the "
