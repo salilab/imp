@@ -37,10 +37,11 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                   }
 
 
+
 class IMPData:
     class ModuleData:
         def __init__(self, name, dependencies=[], unfound_dependencies=[], modules=[],
-                     python_modules=[], version="", ok=True):
+                     python_modules=[], version="", external=False, ok=True):
             self.build=[]
             if ok:
                 self.dependencies=dependencies
@@ -54,6 +55,7 @@ class IMPData:
                     self.path=name
                     self.nicename="IMP."+name
                 self.version=version
+                self.external=external
             self.ok=ok
 
     class ApplicationData:
@@ -145,7 +147,8 @@ class IMPData:
         return dret
     def add_module(self, name, directory="",
                    dependencies=[], unfound_dependencies=[], modules=[],
-                   python_modules=[], version="", ok=True):
+                   python_modules=[], version="", ok=True,
+                   external=False):
         if not ok:
             self.modules[name]=self.ModuleData(name, ok=ok)
         else:
@@ -154,7 +157,7 @@ class IMPData:
             passdependencies= self._expand_dependencies(passpythonmodules,
                                                         dependencies)
             self.modules[name]=self.ModuleData(name, passdependencies, unfound_dependencies,
-                                          passmodules, passpythonmodules, version)
+                                          passmodules, passpythonmodules, version, external)
     def add_dependency(self, name, libs=[], ok=True, variables=[]):
         self.dependencies[name]=self.DependencyData(name, libs=libs, variables=variables,
                                                     ok=ok)
@@ -194,9 +197,29 @@ class IMPData:
                                  version=version)
     def add_example(self, name, overview):
         self.examples[utility.get_link_name_from_name(name)]=self.ExampleData(name, overview)
+    def _check_module(self, m):
+        if m =='kernel':
+            libname="imp"
+            headername="IMP/kernel_config.h"
+            namespace="IMP"
+        else:
+            libname="imp_"+m
+            headername="IMP/"+m+"/"+m+"_config.h"
+            namespace="IMP::"+m+""
+        conf = self.env.Configure()
+        ret=conf.CheckLibWithHeader(libname, header=[headername],
+                                    call=namespace+"::get_module_version_info();",
+                                    language="CXX", autoadd=False)
+        if ret:
+            self.add_module(m, ok=True, external=True)
+        else:
+            self.add_module(m, ok=False)
+        conf.Finish()
     def get_found_modules(self, modules):
         ret=[]
         for m in modules:
+            if not self.modules.has_key(m):
+                self._check_module(m)
             if self.modules[m].ok:
                 ret.append(m)
         return ret
