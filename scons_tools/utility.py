@@ -151,6 +151,9 @@ def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]
         version=version+" with "+", ".join(optional_dependencies+ optional_modules)
     return version
 
+
+
+
 def configure(env, name, type, version, required_modules=[],
               optional_dependencies=[], optional_modules=[],
               required_dependencies=[]):
@@ -159,9 +162,9 @@ def configure(env, name, type, version, required_modules=[],
     if name in disabled:
         print type.capitalize(), name, "explicitly disabled "
         return (False, None, None, None)
-
+    found_required_modules= data.get(env).get_found_modules(required_modules)
     for m in required_modules:
-        if m not in data.get(env).modules.keys() or not data.get(env).modules[m].ok:
+        if m not in found_required_modules:
             print type.capitalize(), name, "disabled due to disabled module "\
                   "IMP."+m
             return (False, None, None, None)
