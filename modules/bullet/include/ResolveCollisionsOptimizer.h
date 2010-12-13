@@ -15,8 +15,8 @@
 #include <IMP/RestraintSet.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/Optimizer.h>
-#include <btBulletDynamicsCommon.h>
-
+//#include <btBulletDynamicsCommon.h>
+#include <bullet/LinearMath/btScalar.h>
 IMPBULLET_BEGIN_NAMESPACE
 
 /** It uses the Bullet physics engine to handle collisions between the
