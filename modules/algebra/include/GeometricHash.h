@@ -400,7 +400,7 @@ private:
   {
     if ( idx >= D )
       return ins(p);
-    if ( not cube_inside_sphere_rec(ins, p, idx + 1) )
+    if (! cube_inside_sphere_rec(ins, p, idx + 1) )
       return false;
     F old = p[idx];
     p[idx] += radii_[idx];
