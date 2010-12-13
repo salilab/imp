@@ -4,10 +4,10 @@ import sys
 import time
 import unittest
 
-from compat_python.unittest2 import result
+from IMP.test._compat_python.unittest2 import result
 
 try:
-    from compat_python.unittest2.signals import registerResult
+    from IMP.test._compat_python.unittest2.signals import registerResult
 except ImportError:
     def registerResult(_):
         pass

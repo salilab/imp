@@ -1,7 +1,7 @@
 import signal
 import weakref
 
-from compat_python.unittest2.compatibility import wraps
+from IMP.test._compat_python.unittest2.compatibility import wraps
 
 __unittest = True
 

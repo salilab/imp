@@ -1,6 +1,6 @@
 import os
 import sys
-from compat_python.unittest2.loader import defaultTestLoader
+from IMP.test._compat_python.unittest2.loader import defaultTestLoader
 
 def collector():
     # import __main__ triggers code re-execution

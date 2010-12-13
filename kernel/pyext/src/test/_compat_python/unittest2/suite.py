@@ -2,7 +2,7 @@
 
 import sys
 import unittest
-from compat_python.unittest2 import case, util
+from IMP.test._compat_python.unittest2 import case, util
 
 __unittest = True
 

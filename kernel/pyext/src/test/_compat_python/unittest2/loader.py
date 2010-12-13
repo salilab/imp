@@ -9,12 +9,12 @@ import unittest
 
 from fnmatch import fnmatch
 
-from compat_python.unittest2 import case, suite
+from IMP.test._compat_python.unittest2 import case, suite
 
 try:
     from os.path import relpath
 except ImportError:
-    from compat_python.unittest2.compatibility import relpath
+    from IMP.test._compat_python.unittest2.compatibility import relpath
 
 __unittest = True
 
