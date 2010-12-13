@@ -151,43 +151,20 @@ def install_as(env, target, source, **keys):
     data.get(env).add_to_alias(environment.get_current_name(env)+"-install", inst)
     data.get(env).add_to_alias("install", inst)
     return ret
-def _make_nodes(files):
-    nodes = []
-    for f in files:
-        if isinstance(f, str):
-            nodes.append(Entry(f))
-        elif isinstance(f, (list, tuple, UserList.UserList)):
-            nodes.extend(_make_nodes(f))
+
+
+def install_hierarchy(env, dir, root_dir, sources):
+    build=[]
+    inst=[]
+    for s in sources:
+        full = File(s).path
+        name = full[full.rfind(root_dir+"/")+len(root_dir)+1:]
+        f= name.rfind("/")
+        if f==-1:
+            cdir=""
         else:
-            nodes.append(f)
-    return nodes
-
-def _install_hierarchy_internal(env, dir, sources):
-    insttargets = []
-    sources = _make_nodes(sources)
-    #print [x.path for x in sources]
-    for f in sources:
-        full = f.path
-        if full.rfind("include") != -1:
-            src = full[full.rfind("include")+8:]
-        elif full.rfind("src") != -1:
-            src= full[full.rfind("src")+4:]
-        # restrainer needs this before data
-        elif full.find("examples") != -1:
-            src= full[full.rfind("examples")+9:]
-        elif full.rfind("data") != -1:
-            src= full[full.rfind("data")+5:]
-        else:
-            raise ValueError(full)
-        #print src
-        dest = os.path.join(dir, os.path.dirname(src))
-        insttargets.append(install(env, dest, f))
-    return insttargets
-
-
-
-
-def install_hierarchy(env, dir, sources):
-    targets = \
-       _install_hierarchy_internal(env, dir, sources)
-    return ([x[0] for x in targets], [x[1] for x in targets])
+            cdir=name[:f]
+        (b,i)= install(env, Dir(dir+"/"+cdir), File(s))
+        build.append(b)
+        inst.append(i)
+    return (build, inst)
