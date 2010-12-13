@@ -132,6 +132,7 @@ def IMPModuleInclude(env, files):
     scons_tools.install.install(env, "includedir/IMP/currentdir",
                                               config[0])
     scons_tools.install.install_hierarchy(env, "includedir/IMP/currentdir",
+                                          "include",
                                          list(files))
     if _get_module_name(env)=='kernel':
         hn= scons_tools.install.get_build_path(env,
@@ -161,6 +162,7 @@ def IMPModuleExamples(env, example_files, data_files):
     #    print f.abspath
     #    open(f.abspath, 'r')
     (build, install)=scons_tools.install.install_hierarchy(env, "docdir/examples/currentdir",
+                                                           "examples",
                                                            example_files+data_files)
     test= scons_tools.test.add_test(env,
                                     source=[x for x in example_files
@@ -296,13 +298,10 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     data.build.append(buildlib[0])
     inst=scons_tools.install.install(penv, 'pyextdir', buildlib[0])
     scons_tools.utility.postprocess_lib(penv, buildlib)
-    for f in pythonfiles:
-        #print f
-        nm= os.path.split(f.path)[1]
-        #print ('#/build/lib/%s/'+nm) % vars['module_include_path']
-        (build, inst)=scons_tools.install.install(env, ('pythondir/IMP/currentdir/'),
-                                         f)
-        data.build.append(build)
+    (b,s)= scons_tools.install.install_hierarchy(env, 'pythondir/IMP/currentdir/',
+                                         "src", pythonfiles)
+    for bs in b:
+        data.build.append(bs)
 
 def IMPModuleGetExamples(env):
     rms= scons_tools.utility.get_matching_recursive(["*.readme"])
@@ -340,7 +339,8 @@ def IMPModuleGetSwigFiles(env):
     return files
 
 def IMPModuleGetPython(env):
-    files=scons_tools.utility.get_matching(["src/*.py"])
+    files=scons_tools.utility.get_matching(["src/*.py", "src/*/*.py",
+                                            "src/*/*/*.py"])
     return files
 
 def IMPModuleGetSources(env):
