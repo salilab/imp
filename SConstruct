@@ -98,8 +98,6 @@ if not env.GetOption('help'):
     scons_tools.dependency.gcc.configure_check_visibility(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
-    scons_tools.standards.setup_standards(env)
-
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
     imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
 
