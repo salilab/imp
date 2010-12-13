@@ -251,7 +251,7 @@ class ParticleQuadsTemp;
 %include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/container_base.h"
-%include "IMP_particle.i"
+%include "IMP_kernel_particle.i"
 %include "IMP/Decorator.h"
 
 namespace IMP {
@@ -268,7 +268,7 @@ namespace IMP {
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Refiner.h"
-%include "IMP_random.i"
+%include "IMP_kernel_random.i"
 %include "IMP/Optimizer.h"
 %include "IMP/ConfigurationSet.h"
 %include "IMP/Sampler.h"

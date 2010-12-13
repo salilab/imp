@@ -59,14 +59,14 @@ namespace multi_array_types {
 }
 
 /* Wrap our own classes */
-%include "IMP_vector.i"
-%include "IMP_transformation2d.i"
-%include "IMP_transformation3d.i"
+%include "IMP_algebra_vector.i"
+%include "IMP_algebra_transformation2d.i"
+%include "IMP_algebra_transformation3d.i"
 %include "IMP/algebra/ReferenceFrame3D.h"
-%include "IMP_bounding_box.i"
-%include "IMP_matrix2d.i"
-%include "IMP_matrix3d.i"
-%include "IMP_spherical_coords.i"
+%include "IMP_algebra_bounding_box.i"
+%include "IMP_algebra_matrix2d.i"
+%include "IMP_algebra_matrix3d.i"
+%include "IMP_algebra_spherical_coords.i"
 %include "IMP/algebra/eigen_analysis.h"
 %include "IMP/algebra/Segment3D.h"
 %include "IMP/algebra/Triangle3D.h"
@@ -93,7 +93,7 @@ namespace IMP {
  }
 }
 %include "IMP/algebra/Grid3D.h"
-%include "IMP_GeometricHash.i"
+%include "IMP_algebra_GeometricHash.i"
 namespace IMP {
  namespace algebra {
    %template(Sphere2D) SphereD<2>;
