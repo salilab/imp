@@ -8,13 +8,13 @@ import scons_tools.module
 import scons_tools.data
 
 # standard include files
-base_includes= ["IMP_macros.i",
-                "IMP_exceptions.i",
-                "IMP_directors.i",
-                "IMP_types.i",
-                "IMP_refcount.i",
-                "IMP_streams_kernel.i",
-                "IMP_streams.i",]
+base_includes= ["IMP_kernel_macros.i",
+                "IMP_kernel_exceptions.i",
+                "IMP_kernel_directors.i",
+                "IMP_kernel_types.i",
+                "IMP_kernel_refcount.i",
+                "IMP_kernel_streams_kernel.i",
+                "IMP_kernel_streams.i",]
 
 
 def _null_scanner(node, env, path):
@@ -207,7 +207,8 @@ def _action_simple_swig(target, source, env):
         command.append('-DIMP_SWIG_KERNEL')
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
-    command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])]
+    command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('CPPPATH', [])]\
+             + ["-I"+str(x) for x in env.get('swigpath', "").split(":") if x != ""]
     command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
     ret= env.Execute(" ".join(command) %vars)
@@ -253,15 +254,19 @@ def swig_scanner(node, env, path):
     import re
     contents= node.get_contents()
     # scons recurses with the same scanner, rather than the right one
-    #print "Scanning "+str(node)
+    # print "Scanning "+str(node)
+    dta= scons_tools.data.get(env)
     if str(node).endswith(".h"):
         # we don't care about recursive .hs for running swig
         return []
     else :
         oldret=[]
-        ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]\
-            + ["#/build/swig/"+x for x in re.findall('\n%include\s"(IMP_[^"]*.i)"', contents)]\
-            + ["#/build/swig/"+x for x in re.findall('\n%import\s"(IMP_[^"]*.i)"', contents)]
+        ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
+        for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
+                +re.findall('\n%import\s"IMP_([^"]*).i"\n', contents):
+            mn= x.split("_")[0]
+            if not dta.modules[mn].external:
+                ret.append("#/build/swig/IMP_"+x+".i")
         retset=set(ret)
         ret=list(retset)
         ret.sort()
