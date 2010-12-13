@@ -20,14 +20,15 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     If derv0 is non-NULL, all four algebra::VectorD<3> parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
-inline double dihedral(const XYZ &d0, const XYZ &d1,
-                       const XYZ &d2, const XYZ &d3,
+template <class P>
+inline double dihedral(const P &d0, const P &d1,
+                       const P &d2, const P &d3,
                        algebra::VectorD<3> *derv0, algebra::VectorD<3> *derv1,
                        algebra::VectorD<3> *derv2, algebra::VectorD<3> *derv3)
 {
-  algebra::VectorD<3> rij = d1.get_vector_to(d0);
-  algebra::VectorD<3> rkj = d1.get_vector_to(d2);
-  algebra::VectorD<3> rkl = d3.get_vector_to(d2);
+  algebra::VectorD<3> rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
+  algebra::VectorD<3> rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
+  algebra::VectorD<3> rkl = get_vector_d_geometry(d2)-get_vector_d_geometry(d3);
 
   algebra::VectorD<3> v1 = get_vector_product(rij, rkj);
   algebra::VectorD<3> v2 = get_vector_product(rkj, rkl);
