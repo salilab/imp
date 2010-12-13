@@ -101,17 +101,30 @@ if not env.GetOption('help'):
 
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
 
-SConscript('kernel/SConscript')
-SConscript('modules/SConscript')
-SConscript('applications/SConscript')
-SConscript('biological_systems/SConscript')
+first=["tools", "kernel", "modules", "applications", "biological_systems"]
+last=["doc"]
+reordered=[]
+reordered_last=[]
+all= [str(x) for x in Glob("*/SConscript")]
+for f in first:
+    e= f+"/SConscript"
+    if e in all:
+        reordered.append(e)
+        all.remove(e)
+for f in last:
+    e= f+"/SConscript"
+    if e in all:
+        reordered_last.append(e)
+        all.remove(e)
+reordered.extend(all)
+reordered.extend(reordered_last)
+for f in reordered:
+    SConscript("#/"+f)
 
 
 if not env.GetOption('help'):
-    SConscript('tools/SConscript')
     # This must be after the other SConscipt calls so that it knows about all the generated files
     scons_tools.doc.add_overview_pages(env)
-    SConscript('doc/SConscript')
 
     env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
