@@ -23,12 +23,13 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
     If derv0 is non-NULL, all three algebra::VectorD<3> parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
-inline double angle(const XYZ &d0, const XYZ &d1, const XYZ &d2,
+template <class P>
+inline double angle(const P &d0, const P &d1, const P &d2,
                     algebra::VectorD<3> *derv0, algebra::VectorD<3> *derv1,
                     algebra::VectorD<3> *derv2)
 {
-  algebra::VectorD<3> rij = d1.get_vector_to(d0);
-  algebra::VectorD<3> rkj = d1.get_vector_to(d2);
+  algebra::VectorD<3> rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
+  algebra::VectorD<3> rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
 
   double scalar_product = rij*rkj;
   double mag_rij = rij.get_magnitude();
