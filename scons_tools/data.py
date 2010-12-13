@@ -55,8 +55,8 @@ class IMPData:
                     self.path=name
                     self.nicename="IMP."+name
                 self.version=version
-                self.external=external
             self.ok=ok
+            self.external=external
 
     class ApplicationData:
         def __init__(self, name, link="",
