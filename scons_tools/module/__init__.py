@@ -264,6 +264,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
                                          env.Value(_get_module_python_modules(env)),
                                          env.Value(" ".join(_get_module_dependencies(env))),
                                   env.Value(" ".join(_get_module_unfound_dependencies(env)))])
+    scons_tools.install.install(penv, "datadir/swig", swigfile)
     vc
     for i in swigfiles:
         if str(i).endswith('.i'):
