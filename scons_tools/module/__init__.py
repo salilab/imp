@@ -301,6 +301,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     (b,s)= scons_tools.install.install_hierarchy(env, 'pythondir/IMP/currentdir/',
                                          "src", pythonfiles)
     for bs in b:
+        #print bs
         data.build.append(bs)
 
 def IMPModuleGetExamples(env):
@@ -340,7 +341,8 @@ def IMPModuleGetSwigFiles(env):
 
 def IMPModuleGetPython(env):
     files=scons_tools.utility.get_matching(["src/*.py", "src/*/*.py",
-                                            "src/*/*/*.py"])
+                                            "src/*/*/*.py", "src/*/*/*/*.py",
+                                            "src/*/*/*/*/*.py"])
     return files
 
 def IMPModuleGetSources(env):
