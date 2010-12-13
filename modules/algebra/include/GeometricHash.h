@@ -9,7 +9,6 @@
 
 #include <vector>
 #include <map>
-
 #include <ostream>
 #include <cmath>
 #include "algebra_config.h"
@@ -131,49 +130,6 @@ std::ostream &operator<<(std::ostream &os, const Point<F, D> &p)
 }
 
 
-/* Murmurhash will be used in conjunction with boost::unordered_map
-    * to hash buckets (of type Point<int32_t, D>) */
-struct MurmurHash
-{
-
-  template < int D >
-  uint64_t operator()(const Point<int32_t, D> &P) const
-  {
-    const uint32_t m = 0x5bd1e995;
-    const int r = 24;
-    const uint32_t seed = 666;
-    uint32_t h1 = seed^D;
-    uint32_t h2 = 0;
-    const uint32_t *data = reinterpret_cast<const uint32_t *>(&P[0]);
-    int l = D;
-    while ( l >= 2 )
-    {
-      uint32_t k1 = *data++;
-      k1 *= m; k1 ^= k1 >> r; k1 *= m;
-      h1 *= m; h1 ^= k1;
-      uint32_t k2 = *data++;
-      k2 *= m; k2 ^= k2 >> r; k2 *= m;
-      h2 *= m; h2 ^= k2;
-      l -= 2;
-    }
-    if ( l >= 1 )
-    {
-      uint32_t k1 = *data;
-      k1 *= m; k1 ^= k1 >> r; k1 *= m;
-      h1 *= m; h1 ^= k1;
-    }
-    h1 ^= h2 >> 18; h1 *= m;
-    h2 ^= h1 >> 22; h2 *= m;
-    h1 ^= h2 >> 17; h1 *= m;
-    h2 ^= h1 >> 19; h2 *= m;
-    uint64_t h = h1;
-    h = (h << 32) | h2;
-    return h;
-  }
-
-};
-
-
 /* This is the definition of Geometric Hash table.
     * GeometricHash<T, F, D> stores values of type T with D-dimensional
     * points whose coordinates are of type F inside D-dimensional
@@ -188,7 +144,6 @@ public:
   typedef std::pair< GeoPoint, T > ValueType;
   typedef const ValueType *Placeholder;
   typedef std::vector< ValueType > PointList;
-//typedef boost::unordered_map<Bucket, PointList, MurmurHash> GeomMap;
   typedef std::map<Bucket, PointList> GeomMap;
   typedef std::vector<Placeholder> HashResult;
   typedef std::vector<T> HashResultT;
