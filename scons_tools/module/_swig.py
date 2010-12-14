@@ -217,9 +217,6 @@ def _action_simple_swig(target, source, env):
 def _print_simple_swig(target, source, env):
     print "Running swig on file "+str(source[0].path)
 
-SwigIt = Builder(action=Action(_action_simple_swig,
-                                _print_simple_swig))
-
 def _action_version_check(target, source, env):
     def get_module(name):
         if name=='kernel':
@@ -288,3 +285,7 @@ scanner= Scanner(function=swig_scanner, skeys=['.i'], name="IMPSWIG", recursive=
 # scons likes to call the scanner on nodes which do not exist (making it tricky to parse their contents
 # so we have to walk higher up in the tree
 inscanner= Scanner(function=inswig_scanner, skeys=['.i-in'], name="IMPINSWIG", recursive=True)
+
+SwigIt = Builder(action=Action(_action_simple_swig,
+                                _print_simple_swig),
+                 source_scanner= scanner)
