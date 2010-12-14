@@ -1,6 +1,7 @@
 /**
  *  \file isd/NOERestraint.h
- *  \brief A restraint on a list of particle pairs.
+ *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
+ *  distance fit.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -41,9 +42,17 @@ public:
   NOERestraint(Particle *p0, Particle *p1, Particle *sigma, 
 	       Particle *gamma,double Iexp);
 
+  /* call for probability */
+  virtual double unprotected_probability() const
+  {
+    return exp(-unprotected_evaluate(NULL));
+  }
+
+
   /** This macro declares the basic needed methods: evaluate and show
    */
   IMP_RESTRAINT(NOERestraint);
+
 };
 
 IMPISD_END_NAMESPACE
