@@ -253,7 +253,6 @@ def swig_scanner(node, env, path):
     # scons recurses with the same scanner, rather than the right one
     # print "Scanning "+str(node)
     dta= scons_tools.data.get(env)
-    print node
     if str(node).endswith(".h"):
         # we don't care about recursive .hs for running swig
         return []
