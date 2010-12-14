@@ -19,12 +19,6 @@ class TestNuisanceParam(IMP.test.TestCase):
         self.m = IMP.Model()
         self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
 
-    def test_String(self):
-        "a parameter cannot take other things than numbers as input"
-        self.assertRaises(TypeError, self.sigma.set_nuisance,"a")
-        self.assertRaises(TypeError, self.sigma.set_nuisance,(1,2))
-        self.assertRaises(TypeError, self.sigma.set_nuisance,[1,2])
-
     def test_Default(self):
         "default value should be 1"
         print self.sigma.get_nuisance()
@@ -34,6 +28,17 @@ class TestNuisanceParam(IMP.test.TestCase):
     def test_Set(self):
         "set returns nothing"
         self.assertEqual(self.sigma.set_nuisance(2),None)
+
+    def test_deriv(self):
+        "test setting/getting derivative"
+        self.sigma.add_to_nuisance_derivative(123,IMP.DerivativeAccumulator())
+        self.assertAlmostEqual(self.sigma.get_nuisance_derivative(),
+                123.0,delta=0.01)
+    def test_String(self):
+        "a parameter cannot take other things than numbers as input"
+        self.assertRaises(TypeError, self.sigma.set_nuisance,"a")
+        self.assertRaises(TypeError, self.sigma.set_nuisance,(1,2))
+        self.assertRaises(TypeError, self.sigma.set_nuisance,[1,2])
 
     def test_GetSet(self):
         "tests get and set (sanity checks)"

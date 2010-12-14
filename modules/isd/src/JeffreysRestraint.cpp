@@ -26,24 +26,22 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   }
   Nuisance sig(p_);
   double score;
-  IMP_USAGE_CHECK(sig.get_nuisance() > 0, 
-          "cannot use jeffreys prior on negative or zero nuisance");
-  score=log(Float(sig.get_nuisance()));
+  if (sig.get_nuisance() <= 0) {
+      IMP_THROW("cannot use jeffreys prior on negative or zero nuisance", 
+              ModelException);
+  }
+  score=log(sig.get_nuisance());
+  if (accum) {
+    /* calculate derivative and add to 1st coordinate of sig */
+    double deriv=1.0/sig.get_nuisance();
+    sig.add_to_nuisance_derivative(deriv,*accum);
+  }
   return score;
 }
 
-double
-JeffreysRestraint::unprotected_probability() const
+double JeffreysRestraint::unprotected_probability() const
 {
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Nuisance::decorate_particle(p_);
-  }
-  Nuisance sig(p_);
-  double prob;
-  IMP_USAGE_CHECK(sig.get_nuisance() > 0, 
-          "cannot use jeffreys prior on negative or zero nuisance");
-  prob=1.0/Float(sig.get_nuisance());
-  return prob;
+  return exp(-unprotected_evaluate(NULL));
 }
 
 /* Return all particles whose attributes are read by the restraints. To

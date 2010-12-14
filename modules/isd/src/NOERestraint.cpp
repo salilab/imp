@@ -39,6 +39,7 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_NEW(FNormal, lognormal, (sigma_val,Fx,Fu,Jx)); 
   double score= lognormal->evaluate(0);
 
+  if (accum)
   return score;
 }
 
@@ -46,7 +47,10 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
    do this, ask the pair score what particles it uses.*/
 ParticlesTemp NOERestraint::get_input_particles() const
 {
-  return ParticlesTemp(1,p0_);
+  ParticlesTemp ret;
+  ret.push_back(p0_);
+  ret.push_back(p1_);
+  return ret;
 }
 
 /* The only container used is pc_. */
