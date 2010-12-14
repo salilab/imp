@@ -9,6 +9,8 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
+#include <IMP/Object.h>
+#include <IMP/constants.h>
 #include <math.h>
 
 IMPISD_BEGIN_NAMESPACE
@@ -24,59 +26,60 @@ IMPISD_BEGIN_NAMESPACE
  *  lognormal distribution with mean M and standard deviation sigma.
  */
 
-class FNormal
+class FNormal : public Object
 {
  public:
   FNormal(double FA, double JA, double FM, double sigma): 
-    FA(FA),
-    JA(JA),
-    FM(FM),
-    sigma(sigma) {}
+    FA_(FA),
+    JA_(JA),
+    FM_(FM),
+    sigma_(sigma) {}
 
   /* energy (score) functions, aka -log(p) */
   virtual double evaluate() const 
   { 
-      return -log(JA/sigma) + 0.5*log(2*IMP::PI) 
-            + 1/(2*square(sigma))*square(FA-FM); 
+      return -log(JA_/sigma_) + 0.5*log(2*IMP::PI) 
+            + 1/(2*square(sigma_))*square(FA_-FM_); 
   }
 
   virtual double evaluate_derivative_FA() const
-  { return (FA-FM)/square(sigma); }
+  { return (FA_-FM_)/square(sigma_); }
 
   virtual double evaluate_derivative_JA() const
-  { return -1/JA }
+  { return -1/JA_; }
 
   virtual double evaluate_derivative_FM() const
-  { return (FM-FA)/square(sigma); }
+  { return (FM_-FA_)/square(sigma_); }
 
   virtual double evaluate_derivative_sigma() const
-  { return 1/sigma - square(FA-FM)/pow(sigma,3) }
+  { return 1/sigma_ - square(FA_-FM_)/pow(sigma_,3); }
   
   /* probability density function */
   virtual double density() const
   { 
-      return JA/(sqrt(2*IMP::PI)*sigma)*exp(-square(FA-FM)/(2*square(sigma)));
+      return JA_/(sqrt(2*IMP::PI)*sigma_)*
+          exp(-square(FA_-FM_)/(2*square(sigma_)));
   }
  
   /* change of parameters */
-  void set_sigma(double f) {
-    sigma=f;
+  void set_sigma_(double f) {
+    sigma_=f;
   }
-  void set_FA(double f) {
-    FA=f;
+  void set_FA_(double f) {
+    FA_=f;
   }
-  void set_FM(double f) {
-    FM=f;
+  void set_FM_(double f) {
+    FM_=f;
   }
-  void set_JA(double f) {
-    JA=f;
+  void set_JA_(double f) {
+    JA_=f;
   }
 
-  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA << ", " << JA
-                            << ", " << FM << ", " << sigma <<std::endl);
+  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
+                            << ", " << FM_ << ", " << sigma_ <<std::endl, {});
 
  private:
-  double FA,JA,FM,sigma;
+  double FA_,JA_,FM_,sigma_;
 };
 
 IMPISD_END_NAMESPACE

@@ -39,11 +39,6 @@ JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   return score;
 }
 
-double JeffreysRestraint::unprotected_probability() const
-{
-  return exp(-unprotected_evaluate(NULL));
-}
-
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
 ParticlesTemp JeffreysRestraint::get_input_particles() const
