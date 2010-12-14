@@ -41,6 +41,15 @@ public:
     get_particle()->set_value(get_nuisance_key(), d);
   }
 
+  void add_to_nuisance_derivative(Float d, DerivativeAccumulator &accum) {
+    get_particle()->add_to_derivative(get_nuisance_key(), d, accum);
+  }
+
+  Float get_nuisance_derivative() const
+  {
+    return get_particle()->get_derivative(get_nuisance_key());
+  }
+
   IMP_DECORATOR(Nuisance, Decorator);
 
   static FloatKey get_nuisance_key();

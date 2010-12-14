@@ -8,50 +8,75 @@
 #define IMPISD_FNORMAL_H
 
 #include "isd_config.h"
-
-#include <IMP/UnaryFunction.h>
-#include <IMP/constants.h>
+#include <IMP/macros.h>
 #include <math.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! FNormal
-/** Probability density function of normal sampling from
-    some function F.  Specify F(x), F(u) (the center),
-    and J(x) (the Jacobian of F at x).
+/** Probability density function and -log(p) of normal sampling from some
+ * function F. If A is drawn from the F-Normal distribution then F(A) is drawn
+ * from a normal distribution with mean M and standard deviation sigma.
+ * Arguments: F(A), J(A) the derivative of F w/r to A, F(M) and sigma.  The
+ * distribution is normalized with respect to the variable A.
+ *
+ *  Example: if F is the log function, the F-normal distribution is the
+ *  lognormal distribution with mean M and standard deviation sigma.
  */
 
-class FNormal : public UnaryFunction
+class FNormal
 {
  public:
-  //! Input spread, F(x) F(u), and J(x)
- FNormal(double sig, double Fx, double Fu, double Jx): 
-  sig_(sig),
-    Fx_(Fx),
-    Fu_(Fu),
-    Jx_(Jx) {}
-  // NEED TO ADD DERIVIATIVE!
-  IMP_UNARY_FUNCTION_INLINE(FNormal,Jx_/(sqrt(2.0*IMP::PI)*sig_)*
-                            exp(1.0/(2.0*square(sig_))*square(Fx_-Fu_)),
-			    1,
-			    "FNormal: " << sig_ << ", " << Fx_
-                            << ", " << Fu_ << ", " << Jx_ <<std::endl);		
-	    
-  void set_sig(double f) {
-    sig_=f;
-  }
-  void set_Fx(double f) {
-    Fx_=f;
-  }
-  void set_Fu(double f) {
-    Fu_=f;
-  }
-  void set_Jx(double f) {
-    Jx_=f;
+  FNormal(double FA, double JA, double FM, double sigma): 
+    FA(FA),
+    JA(JA),
+    FM(FM),
+    sigma(sigma) {}
+
+  /* energy (score) functions, aka -log(p) */
+  virtual double evaluate() const 
+  { 
+      return -log(JA/sigma) + 0.5*log(2*IMP::PI) 
+            + 1/(2*square(sigma))*square(FA-FM); 
   }
 
+  virtual double evaluate_derivative_FA() const
+  { return (FA-FM)/square(sigma); }
+
+  virtual double evaluate_derivative_JA() const
+  { return -1/JA }
+
+  virtual double evaluate_derivative_FM() const
+  { return (FM-FA)/square(sigma); }
+
+  virtual double evaluate_derivative_sigma() const
+  { return 1/sigma - square(FA-FM)/pow(sigma,3) }
+  
+  /* probability density function */
+  virtual double density() const
+  { 
+      return JA/(sqrt(2*IMP::PI)*sigma)*exp(-square(FA-FM)/(2*square(sigma)));
+  }
+ 
+  /* change of parameters */
+  void set_sigma(double f) {
+    sigma=f;
+  }
+  void set_FA(double f) {
+    FA=f;
+  }
+  void set_FM(double f) {
+    FM=f;
+  }
+  void set_JA(double f) {
+    JA=f;
+  }
+
+  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA << ", " << JA
+                            << ", " << FM << ", " << sigma <<std::endl);
+
  private:
-  double sig_, Fx_, Fu_, Jx_;
+  double FA,JA,FM,sigma;
 };
 
 IMPISD_END_NAMESPACE
