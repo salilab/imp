@@ -253,6 +253,7 @@ def swig_scanner(node, env, path):
     # scons recurses with the same scanner, rather than the right one
     # print "Scanning "+str(node)
     dta= scons_tools.data.get(env)
+    print node
     if str(node).endswith(".h"):
         # we don't care about recursive .hs for running swig
         return []
@@ -260,9 +261,11 @@ def swig_scanner(node, env, path):
         oldret=[]
         ret= ["#/build/include/"+x for x in re.findall('\n%include\s"([^"]*.h)"', contents)]
         for x in re.findall('\n%include\s"IMP_([^"]*).i"', contents)\
-                +re.findall('\n%import\s"IMP_([^"]*).i"\n', contents):
+                +re.findall('\n%import\s"IMP_([^"]*).i"', contents):
+            print "found", x
             mn= x.split("_")[0]
             if not dta.modules[mn].external:
+                print "adding"
                 ret.append("#/build/swig/IMP_"+x+".i")
         retset=set(ret)
         ret=list(retset)
