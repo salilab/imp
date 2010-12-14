@@ -2,11 +2,20 @@ import os
 import os.path
 
 ## for convenience
-home=os.environ['HOME']
+extra_roots=[os.path.join(os.environ['HOME'],"fs")]
+
+# if you use macporst
+extra_roots.append("/opt/local/")
 
 ## Where to install IMP
-prefix=home+"/fs"
+prefix="/tmp/imp"
 
+
+pythonpath=""
+includepath=""
+libpath=""
+swigpath=""
+path=""
 ## Add my local environment to that used by scons and tools/imppy.sh
 try:
     pythonpath=os.environ['PYTHONPATH']
@@ -17,15 +26,24 @@ try:
 except:
     pass
 
-## Uncomment if you use macports
-# libpath=':'.join(["/opt/local/lib",os.path.join(prefix, 'lib')])
-# cxxflags=" ".join(['-I'+os.path.join(prefix, 'include'), '-I/opt/local/include'])
+def add(old, root, dir):
+    import os.path
+    return ":".join([old,os.path.join(root, dir)])
+
+for r in extra_roots:
+    includepath=add(includepath, r, "include")
+    libpath=add(includepath, r, "lib")
+    swigpath=add(includepath, r, "share/imp/swig")
+    path=add(includepath, r, "bin")
+
+# uncomment if you are building an isolated module/application
+#imp_build="/Users/drussel/src/IMP/imp/debug
+#includepath=add(includepath, imp_build, "include")
+#libpath=add(includepath, imp_build, "lib")
+#swigpath=add(includepath, imp_build, "swig")
+#pythonpath=add(pythonpath, imp_build, "lib")
 
 
-path=os.environ['PATH']
-
-## Build any local module added to the modules directory
-local=True
 
 ## The build more can be one of 'debug', 'release' or 'fast'.
 ## It is recommended that you use a 'debug' build for testing and development
