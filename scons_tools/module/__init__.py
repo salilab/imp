@@ -244,7 +244,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
               #Scanner(function= _fake_scanner_i, skeys=['.i']),
-              _swig.scanner,
               Scanner(function=_swig._null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
     penv.Replace(SCANNERS=scanners)
     from scons_tools.install import get_build_path as gbp
@@ -280,7 +279,7 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     hin=gbp(penv, 'srcdir/currentfile_wrap.h-in')
     swigr=penv.IMPModuleSWIG(target=[produced,
                                      cppin, hin],
-                       source=[swigfile])
+                             source=[swigfile])
     #print "Moving", produced.path, "to", dest.path
     (build, install)= scons_tools.install.install_as(penv, 'pythondir/IMP/currentdir/__init__.py',
                                    produced)
