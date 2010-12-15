@@ -42,7 +42,6 @@ class TestFNormal(IMP.test.TestCase):
                     (randno[0]-randno[2])/randno[3]**2,
                     delta=0.001)
 
-
     def testEvaluateDJA(self):
         "tests FNormal.evaluate_derivative_JA"
         for i in xrange(100):
