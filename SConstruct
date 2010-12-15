@@ -4,7 +4,6 @@ import scons_tools
 import scons_tools.dependency
 import scons_tools.dependency.boost
 import scons_tools.dependency.swig
-import scons_tools.standards
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
 import scons_tools.dependency.cgal
@@ -39,7 +38,6 @@ Export('env')
 if env.get('repository', None) is not None:
     Repository(env['repository'])
 
-env['IMP_MODULES_ALL']=[]
 
 if not env.GetOption('help'):
     if not env.GetOption('clean'):
@@ -100,6 +98,7 @@ if not env.GetOption('help'):
     # Make these objects available to SConscript files:
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
     imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
+    env.Alias(env.Alias('all'), imppy)
 
 first=["kernel", "modules", "applications", "biological_systems"]
 last=["doc"]
@@ -132,7 +131,6 @@ if not env.GetOption('help'):
     Clean('all', Glob('scons_tools/*.pyc')\
               + Glob('tools/*.pyc'))
 
-    env.Alias(env.Alias('all'), 'tools')
     env.Default(env.Alias('all'))
 
 
