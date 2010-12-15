@@ -33,7 +33,7 @@ typedef boost::shared_ptr<MasksManager> MasksManagerPtr;
 
 //! Mask that contains the projection of a given particles. This matrices
 //! speed up projecting because the only have to be computed once for a model
-class IMPEM2DEXPORT ProjectionMask : public cv::Mat {
+class IMPEM2DEXPORT ProjectionMask {
 
 public:
 
@@ -57,13 +57,19 @@ public:
   void apply(cv::Mat &m,
              const algebra::Vector2D &v,double weight);
 
+  void show(std::ostream &out = std::cout) const;
+
   ~ProjectionMask();
 
 protected:
   int dim_; // dimension of the mask
   double sq_pixelsize_; // Used to save multiplications
+  cv::Mat data_; // actual matrix with the mask
 };
 
+
+
+IMP_OUTPUT_OPERATOR(ProjectionMask);
 
 IMP_VALUES(ProjectionMask,ProjectionMasks);
 
@@ -98,6 +104,12 @@ public:
 
   //! Returns the adequate mask for a particle of given radius
   ProjectionMaskPtr find_mask(double radius);
+
+  void show(std::ostream &out = std::cout) const;
+
+  unsigned int get_number_of_masks() const {
+    return radii2mask_.size();
+  }
 
   ~MasksManager();
 

@@ -14,6 +14,7 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Image.h"
+#include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 
 #include "IMP/atom/Atom.h"
@@ -128,7 +129,7 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
 
 int main(int argc, char **argv) {
 
-  IMP::set_log_level(IMP::TERSE);
+  IMP::set_log_level(IMP::VERBOSE);
 
   po::variables_map vm = get_parameters(argc,argv);
   em2d::SpiderImageReaderWriter<double> srw;
@@ -185,6 +186,17 @@ int main(int argc, char **argv) {
               << fn_subjs << std::endl);
   subjs_names= em2d::read_selection_file(fn_subjs);
   subjects = em2d::read_images(subjs_names,srw);
+  for (unsigned int i=0;i<subjects.size();++i) {
+    std::ostringstream oss;
+    oss << "subject-" << i <<std::endl;
+    subjects[i]->set_name(oss.str());
+//    IMP_NEW(em2d::Image,img,());
+//    em2d::extend_borders(subjects[i]->get_data(),img->get_data(),20);
+//    std::ostringstream oss2;
+//    oss2 << "subject-ext-" << i << ".spi";
+//    img->write_to_floats(oss2.str(),srw);
+  }
+
   int rows=subjects[0]->get_header().get_number_of_rows();
   int cols=subjects[0]->get_header().get_number_of_columns();
 
@@ -212,6 +224,11 @@ int main(int argc, char **argv) {
           em2d::evenly_distributed_registration_results(n_projections);
     projections= em2d::generate_projections(ps,evenly_regs,rows,cols,
                                                 resolution,apix,srw);
+    for (unsigned int i=0;i<projections.size();++i) {
+      std::ostringstream oss;
+      oss << "projection-" << i <<std::endl;
+      projections[i]->set_name(oss.str());
+    }
     if(save_images) {
       IMP_LOG(IMP::TERSE,"Saving "
               << n_projections << " projections " <<  std::endl);

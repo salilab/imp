@@ -119,4 +119,9 @@ void subtract_images(em2d::Image *first,em2d::Image *second,
   result->set_data(result_matrix);
 }
 
+
+void extend_borders(Image *im1,Image *im2,unsigned int pix) {
+  extend_borders(im1->get_data(),im2->get_data(),pix);
+}
+
 IMPEM2D_END_NAMESPACE

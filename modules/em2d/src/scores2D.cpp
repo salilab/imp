@@ -21,7 +21,8 @@ double cross_correlation_coefficient(const cv::Mat &m1,const cv::Mat &m2) {
   cv::Mat cc;
   cv::multiply(m1 - mean1[0],m2-mean2[0],cc);
   cv::Scalar c = cv::sum(cc);
-  return c[0]/(cc.rows*cc.cols*stddev1[0]*stddev2[0]);
+  double ccc = c[0]/(cc.rows*cc.cols*stddev1[0]*stddev2[0]);
+  return ccc;
 }
 
 

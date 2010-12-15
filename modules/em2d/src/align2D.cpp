@@ -26,8 +26,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 ResultAlign2D align2D_complete(const cv::Mat &input,
           cv::Mat &m_to_align,bool apply) {
-  IMP_LOG(IMP::TERSE,"starting complete 2D alignment with OpenCV matrices"
-                                                               << std::endl);
+  IMP_LOG(IMP::TERSE,"starting complete 2D alignment " << std::endl);
   cv::Mat autoc1,autoc2,aux1,aux2,aux3;
   algebra::Transformation2D transformation1,transformation2;
   ResultAlign2D RA;

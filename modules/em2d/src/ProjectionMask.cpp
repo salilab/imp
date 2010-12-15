@@ -18,9 +18,9 @@ ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
          const em::RadiusDependentKernelParameters *params,double pixelsize) {
   sq_pixelsize_ = pixelsize*pixelsize;
   dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
-  this->create(dim_,dim_,CV_64FC1);
-  this->setTo(0.0);
-  this->generate(KP,params);
+  data_.create(dim_,dim_,CV_64FC1);
+  data_.setTo(0.0);
+  generate(KP,params);
 }
 
 
@@ -28,7 +28,7 @@ void  ProjectionMask::generate(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params) {
 
   // Decorate the masks to use centered coordinates
-  CenteredMat centered_mask(*this);
+  CenteredMat centered_mask(data_);
 
   IMP_LOG(IMP::VERBOSE," Generating mask.  " << centered_mask);
 
@@ -55,11 +55,17 @@ void ProjectionMask::apply(cv::Mat &m,
                 const algebra::Vector2D &v,double weight) {
   int vi= algebra::get_rounded(v[0]);
   int vj= algebra::get_rounded(v[1]);
-  CenteredMat centered_mask(*this); // Now pass to CenteredMat
+  CenteredMat centered_mask(data_); // Now pass to CenteredMat
   CenteredMat centered_m(m);
 /**
-  IMP_LOG(IMP::VERBOSE,"ProjectionMask::apply mask "
-          << centered_mask  << std::endl);
+  IMP_LOG(IMP::VERBOSE,"ProjectionMask::apply mask " << this->rows << "x"
+               << this->cols << " "           << centered_mask
+    << " vi " << vi << " vj " << vj << "Mat m " << m.rows
+    << "x" << m.cols << std::endl);
+  std::cout << "fast: ProjectionMask::apply mask " << this->rows << "x"
+           << this->cols << " "           << centered_mask
+          << " vi " << vi << " vj " << vj << "Mat m "
+            << m.rows << "x" << m.cols << std::endl;
 **/
   for(int i=centered_mask.get_start(0);i <= centered_mask.get_end(0);++i) {
     for(int j=centered_mask.get_start(1);j <= centered_mask.get_end(1);++j) {
@@ -74,6 +80,17 @@ void ProjectionMask::apply(cv::Mat &m,
 }
 
 
+
+
+  void ProjectionMask::show(std::ostream &out) const {
+    out << "ProjectionMask size " << data_.rows << "x" <<  data_.cols
+        << std::endl;
+  }
+
+
+
+
+
 ProjectionMaskPtr MasksManager::find_mask(double radius) {
   std::map<double,  ProjectionMaskPtr >::iterator iter
                                     = radii2mask_.find(radius);
@@ -84,7 +101,6 @@ ProjectionMaskPtr MasksManager::find_mask(double radius) {
     return iter->second;
   }
 }
-
 
 
 void MasksManager::generate_masks(const ParticlesTemp &ps) {
@@ -114,6 +130,15 @@ void MasksManager::create_mask(double radius) {
 
 MasksManager::~MasksManager() {
   IMP_LOG(IMP::VERBOSE,"Masks Manager has been destroyed" << std::endl);
+//  std::cout << "Masks Manager has been destroyed" << std::endl;
+}
+
+
+void MasksManager::show(std::ostream &out) const {
+  out << "MasksManager: " << radii2mask_.size() << " masks. "
+      << "Initialized " << is_initialized_ << " pixelsize "
+      << pixelsize_ << std::endl;
+
 }
 
 IMPEM2D_END_NAMESPACE

@@ -95,6 +95,7 @@ public:
 
   void destroyed_msg() {
     IMP_LOG(IMP::VERBOSE, "Image destroyed " << this->name_ << std::endl);
+//    std::cout << "Image destroyed " << this->name_ << std::endl;
   }
 
   void set_name(const String &name) {
@@ -180,6 +181,11 @@ IMPEM2DEXPORT void add_noise(em2d::Image *im1,double op1, double op2,
 IMPEM2DEXPORT void resample_polar(em2d::Image *im1,em2d::Image *im2,
                 const PolarResamplingParameters &polar_params);
 
+/*! Extends the borders of the image a given number of pixels
+   \note See help for extend_borders.
+*/
+IMPEM2DEXPORT void extend_borders(Image *im1,Image *im2,
+                                  unsigned int pix);
 
 IMPEM2D_END_NAMESPACE
 

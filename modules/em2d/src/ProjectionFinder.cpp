@@ -15,9 +15,6 @@
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/image_processing.h"
-#include "IMP/em/image_transformations.h"
-#include "IMP/em/ImageReaderWriter.h"
-#include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
 #include "IMP/log.h"
@@ -338,6 +335,9 @@ void ProjectionFinder::get_complete_registration() {
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       coarse_RRs[k].set_in_image(subjects_[i]->get_header());
+      IMP_LOG(IMP::VERBOSE,"Setting subjec image to "
+              "Fine2DRegistrationRestraint "
+             "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
