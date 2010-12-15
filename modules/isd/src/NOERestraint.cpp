@@ -58,7 +58,7 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       sigma_nuis.add_to_nuisance_derivative(
               lognormal-> evaluate_derivative_sigma(), *accum);
       /* derivative for gamma */
-      gamma_nuis.add_to_nuisance_derivative(DFM*gamma_val, *accum);
+      gamma_nuis.add_to_nuisance_derivative(DFM/gamma_val, *accum);
   }
   return score;
 }
