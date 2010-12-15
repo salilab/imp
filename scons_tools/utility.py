@@ -51,7 +51,7 @@ def postprocess_lib(env, target):
         env.Execute("install_name_tool -change %s %s %s"%(os.path.join(sourcedir, 'libimp.dylib'),
                                                           os.path.join(targetdir, 'libimp.dylib'),
                                                           target[0].abspath))
-        for m in env['IMP_MODULES_ALL']:
+        for m in data.get(env).modules.keys():
             oname=os.path.join(sourcedir, "libimp_"+m+".dylib")
             nname=os.path.join(targetdir, "libimp_"+m+".dylib")
             env.Execute("install_name_tool -change %s %s %s"%(oname,
