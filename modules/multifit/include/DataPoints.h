@@ -31,9 +31,7 @@ class DataPoints{
  public:
   DataPoints(){
     atts_ = core::XYZ::get_xyz_keys();
-  }
-  virtual ~DataPoints(){
-    data_.clear();
+    data_=Array1DD_VEC();
   }
   //TODO - change to get_random_point
   virtual Array1DD sample() const {
@@ -53,7 +51,7 @@ public:
     populate_data_points(vecs);
   }
   void populate_data_points(const algebra::Vector3Ds &vecs);
-  ~XYZDataPoints(){}
+  //  ~XYZDataPoints(){}
   inline algebra::Vector3D get_vector(int i) const {return vecs_[i];}
 protected:
   algebra::Vector3Ds vecs_;
@@ -83,12 +81,13 @@ class IMPMULTIFITEXPORT DensityDataPoints: public XYZDataPoints {
 public:
   DensityDataPoints(em::DensityMap *dens,
                     float density_threshold);
+  ~DensityDataPoints(){}
   Array1DD sample() const;
 
   em::DensityMap* get_density_map() const {return dens_;}
 protected:
   em::DensityMap *dens_;
-  Model *m_;
+  //  Model *m_;
   double max_value_,min_value_;
   double threshold_;
 };

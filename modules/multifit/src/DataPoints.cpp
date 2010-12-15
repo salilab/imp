@@ -35,7 +35,6 @@ void ParticlesDataPoints::populate_data_points(Particles ps) {
 DensityDataPoints::DensityDataPoints(em::DensityMap *dens,
                                      float density_threshold)
   : XYZDataPoints() {
-  //  atts_ = core::XYZ::get_xyz_keys();
   dens_=dens;
   threshold_ = density_threshold;
   max_value_ = dens_->get_max_value();
@@ -52,7 +51,6 @@ DensityDataPoints::DensityDataPoints(em::DensityMap *dens,
   XYZDataPoints::populate_data_points(vecs);
   std::cout<<"after populate"<<std::endl;
 }
-
 Array1DD DensityDataPoints::sample() const {
     bool found = false;
     int num_trails=0;
