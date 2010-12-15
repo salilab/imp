@@ -75,7 +75,7 @@ Images read_images(const Strings &names,
 void save_images(Images images,const Strings &names,
                       const em2d::ImageReaderWriter<double> &rw) {
   for(unsigned long i=0;i<images.size();++i) {
-    images[i]->write_to_floats(names[i],rw);
+    images[i]->write(names[i],rw);
   }
 }
 

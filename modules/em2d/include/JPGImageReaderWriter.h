@@ -21,6 +21,17 @@ class JPGImageReaderWriter: public ImageReaderWriter<T>
 public:
   JPGImageReaderWriter() {}
 
+  void read(const String &filename,
+            em::ImageHeader& header,
+            cv::Mat &data) const {
+    this->read_from_ints(filename, header,data);
+  }
+
+  void write(const String &filename, em::ImageHeader& header,
+                                     const cv::Mat &data) const {
+    this->write_to_ints(filename, header,data);
+  }
+
   //! Reads an image file in JPG format
   /*!
     \param[in] filename file to read
@@ -30,7 +41,7 @@ public:
       If you need full header information you must work with other
       format. Eg, Spider.
   */
-  void read_from_floats(const String &filename,
+  void read_from_ints(const String &filename,
                           em::ImageHeader &header,cv::Mat &data) const {
     IMP_LOG(IMP::VERBOSE,"reading with JPGImageReaderWriter" << std::endl);
     // read
@@ -51,7 +62,7 @@ public:
     \warning: Careful: This function writes a 8-bit image.
               You might be discarding float information.
    */
-  void write_to_floats(const String &filename, em::ImageHeader& header,
+  void write_to_ints(const String &filename, em::ImageHeader& header,
                                         const cv::Mat &data) const {
     // discard header
     IMP_LOG(IMP::WARNING,"Writing with JPGImageReaderWriter "

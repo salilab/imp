@@ -34,7 +34,7 @@ class ProjectTests(IMP.test.TestCase):
 #        rr=IMP.em2d.RegistrationResult()
 #        rr.set_random_registration(0,5)
 #        IMP.em2d.generate_projection(img,particles,rr,resolution,apix,srw)
-#        img.write_to_floats(testfile,srw)
+#        img.write(testfile,srw)
 #        self.assertTrue(os.path.isfile(testfile),
 #                        "Projection image not generated")
 #        os.remove(testfile)
@@ -61,7 +61,7 @@ class ProjectTests(IMP.test.TestCase):
         rr=IMP.em2d.RegistrationResult()
         rr.set_random_registration(0,5)
         IMP.em2d.generate_projection(img,particles,rr,resolution,apix,srw)
-        img.write_to_floats(testfile,srw)
+        img.write(testfile,srw)
         self.assertTrue(os.path.isfile(testfile),
                         "Projection image not generated")
         os.remove(testfile)
