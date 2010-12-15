@@ -88,11 +88,11 @@ An overview of the various modules currently available. Representative classes a
 <td></td>
 </tr>
 <tr>
-<td>IMP::domino2</td>
+<td>IMP::domino</td>
 <td></td>
 <td></td>
 <td></td>
-<td>IMP::domino2::DominoSampler, IMP::domino2::BranchAndBoundSampler</td>
+<td>IMP::domino::DominoSampler, IMP::domino::BranchAndBoundSampler</td>
 </tr>
 <tr>
 <td>IMP::display</td>
