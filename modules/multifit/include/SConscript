@@ -1,5 +1,6 @@
 Import('env')
 files = [
+#'learn_fftw.h',
          'DataPoints.h',
          'DataPointsAssignment.h',
          'VQClustering.h',
@@ -20,6 +21,8 @@ files = [
          'WeightedExcludedVolumeRestraint.h',
          'anchor_graph.h',
 #         'mc_cg_refinement.h'
+         'RMSDClustering.h',
+         'fitting_clustering.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(files)

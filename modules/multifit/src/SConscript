@@ -1,5 +1,6 @@
 Import('env')
 files = [
+#'learn_fftw.cpp',
          'DataPoints.cpp',
          'DataPointsAssignment.cpp',
          'VQClustering.cpp',
@@ -19,6 +20,8 @@ files = [
          'WeightedExcludedVolumeRestraint.cpp',
          'anchor_graph.cpp',
 #         'mc_cg_refinement.cpp'
+         'RMSDClustering.cpp',
+         'fitting_clustering.cpp'
         ]\
 # Build and install the shared library:
 env.IMPModuleLib(files)

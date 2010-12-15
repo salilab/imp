@@ -28,3 +28,5 @@ namespace IMP {
 %include "IMP/multifit/fitting_solutions_reader_writer.h"
 %include "IMP/multifit/fitting_tools.h"
 %include "IMP/multifit/anchor_graph.h"
+#%include "IMP/multifit/learn_fftw.h"
+%include "IMP/multifit/fitting_clustering.h"
