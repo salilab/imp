@@ -75,10 +75,10 @@ def create_restraints(m, rbs):
         for i in [0,len(rb)-1]:
             lrb.add_particles(rb[i])
         nrb= IMP.container.ClosePairContainer(lrb, d0, 2.0)
-        ps=  IMP.core.RigidBodyPackingScore(x0, sigma, nsig, ncl)
+##        ps=  IMP.core.RigidBodyPackingScore(x0, sigma, nsig, ncl)
         prs= IMP.container.PairsRestraint(ps, nrb)
-        m.add_restraint(prs)
-        m.set_maximum_score(prs, .01)
+##        m.add_restraint(prs)
+##        m.set_maximum_score(prs, .01)
 ## ?? def add_penetration_restraint(rb): ??
 ## restraint on the penetration depth
 
@@ -89,7 +89,7 @@ def create_restraints(m, rbs):
         p0=rbs[i].get_member(rbs[i].get_number_of_members()-1)
         p1=rbs[i+1].get_member(0)
         add_distance_restraint(p0,p1,20.0,100)
-    add_packing_restraint(rbs, 9.0)
+##    add_packing_restraint(rbs, 9.0)
     return m.get_restraints()
 
 #def create_discrete_states

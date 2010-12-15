@@ -17,11 +17,9 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
-  Floats x0_, sigma_;
-  unsigned int nsig_, ncl_;
+  Floats bb_, ee_;
 public:
-  RigidBodyPackingScore(Floats x0, Floats sigma,
-                        unsigned int nsig, unsigned int ncl);
+  RigidBodyPackingScore(Floats bb, Floats ee);
   IMP_PAIR_SCORE(RigidBodyPackingScore);
 };
 

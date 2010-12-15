@@ -17,9 +17,8 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-RigidBodyPackingScore::RigidBodyPackingScore(Floats x0, Floats sigma,
-                                          unsigned int nsig,  unsigned int ncl):
-                               x0_(x0), sigma_(sigma), nsig_(nsig), ncl_(ncl) {}
+RigidBodyPackingScore::RigidBodyPackingScore(Floats bb, Floats ee):
+                                                bb_(bb), ee_(ee) {}
 
 Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
@@ -68,9 +67,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   IMP_LOG(VERBOSE, "The crossing angle is" << omega << std::endl);
   double score=1.;
   // calculate score
-  for(unsigned int i=0;i<ncl_;i++)
-   if((omega > x0_[i]-nsig_*sigma_[i]) && (omega < x0_[i]+nsig_*sigma_[i]))
-     score=0.;
+  for(unsigned int i=0;i<bb_.size();i++)
+   if(omega > bb_[i] && omega < ee_[i]) score=0.;
   // check if derivatives are requested
   IMP_USAGE_CHECK(da, "Derivatives not available");
   return score;
