@@ -103,12 +103,11 @@ void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
           const em2d::ImageReaderWriter<double> &srw,bool save_image,
            MasksManagerPtr masks,String name) {
   IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
-
   if(masks==MasksManagerPtr()) {
     masks =MasksManagerPtr(new MasksManager(resolution,pixelsize));
     masks->generate_masks(ps);
-    IMP_LOG(IMP::VERBOSE, "Masks generated from generate_projection()"
-                                                               << std::endl);
+    IMP_LOG(IMP::VERBOSE,
+          "Masks generated from generate_projection()"  << std::endl);
   }
   algebra::Vector3D translation = pixelsize*reg.get_shift3D();
   algebra::Rotation3D R = reg.get_rotation();
@@ -129,7 +128,8 @@ void project_particles(const ParticlesTemp &ps,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
              MasksManagerPtr masks) {
-  IMP_LOG(IMP::VERBOSE,"Projecting particles in a openCV matrix" << std::endl);
+  IMP_LOG(IMP::VERBOSE,"Projecting particles" << std::endl
+          );
   if(m2.empty()) {
     IMP_THROW("Cannot project on a empty matrix",ValueException);
   }
@@ -169,9 +169,6 @@ void project_particles(const ParticlesTemp &ps,
               << " pix_x "<< pix_x << " pix_y "<< pix_y << std::endl);
     }
     // Apply mask
-/**
-    ProjectionMask* mask = masks->find_mask(xyzr.get_radius());
-/**/
     ProjectionMaskPtr mask= masks->find_mask(xyzr.get_radius());
     algebra::Vector2D pix(pix_x,pix_y);
     mask->apply(m2,pix,mass.get_mass());

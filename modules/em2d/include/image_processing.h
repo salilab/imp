@@ -300,8 +300,9 @@ IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
             transformation maps, that can be built in the
             PolarResamplingParameters class
 */
-IMPEM2DEXPORT void resample_polar(const cv::Mat &input, cv::Mat &resampled,
-                    const PolarResamplingParameters &polar_params);
+IMPEM2DEXPORT void resample_polar(const cv::Mat &input,
+                                  cv::Mat &resampled,
+                               const PolarResamplingParameters &polar_params);
 
 //! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
 IMPEM2DEXPORT void normalize(cv::Mat &m);
@@ -309,8 +310,20 @@ IMPEM2DEXPORT void normalize(cv::Mat &m);
 //! Applies a transformation to a matrix. First rotates the matrix using the
 //! matrix center as the origin of the rotation, and then applies
 //! the translation
-IMPEM2DEXPORT void get_transformed(const cv::Mat &input,cv::Mat &transformed,
+IMPEM2DEXPORT void get_transformed(const cv::Mat &input,
+                                   cv::Mat &transformed,
                                    const algebra::Transformation2D &T);
+
+
+
+/*! Extends the bordes of an image
+ \param[in] orig The image to extend
+ \param[in] dst The image destination
+ \param[in] pix number of pixels to extend the borders
+*/
+IMPEM2DEXPORT void extend_borders(cv::Mat &orig,
+                                  cv::Mat &dst,
+                                  unsigned int pix);
 
 
 

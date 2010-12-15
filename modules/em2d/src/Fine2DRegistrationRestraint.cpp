@@ -6,6 +6,7 @@
 
 
 #include "IMP/em2d/Fine2DRegistrationRestraint.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/opencv_interface.h"
@@ -31,8 +32,14 @@ void Fine2DRegistrationRestraint::initialize(
     // Create the masks
     masks_ = MasksManagerPtr(new MasksManager(resolution,pixelsize));
     masks_->generate_masks(ps);
+    IMP_LOG(IMP::VERBOSE, "Created " << masks_->get_number_of_masks()
+           << " masks withing Fine2DRegistrationRestraint " << std::endl);
+//    std::cout << "cout Created " << masks_->get_number_of_masks()
+//           << " masks withing Fine2DRegistrationRestraint " << std::endl;
   } else {
     masks_= masks;
+    IMP_LOG(IMP::VERBOSE,"masks given to Fine2DRegistrationRestraint "
+             << std::endl);
   }
   // Set the model
   this->set_model(scoring_model);
@@ -62,11 +69,14 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
                                 subject->get_header().get_yorigin()*pixelsize_,
                                 0.0);
 
-
   subject_->set_data(subject->get_data()); // deep copy, avoids leaks
   int rows = subject_->get_header().get_number_of_rows();
   int cols = subject_->get_header().get_number_of_columns();
-  projection_->resize(rows,cols);
+  if(projection_->get_header().get_number_of_columns() != cols ||
+     projection_->get_header().get_number_of_rows() != rows ) {
+     projection_->resize(rows,cols);
+  }
+
 /**
   algebra::Rotation3D R=
       algebra::get_rotation_from_fixed_zyz(subject_->get_header().get_Phi(),
@@ -92,6 +102,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
   IMP_USAGE_CHECK(accum==NULL,
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");
+
 
   // projection needs to be mutable, son this const function can change it.
   // project_particles changes the matrix of projection_

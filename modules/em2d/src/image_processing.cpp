@@ -4,6 +4,7 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */
 
+#include "IMP/em2d/CenteredMat.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/filters.h"
@@ -54,7 +55,6 @@ void wiener_filter_2D(algebra::Matrix2D_d &m,
     }
   }
   double avg_variance=variance.compute_avg() ;
-//  std::cout << " avg variance: " << avg_variance << std::endl;
   // Filter
   for (unsigned int i=k_init[0];i<rows-k_end[0]+1;++i) {
     for (unsigned int j=k_init[1];j<cols-k_end[1]+1;++j) {
@@ -681,7 +681,6 @@ void resample_polar(const cv::Mat &input, cv::Mat &resampled,
   cv::Mat temp,temp2,map2;
   input.convertTo(temp,CV_32FC1); // remap does not work with doubles, convert
   cv::remap(temp,temp2,map_16SC2,map_16UC1,cv::INTER_LINEAR,cv::BORDER_WRAP);
-  //std::cout << "Converting CV_64FC1" << std::endl;
   temp2.convertTo(resampled,CV_64FC1);
 }
 
@@ -718,8 +717,18 @@ void get_transformed(const cv::Mat &input,cv::Mat &transformed,
 }
 
 
-
-
+// Using Centered Mat does not allow the first argument to be const.
+void extend_borders(cv::Mat &orig, cv::Mat &dst,unsigned int pix) {
+  dst.create(orig.rows+2*pix,orig.cols+2*pix,orig.type());
+  dst.setTo(0.0);
+  CenteredMat Orig(orig);
+  CenteredMat Dst(dst);
+  for (int i=Orig.get_start(0);i<=Orig.get_end(0);++i) {
+    for (int j=Orig.get_start(1);j<=Orig.get_end(1);++j) {
+      Dst(i,j)=Orig(i,j);
+    }
+  }
+}
 
 
 

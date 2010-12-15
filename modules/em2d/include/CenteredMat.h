@@ -46,7 +46,7 @@ public:
      set_starts_and_ends();
   }
 
-  //! get the starting value for a  dimesion i (0 - rows, 1 - columns)
+  //! get the starting value for a  dimension i (0 - rows, 1 - columns)
   //! for example, in a matrix of 5x5 centered at the origin (2,2), the
   //! starting point will be (-2,2)
   int get_start(int i) const {
@@ -62,11 +62,8 @@ public:
   //! Returns true if the indices are in the matrix. Remember that the indices
   //! Are those respect to the center of the matrix
   bool get_is_in_range(int i,int j) const {
-    for (unsigned int k=0;k<2;++k) {
-      if(i< get_start(k) || j> get_end(k)) {
-        return false;
-      }
-    }
+    if(i < get_start(0) || i > get_end(0)) return false;
+    if(j < get_start(1) || j > get_end(1)) return false;
     return true;
   }
 
@@ -74,6 +71,9 @@ public:
   //! the indices can be negative.
   //!  For performance the indices out of range are NOT checked
   double& operator()(int i,int j) {
+//    if (!get_is_in_range(i,j)) {
+//      IMP_THROW("CenteredMat () : Index out of range",ValueException);
+//    }
     return centered_.at<double>(center_row_+i,center_col_+j);
   }
 

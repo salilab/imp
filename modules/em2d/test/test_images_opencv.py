@@ -149,5 +149,31 @@ class ProjectTests(IMP.test.TestCase):
             return
         self.assertTrue(False);
 
+
+    def test_extend_borders(self):
+        """Test that extending the borders of an image is done correctly"""
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        fn_img1 = self.get_input_file_name("lena-256x256.spi")
+        img1=IMP.em2d.Image(fn_img1,srw)
+        img2=IMP.em2d.Image()
+        border = 10
+        IMP.em2d.extend_borders(img1,img2,border)
+#        fn_img2 = self.get_input_file_name("lena-256x256-extended.spi")
+#        img2.write_to_floats(fn_img2,srw)
+        rows2=int(img2.get_header().get_number_of_rows())
+        cols2=int(img2.get_header().get_number_of_columns())
+        self.assertEqual(rows2,256+2*border,
+                        "Border rows are not extended properly")
+        self.assertEqual(cols2,256+2*border,
+                         "Border columns are not extended properly")
+        for i in range(0,rows2):
+            for j in range(0,cols2):
+                if(i < border or i > (rows2-border)):
+                    self.assertAlmostEqual(img2(i,j),0,delta=0.001,
+                         msg="Borders are not zero at row %d col %d" % (i,j))
+                if(j< border or i >  (cols2-border)):
+                    self.assertAlmostEqual(img2(i,j),0,delta=0.001,
+                         msg="Borders are not zero at row %d col %d" % (i,j))
+
 if __name__ == '__main__':
     IMP.test.main()
