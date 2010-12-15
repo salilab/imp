@@ -62,23 +62,27 @@ def create_restraints(m, rbs):
 ## if the rigid bodies are close, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
 ## of the distributions
-        x0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
-        x0=x0/180.*math.pi
+        omega0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
 #  the sigmas
         sigma=[10.1, 13.6, 7.50, 16.6, 20.8, 11.2]
-        sigma=sigma/180.*math.pi
 #  the number of sigmas
         nsig=2
 #  and the number of clusters
-        ncl=5
+        ncl=6
+# create allowed intervals (in radians)
+        bb=[]
+        ee=[]
+        for i in [0, ncl-1]:
+            bb.append((omega0[i]-nsig*sigma[i])/180.*math.pi)
+            ee.append((omega0[i]+nsig*sigma[i])/180.*math.pi)
         lrb= IMP.container.ListSingletonContainer(m)
         for i in [0,len(rb)-1]:
             lrb.add_particles(rb[i])
         nrb= IMP.container.ClosePairContainer(lrb, d0, 2.0)
-##        ps=  IMP.core.RigidBodyPackingScore(x0, sigma, nsig, ncl)
+        ps=  IMP.core.RigidBodyPackingScore(bb, ee)
         prs= IMP.container.PairsRestraint(ps, nrb)
-##        m.add_restraint(prs)
-##        m.set_maximum_score(prs, .01)
+        m.add_restraint(prs)
+        m.set_maximum_score(prs, .01)
 ## ?? def add_penetration_restraint(rb): ??
 ## restraint on the penetration depth
 
@@ -89,7 +93,7 @@ def create_restraints(m, rbs):
         p0=rbs[i].get_member(rbs[i].get_number_of_members()-1)
         p1=rbs[i+1].get_member(0)
         add_distance_restraint(p0,p1,20.0,100)
-##    add_packing_restraint(rbs, 9.0)
+    add_packing_restraint(rbs, 9.0)
     return m.get_restraints()
 
 #def create_discrete_states
