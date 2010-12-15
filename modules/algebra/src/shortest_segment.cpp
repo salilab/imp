@@ -10,17 +10,66 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
+
+namespace {
+  // the projection of v onto the line through s is s[0]+f*(s[1]-s[0])
+  double get_f(const Segment3D &s,
+               const algebra::VectorD<3> &p) {
+    algebra::VectorD<3> vs= s.get_point(1)- s.get_point(0);
+    algebra::VectorD<3> vps= p- s.get_point(0);
+    double f= vps*vs/(vs*vs);
+    return f;
+  }
+  VectorD<3> get_point(const Segment3D &s, double f) {
+    return s.get_point(0)+ f*(s.get_point(1)-s.get_point(0));
+  }
+  Segment3D get_reversed(const Segment3D &s) {
+    return Segment3D(s.get_point(1), s.get_point(0));
+  }
+  VectorD<3> get_clipped_point(const Segment3D &s, double f) {
+    if (f<= 0) return s.get_point(0);
+    else if (f>=1) return s.get_point(1);
+    else {
+      return get_point(s,f);
+    }
+  }
+  Segment3D get_shortest_segment_parallel(const Segment3D &sa,
+                                          const Segment3D &sb) {
+    // see if the endpoints of sb overlap sa
+    for (int ep= 0; ep<2; ++ep) {
+      double f= get_f(sa, sb.get_point(ep));
+      if (f >=0 && f <=1) {
+        return Segment3D(get_point(sa, f), sb.get_point(ep));
+      }
+    }
+    // see if the endpoints of sa overlap sb
+    for (int ep= 0; ep<2; ++ep) {
+      double f= get_f(sb, sa.get_point(ep));
+      if (f >=0 && f <=1) {
+        return Segment3D(sa.get_point(ep), get_point(sb, f));
+      }
+    }
+    // no overlap
+    Segment3D ms;
+    double md2=std::numeric_limits<double>::infinity();
+    for (int i=0; i< 2; ++i) {
+      for (int j=0; j< 2; ++j) {
+        Segment3D c= Segment3D(sa.get_point(i), sb.get_point(j));
+        double cm=(c.get_point(1)-c.get_point(0)).get_squared_magnitude();
+        if (cm < md2) {
+          ms=c;
+          md2=cm;
+        }
+      }
+    }
+    return ms;
+  }
+}
+
 Segment3D get_shortest_segment(const Segment3D &s,
                                const algebra::VectorD<3> &p) {
-  algebra::VectorD<3> vs= s.get_point(1)- s.get_point(0);
-  algebra::VectorD<3> vps= p- s.get_point(0);
-  double f= vps*vs/(vs*vs);
-  if (f<= 0) return Segment3D(s.get_point(0), p);
-  else if (f>=1) return Segment3D(s.get_point(1), p);
-  else {
-    algebra::VectorD<3> ps= s.get_point(0) + vs*f;
-    return Segment3D(ps, p);
-  }
+  double f= get_f(s, p);
+  return Segment3D(get_clipped_point(s, f), p);
 }
 
 /*
@@ -37,13 +86,12 @@ Segment3D get_shortest_segment(const Segment3D &sa,
   algebra::VectorD<3> vb= sb.get_point(1) - sb.get_point(0);
   double ma= va*va;
   double mb= vb*vb;
-  if (ma < eps) {
-    if (mb < eps) {
-      return Segment3D(sa.get_point(0), sb.get_point(0));
-    } else {
-      Segment3D sr =get_shortest_segment(sb, sa.get_point(0));
-      return Segment3D(sr.get_point(1), sr.get_point(0));
-    }
+  // if one of them is too short to have a well defined direction
+  // just look at an endpoint
+  if (ma < eps && mb < eps) {
+    return Segment3D(sa.get_point(0), sb.get_point(0));
+  } else if (ma < eps) {
+    return get_reversed(get_shortest_segment(sb, sa.get_point(0)));
   } else if (mb < eps) {
     return get_shortest_segment(sa, sb.get_point(0));
   }
@@ -52,14 +100,15 @@ Segment3D get_shortest_segment(const Segment3D &sa,
 
   IMP_LOG(VERBOSE, vfirst << " | " << va << " | " << vb << std::endl);
 
-  double dfb = vfirst*vb;
   double dab = vb*va;
-  double dfa = vfirst*va;
 
   double denom = ma * mb - dab * dab;
+  // they are parallel or anti-parallel
   if (std::abs(denom) < eps) {
-    return Segment3D(sa.get_point(0), sb.get_point(0));
+    return get_shortest_segment_parallel(sa, sb);
   }
+  double dfb = vfirst*vb;
+  double dfa = vfirst*va;
   double numer = dfb * dab - dfa * mb;
 
   double fa = numer / denom;
@@ -80,22 +129,8 @@ Segment3D get_shortest_segment(const Segment3D &sa,
     pb->z = p3.z + *mub * p43.z;
   */
 
-  algebra::VectorD<3> ra;
-  if (fa < 1 && fa > 0) {
-    ra = sa.get_point(0) + fa *va;
-  } else if (fa <=0) {
-    ra= sa.get_point(0);
-  } else {
-    ra= sa.get_point(1);
-  }
-  algebra::VectorD<3> rb;
-  if (fb < 1 && fb > 0) {
-    rb = sb.get_point(0) + fb *vb;
-  } else if (fa <=0) {
-    rb= sb.get_point(0);
-  } else {
-    rb= sb.get_point(1);
-  }
+  algebra::VectorD<3> ra=get_clipped_point(sa, fa);
+  algebra::VectorD<3> rb=get_clipped_point(sb, fb);
 
   IMP_LOG(VERBOSE, fa << " " << fb << std::endl);
 
