@@ -48,6 +48,8 @@ public:
   IMP_OPTIMIZER(MolecularDynamics);
 
   //! Set time step in fs
+  /** The default time step is 4.0 fs.
+    */
   void set_time_step(Float t) { time_step_ = t; }
 
   //! Set maximum velocity in A/fs
@@ -55,6 +57,7 @@ public:
       component is capped at this value. This prevents spurious strong forces
       (occasionally encountered with frustrated conformations) from causing
       large oscillations in the system.
+      By default, velocities are not capped.
    */
   void set_velocity_cap(Float velocity_cap) { velocity_cap_ = velocity_cap; }
 
