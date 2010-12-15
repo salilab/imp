@@ -37,6 +37,12 @@ def create_representation():
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rbs[i],bb,ee)
         print " Rigid #",i," number of residues=",rbs[i].get_number_of_members()
         print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
+#   translate
+    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), 0.01), IMP.algebra.Vector3D(+1,0,0))
+#    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), IMP.algebra.Vector3D(1,0,0))
+    rbs[0].set_transformation(tr0)
+    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(), IMP.algebra.Vector3D(-1,0,0))
+    rbs[1].set_transformation(tr1)
     return (m, rbs)
 
 def create_restraints(m, rbs):
@@ -62,24 +68,32 @@ def create_restraints(m, rbs):
 ## if the rigid bodies are close, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
 ## of the distributions
-        omega0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
+        om0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
 #  the sigmas
-        sigma=[10.1, 13.6, 7.50, 16.6, 20.8, 11.2]
+        sig_om0=[10.1, 13.6, 7.50, 16.6, 20.8, 11.2]
+#  distance cutoff
+        dd0=[8.61, 8.57, 7.93, 9.77, 9.14, 8.55]
+#  and distance sigmas
+        sig_dd0=[0.89, 0.99, 0.88, 1.18, 1.47, 1.05]
 #  the number of sigmas
         nsig=2
 #  and the number of clusters
-        ncl=6
-# create allowed intervals (in radians)
-        bb=[]
-        ee=[]
+        ncl=5
+# create allowed intervals (omega in radians)
+        om_b=[]
+        om_e=[]
+        dd_b=[]
+        dd_e=[]
         for i in [0, ncl-1]:
-            bb.append((omega0[i]-nsig*sigma[i])/180.*math.pi)
-            ee.append((omega0[i]+nsig*sigma[i])/180.*math.pi)
+            om_b.append((om0[i]-nsig*sig_om0[i])/180.*math.pi)
+            om_e.append((om0[i]+nsig*sig_om0[i])/180.*math.pi)
+            dd_b.append(dd0[i]-nsig*sig_dd0[i])
+            dd_e.append(dd0[i]+nsig*sig_dd0[i])
         lrb= IMP.container.ListSingletonContainer(m)
         for i in [0,len(rb)-1]:
             lrb.add_particle(rb[i])
         nrb= IMP.container.ClosePairContainer(lrb, d0, 2.0)
-        ps=  IMP.membrane.RigidBodyPackingScore(bb, ee)
+        ps=  IMP.membrane.RigidBodyPackingScore(om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
@@ -93,7 +107,7 @@ def create_restraints(m, rbs):
         p0=rbs[i].get_member(rbs[i].get_number_of_members()-1)
         p1=rbs[i+1].get_member(0)
         add_distance_restraint(p0,p1,20.0,100)
-    add_packing_restraint(rbs, 9.0)
+    add_packing_restraint(rbs, 10.0)
     return m.get_restraints()
 
 #def create_discrete_states
@@ -111,6 +125,7 @@ def display(m):
             w.add_geometry(g)
 
 # Here starts the real job...
+IMP.set_log_level(IMP.VERBOSE)
 print "creating representation"
 (m,rbs)=create_representation()
 

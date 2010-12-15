@@ -18,8 +18,10 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-RigidBodyPackingScore::RigidBodyPackingScore(Floats bb, Floats ee):
-                                                bb_(bb), ee_(ee) {}
+RigidBodyPackingScore::RigidBodyPackingScore(Floats omb, Floats ome,
+                                             Floats ddb, Floats dde):
+                                                omb_(omb), ome_(ome),
+                                                ddb_(ddb), dde_(dde) {}
 
 Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
@@ -29,7 +31,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   // assume they have an helix decorator
   membrane::HelixDecorator d0(p[0]);
   membrane::HelixDecorator d1(p[1]);
-  double omega;
+  double omega, dist;
   core::XYZ x0,x1,x2,x3;
   algebra::VectorD<3> b0,e0,b1,e1,t0,t1;
   algebra::Transformation3D tr0,tr1;
@@ -43,6 +45,15 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   e0=algebra::VectorD<3>(0.,0.,d0.get_end());
   b1=algebra::VectorD<3>(0.,0.,d1.get_begin());
   e1=algebra::VectorD<3>(0.,0.,d1.get_end());
+
+  IMP_LOG(VERBOSE, "** BEFORE b0[0] " << b0[0] << " b0[1] "<<
+                    b0[1] << " b0[2] " << b0[2] << std::endl);
+  IMP_LOG(VERBOSE, "** BEFORE e0[0] " << e0[0] << " e0[1] "<<
+                    e0[1] << " e0[2] " << e0[2] << std::endl);
+  IMP_LOG(VERBOSE, "** BEFORE b1[0] " << b1[0] << " b1[1] "<<
+                    b1[1] << " b1[2] " << b1[2] << std::endl);
+  IMP_LOG(VERBOSE, "** BEFORE e1[0] " << e1[0] << " e1[1] "<<
+                    e1[1] << " e1[2] " << e1[2] << std::endl);
 
   // check if rigid body
   IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
@@ -60,21 +71,40 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   b1=tr1.get_transformed(b1);
   e1=tr1.get_transformed(e1);
 
+  IMP_LOG(VERBOSE, "** AFTER b0[0] " << b0[0] << " b0[1] "<<
+                    b0[1] << " b0[2] " << b0[2] << std::endl);
+  IMP_LOG(VERBOSE, "** AFTER e0[0] " << e0[0] << " e0[1] "<<
+                    e0[1] << " e0[2] " << e0[2] << std::endl);
+  IMP_LOG(VERBOSE, "** AFTER b1[0] " << b1[0] << " b1[1] "<<
+                    b1[1] << " b1[2] " << b1[2] << std::endl);
+  IMP_LOG(VERBOSE, "** AFTER e1[0] " << e1[0] << " e1[1] "<<
+                    e1[1] << " e1[2] " << e1[2] << std::endl);
+
+
   // get shortest segment
   segment=algebra::get_shortest_segment(algebra::Segment3D(b0,e0),
                                         algebra::Segment3D(b1,e1));
   t0=segment.get_point(0);
   t1=segment.get_point(1);
 
+
+  IMP_LOG(VERBOSE, "** t0[0] " << t0[0] << " t0[1] "<<
+                    t0[1] << " t0[2] " << t0[2] << std::endl);
+  IMP_LOG(VERBOSE, "** t1[0] " << t1[0] << " t1[1] "<<
+                    t1[1] << " t1[2] " << t1[2] << std::endl);
+
   omega=core::internal::dihedral(b0,t0,t1,b1,NULL,NULL,NULL,NULL);
+  dist =segment.get_length();
+
   // log something
-  IMP_LOG(VERBOSE, "The crossing angle is" << omega <<
-                   " and the distance is" << segment.get_length() << std::endl);
+  IMP_LOG(VERBOSE, "** The crossing angle is " << omega <<
+                   " and the distance is " << dist << std::endl);
 
   // calculate score
   double score=1.;
   for(unsigned int i=0;i<bb_.size();i++)
-   if(omega > bb_[i] && omega < ee_[i]) score=0.;
+   if(omega > omb_[i] && omega < ome_[i] &&
+      dist > ddb_[i] && dist < dde_[i]) score=0.;
 
   return score;
 }
