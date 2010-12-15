@@ -176,21 +176,21 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
 }
 
 
-// void write_segment_as_mrc(em::DensityMap *dmap,
-//const DataPointsAssignment &dpa,int segment_id,
-//Float resolution, Float apix,const std::string &filename) {
-//   Pointer<em::DensityMap> segment_map(
-// new em::DensityMap(*(dmap->get_header())));
-//   segment_map->reset_data(0.);
-//   algebra::Vector3Ds vecs =dpa.get_cluster_vectors(segment_id);
-//   for(unsigned int i=0;i<vecs.size();i++) {
-//     segment_map->set_value(
-//vecs[i][0],vecs[i][1],vecs[i][2],dmap->get_value(vecs[i]));
-//   }
-//   em::MRCReaderWriter mrw;
-//   em::write_map(segment_map,filename.c_str(),mrw);
-//   segment_map=NULL;
-// }
+void write_segment_as_mrc(em::DensityMap *dmap,
+const DataPointsAssignment &dpa,int segment_id,
+Float resolution, Float apix,const std::string &filename) {
+  Pointer<em::DensityMap> segment_map(
+new em::DensityMap(*(dmap->get_header())));
+  segment_map->reset_data(0.);
+  algebra::Vector3Ds vecs =dpa.get_cluster_vectors(segment_id);
+  for(unsigned int i=0;i<vecs.size();i++) {
+    segment_map->set_value(
+vecs[i][0],vecs[i][1],vecs[i][2],dmap->get_value(vecs[i]));
+  }
+  em::MRCReaderWriter mrw;
+  em::write_map(segment_map,filename.c_str(),mrw);
+  segment_map=NULL;
+}
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap,
@@ -212,7 +212,7 @@ void write_cmm(const std::string &cmm_filename,
                const DataPointsAssignment &dpa) {
   algebra::Vector3Ds centers;
   Floats radii;
-  float sphere_scale=0.8;
+  float sphere_scale=0.6;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
     centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
@@ -260,16 +260,16 @@ void write_pdb(const std::string &pdb_filename,
   out.close();
 }
 
-// void write_segments_as_mrc(em::DensityMap *dmap,
-//const DataPointsAssignment &dpa,
-//Float resolution, Float apix,
-//const std::string &filename){
-//   for( int i=0;i<dpa.get_number_of_clusters();i++) {
-//     std::stringstream filename_full;
-//     filename_full<<filename<<"_"<<i<<".mrc";
-//     write_segment_as_mrc(dmap,dpa,i,resolution,apix,filename_full.str());
-//   }
-// }
+void write_segments_as_mrc(em::DensityMap *dmap,
+const DataPointsAssignment &dpa,
+Float resolution, Float apix,
+const std::string &filename){
+  for( int i=0;i<dpa.get_number_of_clusters();i++) {
+    std::stringstream filename_full;
+    filename_full<<filename<<"_"<<i<<".mrc";
+    write_segment_as_mrc(dmap,dpa,i,resolution,apix,filename_full.str());
+  }
+}
 
 algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
   const {

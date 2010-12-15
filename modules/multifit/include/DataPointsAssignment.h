@@ -76,15 +76,16 @@ void write_segments_as_pdb(const DataPointsAssignment &dpa,
 void write_segment_as_pdb(const DataPointsAssignment &dpa,
                           int segment_id,
                           const std::string &filename);
+IMPMULTIFITEXPORT
+void write_segments_as_mrc(em::DensityMap *dmap,
+const DataPointsAssignment &dpa,
+Float resolution, Float apix,
+const std::string &filename);
 
-// void write_segments_as_mrc(em::DensityMap *dmap,
-// const DataPointsAssignment &dpa,
-//Float resolution, Float apix,
-//const std::string &filename);
-
-// void write_segment_as_mrc(em::DensityMap *dmap,
-// const DataPointsAssignment &dpa,int segment_id,
-//Float resolution, Float apix,const std::string &filename);
+IMPMULTIFITEXPORT
+void write_segment_as_mrc(em::DensityMap *dmap,
+const DataPointsAssignment &dpa,int segment_id,
+Float resolution, Float apix,const std::string &filename);
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap, int segment_id);
