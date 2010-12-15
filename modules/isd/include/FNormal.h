@@ -24,6 +24,9 @@ IMPISD_BEGIN_NAMESPACE
  *
  *  Example: if F is the log function, the F-normal distribution is the
  *  lognormal distribution with mean M and standard deviation sigma.
+ *
+ *  NOTE: for now, F must be monotonically increasing, so that JA > 0. The
+ *  program will not check for that.
  */
 
 class FNormal : public Object
@@ -62,17 +65,17 @@ class FNormal : public Object
   }
  
   /* change of parameters */
-  void set_sigma_(double f) {
-    sigma_=f;
-  }
-  void set_FA_(double f) {
+  void set_FA(double f) {
     FA_=f;
   }
-  void set_FM_(double f) {
+  void set_JA(double f) {
+    JA_=f;
+  }
+  void set_FM(double f) {
     FM_=f;
   }
-  void set_JA_(double f) {
-    JA_=f;
+  void set_sigma(double f) {
+    sigma_=f;
   }
 
   IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
