@@ -116,7 +116,6 @@ for f in last:
         reordered_last.append(e)
         all.remove(e)
 reordered.extend(all)
-reordered.extend(reordered_last)
 for f in reordered:
     SConscript("#/"+f)
 
@@ -144,6 +143,8 @@ if not env.GetOption('help'):
         print >> sys.stderr, "\n\nUnknown variables: ", " ".join(unknown.keys())
         print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
         Exit(1)
+    for f in reordered_last:
+        SComnscript("#/"+f)
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
