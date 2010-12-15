@@ -55,4 +55,4 @@ def setup_standards(env):
     standards = env.CheckStandards(target='standards.passed',
                                    source=["#/tools/check-standards.py"]+outfiles)
     env.Alias('standards', standards)
-    env.AlwaysBuild(env.Alias('standards'))
+    env.AlwaysBuild(standards)
