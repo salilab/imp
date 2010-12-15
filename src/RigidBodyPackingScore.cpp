@@ -66,14 +66,10 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   t0=segment.get_point(0);
   t1=segment.get_point(1);
 
-  x0.set_coordinates(b0);
-  x1.set_coordinates(t0);
-  x2.set_coordinates(t1);
-  x3.set_coordinates(b1);
-
-  omega=core::internal::dihedral(x0, x1, x2, x3, NULL, NULL, NULL, NULL);
+  omega=core::internal::dihedral(b0,t0,t1,b1,NULL,NULL,NULL,NULL);
   // log something
-  IMP_LOG(VERBOSE, "The crossing angle is" << omega << std::endl);
+  IMP_LOG(VERBOSE, "The crossing angle is" << omega <<
+                   " and the distance is" << segment.get_length() << std::endl);
 
   // calculate score
   double score=1.;
