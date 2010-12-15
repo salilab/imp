@@ -144,7 +144,7 @@ if not env.GetOption('help'):
         print >> sys.stderr, "Use 'scons -h' to get a list of the accepted variables."
         Exit(1)
     for f in reordered_last:
-        SComnscript("#/"+f)
+        SConscript("#/"+f)
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
