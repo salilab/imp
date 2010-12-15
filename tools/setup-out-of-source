@@ -28,7 +28,7 @@ The program will setup things in the current directory.""" % sys.argv[0])
     config=config.replace("path_to_source", relimppath)
     open(os.path.join(path_to_build,"config.py"), "w").write(config)
     oldconfig="cxxcompiler='/dev/null'\n"
-    cmd="cd "+imppath+"; scons -c"
+    cmd="cd "+imppath+"; scons -c >& /dev/null"
     print "Cleaning up source directory:", cmd
     sp=subprocess.Popen([cmd], shell=True, stderr=subprocess.STDOUT)
     ret=sp.wait()
