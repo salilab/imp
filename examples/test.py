@@ -77,9 +77,9 @@ def create_restraints(m, rbs):
             ee.append((omega0[i]+nsig*sigma[i])/180.*math.pi)
         lrb= IMP.container.ListSingletonContainer(m)
         for i in [0,len(rb)-1]:
-            lrb.add_particles(rb[i])
+            lrb.add_particle(rb[i])
         nrb= IMP.container.ClosePairContainer(lrb, d0, 2.0)
-        ps=  IMP.core.RigidBodyPackingScore(bb, ee)
+        ps=  IMP.membrane.RigidBodyPackingScore(bb, ee)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
@@ -104,13 +104,11 @@ def display(m):
     m.update()
     w= IMP.display.PymolWriter("out.pym")
     for i in [0,1]:
-        j=1
         for p in rbs[i].get_members():
             g= IMP.display.XYZRGeometry(p)
             g.set_name(str(i))
-            g.set_color(IMP.display.get_display_color(j))
+            g.set_color(IMP.display.get_display_color(i))
             w.add_geometry(g)
-            j=2
 
 # Here starts the real job...
 print "creating representation"

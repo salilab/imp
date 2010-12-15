@@ -6,14 +6,15 @@
  */
 
 #include <IMP/membrane/RigidBodyPackingScore.h>
-#include <IMP/core/XYZ.h>
 #include <IMP/membrane/HelixDecorator.h>
+#include <IMP/core/XYZ.h>
+#include <IMP/core/internal/dihedral_helpers.h>
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/VectorD.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/algebra/Segment3D.h>
 #include <IMP/algebra/shortest_segment.h>
-#include <IMP/core/internal/dihedral_helpers.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -34,15 +35,24 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   algebra::Transformation3D tr0,tr1;
   algebra::Segment3D segment;
 
+  // check if derivatives are requested
+  IMP_USAGE_CHECK(!da, "Derivatives not available");
+
   // begin and end point
   b0=algebra::VectorD<3>(0.,0.,d0.get_begin());
   e0=algebra::VectorD<3>(0.,0.,d0.get_end());
   b1=algebra::VectorD<3>(0.,0.,d1.get_begin());
   e1=algebra::VectorD<3>(0.,0.,d1.get_end());
 
+  // check if rigid body
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
+                  "Particle is not a rigid body");
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[1]),
+                  "Particle is not a rigid body");
+
   // get rigid body transformation
-  tr0=(p[0]->get_reference_frame()).get_transformation_to();
-  tr1=(p[1]->get_reference_frame()).get_transformation_to();
+  tr0=core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
+  tr1=core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
 
   // and apply it to vectors
   b0=tr0.get_transformed(b0);
@@ -62,15 +72,14 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   x3.set_coordinates(b1);
 
   omega=core::internal::dihedral(x0, x1, x2, x3, NULL, NULL, NULL, NULL);
-
   // log something
   IMP_LOG(VERBOSE, "The crossing angle is" << omega << std::endl);
-  double score=1.;
+
   // calculate score
+  double score=1.;
   for(unsigned int i=0;i<bb_.size();i++)
    if(omega > bb_[i] && omega < ee_[i]) score=0.;
-  // check if derivatives are requested
-  IMP_USAGE_CHECK(da, "Derivatives not available");
+
   return score;
 }
 
@@ -92,7 +101,8 @@ ContainersTemp RigidBodyPackingScore::get_input_containers(Particle *p) const {
 
 
 void RigidBodyPackingScore::do_show(std::ostream &out) const {
-  out << "ncl=" << ncl_ << std::endl;
+  for(unsigned int i=0;i<bb_.size();i++)
+   out << "i" << i << "bb_=" << bb_[i] << "ee_=" << ee_[i] << std::endl;
 }
 
 IMPMEMBRANE_END_NAMESPACE

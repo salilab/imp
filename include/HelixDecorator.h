@@ -5,8 +5,8 @@
  *
  */
 
-#ifndef IMP_HELIX_DECORATOR_H
-#define IMP_HELIX_DECORATOR_H
+#ifndef IMPMEMBRANE_HELIX_DECORATOR_H
+#define IMPMEMBRANE_HELIX_DECORATOR_H
 
 #include "membrane_config.h"
 
@@ -75,4 +75,4 @@ typedef Decorators<HelixDecorator, Particles> HelixDecorators;
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMP_HELIX_DECORATOR_H */
+#endif  /* IMPMEMBRANE_HELIX_DECORATOR_H */

@@ -5,12 +5,14 @@
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMP_RIGID_BODY_PACKING_SCORE_H
-#define IMP_RIGID_BODY_PACKING_SCORE_H
+#ifndef IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H
+#define IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H
 
-#include <IMP/membrane/HelixDecorator.h>
+#include "membrane_config.h"
+
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
+
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -28,4 +30,4 @@ IMP_OBJECTS(RigidBodyPackingScore, RigidBodyPackingScores);
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMP_RIGID_BODY_PACKING_SCORE_H */
+#endif  /* IMPMEMBRANE_RIGID_BODY_PACKING_SCORE_H */
