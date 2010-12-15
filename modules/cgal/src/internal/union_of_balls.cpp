@@ -1,6 +1,8 @@
 /**
- *  \file internal/cgal_knn.h
- *  \brief manipulation of text, and Interconversion between text and numbers
+ *  \file internal/union_of_balls.cpp
+ *  \brief computation of molecular volumetrics :
+ *   surface and area of an union of balls
+ *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  */
 
@@ -65,7 +67,12 @@ typedef Alpha_shape::Vertex_iterator Vertex_iterator;
 typedef Alpha_shape::Edge_iterator Edge_iterator;
 
 
-
+namespace {
+  double safe_sqrt(double v) {
+    if (v<0) return 0;
+    else return std::sqrt(v);
+  }
+}
 
 /*!
  * \addtogroup volumetrics
@@ -1142,7 +1149,7 @@ double SpacefillingVolumetric<Gt>::disk_L(Wpoint const &i,Wpoint const &j){
 template <typename Gt>
 inline
 double SpacefillingVolumetric<Gt>::disk_R(Wpoint const &i,Wpoint const &j){
- return sqrt(cap_H(i,j) * (2*ball_R(i)-cap_H(i,j)));
+ return safe_sqrt(cap_H(i,j) * (2*ball_R(i)-cap_H(i,j)));
 }
 /*! segment area
  * \param i a first sphere
@@ -1158,7 +1165,7 @@ double SpacefillingVolumetric<Gt>::segment_A(Wpoint const &i,
                                              Wpoint const &k){
  double R=disk_R(i,j);
  double H=(R-segment_H(i,j,k));
- return R*segment_L(i,j,k)*0.5 - H*sqrt(R*R-H*H);
+ return R*segment_L(i,j,k)*0.5 - H*safe_sqrt(R*R-H*H);
 // return (R*segment_L(i,j,k) -
 // H*vector_length(triangleDual(i,j,k)-triangleDual(i,k,j)) ) * .5;
 }
@@ -1315,7 +1322,7 @@ typename SpacefillingVolumetric<Gt>::Point
  S2 = vector_squared_length(N);
  //S3 = scalar_product(radC-p.point(),radC-p.point());
  S3 = vector_squared_length(radC-p.point());
- return radC + ((sqrt(S1*S1-S3*S2+p.weight()*S2)-S1)/S2)*N;
+ return radC + ((safe_sqrt(S1*S1-S3*S2+p.weight()*S2)-S1)/S2)*N;
 }
 
 /***********************************************************
@@ -1817,13 +1824,40 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 std::pair<double, double>
 get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
   std::vector<Wpoint> myPoints;
+  // first of all, if there are no atoms, there is no computation
+  if (ss.size() == 0) return std::pair<double,double>(0,0);
+  //
+  Triangulation T;
   for (unsigned int i=0; i< ss.size(); ++i) {
-    myPoints.push_back(Wpoint(Point(ss[i].get_center()[0],
-                                    ss[i].get_center()[1],
-                                    ss[i].get_center()[2]),
-                              square(ss[i].get_radius())));
+    T.insert(Wpoint(Point(ss[i].get_center()[0],
+                          ss[i].get_center()[1],
+                          ss[i].get_center()[2]),
+                    square(ss[i].get_radius())));
   }
-  Alpha_shape A(myPoints.begin(), myPoints.end(), 0, Alpha_shape::GENERAL);
+
+//  Triangulation T(myPoints.begin(), myPoints.end());
+  // If needed insert dummy corner points to level the dimension
+  if (T.dimension()< 3) {
+    algebra::BoundingBoxD<3> bb;
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      bb+= IMP::algebra::get_bounding_box(ss[i]);
+    }
+    bb+=1;
+    T.insert(Wpoint(Point(bb.get_corner(0)[0],
+                          bb.get_corner(0)[1],
+                          bb.get_corner(0)[2]),0));
+    if (T.dimension() < 3) {
+      T.insert(Wpoint(Point(bb.get_corner(0)[0],
+                            bb.get_corner(1)[1],
+                            bb.get_corner(0)[2]),0));
+    }
+    if (T.dimension() < 3) {
+      T.insert(Wpoint(Point(bb.get_corner(0)[0],
+                            bb.get_corner(0)[1],
+                            bb.get_corner(1)[2]),0));
+    }
+  }
+  Alpha_shape A(T, 0, Alpha_shape::GENERAL);
   std::pair<double, double> dp= computeVolumetrics(A);
   return std::make_pair(dp.second, dp.first);
 }
