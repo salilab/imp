@@ -194,7 +194,7 @@ int main(int argc, char **argv) {
 //    em2d::extend_borders(subjects[i]->get_data(),img->get_data(),20);
 //    std::ostringstream oss2;
 //    oss2 << "subject-ext-" << i << ".spi";
-//    img->write_to_floats(oss2.str(),srw);
+//    img->write(oss2.str(),srw);
   }
 
   int rows=subjects[0]->get_header().get_number_of_rows();

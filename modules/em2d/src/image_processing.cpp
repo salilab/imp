@@ -494,7 +494,7 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
 
     boundary = mask - temp;
 //    xxx.set_data(boundary);
-//    xxx.write_to_floats("boundary.spi",srw);
+//    xxx.write("boundary.spi",srw);
     // Erode the mask if pixels in the grayscale are below the mean
     // and are in the boundary
     for (unsigned int i=0;i<greyscale.num_elements();++i) {
@@ -513,7 +513,7 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
     // Now temp contains the new mask with size new_size_in_pixels
     /*******/
 //    xxx.set_data(temp);
-//    xxx.write_to_floats("temp.spi",srw);
+//    xxx.write("temp.spi",srw);
     /*******/
   } while( abs(new_size_in_pixels-size_in_pixels)>1);
 //  } while( new_size_in_pixels != size_in_pixels);

@@ -19,7 +19,7 @@ class ProjectTests(IMP.test.TestCase):
         name=self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em2d.SpiderImageReaderWriter()
         image=IMP.em2d.Image()
-        image.read_from_floats(name,srw)
+        image.read(name,srw)
         rotated=IMP.em2d.Image()
         # random rotation
         angle=random.random()*2*pi
@@ -29,11 +29,11 @@ class ProjectTests(IMP.test.TestCase):
                                  transformation)
 
         fn_rotated = self.get_input_file_name("rotated.spi")
-#        rotated.write_to_floats(fn_rotated,srw)
+#        rotated.write(fn_rotated,srw)
         result=IMP.em2d.align2D_rotational(
                 image.get_data(),rotated.get_data(),True)
         fn_aligned = self.get_input_file_name("rot_aligned.spi")
- #       rotated.write_to_floats(fn_aligned,srw)
+ #       rotated.write(fn_aligned,srw)
         determined_angle=result[0].get_rotation().get_angle()
         # approximately 6 degrees tolerance, 0.1 rad.
         x = angle+determined_angle
@@ -48,7 +48,7 @@ class ProjectTests(IMP.test.TestCase):
         name=self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em2d.SpiderImageReaderWriter()
         image=IMP.em2d.Image()
-        image.read_from_floats(name,srw)
+        image.read(name,srw)
         translated=IMP.em2d.Image()
         # random translation
         trans=IMP.algebra.Vector2D(random.random()*10,random.random()*10)
@@ -56,11 +56,11 @@ class ProjectTests(IMP.test.TestCase):
         IMP.em2d.get_transformed(image.get_data(),translated.get_data(),
                                  transformation)
         fn_translated = self.get_input_file_name("translated.spi")
-#        translated.write_to_floats(fn_translated,srw)
+#        translated.write(fn_translated,srw)
         result=IMP.em2d.align2D_translational(
                 image.get_data(),translated.get_data(),True)
         fn_aligned = self.get_input_file_name("trans_aligned.spi")
- #       translated.write_to_floats(fn_aligned,srw)
+ #       translated.write(fn_aligned,srw)
         # -1 to get the translation applied to reference.
         # Result contains the translation required for align the second matrix
         determined_trans= (-1)*result[0].get_translation()
@@ -79,7 +79,7 @@ class ProjectTests(IMP.test.TestCase):
         name=self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em2d.SpiderImageReaderWriter()
         image=IMP.em2d.Image()
-        image.read_from_floats(name,srw)
+        image.read(name,srw)
         transformed=IMP.em2d.Image()
 
         rot=IMP.algebra.Rotation2D(random.random()*2*pi)
@@ -88,12 +88,12 @@ class ProjectTests(IMP.test.TestCase):
         T=IMP.algebra.Transformation2D(rot,trans)
         IMP.em2d.get_transformed(image.get_data(),transformed.get_data(),T)
         fn_transformed = self.get_input_file_name("transformed.spi")
-#       transformed.write_to_floats(fn_transformed,srw)
+#       transformed.write(fn_transformed,srw)
 
         result=IMP.em2d.align2D_complete(image.get_data(),
                                          transformed.get_data(),True)
         fn_aligned = self.get_input_file_name("aligned_complete.spi")
-#       transformed.write_to_floats(fn_aligned,srw)
+#       transformed.write(fn_aligned,srw)
         cross_correlation_coefficient = result.second
         # Tolerate 1 pixel error
         self.assertAlmostEqual(cross_correlation_coefficient,1, delta=0.03,

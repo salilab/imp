@@ -117,7 +117,7 @@ void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
   reg.set_in_image(img->get_header());
   img->get_header().set_object_pixel_size(pixelsize);
   if(save_image) {
-    img->write_to_floats(name,srw);
+    img->write(name,srw);
   }
 }
 
@@ -234,7 +234,7 @@ em::Images generate_projections(em::DensityMap *map,
     reg.set_in_image(img->get_header());
     images.set(i,img);
     if(project_and_save) {
-     img->write_to_floats(names[i],srw);
+     img->write(names[i],srw);
     }
   }
   return images;

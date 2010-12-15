@@ -229,7 +229,7 @@ int main(int argc, char **argv) {
       proj_names = em2d::generate_filenames(np,"proj","spi");
     }
     for (unsigned int i=0;i<np;++i) {
-      projections[i]->write_to_floats(proj_names[i],srw);
+      projections[i]->write(proj_names[i],srw);
     }
     if(digest_parameter("proj_params",vm,opt)) {
       em2d::write_registration_results(opt[0],registration_values);

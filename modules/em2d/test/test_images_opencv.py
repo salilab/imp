@@ -12,7 +12,7 @@ class ProjectTests(IMP.test.TestCase):
         """Test read/write for the images using OpenCV data storage"""
         srw = IMP.em2d.SpiderImageReaderWriter()
         img=IMP.em2d.Image()
-        img.read_from_floats(
+        img.read(
               self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi"),srw);
 
         rows=int(img.get_header().get_number_of_rows())
@@ -22,10 +22,10 @@ class ProjectTests(IMP.test.TestCase):
         self.assertEqual(cols,128,"Error reading image")
 
         temp=self.get_input_file_name("opencv_test_image.spi")
-        img.write_to_floats(temp,srw)
+        img.write(temp,srw)
 
         img2=IMP.em2d.Image()
-        img2.read_from_floats(temp,srw);
+        img2.read(temp,srw);
 
         for i in range(0,rows):
             for j in range(0,cols):
@@ -39,7 +39,7 @@ class ProjectTests(IMP.test.TestCase):
         """Test that the variance filter is working"""
         srw = IMP.em2d.SpiderImageReaderWriter()
         img=IMP.em2d.Image()
-        img.read_from_floats(
+        img.read(
               self.get_input_file_name("1z5s-projection-2.spi"),srw);
 
         filtered=IMP.em2d.Image()
@@ -47,7 +47,7 @@ class ProjectTests(IMP.test.TestCase):
         IMP.em2d.apply_variance_filter(img,filtered,kernelsize)
 
         saved=IMP.em2d.Image()
-        saved.read_from_floats(
+        saved.read(
               self.get_input_file_name("filtered_image.spi"),srw)
 
         rows =int( img.get_header().get_number_of_rows())
@@ -124,7 +124,7 @@ class ProjectTests(IMP.test.TestCase):
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=IMP.em2d.Image(fn_img1,jrw)
         fn_img2 = self.get_input_file_name("temp.jpg")
-        img1.write_to_floats(fn_img2,jrw)
+        img1.write(fn_img2,jrw)
         img2 = IMP.em2d.Image(fn_img2,jrw)
         # Use the ccc for testing instead of the pixel values. The matrix
         # in img2 is transformed from floats to ints son it can be written.
@@ -142,12 +142,63 @@ class ProjectTests(IMP.test.TestCase):
         img1=IMP.em2d.Image(fn_img1,jrw)
         try:
             fn_img2 = self.get_input_file_name("temp.xxx")
-            img1.write_to_floats(fn_img2,jrw)
+            img1.write(fn_img2,jrw)
         except:
             # Make sure a exception is sent
             self.assertTrue(True);
             return
         self.assertTrue(False);
+
+    def test_read_tiff(self):
+        """Test of TIFFReaderWriter reading"""
+        srw = IMP.em2d.SpiderImageReaderWriter()
+        trw = IMP.em2d.TIFFImageReaderWriter()
+        fn_tif_img = self.get_input_file_name("lena-256x256.tif")
+        tif_img=IMP.em2d.Image(fn_tif_img,trw)
+        fn_spider_img = self.get_input_file_name("lena-256x256.spi")
+        spider_img=IMP.em2d.Image(fn_spider_img,srw)
+        tif_img.write("lena.spi",srw)
+
+        rows =int( tif_img.get_header().get_number_of_rows())
+        cols = int(tif_img.get_header().get_number_of_columns())
+
+        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows);
+        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols);
+        ccc=IMP.em2d.cross_correlation_coefficient(tif_img.get_data(),
+                                                  spider_img.get_data())
+        self.assertAlmostEqual(ccc,1,delta=0.01,msg="ccc ins not 1")
+
+    def test_write_tiff(self):
+        """Test of TIFFReaderWriter writing"""
+        trw = IMP.em2d.TIFFImageReaderWriter()
+        fn_img1 = self.get_input_file_name("lena-256x256.tif")
+        img1=IMP.em2d.Image(fn_img1,trw)
+        fn_img2 = self.get_input_file_name("temp.tif")
+        img1.write(fn_img2,trw)
+        img2 = IMP.em2d.Image(fn_img2,trw)
+        # Use the ccc for testing instead of the pixel values. The matrix
+        # in img2 is transformed from floats to ints son it can be written.
+        # Values can change, but the ccc has to be very close to 1.
+        ccc= IMP.em2d.cross_correlation_coefficient(img1.get_data(),
+                                           img2.get_data())
+        self.assertAlmostEqual(ccc,1,delta=0.01,
+        msg="Written TIFF image is not equal to read ")
+        # os.remove(fn_img2)
+
+    def test_write_error_tiff(self):
+        """Test that writing with TIFFReaderWriter fails with bad extension"""
+        trw = IMP.em2d.TIFFImageReaderWriter()
+        fn_img1 = self.get_input_file_name("lena-256x256.tif")
+        img1=IMP.em2d.Image(fn_img1,trw)
+        try:
+            fn_img2 = self.get_input_file_name("temp.xxx")
+            img1.write(fn_img2,trw)
+        except:
+            # Make sure a exception is sent
+            self.assertTrue(True);
+            return
+        self.assertTrue(False);
+
 
 
     def test_extend_borders(self):
@@ -159,7 +210,7 @@ class ProjectTests(IMP.test.TestCase):
         border = 10
         IMP.em2d.extend_borders(img1,img2,border)
 #        fn_img2 = self.get_input_file_name("lena-256x256-extended.spi")
-#        img2.write_to_floats(fn_img2,srw)
+#        img2.write(fn_img2,srw)
         rows2=int(img2.get_header().get_number_of_rows())
         cols2=int(img2.get_header().get_number_of_columns())
         self.assertEqual(rows2,256+2*border,

@@ -33,7 +33,7 @@ public:
 
   //! Create the image reading from a file
   Image(String filename,const em2d::ImageReaderWriter<double> &reader) {
-    read_from_floats(filename,reader);
+    read(filename,reader);
   }
 
   //! Access to the matrix of data
@@ -71,17 +71,17 @@ public:
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
-  void read_from_floats(String filename, const
+  void read(String filename, const
                           em2d::ImageReaderWriter<double> &reader) {
-    reader.read_from_floats(filename,header_,data_);
+    reader.read(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
-  void write_to_floats(String filename, const
+  void write(String filename, const
                           em2d::ImageReaderWriter<double> &writer) {
     adjust_header(); // adjust the header to guarantee consistence
-    writer.write_to_floats(filename,header_,data_);
+    writer.write(filename,header_,data_);
   }
 
   void show(std::ostream& out) const {

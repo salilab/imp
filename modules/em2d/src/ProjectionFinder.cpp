@@ -234,7 +234,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     strm << "coarse_match-" << i << ".spi";
     em2d::SpiderImageReaderWriter<double> srw;
     match->set_name(strm.str()); ////
-    match->write_to_floats(strm.str(),srw);
+    match->write(strm.str(),srw);
   }
 
 }
@@ -360,7 +360,7 @@ void ProjectionFinder::get_complete_registration() {
       strm << "fine_match-" << i << ".spi";
       registration_results_[i].set_in_image(match->get_header());
       match->set_name(strm.str()); //
-      match->write_to_floats(strm.str(),srw);
+      match->write(strm.str(),srw);
     }
     // ++show_progress;
   }

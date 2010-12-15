@@ -24,6 +24,7 @@ files = [
     "Image.h",
     "SpiderImageReaderWriter.h",
     "JPGImageReaderWriter.h",
+    "TIFFImageReaderWriter.h",
     "ImageReaderWriter.h",
       ] + SConscript("internal/SConscript")
 

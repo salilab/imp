@@ -29,7 +29,7 @@ void write_matrix(cv::Mat &m,std::string name) {
  em2d::SpiderImageReaderWriter<double> srw;
   IMP_NEW(em2d::Image,output_img,());
   output_img->set_data(m);
-  output_img->write_to_floats(name,srw);
+  output_img->write(name,srw);
 }
 
 

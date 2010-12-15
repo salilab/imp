@@ -66,6 +66,17 @@ public:
   }
 
 
+  void read(const String &filename,em::ImageHeader& header,
+            cv::Mat &data) const {
+    this->read_from_floats(filename, header,data);
+  }
+
+  void write(const String &filename,  em::ImageHeader& header,
+                                    const cv::Mat &data) const {
+    this->write_to_floats(filename, header,data);
+  }
+
+
   //! Reads an image file in Spider format and stores the content
   //! int the header and data parameters
   /*!
@@ -116,8 +127,9 @@ public:
    *  \param[in] header header with the image info
    *  \param[in] data a matrix with the grid of data of the image
    */
-  void write_to_floats(const String &filename, em::ImageHeader& header,
-                                        const cv::Mat &data) const {
+  void write_to_floats(const String &filename,
+                        em::ImageHeader& header,
+                         const cv::Mat &data) const {
     std::ofstream out;
     out.open(filename.c_str(), std::ios::out | std::ios::binary);
     //! The image header is already in Spider format, just write it
