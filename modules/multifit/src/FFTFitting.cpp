@@ -11,7 +11,6 @@
 #include <IMP/statistics/Histogram.h>
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
-//#include "../anchor_points/GMMDensityAnchorPoints.h"
 #include <IMP/multifit/density_analysis.h>
 #include <IMP/multifit/VQClustering.h>
 #include <IMP/multifit/DataPoints.h>
@@ -53,25 +52,25 @@ bool operator<(const TransScore& a, const TransScore& b) {
 FFTFitting::FFTFitting(em::DensityMap *dmap,
                        core::RigidBody &rb,
                        Refiner *rb_refiner,
-                       IMP::FloatKey radius_key,
-                       IMP::FloatKey mass_key){
+                       FloatKey radius_key,
+                       FloatKey mass_key){
   radius_key_=radius_key;
   mass_key_=mass_key;
   asmb_map_=dmap;
   asmb_map_->calcRMS();
   orig_avg_ = asmb_map_->get_header()->dmean;
   orig_std_ = asmb_map_->get_header()->rms;
-  asmb_map_->std_normalize(); //TODO - is that correct?
+  asmb_map_->std_normalize();//because we want the norm=0 and std=1
   rb_=rb;
   rb_refiner_=rb_refiner;
-
-  fftw_r_grid_mol_ = NULL;fftw_c_grid_mol_ = NULL;
-  fftw_r_grid_mol_mask_ = NULL;fftw_c_grid_mol_mask_ = NULL;
   fftw_r_grid_asmb_ = NULL;fftw_c_grid_asmb_ = NULL;
-  fftw_r_grid_asmb_sqr_ = NULL;fftw_c_grid_asmb_sqr_ = NULL;
+  fftw_r_grid_mol_ = NULL;fftw_c_grid_mol_ = NULL;
   fftw_r_grid_cc_ = NULL;fftw_c_grid_cc_ = NULL;
+  fftw_r_grid_mol_mask_ = NULL;fftw_c_grid_mol_mask_ = NULL;
   fftw_r_grid_std_upper_ = NULL;fftw_c_grid_std_upper_ = NULL;
   fftw_r_grid_std_lower_ = NULL;fftw_c_grid_std_lower_ = NULL;
+  fftw_r_grid_asmb_sqr_ = NULL;fftw_c_grid_asmb_sqr_ = NULL;
+  std_norm_grid_=NULL;std_upper_=NULL;std_lower_=NULL;
   mol_mask_map_=NULL;
   set_parameters();
   is_initialized_=false;
@@ -105,54 +104,25 @@ FFTFitting::~FFTFitting(){
   fftw_destroy_plan(fftw_plan_c2r_std_lower_);
   fftw_cleanup();
 }
-//!
-/**
-The convolution result is in a wrapped around order
-Wrapped around: (N,....,2N-1,0,...,N-1).
-We return the distance in voxels from the center, ie:
-(0,...,N-1,-N,...,-1)
- */
-//Given indexes in wrapped order (result of FFTW), return
-//the unwrapped indexes
-/*
-\param[in] w_ix wrapped index in X dimension
-\param[in] w_iy wrapped index in Y dimension
-\param[in] w_iz wrapped index in Z dimension
-\param[in] uw_ix unwrapped index in X dimension
-\param[in] uw_iy unwrapped index in Y dimension
-\param[in] uw_iz unwrapped index in Z dimension
-**/
-void FFTFitting::get_unwrapped_index(int w_ix,int w_iy,int w_iz,
-                                     int &uw_ix,int &uw_iy,int &uw_iz) const{
 
+void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
+                                     int &x,int &y,int &z) const{
+
+  //  int shift=-1;
   int x_half = (fftw_nx_-1)/2+1;
   int y_half = (fftw_ny_-1)/2+1;
-  int z_half =(fftw_nz_-1)/2+1;
+  int z_half = (fftw_nz_-1)/2+1;
 
-
-  if (w_ix<x_half){uw_ix=x_half-1+w_ix;}
-  else {uw_ix=w_ix-x_half;}
-  if (w_iy<x_half){uw_iy=y_half-1+w_iy;}
-  else {uw_iy=w_iy-y_half;}
-  if (w_iz<x_half){uw_iz=z_half-1+w_iz;}
-  else {uw_iz=w_iz-z_half;}
-
-
-  //in orig version i and then f_i
-  // int nx_bl = (fftw_nx_)/2;
-  // int ny_bl = (fftw_ny_)/2;
-  // int nz_bl =(fftw_nz_)/2;
-
-  // int nx_br = nx_bl;
-  // int ny_br = ny_bl;
-  // int nz_br = nz_bl;
-
-  // if (ix<nx_br){f_ix=ix;}
-  // else {f_ix = -(fftw_nx_-ix);}
-  // if (iy<ny_br){f_iy=iy;}
-  // else {f_iy = -(fftw_ny_-iy);}
-  // if (iz<nz_br){f_iz=iz;}
-  // else {f_iz = -(fftw_nz_-iz);}
+  if (wx>x_half-2) x=x_half-(fftw_nx_-wx)+1; else x=x_half+wx;
+  if (wy>y_half-2) y=y_half-(fftw_ny_-wy)+1; else y=y_half+wy;
+  if (wz>z_half-2) z=z_half-(fftw_nz_-wz)+1; else z=z_half+wz;
+  /*  std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
+  <<") unwrapped: ("<<x<<","<<y<<","<<z<<") "
+  << "half: ("<<x_half<<","<<y_half<<","<<z_half<<") full:"
+  <<fftw_nx_<<","<<fftw_ny_<<","<<fftw_nz_<<")"<<std::endl;*/
+  /*  x+=shift;
+  y+=shift;
+  z+=shift;*/
 }
 
 void FFTFitting::set_fftw_for_mol(){
@@ -180,12 +150,8 @@ void FFTFitting::set_mol_mask() {
   if (mol_mask_map_ != NULL) {
     mol_mask_map_=NULL;
   }
-  //  em::MRCReaderWriter mrw;
   float mol_t=mol_map_->get_minimum_resampled_value();
-  std::cout<<"==============MIN WEIGHT:"<<mol_t<<" : "<<
-    mol_map_->get_header()->get_resolution()<<std::endl;
   mol_mask_map_ = em::binarize(mol_map_,mol_t);
-//  em::write_map(mol_mask_map_,"mol_mask.mrc",mrw);*/
 }
 
 
@@ -254,7 +220,7 @@ void FFTFitting::create_padded_asmb_map(){
     fftw_zero_padding_extent_[0],
     fftw_zero_padding_extent_[1],
     fftw_zero_padding_extent_[2]);
-  padded_asmb_map_->calcRMS();///----------new
+  padded_asmb_map_->std_normalize();
 }
 
 void FFTFitting::set_fftw_for_asmb(){
@@ -274,8 +240,6 @@ void FFTFitting::set_fftw_for_asmb(){
   //copy density data into the real grid
   //we do that after the plans, because the plan overwrites the data
   copy_density_data(padded_asmb_map_,fftw_r_grid_asmb_);
-  em::MRCReaderWriter mrw;
-  em::write_map(padded_asmb_map_,"padded.mrc",mrw);
   //execute plans
   fftw_execute(fftw_plan_r2c_asmb_);
 }
@@ -318,25 +282,22 @@ void FFTFitting::set_fftw_for_asmb_sqr(){
 }
 
 void FFTFitting::set_parameters() {
-  pad_factor_=0.2;//TODO - change
+  pad_factor_=0.2;
   low_pass_kernel_ext_=1.;//TODO - change
-  fftw_scale_=1./((rb_refiner_->get_refined(rb_)).size());
+  fftw_scale_=1.;///((rb_refiner_->get_refined(rb_)).size());
 }
 
 void FFTFitting::resmooth_mol(){
 
   core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
-  orig_prot_center_ = IMP::core::get_centroid(xyzs);
+  orig_prot_center_ = core::get_centroid(xyzs);
   center_trans_ = algebra::Transformation3D(
                                algebra::get_identity_rotation_3d(),
                                map_center_-orig_prot_center_);
   //move the mol to the center
   core::transform(rb_,center_trans_);
   mol_map_->resample();
-  em::MRCReaderWriter mrw;
-  //  em::write_map(mol_map_,"resampled.mrc", mrw);
-  mol_map_->std_normalize(); // TODO - return?
-
+  mol_map_->std_normalize();
   //move back mol to the center
   core::transform(rb_,center_trans_.get_inverse());
 }
@@ -344,22 +305,16 @@ void FFTFitting::resmooth_mol(){
 void FFTFitting::smooth_mol(){
   //move the protein to the center of the assembly map
   const em::DensityHeader *padded_asmb_h = padded_asmb_map_->get_header();
-  //const em::DensityHeader *asmb_h = asmb_map_->get_header();
   core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
-  orig_prot_center_ = IMP::core::get_centroid(xyzs);
-  const  em::DensityHeader *h=asmb_map_->get_header();
-  map_center_=algebra::Vector3D(
-        h->get_xorigin()+h->get_nx()/2*h->get_spacing(),
-        h->get_yorigin()+h->get_ny()/2*h->get_spacing(),
-        h->get_zorigin()+h->get_nz()/2*h->get_spacing());
+  orig_prot_center_ = core::get_centroid(xyzs);
+  map_center_=asmb_map_->get_centroid(-INT_MAX);
   center_trans_ = algebra::Transformation3D(
                             algebra::get_identity_rotation_3d(),
                             map_center_-orig_prot_center_);
-  IMP_LOG(IMP::VERBOSE,"orig_prot_center_:"<<orig_prot_center_<<std::endl);
-  IMP_LOG(IMP::VERBOSE,"center_trans_:"<<center_trans_<<std::endl);
+  IMP_LOG(VERBOSE,"orig_prot_center_:"<<orig_prot_center_<<std::endl);
+  IMP_LOG(VERBOSE,"center_trans_:"<<center_trans_<<std::endl);
   //move the molecule to the center of the map
     core::transform(rb_,center_trans_);
-    std::cout<<"=======Center trans:"<<center_trans_<<std::endl;
   mol_map_=new em::SampledDensityMap(*padded_asmb_h);
   mol_map_->set_particles(rb_refiner_->get_refined(rb_),
                           radius_key_,
@@ -367,7 +322,7 @@ void FFTFitting::smooth_mol(){
   mol_map_->resample();
   mol_map_->std_normalize();
   //move the mol back
-    core::transform(rb_,center_trans_.get_inverse());
+  core::transform(rb_,center_trans_.get_inverse());
 }
 
 void FFTFitting::test_wrapping_correction() {
@@ -380,10 +335,6 @@ void FFTFitting::test_wrapping_correction() {
     i1=iz*fftw_nx_*fftw_ny_+iy*fftw_nx_+ix;
     get_unwrapped_index(ix,iy,iz,fx,fy,fz);
     i2=fz*fftw_nx_*fftw_ny_+fy*fftw_nx_+fx;
-    //std::cout<<"("<<ix<<","<<iy<<","<<iz<<")
-    //("<<fx<<","<<fy<<","<<fz<<") i1:"<<i1<<" i2:"<<i2
-    //<<" [ "<<fftw_nvox_r2c_<<"] ["<<fftw_nx_
-    //<<","<<fftw_ny_<<","<<fftw_nz_<<"]"<<std::endl;
     test_cc[i2]=fftw_r_grid_cc_[i1];
   }
   }
@@ -393,7 +344,8 @@ void FFTFitting::test_wrapping_correction() {
 
 void FFTFitting::prepare(float threshold) {
   input_threshold_=threshold;
-  IMP_USAGE_CHECK(!is_initialized_,"FFTFitting was already initialized");
+  IMP_USAGE_CHECK(!is_initialized_,
+                  "FFTFitting was already initialized");
   //set the padded assembly map
   create_padded_asmb_map();
   asmb_map_mask_ = em::binarize(asmb_map_,(threshold-orig_avg_)/orig_std_);
@@ -414,7 +366,8 @@ void FFTFitting::prepare(float threshold) {
   //recopy map_sqr as the mol mask plan setting reset that memory
   copy_density_data(padded_asmb_map_sqr_,fftw_r_grid_asmb_sqr_);
   is_initialized_=true;
-}
+}//prepare
+
 void FFTFitting::prepare_std_data() {
   //allocate grid
   std_norm_grid_=(double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
@@ -424,13 +377,14 @@ void FFTFitting::prepare_std_data() {
 
 void FFTFitting::set_fftw_grid_sizes() {
   const em::DensityHeader *d_header = padded_asmb_map_->get_header();
-  fftw_nvox_r2c_= d_header->get_nz()*d_header->get_ny()
-    *(2*(d_header->get_nx()/2+1));
+  fftw_nvox_r2c_= d_header->get_nz()*d_header->get_ny()*d_header->get_nx();
+    //    *(2*(d_header->get_nx()/2+1));
   fftw_nvox_c2r_= d_header->get_nz()*d_header->get_ny()
     *(d_header->get_nx()/2+1);
   fftw_nz_=d_header->get_nz();
   fftw_ny_=d_header->get_ny();
   fftw_nx_=d_header->get_nx();
+  fftw_norm_=1./(fftw_nx_*fftw_ny_*fftw_nz_);
 }
 
 //! The function assumes that the data_array is of the correct size
@@ -438,32 +392,6 @@ void FFTFitting::copy_density_data(em::DensityMap *dmap,double *data_array) {
   for(long i=0;i<dmap->get_number_of_voxels();i++) {
     data_array[i]=dmap->get_value(i);
   }
-}
-
-em::DensityMap* FFTFitting::get_correlation_hit_map() const {
-  const em::DensityHeader *from_header=asmb_map_->get_header();
-  Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
-  int nx=asmb_map_->get_header()->get_nx();
-  int ny=asmb_map_->get_header()->get_ny();
-  int nz=asmb_map_->get_header()->get_nz();
-  double *fftw_r_grid_cc_unwrapped = (double *)
-    fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  int uw_x,uw_y,uw_z;
-  long vox_z,vox_zy;
-  for(int iz=0;iz<fftw_nz_;iz++){
-    vox_z=iz*fftw_ny_*fftw_nx_;
-    for(int iy=0;iy<fftw_ny_;iy++){
-      vox_zy=vox_z+iy*fftw_nx_;
-      for(int ix=0;ix<fftw_nx_;ix++){
-        get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
-        if ((uw_x>-1)&&(uw_y>-1)&&(uw_z>-1)&&
-            (uw_x<nx)&&(uw_y<ny)&&(uw_z<nz)){
-          fftw_r_grid_cc_unwrapped[uw_z*fftw_ny_*fftw_nx_+uw_y*fftw_nx_+uw_x]=
-            fftw_r_grid_cc_[vox_zy+ix];
-        }}}}
-  create_map_from_array(fftw_r_grid_cc_unwrapped,r_map);
-  fftw_free(fftw_r_grid_cc_unwrapped);
-  return r_map.release();
 }
 
 void FFTFitting::create_map_from_array(
@@ -484,7 +412,7 @@ void FFTFitting::create_map_from_array(
   int ny=asmb_map_->get_header()->get_ny();
   int fx,fy,fz;
   algebra::Vector3D center_trans =
-    asmb_map_->get_centroid()-padded_asmb_map_->get_centroid();
+    asmb_map_->get_centroid(-INT_MAX)-padded_asmb_map_->get_centroid(-INT_MAX);
   for(int iz=0;iz<fftw_nz_;iz++){
     for(int iy=0;iy<fftw_ny_;iy++){
       for(int ix=0;ix<fftw_nx_;ix++){
@@ -502,9 +430,31 @@ void FFTFitting::create_map_from_array(
 }
 
 em::DensityMap* FFTFitting::get_variance_map() const {
-  const em::DensityHeader* from_header=asmb_map_->get_header();
+
+
+
+  const em::DensityHeader *from_header=asmb_map_->get_header();
   Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
-  create_map_from_array(std_norm_grid_,r_map);
+  int nx=asmb_map_->get_header()->get_nx();
+  int ny=asmb_map_->get_header()->get_ny();
+  int nz=asmb_map_->get_header()->get_nz();
+  double *fftw_r_grid_cc_unwrapped = (double *)
+    fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
+  int uw_x,uw_y,uw_z;
+  long vox_z,vox_zy;
+  for(int iz=0;iz<fftw_nz_;iz++){
+    vox_z=iz*fftw_ny_*fftw_nx_;
+    for(int iy=0;iy<fftw_ny_;iy++){
+      vox_zy=vox_z+iy*fftw_nx_;
+      for(int ix=0;ix<fftw_nx_;ix++){
+        get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
+        if ((uw_x>-1)&&(uw_y>-1)&&(uw_z>-1)&&
+            (uw_x<nx)&&(uw_y<ny)&&(uw_z<nz)){
+          fftw_r_grid_cc_unwrapped[uw_z*fftw_ny_*fftw_nx_+uw_y*fftw_nx_+uw_x]=
+            std_norm_grid_[vox_zy+ix];
+        }}}}
+  create_map_from_array(fftw_r_grid_cc_unwrapped,r_map);
+  fftw_free(fftw_r_grid_cc_unwrapped);
   return r_map.release();
 }
 
@@ -525,27 +475,24 @@ void FFTFitting::set_fftw_for_cc() {
 void FFTFitting::calculate_correlation() {
   //copy mol data, as the orientation may have changed
   copy_density_data(mol_map_,fftw_r_grid_mol_);
-  mol_map_->calcRMS();///----------new
-  em::MRCReaderWriter mrw;
-  em::write_map(mol_map_,"mol.mrc",mrw);
+  mol_map_->calcRMS();
 
   //evecture the molecule plans, as the rotation may change
   fftw_execute(fftw_plan_r2c_mol_);
+
   //generate the correlation grid in complex space
-  float fftw_scale=1./(fftw_nx_*fftw_ny_*fftw_nz_);
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     fftw_c_grid_cc_[i][0] =(
             fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
-            fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_scale;
+            fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_norm_;
     fftw_c_grid_cc_[i][1] =(
              -fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][1] +
-             fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_scale;
+             fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
   }
   //inverse to get the correlation in real space
   fftw_execute(fftw_plan_c2r_cc_);
-  //scale
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
-    fftw_r_grid_cc_[i]=fftw_r_grid_cc_[i]/(fftw_nx_*fftw_ny_*fftw_nz_);
+    fftw_r_grid_cc_[i]*=fftw_norm_;
   }
 }
 
@@ -554,6 +501,7 @@ void FFTFitting::calculate_local_stds() {
   copy_density_data(mol_mask_map_,fftw_r_grid_mol_mask_);
   //execute the molecule mask plans
   fftw_execute(fftw_plan_r2c_mol_mask_);
+
   //number of non zero elements in the mask
   long num_non_zero=0;//TODO - instead just sum the grid
   em::emreal *data = mol_mask_map_->get_data();
@@ -563,15 +511,14 @@ void FFTFitting::calculate_local_stds() {
     }
   }
   double norm=1./num_non_zero;
-  double fftw_norm=1./padded_asmb_map_->get_number_of_voxels();
   float ta,tb,ma,mb;//t-target, m-mask
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     ta=fftw_c_grid_asmb_sqr_[i][0];
     tb=fftw_c_grid_asmb_sqr_[i][1];
     ma=fftw_c_grid_mol_mask_[i][0];
     mb=-fftw_c_grid_mol_mask_[i][1]; //because we need the mask conjugate
-    fftw_c_grid_std_upper_[i][0]=ta*ma-tb*mb;
-    fftw_c_grid_std_upper_[i][1]=ta*mb+tb*ma;
+    fftw_c_grid_std_upper_[i][0]=(ta*ma-tb*mb)*fftw_norm_*fftw_scale_;
+    fftw_c_grid_std_upper_[i][1]=(ta*mb+tb*ma)*fftw_norm_*fftw_scale_;
   }
   fftw_execute(fftw_plan_c2r_std_upper_);
 
@@ -580,15 +527,15 @@ void FFTFitting::calculate_local_stds() {
     tb=fftw_c_grid_asmb_[i][1];
     ma=fftw_c_grid_mol_mask_[i][0];
     mb=-fftw_c_grid_mol_mask_[i][1]; //because we need the mask conjugate
-    fftw_c_grid_std_lower_[i][0]=ta*ma-tb*mb;
-    fftw_c_grid_std_lower_[i][1]=ta*mb+tb*ma;
+    fftw_c_grid_std_lower_[i][0]=(ta*ma-tb*mb)*fftw_norm_*fftw_scale_;
+    fftw_c_grid_std_lower_[i][1]=(ta*mb+tb*ma)*fftw_norm_*fftw_scale_;
   }
   fftw_execute(fftw_plan_c2r_std_lower_);
 
   for (unsigned long i=0;i<fftw_nvox_r2c_;i++) {
-    std_norm_grid_[i]=norm*fftw_r_grid_std_upper_[i]*fftw_norm-
+    std_norm_grid_[i]=norm*fftw_r_grid_std_upper_[i]-
       norm*norm*fftw_r_grid_std_lower_[i]*
-      fftw_r_grid_std_lower_[i]*fftw_norm*fftw_norm;
+      fftw_r_grid_std_lower_[i];
   }
   // Pointer<em::DensityMap> std_upper(
   //new em::DensityMap(*(asmb_map_->get_header())));
@@ -625,14 +572,6 @@ void FFTFitting::mask_norm_mol_map() {
       mol_data[i]=(mol_data[i]-meanval)/stdval;
     }
   }
-  /*
-  //debug
-  static int mol_mask_counter=0;
-  std::stringstream ss;
-  em::MRCReaderWriter mrw;
-  ss<<"mol_masked_"<<mol_mask_counter<<".mrc";
-  em::write_map(mol_map_,ss.str().c_str(),mrw);
-  mol_mask_counter++;*/
 }
 
 void FFTFitting::calculate_local_correlation() {
@@ -645,33 +584,27 @@ void FFTFitting::calculate_local_correlation() {
   copy_density_data(mol_map_,fftw_r_grid_mol_);
   //re-execute the molecule plans, as the rotation may change
   fftw_execute(fftw_plan_r2c_mol_);
-
   calculate_local_stds();
   //generate the correlation grid in complex space
-  float fftw_scale=1./(fftw_nx_*fftw_ny_*fftw_nz_);
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     fftw_c_grid_cc_[i][0] =
       (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_scale;
+       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_norm_;;
     fftw_c_grid_cc_[i][1] =
       (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][1] -
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_scale;
+       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
   }
   //inverse to get the correlation in real space
   fftw_execute(fftw_plan_c2r_cc_);
-
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
-      fftw_r_grid_cc_[i]=
-        (fftw_r_grid_cc_[i]/sqrt(std_norm_grid_[i]))*fftw_scale;
+    fftw_r_grid_cc_[i]*=(1./sqrt(std_norm_grid_[i]));
   }
 }
 
-TransScores FFTFitting::search_for_the_best_translation(int num_solutions)
-{
+algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
+              em::DensityMap *hit_map, int num_solutions) {
   TransScores best_trans;
   algebra::Vector3D max_trans;
-  //const em::DensityHeader *d_header = asmb_map_->get_header();
-  //float spacing = d_header->get_spacing();
   //make heap
   int heap_size=num_solutions;
   for(int i=0;i<heap_size;i++){
@@ -686,7 +619,6 @@ TransScores FFTFitting::search_for_the_best_translation(int num_solutions)
   float max_cc=-INT_MAX;
   float min_cc=INT_MAX;
   //find the maximum correlation on the correlation grid
-  em::DensityMap *hit_map = get_correlation_hit_map();
   em::emreal *hit_data=hit_map->get_data();
   int nx=hit_map->get_header()->get_nx();
   int ny=hit_map->get_header()->get_ny();
@@ -706,73 +638,73 @@ TransScores FFTFitting::search_for_the_best_translation(int num_solutions)
       best_trans[heap_size-1].second=hit_data[zz_yy+ix];
       best_trans[heap_size-1].first=
         algebra::Transformation3D(algebra::get_identity_rotation_3d(),
-                                  max_trans-orig_prot_center_);
+                                  max_trans-map_center_)*center_trans_;
       std::push_heap(best_trans.begin(),best_trans.end(),
                      trans_score_comp_first_larger_than_second);
-      // std::cout<<"============Current heap:"<<std::endl;
-      // for(int i=0;i<heap_size;i++) {
-      //   std::cout<<best_trans[i].second<<" ";
-      // }
-      // std::cout<<std::endl;
-      IMP_IF_LOG(IMP::VERBOSE){
-        IMP_LOG(IMP::VERBOSE,"Current heap:"<<std::endl);
+      IMP_IF_LOG(VERBOSE){
+        IMP_LOG(VERBOSE,"Current heap:"<<std::endl);
         for(int i=0;i<heap_size;i++) {
-          IMP_LOG(IMP::VERBOSE,best_trans[i].first<<" ");
+          IMP_LOG(VERBOSE,best_trans[i].first<<" ");
         }
-        IMP_LOG(IMP::VERBOSE,std::endl);
+        IMP_LOG(VERBOSE,std::endl);
       }
     }
-  }
-  }
-  }
-  //scale best trans
-  for(TransScores::iterator it = best_trans.begin(); it != best_trans.end();
-      it++) {
-    //    std::cout<<"Left in hash:"<<it->first<<std::endl;
-    //    it->first=it->first/(max_cc-min_cc);
-  }
+  }}}
   std::sort(best_trans.begin(),best_trans.end(),
             trans_score_comp_first_larger_than_second);
-  return best_trans;
+  algebra::Vector3Ds ret_trans;
+  for(TransScores::iterator it = best_trans.begin();
+      it != best_trans.end(); it++) {
+    ret_trans.push_back(it->first.get_translation());
+  }
+  return ret_trans;
 }
-
-
-
-
-TransScores FFTFitting::gmm_based_search_for_best_translations(
-                                       int num_solutions) {
+TransScores FFTFitting::search_for_best_translations(
+                     int num_solutions,bool gmm_based) {
+  //find the best positions on the hit map
+  em::DensityMap *hit_map = get_correlation_hit_map();
+  /*  em::DensityMap* hit_map=em::multiply(hit_map_orig,
+      asmb_map_mask_);*/
+  //  em::DensityMap *hit_map=hit_map_orig;
+  algebra::Vector3Ds best_pos;
+  if (gmm_based) {
+    best_pos = gmm_based_search_for_best_translations(hit_map,num_solutions);
+  }
+  else {
+    best_pos = heap_based_search_for_best_translations(hit_map,num_solutions);
+  }
   TransScores best_trans;
-  em::MRCReaderWriter mrw;
-  em::DensityMap *hit_map_orig = get_correlation_hit_map();
-  em::DensityMap* hit_map=em::multiply(hit_map_orig,
-                                       asmb_map_mask_);
-  statistics::Histogram hist = get_density_histogram(hit_map,
-                                0,100);
-
-  float density_threshold = std::max(em::EPS,hist.get_top(0.85)-EPS);
-  DensityDataPoints ddp(hit_map,density_threshold);
-  VQClustering vq(&ddp,num_solutions);
-  vq.set_fast_clustering();
-  vq.run();
-  DataPointsAssignment asgn(&ddp,&vq);
-  write_max_cmm("hits.cmm",hit_map,
-                "cc_hits",
-                asgn);
-
-  for( int i=0;i<asgn.get_number_of_clusters();i++) {
-     algebra::Vector3D center_voxel =
-       get_segment_maximum(asgn,hit_map,i);
-     TransScore ts;
-     algebra::Transformation3D t = algebra::Transformation3D(
+  for( unsigned int i=0;i<best_pos.size();i++) {
+    algebra::Vector3D center_voxel = best_pos[i];
+     TransScore out_ts;
+     algebra::Transformation3D out_t = algebra::Transformation3D(
                 algebra::get_identity_rotation_3d(),
-                center_voxel-orig_prot_center_);
-     ts.first=t;
-     ts.second=hit_map->get_value(center_voxel);
-     best_trans.push_back(ts);
+                center_voxel-map_center_)*center_trans_;
+     out_ts.first=out_t;
+     out_ts.second=hit_map->get_value(center_voxel);
+     best_trans.push_back(out_ts);
   }
   hit_map=NULL;
   std::sort(best_trans.begin(),best_trans.end(),
             trans_score_comp_first_larger_than_second);
+  return best_trans;
+}
+algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
+                           em::DensityMap *hit_map,int num_solutions) {
+  algebra::Vector3Ds best_trans;
+  statistics::Histogram hist = get_density_histogram(hit_map,
+                                0,100);
+  float density_threshold = 0.1;//std::max(em::EPS,hist.get_top(0.1)-EPS);
+  DensityDataPoints ddp=DensityDataPoints(hit_map,density_threshold);
+  VQClustering vq(&ddp,num_solutions);
+  vq.set_fast_clustering();
+  vq.run();
+  DataPointsAssignment asgn(&ddp,&vq);
+  for( int i=0;i<asgn.get_number_of_clusters();i++) {
+     algebra::Vector3D center_voxel =
+       get_segment_maximum(asgn,hit_map,i);
+     best_trans.push_back(center_voxel);
+  }
   return best_trans;
 }
 
@@ -787,16 +719,18 @@ FFTFittingResults fft_based_rigid_fitting(
   core::XYZsTemp ps_xyz =  core::XYZsTemp(rb_refiner->get_refined(rb));
   //shift the fitted molecule to the center of the map
   algebra::Transformation3D shift_to_center(
-               algebra::get_identity_rotation_3d(),
-               dmap->get_centroid()-core::get_centroid(core::XYZsTemp(ps_xyz)));
+       algebra::get_identity_rotation_3d(),
+       dmap->get_centroid(-INT_MAX)-
+       core::get_centroid(core::XYZsTemp(ps_xyz)));
   core::transform(rb,shift_to_center);
   Pointer<em::DensityMap> max_map(new em::DensityMap(*(dmap->get_header())));
   max_map->reset_data(0.);
-  FFTFitting fft_fit(dmap,rb,rb_refiner);
-  fft_fit.prepare(threshold);
   IMP_LOG(TERSE,"==== Going to run FFT on each rotation"<<std::endl);
   boost::progress_display show_progress(rots.size());
   em::FittingSolutions temp_fits;
+
+  FFTFitting fft_fit(dmap,rb,rb_refiner);
+  fft_fit.prepare(threshold);
   for(unsigned int i=0;i<rots.size();i++) {
     ++show_progress;
     IMP_LOG(TERSE,"translational search for rotation "
@@ -813,22 +747,9 @@ FFTFittingResults fft_based_rigid_fitting(
       fft_fit.calculate_correlation();
     }
     em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
-    TransScores best_trans;
-    if (pick_search_by_gmm) {
-      best_trans=fft_fit.gmm_based_search_for_best_translations(
-                           num_top_fits_to_store_for_each_rotation);
-    }
-    else {
-      best_trans=fft_fit.search_for_the_best_translation(
-                      num_top_fits_to_store_for_each_rotation);
-    }
-    //TODO - move back to the clsutered version
+    TransScores best_trans=fft_fit.search_for_best_translations(
+     num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
-      //      best_trans[i].first=1.-best_trans[i].first;
-      // std::cout<<"THREE TRANSFORMATIONS:"<<std::endl;
-      // std::cout<<shift_to_center<<std::endl;
-      // std::cout<<t1<<std::endl;
-      // std::cout<<best_trans[i].second<<std::endl;
       temp_fits.add_solution(
                              best_trans[i].first*t1*shift_to_center,
                              best_trans[i].second);
@@ -846,8 +767,7 @@ FFTFittingResults fft_based_rigid_fitting(
   return output;
 }
 
-em::DensityMap *FFTFitting::test_fftw_round_trip(){
-    long norm_factor=fftw_nx_*fftw_ny_*fftw_nz_*2;
+em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     double* fftw_r_grid_mol = (double *)
       fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
     IMP_INTERNAL_CHECK(fftw_r_grid_mol != NULL,
@@ -869,15 +789,16 @@ em::DensityMap *FFTFitting::test_fftw_round_trip(){
     copy_density_data(mol_map_,fftw_r_grid_mol);
     //move to fourier
     fftw_execute(fftw_plan_r2c_mol);
+
     //go back
     fftw_execute(fftw_plan_c2r_mol);
+
     mol_map_->set_origin(store_orig);
     // return the map
     const em::DensityHeader *from_header=asmb_map_->get_header();
     Pointer<em::DensityMap> output(new em::DensityMap(*from_header));
     create_map_from_array(fftw_r_grid_mol,output);
-    output->multiply(1./norm_factor);
-
+    output->multiply(fftw_norm_);
     //release everything
     fftw_free(fftw_c_grid_mol);
     fftw_free(fftw_r_grid_mol);
@@ -885,4 +806,29 @@ em::DensityMap *FFTFitting::test_fftw_round_trip(){
     fftw_free(fftw_plan_c2r_mol);
     return output.release();
   }
+
+
+em::DensityMap* FFTFitting::get_correlation_hit_map() {
+  const em::DensityHeader *from_header=padded_asmb_map_->get_header();
+  Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
+  int nx=from_header->get_nx();
+  int ny=from_header->get_ny();
+  int nz=from_header->get_nz();
+  int uw_x,uw_y,uw_z;
+  long vox_z,vox_zy;
+  em::emreal* r_data=r_map->get_data();
+  for(int iz=0;iz<nz;iz++){
+    vox_z=iz*ny*nx;
+    for(int iy=0;iy<ny;iy++){
+      vox_zy=vox_z+iy*nx;
+      for(int ix=0;ix<nx;ix++){
+        get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
+          r_data[uw_z*ny*nx+uw_y*nx+uw_x]=
+            fftw_r_grid_cc_[vox_zy+ix];
+      }}}
+  return r_map.release();
+}
+
+
+
 IMPMULTIFIT_END_NAMESPACE

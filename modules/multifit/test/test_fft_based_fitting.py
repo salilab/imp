@@ -12,67 +12,88 @@ class FFTFittingTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_data(self):
-        self.mp= IMP.atom.read_pdb(self.open_input_file("1z5s.pdb"),
-                                   self.imp_model)
-        self.mp_ref= IMP.atom.read_pdb(self.open_input_file("1z5s.pdb"),
-                              self.imp_model)
+        self.mdl=IMP.Model()
         self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
-        self.ps = IMP.Particles(IMP.core.get_leaves(self.mp))
-        self.rb=IMP.atom.setup_as_rigid_body(self.mp)
-        self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
-        self.scene=IMP.em.particles2density(IMP.core.get_leaves(self.mp),6,1.5)
+        [self.ps,self.rb,self.refiner,self.xyz]=self.create_points(self.mdl)
+        [self.ps_copy,self.rb_copy,self.refiner_copy,self.xyz_copy]=self.create_points(self.mdl)
+
+        scene1=IMP.em.particles2density(self.ps,6,1.5)
+        header1=scene1.get_header()
+        self.start_center=scene1.get_origin()
+        self.end_center=scene1.get_top()
+        #double the size of the grid
+        scene2 = scene1.pad_margin(header1.get_nx(),
+                                       header1.get_ny(),header1.get_nz())
+        self.scene = IMP.em.SampledDensityMap(scene2.get_header())
+        self.scene.set_particles(self.ps)
+
     def setUp(self):
         """Build test model and optimizer"""
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
-        self.imp_model = IMP.Model()
         self.load_data()
 
-
-    def test_fft_based_rigid_fitting_translation_for_protein(self):
-        """test FFT based fitting for a protein"""
-        #randomize protein placement
-        rand_t = IMP.algebra.Transformation3D(
-            IMP.algebra.get_identity_rotation_3d(),
-            IMP.algebra.get_random_vector_in(
-            IMP.algebra.BoundingBox3D(
-            IMP.algebra.Vector3D(-10.,-10.,-10.),
-            IMP.algebra.Vector3D(10.,10.,10.))))
-
-        xyz=IMP.core.XYZsTemp(self.ps)
-        IMP.core.transform(self.rb,rand_t)
-        #IMP.atom.write_pdb(self.mp,"translated.pdb")
-        xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
-        #fit protein
+    def test_fft_based_rigid_fitting_translation(self):
+        """test FFT based fitting for a protein of three points"""
+        #Position the protein center at every possible place on the map
         rots=IMP.algebra.Rotation3Ds()
         rots.append(IMP.algebra.get_identity_rotation_3d())
-        fs = IMP.multifit.fft_based_rigid_fitting(
-               self.rb,self.refiner,self.scene,0.1,rots,3)
-        #check that the score makes sense
-        sols=fs.get_solutions()
-        #self.assertAlmostEqual(score,1.,
-        #check that the rmsd is low
-        best_rmsd=9999
-        best_score=0
-        best_trans=""
-        for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(self.rb,sols.get_transformation(i));
-            rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-            IMP.core.transform(self.rb,sols.get_transformation(i).get_inverse());
-            if best_rmsd>rmsd:
-                best_rmsd=rmsd
-                best_score=sols.get_score(i)
-                best_trans=sols.get_transformation(i)
-        cc_map=fs.get_max_cc_map()
-        IMP.em.write_map(cc_map,"max.mrc",IMP.em.MRCReaderWriter())
+        step=2*IMP.algebra.Vector3D(self.scene.get_spacing(),
+                                 self.scene.get_spacing(),
+                                 self.scene.get_spacing())
+        pos = self.start_center
+        while IMP.algebra.get_distance(self.end_center,pos)>3.:
+            pos +=step
+            t = IMP.algebra.Transformation3D(
+                IMP.algebra.get_identity_rotation_3d(),
+                pos-self.orig_center)
+            IMP.core.transform(self.rb,t)
+            self.scene.resample()
+            i=0
+            #fit protein
+            fs = IMP.multifit.fft_based_rigid_fitting(
+                self.rb_copy,self.refiner_copy,self.scene,0.1,rots,1,False)
+            #check that the score makes sense
+            sols=fs.get_solutions()
+            print "number of solutions:",sols.get_number_of_solutions()
+            for i in range(sols.get_number_of_solutions()):
+                print sols.get_transformation(i), sols.get_score(i)
+            IMP.core.transform(self.rb_copy,sols.get_transformation(0));
 
-        print "PDB best RMSD:",best_rmsd
-        print "SCORE:",best_score
-        print "BEST TRANS:",sols.get_transformation(i)
-        self.assertLess(best_rmsd,3.)
-        self.assertAlmostEqual(best_score,1.,delta=1.)
-
+            rmsd=IMP.atom.get_rmsd(self.xyz,self.xyz_copy)
+            w= IMP.display.BildWriter("test.%d.bild"%i)
+            for p in self.ps_copy:
+                g= IMP.display.XYZRGeometry(p)
+                w.add_geometry(g)
+            w=None
+            print "rmsd:",rmsd
+            IMP.core.transform(self.rb_copy,sols.get_transformation(0).get_inverse());
+            IMP.core.transform(self.rb,t.get_inverse())
+            self.assertLess(rmsd,5.)
+            #check that the rmsd is low
+        print "END TEST"
+    def _test_fft_based_rigid_fitting_roations(self):
+        """test rotations for a protein of three points"""
+        #use 10 rotations the protein center at every possible place on the map
+        rots=IMP.algebra.get_uniform_cover_rotations_3d(10)
+        self.scene.resample()
+        best_sol=[];best_score=9999
+        for rot in rots:
+            t=IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(0,0,0))
+            IMP.core.transform(self.rb_copy,t)
+            #fit protein
+            fs = IMP.multifit.fft_based_rigid_fitting(
+                self.rb_copy,self.refiner_copy,self.scene,0.1,rots,1,False)
+            #check that the score makes sense
+            sols=fs.get_solutions()
+            if sols.get_score(0)<best_score:
+                best_score=sols.get_score(0)
+                best_trans=sols.get_transformation(0)
+        IMP.core.transform(self.rb_copy,best_trans)
+        rmsd=IMP.atom.get_rmsd(self.xyz,self.xyz_copy)
+        print "rmsd:",rmsd
+        self.assertLess(rmsd,2.)
 
     def create_points(self,mdl):
         rd= IMP.core.XYZ.setup_particle(IMP.Particle(mdl),
@@ -89,137 +110,17 @@ class FFTFittingTest(IMP.test.TestCase):
         ps.append(self.create_point_particle(mdl,
                                              3.+origin, 12.+origin,
                                              12.+origin))
-        for i in range(3):
+        self.orig_center=IMP.algebra.Vector3D(0.,0.,0.)
+        for i in range(len(ps)):
             p1 = ps[i]
+            self.orig_center += IMP.core.XYZ(ps[i]).get_coordinates()
             p1.add_attribute(self.radius_key, 1.0)
             p1.add_attribute(self.weight_key, 1.0)
             chd=IMP.core.Hierarchy.setup_particle(p1)
             hd.add_child(chd)
         rb=IMP.core.RigidBody.setup_particle(rd.get_particle(),hd.get_children())
-        return [rb,IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())]
-        #make all a rigid body
-    def test_resampling(self):
-        """Test resampling consistency"""
-        mdl=IMP.Model()
-        [rb,refiner]=self.create_points(mdl)
-        ps_xyz =  IMP.core.XYZsTemp(refiner.get_refined(rb))
-        dmap=IMP.em.particles2density(ps_xyz,10,2)
-        dmap.calcRMS()
-        dmap2=IMP.em.SampledDensityMap(dmap.get_header())
-        dmap2.set_particles(ps_xyz)
-        dmap2.resample()
-        self.assertAlmostEqual(IMP.em.CoarseCC.cross_correlation_coefficient(dmap,dmap2,0),1,1)
-
-    def test_fft_round_trip(self):
-        """Test FFT round trip"""
-        mdl=IMP.Model()
-        [rb,refiner]=self.create_points(mdl)
-        ps_xyz =  IMP.core.XYZsTemp(refiner.get_refined(rb))
-        dmap=IMP.em.particles2density(ps_xyz,3,1)
-        dmap.calcRMS()
-        fft_fit=IMP.multifit.FFTFitting(dmap,rb,refiner);
-        fft_fit.prepare(0)
-        fft_fit.recalculate_molecule()
-        map2=fft_fit.test_fftw_round_trip()
-        map2.calcRMS()
-        #test that the correlation is 1
-        cc=IMP.em.CoarseCC.cross_correlation_coefficient(dmap,map2,0)
-        self.assertAlmostEqual(IMP.em.CoarseCC.cross_correlation_coefficient(dmap,map2,0),1,1)
-
-    def test_fft_based_rigid_fitting_translation(self):
-        """test FFT based fitting on 3 particles"""
-        mdl=IMP.Model()
-        [rb,refiner]=self.create_points(mdl)
-        [rb_ref,refiner_ref]=self.create_points(mdl)
-        #create map
-        spacing=1
-        dmap=IMP.em.particles2density(refiner.get_refined(rb),5,spacing)
-        #generate a 3 particle object
-        #randomize protein placement
-        rand_t = IMP.algebra.Transformation3D(
-            IMP.algebra.get_identity_rotation_3d(),
-            IMP.algebra.get_random_vector_in(
-            IMP.algebra.BoundingBox3D(
-            IMP.algebra.Vector3D(-10.,-10.,-10.),
-            IMP.algebra.Vector3D(10.,10.,10.))))
-
-        xyz=IMP.core.XYZsTemp(refiner.get_refined(rb))
-        IMP.core.transform(rb,rand_t)
-        xyz_ref=IMP.core.XYZsTemp(refiner_ref.get_refined(rb_ref))
-        #fit protein
-        rots=IMP.algebra.Rotation3Ds()
-        rots.append(IMP.algebra.get_identity_rotation_3d())
-        fs = IMP.multifit.fft_based_rigid_fitting(
-               rb,refiner,dmap,0,rots)
-        #check that the score makes sense
-        sols=fs.get_solutions()
-        score=sols.get_score(0)
-        #self.assertAlmostEqual(score,1.,
-            #check that the rmsd is low
-        best_rmsd=9999
-        best_score=0
-        for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(rb,sols.get_transformation(i));
-            rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-            IMP.core.transform(rb,sols.get_transformation(i).get_inverse())
-            if rmsd<best_rmsd:
-                best_rmsd=rmsd
-                best_score=sols.get_score(i)
-        print "RMSD:",best_rmsd
-        print "SCORE:",best_score/spacing
-        cc_map=fs.get_max_cc_map()
-        IMP.em.write_map(cc_map,"max2.mrc",IMP.em.MRCReaderWriter())
-        IMP.em.write_map(dmap,"orig.mrc",IMP.em.MRCReaderWriter())
-        self.assertAlmostEqual(best_rmsd,0.,delta=1.)
-        self.assertAlmostEqual(best_score,1.,delta=1.)
-
-
-    def test_fft_based_rigid_fitting_rotation_translation(self):
-        """test FFT based fitting on 3 particles with 10 rotations"""
-        mdl=IMP.Model()
-        [rb,refiner]=self.create_points(mdl)
-        [rb_ref,refiner_ref]=self.create_points(mdl)
-        #create map
-        dmap=IMP.em.particles2density(refiner.get_refined(rb),3,1)
-        #generate a 3 particle object
-        #randomize protein placement
-        rand_t = IMP.algebra.Transformation3D(
-            IMP.algebra.get_random_rotation_3d(),
-            IMP.algebra.get_random_vector_in(
-            IMP.algebra.BoundingBox3D(
-            IMP.algebra.Vector3D(-10.,-10.,-10.),
-            IMP.algebra.Vector3D(10.,10.,10.))))
-        xyz=IMP.core.XYZsTemp(refiner.get_refined(rb))
-        xyz_ref=IMP.core.XYZsTemp(refiner_ref.get_refined(rb_ref))
-        IMP.core.transform(rb,rand_t)
-        start_rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-        print "ROT START RMSD:", IMP.atom.get_rmsd(xyz_ref,xyz)
-
-        #fit protein
-        rots=IMP.algebra.get_uniform_cover_rotations_3d(10)
-        fs = IMP.multifit.fft_based_rigid_fitting(
-               rb,refiner,dmap,0,rots)
-        #check that the score makes sense
-        sols=fs.get_solutions()
-        score=sols.get_score(0)
-        #self.assertAlmostEqual(score,1.,
-            #check that the rmsd is low
-        best_rmsd=9999
-        best_score=0
-        for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(rb,sols.get_transformation(i));
-            rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-            IMP.core.transform(rb,sols.get_transformation(i).get_inverse())
-            if rmsd<best_rmsd:
-                best_rmsd=rmsd
-                best_score=sols.get_score(i)
-        print "ROT RMSD:",best_rmsd
-        print "ROT SCORE:",best_score
-        cc_map=fs.get_max_cc_map()
-        IMP.em.write_map(cc_map,"max3.mrc",IMP.em.MRCReaderWriter())
-        self.assertLess(best_rmsd,start_rmsd)
-
-
+        refiner = IMP.core.ChildrenRefiner(IMP.core.Hierarchy.get_default_traits())
+        return [ps,rb,refiner,IMP.core.XYZs(ps)]
 
 if __name__ == '__main__':
     IMP.test.main()

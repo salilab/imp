@@ -14,6 +14,7 @@
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 //imp
+#include <IMP/multifit/fitting_clustering.h>
 #include <IMP/multifit/FFTFitting.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
@@ -31,6 +32,34 @@
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 using namespace IMP;
 namespace po = boost::program_options;
+
+em::DensityMap* set_map(const std::string &density_filename,
+            float resolution, float spacing,
+            float x_origin, float y_origin, float z_origin) {
+  em::MRCReaderWriter mrw;
+  em::DensityMap *rmap;
+  try{
+    rmap = em::read_map(density_filename.c_str(),mrw);
+  }
+  catch (const Exception &err){
+    std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
+    exit(-1);
+  }
+  rmap->get_header_writable()->set_resolution(resolution);
+  rmap->update_voxel_size(spacing);
+  algebra::Vector3D v = rmap->get_origin();
+  if (x_origin == INT_MAX) {
+    x_origin = v[0];
+  }
+  if (y_origin == INT_MAX) {
+    y_origin = v[1];
+  }
+  if (z_origin == INT_MAX) {
+    z_origin = v[2];
+  }
+  rmap->set_origin(x_origin, y_origin, z_origin);
+  return rmap;
+}
 
 algebra::Rotation3Ds get_rotations(int num_angles,
                      std::string &pre_calc_rot_filename,int start_rot){
@@ -189,30 +218,15 @@ int main(int argc, char **argv) {
     exit(0);
   }
   //load the density
-  em::MRCReaderWriter mrw;
   em::DensityMap *full_dmap;
   em::DensityMap *dmap; //resampled
-  try{
-    full_dmap = em::read_map(density_filename.c_str(),mrw);
-    full_dmap->get_header_writable()->set_resolution(resolution);
-    full_dmap->update_voxel_size(spacing);
-    algebra::Vector3D v = full_dmap->get_origin();
-    if (x_origin == INT_MAX) {
-      x_origin = v[0];
-    }
-    if (y_origin == INT_MAX) {
-      y_origin = v[1];
-    }
-    if (z_origin == INT_MAX) {
-      z_origin = v[2];
-    }
-    full_dmap->set_origin(x_origin, y_origin, z_origin);
-    dmap = full_dmap;//em::get_resampled(full_dmap,2);
-  }
-  catch (const Exception &err){
-    std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
-    exit(-1);
-  }
+  full_dmap = set_map(density_filename,resolution, spacing,
+                      x_origin, y_origin, z_origin);
+  dmap = full_dmap;//em::get_resampled(full_dmap,2);
+  std::cout<<"==================="<<std::endl;
+  dmap->show();
+  std::cout<<"=========AAAAAAAAAAa=========="<<std::endl;
+
   std::ofstream log_file;
   log_file.open(log_filename.c_str());
   log_file<<"============= parameters ============"<<std::endl;
@@ -268,7 +282,6 @@ int main(int argc, char **argv) {
   set_log_target(log_file);
 
 
-
   Model *mdl = new Model();
   //atom::NonWaterNonHydrogenPDBSelector sel;
   //atom::BackbonePDBSelector sel;
@@ -304,49 +317,42 @@ int main(int argc, char **argv) {
                          rb,rb_refiner,dmap,threshold,rots,
                          num_top_fits_to_store_for_each_rotation,
                          local);
+  dmap = set_map(density_filename,resolution, spacing,
+                 x_origin, y_origin, z_origin);
+  em::MRCReaderWriter mrw;
   //write the results
   if (cc_hit_map_filename != "") {
     em::DensityMap* cc_map = sols.get_max_cc_map();
     em::write_map(cc_map,cc_hit_map_filename.c_str(),mrw);
     cc_map=NULL;
   }
-  // std::cout<<"clustering solutions"<<std::endl;
-  // float cluster_rmsd=resolution/2; //TODO - make a parameter
-  // em::FittingSolutions temp_fits_clustered;
-  // rmsd_clustering (mh,
-  //                  temp_fits,
-  //                  temp_fits_clustered,
-  //                  dmap->get_spacing(),INT_MAX,cluster_rmsd);
-  // std::cout<<"From:"<<temp_fits.get_number_of_solutions()<<
-  //" clustered to:"<<temp_fits_clustered.get_number_of_solutions()<<std::endl;
-  // algebra::Transformation3Ds clust_trans;
-  // for(int i=0;i<temp_fits_clustered.get_number_of_solutions();i++){
-  //   clust_trans.push_back(temp_fits_clustered.get_transformation(i));
-  // }
-  // //score by cc
-  // std::cout<<"scoring final solutions"<<std::endl;
-  em::FittingSolutions all_fit_sols_clustered;
-  all_fit_sols_clustered = em::compute_fitting_scores(
-              mh_ps,dmap,
-              core::XYZR::get_default_radius_key(),
-              atom::Mass::get_mass_key(),
-              sols.get_solutions().get_transformations() //clust_trans
-              ,true,true);
-  //all_fit_sols_clustered=sols.get_solutions();
-  all_fit_sols_clustered.sort(true);
+
+  //cluster fitting solutions
+  std::cout<<"clustering solutions"<<std::endl;
+  float cluster_rmsd=3;//resolution/2; //TODO - make a parameter
+  em::FittingSolutions sols_clustered;
+  multifit::fitting_clustering (mh,
+                                sols.get_solutions(),
+                                sols_clustered,
+                                dmap->get_spacing(),INT_MAX,cluster_rmsd);
+  std::cout<<"From:"<<sols.get_solutions().get_number_of_solutions()<<
+  " clustered to:"<<sols_clustered.get_number_of_solutions()<<std::endl;
+  //prepare output
+  sols_clustered.sort(true);
+  //note: these are CC scores coming from the FFT, not 1-CC.
   //save as multifit records
   multifit::FittingSolutionRecords final_fits;
-  int num_sols=std::min(all_fit_sols_clustered.get_number_of_solutions(),
-                        num_top_fits_to_report);
+  int num_sols=std::min(sols_clustered.get_number_of_solutions(),
+      num_top_fits_to_report);
   for(int i=0;i<num_sols;i++){
     multifit::FittingSolutionRecord rec;
     rec.set_index(i);
-    rec.set_fit_transformation(all_fit_sols_clustered.get_transformation(i));
+    rec.set_fit_transformation(sols_clustered.get_transformation(i));
     std::cout<<"=========i:"<<i<<":"<<
-      all_fit_sols_clustered.get_score(i)<<std::endl;
-    rec.set_fitting_score(all_fit_sols_clustered.get_score(i));
+      sols_clustered.get_score(i)<<std::endl;
+    rec.set_fitting_score(sols_clustered.get_score(i));
     core::transform(rb,
-                    all_fit_sols_clustered.get_transformation(i));
+                    sols_clustered.get_transformation(i));
     if (pdb_fit_filename != "") {
       std::stringstream str_name;
       str_name<<pdb_fit_filename<<"_"<<i<<".pdb";
@@ -356,7 +362,7 @@ int main(int argc, char **argv) {
       rec.set_rmsd_to_reference(atom::get_rmsd(mh_xyz,ref_mh_xyz));
     }
     core::transform(rb,
-                    all_fit_sols_clustered.get_transformation(i).get_inverse());
+                    sols_clustered.get_transformation(i).get_inverse());
     final_fits.push_back(rec);
   }
   multifit::write_fitting_solutions(sol_filename.c_str(),final_fits);

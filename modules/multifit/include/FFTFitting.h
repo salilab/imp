@@ -43,9 +43,29 @@ public:
      /note According to Rath et al, JSB 2003
    */
   void calculate_local_correlation();
-  TransScores search_for_the_best_translation(int num_solutions);
-  TransScores gmm_based_search_for_best_translations(
-                                                  int num_solutions);
+  TransScores search_for_best_translations(
+             int num_solutions, bool gmm_based=true);
+
+//! get the unwrapped index
+/**
+The convolution result is in a wrapped around order,
+which indicates the translation to apply
+Wrapped around: (1,2,3,.,N,-(N-1),..-2, -1,0)
+
+The function returns the index of the centroid
+after applying the displacement indicated by
+the convolution
+ */
+//Given indexes in wrapped order (result of FFTW), return
+//the unwrapped indexes
+/*
+\param[in] wx wrapped index in X dimension
+\param[in] wy wrapped index in Y dimension
+\param[in] wz wrapped index in Z dimension
+\param[in] x unwrapped index in X dimension
+\param[in] y unwrapped index in Y dimension
+\param[in] z unwrapped index in Z dimension
+**/
   void get_unwrapped_index(int ix,int iy,int iz,
                            int &f_ix,int &f_iy,int &f_iz) const;
   void test_wrapping_correction();
@@ -54,13 +74,23 @@ public:
   }
   //!Returns the correlation scores for postitions of the
   //!center of the molecule
-  em::DensityMap* get_correlation_hit_map() const;
   em::DensityMap* get_variance_map() const;
   em::DensityMap* get_padded_asmb_map() const {return padded_asmb_map_;}
   em::DensityMap* get_padded_mol_map() const {return mol_map_;}
+  //note the map is returned as is, in a wrapped order
+  double* get_wrapped_correlation_map(int &nx,int &ny,int &nz) const {
+    nx=fftw_nx_;ny=fftw_ny_; nz=fftw_nz_; return fftw_r_grid_cc_;}
+  //! Get a density map which is the result of moving to Fourier space and back
+  /**
+   \note This function is used for testing normalization issuses
+   */
+  em::DensityMap *get_padded_mol_map_after_fftw_round_trip();
+  em::DensityMap* get_correlation_hit_map();
+  algebra::Vector3Ds gmm_based_search_for_best_translations(
+                  em::DensityMap *hit_map, int num_solutions);
 
-  em::DensityMap *test_fftw_round_trip();
-
+  algebra::Vector3Ds heap_based_search_for_best_translations(
+                  em::DensityMap *hit_map, int num_solutions);
 protected:
   void create_map_from_array(double *arr,em::DensityMap *) const;
   void mask_norm_mol_map();
@@ -125,13 +155,13 @@ protected:
   double* std_norm_grid_;
   double* std_upper_;
   double* std_lower_;
-  Pointer<em::DensityMap> asmb_map_;
-  Pointer<em::DensityMap> padded_asmb_map_,asmb_map_mask_;
-  Pointer<em::DensityMap> padded_asmb_map_sqr_;
-  Pointer<em::DensityMap> mol_mask_map_;
-  Pointer<em::SampledDensityMap> mol_map_;
+  em::DensityMap* asmb_map_;
+  em::DensityMap* padded_asmb_map_,*asmb_map_mask_;
+  em::DensityMap* padded_asmb_map_sqr_;
+  em::DensityMap* mol_mask_map_;
+  em::SampledDensityMap* mol_map_;
   core::RigidBody rb_;
-  Pointer<Refiner> rb_refiner_;
+  Refiner* rb_refiner_;
   bool is_initialized_;
   //parameters
   float pad_factor_;//percentage of the extent (x) to be margin;
@@ -148,6 +178,9 @@ protected:
   float orig_avg_,orig_std_;
   float input_threshold_;
   FloatKey radius_key_,mass_key_;
+  double fftw_norm_;//normalization for FFTW operations
+  double fftw_norm_r2c_;//normalization for FFTW operations
+  double fftw_norm_c2r_;//normalization for FFTW operations
 };
 
 

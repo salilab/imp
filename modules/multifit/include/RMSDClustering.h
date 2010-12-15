@@ -24,7 +24,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
  (fall into the same bin in a hash. Then, all clusters are globally reclustered.
   /note TransT should implement the functions:
         join_into() that joins a transformation into the current
-        get_score() that returns the score
+        get_score() that returns the score (higher score is better)
         inc_score() that updates the score of the
                     cluster according to a new member
 */
