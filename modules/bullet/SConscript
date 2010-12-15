@@ -1,5 +1,6 @@
 Import('env')
 import scons_tools.dependency
+import scons_tools.bug_fixes
 
 scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "BulletCollision",
                                                         "BulletSoftBody",
@@ -8,6 +9,13 @@ scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "B
                                         body="""btBroadphaseInterface* broadphase = new btDbvtBroadphase();""",
                                         extra_libs=[])
 
+cenv= scons_tools.bug_fixes.clone_env(env)
+conf = cenv.Configure(custom_tests={})
+if conf.CheckHeader("LinearMath/btScalar.h", language="C++"):
+    cppdefines=[]
+else:
+    cppdefines=["IMP_BULLET_SUBDIR"]
+conf.Finish()
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['container', 'cgal'],
