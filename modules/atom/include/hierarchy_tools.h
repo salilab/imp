@@ -101,8 +101,8 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
     by the biological name. For example (in python)
     \code
     Selection(hierarchy=h, molecule="myprotein", terminus=Selection.C)
-    Selection(hierarchy=h, molecule="myprotein", residue=133)
-    Selection(hierarchy=h, molecule="myprotein", residues=[(133,134)])
+    Selection(hierarchy=h, molecule="myprotein", residue_index=133)
+    Selection(hierarchy=h, molecule="myprotein", residue_indexes=[(133,134)])
     \endcode
     each get the C-terminus of the protein "myprotein" (assuming the last
     residue index is 133).
