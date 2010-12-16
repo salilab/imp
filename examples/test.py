@@ -31,17 +31,21 @@ def create_representation():
 #   set the new reference frame
     for i in [0,n_TMH-1]:
         rbs[i].set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
-        bb=rbs[i].get_member(0).get_coordinates()[2]
-        ee=rbs[i].get_member(rbs[i].get_number_of_members()-1).get_coordinates()[2]
 #   initialize decorator
+        s0=IMP.atom.Selection(rbs[i].get_members(), atom_type = IMP.atom.AtomType("CA"), residue_index = b[i])
+        s1=IMP.atom.Selection(rbs[i].get_members(), atom_type = IMP.atom.AtomType("CA"), residue_index = e[i])
+        p_bb=s0.get_selected_particles()
+        bb=IMP.core.XYZ(p_bb[0]).get_coordinates()[2]
+        p_ee=s1.get_selected_particles()
+        ee=IMP.core.XYZ(p_ee[0]).get_coordinates()[2]
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rbs[i],bb,ee)
         print " Rigid #",i," number of residues=",rbs[i].get_number_of_members()
         print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
 #   trial translation+rotation
-    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), math.pi/8), IMP.algebra.Vector3D(-4,0,0))
+    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-6,0,0))
 #    rbs[0].set_transformation(IMP.algebra.compose(tr0, rbs[0].get_transformation()))
     IMP.core.transform(rbs[0],tr0)
-    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), -math.pi/8), IMP.algebra.Vector3D(4,0,0))
+    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(6,0,0))
 #    rbs[1].set_transformation(IMP.algebra.compose(tr1, rbs[1].get_transformation()))
     IMP.core.transform(rbs[1],tr1)
     return (m, rbs)
@@ -68,7 +72,7 @@ def create_restraints(m, rbs):
     def add_packing_restraint(rb):
 ## if the rigid bodies are close, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
-## of the distributions
+## of the distributions (Walters and DeGrado PNAS (2007) 103:13658)
         om0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
 #  the sigmas
         sig_om0=[10.1, 13.6, 7.50, 16.6, 20.8, 11.2]
@@ -91,8 +95,7 @@ def create_restraints(m, rbs):
             dd_b.append(dd0[i]-nsig*sig_dd0[i])
             dd_e.append(dd0[i]+nsig*sig_dd0[i])
         lrb= IMP.container.ListSingletonContainer(m)
-        for i in [0,len(rb)-1]:
-            lrb.add_particle(rb[i])
+        lrb.add_particles(rb)
         nrb= IMP.container.ClosePairContainer(lrb, 12.0, 2.0)
         ps=  IMP.membrane.RigidBodyPackingScore(om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)

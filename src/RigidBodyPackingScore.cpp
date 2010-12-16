@@ -41,17 +41,13 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
   // begin and end point
-//  b0=algebra::VectorD<3>(0.,0.,d0.get_begin());
-//  e0=algebra::VectorD<3>(0.,0.,d0.get_end());
-//  b1=algebra::VectorD<3>(0.,0.,d1.get_begin());
-//  e1=algebra::VectorD<3>(0.,0.,d1.get_end());
 
   b0=algebra::VectorD<3>(d0.get_begin(),0.0,0.0);
   e0=algebra::VectorD<3>(d0.get_end(),0.0,0.0);
   b1=algebra::VectorD<3>(d1.get_begin(),0.0,0.0);
   e1=algebra::VectorD<3>(d1.get_end(),0.0,0.0);
 
-
+/**
   IMP_LOG(VERBOSE, "** BEFORE b0[0] " << b0[0] << " b0[1] "<<
                     b0[1] << " b0[2] " << b0[2] << std::endl);
   IMP_LOG(VERBOSE, "** BEFORE e0[0] " << e0[0] << " e0[1] "<<
@@ -60,7 +56,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                     b1[1] << " b1[2] " << b1[2] << std::endl);
   IMP_LOG(VERBOSE, "** BEFORE e1[0] " << e1[0] << " e1[1] "<<
                     e1[1] << " e1[2] " << e1[2] << std::endl);
-
+**/
   // check if rigid body
   IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
                   "Particle is not a rigid body");
@@ -76,7 +72,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   e0=tr0.get_transformed(e0);
   b1=tr1.get_transformed(b1);
   e1=tr1.get_transformed(e1);
-
+/**
   IMP_LOG(VERBOSE, "** AFTER b0[0] " << b0[0] << " b0[1] "<<
                     b0[1] << " b0[2] " << b0[2] << std::endl);
   IMP_LOG(VERBOSE, "** AFTER e0[0] " << e0[0] << " e0[1] "<<
@@ -85,7 +81,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                     b1[1] << " b1[2] " << b1[2] << std::endl);
   IMP_LOG(VERBOSE, "** AFTER e1[0] " << e1[0] << " e1[1] "<<
                     e1[1] << " e1[2] " << e1[2] << std::endl);
-
+**/
 
   // get shortest segment
   segment=algebra::get_shortest_segment(algebra::Segment3D(b0,e0),
@@ -93,11 +89,12 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   t0=segment.get_point(0);
   t1=segment.get_point(1);
 
-
+/**
   IMP_LOG(VERBOSE, "** t0[0] " << t0[0] << " t0[1] "<<
                     t0[1] << " t0[2] " << t0[2] << std::endl);
   IMP_LOG(VERBOSE, "** t1[0] " << t1[0] << " t1[1] "<<
                     t1[1] << " t1[2] " << t1[2] << std::endl);
+**/
 
   omega=core::internal::dihedral(e0,t0,t1,e1,NULL,NULL,NULL,NULL);
   dist =segment.get_length();
