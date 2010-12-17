@@ -188,7 +188,7 @@ IMP_MODEL_SAVE(WriteParticles, (const ParticlesTemp &ps, std::string file_name),
                {
                  IMP_LOG(TERSE, "Writing text model file "
                          << file_name << std::endl);
-                 write_model(ps_,file_name);
+                 write_particles(ps_,file_name);
                });
 #if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** \class WriteParticlesBinaryOptimizerState
@@ -212,13 +212,13 @@ IMP_MODEL_SAVE(WriteParticlesBinary, (const ParticlesTemp &ps,
                {
                  IMP_LOG(TERSE, "Writing text model file "
                          << file_name << std::endl);
-                 write_binary_model(ps_,fks_,file_name, !first_);
+                 write_particles_binary(ps_,fks_,file_name, !first_);
                  first_=false;
                });
+typedef WriteParticlesBinaryOptimizerState WriteBinaryOptimizerState;
 #endif
 
 #ifndef IMP_DOXYGEN
-typedef WriteParticlesBinaryOptimizerState WriteBinaryOptimizerState;
 typedef WriteParticlesOptimizerState WriteOptimizerState;
 #endif
 
