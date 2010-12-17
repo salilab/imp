@@ -13,3 +13,9 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
    %include line.*/
 %include "IMP/membrane/HelixDecorator.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
+%include "IMP/membrane/dope_score.h"
+namespace IMP {
+namespace membrane {
+%template(DopePairScore) IMP::core::StatisticalPairScore< IMP::membrane::DopeType, false >;
+}
+}

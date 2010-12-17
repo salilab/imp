@@ -32,7 +32,6 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   membrane::HelixDecorator d0(p[0]);
   membrane::HelixDecorator d1(p[1]);
   double omega, dist, max_dist, min_dist;
-  core::XYZ x0,x1,x2,x3;
   algebra::VectorD<3> b0,e0,b1,e1,t0,t1;
   algebra::Transformation3D tr0,tr1;
   algebra::Segment3D segment;
