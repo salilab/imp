@@ -315,9 +315,11 @@ void CHARMMParameters::parse_bond_line(const String& line,
     residue->add_bond(atoms);
     // + connects to the next residue
     if(split_results[i][0] == '+' || split_results[i+1][0] == '+') continue;
-    // skip funny added modeller records
-    if (split_results[i].find(':') != std::string::npos
-        || split_results[i+1].find(':') != std::string::npos) continue;
+    // skip 2-residue patch bonds
+    if (split_results[i][0] == '1' || split_results[i][0] == '2'
+        || split_results[i+1][0] == '1' || split_results[i+1][0] == '2') {
+      continue;
+    }
     AtomType imp_atom_type1 = AtomType(split_results[i]);
     AtomType imp_atom_type2 = AtomType(split_results[i+1]);
     Bond bond(imp_atom_type1, imp_atom_type2);
