@@ -91,10 +91,10 @@ void ConfigurationSet::do_show(std::ostream &out) const {
 
 #ifdef IMP_USE_NETCDF
 // in io.cpp
-void read_binary_model(NcFile &f,
-                       const ParticlesTemp &particles,
-                       const FloatKeys &keys,
-                       int var_index);
+void read_particles_binary(NcFile &f,
+                           const ParticlesTemp &particles,
+                           const FloatKeys &keys,
+                           int var_index);
 
 ConfigurationSet* read_configuration_set(std::string filename,
                                          const Particles &ps,
@@ -118,7 +118,7 @@ void read_configuration_set(std::string filename,
               IOException);
   }
   for (int i=0; i< f.num_vars(); ++i) {
-    read_binary_model(f, ps, keys, i);
+    read_particles_binary(f, ps, keys, i);
     ret->save_configuration();
   }
 }

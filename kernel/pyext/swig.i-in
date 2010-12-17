@@ -110,10 +110,10 @@ IMP_SWIG_OBJECT(IMP, SingletonsScoreRestraint,SingletonsScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletScoreRestraint,TripletScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletsScoreRestraint, TripletsScoreRestraints);
 
-IMP_SWIG_OBJECT(IMP, WriteOptimizerState, WriteOptimizerStates);
-IMP_SWIG_OBJECT(IMP, WriteBinaryOptimizerState, WriteBinaryOptimizerStates);
-IMP_SWIG_OBJECT(IMP, WriteFailureHandler, WriteFailureHandlers);
-IMP_SWIG_OBJECT(IMP, WriteBinaryFailureHandler, WriteBinaryFailureHandlers);
+IMP_SWIG_OBJECT(IMP, WriteParticlesOptimizerState, WriteParticlesOptimizerStates);
+IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryOptimizerState, WriteParticlesBinaryOptimizerStates);
+IMP_SWIG_OBJECT(IMP, WriteParticlesFailureHandler, WriteParticlesFailureHandlers);
+IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFailureHandlers);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 

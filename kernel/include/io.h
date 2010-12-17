@@ -43,35 +43,61 @@ class Model;
     substantially faster.
     @{
 */
+IMPEXPORT void write_particles(const ParticlesTemp &particles,
+                               TextOutput out);
+IMPEXPORT void read_particles(TextInput in,
+                              const ParticlesTemp &particles
 #ifndef IMP_DOXYGEN
-IMPEXPORT void write_model(Model *m,
-                           const ParticlesTemp &particles,
-                           TextOutput out);
-#endif
-IMPEXPORT void write_model(const ParticlesTemp &particles,
-                           TextOutput out);
-IMPEXPORT void read_model(TextInput in,
-                          const ParticlesTemp &particles
-#ifndef IMP_DOXYGEN
-                          ,Model *m=NULL
+                    ,Model *m=NULL
 #endif
 );
 
-IMPEXPORT void write_model(const ParticlesTemp &particles,
+IMPEXPORT void write_particles(const ParticlesTemp &particles,
                            const FloatKeys &keys,
                            TextOutput out);
 
-IMPEXPORT void read_model(TextInput in,
+IMPEXPORT void read_particles(TextInput in,
                           const ParticlesTemp &particles,
                           const FloatKeys &keys);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-IMPEXPORT void write_model(Model *m,
+IMPEXPORT void write_particles(Model *m,
                            TextOutput out);
 
-IMPEXPORT void read_model(TextInput in, Model *m);
+IMPEXPORT void read_particles(TextInput in, Model *m);
 #endif
 /** @} */
+
+#ifndef IMP_DOXYGEN
+inline void write_model(Model *m,
+                     const ParticlesTemp &particles,
+                        TextOutput out) {
+  write_particles(particles, out);
+}
+inline void write_model(const ParticlesTemp &particles,
+                        TextOutput out) {
+  write_particles(particles, out);
+}
+inline void read_model(TextInput in,
+                       const ParticlesTemp &particles
+                       ,Model *m=NULL
+                       ) {
+  read_particles(in, particles, m);
+}
+inline void write_model(const ParticlesTemp &particles,
+                           const FloatKeys &keys,
+                        TextOutput out) {
+  write_particles(particles, keys, out);
+}
+
+inline void read_model(TextInput in,
+                          const ParticlesTemp &particles,
+                       const FloatKeys &keys) {
+  read_particles(in, particles, keys);
+}
+
+#endif
+
 
 #if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
 /** \name Binary I/O
@@ -87,27 +113,75 @@ IMPEXPORT void read_model(TextInput in, Model *m);
     For reading, and IOException will be thrown if an invalid frame
     is requested. Frames are always sequential.
 
+    \note Not all particles need to have all the attributes,
+    missing attributes will be skipped. However, the set of attributes
+    must match on the write and read particles.
+
+    \note These methods should be considered unstable. Use the text
+    IO if you want stable long term storage.
+
     \requires{binary I/O functions, NetCDF}
     @{
 */
-IMPEXPORT void write_binary_model(const ParticlesTemp &particles,
+//! if append, don't overwrite an existing file
+IMPEXPORT void write_particles_binary(const ParticlesTemp &particles,
                                   const FloatKeys &keys,
                                   std::string filename,
                                   bool append=false);
-IMPEXPORT void read_binary_model(std::string filename,
-                                 const ParticlesTemp &particles,
-                                 const FloatKeys &keys,
-                                 int frame=-1);
+//! load the ith frame if frame is non-negative
+IMPEXPORT void read_particles_binary(std::string filename,
+                           const ParticlesTemp &particles,
+                           const FloatKeys &keys,
+                           int frame=-1);
+
+#ifndef IMP_DOXYGEN
+inline void write_binary_model(const ParticlesTemp &particles,
+                                  const FloatKeys &keys,
+                                  std::string filename,
+                                  bool append=false) {
+  write_particles_binary(particles, keys, filename, append);
+}
+inline void read_binary_model(std::string filename,
+                           const ParticlesTemp &particles,
+                           const FloatKeys &keys,
+                                  int frame=-1) {
+  read_particles_binary(filename, particles, keys, frame);
+}
+#endif
 /** @} */
 #endif
 
-/** \class WriteOptimizerState
+/** \name Buffer I/O
+    Write/read the state of the particles to/from a buffer in memory.
+    \note Not all particles need to have all the attributes,
+    missing attributes will be skipped. However, the set of attributes
+    must match on the write and read particles.
+
+    \note There is no handling of architectural issues. That is, this
+    is only guaranteed to work if it is read and written on the same
+    operating system and system bit length. We could probably fix this.
+
+    \note both these methods should be considered unstable.
+    @{
+*/
+//! return a binary buffer with the data
+IMPEXPORT std::vector<char>
+write_particles_to_buffer(const ParticlesTemp &particles,
+                          const FloatKeys &keys);
+//! load found attributes into the particles
+IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
+                                       const ParticlesTemp &particles,
+                                       const FloatKeys &keys);
+
+/** @} */
+
+/** \class WriteParticlesOptimizerState
     Write conformations to different text files.
 
-    \class WriteFailureHandler
+    \class WriteParticlesFailureHandler
     Write the conformatin when an error occurs.
  */
-IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
+IMP_MODEL_SAVE(WriteParticles, (const ParticlesTemp &ps, std::string file_name),
                Particles ps_;,
                ps_=ps;,
                ,
@@ -117,7 +191,7 @@ IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
                  write_model(ps_,file_name);
                });
 #if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
-/** \class WriteBinaryOptimizerState
+/** \class WriteParticlesBinaryOptimizerState
     In contrast to other similar OptimizerStates, this one expectes to write
     all models to the same file. As a result, the file name should not contain
     %1% (if it does, then separate files will be written). The first call will
@@ -125,12 +199,13 @@ IMP_MODEL_SAVE(Write, (const ParticlesTemp &ps, std::string file_name),
 
     \requires{class WriteBinaryOptimizerState, NetCDF}
 
-    \class WriteBinaryFailureHandler
+    \class WriteParticlesBinaryFailureHandler
 
     \requires{class WriteBinaryFailureHandler, NetCDF}
  */
-IMP_MODEL_SAVE(WriteBinary, (const ParticlesTemp &ps, const FloatKeys &fks,
-                             std::string file_name),
+IMP_MODEL_SAVE(WriteParticlesBinary, (const ParticlesTemp &ps,
+                                      const FloatKeys &fks,
+                                      std::string file_name),
                Particles ps_; FloatKeys fks_; mutable bool first_;,
                ps_=ps; fks_=fks;first_=-1;,
                ,
@@ -142,6 +217,10 @@ IMP_MODEL_SAVE(WriteBinary, (const ParticlesTemp &ps, const FloatKeys &fks,
                });
 #endif
 
+#ifndef IMP_DOXYGEN
+typedef WriteParticlesBinaryOptimizerState WriteBinaryOptimizerState;
+typedef WriteParticlesOptimizerState WriteOptimizerState;
+#endif
 
 
 IMP_END_NAMESPACE
