@@ -111,9 +111,9 @@ def create_restraints(m, chain, tmb, tme):
 #       initializing data
         IMP.membrane.add_dope_score_data(chain)
         dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
-#        dps=StatisticalPairScore(IMP.membrane.DopeType, cutoff, dope.lib)
-#       d=IMP.container.PairsRestraint(dpc, dps)
-#        m.add_restraint(d)
+        dps= IMP.membrane.DopePairScore("dope.lib")
+        d=   IMP.container.PairsRestraint(dps, dpc)
+        m.add_restraint(d)
 
     add_excluded_volume()
     for i in range(len(tmb)-1):

@@ -11,14 +11,6 @@
 #include "membrane_config.h"
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/StatisticalPairScore.h>
-#include <IMP/Model.h>
-#include <IMP/Particle.h>
-#include <IMP/Restraint.h>
-#include <IMP/PairScore.h>
-#include <IMP/container/PairsRestraint.h>
-#include <IMP/algebra/Vector3D.h>
-#include <IMP/file.h>
-#include <limits>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
