@@ -37,10 +37,10 @@ def create_representation(tmb,tme):
         print " Rigid #",i," number of members=",rbs[i].get_number_of_members()
         print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
 #   trial translation+rotation
-    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), -math.pi/6), IMP.algebra.Vector3D(-5,0,0))
+    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-5,0,0))
 #    rbs[0].set_transformation(IMP.algebra.compose(tr0, rbs[0].get_transformation()))
     IMP.core.transform(rbs[0],tr0)
-    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), math.pi/6), IMP.algebra.Vector3D(5,0,0))
+    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(5,0,0))
 #    rbs[1].set_transformation(IMP.algebra.compose(tr1, rbs[1].get_transformation()))
     IMP.core.transform(rbs[1],tr1)
     return (m, chain)
@@ -115,14 +115,14 @@ def create_restraints(m, chain, tmb, tme):
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
 
-    add_excluded_volume()
+#    add_excluded_volume()
     for i in range(len(tmb)-1):
         s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
         s1=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
-        add_distance_restraint(p0,p1,20.0,100)
-    add_packing_restraint()
+#        add_distance_restraint(p0,p1,20.0,100)
+#    add_packing_restraint()
     add_DOPE()
     return m.get_restraints()
 
