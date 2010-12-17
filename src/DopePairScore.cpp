@@ -1,12 +1,12 @@
 /**
- *  \file dope_score.cpp
+ *  \file DopePairScore.cpp
  *  \brief Dope score
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/membrane/dope_score.h>
+#include <IMP/membrane/DopePairScore.h>
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 
@@ -211,19 +211,15 @@ namespace {
 
 }
 
-/*
-DopeScore::Dopescore(atom::Hierarchy protein){
-  add_dope_score_data(protein);
-  IMP_IF_CHECK(USAGE) {
-    atom::HierarchiesTemp pr= atom::get_by_type(protein, RESIDUE_TYPE);
-    for (unsigned int i=0; i< pr.size(); ++i) {
-      IMP_USAGE_CHECK(!get_is_heterogen(pr[i]),
-                      "Some of protein is actually a heterogen "
-                      <<  pr[i]);
-    }
+
+DopePairScore::DopePairScore(double threshold):
+  P(get_dope_type_key(), threshold, get_data_path("dope_score.lib")){
   }
-}
-*/
+
+DopePairScore::DopePairScore(double threshold, TextInput file):
+  P(get_dope_type_key(), threshold, file){
+  }
+
 
 void add_dope_score_data(atom::Atom atom) {
   int type;

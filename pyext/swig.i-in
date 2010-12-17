@@ -8,14 +8,16 @@
   */
 IMP_SWIG_DECORATOR(IMP::membrane, HelixDecorator, HelixDecorators);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
+IMP_SWIG_OBJECT(IMP::membrane, DopePairScore, DopePairScores);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
 %include "IMP/membrane/HelixDecorator.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
-%include "IMP/membrane/dope_score.h"
+%include "IMP/membrane/DopePairScore.h"
+
 namespace IMP {
-namespace membrane {
-%template(DopePairScore) IMP::core::StatisticalPairScore< IMP::membrane::DopeType, false >;
-}
+  namespace membrane {
+   %template(_DopePairScoreBase) ::IMP::core::StatisticalPairScore< IMP::membrane::DopeType, true>;
+  }
 }
