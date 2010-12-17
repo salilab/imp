@@ -14,10 +14,10 @@ IMP_SWIG_OBJECT(IMP::membrane, DopePairScore, DopePairScores);
    %include line.*/
 %include "IMP/membrane/HelixDecorator.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
-%include "IMP/membrane/DopePairScore.h"
 
 namespace IMP {
   namespace membrane {
-   %template(_DopePairScoreBase) ::IMP::core::StatisticalPairScore< IMP::membrane::DopeType, true>;
+   %template(_DopePairScoreBase) ::IMP::core::StatisticalPairScore< IMP::membrane::DopeType, false>;
   }
 }
+%include "IMP/membrane/DopePairScore.h"

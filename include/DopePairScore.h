@@ -5,8 +5,8 @@
  *  Copyright 2007-9 IMP Inventors. All rights reserved.
  *
  */
-#ifndef IMPDOPE_PAIR_SCORE_H
-#define IMPDOPE_PAIR_SCORE_H
+#ifndef IMPMEMBRANE_DOPE_PAIR_SCORE_H
+#define IMPMEMBRANE_DOPE_PAIR_SCORE_H
 
 #include "membrane_config.h"
 #include <IMP/atom/Hierarchy.h>
@@ -35,8 +35,8 @@ class DopeType;
 
 */
 class IMPMEMBRANEEXPORT DopePairScore:
-  public core::StatisticalPairScore<DopeType, true> {
-  typedef core::StatisticalPairScore<DopeType, true>  P;
+  public core::StatisticalPairScore<DopeType, false> {
+  typedef core::StatisticalPairScore<DopeType, false>  P;
  public:
   DopePairScore(double threshold
                              = std::numeric_limits<double>::max());
@@ -52,4 +52,4 @@ IMPMEMBRANEEXPORT void add_dope_score_data(atom::Hierarchy h);
 /** @} */
 IMPMEMBRANE_END_NAMESPACE
 
-#endif /* IMPDOPE_PAIR_SCORE_H */
+#endif /* IMPMEMBRANE_DOPE_PAIR_SCORE_H */
