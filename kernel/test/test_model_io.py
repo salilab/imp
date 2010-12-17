@@ -52,15 +52,15 @@ class YamlTests(IMP.test.TestCase):
         """Check writing to yaml """
         (m, ps)= self._create_hetero_model()
         s= StringIO.StringIO()
-        IMP.write_model(ps, s)
+        IMP.write_particles(ps, s)
         first=s.getvalue()
         print first
         sto= StringIO.StringIO(first)
         ps[0].set_value(IMP.FloatKey("x"), 11)
         ps[0].add_attribute(IMP.ParticleKey("y"), ps[1])
-        IMP.read_model(sto, ps)
+        IMP.read_particles(sto, ps)
         s= StringIO.StringIO()
-        IMP.write_model(m, ps, s)
+        IMP.write_particles(ps, s)
         print s.getvalue()
         self.assertEqual(first, s.getvalue())
     def test_yaml_attr(self):
@@ -68,14 +68,14 @@ class YamlTests(IMP.test.TestCase):
         (m, ps)= self._create_homo_model()
         s= StringIO.StringIO()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        IMP.write_model(ps, fks, s)
+        IMP.write_particles(ps, fks, s)
         first=s.getvalue()
         print first
         sto= StringIO.StringIO(first)
         ps[0].set_value(IMP.FloatKey("x"), 11)
-        IMP.read_model(sto, ps, fks)
+        IMP.read_particles(sto, ps, fks)
         s= StringIO.StringIO()
-        IMP.write_model(ps, fks, s)
+        IMP.write_particles(ps, fks, s)
         print s.getvalue()
         self.assertEqual(first, s.getvalue())
 
@@ -85,11 +85,11 @@ class YamlTests(IMP.test.TestCase):
             self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test0.bimp"))
+        IMP.write_particles_binary(ps, fks, self.get_tmp_file_name("test0.bimp"))
         first= ps[0].get_value(IMP.FloatKey("x"))
         print first
         ps[0].set_value(IMP.FloatKey("x"), 11)
-        IMP.read_binary_model(self.get_tmp_file_name("test0.bimp"), ps, fks)
+        IMP.read_particles_binary(self.get_tmp_file_name("test0.bimp"), ps, fks)
         self.assertEqual(first, ps[0].get_value(IMP.FloatKey("x")))
 
     def test_netcdf_multiple(self):
@@ -98,15 +98,15 @@ class YamlTests(IMP.test.TestCase):
             self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
-        IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.bimp"), False)
+        IMP.write_particles_binary(ps, fks, self.get_tmp_file_name("test1.bimp"), False)
         for i in range(1,10):
             ps[0].set_value(fks[0], i)
-            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test1.bimp"), True)
+            IMP.write_particles_binary(ps, fks, self.get_tmp_file_name("test1.bimp"), True)
         print "reading"
         for i in range(0,10):
-            IMP.read_binary_model(self.get_tmp_file_name("test1.bimp"), ps, fks, i)
+            IMP.read_particles_binary(self.get_tmp_file_name("test1.bimp"), ps, fks, i)
             self.assertEqual(i, ps[0].get_value(IMP.FloatKey("x")))
-        self.assertRaises(IOError, IMP.read_binary_model, self.get_tmp_file_name("test1.bimp"), ps, fks, 10)
+        self.assertRaises(IOError, IMP.read_particles_binary, self.get_tmp_file_name("test1.bimp"), ps, fks, 10)
 
     def test_cs(self):
         """Check reading a configuration set"""
@@ -116,7 +116,7 @@ class YamlTests(IMP.test.TestCase):
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
         for i in range(0,10):
             ps[0].set_value(fks[0], i)
-            IMP.write_binary_model(ps, fks, self.get_tmp_file_name("test2.bimp"), i)
+            IMP.write_particles_binary(ps, fks, self.get_tmp_file_name("test2.bimp"), i)
         print "reading"
         cs=IMP.read_configuration_set(self.get_tmp_file_name("test2.bimp"),
                                       ps, fks)

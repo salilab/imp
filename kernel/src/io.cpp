@@ -12,16 +12,18 @@
 #ifdef IMP_USE_NETCDF
 #include <netcdfcpp.h>
 #endif
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 
 IMP_BEGIN_NAMESPACE
 
-IMPEXPORT void write_model(Model *,
+IMPEXPORT void write_particles(Model *,
                            const ParticlesTemp &particles,
                            TextOutput out) {
   write_model(particles, out);
 }
 
-IMPEXPORT void write_model(const ParticlesTemp &particles,
+IMPEXPORT void write_particles(const ParticlesTemp &particles,
                            TextOutput out) {
   internal::Map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -40,7 +42,7 @@ IMPEXPORT void write_model(const ParticlesTemp &particles,
   }
 }
 
-IMPEXPORT void write_model(const ParticlesTemp &particles,
+IMPEXPORT void write_particles(const ParticlesTemp &particles,
                            const FloatKeys &keys,
                            TextOutput out) {
   internal::Map<Particle*, unsigned int> to;
@@ -60,12 +62,12 @@ IMPEXPORT void write_model(const ParticlesTemp &particles,
   }
 }
 
-IMPEXPORT void write_model(Model *m,
+IMPEXPORT void write_particles(Model *m,
                            TextOutput out) {
   ParticlesTemp ps(m->particles_begin(), m->particles_end());
   write_model(m, ps, out);
 }
-IMPEXPORT void read_model(TextInput in,
+IMPEXPORT void read_particles(TextInput in,
                           const ParticlesTemp &particles,
                           Model *) {
   internal::LineStream ls(in);
@@ -114,7 +116,7 @@ IMPEXPORT void read_model(TextInput in,
 }
 
 
-IMPEXPORT void read_model(TextInput in,
+IMPEXPORT void read_particles(TextInput in,
                           const ParticlesTemp &particles,
                           const FloatKeys &keys) {
   internal::LineStream ls(in);
@@ -163,17 +165,60 @@ IMPEXPORT void read_model(TextInput in,
 }
 
 
-IMPEXPORT void read_model(TextInput in, Model *m) {
+IMPEXPORT void read_particles(TextInput in, Model *m) {
   ParticlesTemp ps(m->particles_begin(), m->particles_end());
   read_model(in, ps, m);
 }
 
+namespace {
+  void write_particles_to_buffer(const ParticlesTemp &particles,
+                          const FloatKeys &keys,
+                          char *buf, unsigned int size) {
+    IMP_USAGE_CHECK(size>= particles.size()*keys.size()*sizeof(double),
+                    "Not enough space: " << size << " vs "
+                    << particles.size()*keys.size()*sizeof(double));
+    boost::iostreams::stream<boost::iostreams::array_sink>  in(buf, size);
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      for (unsigned int j=0; j< keys.size(); ++j) {
+        double value=0;
+        if (particles[i]->has_attribute(keys[j])) {
+          value=particles[i]->get_value(keys[j]);
+        }
+        in.write(reinterpret_cast<char*>(&value), sizeof(double));
+        if (!in) {
+          IMP_THROW("Error reading writing to buffer", IOException);
+        }
+      }
+    }
+  }
+  void read_particles_from_buffer( const char *buffer, unsigned int size,
+                          const ParticlesTemp &particles,
+                          const FloatKeys &keys) {
+    IMP_USAGE_CHECK(size== particles.size()*keys.size()*sizeof(double),
+                    "Not enough data to read: " << size
+                    << " vs " << particles.size()*keys.size()*sizeof(double));
+    boost::iostreams::stream<boost::iostreams::array_source>  in(buffer, size);
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      for (unsigned int j=0; j< keys.size(); ++j) {
+        double value;
+        in.read(reinterpret_cast<char*>(&value), sizeof(double));
+        if (!in) {
+          IMP_THROW("Error reading from buffer", IOException);
+        }
+        if (particles[i]->has_attribute(keys[j])) {
+          particles[i]->set_value(keys[j], value);
+        }
+      }
+    }
+  }
+}
+
 #ifdef IMP_USE_NETCDF
 
-void write_binary_model(const ParticlesTemp &particles,
-                        const FloatKeys &keys,
-                        std::string filename,
-                        bool append) {
+void write_particles_binary(const ParticlesTemp &particles,
+                            const FloatKeys &keys,
+                            std::string filename,
+                            bool append) {
   NcFile::FileMode mode;
   // replace on 0 also
   if (append) {
@@ -213,15 +258,13 @@ void write_binary_model(const ParticlesTemp &particles,
     cur = f.add_var("0", ncDouble, 2, dims);
   }
   boost::scoped_array<double> values(new double[particles.size()*keys.size()]);
-  for (unsigned int i=0; i< particles.size(); ++i) {
-    for (unsigned int j=0; j< keys.size(); ++j) {
-      values[i*keys.size()+j]= particles[i]->get_value(keys[j]);
-    }
-  }
+  write_particles_to_buffer(particles, keys,
+                            reinterpret_cast<char*>(values.get()),
+                            particles.size()*keys.size()*sizeof(double));
   cur->put(values.get(), particles.size(), keys.size());
 }
 
-void read_binary_model(NcFile &f,
+void read_particles_binary(NcFile &f,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
                        int var_index) {
@@ -232,14 +275,12 @@ void read_binary_model(NcFile &f,
   NcVar *data=f.get_var(var_index);
   boost::scoped_array<double> values(new double[particles.size()*keys.size()]);
   data->get(values.get(), particles.size(), keys.size());
-  for (unsigned int i=0; i< particles.size(); ++i) {
-    for (unsigned int j=0; j< keys.size(); ++j) {
-      particles[i]->set_value(keys[j], values[i*keys.size()+j]);
-    }
-  }
+  read_particles_from_buffer(reinterpret_cast<char*>(values.get()),
+                             particles.size()*keys.size()*sizeof(double),
+                             particles, keys);
 }
 
-void read_binary_model(std::string filename,
+void read_particles_binary(std::string filename,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
                        int frame) {
@@ -272,9 +313,34 @@ void read_binary_model(std::string filename,
   } else {
     index=0;
   }
-  read_binary_model(f, particles, keys, index);
+  read_particles_binary(f, particles, keys, index);
 }
 #endif
+
+
+
+
+
+IMPEXPORT std::vector<char>
+write_particles_to_buffer(const ParticlesTemp &particles,
+                          const FloatKeys &keys) {
+  if (particles.empty() || keys.empty()) {
+    return std::vector<char>();
+  }
+  unsigned int size= particles.size()*keys.size()*sizeof(double);
+  std::vector<char> ret(size);
+  write_particles_to_buffer(particles, keys, &ret.front(), size);
+  return ret;
+}
+IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
+                                  const ParticlesTemp &particles,
+                                  const FloatKeys &keys) {
+  if (particles.empty() || keys.empty()) {
+    return;
+  }
+  read_particles_from_buffer(&buffer.front(),
+                             buffer.size()*sizeof(double), particles, keys);
+}
 
 
 
