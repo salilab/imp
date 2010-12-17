@@ -115,14 +115,14 @@ def create_restraints(m, chain, tmb, tme):
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
 
-#    add_excluded_volume()
+    add_excluded_volume()
     for i in range(len(tmb)-1):
         s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
         s1=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
-#        add_distance_restraint(p0,p1,20.0,100)
-#    add_packing_restraint()
+        add_distance_restraint(p0,p1,20.0,100)
+    add_packing_restraint()
     add_DOPE()
     return m.get_restraints()
 
