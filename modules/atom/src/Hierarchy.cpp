@@ -225,14 +225,20 @@ namespace {
               /*if (!c.get_as_residue()) {
                 TEST_FAIL("Sibling of residue is not residue at " << c);
                 }*/
-              Residue rc(c);
-              if (Residue(h).get_is_protein()
-                || Residue(h).get_is_dna()
-                  || Residue(h).get_is_rna()) {
-                if (rc.get_index() < last_index) {
-                  TEST_FAIL("Residue indexes out of order at " << rc);
+              if (c.get_as_residue()) {
+                Residue rc(c);
+                if (Residue(h).get_is_protein()
+                    || Residue(h).get_is_dna()
+                    || Residue(h).get_is_rna()) {
+                  if (rc.get_index() < last_index) {
+                    TEST_FAIL("Residue indexes out of order at " << rc);
+                  }
+                  last_index=rc.get_index();
                 }
-                last_index=rc.get_index();
+              } else if (c.get_as_fragment()){
+                // should check order, but it is a pain at
+              } else if (c.get_as_domain()) {
+                // should check order
               }
             }
           }
