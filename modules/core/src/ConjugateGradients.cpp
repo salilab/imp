@@ -38,9 +38,7 @@ bool is_good_value(const NT &f) {
 }
 
 void ConjugateGradients::failure() {
-  IMP_LOG(TERSE, "Failure in ConjugateGradients. The Model is:\n");
-  IMP_LOG_WRITE(TERSE, write_model(get_model(), IMP_STREAM));
-  throw ValueException("Failure in ConjugateGradients");
+  IMP_THROW("Failure in ConjugateGradients", ModelException);
 }
 
 
