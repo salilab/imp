@@ -258,10 +258,10 @@ public:
   }
 #endif
 
+#ifndef SWIG
   typedef double* CoordinateIterator;
   CoordinateIterator coordinates_begin() {return vec_;}
   CoordinateIterator coordinates_end() {return vec_+D;}
-#ifndef SWIG
   typedef const double* CoordinateConstIterator;
   CoordinateConstIterator coordinates_begin() const {return vec_;}
   CoordinateConstIterator coordinates_end() const {return vec_+D;}
@@ -465,6 +465,10 @@ typedef VectorD<3> Vector3D;
 typedef std::vector<VectorD<3> > Vector3Ds;
 typedef VectorD<4> Vector4D;
 typedef std::vector<VectorD<4> > Vector4Ds;
+typedef VectorD<5> Vector5D;
+typedef std::vector<VectorD<5> > Vector5Ds;
+typedef VectorD<6> Vector6D;
+typedef std::vector<VectorD<6> > Vector6Ds;
 
 template <unsigned int D>
 const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
