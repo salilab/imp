@@ -59,37 +59,34 @@ IMPEXPORT void write_particles(const ParticlesTemp &particles,
 IMPEXPORT void read_particles(TextInput in,
                           const ParticlesTemp &particles,
                           const FloatKeys &keys);
-
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-IMPEXPORT void write_particles(Model *m,
-                           TextOutput out);
-
-IMPEXPORT void read_particles(TextInput in, Model *m);
-#endif
 /** @} */
 
-#ifndef IMP_DOXYGEN
+#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
+IMP_DEPRECATED_WARN
 inline void write_model(Model *m,
                      const ParticlesTemp &particles,
                         TextOutput out) {
   write_particles(particles, out);
 }
+IMP_DEPRECATED_WARN
 inline void write_model(const ParticlesTemp &particles,
                         TextOutput out) {
   write_particles(particles, out);
 }
+IMP_DEPRECATED_WARN
 inline void read_model(TextInput in,
                        const ParticlesTemp &particles
                        ,Model *m=NULL
                        ) {
   read_particles(in, particles, m);
 }
+IMP_DEPRECATED_WARN
 inline void write_model(const ParticlesTemp &particles,
                            const FloatKeys &keys,
                         TextOutput out) {
   write_particles(particles, keys, out);
 }
-
+IMP_DEPRECATED_WARN
 inline void read_model(TextInput in,
                           const ParticlesTemp &particles,
                        const FloatKeys &keys) {
@@ -134,13 +131,15 @@ IMPEXPORT void read_particles_binary(std::string filename,
                            const FloatKeys &keys,
                            int frame=-1);
 
-#ifndef IMP_DOXYGEN
+#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
+IMP_DEPRECATED_WARN
 inline void write_binary_model(const ParticlesTemp &particles,
                                   const FloatKeys &keys,
                                   std::string filename,
                                   bool append=false) {
   write_particles_binary(particles, keys, filename, append);
 }
+IMP_DEPRECATED_WARN
 inline void read_binary_model(std::string filename,
                            const ParticlesTemp &particles,
                            const FloatKeys &keys,
@@ -215,10 +214,13 @@ IMP_MODEL_SAVE(WriteParticlesBinary, (const ParticlesTemp &ps,
                  write_particles_binary(ps_,fks_,file_name, !first_);
                  first_=false;
                });
+#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
 typedef WriteParticlesBinaryOptimizerState WriteBinaryOptimizerState;
 #endif
 
-#ifndef IMP_DOXYGEN
+#endif
+
+#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
 typedef WriteParticlesOptimizerState WriteOptimizerState;
 #endif
 
