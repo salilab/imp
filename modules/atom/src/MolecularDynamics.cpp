@@ -114,11 +114,8 @@ void MolecularDynamics::step()
 }
 
 
-//! Optimize the model.
-/** \param[in] max_steps   Maximum number of iterations before aborting.
-    \return score of the final state of the model.
- */
-Float MolecularDynamics::optimize(unsigned int max_steps)
+
+double MolecularDynamics::do_optimize(unsigned int max_steps)
 {
   Model *model = get_model();
   Pointer<RestraintSet> rs;

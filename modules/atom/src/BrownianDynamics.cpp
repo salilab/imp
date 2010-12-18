@@ -147,12 +147,7 @@ void BrownianDynamics::revert_coordinates(SingletonContainer *sc,
   T* is
  */
 
-
-//! Optimize the model.
-/** \param[in] max_steps   Maximum number of iterations before aborting.
-    \return score of the final state of the model.
- */
-Float BrownianDynamics::optimize(unsigned int max_steps)
+double BrownianDynamics::do_optimize(unsigned int max_steps)
 {
  IMP_USAGE_CHECK(get_model() != NULL, "Must set model before calling optimize");
  return simulate(si_.get_current_time_with_units().get_value()
