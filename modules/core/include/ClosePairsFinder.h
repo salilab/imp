@@ -17,9 +17,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-typedef std::pair<int,int> IntPair;
-typedef std::vector<IntPair> IntPairs;
-
 
 //! A base class for algorithms to find spatial proximities
 /** In general, the algorithm should make sure it returns all
