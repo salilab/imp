@@ -86,7 +86,7 @@ class ResamplingTest(IMP.test.TestCase):
             print "evaluate rb_all after transform fast: ",j , " : ", score2
             self.assertAlmostEqual(score1,score2, delta=0.1)
             for i in range(3):
-                for x in IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs[i])):
+                for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
                     x.set_coordinates(rand_t[i].get_inverse().get_transformed(x.get_coordinates()))
                 IMP.core.transform(self.rbs_of_copy[i],rand_t[i].get_inverse())
         self.imp_model.remove_restraint(self.restr_ps_all)
