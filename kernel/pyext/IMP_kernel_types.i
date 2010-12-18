@@ -141,6 +141,9 @@
 %typemap(in) Namespace::Name const& {
   BOOST_STATIC_ASSERT(0&&"Objects like "#Namespace"::"#Name" must be passed by pointer ref" #Name);
   }
+%pythoncode %{
+_object_types.append(#Name)
+%}
 %enddef
 
 
@@ -233,11 +236,16 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 IMP_SWIG_VALUE_CHECKS_BASE(Namespace, PluralName);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %pythoncode %{
-  PluralName=list
-  PluralName##Temp=list
+PluralName=list
+_plural_types.append(#PluralName)
 %}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
+%{
+  void test_##PluralName##s() {
+    Namespace::PluralName nm;
+  }
+%}
 %enddef
 
 
@@ -348,9 +356,9 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 %pythoncode %{
-  def PluralName(l=[]):
+def PluralName(l=[]):
     return [Name(x) for x in l]
-  PluralName##Temp=PluralName
+_plural_types.append(#PluralName)
 %}
 %extend Namespace::Name {
 void add_attribute(IMP::FloatKey k, IMP::Float v, bool opt) {
@@ -430,6 +438,9 @@ IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 %{
   BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==3);
 %}
+%pythoncode %{
+_value_types.append(#Name)
+%}
 %enddef
 
 
@@ -441,6 +452,9 @@ IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName);
 %{
   BOOST_STATIC_ASSERT(IMP::internal::swig::Convert<Namespace::Name>::converter==4);
+%}
+%pythoncode %{
+_value_types.append(#Name)
 %}
 %enddef
 
@@ -460,8 +474,9 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, Name, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, Name,);
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
-  PluralName=list
-  PluralName##Temp=list
+PluralName=list
+_plural_types.append(#PluralName)
+_value_types.append(#Name)
 %}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
@@ -493,15 +508,18 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
  }
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
-  PluralName=list
+PluralName=list
+_plural_types.append(#PluralName)
+_value_types.append(#Name)
 %}
 %feature("valuewrapper") PluralName;
 %{
-  void test_##PluralName() {
+  void test_##PluralName##s() {
     Namespace::PluralName nm;
   }
-  %}
+%}
 %enddef
+
 
 
 
@@ -524,6 +542,9 @@ try {
  }
 %typemap(out) Namespace::Name {
  }
+%pythoncode %{
+  _raii_types.append(#Name)
+%}
 %enddef
 
 
@@ -534,11 +555,6 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PairName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %feature("valuewrapper") PluralName;
-%pythoncode %{
-  def PairName(a,b):
-    return (a,b)
-  PluralName= list
-%}
 %enddef
 
 %define IMP_SWIG_SEQUENCE_PAIR(Namespace, Name0, Name1, PairName)
@@ -555,6 +571,7 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
     return (a,b)
 %}
 %enddef
+
 
 
 %define IMP_SWIG_GRAPH(Namespace, Name, Type, Label)
@@ -591,4 +608,7 @@ class BoostDigraph;
       $1= &p->access_graph();
  }
 %template(Name) ::IMP::internal::BoostDigraph< Namespace::Type, Label>;
+%pythoncode %{
+_value_types.append(#Name)
+%}
 %enddef
