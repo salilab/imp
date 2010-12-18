@@ -17,8 +17,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /**    \ingroup uninitialized_default
  */
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
+ public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   typedef PrincipalComponentAnalysis This;
-public:
+#endif
   PrincipalComponentAnalysis(){
     initialized_=false;}
   PrincipalComponentAnalysis(
