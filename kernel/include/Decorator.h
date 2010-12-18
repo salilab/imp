@@ -247,50 +247,12 @@ public:
   Decorator();
   //! @}
 #endif
-  IMP_NO_DOXYGEN(bool is_null() const {return !particle_;});
-  IMP_NO_DOXYGEN(typedef void (Decorator::*bool_type)() const);
-  IMP_NO_DOXYGEN(void safe_bool_function() const {});
-  IMP_NO_DOXYGEN(typedef boost::false_type DecoratorHasTraits);
-};
-#if 0
-
-/** Certain decorators require \quote{traits} to customize their behavior.
-These traits typically are used to allow one decorator class to provide
-functionality that can be applied in a variety of contexts. Examples
-include IMP::core::Hierarchy and IMP::core::XYZR.
-
-Two DecoratorsWithTraits are equal only if the particle and the traits
-are equal.
-*/
-template <class Base, class Traits>
-class DecoratorWithTraits: public Base {
-  typedef DecoratorWithTraits<Base,Traits> T;
-  Traits traits_;
-  int compare(const DecoratorWithTraits<Base, Traits> &o) const {
-    if (Base::is_null() || o.is_null()){
-      if (Base::is_null() == o.is_null()) return 0;
-      else if (Base::is_null()) return -1;
-      else return 1;
-    } else if (traits_== o.traits_) {
-      return Base::compare(o);
-    } else {
-      if (traits_ < o.traits_) return -1;
-      else return 1;
-    }
-  }
-protected:
-  DecoratorWithTraits(){}
-  DecoratorWithTraits(Traits tr): traits_(tr){}
-  DecoratorWithTraits(Particle *p, Traits tr): Base(p), traits_(tr){}
-public:
-  IMP_NO_DOXYGEN(typedef T This);
-  typedef Base DecoratorTraitsBase;
-  typedef Traits DecoratorTraits;
-  const Traits& get_decorator_traits() const {return traits_;}
-  IMP_NO_DOXYGEN(typedef boost::true_type DecoratorHasTraits);
-  IMP_COMPARISONS;
-};
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  typedef void (Decorator::*bool_type)() const;
+  void safe_bool_function() const {};
+  typedef boost::false_type DecoratorHasTraits;
 #endif
+};
 
 
 #ifndef IMP_DOXYGEN
