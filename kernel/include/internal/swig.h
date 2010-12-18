@@ -39,7 +39,7 @@ public:
   IMP_RESTRAINT(_ConstRestraint);
 };
 
-
+IMP_OBJECTS(_ConstRestraint, _ConstRestraints);
 
 class IMPEXPORT _ConstSingletonScore: public IMP::SingletonScore {
   double v_;
@@ -47,6 +47,7 @@ public:
   _ConstSingletonScore(double v): v_(v){}
   IMP_SINGLETON_SCORE(_ConstSingletonScore);
 };
+IMP_OBJECTS(_ConstSingletonScore, _ConstSingletonScores);
 
 
 
@@ -56,6 +57,7 @@ public:
   _ConstPairScore(double v): v_(v){}
   IMP_PAIR_SCORE(_ConstPairScore);
 };
+IMP_OBJECTS(_ConstPairScore, _ConstPairScores);
 
 
 class IMPEXPORT _TrivialDecorator: public Decorator {
@@ -125,6 +127,7 @@ class IMPEXPORT _ConstOptimizer: public Optimizer {
   IMP_OPTIMIZER(_ConstOptimizer);
 };
 
+IMP_OBJECTS(_ConstOptimizer, _ConstOptimizers);
 
 
 
@@ -224,9 +227,11 @@ public:
     }
   }
 #endif
+#ifndef SWIG
   BG &access_graph() {
     return bg_;
   }
+#endif
   const BG &get_graph() const {
     return bg_;
   }
