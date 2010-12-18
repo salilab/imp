@@ -9,6 +9,7 @@ import os
 import random
 import IMP
 import time
+import types
 import shutil
 import _compat_python
 import _compat_python.unittest2
@@ -262,12 +263,110 @@ class TestCase(unittest.TestCase):
             p = self.create_point_particle(model, v[0], v[1], v[2])
             ps.append(p)
         return ps
+    def _get_type(self, module, name):
+        return eval('type('+module+"."+name+')')
+    def assertValueObjects(self, module, exceptions):
+        """Check that all the classes in the module are values or objects."""
+        all= dir(module)
+        bad=[]
+        for name in all:
+            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+                if name.find("SwigPyIterator") != -1:
+                    continue
+                if name in exceptions:
+                    continue
+                if name not in eval(module.__name__+"._value_types")\
+                       and name not in eval(module.__name__+"._object_types")\
+                       and name not in eval(module.__name__+"._raii_types")\
+                       and name not in eval(module.__name__+"._plural_types"):
+                    bad.append(name)
+        self.assertEquals(len(bad), 0,
+                          "All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not: %s. Please add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
+                          % (str(bad)))
+
+    def assertClassNames(self, module, exceptions):
+        """Check that all the classes in the module follow the imp naming conventions."""
+        all= dir(module)
+        bad=[]
+        for name in all:
+            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+                if name.find("SwigPyIterator") != -1:
+                    continue
+                if name.find('_') != -1:
+                    bad.append(name)
+                if name.lower== name:
+                    bad.append(name)
+        self.assertEquals(len(bad), 0,
+                          "All IMP classes should have CamelCase names. The following do not: %s." \
+                          % (str(bad)))
+
+
+    def _check_function_name(self, prefix, name, verbs, all, exceptions):
+        if prefix:
+            fullname=prefix+"."+name
+        else:
+            fullname=name
+        old_exceptions=['unprotected_evaluate_subset',
+                        'unprotected_evaluate', "unprotected_incremental_evaluate",
+                        "after_evaluate", "before_evaluate"]
+        if name in old_exceptions:
+            return []
+        #print "name", fullname
+        if fullname in exceptions:
+            return []
+        if name.endswith("swigregister"):
+            return []
+        if name.lower() != name:
+            if name[0].lower() != name[0] and name.split('_')[0] in all:
+                # static methods
+                return []
+            else:
+                return [fullname]
+        starts=False
+        for v in verbs:
+            if name.startswith(v):
+                starts=True
+                break
+        if not starts:
+            return [fullname]
+        return []
+    def _check_function_names(self, module, prefix, names, verbs, all, exceptions):
+        bad=[]
+        #print "names", module, prefix
+        for name in names:
+            if name.startswith("_") or name =="weakref_proxy":
+                continue
+            if self._get_type(module, name)==types.BuiltinMethodType\
+                   or self._get_type(module, name)==types.MethodType:
+                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions))
+            if self._get_type(module, name)==types.TypeType and name.find("SwigPyIterator")==-1:
+                #print "sub", module+"."+name
+                members=eval("dir("+module+"."+name+")")
+                #print members
+                bad.extend(self._check_function_names(module+"."+name,
+                                                      name,
+                                                      members,
+                                                      verbs, [], exceptions))
+        return bad
+
+
+
+    def assertFunctionNames(self, module, exceptions):
+        """Check that all the functions in the module follow the imp naming conventions."""
+        all= dir(module)
+        verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
+               "push", "pop", "write", "read", "show", "do", "load", "save", "reset",
+               "clear", "handle", "update", "apply", "optimize", "reserve", "dump"]
+        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions)
+        self.assertEquals(len(bad), 0,
+                          "All IMP methods should have lower case names separated by underscores and beginning with a verb, preferable one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. The following do not: %s. If there is a good reason for them not to, add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
+                          % (str(bad)))
 
     def assertPlural(self, modulename, exceptions):
         """Check that all the classes in modulename have associated types to hold many of them."""
         all= dir(modulename)
         not_found=[]
-        for f in dir(modulename):
+        for f in all:
             if f[0].upper()== f[0] and len(f) > 1 and f[1].upper() != f[1]\
                     and  "_" not in f and not f.endswith("_swigregister")\
                     and f not in exceptions and not f.endswith("s")\
@@ -276,23 +375,24 @@ class TestCase(unittest.TestCase):
                 if f+"s" not in dir(modulename):
                     not_found.append(f)
         self.assertEquals(len(not_found), 0,
-                          "Classes %s do not have plural versions" \
+                          "All IMP classes have an associated plural version. The following do not: %s. If there is a good reason for them not to, or the english spelling of the plural is not their name with an added 's', add them to the plural_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % str(not_found))
 
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
         all= dir(modulename)
         not_found=[]
-        for f in dir(modulename):
+        for f in all:
             if f[0].upper()== f[0] and len(f)>1 and f[1].upper() != f[1]\
                     and  "_" not in f and not f.endswith("_swigregister")\
                     and f not in exceptions and not f.endswith("s")\
                     and not f.endswith("Temp") and not f.endswith("Iterator")\
-                    and not f.endswith("Exception"):
+                    and not f.endswith("Exception") and\
+                    f not in eval(modulename.__name__+"._raii_types"):
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         self.assertEquals(len(not_found), 0,
-                          "Classes %s do not have show methods" \
+                          "All IMP classes should support show and __str__. The following do not: %s. If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % str(not_found))
 
     def run_example(self, filename):
