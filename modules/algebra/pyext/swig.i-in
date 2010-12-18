@@ -97,7 +97,6 @@ namespace IMP {
  }
 }
 %include "IMP/algebra/Grid3D.h"
-%include "IMP_algebra_GeometricHash.i"
 namespace IMP {
  namespace algebra {
    %template(Sphere2D) SphereD<2>;
