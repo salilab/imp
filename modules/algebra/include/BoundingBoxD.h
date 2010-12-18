@@ -179,6 +179,35 @@ double get_maximum_length(const BoundingBoxD<D> &a) {
   return e;
 }
 
+
+//! Return a list of the 8 bounding points for the bounding box
+inline std::vector<VectorD<3> > get_vertices(const BoundingBoxD<3> &bb) {
+  std::vector<VectorD<3> > ret; ret.reserve(8);
+  for (unsigned int i=0; i< 2; ++i) {
+    for (unsigned int j=0; j< 2; ++j) {
+      for (unsigned int k=0; k< 2; ++k) {
+        ret.push_back(VectorD<3>(bb.get_corner(i)[0],
+                                 bb.get_corner(j)[1],
+                                 bb.get_corner(k)[2]));
+      }
+    }
+  }
+  return ret;
+}
+
+//! Return the edges of the box as indices into the vertices list
+inline IntPairs get_edges(const BoundingBoxD<3> &bb) {
+  static const IntPair edges[12]={IntPair(0,1), IntPair(0,2), IntPair(0,4),
+                                 IntPair(1,3), IntPair(1,5),
+                                 IntPair(2,3), IntPair(2,6),
+                                 IntPair(3,7),
+                                 IntPair(4,5), IntPair(4,6),
+                                 IntPair(5,7),
+                                 IntPair(6,7)};
+  static IntPairs ret(edges, edges+12);
+  return ret;
+}
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_BOUNDING_BOX_D_H */
