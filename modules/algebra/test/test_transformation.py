@@ -35,10 +35,8 @@ class Transformation2DTests(IMP.test.TestCase):
         R = IMP.algebra.Rotation2D(angle_applied);
         y1 = R.get_rotated(x1)+shift_applied;
         y2 = R.get_rotated(x2)+shift_applied;
-        set1 = IMP.algebra.Vector2Ds(2);
-        set2 = IMP.algebra.Vector2Ds(2);
-        set1[0]=x1; set1[1]=x2;
-        set2[0]=y1; set2[1]=y2;
+        set1 = [x1, x2]
+        set2 = [y1, y2]
         T = IMP.algebra.get_transformation_aligning_pair(set1,set2);
         self.assertAlmostEqual(angle_applied,T.get_rotation().get_angle(),
                                delta=.01)

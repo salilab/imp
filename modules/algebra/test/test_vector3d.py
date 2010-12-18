@@ -15,9 +15,7 @@ class Vector3DTests(IMP.test.TestCase):
         """Check I/O of Vector3Ds"""
         class NotAFile(object):
             pass
-        vs1 = IMP.algebra.Vector3Ds()
-        vs1.push_back(IMP.algebra.Vector3D(1.0, 2.0, 3.0))
-        vs1.push_back(IMP.algebra.Vector3D(4.0, 5.0, 6.0))
+        vs1 = [IMP.algebra.Vector3D(1.0, 2.0, 3.0), IMP.algebra.Vector3D(4.0, 5.0, 6.0)]
 
         # Test read/write for regular files and file-like objects
         sio = StringIO.StringIO()

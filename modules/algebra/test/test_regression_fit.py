@@ -10,7 +10,7 @@ class RegressionTests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 4.0)
         v2 = IMP.algebra.Vector2D(2.0, 5.0)
         v3 = IMP.algebra.Vector2D(3.0, 6.0)
-        vs= IMP.algebra.Vector2Ds()
+        vs= []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)
@@ -24,7 +24,7 @@ class RegressionTests(IMP.test.TestCase):
         v1 = IMP.algebra.Vector2D(1.0, 9.0)
         v2 = IMP.algebra.Vector2D(2.0, 15.0)
         v3 = IMP.algebra.Vector2D(3.0, 23.0)
-        vs= IMP.algebra.Vector2Ds()
+        vs= []
         vs.append(v1)
         vs.append(v2)
         vs.append(v3)

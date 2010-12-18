@@ -26,7 +26,7 @@ class Vector3DTests(IMP.test.TestCase):
         n=50
         r=1.2
         v= IMP.algebra.Vector3D(1,2,3)
-        ss= IMP.algebra.Sphere3Ds()
+        ss= []
         for i in range(0,100):
             c= IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(10,10,10),
                                                  3.0))
