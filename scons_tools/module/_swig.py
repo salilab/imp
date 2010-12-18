@@ -105,6 +105,13 @@ def _action_swig_file(target, source, env):
 %include "std_string.i"
 %include "std_pair.i"
 
+%pythoncode %{
+_value_types=[]
+_object_types=[]
+_raii_types=[]
+_plural_types=[]
+%}
+
 """)
     for i in base_includes:
         preface.append('%include "'+ i + '"')
@@ -155,11 +162,15 @@ std::string get_data_path(std::string fname);
     udeps= source[3].get_contents().split(" ")
     preface.append("%pythoncode {")
     for d in deps:
-        nm=scons_tools.dependency.get_dependency_string(d).lower()
-        preface.append("has_"+nm +"=True")
+        # avoid issues with dumb encoding as strings
+        if d != "":
+            nm=scons_tools.dependency.get_dependency_string(d).lower()
+            preface.append("has_"+nm +"=True")
     for d in udeps:
-        nm=scons_tools.dependency.get_dependency_string(d).lower()
-        preface.append("has_"+nm+"=False")
+        # avoid issues with dumb encoding as strings
+        if d != "":
+            nm=scons_tools.dependency.get_dependency_string(d).lower()
+            preface.append("has_"+nm+"=False")
     preface.append("}")
     if vars['module'] != "kernel":
         preface.append("""
