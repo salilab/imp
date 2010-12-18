@@ -20,6 +20,7 @@
 #include <IMP/algebra/Cylinder3D.h>
 #include <IMP/algebra/Ellipsoid3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
+#include <IMP/algebra/Plane3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -112,6 +113,21 @@ class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
   const algebra::Sphere3D& get_location() const {return loc_;}
   IMP_GEOMETRY(LabelGeometry);
 };
+
+#ifdef IMP_USE_CGAL
+//! Display a plane as truncated to a bounding box
+/** This requires CGAL.
+ */
+class IMPDISPLAYEXPORT PlaneGeometry: public Geometry {
+  algebra::Plane3D plane_;
+  algebra::BoundingBox3D bb_;
+ public:
+  PlaneGeometry(const algebra::Plane3D &loc,
+                const algebra::BoundingBox3D& box);
+  IMP_GEOMETRY(PlaneGeometry);
+};
+#endif
+
 
 IMPDISPLAY_END_NAMESPACE
 
