@@ -124,7 +124,7 @@ public:
     return get_type_name() + "("+__str__()+")";
   }
 
-  void debugger_show() const {
+  void _debugger_show() const {
     show(std::cout);
   }
 
@@ -170,7 +170,7 @@ public:
   // swig needs to know to wrap this function
   virtual void do_show(std::ostream &out) const =0;
 
-  void on_destruction() {
+  void _on_destruction() {
 #if IMP_BUILD < IMP_FAST
     for_destruction_.set(log_level_);
 #endif
