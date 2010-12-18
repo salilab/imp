@@ -241,11 +241,6 @@ _plural_types.append(#PluralName)
 %}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
-%{
-  void test_##PluralName##s() {
-    //Namespace::PluralName nm;
-  }
-%}
 %enddef
 
 
@@ -270,6 +265,11 @@ IMP_SWIG_OBJECT(Namespace, Name, PluralName);
           return IMP.VersionInfo("python", "0")%}
 }
 IMP_SWIG_DIRECTOR(Namespace, Name);
+%{
+  void test_##PluralName##s() {
+    Namespace::PluralName nm;
+  }
+%}
 %enddef
 
 
@@ -515,7 +515,7 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   void test_##PluralName##s() {
-    //Namespace::PluralName nm;
+    Namespace::PluralName nm;
   }
 %}
 %enddef
