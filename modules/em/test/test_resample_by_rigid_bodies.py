@@ -77,7 +77,7 @@ class ResamplingTest(IMP.test.TestCase):
                     IMP.algebra.Vector3D(-2.,-2.,-2.),
                     IMP.algebra.Vector3D(2.,2.,2.)))))
             for i in range(3):
-                for x in IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs[i])):
+                for x in IMP.core.XYZs(IMP.core.get_leaves(self.mhs[i])):
                     x.set_coordinates(rand_t[i].get_transformed(x.get_coordinates()))
                 IMP.core.transform(self.rbs_of_copy[i],rand_t[i])
             score1=self.restr_ps_all.evaluate(False)
