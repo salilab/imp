@@ -8,6 +8,8 @@
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/linear_least_squares_fitting_3.h>
 #include <CGAL/Polygon_convex_decomposition_2.h>
+#include <CGAL/ch_graham_andrew.h>
+#include <CGAL/intersections.h>
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
@@ -70,6 +72,50 @@ get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly) {
       ret.first.back().push_back(algebra::Vector3D(pt[0], pt[1], pt[2]));
     }
     //std::cout << std::endl;
+  }
+  return ret;
+}
+
+namespace {
+  template <class To, class From>
+  To tr(const From &v) {
+    return To(v[0], v[1], v[2]);
+  }
+}
+
+std::vector<algebra::VectorD<3> >
+get_intersection(const algebra::VectorD<3> &normal,
+                 double d,
+                 const algebra::BoundingBoxD<3> &bb) {
+  typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
+  typedef Kernel::Point_2 Point_2;
+  typedef Kernel::Point_3 Point_3;
+  typedef Kernel::Direction_3 Direction_3;
+  typedef Kernel::Vector_3 Vector_3;
+  typedef Kernel::Plane_3 Plane_3;
+  typedef Kernel::Segment_3 Segment_3;
+  Plane_3 plane(tr<Point_3>(normal*d), tr<Direction_3>(normal));
+  std::cout << "plane " << plane << std::endl;
+  std::vector<algebra::VectorD<3> > corners= algebra::get_vertices(bb);
+  IntPairs edges= algebra::get_edges(bb);
+  std::vector<Point_2> intersections;
+  for (unsigned int i=0; i< edges.size(); ++i) {
+    Segment_3 s(tr<Point_3>(corners[edges[i].first]),
+                tr<Point_3>(corners[edges[i].second]));
+    std::cout << s << std::endl;
+    CGAL::Object o=CGAL::intersection(plane, s);
+    if (const Point_3* ip= CGAL::object_cast<Point_3>(&o)) {
+      intersections.push_back(plane.to_2d(*ip));
+    }
+  }
+  std::vector<Point_2> ch;
+  CGAL::ch_graham_andrew(intersections.begin(), intersections.end(),
+                         std::back_inserter(ch));
+  std::vector<algebra::VectorD<3> > ret;
+  for (unsigned int i=0; i< ch.size(); ++i) {
+    std::cout << "found " << ch[i] << " is "
+              << plane.to_3d(ch[i]) << std::endl;
+    ret.push_back(tr<algebra::VectorD<3> >(plane.to_3d(ch[i])));
   }
   return ret;
 }
