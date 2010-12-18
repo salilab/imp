@@ -265,7 +265,7 @@ ConjugateGradients::ConjugateGradients(Model *m):
 
 
 
-Float ConjugateGradients::optimize(unsigned int max_steps)
+Float ConjugateGradients::do_optimize(unsigned int max_steps)
 {
   IMP_OBJECT_LOG;
   IMP_USAGE_CHECK(get_model(),

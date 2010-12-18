@@ -34,7 +34,7 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
                                   return_best_(true) {}
 
 
-Float MonteCarlo::optimize(unsigned int max_steps)
+Float MonteCarlo::do_optimize(unsigned int max_steps)
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);

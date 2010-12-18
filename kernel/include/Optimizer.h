@@ -53,7 +53,7 @@ class IMPEXPORT Optimizer: public Object
 
       \return The final score.
   */
-  virtual Float optimize(unsigned int max_steps) = 0;
+  double optimize(unsigned int max_steps);
 
 #ifndef IMP_DOXYGEN
   /** \name Score threshold
@@ -111,6 +111,8 @@ class IMPEXPORT Optimizer: public Object
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
  protected:
+  //! override this function to do actual optimization
+  virtual double do_optimize(unsigned int ns) =0;
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;
 

@@ -21,17 +21,7 @@ void SteepestDescent::do_show(std::ostream &) const {
 }
 
 
-
-//! Optimize the model.
-/** Follow the gradient based on the partial derivatives. Multiply by the
-   current step size. If the score gets worse, reduce the step size.
-   If the score gets better, increase the step size if we are sufficiently
-   far from a score of zero. If the score reaches the threshold, quit.
-
-   \param[in] max_steps The maximum steps that should be take before giving up.
-   \return score of the final state of the model.
- */
-Float SteepestDescent::optimize(unsigned int max_steps)
+double SteepestDescent::do_optimize(unsigned int max_steps)
 {
   std::vector<Float> temp_vals;
   std::vector<Float> temp_derivs;

@@ -21,7 +21,7 @@ void ConjugateGradients::do_show(std::ostream &) const {
 }
 
 
-Float ConjugateGradients::optimize(unsigned int nsteps) {
+Float ConjugateGradients::do_optimize(unsigned int nsteps) {
   const gsl_multimin_fdfminimizer_type *t
     =gsl_multimin_fdfminimizer_conjugate_fr;
   return GSLOptimizer::optimize(nsteps, t, initial_step_,

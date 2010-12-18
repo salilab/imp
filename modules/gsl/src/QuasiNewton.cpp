@@ -20,7 +20,7 @@ QuasiNewton::QuasiNewton(Model *m): GSLOptimizer(m) {
 void QuasiNewton::do_show(std::ostream &) const {
 }
 
-Float QuasiNewton::optimize(unsigned int nsteps) {
+Float QuasiNewton::do_optimize(unsigned int nsteps) {
   const gsl_multimin_fdfminimizer_type *t
     =gsl_multimin_fdfminimizer_vector_bfgs2;
   return GSLOptimizer::optimize(nsteps, t, initial_step_,

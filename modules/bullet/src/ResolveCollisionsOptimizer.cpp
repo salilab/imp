@@ -368,7 +368,7 @@ bool handle_ev() {
  */
 
 
-double ResolveCollisionsOptimizer::optimize(unsigned int iter) {
+double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   {
   IMP_OBJECT_LOG;
   internal::Memory memory;
