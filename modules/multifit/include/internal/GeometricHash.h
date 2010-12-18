@@ -13,7 +13,7 @@
 #include <cmath>
 #include "../multifit_config.h"
 
-IMPMULTIFIT_BEGIN_NAMESPACE
+IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
 /* Point<F, D> represents a D-dimensional point whose coordinates have
     * type F.
@@ -425,5 +425,5 @@ private:
   F radii_[D];
 };
 
-IMPMULTIFIT_END_NAMESPACE
+IMPMULTIFIT_END_INTERNAL_NAMESPACE
 #endif  /* IMPMULTIFIT_GEOMETRIC_HASH_H */
