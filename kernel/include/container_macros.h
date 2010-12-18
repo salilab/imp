@@ -40,10 +40,7 @@
     return container_name.end();}                                       \
 
 #else
-#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname) \
-  IMP_NO_DOXYGEN(typedef ContainerType::iterator Ucname##Iterator;)     \
-  Ucname##Iterator lcname##s_begin() {return container_name.begin();}   \
-  Ucname##Iterator lcname##s_end() {return container_name.end();}
+#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname)
 #endif // SWIG
 
 /**  \brief  A macro to provide a uniform interface for storing lists of
