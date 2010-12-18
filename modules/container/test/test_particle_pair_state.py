@@ -29,9 +29,9 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
-        return IMP.ParticlesTemp([p])
+        return [p]
     def get_output_particles(self, p):
-        return IMP.ParticlesTemp([p])
+        return [p]
 
 
 class PairTestModifier(IMP.PairModifier):
@@ -52,9 +52,9 @@ class PairTestModifier(IMP.PairModifier):
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
-        return IMP.ParticlesTemp([p])
+        return [p]
     def get_output_particles(self, p):
-        return IMP.ParticlesTemp([p])
+        return [p]
 
 
 def particle_has_attribute(p, k):
@@ -83,7 +83,7 @@ class PairContainerTest(IMP.test.TestCase):
         d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.Vector3D(0,0,1))
         d1.set_coordinates(IMP.algebra.Vector3D(0,0,0))
-        return IMP.ParticlePair(p0,p1)
+        return (p0,p1)
 
     def same(self, a,b):
         return a.get_name() == b.get_name()

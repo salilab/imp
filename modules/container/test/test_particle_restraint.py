@@ -27,7 +27,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         d1.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-        return IMP.ParticlePair(p0,p1)
+        return (p0,p1)
 
     def create_singleton_score(self):
         uf= IMP.core.Linear(0,1)
@@ -41,7 +41,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         return IMP.core.SingletonRestraint(ps, p)
 
     def create_pair_restraint(self, ps, p):
-        return IMP.core.PairRestraint(ps, IMP.ParticlePair(p[0], p[1]))
+        return IMP.core.PairRestraint(ps, (p[0], p[1]))
 
 
     def test_restraint(self):
@@ -170,7 +170,7 @@ class SingletonContainerTest(IMP.test.TestCase):
     def test_max_score(self):
         """Test the MaximumSingletonScore"""
         m= IMP.Model()
-        s= IMP.SingletonScoresTemp()
+        s= []
         for i in range(0,5):
             s.append(IMP._ConstSingletonScore(i))
         ps= IMP.container.MaximumSingletonScore(s, 2)
@@ -181,7 +181,7 @@ class SingletonContainerTest(IMP.test.TestCase):
     def test_min_score(self):
         """Test the MinimumSingletonScore"""
         m= IMP.Model()
-        s= IMP.SingletonScoresTemp()
+        s= []
         for i in range(0,5):
             s.append(IMP._ConstSingletonScore(i))
         ps= IMP.container.MinimumSingletonScore(s, 3)

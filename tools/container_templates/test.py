@@ -27,7 +27,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         d1= IMP.core.XYZ.setup_particle(p1)
         d0.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         d1.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
-        return IMP.ParticlePair(p0,p1)
+        return (p0,p1)
 
     def create_singleton_score(self):
         uf= IMP.core.Linear(0,1)
@@ -41,7 +41,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         return IMP.core.SingletonRestraint(ps, p)
 
     def create_pair_restraint(self, ps, p):
-        return IMP.core.PairRestraint(ps, IMP.ParticlePair(p[0], p[1]))
+        return IMP.core.PairRestraint(ps, (p[0], p[1]))
 
 
     def test_restraint(self):
