@@ -9,7 +9,7 @@ class DummyRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_containers(self):
         return IMP.ContainersTemp()
 
@@ -35,9 +35,9 @@ class DummyScoreState(IMP.ScoreState):
     def update(self):
         pass
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_output_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_objects(self):
         return IMP.ObjectsTemp()
     def get_output_objects(self):
@@ -56,9 +56,9 @@ class ClassScoreState(IMP.ScoreState):
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_output_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_objects(self):
         return IMP.ObjectsTemp()
     def get_output_objects(self):
