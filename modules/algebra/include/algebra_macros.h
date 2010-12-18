@@ -112,7 +112,12 @@
   typedef Name##D<3> Name##3D;                                          \
   IMP_VALUES(Name##3D, Name##3Ds);                                      \
   typedef Name##D<4> Name##4D;                                          \
-  IMP_VALUES(Name##4D, Name##4Ds)
+  IMP_VALUES(Name##4D, Name##4Ds);                                      \
+  typedef Name##D<5> Name##5D;                                          \
+  IMP_VALUES(Name##5D, Name##5Ds);                                      \
+  typedef Name##D<6> Name##6D;                                          \
+  IMP_VALUES(Name##6D, Name##6Ds)
+
 
 
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, name, bounding_box)          \
@@ -152,7 +157,18 @@
     return g;}                                                          \
   IMP_NO_SWIG(template <unsigned int D>                                 \
   inline void set_##name##_d_geometry(Name &g, const Name##D<D> &v) {   \
-                g=v;})
+                g=v;})                                                  \
+  typedef Name##D<2> Name##2D;                                          \
+  IMP_VALUES(Name##2D, Name##2Ds);                                      \
+  typedef Name##D<3> Name##3D;                                          \
+  IMP_VALUES(Name##3D, Name##3Ds);                                      \
+  typedef Name##D<4> Name##4D;                                          \
+  IMP_VALUES(Name##4D, Name##4Ds);                                      \
+  typedef Name##D<5> Name##5D;                                          \
+  IMP_VALUES(Name##5D, Name##5Ds);                                      \
+  typedef Name##D<6> Name##6D;                                          \
+  IMP_VALUES(Name##6D, Name##6Ds)
+
 #endif
 
 #endif  /* IMPALGEBRA_MACROS_H */
