@@ -42,9 +42,12 @@ class FFTFittingTest(IMP.test.TestCase):
         step=2*IMP.algebra.Vector3D(self.scene.get_spacing(),
                                  self.scene.get_spacing(),
                                  self.scene.get_spacing())
-        pos = self.start_center
-        while IMP.algebra.get_distance(self.end_center,pos)>3.:
-            pos +=step
+        #pos = self.start_center
+        bb=IMP.algebra.BoundingBox3D(self.start_center,self.end_center)
+        #while IMP.algebra.get_distance(self.end_center,pos)>3.:
+        for i in range(5):
+            #pos +=step
+            pos=IMP.algebra.get_random_vector_in(bb)
             t = IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(),
                 pos-self.orig_center)
