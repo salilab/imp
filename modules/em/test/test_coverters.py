@@ -19,7 +19,7 @@ class ConvertersTest(IMP.test.TestCase):
         mdl = IMP.Model()
         ps = IMP.em.density2particles(self.scene,self.scene_threshold,mdl)
         self.assertAlmostEqual(
-            IMP.algebra.get_distance(IMP.core.get_centroid(IMP.core.XYZsTemp(ps)),
+            IMP.algebra.get_distance(IMP.core.get_centroid(ps),
                                      self.scene_centroid),
             0,
             delta=0.1)
