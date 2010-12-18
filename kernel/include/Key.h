@@ -67,7 +67,7 @@ class Key
 private:
  bool is_default() const;
 public:
-#ifndef DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   static unsigned int get_ID() {
     return ID;
   }
@@ -84,9 +84,10 @@ public:
     }
   }
 
+#endif
+#ifndef IMP_DOXYGEN
   typedef Key<ID, LazyAdd> This;
 #endif
-
   //! make a default key in a well-defined null state
   Key(): str_(-1) {}
 
