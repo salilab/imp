@@ -33,7 +33,7 @@ class IMPISDEXPORT NOERestraint : public Restraint
   Pointer<Particle> p1_;
   Pointer<Particle> sigma_;
   Pointer<Particle> gamma_;
-  double Iexp_;
+  double Vexp_;
 public:
   //! Create the restraint.
   /** Restraints should store the particles they are to act on,

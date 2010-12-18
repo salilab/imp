@@ -18,10 +18,10 @@ IMPISD_BEGIN_NAMESPACE
 
 NOERestraint::NOERestraint(Particle *p0, Particle *p1, 
 			   Particle *sigma, Particle *gamma,
-			   double Iexp) : p0_(p0), p1_(p1),
+			   double Vexp) : p0_(p0), p1_(p1),
 					  sigma_(sigma),
 					  gamma_(gamma),
-					  Iexp_(Iexp) {}
+					  Vexp_(Vexp) {}
                                           
 /* Apply the restraint to two atoms, two nuisances, one experimental value.
  */
@@ -40,9 +40,9 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   double sigma_val=sigma_nuis.get_nuisance();
   double Icalc = gamma_val*pow(diff,-6);
   /* compute all arguments to FNormal */
-  double FA = log(Iexp_);
+  double FA = log(Vexp_);
   double FM = log(Icalc);
-  double JA = 1.0/Iexp_;
+  double JA = 1.0/Vexp_;
   IMP_NEW(FNormal, lognormal, (FA,JA,FM,sigma_val));
   /* get score */
   double score= lognormal->evaluate();
@@ -87,7 +87,7 @@ void NOERestraint::do_show(std::ostream& out) const
   out << "particle1= " << p1_->get_name() << std::endl;
   out << "sigma= " << sigma_->get_name() << std::endl;
   out << "gamma= " << gamma_->get_name() << std::endl;
-  out << "Iexp= " << Iexp_ << std::endl;
+  out << "Vexp= " << Vexp_ << std::endl;
 }
 
 IMPISD_END_NAMESPACE
