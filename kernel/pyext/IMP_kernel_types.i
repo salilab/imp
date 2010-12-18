@@ -243,7 +243,7 @@ _plural_types.append(#PluralName)
 %feature("valuewrapper") PluralName##Temp;
 %{
   void test_##PluralName##s() {
-    Namespace::PluralName nm;
+    //Namespace::PluralName nm;
   }
 %}
 %enddef
@@ -515,7 +515,7 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   void test_##PluralName##s() {
-    Namespace::PluralName nm;
+    //Namespace::PluralName nm;
   }
 %}
 %enddef
