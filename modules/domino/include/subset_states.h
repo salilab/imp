@@ -50,6 +50,7 @@ public:
   ~SubsetStatesTable();
 };
 
+IMP_OBJECTS(SubsetStatesTable, SubsetStatesTables);
 
 
 /** Enumerate states based on provided ParticleStates
@@ -103,8 +104,6 @@ class IMPDOMINOEXPORT ListSubsetStatesTable: public SubsetStatesTable {
   }
   IMP_SUBSET_STATES_TABLE(ListSubsetStatesTable);
 };
-
-IMP_OBJECTS(ListSubsetStatesTable, ListSubsetStatesTables);
 
 IMPDOMINO_END_NAMESPACE
 
