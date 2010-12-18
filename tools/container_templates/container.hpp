@@ -91,6 +91,7 @@ public:
 #else
   typedef internal::IndexingIterator<Accessor> TYPENAMEIterator;
 #endif
+#ifndef SWIG
   //! begin iterating through the CLASSNAMEs
   TYPENAMEIterator FUNCTIONNAMEs_begin() const {
     // Since I can't make the count mutable in Object
@@ -104,6 +105,7 @@ public:
       TYPENAMEIterator(Accessor(const_cast<CLASSNAMEContainer*>(this)),
                         get_number_of_FUNCTIONNAMEs());
     }
+#endif
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const CLASSNAMEModifier *sm)=0;
