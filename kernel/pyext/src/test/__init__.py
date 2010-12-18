@@ -281,7 +281,7 @@ class TestCase(unittest.TestCase):
                        and name not in eval(module.__name__+"._plural_types"):
                     bad.append(name)
         self.assertEquals(len(bad), 0,
-                          "All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not: %s. Please add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
+                          "All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad)))
 
     def assertClassNames(self, module, exceptions):
@@ -356,10 +356,11 @@ class TestCase(unittest.TestCase):
         all= dir(module)
         verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
                "push", "pop", "write", "read", "show", "do", "load", "save", "reset",
-               "clear", "handle", "update", "apply", "optimize", "reserve", "dump"]
+               "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
+               "propose", "reject"]
         bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions)
         self.assertEquals(len(bad), 0,
-                          "All IMP methods should have lower case names separated by underscores and beginning with a verb, preferable one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. The following do not: %s. If there is a good reason for them not to, add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
+                          "All IMP methods should have lower case names separated by underscores and beginning with a verb, preferable one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. The following do not (given our limited list of verbs that we check for):\n%s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % (str(bad)))
 
     def assertPlural(self, modulename, exceptions):
@@ -375,7 +376,7 @@ class TestCase(unittest.TestCase):
                 if f+"s" not in dir(modulename):
                     not_found.append(f)
         self.assertEquals(len(not_found), 0,
-                          "All IMP classes have an associated plural version. The following do not: %s. If there is a good reason for them not to, or the english spelling of the plural is not their name with an added 's', add them to the plural_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
+                          "All IMP classes have an associated plural version. The following do not: \n%s\n If there is a good reason for them not to, or the english spelling of the plural is not their name with an added 's', add them to the plural_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % str(not_found))
 
     def assertShow(self, modulename, exceptions):
@@ -388,11 +389,12 @@ class TestCase(unittest.TestCase):
                     and f not in exceptions and not f.endswith("s")\
                     and not f.endswith("Temp") and not f.endswith("Iterator")\
                     and not f.endswith("Exception") and\
-                    f not in eval(modulename.__name__+"._raii_types"):
+                    f not in eval(modulename.__name__+"._raii_types") and \
+                    f not in eval(modulename.__name__+"._plural_types"):
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         self.assertEquals(len(not_found), 0,
-                          "All IMP classes should support show and __str__. The following do not: %s. If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
+                          "All IMP classes should support show and __str__. The following do not:\n%s\n If there is a good reason for them not to, add them to the show_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
                           % str(not_found))
 
     def run_example(self, filename):
