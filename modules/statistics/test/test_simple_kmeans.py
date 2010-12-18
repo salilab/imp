@@ -7,13 +7,13 @@ import IMP.algebra
 class KMeansTests(IMP.test.TestCase):
     def test_kmeans(self):
         """Kmeans clustering"""
-        vs= IMP.algebra.Vector3Ds()
+        vs= []
         centers=(IMP.algebra.Vector3D(0,0,0),
                  IMP.algebra.Vector3D(10,15,20),
                  IMP.algebra.Vector3D(60,30,12))
         for i in range(0,3):
             for j in range(0,100):
-                vs.push_back(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 10)))
+                vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 10)))
         e= IMP.statistics.VectorDEmbedding(vs)
         c= IMP.statistics.get_lloyds_kmeans(e,
                                             3, 1000)
