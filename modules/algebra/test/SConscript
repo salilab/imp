@@ -20,7 +20,6 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
                   matrix_function_name_exceptions,
                   class_name_exceptions=['Matrix3D_f', 'Matrix2D_f'],
-                  value_object_exceptions=['DenseDoubleGrid3D',
+                  value_object_exceptions=['BoundedGridStorage3D', 'DenseDoubleGrid3D',
                                            'DenseFloatGrid3D', 'SparseIntGrid3D',
-                                           'SparseUnboundedIntGrid3D',
-                                           'AxisAnglePair'])
+                                           'SparseUnboundedIntGrid3D'])
