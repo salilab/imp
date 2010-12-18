@@ -40,6 +40,8 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(DecomposableRestraint);
 };
 
+IMP_OBJECTS(DecomposableRestraint, DecomposableRestraints);
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_DECOMPOSABLE_RESTRAINT_H */
