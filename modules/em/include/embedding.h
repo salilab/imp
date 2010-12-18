@@ -26,6 +26,8 @@ public:
   IMP_EMBEDDING(HighDensityEmbedding);
 };
 
+IMP_OBJECTS(HighDensityEmbedding, HighDensityEmbeddings);
+
 IMPEM_END_NAMESPACE
 
 #endif /* IMPEM_EMBEDDING_H */
