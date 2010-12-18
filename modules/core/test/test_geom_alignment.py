@@ -12,7 +12,7 @@ class RigidTransformationTests(IMP.test.TestCase):
         for i in range(0, 20):
             vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             print vs[-1]
-            vsr.append(tr.get_transformed(vs.back()))
+            vsr.append(tr.get_transformed(vs[-1]))
             print vsr[-1]
         return (vs, vsr)
     def _convert_to_xyzs(self, m, vs):
