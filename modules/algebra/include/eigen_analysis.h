@@ -17,6 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /**    \ingroup uninitialized_default
  */
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
+  typedef PrincipalComponentAnalysis This;
 public:
   PrincipalComponentAnalysis(){
     initialized_=false;}
@@ -48,10 +49,13 @@ public:
   void set_centroid(Vector3D cntr) {
    centroid_=cntr;}
 
-  //! Show eigen vectors in cmm format
-  void show(std::ostream& out=std::cout) const;
-
+  IMP_SHOWABLE(PrincipalComponentAnalysis);
+  IMP_COMPARISONS;
 protected:
+  int compare(const PrincipalComponentAnalysis &o) const {
+    if (initialized_ && o.initialized_) return true;
+    else return false;
+  }
   std::vector<VectorD<3> > eigen_vecs_;
   VectorD<3> eigen_values_;
   Vector3D centroid_;
