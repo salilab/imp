@@ -14,7 +14,7 @@
 #include <IMP/io.h>
 
 IMPCORE_BEGIN_NAMESPACE
-#ifndef IMP_DOXYGEN
+#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
 typedef IMP::WriteOptimizerState WriteModelOptimizerState;
 #endif
 
