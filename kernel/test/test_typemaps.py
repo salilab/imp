@@ -221,9 +221,7 @@ class ParticleTests(IMP.test.TestCase):
         print rc.get_value()
     def test_particle_methods(self):
         """Test that decorators provide particle methods"""
-        exclusions=["__disown__",
-                    "debugger_show",
-                    "do_show",
+        exclusions=["do_show",
                     "get_contained_particles",
                     "get_contained_particles_changed",
                     "get_input_containers",
@@ -243,11 +241,10 @@ class ParticleTests(IMP.test.TestCase):
                     "get_is_scored",
                     "set_is_scored",
                     "get_from",
-                    "on_destruction"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
-            if not m in md and m not in exclusions:
+            if not m in md and m not in exclusions and not m.startswith("_"):
                 print m
                 self.fail(m+" not found")
 

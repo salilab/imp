@@ -1,4 +1,18 @@
 Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests())
+                  cpp_tests= env.IMPModuleGetCPPTests(),
+                  show_exceptions=[# decorator, RefCounted arer just a base classes
+                                   'Decorator', 'RefCounted',
+                                   'PairFunctor', 'QuadFunctor', 'SingletonFunctor', 'TripletFunctor',
+                                   'RandomNumberGenerator',
+                                   # these are just constuctors for python tuples
+                                   "ParticlePair", "ParticleTriplet", "ParticleQuad"],
+                  function_name_exceptions=['Particle.has_attribute', 'Model.restore_particle',
+                                            'RandomNumberGenerator.seed'],
+                  value_object_exceptions=['Decorator', 'Exception','IOException', 'IndexException',
+                                           'InternalException', 'ModelException', 'PairFunctor',
+                                           'QuadFunctor', 'RandomNumberGenerator', 'RefCounted',
+                                           'SingletonFunctor', 'TripletFunctor', 'UsageException',
+                                           'ValueException', 'WarningContext', 'DerivativeAccumulator',
+                                           'FailureHandlerBase'])

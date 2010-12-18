@@ -7,7 +7,7 @@ class YamlTests(IMP.test.TestCase):
     def _create_hetero_model(self):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        ps=IMP.ParticlesTemp()
+        ps=[]
         p= IMP.Particle(m)
         p.add_attribute(IMP.FloatKey("x"), 0, False)
         p.add_attribute(IMP.FloatKey("y"), 1, True)
@@ -30,7 +30,7 @@ class YamlTests(IMP.test.TestCase):
     def _create_homo_model(self):
         IMP.set_log_level(IMP.VERBOSE)
         m = IMP.Model()
-        ps=IMP.ParticlesTemp()
+        ps=[]
         p= IMP.Particle(m)
         p.add_attribute(IMP.FloatKey("x"), 0, False)
         p.add_attribute(IMP.FloatKey("y"), 1, True)

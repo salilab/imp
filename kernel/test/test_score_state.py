@@ -21,9 +21,9 @@ class LoggingRestraint(IMP.Restraint):
             self.log.append('restraint-score')
         return 0.0
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_containers(self):
-        return IMP.ContainersTemp()
+        return []
 
 class LoggingScoreState(IMP.ScoreState):
     """ScoreState that logs all calls"""
@@ -45,15 +45,15 @@ class LoggingScoreState(IMP.ScoreState):
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_output_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_containers(self):
-        return IMP.ContainersTemp()
+        return []
     def get_output_containers(self):
-        return IMP.ContainersTemp()
+        return []
     def get_interacting_particles(self):
-        return IMP.ParticlesList()
+        return []
 
 class TestScoreState(IMP.test.TestCase):
     """Tests for ScoreState"""
