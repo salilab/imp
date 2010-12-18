@@ -7,7 +7,9 @@
  */
 
 #include "IMP/display/geometry.h"
-
+#ifdef IMP_USE_CGAL
+#include "IMP/cgal/internal/polygons.h"
+#endif
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -36,35 +38,18 @@ IMP_DISPLAY_GEOMETRY_DEF(SphereGeometry, algebra::SphereD<3>);
 IMP_DISPLAY_GEOMETRY_DEF(CylinderGeometry, algebra::Cylinder3D);
 IMP_DISPLAY_GEOMETRY_DEF(EllipsoidGeometry, algebra::Ellipsoid3D);
 
-#define PICK(v, i) (bb.get_corner(vertices[v][i])[i])
 namespace {
   Geometries decompose_box(const algebra::BoundingBox3D &bb,
                            bool has_color,
                            Color color,
                            std::string name) {
     Geometries ret;
-    static const int vertices[8][3]={{0,0,0}, {0,0,1}, {0,1,0},
-                                     {0,1,1}, {1,0,0}, {1,0,1},
-                                     {1,1,0}, {1,1,1}};
-    static const int edges[12][2]={{0,1}, {0,2}, {0,4},
-                                 {1,3}, {1,5},
-                                   {2,3}, {2,6},
-                                   {3,7},
-                                   {4,5}, {4,6},
-                                   {5,7},
-                                   {6,7}};
+    algebra::Vector3Ds corners= algebra::get_vertices(bb);
+    IntPairs edges= algebra::get_edges(bb);
     for (unsigned int i=0; i< 12; ++i) {
-      int v0=edges[i][0];
-      int v1=edges[i][1];
-      algebra::VectorD<3> omin(PICK(v0, 0),
-                             PICK(v0, 1),
-                             PICK(v0, 2));
-      algebra::VectorD<3> omax(PICK(v1, 0),
-                             PICK(v1, 1),
-                             PICK(v1, 2));
       SegmentGeometry *ncg=
-        new SegmentGeometry(algebra::Segment3D(omin,
-                                               omax));
+        new SegmentGeometry(algebra::Segment3D(corners[edges[i].first],
+                                               corners[edges[i].second]));
       ncg->set_name(name);
       if (has_color){
         ncg->set_color(color);
@@ -131,4 +116,27 @@ LabelGeometry::LabelGeometry(const algebra::Vector3D &loc,
 void LabelGeometry::do_show(std::ostream &out) const {
   out << "label: " << get_text() << std::endl;
 }
+
+
+#ifdef IMP_USE_CGAL
+
+Geometries PlaneGeometry::get_components() const {
+  std::vector<algebra::Vector3D> poly
+    = cgal::internal::get_intersection(plane_.get_normal(),
+                             plane_.get_distance_from_origin(),
+                             bb_);
+  return Geometries(new PolygonGeometry(poly));
+}
+
+PlaneGeometry::PlaneGeometry(const algebra::Plane3D &loc,
+                             const algebra::BoundingBox3D &bb):
+  Geometry(""),
+  plane_(loc),
+  bb_(bb){}
+
+void PlaneGeometry::do_show(std::ostream &out) const {
+  out << "plane: " << plane_ << std::endl;
+}
+#endif
+
 IMPDISPLAY_END_NAMESPACE

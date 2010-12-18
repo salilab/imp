@@ -17,6 +17,7 @@ IMP_SWIG_OBJECT(IMP::display, SegmentGeometry, SegmentGeometries);
 IMP_SWIG_OBJECT(IMP::display, PolygonGeometry, PolygonGeometries);
 IMP_SWIG_OBJECT(IMP::display, ReferenceFrameGeometry, ReferenceFrameGeometries);
 IMP_SWIG_OBJECT(IMP::display, BoundingBoxGeometry, BoundingBoxGeometries);
+IMP_SWIG_OBJECT(IMP::display, PlaneGeometry, PlaneGeometries);
 IMP_SWIG_OBJECT(IMP::display, LabelGeometry, LabelGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZRGeometry, XYZRGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZRsGeometry, XYZRsGeometries);
