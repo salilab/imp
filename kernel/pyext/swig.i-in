@@ -121,6 +121,7 @@ IMP_SWIG_PAIR(IMP, Double, DerivativePair, DerivativePairs);
 IMP_SWIG_PAIR(IMP, Double, FloatRange, FloatRanges);
 IMP_SWIG_PAIR(IMP, Double, FloatPair, FloatPairs);
 IMP_SWIG_PAIR(IMP, Int, IntRange, IntRanges);
+IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
 IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
 
 IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);

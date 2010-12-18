@@ -42,6 +42,10 @@ typedef int Int;
 typedef std::pair<Int, Int> IntRange;
 typedef std::vector<IntRange> IntRanges;
 
+typedef std::pair<Int, Int> IntPair;
+typedef std::vector<IntPair> IntPairs;
+
+
 //! Basic string value
 typedef std::string String;
 
