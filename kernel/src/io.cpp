@@ -17,14 +17,9 @@
 
 IMP_BEGIN_NAMESPACE
 
-IMPEXPORT void write_particles(Model *,
-                           const ParticlesTemp &particles,
-                           TextOutput out) {
-  write_model(particles, out);
-}
 
-IMPEXPORT void write_particles(const ParticlesTemp &particles,
-                           TextOutput out) {
+void write_particles(const ParticlesTemp &particles,
+                     TextOutput out) {
   internal::Map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
@@ -42,9 +37,9 @@ IMPEXPORT void write_particles(const ParticlesTemp &particles,
   }
 }
 
-IMPEXPORT void write_particles(const ParticlesTemp &particles,
-                           const FloatKeys &keys,
-                           TextOutput out) {
+void write_particles(const ParticlesTemp &particles,
+                     const FloatKeys &keys,
+                     TextOutput out) {
   internal::Map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
@@ -62,14 +57,9 @@ IMPEXPORT void write_particles(const ParticlesTemp &particles,
   }
 }
 
-IMPEXPORT void write_particles(Model *m,
-                           TextOutput out) {
-  ParticlesTemp ps(m->particles_begin(), m->particles_end());
-  write_model(m, ps, out);
-}
-IMPEXPORT void read_particles(TextInput in,
-                          const ParticlesTemp &particles,
-                          Model *) {
+void read_particles(TextInput in,
+                    const ParticlesTemp &particles,
+                    Model *) {
   internal::LineStream ls(in);
   internal::Map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -116,9 +106,9 @@ IMPEXPORT void read_particles(TextInput in,
 }
 
 
-IMPEXPORT void read_particles(TextInput in,
-                          const ParticlesTemp &particles,
-                          const FloatKeys &keys) {
+void read_particles(TextInput in,
+                    const ParticlesTemp &particles,
+                    const FloatKeys &keys) {
   internal::LineStream ls(in);
   internal::Map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
@@ -164,11 +154,6 @@ IMPEXPORT void read_particles(TextInput in,
   }
 }
 
-
-IMPEXPORT void read_particles(TextInput in, Model *m) {
-  ParticlesTemp ps(m->particles_begin(), m->particles_end());
-  read_model(in, ps, m);
-}
 
 namespace {
   void write_particles_to_buffer(const ParticlesTemp &particles,
