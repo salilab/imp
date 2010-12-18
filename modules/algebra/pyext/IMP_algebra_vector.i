@@ -66,8 +66,8 @@ namespace IMP {
    %template(get_squared_distance) get_squared_distance<4>;
    %template(get_distance) get_distance<2>;
    %template(get_squared_distance) get_squared_distance<2>;
-   %template(Vector4Ds) ::std::vector<VectorD<4> >;
-   %template(Vector3Ds) ::std::vector<VectorD<3> >;
-   %template(Vector2Ds) ::std::vector<VectorD<2> >;
+   %template(_Vector4Ds) ::std::vector<VectorD<4> >;
+   %template(_Vector3Ds) ::std::vector<VectorD<3> >;
+   %template(_Vector2Ds) ::std::vector<VectorD<2> >;
  }
 }
