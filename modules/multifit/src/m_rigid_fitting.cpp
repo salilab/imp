@@ -40,7 +40,7 @@ em::FittingSolutions pca_based_rigid_fitting(
 
   //find the pca of the density
   algebra::PrincipalComponentAnalysis dens_pca;
-  if (dens_pca_input.is_initialized()){
+  if (dens_pca_input != algebra::PrincipalComponentAnalysis()){
     dens_pca=dens_pca_input;
   }
   else{
