@@ -1,4 +1,7 @@
 Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests())
+                  cpp_tests= env.IMPModuleGetCPPTests(),
+                  plural_exceptions=['MoverBase', 'RigidBody', 'Hierarchy', 'HierarchyCounter',
+                                     'HierarchyVisitor', 'ModifierVisitor'],
+                  show_exceptions=['HierarchyCounter', 'HierarchyVisitor', 'ModifierVisitor'])
