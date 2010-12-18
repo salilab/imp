@@ -142,10 +142,32 @@ public:
     data_.fill_nearest_neighbors(pt, distance, eps_, ret);
     return ret;
   }
+  IMP_SHOWABLE_INLINE(NearestNeighborD, {
+    });
 };
 
 /** @} */
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <unsigned int D>
+std::ostream& operator<<(std::ostream &out, const NearestNeighborD<D> &nn) {
+  nn.show(out);
+  return out;
+}
+#endif
+
+#ifndef IMP_DOXYGEN
+typedef NearestNeighborD<2> NearestNeighbor2D;
+typedef NearestNeighborD<3> NearestNeighbor3D;
+typedef NearestNeighborD<4> NearestNeighbor4D;
+typedef NearestNeighborD<5> NearestNeighbor5D;
+typedef NearestNeighborD<6> NearestNeighbor6D;
+#endif
+IMP_VALUES(NearestNeighbor2D, NearestNeighbor2Ds);
+IMP_VALUES(NearestNeighbor3D, NearestNeighbor3Ds);
+IMP_VALUES(NearestNeighbor4D, NearestNeighbor4Ds);
+IMP_VALUES(NearestNeighbor5D, NearestNeighbor5Ds);
+IMP_VALUES(NearestNeighbor6D, NearestNeighbor6Ds);
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_SEARCH_H */

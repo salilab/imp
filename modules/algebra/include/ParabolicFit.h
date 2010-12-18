@@ -50,7 +50,8 @@ public:
   double a_, b_, c_;
   double error_;
 };
-
+IMP_VALUES(ParabolicFit, ParabolicFits);
+IMP_OUTPUT_OPERATOR(ParabolicFit);
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_PARABOLIC_FIT_H */
