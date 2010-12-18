@@ -31,7 +31,7 @@ class NNTests(IMP.test.TestCase):
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-50,-50,-50),
                                      IMP.algebra.Vector3D(50,50,50))
 
-        vecs=IMP.algebra.Vector3Ds()
+        vecs=[]
         for i in range(10):
             vecs.append(IMP.algebra.get_random_vector_in(bb))
         nn= IMP.algebra.NearestNeighbor3D(vecs)
@@ -50,7 +50,7 @@ class NNTests(IMP.test.TestCase):
     def test_nn_functionality(self):
         """Check that nearest neighbor works"""
         nump=60
-        vs= IMP.algebra.Vector3Ds()
+        vs= []
         for i in range(0, nump):
             v= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
             vs.append(v)

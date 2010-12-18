@@ -8,7 +8,7 @@ class SphereTests(IMP.test.TestCase):
         """Check volume and surface area of random"""
         if not IMP.algebra.has_cgal:
             return
-        ss= IMP.algebra.Sphere3Ds()
+        ss= []
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
         for i in range(0,100):

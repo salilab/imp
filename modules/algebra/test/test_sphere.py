@@ -19,7 +19,7 @@ class SphereTests(IMP.test.TestCase):
 
     def test_enclosing(self):
         """Check enclosing sphere"""
-        ss= IMP.algebra.Sphere3Ds()
+        ss= []
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                       IMP.algebra.Vector3D(10,10,10))
         for i in range(0,20):
