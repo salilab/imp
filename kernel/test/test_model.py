@@ -24,9 +24,9 @@ class FailingRestraint(IMP.Restraint):
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
-        return IMP.ParticlesTemp()
+        return []
     def get_input_containers(self):
-        return IMP.ContainersTemp()
+        return []
 
 
 
