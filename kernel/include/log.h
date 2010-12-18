@@ -99,8 +99,8 @@ inline LogLevel get_log_level()
   return internal::log_level;
 }
 
-#ifndef IMP_DOXYGEN
-inline bool is_log_output(LogLevel l)
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+inline bool get_is_log_output(LogLevel l)
 {
   return l <= get_log_level();
 }
@@ -136,7 +136,7 @@ inline bool is_log_output(LogLevel l)
                      << 1 << " " << 2 << " " << 3);
     \endcode
  */
-#define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
+#define IMP_LOG(level, expr) if (IMP::get_is_log_output(level)) \
     { std::ostringstream oss;                               \
       oss<< expr << std::flush;                             \
       IMP::add_to_log(oss.str());                           \
@@ -150,7 +150,7 @@ inline bool is_log_output(LogLevel l)
     IMP_LOG_WRITE(VERBOSE, IMP::atom::write_pdb(h, IMP_STREAM));
     \endcode
  */
-#define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
+#define IMP_LOG_WRITE(level, expr) if (IMP::get_is_log_output(level)) \
     {std::ostringstream IMP_STREAM;                               \
       expr;                                                       \
       IMP::add_to_log(IMP_STREAM.str());                          \
@@ -162,13 +162,13 @@ inline bool is_log_output(LogLevel l)
 #define IMP_IF_LOG(level)\
   if (level <= ::IMP::get_log_level())
 
-#define IMP_LOG(level, expr) if (IMP::is_log_output(level)) \
+#define IMP_LOG(level, expr) if (IMP::get_is_log_output(level)) \
     { std::ostringstream oss;                               \
       oss<< expr << std::flush;                             \
       IMP::add_to_log(oss.str());                           \
     };
 
-#define IMP_LOG_WRITE(level, expr) if (IMP::is_log_output(level)) \
+#define IMP_LOG_WRITE(level, expr) if (IMP::get_is_log_output(level)) \
     {std::ostringstream IMP_STREAM;                               \
       expr;                                                       \
       IMP::add_to_log(IMP_STREAM.str());                          \
@@ -217,7 +217,7 @@ inline bool is_log_output(LogLevel l)
 #define IMP_ERROR_WRITE(expr)
 
 #else
-#define IMP_WARN(expr) if (IMP::is_log_output(IMP::WARNING)) \
+#define IMP_WARN(expr) if (IMP::get_is_log_output(IMP::WARNING)) \
     { std::ostringstream oss;                                \
       oss << "WARNING  " << expr << std::flush;              \
       IMP::add_to_log(oss.str());                            \
@@ -228,7 +228,7 @@ struct WarningContext {
   mutable std::map<std::string, int> data_;
 public:
   void add_warning(std::string str) const {
-    if (IMP::is_log_output(IMP::WARNING)) {
+    if (IMP::get_is_log_output(IMP::WARNING)) {
       if (data_.find(str) == data_.end()) {
         data_[str]=1;
       } else {
@@ -259,7 +259,7 @@ public:
   }
 
 
-#define IMP_WARN_WRITE(expr) if (IMP::is_log_output(IMP::WARNING)) \
+#define IMP_WARN_WRITE(expr) if (IMP::get_is_log_output(IMP::WARNING)) \
     {std::ostringstream IMP_STREAM;                                \
       expr;                                                        \
       IMP::add_to_log(IMP_STREAM.str());                            \
