@@ -8,6 +8,7 @@ import _header
 import _version_info
 import _config_h
 import _link_test
+import _standards
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
@@ -411,7 +412,12 @@ def IMPModuleDoc(env, files, authors,
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, python_tests, cpp_tests):
+def IMPModuleTest(env, python_tests, cpp_tests,
+                  plural_exceptions=[], show_exceptions=[],
+                  function_name_exceptions=[],
+                  value_object_exceptions=[],
+                  class_name_exceptions=[],
+                  check_standards=True):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
        source is a Python script to run (usually run-all-tests.py).
@@ -426,6 +432,12 @@ def IMPModuleTest(env, python_tests, cpp_tests):
         cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= prgs)
         files.append(cpptest)
+    if check_standards:
+        _standards.add(env, plural_exceptions=plural_exceptions,
+                       show_exceptions=show_exceptions,
+                       function_name_exceptions=function_name_exceptions,
+                       value_object_exceptions=value_object_exceptions,
+                       class_name_exceptions=class_name_exceptions)
     test = scons_tools.test.add_test(env, source=files,
                                      type='unit test')
 
