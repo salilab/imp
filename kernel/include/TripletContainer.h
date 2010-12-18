@@ -91,6 +91,7 @@ public:
 #else
   typedef internal::IndexingIterator<Accessor> ParticleTripletIterator;
 #endif
+#ifndef SWIG
   //! begin iterating through the Triplets
   ParticleTripletIterator particle_triplets_begin() const {
     // Since I can't make the count mutable in Object
@@ -104,6 +105,7 @@ public:
       ParticleTripletIterator(Accessor(const_cast<TripletContainer*>(this)),
                         get_number_of_particle_triplets());
     }
+#endif
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const TripletModifier *sm)=0;

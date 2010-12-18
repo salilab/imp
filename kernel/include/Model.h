@@ -307,6 +307,8 @@ public:
   unsigned int get_number_of_particles() const {
     return particles_.size();
   }
+
+#ifndef SWIG
 #ifdef IMP_DOXYGEN
   class ParticleInterator; class ParticleConstIterator;
 #else
@@ -319,6 +321,7 @@ public:
   ParticleIterator particles_end() {
     return particles_.end();
   }
+#endif
 
 #ifndef SWIG
   ParticleConstIterator particles_begin() const {

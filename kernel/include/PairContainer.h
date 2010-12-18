@@ -91,6 +91,7 @@ public:
 #else
   typedef internal::IndexingIterator<Accessor> ParticlePairIterator;
 #endif
+#ifndef SWIG
   //! begin iterating through the Pairs
   ParticlePairIterator particle_pairs_begin() const {
     // Since I can't make the count mutable in Object
@@ -104,6 +105,7 @@ public:
       ParticlePairIterator(Accessor(const_cast<PairContainer*>(this)),
                         get_number_of_particle_pairs());
     }
+#endif
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const PairModifier *sm)=0;

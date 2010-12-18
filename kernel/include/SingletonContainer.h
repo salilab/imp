@@ -91,6 +91,7 @@ public:
 #else
   typedef internal::IndexingIterator<Accessor> ParticleIterator;
 #endif
+#ifndef SWIG
   //! begin iterating through the Singletons
   ParticleIterator particles_begin() const {
     // Since I can't make the count mutable in Object
@@ -104,6 +105,7 @@ public:
       ParticleIterator(Accessor(const_cast<SingletonContainer*>(this)),
                         get_number_of_particles());
     }
+#endif
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const SingletonModifier *sm)=0;

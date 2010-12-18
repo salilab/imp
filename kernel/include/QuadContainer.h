@@ -91,6 +91,7 @@ public:
 #else
   typedef internal::IndexingIterator<Accessor> ParticleQuadIterator;
 #endif
+#ifndef SWIG
   //! begin iterating through the Quads
   ParticleQuadIterator particle_quads_begin() const {
     // Since I can't make the count mutable in Object
@@ -104,6 +105,7 @@ public:
       ParticleQuadIterator(Accessor(const_cast<QuadContainer*>(this)),
                         get_number_of_particle_quads());
     }
+#endif
 
   //! Apply a SingletonModifier to the contents
   virtual void apply(const QuadModifier *sm)=0;
