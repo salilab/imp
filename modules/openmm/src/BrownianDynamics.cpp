@@ -79,7 +79,7 @@ bool handle_ev() {
   return true;
 }
 
-double BrownianDynamics::optimize(unsigned int ns) {
+double BrownianDynamics::do_optimize(unsigned int ns) {
   try {
     boost::scoped_ptr<OpenMM::System> system(new OpenMM::System());
 
