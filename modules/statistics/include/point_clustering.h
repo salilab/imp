@@ -36,6 +36,7 @@ public:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Embedding);
 };
 
+IMP_OBJECTS(Embedding, Embeddings);
 
 //! Embed a configuration using the XYZ coordinates of a set of particles
 /** The point for each configuration of the model is a concatenation of
