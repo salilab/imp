@@ -29,7 +29,6 @@ public:
     eigen_vecs_.push_back(pc3.get_unit_vector());
     initialized_=true;
   }
-  inline bool is_initialized() const {return initialized_;}
   VectorD<3> get_principal_component(unsigned int i) const {
     if (!initialized_){
       IMP_WARN("the PCA was not initialized"<<std::endl);}
@@ -60,7 +59,8 @@ protected:
 };
 
 
-IMP_OUTPUT_OPERATOR(algebra::PrincipalComponentAnalysis);
+IMP_VALUES(PrincipalComponentAnalysis, PrincipalComponentAnalyses);
+IMP_OUTPUT_OPERATOR(PrincipalComponentAnalysis);
 
 //! Perform principle components analysis on a set of vectors
 /** \relatesalso PrincipalComponentAnalysis
