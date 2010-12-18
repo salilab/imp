@@ -75,7 +75,7 @@ def initialize_model(m, all, chains):
     log= IMP.display.WriteOptimizerState(w, "frame.%1%.pym")
     add_geometry(log, chains)
     opt.add_optimizer_state(log)
-    opt.optimize(1000)
+    opt.optimize(10)
 
 
 def display(chains, name):
