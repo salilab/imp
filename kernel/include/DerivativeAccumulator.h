@@ -38,10 +38,13 @@ public:
     IMP_INTERNAL_CHECK(!is_nan(value), "Can't set derivative to NaN.");
     return value * weight_;
   }
+  IMP_SHOWABLE_INLINE(DerivativeAccumulator, out << weight_);
 
 private:
   Float weight_;
 };
+
+IMP_OUTPUT_OPERATOR(DerivativeAccumulator);
 
 IMP_VALUES(DerivativeAccumulator, DerivativeAccumulators);
 
