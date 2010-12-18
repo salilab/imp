@@ -66,12 +66,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 namespace grids {
 
 
-  typedef GridIndexD<3> GridIndex3D;
-  typedef ExtendedGridIndexD<3> ExtendedGridIndex3D;
-  typedef std::vector<GridIndex3D> GridIndex3Ds;
-  typedef std::vector<ExtendedGridIndex3D> ExtendedGridIndex3Ds;
-
-
 
 /** This is a base class for storage types which refer to a bounded number
     of cells.

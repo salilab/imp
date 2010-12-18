@@ -209,7 +209,32 @@ namespace grids {
 
 
 
+#if !defined(IMP_DOXYGEN)
+  typedef GridIndexD<2> GridIndex2D;
+  typedef ExtendedGridIndexD<2> ExtendedGridIndex2D;
+  typedef std::vector<GridIndex2D> GridIndex2Ds;
+  typedef std::vector<ExtendedGridIndex2D> ExtendedGridIndex2Ds;
 
+  typedef GridIndexD<3> GridIndex3D;
+  typedef ExtendedGridIndexD<3> ExtendedGridIndex3D;
+  typedef std::vector<GridIndex3D> GridIndex3Ds;
+  typedef std::vector<ExtendedGridIndex3D> ExtendedGridIndex3Ds;
+
+  typedef GridIndexD<4> GridIndex4D;
+  typedef ExtendedGridIndexD<4> ExtendedGridIndex4D;
+  typedef std::vector<GridIndex4D> GridIndex4Ds;
+  typedef std::vector<ExtendedGridIndex4D> ExtendedGridIndex4Ds;
+
+  typedef GridIndexD<5> GridIndex5D;
+  typedef ExtendedGridIndexD<5> ExtendedGridIndex5D;
+  typedef std::vector<GridIndex5D> GridIndex5Ds;
+  typedef std::vector<ExtendedGridIndex5D> ExtendedGridIndex5Ds;
+
+  typedef GridIndexD<6> GridIndex6D;
+  typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
+  typedef std::vector<GridIndex6D> GridIndex6Ds;
+  typedef std::vector<ExtendedGridIndex6D> ExtendedGridIndex6Ds;
+#endif
 
 
 
