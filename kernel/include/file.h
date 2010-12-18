@@ -75,11 +75,13 @@ class IMPEXPORT TextOutput
     return out_->get_stream();
   }
 #endif
+  IMP_SHOWABLE_INLINE(TextOutput, out << get_name());
   std::string get_name() const {
     return out_->get_name();
   }
 };
 
+IMP_OUTPUT_OPERATOR(TextOutput);
 
 
 /** A TextInput can be implicitly constructed from a C++ stream, a
@@ -124,12 +126,13 @@ class IMPEXPORT TextInput
     return in_->get_stream();
   }
 #endif
+  IMP_SHOWABLE_INLINE(TextOutput, out << get_name());
   std::string get_name() const {
     return in_->get_name();
   }
 };
 
-
+IMP_OUTPUT_OPERATOR(TextInput);
 
 
 //! Set the target for the log.
