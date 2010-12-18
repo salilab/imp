@@ -11,6 +11,7 @@
 
 #include "kernel_config.h"
 #include "file.h"
+#include "deprecation.h"
 #include "FailureHandler.h"
 #include "OptimizerState.h"
 #include "internal/utility.h"
