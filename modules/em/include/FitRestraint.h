@@ -101,6 +101,8 @@ private:
   FloatPair norm_factors_;
 };
 
+IMP_OBJECTS(FitRestraint, FitRestraints);
+
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_FIT_RESTRAINT_H */
