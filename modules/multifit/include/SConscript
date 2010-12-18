@@ -22,7 +22,7 @@ files = [
          'anchor_graph.h',
 #         'mc_cg_refinement.h'
          'RMSDClustering.h',
-         'fitting_clustering.h'
+         'fitting_clustering.h',
     'internal/GeometricHash.h'
         ]
 # Install the include files:
