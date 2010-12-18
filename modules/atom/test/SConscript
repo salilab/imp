@@ -1,4 +1,11 @@
 Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests())
+                  cpp_tests= env.IMPModuleGetCPPTests(),
+                  show_exceptions=['AllMol2Selector', 'AllPDBSelector',
+                                   'ChainPDBSelector',
+                                   'ElementTable', 'HierarchyVector', 'HydrogenPDBSelector',
+                                   'Mol2Selector', 'NonAlternativePDBSelector',
+                                   'NonWaterNonHydrogenPDBSelector',
+                                   'NonWaterPDBSelector', 'NonhydrogenMol2Selector','WaterPDBSelector',
+                                   'AndPDBSelector', 'OrPDBSelector'])
