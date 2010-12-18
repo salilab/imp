@@ -122,6 +122,8 @@ IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
   }
 #endif
 
+IMP_OBJECTS(Writer, Writers);
+
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_WRITER_H */
