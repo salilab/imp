@@ -23,6 +23,7 @@ files = [
 #         'mc_cg_refinement.h'
          'RMSDClustering.h',
          'fitting_clustering.h'
+    'internal/GeometricHash.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(files)
