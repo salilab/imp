@@ -90,7 +90,7 @@ ParticlesTemp pt= c_->get_particles();
     }
     IMP_NEW(core::GridClosePairsFinder, gcpf, ());
     gcpf->set_distance(cpc->get_distance());
-    core::IntPairs ips= gcpf->get_close_pairs(bbs);
+    IntPairs ips= gcpf->get_close_pairs(bbs);
     ParticlePairsTemp ret(ips.size());
     for (unsigned int i=0; i< ips.size(); ++i) {
       ret[i]= ParticlePair(inputs[ips[i].first], inputs[ips[i].second]);
