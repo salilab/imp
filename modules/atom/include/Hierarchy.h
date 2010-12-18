@@ -288,7 +288,7 @@ public:
   void remove_child(Hierarchy h) {
     H(get_particle(), get_traits()).remove_child(h);
   }
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const ParticlesTemp& get_leaves() const {
     return H(get_particle(), get_traits()).get_leaves();
   }
