@@ -132,7 +132,7 @@ void write_configuration_set(ConfigurationSet *cs,
   IMP_NEW(Configuration, c, (cs->get_model()));
   for (unsigned int i=0; i< cs->get_number_of_configurations(); ++i) {
     cs->load_configuration(i);
-    write_binary_model(ps, keys, fname, i!= 0);
+    write_particles_binary(ps, keys, fname, i!= 0);
   }
   c->load_configuration();
 }
