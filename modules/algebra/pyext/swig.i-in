@@ -13,6 +13,14 @@ def get_sphere(v):
       return v
 %}
 
+%define IMP_SWIG_VALUE_D(Namespace, Namebase)
+IMP_SWIG_VALUE(Namespace, Namebase##2D, Namebase##2Ds);
+IMP_SWIG_VALUE(Namespace, Namebase##3D, Namebase##3Ds);
+IMP_SWIG_VALUE(Namespace, Namebase##4D, Namebase##4Ds);
+IMP_SWIG_VALUE(Namespace, Namebase##5D, Namebase##5Ds);
+IMP_SWIG_VALUE(Namespace, Namebase##6D, Namebase##6Ds);
+%enddef
+
 IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
@@ -20,29 +28,25 @@ IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Triangle3D, Triangle3Ds);
 
-IMP_SWIG_VALUE(IMP::algebra,  AxisAnglePair, AxisAnglePairs);
 IMP_SWIG_VALUE(IMP::algebra,  Cone3D, Cone3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Cylinder3D, Cylinder3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Ellipsoid3D, Ellipsoid3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Plane3D, Plane3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  Segment3D, Segment3Ds);
 IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
+IMP_SWIG_VALUE(IMP::algebra, PrincipalComponentAnalysis, PrincipalComponentAnalyses);
 
 // we seem to need the non-typedefed name, at least for the first argument
-IMP_SWIG_VALUE(IMP::algebra,  VectorD<2>, Vector2Ds);
-IMP_SWIG_VALUE(IMP::algebra,  VectorD<3>, Vector3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  VectorD<4>, Vector4Ds);
-IMP_SWIG_VALUE(IMP::algebra,  SphereD<2>, Sphere2Ds);
-IMP_SWIG_VALUE(IMP::algebra,  SphereD<3>, Sphere3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  SphereD<4>, Sphere4Ds);
-IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<2>, BoundingBox2Ds);
-IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<3>, BoundingBox3Ds);
-IMP_SWIG_VALUE(IMP::algebra,  BoundingBoxD<4>, BoundingBox4Ds);
+IMP_SWIG_VALUE_D(IMP::algebra,  Vector);
+IMP_SWIG_VALUE_D(IMP::algebra,  Sphere);
+IMP_SWIG_VALUE_D(IMP::algebra,  BoundingBox);
+IMP_SWIG_VALUE_D(IMP::algebra,  NearestNeighbor);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
 
-IMP_SWIG_VALUE(IMP::algebra::grids,  GridIndexD<3>, GridIndex3Ds);
-IMP_SWIG_VALUE(IMP::algebra::grids,  ExtendedGridIndexD<3>, ExtendedGridIndex3Ds);
-
+IMP_SWIG_VALUE_D(IMP::algebra::grids,  GridIndex);
+IMP_SWIG_VALUE_D(IMP::algebra::grids,  ExtendedGridIndex);
+IMP_SWIG_VALUE(IMP::algebra, LinearFit, LinearFits);
+IMP_SWIG_VALUE(IMP::algebra, ParabolicFit, ParabolicFits);
 
 namespace boost {
 template <class T, int D> class multi_array{};
@@ -87,8 +91,8 @@ namespace IMP {
      %template(_UnboundedGridStorage4D) UnboundedGridStorageD<4>;
      %template(_UnboundedGridStorage5D) UnboundedGridStorageD<5>;
      %template(_UnboundedGridStorage6D) UnboundedGridStorageD<6>;
-     %template(GridIndex3Ds) ::std::vector<GridIndexD<3> >;
-     %template(ExtendedGridIndex3Ds) ::std::vector<ExtendedGridIndexD<3> >;
+     %template(_GridIndex3Ds) ::std::vector<GridIndexD<3> >;
+     %template(_ExtendedGridIndex3Ds) ::std::vector<ExtendedGridIndexD<3> >;
    }
  }
 }
@@ -99,9 +103,9 @@ namespace IMP {
    %template(Sphere2D) SphereD<2>;
    %template(Sphere3D) SphereD<3>;
    %template(Sphere4D) SphereD<4>;
-   %template(Sphere4Ds) ::std::vector< IMP::algebra::SphereD<4> >;
-   %template(Sphere3Ds) ::std::vector< IMP::algebra::SphereD<3> >;
-   %template(Sphere2Ds) ::std::vector< IMP::algebra::SphereD<2> >;
+   %template(_Sphere4Ds) ::std::vector< IMP::algebra::SphereD<4> >;
+   %template(_Sphere3Ds) ::std::vector< IMP::algebra::SphereD<3> >;
+   %template(_Sphere2Ds) ::std::vector< IMP::algebra::SphereD<2> >;
 }
 }
 
@@ -141,13 +145,14 @@ namespace IMP {
    %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridStorageD<3> > >;
    %template(DenseDoubleGrid3D) GridD<3, DenseGridStorage3D<double> >;
    %template(DenseFloatGrid3D) GridD<3, DenseGridStorage3D<float> >;
+   %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
+
    }
 
    // for debugging
    //%template(SpherePair3D) ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> >;
    //%template(SpherePair3Ds) ::std::vector< ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> > >;
 
-   %template(AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
 
