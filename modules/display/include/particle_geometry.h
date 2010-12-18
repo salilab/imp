@@ -52,6 +52,7 @@ public:
 };
 
 
+
 //! A base class for geometry from a set of particles
 /**
  */
