@@ -60,7 +60,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         pr.set_log_level(IMP.WARNING)
         m.add_restraint(pr)
         s= IMP.core.MCCGSampler(m)
-        wos=IMP.WriteOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
+        wos=IMP.WriteParticlesOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
         wos.set_skip_steps(10)
         s.add_optimizer_state(wos)
         s.set_maximum_score(max_score)
