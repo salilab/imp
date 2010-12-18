@@ -38,6 +38,14 @@ void Optimizer::update_states() const
   IMP_LOG(VERBOSE, "done." << std::endl);
 }
 
+double Optimizer::optimize(unsigned int max_steps) {
+  if (!model_) {
+    IMP_THROW("Must give the optimizer a model to optimize",
+              ValueException);
+  }
+  return do_optimize(max_steps);
+}
+
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
               OptimizerState*, OptimizerStates, {
                 Optimizer::set_optimizer_state_optimizer(obj, this);

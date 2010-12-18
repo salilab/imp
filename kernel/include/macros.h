@@ -1199,12 +1199,12 @@ private:                                                        \
 
 //! Define the basic things you need for an Optimizer.
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::Optimizer::optimize()
+    - IMP::Optimizer::do_optimize()
 
     \relatesalso IMP::Optimizer
 */
 #define IMP_OPTIMIZER(Name)                             \
-  virtual Float optimize(unsigned int max_steps);       \
+  virtual Float do_optimize(unsigned int max_steps);   \
   IMP_OBJECT(Name)
 
 //! Define the basic things you need for a Sampler.
