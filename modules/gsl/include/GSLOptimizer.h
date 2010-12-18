@@ -51,6 +51,7 @@ public:
                   double size, double max_size) const;
 #endif
 };
+IMP_OBJECTS(GSLOptimizer, GSLOptimizers);
 
 
 IMPGSL_END_NAMESPACE

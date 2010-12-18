@@ -1,7 +1,7 @@
 IMP_SWIG_BASE_OBJECT(IMP::gsl, GSLOptimizer, GSLOptimizers);
-IMP_SWIG_BASE_OBJECT(IMP::gsl, ConjugateGradients, ConjugateGradientss);
-IMP_SWIG_BASE_OBJECT(IMP::gsl, QuasiNewton, QuasiNewtons);
-IMP_SWIG_BASE_OBJECT(IMP::gsl, Simplex, Simplexes);
+IMP_SWIG_OBJECT(IMP::gsl, ConjugateGradients, ConjugateGradientss);
+IMP_SWIG_OBJECT(IMP::gsl, QuasiNewton, QuasiNewtons);
+IMP_SWIG_OBJECT(IMP::gsl, Simplex, Simplexes);
 
 namespace IMP {
 namespace gsl {
