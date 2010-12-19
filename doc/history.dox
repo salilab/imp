@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- the function IMP::core::Harmonic::k_from_standard_deviation was renamed to IMP::core::Harmonic::get_k_from_standard_deviation() to conform to the standards.
 - the standards tests have been improved to test more useful aspects. Now class and function names are checked some as well as all modules have the checks for show and plural types. The error messages should explain how to fix things.
 
 \par Fall 2010
