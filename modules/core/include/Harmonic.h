@@ -64,7 +64,7 @@ public:
       \param[in] t   System temperature, in Kelvin
       \return        Force constant
    */
-  static Float k_from_standard_deviation(Float sd, Float t=297.15) {
+  static Float get_k_from_standard_deviation(Float sd, Float t=297.15) {
     // Gas constant in kcal/mol K
     const static Float R = 8.31441 / 4186.8;
     return R * t / square(sd);
