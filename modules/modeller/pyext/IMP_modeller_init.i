@@ -120,9 +120,9 @@ class ModellerRestraints(IMP.Restraint):
     def do_show(self, fh):
         fh.write("ModellerRestraints")
     def get_input_particles(self):
-        return IMP.ParticlesTemp([x for x in self._particles])
+        return [x for x in self._particles]
     def get_input_containers(self):
-        return IMP.ContainersTemp()
+        return []
 
 
 def _copy_imp_coords_to_modeller(particles, atoms):
