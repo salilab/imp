@@ -170,17 +170,17 @@ def _get_imp_derivs(particles, dvx, dvy, dvz):
 # Generators to create IMP UnaryFunction objects from Modeller parameters:
 def _HarmonicLowerBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.HarmonicLowerBound(mean, k)
 
 def _HarmonicUpperBoundGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.HarmonicUpperBound(mean, k)
 
 def _HarmonicGenerator(parameters, modalities):
     (mean, stdev) = parameters
-    k = IMP.core.Harmonic.k_from_standard_deviation(stdev)
+    k = IMP.core.Harmonic.get_k_from_standard_deviation(stdev)
     return IMP.core.Harmonic(mean, k)
 
 def _CosineGenerator(parameters, modalities):
@@ -587,7 +587,8 @@ class ModelLoader(object):
             # No way to get Modeller radii, so we have to reassign them
             add_soft_sphere_radii(self._modeller_hierarchy,
                                   libs.topology.submodel, edat.radii_factor)
-            k = IMP.core.Harmonic.k_from_standard_deviation(edat.sphere_stdv)
+            k = \
+              IMP.core.Harmonic.get_k_from_standard_deviation(edat.sphere_stdv)
             ps = IMP.core.SphereDistancePairScore(
                               IMP.core.HarmonicLowerBound(0, k))
             restraints.append(IMP.container.PairsRestraint(ps, nbl))
