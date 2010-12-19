@@ -128,6 +128,10 @@ class IMPData:
         self.dependencies={}
         self.examples={}
         self.env=env
+    def _check_names(self, names):
+        for n in names:
+            if n=="":
+                raise ValueError("Invalid empty name")
     def _expand_modules(self, modules):
         ml=[]
         for m in modules:
@@ -149,6 +153,10 @@ class IMPData:
                    dependencies=[], unfound_dependencies=[], modules=[],
                    python_modules=[], version="", ok=True,
                    external=False):
+        self._check_names(dependencies)
+        self._check_names(unfound_dependencies)
+        self._check_names(modules)
+        self._check_names(python_modules)
         if not ok:
             self.modules[name]=self.ModuleData(name, ok=ok)
         else:
