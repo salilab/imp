@@ -833,25 +833,17 @@ em::DensityMap* FFTFitting::get_correlation_hit_map() {
   Pointer<em::DensityMap> r_map(new em::DensityMap(*padded_header));
   int pnx=padded_header->get_nx();
   int pny=padded_header->get_ny();
-  int sx,sy,sz,ex,ey,ez;//the voxels of the orign and top of asmb_map
+  int pnz=padded_header->get_nz();
   //in the padded map
-  algebra::Vector3D orig=asmb_map_->get_origin();
-  algebra::Vector3D top=asmb_map_->get_top();
-  sx=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,0));
-  sy=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,1));
-  sz=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,2));
-  ex=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,0));
-  ey=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,1));
-  ez=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,2));
   int uw_x,uw_y,uw_z;
   long vox_z,vox_zy;
   em::emreal* r_data=r_map->get_data();
   //TODO - make faster by using the wrapped function.
-  for(int iz=sz;iz<ez;iz++){
+  for(int iz=0;iz<pnz;iz++){
     vox_z=iz*pny*pnx;
-    for(int iy=sy;iy<ey;iy++){
+    for(int iy=0;iy<pny;iy++){
       vox_zy=vox_z+iy*pnx;
-      for(int ix=sx;ix<ex;ix++){
+      for(int ix=0;ix<pnx;ix++){
         get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
         //check if the unwrapped is in the relevant boundaries
         long unwrapped_ind = uw_z*pny*pnx+uw_y*pnx+uw_x;
