@@ -20,7 +20,7 @@ class DihedralRestraintTests(IMP.test.TestCase):
                                                     math.cos(system_angle),
                                                     math.sin(system_angle),
                                                     0.0))
-        k = IMP.core.Harmonic.k_from_standard_deviation(.1)
+        k = IMP.core.Harmonic.get_k_from_standard_deviation(.1)
         r = IMP.core.DistanceRestraint(IMP.core.Harmonic(1.0, k),
                                        particles[0], particles[1])
         model.add_restraint(r)

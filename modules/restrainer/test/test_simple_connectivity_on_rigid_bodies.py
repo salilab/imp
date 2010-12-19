@@ -42,7 +42,7 @@ class SimpleConnectivityTest(IMP.test.TestCase):
 
         sc.set_stddev(3.5)
         self.assertAlmostEqual(h.get_k(),
-                               h.k_from_standard_deviation(3.5), delta=1e-4)
+                               h.get_k_from_standard_deviation(3.5), delta=1e-4)
         sc.set_k(0.1)
         self.assertAlmostEqual(h.get_k(), 0.1, delta=1e-4)
 
