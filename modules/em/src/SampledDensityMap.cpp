@@ -88,8 +88,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
 }
 
 
- void SampledDensityMap::resample()
- {
+ void SampledDensityMap::resample() {
    IMP_LOG(VERBOSE,"going to resample  particles " <<std::endl);
    //check that the particles bounding box is within the density bounding box
    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -284,14 +283,26 @@ void SampledDensityMap::determine_grid_size(emreal resolution,
 }
 float SampledDensityMap::get_minimum_resampled_value() {
   float min_weight=INT_MAX;
-  core::XYZsTemp xyz(ps_);
-  for(unsigned int i=0;i<xyz.size();i++) {
-    if(!is_part_of_volume(xyz[i].get_coordinates()))
+  float res=header_.get_resolution();
+  float spacing=get_spacing();
+  for(unsigned int i=0;i<xyzr_.size();i++) {
+    //This is a coarse resampling test, we use a box of size res/2
+    for(float i1=-res/2;i1<=res/2;i1+=spacing){
+    for(float i2=-res/2;i2<=res/2;i2+=spacing){
+    for(float i3=-res/2;i3<=res/2;i3+=spacing){
+      algebra::Vector3D pos=xyzr_[i].get_coordinates()+
+        algebra::Vector3D(i1,i2,i3);
+      if(!is_part_of_volume(pos))
        continue;
-    if (get_value(xyz[i].get_coordinates())<min_weight) {
-      min_weight=get_value(xyz[i].get_coordinates());
-    }
+    if (get_value(pos)<min_weight) {
+      min_weight=get_value(pos);
+    }}}}
   }
   return min_weight;
 }
+
+
+
+
+
 IMPEM_END_NAMESPACE

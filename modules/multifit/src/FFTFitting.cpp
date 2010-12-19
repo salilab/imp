@@ -125,6 +125,18 @@ void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
   z+=shift;*/
 }
 
+
+void FFTFitting::get_wrapped_index(int x,int y,int z,
+                                     int &wx,int &wy,int &wz) const{
+  int x_half = (fftw_nx_-1)/2;
+  int y_half = (fftw_ny_-1)/2;
+  int z_half = (fftw_nz_-1)/2;
+
+  if (x<x_half) wx=fftw_nx_-x_half+x-2; else wx=x-x_half-1;
+  if (y<y_half) wy=fftw_ny_-y_half+y-2; else wy=y-y_half-1;
+  if (z<z_half) wz=fftw_nz_-z_half+z-2; else wz=z-z_half-1;
+}
+
 void FFTFitting::set_fftw_for_mol(){
   //allocate grids
   fftw_r_grid_mol_ = (double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
@@ -575,10 +587,13 @@ void FFTFitting::mask_norm_mol_map() {
 }
 
 void FFTFitting::calculate_local_correlation() {
+  em::MRCReaderWriter mrw;
+  em::write_map(mol_map_,"mol.start.debug.mrc",mrw);
   set_mol_mask();
   //now mask the moleulce grid and normalize
   mask_norm_mol_map();
-
+  //for debugging write the normalized map
+  em::write_map(mol_map_,"mol.debug.mrc",mrw);
   //copy mol data, as the orientation may have changed
   //  em::DensityMap *masked_mol = em::multiply(mol_map_,mol_mask_map_);
   copy_density_data(mol_map_,fftw_r_grid_mol_);
@@ -587,12 +602,12 @@ void FFTFitting::calculate_local_correlation() {
   calculate_local_stds();
   //generate the correlation grid in complex space
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
-    fftw_c_grid_cc_[i][0] =
-      (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_norm_;;
-    fftw_c_grid_cc_[i][1] =
-      (fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][1] -
-       fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
+    fftw_c_grid_cc_[i][0] =(
+            fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][0] +
+            fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][1])*fftw_norm_;
+    fftw_c_grid_cc_[i][1] =(
+             -fftw_c_grid_asmb_[i][0] * fftw_c_grid_mol_[i][1] +
+             fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
   }
   //inverse to get the correlation in real space
   fftw_execute(fftw_plan_c2r_cc_);
@@ -747,6 +762,8 @@ FFTFittingResults fft_based_rigid_fitting(
       fft_fit.calculate_correlation();
     }
     em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
+    em::MRCReaderWriter mrw;
+    em::write_map(hit_map,"corr.mrc",mrw);
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
@@ -809,22 +826,41 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
 
 
 em::DensityMap* FFTFitting::get_correlation_hit_map() {
-  const em::DensityHeader *from_header=padded_asmb_map_->get_header();
-  Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
-  int nx=from_header->get_nx();
-  int ny=from_header->get_ny();
-  int nz=from_header->get_nz();
+  //there is no meaning to correlation on the padded regions after
+  //unwrapping. We create the r_map of the padded density, but
+  //all padded values are going to be 0
+  const em::DensityHeader *padded_header=padded_asmb_map_->get_header();
+  Pointer<em::DensityMap> r_map(new em::DensityMap(*padded_header));
+  int pnx=padded_header->get_nx();
+  int pny=padded_header->get_ny();
+  int sx,sy,sz,ex,ey,ez;//the voxels of the orign and top of asmb_map
+  //in the padded map
+  algebra::Vector3D orig=asmb_map_->get_origin();
+  algebra::Vector3D top=asmb_map_->get_top();
+  sx=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,0));
+  sy=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,1));
+  sz=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(orig,2));
+  ex=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,0));
+  ey=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,1));
+  ez=get_wrapped_index(padded_asmb_map_->get_dim_index_by_location(top,2));
   int uw_x,uw_y,uw_z;
   long vox_z,vox_zy;
   em::emreal* r_data=r_map->get_data();
-  for(int iz=0;iz<nz;iz++){
-    vox_z=iz*ny*nx;
-    for(int iy=0;iy<ny;iy++){
-      vox_zy=vox_z+iy*nx;
-      for(int ix=0;ix<nx;ix++){
+  //TODO - make faster by using the wrapped function.
+  for(int iz=sz;iz<ez;iz++){
+    vox_z=iz*pny*pnx;
+    for(int iy=sy;iy<ey;iy++){
+      vox_zy=vox_z+iy*pnx;
+      for(int ix=sx;ix<ex;ix++){
         get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
-          r_data[uw_z*ny*nx+uw_y*nx+uw_x]=
+        //check if the unwrapped is in the relevant boundaries
+        long unwrapped_ind = uw_z*pny*pnx+uw_y*pnx+uw_x;
+        if (asmb_map_->is_part_of_volume(
+               padded_asmb_map_->get_location_by_voxel(unwrapped_ind))){
+          r_data[unwrapped_ind]=
             fftw_r_grid_cc_[vox_zy+ix];
+        }
+        else{r_data[unwrapped_ind]=0.;}
       }}}
   return r_map.release();
 }
