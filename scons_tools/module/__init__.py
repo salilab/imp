@@ -433,11 +433,17 @@ def IMPModuleTest(env, python_tests, cpp_tests,
                                        source= prgs)
         files.append(cpptest)
     if check_standards:
-        _standards.add(env, plural_exceptions=plural_exceptions,
-                       show_exceptions=show_exceptions,
-                       function_name_exceptions=function_name_exceptions,
-                       value_object_exceptions=value_object_exceptions,
-                       class_name_exceptions=class_name_exceptions)
+        standards=_standards.add(env, plural_exceptions=plural_exceptions,
+                                 show_exceptions=show_exceptions,
+                                 function_name_exceptions=function_name_exceptions,
+                                 value_object_exceptions=value_object_exceptions,
+                                 class_name_exceptions=class_name_exceptions)
+        for f in files:
+            found=False
+            if str(files).endswith("test_standards.py"):
+                found=True
+        if not found:
+            files.append(standards)
     test = scons_tools.test.add_test(env, source=files,
                                      type='unit test')
 
