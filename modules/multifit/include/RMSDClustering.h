@@ -58,8 +58,7 @@ protected:
 };
 typedef std::vector<TransformationRecord> TransformationRecords;
 public:
-  typedef internal::GeometricHash<int, float, 3> Hash3;
-  typedef Hash3::GeoPoint Point3;
+  typedef internal::GeometricHash<int, 3> Hash3;
   typedef boost::property<boost::edge_weight_t, short> ClusEdgeWeightProperty;
   typedef boost::property<boost::vertex_index_t, int> ClusVertexIndexProperty;
   // Graph type
@@ -165,8 +164,8 @@ void RMSDClustering<TransT>::build_full_graph(const Hash3 &h,
   for (int i = 0 ; i < (int)recs.size() ; ++i) {
     TransT tr=recs[i]->get_record();
     algebra::Transformation3D t = tr.get_transformation();
-    std::vector<Hash3::Placeholder> result =
-      h.neighbors(Hash3::INF, Point3(t.get_transformed(centroid_)), max_dist);
+    Hash3::HashResult result =
+      h.neighbors(Hash3::INF, t.get_transformed(centroid_), max_dist);
     for ( size_t k=0; k<result.size(); ++k ) {
       int j = result[k]->second;
       if (i >= j) continue; //insert edge only once
@@ -249,7 +248,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
   float max_dist2 = max_dist * max_dist;
   int num_joins = 0;
   bool used[recs.size()];
-  Hash3 g_hash(bin_size_);
+  Hash3 g_hash((double)(bin_size_));
 
   //load the hash
   for (int i = 0 ; i < (int)recs.size() ; ++i){
@@ -287,13 +286,13 @@ int RMSDClustering<TransT>::exhustive_clsutering(float max_dist,
            std::vector<RMSDClustering<TransT>::TransformationRecord *>& recs) {
   if (recs.size()<2) return 0;
   bool used[recs.size()];
-  Hash3 ghash(max_dist);
+  Hash3 ghash((double)(max_dist));
 
   //load the hash
   for (int i = 0 ; i < (int)recs.size() ; ++i) {
     used[i] = false;
     algebra::Transformation3D t = recs[i]->get_record().get_transformation();
-    ghash.add(Point3(t.get_transformed(centroid_)), i);
+    ghash.add(t.get_transformed(centroid_), i);
   }
   //build the graph
   Graph g;
