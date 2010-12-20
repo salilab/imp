@@ -229,10 +229,6 @@ public:
    */
   int get_child_index(Hierarchy c) const;
 
-  IMP_NO_DOXYGEN(void validate_node() const);
-
-  IMP_NO_DOXYGEN(void validate() const);
-
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
 #ifndef IMP_DOXYGEN
