@@ -12,6 +12,7 @@
 
 #include <IMP/RefCounted.h>
 #include <IMP/macros.h>
+#include <IMP/VectorOfRefCounted.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -35,6 +36,8 @@ public:
     return data_[i];
   }
 
+  IMP_SHOWABLE_INLINE(ExampleRefCounted, out << data_.size());
+
   /* Make sure that it can't be allocated on the stack
      The macro defines an empty destructor. In general,
      you want destructors to be empty since they are hard
@@ -42,6 +45,10 @@ public:
   */
   IMP_REF_COUNTED_DESTRUCTOR(ExampleRefCounted);
 };
+
+IMP_OUTPUT_OPERATOR(ExampleRefCounted);
+
+typedef VectorOfRefCounted<ExampleRefCounted> ExampleRefCounteds;
 
 
 IMPEXAMPLE_END_NAMESPACE

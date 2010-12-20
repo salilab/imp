@@ -11,6 +11,8 @@ IMP_SWIG_DECORATOR(IMP::example, ExampleDecorator, ExampleDecorators);
 IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
 IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
+IMP_SWIG_OBJECT(IMP::example, ExampleRefCounted, ExampleRefCounteds);
+IMP_SWIG_VALUE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClass3Ds);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.examples.say_hello(). */
@@ -43,6 +45,6 @@ namespace IMP {
   /* Python doesn't natively support C++ templates, so you have to manually
      choose which template parameters you want to intantiate a template with.
    */
-   %template(ExampleTemplateClass3D) ExampleTemplateClass<3>;
+   %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
   }
 }
