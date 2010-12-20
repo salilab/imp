@@ -18,7 +18,6 @@ class DecoratorTests(IMP.test.TestCase):
 
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")
-        ppd.validate()
     def test_alt_hierarchy(self):
         """Check that an alternate hierarchy works fine"""
         t= IMP.core.HierarchyTraits("my_hierarchy")
@@ -34,7 +33,6 @@ class DecoratorTests(IMP.test.TestCase):
 
         self.assertEqual(ppd.get_number_of_children(), 10,
                          "Number of children is not as expected")
-        ppd.validate()
     def test_conversion(self):
         """Test conversion from atom.hierarchy"""
         m= IMP.Model()
