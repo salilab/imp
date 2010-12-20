@@ -46,14 +46,14 @@ void ChimeraWriter::cleanup(std::string name,
     get_stream() << "s= marker_sets[\"" << name << "\"]\n";
   }
 }
-bool ChimeraWriter::process(SphereGeometry *g,
+bool ChimeraWriter::handle(SphereGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
   write_marker(get_stream(), g->get_center(),
                color, g->get_radius());
   return true;
 }
-bool ChimeraWriter::process(CylinderGeometry *g,
+bool ChimeraWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
   write_marker(get_stream(), g->get_segment().get_point(0),
@@ -67,14 +67,14 @@ bool ChimeraWriter::process(CylinderGeometry *g,
   get_stream() << "ml=mark\n";
   return true;
 }
-bool ChimeraWriter::process(PointGeometry *g,
+bool ChimeraWriter::handle(PointGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
   write_marker(get_stream(), *g,
                color, 0);
   return true;
 }
-bool ChimeraWriter::process(SegmentGeometry *g,
+bool ChimeraWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
   write_marker(get_stream(), g->get_point(0),
@@ -87,7 +87,7 @@ bool ChimeraWriter::process(SegmentGeometry *g,
   get_stream() << "ml=mark\n";
   return true;
 }
-bool ChimeraWriter::process(PolygonGeometry *g,
+bool ChimeraWriter::handle(PolygonGeometry *g,
                             Color color, std::string name) {
   cleanup(name, false, true);
   std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D> polys
@@ -110,7 +110,7 @@ bool ChimeraWriter::process(PolygonGeometry *g,
   }
   return true;
 }
-bool ChimeraWriter::process(TriangleGeometry *g,
+bool ChimeraWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
   cleanup(name, false, true);
   get_stream() << "v=[";
@@ -129,7 +129,7 @@ bool ChimeraWriter::process(TriangleGeometry *g,
                << ", 1))\n";
   return true;
 }
-bool ChimeraWriter::process(EllipsoidGeometry *g,
+bool ChimeraWriter::handle(EllipsoidGeometry *g,
                             Color , std::string name) {
   cleanup(name, false, false);
   get_stream() << "try:\n";
@@ -144,7 +144,7 @@ bool ChimeraWriter::process(EllipsoidGeometry *g,
   return true;
 }
 
-void ChimeraWriter::on_open() {
+void ChimeraWriter::handle_open() {
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "try:\n";
@@ -162,7 +162,7 @@ void ChimeraWriter::on_open() {
   get_stream() << "marker_sets={}\n";
   get_stream() << "surf_sets={}\n";
 }
-void ChimeraWriter::on_close() {
+void ChimeraWriter::handle_close() {
   get_stream() << "for k in surf_sets.keys():\n";
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
 }

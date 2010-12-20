@@ -23,19 +23,19 @@ class IMPDISPLAYEXPORT ChimeraWriter: public Writer
 {
   void cleanup(std::string name,
                bool need_ms, bool need_surf=false);
-  bool process(SphereGeometry *g,
+  bool handle(SphereGeometry *g,
                Color color, std::string name);
-  bool process(CylinderGeometry *g,
+  bool handle(CylinderGeometry *g,
                Color color, std::string name);
-  bool process(PointGeometry *g,
+  bool handle(PointGeometry *g,
                Color color, std::string name);
-  bool process(SegmentGeometry *g,
+  bool handle(SegmentGeometry *g,
                Color color, std::string name);
-  bool process(PolygonGeometry *g,
+  bool handle(PolygonGeometry *g,
                Color color, std::string name);
-  bool process(TriangleGeometry *g,
+  bool handle(TriangleGeometry *g,
                Color color, std::string name);
-  bool process(EllipsoidGeometry *g,
+  bool handle(EllipsoidGeometry *g,
                Color color, std::string name);
 public:
   IMP_WRITER(ChimeraWriter);

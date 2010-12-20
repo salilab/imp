@@ -22,48 +22,48 @@ class IMPDISPLAYEXPORT GeometryProcessor
 protected:
   virtual ~GeometryProcessor() {}
 
-  virtual bool process(SphereGeometry *,
+  virtual bool handle(SphereGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(CylinderGeometry *,
+  virtual bool handle(CylinderGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(PointGeometry *,
+  virtual bool handle(PointGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(SegmentGeometry *,
+  virtual bool handle(SegmentGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(PolygonGeometry *,
+  virtual bool handle(PolygonGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(TriangleGeometry *,
+  virtual bool handle(TriangleGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(LabelGeometry *,
+  virtual bool handle(LabelGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(EllipsoidGeometry *,
+  virtual bool handle(EllipsoidGeometry *,
                        Color, std::string) {
     return false;
   }
-  virtual bool process(BoundingBoxGeometry *, Color,
+  virtual bool handle(BoundingBoxGeometry *, Color,
                        std::string) {
     return false;
   }
-  virtual bool process(Geometry *, Color, std::string) {
+  virtual bool handle(Geometry *, Color, std::string) {
     return false;
   }
-  void process_geometry(Geometry* g);
+  void handle_geometry(Geometry* g);
 private:
-  void process_geometry_internal(Geometry* g, bool has_color,
+  void handle_geometry_internal(Geometry* g, bool has_color,
                                  Color c,
                                  std::string);
 };

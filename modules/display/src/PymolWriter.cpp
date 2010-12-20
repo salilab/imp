@@ -20,12 +20,12 @@ namespace {
   }
 }
 
-void PymolWriter::on_open() {
+void PymolWriter::handle_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "from pymol.vfont import plain\ndata= {}\n";
 }
 
-void PymolWriter::on_close() {
+void PymolWriter::handle_close() {
   get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
 }
 
@@ -55,8 +55,8 @@ namespace {
   }
 }
 
-bool PymolWriter::process(SphereGeometry *g,
-                            Color color, std::string name) {
+bool PymolWriter::handle(SphereGeometry *g,
+                          Color color, std::string name) {
   setup(name);
   write_color(get_stream(), color);
   get_stream() << "SPHERE, " << algebra::commas_io(g->get_center()) << ", "
@@ -65,7 +65,7 @@ bool PymolWriter::process(SphereGeometry *g,
 
   return true;
 }
-bool PymolWriter::process(LabelGeometry *g,
+bool PymolWriter::handle(LabelGeometry *g,
                           Color color, std::string name) {
   setup(name);
   write_color(get_stream(), color);
@@ -82,7 +82,7 @@ bool PymolWriter::process(LabelGeometry *g,
   cleanup(name, false);
   return true;
 }
-bool PymolWriter::process(CylinderGeometry *g,
+bool PymolWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "CYLINDER,\n"
@@ -100,7 +100,7 @@ bool PymolWriter::process(CylinderGeometry *g,
   cleanup(name);
   return true;
 }
-bool PymolWriter::process(PointGeometry *g,
+bool PymolWriter::handle(PointGeometry *g,
                             Color color, std::string name) {
   setup(name);
   write_color(get_stream(),color);
@@ -109,7 +109,7 @@ bool PymolWriter::process(PointGeometry *g,
   cleanup(name);
   return true;
 }
-bool PymolWriter::process(SegmentGeometry *g,
+bool PymolWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
   setup(name);
   double r= .01*(g->get_point(0)- g->get_point(1)).get_magnitude();
@@ -128,7 +128,7 @@ bool PymolWriter::process(SegmentGeometry *g,
   cleanup(name);
   return true;
 }
-bool PymolWriter::process(PolygonGeometry *g,
+bool PymolWriter::handle(PolygonGeometry *g,
                           Color color, std::string name) {
   setup(name);
   std::pair<std::vector<algebra::Vector3Ds>,
@@ -148,7 +148,7 @@ bool PymolWriter::process(PolygonGeometry *g,
   cleanup(name);
   return true;
 }
-bool PymolWriter::process(TriangleGeometry *g,
+bool PymolWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";

@@ -29,14 +29,14 @@ class IMPDISPLAYEXPORT FilterGeometry: public GeometryProcessor,
   Geometries gdata_;
   mutable Geometries filtered_;
  protected:
-  using GeometryProcessor::process;
-  bool process(SphereGeometry *g,
+  using GeometryProcessor::handle;
+  bool handle(SphereGeometry *g,
                          Color color, std::string name);
-  bool process(CylinderGeometry *g,
+  bool handle(CylinderGeometry *g,
                        Color color, std::string name);
-  bool process(PointGeometry *g,
+  bool handle(PointGeometry *g,
                        Color color, std::string name);
-  bool process(SegmentGeometry *g,
+  bool handle(SegmentGeometry *g,
                        Color color, std::string name);
 public:
   //! Pay attention to the orientation of the plane.

@@ -15,13 +15,13 @@ IMPDISPLAY_BEGIN_NAMESPACE
 #define HANDLE(Name) {                                  \
     Name *sg= dynamic_cast<Name*>(g);                   \
     if (sg) {                                           \
-      if (process(sg, c, name)) {                       \
+      if (handle(sg, c, name)) {                        \
         return;                                         \
       }                                                 \
     }                                                   \
   }                                                     \
 
-void GeometryProcessor::process_geometry_internal(Geometry* g,
+void GeometryProcessor::handle_geometry_internal(Geometry* g,
                                                   bool has_color,
                                                   Color c,
                                                   std::string name) {
@@ -49,13 +49,13 @@ void GeometryProcessor::process_geometry_internal(Geometry* g,
               ValueException);
   } else {
     for (unsigned int i=0; i< comp.size(); ++i) {
-      process_geometry_internal(comp[i], has_color, c, name);
+      handle_geometry_internal(comp[i], has_color, c, name);
     }
   }
 }
 
-void GeometryProcessor::process_geometry(Geometry *g) {
-  process_geometry_internal(g, false, Color(.7, .7, .7), std::string());
+void GeometryProcessor::handle_geometry(Geometry *g) {
+  handle_geometry_internal(g, false, Color(.7, .7, .7), std::string());
 }
 
 

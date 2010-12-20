@@ -11,10 +11,10 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-void BildWriter::on_open() {
+void BildWriter::handle_open() {
 }
 
-void BildWriter::on_close() {
+void BildWriter::handle_close() {
 }
 
 
