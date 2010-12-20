@@ -47,9 +47,9 @@ class ProteinLigandType;
     to properly initialize the particles.
 */
 class IMPATOMEXPORT ProteinLigandAtomPairScore:
-  public core::StatisticalPairScore<ProteinLigandType, true> {
+  public core::StatisticalPairScore<ProteinLigandType, true, false> {
   friend class ProteinLigandRestraint;
-  typedef core::StatisticalPairScore<ProteinLigandType, true>  P;
+  typedef core::StatisticalPairScore<ProteinLigandType, true, false>  P;
  public:
   ProteinLigandAtomPairScore(double threshold
                              = std::numeric_limits<double>::max());

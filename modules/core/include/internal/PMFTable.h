@@ -16,13 +16,14 @@
 #include <vector>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-template <bool BIPARTITE>
+template <bool BIPARTITE, bool INTERPOLATE>
 struct PMFTable {
 private:
   unsigned int split_;
   double inverse_bin_width_;
   double bin_width_;
   double max_;
+  double offset_;
   std::vector<std::vector< IMP::core::internal::RawOpenCubicSpline > > data_;
   void order(unsigned int &i, unsigned int &j) const {
     if (i > j) {
@@ -43,12 +44,24 @@ public:
     std::getline(in, line);
     std::istringstream iss(line);
     iss >> bin;
+    if (!iss) {
+      IMP_THROW("Error reading bin size from line " << line,
+                IOException);
+    }
     unsigned int np, nl;
     iss >> np;
     if (BIPARTITE) {
       iss >> nl;
     } else {
       nl=np;
+    }
+    if (!iss) {
+      IMP_THROW("Error number of types from line " << line,
+                IOException);
+    }
+    iss >> offset_;
+    if (!iss) {
+      offset_=0;
     }
     IMP_LOG(TERSE, "Reading " << np << " by " << nl
             << " from file " << tin.get_name() << std::endl);
@@ -60,19 +73,7 @@ public:
                 << " but got " << np << " " << nl,
                 IOException);
                 }*/
-    if (!iss) {
-      IMP_THROW("Error reading bin size from line " << line,
-                IOException);
-    }
-    {
-      double test;
-      iss >> test;
-      if (iss) {
-        IMP_THROW("Extra data found on bin size line " << line
-                  << " got " << test,
-                  IOException);
-      }
-    }
+
     bin_width_=bin;
     inverse_bin_width_=1.0/bin;
 
@@ -144,26 +145,34 @@ public:
             << bins_read << " bins with width " << bin_width_ << std::endl);
   }
   double get_score(unsigned int i, unsigned int j, double dist) const {
-   if (dist >= max_) return 0;
+   if (dist >= max_ || dist <= offset_) return 0;
     order(i,j);
     IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
     IMP_USAGE_CHECK(j < data_[i].size(),
                     "Out of range ligand index " << i << " " << j);
-    return data_[i][j].get_bin(dist, bin_width_, inverse_bin_width_);
+    if (INTERPOLATE) {
+      return data_[i][j].evaluate(dist-.5*bin_width_-offset_, bin_width_,
+                                  inverse_bin_width_);
+    } else {
+      return data_[i][j].get_bin(dist-offset_, bin_width_, inverse_bin_width_);
+    }
   }
   double get_max() const {
     return max_;
   }
   DerivativePair get_score_with_derivative(unsigned int i,
                                            unsigned int j, double dist) const {
-   if (dist >= max_-.5*bin_width_) return DerivativePair(0,0);
+    if (dist >= max_-.5*bin_width_ || dist <= offset_) {
+      return DerivativePair(0,0);
+    }
     order(i,j);
     IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
     IMP_USAGE_CHECK(j < data_[i].size(),
                     "Out of range ligand index " << i << " " << j);
     if (dist <= .5*bin_width_) return DerivativePair(get_score(i,j,dist), 0);
     // shift by .5 for the splines so as to be between the centers of the cells
-    return data_[i][j].evaluate_with_derivative(dist-.5*bin_width_, bin_width_,
+    return data_[i][j].evaluate_with_derivative(dist-.5*bin_width_-offset_,
+                                                bin_width_,
                                                 inverse_bin_width_);
   }
 };
