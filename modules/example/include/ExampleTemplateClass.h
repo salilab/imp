@@ -34,15 +34,15 @@ IMPEXAMPLE_BEGIN_NAMESPACE
     \include ExampleTemplateClass.h
 */
 template <unsigned int D>
-class ExampleTemplateClass
+class ExampleTemplateClassD
 {
   IMP::algebra::VectorD<D> eps_[2];
 public:
-  ExampleTemplateClass(){}
+  ExampleTemplateClassD(){}
   /** Since it is a simple object, there is no reason to provide
       methods to change the data.
   */
-  ExampleTemplateClass(const IMP::algebra::VectorD<D> &a,
+  ExampleTemplateClassD(const IMP::algebra::VectorD<D> &a,
                        const IMP::algebra::VectorD<D> &b){
     eps_[0]= a;
     eps_[1]= b;
@@ -52,11 +52,16 @@ public:
     IMP_USAGE_CHECK(i < 2, "The endpoint index can only be 0 or 1");
     return eps_[i];
   }
+
+  IMP_SHOWABLE_INLINE(ExampleTemplateClassD, out << eps_[0] << " " << eps_[1];);
 };
+
+typedef ExampleTemplateClassD<3> ExampleTemplateClass3D;
+typedef std::vector<ExampleTemplateClassD<3> > ExampleTemplateClass3Ds;
 
 // Make it so the C++ operator<< can be used. The _D means that it is
 // is templated on the dimension. See the docs for other, related macros.
-IMP_OUTPUT_OPERATOR_D(ExampleTemplateClass);
+IMP_OUTPUT_OPERATOR_D(ExampleTemplateClassD);
 
 IMPEXAMPLE_END_NAMESPACE
 
