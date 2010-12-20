@@ -63,8 +63,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                   "Particle is not a rigid body");
 
   // get rigid body transformation
-  tr0=core::RigidBody(p[0]).get_transformation();
-  tr1=core::RigidBody(p[1]).get_transformation();
+  tr0=core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
+  tr1=core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
 
   // and apply it to vectors
   b0=tr0.get_transformed(b0);

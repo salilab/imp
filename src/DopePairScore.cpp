@@ -246,8 +246,8 @@ void add_dope_score_data(atom::Atom atom) {
   if (!DopeType::get_key_exists(score_type)) {
     type=-1;
   } else {
-    /*std::cout << "Type for " << atom << " is "
-      << DopeType(score_type) << std::endl;*/
+    //std::cout << "Type for " << atom << " is "
+    //  << DopeType(score_type) << std::endl;
     type= DopeType(score_type).get_index();
   }
   if (type==-1 && atom.get_element() != atom::H) {
