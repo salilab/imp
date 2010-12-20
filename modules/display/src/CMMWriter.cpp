@@ -11,16 +11,16 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-void CMMWriter::on_open() {
+void CMMWriter::handle_open() {
   get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
   marker_index_=0;
 }
 
-void CMMWriter::on_close() {
+void CMMWriter::handle_close() {
   get_stream() << "</marker_set>" << std::endl;
 }
 
-bool CMMWriter::process(SphereGeometry *g, Color color,
+bool CMMWriter::handle(SphereGeometry *g, Color color,
                         std::string name) {
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
                << " x=\"" << g->get_center()[0] << "\""
@@ -34,7 +34,7 @@ bool CMMWriter::process(SphereGeometry *g, Color color,
   return true;
 }
 
-bool CMMWriter::process(PointGeometry *g, Color color,
+bool CMMWriter::handle(PointGeometry *g, Color color,
                         std::string name) {
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
                << " x=\"" << g->operator[](0) << "\""

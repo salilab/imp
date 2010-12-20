@@ -37,7 +37,7 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
     if (! on_open_called_) {
       // can't call virtual functions from constructor reliably
       on_open_called_=true;
-      on_open();
+      handle_open();
     }
     return out_;
   }
@@ -66,17 +66,17 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   }
 
   virtual void set_output(TextOutput f) {
-    if (get_stream_is_open()) on_close();
+    if (get_stream_is_open()) handle_close();
     out_= f;
     if (get_stream_is_open()) {
       set_was_used(true);
-      on_open();
+      handle_open();
     }
   }
 
   //! Close the stream. You shouldn't need this, but it doesn't hurt
   void close() {
-    if (get_stream_is_open()) on_close();
+    if (get_stream_is_open()) handle_close();
     out_= TextOutput();
   }
 
@@ -106,9 +106,9 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 
  protected:
   //! A hook for implementation classes to use to take actions on file close
-  virtual void on_close()=0;
+  virtual void handle_close()=0;
   //! A hook for implementation classes to use to take actions on file open
-  virtual void on_open()=0;
+  virtual void handle_open()=0;
 };
 
 /** Create an appropriate writer based on the file suffix. */

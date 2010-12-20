@@ -28,17 +28,17 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT BildWriter: public Writer
 {
  protected:
-  void process(Color color) {
+  void handle(Color color) {
     get_stream() << ".color " << color << "\n";
   }
-  bool process(PointGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(PointGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".dotat " <<  algebra::spaces_io(*g)
                  << "\n";
     return true;
   }
-  bool process(SegmentGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(SegmentGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".move "
                  << algebra::spaces_io(g->get_point(0)) << "\n";
     get_stream() << ".draw "
@@ -46,8 +46,8 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
                  << "\n";
     return true;
   }
-  bool process(PolygonGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(PolygonGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< g->size(); ++i) {
       get_stream() << " " << algebra::spaces_io(g->at(i));
@@ -55,8 +55,8 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     get_stream() << "\n";
     return true;
   }
-  bool process(TriangleGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(TriangleGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< 3; ++i) {
       get_stream() << " " << algebra::spaces_io(g->at(i));
@@ -64,15 +64,15 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     get_stream() << "\n";
     return true;
   }
-  bool process(SphereGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(SphereGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".sphere "
                  << algebra::spaces_io(g->get_center()) << " "
                  << g->get_radius() << "\n";
     return true;
   }
-  bool process(CylinderGeometry *g, Color color, std::string) {
-    process(color);
+  bool handle(CylinderGeometry *g, Color color, std::string) {
+    handle(color);
     get_stream() << ".cylinder "
                  << algebra::spaces_io(g->get_segment().get_point(0))
                  << " "

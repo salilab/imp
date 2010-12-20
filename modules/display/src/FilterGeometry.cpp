@@ -28,9 +28,9 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }
 }
 
-#define PROCESS(Name, test)                                     \
-  bool FilterGeometry::process(Name##Geometry *g,               \
-                               Color color, std::string name) { \
+#define HANDLE(Name, test)                                      \
+  bool FilterGeometry::handle(Name##Geometry *g,                \
+                              Color color, std::string name) {  \
     if (test) {                                                 \
       filtered_.push_back(g);                                   \
       g->set_name(name);                                        \
@@ -40,18 +40,18 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }                                                             \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-PROCESS(Sphere, !p_.get_is_below(g->get_center()));
-PROCESS(Cylinder, !p_.get_is_below(g->get_segment().get_point(0))
+HANDLE(Sphere, !p_.get_is_below(g->get_center()));
+HANDLE(Cylinder, !p_.get_is_below(g->get_segment().get_point(0))
         || !p_.get_is_below(g->get_segment().get_point(1)));
-PROCESS(Point, !p_.get_is_below(*g));
-PROCESS(Segment, !p_.get_is_below(g->get_point(0))
+HANDLE(Point, !p_.get_is_below(*g));
+HANDLE(Segment, !p_.get_is_below(g->get_point(0))
         || !p_.get_is_below(g->get_point(1)));
 
 
 Geometries FilterGeometry::get_components() const {
   filtered_.clear();
   for (unsigned int i=0; i< gdata_.size(); ++i) {
-    const_cast<FilterGeometry*>(this)->process_geometry(gdata_[i]);
+    const_cast<FilterGeometry*>(this)->handle_geometry(gdata_[i]);
   }
   return filtered_;
 }

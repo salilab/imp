@@ -36,6 +36,11 @@ IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
 IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
 
+IMP_SWIG_OBJECT(IMP::display, ConnectivityRestraintGeometry, ConnectivityRestraintGeometries);
+IMP_SWIG_OBJECT(IMP::display, HierarchiesGeometry, HierarchiesGeometries);
+IMP_SWIG_OBJECT(IMP::display, TriangleGeometry, TriangleGeometries);
+
+
 %warnfilter(403) Geometry;
 %warnfilter(403) Writer;
 %warnfilter(403) SingletonGeometry;

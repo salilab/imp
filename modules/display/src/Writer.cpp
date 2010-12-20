@@ -24,7 +24,7 @@ Writer::~Writer(){
 
 
 void Writer::add_geometry(Geometry *g) {
-  process_geometry(g);
+  handle_geometry(g);
 }
 
 

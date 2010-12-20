@@ -18,9 +18,9 @@
   Name(): Writer(#Name){}                                               \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",close());                   \
 protected:                                                              \
- using Writer::process;                                                 \
- virtual void on_open();                                                \
- virtual void on_close()
+ using Writer::handle;                                                  \
+ virtual void handle_open();                                            \
+ virtual void handle_close()
 
 
 //! Define information for an Geometry object
@@ -29,18 +29,6 @@ protected:                                                              \
   IMP_OBJECT(Name)
 
 
-//! Define a geometric object using an IMP::algebra one
-#define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
-  /** Display a geometric object.*/                                     \
-  class IMPDISPLAYEXPORT Name: public Type,                             \
-                               public Geometry {                        \
-  public:                                                               \
-    Name(const Type &v);                                                \
-    Name(const Type &v, const Color &c);                                \
-    Name(const Type &v, const std::string n);                           \
-    Name(const Type &v, const Color &c, std::string n);                 \
-    IMP_GEOMETRY(Name);                                                 \
-  }                                                                     \
 
 
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
@@ -59,6 +47,46 @@ protected:                                                              \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
+#if defined(IMP_DOXYGEN) || defined(SWIG)
+//! Define a geometric object using an IMP::algebra one
+#define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
+  /** Display a geometric object.*/                                     \
+  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  public:                                                               \
+    Name(const Type &v);                                                \
+    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const std::string n);                           \
+    Name(const Type &v, const Color &c, std::string n);                 \
+    IMP_GEOMETRY(Name);                                                 \
+  }                                                                     \
+
+
+#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
+  /** Display a compound geometric object.*/                    \
+  class IMPDISPLAYEXPORT Name: public Geometry {                \
+  public:                                                       \
+    Name(const Type &v);                                        \
+    Name(const Type &v, const Color &c);                        \
+    Name(const Type &v, const std::string n);                   \
+    Name(const Type &v, const Color &c, std::string n);         \
+    IMP_GEOMETRY(Name);                                         \
+  }
+
+#else
+
+//! Define a geometric object using an IMP::algebra one
+#define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
+  /** Display a geometric object.*/                                     \
+  class IMPDISPLAYEXPORT Name: public Type,                             \
+                               public Geometry {                        \
+  public:                                                               \
+    Name(const Type &v);                                                \
+    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const std::string n);                           \
+    Name(const Type &v, const Color &c, std::string n);                 \
+    IMP_GEOMETRY(Name);                                                 \
+  }                                                                     \
+
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
   /** Display a compound geometric object.*/                    \
@@ -71,6 +99,7 @@ protected:                                                              \
     Name(const Type &v, const Color &c, std::string n);         \
     IMP_GEOMETRY(Name);                                         \
   }
+#endif
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
