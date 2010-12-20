@@ -39,7 +39,7 @@ class RestraintTest(IMP.test.TestCase):
             transformation = IMP.algebra.Transformation3D(rotation, translation)
 
             for rbd in rbs.rigid_bodies:
-                rbd.set_transformation(transformation)
+                rbd.set_reference_frame(IMP.algebra.ReferenceFrame3D(transformation))
 
         root_hierarchy = self.representation.model_decorator
 
