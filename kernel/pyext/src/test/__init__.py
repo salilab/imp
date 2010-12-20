@@ -356,42 +356,28 @@ class TestCase(unittest.TestCase):
         """Check that all the functions in the module follow the imp naming conventions."""
         all= dir(module)
         verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
-               "push", "pop", "write", "read", "show", "do", "load", "save", "reset",
+               "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
-               "propose", "setup", "teardown"]
+               "propose", "setup", "teardown", "visit", "find"]
         bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions)
         self.assertEquals(len(bad), 0,
                           "All IMP methods should have lower case names separated by underscores and beginning with a verb, preferable one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":str(bad), "verbs":verbs})
 
-    def assertPlural(self, modulename, exceptions):
-        """Check that all the classes in modulename have associated types to hold many of them."""
-        all= dir(modulename)
-        not_found=[]
-        for f in all:
-            if f[0].upper()== f[0] and len(f) > 1 and f[1].upper() != f[1]\
-                    and  "_" not in f and not f.endswith("_swigregister")\
-                    and f not in exceptions and not f.endswith("s")\
-                    and not f.endswith("Temp") and not f.endswith("Iterator")\
-                    and not f.endswith("Exception"):
-                if f+"s" not in dir(modulename):
-                    not_found.append(f)
-        self.assertEquals(len(not_found), 0,
-                          "All IMP classes have an associated plural version. The following do not: \n%s\n If there is a good reason for them not to, or the english spelling of the plural is not their name with an added 's', add them to the plural_exceptions variable in the IMPModuleTest call. Otherwise, please fix." \
-                          % str(not_found))
 
     def assertShow(self, modulename, exceptions):
         """Check that all the classes in modulename have a show method"""
         all= dir(modulename)
         not_found=[]
         for f in all:
-            if f[0].upper()== f[0] and len(f)>1 and f[1].upper() != f[1]\
-                    and  "_" not in f and not f.endswith("_swigregister")\
-                    and f not in exceptions and not f.endswith("s")\
-                    and not f.endswith("Temp") and not f.endswith("Iterator")\
-                    and not f.endswith("Exception") and\
-                    f not in eval(modulename.__name__+"._raii_types") and \
-                    f not in eval(modulename.__name__+"._plural_types"):
+            if self._get_type(modulename.__name__, f) == types.TypeType\
+                   and not f.startswith("_") \
+                   and not f.endswith("_swigregister")\
+                   and f not in exceptions\
+                   and not f.endswith("Temp") and not f.endswith("Iterator")\
+                   and not f.endswith("Exception") and\
+                   f not in eval(modulename.__name__+"._raii_types") and \
+                   f not in eval(modulename.__name__+"._plural_types"):
                 if not hasattr(getattr(modulename, f), 'show'):
                     not_found.append(f)
         self.assertEquals(len(not_found), 0,
