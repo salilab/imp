@@ -30,17 +30,22 @@ class IMPSTATISTICSEXPORT Histogram {
   void add(double x);
   //! Get the sum of all counts in the histogram.
   unsigned int get_total_count() const;
-  void show(std::ostream& out = std::cout) const;
   //! Get the lowest value for which X% of the histogram data is lower from
   /**
-\param percentage the percenrage (between 0 to 1)
-The name of this function will change to be more accurate.
-\unstable{get_top}
+     \param percentage the percenrage (between 0 to 1)
+     The name of this function will change to be more accurate.
+     \unstable{get_top}
    */
   double get_top(double percentage)const;
-  private:
+  IMP_SHOWABLE(Histogram);
+ private:
   double start_,end_,interval_size_;
   std::vector<int> freq_;
 };
+
+IMP_OUTPUT_OPERATOR(Histogram);
+
+IMP_VALUES(Histogram, Histograms);
+
 IMPSTATISTICS_END_NAMESPACE
 #endif  /* IMPSTATISTICS_HISTOGRAM_H */
