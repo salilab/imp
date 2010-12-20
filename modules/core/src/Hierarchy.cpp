@@ -25,21 +25,6 @@ HierarchyTraits::HierarchyTraits(std::string name): P(name)
 }
 
 
-void Hierarchy::validate_node() const
-{
-  //get_particle()->get_model()->show(std::cerr);
-  if (get_has_parent()) {
-    IMP_INTERNAL_CHECK(get_parent_index() >= 0,
-               "The parent index must be positive if it is there");
-    This p= get_parent();
-    IMP_INTERNAL_CHECK(p.get_particle() != get_particle(),
-               "A particle can't be its own parent " << *p.get_particle());
-    IMP_INTERNAL_CHECK(p.get_child_index(*this) == get_parent_index(),
-               "Incorrect parent index in particle "
-               << *get_particle());
-  }
-}
-
 void Hierarchy::show(std::ostream &out) const
 {
   out << "Hierarchy";
@@ -90,29 +75,6 @@ unsigned int count_hierarchy(Hierarchy h)
 }
 
 
-
-
-namespace internal
-{
-
-struct AssertHierarchy: public HierarchyVisitor
-{
-  AssertHierarchy(){}
-  bool operator()(Hierarchy p) {
-    p.validate_node();
-    return true;
-  }
-};
-
-} // namespace internal
-
-
-void Hierarchy::validate() const
-{
-  //std::cerr << "Checking hierarchy" << std::endl;
-  internal::AssertHierarchy ah;
-  depth_first_traversal(*this, ah);
-}
 
 
 int Hierarchy::get_child_index(Hierarchy c) const
