@@ -153,7 +153,7 @@ get_residue(Hierarchy mhd,
             unsigned int index)
 {
   MatchResidueIndex mi(index);
-  Hierarchy hd= core::breadth_first_find(mhd, mi);
+  Hierarchy hd= core::find_breadth_first(mhd, mi);
   if (hd== IMP::core::Hierarchy()) {
     return Hierarchy();
   } else {
@@ -279,7 +279,7 @@ namespace {
 
 bool Hierarchy::get_is_valid(bool print_info) const {
   try {
-    IMP::core::depth_first_traversal_with_data(*this, Validator(print_info),
+    IMP::core::visit_depth_first_with_data(*this, Validator(print_info),
                                                false);
   } catch (const BadHierarchy &) {
     return false;
