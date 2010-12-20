@@ -23,7 +23,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Template class for managing multidimensional arrays. This class is based on
 //! boost multi_array.
-/**
+/** This classes is primarily aimed to implement generic 2D and 3D bitmaps. See
+    GridD if you want a more general purpose spatial grid.
+
    The class adds new functionality to the boost class:
    1) Operators + - * and / to deal with other multiarrays and scalars
    2) Computation of maximum, minimum, and statistical properties of the
