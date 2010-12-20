@@ -48,10 +48,8 @@ void IncrementalBallMover::propose_move(Float /*size*/) {
 }
 
 
-void IncrementalBallMover::accept_move() {
-}
 
-void IncrementalBallMover::reject_move() {
+void IncrementalBallMover::reset_move() {
   for (unsigned int i=0; i< n_; ++i) {
     XYZ od(moved_[i]->get_prechange_particle());
     XYZ cd(moved_[i]);

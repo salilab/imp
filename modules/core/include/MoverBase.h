@@ -32,8 +32,7 @@ class IMPCOREEXPORT MoverBase: public Mover
   std::vector<Ints> ints_;
   IMP::internal::OwnerPointer<SingletonContainer> pc_;
 public:
-  virtual void accept_move(){}
-  virtual void reject_move();
+  virtual void reset_move();
 
   /** This sets everything up and then calls the generate_move method.
    */
@@ -58,7 +57,7 @@ protected:
   //! implement this method to propose a move
   /** See NormalMover for a simple example.
    */
-  virtual void generate_move(Float f)=0;
+  virtual void do_move(Float f)=0;
 
   //! Get the value of a controlled attribute
   /** \param [in] i The index of the particle.
