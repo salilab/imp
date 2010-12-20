@@ -31,7 +31,7 @@ class MCOptimizerTest(IMP.test.TestCase):
         trans1 = IMP.algebra.Transformation3D(
           IMP.algebra.get_random_rotation_3d(),
           point1)
-        IMP.core.RigidBody(mh).set_transformation(trans1)
+        IMP.core.RigidBody(mh).set_reference_frame(IMP.algebra.ReferenceFrame3D(trans1))
     def test_c1(self):
         """test monte carlo with rigid bodies"""
         #rigid transformation of the two molecules

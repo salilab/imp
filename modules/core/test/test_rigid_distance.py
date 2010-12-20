@@ -20,7 +20,7 @@ class Test(IMP.test.TestCase):
         rb0= IMP.atom.create_rigid_body(p0)
         rb1= IMP.atom.create_rigid_body(p1)
         randt=IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(), IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(100,100,100))))
-        IMP.core.RigidBody(rb0).set_transformation(randt)
+        IMP.core.RigidBody(rb0).set_reference_frame(IMP.algebra.ReferenceFrame3D(randt))
         sdps= IMP.core.SphereDistancePairScore(IMP.core.Linear(0,1))
         rdps= IMP.core.RigidBodyDistancePairScore(sdps, IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
         v= rdps.evaluate((p0.get_particle(), p1.get_particle()), None)
