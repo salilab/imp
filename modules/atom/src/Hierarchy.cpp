@@ -513,7 +513,7 @@ Hierarchy create_clone(Hierarchy d) {
     } else {
       ne1=Bonded::setup_particle(np1);
     }
-    copy_bond(ne0, ne1, bds[i]);
+    create_bond(ne0, ne1, bds[i]);
   }
   return nh;
 }

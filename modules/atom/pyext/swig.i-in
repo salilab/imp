@@ -24,6 +24,9 @@ IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
 IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
+IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
+IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
+IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
 IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
 IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
 IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
@@ -50,6 +53,7 @@ IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
 IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
 IMP_SWIG_VALUE(IMP::atom, ResidueType, ResidueTypes);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
+IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 
 %extend IMP::atom::Selection {
 %pythoncode %{

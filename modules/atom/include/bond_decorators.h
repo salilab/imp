@@ -167,12 +167,14 @@ public:
 #else
   typedef IMP::internal::IndexingIterator<GetBond> BondIterator;
 #endif
+#ifndef SWIG
   BondIterator bonds_begin() const {
     return BondIterator(GetBond(get_particle()), 0);
   }
   BondIterator bonds_end() const {
     return BondIterator(GetBond(get_particle()), get_number_of_bonds());
   }
+#endif
   /** @} */
   /** @name Iterate through the bondeds
       @{
@@ -182,12 +184,14 @@ public:
 #else
   typedef IMP::internal::IndexingIterator<GetBonded> BondedIterator;
 #endif
+#ifndef SWIG
   BondedIterator bondeds_begin() const {
     return BondedIterator(GetBonded(get_particle()), 0);
   }
   BondedIterator bondeds_end() const {
     return BondedIterator(GetBonded(get_particle()), get_number_of_bonds());
   }
+#endif
   /** @} */
 };
 
@@ -263,7 +267,7 @@ inline Bond create_custom_bond(Bonded a, Bonded b,
     \relatesalso Bonded
  */
 IMPATOMEXPORT
-inline Bond copy_bond(Bonded a, Bonded b,
+inline Bond create_bond(Bonded a, Bonded b,
                                  Bond o) {
   Bond bd=create_bond(a,b, o.get_type());
   if (o.get_length() > 0) bd.set_length(o.get_length());
