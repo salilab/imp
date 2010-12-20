@@ -70,7 +70,7 @@ const ParticlesTemp& Hierarchy::get_leaves() const {
 unsigned int count_hierarchy(Hierarchy h)
 {
   HierarchyCounter hc;
-  depth_first_traversal(h,hc);
+  visit_depth_first(h,hc);
   return hc.get_count();
 }
 
