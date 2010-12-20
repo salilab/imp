@@ -7,6 +7,7 @@ IMP_SWIG_OBJECT(IMP::statistics, MoveStatisticsScoreState, MoveStatisticsScoreSt
 IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetXYZEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
+IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
 
 %include "IMP/statistics/statistics_macros.h"
 //%include "IMP/statistics/KMLProxy.h"
