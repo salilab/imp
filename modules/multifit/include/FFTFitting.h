@@ -62,12 +62,47 @@ the convolution
 \param[in] wx wrapped index in X dimension
 \param[in] wy wrapped index in Y dimension
 \param[in] wz wrapped index in Z dimension
+\param[out] x unwrapped index in X dimension
+\param[out] y unwrapped index in Y dimension
+\param[out] z unwrapped index in Z dimension
+**/
+  void get_unwrapped_index(int wx,int wy,int wz,
+                           int &x,int &y,int &z) const;
+  //for python
+  int get_unwrapped_index(int wx,int wy,int wz,int ind) const {
+    int x,y,z;
+    get_unwrapped_index(wx,wy,wz,x,y,z);
+    if (ind==0) return x;
+    if (ind==1) return y;
+    return z;
+  }
+
+//! get the wrapped index
+/**
+The convolution result is in a wrapped around order,
+which indicates the translation to apply
+Wrapped around: (1,2,3,.,N,-(N-1),..-2, -1,0)
+
+The function returns the original index in its wrapped order
+ */
+/*
 \param[in] x unwrapped index in X dimension
 \param[in] y unwrapped index in Y dimension
 \param[in] z unwrapped index in Z dimension
+\param[out] wx wrapped index in X dimension
+\param[out] wy wrapped index in Y dimension
+\param[out] wz wrapped index in Z dimension
 **/
-  void get_unwrapped_index(int ix,int iy,int iz,
-                           int &f_ix,int &f_iy,int &f_iz) const;
+  void get_wrapped_index(int x,int y,int z,
+                         int &wx,int &wy,int &wz) const;
+  //for python
+  int get_wrapped_index(int x,int y,int z,int ind) const {
+    int wx,wy,wz;
+    get_wrapped_index(x,y,z,wx,wy,wz);
+    if (ind==0) return wx;
+    if (ind==1) return wy;
+    return wz;
+  }
   void test_wrapping_correction();
   void recalculate_molecule(){
     resmooth_mol();
@@ -160,6 +195,9 @@ protected:
   em::DensityMap* padded_asmb_map_sqr_;
   em::DensityMap* mol_mask_map_;
   em::SampledDensityMap* mol_map_;
+  Particles mol_map_ps_;//keep a copy of the rigid body particles
+  Model *mdl_;//model that holds the mol_map_ps_
+  // for the resampling
   core::RigidBody rb_;
   Refiner* rb_refiner_;
   bool is_initialized_;

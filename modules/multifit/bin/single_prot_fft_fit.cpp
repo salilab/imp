@@ -28,7 +28,6 @@
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/distance.h>
 #include <IMP/core/rigid_bodies.h>
-//#include "../utils/clustering.h"
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
 using namespace IMP;
 namespace po = boost::program_options;
@@ -329,7 +328,7 @@ int main(int argc, char **argv) {
 
   //cluster fitting solutions
   std::cout<<"clustering solutions"<<std::endl;
-  float cluster_rmsd=3;//resolution/2; //TODO - make a parameter
+  float cluster_rmsd=resolution/2; //TODO - make a parameter
   em::FittingSolutions sols_clustered;
   multifit::fitting_clustering (mh,
                                 sols.get_solutions(),
