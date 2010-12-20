@@ -38,10 +38,8 @@ def create_representation(tmb,tme):
         print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
 #   trial translation+rotation
     tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-5,0,0))
-#    rbs[0].set_transformation(IMP.algebra.compose(tr0, rbs[0].get_transformation()))
     IMP.core.transform(rbs[0],tr0)
     tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(5,0,0))
-#    rbs[1].set_transformation(IMP.algebra.compose(tr1, rbs[1].get_transformation()))
     IMP.core.transform(rbs[1],tr1)
     return (m, chain)
 
