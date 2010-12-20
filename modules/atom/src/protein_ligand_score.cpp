@@ -9,8 +9,9 @@
 #include <IMP/atom/Atom.h>
 #include <IMP/atom/Residue.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/LeavesRefiner.h>
 #include <IMP/container/CloseBipartitePairContainer.h>
-#include <IMP/container/ListSingletonContainer.h>
+#include <IMP/container/RefinedSingletonContainer.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -289,10 +290,9 @@ namespace {
   PairContainer *create_pair_container(Hierarchy a,
                                        Hierarchy b,
                                        double threshold) {
-    Particles aa= get_by_type(a, ATOM_TYPE);
-    Particles ba= get_by_type(b, ATOM_TYPE);
-    IMP_NEW(container::ListSingletonContainer, lsca, (aa));
-    IMP_NEW(container::ListSingletonContainer, lscb, (ba));
+    IMP_NEW(core::LeavesRefiner, rl, (Hierarchy::get_traits()));
+    IMP_NEW(container::RefinedSingletonContainer, lsca, (rl, a));
+    IMP_NEW(container::RefinedSingletonContainer, lscb, (rl, b));
     IMP_NEW(container::CloseBipartitePairContainer,
             ret, (lsca, lscb, threshold));
     return ret.release();
