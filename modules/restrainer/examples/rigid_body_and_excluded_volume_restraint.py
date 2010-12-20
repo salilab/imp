@@ -39,5 +39,5 @@ rotation = IMP.algebra.get_random_rotation_3d()
 transformation = IMP.algebra.Transformation3D(rotation, translation)
 
 # Perform geometric transformations on the Protein1 rigid body
-protein1_rb.set_transformation(transformation)
+protein1_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(transformation))
 protein1_rb.show()
