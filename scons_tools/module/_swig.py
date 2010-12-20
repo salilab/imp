@@ -175,6 +175,7 @@ std::string get_data_path(std::string fname);
     if vars['module'] != "kernel":
         preface.append("""
 %pythoncode %{
+import IMP
 IMP.used_modules.append(get_module_version_info())
 %}""")
     else:
