@@ -33,10 +33,10 @@ void MoverBase::propose_move(Float f)
       ints_[i][j]= p->get_value(get_int_key(j));
     }
   }
-  generate_move(f);
+  do_move(f);
 }
 
-void MoverBase::reject_move()
+void MoverBase::reset_move()
 {
   IMP_FOREACH_SINGLETON(pc_, {
       for (unsigned int j=0; j< get_number_of_float_keys(); ++j) {

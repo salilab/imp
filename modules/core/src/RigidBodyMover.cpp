@@ -47,11 +47,8 @@ void RigidBodyMover::propose_move(Float f) {
 }
 
 
-void RigidBodyMover::accept_move()
-{
-}
 
-void RigidBodyMover::reject_move() {
+void RigidBodyMover::reset_move() {
   d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
   last_transformation_= algebra::Transformation3D();
 }

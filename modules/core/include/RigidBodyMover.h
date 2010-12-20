@@ -33,8 +33,7 @@ public:
    */
   RigidBodyMover(RigidBody d,Float max_translation,
                  Float max_rotation);
-  void reject_move();
-  void accept_move();
+  void reset_move();
   void propose_move(Float f);
   IMP_OBJECT(RigidBodyMover);
 private:

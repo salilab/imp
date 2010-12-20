@@ -45,13 +45,9 @@ public:
       or affect the probability of a discrete move.
    */
   virtual void propose_move(Float size)=0;
-  //! set whether the proposed modification is accepted
-  /** \note Accepting should not change the Particles at all.
-   */
-  virtual void accept_move()=0;
 
   //! Roll back any changes made to the Particles
-  virtual void reject_move()=0;
+  virtual void reset_move()=0;
 
   //! Get a pointer to the optimizer which has this mover.
   Optimizer *get_optimizer() const {

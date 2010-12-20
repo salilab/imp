@@ -151,9 +151,6 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
             << "(" << get_score_threshold() << ") ");
     if (accept) {
       IMP_LOG(TERSE,  " accept" << std::endl);
-      for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
-        (*it)->accept_move();
-      }
       ++stat_forward_steps_taken_;
       prior_energy= next_energy;
       if (return_best_ && next_energy < best_energy) {
@@ -175,7 +172,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
     } else {
       IMP_LOG(TERSE,  " reject" << std::endl);
       for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
-        (*it)->reject_move();
+        (*it)->reset_move();
       }
       ++stat_num_failures_;
     }
