@@ -29,7 +29,7 @@ void add_to_max_map(em::DensityMap *max_map,em::DensityMap *new_map) {
   ny=max_map_h->get_ny();
   nz=max_map_h->get_nz();
   for(long ind=0;ind<nx*ny*nz;ind++){
-    if (max_map_data[ind]<new_map_data[ind]) {
+    if (max_map_data[ind]<new_map_data[ind]){
       max_map_data[ind]=new_map_data[ind];
     }
   }
@@ -165,7 +165,7 @@ void FFTFitting::set_mol_mask() {
     mol_mask_map_=NULL;
   }
   float mol_t=mol_map_->get_minimum_resampled_value()+EPS;
-  std::cout<<"minimum score:"<<mol_t<<std::endl;
+  //  std::cout<<"minimum score:"<<mol_t<<std::endl;
   mol_mask_map_ = em::binarize(mol_map_,mol_t);
   /*  em::MRCReaderWriter mrw;
       em::write_map(mol_mask_map_,"mol.mask.debug.mrc",mrw);*/
@@ -305,7 +305,6 @@ void FFTFitting::set_parameters() {
 }
 
 void FFTFitting::resmooth_mol(){
-
   core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
   orig_prot_center_ = core::get_centroid(xyzs);
   center_trans_ = algebra::Transformation3D(
@@ -315,7 +314,7 @@ void FFTFitting::resmooth_mol(){
   core::transform(rb_,center_trans_);
   //updated the copied coordinates
   Particles ps=rb_refiner_->get_refined(rb_);
-  for(int i=0;i<ps.size();i++){
+  for(int i=0;i<(int)ps.size();i++){
     core::XYZR(mol_map_ps_[i]).set_coordinates(
                               core::XYZ(ps[i]).get_coordinates());
   }
@@ -509,8 +508,8 @@ void FFTFitting::set_fftw_for_cc() {
 
 void FFTFitting::calculate_correlation() {
   //copy mol data, as the orientation may have changed
-  copy_density_data(mol_map_,fftw_r_grid_mol_);
   mol_map_->calcRMS();
+  copy_density_data(mol_map_,fftw_r_grid_mol_);
 
   //evecture the molecule plans, as the rotation may change
   fftw_execute(fftw_plan_r2c_mol_);
@@ -610,8 +609,6 @@ void FFTFitting::mask_norm_mol_map() {
 }
 
 void FFTFitting::calculate_local_correlation() {
-  /*  em::MRCReaderWriter mrw;
-      em::write_map(mol_map_,"mol.start.debug.mrc",mrw);*/
   set_mol_mask();
   //now mask the moleulce grid and normalize
   mask_norm_mol_map();
@@ -623,6 +620,7 @@ void FFTFitting::calculate_local_correlation() {
   //re-execute the molecule plans, as the rotation may change
   fftw_execute(fftw_plan_r2c_mol_);
   calculate_local_stds();
+
   //generate the correlation grid in complex space
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     fftw_c_grid_cc_[i][0] =(
@@ -675,8 +673,8 @@ algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
       //put the new element in the heap
       best_trans[heap_size-1].second=hit_data[zz_yy+ix];
       best_trans[heap_size-1].first=
-        algebra::Transformation3D(algebra::get_identity_rotation_3d(),
-                                  max_trans-map_center_)*center_trans_;
+                algebra::Transformation3D(algebra::get_identity_rotation_3d(),
+                  max_trans-map_center_)*center_trans_;
       std::push_heap(best_trans.begin(),best_trans.end(),
                      trans_score_comp_first_larger_than_second);
       IMP_IF_LOG(VERBOSE){
@@ -699,8 +697,9 @@ algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
 }
 TransScores FFTFitting::search_for_best_translations(
                      int num_solutions,bool gmm_based) {
+  TransScores best_trans;
   //find the best positions on the hit map
-  em::DensityMap *hit_map = get_correlation_hit_map();
+  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
   /*  em::DensityMap* hit_map=em::multiply(hit_map_orig,
       asmb_map_mask_);*/
   //  em::DensityMap *hit_map=hit_map_orig;
@@ -711,7 +710,6 @@ TransScores FFTFitting::search_for_best_translations(
   else {
     best_pos = heap_based_search_for_best_translations(hit_map,num_solutions);
   }
-  TransScores best_trans;
   for( unsigned int i=0;i<best_pos.size();i++) {
     algebra::Vector3D center_voxel = best_pos[i];
      TransScore out_ts;
@@ -761,14 +759,15 @@ FFTFittingResults fft_based_rigid_fitting(
        dmap->get_centroid(-INT_MAX)-
        core::get_centroid(core::XYZsTemp(ps_xyz)));
   core::transform(rb,shift_to_center);
-  Pointer<em::DensityMap> max_map(new em::DensityMap(*(dmap->get_header())));
-  max_map->reset_data(0.);
   IMP_LOG(TERSE,"==== Going to run FFT on each rotation"<<std::endl);
   boost::progress_display show_progress(rots.size());
   em::FittingSolutions temp_fits;
 
   FFTFitting fft_fit(dmap,rb,rb_refiner);
   fft_fit.prepare(threshold);
+  Pointer<em::DensityMap> max_map(
+       new em::DensityMap(*(fft_fit.get_padded_asmb_map()->get_header())));
+  max_map->reset_data(0.);
   for(unsigned int i=0;i<rots.size();i++) {
     ++show_progress;
     IMP_LOG(TERSE,"translational search for rotation "
@@ -784,25 +783,24 @@ FFTFittingResults fft_based_rigid_fitting(
     else {
       fft_fit.calculate_correlation();
     }
-    em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
-    /*    em::MRCReaderWriter mrw;
-          em::write_map(hit_map,"corr.mrc",mrw);*/
+    Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
+      //TODO: see if you can improve this test
+      if (best_trans[i].second<INT_MAX/5) {
       temp_fits.add_solution(
                              best_trans[i].first*t1*shift_to_center,
                              best_trans[i].second);
+      }
     }
     core::transform(rb,t1.get_inverse());
     add_to_max_map(max_map,hit_map);
     hit_map=NULL;
   }//rotation
-
   FFTFittingResults output;
   output.set_max_cc_map(max_map.release());
   output.set_solutions(temp_fits);
-  //TOOD - add a call to rmsd_clustering
   core::transform(rb,shift_to_center.get_inverse());
   return output;
 }

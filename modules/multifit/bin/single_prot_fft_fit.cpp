@@ -38,15 +38,19 @@ em::DensityMap* set_map(const std::string &density_filename,
   em::MRCReaderWriter mrw;
   em::DensityMap *rmap;
   try{
+    std::cout<<"density filename:"<<density_filename<<std::endl;
     rmap = em::read_map(density_filename.c_str(),mrw);
   }
   catch (const Exception &err){
     std::cerr<<"Problem reading density map:"<<density_filename<<std::endl;
     exit(-1);
   }
+  std::cout<<"================1"<<std::endl;
   rmap->get_header_writable()->set_resolution(resolution);
   rmap->update_voxel_size(spacing);
+  std::cout<<"================2"<<std::endl;
   algebra::Vector3D v = rmap->get_origin();
+  std::cout<<"================3"<<std::endl;
   if (x_origin == INT_MAX) {
     x_origin = v[0];
   }
