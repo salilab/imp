@@ -21,7 +21,10 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 //! Template class for managing 2D matrices. This class is based on
 //! boost multi_array
-/**
+/** This class is primarily aimed at providing support for 2D bitmap
+    images. See GridD for general spatial grids if that is what you
+    are after.
+
   Check MultiArray class for a list of added functionality
 **/
 template<typename T>
