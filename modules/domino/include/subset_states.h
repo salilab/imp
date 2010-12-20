@@ -82,8 +82,6 @@ public:
   IMP_SUBSET_STATES_TABLE(BranchAndBoundSubsetStatesTable);
 };
 
-typedef BranchAndBoundSubsetStatesTable DefaultSubsetStatesTable;
-
 
 /** Store a map of SubsetStates objects and return them on demand.
     \untested{ListSubsetStatesTable}

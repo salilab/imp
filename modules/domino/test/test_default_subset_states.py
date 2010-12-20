@@ -30,7 +30,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.DefaultSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino.Subset(ps)
@@ -58,7 +58,7 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.DefaultSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         ss= dsst.get_subset_states(lsc)
@@ -87,7 +87,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable()
         pft.add_pair((ps[0], ps[1]))
-        dsst= IMP.domino.DefaultSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         ss= dsst.get_subset_states(lsc)

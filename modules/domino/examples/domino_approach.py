@@ -10,7 +10,7 @@ def optimize_subsets(subsets):
         None
         #TODO - do the actual sampling
     #combine back to ParticleStatesTable
-    #there is now a write_binary_model (multiple states into one file)
+    #there is now a write_particles_binary (multiple states into one file)
     return pst
 
 def get_subsets(ps):

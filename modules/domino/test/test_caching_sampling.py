@@ -31,7 +31,7 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps:
             pst.set_particle_states(p, particle_state)
             m.add_restraint(IMP._ConstRestraint(1, [p]))
-        sst= IMP.domino.DefaultSubsetStatesTable(pst, [])
+        sst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [])
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[0], ps[1]))
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
         #sevt= IMP.domino.ModelSubsetEvaluatorTable(m, pst)

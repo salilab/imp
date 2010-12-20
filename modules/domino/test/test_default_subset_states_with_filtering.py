@@ -12,7 +12,7 @@ class DOMINOTests(IMP.test.TestCase):
 
     def _get_full_list(self, pst, lsc):
         print 'getting'
-        dsst= IMP.domino.DefaultSubsetStatesTable(pst, [])
+        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [])
         ss= dsst.get_subset_states(lsc)
         print "got all"
         all_states=[]

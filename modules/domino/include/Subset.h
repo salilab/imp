@@ -74,9 +74,11 @@ class IMPDOMINOEXPORT Subset {
       }
     }
   }
+#ifndef SWIG
   unsigned int size() const {
     return sz_;
   }
+#endif
   Model *get_model() const {
     return ps_[0]->get_model();
   }
@@ -115,7 +117,7 @@ class IMPDOMINOEXPORT Subset {
 IMP_VALUES(Subset, Subsets);
 IMP_OUTPUT_OPERATOR(Subset);
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline std::size_t hash_value(const Subset &t) {
   return t.__hash__();
 }

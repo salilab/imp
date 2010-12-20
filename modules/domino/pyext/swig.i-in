@@ -14,7 +14,6 @@ IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_BASE_OBJECT(IMP::domino, ParticleStates, ParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino, ParticleStatesTable, ParticleStatesTables);
-IMP_SWIG_OBJECT(IMP::domino, XYZsParticleStates, XYZsParticleStatesList);
 IMP_SWIG_OBJECT(IMP::domino, JunctionTreeTable, JunctionTreeTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilter, SubsetFilters);
 IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilterTable, SubsetFilterTables);
@@ -23,6 +22,20 @@ IMP_SWIG_BASE_OBJECT(IMP::domino, DiscreteSampler, DiscreteSamplers);
 IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundSubsetStatesTable, BranchAndBoundSubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino, ListSubsetStatesTable, ListSubsetStatesTables);
 IMP_SWIG_OBJECT(IMP::domino, ListSubsetStates, ListSubsetStatesList);
+IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundSampler, BranchAndBoundSamplers);
+IMP_SWIG_OBJECT(IMP::domino, DisjointSetsSubsetFilterTable, DisjointSetsSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, EqualitySubsetFilterTable, EqualitySubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, EquivalenceSubsetFilterTable, EquivalenceSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, ExclusionSubsetFilterTable, ExclusionSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, EquivalenceSubsetFilterTable, EquivalenceSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, ListSubsetFilterTable, ListSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilter, RestraintScoreSubsetFilters);
+IMP_SWIG_OBJECT(IMP::domino, RigidBodyStates, RigidBodyStatess);
+IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatess);
+IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
+
+
 IMP_SWIG_GRAPH(IMP::domino, InteractionGraph, InteractionGraph, IMP::Particle*);
 IMP_SWIG_GRAPH(IMP::domino, SubsetGraph, SubsetGraph, IMP::domino::Subset );
 IMP_SWIG_VALUE(IMP::domino, SubsetState, SubsetStates);
@@ -40,7 +53,3 @@ IMP_SWIG_VALUE(IMP::domino, SubsetState, SubsetStates);
 %include "IMP/domino/utility.h"
 %include "IMP/domino/analysis.h"
 
-
-%pythoncode %{
-DefaultSubsetStatesTable=BranchAndBoundSubsetStatesTable;
-%}
