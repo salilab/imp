@@ -3,6 +3,8 @@
 \par Winter 2011
 - the function IMP::core::Harmonic::k_from_standard_deviation was renamed to IMP::core::Harmonic::get_k_from_standard_deviation() to conform to the standards.
 - the standards tests have been improved to test more useful aspects. Now class and function names are checked some as well as all modules have the checks for show and plural types. The error messages should explain how to fix things.
+- IMP::core::RigidBody::lazy_set_reference_frame() was renamed to IMP::core::RigidBody::set_reference_frame_lazy() to fit with the standards better.
+- the transform based methods on referene frame which have been deprecated for a while were removed
 
 \par Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
