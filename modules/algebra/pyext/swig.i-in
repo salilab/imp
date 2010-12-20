@@ -56,11 +56,6 @@ template <class T, int D> class multi_array{};
 namespace multi_array_types {
   typedef size_t size_type;
   typedef size_t difference_type;
-  struct index;
-  struct index_range{};
-  struct extent_range{};
-  struct index_gen{};
-  struct extent_gen{};
 }
 }
 
