@@ -23,7 +23,7 @@ def add_DOPE(m, prot):
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
     dsc.add_particles(ps)
 
-    dpc = IMP.container.ClosePairContainer(dsc, 30.0, 0.0)
+    dpc = IMP.container.ClosePairContainer(dsc, 15.0, 1.0)
     pair_filter = IMP.atom.StereochemistryPairFilter()
     pair_filter.set_bonds(bonds)
     pair_filter.set_angles(angles)
@@ -31,7 +31,7 @@ def add_DOPE(m, prot):
     dpc.add_pair_filter(pair_filter)
 
     IMP.membrane.add_dope_score_data(prot)
-    dps= IMP.membrane.DopePairScore(100.0)
+    dps= IMP.membrane.DopePairScore(15.0)
     d=   IMP.container.PairsRestraint(dps, dpc)
     m.add_restraint(d)
 
