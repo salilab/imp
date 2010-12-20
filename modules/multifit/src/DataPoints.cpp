@@ -72,7 +72,8 @@ Array1DD DensityDataPoints::sample() const {
                <<"Probably a problem with reading the map" <<std::endl;
       std::cerr<<"Max value:"<<max_value_<<std::endl;
       std::cerr<<"Min value:"<<min_value_<<std::endl;
+      return data_[statistics::internal::random_int(data_.size())];
     }
-    return data_[statistics::internal::random_int(data_.size())];
+    return data_[p_ind];
   }
 IMPMULTIFIT_END_NAMESPACE
