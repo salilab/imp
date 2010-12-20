@@ -61,6 +61,7 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,
   orig_avg_ = asmb_map_->get_header()->dmean;
   orig_std_ = asmb_map_->get_header()->rms;
   asmb_map_->std_normalize();//because we want the norm=0 and std=1
+  mdl_=new Model();
   rb_=rb;
   rb_refiner_=rb_refiner;
   fftw_r_grid_asmb_ = NULL;fftw_c_grid_asmb_ = NULL;
@@ -77,6 +78,7 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,
 }
 
 FFTFitting::~FFTFitting(){
+  mdl_=NULL;
   if (fftw_r_grid_mol_ != NULL) fftw_free(fftw_r_grid_mol_);
   if (fftw_c_grid_mol_ != NULL) fftw_free(fftw_c_grid_mol_);
   if (fftw_r_grid_mol_mask_ != NULL) fftw_free(fftw_r_grid_mol_mask_);
@@ -162,8 +164,11 @@ void FFTFitting::set_mol_mask() {
   if (mol_mask_map_ != NULL) {
     mol_mask_map_=NULL;
   }
-  float mol_t=mol_map_->get_minimum_resampled_value();
+  float mol_t=mol_map_->get_minimum_resampled_value()+EPS;
+  std::cout<<"minimum score:"<<mol_t<<std::endl;
   mol_mask_map_ = em::binarize(mol_map_,mol_t);
+  /*  em::MRCReaderWriter mrw;
+      em::write_map(mol_mask_map_,"mol.mask.debug.mrc",mrw);*/
 }
 
 
@@ -308,6 +313,12 @@ void FFTFitting::resmooth_mol(){
                                map_center_-orig_prot_center_);
   //move the mol to the center
   core::transform(rb_,center_trans_);
+  //updated the copied coordinates
+  Particles ps=rb_refiner_->get_refined(rb_);
+  for(int i=0;i<ps.size();i++){
+    core::XYZR(mol_map_ps_[i]).set_coordinates(
+                              core::XYZ(ps[i]).get_coordinates());
+  }
   mol_map_->resample();
   mol_map_->std_normalize();
   //move back mol to the center
@@ -328,7 +339,19 @@ void FFTFitting::smooth_mol(){
   //move the molecule to the center of the map
     core::transform(rb_,center_trans_);
   mol_map_=new em::SampledDensityMap(*padded_asmb_h);
-  mol_map_->set_particles(rb_refiner_->get_refined(rb_),
+  //we need to use a copy of the particles as we make some changes
+  Particles ps=rb_refiner_->get_refined(rb_);
+  for(Particles::const_iterator it = ps.begin(); it != ps.end(); it++){
+    Particle *p=new Particle(mdl_);
+    core::XYZR::setup_particle(p,
+   algebra::Sphere3D(core::XYZ(*it).get_coordinates(),
+                     core::XYZR(*it).get_radius()),
+                               radius_key_);
+    //    p->add_attribute(mass_key_,it->get_value(mass_key_));
+    p->add_attribute(mass_key_,atom::Mass(*it).get_mass());
+    mol_map_ps_.push_back(p);
+  }
+  mol_map_->set_particles(mol_map_ps_,
                           radius_key_,
                           mass_key_);
   mol_map_->resample();
@@ -587,13 +610,13 @@ void FFTFitting::mask_norm_mol_map() {
 }
 
 void FFTFitting::calculate_local_correlation() {
-  em::MRCReaderWriter mrw;
-  em::write_map(mol_map_,"mol.start.debug.mrc",mrw);
+  /*  em::MRCReaderWriter mrw;
+      em::write_map(mol_map_,"mol.start.debug.mrc",mrw);*/
   set_mol_mask();
   //now mask the moleulce grid and normalize
   mask_norm_mol_map();
   //for debugging write the normalized map
-  em::write_map(mol_map_,"mol.debug.mrc",mrw);
+  //  em::write_map(mol_map_,"mol.debug.mrc",mrw);
   //copy mol data, as the orientation may have changed
   //  em::DensityMap *masked_mol = em::multiply(mol_map_,mol_mask_map_);
   copy_density_data(mol_map_,fftw_r_grid_mol_);
@@ -762,8 +785,8 @@ FFTFittingResults fft_based_rigid_fitting(
       fft_fit.calculate_correlation();
     }
     em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
-    em::MRCReaderWriter mrw;
-    em::write_map(hit_map,"corr.mrc",mrw);
+    /*    em::MRCReaderWriter mrw;
+          em::write_map(hit_map,"corr.mrc",mrw);*/
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
