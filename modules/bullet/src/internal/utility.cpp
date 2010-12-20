@@ -103,7 +103,7 @@ void copy_back_coordinates(const RigidBodyMap &map) {
       //std::cout << "was " << core::RigidBody(it->first)
       //  .get_transformation() << " is " << internal::tr(trans) << std::endl;
       core::RigidBody(it->first)
-        .set_transformation(internal::tr(trans));
+        .set_reference_frame(algebra::ReferenceFrame3D(internal::tr(trans)));
     } else {
       //std::cout << internal::tr(trans.getOrigin()) << std::endl;
       core::XYZ(it->first).set_coordinates(internal::tr(trans.getOrigin()));
