@@ -125,7 +125,8 @@ void FitRestraint::initialize_model_density_map(
        algebra::get_identity_rotation_3d(),
        target_dens_map_->get_centroid()-rb_centroid);
       core::transform(rb,move2map_center);
-      rbs_orig_trans_.push_back(rb.get_transformation().get_inverse());
+      rbs_orig_trans_.push_back(rb.get_reference_frame()
+                                .get_transformation_to().get_inverse());
       rb_model_dens_map_.push_back(
         new SampledDensityMap(*(target_dens_map_->get_header())));
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
@@ -158,7 +159,8 @@ void FitRestraint::initialize_model_density_map(
   for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
     Pointer<DensityMap> transformed = get_transformed(
          rb_model_dens_map_[rb_i],
-         rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+         rbs_[rb_i].get_reference_frame().get_transformation_to()
+         *rbs_orig_trans_[rb_i]);
       model_dens_map_->add(transformed);
   }
 }
@@ -179,7 +181,8 @@ void FitRestraint::resample() const {
         "\n Target size:"<<get_bounding_box(target_dens_map_,-1000.)<<"\n");
     Pointer<DensityMap> transformed = get_transformed(
          rb_model_dens_map_[rb_i],
-         rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+         rbs_[rb_i].get_reference_frame().get_transformation_to()
+         *rbs_orig_trans_[rb_i]);
       IMP_LOG(VERBOSE,"transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
       model_dens_map_->add(transformed);
@@ -242,7 +245,8 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
               rb_i<<"\n");
       Pointer<DensityMap> transformed = get_transformed(
               rb_model_dens_map_[rb_i],
-              rbs_[rb_i].get_transformation()*rbs_orig_trans_[rb_i]);
+              rbs_[rb_i].get_reference_frame().get_transformation_to()
+              *rbs_orig_trans_[rb_i]);
       write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
       CoarseCC::calc_derivatives(
               target_dens_map_,
