@@ -27,7 +27,7 @@ IMPCORE_BEGIN_NAMESPACE
 
     The expected file format is:
 \verbatim
-    bin_width number_a number_b
+    bin_width number_a number_b [offset]
     key_0a key_0b bin0 bin1 bin2...
     key_1a key_1b bin0 bin1 bin2...
 \endverbatim
@@ -35,10 +35,18 @@ IMPCORE_BEGIN_NAMESPACE
     The order of the lines (after the first one) does not matter.
     The bin_width is how much distance is allocated per bin (the distance used
     is that between the points).
+
+    \param[in] Key is an IMP::Key which maps between names and indices
+    \param[in] BIPARTITE If true, the two sets of particles being stored are
+    difference (eg a protein atom and a ligand atom), otherwise they are assumed
+    to both be the same. Appropriate value must be provided in the file.
+    \param[in] INTERPOLATE If true, even the scores without derivatives are
+    spline interpolated. If false, only the evaluates with derivatives are
+    interpolated with a spline.
 */
-template <class Key, bool BIPARTITE>
+template <class Key, bool BIPARTITE, bool INTERPOLATE>
 class StatisticalPairScore: public PairScore {
-  core::internal::PMFTable<BIPARTITE> table_;
+  core::internal::PMFTable<BIPARTITE, INTERPOLATE> table_;
   double threshold_;
   IntKey key_;
   inline double evaluate(const algebra::VectorD<3> &protein_v,
@@ -65,6 +73,10 @@ class StatisticalPairScore: public PairScore {
     }
   }
 public:
+  /** \param[in] k The attribute to use for determining the particle types
+      \param[in] threshold The maximum distance to score
+      \param[in] data_file Where to load the file from.
+  */
   StatisticalPairScore(IntKey k,
                        double threshold,
                        TextInput data_file):
@@ -74,6 +86,13 @@ public:
                     "Constructor can only be used for non-bipartite scores.");
     table_.template initialize<Key>(data_file);
   }
+  /** \param[in] k The attribute to use for determining the particle types
+      \param[in] threshold The maximum distance to score
+      \param[in] data_file Where to load the file from.
+      \param[in] shift The offset for the types of the second set of types.
+      eg, if the score is on protein and ligand atoms, the ligand atom types
+      start with the value shift.
+  */
   StatisticalPairScore(IntKey k,
                        double threshold,
                        TextInput data_file,
@@ -91,13 +110,15 @@ public:
 };
 #ifndef IMP_DOXYGEN
 
-template <class Key, bool BIPARTITE>
-void StatisticalPairScore<Key, BIPARTITE>::do_show(std::ostream &out) const {
+template <class Key, bool BIPARTITE, bool INTERPOLATE>
+void StatisticalPairScore<Key, BIPARTITE, INTERPOLATE>
+::do_show(std::ostream &out) const {
 }
 
-template <class Key, bool BIPARTITE>
-double StatisticalPairScore<Key, BIPARTITE>::evaluate(const ParticlePair &pp,
-                                           DerivativeAccumulator *da) const {
+template <class Key, bool BIPARTITE, bool INTERPOLATE>
+double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE>
+::evaluate(const ParticlePair &pp,
+           DerivativeAccumulator *da) const {
   int pt= pp[0]->get_value(key_);
   int lt= pp[1]->get_value(key_);
   core::XYZ pxyz(pp[0]);
