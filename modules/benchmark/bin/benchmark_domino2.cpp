@@ -34,7 +34,7 @@ int main(int, char *[]) {
   }
   for (unsigned int i=0; i< residues.size(); ++i) {
     RigidBody r= setup_as_rigid_body(residues[i]);
-    vs.push_back(ReferenceFrame3D(r.get_transformation()));
+    vs.push_back(ReferenceFrame3D(r.get_reference_frame()));
   }
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
 #ifdef IMP_USE_CGAL
