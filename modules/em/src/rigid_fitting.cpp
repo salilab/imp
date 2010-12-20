@@ -90,14 +90,15 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   core::XYZsTemp xyz_t(refiner->get_refined(*rb));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
   //save starting configuration
-  algebra::Transformation3D starting_trans = rb->get_transformation();
+    algebra::Transformation3D starting_trans = rb->get_reference_frame()
+      .get_transformation_to();
   algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                           anchor_centroid-ps_centroid);
 
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //TODO - should we return this line?
-    rb->set_transformation(starting_trans);
+    rb->set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
     //TODO - should we keep this?
@@ -105,14 +106,15 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //optimize
     try {
       e = opt->optimize(number_of_mc_steps);
-      fr.add_solution(rb->get_transformation()/starting_trans,e);
+      fr.add_solution(rb->get_reference_frame()
+                      .get_transformation_to()/starting_trans,e);
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
                << std::endl);
     }
   }
   //return the rigid body to the original position
-  rb->set_transformation(starting_trans);
+  rb->set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
 }
 
 FittingSolutions local_rigid_fitting_around_point(

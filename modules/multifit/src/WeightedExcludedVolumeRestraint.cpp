@@ -32,7 +32,8 @@ void WeightedExcludedVolumeRestraint::initialize_model_density_map(
              <<rb_ps.size()<<" particles"<<std::endl;
     rbs_surface_maps_.push_back(
                                 new SurfaceShellDensityMap(rb_ps,1));
-    rbs_orig_trans_.push_back(rb.get_transformation().get_inverse());
+    rbs_orig_trans_.push_back(rb.get_reference_frame().get_transformation_to()
+                              .get_inverse());
   }
 }
 
