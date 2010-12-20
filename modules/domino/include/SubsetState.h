@@ -80,9 +80,11 @@ public:
   }
   unsigned int __len__() const {return sz_;}
 #endif
+#ifndef SWIG
   unsigned int size() const {
     return sz_;
   }
+#endif
   IMP_SHOWABLE_INLINE(SubsetState, {
       out << "[";
       for (unsigned int i=0; i< size(); ++i) {
@@ -109,7 +111,7 @@ IMP_VALUES(SubsetState, SubsetStates);
 IMP_OUTPUT_OPERATOR(SubsetState);
 
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline std::size_t hash_value(const SubsetState &t) {
   return t.__hash__();
 }
