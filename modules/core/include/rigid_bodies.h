@@ -156,19 +156,9 @@ public:
   //! Change the reference, delay updating the members until evaluate
   /** See set_transformation()
    */
-  void lazy_set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr);
+  void set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr);
 
 #ifndef IMP_DOXYGEN
-  void set_transformation(const algebra::Transformation3D &tr) {
-    set_reference_frame(algebra::ReferenceFrame3D(tr));
-  }
-  void lazy_set_transformation(const algebra::Transformation3D &tr) {
-    lazy_set_reference_frame(algebra::ReferenceFrame3D(tr));
-  }
-  algebra::Transformation3D get_transformation() {
-    return get_reference_frame().get_transformation_to();
-  }
-
   /** This takes a cartesian derivative, and a location in internal coordinates.
 
       It is currently hidden since the function signature is highly ambiguous.

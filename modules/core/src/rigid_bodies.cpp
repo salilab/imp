@@ -433,7 +433,7 @@ void RigidBody::update_members() {
   for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
     RigidMember rm(hdb.get_child(i));
     RigidBody rb(rm);
-    rb.lazy_set_reference_frame(algebra::ReferenceFrame3D(tr
+    rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr
                                      *rm.get_internal_transformation()));
   }
   for (unsigned int i=0; i< 3; ++i) {
@@ -561,7 +561,7 @@ algebra::VectorD<3> RigidBody::get_coordinates(RigidMember p)
 }
 
 void RigidBody
-::lazy_set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
+::set_reference_frame_lazy(const IMP::algebra::ReferenceFrame3D &tr) {
   algebra::VectorD<4> v
     = tr.get_transformation_to().get_rotation().get_quaternion();
   get_particle()->set_value(internal::rigid_body_data().quaternion_[0], v[0]);
@@ -573,7 +573,7 @@ void RigidBody
 
 void RigidBody
   ::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
-  lazy_set_reference_frame(tr);
+  set_reference_frame_lazy(tr);
   for (unsigned int i=0; i< get_number_of_members(); ++i) {
     get_member(i)
       .set_coordinates(tr.get_global_coordinates(get_member(i)
