@@ -1,3 +1,8 @@
+IMP_SWIG_OBJECT(IMP::misc, WormLikeChain, WormLikeChains);
+IMP_SWIG_OBJECT(IMP::misc, StateAdaptor, StateAdaptors);
+IMP_SWIG_OBJECT(IMP::misc, CommonEndpointPairFilter, CommonEndpointPairFilters);
+IMP_SWIG_OBJECT(IMP::misc, LogPairScore, LogPairScores);
+IMP_SWIG_OBJECT(IMP::misc, LowestRefinedPairScore, LowestRefinedPairScores);
 
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
