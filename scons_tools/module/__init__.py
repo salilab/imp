@@ -438,12 +438,13 @@ def IMPModuleTest(env, python_tests, cpp_tests,
                                  function_name_exceptions=function_name_exceptions,
                                  value_object_exceptions=value_object_exceptions,
                                  class_name_exceptions=class_name_exceptions)
+        found=False
         for f in files:
-            found=False
-            if str(files).endswith("test_standards.py"):
-                found=True
-        if not found:
-            files.append(standards)
+            if str(f).endswith("test_standards.py"):
+                found=f
+        if found:
+            files.remove(f)
+        files.append(standards)
     test = scons_tools.test.add_test(env, source=files,
                                      type='unit test')
 
