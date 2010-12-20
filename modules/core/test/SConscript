@@ -2,6 +2,6 @@ Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  plural_exceptions=['MoverBase', 'RigidBody', 'Hierarchy', 'HierarchyCounter',
-                                     'HierarchyVisitor', 'ModifierVisitor'],
-                  show_exceptions=['HierarchyCounter', 'HierarchyVisitor', 'ModifierVisitor'])
+                  value_object_exceptions=['HierarchyVisitor', 'ModifierVisitor'],
+                  function_name_exceptions=['RigidBody.normalize_rotation','transform'],
+                  show_exceptions=['HierarchyVisitor', 'ModifierVisitor'])

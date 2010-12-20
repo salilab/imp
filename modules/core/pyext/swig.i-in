@@ -88,6 +88,9 @@ IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
 IMP_SWIG_DECORATOR( IMP::core, Cover, Covers);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 
+IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
+IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
+
 
 /* Don't wrap internal classes */
 %ignore IMP::core::internal::ChildArrayTraits;
@@ -145,7 +148,7 @@ class HierarchyTraits;
 %inline %{
 namespace IMP {
 namespace core {
-void breadth_first_traversal(Hierarchy d, HierarchyVisitor *f)
+void visit_breadth_first(Hierarchy d, HierarchyVisitor *f)
 {
   std::deque<Hierarchy> stack;
   stack.push_back(d);
@@ -162,7 +165,7 @@ void breadth_first_traversal(Hierarchy d, HierarchyVisitor *f)
   } while (!stack.empty());
 }
 
-void depth_first_traversal(Hierarchy d, HierarchyVisitor *f)
+void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 {
   std::vector<Hierarchy> stack;
   stack.push_back(d);
