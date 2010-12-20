@@ -12,13 +12,11 @@
 /** Helper macro for implementing IMP::core::Mover. In
     addition to the IMP_OBJECT methods, it declares
     - IMP::core::Mover::propose_move()
-    - IMP::core::Mover::accept_move()
-    - IMP::core::Mover::reject_move()
+    - IMP::core::Mover::reset_move()
  */
 #define IMP_MOVER(Name)                                 \
   virtual void propose_move(Float size);                \
-  virtual void accept_move();                           \
-  virtual void reject_move();                           \
+  virtual void reset_move();                            \
   IMP_OBJECT(Name)
 
 /** Helper macro for implementing

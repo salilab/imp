@@ -190,10 +190,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
 }
 
 
-void ScoreWeightedIncrementalBallMover::accept_move() {
-}
-
-void ScoreWeightedIncrementalBallMover::reject_move() {
+void ScoreWeightedIncrementalBallMover::reset_move() {
   for (unsigned int i=0; i< moved_.size(); ++i) {
     XYZ cd(moved_[i]);
     cd.set_coordinates(old_coords_[i]);

@@ -46,10 +46,8 @@ public:
     return radius_;
   }
   IMP_OBJECT(BallMover);
-protected:
-  void generate_move(Float a);
-
-private:
+ private:
+  void do_move(Float a);
   Float radius_;
 };
 

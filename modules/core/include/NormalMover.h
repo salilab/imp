@@ -35,9 +35,8 @@ public:
     return stddev_;
   }
   IMP_OBJECT(NormalMover);
-protected:
-  virtual void generate_move(Float f);
 private:
+  virtual void do_move(Float f);
   Float stddev_;
 };
 
