@@ -392,6 +392,7 @@ public:
                            << " " << v_[2];});
 };
 
+IMP_VALUES(FixedZYZ, FixedZYZs);
 
 
 //! A simple class for returning XYZ Euler angles
@@ -418,6 +419,7 @@ public:
     });
 };
 
+IMP_VALUES(FixedXYZ, FixedXYZs);
 
 IMP_OUTPUT_OPERATOR(FixedZYZ);
 
