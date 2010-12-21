@@ -39,7 +39,7 @@ class IMPATOMEXPORT Diffusion:
                           const algebra::VectorD<3> &v,
                           Float D) {
     XYZ::setup_particle(p, v);
-    p->add_attribute(get_D_key(), D);
+    p->add_attribute(get_d_key(), D);
     return Diffusion(p);
   }
 
@@ -51,37 +51,37 @@ class IMPATOMEXPORT Diffusion:
                           Float D=0) {
     IMP_USAGE_CHECK(XYZ::particle_is_instance(p),
               "Particle must already be an XYZ particle");
-    p->add_attribute(get_D_key(), D);
+    p->add_attribute(get_d_key(), D);
     return Diffusion(p);
   }
 
-  IMP_DECORATOR_GET_SET(D_in_cm2_per_second, get_D_key(), Float, Float);
+  IMP_DECORATOR_GET_SET(d_in_cm2_per_second, get_d_key(), Float, Float);
 
   //! Set D from the radius in angstroms
   /** Use default temperature.
    */
-  void set_D_from_radius(Float r);
+  void set_d_from_radius(Float r);
 
   //! Set D from the radius in angstroms
   /** t is in kelvin
    */
-  void set_D_from_radius(Float r, Float t);
+  void set_d_from_radius(Float r, Float t);
 
   //! Return true if the particle is an instance of an Diffusion
   static bool particle_is_instance(Particle *p) {
     return XYZ::particle_is_instance(p)
-      && p->has_attribute(get_D_key());
+      && p->has_attribute(get_d_key());
   }
 
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
-  unit::SquareCentimeterPerSecond get_D() const {
+  unit::SquareCentimeterPerSecond get_d() const {
     return
-      unit::SquareCentimeterPerSecond(get_particle()->get_value(get_D_key()));
+      unit::SquareCentimeterPerSecond(get_particle()->get_value(get_d_key()));
   }
 
-  void set_D(unit::SquareCentimeterPerSecond D) {
-    set_D_in_cm2_per_second(D.get_value());
+  void set_d(unit::SquareCentimeterPerSecond D) {
+    set_d_in_cm2_per_second(D.get_value());
   }
 
   static unit::SquareCentimeterPerSecond D_from_r(unit::Angstrom radius,
@@ -94,16 +94,16 @@ class IMPATOMEXPORT Diffusion:
 
   unit::Angstrom
     get_sigma(unit::Femtosecond dt) const {
-    return sqrt(2.0*dt*get_D());
+    return sqrt(2.0*dt*get_d());
   }
-  void set_D_from_radius(unit::Angstrom radius,
+  void set_d_from_radius(unit::Angstrom radius,
                          unit::Kelvin t
 #ifndef _MSC_VER
                          // it ICEs on this.
                          = IMP::internal::DEFAULT_TEMPERATURE
 #endif
 ) {
-    set_D_from_radius(unit::strip_units(radius),
+    set_d_from_radius(unit::strip_units(radius),
                                    unit::strip_units(t));
   }
 #endif
@@ -111,16 +111,16 @@ class IMPATOMEXPORT Diffusion:
 
   double get_time_step_from_sigma(double sigma) {
     //s^2= 2*dt*D;
-    unit::Femtosecond fs= square(unit::Angstrom(sigma))/2.0/get_D();
+    unit::Femtosecond fs= square(unit::Angstrom(sigma))/2.0/get_d();
     return unit::strip_units(fs);
   }
 
-  void set_D_from_radius() {
-    set_D_from_radius(core::XYZR(get_particle()).get_radius());
+  void set_d_from_radius() {
+    set_d_from_radius(core::XYZR(get_particle()).get_radius());
   }
 
   //! Get the D key
-  static FloatKey get_D_key();
+  static FloatKey get_d_key();
 };
 
 IMP_OUTPUT_OPERATOR(Diffusion);
