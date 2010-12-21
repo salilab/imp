@@ -29,7 +29,7 @@ const FloatKey Voxel::get_density_key() {
 
 const FloatKeys Voxel::get_keys() {
   static FloatKeys keys=core::XYZ::get_xyz_keys();
-  keys.push_back(core::XYZR::get_default_radius_key());
+  keys.push_back(core::XYZR::get_radius_key());
   keys.push_back(Voxel::get_density_key());
   return keys;
 }
