@@ -17,7 +17,7 @@ class ResamplingTest(IMP.test.TestCase):
     def load_proteins(self):
         fnames=["1atiB01.pdb","1arsA01.pdb","1ab4A02.pdb"]
         print "start load proteins"
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.mhs=[] #3 molecular hierarchies
         self.pss=[] #3 particles
@@ -120,7 +120,7 @@ class ResamplingTest(IMP.test.TestCase):
         d_map=IMP.em.particles2density(self.ps_all,8,1.5)
         d_map.calcRMS()
         fnames=["1atiB01.pdb","1arsA01.pdb","1ab4A02.pdb"]
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.mhs=[] #3 molecular hierarchies
         self.pss=[] #3 particles

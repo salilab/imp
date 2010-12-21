@@ -24,11 +24,11 @@ SurfaceShellDensityMap::SurfaceShellDensityMap(const DensityHeader &header)
 SurfaceShellDensityMap::SurfaceShellDensityMap(
        const Particles &ps,
        float voxel_size,
-       IMP::FloatKey radius_key, IMP::FloatKey mass_key,int num_shells)
+       IMP::FloatKey mass_key,int num_shells)
   :SampledDensityMap()
 {
   set_kernel();
-  set_particles(ps,radius_key,mass_key);
+  set_particles(ps,mass_key);
   //update the grid size to contain all of the particles
   determine_grid_size(header_.get_resolution(),voxel_size,3.);
   //to make

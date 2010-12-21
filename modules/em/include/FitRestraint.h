@@ -54,7 +54,6 @@ public:
                DensityMap *em_map,
                Refiner *refiner,
                FloatPair norm_factors=FloatPair(0.,0.),
-               FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
                float scale=1);
   //! \return the predicted density map of the model
@@ -73,7 +72,7 @@ private:
   \todo the user should pass a refiner for each rigid body. For now we
         assume that each rigid body is a molecular hierarchy
    */
-  void initialize_model_density_map(Particles ps,FloatKey radius_key,
+  void initialize_model_density_map(Particles ps,
                                     FloatKey weight_key);
 
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;

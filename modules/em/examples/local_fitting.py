@@ -78,14 +78,14 @@ score2=IMP.em.CoarseCC.cross_correlation_coefficient(
     dmap,sampled_input_density,sampled_input_density.get_header().dmin)
 print "The score after centering is:",score2, "with rmsd of:",rmsd
 # IMP.em.local_rigid_fitting_grid_search(
-#    ps,IMP.core.XYZR.get_default_radius_key(),
+#    ps,IMP.core.XYZR.get_radius_key(),
 #    IMP.atom.Mass.get_mass_key(),
 #    dmap,fitting_sols)
 
 num_sol=3
 refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 fitting_sols=IMP.em.local_rigid_fitting(
-   prot_rb,refiner,IMP.core.XYZR.get_default_radius_key(),
+   prot_rb,refiner,IMP.core.XYZR.get_radius_key(),
    IMP.atom.Mass.get_mass_key(),
    dmap,None,num_sol,3,100)
 

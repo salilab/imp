@@ -13,7 +13,6 @@ class SampleParticlesTest(IMP.test.TestCase):
         print 'start setup'
         """ create particles """
         self.particles = IMP.Particles()
-        self.rad_key=IMP.core.XYZR.get_default_radius_key()
         self.mass_key=IMP.atom.Mass.get_mass_key()
         self.mdl=IMP.Model()
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
@@ -30,7 +29,7 @@ class SampleParticlesTest(IMP.test.TestCase):
         out_filename = "aa.em"
 
         scene = IMP.em.SampledDensityMap(self.particles,
-                                         resolution,voxel_size,self.rad_key,self.mass_key)
+                                         resolution,voxel_size,self.mass_key)
 
         scene.std_normalize()
 

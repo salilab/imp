@@ -47,7 +47,6 @@ public:
    */
   SurfaceShellDensityMap(const Particles &ps,
                          float voxel_size,
-     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key(),
      int num_shells=IMP_DEFAULT_NUM_SHELLS);
 

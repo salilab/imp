@@ -65,7 +65,6 @@ IMPEMEXPORT SampledDensityMap * particles2density(
    const Particles &ps,
    Float resolution, Float apix,
    int sig_cutoff=3,
-   const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
 
 //! Resample a set of particles into a density grid
@@ -80,7 +79,6 @@ Each such particle should be have xyz radius and weight attributes
  */
 IMPEMEXPORT SurfaceShellDensityMap * particles2surface(
    const Particles &ps,Float apix,
-   const FloatKey &rad_key=IMP::core::XYZR::get_default_radius_key(),
    const FloatKey &weight_key=IMP::atom::Mass::get_mass_key());
 
 IMPEMEXPORT Float calculate_intersection_score(

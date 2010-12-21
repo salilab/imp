@@ -56,7 +56,6 @@ public:
    */
   SampledDensityMap(const Particles &ps, emreal resolution,
    emreal voxel_size,
-   IMP::FloatKey radius_key=IMP::core::XYZR::get_default_radius_key(),
    IMP::FloatKey mass_key=IMP::atom::Mass::get_mass_key(),
    int sig_cuttoff=3);
 
@@ -87,7 +86,6 @@ void project (const Particles &ps,
 
 //!setting particles in case they were not set by the constructor
  void set_particles(const IMP::Particles &ps,
-     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
   KernelParameters *get_kernel_params()  { return &kernel_params_;}
@@ -97,7 +95,6 @@ void project (const Particles &ps,
  // would go away on§ce we have a XYZRW decorator and the next function as well
   inline const Particles & get_sampled_particles() const {return ps_;}
   inline FloatKey  get_weight_key() const {return weight_key_;}
-  inline FloatKey  get_radius_key() const {return radius_key_;}
 
   //! Get minimum density value between voxels that correspond to particles
   float get_minimum_resampled_value();
@@ -128,7 +125,6 @@ protected:
   Particles ps_;
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
   FloatKey weight_key_;
-  FloatKey radius_key_;
   FloatKey x_key_,y_key_,z_key_;
 };
 IMP_OBJECTS(SampledDensityMap, SampledDensityMaps);

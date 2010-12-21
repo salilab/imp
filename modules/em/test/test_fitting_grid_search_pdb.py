@@ -21,7 +21,6 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
                               self.m, IMP.atom.CAlphaPDBSelector())#IMP.atom.NonWaterSelector())
         self.mps = IMP.atom.Hierarchies()
         self.mps.append(self.mp)
-        self.radius_key = IMP.FloatKey("radius")
         self.weight_key = IMP.FloatKey("weight")
         #add radius and weight attributes
         self.particles = IMP.core.get_leaves(self.mp)
@@ -43,7 +42,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         print "start : "
         fr=IMP.em.local_rigid_fitting_grid_search(
             IMP.Particles(self.particles),
-            self.radius_key, self.weight_key,
+            self.weight_key,
             self.scene,
             2,1,0.174,10)
 

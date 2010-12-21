@@ -65,22 +65,20 @@ SampledDensityMap * particles2density(
    const Particles &ps,
    Float resolution, Float apix,
    int sig_cuttoff,
-   const FloatKey &rad_key,
    const FloatKey &weight_key)
  {
    IMP::Pointer<SampledDensityMap> dmap(new SampledDensityMap(
                                      ps, resolution,
-                                     apix,rad_key,weight_key,sig_cuttoff));
+                                     apix,weight_key,sig_cuttoff));
    return dmap.release();
 }
 
 SurfaceShellDensityMap * particles2surface(
    const Particles &ps,Float apix,
-   const FloatKey &rad_key,
    const FloatKey &weight_key){
   IMP::Pointer<SurfaceShellDensityMap> dmap(new SurfaceShellDensityMap(
                                      ps,
-                                     apix,rad_key,weight_key));
+                                     apix,weight_key));
    return dmap.release();
 }
 //TODO - more this function to another file
