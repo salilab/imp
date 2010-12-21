@@ -21,8 +21,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 ExampleComplexRestraint::ExampleComplexRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
                                      Float diameter):diameter_(diameter),
-                                                     sc_(sc), f_(f),
-                                                     dr_("diameter_radius"){
+                                                     sc_(sc), f_(f){
   IMP_USAGE_CHECK(sc->get_number_of_particles()>2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
@@ -37,13 +36,13 @@ void ExampleComplexRestraint::set_model(Model *m) {
     Model *m= sc_->get_particle(0)->get_model();
 
     p_= new Particle(m);
-    core::XYZR d= core::XYZR::setup_particle(p_, dr_);
+    core::XYZR d= core::XYZR::setup_particle(p_);
     d.set_coordinates_are_optimized(false);
     Pointer<core::CoverRefined> cr
       = new core::CoverRefined(
              new core::FixedRefiner(Particles(sc_->particles_begin(),
                                               sc_->particles_end())),
-                               dr_, 0);
+             0);
     ss_= new core::SingletonConstraint(cr, NULL, p_);
     m->add_score_state(ss_);
   } else {
