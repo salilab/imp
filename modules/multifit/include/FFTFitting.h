@@ -49,7 +49,7 @@ public:
 /**
 The convolution result is in a wrapped around order,
 which indicates the translation to apply
-Wrapped around: (1,2,3,.,N,-(N-1),..-2, -1,0)
+Wrapped around: (0,1,2,.,N-1,-N,..-2, -1)
 
 The function returns the index of the centroid
 after applying the displacement indicated by

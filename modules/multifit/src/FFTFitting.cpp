@@ -113,9 +113,9 @@ void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
   int y_half = (fftw_ny_-1)/2+1;
   int z_half = (fftw_nz_-1)/2+1;
 
-  if (wx>x_half-2) x=x_half-(fftw_nx_-wx)+1; else x=x_half+wx;
-  if (wy>y_half-2) y=y_half-(fftw_ny_-wy)+1; else y=y_half+wy;
-  if (wz>z_half-2) z=z_half-(fftw_nz_-wz)+1; else z=z_half+wz;
+  if (wx>=x_half) x=x_half-(fftw_nx_-wx); else x=x_half+wx;
+  if (wy>=y_half) y=y_half-(fftw_ny_-wy); else y=y_half+wy;
+  if (wz>=z_half) z=z_half-(fftw_nz_-wz); else z=z_half+wz;
   /*  std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
   <<") unwrapped: ("<<x<<","<<y<<","<<z<<") "
   << "half: ("<<x_half<<","<<y_half<<","<<z_half<<") full:"
@@ -128,13 +128,13 @@ void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
 
 void FFTFitting::get_wrapped_index(int x,int y,int z,
                                      int &wx,int &wy,int &wz) const{
-  int x_half = (fftw_nx_-1)/2;
-  int y_half = (fftw_ny_-1)/2;
-  int z_half = (fftw_nz_-1)/2;
+  int x_half = (fftw_nx_-1)/2+1;
+  int y_half = (fftw_ny_-1)/2+1;
+  int z_half = (fftw_nz_-1)/2+1;
 
-  if (x<x_half) wx=fftw_nx_-x_half+x-2; else wx=x-x_half-1;
-  if (y<y_half) wy=fftw_ny_-y_half+y-2; else wy=y-y_half-1;
-  if (z<z_half) wz=fftw_nz_-z_half+z-2; else wz=z-z_half-1;
+  if (x<=x_half) wx=fftw_nx_-x_half+x; else wx=x-x_half;
+  if (y<=y_half) wy=fftw_ny_-y_half+y; else wy=y-y_half;
+  if (z<=z_half) wz=fftw_nz_-z_half+z; else wz=z-z_half;
 }
 
 void FFTFitting::set_fftw_for_mol(){
@@ -694,7 +694,8 @@ TransScores FFTFitting::search_for_best_translations(
                      int num_solutions,bool gmm_based) {
   TransScores best_trans;
   //find the best positions on the hit map
-  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
+  //  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
+  em::DensityMap* hit_map = get_correlation_hit_map();
   /*  em::DensityMap* hit_map=em::multiply(hit_map_orig,
       asmb_map_mask_);*/
   //  em::DensityMap *hit_map=hit_map_orig;
@@ -778,16 +779,15 @@ FFTFittingResults fft_based_rigid_fitting(
     else {
       fft_fit.calculate_correlation();
     }
-    Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
+    //    Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
+    em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
       //TODO: see if you can improve this test
-      if (best_trans[i].second<INT_MAX/5) {
       temp_fits.add_solution(
                              best_trans[i].first*t1*shift_to_center,
                              best_trans[i].second);
-      }
     }
     core::transform(rb,t1.get_inverse());
     add_to_max_map(max_map,hit_map);
@@ -840,7 +840,6 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     return output.release();
   }
 
-
 em::DensityMap* FFTFitting::get_correlation_hit_map() {
   //there is no meaning to correlation on the padded regions after
   //unwrapping. We create the r_map of the padded density, but
@@ -863,8 +862,17 @@ em::DensityMap* FFTFitting::get_correlation_hit_map() {
         get_unwrapped_index(ix,iy,iz,uw_x,uw_y,uw_z);
         //check if the unwrapped is in the relevant boundaries
         long unwrapped_ind = uw_z*pny*pnx+uw_y*pnx+uw_x;
+        bool relevant=false;
         if (asmb_map_->is_part_of_volume(
-               padded_asmb_map_->get_location_by_voxel(unwrapped_ind))){
+           padded_asmb_map_->get_location_by_voxel(unwrapped_ind))){
+          algebra::Vector3D loc=
+            padded_asmb_map_->get_location_by_voxel(unwrapped_ind);
+          if ((algebra::get_squared_distance(loc,asmb_map_->get_origin())>25) &&
+              (algebra::get_squared_distance(loc,asmb_map_->get_top())>25)) {
+            relevant=true;
+          }
+        }
+        if (relevant){
           r_data[unwrapped_ind]=
             fftw_r_grid_cc_[vox_zy+ix];
         }
