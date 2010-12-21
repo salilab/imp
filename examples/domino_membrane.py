@@ -130,7 +130,27 @@ def create_restraints(m, chain, tmb, tme):
     add_DOPE()
     return m.get_restraints()
 
-#def create_discrete_states
+# creating the discrete states for domino
+def  create_discrete_states(m,chain,tmb)
+    trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                            Vector2D(0,0,0))),
+          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                            Vector3D(5,0,0))),
+          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                            Vector3D(10,0,0))),
+          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
+                                            Vector3D(15,0,0)))]
+    pstate= IMP.domino.RigidBodyStates(trs)
+    pst= IMP.domino.ParticleStatesTable()
+# getting rigid bodies
+    rbs=[]
+    for i in range(len(tmb)):
+        s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
+        rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+        rbs.append(rb)
+    pst.set_particle_states(rbs[0], pstate)
+    pst.set_particle_states(rbs[1], pstate)
+    return pst
 
 #def create_sampler
 
@@ -158,6 +178,9 @@ print "creating representation"
 
 print "creating score function"
 rs=create_restraints(m,chain,tmb,tme)
+
+print "creating discrete states"
+pst=create_discrete_states(m,chain,tmb)
 
 #print "optimizer"
 #o= IMP.core.ConjugateGradients()
