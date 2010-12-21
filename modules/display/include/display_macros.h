@@ -125,6 +125,7 @@ protected:                                                              \
   /** Display a particle.*/                                             \
   class Name##Geometry: public SingletonGeometry {                      \
   public:                                                               \
+  Name##Geometry(Particle* p): SingletonGeometry(p){}                   \
   Name##Geometry(Decorator d): SingletonGeometry(d){}                   \
   Geometries get_components() const {                                   \
     Geometries ret;                                                     \
