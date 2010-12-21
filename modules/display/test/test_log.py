@@ -13,11 +13,10 @@ class TestBL(IMP.test.TestCase):
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
         o.set_model(m)
-        rk= IMP.FloatKey("my radius_key")
         nm = self.get_tmp_file_name(pref + ".%1%."+suf)
         print nm
         p0= IMP.Particle(m)
-        d0= IMP.core.XYZR.setup_particle(p0, rk)
+        d0= IMP.core.XYZR.setup_particle(p0)
         d0.set_radius(1.5)
         d0.set_x(0)
         d0.set_y(0)
