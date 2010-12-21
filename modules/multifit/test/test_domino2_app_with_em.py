@@ -57,7 +57,7 @@ class MultiFitDominoTests(IMP.test.TestCase):
             ps_ref.append(c1)
             all_atoms+=IMP.core.get_leaves(c)
             rbs.append(IMP.atom.create_rigid_body(c))
-            self.rbs_orig_trans.append(rbs[-1].get_transformation())
+            self.rbs_orig_trans.append(rbs[-1].get_reference_frame())
             color= IMP.display.get_display_color(i)
             for l in IMP.atom.get_leaves(c):
                 g= IMP.display.XYZRGeometry(l)
