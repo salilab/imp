@@ -320,7 +320,7 @@ ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
 
 
 void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRsTemp &ps) {
-  ps_=core::XYZRs(ps, core::XYZR::get_default_radius_key());
+  ps_=core::XYZRs(ps);
 }
 
 void ResolveCollisionsOptimizer
