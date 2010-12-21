@@ -55,6 +55,7 @@ def IMPApplication(env, name, version,
     env= scons_tools.environment.get_named_environment(env, name)
     utility.add_link_flags(env, required_modules,
                            required_dependencies+found_optional_dependencies)
+    scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
     dirs = Glob("*/SConscript")
     for d in dirs:
         env.SConscript(d, exports=['env'])
