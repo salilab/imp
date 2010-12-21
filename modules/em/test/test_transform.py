@@ -4,6 +4,7 @@ import os
 import random,math
 from IMP.algebra import *
 
+
 class DensityTransformTest(IMP.test.TestCase):
     def test_tramsfrom(self):
         """Check transforming a density map"""
@@ -28,7 +29,7 @@ class DensityTransformTest(IMP.test.TestCase):
         print IMP.em.get_bounding_box(mt)
         print IMP.em.get_bounding_box(mtit)
         errors=0
-        for v in range(m.get_number_of_voxels()):
+        for v in random.sample(range(m.get_number_of_voxels()), 100):
             pt= Vector3D(m.get_location_in_dim_by_voxel(v,0),
                          m.get_location_in_dim_by_voxel(v,1),
                          m.get_location_in_dim_by_voxel(v,2))
@@ -53,7 +54,7 @@ class DensityTransformTest(IMP.test.TestCase):
         print "====||2"
         IMP.em.get_transformed_into(into_m, tr.get_inverse(),back_m)
         errors=0
-        for v in range(from_m.get_number_of_voxels()):
+        for v in random.sample(range(from_m.get_number_of_voxels()), 100):
             pt= Vector3D(from_m.get_location_in_dim_by_voxel(v,0),
                          from_m.get_location_in_dim_by_voxel(v,1),
                          from_m.get_location_in_dim_by_voxel(v,2))
