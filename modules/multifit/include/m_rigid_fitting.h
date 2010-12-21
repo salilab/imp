@@ -30,7 +30,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \param[in] rb_refine  The rigid body refiner
 \param[in] em_map     The density map to fit to
 \param[in] threshold  Use voxels above this threshold for PCA calculations
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dens_pca_input provide precalculated em_map PCA is available
 \return fitting solutions
@@ -39,7 +38,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
   core::RigidBody &rb, Refiner *rb_refiner,
   em::DensityMap *em_map,Float threshold,
-  FloatKey rad_key=core::XYZR::get_default_radius_key(),
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=
    algebra::PrincipalComponentAnalysis());
@@ -52,7 +50,6 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 \param[in] ps         The particles to fit (treated as rigid)
 \param[in] em_map     The density map to fit to
 \param[in] threshold  Use voxels above this threshold for PCA calculations
-\param[in] rad_key  The raidus key of the particles in the rigid body
 \param[in] wei_key  The weight key of the particles in the rigid body
 \param[in] dens_pca_input provide precalculated em_map PCA is available
 \return fitting solutions
@@ -61,7 +58,6 @@ IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
   Particles ps,
   em::DensityMap *em_map,Float threshold,
-  FloatKey rad_key=core::XYZR::get_default_radius_key(),
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=
    algebra::PrincipalComponentAnalysis());

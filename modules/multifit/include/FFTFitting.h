@@ -25,7 +25,6 @@ typedef std::vector<TransScore> TransScores;
 class IMPMULTIFITEXPORT FFTFitting {
 public:
   FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,Refiner *rb_refiner,
-     IMP::FloatKey radius_key = IMP::core::XYZR::get_default_radius_key(),
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
   ~FFTFitting();
   void prepare(float threshold);
@@ -215,7 +214,7 @@ protected:
   algebra::Vector3D map_center_;
   float orig_avg_,orig_std_;
   float input_threshold_;
-  FloatKey radius_key_,mass_key_;
+  FloatKey mass_key_;
   double fftw_norm_;//normalization for FFTW operations
   double fftw_norm_r2c_;//normalization for FFTW operations
   double fftw_norm_c2r_;//normalization for FFTW operations

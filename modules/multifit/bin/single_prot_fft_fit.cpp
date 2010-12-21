@@ -281,7 +281,7 @@ int main(int argc, char **argv) {
   Model *mdl = new Model();
   //atom::NonWaterNonHydrogenPDBSelector sel;
   //atom::BackbonePDBSelector sel;
-  FloatKey r_key = core::XYZR::get_default_radius_key();
+  FloatKey r_key = core::XYZR::get_radius_key();
   FloatKey w_key = atom::Mass::get_mass_key();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());

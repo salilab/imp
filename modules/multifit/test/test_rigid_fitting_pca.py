@@ -24,7 +24,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
                               self.imp_model, IMP.atom.NonWaterPDBSelector())
         IMP.atom.add_radii(self.mp_ref)
 
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.ps = IMP.Particles(IMP.core.get_leaves(self.mp))
         self.rb=IMP.atom.setup_as_rigid_body(self.mp)
@@ -48,10 +48,10 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
                 IMP.algebra.Vector3D(-10.,-10.,-10.),
                 IMP.algebra.Vector3D(10.,10.,10.))))
 
-        xyz=IMP.core.XYZsTemp(self.ps)
+        xyz=IMP.core.XYZs(self.ps)
         IMP.core.transform(self.rb,rand_t)
         #IMP.atom.write_pdb(self.mp,"translated.pdb")
-        xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mp_ref))
+        xyz_ref=IMP.core.XYZs(IMP.core.get_leaves(self.mp_ref))
         #fit protein
         fs = IMP.multifit.pca_based_rigid_fitting(
                self.rb,self.refiner,self.scene,0.15)
