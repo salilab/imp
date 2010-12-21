@@ -152,6 +152,7 @@ def  create_discrete_states(m,chain,tmb)
     pst.set_particle_states(rbs[1], pstate)
     return pst
 
+# setting up domino (and filters?)
 def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
     s.set_log_level(IMP.VERBOSE)

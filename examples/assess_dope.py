@@ -3,6 +3,22 @@ import IMP.atom
 import IMP.container
 import IMP.membrane
 
+
+class ConsecutiveFilter(IMP.PairFilter):
+    def __init__(self):
+        IMP.PairFilter.__init__(self)
+    def get_contains_particle_pair(self, pp):
+        diff= pp[0].get_value(ik)-pp[1].get_value(ik)
+        if diff==-1 or diff ==1:
+            return True
+        return False
+    def get_input_particles(self, p):
+        return [p]
+    def get_input_containers(self, p):
+        return []
+    def do_show(self, out):
+        pass
+
 def create_representation():
     m=IMP.Model()
     mp0= IMP.atom.read_pdb('1fdx.B99990001.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
@@ -10,15 +26,14 @@ def create_representation():
     return (m, prot)
 
 def add_DOPE(m, prot):
-
     dsc= IMP.container.ListSingletonContainer(m)
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
     dsc.add_particles(ps)
-
     dpc = IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-
+    f= ConsecutiveFilter()
+    dpc.add_pair_filter(f)
     IMP.membrane.add_dope_score_data(prot)
 #    dps= IMP.membrane.DopePairScore(15.0, IMP.membrane.get_data_path("dope_scorehr.lib"))
     dps= IMP.membrane.DopePairScore(15.0)
