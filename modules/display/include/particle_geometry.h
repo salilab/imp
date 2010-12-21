@@ -126,7 +126,7 @@ public:
     \brief Display an IMP::SingletonContainer of IMP::core::XYZR particles
     as balls.
 */
-IMP_PARTICLE_TRAITS_GEOMETRY(XYZR, core::XYZR,FloatKey, radius_key,
+IMP_PARTICLE_GEOMETRY(XYZR, core::XYZR,
  {
    SphereGeometry *g= new SphereGeometry(d.get_sphere());
    if (Colored::particle_is_instance(d)) {
@@ -244,7 +244,7 @@ public:
     sel.set_target_radius(res_);
     ParticlesTemp ps= sel.get_selected_particles();
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_NEW(XYZRGeometry, g, (ps[i]));
+      IMP_NEW(XYZRGeometry, g, (core::XYZR(ps[i])));
       ret.push_back(g);
     }
     return ret;
