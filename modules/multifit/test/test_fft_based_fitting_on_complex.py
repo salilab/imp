@@ -64,7 +64,7 @@ class FFTFittingTest(IMP.test.TestCase):
             rb=IMP.core.RigidBody(mh)
             xyz=IMP.core.XYZs(IMP.core.get_leaves(mh))
             IMP.core.transform(rb,rand_t)
-            xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs_ref[i]))
+            xyz_ref=IMP.core.XYZs(IMP.core.get_leaves(self.mhs_ref[i]))
             #fit protein
             rots=IMP.algebra.Rotation3Ds()
             rots.append(IMP.algebra.get_identity_rotation_3d())
