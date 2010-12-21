@@ -203,7 +203,7 @@ int main(int argc, char **argv) {
   // Read model file
   fn_model = vm["mod"].as<str>();
   IMP_NEW(IMP::Model,model, ());
-  atom::ATOMPDBSelector sel;
+  IMP::Pointer<atom::ATOMPDBSelector> sel=new atom::ATOMPDBSelector();
   atom::Hierarchy mh =atom::read_pdb(fn_model,model,sel);
   IMP::Particles ps = core::get_leaves(mh);
 

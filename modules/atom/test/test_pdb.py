@@ -125,7 +125,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
     def test_pyimpl(self):
         """Test PDBSelectors implemented in Python"""
         class my_selector(IMP.atom.PDBSelector):
-            def __call__(self, ln):
+            def get_is_selected(self, ln):
                 return ln.startswith("ATOM")
 
         m= IMP.Model()

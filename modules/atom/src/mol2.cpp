@@ -25,10 +25,6 @@ IMPATOM_BEGIN_NAMESPACE
 Mol2Selector::~Mol2Selector(){}
 
 
-bool NonhydrogenMol2Selector::operator() (const std::string& atom_line) const {
-  String atom_type = internal::pick_mol2atom_type(atom_line);
-  return (atom_type[0] != 'H');
-}
 
 
 namespace {
@@ -287,8 +283,9 @@ namespace {
   void read_atom_mol2(Model *model, std::istream& mol2_file,
                       Hierarchy& molecule_d,
                       std::map<Int, Particle*>& molecule_atoms,
-                      const Mol2Selector& mol2sel)
+                      Mol2Selector* mol2sel)
   {
+    IMP::internal::OwnerPointer<Mol2Selector> sel(mol2sel);
     std::string line;
     char c;
 
@@ -299,7 +296,7 @@ namespace {
         break;
       }
       else{
-        if (mol2sel(line)){
+        if (mol2sel->get_is_selected(line)){
           Particle* atom_p = atom_particle(model, line);
           Hierarchy atom_d = Hierarchy(atom_p);
           molecule_d.add_child(atom_d);
@@ -392,8 +389,12 @@ namespace {
 
 
 Hierarchy read_mol2(TextInput mol2_file,
-                    Model *model, const Mol2Selector& mol2sel)
+                    Model *model,  Mol2Selector* mol2sel)
 {
+  if (!mol2sel) {
+    mol2sel=new AllMol2Selector();
+  }
+  IMP::internal::OwnerPointer<Mol2Selector> sel(mol2sel);
   // create a map to save atom_index and atom particle pairs
   std::map<Int, Particle*>molecule_atoms;
 

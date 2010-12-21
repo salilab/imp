@@ -10,6 +10,8 @@
 
 #include "atom_config.h"
 #include "Hierarchy.h"
+#include "atom_macros.h"
+#include "internal/mol2.h"
 
 #include <IMP/Model.h>
 #include <IMP/Particle.h>
@@ -18,25 +20,27 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! A base class for choosing which Mol2 atoms to read
-/** The Mol2Selector classes are designed to be used as
-    temporaries and so should never be stored.
+/**
  */
-class IMPATOMEXPORT Mol2Selector {
+class IMPATOMEXPORT Mol2Selector: public Object {
  public:
-  virtual bool operator()(const std::string& atom_line) const=0;
+  virtual bool get_is_selected(const std::string& atom_line) const=0;
   virtual ~Mol2Selector();
 };
 
 //! Read all atoms
 class AllMol2Selector: public Mol2Selector {
-  bool operator()(const std::string&) const {return true;}
+public:
+  IMP_MOL2_SELECTOR(AllMol2Selector, return true,);
 };
 
 
 //! Defines a selector that will pick only non-hydrogen atoms
-class IMPATOMEXPORT NonhydrogenMol2Selector : public Mol2Selector {
+class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
  public:
-  bool operator() (const std::string& atom_line) const;
+  IMP_MOL2_SELECTOR(NonHydrogenMol2Selector,
+                    String atom_type = internal::pick_mol2atom_type(mol2_line);
+                    return (atom_type[0] != 'H'),);
 };
 
 /** @name Mol2 IO
@@ -50,8 +54,8 @@ class IMPATOMEXPORT NonhydrogenMol2Selector : public Mol2Selector {
 */
 IMPATOMEXPORT Hierarchy read_mol2(TextInput mol2_file,
                                   Model* model,
-                                  const Mol2Selector& mol2sel
-                                  = AllMol2Selector());
+                                  Mol2Selector* mol2sel
+                                  = NULL);
 
 IMPATOMEXPORT void write_mol2(Hierarchy rhd,
                               TextOutput file_name);

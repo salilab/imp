@@ -13,7 +13,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         for i in range(5):
             p=IMP.Particle(m)
             IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,i,i))
-            f.write(IMP.atom.pdb_string(IMP.core.XYZ(p).get_coordinates(),
+            f.write(IMP.atom.get_pdb_string(IMP.core.XYZ(p).get_coordinates(),
                              i,IMP.atom.AT_CA,IMP.atom.ALA,'A',i))
         f.close()
         mp = IMP.atom.read_pdb(name,

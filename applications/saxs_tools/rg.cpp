@@ -63,7 +63,7 @@ use 0.8 for elongated proteins")
     try {
       IMP::atom::Hierarchy mhd =
         IMP::atom::read_pdb(files[i], model,
-                            IMP::atom::NonWaterNonHydrogenPDBSelector(),
+                            new IMP::atom::NonWaterNonHydrogenPDBSelector(),
                             // don't add radii
                             true, true);
       IMP::Particles particles = get_by_type(mhd, IMP::atom::ATOM_TYPE);
