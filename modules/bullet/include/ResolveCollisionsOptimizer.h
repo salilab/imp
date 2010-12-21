@@ -48,8 +48,7 @@ public:
   ResolveCollisionsOptimizer(Model *m);
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
   void set_xyzrs(const ParticlesTemp &ps) {
-    set_xyzrs_internal(core::XYZRsTemp(ps,
-                  IMP::core::XYZR::get_default_radius_key()));
+    set_xyzrs_internal(core::XYZRsTemp(ps));
   }
 
   void add_obstacle(const algebra::Vector3Ds &vertices,
