@@ -16,7 +16,7 @@ class LocalFittingTest(IMP.test.TestCase):
         self.m = IMP.Model()
         self.mh= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaPDBSelector())
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         IMP.atom.add_radii(self.mh)
         IMP.atom.setup_as_rigid_body(self.mh)
@@ -43,13 +43,13 @@ class LocalFittingTest(IMP.test.TestCase):
         fr_fast=IMP.em.local_rigid_fitting(
             IMP.core.RigidBody(self.mh),
             refiner,
-            self.radius_key, self.weight_key,
+            self.weight_key,
             self.scene,self.pdb_opt_state,1,2,50,2.,.3,True)
         print "calculate slow"
         fr_slow=IMP.em.local_rigid_fitting(
              IMP.core.RigidBody(self.mh),
              refiner,
-             self.radius_key, self.weight_key,
+             self.weight_key,
              self.scene,None,1,2,50,2.,.3,False)
         print "fast:",fr_fast.get_score(0)," slow:",fr_slow.get_score(0)
         self.assertAlmostEqual(fr_fast.get_score(0), fr_slow.get_score(0),

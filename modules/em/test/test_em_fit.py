@@ -20,7 +20,7 @@ class FittingTest(IMP.test.TestCase):
         self.assertEqual(header.get_nz(), 33)
 
     def load_particles(self):
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
 
         protein_key = IMP.FloatKey("protein")

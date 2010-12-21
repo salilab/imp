@@ -67,8 +67,7 @@ void SampledDensityMap::set_header(const algebra::VectorD<3> &lower_bound,
   header_.update_cell_dimensions();
 }
 SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
-                   emreal resolution, emreal voxel_size,
-                   IMP::FloatKey radius_key,IMP::FloatKey mass_key,
+                   emreal resolution, emreal voxel_size,IMP::FloatKey mass_key,
                    int sig_cutoff) {
   IMP_LOG(VERBOSE, "start SampledDensityMap with resolution: "<<resolution<<
           "and voxel size: "<<voxel_size<<std::endl);
@@ -76,9 +75,8 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
   weight_key_=mass_key;
-  radius_key_=radius_key;
   ps_=ps;
-  xyzr_=IMP::core::XYZRs(ps_,radius_key_);
+  xyzr_=IMP::core::XYZRs(ps_);
   determine_grid_size(resolution,voxel_size,sig_cutoff);
   header_.set_resolution(resolution);
   //set up the sampling parameters
@@ -164,13 +162,12 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
  }
 
 void SampledDensityMap::set_particles(const IMP::Particles &ps,
-                     IMP::FloatKey radius_key,IMP::FloatKey mass_key) {
+                                      IMP::FloatKey mass_key) {
   IMP_INTERNAL_CHECK(ps_.size()==0,"Particles have already been set");
   IMP_INTERNAL_CHECK(xyzr_.size()==0,"data inconsistency in SampledDensityMap");
   ps_=ps;
   weight_key_=mass_key;
-  radius_key_=radius_key;
-  xyzr_=IMP::core::XYZRs(ps_,radius_key_);
+  xyzr_=IMP::core::XYZRs(ps_);
 }
 
 

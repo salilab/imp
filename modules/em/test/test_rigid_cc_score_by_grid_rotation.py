@@ -24,7 +24,7 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         self.mp_ref= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                                    self.imp_model, IMP.atom.CAlphaPDBSelector())#IMP.
         IMP.atom.add_radii(self.mp)
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.particles = IMP.Particles(IMP.core.get_leaves(self.mp))
     def setUp(self):
@@ -48,12 +48,12 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         scores_fast = IMP.em.compute_fitting_scores(
             self.particles,
             self.scene,
-            self.radius_key,self.weight_key,
+            self.weight_key,
             ts,True)
         scores_slow = IMP.em.compute_fitting_scores(
             self.particles,
             self.scene,
-            self.radius_key,self.weight_key,
+            self.weight_key,
             ts,False)
         #check that the functions calculated 20 scores
         self.assertEqual(scores_fast.get_number_of_solutions(), len(ts))

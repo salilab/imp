@@ -22,7 +22,6 @@ class SampleParticlesTests(IMP.test.TestCase):
 
         self.particles = IMP.Particles()
         mdl=IMP.Model()
-        self.rad_key=IMP.core.XYZR.get_default_radius_key()
         self.mass_key=IMP.atom.Mass.get_mass_key()
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
             p=IMP.Particle(mdl)
@@ -30,7 +29,7 @@ class SampleParticlesTests(IMP.test.TestCase):
             p.add_attribute(self.mass_key,val[4])
             self.particles.append(p)
         self.particles_sampling = IMP.em.SampledDensityMap(
-                                              self.particles, 2.0, 1.0,self.rad_key,self.mass_key)
+                                              self.particles, 2.0, 1.0,self.mass_key)
 
 
     def test_sample(self):

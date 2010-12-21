@@ -11,7 +11,6 @@ class MRCWriteTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         self.particles = IMP.Particles()
         mdl=IMP.Model()
-        self.radius_key=IMP.core.XYZR.get_default_radius_key()
         self.weight_key=IMP.FloatKey("mass")
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:
             p=IMP.Particle(mdl)
@@ -22,7 +21,7 @@ class MRCWriteTest(IMP.test.TestCase):
         voxel_size = 1.0
         em_map = IMP.em.SampledDensityMap(self.particles,
                                           resolution,voxel_size,
-                                          self.radius_key,self.weight_key)
+                                          self.weight_key)
         em_map.calcRMS()
         self.rms = em_map.get_header().rms
         print "RMSD of original map = " + str(self.rms)

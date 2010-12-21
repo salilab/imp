@@ -35,7 +35,7 @@ void FittingSolutions::sort(bool reverse) {
 
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                               core::RigidBody rb,Refiner *leaves_ref,
-                const FloatKey &rad_key, const FloatKey &wei_key,
+                const FloatKey &wei_key,
                 bool fast=false) {
   RestraintSet *rsrs = new RestraintSet();
    model->add_restraint(rsrs);
@@ -45,12 +45,12 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    if (fast) {
      fit_rs = new FitRestraint(rb.get_particle(),
                                dmap,leaves_ref,no_norm_factors,
-                               rad_key,wei_key,1.0);
+                               wei_key,1.0);
    }
    else {
      fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
                                dmap,leaves_ref,no_norm_factors,
-                               rad_key,wei_key,1.0);
+                               wei_key,1.0);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
@@ -119,7 +119,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
 
 FittingSolutions local_rigid_fitting_around_point(
    core::RigidBody rb,Refiner *refiner,
-   const FloatKey &rad_key, const FloatKey &wei_key,
+   const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
@@ -140,7 +140,7 @@ FittingSolutions local_rigid_fitting_around_point(
    //add restraints
    Model *model = rb.get_members()[0].get_particle()->get_model();
    RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
-                                       rad_key, wei_key,fast);
+                                       wei_key,fast);
    //create a rigid body mover and set the optimizer
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
                            number_of_cg_steps, max_translation, max_rotation);
@@ -169,7 +169,7 @@ FittingSolutions local_rigid_fitting_around_point(
 
 FittingSolutions local_rigid_fitting_around_points(
    core::RigidBody rb,Refiner *refiner,
-   const FloatKey &rad_key, const FloatKey &wei_key,
+   const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerState *display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
@@ -184,7 +184,7 @@ FittingSolutions local_rigid_fitting_around_points(
    Model *model = rb.get_members()[0].get_particle()->get_model();
 
    RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
-                                       rad_key,wei_key);
+                                       wei_key);
    core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
                            number_of_cg_steps,max_translation, max_rotation);
 
@@ -204,7 +204,7 @@ FittingSolutions local_rigid_fitting_around_points(
 }
 
 FittingSolutions local_rigid_fitting_grid_search(
-   const Particles &ps, const FloatKey &rad_key,
+   const Particles &ps,
    const FloatKey &wei_key,
    DensityMap *dmap,
    Int max_voxels_translation,
@@ -231,7 +231,7 @@ FittingSolutions local_rigid_fitting_grid_search(
    IMP_INTERNAL_CHECK(
       model_dens_map->same_dimensions(dmap),
       "sampled density map is of wrong dimensions"<<std::endl);
-   model_dens_map->set_particles(ps,rad_key,wei_key);
+   model_dens_map->set_particles(ps,wei_key);
    model_dens_map->resample();
    model_dens_map->calcRMS();
    algebra::Rotation3Ds rots;
@@ -285,14 +285,14 @@ FittingSolutions local_rigid_fitting_grid_search(
 
 FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
-  const FloatKey &rad_key, const FloatKey &wei_key,
+  const FloatKey &wei_key,
   const std::vector<IMP::algebra::Transformation3D>& transformations,
                                         bool fast_version,
                                         bool local) {
   FittingSolutions fr;
   IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
          (*(em_map->get_header())));
-  model_dens_map->set_particles(ps,rad_key,wei_key);
+  model_dens_map->set_particles(ps,wei_key);
     model_dens_map->resample();
     model_dens_map->calcRMS();
     IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(em_map),
@@ -304,7 +304,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
               <<std::endl);
       IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
               (*(em_map->get_header())));
-      model_dens_map2->set_particles(ps,rad_key,wei_key);
+      model_dens_map2->set_particles(ps,wei_key);
       algebra::Vector3Ds original_cooridnates;
       for(core::XYZsTemp::const_iterator it = ps_xyz.begin();
           it != ps_xyz.end(); it++) {
@@ -376,10 +376,10 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
 
 Float compute_fitting_score(const Particles &ps,
                             DensityMap *em_map,
-                            FloatKey rad_key, FloatKey wei_key) {
+                            FloatKey wei_key) {
     IMP::em::SampledDensityMap *model_dens_map =
       new IMP::em::SampledDensityMap(*(em_map->get_header()));
-   model_dens_map->set_particles(ps,rad_key,wei_key);
+   model_dens_map->set_particles(ps,wei_key);
    model_dens_map->resample();
    return em::CoarseCC::calc_score(em_map, model_dens_map,
                                  1.0,true,false);
