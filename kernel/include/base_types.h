@@ -112,7 +112,7 @@ inline void show(std::ostream &out, T*i) {
 #if IMP_BOOST_VERSION != BOOST_VERSION
 #ifdef __GNU__
 #error Boost version does not match expected version. Please rerun\
-  configuration tests.
+  configuration tests by running scons with --config=force.
 #else
 BOOST_STATIC_ASSERT(0
 && "The boost version IMP is built with must match the current one.");
