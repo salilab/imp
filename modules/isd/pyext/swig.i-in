@@ -11,6 +11,7 @@ IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
 IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
+IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -35,11 +36,16 @@ def create_model_and_particles():
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
+%include "IMP/isd/RegularRepulsiveDistancePairScore.h"
+%include "IMP/atom/LennardJones.h"
+%include "IMP/atom/SmoothingFunction.h"
 
 namespace IMP {
-  namespace isd {
+  namespace atom {
   /* Python doesn't natively support C++ templates, so you have to manually
      choose which template parameters you want to intantiate a template with.
+   */
+/*   %template(SmoothingFunction) ::IMP::atom::SmoothingFunction;
    */
   }
 }
