@@ -16,9 +16,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 CoverRefined
 ::CoverRefined(Refiner *ref,
-               FloatKey rk,
-               Float slack): rk_(rk),
-                             slack_(slack)
+               Float slack): slack_(slack)
 {
   refiner_=ref;
 }
@@ -28,7 +26,7 @@ IMP_SINGLETON_MODIFIER_FROM_REFINED(CoverRefined, refiner_);
 
 void CoverRefined::apply(Particle *p) const
 {
-  XYZR dp(p, rk_);
+  XYZR dp(p);
   XYZsTemp ps(refiner_->get_refined(p));
   set_enclosing_sphere(dp, ps, slack_);
 }
@@ -36,6 +34,5 @@ void CoverRefined::apply(Particle *p) const
 
 IMP_SUMMARY_DECORATOR_DEF(Cover, XYZR, XYZs,
                           SingletonModifier * mod
-                          = new CoverRefined(ref,
-                          XYZR::get_default_radius_key(), 0));
+                          = new CoverRefined(ref,0));
 IMPCORE_END_NAMESPACE

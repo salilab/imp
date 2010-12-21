@@ -23,8 +23,7 @@ IMPCORE_BEGIN_NAMESPACE
 DiameterRestraint::DiameterRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
                                      Float diameter):diameter_(diameter),
-                                                     sc_(sc), f_(f),
-                                                     dr_("diameter_radius"){
+                                                     sc_(sc), f_(f){
   IMP_USAGE_CHECK(sc->get_number_of_particles()>=2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
@@ -37,14 +36,14 @@ void DiameterRestraint::set_model(Model *m) {
 
     // make pairs from special generator
     p_= new Particle(m);
-    XYZR d= XYZR::setup_particle(p_, dr_);
+    XYZR d= XYZR::setup_particle(p_);
     p_->set_name("DiameterRestraint center");
     d.set_coordinates_are_optimized(false);
     Pointer<core::CoverRefined> cr
       = new core::CoverRefined(
             new FixedRefiner(Particles(sc_->particles_begin(),
                                        sc_->particles_end())),
-                               dr_, 0);
+            0);
     ss_= new core::SingletonConstraint(cr, NULL, p_);
 
     m->add_score_state(ss_);

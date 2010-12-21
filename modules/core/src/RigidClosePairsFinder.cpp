@@ -103,7 +103,7 @@ namespace {
       for (ParticlesTemp::const_iterator it= ps.begin();
            it != ps.end(); ++it) {
         if (RigidBody::particle_is_instance(*it)
-            && !(*it)->has_attribute(XYZR::get_default_radius_key())) {
+            && !(*it)->has_attribute(XYZR::get_radius_key())) {
           IMP_WARN("Particle " << (*it)->get_name() << " is a rigid body "
                    << "but does not have a radius. "
                    << "Collision detection is unlikely to work."

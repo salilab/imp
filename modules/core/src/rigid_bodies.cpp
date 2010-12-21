@@ -220,15 +220,15 @@ void RigidBody::on_change() {
    for (unsigned int i=0; i< get_number_of_members(); ++i) {
      double cd= (get_coordinates()
                  -get_member(i).get_coordinates()).get_magnitude();
-     if (get_member(i)->has_attribute(XYZR::get_default_radius_key())) {
-       cd+= get_member(i)->get_value(XYZR::get_default_radius_key());
+     if (get_member(i)->has_attribute(XYZR::get_radius_key())) {
+       cd+= get_member(i)->get_value(XYZR::get_radius_key());
      }
      md=std::max(cd, md);
    }
-   if (get_particle()->has_attribute(XYZR::get_default_radius_key())) {
-     get_particle()->set_value(XYZR::get_default_radius_key(), md);
+   if (get_particle()->has_attribute(XYZR::get_radius_key())) {
+     get_particle()->set_value(XYZR::get_radius_key(), md);
    } else {
-     get_particle()->add_attribute(XYZR::get_default_radius_key(), md);
+     get_particle()->add_attribute(XYZR::get_radius_key(), md);
    }
    for (unsigned int i=0; i< cache_keys.size(); ++i) {
      if (get_particle()
