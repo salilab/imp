@@ -3,13 +3,12 @@ import IMP.atom
 import IMP.container
 import IMP.membrane
 
-
-class ConsecutiveFilter(IMP.PairFilter):
+class SameResidueFilter(IMP.PairFilter):
     def __init__(self):
         IMP.PairFilter.__init__(self)
     def get_contains_particle_pair(self, pp):
-        diff= pp[0].get_value(ik)-pp[1].get_value(ik)
-        if diff==-1 or diff ==1:
+        diff= pp[0].get_value(IMP.IntKey("num"))-pp[1].get_value(IMP.IntKey("num"))
+        if diff==0:
             return True
         return False
     def get_input_particles(self, p):
@@ -26,17 +25,19 @@ def create_representation():
     return (m, prot)
 
 def add_DOPE(m, prot):
-    dsc= IMP.container.ListSingletonContainer(m)
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
+    dsc= IMP.container.ListSingletonContainer(m)
+    for p in ps:
+        p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
     dsc.add_particles(ps)
     dpc = IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-    f= ConsecutiveFilter()
+    f= SameResidueFilter()
     dpc.add_pair_filter(f)
     IMP.membrane.add_dope_score_data(prot)
-#    dps= IMP.membrane.DopePairScore(15.0, IMP.membrane.get_data_path("dope_scorehr.lib"))
     dps= IMP.membrane.DopePairScore(15.0)
+#    dps= IMP.membrane.DopePairScore(15.0, IMP.membrane.get_data_path("dope_scorehr.lib"))
     d=   IMP.container.PairsRestraint(dps, dpc)
     m.add_restraint(d)
 
