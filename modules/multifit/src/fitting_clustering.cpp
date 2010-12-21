@@ -28,7 +28,7 @@ public:
   void join_into(const FittingTransformation& t) {
     //todo - improve using average quaterion
     //if the new transformation (t) fits the map better, use it
-    if (t.get_score() > get_score()) {
+    if (t.get_score() > cc_score_) {
       cc_score_ = t.get_score();
       orig_index_ = t.orig_index_;
       representative_rt_ = t.representative_rt_;

@@ -245,7 +245,6 @@ void RMSDClustering<TransT>::prepare(const Particles& ps) {
 template<class TransT>
 int RMSDClustering<TransT>::fast_clustering(float max_dist,
        std::vector<TransformationRecord*>& recs) {
-  float max_dist2 = max_dist * max_dist;
   int num_joins = 0;
   bool used[recs.size()];
   Hash3 g_hash((double)(bin_size_));
