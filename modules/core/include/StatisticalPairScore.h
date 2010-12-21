@@ -36,10 +36,17 @@ IMPCORE_BEGIN_NAMESPACE
     The bin_width is how much distance is allocated per bin (the distance used
     is that between the points).
 
+    \note The values read in the file are for bins. That is, the first bin
+    is from offset to offset+width. The second is offset+width to offset+
+    2width.
+    As a result, when interpolation is used, the function achieves the
+    bin value at the center of the bin.
+
     \param[in] Key is an IMP::Key which maps between names and indices
     \param[in] BIPARTITE If true, the two sets of particles being stored are
-    difference (eg a protein atom and a ligand atom), otherwise they are assumed
-    to both be the same. Appropriate value must be provided in the file.
+    difference (eg a protein atom and a ligand atom), otherwise they are
+    assumed to both be the same. Appropriate value must be provided
+    in the file.
     \param[in] INTERPOLATE If true, even the scores without derivatives are
     spline interpolated. If false, only the evaluates with derivatives are
     interpolated with a spline.
