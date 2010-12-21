@@ -61,9 +61,9 @@ class MultiFitDominoTests(IMP.test.TestCase):
                                       IMP.algebra.Vector3D(5,5,5))
         trans=[]
         for r in rbs:
-            trans.append(r.get_transformation())
-        trans.append(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                                       IMP.algebra.Vector3D(0,0,0)))
+            trans.append(r.get_reference_frame())
+        trans.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                                                              IMP.algebra.Vector3D(0,0,0))))
         for i in range(0):
             trans.append(IMP.algebra.Transformation3D(#IMP.algebra.get_identity_rotation_3d(),
                 IMP.algebra.get_random_rotation_3d(IMP.algebra.get_identity_rotation_3d(), .4),
