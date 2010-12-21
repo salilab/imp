@@ -2,6 +2,7 @@ Import('env')
 
 files = [
          'CommonEndpointPairFilter.h',
+         'CustomXYZR.h',
          'LogPairScore.h',
          'LowestRefinedPairScore.h',
          'StateAdaptor.h',

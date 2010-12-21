@@ -3,6 +3,7 @@ IMP_SWIG_OBJECT(IMP::misc, StateAdaptor, StateAdaptors);
 IMP_SWIG_OBJECT(IMP::misc, CommonEndpointPairFilter, CommonEndpointPairFilters);
 IMP_SWIG_OBJECT(IMP::misc, LogPairScore, LogPairScores);
 IMP_SWIG_OBJECT(IMP::misc, LowestRefinedPairScore, LowestRefinedPairScores);
+IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::misc, CustomXYZR, CustomXYZRs);
 
 /* Wrap our own classes */
 %include "IMP/misc/WormLikeChain.h"
@@ -11,3 +12,4 @@ IMP_SWIG_OBJECT(IMP::misc, LowestRefinedPairScore, LowestRefinedPairScores);
 %include "IMP/misc/LogPairScore.h"
 %include "IMP/misc/StateAdaptor.h"
 %include "IMP/misc/CommonEndpointPairFilter.h"
+%include "IMP/misc/CustomXYZR.h"
