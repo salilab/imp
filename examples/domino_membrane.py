@@ -112,8 +112,6 @@ def create_restraints(m, chain, tmb, tme):
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
         dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
-
-
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
