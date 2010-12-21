@@ -62,12 +62,12 @@ unit::Femtojoule kt(unit::Kelvin t) {
 
 
 
-FloatKey Diffusion::get_D_key() {
+FloatKey Diffusion::get_d_key() {
   static FloatKey k("D");
   return k;
 }
-void Diffusion::set_D_from_radius(Float ir) {
-  return set_D_from_radius(ir,
+void Diffusion::set_d_from_radius(Float ir) {
+  return set_d_from_radius(ir,
                             IMP::internal::DEFAULT_TEMPERATURE.get_value());
 }
 
@@ -81,16 +81,16 @@ unit::SquareCentimeterPerSecond Diffusion::D_from_r(unit::Angstrom radius,
 
 
 
-void Diffusion::set_D_from_radius(Float ir,
+void Diffusion::set_d_from_radius(Float ir,
                                   Float it) {
-  set_D(D_from_r(unit::Angstrom(ir),
+  set_d(D_from_r(unit::Angstrom(ir),
                  unit::Kelvin(it)));
 }
 
 void Diffusion::show(std::ostream &out) const
 {
   XYZ::show(out);
-  out << "D= " << get_D_in_cm2_per_second() << "cm^2/sec";
+  out << "D= " << get_d_in_cm2_per_second() << "cm^2/sec";
 
 }
 

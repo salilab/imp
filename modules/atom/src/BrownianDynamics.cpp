@@ -206,15 +206,15 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       }
     }
 
-    IMP_USAGE_CHECK(unit::strip_units(d.get_D()) > 0
-              && unit::strip_units(d.get_D())
+    IMP_USAGE_CHECK(unit::strip_units(d.get_d()) > 0
+              && unit::strip_units(d.get_d())
               < std::numeric_limits<Float>::max(),
               "Bad diffusion coefficient on particle " << _1->get_name());
     double random[3];
-    unit::Angstrom sigma= sqrt(2.0*d.get_D()*dt);
+    unit::Angstrom sigma= sqrt(2.0*d.get_d()*dt);
     for (unsigned j = 0; j < 3; ++j) {
       double rv= sampler();
-      random[j]=unit::Angstrom(sqrt(2*d.get_D()*dt)*rv).get_value();
+      random[j]=unit::Angstrom(sqrt(2*d.get_d()*dt)*rv).get_value();
       if (rv < 0) random[j]=-random[j];
       //delta[j]=unit::Angstrom(0);
     }
@@ -226,7 +226,7 @@ void BrownianDynamics::take_step(SingletonContainer *sc,
       unit::Femtonewton nforce
         = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
       unit::Angstrom R(sampler());
-      unit::Angstrom force_term(nforce*d.get_D()*dtikt);
+      unit::Angstrom force_term(nforce*d.get_d()*dtikt);
       /*if (force_term > unit::Angstrom(.5)) {
         std::cout << "Forces on " << _1->get_name() << " are "
                   << force << " and " << nforce
@@ -359,11 +359,11 @@ BrownianDynamics
 }
 
 unit::KilocaloriePerAngstromPerMol BrownianDynamics
-::get_force_scale_from_D(unit::SquareCentimeterPerSecond D) const
+::get_force_scale_from_d(unit::SquareCentimeterPerSecond D) const
 {
   // force motion is f*dt_*D/kT
   // sigma*kT/(dt_*D)
-  unit::Angstrom s=compute_sigma_from_D(D);
+  unit::Angstrom s=compute_sigma_from_d(D);
   unit::Piconewton pn= s*kt()/(si_.get_maximum_time_step()*D);
   unit::YoctoKilocaloriePerAngstrom yc=unit::convert_J_to_Cal(pn);
   return unit::operator*(unit::ATOMS_PER_MOL,yc);

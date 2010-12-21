@@ -64,7 +64,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
         XYZR d= XYZR::setup_particle(p);
         d.set_radius(r);
         Diffusion dd= Diffusion::setup_particle(p);
-        dd.set_D_from_radius();
+        dd.set_d_from_radius();
         d.set_coordinates_are_optimized(true);
         d.set_coordinates(Vector3D(i*30.0, j*30.0, k*len));
       }
@@ -97,7 +97,7 @@ It create(PS0 *link, PS1 *lb, SS *bottom) {
 }
 
 void read(std::string name, It it) {
-  IMP_CATCH_AND_TERMINATE(read_model(name, it.all));
+  IMP_CATCH_AND_TERMINATE(read_particles(name, it.all));
   it.cpc->set_slack(it.sp->get_value(FloatKey("slack")));
   if (it.sp != it.bd->get_simulation_parameters()) {
     std::cerr << "Parameters don't match " << it.sp
@@ -183,7 +183,45 @@ void do_benchmark(std::string name, int argc, char *argv[], PS0 *link,
            }, runtime);
   IMP::benchmark::report(std::string("bd ")+name, runtime, total);
   if (argc>2) {
-    IMP_CATCH_AND_TERMINATE(write_model(it.all, argv[2]));
+    IMP_CATCH_AND_TERMINATE(write_particles(it.all, argv[2]));
+  }
+}
+
+template <int I, class PR, class PS0, class PS1, class SS>
+void do_long_run(std::string name, int argc, char *argv[], PS0 *link,
+                  PS1 *lb, SS *bottom) {
+  It it= create<PR>(link, lb, bottom);
+  std::string in;
+  if (argc >0) {
+    in =argv[0];
+  } else {
+    IMP_CATCH_AND_TERMINATE(in
+                            =IMP::benchmark::get_data_path("brownian.imp"));
+  }
+  read(in, it);
+  double total=0, runtime=0;
+  int ns=10000;
+  if (argc >1) {
+    ns=atoi(argv[1]);
+  }
+  for (unsigned int i=0; i< 1000; ++i) {
+    double cur=0;
+    IMP_TIME(
+             {
+               cur+=simulate(it, ns);
+             }, runtime);
+    IMP::benchmark::report(std::string("bd long ")+name, runtime, total);
+    it.m->set_gather_statistics(true);
+    it.m->evaluate(false);
+    it.m->show_restraint_score_statistics();
+    it.m->set_gather_statistics(false);
+    std::ostringstream oss;
+    oss << "build/tmp/sim." << i << ".pym";
+    do_display(it, oss.str());
+  }
+
+  if (argc>2) {
+    IMP_CATCH_AND_TERMINATE(write_particles(it.all, argv[2]));
   }
 }
 
@@ -199,7 +237,7 @@ int main(int argc , char **argv) {
                                   new AttributeSingletonScore(new HLB(0,kk),
                                                              xk));
     initialize(it);
-    write_model(it.all, argv[2]);
+    write_particles(it.all, argv[2]);
   } else if (argc>=4 && std::string(argv[1])=="-d") {
     It it= create<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
                                   new SphereDistancePairScore(new HLB(0,kk)),
@@ -227,6 +265,13 @@ int main(int argc , char **argv) {
                            new SoftSpherePairScore(kk),
                            new AttributeSingletonScore(new HLB(0,kk),
                                                        XYZ::get_xyz_keys()[0]));
+  } else if (argc >=2 && std::string(argv[1])=="-l") {
+      typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
+      do_long_run<1, PR >("long", argc-2, argv+2,
+                          new HarmonicDistancePairScore(len, kk),
+                          new SoftSpherePairScore(kk),
+                          new AttributeSingletonScore(new HLB(0,kk),
+                                                      XYZ::get_xyz_keys()[0]));
   } else {
     {
       typedef ContainerRestraint<SoftSpherePairScore, ClosePairContainer> PR;
