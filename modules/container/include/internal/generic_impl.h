@@ -309,13 +309,13 @@ bool GenericInContainerPairFilter<Container>
 
 template <class Container>
 ParticlesTemp GenericInContainerPairFilter<Container>
-::get_input_particles(const ParticlePair&) const {
+::get_input_particles(Particle*) const {
   // not quite right
   return ParticlesTemp();
 }
 template <class Container>
 ContainersTemp GenericInContainerPairFilter<Container>
-::get_input_containers(const ParticlePair&) const {
+::get_input_containers(Particle*) const {
   return ContainersTemp(1, c_);
 }
 
