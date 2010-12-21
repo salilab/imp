@@ -76,7 +76,7 @@ def create_restraints(m, chain, tmb, tme):
 #  the number of sigmas
         nsig=2
 #  and the number of clusters
-        ncl=6
+        ncl=5
 # create allowed intervals (omega in radians)
         om_b=[]
         om_e=[]
@@ -102,13 +102,18 @@ def create_restraints(m, chain, tmb, tme):
 
 ## DOPE/GQ scoring
     def add_DOPE():
+# initializing data
+        IMP.membrane.add_dope_score_data(chain)
+# creating containers
         dsc= IMP.container.ListSingletonContainer(m)
         for i in range(len(tmb)):
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
             dsc.add_particles(s.get_selected_particles())
-#       initializing data
-        IMP.membrane.add_dope_score_data(chain)
+# exclude pairs of atoms belonging to the same residue
+# for consistency with MODELLER DOPE score
         dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+
+
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
@@ -161,3 +166,4 @@ rs=create_restraints(m,chain,tmb,tme)
 
 print "creating visualization"
 display(m,chain,tmb,tme)
+#IMP.atom.write_pdb(chain,"test.pdb")
