@@ -1,22 +1,12 @@
 Import('env')
 
-# they are weird
-selectors=['HydrogenPDBSelector',
-           'Mol2Selector', 'NonAlternativePDBSelector',
-           'NonWaterNonHydrogenPDBSelector',
-           'NonWaterPDBSelector', 'NonhydrogenMol2Selector','WaterPDBSelector',
-           'AndPDBSelector', 'OrPDBSelector', 'ATOMPDBSelector',
-           'AllMol2Selector', 'AllPDBSelector', 'HydrogenPDBSelector',
-           'NPDBSelector', 'NonAlternativePDBSelector', 'NonWaterNonHydrogenPDBSelector',
-           'NonWaterPDBSelector', 'NonhydrogenMol2Selector', 'PDBSelector', 'PPDBSelector',
-           'CPDBSelector', 'ChainPDBSelector', 'CAlphaPDBSelector', 'CBetaPDBSelector']
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
                   show_exceptions=['AllMol2Selector', 'AllPDBSelector',
                                    'ChainPDBSelector',
-                                   'ElementTable', 'HierarchyVector']+selectors,
-                  value_object_exceptions=selectors+['ElementTable'],
+                                   'ElementTable', 'HierarchyVector'],
+                  value_object_exceptions=['ElementTable'],
                   function_name_exceptions=['transform', 'BrownianDynamics.simulate'])
 
 """

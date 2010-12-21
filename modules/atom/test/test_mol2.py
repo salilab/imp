@@ -71,7 +71,7 @@ class Mol2ReadTest(IMP.test.TestCase):
 
         m = IMP.Model()
         root_d = IMP.atom.read_mol2(self.get_input_file_name("1d3d-ligands.mol2"),
-                                       m, IMP.atom.NonhydrogenMol2Selector())
+                                       m, IMP.atom.NonHydrogenMol2Selector())
         print "test 2"
         print "number of particles"
         print m.get_number_of_particles()

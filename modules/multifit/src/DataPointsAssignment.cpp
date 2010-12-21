@@ -170,7 +170,7 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
   f.open(filename.c_str());
   algebra::Vector3Ds cluster_ps=dpa.get_cluster_vectors(segment_id);
   for(unsigned int i=0;i<cluster_ps.size();i++) {
-    f<<atom::pdb_string(cluster_ps[i],
+    f<<atom::get_pdb_string(cluster_ps[i],
                              i,atom::AT_CA,atom::ALA,'A',i);
   }
 }
@@ -254,7 +254,7 @@ void write_pdb(const std::string &pdb_filename,
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
     centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
-    out<<atom::pdb_string(centers[i],i,
+    out<<atom::get_pdb_string(centers[i],i,
                           atom::AT_CA,atom::ALA,'A',i);
   }
   out.close();

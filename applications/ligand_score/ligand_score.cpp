@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
   IMP::atom::Hierarchy p, l;
   {
     IMP::SetLogState ss(IMP::SILENT);
-    p= IMP::atom::read_pdb(pdbname, m, IMP::atom::ATOMPDBSelector());
+    p= IMP::atom::read_pdb(pdbname, m, new IMP::atom::ATOMPDBSelector());
     IMP::atom::add_protein_ligand_score_data(p);
     l= IMP::atom::read_mol2(mol2name, m);
     IMP::atom::add_protein_ligand_score_data(l);

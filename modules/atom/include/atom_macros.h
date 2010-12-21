@@ -22,4 +22,31 @@
 #define IMP_FORCE_FIELD_PARAMETERS(Name)  \
   IMP_OBJECT(Name)
 
+//! Define the basic things you need for a pdb selector
+/** In addition to the methods defined/declared by IMP_OBJECT,
+    it defines:
+    - IMP::PDBSelector::get_is_selected()
+    The selected argument should return true or false and use
+    a string called pdb_line.
+ */
+#define IMP_PDB_SELECTOR(Name, selected, show)                   \
+  bool get_is_selected(const std::string &pdb_line) const {      \
+    selected;                                                    \
+  }                                                              \
+  IMP_OBJECT_INLINE(Name, show,)
+
+
+//! Define the basic things you need for a mol2 selector
+/** In addition to the methods defined/declared by IMP_OBJECT,
+    it defines:
+    - IMP::Mol2Selector::get_is_selected()
+    The selected argument should return true or false and use
+    a string called pdb_line.
+ */
+#define IMP_MOL2_SELECTOR(Name, selected, show)                  \
+  bool get_is_selected(const std::string &mol2_line) const {     \
+  selected;                                                      \
+  }                                                              \
+  IMP_OBJECT_INLINE(Name, show,)
+
 #endif  /* IMPATOM_MACROS_H */

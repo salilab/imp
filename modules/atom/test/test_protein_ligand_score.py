@@ -44,7 +44,7 @@ class ScoreTest(IMP.test.TestCase):
         p= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"),
                              m, IMP.atom.NonWaterNonHydrogenPDBSelector())
         l= IMP.atom.read_mol2(self.get_input_file_name("1d3d-ligands.mol2"),
-                              m, IMP.atom.NonhydrogenMol2Selector())
+                              m, IMP.atom.NonHydrogenMol2Selector())
         #patms= IMP.atom.get_by_type(p, IMP.atom.ATOM_TYPE)
         #for cp in patms:
         #    print "Read patom "+str(IMP.core.XYZ(cp.get_particle()).get_coordinates())+":Type: \""+str(IMP.atom.Atom(cp.get_particle()).get_atom_type())+"\" atom number: "+str(IMP.atom.Atom(cp.get_particle()).get_input_index())

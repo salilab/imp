@@ -281,11 +281,10 @@ int main(int argc, char **argv) {
   Model *mdl = new Model();
   //atom::NonWaterNonHydrogenPDBSelector sel;
   //atom::BackbonePDBSelector sel;
-  atom::CAlphaPDBSelector sel;
   FloatKey r_key = core::XYZR::get_default_radius_key();
   FloatKey w_key = atom::Mass::get_mass_key();
   atom::Hierarchy mh;
-  mh = atom::read_pdb(protein_filename,mdl,sel);
+  mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());
   try{
     atom::add_radii(mh);
   }
@@ -302,7 +301,7 @@ int main(int argc, char **argv) {
   core::XYZs ref_mh_xyz;
   atom::Hierarchy ref_mh;
   if (ref_filename != "") {
-    ref_mh = atom::read_pdb(ref_filename,mdl,sel);
+    ref_mh = atom::read_pdb(ref_filename,mdl,new atom::CAlphaPDBSelector());
     ref_mh_xyz = core::XYZs(core::get_leaves(ref_mh));
     atom::add_radii(ref_mh);
   }

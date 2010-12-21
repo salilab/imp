@@ -58,6 +58,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(LennardJones);
 
+IMP_DECORATORS(LennardJones, LennardJonesList, core::XYZRs);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_LENNARD_JONES_H */

@@ -7,7 +7,7 @@ env= env.IMPApplication(name="ligand_score", version="SVN",
                         license=env.IMPStandardLicense(),
                         publications=[],
                         required_modules=['atom'],
-                        required_dependencies=['Boost.ProgramOptions'],
+                        required_dependencies=['Boost.ProgramOptions', 'Boost.FileSystem'],
                         python=False)
 
 if env:

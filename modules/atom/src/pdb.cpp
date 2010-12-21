@@ -232,7 +232,7 @@ namespace {
 
   Hierarchies read_pdb(std::istream &in, std::string name,
                        Model *model,
-                       const PDBSelector& selector,
+                       PDBSelector* selector,
                        bool select_first_model,
                        bool split_models,
                        bool noradii)
@@ -273,7 +273,7 @@ namespace {
     // if this is the case construct a new Particle using line and add the
     // Particle to the Model
     if (internal::is_ATOM_rec(line) || internal::is_HETATM_rec(line)) {
-      if (!selector(line)) {
+      if (!selector->get_is_selected(line)) {
         IMP_LOG(VERBOSE, "Selector rejected line " << line << std::endl);
         continue;
       }
@@ -353,7 +353,7 @@ namespace {
 
 Hierarchy read_pdb(TextInput in, Model *model) {
   Hierarchies ret= read_pdb(in,nicename(in.get_name()), model,
-                            NonWaterPDBSelector(), true, false, false);
+                            new NonWaterPDBSelector(), true, false, false);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(),
               ValueException);
@@ -364,10 +364,11 @@ Hierarchy read_pdb(TextInput in, Model *model) {
 
 
 Hierarchy read_pdb(TextInput in, Model *model,
-                   const PDBSelector& selector,
+                   PDBSelector* selector,
                    bool select_first_model,
                    bool no_radii)
 {
+  IMP::internal::OwnerPointer<PDBSelector> sp(selector);
   Hierarchies ret= read_pdb(in, nicename(in.get_name()), model, selector,
                             select_first_model, false, no_radii);
   if (ret.empty()) {
@@ -380,8 +381,9 @@ Hierarchy read_pdb(TextInput in, Model *model,
 
 
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
-                   const PDBSelector& selector)
+                                PDBSelector* selector)
 {
+  IMP::internal::OwnerPointer<PDBSelector> sp(selector);
   return read_pdb(in, nicename(in.get_name()), model, selector, false,
                   true, false);
 }
@@ -425,7 +427,7 @@ void write_pdb(const Particles& ps, TextOutput out)
         pdb_file << std::setw(8) << std::setprecision(3) << xyz.get_z()
         << std::endl;*/
       }
-      out.get_stream() << pdb_string(core::XYZ(ps[i]).get_coordinates(),
+      out.get_stream() << get_pdb_string(core::XYZ(ps[i]).get_coordinates(),
                                      use_input_index? ad.get_input_index(): i+1,
                                      ad.get_atom_type(),
                                      rd.get_residue_type(),
@@ -474,7 +476,7 @@ void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 
 
 // change atom type to string for Hao's hetatom code
-std::string pdb_string(const algebra::VectorD<3>& v, int index,
+std::string get_pdb_string(const algebra::VectorD<3>& v, int index,
                        AtomType at, ResidueType rt,
                        char chain, int res_index,
                        char res_icode, double occupancy,
@@ -557,7 +559,7 @@ std::string pdb_string(const algebra::VectorD<3>& v, int index,
   return out.str();
 }
 
-std::string conect_record_string(int a1_ind,int a2_ind){
+std::string get_conect_record_string(int a1_ind,int a2_ind){
   //      const IMP::atom::Atom &a1, const IMP::atom::Atom &a2){
   //  IMP::atom::Atom *a3,IMP::atom::Atom *a4,IMP::atom::Atom *a5) {
 
