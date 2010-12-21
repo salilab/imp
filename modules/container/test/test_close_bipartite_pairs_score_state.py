@@ -22,7 +22,7 @@ class TestBL(IMP.test.TestCase):
         print "list is " + str(out.get_number_of_particle_pairs())
         for a in pc0:
             for b in pc1:
-                if self._are_close(a,b, IMP.core.XYZR.get_default_radius_key(), d):
+                if self._are_close(a,b, IMP.core.XYZR.get_radius_key(), d):
                     self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(a,b)))
 
     def test_it(self):
