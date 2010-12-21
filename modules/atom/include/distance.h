@@ -158,14 +158,18 @@ public:
   //! Get the squared rmsd between two transformations
   float get_squared_rmsd(const algebra::Transformation3D& t1,
               const algebra::Transformation3D& t2);
-
-protected:
+  IMP_SHOWABLE_INLINE(RMSDCalculator, );
+private:
   algebra::Vector3D centroid_;
   double d_[3][3];//partial calculation
   //for example dist[0][1] is the dot product of a two vectors of lenght N
   //one of all X coordiantes and the second of all Y coordiantes.
   //N is the number of particles
 };
+
+IMP_OUTPUT_OPERATOR(RMSDCalculator);
+
+IMP_VALUES(RMSDCalculator, RMSDCalculators);
 
 IMPATOM_END_NAMESPACE
 
