@@ -14,16 +14,16 @@ IMPEM_BEGIN_NAMESPACE
 WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
   core::RigidBodies rbs,
   Refiner *refiner,
-  FloatKey radius_key,FloatKey weight_key):
+  FloatKey weight_key):
   Restraint("Weighted Excluded Volume Restraint") {
   IMP_LOG(TERSE,"Load WeightedExcludedVolumeRestraint \n");
   rb_refiner_=refiner;
   add_particles(rbs);
   rbs_=rbs;
-  initialize_model_density_map(radius_key,weight_key);
+  initialize_model_density_map(weight_key);
 }
 void WeightedExcludedVolumeRestraint::initialize_model_density_map(
-  FloatKey radius_key,FloatKey weight_key) {
+  FloatKey weight_key) {
   for (core::RigidBodies::const_iterator it = rbs_.begin();
        it != rbs_.end();it++){
     core::RigidBody rb=*it;

@@ -23,17 +23,16 @@ em::FittingSolutions pca_based_rigid_fitting(
   core::RigidBody &rb, Refiner *rb_refiner,
     em::DensityMap *em_map,
     Float threshold,
-    FloatKey rad_key, FloatKey wei_key,
+  FloatKey wei_key,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
   Particles ps = rb_refiner->get_refined(rb);
   return pca_based_rigid_fitting(ps,
-                          em_map,threshold,rad_key,wei_key,dens_pca_input);
+                          em_map,threshold,wei_key,dens_pca_input);
 }
 
 em::FittingSolutions pca_based_rigid_fitting(
   Particles ps,
   em::DensityMap *em_map,Float threshold,
-  FloatKey rad_key,
   FloatKey wei_key,
   algebra::PrincipalComponentAnalysis dens_pca_input) {
 
@@ -73,7 +72,7 @@ em::FittingSolutions pca_based_rigid_fitting(
     algebra::get_alignments_from_first_to_second(ps_pca,dens_pca);
   em::FittingSolutions fs =
     em::compute_fitting_scores(ps,em_map,
-                               rad_key,wei_key,all_trans,true);
+                               wei_key,all_trans,true);
   fs.sort();
   //compose the center translation to the results
   em::FittingSolutions returned_fits;

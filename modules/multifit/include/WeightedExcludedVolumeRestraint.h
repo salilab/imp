@@ -34,7 +34,6 @@ public:
   /**
     \param[in] rbs Excluded volume will be calculated between these Rigid bodies
     \param[in] refiner rigid body refiner
-    \param[in] radius_key the name of the radius attribute of the particles
     \param[in] weight_key the name of the weight attribute of the particles
     \note Particles that are rigid-bodies are interpolated and not resampled.
           This significantly reduces the running time but is less accurate.
@@ -42,7 +41,6 @@ public:
   WeightedExcludedVolumeRestraint(
                core::RigidBodies rbs,
                Refiner *refiner,
-               FloatKey radius_key= IMP::core::XYZR::get_default_radius_key(),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key());
 
   IMP_RESTRAINT(WeightedExcludedVolumeRestraint);
@@ -54,7 +52,7 @@ private:
   \todo the user should pass a refiner for each rigid body. For now we
         assume that each rigid body is a molecular hierarchy
    */
-  void initialize_model_density_map(FloatKey radius_key, FloatKey weight_key);
+  void initialize_model_density_map(FloatKey weight_key);
   core::RigidBodies rbs_;
   //one surface map for each rigid body
   mutable SurfaceShellDensityMaps rbs_surface_maps_;

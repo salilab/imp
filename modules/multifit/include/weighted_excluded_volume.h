@@ -27,7 +27,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 IMPMULTIFITEXPORT void add_surface_index(core::Hierarchy mhd,
                 Float apix,
                 FloatKey shell_key= FloatKey("surf_ind"),
-                FloatKey radius_key=core::XYZR::get_default_radius_key(),
+                FloatKey radius_key=core::XYZR::get_radius_key(),
                 FloatKey weight_key=atom::Mass::get_mass_key()) ;
 
 //! create a  weighted excluded volume restraint between two rigid bodies

@@ -52,9 +52,7 @@ bool operator<(const TransScore& a, const TransScore& b) {
 FFTFitting::FFTFitting(em::DensityMap *dmap,
                        core::RigidBody &rb,
                        Refiner *rb_refiner,
-                       FloatKey radius_key,
                        FloatKey mass_key){
-  radius_key_=radius_key;
   mass_key_=mass_key;
   asmb_map_=dmap;
   asmb_map_->calcRMS();
@@ -342,16 +340,13 @@ void FFTFitting::smooth_mol(){
   Particles ps=rb_refiner_->get_refined(rb_);
   for(Particles::const_iterator it = ps.begin(); it != ps.end(); it++){
     Particle *p=new Particle(mdl_);
-    core::XYZR::setup_particle(p,
-   algebra::Sphere3D(core::XYZ(*it).get_coordinates(),
-                     core::XYZR(*it).get_radius()),
-                               radius_key_);
+    core::XYZ::setup_particle(p, core::XYZ(*it).get_coordinates());
+    core::XYZR::setup_particle(p, core::XYZR(*it).get_radius());
     //    p->add_attribute(mass_key_,it->get_value(mass_key_));
     p->add_attribute(mass_key_,atom::Mass(*it).get_mass());
     mol_map_ps_.push_back(p);
   }
   mol_map_->set_particles(mol_map_ps_,
-                          radius_key_,
                           mass_key_);
   mol_map_->resample();
   mol_map_->std_normalize();

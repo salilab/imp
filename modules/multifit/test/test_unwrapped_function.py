@@ -11,7 +11,7 @@ class UnwrappingTest(IMP.test.TestCase):
 
     def load_data(self):
         self.mdl=IMP.Model()
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         [self.ps,self.rb,self.refiner,self.xyz]=self.create_points(self.mdl)
         [self.ps_copy,self.rb_copy,self.refiner_copy,self.xyz_copy]=self.create_points(self.mdl)
