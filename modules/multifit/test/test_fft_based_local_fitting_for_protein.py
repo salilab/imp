@@ -12,7 +12,6 @@ class FFTFittingTest(IMP.test.TestCase):
     def load_data(self):
         self.mdl=IMP.Model()
         sel=IMP.atom.CAlphaPDBSelector()
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.mh = IMP.atom.read_pdb(self.get_input_file_name("1kp8_A_1oel_A_fit_.pdb"),
                                     self.mdl,sel)
