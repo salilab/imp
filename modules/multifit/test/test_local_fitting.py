@@ -20,7 +20,7 @@ class FFTFittingTest(IMP.test.TestCase):
         self.prob=IMP.atom.setup_as_rigid_body(IMP.atom.get_by_type(self.mp,IMP.atom.CHAIN_TYPE)[0])
         IMP.atom.write_pdb(IMP.atom.Hierarchy(self.prob),"ref.pdb")
         self.prob_ref=IMP.atom.setup_as_rigid_body(IMP.atom.get_by_type(self.mp_ref,IMP.atom.CHAIN_TYPE)[0])
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def setUp(self):
@@ -56,9 +56,9 @@ class FFTFittingTest(IMP.test.TestCase):
             self.fitting_scoring(local,gmm_peaking,resolution)
 
     def fitting_scoring(self,local,gmm_peaking,resolution):
-        xyz=IMP.core.XYZsTemp(self.refiner.get_refined(self.prob))
+        xyz=IMP.core.XYZs(self.refiner.get_refined(self.prob))
         threshold=0.4
-        xyz_ref=IMP.core.XYZsTemp(self.refiner.get_refined(self.prob_ref))
+        xyz_ref=IMP.core.XYZs(self.refiner.get_refined(self.prob_ref))
         #fit protein
         rots=IMP.algebra.Rotation3Ds()
         rots.append(IMP.algebra.get_identity_rotation_3d())
