@@ -28,7 +28,7 @@ class FFTFittingTest(IMP.test.TestCase):
 
         for c in IMP.atom.get_by_type(self.h_ref, IMP.atom.CHAIN_TYPE):
             self.mhs_ref.append(c)
-        self.radius_key = IMP.core.XYZR.get_default_radius_key()
+        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         self.scene = IMP.em.particles2density(self.ps,6,1.5)
@@ -62,7 +62,7 @@ class FFTFittingTest(IMP.test.TestCase):
                 IMP.algebra.Vector3D(-10.,-10.,-10.),
                 IMP.algebra.Vector3D(10.,10.,10.))))
             rb=IMP.core.RigidBody(mh)
-            xyz=IMP.core.XYZsTemp(IMP.core.get_leaves(mh))
+            xyz=IMP.core.XYZs(IMP.core.get_leaves(mh))
             IMP.core.transform(rb,rand_t)
             xyz_ref=IMP.core.XYZsTemp(IMP.core.get_leaves(self.mhs_ref[i]))
             #fit protein
