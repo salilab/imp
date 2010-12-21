@@ -52,10 +52,10 @@ def create_representation(tmb,tme):
         print " Rigid #",i," number of members=",rbs[i].get_number_of_members()
         print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
 #   trial translation+rotation
-    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-5,0,0))
-    IMP.core.transform(rbs[0],tr0)
-    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(5,0,0))
-    IMP.core.transform(rbs[1],tr1)
+#    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-5,0,0))
+#    IMP.core.transform(rbs[0],tr0)
+#    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(5,0,0))
+#    IMP.core.transform(rbs[1],tr1)
     return (m, chain)
 
 def create_restraints(m, chain, tmb, tme):
@@ -149,15 +149,15 @@ def create_restraints(m, chain, tmb, tme):
     return m.get_restraints()
 
 # creating the discrete states for domino
-def  create_discrete_states(m,chain,tmb)
-    trs= [ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
-                                            Vector2D(0,0,0))),
-          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
-                                            Vector3D(5,0,0))),
-          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
-                                            Vector3D(10,0,0))),
-          ReferenceFrame3D(Transformation3D(get_identity_rotation_3d(),
-                                            Vector3D(15,0,0)))]
+def  create_discrete_states(m,chain,tmb):
+    trs= [IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                            IMP.algebra.Vector3D(0,0,0))),
+          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                            IMP.algebra.Vector3D(5,0,0))),
+          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                            IMP.algebra.Vector3D(10,0,0))),
+          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
+                                            IMP.algebra.Vector3D(15,0,0)))]
     pstate= IMP.domino.RigidBodyStates(trs)
     pst= IMP.domino.ParticleStatesTable()
 # getting rigid bodies
@@ -173,7 +173,7 @@ def  create_discrete_states(m,chain,tmb)
 # setting up domino (and filters?)
 def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
-    s.set_log_level(IMP.VERBOSE)
+#    s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
 #    filters=[]
     # do not allow particles with the same ParticleStates object
@@ -206,7 +206,7 @@ def display(m,chain,tmb,tme):
             j=2
 
 # Here starts the real job...
-IMP.set_log_level(IMP.VERBOSE)
+#IMP.set_log_level(IMP.VERBOSE)
 
 print "creating representation"
 # TMH boundaries
