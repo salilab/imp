@@ -67,7 +67,7 @@ IMP_SWIG_OBJECT(IMP::atom, ChainPDBSelector, ChainPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
 IMP_SWIG_VALUE(IMP::atom, RMSDCalculator, RMSDCalculators);
-//IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
+IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 
 IMP_SWIG_VALUE(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
