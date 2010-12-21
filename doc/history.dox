@@ -6,6 +6,10 @@
 - IMP::core::RigidBody::lazy_set_reference_frame() was renamed to IMP::core::RigidBody::set_reference_frame_lazy() to fit with the standards better.
 - the transform based methods on referene frame which have been deprecated for a while were removed
 - the hierarchy visiting and searching functions have been renamed to better fit the \imp naming scheme as we don't expect they were used outside of the \imp source.
+- IMP::atom::NonhydrogenMol2Selector was renamed IMP::atom::NonHydrogenMol2Selector to be consistent with the PDB version
+- the IMP::atom::PDBSelector and IMP::atom::Mol2Selector became IMP::Object classes. All this
+  means is that they need to be created with \c new in C++ code. It also means that one is
+  no longer prohibited from storing them (not that there is much use in doing that).
 
 \par Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
