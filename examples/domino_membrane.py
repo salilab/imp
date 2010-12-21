@@ -152,7 +152,25 @@ def  create_discrete_states(m,chain,tmb)
     pst.set_particle_states(rbs[1], pstate)
     return pst
 
-#def create_sampler
+def create_sampler(m, pst):
+    s=IMP.domino.DominoSampler(m, pst)
+    s.set_log_level(IMP.VERBOSE)
+    # the following lines recreate the defaults and so are optional
+#    filters=[]
+    # do not allow particles with the same ParticleStates object
+    # to have the same state index
+#    filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
+    # filter states that score worse than the cutoffs in the Model
+#    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+#    filters[-1].set_log_level(IMP.SILENT)
+#    mf=MyFilterTable(ps[1], 0)
+    # try with and without this line
+#    filters.append(mf)
+#    states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
+    #states.set_log_level(IMP.SILENT);
+#    s.set_subset_states_table(states)
+#    s.set_subset_filter_tables(filters)
+    return s
 
 def display(m,chain,tmb,tme):
     m.update()
@@ -170,10 +188,11 @@ def display(m,chain,tmb,tme):
 
 # Here starts the real job...
 IMP.set_log_level(IMP.VERBOSE)
+
+print "creating representation"
 # TMH boundaries
 tmb=[38,80]
 tme=[73,106]
-print "creating representation"
 (m,chain)=create_representation(tmb,tme)
 
 print "creating score function"
@@ -182,11 +201,17 @@ rs=create_restraints(m,chain,tmb,tme)
 print "creating discrete states"
 pst=create_discrete_states(m,chain,tmb)
 
-#print "optimizer"
-#o= IMP.core.ConjugateGradients()
-#o.set_model(m)
-#o.optimize(500)
+print "creating sampler"
+s=create_sampler(m, pst)
 
-print "creating visualization"
-display(m,chain,tmb,tme)
+print "sampling"
+cs=s.get_sample()
+
+print "found ", cs.get_number_of_configurations(), "solutions"
+for i in range(cs.get_number_of_configurations()):
+    cs.load_configuration(i)
+    print "solution number:",i," is:", m.evaluate(False)
+
+#print "creating visualization"
+#display(m,chain,tmb,tme)
 #IMP.atom.write_pdb(chain,"test.pdb")
