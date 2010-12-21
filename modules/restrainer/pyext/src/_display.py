@@ -88,8 +88,7 @@ class _DisplayNode(object):
                     atom_list.append(atom)
         if len(atom_list) >0:
             c = IMP.container.ListSingletonContainer(atom_list)
-            geometry = IMP.display.XYZRsGeometry(c,
-                                                 IMP.core.XYZR.get_default_radius_key())
+            geometry = IMP.display.XYZRsGeometry(c)
             geometry.set_name(self.id)
             geometry.set_color(IMP.display.Color(r, g, b))
             log.add_geometry(geometry)
