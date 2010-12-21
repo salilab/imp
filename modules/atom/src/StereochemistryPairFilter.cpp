@@ -23,14 +23,14 @@ bool StereochemistryPairFilter
 }
 
 ParticlesTemp StereochemistryPairFilter
-::get_input_particles(const ParticlePair& t) const {
+::get_input_particles(Particle* p) const {
   ParticlesTemp ret;
-  ret.push_back(t[0]);
-  ret.push_back(t[1]);
-  ExcludedMap::const_iterator it
-      = excluded_map_.find(internal::ExcludedPair(t[0], t[1]));
-  if (it != excluded_map_.end()) {
-    ret.push_back(it->second);
+  ret.push_back(p);
+  for (ExcludedMap::const_iterator it= excluded_map_.begin();
+       it != excluded_map_.end(); ++it) {
+    if (it->first.a_== p || it->first.b_==p) {
+      ret.push_back(it->second);
+    }
   }
   return ret;
 }
@@ -60,7 +60,7 @@ void StereochemistryPairFilter::rebuild_map() {
 }
 
 ContainersTemp
-StereochemistryPairFilter::get_input_containers(const ParticlePair& ) const {
+StereochemistryPairFilter::get_input_containers(Particle* ) const {
   return ContainersTemp();
 }
 

@@ -11,10 +11,28 @@
 #include "IMP/CLASSNAMEFilter.h"
 #include "IMP/internal/utility.h"
 #include "IMP/CLASSNAMEModifier.h"
+#include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 CLASSNAMEFilter::CLASSNAMEFilter(std::string name): Object(name) {
+}
+namespace {
+struct GCP {
+  const CLASSNAMEFilter *back_;
+  GCP(const CLASSNAMEFilter *n): back_(n){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains_FUNCTIONNAME(p);
+  }
+};
+}
+void CLASSNAMEFilter
+::filter_in_place(PLURALVARIABLETYPE &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          GCP(this)),
+           ps.end());
+
 }
 
 IMP_END_NAMESPACE

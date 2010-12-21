@@ -18,12 +18,12 @@ InContainerSingletonFilter
                              std::string name): SingletonFilter(name), c_(c){}
 
 ParticlesTemp InContainerSingletonFilter
-::get_input_particles(Particle*) const {
+::get_input_particles(Particle*p) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerSingletonFilter
-::get_input_containers(Particle*) const {
+::get_input_containers(Particle*p) const {
   return ContainersTemp(1,c_);
 }
 

@@ -18,12 +18,12 @@ InContainerCLASSNAMEFilter
                              std::string name): CLASSNAMEFilter(name), c_(c){}
 
 ParticlesTemp InContainerCLASSNAMEFilter
-::get_input_particles(ARGUMENTTYPE) const {
+::get_input_particles(Particle*p) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerCLASSNAMEFilter
-::get_input_containers(ARGUMENTTYPE) const {
+::get_input_containers(Particle*p) const {
   return ContainersTemp(1,c_);
 }
 

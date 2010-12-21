@@ -18,12 +18,12 @@ InContainerPairFilter
                              std::string name): PairFilter(name), c_(c){}
 
 ParticlesTemp InContainerPairFilter
-::get_input_particles(const ParticlePair&) const {
+::get_input_particles(Particle*p) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerPairFilter
-::get_input_containers(const ParticlePair&) const {
+::get_input_containers(Particle*p) const {
   return ContainersTemp(1,c_);
 }
 

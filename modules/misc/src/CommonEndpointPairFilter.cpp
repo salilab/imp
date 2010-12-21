@@ -36,19 +36,12 @@ bool CommonEndpointPairFilter
 
 
 ParticlesTemp
-CommonEndpointPairFilter::get_input_particles(const ParticlePair& pt)
+CommonEndpointPairFilter::get_input_particles(Particle*p)
   const {
   ParticlesTemp ret;
-  ret.reserve(3);
-  ret.push_back(pt[0]);
-  ret.push_back(pt[1]);
-  if (IMP::atom::Bond::particle_is_instance(pt[0])){
-    IMP::atom::Bond b(pt[0]);
-    ret.push_back(b.get_bonded(0));
-    ret.push_back(b.get_bonded(1));
-  }
-  if (IMP::atom::Bond::particle_is_instance(pt[1])){
-    IMP::atom::Bond b(pt[1]);
+  ret.push_back(p);
+  if (IMP::atom::Bond::particle_is_instance(p)){
+    IMP::atom::Bond b(p);
     ret.push_back(b.get_bonded(0));
     ret.push_back(b.get_bonded(1));
   }
@@ -56,7 +49,7 @@ CommonEndpointPairFilter::get_input_particles(const ParticlePair& pt)
 }
 
 ContainersTemp
-CommonEndpointPairFilter::get_input_containers(const ParticlePair&) const {
+CommonEndpointPairFilter::get_input_containers(Particle*p) const {
   return ContainersTemp();
 }
 

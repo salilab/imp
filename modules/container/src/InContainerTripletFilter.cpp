@@ -18,12 +18,12 @@ InContainerTripletFilter
                              std::string name): TripletFilter(name), c_(c){}
 
 ParticlesTemp InContainerTripletFilter
-::get_input_particles(const ParticleTriplet&) const {
+::get_input_particles(Particle*p) const {
   // not quite right, but...
   return ParticlesTemp();
 }
 ContainersTemp InContainerTripletFilter
-::get_input_containers(const ParticleTriplet&) const {
+::get_input_containers(Particle*p) const {
   return ContainersTemp(1,c_);
 }
 
