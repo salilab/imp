@@ -69,25 +69,21 @@ IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer);
 
 ParticlesTemp CloseBipartitePairContainer
 ::get_state_input_particles() const {
-  ParticlesTemp reta(cpf_->get_input_particles(a_->get_particles()));
+  ParticlesTemp ret(cpf_->get_input_particles(a_->get_particles()));
   ParticlesTemp retb(cpf_->get_input_particles(b_->get_particles()));
-  reta.insert(reta.end(), retb.begin(), retb.end());
+  ret.insert(ret.end(), retb.begin(), retb.end());
   if (get_number_of_pair_filters() >0) {
-    ParticlePairsTemp all_pairs;
-    for (unsigned int i=0; i< reta.size(); ++i) {
-      for (unsigned int j=0; j< i; ++j) {
-        all_pairs.push_back(ParticlePair(reta[i], reta[j]));
-      }
-    }
+    ParticlesTemp retc;
     for (PairFilterConstIterator it= pair_filters_begin();
          it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< all_pairs.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(all_pairs[i]);
-        reta.insert(reta.end(), cur.begin(), cur.end());
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
+        retc.insert(retc.end(), cur.begin(), cur.end());
       }
     }
+    ret.insert(ret.end(), retc.begin(), retc.end());
   }
-  return reta;
+  return ret;
 }
 
 ContainersTemp CloseBipartitePairContainer
@@ -99,6 +95,20 @@ ContainersTemp CloseBipartitePairContainer
   ret.push_back(b_);
   ret.push_back(moveda_);
   ret.push_back(movedb_);
+  if (get_number_of_pair_filters() >0) {
+    ParticlesTemp ps(cpf_->get_input_particles(a_->get_particles()));
+    ParticlesTemp psb(cpf_->get_input_particles(b_->get_particles()));
+    ps.insert(ps.end(), psb.begin(), psb.end());
+    ContainersTemp retc;
+    for (PairFilterConstIterator it= pair_filters_begin();
+         it != pair_filters_end(); ++it) {
+      for (unsigned int i=0; i< ps.size(); ++i) {
+        ContainersTemp cur= (*it)->get_input_containers(ps[i]);
+        retc.insert(retc.end(), cur.begin(), cur.end());
+      }
+    }
+    ret.insert(ret.end(), retc.begin(), retc.end());
+  }
   return ret;
 }
 
