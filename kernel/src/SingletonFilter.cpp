@@ -11,10 +11,28 @@
 #include "IMP/SingletonFilter.h"
 #include "IMP/internal/utility.h"
 #include "IMP/SingletonModifier.h"
+#include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 SingletonFilter::SingletonFilter(std::string name): Object(name) {
+}
+namespace {
+struct GCP {
+  const SingletonFilter *back_;
+  GCP(const SingletonFilter *n): back_(n){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains_particle(p);
+  }
+};
+}
+void SingletonFilter
+::filter_in_place(ParticlesTemp &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          GCP(this)),
+           ps.end());
+
 }
 
 IMP_END_NAMESPACE

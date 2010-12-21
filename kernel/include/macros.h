@@ -2104,8 +2104,8 @@ protected:                                      \
   };                                                                    \
   public:                                                               \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
-  ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
-  ContainersTemp get_input_containers(const ParticlePair& t) const;     \
+  ParticlesTemp get_input_particles(Particle* t) const;                 \
+  ContainersTemp get_input_containers(Particle* t) const;               \
   void filter_in_place(ParticlePairsTemp &ps) const {                   \
     ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
                             GCP(this)),                                 \
@@ -2130,8 +2130,8 @@ protected:                                      \
     }                                                                   \
   };                                                                    \
   bool get_contains_particle_triplet(const ParticleTriplet& p) const;   \
-  ParticlesTemp get_input_particles(const ParticleTriplet& t) const;    \
-  ContainersTemp get_input_containers(const ParticleTriplet& t) const;  \
+  ParticlesTemp get_input_particles(Particle* t) const;                 \
+  ContainersTemp get_input_containers(Particle* t) const;                \
   void filter_in_place(ParticleTripletsTemp &ps) const {                \
     ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
                             GCP(this)),                                 \
@@ -2156,8 +2156,8 @@ protected:                                      \
     }                                                                   \
   };                                                                    \
   bool get_contains_particle_quad(const ParticleQuad& p) const;         \
-  ParticlesTemp get_input_particles(const ParticleQuad& t) const;       \
-  ContainersTemp get_input_containers(const ParticleQuad& t) const;     \
+  ParticlesTemp get_input_particles(Particle* t) const;                 \
+  ContainersTemp get_input_containers(Particle* t) const;               \
   void filter_in_place(ParticleQuadsTemp &ps) const {                   \
     ps.erase(std::remove_if(ps.begin(), ps.end(),                       \
                             GCP(this)),                                 \
@@ -2174,23 +2174,23 @@ protected:                                      \
 
 #define IMP_PAIR_FILTER(Name)                                           \
   bool get_contains_particle_pair(const ParticlePair& p) const;         \
-  ParticlesTemp get_input_particles(const ParticlePair& t) const;       \
-  ContainersTemp get_input_containers(const ParticlePair& t) const;     \
+  ParticlesTemp get_input_particles(Particle* t) const;                 \
+  ContainersTemp get_input_containers(Particle* t) const;               \
   IMP_OBJECT(Name)
 
 
 #define IMP_TRIPLET_FILTER(Name)                                       \
   bool get_contains_particle_triplet(const ParticleTriplet& p) const;  \
-  ParticlesTemp get_input_particles(const ParticleTriplet& t) const;   \
-  ContainersTemp get_input_containers(const ParticleTriplet& t) const; \
+  ParticlesTemp get_input_particles(Particle* t) const;                \
+  ContainersTemp get_input_containers(Particle* t) const;              \
   IMP_OBJECT(Name)
 
 
 
 #define IMP_QUAD_FILTER(Name)                                           \
   bool get_contains_particle_quad(const ParticleQuad& p) const;         \
-  ParticlesTemp get_input_particles(const ParticleQuad& t) const;       \
-  ContainersTemp get_input_containers(const ParticleQuad& t) const;     \
+  ParticlesTemp get_input_particles(Particle* t) const;                 \
+  ContainersTemp get_input_containers(Particle* t) const;               \
   IMP_OBJECT(Name)
 
 #endif

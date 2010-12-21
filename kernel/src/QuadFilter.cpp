@@ -11,10 +11,28 @@
 #include "IMP/QuadFilter.h"
 #include "IMP/internal/utility.h"
 #include "IMP/QuadModifier.h"
+#include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 QuadFilter::QuadFilter(std::string name): Object(name) {
+}
+namespace {
+struct GCP {
+  const QuadFilter *back_;
+  GCP(const QuadFilter *n): back_(n){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains_particle_quad(p);
+  }
+};
+}
+void QuadFilter
+::filter_in_place(ParticleQuadsTemp &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          GCP(this)),
+           ps.end());
+
 }
 
 IMP_END_NAMESPACE

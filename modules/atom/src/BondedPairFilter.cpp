@@ -15,25 +15,23 @@ BondedPairFilter
 }
 
 ParticlesTemp BondedPairFilter
-::get_input_particles(const ParticlePair& t) const {
+::get_input_particles( Particle* t) const {
   ParticlesTemp ret;
-  ret.push_back(t[0]);
-  ret.push_back(t[1]);
-  if (!Bonded::particle_is_instance(t[1])
-      || ! Bonded::particle_is_instance(t[0])) {
-  } else {
-    Bonded ba(t[0]);
-    Bonded bb(t[1]);
-    Bond bd=get_bond(ba, bb);
-    if (bd) ret.push_back(bd);
+  ret.push_back(t);
+  if (Bonded::particle_is_instance(t)) {
+    Bonded b(t);
+    for (unsigned int i=0;
+         i< b.get_number_of_bonds(); ++i) {
+      ret.push_back(b.get_bond(i));
+    }
   }
   return ret;
 }
 
 
 ContainersTemp
-BondedPairFilter::get_input_containers(const ParticlePair&) const {
-  return ContainersTemp();
+BondedPairFilter::get_input_containers(Particle*p) const {
+  return ContainersTemp(1, p);
 }
 void BondedPairFilter::do_show(std::ostream &) const {
 }

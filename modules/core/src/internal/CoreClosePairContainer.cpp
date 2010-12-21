@@ -28,7 +28,9 @@ IMP_LIST_IMPL(CoreClosePairContainer,
               PairFilter,
               pair_filter,
               PairFilter*,
-              PairFilters, obj->set_was_used(true);,{},{});
+              PairFilters, obj->set_was_used(true);first_call_=true;,
+              {first_call_=true;},
+              {if (container) container->first_call_=true;});
 
 
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,
@@ -81,19 +83,15 @@ ContainersTemp CoreClosePairContainer
 ParticlesTemp CoreClosePairContainer::get_state_input_particles() const {
   ParticlesTemp ret(cpf_->get_input_particles(c_->get_particles()));
   if (get_number_of_pair_filters() >0) {
-    ParticlePairsTemp all_pairs;
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      for (unsigned int j=0; j< i; ++j) {
-        all_pairs.push_back(ParticlePair(ret[i], ret[j]));
-      }
-    }
+    ParticlesTemp retc;
     for (PairFilterConstIterator it= pair_filters_begin();
          it != pair_filters_end(); ++it) {
-      for (unsigned int i=0; i< all_pairs.size(); ++i) {
-        ParticlesTemp cur= (*it)->get_input_particles(all_pairs[i]);
-      ret.insert(ret.end(), cur.begin(), cur.end());
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        ParticlesTemp cur= (*it)->get_input_particles(ret[i]);
+        retc.insert(retc.end(), cur.begin(), cur.end());
       }
     }
+    ret.insert(ret.end(), retc.begin(), retc.end());
   }
   return ret;
 }

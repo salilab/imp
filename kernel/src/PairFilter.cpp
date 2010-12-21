@@ -11,10 +11,28 @@
 #include "IMP/PairFilter.h"
 #include "IMP/internal/utility.h"
 #include "IMP/PairModifier.h"
+#include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 PairFilter::PairFilter(std::string name): Object(name) {
+}
+namespace {
+struct GCP {
+  const PairFilter *back_;
+  GCP(const PairFilter *n): back_(n){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains_particle_pair(p);
+  }
+};
+}
+void PairFilter
+::filter_in_place(ParticlePairsTemp &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          GCP(this)),
+           ps.end());
+
 }
 
 IMP_END_NAMESPACE

@@ -43,14 +43,12 @@ public:
       list.
       @{
   */
-  virtual ParticlesTemp get_input_particles(const ParticleQuad& p) const=0;
-  virtual ContainersTemp get_input_containers(const ParticleQuad& p) const=0;
+  virtual ParticlesTemp get_input_particles(Particle* p) const=0;
+  virtual ContainersTemp get_input_containers(Particle* p) const=0;
   /** @} */
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  virtual void filter_in_place(ParticleQuadsTemp& ps) const {
-    IMP_FAILURE("filter_in_place not overloaded properly.");
-  }
+  virtual void filter_in_place(ParticleQuadsTemp& ps) const;
 #endif
 
   IMP_REF_COUNTED_DESTRUCTOR(QuadFilter);
