@@ -26,21 +26,17 @@ class IMPCOREEXPORT XYZR:
   public XYZ
 {
 public:
-  IMP_DECORATOR_WITH_TRAITS(XYZR, XYZ, FloatKey,
-                       radius_key, get_default_radius_key());
+  IMP_DECORATOR(XYZR, XYZ);
 
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
    */
-  static XYZR setup_particle(Particle *p,
-                     FloatKey radius_key= get_default_radius_key()) {
+  static XYZR setup_particle(Particle *p) {
     if (!XYZ::particle_is_instance(p)) {
       XYZ::setup_particle(p);
     }
-    p->add_attribute(radius_key, 0, false);
-    return XYZR(p, radius_key);
+    p->add_attribute(get_radius_key(), 0, false);
+    return XYZR(p);
   }
 
 
@@ -48,34 +44,27 @@ public:
      The particle should already be an XYZ particle.
      \param[in] p The particle to wrap.
      \param[in] radius The radius to set initially
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
    */
   static XYZR setup_particle(Particle *p,
-                     Float radius,
-                     FloatKey radius_key= get_default_radius_key()) {
-    p->add_attribute(radius_key, radius, false);
-    return XYZR(p, radius_key);
+                     Float radius) {
+    p->add_attribute(get_radius_key(), radius, false);
+    return XYZR(p);
   }
 
   /** Create a decorator using radius_key to store the FloatKey.
      \param[in] p The particle to wrap.
      \param[in] s The sphere to use to set the position and radius
-     \param[in] radius_key The (optional) key name to use.
-     The default is "radius".
    */
   static XYZR setup_particle(Particle *p,
-                     const algebra::SphereD<3> &s,
-                     FloatKey radius_key= get_default_radius_key()) {
+                     const algebra::SphereD<3> &s) {
     XYZ::setup_particle(p, s.get_center());
-    p->add_attribute(radius_key, s.get_radius(), false);
-    return XYZR(p, radius_key);
+    p->add_attribute(get_radius_key(), s.get_radius(), false);
+    return XYZR(p);
   }
 
   //! Check if the particle has the required attributes
-  static bool particle_is_instance(Particle *p,
-                             FloatKey radius_key= get_default_radius_key()) {
-    return p->has_attribute(radius_key);
+  static bool particle_is_instance(Particle *p) {
+    return p->has_attribute(get_radius_key());
   }
   IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
 
@@ -91,15 +80,12 @@ public:
     set_radius(s.get_radius());
   }
   //! Get the default radius key.
-  static FloatKey get_default_radius_key() {
+  static FloatKey get_radius_key() {
     return IMP::internal::xyzr_keys[3];
   }
   void add_to_radius_derivative(double v,
                                 DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_radius_key(), v, d);
-  }
-  static FloatKey get_traits() {
-    return get_default_radius_key();
   }
 };
 
@@ -149,8 +135,7 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
 
     \relatesalso XYZR
  */
-IMPCOREEXPORT algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp& v,
-                             FloatKey rk=XYZR::get_default_radius_key());
+IMPCOREEXPORT algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp& v);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.

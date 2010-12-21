@@ -26,7 +26,7 @@ class TestCPFL(IMP.test.TestCase):
         dist= random.uniform(rmin,rmax+1)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_default_radius_key()
+        rk= IMP.core.XYZR.get_radius_key()
         cpf.set_distance(dist)
         m=IMP.Model()
         ps= self.create_particles_in_box(m, num-2, bb.get_corner(0), bb.get_corner(1))
@@ -79,7 +79,7 @@ class TestCPFL(IMP.test.TestCase):
         dist= random.uniform(rmin,rmax)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_default_radius_key()
+        rk= IMP.core.XYZR.get_radius_key()
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m=IMP.Model()
@@ -101,7 +101,7 @@ class TestCPFL(IMP.test.TestCase):
         dist= random.uniform(0,2)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_default_radius_key()
+        rk= IMP.core.XYZR.get_radius_key()
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m=IMP.Model()
@@ -254,20 +254,20 @@ class TestCPFL(IMP.test.TestCase):
         cps=cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
         self._check_abiclose_pairs(free_ps, free_ps, dist,
-                                   IMP.core.XYZR.get_default_radius_key(), out)
+                                   IMP.core.XYZR.get_radius_key(), out)
         self._check_abiclose_pairs(free_ps, rbpsa, dist,
-                                   IMP.core.XYZR.get_default_radius_key(), out)
+                                   IMP.core.XYZR.get_radius_key(), out)
         self._check_abiclose_pairs(free_ps, rbpsb, dist,
-                                   IMP.core.XYZR.get_default_radius_key(), out)
+                                   IMP.core.XYZR.get_radius_key(), out)
         self._check_abiclose_pairs(rbpsa, rbpsb, dist,
-                                   IMP.core.XYZR.get_default_radius_key(), out)
+                                   IMP.core.XYZR.get_radius_key(), out)
         print "Done with all test "+str(out.get_number_of_particle_pairs())
         ps2= self.create_particles_in_box(m, nump)
         rbpsa2= IMP.Particles()
         rbpsb2= IMP.Particles()
         fps2= IMP.Particles()
         for i in range(0, len(ps2)):
-            ps2[i].add_attribute(IMP.core.XYZR.get_default_radius_key(),
+            ps2[i].add_attribute(IMP.core.XYZR.get_radius_key(),
                                  random.uniform(0,1))
             if i%3==0:
                 rbpsa2.append(ps2[i])
@@ -290,7 +290,7 @@ class TestCPFL(IMP.test.TestCase):
         print "done bipartite " + str(out.get_number_of_particle_pairs())
         print ps
         self._check_biclose_pairs(ps, ps2, dist,
-                                  IMP.core.XYZR.get_default_radius_key(), out)
+                                  IMP.core.XYZR.get_radius_key(), out)
 
 if __name__ == '__main__':
     IMP.test.main()

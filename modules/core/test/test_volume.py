@@ -53,7 +53,7 @@ class Volume(IMP.test.TestCase):
         print d
         ps.append(p)
         d.set_coordinates_are_optimized(True)
-        d.get_particle().set_is_optimized(XYZR.get_default_radius_key(), True)
+        d.get_particle().set_is_optimized(XYZR.get_radius_key(), True)
         sc= ListSingletonContainer(ps)
         vr= VolumeRestraint(Harmonic(0,.001), sc, 5**3*3.1415*4.0/3.0*len(ps))
         m.add_restraint(vr)

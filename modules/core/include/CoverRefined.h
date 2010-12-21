@@ -42,14 +42,11 @@ class XYZR;
 class IMPCOREEXPORT CoverRefined: public SingletonModifier
 {
   IMP::internal::OwnerPointer<Refiner> refiner_;
-  FloatKey rk_;
   Float slack_;
 public:
   //! Create with the given refiner and radius key
   /** Slack is the amount added to the radius.*/
   CoverRefined(Refiner *ref,
-               FloatKey rk
-               =XYZR::get_default_radius_key(),
                Float slack=0);
 
   //! Set how nmuch extra to add to the radius.

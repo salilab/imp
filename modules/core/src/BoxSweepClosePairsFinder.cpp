@@ -57,7 +57,7 @@ namespace {
     boxes.resize(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
       Float r= distance/2.0;
-      r+= ps[i]->get_value(XYZR::get_default_radius_key());
+      r+= ps[i]->get_value(XYZR::get_radius_key());
       IMP_INTERNAL_CHECK(i < boxes.size(), "Off the end");
       boxes[i]=NBLBbox(ps[i], r);
     };
