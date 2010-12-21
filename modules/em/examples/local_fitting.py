@@ -85,7 +85,7 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 num_sol=3
 refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 fitting_sols=IMP.em.local_rigid_fitting(
-   prot_rb,refiner,IMP.core.XYZR.get_radius_key(),
+   prot_rb,refiner,
    IMP.atom.Mass.get_mass_key(),
    dmap,None,num_sol,3,100)
 
