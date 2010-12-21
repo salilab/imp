@@ -6,6 +6,21 @@ import IMP.atom
 import IMP.membrane
 import math
 
+class SameResidueFilter(IMP.PairFilter):
+    def __init__(self):
+        IMP.PairFilter.__init__(self)
+    def get_contains_particle_pair(self, pp):
+        diff= pp[0].get_value(IMP.IntKey("num"))-pp[1].get_value(IMP.IntKey("num"))
+        if diff==0:
+            return True
+        return False
+    def get_input_particles(self, p):
+        return [p]
+    def get_input_containers(self, p):
+        return []
+    def do_show(self, out):
+        pass
+
 def create_representation(tmb,tme):
     m=IMP.Model()
 #   only CA
@@ -108,10 +123,15 @@ def create_restraints(m, chain, tmb, tme):
         dsc= IMP.container.ListSingletonContainer(m)
         for i in range(len(tmb)):
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
-            dsc.add_particles(s.get_selected_particles())
+            ps=s.get_selected_particles()
+            for p in ps:
+                p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
+            dsc.add_particles(ps)
+        dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-        dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+        f= SameResidueFilter()
+        dpc.add_pair_filter(f)
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
