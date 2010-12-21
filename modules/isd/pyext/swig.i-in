@@ -37,15 +37,12 @@ def create_model_and_particles():
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/RegularRepulsiveDistancePairScore.h"
-%include "IMP/atom/LennardJones.h"
-%include "IMP/atom/SmoothingFunction.h"
+
 
 namespace IMP {
   namespace atom {
   /* Python doesn't natively support C++ templates, so you have to manually
      choose which template parameters you want to intantiate a template with.
-   */
-/*   %template(SmoothingFunction) ::IMP::atom::SmoothingFunction;
    */
   }
 }
