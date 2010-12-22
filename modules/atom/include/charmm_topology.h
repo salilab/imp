@@ -106,7 +106,7 @@ public:
   }
 
   //! \return true if the bond contains the named atom.
-  bool contains_atom(std::string name) const {
+  bool get_contains_atom(std::string name) const {
     for (std::vector<CHARMMBondEndpoint>::const_iterator
          it = endpoints_.begin(); it != endpoints_.end(); ++it) {
       if (it->get_atom_name() == name) {

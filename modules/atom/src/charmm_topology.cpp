@@ -32,7 +32,7 @@ namespace {
   public:
     bond_has_atom(std::string name) : name_(name) {}
     bool operator()(const CHARMMBond<D> &bond) {
-      return bond.contains_atom(name_);
+      return bond.get_contains_atom(name_);
     }
   };
 
