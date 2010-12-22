@@ -79,8 +79,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
     def test_bond(self):
         """Check CHARMM bond class"""
         bond = IMP.atom.CHARMMBond2(IMP.Strings(['CA', 'CB']))
-        self.assertEqual(bond.contains_atom('CA'), True)
-        self.assertEqual(bond.contains_atom('N'), False)
+        self.assertEqual(bond.get_contains_atom('CA'), True)
+        self.assertEqual(bond.get_contains_atom('N'), False)
         self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'CA')
 
     def test_add_bond(self):
@@ -97,10 +97,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_number_of_dihedrals(), 1)
         res.add_improper(atoms)
         self.assertEqual(res.get_number_of_impropers(), 1)
-        self.assertEqual(res.get_bond(0).contains_atom('CA'), True)
-        self.assertEqual(res.get_angle(0).contains_atom('N'), True)
-        self.assertEqual(res.get_dihedral(0).contains_atom('O'), True)
-        self.assertEqual(res.get_improper(0).contains_atom('O'), True)
+        self.assertEqual(res.get_bond(0).get_contains_atom('CA'), True)
+        self.assertEqual(res.get_angle(0).get_contains_atom('N'), True)
+        self.assertEqual(res.get_dihedral(0).get_contains_atom('O'), True)
+        self.assertEqual(res.get_improper(0).get_contains_atom('O'), True)
 
     def test_patch(self):
         """Check the CHARMM patch class"""
