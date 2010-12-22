@@ -57,7 +57,7 @@ IMP_END_NAMESPACE
                                                            true);       \
   }
 
-#ifdef __GNU__
+#ifdef __GNUC__
 #define IMP_DEPRECATED_WARN __attribute__ ((deprecated))
 #else
 #define IMP_DEPRECATED_WARN
