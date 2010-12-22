@@ -63,22 +63,19 @@ class StereoPairFilterTests(IMP.test.TestCase):
         pf.set_angles(angles)
         pf.set_dihedrals(dihedrals)
 
-        # If the pair is not bonded, output == input
-        self.assertInputParticlesEqual(pf, [ps[0], ps[9]], [ps[0], ps[9]])
-        # If the pair is bonded, output should also contain the bond particle
-        self.assertInputParticlesEqual(pf, [ps[0], ps[1]],
-                                       [ps[0], ps[1], bonds[0]])
-        self.assertInputParticlesEqual(pf, [ps[1], ps[3]],
-                                       [ps[1], ps[3], angles[0]])
-        self.assertInputParticlesEqual(pf, [ps[4], ps[7]],
-                                       [ps[4], ps[7], dihedrals[0]])
+        # If the atom is not bonded to anything, output == input
+        self.assertInputParticlesEqual(pf, ps[8], [ps[8]])
+        # If the atom is bonded, output should also contain the bond particle(s)
+        self.assertInputParticlesEqual(pf, ps[0], [ps[0], bonds[0]])
+        self.assertInputParticlesEqual(pf, ps[1], [ps[1], bonds[0], angles[0]])
+        self.assertInputParticlesEqual(pf, ps[4], [ps[4], dihedrals[0]])
         # Particles within an angle/dihedral (but not the 1-3 or 1-4 pairs)
         # don't count as bonded
-        self.assertInputParticlesEqual(pf, [ps[1], ps[2]], [ps[1], ps[2]])
-        self.assertInputParticlesEqual(pf, [ps[4], ps[6]], [ps[4], ps[6]])
+        self.assertInputParticlesEqual(pf, ps[2], [ps[2]])
+        self.assertInputParticlesEqual(pf, ps[5], [ps[5]])
 
-    def assertInputParticlesEqual(self, pf, inps, exp_outps):
-        outps = pf.get_input_particles(IMP.ParticlePair(inps[0], inps[1]))
+    def assertInputParticlesEqual(self, pf, inp, exp_outps):
+        outps = pf.get_input_particles(inp)
         self.assertEqual(len(outps), len(exp_outps))
         for a, b in zip(outps, exp_outps):
             self.assertEqual(a, b)
