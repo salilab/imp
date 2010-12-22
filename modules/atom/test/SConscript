@@ -9,7 +9,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   value_object_exceptions=['ElementTable', 'CHARMMBond2',
                                            'CHARMMBond3', 'CHARMMBond4',
                                            'CHARMMDihedralParametersVector'],
-                  function_name_exceptions=['transform', 'BrownianDynamics.simulate'])
+                  function_name_exceptions=['transform', 'BrownianDynamics.simulate', 'MolecularDynamics.assign_velocities', 'VelocityScalingOptimizerState.rescale_velocities', 'get_all_atom_CHARMM_parameters', 'get_heavy_atom_CHARMM_parameters'])
 
 """
 All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not:
