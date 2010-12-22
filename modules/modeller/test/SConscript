@@ -1,4 +1,7 @@
 Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
-                  cpp_tests= env.IMPModuleGetCPPTests())
+                  cpp_tests= env.IMPModuleGetCPPTests(),
+                  value_object_exceptions=['ModellerRestraints'],
+                  function_name_exceptions=['IMPRestraints.eval',
+                                            'IMPRestraints.indices_to_atoms'])
