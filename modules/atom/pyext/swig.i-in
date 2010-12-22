@@ -80,6 +80,9 @@ IMP_SWIG_VALUE(IMP::atom, CHARMMBondParameters, CHARMMBondParametersList);
 IMP_SWIG_VALUE(IMP::atom, CHARMMDihedralParameters, CHARMMDihedralParametersList);
 IMP_SWIG_VALUE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMBondEndpoint, CHARMMBondEndpoints);
+IMP_SWIG_VALUE(IMP::atom, CHARMMBond, CHARMMBonds);
+IMP_SWIG_VALUE(IMP::atom, CHARMMAngle, CHARMMAngles);
+IMP_SWIG_VALUE(IMP::atom, CHARMMDihedral, CHARMMDihedrals);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
 IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
@@ -222,10 +225,10 @@ namespace IMP {
 
 namespace IMP {
   namespace atom {
-   %template(CHARMMBond2) CHARMMBond<2>;
-   %template(CHARMMBond3) CHARMMBond<3>;
-   %template(CHARMMBond4) CHARMMBond<4>;
    %template(show_molecular_hierarchy) IMP::core::show<IMP::atom::Hierarchy>;
+   %template(CHARMMBond) CHARMMConnection<2>;
+   %template(CHARMMAngle) CHARMMConnection<3>;
+   %template(CHARMMDihedral) CHARMMConnection<4>;
    %template(get_rmsd_cpp) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
    %template(get_native_overlap_cpp) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
   }

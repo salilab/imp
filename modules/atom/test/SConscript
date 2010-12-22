@@ -6,9 +6,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   show_exceptions=['AllMol2Selector', 'AllPDBSelector',
                                    'ChainPDBSelector',
                                    'ElementTable', 'HierarchyVector'],
-                  value_object_exceptions=['ElementTable', 'CHARMMBond2',
-                                           'CHARMMBond3', 'CHARMMBond4',
-                                           'CHARMMDihedralParametersVector'],
+                  value_object_exceptions=['ElementTable'],
                   function_name_exceptions=['transform', 'BrownianDynamics.simulate', 'MolecularDynamics.assign_velocities', 'VelocityScalingOptimizerState.rescale_velocities', 'get_all_atom_CHARMM_parameters', 'get_heavy_atom_CHARMM_parameters'])
 
 """

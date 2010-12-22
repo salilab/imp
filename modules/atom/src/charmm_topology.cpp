@@ -31,7 +31,7 @@ namespace {
     std::string name_;
   public:
     bond_has_atom(std::string name) : name_(name) {}
-    bool operator()(const CHARMMBond<D> &bond) {
+    bool operator()(const CHARMMConnection<D> &bond) {
       return bond.get_contains_atom(name_);
     }
   };
@@ -148,7 +148,7 @@ namespace {
 
   template <unsigned int D>
   CHARMMResidueTopology *get_two_patch_residue_for_bond(
-                                 const CHARMMBond<D> &bond,
+                                 const CHARMMConnection<D> &bond,
                                  CHARMMResidueTopology *res1,
                                  CHARMMResidueTopology *res2)
   {
@@ -165,7 +165,7 @@ namespace {
   }
 
   template <unsigned int D>
-  CHARMMBond<D> handle_two_patch_bond(const CHARMMBond<D> &bond,
+  CHARMMConnection<D> handle_two_patch_bond(const CHARMMConnection<D> &bond,
                                  CHARMMResidueTopology *res1,
                                  CHARMMResidueTopology *res2,
                                  CHARMMResidueTopology *first_res)
@@ -183,7 +183,7 @@ namespace {
         endpoints.push_back(CHARMMBondEndpoint(name, res2));
       }
     }
-    return CHARMMBond<D>(endpoints);
+    return CHARMMConnection<D>(endpoints);
   }
 
 }
