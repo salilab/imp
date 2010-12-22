@@ -22,6 +22,8 @@ if __name__ == '__main__':
 
     import FileBasedGrid
     import logfile
+
+    import shared_functions as sf
     
     log_output = True
 
@@ -50,7 +52,7 @@ if __name__ == '__main__':
 
     if log_output:
         filename = temp_path + '/%d.log' % tid
-        log = logfile(filename)
+        log = logfile.logfile(filename)
         sys.stdout = log
 
     handler = FileBasedGrid.FileBasedRemoteObjectHandler(

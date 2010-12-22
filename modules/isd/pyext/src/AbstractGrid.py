@@ -300,6 +300,7 @@ class AbstractGrid(Thread):
             for f in filelist:
                 
                 folder, pattern = os.path.split(f)
+                if folder=='': folder = './'
                 for root,useless,filematch in os.walk(folder):
                     
                     for file in filematch:

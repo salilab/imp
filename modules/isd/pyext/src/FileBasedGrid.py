@@ -544,12 +544,15 @@ class FileBasedGrid(AbstractGrid):
         AbstractGrid.__init__(self, hosts, src_path, display, X11_delay, debug, verbose, shared_temp_path=True)
 
         #copy all files in current dir to remote host.
+        if self.debug: print "initialising"
         self.initialise(src_path, ['filebased_loader','ro',
                                    'FileBasedGrid','OrderedDict'])
 
 
+        if self.debug: print "setting filebased_loader"
         self.set_loader(src_path, 'filebased_loader')
         
+        if self.debug: print "creating communicator"
         self.create_communicator(nfs_care) 
         
         self.results = {}        
@@ -590,16 +593,30 @@ class FileBasedGrid(AbstractGrid):
         
         """
 
+        if self.debug: 
+            try:
+                print "publishing instance %s" % \
+                    instance.__class__.__name__
+            except:
+                print "publishing instance"
+
+        if self.debug: print " creating sevice id"
         service_id = self.create_service_id(instance)
     
         for host in self.hosts:
 
+            if self.debug: print " host ",host.name
+
+            if self.debug: print "  creating proxy"
             proxy = self.create_proxy(instance, host, self.display, daemon = 1)
             
+            if self.debug: print "  creating FileBasedServer"
             server = FileBasedServer(proxy, service_id, host, self.debug)
 
+            if self.debug: print "  proxy._get_url()"
             server.url = proxy._get_url()
 
+            if self.debug: print "  adding server"
             self.add_server(server)
 
             if self.display and self.X11_delay is not None:
@@ -613,8 +630,10 @@ class FileBasedGrid(AbstractGrid):
         
         """
 
+        if self.debug: print "   creating handler"
         handler_tid = self.create_handler(instance, host, display, daemon)
 
+        if self.debug: print "   creating proxy"
         proxy = FileBasedRemoteObject(instance, handler_tid, manager = self)
 
         if self.debug:
