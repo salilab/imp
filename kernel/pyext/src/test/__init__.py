@@ -281,7 +281,7 @@ class TestCase(unittest.TestCase):
                        and name not in eval(module.__name__+"._plural_types"):
                     bad.append(name)
         self.assertEquals(len(bad), 0,
-                          "All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
+                          "All IMP classes should be labeled values or as objects to get memory management correct in python. The following are not:\n%s\nPlease add an IMP_SWIG_OBJECT or IMP_SWIG_VALUE call to the python wrapper, or if the class has a good reason to be neither, add the name to the value_object_exceptions list in the IMPModuleTest call." \
                           % (str(bad)))
 
     def assertClassNames(self, module, exceptions):
