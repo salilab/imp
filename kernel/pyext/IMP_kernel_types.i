@@ -109,16 +109,16 @@
   $input = IMP::internal::swig::Convert<Namespace::PluralName >::create_python_object($1_name, $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
  }
 %typemap(in) Namespace::PluralName* {
-  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or const ref " #PluralName);
+  collections_like_##PluralName##_must_be_passed_by_value_or_const_ref;
  }
 %typemap(out) Namespace::PluralName* {
-  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret" #PluralName);
+  collections_like_##PluralName##_must_be_returned_by_value_or_const_ref;
  }
 %typemap(in) Namespace::PluralName& {
-  BOOST_STATIC_ASSERT(0&&"Collections must be passed by value or by const ret" #PluralName);
+  collections_like_##PluralName##_must_be_passed_by_value_or_const_ref;
  }
 %typemap(out) Namespace::PluralName& {
-  BOOST_STATIC_ASSERT(0&&"Collections must be returned by value or by const ret" #PluralName);
+  collections_like_##PluralName##_must_be_returned_by_value_or_const_ref;
  }
 %enddef
 
@@ -130,16 +130,16 @@
 
 %define IMP_SWIG_OBJECT_CHECKS(Namespace, Name)
 %typemap(out) Namespace::Name& {
-  BOOST_STATIC_ASSERT(0&&"Objects like "#Namespace"::"#Name" must be returned by pointer ref" #Name);
+  objects_like_##Name##_must_be_returned_by_pointer;
  }
 %typemap(in) Namespace::Name& {
-  BOOST_STATIC_ASSERT(0&&"Objects like "#Namespace"::"#Name" must be passed by pointer ref" #Name);
+  objects_like_##Name##_must_be_passed_by_pointer;
   }
 %typemap(out) Namespace::Name const& {
-  BOOST_STATIC_ASSERT(0&&"Objects like "#Namespace"::"#Name" must be returned by pointer ref" #Name);
+  objects_like_##Name##_must_be_returned_by_pointer;
  }
 %typemap(in) Namespace::Name const& {
-  BOOST_STATIC_ASSERT(0&&"Objects like "#Namespace"::"#Name" must be passed by pointer ref" #Name);
+  objects_like_##Name##_must_be_passed_by_pointer;
   }
 %pythoncode %{
 _object_types.append(#Name)
@@ -151,10 +151,10 @@ _object_types.append(#Name)
 
 %define IMP_SWIG_VALUE_CHECKS_BASE(Namespace, Name)
 %typemap(out) Namespace::Name& {
-  BOOST_STATIC_ASSERT(0&&"Values like "#Namespace"::"#Name" must be returned by value or const ref" #Name);
+  values_like_##Name##_must_be_returned_by_value_or_const_ref;
  }
 %typemap(in) Namespace::Name& {
-  BOOST_STATIC_ASSERT(0&&"Values like "#Namespace"::"#Name" must be passed by value or const ref" #Name);
+  values_like_##Name##_must_be_passed_by_value_or_const_ref;
   }
 %enddef
 
