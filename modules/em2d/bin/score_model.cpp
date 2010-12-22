@@ -190,11 +190,6 @@ int main(int argc, char **argv) {
     std::ostringstream oss;
     oss << "subject-" << i <<std::endl;
     subjects[i]->set_name(oss.str());
-//    IMP_NEW(em2d::Image,img,());
-//    em2d::extend_borders(subjects[i]->get_data(),img->get_data(),20);
-//    std::ostringstream oss2;
-//    oss2 << "subject-ext-" << i << ".spi";
-//    img->write(oss2.str(),srw);
   }
 
   int rows=subjects[0]->get_header().get_number_of_rows();
@@ -221,8 +216,8 @@ int main(int argc, char **argv) {
 
     // Generate evenly distributed projections
     em2d::RegistrationResults evenly_regs=
-          em2d::evenly_distributed_registration_results(n_projections);
-    projections= em2d::generate_projections(ps,evenly_regs,rows,cols,
+          em2d::get_evenly_distributed_registration_results(n_projections);
+    projections= em2d::get_projections(ps,evenly_regs,rows,cols,
                                                 resolution,apix,srw);
     for (unsigned int i=0;i<projections.size();++i) {
       std::ostringstream oss;
@@ -232,7 +227,7 @@ int main(int argc, char **argv) {
     if(save_images) {
       IMP_LOG(IMP::TERSE,"Saving "
               << n_projections << " projections " <<  std::endl);
-      projs_names = em2d::generate_filenames(n_projections,"proj","spi");
+      projs_names = em2d::create_filenames(n_projections,"proj","spi");
       em2d::save_images(projections,projs_names,srw);
     }
   } else if(opt[0]=="read") {
@@ -254,7 +249,7 @@ int main(int argc, char **argv) {
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
   em2d::ProjectionFinder finder;
-  finder.initialize(apix,
+  finder.setup(apix,
                     resolution,
                     coarse_method,
                     save_images,
@@ -325,7 +320,7 @@ int main(int argc, char **argv) {
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
     *std::cin.tie() <<c<<
-            em2d::ccc_to_em2d(registration_results[i].get_ccc());
+            em2d::get_ccc_to_em2d(registration_results[i].get_ccc());
   }
   *std::cin.tie() << std::endl;
   // Benchmark
@@ -339,8 +334,10 @@ int main(int argc, char **argv) {
     *std::cin.tie() << "# Benchmark ... " << std::endl;
     *std::cin.tie() << "# N.projections Score Av.Rot.Error  Av.Shift.Error"
                     << std::endl;
-    double rot_error=average_rotation_error(correct_RRs,registration_results);
-    double shift_error =average_shift_error(correct_RRs,registration_results);
+    double rot_error=get_average_rotation_error(correct_RRs,
+                                                registration_results);
+    double shift_error=get_average_shift_error(correct_RRs,
+                                               registration_results);
     char c='|';
     *std::cin.tie() << n_projections <<c<< Score
                     <<c<< rot_error <<c<< shift_error << std::endl;
