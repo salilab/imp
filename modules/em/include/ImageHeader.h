@@ -326,32 +326,32 @@ public:
     header_.fFlag = 2;
     header_.fPhi2 = Phi; header_.fTheta2 = Theta; header_.fPsi2 = Psi;
   }
-  void set_Phi(float value) { header_.fIangle = 1; header_.fPhi=value; }
-  float get_Phi() const { return header_.fPhi; }
+  void set_phi(float value) { header_.fIangle = 1; header_.fPhi=value; }
+  float get_phi() const { return header_.fPhi; }
 
-  void set_Theta(float value) { header_.fIangle = 1; header_.fTheta=value; }
-  float get_Theta() const { return header_.fTheta; }
+  void set_theta(float value) { header_.fIangle = 1; header_.fTheta=value; }
+  float get_theta() const { return header_.fTheta; }
 
-  void set_Psi(float value) { header_.fIangle = 1; header_.fPsi=value; }
-  float get_Psi() const { return header_.fPsi; }
+  void set_psi(float value) { header_.fIangle = 1; header_.fPsi=value; }
+  float get_psi() const { return header_.fPsi; }
 
-  void set_Phi1(float value) { header_.fFlag = 1.f; header_.fPhi1=value; }
-  float get_Phi1() const { return header_.fPhi1; }
+  void set_phi1(float value) { header_.fFlag = 1.f; header_.fPhi1=value; }
+  float get_phi1() const { return header_.fPhi1; }
 
-  void set_Theta1(float value) { header_.fFlag = 1.f; header_.fTheta1=value; }
-  float get_Theta1() const { return header_.fTheta1; }
+  void set_theta1(float value) { header_.fFlag = 1.f; header_.fTheta1=value; }
+  float get_theta1() const { return header_.fTheta1; }
 
-  void set_Psi1(float value) { header_.fFlag = 1.f; header_.fPsi1=value; }
-  float get_Psi1() const { return header_.fPsi1; }
+  void set_psi1(float value) { header_.fFlag = 1.f; header_.fPsi1=value; }
+  float get_psi1() const { return header_.fPsi1; }
 
-  void set_Phi2(float value) { header_.fFlag = 2.f; header_.fPhi2=value; }
-  float get_Phi2() const { return header_.fPhi2; }
+  void set_phi2(float value) { header_.fFlag = 2.f; header_.fPhi2=value; }
+  float get_phi2() const { return header_.fPhi2; }
 
-  void set_Theta2(float value) { header_.fFlag = 2.f; header_.fTheta2=value; }
-  float get_Theta2() const { return header_.fTheta2; }
+  void set_theta2(float value) { header_.fFlag = 2.f; header_.fTheta2=value; }
+  float get_theta2() const { return header_.fTheta2; }
 
-  void set_Psi2(float value) { header_.fFlag = 2.f; header_.fPsi2=value; }
-  float get_Psi2() const { return header_.fPsi2; }
+  void set_psi2(float value) { header_.fFlag = 2.f; header_.fPsi2=value; }
+  float get_psi2() const { return header_.fPsi2; }
 
 
   // Origin offsets
