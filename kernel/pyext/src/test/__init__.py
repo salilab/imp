@@ -374,6 +374,10 @@ class TestCase(unittest.TestCase):
         all= dir(modulename)
         not_found=[]
         for f in all:
+            # Exclude Python-only classes; they are all showable
+            if not eval('hasattr(%s.%s, "__swig_destroy__")' \
+                        % (modulename.__name__, f)):
+                continue
             if self._get_type(modulename.__name__, f) == types.TypeType\
                    and not f.startswith("_") \
                    and not f.endswith("_swigregister")\
