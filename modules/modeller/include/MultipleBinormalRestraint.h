@@ -64,7 +64,15 @@ public:
   void set_standard_deviations(FloatPair stdevs) {
     stdevs_ = stdevs;
   }
+  IMP_SHOWABLE_INLINE(BinormalTerm,
+                      {out << "correlation: " << correlation_
+                       << "; weight: " << weight_
+                       << "; means: " << means_.first << ", " << means_.second
+                       << "; standard deviations: " << stdevs_.first << ", "
+                       << stdevs_.second;});
 };
+IMP_OUTPUT_OPERATOR(BinormalTerm);
+IMP_VALUES(BinormalTerm, BinormalTermList);
 
 IMPMODELLER_END_NAMESPACE
 

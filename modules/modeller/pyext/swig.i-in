@@ -1,3 +1,4 @@
+IMP_SWIG_VALUE(IMP::modeller, BinormalTerm, BinormalTermList);
 IMP_SWIG_OBJECT(IMP::modeller, MultipleBinormalRestraint, MultipleBinormalRestraints);
 
 /* Include top-level Python interface */
