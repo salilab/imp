@@ -37,6 +37,8 @@ IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
 IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
+IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
+IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
@@ -68,6 +70,7 @@ IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
 IMP_SWIG_VALUE(IMP::atom, RMSDCalculator, RMSDCalculators);
 IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
+IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 
 IMP_SWIG_VALUE(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
