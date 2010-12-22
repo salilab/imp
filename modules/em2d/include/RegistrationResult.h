@@ -94,7 +94,7 @@ public:
   void add_in_plane_transformation(algebra::Transformation2D t);
 
 
-  void show(std::ostream& out) const;
+  void show(std::ostream& out=std::cout) const;
 
   //! Writes a parseable result
   void write(std::ostream& out = std::cout) const;

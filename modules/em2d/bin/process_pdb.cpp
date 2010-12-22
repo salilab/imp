@@ -143,7 +143,7 @@ em2d::RegistrationResults get_registration_values(
   if(distribution_type == "unif" ) {
     // Generate uniform distribution of projection directions
     registration_values =
-        em2d::evenly_distributed_registration_results(n_projections);
+        em2d::get_evenly_distributed_registration_results(n_projections);
   } else if(distribution_type == "rand" ) {
     // Generate random distribution of projections
     registration_values=em2d::get_random_registration_results(n_projections);
@@ -185,8 +185,8 @@ int main(int argc, char **argv) {
                    "additional parameters"  << std::endl;
       std::exit(0);
     }
-    double apix       = vm["apix"].as<double>();
-    str fn_map       = vm["map"].as<str>();
+    double apix= vm["apix"].as<double>();
+    str fn_map= vm["map"].as<str>();
     std::cout << "Generating map ... " << fn_map << std::endl;
     em::SampledDensityMap *map= new em::SampledDensityMap(sps,resolution,apix);
     em::write_map(map,fn_map.c_str(),mrw);
@@ -207,14 +207,19 @@ int main(int argc, char **argv) {
     digest_parameter("proj_dist",vm,opt);
     em2d::RegistrationResults registration_values=
                             get_registration_values(opt,np);
-    em2d::Images projections = em2d::generate_projections(
-                     sps,registration_values,rows,cols,resolution,apix,srw);
+    em2d::Images projections = em2d::get_projections(sps,
+                                                     registration_values,
+                                                     rows,
+                                                     cols,
+                                                     resolution,
+                                                     apix,
+                                                     srw);
     // Normalize and add noise if requested
     np = registration_values.size(); // for the case when the values are read
     if(vm.count("SNR")) {
       double SNR = vm["SNR"].as<double>();
       for (unsigned int i=0;i<np;++i) {
-        em2d::normalize(projections[i]);
+        em2d::do_normalize(projections[i]);
         // Noise added of mean = 0  and stddev = stddev_signal / sqrt(SNR)
         // As the image is normalized, stddev_signal is 1.0
         em2d::add_noise(
@@ -226,7 +231,7 @@ int main(int argc, char **argv) {
     if(digest_parameter("proj_names",vm,opt)) {
       proj_names = em2d::read_selection_file(opt[0]);
     } else {
-      proj_names = em2d::generate_filenames(np,"proj","spi");
+      proj_names = em2d::create_filenames(np,"proj","spi");
     }
     for (unsigned int i=0;i<np;++i) {
       projections[i]->write(proj_names[i],srw);
@@ -259,14 +264,14 @@ int main(int argc, char **argv) {
     if(vm.count("proj_names")) {
       proj_names=em2d::read_selection_file(vm["proj_names"].as<IMP::String>());
     } else {
-      proj_names = em2d::generate_filenames(np,"proj","pdb");
+      proj_names = em2d::create_filenames(np,"proj","pdb");
     }
     for(unsigned int i=0;i<np;++i) {
       // To project vectors here, the shift is understood a as translation
-      alg::Vector3D translation = registration_values[i].get_shift3D();
+      alg::Vector3D translation = registration_values[i].get_shift_3d();
       alg::Rotation3D R = registration_values[i].get_rotation();
       alg::Vector2Ds projected_points=
-                em2d::project_vectors(pdb_atoms,R,translation,centroid);
+                em2d::do_project_vectors(pdb_atoms,R,translation,centroid);
       // Save projection
       em2d::Vector2Ds_to_pdb(projected_points,proj_names[i]);
     }
