@@ -195,10 +195,10 @@ public:
 
       \throws IndexException if no parameters are present.
    */
-  std::vector<CHARMMDihedralParameters> get_dihedral_parameters(
+  CHARMMDihedralParametersList get_dihedral_parameters(
              std::string type1, std::string type2, std::string type3,
              std::string type4) const {
-    std::vector<CHARMMDihedralParameters> param;
+    CHARMMDihedralParametersList param;
     internal::CHARMMDihedralNames types = internal::CHARMMDihedralNames(
                     type1, type2, type3, type4);
     // Get the first match, using wildcards
