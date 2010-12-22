@@ -6,7 +6,9 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   show_exceptions=['AllMol2Selector', 'AllPDBSelector',
                                    'ChainPDBSelector',
                                    'ElementTable', 'HierarchyVector'],
-                  value_object_exceptions=['ElementTable'],
+                  value_object_exceptions=['ElementTable', 'CHARMMBond2',
+                                           'CHARMMBond3', 'CHARMMBond4',
+                                           'CHARMMDihedralParametersVector'],
                   function_name_exceptions=['transform', 'BrownianDynamics.simulate'])
 
 """
