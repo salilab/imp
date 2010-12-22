@@ -59,7 +59,7 @@ public:
     \param[in] n_projections number of projections to generate to perform
                the initial coarse registration.
   */
-  void initialize(double apix,double resolution =1,
+  void setup(double apix,double resolution =1,
                   unsigned n_projections=20,
                  unsigned int coarse_registration_method = 1,
                  bool save_match_images =false,
@@ -69,7 +69,7 @@ public:
 
   apix_ =apix;
   resolution_ = resolution;
-  finder_.initialize(apix_, resolution_ , coarse_registration_method,
+  finder_.setup(apix_, resolution_ , coarse_registration_method,
       save_match_images ,optimization_steps,
       simplex_initial_length,simplex_minimum_size);
   n_projections_for_coarse_registration_ = n_projections;

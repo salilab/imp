@@ -21,7 +21,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-void wiener_filter_2D(algebra::Matrix2D_d &m,
+void get_wiener_filter_2d(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
                       const unsigned int kernel_rows,
                       const unsigned int kernel_cols) {
@@ -63,18 +63,26 @@ void wiener_filter_2D(algebra::Matrix2D_d &m,
   }
   // Transfer the pixels that could not be filtered
   for (unsigned int j=0;j<cols;++j) {
-    for (int i=0;i<k_init[0];++i) { result(i,j)=m(i,j); }
-    for (unsigned int i=rows-k_end[0]+1;i<rows;++i) { result(i,j)=m(i,j); }
+    for (int i=0;i<k_init[0];++i) {
+      result(i,j)=m(i,j);
+    }
+    for (unsigned int i=rows-k_end[0]+1;i<rows;++i) {
+      result(i,j)=m(i,j);
+    }
   }
   for (unsigned int i=0;i<rows;++i) {
-    for (int j=0;j<k_init[1];++j) { result(i,j)=m(i,j); }
-    for (unsigned int j=cols-k_end[1]+1;j<cols;++j) { result(i,j)=m(i,j); }
+    for (int j=0;j<k_init[1];++j) {
+      result(i,j)=m(i,j);
+    }
+    for (unsigned int j=cols-k_end[1]+1;j<cols;++j) {
+      result(i,j)=m(i,j);
+     }
   }
   // restore origin and assign the same to the result
   m.set_start(origin);  result.set_start(origin);
 }
 
-void morphological_reconstruction(algebra::Matrix2D_d &mask,
+void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
                       algebra::Matrix2D_d &marker,
                       int neighbors_mode) {
 
@@ -93,7 +101,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
   for (unsigned int i=0;i<rows;++i) {
     for (unsigned int j=0;j<cols;++j) {
       Pixel p(i,j); // current pixel
-      Pixels neighbors=compute_neighbors_2D(p,mask,neighbors_mode,1);
+      Pixels neighbors=get_neighbors2d(p,mask,neighbors_mode,1);
       neighbors.push_back(p);
       // Compute maximum
       double max_val = marker(neighbors[0]);
@@ -110,7 +118,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
   for (int i=rows-1;i>=0;--i) {
     for (int j=cols-1;j>=0;--j) {
       Pixel p(i,j); // current pixel
-      Pixels neighbors =compute_neighbors_2D(p,mask,neighbors_mode,-1);
+      Pixels neighbors =get_neighbors2d(p,mask,neighbors_mode,-1);
       // Compute maximum
       double pixel_val = marker(p);
       double max_val = pixel_val;
@@ -131,7 +139,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
   while(propagated_pixels.empty() == false ) {
     Pixel p = propagated_pixels.front();
     propagated_pixels.pop();
-    Pixels neighbors=compute_neighbors_2D(p,mask,neighbors_mode,0);
+    Pixels neighbors=get_neighbors2d(p,mask,neighbors_mode,0);
     // Reconstruction and propagation
     for (unsigned int k=0;k<neighbors.size();++k) {
       if(  (marker(neighbors[k]) < marker(p)) &&
@@ -147,7 +155,7 @@ void morphological_reconstruction(algebra::Matrix2D_d &mask,
 }
 
 
-Pixels compute_neighbors_2D(const Pixel &p,const algebra::Matrix2D_d &m,
+Pixels get_neighbors2d(const Pixel &p,const algebra::Matrix2D_d &m,
                             int mode,int sign,bool cycle) {
   Pixels neighbors,final_neighbors;
   switch(mode) {
@@ -227,7 +235,7 @@ Pixels compute_neighbors_2D(const Pixel &p,const algebra::Matrix2D_d &m,
 
 
 
-void fill_holes(algebra::Matrix2D_d &m,
+void do_fillholes(algebra::Matrix2D_d &m,
                 algebra::Matrix2D_d &result,double h) {
   algebra::Matrix2D_d  mask;
   double max_m = m.compute_max();
@@ -235,24 +243,24 @@ void fill_holes(algebra::Matrix2D_d &m,
   mask = max_plus_h - m;
   // The result is the marker. It should be max_plus_m - m - h, but is the same
   result = max_m - m;
-  morphological_reconstruction(mask,result,8);
+  do_morphological_reconstruction(mask,result,8);
   result = max_plus_h - result;
 }
 
 
 void get_domes(algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h) {
   result = m - h;
-  morphological_reconstruction(m,result,8);
+  do_morphological_reconstruction(m,result,8);
   result = m - result;
 
 }
 
 
-void preprocess_em2d(algebra::Matrix2D_d &m,
+void do_preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs) {
   m.normalize();
-  fill_holes(m,result,1.0); // no standard devs. Fill holes of depth 1
+  do_fillholes(m,result,1.0); // no standard devs. Fill holes of depth 1
   result.normalize();
   em::FilterByThreshold<double,2> thres;
   thres.set_parameters(0,0); // Threshold 0, clean everything below
@@ -262,7 +270,7 @@ void preprocess_em2d(algebra::Matrix2D_d &m,
 }
 
 
-void dilation(const algebra::Matrix2D_d &m,
+void do_dilation(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result) {
   // Prepare the kernel
@@ -289,7 +297,7 @@ void dilation(const algebra::Matrix2D_d &m,
 }
 
 
-void erosion(const algebra::Matrix2D_d &m,
+void do_erosion(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &kernel,
              algebra::Matrix2D_d &result) {
   // Prepare the kernel
@@ -316,20 +324,20 @@ void erosion(const algebra::Matrix2D_d &m,
 }
 
 
-void opening(const algebra::Matrix2D_d &m,
+void do_opening(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &kernel,
              algebra::Matrix2D_d &result) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
             (m.get_number_of_columns()==result.get_number_of_columns()),
-          "em2d::opening: Matrices have different size.");
+          "em2d::do_opening: Matrices have different size.");
 
   algebra::Matrix2D_d temp(m);
-  erosion(m,kernel,temp);
-  dilation(temp,kernel,result);
+  do_erosion(m,kernel,temp);
+  do_dilation(temp,kernel,result);
 }
 
 
-void closing(const algebra::Matrix2D_d &m,
+void do_closing(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &kernel,
              algebra::Matrix2D_d &result) {
 
@@ -338,17 +346,17 @@ void closing(const algebra::Matrix2D_d &m,
                   "em2d::colsing: Matrices have different size.");
 
   algebra::Matrix2D_d temp(m);
-  dilation(m,kernel,temp);
-  erosion(temp,kernel,result);
+  do_dilation(m,kernel,temp);
+  do_erosion(temp,kernel,result);
 }
 
 
-void thresholding(const algebra::Matrix2D_d &m,
+void do_thresholding(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &result,
              double threshold,int mode) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2d::thresholding: Matrices have different size.");
+                  "em2d::do_thresholding: Matrices have different size.");
 
 
   for(unsigned int i=0;i<m.num_elements();++i) {
@@ -361,11 +369,11 @@ void thresholding(const algebra::Matrix2D_d &m,
   }
 }
 
-void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
+void do_masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
           const algebra::Matrix2D<int> &mask,double value) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2d::masking: Matrices have different size.");
+                  "em2d::do_masking: Matrices have different size.");
 
   for (unsigned int i=0;i<m.num_elements();++i) {
     if(mask.data()[i]==1) {
@@ -390,7 +398,7 @@ void masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
   \param[in] dy - step for y
   \param[in] ang - parameter for weight diffusion and edge detection (90-0)
 */
-void diffusion_filtering_partial_der_t(
+void get_diffusion_filtered_partial_der_t(
                       const algebra::Matrix2D_d &I,
                       algebra::Matrix2D_d &It,
                        double dx, double dy, double ang) {
@@ -406,7 +414,7 @@ void diffusion_filtering_partial_der_t(
   for (int i=init_y;i<=end_y;++i) {
     for (int j=init_x;j<=end_x;++j) {
       Pixel p(i,j);
-      Pixels ns = compute_neighbors_2D(p,I,8,0,true);
+      Pixels ns = get_neighbors2d(p,I,8,0,true);
       // partial derivatives of I(x,y) using finite differences
       Ix = (I(ns[2])-I(p))/dx;
       Iy = (I(ns[4])-I(p))/dy;
@@ -422,7 +430,7 @@ void diffusion_filtering_partial_der_t(
 
 
 
-void diffusion_filtering(const algebra::Matrix2D_d &I,
+void get_diffusion_filtered(const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
               double beta,
               double pixelsize,
@@ -443,9 +451,9 @@ void diffusion_filtering(const algebra::Matrix2D_d &I,
 
   // Integrate over time a number of steps
   for (unsigned t=0;t<t_steps;++t) {
-//    diffusion_filtering_partial_der_t(result,deriv_t,deriv_x,deriv_y,h,
+//    get_diffusion_filtered_partial_der_t(result,deriv_t,deriv_x,deriv_y,h,
 //                                      dx,dy,ang);
-    diffusion_filtering_partial_der_t(result,deriv_t,dx,dy,ang);
+    get_diffusion_filtered_partial_der_t(result,deriv_t,dx,dy,ang);
     for (int i=init_y;i<=end_y;++i) {
       for (int j=init_x;j<=end_x;++j) {
         result(i,j) += deriv_t(i,j)*dt;
@@ -455,14 +463,14 @@ void diffusion_filtering(const algebra::Matrix2D_d &I,
 }
 
 
-void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
+void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
                             const algebra::Matrix2D_d &greyscale,
                             algebra::Matrix2D_d &kernel) {
 
 
   IMP_USAGE_CHECK((m.get_number_of_rows()==greyscale.get_number_of_rows()) &&
             (m.get_number_of_columns()==greyscale.get_number_of_columns()),
-            "em2d::dilate_an_shrink: Matrices have different size.");
+            "em2d::do_dilate_an_shrink: Matrices have different size.");
 
   int background = 0;
   int foreground = 1;
@@ -480,7 +488,7 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
       if (algebra::get_rounded(temp.data()[i])>background) { size_in_pixels++; }
     }
     // Dilate to get a new mask
-    dilation(temp,kernel,mask);
+    do_dilation(temp,kernel,mask);
     // Compute mean of the grayscale inside the mask and its size
     double mean=0.0;
     new_size_in_pixels = 0;
@@ -521,7 +529,7 @@ void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
 }
 
 
-void histogram_stretching(algebra::Matrix2D_d &m,
+void do_histogram_stretching(algebra::Matrix2D_d &m,
                           int boxes,int offset) {
   // Number of possible values for the histogram and maximum value for
   // the stretched image
@@ -592,8 +600,9 @@ Floats get_histogram(const cv::Mat &m, int bins) {
 }
 
 
-void apply_variance_filter(
-            const cv::Mat &input,cv::Mat &filtered,int kernelsize) {
+void apply_variance_filter(const cv::Mat &input,
+                           cv::Mat &filtered,
+                           int kernelsize) {
   // Compute the mean for each value with a filter
   cv::Size ksize(kernelsize,kernelsize);
   cv::Point anchor(-1,-1);
@@ -662,18 +671,17 @@ void add_noise(cv::Mat &v,double op1,double op2, const String &mode, double df)
 }
 
 
-void resample_polar(const cv::Mat &input, cv::Mat &resampled,
+void do_resample_polar(const cv::Mat &input, cv::Mat &resampled,
                     const PolarResamplingParameters &polar_params) {
 
   cv::Mat map_16SC2,map_16UC1;
   // If the resampling parameters are not initialized, build a polar map for
   // the resampling.
-  if(polar_params.get_is_initialized() == false)
-  {
+  if(polar_params.get_is_setup() == false) {
     PolarResamplingParameters p;
-    p.initialize(input.rows,input.cols);
+    p.setup(input.rows,input.cols);
     p.set_estimated_number_of_angles(std::min(input.rows,input.cols));
-    p.build_maps_for_resampling();
+    p.create_maps_for_resampling();
     p.get_resampling_maps(map_16SC2,map_16UC1);
   } else {
     polar_params.get_resampling_maps(map_16SC2,map_16UC1);
@@ -687,7 +695,7 @@ void resample_polar(const cv::Mat &input, cv::Mat &resampled,
 
 
 
-void normalize(cv::Mat &m) {
+void do_normalize(cv::Mat &m) {
   cv::Scalar mean,stddev;
   cv::meanStdDev(m,mean,stddev);
   IMP_LOG(IMP::VERBOSE, "Matrix of mean: " << mean[0] << " stddev "
@@ -718,7 +726,7 @@ void get_transformed(const cv::Mat &input,cv::Mat &transformed,
 
 
 // Using Centered Mat does not allow the first argument to be const.
-void extend_borders(cv::Mat &orig, cv::Mat &dst,unsigned int pix) {
+void do_extend_borders(cv::Mat &orig, cv::Mat &dst,unsigned int pix) {
   dst.create(orig.rows+2*pix,orig.cols+2*pix,orig.type());
   dst.setTo(0.0);
   CenteredMat Orig(orig);

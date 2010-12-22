@@ -106,7 +106,7 @@ int decission_tree(const Pixel &p,
   // Set the values considering the null pixels as background
   int neigh_vals[4];
   for (int i=0;i<4;++i) {
-    if(!neighbors[i].is_null()) {
+    if(!neighbors[i].get_is_null()) {
       neigh_vals[i] = algebra::get_rounded(m(neighbors[i]));
     } else {
       neigh_vals[i] = background;
@@ -167,7 +167,7 @@ void scan_SCT1(const algebra::Matrix2D<T> &m,algebra::Matrix2D<int> &L,
         L(p)=background;
       } else {
         // true neighbors
-        Pixels ns = compute_neighbors_2D(p,m,8,1,false);
+        Pixels ns = get_neighbors2d(p,m,8,1,false);
         // fake neighbors to take into account exceptions
         Pixels neighbors(4);
         Pixel q;q.set_null(true);

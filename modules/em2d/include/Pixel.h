@@ -34,14 +34,14 @@ public:
 
   int operator[](unsigned int i) const {
     IMP_INTERNAL_CHECK((i==0 || i==1), "Invalid component of Pixel requested.");
-    IMP_INTERNAL_CHECK(this->is_null() == false,
+    IMP_INTERNAL_CHECK(this->get_is_null() == false,
                             "Error: Accessing a null pixel.");
     return this->at(i);
   }
 
   int& operator[](unsigned int i) {
     IMP_INTERNAL_CHECK((i==0 || i==1), "Invalid component of Pixel requested.");
-    IMP_INTERNAL_CHECK(this->is_null() == false,
+    IMP_INTERNAL_CHECK(this->get_is_null() == false,
                             "Error: Accessing a null pixel.");
     return this->at(i);
   }
@@ -71,7 +71,7 @@ public:
     null_=q;
   }
 
-  bool is_null() const {
+  bool get_is_null() const {
     return null_;
   }
 private:
@@ -80,7 +80,7 @@ private:
 
 IMP_OUTPUT_OPERATOR(Pixel);
 
-typedef std::vector<Pixel> Pixels;
+IMP_VALUES(Pixel,Pixels);
 
 IMPEM2D_END_NAMESPACE
 

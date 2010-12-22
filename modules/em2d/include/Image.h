@@ -56,18 +56,18 @@ public:
 
   //! Access to the header
   inline em::ImageHeader& get_header() {
-    adjust_header();
+    update_header();
     return header_;
   }
 
-  void resize(int rows,int cols);
+  void set_size(int rows,int cols);
 
   //! Resize to the same size of the parameter image
-  void resize(Image *img);
+  void set_size(Image *img);
 
   //! Adjusts the information of the imager header taking into account the
   //! dimensions of the data and setting the time, date, type, etc ...
-  void adjust_header();
+  void update_header();
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
@@ -80,7 +80,7 @@ public:
   //! when writing)
   void write(String filename, const
                           em2d::ImageReaderWriter<double> &writer) {
-    adjust_header(); // adjust the header to guarantee consistence
+    update_header(); // adjust the header to guarantee consistence
     writer.write(filename,header_,data_);
   }
 
@@ -107,7 +107,7 @@ public:
   }
 
 protected:
-  void resize_data(int rows,int cols);
+  void set_size_data(int rows,int cols);
 
   //! Name of the image. Frequently it will be the name of the file
   String name_;
@@ -146,20 +146,20 @@ IMPEM2DEXPORT void save_images(Images images, const Strings &names,
                              const em2d::ImageReaderWriter<double> &rw);
 
 //! Cross correlation between two images
-IMPEM2DEXPORT double cross_correlation_coefficient(Image *im1,Image *im2);
+IMPEM2DEXPORT double get_cross_correlation_coefficient(Image *im1,Image *im2);
 
 //! Autocorrelation image
-inline void autocorrelation2D(Image *im1,Image *im2) {
-  autocorrelation2D(im1->get_data(),im2->get_data());
+inline void get_autocorrelation2d(Image *im1,Image *im2) {
+  get_autocorrelation2d(im1->get_data(),im2->get_data());
 }
 
 //! Cross correlation between two images
-inline void correlation2D(Image *im1,Image *im2,Image *corr) {
-  correlation2D(im1->get_data(),im2->get_data(),corr->get_data());
+inline void get_correlation2d(Image *im1,Image *im2,Image *corr) {
+  get_correlation2d(im1->get_data(),im2->get_data(),corr->get_data());
 }
 
 
-IMPEM2DEXPORT void normalize(em2d::Image *im,bool force=false);
+IMPEM2DEXPORT void do_normalize(em2d::Image *im,bool force=false);
 
 
 inline Floats get_histogram(em2d::Image *img, int bins) {
@@ -171,20 +171,20 @@ inline void apply_variance_filter(em2d::Image *input,
   apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
-IMPEM2DEXPORT void subtract_images(em2d::Image *first,em2d::Image *second,
+IMPEM2DEXPORT void do_subtract_images(em2d::Image *first,em2d::Image *second,
                                   em2d::Image *result);
 
 IMPEM2DEXPORT void add_noise(em2d::Image *im1,double op1, double op2,
                const String &mode = "uniform", double df = 3);
 
 
-IMPEM2DEXPORT void resample_polar(em2d::Image *im1,em2d::Image *im2,
+IMPEM2DEXPORT void do_resample_polar(em2d::Image *im1,em2d::Image *im2,
                 const PolarResamplingParameters &polar_params);
 
 /*! Extends the borders of the image a given number of pixels
-   \note See help for extend_borders.
+   \note See help for do_extend_borders.
 */
-IMPEM2DEXPORT void extend_borders(Image *im1,Image *im2,
+IMPEM2DEXPORT void do_extend_borders(Image *im1,Image *im2,
                                   unsigned int pix);
 
 IMPEM2D_END_NAMESPACE

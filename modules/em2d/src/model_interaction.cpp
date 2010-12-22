@@ -14,7 +14,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Pointer<em::SampledDensityMap> generate_map_from_model(const Particles &ps,
+Pointer<em::SampledDensityMap> get_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize) {
   Pointer<em::SampledDensityMap> map =
@@ -23,7 +23,7 @@ Pointer<em::SampledDensityMap> generate_map_from_model(const Particles &ps,
   return map;
 }
 
-void generate_map_from_model(String fn_model,
+void get_map_from_model(String fn_model,
                              String fn_map,
                             double resolution,
                             double voxelsize,
@@ -35,7 +35,7 @@ void generate_map_from_model(String fn_model,
   atom::add_radii(mh); // Adds radii to particles
   Particles ps = IMP::core::get_leaves(mh);
   Pointer<em::SampledDensityMap> map =
-                    generate_map_from_model(ps,resolution,voxelsize);
+                    get_map_from_model(ps,resolution,voxelsize);
   em::write_map(map,fn_map.c_str(),mrw);
 }
 

@@ -45,7 +45,7 @@ public:
                 of the model. If not given, it is generated
 
   */
-  void initialize(ParticlesTemp &ps,
+  void setup(ParticlesTemp &ps,
                  double resolution,
                  double pixelsize,
                  Model *scoring_model,

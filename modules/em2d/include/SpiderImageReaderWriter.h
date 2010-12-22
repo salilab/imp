@@ -152,6 +152,8 @@ public:
 };
 
 
+
+
 IMPEM2D_END_NAMESPACE
 
 #endif /* IMPEM2D_SPIDER_IMAGE_READER_WRITER_H */

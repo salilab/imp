@@ -42,15 +42,15 @@ public:
   RegistrationResult(algebra::Rotation3D R,algebra::Vector2D shift,
                       long projection_index=0,double ccc=0.0,String name="");
 
-  inline double get_Phi() const { return phi_;}
+  inline double get_phi() const { return phi_;}
 
-  inline double get_Theta() const { return theta_;}
+  inline double get_theta() const { return theta_;}
 
-  inline double get_Psi() const { return psi_;}
+  inline double get_psi() const { return psi_;}
 
   inline algebra::Vector2D get_shift() const { return shift_;}
 
-  inline algebra::Vector3D get_shift3D() const {
+  inline algebra::Vector3D get_shift_3d() const {
     return algebra::Vector3D(shift_[0],shift_[1],0.0);
   }
 
@@ -146,11 +146,6 @@ IMP_OUTPUT_OPERATOR(RegistrationResult);
 
 IMP_VALUES(RegistrationResult,RegistrationResults);
 
-//! Checks the best of the cross correlation coefficients
-inline bool better_ccc(RegistrationResult r1,RegistrationResult r2) {
-  return r1.get_ccc()<r2.get_ccc();
-}
-
 //! Reads a set of registration results
 IMPEM2DEXPORT RegistrationResults read_registration_results(
                                                     const String &filename);
@@ -175,14 +170,14 @@ IMPEM2DEXPORT RegistrationResults get_random_registration_results
   \param[in] n_projections the number of requested projections
 */
 IMPEM2DEXPORT RegistrationResults
-    evenly_distributed_registration_results(unsigned long n_projections);
+    get_evenly_distributed_registration_results(unsigned long n_projections);
 
 //! returns true if the ccc of the first is higher than the second
-IMPEM2DEXPORT bool has_higher_ccc(const RegistrationResult &rr1,
+IMPEM2DEXPORT bool get_has_higher_ccc(const RegistrationResult &rr1,
                                   const RegistrationResult &rr2);
 
 
-inline double random_between_zero_and_one() {
+inline double get_random_between_zero_and_one() {
   return ((double)rand() /((double)RAND_MAX+1));
 }
 

@@ -16,7 +16,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-void Fine2DRegistrationRestraint::initialize(
+void Fine2DRegistrationRestraint::setup(
                        ParticlesTemp &ps,
                        double resolution,
                        double pixelsize,
@@ -31,7 +31,7 @@ void Fine2DRegistrationRestraint::initialize(
   if(masks==MasksManagerPtr() ) {
     // Create the masks
     masks_ = MasksManagerPtr(new MasksManager(resolution,pixelsize));
-    masks_->generate_masks(ps);
+    masks_->create_masks(ps);
     IMP_LOG(IMP::VERBOSE, "Created " << masks_->get_number_of_masks()
            << " masks withing Fine2DRegistrationRestraint " << std::endl);
 //    std::cout << "cout Created " << masks_->get_number_of_masks()
@@ -62,9 +62,9 @@ void Fine2DRegistrationRestraint::initialize(
 void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   // Read the registration parameters from the subject images
   algebra::Rotation3D R=
-      algebra::get_rotation_from_fixed_zyz(subject->get_header().get_Phi(),
-                                           subject->get_header().get_Theta(),
-                                           subject->get_header().get_Psi());
+      algebra::get_rotation_from_fixed_zyz(subject->get_header().get_phi(),
+                                           subject->get_header().get_theta(),
+                                           subject->get_header().get_psi());
   algebra::Vector3D translation(subject->get_header().get_xorigin()*pixelsize_,
                                 subject->get_header().get_yorigin()*pixelsize_,
                                 0.0);
@@ -74,14 +74,14 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   int cols = subject_->get_header().get_number_of_columns();
   if(projection_->get_header().get_number_of_columns() != cols ||
      projection_->get_header().get_number_of_rows() != rows ) {
-     projection_->resize(rows,cols);
+     projection_->set_size(rows,cols);
   }
 
 /**
   algebra::Rotation3D R=
-      algebra::get_rotation_from_fixed_zyz(subject_->get_header().get_Phi(),
-                                           subject_->get_header().get_Theta(),
-                                           subject_->get_header().get_Psi());
+      algebra::get_rotation_from_fixed_zyz(subject_->get_header().get_phi(),
+                                           subject_->get_header().get_theta(),
+                                           subject_->get_header().get_psi());
   algebra::Vector3D translation(subject_->get_header().get_xorigin()*pixelsize_,
                                 subject_->get_header().get_yorigin()*pixelsize_,
                                 0.0);
@@ -106,7 +106,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
 
   // projection needs to be mutable, son this const function can change it.
   // project_particles changes the matrix of projection_
-  em2d::project_particles(ps_,
+  em2d::do_project_particles(ps_,
                           projection_->get_data(),
                           PP_.get_rotation(),
                           PP_.get_translation(),
@@ -114,9 +114,9 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                           pixelsize_,
                           masks_);
 
-  double ccc = cross_correlation_coefficient(subject_->get_data(),
+  double ccc = get_cross_correlation_coefficient(subject_->get_data(),
                                              projection_->get_data());
-  double em2d = ccc_to_em2d(ccc);
+  double em2d = get_ccc_to_em2d(ccc);
   IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << em2d <<std::endl);
   return em2d;
 }
@@ -137,7 +137,7 @@ void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
   algebra::Vector3D translation= PP_.get_translation();
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,em2d_to_ccc(em2d));
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em_to_ccc(em2d));
   rr.show(out);
   out << " em2d: " << em2d;
 
@@ -151,7 +151,7 @@ RegistrationResult Fine2DRegistrationRestraint::get_final_registration() {
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
   double em2d = unprotected_evaluate(NULL);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,em2d_to_ccc(em2d));
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em_to_ccc(em2d));
   return rr;
 }
 

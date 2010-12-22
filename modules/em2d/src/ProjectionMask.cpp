@@ -20,11 +20,11 @@ ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
   dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
   data_.create(dim_,dim_,CV_64FC1);
   data_.setTo(0.0);
-  generate(KP,params);
+  create(KP,params);
 }
 
 
-void  ProjectionMask::generate(const em::KernelParameters &KP,
+void  ProjectionMask::create(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params) {
 
   // Decorate the masks to use centered coordinates
@@ -103,7 +103,7 @@ ProjectionMaskPtr MasksManager::find_mask(double radius) {
 }
 
 
-void MasksManager::generate_masks(const ParticlesTemp &ps) {
+void MasksManager::create_masks(const ParticlesTemp &ps) {
   IMP_LOG(IMP::TERSE,"Generating Projection Masks " << std::endl);
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();
@@ -118,8 +118,8 @@ void MasksManager::generate_masks(const ParticlesTemp &ps) {
 void MasksManager::create_mask(double radius) {
   IMP_LOG(IMP::VERBOSE,"Creating a projection mask for radius " <<
             radius <<std::endl);
-  if(is_initialized_ == false) {
-    IMP_THROW("MasksManager: kernel not initialized",ValueException);
+  if(is_setup_ == false) {
+    IMP_THROW("MasksManager: kernel not setup",ValueException);
   }
   const  em::RadiusDependentKernelParameters *params;
   kernel_params_.set_params(radius);
@@ -136,7 +136,7 @@ MasksManager::~MasksManager() {
 
 void MasksManager::show(std::ostream &out) const {
   out << "MasksManager: " << radii2mask_.size() << " masks. "
-      << "Initialized " << is_initialized_ << " pixelsize "
+      << "Initialized " << is_setup_ << " pixelsize "
       << pixelsize_ << std::endl;
 
 }

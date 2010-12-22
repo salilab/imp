@@ -70,7 +70,7 @@ class ProjectTests(IMP.test.TestCase):
                 img1.set_value(i,j,random.uniform(-1,1))
                 img2.set_value(i,j,img1(i,j))
 
-        IMP.em2d.subtract_images(img1,img2,result)
+        IMP.em2d.do_subtract_images(img1,img2,result)
         for i in range(0,rows):
             for j in range(0,cols):
                 self.assertAlmostEqual(abs(result(i,j)),0,delta=0.001,
@@ -83,7 +83,7 @@ class ProjectTests(IMP.test.TestCase):
         img=IMP.em2d.Image(fn_input,srw)
         polar_params = IMP.em2d.PolarResamplingParameters()
         polar=IMP.em2d.Image()
-        IMP.em2d.resample_polar(img,polar,polar_params)
+        IMP.em2d.do_resample_polar(img,polar,polar_params)
         fn_saved = self.get_input_file_name("1gyt-subject-1-0.5-SNR-polar.spi")
         saved=IMP.em2d.Image(fn_saved,srw)
         rows=int(polar.get_header().get_number_of_rows())
@@ -129,7 +129,7 @@ class ProjectTests(IMP.test.TestCase):
         # Use the ccc for testing instead of the pixel values. The matrix
         # in img2 is transformed from floats to ints son it can be written.
         # Values can change, but the ccc has to be very close to 1.
-        ccc= IMP.em2d.cross_correlation_coefficient(img1.get_data(),
+        ccc= IMP.em2d.get_cross_correlation_coefficient(img1.get_data(),
                                            img2.get_data())
         self.assertAlmostEqual(ccc,1,delta=0.05,
         msg="Written JPG image is not equal to read ")
@@ -164,7 +164,7 @@ class ProjectTests(IMP.test.TestCase):
 
         self.assertEqual(spider_img.get_header().get_number_of_rows(),rows);
         self.assertEqual(spider_img.get_header().get_number_of_columns(),cols);
-        ccc=IMP.em2d.cross_correlation_coefficient(tif_img.get_data(),
+        ccc=IMP.em2d.get_cross_correlation_coefficient(tif_img.get_data(),
                                                   spider_img.get_data())
         self.assertAlmostEqual(ccc,1,delta=0.01,msg="ccc ins not 1")
 
@@ -179,7 +179,7 @@ class ProjectTests(IMP.test.TestCase):
         # Use the ccc for testing instead of the pixel values. The matrix
         # in img2 is transformed from floats to ints son it can be written.
         # Values can change, but the ccc has to be very close to 1.
-        ccc= IMP.em2d.cross_correlation_coefficient(img1.get_data(),
+        ccc= IMP.em2d.get_cross_correlation_coefficient(img1.get_data(),
                                            img2.get_data())
         self.assertAlmostEqual(ccc,1,delta=0.01,
         msg="Written TIFF image is not equal to read ")
@@ -201,14 +201,14 @@ class ProjectTests(IMP.test.TestCase):
 
 
 
-    def test_extend_borders(self):
+    def test_do_extend_borders(self):
         """Test that extending the borders of an image is done correctly"""
         srw = IMP.em2d.SpiderImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.spi")
         img1=IMP.em2d.Image(fn_img1,srw)
         img2=IMP.em2d.Image()
         border = 10
-        IMP.em2d.extend_borders(img1,img2,border)
+        IMP.em2d.do_extend_borders(img1,img2,border)
 #        fn_img2 = self.get_input_file_name("lena-256x256-extended.spi")
 #        img2.write(fn_img2,srw)
         rows2=int(img2.get_header().get_number_of_rows())

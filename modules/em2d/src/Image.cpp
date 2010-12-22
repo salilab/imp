@@ -21,7 +21,7 @@ Image::Image() {
 
 //! Constructor with size
 Image::Image(int rows, int cols) {
-  resize_data(rows,cols);
+  set_size_data(rows,cols);
   header_.set_header();
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);
   header_.set_fSig(-1);
@@ -29,28 +29,28 @@ Image::Image(int rows, int cols) {
 }
 
 
-void Image::resize(int rows,int cols) {
-  resize_data(rows,cols);
+void Image::set_size(int rows,int cols) {
+  set_size_data(rows,cols);
   header_.set_number_of_slices(1.0);
   header_.set_number_of_rows(rows);
   header_.set_number_of_columns(cols);
 }
 
-void Image::resize_data(int rows,int cols) {
+void Image::set_size_data(int rows,int cols) {
   data_.create(rows,cols,CV_64FC1);
 }
 
-void Image::resize(Image *img) {
-  resize(img->get_data().rows,img->get_data().cols);
+void Image::set_size(Image *img) {
+  set_size(img->get_data().rows,img->get_data().cols);
 }
 
 
 void Image::set_data(const cv::Mat &mat) {
   mat.copyTo(data_);
-  adjust_header();
+  update_header();
 }
 
-void Image::adjust_header() {
+void Image::update_header() {
     header_.set_image_type(em::ImageHeader::IMG_IMPEM);
     header_.set_number_of_slices(1.0);
     header_.set_number_of_rows(data_.rows);
@@ -81,14 +81,14 @@ void save_images(Images images,const Strings &names,
 
 
 
-double cross_correlation_coefficient(em2d::Image *im1,
+double get_cross_correlation_coefficient(em2d::Image *im1,
                                      em2d::Image *im2) {
-  return cross_correlation_coefficient(im1->get_data(),im2->get_data());
+  return get_cross_correlation_coefficient(im1->get_data(),im2->get_data());
 }
 
-void normalize(em2d::Image *im,bool force) {
+void do_normalize(em2d::Image *im,bool force) {
   if(!im->get_header().is_normalized() || force==true ) {
-    normalize(im->get_data());
+    do_normalize(im->get_data());
     im->get_header().set_fImami(1);
     im->get_header().set_fAv(0.0);
     im->get_header().set_fSig(1.0);
@@ -100,9 +100,9 @@ void normalize(em2d::Image *im,bool force) {
 }
 
 
-void resample_polar(em2d::Image *im1,em2d::Image *im2,
+void do_resample_polar(em2d::Image *im1,em2d::Image *im2,
                 const PolarResamplingParameters &polar_params) {
-  resample_polar(im1->get_data(),im2->get_data(),polar_params);
+  do_resample_polar(im1->get_data(),im2->get_data(),polar_params);
 }
 
 void add_noise(em2d::Image *im1,double op1, double op2,
@@ -110,7 +110,7 @@ void add_noise(em2d::Image *im1,double op1, double op2,
   add_noise(im1->get_data(),op1,op2,mode,df);
 }
 
-void subtract_images(em2d::Image *first,em2d::Image *second,
+void do_subtract_images(em2d::Image *first,em2d::Image *second,
                                   em2d::Image *result) {
   cv::Mat result_matrix;
   cv::subtract(first->get_data(),
@@ -120,8 +120,8 @@ void subtract_images(em2d::Image *first,em2d::Image *second,
 }
 
 
-void extend_borders(Image *im1,Image *im2,unsigned int pix) {
-  extend_borders(im1->get_data(),im2->get_data(),pix);
+void do_extend_borders(Image *im1,Image *im2,unsigned int pix) {
+  do_extend_borders(im1->get_data(),im2->get_data(),pix);
 }
 
 IMPEM2D_END_NAMESPACE

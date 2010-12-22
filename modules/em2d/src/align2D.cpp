@@ -24,23 +24,24 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-ResultAlign2D align2D_complete(const cv::Mat &input,
+
+ResultAlign2D get_complete_alignment(const cv::Mat &input,
           cv::Mat &m_to_align,bool apply) {
   IMP_LOG(IMP::TERSE,"starting complete 2D alignment " << std::endl);
   cv::Mat autoc1,autoc2,aux1,aux2,aux3;
   algebra::Transformation2D transformation1,transformation2;
   ResultAlign2D RA;
-  autocorrelation2D(input,autoc1);
-  autocorrelation2D(m_to_align,autoc2);
-  RA=align2D_rotational(autoc1,autoc2,false);
+  get_autocorrelation2d(input,autoc1);
+  get_autocorrelation2d(m_to_align,autoc2);
+  RA=get_rotational_alignment(autoc1,autoc2,false);
   double angle1 = RA.first.get_rotation().get_angle();
   get_transformed(m_to_align,aux1,RA.first); // rotate
-  RA=align2D_translational(input,aux1);
+  RA=get_translational_alignment(input,aux1);
   algebra::Vector2D shift1 = RA.first.get_translation();
   transformation1.set_rotation(angle1);
   transformation1.set_translation(shift1);
   get_transformed(m_to_align,aux2,transformation1);
-  double ccc1=cross_correlation_coefficient(input,aux2);
+  double ccc1=get_cross_correlation_coefficient(input,aux2);
   // Check for both angles that can be the solution
   double angle2;
   if (angle1 < PI) {
@@ -53,12 +54,12 @@ ResultAlign2D align2D_complete(const cv::Mat &input,
   algebra::Transformation2D tr(R2);
   get_transformed(m_to_align,aux3,tr);
 
-  RA = align2D_translational(input,aux3);
+  RA = get_translational_alignment(input,aux3);
   algebra::Vector2D shift2=RA.first.get_translation();
   transformation2.set_rotation(angle2);
   transformation2.set_translation(shift2);
   get_transformed(m_to_align,aux3,transformation2);
-  double ccc2=cross_correlation_coefficient(input,aux3);
+  double ccc2=get_cross_correlation_coefficient(input,aux3);
   if(ccc2>ccc1) {
     if(apply) {aux3.copyTo(m_to_align);}
     IMP_LOG(IMP::VERBOSE," Transformation= "  << transformation2
@@ -74,7 +75,7 @@ ResultAlign2D align2D_complete(const cv::Mat &input,
 
 
 
-ResultAlign2D align2D_rotational(const cv::Mat &input,
+ResultAlign2D get_rotational_alignment(const cv::Mat &input,
                           cv::Mat &m_to_align,bool apply) {
   IMP_LOG(IMP::TERSE,
           "starting 2D rotational alignment" << std::endl);
@@ -87,11 +88,11 @@ ResultAlign2D align2D_rotational(const cv::Mat &input,
   PolarResamplingParameters polar_params(input.rows,input.cols);
   polar_params.set_estimated_number_of_angles(std::min(input.rows,input.cols));
 
-  polar_params.build_maps_for_resampling();
-  resample_polar(input,polar1,polar_params);  // subject image
-  resample_polar(m_to_align,polar2,polar_params); // projection image
+  polar_params.create_maps_for_resampling();
+  do_resample_polar(input,polar1,polar_params);  // subject image
+  do_resample_polar(m_to_align,polar2,polar_params); // projection image
 
-  ResultAlign2D RA= align2D_translational(polar1,polar2);
+  ResultAlign2D RA= get_translational_alignment(polar1,polar2);
   algebra::Vector2D shift=RA.first.get_translation();
   // column shift[0] is the optimal angle to bring m_to_align to input
   double angle =shift[0]*polar_params.get_angle_step();
@@ -111,7 +112,7 @@ ResultAlign2D align2D_rotational(const cv::Mat &input,
 
 
 
-ResultAlign2D align2D_translational(const cv::Mat &input,
+ResultAlign2D get_translational_alignment(const cv::Mat &input,
                            cv::Mat &m_to_align,
                             bool apply) {
   IMP_LOG(IMP::TERSE, "starting 2D translational alignment" << std::endl);
@@ -120,9 +121,9 @@ ResultAlign2D align2D_translational(const cv::Mat &input,
             (input.cols==m_to_align.cols),
                   "em2d::align_translational: Matrices have different size.");
   cv::Mat corr;
-  correlation2D(input,m_to_align,corr);
+  get_correlation2d(input,m_to_align,corr);
   double max_cc;
-  algebra::Vector2D peak = peak_search(corr,&max_cc);
+  algebra::Vector2D peak = get_peak(corr,&max_cc);
   // Convert the pixel with the maximum to a shift respect to the center
   algebra::Vector2D shift(peak[0]-(double)corr.cols/2.,
                           peak[1]-(double)corr.rows/2.);
@@ -140,7 +141,7 @@ ResultAlign2D align2D_translational(const cv::Mat &input,
 
 
 
-ResultAlign2D align2D_complete_no_preprocessing(const cv::Mat &input,
+ResultAlign2D get_complete_alignment_no_preprocessing(const cv::Mat &input,
                       const cv::Mat &INPUT,const cv::Mat &POLAR1,
                       cv::Mat &m_to_align,const cv::Mat &POLAR2,bool apply) {
 
@@ -151,16 +152,16 @@ ResultAlign2D align2D_complete_no_preprocessing(const cv::Mat &input,
   cv::Mat AUX1,AUX2,AUX3; // ffts
   algebra::Transformation2D transformation1,transformation2;
   double angle1=0,angle2=0;
-  ResultAlign2D RA = align2D_rotational_no_preprocessing(POLAR1,POLAR2);
+  ResultAlign2D RA = get_rotational_alignment_no_preprocessing(POLAR1,POLAR2);
   angle1 = RA.first.get_rotation().get_angle();
   get_transformed(m_to_align,aux1,RA.first); // rotate
   get_fft_using_optimal_size(aux1,AUX1);
-  RA = align2D_translational_no_preprocessing(INPUT,AUX1);
+  RA = get_translational_alignment_no_preprocessing(INPUT,AUX1);
   algebra::Vector2D shift1 = RA.first.get_translation();
   transformation1.set_rotation(angle1);
   transformation1.set_translation(shift1);
   get_transformed(m_to_align,aux2,transformation1); // rotate
-  double ccc1=cross_correlation_coefficient(input,aux2);
+  double ccc1=get_cross_correlation_coefficient(input,aux2);
   // Check the opposed angle
   if (angle1 < PI) {
     angle2 = angle1+PI;
@@ -172,12 +173,12 @@ ResultAlign2D align2D_complete_no_preprocessing(const cv::Mat &input,
   get_transformed(m_to_align,aux3,tr); // rotate
   get_fft_using_optimal_size(aux3,AUX3);
 
-  RA = align2D_translational_no_preprocessing(INPUT,AUX3);
+  RA = get_translational_alignment_no_preprocessing(INPUT,AUX3);
   algebra::Vector2D shift2 = RA.first.get_translation();
   transformation2.set_rotation(angle2);
   transformation2.set_translation(shift2);
   get_transformed(m_to_align,aux3,transformation2);
-  double ccc2=cross_correlation_coefficient(input,aux3);
+  double ccc2=get_cross_correlation_coefficient(input,aux3);
 
   if(ccc2>ccc1) {
     if(apply) {aux3.copyTo(m_to_align);}
@@ -193,15 +194,15 @@ ResultAlign2D align2D_complete_no_preprocessing(const cv::Mat &input,
 }
 
 
-ResultAlign2D align2D_rotational_no_preprocessing(const cv::Mat &POLAR1,
+ResultAlign2D get_rotational_alignment_no_preprocessing(const cv::Mat &POLAR1,
                                                   const cv::Mat &POLAR2) {
   IMP_LOG(IMP::TERSE,
     "starting 2D rotational alignment with no preprocessing" << std::endl);
 
   IMP_USAGE_CHECK(((POLAR1.rows==POLAR2.rows) && (POLAR1.cols==POLAR2.cols)),
-    "align2D_rotational_no_preprocessing: Matrices have different size.");
+    "get_rotational_alignment_no_preprocessing: Matrices have different size.");
 
-  ResultAlign2D RA =align2D_translational_no_preprocessing(POLAR1,POLAR2);
+  ResultAlign2D RA =get_translational_alignment_no_preprocessing(POLAR1,POLAR2);
   algebra::Vector2D shift=RA.first.get_translation();
   // The number of columns of the polar matrices
   // are the number of angles considered. Init a PolarResamplingParameters
@@ -217,19 +218,21 @@ ResultAlign2D align2D_rotational_no_preprocessing(const cv::Mat &POLAR1,
 }
 
 
-ResultAlign2D align2D_translational_no_preprocessing(const cv::Mat &M1,
+ResultAlign2D get_translational_alignment_no_preprocessing(const cv::Mat &M1,
                                                      const cv::Mat &M2) {
   IMP_LOG(IMP::TERSE,
-      "starting 2D translational alignment with no preprocessing" << std::endl);
+      "starting 2D translational alignment with no preprocessing"
+            << std::endl);
   IMP_USAGE_CHECK(((M1.rows==M2.rows) && (M1.cols == M2.cols)),
-    "align2D_translational_no_preprocessing: Matrices have different size.");
+    "get_translational_alignment_no_preprocessing: "
+    "Matrices have different size.");
 
   cv::Mat corr;
   corr.create(M1.rows,M1.cols,CV_64FC1);
-  correlation2D_no_preprocessing(M1,M2,corr); // corr must be allocated!
+  get_correlation2d_no_preprocessing(M1,M2,corr); // corr must be allocated!
   // Find the peak of the cross_correlation
   double max_cc;
-  algebra::Vector2D peak = peak_search(corr,&max_cc);
+  algebra::Vector2D peak = get_peak(corr,&max_cc);
 
   // Convert the pixel with the maximum to a shift respect to the center
   algebra::Vector2D shift(peak[0]-(double)corr.cols/2.,
@@ -242,7 +245,7 @@ ResultAlign2D align2D_translational_no_preprocessing(const cv::Mat &M1,
 
 
 
-algebra::Vector2D peak_search(cv::Mat &m,double *value) {
+algebra::Vector2D get_peak(cv::Mat &m,double *value) {
   // Find maximum value and location
   IMP_LOG(IMP::VERBOSE,"starting peak seach on a matrix " << std::endl);
 
@@ -313,13 +316,13 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
 }
 
 
-ResultAlign2D align2D_complete_with_centers_no_preprocessing(
+ResultAlign2D get_complete_alignment_with_centers_no_preprocessing(
                   const algebra::Vector2D &center1,
                   const algebra::Vector2D &center2,
                   const cv::Mat &AUTOC_POLAR1,
                   const cv::Mat &AUTOC_POLAR2) {
   // Align rotationally with FFT
-  ResultAlign2D RA= align2D_rotational_no_preprocessing(AUTOC_POLAR1,
+  ResultAlign2D RA= get_rotational_alignment_no_preprocessing(AUTOC_POLAR1,
                                                         AUTOC_POLAR2);
   double angle = RA.first.get_rotation().get_angle();
   if (angle < 0) {

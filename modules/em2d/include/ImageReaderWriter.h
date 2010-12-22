@@ -10,6 +10,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em/ImageHeader.h"
+#include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -43,6 +44,9 @@ public:
   virtual void write_to_ints(const String &filename,
                              em::ImageHeader& header,
                                      const cv::Mat &data) const {}
+  virtual void show(std::ostream &out = std::cout) const {
+    out << "I am an ImageReaderWriter" << std::endl;
+  }
 
 };
 

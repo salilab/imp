@@ -15,14 +15,14 @@ IMPEM2D_BEGIN_NAMESPACE
 // can not be const.
 
 //
-//void correlation2D(algebra::Matrix2D_d &m1,
+//void get_correlation2d(algebra::Matrix2D_d &m1,
 //                   algebra::Matrix2D_d &m2,
 //                          algebra::Matrix2D_d &corr) {
 //  IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
 //
 //  IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
 //                  (m1.get_number_of_columns()==m1.get_number_of_columns()),
-//                  "em2d:correlation2D: Matrices have different size.");
+//                  "em2d:get_correlation2d: Matrices have different size.");
 //  corr.resize(m1);
 //  algebra::Matrix2D_c M1,M2;
 //  FFT2D fft1(m1,M1); fft1.execute();
@@ -36,7 +36,7 @@ IMPEM2D_BEGIN_NAMESPACE
 //  matrix_to_image_interpretation(corr);
 //}
 //
-//void correlation2D_no_preprocessing(
+//void get_correlation2d_no_preprocessing(
 //                   algebra::Matrix2D_c &M1,
 //                   algebra::Matrix2D_c &M2,
 //                   algebra::Matrix2D_d &corr) {
@@ -44,7 +44,8 @@ IMPEM2D_BEGIN_NAMESPACE
 //          "Computing 2D correlation with no preprocessing" << std::endl);
 //  IMP_USAGE_CHECK((M1.get_number_of_rows()==M2.get_number_of_rows()) &&
 //                  (M1.get_number_of_columns()==M2.get_number_of_columns()),
-//     "em2d::correlation2D_no_preprocessing: Matrices have different size.");
+//     "em2d::get_correlation2d_no_preprocessing: "
+//     "Matrices have different size.");
 //
 //  algebra::Matrix2D_c CORR(M1.get_size(0),M1.get_size(1));
 //  for(unsigned long i=0;i<M1.num_elements();++i) {
@@ -54,19 +55,19 @@ IMPEM2D_BEGIN_NAMESPACE
 //  matrix_to_image_interpretation(corr);
 //}
 //
-//void autocorrelation2D(algebra::Matrix2D_d& m,
+//void get_autocorrelation2d(algebra::Matrix2D_d& m,
 //                               algebra::Matrix2D_d& corr) {
 //  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation" <<std::endl);
 //  algebra::Matrix2D_c M;
 //  corr.resize(m);
 //  FFT2D fft(m,M); fft.execute();
-//  autocorrelation2D_no_preprocessing(M,corr);
+//  get_autocorrelation2d_no_preprocessing(M,corr);
 //}
 //
 //
 //
 //
-//void autocorrelation2D_no_preprocessing(
+//void get_autocorrelation2d_no_preprocessing(
 //                    algebra::Matrix2D_c &M,
 //                    algebra::Matrix2D_d &corr) {
 //  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation with no preprocessing"
@@ -92,23 +93,23 @@ IMPEM2D_BEGIN_NAMESPACE
 //}
 
 
-void autocorrelation2D_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
+void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
   IMP_LOG(IMP::VERBOSE,
               "Computing 2D autocorrelation no preprocessing" <<std::endl);
   IMP_USAGE_CHECK(((M.rows!=0) && (M.cols !=0)),
-     "em2d:autocorrelation2D: Output matrix is empty");
+     "em2d:get_autocorrelation2d: Output matrix is empty");
   cv::Mat temp;
   cv::mulSpectrums(M,M, temp,0,true);
   cv::idft(temp, temp,cv::DFT_SCALE+cv::DFT_REAL_OUTPUT);
   temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
-  matrix_to_image_flip(corr);
+  do_matrix_to_image_flip(corr);
 }
 
 
 
 
 
-void autocorrelation2D(const cv::Mat &m, cv::Mat &corr) {
+void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr) {
   IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation " <<std::endl);
   // resize the output array if needed
   cv::Size dftSize;
@@ -127,19 +128,19 @@ void autocorrelation2D(const cv::Mat &m, cv::Mat &corr) {
   cv::idft(temp, temp,cv::DFT_SCALE+cv::DFT_REAL_OUTPUT);
   corr.create(m.rows,m.cols,m.type());
   temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
-  em2d::matrix_to_image_flip(corr);
+  em2d::do_matrix_to_image_flip(corr);
 
 }
 
 
 
 
-void correlation2D(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
+void get_correlation2d(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 
   IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
 
   IMP_USAGE_CHECK(((A.rows==B.rows) && (A.cols == B.cols)),
-                  "em2d:correlation2D: Matrices have different size.");
+                  "em2d:get_correlation2d: Matrices have different size.");
   // resize the output array if needed
   corr.create(A.rows,A.cols, A.type());
   cv::Size dftSize;
@@ -174,25 +175,25 @@ void correlation2D(const cv::Mat &A, const cv::Mat &B, cv::Mat &corr) {
 
   // now copy the result back to C.
   tempA(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
-  matrix_to_image_flip(corr);
+  do_matrix_to_image_flip(corr);
 }
 
 
 
-void correlation2D_no_preprocessing(const cv::Mat &M1,
+void get_correlation2d_no_preprocessing(const cv::Mat &M1,
                                     const cv::Mat &M2, cv::Mat &corr) {
 
   IMP_LOG(IMP::VERBOSE,"Computing 2D correlation no preprocessing "<<std::endl);
 
   IMP_USAGE_CHECK(((M1.rows==M2.rows) && (M1.cols == M2.cols)),
-                  "em2d:correlation2D: Matrices have different size.");
+                  "em2d:get_correlation2d: Matrices have different size.");
 
   cv::Mat temp;
   cv::mulSpectrums(M1, M2, temp,0,true);
   cv::idft(temp, temp,cv::DFT_SCALE+cv::DFT_REAL_OUTPUT);
   // now copy the result to corr
   temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
-  matrix_to_image_flip(corr);
+  do_matrix_to_image_flip(corr);
 }
 
 void get_fft_using_optimal_size(const cv::Mat &m,cv::Mat &M) {
@@ -212,7 +213,7 @@ void get_fft_using_optimal_size(const cv::Mat &m,cv::Mat &M) {
 
 
 
-void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag) {
+void get_spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag) {
   cv::Size dftSize;
   // compute the optimal size for faster DFT transform
   dftSize.width = cv::getOptimalDFTSize(m.cols);
@@ -257,7 +258,7 @@ void spectrum(const cv::Mat &m, cv::Mat &real,cv::Mat &imag) {
 }
 
 
-void matrix_to_image_flip(cv::Mat &m) {
+void do_matrix_to_image_flip(cv::Mat &m) {
   int half_rows = m.rows/2;
   int half_columns = m.cols/2;
   int new_i,new_j;
