@@ -266,12 +266,16 @@ class TestCase(unittest.TestCase):
     def _get_type(self, module, name):
         return eval('type('+module+"."+name+')')
     def assertValueObjects(self, module, exceptions):
-        """Check that all the classes in the module are values or objects."""
+        "Check that all the C++ classes in the module are values or objects."
         all= dir(module)
         bad=[]
         for name in all:
             if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
+                    continue
+                # Exclude Python-only classes
+                if not eval('hasattr(%s.%s, "__swig_destroy__")' \
+                            % (module.__name__, name)):
                     continue
                 if name in exceptions:
                     continue
