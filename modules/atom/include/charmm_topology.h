@@ -87,13 +87,13 @@ public:
 IMP_OUTPUT_OPERATOR(CHARMMBondEndpoint);
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
-//! A bond, angle, dihedral or improper between some number of endpoints.
+//! A connection (bond, angle, dihedral) between some number of endpoints.
 template <unsigned int D>
-class CHARMMBond
+class CHARMMConnection
 {
   std::vector<CHARMMBondEndpoint> endpoints_;
 public:
-  CHARMMBond(const Strings &atoms) {
+  CHARMMConnection(const IMP::Strings &atoms) {
     IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
     for (std::vector<std::string>::const_iterator it = atoms.begin();
          it != atoms.end(); ++it) {
@@ -101,12 +101,14 @@ public:
     }
   }
 
-  CHARMMBond(std::vector<CHARMMBondEndpoint> endpoints)
+#ifndef SWIG
+  CHARMMConnection(std::vector<CHARMMBondEndpoint> endpoints)
      : endpoints_(endpoints) {
     IMP_INTERNAL_CHECK(endpoints.size() == D, "wrong number of bond endpoints");
   }
+#endif
 
-  const CHARMMBondEndpoint & get_endpoint(unsigned int i) const {
+  const IMP::atom::CHARMMBondEndpoint & get_endpoint(unsigned int i) const {
     return endpoints_[i];
   }
 
@@ -121,6 +123,7 @@ public:
     return false;
   }
 
+#ifndef SWIG
   //! Map the bond to a list of Atom particles.
   Atoms get_atoms(const CHARMMResidueTopology *current_residue,
                   const CHARMMResidueTopology *previous_residue,
@@ -140,7 +143,8 @@ public:
     }
     return as;
   }
-  IMP_SHOWABLE_INLINE(CHARMMBond,
+#endif
+  IMP_SHOWABLE_INLINE(CHARMMConnection,
      { for (std::vector<CHARMMBondEndpoint>::const_iterator
             it = endpoints_.begin(); it != endpoints_.end(); ++it) {
          if (it != endpoints_.begin()) {
@@ -150,7 +154,17 @@ public:
        }
      });
 };
-IMP_OUTPUT_OPERATOR_D(CHARMMBond);
+
+typedef CHARMMConnection<2> CHARMMBond;
+typedef CHARMMConnection<3> CHARMMAngle;
+typedef CHARMMConnection<4> CHARMMDihedral;
+
+IMP_OUTPUT_OPERATOR(CHARMMBond);
+IMP_VALUES(CHARMMBond, CHARMMBonds);
+IMP_OUTPUT_OPERATOR(CHARMMAngle);
+IMP_VALUES(CHARMMAngle, CHARMMAngles);
+IMP_OUTPUT_OPERATOR(CHARMMDihedral);
+IMP_VALUES(CHARMMDihedral, CHARMMDihedrals);
 
 //! Base class for all CHARMM residue-based topology
 class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
@@ -158,10 +172,10 @@ class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
   std::string type_;
 protected:
   std::vector<CHARMMAtomTopology> atoms_;
-  std::vector<CHARMMBond<2> > bonds_;
-  std::vector<CHARMMBond<3> > angles_;
-  std::vector<CHARMMBond<4> > dihedrals_;
-  std::vector<CHARMMBond<4> > impropers_;
+  CHARMMBonds bonds_;
+  CHARMMAngles angles_;
+  CHARMMDihedrals dihedrals_;
+  CHARMMDihedrals impropers_;
 
   CHARMMResidueTopologyBase(std::string type) : type_(type) {
     set_name(std::string("CHARMM residue ") + type);
@@ -183,47 +197,47 @@ public:
   const CHARMMAtomTopology &get_atom(std::string name) const;
 
   unsigned int get_number_of_bonds() const { return bonds_.size(); }
-  void add_bond(const CHARMMBond<2> &bond) {
+  void add_bond(const CHARMMBond &bond) {
     bonds_.push_back(bond);
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
-  CHARMMBond<2> &get_bond(unsigned int index) { return bonds_[index]; }
+  CHARMMBond &get_bond(unsigned int index) { return bonds_[index]; }
 #endif
 
   unsigned int get_number_of_angles() const { return angles_.size(); }
-  void add_angle(const CHARMMBond<3> &bond) {
+  void add_angle(const CHARMMAngle &bond) {
     angles_.push_back(bond);
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
-  CHARMMBond<3> &get_angle(unsigned int index) { return angles_[index]; }
+  CHARMMAngle &get_angle(unsigned int index) { return angles_[index]; }
 #endif
   unsigned int get_number_of_dihedrals() const { return dihedrals_.size(); }
-  void add_dihedral(const CHARMMBond<4> &bond) {
+  void add_dihedral(const CHARMMDihedral &bond) {
     dihedrals_.push_back(bond);
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   // cannot return non const ref to swig
-  CHARMMBond<4> &get_dihedral(unsigned int index) { return dihedrals_[index]; }
+  CHARMMDihedral &get_dihedral(unsigned int index) { return dihedrals_[index]; }
 #endif
   unsigned int get_number_of_impropers() const { return impropers_.size(); }
-  void add_improper(const CHARMMBond<4> &bond) {
+  void add_improper(const CHARMMDihedral &bond) {
     impropers_.push_back(bond);
   }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  CHARMMBond<4> &get_improper(unsigned int index) { return impropers_[index]; }
+  CHARMMDihedral &get_improper(unsigned int index) { return impropers_[index]; }
 #endif
-  const CHARMMBond<2> &get_bond(unsigned int index) const {
+  const CHARMMBond &get_bond(unsigned int index) const {
     return bonds_[index];
   }
-  const CHARMMBond<3> &get_angle(unsigned int index) const {
+  const CHARMMAngle &get_angle(unsigned int index) const {
     return angles_[index];
   }
-  const CHARMMBond<4> &get_dihedral(unsigned int index) const {
+  const CHARMMDihedral &get_dihedral(unsigned int index) const {
     return dihedrals_[index];
   }
-  const CHARMMBond<4> &get_improper(unsigned int index) const {
+  const CHARMMDihedral &get_improper(unsigned int index) const {
     return impropers_[index];
   }
 

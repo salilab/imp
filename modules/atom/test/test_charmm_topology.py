@@ -78,7 +78,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_bond(self):
         """Check CHARMM bond class"""
-        bond = IMP.atom.CHARMMBond2(IMP.Strings(['CA', 'CB']))
+        bond = IMP.atom.CHARMMBond(IMP.Strings(['CA', 'CB']))
         self.assertEqual(bond.get_contains_atom('CA'), True)
         self.assertEqual(bond.get_contains_atom('N'), False)
         self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'CA')
@@ -87,15 +87,15 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Check addition of bonds/angles/dihedrals/impropers"""
         res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
         atoms = IMP.Strings(['CA', 'CB'])
-        res.add_bond(IMP.atom.CHARMMBond2(atoms))
+        res.add_bond(IMP.atom.CHARMMBond(atoms))
         self.assertEqual(res.get_number_of_bonds(), 1)
         atoms = IMP.Strings(['CA', 'CB', 'N'])
-        res.add_angle(IMP.atom.CHARMMBond3(atoms))
+        res.add_angle(IMP.atom.CHARMMAngle(atoms))
         self.assertEqual(res.get_number_of_angles(), 1)
         atoms = IMP.Strings(['CA', 'CB', 'N', 'O'])
-        res.add_dihedral(IMP.atom.CHARMMBond4(atoms))
+        res.add_dihedral(IMP.atom.CHARMMDihedral(atoms))
         self.assertEqual(res.get_number_of_dihedrals(), 1)
-        res.add_improper(atoms)
+        res.add_improper(IMP.atom.CHARMMDihedral(atoms))
         self.assertEqual(res.get_number_of_impropers(), 1)
         self.assertEqual(res.get_bond(0).get_contains_atom('CA'), True)
         self.assertEqual(res.get_angle(0).get_contains_atom('N'), True)
