@@ -30,7 +30,7 @@ class ProjectTests(IMP.test.TestCase):
 
         fn_rotated = self.get_input_file_name("rotated.spi")
 #        rotated.write(fn_rotated,srw)
-        result=IMP.em2d.align2D_rotational(
+        result=IMP.em2d.get_rotational_alignment(
                 image.get_data(),rotated.get_data(),True)
         fn_aligned = self.get_input_file_name("rot_aligned.spi")
  #       rotated.write(fn_aligned,srw)
@@ -57,7 +57,7 @@ class ProjectTests(IMP.test.TestCase):
                                  transformation)
         fn_translated = self.get_input_file_name("translated.spi")
 #        translated.write(fn_translated,srw)
-        result=IMP.em2d.align2D_translational(
+        result=IMP.em2d.get_translational_alignment(
                 image.get_data(),translated.get_data(),True)
         fn_aligned = self.get_input_file_name("trans_aligned.spi")
  #       translated.write(fn_aligned,srw)
@@ -90,7 +90,7 @@ class ProjectTests(IMP.test.TestCase):
         fn_transformed = self.get_input_file_name("transformed.spi")
 #       transformed.write(fn_transformed,srw)
 
-        result=IMP.em2d.align2D_complete(image.get_data(),
+        result=IMP.em2d.get_complete_alignment(image.get_data(),
                                          transformed.get_data(),True)
         fn_aligned = self.get_input_file_name("aligned_complete.spi")
 #       transformed.write(fn_aligned,srw)

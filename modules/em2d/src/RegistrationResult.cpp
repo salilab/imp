@@ -28,7 +28,7 @@ RegistrationResults get_random_registration_results(unsigned long n,
 
 
 
-RegistrationResults evenly_distributed_registration_results(
+RegistrationResults get_evenly_distributed_registration_results(
                                           unsigned long n_projections) {
   algebra::SphericalVector3Ds vs;
   em2d::internal::semispherical_even_distribution(n_projections,vs);
@@ -67,15 +67,15 @@ void  write_registration_results(String filename,
 void RegistrationResult::set_random_registration(unsigned long index,
                                 double maximum_shift) {
   // Random point in the sphere, pick to ensure even distribution
-  double u=random_between_zero_and_one();
-  double v=random_between_zero_and_one();
-  double w=random_between_zero_and_one();
+  double u=get_random_between_zero_and_one();
+  double v=get_random_between_zero_and_one();
+  double w=get_random_between_zero_and_one();
   double phi  =  2*PI*u;
   double theta  =  acos((2*v-1))/2;
   double psi=2*PI*w;
   set_rotation(phi,theta,psi);
-  shift_[0] =  maximum_shift*random_between_zero_and_one();
-  shift_[1] =  maximum_shift*random_between_zero_and_one();
+  shift_[0] =  maximum_shift*get_random_between_zero_and_one();
+  shift_[1] =  maximum_shift*get_random_between_zero_and_one();
   set_ccc(0.0);
   set_name("");
   set_projection_index(index);
@@ -161,7 +161,7 @@ RegistrationResults read_registration_results(const String &filename) {
 
 
 
-bool has_higher_ccc(const RegistrationResult &rr1,
+bool get_has_higher_ccc(const RegistrationResult &rr1,
                                   const RegistrationResult &rr2) {
   if(rr1.get_ccc() >= rr2.get_ccc()) return true;
   return false;
@@ -207,8 +207,8 @@ void RegistrationResult::show(std::ostream& out) const {
   algebra::VectorD<4> quaternion=R_.get_quaternion();
   out << "Name: "  << get_name() << " Image index: " << get_image_index()
   << " Projection index: " << get_projection_index()
-  << " (Phi,Theta,Psi) = ( " <<get_Phi() << " , " << get_Theta() << " , "
-  << get_Psi() << " ) | Shift (x,y) " << get_shift()  << " CCC = " << get_ccc()
+  << " (Phi,Theta,Psi) = ( " <<get_phi() << " , " << get_theta() << " , "
+  << get_psi() << " ) | Shift (x,y) " << get_shift()  << " CCC = " << get_ccc()
   <<  " Quaternion " << quaternion;
 }
 
@@ -217,7 +217,7 @@ void RegistrationResult::write(std::ostream& out) const {
   algebra::VectorD<4> quaternion=R_.get_quaternion();
   char c='|';
   out << get_image_index() <<c<< get_projection_index()
-  <<c<< get_Phi() <<c<< get_Theta() <<c<< get_Psi()
+  <<c<< get_phi() <<c<< get_theta() <<c<< get_psi()
   <<c<< quaternion[0] <<c<< quaternion[1] <<c<< quaternion[2]
   <<c<< quaternion[3] <<c<< get_shift()[0] <<c<< get_shift()[1]
   <<c<< get_ccc() <<c<< std::endl;

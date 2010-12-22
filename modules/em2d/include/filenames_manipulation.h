@@ -38,7 +38,7 @@ inline Strings read_selection_file(String fn) {
 
 //! generates consecutive filenames: basic_name-i.extension
 //! Adds zeros at the front of the number when neccessary
-inline Strings generate_filenames(unsigned long number,
+inline Strings create_filenames(unsigned long number,
                                   String basic_name, String extension) {
   // Number of digits to use
   int digits=0;

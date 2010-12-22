@@ -39,7 +39,7 @@ class IMPEM2DEXPORT ProjectionFinder
 public:
 
   ProjectionFinder() {
-    parameters_initialized_=false;
+    parameters_setup_=false;
     registration_done_=false;
   }
 
@@ -65,7 +65,7 @@ public:
     \param[in] Value of the simplex length stop the search. The smaller, the
                more accurate the finder, but slower
   */
-  void initialize(double apix,double resolution =1,
+  void setup(double apix,double resolution =1,
                  int coarse_registration_method = ALIGN2D_PREPROCESSING,
                  bool save_match_images =false,
                   int optimization_steps = 5,
@@ -79,11 +79,11 @@ public:
     save_match_images_ = save_match_images;
     simplex_initial_length_ = simplex_initial_length;
     masks_manager_ = MasksManagerPtr(new MasksManager);
-    masks_manager_->init_kernel(resolution_,apix_);
+    masks_manager_->setup_kernel(resolution_,apix_);
 
 
     fast_optimization_mode_ = false;
-    parameters_initialized_=true;
+    parameters_setup_=true;
     preprocessing_time_=0.0;
     coarse_registration_time_=0.0;
     fine_registration_time_ =0.0;
@@ -152,12 +152,12 @@ protected:
   void get_coarse_registrations_for_subject(unsigned int i,
                                             RegistrationResults &coarse_RRs);
 
-  void preprocess_projection(unsigned int j);
-  void preprocess_subject(unsigned int i);
+  void do_preprocess_projection(unsigned int j);
+  void do_preprocess_subject(unsigned int i);
 
   //! Computes the weighted centroid and the FFT of the polar-resampled
   //!  autocorrelation.
-  void preprocess_for_fast_coarse_registration(const cv::Mat &m,
+  void do_preprocess_for_fast_coarse_registration(const cv::Mat &m,
                                                algebra::Vector2D &center,
                                                cv::Mat &POLAR_AUTOC);
   //! Main parameters
@@ -174,7 +174,7 @@ protected:
        registration_results_set_,
        particles_set_,
        registration_done_,
-       parameters_initialized_,
+       parameters_setup_,
        fast_optimization_mode_;
 
   //! Coarse registration method

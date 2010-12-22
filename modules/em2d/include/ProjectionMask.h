@@ -45,7 +45,7 @@ public:
     \param[in] KP Kernel parameteres to employ. See the EM module
     \param[in] params Kernel parameteres associated with radius to employ
   */
-  void generate(const em::KernelParameters &KP,
+  void create(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params);
 
   //! Adds the values of the mask to a matrix at the given pixel
@@ -77,23 +77,23 @@ IMP_VALUES(ProjectionMask,ProjectionMasks);
 class IMPEM2DEXPORT MasksManager {
 public:
   MasksManager() {
-    is_initialized_ = false;
+    is_setup_ = false;
   };
 
   MasksManager(double resolution,double pixelsize) {
-    init_kernel(resolution,pixelsize);
+    setup_kernel(resolution,pixelsize);
   }
 
   //! Initializes the kernel
-  inline void init_kernel(double resolution,double pixelsize) {
+  inline void setup_kernel(double resolution,double pixelsize) {
     kernel_params_= em::KernelParameters((float)resolution);
     pixelsize_=pixelsize;
-    is_initialized_ = true;
+    is_setup_ = true;
   }
 
   //! Generates all the masks for a set of particles. This is the function
   //! you typically want to use
-  void generate_masks(const ParticlesTemp &ps);
+  void create_masks(const ParticlesTemp &ps);
 
   //! Creates the adequate mask for a particle of given radius
   /*!
@@ -121,7 +121,7 @@ protected:
   em::KernelParameters kernel_params_;
   // Pixel size for the masks
   double pixelsize_;
-  bool is_initialized_;
+  bool is_setup_;
 };
 
 

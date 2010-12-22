@@ -8,15 +8,15 @@ import os
 
 
 class FFToperationsTests(IMP.test.TestCase):
-#    def test_old_autocorrelation2D(self):
+#    def test_old_get_autocorrelation2d(self):
 #        """ Test autocorrelation of an image using FFT"""
 #        name=self.get_input_file_name("1z5s-projection-2.spi")
 #        srw = IMP.em.SpiderImageReaderWriter()
 #        image=IMP.em.Image()
 #        image.read(name,srw)
 #        corr=IMP.em.Image()
-#        IMP.em2d.autocorrelation2D(image.get_data(),corr.get_data() )
-#        IMP.em.normalize(corr)
+#        IMP.em2d.get_autocorrelation2d(image.get_data(),corr.get_data() )
+#        IMP.em.do_normalize(corr)
 #        name=self.get_input_file_name("autocorrelation_img.spi")
 #        stored_corr=IMP.em.Image()
 #        stored_corr.read(name,srw)
@@ -28,14 +28,14 @@ class FFToperationsTests(IMP.test.TestCase):
 #                         msg="Autocorrelation image is different than stored")
 #
 
-    def test_autocorrelation2D(self):
+    def test_get_autocorrelation2d(self):
         """ Test autocorrelation of an image using OpenCV"""
         name=self.get_input_file_name("1z5s-projection-2.spi")
         srw = IMP.em2d.SpiderImageReaderWriter()
         image=IMP.em2d.Image(name,srw)
         corr=IMP.em2d.Image()
-        IMP.em2d.autocorrelation2D(image,corr)
-        IMP.em2d.normalize(corr,True)
+        IMP.em2d.get_autocorrelation2d(image,corr)
+        IMP.em2d.do_normalize(corr,True)
         rows=image.get_header().get_number_of_rows()
         cols=image.get_header().get_number_of_columns()
         fn_corr=self.get_input_file_name("autocorrelation_img.spi")
@@ -46,7 +46,7 @@ class FFToperationsTests(IMP.test.TestCase):
                          msg="Autocorrelation image is different than stored")
 
 
-#    def test_old_correlation2D(self):
+#    def test_old_get_correlation2d(self):
 #        """ Test the correlation between two images using FFT"""
 #        names=[0,0]
 #        names[0]=self.get_input_file_name(
@@ -57,9 +57,9 @@ class FFToperationsTests(IMP.test.TestCase):
 #        srw = IMP.em.SpiderImageReaderWriter()
 #        images=IMP.em.read_images(names,srw)
 #        corr=IMP.em.Image()
-#        IMP.em2d.correlation2D(images[0].get_data(), images[1].get_data(),
+#        IMP.em2d.get_correlation2d(images[0].get_data(), images[1].get_data(),
 #                                               corr.get_data() )
-#        IMP.em.normalize(corr)
+#        IMP.em.do_normalize(corr)
 #        name=self.get_input_file_name("correlation_img.spi")
 #        stored_corr=IMP.em.Image()
 #        stored_corr.read(name,srw)
@@ -70,7 +70,7 @@ class FFToperationsTests(IMP.test.TestCase):
 #                self.assertAlmostEqual(corr(i,j),stored_corr(i,j), delta=0.001,
 #                            msg="Correlation image is different than stored")
 
-    def test_correlation2D(self):
+    def test_get_correlation2d(self):
         """ Test the correlation between two images using FFT"""
         names=[0,0]
         names[0]=self.get_input_file_name(
@@ -81,8 +81,8 @@ class FFToperationsTests(IMP.test.TestCase):
         srw = IMP.em2d.SpiderImageReaderWriter()
         images=IMP.em2d.read_images(names,srw)
         corr=IMP.em2d.Image()
-        IMP.em2d.correlation2D(images[0], images[1],corr)
-        IMP.em2d.normalize(corr)
+        IMP.em2d.get_correlation2d(images[0], images[1],corr)
+        IMP.em2d.do_normalize(corr)
         name=self.get_input_file_name("correlation_img.spi")
         stored_corr=IMP.em2d.Image(name,srw)
         rows=stored_corr.get_header().get_number_of_rows()

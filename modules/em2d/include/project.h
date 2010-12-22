@@ -44,7 +44,7 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] project_and_save if true, save the images
   \param[in] names names of the images
 */
-IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -57,9 +57,9 @@ IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
 /*!
   \param[in] registration_values Registration values with the parameters of
             the projections to generate
-  \note See the function generate_projections() for the rest of the parameters
+  \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
+IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
@@ -76,9 +76,9 @@ IMPEM2DEXPORT em2d::Images generate_projections(const ParticlesTemp &ps,
              for speeding the projection procedure if they are given.
              If NULL, they are computed
   \param[out] img the projection will be stored here
-  \note See the function generate_projections() for the rest of the parameters
+  \note See the function get_projections() for the rest of the parameters
 */
-IMPEM2DEXPORT void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
+IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
         const RegistrationResult &reg,double resolution,double pixelsize,
         const em2d::ImageReaderWriter<double> &srw,bool save_image=false,
         MasksManagerPtr masks=MasksManagerPtr(),String name="");
@@ -88,9 +88,9 @@ IMPEM2DEXPORT void generate_projection(em2d::Image *img,const ParticlesTemp &ps,
   \param[in] ps particles to project
   \param[in] R rotation to apply to the particles (respect to the centroid)
   \param[in] translation Translation to apply after rotation
-  \note See the function generate_projection() for the rest of the parameters
+  \note See the function get_projection() for the rest of the parameters
 */
-IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
+IMPEMEXPORT void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
@@ -104,8 +104,10 @@ IMPEMEXPORT void project_particles(const ParticlesTemp &ps,
   \param[in] translation translation to apply to the points
   \return A set of Vector2D with the projected points
 */
-IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
-            const algebra::Rotation3D &R,const  algebra::Vector3D &translation);
+IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
+            const algebra::Vector3Ds &ps,
+            const algebra::Rotation3D &R,
+            const  algebra::Vector3D &translation);
 
 
 //! Project the points contained in Vector3Ds
@@ -116,7 +118,8 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
   \param[in] center Center point used for the rotation around it
   \return A set of Vector2D with the projected points
 */
-IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
+IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
+              const algebra::Vector3Ds &ps,
               const algebra::Rotation3D &R,
               const algebra::Vector3D &translation,
               const algebra::Vector3D &center);
@@ -138,7 +141,7 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
              of keeping them in memory. Useful when memory is an issue
   \param[in] names of the projections if saved to disk
 */
- IMPEM2DEXPORT em::Images generate_projections(em::DensityMap *map,
+ IMPEM2DEXPORT em::Images get_projections(em::DensityMap *map,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         const em::ImageReaderWriter<double> &srw,
@@ -159,7 +162,7 @@ IMPEM2DEXPORT algebra::Vector2Ds project_vectors(const algebra::Vector3Ds &ps,
  * \param[in] equality_tolerance tolerance allowed to consider a value in the
  *            direction as zero.
 */
- IMPEMEXPORT void project_map(em::DensityMap *map,
+ IMPEMEXPORT void do_project_map(em::DensityMap *map,
   algebra::Matrix2D_d &m2,int rows,int cols,
     const RegistrationResult &reg,double equality_tolerance);
 

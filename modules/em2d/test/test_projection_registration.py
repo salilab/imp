@@ -29,13 +29,13 @@ class ProjectTests(IMP.test.TestCase):
 
         # Generate 20 evenly distributed projections from the PDB file
         n_projections = 20
-        proj_params=IMP.em2d.evenly_distributed_registration_results(
+        proj_params=IMP.em2d.get_evenly_distributed_registration_results(
                                                                 n_projections)
         rows=128
         cols=128
         pixel_size = 1.5
         resolution = 1 # for generating projections, use a very high resolution
-        projections = IMP.em2d.generate_projections(particles,proj_params,
+        projections = IMP.em2d.get_projections(particles,proj_params,
                     rows,cols,resolution,pixel_size,srw)
         self.assertEqual(len(projections),n_projections,
                                           "Problem generating projections")
@@ -47,7 +47,7 @@ class ProjectTests(IMP.test.TestCase):
         simplex_minimum_size=0.01
 
         finder = IMP.em2d.ProjectionFinder();
-        finder.initialize(pixel_size,
+        finder.setup(pixel_size,
                           resolution,
                           coarse_registration_method,
                           save_match_images,
@@ -79,10 +79,10 @@ class ProjectTests(IMP.test.TestCase):
         for i in xrange(0,len(registration_parameters)):
             # Generate the registered projection
             imgx=IMP.em2d.Image()
-            imgx.resize(rows,cols)
-            IMP.em2d.generate_projection(imgx,particles,
+            imgx.set_size(rows,cols)
+            IMP.em2d.get_projection(imgx,particles,
                     registration_parameters[i],resolution,pixel_size,srw)
-            ccc=IMP.em2d.cross_correlation_coefficient(subjects[i].get_data(),
+            ccc=IMP.em2d.get_cross_correlation_coefficient(subjects[i].get_data(),
                                                   imgx.get_data())
             print i,"ccc",ccc
             snr=0.5

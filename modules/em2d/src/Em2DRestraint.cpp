@@ -43,12 +43,12 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_NEW(Model,model,());
   model=get_model();
   // Project the model
-  RegistrationResults evenly_regs=evenly_distributed_registration_results(
+  RegistrationResults evenly_regs=get_evenly_distributed_registration_results(
                                   n_projections_for_coarse_registration_);
   unsigned int rows =  em_images_[0]->get_header().get_number_of_rows();
   unsigned int cols =  em_images_[0]->get_header().get_number_of_columns();
   em2d::SpiderImageReaderWriter<double> srw;
-  em2d::Images projections=generate_projections(
+  em2d::Images projections=get_projections(
           particles_container_->get_particles(),evenly_regs,rows,cols,
                                 resolution_,apix_,srw);
   finder_.set_projections(projections);

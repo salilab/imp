@@ -31,7 +31,7 @@ public:
   //! Compute the parameters for a polar resampling from the dimensions of
   //! a matrix
   PolarResamplingParameters(unsigned int rows, unsigned int cols) {
-    initialize(rows,cols);
+    setup(rows,cols);
   }
 
   //! Compute the parameters for a polar resampling getting the dimensions from
@@ -40,7 +40,7 @@ public:
       \params[in] matrix Matrix that is going to be resampled
   */
   PolarResamplingParameters(const cv::Mat &m) {
-    initialize(m.rows,m.cols);
+    setup(m.rows,m.cols);
   }
 
 ~PolarResamplingParameters() {};
@@ -49,7 +49,7 @@ public:
   //! The class uses a number of radius values for resampling that is
   //! optimal to perform  FFT during the rotational alignment. The first gess
   //! is  half the rows and columns
-  void initialize(unsigned int rows, unsigned int cols) {
+  void setup(unsigned int rows, unsigned int cols) {
     starting_radius_=5.0;
     n_angles_ = 0;
     matrix_rows_ = rows;
@@ -59,7 +59,7 @@ public:
     radius_step_ = (ending_radius_-starting_radius_)/((double)(n_rings_));
     parameters_set_ = true;
     IMP_LOG(IMP::VERBOSE,
-       "PolarResamplingParameters initialized. Input matrix: "
+       "PolarResamplingParameters setup. Input matrix: "
       << rows << " x " << cols
       << " Starting radius= "  <<  starting_radius_  << " Ending radius= "
       << ending_radius_ << " Rings= " << n_rings_ << std::endl);
@@ -68,19 +68,19 @@ public:
 
   //! Gets the initial radius of the resampling
   double get_starting_radius() const {
-    get_is_initialized();
+    get_is_setup();
     return starting_radius_;
   }
 
   //! Gets the largest radius
   double get_ending_radius() const  {
-    get_is_initialized();
+    get_is_setup();
     return ending_radius_;
   }
 
   //! Gets the current radius employed for the ring in consideration)
   double get_radius(unsigned int n_ring) const {
-    get_is_initialized();
+    get_is_setup();
     IMP_USAGE_CHECK(n_ring<=n_rings_,
      "PolarResamplingParameters: Requested ring is above the maximum number");
     return starting_radius_+n_ring*radius_step_;
@@ -88,7 +88,7 @@ public:
 
   //! Get the number of rings (that is, the number of radius values considered)
   unsigned int get_number_of_rings() const {
-    get_is_initialized();
+    get_is_setup();
     return n_rings_;
   }
 
@@ -114,7 +114,7 @@ public:
 
   //! Get the step for the radius coordinate
   double get_radius_step() const {
-    if(get_is_initialized() == false) {
+    if(get_is_setup() == false) {
       IMP_THROW("trying to get radius_step before initializing",
                                                     IMP::ValueException);
   }
@@ -123,7 +123,7 @@ public:
 
   //! After the number of radius and angles values are set, this function
   //! Builds a map of resampling coordinates. This map is very useful for
-  void build_maps_for_resampling() {
+  void create_maps_for_resampling() {
     if(n_angles_==0) {
       IMP_THROW("Number of sampling points for the angle is zero",
                                                           IMP::ValueException);
@@ -174,7 +174,7 @@ public:
   }
 
 
-  bool get_is_initialized() const  {
+  bool get_is_setup() const  {
    if(parameters_set_) return true;
    return false;
   }

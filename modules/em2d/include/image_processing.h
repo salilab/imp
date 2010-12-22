@@ -25,7 +25,7 @@ IMPEM2D_BEGIN_NAMESPACE
               of the filter
   \note
 */
- IMPEM2DEXPORT void wiener_filter_2D(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void get_wiener_filter_2d(algebra::Matrix2D_d &m,
                       algebra::Matrix2D_d &result,
                       const unsigned int kernel_rows=3,
                       const unsigned int kernel_cols=3);
@@ -40,7 +40,7 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
              doing the morphological reconstruction (values: 4, 8).
 */
- IMPEM2DEXPORT void morphological_reconstruction(algebra::Matrix2D_d &mask,
+ IMPEM2DEXPORT void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
                       algebra::Matrix2D_d &marker,
                       int neighbors_mode=4);
 
@@ -62,7 +62,7 @@ IMPEM2D_BEGIN_NAMESPACE
               initial column. If this parameter is false (default) the
               neighbors outside the matrix are removed.
 */
- IMPEM2DEXPORT Pixels compute_neighbors_2D(
+ IMPEM2DEXPORT Pixels get_neighbors2d(
                             const Pixel &p,const algebra::Matrix2D_d &m,
                              int mode=4,
                              int sign=0,
@@ -71,7 +71,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Fills the holes in the matrix m of height h
- IMPEM2DEXPORT void fill_holes(
+ IMPEM2DEXPORT void do_fillholes(
             algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
 
 //! Gets the domes of m with height h
@@ -79,20 +79,20 @@ IMPEM2D_BEGIN_NAMESPACE
                   algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
 
 
- IMPEM2DEXPORT void preprocess_em2d(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void do_preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs);
 
 
 
 
-//! Morphological dilation of a grayscale matrix m.
+//! Morphological get_dilated of a grayscale matrix m.
 /*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
- IMPEM2DEXPORT void dilation(const algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void do_dilation(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
@@ -102,7 +102,7 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
-IMPEM2DEXPORT void erosion(const algebra::Matrix2D_d &m,
+IMPEM2DEXPORT void do_erosion(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 //! Morphological opening of a grayscale matrix m.
@@ -111,17 +111,17 @@ IMPEM2DEXPORT void erosion(const algebra::Matrix2D_d &m,
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
-IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
+IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
-//! Morphological closing of a grayscale matrix m.
+//! Morphological do_closing of a grayscale matrix m.
 /*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
- IMPEM2DEXPORT void closing(const algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void do_closing(const algebra::Matrix2D_d &m,
               algebra::Matrix2D_d &kernel,
               algebra::Matrix2D_d &result);
 
@@ -131,7 +131,7 @@ IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
   \param[in] mode if 1 the values higher than the threshold are given value 1.
                   If the mode is -1, the values lower the threshold are given 1.
 */
- IMPEM2DEXPORT void thresholding(
+ IMPEM2DEXPORT void do_thresholding(
                   const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
                    double threshold, int mode);
 
@@ -144,7 +144,7 @@ IMPEM2DEXPORT void opening(const algebra::Matrix2D_d &m,
   \note  m and result can be the same matrix.
 
 */
-IMPEM2DEXPORT void masking(
+IMPEM2DEXPORT void do_masking(
           const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
           const algebra::Matrix2D<int> &mask,double value);
 
@@ -156,7 +156,7 @@ IMPEM2DEXPORT void masking(
   \param [in] beta contribution of diffusion versus edge enhancement.
               0 - pure reaction, 90 - pure diffusion
 */
- IMPEM2DEXPORT void diffusion_filtering(
+ IMPEM2DEXPORT void get_diffusion_filtered(
              const algebra::Matrix2D_d &I,
              algebra::Matrix2D_d &result,
               double beta,
@@ -237,12 +237,12 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
 */
- IMPEM2DEXPORT void dilate_and_shrink_warp(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
                             const algebra::Matrix2D_d &greyscale,
                             algebra::Matrix2D_d &kernel);
 
 
- IMPEM2DEXPORT void histogram_stretching(algebra::Matrix2D_d &m,
+ IMPEM2DEXPORT void do_histogram_stretching(algebra::Matrix2D_d &m,
                           int boxes,int offset);
 
 
@@ -300,12 +300,12 @@ IMPEM2DEXPORT void add_noise(cv::Mat &v, double op1, double op2,
             transformation maps, that can be built in the
             PolarResamplingParameters class
 */
-IMPEM2DEXPORT void resample_polar(const cv::Mat &input,
+IMPEM2DEXPORT void do_resample_polar(const cv::Mat &input,
                                   cv::Mat &resampled,
                                const PolarResamplingParameters &polar_params);
 
 //! Normalize a openCV matrix to mean 0 and stddev 1. It is done in place
-IMPEM2DEXPORT void normalize(cv::Mat &m);
+IMPEM2DEXPORT void do_normalize(cv::Mat &m);
 
 //! Applies a transformation to a matrix. First rotates the matrix using the
 //! matrix center as the origin of the rotation, and then applies
@@ -321,7 +321,7 @@ IMPEM2DEXPORT void get_transformed(const cv::Mat &input,
  \param[in] dst The image destination
  \param[in] pix number of pixels to extend the borders
 */
-IMPEM2DEXPORT void extend_borders(cv::Mat &orig,
+IMPEM2DEXPORT void do_extend_borders(cv::Mat &orig,
                                   cv::Mat &dst,
                                   unsigned int pix);
 

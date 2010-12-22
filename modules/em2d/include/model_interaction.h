@@ -29,7 +29,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Generates a density map from a Molecular Hierarchy by downsampling
 IMPEM2DEXPORT Pointer<em::SampledDensityMap>
-                            generate_map_from_model(const Particles &ps,
+                            get_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize);
 
@@ -42,7 +42,7 @@ IMPEM2DEXPORT Pointer<em::SampledDensityMap>
   \param[in] voxelsize in Angstroms/pixel
   \param[in] mrw Reader/Writer for the desired format
 */
-IMPEM2DEXPORT void generate_map_from_model(String fn_model,
+IMPEM2DEXPORT void get_map_from_model(String fn_model,
                              String fn_map,
                             double resolution,
                             double voxelsize,

@@ -34,12 +34,12 @@ IMPEM2D_BEGIN_NAMESPACE
   if(subjects.size()==0) {
     IMP_THROW("Passing empty set of subjects",ValueException);
   }
-  if(polar_params_.get_is_initialized() == false) {
-    polar_params_.initialize(subjects[0]->get_data().rows,
+  if(polar_params_.get_is_setup() == false) {
+    polar_params_.setup(subjects[0]->get_data().rows,
                              subjects[0]->get_data().cols);
     polar_params_.set_estimated_number_of_angles(
                     subjects[0]->get_header().get_number_of_columns());
-    polar_params_.build_maps_for_resampling();
+    polar_params_.create_maps_for_resampling();
   }
   boost::timer preprocessing_timer;
   subjects_.resize(subjects.size());
@@ -50,7 +50,7 @@ IMPEM2D_BEGIN_NAMESPACE
   subjects_cog_.resize(n_subjects);
   for (unsigned int i=0;i<n_subjects;++i) {
     subjects_[i]=subjects[i]; // doest not copy
-    preprocess_subject(i);
+    do_preprocess_subject(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Subject images set" << std::endl);
@@ -63,12 +63,12 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
     IMP_THROW("Passing empty set of projections",ValueException);
   }
 
-  if(polar_params_.get_is_initialized() == false) {
-    polar_params_.initialize(projections[0]->get_data().rows,
+  if(polar_params_.get_is_setup() == false) {
+    polar_params_.setup(projections[0]->get_data().rows,
                              projections[0]->get_data().cols);
     polar_params_.set_estimated_number_of_angles(
                     projections[0]->get_header().get_number_of_columns());
-    polar_params_.build_maps_for_resampling();
+    polar_params_.create_maps_for_resampling();
   }
 
   projections_.resize(projections.size());
@@ -78,7 +78,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
   boost::timer preprocessing_timer;
   for (unsigned int i=0;i<n_projections;++i) {
     projections_[i]=projections[i]; // does not copy
-    preprocess_projection(i);
+    do_preprocess_projection(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Projections set" << std::endl);
@@ -90,7 +90,7 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
 void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Setting model particles" << std::endl);
 
-  if(parameters_initialized_==false) {
+  if(parameters_setup_==false) {
     IMP_THROW("The ProjectionFinder is not initialized",ValueException);
   }
   model_particles_= ps;
@@ -101,7 +101,7 @@ void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
        "Particle " << i
        << " does not have the required attributes" << std::endl);
   }
-  masks_manager_->generate_masks(model_particles_);
+  masks_manager_->create_masks(model_particles_);
   particles_set_=true;
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Model particles set" << std::endl);
 }
@@ -119,32 +119,32 @@ void ProjectionFinder::set_fast_mode(unsigned int n) {
 }
 
 
-void ProjectionFinder::preprocess_projection(unsigned int j) {
+void ProjectionFinder::do_preprocess_projection(unsigned int j) {
   // FFT PREPROCESSING
   if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
-    em2d::autocorrelation2D(projections_[j]->get_data(),autoc);
-    em2d::resample_polar(autoc,polar_autoc,polar_params_);
+    em2d::get_autocorrelation2d(projections_[j]->get_data(),autoc);
+    em2d::do_resample_polar(autoc,polar_autoc,polar_params_);
     get_fft_using_optimal_size(polar_autoc,PROJECTIONS_POLAR_AUTOC_[j]);
   }
   // CENTERS OF GRAVITY AND ROTATIONAL FFT PREPROCESSING
   if(coarse_registration_method_== ALIGN2D_WITH_CENTERS) {
-    preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
+    do_preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
                                            projections_cog_[j],
                                            SUBJECTS_POLAR_AUTOC_[j]);
   }
 }
 
-void ProjectionFinder::preprocess_subject(unsigned int i) {
+void ProjectionFinder::do_preprocess_subject(unsigned int i) {
   if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
     get_fft_using_optimal_size(subjects_[i]->get_data(),SUBJECTS_[i]);
-    autocorrelation2D(subjects_[i]->get_data(),autoc);
-    resample_polar(autoc,polar_autoc,polar_params_);
+    get_autocorrelation2d(subjects_[i]->get_data(),autoc);
+    do_resample_polar(autoc,polar_autoc,polar_params_);
     get_fft_using_optimal_size(polar_autoc,SUBJECTS_POLAR_AUTOC_[i]);
   }
   if(coarse_registration_method_ == ALIGN2D_WITH_CENTERS) {
-    preprocess_for_fast_coarse_registration(subjects_[i]->get_data(),
+    do_preprocess_for_fast_coarse_registration(subjects_[i]->get_data(),
                                             subjects_cog_[i],
                                             SUBJECTS_POLAR_AUTOC_[i]);
   }
@@ -162,12 +162,12 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     ResultAlign2D RA;
     // Method without preprocessing
     if(coarse_registration_method_== ALIGN2D_NO_PREPROCESSING) {
-      RA=align2D_complete(subjects_[i]->get_data(),
+      RA=get_complete_alignment(subjects_[i]->get_data(),
                           projections_[j]->get_data(),false);
     }
     // Methods with preprocessing and FFT alignment
     if(coarse_registration_method_== ALIGN2D_PREPROCESSING) {
-      RA=align2D_complete_no_preprocessing(subjects_[i]->get_data(),
+      RA=get_complete_alignment_no_preprocessing(subjects_[i]->get_data(),
                                            SUBJECTS_[i],
                                            SUBJECTS_POLAR_AUTOC_[i],
                                            projections_[j]->get_data(),
@@ -176,26 +176,26 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
 
     // Method with centers of gravity alignment
     if(coarse_registration_method_== ALIGN2D_WITH_CENTERS) {
-      RA=align2D_complete_with_centers_no_preprocessing(
+      RA=get_complete_alignment_with_centers_no_preprocessing(
                                                 subjects_cog_[i],
                                                 projections_cog_[j],
                                                 SUBJECTS_POLAR_AUTOC_[i],
                                                 PROJECTIONS_POLAR_AUTOC_[j]);
-      // align2D_complete_with_centers_no_preprocessing returns a value of
+      // get_complete_alignment_with_centers_no_preprocessing returns a value of
       // Cross correlation from the rotational alignment but not the ccc.
       // compute the ccc here:
       cv::Mat aux;
       get_transformed(projections_[j]->get_data(),aux,RA.first);
-      RA.second=cross_correlation_coefficient(subjects_[i]->get_data(),aux);
+      RA.second=get_cross_correlation_coefficient(subjects_[i]->get_data(),aux);
     }
 
     // Set result
     algebra::Vector2D shift(0.,0.);
     // Get values from the image
      algebra::Rotation3D R=algebra::get_rotation_from_fixed_zyz(
-                    projections_[j]->get_header().get_Phi(),
-                    projections_[j]->get_header().get_Theta(),
-                    projections_[j]->get_header().get_Psi());
+                    projections_[j]->get_header().get_phi(),
+                    projections_[j]->get_header().get_theta(),
+                    projections_[j]->get_header().get_psi());
     RegistrationResult projection_result(R,shift);
     projection_result.set_projection_index(j);
     projection_result.set_image_index(i);
@@ -227,7 +227,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     get_transformed(projections_[projection_index]->get_data(),
                     match->get_data(),
                     best_2d_transformation);
-    normalize(match,true);
+    do_normalize(match,true);
     coarse_RRs[projection_index].set_in_image(match->get_header());
     std::ostringstream strm;
 
@@ -260,7 +260,7 @@ void ProjectionFinder::get_coarse_registration() {
     get_coarse_registrations_for_subject(i,coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
 
-    std::sort(coarse_RRs.begin(),coarse_RRs.end(),has_higher_ccc);
+    std::sort(coarse_RRs.begin(),coarse_RRs.end(),get_has_higher_ccc);
     // Best result
     registration_results_[i]=coarse_RRs[0];
     registration_results_[i].set_in_image(subjects_[i]->get_header());
@@ -292,14 +292,14 @@ void ProjectionFinder::get_complete_registration() {
   unsigned int rows= subjects_[0]->get_header().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_header().get_number_of_columns();
   IMP_NEW(em2d::Image,match,());
-  match->resize(rows,cols);
+  match->set_size(rows,cols);
 
   // Set optimizer
   IMP_NEW(Model,scoring_model,());
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
 
-  fine2d->initialize(model_particles_,
+  fine2d->setup(model_particles_,
                      resolution_,
                      apix_,
                      scoring_model,
@@ -321,7 +321,7 @@ void ProjectionFinder::get_complete_registration() {
     get_coarse_registrations_for_subject(i,coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
 
-    std::sort(coarse_RRs.begin(),coarse_RRs.end(),has_higher_ccc);
+    std::sort(coarse_RRs.begin(),coarse_RRs.end(),get_has_higher_ccc);
 
     unsigned int n_optimized=projections_.size();
     if(fast_optimization_mode_) {
@@ -342,7 +342,7 @@ void ProjectionFinder::get_complete_registration() {
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
-      if(has_higher_ccc(fine_registration,best_fine_registration)) {
+      if(get_has_higher_ccc(fine_registration,best_fine_registration)) {
         best_fine_registration=fine_registration;
       }
     }
@@ -353,9 +353,9 @@ void ProjectionFinder::get_complete_registration() {
                               << registration_results_[i] << std::endl);
     // save if requested
     if(save_match_images_) {
-      generate_projection(match,model_particles_,registration_results_[i],
+      get_projection(match,model_particles_,registration_results_[i],
                     resolution_,apix_,srw,false,masks_manager_);
-      normalize(match,true);
+      do_normalize(match,true);
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
       registration_results_[i].set_in_image(match->get_header());
@@ -415,7 +415,7 @@ double ProjectionFinder::get_fine_registration_time() const {
 
 
 
-void ProjectionFinder::preprocess_for_fast_coarse_registration(
+void ProjectionFinder::do_preprocess_for_fast_coarse_registration(
         const cv::Mat &m,algebra::Vector2D &center,
         cv::Mat &POLAR_AUTOC) {
   // Make the matrix positive to compute the weighted centroid
@@ -429,8 +429,8 @@ void ProjectionFinder::preprocess_for_fast_coarse_registration(
   get_transformed(m,result,T);
   // Get the autocorrelation in polar coordinates and its FFT
   cv::Mat autoc,polar_autoc;
-  autocorrelation2D(result,autoc);
-  resample_polar(autoc,polar_autoc,polar_params_);
+  get_autocorrelation2d(result,autoc);
+  do_resample_polar(autoc,polar_autoc,polar_params_);
   get_fft_using_optimal_size(polar_autoc,POLAR_AUTOC);
 }
 
