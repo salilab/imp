@@ -52,7 +52,7 @@ class CropTest(IMP.test.TestCase):
         os.unlink("test2.mrc")
 
 
-    def test_crop_using_larger_extent(self):
+    def _test_crop_using_larger_extent(self):
         """Test the cropping functionality works when the input bb is larger than the density"""
         em_bb=IMP.em.get_bounding_box(self.scene)
         larger_bb=IMP.algebra.BoundingBox3D(
