@@ -30,9 +30,7 @@ class ModelLoaderTests(IMP.test.TestCase):
         for mp in (loader.load_atoms(m),
                    IMP.modeller.read_pdb(
                        self.get_input_file_name('single_protein.pdb'), m)):
-            mp.validate()
-            hc= IMP.core.HierarchyCounter()
-            IMP.core.depth_first_traversal(mp, hc)
+            desc = IMP.core.get_all_descendants(mp)
             f_num_res_type= IMP.atom.ResidueType.get_number_unique()
             f_num_atom_type= IMP.atom.AtomType.get_number_unique()
             mpp= mp.get_parent()
@@ -45,7 +43,7 @@ class ModelLoaderTests(IMP.test.TestCase):
                              "too many residue types")
             self.assertEqual(i_num_atom_type, f_num_atom_type,
                              "too many atom types")
-            self.assertEqual(1377, hc.get_count(),
+            self.assertEqual(1377, len(desc),
                              "Wrong number of particles created")
             rd= IMP.atom.Residue(IMP.atom.get_residue(mp, 29).get_particle())
             at= IMP.atom.get_atom(rd, IMP.atom.AtomType("C"))
@@ -83,16 +81,14 @@ class ModelLoaderTests(IMP.test.TestCase):
                              self.get_input_file_name('single_dna.pdb'),
                              special_patches=na_patches)
         mp = IMP.modeller.ModelLoader(modmodel).load_atoms(m)
-        mp.validate()
-        hc= IMP.core.HierarchyCounter()
-        IMP.core.depth_first_traversal(mp, hc)
+        desc = IMP.core.get_all_descendants(mp)
         mpp= mp.get_parent()
         self.assertEqual(mpp, IMP.atom.Hierarchy(),
                          "Should not have a parent")
         mpc= mp.get_child(0)
         self.assertEqual(mpc.get_parent(), mp,
                          "Should not have a parent")
-        self.assertEqual(3160, hc.get_count(),
+        self.assertEqual(3160, len(desc),
                          "Wrong number of particles created")
 
 if __name__ == '__main__':
