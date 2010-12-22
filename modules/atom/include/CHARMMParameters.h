@@ -26,7 +26,11 @@ IMPATOM_BEGIN_NAMESPACE
 struct CHARMMBondParameters {
   double force_constant;
   double ideal;
+  IMP_SHOWABLE_INLINE(CHARMMBondParameters,
+                      {out << "force constant: " << force_constant
+                       << "; ideal value: " << ideal;});
 };
+IMP_OUTPUT_OPERATOR(CHARMMBondParameters);
 IMP_VALUES(CHARMMBondParameters, CHARMMBondParametersList);
 
 //! The parameters for a CHARMM dihedral or improper.
@@ -34,7 +38,12 @@ struct CHARMMDihedralParameters {
   double force_constant;
   int multiplicity;
   double ideal;
+  IMP_SHOWABLE_INLINE(CHARMMDihedralParameters,
+                      {out << "force constant: " << force_constant
+                       << "; multiplicity: " << multiplicity
+                       << "; ideal value: " << ideal;});
 };
+IMP_OUTPUT_OPERATOR(CHARMMDihedralParameters);
 IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
 
 //! CHARMM force field parameters.
