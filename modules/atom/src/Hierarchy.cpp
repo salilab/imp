@@ -175,7 +175,7 @@ namespace {
     bool operator()(Hierarchy h, bool) {
       if (h.get_number_of_children() ==0) {
         if (!h.get_as_xyzr()) {
-          TEST_FAIL("Leaf " << h << " does not have coordinates");
+          TEST_FAIL("Leaf " << h << " does not have coordinates and radius");
         }
         if (!h.get_as_mass()) {
           TEST_FAIL("Leaf " << h << " does not have mass");
