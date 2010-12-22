@@ -41,8 +41,11 @@ public:
   double get_charge() const { return charge_; }
   void set_charmm_type(std::string charmm_type) { charmm_type_ = charmm_type; }
   void set_charge(double charge) { charge_ = charge; }
+  IMP_SHOWABLE_INLINE(CHARMMAtomTopology, {out << "name: " << name_
+                                           << "; CHARMM type: " << charmm_type_
+                                           << "; charge: " << charge_;});
 };
-
+IMP_OUTPUT_OPERATOR(CHARMMAtomTopology);
 IMP_VALUES(CHARMMAtomTopology, CHARMMAtomTopologies);
 
 class CHARMMResidueTopology;
@@ -78,8 +81,10 @@ public:
                 const CHARMMResidueTopology *next_residue,
                 const std::map<const CHARMMResidueTopology *,
                                Hierarchy> &resmap) const;
-};
 
+  IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, {out << atom_name_;});
+};
+IMP_OUTPUT_OPERATOR(CHARMMBondEndpoint);
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
 //! A bond, angle, dihedral or improper between some number of endpoints.
@@ -135,7 +140,17 @@ public:
     }
     return as;
   }
+  IMP_SHOWABLE_INLINE(CHARMMBond,
+     { for (std::vector<CHARMMBondEndpoint>::const_iterator
+            it = endpoints_.begin(); it != endpoints_.end(); ++it) {
+         if (it != endpoints_.begin()) {
+           out << "-";
+         }
+         out << it->get_atom_name();
+       }
+     });
 };
+IMP_OUTPUT_OPERATOR_D(CHARMMBond);
 
 //! Base class for all CHARMM residue-based topology
 class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
