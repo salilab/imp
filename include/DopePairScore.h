@@ -2,7 +2,7 @@
  *  \file membrane/DopePairScore.h
  *  \brief Dope scoring
  *
- *  Copyright 2007-9 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMEMBRANE_DOPE_PAIR_SCORE_H
@@ -35,8 +35,8 @@ class DopeType;
 
 */
 class IMPMEMBRANEEXPORT DopePairScore:
-  public core::StatisticalPairScore<DopeType, false> {
-  typedef core::StatisticalPairScore<DopeType, false>  P;
+  public core::StatisticalPairScore<DopeType, false, true> {
+  typedef core::StatisticalPairScore<DopeType, false, true>  P;
  public:
   DopePairScore(double threshold
                              = std::numeric_limits<double>::max());

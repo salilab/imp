@@ -17,7 +17,7 @@ IMP_SWIG_OBJECT(IMP::membrane, DopePairScore, DopePairScores);
 
 namespace IMP {
   namespace membrane {
-   %template(_DopePairScoreBase) ::IMP::core::StatisticalPairScore< IMP::membrane::DopeType, false>;
+   %template(_DopePairScoreBase) ::IMP::core::StatisticalPairScore< IMP::membrane::DopeType, false, true>;
   }
 }
 %include "IMP/membrane/DopePairScore.h"
