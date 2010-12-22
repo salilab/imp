@@ -7,7 +7,7 @@
  .
  - \ref systems_index "Biological systems"
  - \ref applications_index "Applications"
- - \ref examples_index "Examples" 
+ - \ref examples_index "Examples"
  - \wiki{FAQ, FAQ}
  - \salilabssl{imp/bugs/,Bug Tracker}
  - \ref recent "Change history"
@@ -16,7 +16,7 @@
 
  Welcome to the \imp library documentation.
  Throughout the documentation we refer to two, overlapping sets of people.
- - <em>users</em> write python scripts to use existing \imp functionality 
+ - <em>users</em> write python scripts to use existing \imp functionality
  - <em>developers</em> develop new methods for scoring, sampling or representation,
    and hopefully contribute them back to \imp central
  Various pieces of documentation are marked as being intended for developers.
@@ -70,6 +70,13 @@ An overview of the various modules currently available. Representative classes a
 <td>IMP::em</td>
 <td></td>
 <td>IMP::em::FitRestraint</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::em2d</td>
+<td></td>
+<td>IMP::em2d::Em2DRestraint</td>
 <td></td>
 <td></td>
 </tr>
