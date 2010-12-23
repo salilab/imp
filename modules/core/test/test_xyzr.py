@@ -5,7 +5,7 @@ import IMP.algebra
 
 class DecoratorTests(IMP.test.TestCase):
     def test_xyzr(self):
-        """ Testing XYZR decorators"""
+        """Testing XYZR decorators"""
         m = IMP.Model()
         pa=IMP.Particle(m)
         pb=IMP.Particle(m)
@@ -20,7 +20,7 @@ class DecoratorTests(IMP.test.TestCase):
         nrda= IMP.core.XYZ(pa)
         nrdb= IMP.core.XYZ(pb)
     def test_xyzr_overload(self):
-        """ Testing XYZR overload decorators"""
+        """Testing XYZR overload decorators"""
         m = IMP.Model()
         pa=IMP.Particle(m)
         pb=IMP.Particle(m)
