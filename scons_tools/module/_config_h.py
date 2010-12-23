@@ -51,57 +51,60 @@ def _action_config_h(target, source, env):
 
 #ifndef IMP_DOXYGEN
 
-#ifdef _MSC_VER
-#ifdef %(PREPROC)s_EXPORTS
-#define %(PREPROC)sEXPORT __declspec(dllexport)
-#else
-#define %(PREPROC)sEXPORT __declspec(dllimport)
-#endif
-#define %(PREPROC)sLOCAL
-#else
-#ifdef GCC_VISIBILITY
-#define %(PREPROC)sEXPORT __attribute__ ((visibility("default")))
-#define %(PREPROC)sLOCAL __attribute__ ((visibility("hidden")))
-#else
-#define %(PREPROC)sEXPORT
-#define %(PREPROC)sLOCAL
-#endif
-#endif
+#  ifdef _MSC_VER
 
-#if defined(_MSC_VER) && !defined(SWIG) && !defined(IMP_DOXYGEN)
-#ifdef %(PREPROC)s_EXPORTS
+#    ifdef %(PREPROC)s_EXPORTS
+#      define %(PREPROC)sEXPORT __declspec(dllexport)
+#    else // EXPORTS
+#      define %(PREPROC)sEXPORT __declspec(dllimport)
+#    endif // EXPORTS
+#    define %(PREPROC)sLOCAL
 
-#define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
-template class __declspec(dllexport) name
+#  else // _MSC_VER
 
-#else
+#    ifdef GCC_VISIBILITY
+#      define %(PREPROC)sEXPORT __attribute__ ((visibility("default")))
+#      define %(PREPROC)sLOCAL __attribute__ ((visibility("hidden")))
+#    else // GCC_VISIBILITY
+#      define %(PREPROC)sEXPORT
+#      define %(PREPROC)sLOCAL
+#    endif // GCC_VISIBILITY
+#  endif // _MSC_VER
 
-#define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
-template class __declspec(dllimport) name
+#  if defined(_MSC_VER) && !defined(SWIG)
+#    ifdef %(PREPROC)s_EXPORTS
 
-#endif
+#      define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+          template class __declspec(dllexport) name
 
-#else
-#define %(PREPROC)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+#    else //EXPORTS
 
-#endif
+#      define %(PREPROC)s_EXPORT_TEMPLATE(name)       \
+          template class __declspec(dllimport) name
+
+#    endif // EXPORTS
+
+#  else // MSC and SWIG
+#    define %(PREPROC)s_EXPORT_TEMPLATE(name) IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+#  endif // MSC and SWIG
 
 
 """ % vars
-    print >> h, "#define %(PREPROC)s_BEGIN_NAMESPACE \\"%vars
+    print >> h, "#  define %(PREPROC)s_BEGIN_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "namespace %s {\\" %comp
     print >> h
-    print >> h, "#define %(PREPROC)s_END_NAMESPACE \\"%vars
+    print >> h, "#  define %(PREPROC)s_END_NAMESPACE \\"%vars
     for comp in vars['namespace'].split("::"):
         print >> h, "} /* namespace %s */ \\" %comp
     print >> h
-    print >> h, """#define %(PREPROC)s_BEGIN_INTERNAL_NAMESPACE \\
+    print >> h, """#  define %(PREPROC)s_BEGIN_INTERNAL_NAMESPACE \\
 %(PREPROC)s_BEGIN_NAMESPACE \\
 namespace internal {
 """ %vars
     print >> h
-    print >> h, """#define %(PREPROC)s_END_INTERNAL_NAMESPACE \\
+    print >> h, """#  define %(PREPROC)s_END_INTERNAL_NAMESPACE \\
 } /* namespace internal */ \\
 %(PREPROC)s_END_NAMESPACE
 """ %vars
@@ -117,18 +120,18 @@ namespace internal {
         if nd==name:
             nd= name.replace("_NO_", "_USE_")
         if nd != name:
-            print >> h, "#ifdef "+nd
+            print >> h, "#  ifdef "+nd
             print >> h, "/* Do not define IMP config macros directly */"
-            print >> h, "BOOST_STATIC_ASSERT(false);"
-            print >> h, "#endif"
-        print >> h, "#ifdef "+name
+            print >> h, """#    error "Do not define macro """+nd+""" directly.\""""
+            print >> h, "#  endif"
+        print >> h, "#  ifdef "+name
         print >> h, "/* Do not define IMP config macros directly */"
-        print >> h, "BOOST_STATIC_ASSERT(false);"
-        print >> h, "#endif"
+        print >> h, """#    error "Do not define macro """+name+""" directly.\""""
+        print >> h, "#  endif"
         if value is not None:
-            print >> h, "#define "+name+" "+value
+            print >> h, "#  define "+name+" "+value
         else:
-            print >> h, "#define "+name
+            print >> h, "#  define "+name
     print >> h
 
 
@@ -136,10 +139,10 @@ namespace internal {
     # to call from Objects (which have their own get_version_info() method
     print >> h, """
 
-#ifndef SWIG
-#include <IMP/internal/directories.h>
-#include <IMP/kernel_config.h>
-#include <string>
+#  ifndef SWIG
+#    include <IMP/internal/directories.h>
+#    include <IMP/kernel_config.h>
+#    include <string>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 IMPEXPORT std::string get_data_path(std::string module_name,
@@ -148,8 +151,8 @@ IMPEXPORT std::string get_example_path(std::string module_name,
                                        std::string file_name);
 
 IMP_END_INTERNAL_NAMESPACE
-#endif // swig
-#endif // doxygen
+#  endif // SWIG
+#endif // IMP_DOXYGEN
 
 #include <string>
 
