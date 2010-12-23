@@ -112,7 +112,6 @@ def create_restraints(m, chain, tmb, tme):
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
-
 ## DOPE/GQ scoring
     def add_DOPE():
 # initializing data
@@ -167,11 +166,9 @@ def  create_discrete_states(m,chain,tmb):
                 rot_m =IMP.algebra.compose(rot2,rot01)
                 for dz in range(0,1):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
-                    for dx in range(-5,5):
+                    for dx in range(0,2):
                         if ( dx > 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(3.0*dx,0,1.0*dz))))
-
-
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(10.0*dx,0,1.0*dz))))
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
     pst= IMP.domino.ParticleStatesTable()
@@ -238,12 +235,20 @@ print "sampling"
 cs=s.get_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
+score=[]
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    score = m.evaluate(False)
-    print "solution number:",i," is:",score
-    if ( score < -240 ):
-        display(m,chain,tmb,tme,"score_"+str(score)+".pym")
+    score.append(m.evaluate(False))
+
+topscore = 20
+print "visualizing the top ",topscore
+for i in range(0,topscore):
+    low=min(score)
+    ii=score.index(low)
+    score[ii]=10000000.
+    print "** solution number:",i," is:",low
+    cs.load_configuration(ii)
+    display(m,chain,tmb,tme,"sol_"+str(i)+".score_"+str(low)+".pym")
 
 #print "creating visualization"
 #display(m,chain,tmb,tme)
