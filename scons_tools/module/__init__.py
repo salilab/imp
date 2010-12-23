@@ -442,7 +442,7 @@ def IMPModuleTest(env, python_tests, cpp_tests,
             if str(f).endswith("test_standards.py"):
                 found=f
         if found:
-            files.remove(f)
+            files.remove(found)
         files.append(standards)
     test = scons_tools.test.add_test(env, source=files,
                                      type='unit test')
