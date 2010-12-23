@@ -9,11 +9,15 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/algebra/Transformation2D.h"
-//#include "opencv/cv.h"
-//#include "opencv/highgui.h"
+
+#ifdef IMP_HAS_OPENCV22
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#else
+#include "opencv/cv.h"
+#include "opencv/highgui.h"
+#endif
 
 #include <iostream>
 
