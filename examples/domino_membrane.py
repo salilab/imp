@@ -24,9 +24,9 @@ class SameResidueFilter(IMP.PairFilter):
 def create_representation(tmb,tme):
     m=IMP.Model()
 #   only CA
-    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
+#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
 #   all-atom
-#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   select particles and make rigid bodies
     print "Making rigid bodies"
@@ -65,7 +65,7 @@ def create_restraints(m, chain, tmb, tme):
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
             lsc.add_particles(s.get_selected_particles())
         nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 2.0)
-        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
+        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,100))
         evr= IMP.container.PairsRestraint(ps, nbl)
         m.add_restraint(evr)
         m.set_maximum_score(evr, .01)
@@ -150,15 +150,38 @@ def create_restraints(m, chain, tmb, tme):
 
 # creating the discrete states for domino
 def  create_discrete_states(m,chain,tmb):
-    trs= [IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                            IMP.algebra.Vector3D(0,0,0))),
-          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                            IMP.algebra.Vector3D(5,0,0))),
-          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                            IMP.algebra.Vector3D(10,0,0))),
-          IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
-                                            IMP.algebra.Vector3D(15,0,0)))]
-    pstate= IMP.domino.RigidBodyStates(trs)
+    rot00=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
+    trs0=[]
+    for i in range(0,1):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
+        for t in range(0,5):
+            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
+            rot1=IMP.algebra.compose(tilt,rotz)
+            for s in range(0,4):
+                if ( t == 0 ) and ( s != 0 ):
+                    break
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
+                rot2=IMP.algebra.compose(swing,rot1)
+                rot =IMP.algebra.compose(rot2,rot00)
+                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(0,0,0))))
+
+    rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
+    trs1=[]
+    for i in range(0,1):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
+        for t in range(0,5):
+            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
+            rot1=IMP.algebra.compose(tilt,rotz)
+            for s in range(0,4):
+                if ( t == 0 ) and ( s != 0 ):
+                    break
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
+                rot2=IMP.algebra.compose(swing,rot1)
+                rot =IMP.algebra.compose(rot2,rot01)
+                trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(10,0,0))))
+
+    pstate0= IMP.domino.RigidBodyStates(trs0)
+    pstate1= IMP.domino.RigidBodyStates(trs1)
     pst= IMP.domino.ParticleStatesTable()
 # getting rigid bodies
     rbs=[]
@@ -166,8 +189,8 @@ def  create_discrete_states(m,chain,tmb):
         s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
         rbs.append(rb)
-    pst.set_particle_states(rbs[0], pstate)
-    pst.set_particle_states(rbs[1], pstate)
+    pst.set_particle_states(rbs[0], pstate0)
+    pst.set_particle_states(rbs[1], pstate1)
     return pst
 
 # setting up domino (and filters?)
@@ -175,25 +198,21 @@ def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
 #    s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
-#    filters=[]
+    filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
-#    filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
+    filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
-#    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
-#    filters[-1].set_log_level(IMP.SILENT)
-#    mf=MyFilterTable(ps[1], 0)
-    # try with and without this line
-#    filters.append(mf)
-#    states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
-    #states.set_log_level(IMP.SILENT);
-#    s.set_subset_states_table(states)
-#    s.set_subset_filter_tables(filters)
+    filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
+    filters[-1].set_log_level(IMP.SILENT)
+    states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
+    s.set_subset_states_table(states)
+    s.set_subset_filter_tables(filters)
     return s
 
-def display(m,chain,tmb,tme):
+def display(m,chain,tmb,tme,name):
     m.update()
-    w= IMP.display.PymolWriter("out.pym")
+    w= IMP.display.PymolWriter(name)
     for i in range(len(tmb)):
         j=1
         s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
@@ -229,7 +248,10 @@ cs=s.get_sample()
 print "found ", cs.get_number_of_configurations(), "solutions"
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    print "solution number:",i," is:", m.evaluate(False)
+    score = m.evaluate(False)
+    print "solution number:",i," is:",score
+#    if ( score < 0 ):
+#       display(m,chain,tmb,tme,"sol_"+str(i)+".score_"+str(score)+".pym")
 
 #print "creating visualization"
 #display(m,chain,tmb,tme)
