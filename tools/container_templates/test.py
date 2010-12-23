@@ -170,7 +170,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
     def test_max_score(self):
         """Test the MaximumCLASSNAMEScore"""
         m= IMP.Model()
-        s= IMP.CLASSNAMEScoresTemp()
+        s= []
         for i in range(0,5):
             s.append(IMP._ConstCLASSNAMEScore(i))
         ps= IMP.container.MaximumCLASSNAMEScore(s, 2)
@@ -181,7 +181,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
     def test_min_score(self):
         """Test the MinimumCLASSNAMEScore"""
         m= IMP.Model()
-        s= IMP.CLASSNAMEScoresTemp()
+        s= []
         for i in range(0,5):
             s.append(IMP._ConstCLASSNAMEScore(i))
         ps= IMP.container.MinimumCLASSNAMEScore(s, 3)
