@@ -16,6 +16,7 @@
 #include "../BondSingletonScore.h"
 #include <IMP/RestraintSet.h>
 #include <IMP/scoped.h>
+#include <IMP/dependency_graph.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 
 #ifndef IMP_DOXYGEN

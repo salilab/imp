@@ -19,6 +19,8 @@
 #include <IMP/Decorator.h>
 #include <IMP/internal/utility.h>
 
+#include <boost/tuple/tuple.hpp>
+
 #include <limits>
 #include <vector>
 #include <deque>

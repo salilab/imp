@@ -194,7 +194,7 @@ void CoreClosePairContainer::do_before_evaluate() {
               << "slack or reformulate the problem.", ValueException);
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    std::set<ParticlePair> existings(particle_pairs_begin(),
+    IMP::internal::Set<ParticlePair> existings(particle_pairs_begin(),
                                      particle_pairs_end());
     unsigned int num= std::distance(particle_pairs_begin(),
                                     particle_pairs_end());
