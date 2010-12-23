@@ -19,12 +19,13 @@ scons_tools.dependency.add_external_library(env, "OpenCV22",
                   extra_libs=[])
 
 
+config = []
 if scons_tools.data.get(env).dependencies["OpenCV21"]:
     #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV21"]
     pass
 elif scons_tools.data.get(env).dependencies["OpenCV22"]:
+    config.append(['IMP_HAS_OPENCV22', '1'])
     #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV22"]
-    pass
 else:
     print "em2d disabled due to missing dependency OpenCV"
     scons_tools.data.get(env).add_module("em2d",ok=False)
@@ -35,7 +36,8 @@ env.IMPModuleBuild(version="SVN",
                    required_modules=["container","core","atom","algebra","em","display","gsl"],
                    required_dependencies=["FFTW3","Boost.ProgramOptions",
                                           "Boost.FileSystem"],
-                   optional_dependencies=['OpenCV21', 'OpenCV22']
+                   optional_dependencies=['OpenCV21', 'OpenCV22'],
+                   config_macros=config
                    )
 
 
