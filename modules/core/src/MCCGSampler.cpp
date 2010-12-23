@@ -12,12 +12,14 @@
 #include <IMP/core/BallMover.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/utility.h>
+#include <IMP/dependency_graph.h>
 #include <IMP/core/internal/CoreListSingletonContainer.h>
 #include <IMP/algebra/vector_generators.h>
 #include <boost/random/uniform_real.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/core_macros.h>
 #include <boost/graph/reverse_graph.hpp>
+
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
