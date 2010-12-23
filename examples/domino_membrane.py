@@ -151,8 +151,10 @@ def create_restraints(m, chain, tmb, tme):
 # creating the discrete states for domino
 def  create_discrete_states(m,chain,tmb):
     rot00=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
+    rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
     trs0=[]
-    for i in range(0,1):
+    trs1=[]
+    for i in range(0,4):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
@@ -164,19 +166,6 @@ def  create_discrete_states(m,chain,tmb):
                 rot2=IMP.algebra.compose(swing,rot1)
                 rot =IMP.algebra.compose(rot2,rot00)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(0,0,0))))
-
-    rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
-    trs1=[]
-    for i in range(0,1):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,5):
-            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
-            rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,4):
-                if ( t == 0 ) and ( s != 0 ):
-                    break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
-                rot2=IMP.algebra.compose(swing,rot1)
                 rot =IMP.algebra.compose(rot2,rot01)
                 trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(10,0,0))))
 
