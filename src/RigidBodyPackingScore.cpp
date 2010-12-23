@@ -113,7 +113,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   if(dist <= min_dist || dist >=max_dist) return 0.;
 
   // otherwise, calculate the score
-  double score=1.;
+  double score=100000.;
   for(unsigned int i=0;i<omb_.size();i++)
    if(omega > omb_[i] && omega < ome_[i] &&
       dist > ddb_[i] && dist < dde_[i]) score=0.;
