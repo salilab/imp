@@ -16,7 +16,7 @@ rsr = restrainer.add_restraint(IMP.restrainer.get_example_path('input/saxs_restr
 ###=======================================================================###
 
 # Get the IMP model object used by restrainer
-model = restrainer.model()
+model = restrainer.get_model()
 
 # Get restraint by name
 r = rsr.get_restraint_by_name('saxs_restraint')

@@ -13,7 +13,7 @@ class RestraintTest(IMP.test.TestCase):
         self.representation = RepParser.run()
         self.display = DisplayParser.run()
 
-        self.Model = self.representation.to_model()
+        self.Model = self.representation.get_model()
 
         self.log = self.display.create_log(self.representation, 'pdb_log_%03d.py')
         self.log.write('initial_display_in_chimera.py')

@@ -55,7 +55,7 @@ class Representation(object):
                 return r
         return None
 
-    def to_model(self, model=None):
+    def get_model(self, model=None):
         """Return an IMP::Model that contains the representation"""
         if model is None:
             model = self._model

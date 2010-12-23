@@ -14,7 +14,7 @@ class RestraintTest(IMP.test.TestCase):
         self.representation = RepParser.run()
         self.restraint = RestraintParser.run()
 
-        self.Model = self.representation.to_model()
+        self.Model = self.representation.get_model()
         self.restraint.add_to_representation(self.representation)
 
 
