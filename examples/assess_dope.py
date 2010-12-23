@@ -41,9 +41,6 @@ def add_DOPE(m, prot):
     d=   IMP.container.PairsRestraint(dps, dpc)
     m.add_restraint(d)
 
-# Here starts the real job...
-#IMP.set_log_level(IMP.VERBOSE)
-
 print "creating representation"
 (m,prot)=create_representation()
 

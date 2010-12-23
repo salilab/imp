@@ -24,9 +24,9 @@ class SameResidueFilter(IMP.PairFilter):
 def create_representation(tmb,tme):
     m=IMP.Model()
 #   only CA
-#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
+    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
 #   all-atom
-    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   select particles and make rigid bodies
     print "Making rigid bodies"
@@ -112,8 +112,6 @@ def create_restraints(m, chain, tmb, tme):
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
-## ?? def add_penetration_restraint(rb): ??
-## restraint on the penetration depth
 
 ## DOPE/GQ scoring
     def add_DOPE():
@@ -136,6 +134,7 @@ def create_restraints(m, chain, tmb, tme):
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(d)
 
+# assembling all the restraints
     add_excluded_volume()
     for i in range(len(tmb)-1):
         s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
@@ -154,7 +153,7 @@ def  create_discrete_states(m,chain,tmb):
     rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
     trs0=[]
     trs1=[]
-    for i in range(0,4):
+    for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
@@ -164,10 +163,14 @@ def  create_discrete_states(m,chain,tmb):
                     break
                 swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
-                rot =IMP.algebra.compose(rot2,rot00)
-                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(0,0,0))))
-                rot =IMP.algebra.compose(rot2,rot01)
-                trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(10,0,0))))
+                rot_p =IMP.algebra.compose(rot2,rot00)
+                rot_m =IMP.algebra.compose(rot2,rot01)
+                for dz in range(0,1):
+                    trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
+                    for dx in range(-5,5):
+                        if ( dx > 0 ):
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(3.0*dx,0,1.0*dz))))
+
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
@@ -182,7 +185,7 @@ def  create_discrete_states(m,chain,tmb):
     pst.set_particle_states(rbs[1], pstate1)
     return pst
 
-# setting up domino (and filters?)
+# setting up domino (and filters)
 def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
 #    s.set_log_level(IMP.VERBOSE)
@@ -239,8 +242,8 @@ for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
     score = m.evaluate(False)
     print "solution number:",i," is:",score
-#    if ( score < 0 ):
-#       display(m,chain,tmb,tme,"sol_"+str(i)+".score_"+str(score)+".pym")
+    if ( score < -240 ):
+        display(m,chain,tmb,tme,"score_"+str(score)+".pym")
 
 #print "creating visualization"
 #display(m,chain,tmb,tme)
