@@ -213,6 +213,7 @@ private:
   IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
   IMP::Pointer<core::SphereDistancePairScore> sphere_distance_pair_score_;
 };
+IMP_VALUES(SimpleConnectivity, SimpleConnectivities);
 
 //! Simple distance restraint between two particles.
 /**
@@ -286,6 +287,7 @@ private:
   IMP::Pointer<core::DistanceRestraint> distance_restraint_;
   IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
+IMP_VALUES(SimpleDistance, SimpleDistances);
 
 //! Simple diameter restraint.
 /**
@@ -360,6 +362,7 @@ private:
   IMP::Pointer<core::DiameterRestraint> diameter_restraint_;
   IMP::Pointer<core::HarmonicUpperBound> harmonic_upper_bound_;
 };
+IMP_VALUES(SimpleDiameter, SimpleDiameters);
 
 //! Simple excluded volume restraint.
 /**
@@ -404,6 +407,7 @@ private:
 
   IMP::Pointer<core::ExcludedVolumeRestraint> excluded_volume_restraint_;
 };
+IMP_VALUES(SimpleExcludedVolume, SimpleExcludedVolumes);
 
 //! Simple EM fit restraint.
 /**
@@ -442,6 +446,7 @@ private:
 
   IMP::Pointer<em::FitRestraint> fit_restraint_;
 };
+IMP_VALUES(SimpleEMFit, SimpleEMFits);
 
 IMPRESTRAINER_END_NAMESPACE
 

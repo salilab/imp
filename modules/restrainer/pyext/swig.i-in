@@ -1,3 +1,9 @@
+IMP_SWIG_VALUE(IMP::restrainer, SimpleConnectivity, SimpleConnectivities);
+IMP_SWIG_VALUE(IMP::restrainer, SimpleDistance, SimpleDistances);
+IMP_SWIG_VALUE(IMP::restrainer, SimpleDiameter, SimpleDiameters);
+IMP_SWIG_VALUE(IMP::restrainer, SimpleExcludedVolume, SimpleExcludedVolumes);
+IMP_SWIG_VALUE(IMP::restrainer, SimpleEMFit, SimpleEMFits);
+
 %pythoncode %{
 
 import _representation
