@@ -19,7 +19,7 @@ disp = restrainer.add_display(IMP.restrainer.get_example_path('input/pdb_display
 restrainer.log.write('initial_display_in_chimera.py')
 
 # Get the IMP model object used by restrainer
-model = restrainer.model()
+model = restrainer.get_model()
 
 model.show()
 model.evaluate(False)

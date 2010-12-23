@@ -63,7 +63,7 @@ class Restraint(object):
         """ Place restraint into IMP Model."""
 
         if repr._model is None:
-            repr.to_model()
+            repr.get_model()
         self._set_root()
         self._model = repr._model
         for child in self._children:

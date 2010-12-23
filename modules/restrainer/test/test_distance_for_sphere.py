@@ -14,7 +14,7 @@ class RestraintTest(IMP.test.TestCase):
         self.restraint = RestraintParser.run()
         self.display = DisplayParser.run()
 
-        self.Model = self.representation.to_model()
+        self.Model = self.representation.get_model()
         self.restraint.add_to_representation(self.representation)
         #self.log = self.display.create_log(self.representation, 'sphere_log_%03d.py')
         #self.log.write('sphere_initial.py')

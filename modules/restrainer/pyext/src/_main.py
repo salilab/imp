@@ -40,7 +40,7 @@ class Main(object):
         if not self.log:
             if self.display and self.representation:
                 if not self.restraint:
-                    self.representation.to_model()
+                    self.representation.get_model()
                 if self._logname:
                     logname = self._logname
                 else:
@@ -58,7 +58,7 @@ class Main(object):
                     self.optimization.run(self.restraint, None)
         elif self.optimization:
             raise Exception, "Restraint missing!"
-    def model(self):
+    def get_model(self):
         if self.representation:
             return self.representation._model
         else:

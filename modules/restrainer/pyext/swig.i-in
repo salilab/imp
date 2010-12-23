@@ -29,9 +29,9 @@ class Representation(_representation.Representation):
         """Return a node that have the id given by the parameter"""
         return _representation.Representation.find_by_id(self,id)
 
-    def to_model(self, model=None):
+    def get_model(self, model=None):
         """Return an IMP::Model that contains the representation"""
-        return _representation.Representation.to_model(self, model)
+        return _representation.Representation.get_model(self, model)
 
 class Restraint(_restraint.Restraint):
     """Store Restraint"""
@@ -131,8 +131,8 @@ class Main(_main.Main):
         return _main.Main.add_display(self, fname, logname)
     def optimize(self):
         _main.Main.optimize(self)
-    def model(self):
-        return _main.Main.model(self)
+    def get_model(self):
+        return _main.Main.get_model(self)
 
 %}
 

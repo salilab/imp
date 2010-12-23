@@ -16,7 +16,7 @@ rsr = restrainer.add_restraint(IMP.restrainer.get_example_path('input/eg2_restra
 ###=======================================================================###
 
 # Get the IMP model object used by restrainer
-model = restrainer.model()
+model = restrainer.get_model()
 
 # Find the IMP data structure with the given id
 protein1_hierarchy = rep.get_imp_hierarchy_by_id('Protein1')

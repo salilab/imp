@@ -9,7 +9,7 @@ class RepresentationTest(IMP.test.TestCase):
         RepParser = IMP.restrainer.XMLRepresentation(self.get_input_file_name('pdb_representation.xml'))
         repr = RepParser.run()
 
-        M = repr.to_model()
+        M = repr.get_model()
         M.show()
         M.evaluate(False)
         self.assertEqual(len(M.get_particles()), 356)

@@ -16,7 +16,7 @@ rsr = restrainer.add_restraint(IMP.restrainer.get_example_path('input/eg1_restra
 ###=======================================================================###
 
 # Get the IMP model object used by restrainer
-model = restrainer.model()
+model = restrainer.get_model()
 
 model.show()
 model.evaluate(False)
