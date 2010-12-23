@@ -10,6 +10,7 @@
 #include <IMP/Model.h>
 #include <IMP/log.h>
 #include <IMP/internal/utility.h>
+#include <boost/tuple/tuple.hpp>
 #include <memory>
 #include <utility>
 #include <numeric>

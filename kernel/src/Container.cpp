@@ -10,6 +10,7 @@
 #include "IMP/Particle.h"
 #include "IMP/Model.h"
 #include "IMP/internal/graph_utility.h"
+#include "IMP/dependency_graph.h"
 
 IMP_BEGIN_NAMESPACE
 

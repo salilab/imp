@@ -16,6 +16,7 @@
 #include "IMP/internal/graph_utility.h"
 #include "IMP/file.h"
 #include "IMP/internal/map.h"
+#include "IMP/dependency_graph.h"
 #include <boost/timer.hpp>
 #include <set>
 #include <numeric>

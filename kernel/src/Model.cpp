@@ -13,7 +13,7 @@
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 #include "IMP/RestraintSet.h"
-
+#include "IMP/dependency_graph.h"
 
 
 IMP_BEGIN_NAMESPACE
