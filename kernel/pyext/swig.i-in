@@ -303,6 +303,7 @@ namespace IMP {
 %include "IMP/io.h"
 %include "IMP/internal/swig.h"
 %include "IMP/scoped.h"
+%include "IMP/dependency_graph.h"
 
 
 namespace IMP {

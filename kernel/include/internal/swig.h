@@ -306,6 +306,11 @@ public:
   }
 };
 
+#if 0
+inline void bad_pass(FloatKey*) {}
+inline void bad_pass(FloatKeys*) {}
+#endif
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_SWIG_H */

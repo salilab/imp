@@ -12,7 +12,6 @@
 #include "../kernel_config.h"
 #include "../RefCounted.h"
 #include "OwnerPointer.h"
-#include <memory>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 template <class BaseStream>

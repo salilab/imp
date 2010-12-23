@@ -9,6 +9,7 @@
 
 #include "IMP/Configuration.h"
 #include "IMP/internal/utility.h"
+#include "IMP/dependency_graph.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -42,7 +43,7 @@ void Configuration::load_configuration() const {
             << " from model." << std::endl);
     model_->remove_particle(to_remove[i]);
   }
-  std::set<Particle*> active(model_->particles_begin(),
+  internal::Set<Particle*> active(model_->particles_begin(),
                              model_->particles_end());
   for (DataMap::const_iterator it= base_.begin(); it != base_.end(); ++it) {
     PP pp(it->first);

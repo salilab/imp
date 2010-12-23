@@ -48,6 +48,7 @@ files = [
          'constants.h',
          'container_base.h',
          'container_macros.h',
+         'dependency_graph.h',
          'deprecation.h',
          'exception.h',
          'file.h',

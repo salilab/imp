@@ -12,7 +12,6 @@
 #include "../Particle.h"
 #include "map.h"
 #include <cctype>
-#include <boost/format.hpp>
 #include <algorithm>
 #include <sstream>
 #include <boost/graph/graphviz.hpp>

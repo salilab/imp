@@ -20,7 +20,6 @@
 #include "FailureHandler.h"
 #include "internal/utility.h"
 #include "internal/map.h"
-#include <boost/format.hpp>
 #include <set>
 
 IMP_BEGIN_NAMESPACE
