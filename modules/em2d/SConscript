@@ -2,30 +2,30 @@ Import("env")
 import scons_tools.dependency
 
 scons_tools.dependency.add_external_library(env, "OpenCV21",
-    ["cv","cxcore","highgui"],
-    ["opencv/cv.h", "opencv/cvver.h",
-     "boost/static_assert.hpp"],
-    """BOOST_STATIC_ASSERT( CV_MAJOR_VERSION<=2 && CV_MINOR_VERSION<=1); cv::Mat *m = new cv::Mat();""",
-    extra_libs=[])
+                                            ["cv","cxcore","highgui"],
+                                            ["opencv/cv.h", "opencv/cvver.h",
+                                             "boost/static_assert.hpp"],
+                                            """BOOST_STATIC_ASSERT( CV_MAJOR_VERSION<=2 && CV_MINOR_VERSION<=1); cv::Mat *m = new cv::Mat();""",
+                                            extra_libs=[])
 
 
 scons_tools.dependency.add_external_library(env, "OpenCV22",
-                ["opencv_core","opencv_imgproc","opencv_highgui"],
-                ["opencv2/core/core.hpp",
-                 "opencv2/imgproc/imgproc.hpp",
-                 "opencv2/highgui/highgui.hpp",
-                 "opencv2/core/version.hpp", "boost/static_assert.hpp"],
-                """cv::Mat *m = new cv::Mat(); BOOST_STATIC_ASSERT(CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1);""",
-                extra_libs=[])
+                                            ["opencv_core","opencv_imgproc","opencv_highgui"],
+                                            ["opencv2/core/core.hpp",
+                                             "opencv2/imgproc/imgproc.hpp",
+                                             "opencv2/highgui/highgui.hpp",
+                                             "opencv2/core/version.hpp", "boost/static_assert.hpp"],
+                  """cv::Mat *m = new cv::Mat(); BOOST_STATIC_ASSERT(CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1);""",
+                  extra_libs=[])
 
 
 config = []
 if scons_tools.data.get(env).dependencies["OpenCV21"]:
-    config.append(['IMP_HAS_OPENCV21', '1'])
+    #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV21"]
     pass
 elif scons_tools.data.get(env).dependencies["OpenCV22"]:
     config.append(['IMP_HAS_OPENCV22', '1'])
-    pass
+    #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV22"]
 else:
     print "em2d disabled due to missing dependency OpenCV"
     scons_tools.data.get(env).add_module("em2d",ok=False)
@@ -33,9 +33,9 @@ else:
 
 
 env.IMPModuleBuild(version="SVN",
-   required_modules=["container","core","atom","algebra","em","display","gsl"],
-   required_dependencies=["FFTW3","Boost.ProgramOptions",
-                          "Boost.FileSystem"],
-   optional_dependencies=['OpenCV21', 'OpenCV22'],
-   config_macros=config
-   )
+                   required_modules=["container","core","atom","algebra","em","display","gsl"],
+                   required_dependencies=["FFTW3","Boost.ProgramOptions",
+                                          "Boost.FileSystem"],
+                   optional_dependencies=['OpenCV21', 'OpenCV22'],
+                   config_macros=config
+                   )
