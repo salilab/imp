@@ -153,7 +153,7 @@ def  create_discrete_states(m,chain,tmb):
     rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
     trs0=[]
     trs1=[]
-    for i in range(0,1):
+    for i in range(0,4):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
