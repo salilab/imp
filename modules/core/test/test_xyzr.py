@@ -9,7 +9,7 @@ class DecoratorTests(IMP.test.TestCase):
         m = IMP.Model()
         pa=IMP.Particle(m)
         pb=IMP.Particle(m)
-        da= IMP.core.YZR.setup_particle(pa)
+        da= IMP.core.XYZR.setup_particle(pa)
         db= IMP.core.XYZR.setup_particle(pb)
         da.set_radius(1.0)
         db.set_radius(1.5)
