@@ -108,8 +108,6 @@ public:
 
 IMP_VALUES(SubsetState, SubsetStates);
 
-IMP_OUTPUT_OPERATOR(SubsetState);
-
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline std::size_t hash_value(const SubsetState &t) {
