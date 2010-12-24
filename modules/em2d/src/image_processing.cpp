@@ -523,7 +523,7 @@ void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
 //    xxx.set_data(temp);
 //    xxx.write("temp.spi",srw);
     /*******/
-  } while( abs(new_size_in_pixels-size_in_pixels)>1);
+  } while( std::abs(static_cast<int>(new_size_in_pixels)-size_in_pixels)>1);
 //  } while( new_size_in_pixels != size_in_pixels);
   m.copy(temp);
 }
