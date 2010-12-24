@@ -81,8 +81,6 @@ class IMPEXPORT TextOutput
   }
 };
 
-IMP_OUTPUT_OPERATOR(TextOutput);
-
 
 /** A TextInput can be implicitly constructed from a C++ stream, a
     Python filelike object or a path to a file. As a result, those can be
@@ -131,9 +129,6 @@ class IMPEXPORT TextInput
     return in_->get_name();
   }
 };
-
-IMP_OUTPUT_OPERATOR(TextInput);
-
 
 //! Set the target for the log.
 /** See TextOutput for options. Python users should use

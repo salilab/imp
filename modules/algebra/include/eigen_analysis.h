@@ -64,9 +64,7 @@ protected:
   bool initialized_;
 };
 
-
 IMP_VALUES(PrincipalComponentAnalysis, PrincipalComponentAnalyses);
-IMP_OUTPUT_OPERATOR(PrincipalComponentAnalysis);
 
 //! Perform principle components analysis on a set of vectors
 /** \relatesalso PrincipalComponentAnalysis

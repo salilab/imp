@@ -71,7 +71,7 @@
 
 #else
 #define IMP_VOLUME_GEOMETRY_METHODS(Name, name, area, volume, bounding_box) \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
+  IMP_VALUES(Name, Name##s);                                            \
   inline double get_surface_area(const Name &g) {                      \
     area;                                                              \
   }                                                                    \
@@ -82,8 +82,7 @@
     bounding_box;                                                      \
   }                                                                    \
   inline const Name &get_##name##_geometry(const Name &g) {return g;}  \
-  IMP_NO_SWIG(inline void set_##name##_geometry(Name &g, const Name &v) {g=v;})\
-  IMP_VALUES(Name, Name##s)
+  IMP_NO_SWIG(inline void set_##name##_geometry(Name &g, const Name &v) {g=v;})
 
 #define IMP_VOLUME_GEOMETRY_METHODS_D(Name, name, area, volume, bounding_box) \
   IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
@@ -121,17 +120,16 @@
 
 
 #define IMP_LINEAR_GEOMETRY_METHODS(Name, name, bounding_box)          \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
+  IMP_VALUES(Name, Name##s);                                           \
   inline BoundingBoxD<3> get_bounding_box(const Name &g) {             \
     bounding_box;                                                      \
   }                                                                    \
   inline const Name &get_##name##_geometry(const Name &g) {return g;}  \
   IMP_NO_SWIG(inline void set_##name##_geometry( Name &g, const Name &gi)\
               {g=gi;})                                                  \
-  IMP_VALUES(Name, Name##s)
 
 #define IMP_AREA_GEOMETRY_METHODS(Name, name, area, bounding_box)      \
-  IMP_OUTPUT_OPERATOR(Name);                                           \
+  IMP_VALUES(Name, Name##s);                                           \
   inline double get_area(const Name &g) {                              \
     area;                                                              \
   }                                                                    \
@@ -140,7 +138,6 @@
   }                                                                    \
   inline const Name &get_##name##_geometry(const Name &g) {return g;}  \
   IMP_NO_SWIG(inline void set_##name##_geometry(Name &g, const Name &v) {g=v;})\
-  IMP_VALUES(Name, Name##s)
 
 #define IMP_AREA_GEOMETRY_METHODS_D(Name, name, area, bounding_box)     \
   IMP_OUTPUT_OPERATOR_D(Name##D);                                       \

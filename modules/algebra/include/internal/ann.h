@@ -23,6 +23,7 @@ struct ANNData {
   double fix_distance(double dist, double eps) const {
     return (1+eps)*dist;
   }
+  ANNData(){}
   template <class It>
   ANNcoord** extract_points(It b, It e) const {
     unsigned int i=0;

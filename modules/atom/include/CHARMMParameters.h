@@ -30,7 +30,7 @@ struct CHARMMBondParameters {
                       {out << "force constant: " << force_constant
                        << "; ideal value: " << ideal;});
 };
-IMP_OUTPUT_OPERATOR(CHARMMBondParameters);
+
 IMP_VALUES(CHARMMBondParameters, CHARMMBondParametersList);
 
 //! The parameters for a CHARMM dihedral or improper.
@@ -43,7 +43,7 @@ struct CHARMMDihedralParameters {
                        << "; multiplicity: " << multiplicity
                        << "; ideal value: " << ideal;});
 };
-IMP_OUTPUT_OPERATOR(CHARMMDihedralParameters);
+
 IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
 
 //! CHARMM force field parameters.

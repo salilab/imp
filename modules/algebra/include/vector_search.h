@@ -148,13 +148,7 @@ public:
 
 /** @} */
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-template <unsigned int D>
-std::ostream& operator<<(std::ostream &out, const NearestNeighborD<D> &nn) {
-  nn.show(out);
-  return out;
-}
-#endif
+IMP_OUTPUT_OPERATOR_D(NearestNeighborD);
 
 #ifndef IMP_DOXYGEN
 typedef NearestNeighborD<2> NearestNeighbor2D;
@@ -168,6 +162,7 @@ IMP_VALUES(NearestNeighbor3D, NearestNeighbor3Ds);
 IMP_VALUES(NearestNeighbor4D, NearestNeighbor4Ds);
 IMP_VALUES(NearestNeighbor5D, NearestNeighbor5Ds);
 IMP_VALUES(NearestNeighbor6D, NearestNeighbor6Ds);
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif  /* IMPALGEBRA_VECTOR_SEARCH_H */

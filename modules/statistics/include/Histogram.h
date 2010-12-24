@@ -43,8 +43,6 @@ class IMPSTATISTICSEXPORT Histogram {
   std::vector<int> freq_;
 };
 
-IMP_OUTPUT_OPERATOR(Histogram);
-
 IMP_VALUES(Histogram, Histograms);
 
 IMPSTATISTICS_END_NAMESPACE

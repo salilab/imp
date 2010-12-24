@@ -40,8 +40,6 @@ class IMPALGEBRAEXPORT Triangle3D
 
 IMP_VALUES(Triangle3D, Triangle3Ds);
 
-
-
 //! Return the largest triangle defined by 3 points from the input
 /** \relatesalso Triangle3D */
 IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);

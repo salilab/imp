@@ -77,8 +77,6 @@ class IMPALGEBRAEXPORT SphericalVector3D
   double v_[3];
 };
 
-IMP_OUTPUT_OPERATOR(SphericalVector3D);
-
 IMP_VALUES(SphericalVector3D,SphericalVector3Ds);
 
 IMPALGEBRA_END_NAMESPACE

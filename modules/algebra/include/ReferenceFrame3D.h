@@ -53,8 +53,6 @@ public:
 };
 
 
-IMP_OUTPUT_OPERATOR(ReferenceFrame3D);
-
 IMP_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);
 
 inline ReferenceFrame3D

@@ -410,7 +410,7 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
   }
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i= 0; i< restraints.size(); ++i) {
-      Restraint *r=restraints[i];
+      IMP_CHECK_CODE(Restraint *r=restraints[i]);
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
                       "Cannot pass restraint sets to get_score_states()");
     }
@@ -464,7 +464,7 @@ Floats Model::evaluate( RestraintsTemp restraints,
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< restraints.size(); ++i) {
-      Restraint *r= restraints[i];
+      IMP_CHECK_CODE(Restraint *r= restraints[i]);
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
                       "Cannot pass RestraintSets to Model::evaluate().");
     }

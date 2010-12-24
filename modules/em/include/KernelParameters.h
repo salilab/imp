@@ -127,6 +127,8 @@ public:
   inline float get_rkdist() const {return rkdist_;}
   //! Gets the value of lim parameter
   inline float get_lim() const {return lim_;}
+
+  IMP_SHOWABLE_INLINE(KernelParameters, );
 protected:
   float rsig_,rsigsq_,timessig_,sq2pi3_,inv_rsigsq_,rnormfac_,rkdist_,lim_;
   bool initialized_;

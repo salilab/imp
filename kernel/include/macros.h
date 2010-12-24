@@ -863,7 +863,8 @@ protection:                                                             \
 //! Define the type for storing sets of values
 /** The macro defines the type Names. PluralName should be
     Names unless the English spelling is
-    different.
+    different. This macro also defines the output operator
+    for the type.
 
     See
     \ref values "Value and Objects" for a description of what
@@ -871,7 +872,8 @@ protection:                                                             \
  */
 #define IMP_VALUES(Name, PluralName)
 #else
-#define IMP_VALUES(Name, PluralName)            \
+#define IMP_VALUES(Name, PluralName)                     \
+  IMP_OUTPUT_OPERATOR(Name);                             \
   typedef std::vector<Name> PluralName
 #endif
 
