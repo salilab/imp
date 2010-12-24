@@ -71,7 +71,6 @@ public:
                        << "; standard deviations: " << stdevs_.first << ", "
                        << stdevs_.second;});
 };
-IMP_OUTPUT_OPERATOR(BinormalTerm);
 IMP_VALUES(BinormalTerm, BinormalTermList);
 
 IMPMODELLER_END_NAMESPACE
