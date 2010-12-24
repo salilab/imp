@@ -189,9 +189,6 @@ class IMPALGEBRAEXPORT Rotation3D {
   const VectorD<3> get_derivative(const VectorD<3> &o, unsigned int i) const;
 };
 
-
-IMP_OUTPUT_OPERATOR(Rotation3D);
-
 IMP_VALUES(Rotation3D, Rotation3Ds);
 
 
@@ -420,8 +417,6 @@ public:
 };
 
 IMP_VALUES(FixedXYZ, FixedXYZs);
-
-IMP_OUTPUT_OPERATOR(FixedZYZ);
 
 //! The inverse of rotation_from_fixed_zyz()
 /**

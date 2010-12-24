@@ -167,8 +167,6 @@ private:
   //N is the number of particles
 };
 
-IMP_OUTPUT_OPERATOR(RMSDCalculator);
-
 IMP_VALUES(RMSDCalculator, RMSDCalculators);
 
 IMPATOM_END_NAMESPACE

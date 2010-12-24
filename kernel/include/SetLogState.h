@@ -56,7 +56,6 @@ public:
 
 
 IMP_VALUES(SetLogState, SetLogStates);
-IMP_OUTPUT_OPERATOR(SetLogState);
 
 IMP_END_NAMESPACE
 

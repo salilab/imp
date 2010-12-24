@@ -45,7 +45,7 @@ public:
                                            << "; CHARMM type: " << charmm_type_
                                            << "; charge: " << charge_;});
 };
-IMP_OUTPUT_OPERATOR(CHARMMAtomTopology);
+
 IMP_VALUES(CHARMMAtomTopology, CHARMMAtomTopologies);
 
 class CHARMMResidueTopology;
@@ -84,7 +84,7 @@ public:
 
   IMP_SHOWABLE_INLINE(CHARMMBondEndpoint, {out << atom_name_;});
 };
-IMP_OUTPUT_OPERATOR(CHARMMBondEndpoint);
+
 IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 
 //! A connection (bond, angle, dihedral) between some number of endpoints.
@@ -159,11 +159,11 @@ typedef CHARMMConnection<2> CHARMMBond;
 typedef CHARMMConnection<3> CHARMMAngle;
 typedef CHARMMConnection<4> CHARMMDihedral;
 
-IMP_OUTPUT_OPERATOR(CHARMMBond);
+
 IMP_VALUES(CHARMMBond, CHARMMBonds);
-IMP_OUTPUT_OPERATOR(CHARMMAngle);
+
 IMP_VALUES(CHARMMAngle, CHARMMAngles);
-IMP_OUTPUT_OPERATOR(CHARMMDihedral);
+
 IMP_VALUES(CHARMMDihedral, CHARMMDihedrals);
 
 //! Base class for all CHARMM residue-based topology

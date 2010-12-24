@@ -235,7 +235,6 @@ class IMPATOMEXPORT Selection {
 };
 
 IMP_VALUES(Selection, Selections);
-IMP_OUTPUT_OPERATOR(Selection);
 
 /** Create a distance restraint between the selections.
  */

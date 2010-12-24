@@ -50,7 +50,7 @@ namespace {
       }
     }
     // no overlap
-    Segment3D ms;
+    Segment3D ms(Vector3D(0,0,0), Vector3D(0,0,0));
     double md2=std::numeric_limits<double>::infinity();
     for (int i=0; i< 2; ++i) {
       for (int j=0; j< 2; ++j) {

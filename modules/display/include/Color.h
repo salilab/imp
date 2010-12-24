@@ -65,8 +65,6 @@ public:
   IMP_COMPARISONS;
 };
 
-IMP_OUTPUT_OPERATOR(Color);
-
 
 /** Produce a color that is attempted to be contrasting with the
     i-1 previous colors. Currently, they recycle after 11, but they

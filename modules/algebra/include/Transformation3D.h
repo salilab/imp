@@ -88,7 +88,6 @@ private:
   Rotation3D rot_;  //rotation
 };
 
-IMP_OUTPUT_OPERATOR(Transformation3D);
 IMP_VALUES(Transformation3D, Transformation3Ds);
 
 

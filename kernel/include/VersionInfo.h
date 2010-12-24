@@ -45,9 +45,6 @@ public:
 private:
   std::string module_, version_;
 };
-
-IMP_OUTPUT_OPERATOR(VersionInfo);
-
 IMP_VALUES(VersionInfo, VersionInfos);
 
 IMP_END_NAMESPACE
