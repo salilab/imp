@@ -191,8 +191,6 @@ protected:
   double radius_step_,angle_step_;
 };
 
-
-IMP_OUTPUT_OPERATOR(PolarResamplingParameters);
 IMP_VALUES(PolarResamplingParameters, PolarResamplingParametersList);
 
 

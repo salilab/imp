@@ -67,10 +67,6 @@ protected:
   cv::Mat data_; // actual matrix with the mask
 };
 
-
-
-IMP_OUTPUT_OPERATOR(ProjectionMask);
-
 IMP_VALUES(ProjectionMask,ProjectionMasks);
 
 //! Manage of projection masks

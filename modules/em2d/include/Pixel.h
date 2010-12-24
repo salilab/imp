@@ -78,8 +78,6 @@ private:
   bool null_;
 };
 
-IMP_OUTPUT_OPERATOR(Pixel);
-
 IMP_VALUES(Pixel,Pixels);
 
 IMPEM2D_END_NAMESPACE

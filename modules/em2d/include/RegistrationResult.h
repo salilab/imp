@@ -142,8 +142,6 @@ protected:
   bool angles_defined_;
 };
 
-IMP_OUTPUT_OPERATOR(RegistrationResult);
-
 IMP_VALUES(RegistrationResult,RegistrationResults);
 
 //! Reads a set of registration results
