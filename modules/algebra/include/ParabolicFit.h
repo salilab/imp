@@ -17,6 +17,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate parabola that fits best the input data points
 class IMPALGEBRAEXPORT ParabolicFit {
 public:
+  ParabolicFit(): a_(std::numeric_limits<double>::quiet_NaN()),
+    b_(std::numeric_limits<double>::quiet_NaN()){}
+
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
@@ -28,7 +31,9 @@ public:
   double get_fit_error() const { return error_; }
 
   //! get a value (a*x^2)
-  double get_a() const { return a_; }
+  double get_a() const {
+    IMP_USAGE_CHECK(!is_nan(a_), "Using uninitialized parabolic fit");
+    return a_; }
 
   //! get b value (b*x)
   double get_b() const { return b_; }
@@ -46,12 +51,13 @@ public:
   void evaluate_error();
 
  private:
-  const algebra::Vector2Ds& data_;
+  const algebra::Vector2Ds data_;
   double a_, b_, c_;
   double error_;
 };
+
 IMP_VALUES(ParabolicFit, ParabolicFits);
-IMP_OUTPUT_OPERATOR(ParabolicFit);
+
 IMPALGEBRA_END_NAMESPACE
 
 #endif /* IMPALGEBRA_PARABOLIC_FIT_H */
