@@ -197,10 +197,7 @@ protected:
   MasksManagerPtr masks_manager_;
 };
 
-
 IMP_VALUES(ProjectionFinder,ProjectionFinders);
-IMP_OUTPUT_OPERATOR(ProjectionFinder);
-
 
 IMPEM2D_END_NAMESPACE
 
