@@ -24,7 +24,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                 hit=False
                 for si in sis:
                     for sj in sjs:
-                        if IMP.algebra.get_distance(si, sj) < 0:
+                        if IMP.algebra.get_distance(si, sj) < -.1:
                             print str(si), str(sj), ret, pi.get_name(), pj.get_name()
                             hit=True
                 if hit:
