@@ -198,6 +198,7 @@ void CoreClosePairContainer::do_before_evaluate() {
                                      particle_pairs_end());
     unsigned int num= std::distance(particle_pairs_begin(),
                                     particle_pairs_end());
+    if(0) std::cout << num;
     for (ParticlePairIterator it=particle_pairs_begin();
          it != particle_pairs_end(); ++it) {
       for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
