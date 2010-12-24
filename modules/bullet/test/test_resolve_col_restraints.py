@@ -25,7 +25,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                 for si in sis:
                     for sj in sjs:
                         if IMP.algebra.get_distance(si, sj) < 0:
-                            #print str(si), str(sj), ret, pi.get_name(), pj.get_name()
+                            print str(si), str(sj), ret, pi.get_name(), pj.get_name()
                             hit=True
                 if hit:
                     ret=ret+1
@@ -105,13 +105,17 @@ class AngleRestraintTests(IMP.test.TestCase):
         print "intesections:", self.count_hits(ps),"annulus:",self.count_annulus(ps)
         opt= IMP.bullet.ResolveCollisionsOptimizer(m)
         opt.set_xyzrs(ps)
+        opt.set_local_stiffness(.5)
+        self.display(ps, 0)
+        opt.optimize(0);
         for i in range(0,100):
-            self.display(ps, i)
+            print i
+            self.display(ps, i+1)
             opt.optimize(10);
             m.show_restraint_score_statistics()
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
         self.assertEqual(self.count_hits(ps), 0)
-    def test_rcor(self):
+    def _test_rcor(self):
         """Test basic ResolveCollision optimization with rigid bodies and more restraints"""
         (m, bb, ps, rps)= self.create()
         l= IMP.container.ListSingletonContainer(ps)
