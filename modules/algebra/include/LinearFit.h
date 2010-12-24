@@ -17,6 +17,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate line that fits best the input data points
 class IMPALGEBRAEXPORT LinearFit {
 public:
+  LinearFit(): a_(std::numeric_limits<double>::quiet_NaN()),
+    b_(std::numeric_limits<double>::quiet_NaN()){}
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
@@ -28,7 +30,9 @@ public:
   double get_fit_error() const { return error_; }
 
   //! get a value (a*x)
-  double get_a() const { return a_; }
+  double get_a() const {
+    IMP_USAGE_CHECK(!is_nan(a_), "Using uninitialized linear fit");
+    return a_; }
 
   //! get b value (constant)
   double get_b() const { return b_; }
@@ -42,14 +46,11 @@ public:
  private:
   void find_regression();
   void evaluate_error();
-
- private:
-  const algebra::Vector2Ds& data_;
+  const algebra::Vector2Ds data_;
   double a_, b_;
   double error_;
 };
 
-IMP_OUTPUT_OPERATOR(LinearFit);
 IMP_VALUES(LinearFit, LinearFits);
 
 IMPALGEBRA_END_NAMESPACE
