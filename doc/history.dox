@@ -10,6 +10,7 @@
 - the IMP::atom::PDBSelector and IMP::atom::Mol2Selector became IMP::Object classes. All this
   means is that they need to be created with \c new in C++ code. It also means that one is
   no longer prohibited from storing them (not that there is much use in doing that).
+- IMP_VALUES() now includes IMP_OUTPUT_OPERATOR() so you no longer need two namespace macros for each value.
 
 \par Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
