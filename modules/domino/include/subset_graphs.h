@@ -12,6 +12,7 @@
 #include "particle_states.h"
 #include "Subset.h"
 #include <IMP/display/geometry.h>
+#include <boost/graph/adjacency_list.hpp>
 
 
 IMPDOMINO_BEGIN_NAMESPACE

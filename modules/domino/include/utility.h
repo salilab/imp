@@ -17,6 +17,7 @@
 #include <IMP/Model.h>
 #include <IMP/core/internal/CoreClosePairContainer.h>
 #include <IMP/display/Writer.h>
+#include <IMP/dependency_graph.h>
 
 
 IMP_BEGIN_NAMESPACE
