@@ -140,6 +140,8 @@ get_close_pairs(const ParticlePair &p) const {
         for (unsigned int j=0; j< ps1.size(); ++j) {
           double cdistance= get_distance(XYZR(ps0[i]),
                                          XYZR(ps1[j]));
+          // mark as used
+          if (0) std::cout << distance << cdistance;
           IMP_USAGE_CHECK(cdistance >= distance-.1, "Missed shortest distance."
                           << " Got " << distance << " but just found "
                           << cdistance);
