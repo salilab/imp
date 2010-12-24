@@ -110,7 +110,6 @@ public:
   IMP_SHOWABLE_INLINE(HierarchyTraits, get_name());
 };
 
-IMP_OUTPUT_OPERATOR(HierarchyTraits);
 IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 
 
@@ -484,7 +483,7 @@ private:
 
   unsigned int ct_;
 };
-IMP_OUTPUT_OPERATOR(HierarchyCounter);
+
 IMP_VALUES(HierarchyCounter, HierarchyCounters);
 
 
