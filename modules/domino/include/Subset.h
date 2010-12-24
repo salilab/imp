@@ -115,7 +115,6 @@ class IMPDOMINOEXPORT Subset {
 };
 
 IMP_VALUES(Subset, Subsets);
-IMP_OUTPUT_OPERATOR(Subset);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline std::size_t hash_value(const Subset &t) {
