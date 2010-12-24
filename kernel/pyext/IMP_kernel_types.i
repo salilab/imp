@@ -514,8 +514,14 @@ _value_types.append(#Name)
 %}
 %feature("valuewrapper") PluralName;
 %{
-  void test_##PluralName##s() {
+  namespace {
+  void test_##Name() {
     Namespace::PluralName nm;
+    //using namespace Namespace;
+    //using namespace std;
+    //float and all are not by reference
+    //std::ostream& (*ptr)(std::ostream &, const Namespace::Name &)=operator<<;
+  }
   }
 %}
 %enddef
