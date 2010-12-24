@@ -155,7 +155,7 @@ SimpleExcludedVolume create_simple_excluded_volume_on_rigid_bodies(
 SimpleExcludedVolume create_simple_excluded_volume_on_molecules(
                      atom::Hierarchies const &mhs)
 {
-  //size_t mhs_size = mhs.size();
+  IMP_CHECK_CODE(size_t mhs_size = mhs.size());
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
 
