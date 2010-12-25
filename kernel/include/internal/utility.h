@@ -45,6 +45,7 @@ struct Counter {
   }
 };
 
+// Note that older g++ is confused by queue.back().get<2>()
 #define IMP_PRINT_TREE(stream, NodeType, start, num_children,           \
                        get_child, show)                                 \
   {                                                                     \
@@ -53,9 +54,10 @@ struct Counter {
     queue.push_back(boost::make_tuple(std::string(),                    \
                                       std::string(), start));           \
     do {                                                                \
-      NodeType n= queue.back().get<2>();                                \
-      std::string prefix0= queue.back().get<0>();                       \
-      std::string prefix1= queue.back().get<1>();                       \
+      boost::tuple<std::string, std::string, NodeType> &back = queue.back(); \
+      NodeType n= back.get<2>();                                        \
+      std::string prefix0= back.get<0>();                               \
+      std::string prefix1= back.get<1>();                               \
       queue.pop_back();                                                 \
       stream << prefix0;                                                \
       unsigned int nc= num_children;                                    \
