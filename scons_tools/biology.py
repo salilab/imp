@@ -21,7 +21,7 @@ def _run_analysis(target, source, env):
 def _print_analysis(target, source, env):
     print "analyzing", source[2].abspath
 
-def IMPSystem(env, name, version="",
+def IMPSystem(env, name=None, version="",
               authors=[],
               brief="", overview="",
               publications=None,
@@ -32,8 +32,17 @@ def IMPSystem(env, name, version="",
               testable=False,
               last_imp_version="unknown",
               python=True):
+    if not name:
+        name= Dir(".").abspath.split("/")[-1]
     if env.GetOption('help'):
         return
+    dirs = Glob("*/SConscript")
+    local_module=False
+    for d in dirs:
+        if str(d).split("/")[0] == "local":
+            env.SConscript(d, exports=['env'])
+            local_module=True
+            required_modules.append(name+"_local")
     (ok, version, found_optional_modules, found_optional_dependencies) =\
          utility.configure(env, name, "application", version,
                            required_modules=required_modules,
@@ -73,20 +82,29 @@ def IMPSystem(env, name, version="",
                                  modules= required_modules+found_optional_modules,
                                  python_modules=pm,
                                  version=version)
-        dirs = Glob("*/SConscript")
         for d in dirs:
-            env.SConscript(d, exports=['env'])
+            if str(d).split("/")[0] != "local":
+                env.SConscript(d, exports=['env'])
 
         env= scons_tools.environment.get_named_environment(env, name)
         utility.add_link_flags(env, required_modules,
                                required_dependencies+found_optional_dependencies)
+        for m in required_modules+found_optional_modules:
+            print name, m
+            env.Depends(scons_tools.data.get(env).get_alias(name+"-install"),
+                         scons_tools.data.get(env).get_alias(m+"-install"))
+            env.Depends(scons_tools.data.get(env).get_alias(name),
+                         scons_tools.data.get(env).get_alias(m))
         if testable:
             samples= Glob("sample_[0123456789]*.py")
             samples.sort(utility.file_compare)
             analysis= Glob("analyze_[0123456789]*.py")
             analysis.sort(utility.file_compare)
             tt= []
-            test.add_test(env, samples+analysis, "system")
+            tst=test.add_test(env, samples+analysis, "system")
+            env.Depends(tst,
+                        scons_tools.data.get(env).get_alias(name))
+
         return env
 
 

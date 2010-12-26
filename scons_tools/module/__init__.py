@@ -456,18 +456,20 @@ def IMPModuleBuild(env, version, required_modules=[],
                    module_namespace=None, module_nicename=None,
                    required_dependencies=[],
                    cxxflags=[], cppdefines=[], python_docs=False,
-                   helper_module=False):
+                   local_module=False):
     if env.GetOption('help'):
         return
 
     if module is None:
         module=Dir('.').abspath.split('/')[-1]
+        if module=="local":
+            module=Dir('.').abspath.split('/')[-2]+"_local"
     if module_suffix is None:
         module_suffix="_"+module
     if module_include_path is None:
         module_include_path="IMP/"+module
     if module_preproc is None:
-        module_preproc="IMP"+module.upper()
+        module_preproc="IMP"+module.upper().replace("_","")
     if module_namespace is None:
         module_namespace="IMP::"+module
     if module_nicename is None:
@@ -517,13 +519,11 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     env['IMP_MODULE_CONFIG']=config_macros
     env.SConscript('examples/SConscript', exports='env')
-    if not helper_module:
-        env.SConscript('doc/SConscript', exports='env')
+    env.SConscript('doc/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')
     env.SConscript('include/SConscript', exports='env')
     env.SConscript('src/SConscript', exports='env')
-    if not helper_module:
-        env.SConscript('bin/SConscript', exports='env')
+    env.SConscript('bin/SConscript', exports='env')
     if env['IMP_PROVIDE_PYTHON']:
         env.SConscript('pyext/SConscript', exports='env')
         env.SConscript('test/SConscript', exports='env')
