@@ -89,5 +89,7 @@ Float resolution, Float apix,const std::string &filename);
 
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap, int segment_id);
+algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
+                                      DensGrid *dmap, int segment_id);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_DATA_POINTS_ASSIGNMENT_H */

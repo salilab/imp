@@ -11,6 +11,7 @@
 
 #include <IMP/base_types.h>
 #include <IMP/Particle.h>
+#include <IMP/algebra/Grid3D.h>
 #include <IMP/statistics/internal/random_generator.h>
 #include <IMP/em/converters.h>
 #include <IMP/em/DensityMap.h>
@@ -26,6 +27,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 typedef algebra::internal::TNT::Array2D<double> Array2DD;
 typedef algebra::internal::TNT::Array1D<double> Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
+typedef IMP::algebra::DenseGrid3D<double> DensGrid;
+//density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
 class DataPoints{
  public:
@@ -81,13 +84,19 @@ class IMPMULTIFITEXPORT DensityDataPoints: public XYZDataPoints {
 public:
   DensityDataPoints(em::DensityMap *dens,
                     float density_threshold);
+  DensityDataPoints(DensGrid &dens,
+                    float density_threshold);
   ~DensityDataPoints(){}
   Array1DD sample() const;
 
-  em::DensityMap* get_density_map() const {return dens_;}
+  //  em::DensityMap* get_density_map() const {return dens_;}
 protected:
-  em::DensityMap *dens_;
-  //  Model *m_;
+  void populate_data();
+  void set_max_min_density_values();
+  void set_density(em::DensityMap *d);
+  //TODO - change back once DensityMap will be Grid3D
+  DensGrid dens_;
+  //  em::DensityMap *dens_;
   double max_value_,min_value_;
   double threshold_;
 };

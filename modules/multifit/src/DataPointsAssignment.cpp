@@ -207,6 +207,22 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
   return data_for_sorting[0].second;
 }
 
+algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
+                                      DensGrid *dmap,
+                                      int segment_id){
+  algebra::Vector3Ds vecs =dpa.get_cluster_xyz(segment_id);
+  std::vector<std::pair<float,algebra::Vector3D> > data_for_sorting;
+  for(algebra::Vector3Ds::iterator it = vecs.begin();
+      it != vecs.end(); it++) {
+    data_for_sorting.push_back(
+   std::pair<float,algebra::Vector3D>((*dmap)[dmap->get_nearest_index(*it)],
+                                     *it));
+  }
+  std::sort(data_for_sorting.begin(),data_for_sorting.end(),
+            sort_data_points_first_larger_than_second);
+  return data_for_sorting[0].second;
+}
+
 void write_cmm(const std::string &cmm_filename,
                const std::string &marker_set_name,
                const DataPointsAssignment &dpa) {

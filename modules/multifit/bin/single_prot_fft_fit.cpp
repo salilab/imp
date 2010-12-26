@@ -29,6 +29,7 @@
 #include <IMP/atom/distance.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/multifit/fitting_solutions_reader_writer.h>
+//#include <IMP/multifit/random_rotations.h>
 using namespace IMP;
 namespace po = boost::program_options;
 
@@ -68,7 +69,8 @@ algebra::Rotation3Ds get_rotations(int num_angles,
       rots.push_back(algebra::get_identity_rotation_3d());
     }
     else{
-    rots = algebra::get_uniform_cover_rotations_3d(num_angles);
+      //rots=multifit::get_uniform_sampled_rotations_3d(num_angles);
+      rots = algebra::get_uniform_cover_rotations_3d(num_angles);
     }
   }
   else {
@@ -98,7 +100,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
                 int &first_rot,
                 int &num_top_fits_to_report,
                 int &num_top_fits_to_store_for_each_rotation,
-                bool &local) {
+                bool &local,bool &gmm_on) {
   cc_hit_map_filename="";
   pre_calc_rot_filename="";
   num_top_fits_to_report=100;
@@ -110,6 +112,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
   log_filename="multifit.log";
   pdb_fit_filename="";
   local=false;
+  gmm_on=true;
   po::options_description
     optional_params("Allowed options"),po,ao,required_params("Hideen options");
   required_params.add_options()
@@ -160,6 +163,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
      (&num_top_fits_to_store_for_each_rotation),
      "Number of best fits to store for each angle (default is 50)")
     ("local","if called, a local cross-correlation fitting is applied")
+    ("gmm_off","if called, simple maximum search is used")
     ("log-filename",po::value<std::string>(&log_filename),
      "write log messages here");
 
@@ -186,6 +190,9 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
    if (vm.count("local")==1) {
      local=true;
    }
+   if (vm.count("gmm_off")==1) {
+     gmm_on=false;
+   }
    if (not (vm.count("threshold")+
             vm.count("density")+vm.count("apix")+
             vm.count("res")+vm.count("protein")+vm.count("angle") == 6)){
@@ -203,7 +210,7 @@ int main(int argc, char **argv) {
   std::string protein_filename,ref_filename,output_filename,
     sol_filename,pdb_fit_filename,log_filename;
   std::string cc_hit_map_filename,pre_calc_rot_filename;
-  bool local;
+  bool local,gmm_on;
   int num_angles,first_rot,num_top_fits_to_report,
     num_top_fits_to_store_for_each_rotation;
   if (parse_input(argc, argv,density_filename,
@@ -213,7 +220,7 @@ int main(int argc, char **argv) {
                   cc_hit_map_filename,
                   pre_calc_rot_filename,first_rot,num_top_fits_to_report,
                   num_top_fits_to_store_for_each_rotation,
-                  local)) {
+                  local,gmm_on)) {
     exit(0);
   }
   //load the density
@@ -311,7 +318,7 @@ int main(int argc, char **argv) {
   multifit::FFTFittingResults sols = multifit::fft_based_rigid_fitting(
                          rb,rb_refiner,dmap,threshold,rots,
                          num_top_fits_to_store_for_each_rotation,
-                         local);
+                         local,gmm_on);
   dmap = set_map(density_filename,resolution, spacing,
                  x_origin, y_origin, z_origin);
   em::MRCReaderWriter mrw;
