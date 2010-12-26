@@ -13,11 +13,31 @@
 #include <boost/progress.hpp>
 #include <IMP/multifit/density_analysis.h>
 #include <IMP/multifit/VQClustering.h>
-#include <IMP/multifit/DataPoints.h>
 #include <IMP/multifit/DataPointsAssignment.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
+statistics::Histogram get_density_histogram(const DensGrid *dmap,
+                                            float threshold,int num_bins) {
+  //get maximum
+  float max_val=-INT_MAX;
+  algebra::BoundingBox3D bb=dmap->get_bounding_box();
+  DensGrid::ExtendedIndex lb = dmap->get_extended_index(bb.get_corner(0)),
+      ub = dmap->get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= dmap->indexes_begin(lb,ub);
+       it != dmap->indexes_end(lb, ub); ++it) {
+    if ((*dmap)[*it]>max_val) max_val=(*dmap)[*it];
+  }
+  statistics::Histogram hist(threshold-em::EPS,max_val+.1,
+                             num_bins);
+  for (DensGrid::IndexIterator it= dmap->indexes_begin(lb,ub);
+       it != dmap->indexes_end(lb, ub); ++it) {
+    if ((*dmap)[*it]>threshold){
+      hist.add((*dmap)[*it]);
+    }
+  }
+  return hist;
+}
 
 //assumes the two maps are of the same dimensions
 void add_to_max_map(em::DensityMap *max_map,em::DensityMap *new_map) {
@@ -633,7 +653,7 @@ void FFTFitting::calculate_local_correlation() {
 }
 
 algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
-              em::DensityMap *hit_map, int num_solutions) {
+              DensGrid *hit_map, int num_solutions) {
   TransScores best_trans;
   algebra::Vector3D max_trans;
   //make heap
@@ -650,23 +670,20 @@ algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
   float max_cc=-INT_MAX;
   float min_cc=INT_MAX;
   //find the maximum correlation on the correlation grid
-  em::emreal *hit_data=hit_map->get_data();
-  int nx=hit_map->get_header()->get_nx();
-  int ny=hit_map->get_header()->get_ny();
-  for(int iz=0;iz<hit_map->get_header()->get_nz();iz++){
-    long zz=iz*ny*nx;
-  for(int iy=0;iy<hit_map->get_header()->get_ny();iy++){
-    long zz_yy = zz+iy*nx;
-  for(int ix=0;ix<hit_map->get_header()->get_nx();ix++){
-    if (hit_data[zz_yy+ix]>max_cc) max_cc=hit_data[zz_yy+ix];
-    if (hit_data[zz_yy+ix]<min_cc) min_cc=hit_data[zz_yy+ix];
-    if (hit_data[zz_yy+ix]>best_trans[0].second) {
-      max_trans = hit_map->get_location_by_voxel(zz_yy+ix);
+  algebra::BoundingBox3D bb = hit_map->get_bounding_box();
+  DensGrid::ExtendedIndex lb = hit_map->get_extended_index(bb.get_corner(0)),
+      ub = hit_map->get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= hit_map->indexes_begin(lb,ub);
+       it != hit_map->indexes_end(lb, ub); ++it) {
+    if ((*hit_map)[*it]>max_cc) max_cc=(*hit_map)[*it];
+    if ((*hit_map)[*it]<min_cc) min_cc=(*hit_map)[*it];
+    if ((*hit_map)[*it]>best_trans[0].second) {
+      max_trans = hit_map->get_center(*it);
       //move the minimum element from the heap
       std::pop_heap(best_trans.begin(),best_trans.end(),
                     trans_score_comp_first_larger_than_second);
       //put the new element in the heap
-      best_trans[heap_size-1].second=hit_data[zz_yy+ix];
+      best_trans[heap_size-1].second=(*hit_map)[*it];
       best_trans[heap_size-1].first=
                 algebra::Transformation3D(algebra::get_identity_rotation_3d(),
                   max_trans-map_center_)*center_trans_;
@@ -678,9 +695,7 @@ algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
           IMP_LOG(VERBOSE,best_trans[i].first<<" ");
         }
         IMP_LOG(VERBOSE,std::endl);
-      }
-    }
-  }}}
+      }}}
   std::sort(best_trans.begin(),best_trans.end(),
             trans_score_comp_first_larger_than_second);
   algebra::Vector3Ds ret_trans;
@@ -695,16 +710,13 @@ TransScores FFTFitting::search_for_best_translations(
   TransScores best_trans;
   //find the best positions on the hit map
   //  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
-  em::DensityMap* hit_map = get_correlation_hit_map();
-  /*  em::DensityMap* hit_map=em::multiply(hit_map_orig,
-      asmb_map_mask_);*/
-  //  em::DensityMap *hit_map=hit_map_orig;
+  DensGrid hit_map = get_correlation_hit_map();
   algebra::Vector3Ds best_pos;
   if (gmm_based) {
-    best_pos = gmm_based_search_for_best_translations(hit_map,num_solutions);
+    best_pos = gmm_based_search_for_best_translations(&hit_map,num_solutions);
   }
   else {
-    best_pos = heap_based_search_for_best_translations(hit_map,num_solutions);
+    best_pos = heap_based_search_for_best_translations(&hit_map,num_solutions);
   }
   for( unsigned int i=0;i<best_pos.size();i++) {
     algebra::Vector3D center_voxel = best_pos[i];
@@ -713,21 +725,20 @@ TransScores FFTFitting::search_for_best_translations(
                 algebra::get_identity_rotation_3d(),
                 center_voxel-map_center_)*center_trans_;
      out_ts.first=out_t;
-     out_ts.second=hit_map->get_value(center_voxel);
+     out_ts.second=hit_map[hit_map.get_nearest_index(center_voxel)];
      best_trans.push_back(out_ts);
   }
-  hit_map=NULL;
   std::sort(best_trans.begin(),best_trans.end(),
             trans_score_comp_first_larger_than_second);
   return best_trans;
 }
 algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
-                           em::DensityMap *hit_map,int num_solutions) {
+                         DensGrid *hit_map,int num_solutions) {
   algebra::Vector3Ds best_trans;
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
   float density_threshold = 0.1;//std::max(em::EPS,hist.get_top(0.1)-EPS);
-  DensityDataPoints ddp=DensityDataPoints(hit_map,density_threshold);
+  DensityDataPoints ddp=DensityDataPoints(*hit_map,density_threshold);
   VQClustering vq(&ddp,num_solutions);
   vq.set_fast_clustering();
   vq.run();
@@ -779,8 +790,8 @@ FFTFittingResults fft_based_rigid_fitting(
     else {
       fft_fit.calculate_correlation();
     }
-    //    Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
-    em::DensityMap* hit_map = fft_fit.get_correlation_hit_map();
+    //    DensGrid hit_map = fft_fit.get_correlation_hit_map();
+    //Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
     for(unsigned int i=0;i<best_trans.size();i++) {
@@ -790,8 +801,8 @@ FFTFittingResults fft_based_rigid_fitting(
                              best_trans[i].second);
     }
     core::transform(rb,t1.get_inverse());
-    add_to_max_map(max_map,hit_map);
-    hit_map=NULL;
+    //    add_to_max_map(max_map,hit_map);
+    //    hit_map=NULL;
   }//rotation
   FFTFittingResults output;
   output.set_max_cc_map(max_map.release());
@@ -840,19 +851,20 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     return output.release();
   }
 
-em::DensityMap* FFTFitting::get_correlation_hit_map() {
+DensGrid FFTFitting::get_correlation_hit_map() {
   //there is no meaning to correlation on the padded regions after
   //unwrapping. We create the r_map of the padded density, but
   //all padded values are going to be 0
   const em::DensityHeader *padded_header=padded_asmb_map_->get_header();
-  Pointer<em::DensityMap> r_map(new em::DensityMap(*padded_header));
+  DensGrid r_map(padded_asmb_map_->get_spacing(),
+                em::get_bounding_box(padded_asmb_map_),0.);
+
   int pnx=padded_header->get_nx();
   int pny=padded_header->get_ny();
   int pnz=padded_header->get_nz();
   //in the padded map
   int uw_x,uw_y,uw_z;
   long vox_z,vox_zy;
-  em::emreal* r_data=r_map->get_data();
   //TODO - make faster by using the wrapped function.
   for(int iz=0;iz<pnz;iz++){
     vox_z=iz*pny*pnx;
@@ -863,22 +875,23 @@ em::DensityMap* FFTFitting::get_correlation_hit_map() {
         //check if the unwrapped is in the relevant boundaries
         long unwrapped_ind = uw_z*pny*pnx+uw_y*pnx+uw_x;
         bool relevant=false;
+        DensGrid::Index hg_ind;
         if (asmb_map_->is_part_of_volume(
            padded_asmb_map_->get_location_by_voxel(unwrapped_ind))){
           algebra::Vector3D loc=
             padded_asmb_map_->get_location_by_voxel(unwrapped_ind);
+          hg_ind = r_map.get_nearest_index(loc);
           if ((algebra::get_squared_distance(loc,asmb_map_->get_origin())>25) &&
               (algebra::get_squared_distance(loc,asmb_map_->get_top())>25)) {
             relevant=true;
           }
         }
         if (relevant){
-          r_data[unwrapped_ind]=
-            fftw_r_grid_cc_[vox_zy+ix];
+          r_map[hg_ind]=fftw_r_grid_cc_[vox_zy+ix];
         }
-        else{r_data[unwrapped_ind]=0.;}
+        //        else{r_map[hg_ind]=0.;}
       }}}
-  return r_map.release();
+  return r_map;
 }
 
 

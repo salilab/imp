@@ -8,6 +8,7 @@
 #ifndef IMPMULTIFIT_FFT_FITTING_H
 #define IMPMULTIFIT_FFT_FITTING_H
 
+#include <IMP/multifit/DataPoints.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/atom/Hierarchy.h>
@@ -119,13 +120,12 @@ The function returns the original index in its wrapped order
    \note This function is used for testing normalization issuses
    */
   em::DensityMap *get_padded_mol_map_after_fftw_round_trip();
-  em::DensityMap* get_correlation_hit_map();
-  algebra::Vector3Ds gmm_based_search_for_best_translations(
-                  em::DensityMap *hit_map, int num_solutions);
-
-  algebra::Vector3Ds heap_based_search_for_best_translations(
-                  em::DensityMap *hit_map, int num_solutions);
 protected:
+  DensGrid get_correlation_hit_map();
+  algebra::Vector3Ds gmm_based_search_for_best_translations(
+                  DensGrid *hit_map, int num_solutions);
+  algebra::Vector3Ds heap_based_search_for_best_translations(
+                  DensGrid *hit_map, int num_solutions);
   void create_map_from_array(double *arr,em::DensityMap *) const;
   void mask_norm_mol_map();
   void prepare_std_data();
