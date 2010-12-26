@@ -5,6 +5,7 @@ import IMP.display
 import IMP.statistics
 import IMP.example
 import IMP.system
+from IMP.example_system_local import *
 import parameters
 import setup
 import os.path
