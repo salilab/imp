@@ -195,6 +195,9 @@ def _make_systems_overview(target, source, env):
     - \command{path_to_application/sample_0.py -j 1 -n 1000 -o output_0}
     - \command{path_to_application/sample_1.py -j 1 -n 1000 -o output_1 -i output_0}
     - \command{path_to_application/analyze_0.py -i output_1 -o structures}
+
+    An application can also contain an local module in a directory called "local". The module will
+    be named "system_name_local" where "system_name" is the name of the system in question.
     """
     dta= data.get(env)
     for k in dta.systems.keys():
