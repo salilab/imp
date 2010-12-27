@@ -102,7 +102,9 @@ code that is dependent on a new external dependency, it is probably a good
 idea to put that code in its own module. To create a new module, run the
 \ref make_module "make_module" script from the main \imp source directory,
 passing the name of your new module. The module name should consist of lower
-case characters and numbers and the name should not start with a number. eg
+case characters and numbers and the name should not start with a number. In addition
+the name "local" is special and is reserved to modules that are internal to code
+for handling a particular biological system or application. eg
 \code
 ./tools/make_module mymodule
 \endcode
