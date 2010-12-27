@@ -559,7 +559,7 @@ std::string get_pdb_string(const algebra::VectorD<3>& v, int index,
   return out.str();
 }
 
-std::string get_conect_record_string(int a1_ind,int a2_ind){
+std::string get_pdb_conect_record_string(int a1_ind,int a2_ind){
   //      const IMP::atom::Atom &a1, const IMP::atom::Atom &a2){
   //  IMP::atom::Atom *a3,IMP::atom::Atom *a4,IMP::atom::Atom *a5) {
 
