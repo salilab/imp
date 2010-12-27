@@ -16,7 +16,7 @@ class TestBL(IMP.test.TestCase):
         pts=[IMP.algebra.Vector3D(1,0,0), IMP.algebra.Vector3D(0,1,0),
              IMP.algebra.Vector3D(-1,0,0), IMP.algebra.Vector3D(0,-1,0)]
 
-        ps= IMP.Particles()
+        ps= []
         for i in range(0,4):
             p= IMP.Particle(m)
             d= IMP.core.XYZ.setup_particle(p, pts[i])
