@@ -171,7 +171,7 @@ class IMPRESTRAINEREXPORT SimpleConnectivity
   }
 
   //! Set the standard deviation for the HarmonicUpperBound.
-  void set_stddev(Float sd)
+  void set_standard_deviation(Float sd)
   {
      static Float k = harmonic_upper_bound_->get_k_from_standard_deviation(sd);
      harmonic_upper_bound_->set_k(k);
@@ -248,7 +248,7 @@ class IMPRESTRAINEREXPORT SimpleDistance
   }
 
   //! Set the standard deviation for the HarmonicUpperBound.
-  void set_stddev(Float sd)
+  void set_standard_deviation(Float sd)
   {
      static Float k = harmonic_upper_bound_->get_k_from_standard_deviation(sd);
      harmonic_upper_bound_->set_k(k);
@@ -323,7 +323,7 @@ class IMPRESTRAINEREXPORT SimpleDiameter
   }
 
   //! Set the standard deviation for the HarmonicUpperBound.
-  void set_stddev(Float sd)
+  void set_standard_deviation(Float sd)
   {
      static Float k = harmonic_upper_bound_->get_k_from_standard_deviation(sd);
      harmonic_upper_bound_->set_k(k);

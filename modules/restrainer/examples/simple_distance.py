@@ -30,7 +30,7 @@ r = sd.get_restraint()
 h = sd.get_harmonic_upper_bound()
 
 sd.set_mean(10.0)
-sd.set_stddev(3.5)
+sd.set_standard_deviation(3.5)
 sd.set_k(0.1)
 
 imp_model.add_restraint(r)

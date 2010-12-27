@@ -21,7 +21,7 @@ h = sc.get_harmonic_upper_bound()
 sdps = sc.get_sphere_distance_pair_score()
 
 sc.set_mean(10.0)
-sc.set_stddev(3.5)
+sc.set_standard_deviation(3.5)
 sc.set_k(0.1)
 
 m.add_restraint(r)
