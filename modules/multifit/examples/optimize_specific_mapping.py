@@ -44,7 +44,7 @@ settings = IMP.multifit.read_settings(IMP.multifit.get_example_path("input/assem
   IMP.multifit.get_example_path("input"))
 data = IMP.multifit.DataContainer(settings)
 mdl=data.get_model()
-ps=IMP.Particles()
+ps=[]
 for i in range(data.get_number_of_components()):
     ps.append(data.get_component(i))
 restraints=setup_scoring_function(ps)

@@ -14,7 +14,7 @@ class ModuleTest(IMP.test.TestCase):
         # http://sf.net/tracker/?func=detail&atid=101645&aid=1863647&group_id=1645
         # For now (r675) our workaround is to #define PySwigIterator to a unique
         # name in each module that uses vector classes, in the SWIG .i file.
-        for p in IMP.Particles():
+        for p in []:
             print p
 
 if __name__ == '__main__':

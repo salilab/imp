@@ -14,7 +14,7 @@ class SampleTests(IMP.test.TestCase):
         IMP.set_check_level(IMP.NONE)
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
-        self.particles = IMP.Particles()
+        self.particles = []
         ## -  create a set of three particles in imp
         npart = 3
         self.rad_key=IMP.FloatKey("radius")

@@ -39,7 +39,7 @@ class ProteinFittingTest(IMP.test.TestCase):
         IMP.atom.add_radii(self.mh)
         IMP.atom.setup_as_rigid_body(self.mh)
         #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
-        self.particles = IMP.Particles()
+        self.particles = []
         self.particles.append(self.mh)
         self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 if __name__ == '__main__':

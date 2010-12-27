@@ -20,7 +20,7 @@ p2.add_attribute(IMP.FloatKey("y"), 100, True)
 p2.add_attribute(IMP.FloatKey("z"), 100, True)
 p2.add_attribute(IMP.FloatKey("radius"), 1.0, False)
 
-particles = IMP.Particles()
+particles = []
 particles.append(p1)
 particles.append(p2)
 

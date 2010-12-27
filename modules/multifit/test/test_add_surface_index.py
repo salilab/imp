@@ -30,7 +30,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         """Check that the surface indexes are added correctly"""
         IMP.multifit.add_surface_index(self.mp,self.apix)
         ps=IMP.core.get_leaves(self.mp)
-        ps_3=IMP.Particles()
+        ps_3=[]
         for ph in ps:
             p=ph.get_particle()
             if p.get_value(self.surf_key)>3.:

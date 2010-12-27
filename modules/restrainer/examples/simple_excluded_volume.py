@@ -17,7 +17,7 @@ mhs = IMP.atom.Hierarchies()
 mhs.append(p0)
 mhs.append(p1)
 
-ps = IMP.Particles()
+ps = []
 for mh in mhs:
     ps.append(mh.get_particle())
 

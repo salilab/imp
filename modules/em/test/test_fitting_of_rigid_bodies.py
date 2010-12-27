@@ -17,7 +17,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
 
     def load_proteins(self,pdb_filenames):
         self.mhs=IMP.atom.Hierarchies()
-        self.ps = IMP.Particles()
+        self.ps = []
         self.rbs=IMP.core.RigidBodies()
         self.leaves_ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         for pf in pdb_filenames:

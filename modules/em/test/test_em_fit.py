@@ -27,7 +27,7 @@ class FittingTest(IMP.test.TestCase):
         id_key = IMP.FloatKey("id")
 
 
-        self.particles = IMP.Particles()
+        self.particles = []
         origin =  3.0
         self.particles.append(self.create_point_particle(self.imp_model,
                                                          9.+origin, 9.+origin,

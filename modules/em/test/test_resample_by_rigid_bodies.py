@@ -46,7 +46,7 @@ class ResamplingTest(IMP.test.TestCase):
         """test resampling with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
         print "start test resample"
-        self.ps_all=IMP.Particles() #all the molecules together as one particle
+        self.ps_all=[] #all the molecules together as one particle
         for n in xrange(3):
             self.ps_all+=self.pss[n]
         print "start test resample ==1"
@@ -95,7 +95,7 @@ class ResamplingTest(IMP.test.TestCase):
     def _test_resampling_derivatives(self):
         """Test derivatives with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
-        self.ps_all=IMP.Particles() #all the molecules together as one particle
+        self.ps_all=[] #all the molecules together as one particle
         for n in xrange(3):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
@@ -114,7 +114,7 @@ class ResamplingTest(IMP.test.TestCase):
 
     def _test_fast_local_refinement(self):
         """test that local rigid fitting work well with rigid bodies"""
-        self.ps_all=IMP.Particles() #all the molecules together as one particle
+        self.ps_all=[] #all the molecules together as one particle
         for n in xrange(3):
             self.ps_all+=self.pss[n]
         d_map=IMP.em.particles2density(self.ps_all,8,1.5)

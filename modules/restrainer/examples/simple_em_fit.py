@@ -40,7 +40,7 @@ mp = IMP.atom.Hierarchy.setup_particle(p1)
 mp = IMP.atom.Hierarchy.setup_particle(p2)
 mp = IMP.atom.Hierarchy.setup_particle(p3)
 
-particles = IMP.Particles()
+particles = []
 particles.append(p1)
 particles.append(p2)
 particles.append(p3)
