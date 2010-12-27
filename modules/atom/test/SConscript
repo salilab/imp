@@ -7,12 +7,6 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                    'ChainPDBSelector',
                                    'ElementTable', 'HierarchyVector'],
                   value_object_exceptions=['ElementTable'],
-                  function_name_exceptions=['transform', 'BrownianDynamics.simulate', 'MolecularDynamics.assign_velocities', 'VelocityScalingOptimizerState.rescale_velocities', 'get_all_atom_CHARMM_parameters', 'get_heavy_atom_CHARMM_parameters'])
-
-"""
-All IMP classes should be labeled values or as objects to get memory management correct in python. The following do not:
-['ATOMPDBSelector', 'AllMol2Selector', 'AllPDBSelector', 'BrownianDynamics', 'CAlphaPDBSelector', 'CBetaPDBSelector', 'CHARMMAtom', 'CHARMMBond2', 'CHARMMBond3', 'CHARMMBond4', 'CHARMMDihedralParametersVector', , 'ElementTable', 'ForceFieldParameters', 'ForceSwitch', , 'LennardJones', 'Mass', 'Mol2Selector', 'MolecularDynamics', , 'RMSDCalculator', 'SmoothingFunction', 'StereochemistryPairFilter', 'WaterPDBSelector']
-"""
-
-"""
-['Bonded.bondeds_begin', 'Bonded.bondeds_end', 'Bonded.bonds_begin', 'Bonded.bonds_end', 'BrownianDynamics.simulate', 'CHARMMBond2.contains_atom', 'CHARMMBond3.contains_atom', 'CHARMMBond4.contains_atom', 'CHARMMDihedralParametersVector.append', 'CHARMMDihedralParametersVector.assign', 'CHARMMDihedralParametersVector.back', 'CHARMMDihedralParametersVector.begin', 'CHARMMDihedralParametersVector.capacity', 'CHARMMDihedralParametersVector.empty', 'CHARMMDihedralParametersVector.end', 'CHARMMDihedralParametersVector.erase', 'CHARMMDihedralParametersVector.front', 'CHARMMDihedralParametersVector.insert', 'CHARMMDihedralParametersVector.iterator', 'CHARMMDihedralParametersVector.rbegin', 'CHARMMDihedralParametersVector.rend', 'CHARMMDihedralParametersVector.resize', 'CHARMMDihedralParametersVector.size', 'CHARMMDihedralParametersVector.swap', 'Diffusion.get_D_in_cm2_per_second', 'Diffusion.get_D_key', 'Diffusion.set_D_from_radius', 'Diffusion.set_D_in_cm2_per_second', 'MolecularDynamics.assign_velocities', 'VelocityScalingOptimizerState.rescale_velocities', 'conect_record_string', 'copy_bond', 'default_force_field_parameters', 'get_all_atom_CHARMM_parameters', 'get_heavy_atom_CHARMM_parameters', 'pdb_string', 'transform']"""
+                  function_name_exceptions=['transform', 'BrownianDynamics.simulate', 'MolecularDynamics.assign_velocities', 'VelocityScalingOptimizerState.rescale_velocities', 'get_all_atom_CHARMM_parameters', 'get_heavy_atom_CHARMM_parameters'],
+                  spelling_exceptions=['lennard', 'charmm', "jones", "impropers",
+                                       "rmsd", "pdb", "multimodel", "conect"])
