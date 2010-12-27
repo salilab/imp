@@ -65,7 +65,7 @@ def create_restraints(m, chain, tmb, tme):
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
             lsc.add_particles(s.get_selected_particles())
         nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 2.0)
-        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,100))
+        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1000))
         evr= IMP.container.PairsRestraint(ps, nbl)
         m.add_restraint(evr)
         m.set_maximum_score(evr, .01)
@@ -141,7 +141,7 @@ def create_restraints(m, chain, tmb, tme):
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
         length=(tmb[i+1]-tme[i])*3.0
-        add_distance_restraint(p0,p1,length,100)
+        add_distance_restraint(p0,p1,length,1000)
     add_packing_restraint()
     add_DOPE()
     return m.get_restraints()
@@ -164,11 +164,11 @@ def  create_discrete_states(m,chain,tmb):
                 rot2=IMP.algebra.compose(swing,rot1)
                 rot_p =IMP.algebra.compose(rot2,rot00)
                 rot_m =IMP.algebra.compose(rot2,rot01)
-                for dz in range(-2,2):
+                for dz in range(0,2):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
                     for dx in range(0,5):
-                        if ( dx > 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(8.0+dx,0,1.0*dz))))
+                        if ( dx >= 0 ):
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(9.0+1.0*dx,0,1.0*dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
@@ -186,7 +186,6 @@ def  create_discrete_states(m,chain,tmb):
 # setting up domino (and filters)
 def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
-#    s.set_log_level(IMP.VERBOSE)
     # the following lines recreate the defaults and so are optional
     filters=[]
     # do not allow particles with the same ParticleStates object
@@ -194,7 +193,6 @@ def create_sampler(m, pst):
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
-    filters[-1].set_log_level(IMP.SILENT)
     states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
     s.set_subset_states_table(states)
     s.set_subset_filter_tables(filters)
@@ -204,15 +202,17 @@ def display(m,chain,tmb,tme,name):
     m.update()
     w= IMP.display.PymolWriter(name)
     for i in range(len(tmb)):
-        j=1
+        jj=0
         s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
         ps=s.get_selected_particles()
         for p in ps:
+            jj+=1
             g= IMP.display.XYZRGeometry(p)
-            g.set_name(str(i))
-            g.set_color(IMP.display.get_display_color(j))
+            g.set_name("TM"+str(i))
+            c=i
+            if ( jj == 1 ) : c=10
+            g.set_color(IMP.display.get_display_color(c))
             w.add_geometry(g)
-            j=2
 
 # Here starts the real job...
 #IMP.set_log_level(IMP.VERBOSE)
@@ -239,9 +239,11 @@ print "found ", cs.get_number_of_configurations(), "solutions"
 score=[]
 for i in range(cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    score.append(m.evaluate(False))
+    ss=m.evaluate(False)
+    score.append(ss)
+    print "** solution number:",i," is:",ss
 
-topscore = 100
+topscore = 30
 print "visualizing the top ",topscore
 for i in range(0,topscore):
     low=min(score)
@@ -250,7 +252,3 @@ for i in range(0,topscore):
     print "** solution number:",i," is:",low
     cs.load_configuration(ii)
     display(m,chain,tmb,tme,"sol_"+str(i)+".score_"+str(low)+".pym")
-
-#print "creating visualization"
-#display(m,chain,tmb,tme)
-#IMP.atom.write_pdb(chain,"test.pdb")
