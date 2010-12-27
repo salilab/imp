@@ -24,7 +24,7 @@ class TestREFCover(IMP.test.TestCase):
     def test_it(self):
         """Test cover bond"""
         m= IMP.Model()
-        ps=IMP.Particles()
+        ps=[]
         ds=IMP.core.XYZRs()
         for i in range(0,2):
             p= IMP.Particle(m)
