@@ -90,7 +90,6 @@ def IMPSystem(env, name=None, version="",
         utility.add_link_flags(env, required_modules,
                                required_dependencies+found_optional_dependencies)
         for m in required_modules+found_optional_modules:
-            print name, m
             env.Depends(scons_tools.data.get(env).get_alias(name+"-install"),
                          scons_tools.data.get(env).get_alias(m+"-install"))
             env.Depends(scons_tools.data.get(env).get_alias(name),
