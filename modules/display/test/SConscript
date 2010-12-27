@@ -6,4 +6,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   show_exceptions=['GeometryProcessor'],
                   value_object_exceptions=['GeometryProcessor'],
                   function_name_exceptions=['BildWriter.close', 'CMMWriter.close',
-                                            'ChimeraWriter.close', 'PymolWriter.close', 'Writer.close'])
+                                            'ChimeraWriter.close', 'PymolWriter.close', 'Writer.close'],
+                  spelling_exceptions=['bild', 'pymol', 'rgb'])
