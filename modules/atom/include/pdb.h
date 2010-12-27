@@ -379,7 +379,7 @@ IMPATOMEXPORT std::string get_pdb_string(const algebra::VectorD<3>& v,
       the atom serial number as found in the entry.
   /note http://www.bmsc.washington.edu/CrystaLinks/man/pdb/guide2.2_frame.html
 */
-IMPATOMEXPORT std::string get_conect_record_string(int,int);
+IMPATOMEXPORT std::string get_pdb_conect_record_string(int,int);
 #endif
 
 
