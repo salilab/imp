@@ -8,7 +8,7 @@ m= IMP.Model()
 sel=IMP.atom.NonWaterPDBSelector()
 ##1.2 read the protein
 mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
-ps=IMP.Particles(IMP.core.get_leaves(mh))
+ps=IMP.core.get_leaves(mh)
 IMP.atom.add_radii(mh)
 #2. read the density map
 resolution=8.
