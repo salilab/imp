@@ -12,6 +12,9 @@
   no longer prohibited from storing them (not that there is much use in doing that).
 - IMP_VALUES() now includes IMP_OUTPUT_OPERATOR() so you no longer need two namespace macros for each value.
 - biological systems can now include internal modules. These provide a conventient place to put application specific C++ and python code. See the example system for more info.
+- the plural names (eg IMP.Particles()) have been removed from the python side as they are just python lists.
+- class and method names are now spell checked. Add missing words to spelling_exceptions in the module test call.
+- renamed IMP::atom::get_conect_record_string() to IMP::atom::get_pdb_conect_record_string() to make clearer what it is.
 
 \par Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
