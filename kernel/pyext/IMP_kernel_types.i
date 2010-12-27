@@ -235,10 +235,6 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 IMP_SWIG_VALUE_CHECKS_BASE(Namespace, PluralName);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
-%pythoncode %{
-PluralName=list
-_plural_types.append(#PluralName)
-%}
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
 %enddef
