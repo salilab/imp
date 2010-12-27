@@ -229,8 +229,8 @@ namespace IMP {
    %template(CHARMMBond) CHARMMConnection<2>;
    %template(CHARMMAngle) CHARMMConnection<3>;
    %template(CHARMMDihedral) CHARMMConnection<4>;
-   %template(get_rmsd_cpp) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
-   %template(get_native_overlap_cpp) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
+   %template(_get_rmsd_cpp) get_rmsd<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
+   %template(_get_native_overlap_cpp) get_native_overlap<std::vector<algebra::VectorD<3> >, std::vector<algebra::VectorD<3> > >;
   }
 }
 
@@ -238,9 +238,9 @@ namespace IMP {
 def get_rmsd(a, b):
    va= [IMP.algebra.get_vector(x) for x in a]
    vb= [IMP.algebra.get_vector(x) for x in b]
-   return get_rmsd_cpp(va, vb)
+   return _get_rmsd_cpp(va, vb)
 def get_native_overlap(a, b, d):
    va= [IMP.algebra.get_vector(x) for x in a]
    vb= [IMP.algebra.get_vector(x) for x in b]
-   return get_native_overlap_cpp(va, vb, d)
+   return _get_native_overlap_cpp(va, vb, d)
 %}
