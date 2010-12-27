@@ -12,7 +12,7 @@ class SampleParticlesTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         print 'start setup'
         """ create particles """
-        self.particles = IMP.Particles()
+        self.particles = []
         self.mass_key=IMP.atom.Mass.get_mass_key()
         self.mdl=IMP.Model()
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:

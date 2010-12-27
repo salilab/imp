@@ -11,8 +11,8 @@ class SimpleEMFitTest(IMP.test.TestCase):
 
     def load_particles(self, m, coordinates):
         """Load particles"""
-        self.particles = IMP.Particles()
-        self.ps_dist = IMP.Particles()
+        self.particles = []
+        self.ps_dist = []
         self.mhs = IMP.atom.Hierarchies()
 
         radius_key = IMP.FloatKey("radius")

@@ -35,7 +35,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
-        self.particles = IMP.Particles()
+        self.particles = []
         ## -  create a set of three particles in imp
         for i in range(3):
             self.particles.append(IMP.Particle(self.imp_model))
@@ -117,7 +117,7 @@ class DerivativesTest(IMP.test.TestCase):
         self.env.libs.parameters.read(file='$(LIB)/par.lib')
         #init IMP model ( the environment)
         self.imp_model = IMP.Model()
-        self.particles = IMP.Particles()
+        self.particles = []
 
         ## -  create a set of three particles in imp
         for i in range(3):

@@ -20,7 +20,7 @@ class SampleParticlesTests(IMP.test.TestCase):
         self.scene.std_normalize()
 
 
-        self.particles = IMP.Particles()
+        self.particles = []
         mdl=IMP.Model()
         self.mass_key=IMP.atom.Mass.get_mass_key()
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:

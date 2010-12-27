@@ -9,7 +9,7 @@ class SimpleDistanceTest(IMP.test.TestCase):
 
     def load_particles(self, m, coordinates):
         """Load particles"""
-        self.particles = IMP.Particles()
+        self.particles = []
 
         for pt in coordinates:
             p = self.create_point_particle(m, *pt)

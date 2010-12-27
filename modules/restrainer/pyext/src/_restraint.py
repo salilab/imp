@@ -532,7 +532,7 @@ class _RestraintRestraint(_RestraintNode):
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
         if IMP.core.RigidBody.particle_is_instance(first_particle):
-            rbs_tmp = IMP.Particles()
+            rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
@@ -555,7 +555,7 @@ class _RestraintRestraint(_RestraintNode):
             mhs.append(child)
         first_particle = self.child_restraints[0].get_particle()
         if IMP.core.RigidBody.particle_is_instance(first_particle):
-            rbs_tmp = IMP.Particles()
+            rbs_tmp = []
             for mh in mhs:
                 rbs_tmp.append(mh.get_particle())
             rbs = IMP.core.RigidBodies(rbs_tmp)
@@ -620,7 +620,7 @@ class _RestraintRestraint(_RestraintNode):
     def create_diameter_restraint(self, repr):
         _RestraintNode.create_restraint(self, repr)
         self.create_force()
-        ps = IMP.Particles()
+        ps = []
         for child in self.child_restraints:
             ps.append(child.get_particle())
         self.diameter_restraint = IMP.restrainer.create_simple_diameter(

@@ -47,7 +47,7 @@ class UnwrappingTest(IMP.test.TestCase):
         rd= IMP.core.XYZ.setup_particle(IMP.Particle(mdl),
                                         IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
         hd= IMP.core.Hierarchy.setup_particle(rd.get_particle())
-        ps = IMP.Particles()
+        ps = []
         origin =  3.0
         ps.append(self.create_point_particle(mdl,
                                              9.+origin, 9.+origin,

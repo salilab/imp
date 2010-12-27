@@ -12,7 +12,7 @@ class AddParticlesTest(IMP.test.TestCase):
         """ create particles """
         IMP.test.TestCase.setUp(self)
         self.mdl=IMP.Model()
-        self.particles_p = IMP.Particles()
+        self.particles_p = []
         self.rad_key=IMP.core.XYZR.get_radius_key()
         self.mass_key=IMP.FloatKey("mass")
         for val in [[9.,5.,5.,1.,1.],[12.,9.,4.,1.,1.],[4.,5.,5.,1.,1.]]:

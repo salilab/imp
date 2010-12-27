@@ -17,7 +17,7 @@ class CorrelationDecompistionTest(IMP.test.TestCase):
 
     def load_proteins(self,pdb_filenames):
         self.mhs=IMP.atom.Hierarchies()
-        self.ps = IMP.Particles()
+        self.ps = []
         self.rbs=IMP.core.RigidBodies()
         self.leaves_ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         for pf in pdb_filenames:
@@ -41,7 +41,7 @@ class CorrelationDecompistionTest(IMP.test.TestCase):
         self.load_proteins(["1z5s_A_fitted.pdb","1z5s_B_fitted.pdb",
                             "1z5s_C_fitted.pdb","1z5s_D_fitted.pdb",])
         self.full_sampled_map=IMP.em.SampledDensityMap(self.scene.get_header())
-        self.all_ps=IMP.Particles()
+        self.all_ps=[]
         for mh in self.mhs:
             self.all_ps+=IMP.core.get_leaves(mh)
         self.full_sampled_map.set_particles(self.all_ps)
