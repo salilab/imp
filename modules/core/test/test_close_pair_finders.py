@@ -225,9 +225,9 @@ class TestCPFL(IMP.test.TestCase):
         #cpf.set_radius_key(rk)
         m=IMP.Model()
         ps= IMP.core.create_xyzr_particles(m, nump, 1)
-        rbpsa= IMP.Particles()
-        rbpsb= IMP.Particles()
-        fps= IMP.Particles()
+        rbpsa= []
+        rbpsb= []
+        fps= []
         free_ps=[]
         for i in range(0, len(ps)):
             if i%3==0:
@@ -263,9 +263,9 @@ class TestCPFL(IMP.test.TestCase):
                                    IMP.core.XYZR.get_radius_key(), out)
         print "Done with all test "+str(out.get_number_of_particle_pairs())
         ps2= self.create_particles_in_box(m, nump)
-        rbpsa2= IMP.Particles()
-        rbpsb2= IMP.Particles()
-        fps2= IMP.Particles()
+        rbpsa2= []
+        rbpsb2= []
+        fps2= []
         for i in range(0, len(ps2)):
             ps2[i].add_attribute(IMP.core.XYZR.get_radius_key(),
                                  random.uniform(0,1))

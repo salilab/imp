@@ -6,7 +6,7 @@ import IMP.atom
 m= IMP.Model()
 
 # Put the parent particles for each molecule
-hs=IMP.Particles()
+hs=[]
 
 # create the molecules
 for i in range(0,10):

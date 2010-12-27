@@ -11,7 +11,7 @@ class DistanceTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         self.imp_model = IMP.Model()
-        self.particles = IMP.Particles()
+        self.particles = []
         self.rsrs = []
 
         # create particles 0 - 1
