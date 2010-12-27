@@ -417,6 +417,7 @@ def IMPModuleTest(env, python_tests, cpp_tests,
                   function_name_exceptions=[],
                   value_object_exceptions=[],
                   class_name_exceptions=[],
+                  spelling_exceptions=[],
                   check_standards=True):
     """Pseudo-builder to run tests for an IMP module. The single target is
        generally a simple output file, e.g. 'test.passed', while the single
@@ -436,7 +437,8 @@ def IMPModuleTest(env, python_tests, cpp_tests,
                                  show_exceptions=show_exceptions,
                                  function_name_exceptions=function_name_exceptions,
                                  value_object_exceptions=value_object_exceptions,
-                                 class_name_exceptions=class_name_exceptions)
+                                 class_name_exceptions=class_name_exceptions,
+                                 spelling_exceptions=spelling_exceptions)
         found=False
         for f in files:
             if str(f).endswith("test_standards.py"):

@@ -257,7 +257,7 @@ class TestCase(unittest.TestCase):
         import IMP.algebra
         lbv=IMP.algebra.Vector3D(lb[0],lb[1],lb[2])
         ubv=IMP.algebra.Vector3D(ub[0],ub[1],ub[2])
-        ps= IMP.Particles()
+        ps= []
         for i in range(0,num):
             v = IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(lbv, ubv))
             p = self.create_point_particle(model, v[0], v[1], v[2])
@@ -289,10 +289,45 @@ class TestCase(unittest.TestCase):
         self.assertEquals(len(bad), 0,
                           message)
 
-    def assertClassNames(self, module, exceptions):
+    def _check_spelling(self, word, words):
+        """Check that the word is spelled correctly"""
+        if "words" not in dir(self):
+            wordlist= open(IMP.get_data_path("linux.words"), "r").read().split("\n")
+            # why is "all" missing on my mac?
+            custom_words=["info", "prechange", "int", "ints", "optimizeds", "graphviz",
+                          "voxel", "voxels", "endian", 'rna', 'dna',
+                          "xyzr"]
+            self.words=set(wordlist+custom_words)
+        if self.words:
+            for i in "0123456789":
+                if i in word:
+                    return True
+            if word in words:
+                return True
+            if word in self.words:
+                return True
+            else:
+                return False
+        else:
+            return True
+    def assertClassNames(self, module, exceptions, words):
         """Check that all the classes in the module follow the imp naming conventions."""
         all= dir(module)
         bad=[]
+        cc=re.compile("([A-Z][a-z]*)")
+        for name in all:
+            if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
+                if name.find("SwigPyIterator") != -1:
+                    continue
+                for t in re.findall(cc, name):
+                    if not self._check_spelling(t.lower(), words):
+                        print "misspelled", t, "in", name
+                        bad.append(name)
+
+        self.assertEquals(len(bad), 0,
+                          "All IMP classes should be properly spelled. The following do not: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
+                          % (str(bad)))
+
         for name in all:
             if self._get_type(module.__name__, name)==types.TypeType and not name.startswith("_"):
                 if name.find("SwigPyIterator") != -1:
@@ -301,12 +336,17 @@ class TestCase(unittest.TestCase):
                     bad.append(name)
                 if name.lower== name:
                     bad.append(name)
+                for t in re.findall(cc, name):
+                    if not self._check_spelling(t.lower(), words):
+                        print "misspelled", t, "in", name
+                        bad.append(name)
+
         self.assertEquals(len(bad), 0,
                           "All IMP classes should have CamelCase names. The following do not: %s." \
                           % (str(bad)))
 
 
-    def _check_function_name(self, prefix, name, verbs, all, exceptions):
+    def _check_function_name(self, prefix, name, verbs, all, exceptions, words):
         if prefix:
             fullname=prefix+"."+name
         else:
@@ -335,8 +375,13 @@ class TestCase(unittest.TestCase):
                 break
         if not starts:
             return [fullname]
+        tokens= name.split("_")
+        for t in tokens:
+            if not self._check_spelling(t, words):
+                print "misspelled", t, "in", name
+                return [fullname]
         return []
-    def _check_function_names(self, module, prefix, names, verbs, all, exceptions):
+    def _check_function_names(self, module, prefix, names, verbs, all, exceptions, words):
         bad=[]
         #print "names", module, prefix
         for name in names:
@@ -344,7 +389,7 @@ class TestCase(unittest.TestCase):
                 continue
             if self._get_type(module, name)==types.BuiltinMethodType\
                    or self._get_type(module, name)==types.MethodType:
-                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions))
+                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions, words))
             if self._get_type(module, name)==types.TypeType and name.find("SwigPyIterator")==-1:
                 #print "sub", module+"."+name
                 members=eval("dir("+module+"."+name+")")
@@ -352,20 +397,20 @@ class TestCase(unittest.TestCase):
                 bad.extend(self._check_function_names(module+"."+name,
                                                       name,
                                                       members,
-                                                      verbs, [], exceptions))
+                                                      verbs, [], exceptions, words))
         return bad
 
 
 
-    def assertFunctionNames(self, module, exceptions):
+    def assertFunctionNames(self, module, exceptions, words):
         """Check that all the functions in the module follow the imp naming conventions."""
         all= dir(module)
         verbs=["add", "remove", "get", "set", "evaluate", "show", "create", "destroy",
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
                "propose", "setup", "teardown", "visit", "find", "run"]
-        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions)
-        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
+        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words)
+        message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":str(bad), "verbs":verbs}
         self.assertEquals(len(bad), 0,
                           message)
