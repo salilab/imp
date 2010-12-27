@@ -247,7 +247,13 @@ public:
 
 
 
-/** Store a grid as a densely packed set of voxels.
+/** Store a grid as a densely packed set of voxels. The mapping from GridIndex3D
+    to index in the data array is:
+    \code
+      i[2]*BoundedGridStorage3D::get_number_of_voxels(0)
+      *BoundedGridStorage3D::get_number_of_voxels(1)
+      + i[1]*BoundedGridStorage3D::get_number_of_voxels(0)+i[0]
+    \endcode
     \see Grid3D
  */
 template <class VT>
@@ -365,7 +371,9 @@ get_trilinearly_interpolated(const grids::GridD<3, Storage> &g,
 // They are created with %template in swig to get around inclusion order issues
 #ifndef SWIG
 /** A dense grid of values. In python DenseFloatGrid3D and DenseDoubleGrid3D are
-    provided.*/
+    provided. See IMP_GRID3D_FOREACH_VOXEL() for a useful macro when operating
+    on all voxels of the grid.
+*/
 template <class VT>
 struct DenseGrid3D:
   public grids::GridD<3, grids::DenseGridStorage3D< VT> > {
