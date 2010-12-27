@@ -18,18 +18,16 @@ scons_tools.dependency.add_external_library(env, "OpenCV22",
                   """cv::Mat *m = new cv::Mat(); BOOST_STATIC_ASSERT(CV_MAJOR_VERSION>=2 && CV_MINOR_VERSION>=1);""",
                   extra_libs=[])
 
-
 config = []
-if scons_tools.data.get(env).dependencies["OpenCV21"]:
-    #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV21"]
-    pass
-elif scons_tools.data.get(env).dependencies["OpenCV22"]:
-    config.append(['IMP_HAS_OPENCV22', '1'])
-    #scons_tools.data.get(env).dependencies["OpenCV"]=scons_tools.data.get(env).dependencies["OpenCV22"]
-else:
-    print "em2d disabled due to missing dependency OpenCV"
-    scons_tools.data.get(env).add_module("em2d",ok=False)
-    Return()
+if not env.GetOption('help'):
+    if scons_tools.data.get(env).dependencies["OpenCV21"]:
+        pass
+    elif scons_tools.data.get(env).dependencies["OpenCV22"]:
+        config.append(['IMP_HAS_OPENCV22', '1'])
+    else:
+        print "em2d disabled due to missing dependency OpenCV"
+        scons_tools.data.get(env).add_module("em2d",ok=False)
+        Return()
 
 
 env.IMPModuleBuild(version="SVN",
