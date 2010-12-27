@@ -60,7 +60,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
 
         self.model = IMP.Model()
-        self.particles = IMP.Particles()
+        self.particles = []
         self.particles.append(self.create_point_particle(self.model,
                                                          -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
