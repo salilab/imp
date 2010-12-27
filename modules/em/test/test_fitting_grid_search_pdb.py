@@ -41,7 +41,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         #create a rigid body
         print "start : "
         fr=IMP.em.local_rigid_fitting_grid_search(
-            IMP.Particles(self.particles),
+            self.particles,
             self.weight_key,
             self.scene,
             2,1,0.174,10)

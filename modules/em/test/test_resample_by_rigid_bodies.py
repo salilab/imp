@@ -32,7 +32,7 @@ class ResamplingTest(IMP.test.TestCase):
 
             IMP.atom.add_radii(self.mhs[n])
             IMP.atom.add_radii(self.mhs_copy[n])
-            self.pss.append(IMP.Particles(IMP.core.get_leaves(self.mhs[n])))
+            self.pss.append(IMP.core.get_leaves(self.mhs[n]))
             self.rbs_of_copy.append(IMP.atom.setup_as_rigid_body(self.mhs_copy[n]))
         print "end load proteins"
     def setUp(self):
