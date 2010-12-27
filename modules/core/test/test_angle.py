@@ -12,7 +12,7 @@ class AngleRestraintTests(IMP.test.TestCase):
            angle `system_angle`, and add an angle restraint with mean
            `scored_angle`."""
         model = IMP.Model()
-        particles = IMP.Particles()
+        particles = []
         particles.append(self.create_point_particle(model, -1.0, 0.0, 0.0))
         particles.append(self.create_point_particle(model, 0.0, 0.0, 0.0))
         particles.append(self.create_point_particle(model,

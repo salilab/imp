@@ -13,7 +13,7 @@ class Test(IMP.test.TestCase):
         m= IMP.Model()
         p= IMP.Particle(m)
         tpr= IMP.core.TableRefiner()
-        ps= IMP.Particles()
+        ps= []
         ps.append(p)
         tpr.add_particle(p, ps)
         self.assertTrue(tpr.get_can_refine(p))

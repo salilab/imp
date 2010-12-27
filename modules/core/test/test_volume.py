@@ -11,7 +11,7 @@ class Volume(IMP.test.TestCase):
     def test_volume_1(self):
         """Testing that volume restraint can separate balls"""
         m= Model()
-        ps= IMP.Particles()
+        ps= []
         IMP.set_log_level(IMP.VERBOSE)
         for i in range(0,3):
             p= Particle(m)
@@ -43,7 +43,7 @@ class Volume(IMP.test.TestCase):
         """Testing that volume restraint can change radius"""
         m= Model()
         IMP.set_log_level(IMP.VERBOSE)
-        ps= IMP.Particles()
+        ps= []
         p= Particle(m)
         inits=Sphere3D(get_random_vector_in(BoundingBox3D(Vector3D(0,0,0),
                                                           Vector3D(5,5,5))),

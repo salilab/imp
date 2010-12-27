@@ -11,7 +11,7 @@ class TestREFCover(IMP.test.TestCase):
         m= IMP.Model()
         IMP.set_log_level(IMP.MEMORY)
         n= random.randrange(1,10)
-        ps=IMP.Particles()
+        ps=[]
         ds=IMP.core.XYZRs()
         pp= IMP.Particle(m)
         hd= IMP.core.Hierarchy.setup_particle(pp)
