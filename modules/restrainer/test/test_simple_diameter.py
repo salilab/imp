@@ -56,7 +56,7 @@ class SimpleDiameterTest(IMP.test.TestCase):
         sd.set_mean(10.0)
         self.assertAlmostEqual(h.get_mean(), 10.0, delta=1e-4)
 
-        sd.set_stddev(3.5)
+        sd.set_standard_deviation(3.5)
         self.assertAlmostEqual(h.get_k(),
                                h.get_k_from_standard_deviation(3.5), delta=1e-4)
         sd.set_k(0.1)
