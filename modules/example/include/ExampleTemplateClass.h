@@ -17,13 +17,13 @@
 IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! A line segment templated on the dimension.
-/** It inherits from IMP::InvalidDefault since it, like the underlying
+/** Like the underlying
     algebra::VectorD data, is not initialized when the default
     constructor is used. Since it is a small class, it is designed to
     be allocated on the stack and to be passed by value (or
     const &).
 
-    The class should be named SegmentD, but it is an example.
+    The class should be named SegmentD, but it is an demostration.
 
     The following command indicates to doxygen to mark the class
     as being one whose members are left uninitialized by the
