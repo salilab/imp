@@ -31,12 +31,3 @@ def create_model_and_particles():
 %include "IMP/example_system_local/ExampleRestraint.h"
 %include "IMP/example_system_local/ExampleSingletonModifier.h"
 %include "IMP/example_system_local/ExamplePairScore.h"
-
-namespace IMP {
-  namespace example_system_local {
-  /* Python doesn't natively support C++ templates, so you have to manually
-     choose which template parameters you want to intantiate a template with.
-   */
-   %template(ExampleTemplateClass3D) ExampleTemplateClassD<3>;
-  }
-}
