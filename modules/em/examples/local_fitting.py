@@ -18,7 +18,7 @@ mh_ref=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
 IMP.atom.add_radii(mh)
 IMP.atom.add_radii(mh_ref)
 ps= IMP.core.get_leaves(mh)
-ps_ref= IMP.Particles(IMP.core.get_leaves(mh_ref))
+ps_ref= IMP.core.get_leaves(mh_ref)
 #2. read the density map of the protein
 resolution=8.
 voxel_size=1.5
