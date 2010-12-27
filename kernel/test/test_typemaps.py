@@ -9,7 +9,7 @@ class ParticleTests(IMP.test.TestCase):
     def test_no_model(self):
         """Check particle typemaps"""
         m= IMP.Model()
-        ps= IMP.Particles()
+        ps= []
         for i in range(0,10):
             ps.append(IMP.Particle(m))
         num=IMP._take_particles(ps)
@@ -69,7 +69,7 @@ class ParticleTests(IMP.test.TestCase):
     def _test_o(self):
         """Check overloaded"""
         m= IMP.Model()
-        ps= IMP.Particles()
+        ps= []
         for i in range(10):
             ps.append(IMP.Particle(m))
         pso=self._pass(ps)

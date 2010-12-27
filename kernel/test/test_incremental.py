@@ -69,7 +69,7 @@ class ModelTests(IMP.test.TestCase):
     def _setup_model(self):
         m = IMP.Model()
         IMP.set_log_level(IMP.TERSE)
-        ps= IMP.Particles()
+        ps= []
         n=1
         for i in range(0,n):
             p= IMP.Particle(m)
