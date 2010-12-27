@@ -11,6 +11,7 @@
   means is that they need to be created with \c new in C++ code. It also means that one is
   no longer prohibited from storing them (not that there is much use in doing that).
 - IMP_VALUES() now includes IMP_OUTPUT_OPERATOR() so you no longer need two namespace macros for each value.
+- biological systems can now include internal modules. These provide a conventient place to put application specific C++ and python code. See the example system for more info.
 
 \par Fall 2010
 - IMP::display::PlaneGeometry was added to display planes
