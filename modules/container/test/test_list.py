@@ -11,10 +11,10 @@ class RefCountTests(IMP.test.TestCase):
     def test_refcount_container(self):
         """Check that List containers keep track of changes"""
         m= IMP.Model()
-        ps0=IMP.Particles()
+        ps0=[]
         for i in range(0,20):
             ps0.append(IMP.Particle(m))
-        ps1= IMP.Particles()
+        ps1= []
         for i in range(0,10):
             ps1.append(IMP.Particle(m))
         c= IMP.container.ListSingletonContainer(ps0)
