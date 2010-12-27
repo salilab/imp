@@ -14,6 +14,12 @@ import shutil
 import _compat_python
 import _compat_python.unittest2
 
+# Fall back to the sets.Set class on older Pythons that don't have
+# the 'set' builtin type.
+if 'set' not in dir(__builtins__):
+    import sets
+    set = sets.Set
+
 # Load a new enough unittest package (should have the 'skip' decorator)
 # - On Python 2.7 or 3.2, the standard 'unittest' package will work.
 # - On older Pythons, use the 'unittest2' package if available, otherwise use
