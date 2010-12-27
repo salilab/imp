@@ -464,6 +464,9 @@ def IMPModuleBuild(env, version, required_modules=[],
         module=Dir('.').abspath.split('/')[-1]
         if module=="local":
             module=Dir('.').abspath.split('/')[-2]+"_local"
+    if not module.endswith("local"):
+        if module.find("_")!= -1:
+            scons_tools.utility.report_error("Module names can only have lower case characters and numbers")
     if module_suffix is None:
         module_suffix="_"+module
     if module_include_path is None:
