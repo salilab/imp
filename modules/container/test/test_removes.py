@@ -10,8 +10,8 @@ class AllPairsContainerTest(IMP.test.TestCase):
     def _test_allp(self):
         """Check that removal from a list container works"""
         m= IMP.Model()
-        ps= IMP.Particles()
-        psr= IMP.Particles()
+        ps= []
+        psr= []
         for i in range(0,50):
             p= IMP.Particle(m)
             ps.append(p)
@@ -27,8 +27,8 @@ class AllPairsContainerTest(IMP.test.TestCase):
     def test_allp2(self):
         """Check that removal from a list container works and removal from model"""
         m= IMP.Model()
-        ps= IMP.Particles()
-        psr= IMP.Particles()
+        ps= []
+        psr= []
         for i in range(0,50):
             p= IMP.Particle(m)
             ps.append(p)
