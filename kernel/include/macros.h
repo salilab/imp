@@ -983,7 +983,7 @@ protection:                                                             \
     return out;                                                         \
   }                                                                     \
   template <class L>                                                    \
-  inline void show(std::ostream &out, const name<L, M> &i)              \
+  inline void show(std::ostream &out, const name<L> &i) {               \
     i.show(out);                                                        \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
