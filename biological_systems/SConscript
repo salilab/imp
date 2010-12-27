@@ -1,6 +1,6 @@
 Import('env')
 
-systems=['groel', 'example']
+systems=['groel', 'example_system']
 
 if env.get('local', False):
     for d in Glob("*/SConscript"):
