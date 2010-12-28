@@ -61,13 +61,13 @@ class ModelLoaderTests(IMP.test.TestCase):
         all_atoms= IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(1221, len(all_atoms),
                          "Wrong number of atoms found in protein")
-        bonds = loader.load_bonds()
+        bonds = list(loader.load_bonds())
         self.assertEqual(len(bonds), 1248)
-        angles = loader.load_angles()
+        angles = list(loader.load_angles())
         self.assertEqual(len(angles), 1677)
-        dihedrals = loader.load_dihedrals()
+        dihedrals = list(loader.load_dihedrals())
         self.assertEqual(len(dihedrals), 1973)
-        impropers = loader.load_impropers()
+        impropers = list(loader.load_impropers())
         self.assertEqual(len(impropers), 520)
 
     def test_dna(self):
