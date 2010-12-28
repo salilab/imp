@@ -456,11 +456,10 @@ class ModelLoader(object):
 
            You must call load_atoms() prior to using this function.
            @see load_angles(), load_dihedrals(), load_impropers()
-           @return An list containing all of the bonds.
+           @return A generator listing all of the bonds.
         """
         if not hasattr(self, '_modeller_hierarchy'):
             raise ValueError("Call load_atoms() first.")
-        ps = []
         for (maa, mab) in self._modeller_model.bonds:
             pa = self._atoms[maa.index]
             pb = self._atoms[mab.index]
@@ -472,9 +471,8 @@ class ModelLoader(object):
                 bb= IMP.atom.Bonded(pb)
             else:
                 bb= IMP.atom.Bonded.setup_particle(pb)
-            ps.append(IMP.atom.create_bond(ba, bb,
-                                           IMP.atom.Bond.SINGLE).get_particle())
-        return ps
+            yield IMP.atom.create_bond(ba, bb,
+                                       IMP.atom.Bond.SINGLE).get_particle()
 
     def load_angles(self):
         """Load the Modeller angle topology into the IMP model.
@@ -497,14 +495,12 @@ class ModelLoader(object):
     def _internal_load_angles(self, angles, angle_class):
         if not hasattr(self, '_modeller_hierarchy'):
             raise ValueError("Call load_atoms() first.")
-        ps = []
         for modeller_atoms in angles:
             imp_particles = [self._atoms[x.index] for x in modeller_atoms]
             p = IMP.Particle(imp_particles[0].get_model())
             a = angle_class.setup_particle(p,
                                  *[IMP.core.XYZ(x) for x in imp_particles])
-            ps.append(a.get_particle())
-        return ps
+            yield a.get_particle()
 
     def load_static_restraints_file(self, filename):
         """Convert a Modeller static restraints file into equivalent
@@ -569,12 +565,11 @@ class ModelLoader(object):
 
            @note Currently only soft-sphere, electrostatic and Lennard-Jones
                  restraints are loaded.
-           @return A Python list of the newly-created IMP::Restraint
+           @return A Python generator of the newly-created IMP::Restraint
                    objects.
         """
         if not hasattr(self, '_modeller_hierarchy'):
             raise ValueError("Call load_atoms() first.")
-        restraints = []
         edat = self._modeller_model.env.edat
         libs = self._modeller_model.env.libs
         atoms = IMP.container.ListSingletonContainer(
@@ -591,7 +586,7 @@ class ModelLoader(object):
               IMP.core.Harmonic.get_k_from_standard_deviation(edat.sphere_stdv)
             ps = IMP.core.SphereDistancePairScore(
                               IMP.core.HarmonicLowerBound(0, k))
-            restraints.append(IMP.container.PairsRestraint(ps, nbl))
+            yield IMP.container.PairsRestraint(ps, nbl)
 
         if edat.dynamic_lennard or edat.dynamic_coulomb:
             # 3.0 is roughly the max. atom diameter
@@ -605,16 +600,14 @@ class ModelLoader(object):
                 sf = IMP.atom.ForceSwitch(edat.lennard_jones_switch[0],
                                           edat.lennard_jones_switch[1])
                 ps = IMP.atom.LennardJonesPairScore(sf)
-                restraints.append(IMP.container.PairsRestraint(ps, nbl))
+                yield IMP.container.PairsRestraint(ps, nbl)
 
             if edat.dynamic_coulomb:
                 sf = IMP.atom.ForceSwitch(edat.coulomb_switch[0],
                                           edat.coulomb_switch[1])
                 ps = IMP.atom.CoulombPairScore(sf)
                 ps.set_relative_dielectric(edat.relative_dielectric)
-                restraints.append(IMP.container.PairsRestraint(ps, nbl))
-
-        return restraints
+                yield IMP.container.PairsRestraint(ps, nbl)
 
 
 def read_pdb(name, model, special_patches=None):
