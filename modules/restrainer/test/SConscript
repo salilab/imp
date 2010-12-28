@@ -2,4 +2,5 @@ Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  function_name_exceptions=['Restraint.print_all_restraints'])
+                  function_name_exceptions=['Restraint.print_all_restraints'],
+                  spelling_exceptions=['connectivities'])
