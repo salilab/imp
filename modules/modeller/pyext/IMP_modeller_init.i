@@ -52,7 +52,7 @@ class IMPRestraints(modeller.terms.energy_term):
        This can be used to incorporate IMP Restraints into an existing
        comparative modeling pipeline, or to use Modeller optimizers or
        protocols.
-       @param particles A Particles object containing IMP atoms, in the
+       @param particles A list of the IMP atoms (as Particle objects),
                         same order as the Modeller atoms.
        @note since Modeller, unlike IMP, is sensitive to the ordering
              of atoms, it usually makes sense to create the model in
@@ -89,7 +89,7 @@ class ModellerRestraints(IMP.Restraint):
        optimizer, or in combination with IMP restraints.
 
        @param modeller_model The Modeller model object.
-       @param particles A Particles object containing IMP atoms, in the
+       @param particles A list of the IMP atoms (as Particle objects),
                         same order as the Modeller atoms.
        @note since Modeller, unlike IMP, is sensitive to the ordering
              of atoms, it usually makes sense to create the model in
@@ -456,11 +456,11 @@ class ModelLoader(object):
 
            You must call load_atoms() prior to using this function.
            @see load_angles(), load_dihedrals(), load_impropers()
-           @return An IMP::Particles object containing all of the bonds.
+           @return An list containing all of the bonds.
         """
         if not hasattr(self, '_modeller_hierarchy'):
             raise ValueError("Call load_atoms() first.")
-        ps = IMP.Particles()
+        ps = []
         for (maa, mab) in self._modeller_model.bonds:
             pa = self._atoms[maa.index]
             pb = self._atoms[mab.index]
@@ -497,7 +497,7 @@ class ModelLoader(object):
     def _internal_load_angles(self, angles, angle_class):
         if not hasattr(self, '_modeller_hierarchy'):
             raise ValueError("Call load_atoms() first.")
-        ps = IMP.Particles()
+        ps = []
         for modeller_atoms in angles:
             imp_particles = [self._atoms[x.index] for x in modeller_atoms]
             p = IMP.Particle(imp_particles[0].get_model())
