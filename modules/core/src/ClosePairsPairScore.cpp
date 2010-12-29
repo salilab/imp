@@ -96,12 +96,14 @@ ClosePairsPairScore::get_close_pairs(const ParticlePair &p) const {
 double ClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const
 {
+  IMP_OBJECT_LOG;
   return do_evaluate(get_close_pairs(p), f_, da);
 }
 
 
 ParticlePairsTemp KClosePairsPairScore::
 get_close_pairs(const ParticlePair &p) const {
+  IMP_OBJECT_LOG;
   //double mr= std::max(max_radius(psa), max_radius(psb));
   ParticlePairsTemp ppt;
   ParticlesTemp ps0= expand(p[0],r_), ps1= expand(p[1], r_);
@@ -154,6 +156,7 @@ get_close_pairs(const ParticlePair &p) const {
 
 double KClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
   return do_evaluate(get_close_pairs(p), f_, da);
 }
 namespace {
