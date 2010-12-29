@@ -118,6 +118,7 @@ namespace {
 ParticlePairsTemp RigidClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &pa,
                   const ParticlesTemp &pb) const {
+  IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << pa.size() << " and "
           << pb.size() << std::endl);
@@ -153,6 +154,7 @@ ParticlePairsTemp RigidClosePairsFinder
 
 ParticlePairsTemp RigidClosePairsFinder
 ::get_close_pairs(const ParticlesTemp &pa) const {
+  IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Adding close pairs from "
           << pa.size() << " particles." << std::endl);
   check_particles(pa);
@@ -230,6 +232,7 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
 IntPairs RigidClosePairsFinder
 ::get_close_pairs(const algebra::BoundingBox3Ds &bas,
                   const algebra::BoundingBox3Ds &bbs) const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   cpf_->set_distance(get_distance());
   return cpf_->get_close_pairs(bas, bbs);
@@ -237,6 +240,7 @@ IntPairs RigidClosePairsFinder
 
 IntPairs RigidClosePairsFinder
 ::get_close_pairs(const algebra::BoundingBox3Ds &bas) const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   cpf_->set_distance(get_distance());
   return cpf_->get_close_pairs(bas);
