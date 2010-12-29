@@ -16,7 +16,9 @@ import _compat_python.unittest2
 
 # Fall back to the sets.Set class on older Pythons that don't have
 # the 'set' builtin type.
-if 'set' not in dir(__builtins__):
+try:
+    set = set
+except NameError:
     import sets
     set = sets.Set
 
