@@ -83,15 +83,22 @@ namespace {
     } else {
       for (unsigned int i=0; i< ps.size(); ++i) {
         if (RigidMember::particle_is_instance(ps[i])) {
-            if (members.find(RigidMember(ps[i]).get_rigid_body())
-                == members.end()) {
-              out.push_back(RigidMember(ps[i]).get_rigid_body());
-            }
-            members[RigidMember(ps[i]).get_rigid_body()].push_back(ps[i]);
-          } else {
-            out.push_back(ps[i]);
+          if (members.find(RigidMember(ps[i]).get_rigid_body())
+              == members.end()) {
+            out.push_back(RigidMember(ps[i]).get_rigid_body());
           }
+          members[RigidMember(ps[i]).get_rigid_body()].push_back(ps[i]);
+        } else {
+          out.push_back(ps[i]);
         }
+      }
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      ParticlesTemp check_out=out;
+      std::sort(check_out.begin(), check_out.end());
+      check_out.erase(std::unique(check_out.begin(), check_out.end()),
+                      check_out.end());
+      IMP_INTERNAL_CHECK(check_out.size() == out.size(), "Values added twice");
     }
     /*std::cout << "Found " << members.size() << " rigid bodies and "
               << insc->get_number_of_particles()
@@ -129,6 +136,12 @@ ParticlePairsTemp RigidClosePairsFinder
   divvy_up_particles(pa, r_, fa, ma);
   divvy_up_particles(pb, r_, fb, mb);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa,fb);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< ppt.size(); ++i) {
+      IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
+                         "Pair of one returned: " << ppt[i][0]);
+    }
+  }
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator
          it= ppt.begin();
@@ -142,7 +155,7 @@ ParticlePairsTemp RigidClosePairsFinder
     if (mb.find(it->get(1)) != mb.end()) {
       ps1= mb.find(it->get(1))->second;
     } else {
-       ps1= ParticlesTemp(1, it->get(1));
+      ps1= ParticlesTemp(1, it->get(1));
     }
     ParticlePairsTemp c=get_close_pairs(it->get(0), it->get(1),
                                         ps0, ps1);
@@ -162,6 +175,12 @@ ParticlePairsTemp RigidClosePairsFinder
   ParticlesTemp fa;
   divvy_up_particles(pa, r_, fa, m);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa);
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< ppt.size(); ++i) {
+      IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
+                         "Pair of one returned: " << ppt[i][0]);
+    }
+  }
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
        it != ppt.end(); ++it) {
@@ -174,7 +193,7 @@ ParticlePairsTemp RigidClosePairsFinder
     if (m.find(it->get(1)) != m.end()) {
       ps1= m.find(it->get(1))->second;
     } else {
-       ps1= ParticlesTemp(1, it->get(1));
+      ps1= ParticlesTemp(1, it->get(1));
     }
     ParticlePairsTemp c=get_close_pairs(it->get(0), it->get(1),
                                         ps0, ps1);
@@ -189,6 +208,7 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
                                        Particle *b,
                                        const ParticlesTemp &ma,
                                        const ParticlesTemp &mb) const {
+  IMP_INTERNAL_CHECK(a!= b, "Can't pass equal particles");
   internal::RigidBodyHierarchy *da=NULL, *db=NULL;
   ParticlePairsTemp out;
   if (ma.size()>0 && ma[0] != a) {
@@ -223,6 +243,15 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
     }
   } else {
     out.push_back(ParticlePair(a,b));
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< out.size(); ++i) {
+      IMP_INTERNAL_CHECK(RigidMember(out[i][0]).get_rigid_body()
+                         != RigidMember(out[i][1]).get_rigid_body(),
+                         "Particles from same rigid body when processing "
+                         << a->get_name() << " and " << b->get_name()
+                         << " with " << da << " and " << db << std::endl);
+    }
   }
   return out;
 }
