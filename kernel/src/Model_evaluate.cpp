@@ -227,7 +227,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
     for (int i=states.size()-1; i>=0; --i) {
       ScoreState *ss= states[i];
       IMP_CHECK_OBJECT(ss);
-      IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
+      IMP_LOG(TERSE, "Post updating \"" << ss->get_name() << "\"" << std::endl);
       if (gather_statistics_) timer.restart();
       WRAP_UPDATE_CALL(ss, ss->after_evaluate(calc_derivs?&accum:NULL), true);
       if (gather_statistics_) {
