@@ -110,6 +110,8 @@ ParticlesTemp pt= c_->get_particles();
     core::internal::CoreClosePairContainer *cpc
   = dynamic_cast<core::internal::CoreClosePairContainer*>(pr->get_container());
     if (!cpc) return false;
+    IMP_LOG(VERBOSE, "Decomposing nbl restraint " << r->get_name()
+            << std::endl);
     PairScore *ssps= pr->get_score();
     ParticlePairsTemp pairs= get_static_pairs(cpc, pst);
 
@@ -136,7 +138,7 @@ ParticlesTemp pt= c_->get_particles();
       }
       if (!rb) {
         stray_pairs.push_back(ParticlePair(p0, p1));
-      } else {
+      } else if (p0 != p1) {
         rb_pairs.push_back(ParticlePair(p0, p1));
       }
     }
@@ -155,6 +157,7 @@ ParticlesTemp pt= c_->get_particles();
         std::ostringstream oss;
         oss << r->get_name() << " rb " << i;
         IMP_NEW(core::PairRestraint, pr, (cpps, rb_pairs[i]));
+        pr->set_log_level(r->get_log_level());
         added.push_back(new ScopedRestraint(pr, p));
         IMP_LOG(VERBOSE, "Adding rigid body close pair score between "
                 << rb_pairs[i][0]->get_name() << " and "
@@ -170,6 +173,7 @@ ParticlesTemp pt= c_->get_particles();
       oss << r->get_name() << " " << i;
       IMP_NEW(core::PairRestraint, npr, (ssps, stray_pairs[i]));
       npr->set_name(oss.str());
+      npr->set_log_level(r->get_log_level());
       IMP_LOG(VERBOSE, "Adding normal close pair score between "
                 << stray_pairs[i][0]->get_name() << " and "
                 << stray_pairs[i][1]->get_name() << std::endl);
@@ -271,6 +275,7 @@ ParticlesTemp pt= c_->get_particles();
 
 void OptimizeRestraints::optimize_model(RestraintSet *m,
                                         const ParticleStatesTable *pst) {
+  IMP_FUNCTION_LOG;
   IMP::internal::Map<Object*, unsigned int> index;
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
