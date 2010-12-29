@@ -54,6 +54,9 @@ void Model::add_restraint(Restraint *r) {
 }
 void Model::remove_restraint(Restraint *r) {
   IMP_USAGE_CHECK(r, "Cannot remove null restraint.");
+  if (max_scores_.find(r) != max_scores_.end()) {
+    max_scores_.erase(r);
+  }
   rs_->remove_restraint(r);
 }
 Model::RestraintIterator Model::restraints_begin() {
