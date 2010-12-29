@@ -116,6 +116,7 @@ ParticlesTemp pt= c_->get_particles();
     IMP::internal::Map<Particle*, ParticlesTemp> rbs;
     ParticlePairsTemp rb_pairs;
     ParticlePairsTemp stray_pairs;
+    double max= r->get_model()->get_maximum_score(r);
     for (unsigned int i=0; i< pairs.size(); ++i) {
       bool rb=false;
       Particle *p0, *p1;
@@ -155,6 +156,12 @@ ParticlesTemp pt= c_->get_particles();
         oss << r->get_name() << " rb " << i;
         IMP_NEW(core::PairRestraint, pr, (cpps, rb_pairs[i]));
         added.push_back(new ScopedRestraint(pr, p));
+        IMP_LOG(VERBOSE, "Adding rigid body close pair score between "
+                << rb_pairs[i][0]->get_name() << " and "
+                << rb_pairs[i][1]->get_name() << std::endl);
+        if (max < std::numeric_limits<double>::max()) {
+          pr->get_model()->set_maximum_score(pr, max);
+        }
       }
     }
 
@@ -163,7 +170,13 @@ ParticlesTemp pt= c_->get_particles();
       oss << r->get_name() << " " << i;
       IMP_NEW(core::PairRestraint, npr, (ssps, stray_pairs[i]));
       npr->set_name(oss.str());
+      IMP_LOG(VERBOSE, "Adding normal close pair score between "
+                << stray_pairs[i][0]->get_name() << " and "
+                << stray_pairs[i][1]->get_name() << std::endl);
       added.push_back(new ScopedRestraint(npr, p));
+      if (max < std::numeric_limits<double>::max()) {
+        npr->get_model()->set_maximum_score(npr, max);
+      }
     }
     removed.push_back(new ScopedRemoveRestraint(r, p));
     return true;
@@ -200,6 +213,8 @@ ParticlesTemp pt= c_->get_particles();
       double max= r->get_model()->get_maximum_score(r);
       if (max < std::numeric_limits<double>::max()) {
         for (unsigned int i=0; i< rs.size(); ++i) {
+          std::cout << "Setting maximum score of " << rs[i]->get_name()
+                    << " to " << max << std::endl;
           r->get_model()->set_maximum_score(rs[i], max);
         }
       }

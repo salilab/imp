@@ -88,6 +88,10 @@ public:
         }
       }
       scores_[state]=score;
+      IMP_LOG(VERBOSE, "State " << state << " of particles "
+              << Particles(ps) << " has score "
+              << score << " for restraint " << r_->get_name()
+              << std::endl);
       /*std::cout << "Computed score for " << r_->get_name()
         << " on " << state << "= " << score << std::endl;*/
       return score;
