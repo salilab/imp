@@ -428,11 +428,15 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 //! Rigidify a molecule or collection of molecules.
 /** The rigid body created has all the leaves as members and a
     member rigid body for each internal node in the tree.
+
+    A name can be passed as it is not easy to automatically pick
+    a decent name.
     \see create_aligned_rigid_body()
     \relatesalso Hierarchy
     \relatesalso IMP::core::RigidBody
 */
-IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(const Hierarchies& h);
+IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(const Hierarchies& h,
+                        std::string name=std::string("created rigid body"));
 
 /** \see create_rigid_body(const HierarchiesTemp&)
  */

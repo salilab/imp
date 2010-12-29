@@ -389,13 +389,14 @@ namespace {
 }
 
 // write approximate function, remove rigid bodies for intermediates
-core::RigidBody create_rigid_body(const Hierarchies& h) {
+core::RigidBody create_rigid_body(const Hierarchies& h,
+                                  std::string name) {
   if (h.empty()) return core::RigidBody();
   for (unsigned int i=0; i< h.size(); ++i) {
     IMP_USAGE_CHECK(h[i].get_is_valid(true), "Invalid hierarchy passed.");
   }
   Particle *rbp= new Particle(h[0]->get_model());
-  rbp->set_name(h[0]->get_name()+" rigid body");
+  rbp->set_name(name);
   ParticlesTemp all;
   for (unsigned int i=0; i< h.size(); ++i) {
     ParticlesTemp cur= rb_process(h[i]);
@@ -411,7 +412,7 @@ core::RigidBody create_rigid_body(const Hierarchies& h) {
 }
 
 core::RigidBody create_rigid_body(Hierarchy h) {
-  return create_rigid_body(Hierarchies(1,h));
+  return create_rigid_body(Hierarchies(1,h), h->get_name()+" rigid body");
 }
 
 
