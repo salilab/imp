@@ -20,6 +20,10 @@
 #include <algorithm>
 
 
+#include <IMP/core/RigidClosePairsFinder.h>
+#include <IMP/core/rigid_bodies.h>
+
+
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IntKey InList::key_= IntKey("in list temp");
@@ -143,7 +147,9 @@ void CoreClosePairContainer::do_before_evaluate() {
       IMP_INTERNAL_CHECK(moved_->get_is_up_to_date(),
                          "Moved container is not up to date.");
       if (moved_->get_number_of_particles() != 0) {
-        if (moved_->get_particles().size() < c_->get_number_of_particles()*.2) {
+        if (moved_->get_particles().size() < c_->get_number_of_particles()*.2
+            // evil, fix later
+            && !dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
           IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
                   << std::endl);
           ParticlesTemp moved=moved_->get_particles();
@@ -244,6 +250,15 @@ void CoreClosePairContainer::do_before_evaluate() {
                              << *pp[0] << std::endl
                              << *pp[1]);
         }
+      }
+    }
+    if (dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
+      for (ParticlePairIterator it=particle_pairs_begin();
+         it != particle_pairs_end(); ++it) {
+        IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
+                           != RigidMember((*it)[1]).get_rigid_body(),
+                           "Pair should not have two particles from the same "
+                           << "rigid body");
       }
     }
   }
