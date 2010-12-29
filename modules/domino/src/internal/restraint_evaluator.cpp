@@ -62,6 +62,8 @@ void ModelData::initialize() {
     double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
     /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
       << " has max of " << max << std::endl;*/
+    IMP_LOG(VERBOSE, "Restraint " << rdata_[i].get_restraint()->get_name()
+            << " has max of " << max << std::endl);
     rdata_[i].set_max(max);
   }
   initialized_=true;
