@@ -108,8 +108,8 @@ class Restraint(object):
         self._restraint_sets.remove_all(self._model)
 
 
-    def print_all_restraints(self):
-        """Print restraint name, initial weight, and score for the current state of the model"""
+    def show_all_restraints(self):
+        """Show restraint name, initial weight, and score for the current state of the model"""
 
         def find_rec(node):
             if node.imp_restraint is not None:

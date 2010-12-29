@@ -55,7 +55,7 @@ class RestraintTest(IMP.test.TestCase):
         restraint_set = self.restraint.get_restraint_set_by_name("pulldown_restraint_set")
         self.assertAlmostEqual(restraint_set.get_weight(), 100.0, delta=1e-4)
 
-        self.restraint.print_all_restraints()
+        self.restraint.show_all_restraints()
 
         self.Model.show()
         self.Model.evaluate(False)

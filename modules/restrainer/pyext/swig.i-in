@@ -49,9 +49,9 @@ class Restraint(_restraint.Restraint):
         """ Place restraint into IMP Model."""
         return _restraint.Restraint.add_to_representation(self, repr)
 
-    def print_all_restraints(self):
-        """Print restraint name, initial weight, and score for the current state of the model"""
-        return _restraint.Restraint.print_all_restraints(self)
+    def show_all_restraints(self):
+        """Show restraint name, initial weight, and score for the current state of the model"""
+        return _restraint.Restraint.show_all_restraints(self)
 
 
     def get_all_restraints_by_name(self, name):
