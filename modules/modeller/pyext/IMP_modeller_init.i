@@ -433,11 +433,11 @@ class ModelLoader(object):
         if pair_filter is None:
             pair_filter = IMP.atom.StereochemistryPairFilter()
             if edat.excl_local[0]:
-                pair_filter.set_bonds(self.load_bonds())
+                pair_filter.set_bonds(list(self.load_bonds()))
             if edat.excl_local[1]:
-                pair_filter.set_angles(self.load_angles())
+                pair_filter.set_angles(list(self.load_angles()))
             if edat.excl_local[2]:
-                pair_filter.set_dihedrals(self.load_dihedrals())
+                pair_filter.set_dihedrals(list(self.load_dihedrals()))
         nbl.add_pair_filter(pair_filter)
         return nbl
 
