@@ -246,11 +246,14 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     for (unsigned int i=0; i< out.size(); ++i) {
-      IMP_INTERNAL_CHECK(RigidMember(out[i][0]).get_rigid_body()
-                         != RigidMember(out[i][1]).get_rigid_body(),
-                         "Particles from same rigid body when processing "
-                         << a->get_name() << " and " << b->get_name()
-                         << " with " << da << " and " << db << std::endl);
+      if (RigidMember::particle_is_instance(out[i][0])
+          && RigidMember::particle_is_instance(out[i][1])) {
+        IMP_INTERNAL_CHECK(RigidMember(out[i][0]).get_rigid_body()
+                           != RigidMember(out[i][1]).get_rigid_body(),
+                           "Particles from same rigid body when processing "
+                           << a->get_name() << " and " << b->get_name()
+                           << " with " << da << " and " << db << std::endl);
+      }
     }
   }
   return out;
