@@ -255,10 +255,13 @@ void CoreClosePairContainer::do_before_evaluate() {
     if (dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
       for (ParticlePairIterator it=particle_pairs_begin();
          it != particle_pairs_end(); ++it) {
-        IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
-                           != RigidMember((*it)[1]).get_rigid_body(),
-                           "Pair should not have two particles from the same "
-                           << "rigid body");
+        if (RigidMember::particle_is_instance((*it)[0])
+            && RigidMember::particle_is_instance((*it)[1])) {
+          IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
+                             != RigidMember((*it)[1]).get_rigid_body(),
+                             "Pair should not have two particles from the same "
+                             << "rigid body");
+        }
       }
     }
   }
