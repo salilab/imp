@@ -354,7 +354,8 @@ class TestCase(unittest.TestCase):
                           message)
 
 
-    def _check_function_name(self, prefix, name, verbs, all, exceptions, words):
+    def _check_function_name(self, prefix, name, verbs, all, exceptions, words,
+                             misspelled):
         if prefix:
             fullname=prefix+"."+name
         else:
@@ -386,10 +387,11 @@ class TestCase(unittest.TestCase):
         tokens= name.split("_")
         for t in tokens:
             if not self._check_spelling(t, words):
+                misspelled.append(t)
                 print "misspelled", t, "in", name
                 return [fullname]
         return []
-    def _check_function_names(self, module, prefix, names, verbs, all, exceptions, words):
+    def _check_function_names(self, module, prefix, names, verbs, all, exceptions, words, misspelled):
         bad=[]
         #print "names", module, prefix
         for name in names:
@@ -397,7 +399,7 @@ class TestCase(unittest.TestCase):
                 continue
             if self._get_type(module, name)==types.BuiltinMethodType\
                    or self._get_type(module, name)==types.MethodType:
-                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions, words))
+                bad.extend(self._check_function_name(prefix, name, verbs, all, exceptions, words, misspelled))
             if self._get_type(module, name)==types.TypeType and name.find("SwigPyIterator")==-1:
                 #print "sub", module+"."+name
                 members=eval("dir("+module+"."+name+")")
@@ -405,7 +407,7 @@ class TestCase(unittest.TestCase):
                 bad.extend(self._check_function_names(module+"."+name,
                                                       name,
                                                       members,
-                                                      verbs, [], exceptions, words))
+                                                      verbs, [], exceptions, words, misspelled))
         return bad
 
 
@@ -417,9 +419,14 @@ class TestCase(unittest.TestCase):
                "push", "pop", "write", "read", "do", "show", "load", "save", "reset",
                "clear", "handle", "update", "apply", "optimize", "reserve", "dump",
                "propose", "setup", "teardown", "visit", "find", "run"]
-        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words)
+        misspelled = []
+        bad=self._check_function_names(module.__name__, None, all, verbs, all, exceptions, words, misspelled)
         message="All IMP methods should have lower case names separated by underscores and beginning with a verb, preferably one of ['add', 'remove', 'get', 'set', 'create', 'destroy']. Each of the words should be a properly spelled english word. The following do not (given our limited list of verbs that we check for):\n%(bad)s\nIf there is a good reason for them not to (eg it does start with a verb, just one with a meaning that is not covered by the normal list), add them to the function_name_exceptions variable in the IMPModuleTest call. Otherwise, please fix. The current verb list is %(verbs)s" \
                           % {"bad":"\n".join(bad), "verbs":verbs}
+        if len(misspelled) > 0:
+            message += "\nMisspelled words: " + ", ".join(set(misspelled)) \
+                       + ". Add words to the spelling_exceptions variable " \
+                       + "of the IMPModuleTest if needed."
         self.assertEquals(len(bad), 0,
                           message)
 
