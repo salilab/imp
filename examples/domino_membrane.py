@@ -131,6 +131,7 @@ def create_restraints(m, chain, tmb, tme):
         dpc.add_pair_filter(f)
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
+        m.set_maximum_score(d, .01)
         m.add_restraint(d)
 
 # assembling all the restraints
@@ -154,10 +155,10 @@ def  create_discrete_states(m,chain,tmb):
     trs1=[]
     for i in range(0,4):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,2):
+        for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,1):
+            for s in range(0,4):
                 if ( t == 0 ) and ( s != 0 ):
                     break
                 swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
@@ -166,9 +167,9 @@ def  create_discrete_states(m,chain,tmb):
                 rot_m =IMP.algebra.compose(rot2,rot01)
                 for dz in range(0,1):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
-                    for dx in range(0,1):
+                    for dx in range(0,6):
                         if ( dx >= 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(11.0+1.0*dx,0,1.0*dz))))
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(8.0+1.0*dx,0,1.0*dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
@@ -186,7 +187,6 @@ def  create_discrete_states(m,chain,tmb):
 # setting up domino (and filters)
 def create_sampler(m, pst):
     s=IMP.domino.DominoSampler(m, pst)
-    # the following lines recreate the defaults and so are optional
     filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
@@ -244,6 +244,7 @@ for i in range(cs.get_number_of_configurations()):
     print "** solution number:",i," is:",ss
 
 topscore = 30
+topscore = min(topscore,cs.get_number_of_configurations())
 print "visualizing the top ",topscore
 for i in range(0,topscore):
     low=min(score)
