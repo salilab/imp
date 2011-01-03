@@ -9,11 +9,13 @@
 IMP_SWIG_DECORATOR(IMP::membrane, HelixDecorator, HelixDecorators);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
 IMP_SWIG_OBJECT(IMP::membrane, DopePairScore, DopePairScores);
+IMP_SWIG_OBJECT(IMP::membrane, SameResidueFilter, SameResidueFilters);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
 %include "IMP/membrane/HelixDecorator.h"
 %include "IMP/membrane/RigidBodyPackingScore.h"
+%include "IMP/membrane/SameResidueFilter.h"
 
 namespace IMP {
   namespace membrane {
