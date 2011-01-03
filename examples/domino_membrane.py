@@ -117,18 +117,22 @@ def create_restraints(m, chain, tmb, tme):
 # initializing data
         IMP.membrane.add_dope_score_data(chain)
 # creating containers
-        dsc= IMP.container.ListSingletonContainer(m)
+#        dsc= IMP.container.ListSingletonContainer(m)
+        dsc=[]
         for i in range(len(tmb)):
+            dsc.append(IMP.container.ListSingletonContainer(m))
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
-            ps=s.get_selected_particles()
-            for p in ps:
-                p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
-            dsc.add_particles(ps)
-        dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+            dsc[i].add_particles(s.get_selected_particles())
+#            ps=s.get_selected_particles()
+#            for p in ps:
+#                p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
+#            dsc.add_particles(ps)
+#        dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+        dpc= IMP.container.CloseBipartitePairContainer(dsc[0], dsc[1], 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-        f= SameResidueFilter()
-        dpc.add_pair_filter(f)
+#        f= SameResidueFilter()
+#        dpc.add_pair_filter(f)
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
         m.set_maximum_score(d, .01)
@@ -167,9 +171,9 @@ def  create_discrete_states(m,chain,tmb):
                 rot_m =IMP.algebra.compose(rot2,rot01)
                 for dz in range(0,1):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
-                    for dx in range(0,6):
+                    for dx in range(0,2):
                         if ( dx >= 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(8.0+1.0*dx,0,1.0*dz))))
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(10.0+1.0*dx,0,1.0*dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
