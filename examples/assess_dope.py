@@ -3,21 +3,6 @@ import IMP.atom
 import IMP.container
 import IMP.membrane
 
-class SameResidueFilter(IMP.PairFilter):
-    def __init__(self):
-        IMP.PairFilter.__init__(self)
-    def get_contains_particle_pair(self, pp):
-        diff= pp[0].get_value(IMP.IntKey("num"))-pp[1].get_value(IMP.IntKey("num"))
-        if diff==0:
-            return True
-        return False
-    def get_input_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
-    def do_show(self, out):
-        pass
-
 def create_representation():
     m=IMP.Model()
     mp0= IMP.atom.read_pdb('1fdx.B99990001.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
@@ -27,13 +12,11 @@ def create_representation():
 def add_DOPE(m, prot):
     ps=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
     dsc= IMP.container.ListSingletonContainer(m)
-    for p in ps:
-        p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
     dsc.add_particles(ps)
     dpc = IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-    f= SameResidueFilter()
+    f=IMP.membrane.SameResidueFilter()
     dpc.add_pair_filter(f)
     IMP.membrane.add_dope_score_data(prot)
     dps= IMP.membrane.DopePairScore(15.0)
@@ -49,3 +32,5 @@ add_DOPE(m,prot)
 
 print "update model"
 m.update()
+
+print "DOPE SCORE ::",m.evaluate(False)
