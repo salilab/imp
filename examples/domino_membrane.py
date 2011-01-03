@@ -6,27 +6,12 @@ import IMP.atom
 import IMP.membrane
 import math
 
-class SameResidueFilter(IMP.PairFilter):
-    def __init__(self):
-        IMP.PairFilter.__init__(self)
-    def get_contains_particle_pair(self, pp):
-        diff= pp[0].get_value(IMP.IntKey("num"))-pp[1].get_value(IMP.IntKey("num"))
-        if diff==0:
-            return True
-        return False
-    def get_input_particles(self, p):
-        return [p]
-    def get_input_containers(self, p):
-        return []
-    def do_show(self, out):
-        pass
-
 def create_representation(tmb,tme):
     m=IMP.Model()
 #   only CA
-#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
+    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
 #   all-atom
-    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   select particles and make rigid bodies
     print "Making rigid bodies"
@@ -117,21 +102,15 @@ def create_restraints(m, chain, tmb, tme):
 # initializing data
         IMP.membrane.add_dope_score_data(chain)
 # creating containers
-#        dsc= IMP.container.ListSingletonContainer(m)
         dsc=[]
         for i in range(len(tmb)):
             dsc.append(IMP.container.ListSingletonContainer(m))
             s=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), residue_indexes=[(tmb[i],tme[i]+1)])
             dsc[i].add_particles(s.get_selected_particles())
-#            ps=s.get_selected_particles()
-#            for p in ps:
-#                p.add_attribute(IMP.IntKey("num"), IMP.atom.get_residue(IMP.atom.Atom(p)).get_index())
-#            dsc.add_particles(ps)
-#        dpc= IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
         dpc= IMP.container.CloseBipartitePairContainer(dsc[0], dsc[1], 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
-#        f= SameResidueFilter()
+#        f= IMP.membrane.SameResidueFilter()
 #        dpc.add_pair_filter(f)
         dps= IMP.membrane.DopePairScore(15.0)
         d=   IMP.container.PairsRestraint(dps, dpc)
@@ -173,7 +152,7 @@ def  create_discrete_states(m,chain,tmb):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
                     for dx in range(0,2):
                         if ( dx >= 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(10.0+1.0*dx,0,1.0*dz))))
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(10.0+1.0*dx,0,1.0*dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
