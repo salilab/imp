@@ -30,7 +30,4 @@ print "creating representation"
 print "creating DOPE score function"
 add_DOPE(m,prot)
 
-print "update model"
-m.update()
-
 print "DOPE SCORE ::",m.evaluate(False)
