@@ -2,6 +2,7 @@ from SCons.Script import Builder, File, Action, Glob, Return, Alias, Dir, Move, 
 import data
 import os
 import sys
+import environment
 
 def file_compare(a, b):
     """Check if two files are the same, by comparing the path"""
@@ -14,7 +15,7 @@ def get_matching(patterns):
     Otherwise changes in the ordering will cause scons to rebuild things."""
     ret=[]
     for x in patterns:
-        ret+=Glob(x, ondisk=True)
+        ret+=Glob(x)
     ret.sort(file_compare)
     return ret
 
@@ -80,35 +81,6 @@ def unmake_static_build(env):
         print >> sys.stderr, "WARNING: Static builds only supported with GCC, ignored."
 
 
-def add_link_flags(env, modules, dependencies):
-    all_dependencies=dependencies
-    d= data.get(env)
-    all_modules=[]
-    for m in modules:
-        if m not in all_modules:
-            all_modules= all_modules+[m]+d.modules[m].modules
-    final_modules=[]
-    for i,m in enumerate(all_modules):
-        if not m in all_modules[i+1:]:
-            final_modules.append(m)
-    for m in final_modules:
-        all_dependencies= all_dependencies+d.modules[m].dependencies
-    final_dependencies=[]
-    for i,dc in enumerate(all_dependencies):
-        if not dc in all_dependencies[i+1:]:
-            final_dependencies.append(dc)
-    module_libs=[]
-    for m in final_modules:
-        if m=='kernel':
-            module_libs.append('imp')
-        else:
-            module_libs.append('imp_'+m)
-    dependency_libs=[]
-    for dc in final_dependencies:
-        dependency_libs+= d.dependencies[dc].libs
-    env.Append(LIBS=module_libs)
-    env.Append(LIBS=dependency_libs)
-
 
 def get_split_into_directories(paths):
     """Split the input files based on the directory containing them.
@@ -161,18 +133,18 @@ def configure(env, name, type, version, required_modules=[],
     disabled=["IMP."+x for x in env.get("disabledmodules", '').split(":")]
     if name in disabled:
         print type.capitalize(), name, "explicitly disabled "
-        return (False, None, None, None)
+        return (None, None, None, None)
     found_required_modules= data.get(env).get_found_modules(required_modules)
     for m in required_modules:
         if m not in found_required_modules:
             print type.capitalize(), name, "disabled due to disabled module "\
                   "IMP."+m
-            return (False, None, None, None)
+            return (None, None, None, None)
     for m in required_dependencies:
         if not data.get(env).dependencies[m].ok:
             print type.capitalize(), name, "disabled due to missing dependency "\
                   +m
-            return (False, None, None, None)
+            return (None, None, None, None)
     found_optional_modules=data.get(env).get_found_modules(optional_modules)
     found_optional_dependencies=data.get(env).get_found_dependencies(optional_dependencies)
     version= _get_cwd_version(env, version,
@@ -181,7 +153,10 @@ def configure(env, name, type, version, required_modules=[],
     print "Configuring", type, name,"version", version
     if len(required_modules+required_dependencies)>0:
         print "  (requires " +", ".join(required_modules+required_dependencies) +")"
-    return (True, version, found_optional_modules, found_optional_dependencies)
+    return (environment.get_named_environment(env, name,
+                                  required_modules+optional_modules,
+                                  required_dependencies+found_optional_dependencies),
+            version, found_optional_modules, found_optional_dependencies)
 
 
 def get_without_extension(name):

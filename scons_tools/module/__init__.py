@@ -101,8 +101,6 @@ def IMPModuleLib(envi, files):
     build=[]
     if envi['IMP_BUILD_STATIC']:
         env= scons_tools.environment.get_staticlib_environment(envi)
-        scons_tools.utility.add_link_flags(env, _get_module_modules(env),
-                               _get_module_dependencies(env))
         sl= env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
                               list(files))
         data.build.append(sl[0])
@@ -110,8 +108,6 @@ def IMPModuleLib(envi, files):
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
                                     cplusplus=True)
-        scons_tools.utility.add_link_flags(env,_get_module_modules(env),
-                               _get_module_dependencies(env))
         sl=env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
                                        list(files) )
         data.build.append(sl[0])
@@ -198,10 +194,8 @@ def IMPModuleExamples(env, example_files, data_files):
     _set_module_links(env, links)
 
 def _make_programs(envi, files):
-    env= scons_tools.environment.get_bin_environment(envi)
-    scons_tools.utility.add_link_flags(env, [_get_module_name(env)]+
-                                       _get_module_modules(env),
-                                       _get_module_dependencies(env))
+    env= scons_tools.environment.get_bin_environment(envi,
+                                                     extra_modules=[_get_module_name(envi)])
     ret=[]
     for f in files:
         if str(f).endswith(".cpp"):
@@ -240,7 +234,8 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
     data=scons_tools.data.get(env).modules[_get_module_name(env)]
     alldata= scons_tools.data.get(env).modules
     penv = scons_tools.environment.get_pyext_environment(env, module.upper(),
-                                                         cplusplus=True)
+                                                         cplusplus=True,
+                                                         extra_modules=[_get_module_name(env)])
     #penv.Decider('timestamp-match')
     scanners=[Scanner(function= _fake_scanner_cpp, skeys=['.cpp']),
               Scanner(function=_filtered_h, skeys=['.h']),
@@ -248,9 +243,6 @@ def IMPModulePython(env, swigfiles=[], pythonfiles=[]):
               Scanner(function=_swig._null_scanner, skeys=[".cpp-in", ".h-in", ".i-in"])]
     penv.Replace(SCANNERS=scanners)
     from scons_tools.install import get_build_path as gbp
-    scons_tools.utility.add_link_flags(penv,
-                                       [_get_module_name(penv)]+_get_module_modules(penv),
-                                       _get_module_dependencies(penv))
     versions=[]
     for m in _get_module_python_modules(env):
         versions.append(env.Value(m))
@@ -484,13 +476,13 @@ def IMPModuleBuild(env, version, required_modules=[],
     if module.lower() != module:
         print >> sys.stderr, "Module names must be all lower case. This can change if you complain, but might be complicated to fix. Failed on", module
         env.Exit(1)
-    (ok, version, found_optional_modules, found_optional_dependencies)\
-         = scons_tools.utility.configure(env, "IMP."+module, "module", version,
+    (nenv, version, found_optional_modules, found_optional_dependencies)\
+         = scons_tools.utility.configure(env, module, "module", version,
                              required_modules=required_modules+lib_only_required_modules,
                              optional_dependencies=optional_dependencies,
                              optional_modules= optional_modules,
                              required_dependencies= required_dependencies)
-    if ok:
+    if nenv:
         scons_tools.data.get(env).add_module(module,
                                  modules= required_modules+found_optional_modules\
                                      +lib_only_required_modules,
@@ -503,7 +495,7 @@ def IMPModuleBuild(env, version, required_modules=[],
         return
     preclone=env
 
-    env = scons_tools.environment.get_named_environment(env,module)
+    env = nenv
     vars={'module_include_path':module_include_path,
           'module':module,
           'PREPROC':module_preproc,
