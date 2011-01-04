@@ -6,7 +6,7 @@ import IMP.atom
 import IMP.membrane
 import math
 
-def create_representation(tmb,tme):
+def create_representation(tmb,tme,topology):
     m=IMP.Model()
     m.set_log_level(IMP.SILENT)
 #   only CA
@@ -25,26 +25,24 @@ def create_representation(tmb,tme):
     rt= IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
     tr= IMP.algebra.Transformation3D(rt, IMP.algebra.Vector3D(0,0,0))
 #   set the new reference frame
+    sign=[]
     for i in range(len(tmb)):
         rbs[i].set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
-#   initialize decorator
+#   initialize membrane decorator
         s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
         s1=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
         bb=s0.get_selected_particles()[0]
         bb=IMP.core.XYZ(bb).get_coordinates()[2]
         ee=s1.get_selected_particles()[0]
         ee=IMP.core.XYZ(ee).get_coordinates()[2]
+        sign.append(math.copysign(1.0, (ee-bb)*topology[i]))
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rbs[i],bb,ee)
-        print " Rigid #",i," number of members=",rbs[i].get_number_of_members()
-        print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
-#   trial translation+rotation
-#    tr0= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(-5,0,0))
-#    IMP.core.transform(rbs[0],tr0)
-#    tr1= IMP.algebra.Transformation3D(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(1,0,0), 0.0), IMP.algebra.Vector3D(5,0,0))
-#    IMP.core.transform(rbs[1],tr1)
-    return (m, chain)
+#        print " Rigid #",i," number of members=",rbs[i].get_number_of_members()
+#        print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
+    return (m, chain, sign)
 
 def create_restraints(m, chain, tmb, tme):
+
     def add_excluded_volume():
         lsc= IMP.container.ListSingletonContainer(m)
         for i in range(len(tmb)):
@@ -55,14 +53,14 @@ def create_restraints(m, chain, tmb, tme):
         evr= IMP.container.PairsRestraint(ps, nbl)
         m.add_restraint(evr)
         m.set_maximum_score(evr, .01)
+
     def add_distance_restraint(s0, s1, x0, k):
-#       print "defining distance restraint"
         hub= IMP.core.HarmonicUpperBound(x0,k)
         df= IMP.core.DistancePairScore(hub)
         r= IMP.core.PairRestraint(df, IMP.ParticlePair(s0, s1))
         m.add_restraint(r)
-#       set tolerance
         m.set_maximum_score(r, .01)
+
     def add_packing_restraint():
 ## if the rigid bodies are close, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
@@ -98,6 +96,7 @@ def create_restraints(m, chain, tmb, tme):
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
+
 ## DOPE/GQ scoring
     def add_DOPE():
 # initializing data
@@ -132,29 +131,28 @@ def create_restraints(m, chain, tmb, tme):
     return m.get_restraints()
 
 # creating the discrete states for domino
-def  create_discrete_states(m,chain,tmb):
-    rot00=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
-    rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
+def  create_discrete_states(m,chain,tmb,sign):
+#   initial rotation to preserve topology
+    rot0=[]
+    for i in range(len(tmb)):
+        rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
     trs0=[]
     trs1=[]
-    for i in range(0,8):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/4)
-        for t in range(0,10):
-            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/36)
+    for i in range(0,4):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
+        for t in range(0,5):
+            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,8):
+            for s in range(0,4):
                 if ( t == 0 ) and ( s != 0 ):
                     break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/4)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
-                rot_p =IMP.algebra.compose(rot2,rot00)
-                rot_m =IMP.algebra.compose(rot2,rot01)
-                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,0))))
-                for dz in range(0,4):
-                    #trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
+                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),IMP.algebra.Vector3D(0,0,0))))
+                for dz in range(0,2):
                     for dx in range(0,2):
                         if ( dx >= 0 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_m,IMP.algebra.Vector3D(11.0+1.0*dx,0,1.0*dz))))
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),IMP.algebra.Vector3D(10.0+1.0*dx,0,1.0*dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
@@ -206,14 +204,15 @@ print "creating representation"
 # TMH boundaries
 tmb=[38,80]
 tme=[73,106]
+topology=[-1.0,+1.0]
 
-(m,chain)=create_representation(tmb,tme)
+(m,chain,sign)=create_representation(tmb,tme,topology)
 
 print "creating score function"
 rs=create_restraints(m,chain,tmb,tme)
 
 print "creating discrete states"
-pst=create_discrete_states(m,chain,tmb)
+pst=create_discrete_states(m,chain,tmb,sign)
 
 print "creating sampler"
 s=create_sampler(m, pst)
