@@ -154,7 +154,7 @@ def configure(env, name, type, version, required_modules=[],
     if len(required_modules+required_dependencies)>0:
         print "  (requires " +", ".join(required_modules+required_dependencies) +")"
     return (environment.get_named_environment(env, name,
-                                  required_modules+optional_modules,
+                                  required_modules+found_optional_modules,
                                   required_dependencies+found_optional_dependencies),
             version, found_optional_modules, found_optional_dependencies)
 
