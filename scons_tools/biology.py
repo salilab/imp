@@ -44,7 +44,7 @@ def IMPSystem(env, name=None, version="",
             local_module=True
             required_modules.append(name+"_local")
     (nenv, version, found_optional_modules, found_optional_dependencies) =\
-         utility.configure(env, name, "application", version,
+         utility.configure(env, name, "system", version,
                            required_modules=required_modules,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
