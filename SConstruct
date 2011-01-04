@@ -148,7 +148,7 @@ if not env.GetOption('help'):
     scons_tools.build_summary.setup(env)
     config_py=env.IMPConfigPY(target=["#/config.py"],
                               source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
-    senv= scons_tools.environment.get_named_environment(env, "scons")
+    senv= scons_tools.environment.get_named_environment(env, "scons", [], [])
     scons_tools.install.install(senv, "datadir/scons", "SConstruct")
     scons_tools.install.install_hierarchy(senv, "datadir/scons/scons_tools", "scons_tools",
                                           Glob("scons_tools/*.py")+
