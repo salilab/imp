@@ -27,7 +27,7 @@ def IMPApplication(env, name, version,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
     if not nenv:
-        data.get(env).add_application(name, ok=ok)
+        data.get(env).add_application(name, ok=False)
         return
     else:
         if python:
