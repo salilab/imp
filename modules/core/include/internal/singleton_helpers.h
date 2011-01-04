@@ -34,6 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeSingletonContainer: public SingletonContainer {
 private:
   Particles data_;
+  bool changed_;
   typedef IMP::internal::Set<Particle*> Index;
   mutable Index index_;
   void update_index() const {
@@ -95,6 +96,7 @@ protected:
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
     swap(data_, newlist);
+    changed_=true;
   }
 
   template <class Table>
@@ -133,6 +135,7 @@ protected:
         }
       }
     }
+    changed_=true;
   }
   void remove_from_list(ParticlesTemp &cur) {
     index_.clear();
@@ -146,6 +149,7 @@ protected:
       ListLikeSingletonContainer* ac=get_removed();
       ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
     }
+    changed_=true;
   }
   template <class F>
     struct AccIf {
@@ -162,6 +166,7 @@ protected:
   template <class F>
   void remove_from_list_if(F f) {
     index_.clear();
+    unsigned int sz= data_.size();
     if (get_has_added_and_removed_containers()) {
       ParticlesTemp removed;
       data_.remove_if(AccIf<F>(f, removed));
@@ -170,6 +175,7 @@ protected:
     } else {
       data_.remove_if(f);
     }
+    changed_= data_.size() != sz;
   }
   void add_to_list(Particle* cur) {
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
@@ -179,9 +185,10 @@ protected:
         ac->data_.push_back(cur);
       }
     }
+    changed_=true;
   }
   ListLikeSingletonContainer(Model *m, std::string name):
-    SingletonContainer(m,name){
+    SingletonContainer(m,name), changed_(false){
   }
   template <class F>
    void apply_to_contents(F f) const {
@@ -284,6 +291,7 @@ protected:
       get_added()->data_.clear();
       get_removed()->data_.clear();
     }
+    changed_=false;
   }
   void do_before_evaluate() {
     std::remove_if(data_.begin(), data_.end(),

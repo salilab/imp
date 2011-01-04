@@ -32,13 +32,9 @@ public:
   void remove_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
   void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c);
   void clear_FUNCTIONNAMEs();
-#ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     return true;
   }
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
-#endif
   IMP_LISTLIKE_HEADERNAME_CONTAINER(CoreListCLASSNAMEContainer);
 };
 

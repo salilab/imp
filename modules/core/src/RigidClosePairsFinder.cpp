@@ -136,16 +136,12 @@ ParticlePairsTemp RigidClosePairsFinder
   divvy_up_particles(pa, r_, fa, ma);
   divvy_up_particles(pb, r_, fb, mb);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa,fb);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< ppt.size(); ++i) {
-      IMP_INTERNAL_CHECK(ppt[i][0] != ppt[i][1],
-                         "Pair of one returned: " << ppt[i][0]);
-    }
-  }
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator
          it= ppt.begin();
        it != ppt.end(); ++it) {
+    // skip within one rigid body
+    if (it->get(0) == it->get(1)) continue;
     ParticlesTemp ps0, ps1;
     if (ma.find(it->get(0)) != ma.end()) {
       ps0= ma.find(it->get(0))->second;

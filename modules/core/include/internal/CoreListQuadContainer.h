@@ -32,13 +32,9 @@ public:
   void remove_particle_quads(const ParticleQuadsTemp &c);
   void set_particle_quads(ParticleQuadsTemp c);
   void clear_particle_quads();
-#ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     return true;
   }
-  bool get_contained_particles_changed() const;
-  ParticlesTemp get_contained_particles() const;
-#endif
   IMP_LISTLIKE_QUAD_CONTAINER(CoreListQuadContainer);
 };
 

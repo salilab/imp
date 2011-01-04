@@ -49,7 +49,7 @@ ParticlesTemp ListLikeCLASSNAMEContainer
 
 bool ListLikeCLASSNAMEContainer
 ::get_contained_particles_changed() const {
-  return !get_added()->data_.empty() || !get_removed()->data_.empty();
+  return changed_;
 }
 
 CLASSNAMEContainerPair ListLikeCLASSNAMEContainer
