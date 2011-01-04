@@ -37,6 +37,9 @@ IMPCORE_BEGIN_NAMESPACE
     the input list or lists are close. Your choice of this can be passed
     to the constructor.
 
+    \note The bipartite method will also not return any pairs where
+    both members are in the same rigid body.
+
     \note The bounding spheres are kept in internal coordinates for
     the rigid body and transformed on the fly. It would probably be
     faster to cache the tranformed results.
