@@ -21,12 +21,12 @@ def IMPApplication(env, name, version,
                    python=True):
     if env.GetOption('help'):
         return
-    (ok, version, found_optional_modules, found_optional_dependencies) =\
+    (nenv, version, found_optional_modules, found_optional_dependencies) =\
          utility.configure(env, name, "application", version,
                            required_modules=required_modules,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
-    if not ok:
+    if not nenv:
         data.get(env).add_application(name, ok=ok)
         return
     else:
@@ -52,9 +52,7 @@ def IMPApplication(env, name, version,
                                       version=version)
 
 
-    env= scons_tools.environment.get_named_environment(env, name)
-    utility.add_link_flags(env, required_modules,
-                           required_dependencies+found_optional_dependencies)
+    env= environment.get_bin_environment(nenv)
     scons_tools.data.get(env).add_to_alias("all", env.Alias(name))
     dirs = Glob("*/SConscript")
     for d in dirs:

@@ -43,12 +43,12 @@ def IMPSystem(env, name=None, version="",
             env.SConscript(d, exports=['env'])
             local_module=True
             required_modules.append(name+"_local")
-    (ok, version, found_optional_modules, found_optional_dependencies) =\
+    (nenv, version, found_optional_modules, found_optional_dependencies) =\
          utility.configure(env, name, "application", version,
                            required_modules=required_modules,
                            optional_dependencies=optional_dependencies,
                            required_dependencies= required_dependencies)
-    if not ok:
+    if not nenv:
         data.get(env).add_application(name, ok=ok)
         return
     else:
@@ -86,9 +86,7 @@ def IMPSystem(env, name=None, version="",
             if str(d).split("/")[0] != "local":
                 env.SConscript(d, exports=['env'])
 
-        env= scons_tools.environment.get_named_environment(env, name)
-        utility.add_link_flags(env, required_modules,
-                               required_dependencies+found_optional_dependencies)
+        env= nenv
         for m in required_modules+found_optional_modules:
             env.Depends(scons_tools.data.get(env).get_alias(name+"-install"),
                          scons_tools.data.get(env).get_alias(m+"-install"))

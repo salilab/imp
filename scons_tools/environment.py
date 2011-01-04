@@ -285,7 +285,40 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
                                          '-shared')
 
 
-def get_sharedlib_environment(env, cppdefine, cplusplus=False):
+
+def _add_link_flags(env, extra_modules=[], extra_dependencies=[]):
+    modules=extra_modules+env['IMP_CURRENT_MODULES']
+    dependencies=env['IMP_CURRENT_DEPENDENCIES']+extra_dependencies
+    all_dependencies=dependencies
+    d= data.get(env)
+    all_modules=[]
+    for m in modules:
+        if m not in all_modules:
+            all_modules= all_modules+[m]+d.modules[m].modules
+    final_modules=[]
+    for i,m in enumerate(all_modules):
+        if not m in all_modules[i+1:]:
+            final_modules.append(m)
+    for m in final_modules:
+        all_dependencies= all_dependencies+d.modules[m].dependencies
+    final_dependencies=[]
+    for i,dc in enumerate(all_dependencies):
+        if not dc in all_dependencies[i+1:]:
+            final_dependencies.append(dc)
+    module_libs=[]
+    for m in final_modules:
+        if m=='kernel':
+            module_libs.append('imp')
+        else:
+            module_libs.append('imp_'+m)
+    dependency_libs=[]
+    for dc in final_dependencies:
+        dependency_libs+= d.dependencies[dc].libs
+    env.Append(LIBS=module_libs)
+    env.Append(LIBS=dependency_libs)
+
+def get_sharedlib_environment(env, cppdefine, cplusplus=False,
+                              extra_modules=[]):
     """Get a modified environment suitable for building shared libraries
        (i.e. using gcc ELF visibility macros or MSVC dllexport/dllimport macros
        to mark dynamic symbols as exported or private). `cppdefine` should be
@@ -298,7 +331,9 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False):
              CXXFLAGS='${VIS_CXXFLAGS}')
     e.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
+    _add_link_flags(e, extra_modules=extra_modules)
     return e
+
 
 
 def get_staticlib_environment(env):
@@ -315,13 +350,15 @@ def get_staticlib_environment(env):
     return e
 
 
-def get_bin_environment(envi):
+def get_bin_environment(envi, extra_modules=[]):
     env= bug_fixes.clone_env(envi)
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
+    _add_link_flags(env, extra_modules=extra_modules)
     return env
 
 
-def get_pyext_environment(env, mod_prefix, cplusplus=False):
+def get_pyext_environment(env, mod_prefix, cplusplus=True,
+                          extra_modules=[]):
     """Get a modified environment for building a Python extension.
        `mod_prefix` should be a unique prefix for this module.
        If `cplusplus` is True, additional configuration suitable for a C++
@@ -349,11 +386,14 @@ def get_pyext_environment(env, mod_prefix, cplusplus=False):
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
+    _add_link_flags(e, extra_modules=extra_modules)
     return e
 
-def get_named_environment(env, name):
+def get_named_environment(env, name, modules, dependencies):
     e = bug_fixes.clone_env(env)
     e['IMP_CURRENT_NAME']=name
+    e['IMP_CURRENT_DEPENDENCIES']=dependencies
+    e['IMP_CURRENT_MODULES']=modules
     return e
 
 def get_current_name(env):
