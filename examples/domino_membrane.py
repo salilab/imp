@@ -9,9 +9,9 @@ import math
 def create_representation(tmb,tme):
     m=IMP.Model()
 #   only CA
-    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
+#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
 #   all-atom
-#    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   select particles and make rigid bodies
     print "Making rigid bodies"
@@ -74,9 +74,9 @@ def create_restraints(m, chain, tmb, tme):
 #  and distance sigmas
         sig_dd0=[0.89, 0.99, 0.88, 1.18, 1.47, 1.05]
 #  the number of sigmas
-        nsig=2
+        nsig=3
 #  and the number of clusters
-        ncl=5
+        ncl=6
 # create allowed intervals (omega in radians)
         om_b=[]
         om_e=[]
@@ -136,19 +136,19 @@ def  create_discrete_states(m,chain,tmb):
     rot01=  IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), -math.pi/2.0)
     trs0=[]
     trs1=[]
-    for i in range(0,4):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
+    for i in range(0,8):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/4)
         for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,4):
+            for s in range(0,8):
                 if ( t == 0 ) and ( s != 0 ):
                     break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/4)
                 rot2=IMP.algebra.compose(swing,rot1)
                 rot_p =IMP.algebra.compose(rot2,rot00)
                 rot_m =IMP.algebra.compose(rot2,rot01)
-                for dz in range(0,1):
+                for dz in range(0,2):
                     trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(rot_p,IMP.algebra.Vector3D(0,0,1.0*dz))))
                     for dx in range(0,2):
                         if ( dx >= 0 ):
@@ -202,8 +202,11 @@ def display(m,chain,tmb,tme,name):
 
 print "creating representation"
 # TMH boundaries
-tmb=[38,80]
-tme=[73,106]
+#tmb=[38,80]
+#tme=[73,106]
+tmb=[50,80]
+tme=[71,102]
+
 (m,chain)=create_representation(tmb,tme)
 
 print "creating score function"
