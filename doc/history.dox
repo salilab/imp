@@ -1,6 +1,8 @@
 /** \page recent Change History
 
 \par Winter 2011
+- removed IMP::algebra::GridD::get_index(VectorD) as it wasn't very safe (in that vectors coordinates can get rounded between the IMP::algebra::GridD::get_has_index() and IMP::algebra::GridD::get_index() calls. Use IMP::algebra::GridD::get_nearest_index() or IMP::algebra::GridD::get_extended_index() or IMP::algebra::GridD::operator[]() instead.
+- renamed IMP::domino::ParticleStatesTable::get_particles() to IMP::domino::ParticleStatesTable::get_subset() as it is more useful to be able to get the subset containing all the particles.
 - rename IMP::restrainer::Restraint::print_all_restraints() to IMP::restrainer::Restraint::show_all_restraints() to be consistent with the rest of \imp.
 - renamed IMP::atom::get_conect_record_string() to IMP::atom::get_pdb_conect_record_string() to make clearer what it is.
 - class and method names are now spell checked. Add missing words to spelling_exceptions in the module test call.

@@ -15,11 +15,13 @@ class Vector3DTests(IMP.test.TestCase):
         vs=[]
         for i in range(5):
             v= IMP.algebra.get_random_vector_in(bb)
-            if g.get_has_index(v):
-                g[v]=g[v]+1
+            evi= g.get_extended_index(v)
+            if g.get_has_index(evi):
+                vi= g.get_index(evi)
+                g[vi]=g[vi]+1
                 self.assertGreater(g[v], 1)
             else:
-                g.add_voxel(g.get_extended_index(v), 1)
+                g.add_voxel(evi, 1)
                 self.assertEqual(g[v], 1)
             vs.append(v)
         count=0
