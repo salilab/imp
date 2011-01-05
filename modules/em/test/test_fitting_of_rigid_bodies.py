@@ -64,7 +64,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         end_score=opt.optimize(10)
         print "after optimization"
         #IMP.atom.write_pdb(self.mhs,"aa.pdb")
-        self.assertGreater(start_score, end_score)
+        self.assertGreater(start_score+.01, end_score)
 
 if __name__ == '__main__':
     IMP.test.main()
