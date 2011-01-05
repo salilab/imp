@@ -270,7 +270,6 @@ Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
 }
 
 
-
 FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   // double d22 = c2
   double cos_tilt= r.get_rotated(VectorD<3>(0,0,1))[2];
