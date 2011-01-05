@@ -503,10 +503,10 @@ void destroy(Hierarchy d);
 
 //! Get a bounding box for the Hierarchy
 /** This bounding box is that of the highest (in the CS sense of a tree
-    growning down from the root) cut
+    growing down from the root) cut
     through the tree where each node in the cut has x,y,z, and r.
     That is, if the root has x,y,z,r then it is the bounding box
-    if that sphere. If only the leaves have radii, it is the bounding
+    of that sphere. If only the leaves have radii, it is the bounding
     box of the leaves. If no such cut exists, the behavior is undefined.
     \relatesalso Hierarchy
     \relatesalso IMP::algebra::BoundingBoxD
