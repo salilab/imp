@@ -11,7 +11,6 @@ IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
-IMP_SWIG_OBJECT(IMP::em, Image, Images);
 IMP_SWIG_VALUE(IMP::em, RadiusDependentKernelParameters, RadiusDependentKernelParametersList);
 IMP_SWIG_VALUE(IMP::em, KernelParameters, KernelParametersList);
 IMP_SWIG_OBJECT(IMP::em, HighDensityEmbedding, HighDensityEmbeddings);
@@ -35,14 +34,10 @@ IMP_SWIG_OBJECT(IMP::em, HighDensityEmbedding, HighDensityEmbeddings);
 %include "IMP/em/converters.h"
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
-%include "IMP/em/ImageReaderWriter.h"
 %include "IMP/em/SpiderReaderWriter.h"
-%include "IMP/em/Image.h"
-%include "IMP/em/noise.h"
 %include "IMP/em/filters.h"
 %include "IMP/em/rigid_fitting.h"
 %include "IMP/em/envelope_penetration.h"
-%include "IMP/em/image_transformations.h"
 %include "IMP/em/embedding.h"
 %include "IMP/em/density_utilities.h"
 
@@ -54,15 +49,7 @@ namespace IMP {
         return dynamic_cast<IMP::em::FitRestraint *>(r);
       }
     }
-    %template(_ImageReaderWriter) ::IMP::em::ImageReaderWriter<double>;
-    %template(_SpiderImageReaderWriter)
-                          ::IMP::em::SpiderImageReaderWriter<double>;
-
     %template(floats) ::std::vector<float>;
-
-    %template(add_noise) ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
-    %template(add_noise_d)
-              ::IMP::em::add_noise<::IMP::algebra::Matrix2D<double> >;
 
     %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<double,2>;
     %template(FilterByThreshold3D) ::IMP::em::FilterByThreshold<double,3>;
@@ -70,9 +57,3 @@ namespace IMP {
   }
 }
 
-// Cannot instantiate template classes directly, since SWIG complains about
-// attempts to redefine the template classes; so rename them in the Python layer
-%pythoncode {
-  ImageReaderWriter = _ImageReaderWriter
-  SpiderImageReaderWriter = _SpiderImageReaderWriter
-}

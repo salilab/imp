@@ -364,7 +364,7 @@ void ImageHeader::set_header()
 
   // Set scale to 1 (never used but kept for compatibility with Spider)
   header_.fScale = 1;
-  // Set Geometrical transformation Matrix to Identity
+  // Set Geometrical transformation matrix to Identity
   // (compatibility with Spider again)
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
@@ -418,19 +418,8 @@ void ImageHeader::set_title(String newName)
   strcpy(header_.szITit, newName.c_str());
 }
 
-algebra::Matrix2D<double> ImageHeader::get_fGeo_matrix()
-{
-  algebra::Matrix2D<double> retval(3, 3);
-  retval(0, 0) = header_.fGeo_matrix[0][0];
-  retval(0, 1) = header_.fGeo_matrix[0][1];
-  retval(0, 2) = header_.fGeo_matrix[0][2];
-  retval(1, 0) = header_.fGeo_matrix[1][0];
-  retval(1, 1) = header_.fGeo_matrix[1][1];
-  retval(1, 2) = header_.fGeo_matrix[1][2];
-  retval(2, 0) = header_.fGeo_matrix[2][0];
-  retval(2, 1) = header_.fGeo_matrix[2][1];
-  retval(2, 2) = header_.fGeo_matrix[2][2];
-  return retval;
+double ImageHeader::get_fGeo_matrix(unsigned int i,unsigned int j) const {
+  return header_.fGeo_matrix[i][j];
 }
 
 IMPEM_END_NAMESPACE

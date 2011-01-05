@@ -1,6 +1,6 @@
 /**
  *  \file SpiderReaderWriter.cpp
- *  \brief Reader and Writer fro Spider and Xmipp Images and Volumes
+ *  \brief Reader and Writer fro Spider Volumes
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
 */

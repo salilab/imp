@@ -4,37 +4,6 @@ import os
 
 class VolumeTest(IMP.test.TestCase):
 
-    def test_image(self):
-        """Check image reading and writing"""
-        img = IMP.em.Image()
-        rw = IMP.em.SpiderImageReaderWriter(
-                       self.get_input_file_name("flipY-nup84-0.spi"),
-                       False,False,True)
-        img.read(self.get_input_file_name("flipY-nup84-0.spi"), rw)
-        img.write("test_image.spi",rw)
-        img2 = IMP.em.Image()
-        img2.read("test_image.spi",rw)
-        for j in xrange(0,img.get_data().get_number_of_rows()):
-            for i in xrange(0,img.get_data().get_number_of_columns()):
-                self.assertEqual(img.get_data()[i,j],img2.get_data()[i,j])
-        # Cleanup
-        os.unlink('test_image.spi')
-
-
-    def test_images(self):
-        """Check that em.Images is exported to Python"""
-        images = IMP.em.Images()
-        self.assertEqual(len(images),0,"Images size is not 0")
-
-        img1 = IMP.em.Image()
-        img2 = IMP.em.Image()
-        img3 = IMP.em.Image()
-        images.append(img1)
-        images.append(img2)
-        images.append(img3)
-        self.assertEqual(len(images),3,"Images size is not 3")
-
-
     def test_em_maps(self):
         """Check volume reading and writing"""
         # Read in Xmipp format

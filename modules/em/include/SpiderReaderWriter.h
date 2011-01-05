@@ -10,11 +10,9 @@
 
 #include "IMP/em/em_config.h"
 #include "IMP/em/ImageHeader.h"
-#include "IMP/em/ImageReaderWriter.h"
 #include "IMP/em/header_converters.h"
 #include "IMP/em/MapReaderWriter.h"
 #include "IMP/em/DensityHeader.h"
-#include <IMP/algebra/Matrix2D.h>
 #include <IMP/algebra/utility.h>
 #include <IMP/algebra/endian.h>
 #include <IMP/exception.h>
@@ -28,153 +26,6 @@
 #include <cstring>
 
 IMPEM_BEGIN_NAMESPACE
-
-//! Class to read EM images in Spider and Xmipp formats. They are stored in
-//! the header and data passed as arguments
-/**
-   \note Compatible with Xmipp and Spider float images. Other types: byte, int,
-     double and complex are NOT compatible.
-   \note For compatibility with Xmipp and Spider, use functions:
-    read_from_floats() and write_from_floats(), even if your images are doubles
- */
-template <typename T>
-class SpiderImageReaderWriter: public ImageReaderWriter<T>
-{
-public:
-  String filename_;
-  bool skip_type_check_;
-  bool force_reversed_;
-  bool skip_extra_checkings_;
-
-  //! Empty constructor. It does not force reversed header and does not
-  //! skip any of the tests
-  /**
-   *  \note reversed is only used in case that the type_check is skipped
-   */
-  SpiderImageReaderWriter() {
-    skip_type_check_=false;
-    force_reversed_=false;
-    skip_extra_checkings_=false;
-  }
-
-  //! Full constructor.
-  /**
-   *  \param[in] filename file to read
-   *  \param[in] skip_type_check if true, the check for type of image is skipped
-   *  \param[in] force_reversed if true, the reverse mode is enforced
-   * for reading and writting
-   *  \param[in] skip_extra_checkings if true, the most stringent
-   * tests for consistency of images are skipped when reading
-   */
-  SpiderImageReaderWriter(String filename,bool skip_type_check,
-                        bool force_reversed,bool skip_extra_checkings) {
-    filename_=filename;
-    skip_type_check_=skip_type_check;
-    force_reversed_=force_reversed;
-    skip_extra_checkings_=skip_extra_checkings;
-  }
-
-  //! Reads a image file in Spider format and stores the content
-  //! the header and data parameters
-  /**
-    \note: If absolute compatibility with SPIDER format is required, use
-    read_from_floats instead
-    \param[in] filename file to read
-    \param[in] header header to store the info
-    \param[in] data a matrix to store the grid of data of the image
-  **/
-  void read(String filename, ImageHeader &header,
-            algebra::Matrix2D<T> &data) const {
-    IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
-    std::ifstream in;
-    in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    if (in.bad()) {
-      IMP_THROW("Error reading from Spider Image " << filename,IOException);
-    }
-    //! Take advantage that the header format is already in Spider format and
-    //! just read it
-    header.read(in,skip_type_check_,force_reversed_,skip_extra_checkings_);
-    // Adjust size of the matrix according to the header
-    data.resize((int)header.get_number_of_rows(),
-                (int)header.get_number_of_columns());
-
-    data.read_binary(in,force_reversed_ ^ algebra::get_is_big_endian());
-    in.close();
-  }
-
-  void read_from_floats(String filename, ImageHeader& header,
-            algebra::Matrix2D<T>& data) const {
-    IMP_LOG(IMP::VERBOSE,"reading with SpiderImageReaderWriter" << std::endl);
-    std::ifstream in;
-    in.open(filename.c_str(), std::ios::in | std::ios::binary);
-    if (in.bad()) {
-      IMP_THROW("Error reading from Spider Image " << filename,IOException);
-    }
-    //! The header format is already in Spider format, just read it
-    bool success=header.read(in,skip_type_check_,force_reversed_,
-                             skip_extra_checkings_);
-    if (!success) {
-      IMP_THROW("Error reading header from Spider Image "
-                << filename,IOException);
-    }
-    IMP_LOG(IMP::VERBOSE,"Header of image " << filename << std::endl
-            << header << std::endl);
-    // Adjust size of the matrix according to the header
-    data.resize((int)header.get_number_of_rows(),
-                (int)header.get_number_of_columns());
-    // Read with casting
-    float aux;
-    for (unsigned long i=0;i<data.num_elements();i++) {
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        in.read(reinterpret_cast< char* >(&aux), sizeof(float));
-      } else {
-        algebra::reversed_read(reinterpret_cast< char* >(&aux),
-                                              sizeof(float),1,in,true);
-      }
-      data.data()[i] = (T)aux;
-    }
-    in.close();
-  }
-
-  //! Writes an EM image in Spider format
-  /**
-   *  \param[in] filename file to write
-   *  \param[in] header header with the image info
-   *  \param[in] data a matrix with the grid of data of the image
-   */
-  void write(String filename, ImageHeader& header,
-            algebra::Matrix2D<T>& data) const  {
-    std::ofstream out;
-    out.open(filename.c_str(), std::ios::out | std::ios::binary);
-    //! The image header is already in Spider format, just write it
-    header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
-    data.write_binary(out,force_reversed_ ^ algebra::get_is_big_endian());
-    out.close();
-  }
-
-
-  void write_to_floats(String filename, ImageHeader& header,
-            algebra::Matrix2D<T>& data) const {
-    std::ofstream out;
-    out.open(filename.c_str(), std::ios::out | std::ios::binary);
-    //! The image header is already in Spider format, just write it
-    header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
-
-    float aux;
-    for (unsigned long i=0;i<data.num_elements();i++) {
-      aux = (float)data.data()[i];
-      if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
-        out.write(reinterpret_cast< char* >(&aux), sizeof(float));
-      } else {
-        algebra::reversed_write(reinterpret_cast< char* >(&aux),
-                       sizeof(float),1,out,true);
-      }
-    }
-
-    out.close();
-  }
-
-};
 
 //! Class to read EM maps (3D) in Spider and Xmipp formats
 /**
