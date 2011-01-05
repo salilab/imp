@@ -1,6 +1,10 @@
 Import('env')
+import scons_tools.dependency
+
+scons_tools.dependency.add_external_library(env, "ANN", "ANN",
+                                            "ANN/ANN.h")
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['kernel'],
                    optional_modules=['cgal'],
-                   optional_dependencies=['CGAL', 'ANN'])
+                   optional_dependencies=['ANN'])
