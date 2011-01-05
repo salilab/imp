@@ -102,7 +102,7 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 %}
 
 %{
-#ifdef IMP_USE_BOOST_FILESYSTEM
+#ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/exception.hpp>
 #endif
@@ -139,7 +139,7 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
     } catch (const IMP::Exception &e) {
       PyErr_SetString(imp_exception, e.what());
     /* Map Boost exceptions to Python exceptions */
-#ifdef IMP_USE_BOOST_FILESYSTEM
+#ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
     } catch (boost::filesystem::filesystem_error &e) {
       PyErr_SetString(imp_io_exception, e.what());
 #endif
