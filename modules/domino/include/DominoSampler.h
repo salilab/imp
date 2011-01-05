@@ -23,7 +23,9 @@ class SubsetGraph;
 #endif
 
 //! Sample best solutions using Domino
-/**
+/** Note that if there are many solutions, the ConfigurationSet returned
+    by get_sample() might be huge. The SubsetStates returned by
+    get_sample_states() can be a lot smaller.
  */
 class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
 {
