@@ -61,7 +61,7 @@ ParticlesTemp pt= c_->get_particles();
   ParticlePairsTemp
   get_static_pairs(core::internal::CoreClosePairContainer *cpc,
                    const ParticleStatesTable *pst) {
-    const ParticlesTemp optimized= pst->get_particles();
+    const Subset optimized= pst->get_subset();
     ParticleStatesList psl(optimized.size());
     unsigned int max=0;
     for (unsigned int i=0; i< optimized.size(); ++i) {

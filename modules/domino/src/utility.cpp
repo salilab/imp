@@ -113,8 +113,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
                               const DependencyGraph &dg,
                               RestraintSet *rs) {
   RestraintsAndWeights rw= get_restraints_and_weights(rs);
-  ParticlesTemp other=pst->get_particles();
-  std::sort(other.begin(), other.end());
+  Subset other=pst->get_subset();
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(),
                       s.begin(), s.end(),

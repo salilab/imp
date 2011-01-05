@@ -139,7 +139,7 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
     IMP_LOG(VERBOSE, "dependency graph is \n");
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
-  ParticlesTemp ps= pst->get_particles();
+  Subset ps= pst->get_subset();
   for (unsigned int i=0; i< ps.size(); ++i) {
     ParticlesTemp t= get_dependent_particles(ps[i], dg);
     for (unsigned int j=0; j< t.size(); ++j) {
@@ -409,7 +409,7 @@ bool get_has_edge(InteractionGraph &graph,
   return false;
 }
 
-  void add_edges( const ParticlesTemp &ps,
+  void add_edges( const Subset &ps,
                   ParticlesTemp pt,
                   const IMP::internal::Map<Particle*, int> &map,
                 Object *blame,
@@ -454,7 +454,7 @@ Ints find_parents(const IMP::internal::Map<Particle*, Ints>  &map,
 
 InteractionGraph get_interaction_graph(RestraintSet *irs,
                                        const ParticleStatesTable* pst) {
-  ParticlesTemp ps = pst->get_particles();
+  Subset ps = pst->get_subset();
   InteractionGraph ret(ps.size());
   RestraintsTemp rs= get_restraints(irs);
   //Model *m= ps[0]->get_model();
