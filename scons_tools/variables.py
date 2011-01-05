@@ -201,6 +201,7 @@ def add_common_variables(vars, package):
     vars.Add('arliblinkflags', 'Link flags for linking static libraries (e.g. "-lefence")', "")
     vars.Add('shliblinkflags', 'Link flags for linking shared libraries (e.g. "-lefence")', "")
     vars.Add('binlinkflags', 'Link flags for linking executables (e.g. "-lefence")', "")
+    vars.Add('pkgconfig', 'Whether to use pkg_config ', "auto")
     vars.Add('path', 'Extra executable path ' + \
              '(e.g. "/opt/local/bin/") to search for build tools', None)
     vars.Add('precommand',
