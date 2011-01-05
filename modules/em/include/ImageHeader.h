@@ -9,7 +9,6 @@
 
 #include "IMP/em/em_config.h"
 #include "IMP/em/SpiderHeader.h"
-#include <IMP/algebra/Matrix2D.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Vector2D.h>
 #include <IMP/algebra/utility.h>
@@ -292,7 +291,7 @@ public:
   float get_fLenbyt() const { return header_.fLenbyt; }
   void set_fLenbyt(float value) { header_.fLenbyt=value; }
 
-  IMP::algebra::Matrix2D< double > get_fGeo_matrix();
+  double get_fGeo_matrix(unsigned int i,unsigned int j) const;
 
   //! Gets the fFlag.
   /** fFlag contains the number of triads of Euler angles stored

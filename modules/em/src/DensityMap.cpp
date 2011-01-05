@@ -1153,7 +1153,7 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
   const DensityHeader *from_header = from_map->get_header();
   int from_nx=from_header->get_nx();
   int from_ny=from_header->get_ny();
-  int from_nz=from_header->get_nz();
+//  int from_nz=from_header->get_nz(); // unused variable?
   int to_nx=nx_end-nx_start+1;
   int to_ny=ny_end-ny_start+1;
   int to_nz=nz_end-nz_start+1;
