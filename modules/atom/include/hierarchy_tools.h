@@ -97,8 +97,11 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 /** @} */
 
 
-/** A part of an atom.Hiearchy or atom.Hierarchies that is identified
-    by the biological name. For example (in python)
+/** Select a part of an atom.Hiearchy or atom.Hierarchies that is identified
+    by the biological name.
+
+
+    For example (in python)
     \code
     Selection(hierarchy=h, molecule="myprotein", terminus=Selection.C)
     Selection(hierarchy=h, molecule="myprotein", residue_index=133)
@@ -109,7 +112,9 @@ IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 
     \note Only representational particles are selected. That is, ones
     with x,y,z coordinates. And the highest resolution representation
-    that fits is returned.
+    that fits is returned. If you want lower resolution, use the
+    target_radius parameter to select the desired radius (pass a very large
+    number to get the coarsest representation).
 */
 class IMPATOMEXPORT Selection {
  public:
@@ -141,7 +146,7 @@ class IMPATOMEXPORT Selection {
         AtomTypes atom_types=[],
         ResidueTypes residue_types=[],
         Strings domains=[],
-        double target_radius=-1,
+        double target_radius=0,
         std::string molecule=None,
         int residue_index=None,
         char chain=None,
