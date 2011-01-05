@@ -286,8 +286,10 @@ class CHARMMResidueTopology;
     used to modify an existing residue. Any atoms they contain replace or
     add to those in the residue; they can also remove atoms.
     Atom names are as for regular residues, except for patches that affect
-    two residues (e.g. DISU, LINK) in which each atom contains a 1: or 2:
-    prefix to identify the residue which will be patched.
+    two residues (e.g. DISU, LINK) in which each atom contains a 1 or 2
+    prefix (plus an optional colon) to identify the residue which will be
+    patched; for example, both 1:CA and 1CA identify the CA atom in the
+    first residue.
  */
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;

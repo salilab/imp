@@ -202,37 +202,42 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_double_patching(self):
         """Test application of two-residue patches"""
-        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"))
-        patch = ff.get_patch('DISU')
-        res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('CYS')))
-        res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('CYS')))
-        self.assertEqual(res1.get_atom('HG').get_charmm_type(), 'HS')
-        self.assertEqual(res1.get_number_of_bonds(), 11)
-        self.assertEqual(res1.get_number_of_impropers(), 3)
-        self.assertEqual(res2.get_number_of_bonds(), 11)
-        self.assertEqual(res2.get_number_of_impropers(), 3)
-        # Single-residue patches cannot be applied to two residues
-        badpatch = ff.get_patch('CTER')
-        self.assertRaises(IMP.ValueException, badpatch.apply, res1, res2)
-        patch.apply(res1, res2)
-        # Patch should change atom type of existing atoms
-        self.assertEqual(res1.get_atom('SG').get_charmm_type(), 'SM')
-        self.assertEqual(res2.get_atom('SG').get_charmm_type(), 'SM')
-        # Should prevent further patching
-        self.assertEqual(res1.get_patched(), True)
-        self.assertEqual(res2.get_patched(), True)
-        # Patches should delete atoms
-        self.assertRaises(IMP.ValueException, res1.get_atom, 'HG')
-        self.assertRaises(IMP.ValueException, res2.get_atom, 'HG')
-        # Should add/delete bonds/dihedrals
-        self.assertEqual(res1.get_number_of_bonds(), 11)
-        self.assertEqual(res1.get_number_of_impropers(), 3)
-        self.assertEqual(res2.get_number_of_bonds(), 10)
-        self.assertEqual(res2.get_number_of_impropers(), 3)
-        # Should have added an SG-SG bond
-        bond = res1.get_bond(10)
-        self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'SG')
-        self.assertEqual(bond.get_endpoint(1).get_atom_name(), 'SG')
+        ff = IMP.atom.CHARMMParameters(
+                            self.get_input_file_name("top_2patch.lib"))
+        # Check patching using both Modeller-style and CHARMM-style atom naming
+        for patch_name in ('DIS1', 'DIS2'):
+            patch = ff.get_patch(patch_name)
+            res1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(
+                                                IMP.atom.ResidueType('CYS')))
+            res2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(
+                                                IMP.atom.ResidueType('CYS')))
+            self.assertEqual(res1.get_atom('HG').get_charmm_type(), 'HS')
+            self.assertEqual(res1.get_number_of_bonds(), 11)
+            self.assertEqual(res1.get_number_of_impropers(), 3)
+            self.assertEqual(res2.get_number_of_bonds(), 11)
+            self.assertEqual(res2.get_number_of_impropers(), 3)
+            # Single-residue patches cannot be applied to two residues
+            badpatch = ff.get_patch('CTER')
+            self.assertRaises(IMP.ValueException, badpatch.apply, res1, res2)
+            patch.apply(res1, res2)
+            # Patch should change atom type of existing atoms
+            self.assertEqual(res1.get_atom('SG').get_charmm_type(), 'SM')
+            self.assertEqual(res2.get_atom('SG').get_charmm_type(), 'SM')
+            # Should prevent further patching
+            self.assertEqual(res1.get_patched(), True)
+            self.assertEqual(res2.get_patched(), True)
+            # Patches should delete atoms
+            self.assertRaises(IMP.ValueException, res1.get_atom, 'HG')
+            self.assertRaises(IMP.ValueException, res2.get_atom, 'HG')
+            # Should add/delete bonds/dihedrals
+            self.assertEqual(res1.get_number_of_bonds(), 11)
+            self.assertEqual(res1.get_number_of_impropers(), 3)
+            self.assertEqual(res2.get_number_of_bonds(), 10)
+            self.assertEqual(res2.get_number_of_impropers(), 3)
+            # Should have added an SG-SG bond
+            bond = res1.get_bond(10)
+            self.assertEqual(bond.get_endpoint(0).get_atom_name(), 'SG')
+            self.assertEqual(bond.get_endpoint(1).get_atom_name(), 'SG')
 
     def test_manual_make_topology(self):
         """Test manual construction of topology"""

@@ -1,0 +1,56 @@
+RESI CYS          0.00
+ATOM N    NH1    -0.47  !     |
+ATOM H    H       0.31  !   H-N
+ATOM CA   CT1     0.07  !     |   HB2
+ATOM HA   HB      0.09  !     |   |
+ATOM CB   CT2    -0.11  !     |   |     \
+ATOM HB3  HA      0.09  !     |   HB3    HG
+ATOM HB2  HA      0.09  !   O=C
+ATOM SG   S      -0.23  !     |
+ATOM HG   HS      0.16
+ATOM C    C       0.51
+ATOM O    O      -0.51
+BOND     CB    CA    SG    CB    N     H     N     CA    
+BOND     O     C     C     CA    C     +N    CA    HA    CB    HB3   
+BOND     CB    HB2   SG    HG    
+IMPR     N     -C    CA    H     C     CA    +N    O     
+IMPR     CA    N     C     CB    
+
+PRES CTER        -1.00 ! standard C-terminus
+ATOM C    CC      0.34 !   O
+ATOM O    OC     -0.67 !  //
+ATOM OXT  OC     -0.67 ! -C
+BOND C OXT             !   OXT
+IMPR O CA OXT C
+
+! Disulfide patch using Modeller-style atom naming (e.g. 1:CA)
+PRES DIS1        -0.36  ! patch for disulfides. Patch must be 1-CYS and 2-CYS.
+ATOM 1:CB  CT2    -0.10 !
+ATOM 1:SG  SM     -0.08 !            2:SG--2:CB--
+GROUP                  !            /
+ATOM 2:SG  SM     -0.08 ! -1:CB--1:SG
+ATOM 2:CB  CT2    -0.10 !
+DELETE ATOM 1:HG
+DELETE ATOM 2:HG
+BOND  1:SG  2:SG
+ANGLE 1:CB  1:SG 2:SG 1:SG 2:SG  2:CB
+DIHE  1:HB2 1:CB 1:SG 2:SG 1:HB3 1:CB 1:SG 2:SG
+DIHE  2:HB2 2:CB 2:SG 1:SG 2:HB3 2:CB 2:SG 1:SG
+DIHE  1:CA  1:CB 1:SG 2:SG 1:SG  2:SG 2:CB 2:CA
+DIHE  1:CB  1:SG 2:SG 2:CB
+
+! Disulfide patch using CHARMM-style atom naming (e.g. 1CA)
+PRES DIS2        -0.36  ! patch for disulfides. Patch must be 1-CYS and 2-CYS.
+ATOM 1CB  CT2    -0.10 !
+ATOM 1SG  SM     -0.08 !            2SG--2CB--
+GROUP                  !            /
+ATOM 2SG  SM     -0.08 ! -1CB--1SG
+ATOM 2CB  CT2    -0.10 !
+DELETE ATOM 1HG
+DELETE ATOM 2HG
+BOND  1SG  2SG
+ANGLE 1CB  1SG 2SG 1SG 2SG  2CB
+DIHE  1HB2 1CB 1SG 2SG 1HB3 1CB 1SG 2SG
+DIHE  2HB2 2CB 2SG 1SG 2HB3 2CB 2SG 1SG
+DIHE  1CA  1CB 1SG 2SG 1SG  2SG 2CB 2CA
+DIHE  1CB  1SG 2SG 2CB
