@@ -24,8 +24,6 @@ modules=['cgal',
 modules.append('benchmark')
 modules.append('example')
 
-disabled=env.get('disabledmodules', '').split(":")
-
 if env.get('local', False):
     for d in Glob("*/SConscript"):
         p= str(d).split("/")[0]
