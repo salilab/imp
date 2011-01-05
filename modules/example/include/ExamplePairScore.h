@@ -18,8 +18,8 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 
 //! Apply a harmonic to the distance between two particles.
 /** The source code is as follows:
-    \include ExampleRestraint.h
-    \include ExampleRestraint.cpp
+    \include ExamplePairScore.h
+    \include ExamplePairScore.cpp
 */
 class IMPEXAMPLEEXPORT ExamplePairScore : public PairScore
 {

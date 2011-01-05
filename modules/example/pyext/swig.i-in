@@ -13,6 +13,7 @@ IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifier
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleRefCounted, ExampleRefCounteds);
 IMP_SWIG_VALUE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClass3Ds);
+IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.examples.say_hello(). */
@@ -39,6 +40,7 @@ def create_model_and_particles():
 %include "IMP/example/ExampleSingletonModifier.h"
 %include "IMP/example/ExampleTemplateClass.h"
 %include "IMP/example/ExamplePairScore.h"
+%include "IMP/example/ExampleSubsetFilterTable.h"
 
 namespace IMP {
   namespace example {
