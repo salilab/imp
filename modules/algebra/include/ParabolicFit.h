@@ -29,9 +29,7 @@ public:
   double get_fit_error() const { return error_; }
 
   //! get a value (a*x^2)
-  double get_a() const {
-    IMP_USAGE_CHECK(!is_nan(a_), "Using uninitialized parabolic fit");
-    return a_; }
+  double get_a() const { return a_; }
 
   //! get b value (b*x)
   double get_b() const { return b_; }
@@ -45,11 +43,10 @@ public:
     });
 
  private:
-  void find_regression();
-  void evaluate_error();
+  void find_regression(const std::vector<VectorD<2> >& data);
+  void evaluate_error(const std::vector<VectorD<2> >& data);
 
  private:
-  const algebra::Vector2Ds data_;
   double a_, b_, c_;
   double error_;
 };
