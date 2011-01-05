@@ -106,7 +106,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
                     context.Message('Checking for '+name+' ...')
                     context.Result("pkgconfig")
                     (includepath, libpath, libs)= scons_tools.dependency.pkgconfig.get_config(context, lcname)
-                    print name, (includepath, libpath, libs)
+                    #print name, (includepath, libpath, libs)
                     scons_tools.data.get(context.env).add_dependency(name, variables=variables,
                                                                      pkgconfig=lcname,
                                                                      includepath=includepath,
