@@ -17,8 +17,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate line that fits best the input data points
 class IMPALGEBRAEXPORT LinearFit {
 public:
-  LinearFit(): a_(std::numeric_limits<double>::quiet_NaN()),
-    b_(std::numeric_limits<double>::quiet_NaN()){}
   //! Constructor
   /**
      \param[in] data vector of pairs (VectorD<2>) with x and their
