@@ -102,7 +102,7 @@ int main() {
     //test_one(name, cpf, 100000, 0, .1, 85.593333);
     //test_one(name, cpf, 100000, 0, .3, 329.300000);
   }
-#ifdef IMP_USE_CGAL
+#ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     IMP_NEW(BoxSweepClosePairsFinder, cpf, ());
     std::string name="box";

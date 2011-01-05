@@ -79,7 +79,7 @@ int main() {
     test_one("col quadratic", cpf, 10000, 0, .1, 87.210356);
     test_one("col quadratic", cpf, 10000, 0, .5, 99.562332);
   }
-#ifdef IMP_USE_CGAL
+#ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     BoxSweepClosePairsFinder *cpf= new BoxSweepClosePairsFinder();
     //std::cout << "Box:" << std::endl;
