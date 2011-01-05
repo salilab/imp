@@ -19,5 +19,16 @@ class DecoratorTests(IMP.test.TestCase):
         mh=None
         self.assertEqual(0, len(m.get_particles()))
 
+    def test_destroy_child(self):
+        """Destroy of a child should update the parent"""
+        m = IMP.Model()
+        mh = IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
+        atoms = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 68)
+        IMP.atom.destroy(atoms[0])
+        # This will fail if the atom is not removed from the parent residue
+        atoms = IMP.atom.get_by_type(mh, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 67)
+
 if __name__ == '__main__':
     IMP.test.main()
