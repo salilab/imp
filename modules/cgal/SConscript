@@ -1,5 +1,14 @@
 Import('env')
 import scons_tools.dependency.gcc
+import scons_tools.dependency.cgal
+import scons_tools.dependency.boost
+
+cgal_libs=scons_tools.dependency.cgal.get_libs(env,
+                         scons_tools.dependency.boost.get_boost_lib_name(env,"boost_thread"))
+
+scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
+                                            ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
+                                            body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
 
 if scons_tools.dependency.gcc.get_is_gcc(env):
     cxxflags=[]

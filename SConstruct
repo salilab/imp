@@ -6,8 +6,8 @@ import scons_tools.dependency.boost
 import scons_tools.dependency.swig
 import scons_tools.dependency.endian
 import scons_tools.dependency.gcc
-import scons_tools.dependency.cgal
 import scons_tools.dependency.modeller_test
+import scons_tools.dependency.pkgconfig
 import scons_tools.application
 import scons_tools.test
 import scons_tools.config_py
@@ -47,7 +47,6 @@ No working compiler found. Please make sure that g++ or another
 compiler recognized by scons can be found in your path and that all
 the passed compiler options (cxxflags, linkflags) are correct.
 """)
-
     scons_tools.dependency.boost.configure_check(env, '1.33')
     if not env.GetOption('clean'):
         if env.get('BOOST_VERSION', None) == None:
@@ -60,30 +59,22 @@ includepath='/opt/local/include'
 
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
+    scons_tools.dependency.pkgconfig.configure_check(env)
 
-boost_thread="boost_thread"+env.get("BOOST_LIBSUFFIX", "")
-boost_program_options="boost_program_options"+env.get("BOOST_LIBSUFFIX", "")
-boost_filesystem="boost_filesystem"+env.get("BOOST_LIBSUFFIX", "")
-boost_system="boost_system"+env.get("BOOST_LIBSUFFIX", "")
-
-scons_tools.dependency.add_external_library(env, "ANN", "ANN",
-                                            "ANN/ANN.h")
-scons_tools.dependency.add_external_library(env, "NetCDF", ["netcdf_c++", 'netcdf'],
-                                                "netcdfcpp.h")
-scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
-                                            "fftw3.h")
-
-cgal_libs=scons_tools.dependency.cgal.get_libs(env, boost_thread)
-
-scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
-                                            ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],
-                                            body='CGAL_assertion(1); CGAL::Lazy_exact_nt<CGAL::Gmpq> q;')
+boost_program_options=scons_tools.dependency.boost.get_boost_lib_name(env,"boost_program_options")
+boost_filesystem=scons_tools.dependency.boost.get_boost_lib_name(env,"boost_filesystem")
+boost_system=scons_tools.dependency.boost.get_boost_lib_name(env,"boost_system")
 scons_tools.dependency.add_external_library(env, "Boost.FileSystem", boost_filesystem,
                                             'boost/filesystem/path.hpp',
+                                            body="boost::filesystem::path p;",
                                             extra_libs=[boost_system])
 scons_tools.dependency.add_external_library(env, "Boost.ProgramOptions", boost_program_options,
                                                 'boost/program_options.hpp',
                                                 extra_libs=[boost_system])
+
+scons_tools.dependency.add_external_library(env, "FFTW3", "fftw3",
+                                            "fftw3.h")
+
 
 
 
@@ -91,7 +82,6 @@ if not env.GetOption('help'):
     # various flags depending on compiler versions and things
     scons_tools.dependency.swig.configure_check(env)
     scons_tools.dependency.boost.configure_tr1_check(env)
-    scons_tools.dependency.modeller_test.configure_check(env)
     scons_tools.dependency.endian.configure_check(env)
     scons_tools.dependency.gcc.configure_check_visibility(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
