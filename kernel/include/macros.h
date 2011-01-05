@@ -744,7 +744,7 @@ public:                                                                 \
 
     - add_name_at(ExternalType, unsigned int)
 
-    - remove_name(unsigned int)
+    - remove_name(ExternalType)
 
     in addition it defines the private methods
     - add_required_attributes_for_name(Particle *)
