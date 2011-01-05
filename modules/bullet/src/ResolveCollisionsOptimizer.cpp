@@ -22,9 +22,7 @@
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
-#ifdef IMP_USE_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
-#endif
 
 #include <btBulletDynamicsCommon.h>
 #include <boost/ptr_container/ptr_vector.hpp>

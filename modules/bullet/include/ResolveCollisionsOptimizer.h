@@ -16,11 +16,7 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/Optimizer.h>
 //#include <btBulletDynamicsCommon.h>
-#ifdef IMP_BULLET_SUBDIR
-#include <bullet/LinearMath/btScalar.h>
-#else
 #include <LinearMath/btScalar.h>
-#endif
 IMPBULLET_BEGIN_NAMESPACE
 
 /** It uses the Bullet physics engine to handle collisions between the
