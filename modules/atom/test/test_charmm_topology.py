@@ -106,7 +106,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Check the CHARMM patch class"""
         patch = IMP.atom.CHARMMPatch('PFOO')
         self.assertEqual(patch.get_type(), 'PFOO')
+        self.assertEqual(patch.get_number_of_removed_atoms(), 0)
         patch.add_removed_atom('CA')
+        self.assertEqual(patch.get_number_of_removed_atoms(), 1)
+        self.assertEqual(patch.get_removed_atom(0), 'CA')
 
     def test_forcefield_add_get(self):
         """Test adding/getting patches and residues to/from forcefields"""

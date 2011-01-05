@@ -297,6 +297,15 @@ public:
   }
 
   void add_removed_atom(std::string name) { deleted_atoms_.push_back(name); }
+
+  unsigned int get_number_of_removed_atoms() const {
+    return deleted_atoms_.size();
+  }
+
+  std::string get_removed_atom(unsigned int i) const {
+    return deleted_atoms_[i];
+  }
+
   //! Apply the patch to the residue, modifying its topology accordingly.
   /** \note Most CHARMM patches are designed to be applied in isolation;
             it is usually an error to try to apply two different patches
