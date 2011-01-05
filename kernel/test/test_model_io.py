@@ -81,7 +81,7 @@ class YamlTests(IMP.test.TestCase):
 
     def test_netcdf(self):
         """Check writing to netcdf with attributes"""
-        if not IMP.has_netcdf:
+        if not IMP.has_netcdfcpp:
             self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
@@ -94,7 +94,7 @@ class YamlTests(IMP.test.TestCase):
 
     def test_netcdf_multiple(self):
         """Check writing multiple to netcdf with attributes"""
-        if not IMP.has_netcdf:
+        if not IMP.has_netcdfcpp:
             self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
@@ -110,7 +110,7 @@ class YamlTests(IMP.test.TestCase):
 
     def test_cs(self):
         """Check reading a configuration set"""
-        if not IMP.has_netcdf:
+        if not IMP.has_netcdfcpp:
             self.skipTest("NetCDF support not included")
         (m, ps)= self._create_homo_model()
         fks= [IMP.FloatKey("x"), IMP.FloatKey("y")]
