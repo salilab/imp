@@ -32,7 +32,6 @@ files = [
          'endian.h',
          'geometric_alignment.h',
          'grid_range_D.h',
-         'interpolation.h',
          'io.h',
          'python_only.h',
          'shortest_segment.h',

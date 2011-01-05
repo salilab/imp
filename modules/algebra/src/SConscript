@@ -18,7 +18,6 @@ files = [
          'eigen_analysis.cpp',
          'endian.cpp',
          'geometric_alignment.cpp',
-         'interpolation.cpp',
          'io.cpp',
          'shortest_segment.cpp',
          'vector_generators.cpp',
