@@ -383,10 +383,10 @@ get_residue(Hierarchy mhd, unsigned int index);
 
 
 //! Create a fragment containing the specified nodes
-/** A particle representing the frament is created and initialized.
+/** A particle representing the fragment is created and initialized.
 
     The Fragment is inserted as a child of the parent (and the particles are
-    removed). The particles become children of the frament.
+    removed). The particles become children of the fragment.
 
     \throw ValueException If all the particles do not have the same parent.
     \ingroup hierarchy
