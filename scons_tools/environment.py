@@ -286,7 +286,7 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
 
 
 
-def _add_link_flags(env, extra_modules=[], extra_dependencies=[]):
+def _add_flags(env, extra_modules=[], extra_dependencies=[]):
     modules=extra_modules+env['IMP_CURRENT_MODULES']
     dependencies=env['IMP_CURRENT_DEPENDENCIES']+extra_dependencies
     all_dependencies=dependencies
@@ -314,6 +314,7 @@ def _add_link_flags(env, extra_modules=[], extra_dependencies=[]):
     dependency_libs=[]
     for dc in final_dependencies:
         dependency_libs+= d.dependencies[dc].libs
+
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
 
@@ -331,7 +332,7 @@ def get_sharedlib_environment(env, cppdefine, cplusplus=False,
              CXXFLAGS='${VIS_CXXFLAGS}')
     e.Replace(SHLINKFLAGS=env['IMP_SHLIB_LINKFLAGS'])
     _fix_aix_cpp_link(e, cplusplus, 'SHLINKFLAGS')
-    _add_link_flags(e, extra_modules=extra_modules)
+    _add_flags(e, extra_modules=extra_modules)
     return e
 
 
@@ -353,7 +354,7 @@ def get_staticlib_environment(env):
 def get_bin_environment(envi, extra_modules=[]):
     env= bug_fixes.clone_env(envi)
     env.Replace(LINKFLAGS=env['IMP_BIN_LINKFLAGS'])
-    _add_link_flags(env, extra_modules=extra_modules)
+    _add_flags(env, extra_modules=extra_modules)
     return env
 
 
@@ -386,7 +387,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
     e.Append(CPPPATH=[_get_python_include(e)])
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
-    _add_link_flags(e, extra_modules=extra_modules)
+    _add_flags(e, extra_modules=extra_modules)
     return e
 
 def get_named_environment(env, name, modules, dependencies):
@@ -395,6 +396,11 @@ def get_named_environment(env, name, modules, dependencies):
     e['IMP_CURRENT_DEPENDENCIES']=dependencies
     e['IMP_CURRENT_MODULES']=modules
     return e
+
+def get_current_dependencies(env):
+    return env['IMP_CURRENT_DEPENDENCIES']
+def get_current_modules(env):
+    return env['IMP_CURRENT_MODULES']
 
 def get_current_name(env):
     return env['IMP_CURRENT_NAME']

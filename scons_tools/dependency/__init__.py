@@ -1,6 +1,7 @@
 import scons_tools.utility
 import scons_tools.data
 import SCons
+import os
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit, Scanner
 
 def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps):
@@ -53,9 +54,16 @@ def get_dependency_string(name):
     return nname
 
 
+
+
+
+
 def add_external_library(env, name, lib, header, body="", extra_libs=[]):
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
+    if scons_tools.data.get(env).dependencies.has_key(name):
+        # already has been added
+        return
     variables=[lcname, lcname+"libs"]
     def _check(context):
         if context.env[lcname] == "no":
@@ -75,10 +83,36 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
                 val=context.env[lcname+'libs'].split(":")
                 #print val
                 context.Result(" ".join(val))
+                if context.env.get(lcname+"includepath", None) is None:
+                    includepath=None
+                else:
+                    includepath=context.env.get[lcname+"includepath"]
+                if context.env.get(lcname+"libpath", None) is None:
+                    libpath=None
+                else:
+                    libpath=context.env.get[lcname+"libpath"]
                 scons_tools.data.get(context.env).add_dependency(name, variables=variables,
-                                                                 libs=val)
+                                                                 libs=val, includepath=includepath,
+                                                                 libpath=libpath)
                 return True
         else:
+            if context.env['IMP_HAS_PKG_CONFIG']:
+                if context.env[lcname]=="auto":
+                    ret = context.TryAction('pkg-config --exists \'%s\'' % lcname)[0]
+                    #context.Result( ret )
+                else:
+                    ret=1
+                if ret:
+                    context.Message('Checking for '+name+' ...')
+                    context.Result("pkgconfig")
+                    (includepath, libpath, libs)= scons_tools.dependency.pkgconfig.get_config(context, lcname)
+                    print name, (includepath, libpath, libs)
+                    scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                                     pkgconfig=lcname,
+                                                                     includepath=includepath,
+                                                                     libpath=libpath,
+                                                                     libs=libs)
+                    return True
             ret= check_lib(context, lib=lib, header=header,
                            body=body,
                            extra_libs=extra_libs)
@@ -104,7 +138,17 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[]):
         if conf.CheckThisLib():
             env.Append(IMP_ENABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='yes'"])
-            env.Append(IMP_CONFIGURATION=[lcname+"libs='"+":".join(scons_tools.data.get(env).dependencies[name].libs)+"'"])
+            env.Append(IMP_CONFIGURATION=[lcname+"libs='"+\
+                                          ":".join(scons_tools.data.get(env).dependencies[name].libs)+"'"])
+            if scons_tools.data.get(env).dependencies[name].includepath:
+                env.Append(IMP_CONFIGURATION=[lcname\
+                                      +"includepath='"+\
+                                      scons_tools.data.get(env).dependencies[name].includepath+"'"])
+            if scons_tools.data.get(env).dependencies[name].libpath:
+                env.Append(IMP_CONFIGURATION=[lcname\
+                                              +"libpath='"+\
+                                            scons_tools.data.get(env).dependencies[name].libpath+"'"])
         else:
             env.Append(IMP_DISABLED=[name])
+            env.Append(IMP_CONFIGURATION=[lcname+"='no'"])
         conf.Finish()

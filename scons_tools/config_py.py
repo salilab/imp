@@ -19,10 +19,13 @@ def _action_config_py(target, source, env):
         #config.append("# "+str(type(env[ename])))
         #config.append( "# "+repr(env[ename]))
         config.append(name+"='"+_flatten(env.subst(env[ename]), delim)+"'")
-    for v in ['build', 'repository',
-              'precommand', 'includepath', 'modeller',
-              'prefix', 'libpath', 'local',
-              'pythonpath', 'python_include', 'ldlibpath']:
+    simple=['build', 'repository',
+            'precommand',  'modeller',
+            'prefix', 'local',
+            'pythonpath', 'python_include', 'ldlibpath']
+    if not scons_tools.dependency.gcc.get_is_gcc(env):
+        simple.extend(['includepath', 'libpath'])
+    for v in simple:
         _export_to_config(v, v, env, True)
     config.append('platformflags=False')
     for vp in [('cxxcompiler', 'CXX', " "),
@@ -35,7 +38,8 @@ def _action_config_py(target, source, env):
                ('python', 'IMP_PROVIDE_PYTHON', " "),
                ('rpath', 'IMP_USE_RPATH', " "),
                ('static', 'IMP_BUILD_STATIC', " "),
-               ('pythonsosuffix', 'IMP_PYTHON_SO', " ")]:
+               ('pythonsosuffix', 'IMP_PYTHON_SO', " "),
+               ('pkgconfig', "IMP_HAS_PKG_CONFIG", " ")]:
         _export_to_config(vp[0], vp[1], env, delim=vp[2])
     config.append('path="'+_flatten(os.environ['PATH'], ":")+'"')
     #print "opening h at " +target[0].abspath + " for module %(module)s"%vars

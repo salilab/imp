@@ -98,3 +98,7 @@ def configure_tr1_check(env):
     else:
         pass
     conf.Finish()
+
+
+def get_boost_lib_name(env, name):
+    return name+env.get("BOOST_LIBSUFFIX", "")

@@ -513,8 +513,20 @@ def IMPModuleBuild(env, version, required_modules=[],
 
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
+    real_config_macros=config_macros[:]
+    for d in found_optional_dependencies:
+        nm=scons_tools.dependency.get_dependency_string(d)
+        real_config_macros.append("IMP_"+module.upper()+"_USE_"+nm.upper())
+    for d in [x for x in optional_dependencies if not x in found_optional_dependencies]:
+        nm=scons_tools.dependency.get_dependency_string(d)
+        real_config_macros.append("IMP_"+module.upper()+"_NO_"+nm.upper())
+    for d in found_optional_modules:
+        real_config_macros.append("IMP_"+module.upper()+"_USE_IMP_"+d.upper())
+    for d in [x for x in optional_modules if not x in found_optional_modules]:
+        real_config_macros.append("IMP_"+module.upper()+"_NO_IMP_"+d.upper())
 
-    env['IMP_MODULE_CONFIG']=config_macros
+    #print "config", module, real_config_macros
+    env['IMP_MODULE_CONFIG']=real_config_macros
     env.SConscript('examples/SConscript', exports='env')
     env.SConscript('doc/SConscript', exports='env')
     env.SConscript('data/SConscript', exports='env')

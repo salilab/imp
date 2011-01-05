@@ -3,6 +3,7 @@ import data
 import os
 import sys
 import environment
+import dependency
 
 def file_compare(a, b):
     """Check if two files are the same, by comparing the path"""
@@ -179,3 +180,17 @@ def get_link_from_name(name):
     link=get_link_name_from_name(name)
     text=get_display_from_name(name)
     return "\\ref "+link+' "'+text+'"'
+
+
+def add_to_include_path(env, path):
+    if not path:
+        return
+    if dependency.gcc.get_is_gcc(env):
+        env.Append(CXXFLAGS=["-I"+path])
+    else:
+        env.Append(CPPPATH=[path])
+
+def add_to_lib_path(env, path):
+    if not path:
+        return
+    env.Append(LIBPATH=[path])

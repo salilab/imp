@@ -117,10 +117,14 @@ class IMPData:
             self.version=version
             self.ok=ok
     class DependencyData:
-        def __init__(self, name, ok=True, variables=[], libs=[]):
+        def __init__(self, name, ok=True, variables=[], libs=[], libpath=None,
+                     includepath=None, pkgconfig=False):
             self.ok=ok
             self.libs=libs
+            self.includepath=includepath
+            self.libpath=libpath
             self.variables=variables
+            self.pkgconfig=pkgconfig
     def __init__(self, env):
         self.modules={}
         self.applications={}
@@ -166,9 +170,12 @@ class IMPData:
                                                         dependencies)
             self.modules[name]=self.ModuleData(name, passdependencies, unfound_dependencies,
                                           passmodules, passpythonmodules, version, external)
-    def add_dependency(self, name, libs=[], ok=True, variables=[]):
+    def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
+                       includepath=None, libpath=None):
         self.dependencies[name]=self.DependencyData(name, libs=libs, variables=variables,
-                                                    ok=ok)
+                                                    ok=ok, pkgconfig=pkgconfig,
+                                                    includepath=includepath,
+                                                    libpath=libpath)
     def add_application(self, name, link="",
                         dependencies=[], unfound_dependencies=[], modules=[],
                         python_modules=[], version="", ok=True):
