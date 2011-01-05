@@ -669,7 +669,7 @@ namespace grids {
     */
     IMP_BRACKET(Value, VectorD<D>,
                 Storage::get_has_index(get_extended_index(i)),
-                Storage::operator[](get_index(i)));
+                Storage::operator[](get_index(get_extended_index(i))));
     /** @} */
 
 #ifdef SWIG
@@ -687,18 +687,7 @@ namespace grids {
       return inverse_unit_cell_;
     }
 #endif
-    /** Return true if the point falls in a valid grid cell.*/
-    bool get_has_index(const VectorD<D>& pt) const {
-      ExtendedGridIndexD<D> ei= get_extended_index(pt);
-      return Storage::get_has_index(ei);
-    }
-    //! Return the index of the voxel containing the point.
-    /** get_has_index() must be true.
-     */
-    GridIndexD<D> get_index(const VectorD<D>& pt) const {
-      ExtendedGridIndexD<D> ei= get_extended_index(pt);
-      return Storage::get_index(ei);
-    }
+
     // ! Add a voxel to a sparse grid.
     void add_voxel(const VectorD<D>& pt, const Value &vt) {
       IMP_USAGE_CHECK(!Storage::get_is_dense(),
@@ -723,7 +712,7 @@ namespace grids {
     using Storage::add_voxel;
 #else
     bool get_has_index(const ExtendedGridIndexD<D>&i) const;
-    GridIndex3D get_index(const ExtendedGridIndexD<D> &i) const;
+    GridIndexD<D> get_index(const ExtendedGridIndexD<D> &i) const;
     void add_voxel(const ExtendedGridIndexD<D> &i,
                    const Value &vt);
 #endif
