@@ -60,7 +60,7 @@ class IMPEXPORT ConfigurationSet: public Object
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
-#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
+#if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** Read a set of configurations from a file created by write_binary_model().
     \requires{function read_configuration_set(), NetCDF}
     \relatesalso ConfigurationSet
