@@ -17,8 +17,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! Calculate parabola that fits best the input data points
 class IMPALGEBRAEXPORT ParabolicFit {
 public:
-  ParabolicFit(): a_(std::numeric_limits<double>::quiet_NaN()),
-    b_(std::numeric_limits<double>::quiet_NaN()){}
 
   //! Constructor
   /**
