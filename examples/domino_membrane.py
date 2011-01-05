@@ -53,13 +53,15 @@ def create_restraints(m, chain, tmb, tme):
         evr= IMP.container.PairsRestraint(ps, nbl)
         m.add_restraint(evr)
         m.set_maximum_score(evr, .01)
+        return evr
 
     def add_distance_restraint(s0, s1, x0, k):
         hub= IMP.core.HarmonicUpperBound(x0,k)
         df= IMP.core.DistancePairScore(hub)
-        r= IMP.core.PairRestraint(df, IMP.ParticlePair(s0, s1))
-        m.add_restraint(r)
-        m.set_maximum_score(r, .01)
+        dr= IMP.core.PairRestraint(df, IMP.ParticlePair(s0, s1))
+        m.add_restraint(dr)
+        m.set_maximum_score(dr, .01)
+        return dr
 
     def add_packing_restraint():
 ## if the rigid bodies are close, apply a filter on the crossing angle
@@ -96,6 +98,7 @@ def create_restraints(m, chain, tmb, tme):
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
         m.set_maximum_score(prs, .01)
+        return prs
 
 ## DOPE/GQ scoring
     def add_DOPE():
@@ -113,22 +116,30 @@ def create_restraints(m, chain, tmb, tme):
 #        f= IMP.membrane.SameResidueFilter()
 #        dpc.add_pair_filter(f)
         dps= IMP.membrane.DopePairScore(15.0)
-        d=   IMP.container.PairsRestraint(dps, dpc)
-        m.set_maximum_score(d, .01)
-        m.add_restraint(d)
+        dope=IMP.container.PairsRestraint(dps, dpc)
+        m.set_maximum_score(dope, .01)
+        m.add_restraint(dope)
+        return dope
 
 # assembling all the restraints
-    add_excluded_volume()
+    rset=IMP.RestraintSet()
+    evr=add_excluded_volume()
     for i in range(len(tmb)-1):
-        s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
+#        s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tme[i])
+#        s1=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
+#        p0=s0.get_selected_particles()[0]
+#        p1=s1.get_selected_particles()[0]
+#        length=(tmb[i+1]-tme[i])*3.0
+#        dr=add_distance_restraint(p0,p1,length,1000)
+        s0=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
         s1=IMP.atom.Selection(IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE), atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
-        p0=s0.get_selected_particles()[0]
-        p1=s1.get_selected_particles()[0]
-        length=(tmb[i+1]-tme[i])*3.0
-        add_distance_restraint(p0,p1,length,1000)
-    add_packing_restraint()
-    add_DOPE()
-    return m.get_restraints()
+        p0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+        p1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
+        dr=add_distance_restraint(p0,p1,20.0,1000)
+        rset.add_restraint(dr)
+   # pr=add_packing_restraint()
+    dope=add_DOPE()
+    return rset
 
 # creating the discrete states for domino
 def  create_discrete_states(m,chain,tmb,sign):
@@ -168,8 +179,12 @@ def  create_discrete_states(m,chain,tmb,sign):
     return pst
 
 # setting up domino (and filters)
-def create_sampler(m, pst):
+def create_sampler(m, rset, pst):
     s=IMP.domino.DominoSampler(m, pst)
+#   use the restraint graph
+    sg= IMP.domino.get_restraint_graph(rset, pst)
+    s.set_subset_graph(sg)
+#   set filters
     filters=[]
     # do not allow particles with the same ParticleStates object
     # to have the same state index
@@ -200,22 +215,22 @@ def display(m,chain,tmb,tme,name):
 # Here starts the real job...
 #IMP.set_log_level(IMP.VERBOSE)
 
-print "creating representation"
-# TMH boundaries
+# TMH definition and topology
 tmb=[38,80]
 tme=[73,106]
 topology=[-1.0,+1.0]
 
+print "creating representation"
 (m,chain,sign)=create_representation(tmb,tme,topology)
 
 print "creating score function"
-rs=create_restraints(m,chain,tmb,tme)
+rset=create_restraints(m,chain,tmb,tme)
 
 print "creating discrete states"
 pst=create_discrete_states(m,chain,tmb,sign)
 
 print "creating sampler"
-s=create_sampler(m, pst)
+s=create_sampler(m, rset, pst)
 
 print "sampling"
 ass=IMP.domino.Subset(pst.get_particles())
