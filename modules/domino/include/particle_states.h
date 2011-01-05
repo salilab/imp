@@ -11,6 +11,7 @@
 
 #include "domino_config.h"
 #include "domino_macros.h"
+#include "Subset.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/SingletonContainer.h>
@@ -58,7 +59,6 @@ public:
   bool get_has_particle(Particle *p) const {
     return enumerators_.find(p) != enumerators_.end();
   }
-  // This defines the ordering of particles used
   ParticlesTemp get_particles() const {
     ParticlesTemp ret;
     ret.reserve(enumerators_.size());
@@ -67,6 +67,10 @@ public:
       ret.push_back(it->first);
     }
     return ret;
+  }
+  //! Return the subset corresponding to all the particles
+  Subset get_subset() const {
+    return Subset(get_particles(), true);
   }
   void set_particle_states(Particle *p, ParticleStates *e) {
     IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
