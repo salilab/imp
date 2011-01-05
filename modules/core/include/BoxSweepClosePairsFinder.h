@@ -13,7 +13,7 @@
 #include "core_config.h"
 
 
-#if defined(IMP_USE_CGAL) || defined(IMP_DOXYGEN)
+#if defined(IMP_CORE_USE_IMP_CGAL) || defined(IMP_DOXYGEN)
 IMPCORE_BEGIN_NAMESPACE
 
 //! Find all nearby pairs by sweeping the bounding boxes

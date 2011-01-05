@@ -10,7 +10,7 @@
 #include "IMP/core/BoxSweepClosePairsFinder.h"
 #include "IMP/core/XYZR.h"
 
-#ifdef IMP_USE_CGAL
+#ifdef IMP_CORE_USE_IMP_CGAL
 
 /* compile the CGAL code with NDEBUG since it doesn't have the
    same level of control over errors as IMP

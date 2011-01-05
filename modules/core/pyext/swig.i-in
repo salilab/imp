@@ -8,7 +8,7 @@ IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT( IMP::core, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
 IMP_SWIG_OBJECT( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
-#ifdef IMP_USE_CGAL
+#ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
 #endif
 IMP_SWIG_OBJECT( IMP::core, NearestNeighborsClosePairsFinder, NearestNeighborsClosePairsFinders);
