@@ -595,3 +595,83 @@
    obj:/usr/lib64/libpython2.6.so.1.0
    obj:/usr/lib64/libpython2.6.so.1.0
 }
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:_PyArg_ParseTuple_SizeT
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalCode
+   fun:PyImport_ExecCodeModuleEx
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:_PyArg_ParseTuple_SizeT
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalCode
+   fun:PyImport_ExecCodeModuleEx
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:_PyArg_ParseTupleAndKeywords_SizeT
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:PyObject_Call
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalFrameEx
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:_PyArg_ParseTuple_SizeT
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalCode
+   fun:PyImport_ExecCodeModuleEx
+}
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Addr4
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:_PyArg_ParseTupleAndKeywords_SizeT
+   obj:/usr/lib64/libpython2.7.so.1.0
+   obj:/usr/lib64/libpython2.7.so.1.0
+   fun:PyObject_Call
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalCodeEx
+   fun:PyEval_EvalFrameEx
+   fun:PyEval_EvalFrameEx
+}
