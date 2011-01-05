@@ -12,6 +12,7 @@
 #include <IMP/atom/Charged.h>
 #include <IMP/atom/angle_decorators.h>
 
+#include <set>
 #include <algorithm>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -490,6 +491,35 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
     warn_context_.dump_warnings();
   } else {
     warn_context_.clear_warnings();
+  }
+}
+
+void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const
+{
+  Model *model = hierarchy.get_particle()->get_model();
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+
+  for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
+
+    // Get atoms currently in this residue
+    HierarchiesTemp h = get_by_type(it->second, ATOM_TYPE);
+    std::set<std::string> existing_atoms;
+    for (HierarchiesTemp::iterator atit = h.begin(); atit != h.end(); ++atit) {
+      AtomType typ = Atom(*atit).get_atom_type();
+      existing_atoms.insert(typ.get_string());
+    }
+
+    // Look at all atoms in the topology; add any that aren't in existing_atoms
+    for (unsigned int i = 0; i < it->first->get_number_of_atoms(); ++i) {
+      const CHARMMAtomTopology &atomtop = it->first->get_atom(i);
+      if (existing_atoms.find(atomtop.get_name()) == existing_atoms.end()) {
+        AtomType typ = AtomType(atomtop.get_name());
+        Atom atm = Atom::setup_particle(new Particle(model), typ);
+        CHARMMAtom::setup_particle(atm, atomtop.get_charmm_type());
+        it->second.add_child(atm);
+      }
+    }
   }
 }
 

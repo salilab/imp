@@ -461,6 +461,16 @@ public:
    */
   void add_atom_types(Hierarchy hierarchy) const;
 
+  //! Add any missing atoms to the given Hierarchy using this topology.
+  /** Missing atoms are defined as those present in the topology but not
+      in the hierarchy.
+      Newly-added atoms are assigned CHARMM types, but no coordinates.
+      The primary sequence of the Hierarchy must match that of the topology.
+      \see CHARMMAtom, remove_charmm_untyped_atoms.
+   */
+  void add_missing_atoms(Hierarchy hierarchy) const;
+
+
   //! Add CHARMM charges to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
       \see Charged.
