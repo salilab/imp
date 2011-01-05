@@ -498,11 +498,11 @@ public:                                                                 \
      macros*/                                                           \
 IMP_NO_DOXYGEN(typedef Name This);                                      \
 IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
-Name(): Parent(){}                                                     \
+Name(): Parent(){}                                                      \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
                      "Particle missing required attributes for decorator " \
-                     << #Name << *p << std::endl);                      \
+                     << #Name << "\n" << *p);                           \
 }                                                                       \
 static Name decorate_particle(::IMP::Particle *p) {                     \
   IMP_CHECK_OBJECT(p);                                                  \
@@ -540,7 +540,7 @@ public:                                                                 \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
                       "Particle missing required attributes "           \
                       << " for decorator "                              \
-                      << #Name << *p << std::endl);                     \
+                      << #Name << "\n" << *p);                          \
  }                                                                      \
  static Name decorate_particle(::IMP::Particle *p,                      \
                                const TraitsType &tr=default_traits) {   \
