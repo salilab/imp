@@ -28,9 +28,7 @@ public:
   double get_fit_error() const { return error_; }
 
   //! get a value (a*x)
-  double get_a() const {
-    IMP_USAGE_CHECK(!is_nan(a_), "Using uninitialized linear fit");
-    return a_; }
+  double get_a() const { return a_; }
 
   //! get b value (constant)
   double get_b() const { return b_; }
@@ -42,9 +40,8 @@ public:
                       });
 
  private:
-  void find_regression();
-  void evaluate_error();
-  const algebra::Vector2Ds data_;
+  void find_regression(const std::vector<algebra::VectorD<2> >& data);
+  void evaluate_error(const std::vector<algebra::VectorD<2> >& data);
   double a_, b_;
   double error_;
 };
