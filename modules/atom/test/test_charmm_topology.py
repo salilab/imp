@@ -429,5 +429,30 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 7)
 
+    def test_add_missing_atoms(self):
+        """Test adding missing atoms"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(
+                 self.get_input_file_name('charmm_type_test.pdb'), m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = ff.create_topology(pdb)
+        topology.apply_default_patches(ff)
+
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 8)
+        topology.add_missing_atoms(pdb)
+
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        atom_types = [IMP.atom.Atom(x).get_atom_type().get_string() \
+                      for x in atoms]
+        # Input system contains only backbone; output should also contain
+        # hydrogens, etc. Newly-added atoms should be added after the
+        # original atoms
+        self.assertEqual(atom_types,
+                         ['N', 'CA', 'C', 'O', 'H', 'HA', 'CB', 'HB3', 'HB2',
+                          'OG', 'HG', 'H2', 'H3', 'N', 'CA', 'C', 'DUM', 'H',
+                          'HA3', 'HA2', 'O', 'OXT'])
+
 if __name__ == '__main__':
     IMP.test.main()

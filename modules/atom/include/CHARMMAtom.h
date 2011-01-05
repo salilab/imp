@@ -56,7 +56,7 @@ IMP_OUTPUT_OPERATOR(CHARMMAtom);
 IMPATOMEXPORT Atoms get_charmm_untyped_atoms(Hierarchy hierarchy);
 
 //! Remove any atom from the Hierarchy that does not have a CHARMM type.
-/** \see get_charmm_untyped_atoms
+/** \see get_charmm_untyped_atoms, CHARMMTopology::add_missing_atoms
  */
 IMPATOMEXPORT void remove_charmm_untyped_atoms(Hierarchy hierarchy);
 
