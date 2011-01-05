@@ -4,6 +4,7 @@ files = [
          'CommonEndpointPairFilter.cpp',
          'CustomXYZR.cpp',
          'LowestRefinedPairScore.cpp',
+         'SoftCylinderPairScore.cpp',
          'StateAdaptor.cpp',
          'attribute_statistics.cpp',
          'interaction_graph.cpp',

@@ -5,6 +5,7 @@ files = [
          'CustomXYZR.h',
          'LogPairScore.h',
          'LowestRefinedPairScore.h',
+         'SoftCylinderPairScore.h',
          'StateAdaptor.h',
          'WormLikeChain.h',
          'attribute_statistics.h',
