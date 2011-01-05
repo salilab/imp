@@ -114,7 +114,7 @@ class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
   IMP_GEOMETRY(LabelGeometry);
 };
 
-#ifdef IMP_USE_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
 //! Display a plane as truncated to a bounding box
 /** This requires CGAL.
  */
