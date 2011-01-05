@@ -7,7 +7,7 @@
 
 #ifndef IMPALGEBRA_INTERNAL_GRID_3D_IMPL_H
 #define IMPALGEBRA_INTERNAL_GRID_3D_IMPL_H
-#include "../interpolation.h"
+// #include "../interpolation.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 namespace {
