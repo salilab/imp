@@ -624,7 +624,7 @@ void Selection::show(std::ostream &out) const {
    } else {
      Mass(p).set_mass(m);
    }
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ATOM_USE_IMP_CGAL
    double v= algebra::get_surface_area_and_volume(ss).second;
 #else
    double v=0;

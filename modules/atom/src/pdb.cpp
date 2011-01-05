@@ -19,7 +19,7 @@
 #include <fstream>
 #include <iomanip>
 
-#ifdef IMP_USE_BOOST_FILESYSTEM
+#ifdef IMP_ATOM_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
 #include <boost/version.hpp>
 #endif
@@ -28,7 +28,7 @@ IMPATOM_BEGIN_NAMESPACE
 
 namespace {
   std::string nicename(std::string name) {
-#if defined(IMP_USE_BOOST_FILESYSTEM) && BOOST_VERSION > 103600
+#if defined(IMP_ATOM_USE_BOOST_FILESYSTEM) && BOOST_VERSION > 103600
     boost::filesystem::path path(name);
     return path.filename();
 #else
