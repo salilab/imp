@@ -7,7 +7,7 @@
  */
 
 #include "IMP/display/geometry.h"
-#ifdef IMP_USE_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include "IMP/cgal/internal/polygons.h"
 #endif
 
@@ -118,7 +118,7 @@ void LabelGeometry::do_show(std::ostream &out) const {
 }
 
 
-#ifdef IMP_USE_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
 
 Geometries PlaneGeometry::get_components() const {
   std::vector<algebra::Vector3D> poly

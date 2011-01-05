@@ -7,14 +7,14 @@
  */
 
 #include <IMP/display/internal/utility.h>
-#ifdef IMP_USE_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polygons.h>
 #endif
 
 IMPDISPLAY_BEGIN_INTERNAL_NAMESPACE
 std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D>
 get_convex_polygons(const algebra::Vector3Ds &poly) {
-#ifdef IMP_USE_CGAL
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
   return IMP::cgal::internal::get_convex_polygons(poly);
 #else
   if (poly.size() <3) {
