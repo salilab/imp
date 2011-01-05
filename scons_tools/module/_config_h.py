@@ -255,7 +255,7 @@ namespace internal {
 
 def _print_config_cpp(target, source, env):
     vars= scons_tools.module._get_module_variables(env)
-    print "Generating  %(module)s_config.cpp"%vars
+    print "Generating %(module)s_config.cpp"%vars
 
 
 ConfigCPP = Builder(action=Action(_action_config_cpp,
