@@ -410,5 +410,24 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(residues), 3)
         self.assertEqual(len(atoms), 0)
 
+    def test_get_remove_untyped_atoms(self):
+        """Test get or removal of untyped atoms"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(
+                 self.get_input_file_name('charmm_type_test.pdb'), m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = ff.create_topology(pdb)
+        topology.apply_default_patches(ff)
+        topology.add_atom_types(pdb)
+        untyped = IMP.atom.get_charmm_untyped_atoms(pdb)
+        self.assertEqual([x.get_atom_type().get_string() for x in untyped],
+                         ["DUM"])
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 8)
+        IMP.atom.remove_charmm_untyped_atoms(pdb)
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 7)
+
 if __name__ == '__main__':
     IMP.test.main()
