@@ -41,7 +41,7 @@ inline double get_ball_radius_from_volume_3d(double volume) {
 }
 
 
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 /** Return the surface area and volume of the union of the balls
     bounded by the spheres. This method requires CGAL to work.
 */

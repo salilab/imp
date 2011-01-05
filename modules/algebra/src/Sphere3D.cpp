@@ -7,7 +7,7 @@
 #include <IMP/base_types.h>
 #include <IMP/algebra/Sphere3D.h>
 #include <cmath>
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/bounding_sphere.h>
 #include <IMP/cgal/internal/union_of_balls.h>
 #endif
@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 SphereD<3> get_enclosing_sphere(const std::vector<SphereD<3> > &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
                   "Must pass some spheres to have a bounding sphere");
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
   return cgal::internal::get_enclosing_sphere(ss);
 #else
    BoundingBox3D bb= get_bounding_box(ss[0]);
@@ -43,7 +43,7 @@ SphereD<3> get_enclosing_sphere(const std::vector<VectorD<3> > &vs) {
   return get_enclosing_sphere(ss);
 }
 
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 std::pair<double, double>
 get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
   return IMP::cgal::internal::get_surface_area_and_volume(ss);
