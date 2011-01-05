@@ -10,7 +10,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-#ifdef IMP_USE_ANN
+#ifdef IMP_ALGEBRA_USE_ANN
 // make sure symbols are included
 namespace {
   class ANNInclude: public internal::ANNData<3>{

@@ -8,7 +8,7 @@
 #define IMPALGEBRA_INTERNAL_ANN_H
 
 #include "../algebra_config.h"
-#ifdef IMP_USE_ANN
+#ifdef IMP_ALGEBRA_USE_ANN
 #include <ANN/ANN.h>
 #include <IMP/base_types.h>
 #include <IMP/log.h>

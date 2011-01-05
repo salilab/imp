@@ -10,18 +10,18 @@
 
 #include "VectorD.h"
 #include <IMP/base_types.h>
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/knn.h>
 #endif
-#ifdef IMP_USE_ANN
+#ifdef IMP_ALGEBRA_USE_ANN
 #include "internal/ann.h"
 #endif
 #include "internal/linear_knn.h"
 #include <fstream>
 
-#ifdef IMP_USE_ANN
+#ifdef IMP_ALGEBRA_USE_ANN
 #define IMP_KNN_DATA internal::ANNData
-#elif defined(IMP_USE_CGAL)
+#elif defined(IMP_ALGEBRA_USE_IMP_CGAL)
 #define IMP_KNN_DATA IMP::cgal::internal::KNNData
 #else
 #define IMP_KNN_DATA internal::LinearKNNData
@@ -55,7 +55,7 @@ class NearestNeighborD {
     if (0) {
       // compile all of them
       Ints ret;
-#ifdef IMP_USE_ANN
+#ifdef IMP_ALGEBRA_USE_ANN
       internal::ANNData<D> ann(b,e);
       ann.fill_nearest_neighbors(*b, 3U, eps_, ret);
 #endif

@@ -10,7 +10,7 @@
 #include <IMP/base_types.h>
 #include "../VectorD.h"
 #include "../SphericalVector3D.h"
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
 #endif
 
@@ -71,7 +71,7 @@ uniform_cover_sphere(unsigned int n,
                      const VectorD<4> &center,
                      double radius, bool ALL) {
   std::vector<VectorD<4> > ret= native_uniform_cover_unit_sphere<4>(n, ALL);
-#ifdef IMP_USE_CGAL
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
   IMP::cgal::internal::refine_unit_sphere_cover_4d(ret, ALL);
 #endif
   for (unsigned int i=0; i< ret.size(); ++i) {
