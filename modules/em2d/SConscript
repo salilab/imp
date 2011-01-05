@@ -23,7 +23,7 @@ if not env.GetOption('help'):
     if scons_tools.data.get(env).dependencies["OpenCV21"]:
         pass
     elif scons_tools.data.get(env).dependencies["OpenCV22"]:
-        config.append(['IMP_HAS_OPENCV22', '1'])
+        pass
     else:
         print "em2d disabled due to missing dependency OpenCV"
         scons_tools.data.get(env).add_module("em2d",ok=False)
