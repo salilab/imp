@@ -9,7 +9,7 @@
 #include <IMP/io.h>
 #include <IMP/internal/particle_save.h>
 #include <IMP/internal/map.h>
-#ifdef IMP_USE_NETCDF
+#ifdef IMP_KERNEL_USE_NETCDFCPP
 #include <netcdfcpp.h>
 #endif
 #include <boost/iostreams/device/array.hpp>
@@ -198,7 +198,7 @@ namespace {
   }
 }
 
-#ifdef IMP_USE_NETCDF
+#ifdef IMP_KERNEL_USE_NETCDFCPP
 
 void write_particles_binary(const ParticlesTemp &particles,
                             const FloatKeys &keys,

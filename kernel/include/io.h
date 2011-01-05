@@ -97,7 +97,7 @@ inline void read_model(TextInput in,
 #endif
 
 
-#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
+#if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** \name Binary I/O
     \anchor model_binary_io
     When lots of data is being written, it can be useful to write the
@@ -190,7 +190,7 @@ IMP_MODEL_SAVE(WriteParticles, (const ParticlesTemp &ps, std::string file_name),
                          << file_name << std::endl);
                  write_particles(ps_,file_name);
                });
-#if defined(IMP_USE_NETCDF) || defined(IMP_DOXYGEN)
+#if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** \class WriteParticlesBinaryOptimizerState
     In contrast to other similar OptimizerStates, this one expectes to write
     all models to the same file. As a result, the file name should not contain

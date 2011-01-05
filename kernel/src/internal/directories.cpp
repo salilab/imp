@@ -11,7 +11,7 @@
 #include <IMP/exception.h>
 #include <fstream>
 
-#ifdef IMP_USE_BOOST_FILESYSTEM
+#ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/exception.hpp>
 #include <boost/version.hpp>
@@ -28,7 +28,7 @@ namespace {
 /** Boost versions older than 1.35 cannot handle "hidden" paths,
     e.g. /etc/skel/.bashrc; see https://svn.boost.org/trac/boost/ticket/1378
  */
-#if defined(IMP_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
+#if defined(IMP_KERNEL_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   std::string to_string(boost::filesystem::path path) {
     return path.file_string();
   }
@@ -38,7 +38,7 @@ namespace {
 }
 std::string get_concatenated_path(std::string part0,
                                    std::string part1) {
-#if defined(IMP_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
+#if defined(IMP_KERNEL_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   boost::filesystem::path b0(part0), b1(part1);
   return to_string(b0/b1);
 #else
@@ -94,7 +94,7 @@ std::string get_data_path(std::string module, std::string file_name)
       return path;
     }
   }
-#if defined(IMP_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
+#if defined(IMP_KERNEL_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;
@@ -124,7 +124,7 @@ std::string get_example_path(std::string module, std::string file_name)
 
 
 std::string get_directory_path(std::string fileordirectory) {
-#if defined(IMP_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
+#if defined(IMP_KERNEL_USE_BOOST_FILESYSTEM) && BOOST_VERSION >= 103500
   try {
     boost::filesystem::path fnp(fileordirectory);
     boost::filesystem::path dir=

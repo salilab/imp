@@ -10,7 +10,7 @@
 #include "IMP/ConfigurationSet.h"
 #include "IMP/internal/utility.h"
 #include "IMP/io.h"
-#ifdef IMP_USE_NETCDF
+#ifdef IMP_KERNEL_USE_NETCDFCPP
 #include <netcdfcpp.h>
 #endif
 
@@ -89,7 +89,7 @@ void ConfigurationSet::do_show(std::ostream &out) const {
       << " configurations." << std::endl;
 }
 
-#ifdef IMP_USE_NETCDF
+#ifdef IMP_KERNEL_USE_NETCDFCPP
 // in io.cpp
 void read_particles_binary(NcFile &f,
                            const ParticlesTemp &particles,
