@@ -546,6 +546,13 @@ void destroy(Hierarchy d) {
       all[i].remove_child(all[i].get_child(all[i].get_number_of_children()-1));
     }
   }
+
+  // If this Hierarchy has a parent, remove the relationship
+  Hierarchy parent = d.get_parent();
+  if (parent) {
+    parent.remove_child(d);
+  }
+
   for (unsigned int i=0; i< all.size(); ++i) {
     all[i].get_particle()->get_model()->remove_particle(all[i]);
   }
