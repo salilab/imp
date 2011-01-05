@@ -119,17 +119,19 @@ namespace {
                                                CHARMMResidueTopology *res1,
                                                CHARMMResidueTopology *res2)
   {
-    if (name.size() > 2 && name[1] == ':') {
+    if (name.size() >= 2) {
+      // Allow both for CHARMM-style 1CA atom naming and MODELLER-style 1:CA
+      int to_erase = (name[1] == ':' ? 2 : 1);
       if (name[0] == '1') {
-        name.erase(0, 2);
+        name.erase(0, to_erase);
         return res1;
       } else if (name[0] == '2') {
-        name.erase(0, 2);
+        name.erase(0, to_erase);
         return res2;
       }
     }
     IMP_THROW("Patching residue atom " << name
-              << " does not start with 1: or 2:", ValueException);
+              << " does not start with 1 or 2", ValueException);
   }
 
   std::pair<CHARMMResidueTopology *, CHARMMAtomTopology>
