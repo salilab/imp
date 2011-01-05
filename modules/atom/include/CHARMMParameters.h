@@ -84,9 +84,25 @@ public:
   //! Construction with CHARMM topology (and optionally parameters) file.
   /** For addition of atom types, the topology file alone is enough;
       for adding bonds and radii, both files are needed.
+
+      Atom and residue naming in the topology file differs slightly between
+      CHARMM and PDB. If translate_names_to_pdb is set to true, some simple
+      translations are done to map CHARMM-style names to PDB-style for
+      standard amino acids and some other commonly-used residues and patches.
+      (This translation has already been done for the topology files included
+      with IMP and MODELLER, so it is only needed for topology files taken
+      from CHARMM itself or other sources.) The modifications are as follows:
+      - CHARMM HSD (unprotonated histidine) is mapped to PDB HIS.
+      - CD1 and CD2 atoms in LEU are swapped.
+      - OT1 and OT2 in CTER are mapped to O and OXT.
+      - CHARMM hydrogen names are mapped to PDB equivalents.
+      - CHARMM NTER, GLYP and CTER residues are modified slightly to avoid
+        removing the HN, HN and O atoms respectively, and adding excess bonds
+        to these atoms.
    */
   CHARMMParameters(const String& topology_file_name,
-                   const String& par_file_name = std::string());
+                   const String& par_file_name = std::string(),
+                   bool translate_names_to_pdb=false);
 
   /** \name Residue topology
 
@@ -298,17 +314,21 @@ private:
 
   void read_parameter_file(std::ifstream& input_file);
   // read topology file
-  void read_topology_file(std::ifstream& input_file);
+  void read_topology_file(std::ifstream& input_file,
+                          bool translate_names_to_pdb);
 
   void add_angle(Particle *p1, Particle *p2, Particle *p3, Particles &ps) const;
   void add_dihedral(Particle *p1, Particle *p2, Particle *p3, Particle *p4,
                     Particles &ps) const;
 
-  ResidueType parse_residue_line(const String& line);
+  ResidueType parse_residue_line(const String& line,
+                                 bool translate_names_to_pdb);
   void parse_atom_line(const String& line, ResidueType curr_res_type,
-                       CHARMMResidueTopologyBase *residue);
+                       CHARMMResidueTopologyBase *residue,
+                       bool translate_names_to_pdb);
   void parse_bond_line(const String& line, ResidueType curr_res_type,
-                       CHARMMResidueTopologyBase *residue);
+                       CHARMMResidueTopologyBase *residue,
+                       bool translate_names_to_pdb);
 
   void parse_nonbonded_parameters_line(String line);
   void parse_bonds_parameters_line(String line);

@@ -10,6 +10,7 @@
 #include <IMP/atom/angle_decorators.h>
 
 #include <boost/algorithm/string.hpp>
+#include <boost/assign.hpp>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -24,7 +25,147 @@ namespace {
     }
   }
 
-  void parse_dele_line(std::string line, CHARMMPatch *patch) {
+  // Map CHARMM HSD residue type to PDB HIS
+  std::string get_residue_name(std::string residue_name,
+                               bool translate_names_to_pdb)
+  {
+    if (translate_names_to_pdb && residue_name == "HSD") {
+      return "HIS";
+    } else {
+      return residue_name;
+    }
+  }
+
+  std::string get_atom_name(std::string atom_name,
+                            CHARMMResidueTopologyBase *residue,
+                            bool translate_names_to_pdb)
+  {
+    if (!translate_names_to_pdb) {
+      return atom_name;
+    }
+
+    typedef std::map<std::string, std::string> ResidueMap;
+    static std::map<std::string, ResidueMap> map;
+    static bool map_init = false;
+    // Initialize map on first call
+    if (!map_init) {
+      map_init = true;
+      map["ALA"] = boost::assign::map_list_of("HN", "H");
+      map["ARG"] = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("HD1", "HD2")("HD2", "HD3")
+                                             ("HG1", "HG2")("HG2", "HG3");
+      map["ASP"] = map["ASN"]
+                 = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3");
+      map["CYS"] = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("HG1", "HG");
+      map["GLN"] = map["GLU"]
+                 = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("HG1", "HG2")("HG2", "HG3");
+      map["GLY"] = boost::assign::map_list_of("HN", "H")
+                                             ("HA1", "HA2")("HA2", "HA3");
+      map["ILE"] = boost::assign::map_list_of("HN", "H")("CD", "CD1")
+                                             ("HG11", "HG12")("HG12", "HG13")
+                                             ("HD1", "HD11")("HD2", "HD12")
+                                             ("HD3", "HD13");
+      map["LEU"] = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("CD1", "CD2")("CD2", "CD1")
+                                             ("HD11", "HD21")("HD12", "HD22")
+                                             ("HD13", "HD23")
+                                             ("HD21", "HD11")("HD22", "HD12")
+                                             ("HD23", "HD13");
+      map["LYS"] = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("HG1", "HG2")("HG2", "HG3")
+                                             ("HD1", "HD2")("HD2", "HD3")
+                                             ("HE1", "HE2")("HE2", "HE3");
+      map["MET"] = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3")
+                                             ("HG1", "HG2")("HG2", "HG3");
+      map["PRO"] = boost::assign::map_list_of("HB1", "HB2")("HB2", "HB3")
+                                             ("HG1", "HG2")("HG2", "HG3")
+                                             ("HD1", "HD2")("HD2", "HD3");
+      map["SER"] = boost::assign::map_list_of("HN", "H")("HG1", "HG")
+                                             ("HB1", "HB2")("HB2", "HB3");
+      map["THR"] = map["VAL"]
+                 = boost::assign::map_list_of("HN", "H");
+      map["TRP"] = map["TYR"] = map["HIS"] = map["PHE"]
+                 = boost::assign::map_list_of("HN", "H")
+                                             ("HB1", "HB2")("HB2", "HB3");
+      map["TIP3"] = boost::assign::map_list_of("OH2", "O");
+      map["CAL"] = boost::assign::map_list_of("CAL", "CA");
+      map["ALA"] = boost::assign::map_list_of("HN", "H");
+      map["NTER"] = boost::assign::map_list_of("HT1", "H")("HT2", "H2")
+                                              ("HT3", "H3");
+      map["CTER"] = boost::assign::map_list_of("OT1", "O")("OT2", "OXT");
+      map["GLYP"] = boost::assign::map_list_of("HT1", "H")("HT2", "H2")
+                                              ("HT3", "H3")("HA1", "HA2")
+                                              ("HA2", "HA3");
+      map["PROP"] = boost::assign::map_list_of("HN1", "H1")("HN2", "H2")
+                                              ("HD1", "HD2")("HD2", "HD3");
+      map["DISU"] = boost::assign::map_list_of("1HB1", "1HB2")("1HB2", "1HB3")
+                                              ("2HB1", "2HB2")("2HB2", "2HB3")
+                                              ("1HG1", "1HG")("2HG1", "2HG");
+    }
+
+    // Look up residue type
+    std::map<std::string, ResidueMap>::iterator resit
+                                            = map.find(residue->get_type());
+    if (resit != map.end()) {
+      // Look up atom name
+      ResidueMap::iterator atit = resit->second.find(atom_name);
+      if (atit != resit->second.end()) {
+        return atit->second;
+      }
+    }
+    return atom_name;
+  }
+
+  Strings get_atom_names(std::string *first, std::string *last,
+                         CHARMMResidueTopologyBase *residue,
+                         bool translate_names_to_pdb)
+  {
+    Strings ret;
+    for (std::string *str = first; str != last; ++str) {
+      ret.push_back(get_atom_name(*str, residue, translate_names_to_pdb));
+    }
+    return ret;
+  }
+
+  bool excess_patch_bond(const Strings &atom_names,
+                         const CHARMMResidueTopologyBase *residue,
+                         bool translate_names_to_pdb) {
+    if (translate_names_to_pdb) {
+      std::string restyp = residue->get_type();
+      if (restyp == "NTER" || restyp == "GLYP") {
+        return atom_names[0] == "H" || atom_names[1] == "H";
+      } else if (restyp == "CTER") {
+        return atom_names[0] == "O" || atom_names[1] == "O";
+      }
+    }
+    return false;
+  }
+
+  bool excess_patch_removal(const std::string &atom_name,
+                            const CHARMMPatch *patch,
+                            bool translate_names_to_pdb) {
+    if (translate_names_to_pdb) {
+      std::string restyp = patch->get_type();
+      if (restyp == "NTER" || restyp == "GLYP") {
+        return atom_name == "HN";
+      } else if (restyp == "CTER") {
+        return atom_name == "O";
+      }
+    }
+    return false;
+  }
+
+  void parse_dele_line(std::string line, CHARMMPatch *patch,
+                       bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" "),
                  boost::token_compress_on);
@@ -32,50 +173,59 @@ namespace {
 
     // Only DELE ATOM supported for now
     if (split_results[1] == "ATOM") {
-      patch->add_removed_atom(split_results[2]);
+      std::string atom_name = get_atom_name(split_results[2], patch,
+                                            translate_names_to_pdb);
+      if (!excess_patch_removal(atom_name, patch, translate_names_to_pdb)) {
+        patch->add_removed_atom(atom_name);
+      }
     }
   }
 
-  void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue) {
+  void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
+                        bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" "),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 3) {
       if (split_results[i][0] == '!') return;  // comments start
-      std::vector<std::string> atoms(&split_results[i], &split_results[i+3]);
-      residue->add_angle(atoms);
+      residue->add_angle(get_atom_names(&split_results[i], &split_results[i+3],
+                                        residue, translate_names_to_pdb));
     }
   }
 
   void parse_dihedral_line(std::string line,
-                           CHARMMResidueTopologyBase *residue) {
+                           CHARMMResidueTopologyBase *residue,
+                           bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" "),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
       if (split_results[i][0] == '!') return;  // comments start
-      std::vector<std::string> atoms(&split_results[i], &split_results[i+4]);
-      residue->add_dihedral(atoms);
+      residue->add_dihedral(get_atom_names(&split_results[i],
+                                           &split_results[i+4],
+                                           residue, translate_names_to_pdb));
     }
   }
 
   void parse_improper_line(std::string line,
-                           CHARMMResidueTopologyBase *residue) {
+                           CHARMMResidueTopologyBase *residue,
+                           bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
     boost::split(split_results, line, boost::is_any_of(" "),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
       if (split_results[i][0] == '!') return;  // comments start
-      std::vector<std::string> atoms(&split_results[i], &split_results[i+4]);
-      residue->add_improper(atoms);
+      residue->add_improper(get_atom_names(&split_results[i],
+                                           &split_results[i+4],
+                                           residue, translate_names_to_pdb));
     }
   }
 
   void parse_patch_line(std::string line, std::string &first,
-                        std::string &last) {
+                        std::string &last, bool translate_names_to_pdb) {
     const std::string FIRST = "FIRS";
     const std::string LAST = "LAST";
 
@@ -86,10 +236,18 @@ namespace {
       if (split_results[i][0] == '!') return;  // comments start
       if (split_results[i].substr(0, FIRST.length()) == FIRST) {
         first = split_results[i + 1];
-        if (first == "NONE") first = "";
+        if (first == "NONE") {
+          first = "";
+        } else {
+          first = get_residue_name(first, translate_names_to_pdb);
+        }
       } else if (split_results[i].substr(0, LAST.length()) == LAST) {
         last = split_results[i + 1];
-        if (last == "NONE") last = "";
+        if (last == "NONE") {
+          last = "";
+        } else {
+          last = get_residue_name(last, translate_names_to_pdb);
+        }
       }
     }
   }
@@ -121,7 +279,8 @@ namespace {
 }
 
 CHARMMParameters::CHARMMParameters(const String& top_file_name,
-                                   const String& par_file_name)
+                                   const String& par_file_name,
+                                   bool translate_names_to_pdb)
 {
   // Parameter objects are not designed to be added into other containers
   set_was_used(true);
@@ -131,7 +290,7 @@ CHARMMParameters::CHARMMParameters(const String& top_file_name,
     IMP_THROW("Can't open topology file " << top_file_name,
               IOException);
   }
-  read_topology_file(top_file);
+  read_topology_file(top_file, translate_names_to_pdb);
   top_file.close();
 
   if(!par_file_name.empty()) {
@@ -145,7 +304,9 @@ CHARMMParameters::CHARMMParameters(const String& top_file_name,
   }
 }
 
-void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
+void CHARMMParameters::read_topology_file(std::ifstream& input_file,
+                                          bool translate_names_to_pdb)
+{
   IMP_OBJECT_LOG;
   const String DEFA_LINE = "DEFA";
   const String PATC_LINE = "PATC";
@@ -177,7 +338,7 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
       } else if (patch) {
         add_patch(patch.release());
       }
-      curr_res_type = parse_residue_line(line);
+      curr_res_type = parse_residue_line(line, translate_names_to_pdb);
       ResidueType rt(curr_res_type.get_string());
       residue = new CHARMMIdealResidueTopology(rt);
       residue->set_default_first_patch(first_patch);
@@ -196,49 +357,55 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
       if (split_results.size() < 3) {
         IMP_THROW("Invalid PRES line: " << line, ValueException);
       }
-      patch = new CHARMMPatch(split_results[1]);
+      patch = new CHARMMPatch(get_residue_name(split_results[1],
+                                               translate_names_to_pdb));
 
     // handle DEFA line
     } else if (line.substr(0, DEFA_LINE.length()) == DEFA_LINE) {
-      parse_patch_line(line, first_patch, last_patch);
+      parse_patch_line(line, first_patch, last_patch, translate_names_to_pdb);
 
     // handle PATC line
     } else if (line.substr(0, PATC_LINE.length()) == PATC_LINE
                && residue) {
       std::string first = residue->get_default_first_patch();
       std::string last = residue->get_default_last_patch();
-      parse_patch_line(line, first, last);
+      parse_patch_line(line, first, last, translate_names_to_pdb);
       residue->set_default_first_patch(first);
       residue->set_default_last_patch(last);
 
     // read DELE line
     } else if (line.substr(0, DELE_LINE.length()) == DELE_LINE
                && patch) {
-      parse_dele_line(line, patch);
+      parse_dele_line(line, patch, translate_names_to_pdb);
 
     // read atom line
     } else if (line.substr(0, ATOM_LINE.length()) == ATOM_LINE
                && (residue || patch)) {
-      parse_atom_line(line, curr_res_type, get_residue(residue, patch));
+      parse_atom_line(line, curr_res_type, get_residue(residue, patch),
+                      translate_names_to_pdb);
 
     // read bond line
     } else if ((line.substr(0, BOND_LINE.length()) == BOND_LINE ||
                line.substr(0, BOND_LINE2.length()) == BOND_LINE2)
                && (residue || patch)) {
-      parse_bond_line(line, curr_res_type, get_residue(residue, patch));
+      parse_bond_line(line, curr_res_type, get_residue(residue, patch),
+                      translate_names_to_pdb);
 
     // read angle line
     } else if (line.substr(0, ANGLE_LINE.length()) == ANGLE_LINE
                && (residue || patch)) {
-      parse_angle_line(line, get_residue(residue, patch));
+      parse_angle_line(line, get_residue(residue, patch),
+                       translate_names_to_pdb);
     // read dihedral line
     } else if (line.substr(0, DIHEDRAL_LINE.length()) == DIHEDRAL_LINE
                && (residue || patch)) {
-      parse_dihedral_line(line, get_residue(residue, patch));
+      parse_dihedral_line(line, get_residue(residue, patch),
+                          translate_names_to_pdb);
     // read improper line
     } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE
                && (residue || patch)) {
-      parse_improper_line(line, get_residue(residue, patch));
+      parse_improper_line(line, get_residue(residue, patch),
+                          translate_names_to_pdb);
     }
   }
   if (residue) {
@@ -248,14 +415,17 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file) {
   }
 }
 
-ResidueType CHARMMParameters::parse_residue_line(const String& line) {
+ResidueType CHARMMParameters::parse_residue_line(const String& line,
+                                                 bool translate_names_to_pdb)
+{
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
   if(split_results.size() < 3) {
     IMP_THROW("Invalid RESI line: " << line, ValueException);
   }
-  String curr_residue = split_results[1];
+  String curr_residue = get_residue_name(split_results[1],
+                                         translate_names_to_pdb);
   if (ResidueType::get_key_exists(curr_residue)) {
        return ResidueType(curr_residue);
    } else {
@@ -266,14 +436,16 @@ ResidueType CHARMMParameters::parse_residue_line(const String& line) {
 
 void CHARMMParameters::parse_atom_line(const String& line,
                                        ResidueType curr_res_type,
-                                       CHARMMResidueTopologyBase *residue)
+                                       CHARMMResidueTopologyBase *residue,
+                                       bool translate_names_to_pdb)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
                boost::token_compress_on);
   if(split_results.size() < 4) return; // ATOM line has at least 4 fields
 
-  CHARMMAtomTopology atom(split_results[1]);
+  CHARMMAtomTopology atom(get_atom_name(split_results[1], residue,
+                                        translate_names_to_pdb));
   atom.set_charmm_type(split_results[2]);
   atom.set_charge(atof(split_results[3].c_str()));
   residue->add_atom(atom);
@@ -301,7 +473,8 @@ void CHARMMParameters::parse_atom_line(const String& line,
 
 void CHARMMParameters::parse_bond_line(const String& line,
                                        ResidueType curr_res_type,
-                                       CHARMMResidueTopologyBase *residue)
+                                       CHARMMResidueTopologyBase *residue,
+                                       bool translate_names_to_pdb)
 {
   std::vector<String> split_results;
   boost::split(split_results, line, boost::is_any_of(" "),
@@ -311,17 +484,21 @@ void CHARMMParameters::parse_bond_line(const String& line,
   std::vector<Bond> bonds;
   for(unsigned int i=1; i<split_results.size(); i+=2) {
     if(split_results[i][0] == '!') return;  // comments start
-    std::vector<std::string> atoms(&split_results[i], &split_results[i+2]);
-    residue->add_bond(atoms);
-    // + connects to the next residue
-    if(split_results[i][0] == '+' || split_results[i+1][0] == '+') continue;
-    // skip 2-residue patch bonds
-    if (split_results[i][0] == '1' || split_results[i][0] == '2'
-        || split_results[i+1][0] == '1' || split_results[i+1][0] == '2') {
+    Strings atom_names = get_atom_names(&split_results[i], &split_results[i+2],
+                                        residue, translate_names_to_pdb);
+    if (excess_patch_bond(atom_names, residue, translate_names_to_pdb)) {
       continue;
     }
-    AtomType imp_atom_type1 = AtomType(split_results[i]);
-    AtomType imp_atom_type2 = AtomType(split_results[i+1]);
+    residue->add_bond(atom_names);
+    // + connects to the next residue
+    if (atom_names[0][0] == '+' || atom_names[1][0] == '+') continue;
+    // skip 2-residue patch bonds
+    if (atom_names[0][0] == '1' || atom_names[0][0] == '2'
+        || atom_names[1][0] == '1' || atom_names[1][0] == '2') {
+      continue;
+    }
+    AtomType imp_atom_type1 = AtomType(atom_names[0]);
+    AtomType imp_atom_type2 = AtomType(atom_names[1]);
     Bond bond(imp_atom_type1, imp_atom_type2);
     bonds.push_back(bond);
   }
