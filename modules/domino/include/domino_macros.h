@@ -27,26 +27,10 @@
 */
 #define IMP_SUBSET_STATES_TABLE(Name)                                   \
   public:                                                               \
-  virtual SubsetStates get_subset_states(const Subset&s) const;        \
+  virtual IMP::domino::SubsetStates                                     \
+  get_subset_states(const IMP::domino::Subset&s) const;                 \
   IMP_OBJECT(Name)
 
-
-/** This macro declares
-    - IMP::domino::SubsetEvaluatorTable::get_subset_evaluator()
-*/
-#define IMP_SUBSET_EVALUATOR_TABLE(Name)                                \
-  public:                                                               \
-  virtual SubsetEvaluator* get_subset_evaluator(const Subset&s) const;  \
-  IMP_OBJECT(Name)
-
-
-/** This macro declares
-    - IMP::domino::Evaluator::get_score()
-*/
-#define IMP_SUBSET_EVALUATOR(Name)                             \
-  public:                                                      \
- virtual double get_score(const SubsetState& state) const;     \
- IMP_OBJECT(Name)
 
 
 
@@ -55,8 +39,9 @@
 */
 #define IMP_SUBSET_FILTER_TABLE(Name)                                   \
   public:                                                               \
-  virtual SubsetFilter* get_subset_filter(const Subset&s,               \
-                                          const Subsets &excluded) const; \
+  virtual IMP::domino::SubsetFilter*                                    \
+  get_subset_filter(const IMP::domino::Subset&s,                        \
+                    const IMP::domino::Subsets &excluded) const;        \
   IMP_OBJECT(Name)
 
 /** This macro defines a class NameSubsetFilterTable from a method
@@ -69,7 +54,7 @@
     public DisjointSetsSubsetFilterTable {                              \
     typedef DisjointSetsSubsetFilterTable P;                            \
   public:                                                               \
-    Name##SubsetFilterTable(ParticleStatesTable *pst):                  \
+    Name##SubsetFilterTable(IMP::domino::ParticleStatesTable *pst):     \
    P(pst){}                                                             \
     Name##SubsetFilterTable(){}                                         \
     IMP_SUBSET_FILTER_TABLE(Name##SubsetFilterTable);                   \
@@ -86,9 +71,9 @@
   };                                                                    \
   void Name##SubsetFilterTable::do_show(std::ostream &out) const {      \
   }                                                                     \
-  SubsetFilter* Name##SubsetFilterTable::                               \
-  get_subset_filter(const Subset &s,                                    \
-                    const Subsets &excluded) const{                     \
+  IMP::domino::SubsetFilter* Name##SubsetFilterTable::                  \
+  get_subset_filter(const IMP::domino::Subset &s,                       \
+                    const IMP::domino::Subsets &excluded) const{        \
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
     for (unsigned int i=0; i< get_number_of_sets(); ++i) {              \
@@ -105,19 +90,19 @@
 /** This macro declares
     - IMP::domino::SubsetFilter::get_is_ok()
 */
-#define IMP_SUBSET_FILTER(Name)                                \
-  public:                                                      \
-  virtual bool get_is_ok(const SubsetState& state) const;      \
-  virtual double get_strength() const;                         \
+#define IMP_SUBSET_FILTER(Name)                                         \
+  public:                                                               \
+  virtual bool get_is_ok(const IMP::domino::SubsetState& state) const;  \
+  virtual double get_strength() const;                                  \
  IMP_OBJECT(Name)
 
 
 /** This macro declares
     - IMP::domino::DiscreteSampler::do_get_sample_states()
 */
-#define IMP_DISCRETE_SAMPLER(Name)                              \
-  public:                                                       \
-  SubsetStates do_get_sample_states(const Subset &known) const; \
+#define IMP_DISCRETE_SAMPLER(Name)                                      \
+  public:                                                               \
+  SubsetStates do_get_sample_states(const IMP::domino::Subset &known) const; \
   IMP_OBJECT(Name)
 
 
@@ -125,9 +110,9 @@
     - IMP::domino::SubsetGraphTable::get_subset_graph()
     - IMP::Object methods
  */
-#define IMP_SUBSET_GRAPH_TABLE(Name)                            \
-  public:                                                       \
-SubsetGraph get_subset_graph(ParticleStatesTable *pst) const;   \
+#define IMP_SUBSET_GRAPH_TABLE(Name)                                    \
+  public:                                                               \
+  SubsetGraph get_subset_graph(IMP::domino::ParticleStatesTable *pst) const; \
 IMP_OBJECT(Name)
 
 #endif  /* IMPDOMINO_MACROS_H */
