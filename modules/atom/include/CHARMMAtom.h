@@ -12,6 +12,7 @@
 #include "atom_config.h"
 
 #include "Atom.h"
+#include "Hierarchy.h"
 
 #include <vector>
 #include <limits>
@@ -46,6 +47,18 @@ public:
 };
 
 IMP_OUTPUT_OPERATOR(CHARMMAtom);
+
+//! Get all atoms in the Hierarchy that do not have CHARMM types.
+/** \return a list of every Atom in the given Hierarchy that is not also
+            a CHARMMAtom.
+    \see remove_charmm_untyped_atoms
+ */
+IMPATOMEXPORT Atoms get_charmm_untyped_atoms(Hierarchy hierarchy);
+
+//! Remove any atom from the Hierarchy that does not have a CHARMM type.
+/** \see get_charmm_untyped_atoms
+ */
+IMPATOMEXPORT void remove_charmm_untyped_atoms(Hierarchy hierarchy);
 
 IMPATOM_END_NAMESPACE
 
