@@ -170,7 +170,6 @@ IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 
 /* Wrap our own classes */
 %include "IMP/atom/angle_decorators.h"
-%include "IMP/atom/estimates.h"
 %include "IMP/atom/distance.h"
 %include "IMP/atom/smoothing_functions.h"
 %include "IMP/atom/AngleSingletonScore.h"
@@ -220,6 +219,7 @@ namespace IMP {
 %include "IMP/atom/CHARMMAtom.h"
 %include "IMP/atom/CHARMMParameters.h"
 %include "IMP/atom/force_fields.h"
+%include "IMP/atom/estimates.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/hierarchy_tools.h"
 

@@ -41,6 +41,122 @@ namespace {
       std::pow(V/(in*4.0/3.0*PI)/(1-f), .3333);
     return std::make_pair(in, rr);
   }
+
+
+  double get_mass(Hierarchy h) {
+    if (Mass::particle_is_instance(h)) {
+      return Mass(h).get_mass();
+    } else {
+      double mass=0;
+      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+        mass+= get_mass(h.get_child(i));
+      }
+      return mass;
+    }
+  }
+  // ignores overlap
+  double get_volume(Hierarchy h) {
+    if (core::XYZR::particle_is_instance(h)) {
+      return algebra::get_volume(core::XYZR(h).get_sphere());
+    } else {
+      double volume=0;
+      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+        volume+= get_volume(h.get_child(i));
+      }
+      return volume;
+    }
+  }
+  void gather_residue_indices(Hierarchy h, Ints &inds) {
+    if (Residue::particle_is_instance(h)) {
+      int i=Residue(h).get_index();
+      inds.push_back(i);
+    } else if (Fragment::particle_is_instance(h)
+               && h.get_number_of_children() != 0) {
+      Ints v= Fragment(h).get_residue_indexes();
+      inds.insert(inds.end(), v.begin(), v.end());
+    } else if (Domain::particle_is_instance(h)
+               && h.get_number_of_children() == 0) {
+      Domain d(h);
+      for ( int i=d.get_begin_index();
+           i != d.get_end_index(); ++i) {
+        inds.push_back(i);
+      }
+    } else {
+      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+        gather_residue_indices(h.get_child(i), inds);
+      }
+    }
+  }
+
+
+ void setup_as_approximation_internal(Particle* p,
+                                      const ParticlesTemp &other,
+                                      double resolution=-1,
+                                      double volume=-1, double mass=-1) {
+   IMP_USAGE_CHECK(other.size() >0,
+                   "Must pass particles to approximate");
+   double m=0;
+   algebra::Sphere3Ds ss;
+   Ints inds;
+   algebra::VectorD<3> vv(0,0,0);
+   for (unsigned int i=0; i< other.size(); ++i) {
+     m+= get_mass(Hierarchy(other[i]));
+     gather_residue_indices(Hierarchy(other[i]), inds);
+     ss.push_back(core::XYZR(other[i]).get_sphere());
+     vv+= ss.back().get_center();
+   }
+   if (resolution < 0) {
+     algebra::BoundingBox3D bb;
+     for (unsigned int i=0; i< ss.size(); ++i) {
+       bb+= get_bounding_box(ss[i]);
+     }
+     resolution= (bb.get_corner(0)-bb.get_corner(1)).get_magnitude()/2.0;
+   }
+   for (unsigned int i=0; i< ss.size(); ++i) {
+     ss[i]= algebra::Sphere3D(ss[i].get_center(),
+                              ss[i].get_radius()+resolution);
+   }
+   if (mass>=0) {
+     m=mass;
+   }
+   if (!Residue::particle_is_instance(p)
+       && !Fragment::particle_is_instance(p)
+       && !Domain::particle_is_instance(p)
+       && !Chain::particle_is_instance(p)) {
+     Fragment f= Fragment::setup_particle(p);
+     f.set_residue_indexes(inds);
+   }
+   if (!Mass::particle_is_instance(p)) {
+     Mass::setup_particle(p, m);
+   } else {
+     Mass(p).set_mass(m);
+   }
+   double v;
+   if (volume>0) {
+     v=volume;
+   } else {
+#ifdef IMP_ATOM_USE_IMP_CGAL
+     v= algebra::get_surface_area_and_volume(ss).second;
+#else
+     v=0;
+     for (unsigned int i=0; i< other.size(); ++i) {
+       v+= algebra::get_volume(core::XYZR(other[i]).get_sphere());
+     }
+#endif
+   }
+   algebra::SphereD<3> s=algebra::SphereD<3>(vv/other.size(),
+                            algebra::get_ball_radius_from_volume_3d(v));
+
+   s= algebra::SphereD<3>(s.get_center(), s.get_radius()-resolution);
+
+   if (core::XYZR::particle_is_instance(p)) {
+     core::XYZR(p).set_sphere(s);
+   } else {
+     core::XYZR::setup_particle(p,s);
+   }
+ }
+
+
 }
 
 Hierarchy create_protein(Model *m,
@@ -114,62 +230,36 @@ Hierarchy create_protein(Model *m,
 
 namespace {
 
-  double get_mass(Hierarchy h) {
-    if (Mass::particle_is_instance(h)) {
-      return Mass(h).get_mass();
-    } else {
-      double mass=0;
-      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-        mass+= get_mass(h.get_child(i));
-      }
-      return mass;
-    }
-  }
-  // ignores overlap
-  double get_volume(Hierarchy h) {
-    if (core::XYZR::particle_is_instance(h)) {
-      return algebra::get_volume(core::XYZR(h).get_sphere());
-    } else {
-      double volume=0;
-      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-        volume+= get_volume(h.get_child(i));
-      }
-      return volume;
-    }
-  }
-  void gather_residue_indices(Hierarchy h, Ints &inds) {
-    if (Residue::particle_is_instance(h)) {
-      int i=Residue(h).get_index();
-      inds.push_back(i);
-    } else if (Fragment::particle_is_instance(h)
-               && h.get_number_of_children() != 0) {
-      Ints v= Fragment(h).get_residue_indexes();
-      inds.insert(inds.end(), v.begin(), v.end());
-    } else if (Domain::particle_is_instance(h)
-               && h.get_number_of_children() == 0) {
-      Domain d(h);
-      for ( int i=d.get_begin_index();
-           i != d.get_end_index(); ++i) {
-        inds.push_back(i);
-      }
-    } else {
-      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-        gather_residue_indices(h.get_child(i), inds);
-      }
-    }
-  }
-
   // create a particle which approximates the input set
-  Hierarchy create_approximation(const HierarchiesTemp &t) {
+  Hierarchy create_approximation_of_residues(const HierarchiesTemp &t) {
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< t.size(); ++i) {
+        IMP_USAGE_CHECK(Residue::particle_is_instance(t[i]),
+                        "The residue is not a residue, it is "
+                        << t[i]);
+      }
+    }
     if (t.empty()) {
       return Hierarchy();
+    }
+    double v=0;
+    for (unsigned int i=0; i< t.size();  ++i) {
+      ResidueType rt= Residue(t[i]).get_residue_type();
+      v+= get_volume_from_residue_type(rt);
     }
     Model *mm= t[0]->get_model();
     Particle *p= new Particle(mm);
     std::ostringstream oss;
     oss << "Fragment";
     p->set_name(oss.str());
-    setup_as_approximation(p, ParticlesTemp(t.begin(), t.end()));
+    ParticlesTemp children;
+    for (unsigned int i=0; i< t.size(); ++i) {
+      HierarchiesTemp cur= t[i].get_children();
+      children.insert(children.end(), cur.begin(), cur.end());
+    }
+    setup_as_approximation_internal(p, children,
+                                    -1,
+                                    v);
     return Hierarchy(p);
   }
 }
@@ -227,18 +317,14 @@ create_simplified_along_backbone(Chain in,
               << residue_segments[cur_segment].first
               << "..." << residue_segments[cur_segment].second
               << std::endl);
-      root.add_child(create_approximation(cur));
+      root.add_child(create_approximation_of_residues(cur));
       cur.clear();
       ++cur_segment;
     }
-    HierarchiesTemp children= get_leaves(child);
-    // work around decorator mess
-    for (unsigned int i=0; i < children.size(); ++i) {
-      cur.push_back(children[i]);
-    }
+    cur.push_back(child);
   }
   if (!cur.empty()) {
-    root.add_child(create_approximation(cur));
+    root.add_child(create_approximation_of_residues(cur));
   }
   IMP_INTERNAL_CHECK(root.get_is_valid(true),
                      "Invalid hierarchy produced " << root);
@@ -599,52 +685,14 @@ void Selection::show(std::ostream &out) const {
 
 
  void setup_as_approximation(Particle* p,
-                             const ParticlesTemp &other) {
-   IMP_USAGE_CHECK(other.size() >0,
-                   "Must pass particles to approximate");
-   double m=0;
-   algebra::Sphere3Ds ss;
-   Ints inds;
-   algebra::VectorD<3> vv(0,0,0);
-   for (unsigned int i=0; i< other.size(); ++i) {
-     m+= get_mass(Hierarchy(other[i]));
-     gather_residue_indices(Hierarchy(other[i]), inds);
-     ss.push_back(core::XYZR(other[i]).get_sphere());
-     vv+= ss.back().get_center();
-   }
-   if (!Residue::particle_is_instance(p)
-       && !Fragment::particle_is_instance(p)
-       && !Domain::particle_is_instance(p)
-       && !Chain::particle_is_instance(p)) {
-     Fragment f= Fragment::setup_particle(p);
-     f.set_residue_indexes(inds);
-   }
-   if (!Mass::particle_is_instance(p)) {
-     Mass::setup_particle(p, m);
-   } else {
-     Mass(p).set_mass(m);
-   }
-#ifdef IMP_ATOM_USE_IMP_CGAL
-   double v= algebra::get_surface_area_and_volume(ss).second;
-#else
-   double v=0;
-   for (unsigned int i=0; i< other.size(); ++i) {
-     v+= algebra::get_volume(core::XYZR(other[i]).get_sphere());
-   }
-#endif
-   algebra::SphereD<3> s=algebra::SphereD<3>(vv/other.size(),
-                            algebra::get_ball_radius_from_volume_3d(v));
-
-   if (core::XYZR::particle_is_instance(p)) {
-     core::XYZR(p).set_sphere(s);
-   } else {
-     core::XYZR::setup_particle(p,s);
-   }
+                             const ParticlesTemp &other,
+                             double resolution) {
+   setup_as_approximation_internal(p, other, resolution);
  }
 
 
-void setup_as_approximation(Hierarchy h) {
-  setup_as_approximation(h, get_leaves(h));
+void setup_as_approximation(Hierarchy h, double resolution) {
+  setup_as_approximation_internal(h, get_leaves(h), resolution);
 }
 
 

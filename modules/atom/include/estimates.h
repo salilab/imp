@@ -9,6 +9,7 @@
 #define IMPATOM_ESTIMATES_H
 
 #include "atom_config.h"
+#include "Residue.h"
 #include <IMP/base_types.h>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -31,6 +32,17 @@ IMPATOMEXPORT double get_volume_from_mass(double v);
     The mass is in Daltons.
  */
 IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
+
+
+//! Return an estimate for the volume of a given residue
+/** The volume estimates are taken from
+ Pontius J, Richelle J, Wodak SJ.,
+ \external{www.ncbi.nlm.nih.gov/pubmed/8950272,
+ Deviations from standard atomic volumes as a quality measure for
+ protein crystal structures}, J Mol Biol. 1996 Nov 22;264(1):121-36.
+
+ */
+IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
 
 //!@}
 
