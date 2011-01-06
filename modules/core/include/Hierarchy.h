@@ -579,7 +579,10 @@ HD find_breadth_first(HD h, F f)
 
 
 //! Get all the leaves of the bit of hierarchy
-/**     \relatesalso Hierarchy
+/** The leaves are returned in the obvious order
+    (first child before second child).
+
+    \relatesalso Hierarchy
  */
 IMPCOREEXPORT GenericHierarchiesTemp
 get_leaves(Hierarchy mhd);
