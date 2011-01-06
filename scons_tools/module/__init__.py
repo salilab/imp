@@ -6,9 +6,10 @@ import scons_tools.pyscanner
 import _swig
 import _header
 import _version_info
-import _config_h
 import _link_test
 import _standards
+import _version_h
+import _config_h
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
@@ -122,6 +123,12 @@ def IMPModuleInclude(env, files):
 
     # Generate config header and SWIG equivalent
     from scons_tools.install import get_build_path as gbp
+    version=env.IMPModuleVersionH(target\
+                               =[gbp(env,
+                                     'includedir/IMP/currentdir/currentfile_version.h')],
+                               source=[env.Value(_get_module_version(env))])
+    scons_tools.install.install(env, "includedir/IMP/currentdir",
+                                              version[0])
     config=env.IMPModuleConfigH(target\
                                =[gbp(env,
                                      'includedir/IMP/currentdir/currentfile_config.h')],
