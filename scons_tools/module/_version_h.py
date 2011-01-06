@@ -34,9 +34,9 @@ def _action_version_h(target, source, env):
     else:
         svn=False
     version=vers.split(" ")[0]
-    if version.find("-") != -1:
-        min_version=version.split("-")[0]
-        max_version=version.split("-")[1]
+    if version.find(":") != -1:
+        min_version=version.split(":")[0]
+        max_version=version.split(":")[1]
     else:
         min_version=version
         max_version=version
