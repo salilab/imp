@@ -8,8 +8,6 @@ import IMP.test
 # Make sure we use the same version of unittest as the IMP testcases themselves
 from IMP.test import unittest
 
-global files
-
 class _TestModuleImporter(object):
     """Import a Python test module. The module
        is given a unique name (_test_0, _test_1 etc.) so that modules with
@@ -29,29 +27,36 @@ class _TestModuleImporter(object):
                 fh.close()
 _import_test = _TestModuleImporter()
 
-def regressionTest():
+class RegressionTest(object):
     """Run all tests in files called test_*.py in current directory and
        subdirectories"""
-    if len(files) ==0:
-        return unittest.TestSuite([])
-    a_file=files[0]
-    # evil hack
-    os.environ['TEST_DIRECTORY'] = a_file[0:a_file.rfind("/test/")+6]
-    #return 0
-    modobjs = []
-    for f in files:
-        nm= os.path.split(f)[1]
-        dir= os.path.split(f)[0]
-        modname = os.path.splitext(nm)[0]
-        sys.path.insert(0, dir)
-        modobjs.extend([_import_test(modname)])
-        sys.path.pop(0)
 
-    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
+    def __init__(self, files):
+        self._files = files
+
+    def __call__(self):
+        if len(self._files) ==0:
+            return unittest.TestSuite([])
+        a_file=self._files[0]
+        # evil hack
+        os.environ['TEST_DIRECTORY'] = a_file[0:a_file.rfind("/test/")+6]
+        #return 0
+        modobjs = []
+        for f in self._files:
+            nm= os.path.split(f)[1]
+            dir= os.path.split(f)[0]
+            modname = os.path.splitext(nm)[0]
+            sys.path.insert(0, dir)
+            modobjs.extend([_import_test(modname)])
+            sys.path.pop(0)
+
+        tests = [unittest.defaultTestLoader.loadTestsFromModule(o) \
+                 for o in modobjs]
     return unittest.TestSuite(tests)
 
 
 if __name__ == "__main__":
     files = sys.argv[2:]
     sys.argv=[sys.argv[0], "-v"]
-    unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
+    r = RegressionTest(files)
+    unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
