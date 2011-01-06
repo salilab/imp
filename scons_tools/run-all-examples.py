@@ -57,36 +57,42 @@ def test_example(filename, shortname, disabled_modules):
             return""" % (shortname, skip, filename))
     return RunExample("test_run_example")
 
-global files
-global excluded_modules
-def regressionTest():
-    modobjs = []
-    tested_examples = {}
-    for f in files:
-        nm= os.path.split(f)[1]
-        dir= os.path.split(f)[0]
-        if nm.startswith("test_"):
-            scan_tested_examples(f, tested_examples)
-            modname = os.path.splitext(nm)[0]
-            sys.path.insert(0, dir)
-            modobjs.append(__import__(modname))
-            sys.path.pop(0)
-    tests = [unittest.defaultTestLoader.loadTestsFromModule(o) for o in modobjs]
-    suite = unittest.TestSuite(tests)
+class RegressionTest(object):
 
-    # For all examples that don't have an explicit test to exercise them,
-    # just run them to make sure they don't crash
-    for f in files:
-        nm= os.path.split(f)[1]
-        dir= os.path.split(f)[0]
-        if not nm.startswith("test_") and not nm in tested_examples:
-            suite.addTest(test_example(f, nm, excluded_modules))
+    def __init__(self, files, excluded_modules):
+        self._files = files
+        self._excluded_modules = excluded_modules
 
-    return suite
+    def __call__(self):
+        modobjs = []
+        tested_examples = {}
+        for f in self._files:
+            nm= os.path.split(f)[1]
+            dir= os.path.split(f)[0]
+            if nm.startswith("test_"):
+                scan_tested_examples(f, tested_examples)
+                modname = os.path.splitext(nm)[0]
+                sys.path.insert(0, dir)
+                modobjs.append(__import__(modname))
+                sys.path.pop(0)
+        tests = [unittest.defaultTestLoader.loadTestsFromModule(o) \
+                 for o in modobjs]
+        suite = unittest.TestSuite(tests)
+
+        # For all examples that don't have an explicit test to exercise them,
+        # just run them to make sure they don't crash
+        for f in self._files:
+            nm= os.path.split(f)[1]
+            dir= os.path.split(f)[0]
+            if not nm.startswith("test_") and not nm in tested_examples:
+                suite.addTest(test_example(f, nm, self._excluded_modules))
+
+        return suite
 
 
 if __name__ == "__main__":
     excluded_modules = sys.argv[1].split(":")
     files = sys.argv[2:]
     sys.argv=[sys.argv[0], "-v"]
-    unittest.main(defaultTest="regressionTest", testRunner=IMP.test._TestRunner)
+    r = RegressionTest(files, excluded_modules)
+    unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
