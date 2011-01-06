@@ -24,7 +24,10 @@ def get_unmet_module_deps(f, disabled_modules):
         # Parse lines of the form 'from a import b, c (as foo)'
         m = from_re.match(line)
         if m:
+            # Make sure 'a' is not disabled
+            check_disabled(m.group(1))
             for modname in [x.strip() for x in m.group(2).split(',')]:
+                # Make sure 'a.b' is not disabled (in case b is a module)
                 check_disabled(m.group(1) + '.' + modname)
     return unmet_deps
 
