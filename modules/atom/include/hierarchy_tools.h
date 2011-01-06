@@ -267,12 +267,22 @@ IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
     particles.
  */
 IMPATOMEXPORT void setup_as_approximation(Particle *h,
-                                          const ParticlesTemp &other);
+                                          const ParticlesTemp &other
+#ifndef IMP_DOXYGEN
+                                          ,
+                                          double resolution=-1
+#endif
+);
 
 /** Set the mass, radius, residues, and coordinates to approximate the passed
     particle based on the leaves of h.
  */
-IMPATOMEXPORT void setup_as_approximation(Hierarchy h);
+IMPATOMEXPORT void setup_as_approximation(Hierarchy h
+#ifndef IMP_DOXYGEN
+                                          ,
+                                          double resolution =-1
+#endif
+);
 
 
 /** Transform a hierarchy. This is aware of rigid bodies.
