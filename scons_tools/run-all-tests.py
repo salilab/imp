@@ -52,7 +52,7 @@ class RegressionTest(object):
 
         tests = [unittest.defaultTestLoader.loadTestsFromModule(o) \
                  for o in modobjs]
-    return unittest.TestSuite(tests)
+        return unittest.TestSuite(tests)
 
 
 if __name__ == "__main__":
