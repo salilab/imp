@@ -177,7 +177,8 @@ if env['IMP_PROVIDE_PYTHON']:
         sources += Glob("#/build/lib/IMP/"+p+"/*.py", ondisk=False) \
                    + Glob("#/build/lib/IMP/"+p+"/*/*.py", ondisk=False)
 examples=[]
-for d in ["#/modules/example/src/",
+for d in ["#/doc/",
+          "#/modules/example/src/",
           "#/modules/example/include/",
           "#/modules/*/examples/",
           "#/biological_systems/*/doc/",

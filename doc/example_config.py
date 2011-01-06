@@ -32,9 +32,9 @@ def add(old, root, dir):
 
 for r in extra_roots:
     includepath=add(includepath, r, "include")
-    libpath=add(includepath, r, "lib")
-    swigpath=add(includepath, r, "share/imp/swig")
-    path=add(includepath, r, "bin")
+    libpath=add(libpath, r, "lib")
+    swigpath=add(swigpath, r, "share/imp/swig")
+    path=add(path, r, "bin")
 
 # uncomment if you are building an isolated module/application
 #imp_build="/Users/drussel/src/IMP/imp/debug
@@ -43,6 +43,9 @@ for r in extra_roots:
 #swigpath=add(includepath, imp_build, "swig")
 #pythonpath=add(pythonpath, imp_build, "lib")
 
+# You can add to the compiler flags directly, to, for example,
+# add debuging symbols to a fast build.
+# cxxflags= "-g -Wall"
 
 
 ## The build more can be one of 'debug', 'release' or 'fast'.

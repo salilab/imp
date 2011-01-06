@@ -51,17 +51,7 @@ If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py
 located in the top-level \imp directory (the one containing the \c SConstruct file).
 For %example one of ours looks like
-\verbatim
-import os
-
-modeller=os.environ['MODINSTALLSVN']
-prefix=os.environ['HOME']+"/fs"
-path='/opt/local/bin'
-includepath='/opt/local/include:'+os.environ['HOME']+"/fs/include"
-libpath=os.environ['HOME']+"/fs/lib"
-build='debug'
-deprecated=False
-\endverbatim
+\include "example_config.py"
 
 \section devbuild 2. Building and installing for developers
 
