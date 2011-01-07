@@ -1,5 +1,10 @@
 
 %pythoncode %{
+import os
+i_m_p="IMP_MODULE_PATH"
+if i_m_p in os.environ.keys():
+  __path__.insert(0, os.environ[i_m_p])
+
 def _forward_add_attribute(self, name, value, opt=None):
     if opt is not None:
         self.get_particle().add_attribute(name, value, opt)
