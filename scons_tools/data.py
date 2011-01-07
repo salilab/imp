@@ -197,7 +197,7 @@ class IMPData:
                    dependencies=[], unfound_dependencies=[], modules=[],
                         python_modules=[], version="", ok=True):
         if not ok:
-            self.systems[name]=self.ApplicationData(name, ok=ok)
+            self.systems[name]=self.SystemData(name, ok=ok)
         else:
             passmodules= self._expand_modules(modules)
             passpythonmodules= self._expand_modules(python_modules)
