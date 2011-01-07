@@ -28,7 +28,7 @@ rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
 IMPINSTALL=${IMPTOP}/`date "+%Y%m%d"`-${rev}
 IMPSRCTGZ=${IMPINSTALL}/build/sources/imp.tar.gz
 rm -rf ${IMPINSTALL}
-mkdir -p ${IMPINSTALL}/build/sources
+mkdir -p ${IMPINSTALL}/build/sources ${IMPINSTALL}/logs
 
 # Make link so build system can find the install location
 rm -f ${IMPTOP}/.SVN-new
