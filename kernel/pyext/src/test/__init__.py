@@ -156,8 +156,7 @@ class TestCase(unittest.TestCase):
 
     def get_tmp_file_name(self, filename):
         """Get the full name of an output file in the build/tmp directory."""
-        basedir=os.environ['IMP_BUILD_ROOT']
-        dirpath= os.path.join(basedir, 'build', 'tmp')
+        dirpath=os.environ['IMP_TMP_DIR']
         if not os.path.exists(dirpath):
             os.mkdir(dirpath)
         return os.path.join(dirpath, filename)
@@ -540,9 +539,9 @@ class ApplicationTestCase(TestCase):
         # the top-level test directory
         if sys.platform == 'win32':
             filename += '.exe'
-        if 'IMP_BUILD_ROOT' in os.environ:
-            testdir = os.environ['IMP_BUILD_ROOT']
-            return os.path.join(testdir, "build", "bin", filename)
+        #if 'IMP_BUILD_ROOT' in os.environ:
+        #    testdir = os.environ['IMP_BUILD_ROOT']
+        #    return os.path.join(testdir, "build", "bin", filename)
         return filename
 
     def run_application(self, app, args):

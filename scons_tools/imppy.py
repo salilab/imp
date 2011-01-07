@@ -1,6 +1,7 @@
 from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, Scanner, Chmod
 import os.path
 import utility
+import data
 
 template = """#!/bin/sh
 
@@ -8,15 +9,19 @@ template = """#!/bin/sh
 
 @PYTHONPATH@
 
-@BUILDROOT@
+# Where to find data for the various modules
+@MODULEROOTS@
 
+# Extra places to look for imp modules
 @MODULEPATH@
 
 @PATH@
 
 @PRECOMMAND@
 
-mkdir -p ${IMP_BUILD_ROOT}/build/tmp
+@TMPDIR@
+
+mkdir -p ${IMP_TMP_DIR}
 
 exec ${precommand} "$@"
 """
@@ -34,19 +39,28 @@ def builder_script_file(target, source, env):
     ldpath=source[3].get_contents().split(sep)
     precommand=source[4].get_contents()
     path=source[5].get_contents().split(sep)
+    modules=source[6].get_contents().split(":")
 
     libdir= os.path.join(root, "build", "lib")
     impdir= os.path.join(libdir, "IMP")
     bindir= os.path.join(root, "build", "bin")
+    datadir= os.path.join(root, "build", "data")
+    exampledir= os.path.join(root, "build", "doc", "examples")
+    tmpdir= os.path.join(root, "build", "tmp")
 
     varname= utility.get_dylib_name(env)
+
+    if data.get(env).modules['kernel'].external:
+        imp_module_path="IMP_MODULE_PATH"
+    else:
+        imp_module_path=None
 
     lines={"@LDPATH@":(varname, sep.join([libdir]+ldpath), True),
            "@PYTHONPATH@":("PYTHONPATH", sep.join([libdir]+pythonpath), True),
            "@PATH@":("PATH", sep.join([bindir]+path), True),
-           "@BUILDROOT@":("IMP_BUILD_ROOT", root, True),
            "@PRECOMMAND@":("precommand", precommand, False),
-           "@MODULEPATH@":("IMP_MODULE_PATH", impdir, True)}
+           "@MODULEPATH@":(imp_module_path, impdir, True),
+           "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True)}
 
     for line in template.split('\n'):
         line = line.rstrip('\r\n')
@@ -57,6 +71,14 @@ def builder_script_file(target, source, env):
                 print >> outfile, val[0]+"="+val[1]
                 if val[2]:
                     print >> outfile, "export", val[0]
+        elif line== "@MODULEROOTS@":
+            for m in modules:
+                varname="IMP_"+m.upper()+"_DATA"
+                print >>outfile, varname+"='"+datadir+"'"
+                print >>outfile, "export", varname
+                varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
+                print >>outfile, varname+"='"+exampledir+"'"
+                print >>outfile, "export", varname
         else:
             print >> outfile, line
     outfile.close()
@@ -75,5 +97,7 @@ def add(env, target):
                           env.Value(env.get('pythonpath', "")),
                           env.Value(utility.get_ld_path(env)),
                           env.Value(prec),
-                          env.Value(env['ENV']['PATH'])])
+                          env.Value(env['ENV']['PATH']),
+                          env.Value(":".join([x for x in data.get(env).modules.keys()\
+                                              if not data.get(env).modules[x].external]))])
     return bin
