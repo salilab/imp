@@ -1,4 +1,8 @@
 Import('env')
 
-# Install all files in this directory as data
-env.IMPModuleData(env.IMPModuleGetData())
+files = [
+         'chem.lib',
+        ]
+
+# Install the data files:
+env.IMPModuleData(files)
