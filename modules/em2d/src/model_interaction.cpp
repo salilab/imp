@@ -75,7 +75,7 @@ void write_vector2Ds_as_pdb(const algebra::Vector2Ds vs,
 }
 
 
-atom::Hierarchies read_multiple_pdb_files(const String &selection_file,
+atom::Hierarchies read_multiple_pdbs(const String &selection_file,
                                Model* model,
                                atom::PDBSelector* selector,
                                bool select_first_model,

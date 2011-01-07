@@ -27,7 +27,7 @@ TransformationsClusters
   IMP_NEW(IMP::Model,model,());
   IMP::Pointer<atom::ATOMPDBSelector> selector=new atom::ATOMPDBSelector();
   bool select_first_model=true;
-  atom::Hierarchies mhs=read_multiple_pdb_files(selection_file,
+  atom::Hierarchies mhs=read_multiple_pdbs(selection_file,
                                   model,
                                   selector,
                                   select_first_model);

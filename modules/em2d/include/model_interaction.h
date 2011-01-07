@@ -38,7 +38,7 @@ IMPEM2DEXPORT Pointer<em::SampledDensityMap>
 
 /** OBSOLETE
 //! Generates a density map from a PDB file by downsampling.
-/*!
+
   \param[in] fn_model name of the PDB file
   \param[out] fn_map name of the output map
   \param[in] resolution in Angstroms.
@@ -74,7 +74,7 @@ IMPEM2DEXPORT void write_vector3Ds_as_pdb(
 
 */
 IMPEM2DEXPORT atom::Hierarchies
-       read_multiple_pdb_files(const String &selection_file,
+       read_multiple_pdbs(const String &selection_file,
                                Model* model,
                                atom::PDBSelector* selector,
                                bool select_first_model = true,
