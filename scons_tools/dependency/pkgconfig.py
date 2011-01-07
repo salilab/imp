@@ -15,13 +15,18 @@ def _check(context):
 
 def configure_check(env):
     if env.get('pkgconfig') == "auto":
-        custom_tests = {'CheckPK':_check}
-        conf = env.Configure(custom_tests=custom_tests)
-        if not conf.CheckPK():
+        # We currently only parse pkg-config output for gcc, so don't use
+        # pkg-config on non-gcc systems unless the user forces us to
+        if not scons_tools.dependency.gcc.get_is_gcc(env):
             env['IMP_HAS_PKG_CONFIG']=False
         else:
-            env['IMP_HAS_PKG_CONFIG']=True
-        conf.Finish()
+            custom_tests = {'CheckPK':_check}
+            conf = env.Configure(custom_tests=custom_tests)
+            if not conf.CheckPK():
+                env['IMP_HAS_PKG_CONFIG']=False
+            else:
+                env['IMP_HAS_PKG_CONFIG']=True
+            conf.Finish()
     elif env.get('pkgconfig')=="no":
         env['IMP_HAS_PKG_CONFIG']=False
     else:
@@ -30,7 +35,8 @@ def configure_check(env):
 
 def get_config(context, lcname):
     if not scons_tools.dependency.gcc.get_is_gcc(context.env):
-        utility.report_error(context.env, "pkg-config only supported with g++")
+        scons_tools.utility.report_error(context.env,
+                                         "pkg-config only supported with g++")
     #print context.env.Execute('pkg-config --cflags-only-I \'%s\'' % lcname)
     retI = os.popen('pkg-config --cflags-only-I \'%s\'' % lcname).read()
     retL = os.popen('pkg-config --libs-only-L \'%s\'' % lcname).read()
