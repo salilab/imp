@@ -2,5 +2,5 @@ Import('env')
 
 
 module_env=env.IMPModuleBuild(version="SVN",
-                   lib_only_required_modules=['domino', 'atom', 'em', 'core', 'algebra'],
-                   optional_modules=['cgal'])
+                   lib_only_required_modules=['core', 'algebra'],
+                   optional_modules=['domino', 'atom', 'em', 'cgal'])
