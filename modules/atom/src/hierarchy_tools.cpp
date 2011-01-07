@@ -151,7 +151,7 @@ namespace {
 #else
      double v=0;
      for (unsigned int i=0; i< other.size(); ++i) {
-       double v+= algebra::get_volume(ss[i]);
+       v+= algebra::get_volume(ss[i]);
      }
      s=algebra::SphereD<3>(center,
                            algebra::get_ball_radius_from_volume_3d(v));
