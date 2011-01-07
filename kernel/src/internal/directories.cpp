@@ -10,6 +10,7 @@
 #include <IMP/internal/directories.h>
 #include <IMP/exception.h>
 #include <fstream>
+#include <boost/algorithm/string.hpp>
 
 #ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
@@ -62,13 +63,13 @@ namespace {
     }
   }
 
-  std::string get_path(std::string envvar, std::string buildpath,
+  std::string get_path(std::string envvar,
                        std::string def,
                        std::string module, std::string file_name) {
     char *env = getenv(envvar.c_str());
     std::string base;
     if (env) {
-      base=std::string(env)+"/"+buildpath;
+      base=std::string(env);
     } else {
       // Default to compiled-in value
       base=def;
@@ -84,8 +85,9 @@ void set_backup_data_path(std::string path) {
 
 std::string get_data_path(std::string module, std::string file_name)
 {
-  std::string path= get_path("IMP_BUILD_ROOT",
-                             "build/data",
+  std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
+    +std::string("_DATA");
+  std::string path= get_path(varname,
                              imp_data_path,
                              module, file_name);
   {
@@ -109,7 +111,9 @@ std::string get_data_path(std::string module, std::string file_name)
 }
 std::string get_example_path(std::string module, std::string file_name)
 {
-  std::string path= get_path("IMP_BUILD_ROOT", "build/doc/examples",
+  std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
+    +std::string("_EXAMPLE_DATA");
+  std::string path= get_path(varname,
                              imp_example_path,
                              module, file_name);
   std::ifstream in(path.c_str());
