@@ -178,7 +178,9 @@ class IMPData:
                                                     libpath=libpath)
     def add_application(self, name, link="",
                         dependencies=[], unfound_dependencies=[], modules=[],
-                        python_modules=[], version="", ok=True):
+                        python_modules=[], version=None, ok=True):
+        if ok and not version:
+            utility.report_error("Version must be specified for modules")
         if not ok:
             self.applications[name]=self.ApplicationData(name, ok=ok)
         else:
@@ -217,16 +219,26 @@ class IMPData:
             libname="imp"
             headername="IMP/kernel_config.h"
             namespace="IMP"
+            modname="IMP"
         else:
             libname="imp_"+m
             headername="IMP/"+m+"/"+m+"_config.h"
             namespace="IMP::"+m+""
+            modname="IMP."+m
         conf = self.env.Configure()
         ret=conf.CheckLibWithHeader(libname, header=[headername],
                                     call=namespace+"::get_module_version_info();",
                                     language="CXX", autoadd=False)
+        # get version number
         if ret:
-            self.add_module(m, ok=True, external=True)
+            try:
+                version= utility.get_python_result(self.env,
+                                                   "import "+modname,
+                                                   modname+".get_module_version_info().get_version()")
+            except:
+                self.add_module(m, ok=False)
+            else:
+                self.add_module(m, ok=True, external=True, version=version)
         else:
             self.add_module(m, ok=False)
         conf.Finish()
