@@ -14,10 +14,10 @@ modules=['cgal',
          'gsl',
          'modeller',
          'restrainer',
-         'em2d',
          'bullet',
          'openmm',
          'multifit',
+         'em2d',
          'misc',
          'system']
 # always last
