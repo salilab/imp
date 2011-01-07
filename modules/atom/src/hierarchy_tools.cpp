@@ -93,6 +93,8 @@ namespace {
                                       const ParticlesTemp &other,
                                       double resolution=-1,
                                       double volume=-1, double mass=-1) {
+   IMP_USAGE_CHECK(volume==-1 || volume>0,
+                   "Volume must be positive if specified");
    IMP_USAGE_CHECK(other.size() >0,
                    "Must pass particles to approximate");
    double m=0;
@@ -102,8 +104,11 @@ namespace {
    for (unsigned int i=0; i< other.size(); ++i) {
      m+= get_mass(Hierarchy(other[i]));
      gather_residue_indices(Hierarchy(other[i]), inds);
-     ss.push_back(core::XYZR(other[i]).get_sphere());
-     vv+= ss.back().get_center();
+     core::XYZR d(other[i]);
+     if (volume <0) {
+       ss.push_back(d.get_sphere());
+     }
+     vv+= d.get_coordinates();
    }
    if (resolution < 0) {
      algebra::BoundingBox3D bb;
@@ -111,10 +116,6 @@ namespace {
        bb+= get_bounding_box(ss[i]);
      }
      resolution= (bb.get_corner(0)-bb.get_corner(1)).get_magnitude()/2.0;
-   }
-   for (unsigned int i=0; i< ss.size(); ++i) {
-     ss[i]= algebra::Sphere3D(ss[i].get_center(),
-                              ss[i].get_radius()+resolution);
    }
    if (mass>=0) {
      m=mass;
@@ -131,23 +132,31 @@ namespace {
    } else {
      Mass(p).set_mass(m);
    }
-   double v;
-   if (volume>0) {
-     v=volume;
+   algebra::SphereD<3> s;
+   algebra::Vector3D center= vv/other.size();
+   if (volume>=0) {
+     s=algebra::SphereD<3>(center,
+                           algebra::get_ball_radius_from_volume_3d(volume));
    } else {
 #ifdef IMP_ATOM_USE_IMP_CGAL
-     v= algebra::get_surface_area_and_volume(ss).second;
-#else
-     v=0;
-     for (unsigned int i=0; i< other.size(); ++i) {
-       v+= algebra::get_volume(core::XYZR(other[i]).get_sphere());
+     // smooth
+     for (unsigned int i=0; i< ss.size(); ++i) {
+       ss[i]= algebra::Sphere3D(ss[i].get_center(),
+                                ss[i].get_radius()+resolution);
      }
+     double v= algebra::get_surface_area_and_volume(ss).second;
+     s=algebra::SphereD<3>(center,
+                           algebra::get_ball_radius_from_volume_3d(v)
+                           - resolution);
+#else
+     double v=0;
+     for (unsigned int i=0; i< other.size(); ++i) {
+       double v+= algebra::get_volume(ss[i]);
+     }
+     s=algebra::SphereD<3>(center,
+                           algebra::get_ball_radius_from_volume_3d(v));
 #endif
    }
-   algebra::SphereD<3> s=algebra::SphereD<3>(vv/other.size(),
-                            algebra::get_ball_radius_from_volume_3d(v));
-
-   s= algebra::SphereD<3>(s.get_center(), s.get_radius()-resolution);
 
    if (core::XYZR::particle_is_instance(p)) {
      core::XYZR(p).set_sphere(s);
