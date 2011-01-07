@@ -37,6 +37,7 @@ get_enclosing_sphere(const std::vector<VectorD<3> > &ss);
 /** \relatesalso SphereD<3>
  */
 inline double get_ball_radius_from_volume_3d(double volume) {
+  IMP_USAGE_CHECK(volume>=0, "Volume can't be negative");
   return std::pow((.75/PI)*volume, .3333);
 }
 
