@@ -224,6 +224,31 @@ namespace {
     }
   }
 
+  void parse_internal_coordinate_line(std::string line,
+                                      CHARMMResidueTopologyBase *residue,
+                                      bool translate_names_to_pdb) {
+    std::vector<std::string> split_results;
+    boost::split(split_results, line, boost::is_any_of(" "),
+                 boost::token_compress_on);
+    if (split_results.size() < 10) return; // IC line has at least 10 fields
+
+    Strings atom_names = get_atom_names(&split_results[1], &split_results[5],
+                                        residue, translate_names_to_pdb);
+    // Improper IC entries have a leading * on the third atom name
+    bool improper = false;
+    if (atom_names[2][0] == '*') {
+      improper = true;
+      atom_names[2] = atom_names[2].substr(1);
+    }
+    CHARMMInternalCoordinate ic(atom_names,
+                                atof(split_results[5].c_str()),
+                                atof(split_results[6].c_str()),
+                                atof(split_results[7].c_str()),
+                                atof(split_results[8].c_str()),
+                                atof(split_results[9].c_str()), improper);
+    residue->add_internal_coordinate(ic);
+  }
+
   void parse_patch_line(std::string line, std::string &first,
                         std::string &last, bool translate_names_to_pdb) {
     const std::string FIRST = "FIRS";
@@ -319,6 +344,7 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
   const String ANGLE_LINE = "ANGL";
   const String DIHEDRAL_LINE = "DIHE";
   const String IMPROPER_LINE = "IMPR";
+  const String IC_LINE = "IC";
   std::string first_patch = "", last_patch = "";
   Pointer<CHARMMIdealResidueTopology> residue;
   Pointer<CHARMMPatch> patch;
@@ -406,6 +432,11 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
                && (residue || patch)) {
       parse_improper_line(line, get_residue(residue, patch),
                           translate_names_to_pdb);
+    // read internal coordinate line
+    } else if (line.substr(0, IC_LINE.length()) == IC_LINE
+               && (residue || patch)) {
+      parse_internal_coordinate_line(line, get_residue(residue, patch),
+                                     translate_names_to_pdb);
     }
   }
   if (residue) {
