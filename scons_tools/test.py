@@ -45,7 +45,7 @@ def _action_unit_test(target, source, env):
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
     else:
         utility.report_error(env, "Unknown test type "+type)
-    app = "mkdir -p %s; cd %s; %s %s %s%s %s > /dev/null" \
+    app = "mkdir -p %s; cd %s; %s %s %s '%s' %s > /dev/null" \
               % (tmpdir, tmpdir, source[0].abspath, env['PYTHON'],
                  cmd, disab,
                  " ".join(fsource))
