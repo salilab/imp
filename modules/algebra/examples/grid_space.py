@@ -7,9 +7,10 @@ s= IMP.algebra.Sphere3D(IMP.algebra.Vector3D(1,1,1), 6)
 count=0
 for i in range(0,100):
     p= IMP.algebra.get_random_vector_on(s)
-    if g.get_has_index(p):
+    ei= g.get_extended_index(p)
+    if g.get_has_index(ei):
         print "hit"
     else:
-        g.add_voxel(p, count)
+        g.add_voxel(ei, count)
         count=count+1
 print "There are", len(g.get_all_indexes()), "distinct values", count
