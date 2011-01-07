@@ -20,12 +20,12 @@ scons_tools.dependency.add_external_library(env, "OpenCV22",
 
 config = []
 if not env.GetOption('help'):
-    if scons_tools.data.get(env).dependencies["OpenCV21"]:
+    if scons_tools.data.get(env).dependencies["OpenCV21"].ok:
         pass
-    elif scons_tools.data.get(env).dependencies["OpenCV22"]:
+    elif scons_tools.data.get(env).dependencies["OpenCV22"].ok:
         pass
     else:
-        print "em2d disabled due to missing dependency OpenCV"
+        print "Module em2d disabled due to missing dependency OpenCV"
         scons_tools.data.get(env).add_module("em2d",ok=False)
         Return()
 
