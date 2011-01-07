@@ -1,5 +1,6 @@
 from SCons.Script import Builder, File, Action, Glob, Return, Dir, Move, Copy, Scanner, Chmod
-
+import os.path
+import utility
 
 template = """#!/bin/sh
 
@@ -8,6 +9,8 @@ template = """#!/bin/sh
 @PYTHONPATH@
 
 @BUILDROOT@
+
+@MODULEPATH@
 
 @PATH@
 
@@ -22,74 +25,55 @@ exec ${precommand} "$@"
 
 # Custom builder to generate file:
 def builder_script_file(target, source, env):
+    sep= utility.get_separator(env)
+
     outfile = file(target[0].abspath, 'w')
+    template= source[0].get_contents()
+    root=source[1].get_contents()
+    pythonpath=source[2].get_contents().split(sep)
+    ldpath=source[3].get_contents().split(sep)
+    precommand=source[4].get_contents()
+    path=source[5].get_contents().split(sep)
 
-    sep=":"
-    varname=None
-    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
-        varname= "LD_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'darwin':
-        varname= "DYLD_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'win32' and not env['wine']:
-        sep=";"
+    libdir= os.path.join(root, "build", "lib")
+    impdir= os.path.join(libdir, "IMP")
+    bindir= os.path.join(root, "build", "bin")
 
-    for line in source[0].get_contents().split('\n'):
+    varname= utility.get_dylib_name(env)
+
+    lines={"@LDPATH@":(varname, sep.join([libdir]+ldpath), True),
+           "@PYTHONPATH@":("PYTHONPATH", sep.join([libdir]+pythonpath), True),
+           "@PATH@":("PATH", sep.join([bindir]+path), True),
+           "@BUILDROOT@":("IMP_BUILD_ROOT", root, True),
+           "@PRECOMMAND@":("precommand", precommand, False),
+           "@MODULEPATH@":("IMP_MODULE_PATH", impdir, True)}
+
+    for line in template.split('\n'):
         line = line.rstrip('\r\n')
-        if line == "@LDPATH@":
-            if varname:
-                libs= sep+source[5].get_contents()
-                if source[4].get_contents() != "":
-                    libs= libs+sep+source[4].get_contents()
-                line = varname + "='"+source[1].get_contents()+"/build/lib"+\
-                    libs+"'\nexport " + varname
-            else:
-                line=""
-        if line == "@PYTHONPATH@":
-            pl=[source[1].get_contents()+"/build/lib"]
-            if source[2].get_contents() != "":
-                pl.append(source[2].get_contents().replace(":", sep))
-            line= "PYTHONPATH='"+\
-                sep.join(pl)+\
-                          "'\nexport PYTHONPATH"
-        if line == "@PATH@":
-            pl=[source[1].get_contents()+"/build/bin"]
-            if source[7].get_contents() != "":
-                pl.append(source[7].get_contents().replace(":", sep))
-            line= "PATH='"+\
-                sep.join(pl)+\
-                          "'\nexport PATH"
-        if line == "@BUILDROOT@":
-            line= "IMP_BUILD_ROOT='%s'" \
-                  % source[1].get_contents() + "\nexport IMP_BUILD_ROOT"
-        if line == "@PRECOMMAND@":
-            line="precommand='"
-            if len(source[3].get_contents())!=0:
-                line = line + source[3].get_contents()+" "
-            if len(source[6].get_contents()) != 0:
-                line = line+ source[6].get_contents()
-            line=line+"'"
-        print >> outfile, line
+
+        if lines.has_key(line):
+            val= lines[line]
+            if val[0] and len(val[1])>0:
+                print >> outfile, val[0]+"="+val[1]
+                if val[2]:
+                    print >> outfile, "export", val[0]
+        else:
+            print >> outfile, line
     outfile.close()
     env.Execute(Chmod(str(target[0]), 0755))
 
 def add(env, target):
     env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
-    libpath=""
-    ldpath=""
-    prec=""
-    if not env['IMP_USE_RPATH'] and env.get('ldlibpath', None):
-        libpath=":".join(env['libpath'])
-    if env.get('ldlibpath', None):
-        ldpath= env.get('ldlibpath', "")
     prec=""
     if env.get('precommand', None):
         prec= env['precommand']
+    if env.get('MODELLER_MODPY', None):
+        prec=prec+" "+env['MODELLER_MODPY']
     bin = env.ScriptFile(target,
-                         [env.Value(template), env.Value(env.Dir('#').abspath),
+                         [env.Value(template),
+                          env.Value(env.Dir('#').abspath),
                           env.Value(env.get('pythonpath', "")),
-                          env.Value(env['MODELLER_MODPY']),
-                          env.Value(libpath),
-                          env.Value(ldpath),
-                                        env.Value(prec),
+                          env.Value(utility.get_ld_path(env)),
+                          env.Value(prec),
                           env.Value(env['ENV']['PATH'])])
     return bin
