@@ -23,6 +23,11 @@ topology.apply_default_patches(ff)
 # can also be manually assigned at this point using the CHARMMAtom decorator.
 topology.add_atom_types(prot)
 
+# Remove any atoms that are in the PDB file but not in the topology, and add
+# in any that are in the topology but not the PDB.
+IMP.atom.remove_charmm_untyped_atoms(prot)
+topology.add_missing_atoms(prot)
+
 # Generate and return lists of bonds, angles, dihedrals and impropers for
 # the protein. Each is a Particle in the model which defines the 2, 3 or 4
 # atoms that are bonded, and adds parameters such as ideal bond length
