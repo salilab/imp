@@ -230,7 +230,7 @@ def get_python_result(env, setup, cmd):
         os.environ[varname]=ldpath+get_separator(env)+olddylib
     else:
         olddylib=None
-    print setup, cmd
+    #print setup, cmd
     exec setup+"\n"+"ret="+cmd
     if opp:
         sys.path=opp
