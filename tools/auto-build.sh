@@ -14,9 +14,8 @@
 VER=SVN
 IMPSVNDIR=file:///cowbell1/svn/imp/trunk/
 
-TMPDIR=/var/tmp/modeller-build-$$
-MODINSTALL=/salilab/diva1/home/modeller/.${VER}-new
-IMPSRCTGZ=${MODINSTALL}/build/sources/imp.tar.gz
+TMPDIR=/var/tmp/imp-build-$$
+IMPTOP=/salilab/diva1/home/imp
 
 rm -rf ${TMPDIR}
 mkdir ${TMPDIR}
@@ -24,6 +23,16 @@ cd ${TMPDIR}
 
 # Get top-most revision number (must be a nicer way of doing this?)
 rev=$(svn log -q --limit 1 ${IMPSVNDIR} |grep '^r' | cut -f 1 -d' ')
+
+# Get date and revision-specific install directories
+IMPINSTALL=${IMPTOP}/`date "+%Y%m%d"`-${rev}
+IMPSRCTGZ=${IMPINSTALL}/build/sources/imp.tar.gz
+rm -rf ${IMPINSTALL}
+mkdir -p ${IMPINSTALL}/build/sources
+
+# Make link so build system can find the install location
+rm -f ${IMPTOP}/.SVN-new
+ln -s ${IMPINSTALL} ${IMPTOP}/.SVN-new
 
 # Get IMP code from SVN
 svn export -q -${rev} ${IMPSVNDIR} imp
@@ -34,11 +43,12 @@ DATE=`date +'%Y/%m/%d'`
 perl -pi -e "s/version=[\"']SVN[\"']/version='SVN.${rev}'/" imp/kernel/SConscript imp/modules/*/SConscript imp/applications/*/SConscript imp/biological_systems/*/SConscript
 
 # Write out a version file
-verfile="${MODINSTALL}/build/imp-version"
+verfile="${IMPINSTALL}/build/imp-version"
+mkdir -p "${IMPINSTALL}/build"
 echo "${rev}" > $verfile
 
 # Write out list of all modules
-modfile="${MODINSTALL}/build/imp-modules"
+modfile="${IMPINSTALL}/build/imp-modules"
 python <<END
 def Import(var): pass
 def SConscript(var): pass
