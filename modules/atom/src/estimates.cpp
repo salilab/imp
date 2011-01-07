@@ -48,7 +48,9 @@ double get_volume_from_residue_type(ResidueType rt) {
   IMP_USAGE_CHECK(radii_map.find(rt) != radii_map.end(),
                   "Can't approximate volume of non-standard residue " << rt);
   double r= radii_map.find(rt)->second;
-  return 4/3.0*PI*r*square(r);
+  IMP_INTERNAL_CHECK(r>0, "Read garbage r for "<< rt);
+  return algebra::get_volume(algebra::Sphere3D(algebra::get_zero_vector_d<3>(),
+                                               r));
 }
 
 IMPATOM_END_NAMESPACE
