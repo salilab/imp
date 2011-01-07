@@ -25,7 +25,7 @@ public:
     cc_score_=cc_score;
     orig_index_ = orig_index;
   }
-  void join_into(const FittingTransformation& t) {
+  void add_transformation(const FittingTransformation& t) {
     //todo - improve using average quaterion
     //if the new transformation (t) fits the map better, use it
     if (t.get_score() > cc_score_) {
@@ -33,15 +33,15 @@ public:
       orig_index_ = t.orig_index_;
       representative_rt_ = t.representative_rt_;
     }
-    all_rt_.push_back(t.get_transformation());
+    all_rt_.push_back(t.get_representative_transformation());
   }
   unsigned int get_number_of_transformations() const {
     return all_rt_.size();
   }
-  void inc_score(float s) {
+  void update_score(float s) {
     //score_ += s;
   }
-  algebra::Transformation3D get_transformation() const {
+  algebra::Transformation3D get_representative_transformation() const {
     return representative_rt_;
   }
   float get_score() const {return cc_score_;}
@@ -76,7 +76,8 @@ void fitting_clustering (
           << clustered_ts.get_number_of_solutions() << std::endl);
   //set output
   for(unsigned int i=0;i<clustered_ts_temp.size();i++) {
-    clustered_ts.add_solution(clustered_ts_temp[i].get_transformation(),
+    clustered_ts.add_solution(
+                    clustered_ts_temp[i].get_representative_transformation(),
                               clustered_ts_temp[i].get_score());
   }
 }

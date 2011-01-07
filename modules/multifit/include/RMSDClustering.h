@@ -23,10 +23,15 @@ IMPMULTIFIT_BEGIN_NAMESPACE
   clusters transformations for which the transformed centroids are close
  (fall into the same bin in a hash. Then, all clusters are globally reclustered.
   /note TransT should implement the functions:
-        join_into() that joins a transformation into the current
+        add_transformation() add a transformation to the current cluster and
+                   possibly updates the representative transformation for the
+                   cluster
         get_score() that returns the score (higher score is better)
-        inc_score() that updates the score of the
+        update_score() that updates the score of the
                     cluster according to a new member
+        get_representative_transformation() a function that returns the
+                    the representative transformation for a cluster
+
 */
 template <class TransT>
 class RMSDClustering {
@@ -40,14 +45,15 @@ public:
   }
   virtual ~TransformationRecord() {}
   //! Join the transfromations into this.
-  void join_into(const TransformationRecord& record) {
-    trans_.inc_score(record.trans_.get_score());
-    trans_.join_into(record.trans_);
+  void add_transformation(const TransformationRecord& record) {
+    trans_.update_score(record.trans_.get_score());
+    trans_.add_transformation(record.trans_);
   }
   inline float get_score() const { return trans_.get_score();}
   const algebra::Vector3D get_centroid() const { return centroid_; }
   void set_centroid(algebra::Vector3D& centroid) {
-    centroid_ = trans_.get_transformation().get_transformed(centroid); }
+    centroid_ = trans_.get_representative_transformation().get_transformed(
+                                                                   centroid); }
   TransT get_record() const {return trans_;}
   bool get_valid() const {return valid_;}
   void set_valid(bool v) {valid_=v;}
@@ -107,7 +113,7 @@ void build_graph(const Hash3::PointList &inds,
  int fast_clustering(float max_dist,
                      std::vector<TransformationRecord *>& recs);
 
- virtual int exhustive_clsutering(float max_dist,
+ virtual int exhaustive_clustering(float max_dist,
            std::vector<TransformationRecord *>& recs);
  //! Remove transformations which are not valid.
  // should be used after each invokation of work.
@@ -126,8 +132,8 @@ void build_graph(const Hash3::PointList &inds,
 template<class TransT> float
 RMSDClustering<TransT>::get_squared_distance(const TransT& trans1,
                                      const TransT& trans2) {
-  return rmsd_calc_.get_squared_rmsd(trans1.get_transformation(),
-                                     trans2.get_transformation());
+  return rmsd_calc_.get_squared_rmsd(trans1.get_representative_transformation(),
+                                  trans2.get_representative_transformation());
 }
 
 template<class TransT>
@@ -163,7 +169,7 @@ void RMSDClustering<TransT>::build_full_graph(const Hash3 &h,
   //add edges
   for (int i = 0 ; i < (int)recs.size() ; ++i) {
     TransT tr=recs[i]->get_record();
-    algebra::Transformation3D t = tr.get_transformation();
+    algebra::Transformation3D t = tr.get_representative_transformation();
     Hash3::HashResult result =
       h.neighbors(Hash3::INF, t.get_transformed(centroid_), max_dist);
     for ( size_t k=0; k<result.size(); ++k ) {
@@ -219,10 +225,10 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
         TransformationRecord* rec1 = recs[v1_ind];
         TransformationRecord* rec2 = recs[v2_ind];
         if (rec1->get_score() > rec2->get_score()) {
-          rec1->join_into(*rec2);
+          rec1->add_transformation(*rec2);
           rec2->set_valid(false);
         } else {
-          rec2->join_into(*rec1);
+          rec2->add_transformation(*rec1);
           rec1->set_valid(false);
         }
     }
@@ -254,7 +260,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
     used[i] = false;
     TransT tr=recs[i]->get_record();
     algebra::Transformation3D t =
-      tr.get_transformation();
+      tr.get_representative_transformation();
     algebra::Vector3D trans_cen = t.get_transformed(centroid_);
     g_hash.add(trans_cen, i);
     IMP_LOG(VERBOSE,"add to hash vertex number:"<<i
@@ -281,7 +287,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
 
 
 template<class TransT>
-int RMSDClustering<TransT>::exhustive_clsutering(float max_dist,
+int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
            std::vector<RMSDClustering<TransT>::TransformationRecord *>& recs) {
   if (recs.size()<2) return 0;
   bool used[recs.size()];
@@ -290,7 +296,8 @@ int RMSDClustering<TransT>::exhustive_clsutering(float max_dist,
   //load the hash
   for (int i = 0 ; i < (int)recs.size() ; ++i) {
     used[i] = false;
-    algebra::Transformation3D t = recs[i]->get_record().get_transformation();
+    algebra::Transformation3D t =
+                  recs[i]->get_record().get_representative_transformation();
     ghash.add(t.get_transformed(centroid_), i);
   }
   //build the graph
@@ -336,7 +343,7 @@ void RMSDClustering<TransT>::cluster(float max_dist,
   }
   clean(records);
   //complete full clustering
-  while (exhustive_clsutering(max_dist, *records)){
+  while (exhaustive_clustering(max_dist, *records)){
     clean(records);
   }
   clean(records);
