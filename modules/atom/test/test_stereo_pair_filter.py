@@ -76,9 +76,13 @@ class StereoPairFilterTests(IMP.test.TestCase):
 
     def assertInputParticlesEqual(self, pf, inp, exp_outps):
         outps = pf.get_input_particles(inp)
-        self.assertEqual(len(outps), len(exp_outps))
-        for a, b in zip(outps, exp_outps):
-            self.assertEqual(a, b)
+        # Note that the order of outps is not predictable (since it is
+        # generated from a map of Particles, which compare based on their
+        # memory addresses, which are not predictable). So, sort both lists
+        # to ensure they are similarly ordered.
+        exp_outps.sort()
+        outps.sort()
+        self.assertEqual(outps, exp_outps)
 
 if __name__ == '__main__':
     IMP.test.main()
