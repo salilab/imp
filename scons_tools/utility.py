@@ -194,3 +194,46 @@ def add_to_lib_path(env, path):
     if not path:
         return
     env.Append(LIBPATH=[path])
+
+def get_dylib_name(env):
+    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
+        return "LD_LIBRARY_PATH"
+    elif env['PLATFORM'] == 'darwin':
+        return "DYLD_LIBRARY_PATH"
+    else:
+        return None
+
+def get_ld_path(env):
+    ret=[]
+    if not env['IMP_USE_RPATH'] and env.get('ldlibpath', None):
+        ret=env['libpath']
+    if env.get('ldlibpath', None):
+        ret.extend(env.get('ldlibpath').split(":"))
+    return ":".join(ret)
+
+def get_separator(env):
+    if env['PLATFORM'] == 'win32' and not env['wine']:
+        return ";"
+    else:
+        return ":"
+
+def get_python_result(env, setup, cmd):
+    if env.get('pythonpath', None):
+        opp= sys.path
+        sys.path= [env['pythonpath']]+opp
+    else:
+        opp=None
+    varname= get_dylib_name(env)
+    ldpath= get_ld_path(env)
+    if varname and len(ldpath)>0:
+        olddylib= os.environ[varname]
+        os.environ[varname]=ldpath+get_separator(env)+olddylib
+    else:
+        olddylib=None
+    print setup, cmd
+    exec setup+"\n"+"ret="+cmd
+    if opp:
+        sys.path=opp
+    if olddylib:
+        os.environ[varname]=olddylib
+    return ret
