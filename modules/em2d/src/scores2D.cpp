@@ -66,12 +66,16 @@ double get_shift_error(const RegistrationResult &rr1,
   return algebra::get_distance(rr1.get_shift(),rr2.get_shift());
 }
 
+
 double get_ccc_to_em2d(double ccc) {
   return 1-ccc;
 }
-double get_em_to_ccc(double em2d) {
+
+
+double get_em2d_to_ccc(double em2d) {
   return 1-em2d;
 }
+
 
 double get_em2d_score(const RegistrationResults &RRs) {
   double em2d = 0.0;

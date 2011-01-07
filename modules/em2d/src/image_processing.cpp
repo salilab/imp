@@ -21,67 +21,6 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-void get_wiener_filter_2d(algebra::Matrix2D_d &m,
-                      algebra::Matrix2D_d &result,
-                      const unsigned int kernel_rows,
-                      const unsigned int kernel_cols) {
-  unsigned int rows=m.get_size(0);
-  unsigned int cols=m.get_size(1);
-  algebra::Matrix2D_d mean(rows,cols),variance(rows,cols);
-//  mean.resize(rows,cols);
-//  variance.resize(rows,cols);
-  result.resize(rows,cols);
-  // save origins and set to zero
-  Pixel origin(m.get_start(0),m.get_start(1));
-  Pixel zero(0,0); m.set_start(zero); result.set_start(zero);
-  // Set kernel init and end
-  Pixel k_init((int)floor(kernel_rows/2),(int)floor(kernel_cols/2));
-  Pixel k_end(kernel_rows-k_init[0], kernel_cols-k_init[1]);
-  double NM=(double)(kernel_rows*kernel_cols); // useful later
-  for (unsigned int i=k_init[0];i<rows-k_end[0]+1;++i) {
-    for (unsigned int j=k_init[1];j<cols-k_end[1]+1;++j) {
-      // Apply the filter
-      double mean_i=0, var_i=0;
-      // Compute mean and variance in the kernel
-      for (int ik=-k_init[0];ik<k_end[0];++ik) {
-        for (int jk=-k_init[1];jk<k_end[1];++jk) {
-          double value = m(i+ik,j+jk);
-          mean_i+=value;
-          var_i+=value*value;
-         }
-      }
-      mean(i,j)=mean_i/NM;
-      variance(i,j)=(var_i-mean(i,j)*mean(i,j))/NM;
-    }
-  }
-  double avg_variance=variance.compute_avg() ;
-  // Filter
-  for (unsigned int i=k_init[0];i<rows-k_end[0]+1;++i) {
-    for (unsigned int j=k_init[1];j<cols-k_end[1]+1;++j) {
-      result(i,j)=mean(i,j)+(1-avg_variance/variance(i,j))*(m(i,j)-mean(i,j));
-    }
-  }
-  // Transfer the pixels that could not be filtered
-  for (unsigned int j=0;j<cols;++j) {
-    for (int i=0;i<k_init[0];++i) {
-      result(i,j)=m(i,j);
-    }
-    for (unsigned int i=rows-k_end[0]+1;i<rows;++i) {
-      result(i,j)=m(i,j);
-    }
-  }
-  for (unsigned int i=0;i<rows;++i) {
-    for (int j=0;j<k_init[1];++j) {
-      result(i,j)=m(i,j);
-    }
-    for (unsigned int j=cols-k_end[1]+1;j<cols;++j) {
-      result(i,j)=m(i,j);
-     }
-  }
-  // restore origin and assign the same to the result
-  m.set_start(origin);  result.set_start(origin);
-}
-
 void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
                       algebra::Matrix2D_d &marker,
                       int neighbors_mode) {
@@ -235,7 +174,7 @@ Pixels get_neighbors2d(const Pixel &p,const algebra::Matrix2D_d &m,
 
 
 
-void do_fillholes(algebra::Matrix2D_d &m,
+void do_fill_holes(algebra::Matrix2D_d &m,
                 algebra::Matrix2D_d &result,double h) {
   algebra::Matrix2D_d  mask;
   double max_m = m.compute_max();
@@ -260,7 +199,7 @@ void do_preprocess_em2d(algebra::Matrix2D_d &m,
                      algebra::Matrix2D_d &result,
                      double n_stddevs) {
   m.normalize();
-  do_fillholes(m,result,1.0); // no standard devs. Fill holes of depth 1
+  do_fill_holes(m,result,1.0); // no standard devs. Fill holes of depth 1
   result.normalize();
   em::FilterByThreshold<double,2> thres;
   thres.set_parameters(0,0); // Threshold 0, clean everything below
@@ -351,12 +290,12 @@ void do_closing(const algebra::Matrix2D_d &m,
 }
 
 
-void do_thresholding(const algebra::Matrix2D_d &m,
+void apply_threshold(const algebra::Matrix2D_d &m,
              algebra::Matrix2D_d &result,
              double threshold,int mode) {
   IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
                   (m.get_number_of_columns()==result.get_number_of_columns()),
-                  "em2d::do_thresholding: Matrices have different size.");
+                  "em2d::apply_threshold: Matrices have different size.");
 
 
   for(unsigned int i=0;i<m.num_elements();++i) {

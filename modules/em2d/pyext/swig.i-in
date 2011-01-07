@@ -4,6 +4,7 @@ IMP_SWIG_VALUE(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
+IMP_SWIG_VALUE(IMP::em2d, TransformationsCluster, TransformationsClusters);
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);
@@ -33,7 +34,8 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/Em2DRestraint.h"
 %include "IMP/em2d/Pixel.h"
 %include "IMP/em2d/image_processing.h"
-// %include "IMP/em2d/opencv_interface.h"
+%include "IMP/em2d/TransformationsCluster.h"
+%include "IMP/em2d/model_interaction.h"
 
 
 namespace IMP {

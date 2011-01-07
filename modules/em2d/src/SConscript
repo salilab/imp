@@ -17,7 +17,9 @@ files = [
   "scores2D.cpp" ,
   "Em2DRestraint.cpp",
   "Image.cpp",
-        ]\
+  "TransformationsCluster.cpp",
+  "cluster_of_models.cpp"
+          ]\
         + SConscript("internal/SConscript")
 
 # Build and install the shared library:

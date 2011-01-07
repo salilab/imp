@@ -12,25 +12,10 @@
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Pixel.h"
-#include "IMP/em/image_transformations.h"
 #include "IMP/algebra/Matrix2D.h"
 #include <algorithm>
 
 IMPEM2D_BEGIN_NAMESPACE
-
-//! Adaptive Wiener filter for a 2D matrix m, which is stored in matrix result
-/*! \param[in] kernel_rows the total number of rows to use in the kernel
-               of the filter
-    \param[in] kernel_rows the total number of columns to use in the kernel
-              of the filter
-  \note
-*/
- IMPEM2DEXPORT void get_wiener_filter_2d(algebra::Matrix2D_d &m,
-                      algebra::Matrix2D_d &result,
-                      const unsigned int kernel_rows=3,
-                      const unsigned int kernel_cols=3);
-
-
 
 //! Morphological grayscale reconstruction (L Vincent, 1993)
 /*!
@@ -71,7 +56,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 //! Fills the holes in the matrix m of height h
- IMPEM2DEXPORT void do_fillholes(
+ IMPEM2DEXPORT void do_fill_holes(
             algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
 
 //! Gets the domes of m with height h
@@ -131,7 +116,7 @@ IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
   \param[in] mode if 1 the values higher than the threshold are given value 1.
                   If the mode is -1, the values lower the threshold are given 1.
 */
- IMPEM2DEXPORT void do_thresholding(
+ IMPEM2DEXPORT void apply_threshold(
                   const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
                    double threshold, int mode);
 
