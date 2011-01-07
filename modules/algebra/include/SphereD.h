@@ -27,7 +27,9 @@ public:
 #endif
   }
   SphereD(const VectorD<D>& center,double radius):center_(center),
-                                                  radius_(radius){}
+                                                  radius_(radius){
+    IMP_USAGE_CHECK(radius>=0, "Radius can't be negative");
+  }
   double get_radius() const {
     IMP_USAGE_CHECK(!is_nan(radius_),
               "Attempt to use uninitialized sphere.");
