@@ -11,7 +11,6 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/CenteredMat.h"
 #include "IMP/em/exp.h"
-#include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"

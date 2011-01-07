@@ -157,8 +157,6 @@ class ProjectTests(IMP.test.TestCase):
         tif_img=IMP.em2d.Image(fn_tif_img,trw)
         fn_spider_img = self.get_input_file_name("lena-256x256.spi")
         spider_img=IMP.em2d.Image(fn_spider_img,srw)
-        tif_img.write("lena.spi",srw)
-
         rows =int( tif_img.get_header().get_number_of_rows())
         cols = int(tif_img.get_header().get_number_of_columns())
 
@@ -183,7 +181,7 @@ class ProjectTests(IMP.test.TestCase):
                                            img2.get_data())
         self.assertAlmostEqual(ccc,1,delta=0.01,
         msg="Written TIFF image is not equal to read ")
-        # os.remove(fn_img2)
+        os.remove(fn_img2)
 
     def test_write_error_tiff(self):
         """Test that writing with TIFFReaderWriter fails with bad extension"""

@@ -13,7 +13,6 @@
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
-#include "IMP/em/Image.h"
 #include <IMP/Restraint.h>
 #include <IMP/log.h>
 #include <IMP/SingletonContainer.h>

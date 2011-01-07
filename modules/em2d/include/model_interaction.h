@@ -27,13 +27,16 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+/** OBSOLETE
 //! Generates a density map from a Molecular Hierarchy by downsampling
 IMPEM2DEXPORT Pointer<em::SampledDensityMap>
                             get_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize);
+**/
 
 
+/** OBSOLETE
 //! Generates a density map from a PDB file by downsampling.
 /*!
   \param[in] fn_model name of the PDB file
@@ -41,12 +44,13 @@ IMPEM2DEXPORT Pointer<em::SampledDensityMap>
   \param[in] resolution in Angstroms.
   \param[in] voxelsize in Angstroms/pixel
   \param[in] mrw Reader/Writer for the desired format
-*/
+
 IMPEM2DEXPORT void get_map_from_model(String fn_model,
                              String fn_map,
                             double resolution,
                             double voxelsize,
                             em::MapReaderWriter &mrw);
+**/
 
 
 //! Generate a PDB file from a set of Vector2D (all the points are C-alpha) and
@@ -54,11 +58,28 @@ IMPEM2DEXPORT void get_map_from_model(String fn_model,
 /*!
   \note This version deals with the problem of having more than 10000 points
 */
-IMPEM2DEXPORT void Vector2Ds_to_pdb(
+IMPEM2DEXPORT void write_vector2Ds_as_pdb(
                   const algebra::Vector2Ds vs, const String filename);
 
-IMPEM2DEXPORT void Vector3Ds_to_pdb(
+IMPEM2DEXPORT void write_vector3Ds_as_pdb(
                   const algebra::Vector3Ds vs, const String filename);
+
+
+// Read all the pdbs from a selection file
+/*!
+  \param[in] selection_file. Selection file with the names of the pdb files
+  \param[in] model Model to store the particles read
+  \param[in] selector Type of selector desired.
+  \param[out] Hierarchies Set of hierarchies, one per model
+
+*/
+IMPEM2DEXPORT atom::Hierarchies
+       read_multiple_pdb_files(const String &selection_file,
+                               Model* model,
+                               atom::PDBSelector* selector,
+                               bool select_first_model = true,
+                               bool no_radii=false );
+
 
 IMPEM2D_END_NAMESPACE
 

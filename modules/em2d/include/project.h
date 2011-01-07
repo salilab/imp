@@ -11,16 +11,12 @@
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
-#include "IMP/em/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/FFTinterface.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/MRCReaderWriter.h"
 #include "IMP/em/SpiderReaderWriter.h"
-#include "IMP/algebra/interpolation.h"
-#include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/Matrix3D.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/SphericalVector3D.h"
@@ -141,12 +137,12 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
              of keeping them in memory. Useful when memory is an issue
   \param[in] names of the projections if saved to disk
 */
- IMPEM2DEXPORT em::Images get_projections(em::DensityMap *map,
-        const algebra::SphericalVector3Ds &vs,
-        int rows, int cols,
-        const em::ImageReaderWriter<double> &srw,
-        bool project_and_save=false,
-        Strings names=Strings());
+// IMPEM2DEXPORT em::Images get_projections(em::DensityMap *map,
+//        const algebra::SphericalVector3Ds &vs,
+//        int rows, int cols,
+//        const em::ImageReaderWriter<double> &srw,
+//        bool project_and_save=false,
+//        Strings names=Strings());
 
 
 
@@ -162,9 +158,9 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
  * \param[in] equality_tolerance tolerance allowed to consider a value in the
  *            direction as zero.
 */
- IMPEMEXPORT void do_project_map(em::DensityMap *map,
-  algebra::Matrix2D_d &m2,int rows,int cols,
-    const RegistrationResult &reg,double equality_tolerance);
+// IMPEMEXPORT void do_project_map(em::DensityMap *map,
+//  algebra::Matrix2D_d &m2,int rows,int cols,
+//    const RegistrationResult &reg,double equality_tolerance);
 
 
 

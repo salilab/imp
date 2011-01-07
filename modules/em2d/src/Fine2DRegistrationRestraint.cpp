@@ -137,7 +137,7 @@ void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
   algebra::Vector3D translation= PP_.get_translation();
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em_to_ccc(em2d));
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(em2d));
   rr.show(out);
   out << " em2d: " << em2d;
 
@@ -151,7 +151,7 @@ RegistrationResult Fine2DRegistrationRestraint::get_final_registration() {
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
   double em2d = unprotected_evaluate(NULL);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em_to_ccc(em2d));
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(em2d));
   return rr;
 }
 

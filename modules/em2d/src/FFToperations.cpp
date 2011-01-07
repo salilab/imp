@@ -5,92 +5,9 @@
 */
 
 #include "IMP/em2d/FFToperations.h"
-#include "IMP/em/Image.h"
-#include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
-
-// Forget about const in these functions. FFT1D and FFT2D when used with fftw3
-// can not be const.
-
-//
-//void get_correlation2d(algebra::Matrix2D_d &m1,
-//                   algebra::Matrix2D_d &m2,
-//                          algebra::Matrix2D_d &corr) {
-//  IMP_LOG(IMP::VERBOSE,"Computing 2D correlation " <<std::endl);
-//
-//  IMP_USAGE_CHECK((m1.get_number_of_rows()==m2.get_number_of_rows()) &&
-//                  (m1.get_number_of_columns()==m1.get_number_of_columns()),
-//                  "em2d:get_correlation2d: Matrices have different size.");
-//  corr.resize(m1);
-//  algebra::Matrix2D_c M1,M2;
-//  FFT2D fft1(m1,M1); fft1.execute();
-//  FFT2D fft2(m2,M2); fft2.execute();
-//  for(unsigned long i=0;i<M1.num_elements();++i) {
-//    std::complex<double> x1 = M1.data()[i];
-//    std::complex<double> x2 = M2.data()[i];
-//    M2.data()[i] = x1*std::conj(x2);
-//  }
-//  IFFT2D ifft(M2,corr); ifft.execute(); // corr is the correlation matrix
-//  matrix_to_image_interpretation(corr);
-//}
-//
-//void get_correlation2d_no_preprocessing(
-//                   algebra::Matrix2D_c &M1,
-//                   algebra::Matrix2D_c &M2,
-//                   algebra::Matrix2D_d &corr) {
-//  IMP_LOG(IMP::VERBOSE,
-//          "Computing 2D correlation with no preprocessing" << std::endl);
-//  IMP_USAGE_CHECK((M1.get_number_of_rows()==M2.get_number_of_rows()) &&
-//                  (M1.get_number_of_columns()==M2.get_number_of_columns()),
-//     "em2d::get_correlation2d_no_preprocessing: "
-//     "Matrices have different size.");
-//
-//  algebra::Matrix2D_c CORR(M1.get_size(0),M1.get_size(1));
-//  for(unsigned long i=0;i<M1.num_elements();++i) {
-//    CORR.data()[i] = M1.data()[i] * std::conj(M2.data()[i]);
-//  }
-//  IFFT2D ifft(CORR,corr);ifft.execute(); //corr is the correlation matrix
-//  matrix_to_image_interpretation(corr);
-//}
-//
-//void get_autocorrelation2d(algebra::Matrix2D_d& m,
-//                               algebra::Matrix2D_d& corr) {
-//  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation" <<std::endl);
-//  algebra::Matrix2D_c M;
-//  corr.resize(m);
-//  FFT2D fft(m,M); fft.execute();
-//  get_autocorrelation2d_no_preprocessing(M,corr);
-//}
-//
-//
-//
-//
-//void get_autocorrelation2d_no_preprocessing(
-//                    algebra::Matrix2D_c &M,
-//                    algebra::Matrix2D_d &corr) {
-//  IMP_LOG(IMP::VERBOSE,"Computing 2D autocorrelation with no preprocessing"
-//              <<std::endl);
-//  algebra::Matrix2D_c AUTOCORR(M.get_size(0),M.get_size(1));
-//  for(unsigned long i=0;i<M.num_elements();++i) {
-//    (AUTOCORR.data()[i]) = std::norm(M.data()[i]);
-//  }
-//  IFFT2D ifft(AUTOCORR,corr); ifft.execute();
-//  matrix_to_image_interpretation(corr);
-// };
-//
-//
-//void Matrix2D_c_to_img(algebra::Matrix2D_c &M,String name) {
-//  const em::SpiderImageReaderWriter<double> srw;
-//  IMP_NEW(em::Image,img,());
-//  img->resize(M.get_size(0),M.get_size(1));
-//  for(unsigned long i=0;i<M.num_elements();++i) {
-//      (img->get_data().data()[i]) = std::norm(M.data()[i]);
-//  }
-//  img->write(name,srw);
-//
-//}
 
 
 void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
@@ -104,9 +21,6 @@ void get_autocorrelation2d_no_preprocessing(const cv::Mat &M, cv::Mat &corr) {
   temp(cv::Rect(0, 0, corr.cols, corr.rows)).copyTo(corr);
   do_matrix_to_image_flip(corr);
 }
-
-
-
 
 
 void get_autocorrelation2d(const cv::Mat &m, cv::Mat &corr) {

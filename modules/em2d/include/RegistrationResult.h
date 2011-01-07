@@ -9,7 +9,7 @@
 
 #include "IMP/em2d/internal/rotation_helper.h"
 #include "IMP/em2d/em2d_config.h"
-#include "IMP/em/Image.h"
+#include "IMP/em/ImageHeader.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
@@ -23,7 +23,7 @@ IMPEM2D_BEGIN_NAMESPACE
 //! Class to manage registration results
 /*!
   \note  Stores the rotation and in-plane translation needed to register a
-  model
+  model with an EM image
   Contains:
   - Rotation in 3D of the model to register its projection with an image
   - The rotation is understood as ZYZ

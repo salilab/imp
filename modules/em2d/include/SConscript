@@ -26,6 +26,8 @@ files = [
     "JPGImageReaderWriter.h",
     "TIFFImageReaderWriter.h",
     "ImageReaderWriter.h",
+    "TransformationsCluster.h",
+    "cluster_of_models.h"
       ] + SConscript("internal/SConscript")
 
 # Install the include files:

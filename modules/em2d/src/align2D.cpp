@@ -10,8 +10,6 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/scores2D.h"
-#include "IMP/em/noise.h"
-#include "IMP/em/Image.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/exp.h"
 #include "IMP/exception.h"

@@ -6,14 +6,17 @@
 */
 
 #include "IMP/em2d/model_interaction.h"
-#include "IMP/em/MRCReaderWriter.h"
+#include "IMP/em2d/filenames_manipulation.h"
+#include "IMP/em/MapReaderWriter.h"
 #include "IMP/atom/Atom.h"
 #include "IMP/atom/force_fields.h" // add_radii
 #include "IMP/atom/pdb.h"
 #include "IMP/atom/element.h"
+#include "IMP/Pointer.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
+/** OBSOLETE
 Pointer<em::SampledDensityMap> get_map_from_model(const Particles &ps,
                             double resolution,
                             double voxelsize) {
@@ -22,7 +25,8 @@ Pointer<em::SampledDensityMap> get_map_from_model(const Particles &ps,
 //  map->get_header_writable()->set_spacing(voxelsize);
   return map;
 }
-
+**/
+/** OBSOLETE
 void get_map_from_model(String fn_model,
                              String fn_map,
                             double resolution,
@@ -38,9 +42,10 @@ void get_map_from_model(String fn_model,
                     get_map_from_model(ps,resolution,voxelsize);
   em::write_map(map,fn_map.c_str(),mrw);
 }
+**/
 
-
-void Vector3Ds_to_pdb(const algebra::Vector3Ds vs, const String filename) {
+void write_vector3Ds_as_pdb(const algebra::Vector3Ds vs,
+                            const String filename) {
   std::string chains = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::ofstream out;
   out.open(filename.c_str(),std::ios::out);
@@ -54,7 +59,8 @@ void Vector3Ds_to_pdb(const algebra::Vector3Ds vs, const String filename) {
   out.close();
 }
 
-void Vector2Ds_to_pdb(const algebra::Vector2Ds vs,const  String filename) {
+void write_vector2Ds_as_pdb(const algebra::Vector2Ds vs,
+                            const  String filename) {
   std::string chains = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::ofstream out;
   out.open(filename.c_str(),std::ios::out);
@@ -68,5 +74,23 @@ void Vector2Ds_to_pdb(const algebra::Vector2Ds vs,const  String filename) {
   out.close();
 }
 
+
+atom::Hierarchies read_multiple_pdb_files(const String &selection_file,
+                               Model* model,
+                               atom::PDBSelector* selector,
+                               bool select_first_model,
+                               bool no_radii) {
+  Strings fn_pdbs=read_selection_file(selection_file);
+  atom::Hierarchies mhs(fn_pdbs.size());
+  for (unsigned int i=0;i<fn_pdbs.size();++i) {
+    TextInput fn_pdb(fn_pdbs[i]);
+    mhs[i]=atom::read_pdb(fn_pdbs[i],
+                          model,
+                          selector,
+                          select_first_model,
+                          no_radii);
+  }
+  return mhs;
+};
 
 IMPEM2D_END_NAMESPACE

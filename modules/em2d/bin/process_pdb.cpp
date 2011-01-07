@@ -14,13 +14,10 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 
-#include "IMP/em/image_transformations.h"
-#include "IMP/em/Image.h"
 #include "IMP/em/SampledDensityMap.h"
 #include "IMP/em/SpiderReaderWriter.h"
 #include "IMP/em/MRCReaderWriter.h"
 #include "IMP/em2d/project.h"
-#include "IMP/em/noise.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
