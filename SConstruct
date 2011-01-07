@@ -86,8 +86,6 @@ if not env.GetOption('help'):
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
     env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
-    imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
-    env.Alias(env.Alias('all'), imppy)
 
 first=["kernel", "modules", "applications", "biological_systems"]
 last=["doc"]
@@ -112,6 +110,8 @@ for f in reordered:
 if not env.GetOption('help'):
     # This must be after the other SConscipt calls so that it knows about all the generated files
     scons_tools.doc.add_overview_pages(env)
+    imppy= scons_tools.imppy.add(env, "tools/imppy.sh")
+    env.Alias(env.Alias('all'), imppy)
 
     env.Alias(env.Alias('test'), [env.Alias('examples-test')])
 
