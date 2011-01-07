@@ -91,6 +91,8 @@ class RegressionTest(object):
 
 
 if __name__ == "__main__":
+    if len(sys.argv) <2:
+        exit(0)
     excluded_modules = sys.argv[1].split(":")
     files = sys.argv[2:]
     sys.argv=[sys.argv[0], "-v"]
