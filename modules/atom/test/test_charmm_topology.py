@@ -102,6 +102,22 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_dihedral(0).get_contains_atom('O'), True)
         self.assertEqual(res.get_improper(0).get_contains_atom('O'), True)
 
+    def test_add_ic(self):
+        """Check addition of internal coordinates"""
+        res = IMP.atom.CHARMMIdealResidueTopology(IMP.atom.ResidueType('FOO'))
+        ic = IMP.atom.CHARMMInternalCoordinate(['N', 'C', 'CA', 'CB'],
+                                               1,2,3,4,5,True)
+        self.assertEqual(ic.get_first_distance(), 1)
+        self.assertEqual(ic.get_first_angle(), 2)
+        self.assertEqual(ic.get_dihedral(), 3)
+        self.assertEqual(ic.get_second_angle(), 4)
+        self.assertEqual(ic.get_second_distance(), 5)
+        self.assertEqual(ic.get_contains_atom('N'), True)
+        self.assertEqual(ic.get_contains_atom('CG'), False)
+        self.assertEqual(res.get_number_of_internal_coordinates(), 0)
+        res.add_internal_coordinate(ic)
+        self.assertEqual(res.get_number_of_internal_coordinates(), 1)
+
     def test_patch(self):
         """Check the CHARMM patch class"""
         patch = IMP.atom.CHARMMPatch('PFOO')

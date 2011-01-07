@@ -81,6 +81,29 @@ class CHARMMParametersTests(IMP.test.TestCase):
         self.assertRaises(IndexError, p.get_improper_parameters,
                           'NPH', 'CPA', 'CPB', 'CPA')
 
+    def test_read_topology(self):
+        """Check parsing of topology file"""
+        p = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'))
+        r = p.get_residue_topology("ALA")
+        self.assertEqual(r.get_number_of_internal_coordinates(), 12)
+        ic = r.get_internal_coordinate(0)
+        ep = [ic.get_endpoint(i).get_atom_name() for i in range(4)]
+        self.assertEqual(ep, ['-C', 'CA', 'N', 'H'])
+        self.assertEqual(ic.get_contains_atom('-C'), True)
+        self.assertEqual(ic.get_contains_atom('C'), False)
+        self.assertEqual(ic.get_contains_atom('*N'), False)
+        self.assertEqual(ic.get_contains_atom('N'), True)
+        self.assertAlmostEqual(ic.get_first_distance(), 1.3551, delta=1e-4)
+        self.assertAlmostEqual(ic.get_first_angle(), 126.4900, delta=1e-4)
+        self.assertEqual(ic.get_improper(), True)
+        self.assertAlmostEqual(ic.get_dihedral(), 180.0000, delta=1e-4)
+        self.assertAlmostEqual(ic.get_second_angle(), 115.4200, delta=1e-4)
+        self.assertAlmostEqual(ic.get_second_distance(), 0.9996, delta=1e-4)
+        ic = r.get_internal_coordinate(1)
+        self.assertEqual(ic.get_improper(), False)
+        ep = [ic.get_endpoint(i).get_atom_name() for i in range(4)]
+        self.assertEqual(ep, ['-C', 'N', 'CA', 'C'])
+
     def assertResidueTopologiesEqual(self, rpdb, rcharmm):
         # Atom names must also match
         self.assertEqual(rpdb.get_number_of_atoms(),

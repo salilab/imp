@@ -50,9 +50,9 @@ IMP_VALUES(CHARMMAtomTopology, CHARMMAtomTopologies);
 
 class CHARMMResidueTopology;
 
-//! The end of a bond, angle, dihedral, or improper.
+//! The end of a bond, angle, dihedral, improper, or internal coordinate.
 /** An endpoint is an atom in a residue; bonds have two endpoints,
-    angles three, and dihedrals and impropers, four.
+    angles three, and dihedrals, impropers and internal coordinates, four.
 
     If residue_ is not NULL, the endpoint is the named atom in the
     pointed-to residue. (This is used for bonds that can span multiple
@@ -91,6 +91,7 @@ IMP_VALUES(CHARMMBondEndpoint, CHARMMBondEndpoints);
 template <unsigned int D>
 class CHARMMConnection
 {
+protected:
   std::vector<CHARMMBondEndpoint> endpoints_;
 public:
   CHARMMConnection(const IMP::Strings &atoms) {
@@ -166,6 +167,61 @@ IMP_VALUES(CHARMMAngle, CHARMMAngles);
 
 IMP_VALUES(CHARMMDihedral, CHARMMDihedrals);
 
+#ifdef SWIG
+// Ugly, but SWIG needs a template instantiation before it is used as
+// a base class
+%template(CHARMMDihedral) CHARMMConnection<4>;
+#endif
+
+//! A geometric relationship between four atoms.
+/** The atoms (denoted i,j,k,l here) are uniquely positioned in 3D space
+    relative to each other by means of two distances, two angles, and
+    a dihedral.
+
+    A regular internal coordinate stores the distances between ij and
+    kl respectively, and the angles between ijk and jkl.
+
+    An improper internal coordinate stores the distances between ik and
+    kl respectively, and the angles between ikj and jkl.
+
+    In both cases the dihedral is the angle between the two planes formed
+    by ijk and jkl.
+ */
+class CHARMMInternalCoordinate : public CHARMMConnection<4>
+{
+  float first_distance_, second_distance_, first_angle_, second_angle_,
+        dihedral_;
+  bool improper_;
+public:
+  CHARMMInternalCoordinate(const IMP::Strings &atoms, float first_distance,
+                           float first_angle, float dihedral,
+                           float second_angle, float second_distance,
+                           bool improper)
+             : CHARMMConnection<4>(atoms), first_distance_(first_distance),
+               second_distance_(second_distance), first_angle_(first_angle),
+               second_angle_(second_angle), dihedral_(dihedral),
+               improper_(improper) {}
+
+  float get_first_distance() const { return first_distance_; }
+  float get_second_distance() const { return second_distance_; }
+  float get_first_angle() const { return first_angle_; }
+  float get_second_angle() const { return second_angle_; }
+  float get_dihedral() const { return dihedral_; }
+  bool get_improper() const { return improper_; }
+
+  IMP_SHOWABLE_INLINE(CHARMMInternalCoordinate,
+                      {CHARMMConnection<4>::show(out);
+                       out << "; distances: " << first_distance_ << ", "
+                           << second_distance_ << "; angles: " << first_angle_
+                           << ", " << second_angle_ << "; dihedral: "
+                           << dihedral_;
+                       if (improper_) {
+                         out << "; improper";
+                       }
+                      });
+};
+IMP_VALUES(CHARMMInternalCoordinate, CHARMMInternalCoordinates);
+
 //! Base class for all CHARMM residue-based topology
 class IMPATOMEXPORT CHARMMResidueTopologyBase : public Object
 {
@@ -176,6 +232,7 @@ protected:
   CHARMMAngles angles_;
   CHARMMDihedrals dihedrals_;
   CHARMMDihedrals impropers_;
+  CHARMMInternalCoordinates internal_coordinates_;
 
   CHARMMResidueTopologyBase(std::string type) : type_(type) {
     set_name(std::string("CHARMM residue ") + type);
@@ -228,6 +285,18 @@ public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   CHARMMDihedral &get_improper(unsigned int index) { return impropers_[index]; }
 #endif
+
+  unsigned int get_number_of_internal_coordinates() const {
+    return internal_coordinates_.size();
+  }
+  void add_internal_coordinate(const CHARMMInternalCoordinate &ic) {
+    internal_coordinates_.push_back(ic);
+  }
+  const CHARMMInternalCoordinate
+           &get_internal_coordinate(unsigned int index) const {
+    return internal_coordinates_[index];
+  }
+
   const CHARMMBond &get_bond(unsigned int index) const {
     return bonds_[index];
   }
