@@ -10,7 +10,8 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-void TransformationsCluster::join_into(const TransformationsCluster &cluster) {
+void TransformationsCluster::add_transformation(
+                                   const TransformationsCluster &cluster) {
   all_transformations.push_back(cluster.get_representative_transformation());
   // If the representative transformation of the argument is better than
   // the current one, adopt it.

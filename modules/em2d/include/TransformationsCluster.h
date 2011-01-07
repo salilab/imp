@@ -44,7 +44,7 @@ public:
     \param[in] cluster The cluster of tranformations that could be join to
                 this one.
   */
-  void join_into(const TransformationsCluster &cluster);
+  void add_transformation(const TransformationsCluster &cluster);
 
   // Returns the score for the representative transformation in this cluster
   double get_score() const {
