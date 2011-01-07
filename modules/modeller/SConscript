@@ -1,7 +1,7 @@
 Import('env')
-import scons_tools.dependency.modeller
+import scons_tools.dependency.modeller_test
 
-scons_tools.dependency.modeller.configure_check(env)
+scons_tools.dependency.modeller_test.configure_check(env)
 
 env.IMPModuleBuild(version='SVN', required_modules=['core'],
                    required_dependencies=['modeller'],
