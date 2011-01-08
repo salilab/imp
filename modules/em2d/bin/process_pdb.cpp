@@ -270,7 +270,7 @@ int main(int argc, char **argv) {
       alg::Vector2Ds projected_points=
                 em2d::do_project_vectors(pdb_atoms,R,translation,centroid);
       // Save projection
-      em2d::Vector2Ds_to_pdb(projected_points,proj_names[i]);
+      em2d::write_vector2Ds_as_pdb(projected_points,proj_names[i]);
     }
     // Save projection parameters
     if(digest_parameter("proj_params",vm,opt)) {
