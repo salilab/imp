@@ -40,6 +40,9 @@ def builder_script_file(target, source, env):
     precommand=source[4].get_contents()
     path=source[5].get_contents().split(sep)
     modules=source[6].get_contents().split(":")
+    if pythonpath == ['']: pythonpath = []
+    if ldpath == ['']: ldpath = []
+    if path == ['']: path = []
 
     libdir= os.path.join(root, "build", "lib")
     impdir= os.path.join(libdir, "IMP")
@@ -68,7 +71,7 @@ def builder_script_file(target, source, env):
         if lines.has_key(line):
             val= lines[line]
             if val[0] and len(val[1])>0:
-                print >> outfile, val[0]+"="+val[1]
+                print >> outfile, val[0]+"='"+val[1]+"'"
                 if val[2]:
                     print >> outfile, "export", val[0]
         elif line== "@MODULEROOTS@":
