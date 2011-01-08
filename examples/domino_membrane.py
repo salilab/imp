@@ -19,14 +19,14 @@ def create_representation(tmb,tme,topology):
     mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   updating CA radius to match residue volume
-    f= IMP.FloatKey("radius")
-    for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
-        res=IMP.atom.get_residue(IMP.atom.Atom(p))
-        rt=res.get_residue_type()
-        vol=IMP.atom.get_volume_from_residue_type(rt)
-        radius=math.pow(3*vol/4/math.pi,0.33333333)
-        p.remove_attribute(f)
-        p.add_attribute(f, radius)
+#    f= IMP.FloatKey("radius")
+#    for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
+#        res=IMP.atom.get_residue(IMP.atom.Atom(p))
+#        rt=res.get_residue_type()
+#        vol=IMP.atom.get_volume_from_residue_type(rt)
+#        radius=math.pow(3*vol/4/math.pi,0.33333333)
+#        p.remove_attribute(f)
+#        p.add_attribute(f, radius)
 #   select particles and make rigid bodies
     print "Making rigid bodies"
     rbs=[]
