@@ -205,8 +205,8 @@ def get_dylib_name(env):
 
 def get_ld_path(env):
     ret=[]
-    if not env['IMP_USE_RPATH'] and env.get('ldlibpath', None):
-        ret=env['libpath']
+    if not env['IMP_USE_RPATH'] and env.get('libpath', None):
+        ret=env['libpath'].split(":")
     if env.get('ldlibpath', None):
         ret.extend(env.get('ldlibpath').split(":"))
     return ":".join(ret)
