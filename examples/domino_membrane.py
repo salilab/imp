@@ -15,18 +15,19 @@ def mysign(x):
 def create_representation(tmb,tme,topology):
     m=IMP.Model()
     m.set_log_level(IMP.SILENT)
-    #mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
-    mp0= IMP.atom.read_pdb('2K9P_OMP.pdb', m, IMP.atom.CAlphaPDBSelector())
+    #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
+    #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.CAlphaPDBSelector())
+    mp0= IMP.atom.read_pdb('1rwt_OPM.pdb', m, IMP.atom.CAlphaPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   updating CA radius to match residue volume
-#    f= IMP.FloatKey("radius")
-#    for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
-#        res=IMP.atom.get_residue(IMP.atom.Atom(p))
-#        rt=res.get_residue_type()
-#        vol=IMP.atom.get_volume_from_residue_type(rt)
-#        radius=math.pow(3*vol/4/math.pi,0.33333333)
-#        p.remove_attribute(f)
-#        p.add_attribute(f, radius)
+    f= IMP.FloatKey("radius")
+    for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
+        res=IMP.atom.get_residue(IMP.atom.Atom(p))
+        rt=res.get_residue_type()
+        vol=IMP.atom.get_volume_from_residue_type(rt)
+        radius=math.pow(3*vol/4/math.pi,0.33333333)
+        p.remove_attribute(f)
+        p.add_attribute(f, radius)
 #   select particles and make rigid bodies
     print "Making rigid bodies"
     rbs=[]
@@ -61,9 +62,10 @@ def create_restraints(m, chain, tmb, tme):
         for i in range(len(tmb)):
             s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
             lsc.add_particles(s.get_selected_particles())
-        nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 2.0)
-        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1000))
-        evr= IMP.container.PairsRestraint(ps, nbl)
+#        nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder(), 2.0)
+#        ps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1000))
+#        evr= IMP.container.PairsRestraint(ps, nbl)
+        evr=IMP.core.ExcludedVolumeRestraint(lsc,1000)
         m.add_restraint(evr)
         m.set_maximum_score(evr, .01)
 
@@ -122,14 +124,17 @@ def create_restraints(m, chain, tmb, tme):
 #            s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
             s=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_indexes=[(tmb[i],tme[i]+1)])
             dsc[i].add_particles(s.get_selected_particles())
-        dpc= IMP.container.CloseBipartitePairContainer(dsc[0], dsc[1], 15.0, 0.0)
+        for i in range(len(tmb)-1):
+            for j in range(i+1,len(tmb)):
+                dpc= IMP.container.CloseBipartitePairContainer(dsc[i], dsc[j], 15.0, 0.0)
 # exclude pairs of atoms belonging to the same residue
 # for consistency with MODELLER DOPE score
 #        f= IMP.membrane.SameResidueFilter()
 #        dpc.add_pair_filter(f)
-        dps= IMP.membrane.DopePairScore(15.0)
-        dope=IMP.container.PairsRestraint(dps, dpc)
-        m.add_restraint(dope)
+                dps= IMP.membrane.DopePairScore(15.0)
+                dope=IMP.container.PairsRestraint(dps, dpc)
+        #m.set_maximum_score(dope, -32.5531617729)
+                m.add_restraint(dope)
 
 # assembling all the restraints
     rset=IMP.RestraintSet()
@@ -157,24 +162,30 @@ def  create_discrete_states(m,chain,tmb,sign):
         rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
     trs0=[]
     trs1=[]
-    for i in range(0,8):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/4)
+    trs2=[]
+    for i in range(0,4):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,5):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,8):
+            for s in range(0,4):
                 if ( t == 0 ) and ( s != 0 ) : break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/4)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
-                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),IMP.algebra.Vector3D(0,0,0))))
-                for dz in range(0,3):
-                    for dx in range(0,4):
-                        if ( dx >= 0 ):
+                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
+                                        IMP.algebra.Vector3D(0,0,0))))
+                for dz in range(0,1):
+                    for dx in range(-10,30):
+                        if ( dx >= 10 ):
                             trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
-                                        IMP.algebra.Vector3D(10+0.5*dx,0,-0.5+0.5*dz))))
+                                        IMP.algebra.Vector3D(dx,0,dz))))
+                        for dy in range(-20,20):
+                            trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
 
     pstate0= IMP.domino.RigidBodyStates(trs0)
     pstate1= IMP.domino.RigidBodyStates(trs1)
+    pstate2= IMP.domino.RigidBodyStates(trs2)
     pst= IMP.domino.ParticleStatesTable()
 # getting rigid bodies
     rbs=[]
@@ -184,6 +195,7 @@ def  create_discrete_states(m,chain,tmb,sign):
         rbs.append(rb)
     pst.set_particle_states(rbs[0], pstate0)
     pst.set_particle_states(rbs[1], pstate1)
+    pst.set_particle_states(rbs[2], pstate2)
     return pst
 
 # setting up domino (and filters)
@@ -223,12 +235,14 @@ def display(m,chain,tmb,tme,name):
 #IMP.set_log_level(IMP.VERBOSE)
 
 # TMH definition and topology
+# 1rwt definition
+tmb=[64,124,179]
+tme=[82,142,199]
+topology=[+1.0, -1.0, +1.0]
+# 2k9p definition
 #tmb=[38,80]
 #tme=[73,106]
-tmb=[50,80]
-tme=[71,102]
-
-topology=[-1.0,+1.0]
+#topology=[-1.0,+1.0]
 
 print "creating representation"
 (m,chain,sign)=create_representation(tmb,tme,topology)
