@@ -39,7 +39,6 @@ class GridIteratorD
   Pointer<GridRangeData<D> > data_;
   VectorD<D> cur_;
 public:
-  typedef GridIteratorD<D> This;
   typedef const VectorD<D>  value_type;
   typedef unsigned int difference_type;
   typedef const VectorD<D>& reference;
@@ -55,7 +54,7 @@ public:
   pointer operator->() const {
     return &cur_;
   }
-  const This& operator++() {
+  const GridIteratorD& operator++() {
     for (unsigned int i=0; i< D; ++i) {
       cur_[i]+= data_->step;
       if (cur_[i] > data_->bb.get_corner(1)[i]) {
@@ -68,22 +67,22 @@ public:
     return *this;
   }
 
-  This operator++(int) {
-    This ret= *this;
+  GridIteratorD operator++(int) {
+    GridIteratorD ret= *this;
     this->operator++();
     return ret;
   }
 
-  bool operator==(const This &o) const {
+  bool operator==(const GridIteratorD &o) const {
     return compare(cur_, o.cur_) ==0;
   }
-  bool operator!=(const This &o) const {
+  bool operator!=(const GridIteratorD &o) const {
     return compare(cur_, o.cur_) !=0;
   }
-  bool operator<(const This &o) const {
+  bool operator<(const GridIteratorD &o) const {
     return compare(cur_, o.cur_) <0;
   }
-  bool operator>(const This &o) const {
+  bool operator>(const GridIteratorD &o) const {
     return compare(cur_, o.cur_) >0;
   }
 };

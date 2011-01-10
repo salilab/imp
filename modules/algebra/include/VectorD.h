@@ -37,10 +37,6 @@ class VectorD
     }
   }
 public:
-  // public for swig
-#ifndef IMP_DOXYGEN
-  typedef VectorD<D> This;
-#endif
   /** The distance between b and e must be equal to D.
    */
   template <class It>
@@ -160,7 +156,7 @@ public:
 
   VectorD operator*(double s) const {
     check_vector();
-    This ret;
+    VectorD ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] * s;
     }
@@ -169,7 +165,7 @@ public:
 
   VectorD operator/(double s) const {
     check_vector();
-    This ret;
+    VectorD ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] / s;
     }
@@ -178,7 +174,7 @@ public:
 
   VectorD operator-() const {
     check_vector();
-    This ret;
+    VectorD ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = -vec_[i];
     }
@@ -187,7 +183,7 @@ public:
 
   VectorD operator-(const VectorD &o) const {
     check_vector(); o.check_vector();
-    This ret;
+    VectorD ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] - o.vec_[i];
     }
@@ -196,7 +192,7 @@ public:
 
   VectorD operator+(const VectorD &o) const {
     check_vector(); o.check_vector();
-    This ret;
+    VectorD ret;
     for (unsigned int i=0; i< D; ++i) {
       ret.vec_[i] = vec_[i] + o.vec_[i];
     }

@@ -32,8 +32,6 @@ class BoundingBoxD
     }
   }
 public:
-  // public for swig
-  IMP_NO_DOXYGEN(typedef BoundingBoxD<D> This);
 
   //! Create an empty bounding box
   BoundingBoxD() {

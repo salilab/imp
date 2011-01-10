@@ -93,7 +93,7 @@ public:
 
   GridIndexIterator(){}
 
-  IMP_COMPARISONS_1(cur_);
+  IMP_COMPARISONS_1(GridIndexIterator, cur_);
 
   This operator++() {
     do {
