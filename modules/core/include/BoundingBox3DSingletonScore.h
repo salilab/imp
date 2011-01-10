@@ -19,7 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 /** The radius of the particle is ignored, only the center coordinates
     are used. A particle that is contained within the bounding box has
     a score of 0. The UnaryFunction passed should return 0 when given
-    a feature size of 0.
+    a feature size of 0 and a positive value when the feature is positive.
  */
 class IMPCOREEXPORT BoundingBox3DSingletonScore: public SingletonScore
 {
