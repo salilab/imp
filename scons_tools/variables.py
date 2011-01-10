@@ -231,6 +231,7 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('dynamic', 'Whether to build dynamic libraries (needed for python support).', True))
     vars.Add(BoolVariable('precompiledheader', 'Whether to use a precompiled header for swig libraries ', False))
     vars.Add('disabledmodules', 'A colon-separated list of modules to disable.', '')
+    vars.Add('datapath', "The path to the data of an ininstalled IMP you want to use.", None)
     #vars.Add(BoolVariable('noexternaldependencies', 'Do not check files in the provided includepath and libpath for changes.', False))
 
 

@@ -40,6 +40,8 @@ def builder_script_file(target, source, env):
     precommand=source[4].get_contents()
     path=source[5].get_contents().split(sep)
     modules=source[6].get_contents().split(":")
+    externmodules=[x for x in source[7].get_contents().split(":") if x != ""]
+    externdata=source[8].get_contents()
     if pythonpath == ['']: pythonpath = []
     if ldpath == ['']: ldpath = []
     if path == ['']: path = []
@@ -82,6 +84,10 @@ def builder_script_file(target, source, env):
                 varname="IMP_"+m.upper()+"_EXAMPLE_DATA"
                 print >>outfile, varname+"='"+exampledir+"'"
                 print >>outfile, "export", varname
+            for m in externmodules:
+                varname="IMP_"+m.upper()+"_DATA"
+                print >>outfile, varname+"='"+externdata+"'"
+                print >>outfile, "export", varname
         else:
             print >> outfile, line
     outfile.close()
@@ -94,6 +100,13 @@ def add(env, target):
         prec= env['precommand']
     if env.get('MODELLER_MODPY', None):
         prec=prec+" "+env['MODELLER_MODPY']
+    if env.get('datapath', None):
+        externmodules=[x for x in data.get(env).modules.keys()\
+                       if data.get(env).modules[x].external]
+        externdata= env.get('datapath', "")
+    else:
+        externmodules=[]
+        externdata=""
     bin = env.ScriptFile(target,
                          [env.Value(template),
                           env.Value(env.Dir('#').abspath),
@@ -102,5 +115,7 @@ def add(env, target):
                           env.Value(prec),
                           env.Value(env['ENV']['PATH']),
                           env.Value(":".join([x for x in data.get(env).modules.keys()\
-                                              if not data.get(env).modules[x].external]))])
+                                              if not data.get(env).modules[x].external])),
+                          env.Value(":".join(externmodules)),
+                          env.Value(externdata)])
     return bin
