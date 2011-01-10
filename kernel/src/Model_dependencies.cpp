@@ -239,8 +239,7 @@ namespace {
         return 0;
       }
     }
-    typedef Connections This;
-    IMP_COMPARISONS;
+    IMP_COMPARISONS(Connections);
   };
 }
 

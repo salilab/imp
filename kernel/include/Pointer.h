@@ -82,7 +82,6 @@ class Pointer: public WeakPointer<O>
   }
 
   typedef WeakPointer<O> P;
-  typedef Pointer<O> This;
 
   void set_pointer(O* p) {
     if (p == P::o_) return;

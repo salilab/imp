@@ -52,185 +52,187 @@
 */
 
 //! Implement comparison in a class using a compare function
-/** The macro requires that This be defined as the type of the current class.
-    The compare function should take a const This & and return -1, 0, 1 as
+/** The compare function should take a const Name & and return -1, 0, 1 as
     appropriate.
 */
-#define IMP_COMPARISONS
+#define IMP_COMPARISONS(Name)
 
 //! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
+/** \param[in] Name the name of the class
+    \param[in] field the first field to compare on
  */
-#define IMP_COMPARISONS_1(field)
+#define IMP_COMPARISONS_1(Name, field)
 
 //! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
+/** \param[in] Name the name of the class
+    \param[in] f0 the first field to compare on
+    \param[in] f1 the second field to compare on
  */
-#define IMP_COMPARISONS_2(f0, f1)
+#define IMP_COMPARISONS_2(Name, f0, f1)
 
 //! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
+/** \param[in] Name the name of the class
+    \param[in] f0 the first field to compare on
+    \param[in] f1 the second field to compare on
+    \param[in] f2 the third field to compare on
  */
-#define IMP_COMPARISONS_3(f0, f1, f2)
+#define IMP_COMPARISONS_3(Name, f0, f1, f2)
 /** @} */
 #elif defined(SWIG)
-#define IMP_SWIG_COMPARISONS                                            \
-  bool __eq__(const This &o) const;                                     \
-  bool __ne__(const This &o) const;                                     \
-  bool __lt__(const This &o) const;                                     \
-  bool __gt__(const This &o) const;                                     \
-  bool __ge__(const This &o) const;                                     \
-  bool __le__(const This &o) const
+#define IMP_SWIG_COMPARISONS(Name)                                      \
+  bool __eq__(const Name &o) const;                                     \
+  bool __ne__(const Name &o) const;                                     \
+  bool __lt__(const Name &o) const;                                     \
+  bool __gt__(const Name &o) const;                                     \
+  bool __ge__(const Name &o) const;                                     \
+  bool __le__(const Name &o) const
 
 
-#define IMP_COMPARISONS                         \
-  IMP_SWIG_COMPARISONS
+#define IMP_COMPARISONS(Name)                   \
+  IMP_SWIG_COMPARISONS(Name)
 
-#define IMP_COMPARISONS_1(field)                \
-  IMP_SWIG_COMPARISONS
+#define IMP_COMPARISONS_1(Name, field)          \
+  IMP_SWIG_COMPARISONS(Name)
 
-#define IMP_COMPARISONS_2(f0, f1)               \
-  IMP_SWIG_COMPARISONS
+#define IMP_COMPARISONS_2(Name, f0, f1)         \
+  IMP_SWIG_COMPARISONS(Name)
 
-#define IMP_COMPARISONS_3(f0, f1, f2)           \
-  IMP_SWIG_COMPARISONS
+#define IMP_COMPARISONS_3(Name f0, f1, f2)           \
+  IMP_SWIG_COMPARISONS(Name)
 
 #else // not doxygen
-#define IMP_SWIG_COMPARISONS                                            \
-  bool __eq__(const This &o) const {                                    \
+#define IMP_SWIG_COMPARISONS(Name)                                      \
+  bool __eq__(const Name &o) const {                                    \
     return operator==(o);                                               \
   }                                                                     \
-  bool __ne__(const This &o) const {                                    \
+  bool __ne__(const Name &o) const {                                    \
     return operator!=(o);                                               \
   }                                                                     \
-  bool __lt__(const This &o) const {                                    \
+  bool __lt__(const Name &o) const {                                    \
     return operator<(o);                                                \
   }                                                                     \
-  bool __gt__(const This &o) const {                                    \
+  bool __gt__(const Name &o) const {                                    \
     return operator>(o);                                                \
   }                                                                     \
-  bool __ge__(const This &o) const {                                    \
+  bool __ge__(const Name &o) const {                                    \
     return operator>=(o);                                               \
   }                                                                     \
-  bool __le__(const This &o) const {                                    \
+  bool __le__(const Name &o) const {                                    \
     return operator<=(o);                                               \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(comparisons)
 
-#define IMP_COMPARISONS                                                 \
-  IMP_SWIG_COMPARISONS;                                                 \
-  bool operator==(const This &o) const {                                \
+#define IMP_COMPARISONS(Name)                                           \
+  IMP_SWIG_COMPARISONS(Name);                                           \
+  bool operator==(const Name &o) const {                                \
     return (compare(o) == 0);                                           \
   }                                                                     \
-  bool operator!=(const This &o) const {                                \
+  bool operator!=(const Name &o) const {                                \
     return (compare(o) != 0);                                           \
   }                                                                     \
-  bool operator<(const This &o) const {                                 \
+  bool operator<(const Name &o) const {                                 \
     return (compare(o) <0);                                             \
   }                                                                     \
-  bool operator>(const This &o) const {                                 \
+  bool operator>(const Name &o) const {                                 \
     return (compare(o) > 0);                                            \
   }                                                                     \
-  bool operator>=(const This &o) const {                                \
+  bool operator>=(const Name &o) const {                                \
     return !(compare(o) < 0);                                           \
   }                                                                     \
-  bool operator<=(const This &o) const {                                \
+  bool operator<=(const Name &o) const {                                \
     return !(compare(o) > 0);                                           \
   }                                                                     \
   template <class T> friend int compare(const T&a, const T&b)
 
-#define IMP_COMPARISONS_1(field)                \
-  bool operator==(const This &o) const {        \
+#define IMP_COMPARISONS_1(Name, field)          \
+  bool operator==(const Name &o) const {        \
     return (field== o.field);                   \
   }                                             \
-  bool operator!=(const This &o) const {        \
+  bool operator!=(const Name &o) const {        \
     return (field!= o.field);                   \
   }                                             \
-  bool operator<(const This &o) const {         \
+  bool operator<(const Name &o) const {         \
     return (field< o.field);                    \
   }                                             \
-  bool operator>(const This &o) const {         \
+  bool operator>(const Name &o) const {         \
     return (field> o.field);                    \
   }                                             \
-  bool operator>=(const This &o) const {        \
+  bool operator>=(const Name &o) const {        \
     return (field>= o.field);                   \
   }                                             \
-  bool operator<=(const This &o) const {        \
+  bool operator<=(const Name &o) const {        \
     return (field<= o.field);                   \
   }                                             \
-  int compare(const This &o) const {            \
+  int compare(const Name &o) const {            \
     if (operator<(o)) return -1;                \
     else if (operator>(o)) return 1;            \
     else return 0;                              \
   }                                             \
-  IMP_SWIG_COMPARISONS
+  IMP_SWIG_COMPARISONS(Name)
 
-//! Implement comparison in a class using field as the variable to compare
-/** The macro requires that This be defined as the type of the current class.
- */
-#define IMP_COMPARISONS_2(f0, f1)               \
-  bool operator==(const This &o) const {        \
+#define IMP_COMPARISONS_2(Name, f0, f1)         \
+  bool operator==(const Name &o) const {        \
     return (f0== o.f0 && f1==o.f1);             \
   }                                             \
-  bool operator!=(const This &o) const {        \
+  bool operator!=(const Name &o) const {        \
     return (f0!= o.f0 || f1 != o.f1);           \
   }                                             \
-  bool operator<(const This &o) const {         \
+  bool operator<(const Name &o) const {         \
     if (f0< o.f0) return true;                  \
     else if (f0 > o.f0) return false;           \
     else return f1 < o.f1;                      \
   }                                             \
-  bool operator>(const This &o) const {         \
+  bool operator>(const Name &o) const {         \
     if (f0 > o.f0) return true;                 \
     else if (f0 < o.f0) return false;           \
     else return f1 > o.f1;                      \
   }                                             \
-  bool operator>=(const This &o) const {        \
+  bool operator>=(const Name &o) const {        \
     return operator>(o) || operator==(o);       \
   }                                             \
-  bool operator<=(const This &o) const {        \
+  bool operator<=(const Name &o) const {        \
     return operator<(o) || operator==(o);       \
   }                                             \
-  int compare(const This &o) const {            \
+  int compare(const Name &o) const {            \
     if (operator<(o)) return -1;                \
     else if (operator>(o)) return 1;            \
     else return 0;                              \
   }                                             \
-  IMP_SWIG_COMPARISONS
+  IMP_SWIG_COMPARISONS(Name)
 
-#define IMP_COMPARISONS_3(f0, f1, f2)                   \
-  bool operator==(const This &o) const {                \
+#define IMP_COMPARISONS_3(Name, f0, f1, f2)             \
+  bool operator==(const Name &o) const {                \
     return (f0== o.f0 && f1==o.f1 && f2 == o.f2);       \
   }                                                     \
-  bool operator!=(const This &o) const {                \
+  bool operator!=(const Name &o) const {                \
     return (f0!= o.f0 || f1 != o.f1 || f2 != o.f2);     \
   }                                                     \
-  bool operator<(const This &o) const {                 \
+  bool operator<(const Name &o) const {                 \
     if (f0< o.f0) return true;                          \
     else if (f0 > o.f0) return false;                   \
     if (f1< o.f1) return true;                          \
     else if (f1 > o.f1) return false;                   \
     else return f2 < o.f2;                              \
   }                                                     \
-  bool operator>(const This &o) const {                 \
+  bool operator>(const Name &o) const {                 \
     if (f0 > o.f0) return true;                         \
     else if (f0 < o.f0) return false;                   \
     if (f1 > o.f1) return true;                         \
     else if (f1 < o.f1) return false;                   \
     else return f2 > o.f2;                              \
   }                                                     \
-  bool operator>=(const This &o) const {                \
+  bool operator>=(const Name &o) const {                \
     return operator>(o) || operator==(o);               \
   }                                                     \
-  bool operator<=(const This &o) const {                \
+  bool operator<=(const Name &o) const {                \
     return operator<(o) || operator==(o);               \
   }                                                     \
-  int compare(const This &o) const {                    \
+  int compare(const Name &o) const {                    \
     if (operator<(o)) return -1;                        \
     else if (operator>(o)) return 1;                    \
     else return 0;                                      \
   }                                                     \
-  IMP_SWIG_COMPARISONS
+  IMP_SWIG_COMPARISONS(Name)
 #endif
 
 
@@ -496,7 +498,6 @@ public:                                                                 \
   public:                                                               \
   /* Should be private but SWIG accesses it through the comparison
      macros*/                                                           \
-IMP_NO_DOXYGEN(typedef Name This);                                      \
 IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
 Name(): Parent(){}                                                      \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
@@ -529,7 +530,6 @@ IMP_SHOWABLE(Name)
   private:                                                              \
   TraitsType traits_;                                                   \
 public:                                                                 \
- IMP_NO_DOXYGEN(typedef Name This;)                                     \
  IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                        \
  Name(){}                                                               \
  Name(const TraitsType &tr):                                            \

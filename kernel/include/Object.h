@@ -61,7 +61,6 @@ protected:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
 #ifndef IMP_DOXYGEN
-  typedef Object This;
   // Return whether the object already been freed
   bool get_is_valid() const {
 #if IMP_BUILD >= IMP_FAST

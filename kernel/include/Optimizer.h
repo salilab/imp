@@ -136,7 +136,6 @@ class IMPEXPORT Optimizer: public Object
 
   class FloatIndexIterator
   {
-    typedef FloatIndexIterator This;
     Model::ParticleConstIterator pe_;
     mutable FloatIndex i_;
 
@@ -176,12 +175,12 @@ class IMPEXPORT Optimizer: public Object
     typedef std::forward_iterator_tag iterator_category;
     typedef int difference_type;
 
-    const This &operator++() {
+    const FloatIndexIterator &operator++() {
       find_next();
       return *this;
     }
-    This operator++(int) {
-      This ret=*this;
+    FloatIndexIterator operator++(int) {
+      FloatIndexIterator ret=*this;
       find_next();
       return ret;
     }
@@ -193,12 +192,12 @@ class IMPEXPORT Optimizer: public Object
     pointer operator->() const {
       return &i_;
     }
-    bool operator==(const This &o) const {
+    bool operator==(const FloatIndexIterator &o) const {
       if (i_.p_ != o.i_.p_) return false;
       if (i_.p_== pe_) return o.i_.p_ ==pe_;
       else return i_.fk_ == o.i_.fk_;
     }
-    bool operator!=(const This &o) const {
+    bool operator!=(const FloatIndexIterator &o) const {
       return !operator==(o);
     }
   };

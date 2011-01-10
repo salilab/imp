@@ -115,7 +115,7 @@ public:
      */
   }
 
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(ExponentialNumber);
 };
 
 template <int E>

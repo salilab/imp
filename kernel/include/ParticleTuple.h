@@ -41,7 +41,6 @@ class ParticleTuple
   }
 public:
   static unsigned int get_dimension() {return D;};
-  typedef ParticleTuple<D> This;
   ParticleTuple(){
     for (unsigned int i=0; i< D; ++i) {P::operator[](i)=NULL;}
   }
@@ -75,7 +74,7 @@ public:
                                      P::operator[](i));
                }
                return seed;);
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(ParticleTuple<D>);
   std::string get_name() const {
     std::string ret="\"";
     for (unsigned int i=0; i< D; ++i) {

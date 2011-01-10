@@ -85,9 +85,6 @@ public:
   }
 
 #endif
-#ifndef IMP_DOXYGEN
-  typedef Key<ID, LazyAdd> This;
-#endif
   //! make a default key in a well-defined null state
   Key(): str_(-1) {}
 
@@ -121,7 +118,7 @@ public:
     //return str_;
   }
 
-  IMP_COMPARISONS_1(str_);
+  IMP_COMPARISONS_1(Key, str_);
 
   IMP_HASHABLE_INLINE(Key, return str_;)
 
@@ -170,16 +167,16 @@ public:
 #ifndef SWIG
   /** \todo These should be protected, I'll try to work how
    */
-  This& operator++() {
+  Key& operator++() {
     ++str_;
     return *this;
   }
-  This& operator--() {
+  Key& operator--() {
     --str_;
     return *this;
   }
-  This operator+(int o) const {
-    This c=*this;
+  Key operator+(int o) const {
+    Key c=*this;
     c.str_+= o;
     return c;
   }

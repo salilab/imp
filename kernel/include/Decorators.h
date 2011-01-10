@@ -18,7 +18,6 @@ IMP_BEGIN_NAMESPACE
 #define IMP_DECORATORS_METHODS(test, on_add_decorator, on_add_particle, \
                                swap)                                    \
   struct Accessor {                                                     \
-  typedef Accessor This;                                                \
   typedef WrappedDecorator result_type;                                 \
   typedef unsigned int argument_type;                                   \
   result_type operator()(argument_type i) const {                       \
@@ -26,7 +25,7 @@ IMP_BEGIN_NAMESPACE
   }                                                                     \
   Accessor(ThisDecorators *pc): o_(pc){}                                \
   Accessor(): o_(NULL){}                                                \
-  IMP_COMPARISONS_1(o_);                                                \
+  IMP_COMPARISONS_1(Accessor, o_);                                      \
 private:                                                                \
 /* This should be ref counted, but swig memory management
    is broken */                                                         \

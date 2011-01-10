@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- the IMP_COMPARISONS(), IMP_COMPARISONS_1(), IMP_COMPARISONS_2() macros now take the name of the class as an additional (first) argument. This avoids the formerly needed, \c This typedef and makes them more consistent with the other macros in \imp.
 - modules can now be built externally to the \imp svn in addition to applications and biological systems. To do so, create a directory with your module in a subdir containing links to the \imp SConscript file and scons_tools and a config.py that has information needed to run \imp (eg an appropriate \c pythonpath, \c ldpath).
 - removed IMP::algebra::GridD::get_index(VectorD) as it wasn't very safe (in that vectors coordinates can get rounded between the IMP::algebra::GridD::get_has_index() and IMP::algebra::GridD::get_index() calls. Use IMP::algebra::GridD::get_nearest_index() or IMP::algebra::GridD::get_extended_index() or IMP::algebra::GridD::operator[]() instead.
 - renamed IMP::domino::ParticleStatesTable::get_particles() to IMP::domino::ParticleStatesTable::get_subset() as it is more useful to be able to get the subset containing all the particles.

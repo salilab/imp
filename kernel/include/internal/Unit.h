@@ -268,7 +268,7 @@ public:
     return v_.get_normalized_value();
   }
 
-  IMP_COMPARISONS_1(v_);
+  IMP_COMPARISONS_1(Unit, v_);
 
 #ifndef IMP_DOXYGEN
   //! Get the current value
