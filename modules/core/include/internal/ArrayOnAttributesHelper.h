@@ -31,7 +31,6 @@ struct Empty{};
 
 template <class Key, class Value, class Data>
 struct ArrayData: public ArrayDataBase, public Data {
-  typedef ArrayData This;
   ArrayData(std::string p):
     num_key((p+"_number").c_str()),
     prefix(p) {
@@ -40,7 +39,7 @@ struct ArrayData: public ArrayDataBase, public Data {
   std::vector<Key> keys;
   const IntKey num_key;
   const std::string prefix;
-  IMP_COMPARISONS_1(prefix);
+  IMP_COMPARISONS_1(ArrayData, prefix);
 };
 
 template <class K, class V, class D>
@@ -58,8 +57,7 @@ struct ArrayOnAttributesHelper {
   typedef KeyT Key;
   typedef ValueT Value;
   typedef ArrayData<Key, Value, DataT> Data;
-  typedef ArrayOnAttributesHelper<KeyT, ValueT, DataT> This;
-  int compare(const This &o) const {
+  int compare(const ArrayOnAttributesHelper &o) const {
     if (!data_) {
       return !o.data_;
     } else if (!o.data_) {
@@ -68,7 +66,7 @@ struct ArrayOnAttributesHelper {
       return data_->compare(*o.data_);
     }
   }
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(ArrayOnAttributesHelper);
 
   DataT& get_data() {return static_cast<DataT&>(*data_);}
   const DataT& get_data() const {return static_cast<DataT&>(*data_);}
