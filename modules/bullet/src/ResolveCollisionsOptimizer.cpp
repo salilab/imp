@@ -346,6 +346,10 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
   } else {
     rp1=pp[1];
   }
+  if (map.find(rp0) == map.end() || map.find(rp1) == map.end()) {
+    // some of the particles are not being considered, so ignore restraint
+    return false;
+  }
   btRigidBody *r0= map.find(rp0)->second;
   btRigidBody *r1= map.find(rp1)->second;
 
