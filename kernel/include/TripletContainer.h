@@ -39,7 +39,6 @@ class IMPEXPORT TripletContainer : public Container
 {
   mutable internal::OwnerPointer<Container> added_, removed_;
   struct Accessor {
-    typedef Accessor This;
     typedef ParticleTriplet result_type;
     typedef unsigned int argument_type;
     result_type operator()(argument_type i) const {
@@ -47,7 +46,7 @@ class IMPEXPORT TripletContainer : public Container
     }
     Accessor(TripletContainer *pc): o_(pc){}
     Accessor(): o_(NULL){}
-    IMP_COMPARISONS_1(o_);
+    IMP_COMPARISONS_1(Accessor, o_);
   private:
     // This should be ref counted, but swig memory management is broken
     TripletContainer* o_;

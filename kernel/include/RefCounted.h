@@ -69,7 +69,6 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT RefCounted
 {
 #ifndef IMP_DOXYGEN
-  typedef RefCounted This;
 #if IMP_BUILD < IMP_FAST
   static unsigned int live_objects_;
 #endif

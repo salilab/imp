@@ -35,7 +35,6 @@ IMP_BEGIN_NAMESPACE
 template <class O>
 class WeakPointer
 {
-  typedef WeakPointer<O> This;
 
   void set_pointer(O* p) {
     if (p == o_) return;
@@ -95,7 +94,7 @@ public:
     return *this;
   }
 
-  IMP_COMPARISONS_1(o_);
+  IMP_COMPARISONS_1(WeakPointer, o_);
 
   //! Return true if the pointer is not NULL
   bool operator!() const {
