@@ -43,7 +43,6 @@ class IMPDOMINOEXPORT Subset {
     return 0;
   }
  public:
-  typedef Subset This;
 #ifndef IMP_DOXYGEN
   // only use this if particles are sorted already
   Subset(const ParticlesTemp &ps, bool):
@@ -111,7 +110,7 @@ class IMPDOMINOEXPORT Subset {
   std::string get_name() const;
   IMP_HASHABLE_INLINE(Subset, return boost::hash_range(begin(),
                                                        end()););
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(Subset);
 };
 
 IMP_VALUES(Subset, Subsets);

@@ -53,7 +53,6 @@ class SubsetState {
     }
   }
 public:
-  typedef SubsetState This;
   SubsetState(){}
   template <class It>
   SubsetState(It b, It e): v_(new int[std::distance(b,e)]),
@@ -65,7 +64,7 @@ public:
     std::copy(i.begin(), i.end(), v_.get());
     validate();
   }
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(SubsetState);
 #ifndef SWIG
   int operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < sz_, "Out of range");
