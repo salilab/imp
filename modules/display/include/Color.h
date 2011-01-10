@@ -34,7 +34,6 @@ class IMPDISPLAYEXPORT Color
     return 0;
   }
 public:
-  typedef Color This;
 
   Color();
 
@@ -62,7 +61,7 @@ public:
     out << get_red() << delim << get_green() << delim << get_blue();
   }
 
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(Color);
 };
 
 
