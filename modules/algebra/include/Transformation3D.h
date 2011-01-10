@@ -29,8 +29,6 @@ Transformation3D compose(const Transformation3D &a,
 class IMPALGEBRAEXPORT Transformation3D
 {
 public:
-  // public for swig
-  IMP_NO_DOXYGEN(typedef Transformation3D This);
   //! construct an invalid transformation
   Transformation3D(){}
   /** basic constructor*/

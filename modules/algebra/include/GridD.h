@@ -37,9 +37,6 @@ namespace grids {
                                                o.d_, o.d_+D);
     }
   public:
-#ifndef IMP_DOXYGEN
-    typedef ExtendedGridIndexD This;
-#endif
     //! Create a grid cell from three arbitrary indexes
     ExtendedGridIndexD(Ints vals) {
       IMP_USAGE_CHECK(vals.size()==D, "Wrong number of values provided");
@@ -65,7 +62,7 @@ namespace grids {
         d_[i]=std::numeric_limits<int>::max();
       }
     }
-    IMP_COMPARISONS;
+    IMP_COMPARISONS(ExtendedGridIndexD);
     //! Get the ith component (i=0,1,2)
     IMP_CONST_BRACKET(int, unsigned int,
                       i <D,
@@ -186,10 +183,9 @@ namespace grids {
     static unsigned int get_d() {return D;}
 #endif
     unsigned int __len__() const { return D;}
-    typedef GridIndexD This;
     static const unsigned int DIMENSION=D;
 #endif
-    IMP_COMPARISONS;
+    IMP_COMPARISONS(GridIndexD);
     IMP_HASHABLE_INLINE(GridIndexD,
                         return boost::hash_range(begin(), end()));
   };

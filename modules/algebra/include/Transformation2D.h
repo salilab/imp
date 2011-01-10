@@ -29,8 +29,6 @@ Transformation2D compose(const Transformation2D &a,
 class IMPALGEBRAEXPORT Transformation2D
 {
 public:
-  //! public for swig
-  IMP_NO_DOXYGEN(typedef Transformation2D This);
 
   //! constructor. An invalid transformation is built
   Transformation2D(){}

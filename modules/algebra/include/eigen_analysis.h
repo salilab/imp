@@ -18,9 +18,6 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
  public:
-#if !defined(IMP_DOXYGEN)
-  typedef PrincipalComponentAnalysis This;
-#endif
   PrincipalComponentAnalysis(){
     initialized_=false;}
   PrincipalComponentAnalysis(
@@ -52,10 +49,13 @@ class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
    centroid_=cntr;}
 
   IMP_SHOWABLE(PrincipalComponentAnalysis);
-  IMP_COMPARISONS;
+  IMP_COMPARISONS(PrincipalComponentAnalysis);
 protected:
   int compare(const PrincipalComponentAnalysis &o) const {
-    if (initialized_ && o.initialized_) return true;
+    IMP_USAGE_CHECK(!initialized_ || !o.initialized_,
+                    "Cannot compare against anything other than the default"
+                    " PrincipalComponentAnalysis");
+    if (!initialized_ && !o.initialized_) return true;
     else return false;
   }
   std::vector<VectorD<3> > eigen_vecs_;
