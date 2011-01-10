@@ -13,6 +13,9 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 Vector3Ds get_uniform_surface_cover(const Cylinder3D &cyl,
                                     int n) {
+  if (n==0) {
+    return Vector3Ds();
+  }
   double c= 2*PI*cyl.get_radius();
   double h= cyl.get_segment().get_length();
   // h*c= num_points*l*l
@@ -34,9 +37,17 @@ namespace {
   Vector3Ds grid_unit_cylinder(unsigned int nc, unsigned int nh,
                                const Vector3D &scaling,
                                const Transformation3D &transform) {
+    if (nh==0) {
+      return Vector3Ds();
+    }
     Vector3Ds ret;
     for (unsigned int i=0; i< nh; ++i) {
-      double h= static_cast<double>(i)/(nh-1);
+      double h;
+      if (nh==1) {
+        h= .5;
+      } else {
+        h= static_cast<double>(i)/(nh-1);
+      }
       for (unsigned int j=0; j< nc; ++j) {
         double a= 2*PI*static_cast<double>(j)/nc;
         Vector3D pt(scaling[0]*sin(a), scaling[1]*cos(a), scaling[2]*h);
