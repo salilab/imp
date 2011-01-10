@@ -207,8 +207,8 @@ public:
    */
   Hierarchy get_parent() const {
     IMP_DECORATOR_GET(get_decorator_traits().get_data().parent_key_, Particle*,
-                      return This(VALUE, get_decorator_traits()),
-                      return This());
+                      return Hierarchy(VALUE, get_decorator_traits()),
+                      return Hierarchy());
   }
 
   //! Get the index of this particle in the list of children
