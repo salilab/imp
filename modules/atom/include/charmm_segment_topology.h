@@ -64,11 +64,6 @@ IMP_OBJECTS(CHARMMSegmentTopology,CHARMMSegmentTopologies);
     add_bonds(), add_charges()).
  */
 class IMPATOMEXPORT CHARMMTopology : public Object {
-  IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
-           CHARMMSegmentTopologies);
-
-  IMP_OBJECT(CHARMMTopology);
-private:
   Pointer<const CHARMMParameters> force_field_;
   WarningContext warn_context_;
   typedef std::map<const CHARMMResidueTopology *, Hierarchy> ResMap;
@@ -153,7 +148,13 @@ public:
       \see add_bonds().
    */
   Particles add_impropers(Hierarchy hierarchy) const;
+
+  IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
+           CHARMMSegmentTopologies);
+
+  IMP_OBJECT(CHARMMTopology);
 };
+IMP_OBJECTS(CHARMMTopology,CHARMMTopologies);
 
 IMPATOM_END_NAMESPACE
 
