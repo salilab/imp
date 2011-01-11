@@ -287,6 +287,13 @@ def _fix_aix_cpp_link(env, cplusplus, linkflags):
                                          '-shared')
 
 
+def _add_dependency_flags(env, dependencies):
+    for d in dependencies:
+        if data.get(env).dependencies[d].includepath:
+            utility.add_to_include_path(env, data.get(env).dependencies[d].includepath)
+        if data.get(env).dependencies[d].libpath:
+            utility.add_to_lib_path(env, data.get(env).dependencies[d].libpath)
+
 
 def _add_flags(env, extra_modules=[], extra_dependencies=[]):
     modules=extra_modules+env['IMP_CURRENT_MODULES']
@@ -313,6 +320,7 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
             module_libs.append('imp')
         else:
             module_libs.append('imp_'+m)
+    _add_dependency_flags(env, final_dependencies)
     dependency_libs=[]
     for dc in final_dependencies:
         dependency_libs+= d.dependencies[dc].libs
@@ -360,12 +368,14 @@ def get_bin_environment(envi, extra_modules=[]):
     return env
 
 
+
 def get_pyext_environment(env, mod_prefix, cplusplus=True,
                           extra_modules=[]):
     """Get a modified environment for building a Python extension.
        `mod_prefix` should be a unique prefix for this module.
        If `cplusplus` is True, additional configuration suitable for a C++
        extension is done."""
+    #print env['CXXFLAGS'], env['CPPPATH']
     e = bug_fixes.clone_env(env)
 
     e['LDMODULEPREFIX'] = ''
@@ -390,6 +400,7 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
     _add_flags(e, extra_modules=extra_modules)
+    #print e['CXXFLAGS'], e['CPPPATH']
     return e
 
 def get_named_environment(env, name, modules, dependencies):
@@ -397,11 +408,6 @@ def get_named_environment(env, name, modules, dependencies):
     e['IMP_CURRENT_NAME']=name
     e['IMP_CURRENT_DEPENDENCIES']=dependencies
     e['IMP_CURRENT_MODULES']=modules
-    for d in dependencies:
-        if data.get(env).dependencies[d].includepath:
-            utility.add_to_include_path(e, data.get(env).dependencies[d].includepath)
-        if data.get(env).dependencies[d].libpath:
-            utility.add_to_lib_path(e, data.get(env).dependencies[d].libpath)
     return e
 
 def get_current_dependencies(env):
