@@ -102,7 +102,7 @@ Array1DD DensityDataPoints::sample() const {
       p_ind = statistics::internal::random_int(data_.size());
       if (dens_[dens_.get_nearest_index(
              algebra::Vector3D(data_[p_ind][0],
-                               data_[p_ind][0],data_[p_ind][0]))]
+                               data_[p_ind][1],data_[p_ind][2]))]
           > (max_value_-min_value_)*
           statistics::internal::random_uniform()+min_value_) {
         found = true;
