@@ -29,7 +29,7 @@ class IMPInstallTests(unittest.TestCase):
 
     def test_examples_installed(self):
         """Check install of example files"""
-        d = IMP.restrainer.get_example_path("simple_em_fit.py")
+        d = IMP.restrainer.get_example_path("em_restraint.py")
         self.assert_(os.path.exists(d))
 
 if __name__ == '__main__':
