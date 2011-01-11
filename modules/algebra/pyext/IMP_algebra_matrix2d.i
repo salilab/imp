@@ -93,6 +93,4 @@ namespace IMP {
 %pythoncode {
   Matrix2D = _Matrix2D
   Matrix2D_f = _Matrix2D_f
-  MultiArray2D_f = _MultiArray2D_f
-  MultiArray2D_f = _MultiArray2D_f
 }
