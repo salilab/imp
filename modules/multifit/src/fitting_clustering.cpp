@@ -25,7 +25,7 @@ public:
     cc_score_=cc_score;
     orig_index_ = orig_index;
   }
-  void add_transformation(const FittingTransformation& t) {
+  void join_into(const FittingTransformation& t) {
     //todo - improve using average quaterion
     //if the new transformation (t) fits the map better, use it
     if (t.get_score() > cc_score_) {
