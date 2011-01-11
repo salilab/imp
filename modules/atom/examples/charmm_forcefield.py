@@ -16,7 +16,7 @@ topology = ff.create_topology(prot)
 # Typically this modifies the C and N termini of each chain in the protein by
 # applying the CHARMM CTER and NTER patches. Patches can also be manually
 # applied at this point, e.g. to add disulfide bridges.
-topology.apply_default_patches(ff)
+topology.apply_default_patches()
 
 # Each atom is mapped to its CHARMM type. These are needed to look up bond
 # lengths, Lennard-Jones radii etc. in the CHARMM parameter file. Atom types
@@ -35,10 +35,10 @@ topology.add_missing_atoms(prot)
 # in the CHARMM topology file, while angles and dihedrals are generated
 # automatically from an existing set of bonds. These particles only define the
 # bonds, but do not score them or exclude them from the nonbonded list.
-bonds = topology.add_bonds(prot, ff)
+bonds = topology.add_bonds(prot)
 angles = ff.create_angles(bonds)
 dihedrals = ff.create_dihedrals(bonds)
-impropers = topology.add_impropers(prot, ff)
+impropers = topology.add_impropers(prot)
 
 # Maintain stereochemistry by scoring bonds, angles, dihedrals and impropers
 

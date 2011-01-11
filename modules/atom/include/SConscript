@@ -34,6 +34,7 @@ files = [
          'atom_macros.h',
          'bond_decorators.h',
          'bond_graph.h',
+         'charmm_segment_topology.h',
          'charmm_topology.h',
          'distance.h',
          'element.h',

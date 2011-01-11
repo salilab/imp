@@ -46,6 +46,8 @@ struct CHARMMDihedralParameters {
 
 IMP_VALUES(CHARMMDihedralParameters, CHARMMDihedralParametersList);
 
+class CHARMMTopology;
+
 //! CHARMM force field parameters.
 /** This class reads in topology and parameter files in CHARMM format and
     stores the information.
