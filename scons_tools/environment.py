@@ -156,12 +156,6 @@ def _add_platform_flags(env):
             pass
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
                                      if x not in ['-Wall', '-Wextra', '-Wformat', '-O3', '-O2']])
-    if env['IMP_USE_RPATH']:
-        dylinkflags=[]
-        for p in env['LIBPATH']:
-            if p[0] != '#':
-                env.Prepend(IMP_SHLIB_LINKFLAGS=['-Wl,-rpath,'+p])
-                env.Prepend(IMP_BIN_LINKFLAGS=['-Wl,-rpath,'+p])
         #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
     env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
     env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
@@ -327,6 +321,13 @@ def _add_flags(env, extra_modules=[], extra_dependencies=[]):
 
     env.Append(LIBS=module_libs)
     env.Append(LIBS=dependency_libs)
+    if env['IMP_USE_RPATH']:
+        dylinkflags=[]
+        for p in env['LIBPATH']:
+            if p[0] != '#':
+                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+                env.Prepend(LINKFLAGS=['-Wl,-rpath,'+p])
+
 
 def get_sharedlib_environment(env, cppdefine, cplusplus=False,
                               extra_modules=[]):
