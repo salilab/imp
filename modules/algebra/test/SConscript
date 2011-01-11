@@ -13,8 +13,6 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                      'SparseUnboundedIntGrid3D', 'UnboundedGridStorage3D',
                                      'AxisAnglePair'],
                   show_exceptions=[
-                      # too complicated to fix
-                      'Matrix3D',
                       # just used as a template parameter
                       'BoundedGridStorage3D'],
                   function_name_exceptions=['compose', 'reversed_read', 'reversed_write']+\
