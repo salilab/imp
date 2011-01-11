@@ -30,51 +30,102 @@ IMPDOMINO_BEGIN_NAMESPACE
     modified and provide a std::vector/python list like
     interface.
 */
-class SubsetState {
-  boost::shared_array<int> v_;
+class IMPDOMINOEXPORT SubsetState {
+  // store the ref count in the first entry of the block
+  static std::vector<std::vector<int*> > free_;
+  int* v_;
   unsigned int sz_;
   int compare(const SubsetState &o) const {
-    IMP_USAGE_CHECK(std::find(o.v_.get(), o.v_.get()+o.sz_, -1)
-                    ==  o.v_.get()+o.sz_,
+    IMP_USAGE_CHECK(std::find(o.begin(), o.end(), -1)
+                    ==  o.end(),
                     "SubsetState not initialize yet.");
-    IMP_USAGE_CHECK(std::find(v_.get(), v_.get()+sz_, -1)
-                    ==  v_.get()+sz_,
+    IMP_USAGE_CHECK(std::find(begin(), end(), -1) == end(),
                     "SubsetState not initialize yet.");
     IMP_USAGE_CHECK(o.size() == size(), "Sizes don't match");
-    for (unsigned int i=0; i< size(); ++i) {
-      if (v_[i] < o[i]) return -1;
-      else if (v_[i] > o[i]) return 1;
+    for (unsigned int i=1; i< size()+1; ++i) {
+      if (v_[i] < o.v_[i]) return -1;
+      else if (v_[i] > o.v_[i]) return 1;
     }
     return 0;
   }
   void validate() const {
     for (unsigned int i=0; i< sz_; ++i) {
-      IMP_USAGE_CHECK(v_[i] != -1, "Invalid initialization");
+      IMP_USAGE_CHECK(v_[i+1] != -1, "Invalid initialization");
+    }
+  }
+  void teardown() {
+    if (sz_ >0) {
+      --v_[0];
+      IMP_USAGE_CHECK(v_[0] < 10000,
+                      "Bad ref count: " << v_[0]);
+      if (v_[0]==0) {
+        free_[sz_-1].push_back(v_);
+      }
+    }
+  }
+  void create(unsigned int sz) {
+    IMP_USAGE_CHECK(sz>0, "can't create 0 size subset");
+    if (free_.size() < sz) {
+      free_.resize(sz);
+    }
+    if (free_[sz-1].empty()) {
+      v_=new int[sz+1];
+    } else {
+      v_=free_[sz-1].back();
+      free_[sz-1].pop_back();
+    }
+    v_[0]=1;
+    sz_=sz;
+  }
+  void copy_from(const SubsetState &o) {
+    validate();
+    o.validate();
+    teardown();
+    v_=o.v_;
+    sz_=o.sz_;
+    if (sz_ >0) {
+      ++v_[0];
     }
   }
 public:
-  SubsetState(){}
+  ~SubsetState() {
+    teardown();
+  }
+  SubsetState(): v_(0), sz_(0){}
   template <class It>
-  SubsetState(It b, It e): v_(new int[std::distance(b,e)]),
-                           sz_(std::distance(b,e)){
-    std::copy(b,e, v_.get());
+  SubsetState(It b, It e) {
+    create(std::distance(b,e));
+    std::copy(b,e, v_+1);
     validate();
   }
-  SubsetState(const Ints &i): v_(new int[i.size()]), sz_(i.size()){
-    std::copy(i.begin(), i.end(), v_.get());
+  SubsetState(const Ints &i) {
+    create(i.size());
+    std::copy(i.begin(), i.end(), v_+1);
     validate();
   }
+  // can't use due to sz_
+  // IMP_COPY_CONSTRUCTOR(SubsetState);
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  SubsetState(const SubsetState &o):v_(0), sz_(0){
+    copy_from(o);
+  }
+  SubsetState& operator=(const SubsetState &o) {
+    copy_from(o);
+    return *this;
+  }
+#endif
   IMP_COMPARISONS(SubsetState);
 #ifndef SWIG
   int operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < sz_, "Out of range");
-    IMP_USAGE_CHECK(v_[i] >=0, "Not initialized properly");
-    return v_[i];
+    IMP_USAGE_CHECK(v_[i+1] >=0, "Not initialized properly");
+    return v_[i+1];
   }
 #endif
 #ifndef IMP_DOXYGEN
   int __getitem__(unsigned int i) const {
-    if (i >= sz_) IMP_THROW("Out of bound", IndexException);
+    if (i >= sz_) IMP_THROW("Out of bound " << i << " vs " << sz_,
+                            IndexException);
     return operator[](i);
   }
   unsigned int __len__() const {return sz_;}
@@ -87,7 +138,7 @@ public:
   IMP_SHOWABLE_INLINE(SubsetState, {
       out << "[";
       for (unsigned int i=0; i< size(); ++i) {
-        out << v_[i];
+        out << v_[i+1];
         if (i != size()-1) out << " ";
       }
       out << "]";
@@ -95,10 +146,10 @@ public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   typedef const int * const_iterator;
   const_iterator begin() const {
-    return v_.get();
+    return v_+1;
   }
   const_iterator end() const {
-    return v_.get()+size();
+    return v_+1+size();
   }
 #endif
   IMP_HASHABLE_INLINE(SubsetState, return boost::hash_range(begin(),
