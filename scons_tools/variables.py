@@ -215,7 +215,7 @@ def add_common_variables(vars, package):
                           'If true, add any compiler and linker arguments that might be needed/desired. If false, only used passed flags (eg only the values in "cxxflags", "linkflags" etc).',
                           True))
     vars.Add(BoolVariable('deprecated',
-                          'Build deprecated classes and functions', True))
+                          'Build deprecated classes and functions', False))
     vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
     vars.Add(BoolVariable('dot',
                           'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
