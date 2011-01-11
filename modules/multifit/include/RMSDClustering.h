@@ -23,7 +23,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
   clusters transformations for which the transformed centroids are close
  (fall into the same bin in a hash. Then, all clusters are globally reclustered.
   /note TransT should implement the functions:
-        add_transformation() add a transformation to the current cluster and
+        join_into() add a transformation to the current cluster and
                    possibly updates the representative transformation for the
                    cluster
         get_score() that returns the score (higher score is better)
@@ -44,10 +44,10 @@ public:
     valid_(true), trans_(trans) {
   }
   virtual ~TransformationRecord() {}
-  //! Join the transfromations into this.
-  void add_transformation(const TransformationRecord& record) {
+  //! Join the transformations into this.
+  void join_into(const TransformationRecord& record) {
     trans_.update_score(record.trans_.get_score());
-    trans_.add_transformation(record.trans_);
+    trans_.join_into(record.trans_);
   }
   inline float get_score() const { return trans_.get_score();}
   const algebra::Vector3D get_centroid() const { return centroid_; }
@@ -224,11 +224,12 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
 
         TransformationRecord* rec1 = recs[v1_ind];
         TransformationRecord* rec2 = recs[v2_ind];
+          if (!(rec1->get_valid() &&rec2->get_valid())) continue;
         if (rec1->get_score() > rec2->get_score()) {
-          rec1->add_transformation(*rec2);
+          rec1->join_into(*rec2);
           rec2->set_valid(false);
         } else {
-          rec2->add_transformation(*rec1);
+          rec2->join_into(*rec1);
           rec1->set_valid(false);
         }
     }
