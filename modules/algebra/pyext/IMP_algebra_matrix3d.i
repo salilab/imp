@@ -74,16 +74,13 @@ namespace IMP {
 }
 %enddef
 
-SWIG_MATRIX3D(Matrix3D_f, float)
 SWIG_MATRIX3D(Matrix3D, double)
 
 // Instantiating the templates for Python
 namespace IMP {
  namespace algebra {
    %template() ::boost::multi_array<float,3>;
-   %template(_MultiArray3D_f) ::IMP::algebra::MultiArray<float,3>;
    %template(_MultiArray3D) ::IMP::algebra::MultiArray<double,3>;
-   %template(_Matrix3D_f) ::IMP::algebra::Matrix3D<float>;
    %template(_Matrix3D) ::IMP::algebra::Matrix3D<double>;
  }
 }
@@ -92,5 +89,4 @@ namespace IMP {
 // attempt to redefine the template class; so rename it in the Python layer
 %pythoncode {
   Matrix3D = _Matrix3D
-  Matrix3D_f = _Matrix3D_f
 }
