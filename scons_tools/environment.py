@@ -16,6 +16,7 @@ import test
 import doc
 import run
 import data
+import utility
 import variables as impvariables
 from mypopen import MyPopen
 import SCons
@@ -396,6 +397,11 @@ def get_named_environment(env, name, modules, dependencies):
     e['IMP_CURRENT_NAME']=name
     e['IMP_CURRENT_DEPENDENCIES']=dependencies
     e['IMP_CURRENT_MODULES']=modules
+    for d in dependencies:
+        if data.get(env).dependencies[d].includepath:
+            utility.add_to_include_path(e, data.get(env).dependencies[d].includepath)
+        if data.get(env).dependencies[d].libpath:
+            utility.add_to_lib_path(e, data.get(env).dependencies[d].libpath)
     return e
 
 def get_current_dependencies(env):
