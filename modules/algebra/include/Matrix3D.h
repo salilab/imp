@@ -165,6 +165,11 @@ public:
     return (int)this->get_size(2);
   }
 
+  IMP_SHOWABLE_INLINE(Matrix3D,
+                      { out << "3D matrix (" << get_number_of_slices() << ", "
+                            << get_number_of_rows() << ", "
+                            << get_number_of_columns() << ")"; });
+
   void operator=(const This& v) {
     this->reshape(v);
     MA3::copy((MA3 &)v);

@@ -125,14 +125,10 @@ public:
     }
   }
 
-  void show(std::ostream &o=std::cout) const {
-    for(int i=0;i<get_number_of_rows();i++) {
-      for(int j=0;j<get_number_of_columns();j++) {
-        o<<(*this)(i,j)<<" ";
-      }
-      o<<std::endl;
-    }
-  }
+  IMP_SHOWABLE_INLINE(Matrix2D,
+                      { out << "2D matrix (" << get_number_of_rows() << ", "
+                            << get_number_of_columns() << ")"; });
+
   //! Physicial access to the elements of the matrix
   /**
    * \param[in] j physical row to access
