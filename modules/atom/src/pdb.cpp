@@ -13,7 +13,9 @@
 #include <IMP/atom/Chain.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/element.h>
-#include <IMP/atom/force_fields.h>
+#include <IMP/atom/CHARMMAtom.h>
+#include <IMP/atom/CHARMMParameters.h>
+#include <IMP/core/Hierarchy.h>
 #include <boost/algorithm/string.hpp>
 #include <locale>
 #include <fstream>
@@ -230,6 +232,35 @@ Particle* chain_particle(Model *m, char chain_id)
 
 namespace {
 
+  struct RemoveCHARMMTypeVisitor {
+    StringKey ctk;
+    RemoveCHARMMTypeVisitor() {
+      ctk = CHARMMAtom::get_charmm_type_key();
+    }
+    bool operator()(Hierarchy h) {
+      if (CHARMMAtom::particle_is_instance(h)) {
+        h.get_particle()->remove_attribute(ctk);
+      }
+      return true;
+    }
+  };
+
+  // Add radii to the newly-created hierarchy from the PDB file
+  void add_pdb_radii(Hierarchy d)
+  {
+    IMP::Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
+    IMP::Pointer<CHARMMTopology> top = ff->create_topology(d);
+    top->apply_default_patches(ff);
+    top->add_atom_types(d);
+    ff->add_radii(d);
+
+    // We added CHARMM atom types (above) to determine radii, so remove
+    // them again to avoid pollution of the Particles with unrequested
+    // attributes
+    RemoveCHARMMTypeVisitor visitor;
+    IMP::core::visit_depth_first(d, visitor);
+  }
+
   Hierarchies read_pdb(std::istream &in, std::string name,
                        Model *model,
                        PDBSelector* selector,
@@ -333,7 +364,7 @@ namespace {
   }
   if (!noradii) {
     for (unsigned int i=0; i< ret.size(); ++i) {
-      add_radii(ret[i]);
+      add_pdb_radii(ret[i]);
       canonicalize(ret[i]);
     }
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {

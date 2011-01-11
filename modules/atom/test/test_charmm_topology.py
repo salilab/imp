@@ -331,9 +331,10 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
         last_atom = atoms[-1].get_particle()
-        # PDB reader will have already set radii and CHARMM types
-        for typ in (IMP.atom.CHARMMAtom, IMP.core.XYZR):
-            self.assertEqual(typ.particle_is_instance(last_atom), True)
+        # PDB reader will have already set radii but not CHARMM type:
+        self.assertEqual(IMP.core.XYZR.particle_is_instance(last_atom), True)
+        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
+                         False)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
@@ -345,6 +346,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         for typ in (IMP.atom.Charged, IMP.atom.LennardJones):
             self.assertEqual(typ.particle_is_instance(last_atom), False)
         topology.add_atom_types(pdb)
+        self.assertEqual(IMP.atom.CHARMMAtom.particle_is_instance(last_atom),
+                         True)
         self.assertEqual(IMP.atom.CHARMMAtom(last_atom).get_charmm_type(), 'OC')
         topology.add_charges(pdb)
         self.assertAlmostEqual(IMP.atom.Charged(last_atom).get_charge(),
