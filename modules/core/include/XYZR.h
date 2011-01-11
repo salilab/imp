@@ -129,7 +129,6 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
 
 //! Get a sphere enclosing the set of XYZRs
 /** \param[in] v The one whose radius should be set
-    \param[in] rk The radius key to use
     Any particle which does not have the attribute b.get_radius()
     is assumed to have a radius of 0.
 
