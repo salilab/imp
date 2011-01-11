@@ -200,6 +200,14 @@ public:
                second_distance_(second_distance), first_angle_(first_angle),
                second_angle_(second_angle), dihedral_(dihedral),
                improper_(improper) {}
+  CHARMMInternalCoordinate(const std::vector<CHARMMBondEndpoint> endpoints,
+                           float first_distance, float first_angle,
+                           float dihedral, float second_angle,
+                           float second_distance, bool improper)
+             : CHARMMConnection<4>(endpoints), first_distance_(first_distance),
+               second_distance_(second_distance), first_angle_(first_angle),
+               second_angle_(second_angle), dihedral_(dihedral),
+               improper_(improper) {}
 
   float get_first_distance() const { return first_distance_; }
   float get_second_distance() const { return second_distance_; }
@@ -437,6 +445,10 @@ public:
     }
     for (unsigned int i = 0; i < ideal->get_number_of_impropers(); ++i) {
       add_improper(ideal->get_improper(i));
+    }
+    for (unsigned int i = 0; i < ideal->get_number_of_internal_coordinates();
+         ++i) {
+      add_internal_coordinate(ideal->get_internal_coordinate(i));
     }
   }
 
