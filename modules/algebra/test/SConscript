@@ -19,5 +19,6 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   matrix_function_name_exceptions,
                   value_object_exceptions=['BoundedGridStorage3D', 'DenseDoubleGrid3D',
                                            'DenseFloatGrid3D', 'SparseIntGrid3D',
-                                           'SparseUnboundedIntGrid3D'],
+                                           'SparseUnboundedIntGrid3D',
+                                           'Matrix2D', 'Matrix3D'],
                   spelling_exceptions=["xyz", "zyz", "zxz"])
