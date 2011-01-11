@@ -7,6 +7,7 @@
  */
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
+#include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/angle_decorators.h>
 
 #include <boost/algorithm/string.hpp>
@@ -687,7 +688,7 @@ String CHARMMParameters::get_force_field_atom_type(Atom atom) const
 CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
 {
   IMP_OBJECT_LOG;
-  IMP_NEW(CHARMMTopology, topology, ());
+  IMP_NEW(CHARMMTopology, topology, (this));
 
   HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
 

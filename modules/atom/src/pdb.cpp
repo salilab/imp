@@ -15,6 +15,7 @@
 #include <IMP/atom/element.h>
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/CHARMMParameters.h>
+#include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/core/Hierarchy.h>
 #include <boost/algorithm/string.hpp>
 #include <locale>
@@ -250,7 +251,7 @@ namespace {
   {
     IMP::Pointer<CHARMMParameters> ff = get_all_atom_CHARMM_parameters();
     IMP::Pointer<CHARMMTopology> top = ff->create_topology(d);
-    top->apply_default_patches(ff);
+    top->apply_default_patches();
     top->add_atom_types(d);
     ff->add_radii(d);
 

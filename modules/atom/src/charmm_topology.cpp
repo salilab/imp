@@ -7,6 +7,7 @@
 #include <IMP/exception.h>
 #include <IMP/constants.h>
 #include <IMP/atom/charmm_topology.h>
+#include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/CHARMMParameters.h>
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/Charged.h>
@@ -550,8 +551,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
   }
 }
 
-Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
-                                    const CHARMMParameters *ff) const
+Particles CHARMMTopology::add_bonds(Hierarchy hierarchy) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
@@ -567,15 +567,14 @@ Particles CHARMMTopology::add_bonds(Hierarchy hierarchy,
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
-      add_residue_bonds(cur, prev, next, resmap, ff, ps);
+      add_residue_bonds(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }
   }
   return ps;
 }
 
-Particles CHARMMTopology::add_impropers(Hierarchy hierarchy,
-                                        const CHARMMParameters *ff) const
+Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const
 {
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
@@ -591,7 +590,7 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy,
       const CHARMMResidueTopology *next =
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
-      add_residue_impropers(cur, prev, next, resmap, ff, ps);
+      add_residue_impropers(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }
   }

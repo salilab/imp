@@ -257,7 +257,9 @@ class CHARMMTopologyTests(IMP.test.TestCase):
 
     def test_manual_make_topology(self):
         """Test manual construction of topology"""
-        model = IMP.atom.CHARMMTopology()
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        model = IMP.atom.CHARMMTopology(ff)
         self.assertEqual(model.get_number_of_segments(), 0)
         segment = IMP.atom.CHARMMSegmentTopology()
         model.add_segment(segment)
@@ -283,7 +285,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         patch.apply(segment.get_residue(segment.get_number_of_residues() - 1),
                     segment.get_residue(0))
         topology.add_atom_types(pdb)
-        bonds = topology.add_bonds(pdb, ff)
+        bonds = topology.add_bonds(pdb)
         residues = IMP.atom.get_by_type(pdb, IMP.atom.RESIDUE_TYPE)
         # LINK residue should have constructed a backbone bond between the
         # first and last residues
@@ -298,7 +300,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         m = IMP.Model()
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
-        topology = IMP.atom.CHARMMTopology()
+        topology = IMP.atom.CHARMMTopology(ff)
         seg = IMP.atom.CHARMMSegmentTopology()
         topology.add_segment(seg)
         r1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('PRO')))
@@ -310,7 +312,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             IMP.core.XYZ.setup_particle(a.get_particle(),
                                         IMP.algebra.Vector3D(0,0,0))
         topology.add_atom_types(h)
-        bonds = topology.add_bonds(h, ff)
+        bonds = topology.add_bonds(h)
         dihedrals = ff.create_dihedrals(bonds)
         self.assertEqual(len(dihedrals), 67)
         d = IMP.atom.Dihedral(dihedrals[5])
@@ -338,7 +340,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
-        topology.apply_default_patches(ff)
+        topology.apply_default_patches()
         self.assertEqual(topology.get_number_of_segments(), 1)
         segment = topology.get_segment(0)
         self.assertEqual(segment.get_number_of_residues(), 156)
@@ -352,7 +354,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_charges(pdb)
         self.assertAlmostEqual(IMP.atom.Charged(last_atom).get_charge(),
                                -0.67, delta=1e-3)
-        bonds = topology.add_bonds(pdb, ff)
+        bonds = topology.add_bonds(pdb)
         self.assertEqual(len(bonds), 1215)
         angles = ff.create_angles(bonds)
         self.assertEqual(len(angles), 1651)
@@ -373,7 +375,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
             a1 = IMP.atom.get_atom(r1, bonda1)
             a2 = IMP.atom.get_atom(r2, bonda2)
             self.assertAtomsBonded(a1, a2, atyp1, atyp2, bondlen, fcon)
-        impropers = topology.add_impropers(pdb, ff)
+        impropers = topology.add_impropers(pdb)
         self.assertEqual(len(impropers), 509)
 
         ff.add_radii(pdb, 1.2)
@@ -391,7 +393,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test construction of hierarchy from topology"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
-        topology = IMP.atom.CHARMMTopology()
+        topology = IMP.atom.CHARMMTopology(ff)
         segment = IMP.atom.CHARMMSegmentTopology()
         topology.add_segment(segment)
         for res in ('ALA', 'CYS', 'TYR'):
@@ -411,7 +413,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         """Test construction of hierarchy from empty topology"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
-        topology = IMP.atom.CHARMMTopology()
+        topology = IMP.atom.CHARMMTopology(ff)
         segment = IMP.atom.CHARMMSegmentTopology()
         topology.add_segment(segment)
         for res in ('ALA', 'CYS', 'TYR'):
@@ -437,7 +439,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
-        topology.apply_default_patches(ff)
+        topology.apply_default_patches()
         topology.add_atom_types(pdb)
         untyped = IMP.atom.get_charmm_untyped_atoms(pdb)
         self.assertEqual([x.get_atom_type().get_string() for x in untyped],
@@ -456,7 +458,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
-        topology.apply_default_patches(ff)
+        topology.apply_default_patches()
 
         atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(atoms), 8)

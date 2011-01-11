@@ -7,7 +7,7 @@
 
 #include <IMP/atom/force_fields.h>
 #include <IMP/atom/CHARMMParameters.h>
-#include <IMP/atom/charmm_topology.h>
+#include <IMP/atom/charmm_segment_topology.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -26,7 +26,7 @@ void add_radii(Hierarchy d, const ForceFieldParameters* ffp,
   const CHARMMParameters *cp = dynamic_cast<const CHARMMParameters *>(ffp);
   if (cp) {
     IMP::Pointer<CHARMMTopology> top = cp->create_topology(d);
-    top->apply_default_patches(cp);
+    top->apply_default_patches();
     top->add_atom_types(d);
   }
   ffp->add_radii(d, 1.0, radius_key);
