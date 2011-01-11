@@ -46,8 +46,8 @@
    Creating a grid with a given cell size and upper and lower
    bounds
    \code
-   BoundinBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
-   typdef Grid3D<Ints> Grid;
+   BoundingBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
+   typedef Grid3D<Ints> Grid;
    Grid grid(5, bb, 0.0);
    \endcode
 
