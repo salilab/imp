@@ -34,7 +34,7 @@ class SphereTests(IMP.test.TestCase):
         radius=5.0
         sph = IMP.algebra.Sphere3D(center,radius)
         nump=40
-        if not IMP.algebra.has_cgal:
+        if not hasattr(IMP, 'cgal'):
             nump=400
         points=IMP.algebra.get_uniform_surface_cover(sph,nump)
         #check that the centroid is still the center

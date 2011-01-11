@@ -8,7 +8,8 @@ class RotationTests(IMP.test.TestCase):
     """Test rotations"""
     def test_uniform_random(self):
         """Test uniform random rotation"""
-        if not IMP.algebra.has_cgal: return
+        if not hasattr(IMP, 'cgal'):
+            self.skipTest("IMP.cgal module disabled")
         print "Getting them"
         rots= IMP.algebra.get_uniform_cover_rotations_3d(100);
         print "got them"
