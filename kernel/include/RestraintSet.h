@@ -1,7 +1,7 @@
 /**
  *  \file RestraintSet.h     \brief Used to hold a set of related restraints.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

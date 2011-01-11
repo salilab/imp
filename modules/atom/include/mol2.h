@@ -2,7 +2,7 @@
  *  \file atom/mol2.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-9 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPATOM_MOL_2_H

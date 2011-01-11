@@ -2,7 +2,7 @@
  *  \file ResolveCollisionsOptimizer.h
  *  \brief A base class for ResolveCollisions-based optimizers
  *
- *  Copyright 2007-8 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPBULLET_INTERNAL_UTILITY_H

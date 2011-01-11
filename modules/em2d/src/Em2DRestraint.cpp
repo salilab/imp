@@ -2,7 +2,7 @@
  *  \file Em2DRestraint.cpp
  *  \brief A restraint to score the fitness of a model to a set of EM images
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

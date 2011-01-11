@@ -2,7 +2,7 @@
  *  \file anglel_helpers.h
  *  \brief Helper functions to calculate and handle angles
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_ANGLE_HELPERS_H

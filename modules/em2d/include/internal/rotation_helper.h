@@ -2,7 +2,7 @@
  *  \file rotation_helper.h
  *  \brief Funtions related with rotations in em2d
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_INTERNAL_ROTATION_HELPER_H

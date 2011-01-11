@@ -2,7 +2,7 @@
  *  \file ExampleRefCounted.cpp
  *  \brief An example reference counted object.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

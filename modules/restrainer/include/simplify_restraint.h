@@ -2,7 +2,7 @@
  *  \file restrainer/simplify_restraint.h
  *  \brief Restrainer functions for restraints
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPRESTRAINER_SIMPLIFY_RESTRAINT_H

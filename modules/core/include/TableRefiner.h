@@ -2,7 +2,7 @@
  *  \file TableRefiner.h
  *  \brief A lookup based particle refiner
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_TABLE_REFINER_H

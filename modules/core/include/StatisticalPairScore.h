@@ -2,7 +2,7 @@
  *  \file StatisticalPairScore.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-9 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPCORE_STATISTICAL_PAIR_SCORE_H

@@ -2,7 +2,7 @@
  *  \file restraint_geometry.h
  *  \brief Represent an XYZR restraint with a sphere
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_RESTRAINT_GEOMETRY_H

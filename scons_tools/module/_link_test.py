@@ -16,7 +16,7 @@ def _action_link_test(target, source, env):
  *
  *  This file is auto-generated, do not edit.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

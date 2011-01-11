@@ -2,7 +2,7 @@
  *  \file SoftCylinderPairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_SOFT_CYLINDER_PAIR_SCORE_H

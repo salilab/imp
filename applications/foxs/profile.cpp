@@ -40,7 +40,7 @@ int main(int argc, char **argv)
   desc.add_options()
     ("help", "Any number of input PDBs and profiles is supported. \
 Each PDB will be fitted against each profile.")
-    ("version", "FoXS (IMP applications)\nCopyright 2007-2010 IMP Inventors.\n\
+    ("version", "FoXS (IMP applications)\nCopyright 2007-2011 IMP Inventors.\n\
 All rights reserved. \nLicense: GNU LGPL version 2.1 or later\n\
 <http://gnu.org/licenses/lgpl.html>.\n\
 Written by Dina Schneidman.")

@@ -4,7 +4,7 @@ scons prefix=path_to_install install
 Further documentation and an installation guide can be found at
 http://salilab.org/imp/doc.html
 
-IMP is Copyright 2007-2010 IMP Inventors. The IMP Inventors are
+IMP is Copyright 2007-2011 IMP Inventors. The IMP Inventors are
 Andrej Sali, Ben Webb, Daniel Russel, Keren Lasker, Dina Schneidman,
 Javier Velazquez-Muriel, Friedrich Foerster, Elina Tjioe, Hao Fan,
 Seung Joong Kim.

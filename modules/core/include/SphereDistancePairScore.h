@@ -2,7 +2,7 @@
  *  \file SphereDistancePairScore.h
  *  \brief A score on the distance between the surfaces of two spheres.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_SPHERE_DISTANCE_PAIR_SCORE_H

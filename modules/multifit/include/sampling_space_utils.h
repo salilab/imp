@@ -2,7 +2,7 @@
  *  \file sampling_space_utils.h
  *  \brief setting up tools
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_SAMPLING_SPACE_UTILS_H

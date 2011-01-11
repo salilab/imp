@@ -2,7 +2,7 @@
  *  \file DataPointsAssignment.cpp
  *  \brief Tools for data points assignment, after anchor point segmentation
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

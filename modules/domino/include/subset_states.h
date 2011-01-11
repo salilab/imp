@@ -2,7 +2,7 @@
  *  \file domino/subset_states.h
  *  \brief A beyesian infererence-based sampler.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

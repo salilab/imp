@@ -2,7 +2,7 @@
  *  \file atom/BrownianDynamics.h
  *  \brief Simple molecular dynamics optimizer.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

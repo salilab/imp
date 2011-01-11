@@ -2,7 +2,7 @@
  *  \file FFTinterface.h
  *  \brief Functions to deal with very common math operations
  *  \brief Interface between FFTW and this package.
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_FF_TINTERFACE_H

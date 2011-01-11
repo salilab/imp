@@ -1,7 +1,7 @@
 /**
  *  \file SpherePatch3D.h   \brief Simple 3D sphere patch class.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPALGEBRA_SPHERE_PATCH_3D_H

@@ -2,7 +2,7 @@
  *  \file ExcludedPair.h
  *  \brief A pair of Particles, used for exclusions.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_EXCLUDED_PAIR_H

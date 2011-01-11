@@ -2,7 +2,7 @@
  *  \file core/rigid_bodies.h
  *  \brief functionality for defining rigid bodies
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_RIGID_BODIES_H

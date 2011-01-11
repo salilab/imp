@@ -2,7 +2,7 @@
  *  \file GSLOptimizer.h
  *  \brief A base class for GSL-based optimizers
  *
- *  Copyright 2007-8 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPGSL_GSL_OPTIMIZER_H

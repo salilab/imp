@@ -2,7 +2,7 @@
  *  \file model_interaction.h
  *  \brief operations implying interaction of models and the EM module
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_MODEL_INTERACTION_H

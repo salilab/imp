@@ -2,7 +2,7 @@
  *  \file SpecialCaseRestraints.h
  *  \brief Keep track of the maximum change of a set of attributes.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_INTERNAL_SPECIAL_CASE_RESTRAINTS_H

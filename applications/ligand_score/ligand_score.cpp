@@ -1,7 +1,7 @@
 /**
  *  \file bin/protein_ligand_score.cpp   \brief A class for reading mol2 files
  *
- *  Copyright 2007-9 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

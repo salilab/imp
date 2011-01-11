@@ -1,7 +1,7 @@
 /**
  *  \file header_converters.h
  *  \brief Functions to convert between ImageHeader and DensityHeader
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM_HEADER_CONVERTERS_H

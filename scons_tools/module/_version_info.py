@@ -22,7 +22,7 @@ def _action_version_info_h(target, source, env):
  *  \\file %(module_include_path)s/internal/version_info.h
  *  \\brief %(module)s module version information.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 """ % vars
@@ -76,7 +76,7 @@ def _action_version_info_cpp(target, source, env):
  *  \\file %(module_include_path)s/internal/version_info.cpp
  *  \\brief %(module)s module version information.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 """ % vars

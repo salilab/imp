@@ -2,7 +2,7 @@
  *  \file geometric_alignment.h
  *  \brief align sets of points.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_GEOMETRIC_ALIGNMENT_H

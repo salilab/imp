@@ -2,7 +2,7 @@
  *  \file  SphereD<3>.cpp
  *  \brief simple implementation of spheres in 3D
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include <IMP/base_types.h>
 #include <IMP/algebra/Sphere3D.h>

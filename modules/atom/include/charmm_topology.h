@@ -1,7 +1,7 @@
 /**
  * \file charmm_topology.h \brief Classes for handling CHARMM-style topology.
  *
- * Copyright 2007-2010 IMP Inventors. All rights reserved.
+ * Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

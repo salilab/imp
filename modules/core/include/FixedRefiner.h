@@ -2,7 +2,7 @@
  *  \file FixedRefiner.h
  *  \brief A particle refiner which returns a fixed set of particles
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_FIXED_REFINER_H

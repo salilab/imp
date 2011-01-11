@@ -2,7 +2,7 @@
  *  \file atom/hierarchy_tools.cpp
  *  \brief A decorator for a point particle that has an electrostatic charge.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

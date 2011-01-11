@@ -2,7 +2,7 @@
  *  \file align2D.copp
  *  \brief Align operations for EM images
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/align2D.h"

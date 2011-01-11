@@ -2,7 +2,7 @@
  *  \file atom/protein_ligand_score.h
  *  \brief Functions to read mol2s
  *
- *  Copyright 2007-9 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPATOM_PROTEIN_LIGAND_SCORE_H

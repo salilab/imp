@@ -2,7 +2,7 @@
  *  \file ExamplePairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMP_EXAMPLE_SYSTEM_LOCAL_EXAMPLE_PAIR_SCORE_H
