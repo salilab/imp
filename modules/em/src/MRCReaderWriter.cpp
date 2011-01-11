@@ -322,7 +322,7 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
   // extra space used for anything - 0 by default
   for(int i=0;i<IMP_MRC_USER;i++)
     h.user[i]=user[i];
-  strcpy(h.map,"MAP \0"); // character string 'MAP ' to identify file type
+  strcpy(h.map,"MAP\0"); // character string 'MAP ' to identify file type
   // Origin used for transforms
   h.set_xorigin(xorigin) ; h.set_yorigin(yorigin) ; h.set_zorigin(zorigin);
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
@@ -333,7 +333,6 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
   // Copy comments
   for(int i=0;i<h.nlabl;i++)
     strcpy(h.comments[i],labels[i]);
-
 
   // Fill empty coments with null character
   const char *c="\0";
