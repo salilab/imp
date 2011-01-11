@@ -1385,6 +1385,9 @@ protected:                                      \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+
+#else
+#define IMP_SINGLETON_SCORE_BASE(Name)
 #endif
 
 
@@ -1480,6 +1483,8 @@ protected:                                      \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+#else
+#define IMP_PAIR_SCORE_BASE(Name)
 #endif
 
 //! Declare the functions needed for a PairScore
@@ -1576,6 +1581,8 @@ protected:                                      \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+#else
+#define IMP_TRIPLET_SCORE_BASE(Name)
 #endif
 
 //! Declare the functions needed for a TripletScore
