@@ -196,15 +196,21 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'C')
         self.assertEqual(res.get_number_of_bonds(), 10)
         self.assertEqual(res.get_number_of_impropers(), 3)
+        self.assertEqual(res.get_number_of_internal_coordinates(), 12)
         patch.apply(res)
         # Patch should change atom type of existing atoms
         self.assertEqual(res.get_atom('C').get_charmm_type(), 'CC')
         # Should also add new atoms
         self.assertEqual(res.get_atom('OXT').get_charmm_type(), 'OC')
         self.assertEqual(res.get_patched(), True)
-        # Should add bonds/angles/dihedrals/impropers
+        # Should add bonds/angles/dihedrals/impropers/internal coordinates
         self.assertEqual(res.get_number_of_bonds(), 11)
         self.assertEqual(res.get_number_of_impropers(), 4)
+        self.assertEqual(res.get_number_of_internal_coordinates(), 14)
+        ic = res.get_internal_coordinate(13)
+        self.assertEqual(ic.get_first_distance(), 0.)
+        self.assertEqual(ic.get_first_angle(), 0.)
+        self.assertEqual(ic.get_dihedral(), 180.)
         # Repeated patching should not be possible
         self.assertRaises(IMP.ValueException, patch.apply, res)
 

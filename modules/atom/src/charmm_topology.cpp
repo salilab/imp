@@ -169,10 +169,11 @@ namespace {
   }
 
   template <unsigned int D>
-  CHARMMConnection<D> handle_two_patch_bond(const CHARMMConnection<D> &bond,
-                                 CHARMMResidueTopology *res1,
-                                 CHARMMResidueTopology *res2,
-                                 CHARMMResidueTopology *first_res)
+  std::vector<CHARMMBondEndpoint>
+          handle_two_patch_bond(const CHARMMConnection<D> &bond,
+                                CHARMMResidueTopology *res1,
+                                CHARMMResidueTopology *res2,
+                                CHARMMResidueTopology *first_res)
   {
     std::vector<CHARMMBondEndpoint> endpoints;
     for (unsigned int i = 0; i < D; ++i) {
@@ -187,7 +188,7 @@ namespace {
         endpoints.push_back(CHARMMBondEndpoint(name, res2));
       }
     }
-    return CHARMMConnection<D>(endpoints);
+    return endpoints;
   }
 
 }
@@ -329,6 +330,11 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res) const
     res->add_improper(get_improper(i));
   }
 
+  // Add internal coordinates
+  for (unsigned int i = 0; i < get_number_of_internal_coordinates(); ++i) {
+    res->add_internal_coordinate(get_internal_coordinate(i));
+  }
+
   res->set_patched(true);
 }
 
@@ -370,22 +376,40 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   for (unsigned int i = 0; i < get_number_of_bonds(); ++i) {
     CHARMMResidueTopology *res =
                 get_two_patch_residue_for_bond(get_bond(i), res1, res2);
-    res->add_bond(handle_two_patch_bond(get_bond(i), res1, res2, res));
+    res->add_bond(CHARMMBond(handle_two_patch_bond(get_bond(i), res1,
+                                                   res2, res)));
   }
   for (unsigned int i = 0; i < get_number_of_angles(); ++i) {
     CHARMMResidueTopology *res =
                get_two_patch_residue_for_bond(get_angle(i), res1, res2);
-    res->add_angle(handle_two_patch_bond(get_angle(i), res1, res2, res));
+    res->add_angle(CHARMMAngle(handle_two_patch_bond(get_angle(i), res1, res2,
+                                                     res)));
   }
   for (unsigned int i = 0; i < get_number_of_dihedrals(); ++i) {
     CHARMMResidueTopology *res =
                     get_two_patch_residue_for_bond(get_dihedral(i), res1, res2);
-    res->add_dihedral(handle_two_patch_bond(get_dihedral(i), res1, res2, res));
+    res->add_dihedral(CHARMMDihedral(handle_two_patch_bond(get_dihedral(i),
+                                                           res1, res2, res)));
   }
   for (unsigned int i = 0; i < get_number_of_impropers(); ++i) {
     CHARMMResidueTopology *res =
                     get_two_patch_residue_for_bond(get_improper(i), res1, res2);
-    res->add_improper(handle_two_patch_bond(get_improper(i), res1, res2, res));
+    res->add_improper(CHARMMDihedral(handle_two_patch_bond(get_improper(i),
+                                                           res1, res2, res)));
+  }
+
+  // Add impropers
+  for (unsigned int i = 0; i < get_number_of_internal_coordinates(); ++i) {
+    CHARMMInternalCoordinate ic = get_internal_coordinate(i);
+    CHARMMResidueTopology *res =
+                    get_two_patch_residue_for_bond(get_internal_coordinate(i),
+                                                   res1, res2);
+    res->add_internal_coordinate(
+            CHARMMInternalCoordinate(handle_two_patch_bond(ic, res1,
+                                                           res2, res),
+                                ic.get_first_distance(), ic.get_first_angle(),
+                                ic.get_dihedral(), ic.get_second_angle(),
+                                ic.get_second_distance(), ic.get_improper()));
   }
 
   res1->set_patched(true);
