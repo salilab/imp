@@ -2,7 +2,7 @@
  *  \file RefCounted.h
  *  \brief A common base class for ref counted objects.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

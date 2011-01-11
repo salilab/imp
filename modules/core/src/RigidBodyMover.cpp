@@ -2,7 +2,7 @@
  *  \file RigidBodyMover.cpp
  *  \brief A mover that transforms a rigid body
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core/RigidBodyMover.h>

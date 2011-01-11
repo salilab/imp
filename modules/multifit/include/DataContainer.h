@@ -2,7 +2,7 @@
  *  \file DataContainer.h
  *  \brief stored multifit data
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_DATA_CONTAINER_H

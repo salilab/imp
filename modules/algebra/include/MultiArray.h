@@ -2,7 +2,7 @@
  *  \file MultiArray.h
  *  \brief Management of arrays of multiple dimensions
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPALGEBRA_MULTI_ARRAY_H

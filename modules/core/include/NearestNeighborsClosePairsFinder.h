@@ -2,7 +2,7 @@
  *  \file NearestNeighborsClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_NEAREST_NEIGHBORS_CLOSE_PAIRS_FINDER_H

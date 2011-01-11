@@ -2,7 +2,7 @@
  * \file LinearFit
  * \brief Linear fit of data points
  *
- * Copyright 2007-8 IMP Inventors. All rights reserved.
+ * Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

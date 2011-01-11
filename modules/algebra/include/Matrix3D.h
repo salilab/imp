@@ -2,7 +2,7 @@
  *  \file Matrix3D.h
  *  \brief Management of 3D matrices (volumes) of data
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_MATRIX_3D_H

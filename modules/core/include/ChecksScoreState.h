@@ -1,7 +1,7 @@
 /**
  *  \file ChecksScoreState.h    \brief Turn checks on and off.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHECKS_SCORE_STATE_H

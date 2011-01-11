@@ -1,7 +1,7 @@
 /**
  *  \file OpenCubicSpline.h    \brief Open cubic spline function.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_OPEN_CUBIC_SPLINE_H

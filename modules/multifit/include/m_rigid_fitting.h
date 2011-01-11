@@ -2,7 +2,7 @@
  *  \file  m_rigid_fitting.h
  *  \brief preforms rigid fitting between a set of particles and a density map
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #ifndef IMPMULTIFIT_M_RIGID_FITTING_H
 #define IMPMULTIFIT_M_RIGID_FITTING_H

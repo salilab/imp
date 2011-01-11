@@ -2,7 +2,7 @@
  *  \file BoxSweepClosePairsFinder.h
  *  \brief Test all pairs of particles to find close pairs.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_BOX_SWEEP_CLOSE_PAIRS_FINDER_H

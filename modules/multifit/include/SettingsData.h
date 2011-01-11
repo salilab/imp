@@ -2,7 +2,7 @@
  *  \file SettingsData.h
  *  \brief stored multifit settings data
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H

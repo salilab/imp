@@ -2,7 +2,7 @@
  * \file  sampling_space.cpp
  * \brief handles settting sampling space for different mappings
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #include <IMP/multifit/sampling_space.h>

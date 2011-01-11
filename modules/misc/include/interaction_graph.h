@@ -2,7 +2,7 @@
  *  \file interaction_graph.h
  *  \brief Functions to get report statistics about the used attributes.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPMISC_INTERACTION_GRAPH_H

@@ -2,7 +2,7 @@
  *  \file  Triangle3D.h
  *  \brief simple implementation of a triangle in 3D
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #ifndef IMPALGEBRA_TRIANGLE_3D_H
 #define IMPALGEBRA_TRIANGLE_3D_H

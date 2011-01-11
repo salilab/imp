@@ -2,7 +2,7 @@
  *  \file atom/BondPairContainer.h
  *  \brief A fake container for bonds
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPATOM_BOND_PAIR_CONTAINER_H

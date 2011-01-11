@@ -2,7 +2,7 @@
  *  \file ChildrenRefiner.h
  *  \brief Return the hierarchy children of a particle.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_CHILDREN_REFINER_H

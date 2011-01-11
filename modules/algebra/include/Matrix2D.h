@@ -2,7 +2,7 @@
  *  \file Matrix2D.h
  *  \brief Management of 2D matrices.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_MATRIX_2D_H

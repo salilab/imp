@@ -1,7 +1,7 @@
 /**
  * \file SolventAccessibleSurface.h \brief
  *
- * Copyright 2007-2010 IMP Inventors. All rights reserved.
+ * Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPSAXS_SOLVENT_ACCESSIBLE_SURFACE_H

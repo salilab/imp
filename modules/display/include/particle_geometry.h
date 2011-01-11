@@ -2,7 +2,7 @@
  *  \file particle_geometry.h
  *  \brief Represent an XYZR particle with a sphere
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PARTICLE_GEOMETRY_H

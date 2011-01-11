@@ -2,7 +2,7 @@
  *  \file Transformation3D.cpp
  *  \brief Simple 3D transformation class.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 #include "IMP/algebra/Transformation3D.h"
 #include "IMP/algebra/Sphere3D.h"

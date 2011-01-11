@@ -2,7 +2,7 @@
  *  \file DerivativesFromRefined.h
  *  \brief Accumulate the derivatives of the refined particles
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_DERIVATIVES_FROM_REFINED_H

@@ -2,7 +2,7 @@
  *  \file  SphericalVector3D.h
  *  \brief Stores and converts spherical coordinates
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 #ifndef IMPALGEBRA_SPHERICAL_VECTOR_3D_H
 #define IMPALGEBRA_SPHERICAL_VECTOR_3D_H

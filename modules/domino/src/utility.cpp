@@ -2,7 +2,7 @@
  *  \file interaction_graph.cpp
  *  \brief Score particles with respect to a tunnel.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/domino/utility.h>

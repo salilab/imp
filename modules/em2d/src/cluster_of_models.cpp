@@ -2,7 +2,7 @@
  *  \file cluster_of_models.cpp
  *  \brief Cluster of models scored with em2d using the RMSD between them
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

@@ -2,7 +2,7 @@
  *  \file PDBOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDISPLAY_PDB_OPTIMIZER_STATE_H

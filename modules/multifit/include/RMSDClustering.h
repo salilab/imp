@@ -2,7 +2,7 @@
  *  \file RMSDClustering.h
  *  \brief Cluster transformations by rmsd
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_RMSD_CLUSTERING_H

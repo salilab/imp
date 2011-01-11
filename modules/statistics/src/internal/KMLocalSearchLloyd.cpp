@@ -2,7 +2,7 @@
  *  \file KMLocalSearchLloyd.cpp
  *  \brief Lloyd's algorithm with random restarts
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>

@@ -2,7 +2,7 @@
  *  \file FFTFitting.h
  *  \brief FFT based fitting
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_FFT_FITTING_H

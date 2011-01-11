@@ -2,7 +2,7 @@
  *  \file ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PROJECTION_FINDER_H

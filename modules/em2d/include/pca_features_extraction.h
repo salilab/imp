@@ -1,7 +1,7 @@
 /**
  *  \file pca_features_extraction.h
  *  \brief pca features for an image
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM2D_PCA_FEATURES_EXTRACTION_H

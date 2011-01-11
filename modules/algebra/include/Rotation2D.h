@@ -2,7 +2,7 @@
  *  \file Rotation2D.h
  *  \brief Classes and operations related with rotations
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPALGEBRA_ROTATION_2D_H

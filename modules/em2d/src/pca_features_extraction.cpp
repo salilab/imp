@@ -2,7 +2,7 @@
  *  \file pca_features_extraction.copp
  *  \brief pca features for an image
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #include "IMP/em2d/pca_features_extraction.h"

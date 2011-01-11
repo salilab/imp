@@ -2,7 +2,7 @@
  *  \file WriteModelOptimizerState.h
  *  \brief Write geometry to a file during optimization
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCORE_WRITE_MODEL_OPTIMIZER_STATE_H

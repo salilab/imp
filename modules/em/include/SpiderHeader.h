@@ -2,7 +2,7 @@
  *  \file SpiderHeader.h
  *  \brief Header for Spider and Xmipp formats
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
 
 #ifndef IMPEM_SPIDER_HEADER_H

@@ -2,7 +2,7 @@
  *  \file RestraintGraph.cpp
  *  \brief creates a MRF from a set of particles and restraints
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

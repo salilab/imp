@@ -2,7 +2,7 @@
  *  \file ConnectingPairContainer.h
  *  \brief A container which has pairs which ensure a set is connected
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPCONTAINER_CONNECTING_PAIR_CONTAINER_H

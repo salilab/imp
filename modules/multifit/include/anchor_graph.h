@@ -2,7 +2,7 @@
  *  \file anchor_graph.h
  *  \brief anchor graph utilities
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 #ifndef IMPMULTIFIT_ANCHOR_GRAPH_H

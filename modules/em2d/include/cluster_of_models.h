@@ -2,7 +2,7 @@
  *  \file cluster_of_models.h
  *  \brief functions to cluster the models according to the em2d score
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

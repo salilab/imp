@@ -2,7 +2,7 @@
  *  \file KMTerminationCondition.h
  *  \brief Stores data controlling the termination and phase changes
  *          of the kmean clustering
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

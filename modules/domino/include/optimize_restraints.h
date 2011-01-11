@@ -2,7 +2,7 @@
  *  \file domino/optimize_restraints.h
  *  \brief Functions to get report statistics about the used attributes.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
 #ifndef IMPDOMINO_OPTIMIZE_RESTRAINTS_H

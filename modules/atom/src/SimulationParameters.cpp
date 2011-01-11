@@ -1,7 +1,7 @@
 /**
  *  \File SimulationParameters.cpp   \brief Simple atoms decorator.
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 

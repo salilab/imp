@@ -4,7 +4,7 @@
               when doing RMSD clustering
  *            according to the valuess of the em2d score
  *
- *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
