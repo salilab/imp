@@ -60,8 +60,10 @@ IMP_OBJECTS(SubsetStatesTable, SubsetStatesTables);
     - no two particles which have the same ParticleStates object
     in the ParticleStatesTable can be assigned the same state.
     That is for a given Subset s and SubsetState ss, if
+\code
     ParticleStatesTable::get_particle_states(s[i])
     ==ParticleStatesTable::get_particle_states(s[j])
+\endcode
     then ss[i] != ss[j]
 
     - If a SubsetFilterTable objects are provided, the branch and bound
