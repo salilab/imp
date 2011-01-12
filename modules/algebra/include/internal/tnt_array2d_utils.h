@@ -263,9 +263,9 @@ Array2D<T>&  operator/=(Array2D<T> &A, const Array2D<T> &B)
 template <class T>
 Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)
 {
-    if (A.dim2() != B.dim1())
-        return Array2D<T>();
-
+  if (A.dim2() != B.dim1()) {
+    IMP_THROW("Bad dimensions", ValueException);
+  }
     int M = A.dim1();
     int N = A.dim2();
     int K = B.dim2();
@@ -376,6 +376,20 @@ Array1D<T> multiply(T s,const Array1D<T> &V)
   }
   return ans;
 }
+
+/** Added by Keren */
+template<class T>
+Array2D<T> multiply(T s,const Array2D<T> &V)
+{
+  Array2D<T> ans(V.dim1(), V.dim2());
+  for(int i=0; i< V.dim1(); ++i) {
+    for(int j=0; j< V.dim2(); ++j) {
+      ans[i][j]=V[i][j]*s;
+    }
+  }
+  return ans;
+}
+
 
 /** Added by Keren */
 template<class T>
