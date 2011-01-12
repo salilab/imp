@@ -47,7 +47,7 @@ class CrossCorrelationTests(IMP.test.TestCase):
 
 
     def test_correlation_with_padding(self):
-        """ test that padding option does not effect the CC score"""
+        """ test that padding option does not affect the CC score"""
         self.model_map.calcRMS()
         threshold=self.model_map.get_header().dmin-0.001
         score1 = self.ccc.cross_correlation_coefficient(self.EM_map,self.model_map,threshold,False)
