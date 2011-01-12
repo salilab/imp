@@ -286,6 +286,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
+        topology.apply_default_patches()
         topology.add_atom_types(pdb)
         # Add sidechain and hydrogen atoms
         topology.add_missing_atoms(pdb)
