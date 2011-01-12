@@ -63,12 +63,21 @@ public:
       }
     }
   }
+
+  IMP_SHOWABLE_INLINE(FilterByThreshold,
+                      {out << "threshold: " << threshold_ << "; mode: "
+                           << mode_ << "; value: " << value_;});
+
 protected:
   T threshold_;
   int mode_;
   T value_;
 };
 
+typedef FilterByThreshold<double,2> FilterByThreshold2D;
+typedef std::vector<FilterByThreshold<double,2> > FilterByThreshold2Ds;
+typedef FilterByThreshold<double,3> FilterByThreshold3D;
+typedef std::vector<FilterByThreshold<double,3> > FilterByThreshold3Ds;
 
 //! Class to filter by threshold (only DensityMap)
 class IMPEMEXPORT MapFilterByThreshold
@@ -95,11 +104,16 @@ public:
 
   void apply(DensityMap* m);
 
+  IMP_SHOWABLE_INLINE(MapFilterByThreshold,
+                      {out << "threshold: " << threshold_ << "; mode: "
+                           << mode_ << "; value: " << value_;});
+
 protected:
   float threshold_;
   int mode_;
   float value_;
 };
+IMP_VALUES(MapFilterByThreshold, MapFilterByThresholds);
 
 IMPEM_END_NAMESPACE
 

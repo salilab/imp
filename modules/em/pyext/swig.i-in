@@ -19,6 +19,7 @@ IMP_SWIG_OBJECT(IMP::em, MRCReaderWriter, MRCReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, SpiderMapReaderWriter, SpiderMapReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
+IMP_SWIG_VALUE(IMP::em, MapFilterByThreshold, MapFilterByThresholds);
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
@@ -62,3 +63,5 @@ namespace IMP {
   }
 }
 
+IMP_SWIG_VALUE(IMP::em, FilterByThreshold2D, FilterByThreshold2Ds);
+IMP_SWIG_VALUE(IMP::em, FilterByThreshold3D, FilterByThreshold3Ds);
