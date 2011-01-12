@@ -172,7 +172,7 @@ int main(int argc, char **argv) {
 //  atom::add_radii(smh);
   double resolution = vm["res"].as<double>();
   em2d::SpiderImageReaderWriter<double> srw;
-  em::MRCReaderWriter mrw;
+  IMP_NEW(em::MRCReaderWriter,  mrw, ());
 
 
   // Generate a map
