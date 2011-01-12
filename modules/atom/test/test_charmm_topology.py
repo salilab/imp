@@ -279,6 +279,21 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(model.get_number_of_segments(), 1)
         self.assertEqual(segment.get_number_of_residues(), 1)
 
+    def test_add_coordinates(self):
+        """Test CHARMMTopology::add_coordinates()"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(self.get_input_file_name('backbone.pdb'), m)
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = ff.create_topology(pdb)
+        topology.add_atom_types(pdb)
+        # Add sidechain and hydrogen atoms
+        topology.add_missing_atoms(pdb)
+        topology.add_coordinates(pdb)
+        # Every atom should now have XYZ coordinates
+        for a in IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE):
+            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
+
     def test_make_patched_topology(self):
         """Test construction of topology with manual patching"""
         m = IMP.Model()

@@ -6,6 +6,7 @@
 
 #include <IMP/exception.h>
 #include <IMP/constants.h>
+#include <IMP/algebra/Vector3D.h>
 #include <IMP/atom/charmm_topology.h>
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/CHARMMParameters.h>
@@ -546,6 +547,125 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const
       }
     }
   }
+}
+
+namespace {
+  struct ModelInternalCoordinate {
+    float first_distance, second_distance, first_angle, second_angle, dihedral;
+    bool improper;
+    Atoms atoms;
+    ModelInternalCoordinate(const CHARMMInternalCoordinate &ic,
+                            Atoms new_atoms) : atoms(new_atoms) {
+      first_distance = ic.get_first_distance();
+      second_distance = ic.get_second_distance();
+      first_angle = ic.get_first_angle();
+      second_angle = ic.get_second_angle();
+      dihedral = ic.get_dihedral();
+      improper = ic.get_improper();
+    }
+  };
+
+  void build_internal_coordinates(const CHARMMTopology &top,
+                             const std::map<const CHARMMResidueTopology *,
+                                            Hierarchy> &resmap,
+                             std::vector<ModelInternalCoordinate> &ics) {
+    for (unsigned int nseg = 0; nseg < top.get_number_of_segments(); ++nseg) {
+      const CHARMMSegmentTopology *seg = top.get_segment(nseg);
+      const CHARMMResidueTopology *prev = NULL;
+      for (unsigned int nres = 0; nres < seg->get_number_of_residues();
+           ++nres) {
+        const CHARMMResidueTopology *cur = seg->get_residue(nres);
+        const CHARMMResidueTopology *next =
+                 nres < seg->get_number_of_residues() - 1 ?
+                 seg->get_residue(nres + 1) : NULL;
+        for (unsigned int nic = 0;
+             nic < cur->get_number_of_internal_coordinates(); ++nic) {
+          const CHARMMInternalCoordinate &ic =
+                       cur->get_internal_coordinate(nic);
+          Atoms atoms = ic.get_atoms(cur, prev, next, resmap);
+          if (atoms.size() > 0) {
+            ics.push_back(ModelInternalCoordinate(ic, atoms));
+          }
+        }
+        prev = cur;
+      }
+    }
+  }
+
+  void build_cartesian(Atom known1, Atom known2, Atom known3, Atom unknown,
+                       float r, float phi, float theta) {
+    // Convert to radians
+    theta = theta * PI / 180.;
+    phi = phi * PI / 180.;
+
+    double cost = std::cos(theta);
+    double sint = std::sin(theta);
+    double cosp = std::cos(phi);
+    double sinp = std::sin(phi);
+
+    algebra::Vector3D v1 = core::XYZ(known1).get_coordinates();
+    algebra::Vector3D v2 = core::XYZ(known2).get_coordinates();
+    algebra::Vector3D v3 = core::XYZ(known3).get_coordinates();
+
+    algebra::Vector3D rjk = v2 - v3;
+    algebra::Vector3D rjk_unit = rjk.get_unit_vector();
+    algebra::Vector3D rij = v1 - v2;
+
+    algebra::Vector3D cross = algebra::get_vector_product(rij,
+                                                rjk_unit).get_unit_vector();
+    algebra::Vector3D cross2 = algebra::get_vector_product(rjk_unit, cross);
+
+    algebra::Vector3D wt(r * cost, r * sint * cosp, r * sint * sinp);
+
+    algebra::Vector3D newc(wt[0] * rjk_unit[0] + wt[1] * cross2[0]
+                           + wt[2] * cross[0],
+                           wt[0] * rjk_unit[1] + wt[1] * cross2[1]
+                           + wt[2] * cross[1],
+                           wt[0] * rjk_unit[2] + wt[1] * cross2[2]
+                           + wt[2] * cross[2]);
+    core::XYZ::setup_particle(unknown, newc + v3);
+  }
+
+  void build_cartesian_from_internal(
+                             const std::vector<ModelInternalCoordinate> &ics) {
+    for (std::vector<ModelInternalCoordinate>::const_iterator it
+         = ics.begin(); it != ics.end(); ++it) {
+      if (core::XYZ::particle_is_instance(it->atoms[1])
+          && core::XYZ::particle_is_instance(it->atoms[2])) {
+        if (!core::XYZ::particle_is_instance(it->atoms[3])
+            && core::XYZ::particle_is_instance(it->atoms[0])) {
+          float phi = it->dihedral;
+          float r = it->second_distance;
+          float theta = it->second_angle;
+          build_cartesian(it->atoms[0], it->atoms[1],
+                          it->atoms[2], it->atoms[3], r, phi, theta);
+        } else if (!core::XYZ::particle_is_instance(it->atoms[0])
+                   && core::XYZ::particle_is_instance(it->atoms[3])) {
+          float phi = it->dihedral;
+          float r = it->first_distance;
+          float theta = it->first_angle;
+          if (it->improper) {
+            build_cartesian(it->atoms[3], it->atoms[1],
+                            it->atoms[2], it->atoms[0], r, -phi, theta);
+          } else {
+            build_cartesian(it->atoms[3], it->atoms[2],
+                            it->atoms[1], it->atoms[0], r, phi, theta);
+          }
+        }
+      }
+    }
+  }
+}
+
+void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
+{
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+
+  std::vector<ModelInternalCoordinate> ics;
+  build_internal_coordinates(*this, resmap, ics);
+
+  build_cartesian_from_internal(ics);
 }
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
