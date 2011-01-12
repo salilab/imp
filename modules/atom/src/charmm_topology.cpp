@@ -626,8 +626,9 @@ namespace {
     core::XYZ::setup_particle(unknown, newc + v3);
   }
 
-  void build_cartesian_from_internal(
+  unsigned build_cartesian_from_internal(
                              const std::vector<ModelInternalCoordinate> &ics) {
+    unsigned numbuilt = 0;
     for (std::vector<ModelInternalCoordinate>::const_iterator it
          = ics.begin(); it != ics.end(); ++it) {
       if (core::XYZ::particle_is_instance(it->atoms[1])
@@ -639,6 +640,7 @@ namespace {
           float theta = it->second_angle;
           build_cartesian(it->atoms[0], it->atoms[1],
                           it->atoms[2], it->atoms[3], r, phi, theta);
+          numbuilt++;
         } else if (!core::XYZ::particle_is_instance(it->atoms[0])
                    && core::XYZ::particle_is_instance(it->atoms[3])) {
           float phi = it->dihedral;
@@ -651,9 +653,11 @@ namespace {
             build_cartesian(it->atoms[3], it->atoms[2],
                             it->atoms[1], it->atoms[0], r, phi, theta);
           }
+          numbuilt++;
         }
       }
     }
+    return numbuilt;
   }
 }
 
@@ -665,7 +669,9 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
   std::vector<ModelInternalCoordinate> ics;
   build_internal_coordinates(*this, resmap, ics);
 
-  build_cartesian_from_internal(ics);
+  // If we added at least one Cartesian coordinate, run again - there may now
+  // be more coordinates we can fill in using the newly-assigned coordinates.
+  while (build_cartesian_from_internal(ics) > 0) {}
 }
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
