@@ -36,7 +36,7 @@ namespace po = boost::program_options;
 em::DensityMap* set_map(const std::string &density_filename,
             float resolution, float spacing,
             float x_origin, float y_origin, float z_origin) {
-  em::MRCReaderWriter mrw;
+  IMP_NEW(em::MRCReaderWriter,  mrw, ());
   em::DensityMap *rmap;
   try{
     rmap = em::read_map(density_filename.c_str(),mrw);
@@ -321,7 +321,7 @@ int main(int argc, char **argv) {
                          local,gmm_on);
   dmap = set_map(density_filename,resolution, spacing,
                  x_origin, y_origin, z_origin);
-  em::MRCReaderWriter mrw;
+  IMP_NEW(em::MRCReaderWriter, mrw, ());
   //write the results
   if (cc_hit_map_filename != "") {
     em::DensityMap* cc_map = sols.get_max_cc_map();

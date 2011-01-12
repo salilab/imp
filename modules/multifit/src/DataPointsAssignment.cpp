@@ -187,8 +187,7 @@ new em::DensityMap(*(dmap->get_header())));
     segment_map->set_value(
 vecs[i][0],vecs[i][1],vecs[i][2],dmap->get_value(vecs[i]));
   }
-  em::MRCReaderWriter mrw;
-  em::write_map(segment_map,filename.c_str(),mrw);
+  em::write_map(segment_map,filename.c_str(),new em::MRCReaderWriter());
   segment_map=NULL;
 }
 
