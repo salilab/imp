@@ -97,12 +97,26 @@ public:
    */
   void add_atom_types(Hierarchy hierarchy) const;
 
+  //! Add Cartesian coordinates to the given Hierarchy using this topology.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+
+      Cartesian coordinates for any atoms that are not currently core::XYZ
+      particles are generated using internal coordinates.
+
+      \note Currently, atoms with missing coordinates must be related to
+            three other atoms with coordinates. Any atom for which this is
+            not true will not be assigned coordinates. This will be resolved
+            in later additions to this method.
+   */
+  void add_coordinates(Hierarchy hierarchy) const;
+
   //! Add any missing atoms to the given Hierarchy using this topology.
   /** Missing atoms are defined as those present in the topology but not
       in the hierarchy.
-      Newly-added atoms are assigned CHARMM types, but no coordinates.
+      Newly-added atoms are assigned CHARMM types, but no coordinates
+      (use add_coordinates() to add them).
       The primary sequence of the Hierarchy must match that of the topology.
-      \see CHARMMAtom, remove_charmm_untyped_atoms.
+      \see CHARMMAtom, remove_charmm_untyped_atoms, add_coordinates.
    */
   void add_missing_atoms(Hierarchy hierarchy) const;
 
