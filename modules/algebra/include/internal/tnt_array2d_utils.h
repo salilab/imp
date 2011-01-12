@@ -353,7 +353,7 @@ bool is_inversable(const Array2D<T> &M)
 
 /** Added by Keren */
 template<class T>
-Array1D<T> operator*(const Array2D<T> &M,const Array1D<T> &V)
+Array1D<T> multiply(const Array2D<T> &M,const Array1D<T> &V)
 {
   assert(M.dim2() == V.dim1());
   Array1D<T> ans(V.dim1());
@@ -368,33 +368,7 @@ Array1D<T> operator*(const Array2D<T> &M,const Array1D<T> &V)
 
 /** Added by Keren */
 template<class T>
-Array2D<T> operator*(T t,const Array2D<T> &V)
-{
-  Array2D<T> ret(V.dim1(), V.dim2());
-  for(int r=0; r< V.dim1(); ++r) {
-    for(int c=0; c< V.dim2(); ++c) {
-      ret[r][c]= t*V[r][c];
-    }
-  }
-  return ret;
-}
-
-/** Added by Keren */
-template<class T>
-Array2D<T> operator-(const Array2D<T> &V)
-{
-  Array2D<T> ret(V.dim1(), V.dim2());
-  for(int r=0; r< V.dim1(); ++r) {
-    for(int c=0; c< V.dim2(); ++c) {
-      ret[r][c]= -V[r][c];
-    }
-  }
-  return ret;
-}
-
-/** Added by Keren */
-template<class T>
-Array1D<T> operator*(T s,const Array1D<T> &V)
+Array1D<T> multiply(T s,const Array1D<T> &V)
 {
   Array1D<T> ans(V.dim1());
   for(int i=0; i< V.dim1(); ++i) {
@@ -403,6 +377,28 @@ Array1D<T> operator*(T s,const Array1D<T> &V)
   return ans;
 }
 
+/** Added by Keren */
+template<class T>
+Array1D<T> add(const Array1D<T> &V1,const Array1D<T> &V2)
+{
+  assert(V1.dim1() == V2.dim1());
+  Array1D<T> ans(V1.dim1());
+  for(int i=0; i< V1.dim1(); ++i) {
+    ans[i]=V1[i]+V2[i];
+  }
+  return ans;
+}
+
+/** Added by Keren */
+template<class T>
+Array1D<T> subtract(const Array1D<T> &V1,const Array1D<T> &V2)
+{
+  Array1D<T> ans(V1.dim1());
+  for(int i=0; i< V1.dim1(); ++i) {
+    ans[i]=V1[i]-V2[i];
+  }
+  return ans;
+}
 
 /** Added by Keren */
 template<class T>
