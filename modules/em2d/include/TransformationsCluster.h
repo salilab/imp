@@ -17,38 +17,37 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 /*!
-  Class to guide the building of clusters when doing RMSD clustering
-  according to the values of the em2d score.
+  Class to contain clusters of transformations.
+  \note The clustering function works with higher scores for better models
 */
 class IMPEM2DEXPORT TransformationsCluster {
 public:
 
   // Start the cluster
   /*!
-    \param[im] t A transformation to begin the cluster
-    \param[in] score The score of that transformation. Given that it has to
-               be higher to be better, here the ccc is used instead of the em2d
-               score
-
+    \param[in] t A transformation to begin the cluster
+    \param[in] score The score of that transformation. the higher, the better
+    \param[in] model_id identifies the model the initial transformation
+                belongs to. Set to  0 if you don't need that information.
   */
-  TransformationsCluster(const algebra::Transformation3D &t,double score):
-  representative_trans_(t),representative_em2d_score_(score) {
-    all_transformations.push_back(representative_trans_);
+  TransformationsCluster(const algebra::Transformation3D &t,
+                         double score,unsigned int model_id):
+              representative_trans_(t),  representative_score_(score),
+              representative_model_id_(model_id) {
+    all_transformations_.push_back(representative_trans_);
+    all_models_ids_.push_back(representative_model_id_);
+    all_scores_.push_back(representative_score_);
   }
 
   ~TransformationsCluster() {};
 
-  // Function to decide when the representative transformation of
-  //   a cluster should be included in this cluster
-  /*!
-    \param[in] cluster The cluster of tranformations that could be join to
-                this one.
-  */
-  void add_transformation(const TransformationsCluster &cluster);
+  // Merge clusters. Copies all transformations from the other cluster and
+  // updates the representative one if necessary
+  void join_into(const TransformationsCluster &oher);
 
   // Returns the score for the representative transformation in this cluster
   double get_score() const {
-    return representative_em2d_score_;
+    return representative_score_;
   }
 
   // Updates the total score for the cluster with the one given as parameter
@@ -60,29 +59,45 @@ public:
     return representative_trans_;
   }
 
+  unsigned int get_representative_model_id() const {
+    return representative_model_id_;
+  }
+
+
+  // Get the transformation i of the cluster
   algebra::Transformation3D
                 get_individual_transformation(unsigned int i) const {
-    return all_transformations[i];
+    return all_transformations_[i];
   }
 
-  unsigned int get_number_of_transformations() const {
-    return all_transformations.size();
+  // Id of the model stored in the transformation i
+  unsigned int get_individual_model_id(unsigned int i  ) const {
+    return all_models_ids_[i];
   }
+
+  double get_individual_score(unsigned int i) const {
+    return all_scores_[i];
+  }
+
+  unsigned int get_number_of_members() const {
+    return all_transformations_.size();
+  }
+
 
   void show(std::ostream &out = std::cout) const {
-    out << "Transformations cluster: " << std::endl
+    out << "Transformations cluster: " << get_number_of_members()
+        << " elements." << std::endl
         << "Representative transformation: " <<  representative_trans_
-        << std::endl << " Number of transfomations in the cluster "
-        << get_number_of_transformations() << std::endl;
+        << std::endl;
   }
 
 private:
-  // Representative transformation for the cluster
   algebra::Transformation3D representative_trans_;
-  // Vector to contain all the transformations in the cluster
-  algebra::Transformation3Ds all_transformations;
-  // Score of the representative transformation
-  double representative_em2d_score_;
+  double representative_score_;
+  unsigned int representative_model_id_;
+  algebra::Transformation3Ds all_transformations_;
+  Ints all_models_ids_;
+  Floats all_scores_;
 };
 
 IMP_VALUES(TransformationsCluster,TransformationsClusters);
