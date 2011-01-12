@@ -68,10 +68,7 @@ namespace {
   double do_evaluate(const ParticlePairsTemp &ppt,
                      PairScore *ps,
                      DerivativeAccumulator *da) {
-    double ret=0;
-    for (unsigned int i=0; i< ppt.size(); ++i) {
-      ret+=ps->evaluate(ppt[i], da);
-    }
+    double ret=ps->evaluate(ppt, da);
     return ret;
   }
   double max_radius(const ParticlesTemp &ps) {
