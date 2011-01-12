@@ -81,6 +81,18 @@ SubsetStates DominoSampler
     //oss << std::endl;
     //IMP_LOG(TERSE, oss.str() << std::endl);
   }
+  IMP_IF_CHECK(USAGE) {
+    IMP::internal::Set<Particle*> used;
+    boost::property_map< SubsetGraph, boost::vertex_name_t>::type subset_map=
+      boost::get(boost::vertex_name, jt);
+    for (unsigned int i=0; i< boost::num_vertices(jt); ++i) {
+      Subset s= boost::get(subset_map, i);
+      used.insert(s.begin(), s.end());
+    }
+    IMP_USAGE_CHECK(used.size()==known_particles.size(),
+                    "Unexpected number of particles found in graph. Expected "
+                    << known_particles.size() << " found " << used.size());
+  }
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
                                              get_particle_states_table());
   IMP_IF_LOG(TERSE) {
