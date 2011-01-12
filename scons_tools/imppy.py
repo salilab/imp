@@ -93,8 +93,12 @@ def builder_script_file(target, source, env):
     outfile.close()
     env.Execute(Chmod(str(target[0]), 0755))
 
+def print_builder_script_file(target, source, env):
+    print "Building", target[0]
+
 def add(env, target):
-    env.Append(BUILDERS = {'ScriptFile': Builder(action=builder_script_file)})
+    env.Append(BUILDERS = {'ScriptFile': Builder(action=Action(builder_script_file,
+                                                               print_builder_script_file))})
     prec=""
     if env.get('precommand', None):
         prec= env['precommand']
