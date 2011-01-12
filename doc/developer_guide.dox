@@ -139,11 +139,17 @@ the library is found. If the library is optional, instead add
 \code optional_dependencies=["Extern"]
 \endcode
 When writing C++ code that depends on extern, surround it with
-\code #if defined(IMP_USE_EXTERN)
+\code #if defined(IMP_MODULENAME_USE_EXTERN)
 some code using extern
 #endif
 \endcode
 And when writing python code check if \c IMP.mymodule.use_extern is \c True.
+
+Each module has an auto-generated header called \c modulename_config.h. This header
+contains basic definitions needed for the module and should be included (first) in each
+header file in the module. In addition, there is a header \c module_version.h which
+contains the version info as preprocessor symbols. This should not be included in
+module headers or cpp files as doing so will force frequent recompilations.
 
 \section testing Debugging and testing your code
 
