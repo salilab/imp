@@ -234,6 +234,8 @@ protected:
   \exception IOException if the writing operation had failed.
   */
   void WriteHeader(std::ostream& s, const EMHeader &header);
+
+  IMP_OBJECT_INLINE(EMReaderWriter, {out << "EMReaderWriter";}, {});
 };
 
 IMPEM_END_NAMESPACE

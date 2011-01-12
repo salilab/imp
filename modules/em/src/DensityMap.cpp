@@ -139,12 +139,12 @@ void DensityMap::set_void_map(int nx,int ny,int nz) {
 }
 
 #ifndef IMP_NO_DEPRECATED
-void DensityMap::Read(const char *filename, MapReaderWriter &reader) {
+void DensityMap::Read(const char *filename, MapReaderWriter *reader) {
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
   float *f_data;
-  reader.Read(filename, &f_data, header_);
+  reader->Read(filename, &f_data, header_);
   boost::scoped_array<float> fp_data(f_data);
   float2real(f_data, data_);
   normalized_ = false;
@@ -163,16 +163,16 @@ DensityMap* read_map(const char *filename) {
   std::string name(filename);
   std::string suf=name.substr(name.length()-4,4);
   if (suf.compare(std::string(".mrc"))==0) {
-    MRCReaderWriter rw;
+    IMP_NEW(MRCReaderWriter, rw, ());
     return read_map(filename, rw);
   } else if (suf.compare(std::string(".em"))==0) {
-    EMReaderWriter rw;
+    IMP_NEW(EMReaderWriter, rw, ());
     return read_map(filename, rw);
   } else if (suf.compare(std::string(".vol"))==0) {
-    SpiderMapReaderWriter rw;
+    IMP_NEW(SpiderMapReaderWriter, rw, ());
     return read_map(filename, rw);
   } else if (suf.compare(std::string(".xplor"))==0) {
-    XplorReaderWriter rw;
+    IMP_NEW(XplorReaderWriter, rw, ());
     return read_map(filename, rw);
   } else {
     IMP_THROW("Unable to determine type for file "<< filename,
@@ -271,14 +271,14 @@ void DensityMap::update_header() {
                            "The resolution was not initialized"<<std::endl);
 }
 
-DensityMap* read_map(const char *filename, MapReaderWriter &reader)
+DensityMap* read_map(const char *filename, MapReaderWriter *reader)
 {
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
   Pointer<DensityMap> m= new DensityMap();
   float *f_data=NULL;
-  reader.Read(filename, &f_data, m->header_);
+  reader->Read(filename, &f_data, m->header_);
   boost::scoped_array<float> f_datap(f_data);
   m->float2real(f_datap.get(), m->data_);
   m->normalized_ = false;
@@ -320,16 +320,16 @@ void DensityMap::real2float(emreal *r_data,
 
 #ifndef IMP_DEPRECATED
 
-void DensityMap::Write(const char *filename, MapReaderWriter &writer) {
+void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
   IMP::em::write_map(this, filename, writer);
 }
 #endif
 
-void write_map(DensityMap *d, const char *filename, MapReaderWriter &writer)
+void write_map(DensityMap *d, const char *filename, MapReaderWriter *writer)
 {
   boost::scoped_array<float> f_data;
   d->real2float(d->data_.get(), f_data);
-  writer.Write(filename, f_data.get(), d->header_);
+  writer->Write(filename, f_data.get(), d->header_);
 }
 
 long DensityMap::get_number_of_voxels() const {

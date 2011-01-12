@@ -80,6 +80,7 @@ protected:
   int ReadHeader(std::ifstream & XPLORstream, XplorHeader &header);
   int ReadMap(std::ifstream &XPLORstream, float *data, XplorHeader &header);
 
+  IMP_OBJECT_INLINE(XplorReaderWriter, {out << "XplorReaderWriter";}, {});
 };
 
 IMPEM_END_NAMESPACE
