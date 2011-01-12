@@ -276,6 +276,7 @@ DensityMap* read_map(const char *filename, MapReaderWriter *reader)
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
   // we need to pass a pointer to data_
+  Pointer<MapReaderWriter> ptr(reader);
   Pointer<DensityMap> m= new DensityMap();
   float *f_data=NULL;
   reader->Read(filename, &f_data, m->header_);
@@ -327,6 +328,7 @@ void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
 
 void write_map(DensityMap *d, const char *filename, MapReaderWriter *writer)
 {
+  IMP::Pointer<MapReaderWriter> pt(writer);
   boost::scoped_array<float> f_data;
   d->real2float(d->data_.get(), f_data);
   writer->Write(filename, f_data.get(), d->header_);
