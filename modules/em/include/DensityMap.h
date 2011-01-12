@@ -29,7 +29,7 @@ class DensityMap;
 /** Read a density map from a file and return it.
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter &reader);
+IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter *reader);
 
 /** Read a density map from a file and return it. Guess the file type from the
     file name. The file formats supported are:
@@ -46,7 +46,7 @@ IMPEMEXPORT DensityMap* read_map(const char *filename);
     \relatesalso DensityMap
 */
 IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
-                           MapReaderWriter &writer);
+                           MapReaderWriter *writer);
 //!
 /**
 \param[in] m a density map
@@ -72,10 +72,10 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 class IMPEMEXPORT DensityMap: public Object
 {
   IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(const char *filename,
-                                          MapReaderWriter &reader));
+                                          MapReaderWriter *reader));
   IMP_NO_SWIG(friend IMPEMEXPORT void write_map(DensityMap* m,
                                                 const char *filename,
-                                                MapReaderWriter &writer));
+                                                MapReaderWriter *writer));
 
 public:
   DensityMap();
@@ -87,9 +87,9 @@ public:
 #ifndef IMP_DOXYGEN
 #ifndef IMP_DEPRECATED
   /** \deprecated Use read() instead.*/
-  void Read(const char *filename, MapReaderWriter &reader);
+  void Read(const char *filename, MapReaderWriter *reader);
   /** \deprecated Use write() instead.*/
-  void Write(const char *filename,MapReaderWriter &writer);
+  void Write(const char *filename,MapReaderWriter *writer);
 #endif
 #endif
 

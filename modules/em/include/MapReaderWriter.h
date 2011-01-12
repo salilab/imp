@@ -9,6 +9,7 @@
 #ifndef IMPEM_MAP_READER_WRITER_H
 #define IMPEM_MAP_READER_WRITER_H
 
+#include "../Object.h"
 #include "em_config.h"
 #include "DensityHeader.h"
 #include <iostream>
@@ -21,7 +22,7 @@ IMPEM_BEGIN_NAMESPACE
     They should never be stored, only created immediately and passed to
     the read or write function.
  */
-class IMPEMEXPORT MapReaderWriter
+class IMPEMEXPORT MapReaderWriter : public Object
 {
 public:
 #ifndef DOXYGEN
@@ -29,8 +30,9 @@ public:
     =0;
   virtual void Write(const char *filename, const float *data,
                      const DensityHeader &header) =0;
-  virtual ~MapReaderWriter() {}
 #endif
+
+  IMP_OBJECT_INLINE(MapReaderWriter, {out << "MapReaderWriter";}, {});
 };
 
 IMPEM_END_NAMESPACE
