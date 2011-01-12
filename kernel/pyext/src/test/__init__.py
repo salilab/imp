@@ -332,7 +332,7 @@ class TestCase(unittest.TestCase):
                         bad.append(name)
 
         self.assertEquals(len(bad), 0,
-                          "All IMP classes should be properly spelled. The following do not: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
+                          "All IMP classes should be properly spelled. The following are not: %s. Add words to the spelling_exceptions variable of the IMPModuleTest if needed." \
                           % (str(bad)))
 
         for name in all:
