@@ -565,30 +565,26 @@ namespace {
     }
   };
 
-  void build_internal_coordinates(const CHARMMTopology &top,
+  void build_internal_coordinates(const CHARMMSegmentTopology *seg,
                              const std::map<const CHARMMResidueTopology *,
                                             Hierarchy> &resmap,
                              std::vector<ModelInternalCoordinate> &ics) {
-    for (unsigned int nseg = 0; nseg < top.get_number_of_segments(); ++nseg) {
-      const CHARMMSegmentTopology *seg = top.get_segment(nseg);
-      const CHARMMResidueTopology *prev = NULL;
-      for (unsigned int nres = 0; nres < seg->get_number_of_residues();
-           ++nres) {
-        const CHARMMResidueTopology *cur = seg->get_residue(nres);
-        const CHARMMResidueTopology *next =
-                 nres < seg->get_number_of_residues() - 1 ?
-                 seg->get_residue(nres + 1) : NULL;
-        for (unsigned int nic = 0;
-             nic < cur->get_number_of_internal_coordinates(); ++nic) {
-          const CHARMMInternalCoordinate &ic =
-                       cur->get_internal_coordinate(nic);
-          Atoms atoms = ic.get_atoms(cur, prev, next, resmap);
-          if (atoms.size() > 0) {
-            ics.push_back(ModelInternalCoordinate(ic, atoms));
-          }
+    const CHARMMResidueTopology *prev = NULL;
+    for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
+      const CHARMMResidueTopology *cur = seg->get_residue(nres);
+      const CHARMMResidueTopology *next =
+               nres < seg->get_number_of_residues() - 1 ?
+               seg->get_residue(nres + 1) : NULL;
+      for (unsigned int nic = 0;
+           nic < cur->get_number_of_internal_coordinates(); ++nic) {
+        const CHARMMInternalCoordinate &ic =
+                     cur->get_internal_coordinate(nic);
+        Atoms atoms = ic.get_atoms(cur, prev, next, resmap);
+        if (atoms.size() > 0) {
+          ics.push_back(ModelInternalCoordinate(ic, atoms));
         }
-        prev = cur;
       }
+      prev = cur;
     }
   }
 
@@ -676,12 +672,16 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
-  std::vector<ModelInternalCoordinate> ics;
-  build_internal_coordinates(*this, resmap, ics);
+  for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
+       segit != segments_end(); ++segit) {
 
-  // If we added at least one Cartesian coordinate, run again - there may now
-  // be more coordinates we can fill in using the newly-assigned coordinates.
-  while (build_cartesians_from_internal(ics) > 0) {}
+    std::vector<ModelInternalCoordinate> ics;
+    build_internal_coordinates(*segit, resmap, ics);
+
+    // If we added at least one Cartesian coordinate, run again - there may now
+    // be more coordinates we can fill in using the newly-assigned coordinates.
+    while (build_cartesians_from_internal(ics) > 0) {}
+  }
 }
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
