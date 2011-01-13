@@ -58,27 +58,11 @@ IMPEM2DEXPORT void get_map_from_model(String fn_model,
 /*!
   \note This version deals with the problem of having more than 10000 points
 */
-IMPEM2DEXPORT void write_vector2Ds_as_pdb(
+IMPEM2DEXPORT void write_vector2ds_as_pdb(
                   const algebra::Vector2Ds vs, const String filename);
 
-IMPEM2DEXPORT void write_vector3Ds_as_pdb(
+IMPEM2DEXPORT void write_vector3ds_as_pdb(
                   const algebra::Vector3Ds vs, const String filename);
-
-
-// Read all the pdbs from a selection file
-/*!
-  \param[in] selection_file. Selection file with the names of the pdb files
-  \param[in] model Model to store the particles read
-  \param[in] selector Type of selector desired.
-  \param[out] Hierarchies Set of hierarchies, one per model
-
-*/
-IMPEM2DEXPORT atom::Hierarchies
-       read_multiple_pdbs(const String &selection_file,
-                               Model* model,
-                               atom::PDBSelector* selector,
-                               bool select_first_model = true,
-                               bool no_radii=false );
 
 
 IMPEM2D_END_NAMESPACE

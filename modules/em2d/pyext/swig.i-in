@@ -35,6 +35,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/Pixel.h"
 %include "IMP/em2d/image_processing.h"
 %include "IMP/em2d/TransformationsCluster.h"
+%include "IMP/em2d/cluster_of_models.h"
 %include "IMP/em2d/model_interaction.h"
 
 

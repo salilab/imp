@@ -18,18 +18,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 // Clustering of models obtained from scoring with em2d
 /*!
-  \param[in] selection_file file with the names of the models. See
-            read_selection_file()
-  \note See the rest of the values in cluster_models_by_em2d()
-*/
-IMPEM2DEXPORT TransformationsClusters
- cluster_models_by_em2d(const String &selection_file,
-                            const Floats &em2d_scores,
-                            double rmsd_cutoff,
-                            double ratio_bin_size_rmsd=0.5);
-
-// Clustering of models obtained from scoring with em2d
-/*!
   \param[in] mhs molecular hierarchies containing models (one hierarchy per
              model).
   \param[in] em2d_scores Scores for the models. The must have the saqme order
@@ -42,7 +30,7 @@ IMPEM2DEXPORT TransformationsClusters
         each hierarchy is a model.
 */
 IMPEM2DEXPORT TransformationsClusters
-       cluster_models_by_em2d(const atom::Hierarchies &mhs,
+       do_cluster_models_by_em2d_score(const atom::Hierarchies &mhs,
                             const Floats &em2d_scores,
                             double rmsd_cutoff,
                             double ratio_bin_size_rmsd=0.5);
