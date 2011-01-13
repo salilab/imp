@@ -96,6 +96,8 @@ public:
   /** The hierarchy contains chains, residues and atoms as defined in the
       topology. Note, however, that none of the generated atoms is given
       coordinates.
+      Chains are labeled 'A', 'B' etc. Residues are numbered from 1 within
+      each chain.
       \see add_coordinates.
    */
   Hierarchy create_hierarchy(Model *model) const;
