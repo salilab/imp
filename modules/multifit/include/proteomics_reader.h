@@ -19,35 +19,52 @@ class IMPMULTIFITEXPORT ProteomicsData {
  protected:
   class ProteinData {
   public:
-    ProteinData() {
+    void reset_all(){
       name_="";
       start_res_=0;
       end_res_=0;
-      filename_="";}
+      filename_="";
+      ref_filename_="";
+    }
+    ProteinData() {reset_all();
+    }
     ProteinData(const std::string &name){
+      reset_all();
       name_=name;
-      start_res_=0;end_res_=0;filename_="";
     }
     ProteinData(const std::string &name,const std::string fn){
-      name_=name;
-      start_res_=0;end_res_=0;filename_=fn;
+      reset_all();
+      name_=name;filename_=fn;
     }
     ProteinData(const std::string &name,
                 int start_res,int end_res,const std::string fn){
+      reset_all();
       name_=name;
       start_res_=start_res;
       end_res_=end_res;
       filename_=fn;
     }
+    ProteinData(const std::string &name,
+                int start_res,int end_res,const std::string fn,
+                const std::string &ref_fn){
+      reset_all();
+      name_=name;
+      start_res_=start_res;
+      end_res_=end_res;
+      filename_=fn;
+      ref_filename_=ref_fn;
+    }
     std::string name_;
     int start_res_,end_res_;
     std::string filename_;
+    std::string ref_filename_;
   };
  public:
   ProteomicsData(){}
   void add_protein(std::string name,int start_res,
-                   int end_res,std::string fn){
-    prot_data_.push_back(ProteinData(name,start_res,end_res,fn));
+                   int end_res,const std::string &mol_fn,
+                   const std::string &ref_fn){
+    prot_data_.push_back(ProteinData(name,start_res,end_res,mol_fn,ref_fn));
     prot_map_[name]=prot_data_.size()-1;
   }
   //if not found -1 is returned
@@ -101,6 +118,11 @@ class IMPMULTIFITEXPORT ProteomicsData {
         IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),
                         "index out of range\n");
         return prot_data_[protein_ind].filename_;
+  }
+  std::string get_reference_filename(int protein_ind) const {
+        IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),
+                        "index out of range\n");
+        return prot_data_[protein_ind].ref_filename_;
   }
  protected:
   ProteinData get_protein_data(int protein_ind) const {

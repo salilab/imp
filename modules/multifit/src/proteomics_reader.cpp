@@ -54,16 +54,23 @@ void parse_protein_line(
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  IMP_USAGE_CHECK(line_split.size() == 4,
+  IMP_USAGE_CHECK((line_split.size() == 4) || (line_split.size() == 5),
          "wrong protein format for line ("<<line_split.size()<<")"<<
          line<<" expecting: |prot_name|start_res|"<<
-         "end_res|filename|"<<std::endl);
+         "end_res|filename|reference_filename|"<<std::endl);
+  std::string ref_filename="";
+  if (line_split.size()==5) {
+    ref_filename=boost::lexical_cast<std::string>(line_split[4]);
+  }
   dp.add_protein(
                  boost::lexical_cast<std::string>(line_split[0]),
                  boost::lexical_cast<int>(line_split[1]),
                  boost::lexical_cast<int>(line_split[2]),
-                 boost::lexical_cast<std::string>(line_split[3]));
+                 boost::lexical_cast<std::string>(line_split[3]),
+                 ref_filename
+                 );
 }
+
 void parse_interaction_line(
      const std::string &line,
      ProteomicsData &dp){
