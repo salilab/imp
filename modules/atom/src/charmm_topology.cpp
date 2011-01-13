@@ -928,13 +928,15 @@ Hierarchy CHARMMTopology::create_hierarchy(Model *model) const
   Hierarchy root = Hierarchy::setup_particle(new Particle(model));
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
+    int residue_index = 1;
     const CHARMMSegmentTopology *seg = *segit;
     Chain chain = Chain::setup_particle(new Particle(model), chain_id++);
     root.add_child(chain);
     for (unsigned int nres = 0; nres < seg->get_number_of_residues(); ++nres) {
       const CHARMMResidueTopology *res = seg->get_residue(nres);
       ResidueType restyp = ResidueType(res->get_type());
-      Residue residue = Residue::setup_particle(new Particle(model), restyp);
+      Residue residue = Residue::setup_particle(new Particle(model), restyp,
+                                                residue_index++);
       chain.add_child(residue);
       for (unsigned int natm = 0; natm < res->get_number_of_atoms(); ++natm) {
         const CHARMMAtomTopology *atom = &res->get_atom(natm);
