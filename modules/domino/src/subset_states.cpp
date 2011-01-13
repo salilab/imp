@@ -41,7 +41,7 @@ namespace {
     ParticlesTemp pt(boost::make_permutation_iterator(s.begin(), b),
                      boost::make_permutation_iterator(s.begin(), e));
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      for (unsigned int i=0; i< std::distance(b,e); ++i) {
+      for (int i=0; i< std::distance(b,e); ++i) {
         IMP_INTERNAL_CHECK(pt[i]==s[*(b+i)],
                            "Do not match at " << i
                            << " got " << pt[i] << " expected "
