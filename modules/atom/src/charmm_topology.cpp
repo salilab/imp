@@ -786,7 +786,7 @@ namespace {
             ++assigned;
             algebra::Sphere3D sphere(seed, 0.5);
             core::XYZ::setup_particle(child,
-                                      algebra::get_random_vector_on(sphere));
+                                      algebra::get_random_vector_in(sphere));
           }
         }
       }
