@@ -13,11 +13,10 @@
 #include <boost/static_assert.hpp>
 #include <boost/utility.hpp>
 #include <algorithm>
-
-#if IMP_BOOST_VERSION >= 103500
-#include <boost/math/special_functions/fpclassify.hpp>
-#elif defined(__GNUC__)
 #include <cmath>
+
+#if !defined(_GLIBCXX_USE_C99_MATH) && IMP_BOOST_VERSION >= 103500
+#include <boost/math/special_functions/fpclassify.hpp>
 #endif
 
 IMP_BEGIN_NAMESPACE
@@ -46,11 +45,11 @@ T cube(T t)
  */
 template <class T>
 inline bool is_nan(const T& a) {
-#if IMP_BOOST_VERSION >= 103500
-  return (boost::math::isnan)(a);
-#elif defined(_GLIBCXX_USE_C99_MATH)
+#if defined(_GLIBCXX_USE_C99_MATH)
   // Not all gcc versions include C99 math
   return (std::isnan)(a);
+#elif IMP_BOOST_VERSION >= 103500
+  return (boost::math::isnan)(a);
 #else
   return a != a;
 #endif
