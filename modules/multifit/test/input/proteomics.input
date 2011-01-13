@@ -1,0 +1,7 @@
+|proteins|
+|A|1|100|nn|
+|B|1|100|nn|
+|C|1|100|nn|
+|interactions|
+|A|B|
+|A|B|C|
