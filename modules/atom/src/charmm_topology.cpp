@@ -465,6 +465,25 @@ void CHARMMTopology::do_show(std::ostream &) const
 {
 }
 
+void CHARMMTopology::add_sequence(std::string sequence)
+{
+  IMP_NEW(CHARMMSegmentTopology, seg, ());
+
+  for (std::string::const_iterator it = sequence.begin();
+       it != sequence.end(); ++it) {
+    if (*it == '/') {
+      add_segment(seg);
+      seg = new CHARMMSegmentTopology();
+    } else {
+      ResidueType restyp = get_residue_type(*it);
+      IMP_NEW(CHARMMResidueTopology, res,
+              (force_field_->get_residue_topology(restyp)));
+      seg->add_residue(res);
+    }
+  }
+  add_segment(seg);
+}
+
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                                        ResMap &resmap) const
 {

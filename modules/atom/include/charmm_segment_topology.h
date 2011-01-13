@@ -77,6 +77,14 @@ public:
     set_was_used(true);
   }
 
+  //! Add a sequence (as a string of one-letter codes) to the topology.
+  /** The sequence can contain amino-acid one-letter codes and '/' characters
+      to denote the start of a new segment. The empty string simply adds a new
+      segment that contains no residues.
+      \exception ValueException if an invalid one-letter code is passed.
+   */
+  void add_sequence(std::string sequence);
+
   //! Call CHARMMSegmentTopology::apply_default_patches() for all segments.
   void apply_default_patches() {
     for (unsigned int i = 0; i < get_number_of_segments(); ++i) {
