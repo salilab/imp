@@ -626,37 +626,47 @@ namespace {
     core::XYZ::setup_particle(unknown, newc + v3);
   }
 
-  unsigned build_cartesian_from_internal(
-                             const std::vector<ModelInternalCoordinate> &ics) {
-    unsigned numbuilt = 0;
-    for (std::vector<ModelInternalCoordinate>::const_iterator it
-         = ics.begin(); it != ics.end(); ++it) {
-      if (core::XYZ::particle_is_instance(it->atoms[1])
-          && core::XYZ::particle_is_instance(it->atoms[2])) {
-        if (!core::XYZ::particle_is_instance(it->atoms[3])
-            && core::XYZ::particle_is_instance(it->atoms[0])) {
-          float phi = it->dihedral;
-          float r = it->second_distance;
-          float theta = it->second_angle;
-          build_cartesian(it->atoms[0], it->atoms[1],
-                          it->atoms[2], it->atoms[3], r, phi, theta);
-          numbuilt++;
-        } else if (!core::XYZ::particle_is_instance(it->atoms[0])
-                   && core::XYZ::particle_is_instance(it->atoms[3])) {
-          float phi = it->dihedral;
-          float r = it->first_distance;
-          float theta = it->first_angle;
-          if (it->improper) {
-            build_cartesian(it->atoms[3], it->atoms[1],
-                            it->atoms[2], it->atoms[0], r, -phi, theta);
-          } else {
-            build_cartesian(it->atoms[3], it->atoms[2],
-                            it->atoms[1], it->atoms[0], r, phi, theta);
-          }
-          numbuilt++;
+  // If exactly 3 out of the 4 atoms in the given internal coordinate have
+  // defined Cartesian coordinates, build the Cartesian coordinates of the
+  // remaining atom and return true. Otherwise, return false.
+  bool build_cartesian_from_internal(const ModelInternalCoordinate &ic) {
+    if (core::XYZ::particle_is_instance(ic.atoms[1])
+        && core::XYZ::particle_is_instance(ic.atoms[2])) {
+      if (!core::XYZ::particle_is_instance(ic.atoms[3])
+          && core::XYZ::particle_is_instance(ic.atoms[0])) {
+        float phi = ic.dihedral;
+        float r = ic.second_distance;
+        float theta = ic.second_angle;
+        build_cartesian(ic.atoms[0], ic.atoms[1],
+                        ic.atoms[2], ic.atoms[3], r, phi, theta);
+        return true;
+      } else if (!core::XYZ::particle_is_instance(ic.atoms[0])
+                 && core::XYZ::particle_is_instance(ic.atoms[3])) {
+        float phi = ic.dihedral;
+        float r = ic.first_distance;
+        float theta = ic.first_angle;
+        if (ic.improper) {
+          build_cartesian(ic.atoms[3], ic.atoms[1],
+                          ic.atoms[2], ic.atoms[0], r, -phi, theta);
+        } else {
+          build_cartesian(ic.atoms[3], ic.atoms[2],
+                          ic.atoms[1], ic.atoms[0], r, phi, theta);
         }
+        return true;
       }
     }
+    return false;
+  }
+
+  unsigned build_cartesians_from_internal(
+                             std::vector<ModelInternalCoordinate> &ics) {
+    std::vector<ModelInternalCoordinate>::iterator newend =
+         std::remove_if(ics.begin(), ics.end(), build_cartesian_from_internal);
+    unsigned numbuilt = ics.end() - newend;
+    // Any internal coordinate used to build Cartesian coordinates must
+    // now have all 4 of its atoms with defined coordinates, so is no longer
+    // informative and can be removed to avoid slowing down further runs.
+    ics.erase(newend, ics.end());
     return numbuilt;
   }
 }
@@ -671,7 +681,7 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
 
   // If we added at least one Cartesian coordinate, run again - there may now
   // be more coordinates we can fill in using the newly-assigned coordinates.
-  while (build_cartesian_from_internal(ics) > 0) {}
+  while (build_cartesians_from_internal(ics) > 0) {}
 }
 
 void CHARMMTopology::add_charges(Hierarchy hierarchy) const
