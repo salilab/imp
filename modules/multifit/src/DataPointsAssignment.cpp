@@ -45,8 +45,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 void write_cmm_helper(std::ostream &out,
                       const std::string &marker_set_name,
-                      const IMP::algebra::Vector3Ds &nodes,
-                      const Edges &edges, IMP::Floats radii){
+                      const algebra::Vector3Ds &nodes,
+                      const IntPairs &edges, Floats radii){
   Float x,y,z,radius;
   out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
   for(unsigned int i=0;i<nodes.size();i++) {
@@ -63,7 +63,7 @@ void write_cmm_helper(std::ostream &out,
         << " z=\"" << z << "\""
         << " radius=\"" << radius << "\"/>" << std::endl;
     }
-  for(Edges::const_iterator it = edges.begin(); it != edges.end();it++) {
+  for(IntPairs::const_iterator it = edges.begin(); it != edges.end();it++) {
     out << "<link id1= \"" << it->first
         << "\" id2=\""     << it->second
         << "\" radius=\"1.0\"/>" << std::endl;
@@ -135,7 +135,7 @@ void DataPointsAssignment::set_edges() {
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
     for(int j=i+1;j<cluster_engine_->get_number_of_clusters();j++) {
       if (algebra::get_interiors_intersect(bb[i],bb[j])){
-        edges_.push_back(CPair(i,j));
+        edges_.push_back(IntPair(i,j));
       }
     }
   }
@@ -148,9 +148,9 @@ void DataPointsAssignment::connect_clusters(int c1, int c2) {
                   " not connect a cluster to itself");
   int min_c = std::min(c1,c2);
   int max_c = std::max(c1,c2);
-  if (edges_map_.find(CPair(min_c,max_c)) == edges_map_.end()) {
-    edges_map_[CPair(min_c,max_c)]=1;
-    edges_.push_back(CPair(min_c,max_c));
+  if (edges_map_.find(IntPair(min_c,max_c)) == edges_map_.end()) {
+    edges_map_[IntPair(min_c,max_c)]=1;
+    edges_.push_back(IntPair(min_c,max_c));
   }
 }
 
@@ -315,5 +315,22 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
 //   }
 //   w=NULL;
 // }
+
+void write_txt(const std::string &txt_filename,
+               const DataPointsAssignment &dpa) {
+    std::ofstream out;
+  out.open(txt_filename.c_str(),std::ios::out);
+  out<<"|points|"<<std::endl;
+  for( int i=0;i<dpa.get_number_of_clusters();i++) {
+    Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
+    out<<"|"<<i<<"|"<<xyz[0]<<"|"<<xyz[1]<<"|"<<xyz[2]<<"|"<<std::endl;
+  }
+  out<<"|edges|"<<std::endl;
+  const IntPairs *edges=dpa.get_edges();
+  for(IntPairs::const_iterator it = edges->begin(); it != edges->end();it++) {
+    out<<"|"<<it->first<<"|"<<it->second<<"|"<<std::endl;
+  }
+  out.close();
+}
 
 IMPMULTIFIT_END_NAMESPACE

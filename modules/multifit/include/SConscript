@@ -26,6 +26,9 @@ files = [
          'RMSDClustering.h',
          'fitting_clustering.h',
         'internal/GeometricHash.h',
+        'proteomics_reader.h',
+        'anchors_reader.h',
+        'coarse_molecule.h',
         ]
 # Install the include files:
 env.IMPModuleInclude(files)

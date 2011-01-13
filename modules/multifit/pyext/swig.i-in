@@ -2,20 +2,21 @@
 namespace IMP::multifit {
 }
 /* Make selected classes extensible in Python */
-IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
+#IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
 
 /* Wrap our own classes */
 #%include "IMP/multifit/density_analysis.h"
-%include "IMP/multifit/weighted_excluded_volume.h"
+#%include "IMP/multifit/weighted_excluded_volume.h"
 #%include "IMP/multifit/sampling_space.h"
 %include "IMP/multifit/FittingSolutionRecord.h"
+%include "IMP/multifit/MolCnSymmAxisDetector.h"
 %include "IMP/multifit/m_rigid_fitting.h"
 %include "IMP/multifit/SettingsData.h"
 #%include "IMP/multifit/DataContainer.h"
 #%include "IMP/multifit/sampling_space_utils.h"
 #%include "IMP/multifit/restraints_utils.h"
-%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
+#%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 %include "IMP/multifit/FFTFitting.h"
 %include "IMP/multifit/density_analysis.h"
 IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
@@ -30,3 +31,6 @@ namespace IMP {
 %include "IMP/multifit/anchor_graph.h"
 #%include "IMP/multifit/learn_fftw.h"
 %include "IMP/multifit/fitting_clustering.h"
+%include "IMP/multifit/proteomics_reader.h"
+%include "IMP/multifit/anchors_reader.h"
+%include "IMP/multifit/coarse_molecule.h"
