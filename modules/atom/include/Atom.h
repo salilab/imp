@@ -81,6 +81,8 @@ IMPATOMEXPORT extern const AtomType AT_HA1;
 /** \relatesalso AtomType */
 IMPATOMEXPORT extern const AtomType AT_HA2;
 /** \relatesalso AtomType */
+IMPATOMEXPORT extern const AtomType AT_HA3;
+/** \relatesalso AtomType */
 IMPATOMEXPORT extern const AtomType AT_CB;
 /** \relatesalso AtomType */
 IMPATOMEXPORT extern const AtomType AT_HB;
@@ -102,7 +104,9 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG21;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG31;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG12;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG13;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG22;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG23;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HG32;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OG;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_OG1;
@@ -118,6 +122,7 @@ IMPATOMEXPORT extern const AtomType AT_HB1;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD21;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD31;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD12;
+/** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD13;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD22;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_HD32;
 /** \relatesalso AtomType */ IMPATOMEXPORT extern const AtomType AT_SD;
