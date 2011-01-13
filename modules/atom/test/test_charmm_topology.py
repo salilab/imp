@@ -279,8 +279,8 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(model.get_number_of_segments(), 1)
         self.assertEqual(segment.get_number_of_residues(), 1)
 
-    def test_add_coordinates(self):
-        """Test CHARMMTopology::add_coordinates()"""
+    def test_add_coordinates_backbone(self):
+        """Test adding coordinates to a backbone-only structure"""
         m = IMP.Model()
         pdb = IMP.atom.read_pdb(self.get_input_file_name('backbone.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
@@ -293,6 +293,25 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         topology.add_coordinates(pdb)
         # Every atom should now have XYZ coordinates
         for a in IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE):
+            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
+
+    def test_add_coordinates_empty_structure(self):
+        """Test adding coordinates to a completely empty structure"""
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology(ff)
+        segment = IMP.atom.CHARMMSegmentTopology()
+        topology.add_segment(segment)
+        for res in ('ALA', 'CYS', 'TYR'):
+            restop = IMP.atom.CHARMMResidueTopology(
+                          ff.get_residue_topology(IMP.atom.ResidueType(res)))
+            segment.add_residue(restop)
+        m = IMP.Model()
+        topology.apply_default_patches()
+        hierarchy = topology.create_hierarchy(m)
+        topology.add_coordinates(hierarchy)
+        # Every atom should now have XYZ coordinates
+        for a in IMP.atom.get_by_type(hierarchy, IMP.atom.ATOM_TYPE):
             self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
 
     def test_make_patched_topology(self):
