@@ -7,6 +7,7 @@
 #include <IMP/exception.h>
 #include <IMP/constants.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/algebra/vector_generators.h>
 #include <IMP/atom/charmm_topology.h>
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/CHARMMParameters.h>
@@ -563,6 +564,39 @@ namespace {
       dihedral = ic.get_dihedral();
       improper = ic.get_improper();
     }
+
+    // Get the distance between the two atoms stated by this internal
+    // coordinate. If no such distance is present, return 0.
+    float get_distance(Atom i, Atom j) const {
+      if (!improper && ((i == atoms[0] && j == atoms[1])
+                        || (i == atoms[1] && j == atoms[0]))) {
+        return first_distance;
+      } else if (improper && ((i == atoms[0] && j == atoms[2])
+                              || (i == atoms[2] && j == atoms[0]))) {
+        return first_distance;
+      } else if ((i == atoms[2] && j == atoms[3])
+                 || (i == atoms[3] && j == atoms[2])) {
+        return second_distance;
+      }
+      return 0.;
+    }
+
+    // Get the angle between the three atoms stated by this internal
+    // coordinate. If no such angle is present, return 0.
+    float get_angle(Atom i, Atom j, Atom k) const {
+      if (!improper && j == atoms[1] && ((i == atoms[0] && k == atoms[2])
+                                         || (i == atoms[2] && k == atoms[0]))) {
+        return first_angle;
+      } else if (improper && j == atoms[2]
+                 && ((i == atoms[0] && k == atoms[1])
+                     || (i == atoms[1] && k == atoms[0]))) {
+        return first_angle;
+      } else if (j == atoms[2] && ((i == atoms[1] && k == atoms[3])
+                                   || (i == atoms[3] && k == atoms[1]))) {
+        return second_angle;
+      }
+      return 0.;
+    }
   };
 
   void build_internal_coordinates(const CHARMMSegmentTopology *seg,
@@ -665,6 +699,100 @@ namespace {
     ics.erase(newend, ics.end());
     return numbuilt;
   }
+
+  bool seed_triplet(Atom i, Atom j, Atom k,
+                    const std::vector<ModelInternalCoordinate> &ics,
+                    const algebra::Vector3D &seed) {
+    double rij = 0., rjk = 0., tijk = 0.;
+    for (std::vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+         it != ics.end() && (rij == 0. || rjk == 0. || tijk == 0.); ++it) {
+      if (rij == 0.) {
+        rij = it->get_distance(i, j);
+      }
+      if (rjk == 0.) {
+        rjk = it->get_distance(j, k);
+      }
+      if (tijk == 0.) {
+        tijk = it->get_angle(i, j, k);
+      }
+    }
+    if (rij == 0. || rjk == 0. || tijk == 0.) {
+      return false;
+    } else {
+      // Convert from degrees to radians
+      tijk = tijk * PI / 180.;
+      core::XYZ::setup_particle(i, seed);
+      core::XYZ::setup_particle(j, seed + algebra::Vector3D(rij, 0., 0.));
+      core::XYZ::setup_particle(k, seed
+                                + algebra::Vector3D(rij - rjk * std::cos(tijk),
+                                                    rjk * std::sin(tijk), 0.));
+      return true;
+    }
+  }
+
+  // Find three atoms i,j,k for which Rij, Rjk and the angle Tijk are
+  // given by internal coordinates, and set their Cartesian coordinates.
+  // The first atom is placed at the seed, the second Rij along the x axis,
+  // and the third at an angle Tijk on the xy plane, Rjk from the second.
+  // Returns true only if a triplet was found.
+  bool seed_coordinates(const std::vector<ModelInternalCoordinate> &ics,
+                        const algebra::Vector3D &seed) {
+    for (std::vector<ModelInternalCoordinate>::const_iterator it = ics.begin();
+         it != ics.end(); ++it) {
+      if (!it->improper) {
+        if (seed_triplet(it->atoms[0], it->atoms[1], it->atoms[2], ics, seed)
+            || seed_triplet(it->atoms[1], it->atoms[2], it->atoms[3],
+                            ics, seed)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  unsigned count_atoms_with_coordinates(const CHARMMSegmentTopology *seg,
+                const std::map<const CHARMMResidueTopology *,
+                               Hierarchy> &resmap) {
+    unsigned int ct = 0;
+    for (CHARMMResidueTopologies::const_iterator it = seg->residues_begin();
+         it != seg->residues_end(); ++it) {
+      Hierarchy h = resmap.find(*it)->second;
+      for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
+        Hierarchy child = h.get_child(i);
+        if (child.get_as_atom() && core::XYZ::particle_is_instance(child)) {
+          ++ct;
+        }
+      }
+    }
+    return ct;
+  }
+
+  unsigned int assign_remaining_coordinates(const CHARMMSegmentTopology *seg,
+                         const std::map<const CHARMMResidueTopology *,
+                                        Hierarchy> &resmap,
+                         algebra::Vector3D &seed) {
+    unsigned int assigned = 0;
+    // visit all atoms; if defined, update seed; if undefined, set
+    // coordinates as random offset from seed
+    for (CHARMMResidueTopologies::const_iterator it = seg->residues_begin();
+         it != seg->residues_end(); ++it) {
+      Hierarchy h = resmap.find(*it)->second;
+      for (unsigned int i = 0; i < h.get_number_of_children(); ++i) {
+        Hierarchy child = h.get_child(i);
+        if (child.get_as_atom()) {
+          if (core::XYZ::particle_is_instance(child)) {
+            seed = core::XYZ(child).get_coordinates();
+          } else {
+            ++assigned;
+            algebra::Sphere3D sphere(seed, 0.5);
+            core::XYZ::setup_particle(child,
+                                      algebra::get_random_vector_on(sphere));
+          }
+        }
+      }
+    }
+    return assigned;
+  }
 }
 
 void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
@@ -672,15 +800,33 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
   ResMap resmap;
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
+  algebra::Vector3D seed(0., 0., 0.);
   for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
        segit != segments_end(); ++segit) {
-
     std::vector<ModelInternalCoordinate> ics;
     build_internal_coordinates(*segit, resmap, ics);
+
+    // If no atoms currently have Cartesian coordinates, place a triplet
+    // of atoms near the seed position, so we can (hopefully) fill in the
+    // rest from internal coordinates
+    if (count_atoms_with_coordinates(*segit, resmap) == 0) {
+      seed_coordinates(ics, seed);
+    }
 
     // If we added at least one Cartesian coordinate, run again - there may now
     // be more coordinates we can fill in using the newly-assigned coordinates.
     while (build_cartesians_from_internal(ics) > 0) {}
+
+    unsigned int nremain = assign_remaining_coordinates(*segit, resmap, seed);
+    if (nremain > 0) {
+      IMP_WARN("The Cartesian coordinates of " << nremain
+               << " atoms could not be assigned from internal coordinates, "
+                  "and so were assigned randomly to lie near atoms close "
+                  "in sequence.");
+    }
+
+    // offset seed for start of next segment
+    seed += algebra::Vector3D(2., 2., 2.);
   }
 }
 

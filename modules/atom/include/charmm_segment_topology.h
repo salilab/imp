@@ -88,6 +88,7 @@ public:
   /** The hierarchy contains chains, residues and atoms as defined in the
       topology. Note, however, that none of the generated atoms is given
       coordinates.
+      \see add_coordinates.
    */
   Hierarchy create_hierarchy(Model *model) const;
 
@@ -97,16 +98,29 @@ public:
    */
   void add_atom_types(Hierarchy hierarchy) const;
 
-  //! Add Cartesian coordinates to the given Hierarchy using this topology.
+  //! Add atom Cartesian coordinates to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.
 
-      Cartesian coordinates for any atoms that are not currently core::XYZ
-      particles are generated using internal coordinates.
+      This method can be used to add missing coordinates (e.g. of hydrogens
+      or sidechains, such as those added by add_missing_atoms()), or to
+      generate a starting conformation for a new Hierarchy (e.g. generated
+      by create_hierarchy()). On exit, all atoms will have coordinates.
 
-      \note Currently, atoms with missing coordinates must be related to
-            three other atoms with coordinates. Any atom for which this is
-            not true will not be assigned coordinates. This will be resolved
-            in later additions to this method.
+      - Cartesian coordinates for any atoms that are not currently core::XYZ
+        particles are generated using internal coordinates that relate them
+        to particles that do have XYZ coordinates.
+
+      - For each segment (chain), if no atoms have coordinates but a triplet
+        of atoms can be found where theit internal distances and angle can be
+        determined from internal coordinates, these three atoms will be
+        placed to seed the generation procedure. For the first segment, the
+        atoms will be placed on the xy plane with the first atom at the origin.
+        For subsequent segments, the first atom is placed offset by (2.,2.,2.)
+        from the last atom in the previous segment.
+
+      - If any atoms cannot be placed using either method, their coordinates
+        are assigned randomly to lie near atoms that are near in sequence or,
+        if no such atoms exist, near the segment origin.
    */
   void add_coordinates(Hierarchy hierarchy) const;
 
