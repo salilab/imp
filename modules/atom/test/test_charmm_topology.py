@@ -280,15 +280,16 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(segment.get_number_of_residues(), 1)
 
     def test_add_coordinates_backbone(self):
-        """Test adding coordinates to a backbone-only structure"""
+        """Test adding coordinates to a backbone- or CA-only structure"""
         m = IMP.Model()
-        pdb = IMP.atom.read_pdb(self.get_input_file_name('backbone.pdb'), m)
+        pdb = IMP.atom.read_pdb(self.get_input_file_name('backbone-ca.pdb'), m)
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = ff.create_topology(pdb)
         topology.apply_default_patches()
         topology.add_atom_types(pdb)
-        # Add sidechain and hydrogen atoms
+        # Add sidechain and hydrogen atoms for the backbone chain,
+        # and assign all non-CA atoms for the CA-only chain
         topology.add_missing_atoms(pdb)
         topology.add_coordinates(pdb)
         # Every atom should now have XYZ coordinates
