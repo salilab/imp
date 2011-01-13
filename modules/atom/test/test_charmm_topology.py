@@ -301,12 +301,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
-        segment = IMP.atom.CHARMMSegmentTopology()
-        topology.add_segment(segment)
-        for res in ('ALA', 'CYS', 'TYR'):
-            restop = IMP.atom.CHARMMResidueTopology(
-                          ff.get_residue_topology(IMP.atom.ResidueType(res)))
-            segment.add_residue(restop)
+        topology.add_sequence('ACY')
         m = IMP.Model()
         topology.apply_default_patches()
         hierarchy = topology.create_hierarchy(m)
@@ -366,12 +361,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
-        seg = IMP.atom.CHARMMSegmentTopology()
-        topology.add_segment(seg)
-        r1 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('PRO')))
-        r2 = IMP.atom.CHARMMResidueTopology(ff.get_residue_topology(IMP.atom.ResidueType('ALA')))
-        seg.add_residue(r1)
-        seg.add_residue(r2)
+        topology.add_sequence('PA')
         h = topology.create_hierarchy(m)
         for a in IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE):
             IMP.core.XYZ.setup_particle(a.get_particle(),
@@ -459,12 +449,7 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
                                        IMP.atom.get_data_path("par.lib"))
         topology = IMP.atom.CHARMMTopology(ff)
-        segment = IMP.atom.CHARMMSegmentTopology()
-        topology.add_segment(segment)
-        for res in ('ALA', 'CYS', 'TYR'):
-            restop = IMP.atom.CHARMMResidueTopology(
-                                     ff.get_residue_topology(IMP.atom.ResidueType(res)))
-            segment.add_residue(restop)
+        topology.add_sequence('ACY')
         m = IMP.Model()
         hierarchy = topology.create_hierarchy(m)
         chains = IMP.atom.get_by_type(hierarchy, IMP.atom.CHAIN_TYPE)
