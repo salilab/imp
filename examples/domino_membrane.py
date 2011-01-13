@@ -107,7 +107,7 @@ def create_restraints(m, chain, tmb, tme):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
-        nrb= IMP.container.ClosePairContainer(lrb, 12.0, 1.0)
+        nrb= IMP.container.ClosePairContainer(lrb, 12.0)
         ps=  IMP.membrane.RigidBodyPackingScore(om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
@@ -133,7 +133,6 @@ def create_restraints(m, chain, tmb, tme):
 #        dpc.add_pair_filter(f)
                 dps= IMP.membrane.DopePairScore(15.0)
                 dope=IMP.container.PairsRestraint(dps, dpc)
-        #m.set_maximum_score(dope, -32.5531617729)
                 m.add_restraint(dope)
 
 # assembling all the restraints
@@ -142,14 +141,15 @@ def create_restraints(m, chain, tmb, tme):
     for i in range(len(tmb)-1):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tme[i])
         s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
-        p0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-        p1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
-#        p0=s0.get_selected_particles()[0]
-#        p1=s1.get_selected_particles()[0]
-#        length=(tmb[i+1]-tme[i])*3.0
-#        dr=add_distance_restraint(p0,p1,length,1000)
-        dr=add_distance_restraint(p0,p1,20.0,1000)
+        p0=s0.get_selected_particles()[0]
+        p1=s1.get_selected_particles()[0]
+        rb0=IMP.core.RigidMember(p0).get_rigid_body()
+        rb1=IMP.core.RigidMember(p1).get_rigid_body()
+        length=1.8*(tmb[i+1]-tme[i]+1)+7.4
+        dr=add_distance_restraint(p0,p1,length,1000)
+        rdr=add_distance_restraint(rb0,rb1,30.0,1000)
         rset.add_restraint(dr)
+
     add_packing_restraint()
     add_DOPE()
     return rset
@@ -163,12 +163,12 @@ def  create_discrete_states(m,chain,tmb,sign):
     trs0=[]
     trs1=[]
     trs2=[]
-    for i in range(0,4):
+    for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,5):
+        for t in range(0,1):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,4):
+            for s in range(0,1):
                 if ( t == 0 ) and ( s != 0 ) : break
                 swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
