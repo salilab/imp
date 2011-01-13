@@ -19,26 +19,9 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-TransformationsClusters
-      cluster_models_by_em2d(const String &selection_file,
-                            const Floats &em2d_scores,
-                            double rmsd_cutoff,
-                            double ratio_bin_size_rmsd) {
-  IMP_NEW(IMP::Model,model,());
-  IMP::Pointer<atom::ATOMPDBSelector> selector=new atom::ATOMPDBSelector();
-  bool select_first_model=true;
-  atom::Hierarchies mhs=read_multiple_pdbs(selection_file,
-                                  model,
-                                  selector,
-                                  select_first_model);
-  return cluster_models_by_em2d(mhs,
-                                em2d_scores,
-                                rmsd_cutoff,
-                                ratio_bin_size_rmsd);
-}
 
 TransformationsClusters
-       cluster_models_by_em2d(const atom::Hierarchies &mhs,
+       do_cluster_models_by_em2d_score(const atom::Hierarchies &mhs,
                               const Floats &em2d_scores,
                               double rmsd_cutoff,
                               double ratio_bin_size_rmsd) {
@@ -52,12 +35,16 @@ TransformationsClusters
   unsigned int  min_em2d_index = it-em2d_scores.begin();
   IMP_LOG(TERSE,"Best model: index = " << min_em2d_index << " em2d score = "
           << *it << std::endl);
-
   ParticlesTemp best_model_ps = core::get_leaves(mhs[min_em2d_index]);
   core::XYZsTemp best_model_xyzs(best_model_ps.begin(),best_model_ps.end());
 
   // get the transformations3D of all models respect to the best.
   TransformationsClusters clusters;
+  TransformationsCluster cluster(algebra::get_identity_transformation_3d(),
+                                     (-1)*em2d_scores[min_em2d_index],
+                                     min_em2d_index);
+  clusters.push_back(cluster);
+
   for (unsigned int i=0;i<mhs.size();++i) {
     if(i != min_em2d_index) {
       ParticlesTemp other_model_ps= core::get_leaves(mhs[i]);
@@ -67,10 +54,13 @@ TransformationsClusters
       algebra::Transformation3D transformation=
          algebra::get_transformation_aligning_first_to_second(other_model_xyzs,
                                                       best_model_xyzs);
-      // use the ccc instead of the em2d score. The clustering requires
-      // that the higher the score, the better.
+      IMP_LOG(VERBOSE,"Transformation " << i << " to cluster : "
+                << transformation << std::endl);
+      // The clustering requires that the higher the score, the better. Use
+      // negative values
       TransformationsCluster cluster(transformation,
-                                     get_em2d_to_ccc(em2d_scores[i]));
+                                     (-1)*em2d_scores[i],
+                                     i);
       clusters.push_back(cluster);
     }
   }
@@ -79,7 +69,8 @@ TransformationsClusters
   clusterer.prepare(best_model_ps);
   clusterer.set_bin_size(ratio_bin_size_rmsd*rmsd_cutoff);
   clusterer.cluster(rmsd_cutoff,clusters,clustered);
-  IMP_LOG(TERSE,"Clusters obtained" << clustered.size() << std::endl);
+  IMP_LOG(TERSE,"Clusters obtained" << clustered.size()
+              << " from "<<clusters.size()<<std::endl);
   return clustered;
 }
 
