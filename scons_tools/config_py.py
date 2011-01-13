@@ -2,6 +2,7 @@ from SCons.Script import Glob, Dir, File, Builder, Action, Exit
 import os
 import sys
 import re
+import dependency.gcc
 
 def _flatten(strorlist, delim):
     if type(strorlist)== type(""):
@@ -23,7 +24,7 @@ def _action_config_py(target, source, env):
             'precommand',  'modeller',
             'prefix', 'local',
             'pythonpath', 'python_include', 'ldlibpath']
-    if not scons_tools.dependency.gcc.get_is_gcc(env):
+    if not dependency.gcc.get_is_gcc(env):
         simple.extend(['includepath', 'libpath'])
     for v in simple:
         _export_to_config(v, v, env, True)
