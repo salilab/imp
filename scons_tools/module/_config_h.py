@@ -23,9 +23,9 @@ def _action_config_h(target, source, env):
  *
  * When building the module, %(PREPROC)s_EXPORTS should be defined, and when
  * using the module externally, it should not be. Classes and functions
- * defined in the module's headers should then be marked with
- * %(PREPROC)sEXPORT if they are intended to be part of the API, or with
- * %(PREPROC)sLOCAL if they are not (the latter is the default).
+ * declared in the module's headers should then be marked with
+ * %(PREPROC)sEXPORT if they are intended to be part of the API and
+ * they are not defined entirely in a header.
  *
  * The Windows build environment requires applications to mark exports in
  * this way; we use the same markings to set the visibility of ELF symbols
@@ -58,16 +58,13 @@ def _action_config_h(target, source, env):
 #    else // EXPORTS
 #      define %(PREPROC)sEXPORT __declspec(dllimport)
 #    endif // EXPORTS
-#    define %(PREPROC)sLOCAL
 
 #  else // _MSC_VER
 
 #    ifdef GCC_VISIBILITY
 #      define %(PREPROC)sEXPORT __attribute__ ((visibility("default")))
-#      define %(PREPROC)sLOCAL __attribute__ ((visibility("hidden")))
 #    else // GCC_VISIBILITY
 #      define %(PREPROC)sEXPORT
-#      define %(PREPROC)sLOCAL
 #    endif // GCC_VISIBILITY
 #  endif // _MSC_VER
 
