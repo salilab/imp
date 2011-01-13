@@ -27,7 +27,7 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 template <class It>
 void load_particle_states(It b, It e, const SubsetState &ss,
                           const ParticleStatesTable *pst) {
-  IMP_USAGE_CHECK(std::distance(b,e) == ss.size(),
+  IMP_USAGE_CHECK(std::distance(b,e) == static_cast<unsigned int>(ss.size()),
                   "Sizes don't match in load particle states");
   unsigned int i=0;
   for (It c=b; c != e; ++c) {
