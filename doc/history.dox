@@ -1,6 +1,13 @@
 /** \page recent Change History
 
 \par Winter 2011
+- IMP::atom::CHARMMParameters can now automatically map CHARMM-style atom and
+residue naming to PDB-style, so CHARMM topology files can be used unmodified.
+- IMP::atom::CHARMMTopology::add_sequence() provides a simple way to generate a topology from a string of amino acid one-letter codes.
+- IMP::atom::CHARMMTopology::add_coordinates() will generate atomic Cartesian coordinates from CHARMM internal coordinate information.
+- IMP::atom::CHARMMTopology::add_missing_atoms() and
+IMP::atom::remove_charmm_untyped_atoms() can now be used to ensure that atoms
+read from a PDB file match the CHARMM topology.
 - building of deprecated functionality is now false by default
 - the IMP_COMPARISONS(), IMP_COMPARISONS_1(), IMP_COMPARISONS_2() macros now take the name of the class as an additional (first) argument. This avoids the formerly needed, \c This typedef and makes them more consistent with the other macros in \imp.
 - modules can now be built externally to the \imp svn in addition to applications and biological systems. To do so, create a directory with your module in a subdir containing links to the \imp SConscript file and scons_tools and a config.py that has information needed to run \imp (eg an appropriate \c pythonpath, \c ldpath).
