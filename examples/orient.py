@@ -4,8 +4,8 @@ import IMP.algebra
 import IMP.domino
 import IMP.atom
 import IMP.membrane
-import math
 import IMP.container
+import math
 
 def create_representation():
     m=IMP.Model()
@@ -20,14 +20,14 @@ def create_restraints(m, chain, up, down):
     lpc= IMP.container.ListPairContainer(m)
     for i in range(len(up)-1):
 # fix particles up
-        s0=IMP.atom.Selection(chain, residue_index=up[i], atom_type = IMP.atom.AT_CB)
-        s1=IMP.atom.Selection(chain, residue_index=up[i+1], atom_type = IMP.atom.AT_CB)
+        s0=IMP.atom.Selection(chain, residue_index=up[i], atom_type = IMP.atom.AT_CA)
+        s1=IMP.atom.Selection(chain, residue_index=up[i+1], atom_type = IMP.atom.AT_CA)
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
         lpc.add_particle_pair([p0,p1])
 # fix particles down
-        s0=IMP.atom.Selection(chain, residue_index=down[i], atom_type = IMP.atom.AT_CB)
-        s1=IMP.atom.Selection(chain, residue_index=down[i+1], atom_type = IMP.atom.AT_CB)
+        s0=IMP.atom.Selection(chain, residue_index=down[i], atom_type = IMP.atom.AT_CA)
+        s1=IMP.atom.Selection(chain, residue_index=down[i+1], atom_type = IMP.atom.AT_CA)
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
         lpc.add_particle_pair([p0,p1])
