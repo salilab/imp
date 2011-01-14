@@ -14,7 +14,7 @@ import SCons
 
 def _check_no_relative_path(env, pathlist):
     bad=".."+os.path.sep
-    if pathlist.find(bad):
+    if pathlist.find(bad)!= -1:
         utility.report_error(env, "Path lists should not contain relative paths, bad things will happen")
 
 def _propagate_variables(env):
