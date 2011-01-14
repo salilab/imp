@@ -24,12 +24,15 @@ MaximumQuadScore::MaximumQuadScore(const QuadScoresTemp &scores,
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          QuadScore*, std::greater<double> > MS;
+          QuadScore*, std::greater<double> >
+  MaximumQuadScoreMS;
   template <class It>
-  MS find_minimal_set(It b, It e, const ParticleQuad& v, unsigned int n) {
+  MaximumQuadScoreMS
+  find_minimal_set_MaximumQuadScore(It b, It e, const ParticleQuad& v,
+                                          unsigned int n) {
     IMP_LOG(TERSE, "Finding Maximum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    MaximumQuadScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= (*it)->evaluate(v, NULL);
 
@@ -43,8 +46,9 @@ namespace {
 
 double MaximumQuadScore::evaluate(const ParticleQuad& v,
                                       DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(scores_.begin(),
-                             scores_.end(), v, n_);
+  MaximumQuadScoreMS bestn
+    = find_minimal_set_MaximumQuadScore(scores_.begin(),
+                                              scores_.end(), v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

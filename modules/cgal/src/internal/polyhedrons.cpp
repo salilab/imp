@@ -69,17 +69,17 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 namespace {
 
   template <class K>
-  algebra::VectorD<3> tr(const typename K::Point_3 pt) {
+  algebra::VectorD<3> trp(const typename K::Point_3 pt) {
     return algebra::VectorD<3>(CGAL::to_double(pt[0]),
                                CGAL::to_double(pt[1]),
                                CGAL::to_double(pt[2]));
   }
   template <class K>
-  typename K::Point_3 tr(const algebra::VectorD<3> pt) {
+  typename K::Point_3 trp(const algebra::VectorD<3> pt) {
     return typename K::Point_3(pt[0], pt[1], pt[2]);
   }
   template <class K>
-  typename K::Plane_3 tr(const algebra::Plane3D &p) {
+  typename K::Plane_3 trp(const algebra::Plane3D &p) {
     return typename K::Plane_3(p.get_normal()[0],
                    p.get_normal()[1],
                    p.get_normal()[2],
@@ -100,7 +100,7 @@ namespace {
       typename CGAL::Polyhedron_3<K>
         ::Facet::Halfedge_around_facet_circulator c= it->facet_begin();
       do {
-        ret.back().push_back(tr<K>(c->vertex()->point()));
+        ret.back().push_back(trp<K>(c->vertex()->point()));
         ++c;
       } while (c != it->facet_begin());
     }
@@ -126,7 +126,7 @@ namespace {
         typename CGAL::Polyhedron_3<K>::Vertex_handle vh= c->vertex();
         if (vertices.find(vh) == vertices.end()) {
           vertices[vh]= coords.size();
-          coords.push_back(tr<K>(vh->point()));
+          coords.push_back(trp<K>(vh->point()));
         }
         faces.back().push_back(vertices.find(vh)->second);
         ++c;
@@ -197,7 +197,7 @@ namespace {
     typename CGAL::Nef_polyhedron_3<K> cur(create_cube<K>(bb));
     IMP_INTERNAL_CHECK(cur.is_simple(), "Something wrong with cube ");
     for (unsigned int i=0; i< planes.size(); ++i) {
-      cur= cur.intersection(tr<K>(planes[i]),
+      cur= cur.intersection(trp<K>(planes[i]),
                             CGAL::Nef_polyhedron_3<K>::CLOSED_HALFSPACE);
       typename CGAL::Polyhedron_3<K> p;
       try {
@@ -249,7 +249,7 @@ get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
   std::vector<Weighted_point> l(ss.size());
   for (unsigned int i=0; i< ss.size(); ++i) {
-    l[i]= Weighted_point(tr<IKernel>(ss[i].get_center()),
+    l[i]= Weighted_point(trp<IKernel>(ss[i].get_center()),
                          square(ss[i].get_radius()));
   }
   CGAL::Polyhedron_3<IKernel> p;
