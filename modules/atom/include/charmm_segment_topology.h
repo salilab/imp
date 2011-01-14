@@ -131,6 +131,13 @@ public:
       - If any atoms cannot be placed using either method, their coordinates
         are assigned randomly to lie near atoms that are near in sequence or,
         if no such atoms exist, near the segment origin.
+
+      \note It is valid to specify internal coordinates in a CHARMM topology
+            file that leave the angles or distances unspecified. This function
+            will attempt to fill in this missing information using CHARMM atom
+            types and the parameter file. Thus, better results will be obtained
+            if add_atom_types() is called before this function, and the
+            CHARMMParameters object used contains parameter information.
    */
   void add_coordinates(Hierarchy hierarchy) const;
 

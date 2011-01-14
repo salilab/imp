@@ -641,6 +641,66 @@ namespace {
     }
   }
 
+  float fill_distance(Atom i, Atom j, const CHARMMParameters *ff) {
+    if (CHARMMAtom::particle_is_instance(i)
+        && CHARMMAtom::particle_is_instance(j)) {
+      try {
+        return ff->get_bond_parameters(CHARMMAtom(i).get_charmm_type(),
+                                       CHARMMAtom(j).get_charmm_type()).ideal;
+      } catch (IndexException &) {
+      }
+    }
+    return 0.;
+  }
+
+  float fill_angle(Atom i, Atom j, Atom k, const CHARMMParameters *ff) {
+    if (CHARMMAtom::particle_is_instance(i)
+        && CHARMMAtom::particle_is_instance(j)
+        && CHARMMAtom::particle_is_instance(k)) {
+      try {
+        return ff->get_angle_parameters(CHARMMAtom(i).get_charmm_type(),
+                                        CHARMMAtom(j).get_charmm_type(),
+                                        CHARMMAtom(k).get_charmm_type()).ideal;
+      } catch (IndexException &) {
+      }
+    }
+    return 0.;
+  }
+
+  // CHARMM format allows for distances or angles (but not dihedrals) to
+  // be zero; fill in these missing values using atom types and
+  // parameter file information if available.
+  void fill_internal_coordinates(std::vector<ModelInternalCoordinate> &ics,
+                                 const CHARMMParameters *ff) {
+    for (std::vector<ModelInternalCoordinate>::iterator it = ics.begin();
+         it != ics.end(); ++it) {
+      if (it->first_distance == 0.) {
+        if (it->improper) {
+          it->first_distance = fill_distance(it->atoms[0], it->atoms[2], ff);
+        } else {
+          it->first_distance = fill_distance(it->atoms[0], it->atoms[1], ff);
+        }
+      }
+      if (it->second_distance == 0.) {
+        it->second_distance = fill_distance(it->atoms[2], it->atoms[3], ff);
+      }
+
+      if (it->first_angle == 0.) {
+        if (it->improper) {
+          it->first_angle = fill_angle(it->atoms[0], it->atoms[2], it->atoms[1],
+                                       ff);
+        } else {
+          it->first_angle = fill_angle(it->atoms[0], it->atoms[1], it->atoms[2],
+                                       ff);
+        }
+      }
+      if (it->second_angle == 0.) {
+        it->second_angle = fill_angle(it->atoms[1], it->atoms[2], it->atoms[3],
+                                      ff);
+      }
+    }
+  }
+
   void build_cartesian(Atom known1, Atom known2, Atom known3, Atom unknown,
                        float r, float phi, float theta) {
     // Convert to radians
@@ -829,6 +889,8 @@ void CHARMMTopology::add_coordinates(Hierarchy hierarchy) const
        segit != segments_end(); ++segit) {
     std::vector<ModelInternalCoordinate> ics;
     build_internal_coordinates(*segit, resmap, ics);
+
+    fill_internal_coordinates(ics, force_field_);
 
     // If no atoms currently have Cartesian coordinates, place a triplet
     // of atoms near the seed position, so we can (hopefully) fill in the
