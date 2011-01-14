@@ -28,8 +28,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 //! Class to read and write EM images in Spider format. They are stored in
 //! the header and data passed as arguments
-template <typename T>
-class SpiderImageReaderWriter: public ImageReaderWriter<T>
+class SpiderImageReaderWriter: public ImageReaderWriter
 {
 public:
   String filename_;

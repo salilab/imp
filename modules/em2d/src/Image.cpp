@@ -62,7 +62,7 @@ void Image::update_header() {
 
 
 Images read_images(const Strings &names,
-                   const em2d::ImageReaderWriter<double> &rw) {
+                   const em2d::ImageReaderWriter &rw) {
   unsigned long size = names.size();
   Images v(size);
   for(unsigned long i=0;i<size;++i) {
@@ -73,7 +73,7 @@ Images read_images(const Strings &names,
 
 
 void save_images(Images images,const Strings &names,
-                      const em2d::ImageReaderWriter<double> &rw) {
+                      const em2d::ImageReaderWriter &rw) {
   for(unsigned long i=0;i<images.size();++i) {
     images[i]->write(names[i],rw);
   }
