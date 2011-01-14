@@ -10,6 +10,7 @@ import _link_test
 import _standards
 import _version_h
 import _config_h
+import _all_cpp
 import scons_tools.bug_fixes
 import scons_tools.run
 import scons_tools.dependency
@@ -88,9 +89,6 @@ def IMPModuleLib(envi, files):
     vars= _get_module_variables(envi)
     module = _get_module_name(envi)
     module_suffix =_get_module_variables(envi)['module_suffix']
-    if envi['build']=="debug" and envi['linktest']:
-        link= envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
-        files= files+link
     version= _get_module_version(envi)
     data= scons_tools.data.get(envi).modules[_get_module_name(envi)]
     config= envi.IMPModuleConfigCPP(target=["#/build/src/%(module)s_config.cpp"%vars],
@@ -100,17 +98,24 @@ def IMPModuleLib(envi, files):
     #env.AlwaysBuild(version)
     files =files+ config
     build=[]
+    if not envi['testbuild']:
+        allf= [_all_cpp.get(envi, list(files))]+config
+    else:
+        allf=files+config
+    if envi['build']=="debug" and envi['linktest']:
+        link= envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars, '#/build/src/%(module)s_link_1.cpp'%vars], source=[])
+        allf= allf+link
     if envi['IMP_BUILD_STATIC']:
         env= scons_tools.environment.get_staticlib_environment(envi)
         sl= env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
-                              list(files))
+                              allf)
         data.build.append(sl[0])
         scons_tools.install.install(env, "libdir", sl[0])
     if envi['IMP_BUILD_DYNAMIC']:
         env = scons_tools.environment.get_sharedlib_environment(envi, '%(PREPROC)s_EXPORTS' % vars,
                                     cplusplus=True)
         sl=env.SharedLibrary('#/build/lib/imp%s' % module_suffix,
-                                       list(files) )
+                                       allf )
         data.build.append(sl[0])
         scons_tools.utility.postprocess_lib(env, sl)
         scons_tools.install.install(env, "libdir", sl[0])
