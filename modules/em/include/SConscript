@@ -28,7 +28,8 @@ files = [
          'masking.h',
          'rigid_fitting.h',
          'density_utilities.h',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
 
 # Install the include files:
 env.IMPModuleInclude(files)

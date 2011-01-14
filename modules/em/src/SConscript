@@ -24,7 +24,9 @@ files = [
          'masking.cpp',
          'rigid_fitting.cpp',
          'density_utilities.cpp',
-        ]
+        ] \
+        + SConscript('internal/SConscript')
+
 
 # Build and install the shared library:
 env.IMPModuleLib(files)

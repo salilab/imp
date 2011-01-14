@@ -3,7 +3,6 @@ namespace IMP::em {
   %ignore DensityMap::operator =;
 }
 %ignore operator<<(std::ostream&, const DensityHeader &);
-%ignore operator<<(std::ostream&, const EMHeader &);
 %ignore operator<<(std::ostream&, const MRCHeader &);
 
 /* Make selected classes extensible in Python */

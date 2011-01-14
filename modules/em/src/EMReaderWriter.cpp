@@ -10,74 +10,6 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-EMHeader::EMHeader(const DensityHeader &header) {
-  nx=header.get_nx();
-  ny=header.get_ny();
-  nz=header.get_nz();
-  magic=header.magic;
-  type=header.get_data_type();
-  for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
-    comment[i]=header.comments[0][i];
-  }
-  voltage=header.voltage;
-  Cs=header.Cs;
-  Aperture=header.Aperture;
-  Magnification=header.Magnification;
-  Postmagnification=header.Postmagnification;
-  Exposuretime=header.Exposuretime;
-  Objectpixelsize=header.get_spacing();
-  Microscope=header.Microscope;
-  Pixelsize=header.Pixelsize;
-  CCDArea=header.CCDArea;
-  Defocus=header.Defocus;
-  Astigmatism=header.Astigmatism;
-  AstigmatismAngle=header.AstigmatismAngle;
-  FocusIncrement=header.FocusIncrement;
-  CountsPerElectron=header.CountsPerElectron;
-  Intensity=header.Intensity;
-  EnergySlitwidth=header.EnergySlitwidth;
-  EnergyOffset=header.EnergyOffset;
-  Tiltangle=header.Tiltangle;
-  Tiltaxis=header.Tiltaxis;
-  MarkerX=header.MarkerX;
-  MarkerY=header.MarkerY;
-  lswap=header.lswap;
-}
-
-void EMHeader::generate_common_header(DensityHeader &header) {
-  header.Objectpixelsize_=Objectpixelsize;
-  header.update_map_dimensions(nx,ny,nz);
-  header.magic=magic;
-  header.set_data_type(type);
-  for (short i=0;i < DensityHeader::COMMENT_FIELD_SINGLE_SIZE; i++) {
-    header.comments[0][i]=comment[i];
-  }
-
-  header.voltage=voltage;
-  header.Cs= Cs;
-  header.Aperture=Aperture;
-  header.Magnification=Magnification;
-  header.Postmagnification= Postmagnification;
-  header.Exposuretime=Exposuretime;
-  header.Microscope=Microscope;
-  header.Pixelsize=Pixelsize;
-  header.CCDArea=CCDArea;
-  header.Defocus=Defocus;
-  header.Astigmatism=Astigmatism;
-  header.AstigmatismAngle=AstigmatismAngle;
-  header.FocusIncrement=FocusIncrement;
-  header.CountsPerElectron=CountsPerElectron;
-  header.Intensity=Intensity;
-  header.EnergySlitwidth=EnergySlitwidth;
-  header.EnergyOffset=EnergyOffset;
-  header.Tiltangle=Tiltangle;
-  header.Tiltaxis=Tiltaxis;
-  header.MarkerX=MarkerX;
-  MarkerY=header.MarkerY;
-  header.lswap=lswap;
-}
-
-
 void EMReaderWriter::Read(const char *filename, float **data,
                          DensityHeader &header)
 {
@@ -88,7 +20,7 @@ void EMReaderWriter::Read(const char *filename, float **data,
             << " was not found.");
   file.exceptions(std::ifstream::eofbit | std::ifstream::failbit
                   | std::ifstream::badbit);
-  EMHeader eheader;
+  internal::EMHeader eheader;
   ReadHeader(file,eheader);
 
   if (eheader.Objectpixelsize < EPS) {
@@ -108,7 +40,7 @@ void EMReaderWriter::Write(const char* filename,const float *data,
                            const DensityHeader &header_)
 {
   std::ofstream s(filename, std::ofstream::out | std::ofstream::binary);
-  EMHeader header(header_);
+  internal::EMHeader header(header_);
   //init header data if not set
   if (header.type == 0) {
     header.type = 5;
@@ -153,16 +85,17 @@ void swap(char *x, int size)
 
 
 
-void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
+void EMReaderWriter::WriteHeader(std::ostream& s,
+                                 const internal::EMHeader &header)
 {
 
-  EMHeader::EMHeaderParse ehp;
+  internal::EMHeader::EMHeaderParse ehp;
   ehp.Init(header);
 
 #ifdef IMP_LITTLE_ENDIAN
-  ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET] = 0;
+  ehp.emdata[internal::EMHeader::EMHeaderParse::LSWAP_OFFSET] = 0;
 #else
-  ehp.emdata[EMHeader::EMHeaderParse::LSWAP_OFFSET] = 1;
+  ehp.emdata[internal::EMHeader::EMHeaderParse::LSWAP_OFFSET] = 1;
   // byte-swap all ints in the header on big-endian machines:
   swap((char *)&ehp.nx, sizeof(int));
   swap((char *)&ehp.ny, sizeof(int));
@@ -172,7 +105,7 @@ void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
   }
 #endif
 
-  s.write((char *) &ehp,sizeof(EMHeader::EMHeaderParse));
+  s.write((char *) &ehp,sizeof(internal::EMHeader::EMHeaderParse));
   IMP_USAGE_CHECK(!s.bad(),
             "EMReaderWriter::WriteHeader >> Error writing header to file.");
 }
@@ -180,11 +113,11 @@ void EMReaderWriter::WriteHeader(std::ostream& s, const EMHeader &header)
 
 
 
-void EMReaderWriter::ReadHeader(std::ifstream &file, EMHeader &header)
+void EMReaderWriter::ReadHeader(std::ifstream &file, internal::EMHeader &header)
 {
 
-  EMHeader::EMHeaderParse ehp;
-  file.read((char *)&ehp, sizeof(EMHeader::EMHeaderParse));
+  internal::EMHeader::EMHeaderParse ehp;
+  file.read((char *)&ehp, sizeof(internal::EMHeader::EMHeaderParse));
 
 #ifndef IMP_LITTLE_ENDIAN
   // byte-swap all ints in the header on big-endian machines:
@@ -202,7 +135,7 @@ void EMReaderWriter::ReadHeader(std::ifstream &file, EMHeader &header)
 
 
 void EMReaderWriter::ReadData(std::ifstream &file, float **data,
-                             const EMHeader &header)
+                              const internal::EMHeader &header)
 {
 
     int nvox = header.nx*header.ny*header.nz;
