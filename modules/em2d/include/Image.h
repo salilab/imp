@@ -32,7 +32,7 @@ public:
   Image(int rows, int cols);
 
   //! Create the image reading from a file
-  Image(String filename,const em2d::ImageReaderWriter<double> &reader) {
+  Image(String filename,const em2d::ImageReaderWriter &reader) {
     read(filename,reader);
   }
 
@@ -72,14 +72,14 @@ public:
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
   void read(String filename, const
-                          em2d::ImageReaderWriter<double> &reader) {
+                          em2d::ImageReaderWriter &reader) {
     reader.read(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
   void write(String filename, const
-                          em2d::ImageReaderWriter<double> &writer) {
+                          em2d::ImageReaderWriter &writer) {
     update_header(); // adjust the header to guarantee consistence
     writer.write(filename,header_,data_);
   }
@@ -133,7 +133,7 @@ IMP_OUTPUT_OPERATOR(Image);
   \param[in] rw  reader/writer to use
 */
 IMPEM2DEXPORT Images read_images(const Strings &names,
-                                  const em2d::ImageReaderWriter<double> &rw);
+                                  const em2d::ImageReaderWriter &rw);
 
 //! Saves images to files (For compatibility with SPIDER format,
 //! the images are written to floats)
@@ -143,7 +143,7 @@ IMPEM2DEXPORT Images read_images(const Strings &names,
   \param[in] rw  reader/writer to use
 */
 IMPEM2DEXPORT void save_images(Images images, const Strings &names,
-                             const em2d::ImageReaderWriter<double> &rw);
+                             const em2d::ImageReaderWriter &rw);
 
 //! Cross correlation between two images
 IMPEM2DEXPORT double get_cross_correlation_coefficient(Image *im1,Image *im2);

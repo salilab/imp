@@ -232,7 +232,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     std::ostringstream strm;
 
     strm << "coarse_match-" << i << ".spi";
-    em2d::SpiderImageReaderWriter<double> srw;
+    em2d::SpiderImageReaderWriter srw;
     match->set_name(strm.str()); ////
     match->write(strm.str(),srw);
   }
@@ -288,7 +288,7 @@ void ProjectionFinder::get_complete_registration() {
               "Model particles have not been set",ValueException);
   }
 
-  em2d::SpiderImageReaderWriter<double> srw;
+  em2d::SpiderImageReaderWriter srw;
   unsigned int rows= subjects_[0]->get_header().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_header().get_number_of_columns();
   IMP_NEW(em2d::Image,match,());

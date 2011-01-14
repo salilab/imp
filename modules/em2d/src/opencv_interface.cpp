@@ -26,7 +26,7 @@ void show(cv::Mat &m,std::ostream &out) {
 
 
 void write_matrix(cv::Mat &m,std::string name) {
- em2d::SpiderImageReaderWriter<double> srw;
+ em2d::SpiderImageReaderWriter srw;
   IMP_NEW(em2d::Image,output_img,());
   output_img->set_data(m);
   output_img->write(name,srw);

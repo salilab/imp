@@ -14,7 +14,6 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-template<typename T>
 class ImageReaderWriter
 {
 public:

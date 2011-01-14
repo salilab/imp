@@ -13,8 +13,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-template <typename T>
-class TIFFImageReaderWriter: public ImageReaderWriter<T> {
+class TIFFImageReaderWriter: public ImageReaderWriter {
 
 public:
 

@@ -15,8 +15,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! Class to read and write EM images in JPG format.
-template <typename T>
-class JPGImageReaderWriter: public ImageReaderWriter<T>
+class JPGImageReaderWriter: public ImageReaderWriter
 {
 public:
   JPGImageReaderWriter() {}
