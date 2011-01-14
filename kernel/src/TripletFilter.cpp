@@ -18,9 +18,9 @@ IMP_BEGIN_NAMESPACE
 TripletFilter::TripletFilter(std::string name): Object(name) {
 }
 namespace {
-struct GCP {
+struct TripletGCP {
   const TripletFilter *back_;
-  GCP(const TripletFilter *n): back_(n){}
+  TripletGCP(const TripletFilter *n): back_(n){}
   template <class T>
   bool operator()(const T &p) const {
     return back_->get_contains_particle_triplet(p);
@@ -30,7 +30,7 @@ struct GCP {
 void TripletFilter
 ::filter_in_place(ParticleTripletsTemp &ps) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          GCP(this)),
+                          TripletGCP(this)),
            ps.end());
 
 }

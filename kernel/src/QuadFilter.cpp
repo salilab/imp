@@ -18,9 +18,9 @@ IMP_BEGIN_NAMESPACE
 QuadFilter::QuadFilter(std::string name): Object(name) {
 }
 namespace {
-struct GCP {
+struct QuadGCP {
   const QuadFilter *back_;
-  GCP(const QuadFilter *n): back_(n){}
+  QuadGCP(const QuadFilter *n): back_(n){}
   template <class T>
   bool operator()(const T &p) const {
     return back_->get_contains_particle_quad(p);
@@ -30,7 +30,7 @@ struct GCP {
 void QuadFilter
 ::filter_in_place(ParticleQuadsTemp &ps) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          GCP(this)),
+                          QuadGCP(this)),
            ps.end());
 
 }
