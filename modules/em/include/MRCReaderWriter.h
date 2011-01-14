@@ -102,10 +102,6 @@ IMPEMEXPORT
 int get_machine_stamp();
 
 IMPEMEXPORT
-//! Returns true if this machine is big endian
-int is_bigendian();
-
-IMPEMEXPORT
 //! Swaps the byte order in an array of 32-bit ints
 void byte_swap(unsigned char *ch, int n_array);
 

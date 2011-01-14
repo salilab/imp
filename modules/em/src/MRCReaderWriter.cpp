@@ -6,6 +6,7 @@
  *
  */
 
+#include <IMP/algebra/endian.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/log.h>
 
@@ -127,7 +128,7 @@ void  MRCReaderWriter::read_header()
 
   // Check for endian
   unsigned char *ch = (unsigned char *) &header;
-  if ((ch[0] == 0 && ch[1] == 0) + is_bigendian() == 1) {
+  if ((ch[0] == 0 && ch[1] == 0) + algebra::get_is_big_endian() == 1) {
     int machinestamp = header.machinestamp;
     byte_swap(ch, 56);
     header.machinestamp = machinestamp;
@@ -210,18 +211,10 @@ int get_machine_stamp()
   int retval;
   unsigned char *ch;
   ch = (unsigned char *)&retval;
-  ch[0] = ch[1] = (is_bigendian()? 0x11 : 0x44);
+  ch[0] = ch[1] = (algebra::get_is_big_endian()? 0x11 : 0x44);
   ch[2] = ch[3] = 0;
   return retval;
 }
-
-int is_bigendian()
-{
-  static const int ival = 50;
-  char *ch = (char *)&ival;
-  return (ch[0] == 0 && ch[1] == 0);
-}
-
 
 /** Swaps the byte order in an array of 32-bit ints */
 void byte_swap(unsigned char *ch, int n_array)
