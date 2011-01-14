@@ -96,7 +96,6 @@ def IMPModuleLib(envi, files):
                                            envi.Value(envi.subst(envi['datadir'])),
                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
-    files =files+ config
     build=[]
     if not envi['testbuild']:
         allf= [_all_cpp.get(envi, list(files))]+config
