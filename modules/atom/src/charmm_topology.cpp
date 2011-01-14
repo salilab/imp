@@ -676,7 +676,8 @@ namespace {
   }
 
   // If exactly 3 out of the 4 atoms in the given internal coordinate have
-  // defined Cartesian coordinates, build the Cartesian coordinates of the
+  // defined Cartesian coordinates, and the internal coordinate has defined
+  // distances and angles, build the Cartesian coordinates of the
   // remaining atom and return true. Otherwise, return false.
   bool build_cartesian_from_internal(const ModelInternalCoordinate &ic) {
     if (core::XYZ::particle_is_instance(ic.atoms[1])
@@ -686,22 +687,26 @@ namespace {
         float phi = ic.dihedral;
         float r = ic.second_distance;
         float theta = ic.second_angle;
-        build_cartesian(ic.atoms[0], ic.atoms[1],
-                        ic.atoms[2], ic.atoms[3], r, phi, theta);
-        return true;
+        if (r != 0. && theta != 0.) {
+          build_cartesian(ic.atoms[0], ic.atoms[1],
+                          ic.atoms[2], ic.atoms[3], r, phi, theta);
+          return true;
+        }
       } else if (!core::XYZ::particle_is_instance(ic.atoms[0])
                  && core::XYZ::particle_is_instance(ic.atoms[3])) {
         float phi = ic.dihedral;
         float r = ic.first_distance;
         float theta = ic.first_angle;
-        if (ic.improper) {
-          build_cartesian(ic.atoms[3], ic.atoms[1],
-                          ic.atoms[2], ic.atoms[0], r, -phi, theta);
-        } else {
-          build_cartesian(ic.atoms[3], ic.atoms[2],
-                          ic.atoms[1], ic.atoms[0], r, phi, theta);
+        if (r != 0. && theta != 0.) {
+          if (ic.improper) {
+            build_cartesian(ic.atoms[3], ic.atoms[1],
+                            ic.atoms[2], ic.atoms[0], r, -phi, theta);
+          } else {
+            build_cartesian(ic.atoms[3], ic.atoms[2],
+                            ic.atoms[1], ic.atoms[0], r, phi, theta);
+          }
+          return true;
         }
-        return true;
       }
     }
     return false;
