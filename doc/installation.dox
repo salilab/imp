@@ -124,32 +124,34 @@ non-fast builds and to build your module without dealing with the \imp setup eac
 worthwhile. To set this up do
 \verbatim
 mkdir imp
-touch shared_config.py
-cat "execfile('../../shared_config.py')" > /tmp/use_shared
 cd imp
-svn co http://svn.salilab.org/imp/trunk/svn
+touch shared_imp_config.py
+echo "execfile('$PWD/shared_imp_config.py')" > /tmp/use_shared
+svn co http://svn.salilab.org/imp/trunk svn
 mkdir release
 cd release
-cat ../svn/doc/example_simple_config.py /tmp/used_shared > config.py
+cat ../svn/doc/example_simple_config.py /tmp/use_shared | sed "s#debug#release#" > config.py
 ln -s ../svn/SConstruct
 ln -s ../svn/scons_tools
 cd ..
 mkdir fast
-cat ../svn/doc/example_simple_config.py /tmp/used_shared | sed "s#debug#fast#g" > config.py
+cd fast
+cat ../svn/doc/example_simple_config.py /tmp/use_shared | sed "s#debug#fast#g" > config.py
 ln -s ../svn/SConstruct
 ln -s ../svn/scons_tools
 cd ../..
 mkdir mine
-svn co http://path.to.my/svn
-mkdir debug
-cd debug
-cat ../../imp/svn/doc/example_external_config.py  /tmp/used_shared | sed "s#path_to_imp_build#$CWD../../svn/debug/build#" > config.py
+cd mine
+svn co http://path.to.my/svn/trunk svn
+mkdir release
+cd release
+cat ../../imp/svn/doc/example_external_config.py  /tmp/use_shared | sed -e "s#path_to_imp_build#$PWD/../../imp/release/build#" -e "s#debug#release#"> config.py
 ln -s ../../imp/svn/SConstruct
 ln -s ../../imp/svn/scons_tools
 cd ..
 mkdir fast
 cd fast
-cat ../../imp/svn/doc/example_external_config.py  /tmp/used_shared | sed "s#path_to_imp_build#$CWD../../svn/debug/build#" "s#debug#fast#"> config.py
+cat ../../imp/svn/doc/example_external_config.py  /tmp/use_shared | sed -e "s#path_to_imp_build#$PWD/../../imp/fast/build#" -e "s#debug#fast#"> config.py
 ln -s ../../imp/svn/SConstruct
 ln -s ../../imp/svn/scons_tools
 \endverbatim
