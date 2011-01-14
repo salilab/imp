@@ -39,8 +39,8 @@ for r in extra_roots:
 # uncomment if you are building an isolated module/application
 #imp_build="/Users/drussel/src/IMP/imp/debug
 #includepath=add(includepath, imp_build, "include")
-#libpath=add(includepath, imp_build, "lib")
-#swigpath=add(includepath, imp_build, "swig")
+#libpath=add(libpath, imp_build, "lib")
+#swigpath=add(swigpath, imp_build, "swig")
 #pythonpath=add(pythonpath, imp_build, "lib")
 
 # You can add to the compiler flags directly, to, for example,
