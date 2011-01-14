@@ -90,6 +90,9 @@ public:
     flags.push_back(100); // 100% quality image
     cv::imwrite(filename,jpg_data,flags);
   }
+
+  IMP_OBJECT_INLINE(JPGImageReaderWriter,
+                    { out << "JPGImageReaderWriter"; }, {});
 };
 
 IMPEM2D_END_NAMESPACE

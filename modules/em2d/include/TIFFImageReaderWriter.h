@@ -18,7 +18,6 @@ class TIFFImageReaderWriter: public ImageReaderWriter {
 public:
 
   TIFFImageReaderWriter() {}
-  ~TIFFImageReaderWriter() {}
 
   void read(const String &filename,
             em::ImageHeader& header,
@@ -88,6 +87,9 @@ public:
     // write image
     cv::imwrite(filename,TIFF_data);
   }
+
+  IMP_OBJECT_INLINE(TIFFImageReaderWriter,
+                    { out << "TIFFImageReaderWriter"; }, {});
 };
 
 
