@@ -43,7 +43,6 @@ class IMPData:
         def __init__(self, name, dependencies=[], unfound_dependencies=[], modules=[],
                      python_modules=[], version="", external=False, ok=True):
             self.build=[]
-            print "module", name, "is", ok
             if ok:
                 self.dependencies=dependencies
                 self.unfound_dependencies=unfound_dependencies
