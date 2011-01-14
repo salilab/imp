@@ -21,6 +21,32 @@ IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_VALUE(IMP::em, MapFilterByThreshold, MapFilterByThresholds);
 
+/* Since DensityHeaders are not values or Objects, we must ensure that whenever
+   pointers to them are returned to Python, the object that manages the header's
+   storage (usually a DensityMap) must be kept alive so that the header is not
+   prematurely freed. (They cannot be Objects, since the EM code relies on
+   their memory layout, and cannot be values, since it uses them to modify
+   existing map objects.) */
+namespace IMP {
+ namespace em {
+  // Note that since SWIG does not preserve const-correctness, get_header()
+  // and get_header_writable() are essentially equivalent
+  %feature("shadow") DensityMap::get_header() const %{
+    def get_header(self):
+        h = _IMP_em.DensityMap_get_header(self)
+        h._owner = self
+        return h
+  %}
+  %feature("shadow") DensityMap::get_header_writable() %{
+    def get_header_writable(self):
+        h = _IMP_em.DensityMap_get_header_writable(self)
+        h._owner = self
+        return h
+  %}
+ }
+}
+
+
 /* Wrap our own classes */
 %include "IMP/em/def.h"
 %include "IMP/em/DensityHeader.h"

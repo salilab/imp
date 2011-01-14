@@ -41,6 +41,20 @@ class HeaderTest(IMP.test.TestCase):
         self.assertEqual(scene.get_spacing(),self.voxel_size)
         os.unlink(out_filename)
 
+    def test_get_header_memory(self):
+        """Check memory management of DensityHeader"""
+        m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
+        hr = m.get_header()
+        hw = m.get_header_writable()
+        del m
+        # Since DensityHeaders are returned as pointers into the DensityMap
+        # object m accessing hr or hw after the deletion of m will cause
+        # invalid memory access. The Python wrappers should ensure that
+        # hr and hw keep a reference to m to prevent this from occurring.
+        for h in hr, hw:
+            a, b = h.alpha, h.beta
+            h.alpha, h.beta = 45., 90.
+
 
 if __name__ == '__main__':
     IMP.test.main()
