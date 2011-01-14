@@ -22,7 +22,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
                     const algebra::SphericalVector3Ds &vs,
                     int rows, int cols,
                     double resolution, double pixelsize,
-                    const em2d::ImageReaderWriter &srw,
+                    const em2d::ImageReaderWriter *srw,
                     bool project_and_save,
                     Strings names) {
   IMP_LOG(IMP::VERBOSE,
@@ -73,7 +73,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
                     RegistrationResults registration_values,
                     int rows, int cols,
                     double resolution, double pixelsize,
-                    const em2d::ImageReaderWriter &srw,
+                    const em2d::ImageReaderWriter *srw,
                     bool project_and_save,
                     Strings names) {
   IMP_LOG(IMP::VERBOSE,
@@ -99,7 +99,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
 void get_projection(em2d::Image *img,const ParticlesTemp &ps,
             const RegistrationResult &reg,
             double resolution, double pixelsize,
-          const em2d::ImageReaderWriter &srw,bool save_image,
+          const em2d::ImageReaderWriter *srw,bool save_image,
            MasksManagerPtr masks,String name) {
   IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
   if(masks==MasksManagerPtr()) {

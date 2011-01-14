@@ -12,6 +12,10 @@ IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, Fine2DRegistrationRestraint,
                                   Fine2DRegistrationRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, Image, Images);
+IMP_SWIG_OBJECT(IMP::em2d, ImageReaderWriter, ImageReaderWriters);
+IMP_SWIG_OBJECT(IMP::em2d, JPGImageReaderWriter, JPGImageReaderWriters);
+IMP_SWIG_OBJECT(IMP::em2d, TIFFImageReaderWriter, TIFFImageReaderWriters);
+IMP_SWIG_OBJECT(IMP::em2d, SpiderImageReaderWriter, SpiderImageReaderWriters);
 
 // wrapping of a decorator with swigg. Parameters: namespace, name, plural name
 IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
@@ -23,8 +27,8 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/RegistrationResult.h"
 %include "IMP/em2d/scores2D.h"
 %include "IMP/em2d/project.h"
-%include "IMP/em2d/Image.h"
 %include "IMP/em2d/ImageReaderWriter.h"
+%include "IMP/em2d/Image.h"
 %include "IMP/em2d/SpiderImageReaderWriter.h"
 %include "IMP/em2d/JPGImageReaderWriter.h"
 %include "IMP/em2d/TIFFImageReaderWriter.h"
@@ -43,22 +47,5 @@ namespace IMP {
   namespace em2d {
     %template(ResultAlign2D)
             ::std::pair< IMP::algebra::Transformation2D,double >;
-
-    %template(_ImageReaderWriter) ::IMP::em2d::ImageReaderWriter<double>;
-
-    %template(_SpiderImageReaderWriter)
-                          ::IMP::em2d::SpiderImageReaderWriter<double>;
-    %template(_JPGImageReaderWriter)
-                          ::IMP::em2d::JPGImageReaderWriter<double>;
-    %template(_TIFFImageReaderWriter)
-                          ::IMP::em2d::TIFFImageReaderWriter<double>;
   }
 }
-
-%pythoncode {
-  ImageReaderWriter = _ImageReaderWriter
-  SpiderImageReaderWriter = _SpiderImageReaderWriter
-  JPGImageReaderWriter = _JPGImageReaderWriter
-  TIFFImageReaderWriter = _TIFFImageReaderWriter
-}
-
