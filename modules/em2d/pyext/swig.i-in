@@ -4,7 +4,13 @@ IMP_SWIG_VALUE(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
-IMP_SWIG_VALUE(IMP::em2d, TransformationsCluster, TransformationsClusters);
+IMP_SWIG_VALUE(IMP::em2d, ClusterSet, ClusterSets);
+IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
+//IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
+//IMP_SWIG_VALUE(IMP::em2d, AverageDistance, AverageDistances);
+//IMP_SWIG_VALUE(IMP::em2d, LessThanByDistance, LessThanByDistances);
+
+
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);
@@ -12,10 +18,6 @@ IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, Fine2DRegistrationRestraint,
                                   Fine2DRegistrationRestraints);
 IMP_SWIG_OBJECT(IMP::em2d, Image, Images);
-IMP_SWIG_OBJECT(IMP::em2d, ImageReaderWriter, ImageReaderWriters);
-IMP_SWIG_OBJECT(IMP::em2d, JPGImageReaderWriter, JPGImageReaderWriters);
-IMP_SWIG_OBJECT(IMP::em2d, TIFFImageReaderWriter, TIFFImageReaderWriters);
-IMP_SWIG_OBJECT(IMP::em2d, SpiderImageReaderWriter, SpiderImageReaderWriters);
 
 // wrapping of a decorator with swigg. Parameters: namespace, name, plural name
 IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
@@ -27,8 +29,8 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/RegistrationResult.h"
 %include "IMP/em2d/scores2D.h"
 %include "IMP/em2d/project.h"
-%include "IMP/em2d/ImageReaderWriter.h"
 %include "IMP/em2d/Image.h"
+%include "IMP/em2d/ImageReaderWriter.h"
 %include "IMP/em2d/SpiderImageReaderWriter.h"
 %include "IMP/em2d/JPGImageReaderWriter.h"
 %include "IMP/em2d/TIFFImageReaderWriter.h"
@@ -38,14 +40,41 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/Em2DRestraint.h"
 %include "IMP/em2d/Pixel.h"
 %include "IMP/em2d/image_processing.h"
-%include "IMP/em2d/TransformationsCluster.h"
-%include "IMP/em2d/cluster_of_models.h"
 %include "IMP/em2d/model_interaction.h"
+%include "IMP/em2d/hierarchical_clustering.h"
 
 
 namespace IMP {
   namespace em2d {
     %template(ResultAlign2D)
             ::std::pair< IMP::algebra::Transformation2D,double >;
+
+
+    %template(_ImageReaderWriter) ::IMP::em2d::ImageReaderWriter<double>;
+
+    %template(_SpiderImageReaderWriter)
+                          ::IMP::em2d::SpiderImageReaderWriter<double>;
+    %template(_JPGImageReaderWriter)
+                          ::IMP::em2d::JPGImageReaderWriter<double>;
+    %template(_TIFFImageReaderWriter)
+                          ::IMP::em2d::TIFFImageReaderWriter<double>;
+
+   %template(VectorFloats) ::std::vector < IMP::Floats >;
+   %template(_SingleLinkageHierarchicalClustering)
+          ::IMP::em2d::hierarchical_agglomerative_clustering<SingleLinkage>;
+//   %template(_CompleteLinkageHierarchicalClustering)
+//           ::IMP::em2d::hierarchical_agglomerative_clustering<CompleteLinkage>;
+//   %template(_AverageDistanceHierarchicalClustering)
+//           ::IMP::em2d::hierarchical_agglomerative_clustering<AverageDistance>;
   }
+}
+
+%pythoncode {
+  ImageReaderWriter = _ImageReaderWriter
+  SpiderImageReaderWriter = _SpiderImageReaderWriter
+  JPGImageReaderWriter = _JPGImageReaderWriter
+  TIFFImageReaderWriter = _TIFFImageReaderWriter
+  SingleLinkageHierarchicalClustering = _SingleLinkageHierarchicalClustering
+//  CompleteLinkageHierarchicalClustering = _CompleteLinkageHierarchicalClustering
+//  AverageDistanceHierarchicalClustering = _AverageDistanceHierarchicalClustering
 }
