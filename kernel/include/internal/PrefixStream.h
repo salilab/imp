@@ -50,8 +50,8 @@ class PrefixStream:
       return n;
     }
   };
-  friend class LogSink;
-  friend class IndentFilter;
+  friend struct LogSink;
+  friend struct IndentFilter;
  public:
   PrefixStream(std::ostream *out): out_(out) {
     P::push(IndentFilter(this));

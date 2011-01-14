@@ -23,7 +23,7 @@ namespace IMP {
   class Object;
   namespace internal {
     template <class R, class E>
-    class RefStuff;
+    struct RefStuff;
   }
 }
 //IMP_END_INTERNAL_NAMESPACE
@@ -77,7 +77,7 @@ class IMPEXPORT RefCounted
 
 #ifndef _MSC_VER
   template <class R, class E>
-    friend class internal::RefStuff;
+    friend struct internal::RefStuff;
 #else
  public:
 #endif // _MSC_VER

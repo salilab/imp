@@ -26,6 +26,11 @@ namespace {
                           ::value_type(ks[i]));
     }
   }
+  template <class T>
+  bool contains(const T &t, int i) {
+    return t.fits(i) && T::Traits::get_is_valid(t.get(i));
+    //!= T::Traits::get_invalid();
+  }
   template <class T, class It>
   void synchronize(const T &t, It b, It e, Particle *p) {
     typedef typename std::iterator_traits<It>::value_type Key;
@@ -47,11 +52,6 @@ namespace {
         }
       }
     }
-  }
-  template <class T>
-  bool contains(const T &t, int i) {
-    return t.fits(i) && T::Traits::get_is_valid(t.get(i));
-    //!= T::Traits::get_invalid();
   }
   template <class Key, class T>
   void restore(const T &t, Particle *p) {
