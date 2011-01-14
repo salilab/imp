@@ -36,10 +36,11 @@
 #endif
 
 IMP_BEGIN_NAMESPACE
-typedef boost::graph_traits<DependencyGraph> DGTraits;
-typedef internal::Map<Object*, DGTraits::vertex_descriptor> DGIndex;
+typedef ::boost::graph_traits<DependencyGraph> MDGTraits;
+typedef MDGTraits::vertex_descriptor VD;
+typedef internal::Map<Object*, VD> DGIndex;
 typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
-DGConstVertexMap;
+MDGConstVertexMap;
 
 
 
@@ -54,10 +55,10 @@ namespace {
   }
 
   bool get_has_edge(const DependencyGraph &graph,
-                    DGTraits::vertex_descriptor va,
-                    DGTraits::vertex_descriptor vb) {
-    std::pair<DGTraits::out_edge_iterator,
-      DGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
+                    MDGTraits::vertex_descriptor va,
+                    MDGTraits::vertex_descriptor vb) {
+    std::pair<MDGTraits::out_edge_iterator,
+      MDGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
     for (; edges.first != edges.second;++edges.first) {
       if (boost::target(*edges.first, graph) == vb) return true;
     }
@@ -65,8 +66,8 @@ namespace {
   }
 
   void add_edge(DependencyGraph &graph,
-                DGTraits::vertex_descriptor va,
-                DGTraits::vertex_descriptor vb) {
+                MDGTraits::vertex_descriptor va,
+                MDGTraits::vertex_descriptor vb) {
     if (get_has_edge(graph, va, vb)) return;
     IMP_INTERNAL_CHECK(va != vb, "Can't dependend on itself " << va);
     IMP_INTERNAL_CHECK(!get_has_edge(graph, va, vb),
@@ -77,14 +78,14 @@ namespace {
 
   }
 
-  DGTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
+  MDGTraits::vertex_descriptor get_vertex(DependencyGraph &dg,
                                          DGIndex &dgi,
                                          Object *o) {
     DGIndex::const_iterator it=dgi.find(o);
     if (it==dgi.end()) {
       boost::property_map<DependencyGraph, boost::vertex_name_t>::type vm
         = boost::get(boost::vertex_name, dg);
-      DGTraits::vertex_descriptor v= boost::add_vertex(dg);
+      MDGTraits::vertex_descriptor v= boost::add_vertex(dg);
       vm[v]=o;
       dgi[o]=v;
       return v;
@@ -98,7 +99,7 @@ namespace {
                           DependencyGraph &dg,
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
-      DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
+      MDGTraits::vertex_descriptor rv= dgi.find(*c)->second;
       /*IMP_LOG(VERBOSE, "Processing inputs for \""
         << (*c)->get_name() << "\" ");*/
       {
@@ -108,7 +109,7 @@ namespace {
                   << Containers(ct));
                   }*/
         for (unsigned int j=0; j < ct.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
+          MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           if (!get_has_edge(dg, rv, cv)) {
             add_edge(dg, cv, rv);
           }
@@ -120,7 +121,7 @@ namespace {
           IMP_LOG(VERBOSE, ", particles are " << Particles(pt));
           }*/
         for (unsigned int j=0; j < pt.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
+          MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
           if (!get_has_edge(dg, rv, cv)) {
             add_edge(dg, cv, rv);
           }
@@ -135,7 +136,7 @@ namespace {
                            DependencyGraph &dg,
                            DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
-      DGTraits::vertex_descriptor rv= dgi.find(*c)->second;
+      MDGTraits::vertex_descriptor rv= dgi.find(*c)->second;
       /*IMP_LOG(VERBOSE, "Processing outputs for \""
         << (*c)->get_name()  << "\"");*/
       {
@@ -145,7 +146,7 @@ namespace {
                   << Containers(ct));
                   }*/
         for (unsigned int j=0; j < ct.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
+          MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           add_edge(dg, rv, cv);
         }
       }
@@ -156,7 +157,7 @@ namespace {
                   << Particles(pt));
                   }*/
         for (unsigned int j=0; j < pt.size(); ++j) {
-          DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
+          MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
            add_edge(dg, rv, cv);
         }
       }
@@ -278,14 +279,14 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
 class ScoreDependencies: public boost::default_dfs_visitor {
   boost::dynamic_bitset<> &bs_;
   const internal::Map<Object*, int> &ssindex_;
-  DGConstVertexMap vm_;
+  MDGConstVertexMap vm_;
 public:
   ScoreDependencies(boost::dynamic_bitset<> &bs,
                     const internal::Map<Object*, int> &ssindex,
-                    DGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
+                    MDGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
                                           vm_(vm) {}
   template <class G>
-  void discover_vertex(DGTraits::vertex_descriptor u,
+  void discover_vertex(MDGTraits::vertex_descriptor u,
                        const G& g) {
     Object *o= vm_[u];
     internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
@@ -298,8 +299,8 @@ public:
 namespace {
   void order_score_states(const DependencyGraph &dg,
                           ScoreStatesTemp &out) {
-    std::vector<DGTraits::vertex_descriptor> sorted;
-    DGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    std::vector<MDGTraits::vertex_descriptor> sorted;
+    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
       boost::topological_sort(dg, std::back_inserter(sorted));
@@ -331,10 +332,10 @@ namespace {
     }
     bs.resize(ordered_restraints.size(),
               boost::dynamic_bitset<>(ordered_score_states.size(), false));
-    DGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     boost::vector_property_map<int> color(boost::num_vertices(dg));
-    for (std::pair<DGTraits::vertex_iterator,
-           DGTraits::vertex_iterator> be= boost::vertices(dg);
+    for (std::pair<MDGTraits::vertex_iterator,
+           MDGTraits::vertex_iterator> be= boost::vertices(dg);
          be.first != be.second; ++be.first) {
       Object *o= om[*be.first];
       for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
