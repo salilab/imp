@@ -20,6 +20,7 @@
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>
+#include <IMP/algebra/Grid3D.h>
 //#include <IMP/statistics/Histogram.h>
 
 IMPEM_BEGIN_NAMESPACE
@@ -71,6 +72,7 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
  */
 class IMPEMEXPORT DensityMap: public Object
 {
+  typedef IMP::algebra::DenseGrid3D<double> DGrid;
   IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(const char *filename,
                                           MapReaderWriter *reader));
   IMP_NO_SWIG(friend IMPEMEXPORT void write_map(DensityMap* m,
@@ -82,7 +84,15 @@ public:
   //DensityMap(const DensityMap &other);
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header);
-  //DensityMap&  operator=(const DensityMap &other );
+  void release(){
+    /*    if (data_ != NULL) {
+          data_.reset(NULL);}
+    x_loc_.reset();
+    if (y_loc_ != NULL){
+      y_loc_.reset(NULL);}
+    if (z_loc_ != NULL){
+    z_loc_.reset(NULL);}*/
+  }
 
 #ifndef IMP_DOXYGEN
 #ifndef IMP_DEPRECATED
@@ -396,8 +406,7 @@ public:
   Float get_spacing() const {return header_.get_spacing();}
   //! Calculates the coordinates that correspond to all voxels.
   void calc_all_voxel2loc();
-
-  IMP_OBJECT_INLINE(DensityMap, header_.show(out),{});
+  IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
   //! copy map into this map
   void copy_map(const DensityMap *other);
   //! Convolution a kernel with the map

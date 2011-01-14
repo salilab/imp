@@ -83,52 +83,6 @@ DensityMap::DensityMap(const DensityHeader &header){
   calc_all_voxel2loc();
 }
 
-
-//TODO - update the copy cons
-/*
-
-DensityMap* DensityMap::create_clone() const {
-  Pointer<DensityMap> ret= new DensityMap();
-  ret->set_name(get_name()+" clone");
-  ret->copy_map(this);
-  return ret.release();
-}
-*/
-/*DensityMap::DensityMap(const DensityMap &other): Object(other.get_name())
-{
-  header_ = other.header_;
-  long size = get_number_of_voxels();
-  data_.reset(new emreal[size]);
-  std::copy(other.data_.get(), other.data_.get()+size, data_.get());
-  loc_calculated_ = other.loc_calculated_;
-  if (loc_calculated_) {
-    x_loc_.reset(new float[size]);
-    y_loc_.reset(new float[size]);
-    z_loc_.reset(new float[size]);
-    std::copy(other.x_loc_.get(), other.x_loc_.get()+size, x_loc_.get());
-    std::copy(other.y_loc_.get(), other.y_loc_.get()+size, y_loc_.get());
-    std::copy(other.z_loc_.get(), other.z_loc_.get()+size, z_loc_.get());
-  } else {
-    x_loc_.reset();
-    y_loc_.reset();
-    z_loc_.reset();
-  }
-
-  data_allocated_ = other.data_allocated_;
-  normalized_ = other.normalized_;
-  rms_calculated_ = other.rms_calculated_;
-}
-
-DensityMap& DensityMap::operator=(const DensityMap& other)
-{
-  if (this == &other) { // protect against invalid self-assignment
-    return *this;
-  }
-
-  DensityMap *a = new DensityMap(other);
-  return *a;
-  }*/
-
 void DensityMap::set_void_map(int nx,int ny,int nz) {
   long nvox = nx*ny*nz;
   data_.reset(new emreal[nvox]);
