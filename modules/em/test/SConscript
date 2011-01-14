@@ -6,4 +6,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                        'rnormfac', 'rsigsq', 'kdist', 'vsigsq', 'normfac',
                        'nx', 'rsig', 'nz', 'xy', 'params', 'sigsq', 'xorigin',
                        'rkdist', 'vsig', 'xz', 'zorigin'],
-                  value_object_exceptions=['DensityHeader'])
+                  # CoarseCC and CoarseConvolution contain only static methods
+                  value_object_exceptions=['DensityHeader', 'CoarseCC',
+                                           'CoarseConvolution', 'floats'],
+                  show_exceptions=['CoarseCC', 'CoarseConvolution', 'floats'])
