@@ -98,15 +98,39 @@ def create_restraints(m, chain, tmb, tme):
         dd_b=[]
         dd_e=[]
         for i in range(ncl):
-            om_b.append((om0[i]-nsig*sig_om0[i])/180.*math.pi)
-            om_e.append((om0[i]+nsig*sig_om0[i])/180.*math.pi)
-            dd_b.append(dd0[i]-nsig*sig_dd0[i])
-            dd_e.append(dd0[i]+nsig*sig_dd0[i])
+            omb=(om0[i]-nsig*sig_om0[i])/180.*math.pi
+            ome=(om0[i]+nsig*sig_om0[i])/180.*math.pi
+            ddb=dd0[i]-nsig*sig_dd0[i]
+            dde=dd0[i]+nsig*sig_dd0[i]
+            if ( omb >= -math.pi and ome <= math.pi):
+                om_b.append(omb)
+                om_e.append(ome)
+                dd_b.append(ddb)
+                dd_e.append(dde)
+            if ( omb < -math.pi):
+                om_b.append(-math.pi)
+                om_e.append(ome)
+                dd_b.append(ddb)
+                dd_e.append(dde)
+                om_b.append(2*math.pi+omb)
+                om_e.append(math.pi)
+                dd_b.append(ddb)
+                dd_e.append(dde)
+            if ( ome > math.pi):
+                om_b.append(omb)
+                om_e.append(math.pi)
+                dd_b.append(ddb)
+                dd_e.append(dde)
+                om_b.append(-math.pi)
+                om_e.append(-2*math.pi+ome)
+                dd_b.append(ddb)
+                dd_e.append(dde)
         lrb= IMP.container.ListSingletonContainer(m)
         for i in range(len(tmb)):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
+## i have to build nrb in a smarter way
         nrb= IMP.container.ClosePairContainer(lrb, 12.0)
         ps=  IMP.membrane.RigidBodyPackingScore(om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
