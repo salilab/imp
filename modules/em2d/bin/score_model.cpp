@@ -132,7 +132,7 @@ int main(int argc, char **argv) {
   IMP::set_log_level(IMP::VERBOSE);
 
   po::variables_map vm = get_parameters(argc,argv);
-  em2d::SpiderImageReaderWriter<double> srw;
+  IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
   em2d::Images projections,subjects;
   unsigned long n_projections=0;
   double apix=0.0;
