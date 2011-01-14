@@ -174,7 +174,7 @@ def  create_discrete_states(m,chain,tmb,sign):
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dz in range(0,1):
+                for dz in range(-2,3):
                     for dx in range(-10,30):
                         if ( dx >= 10 ):
                             trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
@@ -269,7 +269,7 @@ for i,v in enumerate(cs):
     score.append(ss)
 #    print "** solution number:",i," is:",ss
 
-topscore = 30
+topscore = 50
 topscore = min(topscore,len(cs))
 print "visualizing the top ",topscore
 for i in range(0,topscore):
