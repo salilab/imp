@@ -233,7 +233,7 @@ DensityMap* read_map(const char *filename, MapReaderWriter *reader)
   Pointer<MapReaderWriter> ptr(reader);
   Pointer<DensityMap> m= new DensityMap();
   float *f_data=NULL;
-  reader->Read(filename, &f_data, m->header_);
+  reader->read(filename, &f_data, m->header_);
   boost::scoped_array<float> f_datap(f_data);
   m->float2real(f_datap.get(), m->data_);
   m->normalized_ = false;
@@ -285,7 +285,7 @@ void write_map(DensityMap *d, const char *filename, MapReaderWriter *writer)
   IMP::Pointer<MapReaderWriter> pt(writer);
   boost::scoped_array<float> f_data;
   d->real2float(d->data_.get(), f_data);
-  writer->Write(filename, f_data.get(), d->header_);
+  writer->write(filename, f_data.get(), d->header_);
 }
 
 long DensityMap::get_number_of_voxels() const {

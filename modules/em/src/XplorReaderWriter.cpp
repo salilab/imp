@@ -11,28 +11,28 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-void XplorReaderWriter::Read(const char *filename, float **data,
+void XplorReaderWriter::read(const char *filename, float **data,
                             DensityHeader &header)
 {
   std::ifstream XPLORstream(filename);
   //header
   internal::XplorHeader xheader;
-  ReadHeader(XPLORstream,xheader);
+  read_header(XPLORstream,xheader);
   xheader.GenerateCommonHeader(header);
 
   //data
   int size = xheader.extent[0]*xheader.extent[1]*xheader.extent[2];
   *data =  new float[size];
   IMP_USAGE_CHECK(*data,
-            "XplorReader::Read can not allocated space for data - the "
+            "XplorReader::read can not allocated space for data - the "
                   << "requested size: " << size * sizeof(float));
-  ReadMap(XPLORstream, *data, xheader);
+  read_map(XPLORstream, *data, xheader);
   XPLORstream.close();
 }
 
 
-int XplorReaderWriter::ReadHeader(std::ifstream & XPLORstream,
-                                  internal::XplorHeader &header)
+int XplorReaderWriter::read_header(std::ifstream & XPLORstream,
+                                   internal::XplorHeader &header)
 {
 
   char line[300];
@@ -103,8 +103,8 @@ int XplorReaderWriter::ReadHeader(std::ifstream & XPLORstream,
 }
 
 
-int XplorReaderWriter::ReadMap(std::ifstream &XPLORstream, float *data,
-                               internal::XplorHeader &header)
+int XplorReaderWriter::read_map(std::ifstream &XPLORstream, float *data,
+                                internal::XplorHeader &header)
 {
 
   //reading the map according to the grid order.
@@ -180,7 +180,7 @@ int XplorReaderWriter::ReadMap(std::ifstream &XPLORstream, float *data,
 }
 
 
-void XplorReaderWriter::Write(const char *filename,const float *data,
+void XplorReaderWriter::write(const char *filename,const float *data,
                               const DensityHeader &header_ )
 {
   internal::XplorHeader header(header_);

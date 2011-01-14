@@ -22,13 +22,13 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter
 {
 public:
-  void Read(const char *filename, float **data, DensityHeader &header);
-  void Write(const char *filename, const float *data,
+  void read(const char *filename, float **data, DensityHeader &header);
+  void write(const char *filename, const float *data,
              const DensityHeader &header );
 protected:
-  int ReadHeader(std::ifstream & XPLORstream, internal::XplorHeader &header);
-  int ReadMap(std::ifstream &XPLORstream, float *data,
-              internal::XplorHeader &header);
+  int read_header(std::ifstream & XPLORstream, internal::XplorHeader &header);
+  int read_map(std::ifstream &XPLORstream, float *data,
+               internal::XplorHeader &header);
 
   IMP_OBJECT_INLINE(XplorReaderWriter, {out << "XplorReaderWriter";}, {});
 };

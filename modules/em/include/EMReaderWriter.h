@@ -27,14 +27,14 @@ public:
   \param[in] header DensityHeader() to store the header information
   \exception IOException in case that the filename was not found
   */
-  void Read(const char *filename, float **data, DensityHeader &header);
+  void read(const char *filename, float **data, DensityHeader &header);
   //! Writes a density file in EM format with the header information
   /**
      \param[in] filename name of the file to read
      \param[in] data pointer to the data
      \param[in] header DensityHeader() with the header information
   */
-  void Write(const char* filename, const float *data,
+  void write(const char* filename, const float *data,
              const DensityHeader &header);
 protected:
   //! Reads the header
@@ -43,7 +43,7 @@ protected:
   \param file ifstream of the file to read
   \param header internal::EMHeader to store the header information
   */
-  void ReadHeader(std::ifstream &file, internal::EMHeader &header);
+  void read_header(std::ifstream &file, internal::EMHeader &header);
   //! Reads the data
   /**
   \param file ifstream of the file to read
@@ -52,7 +52,7 @@ protected:
   \exception IOException if the data allocation had failed
   \exception  IOException is the requested data type is not implemented
   */
-  void ReadData(std::ifstream &file, float **data,
+  void read_data(std::ifstream &file, float **data,
                 const internal::EMHeader &header);
   //! Writes the header
   /**
@@ -60,7 +60,7 @@ protected:
   \param[in] header internal::EMHeader with the header information
   \exception IOException if the writing operation had failed.
   */
-  void WriteHeader(std::ostream& s, const internal::EMHeader &header);
+  void write_header(std::ostream& s, const internal::EMHeader &header);
 
   IMP_OBJECT_INLINE(EMReaderWriter, {out << "EMReaderWriter";}, {});
 };

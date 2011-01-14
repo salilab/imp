@@ -26,9 +26,9 @@ class IMPEMEXPORT MapReaderWriter : public Object
 {
 public:
 #ifndef DOXYGEN
-  virtual void Read(const char *filename, float **data, DensityHeader &header)
+  virtual void read(const char *filename, float **data, DensityHeader &header)
     =0;
-  virtual void Write(const char *filename, const float *data,
+  virtual void write(const char *filename, const float *data,
                      const DensityHeader &header) =0;
 #endif
 
