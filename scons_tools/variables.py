@@ -18,6 +18,8 @@ def _check_no_relative_path(env, name, pathlist):
     for p in pl:
         if p.startswith(bad):
             utility.report_error(env, "Path lists such as "+name+" should not contain relative paths, bad things will happen.")
+        if not os.path.isdir(Dir(p).abspath):
+            utility.report_error(env, "The path "+p+" in "+name+" does not exist.")
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
