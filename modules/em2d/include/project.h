@@ -37,14 +37,14 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] resolution resolution used to generate the projections
   \param[in] pixelsize in A/pixel
   \param[in] srw Reader writer for the images. Currently uses Spider format
-  \param[in] project_and_save if true, save the images
+  \param[in] project_and_save If true, save the images
   \param[in] names names of the images
 */
 IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
         int rows, int cols,
         double resolution, double pixelsize,
-        const em2d::ImageReaderWriter *srw,
+        const em2d::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
@@ -59,7 +59,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         RegistrationResults registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
-        const em2d::ImageReaderWriter *srw,
+        const em2d::ImageReaderWriter<double> &srw,
         bool project_and_save=false,
         Strings names=Strings());
 
@@ -76,7 +76,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
 */
 IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
         const RegistrationResult &reg,double resolution,double pixelsize,
-        const em2d::ImageReaderWriter *srw,bool save_image=false,
+        const em2d::ImageReaderWriter<double> &srw,bool save_image=false,
         MasksManagerPtr masks=MasksManagerPtr(),String name="");
 
 //! Projects a set of particles. This is the core function that others call
@@ -140,7 +140,7 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
 // IMPEM2DEXPORT em::Images get_projections(em::DensityMap *map,
 //        const algebra::SphericalVector3Ds &vs,
 //        int rows, int cols,
-//        const em::ImageReaderWriter &srw,
+//        const em::ImageReaderWriter<double> &srw,
 //        bool project_and_save=false,
 //        Strings names=Strings());
 
