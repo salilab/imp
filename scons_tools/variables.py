@@ -8,8 +8,14 @@ import dependency.compilation
 import module
 import dependency
 import platform
+import utility
 
 import SCons
+
+def _check_no_relative_path(env, pathlist):
+    bad=".."+os.path.sep
+    if pathlist.find(bad):
+        utility.report_error(env, "Path lists should not contain relative paths, bad things will happen")
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
@@ -52,6 +58,11 @@ def _propagate_variables(env):
         env.Append(CXXFLAGS = env['cxxflags'].split())
     else:
         env.Append(CXXFLAGS=[])
+
+    _check_no_relative_path(env, env.get("includepath", ""))
+    _check_no_relative_path(env, env.get("libpath", ""))
+    _check_no_relative_path(env, env.get("datapath", ""))
+    _check_no_relative_path(env, env.get("pythonpath", ""))
 
     if env.get('pythoncxxflags', None):
         env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
@@ -217,9 +228,9 @@ def add_common_variables(vars, package):
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', False))
     vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
-    vars.Add(BoolVariable('dot',
-                          'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
-                          True))
+    vars.Add('dot',
+             'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
+                          "auto")
     vars.Add(BoolVariable('svn',
                           'True if this build is from an svn version of IMP. If so, SVN version info is added to the provided version number.',
                           True))
