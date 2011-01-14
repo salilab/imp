@@ -10,7 +10,6 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
-#include "IMP/algebra/Matrix2D.h"
 #include "IMP/constants.h"
 #include "IMP/exception.h"
 #include "IMP/log.h"

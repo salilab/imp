@@ -44,7 +44,7 @@ void get_map_from_model(String fn_model,
 }
 **/
 
-void write_vector3ds_as_pdb(const algebra::Vector3Ds vs,
+void write_vectors_as_pdb(const algebra::Vector3Ds vs,
                             const String filename) {
   std::string chains = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::ofstream out;
@@ -59,7 +59,7 @@ void write_vector3ds_as_pdb(const algebra::Vector3Ds vs,
   out.close();
 }
 
-void write_vector2ds_as_pdb(const algebra::Vector2Ds vs,
+void write_vectors_as_pdb(const algebra::Vector2Ds vs,
                             const  String filename) {
   std::string chains = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   std::ofstream out;

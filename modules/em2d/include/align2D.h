@@ -10,7 +10,6 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/algebra/utility.h"
-#include "IMP/algebra/Matrix2D.h"
 #include "IMP/algebra/Transformation2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include <algorithm>
