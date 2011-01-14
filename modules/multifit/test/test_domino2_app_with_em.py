@@ -1,6 +1,5 @@
 import IMP
 import IMP.test
-import IMP.bullet
 import IMP.core
 import IMP.algebra
 import IMP.domino
