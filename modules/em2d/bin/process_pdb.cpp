@@ -171,7 +171,7 @@ int main(int argc, char **argv) {
   IMP::Particles sps = core::get_leaves(smh);
 //  atom::add_radii(smh);
   double resolution = vm["res"].as<double>();
-  em2d::SpiderImageReaderWriter<double> srw;
+  IMP_NEW(em2d::SpiderImageReaderWriter,  srw, ());
   IMP_NEW(em::MRCReaderWriter,  mrw, ());
 
 
