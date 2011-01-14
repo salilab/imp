@@ -12,10 +12,12 @@ import utility
 
 import SCons
 
-def _check_no_relative_path(env, pathlist):
+def _check_no_relative_path(env, name, pathlist):
+    pl=pathlist.split(os.path.pathsep)
     bad=".."+os.path.sep
-    if pathlist.find(bad)!= -1:
-        utility.report_error(env, "Path lists should not contain relative paths, bad things will happen")
+    for p in pl:
+        if p.startswith(bad):
+            utility.report_error(env, "Path lists such as "+name+" should not contain relative paths, bad things will happen.")
 
 def _propagate_variables(env):
     """enforce dependencies between variables"""
@@ -59,10 +61,11 @@ def _propagate_variables(env):
     else:
         env.Append(CXXFLAGS=[])
 
-    _check_no_relative_path(env, env.get("includepath", ""))
-    _check_no_relative_path(env, env.get("libpath", ""))
-    _check_no_relative_path(env, env.get("datapath", ""))
-    _check_no_relative_path(env, env.get("pythonpath", ""))
+    _check_no_relative_path(env, "includepath", env.get("includepath", ""))
+    _check_no_relative_path(env, "libpath", env.get("libpath", ""))
+    _check_no_relative_path(env, "datapath", env.get("datapath", ""))
+    _check_no_relative_path(env, "pythonpath", env.get("pythonpath", ""))
+    _check_no_relative_path(env, "swigpath", env.get("swigpath", ""))
 
     if env.get('pythoncxxflags', None):
         env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
