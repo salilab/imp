@@ -117,7 +117,7 @@ IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #define IMP_REGISTER_WRITER(Name, suffix)                               \
   namespace {                                                           \
-    internal::WriterFactoryRegistrar registrar(suffix,                  \
+    internal::WriterFactoryRegistrar Name##registrar(suffix,            \
                             new internal::WriterFactoryHelper<Name>()); \
   }
 #endif

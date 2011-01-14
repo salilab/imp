@@ -24,12 +24,15 @@ MaximumSingletonScore::MaximumSingletonScore(const SingletonScoresTemp &scores,
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          SingletonScore*, std::greater<double> > MS;
+          SingletonScore*, std::greater<double> >
+  MaximumSingletonScoreMS;
   template <class It>
-  MS find_minimal_set(It b, It e, Particle* v, unsigned int n) {
+  MaximumSingletonScoreMS
+  find_minimal_set_MaximumSingletonScore(It b, It e, Particle* v,
+                                          unsigned int n) {
     IMP_LOG(TERSE, "Finding Maximum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    MaximumSingletonScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= (*it)->evaluate(v, NULL);
 
@@ -43,8 +46,9 @@ namespace {
 
 double MaximumSingletonScore::evaluate(Particle* v,
                                       DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(scores_.begin(),
-                             scores_.end(), v, n_);
+  MaximumSingletonScoreMS bestn
+    = find_minimal_set_MaximumSingletonScore(scores_.begin(),
+                                              scores_.end(), v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

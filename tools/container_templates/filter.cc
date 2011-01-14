@@ -18,9 +18,9 @@ IMP_BEGIN_NAMESPACE
 CLASSNAMEFilter::CLASSNAMEFilter(std::string name): Object(name) {
 }
 namespace {
-struct GCP {
+struct CLASSNAMEGCP {
   const CLASSNAMEFilter *back_;
-  GCP(const CLASSNAMEFilter *n): back_(n){}
+  CLASSNAMEGCP(const CLASSNAMEFilter *n): back_(n){}
   template <class T>
   bool operator()(const T &p) const {
     return back_->get_contains_FUNCTIONNAME(p);
@@ -30,7 +30,7 @@ struct GCP {
 void CLASSNAMEFilter
 ::filter_in_place(PLURALVARIABLETYPE &ps) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          GCP(this)),
+                          CLASSNAMEGCP(this)),
            ps.end());
 
 }

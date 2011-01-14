@@ -24,12 +24,15 @@ MINORMAXCLASSNAMEScore::MINORMAXCLASSNAMEScore(const CLASSNAMEScoresTemp &scores
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          CLASSNAMEScore*, std::COMPARATOR<double> > MS;
+          CLASSNAMEScore*, std::COMPARATOR<double> >
+  MINORMAXCLASSNAMEScoreMS;
   template <class It>
-  MS find_minimal_set(It b, It e, ARGUMENTTYPE v, unsigned int n) {
+  MINORMAXCLASSNAMEScoreMS
+  find_minimal_set_MINORMAXCLASSNAMEScore(It b, It e, ARGUMENTTYPE v,
+                                          unsigned int n) {
     IMP_LOG(TERSE, "Finding MINORMAX " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    MINORMAXCLASSNAMEScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= (*it)->evaluate(v, NULL);
 
@@ -43,8 +46,9 @@ namespace {
 
 double MINORMAXCLASSNAMEScore::evaluate(ARGUMENTTYPE v,
                                       DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(scores_.begin(),
-                             scores_.end(), v, n_);
+  MINORMAXCLASSNAMEScoreMS bestn
+    = find_minimal_set_MINORMAXCLASSNAMEScore(scores_.begin(),
+                                              scores_.end(), v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

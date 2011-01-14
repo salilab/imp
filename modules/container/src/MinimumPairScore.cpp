@@ -24,12 +24,15 @@ MinimumPairScore::MinimumPairScore(const PairScoresTemp &scores,
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          PairScore*, std::less<double> > MS;
+          PairScore*, std::less<double> >
+  MinimumPairScoreMS;
   template <class It>
-  MS find_minimal_set(It b, It e, const ParticlePair& v, unsigned int n) {
+  MinimumPairScoreMS
+  find_minimal_set_MinimumPairScore(It b, It e, const ParticlePair& v,
+                                          unsigned int n) {
     IMP_LOG(TERSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    MinimumPairScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= (*it)->evaluate(v, NULL);
 
@@ -43,8 +46,9 @@ namespace {
 
 double MinimumPairScore::evaluate(const ParticlePair& v,
                                       DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(scores_.begin(),
-                             scores_.end(), v, n_);
+  MinimumPairScoreMS bestn
+    = find_minimal_set_MinimumPairScore(scores_.begin(),
+                                              scores_.end(), v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

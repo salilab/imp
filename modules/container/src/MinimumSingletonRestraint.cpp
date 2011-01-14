@@ -27,12 +27,13 @@ MinimumSingletonRestraint
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          Particle*, std::less<double> > MS;
+          Particle*, std::less<double> > SingletonMinimumMS;
   template <class It, class F>
-  MS find_minimal_set(It b, It e, F *f, unsigned int n) {
+  SingletonMinimumMS find_minimal_set_SingletonMinimum(It b, It e, F *f,
+                                                         unsigned int n) {
     IMP_LOG(TERSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    SingletonMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
 
@@ -46,8 +47,10 @@ namespace {
 
 double MinimumSingletonRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(c_->particles_begin(),
-                             c_->particles_end(), f_.get(), n_);
+  SingletonMinimumMS bestn
+    = find_minimal_set_SingletonMinimum(c_->particles_begin(),
+                                         c_->particles_end(),
+                                         f_.get(), n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

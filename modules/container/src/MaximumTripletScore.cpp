@@ -24,12 +24,15 @@ MaximumTripletScore::MaximumTripletScore(const TripletScoresTemp &scores,
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          TripletScore*, std::greater<double> > MS;
+          TripletScore*, std::greater<double> >
+  MaximumTripletScoreMS;
   template <class It>
-  MS find_minimal_set(It b, It e, const ParticleTriplet& v, unsigned int n) {
+  MaximumTripletScoreMS
+  find_minimal_set_MaximumTripletScore(It b, It e, const ParticleTriplet& v,
+                                          unsigned int n) {
     IMP_LOG(TERSE, "Finding Maximum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    MaximumTripletScoreMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= (*it)->evaluate(v, NULL);
 
@@ -43,8 +46,9 @@ namespace {
 
 double MaximumTripletScore::evaluate(const ParticleTriplet& v,
                                       DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(scores_.begin(),
-                             scores_.end(), v, n_);
+  MaximumTripletScoreMS bestn
+    = find_minimal_set_MaximumTripletScore(scores_.begin(),
+                                              scores_.end(), v, n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

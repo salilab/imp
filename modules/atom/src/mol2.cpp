@@ -124,7 +124,7 @@ namespace {
   }
 
 
-  Particle* atom_particle(Model *m, const std::string& mol2_atomline)
+  Particle* m2_atom_particle(Model *m, const std::string& mol2_atomline)
   {
     Int atom_number, molecule_number;
     std::string atom_name_field, type_field, molecule_name_field;
@@ -297,7 +297,7 @@ namespace {
       }
       else{
         if (mol2sel->get_is_selected(line)){
-          Particle* atom_p = atom_particle(model, line);
+          Particle* atom_p = m2_atom_particle(model, line);
           Hierarchy atom_d = Hierarchy(atom_p);
           molecule_d.add_child(atom_d);
           Atom ad = Atom(atom_p);

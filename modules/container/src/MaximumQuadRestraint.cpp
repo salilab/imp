@@ -27,12 +27,13 @@ MaximumQuadRestraint
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          ParticleQuad, std::greater<double> > MS;
+          ParticleQuad, std::greater<double> > QuadMaximumMS;
   template <class It, class F>
-  MS find_minimal_set(It b, It e, F *f, unsigned int n) {
+  QuadMaximumMS find_minimal_set_QuadMaximum(It b, It e, F *f,
+                                                         unsigned int n) {
     IMP_LOG(TERSE, "Finding Maximum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    QuadMaximumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
 
@@ -46,8 +47,10 @@ namespace {
 
 double MaximumQuadRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(c_->particle_quads_begin(),
-                             c_->particle_quads_end(), f_.get(), n_);
+  QuadMaximumMS bestn
+    = find_minimal_set_QuadMaximum(c_->particle_quads_begin(),
+                                         c_->particle_quads_end(),
+                                         f_.get(), n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

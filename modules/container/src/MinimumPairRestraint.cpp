@@ -27,12 +27,13 @@ MinimumPairRestraint
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          ParticlePair, std::less<double> > MS;
+          ParticlePair, std::less<double> > PairMinimumMS;
   template <class It, class F>
-  MS find_minimal_set(It b, It e, F *f, unsigned int n) {
+  PairMinimumMS find_minimal_set_PairMinimum(It b, It e, F *f,
+                                                         unsigned int n) {
     IMP_LOG(TERSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    PairMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
 
@@ -46,8 +47,10 @@ namespace {
 
 double MinimumPairRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(c_->particle_pairs_begin(),
-                             c_->particle_pairs_end(), f_.get(), n_);
+  PairMinimumMS bestn
+    = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
+                                         c_->particle_pairs_end(),
+                                         f_.get(), n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {

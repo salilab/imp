@@ -27,12 +27,13 @@ MaximumTripletRestraint
 
 namespace {
   typedef algebra::internal::MinimalSet<double,
-          ParticleTriplet, std::greater<double> > MS;
+          ParticleTriplet, std::greater<double> > TripletMaximumMS;
   template <class It, class F>
-  MS find_minimal_set(It b, It e, F *f, unsigned int n) {
+  TripletMaximumMS find_minimal_set_TripletMaximum(It b, It e, F *f,
+                                                         unsigned int n) {
     IMP_LOG(TERSE, "Finding Maximum " << n << " of "
             << std::distance(b,e) << std::endl);
-    MS bestn(n);
+    TripletMaximumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
 
@@ -46,8 +47,10 @@ namespace {
 
 double MaximumTripletRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
-  MS bestn= find_minimal_set(c_->particle_triplets_begin(),
-                             c_->particle_triplets_end(), f_.get(), n_);
+  TripletMaximumMS bestn
+    = find_minimal_set_TripletMaximum(c_->particle_triplets_begin(),
+                                         c_->particle_triplets_end(),
+                                         f_.get(), n_);
 
   double score=0;
   for (unsigned int i=0; i< bestn.size(); ++i) {
