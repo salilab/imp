@@ -56,15 +56,9 @@ namespace IMP {
    %template(VectorFloats) ::std::vector < IMP::Floats >;
    %template(_SingleLinkageHierarchicalClustering)
           ::IMP::em2d::hierarchical_agglomerative_clustering<SingleLinkage>;
-//   %template(_CompleteLinkageHierarchicalClustering)
-//           ::IMP::em2d::hierarchical_agglomerative_clustering<CompleteLinkage>;
-//   %template(_AverageDistanceHierarchicalClustering)
-//           ::IMP::em2d::hierarchical_agglomerative_clustering<AverageDistance>;
   }
 }
 
 %pythoncode {
   SingleLinkageHierarchicalClustering = _SingleLinkageHierarchicalClustering
-//  CompleteLinkageHierarchicalClustering = _CompleteLinkageHierarchicalClustering
-//  AverageDistanceHierarchicalClustering = _AverageDistanceHierarchicalClustering
 }
