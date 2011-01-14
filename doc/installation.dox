@@ -47,13 +47,23 @@ If there are build errors
 .
 If you cannot figure things out, feel free to post on the \impusers list.
 
+\section config_files 2. Config files
+
 If you are likely to be building \imp repeatedly, it can be useful to
 put the arguments to \c scons into a config file. This is a file called \c config.py
 located in the top-level \imp directory (the one containing the \c SConstruct file).
 For %example one of ours looks like
 \include "example_config.py"
 
-\section devbuild 2. Building and installing for developers
+For simple setups (such as a linux build with no dependencies installed in odd places) the following would suffice.
+\include "example_simple_cofig.py"
+When building a module or biological system externally to the main \imp directory (but still using an svn copy of IMP, something like the following will do:
+\include "example_external_config.py"
+
+Finally, when building in a complicated environment, such as with the google native client, a config file might look like
+\include "example_nacl_config.py"
+
+\section devbuild 3. Building and installing for developers
 
 To get the latest development version of \imp, it is necessary to check it out
 from our \impsvn using an \svn client:
@@ -75,22 +85,77 @@ other than the one containing the source files). Doing this allows several diffe
 versions of \imp to be built using the same source files. For example, an optimized
 one (using \c build='fast') and a debug one (\c build='debug').
 
-To set this up (in an empty directory) do
-  -# make a clean checkout of the source code
-    \command{svn co http://svn.salilab.org/imp/trunk src}
-  -# make a directory for your debug build
-    \command{mkdir imp-debug}
-  -# setup the debug directory
-    \command{src/tools/setup-out-of-source imp-debug}
-  -# edit \c imp-debug/config.py as desired
-  -# change into \c imp-debug
-    \command{cd imp-debug}
-  -# build
-    \command{scons -j 2}
-Note that this probably doesn't work on Windows.
-
 You can update your copy of \imp, by typing
 \command{svn update}
+
+We recommend that you use something like the following directory structure when working
+on a module or biological system:
+\dotgraph{\dot
+    digraph example {
+    node [shape=record\, fontname= Helvetica\, fontsize=10]
+      a [label="imp_root"];
+      config [label="shared_config.py"];
+      imp [label="imp"];
+      imp_svn [label="svn"];
+      imp_debug [label="release"];
+      imp_fast [label="fast"];
+      mine [label="my source"];
+      my_svn [label="svn"];
+      my_module [label="my module"];
+      my_app [label="my system"];
+      my_debug [label="debug"];
+      my_fast [label="fast"];
+      a -> imp [arrowhead="open"];
+      a -> mine [arrowhead="open"];
+      a -> config [arrowhead="open"];
+      imp -> imp_svn [arrowhead="open"];
+      imp -> imp_fast [arrowhead="open"];
+      imp -> imp_debug [arrowhead="open"];
+      mine -> my_svn [arrowhead="open"];
+      my_svn -> my_module [arrowhead="open"];
+      my_svn -> my_app [arrowhead="open"];
+      mine -> my_debug [arrowhead="open"];
+      mine -> my_fast [arrowhead="open"];
+    }
+    \enddot
+    }
+While it takes a bit of work to set up, being able to switch back and forth between fast and
+non-fast builds and to build your module without dealing with the \imp setup each time is
+worthwhile. To set this up do
+\verbatim
+mkdir imp
+touch shared_config.py
+cat "execfile('../../shared_config.py')" > /tmp/use_shared
+cd imp
+svn co http://svn.salilab.org/imp/trunk/svn
+mkdir release
+cd release
+cat ../svn/doc/example_simple_config.py /tmp/used_shared > config.py
+ln -s ../svn/SConstruct
+ln -s ../svn/scons_tools
+cd ..
+mkdir fast
+cat ../svn/doc/example_simple_config.py /tmp/used_shared | sed "s#debug#fast#g" > config.py
+ln -s ../svn/SConstruct
+ln -s ../svn/scons_tools
+cd ../..
+mkdir mine
+svn co http://path.to.my/svn
+mkdir debug
+cd debug
+cat ../../imp/svn/doc/example_external_config.py  /tmp/used_shared | sed "s#path_to_imp_build#$CWD../../svn/debug/build#" > config.py
+ln -s ../../imp/svn/SConstruct
+ln -s ../../imp/svn/scons_tools
+cd ..
+mkdir fast
+cd fast
+cat ../../imp/svn/doc/example_external_config.py  /tmp/used_shared | sed "s#path_to_imp_build#$CWD../../svn/debug/build#" "s#debug#fast#"> config.py
+ln -s ../../imp/svn/SConstruct
+ln -s ../../imp/svn/scons_tools
+\endverbatim
+You can can add extra entries to all of the config.pys using the shared_config.py i the root directory.
+If you frequently run \imp in the debugger, you should use \c debug instead of \c release.
+
 
 \note When you upgrade your system (eg get a new version of boost, or install
 a prerequisite), scons may not detect the package automatically. To force it
@@ -100,7 +165,7 @@ to manually clear out the scons state. To do this, in the source directory do
 \command{rm -rf .scon*}
 
 
-\section prereq 3. Prerequisites
+\section prereq 4. Prerequisites
 In order to obtain and compile \imp, you will need:
 
  - scons (0.98 or later)
@@ -216,7 +281,7 @@ with certain other dependencies such as CGAL.
 
 
 
-\section next 4. Where to go next
+\section next 5. Where to go next
 
 You are now ready to use \imp within Python and C++.
 
