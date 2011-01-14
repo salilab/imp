@@ -121,8 +121,8 @@ typedef IMP::Decorators< Hierarchy,
     \dotgraph{\dot
     digraph example {
     node [shape=record\, fontname= Helvetica\, fontsize=10]
-      a [label="Protein A (the root)"\, URL="\ref B"];
-      b [label="Residue 0"];
+      a [label="Protein A (the root)"];
+      b [label="Residue 0"\, URL="Residue"];
       c [label="Residue 1"];
       cp [label="Residue 2"];
       d0 [label="CA"];
