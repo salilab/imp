@@ -58,10 +58,10 @@ IMPEM2DEXPORT void get_map_from_model(String fn_model,
 /*!
   \note This version deals with the problem of having more than 10000 points
 */
-IMPEM2DEXPORT void write_vector2ds_as_pdb(
+IMPEM2DEXPORT void write_vectors_as_pdb(
                   const algebra::Vector2Ds vs, const String filename);
 
-IMPEM2DEXPORT void write_vector3ds_as_pdb(
+IMPEM2DEXPORT void write_vectors_as_pdb(
                   const algebra::Vector3Ds vs, const String filename);
 
 

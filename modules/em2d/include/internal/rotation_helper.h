@@ -10,10 +10,9 @@
 
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/opencv_interface.h"
 #include "IMP/algebra/algebra_config.h"
 #include "IMP/algebra/SphericalVector3D.h"
-#include "IMP/algebra/Matrix2D.h"
-#include "IMP/algebra/Matrix3D.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
 
@@ -66,7 +65,7 @@ int previous(int axis);
 
 //! convert a quaternion to a rotation matrix.
 //! Required by get_euler_angles_from_rotation()
-algebra::Matrix2D_d quaternion_to_matrix(const algebra::VectorD<4> &v);
+cv::Mat quaternion_to_matrix(const algebra::VectorD<4> &v);
 
 IMPEM2D_END_INTERNAL_NAMESPACE
 
