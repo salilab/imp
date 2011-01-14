@@ -1,6 +1,6 @@
 import IMP.atom
 
-# Use the CHARMM all-atom (i.e. including hydrogens) topology
+# Use the CHARMM all-atom (i.e. including hydrogens) topology and parameters
 topology = IMP.atom.CHARMMTopology(IMP.atom.get_all_atom_CHARMM_parameters())
 
 # Create a single chain of amino acids and apply the standard C- and N-
@@ -14,7 +14,12 @@ m = IMP.Model()
 h = topology.create_hierarchy(m)
 
 # Generate coordinates for all atoms in the Hierarchy, using CHARMM internal
-# coordinate information (an extended chain conformation will be produced)
+# coordinate information (an extended chain conformation will be produced).
+# Since in some cases this information can be incomplete, better results will
+# be obtained if the atom types are assigned first and the CHARMM parameters
+# file is loaded, as we do here, so missing information can be filled in.
+# It will still work without that information, but will approximate the
+# coordinates.
 topology.add_atom_types(h)
 topology.add_coordinates(h)
 
