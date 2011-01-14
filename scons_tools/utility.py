@@ -219,10 +219,9 @@ def get_separator(env):
 
 def get_python_result(env, setup, cmd):
     if env.get('pythonpath', None):
-        opp= sys.path
-        sys.path= [env['pythonpath']]+opp
+        setpp="import sys; sys.path.extend("+str(env.get('pythonpath', None).split(os.path.pathsep))+");"
     else:
-        opp=None
+        setpp=""
     varname= get_dylib_name(env)
     ldpath= get_ld_path(env)
     if varname and len(ldpath)>0 and os.environ.has_key(varname):
@@ -231,9 +230,11 @@ def get_python_result(env, setup, cmd):
     else:
         olddylib=None
     #print setup, cmd
-    exec setup+"\n"+"ret="+cmd
-    if opp:
-        sys.path=opp
+    cmd="python -c \""+setpp+setup+";"+"print "+cmd+",\""
+    #print cmd
+    ret=os.popen(cmd).read()
+    #print ret[:-1]
     if olddylib:
         os.environ[varname]=olddylib
-    return ret
+    #print "done"
+    return ret[:-1]

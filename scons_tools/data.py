@@ -235,7 +235,8 @@ class IMPData:
                 print "Checking for version info in "+modname,
                 version= utility.get_python_result(self.env,
                                                    "import "+modname,
-                                                   modname+".get_module_version_info().get_version()")
+                            modname+".get_module_version_info().get_version()")
+                #print "version", version
             except:
                 print "not found"
                 self.add_module(m, ok=False)
