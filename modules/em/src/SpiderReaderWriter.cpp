@@ -12,7 +12,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-void SpiderMapReaderWriter::Read(const char *filename,
+void SpiderMapReaderWriter::read(const char *filename,
                                 float **data, DensityHeader& header) {
   std::ifstream in;
   in.open(filename, std::ios::in | std::ios::binary);
@@ -34,7 +34,7 @@ void SpiderMapReaderWriter::Read(const char *filename,
   in.close();
 }
 
-void SpiderMapReaderWriter::Write(const char *filename,
+void SpiderMapReaderWriter::write(const char *filename,
             const float *data,const DensityHeader &header) {
   std::ofstream out;
   out.open(filename, std::ios::out | std::ios::binary);

@@ -11,7 +11,7 @@
 
 IMPEM_BEGIN_NAMESPACE
 
-void MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
+void MRCReaderWriter::read(const char *fn_in, float **data, DensityHeader &head)
 {
   // Read file
   filename.assign(fn_in);
@@ -21,7 +21,7 @@ void MRCReaderWriter::Read(const char *fn_in, float **data, DensityHeader &head)
   head.Objectpixelsize_ = (float)head.xlen/head.get_nx();
 }
 
-void MRCReaderWriter::Write(const char *fn_out, const float *data,
+void MRCReaderWriter::write(const char *fn_out, const float *data,
                             const DensityHeader &head)
 {
   // Translate DensityHeader to internal::MRCHeader and write

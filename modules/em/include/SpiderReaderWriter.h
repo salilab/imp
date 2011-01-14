@@ -71,7 +71,7 @@ public:
    *  \param[in] header DensityHeader class where to store the info
    *  from the header.
    */
-  void Read(const char *filename, float **data, DensityHeader &header);
+  void read(const char *filename, float **data, DensityHeader &header);
 
   //! Writes a map in Spider format from data and header.
   /**
@@ -80,7 +80,7 @@ public:
    *  \param[in] header DensityHeader class where the header info is stored
    *  data from the header.
    */
-  void Write(const char *filename,
+  void write(const char *filename,
              const float *data,const DensityHeader &header);
 
   IMP_OBJECT_INLINE(SpiderMapReaderWriter,
