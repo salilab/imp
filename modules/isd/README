@@ -1,5 +1,2 @@
-This is a basic module. Put your header files in a subdirectory of "include"
-your shared implementation in a subdirectory of "src" and any python
-implementation files in "pyext/src". Any ".cpp" file in "bin"
-will be built into an executable linked against the library created from
-"src".
+This is the isd module for IMP. Current contributors: Ben, Charles, Daniel, Riccardo,
+Yannick.
