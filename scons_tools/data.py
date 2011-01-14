@@ -43,6 +43,7 @@ class IMPData:
         def __init__(self, name, dependencies=[], unfound_dependencies=[], modules=[],
                      python_modules=[], version="", external=False, ok=True):
             self.build=[]
+            print "module", name, "is", ok
             if ok:
                 self.dependencies=dependencies
                 self.unfound_dependencies=unfound_dependencies
@@ -232,12 +233,15 @@ class IMPData:
         # get version number
         if ret:
             try:
+                print "Checking for version info in "+modname,
                 version= utility.get_python_result(self.env,
                                                    "import "+modname,
                                                    modname+".get_module_version_info().get_version()")
             except:
+                print "not found"
                 self.add_module(m, ok=False)
             else:
+                print version
                 self.add_module(m, ok=True, external=True, version=version)
         else:
             self.add_module(m, ok=False)
