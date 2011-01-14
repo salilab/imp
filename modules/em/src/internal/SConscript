@@ -1,5 +1,6 @@
 files = [
          'EMHeader.cpp',
+         'MRCHeader.cpp',
         ]
 
 files = [File(x) for x in files]

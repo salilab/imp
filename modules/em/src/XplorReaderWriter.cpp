@@ -16,7 +16,7 @@ void XplorReaderWriter::Read(const char *filename, float **data,
 {
   std::ifstream XPLORstream(filename);
   //header
-  XplorHeader xheader;
+  internal::XplorHeader xheader;
   ReadHeader(XPLORstream,xheader);
   xheader.GenerateCommonHeader(header);
 
@@ -32,7 +32,7 @@ void XplorReaderWriter::Read(const char *filename, float **data,
 
 
 int XplorReaderWriter::ReadHeader(std::ifstream & XPLORstream,
-                                  XplorHeader &header)
+                                  internal::XplorHeader &header)
 {
 
   char line[300];
@@ -104,7 +104,7 @@ int XplorReaderWriter::ReadHeader(std::ifstream & XPLORstream,
 
 
 int XplorReaderWriter::ReadMap(std::ifstream &XPLORstream, float *data,
-                               XplorHeader &header)
+                               internal::XplorHeader &header)
 {
 
   //reading the map according to the grid order.
@@ -183,7 +183,7 @@ int XplorReaderWriter::ReadMap(std::ifstream &XPLORstream, float *data,
 void XplorReaderWriter::Write(const char *filename,const float *data,
                               const DensityHeader &header_ )
 {
-  XplorHeader header(header_);
+  internal::XplorHeader header(header_);
 
 
   std::ofstream s(filename);
