@@ -21,11 +21,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  internal::CoreListSingletonContainer* get_list(SingletonContainer *g) {
-    return dynamic_cast<internal::CoreListSingletonContainer*>(g);
-  }
-}
 
 MovedSingletonContainer::MovedSingletonContainer(Model *m,
                                                  SingletonContainer *pc,

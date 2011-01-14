@@ -12,7 +12,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-#define HANDLE(Name) {                                  \
+#define GP_HANDLE(Name) {                               \
     Name *sg= dynamic_cast<Name*>(g);                   \
     if (sg) {                                           \
       if (handle(sg, c, name)) {                        \
@@ -33,16 +33,16 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   if (name.empty()) {
     name= g->get_name();
   }
-  HANDLE(SphereGeometry);
-  HANDLE(CylinderGeometry);
-  HANDLE(EllipsoidGeometry);
-  HANDLE(BoundingBoxGeometry);
-  HANDLE(PointGeometry);
-  HANDLE(SegmentGeometry);
-  HANDLE(PolygonGeometry);
-  HANDLE(TriangleGeometry);
-  HANDLE(LabelGeometry);
-  HANDLE(Geometry);
+  GP_HANDLE(SphereGeometry);
+  GP_HANDLE(CylinderGeometry);
+  GP_HANDLE(EllipsoidGeometry);
+  GP_HANDLE(BoundingBoxGeometry);
+  GP_HANDLE(PointGeometry);
+  GP_HANDLE(SegmentGeometry);
+  GP_HANDLE(PolygonGeometry);
+  GP_HANDLE(TriangleGeometry);
+  GP_HANDLE(LabelGeometry);
+  GP_HANDLE(Geometry);
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {
     IMP_THROW("Couldn't handle " << *g,
