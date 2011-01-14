@@ -225,7 +225,7 @@ def get_python_result(env, setup, cmd):
         opp=None
     varname= get_dylib_name(env)
     ldpath= get_ld_path(env)
-    if varname and len(ldpath)>0:
+    if varname and len(ldpath)>0 and os.environ.has_key(varname):
         olddylib= os.environ[varname]
         os.environ[varname]=ldpath+get_separator(env)+olddylib
     else:
