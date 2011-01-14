@@ -52,7 +52,7 @@ def generate_doxygen(target, source, env):
     inputs=[]
     images=[]
     dots=[]
-    has_dot=str(source[1].get_contents())
+    has_dot=source[1].get_contents()
     for s in source[2:]:
         ss= str(s)
         if ss.endswith(".png"):
@@ -93,15 +93,12 @@ def generate_doxygen(target, source, env):
         elif '@IMP_TARGET_PATH@' in line:
             outfile.write(line.replace('@IMP_TARGET_PATH@', target_path))
         elif '@IMP_ENABLED_SECTIONS@' in line:
-            if has_dot == "True":
+            if has_dot == "YES":
                 outfile.write(line.replace('@IMP_ENABLED_SECTIONS@', "graphs"))
             else:
                 outfile.write("")
         elif '@IMP_HAS_DOT@' in line:
-            if has_dot=="True":
-                outfile.write(line.replace('@IMP_HAS_DOT@', 'YES'))
-            else:
-                outfile.write(line.replace('@IMP_HAS_DOT@', 'NO'))
+            outfile.write(line.replace('@IMP_HAS_DOT@', has_dot))
         elif not line.startswith('#'):
             outfile.write(line)
     infile.close()
@@ -196,9 +193,16 @@ examples.sort()
 doxyheader= env.GenerateDoxygenHeader(target=["#/doc/doxygen/generated/header.txt"],
                                       source=["#/website/header.txt"])
 env.Alias('doxygen-header', doxyheader)
+dot= env.get('DOT', None)
+#print "dot is", dot
+if dot:
+    dotstring="YES"
+else:
+    dotstring="NO"
+#print "dotstring is", dotstring
 doxconf=env.GenerateDoxygen(target="doxygen.conf",
                             source=["doxygen.conf-in",
-                                    env.Value(env['dot'] and env.get('DOT', None))] +sources+examples)
+                                    env.Value(dotstring)] +sources+examples)
 env.Depends(doxconf, ['#/build/include'])
 
 dox = env.RunDoxygen(target="#/build/doc/html/index.html",
