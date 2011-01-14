@@ -269,6 +269,8 @@ def get_base_environment(variables=None, *args, **kw):
                            'IMPModuleConfigH': module._config_h.ConfigH,
                            'IMPModuleConfigCPP': module._config_h.ConfigCPP,
                            'IMPModuleLinkTest': module._link_test.LinkTest})
+    if env.get('linkflags', None):
+        env.Append(LINKFLAGS=env['linkflags'])
     return env
 
 def _fix_aix_cpp_link(env, cplusplus, linkflags):
