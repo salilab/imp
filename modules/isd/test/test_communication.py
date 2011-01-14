@@ -14,9 +14,9 @@ import IMP
 import IMP.test
 
 #our project
-from FileBasedGrid import FileBasedGrid
-from hosts import create_host_list
-import shared_functions as sf
+from IMP.isd.FileBasedGrid import FileBasedGrid
+from IMP.isd.hosts import create_host_list
+import IMP.isd.shared_functions as sf
 
 class TestCommunication(IMP.test.TestCase):
 
