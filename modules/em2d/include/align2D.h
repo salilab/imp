@@ -29,7 +29,7 @@ typedef std::pair<algebra::Transformation2D,double> ResultAlign2D;
   \param[in] m_to_align Matrix to align to the reference
   \param[in] apply if true, apply the transformation
              to m_to_align after alignment
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D get_complete_alignment(const cv::Mat &input,
           cv::Mat &m_to_align,bool apply=false);
@@ -41,7 +41,7 @@ IMPEM2DEXPORT ResultAlign2D get_complete_alignment(const cv::Mat &input,
   \param[in] m_to_align Matrix to align to the reference
   \param[in] apply if true, apply the transformation
              to m_to_align after alignment
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT em2d::ResultAlign2D get_rotational_alignment(const cv::Mat &input,
                           cv::Mat &m_to_align,bool apply=false);
@@ -53,7 +53,7 @@ IMPEM2DEXPORT em2d::ResultAlign2D get_rotational_alignment(const cv::Mat &input,
   \param[in] m_to_align Matrix to align to the reference
   \param[in] apply if true, apply the transformation
              to m_to_align after alignment
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D get_translational_alignment(const cv::Mat &input,
                            cv::Mat &m_to_align,bool apply=false);
@@ -68,7 +68,7 @@ IMPEM2DEXPORT ResultAlign2D get_translational_alignment(const cv::Mat &input,
   \param[in] m_to_align the matrix to align with the input
   \param[in] POLAR2 fft of the autocorrelation (in polars) of m_to_align
   \param[in] apply true if m_to_align is transformed at the end
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT em2d::ResultAlign2D get_complete_alignment_no_preprocessing(
                 const cv::Mat &input,
@@ -80,7 +80,7 @@ IMPEM2DEXPORT em2d::ResultAlign2D get_complete_alignment_no_preprocessing(
 /*!
   \param[in]  M1 fft of the first autocorrelation (in polars)
   \param[in] M2 fft of the second autocorrelation (in polars)
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D get_rotational_alignment_no_preprocessing(
                                                   const cv::Mat &POLAR1,
@@ -91,7 +91,7 @@ IMPEM2DEXPORT ResultAlign2D get_rotational_alignment_no_preprocessing(
 /*!
   \param[in]  M1 the dft the first matrix (input)
   \param[in]  M2 the dft of the matrix to align with the input
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D get_translational_alignment_no_preprocessing(
                                                      const cv::Mat &M1,
@@ -102,7 +102,7 @@ IMPEM2DEXPORT ResultAlign2D get_translational_alignment_no_preprocessing(
 /*!
   \param[in] m matrix
   \param[out] value the value at the peak
-  \param[out] the position of the peak. Subpixel precision, using interpolation
+  \return the position of the peak. Subpixel precision, using interpolation
 */
 IMPEM2DEXPORT algebra::Vector2D get_peak(cv::Mat &m,double *value);
 
@@ -118,7 +118,7 @@ IMPEM2DEXPORT algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
   \param[in] center2  weighted centroid of the matrix to align
   \param[in] AUTOC_POLAR1 fft of the autocorrelation (in polars) of the input.
   \param[in] AUTOC_POLAR2 fft of the autocorrelation (in polars) of m_to_align
-  \param[out] The result. Check the definition of  ResultAlign2D
+  \return The result. Check the definition of  ResultAlign2D
 */
 IMPEM2DEXPORT ResultAlign2D
                       get_complete_alignment_with_centers_no_preprocessing(
