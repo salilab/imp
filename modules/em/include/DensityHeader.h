@@ -20,8 +20,6 @@
 #include <IMP/VectorOfRefCounted.h>
 IMPEM_BEGIN_NAMESPACE
 
-class DensityHeader;
-
 /** \todo change so that the att will not be encoded but loaded from
     a conf file (Keren) */
 class IMPEMEXPORT DensityHeader
