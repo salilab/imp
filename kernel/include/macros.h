@@ -369,14 +369,14 @@
 #else
 #define IMP_REF_COUNTED_DESTRUCTOR(Name)                                \
   protected:                                                            \
-  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  template <class T, class E> friend struct IMP::internal::RefStuff;    \
   virtual ~Name(){}                                                     \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
 
 #define IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, dest)                   \
   protected:                                                            \
-  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  template <class T, class E> friend struct IMP::internal::RefStuff;    \
   virtual ~Name(){dest}                                                 \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)
@@ -384,7 +384,7 @@ public:                                                                 \
 
 #define IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Name)                     \
   protected:                                                            \
-  template <class T, class E> friend class IMP::internal::RefStuff;     \
+  template <class T, class E> friend struct IMP::internal::RefStuff;    \
   virtual ~Name();                                                      \
 public:                                                                 \
   IMP_REQUIRE_SEMICOLON_CLASS(destructor)

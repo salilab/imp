@@ -50,7 +50,6 @@ namespace internal
 
 template <class Tag>
 std::string get_unit_name(int o) {
-  bool should_not_be_compiled;
   return "";
 }
 

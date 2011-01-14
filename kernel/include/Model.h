@@ -159,7 +159,7 @@ private:
 #else
  private:
 #ifndef IMP_DOXYGEN
-  template <class T, class E> friend class internal::RefStuff;
+  template <class T, class E> friend struct internal::RefStuff;
 #endif
 #endif
 

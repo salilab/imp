@@ -51,8 +51,8 @@ class LogStream:
       return n;
     }
   };
-  friend class LogSink;
-  friend class IndentFilter;
+  friend struct LogSink;
+  friend struct IndentFilter;
  public:
   LogStream(): out_(TextOutput(std::cout)) {
     P::push(IndentFilter(this));

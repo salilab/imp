@@ -207,8 +207,8 @@ class IMPEXPORT Particle : public Container
   friend class Model;
   friend class Changed;
   friend class SaveOptimizeds;
-  friend class internal::ReadLock;
-  friend class internal::WriteLock;
+  friend struct internal::ReadLock;
+  friend struct internal::WriteLock;
   //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
   typedef internal::ParticleStorage::Storage Storage;
   void zero_derivatives();
