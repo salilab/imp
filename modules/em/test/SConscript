@@ -2,4 +2,5 @@ Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  spelling_exceptions=['xplor'])
+                  spelling_exceptions=['xplor'],
+                  value_object_exceptions=['DensityHeader'])
