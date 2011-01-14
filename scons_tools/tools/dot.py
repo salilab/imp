@@ -9,4 +9,4 @@ def generate(env):
     env['DOT']              = env.WhereIs('dot')
 
 def exists(env):
-    return env.Detect(['dot'])
+    return env.get('dot', "no") != "no" and env.Detect(['dot'])
