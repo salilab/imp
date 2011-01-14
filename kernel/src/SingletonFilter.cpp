@@ -18,9 +18,9 @@ IMP_BEGIN_NAMESPACE
 SingletonFilter::SingletonFilter(std::string name): Object(name) {
 }
 namespace {
-struct GCP {
+struct SingletonGCP {
   const SingletonFilter *back_;
-  GCP(const SingletonFilter *n): back_(n){}
+  SingletonGCP(const SingletonFilter *n): back_(n){}
   template <class T>
   bool operator()(const T &p) const {
     return back_->get_contains_particle(p);
@@ -30,7 +30,7 @@ struct GCP {
 void SingletonFilter
 ::filter_in_place(ParticlesTemp &ps) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          GCP(this)),
+                          SingletonGCP(this)),
            ps.end());
 
 }
