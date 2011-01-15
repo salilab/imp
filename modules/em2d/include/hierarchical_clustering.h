@@ -296,6 +296,9 @@ ClusterSet
     // lowest distance is between list l1 and list l2
     unsigned int l2=lists[l1].front().first;
     minimum_distance=lists[l2].front().second;
+    IMP_LOG(IMP::VERBOSE,"joining clusters " << cluster_id[l1]
+            << " and " << cluster_id[l2] << std::endl);
+
     // store the linkage of clusters
     cluster_set.do_join_clusters(cluster_id[l1],
                                  cluster_id[l2],
@@ -307,6 +310,7 @@ ClusterSet
     lists[l1].clear();
     // Update lists of distances
     for (unsigned int i=0;i<N;++i) {
+      IMP_LOG(IMP::VERBOSE,"Updating list of distances " << i << std::endl);
       if(active_list[i]==true && i!=l1) {
         // Delete list elements that store distances to the merged clusters
         list_index_distance::iterator it;
@@ -318,6 +322,7 @@ ClusterSet
                                       cluster_id[i],
                                       cluster_set,
                                       distances);
+      IMP_LOG(IMP::VERBOSE,"After linkage function" << std::endl);
         lists[i].push_back(std::make_pair(l1,dist));
         lists[l1].push_back(std::make_pair(i,dist));
       }
