@@ -13,6 +13,11 @@
 #pragma warning( disable : 4675)
 #endif
 
+#ifdef __clang__
+// for _weight_map
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>

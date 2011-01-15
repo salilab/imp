@@ -239,9 +239,6 @@ namespace {
     return ik;
   }
 
-  int get_index(Particle *p) {
-    return p->get_value(get_protein_ligand_type_key());
-  }
   const int ni= data::LAST_PROTEIN_TYPE.get_index();
   const int nj= data::LAST_LIGAND_TYPE.get_index()
     - data::LAST_PROTEIN_TYPE.get_index()-1;
