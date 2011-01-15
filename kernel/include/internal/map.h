@@ -9,28 +9,35 @@
 #define IMP_INTERNAL_MAP_H
 
 #include "../kernel_config.h"
-#if IMP_BOOST_VERSION > 103500
+
+// creates warnings in clang and we only use clang for diagnostics anyway
+#if IMP_BOOST_VERSION > 103500 && !defined(__clang__)
+#define IMP_USE_BOOST_MAP 1
+#else
+#define IMP_USE_BOOST_MAP 0
+#endif
+
+#if IMP_USE_BOOST_MAP
 #include <boost/unordered_map.hpp>
 #include <boost/unordered_set.hpp>
+#include <boost/functional/hash.hpp>
 #else
 #include <map>
 #include <set>
 #endif
-
-#include <boost/functional/hash.hpp>
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 template <class Key, class Data>
 class Map:
-#if IMP_BOOST_VERSION > 103500
+#if IMP_USE_BOOST_MAP
   public boost::unordered_map<Key, Data>
 #else
   public std::map<Key, Data>
 #endif
 {
-  #if IMP_BOOST_VERSION > 103500
+#if IMP_USE_BOOST_MAP
   typedef boost::unordered_map<Key, Data> P;
 #else
   typedef std::map<Key, Data> P;
@@ -44,13 +51,13 @@ public:
 
 template <class Key>
 class Set:
-#if IMP_BOOST_VERSION > 103500
+#if IMP_USE_BOOST_MAP
   public boost::unordered_set<Key>
 #else
   public std::set<Key>
 #endif
 {
-  #if IMP_BOOST_VERSION > 103500
+#if IMP_USE_BOOST_MAP
   typedef boost::unordered_set<Key> P;
 #else
   typedef std::set<Key> P;
