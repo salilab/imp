@@ -8,9 +8,11 @@ import scons_tools.environment
 
 def _action_all_cpp(target, source, env):
     f= open(target[0].abspath, "w")
+    vars= scons_tools.module._get_module_variables(env)
     for fl in source:
         pth= fl.abspath
         print >> f, "#include \""+pth+"\""
+    print >> f, "#include <%(module_include_path)s.h>"%vars
 
 def _print_all_cpp(target, source, env):
     vars= scons_tools.module._get_module_variables(env)
