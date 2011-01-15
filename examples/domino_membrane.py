@@ -25,23 +25,21 @@ def create_representation(tmb,tme,topology):
         vol=IMP.atom.get_volume_from_residue_type(rt)
         rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
         IMP.core.XYZR(p).set_radius(rg)
-#   select particles and make rigid bodies
-    print "Making rigid bodies"
+#   visualize initial configuration
+    display(m,chain,tmb,tme,"initial.pym")
+#   rotation to make z the principal axis
+    rt= IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
+    tr= IMP.algebra.Transformation3D(rt, IMP.algebra.Vector3D(0,0,0))
+#   make rigid bodies
     rbs=[]
+    sign=[]
     tbr= IMP.core.TableRefiner()
     for i in range(len(tmb)):
         s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
         p=s.get_selected_particles()
         rbs.append(IMP.atom.create_rigid_body(p))
         tbr.add_particle(rbs[i],p)
-#   visualize initial configuration
-    display(m,chain,tmb,tme,"initial.pym")
-#   rotation to make z the principal axis
-    rt= IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
-    tr= IMP.algebra.Transformation3D(rt, IMP.algebra.Vector3D(0,0,0))
 #   set the new reference frame
-    sign=[]
-    for i in range(len(tmb)):
         rbs[i].set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
 #   initialize membrane decorator
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
