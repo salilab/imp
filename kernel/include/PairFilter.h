@@ -15,8 +15,6 @@
 #include "macros.h"
 #include "VersionInfo.h"
 #include "ParticleTuple.h"
-#include <boost/lambda/lambda.hpp>
-#include <boost/lambda/bind.hpp>
 
 
 IMP_BEGIN_NAMESPACE
