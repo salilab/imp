@@ -5,6 +5,7 @@
 from numpy import *
 from random import uniform
 import atexit
+import os,sys
 
 
 #imp general
@@ -27,7 +28,7 @@ class TestCommunication(IMP.test.TestCase):
         #setup host list
         self.hostlist = ['localhost']
         self.tmpdir = '/tmp'
-        self.src_path = './'
+        self.src_path = os.path.dirname(IMP.isd.FileBasedGrid.__file__)
         self.showX11 = False
         self.X11_delay = 1.0
         self.grid_debug = False
@@ -69,7 +70,8 @@ class TestCommunication(IMP.test.TestCase):
         self.assertEqual(retval, "hello world")
 
     def tearDown(self):
-        self.grid.terminate()
+        if hasattr(self,'grid'):
+            self.grid.terminate()
         IMP.test.TestCase.tearDown(self)
 
 if __name__ == '__main__':
