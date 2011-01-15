@@ -8,6 +8,7 @@
 #ifndef IMPEM_SPIDER_HEADER_H
 #define IMPEM_SPIDER_HEADER_H
 
+#include <ostream>
 #include "em_config.h"
 
 IMPEM_BEGIN_NAMESPACE
@@ -121,6 +122,8 @@ struct SpiderHeader {
   char szITim[8];
   //! Title
   char szITit[160];
+
+  void show(std::ostream& out) const { out << "SpiderHeader"; }
 };
 
 

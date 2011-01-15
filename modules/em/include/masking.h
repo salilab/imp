@@ -25,6 +25,8 @@ public:
     return &neighbor_dist_;}
   inline const std::vector<double> *get_neighbor_dist_exp() const {
     return &neighbor_dist_exp_;}
+
+  void show(std::ostream& out) const { out << "RadiusDependentDistanceMask"; }
 protected:
   std::vector<double> neighbor_shift_;
   std::vector<double> neighbor_dist_;
@@ -44,6 +46,8 @@ public:
     header_=header;
     initialized_ = true;
   }
+
+  void show(std::ostream& out) const { out << "DistanceMask"; }
 
   //! Sets the parameters that depend on the radius of a given particle.
   const RadiusDependentDistanceMask* set_mask(float radius);
