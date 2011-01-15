@@ -35,9 +35,7 @@ IMPATOM_BEGIN_NAMESPACE
 class ProteinLigandRestraint;
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace {
-  IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
-}
+IMP_DECLARE_CONTROLLED_KEY_TYPE(ProteinLigandType, 783462);
 #elif defined(SWIG)
 class ProteinLigandType;
 #endif
