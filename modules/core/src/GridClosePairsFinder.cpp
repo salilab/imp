@@ -150,17 +150,12 @@ namespace {
     }
   };
 
-  double get_side(const algebra::BoundingBox3D &bb, unsigned int nump,
-                  double r, double d, double maxr) {
-    return 1.1*(r+maxr+d);
-  }
-
   std::string do_show(Particle*p) {
     return p->get_name();
   }
-  algebra::BoundingBox3D do_show(algebra::BoundingBox3D bb) {
+  /*algebra::BoundingBox3D do_show(algebra::BoundingBox3D bb) {
     return bb;
-  }
+    }*/
   unsigned int do_show(unsigned int i) {
     return i;
   }

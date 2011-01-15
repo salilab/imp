@@ -39,7 +39,7 @@ namespace {
 
 
 
-  ParticlesTemp get_rigid_body_used_particles(Particle *p) {
+  /*ParticlesTemp get_rigid_body_used_particles(Particle *p) {
     RigidBody b(p);
     unsigned int n=b.get_number_of_members();
     ParticlesTemp ret(1+n);
@@ -48,7 +48,7 @@ namespace {
       ret[i+1]= b.get_member(i);
     }
     return ret;
-  }
+    }*/
 
   //! Accumulate the derivatives from the refined particles in the rigid body
   /** You can
