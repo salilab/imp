@@ -25,7 +25,7 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 template <class Score, class Enabled=void>
-class SimpleRestraintParentTraits{};
+struct SimpleRestraintParentTraits{};
 
 
 inline bool is_valid(Particle *p) {
