@@ -438,18 +438,6 @@ bool get_has_edge(InteractionGraph &graph,
   }
 }
 
-
-Ints find_parents(const IMP::internal::Map<Particle*, Ints>  &map,
-                  DGVertex v,
-                  const DependencyGraph &dg) {
-  typedef boost::reverse_graph<DependencyGraph> RG;
-  Ints vals;
-  CollectVisitor<RG> cv(dg, map, vals);
-  RG rg(dg);
-  boost::vector_property_map<int> color(boost::num_vertices(rg));
-  boost::depth_first_visit(rg, v, cv, color);
-  return cv.get_collected();
-}
 }
 
 InteractionGraph get_interaction_graph(RestraintSet *irs,

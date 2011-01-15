@@ -8,7 +8,6 @@
 #include <IMP/domino/BranchAndBoundSampler.h>
 #include <IMP/domino/subset_states.h>
 #include <IMP/domino/utility.h>
-#include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 
 IMPDOMINO_BEGIN_NAMESPACE
