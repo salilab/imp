@@ -75,6 +75,23 @@ void MRCReaderWriter::read_8_data(float *pt)
   //<< header.nx << "x" << header.ny << "x" << header.nz << "\n";
 }
 
+namespace {
+  /** Swaps the byte order in an array of 32-bit ints */
+  void byte_swap(unsigned char *ch, int n_array)
+  {
+    int i;
+    unsigned char tmp;
+
+    for (i = n_array * 4 - 4; i >= 0; i -= 4) {
+      tmp = ch[i];
+      ch[i] = ch[i + 3];
+      ch[i + 3] = tmp;
+      tmp = ch[i + 1];
+      ch[i + 1] = ch[i + 2];
+      ch[i + 2] = tmp;
+    }
+  }
+}
 
 /** Read the density data of a 32-bit MRC file */
 void MRCReaderWriter::read_32_data(float *pt)
@@ -201,35 +218,6 @@ void MRCReaderWriter::write_data(std::ofstream &s,const float *pt)
             "MRCReaderWriter::write_data >> Error writing MRC data.");
   IMP_LOG(IMP::TERSE,"MRC file written: grid " << header.nx << "x" << header.ny
           << "x" << header.nz << std::endl);
-}
-
-
-/** Returns a CCP4 convention machine stamp: 0x11110000 for big endian, or
-    0x44440000 for little endian */
-int get_machine_stamp()
-{
-  int retval;
-  unsigned char *ch;
-  ch = (unsigned char *)&retval;
-  ch[0] = ch[1] = (algebra::get_is_big_endian()? 0x11 : 0x44);
-  ch[2] = ch[3] = 0;
-  return retval;
-}
-
-/** Swaps the byte order in an array of 32-bit ints */
-void byte_swap(unsigned char *ch, int n_array)
-{
-  int i;
-  unsigned char tmp;
-
-  for (i = n_array * 4 - 4; i >= 0; i -= 4) {
-    tmp = ch[i];
-    ch[i] = ch[i + 3];
-    ch[i + 3] = tmp;
-    tmp = ch[i + 1];
-    ch[i + 1] = ch[i + 2];
-    ch[i + 2] = tmp;
-  }
 }
 
 IMPEM_END_NAMESPACE

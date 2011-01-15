@@ -94,17 +94,6 @@ private:
   IMP_OBJECT_INLINE(MRCReaderWriter, {out << "MRCReaderWriter";}, {});
 };
 
-
-
-IMPEMEXPORT
-//!Returns a CCP4 convention machine stamp: 0x11110000 for big endian,
-//!or 0x44440000 for little endian
-int get_machine_stamp();
-
-IMPEMEXPORT
-//! Swaps the byte order in an array of 32-bit ints
-void byte_swap(unsigned char *ch, int n_array);
-
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_MRC_READER_WRITER_H */
