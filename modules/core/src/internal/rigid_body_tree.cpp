@@ -275,10 +275,6 @@ ObjectKey get_rigid_body_hierarchy_key() {
 
 
 namespace {
-inline double
-distance_bound(XYZR a, XYZR b) {
-  return get_distance(a,b);
-}
 
 inline double
 distance_bound(const RigidBodyHierarchy *da, unsigned int i,

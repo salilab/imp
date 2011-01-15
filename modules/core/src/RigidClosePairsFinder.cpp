@@ -59,7 +59,7 @@ namespace {
     return ParticlesTemp(rets.begin(), rets.end());
   }
 
-  ParticlesTemp get_non_rigid(SingletonContainer *sc) {
+  /*ParticlesTemp get_non_rigid(SingletonContainer *sc) {
     ParticlesTemp ret;
     IMP_FOREACH_SINGLETON(sc, {
         if (!RigidMember::particle_is_instance(_1)) {
@@ -67,7 +67,7 @@ namespace {
         }
       });
     return ret;
-  }
+    }*/
   typedef IMP::internal::Map<Particle*, ParticlesTemp> RBM;
   void divvy_up_particles(const ParticlesTemp &ps,
                           Refiner *r,
