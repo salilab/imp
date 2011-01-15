@@ -79,7 +79,7 @@ public:
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
-  void write(String filename, const em2d::ImageReaderWriter *writer) {
+  void write(const String &filename, const em2d::ImageReaderWriter *writer) {
     Pointer<const ImageReaderWriter> ptr(writer);
     update_header(); // adjust the header to guarantee consistence
     writer->write(filename,header_,data_);

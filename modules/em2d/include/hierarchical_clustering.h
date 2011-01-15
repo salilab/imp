@@ -90,7 +90,7 @@ public:
   // Distance between two clusters
   double get_distance(unsigned int cluster_id1,
                       unsigned int cluster_id2) const {
-    //TO DO
+    return 0.0;//TO DO
   }
 
   // Returns a linkage matrix compatible with Matlab format
@@ -220,7 +220,6 @@ public:
     std::vector<unsigned int> members2 = cluster_set.get_cluster_elements(id2);
     // Get minimum distance between elements
     std::vector<unsigned int>::iterator it1,it2;
-    double maximum_distance=std::numeric_limits<double>::min();
     double distance=0.0;
     for (it1=members1.begin();it1 != members1.end();++it1) {
       for (it2=members2.begin();it2 != members2.end();++it2) {
@@ -250,6 +249,9 @@ ClusterSet
 // http://nlp.stanford.edu/IR-book/html/htmledition/
 //      time-complexity-of-hac-1.html)
 
+  IMP_LOG(IMP::TERSE,
+            "starting hierarchical_agglomerative_clustering " << std::endl);
+
   unsigned int N = distances.size(); // number of elements
   // Lists of distances between elements
   // List n has members (i,distance_n_i).
@@ -270,6 +272,7 @@ ClusterSet
     // At the beginning each list is associated with a cluster of one element
     cluster_id[n]=n;
   }
+  IMP_LOG(IMP::TERSE,"lists are built " << std::endl);
 
 
   ClusterSet cluster_set(N);
@@ -277,6 +280,7 @@ ClusterSet
   unsigned int steps = N-1;// Steps of clustering
   // cluster algorithm
   for (unsigned int k=0;k<steps;++k) {
+    IMP_LOG(IMP::TERSE,"step " << k << std::endl);
     // Find the list that contains lower distance
     double minimum_distance=std::numeric_limits<double>::max();
     unsigned int l1=0;

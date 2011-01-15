@@ -56,7 +56,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
-        RegistrationResults registration_values,
+        const RegistrationResults &registration_values,
         int rows, int cols,
         double resolution, double pixelsize,
         const em2d::ImageReaderWriter *srw,
