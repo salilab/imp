@@ -122,6 +122,7 @@ TextInput::TextInput(double) {
 
 
 namespace {
+#ifndef __clang__
   void testf(TextInput) {
   }
   void testcall() {
@@ -130,6 +131,7 @@ namespace {
     std::ifstream inf("infile");
     testf(inf);
   }
+#endif
 }
 
 
