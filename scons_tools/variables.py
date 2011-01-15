@@ -232,8 +232,8 @@ def add_common_variables(vars, package):
                           True))
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', False))
-    vars.Add(BoolVariable('testbuild',
-                          'Do some tests that IMP can be build properly.', False))
+    vars.Add(BoolVariable('batchbuild',
+                          'Merge all .cpp files in a module into 1 file to speed up building.', True))
     vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
     vars.Add('dot',
              'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
