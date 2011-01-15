@@ -9,7 +9,6 @@
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
-#include <IMP/internal/graph_utility.h>
 
 using namespace IMP;
 using namespace IMP::core;
@@ -31,11 +30,9 @@ const double slack=6;
 #endif
 
 namespace {
-  VersionInfo get_module_version_info() {
-    return benchmark::get_module_version_info();
-  }
-
+#ifndef __clang__
   void dummy_f_destructor(){}
+#endif
 }
 
 
