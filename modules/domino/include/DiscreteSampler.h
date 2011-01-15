@@ -54,6 +54,7 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler
 {
   IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
   IMP::internal::OwnerPointer<SubsetStatesTable> sst_;
+  unsigned int max_;
 #ifndef IMP_DOXYGEN
  protected:
   SubsetFilterTables
@@ -105,6 +106,20 @@ public:
   IMP_LIST(public, SubsetFilterTable, subset_filter_table,
            SubsetFilterTable*, SubsetFilterTables);
   /** @} */
+
+  /** Limit the number of states that is ever produced for any
+      set of particles.
+
+      Doing this can be useful to get some feedback when too
+      many states would otherwise be produced. A warning
+      will be emitted whenever the limit eliminates states.
+  */
+  void set_maximum_number_of_states(unsigned int mx) {
+    max_=mx;
+  }
+  unsigned int get_maximum_number_of_states() const {
+    return max_;
+  }
 };
 
 

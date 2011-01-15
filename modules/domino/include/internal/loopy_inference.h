@@ -23,7 +23,8 @@ IMPDOMINOEXPORT
 SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
                                           const Subset& all_particles,
                                           const SubsetFilterTables &filters,
-                                              const SubsetStatesTable *sst);
+                                          const SubsetStatesTable *sst,
+                                          unsigned int max);
 
 
 IMPDOMINO_END_INTERNAL_NAMESPACE

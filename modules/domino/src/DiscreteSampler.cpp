@@ -6,6 +6,7 @@
  */
 
 #include <IMP/domino/DiscreteSampler.h>
+#include <limits>
 
 IMPDOMINO_BEGIN_NAMESPACE
 
@@ -13,7 +14,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 DiscreteSampler::DiscreteSampler(Model *m, ParticleStatesTable* pst,
                                  std::string name):
   Sampler(m, name),
-  pst_(pst){
+  pst_(pst), max_(std::numeric_limits<unsigned int>::max()){
 }
 
 DiscreteSampler::~DiscreteSampler()
@@ -49,7 +50,7 @@ SubsetStatesTable*
 DiscreteSampler
 ::get_subset_states_table_to_use(const SubsetFilterTables &sfts) const {
   if (sst_) return sst_;
-  IMP_NEW(BranchAndBoundSubsetStatesTable, dsst, (pst_, sfts));
+  IMP_NEW(BranchAndBoundSubsetStatesTable, dsst, (pst_, sfts, max_));
   dsst->set_was_used(true);
   return dsst.release();
 }

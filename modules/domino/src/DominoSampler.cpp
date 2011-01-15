@@ -116,7 +116,8 @@ SubsetStates DominoSampler
     final_solutions
       = internal::get_best_conformations(jt, 0,
                                          known_particles,
-                                         sfts, sst, lsft, stats);
+                                         sfts, sst, lsft, stats,
+                                         get_maximum_number_of_states());
     if (lsft) {
       IMP_LOG(TERSE, lsft->get_ok_rate()
               << " were ok with the cross set filtering"
@@ -126,7 +127,8 @@ SubsetStates DominoSampler
   } else {
     final_solutions
       = internal::loopy_get_best_conformations(jt, known_particles,
-                                               sfts, sst);
+                                               sfts, sst,
+                                               get_maximum_number_of_states());
   }
   return final_solutions;
 }

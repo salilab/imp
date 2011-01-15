@@ -86,7 +86,7 @@ InferenceStatistics::~InferenceStatistics() {
   NodeData
   get_union(const Subset &s0, const Subset &s1,
             const NodeData &nd0, const NodeData &nd1,
-            const EdgeData &ed) {
+            const EdgeData &ed, unsigned int max) {
     NodeData ret;
     Ints ii0= get_index(s0, ed.intersection_subset);
     Ints ii1= get_index(s1, ed.intersection_subset);
@@ -111,6 +111,11 @@ InferenceStatistics::~InferenceStatistics() {
           }
           if (ok) {
             ret.subset_states.push_back(ss);
+            if (ret.subset_states.size() > max) {
+              IMP_WARN("Truncated number of states at " << max
+                       << " when merging " << s0 << " and " << s1);
+              return ret;
+            }
           }
         }
       }

@@ -141,9 +141,10 @@ namespace {
 
 }
 SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
-                                              const Subset& all_particles,
-                                              const SubsetFilterTables &filters,
-                                              const SubsetStatesTable *sst) {
+                                          const Subset& all_particles,
+                                          const SubsetFilterTables &filters,
+                                          const SubsetStatesTable *sst,
+                                          unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
   std::vector<NodeData> nds;
   fill_node_data(sg, sst, nds);
@@ -167,7 +168,7 @@ SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
   for (unsigned int i=1; i< nds.size(); ++i) {
     Subset si= subset_map[i];
     EdgeData ed= get_edge_data(s, si, filters);
-    curd= get_union(s, si, curd, nds[i], ed);
+    curd= get_union(s, si, curd, nds[i], ed, max);
     s= ed.union_subset;
   }
   return curd.subset_states;
@@ -314,9 +315,10 @@ namespace {
   }
 }
 SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
-                                                   const Subset& all_particles,
-                                             const SubsetFilterTables &filters,
-                                               const SubsetStatesTable *sst) {
+                                               const Subset& all_particles,
+                                         const SubsetFilterTables &filters,
+                                               const SubsetStatesTable *sst,
+                                               unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
   std::vector<FastNodeData> nds;
   fast_fill_node_data(sg, sst, nds);
@@ -343,7 +345,7 @@ SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
   for (unsigned int i=1; i< nds.size(); ++i) {
     Subset si= subset_map[i];
     EdgeData ed= get_edge_data(s, si, filters);
-    curd= get_union(s, si, curd, nds[i], ed);
+    curd= get_union(s, si, curd, nds[i], ed, max);
     s= ed.union_subset;
   }
   return curd.subset_states;
