@@ -102,7 +102,7 @@ public:
   }
 };
 
-class ModelData;
+struct ModelData;
 
 class IMPDOMINOEXPORT SubsetData {
   const ModelData *md_;
