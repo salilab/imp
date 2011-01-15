@@ -43,7 +43,8 @@ namespace {
              || yi >= g.get_number_of_voxels(1)
              || zi >= g.get_number_of_voxels(2)) return outside;
     else {
-      return g[grids::GridIndex3D(xi, yi, zi)];
+      int vals[]={xi, yi, zi};
+      return g[grids::GridIndex3D(vals, vals+3)];
     }
   }
 }

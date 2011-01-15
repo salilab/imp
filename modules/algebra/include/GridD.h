@@ -665,7 +665,7 @@ namespace grids {
     */
     IMP_BRACKET(Value, VectorD<D>,
                 Storage::get_has_index(get_extended_index(i)),
-                Storage::operator[](get_index(get_extended_index(i))));
+                return Storage::operator[](get_index(get_extended_index(i))));
     /** @} */
 
 #ifdef SWIG
