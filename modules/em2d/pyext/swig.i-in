@@ -6,9 +6,9 @@ IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
 IMP_SWIG_VALUE(IMP::em2d, ClusterSet, ClusterSets);
 IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
-//IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
-//IMP_SWIG_VALUE(IMP::em2d, AverageDistance, AverageDistances);
-//IMP_SWIG_VALUE(IMP::em2d, LessThanByDistance, LessThanByDistances);
+IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
+IMP_SWIG_VALUE(IMP::em2d, AverageDistance, AverageDistances);
+IMP_SWIG_VALUE(IMP::em2d, LessThanByDistance, LessThanByDistances);
 
 
 
@@ -62,3 +62,11 @@ namespace IMP {
 %pythoncode {
   SingleLinkageHierarchicalClustering = _SingleLinkageHierarchicalClustering
 }
+
+
+   %template(_CompleteLinkageHierarchicalClustering)
+           ::IMP::em2d::hierarchical_agglomerative_clustering<CompleteLinkage>;
+   %template(_AverageDistanceHierarchicalClustering)
+           ::IMP::em2d::hierarchical_agglomerative_clustering<AverageDistance>;
+  CompleteLinkageHierarchicalClustering = _CompleteLinkageHierarchicalClustering
+  AverageDistanceHierarchicalClustering = _AverageDistanceHierarchicalClustering

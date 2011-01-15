@@ -70,7 +70,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
 //
 
 em2d::Images get_projections(const ParticlesTemp &ps,
-                    RegistrationResults registration_values,
+                    const RegistrationResults &registration_values,
                     int rows, int cols,
                     double resolution, double pixelsize,
                     const em2d::ImageReaderWriter *srw,
