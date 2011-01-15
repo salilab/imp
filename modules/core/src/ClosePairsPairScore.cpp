@@ -71,13 +71,6 @@ namespace {
     double ret=ps->evaluate(ppt, da);
     return ret;
   }
-  double max_radius(const ParticlesTemp &ps) {
-    double mr=0;
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      mr = std::max(mr, XYZR(ps[i]).get_radius());
-    }
-    return mr;
-  }
 }
 
 
