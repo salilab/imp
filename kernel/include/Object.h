@@ -244,27 +244,27 @@ IMP_END_NAMESPACE
 
 #endif
 
+// recommended by http://gcc.gnu.org/gcc/Function-Names.html
+#if __STDC_VERSION__ < 199901L
+# if __GNUC__ >= 2 || defined(_MSC_VER)
+#  define __func__ __FUNCTION__
+# else
+#  define __func__ "<unknown>"
+# endif
+#endif
+
 #if IMP_BUILD < IMP_FAST
-#if __STDC_VERSION__ >= 199901L || defined(_MSC_VER)
 #define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level());  \
   CreateLogContext log_context__(Object::get_name()                     \
-                                 + "::" + __FUNCTION__)
+                                 + "::" + __func__)
 
 
 #define IMP_FUNCTION_LOG                                                \
-  CreateLogContext log_context__(__FUNCTION__)
+  CreateLogContext log_context__(__func__)
 
-#else
-#define IMP_OBJECT_LOG SetLogState log_state_guard__(get_log_level()); \
-  CreateLogContext log_context__(Object::get_name()                    \
-                                 + "::" + __FUNCTION__)
 
-#define IMP_FUNCTION_LOG                        \
-  CreateLogContext log_context__("function")
-
-#endif
-#else
+#else // fast
 #define IMP_OBJECT_LOG
 #define IMP_FUNCTION_LOG
-#endif
+#endif // fast
 #endif  /* IMP_OBJECT_H */

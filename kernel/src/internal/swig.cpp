@@ -271,5 +271,19 @@ int _test_intranges(const IntRanges &ips) {
   return ips.size();
 }
 
+namespace {
+  void test_log_1() {
+    IMP_FUNCTION_LOG;
+    IMP_LOG(SILENT, "Hi" << std::endl);
+  }
+  void test_log_0() {
+    IMP_FUNCTION_LOG;
+    test_log_1();
+  }
+}
 
+void _test_log() {
+  IMP_FUNCTION_LOG;
+  test_log_0();
+}
 IMP_END_INTERNAL_NAMESPACE
