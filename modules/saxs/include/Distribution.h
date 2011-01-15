@@ -46,7 +46,7 @@ protected:
     bin_size_ = bin_size;
     one_over_bin_size_ = 1.0/bin_size_;     // for faster calculation
     max_distance_ = 50.0;      // start with ~50A (by default)
-    reserve(dist2index(max_distance_) + 1);
+    std::vector< ValueT >::reserve(dist2index(max_distance_) + 1);
   }
   unsigned int dist2index(Float dist) const {
     return algebra::get_rounded( dist * one_over_bin_size_ );
