@@ -120,7 +120,7 @@ namespace {
   class ListXYZRRotMovedParticles:public SingletonModifier {
     std::vector<std::pair<algebra::SphereD<3>,
                           algebra::Rotation3D> > &values_;
-    mutable ParticlesTemp &pt_;
+    mutable ParticlesTemp *pt_;
     double threshold_;
     mutable unsigned int i_;
     bool incremental_;
@@ -131,7 +131,7 @@ namespace {
                          "Wrong size of values_.");
       if (moved_threshold(p, values_[i_].first, incremental_,
                           threshold_, dist2, dr, dist, has_dist)) {
-        pt_.push_back(p);
+        pt_->push_back(p);
       } else {
         if (!has_dist) {
           dist= std::sqrt(dist2);
@@ -144,7 +144,7 @@ namespace {
           algebra::VectorD<3> rv(0,0,XYZR(p).get_radius());
           algebra::VectorD<3> rvr= rd.get_rotated(rv);
           if (dist + (rv-rvr).get_magnitude() > threshold_) {
-            pt_.push_back(p);
+            pt_->push_back(p);
           }
         }
       }
@@ -158,7 +158,7 @@ namespace {
                 bool incremental):
       SingletonModifier("ListXYZRRotMoved"),
       values_(values),
-      pt_(pt), threshold_(threshold),
+      pt_(&pt), threshold_(threshold),
       i_(0), incremental_(incremental){
     }
 
@@ -168,7 +168,7 @@ namespace {
 
   class ListXYZRMovedParticles:public SingletonModifier {
     std::vector<algebra::SphereD<3> > &values_;
-    mutable ParticlesTemp &pt_;
+    mutable ParticlesTemp *pt_;
     double threshold_;
     mutable unsigned int i_;
     bool incremental_;
@@ -177,7 +177,7 @@ namespace {
       bool has_dist=false;
       if (moved_threshold(p, values_[i_], incremental_,
                           threshold_, dist2, dr, dist, has_dist)) {
-        pt_.push_back(p);
+        pt_->push_back(p);
       }
       ++i_;
     }
@@ -188,7 +188,7 @@ namespace {
                            bool incremental):
       SingletonModifier("ListXYZRMoved"),
       values_(values),
-      pt_(pt), threshold_(threshold),
+      pt_(&pt), threshold_(threshold),
       i_(0), incremental_(incremental){
     }
     IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRMovedParticles,
