@@ -16,11 +16,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  CoreListTripletContainer* get_list(TripletContainer *g) {
-    return dynamic_cast<CoreListTripletContainer*>(g);
-  }
-}
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListTripletContainer);
 

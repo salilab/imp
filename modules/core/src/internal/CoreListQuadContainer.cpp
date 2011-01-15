@@ -16,11 +16,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  CoreListQuadContainer* get_list(QuadContainer *g) {
-    return dynamic_cast<CoreListQuadContainer*>(g);
-  }
-}
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListQuadContainer);
 

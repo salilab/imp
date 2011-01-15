@@ -16,11 +16,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  CoreListSingletonContainer* get_list(SingletonContainer *g) {
-    return dynamic_cast<CoreListSingletonContainer*>(g);
-  }
-}
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListSingletonContainer);
 

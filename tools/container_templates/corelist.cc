@@ -16,11 +16,6 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  CoreListCLASSNAMEContainer* get_list(CLASSNAMEContainer *g) {
-    return dynamic_cast<CoreListCLASSNAMEContainer*>(g);
-  }
-}
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListCLASSNAMEContainer);
 
