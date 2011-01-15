@@ -11,6 +11,11 @@
 #include "IMP/VectorOfRefCounted.h"
 #include "IMP/internal/static.h"
 #include <cstring>
+
+#ifdef __clang__
+// for _2, _3
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 #include <boost/lambda/lambda.hpp>
 
 IMP_BEGIN_NAMESPACE
