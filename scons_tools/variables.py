@@ -232,8 +232,8 @@ def add_common_variables(vars, package):
                           True))
     vars.Add(BoolVariable('deprecated',
                           'Build deprecated classes and functions', False))
-    vars.Add(BoolVariable('batchbuild',
-                          'Merge all .cpp files in a module into 1 file to speed up building.', True))
+    vars.Add('percppcompilation',
+                          'By default, all the .cpp files in a module are merged before building, greatly accelerating the process. This can be turned off globally by setting this variable to "yes" or per module by setting it to a colon separated list of module names, eg "em2d:kernel".', "no")
     vars.Add('pythonsosuffix', 'The suffix for the python libraries.', 'default')
     vars.Add('dot',
              'Use dot from graphviz to lay out graphs in the documentation if available. This produces prettier graphs, but is slow.',
