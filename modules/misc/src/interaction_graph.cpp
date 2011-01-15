@@ -6,6 +6,11 @@
  *
  */
 
+#ifdef __clang__
+// for _weight_map
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
 #include <IMP/misc/interaction_graph.h>
 #include <IMP/Particle.h>
 #include <IMP/Model.h>
