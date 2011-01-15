@@ -12,16 +12,18 @@
 
 #include <IMP/PairScore.h>
 #include <IMP/Pointer.h>
-
+#include <IMP/core/TableRefiner.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 //! Score on the crossing angles between two helices
 class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
+  internal::OwnerPointer<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
 public:
-  RigidBodyPackingScore(Floats omb, Floats ome, Floats ddb, Floats dde);
+  RigidBodyPackingScore(core::TableRefiner *tbr,
+                        Floats omb, Floats ome, Floats ddb, Floats dde);
   IMP_PAIR_SCORE(RigidBodyPackingScore);
 };
 

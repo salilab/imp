@@ -14,8 +14,8 @@ FloatKey HelixDecorator::get_helix_key(unsigned int i) {
     IMP_USAGE_CHECK(i <2, "Out of range");
     static FloatKeys helix_keys;
     if(helix_keys.empty()) {
-     helix_keys.push_back(FloatKey("helix end 0"));
-     helix_keys.push_back(FloatKey("helix end 1"));
+     helix_keys.push_back(FloatKey("helix begin"));
+     helix_keys.push_back(FloatKey("helix end"));
     }
     return helix_keys[i];
   }

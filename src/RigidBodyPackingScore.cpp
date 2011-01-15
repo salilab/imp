@@ -8,6 +8,7 @@
 #include <IMP/membrane/RigidBodyPackingScore.h>
 #include <IMP/membrane/HelixDecorator.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/core/TableRefiner.h>
 #include <IMP/core/internal/dihedral_helpers.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/VectorD.h>
@@ -18,10 +19,11 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-RigidBodyPackingScore::RigidBodyPackingScore(Floats omb, Floats ome,
+RigidBodyPackingScore::RigidBodyPackingScore(core::TableRefiner *tbr,
+                                             Floats omb, Floats ome,
                                              Floats ddb, Floats dde):
-                                                omb_(omb), ome_(ome),
-                                                ddb_(ddb), dde_(dde) {}
+                                             tbr_(tbr), omb_(omb), ome_(ome),
+                                             ddb_(ddb), dde_(dde) {}
 
 Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
@@ -31,16 +33,39 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   // assume they have an helix decorator
   membrane::HelixDecorator d0(p[0]);
   membrane::HelixDecorator d1(p[1]);
-  double omega, dist, max_dist, min_dist;
+  double omega, dist;
   algebra::VectorD<3> b0,e0,b1,e1,t0,t1;
   algebra::Transformation3D tr0,tr1;
   algebra::Segment3D segment;
+  ParticlesTemp ps0, ps1;
+  unsigned int close;
 
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");
 
-  // begin and end point
+  // check if rigid body
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
+                  "Particle is not a rigid body");
+  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[1]),
+                  "Particle is not a rigid body");
 
+  // check if rigid bodies are close enough
+  ps0=tbr_->get_refined(p[0]);
+  ps1=tbr_->get_refined(p[1]);
+
+  close = 0;
+  for(unsigned int i=0;i<ps0.size();i++){
+     for(unsigned int j=0;j<ps1.size();j++){
+        if(core::get_distance(core::XYZR(ps0[i]), core::XYZR(ps1[j])) < 0.6)
+           close++;
+        if(close >= 3) break;
+     }
+     if(close >= 3) break;
+  }
+
+  if (close < 3) return 0.;
+
+  // begin and end point
   b0=algebra::VectorD<3>(d0.get_begin(),0.0,0.0);
   e0=algebra::VectorD<3>(d0.get_end(),0.0,0.0);
   b1=algebra::VectorD<3>(d1.get_begin(),0.0,0.0);
@@ -56,11 +81,6 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   IMP_LOG(VERBOSE, "** BEFORE e1[0] " << e1[0] << " e1[1] "<<
                     e1[1] << " e1[2] " << e1[2] << std::endl);
 **/
-  // check if rigid body
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[0]),
-                  "Particle is not a rigid body");
-  IMP_USAGE_CHECK(core::RigidBody::particle_is_instance(p[1]),
-                  "Particle is not a rigid body");
 
   // get rigid body transformation
   tr0=core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
@@ -102,18 +122,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   IMP_LOG(VERBOSE, "** The crossing angle is " << omega <<
                    " and the distance is " << dist << std::endl);
 
-  // find min and max distance
-  min_dist=1.e+30;
-  max_dist=-1.e+30;
-  for(unsigned int i=0;i<omb_.size();i++){
-   if(ddb_[i] < min_dist) min_dist=ddb_[i];
-   if(dde_[i] > max_dist) max_dist=dde_[i];
-  }
-  // if TM are not interacting
-  if(dist <= min_dist || dist >=max_dist) return 0.;
-
-  // otherwise, calculate the score
-  double score=100000.;
+  // calculate the score
+  double score=1.0;
   for(unsigned int i=0;i<omb_.size();i++)
    if(omega > omb_[i] && omega < ome_[i] &&
       dist > ddb_[i] && dist < dde_[i]) score=0.;
