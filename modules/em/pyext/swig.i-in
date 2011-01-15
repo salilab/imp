@@ -17,6 +17,8 @@ IMP_SWIG_OBJECT(IMP::em, MRCReaderWriter, MRCReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, SpiderMapReaderWriter, SpiderMapReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
+IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
+IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
 IMP_SWIG_VALUE(IMP::em, MapFilterByThreshold, MapFilterByThresholds);
 
 /* Since DensityHeaders are not values or Objects, we must ensure that whenever

@@ -58,6 +58,7 @@ the same value before computing the values again
                  std::vector<float>&dvz, float scalefac, bool lderiv,
                  unsigned long eval_interval);
 
+  IMP_OBJECT_INLINE(CoarseCCatIntervals, {out << "CoarseCCatIntervals";}, {});
 
 protected:
   void allocate_derivatives_array(int ncd);

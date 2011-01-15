@@ -25,7 +25,7 @@ IMPEM_BEGIN_NAMESPACE
 //! Responsible for performing coarse fitting between two density objects.
 /** The pixels involved are derived from the positions of N particles.
  */
-class IMPEMEXPORT CoarseCC
+class IMPEMEXPORT CoarseCC : public Object
 {
 
 public:
@@ -129,6 +129,7 @@ static void calc_derivatives_fast(
              std::vector<float> &dvx, std::vector<float>&dvy,
              std::vector<float>&dvz);
 
+  IMP_OBJECT_INLINE(CoarseCC, {out << "CoarseCC";}, {});
 };
 
 
