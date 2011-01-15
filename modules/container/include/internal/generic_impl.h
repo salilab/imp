@@ -11,17 +11,17 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-template <class Score, class Container>
-ContainerRestraint<Score, Container>
+template <class Score, class C>
+ContainerRestraint<Score, C>
 ::ContainerRestraint(Score *ss,
-                     Container *pc,
+                     C *pc,
                      std::string name):
   IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint(name),
   ss_(ss), pc_(pc) {
 
 }
-template <class Score, class Container>
-double ContainerRestraint<Score, Container>
+template <class Score, class C>
+double ContainerRestraint<Score, C>
 ::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
@@ -31,8 +31,8 @@ double ContainerRestraint<Score, Container>
   return score_;
 }
 
-template <class Score, class Container>
-double ContainerRestraint<Score, Container>
+template <class Score, class C>
+double ContainerRestraint<Score, C>
 ::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_OBJECT_LOG;
@@ -43,12 +43,12 @@ double ContainerRestraint<Score, Container>
   // compute the base for the added ones
   IMP_LOG(VERBOSE, " " << score_);
   // could be better...
-  score_ +=pc_->Container::get_added_container()
+  score_ +=pc_->C::get_added_container()
     ->evaluate_prechange(ss_, accum);
   IMP_LOG(VERBOSE," " << score_);
   if (accum) {
     DerivativeAccumulator nda(*accum, -1);
-    score_ -=pc_->Container::get_removed_container()
+    score_ -=pc_->C::get_removed_container()
       ->evaluate_prechange(ss_, &nda);
   } else {
     score_ -=pc_->get_removed_container()
@@ -58,8 +58,8 @@ double ContainerRestraint<Score, Container>
   return score_;
 }
 
-template <class Score, class Container>
-ParticlesTemp ContainerRestraint<Score, Container>::get_input_particles() const
+template <class Score, class C>
+ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const
 {
   IMP_OBJECT_LOG;
   ParticlesTemp ret
@@ -68,8 +68,8 @@ ParticlesTemp ContainerRestraint<Score, Container>::get_input_particles() const
   return ret;
 }
 
-template <class Score, class Container>
-ContainersTemp ContainerRestraint<Score, Container>
+template <class Score, class C>
+ContainersTemp ContainerRestraint<Score, C>
 ::get_input_containers() const
 {
   ContainersTemp ret
@@ -80,8 +80,8 @@ ContainersTemp ContainerRestraint<Score, Container>
 }
 
 
-template <class Score, class Container>
-Restraints ContainerRestraint<Score, Container>::get_decomposition() const {
+template <class Score, class C>
+Restraints ContainerRestraint<Score, C>::get_decomposition() const {
   Restraints ret(pc_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= core::create_restraint(ss_.get(), pc_->get(i));
@@ -89,8 +89,8 @@ Restraints ContainerRestraint<Score, Container>::get_decomposition() const {
   return ret;
 }
 
-template <class Score, class Container>
-void ContainerRestraint<Score, Container>::do_show(std::ostream& out) const
+template <class Score, class C>
+void ContainerRestraint<Score, C>::do_show(std::ostream& out) const
 {
   out << "score " << *ss_ << std::endl;
   out << "container " << *pc_ << std::endl;
@@ -99,20 +99,20 @@ void ContainerRestraint<Score, Container>::do_show(std::ostream& out) const
 
 
 
-template <class Score, class Container>
-Restraint *create_restraint(Pointer<Score> s, Pointer<Container> c,
+template <class Score, class C>
+Restraint *create_restraint(Pointer<Score> s, Pointer<C> c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s.get(), c.get(), name);
+  return create_restraint<Score,C>(s.get(), c.get(), name);
 }
-template <class Score, class Container>
-Restraint *create_restraint(Score* s, Pointer<Container> c,
+template <class Score, class C>
+Restraint *create_restraint(Score* s, Pointer<C> c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s, c.get(), name);
+  return create_restraint<Score,C>(s, c.get(), name);
 }
-template <class Score, class Container>
-Restraint *create_restraint(Pointer<Score> s, Container* c,
+template <class Score, class C>
+Restraint *create_restraint(Pointer<Score> s, C* c,
                             std::string name=std::string()) {
-  return create_restraint<Score,Container>(s.get(), c, name);
+  return create_restraint<Score,C>(s.get(), c, name);
 }
 
 
@@ -125,8 +125,8 @@ Restraint *create_restraint(Pointer<Score> s, Container* c,
 
 
 
-template <class Container, class Before, class After>
-ContainerConstraint<Container, Before, After>::ContainerConstraint(Container *c,
+template <class C, class Before, class After>
+ContainerConstraint<C, Before, After>::ContainerConstraint(C *c,
                                          Before *before,
                                          After *after,
                                          std::string name):
@@ -135,8 +135,8 @@ ContainerConstraint<Container, Before, After>::ContainerConstraint(Container *c,
   if (after) af_=after;
 }
 
-template <class Container, class Before, class After>
-void ContainerConstraint<Container, Before, After>::do_update_attributes()
+template <class C, class Before, class After>
+void ContainerConstraint<C, Before, After>::do_update_attributes()
 {
   IMP_OBJECT_LOG;
   if (!f_) return;
@@ -151,8 +151,8 @@ void ContainerConstraint<Container, Before, After>::do_update_attributes()
   IMP_LOG(TERSE, "End ContainerConstraint::update" << std::endl);
 }
 
-template <class Container, class Before, class After>
-void ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+void ContainerConstraint<C, Before, After>
 ::do_update_derivatives(DerivativeAccumulator *da)
 {
   IMP_OBJECT_LOG;
@@ -168,20 +168,20 @@ void ContainerConstraint<Container, Before, After>
   IMP_LOG(TERSE, "End ContainerConstraint::after_evaluate" << std::endl);
 }
 
-template <class Container, class Before, class After>
-ContainersTemp ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+ContainersTemp ContainerConstraint<C, Before, After>
 ::get_input_containers() const {
   return ContainersTemp(1, c_);
 }
 
-template <class Container, class Before, class After>
-ContainersTemp ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+ContainersTemp ContainerConstraint<C, Before, After>
 ::get_output_containers() const {
   return ContainersTemp();
 }
 
-template <class Container, class Before, class After>
-ParticlesTemp ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+ParticlesTemp ContainerConstraint<C, Before, After>
 ::get_input_particles() const {
   ParticlesTemp ret;
   if (f_) {
@@ -213,8 +213,8 @@ ParticlesTemp ContainerConstraint<Container, Before, After>
   return ret;
 }
 
-template <class Container, class Before, class After>
-ParticlesTemp ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+ParticlesTemp ContainerConstraint<C, Before, After>
 ::get_output_particles() const {
   ParticlesTemp ret;
   if (f_) {
@@ -245,8 +245,8 @@ ParticlesTemp ContainerConstraint<Container, Before, After>
   return ret;
 }
 
-template <class Container, class Before, class After>
-void ContainerConstraint<Container, Before, After>
+template <class C, class Before, class After>
+void ContainerConstraint<C, Before, After>
 ::do_show(std::ostream &out) const {
   out << "on " << *c_ << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
@@ -255,72 +255,72 @@ void ContainerConstraint<Container, Before, After>
 
 
 
-template <class Container, class Before, class After>
-Constraint *create_constraint(Pointer<Container> c, Pointer<Before> b,
+template <class C, class Before, class After>
+Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
                               Pointer<After> a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Container* c, Pointer<Before> b,
+template <class C, class Before, class After>
+Constraint *create_constraint(C* c, Pointer<Before> b,
                               Pointer<After> a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Pointer<Container> c, Before* b,
+template <class C, class Before, class After>
+Constraint *create_constraint(Pointer<C> c, Before* b,
                               Pointer<After> a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Container* c, Before* b,
+template <class C, class Before, class After>
+Constraint *create_constraint(C* c, Before* b,
                               Pointer<After> a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Pointer<Container> c, Pointer<Before> b,
+template <class C, class Before, class After>
+Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
                               After* a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Container* c, Pointer<Before> b,
+template <class C, class Before, class After>
+Constraint *create_constraint(C* c, Pointer<Before> b,
                               After* a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
-template <class Container, class Before, class After>
-Constraint *create_constraint(Pointer<Container> c, Before* b,
+template <class C, class Before, class After>
+Constraint *create_constraint(Pointer<C> c, Before* b,
                               After* a,
                               std::string name=std::string()) {
-  return create_constraint<Container, Before, After>(c, b, a, name);
+  return create_constraint<C, Before, After>(c, b, a, name);
 }
 
 
 
 
-template <class Container>
-bool GenericInContainerPairFilter<Container>
+template <class C>
+bool GenericInContainerPairFilter<C>
 ::get_contains_particle_pair(const ParticlePair& p) const {
-  return c_->Container::get_contains_particle_pair(p);
+  return c_->C::get_contains_particle_pair(p);
 }
 
-template <class Container>
-ParticlesTemp GenericInContainerPairFilter<Container>
+template <class C>
+ParticlesTemp GenericInContainerPairFilter<C>
 ::get_input_particles(Particle*) const {
   // not quite right
   return ParticlesTemp();
 }
-template <class Container>
-ContainersTemp GenericInContainerPairFilter<Container>
+template <class C>
+ContainersTemp GenericInContainerPairFilter<C>
 ::get_input_containers(Particle*) const {
   return ContainersTemp(1, c_);
 }
 
-template <class Container>
-void GenericInContainerPairFilter<Container>
+template <class C>
+void GenericInContainerPairFilter<C>
 ::do_show(std::ostream &out) const {
   out << "Filtering from container " << c_->get_name() << std::endl;
 }
