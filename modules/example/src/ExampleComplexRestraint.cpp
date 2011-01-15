@@ -14,6 +14,10 @@
 #include <IMP/core/SingletonConstraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
+#ifdef __clang__
+// for _2, _3
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
 #include <boost/lambda/lambda.hpp>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
