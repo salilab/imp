@@ -749,6 +749,8 @@ namespace {
                          << " " << fvox);
     }
   }
+  // unused
+  /*
   inline unsigned int get_n(const DensityMap *m, unsigned int dim) {
     switch (dim) {
     case 0:
@@ -758,7 +760,7 @@ namespace {
     default:
       return m->get_header()->get_nz();
     }
-  }
+    }*/
 }
 
 
