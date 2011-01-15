@@ -14,6 +14,9 @@
 #elif defined(SWIG)
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)
 #define IMP_REQUIRE_SEMICOLON_NAMESPACE
+#elif defined(__clang__)
+#define IMP_REQUIRE_SEMICOLON_CLASS(Name)
+#define IMP_REQUIRE_SEMICOLON_NAMESPACE
 #else
 #define IMP_REQUIRE_SEMICOLON_CLASS(Name)                       \
   IMP_NO_DOXYGEN(IMP_NO_SWIG(friend void dummy_f_##Name()))
@@ -982,10 +985,6 @@ protection:                                                             \
     i.show(out);                                                        \
     return out;                                                         \
   }                                                                     \
-  template <class L>                                                    \
-  inline void show(std::ostream &out, const name<L> &i) {               \
-    i.show(out);                                                        \
-  }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 #define IMP_OUTPUT_OPERATOR_2(name)                                     \
@@ -995,10 +994,6 @@ protection:                                                             \
     i.show(out);                                                        \
     return out;                                                         \
   }                                                                     \
-  template <class L, class M>                                           \
-  inline void show(std::ostream &out, const name<L, M> &i)              \
-    i.show(out);                                                        \
-  }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 
@@ -1007,9 +1002,6 @@ protection:                                                             \
   {                                                                     \
     i.show(out);                                                        \
     return out;                                                         \
-  }                                                                     \
-  inline void show(std::ostream &out, const name &i) {                  \
-    i.show(out);                                                        \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
