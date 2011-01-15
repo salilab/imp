@@ -12,7 +12,6 @@
 #include <IMP/core/HarmonicUpperBound.h>
 #include "IMP/container_macros.h"
 #include <IMP/log.h>
-#include <boost/lambda/lambda.hpp>
 //todo - revmoe
 #include <IMP/atom/pdb.h>
 IMPEM_BEGIN_NAMESPACE
