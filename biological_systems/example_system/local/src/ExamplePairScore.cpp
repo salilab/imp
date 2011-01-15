@@ -9,8 +9,6 @@
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
 
-#include <boost/lambda/lambda.hpp>
-
 IMPEXAMPLESYSTEMLOCAL_BEGIN_NAMESPACE
 
 ExamplePairScore::ExamplePairScore(double x0, double k): x0_(x0), k_(k) {}
