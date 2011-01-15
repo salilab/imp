@@ -54,6 +54,7 @@ namespace {
       return mass;
     }
   }
+  /*
   // ignores overlap
   double get_volume(Hierarchy h) {
     if (core::XYZR::particle_is_instance(h)) {
@@ -66,6 +67,7 @@ namespace {
       return volume;
     }
   }
+  */
   void gather_residue_indices(Hierarchy h, Ints &inds) {
     if (Residue::particle_is_instance(h)) {
       int i=Residue(h).get_index();

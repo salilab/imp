@@ -65,6 +65,7 @@ namespace {
       c.add_child(Hierarchy(children[i]));
     }
   }
+  /*
   void sort_atoms(Residue c) {
     HierarchiesTemp dchildren =c.get_children();
     ParticlesTemp children(dchildren.begin(), dchildren.end());
@@ -73,7 +74,7 @@ namespace {
     for (unsigned int i=0; i< children.size(); ++i) {
       c.add_child(Hierarchy(children[i]));
     }
-  }
+    }*/
 
   void canonicalize(Hierarchy h) {
     for (unsigned int i=0; i < h.get_number_of_children(); ++i) {
