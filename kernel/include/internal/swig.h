@@ -194,6 +194,8 @@ IMPEXPORT int _test_overload(const Restraints &ps);
 
 IMPEXPORT int _test_intranges(const IntRanges &ips);
 
+IMPEXPORT void _test_log();
+
 
 template <class BG, class Label>
 class BoostDigraph: public Object {

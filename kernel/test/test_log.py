@@ -4,7 +4,6 @@ import sys
 from StringIO import StringIO
 
 class LogTests(IMP.test.TestCase):
-
     def test_log_targets(self):
         """Test log targets"""
         log_level = IMP.get_log_level()
@@ -37,6 +36,12 @@ class LogTests(IMP.test.TestCase):
         # using the log target that is in the process of being freed
         del t
         IMP.set_log_level(log_level)
-
+    def test_log_functions(self):
+        """Test function log looks ok"""
+        # I don't feel like arranging to capture the output...
+        print "calling"
+        IMP.set_log_level(IMP.VERBOSE)
+        IMP._test_log()
+        print "done"
 if __name__ == '__main__':
     IMP.test.main()
