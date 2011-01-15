@@ -690,8 +690,10 @@ class FileBasedGrid(AbstractGrid):
             
             command += 'xterm'
 
-            argv = ['-title', host.name, '-geometry', self.window_size,
-                    '-hold', '-e',
+            argv = ['-title', host.name, 
+                    '-geometry', self.window_size,
+                    '-hold', 
+                    '-e',
                     host.python, '-i'] + argv
 
             pipe = ''
