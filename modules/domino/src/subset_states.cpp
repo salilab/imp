@@ -71,28 +71,6 @@ namespace {
   }
 
 
-void setup_filters(const Subset &s,
-                     const Ints &order,
-                     const SubsetFilterTables &sfts,
-                     std::vector<SubsetFilters> &ses) {
-    IMP_INTERNAL_CHECK(s.size()== ses.size(), "Sizes don't match");
-    for (unsigned int j=0; j < ses.size(); ++j) {
-      Subset cs= get_sub_subset(s, order.begin()+j, order.end());
-      if (cs.size()==0) continue;
-      Subset es= get_sub_subset(s, order.begin()+j+1, order.end());
-      for (unsigned int i=0; i< sfts.size(); ++i) {
-        /*std::cout << "Getting evaluator for " << j
-          << " on " << cs << " and " << es << std::endl;*/
-        SubsetFilter* se= sfts[i]->get_subset_filter(cs,
-                                                     Subsets(1,es));
-        if (se) {
-          se->set_was_used(true);
-          ses[j].push_back(se);
-        }
-      }
-    }
-  }
-
     void initialize_order(const Subset &s,
                           const SubsetFilterTables &sft,
                           Ints &order,
