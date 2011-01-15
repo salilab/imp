@@ -175,6 +175,7 @@ void setup_filters(const Subset &s,
   void fill_states_list(const Subset &s,
                         ParticleStatesTable *table,
                         const SubsetFilterTables &sft,
+                        unsigned int max,
                         SubsetStates &states_) {
     //std::cout << "Searching order for " << s << std::endl;
     Ints order;
@@ -310,6 +311,11 @@ void setup_filters(const Subset &s,
                   << " with " << sz << " states found so far."
                   << " Last state is " << to_push, ValueException);
       }
+      if (states_.size() > max) {
+        IMP_WARN("Truncated subset states at " << max
+                 << " for subset " << s);
+        goto done;
+      }
     }
   increment:
     //std::cout << "Incrementing " << cur << " on "
@@ -326,7 +332,7 @@ void setup_filters(const Subset &s,
         goto filter;
       }
     }
-    //done:
+  done:
     std::sort(states_.begin(), states_.end());
     IMP_IF_LOG(TERSE) {
       std::size_t possible=1;
@@ -345,8 +351,9 @@ void setup_filters(const Subset &s,
 
 BranchAndBoundSubsetStatesTable
 ::BranchAndBoundSubsetStatesTable(ParticleStatesTable *pst,
-                                  const SubsetFilterTables &sft):
-  pst_(pst), sft_(sft){
+                                  const SubsetFilterTables &sft,
+                                  unsigned int max):
+  pst_(pst), sft_(sft), max_(max){
   IMP_LOG(TERSE, "Created BranchAndBoundSubsetStates with filters: ");
   IMP_IF_LOG(TERSE) {
     for (unsigned int i=0; i< sft.size(); ++i) {
@@ -361,7 +368,7 @@ SubsetStates BranchAndBoundSubsetStatesTable
   set_was_used(true);
   IMP_OBJECT_LOG;
   SubsetStates ssl;
-  fill_states_list(s, pst_, sft_, ssl);
+  fill_states_list(s, pst_, sft_, max_, ssl);
   return ssl;
 }
 

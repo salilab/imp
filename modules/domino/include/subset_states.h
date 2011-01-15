@@ -76,11 +76,14 @@ class IMPDOMINOEXPORT BranchAndBoundSubsetStatesTable:
 public:
   Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
+  unsigned int max_;
 #endif
  public:
   BranchAndBoundSubsetStatesTable(ParticleStatesTable* pst,
                                   const SubsetFilterTables &sft
-                                  = SubsetFilterTables());
+                                  = SubsetFilterTables(),
+                                  unsigned int max
+                                  = std::numeric_limits<unsigned int>::max());
   IMP_SUBSET_STATES_TABLE(BranchAndBoundSubsetStatesTable);
 };
 

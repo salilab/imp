@@ -29,7 +29,8 @@ SubsetStates get_best_conformations(const SubsetGraph &jt,
                                     const SubsetFilterTables &filters,
                                     const SubsetStatesTable *states,
                                     ListSubsetFilterTable *lsft,
-                                    InferenceStatistics &stats);
+                                    InferenceStatistics &stats,
+                                    unsigned int max);
 
 
 IMPDOMINO_END_INTERNAL_NAMESPACE

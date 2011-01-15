@@ -186,7 +186,8 @@ SubsetState get_merged_subset_state(const Subset &s,
 IMPDOMINOEXPORT NodeData
 get_union(const Subset &s0, const Subset &s1,
           const NodeData &nd0, const NodeData &nd1,
-          const EdgeData &ed);
+          const EdgeData &ed,
+          unsigned int max);
 
 inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
                                      const Subset &s,

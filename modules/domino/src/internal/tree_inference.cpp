@@ -26,7 +26,8 @@ namespace {
                                   const SubsetFilterTables &filters,
                                   const SubsetStatesTable *states,
                                   ListSubsetFilterTable *lsft,
-                                  InferenceStatistics &stats) {
+                                  InferenceStatistics &stats,
+                                  unsigned int max) {
     SubsetMap subset_map= boost::get(boost::vertex_name, jt);
     IMP_FUNCTION_LOG;
     Subset s;
@@ -44,7 +45,7 @@ namespace {
         = get_best_conformations_internal(jt, *be.first, root, all,
                                           filters,
                                           states, lsft,
-                                          stats);
+                                          stats, max);
       if (!initialized) {
         s= boost::get(subset_map, root);
         IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
@@ -55,7 +56,7 @@ namespace {
         stats.add_graph_subset(s, nd.subset_states);
       }
       EdgeData ed= get_edge_data(s, cpd.first, filters);
-      nd= get_union(s, cpd.first, nd, cpd.second, ed);
+      nd= get_union(s, cpd.first, nd, cpd.second, ed, max);
       stats.add_merged_subset(ed.union_subset, nd.subset_states);
       s= ed.union_subset;
       if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
@@ -81,12 +82,13 @@ SubsetStates get_best_conformations(const SubsetGraph &jt,
                                     const SubsetFilterTables &filters,
                                     const SubsetStatesTable *states,
                                     ListSubsetFilterTable *lsft,
-                                    InferenceStatistics &stats) {
+                                    InferenceStatistics &stats,
+                                    unsigned int max) {
   return get_best_conformations_internal(jt, root, root,
                                          all_particles,
                                          filters,
                                          states, lsft,
-                                         stats).second.subset_states;
+                                         stats, max).second.subset_states;
 }
 
 
