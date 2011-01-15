@@ -20,6 +20,7 @@ IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
 IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
 IMP_SWIG_VALUE(IMP::em, MapFilterByThreshold, MapFilterByThresholds);
+IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
 
 /* Since DensityHeaders are not values or Objects, we must ensure that whenever
    pointers to them are returned to Python, the object that manages the header's

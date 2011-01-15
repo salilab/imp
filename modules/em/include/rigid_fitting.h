@@ -88,6 +88,7 @@ public:
 protected:
   std::vector<FittingSolution> fs_;
 };
+IMP_VALUES(FittingSolutions, FittingSolutionsList);
 
 //! Local rigid fitting of a rigid body around a center point
 /**
