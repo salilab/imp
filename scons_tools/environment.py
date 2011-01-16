@@ -114,7 +114,7 @@ def _add_platform_flags(env):
         # be great to check if they match, but that is kind of hard.
         (opt, cflags, so) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         env['IMP_PYTHON_SO']=so
-        if dependency.gcc.get_is_gcc(env):
+        if dependency.gcc.get_is_gcc_like(env):
             basecflags=[x for x in opt.split()+cflags.split() \
                         if x not in ['-Werror', '-Wall','-O2', '-O3',
                                      '-fstack-protector', '-Wstrict-prototypes',
@@ -130,8 +130,8 @@ def _add_platform_flags(env):
                 ['-bundle', '-flat_namespace', '-undefined', 'suppress'])
 
 
-    if dependency.gcc.get_is_gcc(env):
-        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
+    if dependency.gcc.get_is_gcc_like(env):
+        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated", "-Werror"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
@@ -202,6 +202,7 @@ def get_base_environment(variables=None, *args, **kw):
     data.add(env)
     impvariables.update(env, variables)
     if env['IMP_USE_PLATFORM_FLAGS']:
+        _fix_include_path(env)
         _add_platform_flags(env)
     #col = colorizer.colorizer()
     #col.colorize(env)
@@ -275,7 +276,6 @@ def get_base_environment(variables=None, *args, **kw):
                            'IMPModuleConfigH': module._config_h.ConfigH,
                            'IMPModuleConfigCPP': module._config_h.ConfigCPP,
                            'IMPModuleLinkTest': module._link_test.LinkTest})
-    _fix_include_path(env)
     if env.get('linkflags', None):
         env.Append(LINKFLAGS=env['linkflags'])
     return env
