@@ -15,11 +15,14 @@ d.set_radius(radius)
 if use_rigid_bodies:
     prb= IMP.Particle(m)
     prb.set_name("rigid body")
+    d.set_coordinates(IMP.algebra.Vector3D(0,0,0))
     drb= IMP.core.RigidBody.setup_particle(prb, [p], IMP.algebra.ReferenceFrame3D())
+    print "initial frame", drb.get_reference_frame()
     fp= prb
     drb.set_coordinates_are_optimized(True)
     refiner= IMP.core.TableRefiner()
     refiner.add_particle(prb, [p])
+    print [p.get_name() for p in refiner.get_refined(prb)]
 else:
     fp= d
     d.set_coordinates_are_optimized(True)
