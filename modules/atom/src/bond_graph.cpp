@@ -64,6 +64,9 @@ BondGraph::~BondGraph() {
 }
 
 namespace {
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
 void bgl_concept_checks() {
 
   boost::function_requires<boost::VertexListGraphConcept<BondGraph> >();
