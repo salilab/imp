@@ -1,7 +1,7 @@
 Import('env')
 
 
-if env['BOOST_VERSION'] <= 103301 and env['percppcompilation']=="no":
+if int(env['BOOST_VERSION']) <= 103301 and env['percppcompilation']=="no":
     # there is a bug in boost that two headers can't be included at the same time as they
     # defined different template <class T> boost::contains(T,T).
     env['percppcompilation']="atom"
