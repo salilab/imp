@@ -1,5 +1,5 @@
 /**
- *  \file TIFFImageReaderWriter
+ *  \file TIFFImageReaderWriter.h
  *  \brief Management of reading/writing TIFF images
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.

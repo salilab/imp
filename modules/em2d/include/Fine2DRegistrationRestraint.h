@@ -1,5 +1,5 @@
 /**
- *  \file Fine2DRegistrationxRestratint.h
+ *  \file Fine2DRegistrationxRestraint.h
  *  \brief Alignment of 2D projections of a 3D volume
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */

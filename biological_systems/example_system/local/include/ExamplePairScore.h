@@ -1,5 +1,5 @@
 /**
- *  \file ExamplePairScore.h
+ *  \file example_system_local/ExamplePairScore.h
  *  \brief A Score on the distance between a pair of particles.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
