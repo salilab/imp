@@ -45,6 +45,7 @@ namespace {
     ret->set_origin(bb.get_corner(0));
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
+    ret->set_name("created density map");
     IMP_LOG(TERSE, "Created map with dimensions " << n[0] << " " << n[1]
             << " " << n[2] << " and spacing " << ret->get_spacing()
             << std::endl);
@@ -58,6 +59,7 @@ DensityMap *create_density_map(int nx,int ny,int nz,
     ret->set_void_map(nx,ny,nz);
     ret->update_voxel_size(spacing);
     ret->get_header_writable()->compute_xyz_top();
+    ret->set_name("created density map");
     IMP_LOG(TERSE, "Created map with dimensions " << nx << " " << ny
             << " " << nz << " and spacing " << ret->get_spacing()
             << std::endl);
@@ -73,7 +75,7 @@ DensityMap::DensityMap()
 }
 
 
-DensityMap::DensityMap(const DensityHeader &header){
+DensityMap::DensityMap(const DensityHeader &header): Object("DensityMap%1%"){
   header_ = header;
   header_.compute_xyz_top(true);
   //allocate the data
