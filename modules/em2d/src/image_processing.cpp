@@ -499,7 +499,9 @@ void do_histogram_stretching(algebra::Matrix2D_d &m,
       break;
     }
   }
-  for (unsigned i=hist.size()-1;i>=0;--i ) {
+  // must be int so it can go negative
+  // and, unfortunately, unsigned - unsigned is still unsigned.
+  for (int i=static_cast<int>(hist.size())-1;i>=0;--i ) {
     if(hist[i] > h_cut) {
       i_max=i;
       break;
