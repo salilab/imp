@@ -17,6 +17,10 @@ ExampleRefCounted::ExampleRefCounted(const std::vector<double> &data ):
 }
 namespace {
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wunused-function"
+#endif
+
 void usage_example() {
   std::vector<double> data(1000, -1);
 
