@@ -6,8 +6,6 @@ m= IMP.Model()
 sel=IMP.atom.CAlphaPDBSelector()
 # read protein
 mh=IMP.atom.read_pdb(IMP.em.get_example_path("input.pdb"),m,sel)
-# add radius info to each atom
-IMP.atom.add_radii(mh)
 apix=1.
 resolution=6.
 # compute bbox, and map size in voxels
@@ -16,8 +14,7 @@ bbox            = IMP.atom.get_bounding_box(mh)
 #nx              = int(bboxCoverage * diag[0] / apix)
 #ny              = int(bboxCoverage * diag[1] / apix)
 #nz              = int(bboxCoverage * diag[2] / apix)
-# compute origin
-origin  = bbox.get_corner(0)
+
 #create a density header of the requested size
 dheader = IMP.em.create_density_header(bbox,apix)
 dheader.set_resolution(resolution)
