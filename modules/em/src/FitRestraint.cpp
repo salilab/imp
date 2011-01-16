@@ -245,7 +245,10 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
               rb_model_dens_map_[rb_i],
               rbs_[rb_i].get_reference_frame().get_transformation_to()
               *rbs_orig_trans_[rb_i]);
-      write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
+      // it is not necessarily a hierarchy
+      if (atom::Hierarchy::particle_is_instance(rbs_[rb_i])) {
+        write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
+      }
       CoarseCC::calc_derivatives(
               target_dens_map_,
               //*(rb_model_dens_map_[rb_i]),
