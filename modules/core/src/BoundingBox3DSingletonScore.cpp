@@ -10,10 +10,6 @@
 #include "IMP/core/XYZ.h"
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 
-#ifdef __clang__
-// _2, _3
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
 #include <boost/lambda/lambda.hpp>
 
 IMPCORE_BEGIN_NAMESPACE

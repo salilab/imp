@@ -18,10 +18,6 @@
 
 #include <climits>
 
-#ifdef __clang__
-#pragma clang diagnostic ignored "-Wmultichar"
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/prim_minimum_spanning_tree.hpp>
 #include <boost/graph/adjacency_list.hpp>
