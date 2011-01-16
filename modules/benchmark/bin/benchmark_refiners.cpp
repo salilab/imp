@@ -22,6 +22,7 @@ using namespace IMP::atom;
 #define ATTRIBUTES
 #endif
 
+namespace {
 template <class PT>
 void do_benchmark(std::string name, Model *,
                   const PT &ps, Refiner *r, double target) {
@@ -37,7 +38,7 @@ void do_benchmark(std::string name, Model *,
              }, runtime);
   IMP::benchmark::report(std::string("refiner ")+name, runtime, total);
 }
-
+}
 
 int main(int argc, char **argv) {
   IMP_NEW(Model, m, ());

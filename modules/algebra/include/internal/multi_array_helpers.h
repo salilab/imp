@@ -28,7 +28,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
  * \param[in] inds class with the list of starting indices for the array
  */
 template<typename T1, typename T2, typename T3>
-bool roll_inds(T1& inds, T2* dims, T3* start)
+inline bool roll_inds(T1& inds, T2* dims, T3* start)
 {
   static bool initialized = false;
   int i = inds.size() - 1;
@@ -64,7 +64,8 @@ bool roll_inds(T1& inds, T2* dims, T3* start)
 
 //! Operates with two arrays of the same shape on a element per element basis.
 template <typename T, int D>
-void operate_arrays(const MultiArray<T, D>& a1, const MultiArray<T, D>& a2,
+inline void operate_arrays(const MultiArray<T, D>& a1,
+                           const MultiArray<T, D>& a2,
                     MultiArray<T, D>& result, const char operation)
 {
   if (!(a1.same_shape(a2) && a1.same_shape(result))) {
@@ -92,7 +93,7 @@ void operate_arrays(const MultiArray<T, D>& a1, const MultiArray<T, D>& a2,
 
 //! Operates with one array and a scalar on a element per element basis.
 template <typename T, int D>
-void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
+inline void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
          MultiArray<T, D>& result, const char operation) {
   for (unsigned long i=0;i<a1.num_elements();i++) {
     switch (operation) {
@@ -114,7 +115,7 @@ void operate_array_and_scalar(const MultiArray<T, D>& a1, const T& X,
 
 //! Operates with one scalar and an array on a element per element basis.
 template <typename T, int D>
-void operate_scalar_and_array(const T& X, const MultiArray<T, D>& a1,
+inline void operate_scalar_and_array(const T& X, const MultiArray<T, D>& a1,
                               MultiArray<T, D>& result, const char operation)
 {
 

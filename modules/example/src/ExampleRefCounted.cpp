@@ -15,6 +15,7 @@ IMPEXAMPLE_BEGIN_NAMESPACE
 ExampleRefCounted::ExampleRefCounted(const std::vector<double> &data ):
   data_(data){
 }
+namespace {
 
 void usage_example() {
   std::vector<double> data(1000, -1);
@@ -40,6 +41,6 @@ void usage_example() {
   std::cout << rc2->get_data(100);
   // the object will be deleted on exit
 }
-
+}
 
 IMPEXAMPLE_END_NAMESPACE

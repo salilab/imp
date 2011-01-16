@@ -14,7 +14,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 
 template <class A, class B>
-bool get_is_non_empty(const A &a, const B &b) {
+inline bool get_is_non_empty(const A &a, const B &b) {
   for (unsigned int i=0; i< A::DIMENSION; ++i) {
     if (a[i] >= b[i]) return false;
   }
@@ -22,7 +22,7 @@ bool get_is_non_empty(const A &a, const B &b) {
 }
 
 template <class It>
-int  lexicographical_compare(It b0, It e0, It b1, It e1) {
+inline int  lexicographical_compare(It b0, It e0, It b1, It e1) {
   while (b0 != e0) {
     if (*b0 < *b1) return -1;
     else if (*b0 > *b1) return 1;
@@ -132,21 +132,21 @@ inline int snap(unsigned int dim, int v, const int d[]) {
 }
 
 template <class EI>
-EI snap(const EI &v, const int d[]) {
+inline EI snap(const EI &v, const int d[]) {
   return EI(snap(0, v[0], d),
             snap(1, v[1], d),
             snap(2, v[2], d));
 }
 template <class EI>
-std::pair<EI, EI> empty_range() {
+inline std::pair<EI, EI> empty_range() {
   return std::make_pair(EI(0,0,0), EI(0,0,0));
 }
 
 
 template <class EI>
-std::pair<EI, EI> intersect(EI l,
-                            EI u,
-                            const int d[]) {
+inline std::pair<EI, EI> intersect(EI l,
+                                   EI u,
+                                   const int d[]) {
   EI rlb;
   EI rub;
   for (unsigned int i=0; i< 3; ++i) {

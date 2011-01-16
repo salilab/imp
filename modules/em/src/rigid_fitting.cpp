@@ -33,6 +33,7 @@ void FittingSolutions::sort(bool reverse) {
     std::reverse(fs_.begin(),fs_.end());}
 }
 
+namespace {
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
                               core::RigidBody rb,Refiner *leaves_ref,
                 const FloatKey &wei_key,
@@ -115,6 +116,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   }
   //return the rigid body to the original position
   rb->set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
+}
 }
 
 FittingSolutions local_rigid_fitting_around_point(
@@ -246,7 +248,7 @@ FittingSolutions local_rigid_fitting_grid_search(
        algebra::get_rotation_about_axis(axis, angle);
      rots.push_back(r);
    }
-   unsigned int rot_ind=-1;
+   unsigned int rot_ind=static_cast<unsigned int>(-1);
    for(algebra::Rotation3Ds::iterator it = rots.begin();
                                       it != rots.end();it++) {
      ++rot_ind;

@@ -25,7 +25,7 @@ inline bool xorT(bool x, bool y)
 
 //! Sign of a number. 1 if the number is higher or equal to 0 and -1 otherwise
 template<typename T>
-int get_sign(const T& x)
+inline int get_sign(const T& x)
 {
   if (x >= 0) return 1;
   return -1;
@@ -44,7 +44,7 @@ int get_sign(const T& x)
  * \endcode
  */
 template<typename T>
-int get_rounded(const T& x)
+inline int get_rounded(const T& x)
 {
   if (x > 0) {
     return (int)((x) + 0.5);
@@ -69,7 +69,7 @@ int get_rounded(const T& x)
  * \endcode
  */
 template<typename T>
-T get_constrained(const T x, const T x0, const T xF)
+inline T get_constrained(const T x, const T x0, const T xF)
 {
   if (x < x0) return x0;
   if (x > xF) return xF;

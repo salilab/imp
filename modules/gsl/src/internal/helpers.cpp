@@ -11,7 +11,7 @@
 #include <gsl/gsl_vector.h>
 
 IMPGSL_BEGIN_INTERNAL_NAMESPACE
-
+namespace {
 double gsl_f(const gsl_vector *v, void *data) {
   const GSLOptimizer *opt=reinterpret_cast<const GSLOptimizer*>(data);
   return opt->evaluate(v);
@@ -27,6 +27,7 @@ void gsl_fdf(const gsl_vector *v, void *data,
              double *f, gsl_vector *df) {
   const GSLOptimizer *opt=reinterpret_cast<const GSLOptimizer*>(data);
   *f= opt->evaluate_derivative(v, df);
+}
 }
 
 gsl_multimin_function_fdf create_function_data(const GSLOptimizer *opt) {

@@ -13,11 +13,6 @@
 #pragma warning( disable : 4675)
 #endif
 
-#ifdef __clang__
-// for _weight_map
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
-
 #include <boost/graph/isomorphism.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_utility.hpp>
@@ -68,7 +63,7 @@ BondGraph::~BondGraph() {
   }
 }
 
-
+namespace {
 void bgl_concept_checks() {
 
   boost::function_requires<boost::VertexListGraphConcept<BondGraph> >();
@@ -91,8 +86,6 @@ void bgl_concept_checks() {
      .distance_map(BondGraph::VertexFloatPropertyMap(FloatKey("hi")))
      .vertex_index_map(a.get_vertex_index_map()));
 }
+}
 
 IMPATOM_END_NAMESPACE
-/*,
-    boost::vertex_index1_map=make_attribute_property_map(index)),
-    boost::vertex_index2_map=make_attribute_property_map(index))*/

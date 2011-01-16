@@ -15,6 +15,7 @@ using namespace IMP::algebra;
 using namespace IMP::benchmark;
 using namespace IMP::container;
 
+namespace {
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax,
@@ -70,6 +71,7 @@ void test_one(std::string name,
     oss << "bcpf " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
   }
+}
 }
 
 int main() {

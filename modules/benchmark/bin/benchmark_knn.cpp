@@ -11,6 +11,7 @@ using namespace IMP;
 using namespace IMP::algebra;
 using namespace IMP::benchmark;
 
+namespace {
 template <class KNN>
 void test(std::string name,
           const std::vector<VectorD<3> > &pts,
@@ -43,6 +44,7 @@ void test_uniform(std::string name,
   }
   KNN knn(pts.begin(), pts.end());
   test(name+" uniform", pts, knn, eps);
+}
 }
 
 int main() {

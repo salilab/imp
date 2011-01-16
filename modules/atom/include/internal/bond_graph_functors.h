@@ -93,7 +93,7 @@ struct AttributeVertexPropertyMap {
 };
 
 template <class Key, class Value>
-typename AttributeVertexPropertyMap<Key, Value>::value_type
+inline typename AttributeVertexPropertyMap<Key, Value>::value_type
 get(const AttributeVertexPropertyMap<Key, Value> &m,
     Bonded d) {
   return m[d];
@@ -101,7 +101,7 @@ get(const AttributeVertexPropertyMap<Key, Value> &m,
 
 
 template <class Key, class Value>
-void put(const AttributeVertexPropertyMap<Key, Value> &m,
+inline void put(const AttributeVertexPropertyMap<Key, Value> &m,
          Bonded d,
          Value    v) {
   if (d.get_particle()->has_attribute(m.k_)) {
@@ -112,7 +112,7 @@ void put(const AttributeVertexPropertyMap<Key, Value> &m,
 }
 
 template <class Key>
-void put(const AttributeVertexPropertyMap<Key, Bonded> &m,
+inline void put(const AttributeVertexPropertyMap<Key, Bonded> &m,
          Bonded d,
          Bonded    v) {
   if (d.get_particle()->has_attribute(m.k_)) {
@@ -143,7 +143,7 @@ struct AttributeEdgePropertyMap {
 };
 
 template <class Key, class Value>
-typename AttributeEdgePropertyMap<Key, Value>::value_type
+inline typename AttributeEdgePropertyMap<Key, Value>::value_type
 get(const AttributeEdgePropertyMap<Key, Value> &m,
     EdgeDescriptor d) {
   return m[d];
@@ -151,7 +151,7 @@ get(const AttributeEdgePropertyMap<Key, Value> &m,
 
 
 template <class Key, class Value>
-void put(const AttributeVertexPropertyMap<Key, Value> &m,
+inline void put(const AttributeVertexPropertyMap<Key, Value> &m,
          EdgeDescriptor d,
          Value    v) {
   Bond bd= get_bond(Bonded(d.first),

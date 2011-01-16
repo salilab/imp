@@ -38,7 +38,7 @@ class IMPDOMINOEXPORT SubsetStatesTable: public Object {
   friend class DominoSampler;
  protected:
   const DominoSampler *get_sampler() const {return sampler_;}
-  const bool get_has_sampler() const {return sampler_;}
+  bool get_has_sampler() const {return sampler_;}
 public:
 #ifndef IMP_DOXYGEN
   void set_sampler(const DominoSampler *sampler) {

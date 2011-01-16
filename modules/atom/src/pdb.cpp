@@ -424,6 +424,7 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model,
 // mol2.cpp
 bool check_arbond(Particle* atom_p);
 
+namespace {
 void write_pdb(const Particles& ps, TextOutput out)
 {
   IMP_FUNCTION_LOG;
@@ -477,6 +478,7 @@ void write_pdb(const Particles& ps, TextOutput out)
       }
     }
   }
+}
 }
 
 void write_pdb(Hierarchy mhd, TextOutput out)

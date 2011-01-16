@@ -86,7 +86,7 @@ public:
 };
 
 template <class SD, unsigned int D, class UF>
-double compute_distance_pair_score(const algebra::VectorD<D> &delta,
+inline double compute_distance_pair_score(const algebra::VectorD<D> &delta,
                                    const UF *f,
                                    algebra::VectorD<D> *d,
                                    SD sd,
@@ -116,7 +116,7 @@ double compute_distance_pair_score(const algebra::VectorD<D> &delta,
 
 
 template <class W0, class W1, class SD, class UF>
-double evaluate_distance_pair_score(W0 d0, W1 d1,
+inline double evaluate_distance_pair_score(W0 d0, W1 d1,
                                     DerivativeAccumulator *da,
                                     const UF *f, SD sd,
                                     double deriv_multiplier = 1.0)

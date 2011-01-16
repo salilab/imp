@@ -15,6 +15,7 @@ using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
 
+namespace {
 void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
   double runtime;
   double value=0;
@@ -29,6 +30,7 @@ void benchmark_it(std::string name, ListSingletonContainer *lsc, Model *m) {
       value+= m->evaluate(false);
     }, runtime);
   IMP::benchmark::report(name, runtime, value);
+}
 }
 
 int main() {

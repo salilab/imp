@@ -34,7 +34,7 @@ using namespace std;
 
 
 template <class T>
-std::ostream& operator<<(std::ostream &s, const Array2D<T> &A)
+inline std::ostream& operator<<(std::ostream &s, const Array2D<T> &A)
 {
     int M=A.dim1();
     int N=A.dim2();
@@ -55,7 +55,7 @@ std::ostream& operator<<(std::ostream &s, const Array2D<T> &A)
 }
 
 template <class T>
-std::istream& operator>>(std::istream &s, Array2D<T> &A)
+inline std::istream& operator>>(std::istream &s, Array2D<T> &A)
 {
 
     int M, N;
@@ -76,7 +76,7 @@ std::istream& operator>>(std::istream &s, Array2D<T> &A)
 
 
 template <class T>
-Array2D<T> operator+(const Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T> operator+(const Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -98,7 +98,7 @@ Array2D<T> operator+(const Array2D<T> &A, const Array2D<T> &B)
 }
 
 template <class T>
-Array2D<T> operator-(const Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T> operator-(const Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -121,7 +121,7 @@ Array2D<T> operator-(const Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T> operator*(const Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T> operator*(const Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -146,7 +146,7 @@ Array2D<T> operator*(const Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T> operator/(const Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T> operator/(const Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -172,7 +172,7 @@ Array2D<T> operator/(const Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T>&  operator+=(Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T>&  operator+=(Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -191,7 +191,7 @@ Array2D<T>&  operator+=(Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T>&  operator-=(Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T>&  operator-=(Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -210,7 +210,7 @@ Array2D<T>&  operator-=(Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T>&  operator*=(Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T>&  operator*=(Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -231,7 +231,7 @@ Array2D<T>&  operator*=(Array2D<T> &A, const Array2D<T> &B)
 
 
 template <class T>
-Array2D<T>&  operator/=(Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T>&  operator/=(Array2D<T> &A, const Array2D<T> &B)
 {
   int m = A.dim1();
   int n = A.dim2();
@@ -261,7 +261,7 @@ Array2D<T>&  operator/=(Array2D<T> &A, const Array2D<T> &B)
 
 */
 template <class T>
-Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)
+inline Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)
 {
   if (A.dim2() != B.dim1()) {
     IMP_THROW("Bad dimensions", ValueException);
@@ -290,7 +290,7 @@ Array2D<T> matmult(const Array2D<T> &A, const Array2D<T> &B)
 
 /** Added by Daniel */
 template <class T>
-Array2D<T> transpose(const Array2D<T> &A)
+inline Array2D<T> transpose(const Array2D<T> &A)
 {
   Array2D<T> ret(A.dim2(), A.dim1());
   for (int i=0; i < A.dim1(); ++i) {
@@ -304,7 +304,7 @@ Array2D<T> transpose(const Array2D<T> &A)
 
 /** Added by Keren */
 template <class T>
-T determinant(const Array2D<T> &M)
+inline T determinant(const Array2D<T> &M)
 {
   assert(M.dim1() == M.dim2()); // square matrices only please
   // Compute determinant using LU factors.
@@ -314,7 +314,7 @@ T determinant(const Array2D<T> &M)
 
 /** Added by Keren */
 template<class T>
-Array2D<T> inverse(const Array2D<T> &M)
+inline Array2D<T> inverse(const Array2D<T> &M)
 {
   assert(M.dim1() == M.dim2()); // square matrices only please
   // solve for inverse with LU decomposition
@@ -328,7 +328,7 @@ Array2D<T> inverse(const Array2D<T> &M)
 
 /** Added by Keren */
 template<class T>
-bool is_inversable(const Array2D<T> &M)
+inline bool is_inversable(const Array2D<T> &M)
 {
   if (M.dim1() != M.dim2()) {
     return false;
@@ -353,7 +353,7 @@ bool is_inversable(const Array2D<T> &M)
 
 /** Added by Keren */
 template<class T>
-Array1D<T> multiply(const Array2D<T> &M,const Array1D<T> &V)
+inline Array1D<T> multiply(const Array2D<T> &M,const Array1D<T> &V)
 {
   assert(M.dim2() == V.dim1());
   Array1D<T> ans(V.dim1());
@@ -368,7 +368,7 @@ Array1D<T> multiply(const Array2D<T> &M,const Array1D<T> &V)
 
 /** Added by Keren */
 template<class T>
-Array1D<T> multiply(T s,const Array1D<T> &V)
+inline Array1D<T> multiply(T s,const Array1D<T> &V)
 {
   Array1D<T> ans(V.dim1());
   for(int i=0; i< V.dim1(); ++i) {
@@ -379,7 +379,7 @@ Array1D<T> multiply(T s,const Array1D<T> &V)
 
 /** Added by Keren */
 template<class T>
-Array2D<T> multiply(T s,const Array2D<T> &V)
+inline Array2D<T> multiply(T s,const Array2D<T> &V)
 {
   Array2D<T> ans(V.dim1(), V.dim2());
   for(int i=0; i< V.dim1(); ++i) {
@@ -393,7 +393,7 @@ Array2D<T> multiply(T s,const Array2D<T> &V)
 
 /** Added by Keren */
 template<class T>
-Array1D<T> add(const Array1D<T> &V1,const Array1D<T> &V2)
+inline Array1D<T> add(const Array1D<T> &V1,const Array1D<T> &V2)
 {
   assert(V1.dim1() == V2.dim1());
   Array1D<T> ans(V1.dim1());
@@ -405,7 +405,7 @@ Array1D<T> add(const Array1D<T> &V1,const Array1D<T> &V2)
 
 /** Added by Keren */
 template<class T>
-Array1D<T> subtract(const Array1D<T> &V1,const Array1D<T> &V2)
+inline Array1D<T> subtract(const Array1D<T> &V1,const Array1D<T> &V2)
 {
   Array1D<T> ans(V1.dim1());
   for(int i=0; i< V1.dim1(); ++i) {
@@ -416,7 +416,7 @@ Array1D<T> subtract(const Array1D<T> &V1,const Array1D<T> &V2)
 
 /** Added by Keren */
 template<class T>
-T dot_product(const Array1D<T> &V1,const Array1D<T> &V2)
+inline T dot_product(const Array1D<T> &V1,const Array1D<T> &V2)
 {
   assert(V1.dim1() == V2.dim1());
   T ans = (T)0;
@@ -428,7 +428,7 @@ T dot_product(const Array1D<T> &V1,const Array1D<T> &V2)
 
 /** Added by Keren */
 template<class T>
-void set_identity(Array2D<T> &M)
+inline void set_identity(Array2D<T> &M)
 {
   for(int r=0; r< M.dim1(); ++r) {
     for(int c=0; c< M.dim2(); ++c) {
@@ -440,7 +440,7 @@ void set_identity(Array2D<T> &M)
 
 /** Added by Keren */
 template<class T>
-void set_row(Array2D<T> &M, const Array1D<T> &v,int i)
+inline void set_row(Array2D<T> &M, const Array1D<T> &v,int i)
 {
   assert(i<M.dim1());
   assert(v.dim1() == M.dim2());

@@ -9,6 +9,7 @@
 #include <IMP/log.h>
 IMPALGEBRA_BEGIN_NAMESPACE
 
+namespace {
 //! Return true if the vectors are paralel
 double get_are_parallel(const VectorD<3> &v1,
                                const VectorD<3> &v2) {
@@ -16,6 +17,7 @@ double get_are_parallel(const VectorD<3> &v1,
   float det1 = v1.get_magnitude();
   float det2 = v2.get_magnitude();
   return (std::abs(std::abs(dot_p)-std::abs(det1*det2))<0.0001);
+}
 }
 
 

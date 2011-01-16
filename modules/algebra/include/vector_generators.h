@@ -34,7 +34,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \relatesalso VectorD
  */
 template <unsigned int D>
-VectorD<D>
+inline VectorD<D>
 get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret;
   for (unsigned int i=0; i< D; ++i) {
@@ -50,7 +50,7 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
     \relatesalso VectorD
  */
 template <unsigned int D>
-VectorD<D>
+inline VectorD<D>
 get_random_vector_on(const BoundingBoxD<D> &bb) {
   double areas[D*2];
   VectorD<D> lb= bb.get_corner(0);
@@ -108,7 +108,7 @@ get_random_vector_on(const BoundingBoxD<D> &bb) {
     \relatesalso SphereD
  */
 template <unsigned int D>
-VectorD<D>
+inline VectorD<D>
 get_random_vector_in(const SphereD<D> &s){
   BoundingBoxD<D> bb= get_bounding_box(s);
   double norm;
@@ -168,7 +168,7 @@ get_random_vector_on(const SphereD<D> &s) {
     \relatesalso SphereD
     */
 template <unsigned int D>
-std::vector<VectorD<D> >
+inline std::vector<VectorD<D> >
 get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),
                                         s.get_radius(), true);
@@ -188,7 +188,7 @@ get_uniform_surface_cover(const Cylinder3D &cyl,
     z coordinates are greater than those of the center of the sphere.
  */
 template <unsigned int D>
-std::vector<VectorD<D> >
+inline std::vector<VectorD<D> >
 get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),
                                         s.get_radius(), false);

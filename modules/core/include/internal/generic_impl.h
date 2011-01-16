@@ -66,7 +66,7 @@ void TupleRestraint<Score>::do_show(std::ostream& out) const
 }
 #ifndef IMP_DOXYGEN
 template <class Score>
-Restraint* create_restraint(Pointer<Score> s,
+inline Restraint* create_restraint(Pointer<Score> s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
   return create_restraint<Score>(s.get(), t, name);
@@ -191,19 +191,19 @@ void TupleConstraint<Before, After>::do_show(std::ostream &out) const {
 
 #ifndef IMP_DOXYGEN
 template <class Before, class After>
-Constraint* create_constraint(Pointer<Before> b, Pointer<After> a,
+inline Constraint* create_constraint(Pointer<Before> b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_constraint<Before, After>(b.get(), a.get(), t, name);
 }
 template <class Before, class After>
-Constraint* create_constraint(Before* b, Pointer<After> a,
+inline Constraint* create_constraint(Before* b, Pointer<After> a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_constraint<Before, After>(b, a.get(), t, name);
 }
 template <class Before, class After>
-Constraint* create_constraint(Pointer<Before> b, After* a,
+inline Constraint* create_constraint(Pointer<Before> b, After* a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   return create_constraint<Before, After>(b.get(), a, t, name);

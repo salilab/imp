@@ -699,7 +699,7 @@ protected:
 //! write to an output stream for 3 dimensions
 /** \relates MultiArray */
 template<typename T, int D>
-std::ostream& operator<<(std::ostream& ostrm,
+inline std::ostream& operator<<(std::ostream& ostrm,
                          const MultiArray<T, D>& v)
 {
   typedef boost::multi_array_types::index index;
@@ -754,7 +754,7 @@ std::ostream& operator<<(std::ostream& ostrm,
 //! Sum operator for a scalar and an array
 /** \relates MultiArray */
 template <class T, int D>
-MultiArray<T, D> operator+(const T& X,
+inline MultiArray<T, D> operator+(const T& X,
                            const MultiArray<T, D>& a1) {
   MultiArray<T, D> result(a1->shape());
   internal::operate_scalar_and_array(X,a1,result,"+");
@@ -764,7 +764,7 @@ MultiArray<T, D> operator+(const T& X,
 //! Minus operator for a scalar and an array
 /** \relates MultiArray */
 template <class T, int D>
-MultiArray<T, D> operator-(const T& X,
+inline MultiArray<T, D> operator-(const T& X,
                            const MultiArray<T, D>& a1) {
   MultiArray<T, D> result(a1->shape());
   internal::operate_scalar_and_array(X,a1,result,"-");
@@ -773,7 +773,7 @@ MultiArray<T, D> operator-(const T& X,
 //! Multiplication operator for a scalar and an array
 /** \relates MultiArray */
 template <class T, int D>
-MultiArray<T, D> operator*(const T& X,
+inline MultiArray<T, D> operator*(const T& X,
                            const MultiArray<T, D>& a1) {
   MultiArray<T, D> result(a1->shape());
   internal::operate_scalar_and_array(X,a1,result,"*");
@@ -783,7 +783,7 @@ MultiArray<T, D> operator*(const T& X,
 //! Division operator for a scalar and an array
 /** \relates MultiArray */
 template <class T, int D>
-MultiArray<T, D> operator/(const T& X,
+inline MultiArray<T, D> operator/(const T& X,
                            const MultiArray<T, D>& a1) {
   MultiArray<T, D> result(a1->shape());
   internal::operate_scalar_and_array(X,a1,result,"/");

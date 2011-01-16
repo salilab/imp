@@ -154,6 +154,7 @@ RMSDCalculator::RMSDCalculator(const ParticlesTemp &ps){
   }
 }
 
+namespace {
 void set_rotation_matrix(const algebra::Rotation3D &r,
                          std::vector<std::vector<double> > &m){
   algebra::Vector4D q = r.get_quaternion();
@@ -169,6 +170,7 @@ void set_rotation_matrix(const algebra::Rotation3D &r,
   m[2][0]=2*(b*d-a*c);
   m[2][1]=2*(c*d+a*b);
   m[2][2]=a*a-b*b-c*c+d*d;
+}
 }
 float RMSDCalculator::get_squared_rmsd(const algebra::Transformation3D &t1,
                                        const algebra::Transformation3D &t2){

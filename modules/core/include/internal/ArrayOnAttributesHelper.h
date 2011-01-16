@@ -43,7 +43,8 @@ struct ArrayData: public ArrayDataBase, public Data {
 };
 
 template <class K, class V, class D>
-std::ostream &operator<<(std::ostream &out, const ArrayData<K,V,D> &d) {
+inline std::ostream &operator<<(std::ostream &out,
+                                const ArrayData<K,V,D> &d) {
   out << d.prefix;
   return out;
 }

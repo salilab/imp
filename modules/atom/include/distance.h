@@ -22,7 +22,7 @@ IMPATOM_BEGIN_NAMESPACE
    \genericgeometry
  */
 template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
+inline double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
                 const IMP::algebra::Transformation3D &tr_for_second
                 = IMP::algebra::get_identity_transformation_3d()) {
   IMP_USAGE_CHECK(std::distance(m1.begin(), m1.end())
@@ -53,7 +53,7 @@ double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   \genericgeometry
 **/
 template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
-double get_native_overlap(const Vecto3DsOrXYZs0& m1,
+inline double get_native_overlap(const Vecto3DsOrXYZs0& m1,
                       const Vecto3DsOrXYZs1& m2,double threshold) {
   IMP_USAGE_CHECK(m1.size()==m2.size(),
             "native_verlap: The input sets of XYZ points "

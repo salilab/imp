@@ -59,7 +59,7 @@ public:
     \relatesalso ContainerRestraint
 */
 template <class Score, class Container>
-Restraint *create_restraint(Score *s, Container*c,
+inline Restraint *create_restraint(Score *s, Container*c,
                             std::string name=std::string()) {
   if (name==std::string()) {
     name= std::string("Restraint on ") + s->get_name()+ " and "+c->get_name();
@@ -109,7 +109,7 @@ public:
     Helper to create a ContainerConstraint.
  */
 template <class Container, class Before, class After>
-Constraint *create_constraint(Container *c, Before *b, After *a,
+inline Constraint *create_constraint(Container *c, Before *b, After *a,
                               std::string name=std::string()) {
   if (name==std::string()) {
     name= std::string("Constraint on ") + c->get_name();

@@ -809,6 +809,7 @@ double get_density(const DensityMap *m, const algebra::VectorD<3> &v) {
   return js[0]*(1-r[0]) + js[1]*(r[0]);
 }
 
+namespace {
 void get_transformed_internal(const DensityMap *in,
           const algebra::Transformation3D &tr,
           DensityMap *ret){
@@ -826,6 +827,7 @@ void get_transformed_internal(const DensityMap *in,
       ->set_resolution(in->get_header()->get_resolution());
   }
   ret->calcRMS();
+}
 }
 
 DensityMap *get_transformed(const DensityMap *in,

@@ -89,7 +89,8 @@ public:
 
 #ifndef IMP_DOXYGEN
 template <unsigned int D>
-std::ostream &operator<<(std::ostream &out, const GridIteratorD<D> &v) {
+inline std::ostream &operator<<(std::ostream &out,
+                                const GridIteratorD<D> &v) {
   v.show(out);
   return out;
 }

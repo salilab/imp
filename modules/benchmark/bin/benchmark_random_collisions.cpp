@@ -26,6 +26,7 @@ public:
   ConstPairScore(){}
   IMP_SIMPLE_PAIR_SCORE(ConstPairScore);
 };
+
 double ConstPairScore::evaluate(const ParticlePair &,
                                 DerivativeAccumulator *) const {
   return 1;
@@ -33,6 +34,10 @@ double ConstPairScore::evaluate(const ParticlePair &,
 void ConstPairScore::do_show(std::ostream &out) const {
 }
 }
+
+
+namespace {
+
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
               float rmin, float rmax, double target) {
@@ -67,6 +72,7 @@ void test_one(std::string name,
   std::ostringstream oss;
   oss << name << " " << n << " " << rmax;
   report(oss.str(), runtime-setuptime, result);
+}
 }
 
 int main() {

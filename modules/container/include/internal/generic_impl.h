@@ -27,7 +27,7 @@ double ContainerRestraint<Score, C>
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
-  score_= pc_->template template_evaluate(ss_.get(), accum);
+  score_= pc_->template template_evaluate<Score>(ss_.get(), accum);
   return score_;
 }
 
@@ -39,7 +39,7 @@ double ContainerRestraint<Score, C>
   IMP_CHECK_OBJECT(ss_);
   IMP_CHECK_OBJECT(pc_);
   IMP_LOG(VERBOSE, "Scores are " << score_);
-  score_+=pc_->template template_evaluate_change(ss_.get(), accum);
+  score_+=pc_->template template_evaluate_change<Score>(ss_.get(), accum);
   // compute the base for the added ones
   IMP_LOG(VERBOSE, " " << score_);
   // could be better...
@@ -100,17 +100,17 @@ void ContainerRestraint<Score, C>::do_show(std::ostream& out) const
 
 
 template <class Score, class C>
-Restraint *create_restraint(Pointer<Score> s, Pointer<C> c,
+inline Restraint *create_restraint(Pointer<Score> s, Pointer<C> c,
                             std::string name=std::string()) {
   return create_restraint<Score,C>(s.get(), c.get(), name);
 }
 template <class Score, class C>
-Restraint *create_restraint(Score* s, Pointer<C> c,
+inline Restraint *create_restraint(Score* s, Pointer<C> c,
                             std::string name=std::string()) {
   return create_restraint<Score,C>(s, c.get(), name);
 }
 template <class Score, class C>
-Restraint *create_restraint(Pointer<Score> s, C* c,
+inline Restraint *create_restraint(Pointer<Score> s, C* c,
                             std::string name=std::string()) {
   return create_restraint<Score,C>(s.get(), c, name);
 }
@@ -256,43 +256,43 @@ void ContainerConstraint<C, Before, After>
 
 
 template <class C, class Before, class After>
-Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
+inline Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
                               Pointer<After> a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(C* c, Pointer<Before> b,
+inline Constraint *create_constraint(C* c, Pointer<Before> b,
                               Pointer<After> a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(Pointer<C> c, Before* b,
+inline Constraint *create_constraint(Pointer<C> c, Before* b,
                               Pointer<After> a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(C* c, Before* b,
+inline Constraint *create_constraint(C* c, Before* b,
                               Pointer<After> a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
+inline Constraint *create_constraint(Pointer<C> c, Pointer<Before> b,
                               After* a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(C* c, Pointer<Before> b,
+inline Constraint *create_constraint(C* c, Pointer<Before> b,
                               After* a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);
 }
 template <class C, class Before, class After>
-Constraint *create_constraint(Pointer<C> c, Before* b,
+inline Constraint *create_constraint(Pointer<C> c, Before* b,
                               After* a,
                               std::string name=std::string()) {
   return create_constraint<C, Before, After>(c, b, a, name);

@@ -66,12 +66,13 @@ const ParticlesTemp& Hierarchy::get_leaves() const {
   }
   return c->leaves;
 }
-
+namespace {
 unsigned int count_hierarchy(Hierarchy h)
 {
   HierarchyCounter hc;
   visit_depth_first(h,hc);
   return hc.get_count();
+}
 }
 
 

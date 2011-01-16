@@ -15,11 +15,12 @@ Segment3D::Segment3D(const VectorD<3> &start,const VectorD<3> &end) {
 double Segment3D::get_length() const {
   return (p_[0]-p_[1]).get_magnitude();
 }
-
+namespace {
 VectorD<3> get_projection(const Segment3D &s, const VectorD<3> &p) {
   VectorD<3> d = s.get_direction().get_unit_vector();
   double t = d*(s.get_point(0)-p);
   return VectorD<3>(p +t * d);
+}
 }
 
 

@@ -17,6 +17,7 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
 
+namespace {
 void test_one(std::string name,
               Model *m,
               RigidBodiesTemp rbs,
@@ -93,6 +94,7 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
            cpc));
   m->add_restraint(pr);
   return m;
+}
 }
 
 int main() {
