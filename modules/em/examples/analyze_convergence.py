@@ -22,9 +22,11 @@ if use_rigid_bodies:
     drb.set_coordinates_are_optimized(True)
     refiner= IMP.core.TableRefiner()
     refiner.add_particle(prb, [p])
+    to_move= drb
     print [p.get_name() for p in refiner.get_refined(prb)]
 else:
     fp= d
+    to_move=d
     d.set_coordinates_are_optimized(True)
     refiner=None
 
@@ -60,21 +62,21 @@ opt= IMP.core.ConjugateGradients(m)
 for i in range(-bd, bd+1, 2*bd/steps):
     for j in range(-bd, bd+1, 2*bd/steps):
         for k in range(-bd, bd+1, 2*bd/steps):
-            print i,j,k
+            print "trying", i,j,k
             vc=IMP.algebra.Vector3D(i,j,k)
-            d.set_coordinates(vc)
+            to_move.set_coordinates(vc)
             # display the score at this position
             cg= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
             cg.set_name("score")
             v=m.evaluate(True)
             cg.set_color(IMP.display.get_hot_color(v))
             w.add_geometry(cg)
-            print v, d.get_derivatives()
+            print "score and derivatives", v, to_move.get_derivatives()
             w.add_geometry(g)
 
             opt.optimize(10)
             print "after", d.get_coordinates()
-            mag= d.get_coordinates().get_magnitude()
+            mag= to_move.get_coordinates().get_magnitude()
 
             converge_color= IMP.display.get_grey_color(1.0/(1.0+mag))
             # display the distance after optimization at this position
