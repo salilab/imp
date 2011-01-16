@@ -136,6 +136,7 @@ inline Color operator*(Color c, double d) {
 
 //! Return a color interpolated between a and b in RGB space
 /** If f is 0, then a is returned, if f is 1, b is returned.
+    \relatesalso Color
  */
 inline Color get_interpolated_rgb(const Color &a,
                                   const Color &b,
@@ -148,8 +149,29 @@ inline Color get_interpolated_rgb(const Color &a,
 
 //! Return the color for f from the jet color map
 /** The argument must be between 0 and 1, inclusive.
+    \relatesalso Color
  */
 IMPDISPLAYEXPORT Color get_jet_color(double f);
+
+//! Return the color for f from the hot color map
+/** The argument must be between 0 and 1, inclusive.
+    \relatesalso Color
+ */
+IMPDISPLAYEXPORT Color get_hot_color(double f);
+
+//! Return the color for f from the rgb color map
+/** The argument must be between 0 and 1, inclusive.
+    \relatesalso Color
+ */
+IMPDISPLAYEXPORT Color get_rgb_color(double f);
+
+
+//! Return the a greyscale value for f
+/** The argument must be between 0 and 1, inclusive.
+    \relatesalso Color
+ */
+IMPDISPLAYEXPORT Color get_grey_color(double f);
+
 
 IMP_VALUES(Color, Colors);
 

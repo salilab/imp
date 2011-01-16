@@ -47,22 +47,50 @@ Color get_display_color(unsigned int i) {
   return all[i%size];
 }
 
+namespace {
+  Color get_color_map_color(double f, Color *colors, unsigned int n) {
+    IMP_USAGE_CHECK(f>=0 && f <= 1.0,
+                    "Argument needs to be between 0 and 1.");
+    int lb= static_cast<int>(std::floor(f*(n-1)));
+    if (lb==static_cast<int>(n)) lb=n-2;
+    if (lb<0) lb=0;
+    double rem= (n-1)*f-lb;
+    if (rem <0) rem=0;
+    if (rem >1) rem=1;
+    return get_interpolated_rgb(colors[lb], colors[lb+1], rem);
+  }
+}
 
 Color get_jet_color(double f) {
-  IMP_USAGE_CHECK(f>=0 && f <= 1.0,
-                  "Argument needs to be between 0 and 1.");
   static Color colors[]={ Color(0,0,1),
-                        Color(0,1,1),
-                        Color(1,1,0),
-                        Color(1,0,0),
-                        Color(1,0,1),
-                        Color(0,0,1)};
-  int lb= static_cast<int>(std::floor(f*6));
-  if (lb==6) lb=5;
-  double rem= 6*f-lb;
-  if (rem <0) rem=0;
-  if (rem >1) rem=1;
-  return get_interpolated_rgb(colors[lb], colors[lb+1], rem);
+                          Color(0,1,1),
+                          Color(1,1,0),
+                          Color(1,0,0),
+                          Color(1,0,1),
+                          Color(0,0,1)};
+  return get_color_map_color(f, colors, sizeof(colors)/sizeof(Color));
+}
+
+Color get_rgb_color(double f) {
+  static Color colors[]={ Color(0,0,1),
+                          Color(0,1,0),
+                          Color(1,0,0)};
+  return get_color_map_color(f, colors, sizeof(colors)/sizeof(Color));
+}
+
+
+Color get_hot_color(double f) {
+  static Color colors[]={Color(0,0,0),
+                         Color(1,0,0),
+                         Color(1,1,0),
+                         Color(1,1,1)};
+  return get_color_map_color(f, colors, sizeof(colors)/sizeof(Color));
+}
+
+Color get_grey_color(double f) {
+  static Color colors[]={Color(0,0,0),
+                         Color(1,1,1)};
+  return get_color_map_color(f, colors, sizeof(colors)/sizeof(Color));
 }
 
 
