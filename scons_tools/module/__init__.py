@@ -98,7 +98,7 @@ def IMPModuleLib(envi, files):
     #env.AlwaysBuild(version)
     build=[]
     if envi['percppcompilation']=="yes"\
-           or module not in envi['percppcompilation'].split(":"):
+           or module in envi['percppcompilation'].split(":"):
         allf=files+config
         if envi['build']=="debug" and envi['linktest']:
             link0=envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars],
