@@ -12,7 +12,7 @@ def mysign(x):
     else:
         return -1
 
-def create_representation(tmb,tme,topology):
+def create_representation(TMH,topo):
     m=IMP.Model()
     #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
     #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.CAlphaPDBSelector())
@@ -26,40 +26,40 @@ def create_representation(tmb,tme,topology):
         rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
         IMP.core.XYZR(p).set_radius(rg)
 #   visualize initial configuration
-    display(m,chain,tmb,tme,"initial.pym")
+    display(m,chain,TMH,"initial.pym")
 #   rotation to make z the principal axis
     rt= IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
     tr= IMP.algebra.Transformation3D(rt, IMP.algebra.Vector3D(0,0,0))
 #   make rigid bodies
-    rbs=[]
     sign=[]
     tbr= IMP.core.TableRefiner()
-    for i in range(len(tmb)):
-        s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
+    for i,h in enumerate(TMH):
+        s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
         p=s.get_selected_particles()
-        rbs.append(IMP.atom.create_rigid_body(p))
-        tbr.add_particle(rbs[i],p)
-#   set the new reference frame
-        rbs[i].set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
-#   initialize membrane decorator
-        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i])
-        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tme[i])
+        rb=IMP.atom.create_rigid_body(p)
+#       set the reference frame so that z is the principal axis
+        rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
+#       add to TableRefiner
+        tbr.add_particle(rb,p)
+#       initialize membrane decorator
+        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
+        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[1])
         bb=s0.get_selected_particles()[0]
         bb=IMP.core.XYZ(bb).get_coordinates()[2]
         ee=s1.get_selected_particles()[0]
         ee=IMP.core.XYZ(ee).get_coordinates()[2]
-        sign.append(mysign((ee-bb)*topology[i]))
-        d_rbs=IMP.membrane.HelixDecorator.setup_particle(rbs[i],bb,ee)
-#        print " Rigid #",i," number of members=",rbs[i].get_number_of_members()
+        sign.append(mysign((ee-bb)*topo[i]))
+        d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
+#        print " Rigid #",i," number of members=",rb.get_number_of_members()
 #        print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
     return (m, chain, tbr, sign)
 
-def create_restraints(m, chain, tbr, tmb, tme):
+def create_restraints(m, chain, tbr, TMH):
 
     def add_excluded_volume():
         lsc= IMP.container.ListSingletonContainer(m)
-        for i in range(len(tmb)):
-            s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
+        for h in TMH:
+            s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
             lsc.add_particles(s.get_selected_particles())
         evr=IMP.core.ExcludedVolumeRestraint(lsc,1000)
         m.add_restraint(evr)
@@ -77,18 +77,19 @@ def create_restraints(m, chain, tbr, tmb, tme):
 ## if the helices are interacting, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
 ## of the distributions (Walters and DeGrado PNAS (2007) 103:13658)
-        om0=[-156.5, 146.4, -37.9, 13.8, 178.0, 25.5]
+        om0=(-156.5, 146.4, -37.9, 13.8, 178.0, 25.5)
 #  the sigmas
-        sig_om0=[10.1, 13.6, 7.50, 16.6, 20.8, 11.2]
+        sig_om0=(10.1, 13.6, 7.50, 16.6, 20.8, 11.2)
 #  distance cutoff
-        dd0=[8.61, 8.57, 7.93, 9.77, 9.14, 8.55]
+        dd0=(8.61, 8.57, 7.93, 9.77, 9.14, 8.55)
 #  and distance sigmas
-        sig_dd0=[0.89, 0.99, 0.88, 1.18, 1.47, 1.05]
+        sig_dd0=(0.89, 0.99, 0.88, 1.18, 1.47, 1.05)
 #  the allowed number of sigma
         nsig=2
 #  and the number of clusters
         ncl=6
 # create allowed intervals (omega in radians)
+# and control periodicity
         om_b=[]
         om_e=[]
         dd_b=[]
@@ -98,32 +99,23 @@ def create_restraints(m, chain, tbr, tmb, tme):
             ome=(om0[i]+nsig*sig_om0[i])/180.*math.pi
             ddb=dd0[i]-nsig*sig_dd0[i]
             dde=dd0[i]+nsig*sig_dd0[i]
-            if ( omb >= -math.pi and ome <= math.pi ):
-                om_b.append(omb)
-                om_e.append(ome)
-                dd_b.append(ddb)
-                dd_e.append(dde)
+            om_b.append(max(omb,-math.pi))
+            om_e.append(min(ome,math.pi))
+            dd_b.append(ddb)
+            dd_e.append(dde)
             if ( omb < -math.pi ):
-                om_b.append(-math.pi)
-                om_e.append(ome)
-                dd_b.append(ddb)
-                dd_e.append(dde)
                 om_b.append(2*math.pi+omb)
                 om_e.append(math.pi)
                 dd_b.append(ddb)
                 dd_e.append(dde)
             if ( ome > math.pi ):
-                om_b.append(omb)
-                om_e.append(math.pi)
-                dd_b.append(ddb)
-                dd_e.append(dde)
                 om_b.append(-math.pi)
                 om_e.append(-2*math.pi+ome)
                 dd_b.append(ddb)
                 dd_e.append(dde)
         lrb= IMP.container.ListSingletonContainer(m)
-        for r in tmb:
-            s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = r)
+        for h in TMH:
+            s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
         nrb= IMP.container.ClosePairContainer(lrb, 15.0)
@@ -138,13 +130,12 @@ def create_restraints(m, chain, tbr, tmb, tme):
         IMP.membrane.add_dope_score_data(chain)
 # creating containers
         dsc=[]
-        for i in range(len(tmb)):
+        for i,h in enumerate(TMH):
             dsc.append(IMP.container.ListSingletonContainer(m))
-#            s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
-            s=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_indexes=[(tmb[i],tme[i]+1)])
+            s=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_indexes=[(h[0],h[1]+1)])
             dsc[i].add_particles(s.get_selected_particles())
-        for i in range(len(tmb)-1):
-            for j in range(i+1,len(tmb)):
+        for i in range(len(TMH)-1):
+            for j in range(i+1,len(TMH)):
                 dpc= IMP.container.CloseBipartitePairContainer(dsc[i], dsc[j], 15.0, 0.0)
                 dps= IMP.membrane.DopePairScore(15.0)
                 dope=IMP.container.PairsRestraint(dps, dpc)
@@ -153,14 +144,14 @@ def create_restraints(m, chain, tbr, tmb, tme):
 # assembling all the restraints
     rset=IMP.RestraintSet()
     add_excluded_volume()
-    for i in range(len(tmb)-1):
-        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tme[i])
-        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = tmb[i+1])
+    for i in range(len(TMH)-1):
+        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
+        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i+1][0])
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
-        length=1.8*(tmb[i+1]-tme[i]+1)+7.4
+        length=1.8*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
         rdr=add_distance_restraint(rb0,rb1,30.0,1000)
         rset.add_restraint(dr)
@@ -170,17 +161,17 @@ def create_restraints(m, chain, tbr, tmb, tme):
     return rset
 
 # creating the discrete states for domino
-def  create_discrete_states(m,chain,tmb,sign):
+def  create_discrete_states(m,chain,TMH,sign):
 #   initial rotation to preserve topology
     rot0=[]
-    for i in range(len(tmb)):
+    for i in range(len(TMH)):
         rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
     trs0=[]
     trs1=[]
     trs2=[]
     for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,1):
+        for t in range(0,6):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
             for s in range(0,1):
@@ -190,11 +181,11 @@ def  create_discrete_states(m,chain,tmb,sign):
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
                                         IMP.algebra.Vector3D(0,0,0))))
                 for dz in range(0,1):
-                    for dx in range(-30,30):
+                    for dx in range(-15,15):
                         if ( dx >= 5 ):
                             trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
                                         IMP.algebra.Vector3D(dx,0,dz))))
-                        for dy in range(-30,30):
+                        for dy in range(-15,15):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
 
@@ -204,8 +195,8 @@ def  create_discrete_states(m,chain,tmb,sign):
     pst= IMP.domino.ParticleStatesTable()
 # getting rigid bodies
     rbs=[]
-    for r in tmb:
-        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = r)
+    for h in TMH:
+        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
         rbs.append(rb)
     pst.set_particle_states(rbs[0], pstate0)
@@ -230,12 +221,12 @@ def create_sampler(m, rset, pst):
     s.set_subset_filter_tables(filters)
     return s
 
-def display(m,chain,tmb,tme,name):
+def display(m,chain,TMH,name):
     m.update()
     w= IMP.display.PymolWriter(name)
-    for i in range(len(tmb)):
+    for i,h in enumerate(TMH):
         jj=0
-        s=IMP.atom.Selection(chain, residue_indexes=[(tmb[i],tme[i]+1)])
+        s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
         ps=s.get_selected_particles()
         for p in ps:
             jj+=1
@@ -251,22 +242,20 @@ def display(m,chain,tmb,tme,name):
 
 # TMH definition and topology
 # 1rwt definition
-tmb=[64,124,179]
-tme=[82,142,199]
-topology=[+1.0, -1.0, +1.0]
+TMH=[[64,82],[124,142],[179,199]]
+topo=[+1.0, -1.0, +1.0]
 # 2k9p definition
-#tmb=[38,80]
-#tme=[73,106]
-#topology=[-1.0,+1.0]
+#TMH=[[38,73],[80,106]]
+#topo=[-1.0,+1.0]
 
 print "creating representation"
-(m,chain,tbr,sign)=create_representation(tmb,tme,topology)
+(m,chain,tbr,sign)=create_representation(TMH,topo)
 
 print "creating score function"
-rset=create_restraints(m,chain,tbr,tmb,tme)
+rset=create_restraints(m,chain,tbr,TMH)
 
 print "creating discrete states"
-pst=create_discrete_states(m,chain,tmb,sign)
+pst=create_discrete_states(m,chain,TMH,sign)
 
 print "creating sampler"
 s=create_sampler(m, rset, pst)
@@ -284,7 +273,7 @@ for i,v in enumerate(cs):
     score.append(ss)
 #    print "** solution number:",i," is:",ss
 
-topscore = 50
+topscore = 30
 topscore = min(topscore,len(cs))
 print "visualizing the top ",topscore
 for i in range(0,topscore):
@@ -293,4 +282,4 @@ for i in range(0,topscore):
     score[ii]=10000000.
     print "** solution number:",i," is:",low
     IMP.domino.load_particle_states(ass,cs[ii],pst)
-    display(m,chain,tmb,tme,"sol_"+str(i)+".score_"+str(low)+".pym")
+    display(m,chain,TMH,"sol_"+str(i)+".score_"+str(low)+".pym")
