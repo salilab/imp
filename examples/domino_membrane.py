@@ -90,10 +90,7 @@ def create_restraints(m, chain, tbr, TMH):
         ncl=6
 # create allowed intervals (omega in radians)
 # and control periodicity
-        om_b=[]
-        om_e=[]
-        dd_b=[]
-        dd_e=[]
+        om_b=[]; om_e=[]; dd_b=[]; dd_e=[]
         for i in range(ncl):
             omb=(om0[i]-nsig*sig_om0[i])/180.*math.pi
             ome=(om0[i]+nsig*sig_om0[i])/180.*math.pi
@@ -126,9 +123,7 @@ def create_restraints(m, chain, tbr, TMH):
 
 ## DOPE/GQ scoring
     def add_DOPE():
-# initializing data
         IMP.membrane.add_dope_score_data(chain)
-# creating containers
         dsc=[]
         for i,h in enumerate(TMH):
             dsc.append(IMP.container.ListSingletonContainer(m))
@@ -155,20 +150,17 @@ def create_restraints(m, chain, tbr, TMH):
         dr=add_distance_restraint(p0,p1,length,1000)
         rdr=add_distance_restraint(rb0,rb1,30.0,1000)
         rset.add_restraint(dr)
-
     add_packing_restraint()
     add_DOPE()
     return rset
 
 # creating the discrete states for domino
 def  create_discrete_states(m,chain,TMH,sign):
-#   initial rotation to preserve topology
+#   store initial rotation to have the right topology
     rot0=[]
     for i in range(len(TMH)):
         rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
-    trs0=[]
-    trs1=[]
-    trs2=[]
+    trs0=[]; trs1=[]; trs2=[]
     for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,6):
@@ -189,19 +181,15 @@ def  create_discrete_states(m,chain,TMH,sign):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
 
-    pstate0= IMP.domino.RigidBodyStates(trs0)
-    pstate1= IMP.domino.RigidBodyStates(trs1)
-    pstate2= IMP.domino.RigidBodyStates(trs2)
     pst= IMP.domino.ParticleStatesTable()
-# getting rigid bodies
-    rbs=[]
-    for h in TMH:
+    pstate=[]
+    pstate.append(IMP.domino.RigidBodyStates(trs0))
+    pstate.append(IMP.domino.RigidBodyStates(trs1))
+    pstate.append(IMP.domino.RigidBodyStates(trs2))
+    for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-        rbs.append(rb)
-    pst.set_particle_states(rbs[0], pstate0)
-    pst.set_particle_states(rbs[1], pstate1)
-    pst.set_particle_states(rbs[2], pstate2)
+        pst.set_particle_states(rb, pstate[i])
     return pst
 
 # setting up domino (and filters)
@@ -238,7 +226,7 @@ def display(m,chain,TMH,name):
             w.add_geometry(g)
 
 # Here starts the real job...
-#IMP.set_log_level(IMP.VERBOSE)
+IMP.set_log_level(IMP.VERBOSE)
 
 # TMH definition and topology
 # 1rwt definition
