@@ -1,5 +1,5 @@
 /**
- *  \file dependency_graphs.h   \brief Build dependency graphs on models.
+ *  \file dependency_graph.h   \brief Build dependency graphs on models.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
