@@ -177,7 +177,6 @@ def _fix_include_path(env):
     ocpppath= env.get("CPPPATH", [])
     env.Replace(CPPPATH=[])
     for p in ocpppath:
-        print "Moving", p
         utility.add_to_include_path(env, p)
 
 def get_base_environment(variables=None, *args, **kw):
