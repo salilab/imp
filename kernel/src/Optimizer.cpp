@@ -43,6 +43,7 @@ double Optimizer::optimize(unsigned int max_steps) {
     IMP_THROW("Must give the optimizer a model to optimize",
               ValueException);
   }
+  set_was_used(true);
   return do_optimize(max_steps);
 }
 
