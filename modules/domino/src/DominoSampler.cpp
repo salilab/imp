@@ -137,7 +137,7 @@ SubsetStates DominoSampler
 void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
   IMP_IF_CHECK(USAGE) {
     std::vector<int> comp(boost::num_vertices(sg));
-    int cc= boost::connected_components(sg, &comp[0]);
+    IMP_CHECK_CODE(int cc= boost::connected_components(sg, &comp[0]));
     IMP_USAGE_CHECK(cc==1, "Graph must have exactly one connected component."
                     << " It has " << cc);
   }
