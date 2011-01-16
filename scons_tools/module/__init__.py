@@ -97,14 +97,8 @@ def IMPModuleLib(envi, files):
                                            envi.Value(envi.subst(os.path.join(envi['docdir'], "examples")))])
     #env.AlwaysBuild(version)
     build=[]
-    if envi['percppcompilation']=="no"\
+    if envi['percppcompilation']=="yes"\
            or module not in envi['percppcompilation'].split(":"):
-        allf= [_all_cpp.get(envi, list(files))]+config
-        if envi['build']=="debug" and envi['linktest']:
-            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link.cpp'%vars],
-                                          source=[])
-            allf= allf+link1
-    else:
         allf=files+config
         if envi['build']=="debug" and envi['linktest']:
             link0=envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_0.cpp'%vars],
@@ -112,6 +106,12 @@ def IMPModuleLib(envi, files):
             link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link_1.cpp'%vars],
                                           source=[])
             allf= allf+link0+link1
+    else:
+        allf= [_all_cpp.get(envi, list(files))]+config
+        if envi['build']=="debug" and envi['linktest']:
+            link1=envi.IMPModuleLinkTest(target=['#/build/src/%(module)s_link.cpp'%vars],
+                                          source=[])
+            allf= allf+link1
     if envi['IMP_BUILD_STATIC']:
         env= scons_tools.environment.get_staticlib_environment(envi)
         sl= env.StaticLibrary('#/build/lib/imp%s' % module_suffix,
