@@ -131,7 +131,7 @@ def _add_platform_flags(env):
 
 
     if dependency.gcc.get_is_gcc_like(env):
-        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated", "-Werror"])
+        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
