@@ -134,10 +134,10 @@ public:
 };
 
 
-double compute_distances_class_access(
+  /*double compute_distances_class_access(
                const std::vector<MyParticle*>& particles) ATTRIBUTES;
 
-double compute_distances_class_access(
+  double compute_distances_class_access(
    const std::vector<MyParticle*>& particles){
   double tdist=0;
   for (unsigned int i = 0; i < particles.size(); i++) {
@@ -146,7 +146,7 @@ double compute_distances_class_access(
     }
   }
   return tdist;
-}
+  }*/
 
 // TEST 2.5
 class MyParticle2 : public IMP::Particle {
@@ -158,7 +158,7 @@ public:
 };
 
 
-double compute_distances_class_access(
+  /*double compute_distances_class_access(
                    const std::vector<MyParticle2*>& particles) ATTRIBUTES;
 
 double compute_distances_class_access(
@@ -170,7 +170,7 @@ double compute_distances_class_access(
     }
   }
   return tdist;
-}
+  }*/
 
 // TEST 3
 double compute_distances_direct_access(

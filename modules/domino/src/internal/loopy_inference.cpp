@@ -177,7 +177,7 @@ SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
 
 
 
-
+/*
 namespace {
   struct FastNodeData: public NodeData {
     boost::dynamic_bitset<> alive;
@@ -352,6 +352,6 @@ SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
   }
   return curd.subset_states;
 }
-}
+}*/
 
 IMPDOMINO_END_INTERNAL_NAMESPACE
