@@ -173,6 +173,13 @@ def _add_platform_flags(env):
         env.Append(IMP_BIN_LINKFLAGS=['-headerpad_max_install_names'])
 
 
+def _fix_include_path(env):
+    ocpppath= env.get("CPPPATH", [])
+    env.Replace(CPPPATH=[])
+    for p in ocpppath:
+        print "Moving", p
+        utility.add_to_include_path(env, p)
+
 def get_base_environment(variables=None, *args, **kw):
     """Create an environment suitable for building IMP modules"""
     #import colorizer
@@ -269,6 +276,7 @@ def get_base_environment(variables=None, *args, **kw):
                            'IMPModuleConfigH': module._config_h.ConfigH,
                            'IMPModuleConfigCPP': module._config_h.ConfigCPP,
                            'IMPModuleLinkTest': module._link_test.LinkTest})
+    _fix_include_path(env)
     if env.get('linkflags', None):
         env.Append(LINKFLAGS=env['linkflags'])
     return env
