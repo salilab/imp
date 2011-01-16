@@ -13,6 +13,7 @@
 #include <boost/static_assert.hpp>
 #include <IMP/RefCounted.h>
 #include <IMP/Pointer.h>
+#include <limits>
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
@@ -90,7 +91,7 @@ struct RealRCTree: public RCTree {
                                           unsigned int k,               \
                                           double eps,                   \
                                           Ints &ret) const {            \
-    VectorWithIndex<D> d(-1, g);                                        \
+    VectorWithIndex<D> d(std::numeric_limits<int>::max(), g);           \
     RealRCTree<D>::                                                     \
       K_neighbor_search search(dynamic_cast<RealRCTree<D>*>(tree_.get()) \
                              ->tree,                                    \
@@ -112,7 +113,7 @@ struct RealRCTree: public RCTree {
                                             double dist,                \
                                             double eps,                 \
                                             Ints &ret) const {          \
-    VectorWithIndex<D> d(-1, g);                                        \
+    VectorWithIndex<D> d(std::numeric_limits<int>::max(), g);           \
     dynamic_cast<RealRCTree<D>*>(tree_.get())                           \
       ->tree.search(std::back_inserter(ret),                            \
                     RealRCTree<D>::Sphere(d, dist, eps));               \
