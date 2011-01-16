@@ -122,6 +122,15 @@ def _propagate_variables(env):
     if env.get('ldlibpath') is not None:
         env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
 
+    if env.get('environment') is not None:
+        for pair in env.get('environment').split(','):
+            if pair != "":
+                if pair.find("=") != -1:
+                    (name, value)= pair.split("=")
+                    env['ENV'][name]=value
+                else:
+                    env['ENV'][pair]=""
+
 
 def add_common_variables(vars, package):
     """Add common variables to an SCons Variables object."""
@@ -213,6 +222,7 @@ def add_common_variables(vars, package):
              None)
 
     vars.Add('linkflags', 'Link flags for all linking (e.g. "-lefence"). See pythonlinkflags, arliblinkflags, shliblinkflags.', None)
+    vars.Add('environment', "Add entries to the environment in which tools are run. The variable should be a comma separated list of name=value pairs.", "")
     vars.Add('pythonlinkflags', 'Link flags for linking python libraries (e.g. "-lefence")', "")
     vars.Add('arliblinkflags', 'Link flags for linking static libraries (e.g. "-lefence")', "")
     vars.Add('shliblinkflags', 'Link flags for linking shared libraries (e.g. "-lefence")', "")
