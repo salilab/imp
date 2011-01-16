@@ -185,9 +185,7 @@ def get_link_from_name(name):
 def add_to_include_path(env, path):
     if not path:
         return
-    if (dependency.gcc.get_is_gcc(env)\
-           or env['CXX'].find("icc")!= -1\
-           or env['CXX'].find("clang") != -1)\
+    if dependency.gcc.get_is_gcc_like(env)\
            and not path.startswith("#"):
         env.Append(CXXFLAGS=["-isystem",path])
     else:

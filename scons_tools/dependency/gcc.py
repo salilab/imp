@@ -66,3 +66,12 @@ def get_is_gcc(env):
         return env['CXX'].find('g++') != -1
     else:
         return False
+
+def get_is_gcc_like(env):
+    if env.get('CXX', None):
+        cxx= env['CXX'];
+        return (cxx.find('g++') != -1\
+                or cxx.find("icc")!= -1\
+                or cxx.find("clang") != -1)
+    else:
+        return False
