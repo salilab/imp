@@ -302,7 +302,7 @@ class IMPEXPORT Optimizer: public Object
   typedef internal::VectorStorage<internal::FloatAttributeTableTraits>
     FloatTable;
   mutable FloatTable widths_;
-  WeakPointer<Model> model_;
+  Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
 };
