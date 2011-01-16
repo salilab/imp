@@ -44,6 +44,8 @@ void DistanceScore::apply(Particle *p) const {
 }
 }
 
+namespace {
+
 // TEST 1
 double compute_distances_decorator_access(
                      const IMP::Particles& particles) ATTRIBUTES;
@@ -388,6 +390,7 @@ void do_benchmark(std::string descr, std::string fname) {
     }
   }
   */
+}
 }
 
 int main(int argc, char **argv) {

@@ -63,7 +63,7 @@ public:
 /** \relatesalso TupleRestraint
  */
 template <class Score>
-Restraint* create_restraint(Score *s,
+inline Restraint* create_restraint(Score *s,
                             const typename Score::Argument &t,
                             std::string name= std::string()) {
     if (name==std::string()) {
@@ -111,7 +111,7 @@ public:
 /** \relatesalso TupleConstraint
  */
 template <class Before, class After>
-Constraint* create_constraint(Before *b, After *a,
+inline Constraint* create_constraint(Before *b, After *a,
                               const typename Before::Argument &t,
                               std::string name=std::string()) {
   if (name==std::string()) {

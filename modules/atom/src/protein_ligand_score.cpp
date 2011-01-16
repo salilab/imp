@@ -314,7 +314,7 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
 }
 
 
-
+namespace {
 void add_protein_ligand_score_data(Atom atom) {
   int type;
   Residue rd= get_residue(atom);
@@ -356,6 +356,8 @@ void add_protein_ligand_score_data(Atom atom) {
     atom->add_attribute(get_protein_ligand_type_key(), type);
   }
 }
+}
+
 void add_protein_ligand_score_data(Hierarchy h) {
   HierarchiesTemp atoms= get_by_type(h, ATOM_TYPE);
   for (unsigned int i= 0; i< atoms.size(); ++i) {

@@ -71,7 +71,7 @@ IMP_VOLUME_GEOMETRY_METHODS_D(Sphere, sphere,
                             );
 
 template <unsigned int D>
-SphereD<D> get_unit_sphere_d() {
+inline SphereD<D> get_unit_sphere_d() {
   return SphereD<D>(get_zero_vector_d<D>(), 1.0);
 }
 

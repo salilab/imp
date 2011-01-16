@@ -41,7 +41,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
-IMP::algebra::Transformation3D
+inline IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(
 IMP_RESTRICT const Vector3DsOrXYZs0 &from,
 IMP_RESTRICT const Vector3DsOrXYZs1 &to) {

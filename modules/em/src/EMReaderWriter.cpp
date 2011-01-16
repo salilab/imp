@@ -51,7 +51,7 @@ void EMReaderWriter::write(const char* filename,const float *data,
 }
 
 
-
+namespace {
 /* swap bytes */
 void swap(char *x, int size)
 {
@@ -82,7 +82,7 @@ void swap(char *x, int size)
       break;
   }
 }
-
+}
 
 
 void EMReaderWriter::write_header(std::ostream& s,

@@ -89,7 +89,7 @@ IMPCOREEXPORT void graph_initialize_edge(Particle *a, const GraphData &d);
 
 /** \internal */
 template <class F>
-F graph_traverse(Particle *start, F f, const GraphData &d)
+inline F graph_traverse(Particle *start, F f, const GraphData &d)
 {
   std::set<Particle*> visited;
   std::vector<Particle*> queue;
@@ -127,7 +127,8 @@ struct GraphGather
 
 /** \internal */
 template <class Oit>
-void graph_connected_component(Particle* start, const GraphData &d, Oit out)
+inline void graph_connected_component(Particle* start,
+                                      const GraphData &d, Oit out)
 {
   graph_traverse(start, GraphGather<Oit>(out), d);
 }

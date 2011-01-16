@@ -31,7 +31,7 @@ using namespace std;
 
 
 template <class T>
-std::ostream& operator<<(std::ostream &s, const Array1D<T> &A)
+inline std::ostream& operator<<(std::ostream &s, const Array1D<T> &A)
 {
     int N=A.dim1();
 
@@ -49,7 +49,7 @@ std::ostream& operator<<(std::ostream &s, const Array1D<T> &A)
 }
 
 template <class T>
-std::istream& operator>>(std::istream &s, Array1D<T> &A)
+inline std::istream& operator>>(std::istream &s, Array1D<T> &A)
 {
   int N;
   s >> N;
@@ -64,7 +64,7 @@ std::istream& operator>>(std::istream &s, Array1D<T> &A)
 
 
 template <class T>
-Array1D<T> operator+(const Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T> operator+(const Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -86,7 +86,7 @@ Array1D<T> operator+(const Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T> operator-(const Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T> operator-(const Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -107,7 +107,7 @@ Array1D<T> operator-(const Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T> operator*(const Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T> operator*(const Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -128,7 +128,7 @@ Array1D<T> operator*(const Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T> operator/(const Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T> operator/(const Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -156,7 +156,7 @@ Array1D<T> operator/(const Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T>&  operator+=(Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T>&  operator+=(Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -174,7 +174,7 @@ Array1D<T>&  operator+=(Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T>&  operator-=(Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T>&  operator-=(Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -191,7 +191,7 @@ Array1D<T>&  operator-=(Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T>&  operator*=(Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T>&  operator*=(Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 
@@ -209,7 +209,7 @@ Array1D<T>&  operator*=(Array1D<T> &A, const Array1D<T> &B)
 
 
 template <class T>
-Array1D<T>&  operator/=(Array1D<T> &A, const Array1D<T> &B)
+inline Array1D<T>&  operator/=(Array1D<T> &A, const Array1D<T> &B)
 {
   int n = A.dim1();
 

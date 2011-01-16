@@ -160,7 +160,7 @@ namespace {
 }
 
 
-
+namespace {
 
 PartitionalClusteringWithCenter*
 get_lloyds_kmeans(const Ints &names, Embedding *metric,
@@ -231,7 +231,7 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
   cl->set_was_used(true);
   return cl;
 }
-
+}
 
 PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
                                     unsigned int k, unsigned int iterations) {

@@ -42,7 +42,7 @@ struct IMPALGEBRAEXPORT stdVectorIO
 
 //! output for a std::vector
 template <class T>
-std::ostream& operator<<(std::ostream& ostrm,
+inline std::ostream& operator<<(std::ostream& ostrm,
                          const stdVectorIO<T>& v)
 {
   unsigned long s = v.v_.size();

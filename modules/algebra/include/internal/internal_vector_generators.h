@@ -25,7 +25,7 @@ IMPALGEBRA_END_NAMESPACE
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <unsigned int D>
-std::vector<VectorD<D> >
+inline std::vector<VectorD<D> >
 native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
   std::vector<VectorD<D> > ret(n);
@@ -49,7 +49,7 @@ native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
 /*If all is true, cover the whole sphere.
 */
 template <unsigned int D>
-std::vector<VectorD<D> >
+inline std::vector<VectorD<D> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<D> &center,
                      double radius, bool ALL) {

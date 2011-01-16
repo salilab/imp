@@ -188,6 +188,7 @@ namespace {
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
+namespace {
 Matrix compute_I(const XYZs &ds,
                  const algebra::VectorD<3> &center,
                  const IMP::algebra::Rotation3D &rot) {
@@ -211,7 +212,7 @@ Matrix compute_I(const XYZs &ds,
   }
   return I;
 }
-
+}
 
 IMP_CONSTRAINT_DECORATOR_DEF(RigidBody);
 
@@ -686,11 +687,6 @@ namespace internal {
     static IMP::internal::OwnerPointer<RigidMembersRefiner> pt
       = new RigidMembersRefiner();
     return pt;
-  }
-
-  void test() {
-    RigidBodies rbs;
-    RigidBodiesTemp rbst;
   }
 }
 

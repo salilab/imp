@@ -25,7 +25,7 @@ Geometry::Geometry(Color c, std::string name): Object(name){
   }*/
 
 
-std::ostream &operator<<(std::ostream &out,
+inline std::ostream &operator<<(std::ostream &out,
                          const std::vector<algebra::VectorD<3> > &pts) {
   for (unsigned int i=0; i< pts.size(); ++i) {
     out << pts[i] << ": ";

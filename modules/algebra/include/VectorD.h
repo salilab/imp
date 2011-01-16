@@ -274,13 +274,13 @@ private:
 #ifndef IMP_DOXYGEN
 
 template <unsigned int D>
-std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
+inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   v.show(out);
   return out;
 }
 
 template <unsigned int D>
-std::istream &operator>>(std::istream &in, VectorD<D> &v) {
+inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   for (unsigned int i=0; i< D; ++i) {
     in >> v[i];
   }
@@ -293,7 +293,7 @@ std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 /** \relatesalso VectorD
  */
 template <unsigned int D>
-int compare(const VectorD<D> &a, const VectorD<D> &b) {
+inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
   for (unsigned int i=0; i< D; ++i) {
     if (a[i] < b[i]) return -1;
     else if (a[i] > b[i]) return 1;
@@ -311,7 +311,7 @@ inline VectorD<D> operator*(double s, const VectorD<D> &o) {
 /** \relatesalso VectorD
  */
 template <unsigned int D>
-double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   double d, s = 0;
   for (unsigned int i=0; i< D; ++i) {
     d = v1[i] - v2[i];
@@ -324,7 +324,7 @@ double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 /** \relatesalso VectorD
  */
 template <unsigned int D>
-double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
+inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(get_squared_distance(v1, v2));
 }
 
@@ -337,7 +337,7 @@ double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \relatesalso VectorD
  */
 template <unsigned int D>
-VectorD<D> get_basis_vector_d(unsigned int coordinate) {
+inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors");
   double vs[D];
   for (unsigned int i=0; i< D; ++i) {
@@ -349,7 +349,7 @@ VectorD<D> get_basis_vector_d(unsigned int coordinate) {
 
 //! Return a vector of zeros
 template <unsigned int D>
-VectorD<D> get_zero_vector_d() {
+inline VectorD<D> get_zero_vector_d() {
   double vs[D]={0};
   return VectorD<D>(vs, vs+D);
 }
@@ -357,7 +357,7 @@ VectorD<D> get_zero_vector_d() {
 
 //! Return a vector of ones (or another constant)
 template <unsigned int D>
-VectorD<D> get_ones_vector_d(double v=1) {
+inline VectorD<D> get_ones_vector_d(double v=1) {
   VectorD<D> vv;
   for (unsigned int i=0; i< D; ++i) {
     vv[i]=v;
@@ -377,12 +377,12 @@ VectorD<D> get_ones_vector_d(double v=1) {
 */
 
 template <unsigned int D>
-double get_l2_norm(const VectorD<D> &v) {
+inline double get_l2_norm(const VectorD<D> &v) {
   return v.get_magnitude();
 }
 
 template <unsigned int D>
-double get_l1_norm(const VectorD<D> &v) {
+inline double get_l1_norm(const VectorD<D> &v) {
   double n=std::abs(v[0]);
   for (unsigned int i=1; i< D; ++i) {
     n+= std::abs(v[i]);
@@ -391,7 +391,7 @@ double get_l1_norm(const VectorD<D> &v) {
 }
 
 template <unsigned int D>
-double get_linf_norm(const VectorD<D> &v) {
+inline double get_linf_norm(const VectorD<D> &v) {
   double n=std::abs(v[0]);
   for (unsigned int i=1; i< D; ++i) {
     n= std::max(n, std::abs(v[i]));
@@ -435,7 +435,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
     \relatesalso VectorD
  */
 template <unsigned int D>
-SpacesIO<D> spaces_io(const VectorD<D> &v) {
+inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
 }
 
@@ -448,7 +448,7 @@ SpacesIO<D> spaces_io(const VectorD<D> &v) {
     \relatesalso VectorD
  */
 template <unsigned int D>
-CommasIO<D> commas_io(const VectorD<D> &v) {
+inline CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
 }
 #endif // doxygen
@@ -467,7 +467,7 @@ typedef VectorD<6> Vector6D;
 typedef std::vector<VectorD<6> > Vector6Ds;
 
 template <unsigned int D>
-const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
+inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
 template <unsigned int D>
 inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
 

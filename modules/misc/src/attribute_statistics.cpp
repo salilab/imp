@@ -47,7 +47,7 @@ struct GetInt {
 };
 
 template <class It>
-BS get_bitset(It b, It e) {
+inline BS get_bitset(It b, It e) {
   BS ret;
   for (It c= b; c != e; ++c) {
     unsigned int i= c->get_index();
@@ -70,7 +70,7 @@ struct LexLess {
 typedef std::map<BS, unsigned int, LexLess> Map;
 
 template <class Get>
-Map get_attribute_usage(Get g, Model *m) {
+inline Map get_attribute_usage(Get g, Model *m) {
   Map bss;
   for (Model::ParticleIterator pit= m->particles_begin();
        pit != m->particles_end(); ++pit) {
@@ -85,7 +85,7 @@ Map get_attribute_usage(Get g, Model *m) {
 }
 
 template <class Key>
-void show_map(const Map &m, std::ostream &out) {
+inline void show_map(const Map &m, std::ostream &out) {
   size_t maxi=0;
   for (Map::const_iterator it= m.begin(); it != m.end(); ++it) {
     maxi= std::max(maxi, it->first.size());

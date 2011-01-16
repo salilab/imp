@@ -14,7 +14,7 @@ using namespace IMP;
 using namespace IMP::core;
 using namespace IMP::algebra;
 using namespace IMP::container;
-
+namespace {
 double update_coordinates(Model *m, const Particles &ps) {
   double t=0;
   for (unsigned int i=0; i< ps.size(); ++i) {
@@ -71,7 +71,7 @@ void benchmark_baseline() {
                       scored_incremental_time, scored_ti);
   }
 }
-
+}
 int main() {
   set_log_level(SILENT);
   benchmark_baseline();

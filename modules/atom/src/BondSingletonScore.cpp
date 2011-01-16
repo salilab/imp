@@ -10,10 +10,6 @@
 #include "IMP/atom/bond_decorators.h"
 #include "IMP/core/XYZ.h"
 
-#ifdef __clang__
-// for _2, _3
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
 #include <boost/lambda/lambda.hpp>
 
 IMPATOM_BEGIN_NAMESPACE

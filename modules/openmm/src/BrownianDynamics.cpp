@@ -57,6 +57,7 @@ SingletonContainer *BrownianDynamics::get_diffusing_particles() const {
   return setup_particles();
 }
 
+namespace {
 bool handle_harmonic(const IMP::internal::Map<Particle*, int> &index,
                      std::vector< std::pair<int,int> > &bond_pairs,
                      OpenMM::HarmonicBondForce *bondStretch,
@@ -77,6 +78,7 @@ bool handle_harmonic(const IMP::internal::Map<Particle*, int> &index,
 
 bool handle_ev() {
   return true;
+}
 }
 
 double BrownianDynamics::do_optimize(unsigned int ns) {

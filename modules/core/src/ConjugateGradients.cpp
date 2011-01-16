@@ -25,8 +25,9 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
+namespace {
 //! Estimate of limit of machine precision
-static const double eps = 1.2e-7;
+const double eps = 1.2e-7;
 
 template <class NT>
 bool is_good_value(const NT &f) {
@@ -35,6 +36,7 @@ bool is_good_value(const NT &f) {
     return false;
   }
   else return true;
+}
 }
 
 void ConjugateGradients::failure() {

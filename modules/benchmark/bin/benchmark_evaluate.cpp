@@ -16,6 +16,8 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 using namespace IMP::container;
 
+namespace {
+
 #define IMP_GET_EVALUATE(Class)\
   static_cast<double (Class::*)(const ParticlePair&,                    \
                                 DerivativeAccumulator*)                 \
@@ -173,7 +175,7 @@ void test_set(int n) {
   IMP_NEW(SoftSpherePairScore, dps, (1));
   time_both(pcs, dps, "set");
 }
-
+}
 
 
 int main(int , char **) {

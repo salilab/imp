@@ -46,6 +46,7 @@ struct It {
   SimulationParameters sp;
 };
 
+namespace {
 template <class PR, class PS0, class PS1, class SS>
 It create(PS0 *link, PS1 *lb, SS *bottom) {
   It ret;
@@ -221,7 +222,7 @@ void do_long_run(std::string name, int argc, char *argv[], PS0 *link,
     IMP_CATCH_AND_TERMINATE(write_particles(it.all, argv[2]));
   }
 }
-
+}
 //new LowerBound(kk)
 
 int main(int argc , char **argv) {

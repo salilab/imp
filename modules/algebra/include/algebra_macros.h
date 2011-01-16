@@ -102,7 +102,7 @@
     g=v;                                                                \
   }                                                                     \
   template <unsigned int D>                                             \
-  const Name##D<D> &get_##name##_d_geometry(const Name##D<D> &g) {      \
+ inline const Name##D<D> &get_##name##_d_geometry(const Name##D<D> &g) { \
     return g;                                                           \
   })                                                                    \
   IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \

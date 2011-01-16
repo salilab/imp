@@ -10,10 +10,7 @@
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/tree_inference.h>
 #include <IMP/domino/optimize_restraints.h>
-#ifdef __clang__
-// for _weight_map
-#pragma clang diagnostic ignored "-Wunused-variable"
-#endif
+
 #include <IMP/internal/graph_utility.h>
 #include <IMP/file.h>
 #include <boost/graph/connected_components.hpp>

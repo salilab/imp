@@ -77,7 +77,7 @@ namespace _maximal_cliques
 // vertex_descriptors in the output iterator
 //
 template< class Graph, class CliqueOutputIterator>
-void maximal_cliques( const Graph& graph, CliqueOutputIterator out)
+inline void maximal_cliques( const Graph& graph, CliqueOutputIterator out)
 {
   typedef boost::graph_traits< Graph>               graph_traits;
   typedef typename graph_traits::vertex_descriptor  vertex_descriptor;

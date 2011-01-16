@@ -23,7 +23,7 @@ using namespace std;
   sqrt(a*a + b*b).
 */
 template <class Real>
-Real hypot(const Real &a, const Real &b)
+inline Real hypot(const Real &a, const Real &b)
 {
 
   if (a== 0)

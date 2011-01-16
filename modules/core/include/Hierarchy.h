@@ -327,7 +327,7 @@ inline const Hierarchy HierarchyTraits::wrap(Particle* p) const {
     \relatesalso Hierarchy
  */
 template <class HD, class F>
-F visit_breadth_first(HD d, F f)
+inline F visit_breadth_first(HD d, F f)
 {
   std::deque<HD > stack;
   stack.push_back(d);
@@ -352,7 +352,7 @@ F visit_breadth_first(HD d, F f)
     \relatesalso Hierarchy
  */
 template <class HD, class F>
-F visit_depth_first(HD d,  F f)
+inline F visit_depth_first(HD d,  F f)
 {
   std::vector<HD> stack;
   stack.push_back(d);
@@ -397,7 +397,7 @@ F visit_depth_first(HD d,  F f)
     \relatesalso Hierarchy
  */
 template <class HD, class F>
-F visit_breadth_first_with_data(HD d, F f, typename F::result_type i)
+inline F visit_breadth_first_with_data(HD d, F f, typename F::result_type i)
 {
   typedef std::pair<typename F::result_type, HD> DP;
   std::deque<DP > stack;
@@ -422,7 +422,7 @@ F visit_breadth_first_with_data(HD d, F f, typename F::result_type i)
     \relatesalso Hierarchy
  */
 template <class HD, class F>
-F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
+inline F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
 {
   typedef std::pair<typename F::result_type, HD> DP;
   std::vector<DP> stack;
@@ -450,7 +450,7 @@ F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
     \relatesalso Hierarchy
  */
 template <class ND>
-std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
+inline std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
                    unsigned int max_depth
                    = std::numeric_limits<unsigned int>::max())
 {
@@ -492,7 +492,7 @@ IMP_VALUES(HierarchyCounter, HierarchyCounters);
     \relatesalso Hierarchy
  */
 template <class Out, class F>
-Out gather(Hierarchy h, F f, Out out)
+inline Out gather(Hierarchy h, F f, Out out)
 {
   internal::Gather<F,Out> gather(f,out);
   visit_depth_first(h, gather);
@@ -508,7 +508,7 @@ Out gather(Hierarchy h, F f, Out out)
     \relatesalso Hierarchy
  */
 template <class Out, class F>
-Out gather_slice(Hierarchy h, F f, Out out)
+inline Out gather_slice(Hierarchy h, F f, Out out)
 {
   internal::Gather<F,Out,true> gather(f,out);
   visit_depth_first(h, gather);
@@ -521,7 +521,7 @@ Out gather_slice(Hierarchy h, F f, Out out)
     \relatesalso Hierarchy
  */
 template <class Out, class K, class V>
-Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
+inline Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
 {
   internal::Gather<internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
@@ -538,7 +538,7 @@ Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
     \relatesalso Hierarchy
  */
 template <class Out, class K0, class V0, class K1, class V1>
-Out gather_by_attributes(Hierarchy h, K0 k0,
+inline Out gather_by_attributes(Hierarchy h, K0 k0,
                          V0 v0, K1 k1, V1 v1, Out out)
 {
   internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
@@ -554,7 +554,7 @@ Out gather_by_attributes(Hierarchy h, K0 k0,
     \relatesalso Hierarchy
  */
 template <class HD, class F>
-HD find_breadth_first(HD h, F f)
+inline HD find_breadth_first(HD h, F f)
 {
   if (f(h.get_particle())) return h;
   std::vector<HD> stack;
