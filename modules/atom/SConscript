@@ -1,5 +1,10 @@
 Import('env')
 
+if env['BOOST_VERSION'] == "1.33.1" and env['percppcompilation']="no":
+    # there is a bug in boost that two headers can't be included at the same time as they
+    # defined different template <class T> boost::contains(T,T).
+    env['percppcompilation']="atom"
+
 env.IMPModuleBuild(version="SVN",
                    required_modules=['core', 'algebra', 'container'],
                    optional_modules=['cgal'],
