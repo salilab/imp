@@ -278,25 +278,25 @@ class VectorOfRefCounted {
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 template <class RC, class Policy>
-std::ostream &operator<<(std::ostream &out,
+inline std::ostream &operator<<(std::ostream &out,
                          const VectorOfRefCounted<RC, Policy> &v) {
   v.show(out);
   return out;
 }
 
 template <class RC, class Policy>
-void swap(VectorOfRefCounted<RC, Policy> &a,
+inline void swap(VectorOfRefCounted<RC, Policy> &a,
           VectorOfRefCounted<RC, Policy> &b) {
   a.swap_with(b);
 }
 
 template <class RC, class Policy>
-void swap(VectorOfRefCounted<RC, Policy> &a,
+inline void swap(VectorOfRefCounted<RC, Policy> &a,
           std::vector<RC> &b) {
   a.swap_with(b);
 }
 template <class RC, class Policy>
-void swap(std::vector<RC> &b,
+inline void swap(std::vector<RC> &b,
           VectorOfRefCounted<RC, Policy> &a) {
   a.swap_with(b);
 }
@@ -306,12 +306,12 @@ void swap(std::vector<RC> &b,
 namespace internal {
 
 template <class T, class F>
-void remove_if(T &t, const F &f) {
+inline void remove_if(T &t, const F &f) {
   t.remove_if(f);
 }
 
 template <class T, class F>
-void remove_if(std::vector<T> &t, const F &f) {
+inline void remove_if(std::vector<T> &t, const F &f) {
   t.erase(std::remove_if(t.begin(), t.end(), f), t.end());
 }
 

@@ -119,7 +119,7 @@ public:
 };
 
 template <int E>
-std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o)
+inline std::ostream &operator<<(std::ostream &out, ExponentialNumber<E> o)
 {
   o.show(out);
   return out;

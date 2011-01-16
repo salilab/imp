@@ -35,7 +35,7 @@ struct ListContains{
 };
 
 template <class T>
-ListContains<T> list_contains(const T&t) {
+inline ListContains<T> list_contains(const T&t) {
   return ListContains<T>(t);
 }
 

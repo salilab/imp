@@ -32,7 +32,7 @@ inline bool is_valid(Particle *p) {
   return p;
 }
 template <unsigned int D>
-bool is_valid(const ParticleTuple<D> &p) {
+inline bool is_valid(const ParticleTuple<D> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (!p[i]) return false;
   }
@@ -43,7 +43,7 @@ inline bool is_dirty(Particle *p) {
   return p->get_is_changed();
 }
 template <unsigned int D>
-bool is_dirty( const ParticleTuple<D> &p) {
+inline bool is_dirty( const ParticleTuple<D> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (p[i]->get_is_changed()) return true;
   }
@@ -54,7 +54,7 @@ inline Particle* prechange(Particle*p) {
 }
 
 template <unsigned int D>
-ParticleTuple<D> prechange(const ParticleTuple<D> &p) {
+inline ParticleTuple<D> prechange(const ParticleTuple<D> &p) {
   ParticleTuple<D> ret;
   for (unsigned int i=0; i< D; ++i) {
     ret[i]= p[i]->get_prechange_particle();
@@ -66,7 +66,7 @@ inline bool is_inactive(const Particle *p) {
   return !p->get_is_active();
 }
 template <unsigned int D>
-bool is_inactive(const ParticleTuple<D> &p) {
+inline bool is_inactive(const ParticleTuple<D> &p) {
   for (unsigned int i=0; i< D; ++i) {
     if (!p[i]->get_is_active()) return true;
   }
@@ -81,7 +81,7 @@ struct IsInactive {
 };
 
 template <class VT>
-ParticlesTemp flatten(const VT &in) {
+inline ParticlesTemp flatten(const VT &in) {
   typedef typename VT::value_type T;
   ParticlesTemp ret(in.size()*T::get_dimension());
   for (unsigned int i=0; i< in.size(); ++i) {
@@ -114,7 +114,7 @@ inline const ParticleTuple<D>& streamable(const ParticleTuple<D> &p) {
 
 
 template <class Score, class C>
-ParticlesTemp get_output_particles(Score *s,
+inline ParticlesTemp get_output_particles(Score *s,
                                    const C& p) {
   ParticlesTemp ret;
   for (unsigned int i=0; i< p.size(); ++i) {
@@ -124,7 +124,7 @@ ParticlesTemp get_output_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
-ParticlesTemp get_input_particles(Score *s,
+inline ParticlesTemp get_input_particles(Score *s,
                                   const C& p) {
   ParticlesTemp ret;
   for (unsigned int i=0; i< p.size(); ++i) {
@@ -134,7 +134,7 @@ ParticlesTemp get_input_particles(Score *s,
   return ret;
 }
 template <class Score, class C>
-ContainersTemp get_input_containers(Score *s,
+inline ContainersTemp get_input_containers(Score *s,
                                    const C& p) {
   ContainersTemp ret;
   for (unsigned int i=0; i< p.size(); ++i) {
@@ -144,32 +144,32 @@ ContainersTemp get_input_containers(Score *s,
   return ret;
 }
 template <class S>
-ParticlesTemp get_output_particles(S *s,
+inline ParticlesTemp get_output_particles(S *s,
                                    Particle *p) {
   return s->get_output_particles(p);
 }
 template <class S>
-ParticlesTemp get_input_particles(S *s,
+inline ParticlesTemp get_input_particles(S *s,
                                      Particle *p) {
   return s->get_input_particles(p);
 }
 template <class S>
-ContainersTemp get_input_containers(S *s,
+inline ContainersTemp get_input_containers(S *s,
                                    Particle *p) {
   return s->get_input_containers(p);
 }
 template <class S>
-ParticlesTemp get_output_particles(S *s,
+inline ParticlesTemp get_output_particles(S *s,
                                    Pointer<Particle> p) {
   return s->get_output_particles(p);
 }
 template <class S>
-ParticlesTemp get_input_particles(S *s,
+inline ParticlesTemp get_input_particles(S *s,
                                   Pointer<Particle> p) {
   return s->get_input_particles(p);
 }
 template <class S>
-ContainersTemp get_input_containers(S *s,
+inline ContainersTemp get_input_containers(S *s,
                                    Pointer<Particle> p) {
   return s->get_input_containers(p);
 }

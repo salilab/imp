@@ -166,7 +166,7 @@ namespace {
   }
 }
 
-DependencyGraph
+inline DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs) {
   IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()

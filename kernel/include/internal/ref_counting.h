@@ -87,20 +87,20 @@ struct RefStuff<T, typename boost::enable_if<
 
 
 template <class O>
-void unref(O* o)
+inline void unref(O* o)
 {
   RefStuff<O>::unref(o);
 }
 
 template <class O>
-void release(O* o)
+inline void release(O* o)
 {
    RefStuff<O>::release(o);
 }
 
 
 template <class O>
-void ref(O* o)
+inline void ref(O* o)
 {
   RefStuff<O>::ref(o);
 }

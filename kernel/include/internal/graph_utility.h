@@ -50,13 +50,13 @@ public:
 };
 
 template <class Graph>
-void show_as_graphviz(const Graph &g, std::ostream &out) {
+inline void show_as_graphviz(const Graph &g, std::ostream &out) {
   ObjectNameWriter<Graph> onw(g);
   boost::write_graphviz(out, g, onw);
 }
 
 template <class Base, class Graph>
-Map<Base*, int> get_graph_index(const Graph &g) {
+inline Map<Base*, int> get_graph_index(const Graph &g) {
   Map<Base*, int>ret;
   typename boost::property_map<Graph,
                                boost::vertex_name_t>::const_type
@@ -109,7 +109,7 @@ public:
 };
 
 template <class G>
-bool get_has_ancestor(const G &g,
+inline bool get_has_ancestor(const G &g,
                       unsigned int v,
                       const ParticlesTemp &pst) {
   typedef boost::reverse_graph<G>  RG;

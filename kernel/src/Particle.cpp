@@ -295,7 +295,7 @@ void Particle::operator delete(void *p) {
   IMP_FAILURE("Particle being deleted was not allocated properly.");
 }
 
-
+/*
 namespace internal {
   Particle* create_particles(Model *m, unsigned int n) {
     IMP_USAGE_CHECK(n>0, "Can't create 0 particles");
@@ -325,6 +325,6 @@ namespace internal {
     (*chunks)[i]->next_to_allocate+=n;
     return ret;
   }
-}
+  }*/
 
 IMP_END_NAMESPACE

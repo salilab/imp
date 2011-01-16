@@ -1013,10 +1013,6 @@ protection:                                                             \
     i.show(out);                                                        \
     return out;                                                         \
   }                                                                     \
-  template <unsigned int D>                                             \
-  void show(std::ostream &out, const name<D> &i) {                      \
-    i.show(out);                                                        \
-  }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 #else
 #define IMP_OUTPUT_OPERATOR_1(name)
