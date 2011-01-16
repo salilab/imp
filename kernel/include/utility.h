@@ -26,14 +26,14 @@ IMP_BEGIN_NAMESPACE
 
 //! Compute the square of a number
 template <class T>
-T square(T t)
+inline T square(T t)
 {
   return t*t;
 }
 
 //! Compute the cube of a number
 template <class T>
-T cube(T t)
+inline T cube(T t)
 {
   return t*t*t;
 }
@@ -60,12 +60,12 @@ inline bool is_nan(const T& a) {
     object, since you can't call both begin and end on it.
  */
 template <class Range, class Functor>
-void for_each(const Range &r, const Functor &f) {
+inline void for_each(const Range &r, const Functor &f) {
   std::for_each(r.begin(), r.end(), f);
 }
 
 template <class T>
-int compare(const T &a, const T &b) {
+inline int compare(const T &a, const T &b) {
   return a.compare(b);
 }
 #endif

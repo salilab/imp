@@ -210,7 +210,7 @@ inline std::ostream &operator<<(std::ostream &out, const Object& o) {
     \c dynamic_cast if you prefer to have a NULL returned.
  */
 template <class O, class I>
-O* object_cast(I *o) {
+inline O* object_cast(I *o) {
   O *ret= dynamic_cast<O*>(o);
   if (!ret) {
     IMP_THROW("Object " << o->get_name() << " cannot be cast to "

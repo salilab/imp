@@ -186,7 +186,7 @@ public:
 #ifndef IMP_DOXYGEN
 
 template <unsigned int ID, bool LA>
-std::ostream &operator<<(std::ostream &out, Key<ID, LA> k) {
+inline std::ostream &operator<<(std::ostream &out, Key<ID, LA> k) {
   k.show(out);
   return out;
 }

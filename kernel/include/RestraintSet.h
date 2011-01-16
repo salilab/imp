@@ -127,7 +127,7 @@ namespace {
 }
 #endif
 template <class It>
-RestraintsAndWeights get_restraints_and_weights(It b, It e,
+inline RestraintsAndWeights get_restraints_and_weights(It b, It e,
                                              double initial_weight=1) {
   internal::Map<Restraint*, int> index;
   RestraintsAndWeights ret;
@@ -137,7 +137,7 @@ RestraintsAndWeights get_restraints_and_weights(It b, It e,
 }
 
 template <class It>
-RestraintsTemp get_restraints(It b, It e) {
+inline RestraintsTemp get_restraints(It b, It e) {
   RestraintsTemp ret;
   get_restraints_internal(b,e, ret);
   std::sort(ret.begin(), ret.end());

@@ -255,7 +255,7 @@ public:
 };
 
 template <class V, int S>
-void swap(FixedInlineStorage<V,S> &a,
+inline void swap(FixedInlineStorage<V,S> &a,
           FixedInlineStorage<V,S> &b) {
   a.swap_with(b);
 }
@@ -320,7 +320,7 @@ public:
 };
 
 template <class V, int S>
-void swap(InlineStorage<V,S> &a,
+inline void swap(InlineStorage<V,S> &a,
           InlineStorage<V,S> &b) {
   a.swap_with(b);
 }

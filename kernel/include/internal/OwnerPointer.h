@@ -76,7 +76,7 @@ public:
 
 //! Make a ref counted pointer to an object. Useful for temporaries.
 template <class T>
-OwnerPointer<T> make_owner_pointer(T*t) {
+inline OwnerPointer<T> make_owner_pointer(T*t) {
   return OwnerPointer<T>(t);
 }
 

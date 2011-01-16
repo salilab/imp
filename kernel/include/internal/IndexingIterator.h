@@ -149,8 +149,8 @@ IndexingIterator<A> operator-(int i,
   }*/
 
 template <class A>
-IndexingIterator<A> operator+(int i,
-                              IndexingIterator<A> in) {
+inline IndexingIterator<A> operator+(int i,
+                                     IndexingIterator<A> in) {
   return in+ (i);
 }
 

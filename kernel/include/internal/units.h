@@ -138,7 +138,7 @@ typedef Shift<Meter, -6>::type Micron;
 
 
 template <int EXP, class Units>
-typename Exchange<Unit<internal::MKSTag, EXP, Units>,
+inline typename Exchange<Unit<internal::MKSTag, EXP, Units>,
         Kilocalorie, Joule, 4>::type
 convert_Cal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>,
@@ -148,7 +148,7 @@ convert_Cal_to_J(Unit<internal::MKSTag, EXP, Units> i) {
 }
 
 template <int EXP, class Units>
-typename Exchange<Unit<internal::MKSTag, EXP, Units>,
+inline typename Exchange<Unit<internal::MKSTag, EXP, Units>,
         Joule, Kilocalorie, -3>::type
 convert_J_to_Cal(Unit<internal::MKSTag, EXP, Units> i) {
   typedef typename Exchange<Unit<internal::MKSTag, EXP, Units>,
@@ -180,14 +180,14 @@ operator/(KilocaloriePerAngstromPerMol k,
 }
 
 template <int EXP>
-KilocaloriePerMol operator*(Unit<internal::MKSTag, EXP, HeatEnergy> k,
+inline KilocaloriePerMol operator*(Unit<internal::MKSTag, EXP, HeatEnergy> k,
                             internal::AtomsPerMol) {
   return KilocaloriePerMol(k.get_exponential_value()
                            *NA);
 }
 
 template <int EXP>
-KilocaloriePerAngstromPerMol
+inline KilocaloriePerAngstromPerMol
 operator*(Unit<internal::MKSTag, EXP,
           HeatEnergyDerivative> k,
           internal::AtomsPerMol) {
@@ -196,7 +196,7 @@ operator*(Unit<internal::MKSTag, EXP,
 }
 
 template <int EXP>
-KilocaloriePerMol operator*(internal::AtomsPerMol,
+inline KilocaloriePerMol operator*(internal::AtomsPerMol,
                             Unit<internal::MKSTag, EXP,HeatEnergy> k) {
   return operator*(k, ATOMS_PER_MOL);
 }
@@ -204,7 +204,7 @@ KilocaloriePerMol operator*(internal::AtomsPerMol,
 
 
 template <int EXP>
-KilocaloriePerAngstromPerMol
+inline KilocaloriePerAngstromPerMol
 operator*(internal::AtomsPerMol,
           Unit<internal::MKSTag, EXP,
           HeatEnergyDerivative >
@@ -218,7 +218,7 @@ typedef Unit<internal::MolarTag, 0, SingletonUnit> Molar;
 typedef Unit<internal::MolarTag, -6, SingletonUnit> Micromolar;
 
 template <int E>
-Molar
+inline Molar
 molarity_from_count(double count, Unit<internal::MKSTag, E, Volume> volume) {
   Unit<internal::MKSTag, -E,
     boost::mpl::vector_c<int, 0,-3,0,0,0>  >
@@ -232,7 +232,7 @@ molarity_from_count(double count, Unit<internal::MKSTag, E, Volume> volume) {
 
 
 template <int E1>
-Unit<internal::MKSTag,E1+23-3,boost::mpl::vector_c<int, 0,-3,0,0,0>  >
+inline Unit<internal::MKSTag,E1+23-3,boost::mpl::vector_c<int, 0,-3,0,0,0>  >
 density_from_molarity(Unit<internal::MolarTag, E1, SingletonUnit> molar) {
   Unit<internal::MKSTag,E1+23, boost::mpl::vector_c<int, 0,-3,0,0,0>  >
     count_per_liter(molar.get_exponential_value()*NA);
@@ -245,20 +245,20 @@ typedef Unit<internal::DaltonTag, 0, SingletonUnit> Dalton;
 typedef Unit<internal::DaltonTag, 3, SingletonUnit> Kilodalton;
 
 template <int EXP>
-Unit<internal::MKSTag, EXP-26, Mass>
+inline Unit<internal::MKSTag, EXP-26, Mass>
 convert_to_mks(Unit<internal::DaltonTag, EXP, SingletonUnit> d) {
   return Unit<internal::MKSTag, EXP-26, Mass>(d.get_value()/NA.get_value());
 }
 
 template <int EXP>
-Unit<internal::DaltonTag, EXP+26, SingletonUnit>
+inline Unit<internal::DaltonTag, EXP+26, SingletonUnit>
 convert_to_Dalton(Unit<internal::MKSTag, EXP, Mass> d) {
   return Unit<internal::DaltonTag,
     EXP+26, SingletonUnit>(d.get_value()*NA.get_value());
 }
 
 template <class TagT, int EXPT, class UnitsT>
-double strip_units(Unit<TagT, EXPT, UnitsT> u) {
+inline double strip_units(Unit<TagT, EXPT, UnitsT> u) {
   return u.get_value();
 }
 
