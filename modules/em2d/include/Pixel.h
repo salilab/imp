@@ -17,7 +17,11 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 //! A class to deal with 2D pixels comfortably
-class Pixel : public std::vector<int>
+class Pixel
+// swig isn't dealing with vector<int> at the moment anyway
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+: public std::vector<int>
+#endif
 {
 public:
   Pixel() {
@@ -31,20 +35,9 @@ public:
     this->at(0)=i;this->at(1)=j;
     null_ = false;
   }
-
-  int operator[](unsigned int i) const {
-    IMP_INTERNAL_CHECK((i==0 || i==1), "Invalid component of Pixel requested.");
-    IMP_INTERNAL_CHECK(this->get_is_null() == false,
-                            "Error: Accessing a null pixel.");
-    return this->at(i);
-  }
-
-  int& operator[](unsigned int i) {
-    IMP_INTERNAL_CHECK((i==0 || i==1), "Invalid component of Pixel requested.");
-    IMP_INTERNAL_CHECK(this->get_is_null() == false,
-                            "Error: Accessing a null pixel.");
-    return this->at(i);
-  }
+  // Use the macro so that there is swig support
+  IMP_BRACKET(int, unsigned int, ((i==0 || i==1) && !this->get_is_null()),
+              return this->at(i));
 
   Pixel operator-(const Pixel &p) const {
     Pixel q(this->at(0)-p[0],this->at(1)-p[1]);
