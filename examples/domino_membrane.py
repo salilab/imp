@@ -136,8 +136,22 @@ def create_restraints(m, chain, tbr, TMH):
                 dope=IMP.container.PairsRestraint(dps, dpc)
                 m.add_restraint(dope)
 
+    def add_interacting_restraint():
+        rbs=[]
+        for h in TMH:
+            s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
+            rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
+        lpc= IMP.container.ListPairContainer(m)
+        lpc.add_particle_pair([rbs[0],rbs[2]])
+        hub= IMP.core.HarmonicUpperBound(0.6,1)
+        sd=  IMP.core.SphereDistancePairScore(hub)
+        kc=  IMP.core.KClosePairsPairScore(sd,tbr,3)
+        ir=  IMP.container.PairsRestraint(kc, lpc)
+        m.add_restraint(ir)
+        m.set_maximum_score(ir, .01)
+        return ir
+
 # assembling all the restraints
-    rset=IMP.RestraintSet()
     add_excluded_volume()
     for i in range(len(TMH)-1):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
@@ -149,9 +163,11 @@ def create_restraints(m, chain, tbr, TMH):
         length=1.8*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
         rdr=add_distance_restraint(rb0,rb1,30.0,1000)
-        rset.add_restraint(dr)
     add_packing_restraint()
     add_DOPE()
+    ir=add_interacting_restraint()
+    rset=IMP.RestraintSet()
+    rset.add_restraint(ir)
     return rset
 
 # creating the discrete states for domino
@@ -163,7 +179,7 @@ def  create_discrete_states(m,chain,TMH,sign):
     trs0=[]; trs1=[]; trs2=[]
     for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,6):
+        for t in range(0,1):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
             for s in range(0,1):
@@ -226,7 +242,7 @@ def display(m,chain,TMH,name):
             w.add_geometry(g)
 
 # Here starts the real job...
-IMP.set_log_level(IMP.VERBOSE)
+#IMP.set_log_level(IMP.VERBOSE)
 
 # TMH definition and topology
 # 1rwt definition
