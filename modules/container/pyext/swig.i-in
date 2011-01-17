@@ -44,6 +44,12 @@ IMP_SWIG_OBJECT(IMP::container, InContainerSingletonFilter, InContainerSingleton
 IMP_SWIG_OBJECT(IMP::container, InContainerPairFilter, InContainerPairFilters);
 IMP_SWIG_OBJECT(IMP::container, InContainerTripletFilter, InContainerTripletFilters);
 IMP_SWIG_OBJECT(IMP::container, InContainerQuadFilter, InContainerQuadFilters);
+IMP_SWIG_OBJECT(IMP::container, SingletonContainerStatistics, SingletonContainerStatisticsList);
+IMP_SWIG_OBJECT(IMP::container, PairContainerStatistics, PairContainerStatisticsList);
+IMP_SWIG_OBJECT(IMP::container, TripletContainerStatistics, TripletContainerStatisticsList);
+IMP_SWIG_OBJECT(IMP::container, QuadContainerStatistics, QuadContainerStatisticsList);
+
+
 
 /* Wrap our own classes */
 %include "IMP/container/AllBipartitePairContainer.h"
@@ -92,3 +98,8 @@ IMP_SWIG_OBJECT(IMP::container, InContainerQuadFilter, InContainerQuadFilters);
 %include "IMP/container/InContainerPairFilter.h"
 %include "IMP/container/InContainerTripletFilter.h"
 %include "IMP/container/InContainerQuadFilter.h"
+%include "IMP/container/SingletonContainerStatistics.h"
+%include "IMP/container/PairContainerStatistics.h"
+%include "IMP/container/TripletContainerStatistics.h"
+%include "IMP/container/QuadContainerStatistics.h"
+
