@@ -80,10 +80,10 @@ class IMPEMEXPORT DensityMap: public Object
                                                 MapReaderWriter *writer));
 
 public:
-  DensityMap();
+  DensityMap(std::string name= "DensityMap%1%");
   //DensityMap(const DensityMap &other);
   //! Construct a density map as intructed in the input header
-  DensityMap(const DensityHeader &header);
+  DensityMap(const DensityHeader &header, std::string name= "DensityMap%1%");
   void release(){
     /*    if (data_ != NULL) {
           data_.reset(NULL);}

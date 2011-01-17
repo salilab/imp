@@ -38,7 +38,7 @@ public:
   //! Creates a new density map for sampled map.
   /** The header of the map is not determined and no data is being allocated
    */
-  SampledDensityMap() {
+  SampledDensityMap(): DensityMap("SampledDensityMap%1%") {
   }
 
   //! The size of the map is determined by the header and the data is allocated.
