@@ -158,5 +158,27 @@ class TestBL(IMP.test.TestCase):
                                       + IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), .7*(i+1))))
             self._compare_lists(m, pc, threshold, cpss)
 
+    def test_rigid(self):
+        """Test ClosePairContainer with rigid finder"""
+        m= IMP.Model()
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                      IMP.algebra.Vector3D(10,10,10))
+        def create_rb():
+            rbp= IMP.Particle(m)
+            ps= []
+            for i in range(0,10):
+                p = IMP.Particle(m)
+                d= IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 3))
+                ps.append(p)
+            IMP.core.RigidBody.setup_particle(rbp, ps)
+            return ps
+        ps0= create_rb()
+        ps1= create_rb()
+        lsc= IMP.container.ListSingletonContainer(ps0+ps1)
+        nbl= IMP.container.ClosePairContainer(lsc, 0, IMP.core.RigidClosePairsFinder())
+        m.update()
+        for p in nbl.get_particle_pairs():
+            self.assert_(IMP.core.RigidMember(p[0]).get_rigid_body() !=\
+                         IMP.core.RigidMember(p[1]).get_rigid_body())
 if __name__ == '__main__':
     IMP.test.main()
