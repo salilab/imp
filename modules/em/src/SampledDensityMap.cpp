@@ -11,7 +11,7 @@
 IMPEM_BEGIN_NAMESPACE
 
 SampledDensityMap::SampledDensityMap(const DensityHeader &header):
-  DensityMap(header)
+  DensityMap(header, "SampledDensityMap%1%")
 {
   x_key_=IMP::core::XYZ::get_coordinate_key(0);
   y_key_=IMP::core::XYZ::get_coordinate_key(1);

@@ -67,7 +67,7 @@ DensityMap *create_density_map(int nx,int ny,int nz,
   }
 
 
-DensityMap::DensityMap()
+DensityMap::DensityMap(std::string name): Object(name)
 {
   loc_calculated_ = false;
   normalized_ = false;
@@ -75,7 +75,8 @@ DensityMap::DensityMap()
 }
 
 
-DensityMap::DensityMap(const DensityHeader &header): Object("DensityMap%1%"){
+DensityMap::DensityMap(const DensityHeader &header,
+                       std::string name): Object(name){
   header_ = header;
   header_.compute_xyz_top(true);
   //allocate the data

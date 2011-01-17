@@ -104,6 +104,7 @@ void FitRestraint::initialize_model_density_map(
   //that are not part of a rigid body
   none_rb_model_dens_map_ =
     new SampledDensityMap(*(target_dens_map_->get_header()));
+  none_rb_model_dens_map_->set_name(get_name()+" scratch map");
   none_rb_model_dens_map_->reset_data(0.0);
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
     if (core::RigidBody::particle_is_instance(*it)) {
@@ -127,6 +128,8 @@ void FitRestraint::initialize_model_density_map(
                                 .get_transformation_to().get_inverse());
       rb_model_dens_map_.push_back(
         new SampledDensityMap(*(target_dens_map_->get_header())));
+      rb_model_dens_map_.back()->set_was_used(true);
+      rb_model_dens_map_.back()->set_name(get_name()+" internal rb map");
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->
         set_particles(rb_ps,weight_key);
       rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
