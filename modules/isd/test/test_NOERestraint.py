@@ -1,0 +1,278 @@
+#!/usr/bin/env python
+
+#general imports
+from numpy import *
+from random import uniform
+
+
+#imp general
+import IMP
+
+#our project
+from IMP.isd import Nuisance,JeffreysRestraint,NOERestraint
+
+#unit testing framework
+import IMP.test
+
+class TestNOERestraintSimple(IMP.test.TestCase):
+    "simple test cases to check if NOERestraint works"
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        #IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.gamma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(0,0,0))
+        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(1,1,1))
+        self.DA = IMP.DerivativeAccumulator()
+        self.Jsi = IMP.isd.JeffreysRestraint(self.sigma)
+        self.Jga = IMP.isd.JeffreysRestraint(self.gamma)
+        self.V_obs=3.0
+        self.noe = IMP.isd.NOERestraint(self.p0,self.p1,
+                self.sigma, self.gamma, self.V_obs)
+
+    def testValuePDist(self):
+        """test if probability is equal to
+        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
+        by changing distance.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=self.sigma.get_nuisance()
+            gamma=self.gamma.get_nuisance()
+            p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            dist=IMP.core.get_distance(p0,p1)
+            expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
+                    -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
+            self.assertAlmostEqual(self.noe.unprotected_probability(),
+                    expected,delta=0.001)
+
+    def testValuePSigma(self):
+        """test if probability is equal to
+        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
+        by changing sigma.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=uniform(0.1,100)
+            self.sigma.set_nuisance(no)
+            gamma=self.gamma.get_nuisance()
+            dist=IMP.core.get_distance(p0,p1)
+            expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
+                    -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
+            self.assertAlmostEqual(self.noe.unprotected_probability(),
+                    expected,delta=0.001)
+
+    def testValuePGamma(self):
+        """test if probability is equal to
+        1/(sqrt(2*pi)*sigma*V_obs) * exp(-1/(2sigma^2)*log^2(gamma*d^-6/Vobs))
+        by changing sigma.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=self.sigma.get_nuisance()
+            gamma=uniform(0.1,100)
+            self.gamma.set_nuisance(gamma)
+            dist=IMP.core.get_distance(p0,p1)
+            expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
+                    -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
+            self.assertAlmostEqual(self.noe.unprotected_probability(),
+                    expected,delta=0.001)
+
+    def testValueEDist(self):
+        """test if score is equal to
+        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
+        by changing distance.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=self.sigma.get_nuisance()
+            gamma=self.gamma.get_nuisance()
+            p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            dist=IMP.core.get_distance(p0,p1)
+            expected=0.5*log(2*pi) + log(no*self.V_obs) + \
+                    1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2
+            self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
+                    expected,delta=0.001)
+
+    def testValueESigma(self):
+        """test if score is equal to
+        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
+        by changing sigma.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=uniform(0.1,100)
+            self.sigma.set_nuisance(no)
+            gamma=self.gamma.get_nuisance()
+            dist=IMP.core.get_distance(p0,p1)
+            expected=0.5*log(2*pi) + log(no*self.V_obs) + \
+                    1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2
+            self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
+                    expected,delta=0.001)
+
+    def testValueEGamma(self):
+        """test if score is equal to
+        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
+        by changing sigma.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            no=self.sigma.get_nuisance()
+            gamma=uniform(0.1,100)
+            self.gamma.set_nuisance(gamma)
+            dist=IMP.core.get_distance(p0,p1)
+            expected=0.5*log(2*pi) + log(no*self.V_obs) + \
+                    1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2
+            self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
+                    expected,delta=0.001)
+
+    def testParticles(self):
+        "test get_input_particles"
+        self.assertEqual(self.noe.get_input_particles(),
+                [self.p0,self.p1,self.sigma,self.gamma])
+
+    def testContainers(self):
+        "test get_input_containers"
+        self.assertEqual(self.noe.get_input_containers(),[])
+
+    def testDerivativeX(self):
+        "test derivative w/r to X"
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            pos0=[uniform(0.1,100) for i in range(3)]
+            self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
+            pos1=[uniform(0.1,100) for i in range(3)]
+            self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
+            dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
+            sigma=uniform(0.1,100)
+            self.sigma.set_nuisance(sigma)
+            gamma=uniform(0.1,100)
+            self.gamma.set_nuisance(gamma)
+            self.m.evaluate(self.DA)
+            for coord in range(3):
+                self.assertAlmostEqual(self.p0.get_derivative(coord),
+                    (pos0[coord]-pos1[coord])/dist*(-6/dist)
+                    *(-1/sigma**2*log(self.V_obs/(gamma*dist**-6))),
+                    delta=0.001)
+                self.assertAlmostEqual(self.p1.get_derivative(coord),
+                    (pos1[coord]-pos0[coord])/dist*(-6/dist)
+                    *(-1/sigma**2*log(self.V_obs/(gamma*dist**-6))),
+                    delta=0.001)
+
+    def testDerivativeSigma(self):
+        "test derivative w/r to sigma"
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            pos0=[uniform(0.1,100) for i in range(3)]
+            self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
+            pos1=[uniform(0.1,100) for i in range(3)]
+            self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
+            dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
+            sigma=uniform(0.1,100)
+            self.sigma.set_nuisance(sigma)
+            gamma=uniform(0.1,100)
+            self.gamma.set_nuisance(gamma)
+            self.m.evaluate(self.DA)
+            self.assertAlmostEqual(self.sigma.get_nuisance_derivative(),
+                    1/sigma-1/sigma**3*log(self.V_obs/(gamma*dist**-6))**2,
+                    delta=0.001)
+
+    def testDerivativeGamma(self):
+        "test derivative w/r to X"
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            pos0=[uniform(0.1,100) for i in range(3)]
+            self.p0.set_coordinates(IMP.algebra.Vector3D(*pos0))
+            pos1=[uniform(0.1,100) for i in range(3)]
+            self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
+            dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
+            sigma=uniform(0.1,100)
+            self.sigma.set_nuisance(sigma)
+            gamma=uniform(0.1,100)
+            self.gamma.set_nuisance(gamma)
+            self.m.evaluate(self.DA)
+            self.assertAlmostEqual(self.gamma.get_nuisance_derivative(),
+                    1/gamma*(-1/sigma**2*log(self.V_obs/(gamma*dist**-6))),
+                    delta=0.001)
+
+    def testSanityEP(self):
+        "test if score is -log(prob)"
+        for i in xrange(100):
+            no=uniform(0.1,100)
+            self.sigma.set_nuisance(no)
+            self.assertAlmostEqual(self.noe.unprotected_evaluate(self.DA),
+                    -log(self.noe.unprotected_probability()),delta=0.001)
+
+    def testSanityPE(self):
+        "test if prob is exp(-score)"
+        for i in xrange(100):
+            no=uniform(0.1,100)
+            self.sigma.set_nuisance(no)
+            self.assertAlmostEqual(self.noe.unprotected_probability(),
+                    exp(-self.noe.unprotected_evaluate(self.DA)),delta=0.001)
+
+class TestNOERestraintApplied(IMP.test.TestCase):
+    "tests the NOE restraint in simulations"
+
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        #IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
+        self.gamma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(0,0,0))
+        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(1,1,1))
+        self.DA = IMP.DerivativeAccumulator()
+        self.Jsi = IMP.isd.JeffreysRestraint(self.sigma)
+        self.Jga = IMP.isd.JeffreysRestraint(self.gamma)
+        self.V_obs=3.0
+        self.noe = IMP.isd.NOERestraint(self.p0,self.p1,
+                self.sigma, self.gamma, self.V_obs)
+    
+    def testSimpleOptimization(self):
+        "tests to satisfy a restraint between two points"
+        m=self.m
+        self.gamma.set_nuisance(3.0)
+        m.add_restraint(self.noe) #this leads to a target distance of 1.0
+        self.p1.set_coordinates_are_optimized(True)
+        # set the conjugate gradient minimization
+        opt=IMP.core.ConjugateGradients(m)
+        # perform the minimization with 100 steps
+        opt.optimize(100)
+        self.assertAlmostEqual(IMP.core.get_distance(self.p0,self.p1),
+                1.0,delta=0.001)
+
+if __name__ == '__main__':
+    IMP.test.main()
+
+
+
+
+        
+        
+        
+
+
+
+
+        
+
