@@ -119,7 +119,7 @@ def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]
             version= "SVN "+vr.split("\n")[0]
         except OSError, detail:
             print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
-
+    version= version+" ("+env['build']+")"
     if len(optional_dependencies+ optional_modules)>0:
         version=version+" with "+", ".join(optional_dependencies+ optional_modules)
     return version
