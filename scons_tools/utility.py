@@ -185,11 +185,7 @@ def get_link_from_name(name):
 def add_to_include_path(env, path):
     if not path:
         return
-    if dependency.gcc.get_is_gcc_like(env)\
-           and not path.startswith("#"):
-        env.Append(CXXFLAGS=["-isystem",path])
-    else:
-        env.Append(CPPPATH=[path])
+    env.Append(CPPPATH=[path])
 
 def add_to_lib_path(env, path):
     if not path:
