@@ -271,11 +271,10 @@ cs=s.get_sample_states(ass)
 print "found ", len(cs), "solutions"
 
 score=[]
-for i,v in enumerate(cs):
+for v in cs:
     IMP.domino.load_particle_states(ass,v,pst)
     ss=m.evaluate(False)
     score.append(ss)
-#    print "** solution number:",i," is:",ss
 
 topscore = 30
 topscore = min(topscore,len(cs))
