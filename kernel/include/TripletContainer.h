@@ -191,8 +191,6 @@ public:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(TripletContainer);
 };
 
-IMP_OUTPUT_OPERATOR(TripletContainer);
-
 IMP_OBJECTS(TripletContainer,TripletContainers);
 
 IMP_END_NAMESPACE

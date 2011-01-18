@@ -191,8 +191,6 @@ public:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PairContainer);
 };
 
-IMP_OUTPUT_OPERATOR(PairContainer);
-
 IMP_OBJECTS(PairContainer,PairContainers);
 
 IMP_END_NAMESPACE
