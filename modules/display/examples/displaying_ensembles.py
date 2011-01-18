@@ -16,7 +16,7 @@ chain_colors={}
 #51
 print "reading"
 for i in range(0,46):
-    name= IMP.display.get_module_example_path("ensemble/aligned-"+str(i)+".pdb")
+    name= IMP.display.get_example_path("ensemble/aligned-"+str(i)+".pdb")
     h= IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
     if i==0:
         base=IMP.atom.Selection(h, atom_type=IMP.atom.AT_CA).get_selected_particles()
