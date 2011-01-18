@@ -131,6 +131,7 @@ class FileBasedCommunicator:
         sh_cmd = "%s %s '%s %s %s %s' &" % (ssh_cmd, host_name, command, args,
                                           filename, pipe)
         
+        print sh_cmd
         os.system(sh_cmd)
 
         return self.tid_counter
@@ -672,6 +673,8 @@ class FileBasedGrid(AbstractGrid):
         if host.init_cmd != '':
             if host.init_cmd.rstrip().endswith(';'):
                 command = host.init_cmd 
+            elif host.init_cmd.rstrip().endswith('!'):
+                command = host.init_cmd.rstrip()[:-1]
             else:
                 command = host.init_cmd + ';' 
         else:
