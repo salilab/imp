@@ -101,4 +101,15 @@ def configure_tr1_check(env):
 
 
 def get_boost_lib_name(env, name):
-    return name+env.get("BOOST_LIBSUFFIX", "")
+    return "boost_"+name+env.get("BOOST_LIBSUFFIX", "")
+
+def add_boost_library(env, nicename, libname, header_name, body=[], extra_boost_libs=[]):
+    real_libname=scons_tools.dependency.boost.get_boost_lib_name(env,libname)
+    real_dep_names=[]
+    for d in extra_boost_libs:
+        real_dep_names.append(scons_tools.dependency.boost.get_boost_lib_name(env,d))
+    lname="Boost."+nicename
+    scons_tools.dependency.add_external_library(env, lname, real_libname,
+                                                header_name,
+                                                body=body,
+                                                extra_libs=real_dep_names)
