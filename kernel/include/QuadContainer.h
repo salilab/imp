@@ -191,8 +191,6 @@ public:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);
 };
 
-IMP_OUTPUT_OPERATOR(QuadContainer);
-
 IMP_OBJECTS(QuadContainer,QuadContainers);
 
 IMP_END_NAMESPACE

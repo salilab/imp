@@ -191,8 +191,6 @@ public:
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(SingletonContainer);
 };
 
-IMP_OUTPUT_OPERATOR(SingletonContainer);
-
 IMP_OBJECTS(SingletonContainer,SingletonContainers);
 
 IMP_END_NAMESPACE
