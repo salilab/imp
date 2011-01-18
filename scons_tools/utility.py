@@ -119,7 +119,7 @@ def _get_cwd_version(env, version, optional_dependencies=[], optional_modules=[]
             version= "SVN "+vr.split("\n")[0]
         except OSError, detail:
             print >> sys.stderr, "WARNING: Could not run svnversion: %s" % str(detail)
-    version= version+" ("+env['build']+")"
+
     if len(optional_dependencies+ optional_modules)>0:
         version=version+" with "+", ".join(optional_dependencies+ optional_modules)
     return version
@@ -185,7 +185,11 @@ def get_link_from_name(name):
 def add_to_include_path(env, path):
     if not path:
         return
-    env.Append(CPPPATH=[path])
+    if dependency.gcc.get_is_gcc_like(env)\
+           and not path.startswith("#"):
+        env.Append(CXXFLAGS=["-isystem",path])
+    else:
+        env.Append(CPPPATH=[path])
 
 def add_to_lib_path(env, path):
     if not path:
