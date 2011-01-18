@@ -131,7 +131,6 @@ class FileBasedCommunicator:
         sh_cmd = "%s %s '%s %s %s %s' &" % (ssh_cmd, host_name, command, args,
                                           filename, pipe)
         
-        print sh_cmd
         os.system(sh_cmd)
 
         return self.tid_counter
