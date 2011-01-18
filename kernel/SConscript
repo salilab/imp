@@ -1,10 +1,17 @@
 Import('env')
 import scons_tools.dependency
+import scons_tools.dependency.boost
 
 config=[]
 
+scons_tools.dependency.boost.configure_tr1_check(env)
+
 scons_tools.dependency.add_external_library(env, "NetCDFCPP", ["netcdf_c++", 'netcdf'],
                                                 "netcdfcpp.h")
+
+scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem", 'boost/filesystem/path.hpp',
+                                               body="boost::filesystem::path p;",
+                                               extra_boost_libs=["system"])
 
 if not env.GetOption('help'):
     if not env.get('deprecated', True):

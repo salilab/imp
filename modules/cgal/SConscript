@@ -4,7 +4,7 @@ import scons_tools.dependency.cgal
 import scons_tools.dependency.boost
 
 cgal_libs=scons_tools.dependency.cgal.get_libs(env,
-                         scons_tools.dependency.boost.get_boost_lib_name(env,"boost_thread"))
+                         scons_tools.dependency.boost.get_boost_lib_name(env,"thread"))
 
 scons_tools.dependency.add_external_library(env, "CGAL", ['CGAL']+cgal_libs,
                                             ['CGAL/Gmpq.h', 'CGAL/Lazy_exact_nt.h'],

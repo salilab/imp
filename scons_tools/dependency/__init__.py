@@ -55,9 +55,6 @@ def get_dependency_string(name):
 
 
 
-
-
-
 def add_external_library(env, name, lib, header, body="", extra_libs=[]):
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
