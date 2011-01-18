@@ -34,3 +34,4 @@ namespace IMP {
 %include "IMP/multifit/proteomics_reader.h"
 %include "IMP/multifit/anchors_reader.h"
 %include "IMP/multifit/coarse_molecule.h"
+%include "IMP/multifit/fitting_utils.h"

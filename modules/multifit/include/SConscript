@@ -29,6 +29,7 @@ files = [
         'proteomics_reader.h',
         'anchors_reader.h',
         'coarse_molecule.h',
+        'fitting_utils.h',
         ]
 # Install the include files:
 env.IMPModuleInclude(files)
