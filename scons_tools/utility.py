@@ -185,9 +185,18 @@ def get_link_from_name(name):
 def add_to_include_path(env, path):
     if not path:
         return
+    #print env["CXXVERSION"], env["CXXVERSION"].split(".")[0] == "4", env["CXXVERSION"].split(".")[1] == "0"
+    #print not (sys.platform=="darwin"
+    #                and env["CXXVERSION"].split(".")[0] == "4"
+    #                and env["CXXVERSION"].split(".")[1] == "0")
     if dependency.gcc.get_is_gcc_like(env)\
            and not path.startswith("#"):
-        env.Append(CXXFLAGS=["-isystem",path])
+        if sys.platform=="darwin"\
+            and env["CXXVERSION"].split(".")[0] == "4"\
+            and env["CXXVERSION"].split(".")[1] == "0":
+            env.Append(CXXFLAGS=["-I"+path])
+        else:
+            env.Append(CXXFLAGS=["-isystem",path])
     else:
         env.Append(CPPPATH=[path])
 
