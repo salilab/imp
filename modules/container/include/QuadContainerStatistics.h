@@ -13,7 +13,7 @@
 #include "container_config.h"
 #include <IMP/QuadContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/Map.h>
+#include <IMP/internal/map.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
