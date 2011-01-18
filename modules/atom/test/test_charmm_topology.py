@@ -296,6 +296,22 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         for a in IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE):
             self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
 
+    def test_setup_hierarchy(self):
+        """Test CHARMMTopology::setup_hierarchy() method"""
+        m = IMP.Model()
+        pdb = IMP.atom.read_pdb(
+                        self.get_input_file_name('charmm_type_test.pdb'), m)
+        ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
+        topology = ff.create_topology(pdb)
+        topology.apply_default_patches()
+        topology.setup_hierarchy(pdb)
+        # Every atom should now have XYZ coordinates and CHARMM type
+        atoms = IMP.atom.get_by_type(pdb, IMP.atom.ATOM_TYPE)
+        self.assertEqual(len(atoms), 11)
+        for a in atoms:
+            self.assertTrue(IMP.core.XYZ.particle_is_instance(a))
+            self.assertTrue(IMP.atom.CHARMMAtom.particle_is_instance(a))
+
     def test_add_coordinates_empty_structure(self):
         """Test adding coordinates to a completely empty structure"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),

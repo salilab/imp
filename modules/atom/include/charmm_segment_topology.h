@@ -151,6 +151,15 @@ public:
    */
   void add_missing_atoms(Hierarchy hierarchy) const;
 
+  //! Make the Hierarchy conform with this topology.
+  /** The hierarchy is modified if necessary so that each residue contains
+      the same set of atoms as defined in the CHARMM topology, and any
+      atoms missing coordinates are assigned them.
+
+      This is equivalent to calling add_atom_types(), add_missing_atoms(),
+      remove_charmm_untyped_atoms(), and add_coordinates() in that order.
+   */
+  void setup_hierarchy(Hierarchy hierarchy) const;
 
   //! Add CHARMM charges to the given Hierarchy using this topology.
   /** The primary sequence of the Hierarchy must match that of the topology.

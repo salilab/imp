@@ -1016,6 +1016,14 @@ Hierarchy CHARMMTopology::create_hierarchy(Model *model) const
   return root;
 }
 
+void CHARMMTopology::setup_hierarchy(Hierarchy hierarchy) const
+{
+  add_atom_types(hierarchy);
+  add_missing_atoms(hierarchy);
+  remove_charmm_untyped_atoms(hierarchy);
+  add_coordinates(hierarchy);
+}
+
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
               CHARMMResidueTopology *, CHARMMResidueTopologies,
               { obj->set_was_used(true); }, {}, {});
