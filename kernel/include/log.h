@@ -216,6 +216,30 @@ inline bool get_is_log_output(LogLevel l)
  */
 #define IMP_ERROR_WRITE(expr)
 
+#elif IMP_BUILD==IMP_FAST
+
+#define IMP_WARN(expr)
+
+
+struct WarningContext {
+public:
+  void add_warning(std::string str) const {}
+  void clear_warnings() const {}
+  void dump_warnings() const {}
+};
+
+
+#define IMP_WARN_ONCE(expr, context)
+
+
+#define IMP_WARN_WRITE(expr)
+
+#define IMP_ERROR(expr) std::cerr << "ERROR: " << expr << std::endl;
+
+#define IMP_ERROR_WRITE(expr)
+
+
+
 #else
 #define IMP_WARN(expr) if (IMP::get_is_log_output(IMP::WARNING)) \
     { std::ostringstream oss;                                \
@@ -228,6 +252,8 @@ struct WarningContext {
   mutable std::map<std::string, int> data_;
 public:
   void add_warning(std::string str) const {
+    IMP_USAGE_CHECK(!str.empty(),
+                    "The empty string is not a valid log message");
     if (IMP::get_is_log_output(IMP::WARNING)) {
       if (data_.find(str) == data_.end()) {
         data_[str]=1;
