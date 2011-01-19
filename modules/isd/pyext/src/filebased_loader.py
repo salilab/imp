@@ -20,10 +20,10 @@ if __name__ == '__main__':
 
     import os, sys, time, cPickle
 
-    import FileBasedGrid
-    import logfile
+    import IMP.isd.FileBasedGrid as FileBasedGrid
+    import IMP.isd.logfile as logfile
 
-    import shared_functions as sf
+    import IMP.isd.shared_functions as sf
     
     log_output = True
 
@@ -53,7 +53,10 @@ if __name__ == '__main__':
     if log_output:
         filename = temp_path + '/%d.log' % tid
         log = logfile.logfile(filename)
-        sys.stdout = log
+        if debug:
+            os.dup2(sys.stdout.fileno(),log.fileno())
+        else:
+            sys.stdout = log
 
     handler = FileBasedGrid.FileBasedRemoteObjectHandler(
         kill_on_error, signal_file, temp_path, parent_tid, tid,
