@@ -4,24 +4,23 @@ import IMP.atom
 Segment= IMP.algebra.Segment3D
 Cylinder= IMP.algebra.Cylinder3D
 
-IMP.set_log_level(IMP.TERSE)
-m= IMP.Model()
-hs=[]
-# used to test of two molecules are touching one another
-ps= IMP.core.KClosePairsPairScore(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10,1)),
-                                  IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
-
-
-chain_colors={}
-#51
-print "reading"
-for i in range(0,46):
-    name= IMP.display.get_example_path("ensemble/aligned-"+str(i)+".pdb")
-    h= IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
-    if i==0:
-        base=IMP.atom.Selection(h, atom_type=IMP.atom.AT_CA).get_selected_particles()
-        print "  base", len(base)
-    hs.append(h)
+def read(m, beyond_file):
+    print "reading"
+    hs=[]
+    for i in range(0,beyond_file):
+        # create a simplified version for each chain to speed up computations
+        name= IMP.display.get_example_path("ensemble/aligned-"+str(i)+".pdb")
+        h= IMP.atom.read_pdb(name, m, IMP.atom.CAlphaPDBSelector())
+        hr= IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+        hs.append(hr)
+        for c in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
+            simp= IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(c), 4)
+            hr.add_child(simp)
+        IMP.atom.destroy(h)
+        if i==0:
+            base=IMP.atom.get_leaves(hr)
+        print " ",i
+    return hs
 
 def add_markers(h, c, w):
     """Add markers to a the passed conformation. The marker locations are chosen
@@ -31,20 +30,20 @@ def add_markers(h, c, w):
         g.set_name(name)
         g.set_color(c)
         w.add_geometry(g)
-    s= IMP.atom.Selection(h, chain='B', residue_index=317, atom_type=IMP.atom.AT_CA)
+    s= IMP.atom.Selection(h, chain='B', residue_index=317)
     add_marker(s, "m0")
-    s= IMP.atom.Selection(h, chain='G', residue_index=212, atom_type=IMP.atom.AT_CA)
+    s= IMP.atom.Selection(h, chain='G', residue_index=212)
     add_marker(s, "m1")
-    s= IMP.atom.Selection(h, chain='I', residue_index=237, atom_type=IMP.atom.AT_CA)
+    s= IMP.atom.Selection(h, chain='I', residue_index=237)
     add_marker(s, "m2")
-    s= IMP.atom.Selection(h, chain='F', residue_index=101, atom_type=IMP.atom.AT_CA)
+    s= IMP.atom.Selection(h, chain='F', residue_index=101)
     add_marker(s, "m3")
 
 def get_nice_name(h):
     nm= h.get_name()
     return nm[nm.find('-')+1:nm.rfind('.')]
 
-def add_axis(h, c, w):
+def add_axis(h, c, w, chain_colors):
     for hc in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         rb= IMP.core.RigidMember(hc).get_rigid_body()
         g= IMP.display.ReferenceFrameGeometry(rb.get_reference_frame())
@@ -55,10 +54,10 @@ def add_axis(h, c, w):
             g.set_color(chain_colors[IMP.atom.Chain(hc).get_id()])
         w.add_geometry(g)
 
-def add_skeleton(h, c, r, w):
+def add_skeleton(h, c, r, w, chain_colors):
     for hc0 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         for hc1 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
-            if hc1 < hc0:
+            if hc1 <= hc0:
                 continue
             d= ps.evaluate((hc0, hc1), None)
             if d < 1:
@@ -80,15 +79,15 @@ def add_skeleton(h, c, r, w):
                 g.set_name(get_nice_name(h)+"_skel")
                 w.add_geometry(g)
 
+IMP.set_log_level(IMP.TERSE)
+m= IMP.Model()
 
-def chaincmp(p0, p1):
-    return  cmp(IMP.core.XYZ(p0).get_x()+IMP.core.XYZ(p0).get_y(),
-                IMP.core.XYZ(p1).get_x()+ IMP.core.XYZ(p1).get_y())
+hs= read(m, 46)
 
-def mycmp(h0, h1):
-    p0=IMP.atom.Selection(h0, chain='I', residue_index=237, atom_type=IMP.atom.AT_CA).get_selected_particles()[0]
-    p1=IMP.atom.Selection(h1, chain='I', residue_index=237, atom_type=IMP.atom.AT_CA).get_selected_particles()[0]
-    return  cmp(IMP.core.XYZ(p0).get_z(), IMP.core.XYZ(p1).get_z())
+# used to test of two molecules are touching one another
+ps= IMP.core.KClosePairsPairScore(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10,1)),
+                                  IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits()))
+ps.set_log_level(IMP.SILENT)
 
 
 print "creating rigid bodies"
@@ -98,7 +97,6 @@ for hc in IMP.atom.get_by_type(hs[0], IMP.atom.CHAIN_TYPE):
     base_chains[c.get_id()]=c
 
 for i, h in enumerate(hs):
-    print " ",i
     for hc in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         c=IMP.atom.Chain(hc)
         if h==hs[0]:
@@ -106,13 +104,12 @@ for i, h in enumerate(hs):
         else:
             # make sure the rigid bodies have equivalent defining reference frames
             crb=IMP.atom.create_compatible_rigid_body(hc, base_chains[c.get_id()])
-            tr= IMP.core.get_transformation_aligning_first_to_second(IMP.atom.get_leaves(base_chains[c.get_id()]),
-                                                                     IMP.atom.get_leaves(hc))
-            brb= IMP.core.RigidMember(base_chains[c.get_id()]).get_rigid_body()
-
+    print " ",i
 
 chains= IMP.atom.get_by_type(hs[0], IMP.atom.CHAIN_TYPE)
-chains.sort(chaincmp)
+chains.sort(lambda x,y: cmp(IMP.core.XYZ(x).get_x()+IMP.core.XYZ(x).get_y(),
+                IMP.core.XYZ(y).get_x()+ IMP.core.XYZ(y).get_y()))
+chain_colors={}
 for i,c in enumerate(chains):
     id= IMP.atom.Chain(c).get_id()
     #f= i/float(len(chains))
@@ -123,22 +120,27 @@ for i,c in enumerate(chains):
 w= IMP.display.PymolWriter("markers.pym")
 add_markers(hs[0], IMP.display.Color(1,1,1), w)
 hso= hs[1:]
-hso.sort(mycmp)
-print "adding markers"
+
+
+hso.sort(lambda h0, h1:  cmp(IMP.core.XYZ(IMP.atom.Selection(h0, chain='I',
+                                                             residue_index=237).get_selected_particles()[0]).get_z(),
+                             IMP.core.XYZ(IMP.atom.Selection(h1, chain='I',
+                                                             residue_index=237).get_selected_particles()[0]).get_z()))
+print "adding markers",
 for i,h in enumerate(hso):
-    print " ",i
     c= IMP.display.get_interpolated_rgb(IMP.display.Color(1,0,0), IMP.display.Color(0,0,1), i/50.)
     add_markers(h, c, w)
-w= IMP.display.PymolWriter("axis.pym")
-print "adding axis"
-add_axis(hs[0], IMP.display.Color(1,1,1), w)
-for i,h in enumerate(hs[1:]):
     print " ",i
-    add_axis(h, None, w)
+w= IMP.display.PymolWriter("axis.pym")
+print "adding axis",
+add_axis(hs[0], IMP.display.Color(1,1,1), w, chain_colors)
+for i,h in enumerate(hs[1:]):
+    add_axis(h, None, w, chain_colors)
+    print i,
 
 w= IMP.display.PymolWriter("skeletons.pym")
-add_skeleton(hs[0], IMP.display.Color(1,1,1), 5, w)
-print "adding skeleton"
+add_skeleton(hs[0], IMP.display.Color(1,1,1), 5, w, chain_colors)
+print "adding skeleton",
 for i,h in enumerate(hs[1:]):
+    add_skeleton(h, None, 1, w, chain_colors)
     print " ",i
-    add_skeleton(h, None, 1, w)
