@@ -45,8 +45,10 @@ double get_volume_from_residue_type(ResidueType rt) {
                                                                  radii
                                                                  +sizeof(radii)
                                                                  /sizeof(RP));
-  IMP_USAGE_CHECK(radii_map.find(rt) != radii_map.end(),
-                  "Can't approximate volume of non-standard residue " << rt);
+  if (radii_map.find(rt) == radii_map.end()) {
+    IMP_THROW( "Can't approximate volume of non-standard residue "
+               << rt, ValueException);
+  }
   double r= radii_map.find(rt)->second;
   IMP_INTERNAL_CHECK(r>0, "Read garbage r for "<< rt);
   return algebra::get_volume(algebra::Sphere3D(algebra::get_zero_vector_d<3>(),

@@ -41,6 +41,8 @@ IMPATOMEXPORT double get_mass_from_number_of_residues(unsigned int num_aa);
  Deviations from standard atomic volumes as a quality measure for
  protein crystal structures}, J Mol Biol. 1996 Nov 22;264(1):121-36.
 
+
+ \throw ValueException if a non-standard residue type is passed
  */
 IMPATOMEXPORT double get_volume_from_residue_type(ResidueType rt);
 
