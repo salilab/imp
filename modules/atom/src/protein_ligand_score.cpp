@@ -240,8 +240,8 @@ namespace {
   }
 
   const int ni= data::LAST_PROTEIN_TYPE.get_index();
-  const int nj= data::LAST_LIGAND_TYPE.get_index()
-    - data::LAST_PROTEIN_TYPE.get_index()-1;
+  /*const int nj= data::LAST_LIGAND_TYPE.get_index()
+    - data::LAST_PROTEIN_TYPE.get_index()-1;*/
 }
 
 
