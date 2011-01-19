@@ -9,12 +9,11 @@ import IMP.isd
 class sfo():
     "shared functions object, published on all nodes"
 
-    #declare here all remotely-accessible objects
-
     def hello(self):
         return "hello world"
 
-    def init_simulation(self):
+    def init_model(self):
+        "loads pdb and restraints and creates particles and nuisances"
         kB= (1.381 * 6.02214) / 4184.0
         #IMP.set_log_level(IMP.SILENT)
         IMP.set_check_level(IMP.NONE)
@@ -144,14 +143,29 @@ class sfo():
         self._p['protein'] = prot
 
     def m(self,name,*args,**kw):
+        "wrapper to call methods of m"
         func=getattr(self._m,name)
         return func(*args, **kw)
 
-    def setup_md(self):
+    def init_simulation(self,temp=300.0):
+        "prepare md and mc sims"
+        self._md = self._setup_md(temp)
+        self._mc_sigma, self._nm_sigma = self._setup_mc(self._p['sigma'], temp)
+        self._mc_gamma, self._nm_gamma = self._setup_mc(self._p['gamma'], temp)
+
+    def do_md(self,nsteps):
+        "perform md simulation on protein for nsteps"
+        for i in IMP.atom.get_leaves(self._p['prot']):
+            IMP.core.XYZR(i).set_coordinates_are_optimized(True)
+        self._p['sigma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
+        self._p['gamma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
+        self._md.optimize(nsteps)
+
+    def _setup_md(self,temp=300.0, tau=500):
         ## Molecular Dynamics (from MAX BONOMI)
         md=IMP.atom.MolecularDynamics()
-        md.set_model(m)
-        md.assign_velocities(300)
+        md.set_model(self._m)
+        md.assign_velocities(temp)
         md.set_time_step(1.0)
         ## therm legend
         # 0 :: nve
@@ -160,38 +174,31 @@ class sfo():
         # 3 :: langevin
         #md.set_therm(0,0,0)
         #md.set_therm(1,300,0)
-        md.set_therm(2,300,100)
+        md.set_therm(2,temp,tau)
         #md.set_therm(3,300,0.01)
         # metadynamics setup
         #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
         return md
 
-    def setup_mc(self,particle):
+    def _setup_mc(self,particle,temp=300.0):
         "monte carlo on nuisance parameter"
-        mc = IMP.core.MonteCarlo(m)
-        cont=IMP.container.ListSingletonContainer(m)
+        mc = IMP.core.MonteCarlo(self._m)
+        cont=IMP.container.ListSingletonContainer(self._m)
         cont.add_particle(particle)
         nm_particle=IMP.core.NormalMover(cont,
                 IMP.FloatKeys([IMP.FloatKey("nuisance")]),0.1)
-        cont=IMP.container.ListSingletonContainer(m)
+        cont=IMP.container.ListSingletonContainer(self._m)
         #why is this returning an int?
         mc.add_mover(nm_particle)
         #set same temp as MD, careful with units
-        mc.set_temperature(kB*300)
+        mc.set_temperature(kB*temp)
         #allow to go uphill
         mc.set_return_best(False)
         #update particle and gamma each time
         mc.set_move_probability(1.0)
         return (mc,nm_particle)
 
-    def do_md(self,nsteps):
-        for i in IMP.atom.get_leaves(prot):
-            IMP.core.XYZR(i).set_coordinates_are_optimized(True)
-        sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        md.optimize(nsteps)
-
-    def mc_and_update(self,nsteps,mc,nm):
+    def _mc_and_update(self,nsteps,mc,nm):
         before = mc.get_number_of_forward_steps()
         mc.optimize(nsteps)
         after = mc.get_number_of_forward_steps()
@@ -205,14 +212,18 @@ class sfo():
         nm.set_sigma(nm.get_sigma()*2*accept)
 
     def do_mc_and_update_stepsize(self,nsteps):
+        "perform mc on nuisances for nsteps"
+        prot = self._p['prot']
+        sigma = self._p['sigma']
+        gamma = self._p['gamma']
         for i in IMP.atom.get_leaves(prot):
             IMP.core.XYZR(i).set_coordinates_are_optimized(False)
         sigma.set_is_optimized(IMP.FloatKey("nuisance"),True)
         gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        mc_and_update(nsteps,mc_sigma,nm_sigma)
+        mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
         sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
         gamma.set_is_optimized(IMP.FloatKey("nuisance"),True)
-        mc_and_update(nsteps,mc_gamma,nm_gamma)
+        mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
 
     def write_pdb(self, name='prot.pdb'):
         IMP.atom.write_pdb(self._p['protein'], name)
