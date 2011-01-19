@@ -76,16 +76,16 @@ void parse_interaction_line(
      ProteomicsData &dp){
   std::vector<int> inter_prots;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
-  IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
+  IMP_USAGE_CHECK(line.size() > 2,
+     "no data to parse. the last two tabs should contain header data\n");
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  for(std::vector<std::string>::iterator it = line_split.begin();
-      it != line_split.end();it++) {
-    std::string name =  boost::lexical_cast<std::string>(*it);
+  for(int i=0;i<line_split.size()-2;i++) {//last two are header
+    std::string name =  boost::lexical_cast<std::string>(line_split[i]);
     int index = dp.find(name);
     IMP_USAGE_CHECK(index != -1,
                  "The protein "<<name<<
