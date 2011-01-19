@@ -26,10 +26,14 @@ typedef std::vector< Floats > VectorFloats;
 
 
 // Comparison of cluster_id,distance
-class LessThanByDistance:
+class LessThanByDistance
+#ifndef SWIG
+:
                 public std::binary_function< pair_cluster_id_distance ,
                                              pair_cluster_id_distance ,
-                                             bool> {
+                                             bool>
+#endif
+ {
 public:
   bool operator()(const pair_cluster_id_distance &a,
                   const pair_cluster_id_distance &b) {
