@@ -37,20 +37,20 @@ namespace {
     //bool old= m->get_gather_statistics();
     IMP_IF_LOG(TERSE) {
       m->set_gather_statistics(true);
-      double oscore= m->evaluate(false);
-      IMP_WARN("Relaxing the model from a score of " << oscore << std::endl);
+      IMP_LOG(TERSE, "Relaxing the model from a score of "
+              << m->evaluate(false) << std::endl);
       m->set_gather_statistics(false);
-      m->show_restraint_score_statistics(std::cerr);
+      IMP_LOG_WRITE(TERSE, m->show_restraint_score_statistics(IMP_STREAM));
     }
     std::cerr << "relaxing" << std::endl;
     IMP_NEW(core::ConjugateGradients, cg, (m));
     cg->optimize(10);
     IMP_IF_LOG(TERSE) {
       m->set_gather_statistics(true);
-      double nscore=m->evaluate(true);
-      IMP_WARN("Relaxed the model to a score of " << nscore << std::endl);
+      IMP_LOG(TERSE, "Relaxed the model to a score of "
+              << m->evaluate(true) << std::endl);
       m->set_gather_statistics(false);
-      m->show_restraint_score_statistics(std::cerr);
+      IMP_LOG_WRITE(TERSE, m->show_restraint_score_statistics(IMP_STREAM));
     }
   }
 
