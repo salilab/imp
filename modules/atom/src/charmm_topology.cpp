@@ -522,7 +522,9 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
                                      it->first->get_atom(typ)
                                      .get_charmm_type());
         } catch (ValueException &e) {
-          IMP_WARN_ONCE("Could not determine CHARMM atom type for atom "
+          IMP_WARN_ONCE(typ.get_string()
+                        +Residue(it->second).get_residue_type().get_string(),
+                        "Could not determine CHARMM atom type for atom "
                         << typ << " in residue " << Residue(it->second)
                         << std::endl, warn_context_);
         }
@@ -930,7 +932,7 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
         Charged::setup_particle(*atit,
                                 it->first->get_atom(typ).get_charge());
       } catch (ValueException &e) {
-        IMP_WARN_ONCE("Could not determine charge for atom "
+        IMP_WARN_ONCE(typ.get_string(), "Could not determine charge for atom "
                       << typ << " in residue " << Residue(it->second)
                       << std::endl, warn_context_);
       }
