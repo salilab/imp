@@ -134,7 +134,7 @@ class RemoteObjectHandler:
 
     def call_method(self, key, name, args, kw):
 
-        if self.debug: print 'call_method: %s' % name
+        #if self.debug: print 'call_method: %s' % name
 
         method = getattr(self.object, name)
 
@@ -198,12 +198,16 @@ class RemoteObject(object):
     def __init__(self, op, handler_tid, manager):
 
         object.__init__(self)
+        #print 'calling as %s'  % self.__class__.__name__
 
         attr_name = '_%s__handler_tid' % self.__class__.__name__
+        #print 'debug2:',attr_name
         object.__setattr__(self, attr_name, handler_tid)
+        self.__dict__['__handler_tid'] = handler_tid
 
         attr_name = '_%s__manager' % self.__class__.__name__
         object.__setattr__(self, attr_name, manager)
+        self.__dict__['__manager'] = manager
 
         self.__dict__['_op'] = op
         #self.__dict__['key'] = 0
@@ -217,6 +221,7 @@ class RemoteObject(object):
 
     def _get_attr(self, value):
 
+        #print "debug: ",value,self.__handler_tid
         self.__manager.send(self.__handler_tid, MSG_GET_TIME, value)
 
         return self.__manager.recv(self.__handler_tid, MSG_GET_ATTR)
@@ -230,7 +235,7 @@ class RemoteObject(object):
     def __getattr__(self, name):
 
         #print 'DEBUG RemoteObject.__getattr__: name = %s (%s)' \
-        #      % (name, id(self))        
+        #     % (name, id(self))        
 
         if hasattr(self._op, name):
 
