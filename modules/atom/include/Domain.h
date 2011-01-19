@@ -55,6 +55,18 @@ public:
       && Hierarchy::particle_is_instance(p);
   }
 
+  void set_index_range(IntRange ir) {
+    IMP_USAGE_CHECK(ir.first < ir.second,
+                    "Bad range passed: " << ir.first
+                    << "..." << ir.second);
+    get_particle()->set_value(get_data().begin, ir.first);
+    get_particle()->set_value(get_data().end, ir.second);
+  }
+
+  IntRange get_index_range() const {
+    return IntRange(get_begin_index(), get_end_index());
+  }
+
   //! Get the index of the first residue in the domain
   Int get_begin_index() const {
     return get_particle()->get_value(get_data().begin);
