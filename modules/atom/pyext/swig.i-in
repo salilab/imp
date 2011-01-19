@@ -42,6 +42,7 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
 IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMStereochemistryRestraint, CHARMMStereochemistryRestraints);
 
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
@@ -220,6 +221,7 @@ namespace IMP {
 %include "IMP/atom/CHARMMAtom.h"
 %include "IMP/atom/CHARMMParameters.h"
 %include "IMP/atom/charmm_segment_topology.h"
+%include "IMP/atom/CHARMMStereochemistryRestraint.h"
 %include "IMP/atom/force_fields.h"
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/pdb.h"
