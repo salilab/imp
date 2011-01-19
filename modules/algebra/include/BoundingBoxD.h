@@ -166,6 +166,26 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
   return true;
 }
 
+//! Return the intersecting bounding box
+template <unsigned int D>
+inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
+                                        const BoundingBoxD<D> &b) {
+  VectorD<D> ic[2];
+  //set low
+  int j=0;
+  for (unsigned int i=0; i< D; ++i) {
+    if (a.get_corner(j)[i] > b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
+    else {ic[j][i]=b.get_corner(j)[i];}
+  }
+  //set top
+  j=1;
+  for (unsigned int i=0; i< D; ++i) {
+    if (a.get_corner(j)[i] < b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
+    else {ic[j][i]=b.get_corner(j)[i];}
+  }
+  return BoundingBoxD<D>(ic[0],ic[1]);
+}
+
 //! Return the maximum axis aligned extent
 template <unsigned int D>
 inline double get_maximum_length(const BoundingBoxD<D> &a) {

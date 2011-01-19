@@ -590,35 +590,50 @@ void DensityMap::add(const DensityMap *other) {
   IMP_INTERNAL_CHECK(
           get_bounding_box(this).get_contains(get_bounding_box(other)),
           "Other map should be contained in this map\n");
-  //find the extent of other that is in this map
+  //find the intersecting bounding box
+  algebra::BoundingBox3D bb =
+    get_intersection(em::get_bounding_box(this),em::get_bounding_box(other));
+  IMP_IF_LOG(VERBOSE){
+    IMP_LOG(VERBOSE,"bounding boxes:"<<std::endl);
+    IMP_LOG_WRITE(VERBOSE,em::get_bounding_box(other).show());
+    IMP_LOG_WRITE(VERBOSE,em::get_bounding_box(this).show());
+    IMP_LOG_WRITE(VERBOSE,bb.show());
+  }
   int x_orig_ind=0;int y_orig_ind=0;int z_orig_ind=0;
   int x_top_ind=header_.get_nx();
   int y_top_ind=header_.get_ny();
   int z_top_ind=header_.get_nz();
-  algebra::Vector3D other_origin=other->get_origin();
-  algebra::Vector3D other_top=other->get_top();
-  if (is_part_of_volume(other_origin)) {
-    x_orig_ind=get_dim_index_by_location(other_origin,0);
-    y_orig_ind=get_dim_index_by_location(other_origin,1);
-    z_orig_ind=get_dim_index_by_location(other_origin,2);
-  }
-  if (is_part_of_volume(other_top)){
-    x_top_ind=get_dim_index_by_location(other_top,0);
-    y_top_ind=get_dim_index_by_location(other_top,1);
-    z_top_ind=get_dim_index_by_location(other_top,2);
-  }
+  x_orig_ind=get_dim_index_by_location(bb.get_corner(0)[0],0);
+  y_orig_ind=get_dim_index_by_location(bb.get_corner(0)[1],1);
+  z_orig_ind=get_dim_index_by_location(bb.get_corner(0)[2],2);
+  x_top_ind=get_dim_index_by_location(bb.get_corner(1)[0],0);
+  y_top_ind=get_dim_index_by_location(bb.get_corner(1)[1],1);
+  z_top_ind=get_dim_index_by_location(bb.get_corner(1)[2],2);
+
+
+  int ox_orig_ind,oy_orig_ind,oz_orig_ind;
+  int ox_top_ind, oy_top_ind, oz_top_ind;
+  ox_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[0],0);
+  oy_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[1],1);
+  oz_orig_ind=other->get_dim_index_by_location(bb.get_corner(0)[2],2);
+  ox_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[0],0);
+  oy_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[1],1);
+  oz_top_ind=other->get_dim_index_by_location(bb.get_corner(1)[2],2);
+
   long my_znxny,other_znxny,my_znxny_ynx,other_znxny_ynx;
-  int my_nxny=header_.get_nx()*header_.get_ny();
-  int other_nxny=other->header_.get_nx()*other->header_.get_ny();
-  for(int iz=z_orig_ind;iz<z_top_ind;iz++){
-      my_znxny=iz * my_nxny;
-      other_znxny=(iz-z_orig_ind) * other_nxny;
-    for(int iy=y_orig_ind;iy<y_top_ind;iy++){
-       my_znxny_ynx = my_znxny + iy * header_.get_nx();
-       other_znxny_ynx = other_znxny + (iy-y_orig_ind)
+  long my_nxny=header_.get_nx()*header_.get_ny();
+  long other_nxny=other->header_.get_nx()*other->header_.get_ny();
+  for(int iz=0;iz<(z_top_ind-z_orig_ind);iz++){
+    //we do not add +1 to avoid numerical problems
+    my_znxny=(iz+z_orig_ind) * my_nxny;
+    other_znxny=(iz+oz_orig_ind) * other_nxny;
+    for(int iy=0;iy<(y_top_ind-y_orig_ind);iy++){
+      my_znxny_ynx = my_znxny + (iy+y_orig_ind) * header_.get_nx();
+      other_znxny_ynx = other_znxny + (iy+oy_orig_ind)
          * other->header_.get_nx();
-      for(int ix=x_orig_ind;ix<x_top_ind;ix++){
-        data_[my_znxny_ynx+ix]+=other->data_[other_znxny_ynx+ix-x_orig_ind];
+      for(int ix=0;ix<(x_top_ind-x_orig_ind);ix++){
+        data_[my_znxny_ynx+ix+x_orig_ind]+=
+          other->data_[other_znxny_ynx+ix+ox_orig_ind];
       }
     }
   }
@@ -975,6 +990,7 @@ int DensityMap::lower_voxel_shift(
   emreal loc, emreal kdist, emreal orig, int ndim) const {
   int imin;
   imin = static_cast<int>(std::floor((loc-kdist-orig) / header_.get_spacing()));
+  //imin = static_cast<int>(std::floor((loc-kdist) / header_.get_spacing()));
   //bookkeeping
   if (imin < 0)
     imin = 0;
@@ -987,6 +1003,7 @@ int DensityMap::upper_voxel_shift(emreal loc, emreal kdist,
                                   emreal orig, int ndim) const {
   int imax;
   imax = static_cast<int>(std::floor((loc+kdist-orig)/ header_.get_spacing()));
+  //  imax = static_cast<int>(std::floor((loc+kdist)/ header_.get_spacing()));
   //bookkeeping
   if (imax < 0) imax = 0;
   if (imax > ndim-1) imax = ndim-1;
