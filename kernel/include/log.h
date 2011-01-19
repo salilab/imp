@@ -252,7 +252,7 @@ struct WarningContext {
   mutable std::map<std::string, int> data_;
 public:
   void add_warning(std::string str) const {
-    if (str.empty()) continue;
+    if (str.empty()) return;
     if (IMP::get_is_log_output(IMP::WARNING)) {
       if (data_.find(str) == data_.end()) {
         data_[str]=1;
