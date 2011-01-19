@@ -83,6 +83,9 @@ namespace {
            i != d.get_end_index(); ++i) {
         inds.push_back(i);
       }
+    } else if (Atom::particle_is_instance(h)) {
+      Residue r= get_residue(Atom(h));
+      inds.push_back(r.get_index());
     } else {
       for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
         gather_residue_indices(h.get_child(i), inds);
@@ -243,6 +246,7 @@ namespace {
 
   // create a particle which approximates the input set
   Hierarchy create_approximation_of_residues(const HierarchiesTemp &t) {
+    static WarningContext wc;
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< t.size(); ++i) {
         IMP_USAGE_CHECK(Residue::particle_is_instance(t[i]),
@@ -256,7 +260,14 @@ namespace {
     double v=0;
     for (unsigned int i=0; i< t.size();  ++i) {
       ResidueType rt= Residue(t[i]).get_residue_type();
-      v+= get_volume_from_residue_type(rt);
+      try {
+        v+= get_volume_from_residue_type(rt);
+      } catch (ValueException) {
+        IMP_WARN_ONCE(rt.get_string(),
+                      "Using volume estimate for ARG for non-standard residue "
+                      << rt, wc);
+        v+= get_volume_from_residue_type(ResidueType("ARG"));
+      }
     }
     Model *mm= t[0]->get_model();
     Particle *p= new Particle(mm);
@@ -271,6 +282,7 @@ namespace {
     setup_as_approximation_internal(p, children,
                                     -1,
                                     v);
+    wc.dump_warnings();
     return Hierarchy(p);
   }
 }
