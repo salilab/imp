@@ -306,7 +306,7 @@ ClusterSet
   unsigned int steps = N-1;// Steps of clustering
   // cluster algorithm
   for (unsigned int k=0;k<steps;++k) {
-    IMP_LOG(IMP::TERSE, << std::endl);
+    IMP_LOG(IMP::TERSE, std::endl);
     // Find the list that contains lower distance
     double minimum_distance=std::numeric_limits<double>::max();
     unsigned int l1=0;
