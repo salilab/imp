@@ -84,7 +84,7 @@ void parse_interaction_line(
   //split returns zero lenght entires as well
   line_split.erase( std::remove_if(line_split.begin(),line_split.end(),
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
-  for(int i=0;i<line_split.size()-2;i++) {//last two are header
+  for(unsigned int i=0;i<line_split.size()-2;i++) {//last two are header
     std::string name =  boost::lexical_cast<std::string>(line_split[i]);
     int index = dp.find(name);
     IMP_USAGE_CHECK(index != -1,
