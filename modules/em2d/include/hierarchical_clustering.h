@@ -52,18 +52,7 @@ public:
   /*!
     \param[in] N Number of elements to be clustered
   */
-  ClusterSet(unsigned int N): steps_(0),n_elements_(N) {
-    joined_ids1_.resize(n_elements_);
-    joined_ids2_.resize(n_elements_);
-    clusters_elements.resize(n_elements_);
-    // fill unary clusters with clusters id and cluster_distances_
-    for (unsigned int i=0;i<n_elements_;++i) {
-      joined_ids1_[i]=i;
-      joined_ids2_[i]=0; // no clusters joined for the unary ones
-      clusters_elements[i].push_back(i);
-    }
-    cluster_distances_.resize(n_elements_,0.0);
-  }
+  ClusterSet(unsigned int N);
 
   // join operation
   /*!
@@ -73,21 +62,7 @@ public:
   */
   void do_join_clusters(unsigned int cluster_id1,
                          unsigned int cluster_id2,
-                         double distance_between_clusters) {
-    joined_ids1_.push_back(cluster_id1);
-    joined_ids2_.push_back(cluster_id2);
-    cluster_distances_.push_back(distance_between_clusters);
-    // join the members of the two clusters
-    Ints new_cluster;
-    new_cluster.insert(new_cluster.end(),
-                       clusters_elements[cluster_id1].begin(),
-                       clusters_elements[cluster_id1].end());
-    new_cluster.insert(new_cluster.end(),
-                       clusters_elements[cluster_id2].begin(),
-                       clusters_elements[cluster_id2].end());
-    clusters_elements.push_back(new_cluster);
-    steps_++;
-  }
+                         double distance_between_clusters);
 
    // Returns a vector with the ids of the elements that are in a cluster
    // Does not contain any hierarchical information, just the members
@@ -102,9 +77,7 @@ public:
   /*!
     \param[in] s Step
   */
-  Ints get_cluster_formed_at_step(unsigned int s) const {
-    return get_cluster_elements(s+n_elements_);
-  }
+  Ints get_cluster_formed_at_step(unsigned int s) const;
 
   // Distance between two clusters
   double get_distance(unsigned int cluster_id1,
@@ -112,34 +85,29 @@ public:
     return 0.0;//TO DO
   }
 
-  // Returns a linkage matrix compatible with Matlab format
+  // Returns the linkage matrix
   /*!
     \note Linkage matrix is a matrix A[N-1][3].
-    Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
     A[i][0] - id of the first cluster merged at step i
     A[i][1] - id of the second cluster merged at step i
     A[i][2] - distance between the clusters
   */
-  VectorFloats get_linkage_matrix() const {
-    VectorFloats mat(steps_);
-    for (unsigned int i=0;i<steps_;++i) {
-      mat[i].resize(3);
-      unsigned int j = n_elements_ + i;
-      mat[i][0]=(double)joined_ids1_[j]+1; // +1 for matlab compatibility
-      mat[i][1]=(double)joined_ids2_[j]+1;
-      mat[i][2]= cluster_distances_[j];
-    }
-    return mat;
+  VectorFloats get_linkage_matrix() const;
+
+  // Returns the linkage matrix compatible with Matlab format
+  /*!
+    \note This function merely adds 1 to the cluster ids, for compatibility
+     with Matlab.
+    Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
+  */
+  VectorFloats get_linkage_matrix_in_matlab_format() const;
+
+  // Returns the number of steps of clustering recorded
+  unsigned int get_number_of_steps() const {
+    return steps_;
   }
 
-  void show(std::ostream &out) const {
-    out << " Linkage matrix for the cluster set" << std::endl;
-    for (unsigned int i=0;i<joined_ids1_.size();++i) {
-      out << joined_ids1_[i] << " "
-          << joined_ids2_[i] << " "
-          << cluster_distances_[i] << std::endl;
-    }
-  }
+  void show(std::ostream &out) const;
 
 private:
   unsigned int steps_;
@@ -150,7 +118,6 @@ private:
   // in a cluster
   std::vector< Ints > clusters_elements;
 };
-
 IMP_VALUES(ClusterSet,ClusterSets);
 
 
@@ -172,21 +139,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances ) const {
-    Ints members1 = cluster_set.get_cluster_elements(id1);
-    Ints members2 = cluster_set.get_cluster_elements(id2);
-    // Get minimum distance between elements of the clusters
-    Ints::iterator it1,it2;
-    double minimum_distance=std::numeric_limits<double>::max();
-    double distance=0.0;
-    for (it1=members1.begin();it1 != members1.end();++it1) {
-      for (it2=members2.begin();it2 != members2.end();++it2) {
-        distance = distances[*it1][*it2];
-        if(distance < minimum_distance) minimum_distance = distance;
-      }
-    }
-    return minimum_distance;
-  }
+                  const VectorFloats &distances ) const;
 
   void show(std::ostream &out) const {};
 };
@@ -206,21 +159,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances ) {
-    Ints members1 = cluster_set.get_cluster_elements(id1);
-    Ints members2 = cluster_set.get_cluster_elements(id2);
-    // Get minimum distance between elements
-    Ints::iterator it1,it2;
-    double maximum_distance=std::numeric_limits<double>::min();
-    double distance=0.0;
-    for (it1=members1.begin();it1 != members1.end();++it1) {
-      for (it2=members2.begin();it2 != members2.end();++it2) {
-        distance = distances[*it1][*it2];
-        if(distance > maximum_distance) maximum_distance = distance;
-      }
-    }
-    return maximum_distance;
-  }
+                  const VectorFloats &distances );
 
   void show(std::ostream &out) const {};
 
@@ -241,19 +180,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances ) {
-    Ints members1 = cluster_set.get_cluster_elements(id1);
-    Ints members2 = cluster_set.get_cluster_elements(id2);
-    // Get minimum distance between elements
-    Ints::iterator it1,it2;
-    double distance=0.0;
-    for (it1=members1.begin();it1 != members1.end();++it1) {
-      for (it2=members2.begin();it2 != members2.end();++it2) {
-        distance += distances[*it1][*it2];
-      }
-    }
-    return distance/(members1.size()*members2.size());
-  }
+                  const VectorFloats &distances );
 
   void show(std::ostream &out) const {};
 };

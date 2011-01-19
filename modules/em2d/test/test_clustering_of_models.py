@@ -57,26 +57,22 @@ class ClusteringTests(IMP.test.TestCase):
         sub_dir = input_dir+"/clustering/"
         os.chdir(sub_dir)
         fn_selection = "all-models-1z5s.sel"
-        # Load hierarchies
+        # Load models
         model = IMP.Model()
         ssel = IMP.atom.ATOMPDBSelector()
-        hierachies_of_models = IMP.atom.Hierarchies()
-        for fn in IMP.em2d.read_selection_file(fn_selection):
+        coords =[]
+        fn_models = IMP.em2d.read_selection_file(fn_selection)
+        n_models = len(fn_models)
+        for fn in fn_models:
             h=IMP.atom.read_pdb(fn,model,ssel,True,True);
-            hierachies_of_models.append(h)
-        # get vectors of coordinatess
-        n_hierarchies = len(hierachies_of_models)
-        models_xyzs = [IMP.core.XYZs(IMP.atom.get_leaves(h))
-                                       for h in hierachies_of_models]
-        coords = [0 for i in xrange(0,n_hierarchies)]
-        for i in range(0,n_hierarchies):
-            coords[i]=[xyz.get_coordinates() for xyz in models_xyzs[i]]
+            xyz=IMP.core.XYZs(IMP.atom.get_leaves(h))
+            coords.append( [x.get_coordinates() for x in xyz])
         # compute rmsds
-        x=IMP.Floats(0.0 for i in range(0,n_hierarchies))
-        rmsds=[IMP.Floats(0.0 for i in range(0,n_hierarchies))
-                  for n in xrange(0,n_hierarchies)]
-        for i in xrange(0,n_hierarchies):
-            for j in xrange(i+1,n_hierarchies):
+        x=IMP.Floats(0.0 for i in range(0,n_models))
+        rmsds=[IMP.Floats(0.0 for i in range(0,n_models))
+                  for n in xrange(0,n_models)]
+        for i in xrange(0,n_models):
+            for j in xrange(i+1,n_models):
                 if(i!=j):
                     t=IMP.algebra.get_transformation_aligning_first_to_second(
                                                       coords[i],
