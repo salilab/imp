@@ -252,8 +252,7 @@ struct WarningContext {
   mutable std::map<std::string, int> data_;
 public:
   void add_warning(std::string str) const {
-    IMP_USAGE_CHECK(!str.empty(),
-                    "The empty string is not a valid log message");
+    if (str.empty()) continue;
     if (IMP::get_is_log_output(IMP::WARNING)) {
       if (data_.find(str) == data_.end()) {
         data_[str]=1;
