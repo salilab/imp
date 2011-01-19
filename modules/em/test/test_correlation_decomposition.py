@@ -6,7 +6,7 @@ import IMP.core
 import IMP.atom
 import random
 
-class CorrelationDecompistionTest(IMP.test.TestCase):
+class CorrelationDecompositionTest(IMP.test.TestCase):
     """Class to test EM correlation restraint"""
 
     def load_density_map(self,em_filename):
