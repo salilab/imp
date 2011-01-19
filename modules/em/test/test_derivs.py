@@ -6,6 +6,8 @@ except ImportError:
     modeller = None
 import IMP
 import IMP.test
+import IMP.core
+import IMP.algebra
 import sys
 import IMP.em
 import os
@@ -50,23 +52,18 @@ class DerivativesTest(IMP.test.TestCase):
         # - add the particles attributes
         rad = 1.0
         wei = 1.0
-        rad_key=IMP.FloatKey("radius")
-        x_key=IMP.FloatKey("x")
-        y_key=IMP.FloatKey("y")
-        z_key=IMP.FloatKey("z")
         wei_key=IMP.FloatKey("weight")
         prot_key=IMP.IntKey("protein")
         id_key=IMP.IntKey("id")
 
         for i,p_data in enumerate([[9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
             p=self.particles[i]
-            p.add_attribute(x_key,p_data[0])
-            p.add_attribute(y_key,p_data[1])
-            p.add_attribute(z_key,p_data[2])
-            p.add_attribute(rad_key,p_data[3])
+            center = IMP.algebra.Vector3D(*p_data[0:3])
+            sphere = IMP.algebra.Sphere3D(center, p_data[3])
+            IMP.core.XYZR.setup_particle(p, sphere)
             p.add_attribute(wei_key,p_data[4])
             p.add_attribute(prot_key,p_data[5])
-            self.particles[i].add_attribute(id_key,i)
+            p.add_attribute(id_key,i)
 
 
         self.atmsel = modeller.selection(self.modeller_model)
@@ -74,7 +71,7 @@ class DerivativesTest(IMP.test.TestCase):
 
         resolution=3.
         voxel_size=1.
-        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,rad_key,wei_key)
+        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,wei_key)
         erw = IMP.em.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
@@ -93,7 +90,7 @@ class DerivativesTest(IMP.test.TestCase):
                                              em_map,
                                              refiner,
                                              [0.,0.],
-                                             rad_key,wei_key,
+                                             wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
         print("EM-score score: "+str(self.atmsel.energy()) )
@@ -133,23 +130,18 @@ class DerivativesTest(IMP.test.TestCase):
         # - add the particles attributes
         rad = 1.0
         wei = 1.0
-        rad_key=IMP.FloatKey("radius")
-        x_key=IMP.FloatKey("x")
-        y_key=IMP.FloatKey("y")
-        z_key=IMP.FloatKey("z")
         wei_key=IMP.FloatKey("weight")
         prot_key=IMP.IntKey("protein")
         id_key=IMP.IntKey("id")
 
         for i,p_data in enumerate([[9.0,9.0,9.0,rad,wei,1],[12.0,3.0,3.0,rad,wei,1],[3.0,12.0,12.0,rad,wei,1]]):
             p=self.particles[i]
-            p.add_attribute(x_key,p_data[0])
-            p.add_attribute(y_key,p_data[1])
-            p.add_attribute(z_key,p_data[2])
-            p.add_attribute(rad_key,p_data[3])
+            center = IMP.algebra.Vector3D(*p_data[0:3])
+            sphere = IMP.algebra.Sphere3D(center, p_data[3])
+            IMP.core.XYZR.setup_particle(p, sphere)
             p.add_attribute(wei_key,p_data[4])
             p.add_attribute(prot_key,p_data[5])
-            self.particles[i].add_attribute(id_key,i)
+            p.add_attribute(id_key,i)
 
 
         self.atmsel = modeller.selection(self.modeller_model)
@@ -157,7 +149,7 @@ class DerivativesTest(IMP.test.TestCase):
 
         resolution=3.
         voxel_size=1.
-        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,rad_key,wei_key)
+        model_map = IMP.em.SampledDensityMap(self.particles, resolution, voxel_size,wei_key)
         erw = IMP.em.EMReaderWriter()
         xorigin = model_map.get_header().get_xorigin()
         yorigin = model_map.get_header().get_yorigin()
@@ -177,7 +169,7 @@ class DerivativesTest(IMP.test.TestCase):
                                              em_map,
                                              refiner,
                                              [0,0],
-                                             rad_key,wei_key,
+                                             wei_key,
                                              1.0))
         self.imp_model.add_restraint(ind_emrsr[0])
         #move the particles outside of the density
