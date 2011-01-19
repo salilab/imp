@@ -45,10 +45,10 @@ def propagate_call(grid, sfo_id, funcname, *args, **kw):
     results = []
     for server in grid.servers[sfo_id]:
         func=getattr(server.proxy, funcname)
-        results.append(func(*args, *kw))
+        results.append(func(*args, **kw))
     return results
 
-def get_result(results)
+def get_result(results):
     retval=[]
     for server in results:
         retval.append(server.get())
@@ -68,20 +68,14 @@ if __name__ == '__main__':
     grid.release_service(proxy)
 
     #call init on all nodes
-    results = []
-    for server in grid.servers[sfo_id]:
-        results.append(server.proxy.init_simulation())
+    requests = propagate_call(grid, sfo_id, 'init_simulation')
     #wait til init is done
-    sfo.init_simulation()
-    for server in results:
-        server.get()
+    results = get_result(requests)
 
     # Finally, evaluate the score of the whole system (without derivatives)
     proxy = grid.acquire_service(sfo_id)
     print proxy.m('evaluate',False).get()
-
     proxy.write_pdb('out.pdb').get()
-
     grid.release_service(proxy)
     
     results=[]
@@ -91,7 +85,7 @@ if __name__ == '__main__':
     sfo.init_simulation()
     for server in results:
         server.get()
-    proxy.setup_md()
+    proxy.setup_md(300.0,500.0) #berendsen 300K tau=0.5ps
 
     #perform two independent MC moves for sigma and gamma
     (mc_sigma,nm_sigma) = setup_mc(sigma)
