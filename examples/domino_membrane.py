@@ -92,8 +92,8 @@ def create_restraints(m, chain, tbr, TMH):
 # and control periodicity
         om_b=[]; om_e=[]; dd_b=[]; dd_e=[]
         for i in range(ncl):
-            omb=(om0[i]-nsig*sig_om0[i])/180.*math.pi
-            ome=(om0[i]+nsig*sig_om0[i])/180.*math.pi
+            omb=math.radians(om0[i]-nsig*sig_om0[i])
+            ome=math.radians(om0[i]+nsig*sig_om0[i])
             ddb=dd0[i]-nsig*sig_dd0[i]
             dde=dd0[i]+nsig*sig_dd0[i]
             om_b.append(max(omb,-math.pi))
