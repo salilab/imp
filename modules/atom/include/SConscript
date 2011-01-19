@@ -10,6 +10,7 @@ files = [
          'BrownianDynamics.h',
          'CHARMMAtom.h',
          'CHARMMParameters.h',
+         'CHARMMStereochemistryRestraint.h',
          'Chain.h',
          'Charged.h',
          'CoulombPairScore.h',

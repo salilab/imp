@@ -475,6 +475,13 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         self.assertEqual(len(residues), 3)
         self.assertEqual(len(atoms), 42)
 
+    def test_get_parameters(self):
+        """Test CHARMMTopology::get_parameters()"""
+        ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                       IMP.atom.get_data_path("par.lib"))
+        topology = IMP.atom.CHARMMTopology(ff)
+        self.assertEqual(topology.get_parameters(), ff)
+
     def test_empty_residue_make_hierarchy(self):
         """Test construction of hierarchy from empty topology"""
         ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),

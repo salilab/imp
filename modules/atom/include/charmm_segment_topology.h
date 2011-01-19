@@ -77,6 +77,8 @@ public:
     set_was_used(true);
   }
 
+  const CHARMMParameters *get_parameters() { return force_field_; }
+
   //! Add a sequence (as a string of one-letter codes) to the topology.
   /** The sequence can contain amino-acid one-letter codes and '/' characters
       to denote the start of a new segment. The empty string simply adds a new

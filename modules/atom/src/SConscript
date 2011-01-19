@@ -10,6 +10,7 @@ files = [
          'BrownianDynamics.cpp',
          'CHARMMAtom.cpp',
          'CHARMMParameters.cpp',
+         'CHARMMStereochemistryRestraint.cpp',
          'Chain.cpp',
          'Charged.cpp',
          'CoulombPairScore.cpp',
