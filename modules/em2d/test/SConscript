@@ -4,7 +4,11 @@ Import('env')
 # matching test_*.cpp
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  function_name_exceptions=['TransformationsCluster.join_into'],
                   spelling_exceptions=['pdb'],
-                  show_exceptions=["ResultAlign2D"],
-                  value_object_exceptions=["Pixel", "ResultAlign2D"])
+                  show_exceptions=["ResultAlign2D",
+                                    "pair_cluster_id_distance",
+                                    "VectorFloats"],
+                  value_object_exceptions=["Pixel",
+                                          "ResultAlign2D",
+                                          "pair_cluster_id_distance",
+                                          "VectorFloats"])

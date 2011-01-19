@@ -10,29 +10,36 @@
 #define IMPEM2D_HIERARCHICAL_CLUSTERING_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/base_types.h"
 #include <vector>
 #include <list>
 #include <algorithm>
 #include <limits>
+#include <functional>
 
 IMPEM2D_BEGIN_NAMESPACE
 
-typedef std::pair<unsigned int ,double> pair_index_distance;
-typedef std::list< pair_index_distance > list_index_distance;
+typedef std::pair<unsigned int ,double> pair_cluster_id_distance;
+typedef std::list< pair_cluster_id_distance > list_cluster_id_distance;
 typedef std::vector< Floats > VectorFloats;
 
 
+
 // Comparison of cluster_id,distance
-class LessThanByDistance {
+class LessThanByDistance:
+                public std::binary_function< pair_cluster_id_distance ,
+                                             pair_cluster_id_distance ,
+                                             bool> {
 public:
-  bool operator()(const pair_index_distance &a,
-                  const pair_index_distance &b) {
+  bool operator()(const pair_cluster_id_distance &a,
+                  const pair_cluster_id_distance &b) {
     return a.second < b.second;
   }
   void show(std::ostream &out) const {};
 };
-
 IMP_VALUES(LessThanByDistance,LessThanByDistances);
+
+
 
 // A class to store the clusters generated during hierarchical clustering;
 class IMPEM2DEXPORT ClusterSet {
@@ -41,17 +48,17 @@ public:
   /*!
     \param[in] N Number of elements to be clustered
   */
-  ClusterSet(unsigned int N): steps_(0),N_(N) {
-    joined_ids1_.resize(N_);
-    joined_ids2_.resize(N_);
-    clusters_elements.resize(N_);
+  ClusterSet(unsigned int N): steps_(0),n_elements_(N) {
+    joined_ids1_.resize(n_elements_);
+    joined_ids2_.resize(n_elements_);
+    clusters_elements.resize(n_elements_);
     // fill unary clusters with clusters id and cluster_distances_
-    for (unsigned int i=0;i<N_;++i) {
+    for (unsigned int i=0;i<n_elements_;++i) {
       joined_ids1_[i]=i;
       joined_ids2_[i]=0; // no clusters joined for the unary ones
       clusters_elements[i].push_back(i);
     }
-    cluster_distances_.resize(N_,0.0);
+    cluster_distances_.resize(n_elements_,0.0);
   }
 
   // join operation
@@ -67,7 +74,7 @@ public:
     joined_ids2_.push_back(cluster_id2);
     cluster_distances_.push_back(distance_between_clusters);
     // join the members of the two clusters
-    std::vector<unsigned int> new_cluster;
+    Ints new_cluster;
     new_cluster.insert(new_cluster.end(),
                        clusters_elements[cluster_id1].begin(),
                        clusters_elements[cluster_id1].end());
@@ -83,9 +90,17 @@ public:
    /*!
      \param[in] id of the cluster
    */
-   std::vector<unsigned int > get_cluster_elements(unsigned int id) const {
+   Ints get_cluster_elements(unsigned int id) const {
      return clusters_elements[id];
    }
+
+  // Return the elements of the cluster formed at a given step
+  /*!
+    \param[in] s Step
+  */
+  Ints get_cluster_formed_at_step(unsigned int s) const {
+    return get_cluster_elements(s+n_elements_);
+  }
 
   // Distance between two clusters
   double get_distance(unsigned int cluster_id1,
@@ -105,16 +120,17 @@ public:
     VectorFloats mat(steps_);
     for (unsigned int i=0;i<steps_;++i) {
       mat[i].resize(3);
-      mat[i][0]=(double)joined_ids1_[i];
-      mat[i][1]=(double)joined_ids2_[i];
-      mat[i][2]= cluster_distances_[i];
+      unsigned int j = n_elements_ + i;
+      mat[i][0]=(double)joined_ids1_[j]+1; // +1 for matlab compatibility
+      mat[i][1]=(double)joined_ids2_[j]+1;
+      mat[i][2]= cluster_distances_[j];
     }
     return mat;
   }
 
   void show(std::ostream &out) const {
     out << " Linkage matrix for the cluster set" << std::endl;
-    for (unsigned int i=0;i<steps_;++i) {
+    for (unsigned int i=0;i<joined_ids1_.size();++i) {
       out << joined_ids1_[i] << " "
           << joined_ids2_[i] << " "
           << cluster_distances_[i] << std::endl;
@@ -123,15 +139,18 @@ public:
 
 private:
   unsigned int steps_;
-  unsigned int N_; // number of elements
-  std::vector<unsigned int> joined_ids1_,joined_ids2_;
+  unsigned int n_elements_; // number of elements to cluster
+  Ints joined_ids1_,joined_ids2_;
   Floats cluster_distances_;
   // each element of the outermost vector is a vector with all the elements
   // in a cluster
-  std::vector< std::vector<unsigned int> > clusters_elements;
+  std::vector< Ints > clusters_elements;
 };
 
 IMP_VALUES(ClusterSet,ClusterSets);
+
+
+
 
 // Functor for hierarchical clustering based on single linkage
 class IMPEM2DEXPORT SingleLinkage {
@@ -150,10 +169,10 @@ public:
                   unsigned int id2,
                   const ClusterSet &cluster_set,
                   const VectorFloats &distances ) const {
-    std::vector<unsigned int> members1 = cluster_set.get_cluster_elements(id1);
-    std::vector<unsigned int> members2 = cluster_set.get_cluster_elements(id2);
-    // Get minimum distance between elements
-    std::vector<unsigned int>::iterator it1,it2;
+    Ints members1 = cluster_set.get_cluster_elements(id1);
+    Ints members2 = cluster_set.get_cluster_elements(id2);
+    // Get minimum distance between elements of the clusters
+    Ints::iterator it1,it2;
     double minimum_distance=std::numeric_limits<double>::max();
     double distance=0.0;
     for (it1=members1.begin();it1 != members1.end();++it1) {
@@ -167,8 +186,9 @@ public:
 
   void show(std::ostream &out) const {};
 };
-
 IMP_VALUES(SingleLinkage,SingleLinkages);
+
+
 
 // Functor for hierarchical clustering based on complete linkage
 class IMPEM2DEXPORT CompleteLinkage {
@@ -183,10 +203,10 @@ public:
                   unsigned int id2,
                   const ClusterSet &cluster_set,
                   const VectorFloats &distances ) {
-    std::vector<unsigned int> members1 = cluster_set.get_cluster_elements(id1);
-    std::vector<unsigned int> members2 = cluster_set.get_cluster_elements(id2);
+    Ints members1 = cluster_set.get_cluster_elements(id1);
+    Ints members2 = cluster_set.get_cluster_elements(id2);
     // Get minimum distance between elements
-    std::vector<unsigned int>::iterator it1,it2;
+    Ints::iterator it1,it2;
     double maximum_distance=std::numeric_limits<double>::min();
     double distance=0.0;
     for (it1=members1.begin();it1 != members1.end();++it1) {
@@ -201,11 +221,13 @@ public:
   void show(std::ostream &out) const {};
 
 };
-
 IMP_VALUES(CompleteLinkage,CompleteLinkages);
 
+
+
+
 // Functor for hierarchical clustering based on average-linkage
-class IMPEM2DEXPORT AverageDistance {
+class IMPEM2DEXPORT AverageDistanceLinkage {
 public:
   // Distance between the clusters
   /*!
@@ -216,10 +238,10 @@ public:
                   unsigned int id2,
                   const ClusterSet &cluster_set,
                   const VectorFloats &distances ) {
-    std::vector<unsigned int> members1 = cluster_set.get_cluster_elements(id1);
-    std::vector<unsigned int> members2 = cluster_set.get_cluster_elements(id2);
+    Ints members1 = cluster_set.get_cluster_elements(id1);
+    Ints members2 = cluster_set.get_cluster_elements(id2);
     // Get minimum distance between elements
-    std::vector<unsigned int>::iterator it1,it2;
+    Ints::iterator it1,it2;
     double distance=0.0;
     for (it1=members1.begin();it1 != members1.end();++it1) {
       for (it2=members2.begin();it2 != members2.end();++it2) {
@@ -231,8 +253,10 @@ public:
 
   void show(std::ostream &out) const {};
 };
+IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
 
-IMP_VALUES(AverageDistance,AverageDistances);
+
+
 
 // Function to perform agglomerative clustering
 /*!
@@ -244,7 +268,7 @@ IMP_VALUES(AverageDistance,AverageDistances);
 */
 template<class LinkageFunction>
 ClusterSet
-    hierarchical_agglomerative_clustering(const VectorFloats &distances) {
+    do_hierarchical_agglomerative_clustering(const VectorFloats &distances) {
 // Based on:
 // http://nlp.stanford.edu/IR-book/html/htmledition/
 //      time-complexity-of-hac-1.html)
@@ -255,9 +279,9 @@ ClusterSet
   unsigned int N = distances.size(); // number of elements
   // Lists of distances between elements
   // List n has members (i,distance_n_i).
-  std::vector< list_index_distance > lists(N);
+  std::vector< list_cluster_id_distance > lists(N);
   // id of the cluster associated with each list
-  std::vector<unsigned int> cluster_id(N);
+  Ints cluster_id(N);
   // All list active at the beginning
   std::vector<bool> active_list(N);
   std::fill(active_list.begin(),active_list.end(),true);
@@ -272,18 +296,17 @@ ClusterSet
     // At the beginning each list is associated with a cluster of one element
     cluster_id[n]=n;
   }
-  IMP_LOG(IMP::TERSE,"lists are built " << std::endl);
-
 
   ClusterSet cluster_set(N);
   LinkageFunction linkage_function;
   unsigned int steps = N-1;// Steps of clustering
   // cluster algorithm
   for (unsigned int k=0;k<steps;++k) {
-    IMP_LOG(IMP::TERSE,"step " << k << std::endl);
+    IMP_LOG(IMP::TERSE, << std::endl);
     // Find the list that contains lower distance
     double minimum_distance=std::numeric_limits<double>::max();
     unsigned int l1=0;
+
     for (unsigned int j=0;j<N;++j) {
       if(active_list[j]==true) {
         // closest distance for list j
@@ -296,10 +319,9 @@ ClusterSet
     // lowest distance is between list l1 and list l2
     unsigned int l2=lists[l1].front().first;
     minimum_distance=lists[l2].front().second;
-    IMP_LOG(IMP::VERBOSE,"joining clusters " << cluster_id[l1]
-            << " and " << cluster_id[l2] << std::endl);
-
-    // store the linkage of clusters
+    IMP_LOG(IMP::TERSE,"step " << k << ": joining clusters " << cluster_id[l1]
+            << " and " << cluster_id[l2] << " distance = "
+            << minimum_distance << std::endl);
     cluster_set.do_join_clusters(cluster_id[l1],
                                  cluster_id[l2],
                                  minimum_distance);
@@ -310,19 +332,23 @@ ClusterSet
     lists[l1].clear();
     // Update lists of distances
     for (unsigned int i=0;i<N;++i) {
-      IMP_LOG(IMP::VERBOSE,"Updating list of distances " << i << std::endl);
+      IMP_LOG(IMP::TERSE,"Updating list of distances " << i << std::endl);
       if(active_list[i]==true && i!=l1) {
+      IMP_LOG(IMP::TERSE,"List " << i << " is active " << std::endl);
         // Delete list elements that store distances to the merged clusters
-        list_index_distance::iterator it;
+        list_cluster_id_distance::iterator it;
         for (it=lists[i].begin() ; it!=lists[i].end() ; ++it) {
-          if((*it).first == l1 || (*it).first == l2 ) lists[i].erase(it);
+          if((*it).first == l1 || (*it).first == l2 ) {
+            lists[i].erase(it);
+            --it;
+          }
         }
         // Update distances to the merged cluster
         double dist = linkage_function(cluster_id[l1],
                                       cluster_id[i],
                                       cluster_set,
                                       distances);
-      IMP_LOG(IMP::VERBOSE,"After linkage function" << std::endl);
+        IMP_LOG(IMP::TERSE,"Distance by linkage function "<< dist<< std::endl);
         lists[i].push_back(std::make_pair(l1,dist));
         lists[l1].push_back(std::make_pair(i,dist));
       }

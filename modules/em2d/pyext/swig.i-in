@@ -4,10 +4,11 @@ IMP_SWIG_VALUE(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
+
 IMP_SWIG_VALUE(IMP::em2d, ClusterSet, ClusterSets);
 IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
 IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
-IMP_SWIG_VALUE(IMP::em2d, AverageDistance, AverageDistances);
+IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 IMP_SWIG_VALUE(IMP::em2d, LessThanByDistance, LessThanByDistances);
 
 
@@ -53,20 +54,25 @@ namespace IMP {
     %template(ResultAlign2D)
             ::std::pair< IMP::algebra::Transformation2D,double >;
 
-   %template(VectorFloats) ::std::vector < IMP::Floats >;
-   %template(_SingleLinkageHierarchicalClustering)
-          ::IMP::em2d::hierarchical_agglomerative_clustering<SingleLinkage>;
-   %template(_CompleteLinkageHierarchicalClustering)
-           ::IMP::em2d::hierarchical_agglomerative_clustering<CompleteLinkage>;
-   %template(_AverageDistanceHierarchicalClustering)
-           ::IMP::em2d::hierarchical_agglomerative_clustering<AverageDistance>;
+    %template(VectorFloats) ::std::vector < IMP::Floats >;
+
+//    %template(pair_cluster_id_distance) ::std::pair<unsigned int,double>;
+//    %template(list_cluster_id_distance) std::list< pair_cluster_id_distance >;
+//    %template(binary_cluster_id_distance) ::std::binary_function<pair_cluster_id_distance,pair_cluster_id_distance,bool>;
+
+   %template(_do_hierarchical_clustering_single_linkage)
+          ::IMP::em2d::do_hierarchical_agglomerative_clustering<SingleLinkage>;
+   %template(_do_hierarchical_clustering_complete_linkage)
+           ::IMP::em2d::do_hierarchical_agglomerative_clustering<CompleteLinkage>;
+   %template(_do_hierarchical_clustering_average_distance_linkage)
+           ::IMP::em2d::do_hierarchical_agglomerative_clustering<AverageDistanceLinkage>;
   }
 }
 
 %pythoncode {
-  SingleLinkageHierarchicalClustering = _SingleLinkageHierarchicalClustering
-  CompleteLinkageHierarchicalClustering = _CompleteLinkageHierarchicalClustering
-  AverageDistanceHierarchicalClustering = _AverageDistanceHierarchicalClustering
+  do_hierarchical_clustering_single_linkage = _do_hierarchical_clustering_single_linkage
+  do_hierarchical_clustering_complete_linkage = _do_hierarchical_clustering_complete_linkage
+  do_hierarchical_clustering_average_distance_linkage = _do_hierarchical_clustering_average_distance_linkage
 }
 
 
