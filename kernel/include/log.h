@@ -249,15 +249,13 @@ public:
 
 
 struct WarningContext {
-  mutable std::map<std::string, int> data_;
+  mutable std::map<std::string, std::string> data_;
 public:
-  void add_warning(std::string str) const {
-    if (str.empty()) return;
+  void add_warning(std::string key, std::string warning) const {
+    if (warning.empty()) return;
     if (IMP::get_is_log_output(IMP::WARNING)) {
-      if (data_.find(str) == data_.end()) {
-        data_[str]=1;
-      } else {
-        ++data_[str];
+      if (data_.find(key) == data_.end()) {
+        data_[key]=warning;
       }
     }
   }
@@ -265,11 +263,13 @@ public:
     data_.clear();
   }
   void dump_warnings() const {
-    for (std::map<std::string, int>::const_iterator it= data_.begin();
+    for (std::map<std::string, std::string>::iterator it= data_.begin();
          it != data_.end(); ++it) {
-      IMP_WARN(it->first << "(" << it->second << " times)" << std::endl);
+      if (!it->second.empty()) {
+        IMP_WARN(it->second << std::endl);
+        it->second=std::string();
+      }
     }
-    data_.clear();
   }
   ~WarningContext() {
     dump_warnings();
@@ -277,10 +277,10 @@ public:
 };
 
 
-#define IMP_WARN_ONCE(expr, context) {                       \
+#define IMP_WARN_ONCE(key, expr, context) {                  \
     std::ostringstream oss;                                  \
     oss << expr << std::flush;                               \
-    context.add_warning(oss.str());                          \
+    context.add_warning(key, oss.str());                     \
   }
 
 

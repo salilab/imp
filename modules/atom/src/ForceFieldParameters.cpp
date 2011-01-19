@@ -60,7 +60,8 @@ Float ForceFieldParameters::get_radius(
     return force_field_2_vdW_.find(force_field_atom_type)->second.second;
   }
   if (!force_field_atom_type.empty()) {
-    IMP_WARN_ONCE("Radius not found for type, default value is used \""
+    IMP_WARN_ONCE(force_field_atom_type,
+                  "Radius not found for type, default value is used \""
                   << force_field_atom_type << "\"" << std::endl, warn_context_);
   }
   return 1.7; // SOME DEFAULT VALUE!!
@@ -139,7 +140,10 @@ void ForceFieldParameters::add_bonds(Residue rd) const {
     Atom ad1 = get_atom(rd, bonds[i].type1_);
     Atom ad2 = get_atom(rd, bonds[i].type2_);
     if(!ad1 || !ad2) {
-      IMP_WARN_ONCE("In residue " << rd << " could not find atom "
+      IMP_WARN_ONCE(rd.get_residue_type().get_string()
+                    +bonds[i].type1_.get_string()
+                    +bonds[i].type2_.get_string(),
+                    "In residue " << rd << " could not find atom "
                     << bonds[i].type1_
                     << " or " << bonds[i].type2_ << std::endl, warn_context_);
       continue;
@@ -166,7 +170,8 @@ String ForceFieldParameters::get_force_field_atom_type(Atom atom) const
   static String empty_atom_type;
   if(atom_res_type_2_force_field_atom_type_.find(residue_type) ==
      atom_res_type_2_force_field_atom_type_.end()) {
-    IMP_WARN_ONCE("Residue not found " << residue_type << std::endl,
+    IMP_WARN_ONCE(residue_type.get_string(),
+                  "Residue not found " << residue_type << std::endl,
                   warn_context_);
     return empty_atom_type;
   }
@@ -175,7 +180,8 @@ String ForceFieldParameters::get_force_field_atom_type(Atom atom) const
   const AtomTypeMap& atom_map =
     atom_res_type_2_force_field_atom_type_.find(residue_type)->second;
   if(atom_map.find(atom_type) == atom_map.end()) {
-    IMP_WARN_ONCE("Atom not found " << atom_type
+    IMP_WARN_ONCE(atom_type.get_string()+residue_type.get_string(),
+                  "Atom not found " << atom_type
                   << " residue " << residue_type << std::endl, warn_context_);
     return empty_atom_type;
   }

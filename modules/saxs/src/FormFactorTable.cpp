@@ -498,7 +498,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_carbon_atom_type(
   // C8
   if (atom_type == atom::AT_C8) return CH;
 
-  IMP_WARN_ONCE("Carbon atom not found, using default C form factor for "
+  IMP_WARN_ONCE(atom_type.get_string()+residue_type.get_string(),
+                "Carbon atom not found, using default C form factor for "
                 << atom_type << " " << residue_type << std::endl,
                 warn_context_);
   return C;
@@ -568,7 +569,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_nitrogen_atom_type(
   // N7, N9
   if (atom_type == atom::AT_N7 || atom_type == atom::AT_N9) return N;
 
-  IMP_WARN_ONCE("Nitrogen atom not found, using default N form factor for "
+  IMP_WARN_ONCE(atom_type.get_string()+residue_type.get_string(),
+                "Nitrogen atom not found, using default N form factor for "
                 << atom_type << " " << residue_type << std::endl,
                 warn_context_);
   return N;
@@ -619,7 +621,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_oxygen_atom_type(
   // water molecule
   if(residue_type == atom::HOH) return OH2;
 
-  IMP_WARN_ONCE("Oxygen atom not found, using default O form factor for "
+  IMP_WARN_ONCE(atom_type.get_string()+residue_type.get_string(),
+                "Oxygen atom not found, using default O form factor for "
                 << atom_type << " " << residue_type << std::endl,
                 warn_context_);
   return O;
@@ -636,7 +639,8 @@ FormFactorTable::FormFactorAtomType FormFactorTable::get_sulfur_atom_type(
     if (residue_type == atom::CYS) return SH;
     return S;
   }
-  IMP_WARN_ONCE("Sulfur atom not found, using default S form factor for "
+  IMP_WARN_ONCE(atom_type.get_string()+residue_type.get_string(),
+                "Sulfur atom not found, using default S form factor for "
                 << atom_type << " " << residue_type << std::endl,
                 warn_context_);
   return S;
