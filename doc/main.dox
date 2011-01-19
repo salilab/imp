@@ -106,7 +106,7 @@ An overview of the various modules currently available. Representative classes a
 <td></td>
 <td></td>
 <td></td>
-<td>IMP::display::PymolWriter, IMP::display::ChimeraWriter, IMP::display::LogOptimizerState...</td>
+<td>IMP::display::PymolWriter, IMP::display::ChimeraWriter, IMP::display::WriteOptimizerState...</td>
 </tr>
 <tr>
 <td>IMP::restrainer</td>
