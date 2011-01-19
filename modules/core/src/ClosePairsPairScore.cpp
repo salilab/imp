@@ -55,6 +55,9 @@ namespace {
                         const ParticlesTemp &pa,
                         const ParticlesTemp &pb,
                         ParticlePairsTemp &pairs) {
+    IMP_USAGE_CHECK(p[0] != p[1],
+                    "The particles passed must be different: "
+                    << p[0]->get_name());
     cpf->set_distance(dist);
     pairs= cpf->get_close_pairs(pa, pb);
     /*for (unsigned int i=0; i< ppt.size(); ++i) {
@@ -99,11 +102,17 @@ get_close_pairs(const ParticlePair &p) const {
   ParticlesTemp ps0= expand(p[0],r_), ps1= expand(p[1], r_);
   Floats dists;
   double dist=last_distance_;
+  IMP_USAGE_CHECK(ps0.size() > 0, "Empty set of particles used for "
+                  << p[0]->get_name());
+  IMP_USAGE_CHECK(ps1.size() > 0, "Empty set of particles used for "
+                  << p[1]->get_name());
   do {
     IMP_LOG(VERBOSE, "Searching for close pairs "
             << dist << std::endl);
     fill_close_pairs(cpf_, dist, p, ps0, ps1, ppt);
     dist*=2;
+    IMP_INTERNAL_CHECK(dist < std::numeric_limits<double>::max(),
+                       "Something is not working for find pairs");
   } while (ppt.size() < static_cast<unsigned int>(k_));
   algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
   for (unsigned int i=0; i< ppt.size(); ++i) {
