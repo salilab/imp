@@ -17,6 +17,7 @@ files = [
   "scores2D.cpp" ,
   "Em2DRestraint.cpp",
   "Image.cpp",
+  "hierarchical_clustering.cpp",
           ]\
         + SConscript("internal/SConscript")
 
