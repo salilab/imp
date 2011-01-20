@@ -55,9 +55,9 @@ class CHARMMTopology;
     It does not actually evaluate the force field itself - there are other
     classes that use the parameters provided by this class to do that. For
     example, the LennardJonesPairScore or CoulombPairScore evaluate the
-    nonbond terms of the CHARMM force field, while BondSingletonScore,
-    AngleSingletonScore, DihedralSingletonScore and ImproperSingletonScore
-    cover the bond terms.
+    nonbond terms of the CHARMM force field, while
+    CHARMMStereochemistryRestraint (or BondSingletonScore, AngleSingletonScore,
+    DihedralSingletonScore and ImproperSingletonScore) cover the bond terms.
 
     Typically, the create_topology() method is used to create a new
     CHARMMTopology object for a given Hierarchy; that object can then be
