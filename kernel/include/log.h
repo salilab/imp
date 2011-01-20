@@ -192,11 +192,12 @@ inline bool get_is_log_output(LogLevel l)
 
 //! Write a warning once per context object
 /** Use this macro to, for example, warn on unprocessable fields in a PDB,
-    since they tend to come together.
+    since they tend to come together. The key is what is tested
+    for uniqueness, the expr is what is output.
 
     Warnings are only output when the context object is destroyed.
  */
-#define IMP_WARN_ONCE(expr, context)
+#define IMP_WARN_ONCE(key, expr, context)
 
 //! Write an entry to a log. This is to be used for objects with no operator<<.
 /** \param[in] expr An expression which writes something to IMP_STREAM.
@@ -229,7 +230,7 @@ public:
 };
 
 
-#define IMP_WARN_ONCE(expr, context)
+#define IMP_WARN_ONCE(key, expr, context)
 
 
 #define IMP_WARN_WRITE(expr)
