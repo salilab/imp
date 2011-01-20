@@ -94,7 +94,7 @@ fitting_sols=IMP.em.local_rigid_fitting(
 print "The start score is:",start_score, "with rmsd of:",start_rmsd
 for i in range(fitting_sols.get_number_of_solutions()):
     #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
-    prot_rb.set_transformation(fitting_sols.get_transformation(i))
+    prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
     m.evaluate(None)#to make sure the transformation was applied
 ## 5.2.2 calc rmsd to native configuration
     rmsd=IMP.atom.get_rmsd(IMP.core.XYZs(ps),IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))
