@@ -147,9 +147,9 @@ class sfo():
         func=getattr(self._m,name)
         return func(*args, **kw)
 
-    def init_simulation(self,temp=300.0):
+    def init_simulation(self,temp=300.0, tau=500.0):
         "prepare md and mc sims"
-        self._md = self._setup_md(temp)
+        self._md = self._setup_md(temp, tau)
         self._mc_sigma, self._nm_sigma = self._setup_mc(self._p['sigma'], temp)
         self._mc_gamma, self._nm_gamma = self._setup_mc(self._p['gamma'], temp)
 
@@ -160,6 +160,25 @@ class sfo():
         self._p['sigma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
         self._p['gamma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
         self._md.optimize(nsteps)
+
+    def do_mc_and_update_stepsize(self,nsteps):
+        """perform mc on nuisances for nsteps, updating stepsizes to target 
+        50% acceptance. Don't make nsteps too small (say << 50).
+        """
+        prot = self._p['prot']
+        sigma = self._p['sigma']
+        gamma = self._p['gamma']
+        for i in IMP.atom.get_leaves(prot):
+            IMP.core.XYZR(i).set_coordinates_are_optimized(False)
+        sigma.set_is_optimized(IMP.FloatKey("nuisance"),True)
+        gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
+        _mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
+        sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
+        gamma.set_is_optimized(IMP.FloatKey("nuisance"),True)
+        _mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
+
+    def write_pdb(self, name='prot.pdb'):
+        IMP.atom.write_pdb(self._p['protein'], name)
 
     def _setup_md(self,temp=300.0, tau=500):
         ## Molecular Dynamics (from MAX BONOMI)
@@ -211,59 +230,43 @@ class sfo():
             accept = 1.0
         nm.set_sigma(nm.get_sigma()*2*accept)
 
-    def do_mc_and_update_stepsize(self,nsteps):
-        "perform mc on nuisances for nsteps"
-        prot = self._p['prot']
-        sigma = self._p['sigma']
-        gamma = self._p['gamma']
-        for i in IMP.atom.get_leaves(prot):
-            IMP.core.XYZR(i).set_coordinates_are_optimized(False)
-        sigma.set_is_optimized(IMP.FloatKey("nuisance"),True)
-        gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
-        sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        gamma.set_is_optimized(IMP.FloatKey("nuisance"),True)
-        mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
-
-    def write_pdb(self, name='prot.pdb'):
-        IMP.atom.write_pdb(self._p['protein'], name)
-
-    class simstats:
         "helper class to gather and print statistics on a simulation"
 
-        def __init__(self):
-            self.flstat=open('simstats.txt','w')
-            self.flstat.write("Step Time Temp Potential Kinetic "
-                    "Total Sigma Gamma MC_accept_s MC_accept_g "
-                    "MC_stepsize_s MC_stepsize_g\n")
-            self.flstat.close()
-            self.naccept_s=0
-            self.naccept_g=0
+    def init_stats(self, fname='simstats.txt'):
+        self.statfile = fname
+        flstat=open(fname,'w')
+        flstat.write("Step Time Temp Potential Kinetic "
+                "Total Sigma Gamma MC_accept_s MC_accept_g "
+                "MC_stepsize_s MC_stepsize_g\n")
+        flstat.close()
+        self.naccept_s=0
+        self.naccept_g=0
 
-        def get_mc_stat(self,mc,nm,nacc,nsteps):
-            "return acceptance rate and stepsize"
-            stepsize = nm.get_sigma()
-            n_ok=mc.get_number_of_forward_steps() - nacc
-            return 100*n_ok/nsteps, stepsize
+    def _get_mc_stat(self,mc,nm,nacc,nsteps):
+        "return acceptance rate and stepsize"
+        stepsize = nm.get_sigma()
+        n_ok=mc.get_number_of_forward_steps() - nacc
+        return 100*n_ok/nsteps, stepsize
 
-        def write_stats(self,stepno,nsteps):
-            self.flstat=open('simstats.txt','a')
-            flstat=self.flstat
-            kinetic   = md.get_kinetic_energy() 
-            potential = m.evaluate(False)
-            temp    = md.get_kinetic_temperature(kinetic)
-            si=sigma.get_nuisance()
-            ga=gamma.get_nuisance()
-            acc_s,st_s = self.get_mc_stat(mc_sigma,nm_sigma,self.naccept_s,nsteps)
-            acc_g,st_g = self.get_mc_stat(mc_gamma,nm_gamma,self.naccept_g,nsteps)
-            self.naccept_s = mc_sigma.get_number_of_forward_steps()
-            self.naccept_g = mc_gamma.get_number_of_forward_steps()
-            for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
-                    kinetic+potential,si,ga,acc_s,acc_g,st_s,st_g]:
-                flstat.write("%10f " % i)
-            flstat.write('\n')
-            flstat.close()
-            IMP.atom.write_pdb(prot,"sol_%05d.pdb" % stepno)
+    def write_stats(self,stepno,nsteps):
+        flstat=open(self.statfile,'a')
+        kinetic   = self._md.get_kinetic_energy() 
+        potential = self._m.evaluate(False)
+        temp    = self._md.get_kinetic_temperature(kinetic)
+        si=self._p['sigma'].get_nuisance()
+        ga=self._p['gamma'].get_nuisance()
+        acc_s,st_s = self._get_mc_stat(self._mc_sigma, self._nm_sigma,
+                self.naccept_s,nsteps)
+        acc_g,st_g = self._get_mc_stat(self._mc_gamma, self._nm_gamma,
+                self.naccept_g,nsteps)
+        self.naccept_s = self._mc_sigma.get_number_of_forward_steps()
+        self.naccept_g = self._mc_gamma.get_number_of_forward_steps()
+        for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
+                kinetic+potential,si,ga,acc_s,acc_g,st_s,st_g]:
+            flstat.write("%10f " % i)
+        flstat.write('\n')
+        flstat.close()
+        IMP.atom.write_pdb(prot,"sol_%05d.pdb" % stepno)
 
 
 
