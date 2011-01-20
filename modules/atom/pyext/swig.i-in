@@ -203,8 +203,8 @@ IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 
 namespace IMP {
   namespace atom {
-   %template() ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
-   %template() ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
+   %template(_SPSTF) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
+   %template(_SPSFT) ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
   }
 }
 %include "IMP/atom/protein_ligand_score.h"
