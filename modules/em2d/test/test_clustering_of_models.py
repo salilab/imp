@@ -73,49 +73,44 @@ class ClusteringTests(IMP.test.TestCase):
                     rmsds[j][i]=rmsds[i][j]
         # cluster
         linkage_mats=[]
+#        print "Single Linkage Matrix"
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_single_linkage(rmsds)
         mat1=cluster_set.get_linkage_matrix_in_matlab_format()
-#        print "Single Linkage Matrix"
-#        for m in mat1:
-#            print m
         mat1 = [[x for x in row] for row in mat1]
         linkage_mats.append(mat1)
+
+#        print "Complete Linkage Matrix"
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_complete_linkage(rmsds)
         mat2=cluster_set.get_linkage_matrix_in_matlab_format()
-#        print "Complete Linkage Matrix"
-#        for m in mat2:
-#            print m
         mat2 = [[x for x in row] for row in mat2]
         linkage_mats.append(mat2)
 
-#        mat2=cluster_set.get_linkage_matrix()
-#        rmsd_cutoff =1.4
-#        cls=cluster_set.get_clusters_below_cutoff(rmsd_cutoff)
-#        print "after function cutoff"
-#        for cl in cls:
-#            print cl
-#
-#        sys.exit()
+        # get clusters with distances below 1.4
+        rmsd_cutoff =1.4
+        complete_cls=cluster_set.get_clusters_below_cutoff(rmsd_cutoff)
+        complete_cls_elems=[cluster_set.get_cluster_elements(c)
+                                          for c in complete_cls]
 
 
+#        print "Average distance Linkage Matrix"
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_average_distance_linkage(rmsds)
 
         mat3=cluster_set.get_linkage_matrix_in_matlab_format()
 
-#        print "Average distance Linkage Matrix"
-#        for m in mat3:
-#            print m
         mat3 = [[x for x in row] for row in mat3]
         linkage_mats.append(mat3)
-        # check
+        # check matrices
         filenames = ["single_linkage_results.txt",
                      "complete_linkage_results.txt",
                      "average_distance_linkage_results.txt"]
 
         for i in range(0,len(linkage_mats)):
+#            print "checking linkage matrix"
+#            for m in linkage_mats[i]:
+#                 print m
             rows = get_rows(filenames[i])
             stored_mat=[[float(col) for col in row] for row in rows]
             mat = linkage_mats[i]
@@ -125,6 +120,13 @@ class ClusteringTests(IMP.test.TestCase):
                     self.assertAlmostEqual(mat[j][k],stored_mat[j][k],
                                            delta=0.01,msg=msg)
 
+        # check cluster elements
+#        print "complete_cls",complete_cls
+#        print "complete_cls_elems",complete_cls_elems
+        self.assertEqual(complete_cls,[10,9],
+                    "Clusters below 1.4 rmsd are not equal")
+        self.assertEqual(complete_cls_elems,[[2,3],[0,4,1]],
+                    "Clusters below 1.4 rmsd are not equal")
 
         os.chdir(input_dir)
 
