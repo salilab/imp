@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- IMP::atom::DopePairScore has been added to \imp.
 - IMP::atom::CHARMMStereochemistryRestraint provides a high-level simplified
 interface to the bonded part of the CHARMM forcefield.
 - \imp modules are now built by first combining all the .cpp files into one, and then building that file. This greatly accelerates building of a module from scratch as build time is dominated by parsing headers. This does change the semantics of .cpp files as they see headers included by and functions declared by an arbitrary subset of other .cpp files. For now they are still required to be able to be compiled separately. To get the only behavior back either globally or on a per-module basis, see the percppcompilation parameter to scons.
