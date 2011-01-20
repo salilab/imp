@@ -28,6 +28,7 @@ statistics::Histogram get_density_histogram(const DensGrid *dmap,
        it != dmap->indexes_end(lb, ub); ++it) {
     if ((*dmap)[*it]>max_val) max_val=(*dmap)[*it];
   }
+  //  std::cout<<"max hit:"<<max_val<<std::endl;
   statistics::Histogram hist(threshold-em::EPS,max_val+.1,
                              num_bins);
   for (DensGrid::IndexIterator it= dmap->indexes_begin(lb,ub);
@@ -129,14 +130,14 @@ void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
                                      int &x,int &y,int &z) const{
 
   //  int shift=-1;
-  int x_half = (fftw_nx_-1)/2+1;
-  int y_half = (fftw_ny_-1)/2+1;
-  int z_half = (fftw_nz_-1)/2+1;
+  int x_half = (fftw_nx_-1)/2;//+1
+  int y_half = (fftw_ny_-1)/2;//+1
+  int z_half = (fftw_nz_-1)/2;//+1
 
-  if (wx>=x_half) x=x_half-(fftw_nx_-wx); else x=x_half+wx;
-  if (wy>=y_half) y=y_half-(fftw_ny_-wy); else y=y_half+wy;
-  if (wz>=z_half) z=z_half-(fftw_nz_-wz); else z=z_half+wz;
-  /*  std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
+  if (wx>x_half) x=x_half-(fftw_nx_-wx); else x=x_half+wx;
+  if (wy>y_half) y=y_half-(fftw_ny_-wy); else y=y_half+wy;
+  if (wz>z_half) z=z_half-(fftw_nz_-wz); else z=z_half+wz;
+  /*   std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
   <<") unwrapped: ("<<x<<","<<y<<","<<z<<") "
   << "half: ("<<x_half<<","<<y_half<<","<<z_half<<") full:"
   <<fftw_nx_<<","<<fftw_ny_<<","<<fftw_nz_<<")"<<std::endl;*/
@@ -399,19 +400,25 @@ void FFTFitting::prepare(float threshold) {
   create_padded_asmb_map();
   asmb_map_mask_ = em::binarize(asmb_map_,(threshold-orig_avg_)/orig_std_);
   set_fftw_grid_sizes();
+  //  std::cout<<"setting fftw for assembly"<<std::endl;
   set_fftw_for_asmb();
   //set asmb sqr
+  //std::cout<<"creating padded asmb map sqrt"<<std::endl;
   create_padded_asmb_map_sqr();
+  // std::cout<<"creating  asmb map sqrt"<<std::endl;
   set_fftw_for_asmb_sqr();
   smooth_mol();
+  //std::cout<<"creating fftw for mol"<<std::endl;
   set_fftw_for_mol();
   //set the mask
   set_mol_mask();
+  //std::cout<<"creating fftw for mol mask"<<std::endl;
   set_fftw_for_mol_mask();
   //set std data
   prepare_std_data();
   //set cc fftw data
   set_fftw_for_cc();
+  //  std::cout<<"creating fftw for cc"<<std::endl;
   //recopy map_sqr as the mol mask plan setting reset that memory
   copy_density_data(padded_asmb_map_sqr_,fftw_r_grid_asmb_sqr_);
   is_initialized_=true;
@@ -737,7 +744,9 @@ algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
   algebra::Vector3Ds best_trans;
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
-  float density_threshold = 0.1;//std::max(em::EPS,hist.get_top(0.1)-EPS);
+  float density_threshold = 0.08;//std::min(0.1,hist.get_top(0.3)-EPS);
+  //todo - make this a parameter
+  //  std::cout<<"= density threshold for gmm:"<<density_threshold<<std::endl;
   DensityDataPoints ddp=DensityDataPoints(*hit_map,density_threshold);
   VQClustering vq(&ddp,num_solutions);
   vq.set_fast_clustering();
@@ -794,11 +803,15 @@ FFTFittingResults fft_based_rigid_fitting(
     //Pointer<em::DensityMap> hit_map = fft_fit.get_correlation_hit_map();
     TransScores best_trans=fft_fit.search_for_best_translations(
      num_top_fits_to_store_for_each_rotation,pick_search_by_gmm);
+    //std::cout<<"best solution for rotation:"<<i
+    //<<" is:"<<best_trans[0].second<<std::endl;
     for(unsigned int i=0;i<best_trans.size();i++) {
       //TODO: see if you can improve this test
       temp_fits.add_solution(
                              best_trans[i].first*t1*shift_to_center,
                              best_trans[i].second);
+      //      std::cout<<"Transformation: "<<i<<" "<<best_trans[i].first<<","
+      //<<t1<<","<<shift_to_center<<std::endl;
     }
     core::transform(rb,t1.get_inverse());
     //    add_to_max_map(max_map,hit_map);
@@ -893,7 +906,6 @@ DensGrid FFTFitting::get_correlation_hit_map() {
       }}}
   return r_map;
 }
-
 
 
 IMPMULTIFIT_END_NAMESPACE
