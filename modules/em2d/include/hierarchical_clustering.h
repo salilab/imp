@@ -21,9 +21,18 @@ IMPEM2D_BEGIN_NAMESPACE
 
 typedef std::pair<unsigned int ,double> pair_cluster_id_distance;
 typedef std::list< pair_cluster_id_distance > list_cluster_id_distance;
-typedef std::vector< Floats > VectorFloats;
+typedef std::vector< IMP::Floats > VectorOfFloats;
+typedef std::vector< IMP::Ints > VectorOfInts;
 
 
+
+template<class T>
+void print_vector(const std::vector<T> &v) {
+  for (unsigned int i=0;i<v.size();++i) {
+    std::cout << v[i] << " , ";
+  }
+    std::cout << std::endl;
+}
 
 // Comparison of cluster_id,distance
 class LessThanByDistance
@@ -69,21 +78,76 @@ public:
    /*!
      \param[in] id of the cluster
    */
-   Ints get_cluster_elements(unsigned int id) const {
-     return clusters_elements[id];
-   }
+   Ints get_cluster_elements(unsigned int id) const;
+
+
+  // Get the biggest clusters that have distances below a given cutoff
+  /*!
+    \param[in] cutoff distance
+    \param[out] A vector of Ints: Each Ints has the ids of all elements of the
+                cluster
+  */
+  VectorOfInts get_clusters_below_cutoff(double cutoff) const {
+    VectorOfInts clusters;
+    std::vector<bool> is_active(steps_,true);
+    for (int i=steps_-1;i>=0;--i) {
+      if(is_active[i]==true && cluster_distances_[i]) {
+        Ints cl = get_cluster_formed_at_step(i);
+        std::cout << "Recovered cluster at step " << i << ":  ";
+        print_vector<int>(cl);
+        clusters.push_back(cl);
+        // Deactivate all the members of the linkage matrix that contain
+        // the elements of this cluster
+        Ints to_deactivate;
+        unsigned int  id1 = joined_ids1_[i];
+        unsigned int  id2 = joined_ids2_[i];
+        std::cout << "Ids cluster recovered: ";
+         print_vector<int>(to_deactivate);
+        if(id1>=n_elements_) to_deactivate.push_back(id1);
+        if(id2>=n_elements_) to_deactivate.push_back(id2);
+
+        while(to_deactivate.size() > 0) {
+          std::cout << "To deactivate beginning: ";
+          print_vector<int>(to_deactivate);
+          int id=to_deactivate.back();
+          to_deactivate.pop_back();
+          int j =get_step_from_id(id); // new row to deactivate
+          is_active[j]=false;
+          unsigned int  jid1 = joined_ids1_[j];
+          unsigned int  jid2 = joined_ids2_[j];
+          std::cout << "Deactivating step " << j
+          <<  " (" << jid1 << "," << jid2 << ")" << std::endl;
+          if(jid1>=n_elements_) to_deactivate.push_back(jid1);
+          if(jid2>=n_elements_) to_deactivate.push_back(jid2);
+          std::cout << "To deactivate end (size "
+                    << to_deactivate.size() << ") : ";
+          print_vector<int>(to_deactivate);
+          std::cout << "State of rows:" << std::endl;
+          for (unsigned int j=0;j<steps_;++j) {
+            std::cout << "row " << j << " active " << is_active[j] << std::endl;
+          }
+        }
+      }
+      is_active[i]=false; // deactivate after consdering it
+    }
+    return clusters;
+  }
+
+
 
   // Return the elements of the cluster formed at a given step
   /*!
     \param[in] s Step
   */
-  Ints get_cluster_formed_at_step(unsigned int s) const;
+  Ints get_cluster_formed_at_step(unsigned int step) const;
 
-  // Distance between two clusters
-  double get_distance(unsigned int cluster_id1,
-                      unsigned int cluster_id2) const {
-    return 0.0;//TO DO
-  }
+  // Distance in the linkage matrix at a given step
+  double get_distance_at_step(unsigned int step) const;
+
+   unsigned int get_id_for_cluster_at_step(unsigned int step) const {
+     return step+n_elements_;
+   }
+
 
   // Returns the linkage matrix
   /*!
@@ -92,7 +156,7 @@ public:
     A[i][1] - id of the second cluster merged at step i
     A[i][2] - distance between the clusters
   */
-  VectorFloats get_linkage_matrix() const;
+  VectorOfFloats get_linkage_matrix() const;
 
   // Returns the linkage matrix compatible with Matlab format
   /*!
@@ -100,7 +164,7 @@ public:
      with Matlab.
     Matlab format: http://www.mathworks.com/help/toolbox/stats/linkage.html
   */
-  VectorFloats get_linkage_matrix_in_matlab_format() const;
+  VectorOfFloats get_linkage_matrix_in_matlab_format() const;
 
   // Returns the number of steps of clustering recorded
   unsigned int get_number_of_steps() const {
@@ -109,14 +173,20 @@ public:
 
   void show(std::ostream &out) const;
 
+
 private:
+  void check_step_value(unsigned int s) const;
+  unsigned int  get_step_from_id(unsigned int id) const {
+    return (id-n_elements_);
+  }
+
   unsigned int steps_;
   unsigned int n_elements_; // number of elements to cluster
   Ints joined_ids1_,joined_ids2_;
   Floats cluster_distances_;
   // each element of the outermost vector is a vector with all the elements
   // in a cluster
-  std::vector< Ints > clusters_elements;
+  VectorOfInts clusters_elements_;
 };
 IMP_VALUES(ClusterSet,ClusterSets);
 
@@ -139,7 +209,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances ) const;
+                  const VectorOfFloats &distances ) const;
 
   void show(std::ostream &out) const {};
 };
@@ -159,7 +229,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances );
+                  const VectorOfFloats &distances );
 
   void show(std::ostream &out) const {};
 
@@ -180,7 +250,7 @@ public:
   double operator()(unsigned int id1,
                   unsigned int id2,
                   const ClusterSet &cluster_set,
-                  const VectorFloats &distances );
+                  const VectorOfFloats &distances );
 
   void show(std::ostream &out) const {};
 };
@@ -199,7 +269,7 @@ IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
 */
 template<class LinkageFunction>
 ClusterSet
-    do_hierarchical_agglomerative_clustering(const VectorFloats &distances) {
+    do_hierarchical_agglomerative_clustering(const VectorOfFloats &distances) {
 // Based on:
 // http://nlp.stanford.edu/IR-book/html/htmledition/
 //      time-complexity-of-hac-1.html)
@@ -251,14 +321,15 @@ ClusterSet
     unsigned int l2=lists[l1].front().first;
     minimum_distance=lists[l2].front().second;
     IMP_LOG(IMP::TERSE,"step " << k << ": joining clusters " << cluster_id[l1]
-            << " and " << cluster_id[l2] << " distance = "
+            << " and " << cluster_id[l2]
+            << " to form cluster "
+            << cluster_set.get_id_for_cluster_at_step(k) << " distance = "
             << minimum_distance << std::endl);
     cluster_set.do_join_clusters(cluster_id[l1],
                                  cluster_id[l2],
                                  minimum_distance);
     active_list[l2]=false;
-    // the new cluster after joining has id = step+n_elements.
-    cluster_id[l1]=k+N;
+    cluster_id[l1]=cluster_set.get_id_for_cluster_at_step(k);
     // clear list 1. It will be filled with distance values for the new cluster
     lists[l1].clear();
     // Update lists of distances

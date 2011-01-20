@@ -5,7 +5,8 @@ import IMP.atom
 import IMP.em2d
 import os
 import csv
-from math import *
+# from math import *
+import sys
 
 def get_columns(fn,cols=[],delimiter=" ",comment="#"):
     """ ge the columns of a file:
@@ -37,16 +38,6 @@ def get_rows(fn,delimiter=" ",comment="#"):
         if(row!=[] and row[0][0]!=comment): # not empty or comment row
             rows.append(row)
     return rows
-
-def compare_linkage_matrix(mat1,mat2):
-    """Compares two linkage matrices from the clustering routines """
-
-    n_rows = len(mat1)
-    for i in range(0,n_rows):
-        for j in range(0,3):
-            self.assertAlmostEqual(mat1[i][j],mat2[i][j], delta=0.01,
-                 msg="Linkage matrices are not equal")
-
 
 
 class ClusteringTests(IMP.test.TestCase):
@@ -84,27 +75,39 @@ class ClusteringTests(IMP.test.TestCase):
         linkage_mats=[]
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_single_linkage(rmsds)
-        mat1=cluster_set.get_linkage_matrix()
-        print "Single Linkage Matrix"
-        for m in mat1:
-            print m
+        mat1=cluster_set.get_linkage_matrix_in_matlab_format()
+#        print "Single Linkage Matrix"
+#        for m in mat1:
+#            print m
         mat1 = [[x for x in row] for row in mat1]
         linkage_mats.append(mat1)
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_complete_linkage(rmsds)
-        mat2=cluster_set.get_linkage_matrix()
-        print "Complete Linkage Matrix"
-        for m in mat2:
-            print m
+        mat2=cluster_set.get_linkage_matrix_in_matlab_format()
+#        print "Complete Linkage Matrix"
+#        for m in mat2:
+#            print m
         mat2 = [[x for x in row] for row in mat2]
         linkage_mats.append(mat2)
+
+#        mat2=cluster_set.get_linkage_matrix()
+#        rmsd_cutoff =1.4
+#        cls=cluster_set.get_clusters_below_cutoff(rmsd_cutoff)
+#        print "after function cutoff"
+#        for cl in cls:
+#            print cl
+#
+#        sys.exit()
+
+
         cluster_set = \
             IMP.em2d.do_hierarchical_clustering_average_distance_linkage(rmsds)
 
-        mat3=cluster_set.get_linkage_matrix()
-        print "Average distance Linkage Matrix"
-        for m in mat3:
-            print m
+        mat3=cluster_set.get_linkage_matrix_in_matlab_format()
+
+#        print "Average distance Linkage Matrix"
+#        for m in mat3:
+#            print m
         mat3 = [[x for x in row] for row in mat3]
         linkage_mats.append(mat3)
         # check
@@ -114,7 +117,6 @@ class ClusteringTests(IMP.test.TestCase):
 
         for i in range(0,len(linkage_mats)):
             rows = get_rows(filenames[i])
-            print rows
             stored_mat=[[float(col) for col in row] for row in rows]
             mat = linkage_mats[i]
             msg = "Linkage matrices are not equal in "+ filenames[i]
@@ -122,7 +124,10 @@ class ClusteringTests(IMP.test.TestCase):
                 for k in range(0,3):
                     self.assertAlmostEqual(mat[j][k],stored_mat[j][k],
                                            delta=0.01,msg=msg)
+
+
         os.chdir(input_dir)
+
 
 if __name__ == '__main__':
     IMP.test.main()

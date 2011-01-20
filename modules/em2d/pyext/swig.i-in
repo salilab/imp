@@ -11,8 +11,6 @@ IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
 IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 IMP_SWIG_VALUE(IMP::em2d, LessThanByDistance, LessThanByDistances);
 
-
-
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);
 IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
@@ -54,11 +52,8 @@ namespace IMP {
     %template(ResultAlign2D)
             ::std::pair< IMP::algebra::Transformation2D,double >;
 
-    %template(VectorFloats) ::std::vector < IMP::Floats >;
-
-//    %template(pair_cluster_id_distance) ::std::pair<unsigned int,double>;
-//    %template(list_cluster_id_distance) std::list< pair_cluster_id_distance >;
-//    %template(binary_cluster_id_distance) ::std::binary_function<pair_cluster_id_distance,pair_cluster_id_distance,bool>;
+//    %template(VectorOfInts)   ::std::vector< IMP::Ints >;
+    %template(VectorOfFloats) ::std::vector< IMP::Floats >;
 
    %template(_do_hierarchical_clustering_single_linkage)
           ::IMP::em2d::do_hierarchical_agglomerative_clustering<SingleLinkage>;
