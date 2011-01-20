@@ -10,58 +10,79 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
- ClusterSet::ClusterSet(unsigned int N): steps_(0),n_elements_(N) {
-    joined_ids1_.resize(n_elements_);
-    joined_ids2_.resize(n_elements_);
-    clusters_elements.resize(n_elements_);
-    // fill unary clusters with clusters id and cluster_distances_
-    for (unsigned int i=0;i<n_elements_;++i) {
-      joined_ids1_[i]=i;
-      joined_ids2_[i]=0; // no clusters joined for the unary ones
-      clusters_elements[i].push_back(i);
-    }
-    cluster_distances_.resize(n_elements_,0.0);
-  }
+
+double ClusterSet::get_distance_at_step(unsigned int step) const {
+  check_step_value(step);
+  return cluster_distances_[step];
+}
+
+void ClusterSet::check_step_value(unsigned int s) const {
+  if(s<0 || s>=steps_) IMP_THROW("ClusterSet: Requesting an invalid step",
+                                 ValueException);
+}
+
+
+ClusterSet::ClusterSet(unsigned int N): steps_(0),n_elements_(N) {};
 
 void ClusterSet::do_join_clusters(unsigned int cluster_id1,
                        unsigned int cluster_id2,
                        double distance_between_clusters) {
+  IMP_LOG(IMP::VERBOSE,"Joining clusters " << cluster_id1 << " and "
+          << cluster_id2 << std::endl);
+
   joined_ids1_.push_back(cluster_id1);
   joined_ids2_.push_back(cluster_id2);
   cluster_distances_.push_back(distance_between_clusters);
-  // join the members of the two clusters
+
+
+  Ints ids;
+  ids.push_back(cluster_id1);
+  ids.push_back(cluster_id2);
   Ints new_cluster;
-  new_cluster.insert(new_cluster.end(),
-                     clusters_elements[cluster_id1].begin(),
-                     clusters_elements[cluster_id1].end());
-  new_cluster.insert(new_cluster.end(),
-                     clusters_elements[cluster_id2].begin(),
-                     clusters_elements[cluster_id2].end());
-  clusters_elements.push_back(new_cluster);
+  for (unsigned int i=0;i<2;++i) {
+    if( (unsigned int )ids[i]<n_elements_) {
+      new_cluster.push_back(ids[i]);
+    } else {
+      unsigned int s=get_step_from_id(ids[i]);
+      new_cluster.insert(new_cluster.end(),
+                       clusters_elements_[s].begin(),
+                       clusters_elements_[s].end());
+    }
+  }
+  clusters_elements_.push_back(new_cluster);
   steps_++;
 }
 
 
 Ints ClusterSet::get_cluster_formed_at_step(unsigned int s) const {
-  return get_cluster_elements(s+n_elements_);
+  check_step_value(s);
+  return clusters_elements_[s];
+}
+
+Ints ClusterSet::get_cluster_elements(unsigned int id) const {
+  if(id<n_elements_) {
+    Ints x(1,id);
+    return x;
+  }
+  return get_cluster_formed_at_step(get_step_from_id(id));
 }
 
 
-VectorFloats ClusterSet::get_linkage_matrix() const {
-  VectorFloats mat(steps_);
+VectorOfFloats ClusterSet::get_linkage_matrix() const {
+  IMP_LOG(IMP::VERBOSE,"ClusterSet: Building linkage  matrix" << std::endl);
+  VectorOfFloats mat(steps_);
   for (unsigned int i=0;i<steps_;++i) {
     mat[i].resize(3);
-    unsigned int j = n_elements_ + i;
-    mat[i][0]=(double)joined_ids1_[j];
-    mat[i][1]=(double)joined_ids2_[j];
-    mat[i][2]= cluster_distances_[j];
+    mat[i][0]=(double)joined_ids1_[i];
+    mat[i][1]=(double)joined_ids2_[i];
+    mat[i][2]= cluster_distances_[i];
   }
   return mat;
 }
 
-VectorFloats  ClusterSet::get_linkage_matrix_in_matlab_format() const {
-  VectorFloats mat = get_linkage_matrix();
-  VectorFloats::iterator it;
+VectorOfFloats  ClusterSet::get_linkage_matrix_in_matlab_format() const {
+  VectorOfFloats mat = get_linkage_matrix();
+  VectorOfFloats::iterator it;
   for (it=mat.begin();it != mat.end();++it) {
      (*it)[0] += 1; // +1 for matlab compatibility (indices start at 1)
      (*it)[1] += 1;
@@ -82,7 +103,8 @@ void  ClusterSet::show(std::ostream &out) const {
 double CompleteLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
-                const VectorFloats &distances ) {
+                const VectorOfFloats &distances ) {
+  IMP_LOG(IMP::VERBOSE,"Evaluating CompleteLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
   // Get minimum distance between elements
@@ -102,9 +124,12 @@ double CompleteLinkage::operator()(unsigned int id1,
 double AverageDistanceLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
-                const VectorFloats &distances ) {
+                const VectorOfFloats &distances ) {
+  IMP_LOG(IMP::VERBOSE,"Evaluating AverageDistanceLinkage " << std::endl);
+
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
+
   // Get minimum distance between elements
   Ints::iterator it1,it2;
   double distance=0.0;
@@ -119,7 +144,8 @@ double AverageDistanceLinkage::operator()(unsigned int id1,
 double SingleLinkage::operator()(unsigned int id1,
                 unsigned int id2,
                 const ClusterSet &cluster_set,
-                const VectorFloats &distances ) const {
+                const VectorOfFloats &distances ) const {
+  IMP_LOG(IMP::VERBOSE,"Evaluating SingleLinkage " << std::endl);
   Ints members1 = cluster_set.get_cluster_elements(id1);
   Ints members2 = cluster_set.get_cluster_elements(id2);
   // Get minimum distance between elements of the clusters

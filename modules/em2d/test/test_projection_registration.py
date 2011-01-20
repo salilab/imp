@@ -40,7 +40,7 @@ class ProjectTests(IMP.test.TestCase):
         self.assertEqual(len(projections),n_projections,
                                           "Problem generating projections")
         # Prepare registration
-        save_match_images=True
+        save_match_images=False
         coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
         optimization_steps=30
         simplex_initial_length=0.1
