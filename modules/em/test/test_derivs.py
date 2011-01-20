@@ -184,5 +184,44 @@ class DerivativesTest(IMP.test.TestCase):
         print " derivs done ..."
         os.unlink("xxx.em")
 
+    def test_fr_deriv(self):
+        """Testing FitRestraint derivative magnitudes"""
+        use_rigid_bodies=True
+        bd= 10
+        radius=10
+        m= IMP.Model()
+        p= IMP.Particle(m)
+        IMP.atom.Mass.setup_particle(p, 10000)
+        d= IMP.core.XYZR.setup_particle(p)
+        d.set_radius(radius)
+        fp= d
+        to_move=d
+        d.set_coordinates_are_optimized(True)
+        refiner=None
+
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-bd-radius, -bd-radius, -bd-radius),
+                                      IMP.algebra.Vector3D( bd+radius,  bd+radius,  bd+radius))
+
+        dheader = IMP.em.create_density_header(bb,1)
+        dheader.set_resolution(1)
+        dmap = IMP.em.SampledDensityMap(dheader)
+        dmap.set_particles([p])
+
+        dmap.resample()
+        # computes statistic stuff about the map and insert it in the header
+        dmap.calcRMS()
+        IMP.em.write_map(dmap,"map.mrc",IMP.em.MRCReaderWriter())
+        rs= IMP.RestraintSet()
+        m.add_restraint(rs)
+
+        # if rigid bodies are used, we need to define a refiner as
+        # FitRestraint doesn't support just passing all the geometry
+        r= IMP.em.FitRestraint([fp], dmap, refiner)
+        rs.add_restraint(r)
+        for i in range(0,10):
+            d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+            self.assertXYZDerivativesInTolerance(m, d, tolerance=.05, percentage=5)
+
+
 if __name__ == '__main__':
     IMP.test.main()
