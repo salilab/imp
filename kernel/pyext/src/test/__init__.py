@@ -161,8 +161,8 @@ class TestCase(unittest.TestCase):
             os.mkdir(dirpath)
         return os.path.join(dirpath, filename)
 
-    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance,
-                                        percentage):
+    def assertXYZDerivativesInTolerance(self, model, xyz, tolerance=0,
+                                        percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
            a tolerance, or a percentage (of the analytical value), whichever
            is larger."""
