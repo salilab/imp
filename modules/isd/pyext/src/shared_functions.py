@@ -6,23 +6,25 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 
+kB= (1.381 * 6.02214) / 4184.0
+
 class sfo():
     "shared functions object, published on all nodes"
 
     def hello(self):
         return "hello world"
 
-    def init_model(self):
+    def init_model(self, wd, initpdb, restraints):
         "loads pdb and restraints and creates particles and nuisances"
-        kB= (1.381 * 6.02214) / 4184.0
         #IMP.set_log_level(IMP.SILENT)
         IMP.set_check_level(IMP.NONE)
+        os.chdir(wd)
         # Create an IMP model and add a heavy atom-only protein from a PDB file
         m = IMP.Model()
         #prot = IMP.atom.read_pdb("./1G6J_MODEL1_imp.pdb", m)
-        prot = IMP.atom.read_pdb("/tmp/generated2.pdb", m)
+        prot = IMP.atom.read_pdb(initpdb, m)
         # Read in the CHARMM heavy atom topology and parameter files
-        ff = IMP.atom.CHARMMParameters("/tmp/top.lib", "/tmp/par.lib")
+        ff = IMP.atom.CHARMMParameters("top.lib", "par.lib")
         # equivalent:
         # ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
         #
@@ -107,7 +109,7 @@ class sfo():
         m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
         sigma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
-        for i,line in enumerate(open('/tmp/NOE_HN-full_7A_sparse100.tbl')):
+        for i,line in enumerate(open(restraints)):
             if i % 100 == 0:
                print i
             tokens=line.split()
@@ -140,7 +142,7 @@ class sfo():
         self._p={}
         self._p['sigma'] = sigma
         self._p['gamma'] = gamma
-        self._p['protein'] = prot
+        self._p['prot'] = prot
 
     def m(self,name,*args,**kw):
         "wrapper to call methods of m"
@@ -172,13 +174,45 @@ class sfo():
             IMP.core.XYZR(i).set_coordinates_are_optimized(False)
         sigma.set_is_optimized(IMP.FloatKey("nuisance"),True)
         gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        _mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
+        self._mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
         sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
         gamma.set_is_optimized(IMP.FloatKey("nuisance"),True)
-        _mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
+        self._mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
 
     def write_pdb(self, name='prot.pdb'):
-        IMP.atom.write_pdb(self._p['protein'], name)
+        IMP.atom.write_pdb(self._p['prot'], name)
+
+    def init_stats(self, prefix='p01'):
+        self.prefix=prefix
+        self.statfile = prefix+'_stats.txt'
+        flstat=open(self.statfile,'w')
+        flstat.write("Step Time Temp Potential Kinetic "
+                "Total Sigma Gamma MC_accept_s MC_accept_g "
+                "MC_stepsize_s MC_stepsize_g\n")
+        flstat.close()
+        self.naccept_s=0
+        self.naccept_g=0
+
+    def write_stats(self,stepno,nsteps):
+        flstat=open(self.statfile,'a')
+        kinetic   = self._md.get_kinetic_energy() 
+        potential = self._m.evaluate(False)
+        temp    = self._md.get_kinetic_temperature(kinetic)
+        si=self._p['sigma'].get_nuisance()
+        ga=self._p['gamma'].get_nuisance()
+        acc_s,st_s = self._get_mc_stat(self._mc_sigma, self._nm_sigma,
+                self.naccept_s,nsteps)
+        acc_g,st_g = self._get_mc_stat(self._mc_gamma, self._nm_gamma,
+                self.naccept_g,nsteps)
+        self.naccept_s = self._mc_sigma.get_number_of_forward_steps()
+        self.naccept_g = self._mc_gamma.get_number_of_forward_steps()
+        for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
+                kinetic+potential,si,ga,acc_s,acc_g,st_s,st_g]:
+            flstat.write("%10f " % i)
+        flstat.write('\n')
+        flstat.close()
+        IMP.atom.write_pdb(self._p['prot'],self.prefix+"_%05d.pdb" % stepno)
+
 
     def _setup_md(self,temp=300.0, tau=500):
         ## Molecular Dynamics (from MAX BONOMI)
@@ -232,41 +266,9 @@ class sfo():
 
         "helper class to gather and print statistics on a simulation"
 
-    def init_stats(self, fname='simstats.txt'):
-        self.statfile = fname
-        flstat=open(fname,'w')
-        flstat.write("Step Time Temp Potential Kinetic "
-                "Total Sigma Gamma MC_accept_s MC_accept_g "
-                "MC_stepsize_s MC_stepsize_g\n")
-        flstat.close()
-        self.naccept_s=0
-        self.naccept_g=0
-
     def _get_mc_stat(self,mc,nm,nacc,nsteps):
         "return acceptance rate and stepsize"
         stepsize = nm.get_sigma()
         n_ok=mc.get_number_of_forward_steps() - nacc
         return 100*n_ok/nsteps, stepsize
-
-    def write_stats(self,stepno,nsteps):
-        flstat=open(self.statfile,'a')
-        kinetic   = self._md.get_kinetic_energy() 
-        potential = self._m.evaluate(False)
-        temp    = self._md.get_kinetic_temperature(kinetic)
-        si=self._p['sigma'].get_nuisance()
-        ga=self._p['gamma'].get_nuisance()
-        acc_s,st_s = self._get_mc_stat(self._mc_sigma, self._nm_sigma,
-                self.naccept_s,nsteps)
-        acc_g,st_g = self._get_mc_stat(self._mc_gamma, self._nm_gamma,
-                self.naccept_g,nsteps)
-        self.naccept_s = self._mc_sigma.get_number_of_forward_steps()
-        self.naccept_g = self._mc_gamma.get_number_of_forward_steps()
-        for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
-                kinetic+potential,si,ga,acc_s,acc_g,st_s,st_g]:
-            flstat.write("%10f " % i)
-        flstat.write('\n')
-        flstat.close()
-        IMP.atom.write_pdb(prot,"sol_%05d.pdb" % stepno)
-
-
 
