@@ -56,9 +56,11 @@ class IMPEXPORT RestraintSet : public Restraint
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
   double evaluate(bool deriv) const;
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
   friend class Model;
   void set_model(Model *m);
+#endif
  private:
   Float weight_;
 };
