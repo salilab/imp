@@ -26,11 +26,8 @@ scons_tools.variables.add_common_variables(vars, "imp")
 env = scons_tools.environment.get_base_environment(variables=vars,
                               tools=["default", "swig", "dot", "doxygen", "cpp"],
                               toolpath=["scons_tools/tools"])
-env['IMP_ENABLED']=[]
-env['IMP_DISABLED']=[]
-env['IMP_BUILD_SUMMARY']=""
-env['IMP_CONFIGURATION']=[]
 env['IMP_VARIABLES']=vars
+env['IMP_CONFIGURATION']=[]
 
 Export('env')
 
@@ -69,7 +66,7 @@ if not env.GetOption('help'):
     scons_tools.dependency.gcc.configure_check_visibility(env)
     scons_tools.dependency.gcc.configure_check_hash(env)
     # Make these objects available to SConscript files:
-    env.Append(BUILDERS={'IMPConfigPY':scons_tools.config_py.ConfigPY})
+
 
 first=["kernel", "modules", "applications", "biological_systems"]
 last=["doc"]
@@ -119,8 +116,7 @@ if not env.GetOption('help'):
     for f in reordered_last:
         SConscript("#/"+f)
     scons_tools.build_summary.setup(env)
-    config_py=env.IMPConfigPY(target=["#/config.py"],
-                              source=[env.Value("#".join(env['IMP_CONFIGURATION']))])
+    config_py=scons_tools.config_py.add(env)
     senv= scons_tools.environment.get_named_environment(env, "scons", [], [])
     scons_tools.install.install(senv, "datadir/scons", "SConstruct")
     scons_tools.install.install_hierarchy(senv, "datadir/scons/scons_tools", "scons_tools",
