@@ -22,6 +22,18 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
+//! Enforce CHARMM stereochemistry on the given Hierarchy.
+/** It is assumed that the Hierarchy has already had CHARMM atom types
+    assigned and conforms with the CHARMM topology information
+    (for example, by calling CHARMMTopology::setup_hierarchy() first).
+
+    \note This is a convenient high-level wrapper; the bonds, angles,
+          dihedrals and impropers can also be created manually and
+          evaluated using standard IMP building blocks - for example,
+          angles can be created using CHARMMParameters::create_angles()
+          and then evaluated using an AngleSingletonScore in combination
+          with a container::SingletonsRestraint.
+ */
 class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint
 {
   Particles bonds_, angles_, dihedrals_, impropers_;
@@ -30,18 +42,6 @@ class IMPATOMEXPORT CHARMMStereochemistryRestraint : public Restraint
   IMP::internal::OwnerPointer<DihedralSingletonScore> dihedral_score_;
   IMP::internal::OwnerPointer<ImproperSingletonScore> improper_score_;
 public:
-  //! Enforce CHARMM stereochemistry on the given Hierarchy.
-  /** It is assumed that the Hierarchy has already had CHARMM atom types
-      assigned and conforms with the CHARMM topology information
-      (for example, by calling CHARMMTopology::setup_hierarchy() first).
-
-      \note This is a convenient high-level wrapper; the bonds, angles,
-            dihedrals and impropers can also be created manually and
-            evaluated using standard IMP building blocks - for example,
-            angles can be created using CHARMMParameters::create_angles()
-            and then evaluated using an AngleSingletonScore in combination
-            with a container::SingletonsRestraint.
-   */
   CHARMMStereochemistryRestraint(Hierarchy h, CHARMMTopology *topology);
 
   //! Get a PairFilter that excludes all stereochemical pairs.
