@@ -3,7 +3,9 @@ import sys
 import re
 import StringIO
 import os
+import tempfile
 import glob
+import shutil
 
 def handle_namespace(infile, outfile):
     #print "filtering ", sys.argv[1]
@@ -74,17 +76,23 @@ def main():
             macros.append("-imacros")
             macros.append(d)
         handle_namespace(txt, pns)
-        open("/tmp/pns.h", "w").write(pns.getvalue())
-        command="cpp -C "+ " ".join(macros) +" /tmp/pns.h > /tmp/cppout"
-        #print >> sys.stderr, command
-        ret=os.system(command)
-        if ret != 0:
-            lns= pns.getvalue().split("\n")
-            for i in range(0, len(lns)):
-                print >>sys.stderr, i, lns[i]
-        else:
-            print "ok"
-        cleanup(open("/tmp/cppout", "r"))
+        tmpdir = tempfile.mkdtemp()
+        infile = os.path.join(tmpdir, 'pns.h')
+        outfile = os.path.join(tmpdir, 'cppout')
+        try:
+            open(infile, "w").write(pns.getvalue())
+            command="cpp -C "+ " ".join(macros) + " %s > %s" % (infile, outfile)
+            print >> sys.stderr, "BW>", command
+            ret=os.system(command)
+            if ret != 0:
+                lns= pns.getvalue().split("\n")
+                for i in range(0, len(lns)):
+                    print >>sys.stderr, i, lns[i]
+            else:
+                print "ok"
+            cleanup(open(outfile, "r"))
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
 
 if __name__ == '__main__':
     main()
