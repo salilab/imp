@@ -3,6 +3,8 @@ import SCons
 import dependency
 import data
 import scons_tools.module
+import scons_tools.config_py
+import StringIO
 def _bf_to_str(bf):
     """Convert an element of GetBuildFailures() to a string
     in a useful way."""
@@ -47,7 +49,12 @@ def _list(env, name, table, check_external=False):
 def _display_build_summary(env):
     print
     print
-    for x in env['IMP_BUILD_SUMMARY']:
+    print "IMP configuration:"
+    s= StringIO.StringIO()
+    scons_tools.config_py.write_config(s, env)
+    print s.getvalue()
+    print
+    for x in env.get('IMP_BUILD_SUMMARY', []):
         print x
     d= data.get(env)
     _list(env, "dependencies", d.dependencies)
@@ -65,3 +72,6 @@ def _display_build_summary(env):
 
 def setup(env):
     atexit.register(_display_build_summary, env)
+
+def add(env, line):
+    env.Append(IMP_BUILD_SUMMARY=line)
