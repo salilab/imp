@@ -5,7 +5,9 @@ files = [
          'top_heav.lib',
          'par.lib',
          'radii.lib',
-         'protein_ligand_score.lib'
+         'protein_ligand_score.lib',
+         'dope_score.lib',
+         'dope_scorehr.lib'
         ]
 
 # Install the data files:

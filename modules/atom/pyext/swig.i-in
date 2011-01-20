@@ -74,6 +74,9 @@ IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
 IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
 
+IMP_SWIG_OBJECT(IMP::atom, SameResiduePairFilter, SameResiduePairFilters);
+IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
+
 IMP_SWIG_VALUE(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
 IMP_SWIG_VALUE(IMP::atom, CHARMMPatch, CHARMMPatches);
@@ -200,7 +203,8 @@ IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 
 namespace IMP {
   namespace atom {
-   %template(_ProteinLigandAtomPairScoreBase) ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
+   %template() ::IMP::core::StatisticalPairScore< IMP::atom::ProteinLigandType, true, false>;
+   %template() ::IMP::core::StatisticalPairScore< IMP::atom::DopeType, false, true>;
   }
 }
 %include "IMP/atom/protein_ligand_score.h"
@@ -226,6 +230,8 @@ namespace IMP {
 %include "IMP/atom/estimates.h"
 %include "IMP/atom/pdb.h"
 %include "IMP/atom/hierarchy_tools.h"
+%include "IMP/atom/DopePairScore.h"
+%include "IMP/atom/SameResiduePairFilter.h"
 
 namespace IMP {
   namespace atom {
