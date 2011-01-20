@@ -10,6 +10,40 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+Ints ClusterSet::get_clusters_below_cutoff(double cutoff) const {
+  Ints clusters;
+  std::vector<bool> is_active(steps_,true);
+
+  for (int i=steps_-1;i>=0;--i) {
+    if(is_active[i]==true && cluster_distances_[i]<cutoff) {
+      clusters.push_back(get_id_for_cluster_at_step(i));
+      // Deactivate all the members of the linkage matrix that contain
+      // the elements of this cluster
+      Ints to_deactivate;
+      unsigned int  id1 = joined_ids1_[i];
+      unsigned int  id2 = joined_ids2_[i];
+       print_vector<int>(to_deactivate);
+      if(id1>=n_elements_) to_deactivate.push_back(id1);
+      if(id2>=n_elements_) to_deactivate.push_back(id2);
+
+      while(to_deactivate.size() > 0) {
+        print_vector<int>(to_deactivate);
+        int id=to_deactivate.back();
+        to_deactivate.pop_back();
+        int j =get_step_from_id(id); // new row to deactivate
+        is_active[j]=false;
+        unsigned int  jid1 = joined_ids1_[j];
+        unsigned int  jid2 = joined_ids2_[j];
+        if(jid1>=n_elements_) to_deactivate.push_back(jid1);
+        if(jid2>=n_elements_) to_deactivate.push_back(jid2);
+      }
+    }
+    is_active[i]=false; // deactivate after consdering it
+  }
+  return clusters;
+}
+
+
 
 double ClusterSet::get_distance_at_step(unsigned int step) const {
   check_step_value(step);

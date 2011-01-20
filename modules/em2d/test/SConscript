@@ -7,8 +7,10 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   spelling_exceptions=['pdb'],
                   show_exceptions=["ResultAlign2D",
                                     "pair_cluster_id_distance",
-                                    "VectorFloats"],
+                                    "VectorOfFloats",
+                                    "VectorOfInts"],
                   value_object_exceptions=["Pixel",
                                           "ResultAlign2D",
                                           "pair_cluster_id_distance",
-                                          "VectorFloats"])
+                                          "VectorOfFloats",
+                                          "VectorOfInts"])
