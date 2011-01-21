@@ -4,6 +4,7 @@ files = [
          'Histogram.cpp',
          'MoveStatisticsScoreState.cpp',
          'PartitionalClustering.cpp',
+         'distance_clustering.cpp',
          'point_clustering.cpp',
         ] \
         + SConscript('internal/SConscript')
