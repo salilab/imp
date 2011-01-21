@@ -18,7 +18,6 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/em/DensityMap.h>
 #include <IMP/algebra/VectorD.h>
-#include <IMP/core/XYZ.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -59,6 +58,33 @@ public:
 };
 
 
+/** Embed particles using the values of some of their attributes.
+    By default, the Cartesian coordinates are used, but another
+    set of attributes can be chosen. When using attributes that
+    are not equivalent (for example, angular degrees of freedom),
+    it is probably useful to rescale the attributes according
+    to their ranges (see IMP::Model::get_range()). This is
+    done by passing rescale=true to the constructor.
+*/
+class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
+  Particles ps_;
+  FloatKeys ks_;
+  bool rescale_;
+  std::vector<FloatRange> ranges_;
+public:
+  ParticleEmbedding(const ParticlesTemp &ps,
+                    const FloatKeys& ks
+#if defined(IMP_DOXYGEN)
+                    =core::XYZ::get_xyz_keys()
+#else
+                    = FloatKeys(IMP::internal::xyzr_keys,
+                                IMP::internal::xyzr_keys+3)
+#endif
+,
+                    bool rescale=false);
+  IMP_EMBEDDING(ParticleEmbedding);
+};
+
 
 //! Simply return the coordinates of a VectorD
 class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
@@ -81,25 +107,6 @@ public:
 
 
 
-/** Embed particles using the values of some of their attributes.
-    By default, the Cartesian coordinates are used, but another
-    set of attributes can be chosen. When using attributes that
-    are not equivalent (for example, angular degrees of freedom),
-    it is probably useful to rescale the attributes according
-    to their ranges (see IMP::Model::get_range()). This is
-    done by passing rescale=true to the constructor.
-*/
-class IMPSTATISTICSEXPORT ParticleEmbedding: public Embedding {
-  Particles ps_;
-  FloatKeys ks_;
-  bool rescale_;
-  std::vector<FloatRange> ranges_;
-public:
-  ParticleEmbedding(const ParticlesTemp &ps,
-                    const FloatKeys& ks=core::XYZ::get_xyz_keys(),
-                    bool rescale=false);
-  IMP_EMBEDDING(ParticleEmbedding);
-};
 
 
 /** In addition to the information in the Clustering base class,

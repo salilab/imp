@@ -38,6 +38,7 @@ files = [
          'Linear.h',
          'MCCGSampler.h',
          'MonteCarlo.h',
+         'MoveStatisticsScoreState.h',
          'Mover.h',
          'MoverBase.h',
          'NearestNeighborsClosePairsFinder.h',

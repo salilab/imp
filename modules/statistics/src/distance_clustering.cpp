@@ -20,9 +20,11 @@
 #endif
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
+#include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/incremental_components.hpp>
 #include <boost/graph/graph_utility.hpp>
 namespace boost {
+  // work around bug in bc_clustering
  using graph::has_no_edges;
 }
 
@@ -37,10 +39,15 @@ Distance::Distance(std::string name): Object(name){}
 Distance::~Distance(){}
 
 namespace {
-  typedef boost::adjacency_matrix<boost::undirectedS,
+  /*typedef boost::adjacency_matrix<boost::undirectedS,
                                   boost::no_property,
                                   boost::property<boost::edge_weight_t,
-                                                  double> > Graph;
+                                  double> > Graph;*/
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                boost::undirectedS,
+                                boost::no_property,
+                                boost::property<boost::edge_weight_t,
+                                                double> > Graph;
   typedef boost::graph_traits<Graph> Traits;
 
   typedef boost::disjoint_sets<int*, int*> DS;

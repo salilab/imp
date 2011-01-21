@@ -12,6 +12,8 @@
 #include "statistics_macros.h"
 #include "PartitionalClustering.h"
 #include <IMP/algebra/VectorD.h>
+#include <IMP/macros.h>
+#include <IMP/VectorOfRefCounted.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
