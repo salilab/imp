@@ -48,11 +48,11 @@ struct IMPCGALEXPORT RCTree: public RefCounted {
 template <unsigned int D>
 struct KNNData{};
 
-#define IMP_CGAL_KNN_D(D)                                               \
-  struct IMPCGALEXPORT KNNData##D {                                     \
+#define IMP_CGAL_KNN_D(N, D)                                            \
+  struct IMPCGALEXPORT KNNData##N {                                     \
     mutable Pointer<RCTree> tree_;                                      \
     std::vector<VectorWithIndex<D> > vsi_;                              \
-    KNNData##D(const std::vector<VectorWithIndex<D> > &v);              \
+    KNNData##N(const std::vector<VectorWithIndex<D> > &v);              \
     void fill_nearest_neighbors_v(const algebra::VectorD<D> &g,         \
                                   unsigned int k,                       \
                                   double eps, Ints &ret) const;         \
@@ -79,15 +79,16 @@ struct KNNData{};
     }                                                                   \
   };                                                                    \
   template <>                                                           \
-  struct KNNData<D>: public KNNData##D {                                \
+  struct KNNData<D>: public KNNData##N {                                \
     template <class It>                                                 \
-    KNNData(It b, It e): KNNData##D(create_vectors_with_index<D>(b,e)) { \
+    KNNData(It b, It e): KNNData##N(create_vectors_with_index<D>(b,e)) { \
     }                                                                   \
   }                                                                     \
 
-IMP_CGAL_KNN_D(2);
-IMP_CGAL_KNN_D(3);
-IMP_CGAL_KNN_D(4);
+IMP_CGAL_KNN_D(2, 2);
+IMP_CGAL_KNN_D(3, 3);
+IMP_CGAL_KNN_D(4, 4);
+IMP_CGAL_KNN_D(k, -1);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
