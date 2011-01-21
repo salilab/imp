@@ -117,7 +117,7 @@ public:
   //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double x0, double x1, double x2, double x3) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D==4 or D==-1, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==4 || D==-1, "Need " << D << " to construct a "
               << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==4);
