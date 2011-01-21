@@ -4,6 +4,7 @@ files = [
          'Histogram.h',
          'MoveStatisticsScoreState.h',
          'PartitionalClustering.h',
+         'distance_clustering.h',
          'point_clustering.h',
          'statistics_macros.h',
         ] \

@@ -8,6 +8,8 @@ IMP_SWIG_OBJECT(IMP::statistics, ConfigurationSetXYZEmbedding, ConfigurationSetX
 IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
 IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
+IMP_SWIG_OBJECT(IMP::statistics, Distance, Distances);
+
 
 %include "IMP/statistics/statistics_macros.h"
 //%include "IMP/statistics/KMLProxy.h"
