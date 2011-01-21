@@ -6,6 +6,8 @@ import IMP.atom
 import IMP.container
 import IMP.isd
 
+from math import sqrt
+
 kB= (1.381 * 6.02214) / 4184.0
 
 class sfo():
@@ -14,11 +16,12 @@ class sfo():
     def hello(self):
         return "hello world"
 
-    def init_model(self, wd, initpdb, restraints):
+    def init_model(self, wd, initpdb, restraints, ff_temp=300.0):
         "loads pdb and restraints and creates particles and nuisances"
         #IMP.set_log_level(IMP.SILENT)
         IMP.set_check_level(IMP.NONE)
         os.chdir(wd)
+        print "loading protein and force field"
         # Create an IMP model and add a heavy atom-only protein from a PDB file
         m = IMP.Model()
         #prot = IMP.atom.read_pdb("./1G6J_MODEL1_imp.pdb", m)
@@ -106,9 +109,16 @@ class sfo():
         nbl.add_pair_filter(pair_filter)
         #setup pair score
         ps = IMP.isd.RepulsiveDistancePairScore(0,1)
-        m.add_restraint(IMP.container.PairsRestraint(ps, nbl))
+        #should weight the ff restraint by a temperature, set to 300K.
+        pr = IMP.container.PairsRestraint(ps, nbl)
+        rs = IMP.RestraintSet('phys')
+        rs.add_restraint(pr)
+        rs.set_weight(1.0/(kB*ff_temp))
+        m.add_restraint(rs)
         sigma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
+        rs = IMP.RestraintSet('NOE')
+        print "reading data restraints"
         for i,line in enumerate(open(restraints)):
             if i % 100 == 0:
                print i
@@ -137,7 +147,12 @@ class sfo():
                 continue
             #create lognormal restraint using gamma_data = 1
             ln=IMP.isd.NOERestraint(p0,p1,sigma,gamma,1*dist**-6)
-            m.add_restraint(ln)
+            rs.add_restraint(ln)
+        print i, "restraints read"
+        #set weight of rs and add to model. 
+        #Weight is 1.0 cause sigma particle already has this role.
+        rs.set_weight(1.0)
+        m.add_restraint(rs)
         self._m = m
         self._p={}
         self._p['sigma'] = sigma
@@ -149,11 +164,15 @@ class sfo():
         func=getattr(self._m,name)
         return func(*args, **kw)
 
-    def init_simulation(self,temp=300.0, tau=500.0):
+    def init_simulation(self,lambda_temp=1.0, tau=500.0):
         "prepare md and mc sims"
-        self._md = self._setup_md(temp, tau)
-        self._mc_sigma, self._nm_sigma = self._setup_mc(self._p['sigma'], temp)
-        self._mc_gamma, self._nm_gamma = self._setup_mc(self._p['gamma'], temp)
+        self.inv_temp = lambda_temp
+        self.md_tau = tau
+        self._md = self._setup_md(1/(kB*lambda_temp), tau)
+        self._mc_sigma, self._nm_sigma = self._setup_mc(self._p['sigma'],
+                lambda_temp)
+        self._mc_gamma, self._nm_gamma = self._setup_mc(self._p['gamma'],
+                lambda_temp)
 
     def do_md(self,nsteps):
         "perform md simulation on protein for nsteps"
@@ -197,7 +216,7 @@ class sfo():
         flstat=open(self.statfile,'a')
         kinetic   = self._md.get_kinetic_energy() 
         potential = self._m.evaluate(False)
-        temp    = self._md.get_kinetic_temperature(kinetic)
+        temp = self._md.get_kinetic_temperature(kinetic)
         si=self._p['sigma'].get_nuisance()
         ga=self._p['gamma'].get_nuisance()
         acc_s,st_s = self._get_mc_stat(self._mc_sigma, self._nm_sigma,
@@ -212,6 +231,16 @@ class sfo():
         flstat.write('\n')
         flstat.close()
         IMP.atom.write_pdb(self._p['prot'],self.prefix+"_%05d.pdb" % stepno)
+
+    def set_temp(self, inv_temp):
+        "sets temperature of mc and md sims (used in replica exchange)"
+        self._md.set_therm(2, 1.0/(kB*inv_temp), self.md_tau)
+        self._md.rescale_vel(sqrt(self.inv_temp/inv_temp))
+        self.inv_temp = inv_temp
+        self._mc.set_temperature(1/self.inv_temp)
+    
+    def get_temp(self):
+        return self.inv_temp
 
 
     def _setup_md(self,temp=300.0, tau=500):
@@ -233,7 +262,7 @@ class sfo():
         #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
         return md
 
-    def _setup_mc(self,particle,temp=300.0):
+    def _setup_mc(self,particle,beta=1.676972322):
         "monte carlo on nuisance parameter"
         mc = IMP.core.MonteCarlo(self._m)
         cont=IMP.container.ListSingletonContainer(self._m)
@@ -244,10 +273,10 @@ class sfo():
         #why is this returning an int?
         mc.add_mover(nm_particle)
         #set same temp as MD, careful with units
-        mc.set_temperature(kB*temp)
+        mc.set_temperature(1.0/beta)
         #allow to go uphill
         mc.set_return_best(False)
-        #update particle and gamma each time
+        #update particle each time
         mc.set_move_probability(1.0)
         return (mc,nm_particle)
 
