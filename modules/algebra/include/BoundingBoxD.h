@@ -35,7 +35,22 @@ public:
 
   //! Create an empty bounding box
   BoundingBoxD() {
+    IMP_USAGE_CHECK(D>0, "The constructor can not be used "
+                    << "with a variable dim bounding box.");
+
     make_empty();
+  }
+  //! Create an empty bounding box
+  BoundingBoxD(unsigned int d) {
+    IMP_USAGE_CHECK(D==-1, "The constructor can only be used "
+                    << "with a variable dim bounding box.");
+    Floats lb(d), ub(d);
+    for (unsigned int i=0; i< d; ++i) {
+      lb[i]= std::numeric_limits<double>::max();
+      ub[i]=-std::numeric_limits<double>::max();
+    }
+    b_[0]= VectorD<D>(lb.begin(), lb.end());
+    b_[1]= VectorD<D>(ub.begin(), ub.end());
   }
   //! Make from the lower and upper corners
   BoundingBoxD(const VectorD<D> &lb,
@@ -43,7 +58,7 @@ public:
     b_[0]=lb;
     b_[1]=ub;
     IMP_IF_CHECK(USAGE) {
-      for (unsigned int i=0; i< D; ++i) {
+      for (unsigned int i=0; i< lb.get_dimension(); ++i) {
         IMP_USAGE_CHECK(lb[i] <= ub[i],
                         "Invalid bounding box");
       }
@@ -68,7 +83,7 @@ public:
 
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const BoundingBoxD<D> &o) {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< get_dimension(); ++i) {
       b_[0][i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
       b_[1][i]= std::max(o.get_corner(1)[i], get_corner(1)[i]);
     }
@@ -77,7 +92,7 @@ public:
 
   //! merge two bounding boxes
   const BoundingBoxD<D>& operator+=(const VectorD<D> &o) {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< get_dimension(); ++i) {
       b_[0][i]= std::min(o[i], b_[0][i]);
       b_[1][i]= std::max(o[i], b_[1][i]);
     }
@@ -86,7 +101,7 @@ public:
 
   /** Grow the bounding box by o on all sizes. */
   const BoundingBoxD<D>& operator+=(double o) {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< get_dimension(); ++i) {
       b_[0][i]= b_[0][i]-o;
       b_[1][i]= b_[1][i]+o;
     }
@@ -107,7 +122,7 @@ public:
   }
 
   bool get_contains(const VectorD<D> &o) const {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< get_dimension(); ++i) {
       if (o[i] < get_corner(0)[i]
           || o[i] > get_corner(1)[i]) return false;
     }

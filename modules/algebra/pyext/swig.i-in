@@ -130,6 +130,7 @@ namespace IMP {
    %template(NearestNeighbor2D) NearestNeighborD<2>;
    %template(NearestNeighbor3D) NearestNeighborD<3>;
    %template(NearestNeighbor4D) NearestNeighborD<4>;
+   %template(NearestNeighborKD) NearestNeighborD<-1>;
    %template(get_basis_vector_2d) get_basis_vector_d<2>;
    %template(get_basis_vector_3d) get_basis_vector_d<3>;
    %template(get_basis_vector_4d) get_basis_vector_d<4>;
@@ -172,6 +173,8 @@ namespace algebra {
 SphereD<2> get_unit_sphere_2d() { return SphereD<2>(get_zero_vector_d<2>(), 1);}
 SphereD<3> get_unit_sphere_3d() { return SphereD<3>(get_zero_vector_d<3>(), 1);}
 SphereD<4> get_unit_sphere_4d() { return SphereD<4>(get_zero_vector_d<4>(), 1);}
+SphereD<5> get_unit_sphere_5d() { return SphereD<5>(get_zero_vector_d<5>(), 1);}
+SphereD<6> get_unit_sphere_6d() { return SphereD<6>(get_zero_vector_d<6>(), 1);}
 // swig doesn't instantiate them properly
 bool get_interiors_intersect(const SphereD<2>&a, const SphereD<2> &b) {
    return get_interiors_intersect<2>(a,b);
@@ -233,6 +236,13 @@ VectorD<4> get_random_vector_in(const SphereD<4> &s) {
 }
 VectorD<4> get_random_vector_in(const BoundingBoxD<4> &s) {
   return get_random_vector_in<4>(s);
+}
+
+VectorD<-1> get_random_vector_in(const SphereD<-1> &s) {
+  return get_random_vector_in<-1>(s);
+}
+VectorD<-1> get_random_vector_in(const BoundingBoxD<-1> &s) {
+  return get_random_vector_in<-1>(s);
 }
 
 std::vector<VectorD<2> > get_uniform_surface_cover(const SphereD<2> &s, unsigned int n) {
