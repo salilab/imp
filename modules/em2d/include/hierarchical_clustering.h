@@ -11,6 +11,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/base_types.h"
+#include <IMP/log.h>
 #include <vector>
 #include <list>
 #include <algorithm>
