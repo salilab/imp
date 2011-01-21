@@ -18,7 +18,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** Represent a sphere in D-dimensions.
     \geometry
   */
-template <unsigned int D>
+template <int D>
 class SphereD {
 public:
   SphereD(){
@@ -79,7 +79,7 @@ inline SphereD<D> get_unit_sphere_d() {
 /** If they intersect, the distances are not meaningful.
     \relatesalso SphereD
 */
-template <unsigned int D>
+template <int D>
 inline double get_distance(const SphereD<D>& a, const SphereD<D> &b) {
   double d= (a.get_center()-b.get_center()).get_magnitude();
   return d - a.get_radius() - b.get_radius();
@@ -90,7 +90,7 @@ inline double get_distance(const SphereD<D>& a, const SphereD<D> &b) {
     minus the sum of the square of the radii.
     \relatesalso SphereD
 */
-template <unsigned int D>
+template <int D>
 inline double get_power_distance(const SphereD<D>& a, const SphereD<D> &b) {
   double d= (a.get_center()-b.get_center()).get_squared_magnitude();
   return d - square(a.get_radius()) - square(b.get_radius());
@@ -100,7 +100,7 @@ inline double get_power_distance(const SphereD<D>& a, const SphereD<D> &b) {
 //! Return true if the two balls bounded by the two spheres interesect
 /** \relatesalso SphereD
  */
-template <unsigned int D>
+template <int D>
 inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
   double sr= a.get_radius() + b.get_radius();
   for (unsigned int i=0; i< 3; ++i) {
@@ -114,7 +114,7 @@ inline bool get_interiors_intersect(const SphereD<D> &a, const SphereD<D> &b) {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 
 namespace internal {
-  template <unsigned int D>
+  template <int D>
   struct SphereSpacesIO
   {
     const SphereD<D> &v_;
@@ -133,7 +133,7 @@ namespace internal {
     produces "1.0 2.0 3.0 4.0" where the radius is 4.0
     \relatesalso SphereD
  */
-template <unsigned int D>
+template <int D>
 inline internal::SphereSpacesIO<D> spaces_io(const SphereD<D> &v) {
   return internal::SphereSpacesIO<D>(v);
 }

@@ -92,16 +92,16 @@
   inline double get_volume(const Name##D<3> &g) {                       \
     volume;                                                             \
   }                                                                     \
-  template <unsigned int D>                                             \
+  template <int D>                                                      \
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
-  IMP_NO_SWIG(template <unsigned int D>                                 \
+  IMP_NO_SWIG(template <int D>                                          \
   inline void set_##name##_d_geometry(Name##D<D> &g,                    \
                                       const Name##D<D> &v) {            \
     g=v;                                                                \
   }                                                                     \
-  template <unsigned int D>                                             \
+  template <int D>                                             \
  inline const Name##D<D> &get_##name##_d_geometry(const Name##D<D> &g) { \
     return g;                                                           \
   })                                                                    \
@@ -115,7 +115,9 @@
   typedef Name##D<5> Name##5D;                                          \
   IMP_VALUES(Name##5D, Name##5Ds);                                      \
   typedef Name##D<6> Name##6D;                                          \
-  IMP_VALUES(Name##6D, Name##6Ds)
+  IMP_VALUES(Name##6D, Name##6Ds);                                      \
+  typedef Name##D<-1> Name##KD;                                         \
+  IMP_VALUES(Name##KD, Name##KDs)
 
 
 
@@ -141,18 +143,18 @@
 
 #define IMP_AREA_GEOMETRY_METHODS_D(Name, name, area, bounding_box)     \
   IMP_OUTPUT_OPERATOR_D(Name##D);                                       \
-  template <unsigned int D>                                             \
+  template <int D>                                                      \
   inline double get_area(const Name##D<D> &g) {                         \
     area;                                                               \
   }                                                                     \
-  template <unsigned int D>                                             \
+  template <int D>                                                      \
   inline BoundingBoxD<D> get_bounding_box(const Name##D<D> &g) {        \
     bounding_box;                                                       \
   }                                                                     \
-  template <unsigned int D>                                             \
+  template <int D>                                                      \
   inline const Name &get_##name##_d_geometry(const Name##D<D> &g) {     \
     return g;}                                                          \
-  IMP_NO_SWIG(template <unsigned int D>                                 \
+  IMP_NO_SWIG(template <int D>                                          \
   inline void set_##name##_d_geometry(Name &g, const Name##D<D> &v) {   \
                 g=v;})                                                  \
   typedef Name##D<2> Name##2D;                                          \
@@ -164,7 +166,9 @@
   typedef Name##D<5> Name##5D;                                          \
   IMP_VALUES(Name##5D, Name##5Ds);                                      \
   typedef Name##D<6> Name##6D;                                          \
-  IMP_VALUES(Name##6D, Name##6Ds)
+  IMP_VALUES(Name##6D, Name##6Ds);                                      \
+  typedef Name##D<-1> Name##KD;                                         \
+  IMP_VALUES(Name##KD, Name##KDs)
 
 #endif
 

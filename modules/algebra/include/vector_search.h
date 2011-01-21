@@ -156,12 +156,14 @@ typedef NearestNeighborD<3> NearestNeighbor3D;
 typedef NearestNeighborD<4> NearestNeighbor4D;
 typedef NearestNeighborD<5> NearestNeighbor5D;
 typedef NearestNeighborD<6> NearestNeighbor6D;
+typedef NearestNeighborD<-1> NearestNeighborKD;
 #endif
 IMP_VALUES(NearestNeighbor2D, NearestNeighbor2Ds);
 IMP_VALUES(NearestNeighbor3D, NearestNeighbor3Ds);
 IMP_VALUES(NearestNeighbor4D, NearestNeighbor4Ds);
 IMP_VALUES(NearestNeighbor5D, NearestNeighbor5Ds);
 IMP_VALUES(NearestNeighbor6D, NearestNeighbor6Ds);
+IMP_VALUES(NearestNeighborKD, NearestNeighborKDs);
 
 IMPALGEBRA_END_NAMESPACE
 

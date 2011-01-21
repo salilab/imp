@@ -33,7 +33,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** \relatesalso BoundingBoxD
     \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline VectorD<D>
 get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret;
@@ -49,7 +49,7 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
 /** \relatesalso BoundingBoxD
     \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline VectorD<D>
 get_random_vector_on(const BoundingBoxD<D> &bb) {
   double areas[D*2];
@@ -107,7 +107,7 @@ get_random_vector_on(const BoundingBoxD<D> &bb) {
 /** \relatesalso VectorD
     \relatesalso SphereD
  */
-template <unsigned int D>
+template <int D>
 inline VectorD<D>
 get_random_vector_in(const SphereD<D> &s){
   BoundingBoxD<D> bb= get_bounding_box(s);
@@ -126,7 +126,7 @@ get_random_vector_in(const SphereD<D> &s){
 /** \relatesalso VectorD
     \relatesalso SphereD
  */
-template <unsigned int D>
+template <int D>
 VectorD<D>
 get_random_vector_on(const SphereD<D> &s) {
   // could be made general
@@ -167,7 +167,7 @@ get_random_vector_on(const SphereD<D> &s) {
     \relatesalso VectorD
     \relatesalso SphereD
     */
-template <unsigned int D>
+template <int D>
 inline std::vector<VectorD<D> >
 get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),
@@ -187,7 +187,7 @@ get_uniform_surface_cover(const Cylinder3D &cyl,
 /** The points all lie on the upper hemisphere, eg, all their
     z coordinates are greater than those of the center of the sphere.
  */
-template <unsigned int D>
+template <int D>
 inline std::vector<VectorD<D> >
 get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
   return internal::uniform_cover_sphere(n, s.get_center(),

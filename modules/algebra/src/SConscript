@@ -1,7 +1,6 @@
 Import('env')
 
 files = [
-      'Triangle3D.cpp',
          'Cone3D.cpp',
          'Cylinder3D.cpp',
          'Ellipsoid3D.cpp',
@@ -15,6 +14,7 @@ files = [
          'SphericalVector3D.cpp',
          'Transformation2D.cpp',
          'Transformation3D.cpp',
+         'Triangle3D.cpp',
          'eigen_analysis.cpp',
          'endian.cpp',
          'geometric_alignment.cpp',

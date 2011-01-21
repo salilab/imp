@@ -22,7 +22,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \note This class is a \ref geometricprimitives "geometric primitive".
 */
-template <unsigned int D>
+template <int D>
 class BoundingBoxD
 {
   void make_empty() {
@@ -60,6 +60,10 @@ public:
     for(unsigned int j=0;j<points.size();j++) {
       operator+=(points[j]);
     }
+  }
+
+  unsigned int get_dimension() const {
+    return get_corner(0).get_dimension();
   }
 
   //! merge two bounding boxes
@@ -156,7 +160,7 @@ inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
 
 
 //! Return true if they intersect
-template <unsigned int D>
+template <int D>
 inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
                           const BoundingBoxD<D> &b) {
   for (unsigned int i=0; i< D; ++i) {
@@ -167,19 +171,19 @@ inline bool get_interiors_intersect(const BoundingBoxD<D> &a,
 }
 
 //! Return the intersecting bounding box
-template <unsigned int D>
+template <int D>
 inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
                                         const BoundingBoxD<D> &b) {
   VectorD<D> ic[2];
   //set low
   int j=0;
-  for (unsigned int i=0; i< D; ++i) {
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] > b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
     else {ic[j][i]=b.get_corner(j)[i];}
   }
   //set top
   j=1;
-  for (unsigned int i=0; i< D; ++i) {
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a.get_corner(j)[i] < b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
     else {ic[j][i]=b.get_corner(j)[i];}
   }
@@ -187,10 +191,10 @@ inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
 }
 
 //! Return the maximum axis aligned extent
-template <unsigned int D>
+template <int D>
 inline double get_maximum_length(const BoundingBoxD<D> &a) {
   double e= a.get_corner(1)[0]-a.get_corner(0)[0];
-  for (unsigned int i=1; i< D; ++i) {
+  for (unsigned int i=1; i< a.get_dimension(); ++i) {
     double ce= a.get_corner(1)[0]-a.get_corner(0)[0];
     e= std::max(ce, e);
   }
