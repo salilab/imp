@@ -489,7 +489,7 @@ _value_types.append(#Name)
 
 
 
-%define IMP_SWIG_VALUE(Namespace, Name, PluralName)
+%define IMP_SWIG_VALUE_NAME(Namespace, NiceName, Name, PluralName)
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(out) Namespace::Name const& {
@@ -511,7 +511,7 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   namespace {
-  void test_##Name() {
+  void test_##NiceName() {
     Namespace::PluralName nm;
     //using namespace Namespace;
     //using namespace std;
@@ -522,7 +522,9 @@ _value_types.append(#Name)
 %}
 %enddef
 
-
+%define IMP_SWIG_VALUE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_NAME(Namespace, Name, Name, PluralName)
+%enddef
 
 
 
