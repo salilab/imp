@@ -56,7 +56,7 @@ class RegressionTest(object):
 
 
 if __name__ == "__main__":
-    files = sys.argv[2:]
+    files = sys.argv[1:]
     sys.argv=[sys.argv[0], "-v"]
     r = RegressionTest(files)
     unittest.main(defaultTest="r", testRunner=IMP.test._TestRunner)
