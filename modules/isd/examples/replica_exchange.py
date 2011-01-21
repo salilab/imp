@@ -2,14 +2,15 @@
 
 import sys,os,errno
 import atexit
+import random
+
 from IMP.isd.FileBasedGrid import FileBasedGrid
 from IMP.isd.hosts import create_host_list
-
 import IMP.atom
 import IMP.container
 import IMP.isd
 import IMP.isd.shared_functions as sf
-#from IMP.isd.Replica import ReplicaSampler as RS
+from IMP.isd.Replica import ReplicaTracker
 
 IMP.set_log_level(IMP.NONE)
 
@@ -20,8 +21,8 @@ outfolder=os.path.join(os.getcwd(), 'results')
 tmpdir = os.path.join(os.getcwd(),'tmp')
 #number of replicas / hosts
 nreps = 2
-#temperature distribution
-temps=[300.0]*nreps
+#lambda scaling distribution
+lambdas=[1.0]*nreps
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
 #list of files relative to the current dir to copy over to all nodes
@@ -77,42 +78,36 @@ def launch_grid():
     grid.start()
     return grid
 
-def broadcast(grid, sfo_id, funcname, *args, **kw):
-    results = []
-    for server in grid.servers[sfo_id]:
-        func=getattr(server.proxy, funcname)
-        results.append(func(*args, **kw))
-    return results
-
-def scatter(grid, sfo_id, funcname, arglist, kwlist=None):
-    results = []
-    if kwlist is None:
-        kwlist=[{} for i in xrange(len(arglist))]
-    for server,args,kw in zip(grid.servers[sfo_id],arglist,kwlist):
-        func=getattr(server.proxy, funcname)
-        results.append(func(*args, **kw))
-    return results
-
-def gather(results):
-    retval=[]
-    for server in results:
-        retval.append(server.get())
-    return retval
-
 def get_energies(grid,sfo_id):
-    return scatter(broadcast(grid,sfo_id,'m','evaluate',False))
+    return grid.scatter(grid.broadcast(sfo_id,'m','evaluate',False))
 
-def gen_pairs_list():
-    pass
+def gen_pairs_list(nreps):
+    "generate list of neighboring pairs"
+    init = range(nreps)
+    pairslist = []
+    while len(init) > 1:
+        i = random.randint(0,len(init)-1)
+        dr = 2*random.randint(0,1)-1
+        r=init.pop(i)
+        if r+dr in init:
+            init.remove(r+dr)
+            pairslist.append((min(r,r+dr),max(r,r+dr)))
+        elif r-dr in init:
+            init.remove(r-dr)
+            pairslist.append((min(r,r-dr),max(r,r-dr)))
+    return sorted(pairslist)
 
-def get_cross_energies(pairslist):
-    raise NotImplementedError
 
-def replica_exchange(grid,sfo_id, replica, stepno):
+def get_cross_energies(grid,sfo_id,pairslist):
+    "return energies"
+
+def replica_exchange(grid,sfo_id, nreps, stepno):
     energies = get_energies(grid,sfo_id)
-    gen_pairs_list()
-    #following is not needed since temperature 
-    #new_energies = get_cross_energies()
+    plist = gen_pairs_list(nreps)
+    new_energies = get_cross_energies(grid,sfo_id,plist)
+    accepted = try_exchanges(plist, energies, new_energies)
+    perform_exchanges(grid, sfo_id, accepted)
+    write_rex_stats(accepted)
 
 def main():
     
@@ -126,6 +121,7 @@ def main():
     sfo_id = grid.publish(sfo)
 
     print "communication test"
+    #get a worker to do a task
     proxy = grid.acquire_service(sfo_id)
     print proxy.hello().get()
     grid.release_service(proxy)
@@ -134,10 +130,10 @@ def main():
     print "initializing model"
     mkdir_p(tmpdir)
     mkdir_p(outfolder)
-    requests = broadcast(grid, sfo_id, 'init_model', tmpdir, 
+    requests = grid.broadcast(sfo_id, 'init_model', tmpdir, 
             initpdb, restraints)
     #wait til init is done
-    results = gather(requests)
+    results = grid.gather(requests)
 
     # evaluate the score of the whole system (without derivatives)
     print "initial energy"
@@ -150,21 +146,23 @@ def main():
     #berendsen 300K tau=0.5ps
     #perform two independent MC moves for sigma and gamma
     print "initializing simulation and statistics"
-    gather(scatter(grid, sfo_id, 'init_simulation', zip(temps, tau)))
-    gather(scatter(grid, sfo_id, 'init_stats', nums))
-    #replica = RS()
+    grid.gather(grid.scatter(sfo_id, 'init_simulation', zip(lambdas, tau)))
+    grid.gather(grid.scatter(sfo_id, 'init_stats', nums))
+    replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
+            logfile=os.path.join(outfolder,'replicanums.txt'))
 
     print "start gibbs sampling loop"
     for i in range(n_gibbs):
         print "gibbs step %d" % i
         print " md"
-        gather(broadcast(grid, sfo_id, 'do_md', n_md))
+        grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
         print " mc"
-        gather(broadcast(grid, sfo_id, 'do_mc_and_update_stepsize', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
         print " swaps"
-        #replica_exchange(grid, sfo_id, replica, i)
+        replica.replica_exchange()
         print " stats"
-        gather(broadcast(grid, sfo_id, 'write_stats', i, n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats', i, n_mc))
+        replica.write_rex_stats()
 
     print "terminating grid"
     grid.terminate()

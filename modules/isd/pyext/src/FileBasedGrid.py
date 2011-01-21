@@ -864,4 +864,27 @@ class FileBasedGrid(AbstractGrid):
     def __del__(self):
         self.terminate()
        
+    #### YS: a few additions
+
+    def broadcast(self, sfo_id, funcname, *args, **kw):
+        results = []
+        for server in self.servers[sfo_id]:
+            func=getattr(server.proxy, funcname)
+            results.append(func(*args, **kw))
+        return results
+
+    def scatter(self, sfo_id, funcname, arglist, kwlist=None):
+        results = []
+        if kwlist is None:
+            kwlist=[{} for i in xrange(len(arglist))]
+        for server,args,kw in zip(self.servers[sfo_id],arglist,kwlist):
+            func=getattr(server.proxy, funcname)
+            results.append(func(*args, **kw))
+        return results
+
+    def gather(self, results):
+        retval=[]
+        for server in results:
+            retval.append(server.get())
+        return retval
 
