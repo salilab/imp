@@ -20,14 +20,14 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 RCTree::~RCTree(){}
 
-template <unsigned int D>
+template < int D>
 struct Construct_coord_iterator {
   const double* operator()(const algebra::VectorD<D>& p) const
   { return p.get_data(); }
   const double* operator()(const algebra::VectorD<D>& p, int)  const
-  { return p.get_data()+D; }
+  { return p.get_data()+p.get_dimension(); }
 };
-template <unsigned int D>
+template < int D>
 struct Distance {
   typedef algebra::VectorD<D> Query_item;
 
@@ -40,7 +40,7 @@ struct Distance {
   double min_distance_to_rectangle(const algebra::VectorD<D>& p,
                   const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
     double distance(0.0);
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< p.get_dimension(); ++i) {
       double h = p[i];
       if (h < b.min_coord(i)) distance += square(b.min_coord(i)-h);
       if (h > b.max_coord(i)) distance += square(h-b.max_coord(i));
@@ -52,7 +52,7 @@ struct Distance {
   double max_distance_to_rectangle(const algebra::VectorD<D>& p,
                     const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
     double d=0.0;
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< p.get_dimension(); ++i) {
       double h = p[i];
       double di = (h >= (b.min_coord(i)+b.max_coord(i))/2.0) ?
         square(h-b.min_coord(i)) : square(b.max_coord(i)-h);
@@ -82,12 +82,12 @@ struct RealRCTree: public RCTree {
   RealRCTree(It b, It e): tree(b,e){}
 };
 
-#define IMP_CGAL_KNN_D_DEF(D)                                           \
-  KNNData##D::KNNData##D(const std::vector<VectorWithIndex<D> > &v):    \
+#define IMP_CGAL_KNN_D_DEF(N, D)                                         \
+  KNNData##N::KNNData##N(const std::vector<VectorWithIndex<D> > &v):    \
   vsi_(v) {                                                             \
     tree_= new RealRCTree<D>(v.begin(), v.end());                       \
   }                                                                     \
-  void KNNData##D::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
+  void KNNData##N::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
                                           unsigned int k,               \
                                           double eps,                   \
                                           Ints &ret) const {            \
@@ -109,7 +109,7 @@ struct RealRCTree: public RCTree {
       ++rit;                                                            \
     }                                                                   \
   }                                                                     \
-  void KNNData##D::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
+  void KNNData##N::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
                                             double dist,                \
                                             double eps,                 \
                                             Ints &ret) const {          \
@@ -120,8 +120,10 @@ struct RealRCTree: public RCTree {
   }                                                                     \
 
 
-IMP_CGAL_KNN_D_DEF(2)
-IMP_CGAL_KNN_D_DEF(3)
-IMP_CGAL_KNN_D_DEF(4)
+IMP_CGAL_KNN_D_DEF(2, 2)
+IMP_CGAL_KNN_D_DEF(3, 3)
+IMP_CGAL_KNN_D_DEF(4, 4)
+IMP_CGAL_KNN_D_DEF(k, -1)
+
 
 IMPCGAL_END_INTERNAL_NAMESPACE

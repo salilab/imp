@@ -16,7 +16,7 @@
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-template <unsigned int D>
+template < int D>
 struct VectorWithIndex: public algebra::VectorD<D> {
   int index;
   VectorWithIndex(unsigned int i, const algebra::VectorD<D>& p):
@@ -25,11 +25,11 @@ struct VectorWithIndex: public algebra::VectorD<D> {
   VectorWithIndex(): index(-1){}
   operator unsigned int() const {return index;}
   unsigned int dimension() const {
-    return D;
+    return algebra::VectorD<D>::get_dimension();
   }
 };
 
-template <unsigned int D, class It>
+template < int D, class It>
 std::vector<VectorWithIndex<D> > create_vectors_with_index(It b, It e) {
   std::vector<VectorWithIndex<D> > v(std::distance(b,e));
   It c=b;
