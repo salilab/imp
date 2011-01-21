@@ -61,7 +61,7 @@ int parse_input(int argc, char *argv[],
   // Declare a group of options that will be
   // allowed from the command line
   optional_params.add_options()
-    ("help", usage.str())
+    ("help", usage.str().c_str())
     ("apix",program_options::value<float>(&apix),
      "the a/pix of the density map")
     ("x",program_options::value<float>(&xorigin),

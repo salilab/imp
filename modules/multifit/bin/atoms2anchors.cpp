@@ -41,7 +41,7 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
     ("output-pdb",boost::program_options::value<std::string>
      (&output_pdb_filename),"the output centers as CA atoms ina PDB file");
   optional_params.add_options()
-    ("help", usage.str())
+    ("help", usage.str().c_str())
     ("cmm",boost::program_options::value<std::string>(&cmm_filename),
      "the output centers as points in a CMM file")
     ("seg",boost::program_options::value<std::string>(&seg_filename),
