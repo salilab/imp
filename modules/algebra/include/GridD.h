@@ -29,50 +29,47 @@ namespace grids {
      by various functions.
      \see Grid3D
   */
-  template <unsigned int D>
+  template < int D>
   class ExtendedGridIndexD {
-    int d_[D];
+    internal::VectorData<int, D> data_;
     int compare(const ExtendedGridIndexD<D> &o) const {
-      return internal::lexicographical_compare(d_, d_+D,
-                                               o.d_, o.d_+D);
+      IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
+                      "Dimensions don't match");
+      return internal::lexicographical_compare(begin(), end(),
+                                               o.begin(), o.end());
     }
   public:
     //! Create a grid cell from three arbitrary indexes
     ExtendedGridIndexD(Ints vals) {
-      IMP_USAGE_CHECK(vals.size()==D, "Wrong number of values provided");
-      for (unsigned int i=0; i< D; ++i) {
-        d_[i]=vals[i];
-      }
+      data_.set_coordinates(vals.begin(), vals.end());
     }
 #ifndef SWIG
     template <class It>
     ExtendedGridIndexD(It b, It e) {
-      IMP_USAGE_CHECK(std::distance(b,e)==D, "Wrong number of values provided");
-      std::copy(b,e, d_);
+      data_.set_coordinates(b,e);
     }
 #endif
     ExtendedGridIndexD(int x, int y, int z) {
       IMP_USAGE_CHECK(D==3, "Can only use explicit constructor in 3D");
-      d_[0]=x;
-      d_[1]=y;
-      d_[2]=z;
+      int v[]={x,y,z};
+      data_.set_coordinates(v, v+3);
     }
     ExtendedGridIndexD() {
-      for (unsigned int i=0; i < D; ++i) {
-        d_[i]=std::numeric_limits<int>::max();
-      }
+    }
+    unsigned int get_dimension() const {
+      return data_.get_dimension();
     }
     IMP_COMPARISONS(ExtendedGridIndexD);
     //! Get the ith component (i=0,1,2)
     IMP_CONST_BRACKET(int, unsigned int,
-                      i <D,
-                      IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
+                      i <get_dimension(),
+                      IMP_USAGE_CHECK(!data_.get_is_null(),
                                       "Using uninitialized grid index");
-                      return d_[i]);
+                      return data_.get_data()[i]);
     IMP_SHOWABLE_INLINE(ExtendedGridIndexD, {
         out << "(";
-        for (unsigned int i=0; i< D; ++i) {
-          out<< d_[i];
+        for (unsigned int i=0; i< get_dimension(); ++i) {
+          out<< operator[](i);
           if (i != D-1) out << ", ";
         }
         out << ")";
@@ -83,34 +80,34 @@ namespace grids {
 
 #ifndef SWIG
     typedef const int* iterator;
-    iterator begin() const {return d_;}
-    iterator end() const {return d_+D;}
+    iterator begin() const {return data_.get_data();}
+    iterator end() const {return data_.get_data()+get_dimension();}
 #endif
 #ifndef IMP_DOXYGEN
-    unsigned int __len__() const { return D;}
+    unsigned int __len__() const { return get_dimension();}
 #endif
-    IMP_HASHABLE_INLINE(ExtendedGridIndex3D,
+    IMP_HASHABLE_INLINE(ExtendedGridIndexD,
                         return boost::hash_range(begin(), end()));
     ExtendedGridIndexD<D> get_uniform_offset(int ii) const {
       ExtendedGridIndexD<D> ret;
-      for (unsigned int i=0; i< D; ++i) {
-        ret.d_[i]= d_[i]+ii;
+      for (unsigned int i=0; i< get_dimension(); ++i) {
+        ret.data_.get_data()[i]= operator[](i)+ii;
       }
       //std::cout << "Offset " << *this << " to get " << ret << std::endl;
       return ret;
     }
     ExtendedGridIndexD<D> get_offset(int i, int j, int k) const {
       IMP_USAGE_CHECK(D==3, "Only for 3D");
-      ExtendedGridIndexD<D> ret;
-      ret.d_[0]= d_[0]+i;
-      ret.d_[1]= d_[1]+j;
-      ret.d_[2]= d_[2]+k;
+      int v[]={operator[](0)+i,
+               operator[](1)+j,
+               operator[](2)+k};
+      ExtendedGridIndexD<D> ret(v, v+3);
       return ret;
     }
   };
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  template <unsigned int D>
+  template < int D>
   inline std::size_t hash_value(const ExtendedGridIndexD<D> &ind) {
     return ind.__hash__();
   }
@@ -134,55 +131,50 @@ namespace grids {
      are the actual cells).
      \see Grid3D
   */
-  template <unsigned int D>
+  template <int D>
   class GridIndexD
   {
-    int d_[D];
+    internal::VectorData<int, D> data_;
     int compare(const GridIndexD<D> &o) const {
-      return internal::lexicographical_compare(d_, d_+D,
-                                               o.d_, o.d_+D);
+      IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
+                      "Dimensions don't match");
+      return internal::lexicographical_compare(begin(), end(),
+                                               o.begin(), o.end());
     }
   public:
     GridIndexD() {
-      for (unsigned int i=0; i < D; ++i) {
-        d_[i]=std::numeric_limits<int>::max();
-      }
     }
 
+    unsigned int get_dimension() const {return data_.get_dimension();}
 
 #ifndef IMP_DOXYGEN
     //! Get the ith component (i=0,1,2)
     IMP_CONST_BRACKET(int, unsigned int,
-                      i <D,
-                      IMP_USAGE_CHECK(d_[i] != std::numeric_limits<int>::max(),
+                      i < get_dimension(),
+                      IMP_USAGE_CHECK(!data_.get_is_null(),
                                       "Using uninitialized grid index");
-                      return d_[i]);
+                      return data_.get_data()[i]);
     IMP_SHOWABLE_INLINE(GridIndexD, {
         out << "(";
-        for (unsigned int i=0; i< D; ++i) {
-          out<< d_[i];
-          if (i != D-1) out << ", ";
+        for (unsigned int i=0; i< get_dimension(); ++i) {
+          out<< operator[](i);
+          if (i != get_dimension()-1) out << ", ";
         }
         out << ")";
       });
 #ifndef SWIG
     typedef const int* iterator;
-    iterator begin() const {return d_;}
-    iterator end() const {return d_+D;}
+    iterator begin() const {return data_.get_data();}
+    iterator end() const {return data_.get_data()+get_dimension();}
     GridIndexD(Ints vals) {
-      IMP_USAGE_CHECK(vals.size()==D, "Wrong number of values provided");
-      for (unsigned int i=0; i< D; ++i) {
-        d_[i]=vals[i];
-      }
+      data_.set_coordinates(vals.begin(), vals.end());
     }
     template <class It>
     GridIndexD(It b, It e) {
-      IMP_USAGE_CHECK(std::distance(b,e)==D, "Wrong number of values");
-      std::copy(b, e, d_);
+      data_.set_coordinates(b,e);
     }
-    static unsigned int get_d() {return D;}
 #endif
-    unsigned int __len__() const { return D;}
+    unsigned int __len__() const { return get_dimension();}
     static const unsigned int DIMENSION=D;
 #endif
     IMP_COMPARISONS(GridIndexD);
@@ -192,7 +184,7 @@ namespace grids {
 
 
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  template <unsigned int D>
+  template < int D>
   inline std::size_t hash_value(const GridIndexD<D> &ind) {
     return ind.__hash__();
   }
@@ -230,6 +222,11 @@ namespace grids {
   typedef ExtendedGridIndexD<6> ExtendedGridIndex6D;
   typedef std::vector<GridIndex6D> GridIndex6Ds;
   typedef std::vector<ExtendedGridIndex6D> ExtendedGridIndex6Ds;
+
+  typedef GridIndexD<-1> GridIndexKD;
+  typedef ExtendedGridIndexD<-1> ExtendedGridIndexKD;
+  typedef std::vector<GridIndexKD> GridIndexKDs;
+  typedef std::vector<ExtendedGridIndexKD> ExtendedGridIndexKDs;
 #endif
 
 

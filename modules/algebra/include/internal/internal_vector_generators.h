@@ -17,14 +17,14 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-template <unsigned int D>
+template <int D>
 VectorD<D> get_random_vector_on(const SphereD<D> &s);
 IMPALGEBRA_END_NAMESPACE
 
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-template <unsigned int D>
+template <int D>
 inline std::vector<VectorD<D> >
 native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
@@ -48,7 +48,7 @@ native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
 
 /*If all is true, cover the whole sphere.
 */
-template <unsigned int D>
+template <int D>
 inline std::vector<VectorD<D> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<D> &center,

@@ -9,7 +9,7 @@ class Vector3DTests(IMP.test.TestCase):
     def test_magnitude(self):
         """Check sparse grid of ints"""
         print "construct"
-        g= IMP.algebra.SparseUnboundedIntGrid3D(5.7, IMP.algebra.Vector3D(-4, -5, -6), 0)
+        g= IMP.algebra.SparseUnboundedIntGrid3D(33.4, IMP.algebra.Vector3D(-4, -5, -6), 0)
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-100,-100,-100),
                                       IMP.algebra.Vector3D(100,100,100))
         vs=[]
@@ -32,8 +32,8 @@ class Vector3DTests(IMP.test.TestCase):
             pass
 
         print "check"
-        for i in g.get_extended_indexes(g.get_extended_index(bb.get_corner(0)),
-                               g.get_extended_index(bb.get_corner(1))):
+        for j, i in enumerate(g.get_extended_indexes(g.get_extended_index(bb.get_corner(0)),
+                                                     g.get_extended_index(bb.get_corner(1)))):
             #print i
             cbb= g.get_bounding_box(i)
             cbb+=-.1

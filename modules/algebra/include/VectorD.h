@@ -12,6 +12,7 @@
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 #include <IMP/utility.h>
+#include "internal/vector.h"
 #include <boost/static_assert.hpp>
 
 #include <vector>
@@ -27,23 +28,51 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
     \geometry
  */
-template <unsigned int D>
+template <int D>
 class VectorD
 {
   void check_vector() const {
-    for (unsigned int i=0; i< D; ++i) {
-      IMP_USAGE_CHECK(!is_nan(vec_[i]),
-                "Attempt to use uninitialized vector.");
-    }
+    IMP_USAGE_CHECK(!data_.get_is_null(),
+                    "Attempt to use uninitialized vector.");
+  }
+  template <int OD>
+  void check_compatible_vector(const VectorD<OD> &o) const {
+    IMP_USAGE_CHECK(o.get_dimension() == get_dimension(),
+                    "Dimensions don't match: "
+                    << get_dimension() << " vs "
+                    << o.get_dimension());
+  }
+  void check_index(unsigned int i) const {
+    IMP_INTERNAL_CHECK(i < data_.get_dimension(),
+                       "Invalid component of vector requested: "
+                       << i << " of " <<get_dimension());
   }
 public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  template <int OD>
+  VectorD(const VectorD<OD> &o) {
+    BOOST_STATIC_ASSERT(D==-1 || OD==-1 || D==OD);
+    IMP_USAGE_CHECK(D==-1
+                    || o.get_dimension() ==static_cast<unsigned int>(D),
+                    "Dimensions don't match in conversion");
+    data_.set_coordinates(o.coordinates_begin(),
+                          o.coordinates_end());
+  }
+  template <int OD>
+  VectorD & operator=(const VectorD<OD> &o) {
+    BOOST_STATIC_ASSERT(D==-1 || OD==-1 || D==OD);
+    IMP_USAGE_CHECK(D==-1 || o.get_dimension() ==D,
+                    "Dimensions don't match in conversion");
+    data_.set_coordinates(o.coordinates_begin(),
+                          o.coordinates_end());
+  }
+#endif
+
   /** The distance between b and e must be equal to D.
    */
   template <class It>
   VectorD(It b, It e) {
-    IMP_INTERNAL_CHECK(std::distance(b,e) == D,
-               "The size of the range must match the dimension");
-    std::copy(b,e, vec_);
+    data_.set_coordinates(b,e);
   }
 
   //! Initialize the 1-vector from its value.
@@ -52,85 +81,74 @@ public:
      VectorD, as we do for example in the various IMP::display Geometry
      subclasses, so replace with runtime checks. */
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D==1, "Need " << D << " to construct a "
-              << D << "-vector.");
+    IMP_USAGE_CHECK(D==1 || D==-1,
+                    "Need " << D << " to construct a "
+                    << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==1);
 #endif
-    vec_[0] = x;
+    data_.set_coordinates(&x, &x+1);
   }
 
   //! Initialize a 2-vector from separate x,y values.
   VectorD(double x, double y) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==2 || D==-1, "Need " << D << " to construct a "
               << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==2);
 #endif
-    vec_[0] = x;
-    vec_[1] = y;
+    double d[]={x,y};
+    data_.set_coordinates(d, d+2);
   }
 
   //! Initialize a 3-vector from separate x,y,z values.
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_USAGE_CHECK(D==3, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==3 or D==-1, "Need " << D << " to construct a "
               << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==3);
 #endif
-    vec_[0] = x;
-    vec_[1] = y;
-    vec_[2] = z;
+    double d[]={x,y,z};
+    data_.set_coordinates(d, d+3);
   }
 
   //! Initialize a 4-vector from separate w,x,y,z values.
   VectorD(double x0, double x1, double x2, double x3) {
 #if defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
-    IMP_USAGE_CHECK(D==4, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==4 or D==-1, "Need " << D << " to construct a "
               << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==4);
 #endif
-    vec_[0] = x0;
-    vec_[1] = x1;
-    vec_[2] = x2;
-    if (D==4) {
-      // suppress warning.
-      vec_[3] = x3;
-    }
+    double d[]={x0, x1, x2, x3};
+    data_.set_coordinates(d, d+4);
   }
 
   //! Default constructor
   VectorD() {
-#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=0; i< D; ++i) {
-      vec_[i]= std::numeric_limits<double>::quiet_NaN();
-    }
-#endif
   }
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc.*/
   double operator[](unsigned int i) const {
-    IMP_INTERNAL_CHECK(i < D, "Invalid component of vector requested: "
-               << i << " of " << D);
+    check_index(i);
     check_vector();
-    return vec_[i];
+    return data_.get_data()[i];
   }
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc. */
   double& operator[](unsigned int i) {
-    IMP_INTERNAL_CHECK(i < D, "Invalid component of vector requested: "
-               << i << " of " << D);
-    return vec_[i];
+    check_index(i);
+    return data_.get_data()[i];
   }
 
   double get_scalar_product(const VectorD<D> &o) const {
+    check_compatible_vector(o);
     check_vector();
     double ret=0;
-    for (unsigned int i=0; i< D; ++i) {
-      ret += vec_[i]* o.vec_[i];
+    for (unsigned int i=0; i< get_dimension(); ++i) {
+      ret += operator[](i)* o.operator[](i);
     }
     return ret;
   }
@@ -151,14 +169,15 @@ public:
   }
 #ifndef IMP_DOXYGEN
   double operator*(const VectorD<D> &o) const {
+    check_compatible_vector(o);
     return get_scalar_product(o);
   }
 
   VectorD operator*(double s) const {
     check_vector();
     VectorD ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] * s;
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      ret[i] = operator[](i) * s;
     }
     return ret;
   }
@@ -166,8 +185,8 @@ public:
   VectorD operator/(double s) const {
     check_vector();
     VectorD ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] / s;
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      ret[i] = operator[](i) / s;
     }
     return ret;
   }
@@ -175,58 +194,62 @@ public:
   VectorD operator-() const {
     check_vector();
     VectorD ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = -vec_[i];
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      ret[i] = -operator[](i);
     }
     return ret;
   }
 
   VectorD operator-(const VectorD &o) const {
+    check_compatible_vector(o);
     check_vector(); o.check_vector();
     VectorD ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] - o.vec_[i];
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      ret[i] = operator[](i) - o[i];
     }
     return ret;
   }
 
   VectorD operator+(const VectorD &o) const {
+    check_compatible_vector(o);
     check_vector(); o.check_vector();
     VectorD ret;
-    for (unsigned int i=0; i< D; ++i) {
-      ret.vec_[i] = vec_[i] + o.vec_[i];
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      ret[i] = operator[](i) + o[i];
     }
     return ret;
   }
 
   VectorD& operator+=(const VectorD &o) {
+    check_compatible_vector(o);
     check_vector(); o.check_vector();
-    for (unsigned int i=0; i< D; ++i) {
-      vec_[i] += o[i];
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      operator[](i) += o[i];
     }
     return *this;
   }
 
   VectorD& operator-=(const VectorD &o) {
+     check_compatible_vector(o);
     check_vector(); o.check_vector();
-    for (unsigned int i=0; i< D; ++i) {
-      vec_[i] -= o[i];
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      operator[](i) -= o[i];
     }
     return *this;
   }
 
   VectorD& operator/=(double f) {
     check_vector();
-    for (unsigned int i=0; i< D; ++i) {
-      vec_[i] /= f;
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      operator[](i) /= f;
     }
     return *this;
   }
 
   VectorD& operator*=(double f) {
     check_vector();
-    for (unsigned int i=0; i< D; ++i) {
-      vec_[i] *= f;
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      operator[](i) *= f;
     }
     return *this;
   }
@@ -235,15 +258,14 @@ public:
             bool parens=true) const {
     check_vector();
     if (parens) out << "(";
-    for (unsigned int i=0; i< D; ++i) {
-      out << vec_[i];
-      if (i != D-1) {
+    for (unsigned int i=0; i<get_dimension(); ++i) {
+      out << operator[](i);
+      if (i != get_dimension()-1) {
         out << delim;
       }
     }
     if (parens) out << ")";
   }
-
   std::string __str__() const {
     std::ostringstream oss;
     show(oss);
@@ -256,30 +278,39 @@ public:
 
 #ifndef SWIG
   typedef double* CoordinateIterator;
-  CoordinateIterator coordinates_begin() {return vec_;}
-  CoordinateIterator coordinates_end() {return vec_+D;}
+  CoordinateIterator coordinates_begin() {return data_.get_data();}
+  CoordinateIterator coordinates_end() {
+    return data_.get_data()+get_dimension();
+  }
   typedef const double* CoordinateConstIterator;
-  CoordinateConstIterator coordinates_begin() const {return vec_;}
-  CoordinateConstIterator coordinates_end() const {return vec_+D;}
+  CoordinateConstIterator coordinates_begin() const {
+    return data_.get_data();
+  }
+  CoordinateConstIterator coordinates_end() const {
+    return data_.get_data()+get_dimension();
+  }
 #endif
 
 #ifndef IMP_DOXYGEN
-  const double *get_data() const {return vec_;}
+  const double *get_data() const {return data_.get_data();}
 #endif
+  unsigned int get_dimension() const {
+    return data_.get_dimension();
+  }
 private:
 
-  double vec_[D];
+  internal::VectorData<double, D> data_;
 };
 
 #ifndef IMP_DOXYGEN
 
-template <unsigned int D>
+template <int D>
 inline std::ostream &operator<<(std::ostream &out, const VectorD<D> &v) {
   v.show(out);
   return out;
 }
 
-template <unsigned int D>
+template <int D>
 inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
   for (unsigned int i=0; i< D; ++i) {
     in >> v[i];
@@ -292,9 +323,11 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 //! lexicographic comparison of two vectors
 /** \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
-  for (unsigned int i=0; i< D; ++i) {
+  IMP_USAGE_CHECK(a.get_dimension()== b.get_dimensions(),
+                  "Dimensions don't match.");
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a[i] < b[i]) return -1;
     else if (a[i] > b[i]) return 1;
   }
@@ -302,7 +335,7 @@ inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
 }
 
 /** \relatesalso VectorD */
-template <unsigned int D>
+template <int D>
 inline VectorD<D> operator*(double s, const VectorD<D> &o) {
   return o*s;
 }
@@ -310,20 +343,15 @@ inline VectorD<D> operator*(double s, const VectorD<D> &o) {
 //! compute the squared distance between two vectors
 /** \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline double get_squared_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
-  double d, s = 0;
-  for (unsigned int i=0; i< D; ++i) {
-    d = v1[i] - v2[i];
-    s += d*d;
-  }
-  return s;
+  return (v1-v2).get_squared_magnitude();
 }
 
 //! compute the distance between two vectors
 /** \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
   return std::sqrt(get_squared_distance(v1, v2));
 }
@@ -336,7 +364,7 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
     \endcode
     \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   IMP_USAGE_CHECK(coordinate<D, "There are only " << D << " basis vectors");
   double vs[D];
@@ -348,7 +376,7 @@ inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
 }
 
 //! Return a vector of zeros
-template <unsigned int D>
+template <int D>
 inline VectorD<D> get_zero_vector_d() {
   double vs[D]={0};
   return VectorD<D>(vs, vs+D);
@@ -356,7 +384,7 @@ inline VectorD<D> get_zero_vector_d() {
 
 
 //! Return a vector of ones (or another constant)
-template <unsigned int D>
+template <int D>
 inline VectorD<D> get_ones_vector_d(double v=1) {
   VectorD<D> vv;
   for (unsigned int i=0; i< D; ++i) {
@@ -376,24 +404,24 @@ inline VectorD<D> get_ones_vector_d(double v=1) {
     @{
 */
 
-template <unsigned int D>
+template <int D>
 inline double get_l2_norm(const VectorD<D> &v) {
   return v.get_magnitude();
 }
 
-template <unsigned int D>
+template <int D>
 inline double get_l1_norm(const VectorD<D> &v) {
   double n=std::abs(v[0]);
-  for (unsigned int i=1; i< D; ++i) {
+  for (unsigned int i=1; i< v.get_dimension(); ++i) {
     n+= std::abs(v[i]);
   }
   return n;
 }
 
-template <unsigned int D>
+template <int D>
 inline double get_linf_norm(const VectorD<D> &v) {
   double n=std::abs(v[0]);
-  for (unsigned int i=1; i< D; ++i) {
+  for (unsigned int i=1; i< v.get_dimension(); ++i) {
     n= std::max(n, std::abs(v[i]));
   }
   return n;
@@ -403,26 +431,26 @@ inline double get_linf_norm(const VectorD<D> &v) {
 
 #ifndef IMP_DOXYGEN
 
-template <unsigned int D>
+template <int D>
 struct SpacesIO
 {
   const VectorD<D> &v_;
   SpacesIO(const VectorD<D> &v): v_(v){}
 };
 
-template <unsigned int D>
+template <int D>
 struct CommasIO
 {
   const VectorD<D> &v_;
   CommasIO(const VectorD<D> &v): v_(v){}
 };
-template <unsigned int D>
+template <int D>
 inline std::ostream &operator<<(std::ostream &out, const SpacesIO<D> &s)
 {
   s.v_.show(out, " ", false);
   return out;
 }
-template <unsigned int D>
+template <int D>
 inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
 {
   s.v_.show(out, ", ", false);
@@ -434,7 +462,7 @@ inline std::ostream &operator<<(std::ostream &out, const CommasIO<D> &s)
     produces "1.0 2.0 3.0"
     \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
   return SpacesIO<D>(v);
 }
@@ -447,7 +475,7 @@ inline SpacesIO<D> spaces_io(const VectorD<D> &v) {
     produces "1.0, 2.0, 3.0"
     \relatesalso VectorD
  */
-template <unsigned int D>
+template <int D>
 inline CommasIO<D> commas_io(const VectorD<D> &v) {
   return CommasIO<D>(v);
 }
@@ -466,9 +494,12 @@ typedef std::vector<VectorD<5> > Vector5Ds;
 typedef VectorD<6> Vector6D;
 typedef std::vector<VectorD<6> > Vector6Ds;
 
-template <unsigned int D>
+typedef VectorD<-1> VectorKD;
+typedef std::vector<VectorD<-1> > VectorKDs;
+
+template <int D>
 inline const VectorD<D> &get_vector_d_geometry(const VectorD<D> &g) {return g;}
-template <unsigned int D>
+template <int D>
 inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
 
 

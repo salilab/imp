@@ -166,7 +166,7 @@ class IMPALGEBRAEXPORT Rotation3D {
   /** Note that there is no guarantee on which of the two
       equivalent quaternions is returned.
   */
-  const VectorD<4>& get_quaternion() const {
+  const Vector4D& get_quaternion() const {
     return v_;
   }
   //! multiply two rotations
