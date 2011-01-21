@@ -123,7 +123,7 @@ def create_restraints(m, chain, tbr, TMH):
 
 ## DOPE/GQ scoring
     def add_DOPE():
-        IMP.membrane.add_dope_score_data(chain)
+        IMP.atom.add_dope_score_data(chain)
         dsc=[]
         for i,h in enumerate(TMH):
             dsc.append(IMP.container.ListSingletonContainer(m))
@@ -132,7 +132,7 @@ def create_restraints(m, chain, tbr, TMH):
         for i in range(len(TMH)-1):
             for j in range(i+1,len(TMH)):
                 dpc= IMP.container.CloseBipartitePairContainer(dsc[i], dsc[j], 15.0, 0.0)
-                dps= IMP.membrane.DopePairScore(15.0)
+                dps= IMP.atom.DopePairScore(15.0)
                 dope=IMP.container.PairsRestraint(dps, dpc)
                 m.add_restraint(dope)
 
