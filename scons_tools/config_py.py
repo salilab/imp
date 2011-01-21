@@ -23,7 +23,8 @@ def write_config(h, env):
     simple=['build', 'repository',
             'precommand',  'modeller',
             'prefix', 'local',
-            'pythonpath', 'python_include', 'ldlibpath']
+            'pythonpath', 'python_include', 'ldlibpath',
+            'swigpath']
     if not dependency.gcc.get_is_gcc(env):
         simple.extend(['includepath', 'libpath'])
     for v in simple:
