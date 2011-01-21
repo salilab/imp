@@ -22,12 +22,10 @@ Ints ClusterSet::get_clusters_below_cutoff(double cutoff) const {
       Ints to_deactivate;
       unsigned int  id1 = joined_ids1_[i];
       unsigned int  id2 = joined_ids2_[i];
-       print_vector<int>(to_deactivate);
       if(id1>=n_elements_) to_deactivate.push_back(id1);
       if(id2>=n_elements_) to_deactivate.push_back(id2);
 
       while(to_deactivate.size() > 0) {
-        print_vector<int>(to_deactivate);
         int id=to_deactivate.back();
         to_deactivate.pop_back();
         int j =get_step_from_id(id); // new row to deactivate
