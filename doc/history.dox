@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- runtime dimensional geometric objects have been added. These include IMP::algebra::VectorKD, IMP::algebra::BoundingBoxKD and IMP::algebra::SphereKD. The IMP::statistics::Embedding classes now use IMP::algebra::VectorKD instead of Floats. The sparse grids also support variable dimensions as to the nearest neighbor searches.
 - IMP::atom::DopePairScore has been added to \imp.
 - IMP::atom::CHARMMStereochemistryRestraint provides a high-level simplified
 interface to the bonded part of the CHARMM forcefield.
