@@ -31,7 +31,7 @@ namespace grids {
   */
   template < int D>
   class ExtendedGridIndexD {
-    internal::VectorData<int, D> data_;
+    internal::VectorData<int, D, true> data_;
     int compare(const ExtendedGridIndexD<D> &o) const {
       IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
                       "Dimensions don't match");
@@ -131,7 +131,7 @@ namespace grids {
   template <int D>
   class GridIndexD
   {
-    internal::VectorData<int, D> data_;
+    internal::VectorData<int, D, true> data_;
     int compare(const GridIndexD<D> &o) const {
       IMP_USAGE_CHECK(get_dimension() == o.get_dimension(),
                       "Dimensions don't match");
