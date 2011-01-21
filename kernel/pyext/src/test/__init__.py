@@ -553,6 +553,28 @@ class ApplicationTestCase(TestCase):
         print "running ", filename
         return _SubprocessWrapper(filename, args)
 
+    def run_python_application(self, app, args):
+        """Run a Python application with the given list of arguments.
+           The Python application should be self-runnable (i.e. it should
+           be executable and with a #! on the first line).
+           @return a subprocess.Popen-like object containing the child stdin,
+                   stdout and stderr.
+        """
+        def find_in_path(filename):
+            paths = os.environ['PATH'].split(os.pathsep)
+            for path in paths:
+                f = os.path.join(path, filename)
+                if os.path.exists(f):
+                    return f
+            raise SystemError("Cannot find %s in PATH" % filename)
+
+        # Handle platforms where /usr/bin/python doesn't work
+        if sys.executable != '/usr/bin/python':
+            return _SubprocessWrapper(sys.executable,
+                                      [find_in_path(app)] + args)
+        else:
+            return _SubprocessWrapper(app, args)
+
     def run_script(self, app, args):
         """Run an application with the given list of arguments.
            @return a subprocess.Popen-like object containing the child stdin,
