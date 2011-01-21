@@ -373,12 +373,12 @@ inline VectorD<-1> get_basis_vector_kd( int D,
   IMP_USAGE_CHECK(D>0, "D must be positive");
   IMP_USAGE_CHECK(coordinate<static_cast<unsigned int>(D),
                   "There are only " << D << " basis vectors");
-  double vs[D];
+  std::vector<double> vs(D);
   for (int i=0; i< D; ++i) {
     if (i==static_cast<int>(coordinate)) vs[i]=1;
     else vs[i]=0;
   }
-  return VectorD<-1>(vs, vs+D);
+  return VectorD<-1>(vs.begin(), vs.end());
 }
 
 //! Return a vector of zeros
