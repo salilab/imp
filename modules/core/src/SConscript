@@ -33,6 +33,7 @@ files = [
          'LeavesRefiner.cpp',
          'MCCGSampler.cpp',
          'MonteCarlo.cpp',
+         'MoveStatisticsScoreState.cpp',
          'MoverBase.cpp',
          'NearestNeighborsClosePairsFinder.cpp',
          'NormalMover.cpp',

@@ -4,11 +4,11 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
-#include <IMP/statistics/MoveStatisticsScoreState.h>
+#include <IMP/core/MoveStatisticsScoreState.h>
 #include <IMP/core/XYZ.h>
 #include <boost/format.hpp>
 
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 MoveStatisticsScoreState::MoveStatisticsScoreState(const ParticlesTemp &ps):
   ps_(ps){
   reset();
@@ -65,4 +65,4 @@ void MoveStatisticsScoreState::show_statistics(std::ostream &out) const {
   out << format%"Maximum mover" % max_mover_;
   out << format%"Maximum average move" % max_average_;
 }
-IMPSTATISTICS_END_NAMESPACE
+IMPCORE_END_NAMESPACE

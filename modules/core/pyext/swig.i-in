@@ -78,6 +78,7 @@ IMP_SWIG_OBJECT( IMP::core, TypedPairScore, TypedPairScores);
 IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, WriteModelOptimizerState, WriteModelOptimizerStates);
+IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
 
 IMP_SWIG_OBJECT( IMP::core, Mover, Movers);
 IMP_SWIG_DECORATOR( IMP::core, XYZ, XYZs);
@@ -218,6 +219,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/utility.h"
 %include "IMP/core/WriteModelOptimizerState.h"
 %include "IMP/core/StatisticalPairScore.h"
+%include "IMP/core/MoveStatisticsScoreState.h"
 
 %inline %{
 namespace IMP {

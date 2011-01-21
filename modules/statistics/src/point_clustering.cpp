@@ -6,7 +6,6 @@
  *
  */
 #include <IMP/statistics/point_clustering.h>
-#include <IMP/core/XYZ.h>
 #include <IMP/statistics/internal/KMData.h>
 #include <IMP/statistics/internal/KMTerminationCondition.h>
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
@@ -22,6 +21,15 @@
 
 
 IMPSTATISTICS_BEGIN_NAMESPACE
+
+namespace {
+  algebra::Vector3D get_coordinates(Particle *p) {
+    algebra::Vector3D ret(p->get_value(IMP::internal::xyzr_keys[0]),
+                          p->get_value(IMP::internal::xyzr_keys[1]),
+                          p->get_value(IMP::internal::xyzr_keys[2]));
+    return ret;
+  }
+}
 
 Embedding::Embedding(std::string name): Object(name){}
 
@@ -53,12 +61,12 @@ ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
     cs_->load_configuration(0);
     algebra::Vector3Ds vs0;
     for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-      vs0.push_back(core::XYZ(sc_->get_particle(i)).get_coordinates());
+      vs0.push_back(get_coordinates(sc_->get_particle(i)));
     }
     cs_->load_configuration(a);
     algebra::Vector3Ds vsc;
     for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-      vsc.push_back(core::XYZ(sc_->get_particle(i)).get_coordinates());
+      vsc.push_back(get_coordinates(sc_->get_particle(i)));
     }
     tr= get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
@@ -67,7 +75,7 @@ ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
   Floats ret(sc_->get_number_of_particles()*3);
   for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
     algebra::Vector3D v
-      = tr.get_transformed(core::XYZ(sc_->get_particle(i)).get_coordinates());
+      = tr.get_transformed(get_coordinates(sc_->get_particle(i)));
     ret[3*i]= v[0];
     ret[3*i+1]= v[1];
     ret[3*i+2]= v[2];

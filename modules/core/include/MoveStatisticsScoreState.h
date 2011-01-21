@@ -5,22 +5,22 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPSTATISTICS_MOVE_STATISTICS_SCORE_STATE_H
-#define IMPSTATISTICS_MOVE_STATISTICS_SCORE_STATE_H
+#ifndef IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
+#define IMPCORE_MOVE_STATISTICS_SCORE_STATE_H
 
-#include "statistics_config.h"
+#include "core_config.h"
 #include <IMP/OptimizerState.h>
 #include <IMP/internal/utility.h>
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/io.h>
 
-IMPSTATISTICS_BEGIN_NAMESPACE
+IMPCORE_BEGIN_NAMESPACE
 
 //! Keep track of statistics about how particles move.
 /** Keep track of average and maximum moves for a set
     of particles during optimization.
  */
-class IMPSTATISTICSEXPORT MoveStatisticsScoreState: public ScoreState
+class IMPCOREEXPORT MoveStatisticsScoreState: public ScoreState
 {
   Particles ps_;
   algebra::Vector3Ds last_;
@@ -38,6 +38,6 @@ public:
 };
 
 
-IMPSTATISTICS_END_NAMESPACE
+IMPCORE_END_NAMESPACE
 
-#endif  /* IMPSTATISTICS_MOVE_STATISTICS_SCORE_STATE_H */
+#endif  /* IMPCORE_MOVE_STATISTICS_SCORE_STATE_H */

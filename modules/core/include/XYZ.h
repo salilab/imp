@@ -184,6 +184,7 @@ inline const algebra::VectorD<3> get_vector_d_geometry(Particle *p) {
 inline void set_vector_d_geometry(Particle *p, const algebra::VectorD<3> &v) {
   core::XYZ(p).set_coordinates(v);
 }
+
 IMP_END_NAMESPACE
 #endif
 
