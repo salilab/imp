@@ -3,10 +3,10 @@ Import('env')
 # modules must be listed after modules that use them
 modules=['cgal',
          'algebra',
+         'statistics',
          'core',
          'container',
          'atom',
-         'statistics',
          'display',
          'domino',
          'em',
