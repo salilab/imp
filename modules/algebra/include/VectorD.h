@@ -105,7 +105,7 @@ public:
   //! Initialize a 3-vector from separate x,y,z values.
   VectorD(double x, double y, double z) {
 #ifdef IMP_SWIG_WRAPPER
-    IMP_USAGE_CHECK(D==3 or D==-1, "Need " << D << " to construct a "
+    IMP_USAGE_CHECK(D==3 || D==-1, "Need " << D << " to construct a "
               << D << "-vector.");
 #else
     BOOST_STATIC_ASSERT(D==3);
