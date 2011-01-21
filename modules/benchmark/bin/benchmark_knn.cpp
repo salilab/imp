@@ -51,7 +51,7 @@ int main() {
 #ifdef IMP_BENCHMARK_USE_ANN
   {
     std::string name("ann");
-    typedef IMP::algebra::internal::ANNData<3> Data;
+    typedef IMP::algebra::internal::ANNData Data;
     test_uniform<Data>(name, 10, 0, 0.000424);
     test_uniform<Data>(name, 10, .1, 0.000388);
     test_uniform<Data>(name, 10, .5, 0.000332);
@@ -66,7 +66,7 @@ int main() {
 #ifdef IMP_BENCHMARK_USE_IMP_CGAL
   {
     std::string name("cgal");
-    typedef IMP::cgal::internal::KNNData<3> Data;
+    typedef IMP::cgal::internal::KNNData Data;
     test_uniform<Data>(name, 10, 0, 0.000673);
     test_uniform<Data>(name, 10, .1, 0.000817);
     test_uniform<Data>(name, 10, .5, 0.000691);
