@@ -283,6 +283,7 @@ def write_driver(fn, f, title, name, names, yrange, log=False):
     if log:
         lines.append( "set logscale y")
     lines.append('set datafile separator ","')
+    #lines.append("set xtics '6/1/2007',31536000")
     lines.append('set yrange ['+str(yrange[0])+':'+str(yrange[1])+']')
     first=True
     verb='plot'
@@ -323,7 +324,7 @@ def main():
         sp=subprocess.Popen(["gnuplot "+ dfn], shell=True, stderr=subprocess.STDOUT)
         ret=sp.wait()
         if ret != 0:
-            print "Errr running gnuplot"
+            print "Error running gnuplot"
         #time.sleep(2)
         files.append("benchmark_"+p.get_name()+".png")
         page.append("\\section "+p.get_name()+" "+p.get_name().replace("_", " "))
