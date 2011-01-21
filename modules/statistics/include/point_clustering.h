@@ -31,8 +31,8 @@ IMPSTATISTICS_BEGIN_NAMESPACE
 class IMPSTATISTICSEXPORT Embedding: public Object {
 public:
   Embedding(std::string name);
-  virtual Floats get_point(unsigned int i) const =0;
-  virtual unsigned int get_number_of_points() const=0;
+  virtual algebra::VectorKD get_point(unsigned int i) const =0;
+  virtual unsigned int get_number_of_items() const=0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Embedding);
 };
 
@@ -62,14 +62,15 @@ public:
 
 //! Simply return the coordinates of a VectorD
 class IMPSTATISTICSEXPORT VectorDEmbedding: public Embedding {
-  std::vector<Floats > vectors_;
+  std::vector<algebra::VectorKD > vectors_;
 public:
-  template <unsigned int D>
+  template <int D>
   VectorDEmbedding(const std::vector<algebra::VectorD<D> > &vs):
     Embedding("VectorDs"){
     vectors_.resize(vs.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
-      vectors_[i]= Floats(vs[i].coordinates_begin(), vs[i].coordinates_end());
+      vectors_[i]= algebra::VectorKD(vs[i].coordinates_begin(),
+                                     vs[i].coordinates_end());
     }
   }
 #ifdef SWIG
@@ -114,7 +115,7 @@ class IMPSTATISTICSEXPORT PartitionalClusteringWithCenter:
   public PartitionalClustering {
   std::vector<Ints> clusters_;
   Ints reps_;
-  std::vector<Floats> centers_;
+  std::vector<algebra::VectorKD> centers_;
 public:
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   template <unsigned int D>
@@ -132,12 +133,12 @@ public:
   }
 #endif
   PartitionalClusteringWithCenter(const std::vector<Ints> &clusters,
-                   const std::vector<Floats> &centers,
+                     const std::vector<algebra::VectorKD> &centers,
                    const Ints &reps): PartitionalClustering("k-means"),
                                       clusters_(clusters),
                                       reps_(reps),
                                       centers_(centers){}
-  const Floats& get_cluster_center(unsigned int i) const {
+  const algebra::VectorKD& get_cluster_center(unsigned int i) const {
     return centers_[i];
   }
   IMP_CLUSTERING(PartitionalClusteringWithCenter);
