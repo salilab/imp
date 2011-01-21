@@ -291,7 +291,7 @@ public:
   }
 private:
 
-  internal::VectorData<double, D> data_;
+  internal::VectorData<double, D, false> data_;
 };
 
 #ifndef IMP_DOXYGEN

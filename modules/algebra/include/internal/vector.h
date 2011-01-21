@@ -30,7 +30,7 @@ inline int get_null_value() {
   return std::numeric_limits<int>::max();
 }
 
-template <class T, int D>
+template <class T, int D, bool KNOWN_DEFAULT>
 class VectorData {
   T storage_[D];
 public:
@@ -41,6 +41,12 @@ public:
 #if IMP_BUILD < IMP_FAST
     for (unsigned int i=0; i< D; ++i) {
       storage_[i]= get_null_value<T>();
+    }
+#else
+    if (KNOWN_DEFAULT) {
+      for (unsigned int i=0; i< D; ++i) {
+        storage_[i]= get_null_value<T>();
+      }
     }
 #endif
   }
@@ -68,8 +74,8 @@ public:
   }
 };
 
-template <class T>
-class VectorData<T, -1> {
+template <class T, bool KNOWN_DEFAULT>
+class VectorData<T, -1, KNOWN_DEFAULT> {
   boost::scoped_array<T> storage_;
   unsigned int d_;
 public:
