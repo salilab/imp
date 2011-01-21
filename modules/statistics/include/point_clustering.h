@@ -100,7 +100,13 @@ public:
     }
   }
 #ifdef SWIG
-  VectorDEmbedding(const std::vector<algebra::VectorD<3> > &vs);
+  VectorDEmbedding(const std::vector<algebra::VectorKD > &vs);
+  VectorDEmbedding(const algebra::Vector3Ds &vs);
+  /*VectorDEmbedding(const std::vector<algebra::Vector2D > &vs);
+  VectorDEmbedding(const std::vector<algebra::Vector3D > &vs);
+  VectorDEmbedding(const std::vector<algebra::Vector4D > &vs);
+  VectorDEmbedding(const std::vector<algebra::Vector5D > &vs);
+  VectorDEmbedding(const std::vector<algebra::Vector6D > &vs);*/
 #endif
   IMP_EMBEDDING(VectorDEmbedding);
 };
@@ -168,6 +174,14 @@ get_lloyds_kmeans(Embedding *embedding,
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
 get_connectivity_clustering(Embedding *embed,
                             double dist);
+
+
+/** The space is grided with bins of side size and all points
+    that fall in the same grid bin are made part of the same cluster.
+*/
+IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
+get_bin_based_clustering(Embedding *embed,
+                         double side);
 
 IMPSTATISTICS_END_NAMESPACE
 
