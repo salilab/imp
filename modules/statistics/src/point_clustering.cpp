@@ -10,6 +10,7 @@
 #include <IMP/statistics/internal/KMTerminationCondition.h>
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
 #include <IMP/algebra/vector_search.h>
+#include <IMP/algebra/GridD.h>
 #include <IMP/algebra/geometric_alignment.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -180,8 +181,9 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
   internal::KMData data(metric->get_point(names[0]).get_dimension(),
                         names.size());
   for (unsigned int i=0; i< names.size(); ++i) {
-    *(data[i])= Floats(metric->get_point(names[i]).coordinates_begin(),
-                       metric->get_point(names[i]).coordinates_end());
+    algebra::VectorKD v= metric->get_point(names[i]);
+    *(data[i])= Floats(v.coordinates_begin(),
+                       v.coordinates_end());
   }
   internal::KMFilterCenters ctrs(k, &data, NULL, 1.0);
 
@@ -218,9 +220,10 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
     int c=-1;
     double d= std::numeric_limits<double>::max();
     for (unsigned int j=0; j< clusters[i].size(); ++j) {
+      Floats dc=*data[clusters[i][j]];
       double cd
-        = algebra::get_distance(algebra::VectorKD(data[clusters[i][j]]->begin(),
-                                                  data[clusters[i][j]]->end()),
+        = algebra::get_distance(algebra::VectorKD(dc.begin(),
+                                                  dc.end()),
                                 centers[i]);
       if (cd < d) {
         d= cd;
@@ -305,6 +308,35 @@ get_connectivity_clustering(Embedding *embed,
         reps[i]=clusters[i][j];
       }
     }
+  }
+  return new PartitionalClusteringWithCenter(clusters, centers, reps);
+}
+
+
+PartitionalClusteringWithCenter*
+get_bin_based_clustering(Embedding *embed,
+                         double side) {
+  IMP::internal::OwnerPointer<Embedding> e(embed);
+  typedef algebra::SparseUnboundedGridD<-1, Ints> Grid;
+  int dim= embed->get_point(0).get_dimension();
+  Floats o(dim, 0);
+  Grid grid(side, algebra::VectorKD(o.begin(), o.end()));
+  for (unsigned int i=0; i< embed->get_number_of_items(); ++i) {
+    Grid::ExtendedIndex ei= grid.get_extended_index(embed->get_point(i));
+    if (!grid.get_has_index(ei)) {
+      grid.add_voxel(ei, Ints(1, i));
+    } else {
+      grid[grid.get_index(ei)].push_back(i);
+    }
+  }
+  std::vector<Ints> clusters;
+  std::vector<algebra::VectorKD> centers;
+  Ints reps;
+  for (Grid::AllConstIterator it= grid.all_begin();
+       it != grid.all_end(); ++it) {
+    clusters.push_back(it->second);
+    centers.push_back(grid.get_center(it->first));
+    reps.push_back(clusters.back()[0]);
   }
   return new PartitionalClusteringWithCenter(clusters, centers, reps);
 }
