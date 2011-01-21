@@ -1007,6 +1007,15 @@ protection:                                                             \
 
 
 #define IMP_OUTPUT_OPERATOR_D(name)                                     \
+  template < int D>                                                     \
+  inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
+  {                                                                     \
+    i.show(out);                                                        \
+    return out;                                                         \
+  }                                                                     \
+  IMP_REQUIRE_SEMICOLON_NAMESPACE
+
+#define IMP_OUTPUT_OPERATOR_UD(name)                                     \
   template <unsigned int D>                                             \
   inline std::ostream &operator<<(std::ostream &out, const name<D> &i)  \
   {                                                                     \
@@ -1014,11 +1023,13 @@ protection:                                                             \
     return out;                                                         \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
+
 #else
 #define IMP_OUTPUT_OPERATOR_1(name)
 #define IMP_OUTPUT_OPERATOR_2(name)
 #define IMP_OUTPUT_OPERATOR(name)
 #define IMP_OUTPUT_OPERATOR_D(name)
+#define IMP_OUTPUT_OPERATOR_UD(name)
 #endif
 #endif
 

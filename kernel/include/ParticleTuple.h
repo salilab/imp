@@ -95,7 +95,14 @@ public:
 #endif
 };
 
-IMP_OUTPUT_OPERATOR_D(ParticleTuple);
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template<unsigned int D>
+std::ostream &operator<<(std::ostream &out,
+                         const ParticleTuple<D> &d) {
+  d.show(out);
+  return out;
+}
+#endif
 
 #if !defined(IMP_DOXYGEN)
 
