@@ -43,7 +43,7 @@ def get_rows(fn,delimiter=" ",comment="#"):
 class ClusteringTests(IMP.test.TestCase):
 
     def test_cluster_of_models(self):
-        """Test hierarquical clustering of models"""
+        """Test hierarchical clustering of models"""
         input_dir=self.get_input_file_name("")
         sub_dir = input_dir+"/clustering/"
         os.chdir(sub_dir)
