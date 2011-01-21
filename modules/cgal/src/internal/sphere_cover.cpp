@@ -26,7 +26,7 @@
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-template <unsigned int D>
+template <int D>
 void
 refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
                             bool ALL) {
