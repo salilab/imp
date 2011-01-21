@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from optparse import OptionParser
 import IMP.em
 def main():
