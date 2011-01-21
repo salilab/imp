@@ -120,6 +120,11 @@ def make_one(params, test=True):
               ("kernel/src/"+multi + "Score.cpp",
                path+"/tools/container_templates/score.cc"),
 
+              ("modules/container/include/"+multi + "ContainerStatistics.h",
+               path+"/tools/container_templates/statistics.hpp"),
+              ("modules/container/src/"+multi + "ContainerStatistics.cpp",
+               path+"/tools/container_templates/statistics.cpp"),
+
 
               ("modules/container/include/Minimum"+multi + "Restraint.h",
                path+"/tools/container_templates/min.hpp", "Minimum", "less"),
