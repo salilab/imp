@@ -87,5 +87,61 @@ AnchorsData read_anchors_data(const char *txt_fn){
   in.close();
   return data;
 }
+void write_txt(const std::string &txt_filename,
+               const AnchorsData &ad) {
+    std::ofstream out;
+  out.open(txt_filename.c_str(),std::ios::out);
+  out<<"|points|"<<std::endl;
+  for( int i=0;i<ad.get_number_of_points();i++) {
+    algebra::Vector3D xyz = ad.points_[i];
+    out<<"|"<<i<<"|"<<xyz[0]<<"|"<<xyz[1]<<"|"<<xyz[2]<<"|"<<std::endl;
+  }
+  out<<"|edges|"<<std::endl;
+  IntPairs edges=ad.edges_;
+  for(IntPairs::const_iterator it = edges.begin(); it != edges.end();it++) {
+    out<<"|"<<it->first<<"|"<<it->second<<"|"<<std::endl;
+  }
+  out.close();
+}
+
+void write_cmm_helper(std::ostream &out,
+                      const std::string &marker_set_name,
+                      const algebra::Vector3Ds &nodes,
+                      const IntPairs &edges, Floats radii){
+  Float x,y,z,radius;
+  out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
+  for(unsigned int i=0;i<nodes.size();i++) {
+    x = nodes[i][0];
+    y = nodes[i][1];
+    z = nodes[i][2];
+    std::string name="";
+    if(radii.size() >0 ) {
+      radius = radii[i];
+    }
+    out << "<marker id=\"" << i << "\""
+        << " x=\"" << x << "\""
+        << " y=\"" << y << "\""
+        << " z=\"" << z << "\""
+        << " radius=\"" << radius << "\"/>" << std::endl;
+    }
+  for(IntPairs::const_iterator it = edges.begin(); it != edges.end();it++) {
+    out << "<link id1= \"" << it->first
+        << "\" id2=\""     << it->second
+        << "\" radius=\"1.0\"/>" << std::endl;
+  }
+  out << "</marker_set>" << std::endl;
+}
+
+void write_cmm(const std::string &cmm_filename,
+               const std::string &marker_set_name,
+               const AnchorsData &ad) {
+  Floats radii;
+  //algebra::get_enclosing_sphere(dpa.get_cluster_vectors(i));
+  radii.insert(radii.begin(),ad.get_number_of_points(),5.);
+  std::ofstream out;
+  out.open(cmm_filename.c_str(),std::ios::out);
+  write_cmm_helper(out,marker_set_name,ad.points_,ad.edges_,radii);
+  out.close();
+}
 
 IMPMULTIFIT_END_NAMESPACE

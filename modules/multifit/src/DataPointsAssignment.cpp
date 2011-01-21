@@ -43,34 +43,6 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 // }
 
 
-void write_cmm_helper(std::ostream &out,
-                      const std::string &marker_set_name,
-                      const algebra::Vector3Ds &nodes,
-                      const IntPairs &edges, Floats radii){
-  Float x,y,z,radius=-1;
-  out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
-  for(unsigned int i=0;i<nodes.size();i++) {
-    x = nodes[i][0];
-    y = nodes[i][1];
-    z = nodes[i][2];
-    std::string name="";
-    if(radii.size() >0 ) {
-      radius = radii[i];
-    }
-    out << "<marker id=\"" << i << "\""
-        << " x=\"" << x << "\""
-        << " y=\"" << y << "\""
-        << " z=\"" << z << "\""
-        << " radius=\"" << radius << "\"/>" << std::endl;
-    }
-  for(IntPairs::const_iterator it = edges.begin(); it != edges.end();it++) {
-    out << "<link id1= \"" << it->first
-        << "\" id2=\""     << it->second
-        << "\" radius=\"1.0\"/>" << std::endl;
-  }
-  out << "</marker_set>" << std::endl;
-}
-
 bool sort_data_points_first_larger_than_second(
             const std::pair<float,algebra::Vector3D> &a,
             const std::pair<float,algebra::Vector3D> &b) {
@@ -222,25 +194,7 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
   return data_for_sorting[0].second;
 }
 
-void write_cmm(const std::string &cmm_filename,
-               const std::string &marker_set_name,
-               const DataPointsAssignment &dpa) {
-  algebra::Vector3Ds centers;
-  Floats radii;
-  float sphere_scale=0.6;
-  for( int i=0;i<dpa.get_number_of_clusters();i++) {
-    Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
-    centers.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
-    radii.push_back(
-     algebra::get_enclosing_sphere(dpa.get_cluster_vectors(i)).get_radius()
-     *sphere_scale);
-  }
-  std::ofstream out;
-  out.open(cmm_filename.c_str(),std::ios::out);
-  write_cmm_helper(out,marker_set_name,centers,*(dpa.get_edges()),radii);
-  out.close();
-}
-
+/*
 void write_max_cmm(const std::string &cmm_filename,
                    em::DensityMap *dmap,
                    const std::string &marker_set_name,
@@ -256,7 +210,7 @@ void write_max_cmm(const std::string &cmm_filename,
   out.open(cmm_filename.c_str(),std::ios::out);
   write_cmm_helper(out,marker_set_name,centers,*(dpa.get_edges()),radii);
   out.close();
-}
+  }*/
 
 void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa) {
@@ -315,22 +269,5 @@ algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)
 //   }
 //   w=NULL;
 // }
-
-void write_txt(const std::string &txt_filename,
-               const DataPointsAssignment &dpa) {
-    std::ofstream out;
-  out.open(txt_filename.c_str(),std::ios::out);
-  out<<"|points|"<<std::endl;
-  for( int i=0;i<dpa.get_number_of_clusters();i++) {
-    Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
-    out<<"|"<<i<<"|"<<xyz[0]<<"|"<<xyz[1]<<"|"<<xyz[2]<<"|"<<std::endl;
-  }
-  out<<"|edges|"<<std::endl;
-  const IntPairs *edges=dpa.get_edges();
-  for(IntPairs::const_iterator it = edges->begin(); it != edges->end();it++) {
-    out<<"|"<<it->first<<"|"<<it->second<<"|"<<std::endl;
-  }
-  out.close();
-}
 
 IMPMULTIFIT_END_NAMESPACE

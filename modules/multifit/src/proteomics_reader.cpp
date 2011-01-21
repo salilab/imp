@@ -62,11 +62,15 @@ void parse_protein_line(
   if (line_split.size()==5) {
     ref_filename=boost::lexical_cast<std::string>(line_split[4]);
   }
+  std::string prot_filename=boost::lexical_cast<std::string>(line_split[3]);
+  if (!boost::iends_with(prot_filename,".pdb")) {
+    prot_filename="";
+  }
   dp.add_protein(
                  boost::lexical_cast<std::string>(line_split[0]),
                  boost::lexical_cast<int>(line_split[1]),
                  boost::lexical_cast<int>(line_split[2]),
-                 boost::lexical_cast<std::string>(line_split[3]),
+                 prot_filename,
                  ref_filename
                  );
 }

@@ -20,6 +20,8 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 class IMPMULTIFITEXPORT AnchorsData {
  public:
   AnchorsData(){}
+  AnchorsData(algebra::Vector3Ds points, IntPairs edges){
+    points_=points;edges_=edges;}
   int get_number_of_points() const {return points_.size();}
   int get_number_of_edges() const {return edges_.size();}
   algebra::Vector3Ds points_;
@@ -27,5 +29,13 @@ class IMPMULTIFITEXPORT AnchorsData {
 };
 
 IMPMULTIFITEXPORT AnchorsData read_anchors_data(const char *txt_filename);
+IMPMULTIFITEXPORT
+void write_txt(const std::string &txt_filename,
+               const AnchorsData &ad);
+IMPMULTIFITEXPORT
+void write_cmm(const std::string &cmm_filename,
+               const std::string &marker_set_name,
+               const AnchorsData &dpa);
+
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_ANCHORS_READER_H */
