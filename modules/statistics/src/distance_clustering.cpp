@@ -23,10 +23,12 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/incremental_components.hpp>
 #include <boost/graph/graph_utility.hpp>
+#if BOOST_VERSION > 103900
 namespace boost {
   // work around bug in bc_clustering
  using graph::has_no_edges;
 }
+#endif
 
 #include <boost/graph/bc_clustering.hpp>
 
