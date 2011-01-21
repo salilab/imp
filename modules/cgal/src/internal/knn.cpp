@@ -20,24 +20,22 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 RCTree::~RCTree(){}
 
-template < int D>
 struct Construct_coord_iterator {
-  const double* operator()(const algebra::VectorD<D>& p) const
+  const double* operator()(const algebra::VectorKD& p) const
   { return p.get_data(); }
-  const double* operator()(const algebra::VectorD<D>& p, int)  const
+  const double* operator()(const algebra::VectorKD& p, int)  const
   { return p.get_data()+p.get_dimension(); }
 };
-template < int D>
 struct Distance {
-  typedef algebra::VectorD<D> Query_item;
+  typedef algebra::VectorKD Query_item;
 
-  double transformed_distance(const algebra::VectorD<D>& p1,
-                              const algebra::VectorD<D>& p2) const {
+  double transformed_distance(const algebra::VectorKD& p1,
+                              const algebra::VectorKD& p2) const {
     return (p1-p2).get_squared_magnitude();
   }
 
   template <class TreeTraits>
-  double min_distance_to_rectangle(const algebra::VectorD<D>& p,
+  double min_distance_to_rectangle(const algebra::VectorKD& p,
                   const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
     double distance(0.0);
     for (unsigned int i=0; i< p.get_dimension(); ++i) {
@@ -49,7 +47,7 @@ struct Distance {
   }
 
   template <class TreeTraits>
-  double max_distance_to_rectangle(const algebra::VectorD<D>& p,
+  double max_distance_to_rectangle(const algebra::VectorKD& p,
                     const CGAL::Kd_tree_rectangle<TreeTraits>& b) const {
     double d=0.0;
     for (unsigned int i=0; i< p.get_dimension(); ++i) {
@@ -68,62 +66,55 @@ struct Distance {
   double inverse_of_transformed_distance(double d) { return std::sqrt(d); }
 }; // end of struct Distance
 
-template <unsigned int D>
 struct RealRCTree: public RCTree {
-  typedef typename CGAL::Search_traits<double, VectorWithIndex<D>,
+  typedef  CGAL::Search_traits<double, VectorWithIndex,
                                        const double*,
-                                       Construct_coord_iterator<D> > Traits;
-  typedef typename CGAL::Fuzzy_sphere<Traits> Sphere;
-  typedef typename CGAL::K_neighbor_search<Traits, Distance<D> >
+                                       Construct_coord_iterator > Traits;
+  typedef  CGAL::Fuzzy_sphere<Traits> Sphere;
+  typedef  CGAL::K_neighbor_search<Traits, Distance >
   K_neighbor_search;
-  typedef typename K_neighbor_search::Tree Tree;
+  typedef  K_neighbor_search::Tree Tree;
   Tree tree;
   template <class It>
   RealRCTree(It b, It e): tree(b,e){}
 };
 
-#define IMP_CGAL_KNN_D_DEF(N, D)                                         \
-  KNNData##N::KNNData##N(const std::vector<VectorWithIndex<D> > &v):    \
-  vsi_(v) {                                                             \
-    tree_= new RealRCTree<D>(v.begin(), v.end());                       \
-  }                                                                     \
-  void KNNData##N::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
-                                          unsigned int k,               \
-                                          double eps,                   \
-                                          Ints &ret) const {            \
-    VectorWithIndex<D> d(std::numeric_limits<int>::max(), g);           \
-    RealRCTree<D>::                                                     \
-      K_neighbor_search search(dynamic_cast<RealRCTree<D>*>(tree_.get()) \
-                             ->tree,                                    \
-                             d, k, eps);                                \
-    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())      \
-                       == static_cast<int>(k),                          \
-                       "Got the wrong number of points out from CGAL neighbor" \
-                       << " search. Expected " << k                     \
-                       << " got "                                       \
-                       << std::distance(search.begin(), search.end())); \
-    Ints::iterator rit = ret.begin();                                   \
-    for ( RealRCTree<D>::K_neighbor_search::iterator it = search.begin(); \
-         it != search.end(); ++it) {                                    \
-      *rit= it->first;                                                  \
-      ++rit;                                                            \
-    }                                                                   \
-  }                                                                     \
-  void KNNData##N::fill_nearest_neighbors_v(const algebra::VectorD<D> &g, \
-                                            double dist,                \
-                                            double eps,                 \
-                                            Ints &ret) const {          \
-    VectorWithIndex<D> d(std::numeric_limits<int>::max(), g);           \
-    dynamic_cast<RealRCTree<D>*>(tree_.get())                           \
-      ->tree.search(std::back_inserter(ret),                            \
-                    RealRCTree<D>::Sphere(d, dist, eps));               \
-  }                                                                     \
+void KNNData::initialize(const std::vector<VectorWithIndex > &v) {
+  vsi_=v;
+  tree_= new RealRCTree(v.begin(), v.end());
+}
+void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD &g,
+                                       unsigned int k,
+                                       double eps,
+                                       Ints &ret) const {
+  VectorWithIndex d(std::numeric_limits<int>::max(), g);
+  RealRCTree::
+    K_neighbor_search search(dynamic_cast<RealRCTree*>(tree_.get())
+                             ->tree,
+                             d, k, eps);
+  IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
+                     == static_cast<int>(k),
+                     "Got the wrong number of points out from CGAL neighbor"
+                     << " search. Expected " << k
+                     << " got "
+                     << std::distance(search.begin(), search.end()));
+  Ints::iterator rit = ret.begin();
+  for ( RealRCTree::K_neighbor_search::iterator it = search.begin();
+        it != search.end(); ++it) {
+    *rit= it->first;
+    ++rit;
+  }
+}
+void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD &g,
+                                          double dist,
+                                          double eps,
+                                          Ints &ret) const {
+  VectorWithIndex d(std::numeric_limits<int>::max(), g);
+  dynamic_cast<RealRCTree*>(tree_.get())
+    ->tree.search(std::back_inserter(ret),
+                  RealRCTree::Sphere(d, dist, eps));
+}
 
-
-IMP_CGAL_KNN_D_DEF(2, 2)
-IMP_CGAL_KNN_D_DEF(3, 3)
-IMP_CGAL_KNN_D_DEF(4, 4)
-IMP_CGAL_KNN_D_DEF(k, -1)
 
 
 IMPCGAL_END_INTERNAL_NAMESPACE

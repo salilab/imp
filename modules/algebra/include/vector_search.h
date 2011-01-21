@@ -24,7 +24,7 @@
 #elif defined(IMP_ALGEBRA_USE_IMP_CGAL)
 #define IMP_KNN_DATA IMP::cgal::internal::KNNData
 #else
-#define IMP_KNN_DATA internal::LinearKNNData
+#define IMP_KNN_DATA internal::LinearKNNData<D>
 #endif
 
 
@@ -45,7 +45,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
  */
 template <unsigned int D>
 class NearestNeighborD {
-  IMP_KNN_DATA<D> data_;
+  IMP_KNN_DATA data_;
   double eps_;
 #if IMP_BUILD < IMP_FAST
   mutable std::ofstream query_log_;
@@ -55,10 +55,6 @@ class NearestNeighborD {
     if (0) {
       // compile all of them
       Ints ret;
-#ifdef IMP_ALGEBRA_USE_ANN
-      internal::ANNData<D> ann(b,e);
-      ann.fill_nearest_neighbors(*b, 3U, eps_, ret);
-#endif
       internal::LinearKNNData<D> linear(b,e);
       linear.fill_nearest_neighbors(*b, 3U, eps_, ret);
     }

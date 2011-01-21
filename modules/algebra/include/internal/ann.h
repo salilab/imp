@@ -16,7 +16,6 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-template <unsigned int D>
 struct ANNData {
   unsigned int dimension_;
   boost::scoped_array<ANNcoord*> points_;
@@ -28,7 +27,7 @@ struct ANNData {
   unsigned int extract_dimension(It b, It e) const {
     unsigned int ret=0;
     for (It c=b; c != e; ++c) {
-      VectorD<D> v= get_vector_d_geometry(*c);
+      VectorKD v= get_vector_d_geometry(*c);
       if (ret==0) {
         ret=v.get_dimension();
       } else {
@@ -44,7 +43,7 @@ struct ANNData {
     unsigned int i=0;
     ANNcoord** ret = new ANNcoord*[std::distance(b,e)];
     for (It c=b; c != e; ++c) {
-      VectorD<D> v= get_vector_d_geometry(*c);
+      VectorKD v= get_vector_d_geometry(*c);
       ANNcoord *pt= new ANNcoord[dimension_];
       std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
       ret[i++]=pt;
@@ -59,7 +58,7 @@ struct ANNData {
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k,
                               double eps, Ints&ret) const {
-    VectorD<D> v= get_vector_d_geometry(g);
+    VectorKD v= get_vector_d_geometry(g);
     ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
@@ -73,7 +72,7 @@ struct ANNData {
     static const unsigned int guess=20;
     static double guess_dists[guess];
     ret.resize(guess);
-    VectorD<D> v= get_vector_d_geometry(g);
+    VectorKD v= get_vector_d_geometry(g);
     ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     unsigned int k=tree_.annkFRSearch(pt, square(fix_distance(distance, eps)),
@@ -86,8 +85,8 @@ struct ANNData {
                          &ret[0], dists.get(), eps);
     }
   }
-  VectorD<D> get_point(unsigned int i) const {
-    return VectorD<D>(tree_.thePoints()[i], tree_.thePoints()[i]+dimension_);
+  VectorKD get_point(unsigned int i) const {
+    return VectorKD(tree_.thePoints()[i], tree_.thePoints()[i]+dimension_);
   }
   unsigned int get_number_of_points() const {
     return tree_.nPoints();
