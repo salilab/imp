@@ -19,7 +19,7 @@
 #include "internal/linear_knn.h"
 #include <fstream>
 
-#ifdef IMP_ALGEBRA_USE_ANN_DO_NOT_COMMIT
+#ifdef IMP_ALGEBRA_USE_ANN
 #define IMP_KNN_DATA internal::ANNData
 #elif defined(IMP_ALGEBRA_USE_IMP_CGAL)
 #define IMP_KNN_DATA IMP::cgal::internal::KNNData
