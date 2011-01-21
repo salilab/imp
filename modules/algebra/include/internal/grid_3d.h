@@ -15,7 +15,9 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <class A, class B>
 inline bool get_is_non_empty(const A &a, const B &b) {
-  for (unsigned int i=0; i< A::DIMENSION; ++i) {
+  IMP_USAGE_CHECK(a.get_dimension() == b.get_dimension(),
+                  "Dimensions don't match");
+  for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a[i] >= b[i]) return false;
   }
   return true;
@@ -42,9 +44,9 @@ class GridIndexIterator
                        "Incrementing invalid iterator");
     IMP_INTERNAL_CHECK(cur_ >= lb_, "cur out of range");
     IMP_INTERNAL_CHECK(cur_ < ub_, "cur out of range");
-    int r[BI::DIMENSION];
+    boost::scoped_array<int> r(new int[cur_.get_dimension()]);
     unsigned int carry=1;
-    for (int i=BI::DIMENSION-1; i>=0; --i) {
+    for (int i=cur_.get_dimension()-1; i>=0; --i) {
       r[i]= cur_[i]+carry;
       if ( r[i] == ub_[i]) {
         r[i]= lb_[i];
@@ -56,7 +58,7 @@ class GridIndexIterator
     if (carry==1) {
       cur_= BI();
     } else {
-      BI nc= BI(r, r+BI::DIMENSION);
+      BI nc= BI(r.get(), r.get()+cur_.get_dimension());
       IMP_INTERNAL_CHECK(nc > cur_, "Nonfunctional increment");
       IMP_INTERNAL_CHECK(nc > lb_, "Problems advancing");
       IMP_INTERNAL_CHECK(get_is_non_empty(nc, ub_), "Problems advancing");

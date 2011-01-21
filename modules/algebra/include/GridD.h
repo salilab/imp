@@ -74,9 +74,6 @@ namespace grids {
         }
         out << ")";
       });
-#ifndef IMP_DOXYGEN
-    static const unsigned int DIMENSION=D;
-#endif
 
 #ifndef SWIG
     typedef const int* iterator;
@@ -175,7 +172,6 @@ namespace grids {
     }
 #endif
     unsigned int __len__() const { return get_dimension();}
-    static const unsigned int DIMENSION=D;
 #endif
     IMP_COMPARISONS(GridIndexD);
     IMP_HASHABLE_INLINE(GridIndexD,
