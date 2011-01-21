@@ -10,5 +10,6 @@ env= env.IMPApplication(name="em_tools", version="SVN",
                         required_dependencies=[])
 if env:
     env.IMPPythonExecutable('resample_density.py')
+    env.IMPPythonExecutable('mol2pca.py')
     env.IMPPythonExecutable('map2pca.py')
     env.IMPPythonExecutable('simulate_density_from_pdb.py')
