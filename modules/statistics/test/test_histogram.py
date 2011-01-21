@@ -18,7 +18,7 @@ class HistogramTests(IMP.test.TestCase):
             hist.add(random.uniform(start,end))
         self.assertEqual(hist.get_total_count(),100)
     def test_histogram_construction2(self):
-        """Check that the histogram is constructed correctly"""
+        """Check that the uniform histogram is constructed correctly"""
         start=0
         end=10
         num_bins=100
@@ -28,6 +28,7 @@ class HistogramTests(IMP.test.TestCase):
         self.assertEqual(hist.get_top(0.9),0)
 
     def test_get_top(self):
+        """Test that histogram top works"""
         start=0
         end=10
         num_bins=100
