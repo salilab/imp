@@ -28,11 +28,11 @@ Embedding::Embedding(std::string name): Object(name){}
 Embedding::~Embedding(){}
 
 
-Floats VectorDEmbedding::get_point(unsigned int i) const {
+algebra::VectorKD VectorDEmbedding::get_point(unsigned int i) const {
   return vectors_[i];
 }
 
-unsigned int VectorDEmbedding::get_number_of_points() const {
+unsigned int VectorDEmbedding::get_number_of_items() const {
   return vectors_.size();
 }
 
@@ -46,7 +46,8 @@ ConfigurationSetXYZEmbedding
   Embedding("ConfiguringEmbedding"),
   cs_(cs), sc_(sc), align_(align){}
 
-Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
+algebra::VectorKD
+ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
   algebra::Transformation3D tr= algebra::get_identity_transformation_3d();
   if (align_) {
     cs_->load_configuration(0);
@@ -71,10 +72,10 @@ Floats ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
     ret[3*i+1]= v[1];
     ret[3*i+2]= v[2];
   }
-  return ret;
+  return algebra::VectorKD(ret.begin(), ret.end());
 }
 
-unsigned int ConfigurationSetXYZEmbedding::get_number_of_points() const {
+unsigned int ConfigurationSetXYZEmbedding::get_number_of_items() const {
   return cs_->get_number_of_configurations();
 }
 
@@ -98,7 +99,7 @@ ParticleEmbedding::ParticleEmbedding(const ParticlesTemp &ps,
   }
 }
 
-Floats ParticleEmbedding::get_point(unsigned int i) const {
+algebra::VectorKD ParticleEmbedding::get_point(unsigned int i) const {
   Floats ret(ks_.size());
   for (unsigned int j=0; j< ks_.size(); ++j) {
     ret[j]= ps_[i]->get_value(ks_[j]);
@@ -108,10 +109,10 @@ Floats ParticleEmbedding::get_point(unsigned int i) const {
       ret[j]= (ret[j]-ranges_[j].first)*ranges_[j].second;
     }
   }
-  return ret;
+  return algebra::VectorKD(ret.begin(), ret.end());
 }
 
-unsigned int ParticleEmbedding::get_number_of_points() const {
+unsigned int ParticleEmbedding::get_number_of_items() const {
   return ps_.size();
 }
 
@@ -149,16 +150,6 @@ void PartitionalClusteringWithCenter::do_show(std::ostream &out) const {
 }
 
 
-namespace {
-  double compute_distance(const Floats &a, const Floats &b) {
-    double d=0;
-    for (unsigned int i=0; i< a.size(); ++i) {
-      d+= square(a[i]-b[i]);
-    }
-    return std::sqrt(d);
-  }
-}
-
 
 namespace {
 
@@ -178,9 +169,11 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
   boost::scoped_ptr<internal::KMPointArray> kmc;
   IMP_LOG(VERBOSE,"KMLProxy::run load initial guess \n");
   //load the initail guess
-  internal::KMData data(metric->get_point(names[0]).size(), names.size());
+  internal::KMData data(metric->get_point(names[0]).get_dimension(),
+                        names.size());
   for (unsigned int i=0; i< names.size(); ++i) {
-    *(data[i])= metric->get_point(names[i]);
+    *(data[i])= Floats(metric->get_point(names[i]).coordinates_begin(),
+                       metric->get_point(names[i]).coordinates_end());
   }
   internal::KMFilterCenters ctrs(k, &data, NULL, 1.0);
 
@@ -195,10 +188,10 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
                      == (unsigned int) best_clusters.get_number_of_centers(),
              "The final number of centers does not match the requested one");
   IMP_LOG(VERBOSE,"KMLProxy::run load best results \n");
-  std::vector<Floats> centers(k);
+  std::vector<algebra::VectorKD> centers(k);
   for (unsigned int i = 0; i < k; i++) {
     internal::KMPoint *kmp = best_clusters[i];
-    centers[i]=*kmp;
+    centers[i]=algebra::VectorKD(kmp->begin(), kmp->end());
   }
   //set the assignment of particles to centers
   //array of number of all points
@@ -217,7 +210,10 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
     int c=-1;
     double d= std::numeric_limits<double>::max();
     for (unsigned int j=0; j< clusters[i].size(); ++j) {
-      double cd= compute_distance(*(data[clusters[i][j]]), centers[i]);
+      double cd
+        = algebra::get_distance(algebra::VectorKD(data[clusters[i][j]]->begin(),
+                                                  data[clusters[i][j]]->end()),
+                                centers[i]);
       if (cd < d) {
         d= cd;
         c= j;
@@ -235,7 +231,7 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
 
 PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
                                     unsigned int k, unsigned int iterations) {
-  Ints names(metric->get_number_of_points());
+  Ints names(metric->get_number_of_items());
   for (unsigned int i=0; i< names.size(); ++i) {
     names[i]=i;
   }
@@ -249,16 +245,14 @@ PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
 PartitionalClusteringWithCenter*
 get_connectivity_clustering(Embedding *embed,
                             double dist) {
-  IMP_USAGE_CHECK(embed->get_number_of_points() >0,
+  IMP_USAGE_CHECK(embed->get_number_of_items() >0,
                   "There most be a point to clustering");
-  IMP_USAGE_CHECK(embed->get_point(0).size() ==3,
-                  "Can currently only use connectivity clustering in 3D.");
-  algebra::Vector3Ds vs(embed->get_number_of_points());
+  algebra::VectorKDs vs(embed->get_number_of_items());
   for (unsigned int i=0; i< vs.size(); ++i) {
-    Floats fs= embed->get_point(i);
-    vs[i]= algebra::Vector3D(fs.begin(), fs.end());
+    algebra::VectorKD fs= embed->get_point(i);
+    vs[i]= fs;
   }
-  algebra::NearestNeighborD<3> nn(vs.begin(), vs.end(), .1);
+  algebra::NearestNeighborKD nn(vs.begin(), vs.end(), .1);
   typedef boost::vector_property_map<unsigned int> Index;
   typedef Index Parent;
   typedef boost::disjoint_sets<Index,Parent> UF;
@@ -280,7 +274,7 @@ get_connectivity_clustering(Embedding *embed,
   std::map<int,int> cluster_map;
   Ints reps;
   std::vector<Ints> clusters;
-  algebra::Vector3Ds centers;
+  algebra::VectorKDs centers;
   for (unsigned int i=0; i < vs.size(); ++i) {
     int p= uf.find_set(i);
     if (cluster_map.find(p) == cluster_map.end()) {

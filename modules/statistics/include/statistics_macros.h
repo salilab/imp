@@ -14,11 +14,22 @@
 
 //! Define things needed for a Embedding
 /** In addition to what is done by IMP_OBJECT() it declares
-    - IMP::statistics::Distance::get_embedding()
+    - IMP::statistics::Embedding::get_embedding()
+    - IMP::statistics::Embedding::get_number_of_items()
 */
 #define IMP_EMBEDDING(Name)                                        \
-  Floats get_point(unsigned int i) const;                          \
-  unsigned int get_number_of_points() const;                       \
+  algebra::VectorKD get_point(unsigned int i) const;               \
+  unsigned int get_number_of_items() const;                        \
+  IMP_OBJECT(Name)
+
+//! Define things needed for a Embedding
+/** In addition to what is done by IMP_OBJECT() it declares
+    - IMP::statistics::Distance::get_embedding()
+*/
+#define IMP_DISTANCE(Name)                                         \
+  distance get_distance(unsigned int i,                            \
+                        unsigned int j) const;                     \
+  unsigned int get_number_of_items() const;                        \
   IMP_OBJECT(Name)
 
 

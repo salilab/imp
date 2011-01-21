@@ -22,12 +22,12 @@ HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
   }
 }
 
-Floats HighDensityEmbedding::get_point(unsigned int i) const {
-  return Floats(points_[i].coordinates_begin(),
-                points_[i].coordinates_end());
+algebra::VectorKD HighDensityEmbedding::get_point(unsigned int i) const {
+  return algebra::VectorKD(points_[i].coordinates_begin(),
+                           points_[i].coordinates_end());
 }
 
-unsigned int HighDensityEmbedding::get_number_of_points() const {
+unsigned int HighDensityEmbedding::get_number_of_items() const {
   return points_.size();
 }
 

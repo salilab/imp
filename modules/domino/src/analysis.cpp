@@ -29,16 +29,16 @@ namespace {
   void ParticleStatesEmbedding::do_show(std::ostream &out) const {
 
   }
-  Floats ParticleStatesEmbedding::get_point(unsigned int i) const {
+  algebra::VectorKD ParticleStatesEmbedding::get_point(unsigned int i) const {
     ps_->load_particle_state(allowed_[i], p_);
     core::XYZ d(p_);
     Floats ret(3,0.0);
     ret[0]= d.get_coordinate(0);
     ret[1]= d.get_coordinate(1);
     ret[2]= d.get_coordinate(2);
-    return ret;
+    return algebra::VectorKD(ret.begin(), ret.end());
   }
-  unsigned int ParticleStatesEmbedding::get_number_of_points() const {
+  unsigned int ParticleStatesEmbedding::get_number_of_items() const {
     return allowed_.size();
   }
 
