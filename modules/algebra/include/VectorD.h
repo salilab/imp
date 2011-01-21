@@ -175,27 +175,23 @@ public:
 
   VectorD operator*(double s) const {
     check_vector();
-    VectorD ret;
-    for (unsigned int i=0; i<get_dimension(); ++i) {
-      ret[i] = operator[](i) * s;
-    }
+    VectorD ret=*this;
+    ret*=s;
     return ret;
   }
 
   VectorD operator/(double s) const {
     check_vector();
-    VectorD ret;
-    for (unsigned int i=0; i<get_dimension(); ++i) {
-      ret[i] = operator[](i) / s;
-    }
+    VectorD ret=*this;
+    ret/=s;
     return ret;
   }
 
   VectorD operator-() const {
     check_vector();
-    VectorD ret;
+    VectorD ret=*this;
     for (unsigned int i=0; i<get_dimension(); ++i) {
-      ret[i] = -operator[](i);
+      ret[i] = -ret[i];
     }
     return ret;
   }
@@ -203,20 +199,16 @@ public:
   VectorD operator-(const VectorD &o) const {
     check_compatible_vector(o);
     check_vector(); o.check_vector();
-    VectorD ret;
-    for (unsigned int i=0; i<get_dimension(); ++i) {
-      ret[i] = operator[](i) - o[i];
-    }
+    VectorD ret=*this;
+    ret-=o;
     return ret;
   }
 
   VectorD operator+(const VectorD &o) const {
     check_compatible_vector(o);
     check_vector(); o.check_vector();
-    VectorD ret;
-    for (unsigned int i=0; i<get_dimension(); ++i) {
-      ret[i] = operator[](i) + o[i];
-    }
+    VectorD ret=*this;
+    ret+=o;
     return ret;
   }
 
@@ -375,22 +367,55 @@ inline VectorD<D> get_basis_vector_d(unsigned int coordinate) {
   return VectorD<D>(vs, vs+D);
 }
 
+//! Return a dynamically sized basis vector
+inline VectorD<-1> get_basis_vector_kd( int D,
+                                    unsigned int coordinate) {
+  IMP_USAGE_CHECK(D>0, "D must be positive");
+  IMP_USAGE_CHECK(coordinate<static_cast<unsigned int>(D),
+                  "There are only " << D << " basis vectors");
+  double vs[D];
+  for (int i=0; i< D; ++i) {
+    if (i==static_cast<int>(coordinate)) vs[i]=1;
+    else vs[i]=0;
+  }
+  return VectorD<-1>(vs, vs+D);
+}
+
 //! Return a vector of zeros
 template <int D>
 inline VectorD<D> get_zero_vector_d() {
-  double vs[D]={0};
-  return VectorD<D>(vs, vs+D);
+  IMP_USAGE_CHECK(D>0, "D must be positive");
+  std::vector<double> vs(D, 0);
+  return VectorD<D>(vs.begin(), vs.end());
+}
+
+//! Return a dynamically sized vector of zeros
+inline VectorD<-1> get_zero_vector_kd( int D) {
+  IMP_USAGE_CHECK(D>0, "D must be positive");
+  std::vector<double> vs(D, 0);
+  return VectorD<-1>(vs.begin(), vs.end());
 }
 
 
 //! Return a vector of ones (or another constant)
+inline VectorD<-1> get_ones_vector_kd( int D, double v=1) {
+  IMP_USAGE_CHECK(D>0, "D must be positive");
+  boost::scoped_array<double> vv(new double[D]);
+  for ( int i=0; i< D; ++i) {
+    vv[i]=v;
+  }
+  return VectorD<-1>(vv.get(), vv.get()+D);
+}
+
+//! Return a vector of ones (or another constant)
 template <int D>
 inline VectorD<D> get_ones_vector_d(double v=1) {
-  VectorD<D> vv;
+  IMP_USAGE_CHECK(D>0, "D must be positive");
+  boost::scoped_array<double> vv(new double[D]);
   for (unsigned int i=0; i< D; ++i) {
     vv[i]=v;
   }
-  return vv;
+  return VectorD<D>(vv.get(), vv.get()+D);
 }
 
 

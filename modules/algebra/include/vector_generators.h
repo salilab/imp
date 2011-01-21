@@ -37,7 +37,7 @@ template <int D>
 inline VectorD<D>
 get_random_vector_in(const BoundingBoxD<D> &bb) {
   VectorD<D> ret;
-  for (unsigned int i=0; i< D; ++i) {
+  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
     ::boost::uniform_real<> rand(bb.get_corner(0)[i],
                                  bb.get_corner(1)[i]);
     ret[i]=rand(random_number_generator);
@@ -52,36 +52,38 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
 template <int D>
 inline VectorD<D>
 get_random_vector_on(const BoundingBoxD<D> &bb) {
-  double areas[D*2];
+  IMP_USAGE_CHECK(D>0, "Does not work in runtime D yet");
+  boost::scoped_array<double> areas(new double[bb.get_dimension()*2]);
   VectorD<D> lb= bb.get_corner(0);
   VectorD<D> ub= bb.get_corner(1);
-  for (unsigned int i=0; i< D; ++i) {
+  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
     areas[i]=1;
-    for (unsigned int j=1; j< D; ++j) {
-      areas[i] *= ub[(i+j)%D]-lb[(i+j)%D];
+    for (unsigned int j=1; j< bb.get_dimension(); ++j) {
+      areas[i] *= ub[(i+j)%bb.get_dimension()]-lb[(i+j)%bb.get_dimension()];
     }
     if (i!= 0) {
       areas[i]+= areas[i-1];
     }
   }
-  for (unsigned int i=0; i< D; ++i) {
-    areas[D+i]= areas[D-1]+areas[i];
+  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
+    areas[bb.get_dimension()+i]= areas[bb.get_dimension()-1]+areas[i];
   }
   /*for (unsigned int i=0; i< D*2; ++i) {
     std::cout << areas[i] << " ";
     }*/
-  ::boost::uniform_real<> rand(0, areas[2*D-1]);
+  ::boost::uniform_real<> rand(0, areas[2*bb.get_dimension()-1]);
   double a= rand(random_number_generator);
   //std::cout << ": " << a << std::endl;
   unsigned int side;
-  for (side=0; side< 2*D; ++side) {
+  for (side=0; side< 2*bb.get_dimension(); ++side) {
     if (areas[side] > a) break;
   }
-  unsigned int coord= (side>=D? side-D: side);
+  unsigned int coord= (side>=bb.get_dimension()? side-bb.get_dimension(): side);
   VectorD<D-1> fmin, fmax, sv;
-  for (unsigned int i=1; i< D; ++i) {
+  for (unsigned int i=1; i< bb.get_dimension(); ++i) {
     fmin[i-1]= 0;
-    fmax[i-1]= ub[(coord+i)%D]- lb[(coord+i)%D];
+    fmax[i-1]= ub[(coord+i)%bb.get_dimension()]
+      - lb[(coord+i)%bb.get_dimension()];
   }
   sv= get_random_vector_in(BoundingBoxD<D-1>(fmin, fmax));
 

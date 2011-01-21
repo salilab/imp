@@ -18,33 +18,49 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <unsigned int D>
 struct ANNData {
+  unsigned int dimension_;
   boost::scoped_array<ANNcoord*> points_;
   mutable ANNkd_tree tree_;
   double fix_distance(double dist, double eps) const {
     return (1+eps)*dist;
   }
-  ANNData(){}
+  template <class It>
+  unsigned int extract_dimension(It b, It e) const {
+    unsigned int ret=0;
+    for (It c=b; c != e; ++c) {
+      VectorD<D> v= get_vector_d_geometry(*c);
+      if (ret==0) {
+        ret=v.get_dimension();
+      } else {
+        IMP_USAGE_CHECK(v.get_dimension() == ret,
+                        "Dimensions don't match");
+      }
+    }
+    return ret;
+  }
+  ANNData(): dimension_(0){}
   template <class It>
   ANNcoord** extract_points(It b, It e) const {
     unsigned int i=0;
     ANNcoord** ret = new ANNcoord*[std::distance(b,e)];
     for (It c=b; c != e; ++c) {
-      ANNcoord *pt= new ANNcoord[D];
       VectorD<D> v= get_vector_d_geometry(*c);
+      ANNcoord *pt= new ANNcoord[dimension_];
       std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
       ret[i++]=pt;
     }
     return ret;
   }
   template <class It>
-  ANNData(It b, It e): points_(extract_points(b,e)),
-                       tree_(points_.get(), std::distance(b,e), D){
+  ANNData(It b, It e): dimension_(extract_dimension(b,e)),
+                       points_(extract_points(b,e)),
+                       tree_(points_.get(), std::distance(b,e), dimension_){
   }
   template <class G>
   void fill_nearest_neighbors(const G &g, unsigned int k,
                               double eps, Ints&ret) const {
     VectorD<D> v= get_vector_d_geometry(g);
-    ANNcoord pt[D];
+    ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     boost::scoped_array<ANNdist> dists(new ANNdist[k]);
     IMP_INTERNAL_CHECK(ret.size() >=k, "Not large enough array");
@@ -58,7 +74,7 @@ struct ANNData {
     static double guess_dists[guess];
     ret.resize(guess);
     VectorD<D> v= get_vector_d_geometry(g);
-    ANNcoord pt[D];
+    ANNcoord pt[dimension_];
     std::copy(v.coordinates_begin(), v.coordinates_end(), pt);
     unsigned int k=tree_.annkFRSearch(pt, square(fix_distance(distance, eps)),
                                       guess, &ret[0], guess_dists, eps);
@@ -71,7 +87,7 @@ struct ANNData {
     }
   }
   VectorD<D> get_point(unsigned int i) const {
-    return VectorD<D>(tree_.thePoints()[i], tree_.thePoints()[i]+D);
+    return VectorD<D>(tree_.thePoints()[i], tree_.thePoints()[i]+dimension_);
   }
   unsigned int get_number_of_points() const {
     return tree_.nPoints();

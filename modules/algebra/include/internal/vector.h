@@ -75,11 +75,11 @@ class VectorData<T, -1> {
 public:
   VectorData(const VectorData &o) {
     set_coordinates(o.get_data(),
-                    o.get_data()+get_dimension());
+                    o.get_data()+o.get_dimension());
   }
   VectorData &operator=(const VectorData &o) {
     set_coordinates(o.get_data(),
-                    o.get_data()+get_dimension());
+                    o.get_data()+o.get_dimension());
     return *this;
   }
   VectorData(): d_(0){}

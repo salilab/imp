@@ -70,7 +70,7 @@ namespace grids {
         out << "(";
         for (unsigned int i=0; i< get_dimension(); ++i) {
           out<< operator[](i);
-          if (i != D-1) out << ", ";
+          if (i != get_dimension()-1) out << ", ";
         }
         out << ")";
       });
@@ -540,31 +540,31 @@ namespace grids {
 
     void set_unit_cell(const VectorD<D> &c) {
       unit_cell_=c;
-      inverse_unit_cell_= VectorD<D>();
-      for (unsigned int i=0; i < D; ++i) {
-        inverse_unit_cell_[i]=1.0/unit_cell_[i];
+      Floats iuc(get_dimension());
+      for (unsigned int i=0; i < get_dimension(); ++i) {
+        iuc[i]=1.0/unit_cell_[i];
       }
+      inverse_unit_cell_=VectorD<D>(iuc.begin(), iuc.end());
     }
     void set_origin(const VectorD<D> &c) {
       origin_=c;
     }
     template <class O>
-    VectorD<D> get_elementwise_product(const VectorD<D> &v0,
+    VectorD<D> get_elementwise_product(VectorD<D> v0,
                                        const O &v1) const {
-      VectorD<D> ret;
-      for (unsigned int i=0; i< D; ++i) {
-        ret[i]= v0[i]*v1[i];
+      for (unsigned int i=0; i< get_dimension(); ++i) {
+        v0[i]*= v1[i];
       }
-      return ret;
+      return v0;
     }
     template <class O>
     VectorD<D> get_uniform_offset(const O &v0,
                                   double o) const {
-      VectorD<D> ret;
-      for (unsigned int i=0; i< D; ++i) {
+      Floats ret(get_dimension());
+      for (unsigned int i=0; i< get_dimension(); ++i) {
         ret[i]= v0[i]+o;
       }
-      return ret;
+      return VectorD<D>(ret.begin(), ret.end());
     }
 #endif
   public:
@@ -633,17 +633,21 @@ namespace grids {
         \c SparseGridStorage3D<VT, UnboundedGridStorage3D>)
     */
     GridD(double side,
-          const VectorD<D> &origin=get_zero_vector_d<D>(),
+          const VectorD<D> &origin=get_zero_vector_kd(D),
           const Value& def= Value()):
       Storage(def),
       origin_(origin){
-      set_unit_cell(get_ones_vector_d<D>()*side);
+      set_unit_cell(get_ones_vector_kd(D)*side);
     }
     //! An empty, undefined grid.
     GridD(): Storage(Value()){
     }
     const VectorD<D> get_origin() const {
       return origin_;
+    }
+
+    unsigned int get_dimension() const {
+      return get_origin().get_dimension();
     }
 
     //! Return the unit cell, relative to the origin.
@@ -717,13 +721,13 @@ namespace grids {
         succeed.
     */
     ExtendedGridIndexD<D> get_extended_index(const VectorD<D>& pt) const {
-      int index[D];
-      for (unsigned int i=0; i< D; ++i ) {
+      boost::scoped_array<int> index(new int[get_dimension()]);
+      for (unsigned int i=0; i< get_dimension(); ++i ) {
         float d = pt[i] - origin_[i];
         float fi= d*inverse_unit_cell_[i];
         index[i]= static_cast<int>(std::floor(fi));
       }
-      return ExtendedGridIndexD<D>(index, index+D);
+      return ExtendedGridIndexD<D>(index.get(), index.get()+D);
     }
     //! Convert an index back to an extended index
     ExtendedGridIndexD<D> get_extended_index(const GridIndexD<D> &index) const {
@@ -754,19 +758,19 @@ namespace grids {
       return origin_+ get_elementwise_product(get_unit_cell(),
                                               get_uniform_offset(gi, .5));
     }
-    VectorD<3> get_center(const GridIndexD<D>& gi) const {
+    VectorD<D> get_center(const GridIndexD<D>& gi) const {
       return origin_+ get_elementwise_product(get_unit_cell(),
                                               get_uniform_offset(gi, .5));
     }
     /** @} */
 
 
-    BoundingBoxD<3> get_bounding_box() const {
+    BoundingBoxD<D> get_bounding_box() const {
       IMP_USAGE_CHECK(Storage::get_is_bounded(),
                       "Get_bounding_box() with no arguments only works on "
                       << "bounded grids.");
       VectorD<D> top= get_origin();
-      for (unsigned int i=0; i< D; ++i) {
+      for (unsigned int i=0; i< get_dimension(); ++i) {
         top[i]+= get_unit_cell()[i]*Storage::get_number_of_voxels(i);
       }
       return BoundingBoxD<D>(get_origin(), top);
@@ -777,13 +781,13 @@ namespace grids {
         voxels are resized as needed.
     */
     void set_bounding_box(const BoundingBoxD<D> &bb3) {
-      VectorD<D> nuc;
-      for (unsigned int i=0; i< D; ++i) {
+      Floats nuc(get_dimension());
+      for (unsigned int i=0; i< get_dimension(); ++i) {
         double side= bb3.get_corner(1)[i]- bb3.get_corner(0)[i];
         IMP_USAGE_CHECK(side>0, "Can't have flat grid");
         nuc[i]= side/Storage::get_number_of_voxels(i);
       }
-      set_unit_cell(nuc);
+      set_unit_cell(VectorD<D>(nuc.begin(), nuc.end()));
       set_origin(bb3.get_corner(0));
     }
 
@@ -805,12 +809,12 @@ namespace grids {
       IMP_USAGE_CHECK(Storage::get_is_bounded(), "get_nearest_index "
                       << "only works on bounded grids.");
       ExtendedGridIndexD<D> ei= get_extended_index(pt);
-      int is[3];
-      for (unsigned int i=0; i< D; ++i) {
+      boost::scoped_array<int> is(new int[get_dimension()]);
+      for (unsigned int i=0; i< get_dimension(); ++i) {
         is[i]= std::max(0, ei[i]);
         is[i]= std::min<int>(Storage::get_number_of_voxels(i)-1, is[i]);
       }
-      return ExtendedGridIndexD<3>(is, is+D);
+      return ExtendedGridIndexD<3>(is.get(), is.get()+get_dimension());
     }
   /** @} */
 

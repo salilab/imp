@@ -21,4 +21,4 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            'DenseFloatGrid3D', 'SparseIntGrid3D',
                                            'SparseUnboundedIntGrid3D',
                                            'Matrix2D', 'Matrix3D'],
-                  spelling_exceptions=["xyz", "zyz", "zxz"])
+                  spelling_exceptions=["xyz", "zyz", "zxz", "kd"])

@@ -45,5 +45,7 @@ namespace IMP {
    //%template(BoundingBox3Ds) ::std::vector<BoundingBoxD<3> >;
    %template(BoundingBox4D) BoundingBoxD<4>;
    //%template(BoundingBox4Ds) ::std::vector<BoundingBoxD<4> >;
+   %template(BoundingBoxKD) BoundingBoxD<-1>;
+   //%template(BoundingBox4Ds) ::std::vector<BoundingBoxD<4> >;
  }
 }
