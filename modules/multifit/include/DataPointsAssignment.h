@@ -33,6 +33,14 @@ public:
   algebra::Vector3Ds  get_cluster_vectors(int cluster_id) const;
   //Float get_cluster_xyz_diameter(int cluster_ind) const;
   const IntPairs *get_edges() const {return &edges_;}
+  algebra::Vector3Ds get_centers() const {
+    algebra::Vector3Ds vecs;
+    for(int i=0;i<get_number_of_clusters();i++) {
+      Array1DD xyz =cluster_engine_->get_center(i);
+      vecs.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+    }
+    return vecs;
+  }
   const ClusteringEngine *get_cluster_engine()
     const {return cluster_engine_;};
   IMP::algebra::Vector3Ds get_cluster_xyz(int cluster_ind) const;
@@ -54,22 +62,18 @@ IMPMULTIFITEXPORT void write_chimera(
            const std::string &chimera_filename,
            const DataPointsAssignment &dpa);
 
-IMPMULTIFITEXPORT void write_cmm(const std::string &cmm_filename,
-               const std::string &marker_set_name,
-               const DataPointsAssignment &dpa);
 IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
                             CEdges> read_cmm(const std::string &cmm_filename);
-IMPMULTIFITEXPORT void write_cmm(const std::string &cmm_filename,
+/*IMPMULTIFITEXPORT void write_cmm(const std::string &cmm_filename,
                const std::string &marker_set_name,
-               const DataPointsAssignment &dpa);
+               const DataPointsAssignment &dpa);*/
 IMPMULTIFITEXPORT std::pair<algebra::Vector3Ds,
                             CEdges> read_cmm(const std::string &cmm_filename);
 
-IMPMULTIFITEXPORT void write_max_cmm(const std::string &cmm_filename,
+/*IMPMULTIFITEXPORT void write_max_cmm(const std::string &cmm_filename,
                    em::DensityMap *dmap,
                    const std::string &marker_set_name,
-                   const DataPointsAssignment &dpa);
-
+                   const DataPointsAssignment &dpa);*/
 
 IMPMULTIFITEXPORT void write_pdb(const std::string &pdb_filename,
                const DataPointsAssignment &dpa);
@@ -95,9 +99,6 @@ algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       em::DensityMap *dmap, int segment_id);
 algebra::Vector3D get_segment_maximum(const DataPointsAssignment &dpa,
                                       DensGrid *dmap, int segment_id);
-IMPMULTIFITEXPORT
-void write_txt(const std::string &txt_filename,
-               const DataPointsAssignment &dpa);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_DATA_POINTS_ASSIGNMENT_H */

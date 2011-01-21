@@ -6,6 +6,7 @@
  *
  */
 #include <IMP/multifit/fitting_utils.h>
+#include <IMP/algebra/vector_search.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 em::DensityMap* create_hit_map(core::RigidBody &rb, Refiner *rb_ref,
@@ -29,4 +30,53 @@ em::DensityMap* create_hit_map(core::RigidBody &rb, Refiner *rb_ref,
   return ret.release();
 }
 
+namespace{
+  std::pair<Ints,Ints> seperate_points(
+    const atom::Hierarchy &mh,
+    const algebra::Vector3Ds points,
+    Float max_dist) {
+  Ints close_inds,far_inds;
+  float max_dist2=max_dist*max_dist;
+  //index leaves of the molecule in a knn
+  algebra::Vector3Ds all_cen;
+  core::XYZsTemp all_xyz(core::get_leaves(mh));
+  for(int i=0;i<(int)all_xyz.size();i++) {
+    all_cen.push_back(all_xyz[i].get_coordinates());
+  }
+  algebra::NearestNeighborD<3> nn(all_cen);
+  for(unsigned int j=0;j<points.size();j++) {
+    int closest_cen = nn.get_nearest_neighbor(points[j]);
+    if(algebra::get_squared_distance(all_cen[closest_cen],points[j])>max_dist2){
+      far_inds.push_back(j);
+    }
+    else{close_inds.push_back(j);}
+  }
+  return std::pair<Ints,Ints>(close_inds,far_inds);
+}
+}
+
+algebra::Vector3Ds get_points_close_to_molecule(
+                        const atom::Hierarchy &mh,
+                        const algebra::Vector3Ds points,
+                        Float max_dist){
+  Ints close_inds  = seperate_points(
+                                     mh,points,max_dist).first;
+  algebra::Vector3Ds ret;
+  for(Ints::iterator it = close_inds.begin(); it != close_inds.end();it++){
+    ret.push_back(points[*it]);
+  }
+  return ret;
+}
+algebra::Vector3Ds get_points_far_from_molecule(
+                        const atom::Hierarchy &mh,
+                        const algebra::Vector3Ds points,
+                        Float max_dist){
+  Ints far_inds  = seperate_points(
+                                     mh,points,max_dist).second;
+  algebra::Vector3Ds ret;
+  for(Ints::iterator it = far_inds.begin(); it != far_inds.end();it++){
+    ret.push_back(points[*it]);
+  }
+  return ret;
+}
 IMPMULTIFIT_END_NAMESPACE

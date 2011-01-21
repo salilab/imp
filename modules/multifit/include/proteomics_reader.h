@@ -15,6 +15,7 @@
 #include <IMP/file.h>
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
+
 class IMPMULTIFITEXPORT ProteomicsData {
  protected:
   class ProteinData {
