@@ -85,7 +85,7 @@ public:
   }
 };
 
-template <class SD, unsigned int D, class UF>
+template <class SD, int D, class UF>
 inline double compute_distance_pair_score(const algebra::VectorD<D> &delta,
                                    const UF *f,
                                    algebra::VectorD<D> *d,
