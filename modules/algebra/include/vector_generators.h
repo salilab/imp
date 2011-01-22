@@ -36,13 +36,13 @@ IMPALGEBRA_BEGIN_NAMESPACE
 template <int D>
 inline VectorD<D>
 get_random_vector_in(const BoundingBoxD<D> &bb) {
-  VectorD<D> ret;
+  Floats ret(bb.get_dimension());
   for (unsigned int i=0; i< bb.get_dimension(); ++i) {
     ::boost::uniform_real<> rand(bb.get_corner(0)[i],
                                  bb.get_corner(1)[i]);
     ret[i]=rand(random_number_generator);
   }
-  return ret;
+  return VectorD<D>(ret.begin(), ret.end());
 }
 
 //! Generate a random vector on a box with uniform density
