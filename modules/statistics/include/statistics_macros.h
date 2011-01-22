@@ -27,8 +27,8 @@
     - IMP::statistics::Distance::get_embedding()
 */
 #define IMP_DISTANCE(Name)                                         \
-  distance get_distance(unsigned int i,                            \
-                        unsigned int j) const;                     \
+  double get_distance(unsigned int i,                              \
+                      unsigned int j) const;                       \
   unsigned int get_number_of_items() const;                        \
   IMP_OBJECT(Name)
 

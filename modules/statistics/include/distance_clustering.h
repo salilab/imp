@@ -32,10 +32,34 @@ public:
 
 IMP_OBJECTS(Distance, Distances);
 
+class IMPSTATISTICSEXPORT EuclideanDistance: public Distance {
+  algebra::VectorKDs vectors_;
+public:
+  template <int D>
+  EuclideanDistance(const std::vector<algebra::VectorD<D> > &vs):
+    Distance("VectorDs"){
+    vectors_.resize(vs.size());
+    for (unsigned int i=0; i< vs.size(); ++i) {
+      vectors_[i]= algebra::VectorKD(vs[i].coordinates_begin(),
+                                     vs[i].coordinates_end());
+    }
+  }
+#ifdef SWIG
+  EuclideanDistance(const algebra::VectorKDs &vs);
+  EuclideanDistance(const algebra::Vector2Ds &vs);
+  EuclideanDistance(const algebra::Vector3Ds &vs);
+  EuclideanDistance(const algebra::Vector4Ds &vs);
+  EuclideanDistance(const algebra::Vector5Ds &vs);
+  EuclideanDistance(const algebra::Vector6Ds &vs);
+#endif
+  IMP_DISTANCE(EuclideanDistance);
+};
+
 /** Cluster by repeatedly removing edges which have lots
-    of shortest paths passing through them. The process can
-    be terminated either when there are a set number of
-    connected components.
+    of shortest paths passing through them. The process is
+    terminated when there are a set number of
+    connected components. Other termination criteria
+    can be added if someone proposes them.
  */
 IMPSTATISTICSEXPORT
 PartitionalClustering *get_centrality_clustering(Distance *d,

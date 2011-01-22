@@ -32,24 +32,39 @@ namespace boost {
 
 #include <boost/graph/bc_clustering.hpp>
 
-
-
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 Distance::Distance(std::string name): Object(name){}
 
 Distance::~Distance(){}
 
+
+double EuclideanDistance::get_distance(unsigned int i,
+                                       unsigned int j) const {
+  return algebra::get_distance(vectors_[i], vectors_[j]);
+}
+
+unsigned int EuclideanDistance::get_number_of_items() const {
+  return vectors_.size();
+}
+
+void EuclideanDistance::do_show(std::ostream &out) const {
+}
+
 namespace {
-  /*typedef boost::adjacency_matrix<boost::undirectedS,
+  /*struct centrality_t {
+    typedef boost::edge_property_tag kind;
+    } centrality;*/
+  typedef boost::adjacency_matrix<boost::undirectedS,
                                   boost::no_property,
                                   boost::property<boost::edge_weight_t,
-                                  double> > Graph;*/
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                                  double,
+            boost::property<boost::edge_centrality_t, double> > > Graph;
+  /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                                 boost::undirectedS,
                                 boost::no_property,
                                 boost::property<boost::edge_weight_t,
-                                                double> > Graph;
+                                double> > Graph;*/
   typedef boost::graph_traits<Graph> Traits;
 
   typedef boost::disjoint_sets<int*, int*> DS;
@@ -59,14 +74,17 @@ namespace {
     int k_;
     std::vector<int> rank_, parent_;
     Done(int k, int n): k_(k), rank_(n), parent_(n){}
-    template <class A, class B>
-    bool operator()(const A &, const B &, const Graph &g) {
+    template <class B>
+    bool operator()(centrality_type c, const B & e, const Graph &g) {
+      std::cout << "Done called on " << boost::source(e, g)
+                << "--" << boost::target(e, g)
+                << ": " << c << std::endl;
       DS ds(&rank_[0], &parent_[0]);
       boost::initialize_incremental_components(g, ds);
       boost::incremental_components(g, ds);
-      return ds.count_sets(boost::vertices(g).first,
-                           boost::vertices(g).second)
-        < static_cast<unsigned int>(k_);
+      unsigned int s= ds.count_sets(boost::vertices(g).first,
+                                    boost::vertices(g).second);
+      return s >= static_cast<unsigned int>(k_);
     }
   };
 
@@ -91,6 +109,7 @@ const Ints&TrivialPartitionalClustering::get_cluster(unsigned int i) const {
   IMP_USAGE_CHECK(i < get_number_of_clusters(),
                       "There are only " << get_number_of_clusters()
                       << " clusters. Not " << i);
+  set_was_used(true);
   return clusters_[i];
 }
 int TrivialPartitionalClustering
@@ -111,19 +130,26 @@ IMPSTATISTICSEXPORT
 PartitionalClustering *get_centrality_clustering(Distance *d,
                                                  double far,
                                                  int k) {
-#if 0
   IMP::internal::OwnerPointer<Distance> dp(d);
   unsigned int n=d->get_number_of_items();
   Graph g(n);
+  boost::property_map<Graph, boost::edge_weight_t>::type w
+    = boost::get(boost::edge_weight, g);
 
   for (unsigned int i=0; i<n; ++i) {
     for (unsigned int j=0; j< i; ++j) {
       double dist= d->get_distance(i,j);
-      add_edge(i,j, 1.0/dist, g);
+      if (dist < far) {
+        boost::graph_traits<Graph>::edge_descriptor e
+          =add_edge(i,j, g).first;
+        w[e]=/*1.0/*/dist;
+      }
     }
   }
-  boost::betweenness_centrality_clustering(g, Done(k, n));
-  std::vector<int> rank, parent;
+  boost::property_map<Graph, boost::edge_centrality_t>::type m
+    = boost::get(boost::edge_centrality, g);
+  boost::betweenness_centrality_clustering(g, Done(k, n), m);
+  std::vector<int> rank(n), parent(n);
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);
@@ -137,10 +163,8 @@ PartitionalClustering *get_centrality_clustering(Distance *d,
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }
-  return new TrivialPartitionalClustering(clusters);
-#else
-  IMP_NOT_IMPLEMENTED;
-#endif
+  IMP_NEW(TrivialPartitionalClustering, ret, (clusters));
+  return ret.release();
 }
 
 IMPSTATISTICS_END_NAMESPACE

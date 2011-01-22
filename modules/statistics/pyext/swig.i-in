@@ -8,11 +8,11 @@ IMP_SWIG_OBJECT(IMP::statistics, VectorDEmbedding, VectorDEmbeddings);
 IMP_SWIG_OBJECT(IMP::statistics, ParticleEmbedding, ParticleEmbeddings);
 IMP_SWIG_VALUE(IMP::statistics, Histogram, Histograms);
 IMP_SWIG_OBJECT(IMP::statistics, Distance, Distances);
+IMP_SWIG_OBJECT(IMP::statistics, EuclideanDistance, EuclideanDistances);
 
 
 %include "IMP/statistics/statistics_macros.h"
-//%include "IMP/statistics/KMLProxy.h"
-
 %include "IMP/statistics/PartitionalClustering.h"
 %include "IMP/statistics/point_clustering.h"
 %include "IMP/statistics/Histogram.h"
+%include "IMP/statistics/distance_clustering.h"
