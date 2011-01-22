@@ -130,20 +130,23 @@ void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
                                      int &x,int &y,int &z) const{
 
   //  int shift=-1;
-  int x_half = (fftw_nx_-1)/2;//+1
-  int y_half = (fftw_ny_-1)/2;//+1
-  int z_half = (fftw_nz_-1)/2;//+1
-
-  if (wx>x_half) x=x_half-(fftw_nx_-wx); else x=x_half+wx;
-  if (wy>y_half) y=y_half-(fftw_ny_-wy); else y=y_half+wy;
-  if (wz>z_half) z=z_half-(fftw_nz_-wz); else z=z_half+wz;
-  /*   std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
+  int x_half = (fftw_nx_)/2;
+  int y_half = (fftw_ny_)/2;
+  int z_half = (fftw_nz_)/2;
+  int x_shift=-1,y_shift=-1,z_shift=-1;
+  if (fftw_nz_%2==1) z_shift=0;
+  if (fftw_ny_%2==1) y_shift=0;
+  if (fftw_nx_%2==1) x_shift=0;
+  if (wx>=x_half+1) x=x_half-(fftw_nx_-wx)+x_shift; else x=x_half+wx+x_shift;
+  if (wy>=y_half+1) y=y_half-(fftw_ny_-wy)+y_shift; else y=y_half+wy+y_shift;
+  if (wz>=z_half+1) z=z_half-(fftw_nz_-wz)+z_shift; else z=z_half+wz+z_shift;
+  /*  if ((x<0)||(y<0)||(z<0)||
+      (x>=fftw_nx_)||(y>=fftw_ny_)||(z>=fftw_nz_)){
+     std::cout<<"wrapped: ("<<wx<<","<<wy<<","<<wz
   <<") unwrapped: ("<<x<<","<<y<<","<<z<<") "
   << "half: ("<<x_half<<","<<y_half<<","<<z_half<<") full:"
-  <<fftw_nx_<<","<<fftw_ny_<<","<<fftw_nz_<<")"<<std::endl;*/
-  /*  x+=shift;
-  y+=shift;
-  z+=shift;*/
+  <<fftw_nx_<<","<<fftw_ny_<<","<<fftw_nz_<<")"<<std::endl;
+  }*/
 }
 
 
