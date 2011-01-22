@@ -1,4 +1,5 @@
 import utility
+import pyscanner
 import dependency
 import doc
 import bug_fixes
@@ -67,11 +68,21 @@ def IMPCPPExecutable(envi, target, source):
     prog= env.Program(target="#/build/bin/"+target, source=source)
     bindir = install.install(env,'bindir', prog[0])
 
-
 def IMPPythonExecutable(env, file):
+    def dummy(target, source, env): pass
+    _PythonExeDependency = Builder(action=Action(dummy, dummy),
+                                   source_scanner=pyscanner.PythonScanner)
+
     if env.GetOption('help'):
         return
-    install.install(env, "bindir", file)
+    inst = install.install(env, "bindir", file)
+
+    # Make sure that when we install a Python executable we first build
+    # any Python modules it uses (env.Install() does not appear to accept
+    # source_scanner, so we use a dummy do-nothing builder to add these
+    # dependencies)
+    pydep = _PythonExeDependency(env, target=None, source=file)
+    env.Depends(inst, pydep)
 
 
 def IMPApplicationTest(env, python_tests=[]):
