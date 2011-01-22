@@ -33,7 +33,20 @@ class FFTFittingTest(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)
         self.load_data()
-
+    def test_fft_based_rigid_fitting_odd_map(self):
+        dmap=IMP.em.read_map(self.get_input_file_name("protA.mrc"),IMP.em.MRCReaderWriter())
+        dmap.get_header().set_resolution(8)
+        mdl=IMP.Model()
+        mh=IMP.atom.read_pdb(self.get_input_file_name("protA.pdb"),mdl)
+        rb=IMP.atom.setup_as_rigid_body(mh)
+        rots=IMP.algebra.Rotation3Ds()
+        rots.append(IMP.algebra.get_identity_rotation_3d())
+        refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        fs = IMP.multifit.fft_based_rigid_fitting(
+           rb,refiner,dmap,0.3,rots,1,False)
+        sols=fs.get_solutions()
+        for i in range(sols.get_number_of_solutions()):
+            print sols.get_score(i)
     def test_fft_based_rigid_fitting_translation(self):
         """test FFT based fitting for a protein of three points"""
         #Position the protein center at every possible place on the map
