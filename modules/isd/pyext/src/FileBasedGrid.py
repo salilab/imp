@@ -877,6 +877,8 @@ class FileBasedGrid(AbstractGrid):
         results = []
         if kwlist is None:
             kwlist=[{} for i in xrange(len(arglist))]
+        if not hasattr(arglist[0],'__iter__'):
+            arglist = [[i] for i in arglist]
         for server,args,kw in zip(self.servers[sfo_id],arglist,kwlist):
             func=getattr(server.proxy, funcname)
             results.append(func(*args, **kw))
