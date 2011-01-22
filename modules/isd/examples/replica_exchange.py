@@ -20,9 +20,12 @@ outfolder=os.path.join(os.getcwd(), 'results')
 #temp dir
 tmpdir = os.path.join(os.getcwd(),'tmp')
 #number of replicas / hosts
-nreps = 2
+nreps = 8
 #lambda scaling distribution
-lambdas=[1.0]*nreps
+lambda_1 = 1.0
+lambda_N = 0.7
+lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1)) 
+        for k in xrange(1,nreps+1)]
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
 #list of files relative to the current dir to copy over to all nodes
@@ -34,21 +37,21 @@ filelist=[initpdb,charmmtop,charmmpar,restraints] #add whatever you want
 #prefix of output files 
 nums=[[os.path.join(outfolder,'p%02d' % (i+1))] for i in xrange(nreps)]
 #number of gibbs sampling steps
-n_gibbs = 2
+n_gibbs = 3
 #number of md steps
-n_md = 500
+n_md = 10
 #number of mc steps
-n_mc = 50
+n_mc = 10
 #where to run sims
 hostlist = ['localhost']*nreps
 
 #misc
-imppy = '/bongo1/home/yannick/impisd/build-fast/tools/imppy.sh'
-src_path = '/bongo1/home/yannick/impisd/src/isd/pyext/src'
-showX11 = True 
-X11_delay = 1.0
+imppy = '/bongo1/home/yannick/imp_local/build-release/tools/imppy.sh'
+src_path = '/bongo1/home/yannick/imp_local/build-release/build/lib/IMP/isd'
+showX11 = False 
 grid_debug = False
 grid_verbose = False
+X11_delay = 1.0
 window_size = '80x25'
 
 def mkdir_p(path):
@@ -78,37 +81,6 @@ def launch_grid():
     grid.start()
     return grid
 
-def get_energies(grid,sfo_id):
-    return grid.scatter(grid.broadcast(sfo_id,'m','evaluate',False))
-
-def gen_pairs_list(nreps):
-    "generate list of neighboring pairs"
-    init = range(nreps)
-    pairslist = []
-    while len(init) > 1:
-        i = random.randint(0,len(init)-1)
-        dr = 2*random.randint(0,1)-1
-        r=init.pop(i)
-        if r+dr in init:
-            init.remove(r+dr)
-            pairslist.append((min(r,r+dr),max(r,r+dr)))
-        elif r-dr in init:
-            init.remove(r-dr)
-            pairslist.append((min(r,r-dr),max(r,r-dr)))
-    return sorted(pairslist)
-
-
-def get_cross_energies(grid,sfo_id,pairslist):
-    "return energies"
-
-def replica_exchange(grid,sfo_id, nreps, stepno):
-    energies = get_energies(grid,sfo_id)
-    plist = gen_pairs_list(nreps)
-    new_energies = get_cross_energies(grid,sfo_id,plist)
-    accepted = try_exchanges(plist, energies, new_energies)
-    perform_exchanges(grid, sfo_id, accepted)
-    write_rex_stats(accepted)
-
 def main():
     
     # launch grid
@@ -134,6 +106,10 @@ def main():
             initpdb, restraints)
     #wait til init is done
     results = grid.gather(requests)
+
+    #turn off noise (works because IMP.NONE is picklable, being an int.
+    grid.gather(grid.broadcast(sfo_id, 'set_checklevel', IMP.NONE))
+    grid.gather(grid.broadcast(sfo_id, 'set_loglevel', IMP.NONE))
 
     # evaluate the score of the whole system (without derivatives)
     print "initial energy"
