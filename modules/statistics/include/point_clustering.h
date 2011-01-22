@@ -100,13 +100,12 @@ public:
     }
   }
 #ifdef SWIG
-  VectorDEmbedding(const std::vector<algebra::VectorKD > &vs);
+  VectorDEmbedding(const algebra::VectorKDs &vs);
+  VectorDEmbedding(const algebra::Vector2Ds &vs);
   VectorDEmbedding(const algebra::Vector3Ds &vs);
-  /*VectorDEmbedding(const std::vector<algebra::Vector2D > &vs);
-  VectorDEmbedding(const std::vector<algebra::Vector3D > &vs);
-  VectorDEmbedding(const std::vector<algebra::Vector4D > &vs);
-  VectorDEmbedding(const std::vector<algebra::Vector5D > &vs);
-  VectorDEmbedding(const std::vector<algebra::Vector6D > &vs);*/
+  VectorDEmbedding(const algebra::Vector4Ds &vs);
+  VectorDEmbedding(const algebra::Vector5Ds &vs);
+  VectorDEmbedding(const algebra::Vector6Ds &vs);
 #endif
   IMP_EMBEDDING(VectorDEmbedding);
 };
