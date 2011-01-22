@@ -39,14 +39,19 @@
 #if IMP_BUILD < IMP_FAST
 #define IMP_CHECK_ACTIVE                                                \
   IMP_USAGE_CHECK(get_is_active(), "Particle " << get_name() << " is inactive");
-#else
-#define IMP_CHECK_ACTIVE
-#endif
 
 #define IMP_CHECK_READABLE IMP_IF_CHECK(USAGE) {assert_values_readable();}
 #define IMP_CHECK_MUTABLE IMP_IF_CHECK(USAGE) {assert_values_mutable();}
 #define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(USAGE) \
   {assert_valid_derivatives();}
+
+#else
+#define IMP_CHECK_ACTIVE
+#define IMP_CHECK_READABLE
+#define IMP_CHECK_MUTABLE
+#define IMP_CHECK_VALID_DERIVATIVES
+
+#endif
 
 #define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, cond,        \
                                     table0, table1,                     \
@@ -100,7 +105,7 @@
       }                                                                 \
     }                                                                   \
   }                                                                     \
-  Value get_value(UCName##Key name) const {                             \
+  inline Value get_value(UCName##Key name) const {                      \
     IMP_CHECK_ACTIVE;                                                   \
     IMP_CHECK_READABLE;                                                 \
     IMP_USAGE_CHECK(name != UCName##Key(),                              \

@@ -19,6 +19,18 @@
 #include <limits>
 #include <cmath>
 
+#if IMP_BUILD < IMP_FAST
+#define IMP_VECTOR_CHECK check_vector()
+#define IMP_VECTOR_CHECK_INDEX(i) check_index(i)
+#define IMP_VECTOR_CHECK_COMPATIBLE(o) \
+  check_compatible_vector(o); o.check_vector()
+#else
+#define IMP_VECTOR_CHECK
+#define IMP_VECTOR_CHECK_INDEX(i)
+#define IMP_VECTOR_CHECK_COMPATIBLE(o)
+#endif
+
+
 IMPALGEBRA_BEGIN_NAMESPACE
 //! A Cartesian vector in D-dimensions.
 /** Store a vector of Cartesian coordinates. It supports all expected
@@ -131,21 +143,21 @@ public:
   }
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc.*/
-  double operator[](unsigned int i) const {
-    check_index(i);
-    check_vector();
+  inline double operator[](unsigned int i) const {
+    IMP_VECTOR_CHECK_INDEX(i);
+    IMP_VECTOR_CHECK;
     return data_.get_data()[i];
   }
   /** Return the ith Cartesian coordinate. In 3D use [0] to get
       the x coordinate etc. */
-  double& operator[](unsigned int i) {
-    check_index(i);
+  inline double& operator[](unsigned int i) {
+    IMP_VECTOR_CHECK_INDEX(i);
     return data_.get_data()[i];
   }
 
   double get_scalar_product(const VectorD<D> &o) const {
-    check_compatible_vector(o);
-    check_vector();
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_VECTOR_CHECK;
     double ret=0;
     for (unsigned int i=0; i< get_dimension(); ++i) {
       ret += operator[](i)* o.operator[](i);
@@ -169,26 +181,26 @@ public:
   }
 #ifndef IMP_DOXYGEN
   double operator*(const VectorD<D> &o) const {
-    check_compatible_vector(o);
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
     return get_scalar_product(o);
   }
 
   VectorD operator*(double s) const {
-    check_vector();
+    IMP_VECTOR_CHECK;
     VectorD ret=*this;
     ret*=s;
     return ret;
   }
 
   VectorD operator/(double s) const {
-    check_vector();
+    IMP_VECTOR_CHECK;
     VectorD ret=*this;
     ret/=s;
     return ret;
   }
 
   VectorD operator-() const {
-    check_vector();
+    IMP_VECTOR_CHECK;
     VectorD ret=*this;
     for (unsigned int i=0; i<get_dimension(); ++i) {
       ret[i] = -ret[i];
@@ -197,24 +209,24 @@ public:
   }
 
   VectorD operator-(const VectorD &o) const {
-    check_compatible_vector(o);
-    check_vector(); o.check_vector();
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_VECTOR_CHECK;
     VectorD ret=*this;
     ret-=o;
     return ret;
   }
 
   VectorD operator+(const VectorD &o) const {
-    check_compatible_vector(o);
-    check_vector(); o.check_vector();
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_VECTOR_CHECK;
     VectorD ret=*this;
     ret+=o;
     return ret;
   }
 
   VectorD& operator+=(const VectorD &o) {
-    check_compatible_vector(o);
-    check_vector(); o.check_vector();
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_VECTOR_CHECK;
     for (unsigned int i=0; i<get_dimension(); ++i) {
       operator[](i) += o[i];
     }
@@ -222,8 +234,8 @@ public:
   }
 
   VectorD& operator-=(const VectorD &o) {
-     check_compatible_vector(o);
-    check_vector(); o.check_vector();
+    IMP_VECTOR_CHECK_COMPATIBLE(o);
+    IMP_VECTOR_CHECK;
     for (unsigned int i=0; i<get_dimension(); ++i) {
       operator[](i) -= o[i];
     }
@@ -231,7 +243,7 @@ public:
   }
 
   VectorD& operator/=(double f) {
-    check_vector();
+    IMP_VECTOR_CHECK;
     for (unsigned int i=0; i<get_dimension(); ++i) {
       operator[](i) /= f;
     }
@@ -239,7 +251,7 @@ public:
   }
 
   VectorD& operator*=(double f) {
-    check_vector();
+    IMP_VECTOR_CHECK;
     for (unsigned int i=0; i<get_dimension(); ++i) {
       operator[](i) *= f;
     }
@@ -248,7 +260,7 @@ public:
 
   void show(std::ostream &out=std::cout, std::string delim=", ",
             bool parens=true) const {
-    check_vector();
+    IMP_VECTOR_CHECK;
     if (parens) out << "(";
     for (unsigned int i=0; i<get_dimension(); ++i) {
       out << operator[](i);
