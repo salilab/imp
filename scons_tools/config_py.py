@@ -12,8 +12,10 @@ def _flatten(strorlist, delim):
     else:
         return delim.join([_flatten(x, delim) for x in list(strorlist)])
 
-def write_config(h, env):
+def write_config(h, env, extra=[]):
     config=env['IMP_CONFIGURATION']
+    for e in extra:
+        config.append(e)
     def _export_to_config(name, ename, env, opt=False, delim=":"):
         if opt and not env.get(ename, None):
             return
@@ -29,7 +31,6 @@ def write_config(h, env):
         simple.extend(['includepath', 'libpath'])
     for v in simple:
         _export_to_config(v, v, env, True)
-    config.append('platformflags=False')
     for vp in [('cxxcompiler', 'CXX', " "),
                ('cxxflags', 'CXXFLAGS', " "),
                ('pythoncxxflags', 'IMP_PYTHON_CXXFLAGS', " "),
@@ -48,13 +49,17 @@ def write_config(h, env):
     #print "Generating "+str(h)
     s= config
     for l in s:
-        print >> h, l
+        try:
+            (var, val)= l.split("=")
+            print >> h, "{0:<20}={1}".format(var, val)
+        except:
+            print >> h, l
 
 
 def _action_config_py(target, source, env):
     #config= source[0].get_contents().split("#")
     h = file(target[0].abspath, 'w')
-    _do_write_config(h, env)
+    _do_write_config(h, env, extra=['platformflags=False'])
 
 def _print_config_py(target, source, env):
     print "Generating config.py"
