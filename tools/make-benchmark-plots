@@ -337,6 +337,7 @@ def main():
         try:
             os.unlink("modules/benchmark/doc/"+f)
         except:
+            print f, "does not exist"
             pass
         print "trying", f
         while not os.path.isfile(f):
