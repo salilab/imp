@@ -84,11 +84,18 @@ void write_segments_as_pdb(const DataPointsAssignment &dpa,
 void write_segment_as_pdb(const DataPointsAssignment &dpa,
                           int segment_id,
                           const std::string &filename);
+//! Write segments in MRC format
+/**
+\note segments are written as filename_0.mrc
+\note an additional file filename.cmd is generated for easy
+      loading of all segments
+ */
 IMPMULTIFITEXPORT
 void write_segments_as_mrc(em::DensityMap *dmap,
-const DataPointsAssignment &dpa,
-Float resolution, Float apix,
-const std::string &filename);
+                           const DataPointsAssignment &dpa,
+                           Float resolution, Float apix,
+                           Float threshold,
+                           const std::string &filename);
 
 IMPMULTIFITEXPORT
 void write_segment_as_mrc(em::DensityMap *dmap,
