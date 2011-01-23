@@ -14,7 +14,7 @@
 #include <IMP/log.h>
 
 IMPALGEBRA_BEGIN_NAMESPACE
-/**    \ingroup uninitialized_default
+/** Represent a eigen analysis of some data.
  */
 class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
  public:
@@ -47,7 +47,6 @@ class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
    return centroid_;}
   void set_centroid(Vector3D cntr) {
    centroid_=cntr;}
-  bool is_initialized() const {return initialized_;}
   IMP_SHOWABLE(PrincipalComponentAnalysis);
   IMP_COMPARISONS(PrincipalComponentAnalysis);
 protected:
