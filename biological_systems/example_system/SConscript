@@ -23,7 +23,7 @@ cgal SVN 7432""",
                    # without doing all of the sampling required. This can be implementedf
                    # either by providing intermediate data or by only analyzing the data
                    # that happens to be there
-                   testable=True)
+                   testable=True, parallelizable=True)
 if env:
     files= ["setup",
             "sample_0",

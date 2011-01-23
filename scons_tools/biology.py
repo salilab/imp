@@ -30,6 +30,7 @@ def IMPSystem(env, name=None, version="",
               optional_dependencies=[],
               required_dependencies=[],
               testable=False,
+              parallelizable=False,
               last_imp_version="unknown",
               python=True):
     if not name:
@@ -62,6 +63,10 @@ def IMPSystem(env, name=None, version="",
             rtxt= "\n\\section testable Testable\nYes.\n"
         else:
             rtxt= "\n\\section testable Testable\nNo.\n"
+        if parallelizable:
+            rtxt= "\n\\section testable Parallelizable\nYes.\n"
+        else:
+            rtxt= "\n\\section testable Parallelizable\nNo.\n"
         if last_imp_version != "unknown":
             vtxt= "\n\\section lkgversion Last known good IMP version\n"+\
                 last_imp_version+"\n"
