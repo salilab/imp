@@ -47,7 +47,7 @@ class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
    return centroid_;}
   void set_centroid(Vector3D cntr) {
    centroid_=cntr;}
-
+  bool is_initialized() const {return initialized_;}
   IMP_SHOWABLE(PrincipalComponentAnalysis);
   IMP_COMPARISONS(PrincipalComponentAnalysis);
 protected:
