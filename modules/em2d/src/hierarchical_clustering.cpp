@@ -49,7 +49,7 @@ double ClusterSet::get_distance_at_step(unsigned int step) const {
 }
 
 void ClusterSet::check_step_value(unsigned int s) const {
-  if(s<0 || s>=steps_) IMP_THROW("ClusterSet: Requesting an invalid step",
+  if(s>=steps_) IMP_THROW("ClusterSet: Requesting an invalid step",
                                  ValueException);
 }
 
