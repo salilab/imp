@@ -26,7 +26,6 @@ em::FittingSolutions pca_based_rigid_fitting(
   FloatKey wei_key,
     algebra::PrincipalComponentAnalysis dens_pca_input) {
   Particles ps = rb_refiner->get_refined(rb);
-  IMP_LOG(VERBOSE,"number of particles:"<<ps.size()<<std::endl);
   return pca_based_rigid_fitting(ps,
                           em_map,threshold,wei_key,dens_pca_input);
 }
@@ -40,17 +39,13 @@ em::FittingSolutions pca_based_rigid_fitting(
 
   //find the pca of the density
   algebra::PrincipalComponentAnalysis dens_pca;
-  if (dens_pca_input.is_initialized()) {
-    IMP_LOG(VERBOSE,"using preset pca"<<std::endl);
+  if (dens_pca_input != algebra::PrincipalComponentAnalysis()){
     dens_pca=dens_pca_input;
   }
   else{
     algebra::Vector3Ds dens_vecs = em::density2vectors(em_map,threshold);
-    IMP_LOG(VERBOSE,"number of voxels with value above:"<<threshold
-            <<" is:"<<dens_vecs.size()<<std::endl);
     dens_pca = algebra::get_principal_components(dens_vecs);
   }
-  IMP_LOG_WRITE(VERBOSE,dens_pca.show());
   //move the rigid body to the center of the map
   core::XYZs ps_xyz =  core::XYZs(ps);
   algebra::Transformation3D move2center_trans = algebra::Transformation3D(
