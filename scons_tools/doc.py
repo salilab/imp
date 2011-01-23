@@ -176,6 +176,7 @@ def _make_systems_overview(target, source, env):
     - \c sample_i.py: These scripts can take the following arguments:
             - \c -j \c i: an index
             - \c -n \c i: the total number of independent parts to divide the task in to
+            - \c --test: run a more limited version of the sampling to test the script
             - \c -i \c path_to_directory: where to find the outputs of the last script (if there was one)
             - \c -o \c path_to_directory: where to write output files
             - \c -d \c path_to_data: where to find input data (defaults to the 'data' directory in the directory containing the script
@@ -189,12 +190,14 @@ def _make_systems_overview(target, source, env):
     iteration may be run (although some applications will include intermediate data, allowing
     users to avoid running all the scripts in order).
 
-    An application can be marked as testable meaning that it can be run with only partial sampling.
-    That is, if it has scripts \c sample_0.py, \c sample_1.py and \c analyze_0.py, the following should
+    A biological system can be marked as testable meaning that it can be run with only partial sampling by using the "--test" argument.
+
+    Also, a biological system can be marked as parallelizeable which means that, given  \c sample_0.py, \c sample_1.py and \c analyze_0.py exist, the following will work
     work (from any directory):
-    - \command{path_to_application/sample_0.py -j 1 -n 1000 -o output_0}
-    - \command{path_to_application/sample_1.py -j 1 -n 1000 -o output_1 -i output_0}
-    - \command{path_to_application/analyze_0.py -i output_1 -o structures}
+    - \command{path_to_application/sample_0.py -j 0 -n 3 -o output_0}
+    - \command{path_to_application/sample_0.py -j 1 -n 3 -o output_0}
+    - \command{path_to_application/sample_0.py -j 2 -n 3 -o output_0}
+    to divide the sampling into three parts and run them separately (eg in different machines or cores).
 
     An application can also contain an local module in a directory called "local". The module will
     be named "system_name_local" where "system_name" is the name of the system in question.

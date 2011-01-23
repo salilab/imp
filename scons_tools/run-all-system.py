@@ -8,7 +8,7 @@ import os.path
 def _test_example(dir, working_dir, index, filename, shortname):
     skip = "pass"
     if shortname.startswith("sample"):
-        args=["1", "1000"]
+        args=["--test"]
     else:
         args=[]
     if shortname == "setup":
