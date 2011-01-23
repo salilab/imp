@@ -130,6 +130,17 @@ class IMPEXPORT _ConstOptimizer: public Optimizer {
 IMP_OBJECTS(_ConstOptimizer, _ConstOptimizers);
 
 
+class IMPEXPORT _Value {
+  int i_;
+ public:
+  _Value(int i): i_(i){}
+  IMP_SHOWABLE_INLINE(_Value, out << i_;);
+  IMP_COMPARISONS_1(_Value, i_);
+  int get() const {return i_;}
+};
+
+IMP_VALUES(_Value, _Values);
+
 
 
 
