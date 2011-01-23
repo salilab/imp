@@ -230,7 +230,7 @@ namespace grids {
 
   /** The base for storing a grid on all of space (in 3D).
    */
-  template <unsigned int D>
+  template <int D>
   class UnboundedGridStorageD {
   public:
     typedef GridIndexD<D> Index;
@@ -315,7 +315,7 @@ namespace grids {
       Base should be one of BoundedGridStorage3D or UnboundedGridStorage3D.
       \see Grid3D
   */
-  template <unsigned int D, class VT, class Base,
+  template <int D, class VT, class Base,
             class Map=typename IMP::internal::Map<GridIndexD<D>, VT> >
   class SparseGridStorageD: public Base {
     typedef Map Data;
@@ -499,7 +499,7 @@ namespace grids {
       \see DenseGridStorage3D
       \see SparseGridStorageD
   */
-  template <unsigned int D,
+  template <int D,
             class Storage,
             // swig needs this for some reason
             class Value=typename Storage::Value>
@@ -629,11 +629,31 @@ namespace grids {
         \c SparseGridStorage3D<VT, UnboundedGridStorage3D>)
     */
     GridD(double side,
-          const VectorD<D> &origin=get_zero_vector_kd(D),
+          const VectorD<D> &origin,
           const Value& def= Value()):
       Storage(def),
       origin_(origin){
+      set_unit_cell(get_ones_vector_kd(origin.get_dimension())*side);
+    }
+    //! Construct and infinite grid with the cell size
+    /** You had better use a sparse, unbounded storage (eg
+        \c SparseGridStorage3D<VT, UnboundedGridStorage3D>)
+    */
+    GridD(double side,
+          const Value& def= Value()):
+      Storage(def),
+      origin_(get_zero_vector_d<D>()){
       set_unit_cell(get_ones_vector_kd(D)*side);
+    }
+    //! Construct and infinite grid with the cell size and the given dimension
+    /** You had better use a sparse, unbounded storage (eg
+        \c SparseGridStorage3D<VT, UnboundedGridStorage3D>)
+    */
+    GridD(double side, unsigned int d, const Value& def= Value()):
+      Storage(def),
+      origin_(get_zero_vector_kd(d)){
+      IMP_USAGE_CHECK(D==-1, "Only for variable dimensional");
+      set_unit_cell(get_ones_vector_kd(d)*side);
     }
     //! An empty, undefined grid.
     GridD(): Storage(Value()){
@@ -723,7 +743,7 @@ namespace grids {
         float fi= d*inverse_unit_cell_[i];
         index[i]= static_cast<int>(std::floor(fi));
       }
-      return ExtendedGridIndexD<D>(index.get(), index.get()+D);
+      return ExtendedGridIndexD<D>(index.get(), index.get()+get_dimension());
     }
     //! Convert an index back to an extended index
     ExtendedGridIndexD<D> get_extended_index(const GridIndexD<D> &index) const {
@@ -869,7 +889,7 @@ namespace grids {
 
 /** A sparse, infinite grid of values. In python SparseUnboundedIntGrid3D
     is provided.*/
-template <unsigned int D, class VT>
+template <int D, class VT>
 struct SparseUnboundedGridD:
   public grids::GridD<D, grids::SparseGridStorageD<D, VT,
                                            grids::UnboundedGridStorageD<D> > >{
@@ -879,6 +899,8 @@ struct SparseUnboundedGridD:
                        const VectorD<D> &origin,
                        VT def=VT()): P(side, origin, def){}
   SparseUnboundedGridD(){}
+  SparseUnboundedGridD(double side, unsigned int d,
+                       const VT& def= VT()): P(side, d, def) {}
 
 };
 
