@@ -43,7 +43,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, CGAL}
     \uses{class NearestNeighborD, ANN}
  */
-template <unsigned int D>
+template <int D>
 class NearestNeighborD {
   IMP_KNN_DATA data_;
   double eps_;
