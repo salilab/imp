@@ -1,0 +1,4 @@
+### modeling of the bacterial molecular chaperone GroEL
+#1. Template identification
+$IMP/tools/imppy.sh python scripts/script1_build_profile.py
+#2. Template(s) selection by sequence
