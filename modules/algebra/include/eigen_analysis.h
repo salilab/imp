@@ -54,8 +54,11 @@ protected:
     IMP_USAGE_CHECK(!initialized_ || !o.initialized_,
                     "Cannot compare against anything other than the default"
                     " PrincipalComponentAnalysis");
-    if (!initialized_ && !o.initialized_) return true;
-    else return false;
+    if (!initialized_ && !o.initialized_) {
+      return 0;
+    } else {
+      return -1;
+    }
   }
   std::vector<VectorD<3> > eigen_vecs_;
   VectorD<3> eigen_values_;
