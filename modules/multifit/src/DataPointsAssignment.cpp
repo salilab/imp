@@ -230,14 +230,28 @@ void write_pdb(const std::string &pdb_filename,
 }
 
 void write_segments_as_mrc(em::DensityMap *dmap,
-const DataPointsAssignment &dpa,
-Float resolution, Float apix,
-const std::string &filename){
+                           const DataPointsAssignment &dpa,
+                           Float resolution, Float apix,
+                           Float threshold,
+                           const std::string &filename){
+  //all filenames
+  std::vector<std::string> mrc_filenames;
   for( int i=0;i<dpa.get_number_of_clusters();i++) {
     std::stringstream filename_full;
     filename_full<<filename<<"_"<<i<<".mrc";
+    mrc_filenames.push_back(filename_full.str());
     write_segment_as_mrc(dmap,dpa,i,resolution,apix,filename_full.str());
   }
+  //generate a chimera command file to load all of the mrc files
+  std::ofstream cmd_s;
+  std::stringstream cmd_s_fn;
+  cmd_s_fn<<"load_configuration.cmd";
+  cmd_s.open(cmd_s_fn.str().c_str());
+  for (int i=0;i<(int)mrc_filenames.size();i++) {
+    cmd_s<<"open "<< mrc_filenames[i]<<std::endl;
+  }
+  cmd_s<<"vol all level "<<threshold<<std::endl;
+  cmd_s.close();
 }
 
 algebra::Vector3Ds DataPointsAssignment::get_cluster_xyz(int cluster_ind)

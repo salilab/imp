@@ -54,6 +54,9 @@ int parse_input(int argc, char *argv[],
     ("output-pdb",program_options::value<std::string>(&pdb_filename),
      "cluster centers as CA atoms in a PDB file");
   program_options::positional_options_description p;
+  std::stringstream seg_help;
+  seg_help<<"print each cluster as a MRC file <seg>_i.mrc, and write "<<
+    "load_segmentation.cmd file to easily load all segments into Chimera";
   p.add("density", 1);
   p.add("num_means", 1);
   p.add("t", 1);
@@ -75,7 +78,7 @@ int parse_input(int argc, char *argv[],
     ("cmm-max",program_options::value<std::string>(&cmm_max_filename),
      "Max point of each clsuter stored in a CMM file.")
     ("seg",program_options::value<std::string>(&seg_filename),
-     "print each cluster as a MRC file <seg>_i.mrc")
+     seg_help.str().c_str())
     ("txt",program_options::value<std::string>(&txt_filename),
      "anchors points in txt file format");
 
@@ -167,7 +170,8 @@ int main(int argc, char *argv[]) {
    multifit::write_max_cmm(cmm_max_filename,dmap,"max_graph",assignment);
    }*/
   if (not (seg_filename == "")) {
-   multifit::write_segments_as_mrc(dmap,assignment,apix,apix,seg_filename);
+    multifit::write_segments_as_mrc(dmap,assignment,apix,apix,
+                                    density_threshold,seg_filename);
    }
   if (not (txt_filename == "")) {
     multifit::write_txt(txt_filename,ad);
