@@ -123,27 +123,30 @@
   bool __le__(const Name &o) const {                                    \
     return operator<=(o);                                               \
   }                                                                     \
+  int __cmp__(const Name &o) const {                                    \
+    return compare(o);                                                  \
+  }                                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(comparisons)
 
 #define IMP_COMPARISONS(Name)                                           \
   IMP_SWIG_COMPARISONS(Name);                                           \
   bool operator==(const Name &o) const {                                \
-    return (compare(o) == 0);                                           \
+    return (Name::compare(o) == 0);                                     \
   }                                                                     \
   bool operator!=(const Name &o) const {                                \
-    return (compare(o) != 0);                                           \
+    return (Name::compare(o) != 0);                                     \
   }                                                                     \
   bool operator<(const Name &o) const {                                 \
-    return (compare(o) <0);                                             \
+    return (Name::compare(o) <0);                                       \
   }                                                                     \
   bool operator>(const Name &o) const {                                 \
     return (compare(o) > 0);                                            \
   }                                                                     \
   bool operator>=(const Name &o) const {                                \
-    return !(compare(o) < 0);                                           \
+    return !(Name::compare(o) < 0);                                     \
   }                                                                     \
   bool operator<=(const Name &o) const {                                \
-    return !(compare(o) > 0);                                           \
+    return !(Name::compare(o) > 0);                                     \
   }                                                                     \
   template <class T> friend int compare(const T&a, const T&b)
 
