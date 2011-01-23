@@ -319,8 +319,7 @@ get_bin_based_clustering(Embedding *embed,
   IMP::internal::OwnerPointer<Embedding> e(embed);
   typedef algebra::SparseUnboundedGridD<-1, Ints> Grid;
   int dim= embed->get_point(0).get_dimension();
-  Floats o(dim, 0);
-  Grid grid(side, algebra::VectorKD(o.begin(), o.end()));
+  Grid grid(side, dim);
   for (unsigned int i=0; i< embed->get_number_of_items(); ++i) {
     Grid::ExtendedIndex ei= grid.get_extended_index(embed->get_point(i));
     if (!grid.get_has_index(ei)) {
