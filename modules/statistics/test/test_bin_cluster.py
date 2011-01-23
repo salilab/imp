@@ -18,11 +18,11 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         for i in range(0,1000):
             vs.append(IMP.algebra.get_random_vector_in(bb))
         embed= IMP.statistics.VectorDEmbedding(vs)
-        cluster= IMP.statistics.get_bin_clustering(embed, 2)
+        cluster= IMP.statistics.get_bin_based_clustering(embed, 2)
         found=[]
         for i in range(cluster.get_number_of_clusters()):
             c= cluster.get_cluster(i)
-            self.assertSameBin(c, vs, 2)
+            self._assert_same_bin(c, vs, 2)
 
 if __name__ == '__main__':
     IMP.test.main()
