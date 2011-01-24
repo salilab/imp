@@ -21,6 +21,8 @@ void Fine2DRegistrationRestraint::setup(
                        double resolution,
                        double pixelsize,
                        Model *scoring_model,
+//                       ScoreFunctionPtr score_function,
+                       ScoreFunction *score_function,
                        MasksManagerPtr masks) {
 
   IMP_LOG(IMP::TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
@@ -34,8 +36,6 @@ void Fine2DRegistrationRestraint::setup(
     masks_->create_masks(ps);
     IMP_LOG(IMP::VERBOSE, "Created " << masks_->get_number_of_masks()
            << " masks withing Fine2DRegistrationRestraint " << std::endl);
-//    std::cout << "cout Created " << masks_->get_number_of_masks()
-//           << " masks withing Fine2DRegistrationRestraint " << std::endl;
   } else {
     masks_= masks;
     IMP_LOG(IMP::VERBOSE,"masks given to Fine2DRegistrationRestraint "
@@ -56,6 +56,9 @@ void Fine2DRegistrationRestraint::setup(
           pp_score_state,
           (subj_params_particle_));
   scoring_model->add_score_state(pp_score_state);
+
+
+  score_function_ = score_function;
 }
 
 
@@ -77,15 +80,6 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
      projection_->set_size(rows,cols);
   }
 
-/**
-  algebra::Rotation3D R=
-      algebra::get_rotation_from_fixed_zyz(subject_->get_header().get_phi(),
-                                           subject_->get_header().get_theta(),
-                                           subject_->get_header().get_psi());
-  algebra::Vector3D translation(subject_->get_header().get_xorigin()*pixelsize_,
-                                subject_->get_header().get_yorigin()*pixelsize_,
-                                0.0);
-**/
   PP_.set_rotation(R);
   PP_.set_translation(translation);
 
@@ -103,8 +97,7 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");
 
-
-  // projection needs to be mutable, son this const function can change it.
+  // projection_ needs to be mutable, son this const function can change it.
   // project_particles changes the matrix of projection_
   em2d::do_project_particles(ps_,
                           projection_->get_data(),
@@ -113,12 +106,9 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                           resolution_,
                           pixelsize_,
                           masks_);
-
-  double ccc = get_cross_correlation_coefficient(subject_->get_data(),
-                                             projection_->get_data());
-  double em2d = get_ccc_to_em2d(ccc);
-  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << em2d <<std::endl);
-  return em2d;
+  double score = score_function_->get_score(subject_,projection_);
+  IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
+  return score;
 }
 
 ParticlesTemp Fine2DRegistrationRestraint::get_input_particles() const {
@@ -133,13 +123,15 @@ ObjectsTemp Fine2DRegistrationRestraint::get_input_objects() const {
 }
 
 void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
-  double em2d = unprotected_evaluate(NULL);
+  double score = unprotected_evaluate(NULL);
   algebra::Vector3D translation= PP_.get_translation();
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(em2d));
+  // CAREFUL!!!!!!!! using get_em2d_to_ccc(em2d) I still assume that the
+  // score that I am using is em2d
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(score));
   rr.show(out);
-  out << " em2d: " << em2d;
+  out << " em2d: " << score << std::endl;
 
 }
 
@@ -150,8 +142,10 @@ RegistrationResult Fine2DRegistrationRestraint::get_final_registration() {
   algebra::Vector3D translation= PP_.get_translation();
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
-  double em2d = unprotected_evaluate(NULL);
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(em2d));
+  double score = unprotected_evaluate(NULL);
+  // CAREFUL!!!!!!!! using get_em2d_to_ccc(em2d) I still assume that the
+  // score that I am using is em2d
+  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(score));
   return rr;
 }
 

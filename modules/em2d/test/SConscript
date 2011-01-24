@@ -13,4 +13,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                           "ResultAlign2D",
                                           "pair_cluster_id_distance",
                                           "VectorOfFloats",
-                                          "VectorOfInts"])
+                                          "VectorOfInts",
+                                          ])

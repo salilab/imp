@@ -14,11 +14,13 @@
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Image.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Rotation2D.h"
+#include "IMP/Pointer.h"
 #include "IMP/Particle.h"
 #include <string>
 
@@ -31,16 +33,12 @@ const unsigned int ALIGN2D_PREPROCESSING = 1;
 const unsigned int ALIGN2D_WITH_CENTERS = 2;
 
 
-
 //! class to perform registration of model projections to images images
 class IMPEM2DEXPORT ProjectionFinder
 {
 public:
 
-  ProjectionFinder() {
-    parameters_setup_=false;
-    registration_done_=false;
-  }
+  ProjectionFinder(): parameters_setup_(false),registration_done_(false) {};
 
   ~ProjectionFinder() {
     IMP_LOG(IMP::VERBOSE, "ProjectionFinder destroyed " << std::endl);
@@ -64,12 +62,18 @@ public:
     \param[in] Value of the simplex length stop the search. The smaller, the
                more accurate the finder, but slower
   */
-  void setup(double apix,double resolution =1,
-                 int coarse_registration_method = ALIGN2D_PREPROCESSING,
-                 bool save_match_images =false,
-                  int optimization_steps = 5,
-                 double simplex_initial_length =0.1,
-                 double simplex_minimum_size =0.01) {
+//  void setup(ScoreFunctionPtr score_function,
+  void setup(ScoreFunction *score_function,
+              double apix,
+              double resolution =1,
+              int coarse_registration_method = ALIGN2D_PREPROCESSING,
+              bool save_match_images =false,
+              int optimization_steps = 5,
+              double simplex_initial_length =0.1,
+              double simplex_minimum_size =0.01) {
+
+    score_function_=score_function;
+
     resolution_ = resolution;
     apix_ = apix;
     coarse_registration_method_ = coarse_registration_method;
@@ -79,7 +83,6 @@ public:
     simplex_initial_length_ = simplex_initial_length;
     masks_manager_ = MasksManagerPtr(new MasksManager);
     masks_manager_->setup_kernel(resolution_,apix_);
-
 
     fast_optimization_mode_ = false;
     parameters_setup_=true;
@@ -131,7 +134,7 @@ public:
 
   //! Get the em2d score for a model after the registration performed:
   //! coarse or complete.
-  double get_em2d_score() const;
+  double get_final_score() const;
 
   void show(std::ostream &out) const;
 
@@ -164,6 +167,10 @@ protected:
   em2d::Images projections_;
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
+
+//  ScoreFunctionPtr score_function_;
+  Pointer<ScoreFunction> score_function_;
+
   //! resolution used to generate projections during the fine registration
   double resolution_;
   //! Sampling of the images in Amstrong/pixel
@@ -172,8 +179,8 @@ protected:
   bool save_match_images_,
        registration_results_set_,
        particles_set_,
-       registration_done_,
        parameters_setup_,
+       registration_done_,
        fast_optimization_mode_;
 
   //! Coarse registration method
@@ -195,7 +202,6 @@ protected:
 **/
   MasksManagerPtr masks_manager_;
 };
-
 IMP_VALUES(ProjectionFinder,ProjectionFinders);
 
 IMPEM2D_END_NAMESPACE

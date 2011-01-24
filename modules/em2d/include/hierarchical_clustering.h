@@ -10,6 +10,7 @@
 #define IMPEM2D_HIERARCHICAL_CLUSTERING_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/base_types.h"
 #include <IMP/log.h>
 #include <vector>
@@ -34,26 +35,6 @@ void print_vector(const std::vector<T> &v) {
   }
     std::cout << std::endl;
 }
-
-// Comparison of cluster_id,distance
-class LessThanByDistance
-#ifndef SWIG
-:
-                public std::binary_function< pair_cluster_id_distance ,
-                                             pair_cluster_id_distance ,
-                                             bool>
-#endif
- {
-public:
-  bool operator()(const pair_cluster_id_distance &a,
-                  const pair_cluster_id_distance &b) {
-    return a.second < b.second;
-  }
-  void show(std::ostream &out) const {};
-};
-IMP_VALUES(LessThanByDistance,LessThanByDistances);
-
-
 
 // A class to store the clusters generated during hierarchical clustering;
 class IMPEM2DEXPORT ClusterSet {
@@ -248,7 +229,7 @@ ClusterSet
         lists[n].push_back(std::make_pair(i,distances[n][i]));
       }
     }
-    lists[n].sort(LessThanByDistance());
+    lists[n].sort(LessPairBySecond<pair_cluster_id_distance>());
     // At the beginning each list is associated with a cluster of one element
     cluster_id[n]=n;
   }
@@ -312,7 +293,9 @@ ClusterSet
     }
     // Sort lists
     for (unsigned int i=0;i<N;++i) {
-      if(active_list[i]==true) lists[i].sort(LessThanByDistance());
+      if(active_list[i]==true) {
+        lists[i].sort(LessPairBySecond<pair_cluster_id_distance>());
+      }
     }
   }
   return cluster_set;

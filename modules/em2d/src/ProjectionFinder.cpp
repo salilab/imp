@@ -260,7 +260,9 @@ void ProjectionFinder::get_coarse_registration() {
     get_coarse_registrations_for_subject(i,coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
 
-    std::sort(coarse_RRs.begin(),coarse_RRs.end(),get_has_higher_ccc);
+    std::sort(coarse_RRs.begin(),
+              coarse_RRs.end(),
+              HasHigherCCC<RegistrationResult>());
     // Best result
     registration_results_[i]=coarse_RRs[0];
     registration_results_[i].set_in_image(subjects_[i]->get_header());
@@ -303,11 +305,12 @@ void ProjectionFinder::get_complete_registration() {
                      resolution_,
                      apix_,
                      scoring_model,
+                     score_function_,
                      masks_manager_);
   simplex_optimizer->set_model(scoring_model);
   simplex_optimizer->set_initial_length(simplex_initial_length_);
   simplex_optimizer->set_minimum_size(simplex_minimum_size_);
-  IMP::SetLogState log_state(fine2d,IMP::TERSE);
+//  IMP::SetLogState log_state(fine2d,IMP::TERSE);
 
   // Computation
 //   boost::progress_display show_progress(
@@ -320,8 +323,10 @@ void ProjectionFinder::get_complete_registration() {
     boost::timer timer_coarse_subject;
     get_coarse_registrations_for_subject(i,coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
-
-    std::sort(coarse_RRs.begin(),coarse_RRs.end(),get_has_higher_ccc);
+    // The coarse registration is done in terms of the cross-correlation
+    std::sort(coarse_RRs.begin(),
+              coarse_RRs.end(),
+              HasHigherCCC<RegistrationResult>());
 
     unsigned int n_optimized=projections_.size();
     if(fast_optimization_mode_) {
@@ -342,7 +347,10 @@ void ProjectionFinder::get_complete_registration() {
       simplex_optimizer->optimize((double)optimization_steps_);
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
-      if(get_has_higher_ccc(fine_registration,best_fine_registration)) {
+
+      // CAREFUL !!!!!!! Here I still assume that the score is em2d
+      HasHigherCCC<RegistrationResult> has_higher_ccc;
+      if(has_higher_ccc(fine_registration,best_fine_registration)) {
         best_fine_registration=fine_registration;
       }
     }
@@ -374,16 +382,17 @@ RegistrationResults ProjectionFinder::get_registration_results() const {
      "before registration",ValueException);
   }
   RegistrationResults Regs(subjects_.size());
-  for (unsigned int i=0;i<subjects_.size();++i) {
-    Regs[i]=registration_results_[i];
-  }
+  std::copy(registration_results_.begin(),
+            registration_results_.end(),
+            Regs.begin());
   return Regs;
 }
 
-double ProjectionFinder::get_em2d_score() const {
+double ProjectionFinder::get_final_score() const {
   if(!registration_done_) {
-    IMP_THROW("get_em2d_score: registration not done ",ValueException);
+    IMP_THROW("get_final_score: registration not done ",ValueException);
   }
+  // CAREFUL !!!!!!! Here I still assume that the score that I am using is em2d
   return em2d::get_em2d_score(registration_results_);
 }
 

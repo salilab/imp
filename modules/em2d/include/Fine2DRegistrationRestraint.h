@@ -12,9 +12,11 @@
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/ProjectionParameters.h"
 #include "IMP/em2d/Image.h"
+#include "IMP/em2d/scores2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-#include "IMP/Restraint.h"
+//#include "IMP/Restraint.h"
+#include "IMP/Pointer.h"
 #include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -48,6 +50,7 @@ public:
                  double resolution,
                  double pixelsize,
                  Model *scoring_model,
+                 ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
 
 
@@ -76,6 +79,8 @@ private:
   // Projection masks for the particles
   MasksManagerPtr  masks_;
   double resolution_,pixelsize_;
+//  ScoreFunctionPtr score_function_;
+  Pointer<ScoreFunction> score_function_;
 };
 
 IMP_OBJECTS(Fine2DRegistrationRestraint,Fine2DRegistrationRestraints);
