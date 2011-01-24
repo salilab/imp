@@ -219,9 +219,13 @@ def _action_simple_swig(target, source, env):
         command.append('-DIMP_SWIG_KERNEL')
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
+    ussp=env.get('swigpath', "")
+    #print 'ussp is', ussp
+    sp=ussp.split(":")
+    #print 'sp is', sp
     command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('includepath', "").split(":")]\
              + ["-I"+Dir("#build/include").abspath]\
-             + ["-I"+str(x) for x in env.get('swigpath', "").split(":") if x != ""]
+             + ["-I"+str(x) for x in sp if x != ""]
     command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
     ret= env.Execute(" ".join(command) %vars)
