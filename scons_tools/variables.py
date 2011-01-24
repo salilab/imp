@@ -102,9 +102,8 @@ def _propagate_variables(env):
         env.Append(IMP_BIN_LINKFLAGS=[])
 
     if env.get('includepath') is not None:
-        env['includepath'] = [os.path.abspath(x) for x in \
-                          env['includepath'].split(os.path.pathsep)]
-        env.Prepend(CPPPATH=env['includepath'])
+        env.Prepend(CPPPATH=[os.path.abspath(x) for x in \
+                             env['includepath'].split(os.path.pathsep)])
     else:
         env.Append(CPPPATH=[])
 
