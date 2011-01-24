@@ -24,6 +24,13 @@ class IMPMULTIFITEXPORT AnchorsData {
     points_=points;edges_=edges;}
   int get_number_of_points() const {return points_.size();}
   int get_number_of_edges() const {return edges_.size();}
+  void show(std::ostream& out=std::cout) const {
+    out<<"==== "<<points_.size()<<" Anchors:"<<std::endl;
+    for(int i=0;i<(int)points_.size();i++) {
+      out<<points_[i]<<std::endl;
+    }
+    out<<"===="<<std::endl;
+  }
   algebra::Vector3Ds points_;
   IntPairs edges_;
 };
