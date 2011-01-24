@@ -28,6 +28,7 @@ files = [
         'anchors_reader.cpp',
         'coarse_molecule.cpp',
         'fitting_utils.cpp',
+        'RadiusOfGyrationRestraint.cpp',
         ]\
 # Build and install the shared library:
 env.IMPModuleLib(files)

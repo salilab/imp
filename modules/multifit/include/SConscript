@@ -30,6 +30,7 @@ files = [
         'anchors_reader.h',
         'coarse_molecule.h',
         'fitting_utils.h',
+        'RadiusOfGyrationRestraint.h'
         ]
 # Install the include files:
 env.IMPModuleInclude(files)
