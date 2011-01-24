@@ -170,10 +170,6 @@ IMPEM2DEXPORT RegistrationResults get_random_registration_results
 IMPEM2DEXPORT RegistrationResults
     get_evenly_distributed_registration_results(unsigned long n_projections);
 
-//! returns true if the ccc of the first is higher than the second
-IMPEM2DEXPORT bool get_has_higher_ccc(const RegistrationResult &rr1,
-                                  const RegistrationResult &rr2);
-
 
 inline double get_random_between_zero_and_one() {
   return ((double)rand() /((double)RAND_MAX+1));

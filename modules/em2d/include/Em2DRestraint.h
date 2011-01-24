@@ -13,6 +13,7 @@
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
+#include "IMP/em2d/scores2D.h"
 #include <IMP/Restraint.h>
 #include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
@@ -58,19 +59,26 @@ public:
     \param[in] n_projections number of projections to generate to perform
                the initial coarse registration.
   */
-  void setup(double apix,double resolution =1,
-                  unsigned n_projections=20,
-                 unsigned int coarse_registration_method = 1,
-                 bool save_match_images =false,
-                 unsigned int optimization_steps = 5,
-                 double simplex_initial_length =0.1,
-                 double simplex_minimum_size =0.01) {
+//  void setup(ScoreFunctionPtr score_function,
+  void setup(ScoreFunction *score_function,
+             double apix,
+             double resolution =1,
+              unsigned n_projections=20,
+              unsigned int coarse_registration_method = 1,
+              bool save_match_images =false,
+              unsigned int optimization_steps = 5,
+              double simplex_initial_length =0.1,
+              double simplex_minimum_size =0.01) {
 
   apix_ =apix;
   resolution_ = resolution;
-  finder_.setup(apix_, resolution_ , coarse_registration_method,
-      save_match_images ,optimization_steps,
-      simplex_initial_length,simplex_minimum_size);
+  finder_.setup(score_function,
+                apix_,
+                resolution_ ,
+                coarse_registration_method,
+                save_match_images,
+                simplex_initial_length,
+                simplex_minimum_size);
   n_projections_for_coarse_registration_ = n_projections;
   fast_optimization_mode_ = false;
 }

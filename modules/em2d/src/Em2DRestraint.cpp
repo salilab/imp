@@ -56,7 +56,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     finder_.set_fast_mode(number_of_optimized_projections_);
   }
   finder_.get_complete_registration();
-  return finder_.get_em2d_score();
+  return finder_.get_final_score();
 }
 
 // We also need to know which particles are used (as some are

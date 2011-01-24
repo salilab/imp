@@ -96,7 +96,6 @@ public:
 
   void destroyed_msg() {
     IMP_LOG(IMP::VERBOSE, "Image destroyed " << this->name_ << std::endl);
-//    std::cout << "Image destroyed " << this->name_ << std::endl;
   }
 
   void set_name(const String &name) {

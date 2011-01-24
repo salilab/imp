@@ -249,13 +249,17 @@ int main(int argc, char **argv) {
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
   em2d::ProjectionFinder finder;
-  finder.setup(apix,
-                    resolution,
-                    coarse_method,
-                    save_images,
-                    optimization_steps,
-                    simplex_initial_length,
-                    simplex_minimum_size);
+//  em2d::ScoreFunctionPtr score_function(new em2d::EM2DScore());
+  IMP_NEW(em2d::EM2DScore,score_function,());
+  std::cout << "SCORE_FUNCTION: " << *score_function << std::endl;
+  finder.setup(score_function,
+               apix,
+                resolution,
+                coarse_method,
+                save_images,
+                optimization_steps,
+                simplex_initial_length,
+                simplex_minimum_size);
   finder.set_model_particles(ps);
   finder.set_subjects(subjects);
   double time_preprocess_subjects =  finder.get_preprocessing_time();
@@ -293,7 +297,7 @@ int main(int argc, char **argv) {
         << " projections " << projections.size()
         << " Time: " << finder.get_coarse_registration_time() <<std::endl;
   }
-  double Score = finder.get_em2d_score();
+  double Score = finder.get_final_score();
 
   double total_time=registration_timer.elapsed();
     *std::cin.tie() << "# Registration: images " << subjects.size()
@@ -308,6 +312,7 @@ int main(int argc, char **argv) {
   for (unsigned int i=0;i<registration_results.size();++i) {
     registration_results[i].write(*std::cin.tie());
   }
+
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();

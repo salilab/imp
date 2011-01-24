@@ -159,48 +159,38 @@ RegistrationResults read_registration_results(const String &filename) {
 }
 
 
-
-
-bool get_has_higher_ccc(const RegistrationResult &rr1,
-                                  const RegistrationResult &rr2) {
-  if(rr1.get_ccc() >= rr2.get_ccc()) return true;
-  return false;
-}
-
-
-
 RegistrationResult::RegistrationResult() {
+  ccc_=0.0;
+  name_="";
+  image_index_=0;
+  projection_index_=0;
   set_shift(algebra::Vector2D(0.,0.));
-  set_projection_index(0);
   set_rotation(0,0,0);
-  set_ccc(0.0);
-  set_name("");
-  set_image_index(0);
 }
 
 RegistrationResult::RegistrationResult(algebra::Rotation3D R,
-    algebra::Vector2D shift,long projection_index,double ccc,String name) {
-  set_shift(shift);
-  set_projection_index(projection_index);
+                                        algebra::Vector2D shift,
+                                        long projection_index,
+                                        double ccc,
+                                        String name) {
   set_rotation(R);
-  set_ccc(ccc);
-  set_image_index(0);
-  set_name(name);
+  set_shift(shift);
+  projection_index_=projection_index;
+  image_index_=0;
+  ccc_=ccc;
+  name_=name;
 }
-
 
 
 RegistrationResult::RegistrationResult(
                   double phi,double theta,double psi,algebra::Vector2D shift,
-                  long index,double ccc,String name) {
-  IMP_LOG(IMP::VERBOSE," initialzing RegistrationResult " << std::endl);
+                  long projection_index,double ccc,String name) {
   set_shift(shift);
-  set_ccc(ccc);
-  set_projection_index(index);
+  projection_index_=projection_index;
+  image_index_=0;
+  ccc_=ccc;
+  name_=name;
   set_rotation(phi,theta,psi);
-  set_name("");
-  set_image_index(0);
-  IMP_LOG(IMP::VERBOSE," end init RegistrationResult " << std::endl);
 }
 
 void RegistrationResult::show(std::ostream& out) const {

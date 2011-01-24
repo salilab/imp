@@ -130,7 +130,6 @@ void MasksManager::create_mask(double radius) {
 
 MasksManager::~MasksManager() {
   IMP_LOG(IMP::VERBOSE,"Masks Manager has been destroyed" << std::endl);
-//  std::cout << "Masks Manager has been destroyed" << std::endl;
 }
 
 

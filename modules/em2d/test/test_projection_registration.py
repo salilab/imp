@@ -45,9 +45,11 @@ class ProjectTests(IMP.test.TestCase):
         optimization_steps=30
         simplex_initial_length=0.1
         simplex_minimum_size=0.01
-
-        finder = IMP.em2d.ProjectionFinder();
-        finder.setup(pixel_size,
+        IMP.set_log_level(IMP.VERBOSE)
+        finder = IMP.em2d.ProjectionFinder()
+        score_function = IMP.em2d.EM2DScore()
+        finder.setup(score_function,
+                      pixel_size,
                           resolution,
                           coarse_registration_method,
                           save_match_images,
