@@ -69,7 +69,6 @@ algebra::Rotation3Ds get_rotations(int num_angles,
       rots.push_back(algebra::get_identity_rotation_3d());
     }
     else{
-      //rots=multifit::get_uniform_sampled_rotations_3d(num_angles);
       rots = algebra::get_uniform_cover_rotations_3d(num_angles);
     }
   }
@@ -89,7 +88,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
                 float &spacing,
                 float &x_origin,float &y_origin,float &z_origin,
                 float &resolution,int &num_angles,
-                float &threshold,
+                float &threshold,float &rmsd_cluster,
                 std::string &protein_filename,
                 std::string &ref_filename,
                 std::string &sol_filename,
@@ -155,6 +154,8 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
     ("rot-file", po::value<std::string>
      (&pre_calc_rot_filename),
      "run FFT translational search only on those rotations")
+    ("rmsd",po::value<float>(&rmsd_cluster),
+     "RMSD threshold for clusetering. The default is resolution/2")
     ("f-rot",po::value<int>(&first_rot),
      "First rotation to consider if a rotation file is provided (default 0)")
     ("n-hits",po::value<int>(&num_top_fits_to_report),
@@ -199,6 +200,9 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
      std::cout<<optional_params<<std::endl;
      return 1;
    }
+   if (vm.count("rmsd")==0) {
+     rmsd_cluster=resolution/2;
+   }
    return 0;
 }
 
@@ -213,9 +217,11 @@ int main(int argc, char **argv) {
   bool local,gmm_on;
   int num_angles,first_rot,num_top_fits_to_report,
     num_top_fits_to_store_for_each_rotation;
+  float rmsd_cluster;
   if (parse_input(argc, argv,density_filename,
                   spacing,x_origin,y_origin,z_origin,resolution,
-                  num_angles,threshold,protein_filename,ref_filename,
+                  num_angles,threshold,rmsd_cluster,protein_filename,
+                  ref_filename,
                   sol_filename,log_filename,pdb_fit_filename,
                   cc_hit_map_filename,
                   pre_calc_rot_filename,first_rot,num_top_fits_to_report,
@@ -246,6 +252,7 @@ int main(int argc, char **argv) {
   log_file<<"pre calculated rotations filename:"<<
     pre_calc_rot_filename<<std::endl;
   log_file<<"start rotation:"<<first_rot<<std::endl;
+  log_file<<"rmsd_cluster: " << rmsd_cluster <<std::endl;
   log_file<<"individual fits : " << pdb_fit_filename << std::endl;
   log_file<<"number of top fits to report :"<<num_top_fits_to_report<<std::endl;
   log_file<<"number of top fits to store for each rotation :"<<
@@ -276,6 +283,7 @@ int main(int argc, char **argv) {
   std::cout<<"individual fits : " << pdb_fit_filename << std::endl;
   std::cout<<"number of top fits to report :"<<
     num_top_fits_to_report<<std::endl;
+  std::cout<<"rmsd_cluster: " << rmsd_cluster <<std::endl;
   std::cout<<"number of top fits to store for each rotation :"<<
     num_top_fits_to_store_for_each_rotation<<std::endl;
   if (local) {
@@ -283,7 +291,7 @@ int main(int argc, char **argv) {
   }
 
   set_log_target(log_file);
-
+  dmap->show();
 
   Model *mdl = new Model();
   //atom::NonWaterNonHydrogenPDBSelector sel;
@@ -292,14 +300,6 @@ int main(int argc, char **argv) {
   FloatKey w_key = atom::Mass::get_mass_key();
   atom::Hierarchy mh;
   mh = atom::read_pdb(protein_filename,mdl,new atom::CAlphaPDBSelector());
-  try{
-    atom::add_radii(mh);
-  }
-  catch (const Exception &err){
-    std::cerr<<"Problem adding radius attribute to molecule."<<
-             " Check that IMP is installed."<<std::endl;
-    exit(-1);
-  }
   core::RigidBody rb=atom::setup_as_rigid_body(mh);
   Particles mh_ps=core::get_leaves(mh);
   core::XYZs mh_xyz;
