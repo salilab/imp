@@ -228,6 +228,8 @@ def get_separator(env):
         return ":"
 
 def get_abspaths(env, name, pathlist):
+    if not pathlist:
+        return None
     pl=pathlist.split(os.path.pathsep)
     bad=".."+os.path.sep
     ret=[]
