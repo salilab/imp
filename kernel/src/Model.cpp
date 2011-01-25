@@ -48,6 +48,18 @@ Model::~Model()
   }
 }
 
+void Model::set_maximum_score(Restraint *r, double d) {
+  IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
+                  "You cannot currently set the maximum score"
+                  << " of a restraint set");
+  max_scores_[r]=d;
+  reset_dependencies();
+}
+void Model::set_maximum_score(double d) {
+  max_score_=d;
+  reset_dependencies();
+}
+
 void Model::add_restraint(Restraint *r) {
   IMP_USAGE_CHECK(r, "Cannot add null restraint.");
   rs_->add_restraint(r);

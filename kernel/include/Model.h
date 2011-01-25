@@ -246,13 +246,8 @@ public:
       return max_scores_.find(r)->second;
     }
   }
-  void set_maximum_score(Restraint *r, double s) {
-     max_scores_[r]=s;
-     reset_dependencies();
-  }
-  void set_maximum_score(double s) {
-    max_score_=s;
-  }
+  void set_maximum_score(Restraint *r, double s);
+  void set_maximum_score(double s);
   double get_maximum_score() const {
     return max_score_;
   }
