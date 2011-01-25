@@ -52,6 +52,14 @@ public:
       out << "(" << spaces_io(center_) << ": " << get_radius()
           << ")";
     });
+#ifndef IMP_DOXYGEN
+  VectorD<D> &_access_center() {
+    return center_;
+  }
+  void _set_radius(double d) {
+    radius_=d;
+  }
+#endif
 private:
   VectorD<D> center_;
   double radius_;
