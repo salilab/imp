@@ -19,12 +19,17 @@ The program will setup things in the current directory.""" % sys.argv[0])
     path_to_build= sys.argv[1]
     print "IMP source found at ", imppath
     print "Setting up IMP build directory at ", path_to_build
-    if os.path.isfile("SConstruct"):
+    if os.path.isfile(os.path.join(path_to_build, "SConstruct")):
         print "SConstruct file already exists in this directory."
         return
-    os.symlink(os.path.join(relimppath, "SConstruct"), os.path.join(path_to_build, "SConstruct"))
-    os.symlink(os.path.join(relimppath, "scons_tools"), os.path.join(path_to_build,  "scons_tools"))
-    config= open(os.path.join(os.path.split(sys.argv[0])[0], "../doc/example_config.py"), "r").read()
+    print "path to imp is", relimppath
+    print "path to build is", path_to_build
+    os.symlink(os.path.join(relimppath, "SConstruct"),
+               os.path.join(path_to_build, "SConstruct"))
+    os.symlink(os.path.join(relimppath, "scons_tools"),
+               os.path.join(path_to_build,  "scons_tools"))
+    config= open(os.path.join(os.path.split(sys.argv[0])[0],
+                              "../doc/example_config.py"), "r").read()
     config=config.replace("path_to_source", relimppath)
     open(os.path.join(path_to_build,"config.py"), "w").write(config)
     oldconfig="cxxcompiler='/dev/null'\n"
