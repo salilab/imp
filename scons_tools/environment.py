@@ -229,7 +229,7 @@ def get_base_environment(variables=None, *args, **kw):
         # building AIX extension modules can find them:
         e['ENV']['PATH'] += ':/usr/vac/bin'
     #print "cxx", env['CXXFLAGS']
-    env.Prepend(CPPPATH=['#/build/include'])
+    env.Prepend(CPPPATH=[Dir('#/build/include').abspath])
     env.Prepend(LIBPATH=['#/build/lib'])
     env.Append(BUILDERS={'IMPRun': run.Run})
     # these should be in application, but...

@@ -227,9 +227,35 @@ def get_separator(env):
     else:
         return ":"
 
+def get_abspaths(env, name, pathlist):
+    pl=pathlist.split(os.path.pathsep)
+    bad=".."+os.path.sep
+    ret=[]
+    #print pl
+    for p in pl:
+        #if p.startswith(bad):
+        #    utility.report_error(env, "Path lists such as "+name+" should not contain relative paths, bad things will happen.")
+        #print p
+        if p.startswith(bad):
+            ret.append(Dir("#/"+p).abspath)
+        else:
+            ret.append(Dir(p).abspath)
+        if not os.path.isdir(ret[-1]):
+            #print "bad"
+            utility.report_error(env, "The path "+p+" in "+name+" does not exist.")
+
+    #print ret
+    #print name, "from", pathlist, "to", ":".join(ret)
+    return ":".join(ret)
+
+
 def get_python_result(env, setup, cmd):
+    #print "hi"
     if env.get('pythonpath', None):
-        setpp="import sys; sys.path.extend("+str(env.get('pythonpath', None).split(os.path.pathsep))+");"
+        #print 1
+        ap=get_abspaths(env, 'pythonpath', env.get('pythonpath', ""))
+        #print ap
+        setpp="import sys; sys.path.extend("+str(ap.split(os.path.pathsep))+");"
     else:
         setpp=""
     varname= get_dylib_name(env)
