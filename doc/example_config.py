@@ -2,13 +2,15 @@ import os
 import os.path
 
 ## for convenience
-extra_roots=[os.path.join(os.environ['HOME'],"fs")]
-
-# if you use macporst
-extra_roots.append("/opt/local/")
+extra_roots=[]
+if os.path.exists(os.path.join(os.environ['HOME'],"fs")):
+    extra_roots.append(os.path.join(os.environ['HOME'],"fs"))
+# for macports
+if os.path.exists('/opt/local'):
+    extra_roots.append('/opt/local')
 
 ## Where to install IMP
-prefix="/tmp/imp"
+prefix=os.path.join(os.environ['HOME'], "imp")
 
 
 pythonpath=""
@@ -28,7 +30,9 @@ except:
 
 def add(old, root, dir):
     import os.path
-    return ":".join([old,os.path.join(root, dir)])
+    path=os.path.join(root, dir)
+    if os.path.exists(path):
+        return ":".join([old,path])
 
 for r in extra_roots:
     includepath=add(includepath, r, "include")
