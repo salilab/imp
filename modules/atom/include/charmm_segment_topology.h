@@ -21,8 +21,14 @@ IMPATOM_BEGIN_NAMESPACE
 /** CHARMM segments typically correspond to IMP::atom::Chain particles.
  */
 class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
+  /** @name Residues
+
+      The segment contains a chain of residues.
+   */
+  /**@{*/
   IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
            CHARMMResidueTopologies);
+  /**@}*/
 
   IMP_OBJECT(CHARMMSegmentTopology);
 public:
@@ -205,8 +211,14 @@ public:
    */
   Particles add_impropers(Hierarchy hierarchy) const;
 
+  /** @name Segments
+
+      The topology contains a list of segments, one for each chain.
+   */
+  /**@{*/
   IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
            CHARMMSegmentTopologies);
+  /**@}*/
 
   IMP_OBJECT(CHARMMTopology);
 };
