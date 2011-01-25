@@ -45,7 +45,7 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
   // extra space used for anything - 0 by default
   for(int i=0;i<IMP_MRC_USER;i++)
     user[i]=h.user[i];
-  strcpy(map,"MAP\0"); // character string 'MAP ' to identify file type
+  strcpy(map,"MAP "); // character string 'MAP ' to identify file type
   // Origin used for transforms
   xorigin=h.get_xorigin() ; yorigin=h.get_yorigin() ; zorigin=h.get_zorigin();
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
