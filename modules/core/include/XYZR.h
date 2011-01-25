@@ -66,18 +66,22 @@ public:
   static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_radius_key());
   }
-  IMP_DECORATOR_GET_SET(radius, get_radius_key(), Float, Float);
+  double get_radius() const {
+    return get_sphere().get_radius();
+  }
+  void set_radius(double r) const {
+    return get_particle()->_access_coordinates()._set_radius(r);
+  }
 
 
   //! Return a sphere object
-  algebra::SphereD<3> get_sphere() const {
-    return algebra::SphereD<3>(get_coordinates(), get_radius());
+  const algebra::SphereD<3>& get_sphere() const {
+    return get_particle()->_get_coordinates();
   }
 
   //! Set the attributes from a sphere
   void set_sphere(const algebra::SphereD<3> &s) {
-    set_coordinates(s.get_center());
-    set_radius(s.get_radius());
+    get_particle()->_access_coordinates()=s;
   }
   //! Get the default radius key.
   static FloatKey get_radius_key() {
