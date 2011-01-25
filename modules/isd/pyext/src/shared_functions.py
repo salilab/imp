@@ -123,6 +123,12 @@ class sfo():
         m.add_restraint(rs)
         sigma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
+        print "prior restraint"
+        rs = IMP.RestraintSet('prior')
+        rs.add_restraint(IMP.isd.JeffreysRestraint(sigma))
+        rs.add_restraint(IMP.isd.JeffreysRestraint(gamma))
+        rs.set_weight(1.0)
+        m.add_restraint(rs)
         rs = IMP.RestraintSet('NOE')
         print "reading data restraints"
         for i,line in enumerate(open(restraints)):
