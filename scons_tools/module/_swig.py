@@ -220,12 +220,12 @@ def _action_simple_swig(target, source, env):
     #print base
     command=command+["-o",target[1].abspath, "-oh",target[2].abspath]
     ussp=env.get('swigpath', "")
-    #print 'ussp is', ussp
-    sp=ussp.split(":")
-    #print 'sp is', sp
-    command=command+[" -Ibuild/swig"]+ ["-I"+str(Dir(x)) for x in env.get('includepath', "").split(":")]\
-             + ["-I"+Dir("#build/include").abspath]\
-             + ["-I"+str(x) for x in sp if x != ""]
+    command=command+[" -Ibuild/swig"]\
+        + ["-I"+x for x in
+           scons_tools.utility.get_env_paths(env, 'includepath')]\
+        + ["-I"+Dir("#build/include").abspath]\
+        + ["-I"+str(x) for x in
+           scons_tools.utility.get_env_paths(env, 'swigpath')]
     command.append("-DIMP_SWIG")
     command.append(source[0].abspath)
     ret= env.Execute(" ".join(command) %vars)

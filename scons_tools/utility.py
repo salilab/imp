@@ -199,37 +199,9 @@ def add_to_include_path(env, path):
             env.Append(CXXFLAGS=["-isystem",path])
     else:
         env.Append(CPPPATH=[path])
-
-def add_to_lib_path(env, path):
-    if not path:
-        return
-    env.Append(LIBPATH=[path])
-
-def get_dylib_name(env):
-    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
-        return "LD_LIBRARY_PATH"
-    elif env['PLATFORM'] == 'darwin':
-        return "DYLD_LIBRARY_PATH"
-    else:
-        return None
-
-def get_ld_path(env):
-    ret=[]
-    if not env['IMP_USE_RPATH'] and env.get('libpath', None):
-        ret=env['libpath'].split(":")
-    if env.get('ldlibpath', None):
-        ret.extend(env.get('ldlibpath').split(":"))
-    return ":".join(ret)
-
-def get_separator(env):
-    if env['PLATFORM'] == 'win32' and not env['wine']:
-        return ";"
-    else:
-        return ":"
-
 def get_abspaths(env, name, pathlist):
     if not pathlist:
-        return None
+        return []
     pl=pathlist.split(os.path.pathsep)
     bad=".."+os.path.sep
     ret=[]
@@ -248,7 +220,41 @@ def get_abspaths(env, name, pathlist):
 
     #print ret
     #print name, "from", pathlist, "to", ":".join(ret)
+    return ret
+
+def get_paths(env, paths):
+    if not paths:
+        return []
+    spl= paths.split(os.path.pathsep)
+    return [x for x in spl if x != ""]
+def get_env_paths(env, name):
+    return get_paths(env, env.get(name, ""))
+
+def add_to_lib_path(env, path):
+    if not path:
+        return
+    env.Append(LIBPATH=[path])
+
+def get_dylib_name(env):
+    if env['PLATFORM'] == 'posix' or env['PLATFORM']=='sunos':
+        return "LD_LIBRARY_PATH"
+    elif env['PLATFORM'] == 'darwin':
+        return "DYLD_LIBRARY_PATH"
+    else:
+        return None
+
+def get_ld_path(env):
+    ret=[]
+    if not env['IMP_USE_RPATH'] and env.get('libpath', None):
+        ret=get_env_paths(env, 'libpath')
+    ret.extend(get_env_paths(env, 'ldlibpath'))
     return ":".join(ret)
+
+def get_separator(env):
+    if env['PLATFORM'] == 'win32' and not env['wine']:
+        return ";"
+    else:
+        return ":"
 
 
 def get_python_result(env, setup, cmd):
@@ -257,7 +263,7 @@ def get_python_result(env, setup, cmd):
         #print 1
         ap=get_abspaths(env, 'pythonpath', env.get('pythonpath', ""))
         #print ap
-        setpp="import sys; sys.path.extend("+str(ap.split(os.path.pathsep))+");"
+        setpp="import sys; sys.path.extend("+str(ap)+");"
     else:
         setpp=""
     varname= get_dylib_name(env)
