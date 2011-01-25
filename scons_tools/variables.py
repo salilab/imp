@@ -57,9 +57,7 @@ def _propagate_variables(env):
 
     for t in ['includepath', 'libpath', 'datapath','pythonpath', 'swigpath', 'ldlibpath']:
         r=utility.get_abspaths(env, t, env.get(t, ""))
-        if r != "":
-            env[t]=r
-        #print "final", env[t]
+        env[t]=os.path.pathsep.join(r)
 
     if env.get('pythoncxxflags', None):
         env.Append(IMP_PYTHON_CXXFLAGS = env['pythoncxxflags'].split())
@@ -94,19 +92,16 @@ def _propagate_variables(env):
         env.Append(IMP_BIN_LINKFLAGS=[])
 
     if env.get('includepath') is not None:
-        env.Prepend(CPPPATH=[os.path.abspath(x) for x in \
-                             env['includepath'].split(os.path.pathsep)])
+        env.Prepend(CPPPATH=utility.get_env_paths(env, 'includepath'))
     else:
         env.Append(CPPPATH=[])
 
     if env.get('libpath') is not None:
-        env.Prepend(LIBPATH=[os.path.abspath(x) for x in \
-                             env['libpath'].split(os.path.pathsep)])
+        env.Prepend(LIBPATH=utility.get_env_paths(env, 'libpath'))
     else:
         env.Append(LIBPATH=[])
     if env.get('libs') is not None:
-        libs= env['libs'].split(":")
-        env.Append(LIBS=libs)
+        env.Append(LIBS=utility.get_env_paths('libs'))
     else:
         env.Append(LIBS=[])
 
