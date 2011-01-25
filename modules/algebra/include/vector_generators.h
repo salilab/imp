@@ -131,10 +131,8 @@ get_random_vector_in(const SphereD<D> &s){
 template <int D>
 VectorD<D>
 get_random_vector_on(const SphereD<D> &s) {
-  // could be made general
-  BOOST_STATIC_ASSERT(D>0);
   double cur_radius2=square(s.get_radius());
-  VectorD<D> up;
+  Floats up(s.get_center().get_dimension());
   for (unsigned int i=D-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
     ::boost::uniform_real<> rand(-r, r);
@@ -149,12 +147,15 @@ get_random_vector_on(const SphereD<D> &s) {
   }
   up[0]=x;
 
-  IMP_INTERNAL_CHECK(std::abs(up.get_magnitude() -s.get_radius()) < .1,
+  IMP_INTERNAL_CHECK(std::abs(VectorD<D>(up.begin(),
+                                         up.end()).get_magnitude()
+                              -s.get_radius()) < .1,
                      "Error generating vector on sphere: "
-                     << up << " for " << s.get_radius());
+                     << VectorD<D>(up.begin(), up.end())
+                     << " for " << s.get_radius());
   //IMP_LOG(VERBOSE, "Random vector on sphere is " << up << std::endl);
 
-  return s.get_center()+ up;
+  return s.get_center()+ VectorD<D>(up.begin(), up.end());
 }
 
 
