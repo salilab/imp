@@ -146,32 +146,37 @@ inline Color get_interpolated_rgb(const Color &a,
                (1-f)*a.get_blue()+f*b.get_blue());
 }
 
-
+/** \name Colormaps
+    These functions map a number in the interval [0,1]
+    to a color using some color map.
+@{
+ */
 //! Return the color for f from the jet color map
-/** The argument must be between 0 and 1, inclusive.
-    \relatesalso Color
+/** \relatesalso Color
  */
 IMPDISPLAYEXPORT Color get_jet_color(double f);
 
 //! Return the color for f from the hot color map
-/** The argument must be between 0 and 1, inclusive.
-    \relatesalso Color
+/** \relatesalso Color
  */
 IMPDISPLAYEXPORT Color get_hot_color(double f);
 
 //! Return the color for f from the rgb color map
-/** The argument must be between 0 and 1, inclusive.
-    \relatesalso Color
+/** \relatesalso Color
  */
 IMPDISPLAYEXPORT Color get_rgb_color(double f);
 
 
 //! Return the a greyscale value for f
-/** The argument must be between 0 and 1, inclusive.
-    \relatesalso Color
+/** \relatesalso Color
  */
 IMPDISPLAYEXPORT Color get_grey_color(double f);
 
+//! Return colors using the gnuplot default color map
+/** \relatesalso Color
+ */
+IMPDISPLAYEXPORT Color get_gnuplot_color(double f);
+/** @} */
 
 IMP_VALUES(Color, Colors);
 
