@@ -26,7 +26,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
 inline std::vector<VectorD<D> >
-native_uniform_cover_unit_sphere(unsigned int n,bool ALL) {
+native_uniform_cover_unit_sphere(unsigned int d,
+                                 unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
   std::vector<VectorD<D> > ret(n);
   for (unsigned int i=0; i< D; ++i) {
@@ -53,7 +54,9 @@ inline std::vector<VectorD<D> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<D> &center,
                      double radius, bool ALL) {
-  std::vector<VectorD<D> > ret= native_uniform_cover_unit_sphere<D>(n, ALL);
+  std::vector<VectorD<D> > ret
+    = native_uniform_cover_unit_sphere<D>(center.get_dimension(),
+                                          n, ALL);
   for (unsigned int i=0; i< ret.size(); ++i) {
     if (!ALL && ret[i][D-1] < 0) {
       ret[i]= -radius*ret[i]+center;
@@ -70,7 +73,9 @@ inline std::vector<VectorD<4> >
 uniform_cover_sphere(unsigned int n,
                      const VectorD<4> &center,
                      double radius, bool ALL) {
-  std::vector<VectorD<4> > ret= native_uniform_cover_unit_sphere<4>(n, ALL);
+  std::vector<VectorD<4> > ret
+    = native_uniform_cover_unit_sphere<4>(center.get_dimension(),
+                                          n, ALL);
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
   IMP::cgal::internal::refine_unit_sphere_cover_4d(ret, ALL);
 #endif
