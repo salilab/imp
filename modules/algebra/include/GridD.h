@@ -256,7 +256,7 @@ namespace grids {
     }
 #endif
 
-    bool get_has_index(const ExtendedGridIndexD<D>& v) const {
+    bool get_has_index(const ExtendedGridIndexD<D>& ) const {
       return true;
     }
 
