@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.algebra
 import IMP.core
-import IMP.local
+import IMP.example_system_local
 
 class DistanceTests(IMP.test.TestCase):
     """Test the symmetry restraint"""
