@@ -43,7 +43,9 @@ SubsetFilterTable::~SubsetFilterTable(){}
     return ok;
   }
 
-  void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{}
+  void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{
+    out << "subset: " << data_.get_subset() << std::endl;
+  }
 
 double RestraintScoreSubsetFilter::get_strength() const {
   return 1-std::pow(.5, static_cast<int>(data_.get_number_of_restraints()));
@@ -118,7 +120,7 @@ void RestraintScoreSubsetFilterTable
   mset_->add_score(r, subset, state, score);
 }
 
-void RestraintScoreSubsetFilterTable::do_show(std::ostream &out) const {
+void RestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 }
 
 
@@ -178,7 +180,7 @@ public:
   }
 };
 template <class Filter>
-void  DisjointSetsSubsetFilter<Filter>::do_show(std::ostream &out) const{}
+void  DisjointSetsSubsetFilter<Filter>::do_show(std::ostream &) const{}
 
 
 }
@@ -319,7 +321,7 @@ namespace {
     return true;
   }
 
-  void ListSubsetFilter::do_show(std::ostream &out) const{}
+  void ListSubsetFilter::do_show(std::ostream &) const{}
 }
 
 double ListSubsetFilter::get_strength() const {
@@ -353,7 +355,7 @@ int ListSubsetFilterTable
 SubsetFilter*
 ListSubsetFilterTable
 ::get_subset_filter(const Subset &s,
-                    const Subsets &excluded) const {
+                    const Subsets &) const {
   ParticlesTemp cur(s.begin(), s.end());
   Ints pos(cur.size());
   Ints indexes(cur.size());
@@ -375,7 +377,7 @@ void ListSubsetFilterTable::intersect(Particle*p,
   states_[index] &= s;
 }
 
-void ListSubsetFilterTable::do_show(std::ostream &out) const {
+void ListSubsetFilterTable::do_show(std::ostream &) const {
 }
 
 IMPDOMINO_END_NAMESPACE

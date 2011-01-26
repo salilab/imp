@@ -350,7 +350,7 @@ SubsetStates BranchAndBoundSubsetStatesTable
   return ssl;
 }
 
-void BranchAndBoundSubsetStatesTable::do_show(std::ostream &out) const {
+void BranchAndBoundSubsetStatesTable::do_show(std::ostream &) const {
 }
 
 
@@ -366,7 +366,7 @@ SubsetStates ListSubsetStatesTable
 }
 
 
-void ListSubsetStatesTable::do_show(std::ostream &out) const {
+void ListSubsetStatesTable::do_show(std::ostream &) const {
 }
 
 IMPDOMINO_END_NAMESPACE

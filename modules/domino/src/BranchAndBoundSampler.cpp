@@ -40,6 +40,7 @@ SubsetStates BranchAndBoundSampler
 }
 
 void BranchAndBoundSampler::do_show(std::ostream &out) const {
+  out << "pst: " << get_particle_states_table()->get_name() << std::endl;
 }
 
 IMPDOMINO_END_NAMESPACE

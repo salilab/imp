@@ -99,9 +99,9 @@ ParticlesTemp pt= c_->get_particles();
   }
 
   bool handle_nbl(Restraint *r, RestraintSet *p,
-                          const DependencyGraph &dg,
+                          const DependencyGraph &,
                           const IMP::internal::Map<Object*,
-                          unsigned int> &index,
+                          unsigned int> &,
                           const ParticleStatesTable *pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
                           boost::ptr_vector<ScopedRestraint> &added) {

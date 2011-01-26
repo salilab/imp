@@ -146,6 +146,7 @@ void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
 }
 
 void DominoSampler::do_show(std::ostream &out) const {
+  out << "pst: " << *get_particle_states_table() << std::endl;
 }
 
 IMPDOMINO_END_NAMESPACE

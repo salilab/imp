@@ -141,7 +141,7 @@ namespace {
 
 }
 SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
-                                          const Subset& all_particles,
+                                          const Subset&,
                                           const SubsetFilterTables &filters,
                                           const SubsetStatesTable *sst,
                                           unsigned int max) {
