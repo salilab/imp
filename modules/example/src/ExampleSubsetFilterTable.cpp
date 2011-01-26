@@ -6,6 +6,7 @@
  */
 
 #include <IMP/example/ExampleSubsetFilterTable.h>
+#include <iterator>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -32,6 +33,9 @@ namespace {
       return true;
     }
   void ExampleSubsetFilter::do_show(std::ostream &out) const {
+    std::copy(values_.begin(), values_.end(),
+              std::ostream_iterator<int>(out, " "));
+    out << std::endl;
   }
 }
 
@@ -43,7 +47,7 @@ ExampleSubsetFilterTable::ExampleSubsetFilterTable(const ParticlesTemp &ps) {
 
 domino::SubsetFilter*
 ExampleSubsetFilterTable::get_subset_filter(const domino::Subset&s,
-                                  const domino::Subsets &excluded) const {
+                                  const domino::Subsets &) const {
   /* In general, the excluded subsets are subsets that have already
    been filtered.  The table is free to reduce its calculations based
    on that knowledge. Here we are lazy and do not. */
@@ -54,7 +58,7 @@ ExampleSubsetFilterTable::get_subset_filter(const domino::Subset&s,
   return new ExampleSubsetFilter(values);
 }
 
-void ExampleSubsetFilterTable::do_show(std::ostream &out) const {
+void ExampleSubsetFilterTable::do_show(std::ostream &) const {
 }
 
 IMPEXAMPLE_END_NAMESPACE
