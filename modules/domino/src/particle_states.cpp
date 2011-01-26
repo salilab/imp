@@ -14,7 +14,13 @@ IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates(){}
 
 
-void ParticleStatesTable::do_show(std::ostream &out) const{}
+void ParticleStatesTable::do_show(std::ostream &out) const{
+  for (Map::const_iterator it= enumerators_.begin(); it != enumerators_.end();
+       ++it) {
+    out << it->first->get_name() << ": " << it->second->get_name()
+        << std::endl;
+  }
+}
 
 
 unsigned int XYZStates::get_number_of_particle_states() const {
@@ -25,7 +31,9 @@ void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
   core::XYZ(p).set_coordinates(states_[i]);
 }
 
-void XYZStates::do_show(std::ostream &out) const{}
+void XYZStates::do_show(std::ostream &out) const{
+  out << "size: " << states_.size() << std::endl;
+}
 
 
 unsigned int RigidBodyStates::get_number_of_particle_states() const {
@@ -36,7 +44,9 @@ void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
   core::RigidBody(p).set_reference_frame(states_[i]);
 }
 
-void RigidBodyStates::do_show(std::ostream &out) const{}
+void RigidBodyStates::do_show(std::ostream &out) const{
+  out << "size: " << states_.size() << std::endl;
+}
 
 
 IMPDOMINO_END_NAMESPACE

@@ -46,7 +46,7 @@ public:
       vm_=boost::get(boost::vertex_name, g);
     }
   void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph& g) {
+                       const Graph&) {
     Object *o= vm_[u];
     //std::cout << "Visiting " << o->get_name() << std::endl;
     Particle *p=dynamic_cast<Particle*>(o);

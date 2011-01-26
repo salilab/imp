@@ -69,7 +69,7 @@
       filter;                                                           \
     }                                                                   \
   };                                                                    \
-  void Name##SubsetFilterTable::do_show(std::ostream &out) const {      \
+  void Name##SubsetFilterTable::do_show(std::ostream &) const {         \
   }                                                                     \
   IMP::domino::SubsetFilter* Name##SubsetFilterTable::                  \
   get_subset_filter(const IMP::domino::Subset &s,                       \

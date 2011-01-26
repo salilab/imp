@@ -28,7 +28,7 @@ namespace {
     IMP_EMBEDDING(ParticleStatesEmbedding);
   };
   void ParticleStatesEmbedding::do_show(std::ostream &out) const {
-
+    out << "particle: " << p_ << std::endl;
   }
   algebra::VectorKD ParticleStatesEmbedding::get_point(unsigned int i) const {
     ps_->load_particle_state(allowed_[i], p_);
@@ -67,7 +67,7 @@ namespace {
     return ret;
   }
 
-  SubsetStates filter_states(const Subset &subset,
+  SubsetStates filter_states(const Subset &,
                              const SubsetStates &in,
                              const std::vector<Ints> &clustering) {
     SubsetStates ret;
