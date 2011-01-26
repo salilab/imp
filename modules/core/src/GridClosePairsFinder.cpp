@@ -46,7 +46,7 @@ namespace {
   struct ParticleClose {
     double d_;
     ParticleClose(double d): d_(d){}
-    double operator()(Particle *a, Particle *b) const {
+    bool operator()(Particle *a, Particle *b) const {
       return get_interiors_intersect(XYZR(a).get_coordinates()
                                      -XYZR(b).get_coordinates(),
                                      XYZR(b).get_radius()+d_,
@@ -62,7 +62,7 @@ namespace {
                           double d):
       uc_(bb.get_corner(1)- bb.get_corner(0)),
       merged_(merged), d_(d){}
-    double operator()(Particle *a, Particle *b) const {
+    bool operator()(Particle *a, Particle *b) const {
       algebra::Vector3D diff
         = XYZR(a).get_coordinates()- XYZR(b).get_coordinates();
       for (unsigned int i=0; i< 3; ++i) {
@@ -592,7 +592,7 @@ namespace {
                                  const ParticleSet<ItQ> &psq,
                                  CloseF close,
                                  double distance,
-                                 const algebra::BoundingBox3D& bb,
+                                 const algebra::BoundingBox3D& ,
                                  unsigned int merged,
                                  Out &out) {
       double maxr=std::max(get_max_radius(psg), get_max_radius(psq));
@@ -847,7 +847,7 @@ GridClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
 }
 
 ContainersTemp
-GridClosePairsFinder::get_input_containers(const ParticlesTemp &ps) const {
+GridClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
   return ContainersTemp();
 }
 
