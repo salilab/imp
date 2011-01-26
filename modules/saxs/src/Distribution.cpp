@@ -115,7 +115,7 @@ void RadialDistributionFunction::write_fit_file(
 }
 
 void RadialDistributionFunction::
-show(std::ostream& out, std::string prefix) const
+show(std::ostream& out) const
 {
   const std::string TITLE_LINE = "Distance distribution";
   out << TITLE_LINE << std::endl;

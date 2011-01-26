@@ -84,7 +84,7 @@ public:
   void add(const RadialDistributionFunction& model_pr);
 
   //! print tables
-  void show(std::ostream &out=std::cout, std::string prefix="") const;
+  void show(std::ostream &out=std::cout) const;
 
   //! analogy crystallographic R-factor score
   Float R_factor_score(const RadialDistributionFunction& model_pr,

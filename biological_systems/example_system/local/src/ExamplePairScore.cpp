@@ -48,7 +48,7 @@ ParticlesTemp ExamplePairScore::get_input_particles(Particle *p) const {
   // being scored. Don't worry about returning duplicates.
   return ParticlesTemp(1,p);
 }
-ContainersTemp ExamplePairScore::get_input_containers(Particle *p) const {
+ContainersTemp ExamplePairScore::get_input_containers(Particle *) const {
   // return any containers that would be read if p is one of the particles
   // being scored. Don't worry about returning duplicates.
   return ContainersTemp();

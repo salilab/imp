@@ -30,10 +30,10 @@ struct RefCountPolicy {
 };
 struct NoRefCountPolicy {
   template <class O>
-  static void ref(O o) {
+  static void ref(O) {
   }
   template <class O>
-  static void unref(O o) {
+  static void unref(O) {
   }
 };
 #endif

@@ -33,7 +33,7 @@ void test(std::string name,
 
 template <class KNN>
 void test_uniform(std::string name,
-                  unsigned int n, double eps, double target) {
+                  unsigned int n, double eps, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   BoundingBox3D bb(VectorD<3>(0,0,0),

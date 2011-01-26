@@ -49,7 +49,7 @@ CommonEndpointPairFilter::get_input_particles(Particle*p)
 }
 
 ContainersTemp
-CommonEndpointPairFilter::get_input_containers(Particle*p) const {
+CommonEndpointPairFilter::get_input_containers(Particle*) const {
   return ContainersTemp();
 }
 

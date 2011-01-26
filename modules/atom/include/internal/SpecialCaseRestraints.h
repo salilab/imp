@@ -108,7 +108,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     void handle_pair_score_restraint(PairScoreRestraint* pr,
                                      RestraintSet *rs,
                                      Harmonic fh,
-                                     EV fev) {
+                                     EV) {
     PairScore *ps= pr->get_score();
     double x0, k;
     if (get_harmonic_info(ps, pr->get_argument(), x0, k)) {
@@ -155,7 +155,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     void handle_singleton_score_restraint(SingletonScoreRestraint* pr,
                                      RestraintSet *rs,
                                      Harmonic fh,
-                                     EV fev) {
+                                     EV) {
     SingletonScore *ps= pr->get_score();
     double x0, k;
     ParticlePair pp;
@@ -169,7 +169,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     void handle_singletons_score_restraint(SingletonsScoreRestraint *pr,
                                      RestraintSet *rs,
                                      Harmonic fh,
-                                    EV fev) {
+                                    EV) {
     ContainersTemp ct= pr->get_input_containers();
     SingletonScore *ps= pr->get_score();
     if (ct.size()==1 && get_is_static_container(ct[0], dg_, ps_)) {
