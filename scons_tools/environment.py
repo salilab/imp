@@ -136,7 +136,7 @@ def _add_platform_flags(env):
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wundef",
                              "-Wunsafe-loop-optimizations",
-                             "-Wcast-align", "-Waddress"])
+                             "-Wcast-align"])
         #-Werror=
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
