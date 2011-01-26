@@ -224,7 +224,7 @@ inline bool get_is_log_output(LogLevel l)
 
 struct WarningContext {
 public:
-  void add_warning(std::string str) const {}
+  void add_warning(std::string ) const {}
   void clear_warnings() const {}
   void dump_warnings() const {}
 };
