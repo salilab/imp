@@ -138,7 +138,10 @@ public:
     data_.fill_nearest_neighbors(pt, distance, eps_, ret);
     return ret;
   }
-  IMP_SHOWABLE_INLINE(NearestNeighborD, {
+  IMP_SHOWABLE_INLINE(NearestNeighborD,
+                      {out << "Nearest neighbor on "
+                           << data_.get_number_of_points()
+                           << " points";
     });
 };
 
