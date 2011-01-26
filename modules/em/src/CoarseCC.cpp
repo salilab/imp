@@ -321,8 +321,6 @@ void CoarseCC::calc_derivatives(
              const float &scalefac,
              std::vector<float> &dvx, std::vector<float>&dvy,
              std::vector<float>&dvz) {
-  //  MRCReaderWriter mrw;
-  //write_map(const_cast<DensityMap*>(&model_map),"deriv.mrc",mrw);
   float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
@@ -359,59 +357,8 @@ void CoarseCC::calc_derivatives(
   int ny=em_header->get_ny();
   //int nz=em_header->get_nz();
   const emreal *model_data = model_map->get_data();
-  ////////////// Calculate local RMS
-  emreal model_mean=0.;
-  emreal em_mean=0.;
-  emreal model_rms=0.;
-  emreal em_rms=0.;
-  int i,j;
-  float voxel_size = em_map->get_header()->get_spacing();
-  int ivoxx_shift = (int)floor((model_header->get_xorigin()
-                                  - em_header->get_xorigin())
-                                 / voxel_size);
-  int ivoxy_shift = (int)floor((model_header->get_yorigin()
-                                  - em_header->get_yorigin())
-                                 / voxel_size);
-  int ivoxz_shift = (int)floor((model_header->get_zorigin()
-                                  - em_header->get_zorigin())
-                                 / voxel_size);
-    // calculate the shift in index of the origin of model_map in em_map
-    // ( j can be negative)
-   j = ivoxz_shift * em_header->get_nx() * em_header->get_ny() + ivoxy_shift
-     * em_header->get_nx() + ivoxx_shift;
-   int num_elements=0;//
-   for (i=0;i<nvox;i++) {
-     // if the voxel of the model is above the threshold
-     if (model_data[i] > 0.001){
-        // Check if the voxel belongs to the em map volume, and only then
-        // compute the correlation
-        if (j + i >= 0 && j + i < nvox)  {
-          num_elements++;
-          em_mean += em_data[j+i] ;
-          model_mean += model_data[i];
-        }
-      }
-    }
-    em_mean = em_mean / num_elements;
-    model_mean = model_mean / num_elements;
-    em_rms=0.;model_rms=0.;
-    for (i=0;i<nvox;i++) {
-      // if the voxel of the model is above the threshold
-      if (model_data[i] > 0.001){
-        // Check if the voxel belongs to the em map volume, and only then
-        // compute the correlation
-        if (j + i >= 0 && j + i < nvox)  {
-          em_rms += (em_data[j+i]-em_mean) * (em_data[j+i]-em_mean);
-          model_rms += (model_data[i]-model_mean) * (model_data[i]-model_mean);
-        }
-      }
-    }
-    em_rms = std::sqrt(em_rms/num_elements);
-    model_rms = std::sqrt(model_rms/num_elements);
-    IMP_LOG(VERBOSE,"em_rms:"<<em_rms<<" model_rms:"<<model_rms<<"\n");
-    ///////////////////////////
-    //  double lower_comp= em_header->rms * model_header->rms;
-    double lower_comp= em_rms*model_rms;
+  double lower_comp= em_header->rms * model_header->rms;
+
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
     float x,y,z;
     x=model_xyzr[ii].get_x();y=model_xyzr[ii].get_y();
@@ -439,8 +386,6 @@ void CoarseCC::calc_derivatives(
         ivox = ivoxz * nx * ny
           + ivoxy * nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          //std::cout<<"for voxel:: ("<<x_loc[ivox]<<","<<y_loc[ivox]<<
-          //","<<z_loc[ivox]<<" ) "<<em_data[ivox]<<std::endl;
           if (em_data[ivox]<EPS) {
             ivox++;
             continue;
