@@ -6,7 +6,7 @@ files = [
          'DataPointsAssignment.cpp',
          'VQClustering.cpp',
          'density_analysis.cpp',
-         'FFTFitting.cpp',
+         'fft_based_rigid_fitting.cpp',
          'MolCnSymmAxisDetector.cpp',
          'weighted_excluded_volume.cpp',
 #         'sampling_space.cpp',

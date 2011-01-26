@@ -17,7 +17,7 @@ namespace IMP::multifit {
 #%include "IMP/multifit/sampling_space_utils.h"
 #%include "IMP/multifit/restraints_utils.h"
 #%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
-%include "IMP/multifit/FFTFitting.h"
+%include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
 IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
 namespace IMP {
