@@ -7,7 +7,7 @@ files = [
          'VQClustering.h',
          'ClusteringEngine.h',
          'density_analysis.h',
-         'FFTFitting.h',
+         'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',
          'weighted_excluded_volume.h',
 #         'sampling_space.h',
