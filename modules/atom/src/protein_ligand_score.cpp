@@ -280,6 +280,9 @@ void ProteinLigandRestraint::initialize(Hierarchy protein,
 
 
 namespace {
+  PairScore* create_pair_score(double threshold, TextInput data) {
+    return new ProteinLigandAtomPairScore(threshold, data);
+  }
   PairScore* create_pair_score(double threshold) {
     return new ProteinLigandAtomPairScore(threshold);
   }
@@ -308,7 +311,7 @@ ProteinLigandRestraint::ProteinLigandRestraint(Hierarchy protein,
                                                Hierarchy ligand,
                                                double threshold,
                                                TextInput data):
-  container::PairsRestraint(create_pair_score(threshold),
+  container::PairsRestraint(create_pair_score(threshold, data),
                             create_pair_container(protein, ligand, threshold)) {
   initialize(protein, ligand);
 }
