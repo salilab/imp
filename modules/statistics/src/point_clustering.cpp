@@ -45,7 +45,7 @@ unsigned int VectorDEmbedding::get_number_of_items() const {
   return vectors_.size();
 }
 
-void VectorDEmbedding::do_show(std::ostream &out) const {
+void VectorDEmbedding::do_show(std::ostream &) const {
 }
 
 ConfigurationSetXYZEmbedding

@@ -58,7 +58,7 @@ unsigned int n=container_->get_number();
 }
 
 void PairContainerStatistics
-::do_after_evaluate(DerivativeAccumulator *da) {
+::do_after_evaluate(DerivativeAccumulator *) {
 }
 ContainersTemp PairContainerStatistics::get_input_containers() const {
   return ContainersTemp(1, container_);
