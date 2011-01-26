@@ -12,7 +12,7 @@ files = [
 #         'sampling_space.cpp',
          'FittingSolutionRecord.cpp',
 #         'SingleDominoRun.cpp',
-         'm_rigid_fitting.cpp',
+         'pca_based_rigid_fitting.cpp',
          'fitting_solutions_reader_writer.cpp',
          'fitting_tools.cpp',
          'SettingsData.cpp',

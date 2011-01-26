@@ -1,12 +1,12 @@
 /**
- *  \file m_rigid_fitting.cpp
+ *  \file pca_based_rigid_fitting.cpp
  *  \brief Fast Rigid fitting functionalities
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/multifit/m_rigid_fitting.h>
+#include <IMP/multifit/pca_based_rigid_fitting.h>
 #include <IMP/em/CoarseCC.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/algebra/vector_generators.h>
