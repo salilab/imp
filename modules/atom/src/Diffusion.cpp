@@ -47,7 +47,7 @@ static MillipascalSecond eta(unit::Kelvin T)
     return points[0].second;
   } else {
     unsigned int i;
-    for (i=1; points[i].first < T; ++i);
+    for (i=1; points[i].first < T; ++i) {}
     double f= ((T - points[i-1].first)
               /(points[i].first - points[i-1].first));
     MillipascalSecond ret=
