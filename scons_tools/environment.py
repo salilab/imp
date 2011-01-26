@@ -146,7 +146,7 @@ def _add_platform_flags(env):
                                  '-fstrict-aliasing',
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
-                                 '-fno-float-store'])
+                                 '-fno-float-store', '-Wno-unused'])
             if dependency.gcc.get_version(env)>= 4.3:
                 env.Append(CXXFLAGS=['-fno-signed-zeros',
                                      '-freciprocal-math',
@@ -161,7 +161,9 @@ def _add_platform_flags(env):
         except ValueError:
             pass
         env.Replace(IMP_PYTHON_CXXFLAGS=[x for x in env['IMP_PYTHON_CXXFLAGS']+env['CXXFLAGS']
-                                     if x not in ['-Wall', '-Wextra', '-Wformat', '-O3', '-O2']])
+                                     if x not in ['-Wall', '-Wextra', '-Wformat',
+                                                  '-Wstrict-aliasing=2',
+                                                  '-O3', '-O2']])
         #env.Prepend(LIBLINKFLAGS=['-Wl,-rpath-link,'+Dir("#/build/lib").abspath])
     env.Prepend(IMP_BIN_LINKFLAGS=env['IMP_LINKFLAGS'])
     env.Prepend(IMP_BIN_LINKFLAGS=env['LINKFLAGS'])
