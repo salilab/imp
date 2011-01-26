@@ -118,7 +118,7 @@ QuadraticClosePairsFinder::get_input_particles(const ParticlesTemp &ps) const {
 
 
 ContainersTemp
-QuadraticClosePairsFinder::get_input_containers(const ParticlesTemp &ps) const {
+QuadraticClosePairsFinder::get_input_containers(const ParticlesTemp &) const {
   return ContainersTemp();
 }
 

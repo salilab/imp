@@ -120,6 +120,8 @@ public:
 template <class Key, bool BIPARTITE, bool INTERPOLATE>
 void StatisticalPairScore<Key, BIPARTITE, INTERPOLATE>
 ::do_show(std::ostream &out) const {
+  out << "key: " << key_ << std::endl;
+  out << "threshold: " << threshold_ << std::endl;
 }
 
 template <class Key, bool BIPARTITE, bool INTERPOLATE>
