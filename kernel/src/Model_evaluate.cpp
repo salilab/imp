@@ -250,7 +250,6 @@ void Model::zero_derivatives(bool st) const {
 
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
-                                     const std::vector<double> &maxs,
                                      bool calc_derivs,
                                      WhichRestraints incremental_restraints,
                                      bool incremental_evaluation) const {
@@ -328,11 +327,8 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
     }
     bool ogather_stats=gather_statistics_;
     gather_statistics_=false;
-    // junk
-    std::vector<double> mx(restraints.size(),
-                           std::numeric_limits<double>::max());
     Floats scores=
-      do_evaluate_restraints(restraints, weights, mx,
+      do_evaluate_restraints(restraints, weights,
                              calc_derivs, ALL, false);
     double nscore= std::accumulate(scores.begin(), scores.end(), 0.0);
     gather_statistics_= ogather_stats;
@@ -341,7 +337,7 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
       if (gather_statistics_) {
         std::cerr << "Incremental:\n";
         show_restraint_score_statistics(std::cerr);
-        do_evaluate_restraints(restraints, weights, mx,
+        do_evaluate_restraints(restraints, weights,
                                calc_derivs, ALL, false);
         std::cerr << "Non-incremental:\n";
         show_restraint_score_statistics(std::cerr);
@@ -396,7 +392,6 @@ void Model::validate_computed_derivatives() const {
 
 Floats Model::do_evaluate(const RestraintsTemp &restraints,
                           const std::vector<double> &weights,
-                          const std::vector<double> &maxs,
                           const ScoreStatesTemp &states,
                           bool calc_derivs) {
   // make sure stage is restored on an exception
@@ -423,7 +418,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   Floats ret;
   if (get_is_incremental()) {
     if (calc_derivs) zero_derivatives(first_incremental_);
-    Floats scores= do_evaluate_restraints(restraints, weights, maxs,
+    Floats scores= do_evaluate_restraints(restraints, weights,
                                    calc_derivs, INCREMENTAL,
                                    !first_incremental_);
     ret.insert(ret.end(), scores.begin(), scores.end());
@@ -433,7 +428,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
         (*pit)->move_derivatives_to_shadow();
       }
     }
-    Floats niscores=do_evaluate_restraints(restraints, weights, maxs,
+    Floats niscores=do_evaluate_restraints(restraints, weights,
                                   calc_derivs, NONINCREMENTAL, false);
     ret.insert(ret.end(), niscores.begin(), niscores.end());
     if (calc_derivs) {
@@ -452,7 +447,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
     if (calc_derivs) {
       zero_derivatives();
     }
-    ret= do_evaluate_restraints(restraints, weights, maxs,
+    ret= do_evaluate_restraints(restraints, weights,
                                   calc_derivs, ALL, false);
   }
 
