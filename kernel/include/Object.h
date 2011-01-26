@@ -257,7 +257,7 @@ IMP_END_NAMESPACE
 #endif
 
 // recommended by http://gcc.gnu.org/gcc/Function-Names.html
-#if __STDC_VERSION__ < 199901L
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ < 199901L
 # if __GNUC__ >= 2 || defined(_MSC_VER)
 #  define __func__ __FUNCTION__
 # else
