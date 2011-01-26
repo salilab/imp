@@ -14,7 +14,7 @@ DecomposableRestraint::DecomposableRestraint(std::string name):
 }
 
 double DecomposableRestraint
-::unprotected_evaluate_subset(DerivativeAccumulator *da) const {
+::unprotected_evaluate_subset(DerivativeAccumulator *) const {
   IMP_NOT_IMPLEMENTED;
 }
 

@@ -292,7 +292,7 @@ public:
   SphereInlineStorage(){
     clear();
   }
-  SphereInlineStorage(int size) {
+  SphereInlineStorage(int) {
     clear();
   }
 
