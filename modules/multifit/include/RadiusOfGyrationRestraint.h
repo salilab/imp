@@ -12,24 +12,34 @@
 
 #include "multifit_config.h"
 #include <IMP/Restraint.h>
-#include <IMP/core/DistancePairScore.h>
+#include <IMP/core/HarmonicUpperBound.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-//! Ensure a maximum distance between particles
-/** defined as maximum distance restraints between all pairs
+//! Ensure the radius of gyration of particles fits the predicted one
+/**
+/note a harmonic upper bound is applied between
+      the predicted radius and the actual radius
  */
 class IMPMULTIFITEXPORT RadiusOfGyrationRestraint : public Restraint
 {
 public:
-  RadiusOfGyrationRestraint(Particles ps,Float max_radius);
+  //! Constructor
+  /**
+    \param[in] ps the particles to work on
+    \param[in] the number of residues the particles represent
+    \param[in] scale allow the radius of gyration of the particles
+                      to be at most scale times the predicted one
+   */
+  RadiusOfGyrationRestraint(Particles ps,int num_residues,Float scale=1.);
   IMP_RESTRAINT(RadiusOfGyrationRestraint);
   IMP_LIST(private, Particle, particle, Particle*, Particles);
   //IMP_OBJECT_INLINE(RadiusOfGyrationRestraint, show(),release(););
  protected:
   Model *mdl_;
-  Float max_radius_;
-  core::DistancePairScore* dps_;
+  Float predicted_rog_;
+  Float scale_;
+  core::HarmonicUpperBound *hub_;
 };
 
 IMPMULTIFIT_END_NAMESPACE
