@@ -15,7 +15,7 @@ using namespace IMP::algebra;
 using namespace IMP::atom;
 
 
-int main(int argc, char **argv) {
+int main(int , char **) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   std::vector<VectorD<3> > vs(10000);

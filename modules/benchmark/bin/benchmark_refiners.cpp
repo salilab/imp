@@ -25,7 +25,7 @@ using namespace IMP::atom;
 namespace {
 template <class PT>
 void do_benchmark(std::string name, Model *,
-                  const PT &ps, Refiner *r, double target) {
+                  const PT &ps, Refiner *r, double ) {
  // measure time
   double runtime;
   double total=0;
@@ -40,7 +40,7 @@ void do_benchmark(std::string name, Model *,
 }
 }
 
-int main(int argc, char **argv) {
+int main(int , char **) {
   IMP_NEW(Model, m, ());
   IMP_NEW(LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
   lr->set_was_used(true);
