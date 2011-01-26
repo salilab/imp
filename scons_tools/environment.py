@@ -116,7 +116,8 @@ def _add_platform_flags(env):
         env['IMP_PYTHON_SO']=so
         if dependency.gcc.get_is_gcc_like(env):
             basecflags=[x for x in opt.split()+cflags.split() \
-                        if x not in ['-Werror', '-Wall','-O2', '-O3',
+                        if x not in ['-Werror', '-Wall', '-Wextra',
+                                     '-O2', '-O3',
                                      '-fstack-protector', '-Wstrict-prototypes',
                                      '-g', '-dynamic', '-DNDEBUG',
                                      "-fwrapv", "-fno-strict-aliasing"]]
@@ -131,7 +132,12 @@ def _add_platform_flags(env):
 
 
     if dependency.gcc.get_is_gcc_like(env):
-        env.Append(CXXFLAGS=["-Wall", "-Wno-deprecated"])
+        env.Append(CXXFLAGS=["-Wall", "-Wextra", "-Wno-deprecated",
+                             "-Winit-self", "-Wstrict-aliasing=2",
+                             "-Wundef",
+                             "-Wunsafe-loop-optimizations",
+                             "-Wcast-align", "-Waddress"])
+        #-Werror=
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
