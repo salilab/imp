@@ -229,12 +229,6 @@ int main(int argc , char **argv) {
   // shorten lines, ick
   typedef HarmonicLowerBound HLB;
   FloatKey xk=  XYZ::get_xyz_keys()[0];
-  Vector3D v(0,1,2);
-  assert(static_cast<void*>(&v[0]) == static_cast<void*>(&v));
-  const double d[]={1,2,3};
-  const Vector3D &v2= reinterpret_cast<const Vector3D&>(d[0]);
-  assert(v2[0]==1);
-  assert(v2[2]==3);
   if (argc>=3 && std::string(argv[1])=="-s") {
     It it= create<PairsRestraint>(new DistancePairScore(new Harmonic(len,kk)),
                                   new SphereDistancePairScore(new HLB(0,kk)),
