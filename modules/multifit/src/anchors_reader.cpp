@@ -108,15 +108,17 @@ void write_cmm_helper(std::ostream &out,
                       const std::string &marker_set_name,
                       const algebra::Vector3Ds &nodes,
                       const IntPairs &edges, Floats radii){
-  Float x,y,z,radius;
   out << "<marker_set name=\"" <<marker_set_name << "\">"<<std::endl;
   for(unsigned int i=0;i<nodes.size();i++) {
-    x = nodes[i][0];
-    y = nodes[i][1];
-    z = nodes[i][2];
+    double x = nodes[i][0];
+    double y = nodes[i][1];
+    double z = nodes[i][2];
     std::string name="";
+    double radius;
     if(radii.size() >0 ) {
       radius = radii[i];
+    } else {
+      radius=1;
     }
     out << "<marker id=\"" << i << "\""
         << " x=\"" << x << "\""
