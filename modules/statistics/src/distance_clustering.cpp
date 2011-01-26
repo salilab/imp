@@ -48,7 +48,7 @@ unsigned int EuclideanDistance::get_number_of_items() const {
   return vectors_.size();
 }
 
-void EuclideanDistance::do_show(std::ostream &out) const {
+void EuclideanDistance::do_show(std::ostream &) const {
 }
 
 namespace {

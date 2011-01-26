@@ -58,6 +58,7 @@ unsigned int ConsecutivePairContainer::get_number_of_particle_pairs() const {
 
 void ConsecutivePairContainer::do_show(std::ostream &out) const {
   IMP_CHECK_OBJECT(this);
+  out << "num particles: " << ps_.size() << std::endl;
 }
 
 ParticlesTemp ConsecutivePairContainer::get_contained_particles() const {
