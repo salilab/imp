@@ -16,10 +16,9 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 class ClusteringEngine {
 public:
   virtual ~ClusteringEngine(){}
-  virtual bool is_part_of_cluster(int data_point_ind,int cluster_ind) const{
-    return true;}
-  virtual Array1DD get_center(int center_ind) const{return Array1DD();}
-  virtual int get_number_of_clusters() const{return 0;}
+  virtual bool is_part_of_cluster(int data_point_ind,int cluster_ind) const=0;
+  virtual Array1DD get_center(int center_ind) const=0;
+  virtual int get_number_of_clusters() const=0;
 };
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_CLUSTERING_ENGINE_H */

@@ -215,7 +215,7 @@ public:
   FixedInlineStorage(){
     clear();
   }
-  FixedInlineStorage(int size) {
+  FixedInlineStorage(int ) {
     clear();
   }
   typename Traits::PassValue get(unsigned int i) const {

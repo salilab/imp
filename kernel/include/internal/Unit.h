@@ -49,7 +49,7 @@ namespace internal
 {
 
 template <class Tag>
-inline std::string get_unit_name(int o) {
+inline std::string get_unit_name(int) {
   return "";
 }
 

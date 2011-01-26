@@ -322,7 +322,7 @@ public:
   }
 
 #ifndef IMP_DOXYGEN
-  void add_voxel(const ExtendedGridIndex3D& i, const VT& gi) {
+  void add_voxel(const ExtendedGridIndex3D&, const VT&) {
     IMP_USAGE_CHECK(false, "Cannot add voxels to dense grid");
   }
 #endif
