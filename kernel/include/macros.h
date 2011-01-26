@@ -1626,7 +1626,7 @@ protected:                                      \
     ParticlesTemp r(1,p);                                               \
     return r;                                                           \
   }                                                                     \
-  ContainersTemp get_input_containers(Particle *p) const {              \
+  ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_TRIPLET_SCORE_BASE(Name)

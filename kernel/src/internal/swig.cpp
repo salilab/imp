@@ -83,7 +83,7 @@ double _ConstOptimizer::do_optimize(unsigned int n) {
   return get_model()->evaluate(false);
 }
 
-void _ConstOptimizer::do_show(std::ostream &out) const {
+void _ConstOptimizer::do_show(std::ostream &) const {
 }
 
 int _overloaded_decorator(_TrivialDecorator) {
@@ -114,16 +114,16 @@ std::string _test_ofile(TextOutput a) {
 
 
 
-std::string _test_ifile_overloaded(TextInput a, std::string s) {
+std::string _test_ifile_overloaded(TextInput a, std::string) {
   return _test_ifile(a);
 }
-std::string _test_ofile_overloaded(TextOutput a, std::string s) {
+std::string _test_ofile_overloaded(TextOutput a, std::string) {
   return _test_ofile(a);
 }
-std::string _test_ifile_overloaded(TextInput a, int s) {
+std::string _test_ifile_overloaded(TextInput a, int) {
   return _test_ifile(a);
 }
-std::string _test_ofile_overloaded(TextOutput a, int s) {
+std::string _test_ofile_overloaded(TextOutput a, int) {
   return _test_ofile(a);
 }
 
