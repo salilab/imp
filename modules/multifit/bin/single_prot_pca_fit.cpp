@@ -18,7 +18,7 @@
 #include <IMP/em/DensityMap.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
-#include <IMP/multifit/m_rigid_fitting.h>
+#include <IMP/multifit/pca_based_rigid_fitting.h>
 #include <IMP/core/LeavesRefiner.h>
 #include <IMP/em/SampledDensityMap.h>
 #include <IMP/em/envelope_penetration.h>
