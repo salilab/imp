@@ -25,6 +25,8 @@ inline bool get_is_non_empty(const A &a, const B &b) {
 
 template <class It>
 inline int  lexicographical_compare(It b0, It e0, It b1, It e1) {
+  IMP_USAGE_CHECK(std::distance(b0, e0)
+                  == std::distance(b1, e1), "Lengths don't match");
   while (b0 != e0) {
     if (*b0 < *b1) return -1;
     else if (*b0 > *b1) return 1;
