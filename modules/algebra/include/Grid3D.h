@@ -23,10 +23,19 @@
 
     \brief Implementation for parameterized grids.
 
+    First some terminology:
+    - a voxel is the data stored at a given location is space
+    - an Index is a way of identifying a particular voxel. That is, given
+      an index, it is easy to get the voxel, but not vice-versa
+    - an ExtendedIndex identifies a particular region in space, but
+      it may not have a corresponding voxel (if it is outside of the
+      region the grid is built on or if that voxel has not yet been
+      added to the sparse grid).
+
     \imp provides support for a variety of spatial grids. The grid support in
     C++ is implemented by combining several different layers to specify
     what capabilities are desired. These layers are:
-    - Data: any type of data can be stored in the grid
+    - Data: any type of data can be stored in a voxel of the grid
     - Boundedness: By using UnboundedGridStorage3D or BoundedGridStorage3D,
       one can choose whether you want a grid over a finite region of space
       or over the whole space.
@@ -39,8 +48,6 @@
 
     These are implemented as mix-ins, so each layer provides a set of accessible
     functionality as methods/types in the final class.
-
-   The VT is stored in each grid cell.
 
    \par Basic operations
    Creating a grid with a given cell size and upper and lower
