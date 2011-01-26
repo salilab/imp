@@ -9,6 +9,7 @@
 #include "../algebra_config.h"
 #include <IMP/base_types.h>
 #include "../VectorD.h"
+#include "../SphereD.h"
 #include "../SphericalVector3D.h"
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/sphere_cover.h>
@@ -29,8 +30,9 @@ inline std::vector<VectorD<D> >
 native_uniform_cover_unit_sphere(unsigned int d,
                                  unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
+  BOOST_STATIC_ASSERT(D!=-1);
   std::vector<VectorD<D> > ret(n);
-  for (unsigned int i=0; i< D; ++i) {
+  for (unsigned int i=0; i< d; ++i) {
     VectorD<D> v= get_basis_vector_d<D>(i);
     if(ALL) {
       ret[2*i]=v;
@@ -39,9 +41,9 @@ native_uniform_cover_unit_sphere(unsigned int d,
       ret[i]=v;
     }
   }
-  for (unsigned int i=(ALL?2*D:D); i< n; ++i) {
+  for (unsigned int i=(ALL?2*d:d); i< n; ++i) {
     VectorD<D> v= get_random_vector_on<D>(get_unit_sphere_d<D>());
-    if (!ALL && v[D-1]<= 0) v=-v;
+    if (!ALL && v[d-1]<= 0) v=-v;
     ret[i]=v;
   }
   return ret;

@@ -233,7 +233,7 @@ inline std::vector<VectorD<3> > get_vertices(const BoundingBoxD<3> &bb) {
 }
 
 //! Return the edges of the box as indices into the vertices list
-inline IntPairs get_edges(const BoundingBoxD<3> &bb) {
+inline IntPairs get_edges(const BoundingBoxD<3> &) {
   static const IntPair edges[12]={IntPair(0,1), IntPair(0,2), IntPair(0,4),
                                  IntPair(1,3), IntPair(1,5),
                                  IntPair(2,3), IntPair(2,6),
