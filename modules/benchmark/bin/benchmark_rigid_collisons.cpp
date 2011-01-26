@@ -22,7 +22,7 @@ void test_one(std::string name,
               Model *m,
               RigidBodiesTemp rbs,
               float side,
-              double target) {
+              double ) {
   VectorD<3> minc(0,0,0), maxc(side, side, side);
   m->evaluate(false);
   double runtime, inittime;

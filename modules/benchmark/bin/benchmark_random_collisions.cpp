@@ -31,7 +31,7 @@ double ConstPairScore::evaluate(const ParticlePair &,
                                 DerivativeAccumulator *) const {
   return 1;
 }
-void ConstPairScore::do_show(std::ostream &out) const {
+void ConstPairScore::do_show(std::ostream &) const {
 }
 }
 
@@ -40,7 +40,7 @@ namespace {
 
 void test_one(std::string name,
               ClosePairsFinder *cpf, unsigned int n,
-              float rmin, float rmax, double target) {
+              float rmin, float rmax, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   VectorD<3> minc(0,0,0), maxc(10,10,10);
