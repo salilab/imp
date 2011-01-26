@@ -83,6 +83,10 @@ inline SphereD<D> get_unit_sphere_d() {
   return SphereD<D>(get_zero_vector_d<D>(), 1.0);
 }
 
+inline SphereD<-1> get_unit_sphere_kd(unsigned int d) {
+  return SphereD<-1>(get_zero_vector_kd(d), 1.0);
+}
+
 //! Return the distance between the two spheres if they are disjoint
 /** If they intersect, the distances are not meaningful.
     \relatesalso SphereD
