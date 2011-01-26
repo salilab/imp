@@ -104,12 +104,10 @@ private:
   void zero_derivatives(bool shadow_too=false) const;
   Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
-                      const std::vector<double> &maxs,
                      const ScoreStatesTemp &states, bool calc_derivs);
   enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
   Floats do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
-                                const std::vector<double> &maxs,
                                 bool calc_derivs,
                                 WhichRestraints incremental_restraints,
                                 bool incremental_evaluation) const;

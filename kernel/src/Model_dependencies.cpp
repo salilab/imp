@@ -287,7 +287,7 @@ public:
                                           vm_(vm) {}
   template <class G>
   void discover_vertex(MDGTraits::vertex_descriptor u,
-                       const G& g) {
+                       const G&) {
     Object *o= vm_[u];
     internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
@@ -449,7 +449,6 @@ double Model::evaluate(bool calc_derivs) {
   }
   Floats ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
-                          restraint_max_scores_,
                      ordered_score_states_,
                      calc_derivs);
   first_call_=false;
@@ -484,14 +483,14 @@ Floats Model::evaluate( RestraintsTemp restraints,
   }
   ScoreStatesTemp ss= get_score_states(restraints);
   std::vector<double> max_scores(restraints.size());
-  for (unsigned int i=0; i< max_scores.size(); ++i) {
+  /*for (unsigned int i=0; i< max_scores.size(); ++i) {
     if (max_scores_.find(restraints[i]) == max_scores_.end()) {
       max_scores[i]= std::numeric_limits<double>::max();
     } else {
       max_scores[i]= max_scores_.find(restraints[i])->second;
     }
-  }
-  Floats ret= do_evaluate(restraints, weights, max_scores,
+    }*/
+  Floats ret= do_evaluate(restraints, weights,
                      ss, calc_derivs);
   IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
                      "The number of scores doesn't match the number of"
