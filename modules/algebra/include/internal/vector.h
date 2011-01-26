@@ -63,7 +63,7 @@ public:
     return storage_;
   }
   bool get_is_null() const {
-    return storage_[0]== get_null_value<T>();
+    return storage_[0]>= get_null_value<T>();
   }
   ~VectorData() {
 #if IMP_BUILD < IMP_FAST
