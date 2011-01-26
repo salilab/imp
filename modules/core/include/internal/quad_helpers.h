@@ -117,7 +117,7 @@ protected:
       || t.find(ParticleTriplet(p[2], p[1], p[0])) != t.end();
   }
   template <class Table>
-   bool has_permutation(const Table &t, const ParticleQuad &p) const {
+   bool has_permutation(const Table &, const ParticleQuad &) const {
     IMP_NOT_IMPLEMENTED;
     return false;
   }

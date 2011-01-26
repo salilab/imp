@@ -49,7 +49,7 @@ public:
   }
   template <class G>
   void discover_vertex( typename boost::graph_traits<G>::vertex_descriptor u,
-                       const G& g) {
+                       const G& ) {
     Object *o= vm_[u];
     Particle *p=dynamic_cast<Particle*>(o);
     if (p) {

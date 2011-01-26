@@ -48,7 +48,7 @@ ParticlesTemp MoveStatisticsScoreState::get_input_particles() const {
 ParticlesTemp MoveStatisticsScoreState::get_output_particles() const {
   return ParticlesTemp();
 }
-void MoveStatisticsScoreState::do_show(std::ostream &out) const{
+void MoveStatisticsScoreState::do_show(std::ostream &) const{
 }
 void MoveStatisticsScoreState::reset() {
   max_move_=0;

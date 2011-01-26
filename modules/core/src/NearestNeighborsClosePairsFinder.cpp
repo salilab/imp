@@ -128,7 +128,7 @@ NearestNeighborsClosePairsFinder
 
 ContainersTemp
 NearestNeighborsClosePairsFinder
-::get_input_containers(const ParticlesTemp &ps) const {
+::get_input_containers(const ParticlesTemp &) const {
   return ContainersTemp();
 }
 

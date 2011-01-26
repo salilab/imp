@@ -121,7 +121,7 @@ struct InList {
     std::sort(ps.begin(), ps.end());
     return InList(ps);
   }
-  static void destroy(InList &il) {
+  static void destroy(InList &) {
     /*for (unsigned int i=0; i< il.ps_.size(); ++i) {
       il.ps_[i]->remove_attribute(key_);
       }*/
