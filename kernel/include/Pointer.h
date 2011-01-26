@@ -78,7 +78,9 @@ class Pointer: public WeakPointer<O>
 
   void check(const RefCounted *){}
   void check(const Object *o) {
-    if (o) IMP_CHECK_OBJECT(o);
+    if (o) {
+      IMP_CHECK_OBJECT(o);
+    }
   }
 
   typedef WeakPointer<O> P;
