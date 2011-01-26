@@ -51,7 +51,7 @@ class NonAlternativePDBSelector : public PDBSelector {
   IMP_PDB_SELECTOR(NonAlternativePDBSelector,
                    return (internal::atom_alt_loc_indicator(pdb_line) == ' '
                            || internal::atom_alt_loc_indicator(pdb_line)
-                           == 'A'),);
+                           == 'A'),out << "");
 };
 
 //! Select all non-alternative ATOM records
@@ -59,7 +59,7 @@ class ATOMPDBSelector: public NonAlternativePDBSelector {
 public:
   IMP_PDB_SELECTOR(ATOMPDBSelector,
                    return NonAlternativePDBSelector::get_is_selected(pdb_line)
-                   && internal::is_ATOM_rec(pdb_line),);
+                   && internal::is_ATOM_rec(pdb_line),out << "");
 };
 
 
@@ -72,7 +72,7 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
                    }
                    const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == 'A'
-                           && type[3] == ' '),);
+                           && type[3] == ' '),out << "");
 };
 
 //! Select all CB ATOM records
@@ -84,7 +84,7 @@ class CBetaPDBSelector: public NonAlternativePDBSelector {
                    }
                    const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == 'B'
-                           && type[3] == ' '),);
+                           && type[3] == ' '),out << "");
 };
 
 //! Select all C (not CA or CB) ATOM records
@@ -96,6 +96,7 @@ class CPDBSelector: public NonAlternativePDBSelector {
                    }
                    const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'C' && type[2] == ' ' && type[3] == ' '),
+                   out << ""
                    );
 };
 
@@ -108,13 +109,15 @@ class NPDBSelector: public NonAlternativePDBSelector {
                    }
                    const std::string type = internal::atom_type(pdb_line);
                    return (type[1] == 'N' && type[2] == ' ' && type[3] == ' '),
+                   out << ""
                    );
 };
 
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
 public:
-  IMP_PDB_SELECTOR(AllPDBSelector, return true,);
+  IMP_PDB_SELECTOR(AllPDBSelector, return true || pdb_line.empty(),
+                   out << "");
 };
 
 //! Select all ATOM and HETATMrecords with the given chain ids
@@ -128,7 +131,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
                      if(internal::atom_chain_id(pdb_line) == chains_[i])
                        return true;
                    }
-                   return false,);
+                   return false,out << chains_);
   //! The chain id can be any character in chains
   ChainPDBSelector(const std::string &chains): chains_(chains) {}
  private:
@@ -148,6 +151,7 @@ class WaterPDBSelector : public NonAlternativePDBSelector {
                             && res_name[2]=='H') ||
                            (res_name[0]=='D' && res_name[1] =='O'
                             && res_name[2]=='D')),
+                   out << ""
                    );
 };
 
@@ -185,7 +189,8 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
   }
  public:
   IMP_PDB_SELECTOR(HydrogenPDBSelector,
-                   return is_hydrogen(pdb_line);,);
+                   return is_hydrogen(pdb_line);,
+                   out << "");
 };
 
 //! Select non water and non hydrogen atoms
@@ -199,7 +204,8 @@ class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
                      return false;
                    }
                    return (! ws_->get_is_selected(pdb_line)
-                           && ! hs_->get_is_selected(pdb_line)),);
+                           && ! hs_->get_is_selected(pdb_line)),
+                   out << "");
 };
 
 //! Select all non-water non-alternative ATOM and HETATM records
@@ -211,7 +217,8 @@ class NonWaterPDBSelector : public NonAlternativePDBSelector {
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
-                   return( ! ws_->get_is_selected(pdb_line)),);
+                   return( ! ws_->get_is_selected(pdb_line)),
+                   out << *ws_);
 };
 
 //! Select all P ATOM records
@@ -222,7 +229,8 @@ class PPDBSelector : public NonAlternativePDBSelector {
                      return false;
                    }
                    const std::string type = internal::atom_type(pdb_line);
-                   return (type[1] == 'P' && type[2] == ' '),);
+                   return (type[1] == 'P' && type[2] == ' '),
+                   out << "");
 };
 
 // these do not work in python as the wrapped selectors get cleaned up
@@ -237,7 +245,8 @@ class AndPDBSelector: public PDBSelector {
 public:
   IMP_PDB_SELECTOR(AndPDBSelector,
                    return a_->get_is_selected(pdb_line)
-                   && b_->get_is_selected(pdb_line),);
+                   && b_->get_is_selected(pdb_line),
+                   out << *a_ << " and " << *b_);
   AndPDBSelector( PDBSelector *a, PDBSelector *b): a_(a), b_(b){}
 };
 
@@ -252,7 +261,8 @@ class OrPDBSelector: public PDBSelector {
 public:
   IMP_PDB_SELECTOR(OrPDBSelector,
                    return a_->get_is_selected(pdb_line)
-                   || b_->get_is_selected(pdb_line),);
+                   || b_->get_is_selected(pdb_line),
+                   out << *a_ << " or " << *b_);
   OrPDBSelector( PDBSelector *a, PDBSelector *b): a_(a), b_(b){}
 };
 
@@ -266,7 +276,8 @@ class NotPDBSelector: public PDBSelector {
   const IMP::internal::OwnerPointer<PDBSelector> a_;
 public:
   IMP_PDB_SELECTOR(NotPDBSelector,
-                   return !a_->get_is_selected(pdb_line),);
+                   return !a_->get_is_selected(pdb_line),
+                   out << "not " << *a_);
   NotPDBSelector( PDBSelector *a): a_(a){}
 };
 

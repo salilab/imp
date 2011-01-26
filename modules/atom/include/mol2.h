@@ -31,7 +31,9 @@ class IMPATOMEXPORT Mol2Selector: public Object {
 //! Read all atoms
 class AllMol2Selector: public Mol2Selector {
 public:
-  IMP_MOL2_SELECTOR(AllMol2Selector, return true,);
+  IMP_MOL2_SELECTOR(AllMol2Selector,
+                    return (true || mol2_line.empty()),
+                    out << "");
 };
 
 
@@ -40,7 +42,7 @@ class IMPATOMEXPORT NonHydrogenMol2Selector : public Mol2Selector {
  public:
   IMP_MOL2_SELECTOR(NonHydrogenMol2Selector,
                     String atom_type = internal::pick_mol2atom_type(mol2_line);
-                    return (atom_type[0] != 'H'),);
+                    return (atom_type[0] != 'H'), out << "");
 };
 
 /** @name Mol2 IO

@@ -158,7 +158,7 @@ public:
   //! Get the squared rmsd between two transformations
   float get_squared_rmsd(const algebra::Transformation3D& t1,
               const algebra::Transformation3D& t2);
-  IMP_SHOWABLE_INLINE(RMSDCalculator, );
+  IMP_SHOWABLE_INLINE(RMSDCalculator, out << centroid_);
 private:
   algebra::Vector3D centroid_;
   double d_[3][3];//partial calculation

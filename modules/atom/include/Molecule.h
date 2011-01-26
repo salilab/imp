@@ -34,7 +34,7 @@ public:
   }
 
   //! Copy data from the other Molecule to the particle p
-  static Molecule setup_particle(Particle *p, Molecule o) {
+  static Molecule setup_particle(Particle *p, Molecule) {
     return setup_particle(p);
   }
 

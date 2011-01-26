@@ -33,7 +33,7 @@ namespace {
   };
 
 
-  void relax_model(Model *m, SingletonContainer *sc) {
+  void relax_model(Model *m, SingletonContainer *) {
     //bool old= m->get_gather_statistics();
     IMP_IF_LOG(TERSE) {
       m->set_gather_statistics(true);
