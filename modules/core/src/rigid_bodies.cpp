@@ -321,7 +321,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
                                     const XYZs &members){
   RigidBody d=internal_setup_particle(p, members);
   for (unsigned int i=0; i< members.size(); ++i) {
-    d.add_member_internal(members[i], d.get_reference_frame(), false);
+    d.add_member_internal(members[i], d.get_reference_frame());
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
   d.on_change();
@@ -351,7 +351,7 @@ RigidBody RigidBody::setup_particle(Particle *p,
   RigidBody d(p);
   d.set_reference_frame(rf);
   for (unsigned int i=0; i< members.size(); ++i) {
-    d.add_member_internal(members[i], d.get_reference_frame(), false);
+    d.add_member_internal(members[i], d.get_reference_frame());
     //IMP_LOG(VERBOSE, " " << cm << " | " << std::endl);
   }
   d.on_change();
@@ -490,12 +490,12 @@ RigidMember RigidBody::get_member(unsigned int i) const {
 }
 
 void RigidBody::add_member(XYZ d) {
-  add_member_internal(d, get_reference_frame(), true);
+  add_member_internal(d, get_reference_frame());
   on_change();
 }
 
-void RigidBody::add_member_internal(XYZ d, const algebra::ReferenceFrame3D &ref,
-                                    bool cover) {
+void RigidBody::add_member_internal(XYZ d,
+                                    const algebra::ReferenceFrame3D &ref) {
   internal::add_required_attributes_for_member(d);
   RigidMember cm(d);
   Hierarchy hc(d, internal::rigid_body_data().htraits_);

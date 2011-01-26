@@ -68,7 +68,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   algebra::VectorD<3> get_coordinates(RigidMember p) const;
 
   void add_member_internal(XYZ d,
-                           const algebra::ReferenceFrame3D &rf, bool cover);
+                           const algebra::ReferenceFrame3D &rf);
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
   void on_change();
