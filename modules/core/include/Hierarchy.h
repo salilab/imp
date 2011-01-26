@@ -107,7 +107,7 @@ public:
   bool operator==(const HierarchyTraits &o) const {
     return get_name() == o.get_name();
   }
-  IMP_SHOWABLE_INLINE(HierarchyTraits, get_name());
+  IMP_SHOWABLE_INLINE(HierarchyTraits, out<< get_name());
 };
 
 IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
@@ -450,9 +450,7 @@ inline F visit_depth_first_with_data(HD d,  F f, typename F::result_type i)
     \relatesalso Hierarchy
  */
 template <class ND>
-inline std::ostream &show(Hierarchy h, std::ostream &out=std::cout,
-                   unsigned int max_depth
-                   = std::numeric_limits<unsigned int>::max())
+inline std::ostream &show(Hierarchy h, std::ostream &out=std::cout)
 {
   IMP_PRINT_TREE(out, Hierarchy, h, n.get_number_of_children(),
                  n.get_child, ND(n).show(out));
