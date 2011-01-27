@@ -10,7 +10,7 @@
 
 #include "../kernel_config.h"
 #include "../base_types.h"
-#include "IMP/algebra/SphereD.h"
+
 #include <boost/scoped_array.hpp>
 #include <vector>
 
@@ -243,9 +243,7 @@ public:
   unsigned int get_length() const {
     return SIZE;
   }
-  const typename TraitsT::Value*get_data() const {
-    return data_;
-  }
+
   void swap_with(FixedInlineStorage<Traits, SIZE> &o) {
     for (unsigned int i=0; i< SIZE; ++i) {
       std::swap(data_[i], o.data_[i]);
@@ -261,95 +259,6 @@ inline void swap(FixedInlineStorage<V,S> &a,
           FixedInlineStorage<V,S> &b) {
   a.swap_with(b);
 }
-
-
-
-class SphereInlineStorage {
-  algebra::SphereD<3> data_;
-public:
-  struct Traits {
-    static double get_invalid() {
-      /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
-      /*if (std::numeric_limits<double>::has_quiet_NaN) {
-      return std::numeric_limits<double>::quiet_NaN();
-      } else*/ if (std::numeric_limits<double>::has_infinity) {
-        return std::numeric_limits<double>::infinity();
-      } else {
-        return std::numeric_limits<double>::max();
-      }
-    }
-    static bool get_is_valid(double f) {
-      /*if (std::numeric_limits<double>::has_quiet_NaN) {
-        return !is_nan(f);
-        } else*/ {
-        return f < std::numeric_limits<double>::max();
-      }
-    }
-    typedef double Value;
-    typedef double PassValue;
-    typedef FloatKey Key;
-  };
-  SphereInlineStorage(){
-    clear();
-  }
-  SphereInlineStorage(int) {
-    clear();
-  }
-
-  double get(unsigned int i) const {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
-    if (i < 3) {
-      return data_.get_center()[i];
-    } else {
-      return data_.get_radius();
-    }
-  }
-  void set(unsigned int i, double v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
-    if (i < 3) {
-      data_._access_center()[i]=v;
-    } else {
-      data_._set_radius(v);
-    }
-  }
-  void add(unsigned int i, double v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
-    set(i, v);
-  }
-  void remove(unsigned int i) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
-    set(i, Traits::get_invalid());
-  }
-  bool fits(unsigned int i) const {
-    return (i < 4);
-  }
-  void clear() {
-    for (unsigned int i=0; i< 4; ++i) {
-      remove(i);
-    }
-  }
-  unsigned int get_length() const {
-    return 4;
-  }
-  const algebra::Sphere3D &get_data() const {
-    return data_;
-  }
-  algebra::Sphere3D &access_data() {
-    return data_;
-  }
-  void fill(double v) {
-    for (unsigned int i=0; i< 4; ++i) {
-      set(i,v);
-    }
-  }
-};
-
-inline void swap(SphereInlineStorage &a,
-                 SphereInlineStorage &b) {
-  std::swap(a.access_data(), b.access_data());
-}
-
-
 
 
 template <class Base, int SIZE>

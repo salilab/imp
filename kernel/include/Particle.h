@@ -286,7 +286,9 @@ class IMPEXPORT Particle : public Container
   void move_derivatives_to_shadow();
   // end incremental
 
-  typedef internal::SphereInlineStorage FloatTable;
+  typedef internal::FixedInlineStorage<internal::FloatAttributeTableTraits,
+    IMP_NUM_INLINE>
+    FloatTable;
   typedef internal::ParticleStorage::IntTable IntTable;
   typedef internal::ParticleStorage::StringTable StringTable;
   typedef internal::ParticleStorage::ParticleTable ParticleTable;
@@ -485,14 +487,6 @@ class IMPEXPORT Particle : public Container
 #endif
 
 #if !defined(IMP_DOXYGEN)
-#if !defined(SWIG)
-  const algebra::Sphere3D &_get_coordinates() const {
-    return floats_.get_data();
-  }
-  algebra::Sphere3D &_access_coordinates() {
-    return floats_.access_data();
-  }
-#endif
   ContainersTemp get_input_containers() const;
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
