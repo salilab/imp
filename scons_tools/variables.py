@@ -105,7 +105,7 @@ def _propagate_variables(env):
     else:
         env.Append(LIBS=[])
 
-    if env.get('ldlibpath') is not None:
+    if env.get('ldlibpath') is not None and env.get('ldlibpath') != '':
         env['ENV']['LD_LIBRARY_PATH'] = env['ldlibpath']
 
     if env.get('environment') is not None:
