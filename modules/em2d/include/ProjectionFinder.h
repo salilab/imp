@@ -126,7 +126,11 @@ public:
 
   //! Coarse registration of all the images using the projections
   //! Based in 2D alignments of the images
-    void get_coarse_registration();
+  /**
+    \note Given that this registration is based on 2D alignment maximizing the
+     cross correlation, the a better score is the best correlation
+  **/
+  void get_coarse_registration();
 
   //! Performs complete registration of projections against the images.
   //! This meaning the coarse registration followed by simplex optimization
@@ -134,7 +138,7 @@ public:
 
   //! Get the em2d score for a model after the registration performed:
   //! coarse or complete.
-  double get_final_score() const;
+  double get_global_score() const;
 
   void show(std::ostream &out) const;
 
