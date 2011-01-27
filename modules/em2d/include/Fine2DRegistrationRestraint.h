@@ -61,7 +61,7 @@ public:
 
   //! Get the final values for the parameters after the optimization performed
   //! by this restraint
-  RegistrationResult get_final_registration();
+  RegistrationResult get_final_registration() const;
 
   IMP_RESTRAINT(Fine2DRegistrationRestraint);
 
