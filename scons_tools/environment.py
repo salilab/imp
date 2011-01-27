@@ -135,8 +135,9 @@ def _add_platform_flags(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra", "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wundef",
-                             "-Wunsafe-loop-optimizations",
                              "-Wcast-align"])
+        if dependency.gcc.get_version(env)>= 4.3:
+            env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         #-Werror=
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
