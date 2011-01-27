@@ -2531,6 +2531,10 @@ public:                                                 \
 #define IMP_CONTAINER_DEPENDENCIES(Name, input_deps)
 #endif
 
+/** Disable unused variable warning for a variable.
+ */
+#define IMP_UNUSED(variable) if (0) std::cout << variable;
+
 #ifndef IMP_DOXYGEN
 #ifdef __GNU__
 //! Use this to label a function with no side effects
