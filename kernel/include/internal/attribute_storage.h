@@ -219,19 +219,19 @@ public:
     clear();
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     return data_[i];
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     set(i, v);
   }
   void remove(unsigned int i) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     set(i, Traits::get_invalid());
   }
   bool fits(unsigned int i) const {
@@ -297,7 +297,7 @@ public:
   }
 
   double get(unsigned int i) const {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i < 3) {
       return data_.get_center()[i];
     } else {
@@ -305,7 +305,7 @@ public:
     }
   }
   void set(unsigned int i, double v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i < 3) {
       data_._access_center()[i]=v;
     } else {
@@ -313,11 +313,11 @@ public:
     }
   }
   void add(unsigned int i, double v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     set(i, v);
   }
   void remove(unsigned int i) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     set(i, Traits::get_invalid());
   }
   bool fits(unsigned int i) const {
@@ -365,12 +365,12 @@ public:
     overflow_(std::max(0, size-SIZE)){
   }
   typename Traits::PassValue get(unsigned int i) const {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i< SIZE) { return P::get(i);}
     else {return overflow_.get(i-SIZE);}
   }
   void set(unsigned int i, typename Traits::PassValue v) {
-    IMP_INTERNAL_CHECK(fits(i), "Out of range attribuite: " << i);
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i< SIZE) { P::set(i, v);}
     else {overflow_.set(i-SIZE, v);}
   }
