@@ -134,10 +134,13 @@ def _add_platform_flags(env):
     if dependency.gcc.get_is_gcc_like(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra", "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
-                             "-Wundef",
                              "-Wcast-align"])
         if dependency.gcc.get_version(env)>= 4.3:
             env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
+        # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
+        # But without -isystem, -Wundef throws up lots of Boost warnings.
+        if sys.platform != 'darwin' or dependency.gcc.get_version(env) > 4.0:
+            env.Append(CXXFLAGS=["-Wundef"])
         #-Werror=
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
