@@ -15,6 +15,9 @@ template = """#!/bin/sh
 # Extra places to look for imp modules
 @MODULEPATH@
 
+# Location of binaries (for wine builds, which don't get PATH)
+@IMP_BIN_DIR@
+
 @PATH@
 
 @PRECOMMAND@
@@ -62,6 +65,7 @@ def builder_script_file(target, source, env):
 
     lines={"@LDPATH@":(varname, sep.join([libdir]+ldpath), True),
            "@PYTHONPATH@":("PYTHONPATH", sep.join([libdir]+pythonpath), True),
+           "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True),
            "@PATH@":("PATH", sep.join([bindir]+path), True),
            "@PRECOMMAND@":("precommand", precommand, False),
            "@MODULEPATH@":(imp_module_path, impdir, True),

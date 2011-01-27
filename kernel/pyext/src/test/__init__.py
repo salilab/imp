@@ -500,9 +500,9 @@ try:
         def __init__(self, app, args):
             appdir, appname = os.path.split(app)
             self.__appcopy = None
-            # For applications to work on Windows, the application must be
-            # run from the same directory as the DLLs
-            if sys.platform == 'win32':
+            # For (non-Python) applications to work on Windows, the
+            # application must be run from the same directory as the DLLs
+            if sys.platform == 'win32' and app != sys.executable:
                 # Hack to find the location of build/lib/
                 libdir = os.environ['PYTHONPATH'].split(';')[0]
                 self.__appcopy = os.path.join(libdir, appname)
@@ -560,18 +560,10 @@ class ApplicationTestCase(TestCase):
            @return a subprocess.Popen-like object containing the child stdin,
                    stdout and stderr.
         """
-        def find_in_path(filename):
-            paths = os.environ['PATH'].split(os.pathsep)
-            for path in paths:
-                f = os.path.join(path, filename)
-                if os.path.exists(f):
-                    return f
-            raise SystemError("Cannot find %s in PATH" % filename)
-
         # Handle platforms where /usr/bin/python doesn't work
         if sys.executable != '/usr/bin/python':
             return _SubprocessWrapper(sys.executable,
-                                      [find_in_path(app)] + args)
+                         [os.path.join(os.environ['IMP_BIN_DIR'], app)] + args)
         else:
             return _SubprocessWrapper(app, args)
 
