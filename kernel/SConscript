@@ -44,4 +44,5 @@ env.IMPModuleBuild(version='SVN', config_macros=config,
                    module='kernel', module_suffix="", module_include_path="IMP",
                    module_preproc="IMP",
                    module_namespace="IMP",
+                   required_dependencies=['Boost'],
                    optional_dependencies=['Boost.FileSystem', 'NetCDFCPP'])
