@@ -32,9 +32,10 @@ void KMData::sample_centers( KMPointArray *sample,int k,
   double offset, bool allow_duplicate) {
     clear_points(sample);
   IMP_LOG(VERBOSE,"KMData::sample_centers size: "<<sample->size()<<std::endl);
-   if (!allow_duplicate)
+  if (!allow_duplicate) {
      IMP_INTERNAL_CHECK(((unsigned int)k)<= points_->size(),
                 "not enough points to sample from");
+  }
    std::vector<int> sampled_ind;
    for (int i = 0; i < k; i++) {
      int ri = internal::random_int(points_->size());
