@@ -11,7 +11,7 @@
 #include "../kernel_config.h"
 
 // creates warnings in clang and we only use clang for diagnostics anyway
-#if IMP_BOOST_VERSION > 103500 && !defined(__clang__)
+#if BOOST_VERSION > 103500 && !defined(__clang__)
 #define IMP_USE_BOOST_MAP 1
 #else
 #define IMP_USE_BOOST_MAP 0
