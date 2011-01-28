@@ -58,14 +58,12 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
   //! set all coordinates from a vector
   void set_coordinates(const algebra::VectorD<3> &v) {
-    set_x(v[0]);
-    set_y(v[1]);
-    set_z(v[2]);
+    get_particle()->_access_coordinates()._access_center()=v;
   }
 
   //! Get the ith coordinate
   Float get_coordinate(int i) const {
-    return get_particle()->get_value(get_coordinate_key(i));
+    return get_coordinates()[i];
   }
   //! Get the ith coordinate derivative
   Float get_derivative(int i) const {
@@ -108,10 +106,8 @@ class IMPCOREEXPORT XYZ: public Decorator
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  algebra::VectorD<3> get_coordinates() const {
-    return algebra::VectorD<3>(get_coordinate(0),
-                             get_coordinate(1),
-                             get_coordinate(2));
+  const algebra::VectorD<3>& get_coordinates() const {
+    return get_particle()->_get_coordinates().get_center();;
   }
 
   //! Get the vector of derivatives.

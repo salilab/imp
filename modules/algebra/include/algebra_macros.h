@@ -105,7 +105,6 @@
  inline const Name##D<D> &get_##name##_d_geometry(const Name##D<D> &g) { \
     return g;                                                           \
   })                                                                    \
-  IMPALGEBRA_EXPORT_TEMPLATE(Name##D<3>);                               \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
   typedef Name##D<3> Name##3D;                                          \
