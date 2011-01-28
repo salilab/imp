@@ -45,7 +45,7 @@ void MRCHeader::FromDensityHeader(const DensityHeader &h)
   // extra space used for anything - 0 by default
   for(int i=0;i<IMP_MRC_USER;i++)
     user[i]=h.user[i];
-  strcpy(map,"MAP "); // character string 'MAP ' to identify file type
+  strcpy(map,"MAP\0"); // character string 'MAP ' to identify file type
   // Origin used for transforms
   xorigin=h.get_xorigin() ; yorigin=h.get_yorigin() ; zorigin=h.get_zorigin();
   // machine stamp (0x11110000 bigendian, 0x44440000 little)
@@ -100,11 +100,13 @@ void MRCHeader::ToDensityHeader(DensityHeader &h)
   h.machinestamp=machinestamp;
   h.rms=rms; // RMS deviation of map from mean density
   h.nlabl=nlabl; // Number of labels being used
-
   // Copy comments
-  for(int i=0;i<h.nlabl;i++)
-    strcpy(h.comments[i],labels[i]);
-
+  for(int i=0;i<h.nlabl;i++) {
+    //to make sure there is not memory leak
+    std::string temp;
+    temp.copy(labels[i],DensityHeader::COMMENT_FIELD_SINGLE_SIZE,0);
+    strcpy(h.comments[i],temp.c_str());
+  }
   // Fill empty coments with null character
   const char *c="\0";
   empty.resize(IMP_MRC_LABEL_SIZE,*c);
