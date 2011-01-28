@@ -15,11 +15,7 @@
 #include "../particle_states.h"
 //#include "inference.h"
 #include <IMP/Restraint.h>
-#if IMP_BOOST_VERSION > 103900
-#include <boost/unordered_map.hpp>
-#else
-#include <map>
-#endif
+
 
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
