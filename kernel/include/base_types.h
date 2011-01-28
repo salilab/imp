@@ -108,10 +108,6 @@ inline void show(std::ostream &out, T*i) {
 }
 #endif
 
-#if !defined(SWIG) && IMP_BOOST_VERSION != BOOST_VERSION
-#error "Boost version does not match expected version. Please rerun"\
-  "configuration tests by running scons with --config=force."
-#endif
 
 #ifndef IMP_DOXYGEN
 template <class T>
