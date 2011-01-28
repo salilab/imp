@@ -1,8 +1,9 @@
 Import('env')
+import scons_tools.data
 
-
-if not env.GetOption('help') and int(env['BOOST_VERSION']) <= 103301 \
-   and env['percppcompilation']=="no":
+if not env.GetOption('help') and\
+       int(scons_tools.data.get(env).dependencies['Boost'].version) <= 103301 \
+       and env['percppcompilation']=="no":
     # there is a bug in boost that two headers can't be included at the same time as they
     # defined different template <class T> bool boost::contains(T,T).
     opercppcompilation=env['percppcompilation']
