@@ -59,7 +59,7 @@ namespace {
     IMP_OBJECT(SurfaceMeshObject);
   };
 
-  void SurfaceMeshObject::do_show(std::ostream &out) const {
+  void SurfaceMeshObject::do_show(std::ostream &) const {
   }
 
   const double damping=1;
@@ -520,7 +520,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
 }
 
 
-void ResolveCollisionsOptimizer::do_show(std::ostream &out) const {
+void ResolveCollisionsOptimizer::do_show(std::ostream &) const {
 }
 
 
