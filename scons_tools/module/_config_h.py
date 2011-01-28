@@ -10,11 +10,9 @@ def _add_use_or_no(env, h, name):
     nd= name.replace("_USE_","_NO_")
     if nd==name:
         nd= name.replace("_NO_", "_USE_")
-    print >> h, "#  ifdef "+nd
-    print >> h, """#    error "Do not define macro """+nd+""" directly.\""""
-    print >> h, "#  endif"
-    print >> h, "#  ifdef "+name
-    print >> h, """#    error "Do not define macro """+name+""" directly.\""""
+    print >> h, "\n",
+    print >> h, "#  if defined("+nd+") || defined("+name+")"
+    print >> h, '#    error "Do not define macro '+name+' directly."'
     print >> h, "#  endif"
     print >> h, "#  define "+name
 
