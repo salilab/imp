@@ -58,6 +58,9 @@ def _get_found_modules(env, modules):
 def _get_module_modules(env):
     return _get_module_data(env).modules
 
+def _get_module_unfound_modules(env):
+    return _get_module_data(env).unfound_modules
+
 def _get_module_python_modules(env):
     return _get_module_data(env).python_modules
 
@@ -70,6 +73,10 @@ def _get_module_unfound_dependencies(env):
 
 def _get_module_dependencies(env):
     return _get_module_data(env).dependencies
+
+def _get_module_direct_dependencies(env):
+    return _get_module_data(env).direct_dependencies
+
 
 def _set_module_links(env, links):
     env['IMP_MDLE_LINKS']=links
@@ -141,10 +148,16 @@ def IMPModuleInclude(env, files):
                                source=[env.Value(_get_module_version(env))])
     scons_tools.install.install(env, "includedir/IMP/currentdir",
                                               version[0])
+    data= scons_tools.data.get(env)
+    deps= _get_module_dependencies(env)
+    signature=_get_module_unfound_dependencies(env)\
+               + deps\
+               + [data.dependencies[x].version for x in deps]
     config=env.IMPModuleConfigH(target\
                                =[gbp(env,
                                      'includedir/IMP/currentdir/currentfile_config.h')],
-                               source=[env.Value(env['IMP_MODULE_CONFIG'])])
+                               source=[env.Value(env['IMP_MODULE_CONFIG']),
+                                       env.Value(signature)])
     scons_tools.install.install(env, "includedir/IMP/currentdir",
                                               config[0])
     scons_tools.install.install_hierarchy(env, "includedir/IMP/currentdir",
@@ -504,8 +517,10 @@ def IMPModuleBuild(env, version, required_modules=[],
         scons_tools.data.get(env).add_module(module,
                                  modules= required_modules+found_optional_modules\
                                      +lib_only_required_modules,
+                                             unfound_modules=[x for x in optional_modules if x not in
+                                              found_optional_modules],
                                  python_modules=required_modules+found_optional_modules,
-                                 dependencies=found_optional_dependencies\
+                                 dependencies=[x for x in found_optional_dependencies if x in optional_dependencies]\
                                      +required_dependencies,
                                  unfound_dependencies=[x for x in optional_dependencies if not x in found_optional_dependencies], version=version)
     else:
@@ -532,16 +547,6 @@ def IMPModuleBuild(env, version, required_modules=[],
     #if len(found_optional_modules + found_optional_dependencies)>0:
     #    print "  (using " +", ".join(found_optional_modules + found_optional_dependencies) +")"
     real_config_macros=config_macros[:]
-    for d in found_optional_dependencies:
-        nm=scons_tools.dependency.get_dependency_string(d)
-        real_config_macros.append("IMP_"+module.upper()+"_USE_"+nm.upper())
-    for d in [x for x in optional_dependencies if not x in found_optional_dependencies]:
-        nm=scons_tools.dependency.get_dependency_string(d)
-        real_config_macros.append("IMP_"+module.upper()+"_NO_"+nm.upper())
-    for d in found_optional_modules:
-        real_config_macros.append("IMP_"+module.upper()+"_USE_IMP_"+d.upper())
-    for d in [x for x in optional_modules if not x in found_optional_modules]:
-        real_config_macros.append("IMP_"+module.upper()+"_NO_IMP_"+d.upper())
 
     #print "config", module, real_config_macros
     env['IMP_MODULE_CONFIG']=real_config_macros

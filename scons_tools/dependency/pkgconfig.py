@@ -41,6 +41,7 @@ def get_config(context, lcname):
     retI = os.popen('pkg-config --cflags-only-I \'%s\'' % lcname).read()
     retL = os.popen('pkg-config --libs-only-L \'%s\'' % lcname).read()
     retl = os.popen('pkg-config --libs-only-l \'%s\'' % lcname).read()
+    #retl = os.popen('pkg-config --version \'%s\'' % lcname).read()
     #print retI[:-1]
     #print retL[:-1]
     #print retl[:-1]
@@ -53,6 +54,8 @@ def get_config(context, lcname):
     else:
         lp=None
     libs=[x[2:].strip() for x in retl[:-1].split(" ") if x != '']
+    #version= retl.split('\n')[0]
+    #print "version", version
     ret= (inc, lp, libs)
     #print ret
     return ret
