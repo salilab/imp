@@ -10,9 +10,29 @@
 
 #include "../kernel_config.h"
 #include "../base_types.h"
+#include <IMP/algebra/SphereD.h>
 
 #include <boost/scoped_array.hpp>
 #include <vector>
+
+/* Microsoft compilers require that if a class is exported from a DLL,
+   all member objects are too. Thus, we make sure that we export the
+   Vector3Ds class here; otherwise, both the statistics and display modules
+   will attempt to export Vector3Ds (since they both contain exported classes
+   that have Vector3Ds members) and then any module that attempts to link
+   against both statistics and display (e.g. domino) will fail to link with
+   LNK2005/LNK1169 errors (multiply defined symbols). See also
+   http://support.microsoft.com/kb/q168958/
+
+   Note that STL members other than std::vector may be impossible to export
+   on Windows systems, due to hidden nested classes.
+ */
+IMP_EXPORT_TEMPLATE(IMP::algebra::VectorD<3>);
+IMP_EXPORT_TEMPLATE(std::allocator<IMP::algebra::VectorD<3> >);
+IMP_EXPORT_TEMPLATE(std::vector<IMP::algebra::VectorD<3> >);
+IMP_EXPORT_TEMPLATE(IMP::algebra::SphereD<3>);
+IMP_EXPORT_TEMPLATE(std::allocator<IMP::algebra::SphereD<3> >);
+IMP_EXPORT_TEMPLATE(std::vector<IMP::algebra::SphereD<3> >);
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -243,7 +263,9 @@ public:
   unsigned int get_length() const {
     return SIZE;
   }
-
+  const typename TraitsT::Value*get_data() const {
+    return data_;
+  }
   void swap_with(FixedInlineStorage<Traits, SIZE> &o) {
     for (unsigned int i=0; i< SIZE; ++i) {
       std::swap(data_[i], o.data_[i]);
@@ -259,6 +281,95 @@ inline void swap(FixedInlineStorage<V,S> &a,
           FixedInlineStorage<V,S> &b) {
   a.swap_with(b);
 }
+
+
+
+class SphereInlineStorage {
+  algebra::SphereD<3> data_;
+public:
+  struct Traits {
+    static double get_invalid() {
+      /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
+      /*if (std::numeric_limits<double>::has_quiet_NaN) {
+      return std::numeric_limits<double>::quiet_NaN();
+      } else*/ if (std::numeric_limits<double>::has_infinity) {
+        return std::numeric_limits<double>::infinity();
+      } else {
+        return std::numeric_limits<double>::max();
+      }
+    }
+    static bool get_is_valid(double f) {
+      /*if (std::numeric_limits<double>::has_quiet_NaN) {
+        return !is_nan(f);
+        } else*/ {
+        return f < std::numeric_limits<double>::max();
+      }
+    }
+    typedef double Value;
+    typedef double PassValue;
+    typedef FloatKey Key;
+  };
+  SphereInlineStorage(){
+    clear();
+  }
+  SphereInlineStorage(int) {
+    clear();
+  }
+
+  double get(unsigned int i) const {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
+    if (i < 3) {
+      return data_.get_center()[i];
+    } else {
+      return data_.get_radius();
+    }
+  }
+  void set(unsigned int i, double v) {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
+    if (i < 3) {
+      data_._access_center()[i]=v;
+    } else {
+      data_._set_radius(v);
+    }
+  }
+  void add(unsigned int i, double v) {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
+    set(i, v);
+  }
+  void remove(unsigned int i) {
+    IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
+    set(i, Traits::get_invalid());
+  }
+  bool fits(unsigned int i) const {
+    return (i < 4);
+  }
+  void clear() {
+    for (unsigned int i=0; i< 4; ++i) {
+      remove(i);
+    }
+  }
+  unsigned int get_length() const {
+    return 4;
+  }
+  const algebra::Sphere3D &get_data() const {
+    return data_;
+  }
+  algebra::Sphere3D &access_data() {
+    return data_;
+  }
+  void fill(double v) {
+    for (unsigned int i=0; i< 4; ++i) {
+      set(i,v);
+    }
+  }
+};
+
+inline void swap(SphereInlineStorage &a,
+                 SphereInlineStorage &b) {
+  std::swap(a.access_data(), b.access_data());
+}
+
+
 
 
 template <class Base, int SIZE>
