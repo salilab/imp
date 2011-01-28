@@ -21,12 +21,15 @@ def add_dependency_link_flags(env, dependencies):
     for d in dependencies:
         env.Append(LIBS=scons_tools.data.get(env).dependencies[d].libs)
 
-def _get_version(context, versioncpp, versionheader):
+def _get_version(context, includepath, versioncpp, versionheader):
     if versioncpp:
         if type(versioncpp) == type([]):
             vs="<< ' ' << ".join(versioncpp)
         else:
             vs=versioncpp
+        if includepath:
+            oldcpp= context.env.get('CPPPATH', None)
+            context.env.Append(CPPPATH=includepath)
         r = context.TryRun("#include <"+versionheader+">\n"+\
                              """#include <iostream>
 
@@ -37,6 +40,8 @@ def _get_version(context, versioncpp, versionheader):
         }
         """, '.cpp')
         context.Result(r[1])
+        if includepath:
+            context.env.Replace(CPPPATH=oldcpp)
         if not r[0]:
             scons_tools.utility.report_error(context.env, "Unable to get version number")
         else:
@@ -72,12 +77,13 @@ def check_lib(context, lib, header, body="", extra_libs=[], versioncpp=None,
         # should be the sum of the two
         if bret[0]:
             context.env.Replace(LINKFLAGS=oldflags)
-            return (bret[0], ret[1]+bret[1], _get_version(context, versioncpp,
+            return (bret[0], ret[1]+bret[1], _get_version(context, None,
+                                                          versioncpp,
                                                           versionheader))
         else:
             context.env.Replace(LINKFLAGS=oldflags)
             return (False, None, None)
-    vers= _get_version(context, versioncpp, versionheader)
+    vers= _get_version(context, None, versioncpp, versionheader)
     #print "version", vers
     context.env.Replace(LINKFLAGS=oldflags)
     return  (True, ret[1], vers)
@@ -123,7 +129,7 @@ def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
     if not versioncpp:
         version=None
     else:
-        version= _get_version(context, versioncpp, versionheader)
+        version= _get_version(context, includepath, versioncpp, versionheader)
     return (True, libs, version, includepath, libpath)
 
 def _get_info_test(context, env, name, lib, header, body,
