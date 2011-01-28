@@ -40,13 +40,18 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
 
 class IMPData:
     class ModuleData:
-        def __init__(self, name, dependencies=[], unfound_dependencies=[], modules=[],
-                     python_modules=[], version="", external=False, ok=True):
+        def __init__(self, name, dependencies=[], direct_dependencies=[],
+                     unfound_dependencies=[], modules=[],
+                     unfound_modules=[],
+                     python_modules=[], version=None, external=False, ok=True):
             self.build=[]
             if ok:
+                #print "configuring", name, dependencies, direct_dependencies, unfound_dependencies, unfound_modules
                 self.dependencies=dependencies
+                self.direct_dependencies=direct_dependencies
                 self.unfound_dependencies=unfound_dependencies
                 self.modules=modules
+                self.unfound_modules=unfound_modules
                 self.python_modules=python_modules
                 if name=="kernel":
                     self.path=""
@@ -118,13 +123,17 @@ class IMPData:
             self.ok=ok
     class DependencyData:
         def __init__(self, name, ok=True, variables=[], libs=[], libpath=None,
-                     includepath=None, pkgconfig=False):
+                     includepath=None, pkgconfig=False, version=None,
+                     versioncpp=None, versionheader=None):
             self.ok=ok
             self.libs=libs
             self.includepath=includepath
             self.libpath=libpath
             self.variables=variables
             self.pkgconfig=pkgconfig
+            self.version=version
+            self.versioncpp=versioncpp
+            self.versionheader=versionheader
     def __init__(self, env):
         self.modules={}
         self.applications={}
@@ -136,7 +145,8 @@ class IMPData:
         for n in names:
             if n=="":
                 raise ValueError("Invalid empty name")
-    def _expand_modules(self, modules):
+    def _expand_modules(self, imodules):
+        modules=imodules[:]
         ml=[]
         for m in modules:
             ml+=[m]+ self.modules[m].modules
@@ -145,7 +155,8 @@ class IMPData:
             if not m in ml[i+1:]:
                 mret.append(m)
         return mret
-    def _expand_dependencies(self, modules, dependencies):
+    def _expand_dependencies(self, modules, idependencies):
+        dependencies=idependencies[:]
         dret=[]
         for m in modules:
             dependencies+= self.modules[m].dependencies
@@ -155,8 +166,10 @@ class IMPData:
         return dret
     def add_module(self, name, directory="",
                    dependencies=[], unfound_dependencies=[], modules=[],
+                   unfound_modules=[],
                    python_modules=[], version="", ok=True,
                    external=False):
+        #print name, dependencies, unfound_dependencies
         self._check_names(dependencies)
         self._check_names(unfound_dependencies)
         self._check_names(modules)
@@ -168,14 +181,20 @@ class IMPData:
             passpythonmodules= self._expand_modules(python_modules)
             passdependencies= self._expand_dependencies(passpythonmodules,
                                                         dependencies)
-            self.modules[name]=self.ModuleData(name, passdependencies, unfound_dependencies,
-                                          passmodules, passpythonmodules, version, external)
+            self.modules[name]=self.ModuleData(name, passdependencies, dependencies,
+                                               unfound_dependencies,
+                                               passmodules, unfound_modules,
+                                               passpythonmodules, version, external)
     def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
-                       includepath=None, libpath=None):
+                       includepath=None, libpath=None, version=None,
+                       versioncpp=None, versionheader=None):
         self.dependencies[name]=self.DependencyData(name, libs=libs, variables=variables,
                                                     ok=ok, pkgconfig=pkgconfig,
                                                     includepath=includepath,
-                                                    libpath=libpath)
+                                                    libpath=libpath,
+                                                    version=version,
+                                                    versioncpp=versioncpp,
+                                                    versionheader=versionheader)
     def add_application(self, name, link="",
                         dependencies=[], unfound_dependencies=[], modules=[],
                         python_modules=[], version=None, ok=True):

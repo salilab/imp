@@ -1,9 +1,43 @@
 
 import scons_tools.module
+import scons_tools.data
 from SCons.Script import Glob, Dir, File, Builder, Action, Exit
 import os
 import sys
 import re
+
+def _add_use_or_no(env, h, name):
+    nd= name.replace("_USE_","_NO_")
+    if nd==name:
+        nd= name.replace("_NO_", "_USE_")
+    print >> h, "#  ifdef "+nd
+    print >> h, """#    error "Do not define macro """+nd+""" directly.\""""
+    print >> h, "#  endif"
+    print >> h, "#  ifdef "+name
+    print >> h, """#    error "Do not define macro """+name+""" directly.\""""
+    print >> h, "#  endif"
+    print >> h, "#  define "+name
+
+def _add_use(env, h, nm):
+    curn= scons_tools.module._get_module_name(env)
+    _add_use_or_no(env, h, "IMP_"+curn.upper()+"_USE_"+nm.upper())
+def _add_no_use(env, h, nm):
+    curn= scons_tools.module._get_module_name(env)
+    _add_use_or_no(env, h, "IMP_"+curn.upper()+"_NO_"+nm.upper())
+def _add_version(env, h, nm, version, versionheader, versioncpp):
+    print >> h, "#ifndef SWIG"
+    print >> h, "\n#include <"+versionheader+">\n"
+    if type(version)==type([]):
+        if not type(versioncpp) == type([]):
+            scons_tools.utility.report_error(env, "Version list expected")
+        test = " && ".join([x[0]+" != " + x[1] for x in zip(versioncpp, version)])
+    else:
+        test=versioncpp +" != "+version
+    print >> h, "#  if "+test
+    print >> h, '#    error "'+nm+ 'versions does not match expected version. Please rerun"\\'\
+    '"configuration tests by running scons with --config=force."'
+    print >> h, "#  endif"
+    print >> h, "#endif"
 
 
 def _action_config_h(target, source, env):
@@ -106,6 +140,28 @@ namespace internal {
 %(PREPROC)s_END_NAMESPACE
 """ %vars
     print >> h
+
+    for d in scons_tools.module._get_module_direct_dependencies(env):
+        print "processing", d
+        nm=scons_tools.dependency.get_dependency_string(d)
+        _add_use(env, h, nm)
+        if scons_tools.data.get(env).dependencies[d].version:
+            _add_version(env, h, nm,
+                         scons_tools.data.get(env).dependencies[d].version,
+                         scons_tools.data.get(env).dependencies[d].versionheader,
+                         scons_tools.data.get(env).dependencies[d].versioncpp)
+        else:
+            print "no version for", d
+    for d in scons_tools.module._get_module_unfound_dependencies(env):
+        nm=scons_tools.dependency.get_dependency_string(d)
+        _add_no_use(env, h, nm)
+    for d in scons_tools.module._get_module_modules(env):
+        nm="IMP_"+d.upper()
+        _add_use(env, h, nm)
+    for d in scons_tools.module._get_module_unfound_modules(env):
+        nm="IMP_"+d.upper()
+        _add_no_use(env, h, nm)
+
     for d in env['IMP_MODULE_CONFIG']:
         if type(d) == type([]):
             name=d[0]

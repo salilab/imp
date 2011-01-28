@@ -43,10 +43,15 @@ No working compiler found. Please make sure that g++ or another
 compiler recognized by scons can be found in your path and that all
 the passed compiler options (cxxflags, linkflags) are correct.
 """)
-    scons_tools.dependency.boost.configure_check(env, '1.33')
+
+    scons_tools.dependency.pkgconfig.configure_check(env)
+    scons_tools.dependency.add_external_library(env, "Boost", None,
+                                                "boost/version.hpp", versionheader="boost/version.hpp",
+                                                versioncpp="BOOST_VERSION")
+    scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
-        if env.get('BOOST_VERSION', None) == None:
-            Exit("""
+        if not scons_tools.data.get(env).dependencies['Boost'].ok or scons_tools.data.get(env).dependencies['Boost'].version < 103300:
+            utility.report_error("""
 Boost version is required to build IMP, but it could not be found on your system.
 
 In particular, if you have Boost installed in a non-standard location, please use the 'includepath' option to add this location to the search path.  For example, a Mac using Boost installed with MacPorts will have the Boost headers in /opt/local/include, so edit (or create) config.py and add the line
@@ -55,7 +60,6 @@ includepath='/opt/local/include'
 
 You can see the produced config.log for more information as to why boost failed to be found.
 """)
-    scons_tools.dependency.pkgconfig.configure_check(env)
 
 
 

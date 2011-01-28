@@ -14,18 +14,49 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
                                              autoadd=False)
         context.env.Replace(LIBS=olibs)
         if ret:
-            return (True, [libname]+lc)
-    return (False, None)
+            return (True, [libname]+lc, None)
+    return (False, None, None)
 
 def add_dependency_link_flags(env, dependencies):
     for d in dependencies:
         env.Append(LIBS=scons_tools.data.get(env).dependencies[d].libs)
 
-def check_lib(context, lib, header, body="", extra_libs=[]):
+def _get_version(context, versioncpp, versionheader):
+    if versioncpp:
+        if type(versioncpp) == type([]):
+            vs="<< ' ' << ".join(versioncpp)
+        else:
+            vs=versioncpp
+        r = context.TryRun("#include <"+versionheader+">\n"+\
+                             """#include <iostream>
+
+        int main()
+        {
+            std::cout << """+vs +"""<<std::endl;
+            return 0;
+        }
+        """, '.cpp')
+        context.Result(r[1])
+        if not r[0]:
+            scons_tools.utility.report_error(context.env, "Unable to get version number")
+        else:
+            v= r[1].split('\n')[0]
+            if type(versioncpp) == type([]):
+                version=v.split()
+            else:
+                version=v
+            return version
+    else:
+        return None
+
+def check_lib(context, lib, header, body="", extra_libs=[], versioncpp=None,
+              versionheader=None):
     oldflags= context.env.get('LINKFLAGS')
     context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
     if type(lib) == list:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
+    elif lib==None:
+        ret=(context.sconf.CheckHeader(header, language="C++"), [])
     else:
         ret=_search_for_deps(context, lib, [], header, body, extra_libs)
     if not ret[0]:
@@ -41,92 +72,114 @@ def check_lib(context, lib, header, body="", extra_libs=[]):
         # should be the sum of the two
         if bret[0]:
             context.env.Replace(LINKFLAGS=oldflags)
-            return (bret[0], ret[1]+bret[1])
+            return (bret[0], ret[1]+bret[1], _get_version(context, versioncpp,
+                                                          versionheader))
         else:
             context.env.Replace(LINKFLAGS=oldflags)
-            return (False, None)
+            return (False, None, None)
+    vers= _get_version(context, versioncpp, versionheader)
+    #print "version", vers
     context.env.Replace(LINKFLAGS=oldflags)
-    return  (True, ret[1])
+    return  (True, ret[1], vers)
 
 def get_dependency_string(name):
     lname= name.lower()
     nname=lname.replace(".", "_")
     return nname
 
+# return (ok, libs, version, includepath, libpath)
+def _get_bad():
+    return (False, None, None, None, None)
+def _get_info_variables(context, env, name, has_version):
+    lcname= get_dependency_string(name)
+    if not env.get(lcname, None) or env.get(lcname) != "yes":
+        return _get_bad()
+    if not env.get(lcname+"libs", None):
+        scons_tools.utility.report_error(env, "If configure specifices 'yes' for "+
+                                         name+" it must also specify "+lcname+"libs")
+        return _get_bad()
+    if has_version and not env.get(lcname+"version", None):
+        scons_tools.utility.report_error(env, "If configure specifices 'yes' for "+
+                                         name+" it must also specify "+lcname+"version")
+        return _get_bad()
+    vers=None
+    if has_version:
+        vers= env.get(lcname+'version')
+        if vers.find(" ") != -1:
+            vers=vers.split()
+    return (True, env.get(lcname+"libs"),
+            vers, None, None)
+def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
+    if not context.env['IMP_HAS_PKG_CONFIG']:
+        return _get_bad()
+    lcname= get_dependency_string(name)
+    context.Message('Checking for '+name+' with pkg-config...')
+    ret = context.TryAction('pkg-config --exists \'%s\'' % lcname)[0]
+    if not ret:
+        context.Result("no")
+        return _get_bad()
+    context.Result("yes")
+    (includepath, libpath, libs)= scons_tools.dependency.pkgconfig.get_config(context, lcname)
+    if not versioncpp:
+        version=None
+    else:
+        version= _get_version(context, versioncpp, versionheader)
+    return (True, libs, version, includepath, libpath)
 
+def _get_info_test(context, env, name, lib, header, body,
+                   extra_libs, versioncpp, versionheader):
+    lcname= get_dependency_string(name)
+    (ret, libs, version)= check_lib(context, lib=lib, header=header,
+                                    body=body,
+                                    extra_libs=extra_libs,
+                                    versioncpp=versioncpp,
+                                    versionheader=versionheader)
+    if not ret:
+        return _get_bad()
+    else:
+        return (True, libs, version, None, None)
 
-def add_external_library(env, name, lib, header, body="", extra_libs=[]):
+def add_external_library(env, name, lib, header, body="", extra_libs=[],
+                         versioncpp=None, versionheader=None):
     lcname= get_dependency_string(name)
     ucname= lcname.upper()
     if scons_tools.data.get(env).dependencies.has_key(name):
         # already has been added
         return
-    variables=[lcname, lcname+"libs"]
+    variables=[lcname, lcname+"libs", lcname+"version"]
     def _check(context):
         if context.env[lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
-            scons_tools.data.get(context.env).add_dependency(name, variables=variables,
-                                                             ok=False)
-            return False
-        elif context.env[lcname] == "yes":
-            context.Message('Checking for '+name+' ...')
-            if context.env.get(lcname+"libs", None) is None:
-                context.Result("disabled, libs not specified")
+            ok=False
+        else:
+            (ok, libs, version, includepath, libpath)\
+                  = _get_info_variables(context, context.env, name, versioncpp)
+            if not ok:
+                (ok, libs, version, includepath, libpath)=\
+                      _get_info_pkgconfig(context, env, name, versioncpp, versionheader)
+                if not ok:
+                    (ok, libs, version, includepath, libpath)=\
+                      _get_info_test(context, env, name, lib, header, body,
+                                      extra_libs, versioncpp, versionheader)
+            if not ok:
                 scons_tools.data.get(context.env).add_dependency(name, variables=variables,
                                                                  ok=False)
                 return False
             else:
-                val=context.env[lcname+'libs'].split(":")
-                #print val
-                context.Result(" ".join(val))
-                if context.env.get(lcname+"includepath", None) is None:
-                    includepath=None
-                else:
-                    includepath=context.env.get[lcname+"includepath"]
-                if context.env.get(lcname+"libpath", None) is None:
-                    libpath=None
-                else:
-                    libpath=context.env.get[lcname+"libpath"]
-                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
-                                                                 libs=val, includepath=includepath,
-                                                                 libpath=libpath)
-                return True
-        else:
-            if context.env['IMP_HAS_PKG_CONFIG']:
-                if context.env[lcname]=="auto":
-                    ret = context.TryAction('pkg-config --exists \'%s\'' % lcname)[0]
-                    #context.Result( ret )
-                else:
-                    ret=1
-                if ret:
-                    context.Message('Checking for '+name+' ...')
-                    context.Result("pkgconfig")
-                    (includepath, libpath, libs)= scons_tools.dependency.pkgconfig.get_config(context, lcname)
-                    #print name, (includepath, libpath, libs)
-                    scons_tools.data.get(context.env).add_dependency(name, variables=variables,
-                                                                     pkgconfig=lcname,
-                                                                     includepath=includepath,
-                                                                     libpath=libpath,
-                                                                     libs=libs)
-                    return True
-            ret= check_lib(context, lib=lib, header=header,
-                           body=body,
-                           extra_libs=extra_libs)
-            context.Message('Checking for '+name+' ...')
-            if ret[0]:
-                scons_tools.data.get(context.env).add_dependency(name, variables=variables,
-                                                                 libs=ret[1])
-                context.Result(" ".join(ret[1]))
-            else:
-                context.Result(False)
                 scons_tools.data.get(context.env).add_dependency(name,
                                                                  variables=variables,
-                                                                 ok=False)
-            return ret[0]
+                                                                 libs=libs,
+                                                                 includepath=includepath,
+                                                                 libpath=libpath,
+                                                                 version=version,
+                                                                 versioncpp=versioncpp,
+                                                                 versionheader=versionheader)
+                return True
     vars = env['IMP_VARIABLES']
     vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
     vars.Add(lcname+'libs', 'Libs to link against when using '+name+'. Needed if "'+lcname+'" is "yes".', None)
+    vars.Add(lcname+'version', 'Version to test against when using '+name, None)
     vars.Update(env)
     if not env.GetOption('help'):
         custom_tests = {'CheckThisLib':_check}
