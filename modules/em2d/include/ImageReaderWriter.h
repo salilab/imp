@@ -21,28 +21,47 @@ public:
 
   virtual void read(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
   }
 
   virtual void read_from_floats(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
   }
 
   virtual void read_from_ints(const String &filename, em::ImageHeader& header,
                                      cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
   }
 
   virtual void write(const String &filename, em::ImageHeader& header,
                                      const cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
   }
 
   virtual void write_to_floats(const String &filename,
                                em::ImageHeader& header,
                                      const cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
   }
 
   virtual void write_to_ints(const String &filename,
                              em::ImageHeader& header,
-                                     const cv::Mat &data) const {}
+                                     const cv::Mat &data) const {
+    IMP_UNUSED(filename);
+    IMP_UNUSED(header);
+    IMP_UNUSED(data);
+  }
 
   IMP_OBJECT_INLINE(ImageReaderWriter,
                     { out << "I am an ImageReaderWriter"; }, {});
