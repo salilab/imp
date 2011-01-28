@@ -43,7 +43,8 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
         if includepath:
             context.env.Replace(CPPPATH=oldcpp)
         if not r[0]:
-            version=["0" for x in versioncpp]
+            context.Result("None")
+            return None
         else:
             v= r[1].split('\n')[0]
             if type(versioncpp) == type([]):
@@ -177,14 +178,20 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                                                                  ok=False)
                 return False
             else:
+                if not version:
+                    pversioncpp=None
+                    pversionheader=None
+                else:
+                    pversioncpp=versioncpp
+                    pversionheader=versionheader
                 scons_tools.data.get(context.env).add_dependency(name,
                                                                  variables=variables,
                                                                  libs=libs,
                                                                  includepath=includepath,
                                                                  libpath=libpath,
                                                                  version=version,
-                                                                 versioncpp=versioncpp,
-                                                                 versionheader=versionheader)
+                                                                 versioncpp=pversioncpp,
+                                                             versionheader=pversionheader)
                 return True
     vars = env['IMP_VARIABLES']
     vars.Add(SCons.Variables.EnumVariable(lcname, 'Whether to use the '+name+' package', "auto", ["yes", "no", "auto"]))
