@@ -8,7 +8,7 @@ from random import random,randint
 class ReplicaTracker():
     
     def __init__(self,nreps,inv_temps,grid,sfo_id,
-            logfile='replicanums.txt', scheme'standard', xchg='random',
+            logfile='replicanums.txt', scheme='standard', xchg='random',
             convectivelog='stirred.txt'):
         self.nreps = nreps
         #replica number as a function of state no
@@ -65,7 +65,7 @@ class ReplicaTracker():
             raise ValueError, dir
         return [(2*i+dir,2*i+1+dir) for i in xrange((self.nreps-1)/2)]
 
-    def gen_pairs_list_rand(self, needed = {}):
+    def gen_pairs_list_rand(self, needed = []):
         "generate list of neighboring pairs of states"
         nreps = self.nreps
         init = range(nreps)
@@ -95,7 +95,7 @@ class ReplicaTracker():
             return self.gen_pairs_list_gromacs(dir)
         elif self.xchg == 'random':
             pair = (state, state + 2*self.stirred['dir'] - 1)
-            return self.gen_pairs_list_rand(needed={pair})
+            return self.gen_pairs_list_rand(needed=[pair])
         else:
             raise NotImplementedError, "Unknown exchange method", self.xchg
 
@@ -104,7 +104,7 @@ class ReplicaTracker():
             if self.xchg == 'gromacs':
                 return self.gen_pairs_list_gromacs(self.stepno)
             elif self.xchg == 'random':
-                return self.gen_pairs_list_random()
+                return self.gen_pairs_list_rand()
             else:
                 raise NotImplementedError, "unknown exchange method", self.xchg
         elif self.scheme == 'convective':
