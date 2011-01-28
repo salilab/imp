@@ -228,13 +228,19 @@ inline void show(std::ostream &out, Object *o) {
 
 IMP_END_NAMESPACE
 
-
+#ifdef IMP_DOXYGEN
 //! Perform some basic validity checks on the object for memory debugging
+#define IMP_CHECK_OBJECT(obj)
+#elif IMP_BUILD < IMP_FAST
 #define IMP_CHECK_OBJECT(obj) do {                                      \
     IMP_INTERNAL_CHECK((obj) != NULL, "NULL object");                   \
     IMP_INTERNAL_CHECK((obj)->get_is_valid(), "Check object " << obj    \
                << " was previously freed");                             \
 } while (false)
+#else
+#define IMP_CHECK_OBJECT
+#endif
+
 
 #ifdef IMP_DOXYGEN
 //! Set the log level to the object's log level.
