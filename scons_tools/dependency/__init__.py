@@ -21,8 +21,9 @@ def add_dependency_link_flags(env, dependencies):
     for d in dependencies:
         env.Append(LIBS=scons_tools.data.get(env).dependencies[d].libs)
 
-def _get_version(context, includepath, versioncpp, versionheader):
+def _get_version(context, name, includepath, versioncpp, versionheader):
     if versioncpp:
+        context.Message('Checking for version of '+name+"...")
         if type(versioncpp) == type([]):
             vs="<< ' ' << ".join(versioncpp)
         else:
@@ -39,22 +40,25 @@ def _get_version(context, includepath, versioncpp, versionheader):
             return 0;
         }
         """, '.cpp')
-        context.Result(r[1])
         if includepath:
             context.env.Replace(CPPPATH=oldcpp)
         if not r[0]:
-            scons_tools.utility.report_error(context.env, "Unable to get version number")
+            version=["0" for x in versioncpp]
         else:
             v= r[1].split('\n')[0]
             if type(versioncpp) == type([]):
                 version=v.split()
             else:
                 version=v
-            return version
+        if type(version) == type([]):
+            context.Result(" ".join(version))
+        else:
+            context.Result(str(version))
+        return version
     else:
         return None
 
-def check_lib(context, lib, header, body="", extra_libs=[], versioncpp=None,
+def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=None,
               versionheader=None):
     oldflags= context.env.get('LINKFLAGS')
     context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
@@ -77,13 +81,13 @@ def check_lib(context, lib, header, body="", extra_libs=[], versioncpp=None,
         # should be the sum of the two
         if bret[0]:
             context.env.Replace(LINKFLAGS=oldflags)
-            return (bret[0], ret[1]+bret[1], _get_version(context, None,
+            return (bret[0], ret[1]+bret[1], _get_version(context, name, None,
                                                           versioncpp,
                                                           versionheader))
         else:
             context.env.Replace(LINKFLAGS=oldflags)
             return (False, None, None)
-    vers= _get_version(context, None, versioncpp, versionheader)
+    vers= _get_version(context, name, None, versioncpp, versionheader)
     #print "version", vers
     context.env.Replace(LINKFLAGS=oldflags)
     return  (True, ret[1], vers)
@@ -129,13 +133,13 @@ def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
     if not versioncpp:
         version=None
     else:
-        version= _get_version(context, includepath, versioncpp, versionheader)
+        version= _get_version(context, name, includepath, versioncpp, versionheader)
     return (True, libs, version, includepath, libpath)
 
 def _get_info_test(context, env, name, lib, header, body,
                    extra_libs, versioncpp, versionheader):
     lcname= get_dependency_string(name)
-    (ret, libs, version)= check_lib(context, lib=lib, header=header,
+    (ret, libs, version)= check_lib(context, name, lib=lib, header=header,
                                     body=body,
                                     extra_libs=extra_libs,
                                     versioncpp=versioncpp,
