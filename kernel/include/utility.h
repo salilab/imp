@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <cmath>
 
-#if !defined(_GLIBCXX_USE_C99_MATH) && IMP_BOOST_VERSION >= 103500
+#if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
 #include <boost/math/special_functions/fpclassify.hpp>
 #endif
 
@@ -48,7 +48,7 @@ inline bool is_nan(const T& a) {
 #if defined(_GLIBCXX_USE_C99_MATH)
   // Not all gcc versions include C99 math
   return (std::isnan)(a);
-#elif IMP_BOOST_VERSION >= 103500
+#elif BOOST_VERSION >= 103500
   return (boost::math::isnan)(a);
 #else
   return a != a;
