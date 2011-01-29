@@ -75,6 +75,11 @@ public:
     this->write_to_floats(filename, header,data);
   }
 
+  void read_from_ints(const String &, em::ImageHeader&, cv::Mat &) const {
+  }
+
+  void write_to_ints(const String &, em::ImageHeader&, const cv::Mat &) const {
+  }
 
   //! Reads an image file in Spider format and stores the content
   //! int the header and data parameters

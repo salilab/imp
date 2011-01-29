@@ -30,6 +30,12 @@ public:
     this->write_to_ints(filename, header,data);
   }
 
+  void write_to_floats(const String &, em::ImageHeader&, const cv::Mat &) const
+  {
+  }
+
+  void read_from_floats(const String &, em::ImageHeader&, cv::Mat &) const {}
+
   //! Reads an image file in TIFF format
   /*!
     \param[in] filename file to read

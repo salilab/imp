@@ -53,6 +53,12 @@ public:
     header.clear();
  }
 
+  void write_to_floats(const String &, em::ImageHeader&, const cv::Mat &) const
+  {
+  }
+
+  void read_from_floats(const String &, em::ImageHeader&, cv::Mat &) const {}
+
   //! Writes an EM image in JPG format
   /*!
     \param[in] filename file to write
