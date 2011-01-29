@@ -17,7 +17,6 @@ modules=['cgal',
          'multifit',
          'em2d',
          'bullet',
-         'openmm',
          'misc',
          'system']
 # always last
