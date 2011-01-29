@@ -9,6 +9,7 @@ import shutil
 import socket
 import stat
 import select
+import fcntl
 
 from AbstractGrid import AbstractGrid, Server, Result
 from ro import *
@@ -47,7 +48,7 @@ def valid_timestamp(name, max_delay):
 class FIFOBasedCommunicator:
 
     remote_shell = 'ssh'
-    polling_interval = 0.1
+    polling_interval = 0.02
     lock_max_delay = 10.
 
     def __init__(self, temp_path, tid=None, debug=False, nfs_care=False):
@@ -79,6 +80,11 @@ class FIFOBasedCommunicator:
 
         self.__stop = False
 
+        #if not hasattr(os,'mkfifo'):
+        if not (hasattr(fcntl, 'LOCK_EX') and hasattr(os,'mkfifo')):
+            raise RuntimeError, "Exclusive locks / FIFOs not supported "\
+                    "on this system, aborting..."
+
     def halt(self):
         self.__stop = True
         #needed to unlock forked process
@@ -90,6 +96,8 @@ class FIFOBasedCommunicator:
         
         if not os.path.exists(slot):
             os.mkfifo(slot)
+            open(slot+'.lockr','w').close()
+            open(slot+'.lockw','w').close()
         elif not stat.S_ISFIFO(os.stat(slot)[stat.ST_MODE]):
             raise "comm file exists but is not a FIFO!"
 
@@ -127,14 +135,18 @@ class FIFOBasedCommunicator:
         return self.tid_counter
 
     def dump(self, op, info, fifo):
-            f = open(fifo, 'w')
-            while True:
-                r,w,e = select.select([],[f],[])
-                if w:
-                    break
-            cPickle.dump((info,op), f)
-            #f.flush()
-            f.close()
+        #fl = os.open(fifo+'.lockw', os.O_RDONLY)
+        #fcntl.lockf(fl, fcntl.LOCK_EX)
+        time.sleep(self.polling_interval)
+        f = open(fifo, 'w')
+        while True:
+            r,w,e = select.select([],[f],[])
+            if w:
+                break
+        cPickle.dump((info,op), f)
+        f.flush()
+        f.close()
+        #os.close(fl)
 
     def register(self, _id, tid, msg, data):
 
@@ -168,26 +180,30 @@ class FIFOBasedCommunicator:
     def poll(self):
         """block until message arrives, 
         extract data and register to self.data construct,
-        remove message file
         """
 
-        filename = self.comm_path + '/%d' % self.tid
+        fifo = self.comm_path + '/%d' % self.tid
+        #fl = os.open(fifo+'.lockr', os.O_RDONLY)
         #blocking call
-        fl = open(filename)
+        #fcntl.lockf(fl, fcntl.LOCK_EX)
+        #blocking call
+        f = open(fifo)
+        time.sleep(self.polling_interval)
         while True:
-            r,w,e = select.select([fl],[],[])
+            r,w,e = select.select([f],[],[])
             if r:
                 break
         while True:
             try:
-                ((sender,msg,_id),_data) = cPickle.load(fl)
+                ((sender,msg,_id),_data) = cPickle.load(f)
                 self.register(int(_id), int(sender), int(msg), _data)
                 if self.debug:
                     print 'poll: sender=%s, msg=%s, id=%s, type=%s, time=%f'%\
                       (sender, msg, _id,_data.__class__.__name__, time.time())
             except EOFError:
                 break
-        fl.close()
+        f.close()
+        #os.close(fl)
 
     def find_message(self, sender, msg):
         """get message msg from sender sender, -1 stands for any.
