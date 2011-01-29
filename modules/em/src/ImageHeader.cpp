@@ -13,29 +13,29 @@ IMPEM_BEGIN_NAMESPACE
 
 
 void ImageHeader::print_hard(std::ostream &out) const {
-  out << "fNslice=" << header_.fNslice << std::endl;
-  out << "fNrow=" <<   header_.fNrow << std::endl;
-  out << "fNcol=" <<   header_.fNcol << std::endl;
-  out << "fNlabel=" << header_.fNlabel << std::endl;
-  out << "fNrec=" <<   header_.fNrec << std::endl;
-  out << "fIform=" <<  header_.fIform << std::endl;
-  out << "fImami=" <<  header_.fImami << std::endl;
-  out << "fFmax=" <<   header_.fFmax << std::endl;
-  out << "fFmin=" <<   header_.fFmin << std::endl;
-  out << "fAv=" <<     header_.fAv << std::endl;
-  out << "fSig=" <<    header_.fSig << std::endl;
-  out << "fIhist=" <<  header_.fIhist << std::endl;
-  out << "fLabrec=" << header_.fLabrec << std::endl;
-  out << "fIangle=" << header_.fIangle << std::endl;
-  out << "fPhi=" <<    header_.fPhi << std::endl;
-  out << "fTheta=" <<  header_.fTheta << std::endl;
-  out << "fPsi=" <<    header_.fPsi << std::endl;
-  out << "fXoff=" <<   header_.fXoff << std::endl;
-  out << "fYoff=" <<   header_.fYoff << std::endl;
-  out << "fZoff=" <<   header_.fZoff << std::endl;
-  out << "fScale=" <<  header_.fScale << std::endl;
-  out << "fLabbyt=" << header_.fLabbyt << std::endl;
-  out << "fLenbyt=" << header_.fLenbyt << std::endl;
+  out << "fNslice=" << spider_header_.fNslice << std::endl;
+  out << "fNrow=" <<   spider_header_.fNrow << std::endl;
+  out << "fNcol=" <<   spider_header_.fNcol << std::endl;
+  out << "fNlabel=" << spider_header_.fNlabel << std::endl;
+  out << "fNrec=" <<   spider_header_.fNrec << std::endl;
+  out << "fIform=" <<  spider_header_.fIform << std::endl;
+  out << "fImami=" <<  spider_header_.fImami << std::endl;
+  out << "fFmax=" <<   spider_header_.fFmax << std::endl;
+  out << "fFmin=" <<   spider_header_.fFmin << std::endl;
+  out << "fAv=" <<     spider_header_.fAv << std::endl;
+  out << "fSig=" <<    spider_header_.fSig << std::endl;
+  out << "fIhist=" <<  spider_header_.fIhist << std::endl;
+  out << "fLabrec=" << spider_header_.fLabrec << std::endl;
+  out << "fIangle=" << spider_header_.fIangle << std::endl;
+  out << "fPhi=" <<    spider_header_.fPhi << std::endl;
+  out << "fTheta=" <<  spider_header_.fTheta << std::endl;
+  out << "fPsi=" <<    spider_header_.fPsi << std::endl;
+  out << "fXoff=" <<   spider_header_.fXoff << std::endl;
+  out << "fYoff=" <<   spider_header_.fYoff << std::endl;
+  out << "fZoff=" <<   spider_header_.fZoff << std::endl;
+  out << "fScale=" <<  spider_header_.fScale << std::endl;
+  out << "fLabbyt=" << spider_header_.fLabbyt << std::endl;
+  out << "fLenbyt=" << spider_header_.fLenbyt << std::endl;
 }
 
 
@@ -114,25 +114,29 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
 
   // Read header
   if (!reversed_) {
-    f.read(reinterpret_cast< char* >(&header_), sizeof(SpiderHeader));
+    f.read(reinterpret_cast< char* >(&spider_header_), sizeof(SpiderHeader));
   }
   // Read numerical fields reversed
   else {
-    IMP::algebra::reversed_read(&header_,sizeof(float),  36, f, true);
-    IMP::algebra::reversed_read(&header_.fGeo_matrix,
+    IMP::algebra::reversed_read(&spider_header_,sizeof(float),  36, f, true);
+    IMP::algebra::reversed_read(&spider_header_.fGeo_matrix,
                                  sizeof(double),  9, f, true);
     // 14 is the number of fields in the SpiderHeader struct after fGeo_matrix
-    IMP::algebra::reversed_read(&header_.fAngle1,sizeof(float),  14, f, true);
-    IMP::algebra::reversed_read(&header_.empty,  sizeof(char),  752, f, true);
+    IMP::algebra::reversed_read(&spider_header_.fAngle1,
+                                sizeof(float),
+                                14, f, true);
+    IMP::algebra::reversed_read(&spider_header_.empty,
+                                sizeof(char),
+                                752, f, true);
   }
 
-  unsigned long usfNcol = (unsigned long) header_.fNcol;
-  unsigned long usfNrow = (unsigned long) header_.fNrow;
+  unsigned long usfNcol = (unsigned long) spider_header_.fNcol;
+  unsigned long usfNrow = (unsigned long) spider_header_.fNrow;
   if (usfNcol==0 || usfNrow==0) {
     IMP_THROW("Zero size read for image", IOException);
   }
-  unsigned long usfNslice = (unsigned long) header_.fNslice;
-  unsigned long usfHeader = (unsigned long) get_header_size();
+  unsigned long usfNslice = (unsigned long) spider_header_.fNslice;
+  unsigned long usfHeader = (unsigned long) get_spider_header_size();
 
   // Get file size
   current_position = f.tellg();
@@ -145,16 +149,16 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
   f.seekg(current_position, std::ios::beg);
 
   // Check if it is an "aberrant" image
-  if (header_.fIform == IMG_IMPEM) {
+  if (spider_header_.fIform == IMG_IMPEM) {
     if ((usfNcol*usfNrow*sizeof(float)) == file_size) {
-      usfNrow = (unsigned long)(--header_.fNrow);
-      --header_.fNrec;
+      usfNrow = (unsigned long)(--spider_header_.fNrow);
+      --spider_header_.fNrec;
     }
   }
 
   // Extra checkings
   if (!skip_extra_checkings) {
-    switch ((int)header_.fIform) {
+    switch ((int)spider_header_.fIform) {
     case IMG_BYTE:
       size = usfNcol * usfNrow * sizeof(float);
       if ((size != file_size)) {
@@ -163,19 +167,19 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       break;
     case IMG_IMPEM:
       size = usfHeader + usfNcol * usfNrow * sizeof(float);
-      if ((size != file_size) || (header_.fIform != 1)) {
+      if ((size != file_size) || (spider_header_.fIform != 1)) {
         return false;
       } else if (skip_type_check) {
-        header_.fIform = 1;
+        spider_header_.fIform = 1;
       }
 
       break;
     case IMG_INT:
       size = usfHeader + usfNcol * usfNrow * sizeof(float);
-      if ((size != file_size) || (header_.fIform != 9)) {
+      if ((size != file_size) || (spider_header_.fIform != 9)) {
         return false;
       } else if (skip_type_check) {
-        header_.fIform = 9; // This is done to recover
+        spider_header_.fIform = 9; // This is done to recover
         // files which are not properly converted from other packages
       }
       break;
@@ -187,18 +191,18 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       break;
     case VOL_IMPEM:
       size = usfHeader + usfNslice * usfNcol * usfNrow * sizeof(float);
-      if ((size != file_size) || (header_.fIform != 3)) {
+      if ((size != file_size) || (spider_header_.fIform != 3)) {
         return false;
       } else if (skip_type_check) {
-        header_.fIform = 3;
+        spider_header_.fIform = 3;
       }
       break;
     case VOL_INT:
       size = usfHeader + usfNslice * usfNcol * usfNrow * sizeof(float);
-      if ((size != file_size) || (header_.fIform != 10)) {
+      if ((size != file_size) || (spider_header_.fIform != 10)) {
         return false;
       } else if (skip_type_check) {
-        header_.fIform = 10;
+        spider_header_.fIform = 10;
       }
       break;
     case IMG_FOURIER:
@@ -206,10 +210,10 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       // The term 2 is to take into account that IMG_FOURIER
       // stores complex numbers with 2 floats for each one.
       if ((size != file_size) ||
-          (header_.fIform != -5 && header_.fIform != -1))
+          (spider_header_.fIform != -5 && spider_header_.fIform != -1))
         return false;
       else if (skip_type_check) {
-        header_.fIform = -1;
+        spider_header_.fIform = -1;
       }
       break;
     case VOL_FOURIER:
@@ -217,10 +221,10 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
       // The term 2 is to take into account that VOL_FOURIER
       // stores complex numbers with 2 floats for each one.
       if ((size != file_size) ||
-          (header_.fIform != -7 && header_.fIform != -3)) {
+          (spider_header_.fIform != -7 && spider_header_.fIform != -3)) {
         return false;
       } else if (skip_type_check) {
-        header_.fIform = -3;
+        spider_header_.fIform = -3;
       }
       break;
     }
@@ -231,9 +235,11 @@ bool ImageHeader::read(std::ifstream& f, bool skip_type_check,
     - a "filling" empty space
     - the data of size cols*rows*sizeof(float).
   */
-  header_.fLabrec = (float) ceil((float) 256 / header_.fNcol);
-  tmpSize = (int)(header_.fNcol * header_.fLabrec * 4); //Size of whole header
-  tmpSize -= sizeof(SpiderHeader);         //Decrease the real header
+  spider_header_.fLabrec = (float) ceil((float) 256 / spider_header_.fNcol);
+  //Size of whole header
+  tmpSize = (int)(spider_header_.fNcol * spider_header_.fLabrec * 4);
+  //Subtrat the real header
+  tmpSize -= sizeof(SpiderHeader);
   // read empty filling space
   for (unsigned i = 0; i < tmpSize / 4; i++) {
     IMP::algebra::reversed_read(&tmp, sizeof(float), 1, f, reversed_);
@@ -275,21 +281,25 @@ void ImageHeader::write(std::ofstream& f, bool force_reversed)
   // Write header
   if (algebra::xorT(reversed_, force_reversed)) {
     reversed_ = true;
-    IMP::algebra::reversed_write(&header_,sizeof(float),  36, f, true);
-    IMP::algebra::reversed_write(&header_.fGeo_matrix,
+    IMP::algebra::reversed_write(&spider_header_,
+                                 sizeof(float),
+                                  36, f, true);
+    IMP::algebra::reversed_write(&spider_header_.fGeo_matrix,
                                   sizeof(double),  9, f, true);
     // 14 is the number of float fields after fGeo_matrix in the eader_ struct
-    IMP::algebra::reversed_write(&header_.fAngle1,sizeof(float),14, f, true);
+    IMP::algebra::reversed_write(&spider_header_.fAngle1,
+                                 sizeof(float),
+                                 14, f, true);
     // 752 is the number of chars to the end of the file
-    f.write(header_.empty, sizeof(char)*752);
+    f.write(spider_header_.empty, sizeof(char)*752);
   } else {
     reversed_ = false;
-    f.write(reinterpret_cast< char* >(&header_),
+    f.write(reinterpret_cast< char* >(&spider_header_),
             sizeof(SpiderHeader));
   }
 
   // Write empty filling space (filled with zeros)
-  tmpSize = get_header_size(); //Size of whole header
+  tmpSize = get_spider_header_size(); //Size of whole header
   tmpSize -= sizeof(SpiderHeader);             //Decrease the real header
   tmp = (float) 0.0;
   for (unsigned i = 0; i < tmpSize / 4; i++) {
@@ -313,65 +323,66 @@ void ImageHeader::write(const String &filename, bool force_reversed)
 
 void ImageHeader::clear()
 {
-  memset(&header_, 0, sizeof(SpiderHeader));
+  memset(&spider_header_, 0, sizeof(SpiderHeader));
   set_header(); // Set a consistent header
   reversed_ = false;
 }
 
 void ImageHeader::set_header()
 {
-  // "dark" stuff for SPIDER compatibility needed in the header_.
+  // "dark" stuff for SPIDER compatibility needed in the spider_header_.
   // Adopted from Xmipp Libraries
-  if ((header_.fNcol != 0) && (header_.fNrow != 0)) {
-    header_.fNlabel = (float)((int)(256 / header_.fNcol + 1));
-    header_.fLabrec = (float) std::ceil((float)(256 / (float)header_.fNcol));
-    if ((1024 % (int)header_.fNcol != 0)) {
-      header_.fNrec = header_.fNrow + 1;
+  if ((spider_header_.fNcol != 0) && (spider_header_.fNrow != 0)) {
+    spider_header_.fNlabel = (float)((int)(256 / spider_header_.fNcol + 1));
+    spider_header_.fLabrec =
+                (float) std::ceil((float)(256 / (float)spider_header_.fNcol));
+    if ((1024 % (int)spider_header_.fNcol != 0)) {
+      spider_header_.fNrec = spider_header_.fNrow + 1;
     } else {
-      header_.fNrec = header_.fNrow;
+      spider_header_.fNrec = spider_header_.fNrow;
     }
-    header_.fLabbyt = get_header_size();
-    header_.fLenbyt = (float) header_.fNcol * 4;
+    spider_header_.fLabbyt = get_spider_header_size();
+    spider_header_.fLenbyt = (float) spider_header_.fNcol * 4;
   }
 
   // file type
-  switch ((int)header_.fIform) {
+  switch ((int)spider_header_.fIform) {
   case IMG_BYTE:
-    header_.fIform = 0;    // for a 2D image.
+    spider_header_.fIform = 0;    // for a 2D image.
     break;
   case IMG_IMPEM:
-    header_.fIform = 1;    // for a 2D image.
+    spider_header_.fIform = 1;    // for a 2D image.
     break;
   case IMG_INT:
-    header_.fIform = 9;    // for a 2D int image.
+    spider_header_.fIform = 9;    // for a 2D int image.
     break;
   case VOL_BYTE:
-    header_.fIform = 2;    // for a 3D volume.
+    spider_header_.fIform = 2;    // for a 3D volume.
     break;
   case VOL_IMPEM:
-    header_.fIform = 3;    // for a 3D volume.
+    spider_header_.fIform = 3;    // for a 3D volume.
     break;
   case VOL_INT:
-    header_.fIform = 10;    // for a 3D int volume.
+    spider_header_.fIform = 10;    // for a 3D int volume.
     break;
   case IMG_FOURIER:
-    header_.fIform = -1;    // for a 2D Fourier transform.
+    spider_header_.fIform = -1;    // for a 2D Fourier transform.
     break;
   case VOL_FOURIER:
-    header_.fIform = -3;    // for a 3D Fourier transform.
+    spider_header_.fIform = -3;    // for a 3D Fourier transform.
     break;
   }
 
   // Set scale to 1 (never used but kept for compatibility with Spider)
-  header_.fScale = 1;
+  spider_header_.fScale = 1;
   // Set Geometrical transformation matrix to Identity
   // (compatibility with Spider again)
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
       if (i == j) {
-        header_.fGeo_matrix[i][j] = (double)1.0;
+        spider_header_.fGeo_matrix[i][j] = (double)1.0;
       } else {
-        header_.fGeo_matrix[i][j] = (double)0.0;
+        spider_header_.fGeo_matrix[i][j] = (double)0.0;
       }
     }
   }
@@ -380,7 +391,7 @@ void ImageHeader::set_header()
 
 char* ImageHeader::get_date() const
 {
-  return (char*) header_.szIDat;
+  return (char*) spider_header_.szIDat;
 }
 
 void ImageHeader::set_date()
@@ -391,12 +402,12 @@ void ImageHeader::set_date()
   tmTime = localtime(&lTime);  // Get current time
   tmTime->tm_mon++;            // Months are from 0..11 so put ti from 1..12
   tmTime->tm_year -= 100;      // Years are from 1900 and we want it from 2000
-  sprintf(header_.szIDat, "%02d%s%02d%s%02d", tmTime->tm_mday, "-",
+  sprintf(spider_header_.szIDat, "%02d%s%02d%s%02d", tmTime->tm_mday, "-",
           tmTime->tm_mon, "-", tmTime->tm_year);
 }
 
 char* ImageHeader::get_time() const {
-  return (char*) header_.szITim;
+  return (char*) spider_header_.szITim;
 }
 
 void ImageHeader::set_time()
@@ -405,21 +416,22 @@ void ImageHeader::set_time()
   struct tm *tmTime;
   time(&lTime);                // Get seconds since January 1 1970
   tmTime = localtime(&lTime);  // Get current time
-  sprintf(header_.szITim, "%02d%s%02d", tmTime->tm_hour, ":", tmTime->tm_min);
+  sprintf(spider_header_.szITim,
+           "%02d%s%02d", tmTime->tm_hour, ":", tmTime->tm_min);
 }
 
 char* ImageHeader::get_title() const
 {
-  return (char*) header_.szITit;
+  return (char*) spider_header_.szITit;
 }
 
 void ImageHeader::set_title(String newName)
 {
-  strcpy(header_.szITit, newName.c_str());
+  strcpy(spider_header_.szITit, newName.c_str());
 }
 
 double ImageHeader::get_fGeo_matrix(unsigned int i,unsigned int j) const {
-  return header_.fGeo_matrix[i][j];
+  return spider_header_.fGeo_matrix[i][j];
 }
 
 IMPEM_END_NAMESPACE

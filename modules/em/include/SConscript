@@ -23,7 +23,6 @@ files = [
          'embedding.h',
          'envelope_penetration.h',
          'exp.h',
-         'filters.h',
          'header_converters.h',
          'masking.h',
          'rigid_fitting.h',

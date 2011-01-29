@@ -19,7 +19,6 @@ files = [
          'converters.cpp',
          'embedding.cpp',
          'envelope_penetration.cpp',
-         'filters.cpp',
          'header_converters.cpp',
          'masking.cpp',
          'rigid_fitting.cpp',
