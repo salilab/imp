@@ -12,8 +12,6 @@
 
 #include "kernel_config.h"
 #include "Key.h"
-
-#include <boost/version.hpp>
 #include <string>
 #include <vector>
 
