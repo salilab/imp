@@ -126,7 +126,6 @@ bool check_parameters(const po::variables_map &vm,const str required_params,
   return false;
 }
 
-
 int main(int argc, char **argv) {
 
   IMP::set_log_level(IMP::VERBOSE);
@@ -142,15 +141,17 @@ int main(int argc, char **argv) {
   IMP::String fn_model,fn_subjs,fn_projs, fn_output="";
   // vector for options values
   std::vector<str> opt;
-  // Parameters
+
   std::ofstream ofs;
+  //  std::ostream out;
   if(vm.count("o")) {
     fn_output = vm["o"].as<IMP::String>();
     ofs.open(fn_output.c_str(), std::ios::out);
     // std::cin is tied to cout by default. Tie it to the stream for the file.
-    // To request the output the command is *std::cin.tie() << . See below
     std::cin.tie(&ofs);
   }
+  std:: ostream *out = std::cin.tie(); // retrieve the current output stream
+
   // Check mandatory parameters
   if( check_parameters(vm,"mod")==false) {
     std::cerr << "Error: The --mod parameter is missing" << std::endl;
@@ -238,7 +239,7 @@ int main(int argc, char **argv) {
     projections = em2d::read_images(projs_names,srw);
   }
   double projection_time = project_timer.elapsed();
-  *std::cin.tie() << "# Projections generated: " << projections.size()
+  *out << "# Projections generated: " << projections.size()
              << " Time: " << projection_time <<std::endl;
 
   // Prepare finder
@@ -249,9 +250,7 @@ int main(int argc, char **argv) {
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
   em2d::ProjectionFinder finder;
-//  em2d::ScoreFunctionPtr score_function(new em2d::EM2DScore());
   IMP_NEW(em2d::EM2DScore,score_function,());
-  std::cout << "SCORE_FUNCTION: " << *score_function << std::endl;
   finder.setup(score_function,
                apix,
                 resolution,
@@ -266,16 +265,16 @@ int main(int argc, char **argv) {
   finder.set_projections(projections);
   double time_preprocess_projections = finder.get_preprocessing_time();
   // Time
-  *std::cin.tie() << "# Preprocessing images " << subjects.size()
+  *out << "# Preprocessing images " << subjects.size()
                   << " Time: " << time_preprocess_subjects <<std::endl;
-  *std::cin.tie() << "# Preprocessing projections: " << projections.size()
+  *out << "# Preprocessing projections: " << projections.size()
              << " Time: " << time_preprocess_projections <<std::endl;
-  *std::cin.tie() << "# Total preprocessing Time: "
+  *out << "# Total preprocessing Time: "
                   << time_preprocess_subjects+time_preprocess_projections
                   << std::endl;
 
   if(n_coarse_results_optimized!=0) {
-    *std::cin.tie() << "# Set fast mode, use "
+    *out << "# Set fast mode, use "
                     << n_coarse_results_optimized
                     << " best coarse results " <<std::endl;
     finder.set_fast_mode(n_coarse_results_optimized);
@@ -287,64 +286,63 @@ int main(int argc, char **argv) {
 
   if(registration_option==COMPLETE_REGISTRATION) {
     finder.get_complete_registration();
-    *std::cin.tie() << "# Coarse registration Time: "
+    *out << "# Coarse registration Time: "
                     << finder.get_coarse_registration_time() <<std::endl;
-    *std::cin.tie() << "# Fine registration Time: "
+    *out << "# Fine registration Time: "
                     << finder.get_fine_registration_time() <<std::endl;
   } else if (registration_option == ONLY_COARSE_REGISTRATION) {
     finder.get_coarse_registration();
-    *std::cin.tie() << "# Coarse registration: images " << subjects.size()
+    *out << "# Coarse registration: images " << subjects.size()
         << " projections " << projections.size()
         << " Time: " << finder.get_coarse_registration_time() <<std::endl;
   }
-  double Score = finder.get_final_score();
+  double Score = finder.get_global_score();
 
   double total_time=registration_timer.elapsed();
-    *std::cin.tie() << "# Registration: images " << subjects.size()
+    *out << "# Registration: images " << subjects.size()
         << " projections " << projections.size()
         << " Total time: " << total_time <<std::endl;
 
   em2d::RegistrationResults registration_results=
                       finder.get_registration_results();
 
-  *std::cin.tie() << "# REGISTRATION RESULTS " << std::endl;
-  registration_results[0].write_comment_line(*std::cin.tie());
+  *out << "# REGISTRATION RESULTS " << std::endl;
+  registration_results[0].write_comment_line(*out);
   for (unsigned int i=0;i<registration_results.size();++i) {
-    registration_results[i].write(*std::cin.tie());
+    registration_results[i].write(*out);
   }
 
   // parseable global result
   char c='|';
   unsigned int n_subjects=subjects.size();
 
-  *std::cin.tie() << "# GLOBAL RESULT " << std::endl
+  *out << "# GLOBAL RESULT " << std::endl
     << "# model | resolution | A/pix | images_file | "
     << "Score | Time used | Number "
    "of subjects | Individual scores "  << std::endl;
-  *std::cin.tie() << "Global result>>" << fn_model <<c<< resolution <<c<< apix
+  *out << "Global result>>" << fn_model <<c<< resolution <<c<< apix
       <<c<< fn_subjs <<c<< Score <<c<< total_time <<c<< n_subjects;
   for (unsigned int i=0;i<n_subjects;++i) {
-    *std::cin.tie() <<c<<
-            em2d::get_ccc_to_em2d(registration_results[i].get_ccc());
+    *out <<c<< registration_results[i].get_score();
   }
-  *std::cin.tie() << std::endl;
+  *out << std::endl;
   // Benchmark
   if(vm.count("bm")) {
     em2d::RegistrationResults correct_RRs=
               em2d::read_registration_results(vm["bm"].as<str>());
-    *std::cin.tie() << "# CORRECT REGISTRATION RESULTS " << std::endl;
+    *out << "# CORRECT REGISTRATION RESULTS " << std::endl;
     for (unsigned int i=0;i<correct_RRs.size();++i) {
-      *std::cin.tie() << correct_RRs[i] << std::endl;
+      *out << correct_RRs[i] << std::endl;
     }
-    *std::cin.tie() << "# Benchmark ... " << std::endl;
-    *std::cin.tie() << "# N.projections Score Av.Rot.Error  Av.Shift.Error"
+    *out << "# Benchmark ... " << std::endl;
+    *out << "# N.projections Score Av.Rot.Error  Av.Shift.Error"
                     << std::endl;
     double rot_error=get_average_rotation_error(correct_RRs,
                                                 registration_results);
     double shift_error=get_average_shift_error(correct_RRs,
                                                registration_results);
     char c='|';
-    *std::cin.tie() << n_projections <<c<< Score
+    *out << n_projections <<c<< Score
                     <<c<< rot_error <<c<< shift_error << std::endl;
   }
   ofs.close();

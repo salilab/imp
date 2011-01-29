@@ -3,7 +3,7 @@ Import("env")
 files = [
   "opencv_interface.cpp",
   "align2D.cpp" ,
-  "labeling_algorithm.cpp" ,
+#  "labeling_algorithm.cpp" ,
   "ProjectionFinder.cpp" ,
   "model_interaction.cpp" ,
   "project.cpp" ,

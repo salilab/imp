@@ -11,11 +11,14 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
-#include "IMP/em2d/Pixel.h"
-#include "IMP/algebra/Matrix2D.h"
+// #include "IMP/em2d/Pixel.h"
+// #include "IMP/algebra/Matrix2D.h"
 #include <algorithm>
+#include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
+
+
 
 //! Morphological grayscale reconstruction (L Vincent, 1993)
 /*!
@@ -25,11 +28,11 @@ IMPEM2D_BEGIN_NAMESPACE
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
              doing the morphological reconstruction (values: 4, 8).
 */
- IMPEM2DEXPORT void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
-                      algebra::Matrix2D_d &marker,
-                      int neighbors_mode=4);
-
-
+// IMPEM2DEXPORT void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
+//                      algebra::Matrix2D_d &marker,
+//                      int neighbors_mode=4);
+//
+//
 
 //! Returns the neighbors for a givel pixel in a given mode
 /*!
@@ -47,58 +50,35 @@ IMPEM2D_BEGIN_NAMESPACE
               initial column. If this parameter is false (default) the
               neighbors outside the matrix are removed.
 */
- IMPEM2DEXPORT Pixels get_neighbors2d(
-                            const Pixel &p,const algebra::Matrix2D_d &m,
-                             int mode=4,
-                             int sign=0,
-                             bool cycle=false);
+// IMPEM2DEXPORT Pixels get_neighbors2d(
+//                            const Pixel &p,const algebra::Matrix2D_d &m,
+//                             int mode=4,
+//                             int sign=0,
+//                             bool cycle=false);
 
 
 
-//! Fills the holes in the matrix m of height h
- IMPEM2DEXPORT void do_fill_holes(
-            algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
-
-//! Gets the domes of m with height h
- IMPEM2DEXPORT void get_domes(
-                  algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
-
-
- IMPEM2DEXPORT void do_preprocess_em2d(algebra::Matrix2D_d &m,
-                     algebra::Matrix2D_d &result,
-                     double n_stddevs);
+////! Fills the holes in the matrix m of height h
+// IMPEM2DEXPORT void do_fill_holes(
+//            algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
+//
+//
+////! Gets the domes of m with height h
+// IMPEM2DEXPORT void get_domes(
+//         algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
+//
+//
 
 
-
-
-//! Morphological get_dilated of a grayscale matrix m.
-/*!
-  \param[in] m Matrix to dilate
-  \param[in] kernel structuring element used for the opening
-  \param[in] result resulting matrix
-*/
- IMPEM2DEXPORT void do_dilation(const algebra::Matrix2D_d &m,
-              algebra::Matrix2D_d &kernel,
-              algebra::Matrix2D_d &result);
-
-//! Morphological erosion of a grayscale matrix m.
-/*!
-  \param[in] m Matrix to dilate
-  \param[in] kernel structuring element used for the opening
-  \param[in] result resulting matrix
-*/
-IMPEM2DEXPORT void do_erosion(const algebra::Matrix2D_d &m,
-              algebra::Matrix2D_d &kernel,
-              algebra::Matrix2D_d &result);
 //! Morphological opening of a grayscale matrix m.
 /*!
   \param[in] m Matrix to dilate
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
-IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
-              algebra::Matrix2D_d &kernel,
-              algebra::Matrix2D_d &result);
+//IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
+//              algebra::Matrix2D_d &kernel,
+//              algebra::Matrix2D_d &result);
 
 //! Morphological do_closing of a grayscale matrix m.
 /*!
@@ -106,9 +86,9 @@ IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
   \param[in] kernel structuring element used for the opening
   \param[in] result resulting matrix
 */
- IMPEM2DEXPORT void do_closing(const algebra::Matrix2D_d &m,
-              algebra::Matrix2D_d &kernel,
-              algebra::Matrix2D_d &result);
+// IMPEM2DEXPORT void do_closing(const algebra::Matrix2D_d &m,
+//              algebra::Matrix2D_d &kernel,
+//              algebra::Matrix2D_d &result);
 
 
 //! Thresholding to get a binary image
@@ -116,10 +96,10 @@ IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
   \param[in] mode if 1 the values higher than the threshold are given value 1.
                   If the mode is -1, the values lower the threshold are given 1.
 */
- IMPEM2DEXPORT void apply_threshold(
-                  const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-                   double threshold, int mode);
-
+// IMPEM2DEXPORT void apply_threshold(
+//                  const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
+//                   double threshold, int mode);
+//
 
 //! Applies a binary mask to an image.
 /*!
@@ -129,11 +109,27 @@ IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
   \note  m and result can be the same matrix.
 
 */
-IMPEM2DEXPORT void do_masking(
-          const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-          const algebra::Matrix2D<int> &mask,double value);
+//IMPEM2DEXPORT void do_masking(
+//          const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
+//          const algebra::Matrix2D<int> &mask,double value);
+//
 
 
+
+/*!
+  \param[in] I input
+  \param[in] deriv output derivative
+  \param[in] temp_x temporary matrix to store dI/dx
+  \param[in] deriv_y temporary matrix to store dI/dy
+  \param[in] h temporary matrix to store the "edge indicator function"
+  \param[in] dx - step for x
+  \param[in] dy - step for y
+  \param[in] ang - parameter for weight diffusion and edge detection (90-0)
+*/
+//void get_diffusion_filtered_partial_der_t(
+//                      const algebra::Matrix2D_d &I,
+//                      algebra::Matrix2D_d &It,
+//                       double dx, double dy, double ang);
 
 //! Smoothing filter by application of the reaction-diffusion
 //! equation of Beltrami flow. Adiga, JSB, 2005
@@ -141,28 +137,13 @@ IMPEM2DEXPORT void do_masking(
   \param [in] beta contribution of diffusion versus edge enhancement.
               0 - pure reaction, 90 - pure diffusion
 */
- IMPEM2DEXPORT void get_diffusion_filtered(
-             const algebra::Matrix2D_d &I,
-             algebra::Matrix2D_d &result,
-              double beta,
-              double pixelsize,
-              unsigned int t_steps);
+// IMPEM2DEXPORT void get_diffusion_filtered(
+//             const algebra::Matrix2D_d &I,
+//             algebra::Matrix2D_d &result,
+//              double beta,
+//              double pixelsize,
+//              unsigned int t_steps);
 
-
-
-
-
-template<typename T,typename U>
-void transfer_by_casting(algebra::Matrix2D<T> &m,
-                         algebra::Matrix2D<U> &result) {
-  result.reshape(m);
-  for (int i=m.get_start(0);i<=m.get_finish(0);++i) {
-    for (int j=m.get_start(1);j<=m.get_finish(1);++j) {
-      // cast
-      result(i,j)=(U)m(i,j);
-    }
-  }
-}
 
 
 //! Removes small objects from a labeled image. The background value is assumed
@@ -174,46 +155,84 @@ void transfer_by_casting(algebra::Matrix2D<T> &m,
   \param[in] n_labels If higher than 0 (default) is the number of labels in the
              image. Otherwise, the function computes the number (slower)
 */
-template<typename T>
-void remove_small_objects(algebra::Matrix2D<T> &m,
-            double percentage,int n_labels=0) {
-  int background =0;
-  int foreground =1;
-  // If not given, compute the number of labels. Requires one scan
-  if(n_labels== 0) {
-    n_labels = algebra::get_rounded(m.compute_max());
-  }
-  // Vector to count pixels
-  std::vector<unsigned int> pixel_count(n_labels);
-  for (unsigned int i=0;i<pixel_count.size();++i) {
-    pixel_count[i]=0;
-  }
-  // First scan, count pixels
-  for (unsigned int i=0;i<m.num_elements();++i) {
-    int val = algebra::get_rounded(m.data()[i]);
-    if(val != background) {
-      (pixel_count[val-1])++;
-    }
-  }
-  // Get largest object
-  unsigned int max_pixels = *max_element(pixel_count.begin(),pixel_count.end());
-  std::vector<double> percentages(n_labels);
-  for (unsigned int i=0;i<pixel_count.size();++i) {
-    percentages[i]=((double)pixel_count[i])/((double)max_pixels);
-  }
-  // Second scan, remove objects of size lower than the percentage
-  for (unsigned int i=0;i<m.num_elements();++i) {
-    int val = algebra::get_rounded(m.data()[i]);
-    if(percentages[val-1] > percentage) {
-      m.data()[i] = (T)foreground;
-    } else {
-      m.data()[i] = (T)background;
-    }
-  }
-}
+//template<typename T>
+//void remove_small_objects(algebra::Matrix2D<T> &m,
+//            double percentage,int n_labels=0) {
+//  int background =0;
+//  int foreground =1;
+//  // If not given, compute the number of labels. Requires one scan
+//  if(n_labels== 0) {
+//    n_labels = algebra::get_rounded(m.compute_max());
+//  }
+//  // Vector to count pixels
+//  std::vector<unsigned int> pixel_count(n_labels);
+//  for (unsigned int i=0;i<pixel_count.size();++i) {
+//    pixel_count[i]=0;
+//  }
+//  // First scan, count pixels
+//  for (unsigned int i=0;i<m.num_elements();++i) {
+//    int val = algebra::get_rounded(m.data()[i]);
+//    if(val != background) {
+//      (pixel_count[val-1])++;
+//    }
+//  }
+//  // Get largest object
+//  unsigned int max_pixels=*max_element(pixel_count.begin(),pixel_count.end());
+//  std::vector<double> percentages(n_labels);
+//  for (unsigned int i=0;i<pixel_count.size();++i) {
+//    percentages[i]=((double)pixel_count[i])/((double)max_pixels);
+//  }
+//  // Second scan, remove objects of size lower than the percentage
+//  for (unsigned int i=0;i<m.num_elements();++i) {
+//    int val = algebra::get_rounded(m.data()[i]);
+//    if(percentages[val-1] > percentage) {
+//      m.data()[i] = (T)foreground;
+//    } else {
+//      m.data()[i] = (T)background;
+//    }
+//  }
+//}
+
+
+////! (U. Adiga, 2005)
+///*!
+//  \param[in] m binary matrix to dilate and shrink
+//  \param[in] greyscale greyscale matrix that controls the shrinking
+//  \param[in] kernel dilation kernel
+//  \note Only tested with binary matrices (background =0 and foreground = 1)
+//*/
+// IMPEM2DEXPORT void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
+//                            const algebra::Matrix2D_d &greyscale,
+//                            algebra::Matrix2D_d &kernel);
+
+
+// IMPEM2DEXPORT void do_histogram_stretching(algebra::Matrix2D_d &m,
+//                          int boxes,int offset);
 
 
 
+/***************************/
+
+
+//! Removes small objects from a labeled image. The background value is assumed
+//! to be 0, and the labels start at 1 up to the number of labels.
+/*!
+  \param[in] m the matrix
+  \param[in] percentage The percentage respect to the largest object that
+             other objects have to be in order to survive the removal.
+  \param[in] n_labels The number of labels in the image. If 0, the function
+             computes the number
+*/
+IMPEM2DEXPORT void remove_small_objects(cv::Mat &m,
+                          double percentage,
+                          int n_labels=0,
+                          int background=0,
+                          int foreground=1);
+
+
+ IMPEM2DEXPORT void do_histogram_stretching(cv::Mat &m,
+                                           int boxes,
+                                           int offset);
 
 //! (U. Adiga, 2005)
 /*!
@@ -222,15 +241,103 @@ void remove_small_objects(algebra::Matrix2D<T> &m,
   \param[in] kernel dilation kernel
   \note Only tested with binary matrices m with background =0 and foreground = 1
 */
- IMPEM2DEXPORT void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
-                            const algebra::Matrix2D_d &greyscale,
-                            algebra::Matrix2D_d &kernel);
+ void IMPEM2DEXPORT do_dilate_and_shrink_warp(cv::Mat &m,
+                                const cv::Mat &greyscale,
+                                cv::Mat &kernel);
 
 
- IMPEM2DEXPORT void do_histogram_stretching(algebra::Matrix2D_d &m,
-                          int boxes,int offset);
+
+//! Morphological grayscale reconstruction (L Vincent, 1993)
+/*!
+  \param[in] mask image to reconstruct
+  \param[out] marker this image contains the initial marker points and will
+              contain the final result
+  \param[in] neighbors_mode number of neighbors for a pixel to consider when
+             doing the morphological reconstruction (values: 4, 8).
+*/
+void IMPEM2DEXPORT do_morphological_reconstruction(const cv::Mat &mask,
+                                      cv::Mat &marker,
+                                      int neighbors_mode=4);
 
 
+
+//! Labeling function for a matrix
+/*!
+  \param[in] m binary matrix to scan. The matrix needs to contain zeros and
+             ones but they can be stored as doubles, floats or ints
+  \param[out] result matrix it is returned as a matrix of ints
+  \param[out] labels The number of labels in the image
+*/
+IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
+                cvIntMat &mat_to_label);
+
+
+//! Segmentation of images
+/*!
+  \param[in] m The EM image to segment
+  \param[in] result The segmented image, with the shape of the molecule
+*/
+IMPEM2DEXPORT void do_segmentation(const cv::Mat &m,
+                                   cv::Mat &result);
+
+
+//! Smoothing filter by application of the reaction-diffusion
+//! equation of Beltrami flow. Adiga, JSB, 2005
+/*!
+  \param [in] beta contribution of diffusion versus edge enhancement.
+              0 - pure reaction, 90 - pure diffusion
+*/
+IMPEM2DEXPORT void do_diffusion_filtering(const cv::Mat &m,
+                           cv::Mat &result,
+                           double beta,
+                           double pixelsize,
+                           unsigned int time_steps);
+
+//! Partial derivative with respect to time for an image filtered with
+//! difusion-reaction
+/*!
+  \param[in] m input matrix
+  \param[in] der output derivative matrix
+  \param[in] dx - step for x
+  \param[in] dy - step for y
+  \param[in] ang - parameter for weight diffusion and edge detection (90-0)
+*/
+IMPEM2DEXPORT void get_diffusion_filtering_partial_derivative(const cv::Mat &m,
+                                                cv::Mat &der,
+                                               double dx,
+                                               double dy,
+                                               double ang);
+
+
+//! Fills the holes in the matrix m of height h
+/*!
+  \param[in] m the input matrix
+  \param[in] result the result matrix
+  \param[in] h the height
+  \note The function does not work in-place
+*/
+IMPEM2DEXPORT void do_fill_holes(const cv::Mat &m,
+                                 cv::Mat &result,
+                                 double h);
+
+
+//! Gets the domes of m with height h
+/*!
+  \param[in] m the input matrix
+  \param[in] result the result matrix
+  \param[in] h the height
+  \note The function does not work in-place
+*/
+IMPEM2DEXPORT void get_domes(cv::Mat &m,cv::Mat &result,double h) ;
+
+
+//!
+/*!
+  \param[in]
+*/
+IMPEM2DEXPORT void do_preprocess_em2d(cv::Mat &m,
+                                     cv::Mat &result,
+                                     double n_stddevs);
 
 
 

@@ -54,7 +54,7 @@ public:
     matrix_rows_ = rows;
     matrix_cols_ = cols;
     ending_radius_=std::min(rows/2.,cols/2.); // maximum radius, half the size
-    n_rings_ = cv::getOptimalDFTSize(ending_radius_);
+    n_rings_ = cv::getOptimalDFTSize((int)ending_radius_);
     radius_step_ = (ending_radius_-starting_radius_)/((double)(n_rings_));
     parameters_set_ = true;
     IMP_LOG(IMP::VERBOSE,
