@@ -9,6 +9,7 @@
 #define IMPALGEBRA_VECTOR_D_H
 
 #include "algebra_config.h"
+#include <IMP/base_types.h>
 #include <IMP/macros.h>
 #include <IMP/exception.h>
 #include <IMP/utility.h>
@@ -79,6 +80,12 @@ public:
                           o.coordinates_end());
   }
 #endif
+
+  VectorD(const Floats &f) {
+    IMP_USAGE_CHECK(D==-1 || f.size()==D,
+                    "Sizes don't match");
+    data_.set_coordinates(f.begin(), f.end());
+  }
 
   /** The distance between b and e must be equal to D.
    */
