@@ -380,4 +380,15 @@ void ListSubsetFilterTable::intersect(Particle*p,
 void ListSubsetFilterTable::do_show(std::ostream &) const {
 }
 
+void ListSubsetFilterTable::set_allowed_states(Particle *p,
+                                               const Ints &states) {
+  boost::dynamic_bitset<> s(pst_->get_particle_states(p)
+                            ->get_number_of_particle_states(),
+                            false);
+  for (unsigned int i=0; i< states.size(); ++i) {
+    s[states[i]]=true;
+  }
+  intersect(p, s);
+}
+
 IMPDOMINO_END_NAMESPACE
