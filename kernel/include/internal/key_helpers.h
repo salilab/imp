@@ -11,7 +11,6 @@
 #include "../kernel_config.h"
 #include "map.h"
 #include <vector>
-#include <map>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /** \internal The data concerning keys.
