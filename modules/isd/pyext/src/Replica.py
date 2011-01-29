@@ -20,7 +20,7 @@ class ReplicaTracker():
         #expect inverse temperatures
         self.temps = inv_temps
         self.logfile = logfile
-        self.stepno = 0
+        self.stepno = 1
         self.scheme = scheme
         self.xchg = xchg
         #scheme is one of gromacs, randomneighbors or convective
@@ -41,6 +41,7 @@ class ReplicaTracker():
             #how many steps are remaining til we change stirring replica
             self.stirred['steps']=2*(self.nreps-1)
             self.convectivelog = convectivelog
+        self.write_rex_stats()
 
     def sort_per_state(self, inplist):
         "sorts a replica list per state"
@@ -63,7 +64,9 @@ class ReplicaTracker():
         nreps = self.nreps
         if dir != 0 and dir != 1:
             raise ValueError, dir
-        return [(2*i+dir,2*i+1+dir) for i in xrange((self.nreps-1)/2)]
+        if nreps == 2:
+            return [(0,1)]
+        return [(2*i+dir,2*i+1+dir) for i in xrange((nreps-1)/2)]
 
     def gen_pairs_list_rand(self, needed = []):
         "generate list of neighboring pairs of states"
@@ -97,20 +100,23 @@ class ReplicaTracker():
             pair = (state, state + 2*self.stirred['dir'] - 1)
             return self.gen_pairs_list_rand(needed=[pair])
         else:
-            raise NotImplementedError, "Unknown exchange method", self.xchg
+            raise NotImplementedError, \
+                    "Unknown exchange method: %s" % self.xchg
 
     def gen_pairs_list(self):
         if self.scheme == 'standard':
             if self.xchg == 'gromacs':
-                return self.gen_pairs_list_gromacs(self.stepno)
+                return self.gen_pairs_list_gromacs(self.stepno % 2)
             elif self.xchg == 'random':
                 return self.gen_pairs_list_rand()
             else:
-                raise NotImplementedError, "unknown exchange method", self.xchg
+                raise NotImplementedError, \
+                        "unknown exchange method: %s" % self.xchg
         elif self.scheme == 'convective':
             return self.gen_pairs_list_conv()
         else:
-            raise NotImplementedError, "unknown exchange scheme", self.scheme
+            raise NotImplementedError, \
+                    "unknown exchange scheme: %s" % self.scheme
         
     def get_cross_energies(self, pairslist):
         "get energies assuming all exchanges have succeeded"
@@ -151,6 +157,16 @@ class ReplicaTracker():
         #on the grid (suboptimal but who cares)
         newtemps = self.sort_per_replica(self.temps)
         self.grid.gather(self.grid.scatter(self.sfo_id, 'set_temp', newtemps))
+        steps = self.grid.gather(
+                self.grid.broadcast(self.sfo_id, 'get_mc_stepsize'))
+        for (i,j) in accepted:
+            ri = self.replicanums[i]
+            rj = self.replicanums[j]
+            buf = steps[ri]
+            steps[ri] = steps[rj]
+            steps[rj] = buf
+        self.grid.gather(
+                self.grid.scatter(self.sfo_id, 'set_mc_stepsize', steps))
 
     def write_rex_stats(self):
         "write replica numbers as a function of state"
