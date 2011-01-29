@@ -27,6 +27,7 @@ class IMPATOMEXPORT Domain: public Hierarchy
   };
   static const Data &get_data();
 public:
+#ifndef IMP_DOXYGEN
   //! Create a domain covering the range [b, e)
   static Domain setup_particle(Particle *p, Int b, Int e) {
     p->add_attribute(get_data().begin, b);
@@ -36,7 +37,16 @@ public:
     }
     return Domain(p);
   }
-
+#endif
+//! Create a domain covering the range [b, e)
+  static Domain setup_particle(Particle *p, IntRange r) {
+    p->add_attribute(get_data().begin, r.first);
+    p->add_attribute(get_data().end, r.second);
+    if (!Hierarchy::particle_is_instance(p)) {
+      Hierarchy::setup_particle(p);
+    }
+    return Domain(p);
+  }
   //! Create a domain by copying from o
   static Domain setup_particle(Particle *p, Domain o) {
     p->add_attribute(get_data().begin, o.get_begin_index());
