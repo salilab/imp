@@ -51,7 +51,7 @@ the passed compiler options (cxxflags, linkflags) are correct.
     scons_tools.dependency.boost.find_lib_version(env)
     if not env.GetOption('clean'):
         if not scons_tools.data.get(env).dependencies['Boost'].ok or scons_tools.data.get(env).dependencies['Boost'].version < 103300:
-            utility.report_error("""
+            scons_tools.utility.report_error(env, """
 Boost version is required to build IMP, but it could not be found on your system.
 
 In particular, if you have Boost installed in a non-standard location, please use the 'includepath' option to add this location to the search path.  For example, a Mac using Boost installed with MacPorts will have the Boost headers in /opt/local/include, so edit (or create) config.py and add the line
