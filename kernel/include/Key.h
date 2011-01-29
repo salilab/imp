@@ -13,7 +13,6 @@
 #include "utility.h"
 #include "internal/key_helpers.h"
 
-#include <map>
 #include <vector>
 
 IMP_BEGIN_NAMESPACE
