@@ -12,7 +12,6 @@
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
-#include "IMP/em2d/FFTinterface.h"
 #include "IMP/em2d/FFToperations.h"
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/MRCReaderWriter.h"

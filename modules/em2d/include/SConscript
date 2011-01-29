@@ -4,7 +4,6 @@ files = [
     "opencv_interface.h",
     "align2D.h" ,
     "filenames_manipulation.h" ,
-    "FFTinterface.h" ,
     "FFToperations.h" ,
     "Fine2DRegistrationRestraint.h" ,
     "image_processing.h" ,
