@@ -10,6 +10,9 @@ class Vector3DTests(IMP.test.TestCase):
         v = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
         self.assertEqual(v.get_squared_magnitude(), 14.0)
         self.assertAlmostEqual(v.get_magnitude(), math.sqrt(14.0), places=1)
+    def test_from_floats(self):
+        """Check Vector3D from floats"""
+        v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
 
     def test_io(self):
         """Check I/O of Vector3Ds"""
