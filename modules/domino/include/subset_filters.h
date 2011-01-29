@@ -236,6 +236,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
     int i= get_index(p);
     return states_[i].size();
   }
+  void set_allowed_states(Particle *p, const Ints &states);
   IMP_SUBSET_FILTER_TABLE(ListSubsetFilterTable);
 };
 
