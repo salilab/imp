@@ -24,6 +24,7 @@
 #include <boost/progress.hpp>
 #include <algorithm>
 #include <iostream>
+#include <limits>
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -151,7 +152,6 @@ void ProjectionFinder::do_preprocess_subject(unsigned int i) {
 }
 
 
-
 void ProjectionFinder::get_coarse_registrations_for_subject(
              unsigned int i,RegistrationResults &coarse_RRs) {
   algebra::Transformation2D best_2d_transformation;
@@ -192,13 +192,11 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     // Set result
     algebra::Vector2D shift(0.,0.);
     // Get values from the image
-     algebra::Rotation3D R=algebra::get_rotation_from_fixed_zyz(
-                    projections_[j]->get_header().get_phi(),
-                    projections_[j]->get_header().get_theta(),
-                    projections_[j]->get_header().get_psi());
-    RegistrationResult projection_result(R,shift);
-    projection_result.set_projection_index(j);
-    projection_result.set_image_index(i);
+    algebra::Vector3D euler = projections_[j]->get_header().get_euler_angles();
+    algebra::Rotation3D R=algebra::get_rotation_from_fixed_zyz(euler[0],
+                                                                euler[1],
+                                                                euler[2]);
+    RegistrationResult projection_result(R,shift,j,i);
     projection_result.set_ccc(RA.second);
     // add the 2D alignment transformation to the registration result
     // for the projection
@@ -263,7 +261,7 @@ void ProjectionFinder::get_coarse_registration() {
     std::sort(coarse_RRs.begin(),
               coarse_RRs.end(),
               HasHigherCCC<RegistrationResult>());
-    // Best result
+    // Best result after coarse registration is based on the ccc
     registration_results_[i]=coarse_RRs[0];
     registration_results_[i].set_in_image(subjects_[i]->get_header());
     IMP_LOG(IMP::TERSE,"Best coarse registration: "
@@ -272,7 +270,6 @@ void ProjectionFinder::get_coarse_registration() {
   }
   registration_done_=true;
 }
-
 
 
 void ProjectionFinder::get_complete_registration() {
@@ -323,7 +320,7 @@ void ProjectionFinder::get_complete_registration() {
     boost::timer timer_coarse_subject;
     get_coarse_registrations_for_subject(i,coarse_RRs);
     coarse_registration_time_ += timer_coarse_subject.elapsed();
-    // The coarse registration is done in terms of the cross-correlation
+    // The coarse registration scoring is done by cross-correlation
     std::sort(coarse_RRs.begin(),
               coarse_RRs.end(),
               HasHigherCCC<RegistrationResult>());
@@ -334,7 +331,7 @@ void ProjectionFinder::get_complete_registration() {
     }
 
     RegistrationResult best_fine_registration;
-    best_fine_registration.set_ccc(0.0);
+    best_fine_registration.set_score(std::numeric_limits<double>::max());
 
     boost::timer timer_fine_subject;
     for (unsigned int k=0;k<n_optimized;++k) {
@@ -348,9 +345,8 @@ void ProjectionFinder::get_complete_registration() {
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
 
-      // CAREFUL !!!!!!! Here I still assume that the score is em2d
-      HasHigherCCC<RegistrationResult> has_higher_ccc;
-      if(has_higher_ccc(fine_registration,best_fine_registration)) {
+      HasLowerScore<RegistrationResult> has_lower_score;
+      if(has_lower_score(fine_registration,best_fine_registration)) {
         best_fine_registration=fine_registration;
       }
     }
@@ -388,12 +384,11 @@ RegistrationResults ProjectionFinder::get_registration_results() const {
   return Regs;
 }
 
-double ProjectionFinder::get_final_score() const {
+double ProjectionFinder::get_global_score() const {
   if(!registration_done_) {
-    IMP_THROW("get_final_score: registration not done ",ValueException);
+    IMP_THROW("get_global_score: registration not done ",ValueException);
   }
-  // CAREFUL !!!!!!! Here I still assume that the score that I am using is em2d
-  return em2d::get_em2d_score(registration_results_);
+  return em2d::get_global_score(registration_results_);
 }
 
   //! Time employed for preprocessing
@@ -443,7 +438,6 @@ void ProjectionFinder::do_preprocess_for_fast_coarse_registration(
   get_fft_using_optimal_size(polar_autoc,POLAR_AUTOC);
 }
 
-
 void ProjectionFinder::show(std::ostream &out) const {
   out << "ProjectionFinder:" << std::endl
   << "Number of projections = " << projections_.size()  << std::endl
@@ -457,8 +451,5 @@ void ProjectionFinder::show(std::ostream &out) const {
   << "Simplex maximum optimization steps: " <<optimization_steps_ << std::endl
   << "Save matching images: " << save_match_images_ << std::endl;
 }
-
-
-
 
 IMPEM2D_END_NAMESPACE

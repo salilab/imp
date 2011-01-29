@@ -51,7 +51,6 @@ public:
 
   double operator()(int i, int j) const {
     return data_.at<double>(i,j);
-    return 0;
   }
 
 
@@ -112,6 +111,7 @@ protected:
   //! Name of the image. Frequently it will be the name of the file
   String name_;
   //! Matrix with the data for the image
+//  cv::Mat data_;
   cv::Mat data_;
   //! Header for the image with all the pertinent information
   em::ImageHeader header_;

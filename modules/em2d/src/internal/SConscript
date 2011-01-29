@@ -1,6 +1,7 @@
 files = [
-         'rotation_helper.cpp'
+         "rotation_helper.cpp",
+         "image_processing_helper.cpp"
         ]
 
 files = [File(x) for x in files]
-Return('files')
+Return("files")

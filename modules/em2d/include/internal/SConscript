@@ -1,8 +1,9 @@
-Import('env')
+Import("env")
 
 files = [
-         'rotation_helper.h'
+         "rotation_helper.h",
+         "image_processing_helper.h"
         ]
 
 files = [File(x) for x in files]
-Return('files')
+Return("files")

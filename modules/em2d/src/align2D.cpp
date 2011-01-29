@@ -299,6 +299,7 @@ algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
   double denominator=0.0;
   for (int i=1;i<=m.cols;++i) {
     for (int j=1;j<=m.rows;++j) {
+//      double value = m.at<double>(i-1,j-1);
       double value = m.at<double>(i-1,j-1);
       denominator+= value;
       center[0] += value*i;

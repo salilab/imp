@@ -14,7 +14,8 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-double get_cross_correlation_coefficient(const cv::Mat &m1,const cv::Mat &m2) {
+double get_cross_correlation_coefficient(const cv::Mat &m1,
+                                         const cv::Mat &m2) {
   cv::Scalar mean1,stddev1,mean2,stddev2;
   cv::meanStdDev(m1,mean1,stddev1);
   cv::meanStdDev(m2,mean2,stddev2);
@@ -67,22 +68,19 @@ double get_shift_error(const RegistrationResult &rr1,
 }
 
 
-double get_ccc_to_em2d(double ccc) {
-  return 1-ccc;
-}
+double get_global_score(const RegistrationResults &RRs) {
 
-
-double get_em2d_to_ccc(double em2d) {
-  return 1-em2d;
-}
-
-
-double get_em2d_score(const RegistrationResults &RRs) {
-  double em2d = 0.0;
-  for (unsigned int i=0;i < RRs.size();++i) {
-    em2d += get_ccc_to_em2d(RRs[i].get_ccc());
+  double global_score = 0.0;
+  if(RRs[0].get_is_optimized_result()) {
+    for (unsigned int i=0;i < RRs.size();++i) {
+      global_score += RRs[i].get_score();
+    }
+  } else {
+    for (unsigned int i=0;i < RRs.size();++i) {
+      global_score += RRs[i].get_ccc();
+    }
   }
-  return em2d/RRs.size();
+  return global_score/RRs.size();
 }
 
 

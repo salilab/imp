@@ -12,43 +12,28 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
-void assign_final_labels(algebra::Matrix2D<int> &L,std::vector<int> &P) {
-  for (int i=L.get_start(0);i<=L.get_finish(0);++i) {
-    for (int j=L.get_start(1);j<=L.get_finish(1);++j) {
-      L(i,j)=P[L(i,j)];
-    }
-  }
-}
-
-
-int p_union(std::vector<int> &P,int i,int j) {
-  int root = find_root(P,i);
-  if(i != j) {
-    int root_j = find_root(P,j);
-    // Check which is the lowest root label
-    if(root > root_j) {
-      root = root_j;
-    }
-    // Set the lowest label
-    set_root(P,j,root);
-  }
-  set_root(P,i,root);
-  return root;
-}
+//
+//void set_final_labels(algebra::Matrix2D<int> &mat_to_label,Ints &Labels) {
+//  for (int i=mat_to_label.get_start(0);i<=mat_to_label.get_finish(0);++i) {
+//    for (int j=mat_to_label.get_start(1);j<=mat_to_label.get_finish(1);++j) {
+//      mat_to_label(i,j)=Labels[mat_to_label(i,j)];
+//    }
+//  }
+//}
 
 
-
-void d_copy(const Pixel &p, const Pixel &a,const Pixel &c,
-            algebra::Matrix2D<int> &L,
-            std::vector<int> &P) {
-  L(p) = p_union(P,L(c),L(a));
-}
-
-void d_copy(const Pixel &p, const Pixel &a,
-            algebra::Matrix2D<int> &L) {
-  L(p) = L(a);
-}
+//
+//
+//void do_copy_tree(const Pixel &p, const Pixel &a,const Pixel &c,
+//            algebra::Matrix2D<int> &mat_to_label,
+//            Ints &Labels) {
+//  mat_to_label(p) = do_union(Labels,mat_to_label(c),mat_to_label(a));
+//}
+//
+//void do_copy_tree(const Pixel &p, const Pixel &a,
+//            algebra::Matrix2D<int> &mat_to_label) {
+//  mat_to_label(p) = mat_to_label(a);
+//}
 
 
 IMPEM2D_END_NAMESPACE

@@ -13,11 +13,11 @@ RegistrationResult::~RegistrationResult() {};
 
 
 
-RegistrationResults get_random_registration_results(unsigned long n,
+RegistrationResults get_random_registration_results(unsigned int n,
                                 double maximum_shift) {
   srand (time(NULL));
   RegistrationResults results;
-  for (unsigned long i=0;i<n;++i) {
+  for (unsigned int i=0;i<n;++i) {
     RegistrationResult rr;
     rr.set_random_registration(i,maximum_shift);
     results.push_back(rr);
@@ -29,15 +29,15 @@ RegistrationResults get_random_registration_results(unsigned long n,
 
 
 RegistrationResults get_evenly_distributed_registration_results(
-                                          unsigned long n_projections) {
+                                          unsigned int n_projections) {
   algebra::SphericalVector3Ds vs;
   em2d::internal::semispherical_even_distribution(n_projections,vs);
   RegistrationResults results;
-  for (unsigned long i=0;i<n_projections;++i) {
+  for (unsigned int i=0;i<n_projections;++i) {
     algebra::Rotation3D R=
          em2d::internal::get_rotation_from_projection_direction(vs[i]);
     algebra::Vector2D shift(0.0,0.0);
-    results.push_back(RegistrationResult(R,shift,i) );
+    results.push_back(RegistrationResult(R,shift,i,0) );
   }
   return results;
 }
@@ -58,13 +58,13 @@ void  write_registration_results(String filename,
   std::ofstream f(filename.c_str(),std::ios::out | std::ios::binary);
   results[0].write_comment_line(f);
   f << results.size() << std::endl;
-  for (unsigned long i=0;i<results.size();++i) {
+  for (unsigned int i=0;i<results.size();++i) {
     results[i].write(f);
   }
   f.close();
 }
 
-void RegistrationResult::set_random_registration(unsigned long index,
+void RegistrationResult::set_random_registration(unsigned int index,
                                 double maximum_shift) {
   // Random point in the sphere, pick to ensure even distribution
   double u=get_random_between_zero_and_one();
@@ -83,15 +83,19 @@ void RegistrationResult::set_random_registration(unsigned long index,
 }
 
 void RegistrationResult::read_from_image(const em::ImageHeader &header) {
-  header.get_euler_angles(phi_,theta_,psi_);
-  header.get_origin_offsets(shift_[0],shift_[1]);
+  algebra::Vector3D euler= header.get_euler_angles();
+  phi_= euler[0];
+  theta_ = euler[1];
+  psi_ = euler[2];
   set_rotation(phi_,theta_,psi_);
+  algebra::Vector3D origin = header.get_origin();
+  shift_ = algebra::Vector2D(origin[0],origin[1]);
 }
 
-
 void RegistrationResult::set_in_image(em::ImageHeader &header) const {
-  header.set_euler_angles(phi_,theta_,psi_);
-  header.set_origin_offsets(shift_);
+  algebra::Vector3D euler(phi_,theta_,psi_);
+  header.set_euler_angles(euler);
+  header.set_origin(shift_);
 }
 
   void RegistrationResult::set_rotation(algebra::Rotation3D R){
@@ -170,28 +174,30 @@ RegistrationResult::RegistrationResult() {
 
 RegistrationResult::RegistrationResult(algebra::Rotation3D R,
                                         algebra::Vector2D shift,
-                                        long projection_index,
-                                        double ccc,
+                                        int projection_index,
+                                        int image_index,
                                         String name) {
   set_rotation(R);
   set_shift(shift);
   projection_index_=projection_index;
-  image_index_=0;
-  ccc_=ccc;
+  image_index_=image_index;
   name_=name;
 }
 
 
-RegistrationResult::RegistrationResult(
-                  double phi,double theta,double psi,algebra::Vector2D shift,
-                  long projection_index,double ccc,String name) {
+  RegistrationResult::RegistrationResult(double phi,double theta,double psi,
+                     algebra::Vector2D shift,
+                     int projection_index,
+                     int image_index,
+                     String name) {
+  set_rotation(phi,theta,psi);
   set_shift(shift);
   projection_index_=projection_index;
-  image_index_=0;
-  ccc_=ccc;
+  image_index_=image_index;
   name_=name;
-  set_rotation(phi,theta,psi);
 }
+
+
 
 void RegistrationResult::show(std::ostream& out) const {
   algebra::VectorD<4> quaternion=R_.get_quaternion();

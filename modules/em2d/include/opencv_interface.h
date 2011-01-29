@@ -23,7 +23,13 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-typedef cv::MatIterator_<double> CVDoubleMatIterator;
+typedef cv::MatIterator_<double> cvDoubleMatIterator;
+typedef cv::MatConstIterator_<double> cvDoubleConstMatIterator;
+typedef cv::Point_<int> cvPixel;
+typedef std::vector< cvPixel > cvPixels;
+typedef cv::Mat_<int> cvIntMat;
+
+
 
 //! Prints a OpenCV matrix
 IMPEM2DEXPORT void show(cv::Mat &m,std::ostream &out = std::cout);

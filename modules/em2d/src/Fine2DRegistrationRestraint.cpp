@@ -64,17 +64,17 @@ void Fine2DRegistrationRestraint::setup(
 
 void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
   // Read the registration parameters from the subject images
-  algebra::Rotation3D R=
-      algebra::get_rotation_from_fixed_zyz(subject->get_header().get_phi(),
-                                           subject->get_header().get_theta(),
-                                           subject->get_header().get_psi());
-  algebra::Vector3D translation(subject->get_header().get_xorigin()*pixelsize_,
-                                subject->get_header().get_yorigin()*pixelsize_,
-                                0.0);
+
+  algebra::Vector3D euler = subject->get_header().get_euler_angles();
+  algebra::Rotation3D R=algebra::get_rotation_from_fixed_zyz(euler[0],
+                                                             euler[1],
+                                                             euler[2]);
+  algebra::Vector3D origin = subject->get_header().get_origin();
+  algebra::Vector3D translation(origin[0]*pixelsize_,origin[1]*pixelsize_,0.0);
 
   subject_->set_data(subject->get_data()); // deep copy, avoids leaks
-  int rows = subject_->get_header().get_number_of_rows();
-  int cols = subject_->get_header().get_number_of_columns();
+  unsigned int  rows = subject_->get_header().get_number_of_rows();
+  unsigned int  cols = subject_->get_header().get_number_of_columns();
   if(projection_->get_header().get_number_of_columns() != cols ||
      projection_->get_header().get_number_of_rows() != rows ) {
      projection_->set_size(rows,cols);
@@ -123,29 +123,21 @@ ObjectsTemp Fine2DRegistrationRestraint::get_input_objects() const {
 }
 
 void Fine2DRegistrationRestraint::do_show(std::ostream& out) const {
-  double score = unprotected_evaluate(NULL);
-  algebra::Vector3D translation= PP_.get_translation();
-  algebra::Vector2D shift(translation[0]/pixelsize_,
-                          translation[1]/pixelsize_);
-  // CAREFUL!!!!!!!! using get_em2d_to_ccc(em2d) I still assume that the
-  // score that I am using is em2d
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(score));
+  RegistrationResult rr=get_final_registration();
   rr.show(out);
-  out << " em2d: " << score << std::endl;
-
+  out << " em2d: " << rr.get_score() << std::endl;
 }
 
-
-RegistrationResult Fine2DRegistrationRestraint::get_final_registration() {
+RegistrationResult
+              Fine2DRegistrationRestraint::get_final_registration() const {
   IMP_LOG(VERBOSE, "Retuning the final values for Fine2DRegistrationRestraint "
            <<std::endl);
   algebra::Vector3D translation= PP_.get_translation();
   algebra::Vector2D shift(translation[0]/pixelsize_,
                           translation[1]/pixelsize_);
   double score = unprotected_evaluate(NULL);
-  // CAREFUL!!!!!!!! using get_em2d_to_ccc(em2d) I still assume that the
-  // score that I am using is em2d
-  RegistrationResult rr(PP_.get_rotation(),shift,0,get_em2d_to_ccc(score));
+  RegistrationResult rr(PP_.get_rotation(),shift);
+  rr.set_score(score);
   return rr;
 }
 

@@ -4,7 +4,7 @@ Import('env')
 # matching test_*.cpp
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  spelling_exceptions=['pdb'],
+                  spelling_exceptions=['pdb','matlab'],
                   show_exceptions=["ResultAlign2D",
                                     "pair_cluster_id_distance",
                                     "VectorOfFloats",

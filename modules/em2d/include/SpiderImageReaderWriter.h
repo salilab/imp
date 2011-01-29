@@ -106,7 +106,7 @@ public:
     data.create(rows,cols,CV_64FC1);
     // Read with casting
     float aux;
-    for (CVDoubleMatIterator it=data.begin<double>();
+    for (cvDoubleMatIterator it=data.begin<double>();
                                 it!=data.end<double>();++it) {
       if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
         in.read(reinterpret_cast< char* >(&aux), sizeof(float));
@@ -114,7 +114,7 @@ public:
         algebra::reversed_read(reinterpret_cast< char* >(&aux),
                                               sizeof(float),1,in,true);
       }
-      *it = (double)aux;
+      (*it) = (double)aux;
     }
     in.close();
   }
@@ -135,7 +135,7 @@ public:
     header.write(out, force_reversed_ ^ algebra::get_is_big_endian());
 
     float aux;
-    for (cv::MatConstIterator_<double> it=data.begin<double>();
+    for (cvDoubleConstMatIterator it=data.begin<double>();
                                 it!=data.end<double>();++it) {
       aux = (float)(*it);
       if (!(force_reversed_ ^ algebra::get_is_big_endian())) {
