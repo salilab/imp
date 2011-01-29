@@ -7,11 +7,11 @@
 #ifndef IMPALGEBRA_SPHERE_D_H
 #define IMPALGEBRA_SPHERE_D_H
 
-#include <cmath>
+#include "algebra_macros.h"
 #include <IMP/constants.h>
 #include "BoundingBoxD.h"
 #include "Vector3D.h"
-#include "algebra_macros.h"
+#include <cmath>
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
