@@ -6,6 +6,7 @@
 */
 
 #include <IMP/em/header_converters.h>
+#include "IMP/algebra/Vector3D.h"
 
 IMPEM_BEGIN_NAMESPACE
 
@@ -66,11 +67,12 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
   }
   dh.ispg=0; // Sapce group number 0 or 1 (default 0)
   dh.nsymbt=0; // Number of bytes used for symmetry data (0 or 80, default 0)
-  std::strcpy(dh.map,"MAP "); // string 'MAP ' to identify file type
+  std::strcpy(dh.map,"MAP\0"); // string 'MAP ' to identify file type
   // Origin used for transforms
-  dh.set_xorigin(h.get_xorigin());
-  dh.set_yorigin(h.get_yorigin());
-  dh.set_zorigin(h.get_zorigin());
+  algebra::Vector3D origin = h.get_origin();
+  dh.set_xorigin(origin[0]);
+  dh.set_yorigin(origin[1]);
+  dh.set_zorigin(origin[2]);
   /* CCP4 convention machine stamp: 0x11110000 for big endian, or
     0x44440000 for little endian */
   unsigned char *ch;
@@ -102,7 +104,9 @@ void  ImageHeader_to_DensityHeader(const ImageHeader &h,DensityHeader &dh) {
 //! to ImageHeader
 void  DensityHeader_to_ImageHeader(const DensityHeader& dh,ImageHeader& h) {
   // map size
-  h.set_dimensions((float)dh.get_nz(),(float)dh.get_ny(), (float)dh.get_nx());
+  h.set_number_of_slices(dh.get_nz());
+  h.set_number_of_rows(dh.get_ny());
+  h.set_number_of_columns(dh.get_nx());
   // mode
   switch (dh.get_data_type()) {
   case 1:
@@ -122,9 +126,9 @@ void  DensityHeader_to_ImageHeader(const DensityHeader& dh,ImageHeader& h) {
     h.set_reversed(dh.lswap==1);
   }
   // Origins and pixel size
-  h.set_xorigin(dh.get_xorigin());
-  h.set_yorigin(dh.get_yorigin());
-  h.set_zorigin(dh.get_zorigin());
+  h.set_origin(algebra::Vector3D(dh.get_xorigin(),
+                                 dh.get_yorigin(),
+                                 dh.get_zorigin()) );
   h.set_object_pixel_size(dh.get_spacing());
   // Statistical values. There is no field in DensityHeader to guarantee that
   // they are computed or correct, so they are ignored

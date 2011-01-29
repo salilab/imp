@@ -19,7 +19,6 @@ IMP_SWIG_OBJECT(IMP::em, EMReaderWriter, EMReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, XplorReaderWriter, XplorReaderWriters);
 IMP_SWIG_OBJECT(IMP::em, CoarseCC, CoarseCCs);
 IMP_SWIG_OBJECT(IMP::em, CoarseCCatIntervals, CoarseCCatIntervalsList);
-IMP_SWIG_VALUE(IMP::em, MapFilterByThreshold, MapFilterByThresholds);
 IMP_SWIG_VALUE(IMP::em, FittingSolutions, FittingSolutionsList);
 
 /* Since DensityHeaders are not values or Objects, we must ensure that whenever
@@ -68,7 +67,6 @@ namespace IMP {
 %include "IMP/em/SpiderHeader.h"
 %include "IMP/em/ImageHeader.h"
 %include "IMP/em/SpiderReaderWriter.h"
-%include "IMP/em/filters.h"
 %include "IMP/em/rigid_fitting.h"
 %include "IMP/em/envelope_penetration.h"
 %include "IMP/em/embedding.h"
@@ -84,11 +82,6 @@ namespace IMP {
     }
     %template(floats) ::std::vector<float>;
 
-    %template(FilterByThreshold2D) ::IMP::em::FilterByThreshold<double,2>;
-    %template(FilterByThreshold3D) ::IMP::em::FilterByThreshold<double,3>;
 
   }
 }
-
-IMP_SWIG_VALUE(IMP::em, FilterByThreshold2D, FilterByThreshold2Ds);
-IMP_SWIG_VALUE(IMP::em, FilterByThreshold3D, FilterByThreshold3Ds);
