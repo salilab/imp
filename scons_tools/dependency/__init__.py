@@ -72,7 +72,7 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
     if not ret[0]:
         context.env.Replace(LINKFLAGS=oldflags)
         return ret
-    if context.env['IMP_BUILD_STATIC']:
+    if context.env['IMP_BUILD_STATIC'] and lib != None:
         scons_tools.utility.make_static_build(context.env)
         if type(lib) == list:
             bret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
@@ -87,7 +87,7 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
                                                           versionheader))
         else:
             context.env.Replace(LINKFLAGS=oldflags)
-            return (False, None, None)
+            return (False, [], None)
     vers= _get_version(context, name, None, versioncpp, versionheader)
     #print "version", vers
     context.env.Replace(LINKFLAGS=oldflags)
