@@ -258,7 +258,7 @@ def _action_version_check(target, source, env):
           "', '"+ver+"', "+get_module(mn)+".get_module_version_info().get_version())"
 
 def _print_version_check(target, source, env):
-    print "Running building version check "+target[0].abspath
+    print "Building version check "+target[0].abspath
 
 VersionCheck = Builder(action=Action(_action_version_check,
                                 _print_version_check))
