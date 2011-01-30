@@ -33,6 +33,9 @@ DiscreteSampler
 ::get_subset_filter_tables_to_use(RestraintSet *rs,
                                   ParticleStatesTable *pst) const {
   if (get_number_of_subset_filter_tables() > 0) {
+    for (unsigned int i=0; i< get_number_of_subset_filter_tables(); ++i) {
+      get_subset_filter_table(i)->set_was_used(true);
+    }
     return SubsetFilterTables(subset_filter_tables_begin(),
                               subset_filter_tables_end());
   } else {
