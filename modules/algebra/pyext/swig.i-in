@@ -124,6 +124,7 @@ namespace IMP {
 %include "IMP/algebra/shortest_segment.h"
 %include "IMP/algebra/vector_search.h"
 %include "IMP/algebra/geometric_alignment.h"
+%include "IMP/algebra/grid_range_d.h"
 
 namespace IMP {
  namespace algebra {
@@ -143,6 +144,7 @@ namespace IMP {
    %template(get_unit_bounding_box_2d) get_unit_bounding_box_d<2>;
    %template(get_unit_bounding_box_3d) get_unit_bounding_box_d<3>;
    %template(get_unit_bounding_box_4d) get_unit_bounding_box_d<4>;
+   %template(GridRange3D) GridRangeD<3>;
    namespace grids {
    %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorage3D>;
    %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
