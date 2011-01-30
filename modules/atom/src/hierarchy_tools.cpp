@@ -533,47 +533,53 @@ ParticlesTemp Selection::get_selected_particles() const {
 }
 
 
+namespace {
+  Restraint* create_distance_restraint(const Selection &n0,
+                                       const Selection &n1,
+                                       PairScore *ps) {
+    ParticlesTemp p0= n0.get_selected_particles();
+    ParticlesTemp p1= n1.get_selected_particles();
+    IMP_IF_CHECK(USAGE) {
+      IMP::internal::Set<Particle*> all(p0.begin(), p0.end());
+      all.insert(p1.begin(), p1.end());
+      IMP_USAGE_CHECK(all.size() == p0.size()+p1.size(),
+                      "The two selections cannot overlap.");
+    }
+    Pointer<Restraint> ret;
+    IMP_USAGE_CHECK(!p0.empty(), "Selection " << n0
+                    << " does not refer to any particles.");
+    IMP_USAGE_CHECK(!p1.empty(), "Selection " << n1
+                    << " does not refer to any particles.");
+    if (p1.size() ==1 && p0.size()==1) {
+      IMP_LOG(TERSE, "Creating distance restraint between "
+              << p0[0]->get_name() << " and "
+              << p1[0]->get_name() << std::endl);
+      ret= new core::PairRestraint(ps,
+                                   ParticlePair(p0[0], p1[0]),
+                                   "Atom distance restraint %1%");
+    } else {
+      IMP_LOG(TERSE, "Creating distance restraint between "
+              << n0 << " and "
+              << n1 << std::endl);
+      Pointer<core::TableRefiner> r= new core::TableRefiner();
+      r->add_particle(p0[0], p0);
+      r->add_particle(p1[0], p1);
+      Pointer<PairScore> ps
+        = new core::KClosePairsPairScore(ps,
+                                         r, 1);
+      ret= new core::PairRestraint(ps, ParticlePair(p0[0],
+                                                    p1[0]),
+                                   "Atom k distance restraint %1%");
+    }
+    return ret.release();
+  }
+}
+
 Restraint* create_distance_restraint(const Selection &n0,
                                      const Selection &n1,
                                      double x0, double k) {
-  ParticlesTemp p0= n0.get_selected_particles();
-  ParticlesTemp p1= n1.get_selected_particles();
-  IMP_IF_CHECK(USAGE) {
-    IMP::internal::Set<Particle*> all(p0.begin(), p0.end());
-    all.insert(p1.begin(), p1.end());
-    IMP_USAGE_CHECK(all.size() == p0.size()+p1.size(),
-                    "The two selections cannot overlap.");
-  }
-  Pointer<Restraint> ret;
-  IMP_USAGE_CHECK(!p0.empty(), "Selection " << n0
-                  << " does not refer to any particles.");
-  IMP_USAGE_CHECK(!p1.empty(), "Selection " << n1
-                  << " does not refer to any particles.");
-  if (p1.size() ==1 && p0.size()==1) {
-    IMP_LOG(TERSE, "Creating distance restraint between "
-            << p0[0]->get_name() << " and "
-            << p1[0]->get_name() << std::endl);
-    double d= core::XYZR(p0[0]).get_radius()
-      + core::XYZR(p1[0]).get_radius() + x0;
-    ret= new core::PairRestraint(new core::HarmonicDistancePairScore(d, k),
-                                 ParticlePair(p0[0], p1[0]),
-                                 "Atom distance restraint %1%");
-  } else {
-    IMP_LOG(TERSE, "Creating distance restraint between "
-            << n0 << " and "
-            << n1 << std::endl);
-    Pointer<core::TableRefiner> r= new core::TableRefiner();
-    r->add_particle(p0[0], p0);
-    r->add_particle(p1[0], p1);
-    Pointer<PairScore> ps
-      = new core::KClosePairsPairScore(
-               new core::HarmonicSphereDistancePairScore(x0, k),
-                                       r, 1);
-    ret= new core::PairRestraint(ps, ParticlePair(p0[0],
-                                                  p1[0]),
-                                 "Atom k distance restraint %1%");
-  }
-  return ret.release();
+  return create_distance_restraint(n0, n1,
+              new core::HarmonicSphereDistancePairScore(x0, k));
 }
 
 
@@ -582,7 +588,9 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
                                                        double k) {
   if (s.size() < 2) return NULL;
   if (s.size() ==2) {
-    return create_distance_restraint(s[0], s[1], 0, k);
+    Restraint *r= create_distance_restraint(s[0], s[1],
+                 new core::HarmonicUpperBoundSphereDistancePairScore(0, k));
+    return r;
   } else {
     unsigned int max=0;
     for (unsigned int i=0; i< s.size(); ++i) {
@@ -599,7 +607,7 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
       IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
               (particles[0]->get_model(), "Connectivity particles"));
       lsc->set_particles(particles);
-      IMP_NEW(core::HarmonicSphereDistancePairScore, hdps, (0,k));
+      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (0,k));
       IMP_NEW(core::ConnectivityRestraint, cr, (hdps, lsc));
       return cr.release();
     } else {
@@ -614,7 +622,7 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
         if (ps.size() > 0) multiple=true;
         rps.push_back(ps[0]);
       }
-      IMP_NEW(core::HarmonicSphereDistancePairScore, hdps, (0,k));
+      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (0,k));
       Pointer<PairScore> ps;
       if (multiple) {
         IMP_LOG(TERSE, "Using closest pair score." << std::endl);
