@@ -603,7 +603,8 @@ void do_dilate_and_shrink_warp(cv::Mat &m,
 //    xxx.set_data(temp);
 //    xxx.write("temp.spi",srw);
     /*******/
-  } while(std::abs(new_size_in_pixels-size_in_pixels)>1);
+  } while(std::abs(static_cast<int>(new_size_in_pixels)
+                   -static_cast<int>(size_in_pixels))>1);
   // Now temp contains the new mask with size new_size_in_pixels
   temp.copyTo(m);
 }
