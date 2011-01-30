@@ -149,8 +149,8 @@ inline EdgeData get_edge_data(const Subset&s0,
   for (unsigned int i=0; i< sft.size(); ++i) {
     SubsetFilter* sf= sft[i]->get_subset_filter(ret.union_subset,
                                                 excluded);
-    sf->set_was_used(true);
     if (sf) {
+      sf->set_was_used(true);
       ret.filters.push_back(sf);
     }
   }
