@@ -209,6 +209,8 @@ def _make_systems_overview(target, source, env):
     \c sample_i in the current directory. The input for \c sample_i.py for i>0
     is \c sample_{i-1}. The input for \c analyze_0.py is the last sample output and the
     output is \c analyzed_0 (and accordingly for later analyze scripts).
+
+    The IMP::system module provides support for writing biological system scripts.
     """
     dta= data.get(env)
     for k in dta.systems.keys():
