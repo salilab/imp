@@ -15,7 +15,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
   template <unsigned int D>
   struct GridRangeData: public RefCounted {
@@ -33,7 +33,8 @@ namespace {
 }
 #endif
 
-template <unsigned int D>
+#if !defined(SWIG)
+template <int D>
 class GridIteratorD
 {
   Pointer<GridRangeData<D> > data_;
@@ -55,7 +56,7 @@ public:
     return &cur_;
   }
   const GridIteratorD& operator++() {
-    for (unsigned int i=0; i< D; ++i) {
+    for (unsigned int i=0; i< data_->bb.get_dimension(); ++i) {
       cur_[i]+= data_->step;
       if (cur_[i] > data_->bb.get_corner(1)[i]) {
         cur_[i]= data_->bb.get_corner(0)[i];
@@ -86,15 +87,9 @@ public:
     return compare(cur_, o.cur_) >0;
   }
 };
-
-#ifndef IMP_DOXYGEN
-template <unsigned int D>
-inline std::ostream &operator<<(std::ostream &out,
-                                const GridIteratorD<D> &v) {
-  v.show(out);
-  return out;
-}
 #endif
+
+IMP_OUTPUT_OPERATOR_D(GridIteratorD);
 
 //! A Boost.Range over the vertices of a grid
 /** This range range the VectorD objects whose coordinates
@@ -115,11 +110,16 @@ public:
   //! Create a new range on the volume [min, max] with step step
   GridRangeD(const BoundingBoxD<D>& bb, double step):
     data_(new GridRangeData<D>(bb, step)){}
+#if !defined(SWIG)
   const_iterator begin() const {
-    return iterator(data_, data_->min);
+    return iterator(data_, data_->bb.get_corner(0));
   }
   const_iterator end() const {
-    return iterator(data_, data_->max);
+    return iterator(data_, data_->bb.get_corner(1));
+  }
+#endif
+  Vector3Ds get() const {
+    return Vector3Ds(begin(), end());
   }
 };
 
