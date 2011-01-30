@@ -184,12 +184,10 @@ for i in range(all.get_number_of_children()):
 # also display the restraints to see which particles they connect
 for r in display_restraints:
     try:
-        cr= IMP.core.ConnectivityRestraint.get_from(r)
-        g= IMP.display.ConnectivityRestraintGeometry(cr)
+        g= IMP.display.create_restraint_geometry(r)
         gs.append(g)
     except:
-        g= IMP.display.PairRestraintGeometry(r)
-        gs.append(g)
+        pass
 
 cs= get_conformations(m, gs)
 
