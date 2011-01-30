@@ -590,7 +590,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
   if (s.size() < 2) return NULL;
   if (s.size() ==2) {
     Restraint *r= create_distance_restraint(s[0], s[1],
-                 new core::HarmonicUpperBoundSphereDistancePairScore(0, k));
+                 new core::HarmonicUpperBoundSphereDistancePairScore(x0, k));
     return r;
   } else {
     unsigned int max=0;
@@ -608,7 +608,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
               (particles[0]->get_model(), "Connectivity particles"));
       lsc->set_particles(particles);
-      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (0,k));
+      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       IMP_NEW(core::ConnectivityRestraint, cr, (hdps, lsc));
       return cr.release();
     } else {
@@ -623,7 +623,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
         if (ps.size() > 0) multiple=true;
         rps.push_back(ps[0]);
       }
-      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (0,k));
+      IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       Pointer<PairScore> ps;
       if (multiple) {
         IMP_LOG(TERSE, "Using closest pair score." << std::endl);
