@@ -17,25 +17,15 @@
 #include <IMP/core/XYZ.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
-#define IMP_PROCESS(type, ops)\
-  if (dynamic_cast<type*>(r)) {                                         \
-    type* cr= dynamic_cast<type*>(r);                                   \
-    ops;                                                                \
-  }
 
-PairRestraintGeometry::PairRestraintGeometry(Restraint*r):
+PairRestraintGeometry::PairRestraintGeometry(core::PairRestraint*r):
   Geometry(r->get_name()),
   r_(r) {
-  IMP_CHECK_OBJECT(r);
-  IMP_PROCESS(core::PairRestraint,
-              pc_= new container::ListPairContainer(ParticlePairsTemp(1,
-                                    cr->get_argument()));)
-  else IMP_PROCESS(container::PairsRestraint,
-                   pc_= cr->get_container();)
-  else {
-    IMP_THROW("Unable to handle restraint " << r->get_name(),
-              ValueException);
-  }
+}
+
+PairsRestraintGeometry::PairsRestraintGeometry(container::PairsRestraint*r):
+  Geometry(r->get_name()),
+  r_(r) {
 }
 
 
@@ -44,14 +34,15 @@ IMP::display::Geometries PairRestraintGeometry::get_components() const {
   IMP::display::Geometries ret;
   bool non_empty=false;
   algebra::Vector3D mp;
-  IMP_FOREACH_PAIR(pc_, {
-      algebra::Vector3D v0=core::XYZ(_1[0]).get_coordinates();
-      algebra::Vector3D v1=core::XYZ(_1[1]).get_coordinates();
-      algebra::Segment3D s(v0, v1);
-      ret.push_back(new SegmentGeometry(s));
-      non_empty=true;
-      mp=.5*(v0+v1);
-    });
+  {
+    ParticlePair pp= r_->get_argument();
+    algebra::Vector3D v0=core::XYZ(pp[0]).get_coordinates();
+    algebra::Vector3D v1=core::XYZ(pp[1]).get_coordinates();
+    algebra::Segment3D s(v0, v1);
+    ret.push_back(new SegmentGeometry(s));
+    non_empty=true;
+    mp=.5*(v0+v1);
+  }
   double s= r_->evaluate(false);
   std::ostringstream oss;
   oss << s;
@@ -60,6 +51,30 @@ IMP::display::Geometries PairRestraintGeometry::get_components() const {
 }
 
 void PairRestraintGeometry::do_show(std::ostream &out) const {
+  out << "  restraint: " << r_->get_name() << std::endl;
+}
+
+IMP::display::Geometries PairsRestraintGeometry::get_components() const {
+  IMP_CHECK_OBJECT(r_);
+  IMP::display::Geometries ret;
+  bool non_empty=false;
+  algebra::Vector3D mp;
+  IMP_FOREACH_PAIR(r_->get_container(), {
+        algebra::Vector3D v0=core::XYZ(_1[0]).get_coordinates();
+        algebra::Vector3D v1=core::XYZ(_1[1]).get_coordinates();
+        algebra::Segment3D s(v0, v1);
+        ret.push_back(new SegmentGeometry(s));
+        non_empty=true;
+        mp=.5*(v0+v1);
+    });
+  double s= r_->evaluate(false);
+  std::ostringstream oss;
+  oss << s;
+  ret.push_back(new LabelGeometry(mp, oss.str()));
+  return ret;
+}
+
+void PairsRestraintGeometry::do_show(std::ostream &out) const {
   out << "  restraint: " << r_->get_name() << std::endl;
 }
 
@@ -128,5 +143,22 @@ IMP::display::Geometries ConnectivityRestraintGeometry::get_components() const {
 void ConnectivityRestraintGeometry::do_show(std::ostream &out) const {
   out << "  restraint: " << r_->get_name() << std::endl;
 }
+
+
+
+Geometry* create_restraint_geometry(Restraint*r) {
+  if (dynamic_cast<core::PairRestraint*>(r)) {
+    return new PairRestraintGeometry(dynamic_cast<core::PairRestraint*>(r));
+  } else if (dynamic_cast<container::PairsRestraint*>(r)) {
+ return new PairsRestraintGeometry(dynamic_cast<container::PairsRestraint*>(r));
+  } else if (dynamic_cast<core::ConnectivityRestraint*>(r)) {
+    return new
+   ConnectivityRestraintGeometry(dynamic_cast<core::ConnectivityRestraint*>(r));
+  } else {
+    IMP_THROW("Can't handle restraint " << r->get_name()
+              << " of type " << r->get_type_name(), ValueException);
+  }
+}
+
 
 IMPDISPLAY_END_NAMESPACE

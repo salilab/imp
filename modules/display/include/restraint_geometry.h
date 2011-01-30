@@ -15,10 +15,12 @@
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/PairContainer.h>
+#include <IMP/core/PairRestraint.h>
+#include <IMP/container/PairsRestraint.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-//! Draw edges for various pair-based restraints.
+//! Draw edges for various core::PairRestraint.
 /** This currently can handle
     - IMP::container::PairsRestraint
     - IMP::core::PairRestraint
@@ -26,17 +28,33 @@ IMPDISPLAY_BEGIN_NAMESPACE
 */
 class IMPDISPLAYEXPORT PairRestraintGeometry: public Geometry
 {
-  IMP::internal::OwnerPointer<PairContainer> pc_;
-  IMP::Pointer<Restraint> r_;
+  IMP::Pointer<core::PairRestraint> r_;
 public:
-  PairRestraintGeometry(Restraint *p);
-  Restraint *get_restraint() const {
+  PairRestraintGeometry(core::PairRestraint *p);
+  core::PairRestraint *get_restraint() const {
     return r_;
   }
   IMP_GEOMETRY(PairRestraintGeometry);
 };
 
-//! Draw edges for various pair-based restraints.
+//! Draw edges for various container::PasirRestraint.
+/** This currently can handle
+    - IMP::container::PairsRestraint
+    - IMP::core::PairRestraint
+
+*/
+class IMPDISPLAYEXPORT PairsRestraintGeometry: public Geometry
+{
+  IMP::Pointer<container::PairsRestraint> r_;
+public:
+  PairsRestraintGeometry(container::PairsRestraint *p);
+  container::PairsRestraint *get_restraint() const {
+    return r_;
+  }
+  IMP_GEOMETRY(PairsRestraintGeometry);
+};
+
+//! Draw edges for core::ConnectivityRestraint.
 /** It special cases IMP::core::KClosePairsPairScore.
 
 */
@@ -51,6 +69,11 @@ public:
   IMP_GEOMETRY(ConnectivityRestraintGeometry);
 };
 
+
+/** Attempt to create restraint geometry for the passed restraint.
+    \throws ValueException if it can't handle the restraint.
+ */
+IMPDISPLAYEXPORT Geometry* create_restraint_geometry(Restraint *r);
 
 IMPDISPLAY_END_NAMESPACE
 
