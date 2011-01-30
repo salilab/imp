@@ -16,9 +16,11 @@
 ## prohibited without the explicit permission of the copyright holders.
 ##
 
-import os, sys
+import os
+import sys
+from socket import gethostname
 from string import split, join
-from threading import Lock
+from threading import Lock, Thread
 from time import time, sleep
 
 import Pyro.naming
@@ -168,8 +170,6 @@ def is_stopped(obj_uri, timeout = default_timeout, ns = None):
     has been stopped (gracefully).
     
     """
-    from time import time
-
     if default_debug:
         print 'PyroUtils.is_stopped: for %s...' % obj_uri
 
@@ -215,8 +215,6 @@ def launch_instance(obj_instance, obj_uri, delegate, \
     ...
     
     """
-    from socket import gethostname
-    from threading import Thread
 
     if debug:
         print 'PyroUtils.launch_instance: %s, URI %s, PID %s on %s' \
@@ -281,20 +279,10 @@ def launch_instance(obj_instance, obj_uri, delegate, \
     print 'PyroUtils.launch_instance: Remote object "%s" is ready' % obj_uri
 
     try:
-        do_profile=False
-        if do_profile:
-            import cProfile
-            import time
-            def prof_cond():
-                return not obj_instance._pyro_stop
-            cProfile.runctx('daemon.requestLoop(condition = prof_cond)',\
-                    globals(),locals(), \
-                    '/Bis/home/yannick/simulations/test_isd_ww/profiled_'+str(time.time()))
-        else:
-            #listen for requests as long as condition returns True
-            #by default, each loop lasts 3 seconds
-            daemon.requestLoop(condition = lambda:
-                           not obj_instance._pyro_stop)
+        #listen for requests as long as condition returns True
+        #by default, each loop lasts 3 seconds
+        daemon.requestLoop(condition = lambda:
+                       not obj_instance._pyro_stop)
     except KeyboardInterrupt:
         pass
         
@@ -315,8 +303,6 @@ def launch_instance(obj_instance, obj_uri, delegate, \
         print 'Finished, keeping interperter alive and Pyro daemon running'
 
 def get_proxy(obj_uri, ns = None, attrproxy = True, timeout = default_timeout):
-
-    from time import time, sleep
 
     if default_debug:
         print 'PyroUtils.get_proxy: "%s" using nameserver "%s"...' \
