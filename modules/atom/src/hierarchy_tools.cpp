@@ -584,8 +584,9 @@ Restraint* create_distance_restraint(const Selection &n0,
 
 
 
-IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
-                                                       double k) {
+Restraint* create_connectivity_restraint(const Selections &s,
+                                         double x0,
+                                         double k) {
   if (s.size() < 2) return NULL;
   if (s.size() ==2) {
     Restraint *r= create_distance_restraint(s[0], s[1],
@@ -640,8 +641,13 @@ IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
   }
 }
 
-IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
-                                                          double resolution) {
+Restraint* create_connectivity_restraint(const Selections &s,
+                                         double k) {
+  return create_connectivity_restraint(s, 0, k);
+}
+
+Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
+                                            double resolution) {
   ParticlesTemp ps;
   for (unsigned int i=0; i< hs.size(); ++i) {
     Selection s(hs[i]);

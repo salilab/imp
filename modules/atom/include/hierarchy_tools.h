@@ -252,6 +252,10 @@ IMPATOMEXPORT Restraint* create_distance_restraint(const Selection &n0,
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
                                                        double k);
 
+/** Create a restraint connecting the selections. The particles are
+ allowed to be appart by x0 and still count as connected. */
+IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
+                                                       double x0, double k);
 
 /** Create an excluded volume restraint for the included molecules. If a
     value is provided for resolution, then something less than the full
