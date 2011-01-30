@@ -65,12 +65,12 @@ def _is_sample_0():
 def _create_parser():
   parser = OptionParser(usage='%prog [options]')
   parser.add_option(
-      '-o', '--output-dir', dest='output_dir', default='default',
+      '-o', '--output-dir', dest='output_dir', default='auto',
       help='Where to put the output for the script',
       )
   if not _is_sample_0():
     parser.add_option(
-        '-i', '--input-dir', dest='input_dir', default='default',
+        '-i', '--input-dir', dest='input_dir', default='auto',
         help='Where to find input for the script',
         )
   parser.add_option(
@@ -131,7 +131,7 @@ def get_input_path(name):
        id=options.input_dir
     except:
        _argument_error()
-    if id=="default":
+    if id=="auto":
        id= _get_default_input()
     return os.path.join(id, name)
 
@@ -141,7 +141,7 @@ def get_output_path(name):
        od=options.output_dir
     except:
        _argument_error()
-    if od=="default":
+    if od=="auto":
        od= _get_default_output()
     os.system("mkdir -p "+od)
     return os.path.join(od, name)
