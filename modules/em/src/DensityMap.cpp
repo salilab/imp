@@ -118,21 +118,24 @@ void DensityMap::Read(const char *filename, MapReaderWriter *reader) {
 
 DensityMap* read_map(const char *filename) {
   std::string name(filename);
-  std::string suf=name.substr(name.length()-4,4);
-  if (suf.compare(std::string(".mrc"))==0) {
+  IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
+                  "No suffix in file name: " << filename);
+  std::string suf=name.substr(name.rfind('.'));
+  if (suf == ".mrc") {
     IMP_NEW(MRCReaderWriter, rw, ());
     return read_map(filename, rw);
-  } else if (suf.compare(std::string(".em"))==0) {
+  } else if (suf == ".em") {
     IMP_NEW(EMReaderWriter, rw, ());
     return read_map(filename, rw);
-  } else if (suf.compare(std::string(".vol"))==0) {
+  } else if (suf == ".vol") {
     IMP_NEW(SpiderMapReaderWriter, rw, ());
     return read_map(filename, rw);
-  } else if (suf.compare(std::string(".xplor"))==0) {
+  } else if (suf == ".xplor") {
     IMP_NEW(XplorReaderWriter, rw, ());
     return read_map(filename, rw);
   } else {
-    IMP_THROW("Unable to determine type for file "<< filename,
+    IMP_THROW("Unable to determine type for file "<< filename
+              << " with suffix " << suf,
               IOException);
   }
 }
