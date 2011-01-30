@@ -39,7 +39,7 @@ def _get_default_input():
     elif _get_is_analysis():
        return "analyzed_"+str(_get_script_index()-1)
     else:
-       raise valueerror("bad script name, expect sample_n or analyze_n")
+       raise ValueError("bad script name, expect sample_n or analyze_n")
 
 def _get_default_output():
     if _get_is_sample():
@@ -147,11 +147,10 @@ def get_output_path(name):
     return os.path.join(od, name)
 
 
-def get_data_path(name):
+def get_data_input_path(name):
     """Get the path where the current script should find data files"""
     da= options.data_dir
     if da=="auto":
-       sd= os.path.split(sys.argv[0])[0]
-       da= os.path.join(sd, "data")
-    return da
+       da= os.path.join(os.path.split(sys.argv[0])[0], "data")
+    return os.path.join(da, name)
 %}
