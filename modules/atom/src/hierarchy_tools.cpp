@@ -564,10 +564,10 @@ namespace {
       Pointer<core::TableRefiner> r= new core::TableRefiner();
       r->add_particle(p0[0], p0);
       r->add_particle(p1[0], p1);
-      Pointer<PairScore> ps
+      Pointer<PairScore> nps
         = new core::KClosePairsPairScore(ps,
                                          r, 1);
-      ret= new core::PairRestraint(ps, ParticlePair(p0[0],
+      ret= new core::PairRestraint(nps, ParticlePair(p0[0],
                                                     p1[0]),
                                    "Atom k distance restraint %1%");
     }
@@ -578,8 +578,8 @@ namespace {
 Restraint* create_distance_restraint(const Selection &n0,
                                      const Selection &n1,
                                      double x0, double k) {
-  return create_distance_restraint(n0, n1,
-              new core::HarmonicSphereDistancePairScore(x0, k));
+  IMP_NEW(core::HarmonicSphereDistancePairScore, ps, (x0, k));
+  return create_distance_restraint(n0, n1, ps);
 }
 
 
@@ -589,8 +589,8 @@ Restraint* create_connectivity_restraint(const Selections &s,
                                          double k) {
   if (s.size() < 2) return NULL;
   if (s.size() ==2) {
-    Restraint *r= create_distance_restraint(s[0], s[1],
-                 new core::HarmonicUpperBoundSphereDistancePairScore(x0, k));
+    IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
+    Restraint *r= create_distance_restraint(s[0], s[1], ps);
     return r;
   } else {
     unsigned int max=0;
