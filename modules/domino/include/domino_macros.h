@@ -55,8 +55,9 @@
     typedef DisjointSetsSubsetFilterTable P;                            \
   public:                                                               \
     Name##SubsetFilterTable(IMP::domino::ParticleStatesTable *pst):     \
-   P(pst){}                                                             \
-    Name##SubsetFilterTable(){}                                         \
+      P(pst, std::string(#Name)+std::string(" %1%")){}                  \
+    Name##SubsetFilterTable(): P(std::string(#Name)                      \
+                               +std::string(" %1%")){}                  \
     IMP_SUBSET_FILTER_TABLE(Name##SubsetFilterTable);                   \
   };                                                                    \
   IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
@@ -83,7 +84,9 @@
         all.push_back(index);                                           \
       }                                                                 \
     }                                                                   \
-    return new DisjointSetsSubsetFilter<Name##Filter>(all);             \
+    IMP_NEW(DisjointSetsSubsetFilter<Name##Filter>, f, (all));          \
+    f->set_name(std::string(#Name)+std::string(" filter %1%"));         \
+    return f.release();                                                 \
   }                                                                     \
 
 

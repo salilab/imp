@@ -167,10 +167,14 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   ParticlesTemp get_set(unsigned int i) const {
     return sets_[i];
   }
-  DisjointSetsSubsetFilterTable(ParticleStatesTable *pst):
+  DisjointSetsSubsetFilterTable(ParticleStatesTable *pst,
+                                std::string name):
+    SubsetFilterTable(name),
     pst_(pst),
     disjoint_sets_(rank_, parent_){}
-  DisjointSetsSubsetFilterTable(): disjoint_sets_(rank_, parent_){}
+  DisjointSetsSubsetFilterTable(std::string name):
+    SubsetFilterTable(name),
+    disjoint_sets_(rank_, parent_){}
  public:
   void add_set(const ParticlesTemp &ps);
   void add_pair(const ParticlePair &pp);
