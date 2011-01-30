@@ -33,6 +33,9 @@ if __name__ == '__main__':
 
     import os, sys, socket
     from threading import Thread
+    from IMP.isd.PyroGrid import PyroHandler
+    from IMP.isd.PyroUtils import launch_instance #, get_proxy
+    
     
     # niceness = 19
     # nshost = 'horse--bio'
@@ -61,9 +64,6 @@ if __name__ == '__main__':
     if not temp_path in sys.path:
         sys.path.insert(0, temp_path)
 
-    from Isd.comm.pyro.PyroGrid import PyroHandler
-    from Isd.comm.pyro.PyroUtils import launch_instance #, get_proxy
-    
     os.nice(niceness)
 
     print 'PyroHandlerLoader: %s (%s)' % (uri, socket.gethostname())
