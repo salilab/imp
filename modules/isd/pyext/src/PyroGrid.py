@@ -24,6 +24,7 @@ import time
 import Queue
 import Pyro.core, Pyro.errors, Pyro.util
 import atexit
+import string
 
 from IMP.isd.utils import WatchDog
 from IMP.isd.AbstractGrid import AbstractGrid, Server, Result
@@ -93,8 +94,8 @@ class PyroGrid(AbstractGrid):
         if host.init_cmd != '':
             if host.init_cmd.rstrip().endswith(';'):
                 cmd = host.init_cmd + cmd
-            elif host.init_cmd.rstrip().endwith('!'):
-                command = host.init_cmd.rstrip()[:-1]
+            elif host.init_cmd.rstrip().endswith('!'):
+                cmd = host.init_cmd.rstrip()[:-1] + cmd
             else:
                 cmd = host.init_cmd + ';' + cmd 
 
