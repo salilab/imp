@@ -20,7 +20,7 @@ class DistanceTests(IMP.test.TestCase):
         print "setting up"
         d= IMP.core.XYZ.setup_particle(p, IMP.algebra.get_random_vector_in(bbb))
         print "creating m"
-        mod= IMP.local.ExampleSingletonModifier(sbb)
+        mod= IMP.example_system_local.ExampleSingletonModifier(sbb)
         print "applying"
         mod.apply(d.get_particle())
         for i in range(0,3):
