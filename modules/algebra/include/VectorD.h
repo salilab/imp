@@ -336,7 +336,7 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
  */
 template <int D>
 inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
-  IMP_USAGE_CHECK(a.get_dimension()== b.get_dimensions(),
+  IMP_USAGE_CHECK(a.get_dimension()== b.get_dimension(),
                   "Dimensions don't match.");
   for (unsigned int i=0; i< a.get_dimension(); ++i) {
     if (a[i] < b[i]) return -1;
