@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- the fuction IMP::display::create_restraint_geometry() was added to do what its name says.
 - runtime dimensional geometric objects have been added. These include IMP::algebra::VectorKD, IMP::algebra::BoundingBoxKD and IMP::algebra::SphereKD. The IMP::statistics::Embedding classes now use IMP::algebra::VectorKD instead of Floats. The sparse grids also support variable dimensions as to the nearest neighbor searches.
 - IMP::atom::DopePairScore has been added to \imp.
 - IMP::atom::CHARMMStereochemistryRestraint provides a high-level simplified
