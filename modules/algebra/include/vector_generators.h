@@ -14,7 +14,7 @@
 #include "Sphere3D.h"
 #include "SpherePatch3D.h"
 #include "BoundingBoxD.h"
-
+#include "internal/grid_range_d.h"
 #include "internal/internal_vector_generators.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -79,29 +79,32 @@ get_random_vector_on(const BoundingBoxD<D> &bb) {
     if (areas[side] > a) break;
   }
   unsigned int coord= (side>=bb.get_dimension()? side-bb.get_dimension(): side);
-  VectorD<D-1> fmin, fmax, sv;
+  std::vector<double> fmin(bb.get_dimension()-1), fmax(bb.get_dimension()-1);
   for (unsigned int i=1; i< bb.get_dimension(); ++i) {
     fmin[i-1]= 0;
     fmax[i-1]= ub[(coord+i)%bb.get_dimension()]
       - lb[(coord+i)%bb.get_dimension()];
   }
-  sv= get_random_vector_in(BoundingBoxD<D-1>(fmin, fmax));
+  VectorD<internal::DMinus1<D>::D> vfmin(fmin.begin(), fmin.end()),
+          vfmax(fmax.begin(), fmax.end());
+  VectorD<internal::DMinus1<D>::D> sv=
+    get_random_vector_in(BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
 
-  VectorD<D> ret;
+  std::vector<double> ret(bb.get_dimension());
   //std::cout << "Side is " << side << std::endl;
-  if (side >=D) {
-    ret=ub;
-    for (unsigned int i=1; i< D; ++i) {
-      ret[(coord+i)%D]-= sv[i-1];
+  if (side >=bb.get_dimension()) {
+    std::copy(ub.coordinates_begin(), ub.coordinates_end(), ret.begin());
+    for (unsigned int i=1; i< bb.get_dimension(); ++i) {
+      ret[(coord+i)%bb.get_dimension()]-= sv[i-1];
     }
   } else {
-    ret=lb;
-    for (unsigned int i=1; i< D; ++i) {
-      ret[(coord+i)%D]+= sv[i-1];
+    std::copy(lb.coordinates_begin(), lb.coordinates_end(), ret.begin());
+    for (unsigned int i=1; i< bb.get_dimension(); ++i) {
+      ret[(coord+i)%bb.get_dimension()]+= sv[i-1];
     }
   }
 
-  return ret;
+  return VectorD<D>(ret.begin(), ret.end());
 }
 
 
@@ -133,7 +136,7 @@ VectorD<D>
 get_random_vector_on(const SphereD<D> &s) {
   double cur_radius2=square(s.get_radius());
   Floats up(s.get_center().get_dimension());
-  for (unsigned int i=D-1; i>0; --i) {
+  for (unsigned int i=s.get_dimension()-1; i>0; --i) {
     double r= std::sqrt(cur_radius2);
     ::boost::uniform_real<> rand(-r, r);
     up[i]= rand(random_number_generator);
@@ -224,6 +227,12 @@ get_uniform_surface_cover(const SpherePatch3D &sph,
 IMPALGEBRAEXPORT  std::vector<VectorD<3> >
 get_uniform_surface_cover(const Cone3D &cone,
                           unsigned int number_of_points);
+
+template <int D>
+std::vector<VectorD<D> >
+get_grid_volume_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
+  return internal::GridRangeD<D>(bb, s).get();
+}
 
 
 //! Generate a random chain with no collisions
