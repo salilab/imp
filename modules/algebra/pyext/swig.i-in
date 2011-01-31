@@ -1,5 +1,5 @@
 %include "IMP/algebra/algebra_macros.h"
-
+%include "IMP_algebra_types.i"
 %pythoncode %{
 def get_vector(v):
    try:
@@ -13,20 +13,6 @@ def get_sphere(v):
       return v
 %}
 
-%define IMP_SWIG_VALUE_D(Namespace, Namebase)
-IMP_SWIG_VALUE(Namespace, Namebase##2D, Namebase##2Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##3D, Namebase##3Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##4D, Namebase##4Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##5D, Namebase##5Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##6D, Namebase##6Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##KD, Namebase##KDs);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##2, Namebase##D<2>, Namebase##2Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##3, Namebase##D<3>, Namebase##3Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##4, Namebase##D<4>, Namebase##4Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##5, Namebase##D<5>, Namebase##5Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##6, Namebase##D<6>, Namebase##6Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##k, Namebase##D<-1>, Namebase##KDs);
-%enddef
 
 IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
@@ -44,14 +30,14 @@ IMP_SWIG_VALUE(IMP::algebra,  SpherePatch3D, SpherePatch3Ds);
 IMP_SWIG_VALUE(IMP::algebra, PrincipalComponentAnalysis, PrincipalComponentAnalyses);
 
 // we seem to need the non-typedefed name, at least for the first argument
-IMP_SWIG_VALUE_D(IMP::algebra,  Vector);
-IMP_SWIG_VALUE_D(IMP::algebra,  Sphere);
-IMP_SWIG_VALUE_D(IMP::algebra,  BoundingBox);
-IMP_SWIG_VALUE_D(IMP::algebra,  NearestNeighbor);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Vector);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  Sphere);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra,  BoundingBox);
+IMP_SWIG_ALGEBRA_OBJECT_D(IMP::algebra,  NearestNeighbor);
 IMP_SWIG_VALUE(IMP::algebra,  ReferenceFrame3D, ReferenceFrame3Ds);
 
-IMP_SWIG_VALUE_D(IMP::algebra::grids,  GridIndex);
-IMP_SWIG_VALUE_D(IMP::algebra::grids,  ExtendedGridIndex);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  GridIndex);
+IMP_SWIG_ALGEBRA_VALUE_D(IMP::algebra::grids,  ExtendedGridIndex);
 IMP_SWIG_VALUE(IMP::algebra, LinearFit, LinearFits);
 IMP_SWIG_VALUE(IMP::algebra, ParabolicFit, ParabolicFits);
 IMP_SWIG_VALUE(IMP::algebra, FixedZYZ, FixedZYZs);
@@ -66,12 +52,34 @@ namespace multi_array_types {
 }
 }
 
-/* Wrap our own classes */
+
+/* to extend */
+%include "IMP_algebra_bounding_box.i"
 %include "IMP_algebra_vector.i"
 %include "IMP_algebra_transformation2d.i"
 %include "IMP_algebra_transformation3d.i"
+
+/* Wrap our own classes */
+%include "IMP/algebra/VectorD.h"
+%include "IMP/algebra/Vector2D.h"
+%include "IMP/algebra/Vector3D.h"
+// to transform bbs
+%include "IMP/algebra/Rotation3D.h"
+%include "IMP/algebra/Transformation3D.h"
+%include "IMP/algebra/Rotation2D.h"
+%include "IMP/algebra/Transformation2D.h"
+%include "IMP/algebra/BoundingBoxD.h"
+%include "IMP/algebra/SphereD.h"
+%include "IMP/algebra/Sphere3D.h"
+
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Vector);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, BoundingBox);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
+
+
 %include "IMP/algebra/ReferenceFrame3D.h"
-%include "IMP_algebra_bounding_box.i"
+
+
 %include "IMP_algebra_matrix2d.i"
 %include "IMP_algebra_matrix3d.i"
 %include "IMP_algebra_spherical_coords.i"
@@ -83,37 +91,15 @@ namespace multi_array_types {
 %include "IMP/algebra/Plane3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Ellipsoid3D.h"
-%include "IMP/algebra/SphereD.h"
-%include "IMP/algebra/Sphere3D.h"
+
+
 %include "IMP/algebra/GridD.h"
-namespace IMP {
- namespace algebra {
-   namespace grids {
-     %template(GridIndex3D) GridIndexD<3>;
-     %template(ExtendedGridIndex3D) ExtendedGridIndexD<3>;
-     %template(_UnboundedGridStorage3D) UnboundedGridStorageD<3>;
-     %template(_UnboundedGridStorage4D) UnboundedGridStorageD<4>;
-     %template(_UnboundedGridStorage5D) UnboundedGridStorageD<5>;
-     %template(_UnboundedGridStorage6D) UnboundedGridStorageD<6>;
-     %template(_UnboundedGridStorageKD) UnboundedGridStorageD<-1>;
-     %template(_GridIndex3Ds) ::std::vector<GridIndexD<3> >;
-     %template(_ExtendedGridIndex3Ds) ::std::vector<ExtendedGridIndexD<3> >;
-   }
- }
-}
+
+IMP_SWIG_ALGEBRA_PRIVATE_TEMPLATE_D(IMP::algebra::grids, UnboundedGridStorage);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, GridIndex);
+IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra::grids, ExtendedGridIndex);
+
 %include "IMP/algebra/Grid3D.h"
-namespace IMP {
- namespace algebra {
-   %template(Sphere2D) SphereD<2>;
-   %template(Sphere3D) SphereD<3>;
-   %template(Sphere4D) SphereD<4>;
-   %template(SphereKD) SphereD<-1>;
-   %template(_Sphere2D) ::std::vector< SphereD<2> >;
-   %template(_Sphere3D) ::std::vector< SphereD<3> >;
-   %template(_Sphere4D) ::std::vector< SphereD<4> >;
-   %template(_SpherekD) ::std::vector<SphereD<-1> >;
-}
-}
 
 %include "IMP/algebra/SpherePatch3D.h"
 %include "IMP/algebra/Cone3D.h"
@@ -123,28 +109,31 @@ namespace IMP {
 %include "IMP/algebra/Rotation2D.h"
 %include "IMP/algebra/shortest_segment.h"
 %include "IMP/algebra/vector_search.h"
+
+IMP_SWIG_ALGEBRA_TEMPLATE_OBJECT_D(IMP::algebra, NearestNeighbor);
+
 %include "IMP/algebra/geometric_alignment.h"
-%include "IMP/algebra/grid_range_d.h"
+
+IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Vector, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_distance, Sphere, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_N_DD(double, get_squared_distance, Vector, Vector);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_basis_vector);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_zero_vector);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_ones_vector);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_bounding_box);
+IMP_SWIG_ALGEBRA_FUNCTION_TEMPLATE_D(get_unit_sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, Sphere, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, BoundingBox, BoundingBox);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, BoundingBox);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, BoundingBox);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(BoundingBox, get_bounding_box, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_uniform_surface_cover, Sphere, unsigned int);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_volume_cover_by_spacing, BoundingBox, double);
 
 namespace IMP {
  namespace algebra {
-   %template(NearestNeighbor2D) NearestNeighborD<2>;
-   %template(NearestNeighbor3D) NearestNeighborD<3>;
-   %template(NearestNeighbor4D) NearestNeighborD<4>;
-   %template(NearestNeighborKD) NearestNeighborD<-1>;
-   %template(get_basis_vector_2d) get_basis_vector_d<2>;
-   %template(get_basis_vector_3d) get_basis_vector_d<3>;
-   %template(get_basis_vector_4d) get_basis_vector_d<4>;
-   %template(get_zero_vector_2d) get_zero_vector_d<2>;
-   %template(get_zero_vector_3d) get_zero_vector_d<3>;
-   %template(get_zero_vector_4d) get_zero_vector_d<4>;
-   %template(get_ones_vector_2d) get_ones_vector_d<2>;
-   %template(get_ones_vector_3d) get_ones_vector_d<3>;
-   %template(get_ones_vector_4d) get_ones_vector_d<4>;
-   %template(get_unit_bounding_box_2d) get_unit_bounding_box_d<2>;
-   %template(get_unit_bounding_box_3d) get_unit_bounding_box_d<3>;
-   %template(get_unit_bounding_box_4d) get_unit_bounding_box_d<4>;
-   %template(GridRange3D) GridRangeD<3>;
    namespace grids {
    %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorage3D>;
    %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
@@ -158,114 +147,8 @@ namespace IMP {
 
    }
 
-   // for debugging
-   //%template(SpherePair3D) ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> >;
-   //%template(SpherePair3Ds) ::std::vector< ::std::pair<IMP::algebra::SphereD<3>,IMP::algebra::SphereD<3> > >;
 
    %template(get_transformation_aligning_first_to_second) get_transformation_aligning_first_to_second<std::vector<IMP::algebra::VectorD<3> >, std::vector<IMP::algebra::VectorD<3> > >;
    // rotation operations
-
-   IMP_SWIG_VALUES(ReferenceFrame3D, ReferenceFrame3Ds);
  }
 }
-%inline %{
-namespace IMP {
-namespace algebra {
-
-SphereD<2> get_unit_sphere_2d() { return SphereD<2>(get_zero_vector_d<2>(), 1);}
-SphereD<3> get_unit_sphere_3d() { return SphereD<3>(get_zero_vector_d<3>(), 1);}
-SphereD<4> get_unit_sphere_4d() { return SphereD<4>(get_zero_vector_d<4>(), 1);}
-SphereD<5> get_unit_sphere_5d() { return SphereD<5>(get_zero_vector_d<5>(), 1);}
-SphereD<6> get_unit_sphere_6d() { return SphereD<6>(get_zero_vector_d<6>(), 1);}
-// swig doesn't instantiate them properly
-bool get_interiors_intersect(const SphereD<2>&a, const SphereD<2> &b) {
-   return get_interiors_intersect<2>(a,b);
-}
-bool get_interiors_intersect(const SphereD<3>&a, const SphereD<3> &b) {
-   return get_interiors_intersect<3>(a,b);
-}
-bool get_interiors_intersect(const SphereD<4>&a, const SphereD<4> &b) {
-   return get_interiors_intersect<4>(a,b);
-}
-double get_distance(const SphereD<2>&a, const SphereD<2> &b) {
-   return get_distance<2>(a,b);
-}
-double get_distance(const SphereD<3>&a, const SphereD<3> &b) {
-   return get_distance<3>(a,b);
-}
-double get_distance(const SphereD<4>&a, const SphereD<4> &b) {
-   return get_distance<4>(a,b);
-}
-
-VectorD<2> get_random_vector_on(const SphereD<2> &s) {
- return get_random_vector_on<2>(s);
-}
-VectorD<2> get_random_vector_on(const BoundingBoxD<2> &s) {
-  return get_random_vector_on<2>(s);
-}
-VectorD<3> get_random_vector_on(const SphereD<3> &s) {
-  return get_random_vector_on<3>(s);
-}
-VectorD<3> get_random_vector_on(const BoundingBoxD<3> &s) {
-  return get_random_vector_on<3>(s);
-}
-bool get_interiors_intersect(const BoundingBoxD<3>&a,
-                             const BoundingBoxD<3> &b) {
-   return get_interiors_intersect<3>(a,b);
-}
-
-VectorD<4> get_random_vector_on(const SphereD<4> &s) {
-  return get_random_vector_on<4>(s);
-}
-VectorD<4> get_random_vector_on(const BoundingBoxD<4> &s) {
-  return get_random_vector_on<4>(s);
-}
-
-VectorD<2> get_random_vector_in(const SphereD<2> &s) {
-  return get_random_vector_in<2>(s);
-}
-VectorD<2> get_random_vector_in(const BoundingBoxD<2> &s) {
-  return get_random_vector_in<2>(s);
-}
-VectorD<3> get_random_vector_in(const SphereD<3> &s) {
-  return get_random_vector_in<3>(s);
-}
-VectorD<3> get_random_vector_in(const BoundingBoxD<3> &s) {
-  return get_random_vector_in<3>(s);
-}
-VectorD<4> get_random_vector_in(const SphereD<4> &s) {
-  return get_random_vector_in<4>(s);
-}
-VectorD<4> get_random_vector_in(const BoundingBoxD<4> &s) {
-  return get_random_vector_in<4>(s);
-}
-
-VectorD<-1> get_random_vector_in(const SphereD<-1> &s) {
-  return get_random_vector_in<-1>(s);
-}
-VectorD<-1> get_random_vector_in(const BoundingBoxD<-1> &s) {
-  return get_random_vector_in<-1>(s);
-}
-
-std::vector<VectorD<2> > get_uniform_surface_cover(const SphereD<2> &s, unsigned int n) {
-  return get_uniform_surface_cover<2>(s,n);
-}
-std::vector<VectorD<3> > get_uniform_surface_cover(const SphereD<3> &s, unsigned int n) {
-  return get_uniform_surface_cover<3>(s,n);
-}
-std::vector<VectorD<4> > get_uniform_surface_cover(const SphereD<4> &s, unsigned int n) {
-  return get_uniform_surface_cover<4>(s,n);
-}
-
-BoundingBoxD<2> get_bounding_box(const SphereD<2> &s) {
-  return get_bounding_box<2>(s);
-}
-BoundingBoxD<3> get_bounding_box(const SphereD<3> &s) {
-  return get_bounding_box<3>(s);
-}
-BoundingBoxD<4> get_bounding_box(const SphereD<4> &s) {
-  return get_bounding_box<4>(s);
-}
-}
-}
-%}
