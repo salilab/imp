@@ -9,8 +9,9 @@ from IMP.isd.hosts import create_host_list
 import IMP.atom
 import IMP.container
 import IMP.isd
-import IMP.isd.shared_functions as sf
 from IMP.isd.Replica import ReplicaTracker
+
+import shared_functions as sf
 
 IMP.set_log_level(IMP.NONE)
 

@@ -121,6 +121,8 @@ class sfo():
         rs.add_restraint(pr)
         rs.set_weight(1.0/(kB*ff_temp))
         m.add_restraint(rs)
+        self._rs = {}
+        self._rs['phys'] = rs
         sigma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         print "prior restraint"
@@ -129,6 +131,7 @@ class sfo():
         rs.add_restraint(IMP.isd.JeffreysRestraint(gamma))
         rs.set_weight(1.0)
         m.add_restraint(rs)
+        self._rs['prior'] = rs
         rs = IMP.RestraintSet('NOE')
         print "reading data restraints"
         for i,line in enumerate(open(restraints)):
@@ -165,6 +168,7 @@ class sfo():
         #Weight is 1.0 cause sigma particle already has this role.
         rs.set_weight(1.0)
         m.add_restraint(rs)
+        self._rs['data'] = rs
         self._m = m
         self._p={}
         self._p['sigma'] = sigma
@@ -218,7 +222,8 @@ class sfo():
         self.statfile = prefix+'_stats.txt'
         flstat=open(self.statfile,'w')
         flstat.write("Step Time Temp Potential Kinetic "
-                "Total Sigma Gamma MC_accept_s MC_accept_g "
+                "Total E_phys E_data E_prior Sigma Gamma "
+                "MC_accept_s MC_accept_g "
                 "MC_stepsize_s MC_stepsize_g\n")
         flstat.close()
         self.naccept_s=0
@@ -237,8 +242,12 @@ class sfo():
                 self.naccept_g,nsteps)
         self.naccept_s = self._mc_sigma.get_number_of_forward_steps()
         self.naccept_g = self._mc_gamma.get_number_of_forward_steps()
+        e_phys = self._rs['phys'].unprotected_evaluate(False)
+        e_data = self._rs['data'].unprotected_evaluate(False)
+        e_prior = self._rs['prior'].unprotected_evaluate(False)
         for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
-                kinetic+potential,si,ga,acc_s,acc_g,st_s,st_g]:
+                kinetic+potential,e_phys,e_data,e_prior,
+                si,ga,acc_s,acc_g,st_s,st_g]:
             flstat.write("%10f " % i)
         flstat.write('\n')
         flstat.close()
