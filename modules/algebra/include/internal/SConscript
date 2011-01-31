@@ -3,6 +3,7 @@ files = [
          'ann.h',
          'grid_3d.h',
          'grid_3d_impl.h',
+         'grid_range_d.h',
          'internal_vector_generators.h',
          'jama_cholesky.h',
          'jama_eig.h',
