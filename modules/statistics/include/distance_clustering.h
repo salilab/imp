@@ -14,6 +14,9 @@
 #include <IMP/algebra/VectorD.h>
 #include <IMP/macros.h>
 #include <IMP/VectorOfRefCounted.h>
+#include <IMP/ConfigurationSet.h>
+#include <IMP/SingletonContainer.h>
+#include <IMP/internal/OwnerPointer.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -54,6 +57,22 @@ public:
 #endif
   IMP_DISTANCE(EuclideanDistance);
 };
+
+
+/** Compute the RMSD between two sets of particles in two configurations.
+ */
+class IMPSTATISTICSEXPORT ConfigurationSetRMSDistance: public Distance {
+  IMP::internal::OwnerPointer<ConfigurationSet> cs_;
+  IMP::internal::OwnerPointer<SingletonContainer> sc_;
+  bool align_;
+ public:
+  ConfigurationSetRMSDistance(ConfigurationSet *cs,
+                              SingletonContainer *sc,
+                              bool align=false);
+  IMP_DISTANCE(ConfigurationSetRMSDistance);
+};
+
+
 
 /** Cluster by repeatedly removing edges which have lots
     of shortest paths passing through them. The process is
