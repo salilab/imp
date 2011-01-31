@@ -44,7 +44,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \uses{class NearestNeighborD, ANN}
  */
 template <int D>
-class NearestNeighborD {
+class NearestNeighborD: public Object {
   IMP_KNN_DATA data_;
   double eps_;
 #if IMP_BUILD < IMP_FAST
@@ -138,16 +138,13 @@ public:
     data_.fill_nearest_neighbors(pt, distance, eps_, ret);
     return ret;
   }
-  IMP_SHOWABLE_INLINE(NearestNeighborD,
-                      {out << "Nearest neighbor on "
+  IMP_OBJECT_INLINE(NearestNeighborD, {out << "Nearest neighbor on "
                            << data_.get_number_of_points()
                            << " points";
-    });
+    }, );
 };
 
 /** @} */
-
-IMP_OUTPUT_OPERATOR_D(NearestNeighborD);
 
 #ifndef IMP_DOXYGEN
 typedef NearestNeighborD<2> NearestNeighbor2D;
@@ -157,12 +154,6 @@ typedef NearestNeighborD<5> NearestNeighbor5D;
 typedef NearestNeighborD<6> NearestNeighbor6D;
 typedef NearestNeighborD<-1> NearestNeighborKD;
 #endif
-IMP_VALUES(NearestNeighbor2D, NearestNeighbor2Ds);
-IMP_VALUES(NearestNeighbor3D, NearestNeighbor3Ds);
-IMP_VALUES(NearestNeighbor4D, NearestNeighbor4Ds);
-IMP_VALUES(NearestNeighbor5D, NearestNeighbor5Ds);
-IMP_VALUES(NearestNeighbor6D, NearestNeighbor6Ds);
-IMP_VALUES(NearestNeighborKD, NearestNeighborKDs);
 
 IMPALGEBRA_END_NAMESPACE
 

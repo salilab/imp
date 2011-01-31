@@ -28,14 +28,14 @@ void ProbabilisticAnchorGraph::set_particle_probabilities_on_anchors(
                          FittingSolutionRecords sols) {
   IMP_USAGE_CHECK(sols.size()>0,
                   "no solutions provided\n");
-  algebra::NearestNeighborD<3> nn(positions_);
+  IMP_NEW(algebra::NearestNeighborD<3>, nn, (positions_));
   Ints anchor_counters;
   anchor_counters.insert(anchor_counters.end(),positions_.size(),0);
   for (unsigned int i=0;i<sols.size();i++) {
     algebra::Vector3D loc=
       sols[i].get_fit_transformation().get_transformed(
                                core::XYZ(p).get_coordinates());
-    anchor_counters[nn.get_nearest_neighbor(loc)]++;
+    anchor_counters[nn->get_nearest_neighbor(loc)]++;
   }
   Floats probs;
   for (unsigned int i=0;i<anchor_counters.size();i++) {
