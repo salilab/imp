@@ -215,11 +215,6 @@ class ReplicaTracker():
             expected = (min(state,state+dir),max(state,state+dir))
             if self.stirred['pair'] in accepted:
                 self.stirred['steps'] -= 1
-        fl=open('plist','a')
-        fl.write('plist (%d,%d)' % self.stirred['pair'])
-        fl.write(''.join(['(%d,%d)' % i for i in accepted]))
-        fl.write('\n')
-        fl.close()
 
     def replica_exchange(self):
         "main entry point for replica-exchange"
@@ -229,10 +224,6 @@ class ReplicaTracker():
         energies = self.sort_per_state(self.get_energies())
         #print "pairs list"
         plist = self.gen_pairs_list()
-        fl=open('plist','a')
-        fl.write(''.join(['(%d,%d)' % (i,j) for (i,j) in plist]))
-        fl.write('\n')
-        fl.close()
         #print "metropolis"
         metrop = self.get_metropolis(plist,energies)
         #print "exchanges"
