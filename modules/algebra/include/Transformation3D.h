@@ -118,6 +118,7 @@ inline Transformation3D compose(const Transformation3D &a,
                           a.get_transformed(b.get_translation()));
 }
 
+class Transformation2D;
 
 //! Builds a 3D transformation from a 2D one.
 /**
