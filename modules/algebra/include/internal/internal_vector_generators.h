@@ -30,10 +30,9 @@ inline std::vector<VectorD<D> >
 native_uniform_cover_unit_sphere(unsigned int d,
                                  unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
-  BOOST_STATIC_ASSERT(D!=-1);
   std::vector<VectorD<D> > ret(n);
   for (unsigned int i=0; i< d; ++i) {
-    VectorD<D> v= get_basis_vector_d<D>(i);
+    VectorD<D> v= get_basis_vector_kd(d, i);
     if(ALL) {
       ret[2*i]=v;
       ret[2*i+1]= -v;
@@ -42,7 +41,7 @@ native_uniform_cover_unit_sphere(unsigned int d,
     }
   }
   for (unsigned int i=(ALL?2*d:d); i< n; ++i) {
-    VectorD<D> v= get_random_vector_on<D>(get_unit_sphere_d<D>());
+    VectorD<D> v= get_random_vector_on(get_unit_sphere_kd(d));
     if (!ALL && v[d-1]<= 0) v=-v;
     ret[i]=v;
   }
@@ -60,7 +59,7 @@ uniform_cover_sphere(unsigned int n,
     = native_uniform_cover_unit_sphere<D>(center.get_dimension(),
                                           n, ALL);
   for (unsigned int i=0; i< ret.size(); ++i) {
-    if (!ALL && ret[i][D-1] < 0) {
+    if (!ALL && ret[i][center.get_dimension()-1] < 0) {
       ret[i]= -radius*ret[i]+center;
     } else {
       ret[i]= radius*ret[i]+center;
@@ -142,6 +141,17 @@ uniform_cover_sphere(unsigned int N,
   }
   return ret;
 }
+
+
+template <int DO>
+struct DMinus1 {
+  static const int D=DO-1;
+};
+template <>
+struct DMinus1<-1> {
+  static const int D=-1;
+};
+
 
 IMPALGEBRA_END_INTERNAL_NAMESPACE
 
