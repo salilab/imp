@@ -60,6 +60,9 @@ public:
     radius_=d;
   }
 #endif
+  unsigned int get_dimension() const {
+    return center_.get_dimension();
+  }
 private:
   VectorD<D> center_;
   double radius_;
