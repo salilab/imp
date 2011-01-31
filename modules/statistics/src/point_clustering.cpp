@@ -263,7 +263,7 @@ get_connectivity_clustering(Embedding *embed,
     algebra::VectorKD fs= embed->get_point(i);
     vs[i]= fs;
   }
-  algebra::NearestNeighborKD nn(vs.begin(), vs.end(), .1);
+  IMP_NEW(algebra::NearestNeighborKD, nn,(vs.begin(), vs.end(), .1));
   typedef boost::vector_property_map<unsigned int> Index;
   typedef Index Parent;
   typedef boost::disjoint_sets<Index,Parent> UF;
@@ -274,7 +274,7 @@ get_connectivity_clustering(Embedding *embed,
     uf.make_set(i);
   }
   for (unsigned int i=0; i< vs.size(); ++i) {
-    Ints ns= nn.get_in_ball(i, dist);
+    Ints ns= nn->get_in_ball(i, dist);
     for (unsigned int j=0; j < ns.size(); ++j) {
       if (get_distance(vs[i], vs[ns[j]]) < dist) {
         //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
