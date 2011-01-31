@@ -31,7 +31,7 @@ files = [
          'eigen_analysis.h',
          'endian.h',
          'geometric_alignment.h',
-         'grid_range_D.h',
+         'grid_range_d.h',
          'io.h',
          'python_only.h',
          'shortest_segment.h',
