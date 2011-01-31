@@ -32,6 +32,3 @@ namespace IMP {
 
  }
 }
-
-%include "IMP/algebra/Rotation2D.h"
-%include "IMP/algebra/Transformation2D.h"

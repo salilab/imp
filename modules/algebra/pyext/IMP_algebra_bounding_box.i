@@ -35,17 +35,3 @@ namespace IMP {
     unsigned int __len__() {return 2;}
 };
 
-%include "IMP/algebra/BoundingBoxD.h"
-
-namespace IMP {
- namespace algebra {
-   %template(BoundingBox2D) BoundingBoxD<2>;
-   //%template(BoundingBox2Ds) ::std::vector<BoundingBoxD<2> >;
-   %template(BoundingBox3D) BoundingBoxD<3>;
-   //%template(BoundingBox3Ds) ::std::vector<BoundingBoxD<3> >;
-   %template(BoundingBox4D) BoundingBoxD<4>;
-   //%template(BoundingBox4Ds) ::std::vector<BoundingBoxD<4> >;
-   %template(BoundingBoxKD) BoundingBoxD<-1>;
-   //%template(BoundingBox4Ds) ::std::vector<BoundingBoxD<4> >;
- }
-}

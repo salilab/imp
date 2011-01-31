@@ -50,27 +50,3 @@ namespace IMP {
   unsigned int __len__() {return D;}
   const IMP::algebra::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
 };
-
-%include "IMP/algebra/VectorD.h"
-%include "IMP/algebra/Vector2D.h"
-%include "IMP/algebra/Vector3D.h"
-
-namespace IMP {
- namespace algebra {
-   %template(Vector2D) VectorD<2>;
-   %template(Vector3D) VectorD<3>;
-   %template(Vector4D) VectorD<4>;
-   %template(VectorKD) VectorD<-1>;
-   %template(get_distance) get_distance<3>;
-   %template(get_squared_distance) get_squared_distance<3>;
-   %template(get_distance) get_distance<4>;
-   %template(get_squared_distance) get_squared_distance<4>;
-   %template(get_distance) get_distance<2>;
-   %template(get_squared_distance) get_squared_distance<2>;
-   %template(get_distance) get_distance<-1>;
-   %template(get_squared_distance) get_squared_distance<-1>;
-   %template(_Vector4Ds) ::std::vector<VectorD<4> >;
-   %template(_Vector3Ds) ::std::vector<VectorD<3> >;
-   %template(_Vector2Ds) ::std::vector<VectorD<2> >;
- }
-}
