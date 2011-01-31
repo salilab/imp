@@ -37,11 +37,11 @@ filelist=[initpdb,charmmtop,charmmpar,restraints] #add whatever you want
 #prefix of output files 
 nums=[[os.path.join(outfolder,'p%02d' % (i+1))] for i in xrange(nreps)]
 #number of gibbs sampling steps
-n_gibbs = 3
+n_gibbs = 10
 #number of md steps
-n_md = 10
-#number of mc steps
-n_mc = 10
+n_md = 1000
+#number of mc steps (not < 50 because adaptive)
+n_mc = 100
 #where to run sims
 hostlist = ['localhost']*nreps
 
