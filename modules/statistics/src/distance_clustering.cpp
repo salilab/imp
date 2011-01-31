@@ -12,6 +12,7 @@
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/geometric_alignment.h>
+#include <IMP/atom/distance.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -50,6 +51,49 @@ unsigned int EuclideanDistance::get_number_of_items() const {
 
 void EuclideanDistance::do_show(std::ostream &) const {
 }
+
+
+ConfigurationSetRMSDistance::ConfigurationSetRMSDistance(ConfigurationSet *cs,
+                                                         SingletonContainer *sc,
+                                                         bool align):
+  Distance("CS RMS %1%"),
+  cs_(cs), sc_(sc), align_(align){
+
+}
+
+namespace {
+  algebra::Vector3Ds get_vectors(ConfigurationSet *cs,
+                        unsigned int i,
+                        SingletonContainer *sc) {
+    algebra::Vector3Ds ret(sc->get_number_of_particles());
+    cs->load_configuration(i);
+    IMP_FOREACH_SINGLETON(sc, {
+        ret[_2]= core::XYZ(_1).get_coordinates();
+      });
+    return ret;
+  }
+}
+
+double ConfigurationSetRMSDistance::get_distance(unsigned int i,
+                                                 unsigned int j) const {
+  algebra::Vector3Ds vi= get_vectors(cs_, i, sc_);
+  algebra::Vector3Ds vj= get_vectors(cs_, j, sc_);
+  algebra::Transformation3D tr;
+  if (align_) {
+    tr= algebra::get_transformation_aligning_first_to_second(vi, vj);
+  } else {
+    tr=algebra::get_identity_transformation_3d();
+  }
+  return atom::get_rmsd(vi, vj, tr);
+}
+
+unsigned int ConfigurationSetRMSDistance::get_number_of_items() const {
+  return cs_->get_number_of_configurations();
+}
+
+void ConfigurationSetRMSDistance::do_show(std::ostream &) const {
+}
+
 
 namespace {
   /*struct centrality_t {
