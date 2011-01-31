@@ -43,9 +43,9 @@ namespace{
   for(int i=0;i<(int)all_xyz.size();i++) {
     all_cen.push_back(all_xyz[i].get_coordinates());
   }
-  algebra::NearestNeighborD<3> nn(all_cen);
+  IMP_NEW(algebra::NearestNeighborD<3>, nn, (all_cen));
   for(unsigned int j=0;j<points.size();j++) {
-    int closest_cen = nn.get_nearest_neighbor(points[j]);
+    int closest_cen = nn->get_nearest_neighbor(points[j]);
     if(algebra::get_squared_distance(all_cen[closest_cen],points[j])>max_dist2){
       far_inds.push_back(j);
     }

@@ -41,11 +41,11 @@ namespace {
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     IMP_FOREACH_SINGLETON(sc,
                           vs[_2]= core::XYZ(_1).get_coordinates(););
-    algebra::NearestNeighborD<3> nn(vs);
+    IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
     unsigned int nnn=static_cast<unsigned int>(
                                 std::sqrt(static_cast<double>(vs.size()))+1);
     for (unsigned int i=0; i< vs.size(); ++i) {
-      Ints ni=nn.get_nearest_neighbors(i, nnn);
+      Ints ni=nn->get_nearest_neighbors(i, nnn);
       unsigned int si= uf.find_set(i);
       for (unsigned int j=0; j< ni.size(); ++j) {
         unsigned int sj= uf.find_set(ni[j]);
@@ -88,12 +88,12 @@ namespace {
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     IMP_FOREACH_SINGLETON(sc,
                           vs[_2]= core::XYZ(_1).get_coordinates(););
-    algebra::NearestNeighborD<3> nn(vs);
+    IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
     ///unsigned int nnn=static_cast<unsigned int>(std::sqrt(vs.size())+1);
     Graph g(vs.size());
     for (unsigned int i=0; i< vs.size(); ++i) {
       core::XYZR di(sc->get_particle(i));
-      Ints ni=nn.get_nearest_neighbors(i, nnn);
+      Ints ni=nn->get_nearest_neighbors(i, nnn);
       for (unsigned int j=0; j< ni.size(); ++j) {
         core::XYZR dj(sc->get_particle(ni[j]));
         double d= algebra::get_power_distance(di.get_sphere(), dj.get_sphere());

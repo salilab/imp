@@ -37,13 +37,13 @@ NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder():
 ParticlePairsTemp NearestNeighborsClosePairsFinder
 ::get_close_pairs(IMP_RESTRICT const ParticlesTemp &pa,
                   IMP_RESTRICT const ParticlesTemp &pb) const {
-  algebra::NearestNeighborD<3> nn(pa.begin(),
-                                  pa.end(), 0);
+  IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(),
+                                             pa.end(), 0));
   double rm= max_radius(pa.begin(), pa.end());
   ParticlePairsTemp ret;
   for (unsigned int i=0; i< pb.size(); ++i) {
       XYZR d(pb[i]);
-      Ints cur= nn.get_in_ball(d.get_coordinates(),
+      Ints cur= nn->get_in_ball(d.get_coordinates(),
                                rm + get_distance()+ d.get_radius());
       for (unsigned int j=0; j< cur.size(); ++j) {
         ret.push_back(ParticlePair(pa[cur[j]],
@@ -54,12 +54,12 @@ ParticlePairsTemp NearestNeighborsClosePairsFinder
 }
 ParticlePairsTemp NearestNeighborsClosePairsFinder
 ::get_close_pairs(IMP_RESTRICT const ParticlesTemp &c) const {
-  algebra::NearestNeighborD<3> nn(c.begin(), c.end(), 0);
+  IMP_NEW(algebra::NearestNeighborD<3>, nn,(c.begin(), c.end(), 0));
   double rm= max_radius(c.begin(), c.end());
   ParticlePairsTemp ret;
   for (unsigned int i=0; i< c.size(); ++i) {
     XYZR d(c[i]);
-    Ints cur=nn.get_in_ball(d.get_coordinates(),
+    Ints cur=nn->get_in_ball(d.get_coordinates(),
                             rm + get_distance()+ d.get_radius());
     for (unsigned int j=0; j< cur.size(); ++j) {
       if (d < c[cur[j]]) {
