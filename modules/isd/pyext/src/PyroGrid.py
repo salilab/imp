@@ -61,6 +61,8 @@ class PyroGrid(AbstractGrid):
 
         self.__terminate_during_publish = terminate_during_publish
         self.__published = {}
+        
+        self.comm_acquired = False
 
         self.__stopped = False
         
@@ -444,20 +446,25 @@ class PyroGrid(AbstractGrid):
             print 'PyroGrid: terminated'
 
     def broadcast(self, sfo_id, funcname, *args, **kw):
-        results = []
-        for server in self.servers[sfo_id]:
-            func=getattr(server.proxy, funcname)
-            results.append(func(*args, **kw))
-        return results
+        if self.comm_acquired == False:
+            self.comm_proxies = [ self.acquire_service(sfo_id) for i in \
+                    xrange(self.n_hosts)]
+            self.comm_acquired = True
+        return [getattr(prox, funcname)(*args, **kw) for prox in \
+                self.comm_proxies]
 
     def scatter(self, sfo_id, funcname, arglist, kwlist=None):
+        if self.comm_acquired == False:
+            self.comm_proxies = [ self.acquire_service(sfo_id) for i in \
+                    xrange(self.n_hosts)]
+            self.comm_acquired = True
         results = []
         if kwlist is None:
             kwlist=[{} for i in xrange(len(arglist))]
         if not hasattr(arglist[0],'__iter__'):
             arglist = [[i] for i in arglist]
-        for server,args,kw in zip(self.servers[sfo_id],arglist,kwlist):
-            func=getattr(server.proxy, funcname)
+        for prox,args,kw in zip(self.comm_proxies,arglist,kwlist):
+            func=getattr(prox, funcname)
             results.append(func(*args, **kw))
         return results
 
@@ -466,6 +473,12 @@ class PyroGrid(AbstractGrid):
         for server in results:
             retval.append(server.get())
         return retval
+
+    def release_all(self):
+        for prox in self.comm_proxies:
+            self.release_service(prox)
+        self.comm_acquired = False
+
 class PyroHandler(Pyro.core.ObjBase):
     """    
     Runs on remote side, non-specific object. 

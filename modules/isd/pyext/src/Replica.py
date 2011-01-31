@@ -9,7 +9,7 @@ class ReplicaTracker():
     
     def __init__(self,nreps,inv_temps,grid,sfo_id,
             logfile='replicanums.txt', scheme='standard', xchg='random',
-            convectivelog='stirred.txt'):
+            convectivelog='results/stirred.txt'):
         self.nreps = nreps
         #replica number as a function of state no
         self.replicanums = range(nreps)
@@ -66,7 +66,10 @@ class ReplicaTracker():
             raise ValueError, dir
         if nreps == 2:
             return [(0,1)]
-        return [(2*i+dir,2*i+1+dir) for i in xrange((nreps-1)/2)]
+        ret = [(2*i+dir,2*i+1+dir) for i in xrange(nreps/2)]
+        if nreps in ret[-1]:
+            ret.pop()
+        return ret
 
     def gen_pairs_list_rand(self, needed = []):
         "generate list of neighboring pairs of states"
@@ -84,7 +87,7 @@ class ReplicaTracker():
             if r+dr in init:
                 init.remove(r+dr)
                 pairslist.append((min(r,r+dr),max(r,r+dr)))
-            elif r-dr in init:
+            elif r-dr in init and not (r==0 or r==nreps-1):
                 init.remove(r-dr)
                 pairslist.append((min(r,r-dr),max(r,r-dr)))
         return sorted(pairslist)
@@ -93,12 +96,13 @@ class ReplicaTracker():
         nreps = self.nreps
         rep = self.stirred['replica']
         state = self.statenums[rep]
+        self.stirred['pair'] = (state, state + 2*self.stirred['dir'] - 1)
+        self.stirred['pair'] = tuple(sorted(self.stirred['pair']))
         if self.xchg == 'gromacs':
             dir = (state + 1 + self.stirred['dir']) % 2
             return self.gen_pairs_list_gromacs(dir)
         elif self.xchg == 'random':
-            pair = (state, state + 2*self.stirred['dir'] - 1)
-            return self.gen_pairs_list_rand(needed=[pair])
+            return self.gen_pairs_list_rand(needed=[self.stirred['pair']])
         else:
             raise NotImplementedError, \
                     "Unknown exchange method: %s" % self.xchg
@@ -178,9 +182,9 @@ class ReplicaTracker():
         if self.scheme == 'convective':
             fl=open(self.convectivelog, 'a')
             fl.write('%5d ' % self.stepno)
-            fl.write('%2d ' % self.sticklist['replica'])
-            fl.write('%2d ' % self.sticklist['dir'])
-            fl.write('%2d\n' % self.sticklist['steps'])
+            fl.write('%2d ' % (self.stirred['replica']+1))
+            fl.write('%2d ' % self.stirred['dir'])
+            fl.write('%2d\n' % self.stirred['steps'])
             fl.close()
 
 
@@ -191,7 +195,7 @@ class ReplicaTracker():
             #check if we are done stirring this replica
             if st['steps'] == 0:
                 st['pos'] = (st['pos'] + 1) % self.nreps
-                st['replica'] = st['order'][pos]
+                st['replica'] = st['order'][st['pos']]
                 st['dir'] = 1
                 st['steps'] = 2*(self.nreps - 1)
             rep = st['replica']
@@ -209,19 +213,35 @@ class ReplicaTracker():
             state = self.statenums[rep]
             dir = 2*self.stirred['dir'] - 1
             expected = (min(state,state+dir),max(state,state+dir))
-            pair = (state, state + 2*self.stirred['dir'] - 1)
-            if pair in accepted:
+            if self.stirred['pair'] in accepted:
                 self.stirred['steps'] -= 1
+        fl=open('plist','a')
+        fl.write('plist (%d,%d)' % self.stirred['pair'])
+        fl.write(''.join(['(%d,%d)' % i for i in accepted]))
+        fl.write('\n')
+        fl.close()
 
     def replica_exchange(self):
         "main entry point for replica-exchange"
+        #print "replica exchange"
         self.do_bookkeeping_before()
+        #print "energies"
         energies = self.sort_per_state(self.get_energies())
+        #print "pairs list"
         plist = self.gen_pairs_list()
+        fl=open('plist','a')
+        fl.write(''.join(['(%d,%d)' % (i,j) for (i,j) in plist]))
+        fl.write('\n')
+        fl.close()
+        #print "metropolis"
         metrop = self.get_metropolis(plist,energies)
+        #print "exchanges"
         accepted = self.try_exchanges(plist, metrop)
+        #print "propagate"
         self.perform_exchanges(accepted)
+        #print "book"
         self.do_bookkeeping_after(accepted)
+        #print "done"
 
 
 

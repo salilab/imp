@@ -77,7 +77,7 @@ class AbstractGrid(Thread):
 
         self.verbose = verbose
         self.debug = debug
-        self.debug_out = sys.stdout
+        self.debug_out = sys.stderr
 
         self.display = display
         self.X11_delay = X11_delay
