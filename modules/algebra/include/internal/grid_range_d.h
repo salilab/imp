@@ -5,15 +5,15 @@
  *
  */
 
-#ifndef IMPALGEBRA_GRID_RANGE_D_H
-#define IMPALGEBRA_GRID_RANGE_D_H
+#ifndef IMPALGEBRA_INTERNAL_GRID_RANGE_D_H
+#define IMPALGEBRA_INTERNAL_GRID_RANGE_D_H
 
-#include "VectorD.h"
+#include "../VectorD.h"
 #include <IMP/RefCounted.h>
 #include <IMP/Pointer.h>
 #include <boost/range.hpp>
 
-IMPALGEBRA_BEGIN_NAMESPACE
+IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
@@ -118,13 +118,14 @@ public:
     return iterator(data_, data_->bb.get_corner(1));
   }
 #endif
-  Vector3Ds get() const {
-    return Vector3Ds(begin(), end());
+  std::vector< VectorD<D> > get() const {
+    return std::vector< VectorD<D> >(begin(), end());
   }
 };
 
 
 
-IMPALGEBRA_END_NAMESPACE
 
-#endif  /* IMPALGEBRA_GRID_RANGE_D_H */
+IMPALGEBRA_END_INTERNAL_NAMESPACE
+
+#endif  /* IMPALGEBRA_INTERNAL_GRID_RANGE_D_H */
