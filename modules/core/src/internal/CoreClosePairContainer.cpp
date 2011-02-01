@@ -63,7 +63,8 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
   moved_=cpf_->get_moved_singleton_container(c_, get_model(), slack_);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer);
+IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer,
+                         moved_->set_log_level(l));
 
 
 void CoreClosePairContainer::set_slack(double s) {
@@ -245,8 +246,8 @@ void CoreClosePairContainer::do_before_evaluate() {
                              << a->get_name()
                              << " and " << b->get_name()
                              << " not found in list: "
-                             << *pp[0] << std::endl
-                             << *pp[1]);
+                             << IMP::core::XYZR(a) << std::endl
+                             << IMP::core::XYZR(b));
         }
       }
     }
