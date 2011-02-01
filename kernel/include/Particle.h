@@ -490,6 +490,7 @@ class IMPEXPORT Particle : public Container
     return floats_.get_data();
   }
   algebra::Sphere3D &_access_coordinates() {
+    dirty_=true;
     return floats_.access_data();
   }
 #endif
