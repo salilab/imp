@@ -17,7 +17,7 @@
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 
-IMP_ACTIVE_CONTAINER_DEF(CoreListPairContainer);
+IMP_ACTIVE_CONTAINER_DEF(CoreListPairContainer,);
 
 CoreListPairContainer
 ::CoreListPairContainer():

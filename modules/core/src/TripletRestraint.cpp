@@ -51,6 +51,9 @@ double TripletRestraint
   return score_;
 }
 
+void TripletRestraint
+::set_is_incremental(bool) {}
+
 ParticlesTemp TripletRestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(ss_.get(), v_);

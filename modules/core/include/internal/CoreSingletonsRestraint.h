@@ -37,7 +37,7 @@ class IMPCOREEXPORT CoreSingletonsRestraint :
   public SingletonsScoreRestraint
 {
   IMP::internal::OwnerPointer<SingletonScore> ss_;
-  IMP::internal::OwnerPointer<SingletonContainer> pc_;
+  IMP::internal::OwnerPointer<SingletonContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

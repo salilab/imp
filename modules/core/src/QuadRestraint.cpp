@@ -51,6 +51,9 @@ double QuadRestraint
   return score_;
 }
 
+void QuadRestraint
+::set_is_incremental(bool) {}
+
 ParticlesTemp QuadRestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(ss_.get(), v_);

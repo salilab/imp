@@ -33,6 +33,7 @@ public IMP::internal::SimpleRestraintParentTraits<Score>::SimplesRestraint
 {
   IMP::internal::OwnerPointer<Score> ss_;
   IMP::internal::OwnerPointer<Container> pc_;
+  IMP::internal::OwnerPointer<IMP::Container> ac_, rc_;
   mutable double score_;
 public:
   ContainerRestraint(Score *ss,
@@ -52,6 +53,8 @@ public:
 
   Restraints get_decomposition() const;
 };
+
+
 
 /** Helper to create a ContainerRestraint without specifying the types. Make
     sure the score and container passed have their real type, not Container

@@ -59,6 +59,17 @@ double ContainerRestraint<Score, C>
 }
 
 template <class Score, class C>
+void ContainerRestraint<Score, C>::set_is_incremental(bool tf) {
+  if (tf) {
+    ac_=pc_->get_added_container();
+    rc_=pc_->get_removed_container();
+  } else {
+    ac_=NULL;
+    rc_=NULL;
+  }
+}
+
+template <class Score, class C>
 ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const
 {
   IMP_OBJECT_LOG;

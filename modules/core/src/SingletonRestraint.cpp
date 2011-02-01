@@ -51,6 +51,9 @@ double SingletonRestraint
   return score_;
 }
 
+void SingletonRestraint
+::set_is_incremental(bool) {}
+
 ParticlesTemp SingletonRestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(ss_.get(), v_);

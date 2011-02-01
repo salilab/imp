@@ -72,7 +72,8 @@ inline Restraint* create_restraint(Score *s,
     return new TupleRestraint<Score>(s, t, name);
 }
 
-
+template <class Score>
+void TupleRestraint<Score>::set_is_incremental(bool) {}
 
 
 /** When programming in C++, you can use TupleConstraint instead
