@@ -82,7 +82,8 @@ def add_skeleton(h, c, r, w, chain_colors):
 IMP.set_log_level(IMP.TERSE)
 m= IMP.Model()
 
-hs= read(m, 46)
+# change to 46 to display all of them
+hs= read(m, 10)
 
 # used to test of two molecules are touching one another
 ps= IMP.core.KClosePairsPairScore(IMP.core.SphereDistancePairScore(IMP.core.HarmonicUpperBound(10,1)),
