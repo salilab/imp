@@ -23,6 +23,19 @@ void ParticleStatesTable::do_show(std::ostream &out) const{
 }
 
 
+unsigned int TrivialStates::get_number_of_particle_states() const {
+  return n_;
+}
+void TrivialStates::load_particle_state(unsigned int i, Particle *p) const {
+  p->set_value(k_, i);
+}
+
+void TrivialStates::do_show(std::ostream &out) const{
+  out << "size: " << n_ << std::endl;
+}
+
+
+
 unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
