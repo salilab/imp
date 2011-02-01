@@ -3,6 +3,7 @@ Import('env')
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
+                  expensive_python_tests= env.IMPModuleGetExpensivePythonTests(),
                   show_exceptions=['AllMol2Selector', 'AllPDBSelector',
                                    'ChainPDBSelector',
                                    'ElementTable', 'HierarchyVector'],

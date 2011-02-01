@@ -30,17 +30,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
                           IMP.atom.read_pdb,
                           self.open_input_file("notapdb.pdb"),
                           m)
-    def test_round_trips(self):
-        """Testing that we can read and write various pdbs"""
-        self._test_round_trip("1d3d-protein.pdb", IMP.atom.NonWaterPDBSelector())
-        self._test_round_trip("1d3d-protein.pdb", IMP.atom.NonAlternativePDBSelector())
-        self._test_round_trip("1DQK.pdb", IMP.atom.NonWaterPDBSelector())
-        self._test_round_trip("1z5s_A.pdb", IMP.atom.NonWaterPDBSelector())
-        self._test_round_trip("input.pdb", IMP.atom.NonWaterPDBSelector())
-        self._test_round_trip("protein_water.pdb", IMP.atom.NonWaterPDBSelector())
-        self._test_round_trip("protein_water.pdb", IMP.atom.NonAlternativePDBSelector())
-        self._test_round_trip("regression_0.pdb", IMP.atom.NonAlternativePDBSelector())
-        self._test_round_trip("single_dna.pdb", IMP.atom.NonAlternativePDBSelector())
     def test_read(self):
         """Check reading a pdb with one protein"""
         m = IMP.Model()
@@ -69,28 +58,6 @@ class PDBReadWriteTest(IMP.test.TestCase):
                                m, IMP.atom.NonWaterPDBSelector())
         ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
         self.assertEqual(len(ps), 3011)
-
-    def test_read_het(self):
-        """Check reading a pdb with one protein and a hetatm"""
-        m = IMP.Model()
-
-        #! read PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
-                               m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
-        self.assertEqual(len(ps), 4060)
-        #IMP.atom.show_molecular_hierarchy(mp)
-        IMP.atom.show(mp)
-        IMP.atom.add_bonds(mp)
-        bds = IMP.atom.get_internal_bonds(mp)
-        #self.assertEqual(bds.size(), 1020)
-        IMP.atom.add_radii(mp)
-        IMP.atom.show_molecular_hierarchy(mp)
-        # read another PDB
-        mp = IMP.atom.read_pdb(self.open_input_file("1aon.pdb"),
-                              m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
-        self.assertEqual(len(ps), 58870)
 
     def test_read_non_water(self):
         """Check that the default pdb reader skips waters"""
