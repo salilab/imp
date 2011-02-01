@@ -37,7 +37,7 @@ class IMPCOREEXPORT CoreCLASSNAMEsRestraint :
   public CLASSNAMEsScoreRestraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> pc_;
+  IMP::internal::OwnerPointer<CLASSNAMEContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 
