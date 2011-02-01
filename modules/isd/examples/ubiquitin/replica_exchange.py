@@ -4,7 +4,8 @@ import sys,os,errno
 import atexit
 import random
 
-from IMP.isd.FileBasedGrid import FileBasedGrid
+from IMP.isd.PyroGrid import PyroGrid as Grid
+#from IMP.isd.FileBasedGrid import FileBasedGrid as Grid
 from IMP.isd.hosts import create_host_list
 import IMP.atom
 import IMP.container
@@ -23,12 +24,15 @@ tmpdir = os.path.join(os.getcwd(),'tmp')
 #number of replicas / hosts
 nreps = 8
 #lambda scaling distribution
+kB= (1.381 * 6.02214) / 4184.0
 lambda_1 = 1.0
 lambda_N = 0.7
 lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1)) 
         for k in xrange(1,nreps+1)]
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
+#stat_rate is the rate at which to print out traj statistics
+stat_rate=[10]*nreps
 #list of files relative to the current dir to copy over to all nodes
 initpdb = "generated2.pdb"
 charmmtop = "top.lib"
@@ -36,24 +40,33 @@ charmmpar =  "par.lib"
 restraints = "NOE_HN-full_7A_sparse100.tbl"
 filelist=[initpdb,charmmtop,charmmpar,restraints] #add whatever you want
 #prefix of output files 
-nums=[[os.path.join(outfolder,'p%02d' % (i+1))] for i in xrange(nreps)]
+nums=[[os.path.join(outfolder,'r%02d' % (i+1))] for i in xrange(nreps)]
 #number of gibbs sampling steps
-n_gibbs = 10
+n_gibbs = 1000
 #number of md steps
 n_md = 1000
 #number of mc steps (not < 50 because adaptive)
 n_mc = 100
 #where to run sims
 hostlist = ['localhost']*nreps
+#replica exchange scheme
+rex_scheme='convective'
+#replica exchange exchange method
+rex_xchg='gromacs'
 
 #misc
-imppy = '/bongo1/home/yannick/imp_local/build-release/tools/imppy.sh'
-src_path = '/bongo1/home/yannick/imp_local/build-release/build/lib/IMP/isd'
-showX11 = False 
+
+imppy = '/bongo1/home/yannick/imp_local/build-fast/tools/imppy.sh'
+src_path = '/bongo1/home/yannick/imp_local/build-fast/build/lib/IMP/isd'
+showX11 = True 
 grid_debug = False
 grid_verbose = False
 X11_delay = 1.0
 window_size = '80x25'
+#pyroGrid
+shared_temp_path = True
+terminate_during_publish = False
+nshost = 'localhost'
 
 def mkdir_p(path):
     "mkdir -p, taken from stackoverflow" 
@@ -69,15 +82,16 @@ def launch_grid():
     for host in hosts:
         #ugly hack
         host.init_cmd = imppy + ' !'
-    grid = FileBasedGrid(hosts, src_path, showX11, X11_delay, grid_debug,
-            grid_verbose)
-    grid.shared_temp_path = True
+    #grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
+    #        grid_verbose)
+    #grid.shared_temp_path = shared_temp_path
+    grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
+            grid_verbose, shared_temp_path, nshost, terminate_during_publish)
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
     #grid.copy_files(src_path,["shared_functions.py"])
-    #register termination
-    atexit.register(grid.terminate)
+    
     #start grid on all nodes
     grid.start()
     return grid
@@ -95,16 +109,18 @@ def main():
 
     print "communication test"
     #get a worker to do a task
-    proxy = grid.acquire_service(sfo_id)
-    print proxy.hello().get()
-    grid.release_service(proxy)
+    #proxy = grid.acquire_service(sfo_id)
+    #print proxy.hello().get()
+    #grid.release_service(proxy)
+
+    print "broadcast test"
+    print grid.gather(grid.broadcast(sfo_id, 'hello'))
 
     #call init on all nodes
     print "initializing model"
     mkdir_p(tmpdir)
     mkdir_p(outfolder)
-    requests = grid.broadcast(sfo_id, 'init_model', tmpdir, 
-            initpdb, restraints)
+    requests = grid.broadcast(sfo_id, 'init_model', tmpdir)
     #wait til init is done
     results = grid.gather(requests)
 
@@ -114,31 +130,29 @@ def main():
 
     # evaluate the score of the whole system (without derivatives)
     print "initial energy"
-    proxy = grid.acquire_service(sfo_id)
-    print proxy.m('evaluate',False).get()
-    print "writing initial structure to file initial.pdb"
-    proxy.write_pdb(os.path.join(outfolder,'initial.pdb')).get()
-    grid.release_service(proxy)
+    grid.gather(grid.broadcast(sfo_id, 'm', 'evaluate', False))
     
     #berendsen 300K tau=0.5ps
     #perform two independent MC moves for sigma and gamma
     print "initializing simulation and statistics"
-    grid.gather(grid.scatter(sfo_id, 'init_simulation', zip(lambdas, tau)))
+    grid.gather(grid.scatter(sfo_id, 'init_simulation', 
+        zip(lambdas, tau, stat_rate)))
     grid.gather(grid.scatter(sfo_id, 'init_stats', nums))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
-            logfile=os.path.join(outfolder,'replicanums.txt'))
+            logfile=os.path.join(outfolder,'replicanums.txt'),
+            scheme=rex_scheme, xchg=rex_xchg)
 
     print "start gibbs sampling loop"
     for i in range(n_gibbs):
-        print "gibbs step %d" % i
-        print " md"
+        print "\rgibbs step %d" % i,
+        sys.stdout.flush()
+        #print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
-        print " mc"
+        #print " mc"
         grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
-        print " swaps"
+        #print " swaps"
         replica.replica_exchange()
-        print " stats"
-        grid.gather(grid.broadcast(sfo_id, 'write_stats', i, n_mc))
+        #print " stats"
         replica.write_rex_stats()
 
     print "terminating grid"
