@@ -32,7 +32,8 @@ IMP_SWIG_OBJECT(IMP::domino, ListSubsetFilterTable, ListSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilterTable, RestraintScoreSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilter, RestraintScoreSubsetFilters);
 IMP_SWIG_OBJECT(IMP::domino, RigidBodyStates, RigidBodyStatess);
-IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatess);
+IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatesList);
+IMP_SWIG_OBJECT(IMP::domino, TrivialStates, TrivialStatesList);
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 
 

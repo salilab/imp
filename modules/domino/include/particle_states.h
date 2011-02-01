@@ -85,6 +85,19 @@ public:
 
 IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);
 
+
+/** Store the state index in the particle. The particle must
+    already have the attribute in question.
+*/
+class IMPDOMINOEXPORT TrivialStates: public ParticleStates {
+  IntKey k_;
+  unsigned int n_;
+public:
+  TrivialStates(unsigned int n): n_(n){}
+  IMP_PARTICLE_STATES(TrivialStates);
+};
+IMP_OBJECTS(TrivialStates, TrivialStatesList);
+
 /** Store a set of states which explicitly define the XYZ coordinates of
     the particle in question.
 */
