@@ -56,7 +56,7 @@ For %example one of ours looks like
 \include "example_config.py"
 
 For simple setups (such as a linux build with no dependencies installed in odd places) the following would suffice.
-\include "example_simple_cofig.py"
+\include "example_simple_config.py"
 When building a module or biological system externally to the main \imp directory (but still using an svn copy of IMP, something like the following will do:
 \include "example_external_config.py"
 
