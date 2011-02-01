@@ -65,7 +65,10 @@ void CloseBipartitePairContainer::initialize(SingletonContainer *a,
   movedb_= cpf_->get_moved_singleton_container(b_, get_model(), slack_);
 }
 
-IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer);
+IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer, {
+    moveda_->set_log_level(l);
+    movedb_->set_log_level(l);
+  });
 
 ParticlesTemp CloseBipartitePairContainer
 ::get_state_input_particles() const {
