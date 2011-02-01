@@ -74,16 +74,16 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
       IMP_LOG(VERBOSE, "end\n");
     }
     Float next_energy;
-    if (cg_ && num_local_steps_!= 0) {
-      IMP_LOG(TERSE,
-              "MC Performing local optimization from "
-              << get_model()->evaluate(false) << std::endl);
-      CreateLogContext clc("mc local optimization");
-      {
-        IMP_CHECK_OBJECT(cg_.get());
+    try {
+      if (cg_ && num_local_steps_!= 0) {
+        IMP_LOG(TERSE,
+                "MC Performing local optimization from "
+                << get_model()->evaluate(false) << std::endl);
+        CreateLogContext clc("mc local optimization");
+        {
+          IMP_CHECK_OBJECT(cg_.get());
 
-        // if incremental, turn off non-dirty particles
-        try {
+          // if incremental, turn off non-dirty particles
           if (get_model()->get_is_incremental()) {
             bool has_changed=false;
             get_model()->update();
@@ -120,19 +120,19 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
                               << .01*(next_energy+me)+.01);
             }
           }
-        } catch (const ModelException &e) {
-          // make sure the move is rejected if the model gets in
-          // an invalid state
-          ++failures;
-          next_energy= std::numeric_limits<double>::infinity();
-        }
       }
       IMP_LOG(TERSE, "To energy " << next_energy << " equals "
               << get_model()->evaluate(false)
               << " done "<< std::endl);
-    } else {
-      next_energy =  get_model()->evaluate(false);
-    }
+      } else {
+        next_energy =  get_model()->evaluate(false);
+      }
+    } catch (const ModelException &e) {
+      // make sure the move is rejected if the model gets in
+          // an invalid state
+          ++failures;
+          next_energy= std::numeric_limits<double>::infinity();
+        }
     bool accept=false;
     if  (next_energy < prior_energy) {
       accept=true;
