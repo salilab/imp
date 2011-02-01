@@ -103,6 +103,10 @@ protected:
 #endif
 #endif // IMP_DOXYGEN
 
+  bool get_is_shared() const {
+    return count_ >1;
+  }
+
 };
 
 IMP_END_NAMESPACE

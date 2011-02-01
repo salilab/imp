@@ -1194,7 +1194,8 @@ private:                                                        \
 */
 #define IMP_INCREMENTAL_RESTRAINT(Name)                                 \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
-  virtual bool get_is_incremental() const {return true;}                \
+  virtual bool get_supports_incremental() const {return true;}          \
+  virtual void set_is_incremental(bool tf);                             \
   virtual double                                                        \
   unprotected_incremental_evaluate(DerivativeAccumulator *accum) const; \
   ContainersTemp get_input_containers() const;                          \
