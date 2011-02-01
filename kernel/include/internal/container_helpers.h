@@ -216,9 +216,11 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   bool get_has_model() const { return ticker_.get_is_set();}    \
   ParticlesTemp get_state_input_particles() const;              \
   ContainersTemp get_state_input_containers() const;            \
-  void initialize_active_container(Model *m)
+  void initialize_active_container(Model *m);                   \
+public:                                                         \
+ void set_log_level(LogLevel l)
 
-#define IMP_ACTIVE_CONTAINER_DEF(Name)                                  \
+#define IMP_ACTIVE_CONTAINER_DEF(Name, extra_objects_log)               \
   void Name::Ticker::do_before_evaluate() {                             \
     back_->do_before_evaluate();                                        \
     back_->eval_update_= back_->get_model()->get_evaluation();          \
@@ -257,6 +259,11 @@ inline std::string get_name(const ParticleTuple<D>& p) {
     IMP_INTERNAL_CHECK(get_model(),                                     \
                        "No active updating of add/remove containers."); \
     ticker_.set(new Ticker(this), m);                                   \
+  }                                                                     \
+  void Name::set_log_level(LogLevel l) {                                \
+    Object::set_log_level(l);                                           \
+    ticker_->set_log_level(l);                                          \
+    extra_objects_log;                                                  \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
