@@ -51,6 +51,9 @@ double CLASSNAMERestraint
   return score_;
 }
 
+void CLASSNAMERestraint
+::set_is_incremental(bool) {}
+
 ParticlesTemp CLASSNAMERestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(ss_.get(), v_);
