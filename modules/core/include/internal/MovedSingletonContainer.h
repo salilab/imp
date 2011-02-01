@@ -99,8 +99,10 @@ namespace {
   inline bool moved_threshold(Particle *p, const algebra::SphereD<3> &old,
                               bool incremental,
                               double threshold, double &dist2, double &dr,
-                              double &dist, bool has_dist) {
+                              double &dist, bool &has_dist) {
     if (incremental && !p->get_is_changed()) {
+      IMP_LOG(VERBOSE, p->get_name() << " was not changed"
+              << std::endl);
       has_dist=false;
       return false;
     }
@@ -108,10 +110,18 @@ namespace {
     dist2=(d.get_coordinates()- old.get_center()).get_squared_magnitude();
     dr= std::abs(old.get_radius()-d.get_radius());
     if (square(threshold) > dist2+ dist2*dr + square(dr)) {
+      IMP_LOG(VERBOSE, p->get_name() << " rejected out of hand: "
+              << d.get_coordinates() << " vs " << old.get_center()
+              << " - " << dist2 << " - " << dr
+              << std::endl);
       has_dist=false;
       return false;
     } else {
       dist= std::sqrt(dist2);
+      IMP_LOG(VERBOSE, p->get_name() << " considered : "
+              << d.get_coordinates() << " vs " << old.get_center()
+              << " - " << dist << " - " << dr
+              << std::endl);
       has_dist=true;
       return threshold < dist + dr;
     }
@@ -127,6 +137,7 @@ namespace {
     void do_apply(Particle *p) const {
       double dist2=-1, dr, dist;
       bool has_dist=false; // suppress warning
+      //std::cout << "rapplying on " << p->get_name() << std::endl;
       IMP_INTERNAL_CHECK(values_.size() > i_,
                          "Wrong size of values_.");
       if (moved_threshold(p, values_[i_].first, incremental_,
@@ -143,6 +154,9 @@ namespace {
             *rb.get_reference_frame().get_transformation_from().get_rotation();
           algebra::VectorD<3> rv(0,0,XYZR(p).get_radius());
           algebra::VectorD<3> rvr= rd.get_rotated(rv);
+          IMP_LOG(VERBOSE, p->get_name() << " rigid body : "
+                  << rv << " " << rvr
+                  << std::endl);
           if (dist + (rv-rvr).get_magnitude() > threshold_) {
             pt_->push_back(p);
           }
@@ -175,6 +189,7 @@ namespace {
     void do_apply(Particle *p ) const {
       double dist2, dr, dist;
       bool has_dist=false;
+      //std::cout << "applying on " << p->get_name() << std::endl;
       if (moved_threshold(p, values_[i_], incremental_,
                           threshold_, dist2, dr, dist, has_dist)) {
         pt_->push_back(p);
@@ -200,7 +215,7 @@ class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
 {
  protected:
   double threshold_;
-  Pointer<SingletonContainer> pc_;
+  Pointer<SingletonContainer> pc_, ac_, rc_;
   bool first_call_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
   virtual void save()=0;
@@ -272,6 +287,8 @@ class MovedSingletonContainerImpl:
                                MovedSingletonContainer::threshold_, incr));
       cv->set_was_used(true);
       MovedSingletonContainer::pc_->apply(cv);
+      IMP_LOG(TERSE, "Found " << ret.size()
+              << " moved particles." << std::endl);
       add_to_list(ret);
     }
   }
