@@ -108,18 +108,20 @@ _ModuleExamplesOverview = Builder(action=Action(_make_module_example_overview,
                                          _print_module_example_overview))
 
 def _make_example_links(target, source, env):
+    print "making example links:", target[0].abspath
     out= open(target[0].abspath, "w")
-    return
     dta= data.get(env)
     methods={}
     classes={}
     for m in dta.modules.keys():
+        print m
         methods[m]={}
         classes[m]={}
     for k in dta.examples.keys():
+        print k
         for m in dta.examples[k].classes.keys():
             for c in dta.examples[k].classes[m]:
-                if classes[m].has_key(c):
+                if not classes[m].has_key(c):
                     classes[m][c]=[]
                 classes[m][c].append(k)
         for m in dta.examples[k].methods.keys():
@@ -127,7 +129,10 @@ def _make_example_links(target, source, env):
                 if not methods[m].has_key(c):
                     methods[m][c]=[]
                 methods[m][c].append(k)
+    print classes
+    print methods
     for m in dta.modules.keys():
+        print m
         if len(methods[m])+ len(classes[m]) > 0:
             print >> out, "namespace IMP {"
             if m != "kernel":
