@@ -266,6 +266,7 @@ def get_base_environment(variables=None, *args, **kw):
     env.AddMethod(module.IMPModuleGetExamples)
     env.AddMethod(module.IMPModuleGetExampleData)
     env.AddMethod(module.IMPModuleGetPythonTests)
+    env.AddMethod(module.IMPModuleGetExpensivePythonTests)
     env.AddMethod(module.IMPModuleGetCPPTests)
     env.AddMethod(module.IMPModuleGetData)
     env.AddMethod(module.IMPModuleGetSources)

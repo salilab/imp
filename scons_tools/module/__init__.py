@@ -343,6 +343,10 @@ def IMPModuleGetPythonTests(env):
     return scons_tools.utility.get_matching_recursive(["test_*.py"])
 def IMPModuleGetCPPTests(env):
     return scons_tools.utility.get_matching_recursive(["test_*.cpp"])
+def IMPModuleGetExpensivePythonTests(env):
+    return scons_tools.utility.get_matching_recursive(["expensive_test_*.py"])
+def IMPModuleGetExpensiveCPPTests(env):
+    return scons_tools.utility.get_matching_recursive(["expensive_test_*.cpp"])
 
 
 def IMPModuleGetHeaders(env):
@@ -436,7 +440,9 @@ def IMPModuleDoc(env, files, authors,
 #   files= ["#/bin/imppy.sh", "#/tools/run_all_tests.py"]+\
 #        [x.abspath for x in Glob("test_*.py")+ Glob("*/test_*.py")]
 
-def IMPModuleTest(env, python_tests, cpp_tests,
+def IMPModuleTest(env, python_tests=[], cpp_tests=[],
+                  expensive_python_tests=[],
+                  expensive_cpp_tests=[],
                   plural_exceptions=[], show_exceptions=[],
                   function_name_exceptions=[],
                   value_object_exceptions=[],
@@ -449,6 +455,7 @@ def IMPModuleTest(env, python_tests, cpp_tests,
        Right now, the assumption is made that run-abll-tests.py executes
        all files called test_*.py in the current directory and subdirectories."""
     files= [x.abspath for x in python_tests]
+    expensive_files= [x.abspath for x in expensive_python_tests]
     if len(cpp_tests)>0:
         #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
         prgs= _make_programs(env, cpp_tests)
@@ -456,6 +463,13 @@ def IMPModuleTest(env, python_tests, cpp_tests,
         cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
                                        source= prgs)
         files.append(cpptest)
+    if len(expensive_cpp_tests)>0:
+        #print "found cpp tests", " ".join([str(x) for x in cpp_tests])
+        prgs= _make_programs(env, expensive_cpp_tests)
+        #print [x[0].abspath for x in prgs]
+        cpptest= env.IMPModuleCPPTest(target="cpp_test_programs.py",
+                                       source= prgs)
+        expensive_files.append(cpptest)
     if check_standards:
         standards=_standards.add(env, plural_exceptions=plural_exceptions,
                                  show_exceptions=show_exceptions,
@@ -471,6 +485,7 @@ def IMPModuleTest(env, python_tests, cpp_tests,
             files.remove(found)
         files.append(standards)
     test = scons_tools.test.add_test(env, source=files,
+                                     expensive_source=expensive_files,
                                      type='unit test')
 
 def IMPModuleBuild(env, version, required_modules=[],
