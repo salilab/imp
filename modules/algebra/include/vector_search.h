@@ -10,6 +10,7 @@
 
 #include "VectorD.h"
 #include <IMP/base_types.h>
+#include <IMP/Object.h>
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 #include <IMP/cgal/internal/knn.h>
 #endif
