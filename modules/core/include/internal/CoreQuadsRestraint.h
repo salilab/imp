@@ -37,7 +37,7 @@ class IMPCOREEXPORT CoreQuadsRestraint :
   public QuadsScoreRestraint
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
-  IMP::internal::OwnerPointer<QuadContainer> pc_;
+  IMP::internal::OwnerPointer<QuadContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

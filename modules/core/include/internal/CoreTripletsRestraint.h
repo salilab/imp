@@ -37,7 +37,7 @@ class IMPCOREEXPORT CoreTripletsRestraint :
   public TripletsScoreRestraint
 {
   IMP::internal::OwnerPointer<TripletScore> ss_;
-  IMP::internal::OwnerPointer<TripletContainer> pc_;
+  IMP::internal::OwnerPointer<TripletContainer> pc_, ac_, rc_;
   mutable double score_;
 public:
 

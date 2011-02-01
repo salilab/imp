@@ -51,19 +51,30 @@ double CoreSingletonsRestraint
   score_+=pc_->evaluate_change(ss_, accum);
   // compute the base for the added ones
   IMP_LOG(VERBOSE, " " << score_);
-  score_ +=pc_->get_added_container()
+  score_ +=ac_
     ->evaluate_prechange(ss_, accum);
   IMP_LOG(VERBOSE," " << score_);
   if (accum) {
     DerivativeAccumulator nda(*accum, -1);
-    score_ -=pc_->get_removed_container()
+    score_ -=rc_
       ->evaluate_prechange(ss_, &nda);
   } else {
-    score_ -=pc_->get_removed_container()
+    score_ -=rc_
       ->evaluate_prechange(ss_, NULL);
   }
   IMP_LOG(VERBOSE," " << score_ << std::endl);
   return score_;
+}
+
+void CoreSingletonsRestraint
+::set_is_incremental(bool tf) {
+  if (tf) {
+    ac_= pc_->get_added_container();
+    rc_= pc_->get_removed_container();
+  } else {
+    ac_= NULL;
+    rc_= NULL;
+  }
 }
 
 ParticlesTemp CoreSingletonsRestraint::get_input_particles() const

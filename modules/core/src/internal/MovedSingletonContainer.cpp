@@ -27,7 +27,8 @@ MovedSingletonContainer::MovedSingletonContainer(Model *m,
                                                  double threshold):
   internal::ListLikeSingletonContainer(m, "MovedSingletonContainer"),
   threshold_(threshold),
-  pc_(pc)
+  pc_(pc), ac_(pc_->get_added_container()),
+  rc_(pc_->get_removed_container())
 {
   initialize_active_container(m);
   first_call_=true;
@@ -45,15 +46,17 @@ void MovedSingletonContainer::do_after_evaluate() {
 
 void MovedSingletonContainer::do_before_evaluate()
 {
+  IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
   if (first_call_) {
+    IMP_LOG(TERSE, "First call" << std::endl);
     first_call_=false;
     reset();
     ParticlesTemp t=pc_->get_particles();
     update_list(t);
   }
-  if (pc_->get_added_container()->get_number_of_particles() != 0
-      || pc_->get_removed_container()->get_number_of_particles()
+  if (ac_->get_number_of_particles() != 0
+      || rc_->get_number_of_particles()
       != 0) {
     reset();
     ParticlesTemp t=pc_->get_particles();
@@ -94,7 +97,7 @@ void MovedSingletonContainer::set_threshold(double d) {
   reset();
 }
 
-IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer);
+IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer,);
 
 
 

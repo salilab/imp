@@ -51,6 +51,9 @@ double PairRestraint
   return score_;
 }
 
+void PairRestraint
+::set_is_incremental(bool) {}
+
 ParticlesTemp PairRestraint::get_input_particles() const
 {
   return IMP::internal::get_input_particles(ss_.get(), v_);
