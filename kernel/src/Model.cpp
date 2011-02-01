@@ -142,15 +142,19 @@ double Model::get_weight(Restraint *r) const {
 
 
 void Model::update() {
-  /*SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
-  if (!score_states_ordered_) {
-    order_score_states();
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(this);
+  if (get_is_incremental() && !first_incremental_) {
+    evaluate(last_had_derivatives_);
   } else {
-    ScoreStatesTemp st(score_states_begin(), score_states_end());
-    before_evaluate(st);
+    if (!get_has_dependencies()) {
+      compute_dependencies();
+    }
+    Floats ret= do_evaluate(RestraintsTemp(),
+                            Floats(),
+                            ordered_score_states_,
+                            false);
   }
-  ++eval_count_;*/
-  evaluate(false);
 }
 
 void Model::set_is_incremental(bool tf) {
@@ -160,9 +164,17 @@ void Model::set_is_incremental(bool tf) {
     for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
       (*it)->setup_incremental();
     }
+    RestraintsTemp rt= get_restraints(rs_);
+    for (unsigned int i=0; i< rt.size(); ++i) {
+      rt[i]->set_is_incremental(true);
+    }
   } else if (!tf && get_is_incremental()) {
     for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
       (*it)->teardown_incremental();
+    }
+    RestraintsTemp rt= get_restraints(rs_);
+    for (unsigned int i=0; i< rt.size(); ++i) {
+      rt[i]->set_is_incremental(false);
     }
   }
   incremental_update_=tf;
