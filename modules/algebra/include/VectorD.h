@@ -81,9 +81,12 @@ public:
   }
 #endif
 
+  /** \throw ValueException if f.size() is not appropriate.*/
   VectorD(const Floats &f) {
-    IMP_USAGE_CHECK(D==-1 || f.size()==D,
-                    "Sizes don't match");
+    if (D!=-1 && f.size() != D) {
+      IMP_THROW("Expected " << D << " but got " << f.size(),
+                ValueException);
+    }
     data_.set_coordinates(f.begin(), f.end());
   }
 
