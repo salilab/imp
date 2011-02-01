@@ -271,7 +271,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     double value=0;
     DerivativeAccumulator accum(weights[i]);
     if (gather_statistics_) timer.restart();
-    if (restraints[i]->get_is_incremental()
+    if (restraints[i]->get_supports_incremental()
         && incremental_restraints != NONINCREMENTAL) {
       if (incremental_evaluation) {
         WRAP_EVALUATE_CALL(restraints[i],
@@ -284,7 +284,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                            restraints[i]->unprotected_evaluate(calc_derivs?
                                                                 &accum:NULL));
       }
-    } else if (!restraints[i]->get_is_incremental()
+    } else if (!restraints[i]->get_supports_incremental()
                && incremental_restraints != INCREMENTAL) {
       WRAP_EVALUATE_CALL(restraints[i],
                          value=

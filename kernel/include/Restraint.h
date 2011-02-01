@@ -92,8 +92,11 @@ public:
       @{
   */
   //! Return true if the incremental_evaluate() function is implemented
-  virtual bool get_is_incremental() const {return false;}
-
+  virtual bool get_supports_incremental() const {return false;}
+  /** Do any prep work that needs to be done to prepare for incremental
+      evaluation.
+  */
+  virtual void set_is_incremental(bool ) {}
   /** @} */
 
   /** \brief The restraint can override this in order to take action
