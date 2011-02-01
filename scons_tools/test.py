@@ -65,20 +65,23 @@ UnitTest = Builder(action=Action(_action_unit_test,
                    source_scanner=pyscanner.PythonScanner)
 
 
-def add_test(env, source, type):
-    test=UnitTest(env, target="test.passed", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
+def add_test(env, source, type, expensive_source=[]):
+    test=UnitTest(env, target="fast-test.passed", source=["#/tools/imppy.sh"]+source+[env.Value(type)])
+    etest=UnitTest(env, target="test.passed", source=["#/tools/imppy.sh"]+source+expensive_source+[env.Value(type)])
     env.Requires(test, "#/build/lib/compat_python")
     env.AlwaysBuild("test.passed")
     #env.Requires(test, env.Alias(environment.get_current_name(env)))
     #env.Requires(test, "tools/imppy.sh")
     if type=='unit test':
-        data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
+        data.get(env).add_to_alias(environment.get_current_name(env)+"-test-fast", test)
+        data.get(env).add_to_alias(environment.get_current_name(env)+"-test", etest)
     elif type=='example':
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test-examples",
                                                test)
     elif type=="system":
         data.get(env).add_to_alias(environment.get_current_name(env)+"-test", test)
     env.Alias(env.Alias('test'), test)
+    env.Alias(env.Alias('test-fast'), etest)
     return test
 
 
