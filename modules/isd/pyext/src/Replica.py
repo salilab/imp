@@ -2,14 +2,17 @@
 #inspired by ISD Replica.py
 #Yannick
 
-from math import exp
-from random import random,randint
+from numpy import *
+from numpy.random import random,randint
+import TuneRex
+kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 
 class ReplicaTracker():
     
     def __init__(self,nreps,inv_temps,grid,sfo_id,
-            logfile='replicanums.txt', scheme='standard', xchg='random',
-            convectivelog='results/stirred.txt'):
+            rexlog='replicanums.txt', scheme='standard', xchg='random',
+            convectivelog='stirred.txt', tune_temps = False,
+            tune_data={}, templog = 'temps.txt'):
         self.nreps = nreps
         #replica number as a function of state no
         self.replicanums = range(nreps)
@@ -18,11 +21,15 @@ class ReplicaTracker():
         self.grid = grid
         self.sfo_id = sfo_id
         #expect inverse temperatures
-        self.temps = inv_temps
-        self.logfile = logfile
+        self.inv_temps = inv_temps
+        self.logfile = rexlog
         self.stepno = 1
         self.scheme = scheme
         self.xchg = xchg
+        self.tune_temps = tune_temps
+        self.tune_data = tune_data
+        self.rn_history = []
+        self.templog = templog
         #scheme is one of gromacs, randomneighbors or convective
         if scheme == "convective":
             self.stirred = {}
@@ -135,7 +142,8 @@ class ReplicaTracker():
         (s1,s2) = pairslist[0]
         for (s1,s2) in pairslist:
             metrop[(s1,s2)] = \
-                exp((old_ene[s2]-old_ene[s1])*(self.temps[s2]-self.temps[s1]))
+                exp((old_ene[s2]-old_ene[s1])*
+                        (self.inv_temps[s2]-self.inv_temps[s1]))
         return metrop
                     
     def try_exchanges(self, plist, metrop):
@@ -159,7 +167,7 @@ class ReplicaTracker():
             self.replicanums[i] = self.replicanums[j]
             self.replicanums[j] = buf
         #on the grid (suboptimal but who cares)
-        newtemps = self.sort_per_replica(self.temps)
+        newtemps = self.sort_per_replica(self.inv_temps)
         self.grid.gather(self.grid.scatter(self.sfo_id, 'set_temp', newtemps))
         steps = self.grid.gather(
                 self.grid.broadcast(self.sfo_id, 'get_mc_stepsize'))
@@ -186,8 +194,43 @@ class ReplicaTracker():
             fl.write('%2d ' % self.stirred['dir'])
             fl.write('%2d\n' % self.stirred['steps'])
             fl.close()
+        if self.tune_temps and len(self.rn_history) == 1:
+            fl=open(self.templog, 'a')
+            fl.write('%5d ' % self.stepno)
+            fl.write(' '.join(['%.3f' % i for i in self.inv_temps]))
+            fl.write('\n')
+            fl.close()
 
-
+    def tune_rex(self):
+        """use TuneRex to optimize temp set. Temps are optimized every 
+        'rate' steps and 'method' is used. Data is accumulated as long as
+        the temperatures weren't optimized.
+        td keys that should be passed to init:
+            rate : the rate at which to try tuning temps
+            method : flux or cv
+            targetAR : for cv only, target acceptance rate
+            alpha : Type I error to use.
+        """
+        #update replicanum
+        self.rn_history.append([i for i in self.replicanums])
+        td = self.tune_data
+        if len(self.rn_history) % td['rate'] == 0\
+                and len(self.rn_history) > 0:
+            temps = [1/(kB*la) for la in self.inv_temps]
+            if td['method'] == 'cv':
+                indicators = TuneRex.compute_indicators(
+                        transpose(self.rn_history))
+                changed, newparams = TuneRex.tune_params(indicators, temps,
+                        td['targetAR'], td['alpha'])
+            elif td['method'] == 'flux':
+                changed, newparams = TuneRex.tune_params_nonergodic(
+                        transpose(self.rn_history),
+                        temps, alpha = td['alpha'])
+            if changed:
+                self.rn_history = []
+                print newparams
+                self.inv_temps = [1/(kB*t) for t in newparams]
+                
     def do_bookkeeping_before(self):
         self.stepno += 1
         if self.scheme == 'convective':
@@ -220,8 +263,16 @@ class ReplicaTracker():
         "main entry point for replica-exchange"
         #print "replica exchange"
         self.do_bookkeeping_before()
+        #tune temperatures
+        if self.tune_temps:
+            self.tune_rex()
         #print "energies"
         energies = self.sort_per_state(self.get_energies())
+        fl=open('energies.txt','a')
+        fl.write('%d ' % self.stepno)
+        fl.write(' '.join(['%f' % ene for ene in energies]))
+        fl.write('\n')
+        fl.close()
         #print "pairs list"
         plist = self.gen_pairs_list()
         #print "metropolis"

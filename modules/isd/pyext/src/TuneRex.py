@@ -17,7 +17,7 @@ import rpy2.robjects as robjects
 kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 EPSILON = 1e-8 #here for float comparison. Floats are equal if their difference
                 #is smaller than EPSILON
-debug=True 
+debug=False
 def prdb(arg):
     if debug:
         print arg
@@ -25,7 +25,7 @@ def prdb(arg):
 ##### R compatibility functions
 
 r = robjects.r
-robjects.globalEnv["kB"] = kB
+robjects.globalenv["kB"] = kB
 _rinverf = r('invErf <-  function(x) {qnorm((1 + x) /2) / sqrt(2)}')
 _rerf = r('erf <- function(x) {2 * pnorm(x * sqrt(2)) - 1}')
 _rinvF = r('qf')
@@ -45,8 +45,8 @@ def spline(xy, mean,method=None):
     negative, replace by mean value.
     """
     x,y = zip(*xy)
-    robjects.globalEnv["x"] = robjects.FloatVector(x)
-    robjects.globalEnv["y"] = robjects.FloatVector(y)
+    robjects.globalenv["x"] = robjects.FloatVector(x)
+    robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
     #_rinterp = r.splinefun(x,y)
     if method == None:
@@ -63,8 +63,8 @@ def linear_interpolation(xy, mean):
     """linear interpolation of (x,y) coordinates. No extrapolation possible.
     """
     x,y = zip(*xy)
-    robjects.globalEnv["x"] = robjects.FloatVector(x)
-    robjects.globalEnv["y"] = robjects.FloatVector(y)
+    robjects.globalenv["x"] = robjects.FloatVector(x)
+    robjects.globalenv["y"] = robjects.FloatVector(y)
     global _rinterp
     #_rinterp = r.splinefun(x,y)
     _rinterp = r('cvspline <- approxfun(x,y)')
@@ -87,8 +87,8 @@ def anova(*args):
         reps += r.rep(i,len(args[i]))
         weight += robjects.FloatVector(args[i])
     group = r.factor(reps)
-    robjects.globalEnv["weight"] = weight
-    robjects.globalEnv["group"] = group
+    robjects.globalenv["weight"] = weight
+    robjects.globalenv["group"] = group
     lm = r.lm("weight ~ group")
     aov =  r.anova(lm)
     prdb(aov)
@@ -142,8 +142,8 @@ def bartlett(*args):
     weight = robjects.IntVector(args[0])
     for i in args[1:]:
         weight += robjects.IntVector(i)
-    robjects.globalEnv["weight"] = weight
-    robjects.globalEnv["group"] = group
+    robjects.globalenv["weight"] = weight
+    robjects.globalenv["group"] = group
     var =  r('bartlett.test')(weight,group)
     return var[0][0], var[2][0] # statistic and p-value
 
@@ -155,8 +155,8 @@ def fligner(*args):
     weight = robjects.IntVector(args[0])
     for i in args[1:]:
         weight += robjects.IntVector(i)
-    robjects.globalEnv["weight"] = weight
-    robjects.globalEnv["group"] = group
+    robjects.globalenv["weight"] = weight
+    robjects.globalenv["group"] = group
     var =  r('fligner.test')(weight,group)
     return var[0][0], var[2][0] # statistic and p-value
 
@@ -201,7 +201,7 @@ class CvEstimator:
     """
     
     def __init__(self, params, energies=None, indicators=None,
-            method="constant", temps=None, write_cv = True):
+            method="constant", temps=None, write_cv = False):
         
         kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
         self.__initialized = False
@@ -751,11 +751,11 @@ def spline_diffusivity(pup,params):
     """spline interpolation of  diffusivity: D = 1/(df/dT * heta)
     """
     from numpy import linspace
-    robjects.globalEnv["hetay"] = \
+    robjects.globalenv["hetay"] = \
         robjects.FloatVector(linspace(0,1,num=len(params)).tolist())
-    robjects.globalEnv["hetax"] = robjects.FloatVector(params)
-    robjects.globalEnv["pupx"] = robjects.FloatVector(params)
-    robjects.globalEnv["pupy"] = robjects.FloatVector(pup)
+    robjects.globalenv["hetax"] = robjects.FloatVector(params)
+    robjects.globalenv["pupx"] = robjects.FloatVector(params)
+    robjects.globalenv["pupy"] = robjects.FloatVector(pup)
     heta=r('heta <- splinefun(hetax,hetay,method="monoH.FC")')
     eff=r('eff <- splinefun(pupx,pupy,method="monoH.FC")')
     diff = r('diff <- function(x) {-1/(heta(x,deriv=1)*eff(x,deriv=1))}')
