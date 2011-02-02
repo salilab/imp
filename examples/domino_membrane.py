@@ -14,9 +14,7 @@ def mysign(x):
 
 def create_representation(TMH,topo):
     m=IMP.Model()
-    #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.NonWaterNonHydrogenPDBSelector())
-    #mp0= IMP.atom.read_pdb('2K9P_OPM.pdb', m, IMP.atom.CAlphaPDBSelector())
-    mp0= IMP.atom.read_pdb('1rwt_OPM.pdb', m, IMP.atom.CAlphaPDBSelector())
+    mp0= IMP.atom.read_pdb('1h68_A.pdb', m, IMP.atom.CAlphaPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   updating CA radius to match residue volume
     for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
@@ -36,7 +34,7 @@ def create_representation(TMH,topo):
     for i,h in enumerate(TMH):
         s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
         p=s.get_selected_particles()
-        rb=IMP.atom.create_rigid_body(p)
+        rb=IMP.atom.create_rigid_body(p,"TM"+str(i))
 #       set the reference frame so that z is the principal axis
         rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
 #       add to TableRefiner
@@ -142,7 +140,7 @@ def create_restraints(m, chain, tbr, TMH):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
         lpc= IMP.container.ListPairContainer(m)
-        lpc.add_particle_pair([rbs[0],rbs[2]])
+        lpc.add_particle_pair([rbs[0],rbs[6]])
         hub= IMP.core.HarmonicUpperBound(0.6,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,3)
@@ -153,6 +151,7 @@ def create_restraints(m, chain, tbr, TMH):
 
 # assembling all the restraints
     add_excluded_volume()
+    rset=IMP.RestraintSet()
     for i in range(len(TMH)-1):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
         s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i+1][0])
@@ -160,14 +159,14 @@ def create_restraints(m, chain, tbr, TMH):
         p1=s1.get_selected_particles()[0]
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
-        length=1.8*(TMH[i+1][0]-TMH[i][1]+1)+7.4
+        length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
-        rdr=add_distance_restraint(rb0,rb1,30.0,1000)
+        rdr=add_distance_restraint(rb0,rb1,35.0,1000)
+        rset.add_restraint(dr)
     add_packing_restraint()
     add_DOPE()
-    ir=add_interacting_restraint()
-    rset=IMP.RestraintSet()
-    rset.add_restraint(ir)
+    #ir=add_interacting_restraint()
+    #rset.add_restraint(ir)
     return rset
 
 # creating the discrete states for domino
@@ -176,25 +175,33 @@ def  create_discrete_states(m,chain,TMH,sign):
     rot0=[]
     for i in range(len(TMH)):
         rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
-    trs0=[]; trs1=[]; trs2=[]
+    trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
     for i in range(0,1):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/6)
         for t in range(0,1):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
             rot1=IMP.algebra.compose(tilt,rotz)
             for s in range(0,1):
                 if ( t == 0 ) and ( s != 0 ) : break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/6)
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dz in range(0,1):
-                    for dx in range(-15,15):
-                        if ( dx >= 5 ):
-                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
-                                        IMP.algebra.Vector3D(dx,0,dz))))
-                        for dy in range(-15,15):
+                for dx in range(-30,30):
+                    if ( dx >= 7 ):
+                        trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
+                                    IMP.algebra.Vector3D(dx,0,0))))
+                    for dz in range(0,1):
+                        for dy in range(-30,30):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[3]),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[4]),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[5]),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[6]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
 
     pst= IMP.domino.ParticleStatesTable()
@@ -202,6 +209,10 @@ def  create_discrete_states(m,chain,TMH,sign):
     pstate.append(IMP.domino.RigidBodyStates(trs0))
     pstate.append(IMP.domino.RigidBodyStates(trs1))
     pstate.append(IMP.domino.RigidBodyStates(trs2))
+    pstate.append(IMP.domino.RigidBodyStates(trs3))
+    pstate.append(IMP.domino.RigidBodyStates(trs4))
+    pstate.append(IMP.domino.RigidBodyStates(trs5))
+    pstate.append(IMP.domino.RigidBodyStates(trs6))
     for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -244,13 +255,10 @@ def display(m,chain,TMH,name):
 # Here starts the real job...
 #IMP.set_log_level(IMP.VERBOSE)
 
-# TMH definition and topology
-# 1rwt definition
-TMH=[[64,82],[124,142],[179,199]]
-topo=[+1.0, -1.0, +1.0]
-# 2k9p definition
-#TMH=[[38,73],[80,106]]
-#topo=[-1.0,+1.0]
+TMH=[[3,25],[37,56],[70,87],[99,117],[121,141],[163,180],[190,211]]
+
+# define the topology
+topo=[-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0]
 
 print "creating representation"
 (m,chain,tbr,sign)=create_representation(TMH,topo)
