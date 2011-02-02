@@ -140,7 +140,7 @@ namespace internal {
     print >> h
 
     for d in scons_tools.module._get_module_direct_dependencies(env):
-        print "processing", d
+        #print "processing", d
         nm=scons_tools.dependency.get_dependency_string(d)
         _add_use(env, h, nm)
         if scons_tools.data.get(env).dependencies[d].version:
@@ -149,7 +149,8 @@ namespace internal {
                          scons_tools.data.get(env).dependencies[d].versionheader,
                          scons_tools.data.get(env).dependencies[d].versioncpp)
         else:
-            print "no version for", d
+            #print "no version for", d
+            pass
     for d in scons_tools.module._get_module_unfound_dependencies(env):
         nm=scons_tools.dependency.get_dependency_string(d)
         _add_no_use(env, h, nm)
