@@ -81,10 +81,21 @@ class CHARMMParametersTests(IMP.test.TestCase):
         self.assertRaises(IndexError, p.get_improper_parameters,
                           'NPH', 'CPA', 'CPB', 'CPA')
 
+    def test_read_nucleic_acids(self):
+        """Check read and lookup of RNA/DNA"""
+        p = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'))
+        for resnam in ['GUA', 'THY', 'URA', 'CYT', 'ADE',
+                       'G', 'T', 'U', 'C', 'A',
+                       'DGUA', 'DTHY', 'DURA', 'DCYT', 'DADE',
+                       'DG', 'DT', 'DU', 'DC', 'DA']:
+            r = p.get_residue_topology(IMP.atom.ResidueType(resnam))
+        self.assertRaises(ValueError, p.get_residue_topology,
+                          IMP.atom.ResidueType('garbage'))
+
     def test_read_topology(self):
         """Check parsing of topology file"""
         p = IMP.atom.CHARMMParameters(IMP.atom.get_data_path('top.lib'))
-        r = p.get_residue_topology("ALA")
+        r = p.get_residue_topology(IMP.atom.ALA)
         self.assertEqual(r.get_number_of_internal_coordinates(), 12)
         ic = r.get_internal_coordinate(0)
         ep = [ic.get_endpoint(i).get_atom_name() for i in range(4)]
@@ -162,8 +173,9 @@ class CHARMMParametersTests(IMP.test.TestCase):
         for res in ['ALA', 'CYS', 'ASP', 'GLU', 'PHE', 'GLY', 'HIS', 'ILE',
                     'LYS', 'LEU', 'MET', 'ASN', 'PRO', 'GLN', 'ARG', 'SER',
                     'THR', 'VAL', 'TRP', 'TYR', 'TIP3', 'CAL']:
-            rpdb = ppdb.get_residue_topology(res)
-            rcharmm = pcharmm.get_residue_topology(res)
+            typ = IMP.atom.ResidueType(res)
+            rpdb = ppdb.get_residue_topology(typ)
+            rcharmm = pcharmm.get_residue_topology(typ)
             self.assertResidueTopologiesEqual(rpdb, rcharmm)
         for res in ['NTER', 'CTER', 'GLYP', 'PROP', 'LINK', 'DISU']:
             rpdb = ppdb.get_patch(res)

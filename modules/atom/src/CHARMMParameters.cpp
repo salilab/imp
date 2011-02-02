@@ -699,17 +699,17 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
     HierarchiesTemp residues = get_by_type(*chainit, RESIDUE_TYPE);
     for (HierarchiesTemp::iterator resit = residues.begin();
          resit != residues.end(); ++resit) {
-      std::string restyp = Residue(*resit).get_residue_type().get_string();
+      ResidueType restyp = Residue(*resit).get_residue_type();
       try {
         IMP_NEW(CHARMMResidueTopology, residue, (get_residue_topology(restyp)));
         segment->add_residue(residue);
       } catch (ValueException) {
         // If residue type is unknown, add empty topology for this residue
-        IMP_WARN_ONCE(restyp,
+        IMP_WARN_ONCE(restyp.get_string(),
                       "Residue type " << restyp << " was not found in "
                       "topology library; using empty topology for this residue"
                       << std::endl, warn_context_);
-        IMP_NEW(CHARMMResidueTopology, residue, (ResidueType(restyp)));
+        IMP_NEW(CHARMMResidueTopology, residue, (restyp));
         segment->add_residue(residue);
       }
     }
