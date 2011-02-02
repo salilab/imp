@@ -15,8 +15,8 @@ class HistogramTests(IMP.test.TestCase):
         pts=[]
         for i in range(100):
             pts.append(IMP.algebra.get_random_vector_in(s[i%2]))
-        e= IMP.statistics.EuclideanDistance(pts)
-        c= IMP.statistics.get_centrality_clustering(e, 20, 2)
+        e= IMP.statistics.EuclideanMetric(IMP.statistics.VectorDEmbedding(pts))
+        c= IMP.statistics.create_centrality_clustering(e, 20, 2)
         self.assertEqual(c.get_number_of_clusters(), 2)
         for i in range(0, c.get_number_of_clusters()):
             cl= c.get_cluster(i)

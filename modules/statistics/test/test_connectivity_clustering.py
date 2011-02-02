@@ -14,10 +14,10 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         e = IMP.statistics.VectorDEmbedding(vs)
         # Distance between points must be *less than* 1.0, not equal to, so
         # we should get exactly three clusters here
-        c = IMP.statistics.get_connectivity_clustering(e, 1.0)
+        c = IMP.statistics.create_connectivity_clustering(e, 1.0)
         self.assertEqual(c.get_number_of_clusters(), 3)
         # First three points should fall into one cluster
-        c = IMP.statistics.get_connectivity_clustering(e, 1.01)
+        c = IMP.statistics.create_connectivity_clustering(e, 1.01)
         self.assertEqual(c.get_number_of_clusters(), 2)
 
     def test_connectivity_clustering(self):
@@ -30,7 +30,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
             for j in range(0,150):
                 vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 5)))
         e= IMP.statistics.VectorDEmbedding(vs)
-        c= IMP.statistics.get_connectivity_clustering(e, 5)
+        c= IMP.statistics.create_connectivity_clustering(e, 5)
         self.assertEqual(c.get_number_of_clusters(), 3)
         print c.get_cluster_center(0)
         print c.get_cluster_center(1)

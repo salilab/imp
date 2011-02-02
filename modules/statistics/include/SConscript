@@ -3,7 +3,7 @@ Import('env')
 files = [
          'Histogram.h',
          'PartitionalClustering.h',
-         'distance_clustering.h',
+         'metric_clustering.h',
          'point_clustering.h',
          'statistics_macros.h',
         ] \

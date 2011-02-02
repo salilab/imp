@@ -163,7 +163,7 @@ public:
     takes longer but produces a better clustering.
 */
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-get_lloyds_kmeans(Embedding *embedding,
+create_lloyds_kmeans(Embedding *embedding,
                   unsigned int k, unsigned int iterations);
 
 /** Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
@@ -171,7 +171,7 @@ get_lloyds_kmeans(Embedding *embedding,
     such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
  */
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-get_connectivity_clustering(Embedding *embed,
+create_connectivity_clustering(Embedding *embed,
                             double dist);
 
 
@@ -179,8 +179,31 @@ get_connectivity_clustering(Embedding *embed,
     that fall in the same grid bin are made part of the same cluster.
 */
 IMPSTATISTICSEXPORT PartitionalClusteringWithCenter*
-get_bin_based_clustering(Embedding *embed,
+create_bin_based_clustering(Embedding *embed,
                          double side);
+
+/** Cluster by repeatedly removing edges which have lots
+    of shortest paths passing through them. The process is
+    terminated when there are a set number of
+    connected components. Other termination criteria
+    can be added if someone proposes them.
+ */
+IMPSTATISTICSEXPORT
+PartitionalClustering *create_centrality_clustering(Embedding *d,
+                                                 double far,
+                                                 int k);
+
+/** Given a clustering and an embedding, compute the centroid for each cluster
+ */
+IMPSTATISTICSEXPORT
+algebra::VectorKDs get_centroids(Embedding* d, PartitionalClustering *pc);
+
+/** Given a clustering and an embedding, compute a representatative
+    element for each cluster.
+ */
+IMPSTATISTICSEXPORT
+Ints get_representatives(Embedding* d, PartitionalClustering *pc);
+
 
 IMPSTATISTICS_END_NAMESPACE
 

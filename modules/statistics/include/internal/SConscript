@@ -11,6 +11,7 @@ files = [
          'KMLocalSearchLloyd.h',
          'KMRectangle.h',
          'KMTerminationCondition.h',
+         'centrality_clustering.h',
          'random_generator.h',
         ]
 
