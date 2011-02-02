@@ -238,7 +238,7 @@ IMP_END_NAMESPACE
                << " was previously freed");                             \
 } while (false)
 #else
-#define IMP_CHECK_OBJECT
+#define IMP_CHECK_OBJECT(obj)
 #endif
 
 
