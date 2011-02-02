@@ -64,7 +64,7 @@ class CHARMMTopology;
     used to assign atomic radii, bonds, etc.
  */
 class IMPATOMEXPORT CHARMMParameters : public ForceFieldParameters {
-  std::map<std::string, Pointer<CHARMMIdealResidueTopology> >
+  std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >
       residue_topologies_;
   std::map<std::string, Pointer<CHARMMPatch> > patches_;
   std::map<internal::CHARMMBondNames, CHARMMBondParameters> bond_parameters_;
@@ -114,34 +114,20 @@ public:
   /**@{*/
   void add_residue_topology(CHARMMIdealResidueTopology *res) {
     res->set_was_used(true);
-    residue_topologies_.insert(std::make_pair(res->get_type(), res));
+    residue_topologies_.insert(std::make_pair(ResidueType(res->get_type()),
+                                                          res));
   }
-#if 0
-  // return of non const-ref values is not allowed
-  CHARMMIdealResidueTopology &get_residue_topology(ResidueType type) {
-    std::map<std::string, CHARMMIdealResidueTopology>::iterator it
-              = residue_topologies_.find(type.get_string());
+
+  CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const
+  {
+    std::map<ResidueType, Pointer<CHARMMIdealResidueTopology> >::const_iterator
+        it = residue_topologies_.find(type);
     if (it != residue_topologies_.end()) {
       return it->second;
     } else {
       IMP_THROW("Residue " << type << " does not exist", ValueException);
     }
   }
-#endif
-
-  CHARMMIdealResidueTopology *get_residue_topology(std::string name) const
-  {
-    std::map<std::string, Pointer<CHARMMIdealResidueTopology> >::const_iterator
-        it = residue_topologies_.find(name);
-    if (it != residue_topologies_.end()) {
-      return it->second;
-    } else {
-      IMP_THROW("Residue " << name << " does not exist", ValueException);
-    }
-  }
-
-  CHARMMIdealResidueTopology *get_residue_topology(ResidueType type) const
-  { return get_residue_topology(type.get_string()); }
 
   /** \name Patches
 
