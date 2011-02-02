@@ -62,8 +62,8 @@ class IMPEXPORT QuadContainer : public Container
   virtual QuadContainerPair
     get_added_and_removed_containers() const =0;
   bool get_has_added_and_removed_containers() const {
-    return added_ && added_->get_is_shared()
-      || removed_ && removed_->get_is_shared();
+    return (added_ && added_->get_is_shared())
+      || (removed_ && removed_->get_is_shared());
   }
   QuadContainer(){}
   QuadContainer(Model *m,
