@@ -100,14 +100,14 @@ namespace {
                           DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       MDGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      /*IMP_LOG(VERBOSE, "Processing inputs for \""
-        << (*c)->get_name() << "\" ");*/
+      IMP_LOG(VERBOSE, "Processing inputs for \""
+        << (*c)->get_name() << "\" ");
       {
         ContainersTemp ct= filter((*c)->get_input_containers());
-        /*if (!ct.empty()) {
+        if (!ct.empty()) {
           IMP_LOG(VERBOSE, ", containers are "
                   << Containers(ct));
-                  }*/
+                  }
         for (unsigned int j=0; j < ct.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -117,9 +117,9 @@ namespace {
       }
       {
         ParticlesTemp pt= filter((*c)->get_input_particles());
-        /*if (!pt.empty()) {
+        if (!pt.empty()) {
           IMP_LOG(VERBOSE, ", particles are " << Particles(pt));
-          }*/
+          }
         for (unsigned int j=0; j < pt.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
           if (!get_has_edge(dg, rv, cv)) {
@@ -127,7 +127,7 @@ namespace {
           }
         }
       }
-      //IMP_LOG(VERBOSE, std::endl);
+      IMP_LOG(VERBOSE, std::endl);
     }
   }
 
@@ -137,14 +137,14 @@ namespace {
                            DGIndex &dgi) {
     for (It c= b; c != e; ++c) {
       MDGTraits::vertex_descriptor rv= dgi.find(*c)->second;
-      /*IMP_LOG(VERBOSE, "Processing outputs for \""
-        << (*c)->get_name()  << "\"");*/
+      IMP_LOG(VERBOSE, "Processing outputs for \""
+        << (*c)->get_name()  << "\"");
       {
         ContainersTemp ct= filter((*c)->get_output_containers());
-        /*if (!ct.empty()) {
+        if (!ct.empty()) {
           IMP_LOG(VERBOSE, ", containers are "
                   << Containers(ct));
-                  }*/
+                  }
         for (unsigned int j=0; j < ct.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           add_edge(dg, rv, cv);
@@ -152,16 +152,16 @@ namespace {
       }
       {
         ParticlesTemp pt= filter((*c)->get_output_particles());
-        /*if (!pt.empty()) {
+        if (!pt.empty()) {
           IMP_LOG(VERBOSE, ", particles are "
                   << Particles(pt));
-                  }*/
+                  }
         for (unsigned int j=0; j < pt.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
            add_edge(dg, rv, cv);
         }
       }
-      //IMP_LOG(VERBOSE, std::endl);
+      IMP_LOG(VERBOSE, std::endl);
     }
   }
 }
@@ -170,7 +170,7 @@ inline DependencyGraph
 get_dependency_graph(const ScoreStatesTemp &ss,
                      const RestraintsTemp &rs) {
   IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-          << " restraints."
+          << " restraints and " << ss.size() << " score states."
           << std::endl);
   DGIndex index;
   DependencyGraph ret(ss.size()+rs.size());
@@ -289,8 +289,10 @@ public:
   void discover_vertex(MDGTraits::vertex_descriptor u,
                        const G&) {
     Object *o= vm_[u];
+    //std::cout << "visiting " << o->get_name() << std::endl;
     internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
+      //std::cout << "setting " << it->second << std::endl;
       bs_.set(it->second);
     }
   }
@@ -333,13 +335,15 @@ namespace {
     bs.resize(ordered_restraints.size(),
               boost::dynamic_bitset<>(ordered_score_states.size(), false));
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
-    boost::vector_property_map<int> color(boost::num_vertices(dg));
     for (std::pair<MDGTraits::vertex_iterator,
            MDGTraits::vertex_iterator> be= boost::vertices(dg);
          be.first != be.second; ++be.first) {
       Object *o= om[*be.first];
       for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
         if (o== ordered_restraints[i]) {
+          //std::cout << "Finding deps for " << o->get_name() << std::endl;
+          // cannot reuse this
+          boost::vector_property_map<int> color(boost::num_vertices(dg));
           boost::depth_first_visit(boost::make_reverse_graph(dg), *be.first,
                                    ScoreDependencies(bs[i], ssindex, om),
                                    color);
@@ -360,6 +364,7 @@ void Model::reset_dependencies() {
 }
 
 void Model::compute_dependencies() const {
+  IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
   boost::tie(ordered_restraints_,
              restraint_weights_)
@@ -375,7 +380,6 @@ void Model::compute_dependencies() const {
           << " particles." << std::endl);
   DependencyGraph dg= get_dependency_graph(score_states,
                                            ordered_restraints_);
-
   order_score_states(dg, ordered_score_states_);
   compute_restraint_dependencies(dg, ordered_restraints_,
                                  ordered_score_states_,
@@ -423,10 +427,18 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
   }
   boost::dynamic_bitset<> bs(ordered_score_states_.size(), false);
   for (unsigned int i=0; i< restraints.size(); ++i) {
+    IMP_USAGE_CHECK(restraints[i]->get_is_part_of_model(),
+                    "Restraint must be added to model: "
+                    << restraints[i]->get_name());
     // weight 0
     if (restraint_index_.find(restraints[i])
-        == restraint_index_.end()) continue;
+        == restraint_index_.end()) {
+      IMP_LOG(VERBOSE, "Restraint " << restraints[i]->get_name()
+              << " has weight 0" << std::endl);
+    }
     int index=restraint_index_.find(restraints[i])->second;
+    IMP_LOG(VERBOSE, restraints[i]->get_name() << ": "
+            << restraint_dependencies_[index] << std::endl);
     bs|= restraint_dependencies_[index];
   }
   ScoreStatesTemp ss;
