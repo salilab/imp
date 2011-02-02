@@ -5,7 +5,7 @@
  *
  */
 #include <IMP/statistics/internal/centrality_clustering.h>
-
+#include <IMP/statistics/statistics_macros.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
