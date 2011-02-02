@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- IMP now has the ability to have certain tests designated as expensive and to skip those tests when test-fast is run. The motivation for this is that the tests take a really long time making it impractical to run before every commit. And it is hard to tell which tests have not been run when running with the necessary multiple build processes. My thought is that tests that take about a second or less on a debug build should be left along (this is probably  >95% of the tests), but the few that take longer should be marked as expensive. To do that, rename the test to expensive_text_XXX.py (from test_XXX.py) and add expensive_python_tests= env.IMPModuleGetExpensivePythonTests() to the IMPModuleTest call in the test SConscript.
 - the fuction IMP::display::create_restraint_geometry() was added to do what its name says.
 - runtime dimensional geometric objects have been added. These include IMP::algebra::VectorKD, IMP::algebra::BoundingBoxKD and IMP::algebra::SphereKD. The IMP::statistics::Embedding classes now use IMP::algebra::VectorKD instead of Floats. The sparse grids also support variable dimensions as to the nearest neighbor searches.
 - IMP::atom::DopePairScore has been added to \imp.
