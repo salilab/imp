@@ -53,6 +53,13 @@ hostlist = ['localhost']*nreps
 rex_scheme='convective'
 #replica exchange exchange method
 rex_xchg='gromacs'
+#whether to use TuneRex to tune temperatures
+tune_temps = True
+tune_data = {'rate' = 100, #temp optimization rate, in rex steps.
+        'method':'flux', #flux-optimization or cv-optimization
+        'alpha':0.05} # type I error on the estimates
+templog = os.path.join(outfolder, 'temps.txt')
+rexlog = os.path.join(outfolder,'replicanums.txt'),
 
 #misc
 
@@ -139,8 +146,9 @@ def main():
         zip(lambdas, tau, stat_rate)))
     grid.gather(grid.scatter(sfo_id, 'init_stats', nums))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
-            logfile=os.path.join(outfolder,'replicanums.txt'),
-            scheme=rex_scheme, xchg=rex_xchg)
+            rexlog=rexlog,
+            scheme=rex_scheme, xchg=rex_xchg, 
+            tune_temps=tune_temps, tune_data=tune_data, templog=templog)
 
     print "start gibbs sampling loop"
     for i in range(n_gibbs):
