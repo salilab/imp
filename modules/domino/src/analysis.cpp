@@ -51,7 +51,7 @@ namespace {
     IMP::internal::OwnerPointer<ParticleStatesEmbedding> pse
       = new ParticleStatesEmbedding(p, ps, allowed_states, "domino embedding");
     IMP::internal::OwnerPointer<statistics::PartitionalClusteringWithCenter> c
-      = get_connectivity_clustering(pse, resolution);
+      = create_connectivity_clustering(pse, resolution);
     Ints ret(ps->get_number_of_particle_states(), -1);
     IMP_LOG(TERSE, "For particle " << p->get_name()
             << " there are " << allowed_states.size()
