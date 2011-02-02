@@ -114,6 +114,7 @@ class VectorOfRefCounted {
     return data_;
   }
 #ifndef IMP_DOXYGEN
+  typedef typename std::vector<RC>::size_type size_type;
   // need to inherit from T to get methods right
   template <class T>
   struct Proxy: public T {
@@ -184,7 +185,7 @@ class VectorOfRefCounted {
     return data_.front();
   }
   void reserve(unsigned int i){ data_.reserve(i);}
-  unsigned int size() const {return data_.size();}
+  size_type size() const {return data_.size();}
   void resize(unsigned int i) {data_.resize(i);}
   // god swig is dumb
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
