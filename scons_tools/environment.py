@@ -135,8 +135,8 @@ def _add_platform_flags(env):
         env.Append(CXXFLAGS=["-Wall", "-Wextra", "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
                              "-Wcast-align"])
-        if dependency.gcc.get_version(env)>= 4.3:
-            env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
+        #if dependency.gcc.get_version(env)>= 4.3:
+        #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
         # But without -isystem, -Wundef throws up lots of Boost warnings.
         if sys.platform != 'darwin' or dependency.gcc.get_version(env) > 4.0:
@@ -150,7 +150,8 @@ def _add_platform_flags(env):
                                  '-fstrict-aliasing',
                                  '-fno-trapping-math',
                                  '-fno-signaling-nans',
-                                 '-fno-float-store', '-Wno-unused'])
+                                 '-fno-float-store', '-Wno-unused',
+                                 '-funsafe-loop-optimizations'])
             if dependency.gcc.get_version(env)>= 4.3:
                 env.Append(CXXFLAGS=['-fno-signed-zeros',
                                      '-freciprocal-math',
