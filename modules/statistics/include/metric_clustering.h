@@ -1,16 +1,17 @@
 /**
- *  \file distance_clustering.h
+ *  \file metric_clustering.h
  *  \brief Cluster sets of points.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
-#ifndef IMPSTATISTICS_DISTANCE_CLUSTERING_H
-#define IMPSTATISTICS_DISTANCE_CLUSTERING_H
+#ifndef IMPSTATISTICS_METRIC_CLUSTERING_H
+#define IMPSTATISTICS_METRIC_CLUSTERING_H
 
 #include "statistics_config.h"
 #include "statistics_macros.h"
 #include "PartitionalClustering.h"
+#include "point_clustering.h"
 #include <IMP/algebra/VectorD.h>
 #include <IMP/macros.h>
 #include <IMP/VectorOfRefCounted.h>
@@ -21,55 +22,39 @@
 IMPSTATISTICS_BEGIN_NAMESPACE
 
 //! Compute a distance between two elements to be clustered
-/** Distance-based clustering needs a way of computing the
+/** Metric clustering needs a way of computing the
     distances between the things being clustered.
  */
-class IMPSTATISTICSEXPORT Distance: public Object {
+class IMPSTATISTICSEXPORT Metric: public Object {
 public:
-  Distance(std::string name);
+  Metric(std::string name);
   virtual double get_distance(unsigned int i,
                               unsigned int j) const =0;
   virtual unsigned int get_number_of_items() const=0;
-  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Distance);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Metric);
 };
 
-IMP_OBJECTS(Distance, Distances);
+IMP_OBJECTS(Metric, Metrics);
 
-class IMPSTATISTICSEXPORT EuclideanDistance: public Distance {
-  algebra::VectorKDs vectors_;
+class IMPSTATISTICSEXPORT EuclideanMetric: public Metric {
+  IMP::internal::OwnerPointer<Embedding> em_;
 public:
-  template <int D>
-  EuclideanDistance(const std::vector<algebra::VectorD<D> > &vs):
-    Distance("VectorDs"){
-    vectors_.resize(vs.size());
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      vectors_[i]= algebra::VectorKD(vs[i].coordinates_begin(),
-                                     vs[i].coordinates_end());
-    }
-  }
-#ifdef SWIG
-  EuclideanDistance(const algebra::VectorKDs &vs);
-  EuclideanDistance(const algebra::Vector2Ds &vs);
-  EuclideanDistance(const algebra::Vector3Ds &vs);
-  EuclideanDistance(const algebra::Vector4Ds &vs);
-  EuclideanDistance(const algebra::Vector5Ds &vs);
-  EuclideanDistance(const algebra::Vector6Ds &vs);
-#endif
-  IMP_DISTANCE(EuclideanDistance);
+  EuclideanMetric(Embedding *em);
+  IMP_METRIC(EuclideanMetric);
 };
 
 
 /** Compute the RMSD between two sets of particles in two configurations.
  */
-class IMPSTATISTICSEXPORT ConfigurationSetRMSDistance: public Distance {
+class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
   IMP::internal::OwnerPointer<ConfigurationSet> cs_;
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   bool align_;
  public:
-  ConfigurationSetRMSDistance(ConfigurationSet *cs,
+  ConfigurationSetRMSDMetric(ConfigurationSet *cs,
                               SingletonContainer *sc,
                               bool align=false);
-  IMP_DISTANCE(ConfigurationSetRMSDistance);
+  IMP_METRIC(ConfigurationSetRMSDMetric);
 };
 
 
@@ -81,10 +66,10 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDistance: public Distance {
     can be added if someone proposes them.
  */
 IMPSTATISTICSEXPORT
-PartitionalClustering *get_centrality_clustering(Distance *d,
+PartitionalClustering *create_centrality_clustering(Metric *d,
                                                  double far,
                                                  int k);
 
 IMPSTATISTICS_END_NAMESPACE
 
-#endif /* IMPSTATISTICS_DISTANCE_CLUSTERING_H */
+#endif /* IMPSTATISTICS_METRIC_CLUSTERING_H */

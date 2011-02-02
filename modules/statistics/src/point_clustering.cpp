@@ -162,8 +162,16 @@ void PartitionalClusteringWithCenter::do_show(std::ostream &out) const {
 
 namespace {
 
+  algebra::VectorKDs get_all(Embedding *e) {
+    algebra::VectorKDs ret(e->get_number_of_items());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= e->get_point(i);
+    }
+    return ret;
+  }
+
 PartitionalClusteringWithCenter*
-get_lloyds_kmeans(const Ints &names, Embedding *metric,
+create_lloyds_kmeans(const Ints &names, Embedding *metric,
                   unsigned int k, unsigned int iterations) {
   metric->set_was_used(true);
   IMP_USAGE_CHECK(k < iterations,
@@ -240,7 +248,7 @@ get_lloyds_kmeans(const Ints &names, Embedding *metric,
 }
 }
 
-PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
+PartitionalClusteringWithCenter* create_lloyds_kmeans(Embedding *metric,
                                     unsigned int k, unsigned int iterations) {
   Ints names(metric->get_number_of_items());
   for (unsigned int i=0; i< names.size(); ++i) {
@@ -249,27 +257,23 @@ PartitionalClusteringWithCenter* get_lloyds_kmeans(Embedding *metric,
   if (names.empty()) {
     IMP_THROW("No points to cluster", ValueException);
   }
-  return get_lloyds_kmeans(names, metric, k, iterations);
+  return create_lloyds_kmeans(names, metric, k, iterations);
 }
 
 
 PartitionalClusteringWithCenter*
-get_connectivity_clustering(Embedding *embed,
+create_connectivity_clustering(Embedding *embed,
                             double dist) {
   IMP_USAGE_CHECK(embed->get_number_of_items() >0,
                   "There most be a point to clustering");
-  algebra::VectorKDs vs(embed->get_number_of_items());
-  for (unsigned int i=0; i< vs.size(); ++i) {
-    algebra::VectorKD fs= embed->get_point(i);
-    vs[i]= fs;
-  }
-  IMP_NEW(algebra::NearestNeighborKD, nn,(vs.begin(), vs.end(), .1));
+  IMP_NEW(algebra::NearestNeighborKD, nn,(get_all(embed), .1));
   typedef boost::vector_property_map<unsigned int> Index;
   typedef Index Parent;
   typedef boost::disjoint_sets<Index,Parent> UF;
   Index id;
   Parent pt;
   UF uf(id, pt);
+  algebra::VectorKDs vs= get_all(embed);
   for (unsigned int i=0; i< vs.size(); ++i) {
     uf.make_set(i);
   }
@@ -314,7 +318,7 @@ get_connectivity_clustering(Embedding *embed,
 
 
 PartitionalClusteringWithCenter*
-get_bin_based_clustering(Embedding *embed,
+create_bin_based_clustering(Embedding *embed,
                          double side) {
   IMP::internal::OwnerPointer<Embedding> e(embed);
   typedef algebra::SparseUnboundedGridD<-1, Ints> Grid;
@@ -339,5 +343,62 @@ get_bin_based_clustering(Embedding *embed,
   }
   return new PartitionalClusteringWithCenter(clusters, centers, reps);
 }
+
+
+PartitionalClustering *create_centrality_clustering(Embedding *d,
+                                                 double far,
+                                                 int k) {
+  IMP::internal::OwnerPointer<Embedding> dp(d);
+  const unsigned int n=d->get_number_of_items();
+  algebra::VectorKDs vs= get_all(d);
+  IMP_NEW(algebra::NearestNeighborKD, nn, (vs));
+  internal::CentralityGraph g(n);
+  boost::property_map<internal::CentralityGraph,
+                      boost::edge_weight_t>::type w
+    = boost::get(boost::edge_weight, g);
+
+  for (unsigned int i=0; i<n; ++i) {
+    Ints cnn= nn->get_in_ball(i, far);
+    for (unsigned int j=0; j< cnn.size(); ++j) {
+      double dist= algebra::get_distance(vs[i], vs[j]);
+      boost::graph_traits<internal::CentralityGraph>::edge_descriptor e
+          =add_edge(i,j, g).first;
+        w[e]=/*1.0/*/dist;
+    }
+  }
+  return internal::get_centrality_clustering(g, k);
+}
+
+
+
+algebra::VectorKDs get_centroids(Embedding* d, PartitionalClustering *pc) {
+  Pointer<Embedding> pd(d);
+  Pointer<PartitionalClustering> ppc(pc);
+  algebra::VectorKDs ret(pc->get_number_of_clusters());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    algebra::VectorKD cur
+      = algebra::get_zero_vector_kd(d->get_point(0).get_dimension());
+    Ints cc= pc->get_cluster(i);
+    for (unsigned int j=0; j< cc.size(); ++j) {
+      cur+= d->get_point(cc[j]);
+    }
+    cur/= cc.size();
+    ret[i]=cur;
+  }
+  return ret;
+}
+
+Ints get_representatives(Embedding* d, PartitionalClustering *pc) {
+  Pointer<Embedding> pd(d);
+  Pointer<PartitionalClustering> ppc(pc);
+  algebra::VectorKDs centroids= get_centroids(d, pc);
+  Ints ret(centroids.size());
+  IMP_NEW(algebra::NearestNeighborKD, nn, (get_all(d)));
+  for (unsigned int i=0; i < centroids.size(); ++i) {
+    ret[i]= nn->get_nearest_neighbors(centroids[i], 1)[0];
+  }
+  return ret;
+}
+
 
 IMPSTATISTICS_END_NAMESPACE

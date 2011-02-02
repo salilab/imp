@@ -10,6 +10,7 @@ files = [
          'KMLocalSearch.cpp',
          'KMLocalSearchLloyd.cpp',
          'KMRectangle.cpp',
+         'centrality_clustering.cpp',
         ]
 
 files = [File(x) for x in files]

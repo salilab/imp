@@ -18,7 +18,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         for i in range(0,1000):
             vs.append(IMP.algebra.get_random_vector_in(bb))
         embed= IMP.statistics.VectorDEmbedding(vs)
-        cluster= IMP.statistics.get_bin_based_clustering(embed, 2)
+        cluster= IMP.statistics.create_bin_based_clustering(embed, 2)
         found=[]
         for i in range(cluster.get_number_of_clusters()):
             c= cluster.get_cluster(i)

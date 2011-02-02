@@ -3,7 +3,7 @@ Import('env')
 files = [
          'Histogram.cpp',
          'PartitionalClustering.cpp',
-         'distance_clustering.cpp',
+         'metric_clustering.cpp',
          'point_clustering.cpp',
         ] \
         + SConscript('internal/SConscript')
