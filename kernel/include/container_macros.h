@@ -205,7 +205,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     unsigned int osz= lcname##_vector_.size();                          \
     lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),       \
                             objs.end());                                \
-    for (unsigned int i=0; i< objs.size(); ++i) {                       \
+    for (PluralData::size_type i=0; i< objs.size(); ++i) {              \
       Data obj= lcname##_vector_[osz+i];                                \
       unsigned int index(osz+i);                                        \
       OnAdd;                                                            \
