@@ -141,13 +141,13 @@ def _make_example_links(target, source, env):
             for c in classes[m].keys():
                 print >> out, "\\class", c
                 print >> out, "Examples:"
-                for e in classes[m][c]:
-                    print >> out, " -", dta.examples[e].link
+                lst= [dta.examples[e].link for e in classes[m][c]]
+                print >> out, ", ".join(lst)
             for c in methods[m].keys():
                 print >> out, "\\fn", c
                 print >> out, "Examples:"
-                for e in methods[m][c]:
-                    print >> out, " -", dta.examples[e].link
+                lst= [dta.examples[e].link for e in methods[m][c]]
+                print >> out, ", ".join(lst)
             print >> out, "*/"
             if m != "kernel":
                 print >> out, "}"
