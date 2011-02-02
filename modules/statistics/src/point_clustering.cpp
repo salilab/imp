@@ -9,6 +9,7 @@
 #include <IMP/statistics/internal/KMData.h>
 #include <IMP/statistics/internal/KMTerminationCondition.h>
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
+#include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/geometric_alignment.h>
