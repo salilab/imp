@@ -31,7 +31,7 @@ e= IMP.statistics.ConfigurationSetXYZEmbedding(configs, c)
 
 # of course, this doesn't return anything of interest since the points are
 # randomly distributed, but, again, why not?
-clustering = IMP.statistics.get_lloyds_kmeans(e, 3, 1000)
+clustering = IMP.statistics.create_lloyds_kmeans(e, 3, 1000)
 for i in range(0,clustering.get_number_of_clusters()):
     # load the configuration for a central point
     configs.load_configuration(clustering.get_cluster_representative(i))
