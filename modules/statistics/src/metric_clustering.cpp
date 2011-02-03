@@ -6,7 +6,6 @@
  *
  */
 #include <IMP/statistics/metric_clustering.h>
-#include <IMP/core/XYZ.h>
 #include <IMP/statistics/internal/KMData.h>
 #include <IMP/statistics/internal/KMTerminationCondition.h>
 #include <IMP/statistics/internal/KMLocalSearchLloyd.h>
@@ -51,7 +50,7 @@ namespace {
     algebra::Vector3Ds ret(sc->get_number_of_particles());
     cs->load_configuration(i);
     IMP_FOREACH_SINGLETON(sc, {
-        ret[_2]= core::XYZ(_1).get_coordinates();
+        ret[_2]= _1->_get_coordinates().get_center();
       });
     return ret;
   }
