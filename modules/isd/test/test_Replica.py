@@ -2,6 +2,7 @@
 
 import os
 import numpy.random as random
+from numpy import exp
 
 import IMP
 import IMP.isd.Replica
@@ -122,7 +123,7 @@ class TestReplicaExchange(IMP.test.TestCase):
                 plist.add(p[1])
             a=set(range(self.nreps))
             singletons = a - plist
-            #print singletons
+            print singletons
             for i in singletons:
                 self.assertEqual((i+1) in singletons, False)
                 self.assertEqual((i-1) in singletons, False)
@@ -140,7 +141,7 @@ class TestReplicaExchange(IMP.test.TestCase):
 
     def test_2(self):
         pairs={}
-        for i in xrange(100000):
+        for i in xrange(10000):
             for pair in self.replica.gen_pairs_list_rand():
                 if pair in pairs:
                     pairs[pair] += 1
@@ -148,10 +149,59 @@ class TestReplicaExchange(IMP.test.TestCase):
                     pairs[pair] = 1
         print sorted(pairs.items())
 
+    def test_get_metropolis(self):
+        pl=[(1,2)]
+        ene=[1,2,3]
+        self.replica.inv_temps=[6,5,4]
+        expected=exp(-1)  #exp((5-6)*(3-2))
+        self.assertAlmostEqual(self.replica.get_metropolis(pl,ene)[pl[0]],
+                expected, delta=1e-3)
+        ene=[3,2,1]
+        expected=1
+        self.assertAlmostEqual(self.replica.get_metropolis(pl,ene)[pl[0]],
+                expected, delta=1e-3)
 
+    def test_perform_exchanges_statenums(self):
+        accepted=[(0,1),(5,6),(7,8)]
+        sb = [i for i in self.replica.statenums]
+        self.replica.perform_exchanges(accepted)
+        sa = [i for i in self.replica.statenums]
+        for (i,j) in accepted:
+            ri = self.replica.replicanums[j]
+            rj = self.replica.replicanums[i]
+            self.assertEqual(sa[rj],sb[ri])
+            self.assertEqual(sa[ri],sb[rj])
 
+    def test_perform_exchanges_replicanums(self):
+        accepted=[(0,1),(5,6),(7,8)]
+        rnb = [i for i in self.replica.replicanums]
+        self.replica.perform_exchanges(accepted)
+        rna = [i for i in self.replica.replicanums]
+        for (i,j) in accepted:
+            self.assertEqual(rna[j],rnb[i])
+            self.assertEqual(rna[i],rnb[j])
 
+    def test_perform_exchanges_temps(self):
+        accepted=[(0,1),(5,6),(7,8)]
+        tb = self.replica.sort_per_state(self.grid.gather(
+                self.grid.broadcast(123, 'get_temp')))
+        self.replica.perform_exchanges(accepted)
+        ta = self.replica.sort_per_state(self.grid.gather(
+                self.grid.broadcast(123, 'get_temp')))
+        for (i,j) in accepted:
+            self.assertEqual(ta[j],tb[i])
+            self.assertEqual(ta[i],tb[j])
 
+    def test_perform_exchanges_steps(self):
+        accepted=[(0,1),(5,6),(7,8)]
+        stb = self.replica.sort_per_state(self.grid.gather(
+                self.grid.broadcast(123, 'get_mc_stepsize')))
+        self.replica.perform_exchanges(accepted)
+        sta = self.replica.sort_per_state(self.grid.gather(
+                self.grid.broadcast(123, 'get_mc_stepsize')))
+        for (i,j) in accepted:
+            self.assertEqual(sta[j],stb[i])
+            self.assertEqual(sta[i],stb[j])
 
 
 
