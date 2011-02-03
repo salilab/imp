@@ -12,7 +12,7 @@ for i in range(0,3):
 
 # cluster them into 3 clusters
 e= IMP.statistics.VectorDEmbedding(vs)
-c= IMP.statistics.get_lloyds_kmeans(e,
+c= IMP.statistics.create_lloyds_kmeans(e,
                                     3, 1000)
 
 # print out the cluster results
