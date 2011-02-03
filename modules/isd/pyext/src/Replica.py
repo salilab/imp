@@ -86,26 +86,33 @@ class ReplicaTracker():
     def gen_pairs_list_rand(self, needed = []):
         "generate list of neighboring pairs of states"
         nreps = self.nreps
-        init = range(nreps)
         pairslist = []
+        #generate all possible pairs
+        init = [(i,i+1) for i in xrange(nreps-1)]
+        #add this pair to form a loop
+        init.append((0,nreps-1))
+        #add needed pairs and remove overlapping candidates
         for (i,j) in needed:
-            pairslist.append((min(i,j),max(i,j)))
-            init.pop(i)
-            init.pop(j)
-        while len(init) > 1:
+            if j-i != 1:
+                raise ValueError, "wrong format for 'needed' list"
+            pairslist.append((i,i+1))
+            init.remove((i-1,i))
+            init.remove((i,i+1))
+            init.remove((i+1,i+2))
+        while len(init) > 0:
+            #choose random pair
             i = randint(0,len(init)) # numpy randint is [a,b[
-            dr = 2*randint(0,2)-1
-            r=init.pop(i)
-            if r+dr in init:
-                init.remove(r+dr)
-                pairslist.append((min(r,r+dr),max(r,r+dr)))
-                #print "init ",init," r ",r," dr +",dr
-            elif r-dr in init:
-                init.remove(r-dr)
-                pairslist.append((min(r,r-dr),max(r,r-dr)))
-                #print "init ",init," r ",r," dr -",dr
-            #else:
-                #print "init ",init," r ",r," dr /",dr
+            #remove it from list
+            pair = init.pop(i)
+            #print pair
+            #remove overlapping
+            init = [(r,q) for (r,q) in init 
+                      if (r not in pair and q not in pair)]
+            #print init
+            #add to pairslist
+            if not pair == (0,nreps-1):
+                pairslist.append(pair)
+        #print "pl:",sorted(pairslist)
         return sorted(pairslist)
 
     def gen_pairs_list_conv(self):
@@ -146,13 +153,13 @@ class ReplicaTracker():
     def get_metropolis(self, pairslist, old_ene):
         """compute metropolis criterion for temperature replica exchange
         e.g. exp(Delta beta Delta E)
+        input: list of pairs, list of state-sorted energies
         """
         metrop={}
-        (s1,s2) = pairslist[0]
         for (s1,s2) in pairslist:
             metrop[(s1,s2)] = \
-                exp((old_ene[s2]-old_ene[s1])*
-                        (self.inv_temps[s2]-self.inv_temps[s1]))
+                min(1,exp((old_ene[s2]-old_ene[s1])*
+                        (self.inv_temps[s2]-self.inv_temps[s1])))
         return metrop
                     
     def try_exchanges(self, plist, metrop):

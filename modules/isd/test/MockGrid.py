@@ -37,6 +37,9 @@ class MockSlave():
             raise NotImplementedError
         return func(*args, **kwargs)
     
+    def get_temp(self):
+        return self.temp
+
     def set_temp(self,temp):
         self.temp = temp
         self._m.set_temp(temp)
