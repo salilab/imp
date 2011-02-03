@@ -123,10 +123,12 @@ class TestReplicaExchange(IMP.test.TestCase):
                 plist.add(p[1])
             a=set(range(self.nreps))
             singletons = a - plist
-            print singletons
+            #print singletons
             for i in singletons:
-                self.assertEqual((i+1) in singletons, False)
-                self.assertEqual((i-1) in singletons, False)
+	        if i != 0 and i+1 != self.nreps-1:
+                   self.assertEqual((i+1) in singletons, False)
+		if i-1 != 0 and  i != self.nreps-1:
+                   self.assertEqual((i-1) in singletons, False)
         self.replica.nreps=10
         for i in xrange(100):
             plist=set()
@@ -136,18 +138,25 @@ class TestReplicaExchange(IMP.test.TestCase):
             a=set(range(self.nreps))
             singletons = a - plist
             for i in singletons:
-                self.assertEqual((i+1) in singletons, False)
-                self.assertEqual((i-1) in singletons, False)
+	        if i != 0 and i+1 != self.nreps-1:
+                   self.assertEqual((i+1) in singletons, False)
+		if i-1 != 0 and  i != self.nreps-1:
+                   self.assertEqual((i-1) in singletons, False)
 
-    def test_2(self):
+    def test_gen_pairs_list_rand_uniform_distr(self):
+        "Test uniformity of randomly generated replica pairs"
         pairs={}
-        for i in xrange(10000):
+        for i in xrange(100000):
             for pair in self.replica.gen_pairs_list_rand():
                 if pair in pairs:
                     pairs[pair] += 1
                 else:
                     pairs[pair] = 1
-        print sorted(pairs.items())
+        s=float(sum(pairs.values()))/len(pairs)
+	
+        for i in pairs.values():
+	     self.assertAlmostEqual(i/s,1.0,delta=1e-2)
+        #print sorted(pairs.items())
 
     def test_get_metropolis(self):
         pl=[(1,2)]
