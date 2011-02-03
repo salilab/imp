@@ -63,17 +63,22 @@ class ReplicaTracker():
         return [inplist[i] for i in self.statenums]
         
     def get_energies(self):
+        "return replica-sorted energies"
         return self.grid.gather(
                 self.grid.broadcast(self.sfo_id,'m','evaluate',False))
 
-    def gen_pairs_list_gromacs(self, dir):
-        "generate ordered list of pairs based on dir"
+    def gen_pairs_list_gromacs(self, direction):
+        """generate ordered list of exchange pairs based on direction.
+        direction == 0 : (0,1)(2,3)...
+        direction == 1 : (0(1,2)(3,4)...
+        returns only pairs.
+        """
         nreps = self.nreps
-        if dir != 0 and dir != 1:
-            raise ValueError, dir
+        if direction != 0 and direction != 1:
+            raise ValueError, direction
         if nreps == 2:
             return [(0,1)]
-        ret = [(2*i+dir,2*i+1+dir) for i in xrange(nreps/2)]
+        ret = [(2*i+direction,2*i+1+direction) for i in xrange(nreps/2)]
         if nreps in ret[-1]:
             ret.pop()
         return ret
@@ -88,15 +93,19 @@ class ReplicaTracker():
             init.pop(i)
             init.pop(j)
         while len(init) > 1:
-            i = randint(0,len(init)-1)
-            dr = 2*randint(0,1)-1
+            i = randint(0,len(init)) # numpy randint is [a,b[
+            dr = 2*randint(0,2)-1
             r=init.pop(i)
             if r+dr in init:
                 init.remove(r+dr)
                 pairslist.append((min(r,r+dr),max(r,r+dr)))
-            elif r-dr in init and not (r==0 or r==nreps-1):
+                #print "init ",init," r ",r," dr +",dr
+            elif r-dr in init:
                 init.remove(r-dr)
                 pairslist.append((min(r,r-dr),max(r,r-dr)))
+                #print "init ",init," r ",r," dr -",dr
+            #else:
+                #print "init ",init," r ",r," dr /",dr
         return sorted(pairslist)
 
     def gen_pairs_list_conv(self):

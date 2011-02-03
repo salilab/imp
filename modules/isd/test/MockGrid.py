@@ -63,6 +63,14 @@ class MockGrid():
         self.nreps = nreps
         self._temps = temps
         self._slaves = [MockSlave(temp,mc) for temp,mc in zip(temps,stepsizes)]
+        self._replay = None
+
+    def set_replay(self,replay):
+        "override output of gather function"
+        if len(replay) == self.nreps:
+            self._replay = replay
+        else:
+            raise ValueError, "replay should be length of nrep"
 
     def broadcast(self, id, call, *args, **kwargs):
         return [MockResult(getattr(sl,call)(*args,**kwargs))
@@ -80,7 +88,10 @@ class MockGrid():
         return results
     
     def gather(self, results):
-        return [res.get() for res in results]
+        if self._replay is not None:
+            return self._replay
+        else:
+            return [res.get() for res in results]
 
 
 
