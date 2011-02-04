@@ -22,21 +22,11 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-//void get_domes(algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h) {
-//  result = m - h;
-//  do_morphological_reconstruction(m,result,8);
-//  result = m - result;
-//
-//}
-
-
-
-
-//void do_masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
+//void apply_mask(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
 //          const algebra::Matrix2D<int> &mask,double value) {
 //  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
 //                  (m.get_number_of_columns()==result.get_number_of_columns()),
-//                  "em2d::do_masking: Matrices have different size.");
+//                  "em2d::apply_mask: Matrices have different size.");
 //
 //  for (unsigned int i=0;i<m.num_elements();++i) {
 //    if(mask.data()[i]==1) {
@@ -47,6 +37,23 @@ IMPEM2D_BEGIN_NAMESPACE
 //  }
 //}
 //
+
+void apply_mask(const cv::Mat &m,
+                cv::Mat &result,
+                const cvIntMat &mask,
+                double val) {
+  result.create(m.rows,m.cols,m.type());
+
+  cvDoubleMat M = m;
+  cvDoubleMat R = result;
+  for (int i=0;i<M.rows;++i) {
+    for (int j=0;j<M.cols;++j) {
+      R(i,j) = mask(i,j) == 0 ? val : M(i,j);
+    }
+  }
+}
+
+
 
 
 //void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
@@ -497,11 +504,10 @@ void apply_diffusion_filter(const cv::Mat &m,
   }
 }
 
-
-
 void do_segmentation(const cv::Mat &m,
                      cv::Mat &result,
                      SegmentationParameters &params) {
+  IMP_LOG(IMP::VERBOSE,"Segmenting image" << std::endl);
   cv::Mat temp1,temp2; // to store doubles
   cv::Mat aux,aux2; // to store floats
   m.copyTo(temp1);
@@ -513,22 +519,17 @@ void do_segmentation(const cv::Mat &m,
                          params.diffusion_timesteps);
 
   do_combined_fill_holes_and_threshold(temp2, //input
-                                       temp1, // holes filled
+                                       temp1, // result with holes filled
                                        params.fill_holes_stddevs);
   // opening
   temp1.convertTo(aux,CV_32FC1);
   cv::morphologyEx(aux, // input
-                   aux2, // opened
+                   aux2, // result, opened
                    cv::MORPH_OPEN,
                    params.opening_kernel);
-
   // threshold the opened image to binary
   double threshold = 0.0; // for making binary images
   cv::threshold(aux2,aux,threshold,params.binary_foreground,cv::THRESH_BINARY);
-
-//  aux.convertTo(temp1,CV_64FC1);
-//  write_matrix(temp1,"xxx_opened_binary.spi");
-
   // convert to ints to remove small objects
   aux.convertTo(aux2,CV_16SC1); // aux2 now is ints
   cvIntMat Aux = aux2;
@@ -536,11 +537,7 @@ void do_segmentation(const cv::Mat &m,
                           params.remove_sizing_percentage,
                           params.binary_background,
                           params.binary_foreground);
-////  // Generate mask
-////  mask()....
-////  // Threshold mask 0 and apply mask of viceversa
-  Aux.convertTo(temp2,CV_64FC1);
-  temp2.copyTo(result);
+  apply_mask(m,result,Aux,0.0); // Aux is the mask
 }
 
 int do_labeling(const cvIntMat &m,
