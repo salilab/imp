@@ -113,7 +113,10 @@ coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
 # use true if you want to save the projections from the model that best
 # match the Em images
 save_match_images = False
-em2d_restraint.setup(apix,resolution,n_projections,
+
+
+score_function=em2d.EM2DScore()
+em2d_restraint.setup(score_function,apix,resolution,n_projections,
                 coarse_registration_method,save_match_images)
 em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
