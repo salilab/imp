@@ -69,11 +69,11 @@ rexlog = os.path.join(outfolder,'replicanums.txt')
 
 #misc
 
-imppy = os.path.abspath(
-        os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
-src_path = os.path.abspath(
-        os.path.join(os.getenv('IMP_ISD_DATA'),'../lib/IMP/isd'))
-showX11 = False 
+imppy = '/mandolin1/home/cgreen/imp/tools/imppy.sh'
+src_path = '/mandolin1/home/cgreen/imp/modules/isd/pyext/src'
+#imppy = '/bongo1/home/yannick/imp_local/build-fast/tools/imppy.sh'
+#src_path = '/bongo1/home/yannick/imp_local/build-fast/build/lib/IMP/isd'
+showX11 = False
 grid_debug = False
 grid_verbose = False
 X11_delay = 1.0

@@ -268,13 +268,19 @@ class sfo():
 
     def get_temp(self):
         return self.inv_temp
-    
-    def get_mc_stepsize(self):
-        return self._nm.get_sigma()
+ 
+    def get_state(self):
+        state={}
+        state['inv_temp']=self.get_temp()
+        state['gamma_mc_stepsize']=self._nm_gamma.get_sigma()
+        state['sigma_mc_stepsize']=self._nm_sigma.get_sigma()
+        return state
 
-    def set_mc_stepsize(self, stepsize):
-        self._nm.set_sigma(stepsize)
-
+    def set_state(self,state):
+        self.set_temp(state['inv_temp'])
+        self._nm_gamma.set_sigma(state['gamma_mc_stepsize'])
+        self._nm_sigma.set_sigma(state['sigma_mc_stepsize'])
+        
     def _setup_md(self,temp=300.0, tau=500):
         ## Molecular Dynamics (from MAX BONOMI)
         md=IMP.atom.MolecularDynamics()
