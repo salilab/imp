@@ -122,17 +122,17 @@ def create_restraints(m, chain, tbr, TMH):
 ## DOPE/GQ scoring
     def add_DOPE():
         IMP.atom.add_dope_score_data(chain)
-        dsc=[]
-        for i,h in enumerate(TMH):
-            dsc.append(IMP.container.ListSingletonContainer(m))
+        dsc=IMP.container.ListSingletonContainer(m)
+        for h in TMH:
             s=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_indexes=[(h[0],h[1]+1)])
-            dsc[i].add_particles(s.get_selected_particles())
-        for i in range(len(TMH)-1):
-            for j in range(i+1,len(TMH)):
-                dpc= IMP.container.CloseBipartitePairContainer(dsc[i], dsc[j], 15.0, 0.0)
-                dps= IMP.atom.DopePairScore(15.0)
-                dope=IMP.container.PairsRestraint(dps, dpc)
-                m.add_restraint(dope)
+            dsc.add_particles(s.get_selected_particles())
+        dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
+        f=IMP.membrane.SameHelixPairFilter()
+        dpc.add_pair_filter(f)
+        dps= IMP.atom.DopePairScore(15.0)
+        dope=IMP.container.PairsRestraint(dps, dpc)
+        m.add_restraint(dope)
+        m.set_maximum_score(dope, .01)
 
     def add_interacting_restraint():
         rbs=[]
@@ -187,12 +187,12 @@ def  create_discrete_states(m,chain,TMH,sign):
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dx in range(-30,30):
+                for dx in range(0,30):
                     if ( dx >= 7 ):
                         trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
                                     IMP.algebra.Vector3D(dx,0,0))))
                     for dz in range(0,1):
-                        for dy in range(-30,30):
+                        for dy in range(0,30):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
                             trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[3]),
