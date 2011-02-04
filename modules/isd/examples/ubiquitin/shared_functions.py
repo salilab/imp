@@ -232,8 +232,9 @@ class sfo():
         self.naccept_s=0
         self.naccept_g=0
 
-    def write_stats(self,stepno,nsteps):
-        flstat=open(self.statfile,'a')
+    def write_stats(self,nsteps):
+        stepno=self.local_counter
+	flstat=open(self.statfile,'a')
         kinetic   = self._md.get_kinetic_energy() 
         potential = self._m.evaluate(False)
         temp = self._md.get_kinetic_temperature(kinetic)
