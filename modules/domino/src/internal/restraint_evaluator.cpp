@@ -53,6 +53,7 @@ namespace {
 }
 
 void ModelData::initialize() {
+  IMP_FUNCTION_LOG;
   IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
@@ -64,6 +65,7 @@ void ModelData::initialize() {
       idm[ps[j]]=p;
     }
   }
+  IMP::internal::Map<Restraint*, int> index;
   Restraints restraints= get_restraints(rs_->restraints_begin(),
                                         rs_->restraints_end());
   for (Restraints::const_iterator rit= restraints.begin();
@@ -72,30 +74,43 @@ void ModelData::initialize() {
     double weight=rs_->get_model()->get_weight(*rit);
     rdata_.push_back(handle_restraint(*rit, weight, idm, preload_,
                                       dependencies_, ip));
+    index[*rit]=rdata_.size()-1;
   }
   RestraintSets restraint_sets= get_restraint_sets(rs_->restraints_begin(),
                                                    rs_->restraints_end());
+  restraint_sets.push_back(rs_);
   for (unsigned int i=0; i< restraint_sets.size(); ++i) {
-    if (restraint_sets[i]->get_model()->get_maximum_score(restraint_sets[i])
-        >= std::numeric_limits<double>::max()) {
+    double max=restraint_sets[i]
+      ->get_model()->get_maximum_score(restraint_sets[i]);
+    if (max >= std::numeric_limits<double>::max() && restraint_sets[i]==rs_) {
+      max= restraint_sets[i]->get_model()->get_maximum_score();
+    }
+    if (max >= std::numeric_limits<double>::max()) {
       continue;
     }
-    Restraints cur= get_restraints(restraint_sets[i]->restraints_begin(),
-                                   restraint_sets[i]->restraints_end());
-    ParticlesTemp ip;
-    for (unsigned int j=0; j < cur.size(); ++j) {
-      ParticlesTemp cip= cur[i]->get_input_particles();
-      ip.insert(ip.end(), cip.begin(), cip.end());
+    std::pair<Restraints, Floats> cur=
+      get_restraints_and_weights(restraint_sets[i]->restraints_begin(),
+                                 restraint_sets[i]->restraints_end(),
+                                 restraint_sets[i]->get_weight());
+    Ints curi;
+    Floats curw;
+    for (unsigned int j=0; j< cur.first.size(); ++j) {
+      curi.push_back(index[cur.first[j]]);
+      curw.push_back(cur.second[j]);
     }
-    rdata_.push_back(handle_restraint(restraint_sets[i], 1, idm, preload_,
-                                      dependencies_, ip));
+    sets_.push_back(std::make_pair(max, curi));
+    set_weights_.push_back(curw);
+    IMP_LOG(TERSE, "Restraint set " << restraint_sets[i]->get_name()
+            << " has maximum score " << max
+            << " over " << cur.first.size() << " restraints."
+            << std::endl);
   }
 
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
     /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
       << " has max of " << max << std::endl;*/
-    IMP_LOG(VERBOSE, "Restraint " << rdata_[i].get_restraint()->get_name()
+    IMP_LOG(TERSE, "Restraint " << rdata_[i].get_restraint()->get_name()
             << " has max of " << max << std::endl);
     rdata_[i].set_max(max);
   }
@@ -117,6 +132,7 @@ void ModelData::validate() const {
 
 const SubsetData &ModelData::get_subset_data(const Subset &s,
                                              const Subsets &exclusions) const {
+  IMP_FUNCTION_LOG;
   if (!initialized_) {
     const_cast<ModelData*>(this)->initialize();
   }
@@ -158,7 +174,42 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
         }
       }
     }
-    sdata_[id]= SubsetData(this, ris, total_ris, inds,total_inds, s);
+    std::vector<std::pair<double, Ints> > set_ris;
+    std::vector<std::vector<Ints> > set_inds;
+    std::vector<Floats> set_weights;
+    for (unsigned int i=0; i< sets_.size(); ++i) {
+      Ints cris;
+      std::vector<Ints> cinds;
+      Floats weights;
+      for (unsigned int j=0; j< ris.size(); ++j) {
+        for (unsigned int k=0; k < sets_[i].second.size(); ++k) {
+          if (sets_[i].second[k]== ris[j]) {
+            cris.push_back(ris[j]);
+            cinds.push_back(inds[j]);
+            weights.push_back(set_weights_[i][k]);
+            break;
+          }
+        }
+      }
+      for (unsigned int j=0; j< total_ris.size(); ++j) {
+        for (unsigned int k=0; k < sets_[i].second.size(); ++k) {
+          if (sets_[i].second[k]== total_ris[j]) {
+            cris.push_back(total_ris[j]);
+            cinds.push_back(total_inds[j]);
+            weights.push_back(set_weights_[i][k]);
+            break;
+          }
+        }
+      }
+      if (cris.size() >1) {
+        IMP_LOG(VERBOSE, "Adding restraint set with size "
+                << cris.size() << std::endl);
+        set_ris.push_back(std::make_pair(sets_[i].first, cris));
+        set_inds.push_back(cinds);
+        set_weights.push_back(weights);
+      }
+    }
+    sdata_[id]= SubsetData(this, ris, set_ris, inds,set_inds, set_weights, s);
   }
   return sdata_.find(id)->second;
 }
@@ -212,21 +263,22 @@ bool SubsetData::get_is_ok(const SubsetState &state,
       return false;
     }
   }
-  if (total_max < std::numeric_limits<double>::max()) {
-    for (unsigned int i=0; i< total_ris_.size(); ++i) {
-      Ints ssi(total_indices_[i].size());
+  for (unsigned int h=0; h < set_ris_.size(); ++h) {
+    double set_total=0;
+    for (unsigned int i=0; i< set_ris_[h].second.size(); ++i) {
+      Ints ssi(set_indices_[h][i].size());
       for (unsigned int j=0; j< ssi.size();++j) {
-        ssi[j]= state[total_indices_[i][j]];
+        ssi[j]= state[set_indices_[h][i][j]];
       }
       SubsetState ss(ssi);
       ParticlesTemp ps(ss.size());
       for (unsigned int j=0; j< ss.size(); ++j) {
-        ps[j]= s_[total_indices_[i][j]];
+        ps[j]= s_[set_indices_[h][i][j]];
       }
-      double ms=md_->rdata_[total_ris_[i]].get_score<true>(md_->pst_,
-                                                           ps, ss);
-      total+=ms;
-      if (total > total_max) {
+      double ms=md_->rdata_[set_ris_[h].second[i]].get_score<true>(md_->pst_,
+                                                                   ps, ss);
+      set_total+=ms *set_weights_[h][i];
+      if (set_total > set_ris_[h].first) {
         return false;
       }
     }

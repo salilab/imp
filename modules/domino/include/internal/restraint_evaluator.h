@@ -103,26 +103,30 @@ struct ModelData;
 class IMPDOMINOEXPORT SubsetData {
   const ModelData *md_;
   Ints ris_;
-  Ints total_ris_;
   std::vector<Ints> indices_;
-  std::vector<Ints> total_indices_;
+  std::vector<std::pair<double, Ints> > set_ris_;
+  std::vector< std::vector<Ints> > set_indices_;
+  std::vector<Floats> set_weights_;
   Subset s_;
 public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
-             const Ints &total_ris,
+             const std::vector<std::pair< double, Ints> > &set_ris,
              std::vector<Ints> indices,
-             std::vector<Ints> total_indices,
-             const Subset &s): md_(md), ris_(ris), total_ris_(total_ris),
-    indices_(indices), total_indices_(total_indices), s_(s){}
+             const std::vector<std::vector<Ints> >& set_indices,
+             const std::vector<Floats>& set_weights,
+             const Subset &s): md_(md), ris_(ris),
+    indices_(indices),
+    set_ris_(set_ris), set_indices_(set_indices), set_weights_(set_weights),
+    s_(s){}
   double get_score(const SubsetState &state) const;
   bool get_is_ok(const SubsetState &state, double max) const;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
   unsigned int get_number_of_total_restraints() const {
-    return ris_.size() + total_ris_.size();
+    return set_ris_.size()+ ris_.size();
   }
   Subset get_subset() const {return s_;}
 };
@@ -160,6 +164,8 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   mutable Pointer<RestraintSet> rs_;
 
   std::vector<RestraintData> rdata_;
+  std::vector<std::pair<double, Ints> > sets_;
+  std::vector<Floats> set_weights_;
   std::vector<Subset> dependencies_;
   Pointer<ParticleStatesTable> pst_;
   mutable std::map<const SubsetID, SubsetData> sdata_;
