@@ -263,10 +263,14 @@ class sfo():
         self.inv_temp = inv_temp
         self._mc_sigma.set_temperature(1/self.inv_temp)
         self._mc_gamma.set_temperature(1/self.inv_temp)
-    
     def get_temp(self):
         return self.inv_temp
+    
+    def get_mc_stepsize(self):
+        return self._nm.get_sigma()
 
+    def set_mc_stepsize(self, stepsize):
+        self._nm.set_sigma(stepsize)
 
     def _setup_md(self,temp=300.0, tau=500):
         ## Molecular Dynamics (from MAX BONOMI)
