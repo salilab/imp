@@ -6,6 +6,8 @@ from math import *
 import random
 
 
+
+
 class ProjectTests(IMP.test.TestCase):
 
     def test_read_and_write_opencv_images(self):
@@ -30,7 +32,7 @@ class ProjectTests(IMP.test.TestCase):
         for i in range(0,rows):
             for j in range(0,cols):
                 self.assertAlmostEqual(img(i,j),img2(i,j),delta=0.001,
-                         msg="Generated image is different than stored")
+                         msg="Generated image is different from stored")
 
         os.remove(temp)
 
@@ -55,7 +57,7 @@ class ProjectTests(IMP.test.TestCase):
         for i in range(0,rows):
             for j in range(0,cols):
                 self.assertAlmostEqual(saved(i,j),filtered(i,j),delta=0.001,
-                         msg="Generated image is different than stored")
+                         msg="Generated image is different from stored")
 
     def test_substract(self):
         """Test subtracting images"""
@@ -91,7 +93,7 @@ class ProjectTests(IMP.test.TestCase):
         for i in range(0,rows):
             for j in range(0,cols):
                 self.assertAlmostEqual(saved(i,j),polar(i,j),delta=0.001,
-                         msg="Generated polar image is different than stored"\
+                         msg="Generated polar image is different from stored"\
                          " row %d col %d" % (i,j))
 
 
@@ -223,6 +225,9 @@ class ProjectTests(IMP.test.TestCase):
                 if(j< border or i >  (cols2-border)):
                     self.assertAlmostEqual(img2(i,j),0,delta=0.001,
                          msg="Borders are not zero at row %d col %d" % (i,j))
+
+
+
 
 if __name__ == '__main__':
     IMP.test.main()

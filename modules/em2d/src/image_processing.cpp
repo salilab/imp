@@ -20,177 +20,6 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-//void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
-//                      algebra::Matrix2D_d &marker,
-//                      int neighbors_mode) {
-//
-//  IMP_USAGE_CHECK((mask.get_number_of_rows()==marker.get_number_of_rows()) &&
-//            (mask.get_number_of_columns()==marker.get_number_of_columns()),
-//        "em2d::morfological_reconstruction: Matrices have different size.");
-//  unsigned int rows = mask.get_size(0);
-//  unsigned int cols = mask.get_size(1);
-//  int dims[2]; dims[0]=rows;dims[1]=cols;
-//  // save origin
-//  Pixel origin(mask.get_start(0),mask.get_start(1));
-//  Pixel zero(0,0);
-//  mask.set_start(zero);
-//  marker.set_start(zero);
-//  // Scan in raster order
-//  for (unsigned int i=0;i<rows;++i) {
-//    for (unsigned int j=0;j<cols;++j) {
-//      Pixel p(i,j); // current pixel
-//      Pixels neighbors=get_neighbors2d(p,mask,neighbors_mode,1);
-//      neighbors.push_back(p);
-//      // Compute maximum
-//      double max_val = marker(neighbors[0]);
-//      for (unsigned int k=1;k<neighbors.size();++k) {
-//        if(marker(neighbors[k]) > max_val) { max_val = marker(neighbors[k]); }
-//      }
-//      // Reconstruction
-//      marker(p)=std::min(max_val,mask(p));
-//    }
-//  }
-//
-//  std::queue<Pixel,std::deque<Pixel> > propagated_pixels;
-//  // Scan in anti-raster order
-//  for (int i=rows-1;i>=0;--i) {
-//    for (int j=cols-1;j>=0;--j) {
-//      Pixel p(i,j); // current pixel
-//      Pixels neighbors =get_neighbors2d(p,mask,neighbors_mode,-1);
-//      // Compute maximum
-//      double pixel_val = marker(p);
-//      double max_val = pixel_val;
-//      for (unsigned int k=0;k<neighbors.size();++k) {
-//        if(marker(neighbors[k]) > max_val) { max_val = marker(neighbors[k]); }
-//        // Check if propagation is required
-//        if(  (marker(neighbors[k]) < pixel_val) &&
-//             (marker(neighbors[k]) < mask(neighbors[k]) )  ) {
-//          propagated_pixels.push(p);
-//        }
-//      }
-//      // Reconstruction
-//      marker(p)=std::min(max_val,mask(p));
-//    }
-//  }
-//
-//  // Propagation step
-//  while(propagated_pixels.empty() == false ) {
-//    Pixel p = propagated_pixels.front();
-//    propagated_pixels.pop();
-//    Pixels neighbors=get_neighbors2d(p,mask,neighbors_mode,0);
-//    // Reconstruction and propagation
-//    for (unsigned int k=0;k<neighbors.size();++k) {
-//      if(  (marker(neighbors[k]) < marker(p)) &&
-//           (!algebra::get_are_almost_equal(marker(neighbors[k]),
-//                                   mask(neighbors[k]),1e-4)) ) {
-//        marker(neighbors[k]) = std::min(marker(p),mask(neighbors[k]));
-//        propagated_pixels.push(neighbors[k]);
-//      }
-//    }
-//  }
-//  // restore origin and assign the same to the result
-//  mask.set_start(origin);  marker.set_start(origin);
-//}
-//
-//
-
-
-
-//
-//Pixels get_neighbors2d(const Pixel &p,const algebra::Matrix2D_d &m,
-//                            int mode,int sign,bool cycle) {
-//  Pixels neighbors,final_neighbors;
-//  switch(mode) {
-//   case 4:
-//    switch(sign) {
-//     case 0:
-//      neighbors.resize(4);
-//      neighbors[0]=p+Pixel(-1, 0);
-//      neighbors[1]=p+Pixel( 0, 1);
-//      neighbors[2]=p+Pixel( 1, 0);
-//      neighbors[3]=p+Pixel( 0,-1);
-//      break;
-//     case -1:
-//      neighbors.resize(2);
-//      neighbors[0]=p+Pixel( 0, 1);
-//      neighbors[1]=p+Pixel( 1, 0);
-//      break;
-//     case 1:
-//      neighbors.resize(2);
-//      neighbors[0]=p+Pixel(-1, 0);
-//      neighbors[1]=p+Pixel( 0,-1);
-//      break;
-//    }
-//    break;
-//   case 8:
-//    switch(sign) {
-//     case 0:
-//      neighbors.resize(8);
-//      neighbors[0]=p+Pixel(-1, 0);
-//      neighbors[1]=p+Pixel(-1, 1);
-//      neighbors[2]=p+Pixel( 0, 1);
-//      neighbors[3]=p+Pixel( 1, 1);
-//      neighbors[4]=p+Pixel( 1, 0);
-//      neighbors[5]=p+Pixel( 1,-1);
-//      neighbors[6]=p+Pixel( 0,-1);
-//      neighbors[7]=p+Pixel(-1,-1);
-//      break;
-//     case 1:
-//      neighbors.resize(4);
-//      neighbors[0]=p+Pixel(-1, 0);
-//      neighbors[1]=p+Pixel(-1, 1);
-//      neighbors[2]=p+Pixel( 0,-1);
-//      neighbors[3]=p+Pixel(-1,-1);
-//      break;
-//     case -1:
-//      neighbors.resize(4);
-//      neighbors[0]=p+Pixel( 0, 1);
-//      neighbors[1]=p+Pixel( 1, 1);
-//      neighbors[2]=p+Pixel( 1, 0);
-//      neighbors[3]=p+Pixel( 1,-1);
-//      break;
-//    }
-//    break;
-//  }
-//  if(cycle) {
-//    // Cycle indexes out of the matrix
-//    for(unsigned int i=0;i<neighbors.size();++i) {
-//      Pixel q=neighbors[i];
-//      if( q[0]<m.get_start(0) ) { q[0] = m.get_finish(0); }
-//      if( q[0]>m.get_finish(0) ) { q[0] = m.get_start(0); }
-//      if( q[1]<m.get_start(1) ) { q[1] = m.get_finish(1); }
-//      if( q[1]>m.get_finish(1) ) { q[1] = m.get_start(1); }
-//      final_neighbors.push_back(q);
-//    }
-//  } else {
-//    // Clean neighbors with indexes out of the matrix
-//    for(unsigned int i=0;i<neighbors.size();++i) {
-//      Pixel q=neighbors[i];
-//      if( q[0]>=m.get_start(0)  && q[1]>=m.get_start(1) &&
-//          q[0]<=m.get_finish(0) && q[1]<=m.get_finish(1)) {
-//        final_neighbors.push_back(q);
-//      }
-//    }
-//  }
-//  return final_neighbors;
-//}
-//
-
-
-
-//void do_fill_holes(algebra::Matrix2D_d &m,
-//                algebra::Matrix2D_d &result,double h) {
-//  algebra::Matrix2D_d  mask;
-//  double max_m = m.compute_max();
-//  double max_plus_h = max_m +h;
-//  mask = max_plus_h - m;
-//  // The result is the marker. Should be max_plus_m - m - h, but is the same
-//  result = max_m - m;
-//  do_morphological_reconstruction(mask,result,8);
-//  result = max_plus_h - result;
-//}
-
-
 
 
 //void get_domes(algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h) {
@@ -201,51 +30,8 @@ IMPEM2D_BEGIN_NAMESPACE
 //}
 
 
-//void do_opening(const algebra::Matrix2D_d &m,
-//             algebra::Matrix2D_d &kernel,
-//             algebra::Matrix2D_d &result) {
-//  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
-//            (m.get_number_of_columns()==result.get_number_of_columns()),
-//          "em2d::do_opening: Matrices have different size.");
-//
-//  algebra::Matrix2D_d temp(m);
-//  do_erosion(m,kernel,temp);
-//  do_dilation(temp,kernel,result);
-//}
-//
-//
-//void do_closing(const algebra::Matrix2D_d &m,
-//             algebra::Matrix2D_d &kernel,
-//             algebra::Matrix2D_d &result) {
-//
-//  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
-//                  (m.get_number_of_columns()==result.get_number_of_columns()),
-//                  "em2d::colsing: Matrices have different size.");
-//
-//  algebra::Matrix2D_d temp(m);
-//  do_dilation(m,kernel,temp);
-//  do_erosion(temp,kernel,result);
-//}
-//
-//
-//void apply_threshold(const algebra::Matrix2D_d &m,
-//             algebra::Matrix2D_d &result,
-//             double threshold,int mode) {
-//  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
-//                  (m.get_number_of_columns()==result.get_number_of_columns()),
-//                  "em2d::apply_threshold: Matrices have different size.");
-//
-//
-//  for(unsigned int i=0;i<m.num_elements();++i) {
-//    if((mode ==  1 && m.data()[i]>threshold) ||
-//       (mode == -1 && m.data()[i]<threshold) ) {
-//      result.data()[i] = 1;
-//    } else {
-//      result.data()[i] = 0;
-//    }
-//  }
-//}
-//
+
+
 //void do_masking(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
 //          const algebra::Matrix2D<int> &mask,double value) {
 //  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
@@ -257,71 +43,6 @@ IMPEM2D_BEGIN_NAMESPACE
 //      result.data()[i] = m.data()[i];
 //    } else {
 //      result.data()[i] = value;
-//    }
-//  }
-//}
-//
-
-
-//void get_diffusion_filtered_partial_der_t(
-//                      const algebra::Matrix2D_d &I,
-//                      algebra::Matrix2D_d &It,
-//                       double dx, double dy, double ang) {
-//  int init_y = I.get_start(0); int end_y = I.get_finish(0);
-//  int init_x = I.get_start(1); int end_x = I.get_finish(1);
-//  double c = cos(ang);
-//  double s = sin(ang);
-//  double dxdx = dx*dx;
-//  double dydy = dy*dy;
-//  double dxdy = dx*dy;
-//  double Ix,Iy,Ixx,Iyy,Ixy,h;
-//  // Compute derivatives and result at the same time. Normal cases:
-//  for (int i=init_y;i<=end_y;++i) {
-//    for (int j=init_x;j<=end_x;++j) {
-//      Pixel p(i,j);
-//      Pixels ns = get_neighbors2d(p,I,8,0,true);
-//      // partial derivatives of I(x,y) using finite differences
-//      Ix = (I(ns[2])-I(p))/dx;
-//      Iy = (I(ns[4])-I(p))/dy;
-//      h= 1/(1+Ix*Ix+Iy*Iy);   // edge indicator function (h)
-//      // Second derivatives with finite differences
-//      Ixx = (I(ns[2])+I(ns[6])-2*I(p))/dxdx;
-//      Iyy = (I(ns[4])+I(ns[0])-2*I(p))/dydy;
-//      Ixy = (I(ns[3])+I(ns[7])-I(ns[1])-I(ns[5]))/(4*dxdy);
-//      It(p) = s*h*(Ixx+Iyy)+c*(-2)*h*h*(Ix*Ix*Ixx+Iy*Iy*Iyy+2*Ix*Iy*Ixy);
-//    }
-//  }
-//}
-//
-//
-//void get_diffusion_filtered(const algebra::Matrix2D_d &I,
-//             algebra::Matrix2D_d &result,
-//              double beta,
-//              double pixelsize,
-//              unsigned int t_steps) {
-//
-//  algebra::Matrix2D_d deriv_t,deriv_x,deriv_y,h;
-//  deriv_x.reshape(I);
-//  deriv_y.reshape(I);
-//  deriv_t.reshape(I);
-//  h.reshape(I);
-//  result = I;
-//  double dx=pixelsize;
-//  double dy=pixelsize;
-//  double dt=0.5*(1/(dx*dx)+1/(dy*dy));
-//  double ang = beta*PI/180.0;
-//  int init_y = I.get_start(0); int end_y = I.get_finish(0);
-//  int init_x = I.get_start(1); int end_x = I.get_finish(1);
-//
-//  // Integrate over time a number of steps
-//  for (unsigned t=0;t<t_steps;++t) {
-////    get_diffusion_filtered_partial_der_t(result,deriv_t,deriv_x,deriv_y,h,
-////                                      dx,dy,ang);
-//    get_diffusion_filtered_partial_der_t(result,deriv_t,dx,dy,ang);
-//    for (int i=init_y;i<=end_y;++i) {
-//      for (int j=init_x;j<=end_x;++j) {
-//        result(i,j) += deriv_t(i,j)*dt;
-//      }
 //    }
 //  }
 //}
@@ -455,22 +176,20 @@ IMPEM2D_BEGIN_NAMESPACE
 
 /***************************/
 
-void remove_small_objects(cv::Mat &m,
+
+void do_remove_small_objects(cvIntMat &m,
                           double percentage,
-                          int n_labels,
                           int background,
                           int foreground) {
-  // If not given, compute the number of labels. Requires one scan
-  if(n_labels== 0) {
-    double max_val,min_val;
-    cv::minMaxLoc(m,&min_val,&max_val);
-    n_labels = algebra::get_rounded(max_val);
-  }
-  Ints pixel_count(n_labels,0);
+  // Convert the image to integers in order to compute labels
+  cvIntMat aux;
+  int labels_found=do_labeling(m,aux); // aux contains the labels
+
   // Count pixels of each object
-  for (cvDoubleMatIterator it = m.begin<double>();it!=m.end<double>();++it) {
-    int val = algebra::get_rounded(*it);
-    if(val != background) pixel_count[val-1]++;
+  Ints pixel_count(labels_found,0);
+  for (cvIntMatIterator it = aux.begin();it!=aux.end();++it) {
+    int val = (*it);
+    if( val!= background) pixel_count[val-1]++;
   }
   // Count the pixels of the largest object and the percentage in size of
   // The others
@@ -480,14 +199,11 @@ void remove_small_objects(cv::Mat &m,
     percentages.push_back(double(*it)/double(max_pixels));
   }
   // Remove objects of size lower than the percentage
-  for (cvDoubleMatIterator it = m.begin<double>();it!=m.end<double>();++it) {
-    int val = algebra::get_rounded(*it);
-    if(percentages[val-1] > percentage) {
-      *it = double(foreground);
-    } else {
-      *it = double(background);
-    }
+  for (cvIntMatIterator it = aux.begin();it!=aux.end();++it) {
+    int val= (*it);
+    (*it) = percentages[val-1]>percentage ? foreground : background;
   }
+  aux.copyTo(m);
 }
 
 
@@ -613,17 +329,20 @@ void do_dilate_and_shrink_warp(cv::Mat &m,
 
 
 
-void do_preprocess_em2d(cv::Mat &m,cv::Mat &result, double n_stddevs) {
+void do_combined_fill_holes_and_threshold(cv::Mat &m,
+                                          cv::Mat &result,
+                                          double n_stddevs) {
   do_normalize(m);
-  cv::Mat temp;
-  do_fill_holes(m,temp,1.0); // no standard devs. Fill holes of depth 1
+  cv::Mat temp,temp2;
+  do_fill_holes(m,temp,n_stddevs);
   do_normalize(temp);
-  double threshold = 0; // Clean to 0 everything below this threshold
-  cv::threshold(temp,result,threshold,0.0,cv::THRESH_TOZERO);
+  temp.convertTo(temp2,CV_32FC1); // threshold does not work with doubles
+  // Remove everything below 0
+  double threshold = 0.0;
+  cv::threshold(temp2,temp,threshold,0.0,cv::THRESH_TOZERO);
+  temp.convertTo(result,CV_64FC1);
   do_normalize(result);
 }
-
-
 
 void do_morphological_reconstruction(const cv::Mat &mask,
                                       cv::Mat &marker,
@@ -715,93 +434,114 @@ void get_domes(cv::Mat &m,cv::Mat &result,double h) {
 }
 
 
+
+
 void get_diffusion_filtering_partial_derivative(const cv::Mat &m,
                                                 cv::Mat &der,
                                                double dx,
                                                double dy,
                                                double ang) {
+  if(m.rows!=der.rows || m.cols!=der.cols)
+    IMP_THROW("Diffusion filter: Derivatives matrix has incorrect size",
+              ValueException);
+
+
   double c = cos(ang);
   double s = sin(ang);
   double dxdx = dx*dx;
   double dydy = dy*dy;
   double dxdy = dx*dy;
   double Ix,Iy,Ixx,Iyy,Ixy,h;
-  // Compute derivatives and result at the same time. Normal cases:
-  for (int i=0;i<m.rows;++i) {
-    for (int j=0;j<m.cols;++j) {
+  cv::Mat_<double> M = m; // for convenience with the notation (does not copy)
+  cv::Mat_<double> Der = der; // same here
+  for (int i=0;i<M.rows;++i) {
+    for (int j=0;j<M.cols;++j) {
       cvPixel p(i,j);
       cvPixels ns = internal::get_neighbors2d(p,m,8,0,true);
       // partial derivatives of m using finite differences
-      Ix = (m.at<double>(ns[2])-m.at<double>(p))/dx;
-      Iy = (m.at<double>(ns[4])-m.at<double>(p))/dy;
+      Ix = (M(ns[2])-M(p))/dx;
+      Iy = (M(ns[4])-M(p))/dy;
       h= 1/(1+Ix*Ix+Iy*Iy);   // edge indicator function (h)
       // Second derivatives with finite differences
-      Ixx = (m.at<double>(ns[2])+m.at<double>(ns[6])
-                                            -2*m.at<double>(p))/dxdx;
-      Iyy = (m.at<double>(ns[4])+m.at<double>(ns[0])
-                                            -2*m.at<double>(p))/dydy;
-      Ixy = (m.at<double>(ns[3])+m.at<double>(ns[7])
-                       -m.at<double>(ns[1])-m.at<double>(ns[5]))/(4*dxdy);
-      der.at<double>(p) = s*h*(Ixx+Iyy)+
-                             c*(-2)*h*h*(Ix*Ix*Ixx+Iy*Iy*Iyy+2*Ix*Iy*Ixy);
+      Ixx = (M(ns[2])+M(ns[6])-2*M(p))/dxdx;
+      Iyy = (M(ns[4])+M(ns[0])-2*M(p))/dydy;
+      Ixy = (M(ns[3])+M(ns[7])-M(ns[1])-M(ns[5]))/(4*dxdy);
+      Der(p) = s*h*(Ixx+Iyy)+c*(-2)*h*h*(Ix*Ix*Ixx+Iy*Iy*Iyy+2*Ix*Iy*Ixy);
     }
   }
 }
 
 
-void do_diffusion_filtering(const cv::Mat &m,
+void apply_diffusion_filter(const cv::Mat &m,
                            cv::Mat &result,
                            double beta,
                            double pixelsize,
                            unsigned int time_steps) {
-  cv::Mat derivative_time;
+  if(beta<0 || beta>90)
+    IMP_THROW("Diffusion filter: Beta not in interval [0,90]",ValueException);
+
   m.copyTo(result);
   double dx = pixelsize;
   double dy = pixelsize;
   double dt=0.5*(1/(dx*dx)+1/(dy*dy));
   double angle= beta * PI/180.0;
-  // Integrate over time a number of steps
+  // Integrate over time
+  cv::Mat derivative_time(m.rows,m.cols,m.type());
   for (unsigned int t=0;t<time_steps;++t) {
-    get_diffusion_filtering_partial_derivative(m,derivative_time,dx,dy,angle);
-    for (int i=0;i<m.rows;++i) {
-      for (int j=0;j<m.cols;++j) {
-        cvPixel p(i,j);
-        result.at<double>(p) += derivative_time.at<double>(p)*dt;
-      }
-    }
+    get_diffusion_filtering_partial_derivative(result,
+                                               derivative_time,
+                                               dx,
+                                               dy,
+                                               angle);
+    result += derivative_time * dt;
   }
 }
 
 
 
+void do_segmentation(const cv::Mat &m,
+                     cv::Mat &result,
+                     SegmentationParameters &params) {
+  cv::Mat temp1,temp2; // to store doubles
+  cv::Mat aux,aux2; // to store floats
+  m.copyTo(temp1);
+  do_normalize(temp1);
+  apply_diffusion_filter(temp1, // input
+                         temp2, // filtered
+                         params.diffusion_beta,
+                         params.image_pixel_size,
+                         params.diffusion_timesteps);
 
-void do_segmentation(const cv::Mat &m,cv::Mat &result) {
-  cv::Mat temp;
-  m.copyTo(temp);
-  do_normalize(temp);
-//
-//  // Reaction diffusion
-//  cv::Mat diffused;
-//  get_diffusion_filtered(temp,diffused, ...);
-//  // Threshold 0
-//  cv::Mat thresholded;
-//  cv::threshold(diffused,thresholded,...);
-//  // Opening
-//  cv::Mat open;
-//  cv::morphologyEx(thresholded,open,MORPH_OPEN, element ...);
-//  // labeling
-//  do_labeling() ...
-//  // remove small objects
-//  do_remove() ...
-//  // Generate mask
-//  mask()....
-//  // Threshold mask 0 and apply mask of viceversa
+  do_combined_fill_holes_and_threshold(temp2, //input
+                                       temp1, // holes filled
+                                       params.fill_holes_stddevs);
+  // opening
+  temp1.convertTo(aux,CV_32FC1);
+  cv::morphologyEx(aux, // input
+                   aux2, // opened
+                   cv::MORPH_OPEN,
+                   params.opening_kernel);
 
+  // threshold the opened image to binary
+  double threshold = 0.0; // for making binary images
+  cv::threshold(aux2,aux,threshold,params.binary_foreground,cv::THRESH_BINARY);
 
+//  aux.convertTo(temp1,CV_64FC1);
+//  write_matrix(temp1,"xxx_opened_binary.spi");
 
+  // convert to ints to remove small objects
+  aux.convertTo(aux2,CV_16SC1); // aux2 now is ints
+  cvIntMat Aux = aux2;
+  do_remove_small_objects(Aux,
+                          params.remove_sizing_percentage,
+                          params.binary_background,
+                          params.binary_foreground);
+////  // Generate mask
+////  mask()....
+////  // Threshold mask 0 and apply mask of viceversa
+  Aux.convertTo(temp2,CV_64FC1);
+  temp2.copyTo(result);
 }
-
-
 
 int do_labeling(const cvIntMat &m,
              cvIntMat &mat_to_label) {

@@ -120,8 +120,15 @@ void do_subtract_images(em2d::Image *first,em2d::Image *second,
 }
 
 
-void do_extend_borders(Image *im1,Image *im2,unsigned int pix) {
-  do_extend_borders(im1->get_data(),im2->get_data(),pix);
+void do_remove_small_objects(Image *input,
+                            double percentage,
+                            int background,
+                            int foreground) {
+  cv::Mat aux;
+  input->get_data().convertTo(aux,CV_16SC1); // aux now is ints
+  cvIntMat Aux = aux;
+  do_remove_small_objects(Aux,percentage,background,foreground);
+  Aux.convertTo(input->get_data(),CV_64FC1); // back to doubles
 }
 
 IMPEM2D_END_NAMESPACE

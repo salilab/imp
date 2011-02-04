@@ -11,95 +11,12 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
-// #include "IMP/em2d/Pixel.h"
-// #include "IMP/algebra/Matrix2D.h"
 #include <algorithm>
 #include <cmath>
 
 IMPEM2D_BEGIN_NAMESPACE
 
 
-
-//! Morphological grayscale reconstruction (L Vincent, 1993)
-/*!
-  \param[in] mask image to reconstruct
-  \param[out] marker this image contains the initial marker points and will
-              contain the final result
-  \param[in] neighbors_mode number of neighbors for a pixel to consider when
-             doing the morphological reconstruction (values: 4, 8).
-*/
-// IMPEM2DEXPORT void do_morphological_reconstruction(algebra::Matrix2D_d &mask,
-//                      algebra::Matrix2D_d &marker,
-//                      int neighbors_mode=4);
-//
-//
-
-//! Returns the neighbors for a givel pixel in a given mode
-/*!
-  \ note IMPORTANT: The neighbors are returned in CLOCKWISE order starting
-                    with i-1,j+0  (12 o'clock)
-  \param[in] p the pixel to get the neighbors for
-  \param[in] matrix where the neighbors are computed
-  \param[in] mode modes supported for neighbors: 4 (default) and 8 neighbors
-  \params[in] sign of the neighbors requested
-              0 - all neighbors (default)
-              1 - positive or before raster-order neighbors
-              -1 - negative or before antiraster-order neighbors
-  \params[in] cycle if true, the neighbors are cyclical at the border of the
-              matrix. Eg. the neighbor to the right of last column, is the
-              initial column. If this parameter is false (default) the
-              neighbors outside the matrix are removed.
-*/
-// IMPEM2DEXPORT Pixels get_neighbors2d(
-//                            const Pixel &p,const algebra::Matrix2D_d &m,
-//                             int mode=4,
-//                             int sign=0,
-//                             bool cycle=false);
-
-
-
-////! Fills the holes in the matrix m of height h
-// IMPEM2DEXPORT void do_fill_holes(
-//            algebra::Matrix2D_d &m, algebra::Matrix2D_d &result,double h);
-//
-//
-////! Gets the domes of m with height h
-// IMPEM2DEXPORT void get_domes(
-//         algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,double h);
-//
-//
-
-
-//! Morphological opening of a grayscale matrix m.
-/*!
-  \param[in] m Matrix to dilate
-  \param[in] kernel structuring element used for the opening
-  \param[in] result resulting matrix
-*/
-//IMPEM2DEXPORT void do_opening(const algebra::Matrix2D_d &m,
-//              algebra::Matrix2D_d &kernel,
-//              algebra::Matrix2D_d &result);
-
-//! Morphological do_closing of a grayscale matrix m.
-/*!
-  \param[in] m Matrix to dilate
-  \param[in] kernel structuring element used for the opening
-  \param[in] result resulting matrix
-*/
-// IMPEM2DEXPORT void do_closing(const algebra::Matrix2D_d &m,
-//              algebra::Matrix2D_d &kernel,
-//              algebra::Matrix2D_d &result);
-
-
-//! Thresholding to get a binary image
-/*!
-  \param[in] mode if 1 the values higher than the threshold are given value 1.
-                  If the mode is -1, the values lower the threshold are given 1.
-*/
-// IMPEM2DEXPORT void apply_threshold(
-//                  const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-//                   double threshold, int mode);
-//
 
 //! Applies a binary mask to an image.
 /*!
@@ -113,36 +30,6 @@ IMPEM2D_BEGIN_NAMESPACE
 //          const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
 //          const algebra::Matrix2D<int> &mask,double value);
 //
-
-
-
-/*!
-  \param[in] I input
-  \param[in] deriv output derivative
-  \param[in] temp_x temporary matrix to store dI/dx
-  \param[in] deriv_y temporary matrix to store dI/dy
-  \param[in] h temporary matrix to store the "edge indicator function"
-  \param[in] dx - step for x
-  \param[in] dy - step for y
-  \param[in] ang - parameter for weight diffusion and edge detection (90-0)
-*/
-//void get_diffusion_filtered_partial_der_t(
-//                      const algebra::Matrix2D_d &I,
-//                      algebra::Matrix2D_d &It,
-//                       double dx, double dy, double ang);
-
-//! Smoothing filter by application of the reaction-diffusion
-//! equation of Beltrami flow. Adiga, JSB, 2005
-/*!
-  \param [in] beta contribution of diffusion versus edge enhancement.
-              0 - pure reaction, 90 - pure diffusion
-*/
-// IMPEM2DEXPORT void get_diffusion_filtered(
-//             const algebra::Matrix2D_d &I,
-//             algebra::Matrix2D_d &result,
-//              double beta,
-//              double pixelsize,
-//              unsigned int t_steps);
 
 
 
@@ -214,18 +101,68 @@ IMPEM2D_BEGIN_NAMESPACE
 /***************************/
 
 
-//! Removes small objects from a labeled image. The background value is assumed
-//! to be 0, and the labels start at 1 up to the number of labels.
+//! Class to provide all the parameters to the segmentation function
+class IMPEM2DEXPORT SegmentationParameters {
+public:
+  double image_pixel_size;
+  double diffusion_beta;
+  double diffusion_timesteps;
+  double fill_holes_stddevs;
+  cv::Mat opening_kernel;
+  double remove_sizing_percentage;
+  int binary_background;
+  int binary_foreground;
+
+  SegmentationParameters(): image_pixel_size(1),
+                            diffusion_beta(45),
+                            diffusion_timesteps(200),
+                            fill_holes_stddevs(1.0),
+                            remove_sizing_percentage (0.1),
+                            binary_background(0),
+                            binary_foreground(1) {
+    opening_kernel = cv::Mat::ones(3,3,CV_64FC1);
+  }
+
+  SegmentationParameters(double apix,
+                         double diff_beta,
+                         unsigned int diff_timesteps,
+                         double fh_stddevs,
+                         const cv::Mat &kr,
+                         int background,
+                         int foreground):
+                               image_pixel_size(apix),
+                               diffusion_beta(diff_beta),
+                               diffusion_timesteps(diff_timesteps),
+                               fill_holes_stddevs(fh_stddevs),
+                               opening_kernel(kr),
+                               binary_background(background),
+                               binary_foreground(foreground) {};
+
+  void show(std::ostream &out = std::cout) const {
+    out << "Diffusion parameters: " << std::endl;
+    out << "image_pixel_size " << image_pixel_size << std::endl;
+    out << "diffusion_beta " << diffusion_beta << std::endl;
+    out << "diffusion_timesteps " << diffusion_timesteps << std::endl;
+    out << "fill_holes_stddevs " << fill_holes_stddevs << std::endl;
+    out << "Opening kernel " << opening_kernel.rows
+        << "x" << opening_kernel.cols << std::endl;
+    out << "binary_background " << binary_background << std::endl;
+    out << "binary_foreground " << binary_foreground << std::endl;
+  }
+};
+IMP_VALUES(SegmentationParameters,SegmentationParameterss);
+
+
+//! Removes small objects from a matrix of integers.
 /*!
   \param[in] m the matrix
   \param[in] percentage The percentage respect to the largest object that
              other objects have to be in order to survive the removal.
-  \param[in] n_labels The number of labels in the image. If 0, the function
-             computes the number
+  \param[in] background value for the background after removed
+  \param[in] background value for the foreground after removed
 */
-IMPEM2DEXPORT void remove_small_objects(cv::Mat &m,
+IMPEM2DEXPORT void do_remove_small_objects(cvIntMat &m,
                           double percentage,
-                          int n_labels=0,
                           int background=0,
                           int foreground=1);
 
@@ -278,16 +215,17 @@ IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
   \param[in] result The segmented image, with the shape of the molecule
 */
 IMPEM2DEXPORT void do_segmentation(const cv::Mat &m,
-                                   cv::Mat &result);
-
+                                   cv::Mat &result,
+                                   SegmentationParameters &params);
 
 //! Smoothing filter by application of the reaction-diffusion
 //! equation of Beltrami flow. Adiga, JSB, 2005
 /*!
   \param [in] beta contribution of diffusion versus edge enhancement.
               0 - pure reaction, 90 - pure diffusion
+  \note The function only works for matrices containing doubles
 */
-IMPEM2DEXPORT void do_diffusion_filtering(const cv::Mat &m,
+IMPEM2DEXPORT void apply_diffusion_filter(const cv::Mat &m,
                            cv::Mat &result,
                            double beta,
                            double pixelsize,
@@ -331,11 +269,15 @@ IMPEM2DEXPORT void do_fill_holes(const cv::Mat &m,
 IMPEM2DEXPORT void get_domes(cv::Mat &m,cv::Mat &result,double h) ;
 
 
-//!
+//! Combines the fill holes and tresholding operations together with normalize
 /*!
-  \param[in]
+  \param[in] m Input matrix
+  \param[out] result the result matrix
+  \param[in] n_stddevs Number of standard deviations used to compute the holes
+  \note The function does normalize -> fill_holes -> normalize -> threshold ->
+    normalize
 */
-IMPEM2DEXPORT void do_preprocess_em2d(cv::Mat &m,
+IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(cv::Mat &m,
                                      cv::Mat &result,
                                      double n_stddevs);
 

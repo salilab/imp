@@ -14,6 +14,7 @@
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
+
 cvPixels get_neighbors2d(const cvPixel &p,
                         const cv::Mat &m,
                         int mode,
@@ -75,7 +76,7 @@ cvPixels get_neighbors2d(const cvPixel &p,
     // Clean neighbors with indexes out of the matrix
     for(unsigned int i=0;i<neighbors.size();++i) {
       cvPixel q=neighbors[i];
-      if( q.x>= 0 && q.x<m.rows && q.y >=0 && q.y<=m.cols) {
+      if( q.x>= 0 && q.x<m.rows && q.y >=0 && q.y<m.cols) {
         final_neighbors.push_back(q);
       }
     }

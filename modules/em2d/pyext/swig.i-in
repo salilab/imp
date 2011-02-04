@@ -10,6 +10,9 @@ IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
 IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
 IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 
+
+IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParameterss);
+
 IMP_SWIG_OBJECT(IMP::em2d, ScoreFunction,ScoreFunctions);
 IMP_SWIG_OBJECT(IMP::em2d, ChiSquaredScore,ChiSquaredScores);
 IMP_SWIG_OBJECT(IMP::em2d, EM2DScore,EM2DScores);
@@ -35,6 +38,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/opencv_interface.h"
 %include "IMP/em2d/ImageReaderWriter.h"
 %include "IMP/em2d/PolarResamplingParameters.h"
+%include "IMP/em2d/image_processing.h"
 %include "IMP/em2d/Image.h"
 %include "IMP/em2d/RegistrationResult.h"
 %include "IMP/em2d/SpiderImageReaderWriter.h"
@@ -47,7 +51,6 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/ProjectionMask.h"
 %include "IMP/em2d/project.h"
 %include "IMP/em2d/align2D.h"
-%include "IMP/em2d/image_processing.h"
 %include "IMP/em2d/model_interaction.h"
 %include "IMP/em2d/ProjectionFinder.h"
 %include "IMP/em2d/Em2DRestraint.h"
