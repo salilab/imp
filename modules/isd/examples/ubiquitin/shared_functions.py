@@ -127,10 +127,10 @@ class sfo():
         gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
         print "prior restraint"
         rs = IMP.RestraintSet('prior')
-        rs.add_restraint(IMP.isd.JeffreysRestraint(sigma))
-        rs.add_restraint(IMP.isd.JeffreysRestraint(gamma))
-        rs.set_weight(1.0)
-        m.add_restraint(rs)
+        #rs.add_restraint(IMP.isd.JeffreysRestraint(sigma))
+        #rs.add_restraint(IMP.isd.JeffreysRestraint(gamma))
+        #rs.set_weight(1.0)
+        #m.add_restraint(rs)
         self._rs['prior'] = rs
         rs = IMP.RestraintSet('NOE')
         print "reading data restraints"
@@ -195,6 +195,7 @@ class sfo():
 
     def do_md(self,nsteps):
         "perform md simulation on protein for nsteps"
+        self.global_counter += 1
         for i in IMP.atom.get_leaves(self._p['prot']):
             IMP.core.XYZR(i).set_coordinates_are_optimized(True)
         self._p['sigma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
@@ -224,7 +225,7 @@ class sfo():
         self.prefix=prefix
         self.statfile = prefix+'_stats.txt'
         flstat=open(self.statfile,'w')
-        flstat.write("Step Time Temp Potential Kinetic "
+        flstat.write("global_step local_step Temp Potential Kinetic "
                 "Total E_phys E_data E_prior Sigma Gamma "
                 "MC_accept_s MC_accept_g "
                 "MC_stepsize_s MC_stepsize_g\n")
@@ -246,10 +247,10 @@ class sfo():
                 self.naccept_g,nsteps)
         self.naccept_s = self._mc_sigma.get_number_of_forward_steps()
         self.naccept_g = self._mc_gamma.get_number_of_forward_steps()
-        e_phys = self._rs['phys'].unprotected_evaluate(False)
-        e_data = self._rs['data'].unprotected_evaluate(False)
-        e_prior = self._rs['prior'].unprotected_evaluate(False)
-        for i in [stepno, stepno*100*2.0/1000.0, temp, potential, kinetic,
+        e_phys = self._rs['phys'].evaluate(False)
+        e_data = self._rs['data'].evaluate(False)
+        e_prior = self._rs['prior'].evaluate(False)
+        for i in [self.global_counter, self.local_counter, temp, potential, kinetic,
                 kinetic+potential,e_phys,e_data,e_prior,
                 si,ga,acc_s,acc_g,st_s,st_g]:
             flstat.write("%10f " % i)
@@ -313,7 +314,6 @@ class sfo():
 
     def _run_md_or_mc(self, nsteps, mdmc):
         "run mdmc or mc and print statistics"
-        self.global_counter += 1
         if self.stat_rate <= 0:
             self.local_counter += nsteps
             mdmc.optimize(nsteps)
@@ -321,6 +321,10 @@ class sfo():
         else:
             for i in xrange(nsteps/self.stat_rate):
                 self.local_counter += self.stat_rate
+                fl=open('dummy','a')
+                fl.write('replica %s global %d local %d\n' % (self.prefix,
+                    self.global_counter, self.local_counter))
+                fl.close()
                 mdmc.optimize(self.stat_rate)
                 self.write_stats(self.stat_rate)
             remainder = nsteps % self.stat_rate
