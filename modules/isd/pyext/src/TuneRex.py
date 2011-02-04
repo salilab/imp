@@ -344,13 +344,13 @@ def update_good_dumb(newp, oldp, *args, **kwargs):
             (oldp[0],newp[0]))
     return oldp[1] - (oldp[0] - newp[0])
 
-def update_bad_dumb(newp, oldp, ind, targetAR = 0.4, **kwargs):
+def update_bad_dumb(newp, oldp, ind, targetAR = 0.4, scale=0.1, **kwargs):
     """Here the old parameters are oldp[0] and oldp[1], and the starting point
     is newp[0]. We should modify newp[1] so that the AR in the following cycle 
     is equal to the targetAR.
     In the "dumb" method, the Cv keyword is ignored. Here the newp[1]
     parameter is modified to follow the possible translation of newp[0] by
-    calling update_good_dumb, and then newp[1] is added or substracted 10% of
+    calling update_good_dumb, and then newp[1] is added or substracted scale% of
     (oldp[1] - oldp[0]) to adjust to targetAR.
     """
     
@@ -358,10 +358,10 @@ def update_bad_dumb(newp, oldp, ind, targetAR = 0.4, **kwargs):
         newp[1] = update_good_dumb(newp,oldp)
     if targetAR > sum(ind)/float(len(ind)):
         prdb("""target AR is higher than expected, decreasing newp[1]""")
-        newp[1] -= 0.1 * (oldp[1]-oldp[0])
+        newp[1] -= scale * (oldp[1]-oldp[0])
     else:
         prdb("""target AR is lower than expected, increasing newp[1]""")
-        newp[1] += 0.1 * (oldp[1]-oldp[0])
+        newp[1] += scale * (oldp[1]-oldp[0])
     return newp[1]
 
 def update_any_cv_step(newp, oldp, ind, targetAR = 0.4, Cv = None, **kwargs):
@@ -807,7 +807,7 @@ def update_params_nonergodic(pup, params, write_g=True, num=False):
     return newparams
 
 def update_params(indicators, params, isGood, targetAR = 0.4, immobilePoint = 1,
-        Cv = None, badMethod = "dumb", goodMethod = "dumb"):
+        Cv = None, badMethod = "dumb", goodMethod = "dumb", dumb_scale = 0.1):
     """update the parameters according to the isGood tuple and using the
     specified methods"""
 
@@ -852,11 +852,11 @@ def update_params(indicators, params, isGood, targetAR = 0.4, immobilePoint = 1,
                     indicators[pos], targetAR = targetAR, Cv = Cv)
         else:
             newparams[pos+1] = update_bad(newparams[pos:pos+2],params[pos:pos+2], 
-                    indicators[pos], targetAR = targetAR, Cv = Cv)
+                    indicators[pos], targetAR = targetAR, Cv = Cv, scale=dumb_scale)
     
     return tuple(newparams)
 
-def tune_params_nonergodic(replicanums, params, subs=1, start=0, alpha = 0.05, 
+def tune_params_flux(replicanums, params, subs=1, start=0, alpha = 0.05, 
         testMethod = 'anova', meanMethod = 'binom', use_avgAR=False, 
         power = 0.8, num=False):
     #num is here if you want to add some more temperatures. indicate total
@@ -907,10 +907,10 @@ def tune_params_nonergodic(replicanums, params, subs=1, start=0, alpha = 0.05,
 
     return (True, params)
 
-def tune_params(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePoint
+def tune_params_ar(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePoint
         = 1, CvMethod = "skip", badMethod = "dumb", goodMethod = "dumb",
         varMethod = "skip", testMethod = "anova", meanMethod = "binom", 
-        energies = None, temps = None, power=0.8):
+        energies = None, temps = None, power=0.8, dumb_scale=0.1):
     """Tune the replica-exchange parameters and return a new set.
 
     Arguments:
@@ -936,6 +936,8 @@ def tune_params(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePoint
             parameter has been modified (default: "dumb",options: "step", 
             "sc" self-consistent, "scfull" self-consistent using the exact equation, 
             "nr" newton-raphson solver for the exact equation)
+	dumb_scale -- (0.0-1.0) in the "dumb" method, scale wrong temperature 
+	    intervals by this amount. (default: 0.1)
         testMethod -- how to test for the difference of the means,
             either "anova" for a one-way anova, or "kruskal" for a
             Kruskal-Wallis one-way non-parametric anova.
@@ -996,7 +998,7 @@ def tune_params(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePoint
     #update the current parameter set to match the target AR
     params = update_params(indicators, params, isGood, targetAR = targetAR,
                 immobilePoint = immobilePoint, Cv = Cv,
-                badMethod = badMethod, goodMethod = goodMethod)
+                badMethod = badMethod, goodMethod = goodMethod, dumb_scale=dumb_scale)
 
     prdb('Done')
     return (True, params)

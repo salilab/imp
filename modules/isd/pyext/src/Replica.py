@@ -224,8 +224,8 @@ class ReplicaTracker():
         the temperatures weren't optimized.
         td keys that should be passed to init:
             rate : the rate at which to try tuning temps
-            method : flux or cv
-            targetAR : for cv only, target acceptance rate
+            method : flux or ar
+            targetAR : for ar only, target acceptance rate
             alpha : Type I error to use.
         """
         #update replicanum
@@ -234,15 +234,19 @@ class ReplicaTracker():
         if len(self.rn_history) % td['rate'] == 0\
                 and len(self.rn_history) > 0:
             temps = [1/(kB*la) for la in self.inv_temps]
-            if td['method'] == 'cv':
+            kwargs={}
+	    if td['method'] == 'ar':
+		if 'targetAR'  in td: kwargs['targetAR']=td['targetAR']
+		if 'alpha' in td: kwargs['alpha']=td['alpha']
+		if 'dumb_scale' in td: kwargs['dumb_scale']=td['dumb_scale']   
                 indicators = TuneRex.compute_indicators(
                         transpose(self.rn_history))
-                changed, newparams = TuneRex.tune_params(indicators, temps,
-                        td['targetAR'], td['alpha'])
+                changed, newparams = TuneRex.tune_params_ar(indicators, temps, **kwargs)
             elif td['method'] == 'flux':
-                changed, newparams = TuneRex.tune_params_nonergodic(
+		if 'alpha' in td: kwargs['alpha']=td['alpha']
+                changed, newparams = TuneRex.tune_params_flux(
                         transpose(self.rn_history),
-                        temps, alpha = td['alpha'])
+                        temps, **kwargs)
             if changed:
                 self.rn_history = []
                 print newparams

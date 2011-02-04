@@ -55,7 +55,7 @@ rex_scheme='convective'
 rex_xchg='gromacs'
 #whether to use TuneRex to tune temperatures
 tune_temps = True
-tune_data = {'rate' = 100, #temp optimization rate, in rex steps.
+tune_data = {'rate' : 100, #temp optimization rate, in rex steps.
         'method':'flux', #flux-optimization or cv-optimization
         'alpha':0.05} # type I error on the estimates
 templog = os.path.join(outfolder, 'temps.txt')
