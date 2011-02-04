@@ -1125,6 +1125,11 @@ IMP_REF_COUNTED_INLINE_DESTRUCTOR(Name, Object::_on_destruction();)
   virtual ::IMP::VersionInfo get_version_info() const {                 \
     return get_module_version_info();                                   \
   }                                                                     \
+  /** \brief For python, cast a generic Object to this type. Return None
+      if object is not the right type.*/                                \
+static Name* get_from(Object *o) {                                      \
+    return object_cast<Name>(o);                                        \
+  }                                                                     \
   IMP_NO_DOXYGEN (virtual void do_show(std::ostream &out) const {       \
       show;                                                             \
     });                                                                 \
