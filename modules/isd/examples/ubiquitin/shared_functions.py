@@ -199,7 +199,7 @@ class sfo():
             IMP.core.XYZR(i).set_coordinates_are_optimized(True)
         self._p['sigma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
         self._p['gamma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
-        self._md.optimize(nsteps)
+        self._run_md_or_mc(nsteps, self._md)
 
     def do_mc_and_update_stepsize(self,nsteps):
         """perform mc on nuisances for nsteps, updating stepsizes to target 
@@ -263,6 +263,7 @@ class sfo():
         self.inv_temp = inv_temp
         self._mc_sigma.set_temperature(1/self.inv_temp)
         self._mc_gamma.set_temperature(1/self.inv_temp)
+
     def get_temp(self):
         return self.inv_temp
     
@@ -309,23 +310,28 @@ class sfo():
         mc.set_move_probability(1.0)
         return (mc,nm_particle)
 
-    def _mc_and_update(self,nsteps,mc,nm):
-        before = mc.get_number_of_forward_steps()
+    def _run_md_or_mc(self, nsteps, mdmc):
+        "run mdmc or mc and print statistics"
         self.global_counter += 1
         if self.stat_rate <= 0:
             self.local_counter += nsteps
-            mc.optimize(nsteps)
-            self.write_stats(self.stat_rate)
+            mdmc.optimize(nsteps)
+            self.write_stats(nsteps)
         else:
             for i in xrange(nsteps/self.stat_rate):
                 self.local_counter += self.stat_rate
-                mc.optimize(self.stat_rate)
+                mdmc.optimize(self.stat_rate)
                 self.write_stats(self.stat_rate)
             remainder = nsteps % self.stat_rate
             if remainder != 0:
-                mc.optimize(remainder)
                 self.local_counter += remainder
+                mdmc.optimize(remainder)
                 self.write_stats(remainder)
+
+    def _mc_and_update(self,nsteps,mc,nm):
+        "run mc, update stepsize and print statistics"
+        before = mc.get_number_of_forward_steps()
+        self._run_md_or_mc(nsteps, mc)
         after = mc.get_number_of_forward_steps()
         accept = float(after-before)/nsteps
         if 0.4 < accept < 0.6:
@@ -335,8 +341,6 @@ class sfo():
         if accept > 1.0:
             accept = 1.0
         nm.set_sigma(nm.get_sigma()*2*accept)
-
-        "helper class to gather and print statistics on a simulation"
 
     def _get_mc_stat(self,mc,nm,nacc,nsteps):
         "return acceptance rate and stepsize"
