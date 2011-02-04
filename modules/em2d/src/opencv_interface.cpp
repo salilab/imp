@@ -14,7 +14,7 @@
 IMPEM2D_BEGIN_NAMESPACE
 
 
-void show(cv::Mat &m,std::ostream &out) {
+void show(const cv::Mat &m,std::ostream &out) {
   for ( int i=0;i<m.rows;++i) {
     for ( int j=0;j<m.cols;++j) {
       out << m.at<double>(i,j) << " ";

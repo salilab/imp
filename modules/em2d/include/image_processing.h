@@ -18,20 +18,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-//! Applies a binary mask to an image.
-/*!
-  \param[in] mask If the mask is 1, the result has the value of m. Otherwise
-             the value is given by the parameter value.
-  \param[in] value value to apply when the mask is 0
-  \note  m and result can be the same matrix.
-
-*/
-//IMPEM2DEXPORT void do_masking(
-//          const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-//          const algebra::Matrix2D<int> &mask,double value);
-//
-
-
 
 //! Removes small objects from a labeled image. The background value is assumed
 //! to be 0, and the labels start at 1 up to the number of labels.
@@ -151,6 +137,21 @@ public:
   }
 };
 IMP_VALUES(SegmentationParameters,SegmentationParameterss);
+
+
+
+//! Applies a binary mask to an image.
+/*!
+  \param[in] m Input matrix
+  \param[in] result matrix with the result
+  \param[in] mask If the mask is 0, the result has the value of val. Otherwise
+             is the value of m.
+  \param[in] value value to apply when the mask is 0
+*/
+IMPEM2DEXPORT void apply_mask(const cv::Mat &m,
+                              cv::Mat &result,
+                              const cvIntMat &mask,
+                              double val);
 
 
 //! Removes small objects from a matrix of integers.
