@@ -546,12 +546,12 @@ def are_equal(indicators, targetAR=0.4, alpha = 0.05,
     # p-value < alpha => H0 rejected => result == False
     tr['result']= tr['pval'] >= alpha
 
-    if tr['test'] == 'anova':
-        try:
-            power_test(tr, power=power, alpha=alpha)
-        except:
-            prdb("power test failed")
-            pass
+    #if tr['test'] == 'anova':
+        #try:
+        #    power_test(tr, power=power, alpha=alpha)
+        #except:
+        #    prdb("power test failed")
+        #    pass
 
     return tr
 
@@ -783,8 +783,8 @@ def compute_indicators(replicanums, subs = 1, start=0):
 def update_params_nonergodic(pup, params, write_g=True, num=False):
     
     from numpy import linspace
-    g = spline(zip(pup,params),0,method='monoH.FC')
-    
+    #g = spline(zip(pup,params),0,method='monoH.FC')
+    g = linear_interpolation(zip(pup,params),0)
     if write_g:
         d = spline_diffusivity(pup,params)
         fl=open('g','w')
@@ -793,6 +793,9 @@ def update_params_nonergodic(pup, params, write_g=True, num=False):
         fl=open('diffusivity','w')
         fl.write(''.join(["%f %f\n" % (x,d(x)) for x in
             linspace(params[0],params[-1],num=100)]))
+        fl.close()
+        fl=open('pup','w')
+        fl.write("".join(["%f %f\n" % (i,j) for (i,j) in zip(params,pup)]))
         fl.close()
 
 
@@ -1002,8 +1005,6 @@ def tune_params_ar(indicators,  params, targetAR = 0.4, alpha = 0.05, immobilePo
 
     prdb('Done')
     return (True, params)
-
-##### Main program entry point
 
 if __name__ == '__main__':
     from numpy import *
