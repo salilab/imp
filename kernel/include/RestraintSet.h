@@ -126,6 +126,19 @@ namespace {
       }
     }
   }
+  template <class It>
+  void get_restraint_sets_internal(It b, It e,
+                                   RestraintSetsTemp &ret) {
+    for (It c=b; c!= e; ++c) {
+      RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
+      if (rs) {
+        get_restraint_sets_internal(rs->restraints_begin(),
+                                    rs->restraints_end(), ret);
+        ret.push_back(dynamic_cast<RestraintSet*>(*c));
+      } else {
+      }
+    }
+  }
 }
 #endif
 template <class It>
@@ -142,6 +155,15 @@ template <class It>
 inline RestraintsTemp get_restraints(It b, It e) {
   RestraintsTemp ret;
   get_restraints_internal(b,e, ret);
+  std::sort(ret.begin(), ret.end());
+  ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
+  return ret;
+}
+
+template <class It>
+inline RestraintSetsTemp get_restraint_sets(It b, It e) {
+  RestraintSetsTemp ret;
+  get_restraint_sets_internal(b,e, ret);
   std::sort(ret.begin(), ret.end());
   ret.erase(std::unique(ret.begin(), ret.end()), ret.end());
   return ret;
