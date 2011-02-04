@@ -20,6 +20,38 @@ ModelData::ModelData(RestraintSet *rs,
   pst_=pst;
   initialized_=false;
 }
+
+namespace {
+  RestraintData handle_restraint(Restraint *r,
+                                 double weight,
+                        const IMP::internal::Map<Particle*, Particle*> &idm,
+      const IMP::internal::Map<Restraint*, ModelData::PreloadData> &preload,
+                                 std::vector<Subset> &dependencies,
+                        ParticlesTemp ip) {
+    ParticlesTemp oip;
+    for (unsigned int i=0; i< ip.size(); ++i) {
+      if (idm.find(ip[i]) != idm.end()) {
+        oip.push_back(idm.find(ip[i])->second);
+      }
+    }
+    std::sort(oip.begin(), oip.end());
+    oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
+    dependencies.push_back(Subset(oip, true));
+    RestraintData ret(r, weight);
+    if (preload.find(r) != preload.end()){
+      const ModelData::PreloadData &data= preload.find(r)->second;
+      IMP_USAGE_CHECK(dependencies.back() == data.s,
+                      "Was passed subset " << data.s
+                      << " but expected subset " << dependencies.back()
+                      << " for restraint " << r->get_name());
+      for (unsigned int i=0; i< data.scores.size(); ++i) {
+        ret.set_score(data.sss[i], data.scores[i]);
+      }
+    }
+    return ret;
+  }
+}
+
 void ModelData::initialize() {
   IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
@@ -37,27 +69,28 @@ void ModelData::initialize() {
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
-    ParticlesTemp oip;
-    for (unsigned int i=0; i< ip.size(); ++i) {
-      if (idm.find(ip[i]) != idm.end()) {
-        oip.push_back(idm.find(ip[i])->second);
-      }
-    }
-    std::sort(oip.begin(), oip.end());
-    oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
-    dependencies_.push_back(Subset(oip, true));
-    rdata_.push_back(RestraintData(*rit, rs_->get_model()->get_weight(*rit)));
-    if (preload_.find(*rit) != preload_.end()){
-      const PreloadData &data= preload_.find(*rit)->second;
-      IMP_USAGE_CHECK(dependencies_.back() == data.s,
-                      "Was passed subset " << data.s
-                      << " but expected subset " << dependencies_.back()
-                      << " for restraint " << (*rit)->get_name());
-      for (unsigned int i=0; i< data.scores.size(); ++i) {
-        rdata_.back().set_score(data.sss[i], data.scores[i]);
-      }
-    }
+    double weight=rs_->get_model()->get_weight(*rit);
+    rdata_.push_back(handle_restraint(*rit, weight, idm, preload_,
+                                      dependencies_, ip));
   }
+  RestraintSets restraint_sets= get_restraint_sets(rs_->restraints_begin(),
+                                                   rs_->restraints_end());
+  for (unsigned int i=0; i< restraint_sets.size(); ++i) {
+    if (restraint_sets[i]->get_model()->get_maximum_score(restraint_sets[i])
+        >= std::numeric_limits<double>::max()) {
+      continue;
+    }
+    Restraints cur= get_restraints(restraint_sets[i]->restraints_begin(),
+                                   restraint_sets[i]->restraints_end());
+    ParticlesTemp ip;
+    for (unsigned int j=0; j < cur.size(); ++j) {
+      ParticlesTemp cip= cur[i]->get_input_particles();
+      ip.insert(ip.end(), cip.begin(), cip.end());
+    }
+    rdata_.push_back(handle_restraint(restraint_sets[i], 1, idm, preload_,
+                                      dependencies_, ip));
+  }
+
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
     /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
