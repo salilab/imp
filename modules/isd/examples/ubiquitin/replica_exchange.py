@@ -22,7 +22,7 @@ IMP.set_log_level(IMP.NONE)
 #where to output files
 outfolder=os.path.join(os.getcwd(), 'results')
 #temp dir
-tmpdir = os.path.join(os.getcwd(),'tmp')
+tmpdir = os.getenv('IMP_TMP_DIR')
 #number of replicas / hosts
 nreps = 8
 #lambda scaling distribution
@@ -39,7 +39,7 @@ stat_rate=[10]*nreps
 initpdb = "generated2.pdb"
 charmmtop = "top.lib"
 charmmpar =  "par.lib"
-restraints = "NOE_HN-full_7A_sparseHA.tbl"
+restraints = "NOE_HN-full_7A_sparse100.tbl"
 filelist=[initpdb,charmmtop,charmmpar,restraints] #add whatever you want
 #prefix of output files 
 nums=[[os.path.join(outfolder,'r%02d' % (i+1))] for i in xrange(nreps)]
@@ -69,8 +69,10 @@ rexlog = os.path.join(outfolder,'replicanums.txt')
 
 #misc
 
-imppy = '/piano1/home/pellarin/imp-projects/imp-isd-new-fast/tools/imppy.sh'
-src_path = '/piano1/home/pellarin/imp-projects/imp-isd-new/modules/isd/pyext/src/'
+imppy = os.path.abspath(
+        os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
+src_path = os.path.abspath(
+        os.path.join(os.getenv('IMP_ISD_DATA'),'../lib/IMP/isd'))
 showX11 = False 
 grid_debug = False
 grid_verbose = False
