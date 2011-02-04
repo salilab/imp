@@ -30,7 +30,7 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
             vs=versioncpp
         if includepath:
             oldcpp= context.env.get('CPPPATH', None)
-            context.env.Append(CPPPATH=includepath)
+            context.env.Replace(CPPPATH=context.env.get('CPPPATH', [])[:]+[includepath])
         r = context.TryRun("#include <"+versionheader+">\n"+\
                              """#include <iostream>
 
