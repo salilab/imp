@@ -185,17 +185,19 @@ class ReplicaTracker():
             self.replicanums[j] = buf
         #on the grid (suboptimal but who cares)
         newtemps = self.sort_per_replica(self.inv_temps)
-        self.grid.gather(self.grid.scatter(self.sfo_id, 'set_temp', newtemps))
-        steps = self.grid.gather(
-                self.grid.broadcast(self.sfo_id, 'get_mc_stepsize'))
+        states = self.grid.gather(
+                self.grid.broadcast(self.sfo_id, 'get_state'))
         for (i,j) in accepted:
             ri = self.replicanums[i]
             rj = self.replicanums[j]
-            buf = steps[ri]
-            steps[ri] = steps[rj]
-            steps[rj] = buf
+            buf = states[ri]
+            states[ri] = states[rj]
+            states[rj] = buf
+        for temp,state in zip(newtemps,states):
+            if state['inv_temp'] != temp:
+                raise RuntimeError, "consistency check of temperatures failed!"
         self.grid.gather(
-                self.grid.scatter(self.sfo_id, 'set_mc_stepsize', steps))
+                self.grid.scatter(self.sfo_id, 'set_state', states))
 
     def write_rex_stats(self):
         "write replica numbers as a function of state"
