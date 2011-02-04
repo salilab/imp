@@ -189,6 +189,9 @@ class sfo():
                 lambda_temp)
         self._mc_gamma, self._nm_gamma = self._setup_mc(self._p['gamma'],
                 lambda_temp)
+        self.local_counter = 0
+        self.global_counter = 0
+        self.stat_rate=100
 
     def do_md(self,nsteps):
         "perform md simulation on protein for nsteps"
@@ -304,7 +307,21 @@ class sfo():
 
     def _mc_and_update(self,nsteps,mc,nm):
         before = mc.get_number_of_forward_steps()
-        mc.optimize(nsteps)
+        self.global_counter += 1
+        if self.stat_rate <= 0:
+            self.local_counter += nsteps
+            mc.optimize(nsteps)
+            self.write_stats(self.stat_rate)
+        else:
+            for i in xrange(nsteps/self.stat_rate):
+                self.local_counter += self.stat_rate
+                mc.optimize(self.stat_rate)
+                self.write_stats(self.stat_rate)
+            remainder = nsteps % self.stat_rate
+            if remainder != 0:
+                mc.optimize(remainder)
+                self.local_counter += remainder
+                self.write_stats(remainder)
         after = mc.get_number_of_forward_steps()
         accept = float(after-before)/nsteps
         if 0.4 < accept < 0.6:
