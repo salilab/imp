@@ -114,16 +114,22 @@ def _add_platform_flags(env):
         # be great to check if they match, but that is kind of hard.
         (opt, cflags, so) = get_config_vars('OPT', 'BASECFLAGS', 'SO')
         env['IMP_PYTHON_SO']=so
+        includepath=[]
         if dependency.gcc.get_is_gcc_like(env):
             basecflags=[x for x in opt.split()+cflags.split() \
                         if x not in ['-Werror', '-Wall', '-Wextra',
                                      '-O2', '-O3',
                                      '-fstack-protector', '-Wstrict-prototypes',
                                      '-g', '-dynamic', '-DNDEBUG',
-                                     "-fwrapv", "-fno-strict-aliasing"]]
+                                     "-fwrapv", "-fno-strict-aliasing"]\
+                        and not x.startswith('-I')]
                     #total.append(v)
+            includepath=[x[2:] for x in opt.split()+cflags.split()\
+                         if x.startswith('-I')]
         else:
             basecflags= opt.split()+cflags.split()
+        for p in includepath:
+            utility.add_to_include_path(env, p)
         env.Append(CXXFLAGS=basecflags)
 
     if env['PLATFORM'] == 'darwin':
@@ -420,11 +426,10 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
     e.Replace(CXXFLAGS=e['IMP_PYTHON_CXXFLAGS'])
     #e['CXXFLAGS']=cxxs
     e.Append(CPPDEFINES=['IMP_SWIG_WRAPPER'])
-    e.Append(CPPPATH=[_get_python_include(e)])
+    utility.add_to_include_path(e, _get_python_include(e))
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
     _add_flags(e, extra_modules=extra_modules)
-    #print e['CXXFLAGS'], e['CPPPATH']
     return e
 
 def get_named_environment(env, name, modules, dependencies):
