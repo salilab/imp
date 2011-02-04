@@ -94,6 +94,7 @@ RestraintScoreSubsetFilterTable
     for (unsigned int i=0; i< excluded.size(); ++i) {
       IMP_LOG(VERBOSE, excluded[i] << " ");
     }
+    IMP_LOG(VERBOSE, std::endl);
   }
   // if there are no restraints just here, the total score can't change
   if (mset_->get_subset_data(s, excluded)
