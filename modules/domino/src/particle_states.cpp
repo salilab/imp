@@ -23,14 +23,14 @@ void ParticleStatesTable::do_show(std::ostream &out) const{
 }
 
 
-unsigned int TrivialStates::get_number_of_particle_states() const {
+unsigned IndexStates::get_number_of_particle_states() const {
   return n_;
 }
-void TrivialStates::load_particle_state(unsigned int i, Particle *p) const {
+void IndexStates::load_particle_state(unsigned int i, Particle *p) const {
   p->set_value(k_, i);
 }
 
-void TrivialStates::do_show(std::ostream &out) const{
+void IndexStates::do_show(std::ostream &out) const{
   out << "size: " << n_ << std::endl;
 }
 
@@ -59,6 +59,43 @@ void RigidBodyStates::load_particle_state(unsigned int i, Particle *p) const {
 
 void RigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << states_.size() << std::endl;
+}
+
+
+unsigned int CompoundStates::get_number_of_particle_states() const {
+  IMP_USAGE_CHECK(a_->get_number_of_particle_states()
+                  == b_->get_number_of_particle_states(),
+                  "Number of states don't match: "
+                  << a_->get_number_of_particle_states()
+                  << " vs " << b_->get_number_of_particle_states());
+  return a_->get_number_of_particle_states();
+}
+void CompoundStates::load_particle_state(unsigned int i, Particle *p) const {
+  a_->load_particle_state(i, p);
+  b_->load_particle_state(i, p);
+}
+
+void CompoundStates::do_show(std::ostream &out) const{
+  out << a_->get_name() << " and " << b_->get_name() << std::endl;
+}
+
+
+unsigned int RecursiveStates::get_number_of_particle_states() const {
+  return ss_.size();
+}
+void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
+  IMP_USAGE_CHECK(i < get_number_of_particle_states(),
+                  "Out of range");
+  for (unsigned int j=0; j< s_.size(); ++j) {
+    IMP::internal::OwnerPointer<ParticleStates> ps
+      = pst_->get_particle_states(s_[j]);
+    ps->load_particle_state(ss_[i][j], s_[j]);
+  }
+}
+
+void RecursiveStates::do_show(std::ostream &out) const{
+  out << "particles: " << s_ << std::endl;
+  out << "states: " << ss_.size() << std::endl;
 }
 
 

@@ -12,6 +12,7 @@
 #include "domino_config.h"
 #include "domino_macros.h"
 #include "Subset.h"
+#include "SubsetState.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/SingletonContainer.h>
@@ -31,6 +32,7 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 class IMPDOMINOEXPORT ParticleStates: public Object {
 public:
+  ParticleStates(std::string name="ParticleStates %1%"): Object(name){}
   virtual unsigned int get_number_of_particle_states() const=0;
   virtual void load_particle_state(unsigned int, Particle*) const=0;
   virtual ~ParticleStates();
@@ -89,14 +91,13 @@ IMP_OBJECTS(ParticleStatesTable, ParticleStatesTables);
 /** Store the state index in the particle. The particle must
     already have the attribute in question.
 */
-class IMPDOMINOEXPORT TrivialStates: public ParticleStates {
+class IMPDOMINOEXPORT IndexStates: public ParticleStates {
   IntKey k_;
   unsigned int n_;
 public:
-  TrivialStates(unsigned int n): n_(n){}
-  IMP_PARTICLE_STATES(TrivialStates);
+  IndexStates(unsigned int n): ParticleStates("IndexStates %1%"), n_(n){}
+  IMP_PARTICLE_STATES(IndexStates);
 };
-IMP_OBJECTS(TrivialStates, TrivialStatesList);
 
 /** Store a set of states which explicitly define the XYZ coordinates of
     the particle in question.
@@ -104,10 +105,10 @@ IMP_OBJECTS(TrivialStates, TrivialStatesList);
 class IMPDOMINOEXPORT XYZStates: public ParticleStates {
   algebra::Vector3Ds states_;
 public:
-  XYZStates(const algebra::Vector3Ds &states): states_(states){}
+  XYZStates(const algebra::Vector3Ds &states):
+    ParticleStates("XYZStates %1%"), states_(states){}
   IMP_PARTICLE_STATES(XYZStates);
 };
-IMP_OBJECTS(XYZStates, XYZStatesList);
 
 /** Store a set of states which explicitly define the
     transformation coordinates of the particle in question.
@@ -115,11 +116,40 @@ IMP_OBJECTS(XYZStates, XYZStatesList);
 class IMPDOMINOEXPORT RigidBodyStates: public ParticleStates {
   algebra::ReferenceFrame3Ds states_;
 public:
-  RigidBodyStates(const algebra::ReferenceFrame3Ds &states): states_(states){}
+  RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
+    ParticleStates("RigidBodyStates %1%"), states_(states){}
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
-IMP_OBJECTS(RigidBodyStates, RigidBodyStatesList);
 
+/** Combine two particle states together. They must both have the same
+    number of states.
+*/
+class IMPDOMINOEXPORT CompoundStates: public ParticleStates {
+  IMP::internal::OwnerPointer<ParticleStates> a_, b_;
+public:
+  CompoundStates(ParticleStates* a, ParticleStates *b):
+    ParticleStates("CompoundStates %1%"), a_(a), b_(b){}
+  IMP_PARTICLE_STATES(CompoundStates);
+};
+
+
+/** Load particle states for a set of particles based on the state
+    index of a single particle, This can be used to implement compound
+    objects (like rigid bodies), where state i of the particle being
+    sampled causes a set of representation balls to be moved to
+    certain locations.
+*/
+class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
+  Subset s_;
+  SubsetStates ss_;
+  IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
+ public:
+  RecursiveStates(Subset s, const SubsetStates &ss,
+                  ParticleStatesTable * pst):
+    ParticleStates("RecursiveStates %1%"),
+    s_(s), ss_(ss), pst_(pst){}
+  IMP_PARTICLE_STATES(RecursiveStates);
+};
 
 IMPDOMINO_END_NAMESPACE
 
