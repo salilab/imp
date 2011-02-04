@@ -71,14 +71,14 @@ public:
 
   //! Reads and casts the image from the file (the image matrix of data must
   //! be stored as floats)
-  void read(String filename, const em2d::ImageReaderWriter *reader) {
+  void read(String filename, const ImageReaderWriter *reader) {
     Pointer<const ImageReaderWriter> ptr(reader);
     reader->read(filename,header_,data_);
   }
 
   //! Writes the image to a file (the image matrix of data is stored as floats
   //! when writing)
-  void write(const String &filename, const em2d::ImageReaderWriter *writer) {
+  void write(const String &filename, const ImageReaderWriter *writer) {
     Pointer<const ImageReaderWriter> ptr(writer);
     update_header(); // adjust the header to guarantee consistence
     writer->write(filename,header_,data_);
@@ -133,7 +133,7 @@ IMP_OUTPUT_OPERATOR(Image);
   \param[in] rw  reader/writer to use
 */
 IMPEM2DEXPORT Images read_images(const Strings &names,
-                                 const em2d::ImageReaderWriter *rw);
+                                 const ImageReaderWriter *rw);
 
 //! Saves images to files (For compatibility with SPIDER format,
 //! the images are written to floats)
@@ -143,7 +143,7 @@ IMPEM2DEXPORT Images read_images(const Strings &names,
   \param[in] rw  reader/writer to use
 */
 IMPEM2DEXPORT void save_images(Images images, const Strings &names,
-                               const em2d::ImageReaderWriter *rw);
+                               const ImageReaderWriter *rw);
 
 //! Cross correlation between two images
 IMPEM2DEXPORT double get_cross_correlation_coefficient(Image *im1,Image *im2);
@@ -159,33 +159,73 @@ inline void get_correlation2d(Image *im1,Image *im2,Image *corr) {
 }
 
 
-IMPEM2DEXPORT void do_normalize(em2d::Image *im,bool force=false);
+IMPEM2DEXPORT void do_normalize(Image *im,bool force=false);
 
 
-inline Floats get_histogram(em2d::Image *img, int bins) {
+inline Floats get_histogram(Image *img, int bins) {
   return get_histogram(img->get_data(),bins);
 }
 
-inline void apply_variance_filter(em2d::Image *input,
-                           em2d::Image *filtered,int kernelsize) {
+inline void apply_variance_filter(Image *input,
+                           Image *filtered,int kernelsize) {
   apply_variance_filter(input->get_data(),filtered->get_data(),kernelsize);
 }
 
-IMPEM2DEXPORT void do_subtract_images(em2d::Image *first,em2d::Image *second,
-                                  em2d::Image *result);
+inline void apply_diffusion_filter(Image *input,
+                                   Image *filtered,
+                                   double beta,
+                                   double pixelsize,
+                                   int time_steps) {
+  apply_diffusion_filter(input->get_data(),
+                         filtered->get_data(),
+                         beta,
+                         pixelsize,
+                         time_steps);
+}
 
-IMPEM2DEXPORT void add_noise(em2d::Image *im1,double op1, double op2,
+
+inline void do_fill_holes(Image *input,Image *result,double n_stddevs) {
+  do_fill_holes(input->get_data(),result->get_data(),n_stddevs);
+
+}
+
+inline void do_combined_fill_holes_and_threshold(Image *input,
+                                                 Image *result,
+                                                 double n_stddevs) {
+  do_combined_fill_holes_and_threshold(input->get_data(),
+                                       result->get_data(),
+                                       n_stddevs);
+}
+
+
+
+inline void do_extend_borders(Image *im1,Image *im2,unsigned int pix) {
+  do_extend_borders(im1->get_data(),im2->get_data(),pix);
+}
+
+
+inline void do_segmentation(Image *input,
+                            Image *result,
+                            SegmentationParameters &params) {
+  do_segmentation(input->get_data(),result->get_data(),params);
+}
+
+IMPEM2DEXPORT void do_remove_small_objects(Image *input,
+                            double percentage,
+                            int background=0,
+                            int foreground=1);
+
+
+IMPEM2DEXPORT void do_subtract_images(Image *first,Image *second,
+                                  Image *result);
+
+IMPEM2DEXPORT void add_noise(Image *im1,double op1, double op2,
                const String &mode = "uniform", double df = 3);
 
 
-IMPEM2DEXPORT void do_resample_polar(em2d::Image *im1,em2d::Image *im2,
+IMPEM2DEXPORT void do_resample_polar(Image *im1,Image *im2,
                 const PolarResamplingParameters &polar_params);
 
-/*! Extends the borders of the image a given number of pixels
-   \note See help for do_extend_borders.
-*/
-IMPEM2DEXPORT void do_extend_borders(Image *im1,Image *im2,
-                                  unsigned int pix);
 
 IMPEM2D_END_NAMESPACE
 

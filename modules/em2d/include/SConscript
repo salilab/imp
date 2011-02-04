@@ -7,7 +7,6 @@ files = [
     "FFToperations.h" ,
     "Fine2DRegistrationRestraint.h" ,
     "image_processing.h" ,
-#    "labeling_algorithm.h" ,
     "model_interaction.h" ,
     "pca_features_extraction.h" ,
     "project.h" ,
