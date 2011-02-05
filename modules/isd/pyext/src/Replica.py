@@ -193,9 +193,8 @@ class ReplicaTracker():
             buf = states[ri]
             states[ri] = states[rj]
             states[rj] = buf
-        for temp,state in zip(newtemps,states):
-            if state['inv_temp'] != temp:
-                raise RuntimeError, "consistency check of temperatures failed!"
+        for temp,state in zip(newtemps,states):	    
+            state['inv_temp'] = temp
         self.grid.gather(
                 self.grid.scatter(self.sfo_id, 'set_state', states))
 
