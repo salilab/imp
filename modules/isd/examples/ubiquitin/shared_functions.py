@@ -180,7 +180,7 @@ class sfo():
         func=getattr(self._m,name)
         return func(*args, **kw)
 
-    def init_simulation(self,lambda_temp=1.0, tau=500.0):
+    def init_simulation(self,lambda_temp=1.0, tau=500.0, stat_rate=1000):
         "prepare md and mc sims"
         self.inv_temp = lambda_temp
         self.md_tau = tau
@@ -191,7 +191,7 @@ class sfo():
                 lambda_temp)
         self.local_counter = 0
         self.global_counter = 0
-        self.stat_rate=100
+        self.stat_rate=stat_rate
 
     def do_md(self,nsteps):
         "perform md simulation on protein for nsteps"
@@ -320,7 +320,7 @@ class sfo():
 
     def _run_md_or_mc(self, nsteps, mdmc):
         "run mdmc or mc and print statistics"
-        if self.stat_rate <= 0:
+        if self.stat_rate <= 0 or self.stat_rate >= nsteps:
             self.local_counter += nsteps
             mdmc.optimize(nsteps)
             self.write_stats(nsteps)
