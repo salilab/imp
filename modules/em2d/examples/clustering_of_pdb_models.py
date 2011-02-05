@@ -59,13 +59,11 @@ model = IMP.Model()
 ssel = atom.ATOMPDBSelector()
 coords =[]
 fn_models = em2d.read_selection_file(fn_selection)
-for fn in fn_models:
-    fn=em2d.get_example_path(fn)
-
 n_models = len(fn_models)
 hierarchies=[]
 for fn in fn_models:
-    h=atom.read_pdb(fn,model,ssel,True,True);
+    fn_model=em2d.get_example_path(fn)
+    h=atom.read_pdb(fn_model,model,ssel,True,True);
     hierarchies.append(h)
     xyz=core.XYZs(atom.get_leaves(h))
     coords.append( [x.get_coordinates() for x in xyz])
