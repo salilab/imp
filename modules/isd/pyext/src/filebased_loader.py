@@ -23,7 +23,7 @@ if __name__ == '__main__':
     import IMP.isd.FileBasedGrid as FileBasedGrid
     import IMP.isd.logfile as logfile
 
-    import IMP.isd.shared_functions as sf
+    import shared_functions as sf
     
     log_output = True
 

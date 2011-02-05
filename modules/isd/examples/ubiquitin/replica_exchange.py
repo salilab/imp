@@ -40,7 +40,8 @@ initpdb = "generated2.pdb"
 charmmtop = "top.lib"
 charmmpar =  "par.lib"
 restraints = "NOE_HN-full_7A_sparse100.tbl"
-filelist=[initpdb,charmmtop,charmmpar,restraints] #add whatever you want
+#export the files in a local tmp directory
+filelist=[initpdb,charmmtop,charmmpar,restraints,'shared_functions.py'] #add whatever you want
 #prefix of output files 
 nums=[[os.path.join(outfolder,'r%02d' % (i+1))] for i in xrange(nreps)]
 #number of gibbs sampling steps in  the first temperature relaxation
