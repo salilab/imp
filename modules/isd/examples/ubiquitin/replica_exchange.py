@@ -57,9 +57,9 @@ n_mc = 100
 #where to run sims
 hostlist = ['localhost']*nreps
 #replica exchange scheme
-rex_scheme='convective'
+rex_scheme='standard'
 #replica exchange exchange method
-rex_xchg='gromacs'
+rex_xchg='random'
 #whether to use TuneRex to tune temperatures
 tune_temps = True
 tune_data = {'rate' : 100, #temp optimization rate, in rex steps.
