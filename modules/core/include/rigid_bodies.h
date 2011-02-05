@@ -30,7 +30,14 @@ IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
 
 //! A decorator for a rigid body
 /** A rigid body particle describes a set of particles, known
-    as the members, which move rigidly together. Since the
+    as the members, which move rigidly together. The rigid body
+    is represented as an algebra::ReferenceFrame3D coupled
+    with local coordinates (RigidMember::get_local_coordinates())
+    for the members expressed in that reference frame. The
+    global coordinates of the members are accessed, as with
+    other global coordinates, via the XYZ::get_coordinates().
+
+    Since the
     members are simply a set of particles which move together
     they don't (necessarily) define a shape. For example,
     the members of the rigid body made from a molecular hierarchy
@@ -40,14 +47,10 @@ IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
     to map from the rigid body to the set of particles
     defining the geometry of interest.
 
-    The initial orientation of the rigid body is computed from
+    The initial reference of the rigid body is computed from
     the coordinates, masses and radii of the particles
     passed to the constructor, based on diagonalizing the
     inertial tensor (which is not stored, currently).
-
-    A rigid body stores the a set of local coordinates for each
-    member and a algebra::ReferenceFrame3D in which those local
-    coordinates are expressed.
 
     It is often desirable to randomize the orientation of a rigid
     body:
