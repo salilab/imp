@@ -136,7 +136,7 @@ public:
     out << "binary_foreground " << binary_foreground << std::endl;
   }
 };
-IMP_VALUES(SegmentationParameters,SegmentationParameterss);
+IMP_VALUES(SegmentationParameters,SegmentationParametersList);
 
 
 
