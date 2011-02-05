@@ -11,7 +11,7 @@ IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
 IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 
 
-IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParameterss);
+IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
 
 IMP_SWIG_OBJECT(IMP::em2d, ScoreFunction,ScoreFunctions);
 IMP_SWIG_OBJECT(IMP::em2d, ChiSquaredScore,ChiSquaredScores);
