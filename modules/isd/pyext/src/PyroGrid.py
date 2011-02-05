@@ -465,7 +465,10 @@ class PyroGrid(AbstractGrid):
             arglist = [[i] for i in arglist]
         for prox,args,kw in zip(self.comm_proxies,arglist,kwlist):
             func=getattr(prox, funcname)
-            results.append(func(*args, **kw))
+            if type(args) is dict:
+                results.append(func(args,**kw))
+            else:
+                results.append(func(*args, **kw))
         return results
 
     def gather(self, results):
