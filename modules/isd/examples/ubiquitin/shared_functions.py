@@ -250,7 +250,9 @@ class sfo():
         e_phys = self._rs['phys'].evaluate(False)
         e_data = self._rs['data'].evaluate(False)
         e_prior = self._rs['prior'].evaluate(False)
-        for i in [self.global_counter, self.local_counter, temp, potential, kinetic,
+        for i in [self.global_counter, self.local_counter]:
+            flstat.write("%10d " % i)
+        for i in [temp, potential, kinetic,
                 kinetic+potential,e_phys,e_data,e_prior,
                 si,ga,acc_s,acc_g,st_s,st_g]:
             flstat.write("%10f " % i)
