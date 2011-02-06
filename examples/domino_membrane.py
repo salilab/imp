@@ -14,7 +14,7 @@ def mysign(x):
 
 def create_representation(TMH,topo):
     m=IMP.Model()
-    mp0= IMP.atom.read_pdb('1h68_A.pdb', m, IMP.atom.CAlphaPDBSelector())
+    mp0= IMP.atom.read_pdb('2zuq_A.pdb', m, IMP.atom.CAlphaPDBSelector())
     chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
 #   updating CA radius to match residue volume
     for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
@@ -59,9 +59,9 @@ def create_restraints(m, chain, tbr, TMH):
         for h in TMH:
             s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
             lsc.add_particles(s.get_selected_particles())
-        evr=IMP.core.ExcludedVolumeRestraint(lsc,1000)
+        evr=IMP.core.ExcludedVolumeRestraint(lsc,1)
         m.add_restraint(evr)
-        m.set_maximum_score(evr, .01)
+        m.set_maximum_score(evr, 17.0)
 
     def add_distance_restraint(s0, s1, x0, k):
         hub= IMP.core.HarmonicUpperBound(x0,k)
@@ -140,8 +140,8 @@ def create_restraints(m, chain, tbr, TMH):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
         lpc= IMP.container.ListPairContainer(m)
-        lpc.add_particle_pair([rbs[0],rbs[6]])
-        hub= IMP.core.HarmonicUpperBound(0.6,1)
+        lpc.add_particle_pair([rbs[0],rbs[3]])
+        hub= IMP.core.HarmonicUpperBound(1.0,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,3)
         ir=  IMP.container.PairsRestraint(kc, lpc)
@@ -161,7 +161,7 @@ def create_restraints(m, chain, tbr, TMH):
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
         length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
-        rdr=add_distance_restraint(rb0,rb1,35.0,1000)
+        rdr=add_distance_restraint(rb0,rb1,27.0,1000)
         rset.add_restraint(dr)
     add_packing_restraint()
     add_DOPE()
@@ -175,7 +175,7 @@ def  create_discrete_states(m,chain,TMH,sign):
     rot0=[]
     for i in range(len(TMH)):
         rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
-    trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
+    trs0=[]; trs1=[]; trs2=[]; trs3=[]; #trs4=[]; trs5=[]; trs6=[]
     for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/6)
         for t in range(0,1):
@@ -187,22 +187,22 @@ def  create_discrete_states(m,chain,TMH,sign):
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dx in range(0,30):
+                for dx in range(0,20,1):
                     if ( dx >= 7 ):
                         trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
                                     IMP.algebra.Vector3D(dx,0,0))))
                     for dz in range(0,1):
-                        for dy in range(0,30):
+                        for dy in range(0,20,1):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
                             trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[3]),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[4]),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[5]),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[6]),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            #trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[4]),
+                            #            IMP.algebra.Vector3D(dx,dy,dz))))
+                            #trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[5]),
+                            #            IMP.algebra.Vector3D(dx,dy,dz))))
+                            #trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[6]),
+                            #            IMP.algebra.Vector3D(dx,dy,dz))))
 
     pst= IMP.domino.ParticleStatesTable()
     pstate=[]
@@ -210,9 +210,9 @@ def  create_discrete_states(m,chain,TMH,sign):
     pstate.append(IMP.domino.RigidBodyStates(trs1))
     pstate.append(IMP.domino.RigidBodyStates(trs2))
     pstate.append(IMP.domino.RigidBodyStates(trs3))
-    pstate.append(IMP.domino.RigidBodyStates(trs4))
-    pstate.append(IMP.domino.RigidBodyStates(trs5))
-    pstate.append(IMP.domino.RigidBodyStates(trs6))
+    #pstate.append(IMP.domino.RigidBodyStates(trs4))
+    #pstate.append(IMP.domino.RigidBodyStates(trs5))
+    #pstate.append(IMP.domino.RigidBodyStates(trs6))
     for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -255,10 +255,10 @@ def display(m,chain,TMH,name):
 # Here starts the real job...
 #IMP.set_log_level(IMP.VERBOSE)
 
-TMH=[[3,25],[37,56],[70,87],[99,117],[121,141],[163,180],[190,211]]
+TMH=[[13,32],[47,62],[68,86],[144,161]]
 
 # define the topology
-topo=[-1.0, +1.0, -1.0, +1.0, -1.0, +1.0, -1.0]
+topo=[+1.0, -1.0, +1.0, -1.0]
 
 print "creating representation"
 (m,chain,tbr,sign)=create_representation(TMH,topo)
