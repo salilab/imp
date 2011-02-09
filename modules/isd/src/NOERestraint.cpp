@@ -9,7 +9,7 @@
 
 #include <IMP/isd/NOERestraint.h>
 #include <IMP/isd/FNormal.h>
-#include <IMP/isd/Nuisance.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/UnaryFunction.h>
 #include <math.h>
@@ -23,21 +23,21 @@ NOERestraint::NOERestraint(Particle *p0, Particle *p1,
 					  gamma_(gamma),
 					  Vexp_(Vexp) {}
                                           
-/* Apply the restraint to two atoms, two nuisances, one experimental value.
+/* Apply the restraint to two atoms, two Scales, one experimental value.
  */
 double
 NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   core::XYZ d0(p0_);
   core::XYZ d1(p1_);
-  Nuisance sigma_nuis(sigma_);
-  Nuisance gamma_nuis(gamma_);
+  Scale sigma_nuis(sigma_);
+  Scale gamma_nuis(gamma_);
   /* compute Icalc */
   algebra::Vector3D c0 = d0.get_coordinates();
   algebra::Vector3D c1 = d1.get_coordinates();
   double diff = (c0-c1).get_magnitude();
-  double gamma_val=gamma_nuis.get_nuisance();
-  double sigma_val=sigma_nuis.get_nuisance();
+  double gamma_val=gamma_nuis.get_scale();
+  double sigma_val=sigma_nuis.get_scale();
   double Icalc = gamma_val*pow(diff,-6);
   /* compute all arguments to FNormal */
   double FA = log(Vexp_);
@@ -55,10 +55,10 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       d0.add_to_derivatives(deriv, *accum);
       d1.add_to_derivatives( -deriv, *accum);
       /* derivative for sigma */
-      sigma_nuis.add_to_nuisance_derivative(
+      sigma_nuis.add_to_scale_derivative(
               lognormal-> evaluate_derivative_sigma(), *accum);
       /* derivative for gamma */
-      gamma_nuis.add_to_nuisance_derivative(DFM/gamma_val, *accum);
+      gamma_nuis.add_to_scale_derivative(DFM/gamma_val, *accum);
   }
   return score;
 }

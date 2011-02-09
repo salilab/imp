@@ -8,7 +8,7 @@
   */
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
-IMP_SWIG_DECORATOR(IMP::isd, Nuisance, Nuisances);
+IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
@@ -31,7 +31,7 @@ def create_model_and_particles():
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
-%include "IMP/isd/Nuisance.h"
+%include "IMP/isd/Scale.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/NOERestraint.h"

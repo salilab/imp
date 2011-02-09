@@ -69,7 +69,7 @@ class sfo():
         self._md.optimize(nsteps)
 
     def do_mc_and_update_stepsize(self,nsteps):
-        """perform mc on nuisances for nsteps, updating stepsizes to target 
+        """perform mc on scales for nsteps, updating stepsizes to target 
         50% acceptance. Don't make nsteps too small (say << 50).
         """
         print "running mc"
@@ -139,7 +139,7 @@ class sfo():
         return md
 
     def _setup_mc(self,particle,beta=1.676972322):
-        "monte carlo on nuisance parameter"
+        "monte carlo on scale parameter"
         mc = IMP.core.MonteCarlo(self._m)
         cont=IMP.container.ListSingletonContainer(self._m)
         cont.add_particle(particle)

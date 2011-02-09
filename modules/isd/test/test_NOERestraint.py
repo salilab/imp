@@ -9,7 +9,7 @@ from random import uniform
 import IMP
 
 #our project
-from IMP.isd import Nuisance,JeffreysRestraint,NOERestraint
+from IMP.isd import Scale,JeffreysRestraint,NOERestraint
 
 #unit testing framework
 import IMP.test
@@ -21,8 +21,8 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
-        self.gamma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.gamma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
         self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
@@ -42,8 +42,8 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
-            no=self.sigma.get_nuisance()
-            gamma=self.gamma.get_nuisance()
+            no=self.sigma.get_scale()
+            gamma=self.gamma.get_scale()
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
                     for i in range(3)]))
             p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
@@ -63,8 +63,8 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             p0=self.p0
             p1=self.p1
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
-            gamma=self.gamma.get_nuisance()
+            self.sigma.set_scale(no)
+            gamma=self.gamma.get_scale()
             dist=IMP.core.get_distance(p0,p1)
             expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
                     -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
@@ -79,9 +79,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
-            no=self.sigma.get_nuisance()
+            no=self.sigma.get_scale()
             gamma=uniform(0.1,100)
-            self.gamma.set_nuisance(gamma)
+            self.gamma.set_scale(gamma)
             dist=IMP.core.get_distance(p0,p1)
             expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
                     -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
@@ -96,8 +96,8 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
-            no=self.sigma.get_nuisance()
-            gamma=self.gamma.get_nuisance()
+            no=self.sigma.get_scale()
+            gamma=self.gamma.get_scale()
             p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
                     for i in range(3)]))
             p1.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
@@ -117,8 +117,8 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             p0=self.p0
             p1=self.p1
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
-            gamma=self.gamma.get_nuisance()
+            self.sigma.set_scale(no)
+            gamma=self.gamma.get_scale()
             dist=IMP.core.get_distance(p0,p1)
             expected=0.5*log(2*pi) + log(no*self.V_obs) + \
                     1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2
@@ -133,9 +133,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         for i in xrange(100):
             p0=self.p0
             p1=self.p1
-            no=self.sigma.get_nuisance()
+            no=self.sigma.get_scale()
             gamma=uniform(0.1,100)
-            self.gamma.set_nuisance(gamma)
+            self.gamma.set_scale(gamma)
             dist=IMP.core.get_distance(p0,p1)
             expected=0.5*log(2*pi) + log(no*self.V_obs) + \
                     1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2
@@ -161,9 +161,9 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
             dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
             sigma=uniform(0.1,100)
-            self.sigma.set_nuisance(sigma)
+            self.sigma.set_scale(sigma)
             gamma=uniform(0.1,100)
-            self.gamma.set_nuisance(gamma)
+            self.gamma.set_scale(gamma)
             self.m.evaluate(self.DA)
             for coord in range(3):
                 self.assertAlmostEqual(self.p0.get_derivative(coord),
@@ -185,11 +185,11 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
             dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
             sigma=uniform(0.1,100)
-            self.sigma.set_nuisance(sigma)
+            self.sigma.set_scale(sigma)
             gamma=uniform(0.1,100)
-            self.gamma.set_nuisance(gamma)
+            self.gamma.set_scale(gamma)
             self.m.evaluate(self.DA)
-            self.assertAlmostEqual(self.sigma.get_nuisance_derivative(),
+            self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                     1/sigma-1/sigma**3*log(self.V_obs/(gamma*dist**-6))**2,
                     delta=0.001)
 
@@ -203,11 +203,11 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.p1.set_coordinates(IMP.algebra.Vector3D(*pos1))
             dist=sqrt(sum([(i-j)**2 for (i,j) in zip(pos0,pos1)]))
             sigma=uniform(0.1,100)
-            self.sigma.set_nuisance(sigma)
+            self.sigma.set_scale(sigma)
             gamma=uniform(0.1,100)
-            self.gamma.set_nuisance(gamma)
+            self.gamma.set_scale(gamma)
             self.m.evaluate(self.DA)
-            self.assertAlmostEqual(self.gamma.get_nuisance_derivative(),
+            self.assertAlmostEqual(self.gamma.get_scale_derivative(),
                     1/gamma*(-1/sigma**2*log(self.V_obs/(gamma*dist**-6))),
                     delta=0.001)
 
@@ -215,7 +215,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         "test if score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.unprotected_evaluate(self.DA),
                     -log(self.noe.unprotected_probability()),delta=0.001)
 
@@ -223,7 +223,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
         "test if prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.unprotected_probability(),
                     exp(-self.noe.unprotected_evaluate(self.DA)),delta=0.001)
 
@@ -235,8 +235,8 @@ class TestNOERestraintApplied(IMP.test.TestCase):
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 2.0)
-        self.gamma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.gamma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
             IMP.algebra.Vector3D(0,0,0))
         self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
@@ -251,7 +251,7 @@ class TestNOERestraintApplied(IMP.test.TestCase):
     def testSimpleOptimization(self):
         "tests to satisfy a restraint between two points"
         m=self.m
-        self.gamma.set_nuisance(3.0)
+        self.gamma.set_scale(3.0)
         m.add_restraint(self.noe) #this leads to a target distance of 1.0
         self.p1.set_coordinates_are_optimized(True)
         # set the conjugate gradient minimization

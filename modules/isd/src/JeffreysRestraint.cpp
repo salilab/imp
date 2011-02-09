@@ -1,12 +1,12 @@
 /**
  *  \file isd/JeffreysRestraint.cpp
- *  \brief Restrain a nuisance particle with log(nuisance)
+ *  \brief Restrain a scale particle with log(scale)
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/isd/Nuisance.h>
+#include <IMP/isd/Scale.h>
 #include <IMP/isd/JeffreysRestraint.h>
 #include <math.h>
 
@@ -16,25 +16,25 @@ JeffreysRestraint::JeffreysRestraint(Particle *p): p_(p) {
 }
 
 
-/* Apply the score if it's a nuisance decorator.
+/* Apply the score if it's a scale decorator.
  */
 double
 JeffreysRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    Nuisance::decorate_particle(p_);
+    Scale::decorate_particle(p_);
   }
-  Nuisance sig(p_);
+  Scale sig(p_);
   double score;
-  if (sig.get_nuisance() <= 0) {
-      IMP_THROW("cannot use jeffreys prior on negative or zero nuisance", 
+  if (sig.get_scale() <= 0) {
+      IMP_THROW("cannot use jeffreys prior on negative or zero scale", 
               ModelException);
   }
-  score=log(sig.get_nuisance());
+  score=log(sig.get_scale());
   if (accum) {
     /* calculate derivative and add to 1st coordinate of sig */
-    double deriv=1.0/sig.get_nuisance();
-    sig.add_to_nuisance_derivative(deriv,*accum);
+    double deriv=1.0/sig.get_scale();
+    sig.add_to_scale_derivative(deriv,*accum);
   }
   return score;
 }

@@ -9,7 +9,7 @@ from random import uniform
 import IMP
 
 #our project
-from IMP.isd import Nuisance,JeffreysRestraint
+from IMP.isd import Scale,JeffreysRestraint
 
 #unit testing framework
 import IMP.test
@@ -21,23 +21,23 @@ class TestJeffreysRestraint(IMP.test.TestCase):
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
         self.m = IMP.Model()
-        self.sigma = Nuisance.setup_particle(IMP.Particle(self.m), 1.0)
+        self.sigma = Scale.setup_particle(IMP.Particle(self.m), 1.0)
         self.DA = IMP.DerivativeAccumulator()
         self.J = IMP.isd.JeffreysRestraint(self.sigma)
 
     def testValueP(self):
-        "test if probability is 1/nuisance"
+        "test if probability is 1/scale"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_probability(),
                     1.0/no,delta=0.001)
 
     def testValueE(self): 
-        "test if score is log(nuisance)"
+        "test if score is log(scale)"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
                     log(no), delta=0.001)
 
@@ -46,9 +46,9 @@ class TestJeffreysRestraint(IMP.test.TestCase):
         self.m.add_restraint(self.J)
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.m.evaluate(self.DA)
-            self.assertAlmostEqual(self.sigma.get_nuisance_derivative(),
+            self.assertAlmostEqual(self.sigma.get_scale_derivative(),
                     1.0/no,delta=0.001)
 
     def testParticles(self):
@@ -59,29 +59,29 @@ class TestJeffreysRestraint(IMP.test.TestCase):
 
     def testNonzeroE(self):
         "raise ValueError if zero"
-        self.sigma.set_nuisance(0.0)
+        self.sigma.set_scale(0.0)
         self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNegativeE(self):
         "raise ValueError if negative"
-        self.sigma.set_nuisance(-1.0)
+        self.sigma.set_scale(-1.0)
         self.assertRaises(IMP.ModelException, self.J.unprotected_evaluate, self.DA)
 
     def testNonzeroP(self):
         "raise ValueError if zero"
-        self.sigma.set_nuisance(0.0)
+        self.sigma.set_scale(0.0)
         self.assertRaises(IMP.ModelException, self.J.unprotected_probability)
         
     def testNegativeP(self):
         "raise ValueError if negative"
-        self.sigma.set_nuisance(-1.0)
+        self.sigma.set_scale(-1.0)
         self.assertRaises(IMP.ModelException, self.J.unprotected_probability)
 
     def testSanityEP(self):
         "test if score is -log(prob)"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
                     -log(self.J.unprotected_probability()))
 
@@ -89,7 +89,7 @@ class TestJeffreysRestraint(IMP.test.TestCase):
         "test if prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
-            self.sigma.set_nuisance(no)
+            self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_probability(),
                     exp(-self.J.unprotected_evaluate(self.DA)))
 
