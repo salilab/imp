@@ -7,13 +7,4 @@ env.IMPModuleExamples(example_files=env.IMPModuleGetExamples(),
                         '1z5s-projection-1.spi',
                         '1z5s-projection-2.spi',
                         'em2d_scores_for_clustering.data',
-                        'model-0.pdb',
-                        'model-1.pdb',
-                        'model-2.pdb',
-                        'model-3.pdb',
-                        'model-1000.pdb',
-                        'model-1001.pdb',
-                        'model-1002.pdb',
-                        '1z5s.pdb',
-
                         ])
