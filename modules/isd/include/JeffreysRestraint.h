@@ -1,6 +1,6 @@
 /**
  *  \file isd/JeffreysRestraint.h
- *  \brief A restraint on a nuisance parameter.
+ *  \brief A restraint on a scale parameter.
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
  *
@@ -15,8 +15,8 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Score a nuisance parameter with log(nuisance)
-//! the probability is 1/nuisance
+//! Score a Scale particle with log(scale)
+//! the probability is 1/scale
 
 class IMPISDEXPORT JeffreysRestraint : public Restraint
 {

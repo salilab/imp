@@ -23,7 +23,7 @@ class sfo():
         IMP.set_log_level(value)
 
     def init_model(self, wd, initpdb, restraints, ff_temp=300.0):
-        "loads pdb and restraints and creates particles and nuisances"
+        "loads pdb and restraints and creates particles and scales"
         #IMP.set_log_level(IMP.SILENT)
         IMP.set_check_level(IMP.NONE)
         os.chdir(wd)
@@ -123,8 +123,9 @@ class sfo():
         m.add_restraint(rs)
         self._rs = {}
         self._rs['phys'] = rs
-        sigma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
-        gamma=IMP.isd.Nuisance.setup_particle(IMP.Particle(m),10)
+        #setup sigma and gamma and bound them between 0.1 and 100.
+        sigma=IMP.isd.Scale.setup_particle(IMP.Particle(m),1.0,0.1,100)
+        gamma=IMP.isd.Scale.setup_particle(IMP.Particle(m),2.0,0.1,100)
         print "prior restraint"
         rs = IMP.RestraintSet('prior')
         rs.add_restraint(IMP.isd.JeffreysRestraint(sigma))
@@ -198,12 +199,12 @@ class sfo():
         self.global_counter += 1
         for i in IMP.atom.get_leaves(self._p['prot']):
             IMP.core.XYZR(i).set_coordinates_are_optimized(True)
-        self._p['sigma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
-        self._p['gamma'].set_is_optimized(IMP.FloatKey("nuisance"),False)
+        self._p['sigma'].set_is_optimized(IMP.FloatKey("scale"),False)
+        self._p['gamma'].set_is_optimized(IMP.FloatKey("scale"),False)
         self._run_md_or_mc(nsteps, self._md)
 
     def do_mc_and_update_stepsize(self,nsteps):
-        """perform mc on nuisances for nsteps, updating stepsizes to target 
+        """perform mc on scales for nsteps, updating stepsizes to target 
         50% acceptance. Don't make nsteps too small (say << 50).
         """
         prot = self._p['prot']
@@ -211,11 +212,11 @@ class sfo():
         gamma = self._p['gamma']
         for i in IMP.atom.get_leaves(prot):
             IMP.core.XYZR(i).set_coordinates_are_optimized(False)
-        sigma.set_is_optimized(IMP.FloatKey("nuisance"),True)
-        gamma.set_is_optimized(IMP.FloatKey("nuisance"),False)
+        sigma.set_is_optimized(IMP.FloatKey("scale"),True)
+        gamma.set_is_optimized(IMP.FloatKey("scale"),False)
         self._mc_and_update(nsteps,self._mc_sigma,self._nm_sigma)
-        sigma.set_is_optimized(IMP.FloatKey("nuisance"),False)
-        gamma.set_is_optimized(IMP.FloatKey("nuisance"),True)
+        sigma.set_is_optimized(IMP.FloatKey("scale"),False)
+        gamma.set_is_optimized(IMP.FloatKey("scale"),True)
         self._mc_and_update(nsteps,self._mc_gamma,self._nm_gamma)
 
     def write_pdb(self, name='prot.pdb'):
@@ -239,8 +240,8 @@ class sfo():
         kinetic   = self._md.get_kinetic_energy() 
         potential = self._m.evaluate(False)
         temp = self._md.get_kinetic_temperature(kinetic)
-        si=self._p['sigma'].get_nuisance()
-        ga=self._p['gamma'].get_nuisance()
+        si=self._p['sigma'].get_scale()
+        ga=self._p['gamma'].get_scale()
         acc_s,st_s = self._get_mc_stat(self._mc_sigma, self._nm_sigma,
                 self.naccept_s,nsteps)
         acc_g,st_g = self._get_mc_stat(self._mc_gamma, self._nm_gamma,
@@ -303,12 +304,12 @@ class sfo():
         return md
 
     def _setup_mc(self,particle,beta=1.676972322):
-        "monte carlo on nuisance parameter"
+        "monte carlo on scale parameter"
         mc = IMP.core.MonteCarlo(self._m)
         cont=IMP.container.ListSingletonContainer(self._m)
         cont.add_particle(particle)
         nm_particle=IMP.core.NormalMover(cont,
-                IMP.FloatKeys([IMP.FloatKey("nuisance")]),0.1)
+                IMP.FloatKeys([IMP.FloatKey("scale")]),0.1)
         cont=IMP.container.ListSingletonContainer(self._m)
         #why is this returning an int?
         mc.add_mover(nm_particle)
