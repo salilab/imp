@@ -47,6 +47,6 @@ namespace IMP {
   void __imul__(double f) { self->operator*=(f); }
   void __idiv__(double f) { self->operator/=(f); }
   void __isub__(const IMP::algebra::VectorD<D> &o) { self->operator-=(o); }
-  unsigned int __len__() {return D;}
+  unsigned int __len__() { return self->get_dimension(); }
   const IMP::algebra::VectorD<D> __rmul__(double f) const {return self->operator*(f);}
 };
