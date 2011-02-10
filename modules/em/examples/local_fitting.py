@@ -82,12 +82,12 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 #    IMP.atom.Mass.get_mass_key(),
 #    dmap,fitting_sols)
 
-num_sol=3
+num_sol=2
 refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 fitting_sols=IMP.em.local_rigid_fitting(
    prot_rb,refiner,
    IMP.atom.Mass.get_mass_key(),
-   dmap,None,num_sol,3,100)
+   dmap,None,num_sol,2,10,10)
 
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
