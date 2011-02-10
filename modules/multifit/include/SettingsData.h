@@ -8,6 +8,9 @@
 #ifndef IMPMULTIFIT_SETTINGS_DATA_H
 #define IMPMULTIFIT_SETTINGS_DATA_H
 
+#include <IMP/container_macros.h>
+#include <IMP/Pointer.h>
+#include <IMP/internal/OwnerPointer.h>
 #include <IMP/algebra/Transformation3D.h>
 #include "multifit_config.h"
 #include <boost/algorithm/string.hpp>
@@ -17,7 +20,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Holds data about a component needed for optimization
-class IMPMULTIFITEXPORT ComponentHeader {
+class IMPMULTIFITEXPORT ComponentHeader : public Object {
   public:
     ComponentHeader() {
       name_="";
@@ -43,11 +46,11 @@ class IMPMULTIFITEXPORT ComponentHeader {
     std::string get_cmm_ap_fn() const {return cmm_ap_fn_;}
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
-    void show(std::ostream& out = std::cout) const {
-      out<<name_<<"|"<<filename_<<"|"<<pdb_ap_fn_<<"|";
-      out<<num_ap_<<"|"<<transformations_fn_<<"|"<<reference_fn_
-         <<"|"<<std::endl;
-    }
+    IMP_OBJECT_INLINE(ComponentHeader, {
+       out<<name_<<"|"<<filename_<<"|"<<pdb_ap_fn_<<"|";
+       out<<num_ap_<<"|"<<transformations_fn_<<"|"<<reference_fn_
+          <<"|"<<std::endl; }, {});
+
   protected:
     std::string name_;
     std::string filename_;
@@ -56,9 +59,11 @@ class IMPMULTIFITEXPORT ComponentHeader {
     std::string transformations_fn_;
     std::string cmm_ap_fn_;
     std::string reference_fn_;
-  };
+};
+IMP_OBJECTS(ComponentHeader, ComponentHeaders);
+
 //! Holds data about the assembly density needed for optimization
-class IMPMULTIFITEXPORT AssemblyHeader {
+class IMPMULTIFITEXPORT AssemblyHeader : public Object {
   public:
     AssemblyHeader(){
       dens_fn_="";
@@ -87,11 +92,12 @@ class IMPMULTIFITEXPORT AssemblyHeader {
     void set_cmm_ap_fn (const std::string &new_fn) {cmm_ap_fn_=new_fn;}
     std::string get_junction_tree_fn () const {return jt_fn_;}
     void set_junction_tree_fn (const std::string &new_fn) {jt_fn_=new_fn;}
-    void show(std::ostream& out = std::cout) const {
+    IMP_OBJECT_INLINE(AssemblyHeader, {
       out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<origin_[0]<<"|";
       out<<origin_[1]<<"|"<<origin_[2]<<"|"<<pdb_fine_ap_fn_<<"|";
       out<<pdb_coarse_ap_fn_<<"|"<<jt_fn_<<"|"<<std::endl;
-    }
+      }, {});
+
   protected:
     std::string dens_fn_;
     float resolution_;
@@ -104,7 +110,7 @@ class IMPMULTIFITEXPORT AssemblyHeader {
   };
 
 //! Holds header data for optimization
-class IMPMULTIFITEXPORT SettingsData {
+class IMPMULTIFITEXPORT SettingsData : public Object {
 public:
   SettingsData(){
     data_path_="./";}
@@ -122,20 +128,10 @@ public:
   const char * get_asmb_fn() const {
     return asmb_fn_.c_str();
   }
-  void add_component_header(ComponentHeader ch) {
-    comp_data_.push_back(ch);
-  }
-  void set_assembly_header(AssemblyHeader h) {
+  void set_assembly_header(AssemblyHeader *h) {
     dens_data_=h;
   }
-  ComponentHeader get_component_header(unsigned int i) const {
-    IMP_USAGE_CHECK(i<comp_data_.size(),"index out of range\n");
-    return comp_data_[i];
-  }
-  int get_number_of_component_headers() const {
-    return comp_data_.size();
-  }
-  AssemblyHeader get_assembly_header() const {
+  AssemblyHeader *get_assembly_header() const {
     return dens_data_;
   }
   void set_data_path(const char *fn) {
@@ -143,16 +139,20 @@ public:
   }
   std::string get_data_path() const {return data_path_;}
 
+  IMP_OBJECT_INLINE(SettingsData, { out << "Settings data"; }, {});
+
+  IMP_LIST(public, ComponentHeader, component_header, ComponentHeader*,
+           ComponentHeaders);
+
 protected:
-  std::vector<ComponentHeader> comp_data_;
-  AssemblyHeader dens_data_;
+  IMP::internal::OwnerPointer<AssemblyHeader> dens_data_;
   std::string asmb_fn_;
   std::string data_path_;
 };
 
-IMPMULTIFITEXPORT SettingsData read_settings(
+IMPMULTIFITEXPORT SettingsData *read_settings(
    const char *filename,const char *data_path);
 IMPMULTIFITEXPORT void write_settings(
-   const char *filename, const SettingsData &sd);
+   const char *filename, const SettingsData *sd);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_SETTINGS_DATA_H */

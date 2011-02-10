@@ -4,6 +4,9 @@ namespace IMP::multifit {
 
 IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,
                 RadiusOfGyrationRestraints);
+IMP_SWIG_OBJECT(IMP::multifit, ComponentHeader, ComponentHeaders);
+IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
+IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 
 /* Make selected classes extensible in Python */
 #IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
