@@ -1,6 +1,10 @@
 /* Ignore things to prevent SWIG warning about them */
 namespace IMP::multifit {
 }
+
+IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,
+                RadiusOfGyrationRestraints);
+
 /* Make selected classes extensible in Python */
 #IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
