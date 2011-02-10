@@ -18,7 +18,7 @@ def analyze_conformations(cs, all, gs):
     k= parameters.number_of_clusters
     if cs.get_number_of_configurations() < k:
         k= cs.get_number_of_configurations()
-    cluster= IMP.statistics.get_lloyds_kmeans(embed, k, 10000)
+    cluster= IMP.statistics.create_lloyds_kmeans(embed, k, 10000)
     # dump each cluster center to a file so it can be viewed.
     for i in range(cluster.get_number_of_clusters()):
         center= cluster.get_cluster_center(i)
