@@ -36,10 +36,7 @@ namespace {
     TripletMaximumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
-
-      if (bestn.can_insert(score)) {
-        bestn.insert(score, *it);
-      }
+      bestn.insert(score, *it);
     }
     return bestn;
   }

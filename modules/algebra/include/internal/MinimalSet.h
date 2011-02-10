@@ -45,7 +45,13 @@ public:
   }
 
   void insert(Score s, const Data &d) {
-    IMP_INTERNAL_CHECK(can_insert(s), "Invalid insert");
+    // no-op if set is already filled
+    if (!can_insert(s)) {
+      // Note: previously this was an assert; however
+      // if (can_insert(s)) { insert(s,d); } can fail if s~data.back.first,
+      // if floating point rounding occurs, s is placed into a register, etc.
+      return;
+    }
     std::pair<Score, Data> pair(s, d);
     typename Vector::iterator it=
       std::upper_bound(data_.begin(), data_.end(), pair,

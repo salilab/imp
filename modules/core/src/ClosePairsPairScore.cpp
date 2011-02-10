@@ -117,9 +117,7 @@ get_close_pairs(const ParticlePair &p) const {
   algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
   for (unsigned int i=0; i< ppt.size(); ++i) {
     double d= get_distance(XYZR(ppt[i][0]), XYZR(ppt[i][1]));
-    if (ms.can_insert(d)) {
-      ms.insert(d, ppt[i]);
-    }
+    ms.insert(d, ppt[i]);
   }
   if (ppt.size() > static_cast<unsigned int>(k_*2)) {
     last_distance_= dist*.25;
