@@ -317,7 +317,7 @@ void CoarseCC::calc_derivatives(
              const DensityMap *em_map,
              const DensityMap *model_map,
              const Particles &model_ps,const FloatKey &w_key,
-             KernelParameters *kernel_params,DistanceMask *dist_mask,
+             KernelParameters *kernel_params,
              const float &scalefac,
              std::vector<float> &dvx, std::vector<float>&dvy,
              std::vector<float>&dvz) {
@@ -336,7 +336,6 @@ void CoarseCC::calc_derivatives(
   //this would go away once we have XYZRW decorator
   const emreal *em_data = em_map->get_data();
   float lim = kernel_params->get_lim();
-  long nvox = em_header->get_number_of_voxels();
   long ivox;
   // validate that the model and em maps are not empty
   IMP_USAGE_CHECK(em_header->rms >= EPS,
@@ -356,7 +355,6 @@ void CoarseCC::calc_derivatives(
   int nx=em_header->get_nx();
   int ny=em_header->get_ny();
   //int nz=em_header->get_nz();
-  const emreal *model_data = model_map->get_data();
   double lower_comp= em_header->rms * model_header->rms;
 
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
