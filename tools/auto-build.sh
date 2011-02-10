@@ -60,6 +60,9 @@ for m in modules:
 exec(open('imp/applications/SConscript').read())
 for m in applications:
     print >> f, "application\t" + m
+exec(open('imp/biological_systems/SConscript').read())
+for m in systems:
+    print >> f, "system\t" + m
 END
 
 # Write out a tarball:
