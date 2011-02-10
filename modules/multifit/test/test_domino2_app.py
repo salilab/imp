@@ -89,8 +89,6 @@ class MultiFitDominoTests(IMP.test.TestCase):
         for p in rbs:
             pst.set_particle_states(IMP.core.RigidBody(p.get_particle()), states)
         #create sampler
-        oc= IMP.domino.OptimizeContainers(m.get_root_restraint_set(), pst)
-        ocr= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
         allrs= IMP.get_restraints(m.get_root_restraint_set())
         for r in allrs:
             print r.get_name()
