@@ -573,7 +573,7 @@ class ApplicationTestCase(TestCase):
                    stdout and stderr.
         """
         print "running ", app
-        return _SubprocessWrapper("python", [app]+args)
+        return _SubprocessWrapper(sys.executable, [app]+args)
 
     def assertApplicationExitedCleanly(self, ret, error):
         """Assert that the application exited cleanly, i.e. that the
