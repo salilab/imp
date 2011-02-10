@@ -40,6 +40,11 @@ class Vector3DTests(IMP.test.TestCase):
         v[0] = 10.0
         self.assertEqual(v[0], 10.0)
 
+    def test_len(self):
+        """Check Vector3D length"""
+        v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
+        self.assertEqual(len(v1), 3)
+
     def test_scalar_product(self):
         """Check Vector3D scalar product"""
         v1 = IMP.algebra.Vector3D(1.0, 2.0, 3.0)
