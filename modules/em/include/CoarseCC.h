@@ -75,7 +75,6 @@ public:
      const DensityMap *em_map, const DensityMap *model_map,
      const Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
-     DistanceMask *dist_mask,
      const float &scalefac, std::vector<float> &dvx,
      std::vector<float>&dvy,std::vector<float>&dvz);
 

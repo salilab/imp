@@ -64,12 +64,10 @@ float CoarseCCatIntervals::evaluate(DensityMap *em_map,
     stored_cc_ = CoarseCC::calc_score(em_map, model_map,
                                     scalefac);
     if (lderiv) {
-      DistanceMask dist_mask(em_map->get_header());
       CoarseCC::calc_derivatives(em_map, model_map,
                                  model_map->get_sampled_particles(),
                                  model_map->get_weight_key(),
                                  model_map->get_kernel_params(),
-                                 &dist_mask,
                                  scalefac, dvx, dvy, dvz);
     }
 
