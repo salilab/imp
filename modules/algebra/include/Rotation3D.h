@@ -149,7 +149,11 @@ class IMPALGEBRAEXPORT Rotation3D {
   VectorD<3> operator*(const VectorD<3> &v) const {
     return get_rotated(v);
   }
-
+  VectorD<3> get_rotation_matrix_row(int i) const {
+    IMP_USAGE_CHECK((i>=0)&&(i<=2),"row index out of range");
+    fill_cache();
+    return matrix_[i];
+  }
   IMP_SHOWABLE_INLINE(Rotation3D, {out << v_[0] << " " << v_[1]<< " " <<v_[2]
                            << " " <<v_[3];});
 

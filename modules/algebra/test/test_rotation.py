@@ -49,8 +49,23 @@ class RotationTests(IMP.test.TestCase):
             self.assertAlmostEqual(vti[2], v_start[2], delta=.1)
 
 
-
-
+    def test_rotation_matrix_conversion(self):
+        """Check rotation about axis """
+        r1=IMP.algebra.Rotation3D(0.202607 ,0.0324723 ,0.0521312, -0.977332)
+        r2=IMP.algebra.Rotation3D(0.900969, 0.0318942 ,0.0297037 ,-0.431689)
+        for r in [r1,r2]:
+            rot_mat=[]
+            for i in range(3):
+                t=r.get_rotation_matrix_row(i)
+                rot_mat+=[t[0],t[1],t[2]]
+            rot_copy=IMP.algebra.get_rotation_from_matrix(rot_mat[0],rot_mat[1],rot_mat[2],
+                                            rot_mat[3],rot_mat[4],rot_mat[5],
+                                            rot_mat[6],rot_mat[7],rot_mat[8])
+            comp=rot_copy*r.get_inverse()
+            q=comp.get_quaternion()
+            print "===q:",q
+            for j,e in enumerate([1,0,0,0]):
+                self.assertAlmostEqual(q[j],e,delta=.1)
     def test_rotation(self):
         """Check that the rotation inverse is an inverse"""
         axis= IMP.algebra.get_random_vector_on(IMP.algebra.get_unit_sphere_3d())
@@ -145,6 +160,7 @@ class RotationTests(IMP.test.TestCase):
         print "out"
         r1p.show()
         self.assertAlmostEqual((r1.get_quaternion()-r1p.get_quaternion()).get_squared_magnitude(), 0, delta=.1)
+
 
 if __name__ == '__main__':
     IMP.test.main()
