@@ -38,7 +38,7 @@ class FFTFittingTest(IMP.test.TestCase):
         rots=IMP.algebra.Rotation3Ds()
         rots.append(IMP.algebra.get_identity_rotation_3d())
         bb=IMP.algebra.BoundingBox3D(self.start_center,self.end_center)
-        for i in range(5):
+        for i in range(2):
             pos=IMP.algebra.get_random_vector_in(bb)
             t = IMP.algebra.Transformation3D(
                 IMP.algebra.get_identity_rotation_3d(),
