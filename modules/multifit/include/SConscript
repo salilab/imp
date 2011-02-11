@@ -31,6 +31,8 @@ files = [
         'coarse_molecule.h',
         'fitting_utils.h',
         'RadiusOfGyrationRestraint.h'
-        ]
+        ] \
+        + SConscript('internal/SConscript')
+
 # Install the include files:
 env.IMPModuleInclude(files)
