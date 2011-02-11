@@ -83,35 +83,11 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,
   mdl_=new Model();
   rb_=rb;
   rb_refiner_=rb_refiner;
-  fftw_r_grid_asmb_ = NULL;fftw_c_grid_asmb_ = NULL;
-  fftw_r_grid_mol_ = NULL;fftw_c_grid_mol_ = NULL;
-  fftw_r_grid_cc_ = NULL;fftw_c_grid_cc_ = NULL;
-  fftw_r_grid_mol_mask_ = NULL;fftw_c_grid_mol_mask_ = NULL;
-  fftw_r_grid_std_upper_ = NULL;fftw_c_grid_std_upper_ = NULL;
-  fftw_r_grid_std_lower_ = NULL;fftw_c_grid_std_lower_ = NULL;
-  fftw_r_grid_asmb_sqr_ = NULL;fftw_c_grid_asmb_sqr_ = NULL;
-  std_norm_grid_=NULL;std_upper_=NULL;std_lower_=NULL;
-  mol_mask_map_=NULL;
   set_parameters();
   is_initialized_=false;
 }
 
 FFTFitting::~FFTFitting(){
-  mdl_=NULL;
-  if (fftw_r_grid_mol_ != NULL) fftw_free(fftw_r_grid_mol_);
-  if (fftw_c_grid_mol_ != NULL) fftw_free(fftw_c_grid_mol_);
-  if (fftw_r_grid_mol_mask_ != NULL) fftw_free(fftw_r_grid_mol_mask_);
-  if (fftw_c_grid_mol_mask_ != NULL) fftw_free(fftw_c_grid_mol_mask_);
-  if (fftw_r_grid_asmb_ != NULL) fftw_free(fftw_r_grid_asmb_);
-  if (fftw_c_grid_asmb_ != NULL) fftw_free(fftw_c_grid_asmb_);
-  if (fftw_r_grid_asmb_sqr_ != NULL) fftw_free(fftw_r_grid_asmb_sqr_);
-  if (fftw_c_grid_asmb_sqr_ != NULL)fftw_free(fftw_c_grid_asmb_sqr_);
-  if (fftw_r_grid_cc_ != NULL) fftw_free(fftw_r_grid_cc_);
-  if (fftw_c_grid_cc_ != NULL) fftw_free(fftw_c_grid_cc_);
-  if (fftw_r_grid_std_upper_ != NULL) fftw_free(fftw_r_grid_std_upper_);
-  if (fftw_c_grid_std_upper_ != NULL) fftw_free(fftw_c_grid_std_upper_);
-  if (fftw_r_grid_std_lower_ != NULL) fftw_free(fftw_r_grid_std_lower_);
-  if (fftw_c_grid_std_lower_ != NULL) fftw_free(fftw_c_grid_std_lower_);
   //After calling fftw_cleanup, all existing plans become undefined,
   //fftw_cleanup does not deallocate your plans, however.
   //To prevent memory leaks, you must still call fftw_destroy_plan
@@ -163,13 +139,8 @@ void FFTFitting::get_wrapped_index(int x,int y,int z,
 
 void FFTFitting::set_fftw_for_mol(){
   //allocate grids
-  fftw_r_grid_mol_ = (double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_mol_ != NULL,
-                     "Problem allocating memory for fftw_r_grid_mol_ array");
-  fftw_c_grid_mol_ =
-    (fftw_complex *) fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_mol_ != NULL,
-                     "Problem allocating memory for FFTW arrays");
+  fftw_r_grid_mol_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_mol_.resize(fftw_nvox_c2r_);
   //set plans
   fftw_plan_r2c_mol_ = fftw_plan_dft_r2c_3d(
                             fftw_nz_,fftw_ny_,fftw_nx_,
@@ -196,30 +167,12 @@ void FFTFitting::set_mol_mask() {
 
 void FFTFitting::set_fftw_for_mol_mask(){
   //allocate grids
-  fftw_r_grid_mol_mask_ = (double *) fftw_malloc(
-                                  fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_mol_mask_ != NULL,
-                "Problem allocating memory for fftw_r_grid_mol_mask_ array");
-  fftw_c_grid_mol_mask_ = (fftw_complex *)
-                fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_mol_mask_ != NULL,
-                "Problem allocating memory for FFTW arrays");
-  fftw_r_grid_std_upper_ = (double *)
-                fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_std_upper_ != NULL,
-                "Problem allocating memory for fftw_r_grid_std_upper_ array");
-  fftw_c_grid_std_upper_ = (fftw_complex *)
-                fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_std_upper_ != NULL,
-               "Problem allocating memory for fftw_c_grid_std_upper_ array");
-  fftw_r_grid_std_lower_ = (double *)
-               fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_std_lower_ != NULL,
-               "Problem allocating memory for fftw_r_grid_std_lower_ array");
-  fftw_c_grid_std_lower_ = (fftw_complex *)
-               fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_std_lower_ != NULL,
-              "Problem allocating memory for fftw_c_grid_std_lower_ array");
+  fftw_r_grid_mol_mask_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_mol_mask_.resize(fftw_nvox_c2r_);
+  fftw_r_grid_std_upper_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_std_upper_.resize(fftw_nvox_c2r_);
+  fftw_r_grid_std_lower_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_std_lower_.resize(fftw_nvox_c2r_);
   //set plans
   fftw_plan_r2c_mol_mask_ = fftw_plan_dft_r2c_3d(
                         fftw_nz_,fftw_ny_,fftw_nx_,
@@ -264,13 +217,8 @@ void FFTFitting::create_padded_asmb_map(){
 
 void FFTFitting::set_fftw_for_asmb(){
   //initialize fftw grids
-  fftw_r_grid_asmb_ = (double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_asmb_ != NULL,
-                     "Problem allocating memory for fftw_r_grid_asmb_array");
-  fftw_c_grid_asmb_ = (fftw_complex *)
-                      fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_asmb_ != NULL,
-                     "Problem allocating memory for FFTW arrays");
+  fftw_r_grid_asmb_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_asmb_.resize(fftw_nvox_c2r_);
 
   //make plans
   fftw_plan_r2c_asmb_ = fftw_plan_dft_r2c_3d(
@@ -298,14 +246,8 @@ void FFTFitting::create_padded_asmb_map_sqr() {
 
 void FFTFitting::set_fftw_for_asmb_sqr(){
   //initialize fftw grids
-  fftw_r_grid_asmb_sqr_ = (double *)
-    fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_asmb_sqr_ != NULL,
-                     "Problem allocating memory for fftw_r_grid_asmb_ \n");
-  fftw_c_grid_asmb_sqr_ = (fftw_complex *)
-                     fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_asmb_sqr_ != NULL,
-                     "Problem allocating memory for fftw_c_grid_asmb_sqr_\n");
+  fftw_r_grid_asmb_sqr_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_asmb_sqr_.resize(fftw_nvox_c2r_);
   //make plans
   fftw_plan_r2c_asmb_sqr_ = fftw_plan_dft_r2c_3d(
                                fftw_nz_,fftw_ny_,fftw_nx_,
@@ -379,7 +321,7 @@ void FFTFitting::smooth_mol(){
 }
 
 void FFTFitting::test_wrapping_correction() {
-  double *test_cc = (double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
+  internal::FFTWGrid<double> test_cc(fftw_nvox_r2c_);
   int fx,fy,fz;
   long i1,i2;
   for(int iz=0;iz<fftw_nz_;iz++){
@@ -392,7 +334,6 @@ void FFTFitting::test_wrapping_correction() {
   }
   }
   }
-  fftw_free(test_cc);
 }
 
 void FFTFitting::prepare(float threshold) {
@@ -429,9 +370,7 @@ void FFTFitting::prepare(float threshold) {
 
 void FFTFitting::prepare_std_data() {
   //allocate grid
-  std_norm_grid_=(double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(std_norm_grid_ != NULL,
-                     "Problem allocating memory for std_norm_grid_");
+  std_norm_grid_.resize(fftw_nvox_r2c_);
 }
 
 void FFTFitting::set_fftw_grid_sizes() {
@@ -497,8 +436,7 @@ em::DensityMap* FFTFitting::get_variance_map() const {
   int nx=asmb_map_->get_header()->get_nx();
   int ny=asmb_map_->get_header()->get_ny();
   int nz=asmb_map_->get_header()->get_nz();
-  double *fftw_r_grid_cc_unwrapped = (double *)
-    fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
+  internal::FFTWGrid<double> fftw_r_grid_cc_unwrapped(fftw_nvox_r2c_);
   int uw_x,uw_y,uw_z;
   long vox_z,vox_zy;
   for(int iz=0;iz<fftw_nz_;iz++){
@@ -513,19 +451,13 @@ em::DensityMap* FFTFitting::get_variance_map() const {
             std_norm_grid_[vox_zy+ix];
         }}}}
   create_map_from_array(fftw_r_grid_cc_unwrapped,r_map);
-  fftw_free(fftw_r_grid_cc_unwrapped);
   return r_map.release();
 }
 
 void FFTFitting::set_fftw_for_cc() {
   //initializd the grids
-  fftw_r_grid_cc_ = (double *) fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-  IMP_INTERNAL_CHECK(fftw_r_grid_cc_ != NULL,
-                     "Problem allocating memory for fftw_r_grid_cc_ arrays");
-  fftw_c_grid_cc_ = (fftw_complex *)
-                     fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-  IMP_INTERNAL_CHECK(fftw_c_grid_cc_ != NULL,
-                     "Problem allocating memory for FFTW arrays");
+  fftw_r_grid_cc_.resize(fftw_nvox_r2c_);
+  fftw_c_grid_cc_.resize(fftw_nvox_c2r_);
   fftw_plan_c2r_cc_ = fftw_plan_dft_c2r_3d(
                          fftw_nz_,fftw_ny_,fftw_nx_,
                          fftw_c_grid_cc_,fftw_r_grid_cc_,FFTW_MEASURE);
@@ -828,14 +760,8 @@ FFTFittingResults fft_based_rigid_fitting(
 }
 
 em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
-    double* fftw_r_grid_mol = (double *)
-      fftw_malloc(fftw_nvox_r2c_ * sizeof(double));
-    IMP_INTERNAL_CHECK(fftw_r_grid_mol != NULL,
-                       "Problem allocating memory for fftw_r_grid_mol_ array");
-    fftw_complex* fftw_c_grid_mol = (fftw_complex *)
-      fftw_malloc(fftw_nvox_c2r_ * sizeof(fftw_complex));
-    IMP_INTERNAL_CHECK(fftw_c_grid_mol != NULL,
-                       "Problem allocating memory for FFTW arrays");
+    internal::FFTWGrid<double> fftw_r_grid_mol(fftw_nvox_r2c_);
+    internal::FFTWGrid<fftw_complex> fftw_c_grid_mol(fftw_nvox_c2r_);
     //set plans
     fftw_plan fftw_plan_r2c_mol =
       fftw_plan_dft_r2c_3d(fftw_nz_,fftw_ny_,fftw_nx_,
@@ -860,10 +786,8 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     create_map_from_array(fftw_r_grid_mol,output);
     output->multiply(fftw_norm_);
     //release everything
-    fftw_free(fftw_c_grid_mol);
-    fftw_free(fftw_r_grid_mol);
-    fftw_free(fftw_plan_r2c_mol);
-    fftw_free(fftw_plan_c2r_mol);
+    fftw_destroy_plan(fftw_plan_r2c_mol);
+    fftw_destroy_plan(fftw_plan_c2r_mol);
     return output.release();
   }
 

@@ -18,6 +18,8 @@
 #include "fftw3.h"
 #include "multifit_config.h"
 #include <IMP/Object.h>
+#include "internal/FFTWGrid.h"
+
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 typedef std::pair<algebra::Transformation3D,float> TransScore;
@@ -173,12 +175,15 @@ protected:
   unsigned int fftw_zero_padding_extent_[3];
   long mask_nvox_;
   //fftw grids
-  double *fftw_r_grid_asmb_,*fftw_r_grid_mol_,*fftw_r_grid_cc_,
-    *fftw_r_grid_mol_mask_,*fftw_r_grid_std_upper_,*fftw_r_grid_std_lower_,
-    *fftw_r_grid_asmb_sqr_;
-  fftw_complex *fftw_c_grid_asmb_,*fftw_c_grid_mol_,*fftw_c_grid_cc_,
-    *fftw_c_grid_mol_mask_,*fftw_c_grid_std_upper_,*fftw_c_grid_std_lower_,
-    *fftw_c_grid_asmb_sqr_;
+  internal::FFTWGrid<double> fftw_r_grid_asmb_, fftw_r_grid_mol_,
+                             fftw_r_grid_cc_, fftw_r_grid_mol_mask_,
+                             fftw_r_grid_std_upper_, fftw_r_grid_std_lower_,
+                             fftw_r_grid_asmb_sqr_;
+  internal::FFTWGrid<fftw_complex> fftw_c_grid_asmb_, fftw_c_grid_mol_,
+                                   fftw_c_grid_cc_, fftw_c_grid_mol_mask_,
+                                   fftw_c_grid_std_upper_,
+                                   fftw_c_grid_std_lower_,
+                                   fftw_c_grid_asmb_sqr_;
   //fftw plans
   fftw_plan fftw_plan_r2c_asmb_,fftw_plan_r2c_mol_,
     fftw_plan_r2c_mol_mask_,fftw_plan_r2c_asmb_sqr_;
@@ -186,9 +191,7 @@ protected:
   fftw_plan fftw_plan_c2r_cc_,
     fftw_plan_c2r_std_upper_,fftw_plan_c2r_std_lower_;
   //normalization grid
-  double* std_norm_grid_;
-  double* std_upper_;
-  double* std_lower_;
+  internal::FFTWGrid<double> std_norm_grid_, std_upper_, std_lower_;
   Pointer<em::DensityMap> asmb_map_;
   Pointer<em::DensityMap> padded_asmb_map_, asmb_map_mask_;
   Pointer<em::DensityMap> padded_asmb_map_sqr_;
