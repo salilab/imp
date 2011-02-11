@@ -189,16 +189,16 @@ protected:
   double* std_norm_grid_;
   double* std_upper_;
   double* std_lower_;
-  em::DensityMap* asmb_map_;
-  em::DensityMap* padded_asmb_map_,*asmb_map_mask_;
-  em::DensityMap* padded_asmb_map_sqr_;
-  em::DensityMap* mol_mask_map_;
-  em::SampledDensityMap* mol_map_;
+  Pointer<em::DensityMap> asmb_map_;
+  Pointer<em::DensityMap> padded_asmb_map_, asmb_map_mask_;
+  Pointer<em::DensityMap> padded_asmb_map_sqr_;
+  Pointer<em::DensityMap> mol_mask_map_;
+  Pointer<em::SampledDensityMap> mol_map_;
   Particles mol_map_ps_;//keep a copy of the rigid body particles
-  Model *mdl_;//model that holds the mol_map_ps_
+  Pointer<Model> mdl_;//model that holds the mol_map_ps_
   // for the resampling
   core::RigidBody rb_;
-  Refiner* rb_refiner_;
+  Pointer<Refiner> rb_refiner_;
   bool is_initialized_;
   //parameters
   float pad_factor_;//percentage of the extent (x) to be margin;
