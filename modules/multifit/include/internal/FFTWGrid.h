@@ -10,11 +10,12 @@
 
 #include "../multifit_config.h"
 #include "fftw3.h"
+#include <boost/noncopyable.hpp>
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
 template < typename T >
-class FFTWGrid
+class FFTWGrid : public boost::noncopyable
 {
 private:
   T *data_;
