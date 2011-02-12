@@ -19,6 +19,7 @@
 #include "multifit_config.h"
 #include <IMP/Object.h>
 #include "internal/FFTWGrid.h"
+#include "internal/FFTWPlan.h"
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -185,11 +186,11 @@ protected:
                                    fftw_c_grid_std_lower_,
                                    fftw_c_grid_asmb_sqr_;
   //fftw plans
-  fftw_plan fftw_plan_r2c_asmb_,fftw_plan_r2c_mol_,
-    fftw_plan_r2c_mol_mask_,fftw_plan_r2c_asmb_sqr_;
+  internal::FFTWPlan fftw_plan_r2c_asmb_, fftw_plan_r2c_mol_,
+                     fftw_plan_r2c_mol_mask_, fftw_plan_r2c_asmb_sqr_;
   //fftw_plan_r2c_std_upper_,fftw_plan_r2c_std_lower_,
-  fftw_plan fftw_plan_c2r_cc_,
-    fftw_plan_c2r_std_upper_,fftw_plan_c2r_std_lower_;
+  internal::FFTWPlan fftw_plan_c2r_cc_, fftw_plan_c2r_std_upper_,
+                     fftw_plan_c2r_std_lower_;
   //normalization grid
   internal::FFTWGrid<double> std_norm_grid_, std_upper_, std_lower_;
   Pointer<em::DensityMap> asmb_map_;

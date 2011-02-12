@@ -88,18 +88,7 @@ FFTFitting::FFTFitting(em::DensityMap *dmap,
 }
 
 FFTFitting::~FFTFitting(){
-  //After calling fftw_cleanup, all existing plans become undefined,
-  //fftw_cleanup does not deallocate your plans, however.
-  //To prevent memory leaks, you must still call fftw_destroy_plan
-  //before executing fftw_cleanup.
-  fftw_destroy_plan(fftw_plan_r2c_asmb_);
-  fftw_destroy_plan(fftw_plan_r2c_mol_);
-  fftw_destroy_plan(fftw_plan_r2c_mol_mask_);
-  fftw_destroy_plan(fftw_plan_r2c_asmb_sqr_);
-  fftw_destroy_plan(fftw_plan_c2r_cc_);
-  fftw_destroy_plan(fftw_plan_c2r_std_upper_);
-  fftw_destroy_plan(fftw_plan_c2r_std_lower_);
-  fftw_cleanup();
+  internal::FFTWPlan::request_cleanup();
 }
 
 void FFTFitting::get_unwrapped_index(int wx,int wy,int wz,
@@ -228,7 +217,7 @@ void FFTFitting::set_fftw_for_asmb(){
   //we do that after the plans, because the plan overwrites the data
   copy_density_data(padded_asmb_map_,fftw_r_grid_asmb_);
   //execute plans
-  fftw_execute(fftw_plan_r2c_asmb_);
+  fftw_execute(fftw_plan_r2c_asmb_.get());
 }
 
 void FFTFitting::create_padded_asmb_map_sqr() {
@@ -259,7 +248,7 @@ void FFTFitting::set_fftw_for_asmb_sqr(){
   copy_density_data(padded_asmb_map_sqr_,fftw_r_grid_asmb_sqr_);
 
   //execute plans
-  fftw_execute(fftw_plan_r2c_asmb_sqr_);
+  fftw_execute(fftw_plan_r2c_asmb_sqr_.get());
 }
 
 void FFTFitting::set_parameters() {
@@ -469,7 +458,7 @@ void FFTFitting::calculate_correlation() {
   copy_density_data(mol_map_,fftw_r_grid_mol_);
 
   //evecture the molecule plans, as the rotation may change
-  fftw_execute(fftw_plan_r2c_mol_);
+  fftw_execute(fftw_plan_r2c_mol_.get());
 
   //generate the correlation grid in complex space
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
@@ -481,7 +470,7 @@ void FFTFitting::calculate_correlation() {
              fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
   }
   //inverse to get the correlation in real space
-  fftw_execute(fftw_plan_c2r_cc_);
+  fftw_execute(fftw_plan_c2r_cc_.get());
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
     fftw_r_grid_cc_[i]*=fftw_norm_;
   }
@@ -491,7 +480,7 @@ void FFTFitting::calculate_local_stds() {
   //copy mol_mask data, as the orientation may have changed
   copy_density_data(mol_mask_map_,fftw_r_grid_mol_mask_);
   //execute the molecule mask plans
-  fftw_execute(fftw_plan_r2c_mol_mask_);
+  fftw_execute(fftw_plan_r2c_mol_mask_.get());
 
   //number of non zero elements in the mask
   long num_non_zero=0;//TODO - instead just sum the grid
@@ -511,7 +500,7 @@ void FFTFitting::calculate_local_stds() {
     fftw_c_grid_std_upper_[i][0]=(ta*ma-tb*mb)*fftw_norm_*fftw_scale_;
     fftw_c_grid_std_upper_[i][1]=(ta*mb+tb*ma)*fftw_norm_*fftw_scale_;
   }
-  fftw_execute(fftw_plan_c2r_std_upper_);
+  fftw_execute(fftw_plan_c2r_std_upper_.get());
 
   for (unsigned long i=0;i<fftw_nvox_c2r_;i++) {
     ta=fftw_c_grid_asmb_[i][0];
@@ -521,7 +510,7 @@ void FFTFitting::calculate_local_stds() {
     fftw_c_grid_std_lower_[i][0]=(ta*ma-tb*mb)*fftw_norm_*fftw_scale_;
     fftw_c_grid_std_lower_[i][1]=(ta*mb+tb*ma)*fftw_norm_*fftw_scale_;
   }
-  fftw_execute(fftw_plan_c2r_std_lower_);
+  fftw_execute(fftw_plan_c2r_std_lower_.get());
 
   for (unsigned long i=0;i<fftw_nvox_r2c_;i++) {
     std_norm_grid_[i]=norm*fftw_r_grid_std_upper_[i]-
@@ -575,7 +564,7 @@ void FFTFitting::calculate_local_correlation() {
   //  em::DensityMap *masked_mol = em::multiply(mol_map_,mol_mask_map_);
   copy_density_data(mol_map_,fftw_r_grid_mol_);
   //re-execute the molecule plans, as the rotation may change
-  fftw_execute(fftw_plan_r2c_mol_);
+  fftw_execute(fftw_plan_r2c_mol_.get());
   calculate_local_stds();
 
   //generate the correlation grid in complex space
@@ -588,7 +577,7 @@ void FFTFitting::calculate_local_correlation() {
              fftw_c_grid_asmb_[i][1] * fftw_c_grid_mol_[i][0])*fftw_norm_;
   }
   //inverse to get the correlation in real space
-  fftw_execute(fftw_plan_c2r_cc_);
+  fftw_execute(fftw_plan_c2r_cc_.get());
   for(unsigned long i=0;i<fftw_nvox_r2c_;i++){
     fftw_r_grid_cc_[i]*=(1./sqrt(std_norm_grid_[i]));
   }
@@ -763,21 +752,21 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     internal::FFTWGrid<double> fftw_r_grid_mol(fftw_nvox_r2c_);
     internal::FFTWGrid<fftw_complex> fftw_c_grid_mol(fftw_nvox_c2r_);
     //set plans
-    fftw_plan fftw_plan_r2c_mol =
+    internal::FFTWPlan fftw_plan_r2c_mol(
       fftw_plan_dft_r2c_3d(fftw_nz_,fftw_ny_,fftw_nx_,
-                           fftw_r_grid_mol,fftw_c_grid_mol,FFTW_MEASURE);
-    fftw_plan fftw_plan_c2r_mol =
+                           fftw_r_grid_mol,fftw_c_grid_mol,FFTW_MEASURE));
+    internal::FFTWPlan fftw_plan_c2r_mol(
       fftw_plan_dft_c2r_3d(fftw_nz_,fftw_ny_,fftw_nx_,
-                           fftw_c_grid_mol,fftw_r_grid_mol,FFTW_MEASURE);
+                           fftw_c_grid_mol,fftw_r_grid_mol,FFTW_MEASURE));
     //copy data, afer the plan because creating the plan overwrites the data
     //center map on center
     algebra::Vector3D store_orig=mol_map_->get_origin();
     copy_density_data(mol_map_,fftw_r_grid_mol);
     //move to fourier
-    fftw_execute(fftw_plan_r2c_mol);
+    fftw_execute(fftw_plan_r2c_mol.get());
 
     //go back
-    fftw_execute(fftw_plan_c2r_mol);
+    fftw_execute(fftw_plan_c2r_mol.get());
 
     mol_map_->set_origin(store_orig);
     // return the map
@@ -785,9 +774,6 @@ em::DensityMap *FFTFitting::get_padded_mol_map_after_fftw_round_trip(){
     Pointer<em::DensityMap> output(new em::DensityMap(*from_header));
     create_map_from_array(fftw_r_grid_mol,output);
     output->multiply(fftw_norm_);
-    //release everything
-    fftw_destroy_plan(fftw_plan_r2c_mol);
-    fftw_destroy_plan(fftw_plan_c2r_mol);
     return output.release();
   }
 
