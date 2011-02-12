@@ -7,9 +7,9 @@ IMP_SWIG_OBJECT(IMP::multifit, RadiusOfGyrationRestraint,
 IMP_SWIG_OBJECT(IMP::multifit, ComponentHeader, ComponentHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
+IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 
 /* Make selected classes extensible in Python */
-#IMP_SWIG_OBJECT(IMP::em, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
 
 /* Wrap our own classes */
@@ -23,7 +23,7 @@ IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 #%include "IMP/multifit/DataContainer.h"
 #%include "IMP/multifit/sampling_space_utils.h"
 #%include "IMP/multifit/restraints_utils.h"
-#%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
+%include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 %include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
 IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
