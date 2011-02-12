@@ -1,6 +1,5 @@
 files = [
-         'FFTWGrid.h',
-         'FFTWPlan.h',
+         'FFTWPlan.cpp',
         ]
 
 files = [File(x) for x in files]
