@@ -35,6 +35,7 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
                                bead_radius));
     atom::Mass::setup_particle(bead_child,3);
     atom::Hierarchy::setup_particle(bead_child);
+    atom::Atom::setup_particle(bead_child,atom::AT_CA);
     ret_prot.add_child(atom::Hierarchy(bead_child));
     sel.push_back(atom::Selection(atom::Hierarchy(bead_child)));
   }
@@ -88,6 +89,7 @@ atom::Hierarchy create_coarse_molecule_from_density(
                                bead_radius));
     atom::Mass::setup_particle(bead_child,3);
     atom::Hierarchy::setup_particle(bead_child);
+    atom::Atom::setup_particle(bead_child,atom::AT_CA);
     ret_prot.add_child(atom::Hierarchy(bead_child));
     sel.push_back(atom::Selection(atom::Hierarchy(bead_child)));
   }
