@@ -17,7 +17,7 @@
 IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint(std::string name):
-  Object(name)
+  Object(name), weight_(1)
 {
 }
 
@@ -43,5 +43,14 @@ double Restraint::evaluate(bool calc_derivs) const {
   Floats v= get_model()->evaluate(rr, ws, calc_derivs);
   return std::accumulate(v.begin(), v.end(), 0.0);
 }
+
+
+void Restraint::set_weight(double w) {
+  weight_=w;
+  if (get_is_part_of_model()) {
+    get_model()->reset_dependencies();
+  }
+}
+
 
 IMP_END_NAMESPACE
