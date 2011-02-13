@@ -167,4 +167,16 @@ ResidueType get_residue_type(char c) {
 }
 
 
+bool check_residue(Particle*p) {
+  unsigned int t=p->get_value(Residue::get_residue_type_key());
+  if (t >= ResidueType::get_number_unique()) {
+    IMP_THROW("Invalid residue type: " << t,
+              ValueException);
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(Residue, check_residue);
+
+
 IMPATOM_END_NAMESPACE
