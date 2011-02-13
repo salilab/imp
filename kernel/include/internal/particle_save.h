@@ -127,7 +127,7 @@ class IMPEXPORT ParticleData {
   //! overwrite the particle
   void apply(Particle *p) const;
   void apply(Particle *p,  const FloatKeys &keys) const;
-  void show(std::ostream &out=std::cout) const;
+  IMP_SHOWABLE(ParticleData);
   void write_yaml(std::ostream &out,
                   const internal::Map<Particle*,
                   unsigned int> &particles) const;
@@ -158,7 +158,7 @@ class IMPEXPORT ParticleDiff {
   //! Compute the diff between the two
   ParticleDiff(const ParticleData &base, Particle *p);
   void apply(Particle *p) const;
-  void show(std::ostream &out=std::cout) const;
+  IMP_SHOWABLE(ParticleDiff);
 };
 IMP_OUTPUT_OPERATOR(ParticleDiff);
 
