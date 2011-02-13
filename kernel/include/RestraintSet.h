@@ -53,16 +53,12 @@ class IMPEXPORT RestraintSet : public Restraint
   IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
   /**@}*/
  public:
-  void set_weight(Float weight);
-  Float get_weight() const { return weight_; }
   double evaluate(bool deriv) const;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
   friend class Model;
   void set_model(Model *m);
 #endif
- private:
-  Float weight_;
 };
 
 IMP_OBJECTS(RestraintSet, RestraintSets);
@@ -104,10 +100,10 @@ namespace {
         if (index.find(*c) == index.end()) {
           index[*c]= ret.first.size();
           ret.first.push_back(*c);
-          ret.second.push_back(initial_weight);
+          ret.second.push_back(initial_weight* (*c)->get_weight());
         } else {
           int i= index.find(*c)->second;
-          ret.second[i]+=initial_weight;
+          ret.second[i]+=initial_weight*(*c)->get_weight();
         }
       }
     }

@@ -20,12 +20,13 @@ IMP_BEGIN_NAMESPACE
 
 RestraintSet::RestraintSet(double weight,
                            const std::string& name)
-  : Restraint(name), weight_(weight)
+  : Restraint(name)
 {
+  set_weight(weight);
 }
 
 RestraintSet::RestraintSet(const std::string& name)
-  : Restraint(name), weight_(1.0)
+  : Restraint(name)
 {
 }
 
@@ -49,14 +50,6 @@ IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
                 obj->set_model(NULL);
               });
 
-
-
-void RestraintSet::set_weight(double w) {
-  weight_=w;
-  if (get_is_part_of_model()) {
-    get_model()->reset_dependencies();
-  }
-}
 
 double
 RestraintSet::evaluate(bool deriv) const

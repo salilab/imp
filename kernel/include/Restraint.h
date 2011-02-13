@@ -152,13 +152,16 @@ public:
   virtual Restraints get_decomposition() const {
     return Restraints(1, const_cast<Restraint*>(this));
   }
-
+  void set_weight(Float weight);
+  Float get_weight() const { return weight_; }
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object.
    */
   WeakPointer<Model> model_;
+
+  double weight_;
 };
 
 IMP_END_NAMESPACE
