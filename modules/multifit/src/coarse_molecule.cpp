@@ -12,7 +12,28 @@
 #include <IMP/multifit/coarse_molecule.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
+namespace {
+  atom::Hierarchy create_molecule(const algebra::Vector3Ds vecs,
+                                  float bead_radius,float bead_mass,Model *mdl)
+  {
+  atom::Hierarchy ret_prot=
+    atom::Hierarchy::setup_particle(new Particle(mdl));
+  for (int i=0;i<vecs.size();i++){
+    core::XYZR bead_child=core::XYZR::setup_particle(
+             new Particle(mdl),
+             algebra::Sphere3D(vecs[i],bead_radius));
+    atom::Residue residue_child=atom::Residue::setup_particle(
+                                 new Particle(mdl),atom::ALA,i);
+    atom::Hierarchy::setup_particle(bead_child);
+    atom::Atom::setup_particle(bead_child,atom::AT_CA);
+    atom::Mass(bead_child).set_mass(bead_mass);
+    //todo - mass should be calculated
+    residue_child.add_child(atom::Hierarchy(bead_child));
+    ret_prot.add_child(atom::Hierarchy(residue_child));
+  }
+  return ret_prot;
+  }
+}
 atom::Hierarchy create_coarse_molecule_from_molecule(
                const atom::Hierarchy &mh,int num_beads,
                Model *mdl,
@@ -22,22 +43,17 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
   multifit::VQClustering vq(&ddp,num_beads);
   vq.run();
   multifit::DataPointsAssignment assignment(&ddp,&vq);
-  atom::Hierarchy ret_prot=
-    atom::Hierarchy::setup_particle(new Particle(mdl));
   atom::Selections sel;
+  algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
     Array1DD xyz = assignment.get_cluster_engine()->get_center(i);
-    core::XYZR bead_child=core::XYZR::setup_particle(
-             new Particle(mdl),
-             algebra::Sphere3D(algebra::Vector3D(xyz[0],
-                                                 xyz[1],
-                                                 xyz[2]),
-                               bead_radius));
-    atom::Mass::setup_particle(bead_child,3);
-    atom::Hierarchy::setup_particle(bead_child);
-    atom::Atom::setup_particle(bead_child,atom::AT_CA);
-    ret_prot.add_child(atom::Hierarchy(bead_child));
-    sel.push_back(atom::Selection(atom::Hierarchy(bead_child)));
+    vecs.push_back(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
+  }
+  //todo - mass should be a parameter
+  atom::Hierarchy ret_prot=create_molecule(vecs,bead_radius,3,mdl);
+  Particles leaves=core::get_leaves(ret_prot);
+  for (Particles::iterator it = leaves.begin();it != leaves.end();it++){
+    sel.push_back(atom::Selection(atom::Hierarchy(*it)));
   }
   if (add_conn_restraint){
   int k=1;//todo - make this a parameter
@@ -76,23 +92,15 @@ atom::Hierarchy create_coarse_molecule_from_density(
   multifit::VQClustering vq(&ddp,num_beads);
   vq.run();
   multifit::DataPointsAssignment assignment(&ddp,&vq);
-  atom::Hierarchy ret_prot=
-    atom::Hierarchy::setup_particle(new Particle(mdl));
-  atom::Selections sel;
+  algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
     Array1DD xyz = assignment.get_cluster_engine()->get_center(i);
-    core::XYZR bead_child=core::XYZR::setup_particle(
-             new Particle(mdl),
-             algebra::Sphere3D(algebra::Vector3D(xyz[0],
-                                                 xyz[1],
-                                                 xyz[2]),
-                               bead_radius));
-    atom::Mass::setup_particle(bead_child,3);
-    atom::Hierarchy::setup_particle(bead_child);
-    atom::Atom::setup_particle(bead_child,atom::AT_CA);
-    ret_prot.add_child(atom::Hierarchy(bead_child));
-    sel.push_back(atom::Selection(atom::Hierarchy(bead_child)));
+    vecs.push_back(algebra::Vector3D(xyz[0],
+                                     xyz[1],
+                                     xyz[2]));
   }
+  //todo - mass should be a parameter
+  atom::Hierarchy ret_prot=create_molecule(vecs,bead_radius,3,mdl);
   return ret_prot;
 }
 
