@@ -31,8 +31,6 @@ IMPDOMINO_BEGIN_NAMESPACE
     used to prune the discrete space.
 
     Defaults are provided for all the parameters:
-    - if no SubsetEvaluatorTable is provided, then the
-    ModelSubsetEvaluatorTable is used.
     - if no SubsetFilterTables are provided, then the
     ExclusionSubsetFilterTable and the
     RestraintScoreSubsetFilterTable are used.
