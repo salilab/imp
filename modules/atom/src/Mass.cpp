@@ -21,4 +21,14 @@ void Mass::show(std::ostream &out) const {
   out << "Mass " << get_mass() <<  std::endl;
 }
 
+bool check_mass(Particle*p) {
+  if (p->get_value(Mass::get_mass_key()) < 0) {
+    IMP_THROW("Mass must be non-negative.",
+              ValueException);
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(Mass, check_mass);
+
 IMPATOM_END_NAMESPACE
