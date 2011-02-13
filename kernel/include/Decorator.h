@@ -322,6 +322,19 @@ public:                                                                 \
 
 #endif
 
+#ifndef SWIG
+/** Register a function that can be used to check that the particle
+    is valid with respect to the decorator. The function should take
+    a Particle* as an argument and return a bool. It should throw
+    an exception if something is wrong.
+
+    This macro should only be used in a .cpp file.
+*/
+#define IMP_CHECK_DECORATOR(Name, function) \
+  IMP::internal::ParticleCheck \
+  Name##pc(Name::particle_is_instance, function);
+#endif
+
 IMP_END_NAMESPACE
 
 #if !defined(SWIG) && !defined IMP_DOXYGEN
