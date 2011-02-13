@@ -64,14 +64,14 @@ namespace {
               << " and data is\n" << nd << std::endl);
     }
     if (!initialized) {
-        IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
-        s= boost::get(subset_map, root);
-        nd= get_node_data(s, states);
-        if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
-        IMP_LOG(VERBOSE, "Subset data is\n" << nd << std::endl);
-        initialized=true;
-        stats.add_graph_subset(s, nd.subset_states);
-      }
+      IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
+      s= boost::get(subset_map, root);
+      nd= get_node_data(s, states);
+      if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
+      IMP_LOG(VERBOSE, "Subset data is\n" << nd << std::endl);
+      initialized=true;
+      stats.add_graph_subset(s, nd.subset_states);
+    }
     return std::make_pair(s, nd);
   }
 }
