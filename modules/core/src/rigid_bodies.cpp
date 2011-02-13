@@ -692,4 +692,19 @@ namespace internal {
 
 
 
+bool check_rigid_body(Particle*p) {
+  algebra::Vector4D
+    v(p->get_value(internal::rigid_body_data().quaternion_[0]),
+      p->get_value(internal::rigid_body_data().quaternion_[1]),
+      p->get_value(internal::rigid_body_data().quaternion_[2]),
+      p->get_value(internal::rigid_body_data().quaternion_[3])
+      );
+  if (std::abs(v.get_magnitude()-1) >.1) {
+    IMP_THROW("Bad quaternion in rigid body: " << v, ValueException);
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(RigidBody, check_rigid_body);
+
 IMPCORE_END_NAMESPACE
