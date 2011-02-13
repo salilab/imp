@@ -34,17 +34,7 @@ class DominoSampler;
     which returns a SubsetStates containing the valid states.
 */
 class IMPDOMINOEXPORT SubsetStatesTable: public Object {
-  WeakPointer<const DominoSampler> sampler_;
-  friend class DominoSampler;
- protected:
-  const DominoSampler *get_sampler() const {return sampler_;}
-  bool get_has_sampler() const {return sampler_;}
-public:
-#ifndef IMP_DOXYGEN
-  void set_sampler(const DominoSampler *sampler) {
-    sampler_=sampler;
-  }
-#endif
+ public:
   SubsetStatesTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
   virtual SubsetStates get_subset_states(const Subset &s) const=0;
   ~SubsetStatesTable();
