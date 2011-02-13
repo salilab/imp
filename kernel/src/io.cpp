@@ -15,8 +15,16 @@
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
 
+#define IMP_CHECK_MODEL_PARTICLES(m)                            \
+  for (Model::ParticleIterator pit= m->particles_begin();       \
+       pit != m->particles_end(); ++pit) {                      \
+    IMP::check_particle(*pit);                                  \
+  }                                                             \
+
 IMP_BEGIN_NAMESPACE
 
+// not yet exposed
+void check_particle(Particle*p);
 
 void write_particles(const ParticlesTemp &particles,
                      TextOutput out) {
@@ -103,6 +111,7 @@ void read_particles(TextInput in,
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first);
   }
+  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 
 
@@ -152,6 +161,7 @@ void read_particles(TextInput in,
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first, keys);
   }
+  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 
 
@@ -263,6 +273,7 @@ void read_particles_binary(NcFile &f,
   read_particles_from_buffer(reinterpret_cast<char*>(values.get()),
                              particles.size()*keys.size()*sizeof(double),
                              particles, keys);
+  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 
 void read_particles_binary(std::string filename,
@@ -299,6 +310,7 @@ void read_particles_binary(std::string filename,
     index=0;
   }
   read_particles_binary(f, particles, keys, index);
+  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 #endif
 
@@ -325,6 +337,7 @@ IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
   }
   read_particles_from_buffer(&buffer.front(),
                              buffer.size()*sizeof(double), particles, keys);
+  IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
 
 

@@ -13,7 +13,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
   fuss about initialization and destruction order.
  */
 
-// bjects
+// objects
 
 internal::Map<std::string, unsigned int> object_type_counts;
 
@@ -46,6 +46,9 @@ std::ofstream fstream;
 internal::LogStream stream;
 
 
+// particle validation
+typedef bool (*ParticleFunction)(Particle*);
+std::vector<std::pair<ParticleFunction, ParticleFunction> > particle_validators;
 
 IMP_END_INTERNAL_NAMESPACE
 
