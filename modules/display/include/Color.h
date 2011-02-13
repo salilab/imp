@@ -57,9 +57,11 @@ public:
   }
   //!@}
 
-  void show(std::ostream &out=std::cout, std::string delim=" ") const {
+  void show(std::ostream &out, std::string delim) const {
     out << get_red() << delim << get_green() << delim << get_blue();
   }
+
+  IMP_SHOWABLE_INLINE(Color, show(out, " "););
 
   IMP_COMPARISONS(Color);
 };
