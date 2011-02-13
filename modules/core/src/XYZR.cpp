@@ -83,5 +83,15 @@ XYZRs create_xyzr_particles(Model *m,
 }
 
 
+bool check_radius(Particle *p) {
+  XYZR d(p);
+  if (d.get_radius()<0) {
+    IMP_THROW("Invalid radius: " << d.get_radius(), ValueException);
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(XYZR, check_radius);
+
 
 IMPCORE_END_NAMESPACE
