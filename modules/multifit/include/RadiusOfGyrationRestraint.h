@@ -13,7 +13,7 @@
 #include "multifit_config.h"
 #include <IMP/Restraint.h>
 #include <IMP/core/HarmonicUpperBound.h>
-
+#include <IMP/Particle.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Ensure the radius of gyration of particles fits the predicted one
@@ -42,6 +42,12 @@ public:
   core::HarmonicUpperBound *hub_;
 };
 
+IMPMULTIFITEXPORT
+float get_approximated_radius_of_gyration(int len);
+IMPMULTIFITEXPORT
+float get_actual_radius_of_gyration(Particles ps);
+IMPMULTIFITEXPORT
+float get_approximated_radius(int len);
 IMPMULTIFIT_END_NAMESPACE
 
 #endif /* IMPMULTIFIT_RADIUS_OF_GYRATION_RESTRAINT_H */
