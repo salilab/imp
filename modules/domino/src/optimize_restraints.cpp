@@ -119,6 +119,13 @@ ParticlesTemp pt= c_->get_particles();
     ParticlePairsTemp rb_pairs;
     ParticlePairsTemp stray_pairs;
     double max= r->get_model()->get_maximum_score(r);
+    IMP_NEW(RestraintSet, cur, (r->get_name()+" set"));
+    added.push_back(new ScopedRestraint(cur, p));
+    if (r->get_model()->get_maximum_score(r)
+        < std::numeric_limits<double>::max()) {
+      r->get_model()->set_maximum_score(cur,
+                                        r->get_model()->get_maximum_score(r));
+    }
     for (unsigned int i=0; i< pairs.size(); ++i) {
       bool rb=false;
       Particle *p0, *p1;
@@ -158,13 +165,10 @@ ParticlesTemp pt= c_->get_particles();
         oss << r->get_name() << " rb " << i;
         IMP_NEW(core::PairRestraint, pr, (cpps, rb_pairs[i]));
         pr->set_log_level(r->get_log_level());
-        added.push_back(new ScopedRestraint(pr, p));
         IMP_LOG(VERBOSE, "Adding rigid body close pair score between "
                 << rb_pairs[i][0]->get_name() << " and "
                 << rb_pairs[i][1]->get_name() << std::endl);
-        if (max < std::numeric_limits<double>::max()) {
-          pr->get_model()->set_maximum_score(pr, max);
-        }
+        cur->add_restraint(pr);
       }
     }
 
@@ -177,7 +181,7 @@ ParticlesTemp pt= c_->get_particles();
       IMP_LOG(VERBOSE, "Adding normal close pair score between "
                 << stray_pairs[i][0]->get_name() << " and "
                 << stray_pairs[i][1]->get_name() << std::endl);
-      added.push_back(new ScopedRestraint(npr, p));
+      cur->add_restraint(npr);
       if (max < std::numeric_limits<double>::max()) {
         npr->get_model()->set_maximum_score(npr, max);
       }
@@ -213,17 +217,15 @@ ParticlesTemp pt= c_->get_particles();
               << "\" is being decompsed into " << rs.size() << " restraints"
               << std::endl);
       IMP_NEW(RestraintSet, rss, (r->get_name()));
+      added.push_back(new ScopedRestraint(rss, p));
       rss->add_restraints(rs);
       double max= r->get_model()->get_maximum_score(r);
       if (max < std::numeric_limits<double>::max()) {
-        for (unsigned int i=0; i< rs.size(); ++i) {
-          std::cout << "Setting maximum score of " << rs[i]->get_name()
-                    << " to " << max << std::endl;
-          r->get_model()->set_maximum_score(rs[i], max);
-        }
+        std::cout << "Setting maximum score of " << rss->get_name()
+                  << " to " << max << std::endl;
+          r->get_model()->set_maximum_score(rss, max);
       }
       removed.push_back(new ScopedRemoveRestraint(r, p));
-      added.push_back(new ScopedRestraint(rss, p));
     } else {
     }
     return true;
