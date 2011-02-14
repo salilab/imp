@@ -268,7 +268,7 @@ public:
     return *this;
   }
 
-  void show(std::ostream &out=std::cout, std::string delim=", ",
+  void show(std::ostream &out, std::string delim,
             bool parens=true) const {
     IMP_VECTOR_CHECK;
     if (parens) out << "(";
@@ -280,14 +280,7 @@ public:
     }
     if (parens) out << ")";
   }
-  std::string __str__() const {
-    std::ostringstream oss;
-    show(oss);
-    return oss.str();
-  }
-  std::string __repr__() const {
-    return __str__();
-  }
+  IMP_SHOWABLE_INLINE(VectorD, show(out, ", "););
 #endif
 
 #ifndef SWIG
