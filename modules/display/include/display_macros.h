@@ -32,18 +32,18 @@ protected:                                                              \
 
 
 #define IMP_DISPLAY_GEOMETRY_DEF(Name, Type)                            \
-  Name::Name(const Type &v): Type(v), Geometry(#Name){}                 \
+  Name::Name(const Type &v): Geometry(#Name), v_(v){}                   \
   Name::Name(const Type &v, const Color &c):                            \
-    Type(v), Geometry(c, #Name) {}                                      \
+    Geometry(c, #Name), v_(v) {}                                        \
   Name::Name(const Type &v, const std::string n):                       \
-    Type(v), Geometry(n) {}                                             \
+    Geometry(n), v_(v) {}                                               \
   Name::Name(const Type &v, const Color &c, std::string n):             \
-    Type(v), Geometry(c,n) {}                                           \
+    Geometry(c,n), v_(v) {}                                             \
   Geometries Name::get_components() const {                             \
-    return Geometries(const_cast<Name*>(this));                         \
+    return Geometries(1, const_cast<Name*>(this));                      \
   }                                                                     \
   void Name::do_show(std::ostream &out) const {                         \
-    out << #Name << "Geometry: " << static_cast<Type >(*this);          \
+    out << #Name << "Geometry: " << get_geometry();                     \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
@@ -57,19 +57,20 @@ protected:                                                              \
     Name(const Type &v, const Color &c);                                \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const Color &c, std::string n);                 \
+    const Type& get_geometry() const {return v_;}                       \
     IMP_GEOMETRY(Name);                                                 \
   }                                                                     \
 
 
-#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
-  /** Display a compound geometric object.*/                    \
-  class IMPDISPLAYEXPORT Name: public Geometry {                \
-  public:                                                       \
-    Name(const Type &v);                                        \
-    Name(const Type &v, const Color &c);                        \
-    Name(const Type &v, const std::string n);                   \
-    Name(const Type &v, const Color &c, std::string n);         \
-    IMP_GEOMETRY(Name);                                         \
+#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)              \
+  /** Display a compound geometric object.*/                            \
+  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+  public:                                                               \
+    Name(const Type &v);                                                \
+    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const std::string n);                           \
+    Name(const Type &v, const Color &c, std::string n);                 \
+    IMP_GEOMETRY(Name);                                                 \
   }
 
 #else
@@ -77,42 +78,44 @@ protected:                                                              \
 //! Define a geometric object using an IMP::algebra one
 #define IMP_DISPLAY_GEOMETRY_DECL(Name, Type)                           \
   /** Display a geometric object.*/                                     \
-  class IMPDISPLAYEXPORT Name: public Type,                             \
-                               public Geometry {                        \
+  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+    Type v_;                                                            \
   public:                                                               \
     Name(const Type &v);                                                \
     Name(const Type &v, const Color &c);                                \
     Name(const Type &v, const std::string n);                           \
     Name(const Type &v, const Color &c, std::string n);                 \
+    const Type& get_geometry() const {return v_;}                       \
     IMP_GEOMETRY(Name);                                                 \
   }                                                                     \
 
 
-#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)      \
-  /** Display a compound geometric object.*/                    \
-  class IMPDISPLAYEXPORT Name: public Type,                     \
-                               public Geometry {                \
-  public:                                                       \
-    Name(const Type &v);                                        \
-    Name(const Type &v, const Color &c);                        \
-    Name(const Type &v, const std::string n);                   \
-    Name(const Type &v, const Color &c, std::string n);         \
-    IMP_GEOMETRY(Name);                                         \
+#define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(Name, Type)              \
+  /** Display a compound geometric object.*/                            \
+  class IMPDISPLAYEXPORT Name: public Geometry {                        \
+    Type v_;                                                            \
+  public:                                                               \
+    Name(const Type &v);                                                \
+    Name(const Type &v, const Color &c);                                \
+    Name(const Type &v, const std::string n);                           \
+    Name(const Type &v, const Color &c, std::string n);                 \
+    const Type& get_geometry() const {return v_;}                       \
+    IMP_GEOMETRY(Name);                                                 \
   }
 #endif
 
 
 #define IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(Name, Type, decomp)       \
-  Name::Name(const Type &v): Type(v), Geometry(#Name){}                 \
+  Name::Name(const Type &v): Geometry(#Name), v_(v){}                   \
   Name::Name(const Type &v, const Color &c):                            \
-    Type(v), Geometry(c, #Name) {}                                      \
+    Geometry(c, #Name), v_(v) {}                                        \
   Name::Name(const Type &v, const std::string n):                       \
-    Type(v), Geometry(n) {}                                             \
+    Geometry(n), v_(v) {}                                               \
   Name::Name(const Type &v, const Color &c, std::string n):             \
-    Type(v), Geometry(c,n) {}                                           \
+    Geometry(c,n), v_(v) {}                                             \
   void Name::do_show(std::ostream &out) const {                         \
     out << #Name << "Geometry: "                                        \
-        << static_cast<Type>(*this);                                    \
+        << get_geometry();                                              \
   }                                                                     \
   Geometries Name::get_components() const {                             \
     Geometries ret;                                                     \

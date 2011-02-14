@@ -63,7 +63,7 @@ namespace {
 
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(BoundingBoxGeometry,
                                       algebra::BoundingBox3D,
-                                      {ret=decompose_box(*this,
+                                      {ret=decompose_box(get_geometry(),
                                                          get_has_color(),
                                                          get_has_color()?
                                                          get_color()
@@ -90,7 +90,8 @@ namespace {
 
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(ReferenceFrameGeometry,
                                       algebra::ReferenceFrame3D,
-   { algebra::Transformation3D tr = this->get_transformation_to();
+ { algebra::Transformation3D tr
+     = this->get_geometry().get_transformation_to();
      return get_frame(tr);
    });
 

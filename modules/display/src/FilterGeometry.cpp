@@ -40,12 +40,12 @@ void FilterGeometry::add_geometry(const Geometries& g) {
   }                                                             \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
-HANDLE(Sphere, !p_.get_is_below(g->get_center()));
-HANDLE(Cylinder, !p_.get_is_below(g->get_segment().get_point(0))
-        || !p_.get_is_below(g->get_segment().get_point(1)));
-HANDLE(Point, !p_.get_is_below(*g));
-HANDLE(Segment, !p_.get_is_below(g->get_point(0))
-        || !p_.get_is_below(g->get_point(1)));
+HANDLE(Sphere, !p_.get_is_below(g->get_geometry().get_center()));
+HANDLE(Cylinder, !p_.get_is_below(g->get_geometry().get_segment().get_point(0))
+        || !p_.get_is_below(g->get_geometry().get_segment().get_point(1)));
+HANDLE(Point, !p_.get_is_below(g->get_geometry()));
+HANDLE(Segment, !p_.get_is_below(g->get_geometry().get_point(0))
+        || !p_.get_is_below(g->get_geometry().get_point(1)));
 
 
 Geometries FilterGeometry::get_components() const {
