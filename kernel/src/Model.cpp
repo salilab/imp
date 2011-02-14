@@ -48,12 +48,6 @@ Model::~Model()
   }
 }
 
-void Model::set_maximum_score(Restraint *r, double d) {
-  IMP_USAGE_CHECK(r->get_model() == this,
-                  "Restraint not part of model");
-  max_scores_[r]=d;
-  reset_dependencies();
-}
 void Model::set_maximum_score(double d) {
   max_score_=d;
   reset_dependencies();
@@ -65,9 +59,6 @@ void Model::add_restraint(Restraint *r) {
 }
 void Model::remove_restraint(Restraint *r) {
   IMP_USAGE_CHECK(r, "Cannot remove null restraint.");
-  if (max_scores_.find(r) != max_scores_.end()) {
-    max_scores_.erase(r);
-  }
   rs_->remove_restraint(r);
 }
 Model::RestraintIterator Model::restraints_begin() {

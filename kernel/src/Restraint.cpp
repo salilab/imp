@@ -17,7 +17,7 @@
 IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint(std::string name):
-  Object(name), weight_(1)
+  Object(name), weight_(1), max_(std::numeric_limits<double>::max())
 {
 }
 
@@ -51,6 +51,14 @@ void Restraint::set_weight(double w) {
     get_model()->reset_dependencies();
   }
 }
+
+void Restraint::set_maximum_score(double w) {
+  max_=w;
+  if (get_is_part_of_model()) {
+    get_model()->reset_dependencies();
+  }
+}
+
 
 
 IMP_END_NAMESPACE

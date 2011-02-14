@@ -154,6 +154,23 @@ public:
   }
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
+/** \name Filtering
+      We are typically only interested in "good" conformations of
+      the model. These are described by specifying maximum scores
+      per restraint and for the whole model. Samplers, optimizers
+      etc are free to ignore configurations they encounter which
+      go outside these bounds.
+
+      \note The maximum score for for the unweighted restraint
+      (eg the score that is returned with weight 1).
+      @{
+  */
+  double get_maximum_score() const {
+    return max_;
+  }
+  void set_maximum_score(double s);
+  /** @} */
+
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
@@ -162,6 +179,7 @@ private:
   WeakPointer<Model> model_;
 
   double weight_;
+  double max_;
 };
 
 IMP_END_NAMESPACE
