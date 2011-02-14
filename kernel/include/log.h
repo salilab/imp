@@ -231,6 +231,7 @@ public:
   void add_warning(std::string ) const {}
   void clear_warnings() const {}
   void dump_warnings() const {}
+  void show(std::ostream &) const {}
 };
 
 
