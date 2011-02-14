@@ -7,8 +7,8 @@ class RigidTransformationTests(IMP.test.TestCase):
     """Test rigid transformations"""
 
     def _produce_point_sets(self, tr):
-        vs= IMP.algebra.Vector3Ds()
-        vsr= IMP.algebra.Vector3Ds()
+        vs= []
+        vsr= []
         for i in range(0, 20):
             vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
             print vs[-1]
