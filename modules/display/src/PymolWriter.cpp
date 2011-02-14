@@ -59,8 +59,10 @@ bool PymolWriter::handle(SphereGeometry *g,
                           Color color, std::string name) {
   setup(name);
   write_color(get_stream(), color);
-  get_stream() << "SPHERE, " << algebra::commas_io(g->get_center()) << ", "
-               << g->get_radius() << ",\n";
+  get_stream() << "SPHERE, "
+               << algebra::commas_io(g->get_geometry().get_center())
+               << ", "
+               << g->get_geometry().get_radius() << ",\n";
   cleanup(name);
 
   return true;
@@ -86,9 +88,11 @@ bool PymolWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "CYLINDER,\n"
-               << algebra::commas_io(g->get_segment().get_point(0)) << ",\n"
-               << algebra::commas_io(g->get_segment().get_point(1)) << ",\n"
-               << g->get_radius() << ",\n";
+               << algebra::commas_io(g->get_geometry()
+                                     .get_segment().get_point(0)) << ",\n"
+               << algebra::commas_io(g->get_geometry()
+                                     .get_segment().get_point(1)) << ",\n"
+               << g->get_geometry().get_radius() << ",\n";
   get_stream() << color.get_red()
                << ", " << color.get_green()
                << ", " << color.get_blue()
@@ -104,7 +108,8 @@ bool PymolWriter::handle(PointGeometry *g,
                             Color color, std::string name) {
   setup(name);
   write_color(get_stream(),color);
-  get_stream() << "SPHERE, " << algebra::commas_io(*g) << ", "
+  get_stream() << "SPHERE, "
+               << algebra::commas_io(g->get_geometry()) << ", "
                << .1 << ",\n";
   cleanup(name);
   return true;
@@ -112,10 +117,11 @@ bool PymolWriter::handle(PointGeometry *g,
 bool PymolWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
   setup(name);
-  double r= .01*(g->get_point(0)- g->get_point(1)).get_magnitude();
+  double r= .01*(g->get_geometry().get_point(0)- g->get_geometry()
+                 .get_point(1)).get_magnitude();
   get_stream() << "CYLINDER,\n"
-               << algebra::commas_io(g->get_point(0)) << ",\n"
-               << algebra::commas_io(g->get_point(1)) << ",\n"
+               << algebra::commas_io(g->get_geometry().get_point(0)) << ",\n"
+               << algebra::commas_io(g->get_geometry().get_point(1)) << ",\n"
                << r << ",\n";
   get_stream() << color.get_red()
                << ", " << color.get_green()
@@ -132,7 +138,8 @@ bool PymolWriter::handle(PolygonGeometry *g,
                           Color color, std::string name) {
   setup(name);
   std::pair<std::vector<algebra::Vector3Ds>,
-    algebra::Vector3D> polys= internal::get_convex_polygons(*g);
+            algebra::Vector3D> polys
+            = internal::get_convex_polygons(g->get_geometry());
   for (unsigned int i=0; i< polys.first.size(); ++i) {
     get_stream() << "BEGIN, TRIANGLE_FAN, ";
     algebra::VectorD<3> n= polys.second;
@@ -153,13 +160,16 @@ bool PymolWriter::handle(TriangleGeometry *g,
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
   algebra::VectorD<3> n=
-    get_vector_product(g->at(1)-g->at(0),
-                   g->at(2)-g->at(0)).get_unit_vector();
+    get_vector_product(g->get_geometry().at(1)
+                       -g->get_geometry().at(0),
+                       g->get_geometry().at(2)
+                       -g->get_geometry().at(0)).get_unit_vector();
   write_color(get_stream(), color);
   get_stream() << "NORMAL, " << algebra::commas_io(n)
                << ",\n";
   for (unsigned int i=0; i< 3; ++i) {
-    get_stream() << "VERTEX, " << algebra::commas_io(g->at(i))
+    get_stream() << "VERTEX, "
+                 << algebra::commas_io(g->get_geometry().at(i))
                  << ", ";
   }
   get_stream() << "END,\n";

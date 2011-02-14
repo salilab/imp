@@ -33,24 +33,24 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
   }
   bool handle(PointGeometry *g, Color color, std::string) {
     handle(color);
-    get_stream() << ".dotat " <<  algebra::spaces_io(*g)
+    get_stream() << ".dotat " <<  algebra::spaces_io(g->get_geometry())
                  << "\n";
     return true;
   }
   bool handle(SegmentGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".move "
-                 << algebra::spaces_io(g->get_point(0)) << "\n";
+                 << algebra::spaces_io(g->get_geometry().get_point(0)) << "\n";
     get_stream() << ".draw "
-                 << algebra::spaces_io(g->get_point(1))
+                 << algebra::spaces_io(g->get_geometry().get_point(1))
                  << "\n";
     return true;
   }
   bool handle(PolygonGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".polygon ";
-    for (unsigned int i=0; i< g->size(); ++i) {
-      get_stream() << " " << algebra::spaces_io(g->at(i));
+    for (unsigned int i=0; i< g->get_geometry().size(); ++i) {
+      get_stream() << " " << algebra::spaces_io(g->get_geometry().at(i));
     }
     get_stream() << "\n";
     return true;
@@ -59,7 +59,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< 3; ++i) {
-      get_stream() << " " << algebra::spaces_io(g->at(i));
+      get_stream() << " " << algebra::spaces_io(g->get_geometry().at(i));
     }
     get_stream() << "\n";
     return true;
@@ -67,17 +67,19 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
   bool handle(SphereGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".sphere "
-                 << algebra::spaces_io(g->get_center()) << " "
-                 << g->get_radius() << "\n";
+                 << algebra::spaces_io(g->get_geometry().get_center()) << " "
+                 << g->get_geometry().get_radius() << "\n";
     return true;
   }
   bool handle(CylinderGeometry *g, Color color, std::string) {
     handle(color);
     get_stream() << ".cylinder "
-                 << algebra::spaces_io(g->get_segment().get_point(0))
+                 << algebra::spaces_io(g->get_geometry()
+                                       .get_segment().get_point(0))
                  << " "
-                 << algebra::spaces_io(g->get_segment().get_point(1)) << " "
-                 << g->get_radius() << "\n";
+                 << algebra::spaces_io(g->get_geometry()
+                                       .get_segment().get_point(1)) << " "
+                 << g->get_geometry().get_radius() << "\n";
     return true;
   }
 public:

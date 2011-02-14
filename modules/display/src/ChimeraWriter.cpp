@@ -49,20 +49,20 @@ void ChimeraWriter::cleanup(std::string name,
 bool ChimeraWriter::handle(SphereGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
-  write_marker(get_stream(), g->get_center(),
-               color, g->get_radius());
+  write_marker(get_stream(), g->get_geometry().get_center(),
+               color, g->get_geometry().get_radius());
   return true;
 }
 bool ChimeraWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
-  write_marker(get_stream(), g->get_segment().get_point(0),
-               color, g->get_radius());
+  write_marker(get_stream(), g->get_geometry().get_segment().get_point(0),
+               color, g->get_geometry().get_radius());
   get_stream() << "ml=mark\n";
-  write_marker(get_stream(), g->get_segment().get_point(1),
-               color, g->get_radius());
+  write_marker(get_stream(), g->get_geometry().get_segment().get_point(1),
+               color, g->get_geometry().get_radius());
   get_stream() << "Link(ml, mark, (" << commas_io(color) << ")";
-  get_stream() << ", " << g->get_radius();
+  get_stream() << ", " << g->get_geometry().get_radius();
   get_stream() << ")\n";
   get_stream() << "ml=mark\n";
   return true;
@@ -70,17 +70,17 @@ bool ChimeraWriter::handle(CylinderGeometry *g,
 bool ChimeraWriter::handle(PointGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
-  write_marker(get_stream(), *g,
+  write_marker(get_stream(), g->get_geometry(),
                color, 0);
   return true;
 }
 bool ChimeraWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
   cleanup(name, true);
-  write_marker(get_stream(), g->get_point(0),
+  write_marker(get_stream(), g->get_geometry().get_point(0),
                color, 0);
   get_stream() << "ml=mark\n";
-  write_marker(get_stream(), g->get_point(1),
+  write_marker(get_stream(), g->get_geometry().get_point(1),
                color, 0);
   get_stream() << "Link(ml, mark, (" << commas_io(color) << ")";
   get_stream() << ", .1)\n";
@@ -91,7 +91,7 @@ bool ChimeraWriter::handle(PolygonGeometry *g,
                             Color color, std::string name) {
   cleanup(name, false, true);
   std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D> polys
-    = internal::get_convex_polygons(*g);
+    = internal::get_convex_polygons(g->get_geometry());
   for (unsigned int i=0; i< polys.first.size(); ++i) {
     get_stream() << "v=[";
     for (unsigned int j=0; j< polys.first[i].size(); ++j) {
@@ -115,7 +115,7 @@ bool ChimeraWriter::handle(TriangleGeometry *g,
   cleanup(name, false, true);
   get_stream() << "v=[";
   for (unsigned int i=0; i< 3; ++i) {
-    get_stream() << "(" << commas_io(g->at(i)) << "), ";
+    get_stream() << "(" << commas_io(g->get_geometry().at(i)) << "), ";
   }
   get_stream() << "]\n";
   get_stream() << "vi=[";
@@ -133,10 +133,11 @@ bool ChimeraWriter::handle(EllipsoidGeometry *g,
                             Color , std::string name) {
   cleanup(name, false, false);
   get_stream() << "try:\n";
-  algebra::VectorD<4> q=g->get_rotation().get_quaternion();
+  algebra::VectorD<4> q=g->get_geometry().get_rotation().get_quaternion();
   get_stream() << "  chimera.runCommand(\"shape ellipsoid radius "
-               << g->get_radius(0) << "," << g->get_radius(1)
-               << "," << g->get_radius(2) << " qrotation "
+               << g->get_geometry().get_radius(0)
+               << "," << g->get_geometry().get_radius(1)
+               << "," << g->get_geometry().get_radius(2) << " qrotation "
                << q[0] << "," << q[1] << "," << q[2] << "," << q[3]
                << "\")\n";
   get_stream() << "except:\n";

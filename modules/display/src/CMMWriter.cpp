@@ -23,10 +23,10 @@ void CMMWriter::handle_close() {
 bool CMMWriter::handle(SphereGeometry *g, Color color,
                         std::string name) {
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
-               << " x=\"" << g->get_center()[0] << "\""
-               << " y=\"" << g->get_center()[1] << "\""
-               << " z=\"" << g->get_center()[2] << "\""
-               << " radius=\"" << g->get_radius() << "\""
+               << " x=\"" << g->get_geometry().get_center()[0] << "\""
+               << " y=\"" << g->get_geometry().get_center()[1] << "\""
+               << " z=\"" << g->get_geometry().get_center()[2] << "\""
+               << " radius=\"" << g->get_geometry().get_radius() << "\""
                << " r=\"" << color.get_red() << "\""
                << " g=\"" << color.get_green() << "\""
                << " b=\"" << color.get_blue() <<  "\""
@@ -37,9 +37,9 @@ bool CMMWriter::handle(SphereGeometry *g, Color color,
 bool CMMWriter::handle(PointGeometry *g, Color color,
                         std::string name) {
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
-               << " x=\"" << g->operator[](0) << "\""
-               << " y=\"" << g->operator[](1) << "\""
-               << " z=\"" << g->operator[](2) << "\""
+               << " x=\"" << g->get_geometry().operator[](0) << "\""
+               << " y=\"" << g->get_geometry().operator[](1) << "\""
+               << " z=\"" << g->get_geometry().operator[](2) << "\""
                << " radius=\"" << 1 << "\""
                << " r=\"" << color.get_red() << "\""
                << " g=\"" << color.get_green() << "\""
