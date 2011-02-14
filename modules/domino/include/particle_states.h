@@ -143,11 +143,11 @@ class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
   Subset s_;
   SubsetStates ss_;
   IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
+  ScopedScoreState sss_;
  public:
-  RecursiveStates(Subset s, const SubsetStates &ss,
-                  ParticleStatesTable * pst):
-    ParticleStates("RecursiveStates %1%"),
-    s_(s), ss_(ss), pst_(pst){}
+  RecursiveStates(Particle *p,
+                  Subset s, const SubsetStates &ss,
+                  ParticleStatesTable * pst);
   IMP_PARTICLE_STATES(RecursiveStates);
 };
 

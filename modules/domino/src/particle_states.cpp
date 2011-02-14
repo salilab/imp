@@ -80,6 +80,45 @@ void CompoundStates::do_show(std::ostream &out) const{
 }
 
 
+namespace {
+  class DummyConstraint: public Constraint {
+    Particle *in_;
+    ParticlesTemp out_;
+  public:
+    DummyConstraint(Particle *in,
+                    const ParticlesTemp &out): in_(in),
+                                               out_(out){}
+    IMP_CONSTRAINT(DummyConstraint);
+  };
+  void DummyConstraint::do_show(std::ostream &) const {
+  }
+  void DummyConstraint::do_update_attributes() {
+  }
+  void DummyConstraint::do_update_derivatives(DerivativeAccumulator*) {
+  }
+  ContainersTemp DummyConstraint::get_input_containers() const {
+    return ContainersTemp();
+  }
+  ContainersTemp DummyConstraint::get_output_containers() const {
+    return ContainersTemp();
+  }
+  ParticlesTemp DummyConstraint::get_input_particles() const {
+    return ParticlesTemp(1, in_);
+  }
+  ParticlesTemp DummyConstraint::get_output_particles() const {
+    return out_;
+  }
+}
+
+
+RecursiveStates::RecursiveStates(Particle *p,
+                                 Subset s, const SubsetStates &ss,
+                  ParticleStatesTable * pst):
+    ParticleStates("RecursiveStates %1%"),
+    s_(s), ss_(ss), pst_(pst), sss_(new DummyConstraint(p,
+                                         ParticlesTemp(s.begin(), s.end())),
+                                    p->get_model())
+{}
 unsigned int RecursiveStates::get_number_of_particle_states() const {
   return ss_.size();
 }
