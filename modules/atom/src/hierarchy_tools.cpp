@@ -646,6 +646,34 @@ Restraint* create_connectivity_restraint(const Selections &s,
   return create_connectivity_restraint(s, 0, k);
 }
 
+
+Restraint* create_internal_connectivity_restraint(const Selection &ss,
+                                         double x0,
+                                         double k) {
+  ParticlesTemp s= ss.get_selected_particles();
+  if (s.size() < 2) return NULL;
+  if (s.size() ==2) {
+    IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
+    IMP_NEW(core::PairRestraint, r, (ps, ParticlePair(s[0], s[1])));
+    return r.release();
+  } else {
+    IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
+            (s[0]->get_model(), "Connectivity particles"));
+    lsc->set_particles(s);
+    IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
+    IMP_NEW(core::ConnectivityRestraint, cr, (hdps, lsc));
+    return cr.release();
+  }
+}
+
+
+Restraint* create_internal_connectivity_restraint(const Selection &s,
+                                         double k) {
+  return create_internal_connectivity_restraint(s, 0, k);
+}
+
+
+
 Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
                                             double resolution) {
   ParticlesTemp ps;
@@ -672,6 +700,8 @@ Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
   evr->set_name("Hierarchy EV");
   return evr.release();
 }
+
+
 
 
 
