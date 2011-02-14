@@ -71,13 +71,9 @@ IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
 IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
 IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
-IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicBound, TruncatedHarmonicBounds);
-IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonicLowerBounds);
-IMP_SWIG_OBJECT( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, TypedPairScore, TypedPairScores);
 IMP_SWIG_OBJECT( IMP::core, VolumeRestraint, VolumeRestraints);
 IMP_SWIG_OBJECT( IMP::core, WeightedSphereDistancePairScore, WeightedSphereDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, WriteModelOptimizerState, WriteModelOptimizerStates);
 IMP_SWIG_OBJECT( IMP::core, MoveStatisticsScoreState, MoveStatisticsScoreStates);
 
 IMP_SWIG_OBJECT( IMP::core, Mover, Movers);
@@ -91,6 +87,12 @@ IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
 IMP_SWIG_VALUE( IMP::core, HierarchyTraits, HierarchyTraitsList);
+
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicBound, TruncatedHarmonic, TruncatedHarmonicBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicLowerBound, TruncatedHarmonic, TruncatedHarmonicLowerBounds);
+IMP_SWIG_OBJECT_INSTANCE( IMP::core, TruncatedHarmonicUpperBound, TruncatedHarmonic, TruncatedHarmonicUpperBounds);
+IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
+
 
 
 /* Don't wrap internal classes */
