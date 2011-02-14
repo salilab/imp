@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
+#include <boost/progress.hpp>
 
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
@@ -27,7 +28,8 @@ namespace {
                                   const SubsetStatesTable *states,
                                   ListSubsetFilterTable *lsft,
                                   InferenceStatistics &stats,
-                                  unsigned int max) {
+                                  unsigned int max,
+                                  boost::progress_display *progress) {
     SubsetMap subset_map= boost::get(boost::vertex_name, jt);
     IMP_FUNCTION_LOG;
     Subset s;
@@ -45,7 +47,7 @@ namespace {
         = get_best_conformations_internal(jt, *be.first, root, all,
                                           filters,
                                           states, lsft,
-                                          stats, max);
+                                          stats, max, progress);
       if (!initialized) {
         s= boost::get(subset_map, root);
         IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
@@ -62,6 +64,9 @@ namespace {
       if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
       IMP_LOG(VERBOSE, "After merge, set is " << s
               << " and data is\n" << nd << std::endl);
+      if (progress) {
+        ++(*progress);
+      }
     }
     if (!initialized) {
       IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
@@ -84,11 +89,16 @@ SubsetStates get_best_conformations(const SubsetGraph &jt,
                                     ListSubsetFilterTable *lsft,
                                     InferenceStatistics &stats,
                                     unsigned int max) {
+  boost::scoped_ptr<boost::progress_display> progress;
+  if (get_log_level() == PROGRESS) {
+    progress.reset(new boost::progress_display(boost::num_vertices(jt)));
+  }
   return get_best_conformations_internal(jt, root, root,
                                          all_particles,
                                          filters,
                                          states, lsft,
-                                         stats, max).second.subset_states;
+                                         stats, max,
+                                         progress.get()).second.subset_states;
 }
 
 
