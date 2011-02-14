@@ -62,9 +62,8 @@ public:
     // trying to use the non-virtual interface (Alexandrescu, 39)
     return get_private_score(image,projection);
   }
-  void show(std::ostream &out) const {}
 
-  IMP_OBJECT_INLINE(ScoreFunction, show(out), {});
+  IMP_OBJECT_INLINE(ScoreFunction, IMP_UNUSED(out), {});
 private:
   virtual double get_private_score(Image *image,Image *projection) const = 0;
 };
@@ -77,9 +76,8 @@ IMP_OUTPUT_OPERATOR(ScoreFunction);
 class IMPEM2DEXPORT ChiSquaredScore: public ScoreFunction {
 public:
   ChiSquaredScore() {}
-  void show(std::ostream &out) const {}
 private:
-  double get_private_score(Image *image,Image *projection) const {
+  double get_private_score(Image *,Image *) const {
     return 0.0;
   }
 };
@@ -93,7 +91,6 @@ IMP_OUTPUT_OPERATOR(ChiSquaredScore);
 class IMPEM2DEXPORT EM2DScore: public ScoreFunction {
 public:
   EM2DScore() {}
-  void show(std::ostream &out) const {}
 private:
   double get_private_score(Image *image,Image *projection) const {
     return 1-get_cross_correlation_coefficient(image->get_data(),
@@ -118,7 +115,7 @@ public:
   bool operator()(const T &a,const T &b) const {
     return a.get_ccc() >= b.get_ccc();
   }
-  void show(std::ostream &out) const {}
+  void show(std::ostream &) const {}
 };
 
 
@@ -134,7 +131,7 @@ public:
   bool operator()(const T &a,const T &b) const {
     return a.second < b.second;
   }
-  void show(std::ostream &out) const {}
+  void show(std::ostream &) const {}
 };
 
 
@@ -151,7 +148,7 @@ public:
   bool operator()(const T &a,const T &b) const {
     return a.get_score() < b.get_score();
   }
-  void show(std::ostream &out) const {}
+  void show(std::ostream &) const {}
 };
 
 IMPEM2D_END_NAMESPACE
