@@ -951,27 +951,11 @@ protection:                                                             \
 #else
 #define IMP_SHOWABLE(Name)                              \
   void show(std::ostream &out=std::cout) const;         \
-  std::string __str__() const {                         \
-    std::ostringstream out;                             \
-    show(out);                                          \
-    return out.str();                                   \
-  }                                                     \
-  std::string __repr__() const {                        \
-    return std::string(#Name) + "("+__str__()+")";      \
-  }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
 #define IMP_SHOWABLE_INLINE(Name, how_to_show)          \
   void show(std::ostream &out=std::cout) const{         \
     how_to_show;                                        \
-  }                                                     \
-  std::string __str__() const {                         \
-    std::ostringstream out;                             \
-    show(out);                                          \
-    return out.str();                                   \
-  }                                                     \
-  std::string __repr__() const {                        \
-    return std::string(#Name) + "("+__str__()+")";      \
   }                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(showable)
 
@@ -2354,18 +2338,19 @@ IMP_OBJECTS(Name##FailureHandler, Name##FailureHandlers);
     functions. "args" are the argument string (in parens) for the
     constructor and set.
 */
-#define IMP_RAII(Name, args, Initialize, Set, Reset)    \
-  Name() {Initialize;}                                  \
-  explicit Name args {Initialize; Set;}                 \
-  void set args {reset();                               \
-    Set;}                                               \
-  void reset() {Reset;}                                 \
-  ~Name () {reset();}                                   \
-private:                                                \
- void operator=(const Name &){}                         \
- Name(const Name &){}                                   \
-public:                                                 \
-  IMP_REQUIRE_SEMICOLON_CLASS(raii)
+#define IMP_RAII(Name, args, Initialize, Set, Reset, Show)              \
+  Name() {Initialize;}                                                  \
+  explicit Name args {Initialize; Set;}                                 \
+  void set args {reset();                                               \
+    Set;}                                                               \
+  void reset() {Reset;}                                                 \
+  ~Name () {reset();}                                                   \
+  IMP_SHOWABLE_INLINE(Name, out << #Name << '('; Show; out << ')');     \
+private:                                                                \
+ void operator=(const Name &){}                                         \
+ Name(const Name &){}                                                   \
+public:                                                                 \
+ IMP_REQUIRE_SEMICOLON_CLASS(raii)
 
 //! @}
 

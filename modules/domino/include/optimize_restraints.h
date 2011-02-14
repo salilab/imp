@@ -54,7 +54,7 @@ public:
                added_.clear();
                m_=NULL;
              }
-           });
+           },);
 };
 
 /**@} */

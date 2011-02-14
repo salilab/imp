@@ -33,7 +33,7 @@ void SetLogState::do_reset() {
   }
 }
 
-void SetLogState::show(std::ostream &out) const{
+void SetLogState::do_show(std::ostream &out) const{
  out << "Setting from " << level_
                       << " to "
                       << (obj_? obj_->get_log_level() : get_log_level())

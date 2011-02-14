@@ -326,7 +326,7 @@ public:
              for (unsigned int i=0; i< pt_.size(); ++i) {
                pt_[i]->ps_->optimizeds_= saved_[i];
              }
-           });
+           },);
 };
 
 IMP_OBJECTS(Optimizer,Optimizers);

@@ -51,13 +51,17 @@ IMP_BEGIN_NAMESPACE
     TERSE prints a few lines per restraint or per state each time
     the score is evaluated.
 
+    PROGRESS show how large calculations are progressing (eg samplers)
+    but otherwise just show warnings
+
     WARNING prints only warnings.
 
     MEMORY prints information about allocations and deallocations to debug
     memory issues.
  */
-enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, TERSE=2, VERBOSE=3,
-               MEMORY=4
+enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, PROGRESS=2,
+               TERSE=3, VERBOSE=4,
+               MEMORY=5
 #ifndef IMP_DOXYGEN
                , ALL_LOG
 #endif
@@ -275,6 +279,7 @@ public:
   ~WarningContext() {
     dump_warnings();
   }
+  IMP_SHOWABLE_INLINE(WarningContext, out << data_.size() << " warnings");
 };
 
 
@@ -330,7 +335,7 @@ struct CreateLogContext {
 public:
   IMP_RAII(CreateLogContext, (std::string name),,
            push_log_context(name),
-           pop_log_context());
+           pop_log_context(),);
 };
 
 /** @} */

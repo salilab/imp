@@ -5,96 +5,97 @@ namespace atom {
 }
 
 
-IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
-IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
-IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
-IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
-IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
-IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
-IMP_SWIG_DECORATOR(IMP::atom, Bond, Bonds);
-IMP_SWIG_DECORATOR(IMP::atom, Bonded, Bondeds);
-IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
-IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
-IMP_SWIG_DECORATOR(IMP::atom, SimulationParameters, SimulationParameterss);
 
-IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
-IMP_SWIG_VALUE(IMP::atom, AtomType, AtomTypes);
-IMP_SWIG_OBJECT(IMP::atom, BondEndpointsRefiner, BondEndpointsRefiners);
-IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
-IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
-IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
-IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
-IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
-IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
-IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
-IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
-IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
-IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
-IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
-IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
-IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
-IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
-IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
-IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
-IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
-IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
-IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
-IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
-IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
-IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
-IMP_SWIG_OBJECT(IMP::atom, CHARMMStereochemistryRestraint, CHARMMStereochemistryRestraints);
+
+
 
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
-IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector,NonAlternativePDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonWaterNonHydrogenPDBSelector,NonWaterNonHydrogenPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonWaterPDBSelector,NonWaterPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonhydrogenMol2Selector,NonhydrogenMol2Selectors);
-IMP_SWIG_OBJECT(IMP::atom, WaterPDBSelector,WaterPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NotPDBSelector,NotPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, AndPDBSelector,AndPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, OrPDBSelector,OrPDBSelectors);
+IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
+IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
+IMP_SWIG_DECORATOR(IMP::atom, Bond, Bonds);
+IMP_SWIG_DECORATOR(IMP::atom, Bonded, Bondeds);
+IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
+IMP_SWIG_DECORATOR(IMP::atom, Chain, Chains);
+IMP_SWIG_DECORATOR(IMP::atom, Charged, Chargeds);
+IMP_SWIG_DECORATOR(IMP::atom, Diffusion, Diffusions);
+IMP_SWIG_DECORATOR(IMP::atom, Dihedral, Dihedrals);
+IMP_SWIG_DECORATOR(IMP::atom, Domain, Domains);
+IMP_SWIG_DECORATOR(IMP::atom, Fragment, Fragments);
+IMP_SWIG_DECORATOR(IMP::atom, Hierarchy, Hierarchies);
+IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
+IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
+IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
+IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
+IMP_SWIG_DECORATOR(IMP::atom, SimulationParameters, SimulationParameterss);
+IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AllMol2Selector,AllMol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, AllPDBSelector, AllPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector, HydrogenPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector, NonAlternativePDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonWaterNonHydrogenPDBSelector, NonWaterNonHydrogenPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonWaterPDBSelector, NonWaterPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, NonHydrogenMol2Selector, NonHydrogenMol2Selectors);
-IMP_SWIG_OBJECT(IMP::atom, PPDBSelector, PPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, CPDBSelector, CPDBSelectors);
-IMP_SWIG_OBJECT(IMP::atom, ChainPDBSelector, ChainPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, AndPDBSelector,AndPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, AngleSingletonScore, AngleSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, BondEndpointsRefiner, BondEndpointsRefiners);
+IMP_SWIG_OBJECT(IMP::atom, BondPairContainer, BondPairContainers);
+IMP_SWIG_OBJECT(IMP::atom, BondSingletonScore, BondSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, BondedPairFilter, BondedPairFilters);
+IMP_SWIG_OBJECT(IMP::atom, BrownianDynamics, BrownianDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, CAlphaPDBSelector, CAlphaPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, CBetaPDBSelector, CBetaPDBSelectors);
-IMP_SWIG_VALUE(IMP::atom, RMSDCalculator, RMSDCalculators);
-IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
-IMP_SWIG_DECORATOR(IMP::atom, CHARMMAtom, CHARMMAtomList);
-IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
-
-IMP_SWIG_OBJECT(IMP::atom, SameResiduePairFilter, SameResiduePairFilters);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMResidueTopology, CHARMMResidueTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMSegmentTopology, CHARMMSegmentTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMStereochemistryRestraint, CHARMMStereochemistryRestraints);
+IMP_SWIG_OBJECT(IMP::atom, CHARMMTopology, CHARMMTopologies);
+IMP_SWIG_OBJECT(IMP::atom, CPDBSelector, CPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, ChainPDBSelector, ChainPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, CoulombPairScore, CoulombPairScores);
+IMP_SWIG_OBJECT(IMP::atom, CoverBond, CoverBonds);
+IMP_SWIG_OBJECT(IMP::atom, DihedralSingletonScore, DihedralSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, DopePairScore, DopePairScores);
-
-IMP_SWIG_VALUE(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
-IMP_SWIG_VALUE(IMP::atom, CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
-IMP_SWIG_VALUE(IMP::atom, CHARMMPatch, CHARMMPatches);
-IMP_SWIG_VALUE(IMP::atom, CHARMMBondParameters, CHARMMBondParametersList);
-IMP_SWIG_VALUE(IMP::atom, CHARMMDihedralParameters, CHARMMDihedralParametersList);
+IMP_SWIG_OBJECT(IMP::atom, ForceFieldParameters, ForceFieldParametersList);
+IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
+IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
+IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
+IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
+IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
+IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, NonAlternativePDBSelector, NonAlternativePDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, NonHydrogenMol2Selector, NonHydrogenMol2Selectors);
+IMP_SWIG_OBJECT(IMP::atom, NonWaterNonHydrogenPDBSelector, NonWaterNonHydrogenPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, NonWaterPDBSelector,NonWaterPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, NotPDBSelector,NotPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, OrPDBSelector,OrPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, PPDBSelector, PPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, ProteinLigandAtomPairScore, ProteinLigandAtomPairScores);
+IMP_SWIG_OBJECT(IMP::atom, ProteinLigandRestraint, ProteinLigandRestraints);
+IMP_SWIG_OBJECT(IMP::atom, SameResiduePairFilter, SameResiduePairFilters);
+IMP_SWIG_OBJECT(IMP::atom, SmoothingFunction, SmoothingFunctions);
+IMP_SWIG_OBJECT(IMP::atom, StereochemistryPairFilter, StereochemistryPairFilters);
+IMP_SWIG_OBJECT(IMP::atom, VelocityScalingOptimizerState, VelocityScalingOptimizerStates);
+IMP_SWIG_OBJECT(IMP::atom, WaterPDBSelector,WaterPDBSelectors);
+IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
+IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, AtomType, AtomType, AtomTypes);
 IMP_SWIG_VALUE(IMP::atom, CHARMMAtomTopology, CHARMMAtomTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMBondEndpoint, CHARMMBondEndpoints);
-IMP_SWIG_VALUE(IMP::atom, CHARMMBond, CHARMMBonds);
-IMP_SWIG_VALUE(IMP::atom, CHARMMAngle, CHARMMAngles);
-IMP_SWIG_VALUE(IMP::atom, CHARMMDihedral, CHARMMDihedrals);
+IMP_SWIG_VALUE(IMP::atom, CHARMMBondParameters, CHARMMBondParametersList);
+IMP_SWIG_VALUE(IMP::atom, CHARMMDihedralParameters, CHARMMDihedralParametersList);
+IMP_SWIG_VALUE(IMP::atom, CHARMMIdealResidueTopology, CHARMMIdealResidueTopologies);
 IMP_SWIG_VALUE(IMP::atom, CHARMMInternalCoordinate, CHARMMInternalCoordinates);
-IMP_SWIG_OBJECT(IMP::atom, CHARMMParameters, CHARMMParametersList);
-IMP_SWIG_OBJECT(IMP::atom, WritePDBOptimizerState, WritePDBOptimizerStates);
-IMP_SWIG_OBJECT(IMP::atom, WritePDBFailureHandler, WritePDBFailureHandlers);
+IMP_SWIG_VALUE(IMP::atom, CHARMMPatch, CHARMMPatches);
+IMP_SWIG_VALUE(IMP::atom, CHARMMResidueTopologyBase, CHARMMResidueTopologyBases);
+IMP_SWIG_VALUE(IMP::atom, RMSDCalculator, RMSDCalculators);
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, ResidueType, ResidueType, ResidueTypes);
 IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
-IMP_SWIG_VALUE(IMP::atom, ResidueType, ResidueTypes);
-IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
-IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
+
+
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMBond, CHARMMConnection, CHARMMBonds);
+IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
+// for some reason this one fails using the generic macro
+ %extend IMP::atom::CHARMMConnection<D> {
+  IMP_SWIG_SHOWSTUFF(CHARMMConnection);
+ }
 
 %extend IMP::atom::Selection {
 %pythoncode %{

@@ -78,8 +78,24 @@
   %}
 
 
+%define IMP_SWIG_SHOWSTUFF(Name)
+  std::string __str__() const {
+    std::ostringstream out;
+    self->show(out);
+    return out.str();
+  }
+  std::string __repr__() const {
+    std::ostringstream out;
+    self->show(out);
+    return std::string(#Name) + "("+out.str()+")";
+  }
+%enddef
 
-
+%define IMP_SWIG_SHOWABLE(Namespace, Name)
+     %extend Namespace::Name {
+  IMP_SWIG_SHOWSTUFF(Name);
+ }
+%enddef
 
 %define IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, CONSTREF)
   %typemap(in) Namespace::PluralName CONSTREF {
@@ -215,9 +231,7 @@ try {
 
 
 
-
-
-%define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
+%define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName)
 %typemap(out) Namespace::Name* {
   if (!($owner & SWIG_POINTER_NEW)) {
     // out typemaps are also called for constructors, which already use %ref
@@ -237,6 +251,15 @@ IMP_SWIG_VALUE_CHECKS_BASE(Namespace, PluralName);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
+%enddef
+
+%define IMP_SWIG_OBJECT(Namespace,Name, PluralName)
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Name, Name, PluralName);
+IMP_SWIG_SHOWABLE(Namespace, Name);
+%enddef
+
+%define IMP_SWIG_OBJECT_TEMPLATE(Namespace, Name)
+IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
 
@@ -423,6 +446,7 @@ IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
 IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
+IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
 
@@ -486,10 +510,7 @@ _value_types.append(#Name)
 
 
 
-
-
-
-%define IMP_SWIG_VALUE_NAME(Namespace, NiceName, Name, PluralName)
+%define IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, UniqueName, PluralName)
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(out) Namespace::Name const& {
@@ -511,7 +532,7 @@ _value_types.append(#Name)
 %feature("valuewrapper") PluralName;
 %{
   namespace {
-  void test_##NiceName() {
+  void test_##UniqueName() {
     Namespace::PluralName nm;
     //using namespace Namespace;
     //using namespace std;
@@ -522,13 +543,23 @@ _value_types.append(#Name)
 %}
 %enddef
 
+
+%define IMP_SWIG_VALUE_INSTANCE(Namespace, Name, TemplateName, PluralName)
+IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
+%enddef
+
 %define IMP_SWIG_VALUE(Namespace, Name, PluralName)
-IMP_SWIG_VALUE_NAME(Namespace, Name, Name, PluralName)
+IMP_SWIG_VALUE_INSTANCE(Namespace, Name, Name, PluralName)
+IMP_SWIG_SHOWABLE(Namespace, Name);
+%enddef
+
+%define IMP_SWIG_VALUE_TEMPLATE(Namespace, Name)
+IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
 
 
-%define IMP_SWIG_RAII(Namespace, Name)
+%define IMP_SWIG_RAII_INSTANCE(Namespace, Name, NiceName)
   %typemap(in) Namespace::Name* {
   BOOST_STATIC_ASSERT($argnum==1); // RAII object Namespace::Name cannot be passed as an argument
 try {
@@ -549,6 +580,16 @@ try {
 %pythoncode %{
   _raii_types.append(#Name)
 %}
+%enddef
+
+
+%define IMP_SWIG_RAII(Namespace, Name)
+IMP_SWIG_RAII_INSTANCE(Namespace, Name, Name)
+IMP_SWIG_SHOWABLE(Namespace, Name);
+%enddef
+
+%define IMP_SWIG_RAII_TEMPLATE(Namespace, Name)
+IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
 

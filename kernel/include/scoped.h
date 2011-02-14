@@ -33,6 +33,9 @@ public:
         ss_->get_model()->remove_score_state(ss_);
         ss_=NULL;
       }
+    },{
+      if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
+      else out << "(Unset scoped score state)";
     });
   bool get_is_set() const {return ss_;}
 #ifndef SWIG
@@ -41,10 +44,6 @@ public:
   SS* operator->() {return ss_;}
   SS& operator*() {return *ss_;}
 #endif
-  IMP_SHOWABLE_INLINE(GenericScopedScoreState, {
-      if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
-      else out << "(Unset scoped score state)";
-    });
 };
 
 //! Removes the Restraint when the RAII object is destroyed
@@ -68,6 +67,9 @@ public:
         ss_=NULL;
         rs_=NULL;
       }
+    }, {
+      if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
+      else out << "(Unset scoped restraint)";
     });
   bool get_is_set() const {return ss_;}
 #ifndef SWIG
@@ -76,10 +78,6 @@ public:
   SS* operator->() {return ss_;}
   SS& operator*() {return *ss_;}
 #endif
-  IMP_SHOWABLE_INLINE(GenericScopedRestraint, {
-      if (ss_) out << "(Scoped " <<ss_->get_name() << ")";
-      else out << "(Unset scoped restraint)";
-    });
 };
 
 //! Removes the Restraint until RAII object is destroyed
@@ -103,6 +101,9 @@ public:
         ss_=NULL;
         rs_=NULL;
       }
+    }, {
+      if (ss_) out << "(Scoped removal of " <<ss_->get_name() << ")";
+      else out << "(Unset scoped restraint)";
     });
   bool get_is_set() const {return ss_;}
 #ifndef SWIG
@@ -111,10 +112,6 @@ public:
   SS* operator->() {return ss_;}
   SS& operator*() {return *ss_;}
 #endif
-  IMP_SHOWABLE_INLINE(GenericScopedRemoveRestraint, {
-      if (ss_) out << "(Scoped removal of " <<ss_->get_name() << ")";
-      else out << "(Unset scoped restraint)";
-    });
 };
 
 //! Remove a score state when the object goes out of scope
@@ -143,7 +140,7 @@ public:
            {
              if (fh_) remove_failure_handler(fh_);
              fh_=NULL;
-           }
+           },
            );
 };
 

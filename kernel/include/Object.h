@@ -120,16 +120,6 @@ public:
   IMP_HASHABLE_INLINE(Object, return boost::hash_value(this););
 
 #ifndef IMP_DOXYGEN
-  std::string __str__() const {
-    std::ostringstream oss;
-    show(oss);
-    return oss.str();
-  }
-
-  std::string __repr__() const {
-    return get_type_name() + "("+__str__()+")";
-  }
-
   void _debugger_show() const {
     show(std::cout);
   }
