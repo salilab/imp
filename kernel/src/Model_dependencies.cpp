@@ -386,12 +386,7 @@ void Model::compute_dependencies() const {
                                  restraint_dependencies_);
   restraint_max_scores_.resize(ordered_restraints_.size());
   for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
-    if (max_scores_.find(ordered_restraints_[i]) == max_scores_.end()) {
-      restraint_max_scores_[i]= std::numeric_limits<double>::max();
-    } else {
-      restraint_max_scores_[i]
-        = max_scores_.find(ordered_restraints_[i])->second;
-    }
+    restraint_max_scores_[i]= ordered_restraints_[i]->get_maximum_score();
   }
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ScoreStates(ordered_score_states_) << std::endl);

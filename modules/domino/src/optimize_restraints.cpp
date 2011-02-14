@@ -118,13 +118,12 @@ ParticlesTemp pt= c_->get_particles();
     IMP::internal::Map<Particle*, ParticlesTemp> rbs;
     ParticlePairsTemp rb_pairs;
     ParticlePairsTemp stray_pairs;
-    double max= r->get_model()->get_maximum_score(r);
+    double max= r->get_maximum_score();
     IMP_NEW(RestraintSet, cur, (r->get_name()+" set"));
     added.push_back(new ScopedRestraint(cur, p));
-    if (r->get_model()->get_maximum_score(r)
+    if (r->get_maximum_score()
         < std::numeric_limits<double>::max()) {
-      r->get_model()->set_maximum_score(cur,
-                                        r->get_model()->get_maximum_score(r));
+      cur->set_maximum_score(r->get_maximum_score());
     }
     for (unsigned int i=0; i< pairs.size(); ++i) {
       bool rb=false;
@@ -183,7 +182,7 @@ ParticlesTemp pt= c_->get_particles();
                 << stray_pairs[i][1]->get_name() << std::endl);
       cur->add_restraint(npr);
       if (max < std::numeric_limits<double>::max()) {
-        npr->get_model()->set_maximum_score(npr, max);
+        npr->set_maximum_score(max);
       }
     }
     removed.push_back(new ScopedRemoveRestraint(r, p));
@@ -219,11 +218,11 @@ ParticlesTemp pt= c_->get_particles();
       IMP_NEW(RestraintSet, rss, (r->get_name()));
       added.push_back(new ScopedRestraint(rss, p));
       rss->add_restraints(rs);
-      double max= r->get_model()->get_maximum_score(r);
+      double max= r->get_maximum_score();
       if (max < std::numeric_limits<double>::max()) {
         std::cout << "Setting maximum score of " << rss->get_name()
                   << " to " << max << std::endl;
-          r->get_model()->set_maximum_score(rss, max);
+          rss->set_maximum_score(max);
       }
       removed.push_back(new ScopedRemoveRestraint(r, p));
     } else {

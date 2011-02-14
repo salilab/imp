@@ -14,6 +14,7 @@
 #include <boost/utility.hpp>
 #include <algorithm>
 #include <cmath>
+#include "macros.h"
 
 #if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
 #include <boost/math/special_functions/fpclassify.hpp>
@@ -26,14 +27,14 @@ IMP_BEGIN_NAMESPACE
 
 //! Compute the square of a number
 template <class T>
-inline T square(T t)
+inline T square(T t) IMP_NO_SIDEEFFECTS
 {
   return t*t;
 }
 
 //! Compute the cube of a number
 template <class T>
-inline T cube(T t)
+inline T cube(T t) IMP_NO_SIDEEFFECTS
 {
   return t*t*t;
 }
@@ -44,7 +45,7 @@ inline T cube(T t)
  out a!=a (and certain intel chips had issues with it too).
  */
 template <class T>
-inline bool is_nan(const T& a) {
+inline bool is_nan(const T& a) IMP_NO_SIDEEFFECTS {
 #if defined(_GLIBCXX_USE_C99_MATH)
   // Not all gcc versions include C99 math
   return (std::isnan)(a);

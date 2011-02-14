@@ -80,8 +80,6 @@ private:
   internal::OwnerPointer<RestraintSet> rs_;
   bool first_call_;
   double max_score_;
-  typedef internal::Map<Restraint*, double> Maxes;
-  Maxes max_scores_;
   mutable bool has_good_score_;
 
 
@@ -232,24 +230,27 @@ public:
   /** \name Filtering
       We are typically only interested in "good" conformations of
       the model. These are described by specifying maximum scores
-      per restraint and for the whole model. Samplers, optimizers
+      per restraint (Restraint::set_maximum_score())
+      and for the whole model. Samplers, optimizers
       etc are free to ignore configurations they encounter which
       go outside these bounds.
       @{
   */
+#if !defined(IMP_DOXYGEN)
   double get_maximum_score(Restraint *r) const {
-    if (max_scores_.find(r) == max_scores_.end()) {
-      return max_score_;
-    } else {
-      return max_scores_.find(r)->second;
-    }
+    return r->get_maximum_score();
   }
-  void set_maximum_score(Restraint *r, double s);
+  void set_maximum_score(Restraint *r, double s) {
+    r->set_maximum_score(s);
+  }
+#endif
   void set_maximum_score(double s);
   double get_maximum_score() const {
     return max_score_;
   }
   //! Return true if thelast evaluate satisfied the thresholds
+  /** Currently this ignores maximum scores on restraint sets. Sorry.
+   */
   bool get_has_good_score() const;
   /** @} */
 

@@ -81,7 +81,7 @@ void ModelData::initialize() {
   restraint_sets.push_back(rs_);
   for (unsigned int i=0; i< restraint_sets.size(); ++i) {
     double max=restraint_sets[i]
-      ->get_model()->get_maximum_score(restraint_sets[i]);
+      ->get_maximum_score();
     if (max >= std::numeric_limits<double>::max() && restraint_sets[i]==rs_) {
       max= restraint_sets[i]->get_model()->get_maximum_score();
     }
@@ -107,7 +107,7 @@ void ModelData::initialize() {
   }
 
   for (unsigned int i=0; i< rdata_.size(); ++i) {
-    double max= rs_->get_model()->get_maximum_score(rdata_[i].get_restraint());
+    double max= rdata_[i].get_restraint()->get_maximum_score();
     /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
       << " has max of " << max << std::endl;*/
     IMP_LOG(TERSE, "Restraint " << rdata_[i].get_restraint()->get_name()
