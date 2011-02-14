@@ -1,26 +1,28 @@
 
 %define IMP_SWIG_ALGEBRA_VALUE_D(Namespace, Namebase)
-IMP_SWIG_VALUE(Namespace, Namebase##2D, Namebase##2Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##3D, Namebase##3Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##4D, Namebase##4Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##5D, Namebase##5Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##6D, Namebase##6Ds);
-IMP_SWIG_VALUE(Namespace, Namebase##KD, Namebase##KDs);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##2, Namebase##D<2>, Namebase##2Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##3, Namebase##D<3>, Namebase##3Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##4, Namebase##D<4>, Namebase##4Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##5, Namebase##D<5>, Namebase##5Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##6, Namebase##D<6>, Namebase##6Ds);
-IMP_SWIG_VALUE_NAME(Namespace, Namebase##k, Namebase##D<-1>, Namebase##KDs);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##2D, Namebase##D, Namebase##2Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##3D, Namebase##D, Namebase##3Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##4D, Namebase##D, Namebase##4Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##5D, Namebase##D, Namebase##5Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##6D, Namebase##D, Namebase##6Ds);
+IMP_SWIG_VALUE_INSTANCE(Namespace, Namebase##KD, Namebase##D, Namebase##KDs);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<2>, Namebase##D, Namebase##test##2,Namebase##2Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<3>, Namebase##D, Namebase##test##3,Namebase##3Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<4>, Namebase##D, Namebase##test##4,Namebase##4Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Namebase##5Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
+IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
+IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
 %enddef
 
 %define IMP_SWIG_ALGEBRA_OBJECT_D(Namespace, Namebase)
-IMP_SWIG_OBJECT(Namespace, Namebase##2D, Namebase##2Ds);
-IMP_SWIG_OBJECT(Namespace, Namebase##3D, Namebase##3Ds);
-IMP_SWIG_OBJECT(Namespace, Namebase##4D, Namebase##4Ds);
-IMP_SWIG_OBJECT(Namespace, Namebase##5D, Namebase##5Ds);
-IMP_SWIG_OBJECT(Namespace, Namebase##6D, Namebase##6Ds);
-IMP_SWIG_OBJECT(Namespace, Namebase##KD, Namebase##KDs);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##2D, Namebase##2D, Namebase##2Ds);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##3D, Namebase##3D, Namebase##3Ds);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##4D, Namebase##4D, Namebase##4Ds);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##5D, Namebase##5D, Namebase##5Ds);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##6D, Namebase##6D, Namebase##6Ds);
+IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##KD, Namebase##KD, Namebase##KDs);
+IMP_SWIG_OBJECT_TEMPLATE(Namespace, Namebase##D);
 %enddef
 
 %define IMP_SWIG_ALGEBRA_TEMPLATE_D(Namespace, Namebase)

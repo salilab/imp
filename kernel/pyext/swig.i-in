@@ -132,21 +132,24 @@ IMP_SWIG_SEQUENCE_PAIR(IMP, IMP::Restraint*, double, RestraintsAndWeights);
 IMP_SWIG_VALUE(IMP, VersionInfo, VersionInfos);
 // derivative accumulator is weird
 // IMP_SWIG_VALUE(IMP, DerivativeAccumulator, DerivativeAccumulators);
-IMP_SWIG_VALUE(IMP, FloatKey, FloatKeys);
-IMP_SWIG_VALUE(IMP, IntKey, IntKeys);
-IMP_SWIG_VALUE(IMP, StringKey, StringKeys);
-IMP_SWIG_VALUE(IMP, ParticleKey, ParticleKeys);
-IMP_SWIG_VALUE(IMP, ObjectKey, ObjectKeys);
-IMP_SWIG_VALUE(IMP, Float, Floats);
-IMP_SWIG_VALUE(IMP, Int, Ints);
-IMP_SWIG_VALUE(IMP, String, Strings);
+IMP_SWIG_VALUE_INSTANCE(IMP, FloatKey, Key, FloatKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, IntKey, Key, IntKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, ParticleKey, Key, ParticleKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
+IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
+IMP_SWIG_VALUE_INSTANCE(IMP, Float, Float, Floats);
+IMP_SWIG_VALUE_INSTANCE(IMP, Int, Int, Ints);
+IMP_SWIG_VALUE_INSTANCE(IMP, String, String, Strings);
 IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
 IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
 IMP_SWIG_RAII(IMP, SetLogState);
 IMP_SWIG_RAII(IMP, SetLogTarget);
 IMP_SWIG_RAII(IMP, ScopedFailureHandler);
-IMP_SWIG_RAII(IMP, ScopedRestraint);
-IMP_SWIG_RAII(IMP, ScopedScoreState);
+IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
+IMP_SWIG_RAII_INSTANCE(IMP, ScopedScoreState, GenericScopedScoreState);
+IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedRestraint);
+IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedScoreState);
 IMP_SWIG_RAII(IMP, SaveOptimizeds);
 IMP_SWIG_RAII(IMP, CreateLogContext)
 IMP_SWIG_RAII(IMP, WarningContext)

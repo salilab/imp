@@ -26,6 +26,7 @@ class IMPEXPORT SetLogState
   Object* obj_;
   void do_set(Object *o, LogLevel l);
   void do_reset();
+  void do_show(std::ostream &out) const;
 public:
   IMP_RAII(SetLogState, (Object *o, LogLevel l),
            {level_= DEFAULT; obj_=NULL;},
@@ -34,7 +35,7 @@ public:
            },
            {
              do_reset();
-           });
+           }, do_show(out););
 
   //! Construct it with the desired level and target
   SetLogState(LogLevel l){
@@ -51,7 +52,6 @@ public:
       level_=DEFAULT;
     }
   }
-  IMP_SHOWABLE(SetLogState);
 };
 
 

@@ -157,7 +157,7 @@ public:
   IMP_RAII(SetLogTarget, (TextOutput to),
            old_=get_log_target();,
            set_log_target(to);,
-           set_log_target(old_););
+           set_log_target(old_);,);
 };
 
 
