@@ -19,6 +19,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <IMP/core/core_macros.h>
 #include <boost/graph/reverse_graph.hpp>
+#include <boost/progress.hpp>
 
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -366,6 +367,10 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   }
   IMP_CHECK_OBJECT(sc);
   int failures=0;
+  boost::scoped_ptr<boost::progress_display> progress;
+  if (get_log_level() == PROGRESS) {
+    progress.reset(new boost::progress_display(pms.attempts_));
+  }
   for (unsigned int i=0; i< pms.attempts_; ++i) {
     ret->load_configuration(-1);
     if (!is_refining_) {
@@ -400,6 +405,9 @@ ConfigurationSet *MCCGSampler::do_sample() const {
       if (rejected_) {
         rejected_->save_configuration();
       }
+    }
+    if (progress) {
+      ++(*progress);
     }
   }
   if (failures != 0) {
