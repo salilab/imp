@@ -91,6 +91,12 @@ class Vector3DTests(IMP.test.TestCase):
                                0, delta=.1)
         self.assertAlmostEqual((v1-expected_diff).get_magnitude(),
                                0, delta=.1)
+    def test_show(self):
+        """Check vector 3D show"""
+        v= IMP.algebra.Vector3D(1,2,3)
+        out= StringIO.StringIO()
+        print >> out, v
+        self.assert_(out.getvalue().find("Swig") ==-1)
 
     def test_addition(self):
         """Check Vector3D addition"""
