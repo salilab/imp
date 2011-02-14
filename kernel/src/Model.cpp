@@ -49,9 +49,8 @@ Model::~Model()
 }
 
 void Model::set_maximum_score(Restraint *r, double d) {
-  IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(r),
-                  "You cannot currently set the maximum score"
-                  << " of a restraint set");
+  IMP_USAGE_CHECK(r->get_model() == this,
+                  "Restraint not part of model");
   max_scores_[r]=d;
   reset_dependencies();
 }
