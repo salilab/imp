@@ -6,6 +6,7 @@
  */
 
 #include "IMP/internal/static.h"
+#include "IMP/Particle.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /*
