@@ -1,4 +1,3 @@
-import numpy as np
 import IMP
 import IMP.multifit
 import IMP.test
