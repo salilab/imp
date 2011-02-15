@@ -3,6 +3,7 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.algebra
+import os
 
 def get_bonds(numbonds, getfunc, numendpoints):
     """Get all of the bonds (or angles, dihedrals) from a residue topology,
@@ -25,6 +26,11 @@ def get_bonds(numbonds, getfunc, numendpoints):
 
 class CHARMMParametersTests(IMP.test.TestCase):
     """Test the CHARMMParameters class"""
+
+    def assertBondBetween(self, bond, atoms):
+        bond_atoms = [bond.get_endpoint(i).get_atom_name() \
+                      for i in range(len(atoms))]
+        self.assertEqual(bond_atoms, atoms)
 
     def test_bond_parameters(self):
         """Check extraction of bond parameters"""
@@ -158,6 +164,42 @@ class CHARMMParametersTests(IMP.test.TestCase):
                                      rcharmm.get_improper, 4)
         for i in impropers_charmm:
             self.assertIn(i, impropers_pdb)
+
+    def test_split_tabs(self):
+        """Make sure that splitting works with tabs"""
+        fname = 'toptest.inp'
+        open(fname, 'w').write("""
+               \tRESI\tHIS\t0.00000
+               ATOM\tCB\tCH2E\t0.00
+               BOND\tN\tCB
+               ANGLE\tN\tCB\tCA
+               DIHE\tN\tCB\tCA\tCG
+               IMPR\tN\tCB\tCA\tCG
+               IC\tHT1\tN\tCA\tC\t0.0000\t0.00\t180.00\t0.00\t0.0000
+               PATC\tFIRS\tGLYP
+
+               PRES\tNTER\t1.00000
+               DELETE ATOM H\tN\tCA""")
+        f = IMP.atom.CHARMMParameters(fname)
+        t = f.get_residue_topology(IMP.atom.HIS)
+        self.assertEqual(t.get_number_of_bonds(), 1)
+        self.assertBondBetween(t.get_bond(0), ['N', 'CB'])
+        self.assertEqual(t.get_number_of_angles(), 1)
+        self.assertBondBetween(t.get_angle(0), ['N', 'CB', 'CA'])
+        self.assertEqual(t.get_number_of_dihedrals(), 1)
+        self.assertBondBetween(t.get_dihedral(0), ['N', 'CB', 'CA', 'CG'])
+        self.assertEqual(t.get_number_of_impropers(), 1)
+        self.assertBondBetween(t.get_improper(0), ['N', 'CB', 'CA', 'CG'])
+        self.assertEqual(t.get_number_of_internal_coordinates(), 1)
+        self.assertBondBetween(t.get_internal_coordinate(0),
+                               ['HT1', 'N', 'CA', 'C'])
+
+        t = f.get_patch('NTER')
+        self.assertEqual(t.get_number_of_removed_atoms(), 3)
+        self.assertEqual(t.get_removed_atom(0), 'H')
+        self.assertEqual(t.get_removed_atom(1), 'N')
+        self.assertEqual(t.get_removed_atom(2), 'CA')
+        os.unlink(fname)
 
     def test_map_names_to_pdb(self):
         """Check mapping of CHARMM names to PDB"""

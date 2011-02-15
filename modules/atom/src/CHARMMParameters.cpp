@@ -168,16 +168,18 @@ namespace {
   void parse_dele_line(std::string line, CHARMMPatch *patch,
                        bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     if (split_results.size() < 3) return;
 
     // Only DELE ATOM supported for now
     if (split_results[1] == "ATOM") {
-      std::string atom_name = get_atom_name(split_results[2], patch,
-                                            translate_names_to_pdb);
-      if (!excess_patch_removal(atom_name, patch, translate_names_to_pdb)) {
-        patch->add_removed_atom(atom_name);
+      for (unsigned int i = 2; i < split_results.size(); ++i) {
+        std::string atom_name = get_atom_name(split_results[i], patch,
+                                              translate_names_to_pdb);
+        if (!excess_patch_removal(atom_name, patch, translate_names_to_pdb)) {
+          patch->add_removed_atom(atom_name);
+        }
       }
     }
   }
@@ -185,7 +187,7 @@ namespace {
   void parse_angle_line(std::string line, CHARMMResidueTopologyBase *residue,
                         bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 3) {
@@ -199,7 +201,7 @@ namespace {
                            CHARMMResidueTopologyBase *residue,
                            bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
@@ -214,7 +216,7 @@ namespace {
                            CHARMMResidueTopologyBase *residue,
                            bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
 
     for (unsigned int i = 1; i < split_results.size(); i += 4) {
@@ -229,7 +231,7 @@ namespace {
                                       CHARMMResidueTopologyBase *residue,
                                       bool translate_names_to_pdb) {
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     if (split_results.size() < 10) return; // IC line has at least 10 fields
 
@@ -256,7 +258,7 @@ namespace {
     const std::string LAST = "LAST";
 
     std::vector<std::string> split_results;
-    boost::split(split_results, line, boost::is_any_of(" "),
+    boost::split(split_results, line, boost::is_any_of(" \t"),
                  boost::token_compress_on);
     for (unsigned int i = 1; i < split_results.size(); i += 2) {
       if (split_results[i][0] == '!') return;  // comments start
@@ -379,7 +381,7 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
         add_patch(patch.release());
       }
       std::vector<String> split_results;
-      boost::split(split_results, line, boost::is_any_of(" "),
+      boost::split(split_results, line, boost::is_any_of(" \t"),
                    boost::token_compress_on);
       if (split_results.size() < 3) {
         IMP_THROW("Invalid PRES line: " << line, ValueException);
@@ -451,7 +453,7 @@ ResidueType CHARMMParameters::parse_residue_line(const String& line,
                                                  bool translate_names_to_pdb)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 3) {
     IMP_THROW("Invalid RESI line: " << line, ValueException);
@@ -472,7 +474,7 @@ void CHARMMParameters::parse_atom_line(const String& line,
                                        bool translate_names_to_pdb)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 4) return; // ATOM line has at least 4 fields
 
@@ -509,7 +511,7 @@ void CHARMMParameters::parse_bond_line(const String& line,
                                        bool translate_names_to_pdb)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if(split_results.size() < 3) return; // BOND line has at least 3 fields
 
@@ -546,7 +548,7 @@ void CHARMMParameters::parse_bond_line(const String& line,
 void CHARMMParameters::parse_nonbonded_parameters_line(String line)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 4)
     return; // non-bonded line has at least 4 fields
@@ -560,7 +562,7 @@ void CHARMMParameters::parse_nonbonded_parameters_line(String line)
 void CHARMMParameters::parse_bonds_parameters_line(String line)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 4)
     return; // bonds line has at least 4 fields
@@ -575,7 +577,7 @@ void CHARMMParameters::parse_bonds_parameters_line(String line)
 void CHARMMParameters::parse_angles_parameters_line(String line)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 5)
     return; // angles line has at least 5 fields
@@ -592,7 +594,7 @@ void CHARMMParameters::parse_dihedrals_parameters_line(String line,
                                        DihedralParameters &param)
 {
   std::vector<String> split_results;
-  boost::split(split_results, line, boost::is_any_of(" "),
+  boost::split(split_results, line, boost::is_any_of(" \t"),
                boost::token_compress_on);
   if (split_results.size() < 7)
     return; // dihedrals line has at least 7 fields
