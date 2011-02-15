@@ -182,6 +182,7 @@ class CHARMMParametersTests(IMP.test.TestCase):
                DELETE ATOM H\tN\tCA""")
         f = IMP.atom.CHARMMParameters(fname)
         t = f.get_residue_topology(IMP.atom.HIS)
+        self.assertEqual(t.get_default_first_patch(), 'GLYP')
         self.assertEqual(t.get_number_of_bonds(), 1)
         self.assertBondBetween(t.get_bond(0), ['N', 'CB'])
         self.assertEqual(t.get_number_of_angles(), 1)
