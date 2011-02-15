@@ -531,10 +531,14 @@ void CHARMMParameters::parse_bond_line(const String& line,
         || atom_names[1][0] == '1' || atom_names[1][0] == '2') {
       continue;
     }
-    AtomType imp_atom_type1 = AtomType(atom_names[0]);
-    AtomType imp_atom_type2 = AtomType(atom_names[1]);
-    Bond bond(imp_atom_type1, imp_atom_type2);
-    bonds.push_back(bond);
+    // Ignore bonds to non-existent atoms
+    if (AtomType::get_key_exists(atom_names[0])
+        && AtomType::get_key_exists(atom_names[1])) {
+      AtomType imp_atom_type1 = AtomType(atom_names[0]);
+      AtomType imp_atom_type2 = AtomType(atom_names[1]);
+      Bond bond(imp_atom_type1, imp_atom_type2);
+      bonds.push_back(bond);
+    }
   }
 
   if(residue_bonds_.find(curr_res_type) == residue_bonds_.end()) {
