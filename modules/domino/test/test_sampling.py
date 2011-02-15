@@ -36,7 +36,7 @@ class DOMINOTests(IMP.test.TestCase):
         print 5
         sampler= IMP.domino.DominoSampler(m, pst)
         sampler.set_log_level(IMP.VERBOSE)
-        sampler.set_maximum_score(.1)
+        m.set_maximum_score(.1)
         cs= sampler.get_sample()
         print 6
         self.assertGreater(cs.get_number_of_configurations(), 0)
@@ -74,7 +74,7 @@ class DOMINOTests(IMP.test.TestCase):
 
         sampler= IMP.domino.DominoSampler(m, pst)
         sampler.set_log_level(IMP.VERBOSE)
-        sampler.set_maximum_score(3.1)
+        m.set_maximum_score(3.1)
         cs= sampler.get_sample()
         self.assertGreater(cs.get_number_of_configurations(), 0)
         for i in range(0, cs.get_number_of_configurations()):
