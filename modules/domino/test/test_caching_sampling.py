@@ -39,7 +39,7 @@ class DOMINOTests(IMP.test.TestCase):
         #sampler.set_subset_evaluator_table(sevt);
         sampler.set_log_level(IMP.VERBOSE)
         #sampler.set_subset_states_table(sst)
-        sampler.set_maximum_score(3.1)
+        m.set_maximum_score(3.1)
         print "getting sample"
         cs= sampler.get_sample()
         print "done"
