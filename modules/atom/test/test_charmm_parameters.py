@@ -202,6 +202,59 @@ class CHARMMParametersTests(IMP.test.TestCase):
         self.assertEqual(t.get_removed_atom(2), 'CA')
         os.unlink(fname)
 
+    def test_alternate_keywords(self):
+        """Check alternate CHARMM keywords"""
+        topname = 'toptest.inp'
+        parname = 'partest.inp'
+        # Both 'ANGL' and 'THETA' should work for angles (thus this
+        # topology file defines two separate angles), etc.
+        open(topname, 'w').write("""
+             RESI HIS 0.00000
+             BOND N CB
+             ANGL N CA CB
+             THETA N CA CG
+             DIHE N CA CB CG
+             PHI C CA CB CG
+             IMPR N CA CB CG
+             IMPH C CA CB CG""")
+        open(parname, 'w').write("""
+             BOND
+             C    C      450.0       1.38
+             ANGL
+             C    C    C       70.0     106.5
+             DIHE
+             CH1E C    N    CH1E    10.0       2     180.0
+             IMPR
+             C    C    CR1E CH2E    90.0    0     0.0
+             NONB NBXMOD 5  ATOM CDIEL SHIFT VATOM VDISTANCE VSHIFT -
+                CUTNB 8.0  CTOFNB 7.5  CTONNB 6.5  EPS 1.0  E14FAC 0.4  WMIN 1.5
+             H        0.0440    -0.0498    0.8000
+             THETA
+             C    C    CH2E    65.0     126.5
+             PHI
+             CH2E C    N    CH1E    10.0       2     180.0
+             IMPHI
+             C    CR1E C    CH2E    90.0    0     0.0
+             NBON NBXMOD 5  ATOM CDIEL SHIFT VATOM VDISTANCE VSHIFT -
+               CUTNB 8.0  CTOFNB 7.5  CTONNB 6.5  EPS 1.0  E14FAC 0.4  WMIN 1.5
+             HC       0.0440    -0.0498    0.6000""")
+        f = IMP.atom.CHARMMParameters(topname, parname)
+        f.get_bond_parameters('C', 'C')
+        f.get_angle_parameters('C', 'C', 'C')
+        f.get_angle_parameters('C', 'C', 'CH2E')
+        f.get_dihedral_parameters('CH1E', 'C', 'N', 'CH1E')
+        f.get_dihedral_parameters('CH2E', 'C', 'N', 'CH1E')
+        f.get_improper_parameters('C', 'C', 'CR1E', 'CH2E')
+        f.get_improper_parameters('C', 'CR1E', 'C', 'CH2E')
+
+        h = f.get_residue_topology(IMP.atom.HIS)
+        self.assertEqual(h.get_number_of_bonds(), 1)
+        self.assertEqual(h.get_number_of_angles(), 2)
+        self.assertEqual(h.get_number_of_dihedrals(), 2)
+        self.assertEqual(h.get_number_of_impropers(), 2)
+        os.unlink(topname)
+        os.unlink(parname)
+
     def test_map_names_to_pdb(self):
         """Check mapping of CHARMM names to PDB"""
         # Read CHARMM file containing PDB atom and residue names
