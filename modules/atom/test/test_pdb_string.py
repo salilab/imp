@@ -20,5 +20,24 @@ class PDBReadWriteTest(IMP.test.TestCase):
                                m, IMP.atom.CAlphaPDBSelector())
         os.unlink(name)
         self.assertEqual(len(IMP.core.get_leaves(mp)),5)
+
+    def test_no_mangle(self):
+        """Test that PDB atom names are not mangled"""
+        # Atom names should not be changed by a read/write PDB cycle; this would
+        # break usage of PDBs containing CHARMM atom names.
+        for atom in ('OT1', 'OT2', 'OXT', 'HE21', 'HE22', '1HE2',
+                     '2HE2', 'foo'):
+            s = StringIO()
+            s.write('ATOM      2 %-4s ALA A   1      17.121  17.162   '
+                    '6.197  1.00 15.60           C\n' % atom)
+            s.seek(0)
+
+            m = IMP.Model()
+            pdb = IMP.atom.read_pdb(s, m)
+
+            s = StringIO()
+            IMP.atom.write_pdb(pdb, s)
+            self.assertEqual(s.getvalue()[12:16].strip(), atom)
+
 if __name__ == '__main__':
     IMP.test.main()
