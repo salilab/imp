@@ -345,8 +345,11 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
   const String BOND_LINE = "BOND";
   const String BOND_LINE2 = "DOUBLE";
   const String ANGLE_LINE = "ANGL";
+  const String ANGLE_LINE2 = "THET";
   const String DIHEDRAL_LINE = "DIHE";
+  const String DIHEDRAL_LINE2 = "PHI";
   const String IMPROPER_LINE = "IMPR";
+  const String IMPROPER_LINE2 = "IMPH";
   const String IC_LINE = "IC";
   std::string first_patch = "", last_patch = "";
   Pointer<CHARMMIdealResidueTopology> residue;
@@ -421,17 +424,20 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
                       translate_names_to_pdb);
 
     // read angle line
-    } else if (line.substr(0, ANGLE_LINE.length()) == ANGLE_LINE
+    } else if ((line.substr(0, ANGLE_LINE.length()) == ANGLE_LINE ||
+               line.substr(0, ANGLE_LINE2.length()) == ANGLE_LINE2)
                && (residue || patch)) {
       parse_angle_line(line, get_residue(residue, patch),
                        translate_names_to_pdb);
     // read dihedral line
-    } else if (line.substr(0, DIHEDRAL_LINE.length()) == DIHEDRAL_LINE
+    } else if ((line.substr(0, DIHEDRAL_LINE.length()) == DIHEDRAL_LINE ||
+               line.substr(0, DIHEDRAL_LINE2.length()) == DIHEDRAL_LINE2)
                && (residue || patch)) {
       parse_dihedral_line(line, get_residue(residue, patch),
                           translate_names_to_pdb);
     // read improper line
-    } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE
+    } else if ((line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE ||
+               line.substr(0, IMPROPER_LINE2.length()) == IMPROPER_LINE2)
                && (residue || patch)) {
       parse_improper_line(line, get_residue(residue, patch),
                           translate_names_to_pdb);
@@ -616,11 +622,15 @@ void CHARMMParameters::parse_dihedrals_parameters_line(String line,
 
 void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
   IMP_OBJECT_LOG;
-  const String BONDS_LINE = "BONDS";
-  const String ANGLES_LINE = "ANGLES";
-  const String DIHEDRALS_LINE = "DIHEDRALS";
-  const String IMPROPER_LINE = "IMPROPER";
-  const String NONBONDED_LINE = "NONBONDED";
+  const String BONDS_LINE = "BOND";
+  const String ANGLES_LINE = "ANGL";
+  const String ANGLES_LINE2 = "THETA";
+  const String DIHEDRALS_LINE = "DIHE";
+  const String DIHEDRALS_LINE2 = "PHI";
+  const String IMPROPER_LINE = "IMPR";
+  const String IMPROPER_LINE2 = "IMPHI";
+  const String NONBONDED_LINE = "NONB";
+  const String NONBONDED_LINE2 = "NBON";
   enum { NONE, BONDS, ANGLES, DIHEDRALS, IMPROPERS, NONBONDED } section = NONE;
 
   while (!input_file.eof()) {
@@ -631,16 +641,20 @@ void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
     // skip comments or empty lines
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
 
-    if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE) {
+    if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE
+        || line.substr(0, NONBONDED_LINE2.length()) == NONBONDED_LINE2) {
       section = NONBONDED;
       getline(input_file, line); //remove second line of NONBONDED
     } else if (line.substr(0, BONDS_LINE.length()) == BONDS_LINE) {
       section = BONDS;
-    } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE) {
+    } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE
+               || line.substr(0, ANGLES_LINE2.length()) == ANGLES_LINE2) {
       section = ANGLES;
-    } else if (line.substr(0, DIHEDRALS_LINE.length()) == DIHEDRALS_LINE) {
+    } else if (line.substr(0, DIHEDRALS_LINE.length()) == DIHEDRALS_LINE
+               || line.substr(0, DIHEDRALS_LINE2.length()) == DIHEDRALS_LINE2) {
       section = DIHEDRALS;
-    } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE) {
+    } else if (line.substr(0, IMPROPER_LINE.length()) == IMPROPER_LINE
+               || line.substr(0, IMPROPER_LINE2.length()) == IMPROPER_LINE2) {
       section = IMPROPERS;
     } else if (line.substr(0, 5) == "HBOND" || line.substr(0, 5) == "NBFIX") {
       section = NONE;
