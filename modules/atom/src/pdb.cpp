@@ -88,18 +88,6 @@ namespace {
       }*/
   }
 
-  // try putting the numbers after
-  std::string try_rename(std::string str) {
-    std::string out;
-    for (unsigned int i=0; i< str.size(); ++i) {
-      if (std::isalpha(str[i], std::locale())) out.push_back(str[i]);
-    }
-    for (unsigned int i=0; i< str.size(); ++i) {
-      if (!std::isalpha(str[i], std::locale())) out.push_back(str[i]);
-    }
-    return out;
-  }
-
 Element get_element_from_pdb_line(const std::string& pdb_line) {
   // 1. determine element from element column
   std::string elem = internal::atom_element(pdb_line);
@@ -163,15 +151,9 @@ Particle* atom_particle(Model *m, const std::string& pdb_line)
   } else { // ATOM line
     boost::trim(string_name);
     if (!AtomType::get_key_exists(string_name)) {
-      string_name= try_rename(string_name);
-      if (!AtomType::get_key_exists(string_name)) {
-       IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
-                << "\" from " << pdb_line << std::endl);
-        // return NULL; // never skip ATOMs!!!
-        atom_name=add_atom_type(string_name, e);
-      } else {
-        atom_name = AtomType(string_name);
-      }
+      IMP_LOG(VERBOSE, "ATOM record type not found: \"" << string_name
+              << "\" from " << pdb_line << std::endl);
+      atom_name = add_atom_type(string_name, e);
     } else {
       atom_name = AtomType(string_name);
     }
