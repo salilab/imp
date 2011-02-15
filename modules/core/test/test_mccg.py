@@ -63,7 +63,7 @@ class CGOptimizerTests(IMP.test.TestCase):
         wos=IMP.WriteParticlesOptimizerState(ds, self.get_tmp_file_name("mccg")+".%1%.imp")
         wos.set_skip_steps(10)
         s.add_optimizer_state(wos)
-        s.set_maximum_score(max_score)
+        m.set_maximum_score(max_score)
         s.set_number_of_monte_carlo_steps(1000)
         s.set_number_of_conjugate_gradient_steps(100)
         IMP.set_log_level(IMP.TERSE)
