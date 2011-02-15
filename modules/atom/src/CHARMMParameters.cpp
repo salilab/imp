@@ -175,6 +175,7 @@ namespace {
     // Only DELE ATOM supported for now
     if (split_results[1] == "ATOM") {
       for (unsigned int i = 2; i < split_results.size(); ++i) {
+        if (split_results[i][0] == '!') break;  // comments start
         std::string atom_name = get_atom_name(split_results[i], patch,
                                               translate_names_to_pdb);
         if (!excess_patch_removal(atom_name, patch, translate_names_to_pdb)) {
