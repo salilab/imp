@@ -33,15 +33,27 @@ void Restraint::set_model(Model* model)
 }
 
 double Restraint::evaluate(bool calc_derivs) const {
-  IMP_USAGE_CHECK(model_,
-                  "The restraint must be added to the model before being "
-                  << "evaluated.");
-  IMP_USAGE_CHECK(get_model()->get_stage()==Model::NOT_EVALUATING,
-            "Restraint::evaluate() cannot be called during model evaluation");
-  RestraintsTemp rr(1, const_cast<Restraint*>(this));
-  std::vector<double> ws(1, 1.0);
-  Floats v= get_model()->evaluate(rr, ws, calc_derivs);
-  return std::accumulate(v.begin(), v.end(), 0.0);
+  IMP_OBJECT_LOG;
+  RestraintsTemp restraints;
+  std::vector<double> weights;
+  if (dynamic_cast<const RestraintSet*>(this)) {
+    boost::tie(restraints, weights)=
+      get_restraints_and_weights(dynamic_cast<const RestraintSet*>(this));
+  } else {
+    restraints.push_back(const_cast<Restraint*>(this));
+    weights.push_back(get_weight());
+  }
+  IMP_LOG(TERSE, "Evaluating "<< restraints.size()
+          << " restraints in set.\n");
+  Floats ret= get_model()->evaluate(restraints, weights, calc_derivs);
+  double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Got " << rv << "\n");
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      IMP_LOG(TERSE, ret[i] << " for " << restraints[i]->get_name() << "\n");
+    }
+  }
+  return rv;
 }
 
 

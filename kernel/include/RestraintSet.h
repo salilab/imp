@@ -53,7 +53,6 @@ class IMPEXPORT RestraintSet : public Restraint
   IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
   /**@}*/
  public:
-  double evaluate(bool deriv) const;
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  protected:
   friend class Model;
