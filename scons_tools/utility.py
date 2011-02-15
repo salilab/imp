@@ -216,7 +216,7 @@ def get_abspaths(env, name, pathlist):
             ret.append(Dir(p).abspath)
         if not os.path.isdir(ret[-1]):
             #print "bad"
-            utility.report_error(env, "The path "+p+" in "+name+" does not exist.")
+            report_error(env, "The path "+p+" in "+name+" does not exist.")
 
     #print ret
     #print name, "from", pathlist, "to", ":".join(ret)
