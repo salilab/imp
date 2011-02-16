@@ -38,23 +38,6 @@ IMPEM2D_BEGIN_NAMESPACE
 //}
 //
 
-void apply_mask(const cv::Mat &m,
-                cv::Mat &result,
-                const cvIntMat &mask,
-                double val) {
-  result.create(m.rows,m.cols,m.type());
-
-  cvDoubleMat M = m;
-  cvDoubleMat R = result;
-  for (int i=0;i<M.rows;++i) {
-    for (int j=0;j<M.cols;++j) {
-      R(i,j) = mask(i,j) == 0 ? val : M(i,j);
-    }
-  }
-}
-
-
-
 
 //void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
 //                            const algebra::Matrix2D_d &greyscale,
@@ -550,6 +533,31 @@ int do_labeling(const cvIntMat &m,
   int labels = *max_element(union_find_tree.begin(), union_find_tree.end());
   return labels;
 }
+
+
+
+
+void apply_mask(const cv::Mat &m,
+                cv::Mat &result,
+                const cvIntMat &mask,
+                double val) {
+  result.create(m.rows,m.cols,m.type());
+
+  cvDoubleMat M = m;
+  cvDoubleMat R = result;
+  for (int i=0;i<M.rows;++i) {
+    for (int j=0;j<M.cols;++j) {
+      R(i,j) = mask(i,j) == 0 ? val : M(i,j);
+    }
+  }
+}
+
+
+
+
+
+
+
 
 
 

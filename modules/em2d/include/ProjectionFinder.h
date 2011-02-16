@@ -1,4 +1,4 @@
-/**`
+/**
  *  \file ProjectionFinder.h
  *  \brief Coarse registration of 2D projections from a 3D volume
  *

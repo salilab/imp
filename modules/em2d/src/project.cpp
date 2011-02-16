@@ -40,35 +40,6 @@ em2d::Images get_projections(const ParticlesTemp &ps,
                     pixelsize,srw,project_and_save,names);
 }
 
-
-//em2d::Images get_projections(const ParticlesTemp &ps,
-//                    RegistrationResults registration_values,
-//                    int rows, int cols,
-//                    double resolution, double pixelsize,
-//                    const em2d::ImageReaderWriter<double> &srw,
-//                    bool project_and_save,
-//                    Strings names) {
-//  IMP_LOG(IMP::VERBOSE,
-//          "Generating projections from registraion results" << std::endl);
-//
-//  unsigned long n_projs= registration_values.size();
-//  em2d::Images projections(n_projs);
-//  // Precomputation of all the possible projection masks for the particles
-//  MasksManager masks(resolution,pixelsize);
-//  masks.create_masks(ps);
-//  for (unsigned long i=0;i<n_projs;++i) {
-//    IMP_NEW(em2d::Image,img,());
-//    img->set_size(rows,cols);
-//    String name="";
-//    if(project_and_save) { name = names[i]; } // deal with name only if saving
-//    get_projection(img,ps,registration_values[i],
-//                resolution,pixelsize,srw,project_and_save,&masks,name);
-//    projections.set(i,img);
-//  }
-//  return projections;
-//}
-//
-
 em2d::Images get_projections(const ParticlesTemp &ps,
                     const RegistrationResults &registration_values,
                     int rows, int cols,
@@ -79,6 +50,11 @@ em2d::Images get_projections(const ParticlesTemp &ps,
   IMP_LOG(IMP::VERBOSE,
           "Generating projections from registraion results" << std::endl);
 
+  if(project_and_save && (names.size() < registration_values.size() ) ) {
+    IMP_THROW("get_projections: Insufficient number of image names provided",
+              IOException);
+  }
+
   unsigned long n_projs= registration_values.size();
   em2d::Images projections(n_projs);
   // Precomputation of all the possible projection masks for the particles
@@ -88,7 +64,7 @@ em2d::Images get_projections(const ParticlesTemp &ps,
     IMP_NEW(em2d::Image,img,());
     img->set_size(rows,cols);
     String name="";
-    if(project_and_save) { name = names[i]; } // deal with name only if saving
+    if(project_and_save) name = names[i];
     get_projection(img,ps,registration_values[i],
                 resolution,pixelsize,srw,project_and_save,masks,name);
     projections.set(i,img);
@@ -102,6 +78,7 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
           const em2d::ImageReaderWriter *srw,bool save_image,
            MasksManagerPtr masks,String name) {
   IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
+
   if(masks==MasksManagerPtr()) {
     masks =MasksManagerPtr(new MasksManager(resolution,pixelsize));
     masks->create_masks(ps);
@@ -116,10 +93,12 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   reg.set_in_image(img->get_header());
   img->get_header().set_object_pixel_size(pixelsize);
   if(save_image) {
+    if(name.empty()) {
+      IMP_THROW("get_projection: File name string is empty ", IOException);
+    }
     img->write(name,srw);
   }
 }
-
 
 void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,

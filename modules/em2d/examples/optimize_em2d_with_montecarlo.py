@@ -161,7 +161,7 @@ for temp in temperatures:
 atom.write_pdb(prot,"solution.pdb")
 
 
-# Check that the optimization achieves distances close to th solution
+# Check that the optimization achieves distances close to the solution
 print "*** End optimization ***"
 new_centers = []
 for rbd in rigid_bodies:
