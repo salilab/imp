@@ -15,6 +15,7 @@
 #ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/exception.hpp>
+#include <boost/filesystem/operations.hpp>
 #include <boost/version.hpp>
 #endif
 
@@ -83,6 +84,18 @@ void set_backup_data_path(std::string path) {
   backup_search_path=path;
 }
 
+namespace {
+  bool get_path_exists(std::string name) {
+#if defined(IMP_KERNEL_USE_BOOST_FILESYSTEM)
+    return boost::filesystem::exists(name);
+#else
+    // does not work on binary files
+    std::ifstream in(name.c_str(), std::ios::binary);
+    return in;
+#endif
+  }
+}
+
 std::string get_data_path(std::string module, std::string file_name)
 {
   std::string varname=std::string("IMP_")+boost::to_upper_copy(module)
@@ -91,8 +104,7 @@ std::string get_data_path(std::string module, std::string file_name)
                              imp_data_path,
                              module, file_name);
   {
-    std::ifstream in(path.c_str());
-    if (in) {
+    if (get_path_exists(path)) {
       return path;
     }
   }
@@ -100,8 +112,9 @@ std::string get_data_path(std::string module, std::string file_name)
   if (!backup_search_path.empty()) {
     boost::filesystem::path path
       = boost::filesystem::path(backup_search_path)/file_name;
-    std::ifstream in(path.native_file_string().c_str());
-    if (in) return path.native_file_string();
+    if (get_path_exists(path.native_file_string())) {
+      return path.native_file_string();
+    }
   }
 #endif
   IMP_THROW("Unable to find data file "
