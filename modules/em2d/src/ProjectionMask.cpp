@@ -17,8 +17,11 @@ ProjectionMask::~ProjectionMask() {
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
          const em::RadiusDependentKernelParameters *params,double pixelsize) {
   sq_pixelsize_ = pixelsize*pixelsize;
-  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
-  data_.create(dim_,dim_,CV_64FC1);
+//  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
+//  data_.create(dim_,dim_,CV_64FC1);
+  dim_ = floor(params->get_kdist()/pixelsize);
+  int mask_size = 2*dim_+1; // enough to go from -dim to dim
+  data_.create(mask_size,mask_size,CV_64FC1);
   data_.setTo(0.0);
   create(KP,params);
 }
@@ -37,8 +40,9 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
     double isq = (double)i*i;
     for(int j=-dim_;j<=dim_;++j) {
       double jsq = (double)j*j;
+      double ijsq = isq+jsq;
       for(int k=-dim_;k<=dim_;++k) {
-        square_radius = (isq+jsq+(double)k*k)*sq_pixelsize_;
+        square_radius = (ijsq+(double)k*k)*sq_pixelsize_;
         // Add the value to the mask
         tmp= em::EXP(-square_radius * params->get_inv_sigsq());
         // if statement to ensure even sampling within the box
@@ -48,6 +52,7 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
       }
     }
   }
+ IMP_LOG(IMP::VERBOSE," Mask generated.  " << std::endl);
 }
 
 
@@ -94,25 +99,25 @@ void ProjectionMask::apply(cv::Mat &m,
 ProjectionMaskPtr MasksManager::find_mask(double radius) {
   std::map<double,  ProjectionMaskPtr >::iterator iter
                                     = radii2mask_.find(radius);
-  //IMP_LOG(IMP::VERBOSE,"trying to find mask " << std::endl);
-  if(iter == radii2mask_.end()) {
+  if(iter == radii2mask_.end())
     return ProjectionMaskPtr(); // null
-  } else {
-    return iter->second;
-  }
+  return iter->second;
 }
 
 
 void MasksManager::create_masks(const ParticlesTemp &ps) {
-  IMP_LOG(IMP::TERSE,"Generating Projection Masks " << std::endl);
+  IMP_LOG(IMP::TERSE,"Creating Projection Masks " << std::endl);
   ProjectionMaskPtr mask;
   unsigned long n_particles = ps.size();
   for (unsigned long i=0; i<n_particles; i++) {
     core::XYZR xyzr(ps[i]);
     double radius = xyzr.get_radius();
     mask = this->find_mask(radius);
-    if (!mask) this->create_mask(radius);
+    if (!mask) {
+      this->create_mask(radius);
+    }
   }
+  IMP_LOG(IMP::TERSE,"Finished creating Projection Masks " << std::endl);
 }
 
 void MasksManager::create_mask(double radius) {

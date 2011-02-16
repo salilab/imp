@@ -18,55 +18,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-
-//! Removes small objects from a labeled image. The background value is assumed
-//! to be 0, and the labels start at 1 up to the number of labels.
-/*!
-  \param[in] m the matrix
-  \param[in] percentage The percentage respect to the largest object that
-             other objects have to be in order to survive the removal.
-  \param[in] n_labels If higher than 0 (default) is the number of labels in the
-             image. Otherwise, the function computes the number (slower)
-*/
-//template<typename T>
-//void remove_small_objects(algebra::Matrix2D<T> &m,
-//            double percentage,int n_labels=0) {
-//  int background =0;
-//  int foreground =1;
-//  // If not given, compute the number of labels. Requires one scan
-//  if(n_labels== 0) {
-//    n_labels = algebra::get_rounded(m.compute_max());
-//  }
-//  // Vector to count pixels
-//  std::vector<unsigned int> pixel_count(n_labels);
-//  for (unsigned int i=0;i<pixel_count.size();++i) {
-//    pixel_count[i]=0;
-//  }
-//  // First scan, count pixels
-//  for (unsigned int i=0;i<m.num_elements();++i) {
-//    int val = algebra::get_rounded(m.data()[i]);
-//    if(val != background) {
-//      (pixel_count[val-1])++;
-//    }
-//  }
-//  // Get largest object
-//  unsigned int max_pixels=*max_element(pixel_count.begin(),pixel_count.end());
-//  std::vector<double> percentages(n_labels);
-//  for (unsigned int i=0;i<pixel_count.size();++i) {
-//    percentages[i]=((double)pixel_count[i])/((double)max_pixels);
-//  }
-//  // Second scan, remove objects of size lower than the percentage
-//  for (unsigned int i=0;i<m.num_elements();++i) {
-//    int val = algebra::get_rounded(m.data()[i]);
-//    if(percentages[val-1] > percentage) {
-//      m.data()[i] = (T)foreground;
-//    } else {
-//      m.data()[i] = (T)background;
-//    }
-//  }
-//}
-
-
 ////! (U. Adiga, 2005)
 ///*!
 //  \param[in] m binary matrix to dilate and shrink
@@ -81,7 +32,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 // IMPEM2DEXPORT void do_histogram_stretching(algebra::Matrix2D_d &m,
 //                          int boxes,int offset);
-
 
 
 /***************************/

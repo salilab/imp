@@ -177,6 +177,7 @@ RegistrationResult::RegistrationResult(algebra::Rotation3D R,
                                         int projection_index,
                                         int image_index,
                                         String name) {
+  ccc_=0.0;
   set_rotation(R);
   set_shift(shift);
   projection_index_=projection_index;
