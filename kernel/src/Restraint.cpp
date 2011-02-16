@@ -12,6 +12,7 @@
 #include "IMP/log.h"
 #include "IMP/Restraint.h"
 #include "IMP/internal/utility.h"
+#include <boost/tuple/tuple.hpp>
 #include <numeric>
 
 IMP_BEGIN_NAMESPACE
