@@ -10,6 +10,9 @@
 #define IMPBENCHMARK_MACROS_H
 
 #include <boost/timer.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
+#include <boost/date_time/posix_time/posix_time_types.hpp>
+#include <boost/date_time/posix_time/posix_time_duration.hpp>
 
 
 //! Time the given command and assign the time of one iteration to the variable
@@ -28,6 +31,27 @@
                << e.what() << std::endl;        \
     }                                           \
     timev= imp_timer.elapsed()/imp_reps;        \
+  }
+
+//! Time the given command and assign the time of one iteration to the variable
+/** The units for the time are in seconds. See also IMP_TIME_N */
+#define IMP_WALLTIME(block, timev)                                      \
+  {                                                                     \
+    using namespace boost::posix_time;                                  \
+    ptime start=microsec_clock::local_time();                           \
+    unsigned int imp_reps=0;                                            \
+    try {                                                               \
+      do {                                                              \
+        block;                                                          \
+        ++imp_reps;                                                     \
+      } while (microsec_clock::local_time()-start < seconds(2.5));      \
+    } catch (const IMP::Exception &e) {                                 \
+      std::cerr<< "Caught exception "                                   \
+               << e.what() << std::endl;                                \
+    }                                                                   \
+    timev= (microsec_clock::local_time()-start)                         \
+      .total_milliseconds()/1000.0                                      \
+      /imp_reps;                                                        \
   }
 
 //! Time the given command and assign the time of one iteration to the variable
