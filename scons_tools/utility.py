@@ -4,6 +4,7 @@ import os
 import sys
 import environment
 import dependency
+import subprocess
 
 def file_compare(a, b):
     """Check if two files are the same, by comparing the path"""
@@ -199,10 +200,14 @@ def add_to_include_path(env, path):
             env.Append(CXXFLAGS=["-isystem",path])
     else:
         env.Append(CPPPATH=[path])
-def get_abspaths(env, name, pathlist):
-    if not pathlist:
+def get_abspaths(env, name, pl):
+    # ick
+    if type(pl)==type(""):
+        pl=pl.split(os.path.pathsep)
+    if pl==[]:
         return []
-    pl=pathlist.split(os.path.pathsep)
+    if type(pl) != type([]):
+        report_error(env, "not a list: "+pl)
     bad=".."+os.path.sep
     ret=[]
     #print pl
@@ -228,7 +233,11 @@ def get_paths(env, paths):
     spl= paths.split(os.path.pathsep)
     return [x for x in spl if x != ""]
 def get_env_paths(env, name):
-    return get_paths(env, env.get(name, ""))
+    paths= env.get(name, "")
+    #print "#########", name, paths
+    ret= get_paths(env, paths)
+    #print ret
+    return ret
 
 def add_to_lib_path(env, path):
     if not path:
@@ -248,7 +257,8 @@ def get_ld_path(env):
     if not env['IMP_USE_RPATH'] and env.get('libpath', None):
         ret=get_env_paths(env, 'libpath')
     ret.extend(get_env_paths(env, 'ldlibpath'))
-    return ":".join(ret)
+    #print get_env_paths(env, 'ldlibpath')
+    return ":".join(get_abspaths(env, "ldpath", ret))
 
 def get_separator(env):
     if env['PLATFORM'] == 'win32' and not env['wine']:
@@ -268,15 +278,28 @@ def get_python_result(env, setup, cmd):
         setpp=""
     varname= get_dylib_name(env)
     ldpath= get_ld_path(env)
+    #print "here", ldpath
     if varname and len(ldpath)>0 and os.environ.has_key(varname):
         olddylib= os.environ[varname]
         os.environ[varname]=ldpath+get_separator(env)+olddylib
     else:
         olddylib=None
     #print setup, cmd
-    cmd="python -c \""+setpp+setup+";"+"print "+cmd+",\""
-    #print cmd
-    ret=os.popen(cmd).read()
+    scmd=' '.join(["python", "-c", "\""+setpp+setup+";"+"print "+cmd+",\""])
+    #print "\n*****"
+    #print scmd
+    #print "*****"
+    #print varname, os.environ[varname]
+    #print "*****"
+    #print ldpath
+    #print "*****"
+    sp=subprocess.Popen(scmd, shell=True, stdout=subprocess.PIPE,
+                         stderr= subprocess.PIPE,
+                         env=os.environ)
+    ret=sp.stdout.read()
+    eret=sp.stderr.read()
+    #print "\n******\nreturned", ret
+    #print "\n******\nerror", eret
     #print ret[:-1]
     if olddylib:
         os.environ[varname]=olddylib
