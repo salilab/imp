@@ -261,7 +261,7 @@ def get_ld_path(env):
     return ":".join(get_abspaths(env, "ldpath", ret))
 
 def get_separator(env):
-    if env['PLATFORM'] == 'win32' and not env['wine']:
+    if env['PLATFORM'] == 'win32' or env['wine']:
         return ";"
     else:
         return ":"

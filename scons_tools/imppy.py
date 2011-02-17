@@ -38,10 +38,10 @@ def builder_script_file(target, source, env):
     outfile = file(target[0].abspath, 'w')
     template= source[0].get_contents()
     root=source[1].get_contents()
-    pythonpath=source[2].get_contents().split(sep)
-    ldpath=source[3].get_contents().split(sep)
+    pythonpath=source[2].get_contents().split(os.pathsep)
+    ldpath=source[3].get_contents().split(os.pathsep)
     precommand=source[4].get_contents()
-    path=source[5].get_contents().split(sep)
+    path=source[5].get_contents().split(os.pathsep)
     modules=source[6].get_contents().split(":")
     externmodules=[x for x in source[7].get_contents().split(":") if x != ""]
     externdata=source[8].get_contents()
@@ -63,10 +63,11 @@ def builder_script_file(target, source, env):
     else:
         imp_module_path=None
 
-    lines={"@LDPATH@":(varname, sep.join([libdir]+ldpath), True),
-           "@PYTHONPATH@":("PYTHONPATH", sep.join([libdir]+pythonpath), True),
+    lines={"@LDPATH@":(varname, os.pathsep.join([libdir]+ldpath), True),
+           "@PYTHONPATH@":("PYTHONPATH",
+                           sep.join([libdir]+pythonpath), True),
            "@IMP_BIN_DIR@":("IMP_BIN_DIR", bindir, True),
-           "@PATH@":("PATH", sep.join([bindir]+path), True),
+           "@PATH@":("PATH", os.pathsep.join([bindir]+path), True),
            "@PRECOMMAND@":("precommand", precommand, False),
            "@MODULEPATH@":(imp_module_path, impdir, True),
            "@TMPDIR@":("IMP_TMP_DIR", tmpdir, True)}
