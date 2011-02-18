@@ -454,8 +454,10 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   after_evaluate(states, calc_derivs);
 
   // validate derivatives
-  if (calc_derivs) {
-    validate_computed_derivatives();
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    if (calc_derivs) {
+      validate_computed_derivatives();
+    }
   }
   //if (get_is_incremental()) {
   IMP_LOG(TERSE, "Backing up changed particles" << std::endl);
