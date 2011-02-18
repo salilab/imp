@@ -65,13 +65,15 @@ public:
   void assign_velocities(Float temperature);
 
   //! Choose thermostat type and parameters
-  void set_therm(unsigned int type, Float temperature, Float time_friction);
+  void set_thermostat(unsigned int type, Float temperature,
+                      Float time_friction);
 
   //! Rescale velocities globally
-  void rescale_vel(Float factor);
+  void rescale_velocities(Float factor);
 
-  //! Setup metadynamics
-  void  mtd_setup(Float height, Float sigma, Float min, Float max);
+  //! Setup metadynamics and turn it on
+  void  set_metadynamics_parameters(Float height, Float sigma,
+                                    Float min, Float max);
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 

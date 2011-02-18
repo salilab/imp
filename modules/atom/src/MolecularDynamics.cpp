@@ -83,8 +83,9 @@ void MolecularDynamics::setup_particles()
   degrees_of_freedom_ -= 6;
 }
 
-void MolecularDynamics::set_therm(unsigned int type,
-                                  Float temperature, Float time_friction)
+void MolecularDynamics::set_thermostat(unsigned int type,
+                                       Float temperature,
+                                       Float time_friction)
 {
 
  therm_type_ = type;
@@ -95,7 +96,7 @@ void MolecularDynamics::set_therm(unsigned int type,
 
 }
 
-void MolecularDynamics::rescale_vel(Float factor)
+void MolecularDynamics::rescale_velocities(Float factor)
 {
     for (ParticleIterator iter = particles_begin();
             iter != particles_end(); ++iter) {
@@ -435,8 +436,9 @@ void MolecularDynamics::assign_velocities(Float temperature)
 
 // metadynamics stuff
 
-void MolecularDynamics::mtd_setup(Float height,
-                                  Float sigma, Float min, Float max)
+void MolecularDynamics::set_metadynamics_parameters(Float height,
+                                                    Float sigma, Float min,
+                                                    Float max)
 {
 
   mtd_on_    = 1;
