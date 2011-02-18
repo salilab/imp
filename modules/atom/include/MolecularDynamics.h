@@ -64,11 +64,21 @@ public:
   //! Assign velocities representative of the given temperature
   void assign_velocities(Float temperature);
 
+  //! Choose thermostat type and parameters
+  void set_therm(unsigned int type, Float temperature, Float time_friction);
+
+  //! Rescale velocities globally
+  void rescale_vel(Float factor);
+
+  //! Setup metadynamics
+  void  mtd_setup(Float height, Float sigma, Float min, Float max);
+
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 protected:
   //! Perform a single dynamics step.
-  virtual void step();
+  virtual void step_1();
+  virtual void step_2();
 
 private:
   void initialize();
@@ -80,6 +90,11 @@ private:
    */
   void setup_particles();
 
+  // Additional stuff needed for NVT
+  void remove_linear();
+  void remove_angular();
+  void do_therm();
+
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
     if (vel >= 0.0) {
@@ -88,6 +103,25 @@ private:
       vel = std::max(vel, -velocity_cap_);
     }
   }
+
+  // metadynamics stuff
+  Float mtd_get_force();
+  void  mtd_add_Gaussian();
+
+  Float mtd_force_[1000];
+  Float mtd_min_;
+  Float mtd_max_;
+  unsigned int mtd_on_;
+  Float mtd_W_;
+  Float mtd_sigma_;
+  Float mtd_nbin_;
+  Float mtd_dx_;
+  Float mtd_score_;
+
+  //! Thermostat type, temperature and time/friction
+  unsigned int therm_type_;
+  Float therm_temp_;
+  Float therm_tf_;
 
   //! Time step in fs
   Float time_step_;
