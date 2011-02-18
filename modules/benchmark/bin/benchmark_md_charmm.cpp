@@ -99,7 +99,7 @@ int do_benchmark() {
 #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
 
 # GO! */
-    md->set_therm(2, 300, 500);
+    md->set_thermostat(2, 300, 500);
     double time, score=0;
     IMP_TIME({
          score+=md->optimize(100);
