@@ -92,4 +92,49 @@ Bond get_bond(Bonded a, Bonded b) {
   return Bond();
 }
 
+
+bool check_bond(Particle*p) {
+  if (p->get_value(internal::get_bond_data().length_) <0) {
+    IMP_THROW("Invalid bond length: "
+              << p->get_value(internal::get_bond_data().length_),
+              ValueException);
+  }
+  if (p->get_value(internal::get_bond_data().stiffness_) <0) {
+    IMP_THROW("Invalid bond stiffness: "
+              << p->get_value(internal::get_bond_data().stiffness_),
+              ValueException);
+  }
+  Bond bd(p);
+  for (unsigned int j=0; j< 2; ++j) {
+    Bonded bdd=bd.get_bonded(j);
+    bool found=false;
+    for (unsigned int i=0; i< bdd.get_number_of_bonds(); ++i) {
+      if (bdd.get_bond(i) ==bd) {
+        found=true;
+        break;
+      }
+    }
+    if (!found) {
+      IMP_THROW("Inconsistent bond: " << bd, ValueException);
+    }
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(Bond, check_bond);
+
+bool check_bonded(Particle*p) {
+  Bonded bdd(p);
+  for (unsigned int i=0; i< bdd.get_number_of_bonds(); ++i) {
+    if (bdd.get_bond(i).get_bonded(0) != bdd
+        && bdd.get_bond(i).get_bonded(1) != bdd) {
+      IMP_THROW("Invalid bond at " << bdd << ", " << i,
+                ValueException);
+    }
+  }
+  return true;
+}
+
+IMP_CHECK_DECORATOR(Bonded, check_bonded);
+
 IMPATOM_END_NAMESPACE
