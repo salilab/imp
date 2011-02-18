@@ -298,6 +298,10 @@ public:
   }
 #endif
 
+  Floats get_coordinates() const {
+    return Floats(coordinates_begin(), coordinates_end());
+  }
+
 #ifndef IMP_DOXYGEN
   const double *get_data() const {return data_.get_data();}
 #endif
