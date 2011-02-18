@@ -59,4 +59,21 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
   os->set_optimizer(o);
 }
 
+
+void Optimizer::set_restraints(const RestraintsTemp &rs) {
+  restraints_=Restraints(rs.begin(), rs.end());
+}
+
+double Optimizer::evaluate(bool compute_derivatives) const {
+  if (restraints_.empty()) {
+    return get_model()->evaluate(compute_derivatives);
+  } else {
+    IMP::Floats ret= get_model()->evaluate(restraints_,
+                         std::vector<double>(restraints_.size(), 1),
+                                           compute_derivatives);
+    return std::accumulate(ret.begin(), ret.end(), 0);
+  }
+}
+
+
 IMP_END_NAMESPACE

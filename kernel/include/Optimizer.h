@@ -107,10 +107,22 @@ class IMPEXPORT Optimizer: public Object
            OptimizerStates);
   /**@}*/
 
+  /** \brief The optimizer can be told to use only a subset of the
+      restraints to compute scores.
+
+      These restraints must all be part of the model. Passing
+      an empty list will revert to using the whole model.
+  */
+  void set_restraints(const RestraintsTemp &rs);
+
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
 
  protected:
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate(bool compute_derivatives) const;
+
   //! override this function to do actual optimization
   virtual double do_optimize(unsigned int ns) =0;
   //! Update optimizer state, should be called at each successful step
@@ -305,6 +317,7 @@ class IMPEXPORT Optimizer: public Object
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
+  Restraints restraints_;
 };
 
 
