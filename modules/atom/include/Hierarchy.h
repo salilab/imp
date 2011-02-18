@@ -263,6 +263,8 @@ public:
       Type enum list.
    */
   unsigned int add_child(Hierarchy o) {
+    IMP_USAGE_CHECK(o != *this, "Can't add something as its own child: "
+                    << o);
     return H::add_child(o);
   }
 
@@ -271,29 +273,10 @@ public:
       Type enum list.
    */
   void add_child_at(Hierarchy o, unsigned int i) {
+    IMP_USAGE_CHECK(o != *this, "Can't add something as its own child: "
+                    << o);
     H::add_child_at(o, i);
   }
-#if 0
-
-  unsigned int get_number_of_children() const {
-    return H(get_particle(), get_traits()).get_number_of_children();
-  }
-  unsigned int get_parent_index() const {
-    return H(get_particle(), get_traits()).get_parent_index();
-  }
-
-  bool get_has_parent() const {
-    return H(get_particle(), get_traits()).get_has_parent();
-  }
-  void remove_child(Hierarchy h) {
-    H(get_particle(), get_traits()).remove_child(h);
-  }
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  const ParticlesTemp& get_leaves() const {
-    return H(get_particle(), get_traits()).get_leaves();
-  }
-#endif
-#endif
 
   /** Get the ith child */
   Hierarchy get_child(unsigned int i) const {
@@ -407,7 +390,7 @@ get_internal_bonds(Hierarchy mhd);
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
-  while (h.get_has_parent()) {
+  while (h.get_parent()) {
     h= h.get_parent();
   }
   return h;
