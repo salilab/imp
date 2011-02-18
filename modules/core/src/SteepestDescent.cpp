@@ -46,7 +46,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
     int cnt = 0;
 
     // evaluate the last model state
-    last_score = get_model()->evaluate(true);
+    last_score = evaluate(true);
     IMP_LOG(VERBOSE, "start score: " << last_score);
 
     // store the old values
@@ -77,7 +77,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
       }
 
       // check the new model
-      new_score = get_model()->evaluate(false);
+      new_score = evaluate(false);
       IMP_LOG(VERBOSE, "last score: " << last_score << "  new score: "
               << new_score << "  step size: " << current_step_size);
 

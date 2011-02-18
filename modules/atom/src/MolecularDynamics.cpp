@@ -27,12 +27,6 @@ MolecularDynamics::MolecularDynamics(Model *m)
   set_model(m);
 }
 
-MolecularDynamics::MolecularDynamics(RestraintSet *rs)
-{
-  initialize();
-  set_model(rs->get_model());
-  rs_= rs;
-}
 
 void MolecularDynamics::initialize() {
   time_step_=4.0;
@@ -110,7 +104,7 @@ void MolecularDynamics::rescale_velocities(Float factor)
 void MolecularDynamics::do_therm()
 {
 
- Float rescale, c1, c2;
+ double rescale, c1=0, c2=0;
  static const Float gas_constant = 8.31441e-7;
 
  // NVE
@@ -137,10 +131,10 @@ void MolecularDynamics::do_therm()
       iter != particles_end(); ++iter) {
    Particle *p = *iter;
 
-   Float mass = p->get_value(masskey_);
+   double mass = p->get_value(masskey_);
 
    for (int i = 0; i < 3; ++i) {
-     Float velocity = p->get_value(vs_[i]);
+     double velocity = p->get_value(vs_[i]);
 
      if(therm_type_==1 || therm_type_==2) velocity *= rescale;
      if(therm_type_==3)
@@ -225,23 +219,16 @@ void MolecularDynamics::step_2()
 
 double MolecularDynamics::do_optimize(unsigned int max_steps)
 {
-  Model *model = get_model();
-  Pointer<RestraintSet> rs;
-  if (rs_) {
-    rs=rs_;
-  } else {
-    rs= model->get_root_restraint_set();
-  }
   setup_particles();
 
   // get initial system score
-  Float score = rs->evaluate(true);
+  Float score = evaluate(true);
   mtd_score_  = score;
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
     step_1();
-    score = rs->evaluate(true);
+    score = evaluate(true);
     mtd_score_ = score;
     step_2();
     remove_linear();
