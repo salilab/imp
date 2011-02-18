@@ -36,6 +36,8 @@ MolecularDynamics::MolecularDynamics(RestraintSet *rs)
 
 void MolecularDynamics::initialize() {
   time_step_=4.0;
+  therm_type_=0;
+  mtd_on_=0;
   degrees_of_freedom_=0;
   velocity_cap_=std::numeric_limits<Float>::max();
   cs_[0] = FloatKey("x");
@@ -78,16 +80,87 @@ void MolecularDynamics::setup_particles()
       degrees_of_freedom_ += 3;
     }
   }
+  degrees_of_freedom_ -= 6;
 }
 
+void MolecularDynamics::set_therm(unsigned int type,
+                                  Float temperature, Float time_friction)
+{
 
-//! Perform a single dynamics step.
-void MolecularDynamics::step()
+ therm_type_ = type;
+
+ if(type==0) return;
+ if(type==1) therm_temp_ = temperature;
+ if(type==2 || type==3) {therm_temp_ = temperature; therm_tf_ = time_friction;}
+
+}
+
+void MolecularDynamics::rescale_vel(Float factor)
+{
+    for (ParticleIterator iter = particles_begin();
+            iter != particles_end(); ++iter) {
+        Particle *p = *iter;
+        for (int i = 0; i < 3; ++i) {
+            p->set_value(vs_[i], p->get_value(vs_[i]) * factor);
+        }
+    }
+}
+
+void MolecularDynamics::do_therm()
+{
+
+ Float rescale, c1, c2;
+ static const Float gas_constant = 8.31441e-7;
+
+ // NVE
+ if(therm_type_==0) return;
+ // scale velocities
+ if(therm_type_==1)
+  rescale = sqrt(therm_temp_/get_kinetic_temperature(get_kinetic_energy()));
+ // Berendsen
+ if(therm_type_==2)
+  rescale = sqrt(1.0-(time_step_/therm_tf_)*(1.0-(therm_temp_/
+            get_kinetic_temperature(get_kinetic_energy()))));
+ // Langevin
+ if(therm_type_==3){
+  c1 = exp(-therm_tf_*time_step_);
+  c2 = sqrt((1.0-c1)*gas_constant*therm_temp_);
+ }
+
+ boost::normal_distribution<Float> mrng(0., 1.);
+ boost::variate_generator<RandomNumberGenerator&,
+                          boost::normal_distribution<Float> >
+     sampler(random_number_generator, mrng);
+
+ for (ParticleIterator iter = particles_begin();
+      iter != particles_end(); ++iter) {
+   Particle *p = *iter;
+
+   Float mass = p->get_value(masskey_);
+
+   for (int i = 0; i < 3; ++i) {
+     Float velocity = p->get_value(vs_[i]);
+
+     if(therm_type_==1 || therm_type_==2) velocity *= rescale;
+     if(therm_type_==3)
+      velocity = c1*velocity+c2*sqrt((c1+1.0)/mass)*sampler();
+
+     p->set_value(vs_[i], velocity);
+   }
+ }
+
+}
+
+//! First part of velocity verlet
+void MolecularDynamics::step_1()
 {
   // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
   // and mass is in g/mol, conversion factor necessary to get accelerations
   // in angstrom/fs/fs from raw derivatives
   static const Float deriv_to_acceleration = -4.1868e-4;
+  Float  mtd_addon = 0.0;
+
+  if(mtd_on_==1) mtd_addon = mtd_get_force();
 
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
@@ -96,23 +169,57 @@ void MolecularDynamics::step()
     for (unsigned i = 0; i < 3; ++i) {
       Float coord = p->get_value(cs_[i]);
       Float dcoord = p->get_derivative(cs_[i]);
-
-      // calculate velocity at t+(delta t/2) from that at t-(delta t/2)
       Float velocity = p->get_value(vs_[i]);
-      velocity += dcoord * deriv_to_acceleration * invmass * time_step_;
 
-      cap_velocity_component(velocity);
+      dcoord *= ( 1.0 + mtd_addon );
+
+//    calculate position at t+(delta t) from that at t
+      coord += time_step_ * velocity +
+               0.5 * time_step_ * time_step_ * dcoord
+               * deriv_to_acceleration * invmass;
+      p->set_value(cs_[i], coord);
+
+//    calculate velocity at t+(delta t/2) from that at t
+      velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
+
+      //cap_velocity_component(velocity);
       p->set_value(vs_[i], velocity);
 
-      // get atomic shift
-      Float shift = velocity * time_step_;
-
-      // calculate position at t+(delta t) from that at t
-      p->set_value(cs_[i], coord + shift);
     }
   }
 }
 
+
+//! Second part of velocity verlet
+void MolecularDynamics::step_2()
+{
+  // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
+  // and mass is in g/mol, conversion factor necessary to get accelerations
+  // in angstrom/fs/fs from raw derivatives
+  static const Float deriv_to_acceleration = -4.1868e-4;
+  Float  mtd_addon = 0.0;
+
+  if(mtd_on_==1) mtd_addon = mtd_get_force();
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+    Float invmass = 1.0 / p->get_value(masskey_);
+    for (unsigned i = 0; i < 3; ++i) {
+      Float dcoord = p->get_derivative(cs_[i]);
+      Float velocity = p->get_value(vs_[i]);
+
+      dcoord *= ( 1.0 + mtd_addon );
+
+      // calculate velocity at t+delta t from that at t+(delta t/2)
+      velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
+
+      //cap_velocity_component(velocity);
+      p->set_value(vs_[i], velocity);
+
+    }
+  }
+}
 
 
 double MolecularDynamics::do_optimize(unsigned int max_steps)
@@ -128,11 +235,18 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
 
   // get initial system score
   Float score = rs->evaluate(true);
+  mtd_score_  = score;
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
-    step();
+    step_1();
     score = rs->evaluate(true);
+    mtd_score_ = score;
+    step_2();
+    remove_linear();
+    remove_angular();
+    do_therm();
+    if(mtd_on_==1) mtd_add_Gaussian();
   }
   return score;
 }
@@ -169,28 +283,193 @@ Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
   }
 }
 
-void MolecularDynamics::assign_velocities(Float temperature)
+void MolecularDynamics::remove_linear()
 {
-  // gas constant for mass in g/mol
-  static const Float gas_constant = 8.31441e-7;
 
-  setup_particles();
-  Float mean = 0.0;
+  Float cm[3];
+  Float cm_mass = 0.;
+
+  for (unsigned i = 0; i < 3; ++i) cm[i] = 0.;
 
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    Float mass = p->get_value(masskey_);
-    Float stddev = std::sqrt(gas_constant * temperature / mass);
-    boost::normal_distribution<Float> mrng(mean, stddev);
-    boost::variate_generator<RandomNumberGenerator&,
-                             boost::normal_distribution<Float> >
-        sampler(random_number_generator, mrng);
+
+    Float mass =  p->get_value(masskey_);
+    cm_mass +=mass;
+
+    for (unsigned i = 0; i < 3; ++i) {
+      Float velocity = p->get_value(vs_[i]);
+      cm[i] += mass * velocity;
+    }
+  }
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+
+    for (unsigned i = 0; i < 3; ++i) {
+      Float velocity = p->get_value(vs_[i]);
+
+      velocity -= cm[i]/cm_mass;
+      p->set_value(vs_[i], velocity);
+    }
+  }
+}
+
+void MolecularDynamics::remove_angular()
+{
+
+  Float x[3],vx[3],v[3],vl[3],oo[3];
+  Float inertia[3][3];
+
+  for (unsigned i = 0; i < 3; ++i) {
+   vl[i] = 0.;
+   for (unsigned j = 0; j < 3; ++j) {
+    inertia[i][j] = 0.;
+   }
+  }
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+
+    Float mass =  p->get_value(masskey_);
+
+    for (unsigned i = 0; i < 3; ++i) {
+      x[i]   = p->get_value(cs_[i]);
+      vx[i]  = p->get_value(vs_[i]);
+    }
+
+    v[0] = x[1]* vx[2] - x[2]*vx[1];
+    v[1] = x[2]* vx[0] - x[0]*vx[2];
+    v[2] = x[0]* vx[1] - x[1]*vx[0];
+
+    for (unsigned i = 0; i < 3; ++i) vl[i] += v[i] * mass;
+
+    for (unsigned i = 0; i < 3; ++i)
+     for (unsigned j = 0; j < 3; ++j)
+      inertia[i][j] -= mass * x[i] * x[j];
+   }
+
+
+   Float trace = inertia[0][0] + inertia[1][1] + inertia[2][2];
+   for (unsigned i = 0; i < 3; ++i) inertia[i][i] -= trace;
+
+   Float a = inertia[0][0];
+   Float b = inertia[1][1];
+   Float c = inertia[2][2];
+   Float d = inertia[0][1];
+   Float e = inertia[0][2];
+   Float f = inertia[1][2];
+   Float o = vl[0];
+   Float r = vl[1];
+   Float q = vl[2];
+
+   Float af_de = a*f-d*e;
+   Float aq_eo = a*q-e*o;
+   Float ab_dd = a*b-d*d;
+   Float ac_ee = a*c-e*e;
+
+   oo[2] = (af_de*(a*r-d*o)-ab_dd*aq_eo) / (af_de*af_de-ab_dd*ac_ee);
+   oo[1] = (aq_eo - oo[2]*ac_ee)/af_de;
+   oo[0] = (o - d*oo[1] - e*oo[2])/a;
+
+   for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+
+    for (unsigned i = 0; i < 3; ++i) {
+      x[i]   = p->get_value(cs_[i]);
+      vx[i]  = p->get_value(vs_[i]);
+    }
+
+    v[0] = oo[1]* x[2] - oo[2]*x[1];
+    v[1] = oo[2]* x[0] - oo[0]*x[2];
+    v[2] = oo[0]* x[1] - oo[1]*x[0];
+
+    for (int i = 0; i < 3; ++i) {
+      vx[i]  -= v[i];
+      p->set_value(vs_[i], vx[i]);
+    }
+   }
+}
+
+void MolecularDynamics::assign_velocities(Float temperature)
+{
+
+  setup_particles();
+
+  boost::normal_distribution<Float> mrng(0., 1.);
+  boost::variate_generator<RandomNumberGenerator&,
+                           boost::normal_distribution<Float> >
+      sampler(random_number_generator, mrng);
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
 
     for (int i = 0; i < 3; ++i) {
       p->set_value(vs_[i], sampler());
     }
   }
+
+  remove_linear();
+  remove_angular();
+
+  Float rescale = sqrt(temperature/
+                  get_kinetic_temperature(get_kinetic_energy()));
+
+  for (ParticleIterator iter = particles_begin();
+       iter != particles_end(); ++iter) {
+    Particle *p = *iter;
+
+    for (int i = 0; i < 3; ++i) {
+      Float velocity = p->get_value(vs_[i]);
+      velocity *= rescale;
+      p->set_value(vs_[i], velocity);
+    }
+
+  }
+}
+
+// metadynamics stuff
+
+void MolecularDynamics::mtd_setup(Float height,
+                                  Float sigma, Float min, Float max)
+{
+
+  mtd_on_    = 1;
+  mtd_nbin_  = 1000;
+  mtd_W_     = height;
+  mtd_sigma_ = sigma;
+  mtd_min_   = min;
+  mtd_max_   = max;
+  mtd_dx_    = ( max - min ) / mtd_nbin_;
+  for (int i = 0; i < 1000; ++i) mtd_force_[i] = 0.;
+
+}
+
+Float MolecularDynamics::mtd_get_force()
+{
+
+  int index = floor((mtd_score_-mtd_min_)/mtd_dx_);
+  return mtd_force_[index];
+
+}
+
+void MolecularDynamics::mtd_add_Gaussian()
+{
+
+  for (int i = 0; i < 1000; ++i){
+
+   Float xx = mtd_min_ + i * mtd_dx_;
+   Float dp = ( xx - mtd_score_ ) / mtd_sigma_;
+   mtd_force_[i] -= mtd_W_ * dp /
+                    mtd_sigma_ * exp ( - 0.5 * dp * dp );
+
+  }
+
 }
 
 IMPATOM_END_NAMESPACE
