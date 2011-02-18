@@ -48,6 +48,12 @@ void ConfigurationSet::save_configuration() {
   }
 }
 
+void ConfigurationSet::remove_configuration(unsigned int i) {
+  IMP_USAGE_CHECK(i < get_number_of_configurations(),
+                  "Out of range configuration: " << i);
+  configurations_.erase(configurations_.begin()+i);
+}
+
 unsigned int ConfigurationSet::get_number_of_configurations() const {
   return configurations_.size();
 }

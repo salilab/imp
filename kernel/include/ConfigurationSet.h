@@ -52,6 +52,7 @@ class IMPEXPORT ConfigurationSet: public Object
   //! Load the ith configuration into the Model
   /** Passing -1 returns it to the base configuration. */
   void load_configuration(int i) const;
+  void remove_configuration(unsigned int i);
   Model *get_model() const {
     return model_;
   }
