@@ -44,6 +44,7 @@ double Optimizer::optimize(unsigned int max_steps) {
               ValueException);
   }
   set_was_used(true);
+  flattened_restraints_=get_restraints(restraints_);
   return do_optimize(max_steps);
 }
 
@@ -68,8 +69,8 @@ double Optimizer::evaluate(bool compute_derivatives) const {
   if (restraints_.empty()) {
     return get_model()->evaluate(compute_derivatives);
   } else {
-    IMP::Floats ret= get_model()->evaluate(restraints_,
-                         std::vector<double>(restraints_.size(), 1),
+    IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
+              std::vector<double>(flattened_restraints_.size(), 1),
                                            compute_derivatives);
     return std::accumulate(ret.begin(), ret.end(), 0);
   }
