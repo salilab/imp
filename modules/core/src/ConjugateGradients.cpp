@@ -86,7 +86,7 @@ ConjugateGradients::get_score(std::vector<FloatIndex> float_indices,
   NT score;
   /* get score */
   try {
-    score = get_model()->evaluate(true);
+    score = evaluate(true);
   } catch (ModelException) {
     // if we took a bad step, just return a bad score
     return std::numeric_limits<NT>::infinity();

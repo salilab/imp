@@ -277,7 +277,7 @@ double BrownianDynamics::simulate(float max_time_nu)
           << " until time " << max_time << std::endl);
   std::vector<algebra::VectorD<3> > old_forces, old_coordinates;
   unit::Femtosecond dt=si_.get_maximum_time_step_with_units();
-  double score= get_model()->evaluate(true);
+  double score= evaluate(true);
   if (score > maximum_score_) {
     relax_model(get_model(), sc);
   }
@@ -286,7 +286,7 @@ double BrownianDynamics::simulate(float max_time_nu)
   AddTime at(si_);
   bool success=false;
   while (at.get_current_time() < max_time){
-    double score= get_model()->evaluate(true);
+    double score= evaluate(true);
     if (score > maximum_score_) {
       relax_model(get_model(), sc);
     }
@@ -314,7 +314,7 @@ double BrownianDynamics::simulate(float max_time_nu)
               << " steps: " << failed_steps_ << " vs "
               << successful_steps_ << std::endl);
       revert_coordinates(sc, old_coordinates);
-      get_model()->evaluate(true);
+      evaluate(true);
       dt= dt*.5;
       if (dt < unit::Femtosecond(1)) {
         IMP_THROW("Something is wrong with the restraints"
@@ -326,7 +326,7 @@ double BrownianDynamics::simulate(float max_time_nu)
       success=false;
     }
   }
-  double v= get_model()->evaluate(false);
+  double v= evaluate(false);
   update_states();
   return v;
 }

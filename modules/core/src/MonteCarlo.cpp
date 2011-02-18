@@ -55,7 +55,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
               " that used by the montecarlo optimizer");
   }
   update_states();
-  double prior_energy =get_model()->evaluate(false);
+  double prior_energy =evaluate(false);
   double best_energy= prior_energy;
   //if (prior_energy < get_score_threshold()) return prior_energy;
   if (get_stop_on_good_score() && get_model()->get_has_good_score()) {
@@ -78,7 +78,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
       if (cg_ && num_local_steps_!= 0) {
         IMP_LOG(TERSE,
                 "MC Performing local optimization from "
-                << get_model()->evaluate(false) << std::endl);
+                << evaluate(false) << std::endl);
         CreateLogContext clc("mc local optimization");
         {
           IMP_CHECK_OBJECT(cg_.get());
@@ -111,7 +111,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
           } else {
             next_energy =cg_->optimize(num_local_steps_);
             IMP_IF_CHECK(USAGE) {
-              double me= get_model()->evaluate(false);
+              double me= evaluate(false);
               if(0) std::cout << me;
               IMP_USAGE_CHECK((next_energy-me) < .01*(next_energy+me)+.01,
                               "Energies don't match after local opt. "
@@ -122,10 +122,10 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
           }
       }
       IMP_LOG(TERSE, "To energy " << next_energy << " equals "
-              << get_model()->evaluate(false)
+              << evaluate(false)
               << " done "<< std::endl);
       } else {
-        next_energy =  get_model()->evaluate(false);
+        next_energy =  evaluate(false);
       }
     } catch (const ModelException &e) {
       // make sure the move is rejected if the model gets in
@@ -188,7 +188,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
     best_state->load_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy << std::endl);
     IMP_IF_CHECK(USAGE) {
-      IMP_CHECK_CODE(double e= get_model()->evaluate(false));
+      IMP_CHECK_CODE(double e= evaluate(false));
       IMP_LOG(TERSE, "MC Got " << e << std::endl);
       IMP_INTERNAL_CHECK(std::abs(best_energy - e)
                          < .01+.1* std::abs(best_energy +e),
@@ -197,7 +197,7 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
     }
     return best_energy;
   } else {
-    double ret= get_model()->evaluate(false); //force coordinate update
+    double ret= evaluate(false); //force coordinate update
     IMP_INTERNAL_CHECK(ret < std::numeric_limits<double>::max(),
                        "Don't return rejected conformation");
     return ret;
