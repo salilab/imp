@@ -318,6 +318,7 @@ class IMPEXPORT Optimizer: public Object
   double min_score_;
   bool stop_on_good_score_;
   Restraints restraints_;
+  RestraintsTemp flattened_restraints_;
 };
 
 
