@@ -31,7 +31,6 @@ MolecularDynamics::MolecularDynamics(Model *m)
 void MolecularDynamics::initialize() {
   time_step_=4.0;
   therm_type_=0;
-  mtd_on_=0;
   degrees_of_freedom_=0;
   velocity_cap_=std::numeric_limits<Float>::max();
   cs_[0] = FloatKey("x");
@@ -153,9 +152,6 @@ void MolecularDynamics::step_1()
   // and mass is in g/mol, conversion factor necessary to get accelerations
   // in angstrom/fs/fs from raw derivatives
   static const Float deriv_to_acceleration = -4.1868e-4;
-  Float  mtd_addon = 0.0;
-
-  if(mtd_on_==1) mtd_addon = mtd_get_force();
 
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
@@ -165,8 +161,6 @@ void MolecularDynamics::step_1()
       Float coord = p->get_value(cs_[i]);
       Float dcoord = p->get_derivative(cs_[i]);
       Float velocity = p->get_value(vs_[i]);
-
-      dcoord *= ( 1.0 + mtd_addon );
 
 //    calculate position at t+(delta t) from that at t
       coord += time_step_ * velocity +
@@ -192,9 +186,6 @@ void MolecularDynamics::step_2()
   // and mass is in g/mol, conversion factor necessary to get accelerations
   // in angstrom/fs/fs from raw derivatives
   static const Float deriv_to_acceleration = -4.1868e-4;
-  Float  mtd_addon = 0.0;
-
-  if(mtd_on_==1) mtd_addon = mtd_get_force();
 
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
@@ -204,7 +195,6 @@ void MolecularDynamics::step_2()
       Float dcoord = p->get_derivative(cs_[i]);
       Float velocity = p->get_value(vs_[i]);
 
-      dcoord *= ( 1.0 + mtd_addon );
 
       // calculate velocity at t+delta t from that at t+(delta t/2)
       velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
@@ -223,18 +213,15 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
 
   // get initial system score
   Float score = evaluate(true);
-  mtd_score_  = score;
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
     step_1();
     score = evaluate(true);
-    mtd_score_ = score;
     step_2();
     remove_linear();
     remove_angular();
     do_therm();
-    if(mtd_on_==1) mtd_add_Gaussian();
   }
   return score;
 }
@@ -421,44 +408,5 @@ void MolecularDynamics::assign_velocities(Float temperature)
   }
 }
 
-// metadynamics stuff
-
-void MolecularDynamics::set_metadynamics_parameters(Float height,
-                                                    Float sigma, Float min,
-                                                    Float max)
-{
-
-  mtd_on_    = 1;
-  mtd_nbin_  = 1000;
-  mtd_W_     = height;
-  mtd_sigma_ = sigma;
-  mtd_min_   = min;
-  mtd_max_   = max;
-  mtd_dx_    = ( max - min ) / mtd_nbin_;
-  for (int i = 0; i < 1000; ++i) mtd_force_[i] = 0.;
-
-}
-
-Float MolecularDynamics::mtd_get_force()
-{
-
-  int index = floor((mtd_score_-mtd_min_)/mtd_dx_);
-  return mtd_force_[index];
-
-}
-
-void MolecularDynamics::mtd_add_Gaussian()
-{
-
-  for (int i = 0; i < 1000; ++i){
-
-   Float xx = mtd_min_ + i * mtd_dx_;
-   Float dp = ( xx - mtd_score_ ) / mtd_sigma_;
-   mtd_force_[i] -= mtd_W_ * dp /
-                    mtd_sigma_ * exp ( - 0.5 * dp * dp );
-
-  }
-
-}
 
 IMPATOM_END_NAMESPACE

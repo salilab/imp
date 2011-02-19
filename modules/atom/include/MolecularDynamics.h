@@ -68,10 +68,6 @@ public:
   //! Rescale velocities globally
   void rescale_velocities(Float factor);
 
-  //! Setup metadynamics and turn it on
-  void  set_metadynamics_parameters(Float height, Float sigma,
-                                    Float min, Float max);
-
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 protected:
@@ -102,20 +98,6 @@ private:
       vel = std::max(vel, -velocity_cap_);
     }
   }
-
-  // metadynamics stuff
-  Float mtd_get_force();
-  void  mtd_add_Gaussian();
-
-  Float mtd_force_[1000];
-  Float mtd_min_;
-  Float mtd_max_;
-  unsigned int mtd_on_;
-  Float mtd_W_;
-  Float mtd_sigma_;
-  Float mtd_nbin_;
-  Float mtd_dx_;
-  Float mtd_score_;
 
   //! Thermostat type, temperature and time/friction
   unsigned int therm_type_;
