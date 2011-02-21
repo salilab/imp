@@ -34,7 +34,6 @@ IMPBULLET_BEGIN_NAMESPACE
  */
 class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
 {
-  RestraintSets rs_;
   core::XYZRs ps_;
   typedef std::pair<std::vector<btScalar>, Ints > Obstacle;
   mutable std::vector<Obstacle> obstacles_;
