@@ -308,12 +308,12 @@ namespace {
 ResolveCollisionsOptimizer
 ::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs):
   Optimizer(rs[0]->get_model(), "ResolveCollisionsOptimizer %1%"),
-  rs_(rs), local_(0){
+  local_(0){
+  Optimizer::set_restraints(rs);
 }
 
 ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
-  Optimizer(m, "ResolveCollisionsOptimizer %1%"),
-  rs_(1, m->get_root_restraint_set()), local_(0){
+  Optimizer(m, "ResolveCollisionsOptimizer %1%"), local_(0){
 }
 
 
@@ -433,8 +433,9 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       root_particles.push_back(it->first);
   }
   IMP::atom::internal::SpecialCaseRestraints scr(get_model(), root_particles);
-  for (unsigned int i=0; i< rs_.size(); ++i) {
-    scr.add_restraint_set(rs_[i],
+  RestraintSets rs= Optimizer::get_restraint_sets();
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    scr.add_restraint_set(rs[i],
                           boost::bind(handle_harmonic, dynamicsWorld.get(),
                                       map, &memory, _1, _2, _3),
                           handle_ev);
@@ -446,7 +447,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   }
   IMP_IF_LOG(TERSE) {
     ScoreStatesTemp sst
-      = get_required_score_states(RestraintsTemp(rs_.begin(), rs_.end()));
+      = get_required_score_states(RestraintsTemp(rs.begin(), rs.end()));
     {
       IMP_LOG(TERSE, "Score states are ");
       for (unsigned int i=0; i< sst.size(); ++i) {
@@ -455,13 +456,13 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       IMP_LOG(TERSE, std::endl);
     }
     unsigned int rrs=0;
-    for (unsigned int i=0; i< rs_.size(); ++i) {
-      rrs+=get_restraints(rs_[i]).size();
+    for (unsigned int i=0; i< rs.size(); ++i) {
+      rrs+=get_restraints(rs[i]).size();
     }
     IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
     {
-      for (unsigned int i=0; i< rs_.size(); ++i) {
-        Restraints crs= get_restraints(rs_[i]);
+      for (unsigned int i=0; i< rs.size(); ++i) {
+        Restraints crs= get_restraints(rs[i]);
         for (unsigned int j=0; j< crs.size(); ++j) {
           IMP_LOG(TERSE, crs[j]->get_name() <<" ");
         }
@@ -472,7 +473,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   RestraintsTemp utrestraints;
   std::vector<double> weights;
   boost::tie(utrestraints, weights)
-    = get_restraints_and_weights(rs_.begin(), rs_.end());
+    = get_restraints_and_weights(rs.begin(), rs.end());
   for (unsigned int i=0; i< iter; ++i) {
     if (get_model()->get_number_of_restraints() > 0
         || get_number_of_optimizer_states() > 0) {
