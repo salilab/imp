@@ -44,7 +44,8 @@ double Optimizer::optimize(unsigned int max_steps) {
               ValueException);
   }
   set_was_used(true);
-  flattened_restraints_=get_restraints(restraints_);
+  flattened_restraints_=get_restraints(RestraintsTemp(restraints_.begin(),
+                                                      restraints_.end()));
   return do_optimize(max_steps);
 }
 
@@ -61,8 +62,8 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 }
 
 
-void Optimizer::set_restraints(const RestraintsTemp &rs) {
-  restraints_=Restraints(rs.begin(), rs.end());
+void Optimizer::set_restraints(const RestraintSetsTemp &rs) {
+  restraints_=RestraintSets(rs.begin(), rs.end());
 }
 
 double Optimizer::evaluate(bool compute_derivatives) const {
