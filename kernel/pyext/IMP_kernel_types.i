@@ -513,6 +513,7 @@ _value_types.append(#Name)
 %define IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, UniqueName, PluralName)
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
+
 %typemap(out) Namespace::Name const& {
   $result=SWIG_NewPointerObj(new Namespace::Name(*$1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
  }
@@ -556,6 +557,68 @@ IMP_SWIG_SHOWABLE(Namespace, Name);
 %define IMP_SWIG_VALUE_TEMPLATE(Namespace, Name)
 IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
+
+
+
+
+%define IMP_SWIG_NATIVE_VALUE(Name)
+%typemap(in) std::vector<Name> const& {
+  try {
+    // hack to get around swig's value wrapper being randomly used
+    IMP::internal::swig::assign($1, IMP::internal::swig::Convert<std::vector<Name> >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  } catch (const IMP::Exception &e) {
+    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
+ }
+%typemap(freearg) std::vector<Name> const& {
+  IMP::internal::swig::delete_if_pointer($1);
+ }
+%typecheck(SWIG_TYPECHECK_POINTER) std::vector<Name> const& {
+  $1= IMP::internal::swig::Convert<std::vector<Name> >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+ }
+%typemap(out) std::vector<Name> const& {
+  $result = IMP::internal::swig::Convert<std::vector<Name> >::create_python_object(IMP::internal::swig::ValueOrObject<std::vector<Name> >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+%typemap(directorout) std::vector<Name> const& {
+  // hack to get around swig's evil value wrapper being randomly used
+  IMP::internal::swig::assign($result, IMP::internal::swig::Convert<std::vector<Name> >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+ }
+%typemap(directorin) std::vector<Name> const& {
+  $input = IMP::internal::swig::Convert<std::vector<Name> >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+
+%typemap(in) std::vector<Name> {
+  try {
+    // hack to get around swig's value wrapper being randomly used
+    IMP::internal::swig::assign($1, IMP::internal::swig::Convert<std::vector<Name> >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+  } catch (const IMP::Exception &e) {
+    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
+    PyErr_SetString(PyExc_TypeError, e.what());
+    return NULL;
+  }
+ }
+%typemap(freearg) std::vector<Name> {
+  IMP::internal::swig::delete_if_pointer($1);
+ }
+%typecheck(SWIG_TYPECHECK_POINTER) std::vector<Name> {
+  $1= IMP::internal::swig::Convert<std::vector<Name> >::get_is_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
+ }
+%typemap(out) std::vector<Name> {
+  $result = IMP::internal::swig::Convert<std::vector<Name> >::create_python_object(IMP::internal::swig::ValueOrObject<std::vector<Name> >::get($1), $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+%typemap(directorout) std::vector<Name> {
+  // hack to get around swig's evil value wrapper being randomly used
+  IMP::internal::swig::assign($result, IMP::internal::swig::Convert<std::vector<Name> >::get_cpp_object($input, $descriptor(Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
+ }
+%typemap(directorin) std::vector<Name> {
+  $input = IMP::internal::swig::Convert<std::vector<Name> >::create_python_object($1_name, $descriptor(Name*), SWIG_POINTER_OWN);
+ }
+
+%enddef
+
+
 
 
 
