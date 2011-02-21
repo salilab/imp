@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Winter 2011
+- IMP::Optimizer now can use a list of restraint sets to compute the score rather than the complete Model score.
 - each IMP::Restraint now has its own weight. This is lightly tested.
 - A new log level IMP::PROGRESS has been added. The idea is that IMP::Sampler::get_sample() calls and other expensive loops can show a boost progress meter at this log level to give some idea when things are moving forward.
 - IMP::domino::TrivialParticleStates renamed to IMP::domino::IndexParticleStates to be less judgmental
