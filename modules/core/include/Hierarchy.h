@@ -220,12 +220,6 @@ public:
                       Int, return VALUE, return -1);
   }
 
-  /** Return true if the parent is not empty */
-  bool get_has_parent() const {
-    return get_particle()
-      ->has_attribute(get_decorator_traits().get_data().parent_key_);
-  }
-
   //! Get the index of a specific child in this particle.
   /** This takes linear time.
       \note This is mostly useful for debugging as you can always call
@@ -600,7 +594,7 @@ get_all_descendants(Hierarchy mhd);
 //! Return the root of the hierarchy
 /** \relatesalso Hierarchy */
 inline Hierarchy get_root(Hierarchy h) {
-  while (h.get_has_parent()) {
+  while (h.get_parent()) {
     h= h.get_parent();
   }
   return h;
