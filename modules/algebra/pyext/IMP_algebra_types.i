@@ -161,7 +161,7 @@ ReturnType function_name(const Argument0##KD& a, const Argument1##KD& b) {
   namespace IMP {
     namespace algebra {
 ReturnType##1Ds function_name(const Argument0##1D& a, const Argument1& b) {
-  return function_name<2>(a,b);
+  return function_name<1>(a,b);
 }
 ReturnType##2Ds function_name(const Argument0##2D& a, const Argument1& b) {
   return function_name<2>(a,b);
