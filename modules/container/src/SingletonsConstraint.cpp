@@ -25,6 +25,15 @@ SingletonsConstraint::SingletonsConstraint(SingletonContainer *c,
   if (after) af_=after;
 }
 
+SingletonsConstraint::SingletonsConstraint(SingletonModifier *before,
+                                           SingletonModifier *after,
+                                           SingletonContainer *c,
+                                           std::string name):
+  Constraint(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
+}
+
 
 void SingletonsConstraint::do_update_attributes()
 {

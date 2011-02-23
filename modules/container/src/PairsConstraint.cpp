@@ -25,6 +25,15 @@ PairsConstraint::PairsConstraint(PairContainer *c,
   if (after) af_=after;
 }
 
+PairsConstraint::PairsConstraint(PairModifier *before,
+                                           PairModifier *after,
+                                           PairContainer *c,
+                                           std::string name):
+  Constraint(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
+}
+
 
 void PairsConstraint::do_update_attributes()
 {

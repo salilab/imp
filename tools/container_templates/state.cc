@@ -25,6 +25,15 @@ CLASSNAMEsConstraint::CLASSNAMEsConstraint(CLASSNAMEContainer *c,
   if (after) af_=after;
 }
 
+CLASSNAMEsConstraint::CLASSNAMEsConstraint(CLASSNAMEModifier *before,
+                                           CLASSNAMEModifier *after,
+                                           CLASSNAMEContainer *c,
+                                           std::string name):
+  Constraint(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
+}
+
 
 void CLASSNAMEsConstraint::do_update_attributes()
 {
