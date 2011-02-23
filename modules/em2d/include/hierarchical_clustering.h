@@ -147,7 +147,9 @@ public:
                   const ClusterSet &cluster_set,
                   const VectorOfFloats &distances ) const;
 
-  void show(std::ostream &out) const {};
+  void show(std::ostream &out) const {
+    out << "SingleLinkage";
+  };
 };
 IMP_VALUES(SingleLinkage,SingleLinkages);
 
@@ -167,7 +169,9 @@ public:
                   const ClusterSet &cluster_set,
                   const VectorOfFloats &distances );
 
-  void show(std::ostream &out) const {};
+  void show(std::ostream &out) const {
+     out << "CompleteLinkage";
+  };
 
 };
 IMP_VALUES(CompleteLinkage,CompleteLinkages);
@@ -188,7 +192,9 @@ public:
                   const ClusterSet &cluster_set,
                   const VectorOfFloats &distances );
 
-  void show(std::ostream &out) const {};
+  void show(std::ostream &out) const {
+     out << "AverageDistanceLinkage";
+  };
 };
 IMP_VALUES(AverageDistanceLinkage,AverageDistanceLinkages);
 
