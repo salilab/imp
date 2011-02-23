@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     TripletModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \see TripletsConstraint
+    \see container::TripletsConstraint
  */
 class IMPCOREEXPORT TripletConstraint : public Constraint
 {

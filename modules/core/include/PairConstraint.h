@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     PairModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \see PairsConstraint
+    \see container::PairsConstraint
  */
 class IMPCOREEXPORT PairConstraint : public Constraint
 {

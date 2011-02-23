@@ -35,7 +35,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see SingletonConstraint
+    \see core::SingletonConstraint
  */
 class IMPCONTAINEREXPORT SingletonsConstraint : public Constraint
 {
