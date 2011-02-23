@@ -20,8 +20,9 @@ IMP_SWIG_OBJECT(IMP::em2d, EM2DScore,EM2DScores);
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);
 IMP_SWIG_OBJECT(IMP::em2d, Em2DRestraint, Em2DRestraints);
+/*header is not included
 IMP_SWIG_OBJECT(IMP::em2d, Fine2DRegistrationRestraint,
-                                  Fine2DRegistrationRestraints);
+                                  Fine2DRegistrationRestraints);*/
 IMP_SWIG_OBJECT(IMP::em2d, Image, Images);
 IMP_SWIG_OBJECT(IMP::em2d, ImageReaderWriter, ImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, JPGImageReaderWriter, JPGImageReaderWriters);
