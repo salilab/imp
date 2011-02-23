@@ -43,6 +43,7 @@ class IMPCONTAINEREXPORT SingletonsConstraint : public Constraint
   IMP::internal::OwnerPointer<SingletonModifier> af_;
   IMP::internal::OwnerPointer<SingletonContainer> c_;
 public:
+#ifndef IMP_DOXYGEN
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The SingletonModifier to apply to all elements
       before evaluate.
@@ -52,6 +53,19 @@ public:
    */
   SingletonsConstraint(SingletonContainer *c, SingletonModifier *before,
                        SingletonModifier *after,
+                       std::string name="SingletonConstraint %1%");
+#endif
+
+  /** \param[in] c The Container to hold the elements to process
+      \param[in] before The SingletonModifier to apply to all elements
+      before evaluate.
+      \param[in] after The SingletonModifier to apply to all elements
+      after evaluate.
+      \param[in] name The object name
+   */
+  SingletonsConstraint(SingletonModifier *before,
+                       SingletonModifier *after,
+                       SingletonContainer *c,
                        std::string name="SingletonConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

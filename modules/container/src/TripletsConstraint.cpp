@@ -25,6 +25,15 @@ TripletsConstraint::TripletsConstraint(TripletContainer *c,
   if (after) af_=after;
 }
 
+TripletsConstraint::TripletsConstraint(TripletModifier *before,
+                                           TripletModifier *after,
+                                           TripletContainer *c,
+                                           std::string name):
+  Constraint(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
+}
+
 
 void TripletsConstraint::do_update_attributes()
 {

@@ -43,6 +43,7 @@ class IMPCONTAINEREXPORT QuadsConstraint : public Constraint
   IMP::internal::OwnerPointer<QuadModifier> af_;
   IMP::internal::OwnerPointer<QuadContainer> c_;
 public:
+#ifndef IMP_DOXYGEN
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The QuadModifier to apply to all elements
       before evaluate.
@@ -52,6 +53,19 @@ public:
    */
   QuadsConstraint(QuadContainer *c, QuadModifier *before,
                        QuadModifier *after,
+                       std::string name="QuadConstraint %1%");
+#endif
+
+  /** \param[in] c The Container to hold the elements to process
+      \param[in] before The QuadModifier to apply to all elements
+      before evaluate.
+      \param[in] after The QuadModifier to apply to all elements
+      after evaluate.
+      \param[in] name The object name
+   */
+  QuadsConstraint(QuadModifier *before,
+                       QuadModifier *after,
+                       QuadContainer *c,
                        std::string name="QuadConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate

@@ -25,6 +25,15 @@ QuadsConstraint::QuadsConstraint(QuadContainer *c,
   if (after) af_=after;
 }
 
+QuadsConstraint::QuadsConstraint(QuadModifier *before,
+                                           QuadModifier *after,
+                                           QuadContainer *c,
+                                           std::string name):
+  Constraint(name), c_(c) {
+  if (before) f_=before;
+  if (after) af_=after;
+}
+
 
 void QuadsConstraint::do_update_attributes()
 {
