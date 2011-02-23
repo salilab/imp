@@ -105,6 +105,8 @@
  inline const Name##D<D> &get_##name##_d_geometry(const Name##D<D> &g) { \
     return g;                                                           \
   })                                                                    \
+  typedef Name##D<1> Name##1D;                                          \
+  IMP_VALUES(Name##1D, Name##1Ds);                                      \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
   typedef Name##D<3> Name##3D;                                          \
@@ -156,6 +158,8 @@
   IMP_NO_SWIG(template <int D>                                          \
   inline void set_##name##_d_geometry(Name &g, const Name##D<D> &v) {   \
                 g=v;})                                                  \
+  typedef Name##D<1> Name##1D;                                          \
+  IMP_VALUES(Name##1D, Name##1Ds);                                      \
   typedef Name##D<2> Name##2D;                                          \
   IMP_VALUES(Name##2D, Name##2Ds);                                      \
   typedef Name##D<3> Name##3D;                                          \
