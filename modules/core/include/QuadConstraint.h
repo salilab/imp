@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     QuadModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \see QuadsConstraint
+    \see container::QuadsConstraint
  */
 class IMPCOREEXPORT QuadConstraint : public Constraint
 {

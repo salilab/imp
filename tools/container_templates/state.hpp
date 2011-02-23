@@ -35,7 +35,7 @@ IMPCONTAINER_BEGIN_NAMESPACE
     of the atoms of a protein by a sphere per residue.
     \verbinclude cover_particles.py
 
-    \see CLASSNAMEConstraint
+    \see core::CLASSNAMEConstraint
  */
 class IMPCONTAINEREXPORT CLASSNAMEsConstraint : public Constraint
 {

@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     SingletonModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \see SingletonsConstraint
+    \see container::SingletonsConstraint
  */
 class IMPCOREEXPORT SingletonConstraint : public Constraint
 {

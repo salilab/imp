@@ -30,7 +30,7 @@ IMPCORE_BEGIN_NAMESPACE
     CLASSNAMEModifier::apply() and will only be called if
     the score was computed with derivatives.
 
-    \see CLASSNAMEsConstraint
+    \see container::CLASSNAMEsConstraint
  */
 class IMPCOREEXPORT CLASSNAMEConstraint : public Constraint
 {
