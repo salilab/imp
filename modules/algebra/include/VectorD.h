@@ -527,6 +527,8 @@ inline CommasIO<D> commas_io(const VectorD<D> &v) {
 
 #endif  //swig
 
+typedef VectorD<1> Vector1D;
+typedef std::vector<VectorD<1> > Vector1Ds;
 typedef VectorD<2> Vector2D;
 typedef std::vector<VectorD<2> > Vector2Ds;
 typedef VectorD<3> Vector3D;
