@@ -59,7 +59,7 @@ def write_config(h, env, extra=[]):
 def _action_config_py(target, source, env):
     #config= source[0].get_contents().split("#")
     h = file(target[0].abspath, 'w')
-    _do_write_config(h, env, extra=['platformflags=False'])
+    write_config(h, env, extra=['platformflags=False'])
 
 def _print_config_py(target, source, env):
     print "Generating config.py"
