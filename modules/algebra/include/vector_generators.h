@@ -52,59 +52,7 @@ get_random_vector_in(const BoundingBoxD<D> &bb) {
 template <int D>
 inline VectorD<D>
 get_random_vector_on(const BoundingBoxD<D> &bb) {
-  IMP_USAGE_CHECK(D>0, "Does not work in runtime D yet");
-  boost::scoped_array<double> areas(new double[bb.get_dimension()*2]);
-  VectorD<D> lb= bb.get_corner(0);
-  VectorD<D> ub= bb.get_corner(1);
-  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
-    areas[i]=1;
-    for (unsigned int j=1; j< bb.get_dimension(); ++j) {
-      areas[i] *= ub[(i+j)%bb.get_dimension()]-lb[(i+j)%bb.get_dimension()];
-    }
-    if (i!= 0) {
-      areas[i]+= areas[i-1];
-    }
-  }
-  for (unsigned int i=0; i< bb.get_dimension(); ++i) {
-    areas[bb.get_dimension()+i]= areas[bb.get_dimension()-1]+areas[i];
-  }
-  /*for (unsigned int i=0; i< D*2; ++i) {
-    std::cout << areas[i] << " ";
-    }*/
-  ::boost::uniform_real<> rand(0, areas[2*bb.get_dimension()-1]);
-  double a= rand(random_number_generator);
-  //std::cout << ": " << a << std::endl;
-  unsigned int side;
-  for (side=0; side< 2*bb.get_dimension(); ++side) {
-    if (areas[side] > a) break;
-  }
-  unsigned int coord= (side>=bb.get_dimension()? side-bb.get_dimension(): side);
-  std::vector<double> fmin(bb.get_dimension()-1), fmax(bb.get_dimension()-1);
-  for (unsigned int i=1; i< bb.get_dimension(); ++i) {
-    fmin[i-1]= 0;
-    fmax[i-1]= ub[(coord+i)%bb.get_dimension()]
-      - lb[(coord+i)%bb.get_dimension()];
-  }
-  VectorD<internal::DMinus1<D>::D> vfmin(fmin.begin(), fmin.end()),
-          vfmax(fmax.begin(), fmax.end());
-  VectorD<internal::DMinus1<D>::D> sv=
-    get_random_vector_in(BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
-
-  std::vector<double> ret(bb.get_dimension());
-  //std::cout << "Side is " << side << std::endl;
-  if (side >=bb.get_dimension()) {
-    std::copy(ub.coordinates_begin(), ub.coordinates_end(), ret.begin());
-    for (unsigned int i=1; i< bb.get_dimension(); ++i) {
-      ret[(coord+i)%bb.get_dimension()]-= sv[i-1];
-    }
-  } else {
-    std::copy(lb.coordinates_begin(), lb.coordinates_end(), ret.begin());
-    for (unsigned int i=1; i< bb.get_dimension(); ++i) {
-      ret[(coord+i)%bb.get_dimension()]+= sv[i-1];
-    }
-  }
-
-  return VectorD<D>(ret.begin(), ret.end());
+  return internal::RandomVectorOnBB<D>::get(bb);
 }
 
 
