@@ -15,7 +15,24 @@ IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<5>, Namebase##D, Namebase##test##5,Na
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<6>, Namebase##D, Namebase##test##6,Namebase##6Ds);
 IMP_SWIG_VALUE_IMPL(Namespace, Namebase##D<-1>, Namebase##D, Namebase##test##k, Namebase##KDs);
 IMP_SWIG_VALUE_TEMPLATE(Namespace, Namebase##D);
+%extend Namespace::Namebase##D {
+  int __cmp__(const Namebase##D<D> &) const {
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::ValueException);
+  }
+}
 %enddef
+
+%define IMP_SWIG_ALGEBRA_VALUE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE(Namespace, Name, PluralName);
+%extend Namespace::Name {
+  int __cmp__(const Name &) const {
+    IMP_THROW("Geometric primitives cannot be compared",
+              IMP::ValueException);
+  }
+}
+%enddef
+
 
 %define IMP_SWIG_ALGEBRA_OBJECT_D(Namespace, Namebase)
 IMP_SWIG_OBJECT_INSTANCE(Namespace, Namebase##1D, Namebase##1D, Namebase##1Ds);
