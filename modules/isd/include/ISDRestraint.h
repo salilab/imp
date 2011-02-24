@@ -1,0 +1,60 @@
+/**
+ *  \file isd/ISDRestraint.h
+ *  \brief A lognormal restraint that uses the ISPA model to model NOE-derived
+ *  distance fit.
+ *
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *
+ */
+
+#ifndef IMPISD_ISD_RESTRAINT_H
+#define IMPISD_ISD_RESTRAINT_H
+
+#include "isd_config.h"
+#include <IMP/SingletonScore.h>
+#include <IMP/core/XYZ.h>
+#include <IMP/Restraint.h>
+#include <IMP/PairContainer.h>
+#include <IMP/PairScore.h>
+
+IMPISD_BEGIN_NAMESPACE
+
+//! Apply an NOE distance restraint between two particles.
+/** \note Be sure to check out the swig wrapper file and how it
+    wraps this class.
+
+    The source code is as follows:
+    \include ISDRestraint.h
+    \include ISDRestraint.cpp
+*/
+class IMPISDEXPORT ISDRestraint : public Restraint
+{
+  Pointer<Particle> p0_;
+  Pointer<Particle> p1_;
+  Pointer<Particle> sigma_;
+  Pointer<Particle> gamma_;
+  double Vexp_;
+public:
+  //! Create the restraint.
+  /** Restraints should store the particles they are to act on,
+      preferably in a Singleton or PairContainer as appropriate.
+   */
+  ISDRestraint(Particle *p0, Particle *p1, Particle *sigma, 
+	       Particle *gamma,double Iexp);
+
+  /* call for probability */
+  virtual double get_probability() const
+  {
+    return exp(-unprotected_evaluate(NULL));
+  }
+
+
+  /** This macro declares the basic needed methods: evaluate and show
+   */
+  IMP_RESTRAINT(ISDRestraint);
+
+};
+
+IMPISD_END_NAMESPACE
+
+#endif  /* IMPISD_NOE_RESTRAINT_H */
