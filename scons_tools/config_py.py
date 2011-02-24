@@ -25,10 +25,10 @@ def write_config(h, env, extra=[]):
     simple=['build', 'repository',
             'precommand',  'modeller',
             'prefix', 'local',
-            'pythonpath', 'python_include', 'ldlibpath',
+            'pythonpath', 'python_include', 'libpath', 'ldlibpath',
             'swigpath']
     if not dependency.gcc.get_is_gcc(env):
-        simple.extend(['includepath', 'libpath'])
+        simple.extend(['includepath'])
     for v in simple:
         _export_to_config(v, v, env, True)
     for vp in [('cxxcompiler', 'CXX', " "),

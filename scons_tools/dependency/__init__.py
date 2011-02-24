@@ -103,22 +103,28 @@ def _get_bad():
     return (False, None, None, None, None)
 def _get_info_variables(context, env, name, has_version):
     lcname= get_dependency_string(name)
+    context.Message('Checking for '+name+' with variables...')
     if not env.get(lcname, None) or env.get(lcname) != "yes":
+        context.Result("no")
         return _get_bad()
-    if not env.get(lcname+"libs", None):
-        scons_tools.utility.report_error(env, "If configure specifices 'yes' for "+
-                                         name+" it must also specify "+lcname+"libs")
+    if env.get(lcname+"libs", None) is None:
+        scons_tools.utility.report_error(env, "If configure specifies 'yes' for "+
+                                         name+" it must also specify "+lcname+"libs"+
+                                         env.get(lcname+"libs", "no found"))
+        context.Result("no")
         return _get_bad()
     if has_version and not env.get(lcname+"version", None):
-        scons_tools.utility.report_error(env, "If configure specifices 'yes' for "+
+        scons_tools.utility.report_error(env, "If configure specifies 'yes' for "+
                                          name+" it must also specify "+lcname+"version")
+        context.Result("no")
         return _get_bad()
     vers=None
     if has_version:
         vers= env.get(lcname+'version')
         if vers.find(" ") != -1:
             vers=vers.split()
-    return (True, env.get(lcname+"libs"),
+    context.Result("yes")
+    return (True, env.get(lcname+"libs").split(":"),
             vers, None, None)
 def _get_info_pkgconfig(context, env,  name, versioncpp, versionheader):
     if not context.env['IMP_HAS_PKG_CONFIG']:
@@ -215,6 +221,10 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
                 env.Append(IMP_CONFIGURATION=[lcname\
                                               +"libpath='"+\
                                             scons_tools.data.get(env).dependencies[name].libpath+"'"])
+            if scons_tools.data.get(env).dependencies[name].version:
+                env.Append(IMP_CONFIGURATION=[lcname\
+                                              +"version='"+\
+                                            scons_tools.data.get(env).dependencies[name].version+"'"])
         else:
             env.Append(IMP_DISABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='no'"])
