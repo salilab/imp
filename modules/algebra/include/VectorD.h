@@ -332,7 +332,8 @@ inline std::istream &operator>>(std::istream &in, VectorD<D> &v) {
 #endif
 
 //! lexicographic comparison of two vectors
-/** \relatesalso VectorD
+/** Note that this is not very reliable and probably should not be used.
+    \relatesalso VectorD
  */
 template <int D>
 inline int compare(const VectorD<D> &a, const VectorD<D> &b) {
