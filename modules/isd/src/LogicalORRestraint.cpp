@@ -32,8 +32,8 @@ LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     //IMP_NEW(DerivativeAccumulator, a1, (*accum,(p1 * (1 - p0))/score));
     DerivativeAccumulator a0(*accum,(p0 * (1 - p1))/score);
     DerivativeAccumulator a1(*accum,(p1 * (1 - p0))/score);
-    r0_->unprotected_evaluate(a0);
-    r1_->unprotected_evaluate(a1);
+    r0_->unprotected_evaluate(&a0);
+    r1_->unprotected_evaluate(&a1);
   }  
   return score;
 }
