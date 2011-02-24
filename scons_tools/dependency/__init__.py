@@ -24,10 +24,7 @@ def add_dependency_link_flags(env, dependencies):
 def _get_version(context, name, includepath, versioncpp, versionheader):
     if versioncpp:
         context.Message('Checking for version of '+name+"...")
-        if type(versioncpp) == type([]):
-            vs="<< ' ' << ".join(versioncpp)
-        else:
-            vs=versioncpp
+        vs="<< ' ' << ".join(versioncpp)
         if includepath:
             oldcpp= context.env.get('CPPPATH', None)
             context.env.Replace(CPPPATH=context.env.get('CPPPATH', [])[:]+[includepath])
@@ -61,14 +58,16 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
 
 def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=None,
               versionheader=None):
+    if lib is not None and type(lib) != type([]):
+        scons_tools.utility.report_error(context.env, "The lib argument must be given as a list. It was not for "+name)
+    if versioncpp != None and type(versioncpp) != type([]):
+        scons_tools.utility.report_error(context.env, "The versioncpp argument must be given as a list. It was not for "+name)
     oldflags= context.env.get('LINKFLAGS')
     context.env.Replace(LINKFLAGS=context.env['IMP_BIN_LINKFLAGS'])
-    if type(lib) == list:
+    if lib is not None:
         ret=_search_for_deps(context, lib[0], lib[1:], header, body, extra_libs)
-    elif lib==None:
-        ret=(context.sconf.CheckHeader(header, language="C++"), [])
     else:
-        ret=_search_for_deps(context, lib, [], header, body, extra_libs)
+        ret=(context.sconf.CheckHeader(header, language="C++"), [])
     if not ret[0]:
         context.env.Replace(LINKFLAGS=oldflags)
         return ret
@@ -168,6 +167,8 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
         if context.env[lcname] == "no":
             context.Message('Checking for '+name+' ...')
             context.Result("disabled")
+            scons_tools.data.get(context.env).add_dependency(name, variables=variables,
+                                                             ok=False)
             ok=False
         else:
             (ok, libs, version, includepath, libpath)\
@@ -224,7 +225,7 @@ def add_external_library(env, name, lib, header, body="", extra_libs=[],
             if scons_tools.data.get(env).dependencies[name].version:
                 env.Append(IMP_CONFIGURATION=[lcname\
                                               +"version='"+\
-                                            scons_tools.data.get(env).dependencies[name].version+"'"])
+                                            " ".join(scons_tools.data.get(env).dependencies[name].version)+"'"])
         else:
             env.Append(IMP_DISABLED=[name])
             env.Append(IMP_CONFIGURATION=[lcname+"='no'"])
