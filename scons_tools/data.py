@@ -188,6 +188,9 @@ class IMPData:
     def add_dependency(self, name, libs=[], ok=True, variables=[], pkgconfig=False,
                        includepath=None, libpath=None, version=None,
                        versioncpp=None, versionheader=None):
+        if type(libs) != type([]):
+            utility.report_error(self.env, "lib lists must be stored as a list: "+name)
+
         self.dependencies[name]=self.DependencyData(name, libs=libs, variables=variables,
                                                     ok=ok, pkgconfig=pkgconfig,
                                                     includepath=includepath,
