@@ -26,7 +26,7 @@ def write_config(h, env, extra=[]):
             'precommand',  'modeller',
             'prefix', 'local',
             'pythonpath', 'python_include', 'libpath', 'ldlibpath',
-            'swigpath']
+            'swigpath', 'datapath']
     if not dependency.gcc.get_is_gcc(env):
         simple.extend(['includepath'])
     for v in simple:
