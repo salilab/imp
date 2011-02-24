@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef IMPISD_NOE_RESTRAINT_H
-#define IMPISD_NOE_RESTRAINT_H
+#ifndef IMPISD_LOGICALOR_RESTRAINT_H
+#define IMPISD_LOGICALOR_RESTRAINT_H
 
 #include "isd_config.h"
 #include <IMP/Restraint.h>
@@ -50,4 +50,4 @@ public:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_NOE_RESTRAINT_H */
+#endif  /* IMPISD_LOGICALOR_RESTRAINT_H */

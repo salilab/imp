@@ -57,4 +57,4 @@ public:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_NOE_RESTRAINT_H */
+#endif  /* IMPISD_ISD_RESTRAINT_H */
