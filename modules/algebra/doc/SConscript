@@ -13,7 +13,8 @@ functions as appropriate
   - IMP::algebra::get_surface_area()
   - IMP::algebra::get_volume()
   .
-In addition, they cannot be compared against one another.
+In addition, they cannot be compared against one another due to floating point
+implementation issues (eg Vector3D v=v2 does not imply v==v2).
 
 \\par Geometry and dimensions
 Many of the geometric primitives and operations in \imp are written to work in any dimension.
