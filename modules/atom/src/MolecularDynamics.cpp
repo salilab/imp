@@ -89,17 +89,6 @@ void MolecularDynamics::set_thermostat(unsigned int type,
 
 }
 
-void MolecularDynamics::rescale_velocities(Float factor)
-{
-    for (ParticleIterator iter = particles_begin();
-            iter != particles_end(); ++iter) {
-        Particle *p = *iter;
-        for (int i = 0; i < 3; ++i) {
-            p->set_value(vs_[i], p->get_value(vs_[i]) * factor);
-        }
-    }
-}
-
 void MolecularDynamics::do_therm()
 {
 
@@ -219,8 +208,8 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
     step_1();
     score = evaluate(true);
     step_2();
-    remove_linear();
-    remove_angular();
+    //remove_linear();
+    //remove_angular();
     do_therm();
   }
   return score;
@@ -389,8 +378,8 @@ void MolecularDynamics::assign_velocities(Float temperature)
     }
   }
 
-  remove_linear();
-  remove_angular();
+  //remove_linear();
+  //remove_angular();
 
   Float rescale = sqrt(temperature/
                   get_kinetic_temperature(get_kinetic_energy()));

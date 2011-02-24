@@ -133,37 +133,44 @@ namespace {
   struct RP: public std::pair<char, ResidueType> {
     RP(ResidueType rt, char c): std::pair<char, ResidueType>(c, rt) {}
   };
+  const RP rp_names[]={RP(ALA, 'A'),
+                    RP(ARG, 'R'),
+                    RP(ASP, 'D'),
+                    RP(ASN, 'N'),
+                    RP(CYS, 'C'),
+                    RP(GLN, 'Q'),
+                    RP(GLU, 'E'),
+                    RP(GLY, 'G'),
+                    RP(HIS, 'H'),
+                    RP(ILE, 'I'),
+                    RP(LEU, 'L'),
+                    RP(LYS, 'K'),
+                    RP(MET, 'M'),
+                    RP(PHE, 'F'),
+                    RP(PRO, 'P'),
+                    RP(SER, 'S'),
+                    RP(THR, 'T'),
+                    RP(TYR, 'Y'),
+                    RP(TRP, 'W'),
+                    RP(VAL, 'V'),
+                    RP(UNK, 'X')};
+  const IMP::internal::Map<char, ResidueType> rp_map(rp_names,
+                                        rp_names+sizeof(rp_names)/sizeof(RP));
 }
 
 ResidueType get_residue_type(char c) {
-  static const RP names[]={RP(ALA, 'A'),
-                           RP(ARG, 'R'),
-                           RP(ASP, 'D'),
-                           RP(ASN, 'N'),
-                           RP(CYS, 'C'),
-                           RP(GLN, 'Q'),
-                           RP(GLU, 'E'),
-                           RP(GLY, 'G'),
-                           RP(HIS, 'H'),
-                           RP(ILE, 'I'),
-                           RP(LEU, 'L'),
-                           RP(LYS, 'K'),
-                           RP(MET, 'M'),
-                           RP(PHE, 'F'),
-                           RP(PRO, 'P'),
-                           RP(SER, 'S'),
-                           RP(THR, 'T'),
-                           RP(TYR, 'Y'),
-                           RP(TRP, 'W'),
-                           RP(VAL, 'V'),
-                           RP(UNK, 'X')};
-  static const IMP::internal::Map<char, ResidueType> map(names,
-                                               names+sizeof(names)/sizeof(RP));
-  if (map.find(c) == map.end()) {
+  if (rp_map.find(c) == rp_map.end()) {
     IMP_THROW("Residue name not found " << c, ValueException);
   } else {
-    return map.find(c)->second;
+    return rp_map.find(c)->second;
   }
+}
+
+char get_one_letter_code(ResidueType c) {
+  for (unsigned int i=0; i< rp_map.size(); ++i) {
+    if (rp_names[i].second==c) return rp_names[i].first;
+  }
+  return 'X';
 }
 
 
