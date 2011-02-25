@@ -30,13 +30,8 @@ MolecularDynamics::MolecularDynamics(Model *m)
 
 void MolecularDynamics::initialize() {
   time_step_=4.0;
-  therm_type_=0;
   degrees_of_freedom_=0;
   velocity_cap_=std::numeric_limits<Float>::max();
-  cs_[0] = FloatKey("x");
-  cs_[1] = FloatKey("y");
-  cs_[2] = FloatKey("z");
-  masskey_ = FloatKey("mass");
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
   vs_[2] = FloatKey("vz");
@@ -65,10 +60,9 @@ void MolecularDynamics::setup_particles()
   for (Model::ParticleIterator it= get_model()->particles_begin();
        it != get_model()->particles_end(); ++it) {
     Particle *p= *it;
-    if (p->has_attribute(cs_[0]) && p->get_is_optimized(cs_[0])
-        && p->has_attribute(cs_[1]) && p->get_is_optimized(cs_[1])
-        && p->has_attribute(cs_[2]) && p->get_is_optimized(cs_[2])
-        && p->has_attribute(masskey_) && !p->get_is_optimized(masskey_)) {
+    if (core::XYZ::particle_is_instance(p)
+        && core::XYZ(p).get_coordinates_are_optimized()
+        && Mass::particle_is_instance(p)) {
       add_particle(p);
       degrees_of_freedom_ += 3;
     }
@@ -76,63 +70,6 @@ void MolecularDynamics::setup_particles()
   degrees_of_freedom_ -= 6;
 }
 
-void MolecularDynamics::set_thermostat(unsigned int type,
-                                       Float temperature,
-                                       Float time_friction)
-{
-
- therm_type_ = type;
-
- if(type==0) return;
- if(type==1) therm_temp_ = temperature;
- if(type==2 || type==3) {therm_temp_ = temperature; therm_tf_ = time_friction;}
-
-}
-
-void MolecularDynamics::do_therm()
-{
-
- double rescale, c1=0, c2=0;
- static const Float gas_constant = 8.31441e-7;
-
- // NVE
- if(therm_type_==0) return;
- // scale velocities
- if(therm_type_==1)
-  rescale = sqrt(therm_temp_/get_kinetic_temperature(get_kinetic_energy()));
- // Berendsen
- if(therm_type_==2)
-  rescale = sqrt(1.0-(time_step_/therm_tf_)*(1.0-(therm_temp_/
-            get_kinetic_temperature(get_kinetic_energy()))));
- // Langevin
- if(therm_type_==3){
-  c1 = exp(-therm_tf_*time_step_);
-  c2 = sqrt((1.0-c1)*gas_constant*therm_temp_);
- }
-
- boost::normal_distribution<Float> mrng(0., 1.);
- boost::variate_generator<RandomNumberGenerator&,
-                          boost::normal_distribution<Float> >
-     sampler(random_number_generator, mrng);
-
- for (ParticleIterator iter = particles_begin();
-      iter != particles_end(); ++iter) {
-   Particle *p = *iter;
-
-   double mass = p->get_value(masskey_);
-
-   for (int i = 0; i < 3; ++i) {
-     double velocity = p->get_value(vs_[i]);
-
-     if(therm_type_==1 || therm_type_==2) velocity *= rescale;
-     if(therm_type_==3)
-      velocity = c1*velocity+c2*sqrt((c1+1.0)/mass)*sampler();
-
-     p->set_value(vs_[i], velocity);
-   }
- }
-
-}
 
 //! First part of velocity verlet
 void MolecularDynamics::step_1()
@@ -145,17 +82,18 @@ void MolecularDynamics::step_1()
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    Float invmass = 1.0 / p->get_value(masskey_);
+    Float invmass = 1.0 / Mass(p).get_mass();
     for (unsigned i = 0; i < 3; ++i) {
-      Float coord = p->get_value(cs_[i]);
-      Float dcoord = p->get_derivative(cs_[i]);
+      core::XYZ d(p);
+      Float coord = d.get_coordinate(i);
+      Float dcoord = d.get_derivative(i);
       Float velocity = p->get_value(vs_[i]);
 
 //    calculate position at t+(delta t) from that at t
       coord += time_step_ * velocity +
                0.5 * time_step_ * time_step_ * dcoord
                * deriv_to_acceleration * invmass;
-      p->set_value(cs_[i], coord);
+      d.set_coordinate(i, coord);
 
 //    calculate velocity at t+(delta t/2) from that at t
       velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
@@ -179,9 +117,10 @@ void MolecularDynamics::step_2()
   for (ParticleIterator iter = particles_begin();
        iter != particles_end(); ++iter) {
     Particle *p = *iter;
-    Float invmass = 1.0 / p->get_value(masskey_);
+    Float invmass = 1.0 / Mass(p).get_mass();
+    core::XYZ d(p);
     for (unsigned i = 0; i < 3; ++i) {
-      Float dcoord = p->get_derivative(cs_[i]);
+      Float dcoord = d.get_derivative(i);
       Float velocity = p->get_value(vs_[i]);
 
 
@@ -208,9 +147,7 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
     step_1();
     score = evaluate(true);
     step_2();
-    //remove_linear();
-    //remove_angular();
-    do_therm();
+    update_states();
   }
   return score;
 }
@@ -228,7 +165,7 @@ Float MolecularDynamics::get_kinetic_energy() const
     Float vx = p->get_value(vs_[0]);
     Float vy = p->get_value(vs_[1]);
     Float vz = p->get_value(vs_[2]);
-    Float mass = p->get_value(masskey_);
+    Float mass = Mass(p).get_mass();
 
     ekinetic += mass * (vx * vx + vy * vy + vz * vz);
   }
@@ -247,117 +184,7 @@ Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
   }
 }
 
-void MolecularDynamics::remove_linear()
-{
 
-  Float cm[3];
-  Float cm_mass = 0.;
-
-  for (unsigned i = 0; i < 3; ++i) cm[i] = 0.;
-
-  for (ParticleIterator iter = particles_begin();
-       iter != particles_end(); ++iter) {
-    Particle *p = *iter;
-
-    Float mass =  p->get_value(masskey_);
-    cm_mass +=mass;
-
-    for (unsigned i = 0; i < 3; ++i) {
-      Float velocity = p->get_value(vs_[i]);
-      cm[i] += mass * velocity;
-    }
-  }
-
-  for (ParticleIterator iter = particles_begin();
-       iter != particles_end(); ++iter) {
-    Particle *p = *iter;
-
-    for (unsigned i = 0; i < 3; ++i) {
-      Float velocity = p->get_value(vs_[i]);
-
-      velocity -= cm[i]/cm_mass;
-      p->set_value(vs_[i], velocity);
-    }
-  }
-}
-
-void MolecularDynamics::remove_angular()
-{
-
-  Float x[3],vx[3],v[3],vl[3],oo[3];
-  Float inertia[3][3];
-
-  for (unsigned i = 0; i < 3; ++i) {
-   vl[i] = 0.;
-   for (unsigned j = 0; j < 3; ++j) {
-    inertia[i][j] = 0.;
-   }
-  }
-
-  for (ParticleIterator iter = particles_begin();
-       iter != particles_end(); ++iter) {
-    Particle *p = *iter;
-
-    Float mass =  p->get_value(masskey_);
-
-    for (unsigned i = 0; i < 3; ++i) {
-      x[i]   = p->get_value(cs_[i]);
-      vx[i]  = p->get_value(vs_[i]);
-    }
-
-    v[0] = x[1]* vx[2] - x[2]*vx[1];
-    v[1] = x[2]* vx[0] - x[0]*vx[2];
-    v[2] = x[0]* vx[1] - x[1]*vx[0];
-
-    for (unsigned i = 0; i < 3; ++i) vl[i] += v[i] * mass;
-
-    for (unsigned i = 0; i < 3; ++i)
-     for (unsigned j = 0; j < 3; ++j)
-      inertia[i][j] -= mass * x[i] * x[j];
-   }
-
-
-   Float trace = inertia[0][0] + inertia[1][1] + inertia[2][2];
-   for (unsigned i = 0; i < 3; ++i) inertia[i][i] -= trace;
-
-   Float a = inertia[0][0];
-   Float b = inertia[1][1];
-   Float c = inertia[2][2];
-   Float d = inertia[0][1];
-   Float e = inertia[0][2];
-   Float f = inertia[1][2];
-   Float o = vl[0];
-   Float r = vl[1];
-   Float q = vl[2];
-
-   Float af_de = a*f-d*e;
-   Float aq_eo = a*q-e*o;
-   Float ab_dd = a*b-d*d;
-   Float ac_ee = a*c-e*e;
-
-   oo[2] = (af_de*(a*r-d*o)-ab_dd*aq_eo) / (af_de*af_de-ab_dd*ac_ee);
-   oo[1] = (aq_eo - oo[2]*ac_ee)/af_de;
-   oo[0] = (o - d*oo[1] - e*oo[2])/a;
-
-   for (ParticleIterator iter = particles_begin();
-       iter != particles_end(); ++iter) {
-    Particle *p = *iter;
-
-    for (unsigned i = 0; i < 3; ++i) {
-      x[i]   = p->get_value(cs_[i]);
-      vx[i]  = p->get_value(vs_[i]);
-    }
-
-    v[0] = oo[1]* x[2] - oo[2]*x[1];
-    v[1] = oo[2]* x[0] - oo[0]*x[2];
-    v[2] = oo[0]* x[1] - oo[1]*x[0];
-
-    for (int i = 0; i < 3; ++i) {
-      vx[i]  -= v[i];
-      p->set_value(vs_[i], vx[i]);
-    }
-   }
-}
 
 void MolecularDynamics::assign_velocities(Float temperature)
 {
@@ -377,9 +204,6 @@ void MolecularDynamics::assign_velocities(Float temperature)
       p->set_value(vs_[i], sampler());
     }
   }
-
-  //remove_linear();
-  //remove_angular();
 
   Float rescale = sqrt(temperature/
                   get_kinetic_temperature(get_kinetic_energy()));

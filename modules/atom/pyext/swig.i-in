@@ -87,6 +87,9 @@ IMP_SWIG_VALUE(IMP::atom, CHARMMResidueTopologyBase, CHARMMResidueTopologyBases)
 IMP_SWIG_VALUE(IMP::atom, RMSDCalculator, RMSDCalculators);
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, ResidueType, ResidueType, ResidueTypes);
 IMP_SWIG_VALUE(IMP::atom, Selection, Selections);
+IMP_SWIG_OBJECT(IMP::atom, RemoveRigidMotionOptimizerState, RemoveRigidMotionOptimizerStates);
+IMP_SWIG_OBJECT(IMP::atom, BerendsenThermostatOptimizerState, BerendsenThermostatOptimizerStates);
+IMP_SWIG_OBJECT(IMP::atom, LangevinThermostatOptimizerState, LangevinThermostatOptimizerStates);
 
 
 IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMDihedral, CHARMMConnection, CHARMMDihedrals);
@@ -233,6 +236,9 @@ namespace IMP {
 %include "IMP/atom/hierarchy_tools.h"
 %include "IMP/atom/DopePairScore.h"
 %include "IMP/atom/SameResiduePairFilter.h"
+%include "IMP/atom/RemoveRigidMotionOptimizerState.h"
+%include "IMP/atom/BerendsenThermostatOptimizerState.h"
+%include "IMP/atom/LangevinThermostatOptimizerState.h"
 
 namespace IMP {
   namespace atom {
