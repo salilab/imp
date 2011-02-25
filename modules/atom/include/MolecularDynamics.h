@@ -24,6 +24,9 @@ IMPATOM_BEGIN_NAMESPACE
 
     Particles without optimized x,y,z and nonoptimized mass are skipped.
     \see VelocityScalingOptimizerState
+    \see LangevinThermostatOptimizerState
+    \see BerendsenThermostatOptimizerState
+    \see RemoveRigidMotionOptimizerState
  */
 class IMPATOMEXPORT MolecularDynamics : public Optimizer
 {
@@ -49,6 +52,8 @@ public:
     */
   void set_time_step(Float t) { time_step_ = t; }
 
+  double get_time_step() const {return time_step_;}
+
   //! Set maximum velocity in A/fs
   /** At each dynamics time step, the absolute value of each velocity
       component is capped at this value. This prevents spurious strong forces
@@ -60,11 +65,6 @@ public:
 
   //! Assign velocities representative of the given temperature
   void assign_velocities(Float temperature);
-
-  //! Choose thermostat type and parameters
-  void set_thermostat(unsigned int type, Float temperature,
-                      Float time_friction);
-
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
@@ -97,19 +97,8 @@ private:
     }
   }
 
-  //! Thermostat type, temperature and time/friction
-  unsigned int therm_type_;
-  Float therm_temp_;
-  Float therm_tf_;
-
   //! Time step in fs
   Float time_step_;
-
-  //! Keys of the xyz coordinates
-  FloatKey cs_[3];
-
-  //! Key of the mass attribute
-  FloatKey masskey_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];
