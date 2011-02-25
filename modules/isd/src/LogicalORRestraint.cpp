@@ -41,23 +41,31 @@ LogicalORRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-//ASK DANIEL
 ParticlesTemp LogicalORRestraint::get_input_particles() const
 {
-  ParticlesTemp ret;
+  ParticlesTemp ret,tmp;
+  tmp=r0_->get_input_particles();
+  ret.insert(ret.end(),tmp.begin(),tmp.end());
+  tmp=r1_->get_input_particles();
+  ret.insert(ret.end(),tmp.begin(),tmp.end());
   return ret;
 }
 
 /* The only container used is pc_. */
 ContainersTemp LogicalORRestraint::get_input_containers() const
 {
-  return ContainersTemp();
+  ContainersTemp ret,tmp;
+  tmp=r0_->get_input_containers();
+  ret.insert(ret.end(),tmp.begin(),tmp.end());
+  tmp=r1_->get_input_containers();
+  ret.insert(ret.end(),tmp.begin(),tmp.end());
+  return ret;
 }
 
 void LogicalORRestraint::do_show(std::ostream& out) const
 {
   out << "restraint0= " <<  r0_->get_name() << std::endl;
-  out << "restraint11= " << r1_->get_name() << std::endl;
+  out << "restraint1= " << r1_->get_name() << std::endl;
 }
 
 IMPISD_END_NAMESPACE

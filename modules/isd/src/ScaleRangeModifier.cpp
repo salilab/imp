@@ -12,9 +12,6 @@
 
 
 IMPISD_BEGIN_NAMESPACE
-ScaleRangeModifier
-::ScaleRangeModifier(const algebra::BoundingBox1D &bb ): bb_(bb){
-}
 
 void ScaleRangeModifier::apply(Particle *p) const {
   Scale d(p);
@@ -44,7 +41,7 @@ ScaleRangeModifier::get_output_containers(Particle *) const {
 }
 
 void ScaleRangeModifier::do_show(std::ostream &out) const {
-  out << "bounding box " << bb_ << std::endl;
+  out << "ScaleRangeModifier " << std::endl;
 }
 
 IMPISD_END_NAMESPACE
