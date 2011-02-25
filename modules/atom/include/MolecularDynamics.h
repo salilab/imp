@@ -65,8 +65,6 @@ public:
   void set_thermostat(unsigned int type, Float temperature,
                       Float time_friction);
 
-  //! Rescale velocities globally
-  void rescale_velocities(Float factor);
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
