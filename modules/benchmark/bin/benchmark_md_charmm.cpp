@@ -50,10 +50,10 @@ int do_benchmark() {
   IMP_NEW(CHARMMStereochemistryRestraint, r, (prot, topology));
   m->add_restraint(r);
 
-    /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-       know the radii and well depths for each atom, so add them from the
-       forcefield (they can also be assigned manually using the XYZR or
-       LennardJones decorators): */
+  /* Add non-bonded interaction (in this case, Lennard-Jones). This needs to
+     know the radii and well depths for each atom, so add them from the
+     forcefield (they can also be assigned manually using the XYZR or
+     LennardJones decorators): */
   ff->add_radii(prot);
   ff->add_well_depths(prot);
 
@@ -85,27 +85,30 @@ int do_benchmark() {
   IMP_NEW(MolecularDynamics, md, (m));
   md->assign_velocities(300);
   md->set_time_step(2.0);
-    /*## therm legend
-# 0 :: nve
-# 1 :: rescale velocities
-# 2 :: berendsen
-# 3 :: langevin
-#md.set_therm(0,0,0)
-#md.set_therm(1,300,0)
-#md.set_therm(2,300,100)
-#md.set_therm(3,300,0.01)
+  /*## therm legend
+    # 0 :: nve
+    # 1 :: rescale velocities
+    # 2 :: berendsen
+    # 3 :: langevin
+    #md.set_therm(0,0,0)
+    #md.set_therm(1,300,0)
+    #md.set_therm(2,300,100)
+    #md.set_therm(3,300,0.01)
 
-# metadynamics setup
-#md.mtd_setup(0.003, 10.0, -200.0, 400.0)
+    # metadynamics setup
+    #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
 
-# GO! */
-    md->set_thermostat(2, 300, 500);
-    double time, score=0;
-    IMP_TIME({
-         score+=md->optimize(100);
-      }, time);
-    IMP::benchmark::report("md charmm", time, score);
-    return 0;
+    # GO! */
+  IMP_NEW(atom::RemoveRigidMotionOptimizerState, rmos, (atoms, 10));
+  md->add_optimizer_state(rmos);
+  IMP_NEW(atom::LangevinThermostatOptimizerState, therm, (atoms, 300, 500, 10));
+  md->add_optimizer_state(therm);
+  double time, score=0;
+  IMP_TIME({
+      score+=md->optimize(100);
+    }, time);
+  IMP::benchmark::report("md charmm", time, score);
+  return 0;
 }
 
 int main(int  , char **) {
