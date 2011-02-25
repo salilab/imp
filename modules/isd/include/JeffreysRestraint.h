@@ -11,14 +11,14 @@
 
 #include "isd_config.h"
 #include <IMP/SingletonScore.h>
-#include <IMP/Restraint.h>
+#include <IMP/isd/ISDRestraint.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! Score a Scale particle with log(scale)
 //! the probability is 1/scale
 
-class IMPISDEXPORT JeffreysRestraint : public Restraint
+class IMPISDEXPORT JeffreysRestraint : public ISDRestraint
 {
   Pointer<Particle> p_;
 
@@ -31,7 +31,7 @@ public:
   IMP_RESTRAINT(JeffreysRestraint);
 
    /* call for probability */
-  virtual double unprotected_probability() const
+  virtual double get_probability() const
   {
     return exp(-unprotected_evaluate(NULL));
   }
@@ -40,4 +40,4 @@ public:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_ISD_RESTRAINT_H */
+#endif  /* IMPISD_JEFFREYS_RESTRAINT_H */

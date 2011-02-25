@@ -27,7 +27,7 @@ IMPISD_BEGIN_NAMESPACE
     \include NOERestraint.h
     \include NOERestraint.cpp
 */
-class IMPISDEXPORT NOERestraint : public Restraint
+class IMPISDEXPORT NOERestraint : public ISDRestraint
 {
   Pointer<Particle> p0_;
   Pointer<Particle> p1_;
@@ -43,7 +43,7 @@ public:
 	       Particle *gamma,double Iexp);
 
   /* call for probability */
-  virtual double unprotected_probability() const
+  double get_probability() const
   {
     return exp(-unprotected_evaluate(NULL));
   }

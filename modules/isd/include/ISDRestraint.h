@@ -29,29 +29,10 @@ IMPISD_BEGIN_NAMESPACE
 */
 class IMPISDEXPORT ISDRestraint : public Restraint
 {
-  Pointer<Particle> p0_;
-  Pointer<Particle> p1_;
-  Pointer<Particle> sigma_;
-  Pointer<Particle> gamma_;
-  double Vexp_;
 public:
-  //! Create the restraint.
-  /** Restraints should store the particles they are to act on,
-      preferably in a Singleton or PairContainer as appropriate.
-   */
-  ISDRestraint(Particle *p0, Particle *p1, Particle *sigma, 
-	       Particle *gamma,double Iexp);
 
-  /* call for probability */
-  virtual double get_probability() const
-  {
-    return exp(-unprotected_evaluate(NULL));
-  }
-
-
-  /** This macro declares the basic needed methods: evaluate and show
-   */
-  IMP_RESTRAINT(ISDRestraint);
+  /* call for probability, pure method */
+  virtual double get_probability() const = 0;
 
 };
 
