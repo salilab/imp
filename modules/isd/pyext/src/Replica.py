@@ -5,7 +5,7 @@
 from numpy import *
 from numpy.random import random, randint
 from numpy.random import shuffle
-#import TuneRex
+import TuneRex
 kB = 1.3806503 * 6.0221415 / 4184.0 # Boltzmann constant in kcal/mol/K
 
 class ReplicaTracker():

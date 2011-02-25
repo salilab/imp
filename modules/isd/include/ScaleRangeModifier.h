@@ -11,29 +11,25 @@
 
 #include "isd_config.h"
 #include <IMP/SingletonModifier.h>
-#include <IMP/algebra/BoundingBoxD.h>
 
 IMPISD_BEGIN_NAMESPACE
 
 //! An example singleton modifer
-/**  A simple singleton modifier which restrains the only     
- *   coordinate of a given 1D particle to a box by wrapping them.
+/**  A simple singleton modifier which constrains a Scale particle
+ *   to it's allowed domain.
 
-     Such a class could be coupled with an IMP::core::SingletonRestraint
-     or IMP::core::SingletonsRestraint to keep a set of particles
-     in a box.
+     Use with IMP::core::SingletonRestraint
 
      \pythonexample{range_restriction}
 
      The source code is as follows:
-     \include ExampleRestraint.h
-     \include ExampleRestraint.cpp
+     \include ScaleRangeModifier.h
+     \include ScaleRangeModifier.cpp
  */
 class IMPISDEXPORT ScaleRangeModifier: public SingletonModifier
 {
-  algebra::BoundingBoxD<1> bb_;
 public:
-  ScaleRangeModifier(const algebra::BoundingBoxD<1> &bb);
+  ScaleRangeModifier() {};
 
   // note, Doxygen wants a semicolon at the end of macro lines
   IMP_SINGLETON_MODIFIER(ScaleRangeModifier);

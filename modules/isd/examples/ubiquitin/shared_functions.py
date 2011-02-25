@@ -263,7 +263,7 @@ class sfo():
 
     def set_temp(self, inv_temp):
         "sets temperature of mc and md sims (used in replica exchange)"
-        self._md.set_therm(2, 1.0/(kB*inv_temp), self.md_tau)
+        self._md.set_thermostat(2, 1.0/(kB*inv_temp), self.md_tau)
         self._md.rescale_vel(sqrt(self.inv_temp/inv_temp))
         self.inv_temp = inv_temp
         self._mc_sigma.set_temperature(1/self.inv_temp)
@@ -297,7 +297,7 @@ class sfo():
         # 3 :: langevin
         #md.set_therm(0,0,0)
         #md.set_therm(1,300,0)
-        md.set_therm(2,temp,tau)
+        md.set_thermostat(2,temp,tau)
         #md.set_therm(3,300,0.01)
         # metadynamics setup
         #md.mtd_setup(0.003, 10.0, -200.0, 400.0)
