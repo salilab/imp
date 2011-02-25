@@ -42,18 +42,6 @@ namespace {
     return std::make_pair(in, rr);
   }
 
-
-  double get_mass(Hierarchy h) {
-    if (Mass::particle_is_instance(h)) {
-      return Mass(h).get_mass();
-    } else {
-      double mass=0;
-      for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-        mass+= get_mass(h.get_child(i));
-      }
-      return mass;
-    }
-  }
   /*
   // ignores overlap
   double get_volume(Hierarchy h) {
@@ -798,6 +786,38 @@ void transform(Hierarchy h, const algebra::Transformation3D &tr) {
       stack.push_back(c.get_child(i));
     }
   } while (!stack.empty());
+}
+
+
+double get_mass(Hierarchy h) {
+  if (Mass::particle_is_instance(h)) {
+    return Mass(h).get_mass();
+  } else {
+    double mass=0;
+    for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
+      mass+= get_mass(h.get_child(i));
+    }
+    return mass;
+  }
+}
+
+namespace {
+  algebra::Sphere3Ds get_representation(Hierarchy h) {
+    HierarchiesTemp leaves= get_leaves(h);
+    algebra::Sphere3Ds ret(leaves.size());
+    for (unsigned int i=0; i< leaves.size(); ++i) {
+      ret[i] = core::XYZR(leaves[i]).get_sphere();
+    }
+    return ret;
+  }
+}
+
+double get_volume(Hierarchy h) {
+  return algebra::get_surface_area_and_volume(get_representation(h)).second;
+}
+
+double get_surface_area(Hierarchy h) {
+  return algebra::get_surface_area_and_volume(get_representation(h)).first;
 }
 
 
