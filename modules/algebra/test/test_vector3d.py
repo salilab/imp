@@ -16,12 +16,8 @@ class Vector3DTests(IMP.test.TestCase):
     def test_compare(self):
         """Test that vectors can't be compared"""
         v= IMP.algebra.Vector3D(0,0,0)
-        try:
-            v==v
-        except:
-            pass
-        else:
-            self.assert_(False, "comparison did not throw")
+        self.assertRaises(ValueError, lambda a,b: a==b, v, v)
+
     def test_io(self):
         """Check I/O of Vector3Ds"""
         class NotAFile(object):
