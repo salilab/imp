@@ -84,7 +84,7 @@ void PairsRestraintGeometry::do_show(std::ostream &out) const {
 
 ConnectivityRestraintGeometry
   ::ConnectivityRestraintGeometry(core::ConnectivityRestraint*r):
-    Geometry(std::string()), r_(r) {
+    Geometry(r->get_name()), r_(r) {
 }
 
 

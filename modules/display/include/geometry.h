@@ -61,6 +61,11 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
 
+
+/** \brief Group of set of geometric elements
+ */
+IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(CompoundGeometry, Geometries);
+
 /** \brief Display a sphere.
 */
 IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::SphereD<3>);

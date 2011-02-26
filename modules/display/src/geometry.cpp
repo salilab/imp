@@ -71,6 +71,12 @@ IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(BoundingBoxGeometry,
                                                          get_name());
                                      });
 
+
+IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(CompoundGeometry,
+                                      Geometries,
+                                      {ret=get_geometry();
+                                      });
+
 namespace {
   Geometries get_frame(const algebra::Transformation3D &tr) {
     algebra::Vector3D o=tr.get_transformed(algebra::Vector3D(0,0,0));
