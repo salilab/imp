@@ -15,7 +15,6 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 

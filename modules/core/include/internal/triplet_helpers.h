@@ -15,7 +15,6 @@
 #include <IMP/TripletContainer.h>
 #include <IMP/TripletModifier.h>
 #include <IMP/TripletScore.h>
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 

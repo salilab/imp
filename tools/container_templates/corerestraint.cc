@@ -95,15 +95,15 @@ ContainersTemp CoreCLASSNAMEsRestraint::get_input_containers() const
 
 
 Restraints CoreCLASSNAMEsRestraint::get_decomposition() const {
-    Restraints ret(pc_->get_number());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= new CLASSNAMERestraint(ss_, pc_->get(i));
-      std::ostringstream oss;
-      oss << get_name() << " on " << IMP::internal::streamable(pc_->get(i));
-      ret[i]->set_name(oss.str());
+  Restraints ret(pc_->get_number());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= new CLASSNAMERestraint(ss_, pc_->get(i));
+    std::ostringstream oss;
+    oss << get_name() << " " << i;
+    ret[i]->set_name(oss.str());
     }
-    return ret;
-  }
+  return ret;
+}
 
 void CoreCLASSNAMEsRestraint::do_show(std::ostream& out) const
 {
