@@ -71,6 +71,8 @@ public:
     return ps_;
   }
 
+  Restraints get_instant_decomposition() const;
+
   IMP_RESTRAINT(ConnectivityRestraint);
 };
 

@@ -14,6 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/log.h>
 #include <IMP/PairScore.h>
+#include <IMP/core/PairRestraint.h>
 #include <IMP/core/internal/CoreListSingletonContainer.h>
 
 #include <climits>
@@ -149,6 +150,19 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     }
   }
   return sum;
+}
+
+
+Restraints ConnectivityRestraint::get_instant_decomposition() const {
+  ParticlePairs pp= get_connected_pairs();
+  Restraints ret(pp.size());
+  for (unsigned int i=0; i< pp.size(); ++i) {
+    IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
+    std::ostringstream oss;
+    oss << get_name() << " " << i;
+    pr->set_name(oss.str());
+  }
+  return ret;
 }
 
 
