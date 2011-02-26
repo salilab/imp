@@ -15,7 +15,6 @@
 #include <IMP/QuadContainer.h>
 #include <IMP/QuadModifier.h>
 #include <IMP/QuadScore.h>
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 

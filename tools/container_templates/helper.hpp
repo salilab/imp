@@ -15,7 +15,6 @@
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/CLASSNAMEModifier.h>
 #include <IMP/CLASSNAMEScore.h>
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 

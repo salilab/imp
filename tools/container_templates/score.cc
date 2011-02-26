@@ -23,6 +23,6 @@ CLASSNAMEScoreRestraint::CLASSNAMEScoreRestraint(std::string name):
   Restraint(name){}
 
 CLASSNAMEsScoreRestraint::CLASSNAMEsScoreRestraint(std::string name):
-  DecomposableRestraint(name){}
+  Restraint(name){}
 
 IMP_END_NAMESPACE

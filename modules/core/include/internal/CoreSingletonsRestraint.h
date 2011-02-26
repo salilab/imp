@@ -14,7 +14,6 @@
 
 #include "../core_config.h"
 
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/SingletonContainer.h>

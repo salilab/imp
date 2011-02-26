@@ -15,7 +15,6 @@
 #include <IMP/PairContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/internal/container_helpers.h>
 #include <algorithm>
 

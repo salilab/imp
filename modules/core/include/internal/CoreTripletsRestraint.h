@@ -14,7 +14,6 @@
 
 #include "../core_config.h"
 
-#include <IMP/DecomposableRestraint.h>
 #include <IMP/Pointer.h>
 #include <IMP/TripletScore.h>
 #include <IMP/TripletContainer.h>
