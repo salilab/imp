@@ -13,7 +13,15 @@ class Vector3DTests(IMP.test.TestCase):
     def test_from_floats(self):
         """Check Vector3D from floats"""
         v = IMP.algebra.Vector3D([1.0, 2.0, 3.0])
-
+    def test_compare(self):
+        """Test that vectors can't be compared"""
+        v= IMP.algebra.Vector3D(0,0,0)
+        try:
+            v==v
+        except:
+            pass
+        else:
+            self.assert_(False, "comparison did not throw")
     def test_io(self):
         """Check I/O of Vector3Ds"""
         class NotAFile(object):
