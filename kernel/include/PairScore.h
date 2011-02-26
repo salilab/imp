@@ -14,7 +14,6 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
-#include "DecomposableRestraint.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -93,7 +92,7 @@ IMP_OBJECTS(PairScoreRestraint, PairScoreRestraints);
     derivative values) can be decomposed into a series of applications
     of a PairScore onto a ParticlePair.
 */
-class IMPEXPORT PairsScoreRestraint: public DecomposableRestraint {
+class IMPEXPORT PairsScoreRestraint: public Restraint {
 public:
   PairsScoreRestraint(std::string name);
   virtual PairScore *get_score() const =0;

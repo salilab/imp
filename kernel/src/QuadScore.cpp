@@ -23,6 +23,6 @@ QuadScoreRestraint::QuadScoreRestraint(std::string name):
   Restraint(name){}
 
 QuadsScoreRestraint::QuadsScoreRestraint(std::string name):
-  DecomposableRestraint(name){}
+  Restraint(name){}
 
 IMP_END_NAMESPACE

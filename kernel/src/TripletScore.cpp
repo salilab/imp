@@ -23,6 +23,6 @@ TripletScoreRestraint::TripletScoreRestraint(std::string name):
   Restraint(name){}
 
 TripletsScoreRestraint::TripletsScoreRestraint(std::string name):
-  DecomposableRestraint(name){}
+  Restraint(name){}
 
 IMP_END_NAMESPACE

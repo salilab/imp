@@ -14,7 +14,6 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
-#include "DecomposableRestraint.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -93,7 +92,7 @@ IMP_OBJECTS(SingletonScoreRestraint, SingletonScoreRestraints);
     derivative values) can be decomposed into a series of applications
     of a SingletonScore onto a Particle*.
 */
-class IMPEXPORT SingletonsScoreRestraint: public DecomposableRestraint {
+class IMPEXPORT SingletonsScoreRestraint: public Restraint {
 public:
   SingletonsScoreRestraint(std::string name);
   virtual SingletonScore *get_score() const =0;
