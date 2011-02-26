@@ -36,8 +36,10 @@ Pyro.config.PYRO_MOBILE_CODE = 1
 
 class PyroGrid(AbstractGrid):
 
-    def __init__(self, hosts, src_path, display, X11_delay, debug, verbose, \
-                 shared_temp_path, nshost, terminate_during_publish):
+    def __init__(self, hosts, src_path, display, X11_delay, 
+                 debug, verbose, 
+                 shared_temp_path, nshost, terminate_during_publish, 
+                 method='ssh', qsub_config=None):
         
         AbstractGrid.__init__(self, hosts, src_path, display, X11_delay,\
                               debug, verbose, shared_temp_path)
@@ -49,8 +51,17 @@ class PyroGrid(AbstractGrid):
         #set the pyro loader as the loader
         self.set_loader(src_path, 'PyroHandlerLoader')
         
+        #method is either ssh or qsub
+        if method != 'ssh' and method != 'qsub':
+            raise ValueError, "unknown method: %s. Try ssh or qsub" % method
+        self.method = method
+
         #number of hosts
         self.n_hosts = len(hosts)
+        if qsub_config:
+            #qsub_config syntax: string with all needed options to qrsh.
+            self.qsub_config=qsub_config
+        
 
         #name of the host having the pyro-ns nameserver
         self.nshost = nshost         
@@ -102,7 +113,10 @@ class PyroGrid(AbstractGrid):
                 cmd = host.init_cmd + ';' + cmd 
 
         #now wrap everything for ssh
-        cmd  = "ssh %s '%s' " % (host.name, cmd)
+        if self.method == 'ssh':
+            cmd  = "ssh %s '%s' " % (host.name, cmd)
+        else:
+            cmd = "qrsh %s '%s' " % (self.qsub_config, cmd)
 
         #if debug then be verbose. In any case do this in background.
         if self.debug: 
