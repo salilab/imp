@@ -23,6 +23,6 @@ SingletonScoreRestraint::SingletonScoreRestraint(std::string name):
   Restraint(name){}
 
 SingletonsScoreRestraint::SingletonsScoreRestraint(std::string name):
-  DecomposableRestraint(name){}
+  Restraint(name){}
 
 IMP_END_NAMESPACE

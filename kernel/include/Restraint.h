@@ -152,6 +152,15 @@ public:
   virtual Restraints get_decomposition() const {
     return Restraints(1, const_cast<Restraint*>(this));
   }
+  //! Decompose this restraint into constituent terms for the current conf
+  /** Return a decomposition that is value for the current conformation,
+      but will not necessarily be valid if any of the particles are
+      changed. This is the same as get_decomposition() for
+      non-conditional restraints.
+   */
+  virtual Restraints get_instant_decomposition() const {
+    return get_decomposition();
+  }
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
 /** \name Filtering

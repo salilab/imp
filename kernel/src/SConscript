@@ -5,7 +5,6 @@ files = [
          'ConfigurationSet.cpp',
          'Constraint.cpp',
          'Container.cpp',
-         'DecomposableRestraint.cpp',
          'Decorator.cpp',
          'FailureHandler.cpp',
          'Key.cpp',

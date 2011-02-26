@@ -23,6 +23,6 @@ PairScoreRestraint::PairScoreRestraint(std::string name):
   Restraint(name){}
 
 PairsScoreRestraint::PairsScoreRestraint(std::string name):
-  DecomposableRestraint(name){}
+  Restraint(name){}
 
 IMP_END_NAMESPACE

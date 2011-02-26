@@ -61,7 +61,6 @@ build="debug"
 
 namespace IMP {
 %warnfilter(403) FailureHandlerBase;
-%warnfilter(403) DecomposableRestraint;
 %warnfilter(473) Refiner;
 %warnfilter(473) SingletonContainer;
 %warnfilter(473) PairContainer;
@@ -102,7 +101,6 @@ IMP_SWIG_OBJECT(IMP,Model, Models);
 //IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
 IMP_SWIG_OBJECT(IMP,RestraintSet, RestraintSets);
-IMP_SWIG_OBJECT(IMP,DecomposableRestraint, DecomposableRestraints);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticlePair, ParticlePairs);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleTriplet, ParticleTriplets);
 IMP_SWIG_OBJECT_TUPLE(IMP, ParticleQuad, ParticleQuads);
@@ -288,7 +286,6 @@ namespace IMP {
 %include "IMP/ScoreState.h"
 %include "IMP/Model.h"
 %include "IMP/UnaryFunction.h"
-%include "IMP/DecomposableRestraint.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"
 %include "IMP/Refiner.h"

@@ -14,7 +14,6 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
-#include "DecomposableRestraint.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -93,7 +92,7 @@ IMP_OBJECTS(TripletScoreRestraint, TripletScoreRestraints);
     derivative values) can be decomposed into a series of applications
     of a TripletScore onto a ParticleTriplet.
 */
-class IMPEXPORT TripletsScoreRestraint: public DecomposableRestraint {
+class IMPEXPORT TripletsScoreRestraint: public Restraint {
 public:
   TripletsScoreRestraint(std::string name);
   virtual TripletScore *get_score() const =0;
