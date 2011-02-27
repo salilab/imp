@@ -7,6 +7,7 @@
 
 #include <IMP/atom/MolecularDynamics.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/atom/Mass.h>
 
 #include <IMP/log.h>
 #include <IMP/random.h>
