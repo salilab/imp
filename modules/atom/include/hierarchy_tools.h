@@ -9,6 +9,7 @@
 #define IMPATOM_HIERARCHY_TOOLS_H
 
 #include "atom_config.h"
+#include "algebra_config.h"
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
@@ -310,6 +311,8 @@ IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
  */
 IMPATOMEXPORT double get_mass(Hierarchy h);
 
+
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 /** Get the total volume of a hierarchy. In cubic angstroms.
     \requires{get_volume, CGAL}*/
 IMPATOMEXPORT double get_volume(Hierarchy h);
@@ -318,6 +321,7 @@ IMPATOMEXPORT double get_volume(Hierarchy h);
     \requires{get_volume, CGAL}
 */
 IMPATOMEXPORT double get_surface_area(Hierarchy h);
+#endif
 
 IMPATOM_END_NAMESPACE
 

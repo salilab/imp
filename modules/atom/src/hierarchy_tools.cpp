@@ -812,6 +812,7 @@ namespace {
   }
 }
 
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
 double get_volume(Hierarchy h) {
   return algebra::get_surface_area_and_volume(get_representation(h)).second;
 }
@@ -819,6 +820,7 @@ double get_volume(Hierarchy h) {
 double get_surface_area(Hierarchy h) {
   return algebra::get_surface_area_and_volume(get_representation(h)).first;
 }
+#endif
 
 
 IMPATOM_END_NAMESPACE
