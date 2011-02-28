@@ -15,6 +15,8 @@ IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
 IMP_SWIG_OBJECT(IMP::isd, ScaleRangeModifier, ScaleRangeModifiers);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
+IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
+
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.isds.say_hello(). */
@@ -43,7 +45,7 @@ def create_model_and_particles():
 %include "IMP/isd/LogicalORRestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/RegularRepulsiveDistancePairScore.h"
-
+%include "IMP/isd/AmbiguousRestraint.h"
 
 namespace IMP {
   namespace atom {
