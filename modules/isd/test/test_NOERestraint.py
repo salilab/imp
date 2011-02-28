@@ -51,7 +51,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             dist=IMP.core.get_distance(p0,p1)
             expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
                     -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
-            self.assertAlmostEqual(self.noe.unprotected_probability(),
+            self.assertAlmostEqual(self.noe.get_probability(),
                     expected,delta=0.001)
 
     def testValuePSigma(self):
@@ -68,7 +68,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             dist=IMP.core.get_distance(p0,p1)
             expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
                     -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
-            self.assertAlmostEqual(self.noe.unprotected_probability(),
+            self.assertAlmostEqual(self.noe.get_probability(),
                     expected,delta=0.001)
 
     def testValuePGamma(self):
@@ -85,7 +85,7 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             dist=IMP.core.get_distance(p0,p1)
             expected=1/(sqrt(2*pi)*no*self.V_obs)*exp(\
                     -1/(2*no**2)*log(gamma*dist**-6/self.V_obs)**2)
-            self.assertAlmostEqual(self.noe.unprotected_probability(),
+            self.assertAlmostEqual(self.noe.get_probability(),
                     expected,delta=0.001)
 
     def testValueEDist(self):
@@ -217,14 +217,14 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.noe.unprotected_evaluate(self.DA),
-                    -log(self.noe.unprotected_probability()),delta=0.001)
+                    -log(self.noe.get_probability()),delta=0.001)
 
     def testSanityPE(self):
         "test if prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
-            self.assertAlmostEqual(self.noe.unprotected_probability(),
+            self.assertAlmostEqual(self.noe.get_probability(),
                     exp(-self.noe.unprotected_evaluate(self.DA)),delta=0.001)
 
 class TestNOERestraintApplied(IMP.test.TestCase):
