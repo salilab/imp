@@ -33,6 +33,8 @@ def add(old, root, dir):
     path=os.path.join(root, dir)
     if os.path.exists(path):
         return ":".join([old,path])
+    else:
+        return old
 
 for r in extra_roots:
     includepath=add(includepath, r, "include")
