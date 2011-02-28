@@ -14,8 +14,9 @@
 
 IMPSAXS_BEGIN_NAMESPACE
 
-Restraint::Restraint(const Particles& particles, const Profile& exp_profile) :
-  IMP::Restraint("SAXS restraint") {
+Restraint::Restraint(const Particles& particles, const Profile& exp_profile,
+                     FormFactorType ff_type) :
+  IMP::Restraint("SAXS restraint"), ff_type_(ff_type) {
 
   saxs_score_ = new Score(exp_profile);
 
@@ -30,7 +31,7 @@ Restraint::Restraint(const Particles& particles, const Profile& exp_profile) :
      rigid_bodies_.push_back(ref->get_refined(rigid_bodies_decorators_.back()));
       // compute non-changing profile
       Profile rigid_part_profile;
-      rigid_part_profile.calculate_profile(rigid_bodies_.back());
+      rigid_part_profile.calculate_profile(rigid_bodies_.back(), ff_type);
       rigid_bodies_profile_.add(rigid_part_profile);
     } else {
       if(atom::Atom::particle_is_instance(particles[i])) {
@@ -77,17 +78,17 @@ void Restraint::compute_profile(Profile& model_profile) {
   // compute inter-rigid bodies contribution
   for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
     for(unsigned int j=i+1; j<rigid_bodies_.size(); j++) {
-      profile.calculate_profile(rigid_bodies_[i], rigid_bodies_[j]);
+      profile.calculate_profile(rigid_bodies_[i], rigid_bodies_[j], ff_type_);
       model_profile.add(profile);
     }
   }
   // compute non rigid body particles contribution
   if(particles_.size() > 0) {
-    profile.calculate_profile(particles_);
+    profile.calculate_profile(particles_, ff_type_);
     model_profile.add(profile);
     // compute non rigid body particles - rigid bodies contribution
     for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
-      profile.calculate_profile(rigid_bodies_[i], particles_);
+      profile.calculate_profile(rigid_bodies_[i], particles_, ff_type_);
       model_profile.add(profile);
     }
   }
@@ -105,7 +106,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
 
   Profile model_profile;
   const_cast<Restraint*>(this)->compute_profile(model_profile);
-  Float score = saxs_score_->compute_chi_square_score(model_profile, true);
+  Float score = saxs_score_->compute_chi_square_score(model_profile);
   bool calc_deriv = acc? true: false;
   if(!calc_deriv) return score;
 
@@ -121,7 +122,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
     for(unsigned int j=0; j<rigid_bodies_.size(); j++) {
       if(i == j) continue;
       saxs_score_->compute_chi_derivative(model_profile, rigid_bodies_[i],
-                                          rigid_bodies_[j], derivatives, true);
+                                          rigid_bodies_[j], derivatives);
       for (unsigned int k = 0; k < rigid_bodies_[i].size(); k++) {
         rigid_bodies_[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
         rigid_bodies_[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
@@ -131,7 +132,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
     if(particles_.size() > 0) {
       // contribution from other particles
       saxs_score_->compute_chi_derivative(model_profile, rigid_bodies_[i],
-                                          particles_, derivatives, true);
+                                          particles_, derivatives);
       for (unsigned int k = 0; k < rigid_bodies_[i].size(); k++) {
         rigid_bodies_[i][k]->add_to_derivative(keys[0],derivatives[k][0], *acc);
         rigid_bodies_[i][k]->add_to_derivative(keys[1],derivatives[k][1], *acc);
@@ -143,8 +144,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
   // 2. compute derivatives for other particles
   if(particles_.size() > 0) {
     // particles own contribution
-    saxs_score_->compute_chi_derivative(model_profile, particles_,
-                                        derivatives, true);
+    saxs_score_->compute_chi_derivative(model_profile, particles_, derivatives);
     for (unsigned int i = 0; i < particles_.size(); i++) {
       particles_[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
       particles_[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);
@@ -153,7 +153,7 @@ double Restraint::unprotected_evaluate(DerivativeAccumulator *acc) const
     // rigid bodies contribution
     for(unsigned int i=0; i<rigid_bodies_.size(); i++) {
       saxs_score_->compute_chi_derivative(model_profile, particles_,
-                                          rigid_bodies_[i], derivatives, true);
+                                          rigid_bodies_[i], derivatives);
       for (unsigned int i = 0; i < particles_.size(); i++) {
         particles_[i]->add_to_derivative(keys[0], derivatives[i][0], *acc);
         particles_[i]->add_to_derivative(keys[1], derivatives[i][1], *acc);

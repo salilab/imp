@@ -51,6 +51,7 @@ class SAXSProfileTest(IMP.test.TestCase):
 
         #! select particles from the model
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        print 'Atomic level, number of particles ' + str(len(particles))
 
         #! calculate SAXS profile
         model_profile = IMP.saxs.Profile()
@@ -66,6 +67,39 @@ class SAXSProfileTest(IMP.test.TestCase):
         m.add_restraint(saxs_restraint)
         score = saxs_restraint.evaluate(False)
         print 'initial score = ' + str(score)
+
+
+    def test_saxs_residue_level_restraint(self):
+        """Check residue level saxs restraint"""
+        m = IMP.Model()
+
+        #! read PDB
+        mp= IMP.atom.read_pdb(self.get_input_file_name('6lyz.pdb'), m,
+                              IMP.atom.CAlphaPDBSelector())
+
+        #! read experimental profile
+        exp_profile = IMP.saxs.Profile(self.get_input_file_name('lyzexp.dat'))
+
+        #! select particles from the model
+        particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
+        print 'Residue level, number of particles ' + str(len(particles))
+
+        #! calculate SAXS profile
+        model_profile = IMP.saxs.Profile()
+        model_profile.calculate_profile(particles, IMP.saxs.CA_ATOMS)
+
+        #! calculate chi-square
+        saxs_score = IMP.saxs.Score(exp_profile)
+        chi = saxs_score.compute_chi_score(model_profile)
+        print 'Chi = ' + str(chi)
+
+
+        #! define residue level restraint
+        saxs_restraint = IMP.saxs.Restraint(particles, exp_profile, IMP.saxs.CA_ATOMS)
+        m.add_restraint(saxs_restraint)
+        score = saxs_restraint.evaluate(False)
+        print 'initial score = ' + str(score)
+
 
 if __name__ == '__main__':
     IMP.test.main()

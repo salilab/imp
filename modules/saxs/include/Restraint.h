@@ -44,8 +44,13 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   /**
      \param[in] particles The particles participating in the fitting score
      \param[in] exp_profile  The experimental profile used in the fitting score
+     \param[in] ff_type Type of the form factors for profile calculations:
+                ALL_ATOMS - all atoms including hydrogens
+                HEAVY_ATOMS - no hydrogens, all other atoms included
+                CA_ATOMS - residue level, residue represented by CA
   */
-  Restraint(const Particles& particles, const Profile& exp_profile);
+  Restraint(const Particles& particles, const Profile& exp_profile,
+            FormFactorType ff_type = HEAVY_ATOMS);
 
   IMP_RESTRAINT(Restraint);
 
@@ -57,6 +62,7 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
   Profile rigid_bodies_profile_; // non-changing part of the profile
   Pointer<Score> saxs_score_; // computes profiles and derivatives
+  FormFactorType ff_type_; // type of the form factors to use
 };
 
 IMPSAXS_END_NAMESPACE

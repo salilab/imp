@@ -141,7 +141,7 @@ public:
                                    bool use_offset) const;
 
 
-  const Profile& exp_profile_;   //  experimental saxs profile
+  const Profile exp_profile_;   //  experimental saxs profile
 };
 
 IMPSAXS_END_NAMESPACE

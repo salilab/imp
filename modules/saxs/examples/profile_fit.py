@@ -9,7 +9,7 @@ m = IMP.Model()
 
 #! read PDB
 mp= IMP.atom.read_pdb(IMP.saxs.get_example_path('6lyz.pdb'), m,
-                      IMP.atom.NonWaterNonHydrogenPDBSelector())
+                      IMP.atom.NonWaterNonHydrogenPDBSelector(), True, True)
 
 #! read experimental profile
 exp_profile = IMP.saxs.Profile(IMP.saxs.get_example_path('lyzexp.dat'))
@@ -25,13 +25,14 @@ particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 ft = IMP.saxs.default_form_factor_table()
 for i in range(0, len(particles)):
     radius = ft.get_radius(particles[i])
-    IMP.core.XYZR(particles[i]).set_radius(radius)
+    IMP.core.XYZR.setup_particle(particles[i], radius)
 # compute surface accessibility
 s = IMP.saxs.SolventAccessibleSurface()
 surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
 
 #! calculate SAXS profile
-model_profile = IMP.saxs.Profile()
+delta_q = 0.5 / 500
+model_profile = IMP.saxs.Profile(0.0, 0.5, delta_q)
 model_profile.calculate_profile_partial(particles, surface_area)
 model_profile.write_SAXS_file('6lyz.dat')
 
