@@ -295,7 +295,28 @@ def touch(filename):
             pass
         else:
             raise IOError, error
-        
+
+def read_sequence_file(filename):
+
+    filename = abspath(filename)
+
+    try:
+        f = open(filename)
+
+    except IOError, msg:
+
+        raise IOError, 'Could not open sequence file "%s".' % filename
+
+    seq = f.readlines()
+
+    l = []
+
+    for x in seq:
+        l += x.split()
+
+    return [x.upper() for x in l]
+
+ 
 
 def my_glob(x, do_touch=False):
 
