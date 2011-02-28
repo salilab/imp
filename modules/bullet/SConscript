@@ -9,7 +9,7 @@ scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "B
                                         body="""btBroadphaseInterface* broadphase = new btDbvtBroadphase();""",
                                         extra_libs=[],
                                             versionheader="LinearMath/btScalar.h",
-                                            versioncpp="BT_BULLET_VERSION")
+                                            versioncpp=["BT_BULLET_VERSION"])
 
 
 env.IMPModuleBuild(version='SVN',
