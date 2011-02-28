@@ -9,7 +9,7 @@
 #define IMPATOM_HIERARCHY_TOOLS_H
 
 #include "atom_config.h"
-#include "algebra_config.h"
+#include <IMP/algebra/algebra_config.h>
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
