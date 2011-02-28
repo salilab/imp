@@ -192,10 +192,10 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Exclusion);
 
 /** \brief Do not allow two particles to be in the same state.
 
-    If a ParticleStatesTable is passed, then two particles cannot
+    If a ParticleStatesTable is passed, then two particles must
     be in the same state if they have the same ParticleStates,
     otherwise, if a ParticlePairs is passed then pairs found in the
-    list are not allowed to have the same state index.
+    list must have the same state index.
  */
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Equality);
 
