@@ -54,7 +54,7 @@ namespace {
 
 void ModelData::initialize() {
   IMP_FUNCTION_LOG;
-  IMP_LOG(SILENT, "Initializing model score data" << std::endl);
+  //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
   IMP::internal::Map<Particle*, Particle*> idm;
