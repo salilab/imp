@@ -369,4 +369,17 @@ SubsetStates ListSubsetStatesTable
 void ListSubsetStatesTable::do_show(std::ostream &) const {
 }
 
+
+Ints get_order(const Subset &s,
+               const SubsetFilterTables &sft) {
+  Ints order;
+  std::vector<SubsetFilters> filters;
+  std::vector<Subset> filter_subsets;
+  initialize_order(s, sft, order,
+                   filters,
+                   filter_subsets);
+  return order;
+}
+
+
 IMPDOMINO_END_NAMESPACE

@@ -98,6 +98,14 @@ class IMPDOMINOEXPORT ListSubsetStatesTable: public SubsetStatesTable {
   IMP_SUBSET_STATES_TABLE(ListSubsetStatesTable);
 };
 
+
+/** Return the order computed for the particles in the subset to be used for
+    enumeration. This function is there in order to expose internal
+    functionality for easier testing and should not be depended upon.
+*/
+IMPDOMINOEXPORT Ints get_order(const Subset &s,
+                               const SubsetFilterTables &sft);
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_SUBSET_STATES_H */
