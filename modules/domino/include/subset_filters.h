@@ -56,8 +56,12 @@ public:
   //! The strength is a rough metric of how this filter restricts the subset
   /** It is still kind of nebulous, but as a rough guide, it should be
       the fraction of the states that are eliminated by the filter.
+
+      The whole subset being ordered is passed to provide some
+      normalization and looking ahead.
    */
-  virtual double get_strength() const=0;
+  virtual double get_strength(const Subset&total) const=0;
+
   virtual ~SubsetFilter();
 };
 
@@ -155,11 +159,12 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
                                boost::vector_property_map<int> > disjoint_sets_;
   IMP::internal::Map<const Particle*, int> index_;
   mutable std::vector<ParticlesTemp> sets_;
+  mutable IMP::internal::Map<const Particle *, int> set_indexes_;
 
   int get_index(Particle *p);
 
   void build_sets() const;
- protected:
+protected:
   unsigned int get_number_of_sets() const {
     build_sets();
     return sets_.size();
@@ -175,7 +180,22 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   DisjointSetsSubsetFilterTable(std::string name):
     SubsetFilterTable(name),
     disjoint_sets_(rank_, parent_){}
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  void get_indexes(const Subset &s,
+                   const Subsets &excluded,
+                   std::vector<Ints> &ret,
+                   Ints &used) const;
+#endif
  public:
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  int get_index_in_set(Particle *p) const {
+    if (set_indexes_.find(p)== set_indexes_.end()) {
+      return -1;
+    } else {
+      return set_indexes_.find(p)->second;
+    }
+  }
+#endif
   void add_set(const ParticlesTemp &ps);
   void add_pair(const ParticlePair &pp);
 };
