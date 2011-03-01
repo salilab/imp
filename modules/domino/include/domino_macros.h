@@ -63,11 +63,17 @@
   IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
 
 
-#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter)              \
+#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter, strength)    \
   struct Name##Filter {                                                 \
     bool operator()(const SubsetState &state,                           \
-                    const Ints &members) {                              \
+                    const Ints &members) const {                        \
       filter;                                                           \
+    }                                                                   \
+  };                                                                    \
+  struct Name##Strength {                                               \
+    double operator()(const Ints &members,                             \
+                       const Ints &other_members) const {               \
+      strength;                                                         \
     }                                                                   \
   };                                                                    \
   void Name##SubsetFilterTable::do_show(std::ostream &) const {         \
@@ -77,14 +83,12 @@
                     const IMP::domino::Subsets &excluded) const{        \
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
-    for (unsigned int i=0; i< get_number_of_sets(); ++i) {              \
-      Ints index= IMP::domino::get_partial_index(get_set(i),            \
-                                                  s, excluded);         \
-      if (!index.empty()) {                                             \
-        all.push_back(index);                                           \
-      }                                                                 \
-    }                                                                   \
-    IMP_NEW(DisjointSetsSubsetFilter<Name##Filter>, f, (all));          \
+    Ints used;                                                          \
+    get_indexes(s, excluded, all, used);                                \
+    if (all.empty()) return NULL;                                       \
+    typedef DisjointSetsSubsetFilter<Name##Filter, Name##Strength> CF;  \
+    IMP_NEW(CF,                                                         \
+            f, (all, used, this));                                      \
     f->set_name(std::string(#Name)+std::string(" filter %1%"));         \
     return f.release();                                                 \
   }                                                                     \
@@ -96,7 +100,7 @@
 #define IMP_SUBSET_FILTER(Name)                                         \
   public:                                                               \
   virtual bool get_is_ok(const IMP::domino::SubsetState& state) const;  \
-  virtual double get_strength() const;                                  \
+  virtual double get_strength(const IMP::domino::Subset &s) const;      \
  IMP_OBJECT(Name)
 
 

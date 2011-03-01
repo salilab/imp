@@ -12,6 +12,7 @@
 #include <IMP/domino/subset_states.h>
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
+#include <IMP/domino/internal/inference_utility.h>
 
 
 
@@ -24,30 +25,31 @@ SubsetFilterTable::~SubsetFilterTable(){}
 
 /***************************SCORE ******************************/
 
-  bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
-    /*IMP_IF_CHECK(USAGE) {
-      IMP_USAGE_CHECK(called_.find(state)
-                      == called_.end(),
-                      "Already called with " << state << " for "
-                      << data_.get_subset());
-#if IMP_BUILD < IMP_FAST
-      called_.insert(state);
-#endif
-}*/
-    IMP_OBJECT_LOG;
-    set_was_used(true);
-    const bool ok=data_.get_is_ok(state, max_);
-    IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
-            << (ok?" accepted":" rejected")
-            << " state " << state << std::endl);
-    return ok;
-  }
+bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
+  /*IMP_IF_CHECK(USAGE) {
+    IMP_USAGE_CHECK(called_.find(state)
+    == called_.end(),
+    "Already called with " << state << " for "
+    << data_.get_subset());
+    #if IMP_BUILD < IMP_FAST
+    called_.insert(state);
+    #endif
+    }*/
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  const bool ok=data_.get_is_ok(state, max_);
+  IMP_LOG(VERBOSE, "For subset " << data_.get_subset()
+          << (ok?" accepted":" rejected")
+          << " state " << state << std::endl);
+  return ok;
+}
 
-  void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{
-    out << "subset: " << data_.get_subset() << std::endl;
-  }
+void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{
+  out << "subset: " << data_.get_subset() << std::endl;
+}
 
-double RestraintScoreSubsetFilter::get_strength() const {
+double RestraintScoreSubsetFilter::get_strength(const Subset &) const {
+  set_was_used(true);
   return 1-std::pow(.5, static_cast<int>(data_.get_number_of_restraints()));
 }
 
@@ -117,7 +119,7 @@ RestraintScoreSubsetFilterTable
 
 void RestraintScoreSubsetFilterTable
 ::add_score(Restraint *r, const Subset &subset,
-               const SubsetState &state, double score) {
+            const SubsetState &state, double score) {
   mset_->add_score(r, subset, state, score);
 }
 
@@ -133,7 +135,11 @@ namespace {
     IMP_IF_LOG(l) {
       IMP_LOG(l, "[");
       for (unsigned int i=0; i< is.size(); ++i) {
-        IMP_LOG(l, is[i] << " ");
+        if (is[i] >=0) {
+          IMP_LOG(l, is[i] << " ");
+        } else {
+          IMP_LOG(l, "- ");
+        }
       }
       IMP_LOG(l, "] ");
     }
@@ -149,39 +155,65 @@ namespace {
   }
 
 
-template <class Filter>
-class  DisjointSetsSubsetFilter: public SubsetFilter {
-  std::vector<Ints> sets_;
-public:
-  DisjointSetsSubsetFilter(const std::vector<Ints> &sets): sets_(sets) {
-    IMP_LOG(TERSE, "Created filter with ");
-    IMP_IF_LOG(TERSE) {
-      for (unsigned int i=0; i < sets.size(); ++i) {
-        logit(TERSE, sets_[i]);
+  double get_default_strength(const Ints &members,
+                              const Ints &) {
+    unsigned int sz=0;
+    for (unsigned int i=0; i < members.size(); ++i) {
+      if (members[i] >=0) ++sz;
+    }
+    return std::pow(.1, static_cast<double>(sz));
+  }
+
+
+  template <class Filter, class Strength>
+  class  DisjointSetsSubsetFilter: public SubsetFilter {
+    std::vector<Ints> sets_;
+    Ints used_;
+    Pointer<const DisjointSetsSubsetFilterTable> back_;
+  public:
+    DisjointSetsSubsetFilter(const std::vector<Ints> &sets,
+                             const Ints &used,
+                             const DisjointSetsSubsetFilterTable *back):
+      sets_(sets), used_(used), back_(back) {
+      IMP_LOG(TERSE, "Created disjoint set subset filter with ");
+      IMP_IF_LOG(TERSE) {
+        for (unsigned int i=0; i < sets.size(); ++i) {
+          logit(TERSE, sets_[i]);
+        }
+        IMP_LOG(TERSE, std::endl);
       }
-      IMP_LOG(TERSE, std::endl);
     }
-  }
-  IMP_OBJECT(DisjointSetsSubsetFilter);
-  double get_strength() const {
-    double r=1;
-    for (unsigned int i=0; i< sets_.size(); ++i) {
-      r*= std::pow(.1, static_cast<double>(sets_[i].size()));
+    IMP_OBJECT(DisjointSetsSubsetFilter);
+    double get_strength(const Subset &s) const {
+      set_was_used(true);
+      double r=1;
+      Strength str;
+      for (unsigned int i=0; i< sets_.size(); ++i) {
+        Ints si(s.size(), -1);
+        for (unsigned int j=0; j< s.size(); ++j) {
+          si[j]= back_->get_index_in_set(s[j]);
+        }
+        double rc=str(sets_[i], si);
+        r*=(1-rc);
+      }
+      return 1-r;
     }
-    return 1-r;
-  }
-  bool get_is_ok(const SubsetState &state) const{
-    IMP_OBJECT_LOG;
-    set_was_used(true);
-    Filter f;
-    for (unsigned int i=0; i< sets_.size(); ++i) {
-      if (!f(state, sets_[i])) return false;
+    bool get_is_ok(const SubsetState &state) const{
+      IMP_OBJECT_LOG;
+      set_was_used(true);
+      Filter f;
+      for (unsigned int i=0; i< sets_.size(); ++i) {
+        if (!f(state, sets_[i])) return false;
+      }
+      return true;
     }
-    return true;
-  }
-};
-template <class Filter>
-void  DisjointSetsSubsetFilter<Filter>::do_show(std::ostream &) const{}
+    /*int get_subset_index(int i, int j) const {
+      return back_->get_set_index(back_->get_set(used_[i])[j]);
+      }*/
+  };
+  template <class Filter, class Strength>
+  void  DisjointSetsSubsetFilter<Filter, Strength>::do_show(std::ostream &)
+    const{}
 
 
 }
@@ -196,59 +228,90 @@ int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
 }
 
 void DisjointSetsSubsetFilterTable::build_sets() const {
-    if (!sets_.empty()) return;
-    if (pst_) {
-      IMP::internal::Map<ParticleStates*, int> map;
-      ParticlesTemp allps= pst_->get_particles();
-      std::vector<ParticlesTemp> allsets;
-      for (unsigned int i=0; i< allps.size(); ++i) {
-        ParticleStates *ps=pst_->get_particle_states(allps[i]);
-        if (map.find(ps) == map.end()){
-          map[pst_->get_particle_states(allps[i])] = allsets.size();
-          allsets.push_back(ParticlesTemp());
-        }
-        allsets[map.find(ps)->second].push_back(allps[i]);
+  if (!sets_.empty()) return;
+  if (pst_) {
+    IMP::internal::Map<ParticleStates*, int> map;
+    ParticlesTemp allps= pst_->get_particles();
+    std::vector<ParticlesTemp> allsets;
+    for (unsigned int i=0; i< allps.size(); ++i) {
+      ParticleStates *ps=pst_->get_particle_states(allps[i]);
+      if (map.find(ps) == map.end()){
+        map[pst_->get_particle_states(allps[i])] = allsets.size();
+        allsets.push_back(ParticlesTemp());
       }
-      for (unsigned int i=0; i< allsets.size(); ++i) {
-        if (allsets[i].size()>1) {
-          sets_.push_back(allsets[i]);
-        }
+      allsets[map.find(ps)->second].push_back(allps[i]);
+    }
+    for (unsigned int i=0; i< allsets.size(); ++i) {
+      if (allsets[i].size()>1) {
+        sets_.push_back(allsets[i]);
       }
     }
+  }
 
-    std::vector<ParticlesTemp> all(elements_.size());
-    for (unsigned int i=0; i< elements_.size(); ++i) {
-      int set= disjoint_sets_.find_set(i);
-      all[set].push_back(elements_[i]);
+  std::vector<ParticlesTemp> all(elements_.size());
+  for (unsigned int i=0; i< elements_.size(); ++i) {
+    int set= disjoint_sets_.find_set(i);
+    all[set].push_back(elements_[i]);
+  }
+  for (unsigned int i=0; i< all.size(); ++i) {
+    if (all[i].size() >1 ) {
+      sets_.push_back(all[i]);
+      std::sort(sets_.back().begin(), sets_.back().end());
     }
-    for (unsigned int i=0; i< all.size(); ++i) {
-      if (all[i].size() >1 ) sets_.push_back(all[i]);
+  }
+  for (unsigned int i=0; i < sets_.size(); ++i) {
+    for (unsigned int j=0; j< sets_[i].size(); ++j) {
+      set_indexes_[sets_[i][j]]=j;
     }
-    IMP_IF_LOG(TERSE) {
-      IMP_LOG(TERSE, "Sets are:\n");
-      for (unsigned int i=0; i< sets_.size(); ++i) {
-        logit(TERSE, sets_[i]);
-        IMP_LOG(TERSE, std::endl);
+  }
+  IMP_IF_LOG(TERSE) {
+    IMP_LOG(TERSE, "Sets are:\n");
+    for (unsigned int i=0; i< sets_.size(); ++i) {
+      logit(TERSE, sets_[i]);
+      IMP_LOG(TERSE, std::endl);
+    }
+  }
+}
+
+void
+DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
+                                           const Subsets &excluded,
+                                           std::vector<Ints> &ret,
+                                           Ints &used) const {
+  for (unsigned int i=0; i< get_number_of_sets(); ++i) {
+    Ints index= IMP::domino::get_partial_index(get_set(i),
+                                               s, excluded);
+    std::cout << "Index of " << s << " wrt " << Particles(get_set(i))
+              << " is " << internal::AsIndexes(index) << std::endl;
+    int ct =0;
+    for (unsigned int j=0; j< index.size(); ++j) {
+      if (index[j] != -1) {
+        ++ct;
       }
     }
+    if (ct >1) {
+      ret.push_back(index);
+      used.push_back(i);
+    }
+  }
 }
 
 
-  void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
-    if (ps.empty()) return;
-    int set_index= get_index(ps[0]);
-    for (unsigned int i=1; i< ps.size(); ++i) {
-      int index= get_index(ps[i]);
-      disjoint_sets_.union_set(set_index, index);
-    }
-    sets_.clear();
-  }
-  void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
-    int set_index= get_index(pp[0]);
-    int index= get_index(pp[1]);
+void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
+  if (ps.empty()) return;
+  int set_index= get_index(ps[0]);
+  for (unsigned int i=1; i< ps.size(); ++i) {
+    int index= get_index(ps[i]);
     disjoint_sets_.union_set(set_index, index);
-    sets_.clear();
   }
+  sets_.clear();
+}
+void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
+  int set_index= get_index(pp[0]);
+  int index= get_index(pp[1]);
+  disjoint_sets_.union_set(set_index, index);
+  sets_.clear();
+}
 
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
@@ -260,7 +323,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
     }
     std::sort(states.begin(), states.end());
     return std::unique(states.begin(), states.end())==states.end();
-  });
+  },return get_default_strength(members, other_members));
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
     unsigned int base=0;
@@ -271,8 +334,33 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
       }
     }
     return true;
-  });
+  }, return get_default_strength(members, other_members));
 
+
+namespace {
+  double get_sorted_strength(const Ints &members, const Ints &other_members) {
+    IMP_LOG(SILENT, "For ");
+    logit(SILENT, members);
+    IMP_LOG(SILENT, " and ");
+    logit(SILENT, other_members);
+    bool gap=false;
+    int count=0;
+    for (unsigned int i=0; i< members.size(); ++i) {
+      if (members[i] != -1){
+        if (gap) {
+          IMP_LOG(SILENT, " the order sucks" << std::endl);
+          return 0;
+        }
+        ++count;
+      } else {
+        gap=true;
+      }
+    }
+    IMP_LOG(SILENT, " returning for set " << count << std::endl);
+    double ret= std::pow(.1, static_cast<double>(count));
+    return ret;
+  }
+}
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     //IMP_LOG(TERSE, "State is " << state << " and ");
@@ -282,13 +370,15 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     while (last < members.size() && members[last]==-1) ++last;
     for (unsigned int i=last+1; i< members.size(); ++i) {
       if (members[i] != -1) {
-        if (state[members[last]] > state[members[i]]) return false;
+        // it is too low an index to work globally
+        if (state[members[i]] < members[i]) return false;
+        if (state[members[last]] >= state[members[i]]) return false;
         last=i;
       }
     }
     //IMP_LOG(TERSE, "ok" << std::endl);
     return true;
-  });
+  }, return get_sorted_strength(members, other_members));
 
 
 // **************************************** List ********************
@@ -325,7 +415,8 @@ namespace {
   void ListSubsetFilter::do_show(std::ostream &) const{}
 }
 
-double ListSubsetFilter::get_strength() const {
+double ListSubsetFilter::get_strength(const Subset &) const {
+  set_was_used(true);
   return 1-std::pow(.5, static_cast<int>(pos_.size()));
 }
 

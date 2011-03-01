@@ -114,7 +114,7 @@ namespace {
             if (cur_filterp) {
               Pointer<SubsetFilter> cur_filter=cur_filterp;
               cur_filter->set_was_used(true);
-              double str=cur_filter->get_strength();
+              double str=cur_filter->get_strength(s);
               IMP_USAGE_CHECK(str >=0 && str <=1, "Strength is out of range "
                               << str);
               //std::cout << "strength is " << str << std::endl;
