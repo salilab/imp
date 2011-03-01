@@ -47,6 +47,21 @@ public:
   ~InferenceStatistics();
 };
 
+struct AsIndexes {
+  Ints is_;
+  AsIndexes(Ints is): is_(is){}
+  void show(std::ostream &out) const {
+    for (unsigned int i=0; i< is_.size(); ++i) {
+      if (is_[i]>=0) {
+        out << is_[i] << " ";
+      } else {
+        out << "- ";
+      }
+    }
+  }
+};
+IMP_VALUES(AsIndexes, AsIndexesList);
+
 
 inline Subset get_intersection(const Subset &a, const Subset &b) {
   ParticlesTemp rs;
@@ -121,6 +136,9 @@ inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
 inline NodeData get_node_data(const Subset &s, const SubsetStatesTable *sst) {
   NodeData ret;
   ret.subset_states= sst->get_subset_states(s);
+  if (ret.subset_states.empty()) {
+    IMP_THROW("Empty state encountered with subset " << s, ValueException);
+  }
   return ret;
 }
 
