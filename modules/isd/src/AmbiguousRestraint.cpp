@@ -36,7 +36,7 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     if (accum)
     {
         for (unsigned int i=0; i < rs_.size(); ++i) {
-            DerivativeAccumulator a0(*accum,pow(enes[i],d_-1)*ene);
+            DerivativeAccumulator a0(*accum,pow(enes[i],d_-1)*pow(ene,1-d_));
             rs_[i]->unprotected_evaluate(&a0);
         }
     }
