@@ -19,7 +19,7 @@ namespace {
     }
     IMP_SUBSET_FILTER(ExampleSubsetFilter);
   };
-  double ExampleSubsetFilter::get_strength() const {
+  double ExampleSubsetFilter::get_strength(const domino::Subset &) const {
       // this is a really strong filter
       // for a weaker one, the number should be roughly the fraction
       // of states that the filter eliminates
