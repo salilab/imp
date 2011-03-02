@@ -192,7 +192,7 @@ IMP_MODEL_SAVE(WriteParticles, (const ParticlesTemp &ps, std::string file_name),
                });
 #if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** \class WriteParticlesBinaryOptimizerState
-    In contrast to other similar OptimizerStates, this one expectes to write
+    In contrast to other similar OptimizerStates, this one expects to write
     all models to the same file. As a result, the file name should not contain
     %1% (if it does, then separate files will be written). The first call will
     overwrite the file.
