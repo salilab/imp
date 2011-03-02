@@ -70,7 +70,7 @@ def check_lib(context, name, lib, header, body="", extra_libs=[], versioncpp=Non
         ret=(context.sconf.CheckHeader(header, language="C++"), [])
     if not ret[0]:
         context.env.Replace(LINKFLAGS=oldflags)
-        return ret
+        return (ret[0], ret[1], None)
     if context.env['IMP_BUILD_STATIC'] and lib != None:
         scons_tools.utility.make_static_build(context.env)
         if type(lib) == list:
