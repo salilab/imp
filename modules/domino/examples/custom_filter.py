@@ -51,7 +51,7 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
         def get_is_ok(self, state):
             ret= state[self.pos]==self.value
             return ret
-        def get_strength(self):
+        def get_strength(self, full_set):
             # return the maximum value since it dictates the position
             return 1
     def __init__(self, p, s):
