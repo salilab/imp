@@ -4,11 +4,14 @@ import sys,os
 import IMP
 import IMP.atom
 import IMP.container
-import IMP.isd
 import IMP.saxs
 import IMP.core
+import IMP.isd
+import IMP.isd.TBLReader
+import IMP.isd.utils
 
 from math import sqrt
+from StringIO import StringIO
 
 kB= (1.381 * 6.02214) / 4184.0
 
@@ -19,7 +22,8 @@ class sfo_common():
                 init_model_* )
         - they don't store anything in the class, but instead
                 return all created objects. 
-                Exception: the model, which is self._m
+                Exceptions: the model, which is self._m
+                            the statistics class, which is self.stat
         - they store what they have to store in the model (e.g. restraints)
         - they don't print out anything except for long routines (e.g. NOE
           parsing)
@@ -47,11 +51,11 @@ class sfo_common():
         # Create an IMP model
         self._m = IMP.Model()
 
-    def init_model_charmm_protein_and_ff(self, initpdb, selector, pairscore,
+    def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
             ff_temp=300.0):
         """creates a CHARMM protein representation.  
         creates the charmm force field, bonded and nonbonded.
-        
+        - initpdb: initial structure in pdb format
         - top is a CHARMM top.lib
         - par is a CHARMM par.lib
         - selector is an instance of
@@ -71,7 +75,7 @@ class sfo_common():
               using ff_temp.
         """
         m=self._m
-        prot = IMP.atom.read_pdb(initpdb, self.m, selector)
+        prot = IMP.atom.read_pdb(initpdb, m, selector)
         # Read in the CHARMM heavy atom topology and parameter files
         ff = IMP.atom.CHARMMParameters(top,par)
         # equivalent:
@@ -179,7 +183,7 @@ class sfo_common():
                             IMP.isd.ScaleRangeModifier(),None,scale))
         return scale
 
-    def init_model_jeffreys(scales, prior_rs=None):
+    def init_model_jeffreys(self, scales, prior_rs=None):
         """given a list of scales, returns a RestraintSet('prior') with weight
         1.0 that contains a list of JeffreysRestraint on each scale.
         If argument prior_rs is used, add them to that RestraintSet instead.
@@ -202,18 +206,19 @@ class sfo_common():
                 ).get_selected_particles()
             if len(sel) > 1:
                 print "found multiple atoms for atom %d %s!" % (r2,at2)
-                continue
+                return
             p0=IMP.core.XYZ(sel[0])
         except:
             print "atom %d %s not found" % (r2,at2)
-            continue
+            return
         return p0
 
-    def init_model_NOE_restraint(self, atoms, distance, sigma, gamma):
-        """assumes atoms = (atom1, atom2)
-        where atom1 is (resno, atomname) and resno starts at 0.
+    def init_model_NOE_restraint(self, prot, atoms, distance, sigma, gamma):
+        """
         Sets up a lognormal distance restraint using the given sigma and gamma.
         Returns the restraint.
+        assumes atoms = (atom1, atom2)
+        where atom1 is (resno, atomname) and resno starts at 0.
         """
         #find corresponding atoms
         p0=self.find_atom(atoms[0], prot)
@@ -247,12 +252,13 @@ class sfo_common():
         #prior
         sigma=self.init_model_setup_scale(*bounds_sigma)
         gamma=self.init_model_setup_scale(*bounds_gamma)
-        prior_rs = init_model_jeffreys([sigma,gamma], prior_rs)
+        prior_rs = self.init_model_jeffreys([sigma,gamma], prior_rs)
         #likelihood
         rs = IMP.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
-        tblr = IMP.isd.TBLReader(IMP.isd.utils.read_sequence_file(seqfile))
-        restraints = tblr.read_distances(noe, 'NOE')['NOE']
+        sequence = IMP.isd.utils.read_sequence_file(seqfile)
+        tblr = IMP.isd.TBLReader.TBLReader(sequence)
+        restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         for i,restraint in enumerate(restraints):
             if i % 100 == 0:
                print i
@@ -261,10 +267,10 @@ class sfo_common():
             #and a pair is (c1, c2), where c1 is of the form (resno, atname)
             #residue numbers start at 0
             if len(restraint[0]) > 1:
-                ln = self.init_model_ambiguous_NOE_restraint(restraint[0],
+                ln = self.init_model_ambiguous_NOE_restraint(prot, restraint[0],
                         restraint[1], sigma, gamma)
             else:
-                ln = self.init_model_NOE_restraint(restraint[0][0], 
+                ln = self.init_model_NOE_restraint(prot, restraint[0][0], 
                         restraint[1], sigma, gamma)
             rs.add_restraint(ln)
         print i, "NOE restraints read"
@@ -274,7 +280,7 @@ class sfo_common():
         self._m.add_restraint(rs) 
         return rs, prior_rs, sigma, gamma
 
-    def init_model_standard_SAXS_restraint(self, prot, profilefile, name='SAXS')
+    def init_model_standard_SAXS_restraint(self, prot, profilefile, name='SAXS'):
         """read experimental SAXS profile and apply restraint the standard
         way (like foxs)
         Returns: a restraintset
@@ -304,7 +310,7 @@ class sfo_common():
         ## Molecular Dynamics (from MAX BONOMI)
         md=IMP.atom.MolecularDynamics()
         md.set_model(self._m)
-        md.assign_velocities(temp)
+        md.assign_velocities(temperature)
         md.set_time_step(timestep)
         ## therm legend
         # 0 :: nve
@@ -351,7 +357,7 @@ class sfo_common():
         """
         mc = IMP.core.MonteCarlo(self._m)
         #why is this returning an int?
-        mc.add_mover(nm_particle)
+        mc.add_mover(mover)
         #set same temp as MD, careful with units
         mc.set_temperature(kB*temperature)
         #allow to go uphill
@@ -404,10 +410,66 @@ class sfo_common():
         mc = self._setup_mc(nm, temperature, mc_restraints)
         return mc, nm
 
+    def _mc_and_update_nm(self, nsteps, mc, nm, stats_key, 
+            adjust_stepsize=True):
+        """run mc using a normal mover on a single particle, 
+        update stepsize and store nsteps, acceptance and stepsize in the
+        statistics instance self.stat by using the key stats_key.
+        """
+        before = mc.get_number_of_forward_steps()
+        #do the monte carlo
+        mc.optimize(nsteps)
+        after = mc.get_number_of_forward_steps()
+        #increment the counter for this simulation
+        self.stat.increment_counter(stats_key, nsteps)
+        #get the acceptance rate, stepsize
+        accept = float(after-before)/nsteps
+        self.stat.update(stats_key, 'acceptance', accept)
+        stepsize = nm.get_sigma()
+        self.stat.update(stats_key, 'stepsize', stepsize)
+        #update stepsize if needed and requested
+        if adjust_stepsize:
+            if 0.4 < accept < 0.6:
+                return
+            if accept < 0.05:
+                accept = 0.05
+            if accept > 1.0:
+                accept = 1.0
+            nm.set_sigma(stepsize*2*accept)
 
+    def _hmc_and_update_md(self, nsteps, hmc, mv, stats_key,
+            adjust_stepsize=True):
+        """run hmc, update stepsize and print statistics. Updates number of MD
+        steps to reach a target acceptance between 0.4 and 0.6, sends
+        statistics to self.stat. MD steps are always at least 10 and at most 500.
+        """
+        before = hmc.get_number_of_forward_steps()
+        hmc.optimize(nsteps)
+        after = hmc.get_number_of_forward_steps()
+        self.stat.increment_counter(stats_key, nsteps)
+        accept = float(after-before)/nsteps
+        self.stat.update(stats_key, 'acceptance', accept)
+        mdsteps = mv.get_nsteps()
+        self.stat.update(stats_key, 'n_md_steps', nsteps)
+        if adjust_stepsize:
+            if 0.4 < accept < 0.6:
+                return
+            mdsteps = int(mdsteps *2**(accept-0.5))
+            if mdsteps > 500:
+                mdsteps = 500
+            if mdsteps < 10:
+                mdsteps = 10
+            mv.set_nsteps(mdsteps)
 
+    def get_pdb(self, prot):
+        """returns a string corresponding to the pdb structure of hierarchy
+        prot.
+        """
+        output = StringIO()
+        output.write('MODEL\n')
+        IMP.atom.write_pdb(prot, output)
+        output.write('ENDMDL\n')
+        return output.getvalue()
 
-
-
-
-
+    def get_netcdf(self, prot):
+        raise NotImplementedError

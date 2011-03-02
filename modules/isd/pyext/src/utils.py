@@ -21,6 +21,7 @@ import sys
 import subprocess
 import time
 import os
+import os.path
 import socket
 
 
@@ -298,7 +299,7 @@ def touch(filename):
 
 def read_sequence_file(filename):
 
-    filename = abspath(filename)
+    filename = os.path.abspath(filename)
 
     try:
         f = open(filename)
