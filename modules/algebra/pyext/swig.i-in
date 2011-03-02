@@ -135,14 +135,15 @@ IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_volume_cover_by_spacing, Boundi
 namespace IMP {
  namespace algebra {
    namespace grids {
-   %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorage3D>;
+   %template(_BoundedGridStorage3D) BoundedGridStorageD<3>;
+   %template(_SparseIntStorage) SparseGridStorageD<3, int, BoundedGridStorageD<3> >;
    %template(_SparseUBIntStorage) grids::SparseGridStorageD<3, int, UnboundedGridStorageD<3> >;
-   %template(_DenseDoubleStorage) DenseGridStorage3D<double>;
-   %template(_DenseFloatStorage) DenseGridStorage3D<float>;
-   %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridStorage3D> >;
+   %template(_DenseDoubleStorage) DenseGridStorageD<3, double>;
+   %template(_DenseFloatStorage) DenseGridStorageD<3, float>;
+   %template(SparseIntGrid3D) GridD<3, SparseGridStorageD<3, int, BoundedGridStorageD<3> > >;
    %template(SparseUnboundedIntGrid3D) GridD<3, SparseGridStorageD<3, int, UnboundedGridStorageD<3> > >;
-   %template(DenseDoubleGrid3D) GridD<3, DenseGridStorage3D<double> >;
-   %template(DenseFloatGrid3D) GridD<3, DenseGridStorage3D<float> >;
+   %template(DenseDoubleGrid3D) GridD<3, DenseGridStorageD<3, double> >;
+   %template(DenseFloatGrid3D) GridD<3, DenseGridStorageD<3, float> >;
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
 
    }

@@ -125,8 +125,8 @@ public:
   }
 };
 
-
-inline int snap(unsigned int dim, int v, const int d[]) {
+template <class ED>
+inline int snap(unsigned int dim, int v, ED d) {
   IMP_INTERNAL_CHECK(dim <3, "Invalid dim");
   if (v < 0) return 0;
   else if (v > d[dim]) {
@@ -135,8 +135,8 @@ inline int snap(unsigned int dim, int v, const int d[]) {
   else return v;
 }
 
-template <class EI>
-inline EI snap(const EI &v, const int d[]) {
+template <class EI, class ED>
+inline EI snap(const EI &v, ED d) {
   return EI(snap(0, v[0], d),
             snap(1, v[1], d),
             snap(2, v[2], d));
@@ -147,10 +147,10 @@ inline std::pair<EI, EI> empty_range() {
 }
 
 
-template <class EI>
+template <class EI, class ED>
 inline std::pair<EI, EI> intersect(EI l,
                                    EI u,
-                                   const int d[]) {
+                                   ED d) {
   EI rlb;
   EI rub;
   for (unsigned int i=0; i< 3; ++i) {
