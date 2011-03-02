@@ -10,13 +10,29 @@
 
 #include "../core_config.h"
 #include "evaluate_distance_pair_score.h"
+#include <IMP/algebra/GridD.h>
 #include <IMP/exception.h>
 #include <IMP/file.h>
 #include <cmath>
 #include <vector>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
-template <bool BIPARTITE, bool INTERPOLATE>
+
+
+
+// slightly evil using the grid storage, but...
+template <bool SPARSE>
+struct StorageSelector {
+  typedef algebra::grids::DenseGridStorageD<2, RawOpenCubicSpline> Type;
+};
+
+template <>
+struct StorageSelector<true> {
+  typedef algebra::grids::SparseGridStorageD<2, RawOpenCubicSpline,
+                     algebra::grids::UnboundedGridStorageD<2> > Type;
+};
+
+template <bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
 struct PMFTable {
 private:
   unsigned int split_;
@@ -24,7 +40,8 @@ private:
   double bin_width_;
   double max_;
   double offset_;
-  std::vector<std::vector< IMP::core::internal::RawOpenCubicSpline > > data_;
+  typedef typename StorageSelector<SPARSE>::Type Storage;
+  Storage data_;
   void order(unsigned int &i, unsigned int &j) const {
     if (i > j) {
       std::swap(i,j);
@@ -33,6 +50,12 @@ private:
                     "One of the particles should be of each type: "
                     << i << " " << j);
     j-=split_;
+  }
+  const RawOpenCubicSpline& get(int i, int j) const {
+    Ints is(2);
+    is[0]=i; is[1]=j;
+    typename Storage::ExtendedIndex ei(is);
+    return data_[data_.get_index(ei)];
   }
 public:
   PMFTable(unsigned int split): split_(split){}
@@ -76,12 +99,12 @@ public:
 
     bin_width_=bin;
     inverse_bin_width_=1.0/bin;
-
-    data_.resize(np);
+    data_= Storage();
+    Ints dims(2);
+    dims[0]=np;
+    dims[1]=nl;
+    data_.set_number_of_voxels(dims);
     int bins_read=-1;
-    for(unsigned int i=0;i<data_.size();i++){
-      data_[i].resize(nl);
-    }
     unsigned int read_entries=0;
     while (true) {
       std::string line;
@@ -117,16 +140,17 @@ public:
         }
       }
       order(i, j);
-      IMP_USAGE_CHECK(data_.size() > i, "Invalid particle type: "
-                      << (Key(pname).get_index()==i?Key(pname):Key(lname))
-                      << " its index " << i << " is not smaller than "
-                      << data_.size());
-      IMP_USAGE_CHECK(data_[i].size() > j, "Invalid particle type: "
-                      << (Key(pname).get_index()==j?Key(pname):Key(lname))
-                      << " its index " << j << " is not smaller than "
-                      << data_[i].size());
-      data_[i][j]= core::internal::RawOpenCubicSpline(data, bin_width_,
-                                                      inverse_bin_width_);
+      Ints is(2);
+      is[0]=i; is[1]=j;
+      typename Storage::ExtendedIndex ei(is);
+      if (!data_.get_has_index(ei)) {
+        data_.add_voxel(ei, core::internal::RawOpenCubicSpline(data, bin_width_,
+                                                          inverse_bin_width_));
+      } else {
+        data_[data_.get_index(ei)]=
+          core::internal::RawOpenCubicSpline(data, bin_width_,
+                                             inverse_bin_width_);
+      }
       if (bins_read != -1 && cur_bins_read != bins_read) {
         IMP_THROW("Read wrong number of bins from line: "
                   << line << "\nExpected " << bins_read
@@ -150,19 +174,17 @@ public:
       }
     }
     IMP_LOG(TERSE, "PMF table entries have "
-            << bins_read << " bins with width " << bin_width_ << std::endl);
+            << bins_read << " bins with width "
+            << bin_width_ << std::endl);
   }
   double get_score(unsigned int i, unsigned int j, double dist) const {
    if (dist >= max_ || dist <= offset_) return 0;
     order(i,j);
-    IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
-    IMP_USAGE_CHECK(j < data_[i].size(),
-                    "Out of range ligand index " << i << " " << j);
     if (INTERPOLATE) {
-      return data_[i][j].evaluate(dist-.5*bin_width_-offset_, bin_width_,
+      return get(i,j).evaluate(dist-.5*bin_width_-offset_, bin_width_,
                                   inverse_bin_width_);
     } else {
-      return data_[i][j].get_bin(dist-offset_, bin_width_, inverse_bin_width_);
+      return get(i,j).get_bin(dist-offset_, bin_width_, inverse_bin_width_);
     }
   }
   double get_max() const {
@@ -174,14 +196,11 @@ public:
       return DerivativePair(0,0);
     }
     order(i,j);
-    IMP_USAGE_CHECK(i < data_.size(), "Out of range protein index " << i);
-    IMP_USAGE_CHECK(j < data_[i].size(),
-                    "Out of range ligand index " << i << " " << j);
     if (dist <= .5*bin_width_) return DerivativePair(get_score(i,j,dist), 0);
     // shift by .5 for the splines so as to be between the centers of the cells
-    return data_[i][j].evaluate_with_derivative(dist-.5*bin_width_-offset_,
-                                                bin_width_,
-                                                inverse_bin_width_);
+    return get(i,j).evaluate_with_derivative(dist-.5*bin_width_-offset_,
+                                             bin_width_,
+                                             inverse_bin_width_);
   }
 };
 
