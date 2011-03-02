@@ -45,7 +45,6 @@ AmbiguousRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 /* Return all particles whose attributes are read by the restraints. To
    do this, ask the pair score what particles it uses.*/
-//ASK DANIEL
 ParticlesTemp AmbiguousRestraint::get_input_particles() const
 {
   ParticlesTemp ret;
