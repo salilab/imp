@@ -51,9 +51,9 @@ IMPCORE_BEGIN_NAMESPACE
     spline interpolated. If false, only the evaluates with derivatives are
     interpolated with a spline.
 */
-template <class Key, bool BIPARTITE, bool INTERPOLATE>
+template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE=false>
 class StatisticalPairScore: public PairScore {
-  core::internal::PMFTable<BIPARTITE, INTERPOLATE> table_;
+  core::internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> table_;
   double threshold_;
   IntKey key_;
   inline double evaluate(const algebra::VectorD<3> &protein_v,
@@ -117,15 +117,15 @@ public:
 };
 #ifndef IMP_DOXYGEN
 
-template <class Key, bool BIPARTITE, bool INTERPOLATE>
-void StatisticalPairScore<Key, BIPARTITE, INTERPOLATE>
+template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE>
+void StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
 ::do_show(std::ostream &out) const {
   out << "key: " << key_ << std::endl;
   out << "threshold: " << threshold_ << std::endl;
 }
 
-template <class Key, bool BIPARTITE, bool INTERPOLATE>
-double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE>
+template <class Key, bool BIPARTITE, bool INTERPOLATE, bool SPARSE>
+double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
 ::evaluate(const ParticlePair &pp,
            DerivativeAccumulator *da) const {
   int pt= pp[0]->get_value(key_);
