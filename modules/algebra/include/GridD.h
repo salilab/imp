@@ -556,7 +556,7 @@ namespace grids {
     }
     IMP_BRACKET(VT, GridIndexD<D>, true, return data_[index(i)]);
 #ifndef IMP_DOXYGEN
-    DenseGridStorageD(const VT &def=VT()): default_(def) {
+    DenseGridStorageD(const VT &def=VT()): extent_(0), default_(def) {
     }
   void set_number_of_voxels(Ints dims) {
     extent_=1;
