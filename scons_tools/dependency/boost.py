@@ -29,13 +29,14 @@ def _check(context):
 
 def _checks(context):
     version=context.env['BOOST_LIB_VERSION']
-    for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
-        ret= context.sconf.CheckLib('boost_filesystem'+suffix, language="c++", autoadd=False)
-        if ret:
-            context.Message('Checking for Boost lib suffix... ')
-            context.env['BOOST_LIBSUFFIX']=suffix
-            context.Result(suffix)
-            return True
+    if version is not None:
+        for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
+            ret= context.sconf.CheckLib('boost_filesystem'+suffix, language="c++", autoadd=False)
+            if ret:
+                context.Message('Checking for Boost lib suffix... ')
+                context.env['BOOST_LIBSUFFIX']=suffix
+                context.Result(suffix)
+                return True
     context.env['BOOST_LIBSUFFIX']=""
     context.Message('Checking for Boost lib suffix... ')
     context.Result('not found')
