@@ -117,6 +117,14 @@ public:
         }
       }
       order(i, j);
+      IMP_USAGE_CHECK(data_.size() > i, "Invalid particle type: "
+                      << (Key(pname).get_index()==i?Key(pname):Key(lname))
+                      << " its index " << i << " is not smaller than "
+                      << data_.size());
+      IMP_USAGE_CHECK(data_[i].size() > j, "Invalid particle type: "
+                      << (Key(pname).get_index()==j?Key(pname):Key(lname))
+                      << " its index " << j << " is not smaller than "
+                      << data_[i].size());
       data_[i][j]= core::internal::RawOpenCubicSpline(data, bin_width_,
                                                       inverse_bin_width_);
       if (bins_read != -1 && cur_bins_read != bins_read) {
