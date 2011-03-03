@@ -395,7 +395,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
     std::sort(states.begin(), states.end());
     return std::unique(states.begin(), states.end())==states.end();
   },return get_default_strength(s, excluded, members),
-  return state[pos]+1);
+  return get_next_exclusion(pos, state, set));
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
     unsigned int base=0;
@@ -407,7 +407,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
     }
     return true;
   }, return get_default_strength(s, excluded, members),
-  return state[pos]+1);
+  return get_next_equality(pos, state, set));
 
 
 namespace {
@@ -464,7 +464,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     //IMP_LOG(TERSE, "ok" << std::endl);
     return true;
   }, return get_sorted_strength(s, excluded, members),
-  return state[pos]+1);
+  return get_next_permutation(pos, state, set));
 
 
 // **************************************** List ********************
