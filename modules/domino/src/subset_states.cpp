@@ -112,9 +112,7 @@ namespace {
 
     void initialize_order(const Subset &s,
                           const SubsetFilterTables &sft,
-                          Ints &order,
-                          std::vector<SubsetFilters>& filters,
-                          std::vector<Subset>& filter_subsets) {
+                          Ints &order) {
       Ints remaining;
       for (unsigned int i=0; i< s.size(); ++i) {
         remaining.push_back(i);
@@ -122,8 +120,6 @@ namespace {
       for (unsigned int i=0; i< s.size(); ++i) {
         double max_restraint=-1;
         int max_j=-1;
-        SubsetFilters max_filters;
-        Subset max_subset;
         Subsets max_excluded;
         Subset all_remaining=get_sub_subset(s, remaining.begin(),
                                             remaining.end());
@@ -141,7 +137,7 @@ namespace {
           Subset excluded= get_sub_subset(s, excluded_order.begin(),
                                           excluded_order.end());
           // ask all tables about subset of taken+this particle - taken
-          double cur_restraint=1;
+          double cur_restraint=0;
           for (unsigned int i=0; i < sft.size(); ++i) {
             /*std::cout << "Creating filter on "
               << all_remaining << " " << excluded
@@ -150,7 +146,7 @@ namespace {
               =sft[i]->get_strength(all_remaining,
                                          Subsets(1,
                                                  excluded));
-            cur_restraint*= 1-st;
+            cur_restraint+= 1-st;
           }
           /*std::cout << "Of " << s[remaining[j]]->get_name()
                     << " plus " << excluded << " got strength " << cur_restraint
@@ -158,17 +154,10 @@ namespace {
           if (cur_restraint >= max_restraint) {
             max_restraint=cur_restraint;
             max_j=j;
-            max_excluded=Subsets(1,
-                                 excluded);
-            max_subset=all_remaining;
           }
           before.push_back(cur);
         }
         order.push_back(remaining[max_j]);
-        filters.push_back(get_filters(max_subset,
-                                      max_excluded,
-                                      sft));
-        filter_subsets.push_back(max_subset);
         remaining.erase(remaining.begin()+max_j);
         /*std::cout << "Remaining is ";
         for (unsigned int i=0; i< remaining.size(); ++i) {
@@ -190,10 +179,10 @@ namespace {
                         SubsetStates &states_) {
     //std::cout << "Searching order for " << s << std::endl;
     Ints order;
+
+    initialize_order(s, sft, order);
     std::vector<SubsetFilters> filters;
     std::vector<Subset> filter_subsets;
-
-    initialize_order(s, sft, order, filters, filter_subsets);
     for (unsigned int i=0; i< order.size(); ++i) {
       ParticlesTemp ps= get_sub_particles(s, order.begin()+i, order.end());
       Subset sc(ps);
@@ -414,11 +403,7 @@ void ListSubsetStatesTable::do_show(std::ostream &) const {
 Ints get_order(const Subset &s,
                const SubsetFilterTables &sft) {
   Ints order;
-  std::vector<SubsetFilters> filters;
-  std::vector<Subset> filter_subsets;
-  initialize_order(s, sft, order,
-                   filters,
-                   filter_subsets);
+  initialize_order(s, sft, order);
   return order;
 }
 
