@@ -87,7 +87,7 @@
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
-    get_indexes(s, excluded, all, used);                                \
+    get_indexes(s, excluded, all, 1, used);                             \
     return get_disjoint_set_filter<Name##Filter>(#Name, all, used);     \
   }                                                                     \
   double                                                                \
@@ -96,7 +96,7 @@
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
-    get_indexes(s, excluded, all, used);                                \
+    get_indexes(s, excluded, all, 0, used);                             \
     return get_disjoint_set_strength<Name##Strength>(s, excluded, all,used); \
   }
 

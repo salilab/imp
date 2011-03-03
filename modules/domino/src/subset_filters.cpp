@@ -167,14 +167,14 @@ namespace {
   }
 
 
-  double get_default_strength(const IMP::domino::Subset &,
+  double get_default_strength(const IMP::domino::Subset &s,
                               const IMP::domino::Subsets &,
                               const Ints &members) {
     unsigned int sz=0;
     for (unsigned int i=0; i < members.size(); ++i) {
       if (members[i] >=0) ++sz;
     }
-    return std::pow(.1, static_cast<double>(sz));
+    return std::pow(.1, static_cast<double>(s.size()-sz));
   }
 
 
@@ -297,6 +297,7 @@ void
 DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
                                            const Subsets &excluded,
                                            std::vector<Ints> &ret,
+                                           int lb,
                                            Ints &used) const {
   for (unsigned int i=0; i< get_number_of_sets(); ++i) {
     Ints index= IMP::domino::get_partial_index(get_set(i),
@@ -309,7 +310,7 @@ DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
         ++ct;
       }
     }
-    if (ct >1) {
+    if (ct >lb) {
       ret.push_back(index);
       used.push_back(i);
     }
@@ -361,15 +362,15 @@ namespace {
   double get_sorted_strength(const IMP::domino::Subset &s,
                              const IMP::domino::Subsets &excluded,
                              const Ints &members) {
-    IMP_LOG(SILENT, "For ");
-    logit(SILENT, members);
+    /*IMP_LOG(SILENT, "For " << s << " ");
+      logit(SILENT, members);*/
     int count=0;
     bool gap=false;
     for (unsigned int i=0; i< members.size(); ++i) {
       if (members[i] != -1){
-        if (gap) {
-          IMP_LOG(SILENT, " not packed " << i
-              << " " << count << std::endl);
+        if (gap || members[i] < i) {
+          /*IMP_LOG(SILENT, " not packed " << i
+            << " " << count << std::endl);*/
           return 0;
         }
         ++count;
@@ -377,8 +378,8 @@ namespace {
         gap=true;
       }
     }
-    IMP_LOG(SILENT, " returning for set " << count << std::endl);
-    double ret= std::pow(.1, static_cast<double>(count));
+    //IMP_LOG(SILENT, " returning for set " << count << std::endl);
+    double ret= std::pow(.1, static_cast<double>(s.size()-count));
     return ret;
   }
 }

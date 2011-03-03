@@ -184,6 +184,7 @@ protected:
   void get_indexes(const Subset &s,
                    const Subsets &excluded,
                    std::vector<Ints> &ret,
+                   int lb,
                    Ints &used) const;
 #endif
  public:
