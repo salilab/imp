@@ -6,6 +6,7 @@
  */
 
 #include <IMP/atom/MolecularDynamics.h>
+#include <IMP/atom/RemoveRigidMotionOptimizerState.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/atom/Mass.h>
 
@@ -68,7 +69,16 @@ void MolecularDynamics::setup_particles()
       degrees_of_freedom_ += 3;
     }
   }
-  degrees_of_freedom_ -= 6;
+
+  // If global rotation and translation have been removed, reduce degrees
+  // of freedom accordingly (kind of ugly...)
+  for (OptimizerStateIterator o = optimizer_states_begin();
+       o != optimizer_states_end(); ++o) {
+    if (dynamic_cast<RemoveRigidMotionOptimizerState *>(*o)) {
+      degrees_of_freedom_ -= 6;
+      break;
+    }
+  }
 }
 
 //! Perform a single dynamics step.
