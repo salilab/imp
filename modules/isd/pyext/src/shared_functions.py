@@ -9,6 +9,7 @@ import IMP.core
 import IMP.isd
 import IMP.isd.TBLReader
 import IMP.isd.utils
+from IMP.isd.Entry import Entry
 
 from math import sqrt
 from StringIO import StringIO
@@ -473,3 +474,73 @@ class sfo_common():
 
     def get_netcdf(self, prot):
         raise NotImplementedError
+
+    def do_md_protein_statistics(self, md_key, nsteps, md_instance, 
+            temperature=300.0, prot_coordinates=None):
+        """updates statistics for md simulation: target temp, kinetic energy,
+        kinetic temperature, writes coordinates and increments counter.
+        - md_key: stats md key
+        - nsteps: number of steps performed.
+        - md_instance: instance of the MolecularDynamics class.
+        - temperature: target temperature
+        - prot_coordinates: protein coordinates to be passed to the stats class,
+          (should be a string)
+        """
+        self.stat.update(md_key, 'target_temp', temperature)
+        kinetic = md_instance.get_kinetic_energy()
+        self.stat.update(md_key, 'E_kinetic', kinetic)
+        self.stat.update(md_key, 'instant_temp', 
+                         md_instance.get_kinetic_temperature(kinetic))
+        self.stat.update_coordinates(md_key, 'protein', prot_coordinates)
+        self.stat.increment_counter(md_key, nsteps)
+
+    def init_stats_add_mc_category(self, stat, name='mc', coord='particle'):
+        """shortcut for a frequent series of operations on MC simulations'
+        statistics. Creates an entry for acceptance, stepsize and one
+        coordinate set printed in the statistics file.
+        """
+        #create category
+        mc_key = stat.add_category(name=name)
+        #giving None as argument is a way to create a static entry.
+        stat.add_entry(mc_key, entry=Entry('acceptance', '%10f', None))
+        stat.add_entry(mc_key, entry=Entry('stepsize', '%10f', None))
+        #special call to add coordinates to be dumped
+        stat.add_entry(mc_key, entry=Entry(coord, '%10f', None))
+        #add the counter to the output
+        stat.add_entry(mc_key, name='counter')
+        return mc_key
+
+    def init_stats_add_md_category(self, stat, name='md', coord='protein'):
+        """shortcut for a frequent series of operations on MD simulations'
+        statistics. Creates an entry for target temp, instantaneous temp,
+        kinetic energy, and one set of coordinates called 'protein' by 
+        default.
+        """
+        #create category
+        md_key = stat.add_category(name=name)
+        #giving None as argument is a way to create a static entry.
+        stat.add_entry(md_key, entry=Entry('target_temp', '%10f', None))
+        stat.add_entry(md_key, entry=Entry('instant_temp', '%10f', None))
+        stat.add_entry(md_key, entry=Entry('E_kinetic', '%10f', None))
+        #special call to add coordinates to be dumped
+        stat.add_coordinates(md_key, coord)
+        #add the counter to the output
+        stat.add_entry(md_key, name='counter')
+        return md_key
+
+    def init_stats_add_hmc_category(self, stat, name='hmc', coord='protein'):
+        """shortcut for a frequent series of operations on HMC simulations'
+        statistics. Adds acceptance, number of MD steps and a trajectory for
+        a protein.
+        """
+        #create category
+        hmc_key = stat.add_category(name=name)
+        #giving None as argument is a way to create a static entry.
+        stat.add_entry(hmc_key, entry=Entry('acceptance', '%10f', None))
+        stat.add_entry(hmc_key, entry=Entry('n_md_steps', '%10d', None))
+        #special call to add coordinates to be dumped
+        stat.add_coordinates(hmc_key, coord)
+        #add the counter to the output
+        stat.add_entry(hmc_key, name='counter')
+        return hmc_key
+

@@ -18,7 +18,7 @@ IMP.set_log_level(IMP.NONE)
 #where to output files
 outfolder=os.path.join(os.getcwd(), 'results')
 #temp dir
-tmpdir = os.path.join(os.getcwd(),'tmp')
+tmpdir = os.getenv('IMP_TMP_DIR')
 #number of replicas / hosts
 nreps = 10
 #lambda scaling distribution
@@ -30,29 +30,31 @@ lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1))
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
 #stat_rate is the rate at which to print out traj statistics
-stat_rate=[10]*nreps
+#(in units of gibbs sampling steps)
+stat_rate=[1]*nreps
 #list of files relative to the current dir to copy over to all nodes
 filelist=['shared_functions.py'] #add whatever you want
 #prefix of output files 
-nums=[[os.path.join(outfolder,'r%02d' % (i+1))] for i in xrange(nreps)]
+nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
 #number of gibbs sampling steps
 n_gibbs = 1000
-#number of md steps
-n_md = 0
 #number of mc steps
 n_mc = 1000
 #where to run sims
 hostlist = ['localhost']*nreps
 #replica exchange scheme
-rex_scheme='convective'
+rex_scheme='standard'
 #replica exchange exchange method
 rex_xchg='gromacs'
+rexlog = os.path.join(outfolder,'replicanums.txt')
 
 #misc
 
-imppy = '/bongo1/home/yannick/imp_local/build-fast/tools/imppy.sh'
-src_path = '/bongo1/home/yannick/imp_local/build-fast/build/lib/IMP/isd'
-showX11 = True 
+imppy = os.path.abspath(
+        os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
+src_path = os.path.abspath(
+        os.path.join(os.getenv('IMP_ISD_DATA'),'../lib/IMP/isd'))
+showX11 = False 
 grid_debug = False
 grid_verbose = False
 X11_delay = 1.0
@@ -60,7 +62,7 @@ window_size = '80x25'
 #pyroGrid
 shared_temp_path = True
 terminate_during_publish = False
-nshost = 'localhost'
+nshost = None
 
 def mkdir_p(path):
     "mkdir -p, taken from stackoverflow" 
@@ -76,11 +78,16 @@ def launch_grid():
     for host in hosts:
         #ugly hack
         host.init_cmd = imppy + ' !'
-    #grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
-    #        grid_verbose)
-    #grid.shared_temp_path = shared_temp_path
+	
+    #pyro grid
     grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
             grid_verbose, shared_temp_path, nshost, terminate_during_publish)
+	    
+    #uncomment the following lines and comments the two previous ones to use file based grid	
+    #file based grid
+    #grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
+    #        grid_verbose)
+    #grid.shared_temp_path = shared_temp_path	    
     if showX11:
         grid.window_size = window_size
     grid.copy_files('./', filelist)
@@ -118,11 +125,11 @@ def main():
     #wait til init is done
     results = grid.gather(requests)
 
-    #turn off noise (works because IMP.NONE is picklable, being an int.
+    #turn off verbose noise (works because IMP.NONE is picklable, being an int.
     grid.gather(grid.broadcast(sfo_id, 'set_checklevel', IMP.NONE))
     grid.gather(grid.broadcast(sfo_id, 'set_loglevel', IMP.NONE))
 
-    # evaluate the score of the whole system (without derivatives)
+    # evaluate the score of the whole system (without derivatives, False flag)
     print "initial energy"
     grid.gather(grid.broadcast(sfo_id, 'm', 'evaluate', False))
     
@@ -130,20 +137,20 @@ def main():
     #perform two independent MC moves for sigma and gamma
     print "initializing simulation and statistics"
     grid.gather(grid.scatter(sfo_id, 'init_simulation', 
-        zip(lambdas, tau, stat_rate)))
-    grid.gather(grid.scatter(sfo_id, 'init_stats', nums))
+        zip(lambdas, tau)))
+    grid.gather(grid.scatter(sfo_id, 'init_stats', zip(nums, stat_rate)))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
-            logfile=os.path.join(outfolder,'replicanums.txt'),
-            scheme=rex_scheme, xchg=rex_xchg)
+            rexlog=rexlog,
+            scheme=rex_scheme, xchg=rex_xchg, 
+            tune_temps=False)
 
     print "start gibbs sampling loop"
     for i in range(n_gibbs):
         print "\rgibbs step %d" % i,
         sys.stdout.flush()
-        #print " md"
-        #grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
         #print " mc"
         grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
         replica.replica_exchange()
         #print " stats"
