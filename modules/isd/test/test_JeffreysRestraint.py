@@ -30,7 +30,7 @@ class TestJeffreysRestraint(IMP.test.TestCase):
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
-            self.assertAlmostEqual(self.J.unprotected_probability(),
+            self.assertAlmostEqual(self.J.get_probability(),
                     1.0/no,delta=0.001)
 
     def testValueE(self): 
@@ -70,12 +70,12 @@ class TestJeffreysRestraint(IMP.test.TestCase):
     def testNonzeroP(self):
         "raise ValueError if zero"
         self.sigma.set_scale(0.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_probability)
+        self.assertRaises(IMP.ModelException, self.J.get_probability)
         
     def testNegativeP(self):
         "raise ValueError if negative"
         self.sigma.set_scale(-1.0)
-        self.assertRaises(IMP.ModelException, self.J.unprotected_probability)
+        self.assertRaises(IMP.ModelException, self.J.get_probability)
 
     def testSanityEP(self):
         "test if score is -log(prob)"
@@ -83,14 +83,14 @@ class TestJeffreysRestraint(IMP.test.TestCase):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
             self.assertAlmostEqual(self.J.unprotected_evaluate(self.DA),
-                    -log(self.J.unprotected_probability()))
+                    -log(self.J.get_probability()))
 
     def testSanityPE(self):
         "test if prob is exp(-score)"
         for i in xrange(100):
             no=uniform(0.1,100)
             self.sigma.set_scale(no)
-            self.assertAlmostEqual(self.J.unprotected_probability(),
+            self.assertAlmostEqual(self.J.get_probability(),
                     exp(-self.J.unprotected_evaluate(self.DA)))
 
 

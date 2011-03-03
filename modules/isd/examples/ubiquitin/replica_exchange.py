@@ -34,28 +34,37 @@ lambdas=[lambda_N*(lambda_1/lambda_N)**((float(nreps)-k)/(nreps-1))
 #thermostat coupling constant (berendsen, in fs)
 tau=[500.0]*nreps
 #stat_rate is the rate at which to print out traj statistics
-stat_rate=[10]*nreps
+#(in units of gibbs sampling steps)
+stat_rate=[1]*nreps
 #list of files relative to the current dir to copy over to all nodes
 initpdb = "generated2.pdb"
 charmmtop = "top.lib"
 charmmpar =  "par.lib"
 restraints = "NOE_HN-full_7A_sparse100.tbl"
+sequence='sequence.dat'
 #export the files in a local tmp directory
-filelist=[initpdb,charmmtop,charmmpar,restraints,'shared_functions.py'] #add whatever you want
+filelist=[initpdb,charmmtop,charmmpar,sequence,
+          restraints,'shared_functions.py'] #add whatever you want
 #prefix of output files 
-nums=[[os.path.join(outfolder,'r%02d' % (i+1))] for i in xrange(nreps)]
+nums=[os.path.join(outfolder,'r%02d' % (i+1)) for i in xrange(nreps)]
+#thermalization (mc parameters stay fixed)
+n_therm = 100 #number of loops, where temperatures are scaled to target value
+n_hmc_therm = 10 #number of steps per loop
 #number of gibbs sampling steps in  the first temperature relaxation
-n_gibbs1 = 10
+n_gibbs1 = 100
 #number of gibbs sampling steps in  the second temperature relaxation
-n_gibbs2 = 10
+n_gibbs2 = 100
 #number of gibbs sampling steps in  the production temperature relaxation
-n_gibbs3 = 10
+n_gibbs3 = 10000
 #number of md steps
 n_md = 1000
 #number of mc steps (not < 50 because adaptive)
 n_mc = 100
 #where to run sims
 hostlist = ['localhost']*nreps
+#qsub or ssh
+grid_method = 'ssh'
+qsub_config="-inherit $HOSTNAME" #"-now no -cwd -q -j y -N 'slave' -S /bin/bash"
 #replica exchange scheme
 rex_scheme='standard'
 #replica exchange exchange method
@@ -82,7 +91,7 @@ window_size = '80x25'
 #pyroGrid
 shared_temp_path = True
 terminate_during_publish = False
-nshost = 'localhost'
+nshost = None
 
 def mkdir_p(path):
     "mkdir -p, taken from stackoverflow" 
@@ -101,7 +110,8 @@ def launch_grid():
 	
     #pyro grid
     grid = Grid(hosts, src_path, showX11, X11_delay, grid_debug,
-            grid_verbose, shared_temp_path, nshost, terminate_during_publish)
+            grid_verbose, shared_temp_path, nshost, terminate_during_publish,
+            method=grid_method, qsub_config=qsub_config)
 	    
     #uncomment the following lines and comments the two previous ones to use file based grid	
     #file based grid
@@ -141,7 +151,7 @@ def main():
     print "initializing model"
     mkdir_p(tmpdir)
     mkdir_p(outfolder)
-    requests = grid.broadcast(sfo_id, 'init_model', tmpdir, initpdb, restraints)
+    requests = grid.broadcast(sfo_id, 'init_model', tmpdir, sequence, initpdb, restraints)
     #wait til init is done
     results = grid.gather(requests)
 
@@ -158,11 +168,20 @@ def main():
     print "initializing simulation and statistics"
     grid.gather(grid.scatter(sfo_id, 'init_simulation', 
         zip(lambdas, tau)))
-    grid.gather(grid.scatter(sfo_id, 'init_stats', nums))
+    grid.gather(grid.scatter(sfo_id, 'init_stats', zip(nums, stat_rate)))
     replica = ReplicaTracker(nreps, lambdas, grid, sfo_id,
             rexlog=rexlog,
             scheme=rex_scheme, xchg=rex_xchg, 
             tune_temps=tune_temps, tune_data=tune_data, templog=templog)
+
+    print "thermalization"
+    for i in range(n_therm):
+        print "\rgibbs step %d" % i,
+        sys.stdout.flush()
+        grid.gather(grid.scatter(sfo_id, 'set_inv_temp', 
+            [ n_therm/float(i+1) * l for l in lambdas ]))
+        grid.gather(grid.broadcast(sfo_id, 'do_md', n_hmc_therm))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats'))
 
     print "start gibbs sampling loop: first relaxation"
     for i in range(n_gibbs1):
@@ -171,7 +190,8 @@ def main():
         #print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
         #print " mc"
-        grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
 	replica.tune_data['dumb_scale']=0.5
         replica.replica_exchange()
@@ -185,7 +205,8 @@ def main():
         #print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
         #print " mc"
-        grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
 	replica.tune_data['dumb_scale']=0.2
         replica.replica_exchange()
@@ -199,7 +220,8 @@ def main():
         #print " md"
         grid.gather(grid.broadcast(sfo_id, 'do_md', n_md))
         #print " mc"
-        grid.gather(grid.broadcast(sfo_id, 'do_mc_and_update_stepsize', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'do_mc', n_mc))
+        grid.gather(grid.broadcast(sfo_id, 'write_stats'))
         #print " swaps"
 	replica.tune_temps=False
         replica.replica_exchange()

@@ -50,6 +50,14 @@ class MockSlave():
     def set_mc_stepsize(self, mc):
         self.mc_stepsize=mc
 
+    def get_state(self):
+        return {'inv_temp':1/(kB*self.get_temp()), 
+                'mcstep':self.get_mc_stepsize()}
+
+    def set_state(self, state):
+        self.set_temp(1/(kB*state['inv_temp']))
+        self.set_mc_stepsize(state['mcstep'])
+
 class MockResult():
     """fake result object for the grid"""
     def __init__(self,value):

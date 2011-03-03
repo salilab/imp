@@ -35,6 +35,11 @@ class TestCommunication(IMP.test.TestCase):
         self.grid_verbose = False
         self.window_size = '80x25'
         self.hosts=create_host_list(self.hostlist, self.tmpdir)
+        imppy=os.path.abspath(
+        os.path.join(os.getenv('IMP_ISD_DATA'),'../../tools/imppy.sh'))
+        for host in self.hosts:
+            host.init_cmd = imppy + ' !'
+
 
     def create_grid(self):
         grid = FileBasedGrid(self.hosts,self.src_path,self.showX11,
@@ -62,7 +67,7 @@ class TestCommunication(IMP.test.TestCase):
         #use grid.publish(stuff) to send stuff to all nodes. 
         #returns a service id.
 
-        instance=sf.sfo()
+        instance=sf.sfo_common()
         service_id = grid.publish(instance)
 
         proxy = grid.servers.values()[0][0].proxy

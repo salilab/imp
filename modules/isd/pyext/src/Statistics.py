@@ -1,66 +1,6 @@
 #!/usr/bin/env python
 
-import IMP
-import IMP.isd
-
-class Entry:
-    """The entry class represents a column in the statistics file. 
-    Its components are a title, a format and an additional object.
-    It's what gets written to the statistics file in a column.
-    - title: the title of the column
-    - format: a wisely chosen format string (see below)
-    - something: either something that can be formattable, a string, a number
-      etc. This is a static entry. In that case all remaining arguments are
-      discarded and get_value returns the formatted string : format % something.
-      If something is a function, this is a dynamic entry, and the format 
-      string is used on the result of the function call 
-      something(*args,**kwargs).
-    """
-    def __init__(self, title, fmt, something, *args, **kwargs):
-        self.title = title
-        self.format = fmt
-        self.is_function = callable(something)
-        if self.is_function:
-            self.function = something
-            self.args = args
-            self.kwargs = kwargs
-        else:
-            self.value = something
-        self.was_updated_since_last_get = False
-
-    def __repr__(self):
-        if self.is_function:
-            return "Entry('%s', '%s', f(...))" % (self.title, self.format)
-        else:
-            return "Entry('%s', '%s', %s)" % (self.title, self.format,
-                    self.value)
-
-
-    def get_title(self):
-        return self.title
-
-    def get_raw_value(self):
-        if self.is_function:
-            return self.function(*self.args, **self.kwargs)
-        else:
-            self.was_updated_since_last_get = False
-            return self.value
-
-    def get_value(self):
-        try:
-            return self.format % self.get_raw_value()
-        except TypeError:
-            return "N/A"
-
-    def set_value(self, val):
-        if self.is_function:
-            raise RuntimeError, \
-                    "Can only set_value on static entries."
-        self.value = val
-        self.was_updated_since_last_get = True
-
-    def get_was_updated(self):
-        return self.is_function or self.was_updated_since_last_get
+from IMP.isd.Entry import Entry
 
 class Statistics:
     """Statistics gathering and printing class for ISD gibbs sampling.
@@ -69,14 +9,21 @@ class Statistics:
     - rate: print statistics every so many gibbs sampling steps
     - statfile: suffix of the statistics file
     - append: whether to append to a trajectory or to write multiple files.
-    For the statistics class, a trajectory is just a string, you can stuff
-    whatever you want in it. If append is False, files will be numbered
-    according to the counter of their category.
+      For the statistics class, a trajectory is just a string, you can stuff
+      whatever you want in it. If append is False, files will be numbered
+      according to the counter of their category.
+    - num_entries_per_line: number of entries per line in the output. -1 to
+      disable wrapping. 
+    - repeat_title: if 0 (default) only print it in the beginning. Else repeat
+      it every 'repeat_title' outputted lines in the statistics file.
+    - separate_lines: If False the entries are not separated (default). If True,
+      the lines are separated with stars.
     TODO: check if everything was updated nicely
     """
 
     def __init__(self, prefix='r01', rate=1, statfile='_stats.txt', 
-            append=True):
+            append=True, num_entries_per_line=5, repeat_title=0,
+            separate_lines=False):
         self.prefix = prefix
         self.rate=rate
         self.statfile=prefix+statfile
@@ -95,9 +42,17 @@ class Statistics:
         self.add_entry('global',name='counter')
         #output-specific flags
         self.write_title=True
-        self.num_entries_per_line = 5
+        if num_entries_per_line == 0 or num_entries_per_line < -1:
+            raise ValueError, "number of entries per line is >0 or equal to -1"
+        if num_entries_per_line == -1:
+            self.wrap_stats = False
+        else:
+            self.wrap_stats = True
+        self.num_entries_per_line = num_entries_per_line
         self.add_numbers_to_titles = True
         self.separator=' '
+        self.repeat_title = repeat_title
+        self.separate_lines = separate_lines
 
     def _get_unique_category_name(self, name):
         if name:
@@ -199,56 +154,6 @@ class Statistics:
         cnt=self.categories[key]['counter']
         cnt.set_value(cnt.get_raw_value() + value)
 
-    def add_mc_category(self, name='mc', coord='particle'):
-        """shortcut for a frequent series of operations on MC simulations'
-        statistics. Creates an entry for acceptance, stepsize and one
-        coordinate set printed in the statistics file.
-        """
-        #create category
-        mc_key = self.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
-        self.add_entry(mc_key, entry=Entry('acceptance', '%10f', None))
-        self.add_entry(mc_key, entry=Entry('stepsize', '%10f', None))
-        #special call to add coordinates to be dumped
-        self.add_entry(mc_key, entry=Entry(coord, '%10f', None))
-        #add the counter to the output
-        self.add_entry(mc_key, name='counter')
-        return mc_key
-
-    def add_md_category(self, name='md', coord='protein'):
-        """shortcut for a frequent series of operations on MD simulations'
-        statistics. Creates an entry for target temp, instantaneous temp,
-        kinetic energy, and one set of coordinates called 'protein' by 
-        default.
-        """
-        #create category
-        md_key = self.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
-        self.add_entry(md_key, entry=Entry('target_temp', '%10f', None))
-        self.add_entry(md_key, entry=Entry('instant_temp', '%10f', None))
-        self.add_entry(md_key, entry=Entry('E_kinetic', '%10f', None))
-        #special call to add coordinates to be dumped
-        self.add_coordinates(md_key, coord)
-        #add the counter to the output
-        self.add_entry(md_key, name='counter')
-        return md_key
-
-    def add_hmc_category(self, name='hmc', coord='protein'):
-        """shortcut for a frequent series of operations on HMC simulations'
-        statistics. Adds acceptance, number of MD steps and a trajectory for
-        a protein.
-        """
-        #create category
-        hmc_key = self.add_category(name=name)
-        #giving None as argument is a way to create a static entry.
-        self.add_entry(hmc_key, entry=Entry('acceptance', '%10f', None))
-        self.add_entry(hmc_key, entry=Entry('n_md_steps', '%10d', None))
-        #special call to add coordinates to be dumped
-        self.add_coordinates(hmc_key, coord)
-        #add the counter to the output
-        self.add_entry(hmc_key, name='counter')
-        return hmc_key
-
     def get_entry_category(self, entry):
         #ugly, find something better
         for cat in self.categories:
@@ -271,17 +176,24 @@ class Statistics:
     def get_formatted_entries(self):
         return [ent.get_value() for ent in self.entries]
 
-    def prepare_line(self, line):
-        out = 'L1'
+    def should_wrap_line(self, pos):
+        if self.wrap_stats:
+            if pos % self.num_entries_per_line == \
+                    self.num_entries_per_line - 1:
+                return True
+        return False
+
+    def prepare_line(self, line, marker='L'):
+        out = marker+'1'
         out += self.separator
         for i,tok in enumerate(line):
             out += tok
             ln = 2 + (i / self.num_entries_per_line)
-            if i % self.num_entries_per_line == self.num_entries_per_line - 1:
-                out += '\nL%d' % ln
+            if self.should_wrap_line(i):
+                out += '\n%s%d' % (marker,ln)
             out += self.separator
         #don't add a newline if we just did
-        if i % self.num_entries_per_line != self.num_entries_per_line - 1:
+        if not self.should_wrap_line(i):
             out += '\n'
         return out
 
@@ -291,7 +203,8 @@ class Statistics:
         the output rate.
         Returns: True if data was written, False if not.
         """
-        if self.categories['global']['counter'].get_raw_value() % self.rate != 0:
+        stepno = self.categories['global']['counter'].get_raw_value() 
+        if stepno % self.rate != 0:
             return False
         #stats file
         fl=open(self.statfile, 'a')
@@ -299,10 +212,15 @@ class Statistics:
         if self.write_title:
             self.write_title = False
             titles = self.format_titles()
-            fl.write(self.prepare_line(titles))
+            fl.write(self.prepare_line(titles, marker='H'))
+        elif self.repeat_title > 0:
+            if (stepno/self.rate) % self.repeat_title == 0:
+                self.write_title = True
         #write stats
         entries = self.get_formatted_entries()
         fl.write(self.prepare_line(entries))
+        if self.separate_lines:
+            fl.write('*'*80+'\n')
         fl.close()
         #write trajs
         for key,name in self.coordinates:
@@ -310,7 +228,7 @@ class Statistics:
                 fl=open(self.prefix+'_traj.pdb', 'a')
             else:
                 num=self.categories[key]['counter'].get_raw_value()
-                fl=open(self.prefix + ('_%s_%10d.pdb' % (name,num)), 'w')
+                fl=open(self.prefix + ('_%s_%010d.pdb' % (name,num)), 'w')
             fl.write(self.categories[key][name])
             fl.close()
         return True

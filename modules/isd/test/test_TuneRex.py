@@ -7,6 +7,7 @@ from numpy import *
 import IMP
 import IMP.isd.Replica
 import IMP.isd.TuneRex
+IMP.isd.TuneRex.debug=False
 import MockGrid
 import IMP.test
 
