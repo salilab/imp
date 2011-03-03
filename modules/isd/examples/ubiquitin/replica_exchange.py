@@ -22,7 +22,7 @@ IMP.set_log_level(IMP.NONE)
 #where to output files
 outfolder=os.path.join(os.getcwd(), 'results')
 #temp dir
-tmpdir = os.getenv('IMP_TMP_DIR')
+tmpdir=os.path.join(os.getcwd(), 'tmp')
 #number of replicas / hosts
 nreps = 8
 #lambda scaling distribution
