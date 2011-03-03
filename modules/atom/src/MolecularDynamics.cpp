@@ -72,7 +72,7 @@ void MolecularDynamics::setup_particles()
 }
 
 //! Perform a single dynamics step.
-void MolecularDynamics::step()
+double MolecularDynamics::step()
 {
   // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
   // and mass is in g/mol, conversion factor necessary to get accelerations
@@ -103,6 +103,7 @@ void MolecularDynamics::step()
       d.set_coordinate(i, coord + shift);
     }
   }
+  return evaluate(true);
 }
 
 
@@ -116,8 +117,7 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
-    step();
-    score = evaluate(true);
+    score = step();
   }
   return score;
 }
