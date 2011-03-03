@@ -127,7 +127,8 @@ IMP_SWIG_ALGEBRA_FUNCTION_N_DD(bool, get_interiors_intersect, BoundingBox, Bound
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_on, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, Sphere);
-IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, BoundingBox);
+IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, Sphere);
+IMP_SWIG_ALGEBRA_FUNCTION_D_DD(BoundingBox, get_intersection, BoundingBox, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(BoundingBox, get_bounding_box, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_uniform_surface_cover, Sphere, unsigned int);
 IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_volume_cover_by_spacing, BoundingBox, double);
