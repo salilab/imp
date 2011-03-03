@@ -71,9 +71,8 @@ void MolecularDynamics::setup_particles()
   degrees_of_freedom_ -= 6;
 }
 
-
-//! First part of velocity verlet
-void MolecularDynamics::step_1()
+//! Perform a single dynamics step.
+void MolecularDynamics::step()
 {
   // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
   // and mass is in g/mol, conversion factor necessary to get accelerations
@@ -86,54 +85,26 @@ void MolecularDynamics::step_1()
     Float invmass = 1.0 / Mass(p).get_mass();
     for (unsigned i = 0; i < 3; ++i) {
       core::XYZ d(p);
+
       Float coord = d.get_coordinate(i);
       Float dcoord = d.get_derivative(i);
+
+      // calculate velocity at t+(delta t/2) from that at t-(delta t/2)
       Float velocity = p->get_value(vs_[i]);
+      velocity += dcoord * deriv_to_acceleration * invmass * time_step_;
 
-//    calculate position at t+(delta t) from that at t
-      coord += time_step_ * velocity +
-               0.5 * time_step_ * time_step_ * dcoord
-               * deriv_to_acceleration * invmass;
-      d.set_coordinate(i, coord);
-
-//    calculate velocity at t+(delta t/2) from that at t
-      velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
-
-      //cap_velocity_component(velocity);
+      cap_velocity_component(velocity);
       p->set_value(vs_[i], velocity);
 
+      // get atomic shift
+      Float shift = velocity * time_step_;
+
+      // calculate position at t+(delta t) from that at t
+      d.set_coordinate(i, coord + shift);
     }
   }
 }
 
-
-//! Second part of velocity verlet
-void MolecularDynamics::step_2()
-{
-  // Assuming score is in kcal/mol, its derivatives in kcal/mol/angstrom,
-  // and mass is in g/mol, conversion factor necessary to get accelerations
-  // in angstrom/fs/fs from raw derivatives
-  static const Float deriv_to_acceleration = -4.1868e-4;
-
-  for (ParticleIterator iter = particles_begin();
-       iter != particles_end(); ++iter) {
-    Particle *p = *iter;
-    Float invmass = 1.0 / Mass(p).get_mass();
-    core::XYZ d(p);
-    for (unsigned i = 0; i < 3; ++i) {
-      Float dcoord = d.get_derivative(i);
-      Float velocity = p->get_value(vs_[i]);
-
-
-      // calculate velocity at t+delta t from that at t+(delta t/2)
-      velocity += 0.5 * time_step_ * dcoord * deriv_to_acceleration * invmass;
-
-      //cap_velocity_component(velocity);
-      p->set_value(vs_[i], velocity);
-
-    }
-  }
-}
 
 
 double MolecularDynamics::do_optimize(unsigned int max_steps)
@@ -145,10 +116,8 @@ double MolecularDynamics::do_optimize(unsigned int max_steps)
 
   for (unsigned int i = 0; i < max_steps; ++i) {
     update_states();
-    step_1();
+    step();
     score = evaluate(true);
-    step_2();
-    update_states();
   }
   return score;
 }
