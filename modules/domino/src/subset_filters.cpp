@@ -178,7 +178,7 @@ namespace {
   }
 
 
-  template <class Filter>
+  template <class Filter, class Next>
   class  DisjointSetsSubsetFilter: public SubsetFilter {
     std::vector<Ints> sets_;
   public:
@@ -202,21 +202,35 @@ namespace {
       }
       return true;
     }
+    int get_next_state(int pos, const SubsetState& state) const {
+      for (unsigned int i=0; i< sets_.size(); ++i) {
+        for (unsigned int j=0; j< sets_[i].size(); ++j) {
+          if (sets_[i][j]==pos) {
+            return Next()(pos, state, sets_[i]);
+          }
+        }
+      }
+      IMP_FAILURE("No knowledge of current pos");
+      return SubsetFilter::get_next_state(pos, state);
+    }
   };
-  template <class Filter>
-  void  DisjointSetsSubsetFilter<Filter>::do_show(std::ostream &)
+  template <class Filter, class Next>
+  void  DisjointSetsSubsetFilter<Filter, Next>::do_show(std::ostream &)
     const{}
 
 
-  template <class FF>
-  DisjointSetsSubsetFilter<FF>*
+  template <class FF, class Next>
+  DisjointSetsSubsetFilter<FF, Next>*
   get_disjoint_set_filter(std::string name,
+                          const Subset &s,
                           const std::vector<Ints> &all,
                           const Ints &) {
     if (all.empty()) return NULL;
-    typedef DisjointSetsSubsetFilter<FF> CF;
+    typedef DisjointSetsSubsetFilter<FF, Next> CF;
     IMP_NEW(CF, f, (all));
-    f->set_name(name+std::string(" filter %1%"));
+    std::ostringstream oss;
+    oss << name << " for " << s;
+    f->set_name(oss.str());
     return f.release();
   }
 
@@ -302,8 +316,8 @@ DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
   for (unsigned int i=0; i< get_number_of_sets(); ++i) {
     Ints index= IMP::domino::get_partial_index(get_set(i),
                                                s, excluded);
-    std::cout << "Index of " << s << " wrt " << Particles(get_set(i))
-              << " is " << internal::AsIndexes(index) << std::endl;
+    /*std::cout << "Index of " << s << " wrt " << Particles(get_set(i))
+      << " is " << internal::AsIndexes(index) << std::endl;*/
     int ct =0;
     for (unsigned int j=0; j< index.size(); ++j) {
       if (index[j] != -1) {
@@ -334,6 +348,42 @@ void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
   sets_.clear();
 }
 
+namespace {
+  int get_next_exclusion(int pos, const SubsetState& state,
+                         const Ints &set) {
+    Ints used;
+    for (unsigned int i=0; i<set.size();++i){
+      if (set[i]>=0) {
+        used.push_back(state[set[i]]);
+      }
+    }
+    std::sort(used.begin(), used.end());
+    int st= state[pos]+1;
+    Ints::const_iterator it=std::lower_bound(used.begin(), used.end(), st);
+    while (it != used.end() && *it==st) {
+      ++st;
+      ++it;
+    }
+    IMP_USAGE_CHECK(!std::binary_search(used.begin(), used.end(), st),
+                    "Found");
+    return st;
+  }
+  int get_next_equality(int pos, const SubsetState& state,
+                         const Ints &set) {
+    for (unsigned int i=0; i<set.size();++i){
+      if (set[i] != -1 && state[set[i]] != state[pos]) {
+        if (state[set[i]] > state[pos]) {
+          return state[set[i]];
+        } else {
+          return std::numeric_limits<int>::max();
+        }
+      }
+    }
+    IMP_THROW("!found", ValueException);
+    return -1;
+  }
+}
+
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
     Ints states;
@@ -344,7 +394,8 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Exclusion, {
     }
     std::sort(states.begin(), states.end());
     return std::unique(states.begin(), states.end())==states.end();
-  },return get_default_strength(s, excluded, members));
+  },return get_default_strength(s, excluded, members),
+  return state[pos]+1);
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
     unsigned int base=0;
@@ -355,7 +406,8 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
       }
     }
     return true;
-  }, return get_default_strength(s, excluded, members));
+  }, return get_default_strength(s, excluded, members),
+  return state[pos]+1);
 
 
 namespace {
@@ -382,6 +434,17 @@ namespace {
     double ret= std::pow(.1, static_cast<double>(s.size()-count));
     return ret;
   }
+
+  int get_next_permutation(int pos, const SubsetState& state,
+                           const Ints &set) {
+    int mx=-1;
+    for (unsigned int i=0; i<set.size();++i){
+      if (set[i]>=0){
+        mx=std::max(mx, state[set[i]]);
+      }
+    }
+    return std::max(mx+1, state[pos]+1);
+  }
 }
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
@@ -400,7 +463,8 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     }
     //IMP_LOG(TERSE, "ok" << std::endl);
     return true;
-  }, return get_sorted_strength(s, excluded, members));
+  }, return get_sorted_strength(s, excluded, members),
+  return state[pos]+1);
 
 
 // **************************************** List ********************
