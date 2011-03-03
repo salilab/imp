@@ -69,8 +69,8 @@ public:
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 
 protected:
-  //! Perform a single dynamics step.
-  virtual void step();
+  //! Perform a single dynamics step; return the system score for the new state.
+  virtual double step();
 
 private:
   void initialize();
