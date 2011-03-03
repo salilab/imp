@@ -53,14 +53,6 @@ public:
   //! Return true if the given state passes this filter for the Subset
   //! it was created with
   virtual bool get_is_ok(const SubsetState& state) const=0;
-  //! The strength is a rough metric of how this filter restricts the subset
-  /** It is still kind of nebulous, but as a rough guide, it should be
-      the fraction of the states that are eliminated by the filter.
-
-      The whole subset being ordered is passed to provide some
-      normalization and looking ahead.
-   */
-  virtual double get_strength(const Subset&total) const=0;
 
   virtual ~SubsetFilter();
 };
@@ -87,6 +79,14 @@ class IMPDOMINOEXPORT SubsetFilterTable: public Object {
    */
   virtual SubsetFilter* get_subset_filter(const Subset &s,
                                           const Subsets &prior_subsets) const=0;
+
+  //! The strength is a rough metric of how this filter restricts the subset
+  /** It is still kind of nebulous, but as a rough guide, it should be
+      the fraction of the states that are eliminated by the filter.
+   */
+  virtual double get_strength(const Subset &s,
+                              const Subsets &prior_subsets) const=0;
+
   virtual ~SubsetFilterTable();
 };
 
@@ -244,12 +244,14 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
   public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  mutable IMP::internal::Map<Particle*,int > map_;
-  mutable std::vector< boost::dynamic_bitset<> > states_;
+  IMP::internal::Map<Particle*,int > map_;
+  std::vector< boost::dynamic_bitset<> > states_;
   Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle*p) const;
-  void intersect(Particle*p, const boost::dynamic_bitset<> &s);
+  void fill_indexes(const Subset &s,
+                    Ints &indexes) const;
+  void mask_allowed_states(Particle *p, const boost::dynamic_bitset<> &bs);
 #endif
  public:
   ListSubsetFilterTable(ParticleStatesTable *pst);

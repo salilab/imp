@@ -217,7 +217,7 @@ inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
     for (unsigned int j=0; j< states.size(); ++j) {
       bs.set(states[j][i]);
     }
-    lsft->intersect(s[i], bs);
+    lsft->mask_allowed_states(s[i], bs);
   }
 }
 

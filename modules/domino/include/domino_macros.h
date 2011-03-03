@@ -42,6 +42,8 @@
   virtual IMP::domino::SubsetFilter*                                    \
   get_subset_filter(const IMP::domino::Subset&s,                        \
                     const IMP::domino::Subsets &excluded) const;        \
+  virtual double get_strength(const IMP::domino::Subset&s,              \
+                              const IMP::domino::Subsets &excluded) const; \
   IMP_OBJECT(Name)
 
 /** This macro defines a class NameSubsetFilterTable from a method
@@ -56,7 +58,7 @@
   public:                                                               \
     Name##SubsetFilterTable(IMP::domino::ParticleStatesTable *pst):     \
       P(pst, std::string(#Name)+std::string(" %1%")){}                  \
-    Name##SubsetFilterTable(): P(std::string(#Name)                      \
+    Name##SubsetFilterTable(): P(std::string(#Name)                     \
                                +std::string(" %1%")){}                  \
     IMP_SUBSET_FILTER_TABLE(Name##SubsetFilterTable);                   \
   };                                                                    \
@@ -71,8 +73,9 @@
     }                                                                   \
   };                                                                    \
   struct Name##Strength {                                               \
-    double operator()(const Ints &members,                             \
-                       const Ints &other_members) const {               \
+    double operator()(const Subset &s,                                  \
+                      const Subsets &excluded,                          \
+                      const Ints &members) const {                      \
       strength;                                                         \
     }                                                                   \
   };                                                                    \
@@ -85,13 +88,18 @@
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
     get_indexes(s, excluded, all, used);                                \
-    if (all.empty()) return NULL;                                       \
-    typedef DisjointSetsSubsetFilter<Name##Filter, Name##Strength> CF;  \
-    IMP_NEW(CF,                                                         \
-            f, (all, used, this));                                      \
-    f->set_name(std::string(#Name)+std::string(" filter %1%"));         \
-    return f.release();                                                 \
+    return get_disjoint_set_filter<Name##Filter>(#Name, all, used);     \
   }                                                                     \
+  double                                                                \
+  Name##SubsetFilterTable::get_strength(const IMP::domino::Subset &s,   \
+                        const IMP::domino::Subsets &excluded) const{    \
+    set_was_used(true);                                                 \
+    std::vector<Ints> all;                                              \
+    Ints used;                                                          \
+    get_indexes(s, excluded, all, used);                                \
+    return get_disjoint_set_strength<Name##Strength>(s, excluded, all,used); \
+  }
+
 
 
 /** This macro declares
@@ -100,7 +108,6 @@
 #define IMP_SUBSET_FILTER(Name)                                         \
   public:                                                               \
   virtual bool get_is_ok(const IMP::domino::SubsetState& state) const;  \
-  virtual double get_strength(const IMP::domino::Subset &s) const;      \
  IMP_OBJECT(Name)
 
 
