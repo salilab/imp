@@ -161,10 +161,12 @@ namespace {
                         SubsetStates &states_) {
     //std::cout << "Searching order for " << s << std::endl;
 
+    IMP_FUNCTION_LOG;
     Ints order=initialize_order(s, sft);
     std::reverse(order.begin(), order.end());
     std::vector<SubsetFilters> filters;
     std::vector<Subset> filter_subsets;
+    int incr=1;
     for (unsigned int i=0; i< order.size(); ++i) {
       ParticlesTemp ps= get_sub_particles(s, order.begin()+i, order.end());
       Subset sc(ps);
@@ -180,7 +182,6 @@ namespace {
                          "Duplicate elements in order "
                          << taken.size() << " " << order.size());
     }
-    IMP_FUNCTION_LOG;
     IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::flush);
 
     IMP_CHECK_OBJECT(table);
@@ -280,6 +281,7 @@ namespace {
           IMP_LOG(VERBOSE, "Rejected state " << state
                   << " on prefix subset " << subset << " due to filter "
                   << *filters[i][j] << std::endl);
+          incr= filters[i][j]->get_next_state(order[i], state)- state[order[i]];
           goto bad;
         }
       }
@@ -314,8 +316,8 @@ namespace {
       cur[order[i]]=0;
     }
     for (unsigned int i=current_digit; i < cur.size(); ++i) {
-      ++cur[order[i]];
-      if (cur[order[i]]==maxs[order[i]]) {
+      cur[order[i]]+=incr;
+      if (cur[order[i]]>=maxs[order[i]]) {
         cur[order[i]]=0;
       } else {
         changed_digit=i;

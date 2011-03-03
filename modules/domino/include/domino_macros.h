@@ -65,7 +65,8 @@
   IMP_OBJECTS(Name##SubsetFilterTable, Name##SubsetFilterTables)
 
 
-#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter, strength)    \
+#define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter, strength,    \
+                                             next)                      \
   struct Name##Filter {                                                 \
     bool operator()(const SubsetState &state,                           \
                     const Ints &members) const {                        \
@@ -79,6 +80,12 @@
       strength;                                                         \
     }                                                                   \
   };                                                                    \
+  struct Name##Next {                                                   \
+    double operator()(int pos, const SubsetState& state,                \
+                      const Ints &set) const {                          \
+      next;                                                             \
+    }                                                                   \
+  };                                                                    \
   void Name##SubsetFilterTable::do_show(std::ostream &) const {         \
   }                                                                     \
   IMP::domino::SubsetFilter* Name##SubsetFilterTable::                  \
@@ -88,7 +95,8 @@
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
     get_indexes(s, excluded, all, 1, used);                             \
-    return get_disjoint_set_filter<Name##Filter>(#Name, all, used);     \
+    return get_disjoint_set_filter<Name##Filter, Name##Next>(#Name, s,  \
+                                                             all, used); \
   }                                                                     \
   double                                                                \
   Name##SubsetFilterTable::get_strength(const IMP::domino::Subset &s,   \
@@ -97,7 +105,9 @@
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
     get_indexes(s, excluded, all, 0, used);                             \
-    return get_disjoint_set_strength<Name##Strength>(s, excluded, all,used); \
+    return get_disjoint_set_strength<Name##Strength>(s,                 \
+                                                 excluded,              \
+                                                 all,used);             \
   }
 
 

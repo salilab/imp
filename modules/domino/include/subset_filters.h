@@ -54,6 +54,17 @@ public:
   //! it was created with
   virtual bool get_is_ok(const SubsetState& state) const=0;
 
+  //! Return a next possible acceptable state for the particle in pos
+  /** The default implementation returns the current value +1. This method
+      needs to make sure it does not skip any valid states.
+
+      The method can assume \c !get_is_ok(state) and that the state
+      minus pos is ok.
+  */
+  virtual int get_next_state(int pos, const SubsetState& state) const {
+    return state[pos]+1;
+  }
+
   virtual ~SubsetFilter();
 };
 
