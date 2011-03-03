@@ -176,10 +176,10 @@ class Statistics:
     def get_formatted_entries(self):
         return [ent.get_value() for ent in self.entries]
 
-    def should_wrap_line(self, pos):
+    def should_wrap_line(self, pos, line):
         if self.wrap_stats:
-            if pos % self.num_entries_per_line == \
-                    self.num_entries_per_line - 1:
+            num = self.num_entries_per_line
+            if pos % num == num - 1 and pos != len(line)-1:
                 return True
         return False
 
@@ -189,11 +189,11 @@ class Statistics:
         for i,tok in enumerate(line):
             out += tok
             ln = 2 + (i / self.num_entries_per_line)
-            if self.should_wrap_line(i):
+            if self.should_wrap_line(i,line):
                 out += '\n%s%d' % (marker,ln)
             out += self.separator
         #don't add a newline if we just did
-        if not self.should_wrap_line(i):
+        if not self.should_wrap_line(i,line):
             out += '\n'
         return out
 
@@ -212,7 +212,7 @@ class Statistics:
         if self.write_title:
             self.write_title = False
             titles = self.format_titles()
-            fl.write(self.prepare_line(titles, marker='H'))
+            fl.write(self.prepare_line(titles, marker='#'))
         elif self.repeat_title > 0:
             if (stepno/self.rate) % self.repeat_title == 0:
                 self.write_title = True
