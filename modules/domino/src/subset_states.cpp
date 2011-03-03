@@ -35,11 +35,17 @@ namespace {
   namespace {
 
 
+    template <class It>
+    ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
+      if (b==e) return ParticlesTemp();
+      return ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
+                           boost::make_permutation_iterator(s.end(), e));
+  }
+
+
   template <class It>
   Subset get_sub_subset(const Subset &s, It b, It e) {
-    if (b==e) return Subset();
-    ParticlesTemp pt(boost::make_permutation_iterator(s.begin(), b),
-                     boost::make_permutation_iterator(s.begin(), e));
+    ParticlesTemp pt= get_sub_particles(s, b, e);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (int i=0; i< std::distance(b,e); ++i) {
         IMP_INTERNAL_CHECK(pt[i]==s[*(b+i)],
@@ -71,6 +77,39 @@ namespace {
   }
 
 
+ SubsetFilters get_filters(const Subset &sc,
+                           const Subsets &excluded,
+                           const SubsetFilterTables &sft) {
+   SubsetFilters ret;
+   for (unsigned int i=0; i< sft.size(); ++i) {
+     SubsetFilter* f= sft[i]->get_subset_filter(sc, excluded);
+     if (f) {
+       ret.push_back(f);
+     } else {
+       std::cout << "No filter for " << sft[i]->get_name()
+                 << " on " << sc
+                 << " minus " << (excluded.empty()?Subset(): excluded[0])
+                 << std::endl;
+     }
+   }
+   return ret;
+ }
+
+
+    /* double evaluate_order(const Ints &order, const Subset &s,
+                          const SubsetFilterTables &sft) {
+      ParticlesTemp sorted= get_sub_particles(s, order.begin(), order.end());
+      Subset sc(sorted);
+      sorted.pop_back();
+      Subsets excluded(1, Subset(sorted));
+      SubsetFilters filters= get_filters(sc, excluded, sft);
+      double ret=0;
+      for (unsigned int i=0; i< filters.size(); ++i) {
+        ret+= filters[i]->get_strength(s);
+      }
+      return ret;
+      }*/
+
     void initialize_order(const Subset &s,
                           const SubsetFilterTables &sft,
                           Ints &order,
@@ -85,6 +124,7 @@ namespace {
         int max_j=-1;
         SubsetFilters max_filters;
         Subset max_subset;
+        Subsets max_excluded;
         Subset all_remaining=get_sub_subset(s, remaining.begin(),
                                             remaining.end());
         Ints before;
@@ -102,25 +142,15 @@ namespace {
                                           excluded_order.end());
           // ask all tables about subset of taken+this particle - taken
           double cur_restraint=1;
-          SubsetFilters cur_filters;
           for (unsigned int i=0; i < sft.size(); ++i) {
             /*std::cout << "Creating filter on "
               << all_remaining << " " << excluded
               << std::endl;*/
-            SubsetFilter *cur_filterp
-              =sft[i]->get_subset_filter(all_remaining,
+            double st
+              =sft[i]->get_strength(all_remaining,
                                          Subsets(1,
                                                  excluded));
-            if (cur_filterp) {
-              Pointer<SubsetFilter> cur_filter=cur_filterp;
-              cur_filter->set_was_used(true);
-              double str=cur_filter->get_strength(s);
-              IMP_USAGE_CHECK(str >=0 && str <=1, "Strength is out of range "
-                              << str);
-              //std::cout << "strength is " << str << std::endl;
-              cur_restraint*= 1-str;
-              cur_filters.push_back(cur_filter);
-            }
+            cur_restraint*= 1-st;
           }
           /*std::cout << "Of " << s[remaining[j]]->get_name()
                     << " plus " << excluded << " got strength " << cur_restraint
@@ -128,13 +158,16 @@ namespace {
           if (cur_restraint >= max_restraint) {
             max_restraint=cur_restraint;
             max_j=j;
-            max_filters=cur_filters;
+            max_excluded=Subsets(1,
+                                 excluded);
             max_subset=all_remaining;
           }
           before.push_back(cur);
         }
         order.push_back(remaining[max_j]);
-        filters.push_back(max_filters);
+        filters.push_back(get_filters(max_subset,
+                                      max_excluded,
+                                      sft));
         filter_subsets.push_back(max_subset);
         remaining.erase(remaining.begin()+max_j);
         /*std::cout << "Remaining is ";
@@ -145,7 +178,7 @@ namespace {
       }
       IMP_LOG(TERSE, "Order for " << s << " is ");
       for (unsigned int i=0; i< order.size(); ++i) {
-        IMP_LOG(TERSE,  order[i] << " ");
+        IMP_LOG(TERSE,  s[order[i]]->get_name() << " ");
       }
       IMP_LOG(TERSE, std::endl);
     }
@@ -161,6 +194,14 @@ namespace {
     std::vector<Subset> filter_subsets;
 
     initialize_order(s, sft, order, filters, filter_subsets);
+    for (unsigned int i=0; i< order.size(); ++i) {
+      ParticlesTemp ps= get_sub_particles(s, order.begin()+i, order.end());
+      Subset sc(ps);
+      Subset ex(ParticlesTemp(ps.begin()+1, ps.end()));
+      SubsetFilters fts= get_filters(sc, Subsets(1, ex), sft);
+      filter_subsets.push_back(sc);
+      filters.push_back(fts);
+    }
 
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       std::set<int> taken(order.begin(), order.end());

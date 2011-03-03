@@ -38,6 +38,9 @@ class DOMINOTests(IMP.test.TestCase):
         css= IMP.domino.Subset(psp[0:5])
         print css
         f= ft.get_subset_filter(css, [])
+        print f, css
+        if not f:
+            return
         filtered= self._get_filtered(f, 5)
         for s in filtered:
             for i, p0 in enumerate(css):

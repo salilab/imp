@@ -19,12 +19,6 @@ namespace {
     }
     IMP_SUBSET_FILTER(ExampleSubsetFilter);
   };
-  double ExampleSubsetFilter::get_strength(const domino::Subset &) const {
-      // this is a really strong filter
-      // for a weaker one, the number should be roughly the fraction
-      // of states that the filter eliminates
-      return 1;
-    }
   bool ExampleSubsetFilter::get_is_ok(const domino::SubsetState &state) const{
       IMP_OBJECT_LOG;
       for (unsigned int i=0; i< state.size(); ++i) {
@@ -56,6 +50,14 @@ ExampleSubsetFilterTable::get_subset_filter(const domino::Subset&s,
     values[i]= index_.find(s[i])->second;
   }
   return new ExampleSubsetFilter(values);
+}
+
+double ExampleSubsetFilterTable::get_strength(const domino::Subset&,
+                                  const domino::Subsets &) const {
+  // this is a really strong filter
+  // for a weaker one, the number should be roughly the fraction
+  // of states that the filter eliminates
+  return 1;
 }
 
 void ExampleSubsetFilterTable::do_show(std::ostream &) const {
