@@ -70,8 +70,7 @@ public:
 
 protected:
   //! Perform a single dynamics step.
-  virtual void step_1();
-  virtual void step_2();
+  virtual void step();
 
 private:
   void initialize();
