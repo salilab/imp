@@ -83,11 +83,6 @@ private:
    */
   void setup_particles();
 
-  // Additional stuff needed for NVT
-  void remove_linear();
-  void remove_angular();
-  void do_therm();
-
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
     if (vel >= 0.0) {
