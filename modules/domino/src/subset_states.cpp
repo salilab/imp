@@ -33,7 +33,6 @@ namespace {
   template <class It>
   ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
     if (b==e) return ParticlesTemp();
-                    == std::distance(b,e), "Distances don't match");
     return ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
                          boost::make_permutation_iterator(s.end(), e));
   }

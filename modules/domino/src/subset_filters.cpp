@@ -360,7 +360,7 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equality, {
 
 namespace {
   double get_sorted_strength(const IMP::domino::Subset &s,
-                             const IMP::domino::Subsets &excluded,
+                             const IMP::domino::Subsets &,
                              const Ints &members) {
     /*IMP_LOG(SILENT, "For " << s << " ");
       logit(SILENT, members);*/
@@ -368,7 +368,7 @@ namespace {
     bool gap=false;
     for (unsigned int i=0; i< members.size(); ++i) {
       if (members[i] != -1){
-        if (gap || members[i] < i) {
+        if (gap || static_cast<unsigned int>(members[i]) < i) {
           /*IMP_LOG(SILENT, " not packed " << i
             << " " << count << std::endl);*/
           return 0;
