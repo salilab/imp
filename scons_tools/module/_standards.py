@@ -67,4 +67,5 @@ def add(env, plural_exceptions=[], show_exceptions=[], function_name_exceptions=
                               env.Value(function_name_exceptions),
                               env.Value(value_object_exceptions),
                               env.Value(class_name_exceptions),
-                              env.Value(spelling_exceptions)])[0]
+                              env.Value([x.lower() \
+                                         for x in spelling_exceptions])])[0]
