@@ -30,16 +30,12 @@ namespace {
 
 
 
-
-
-  namespace {
-
-
-    template <class It>
-    ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
-      if (b==e) return ParticlesTemp();
-      return ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
-                           boost::make_permutation_iterator(s.end(), e));
+  template <class It>
+  ParticlesTemp get_sub_particles(const Subset &s, It b, It e) {
+    if (b==e) return ParticlesTemp();
+                    == std::distance(b,e), "Distances don't match");
+    return ParticlesTemp(boost::make_permutation_iterator(s.begin(), b),
+                         boost::make_permutation_iterator(s.end(), e));
   }
 
 
@@ -56,121 +52,108 @@ namespace {
     }
     Subset rs(pt);
     /*std::cout << "SubSubset " << s << " ";
-    for (It c= b; c!= e; ++c) {
+      for (It c= b; c!= e; ++c) {
       std::cout << *c << " ";
-    }
-    std::cout << " is " << rs << std::endl;*/
+      }
+      std::cout << " is " << rs << std::endl;*/
     return rs;
   }
   template <class Ints>
- SubsetState get_sub_subset_state(const Subset &s, const Ints &ss,
-                                  const Subset sub_s) {
-   Ints ret(sub_s.size());
-   for (unsigned int i=0; i< sub_s.size(); ++i) {
-     for (unsigned int j=0; j< s.size(); ++j) {
-       if (sub_s[i] == s[j]) {
-         ret[i]= ss[j];
-       }
-     }
-   }
-   return SubsetState(ret);
+  SubsetState get_sub_subset_state(const Subset &s, const Ints &ss,
+                                   const Subset sub_s) {
+    Ints ret(sub_s.size());
+    for (unsigned int i=0; i< sub_s.size(); ++i) {
+      for (unsigned int j=0; j< s.size(); ++j) {
+        if (sub_s[i] == s[j]) {
+          ret[i]= ss[j];
+        }
+      }
+    }
+    return SubsetState(ret);
   }
 
 
- SubsetFilters get_filters(const Subset &sc,
-                           const Subsets &excluded,
-                           const SubsetFilterTables &sft) {
-   SubsetFilters ret;
-   for (unsigned int i=0; i< sft.size(); ++i) {
-     SubsetFilter* f= sft[i]->get_subset_filter(sc, excluded);
-     if (f) {
-       ret.push_back(f);
-     } else {
-       std::cout << "No filter for " << sft[i]->get_name()
-                 << " on " << sc
-                 << " minus " << (excluded.empty()?Subset(): excluded[0])
-                 << std::endl;
-     }
-   }
-   return ret;
- }
-
-
-    /* double evaluate_order(const Ints &order, const Subset &s,
-                          const SubsetFilterTables &sft) {
-      ParticlesTemp sorted= get_sub_particles(s, order.begin(), order.end());
-      Subset sc(sorted);
-      sorted.pop_back();
-      Subsets excluded(1, Subset(sorted));
-      SubsetFilters filters= get_filters(sc, excluded, sft);
-      double ret=0;
-      for (unsigned int i=0; i< filters.size(); ++i) {
-        ret+= filters[i]->get_strength(s);
+  SubsetFilters get_filters(const Subset &sc,
+                            const Subsets &excluded,
+                            const SubsetFilterTables &sft) {
+    SubsetFilters ret;
+    for (unsigned int i=0; i< sft.size(); ++i) {
+      SubsetFilter* f= sft[i]->get_subset_filter(sc, excluded);
+      if (f) {
+        ret.push_back(f);
+      } else {
+        /*std::cout << "No filter for " << sft[i]->get_name()
+                  << " on " << sc
+                  << " minus " << (excluded.empty()?Subset(): excluded[0])
+                  << std::endl;*/
       }
-      return ret;
-      }*/
-
-    void initialize_order(const Subset &s,
-                          const SubsetFilterTables &sft,
-                          Ints &order) {
-      Ints remaining;
-      for (unsigned int i=0; i< s.size(); ++i) {
-        remaining.push_back(i);
-      }
-      for (unsigned int i=0; i< s.size(); ++i) {
-        double max_restraint=-1;
-        int max_j=-1;
-        Subsets max_excluded;
-        Subset all_remaining=get_sub_subset(s, remaining.begin(),
-                                            remaining.end());
-        Ints before;
-        Ints after(remaining.rbegin(), remaining.rend());
-        for (unsigned int j=0; j< remaining.size(); ++j) {
-          //std::cout << "Trying " << remaining[j] << std::endl;
-          int cur= after.back();
-          IMP_INTERNAL_CHECK(remaining[j]== cur,
-                             "Do not match " << remaining[j] << " and " << cur);
-          after.pop_back();
-          Ints excluded_order(before);
-          excluded_order.insert(excluded_order.end(),
-                                after.begin(), after.end());
-          Subset excluded= get_sub_subset(s, excluded_order.begin(),
-                                          excluded_order.end());
-          // ask all tables about subset of taken+this particle - taken
-          double cur_restraint=0;
-          for (unsigned int i=0; i < sft.size(); ++i) {
-            /*std::cout << "Creating filter on "
-              << all_remaining << " " << excluded
-              << std::endl;*/
-            double st
-              =sft[i]->get_strength(all_remaining,
-                                         Subsets(1,
-                                                 excluded));
-            cur_restraint+= 1-st;
-          }
-          /*std::cout << "Of " << s[remaining[j]]->get_name()
-                    << " plus " << excluded << " got strength " << cur_restraint
-                    << std::endl;*/
-          if (cur_restraint >= max_restraint) {
-            max_restraint=cur_restraint;
-            max_j=j;
-          }
-          before.push_back(cur);
-        }
-        order.push_back(remaining[max_j]);
-        remaining.erase(remaining.begin()+max_j);
-        /*std::cout << "Remaining is ";
-        for (unsigned int i=0; i< remaining.size(); ++i) {
-          std::cout << remaining[i] << " ";
-        }
-        std::cout << std::endl;*/
-      }
-      IMP_LOG(TERSE, "Order for " << s << " is ");
-      for (unsigned int i=0; i< order.size(); ++i) {
-        IMP_LOG(TERSE,  s[order[i]]->get_name() << " ");
-      }
-      IMP_LOG(TERSE, std::endl);
     }
+    return ret;
+  }
+
+
+  double evaluate_order(const Ints &order, const Subset &s,
+                        const SubsetFilterTables &sft) {
+    ParticlesTemp sorted= get_sub_particles(s, order.begin(), order.end());
+    Subset sc(sorted);
+    //std::cout << "sc is " << sc << std::endl;
+    sorted.pop_back();
+    Subsets excluded;
+    if (!sorted.empty()) {
+      //std::cout << "excluded is " << Subset(sorted) << std::endl;
+      excluded.push_back(Subset(sorted));
+    }
+    double ret=0;
+    for (unsigned int i=0; i< sft.size(); ++i) {
+      ret+= sft[i]->get_strength(sc, excluded);
+    }
+    return ret;
+  }
+
+  Ints initialize_order(const Subset &s,
+                        const SubsetFilterTables &sft) {
+    Ints order;
+    Ints remaining;
+    for (unsigned int i=0; i< s.size(); ++i) {
+      remaining.push_back(i);
+    }
+    while (order.size() != s.size()) {
+      double max_restraint=-1;
+      int max_j=-1;
+      /*std::cout << "Cur order is ";
+      for (unsigned int i=0; i< order.size(); ++i) {
+        std::cout << order[i] << " ";
+      }
+      std::cout << std::endl;*/
+      for (unsigned int j=0; j< remaining.size(); ++j) {
+        //std::cout << "Trying " << remaining[j] << std::endl;
+        int cur= remaining[j];
+        order.push_back(cur);
+
+        // ask all tables about subset of taken+this particle - taken
+        double cur_restraint=evaluate_order(order, s, sft);
+
+        /*std::cout << "Of " << s[remaining[j]]->get_name()
+          << " plus " << excluded << " got strength "
+          << cur_restraint
+          << std::endl;*/
+        /*std::cout << "For " << remaining[j] << " got "
+          << cur_restraint << std::endl;*/
+        if (cur_restraint >= max_restraint) {
+          max_restraint=cur_restraint;
+          max_j=j;
+        }
+        order.pop_back();
+      }
+      order.push_back(remaining[max_j]);
+      remaining.erase(remaining.begin()+max_j);
+    }
+    IMP_IF_LOG(TERSE) {
+      IMP_LOG(TERSE, "Order for " << s << " is ");
+      Particles ps(get_sub_particles(s, order.begin(), order.end()));
+      IMP_LOG(TERSE, ps << std::endl);
+    }
+    return order;
   }
   void fill_states_list(const Subset &s,
                         ParticleStatesTable *table,
@@ -178,9 +161,9 @@ namespace {
                         unsigned int max,
                         SubsetStates &states_) {
     //std::cout << "Searching order for " << s << std::endl;
-    Ints order;
 
-    initialize_order(s, sft, order);
+    Ints order=initialize_order(s, sft);
+    std::reverse(order.begin(), order.end());
     std::vector<SubsetFilters> filters;
     std::vector<Subset> filter_subsets;
     for (unsigned int i=0; i< order.size(); ++i) {
@@ -221,43 +204,43 @@ namespace {
       Ints state;
       std::map<Particle*, int> map;
       for (unsigned int i=0; i< s.size(); ++i) {
-        state.push_back(i);
-        map[s[i]]=i;
+      state.push_back(i);
+      map[s[i]]=i;
       }
       IMP_LOG(VERBOSE,"Order is: ");
       for (unsigned int i=0; i< order.size(); ++i) {
-        IMP_LOG(VERBOSE, order[i] << " ");
+      IMP_LOG(VERBOSE, order[i] << " ");
       }
       IMP_LOG(VERBOSE, std::endl);
       for (unsigned int i=0; i< s.size(); ++i) {
-        {
-          //Ints pstate(state.begin(), state.begin()+i);
-          Subset csub= get_sub_subset(s, order.begin(),
-                                      order.begin()+i);
-          SubsetState cstate= get_sub_subset_state(s,
-                                                   state,
-                                                   csub);
-          for (unsigned int j=0; j < csub.size(); ++j) {
-            IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
-                               "Wrong state found in " << cstate
-                               << " for " << csub << " from "
-                               << s << std::endl);
-          }
-        }
-        {
-          //Ints pstate(state.begin()+i, state.end());
-          Subset csub= get_sub_subset(s, order.begin()+i,
-                                      order.end());
-          SubsetState cstate= get_sub_subset_state(s, state, csub);
-          for (unsigned int j=0; j < csub.size(); ++j) {
-            IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
-                               "Wrong state found in back " << cstate
-                               << " for " << csub << " from "
-                               << s << std::endl);
-          }
-        }
-        }
-        }*/
+      {
+      //Ints pstate(state.begin(), state.begin()+i);
+      Subset csub= get_sub_subset(s, order.begin(),
+      order.begin()+i);
+      SubsetState cstate= get_sub_subset_state(s,
+      state,
+      csub);
+      for (unsigned int j=0; j < csub.size(); ++j) {
+      IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
+      "Wrong state found in " << cstate
+      << " for " << csub << " from "
+      << s << std::endl);
+      }
+      }
+      {
+      //Ints pstate(state.begin()+i, state.end());
+      Subset csub= get_sub_subset(s, order.begin()+i,
+      order.end());
+      SubsetState cstate= get_sub_subset_state(s, state, csub);
+      for (unsigned int j=0; j < csub.size(); ++j) {
+      IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
+      "Wrong state found in back " << cstate
+      << " for " << csub << " from "
+      << s << std::endl);
+      }
+      }
+      }
+      }*/
 
   filter:
     //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
@@ -266,15 +249,15 @@ namespace {
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
         SubsetState sub_state= get_sub_subset_state(s, cur, subset);
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-          IMP_INTERNAL_CHECK(subset== filter_subsets[i],
-                             "Expected and found subsets don't match "
-                             << filter_subsets[i] << " vs " << subset);
+        IMP_INTERNAL_CHECK(subset== filter_subsets[i],
+        "Expected and found subsets don't match "
+        << filter_subsets[i] << " vs " << subset);
         }
         for (unsigned int j=0; j< filters[i].size(); ++j) {
-          IMP_INTERNAL_CHECK(filters[i][j]->get_is_ok(sub_state),
-                             "Subset should have been passed before "
-                             << get_sub_subset(s, order.begin()+i, order.end())
-                             << " with " << sub_state << std::endl);
+        IMP_INTERNAL_CHECK(filters[i][j]->get_is_ok(sub_state),
+        "Subset should have been passed before "
+        << get_sub_subset(s, order.begin()+i, order.end())
+        << " with " << sub_state << std::endl);
         }
         }*/
     }
@@ -285,9 +268,9 @@ namespace {
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
         SubsetState state= get_sub_subset_state(s, cur, subset);
         /*std::cout << "filtering " << i << " " << j
-                  << " on state " << state
-                  << " got " << filters[i][j]->get_is_ok(state)
-                  << std::endl;*/
+          << " on state " << state
+          << " got " << filters[i][j]->get_is_ok(state)
+          << std::endl;*/
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           IMP_INTERNAL_CHECK(subset== filter_subsets[i],
                              "Expected and found subsets don't match "
@@ -353,9 +336,7 @@ namespace {
               << " possible states." << std::endl);
     }
   }
-
 }
-
 
 BranchAndBoundSubsetStatesTable
 ::BranchAndBoundSubsetStatesTable(ParticleStatesTable *pst,
@@ -402,8 +383,7 @@ void ListSubsetStatesTable::do_show(std::ostream &) const {
 
 Ints get_order(const Subset &s,
                const SubsetFilterTables &sft) {
-  Ints order;
-  initialize_order(s, sft, order);
+  Ints order=initialize_order(s, sft);
   return order;
 }
 
