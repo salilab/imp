@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
+import IMP.algebra
 
 
 
@@ -31,6 +32,20 @@ class MeasuresTest(IMP.test.TestCase):
             IMP.core.transform(d,t)
         rmsd = IMP.atom.get_rmsd(xyz,xyz1)
         self.assertAlmostEqual(rmsd,(5**2+5**2+5**2)**0.5, 2)
+
+    def test_simple_rmsd(self):
+        """Test RMSD for vectors and XYZs"""
+        v1 = IMP.algebra.Vector3D(0,0,0)
+        v2 = IMP.algebra.Vector3D(1,0,0)
+
+        m = IMP.Model()
+        p1 = IMP.Particle(m)
+        p2 = IMP.Particle(m)
+        x1 = IMP.core.XYZ.setup_particle(p1, v1)
+        x2 = IMP.core.XYZ.setup_particle(p2, v2)
+
+        self.assertAlmostEqual(IMP.atom.get_rmsd([v1], [v2]), 1.0, delta=1e-6)
+        self.assertAlmostEqual(IMP.atom.get_rmsd([x1], [x2]), 1.0, delta=1e-6)
 
     def test_native_overlap(self):
         """Testing proper results for native overlap"""
