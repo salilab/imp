@@ -735,7 +735,7 @@ class PyroProxy(threading.Thread):
 
                 return attr            
         else:
-            raise 'Proxy object does not have attribute "%s"' % name
+            raise ValueError, 'Proxy object does not have attribute "%s"' % name
         
     def __call_method(self, name, *args):
 
