@@ -281,7 +281,19 @@ namespace {
           IMP_LOG(VERBOSE, "Rejected state " << state
                   << " on prefix subset " << subset << " due to filter "
                   << *filters[i][j] << std::endl);
-          incr= filters[i][j]->get_next_state(order[i], state)- state[order[i]];
+          int pos=-1;
+          for (unsigned int k=0; k< subset.size(); ++k) {
+            if (subset[k]== s[order[i]]) {
+              pos=k;
+              break;
+            }
+          }
+          IMP_USAGE_CHECK(pos != -1, "Particle not found " << s << " vs "
+                          << subset << " " << s[order[i]]->get_name());
+          incr= filters[i][j]->get_next_state(pos, state)- state[pos];
+          IMP_USAGE_CHECK(incr>0, "invalid next state returned by "
+                          << filters[i][j]->get_name()
+                          << " " << filters[i][j]->get_next_state(pos, state));
           goto bad;
         }
       }
