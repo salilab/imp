@@ -1,6 +1,6 @@
 /**
  *  \file atom/RemoveRigidMotionOptimizerState.h
- *  \brief Maintains temperature during molecular dynamics by velocity scaling.
+ *  \brief Remove rigid rotation and translation during molecular dynamics.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
@@ -16,15 +16,14 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Removes new translationa and rotations from the set of points..
-/**  */
+//! Removes rigid translation and rotation from the particles.
 class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState
 {
  public:
   RemoveRigidMotionOptimizerState(const Particles &pis,
                                   unsigned skip_steps);
 
-  //! Set the number of update calls to skip between rescaling.
+  //! Set the number of update calls to skip between removals.
   void set_skip_steps(unsigned skip_steps) {
     skip_steps_ = skip_steps;
   }
@@ -34,7 +33,7 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState
     pis_=pis;
   }
 
-  //! Rescale the velocities now
+  //! Remove rigid motion now
   void remove_rigid_motion() const;
 
   IMP_OPTIMIZER_STATE(RemoveRigidMotionOptimizerState);
