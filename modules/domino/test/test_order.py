@@ -13,7 +13,7 @@ class DOMINOTests(IMP.test.TestCase):
     def _print_order(self, order, s):
         for i in order:
             print s[order[i]].get_name(),
-    def test_global_min2(self):
+    def _test_global_min2(self):
         """Testing ordering"""
         m= IMP.Model()
         ps=[]
@@ -34,7 +34,25 @@ class DOMINOTests(IMP.test.TestCase):
         for i, oi in enumerate(order):
             self.assertEqual(i, oi)
 
-    def test_global_min3(self):
+
+    def test_global_min4(self):
+        """Testing enumeration with ordering"""
+        m= IMP.Model()
+        ps=[]
+        #IMP.set_log_level(IMP.VERBOSE)
+        pst= IMP.domino.ParticleStatesTable()
+        state= IMP.domino.IndexStates(20);
+        for i in range(0,20):
+            ps.append(IMP.Particle(m));
+            pst.set_particle_states(ps[-1], state)
+        eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
+        ps.sort()
+        s= IMP.domino.Subset(ps)
+        sst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [eqft])
+        ss= sst.get_subset_states(s)
+        print ss
+        self.assertEqual(len(ss), 1)
+    def _test_global_min3(self):
         """Testing ordering with other node"""
         m= IMP.Model()
         ps=[]

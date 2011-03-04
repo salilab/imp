@@ -483,6 +483,8 @@ namespace {
       SubsetFilter("List score filter"),
       keepalive_(ka), indexes_(indexes) {
     }
+    int get_next_state(int pos,
+                       const SubsetState& state) const;
     IMP_SUBSET_FILTER(ListSubsetFilter);
   };
 
@@ -499,6 +501,14 @@ namespace {
     }
     ++keepalive_->num_ok_;
     return true;
+  }
+
+  int ListSubsetFilter::get_next_state(int pos,
+                                       const SubsetState& state) const {
+    unsigned int i=state[pos]+1;
+    while (i < keepalive_->states_[indexes_[pos]].size()
+           && !keepalive_->states_[indexes_[pos]][i]) ++i;
+    return i;
   }
 
   void ListSubsetFilter::do_show(std::ostream &) const{}
