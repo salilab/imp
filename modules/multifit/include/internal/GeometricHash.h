@@ -34,6 +34,7 @@ public:
   typedef std::map<Bucket, PointList> GeomMap;
   typedef std::vector< const ValueType *> HashResult;
   typedef std::vector<T> HashResultT;
+  typedef std::vector<Bucket> BucketList;
 
 
   /* Default constructor - all cubes/buckets have the same edge length */
@@ -146,6 +147,16 @@ public:
   GeomMap const &Map() const
   {
     return gmap_;
+  }
+
+  /* Return vector of buckets */
+  BucketList get_buckets() const
+  {
+    BucketList result;
+    for ( typename GeomMap::const_iterator p = gmap_.begin();
+        p != gmap_.end(); ++p )
+      result.push_back(p->first);
+    return result;
   }
 
   /* Remove all data from the hash map */
