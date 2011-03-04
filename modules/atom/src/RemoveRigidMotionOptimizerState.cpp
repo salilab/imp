@@ -42,13 +42,11 @@ void RemoveRigidMotionOptimizerState::remove_rigid_motion() const
 void RemoveRigidMotionOptimizerState::remove_linear() const
 {
 
-  Float cm[3];
+  Float cm[3] = {0., 0., 0.};
   Float cm_mass = 0.;
 
-  for (unsigned i = 0; i < 3; ++i) cm[i] = 0.;
-
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    Particle *p = pis_[i];
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    Particle *p = *pi;
 
     Float mass =  Mass(p).get_mass();
     cm_mass +=mass;
@@ -59,8 +57,8 @@ void RemoveRigidMotionOptimizerState::remove_linear() const
     }
   }
 
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    Particle *p = pis_[i];
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    Particle *p = *pi;
 
     for (unsigned i = 0; i < 3; ++i) {
       Float velocity = p->get_value(vs_[i]);
@@ -84,8 +82,8 @@ void RemoveRigidMotionOptimizerState::remove_angular() const
    }
   }
 
-  for (unsigned int i=0; i< pis_.size(); ++i) {
-    Particle *p = pis_[i];
+  for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+    Particle *p = *pi;
 
     Float mass =  Mass(p).get_mass();
 
@@ -128,8 +126,8 @@ void RemoveRigidMotionOptimizerState::remove_angular() const
    oo[1] = (aq_eo - oo[2]*ac_ee)/af_de;
    oo[0] = (o - d*oo[1] - e*oo[2])/a;
 
-   for (unsigned int i=0; i< pis_.size(); ++i) {
-     Particle *p = pis_[i];
+   for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
+     Particle *p = *pi;
 
     for (unsigned i = 0; i < 3; ++i) {
       x[i]   = core::XYZ(p).get_coordinate(i);
