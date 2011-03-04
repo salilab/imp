@@ -122,6 +122,11 @@ void RemoveRigidMotionOptimizerState::remove_angular() const
    Float ab_dd = a*b-d*d;
    Float ac_ee = a*c-e*e;
 
+   // Avoid division by zero
+   if (a == 0. || af_de == 0. || (af_de*af_de-ab_dd*ac_ee) == 0.) {
+     return;
+   }
+
    oo[2] = (af_de*(a*r-d*o)-ab_dd*aq_eo) / (af_de*af_de-ab_dd*ac_ee);
    oo[1] = (aq_eo - oo[2]*ac_ee)/af_de;
    oo[0] = (o - d*oo[1] - e*oo[2])/a;
