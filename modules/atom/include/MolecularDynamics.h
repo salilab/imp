@@ -60,6 +60,9 @@ public:
       (occasionally encountered with frustrated conformations) from causing
       large oscillations in the system.
       By default, velocities are not capped.
+
+      \note The actual velocities that are capped are the half-step velocities
+            in the velocity Verlet algorithm.
    */
   void set_velocity_cap(Float velocity_cap) { velocity_cap_ = velocity_cap; }
 
@@ -74,6 +77,12 @@ protected:
 
 private:
   void initialize();
+
+  //! First part of velocity Verlet (update coordinates and half-step velocity)
+  void propagate_coordinates();
+
+  //! Second part of velocity Verlet (update velocity)
+  void propagate_velocities();
 
   //! Get the set of particles to use in this optimization.
   /** Scans for particles which have the necessary attributes to be

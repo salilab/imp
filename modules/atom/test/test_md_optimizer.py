@@ -75,15 +75,17 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         velmsg = "Predicted velocity %.5f doesn't match generated %.5f, " + \
                  "for step %d, particle %d"
         for (num, step) in enumerate(traj):
+            newvx = vxfunc(vx)
             for n in range(len(coor)):
-                coor[n][0] += vx * timestep
                 self.assertAlmostEqual(vx, step[n][3], delta=1e-3,
-                                       msg=velmsg % (vx, step[n][3], num, n))
+                                       msg=velmsg % (vx, step[n][3],
+                                                     num, n))
                 for d in range(3):
                     self.assertAlmostEqual(coor[n][d], step[n][d], delta=1e-3,
                                            msg=msg % (coor[n][d], step[n][d],
                                                       num, n, d))
-            vx = vxfunc(vx)
+                coor[n][0] += (newvx+vx)/2.0 * timestep
+            vx = newvx
 
     def _optimize_model(self, timestep):
         """Run a short MD optimization on the model."""
@@ -115,8 +117,12 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self.model.add_restraint(r)
         self.md.set_velocity_cap(0.3)
         (start, traj) = self._optimize_model(timestep)
-        # At this strength, velocity at each step should be greater than the cap
-        self._check_trajectory(start, traj, timestep, lambda a: -0.3)
+        # Strength is so high that velocity should max out at the cap
+        for i in range(len(traj) - 1):
+            oldx = traj[i][0][0]
+            newx = traj[i+1][0][0]
+            # Calculate velocity from change in position
+            self.assertAlmostEqual((oldx-newx) / timestep, 0.3, delta=1e-5)
 
     def test_non_xyz(self):
         """Should skip particles without xyz attributes"""
