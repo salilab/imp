@@ -309,6 +309,8 @@ class sfo_common():
         - timestep: in femtoseconds.
         - recenter: recenter the molecule every so many steps (Langevin only)
         - momentum: remove angular momentum every so many steps (Berendsen only)
+        Returns: an instance of md and an instance of an OptimizerState (the
+        thermostat), or None if NVE.
         """
         ## Molecular Dynamics (from MAX BONOMI)
         md=IMP.atom.MolecularDynamics()
@@ -316,7 +318,7 @@ class sfo_common():
         md.assign_velocities(temperature)
         md.set_time_step(timestep)
         if thermostat == 'NVE':
-            pass
+            os = None
         elif thermostat == 'rescale_velocities':
             os=IMP.atom.VelocityScalingOptimizerState(
                     IMP.atom.get_leaves(prot), temperature, 0)
@@ -340,7 +342,8 @@ class sfo_common():
 
         if md_restraints:
             md.set_restraints(md_restraints)
-        return md
+
+        return md, os
 
     def _setup_normal_mover(self, particle, floatkey, stepsize):
         """setup NormalMover to move particle's floatkey attribute
@@ -403,15 +406,15 @@ class sfo_common():
         - mc_restraints: if not None, use these energy terms for the metropolis
                             criterion.
         - timestep: time step for md, in femtoseconds.
-        Returns: hmc, mdmover, md
+        Returns: hmc, mdmover, md and OptimizerState (thermostat)
         """
-        md = self._setup_md(prot, temperature=temperature,
+        md, os = self._setup_md(prot, temperature=temperature,
                 thermostat=thermostat, coupling=coupling,
                 md_restraints=md_restraints, timestep=timestep)
         particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         mdmover = self._setup_md_mover(md, particles, temperature, n_md_steps)
         hmc = self._setup_mc(mdmover, temperature, mc_restraints)
-        return hmc, mdmover, md
+        return hmc, mdmover, md, os
 
     def init_simulation_setup_scale_mc(self, scale, temperature=300.0,
             mc_restraints=None, floatkey=IMP.FloatKey("scale"), nm_stepsize=0.1):
@@ -561,4 +564,14 @@ class sfo_common():
         #add the counter to the output
         stat.add_entry(hmc_key, name='counter')
         return hmc_key
+
+
+    def rescale_velocities(self, particles, factor):
+        """rescale the velocities of a bunch of particles having vx vy and vz
+        floatkeys
+        """
+        keys=[IMP.FloatKey("vx"), IMP.FloatKey("vy"), IMP.FloatKey("vz")]
+        for p in particles:
+            for k in keys:
+                p.set_value(k, p.get_value(k)*factor)
 
