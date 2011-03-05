@@ -295,8 +295,9 @@ class sfo_common():
         self._m.add_restraint(rs)
         return rs
 
-    def _setup_md(self,temperature=300.0, thermostat='berendsen', coupling=500, 
-                    md_restraints=None, timestep=1.0):
+    def _setup_md(self,prot, temperature=300.0, thermostat='berendsen',
+            coupling=500, md_restraints=None, timestep=1.0, recenter=1000,
+            momentum=1000):
         """setup molecular dynamics
         - temperature: target temperature
         - thermostat: one of 'NVE', rescale_velocities',
@@ -306,21 +307,37 @@ class sfo_common():
         - md_restraints: if not None, specify the terms of the energy to be used
                             during the md steps via a list of restraints.
         - timestep: in femtoseconds.
-        
+        - recenter: recenter the molecule every so many steps (Langevin only)
+        - momentum: remove angular momentum every so many steps (Berendsen only)
         """
         ## Molecular Dynamics (from MAX BONOMI)
         md=IMP.atom.MolecularDynamics()
         md.set_model(self._m)
         md.assign_velocities(temperature)
         md.set_time_step(timestep)
-        ## therm legend
-        # 0 :: nve
-        # 1 :: rescale velocities
-        # 2 :: berendsen
-        # 3 :: langevin
-        thermostats={'NVE':0, 'rescale_velocities':1, 
-                    'berendsen':2, 'langevin':3}
-        md.set_thermostat(thermostats[thermostat], temperature, coupling)
+        if thermostat == 'NVE':
+            pass
+        elif thermostat == 'rescale_velocities':
+            os=IMP.atom.VelocityScalingOptimizerState(
+                    IMP.atom.get_leaves(prot), temperature, 0)
+            md.add_optimizer_state(os)
+        elif thermostat == 'berendsen':
+            os=IMP.atom.BerendsenThermostatOptimizerState(
+                    IMP.atom.get_leaves(prot), temperature, coupling, 0)
+            md.add_optimizer_state(os)
+            mom = IMP.atom.RemoveRigidMotionOptimizerState(
+                    IMP.atom.get_leaves(prot), momentum)
+            md.add_optimizer_state(mom)
+        elif thermostat == 'langevin':
+            os=IMP.atom.LangevinThermostatOptimizerState(
+                    IMP.atom.get_leaves(prot), temperature, coupling, 0)
+            md.add_optimizer_state(os)
+            cen = IMP.atom.RemoveTranslationOptimizerState(
+                    IMP.atom.get_leaves(prot), recenter)
+            md.add_optimizer_state(cen)
+        else:            
+            raise NotImplementedError, thermostat
+
         if md_restraints:
             md.set_restraints(md_restraints)
         return md
@@ -336,7 +353,7 @@ class sfo_common():
                 IMP.FloatKeys([floatkey]),stepsize)
         return nm
 
-    def _setup_md_mover(self, md, particles, n_md_steps=10):
+    def _setup_md_mover(self, md, particles, temperature, n_md_steps=10):
         """setup MDMover using md and particles.
         - md: md instance
         - particles: particles to move, usually the leaves of the protein
@@ -346,7 +363,7 @@ class sfo_common():
         """
         cont=IMP.container.ListSingletonContainer(self._m)
         cont.add_particles(particles)
-        return IMP.atom.MDMover(cont, md, n_md_steps)
+        return IMP.atom.MDMover(cont, md, temperature, n_md_steps)
 
     def _setup_mc(self, mover, temperature=300.0, mc_restraints=None):
         """setup monte carlo using a certain mover.
@@ -388,10 +405,11 @@ class sfo_common():
         - timestep: time step for md, in femtoseconds.
         Returns: hmc, mdmover, md
         """
-        md = self._setup_md(temperature, thermostat, coupling, md_restraints,
-                timestep)
+        md = self._setup_md(prot, temperature=temperature,
+                thermostat=thermostat, coupling=coupling,
+                md_restraints=md_restraints, timestep=timestep)
         particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        mdmover = self._setup_md_mover(md, particles, n_md_steps)
+        mdmover = self._setup_md_mover(md, particles, temperature, n_md_steps)
         hmc = self._setup_mc(mdmover, temperature, mc_restraints)
         return hmc, mdmover, md
 
@@ -451,7 +469,7 @@ class sfo_common():
         accept = float(after-before)/nsteps
         self.stat.update(stats_key, 'acceptance', accept)
         mdsteps = mv.get_nsteps()
-        self.stat.update(stats_key, 'n_md_steps', nsteps)
+        self.stat.update(stats_key, 'n_md_steps', mdsteps)
         if adjust_stepsize:
             if 0.4 < accept < 0.6:
                 return
