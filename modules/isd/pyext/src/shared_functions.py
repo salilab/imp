@@ -77,6 +77,8 @@ class sfo_common():
         """
         m=self._m
         prot = IMP.atom.read_pdb(initpdb, m, selector)
+        if not prot.get_is_valid():
+            raise ValueError, "invalid hierarchy!"
         # Read in the CHARMM heavy atom topology and parameter files
         ff = IMP.atom.CHARMMParameters(top,par)
         # equivalent:
@@ -227,11 +229,12 @@ class sfo_common():
         #create lognormal restraint using gamma_data = 1
         return IMP.isd.NOERestraint(p0,p1,sigma,gamma,distance**(-6))
 
-    def init_model_ambiguous_NOE_restraint(self, restraint, sigma, gamma):
-        """reads a NOE restraint in the form (contribution,distance)
-        with contribution = (atom1, atom2)
-        where atom1 is (resno, atomname) and resno starts at 0.
-        Sets up a lognormal distance restraint using the given sigma and gamma.
+    def init_model_ambiguous_NOE_restraint(self, contributions, distance, 
+            sigma, gamma):
+        """Reads an ambiguous NOE restraint. contributions is a list of
+        (atom1, atom2) pairs, where atom1 is (resno, atomname) and resno starts
+        at 0.  Sets up a lognormal distance restraint using the given sigma and
+        gamma.  
         Returns the restraint.
         """
         raise NotImplementedError
@@ -325,14 +328,14 @@ class sfo_common():
             md.add_optimizer_state(os)
         elif thermostat == 'berendsen':
             os=IMP.atom.BerendsenThermostatOptimizerState(
-                    IMP.atom.get_leaves(prot), temperature, coupling, 0)
+                    IMP.atom.get_leaves(prot), temperature, coupling)
             md.add_optimizer_state(os)
             mom = IMP.atom.RemoveRigidMotionOptimizerState(
                     IMP.atom.get_leaves(prot), momentum)
             md.add_optimizer_state(mom)
         elif thermostat == 'langevin':
             os=IMP.atom.LangevinThermostatOptimizerState(
-                    IMP.atom.get_leaves(prot), temperature, coupling, 0)
+                    IMP.atom.get_leaves(prot), temperature, coupling)
             md.add_optimizer_state(os)
             cen = IMP.atom.RemoveTranslationOptimizerState(
                     IMP.atom.get_leaves(prot), recenter)
@@ -565,7 +568,6 @@ class sfo_common():
         stat.add_entry(hmc_key, name='counter')
         return hmc_key
 
-
     def rescale_velocities(self, particles, factor):
         """rescale the velocities of a bunch of particles having vx vy and vz
         floatkeys
@@ -574,4 +576,5 @@ class sfo_common():
         for p in particles:
             for k in keys:
                 p.set_value(k, p.get_value(k)*factor)
+
 
