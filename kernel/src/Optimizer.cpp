@@ -44,7 +44,7 @@ double Optimizer::optimize(unsigned int max_steps) {
               ValueException);
   }
   set_was_used(true);
-  flattened_restraints_=get_restraints(RestraintsTemp(restraints_.begin(),
+  flattened_restraints_=IMP::get_restraints(RestraintsTemp(restraints_.begin(),
                                                       restraints_.end()));
   return do_optimize(max_steps);
 }
@@ -77,5 +77,13 @@ double Optimizer::evaluate(bool compute_derivatives) const {
   }
 }
 
+
+RestraintSets Optimizer::get_restraints() const {
+  if (restraints_.empty()) {
+    return RestraintSets(1, model_->get_root_restraint_set());
+  } else {
+    return restraints_;
+  }
+}
 
 IMP_END_NAMESPACE
