@@ -46,6 +46,10 @@ protected:
                        Color, std::string) {
     return false;
   }
+  virtual bool handle(SurfaceMeshGeometry *,
+                      Color, std::string) {
+    return false;
+  }
   virtual bool handle(LabelGeometry *,
                        Color, std::string) {
     return false;

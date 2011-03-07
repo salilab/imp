@@ -22,6 +22,10 @@
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Plane3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
+#include <IMP/algebra/Grid3D.h>
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
+#include <IMP/cgal/internal/polyhedrons.h>
+#endif
 
 IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
@@ -119,6 +123,26 @@ class IMPDISPLAYEXPORT LabelGeometry: public Geometry {
   IMP_GEOMETRY(LabelGeometry);
 };
 
+
+
+//! Display a surface mesh
+/** Faces are delimited by -1s in the list of indices.
+*/
+class IMPDISPLAYEXPORT SurfaceMeshGeometry: public Geometry {
+  const algebra::Vector3Ds vertices_;
+  const Ints faces_;
+ protected:
+  SurfaceMeshGeometry(const std::pair<algebra::Vector3Ds, Ints >&m,
+                      std::string name="SurfaceMesh %1%");
+ public:
+  SurfaceMeshGeometry(const algebra::Vector3Ds& vertices,
+                      const Ints &faces);
+  const algebra::Vector3Ds& get_vertices() const {return vertices_;}
+  const Ints& get_faces() const {return faces_;}
+  IMP_GEOMETRY(SurfaceMeshGeometry);
+};
+
+
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 //! Display a plane as truncated to a bounding box
 /** This requires CGAL.
@@ -131,6 +155,40 @@ class IMPDISPLAYEXPORT PlaneGeometry: public Geometry {
                 const algebra::BoundingBox3D& box);
   IMP_GEOMETRY(PlaneGeometry);
 };
+
+
+
+//! Display an isosurface of a density map
+/** This requires CGAL.
+ */
+class IMPDISPLAYEXPORT IsosurfaceGeometry: public SurfaceMeshGeometry {
+ public:
+  template <int D,
+            class Storage,
+            class Value>
+    IsosurfaceGeometry(const algebra::grids::GridD<D, Storage, Value> &grid,
+                       double iso):
+    SurfaceMeshGeometry(cgal::internal::get_iso_surface(grid, iso),
+                        "IsosurfaceGeometry %1%"){}
+#ifdef SWIG
+  IsosurfaceGeometry(const algebra::grids::GridD<3,
+                      algebra::grids::DenseGridStorageD<3, double> > &grid,
+                     double iso);
+  IsosurfaceGeometry(const algebra::grids::GridD<3,
+                       algebra::grids::DenseGridStorageD<3, float> > &grid,
+                     double iso);
+#endif
+};
+
+
+//! Display an isosurface of a density map
+/** This requires CGAL.
+ */
+class IMPDISPLAYEXPORT SkinSurfaceGeometry: public SurfaceMeshGeometry {
+ public:
+  SkinSurfaceGeometry(const algebra::Sphere3Ds &balls);
+};
+
 #endif
 
 
