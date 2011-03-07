@@ -27,7 +27,7 @@ files = [
          'masking.h',
          'rigid_fitting.h',
          'density_utilities.h',
-         'densityMapVolumetrics.h',
+         'density_map_volumetrics.h',
         ] \
         + SConscript('internal/SConscript')
 
