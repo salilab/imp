@@ -544,7 +544,7 @@ namespace grids {
                 data_.get());
     }
   public:
-    IMP_COPY_CONSTRUCTOR(DenseGridStorageD);
+    IMP_COPY_CONSTRUCTOR(DenseGridStorageD, BoundedGridStorageD<D>);
     typedef VT Value;
     DenseGridStorageD(int i, int j, int k, const VT &def):
       default_(def) {
@@ -1216,6 +1216,16 @@ struct SparseUnboundedGridD:
 };
 
 #endif
+
+
+template <int D,
+          class Storage,
+          // swig needs this for some reason
+          class Value>
+inline BoundingBoxD<D> get_bounding_box(const
+                                        grids::GridD<D, Storage, Value> &g) {
+  return g.get_bounding_box();
+}
 IMPALGEBRA_END_NAMESPACE
 
 

@@ -15,6 +15,7 @@
 #include "GridD.h"
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
+#include "internal/grid_3d_impl.h"
 #include <boost/iterator/transform_iterator.hpp>
 #include <IMP/internal/map.h>
 
@@ -77,10 +78,44 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \relatesalso Grid3D
 */
 template <class Storage>
-const typename Storage::Value &
+inline const typename Storage::Value
 get_trilinearly_interpolated(const grids::GridD<3, Storage> &g,
                              const VectorD<3> &v,
-                             const typename Storage::Value& outside=0);
+                             const typename Storage::Value& outside=0) {
+  // trilirp in z, y, x
+  const VectorD<3> halfside= g.get_unit_cell()*.5;
+  const VectorD<3> bottom_sample= g.get_bounding_box().get_corner(0)+halfside;
+  const VectorD<3> top_sample= g.get_bounding_box().get_corner(1)-halfside;
+  for (unsigned int i=0; i< 3; ++i){
+    if (v[i] < bottom_sample[i]
+        || v[i] >= top_sample[i]) {
+      //std::cout << v << " was rejected." << std::endl;
+      return outside;
+    }
+  }
+  using namespace internal::trilep_helpers;
+  int ivox[3];
+  algebra::VectorD<3> r;
+  internal::trilep_helpers::compute_voxel(g, v, ivox, r);
+  typename Storage::Value is[4];
+  for (unsigned int i=0; i< 4; ++i) {
+    // operator >> has high precidence compared. Go fig.
+    unsigned int bx= ((i&2) >> 1);
+    unsigned int by= (i&1);
+    IMP_INTERNAL_CHECK((bx==0 || bx==1) && (by==0 || by==1),
+                       "Logic error in trilerp");
+    is[i]=get_linearly_interpolated(r[2],
+                                      get_value(g, ivox[0]+bx, ivox[1]+by,
+                                                       ivox[2], outside),
+                                       get_value(g, ivox[0]+bx, ivox[1]+by,
+                                                 ivox[2]+1U, outside));
+  }
+  typename Storage::Value js[2];
+  for (unsigned int i=0; i< 2; ++i) {
+    js[i]= get_linearly_interpolated(r[1], is[i*2], is[i*2+1]);
+  }
+  return get_linearly_interpolated(r[0], js[0], js[1]);
+}
 
 // They are created with %template in swig to get around inclusion order issues
 #ifndef SWIG
@@ -145,7 +180,7 @@ IMPALGEBRA_END_NAMESPACE
     loop_voxel_index.
     \relatesalso Grid3D
  */
-#define IMP_GRID3D_FOREACH_VOXEL(grid, action)                          \
+#define IMP_GRID3D_FOREACH_VOXEL(g, action)                             \
   {                                                                     \
     unsigned int next_loop_voxel_index=0;                               \
     const algebra::Vector3D macro_map_unit_cell=g.get_unit_cell();      \
@@ -159,15 +194,15 @@ IMPALGEBRA_END_NAMESPACE
     for (voxel_index[0]=0; voxel_index[0]< macro_map_nx;                \
          ++voxel_index[0]) {                                            \
       voxel_center[0]= macro_map_origin[0]                              \
-        +(ix+.5)*macro_map_unit_cell[0];                                \
+        +(voxel_index[0]+.5)*macro_map_unit_cell[0];                    \
       for (voxel_index[1]=0; voxel_index[1]< macro_map_ny;              \
            ++voxel_index[1]) {                                          \
         voxel_center[1]= macro_map_origin[1]                            \
-          +(iy+.5)*macro_map_unit_cell[1];                              \
+          +(voxel_index[1]+.5)*macro_map_unit_cell[1];                  \
         for (voxel_index[2]=0; voxel_index[2]< macro_map_nz;            \
              ++voxel_index[2]) {                                        \
           voxel_center[2]= macro_map_origin[2]                          \
-            +(iz+.5)*macro_map_unit_cell[2];                            \
+            +(voxel_index[2]+.5)*macro_map_unit_cell[2];                \
           unsigned int loop_voxel_index=next_loop_voxel_index;          \
           ++next_loop_voxel_index;                                      \
           {action};                                                     \
