@@ -23,6 +23,7 @@ files = [
          'masking.cpp',
          'rigid_fitting.cpp',
          'density_utilities.cpp',
+         'densityMapVolumetrics.cpp',
         ] \
         + SConscript('internal/SConscript')
 

@@ -27,7 +27,7 @@ IMPEM_BEGIN_NAMESPACE
  * Unless otherly specified, the default value is
  * 0.826446 (Harpaz et al 1994).
  */
-IMPEMBENEXPORT enum ProteinDensityReference {
+enum ProteinDensityReference {
   HARPAZ,
   ANDERSSON,
   TSAI,
