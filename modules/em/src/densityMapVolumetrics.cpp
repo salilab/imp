@@ -68,7 +68,7 @@ double set_used_protein_density(
 }
 
 
-Float compute_volume_at_threshold(
+Float get_volume_at_threshold(
       DensityMap* d,
       Float threshold) {
   long counter=0;//number of voxels above the threshold
@@ -81,7 +81,7 @@ Float compute_volume_at_threshold(
   return  s*s*s*counter;
  }
 
-Float compute_molecular_mass_at_threshold(
+Float get_molecular_mass_at_threshold(
       DensityMap* d,
       Float threshold) {
   long counter=0;//number of voxels above the threshold
@@ -94,7 +94,7 @@ Float compute_molecular_mass_at_threshold(
   return  s*s*s*counter*get_used_protein_density();
  }
 
-Float compute_threshold_for_approximate_volume(
+Float get_threshold_for_approximate_volume(
       DensityMap* d,
       Float volumeDesired) {
   Float voxelVolume     = d->get_spacing()*d->get_spacing()*d->get_spacing();
@@ -111,11 +111,11 @@ Float compute_threshold_for_approximate_volume(
   return static_cast<Float>(threshold);
  }
 
-Float compute_threshold_for_approximate_mass(
+Float get_threshold_for_approximate_mass(
       DensityMap* d,
       Float desiredMass){
   Float desiredVolume = desiredMass / get_used_protein_density();
-  return compute_threshold_for_approximate_volume(d,desiredVolume);
+  return get_threshold_for_approximate_volume(d,desiredVolume);
 }
 
 
