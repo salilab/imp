@@ -48,6 +48,8 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
                Color color, std::string name);
   bool handle(LabelGeometry *g,
                Color color, std::string name);
+  bool handle(SurfaceMeshGeometry *g,
+               Color color, std::string name);
 
 public:
 

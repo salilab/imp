@@ -9,6 +9,7 @@
 #include "IMP/display/geometry.h"
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include "IMP/cgal/internal/polygons.h"
+#include "IMP/cgal/internal/polyhedrons.h"
 #endif
 
 IMPDISPLAY_BEGIN_NAMESPACE
@@ -125,6 +126,47 @@ void LabelGeometry::do_show(std::ostream &out) const {
 }
 
 
+
+SurfaceMeshGeometry::
+SurfaceMeshGeometry(const std::pair<algebra::Vector3Ds, Ints >&m,
+                    std::string name):
+  Geometry(name),
+  vertices_(m.first),
+  faces_(m.second){}
+
+SurfaceMeshGeometry::SurfaceMeshGeometry(const algebra::Vector3Ds& vertices,
+                                         const Ints &faces):
+  Geometry("SurfaceMesh %1%"),
+  vertices_(vertices),
+  faces_(faces){}
+
+void SurfaceMeshGeometry::do_show(std::ostream &out) const {
+  out << "surface mesh: " << faces_.size() << std::endl;
+}
+
+
+Geometries SurfaceMeshGeometry::get_components() const {
+  Geometries ret;
+  algebra::Vector3Ds cur;
+  for (unsigned int i=0; i< faces_.size(); ++i) {
+    if (faces_[i]==-1) {
+      if (cur.size()==3) {
+        ret.push_back(new TriangleGeometry(cur));
+      } else {
+        ret.push_back(new PolygonGeometry(cur));
+      }
+      cur.clear();
+    } else {
+      IMP_USAGE_CHECK(vertices_.size() > static_cast<unsigned int>(faces_[i]),
+                      "Out of range vertex: " << faces_[i]);
+      cur.push_back(vertices_[faces_[i]]);
+    }
+  }
+  return ret;
+}
+
+
+
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 
 Geometries PlaneGeometry::get_components() const {
@@ -137,13 +179,19 @@ Geometries PlaneGeometry::get_components() const {
 
 PlaneGeometry::PlaneGeometry(const algebra::Plane3D &loc,
                              const algebra::BoundingBox3D &bb):
-  Geometry(""),
+  Geometry("PlaneGeometry %1%"),
   plane_(loc),
   bb_(bb){}
 
 void PlaneGeometry::do_show(std::ostream &out) const {
   out << "plane: " << plane_ << std::endl;
 }
+
+
+SkinSurfaceGeometry::SkinSurfaceGeometry(const algebra::Sphere3Ds &sps):
+  SurfaceMeshGeometry(cgal::internal::get_skin_surface(sps),
+                      "SkinSurface %1%") {}
+
 #endif
 
 IMPDISPLAY_END_NAMESPACE

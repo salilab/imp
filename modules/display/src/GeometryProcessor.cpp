@@ -42,6 +42,7 @@ void GeometryProcessor::handle_geometry_internal(Geometry* g,
   GP_HANDLE(PolygonGeometry);
   GP_HANDLE(TriangleGeometry);
   GP_HANDLE(LabelGeometry);
+  GP_HANDLE(SurfaceMeshGeometry);
   GP_HANDLE(Geometry);
   Geometries comp= g->get_components();
   if (comp.size()==1 && comp[0]== g) {

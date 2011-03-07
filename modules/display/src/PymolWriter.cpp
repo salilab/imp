@@ -134,6 +134,32 @@ bool PymolWriter::handle(SegmentGeometry *g,
   cleanup(name);
   return true;
 }
+
+
+namespace {
+  void write_triangle(algebra::Vector3D a,
+                      algebra::Vector3D b,
+                      algebra::Vector3D c,
+                      Color color,
+                      std::ostream &out) {
+    algebra::VectorD<3> n=
+      get_vector_product(b-a,
+                         c-a).get_unit_vector();
+    write_color(out, color);
+    out << "NORMAL, " << algebra::commas_io(n)
+        << ",\n";
+    out << "VERTEX, "
+        << algebra::commas_io(a)
+        << ",\n";
+    out << "VERTEX, "
+        << algebra::commas_io(b)
+        << ",\n";
+    out << "VERTEX, "
+        << algebra::commas_io(c)
+        << ",\n";
+  }
+}
+
 bool PymolWriter::handle(PolygonGeometry *g,
                           Color color, std::string name) {
   setup(name);
@@ -155,27 +181,43 @@ bool PymolWriter::handle(PolygonGeometry *g,
   cleanup(name);
   return true;
 }
+
+
+
 bool PymolWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  algebra::VectorD<3> n=
-    get_vector_product(g->get_geometry().at(1)
-                       -g->get_geometry().at(0),
-                       g->get_geometry().at(2)
-                       -g->get_geometry().at(0)).get_unit_vector();
-  write_color(get_stream(), color);
-  get_stream() << "NORMAL, " << algebra::commas_io(n)
-               << ",\n";
-  for (unsigned int i=0; i< 3; ++i) {
-    get_stream() << "VERTEX, "
-                 << algebra::commas_io(g->get_geometry().at(i))
-                 << ", ";
+  write_triangle(g->get_geometry().at(0), g->get_geometry().at(1),
+                 g->get_geometry().at(2), color, get_stream());
+  get_stream() << "END,\n";
+  cleanup(name);
+  return true;
+}
+
+bool PymolWriter::handle(SurfaceMeshGeometry *g,
+                         Color color, std::string name) {
+  setup(name);
+  get_stream() << "BEGIN, TRIANGLES, ";
+  algebra::Vector3Ds cur;
+  for (unsigned int i=0; i< g->get_faces().size(); ++i) {
+    if (g->get_faces()[i]==-1) {
+      if (cur.size()==3) {
+        write_triangle(cur[0], cur[1], cur[2], color, get_stream());
+      } else {
+        //write_polygon(cur, color, get_stream());
+        IMP_NOT_IMPLEMENTED;
+      }
+      cur.clear();
+    } else {
+      cur.push_back(g->get_vertices()[g->get_faces()[i]]);
+    }
   }
   get_stream() << "END,\n";
   cleanup(name);
   return true;
 }
+
 
 IMP_REGISTER_WRITER(PymolWriter, ".pym")
 
