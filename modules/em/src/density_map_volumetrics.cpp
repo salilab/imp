@@ -4,7 +4,7 @@
  *
  */
 
-#include <IMP/em/densityMapVolumetrics.h>
+#include <IMP/em/density_map_volumetrics.h>
 
 //#include <boost/algorithm/string/predicate.hpp>
 //#include <climits>
