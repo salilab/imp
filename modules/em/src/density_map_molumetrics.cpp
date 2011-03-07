@@ -20,17 +20,17 @@ double get_used_protein_density(){
   return protein_density_;
  };
 
-double set_used_protein_density(double densityValue){
-  IMP_USAGE_CHECK(densityValue > 0,
+double set_used_protein_density(double density_value){
+  IMP_USAGE_CHECK(density_value > 0,
         "A protein density value should most probably be a positive value");
-  protein_density_=densityValue;
+  protein_density_=density_value;
   return protein_density_;
  }
 
 double get_reference_protein_density(
-      ProteinDensityReference densityReference){
+      ProteinDensityReference density_reference){
   double density=0.0;
-  switch (densityReference) {
+  switch (density_reference) {
    // Harpaz et all 0.826446=1/1.21 Da/A3 ~ 1.372 g/cm3
     case HARPAZ:
       density = IMP_DEFAULT_PROTEIN_DENSITY;
@@ -61,8 +61,8 @@ double get_reference_protein_density(
  }
 
 double set_used_protein_density(
-      ProteinDensityReference densityReference){
-   double density = get_reference_protein_density(densityReference);
+      ProteinDensityReference density_reference){
+   double density = get_reference_protein_density(density_reference);
    density        = set_used_protein_density(density);
    return density;
 }
@@ -96,9 +96,9 @@ Float get_molecular_mass_at_threshold(
 
 Float get_threshold_for_approximate_volume(
       DensityMap* d,
-      Float volumeDesired) {
+      Float desired_volume) {
   Float voxelVolume     = d->get_spacing()*d->get_spacing()*d->get_spacing();
-  long numVoxelsNeeded  = volumeDesired / voxelVolume;
+  long numVoxelsNeeded  = desired_volume / voxelVolume;
   long mapSizeInVoxels  = d->get_number_of_voxels();
   std::vector<emreal> data(mapSizeInVoxels);
   // This costly loop could probably be replaced by a memcopy
@@ -113,8 +113,8 @@ Float get_threshold_for_approximate_volume(
 
 Float get_threshold_for_approximate_mass(
       DensityMap* d,
-      Float desiredMass){
-  Float desiredVolume = desiredMass / get_used_protein_density();
+      Float desired_mass){
+  Float desiredVolume = desired_mass / get_used_protein_density();
   return get_threshold_for_approximate_volume(d,desiredVolume);
 }
 
