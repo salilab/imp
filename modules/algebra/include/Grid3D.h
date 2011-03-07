@@ -104,17 +104,17 @@ get_trilinearly_interpolated(const grids::GridD<3, Storage> &g,
     unsigned int by= (i&1);
     IMP_INTERNAL_CHECK((bx==0 || bx==1) && (by==0 || by==1),
                        "Logic error in trilerp");
-    is[i]=get_linearly_interpolated(r[2],
-                                      get_value(g, ivox[0]+bx, ivox[1]+by,
-                                                       ivox[2], outside),
-                                       get_value(g, ivox[0]+bx, ivox[1]+by,
-                                                 ivox[2]+1U, outside));
+    is[i]=get_linearly_interpolated(1-r[2],
+                                    get_value(g, ivox[0]+bx, ivox[1]+by,
+                                              ivox[2], outside),
+                                    get_value(g, ivox[0]+bx, ivox[1]+by,
+                                              ivox[2]+1U, outside));
   }
   typename Storage::Value js[2];
   for (unsigned int i=0; i< 2; ++i) {
-    js[i]= get_linearly_interpolated(r[1], is[i*2], is[i*2+1]);
+    js[i]= get_linearly_interpolated(1-r[1], is[i*2], is[i*2+1]);
   }
-  return get_linearly_interpolated(r[0], js[0], js[1]);
+  return get_linearly_interpolated(1-r[0], js[0], js[1]);
 }
 
 // They are created with %template in swig to get around inclusion order issues
