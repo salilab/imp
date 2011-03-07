@@ -31,7 +31,7 @@ IMPBULLET_BEGIN_INTERNAL_NAMESPACE
 
 std::pair<std::vector<btScalar>, Ints>
 get_as_bt(const algebra::Vector3Ds &vertices,
-               const std::vector<Ints > &tris) {
+               const Ints &tris) {
   std::pair<std::vector<btScalar>, Ints> ret=
     std::make_pair(std::vector<btScalar>(vertices.size()*3),
                                       Ints(tris.size()*3));
@@ -40,12 +40,11 @@ get_as_bt(const algebra::Vector3Ds &vertices,
     ret.first[3*i+1]=vertices[i][1];
     ret.first[3*i+2]=vertices[i][2];
   }
+  int oi=0;
   for (unsigned int i=0; i< tris.size(); ++i) {
-    IMP_USAGE_CHECK(tris[i].size()==3, "Not a triangle: "
-                    << tris[i].size() << " at " << i);
-    ret.second[3*i]=tris[i][0];
-    ret.second[3*i+1]=tris[i][1];
-    ret.second[3*i+2]=tris[i][2];
+    if (tris[i] != -1) {
+      ret.second[oi++]=tris[i];
+    }
   }
   return ret;
 }

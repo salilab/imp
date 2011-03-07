@@ -41,7 +41,7 @@ namespace {
     const std::pair<std::vector<btScalar>, Ints> btg_;
   public:
     SurfaceMeshObject(const algebra::Vector3Ds &vertices,
-                      const std::vector<Ints> &faces):
+                      const Ints &faces):
       Object("Surface mesh for bullet"),
       btg_(internal::get_as_bt(vertices, faces)){}
     /*const algebra::Vector3Ds& get_vertices() const {
@@ -234,7 +234,7 @@ namespace {
       if (spheres.empty()) {
         std::cout << "Empty: "<< p->get_name() << std::endl;
       }
-      std::pair<algebra::Vector3Ds, std::vector<Ints> > impfaces
+      std::pair<algebra::Vector3Ds, Ints > impfaces
         = IMP::cgal::internal::get_skin_surface(spheres);
       Pointer<SurfaceMeshObject> smo= new SurfaceMeshObject(impfaces.first,
                                                             impfaces.second);
@@ -323,7 +323,7 @@ void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRsTemp &ps) {
 
 void ResolveCollisionsOptimizer
 ::add_obstacle(const algebra::Vector3Ds &vertices,
-               const std::vector<Ints > &tris) {
+               const Ints &tris) {
   obstacles_.push_back(internal::get_as_bt(vertices, tris));
 }
 
@@ -457,12 +457,12 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
     }
     unsigned int rrs=0;
     for (unsigned int i=0; i< rs.size(); ++i) {
-      rrs+=get_restraints(rs[i]).size();
+      rrs+=IMP::get_restraints(rs[i]).size();
     }
     IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
     {
       for (unsigned int i=0; i< rs.size(); ++i) {
-        Restraints crs= get_restraints(rs[i]);
+        Restraints crs= IMP::get_restraints(rs[i]);
         for (unsigned int j=0; j< crs.size(); ++j) {
           IMP_LOG(TERSE, crs[j]->get_name() <<" ");
         }
