@@ -37,6 +37,7 @@ files = [
          'LeavesRefiner.h',
          'Linear.h',
          'MCCGSampler.h',
+         'MinimumRestraint.h',
          'MonteCarlo.h',
          'MoveStatisticsScoreState.h',
          'Mover.h',

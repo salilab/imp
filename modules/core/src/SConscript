@@ -32,6 +32,7 @@ files = [
          'IncrementalBallMover.cpp',
          'LeavesRefiner.cpp',
          'MCCGSampler.cpp',
+         'MinimumRestraint.cpp',
          'MonteCarlo.cpp',
          'MoveStatisticsScoreState.cpp',
          'MoverBase.cpp',
