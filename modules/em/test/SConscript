@@ -155,10 +155,6 @@ function_name_exceptions = [
   'multiply',
   'particles2density',
   'particles2surface',
-  'compute_volume_at_threshold',
-  'compute_molecular_mass_at_threshold',
-  'compute_threshold_for_approximate_volume',
-  'compute_threshold_for_approximate_mass',
 ]
 
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),

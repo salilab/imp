@@ -81,7 +81,7 @@ IMPEMEXPORT double get_reference_protein_density(
 \return a volume for the set of voxels with intensity
 under the provided threshold
  */
-IMPEMEXPORT Float compute_volume_at_threshold(DensityMap* m, Float threshold);
+IMPEMEXPORT Float get_volume_at_threshold(DensityMap* m, Float threshold);
 
 //! Compute an approximate molecular mass
 /** Compute an approximate molecular mass for the set of voxels with intensity
@@ -94,7 +94,7 @@ under the provided threshold (mass in Da)
 (Harpaz et al 1994).
 this constant can be modified through the set_used_protein_density function.
  */
-IMPEMEXPORT Float compute_molecular_mass_at_threshold(
+IMPEMEXPORT Float get_molecular_mass_at_threshold(
       DensityMap* m,
       Float threshold);
 
@@ -105,7 +105,7 @@ IMPEMEXPORT Float compute_molecular_mass_at_threshold(
 \param[in] m a density map
 \param[in] desiredVolume (in A^3)
  */
-IMPEMEXPORT Float compute_threshold_for_approximate_volume(
+IMPEMEXPORT Float get_threshold_for_approximate_volume(
       DensityMap* m,
       Float desiredVolume);
 
@@ -119,7 +119,7 @@ IMPEMEXPORT Float compute_threshold_for_approximate_volume(
  (Harpaz et al 1994).
 this constant can be modified through the set_used_protein_density function.
  */
-IMPEMEXPORT Float compute_threshold_for_approximate_mass(
+IMPEMEXPORT Float get_threshold_for_approximate_mass(
       DensityMap* m,
       Float desiredMass);
 
