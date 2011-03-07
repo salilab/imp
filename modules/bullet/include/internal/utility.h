@@ -50,7 +50,7 @@ inline const btTransform tr(const algebra::Transformation3D &v) {
 IMPBULLETEXPORT
 std::pair<std::vector<btScalar>, Ints>
 get_as_bt(const algebra::Vector3Ds &vertices,
-          const std::vector<Ints > &tris);
+          const Ints &tris);
 
 IMPBULLETEXPORT
 ParticlesTemp get_particles(const ParticlesTemp &in);

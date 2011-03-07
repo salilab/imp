@@ -47,7 +47,7 @@ public:
   }
 
   void add_obstacle(const algebra::Vector3Ds &vertices,
-                    const std::vector<Ints > &tris);
+                    const Ints &tris);
 
   void set_local_stiffness(double tf) {
     local_= tf;
