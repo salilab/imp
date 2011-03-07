@@ -8,14 +8,6 @@ IMP_SWIG_OBJECT(IMP::container, ListPairContainer, ListPairContainers);
 IMP_SWIG_OBJECT(IMP::container, ListQuadContainer, ListQuadContainers);
 IMP_SWIG_OBJECT(IMP::container, ListSingletonContainer, ListSingletonContainers);
 IMP_SWIG_OBJECT(IMP::container, ListTripletContainer, ListTripletContainers);
-IMP_SWIG_OBJECT(IMP::container, MaximumPairRestraint, MaximumPairRestraints);
-IMP_SWIG_OBJECT(IMP::container, MaximumPairScore, MaximumPairScores);
-IMP_SWIG_OBJECT(IMP::container, MaximumQuadRestraint, MaximumQuadRestraints);
-IMP_SWIG_OBJECT(IMP::container, MaximumQuadScore, MaximumQuadScores);
-IMP_SWIG_OBJECT(IMP::container, MaximumSingletonRestraint, MaximumSingletonRestraints);
-IMP_SWIG_OBJECT(IMP::container, MaximumSingletonScore, MaximumSingletonScores);
-IMP_SWIG_OBJECT(IMP::container, MaximumTripletRestraint, MaximumTripletRestraints);
-IMP_SWIG_OBJECT(IMP::container, MaximumTripletScore, MaximumTripletScores);
 IMP_SWIG_OBJECT(IMP::container, MinimumPairRestraint, MinimumPairRestraints);
 IMP_SWIG_OBJECT(IMP::container, MinimumPairScore, MinimumPairScores);
 IMP_SWIG_OBJECT(IMP::container, MinimumQuadRestraint, MinimumQuadRestraints);
@@ -62,14 +54,6 @@ IMP_SWIG_OBJECT(IMP::container, QuadContainerStatistics, QuadContainerStatistics
 %include "IMP/container/ListQuadContainer.h"
 %include "IMP/container/ListSingletonContainer.h"
 %include "IMP/container/ListTripletContainer.h"
-%include "IMP/container/MaximumPairRestraint.h"
-%include "IMP/container/MaximumPairScore.h"
-%include "IMP/container/MaximumQuadRestraint.h"
-%include "IMP/container/MaximumQuadScore.h"
-%include "IMP/container/MaximumSingletonRestraint.h"
-%include "IMP/container/MaximumSingletonScore.h"
-%include "IMP/container/MaximumTripletRestraint.h"
-%include "IMP/container/MaximumTripletScore.h"
 %include "IMP/container/MinimumPairRestraint.h"
 %include "IMP/container/MinimumPairScore.h"
 %include "IMP/container/MinimumQuadRestraint.h"
