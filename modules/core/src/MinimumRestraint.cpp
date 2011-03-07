@@ -7,6 +7,7 @@
 
 #include <IMP/core/MinimumRestraint.h>
 #include <IMP/algebra/internal/MinimalSet.h>
+#include <IMP/Model.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
