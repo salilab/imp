@@ -19,6 +19,7 @@
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/algebra/internal/tnt_array2d_utils.h>
 #include <IMP/atom/Hierarchy.h>
+#include <boost/scoped_ptr.hpp>
 #include "multifit_config.h"
 #include <map>
 
@@ -109,7 +110,7 @@ protected:
   void set_density(em::DensityMap *d);
   //TODO - change back once DensityMap will be Grid3D
   //  Pointer<DensGrid> dens_; /// TODO - make the class an object
-  DensGrid *dens_;
+  boost::scoped_ptr<DensGrid> dens_;
   //  em::DensityMap *dens_;
   double max_value_,min_value_;
   double threshold_;
