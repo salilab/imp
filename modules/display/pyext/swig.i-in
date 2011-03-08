@@ -41,6 +41,9 @@ IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
 IMP_SWIG_OBJECT(IMP::display, ConnectivityRestraintGeometry, ConnectivityRestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, HierarchiesGeometry, HierarchiesGeometries);
 IMP_SWIG_OBJECT(IMP::display, TriangleGeometry, TriangleGeometries);
+IMP_SWIG_OBJECT(IMP::display, IsosurfaceGeometry, IsosurfaceGeometries);
+IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
+IMP_SWIG_OBJECT(IMP::display, SurfaceMeshGeometry, SurfaceMeshGeometries);
 
 
 %warnfilter(403) Geometry;
