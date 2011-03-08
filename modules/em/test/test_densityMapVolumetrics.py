@@ -20,8 +20,8 @@ class DensityMapVolumetricsTest(IMP.test.TestCase):
         self.assertTrue(
                 IMP.em.get_used_protein_density()
                 ==
-                IMP.em.get_reference_protein_density(IMP.em.TSAI),
-                "default used protein density value should be TSAI")
+                IMP.em.get_reference_protein_density(IMP.em.HARPAZ),
+                "default used protein density value should be HARPAZ")
 
     def test_set_and_get_used_protein_density(self):
         # crash on negative densities
@@ -46,12 +46,16 @@ class DensityMapVolumetricsTest(IMP.test.TestCase):
 
     def test_get_molecular_mass_at_threshold(self):
         dmap = IMP.em.read_map(self.get_input_file_name("1z5s.mrc"),IMP.em.MRCReaderWriter())
-        weight_In_kD   = 50000 # 50 kDa
-        epsilon        = 10
+        weight_In_kD              = 50000 # 50 kDa
+        epsilon                   = 2     # in number of pixels
+
+        apix                      = dmap.get_spacing()
+        allowedMassDelta          = apix*apix*apix * epsilon * IMP.em.get_used_protein_density()
+
         threshold = IMP.em.get_threshold_for_approximate_mass(dmap,weight_In_kD)
         mass      = IMP.em.get_molecular_mass_at_threshold (dmap, threshold)
-        self.assertTrue(abs(weight_In_kD - mass) < epsilon,
-            "M1 and M2 mismatch, when threshold asked for mass M1, and mass M2 computed for that threshold"
+        self.assertTrue(abs(weight_In_kD - mass) < allowedMassDelta,
+            "asked threshold t to attein mass M1, mass M2 computed at threshold t; though M1 and M2 are different"
             )
 
 
