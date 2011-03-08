@@ -137,47 +137,6 @@ class SingletonContainerTest(IMP.test.TestCase):
         print mt
         self.assertAlmostEqual(mt, f, delta=.1*f)
 
-    def test_max_restraint(self):
-        """Test the MaximumSingletonRestraint"""
-        m= IMP.Model()
-        c= IMP.container.ListSingletonContainer(m)
-        self.assertEqual(c.get_ref_count(), 1)
-        for i in range(0,10):
-            c.add_particle(self.create_particle(m))
-        print c.get_number_of_particles()
-        d= self.create_singleton_score()
-        self.assertEqual(d.get_ref_count(), 1)
-        r= IMP.container.MaximumSingletonRestraint(d, c)
-        self.assertEqual(c.get_ref_count(), 2)
-        self.assertEqual(d.get_ref_count(), 2)
-        r.set_n(4)
-        m.add_restraint(r)
-        f= m.evaluate(False)
-        print f
-        ms= []
-        print c.get_number_of_particles()
-        for i in range(0,10):
-            ps= c.get_particle(i)
-            cm= d.evaluate(ps, None)
-            ms.append(cm)
-        ms.sort()
-        print ms
-        mt=0
-        for i in range(0, 4):
-            mt = mt+ ms[-i-1]
-        print mt
-        self.assertAlmostEqual(mt, f, delta=.1*f)
-    def test_max_score(self):
-        """Test the MaximumSingletonScore"""
-        m= IMP.Model()
-        s= []
-        for i in range(0,5):
-            s.append(IMP._ConstSingletonScore(i))
-        ps= IMP.container.MaximumSingletonScore(s, 2)
-        p= self.create_particle(m)
-        ps.set_was_used(True)
-        v= ps.evaluate(p, None)
-        self.assertEqual(v, 7)
     def test_min_score(self):
         """Test the MinimumSingletonScore"""
         m= IMP.Model()
