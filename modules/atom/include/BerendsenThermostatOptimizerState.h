@@ -1,6 +1,7 @@
 /**
  *  \file atom/BerendsenThermostatOptimizerState.h
- *  \brief Maintains temperature during molecular dynamics by velocity scaling.
+ *  \brief Maintains temperature during molecular dynamics using a
+ *         Berendsen thermostat.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
@@ -16,13 +17,27 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Implement the Berendsen thermostat.
-/**  */
+//! Maintains temperature during molecular dynamics.
+/** The thermostat scales velocities using the algorithm described by
+    Berendsen et al. in H. J. C. Berendsen, J. P. M. Postma,
+    W. F. van Gunsteren, A. DiNola, and J. R. Haak "Molecular dynamics
+    with coupling to an external bath", Journal of Chemical Physics 81
+    pp. 3684-3690 (1984)
+
+    At each update, velocities are rescaled by \f[
+    \lambda = \left[1 + \frac{\Delta t}{\tau_T}
+                        \left( \frac{T}{T_k} -1\right)\right]^{1/2}
+    \f]
+    where \f$\Delta t\f$ is the molecular dynamics timestep, \f$\tau_T\f$
+    is the coupling constant (in fs) of the thermostat, \f$T\f$ is the
+    thermostat temperature, \f$T_k\f$ and is the instantaneous (kinetic)
+    temperature of the dynamics. (This is equation 11 from the reference above.)
+ */
 class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState
 {
  public:
   BerendsenThermostatOptimizerState(const Particles &pis,
-                                    double temperature,
+                                    double temperature, double coupling,
                                     unsigned skip_steps);
 
   //! Set the number of update calls to skip between rescaling.
@@ -35,12 +50,14 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState
     pis_=pis;
   }
 
+  //! Rescale the velocities now
+  void rescale_velocities() const;
+
   IMP_OPTIMIZER_STATE(BerendsenThermostatOptimizerState);
 
 private:
-  void do_therm();
   Particles pis_;
-  double temperature_;
+  double temperature_, coupling_;
   unsigned skip_steps_;
   unsigned call_number_;
 

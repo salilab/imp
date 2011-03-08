@@ -17,6 +17,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
         for c in coords:
             p = IMP.Particle(m)
             x = IMP.core.XYZ.setup_particle(p, c[0])
+            x.set_coordinates_are_optimized(True)
             IMP.atom.Mass.setup_particle(p, 1.0)
             p.add_attribute(vxkey, c[1][0])
             p.add_attribute(vykey, c[1][1])
@@ -66,6 +67,30 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
         self.assertEqual(ps[0].get_value(vxkey), 0.)
         self.assertEqual(ps[0].get_value(vykey), 0.)
         self.assertEqual(ps[0].get_value(vzkey), 0.)
+
+    def test_berendsen_thermostat(self):
+        """Test Berendsen thermostat"""
+        # With a shorter coupling time, fewer steps should be needed
+        # to reach the set temperature
+        for (coupling, steps) in [(8.0, 16), (6.0, 10)]:
+            m, ps = self.setup_particles([[IMP.algebra.Vector3D(0,0,0),
+                                           IMP.algebra.Vector3D(0.1,0,0)]])
+            scaler = IMP.atom.BerendsenThermostatOptimizerState(
+                                              ps, 298.0, coupling, 0)
+            md = IMP.atom.MolecularDynamics(m)
+            md.set_time_step(4.0)
+            md.add_optimizer_state(scaler)
+            md.optimize(0)
+            ts = []
+            for i in range(20):
+                ts.append(md.get_kinetic_temperature(md.get_kinetic_energy()))
+                scaler.rescale_velocities()
+            # Temperature should decrease from start to set temp
+            self.assertAlmostEqual(ts[0], 4009.0, delta=0.2)
+            self.assertGreater(ts[steps-1], 298.1)
+            # Make sure that once set temperature is reached, it is maintained
+            for i in range(steps, 20):
+                self.assertAlmostEqual(ts[i], 298.0, delta=0.1)
 
 if __name__ == '__main__':
     IMP.test.main()
