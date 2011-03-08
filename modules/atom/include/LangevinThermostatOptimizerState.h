@@ -1,6 +1,7 @@
 /**
  *  \file atom/LangevinThermostatOptimizerState.h
- *  \brief Maintains temperature during molecular dynamics by velocity scaling.
+ *  \brief Maintains temperature during molecular dynamics using
+ *         a Langevin thermostat.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
@@ -16,8 +17,11 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-//! Implement the Langevin thermostat.
-/**  */
+//! Maintains temperature during molecular dynamics.
+/** The thermostat scales velocities using the algorithm described in
+    G. Bussi and M. Parrinello "Accurate sampling using Langevin dynamics",
+    Phys. Rev. E 75, 056707 (2007)
+ */
 class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
 {
  public:
@@ -36,10 +40,12 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
     pis_=pis;
   }
 
+  //! Rescale the velocities now
+  void rescale_velocities() const;
+
   IMP_OPTIMIZER_STATE(LangevinThermostatOptimizerState);
 
 private:
-  void do_therm();
   Particles pis_;
   double temperature_;
   double time_friction_;
