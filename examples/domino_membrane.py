@@ -12,7 +12,7 @@ def create_representation(seq,tmh,topo):
     tbr= IMP.core.TableRefiner()
     all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 
-    def generate_balls(ii,seq,tmh,sign):
+    def generate_balls(id,seq,tmh,sign):
         nres=len(seq)
         atoms=[]
         for i in range(nres):
@@ -24,8 +24,8 @@ def create_representation(seq,tmh,topo):
             r=IMP.atom.Residue.setup_particle(p, IMP.atom.get_residue_type(seq[i]), i+tmh[0])
             rt=r.get_residue_type()
             vol=IMP.atom.get_volume_from_residue_type(rt)
-            rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
-            #rd=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),2.273))
+            #rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
+            rg=2.273
             rd=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),rg))
             # set up atom
             p1=IMP.Particle(m)
@@ -37,7 +37,7 @@ def create_representation(seq,tmh,topo):
             if ( i == 0 ):      bb=z
             if ( i == nres-1 ): ee=z
         rb=IMP.Particle(m)
-        rb=IMP.atom.create_rigid_body(atoms,"TM"+str(ii))
+        rb=IMP.atom.create_rigid_body(atoms,"TM"+str(id))
         tbr.add_particle(rb,atoms)
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
 
@@ -53,9 +53,9 @@ def create_restraints(m, chain, tbr, TMH):
         for h in TMH:
             s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
             lsc.add_particles(s.get_selected_particles())
-        evr=IMP.core.ExcludedVolumeRestraint(lsc,1)
+        evr=IMP.core.ExcludedVolumeRestraint(lsc,1000)
         m.add_restraint(evr)
-        m.set_maximum_score(evr, 17.0)
+        m.set_maximum_score(evr, 0.01)
 
     def add_distance_restraint(s0, s1, x0, k):
         hub= IMP.core.HarmonicUpperBound(x0,k)
@@ -134,8 +134,10 @@ def create_restraints(m, chain, tbr, TMH):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
         lpc= IMP.container.ListPairContainer(m)
-        lpc.add_particle_pair([rbs[0],rbs[3]])
-        hub= IMP.core.HarmonicUpperBound(4.0,1)
+        lpc.add_particle_pair([rbs[0],rbs[1]])
+        lpc.add_particle_pair([rbs[5],rbs[6]])
+        #lpc.add_particle_pair([rbs[3],rbs[4]])
+        hub= IMP.core.HarmonicUpperBound(3.454,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
         ir=  IMP.container.PairsRestraint(kc, lpc)
@@ -144,8 +146,8 @@ def create_restraints(m, chain, tbr, TMH):
         return ir
 
 # assembling all the restraints
-    add_excluded_volume()
     rset=IMP.RestraintSet()
+    add_excluded_volume()
     for i in range(len(TMH)-1):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
         s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i+1][0])
@@ -153,14 +155,14 @@ def create_restraints(m, chain, tbr, TMH):
         p1=s1.get_selected_particles()[0]
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
-        length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
+        length=1.6*(4+TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
         rdr=add_distance_restraint(rb0,rb1,27.0,1000)
         rset.add_restraint(dr)
     add_packing_restraint()
     add_DOPE()
-    #ir=add_interacting_restraint()
-    #rset.add_restraint(ir)
+    ir=add_interacting_restraint()
+    rset.add_restraint(ir)
     return rset
 
 # creating the discrete states for domino
@@ -169,22 +171,22 @@ def  create_discrete_states(m,chain,TMH):
     rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
     trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
     for i in range(0,1):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/6)
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
         for t in range(0,1):
-            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/18)
+            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/6)
             rot1=IMP.algebra.compose(tilt,rotz)
             for s in range(0,1):
                 if ( t == 0 ) and ( s != 0 ) : break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/6)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dx in range(0,30,1):
+                for dx in range(0,40,1):
                     if ( dx >= 7 ):
                         trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                     IMP.algebra.Vector3D(dx,0,0))))
                     for dz in range(0,1):
-                        for dy in range(0,30,1):
+                        for dy in range(0,40,1):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
                             trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
@@ -248,11 +250,12 @@ def display(m,chain,TMH,name):
 #IMP.set_log_level(IMP.VERBOSE)
 
 # TM regions
-TMH= [[3, 21], [31, 61], [67, 97], [102, 113], [121, 154], [161, 180], [191, 219]]
+TMH= [[3, 26], [33, 56], [70, 92], [94, 118], [122, 150], [153, 181], [189, 219]]
 
 # define TMH sequences
 seq0=("M","V","G","L","T","T","L","F","W","L","G","A","I","G","M","L","V","G","T","L","A","F","A","W","A","G","R","D","A","G","S","G","E","R","R","Y","Y","V","T","L","V","G","I","S","G","I","A","A","V","A","Y","V","V","M","A","L","G","V","G","W","V","P","V","A","E","R","T","V","F","A","P","R","Y","I","D","W","I","L","T","T","P","L","I","V","Y","F","L","G","L","L","A","G","L","D","S","R","E","F","G","I","V","I","T","L","N","T","V","V","M","L","A","G","F","A","G","A","M","V","P","G","I","E","R","Y","A","L","F","G","M","G","A","V","A","F","L","G","L","V","Y","Y","L","V","G","P","M","T","E","S","A","S","Q","R","S","S","G","I","K","S","L","Y","V","R","L","R","N","L","T","V","I","L","W","A","I","Y","P","F","I","W","L","L","G","P","P","G","V","A","L","L","T","P","T","V","D","V","A","L","I","V","Y","L","D","L","V","T","K","V","G","F","G","F","I","A","L","D","A","A","A","T","L")
 
+# storing sequences of TMH
 seq=[]
 for h in TMH:
     tmp=[]
@@ -266,7 +269,7 @@ topo=[-1.0,1.0,-1.0,1.0,-1.0,1.0,-1.0]
 print "creating representation"
 (m,chain,tbr)=create_representation(seq,TMH,topo)
 
-print "creating score function"
+print "creating restraints"
 rset=create_restraints(m,chain,tbr,TMH)
 
 print "creating discrete states"
