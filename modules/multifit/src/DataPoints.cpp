@@ -32,25 +32,26 @@ void ParticlesDataPoints::populate_data_points(Particles ps) {
 }
 void DensityDataPoints::set_density(em::DensityMap *dmap) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
-  dens_ = DensGrid(dmap->get_spacing(),bb);
+  dens_=new DensGrid(dmap->get_spacing(),bb);
   em::emreal* d_data = dmap->get_data();
   algebra::Vector3D loc;
+  std::cout<<"number of voxels:"<<dmap->get_number_of_voxels()<<std::endl;
   for(long l=0;l<dmap->get_number_of_voxels();l++) {
     loc = dmap->get_location_by_voxel(l);
-    dens_[dens_.get_nearest_index(loc)]=d_data[l];
+    (*dens_)[dens_->get_nearest_index(loc)]=d_data[l];
   }
 }
 
 void DensityDataPoints::set_max_min_density_values() {
   max_value_=-INT_MAX;
   min_value_=INT_MAX;
-  algebra::BoundingBox3D bb = dens_.get_bounding_box();
-  DensGrid::ExtendedIndex lb = dens_.get_extended_index(bb.get_corner(0)),
-      ub = dens_.get_extended_index(bb.get_corner(1));
-  for (DensGrid::IndexIterator it= dens_.indexes_begin(lb,ub);
-       it != dens_.indexes_end(lb, ub); ++it) {
-    if (dens_[*it]<min_value_) min_value_=dens_[*it];
-    if (dens_[*it]>max_value_) max_value_=dens_[*it];
+  algebra::BoundingBox3D bb = dens_->get_bounding_box();
+  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner(0)),
+      ub = dens_->get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= dens_->indexes_begin(lb,ub);
+       it != dens_->indexes_end(lb, ub); ++it) {
+    if ((*dens_)[*it]<min_value_) min_value_=(*dens_)[*it];
+    if ((*dens_)[*it]>max_value_) max_value_=(*dens_)[*it];
   }
 }
 
@@ -68,12 +69,12 @@ DensityDataPoints::DensityDataPoints(em::DensityMap *dens,
 }
 void DensityDataPoints::populate_data() {
   algebra::Vector3Ds vecs;
-  algebra::BoundingBox3D bb = dens_.get_bounding_box();
-  DensGrid::ExtendedIndex lb = dens_.get_extended_index(bb.get_corner(0)),
-      ub = dens_.get_extended_index(bb.get_corner(1));
-  for (DensGrid::IndexIterator it= dens_.indexes_begin(lb,ub);
-       it != dens_.indexes_end(lb, ub); ++it) {
-    if (dens_[*it]>threshold_) {vecs.push_back(dens_.get_center(*it));}
+  algebra::BoundingBox3D bb = dens_->get_bounding_box();
+  DensGrid::ExtendedIndex lb = dens_->get_extended_index(bb.get_corner(0)),
+      ub = dens_->get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= dens_->indexes_begin(lb,ub);
+       it != dens_->indexes_end(lb, ub); ++it) {
+    if ((*dens_)[*it]>threshold_) {vecs.push_back(dens_->get_center(*it));}
   }
   IMP_INTERNAL_CHECK(vecs.size()>0,
            "No data points were found above the input threshold ("<<
@@ -85,7 +86,7 @@ void DensityDataPoints::populate_data() {
 DensityDataPoints::DensityDataPoints(DensGrid &dens,
                                      float density_threshold)
   : XYZDataPoints() {
-  dens_=dens;
+  dens_=new DensGrid(dens);
   threshold_ = density_threshold;
   set_max_min_density_values();
   populate_data();
@@ -100,7 +101,7 @@ Array1DD DensityDataPoints::sample() const {
       IMP_LOG(VERBOSE,"trail number:"<<num_trails<<std::endl);
       ++num_trails;
       p_ind = statistics::internal::random_int(data_.size());
-      if (dens_[dens_.get_nearest_index(
+      if ((*dens_)[dens_->get_nearest_index(
              algebra::Vector3D(data_[p_ind][0],
                                data_[p_ind][1],data_[p_ind][2]))]
           > (max_value_-min_value_)*

@@ -95,7 +95,8 @@ protected:
   void set_max_min_density_values();
   void set_density(em::DensityMap *d);
   //TODO - change back once DensityMap will be Grid3D
-  DensGrid dens_;
+  //  Pointer<DensGrid> dens_; /// TODO - make the class an object
+  DensGrid *dens_;
   //  em::DensityMap *dens_;
   double max_value_,min_value_;
   double threshold_;
