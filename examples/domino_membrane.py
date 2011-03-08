@@ -179,12 +179,12 @@ def  create_discrete_states(m,chain,TMH):
                 rot2=IMP.algebra.compose(swing,rot1)
                 trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(0,0,0))))
-                for dx in range(0,20,1):
+                for dx in range(0,30,1):
                     if ( dx >= 7 ):
                         trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                     IMP.algebra.Vector3D(dx,0,0))))
                     for dz in range(0,1):
-                        for dy in range(0,20,1):
+                        for dy in range(0,30,1):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
                             trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
@@ -250,9 +250,6 @@ def display(m,chain,TMH,name):
 # TM regions
 TMH= [[3, 21], [31, 61], [67, 97], [102, 113], [121, 154], [161, 180], [191, 219]]
 
-# number of TMH
-nTMH=len(TMH)
-
 # define TMH sequences
 seq0=("M","V","G","L","T","T","L","F","W","L","G","A","I","G","M","L","V","G","T","L","A","F","A","W","A","G","R","D","A","G","S","G","E","R","R","Y","Y","V","T","L","V","G","I","S","G","I","A","A","V","A","Y","V","V","M","A","L","G","V","G","W","V","P","V","A","E","R","T","V","F","A","P","R","Y","I","D","W","I","L","T","T","P","L","I","V","Y","F","L","G","L","L","A","G","L","D","S","R","E","F","G","I","V","I","T","L","N","T","V","V","M","L","A","G","F","A","G","A","M","V","P","G","I","E","R","Y","A","L","F","G","M","G","A","V","A","F","L","G","L","V","Y","Y","L","V","G","P","M","T","E","S","A","S","Q","R","S","S","G","I","K","S","L","Y","V","R","L","R","N","L","T","V","I","L","W","A","I","Y","P","F","I","W","L","L","G","P","P","G","V","A","L","L","T","P","T","V","D","V","A","L","I","V","Y","L","D","L","V","T","K","V","G","F","G","F","I","A","L","D","A","A","A","T","L")
 
@@ -267,7 +264,7 @@ for h in TMH:
 topo=[-1.0,1.0,-1.0,1.0,-1.0,1.0,-1.0]
 
 print "creating representation"
-(m,chain,tbr)=create_representation(seq,topo)
+(m,chain,tbr)=create_representation(seq,TMH,topo)
 
 print "creating score function"
 rset=create_restraints(m,chain,tbr,TMH)
