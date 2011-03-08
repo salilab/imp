@@ -32,7 +32,7 @@ void ParticlesDataPoints::populate_data_points(Particles ps) {
 }
 void DensityDataPoints::set_density(em::DensityMap *dmap) {
   algebra::BoundingBox3D bb = em::get_bounding_box(dmap);
-  dens_=new DensGrid(dmap->get_spacing(),bb);
+  dens_.reset(new DensGrid(dmap->get_spacing(),bb));
   em::emreal* d_data = dmap->get_data();
   algebra::Vector3D loc;
   std::cout<<"number of voxels:"<<dmap->get_number_of_voxels()<<std::endl;
@@ -86,7 +86,7 @@ void DensityDataPoints::populate_data() {
 DensityDataPoints::DensityDataPoints(DensGrid &dens,
                                      float density_threshold)
   : XYZDataPoints() {
-  dens_=new DensGrid(dens);
+  dens_.reset(new DensGrid(dens));
   threshold_ = density_threshold;
   set_max_min_density_values();
   populate_data();
