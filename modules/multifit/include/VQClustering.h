@@ -84,7 +84,7 @@ protected:
   int k_;//number of centers
   bool is_set_; //is_set_ is true if the clustering was preformed
   const Array1DD_VEC * data_;
-  DataPoints *full_data_;
+  Pointer<DataPoints> full_data_;
   //exe parameters
   int number_of_runs_;
   int number_of_steps_;

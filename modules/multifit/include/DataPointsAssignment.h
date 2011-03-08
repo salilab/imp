@@ -51,7 +51,7 @@ protected:
   void set_edges();
   /*  bool are_particles_close(core::RigidBody rb1,
       core::RigidBody rb2);*/
-  const XYZDataPoints *data_;
+  Pointer<const XYZDataPoints> data_;
   std::vector<algebra::Vector3Ds> cluster_sets_;
   const ClusteringEngine *cluster_engine_;
   IntPairs edges_;

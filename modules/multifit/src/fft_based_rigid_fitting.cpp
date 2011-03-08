@@ -671,11 +671,11 @@ algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
   float density_threshold = 0.08;//std::min(0.1,hist.get_top(0.3)-EPS);
   //todo - make this a parameter
   //  std::cout<<"= density threshold for gmm:"<<density_threshold<<std::endl;
-  DensityDataPoints ddp=DensityDataPoints(*hit_map,density_threshold);
-  VQClustering vq(&ddp,num_solutions);
+  IMP_NEW(DensityDataPoints, ddp, (*hit_map,density_threshold));
+  VQClustering vq(ddp,num_solutions);
   vq.set_fast_clustering();
   vq.run();
-  DataPointsAssignment asgn(&ddp,&vq);
+  DataPointsAssignment asgn(ddp,&vq);
   for( int i=0;i<asgn.get_number_of_clusters();i++) {
      algebra::Vector3D center_voxel =
        get_segment_maximum(asgn,hit_map,i);
