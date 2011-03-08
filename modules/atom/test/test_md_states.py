@@ -11,18 +11,19 @@ vzkey = IMP.FloatKey('vz')
 class MolecularDynamicsStateTests(IMP.test.TestCase):
     """Test molecular dynamics optimizer states"""
 
-    def setup_particles(self, coords):
+    def setup_particles(self, coords, copies=1):
         m = IMP.Model()
         ps = []
-        for c in coords:
-            p = IMP.Particle(m)
-            x = IMP.core.XYZ.setup_particle(p, c[0])
-            x.set_coordinates_are_optimized(True)
-            IMP.atom.Mass.setup_particle(p, 1.0)
-            p.add_attribute(vxkey, c[1][0])
-            p.add_attribute(vykey, c[1][1])
-            p.add_attribute(vzkey, c[1][2])
-            ps.append(p)
+        for i in range(copies):
+            for c in coords:
+                p = IMP.Particle(m)
+                x = IMP.core.XYZ.setup_particle(p, c[0])
+                x.set_coordinates_are_optimized(True)
+                IMP.atom.Mass.setup_particle(p, 1.0)
+                p.add_attribute(vxkey, c[1][0])
+                p.add_attribute(vykey, c[1][1])
+                p.add_attribute(vzkey, c[1][2])
+                ps.append(p)
         return m, ps
 
     def test_remove_rigid_translation(self):
@@ -91,6 +92,26 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
             # Make sure that once set temperature is reached, it is maintained
             for i in range(steps, 20):
                 self.assertAlmostEqual(ts[i], 298.0, delta=0.1)
+
+    def test_langevin_thermostat(self):
+        """Test Langevin thermostat"""
+        # Need many particles due to random forces
+        m, ps = self.setup_particles([[IMP.algebra.Vector3D(0,0,0),
+                                       IMP.algebra.Vector3D(0.1,0,0)]],
+                                     copies=50)
+        scaler = IMP.atom.LangevinThermostatOptimizerState(
+                                              ps, 298.0, 0.1, 0)
+        md = IMP.atom.MolecularDynamics(m)
+        md.set_time_step(4.0)
+        md.add_optimizer_state(scaler)
+        md.optimize(0)
+        ts = []
+        for i in range(100):
+            ts.append(md.get_kinetic_temperature(md.get_kinetic_energy()))
+            scaler.rescale_velocities()
+        # After a while, temperature should have stabilized at set value
+        equilibrium_temp = sum(ts[40:100])/60.0
+        self.assertAlmostEqual(equilibrium_temp, 298.0, delta=20.0)
 
 if __name__ == '__main__':
     IMP.test.main()

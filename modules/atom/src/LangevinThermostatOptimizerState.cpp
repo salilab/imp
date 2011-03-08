@@ -28,12 +28,12 @@ LangevinThermostatOptimizerState
 void LangevinThermostatOptimizerState::update()
 {
   if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
-    do_therm();
+    rescale_velocities();
   }
   ++call_number_;
 }
 
-void LangevinThermostatOptimizerState::do_therm()
+void LangevinThermostatOptimizerState::rescale_velocities() const
 {
   static const double gas_constant = 8.31441e-7;
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
