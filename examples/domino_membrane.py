@@ -6,51 +6,45 @@ import IMP.atom
 import IMP.membrane
 import math
 
-def mysign(x):
-    if x >= 0.0:
-        return 1
-    else:
-        return -1
+def create_representation(seq,tmh,topo):
 
-def create_representation(TMH,topo):
     m=IMP.Model()
-    mp0= IMP.atom.read_pdb('2zuq_A.pdb', m, IMP.atom.CAlphaPDBSelector())
-    chain=IMP.atom.get_by_type(mp0, IMP.atom.CHAIN_TYPE)[0]
-#   updating CA radius to match residue volume
-    for p in IMP.atom.get_by_type(chain, IMP.atom.ATOM_TYPE):
-        res=IMP.atom.get_residue(IMP.atom.Atom(p))
-        rt=res.get_residue_type()
-        vol=IMP.atom.get_volume_from_residue_type(rt)
-        rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
-        IMP.core.XYZR(p).set_radius(rg)
-#   visualize initial configuration
-    display(m,chain,TMH,"initial.pym")
-#   rotation to make z the principal axis
-    rt= IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
-    tr= IMP.algebra.Transformation3D(rt, IMP.algebra.Vector3D(0,0,0))
-#   make rigid bodies
-    sign=[]
     tbr= IMP.core.TableRefiner()
-    for i,h in enumerate(TMH):
-        s=IMP.atom.Selection(chain, residue_indexes=[(h[0],h[1]+1)])
-        p=s.get_selected_particles()
-        rb=IMP.atom.create_rigid_body(p,"TM"+str(i))
-#       set the reference frame so that z is the principal axis
-        rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(tr))
-#       add to TableRefiner
-        tbr.add_particle(rb,p)
-#       initialize membrane decorator
-        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
-        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[1])
-        bb=s0.get_selected_particles()[0]
-        bb=IMP.core.XYZ(bb).get_coordinates()[2]
-        ee=s1.get_selected_particles()[0]
-        ee=IMP.core.XYZ(ee).get_coordinates()[2]
-        sign.append(mysign((ee-bb)*topo[i]))
+    all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
+
+    def generate_balls(ii,seq,tmh,sign):
+        nres=len(seq)
+        atoms=[]
+        for i in range(nres):
+            x=2.3*math.cos(math.radians(100.0)*float(i))
+            y=2.3*math.sin(math.radians(100.0)*float(i))
+            z=sign*1.51*(float(i)-float((nres-1))/2.0)
+            # set up residue
+            p=IMP.Particle(m)
+            r=IMP.atom.Residue.setup_particle(p, IMP.atom.get_residue_type(seq[i]), i+tmh[0])
+            rt=r.get_residue_type()
+            vol=IMP.atom.get_volume_from_residue_type(rt)
+            rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
+            #rd=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),2.273))
+            rd=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),rg))
+            # set up atom
+            p1=IMP.Particle(m)
+            a=IMP.atom.Atom.setup_particle(p1, IMP.atom.AT_CA)
+            ad=IMP.core.XYZR.setup_particle(p1, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),rg))
+            r.add_child(a)
+            all.add_child(r)
+            atoms.append(ad)
+            if ( i == 0 ):      bb=z
+            if ( i == nres-1 ): ee=z
+        rb=IMP.Particle(m)
+        rb=IMP.atom.create_rigid_body(atoms,"TM"+str(ii))
+        tbr.add_particle(rb,atoms)
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
-#        print " Rigid #",i," number of members=",rb.get_number_of_members()
-#        print "              begin=",d_rbs.get_begin()," end=",d_rbs.get_end()
-    return (m, chain, tbr, sign)
+
+    for i in range(len(seq)):
+        generate_balls(i,seq[i],tmh[i],topo[i])
+
+    return m,all,tbr
 
 def create_restraints(m, chain, tbr, TMH):
 
@@ -75,17 +69,17 @@ def create_restraints(m, chain, tbr, TMH):
 ## if the helices are interacting, apply a filter on the crossing angle
 ## first define the allowed intervals, by specifying the center
 ## of the distributions (Walters and DeGrado PNAS (2007) 103:13658)
-        om0=(-156.5, 146.4, -37.9, 13.8, 178.0, 25.5)
+        om0=(-156.5, 146.4, -37.9, 13.8, 178.0, 25.5, -161.1, 44.8, 127.4, -60.2, -129.2, 2.4, 161.0)
 #  the sigmas
-        sig_om0=(10.1, 13.6, 7.50, 16.6, 20.8, 11.2)
+        sig_om0=(10.1, 13.6, 7.50, 16.6, 20.8, 11.2, 10.3, 8.8, 12.3, 14.8, 12.9, 16.2, 17.6)
 #  distance cutoff
-        dd0=(8.61, 8.57, 7.93, 9.77, 9.14, 8.55)
+        dd0=(8.61, 8.57, 7.93, 9.77, 9.14, 8.55, 9.30, 7.96, 9.40, 8.61, 8.97, 8.55, 8.75)
 #  and distance sigmas
-        sig_dd0=(0.89, 0.99, 0.88, 1.18, 1.47, 1.05)
+        sig_dd0=(0.89, 0.99, 0.88, 1.18, 1.47, 1.05, 1.57, 1.13, 1.0, 1.04, 1.65, 0.78, 1.33)
 #  the allowed number of sigma
-        nsig=2
+        nsig=3
 #  and the number of clusters
-        ncl=6
+        ncl=13
 # create allowed intervals (omega in radians)
 # and control periodicity
         om_b=[]; om_e=[]; dd_b=[]; dd_e=[]
@@ -113,7 +107,7 @@ def create_restraints(m, chain, tbr, TMH):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
-        nrb= IMP.container.ClosePairContainer(lrb, 15.0)
+        nrb= IMP.container.ClosePairContainer(lrb, 25.0)
         ps=  IMP.membrane.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
@@ -129,7 +123,7 @@ def create_restraints(m, chain, tbr, TMH):
         dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
         f=IMP.membrane.SameHelixPairFilter()
         dpc.add_pair_filter(f)
-        dps= IMP.atom.DopePairScore(15.0)
+        dps=IMP.atom.DopePairScore(15.0, IMP.atom.get_data_path("dope_new.lib"))
         dope=IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(dope)
         m.set_maximum_score(dope, .01)
@@ -141,9 +135,9 @@ def create_restraints(m, chain, tbr, TMH):
             rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
         lpc= IMP.container.ListPairContainer(m)
         lpc.add_particle_pair([rbs[0],rbs[3]])
-        hub= IMP.core.HarmonicUpperBound(1.0,1)
+        hub= IMP.core.HarmonicUpperBound(4.0,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
-        kc=  IMP.core.KClosePairsPairScore(sd,tbr,3)
+        kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
         ir=  IMP.container.PairsRestraint(kc, lpc)
         m.add_restraint(ir)
         m.set_maximum_score(ir, .01)
@@ -170,12 +164,10 @@ def create_restraints(m, chain, tbr, TMH):
     return rset
 
 # creating the discrete states for domino
-def  create_discrete_states(m,chain,TMH,sign):
+def  create_discrete_states(m,chain,TMH):
 #   store initial rotation to have the right topology
-    rot0=[]
-    for i in range(len(TMH)):
-        rot0.append(IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), sign[i]*math.pi/2.0))
-    trs0=[]; trs1=[]; trs2=[]; trs3=[]; #trs4=[]; trs5=[]; trs6=[]
+    rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
+    trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
     for i in range(0,1):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/6)
         for t in range(0,1):
@@ -185,24 +177,24 @@ def  create_discrete_states(m,chain,TMH,sign):
                 if ( t == 0 ) and ( s != 0 ) : break
                 swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/6)
                 rot2=IMP.algebra.compose(swing,rot1)
-                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[0]),
+                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(0,0,0))))
                 for dx in range(0,20,1):
                     if ( dx >= 7 ):
-                        trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[1]),
+                        trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                     IMP.algebra.Vector3D(dx,0,0))))
                     for dz in range(0,1):
                         for dy in range(0,20,1):
-                            trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[2]),
+                            trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[3]),
+                            trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(dx,dy,dz))))
-                            #trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[4]),
-                            #            IMP.algebra.Vector3D(dx,dy,dz))))
-                            #trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[5]),
-                            #            IMP.algebra.Vector3D(dx,dy,dz))))
-                            #trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0[6]),
-                            #            IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                            trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
+                                        IMP.algebra.Vector3D(dx,dy,dz))))
 
     pst= IMP.domino.ParticleStatesTable()
     pstate=[]
@@ -210,9 +202,9 @@ def  create_discrete_states(m,chain,TMH,sign):
     pstate.append(IMP.domino.RigidBodyStates(trs1))
     pstate.append(IMP.domino.RigidBodyStates(trs2))
     pstate.append(IMP.domino.RigidBodyStates(trs3))
-    #pstate.append(IMP.domino.RigidBodyStates(trs4))
-    #pstate.append(IMP.domino.RigidBodyStates(trs5))
-    #pstate.append(IMP.domino.RigidBodyStates(trs6))
+    pstate.append(IMP.domino.RigidBodyStates(trs4))
+    pstate.append(IMP.domino.RigidBodyStates(trs5))
+    pstate.append(IMP.domino.RigidBodyStates(trs6))
     for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -255,19 +247,33 @@ def display(m,chain,TMH,name):
 # Here starts the real job...
 #IMP.set_log_level(IMP.VERBOSE)
 
-TMH=[[13,32],[47,62],[68,86],[144,161]]
+# TM regions
+TMH= [[3, 21], [31, 61], [67, 97], [102, 113], [121, 154], [161, 180], [191, 219]]
+
+# number of TMH
+nTMH=len(TMH)
+
+# define TMH sequences
+seq0=("M","V","G","L","T","T","L","F","W","L","G","A","I","G","M","L","V","G","T","L","A","F","A","W","A","G","R","D","A","G","S","G","E","R","R","Y","Y","V","T","L","V","G","I","S","G","I","A","A","V","A","Y","V","V","M","A","L","G","V","G","W","V","P","V","A","E","R","T","V","F","A","P","R","Y","I","D","W","I","L","T","T","P","L","I","V","Y","F","L","G","L","L","A","G","L","D","S","R","E","F","G","I","V","I","T","L","N","T","V","V","M","L","A","G","F","A","G","A","M","V","P","G","I","E","R","Y","A","L","F","G","M","G","A","V","A","F","L","G","L","V","Y","Y","L","V","G","P","M","T","E","S","A","S","Q","R","S","S","G","I","K","S","L","Y","V","R","L","R","N","L","T","V","I","L","W","A","I","Y","P","F","I","W","L","L","G","P","P","G","V","A","L","L","T","P","T","V","D","V","A","L","I","V","Y","L","D","L","V","T","K","V","G","F","G","F","I","A","L","D","A","A","A","T","L")
+
+seq=[]
+for h in TMH:
+    tmp=[]
+    for j in range(h[0],h[1]+1):
+        tmp.append(seq0[j-1])
+    seq.append(tmp)
 
 # define the topology
-topo=[+1.0, -1.0, +1.0, -1.0]
+topo=[-1.0,1.0,-1.0,1.0,-1.0,1.0,-1.0]
 
 print "creating representation"
-(m,chain,tbr,sign)=create_representation(TMH,topo)
+(m,chain,tbr)=create_representation(seq,topo)
 
 print "creating score function"
 rset=create_restraints(m,chain,tbr,TMH)
 
 print "creating discrete states"
-pst=create_discrete_states(m,chain,TMH,sign)
+pst=create_discrete_states(m,chain,TMH)
 
 print "creating sampler"
 s=create_sampler(m, rset, pst)
