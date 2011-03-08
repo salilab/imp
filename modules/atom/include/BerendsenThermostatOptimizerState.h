@@ -18,11 +18,11 @@
 IMPATOM_BEGIN_NAMESPACE
 
 //! Maintains temperature during molecular dynamics.
-/** The thermostat scales velocities using the algorithm described by
-    Berendsen et al. in H. J. C. Berendsen, J. P. M. Postma,
+/** The thermostat scales velocities using the algorithm described
+    in H. J. C. Berendsen, J. P. M. Postma,
     W. F. van Gunsteren, A. DiNola, and J. R. Haak "Molecular dynamics
     with coupling to an external bath", Journal of Chemical Physics 81
-    pp. 3684-3690 (1984)
+    pp. 3684-3690 (1984).
 
     At each update, velocities are rescaled by \f[
     \lambda = \left[1 + \frac{\Delta t}{\tau_T}
@@ -30,7 +30,7 @@ IMPATOM_BEGIN_NAMESPACE
     \f]
     where \f$\Delta t\f$ is the molecular dynamics timestep, \f$\tau_T\f$
     is the coupling constant (in fs) of the thermostat, \f$T\f$ is the
-    thermostat temperature, \f$T_k\f$ and is the instantaneous (kinetic)
+    thermostat temperature, and \f$T_k\f$ is the instantaneous (kinetic)
     temperature of the dynamics. (This is equation 11 from the reference above.)
  */
 class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState
