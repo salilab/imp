@@ -28,9 +28,10 @@ typedef algebra::internal::TNT::Array2D<double> Array2DD;
 typedef algebra::internal::TNT::Array1D<double> Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
 typedef IMP::algebra::DenseGrid3D<double> DensGrid;
+
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
-class DataPoints{
+class DataPoints : public Object {
  public:
   DataPoints(){
     atts_ = core::XYZ::get_xyz_keys();
@@ -42,12 +43,15 @@ class DataPoints{
   }
   const Array1DD_VEC *get_data() const {return &data_;}
   int get_number_of_data_points()const {return data_.size();}
+
+  IMP_OBJECT_INLINE(DataPoints, { out << "DataPoints" << std::endl; }, {});
 protected:
   FloatKeys atts_;
   Array1DD_VEC data_;
 };
+IMP_OBJECTS(DataPoints, DataPointsList);
 
-class XYZDataPoints : public DataPoints {
+class IMPMULTIFITEXPORT XYZDataPoints : public DataPoints {
 public:
   XYZDataPoints():DataPoints(){}
   XYZDataPoints(const algebra::Vector3Ds &vecs):DataPoints(){
@@ -56,9 +60,13 @@ public:
   void populate_data_points(const algebra::Vector3Ds &vecs);
   //  ~XYZDataPoints(){}
   inline algebra::Vector3D get_vector(int i) const {return vecs_[i];}
+
+  IMP_OBJECT_INLINE(XYZDataPoints, { out << "XYZDataPoints" << std::endl; },
+                    {});
 protected:
   algebra::Vector3Ds vecs_;
 };
+IMP_OBJECTS(XYZDataPoints, XYZDataPointsList);
 
 class IMPMULTIFITEXPORT ParticlesDataPoints : public XYZDataPoints {
 public:
@@ -69,12 +77,15 @@ public:
     populate_data_points(ps);
   }
   void populate_data_points(Particles ps);
-  ~ParticlesDataPoints(){}
   Particle* get_particle(int i) const { return ps_[i];}
   const Particles  &get_particles() const { return ps_;}
+
+  IMP_OBJECT_INLINE(ParticlesDataPoints,
+                    { out << "ParticlesDataPoints" << std::endl; }, {});
 protected:
   Particles ps_;
 };
+IMP_OBJECTS(ParticlesDataPoints, ParticlesDataPointsList);
 
 //! Stoers density voxels as a vector of Array1D.
 /**
@@ -86,10 +97,12 @@ public:
                     float density_threshold);
   DensityDataPoints(DensGrid &dens,
                     float density_threshold);
-  ~DensityDataPoints(){}
   Array1DD sample() const;
 
   //  em::DensityMap* get_density_map() const {return dens_;}
+
+  IMP_OBJECT_INLINE(DensityDataPoints,
+                    { out << "DensityDataPoints" << std::endl; }, {});
 protected:
   void populate_data();
   void set_max_min_density_values();
@@ -101,6 +114,8 @@ protected:
   double max_value_,min_value_;
   double threshold_;
 };
+IMP_OBJECTS(DensityDataPoints, DensityDataPointsList);
 
 IMPMULTIFIT_END_NAMESPACE
+
 #endif /* IMPMULTIFIT_DATA_POINTS_H */

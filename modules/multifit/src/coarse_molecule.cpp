@@ -39,10 +39,10 @@ atom::Hierarchy create_coarse_molecule_from_molecule(
                Model *mdl,
                float bead_radius,
                bool add_conn_restraint) {
-  multifit::ParticlesDataPoints ddp(core::get_leaves(mh));
-  multifit::VQClustering vq(&ddp,num_beads);
+  IMP_NEW(ParticlesDataPoints, ddp, (core::get_leaves(mh)));
+  multifit::VQClustering vq(ddp,num_beads);
   vq.run();
-  multifit::DataPointsAssignment assignment(&ddp,&vq);
+  multifit::DataPointsAssignment assignment(ddp,&vq);
   atom::Selections sel;
   algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
@@ -87,11 +87,11 @@ atom::Hierarchy create_coarse_molecule_from_density(
     Model *mdl,
     float bead_radius){
 
-  multifit::DensityDataPoints ddp(dmap,dens_threshold);
+  IMP_NEW(DensityDataPoints, ddp, (dmap,dens_threshold));
   IMP_LOG(VERBOSE,"initialize calculation of initial centers"<<std::endl);
-  multifit::VQClustering vq(&ddp,num_beads);
+  multifit::VQClustering vq(ddp,num_beads);
   vq.run();
-  multifit::DataPointsAssignment assignment(&ddp,&vq);
+  multifit::DataPointsAssignment assignment(ddp,&vq);
   algebra::Vector3Ds vecs;
   for (int i=0;i<num_beads;i++){
     Array1DD xyz = assignment.get_cluster_engine()->get_center(i);
