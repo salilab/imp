@@ -77,7 +77,7 @@ class sfo_common():
         """
         m=self._m
         prot = IMP.atom.read_pdb(initpdb, m, selector)
-        if not prot.get_is_valid():
+        if not prot.get_is_valid(True):
             raise ValueError, "invalid hierarchy!"
         # Read in the CHARMM heavy atom topology and parameter files
         ff = IMP.atom.CHARMMParameters(top,par)

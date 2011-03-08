@@ -6,6 +6,8 @@ import math
 
 class testSharedFunctions(IMP.test.TestCase):
     
+    kB= (1.381 * 6.02214) / 4184.0
+
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         self.sfo=sf.sfo_common()
@@ -19,25 +21,27 @@ class testSharedFunctions(IMP.test.TestCase):
 
     def init_protein(self, name):
         self.sfo.init_model_base('./')
-        pdb=IMP.isd.get_input_file_name(name)
+        pdb=self.get_input_file_name(name)
+        top=self.get_input_file_name('top.lib')
+        par=self.get_input_file_name('par.lib')
         selector=IMP.atom.NonWaterNonHydrogenPDBSelector()
         pairscore=IMP.isd.RepulsiveDistancePairScore(0,1)
         prot,ff,rsb,rs = \
-                self.sfo.init_model_charmm_protein_and_ff(pdb,selector,pairscore)
+                self.sfo.init_model_charmm_protein_and_ff(pdb,top,par,selector,pairscore)
         return prot,ff,rsb,rs
 
     def test_hello(self):
         self.assertEqual(self.sfo.hello(), 'hello world')
 
-    @expectedFailure
+    @IMP.test.expectedFailure
     def test_set_checklevel(self):
         self.fail()
 
-    @expectedFailure
+    @IMP.test.expectedFailure
     def test_set_loglevel(self):
         self.fail()
 
-    @expectedFailure
+    @IMP.test.expectedFailure
     def test_m(self):
         self.fail()
 
@@ -47,17 +51,12 @@ class testSharedFunctions(IMP.test.TestCase):
 
     def test_init_model_charmm_protein_and_ff(self):
         "rudimentary test of things"
-        self.sfo.init_model_base('./')
-        pdb=IMP.isd.get_input_file_name('1G6J_MODEL1.pdb')
-        selector=IMP.atom.NonWaterNonHydrogenPDBSelector()
-        pairscore=IMP.isd.RepulsiveDistancePairScore(0,1)
-        prot,ff,rsb = \
-                self.sfo.init_model_charmm_protein_and_ff(pdb,selector,pairscore)
+        self.init_protein('1G6J_MODEL1.pdb')
         self.assertIsInstance(ff, IMP.atom.CHARMMParameters)
         self.assertIsInstance(prot,IMP.atom.Hierarchy)
         self.assertIsInstance(rsb, IMP.RestraintSet)
         self.assertEqual(rsb.get_type_name(), 'phys_bonded')
-        self.assertTrue(prot.get_is_valid())
+        self.assertTrue(prot.get_is_valid(False))
 
     def test_init_model_setup_scale(self):
         self.sfo.init_model_base('./')
@@ -71,7 +70,7 @@ class testSharedFunctions(IMP.test.TestCase):
     def test_init_model_Jeffreys(self):
         self.sfo.init_model_base('./')
         s=self.sfo.init_model_setup_scale(3.0,1.0,5.0)
-        rs=self.sfo.init_model_jeffreys(s)
+        rs=self.sfo.init_model_jeffreys([s])
         self.assertIsInstance(rs, IMP.RestraintSet)
         self.assertEqual(rs.get_type_name(), 'prior')
         self.assertEqual(rs.get_number_of_restraints(), 1)
@@ -80,7 +79,7 @@ class testSharedFunctions(IMP.test.TestCase):
         self.assertTrue(rs.get_is_part_of_model())
         rs=IMP.RestraintSet('test')
         rs.add_restraint(IMP.isd.JeffreysRestraint(s))
-        rs=self.sfo.init_model_jeffreys(s, rs)
+        rs=self.sfo.init_model_jeffreys([s], rs)
         self.assertIsInstance(rs, IMP.RestraintSet)
         self.assertEqual(rs.get_type_name(), 'test')
         self.assertEqual(rs.get_number_of_restraints(), 2)
@@ -105,7 +104,7 @@ class testSharedFunctions(IMP.test.TestCase):
                 1.0, sigma, gamma)
         self.assertIsInstance(ln, IMP.isd.NOERestraint)
 
-    @expectedFailure
+    @IMP.test.expectedFailure
     def test_init_model_ambiguous_NOE_restraint(self):
         prot,ff,rsb,rs = self.init_protein('1G6J_MODEL1.pdb')
         sigma=IMP.isd.Scale(1.0)
@@ -117,7 +116,7 @@ class testSharedFunctions(IMP.test.TestCase):
 
     def test_init_model_NOEs(self):
         prot,ff,rsb,rs = self.init_protein('1G6J_MODEL1.pdb')
-        seqfile=IMP.isd.get_input_file_name('sequence.dat')
+        seqfile=self.get_input_file_name('sequence.dat')
         tbl=['assign (resid 1 and name CA) (resid 2 and name H) 1.0 0.0 0.0',
              'assign (resid 1 and name HA) (resid 2 and name OE1) 2.0 0.0 0.0']
         tblfile=writetofile(tbl)
@@ -149,7 +148,7 @@ class testSharedFunctions(IMP.test.TestCase):
 
     def test_init_model_standard_SAXS_restraint(self):
         prot,ff,rsb,rs = self.init_protein('6lyz.pdb')
-        profile=IMP.isd.get_input_file_name('lyzexp.dat')
+        profile=self.get_input_file_name('lyzexp.dat')
         rs=self.init_model_standard_SAXS_restraint(prot, profile, name='test')
         self.assertIsInstance(rs, IMP.RestraintSet)
         self.assertEqual(rs.get_type_name(), 'test')
@@ -223,7 +222,7 @@ class testSharedFunctions(IMP.test.TestCase):
 
     def test_init_model__setup_md_restraints(self):
         prot, ff, rsb, rs = self.init_protein('1G6J_MODEL1.pdb')
-        md, os = self.sfo._setup_md(prot, md_restraints=rsb)
+        md, os = self.sfo._setup_md(prot, md_restraints=[rsb])
         self.assertIsInstance(md, IMP.atom.MolecularDynamics)
         self.assertEqual(md.get_restraint_sets()[0], rsb)
 
@@ -252,16 +251,19 @@ class testSharedFunctions(IMP.test.TestCase):
         p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
         mc=self.sfo._setup_mc(nm, temperature=200.0)
-        self.assertAlmostEqual(mc.get_temperature(), 200.0, delta=1e-6)
+        self.assertAlmostEqual(mc.get_temperature(), self.kB*200.0, delta=1e-6)
         self.assertTrue(mc.get_has_movers())
         self.assertEqual(mc.get_mover(0), nm)
 
+    @IMP.test.expectedFailure
     def test__setup_mc_restraints(self):
         self.sfo.init_model_base('./')
         p0=IMP.isd.Scale.setup_particle(IMP.Particle(self.sfo._m), 1.0)
-        prior_rs = self.sfo.init_model_jeffreys(p0)
+        prior_rs = self.sfo.init_model_jeffreys([p0])
         nm = self.sfo._setup_normal_mover(p0, IMP.FloatKey("scale"), 0.1)
-        mc=self.sfo._setup_mc(nm, mc_restraints=prior_rs)
+        mc=self.sfo._setup_mc(nm, mc_restraints=[prior_rs])
         self.assertEqual(mc.get_restraint_sets()[0], prior_rs)
 
 
+if __name__ == '__main__':
+    IMP.test.main()
