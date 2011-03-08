@@ -114,9 +114,12 @@ IMP_SWIG_OBJECT(IMP, TripletScoreRestraint,TripletScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletsScoreRestraint, TripletsScoreRestraints);
 
 IMP_SWIG_OBJECT(IMP, WriteParticlesOptimizerState, WriteParticlesOptimizerStates);
+#ifdef IMP_KERNEL_USE_NETCDFCPP
 IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryOptimizerState, WriteParticlesBinaryOptimizerStates);
 IMP_SWIG_OBJECT(IMP, WriteParticlesFailureHandler, WriteParticlesFailureHandlers);
 IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFailureHandlers);
+#endif
+
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetFailureHandler, SaveToConfigurationSetFailureHandlers);
 
