@@ -37,17 +37,29 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState
 {
  public:
   BerendsenThermostatOptimizerState(const Particles &pis,
-                                    double temperature, double coupling,
-                                    unsigned skip_steps);
+                                    double temperature,
+                                    double tau);
 
-  //! Set the number of update calls to skip between rescaling.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
 
   //! Set the particles to use.
   void set_particles(const Particles &pis) {
     pis_=pis;
+  }
+
+  double get_temperature() {
+      return temperature_;
+  }
+
+  double get_tau() {
+      return tau_;
+  }
+
+  void set_temperature(double temperature) {
+      temperature_ = temperature;
+  }
+
+  void set_tau(double tau) {
+      tau_ = tau;
   }
 
   //! Rescale the velocities now
@@ -57,9 +69,8 @@ class IMPATOMEXPORT BerendsenThermostatOptimizerState : public OptimizerState
 
 private:
   Particles pis_;
-  double temperature_, coupling_;
-  unsigned skip_steps_;
-  unsigned call_number_;
+  double temperature_;
+  double tau_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];
