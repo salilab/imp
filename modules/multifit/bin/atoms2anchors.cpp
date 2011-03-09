@@ -24,9 +24,11 @@ using namespace IMP;
 
 int parse_input(int argc, char *argv[],std::string &pdb_filename,
                 int &num_means,std::string &cmm_filename,
-                std::string &output_pdb_filename,std::string &seg_filename) {
+                std::string &output_pdb_filename,std::string &seg_filename,
+                std::string &txt_filename) {
   cmm_filename="";
   seg_filename="";
+  txt_filename="";
   std::stringstream usage;
   usage<<"The program segments all CA atoms into K clusters using a GMM "
        <<"procedure\n\nUsage: atoms2anchors <input pdb filename> "
@@ -45,7 +47,9 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
     ("cmm",boost::program_options::value<std::string>(&cmm_filename),
      "the output centers as points in a CMM file")
     ("seg",boost::program_options::value<std::string>(&seg_filename),
-     "print each cluster as a PDB file <seg>_i.pdb");
+     "print each cluster as a PDB file <seg>_i.pdb")
+    ("txt",boost::program_options::value<std::string>(&txt_filename),
+     "anchors points in txt file format");
   boost::program_options::positional_options_description p;
   p.add("pdb", 1);
   p.add("num", 1);
@@ -79,9 +83,10 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
 
 int main(int argc, char *argv[]) {
   std::string pdb_filename,cmm_filename, output_pdb_filename,seg_filename;
+  std::string txt_filename;
   int num_means;
   if (parse_input(argc,argv,pdb_filename, num_means,cmm_filename,
-                  output_pdb_filename,seg_filename)){
+                  output_pdb_filename,seg_filename,txt_filename)){
     exit(0);
   }
 
@@ -89,10 +94,10 @@ int main(int argc, char *argv[]) {
   Model *m = new Model();
   atom::Hierarchy mh;
   mh = atom::read_pdb(pdb_filename,m);
-  multifit::ParticlesDataPoints ddp(core::get_leaves(mh));
-  multifit::VQClustering vq(&ddp,num_means);
+  IMP_NEW(multifit::ParticlesDataPoints,ddp,(core::get_leaves(mh)));
+  multifit::VQClustering vq(ddp,num_means);
   vq.run();
-  multifit::DataPointsAssignment assignment(&ddp,&vq);
+  multifit::DataPointsAssignment assignment(ddp,&vq);
   multifit::AnchorsData ad(
                           assignment.get_centers(),
                           *(assignment.get_edges()));
@@ -101,5 +106,8 @@ int main(int argc, char *argv[]) {
   if (not (cmm_filename == "")) {
     multifit::write_cmm(cmm_filename,"anchor_graph",ad);
   }
+  if (not (txt_filename == "")) {
+    multifit::write_txt(txt_filename,ad);
+   }
   return 0;
 }
