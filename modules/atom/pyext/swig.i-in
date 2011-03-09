@@ -56,6 +56,7 @@ IMP_SWIG_OBJECT(IMP::atom, ForceSwitch, ForceSwitches);
 IMP_SWIG_OBJECT(IMP::atom, HydrogenPDBSelector,HydrogenPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, ImproperSingletonScore, ImproperSingletonScores);
 IMP_SWIG_OBJECT(IMP::atom, LennardJonesPairScore, LennardJonesPairScores);
+IMP_SWIG_OBJECT(IMP::atom, MDMover, MDMovers);
 IMP_SWIG_OBJECT(IMP::atom, Mol2Selector, Mol2Selectors);
 IMP_SWIG_OBJECT(IMP::atom, MolecularDynamics, MolecularDynamicsList);
 IMP_SWIG_OBJECT(IMP::atom, NPDBSelector, NPDBSelectors);
@@ -239,6 +240,7 @@ namespace IMP {
 %include "IMP/atom/RemoveRigidMotionOptimizerState.h"
 %include "IMP/atom/BerendsenThermostatOptimizerState.h"
 %include "IMP/atom/LangevinThermostatOptimizerState.h"
+%include "IMP/atom/MDMover.h"
 
 namespace IMP {
   namespace atom {
