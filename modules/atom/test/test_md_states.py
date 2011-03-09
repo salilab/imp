@@ -64,6 +64,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
         m, ps = self.setup_particles([[IMP.algebra.Vector3D(0,0,0),
                                        IMP.algebra.Vector3D(10,0,0)]])
         s = IMP.atom.RemoveRigidMotionOptimizerState(ps, 1)
+        self.assertEqual(s.get_skip_steps(), 1)
         s.remove_rigid_motion()
         self.assertEqual(ps[0].get_value(vxkey), 0.)
         self.assertEqual(ps[0].get_value(vykey), 0.)

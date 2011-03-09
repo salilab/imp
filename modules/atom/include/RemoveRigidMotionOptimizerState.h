@@ -28,6 +28,12 @@ class IMPATOMEXPORT RemoveRigidMotionOptimizerState : public OptimizerState
     skip_steps_ = skip_steps;
   }
 
+  //! get the number of update calls to skip between rescaling.
+  unsigned int get_skip_steps() {
+    return skip_steps_;
+  }
+
+
   //! Set the particles to use.
   void set_particles(const Particles &pis) {
     pis_=pis;
