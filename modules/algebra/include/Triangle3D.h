@@ -24,11 +24,12 @@ class IMPALGEBRAEXPORT Triangle3D
   Triangle3D(const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
   //! Get the start=0/end=1 point of the segment
   const VectorD<3>& get_point(unsigned int i) const {
-#if defined(IMP_SWIG_WRAPPER)
+    //#if defined(IMP_SWIG_WRAPPER)
     IMP_USAGE_CHECK(i<3,"invalid point index");
-#else
-    IMP_INTERNAL_CHECK(i<2, "Invalid point index");
-#endif
+    //TODO - ask Daniel if we really need that
+// #else
+//     IMP_INTERNAL_CHECK(i<2, "Invalid point index");
+// #endif
     return p_[i];
   }
   IMP_SHOWABLE_INLINE(Triangle3D, out << "(" << p_[0] << ", "
@@ -43,6 +44,11 @@ IMP_VALUES(Triangle3D, Triangle3Ds);
 //! Return the largest triangle defined by 3 points from the input
 /** \relatesalso Triangle3D */
 IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);
+
+//! Return a transformation between two triangles
+IMPALGEBRAEXPORT Transformation3D
+   get_transformation_from_first_triangle_to_second(
+                      Triangle3D first_tri,Triangle3D second_tri);
 
 
 IMPALGEBRA_END_NAMESPACE
