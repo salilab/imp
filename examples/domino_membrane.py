@@ -128,15 +128,13 @@ def create_restraints(m, chain, tbr, TMH):
         m.add_restraint(dope)
         m.set_maximum_score(dope, .01)
 
-    def add_interacting_restraint():
-        rbs=[]
-        for h in TMH:
-            s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
-            rbs.append(IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body())
+    def add_interacting_restraint(h0, h1):
+        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h0[0])
+        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h1[0])
+        rb0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+        rb1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
         lpc= IMP.container.ListPairContainer(m)
-        lpc.add_particle_pair([rbs[0],rbs[1]])
-        lpc.add_particle_pair([rbs[5],rbs[6]])
-        #lpc.add_particle_pair([rbs[3],rbs[4]])
+        lpc.add_particle_pair([rb0,rb1])
         hub= IMP.core.HarmonicUpperBound(3.454,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
@@ -155,14 +153,16 @@ def create_restraints(m, chain, tbr, TMH):
         p1=s1.get_selected_particles()[0]
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
-        length=1.6*(4+TMH[i+1][0]-TMH[i][1]+1)+7.4
+        length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
-        rdr=add_distance_restraint(rb0,rb1,27.0,1000)
-        rset.add_restraint(dr)
+        rdr=add_distance_restraint(rb0,rb1,30.0,1000)
+        rset.add_restraint(rdr)
     add_packing_restraint()
     add_DOPE()
-    ir=add_interacting_restraint()
-    rset.add_restraint(ir)
+    ir0=add_interacting_restraint(TMH[0],TMH[1])
+    ir1=add_interacting_restraint(TMH[5],TMH[6])
+    rset.add_restraint(ir0)
+    rset.add_restraint(ir1)
     return rset
 
 # creating the discrete states for domino
@@ -170,12 +170,12 @@ def  create_discrete_states(m,chain,TMH):
 #   store initial rotation to have the right topology
     rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
     trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
-    for i in range(0,1):
+    for i in range(0,4):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,1):
+        for t in range(0,2):
             tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/6)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,1):
+            for s in range(0,4):
                 if ( t == 0 ) and ( s != 0 ) : break
                 swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
                 rot2=IMP.algebra.compose(swing,rot1)
@@ -218,6 +218,7 @@ def create_sampler(m, rset, pst):
     s=IMP.domino.DominoSampler(m, pst)
     ig= IMP.domino.get_interaction_graph(rset, pst)
     jt= IMP.domino.get_junction_tree(ig)
+    print ig,jt
 #   set filters
     filters=[]
     # do not allow particles with the same ParticleStates object
