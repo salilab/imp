@@ -147,14 +147,13 @@ void RMSDClustering<TransT>::build_graph(const Hash3::PointList &inds,
   //hash all the records
   float max_dist2=max_dist*max_dist;
   //add nodes
-  std::cout<<"adding nodes"<<std::endl;
+IMP_LOG(VERBOSE,"build_graph:adding nodes"<<std::endl);
   std::vector<RCVertex> nodes(inds.size());
   for (unsigned int i=0; i<inds.size(); ++i) {
     nodes[i]=boost::add_vertex(i,g);
   }
   //add edges
-  std::cout<<"adding edges"<<std::endl;
-  //use here knn ?
+  IMP_LOG(VERBOSE,"build_graph:adding edges"<<std::endl);
   for (unsigned int i=0; i<inds.size(); ++i) {
     for (unsigned int j=i+1; j<inds.size(); ++j) {
       float d2 = get_squared_distance(recs[i]->get_record(),
@@ -163,7 +162,7 @@ void RMSDClustering<TransT>::build_graph(const Hash3::PointList &inds,
         boost::add_edge(nodes[i],nodes[j],d2,g);
         //edge_weight.push_back(std::pair<RCEdge,float>(e,d2));
       }}}
-  std::cout<<"done building"<<std::endl;
+  IMP_LOG(VERBOSE,"build_graph: done building"<<std::endl);
 }
 template<class TransT>
 void RMSDClustering<TransT>::build_full_graph(const Hash3 &h,
@@ -266,7 +265,6 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
   Hash3 g_hash((double)(bin_size_));
 
   //load the hash
-  std::cout<<"loading the hash"<<std::endl;
   for (int i = 0 ; i < (int)recs.size() ; ++i){
     used[i] = false;
     TransT tr=recs[i]->get_record();
@@ -277,7 +275,6 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
     IMP_LOG(VERBOSE,"add to hash vertex number:"<<i
             <<" with center:"<<trans_cen<<std::endl);
   }
-  std::cout<<"going to work on each bucket"<<std::endl;
   //work on each bucket
   const Hash3::GeomMap &M = g_hash.Map();
   for (Hash3::GeomMap::const_iterator bucket = M.begin();
@@ -290,9 +287,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
     IMP_LOG(VERBOSE,"create graph with:"<<boost::num_vertices(g)<<" nodes and"<<
             boost::num_edges(g)<<" edges out of "<<pb.size()<<" points\n");
     //cluster all transformations in the bin
-    std::cout<<"going to clsuter graph"<<std::endl;
     num_joins +=cluster_graph(g,recs,max_dist);
-    std::cout<<"after clsuter graph"<<std::endl;
     IMP_LOG(VERBOSE,"after clustering number of joins::"<<num_joins<<std::endl);
   }
   return num_joins;
