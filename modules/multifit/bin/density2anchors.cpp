@@ -153,11 +153,11 @@ int main(int argc, char *argv[]) {
  set_log_level(SILENT);
  dmap->set_origin(xorigin,yorigin,zorigin);
  IMP_LOG(VERBOSE,"start setting trn_em"<<std::endl);
- multifit::DensityDataPoints ddp(dmap,density_threshold);
+ IMP_NEW(multifit::DensityDataPoints,ddp,(dmap,density_threshold));
  IMP_LOG(VERBOSE,"initialize calculation of initial centers"<<std::endl);
- multifit::VQClustering vq(&ddp,num_means);
+ multifit::VQClustering vq(ddp,num_means);
  vq.run();
- multifit::DataPointsAssignment assignment(&ddp,&vq);
+ multifit::DataPointsAssignment assignment(ddp,&vq);
  multifit::AnchorsData ad(
                           assignment.get_centers(),
                           *(assignment.get_edges()));
