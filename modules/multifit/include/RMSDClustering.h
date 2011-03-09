@@ -344,13 +344,10 @@ void RMSDClustering<TransT>::cluster(float max_dist,
     record->set_centroid(centroid_);
     records->push_back(record);
   }
-  std::cout<<"start fast clustering"<<std::endl;
   //fast clustering using geometric hashing
   while (fast_clustering(max_dist, *records)){
-    std::cout<<"cleaning"<<std::endl;
     clean(records);
   }
-  std::cout<<"end"<<std::endl;
   clean(records);
   //complete full clustering
   while (exhaustive_clustering(max_dist, *records)){
