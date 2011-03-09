@@ -77,7 +77,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
             m, ps = self.setup_particles([[IMP.algebra.Vector3D(0,0,0),
                                            IMP.algebra.Vector3D(0.1,0,0)]])
             scaler = IMP.atom.BerendsenThermostatOptimizerState(
-                                              ps, 298.0, coupling, 0)
+                                              ps, 298.0, coupling)
             md = IMP.atom.MolecularDynamics(m)
             md.set_time_step(4.0)
             md.add_optimizer_state(scaler)
