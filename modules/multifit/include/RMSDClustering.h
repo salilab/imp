@@ -12,6 +12,7 @@
 #include "internal/GeometricHash.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
+#include <IMP/algebra/vector_search.h>
 #include <IMP/core/XYZ.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <IMP/atom/distance.h>
@@ -82,8 +83,11 @@ public:
       return s1.second < s2.second;
     }
   };
-
-  RMSDClustering(){is_ready_=false;}
+  /**
+     \param[in] bin_size the radius of the bins of the hash
+     differ with at most this value
+   */
+  RMSDClustering(float bin_size=3.){is_ready_=false;bin_size_=bin_size;}
   virtual ~RMSDClustering() {}
   //! cluster transformations
   void cluster(float max_dist, const std::vector<TransT>& input_trans,
@@ -140,13 +144,17 @@ template<class TransT>
 void RMSDClustering<TransT>::build_graph(const Hash3::PointList &inds,
                    const std::vector<TransformationRecord*> &recs,
                                  float max_dist, Graph &g){
+  //hash all the records
   float max_dist2=max_dist*max_dist;
   //add nodes
+  std::cout<<"adding nodes"<<std::endl;
   std::vector<RCVertex> nodes(inds.size());
   for (unsigned int i=0; i<inds.size(); ++i) {
     nodes[i]=boost::add_vertex(i,g);
   }
   //add edges
+  std::cout<<"adding edges"<<std::endl;
+  //use here knn ?
   for (unsigned int i=0; i<inds.size(); ++i) {
     for (unsigned int j=i+1; j<inds.size(); ++j) {
       float d2 = get_squared_distance(recs[i]->get_record(),
@@ -155,6 +163,7 @@ void RMSDClustering<TransT>::build_graph(const Hash3::PointList &inds,
         boost::add_edge(nodes[i],nodes[j],d2,g);
         //edge_weight.push_back(std::pair<RCEdge,float>(e,d2));
       }}}
+  std::cout<<"done building"<<std::endl;
 }
 template<class TransT>
 void RMSDClustering<TransT>::build_full_graph(const Hash3 &h,
@@ -224,7 +233,7 @@ int RMSDClustering<TransT>::cluster_graph(Graph &g,
 
         TransformationRecord* rec1 = recs[v1_ind];
         TransformationRecord* rec2 = recs[v2_ind];
-          if (!(rec1->get_valid() &&rec2->get_valid())) continue;
+        if (!(rec1->get_valid() &&rec2->get_valid())) continue;
         if (rec1->get_score() > rec2->get_score()) {
           rec1->join_into(*rec2);
           rec2->set_valid(false);
@@ -257,6 +266,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
   Hash3 g_hash((double)(bin_size_));
 
   //load the hash
+  std::cout<<"loading the hash"<<std::endl;
   for (int i = 0 ; i < (int)recs.size() ; ++i){
     used[i] = false;
     TransT tr=recs[i]->get_record();
@@ -267,7 +277,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
     IMP_LOG(VERBOSE,"add to hash vertex number:"<<i
             <<" with center:"<<trans_cen<<std::endl);
   }
-
+  std::cout<<"going to work on each bucket"<<std::endl;
   //work on each bucket
   const Hash3::GeomMap &M = g_hash.Map();
   for (Hash3::GeomMap::const_iterator bucket = M.begin();
@@ -280,7 +290,9 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
     IMP_LOG(VERBOSE,"create graph with:"<<boost::num_vertices(g)<<" nodes and"<<
             boost::num_edges(g)<<" edges out of "<<pb.size()<<" points\n");
     //cluster all transformations in the bin
+    std::cout<<"going to clsuter graph"<<std::endl;
     num_joins +=cluster_graph(g,recs,max_dist);
+    std::cout<<"after clsuter graph"<<std::endl;
     IMP_LOG(VERBOSE,"after clustering number of joins::"<<num_joins<<std::endl);
   }
   return num_joins;
@@ -337,11 +349,13 @@ void RMSDClustering<TransT>::cluster(float max_dist,
     record->set_centroid(centroid_);
     records->push_back(record);
   }
-
+  std::cout<<"start fast clustering"<<std::endl;
   //fast clustering using geometric hashing
   while (fast_clustering(max_dist, *records)){
+    std::cout<<"cleaning"<<std::endl;
     clean(records);
   }
+  std::cout<<"end"<<std::endl;
   clean(records);
   //complete full clustering
   while (exhaustive_clustering(max_dist, *records)){
