@@ -46,6 +46,8 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
   IMP::internal::OwnerPointer<Configuration> best_state
     = new Configuration(get_model());
 
+  stat_forward_steps_taken_ = 0;
+  stat_num_failures_ = 0;
   int failures=0;
   if (cg_) {
     //cg_->set_score_threshold(get_score_threshold());
@@ -213,7 +215,7 @@ void MonteCarlo::set_local_optimizer(Optimizer* cg)
 
 void MonteCarlo::do_show(std::ostream &out) const
 {
-  out << "forward steps " << stat_forward_steps_taken_
+  out << "forward steps taken after last call " << stat_forward_steps_taken_
       << " -" << stat_num_failures_ << std::endl;
 }
 
