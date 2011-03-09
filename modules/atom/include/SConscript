@@ -31,6 +31,7 @@ files = [
          'MolecularDynamics.h',
          'Molecule.h',
          'RemoveRigidMotionOptimizerState.h',
+         'RemoveTranslationOptimizerState.h',
          'Residue.h',
          'SameResiduePairFilter.h',
          'SimulationParameters.h',
