@@ -100,7 +100,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
                                        IMP.algebra.Vector3D(0.1,0,0)]],
                                      copies=50)
         scaler = IMP.atom.LangevinThermostatOptimizerState(
-                                              ps, 298.0, 0.1, 0)
+                                              ps, 298.0, 0.1)
         md = IMP.atom.MolecularDynamics(m)
         md.set_time_step(4.0)
         md.add_optimizer_state(scaler)

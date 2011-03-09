@@ -27,17 +27,27 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
  public:
   LangevinThermostatOptimizerState(const Particles &pis,
                                    double temperature,
-                                   double time_friction,
-                                   unsigned skip_steps);
-
-  //! Set the number of update calls to skip between rescaling.
-  void set_skip_steps(unsigned skip_steps) {
-    skip_steps_ = skip_steps;
-  }
+                                   double gamma);
 
   //! Set the particles to use.
   void set_particles(const Particles &pis) {
     pis_=pis;
+  }
+
+  double get_temperature() {
+      return temperature_;
+  }
+
+  double get_gamma() {
+      return gamma_;
+  }
+
+  void set_temperature(double temperature) {
+      temperature_ = temperature;
+  }
+
+  void set_gamma(double gamma) {
+      gamma_ = gamma;
   }
 
   //! Rescale the velocities now
@@ -48,9 +58,7 @@ class IMPATOMEXPORT LangevinThermostatOptimizerState : public OptimizerState
 private:
   Particles pis_;
   double temperature_;
-  double time_friction_;
-  unsigned skip_steps_;
-  unsigned call_number_;
+  double gamma_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];
