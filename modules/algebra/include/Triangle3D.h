@@ -8,6 +8,8 @@
 #define IMPALGEBRA_TRIANGLE_3D_H
 
 #include "Vector3D.h"
+#include "Transformation3D.h"
+#include "ReferenceFrame3D.h"
 #include "algebra_macros.h"
 #include <iostream>
 #include <IMP/constants.h>
