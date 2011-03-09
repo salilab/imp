@@ -14,11 +14,8 @@ IMPATOM_BEGIN_NAMESPACE
 LangevinThermostatOptimizerState
 ::LangevinThermostatOptimizerState(
                                    const Particles &pis,
-                                   Float temperature, double tf,
-                                   unsigned skip_steps) :
-  pis_(pis), temperature_(temperature), time_friction_(tf),
-  skip_steps_(skip_steps),
-  call_number_(0)
+                                   Float temperature, double gamma) :
+  pis_(pis), temperature_(temperature), gamma_(gamma)
 {
   vs_[0] = FloatKey("vx");
   vs_[1] = FloatKey("vy");
@@ -27,17 +24,14 @@ LangevinThermostatOptimizerState
 
 void LangevinThermostatOptimizerState::update()
 {
-  if (skip_steps_ == 0 || (call_number_ % skip_steps_) == 0) {
     rescale_velocities();
-  }
-  ++call_number_;
 }
 
 void LangevinThermostatOptimizerState::rescale_velocities() const
 {
   static const double gas_constant = 8.31441e-7;
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  double c1 = exp(-time_friction_*md->get_time_step());
+  double c1 = exp(-gamma_*md->get_time_step());
   double c2 = sqrt((1.0-c1)*gas_constant*temperature_);
   IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
              "the molecular dynamics optimizer.");
@@ -58,8 +52,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const
 
 void LangevinThermostatOptimizerState::do_show(std::ostream &out) const
 {
-  out << "Berendsen thermostate with " << temperature_ << " every "
-      << skip_steps_ << " steps" << std::endl;
+  out << "Langevin thermostat with " << temperature_ << std::endl;
 }
 
 IMPATOM_END_NAMESPACE
