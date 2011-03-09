@@ -28,6 +28,7 @@ files = [
          'LennardJones.h',
          'LennardJonesPairScore.h',
          'Mass.h',
+         'MDMover.h',
          'MolecularDynamics.h',
          'Molecule.h',
          'RemoveRigidMotionOptimizerState.h',

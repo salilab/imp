@@ -28,6 +28,7 @@ files = [
          'LennardJones.cpp',
          'LennardJonesPairScore.cpp',
          'Mass.cpp',
+         'MDMover.cpp',
          'MolecularDynamics.cpp',
          'Molecule.cpp',
          'RemoveRigidMotionOptimizerState.cpp',
