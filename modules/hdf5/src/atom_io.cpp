@@ -222,7 +222,7 @@ namespace {
 
 
 }
-void add_hierarchy(atom::Hierarchy hs, RootHandle fh) {
+void write_hierarchy(atom::Hierarchy hs, RootHandle fh) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {

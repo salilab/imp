@@ -10,6 +10,7 @@
 #define IMPHDF5_HDF5_TYPES_H
 
 #include "hdf5_config.h"
+#include "NodeID.h"
 #include <hdf5.h>
 #include <algorithm>
 #include <vector>
@@ -40,31 +41,31 @@ IMPHDF5_BEGIN_NAMESPACE
  - static hid_t get_hdf5_type()
  - static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
-                                   float v)
- - static float read_value_dataset(hid_t d, hid_t is,
+                                   double v)
+ - static double read_value_dataset(hid_t d, hid_t is,
                                   hid_t sp)
- - static std::vector<float> read_values_attribute(hid_t a, unsigned int size)
- - static void write_values_attribute(hid_t a, const std::vector<float> &v)
- - static const float& get_null_value()
+ - static std::vector<double> read_values_attribute(hid_t a, unsigned int size)
+ - static void write_values_attribute(hid_t a, const std::vector<double> &v)
+ - static const double& get_null_value()
  - static std::string get_name()
  - static unsigned int get_index()
 @{
 */
 /** */
 struct IMPHDF5EXPORT FloatTraits {
-  typedef float Type;
+  typedef double Type;
   static hid_t get_hdf5_type();
   static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
-                                  float v);
-  static float read_value_dataset(hid_t d, hid_t is,
+                                  double v);
+  static double read_value_dataset(hid_t d, hid_t is,
                                   hid_t sp);
-  static std::vector<float> read_values_attribute(hid_t a, unsigned int size);
-  static void write_values_attribute(hid_t a, const std::vector<float> &v);
-  static const float& get_null_value();
-  static const float& get_fill_value();
-  static bool get_is_null_value(const float& f) {
-    return f >= std::numeric_limits<float>::max();
+  static std::vector<double> read_values_attribute(hid_t a, unsigned int size);
+  static void write_values_attribute(hid_t a, const std::vector<double> &v);
+  static const double& get_null_value();
+  static const double& get_fill_value();
+  static bool get_is_null_value(const double& f) {
+    return f >= std::numeric_limits<double>::max();
   }
   static std::string get_name();
   static unsigned int get_index() {
@@ -92,7 +93,7 @@ struct IMPHDF5EXPORT IntTraits {
     return 0;
   }
 };
-/** */
+/** A non-negative index.*/
 struct IMPHDF5EXPORT IndexTraits: IntTraits {
   static const int& get_null_value();
   static const int& get_fill_value();
@@ -104,7 +105,7 @@ struct IMPHDF5EXPORT IndexTraits: IntTraits {
     return 2;
   }
 };
-
+/** A string */
 struct IMPHDF5EXPORT StringTraits {
   typedef std::string Type;
   static hid_t get_hdf5_type();
@@ -125,6 +126,29 @@ struct IMPHDF5EXPORT StringTraits {
   static std::string get_name();
   static unsigned int get_index() {
     return 3;
+  }
+};
+/** Store the Node for other nodes in the hierarchy. */
+struct IMPHDF5EXPORT NodeIDTraits {
+  typedef NodeID Type;
+  static hid_t get_hdf5_type();
+  static void write_value_dataset(hid_t d, hid_t is,
+                                  hid_t s,
+                                  NodeID v);
+  static NodeID read_value_dataset(hid_t d, hid_t is,
+                                        hid_t sp);
+  static std::vector<NodeID>
+    read_values_attribute(hid_t a, unsigned int size);
+  static void write_values_attribute(hid_t a,
+                                     const std::vector<NodeID> &v);
+  static const NodeID& get_null_value();
+  static const NodeID& get_fill_value();
+  static bool get_is_null_value(NodeID s) {
+    return s== NodeID();
+  }
+  static std::string get_name();
+  static unsigned int get_index() {
+    return 4;
   }
 };
 /** @} */

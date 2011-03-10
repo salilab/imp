@@ -31,6 +31,7 @@ public:
     // int, string, float
     return 3*i_;
   }
+  IMP_HASHABLE_INLINE(KeyCategory, return i_);
   IMP_COMPARISONS_1(KeyCategory, i_);
   void show(std::ostream &out) const {
     out << get_name();

@@ -106,7 +106,7 @@ namespace {
 //IMP_REGISTER_WRITER(HDF5Writer, ".pym")
 
 
-void add_geometry(display::Geometry *g,
+void write_geometry(display::Geometry *g,
                   RootHandle parent) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   add_internal(parent, g,

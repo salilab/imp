@@ -13,6 +13,7 @@
 #include "hdf5_wrapper.h"
 #include "internal/shared.h"
 #include "hdf5_types.h"
+#include "NodeID.h"
 
 IMPHDF5_BEGIN_NAMESPACE
 //! The types of the nodes.
@@ -51,8 +52,8 @@ class IMPHDF5EXPORT NodeHandle {
     return NodeType(shared_->get_type(node_));
   }
   //! get a unique id for this node
-  unsigned int get_id() const {
-    return node_;
+  NodeID get_id() const {
+    return NodeID(node_);
   }
   //! get the value of the attribute k from this node
   /** The node must have the attribute and if it is a per-frame
@@ -105,6 +106,7 @@ class IMPHDF5EXPORT NodeHandle {
   IMP_HDF5_NODE_KEY_TYPE_METHODS(float, Float);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(string, String);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(index, Index);
+  IMP_HDF5_NODE_KEY_TYPE_METHODS(node_id, NodeID);
   /** @} */
   void show(std::ostream &out= std::cout) const {
     out << "NodeHandle " << get_type();

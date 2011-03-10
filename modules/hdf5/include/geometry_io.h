@@ -17,11 +17,11 @@
 IMPHDF5_BEGIN_NAMESPACE
 
 /** Add the geometry to the file */
-IMPHDF5EXPORT void add_geometry(display::Geometry *r,
+IMPHDF5EXPORT void write_geometry(display::Geometry *r,
                                 RootHandle parent);
 /** Save the geometry for the specified frame. */
-IMPHDF5EXPORT void save_geometry(display::Geometry *r,
-                                 RootHandle parent, int frame);
+IMPHDF5EXPORT void save_conformation(display::Geometry *r,
+                                              RootHandle parent, int frame);
 
 IMPHDF5_END_NAMESPACE
 
