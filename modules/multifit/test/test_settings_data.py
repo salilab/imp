@@ -5,8 +5,6 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.multifit
-import IMP.restrainer
-
 
 class SettingsDataTest(IMP.test.TestCase):
     """Class to test correct reading of system data"""
