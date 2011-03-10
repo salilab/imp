@@ -1,0 +1,42 @@
+
+namespace IMP {
+namespace hdf5 {
+%rename(_FloatTraits) FloatTraits;
+%rename(_StringTraits) StringTraits;
+%rename(_IntTraits) IntTraits;
+%rename(_IndexTraits) IndexTraits;
+}
+}
+
+IMP_SWIG_VALUE(IMP::hdf5, NodeHandle, NodeHandles);
+IMP_SWIG_VALUE(IMP::hdf5, RootHandle, RootHandles);
+IMP_SWIG_VALUE(IMP::hdf5, KeyCategory, KeyCategories);
+IMP_SWIG_VALUE_TEMPLATE(IMP::hdf5, Key);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, FloatKey, FloatKey, FloatKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, IntKey, IntKey, IntKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, StringKey, StringKey, StringKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, IndexKey, IndexKey, IndexKeys);
+IMP_SWIG_VALUE(IMP::hdf5, HDF5Group, HDF5Groups);
+IMP_SWIG_VALUE_TEMPLATE(IMP::hdf5, HDF5DataSet);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5FloatDataSet, HDF5FloatDataSet, HDF5FloatDataSets);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5IntDataSet, HDF5IntDataSet, HDF5IntDataSets);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5StringDataSet, HDF5StringDataSet, HDF5StringDataSets);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5IndexDataSet, HDF5IndexDataSet, HDF5IndexDataSets);
+
+%include "IMP/hdf5/hdf5_types.h"
+%include "IMP/hdf5/hdf5_wrapper.h"
+%include "IMP/hdf5/KeyCategory.h"
+%include "IMP/hdf5/Key.h"
+%include "IMP/hdf5/NodeHandle.h"
+%include "IMP/hdf5/RootHandle.h"
+%include "IMP/hdf5/operations.h"
+%include "IMP/hdf5/atom_io.h"
+%include "IMP/hdf5/restraint_io.h"
+
+%template(HDF5FloatDataSet) IMP::hdf5::HDF5DataSet<IMP::hdf5::FloatTraits>;
+%template(HDF5StringDataSet) IMP::hdf5::HDF5DataSet<IMP::hdf5::StringTraits>;
+%template(HDF5IntDataSet) IMP::hdf5::HDF5DataSet<IMP::hdf5::IntTraits>;
+%template(FloatKey) IMP::hdf5::Key<IMP::hdf5::FloatTraits>;
+%template(IntKey) IMP::hdf5::Key<IMP::hdf5::IntTraits>;
+%template(StringKey) IMP::hdf5::Key<IMP::hdf5::StringTraits>;
+%template(IndexKey) IMP::hdf5::Key<IMP::hdf5::IndexTraits>;
