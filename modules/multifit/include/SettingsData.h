@@ -35,8 +35,8 @@ class IMPMULTIFITEXPORT ComponentHeader : public Object {
     inline std::string get_name() const {return name_;}
     void set_filename(const std::string &filename){filename_=filename;}
     inline std::string get_filename() const {return filename_;}
-    void set_pdb_ap_fn(const std::string &pdb_ap_fn) {pdb_ap_fn_=pdb_ap_fn;}
-    inline std::string get_pdb_ap_fn() const {return pdb_ap_fn_;}
+    void set_txt_ap_fn(const std::string &pdb_ap_fn) {pdb_ap_fn_=pdb_ap_fn;}
+    inline std::string get_txt_ap_fn() const {return pdb_ap_fn_;}
     void set_num_ap(int num_ap) {num_ap_=num_ap;}
     inline int get_num_ap() const {return num_ap_;}
     void set_transformations_fn(std::string transformations_fn)
@@ -69,10 +69,9 @@ class IMPMULTIFITEXPORT AssemblyHeader : public Object {
       dens_fn_="";
       resolution_=0.;
       spacing_=0.;
-      pdb_fine_ap_fn_="";
-      pdb_coarse_ap_fn_="";
-      jt_fn_="";
-      cmm_ap_fn_="";
+      threshold_=0.;
+      txt_ap_fn_="";
+      txt_finer_ap_fn_="";
     }
     void set_dens_fn(const std::string &dens_fn) {dens_fn_=dens_fn;}
     std::string get_dens_fn() const {return dens_fn_;}
@@ -80,33 +79,30 @@ class IMPMULTIFITEXPORT AssemblyHeader : public Object {
     float get_resolution() const {return resolution_;}
     float get_spacing() const {return spacing_;}
     void set_spacing(float spacing) {spacing_=spacing;}
+    void set_threshold(float t) {threshold_=t;}
+    float get_threshold() const {return threshold_;}
     algebra::Vector3D get_origin() const {return origin_;}
     void set_origin(algebra::Vector3D origin) {origin_=origin;}
-    std::string get_pdb_fine_ap_fn () const {return pdb_fine_ap_fn_;}
-    void set_pdb_fine_ap_fn (const std::string &new_fn) {
-      pdb_fine_ap_fn_=new_fn;}
-    std::string get_pdb_coarse_ap_fn () const {return pdb_coarse_ap_fn_;}
-    void set_pdb_coarse_ap_fn (const std::string &new_fn) {
-     pdb_coarse_ap_fn_=new_fn;}
-    std::string get_cmm_ap_fn () const {return cmm_ap_fn_;}
-    void set_cmm_ap_fn (const std::string &new_fn) {cmm_ap_fn_=new_fn;}
-    std::string get_junction_tree_fn () const {return jt_fn_;}
-    void set_junction_tree_fn (const std::string &new_fn) {jt_fn_=new_fn;}
+    std::string get_txt_ap_fn () const {return txt_ap_fn_;}
+    void set_txt_ap_fn (const std::string &new_fn) {
+      txt_ap_fn_=new_fn;}
+    std::string get_txt_finer_ap_fn () const {return txt_finer_ap_fn_;}
+    void set_txt_finer_ap_fn (const std::string &new_fn) {
+      txt_finer_ap_fn_=new_fn;}
     IMP_OBJECT_INLINE(AssemblyHeader, {
-      out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<origin_[0]<<"|";
-      out<<origin_[1]<<"|"<<origin_[2]<<"|"<<pdb_fine_ap_fn_<<"|";
-      out<<pdb_coarse_ap_fn_<<"|"<<jt_fn_<<"|"<<std::endl;
+        out<<dens_fn_<<"|"<<resolution_<<"|"<<spacing_<<"|"<<threshold_
+           <<"|"<<origin_[0]<<"|";
+        out<<origin_[1]<<"|"<<origin_[2]<<"|"<<txt_ap_fn_;
+        out<<"|"<<txt_finer_ap_fn_<<"|\n";
       }, {});
-
   protected:
     std::string dens_fn_;
     float resolution_;
     float spacing_;
+    float threshold_;
     algebra::Vector3D origin_;
-    std::string pdb_fine_ap_fn_;
-    std::string pdb_coarse_ap_fn_;
-    std::string cmm_ap_fn_;
-    std::string jt_fn_;
+    std::string txt_ap_fn_;
+    std::string txt_finer_ap_fn_;
   };
 
 //! Holds header data for optimization
@@ -119,8 +115,8 @@ public:
          "transformations|ref filename|"<<std::endl;
   }
   void show_density_header_line(std::ostream& out = std::cout) const {
-    out <<"map| resolution| spacing| x-origin| y-origin| z-origin|";
-    out<<"fine anchor points |coarse anchor_points|junction tree|"<<std::endl;
+    out <<"map| resolution| spacing| threshold|x-origin| y-origin| z-origin|";
+    out<<"anchor_points|"<<std::endl;
   }
   void set_asmb_fn(const std::string  &fn) {
     asmb_fn_ = fn;

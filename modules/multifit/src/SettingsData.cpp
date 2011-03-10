@@ -34,7 +34,7 @@ ComponentHeader *parse_component_line(
   IMP_NEW(ComponentHeader, comp, ());
   comp->set_name(boost::lexical_cast<std::string>(line_split[0]));
   comp->set_filename(join_path(path, line_split[1]));
-  comp->set_pdb_ap_fn(join_path(path, line_split[2]));
+  comp->set_txt_ap_fn(join_path(path, line_split[2]));
   comp->set_num_ap(boost::lexical_cast<int>(line_split[3]));
   comp->set_transformations_fn(join_path(path, line_split[4]));
   comp->set_reference_fn(join_path(path, line_split[5]));
@@ -58,13 +58,13 @@ AssemblyHeader *parse_assembly_line(
   dens->set_dens_fn(join_path(path, line_split[0]));
   dens->set_resolution(boost::lexical_cast<float>(line_split[1]));
   dens->set_spacing(boost::lexical_cast<float>(line_split[2]));
+  dens->set_threshold(boost::lexical_cast<float>(line_split[3]));
   dens->set_origin(algebra::Vector3D(
-    boost::lexical_cast<float>(line_split[3]),
     boost::lexical_cast<float>(line_split[4]),
-    boost::lexical_cast<float>(line_split[5])));
-  dens->set_pdb_fine_ap_fn(join_path(path, line_split[6]));
-  dens->set_pdb_coarse_ap_fn(join_path(path, line_split[7]));
-  dens->set_junction_tree_fn(join_path(path, line_split[8]));
+    boost::lexical_cast<float>(line_split[5]),
+    boost::lexical_cast<float>(line_split[6])));
+  dens->set_txt_ap_fn(join_path(path, line_split[7]));
+  dens->set_txt_finer_ap_fn(join_path(path, line_split[8]));
   return dens.release();
 }
 
