@@ -1,0 +1,10 @@
+Import('env')
+
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="This module provides rich file I/O for \imp.",
+                 overview="""The modules supports I/O of IMP::atom::Hierarchy and
+                 associated types as well as output of IMP::display:;Geonmetry and
+                 IMP::Restraint types.""",
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())
