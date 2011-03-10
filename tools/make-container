@@ -130,20 +130,20 @@ def make_one(params, test=True):
                path+"/tools/container_templates/min.hpp", "Minimum", "less"),
               ("modules/container/src/Minimum"+multi + "Restraint.cpp",
                path+"/tools/container_templates/min.cc", "Minimum", "less"),
-              ("modules/container/include/Maximum"+multi + "Restraint.h",
-               path+"/tools/container_templates/min.hpp", "Maximum", "greater"),
-              ("modules/container/src/Maximum"+multi + "Restraint.cpp",
-               path+"/tools/container_templates/min.cc", "Maximum", "greater"),
+              #("modules/container/include/Maximum"+multi + "Restraint.h",
+              # path+"/tools/container_templates/min.hpp", "Maximum", "greater"),
+              #("modules/container/src/Maximum"+multi + "Restraint.cpp",
+              # path+"/tools/container_templates/min.cc", "Maximum", "greater"),
 
 
               ("modules/container/include/Minimum"+multi + "Score.h",
                path+"/tools/container_templates/minscore.hpp", "Minimum", "less"),
               ("modules/container/src/Minimum"+multi + "Score.cpp",
-               path+"/tools/container_templates/minscore.cc", "Minimum", "less"),
-              ("modules/container/include/Maximum"+multi + "Score.h",
-               path+"/tools/container_templates/minscore.hpp", "Maximum", "greater"),
-              ("modules/container/src/Maximum"+multi + "Score.cpp",
-               path+"/tools/container_templates/minscore.cc", "Maximum", "greater")]
+               path+"/tools/container_templates/minscore.cc", "Minimum", "less")]
+              #("modules/container/include/Maximum"+multi + "Score.h",
+              # path+"/tools/container_templates/minscore.hpp", "Maximum", "greater"),
+              #("modules/container/src/Maximum"+multi + "Score.cpp",
+              # path+"/tools/container_templates/minscore.cc", "Maximum", "greater")]
     if test:
         files.append(("modules/container/test/test_"+cname + "_restraint.py",
                    path+"/tools/container_templates/test.py"))
