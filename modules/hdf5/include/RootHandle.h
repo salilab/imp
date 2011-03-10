@@ -98,12 +98,13 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(float, Float);
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(string, String);
   IMP_HDF5_ROOT_KEY_TYPE_METHODS(index, Index);
+  IMP_HDF5_ROOT_KEY_TYPE_METHODS(node_id, NodeID);
 
   //IMP_HDF5_ROOT_TYPE(string, 0, std::string);
   /** @} */
 
   NodeHandle get_node_handle_from_association(void*d) const;
-  NodeHandle get_node_handle_from_id(unsigned int id) const;
+  NodeHandle get_node_handle_from_id(NodeID id) const;
   void show(std::ostream &out= std::cout) const {
     out << "RootHandle";
   }
@@ -116,9 +117,9 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
                           get_node_handle_from_id(t.get<1>()));
   }
   void add_bond(NodeHandle na, NodeHandle nb, unsigned int type) {
-    int ida= na.get_id();
-    int idb= nb.get_id();
-    shared_->add_bond(ida, idb, type);
+    NodeID ida= na.get_id();
+    NodeID idb= nb.get_id();
+    shared_->add_bond(ida.get_index(), idb.get_index(), type);
   }
 };
 IMP_VALUES(RootHandle, RootHandles);

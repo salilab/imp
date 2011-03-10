@@ -49,6 +49,7 @@ public:
     out << ci_.get_name() << (pf_?'E':'I') << i_;
   }
   IMP_COMPARISONS_2(Key, ci_, i_);
+  IMP_HASHABLE_INLINE(Key, return i_*ci_.get_index());
 };
 template <class TypeTraits>
 std::ostream &operator<<(std::ostream &out, Key<TypeTraits> k) {
@@ -64,6 +65,8 @@ typedef Key<StringTraits> StringKey;
 IMP_VALUES(StringKey, StringKeys);
 typedef Key<IndexTraits> IndexKey;
 IMP_VALUES(IndexKey, IndexKeys);
+typedef Key<NodeIDTraits> NodeIDKey;
+IMP_VALUES(NodeIDKey, NodeIDKeys);
 
 
 IMPHDF5_END_NAMESPACE

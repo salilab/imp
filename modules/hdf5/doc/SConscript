@@ -3,8 +3,20 @@ Import('env')
 env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  authors=["Daniel Russel"],
                  brief="This module provides rich file I/O for \imp.",
-                 overview="""The modules supports I/O of IMP::atom::Hierarchy and
-                 associated types as well as output of IMP::display:;Geonmetry and
-                 IMP::Restraint types.""",
+                 overview="""The modules supports provides three levels of abstraction
+for writing data to hdf5 files.
+
+-# The \imp layer: supports I/O of IMP::atom::Hierarchy and associated
+   types as well as output of IMP::display::Geometry and IMP::Restraint types. These
+   work by havin a \c write_X method which adds the object to the file and then
+   \c save_conformation methods which can add another conformation of the object to
+   the file. Similarly, there are \c read_X and \c load_conformation methods.
+-# The hierarchy layer: supports general traversal of the encoded hierarchy
+   and addition and reading of arbitrary hierarchical data. This layer primarily
+   consists of IMP::hdf5::RootHandle and IMP::hdf5::NodeHandle.
+-# The HDF5 layer: provides a C++ interface to access the raw HDF5 file directly.
+   This layer consists of IMP::hdf5::HDF5DataSet and IMP::hdf5::HDF5Group along
+   with the IMP::hdf5::HDF5Handle and type traits classes.
+""",
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())

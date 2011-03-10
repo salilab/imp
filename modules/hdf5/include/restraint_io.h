@@ -16,7 +16,7 @@
 IMPHDF5_BEGIN_NAMESPACE
 
 /** Add a restraint to the file.*/
-IMPHDF5EXPORT void add_restraint(Restraint *r,
+IMPHDF5EXPORT void write_restraint(Restraint *r,
                                  RootHandle parent);
 /** Add the current score of the restraint to the given frame.*/
 IMPHDF5EXPORT void save_restraint(Restraint *r,

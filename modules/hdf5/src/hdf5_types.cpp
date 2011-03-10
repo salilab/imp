@@ -11,38 +11,38 @@
 IMPHDF5_BEGIN_NAMESPACE
 
 hid_t FloatTraits::get_hdf5_type() {
-  return H5T_NATIVE_FLOAT;
+  return H5T_NATIVE_DOUBLE;
 }
 void FloatTraits::write_value_dataset(hid_t d, hid_t is,
                                         hid_t s,
-                                        float v) {
+                                        double v) {
   IMP_HDF5_CALL(H5Dwrite(d,
-                         H5T_NATIVE_FLOAT, is, s,
+                         H5T_NATIVE_DOUBLE, is, s,
                          H5P_DEFAULT, &v));
 }
-float FloatTraits::read_value_dataset(hid_t d, hid_t is,
+double FloatTraits::read_value_dataset(hid_t d, hid_t is,
                                         hid_t sp) {
-  float ret;
+  double ret;
   IMP_HDF5_CALL(H5Dread(d,
                         get_hdf5_type(),
                         is, sp, H5P_DEFAULT, &ret));
   return ret;
 }
-std::vector<float>
+std::vector<double>
 FloatTraits::read_values_attribute(hid_t a, unsigned int size) {
-  std::vector<float> v(size);
+  std::vector<double> v(size);
   IMP_HDF5_CALL(H5Aread(a, get_hdf5_type(), &v[0]));
   return v;
 }
 void FloatTraits::write_values_attribute(hid_t a,
-                                         const std::vector<float> &v) {
+                                         const std::vector<double> &v) {
   IMP_HDF5_CALL(H5Awrite(a, get_hdf5_type(), &v[0]));
 }
-const float& FloatTraits::get_null_value() {
-  static const float ret= std::numeric_limits<float>::max();
+const double& FloatTraits::get_null_value() {
+  static const double ret= std::numeric_limits<double>::max();
   return ret;
 }
-const float& FloatTraits::get_fill_value() {
+const double& FloatTraits::get_fill_value() {
   return get_null_value();
 }
 std::string FloatTraits::get_name() {
@@ -167,6 +167,54 @@ const char& StringTraits::get_fill_value() {
 
 std::string StringTraits::get_name() {
   return std::string("string");
+}
+
+
+
+
+
+hid_t NodeIDTraits::get_hdf5_type() {
+  return IndexTraits::get_hdf5_type();
+}
+void NodeIDTraits::write_value_dataset(hid_t d, hid_t is,
+                                         hid_t s, NodeID str) {
+  return IndexTraits::write_value_dataset(d, is, s, str.get_index());
+}
+NodeID NodeIDTraits::read_value_dataset(hid_t d,
+                                        hid_t is,
+                                        hid_t sp) {
+  int i= IndexTraits::read_value_dataset(d, is, sp);
+  if (i>=0) return NodeID(i);
+  else return NodeID();
+}
+
+void NodeIDTraits::write_values_attribute(hid_t d,
+                                const std::vector<NodeID> &values) {
+  Ints is(values.size());
+  for (unsigned int i=0; i< values.size(); ++i) {
+    is[i]=values[i].get_index();
+  }
+  IndexTraits::write_values_attribute(d, is);
+}
+std::vector<NodeID> NodeIDTraits::read_values_attribute(hid_t d,
+                                                             unsigned int num) {
+  Ints is= IndexTraits::read_values_attribute(d, num);
+  std::vector<NodeID> ret(is.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]=NodeID(is[i]);
+  }
+  return ret;
+}
+const NodeID& NodeIDTraits::get_null_value() {
+  static NodeID n;
+  return n;
+}
+const NodeID& NodeIDTraits::get_fill_value() {
+  return get_null_value();
+}
+
+std::string NodeIDTraits::get_name() {
+  return std::string("node id");
 }
 
 

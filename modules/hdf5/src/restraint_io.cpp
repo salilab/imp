@@ -26,9 +26,10 @@ namespace {
     for (unsigned int i=0; i< ip.size(); ++i) {
       std::ostringstream oss;
       oss << "representation" << i;
-      IndexKey ik= get_or_add_key<IndexTraits>(parent.get_root_handle(),
-                                               Feature, oss.str(), false);
-      int id= parent.get_root_handle().get_node_handle_from_association(ip[i])
+      NodeIDKey ik= get_or_add_key<NodeIDTraits>(parent.get_root_handle(),
+                                                Feature, oss.str(), false);
+      NodeID id= parent.get_root_handle()
+        .get_node_handle_from_association(ip[i])
         .get_id();
       cur.set_value(ik, id);
     }
@@ -42,7 +43,7 @@ namespace {
   }
 }
 
-void add_restraint(Restraint *r,
+void write_restraint(Restraint *r,
                    RootHandle parent) {
   add_restraint_internal(r, parent);
 }

@@ -21,7 +21,7 @@ IMPHDF5_BEGIN_NAMESPACE
 IMPHDF5EXPORT void save_conformation(atom::Hierarchy hs, RootHandle fh,
                                      unsigned int frame);
 
-IMPHDF5EXPORT void add_hierarchy(atom::Hierarchy hs, RootHandle fh);
+IMPHDF5EXPORT void write_hierarchy(atom::Hierarchy hs, RootHandle fh);
 
 
 /** Create a hierarchy from part of the file.
@@ -31,8 +31,8 @@ IMPHDF5EXPORT atom::Hierarchies read_all_hierarchies(RootHandle fh, Model *m);
 /** Read the ith frame from a file as a new hierarchy.
  */
 IMPHDF5EXPORT void load_conformation(RootHandle fh,
-                                     atom::Hierarchy hs,
-                                     unsigned int frame);
+                                               atom::Hierarchy hs,
+                                               unsigned int frame);
 
 IMPHDF5_END_NAMESPACE
 

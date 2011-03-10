@@ -6,7 +6,7 @@
  *
  */
 
-xs#include <IMP/hdf5/Key.h>
+#include <IMP/hdf5/Key.h>
 
 IMPHDF5_BEGIN_NAMESPACE
 namespace {;
