@@ -7,6 +7,7 @@
  */
 
 #include <IMP/hdf5/internal/shared.h>
+#include <IMP/hdf5/NodeHandle.h>
 
 IMPHDF5_BEGIN_INTERNAL_NAMESPACE
 

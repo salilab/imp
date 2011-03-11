@@ -11,6 +11,8 @@
 #include <IMP/display/geometry.h>
 #include <IMP/hdf5/Key.h>
 #include <IMP/hdf5/NodeHandle.h>
+#include <IMP/hdf5/RootHandle.h>
+#include <IMP/hdf5/operations.h>
 
 IMPHDF5_BEGIN_NAMESPACE
 namespace {
@@ -107,7 +109,7 @@ namespace {
 
 
 void write_geometry(display::Geometry *g,
-                  RootHandle parent) {
+                    RootHandle parent) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   add_internal(parent, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);

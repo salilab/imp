@@ -13,6 +13,7 @@
 #include "../Key.h"
 #include "../hdf5_types.h"
 #include "../names.h"
+#include "../hdf5_wrapper.h"
 #include <boost/tuple/tuple.hpp>
 #include <hdf5.h>
 #include <algorithm>
