@@ -1,11 +1,11 @@
 Import('env')
 import scons_tools.dependency
 
-scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5_cpp", "hdf5"],
-                                            "H5Cpp.h",
-                                            body='new H5::H5File();',
-                                            versionheader="H5version.h",
-                                            versioncpp=["H5Acreate_vers"])
+scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
+                                            "hdf5.h",
+                                            body='H5garbage_collect();')
+#                                            versionheader="hdf5.h",
+#                                            versioncpp=["H5Acreate_vers"])
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem", 'boost/filesystem/path.hpp',
                                                body="boost::filesystem::path p;",
