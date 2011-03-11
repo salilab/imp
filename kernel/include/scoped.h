@@ -11,7 +11,9 @@
 #include "macros.h"
 #include "kernel_config.h"
 #include "RestraintSet.h"
+#include "ScoreState.h"
 #include "FailureHandler.h"
+#include "Model.h"
 
 IMP_BEGIN_NAMESPACE
 
