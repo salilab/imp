@@ -39,12 +39,12 @@ public:
     return temperature_;
   }
 
-  void set_nsteps(unsigned int nsteps) {
+  void set_number_of_steps(unsigned int nsteps) {
     IMP_USAGE_CHECK(nsteps > 0, "The number of steps must be positive");
     nsteps_=nsteps;
   }
 
-  unsigned int get_nsteps() const {
+  unsigned int get_number_of_steps() const {
     return nsteps_;
   }
 
