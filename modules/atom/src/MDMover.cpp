@@ -20,7 +20,7 @@ MDMover::MDMover(SingletonContainer *sc,
                                     temperature_(temperature)
 {
   add_float_keys(IMP::core::XYZ::get_xyz_keys());
-  set_nsteps(nsteps);
+  set_number_of_steps(nsteps);
 }
 
 void MDMover::do_move(Float probability)
@@ -29,7 +29,7 @@ void MDMover::do_move(Float probability)
   if (rand(random_number_generator) < probability) {
 
     md_->assign_velocities(temperature_);
-    md_->optimize(get_nsteps());
+    md_->optimize(get_number_of_steps());
 
     for (unsigned int i = 0;
             i < get_container()->get_number_of_particles(); ++i) {
