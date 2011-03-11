@@ -10,6 +10,7 @@
 #define IMPHDF5_NODE_ID_H
 
 #include "hdf5_config.h"
+#include <IMP/macros.h>
 
 IMPHDF5_BEGIN_NAMESPACE
 
