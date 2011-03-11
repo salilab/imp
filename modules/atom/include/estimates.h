@@ -1,9 +1,9 @@
 /**
- *  \file estimates.h
- *  \brief Estimates of various physical quantities.
- *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
- */
+    *  \file estimates.h
+    *  \brief Estimates of various physical quantities.
+    *
+    *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+    */
 
 #ifndef IMPATOM_ESTIMATES_H
 #define IMPATOM_ESTIMATES_H
@@ -20,11 +20,50 @@ IMPATOM_BEGIN_NAMESPACE
 */
 //!@{
 
-//! Estimate the volume of a protein from its mass
-/** We use the estimate published in Alber et. al, Structure 2005.
-*/
-IMPATOMEXPORT double get_volume_from_mass(double v);
 
+/*! Several protein density value references that have been proposed
+ *  in the literature.
+ *  - ALBER et al. (structure 2005)  Estimated value 0.625 (1/1.60) Da/A3
+ *  - HARPAZ et al. (1994)           Computed value  0.826446=1/1.21 Da/A3
+ *  - ANDERSSON and Hovmšller (1998) Computed value  1.22 g/cm3 ~ 0.7347 Da/A3
+ *  - TSAI et al. (1999)             Computed value  1.40 g/cm3 ~ 0.84309 Da/A3
+ *  - QUILLIN and Matthews (2000)    Computed value  1.43 g/cm3 ~ 0.86116 Da/A3
+ *  - SQUIRE and Himmel (1979),
+ *    Gekko and Noguchi (1979) Experimental value  1.37 g/cm3 ~ 0.82503 Da/A3
+ */
+enum ProteinDensityReference {
+  ALBER,
+  HARPAZ,
+  ANDERSSON,
+  TSAI,
+  QUILLIN,
+  SQUIRE
+ };
+
+//! returns the protein density value (in Da/A^3)
+//! associated with a given reference
+IMPATOMEXPORT double get_protein_density_from_reference(
+                ProteinDensityReference densityReference);
+
+//! Estimate the volume of a protein from its mass
+/**
+ * \param[in] m   the mass for which we want to output the corresponding volume
+ * \param[in] ref the protein density reference used in the computation.
+ * As a default ref is the estimate published in Alber et. al, Structure 2005.
+*/
+IMPATOMEXPORT double get_volume_from_mass(
+                double m,
+                ProteinDensityReference ref=ALBER);
+
+//! Estimate the mass of a protein from its volume
+/**
+ * \param[in] v   the volume for which we want to output the corresponding mass
+ * \param[in] ref the protein density reference used in the computation.
+ * As a default ref is the estimate published in Alber et. al, Structure 2005.
+*/
+IMPATOMEXPORT double get_mass_from_volume(
+                double v,
+                ProteinDensityReference ref=ALBER);
 
 //! Estimate the mass of a protein from the number of amino acids
 /** We use an estimate of 110 Daltons per residue, following Chimera.

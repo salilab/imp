@@ -1,18 +1,56 @@
 /**
- *  \file estimates.cpp
- *  \brief Estimates of various physical quantities.
- *
- *  Copyright 2007-2011 IMP Inventors. All rights reserved.
- */
+    *  \file estimates.cpp
+    *  \brief Estimates of various physical quantities.
+    *
+    *  Copyright 2007-2011 IMP Inventors. All rights reserved.
+    */
 
 #include "IMP/atom/estimates.h"
 #include <IMP/internal/units.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
-double get_volume_from_mass(double m) {
-  // Alber et al r = 0.726*std::pow(m, .3333);
-  return 1.60*m;
+
+double get_protein_density_from_reference(
+      ProteinDensityReference density_reference){
+  double density=0.625; // ALBER reference
+  switch (density_reference) {
+   // Alber et al. (2005) r = 0.726*std::pow(m, .3333);
+    case ALBER:
+        break;
+   // Harpaz et al. 0.826446=1/1.21 Da/A3 ~ 1.372 g/cm3
+    case HARPAZ:
+      density = 0.826446;
+      break;
+    // Andersson and Hovmoller (1998) Theoretical 1.22 g/cm3
+    case ANDERSSON :
+      density = 0.7347;
+      break;
+    // Tsai et al. (1999) Theoretical 1.40 g/cm3
+    case TSAI:
+      density = 0.84309;
+      break;
+    // Quillin and Matthews (2000) Theoretical 1.43 g/cm3
+    case QUILLIN:
+      density = 0.86116;
+      break;
+    // Squire and Himmel (1979) and Gekko and Noguchi (1979) Experimental 1.37
+    case SQUIRE:
+      density = 0.82503;
+      break;
+    // unknown reference;
+    default :
+    IMP_WARN("unknown density reference... Density set to its default value.");
+   }
+  return density;
+ }
+
+double get_volume_from_mass(double m,ProteinDensityReference ref) {
+  return m/get_protein_density_from_reference(ref);
+}
+
+double get_mass_from_volume(double m,ProteinDensityReference ref) {
+  return m*get_protein_density_from_reference(ref);
 }
 
 double get_mass_from_number_of_residues(unsigned int num_aa) {
