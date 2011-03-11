@@ -12,6 +12,7 @@
 #include "hdf5_config.h"
 #include <IMP/macros.h>
 #include <vector>
+#include <iostream>
 
 IMPHDF5_BEGIN_NAMESPACE
 

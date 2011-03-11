@@ -7,6 +7,8 @@
  */
 
 #include <IMP/hdf5/hdf5_types.h>
+#include <boost/scoped_array.hpp>
+#include <IMP/base_types.h>
 
 IMPHDF5_BEGIN_NAMESPACE
 

@@ -11,6 +11,8 @@
 
 #include "hdf5_config.h"
 #include "NodeHandle.h"
+#include "RootHandle.h"
+#include "hdf5_types.h"
 
 IMPHDF5_BEGIN_NAMESPACE
 
