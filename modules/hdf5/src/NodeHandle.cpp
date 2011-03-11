@@ -102,8 +102,6 @@ namespace {
     ret.insert(ret.end(), curp.begin(), curp.end());
     std::vector<Key<TypeT> > curs=f.get_keys<TypeT>(Sequence);
     ret.insert(ret.end(), curs.begin(), curs.end());
-    std::vector<Key<TypeT> > curb=f.get_keys<TypeT>(Bond);
-    ret.insert(ret.end(), curb.begin(), curb.end());
     std::vector<Key<TypeT> > curh=f.get_keys<TypeT>(Shape);
     ret.insert(ret.end(), curh.begin(), curh.end());
     std::vector<Key<TypeT> > curf=f.get_keys<TypeT>(Feature);
