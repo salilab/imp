@@ -13,6 +13,9 @@
 
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
+#include <IMP/Configuration.h>
+
+#include <boost/random/uniform_real.hpp>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -122,6 +125,11 @@ public:
   IMP_LIST(public, Mover, mover, Mover*, Movers);
   /** @} */
 private:
+
+  double do_step(double pe, double &best_energy,
+                 IMP::internal::OwnerPointer<Configuration> &best_state,
+                 int &failures);
+  bool get_accept(double prior_energy, double next_energy);
   Float temp_;
   Float probability_;
   IMP::internal::OwnerPointer<Optimizer> cg_;
@@ -131,6 +139,7 @@ private:
   unsigned int stat_num_failures_;
   bool return_best_;
   bool basin_hopping_;
+  ::boost::uniform_real<> rand_;
 };
 
 IMP_OUTPUT_OPERATOR(MonteCarlo);
