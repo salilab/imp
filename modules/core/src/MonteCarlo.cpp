@@ -31,7 +31,22 @@ MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo"),
                                   stat_forward_steps_taken_(0),
                                   stat_upward_steps_taken_(0),
                                   stat_num_failures_(0),
-                                  return_best_(true) {}
+                                  return_best_(true),
+                                  basin_hopping_(false){}
+
+namespace {
+  double do_local(Optimizer *opt, int ns, bool basin_hopping) {
+    Pointer<Configuration> cs;
+    if (basin_hopping) {
+      cs= new Configuration(opt->get_model());
+    }
+    double ne =opt->optimize(ns);
+    if (basin_hopping) {
+      cs->load_configuration();
+    }
+    return ne;
+  }
+}
 
 
 Float MonteCarlo::do_optimize(unsigned int max_steps)
@@ -105,13 +120,13 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
               }
             }
             if (has_changed) {
-              next_energy =cg_->optimize(num_local_steps_);
-            } else {
+              next_energy =do_local(cg_, num_local_steps_, basin_hopping_);
+           } else {
               IMP_LOG(TERSE, "empty move" << std::endl);
               next_energy=prior_energy;
             }
           } else {
-            next_energy =cg_->optimize(num_local_steps_);
+            next_energy =do_local(cg_, num_local_steps_, basin_hopping_);
             IMP_IF_CHECK(USAGE) {
               double me= evaluate(false);
               if(0) std::cout << me;
@@ -131,10 +146,10 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
       }
     } catch (const ModelException &e) {
       // make sure the move is rejected if the model gets in
-          // an invalid state
-          ++failures;
-          next_energy= std::numeric_limits<double>::infinity();
-        }
+      // an invalid state
+      ++failures;
+      next_energy= std::numeric_limits<double>::infinity();
+    }
     bool accept=false;
     if  (next_energy < prior_energy) {
       accept=true;

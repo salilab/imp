@@ -70,17 +70,17 @@ public:
     return_best_=tf;
   }
 
-  /** \name Temperature
-      The temperature has to be on the same scale as the differences
+  /** \name kT
+      The kT value has to be on the same scale as the differences
       in energy between good and bad states (and so the default is
       likely to not be a good choice).
       @{
   */
-  void set_temperature(Float t) {
+  void set_kt(Float t) {
     IMP_INTERNAL_CHECK(t>0, "Temperature must be positive");
     temp_=t;
   }
-  Float get_temperature() const {
+  Float get_kt() const {
     return temp_;
   }
   /** @} */
@@ -108,6 +108,10 @@ public:
   }
   /** @} */
 
+  void set_use_basin_hopping(bool tf) {
+    basin_hopping_=tf;
+  }
+
   /** @name Movers
 
        The following methods are used to manipulate the list of Movers.
@@ -126,6 +130,7 @@ private:
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
+  bool basin_hopping_;
 };
 
 IMP_OUTPUT_OPERATOR(MonteCarlo);
