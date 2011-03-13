@@ -54,6 +54,9 @@ public:
   void set_current_time(double ct) {
     current_time_=ct;
   }
+  double get_last_time_step() const {
+    return last_time_step_;
+  }
   ParticlesTemp get_simulation_particles() const;
   IMP_OPTIMIZER(Simulator);
 protected:
@@ -67,6 +70,7 @@ protected:
   double temperature_;
   double max_time_step_;
   double current_time_;
+  double last_time_step_;
 };
 
 
