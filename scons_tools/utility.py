@@ -298,10 +298,13 @@ def get_python_result(env, setup, cmd):
                          env=os.environ)
     ret=sp.stdout.read()
     eret=sp.stderr.read()
+    if len(eret)>0:
+        print eret
     #print "\n******\nreturned", ret
     #print "\n******\nerror", eret
     #print ret[:-1]
     if olddylib:
         os.environ[varname]=olddylib
     #print "done"
+    #print "found", ret, "done", ret[:-1], "end"
     return ret[:-1]
