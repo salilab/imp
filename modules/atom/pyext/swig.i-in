@@ -26,7 +26,7 @@ IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
-IMP_SWIG_DECORATOR(IMP::atom, SimulationParameters, SimulationParameterss);
+IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
 IMP_SWIG_OBJECT(IMP::atom, AllMol2Selector,AllMol2Selectors);
@@ -189,6 +189,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/DihedralSingletonScore.h"
 %include "IMP/atom/ImproperSingletonScore.h"
 %include "IMP/atom/CoverBond.h"
+%include "IMP/atom/Simulator.h"
 %include "IMP/atom/BrownianDynamics.h"
 %include "IMP/atom/Diffusion.h"
 %include "IMP/atom/Chain.h"
@@ -200,7 +201,6 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
 %include "IMP/atom/MolecularDynamics.h"
 %include "IMP/atom/VelocityScalingOptimizerState.h"
 %include "IMP/atom/Fragment.h"
-%include "IMP/atom/SimulationParameters.h"
 %include "IMP/atom/StereochemistryPairFilter.h"
 %include "IMP/atom/Mass.h"
 %include "IMP/atom/BondedPairFilter.h"
