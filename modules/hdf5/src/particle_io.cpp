@@ -15,7 +15,13 @@ void write_particle(Particle* ps, RootHandle fh) {
   n.set_association(ps);
   for (Particle::FloatKeyIterator it= ps->float_keys_begin();
        it != ps->float_keys_end(); ++it) {
-    FloatKey fk= get_or_add_key<FloatTraits>(fh, IMP, it->get_string(), false);
+    bool mf=false;
+    if (*it== IMP::core::XYZ::get_xyz_keys()[0]
+        || *it== IMP::core::XYZ::get_xyz_keys()[1]
+        || *it== IMP::core::XYZ::get_xyz_keys()[2]) {
+      mf=true;
+    }
+    FloatKey fk= get_or_add_key<FloatTraits>(fh, IMP, it->get_string(), mf);
     n.set_value(fk, ps->get_value(*it));
   }
   for (Particle::IntKeyIterator it= ps->int_keys_begin();
