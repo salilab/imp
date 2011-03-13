@@ -111,9 +111,11 @@ public:
   }
   /** @} */
 
-  void set_use_basin_hopping(bool tf) {
-    basin_hopping_=tf;
-  }
+  /** Basin hopping runs the local optimizer before evaluating the
+      acceptance criteria, but takes the next MC step from the
+      conformation prior to optimization.
+   */
+  void set_use_basin_hopping(bool tf);
 
   /** @name Movers
 
