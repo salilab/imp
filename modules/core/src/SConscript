@@ -57,6 +57,7 @@ files = [
          'TransformedDistancePairScore.cpp',
          'TripletConstraint.cpp',
          'TripletRestraint.cpp',
+         'Typed.cpp',
          'TypedPairScore.cpp',
          'VolumeRestraint.cpp',
          'XYZ.cpp',

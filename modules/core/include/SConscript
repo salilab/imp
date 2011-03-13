@@ -65,6 +65,7 @@ files = [
          'TripletConstraint.h',
          'TripletRestraint.h',
          'TruncatedHarmonic.h',
+         'Typed.h',
          'TypedPairScore.h',
          'VolumeRestraint.h',
          'WriteModelOptimizerState.h',

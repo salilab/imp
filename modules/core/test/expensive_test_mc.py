@@ -44,7 +44,9 @@ class MCOptimizerTest(IMP.test.TestCase):
     def test_c1(self):
         """test montecarlo 1"""
         (model, opt)= self._setup_opt()
+        opt.set_log_level(IMP.VERBOSE)
         lopt= IMP.core.ConjugateGradients()
+        lopt.set_log_level(IMP.SILENT)
         opt.set_local_optimizer(lopt)
         self._test_starting_conditions(model, opt, (-3.0, -1.0, -3.0, -1.0), 5)
     def test_c2(self):
