@@ -14,6 +14,7 @@ Simulator::Simulator(Model *m,
   temperature_=strip_units(IMP::internal::DEFAULT_TEMPERATURE);
   max_time_step_=2;
   current_time_=0;
+  last_time_step_=-1;
 }
 
 
@@ -24,7 +25,8 @@ double Simulator::simulate(double time) {
   setup(ps);
   double target= current_time_+time;
   while (current_time_ < target) {
-    current_time_+= do_step(ps, max_time_step_);
+    last_time_step_= do_step(ps, max_time_step_);
+    current_time_+= last_time_step_;
     update_states();
   }
   return get_model()->evaluate(false);
