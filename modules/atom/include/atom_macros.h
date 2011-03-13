@@ -49,4 +49,14 @@
   }                                                              \
   IMP_OBJECT_INLINE(Name, show,)
 
+
+/** Add the methods needed for a Simulator
+ */
+#define IMP_SIMULATOR(Name)                                     \
+  private:                                                      \
+  virtual void setup(const ParticlesTemp &ps);                  \
+  virtual double do_step(const ParticlesTemp &sc, double dt);   \
+  virtual bool get_is_simulation_particle(Particle*p) const;    \
+public:
+
 #endif  /* IMPATOM_MACROS_H */
