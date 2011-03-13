@@ -1,4 +1,18 @@
 Import('env')
 
+files = [
+         'Key.cpp',
+         'NodeHandle.cpp',
+         'RootHandle.cpp',
+         'atom_io.cpp',
+         'geometry_io.cpp',
+         'hdf5_types.cpp',
+         'hdf5_wrapper.cpp',
+         'operations.cpp',
+         'particle_io.cpp',
+         'restraint_io.cpp',
+        ] \
+        + SConscript('internal/SConscript')
+
 # Build and install the shared library:
-env.IMPModuleLib(files=env.IMPModuleGetSources())
+env.IMPModuleLib(files)

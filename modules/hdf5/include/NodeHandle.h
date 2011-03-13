@@ -21,7 +21,7 @@ enum NodeType {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 ROOT,
 #endif
-REPRESENTATION, GEOMETRY, FEATURE};
+REPRESENTATION, GEOMETRY, FEATURE, CUSTOM};
 
 
 class RootHandle;
