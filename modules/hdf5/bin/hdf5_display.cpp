@@ -3,6 +3,7 @@
  */
 #include <IMP/hdf5/atom_io.h>
 #include <IMP/hdf5/RootHandle.h>
+#include <IMP/hdf5/particle_io.h>
 #include <IMP/display/geometry.h>
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>
@@ -53,6 +54,20 @@ int main(int argc, char **argv) {
       g->set_color(IMP::display::get_display_color(i));
     }
     w->add_geometry(g);
+  }
+  IMP::ParticlesTemp ps= IMP::hdf5::read_all_particles(rh, m);
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    /*if (frame!= 0) {
+      IMP::hdf5::load_configuration(rh, hs[i], frame);
+      }*/
+    if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+      IMP::core::XYZR d(ps[i]);
+      IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+      if (vm.count("recolor")) {
+        g->set_color(IMP::display::get_display_color(i));
+      }
+      w->add_geometry(g);
+    }
   }
   return 0;
 }

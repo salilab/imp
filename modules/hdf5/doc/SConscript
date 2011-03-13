@@ -17,6 +17,10 @@ for writing data to hdf5 files.
 -# The HDF5 layer: provides a C++ interface to access the raw HDF5 file directly.
    This layer consists of IMP::hdf5::HDF5DataSet and IMP::hdf5::HDF5Group along
    with the IMP::hdf5::HDF5Handle and type traits classes.
+
+   In addition, there is an executable hdf5_display which outputs an arbitrary
+   hdf5 file to pymol or chimera as appropriate (based on the file name of the
+   second argument).
 """,
                  publications=env.IMPStandardPublications(),
                  license=env.IMPStandardLicense())
