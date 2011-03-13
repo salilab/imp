@@ -75,9 +75,8 @@ class MDMoverTest(IMP.test.TestCase):
     def init_simulations(self):
         p2=self.p2
         #regular md
-        md=IMP.atom.MolecularDynamics()
-        md.set_model(self.m)
-        md.set_time_step(1.0)
+        md=IMP.atom.MolecularDynamics(self.m)
+        md.set_maximum_time_step(1.0)
         #mover
         cont=IMP.container.ListSingletonContainer(self.m)
         cont.add_particle(p2)
@@ -88,14 +87,18 @@ class MDMoverTest(IMP.test.TestCase):
 
     def test_MDMover(self):
         p2=self.p2
-        original = tuple(p2.get_coordinates())
+        original = p2.get_coordinates()
         self.md.optimize(10)
-        expected = tuple(p2.get_coordinates())
+        expected = p2.get_coordinates()
         p2.set_coordinates(original)
         self.mdmv.propose_move(1)
-        self.assertAlmostEqual(expected,tuple(p2.get_coordinates()),delta=1e-6)
+        print expected
+        print p2.get_coordinates()
+        self.assertAlmostEqual((expected-p2.get_coordinates()).get_magnitude(),
+                               0, delta=1e-2)
         self.mdmv.reset_move()
-        self.assertAlmostEqual(original,tuple(p2.get_coordinates()),delta=1e-6)
+        self.assertAlmostEqual((original-p2.get_coordinates()).get_magnitude(),
+                               0,delta=1e-2)
 
 
 if __name__ == '__main__':
