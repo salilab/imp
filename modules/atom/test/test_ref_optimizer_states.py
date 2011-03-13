@@ -7,10 +7,11 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_simple(self):
         """Check reference counting of OptimizerStates"""
-        refcnt = IMP.test.RefCountChecker(self)
         ps = []
+        m= IMP.Model()
+        refcnt = IMP.test.RefCountChecker(self)
         s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
-        o = IMP.atom.MolecularDynamics()
+        o = IMP.atom.MolecularDynamics(m)
         o.add_optimizer_state(s)
         refcnt.assert_number(2)
         # Optimizer should hold a ref to state, so nothing should be freed
@@ -22,8 +23,9 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_delete_optimizer_constructor(self):
         """Constructed Python states should survive optimizer deletion"""
+        m=IMP.Model()
         refcnt = IMP.test.RefCountChecker(self)
-        o = IMP.atom.MolecularDynamics()
+        o = IMP.atom.MolecularDynamics(m)
         ps = []
         s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
         o.add_optimizer_state(s)
@@ -38,8 +40,9 @@ class RefCountTests(IMP.test.TestCase):
 
     def test_delete_optimizer_accessor(self):
         "OptimizerStates from vector accessors should survive Optimizer del."
+        m= IMP.Model()
         refcnt = IMP.test.RefCountChecker(self)
-        o = IMP.atom.MolecularDynamics()
+        o = IMP.atom.MolecularDynamics(m)
         ps = []
         s = IMP.atom.VelocityScalingOptimizerState(ps, 300., 10)
         o.add_optimizer_state(s)
