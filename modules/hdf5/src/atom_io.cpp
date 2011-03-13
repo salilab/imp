@@ -11,6 +11,9 @@
 #include <IMP/atom/Residue.h>
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Domain.h>
+#include <IMP/atom/Diffusion.h>
+#include <IMP/core/Typed.h>
+#include <IMP/display/Colored.h>
 #include <IMP/hdf5/operations.h>
 #include <boost/progress.hpp>
 IMPHDF5_BEGIN_NAMESPACE
@@ -30,15 +33,24 @@ IMPHDF5_BEGIN_NAMESPACE
   IndexKey ie= get_or_add_key<IndexTraits>(f, Sequence,                 \
                                            "residue index end");        \
   IndexKey e= get_or_add_key<IndexTraits>(f, Physics, "element");       \
+  StringKey tk= get_or_add_key<StringTraits>(f, Sequence, "type");      \
+  FloatKey cr= get_or_add_key<FloatTraits>(f, Shape, "rgb color red",   \
+                                           false);                      \
+  FloatKey cg= get_or_add_key<FloatTraits>(f, Shape, "rgb color green", \
+                                           false);                      \
+  FloatKey cb= get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",  \
+                                           false);                      \
+  FloatKey dk= get_or_add_key<FloatTraits>(f, Physics, "D in cm2/s");   \
   StringKey rt= get_or_add_key<StringTraits>(f, Sequence, "residue type");
 
 #define IMP_HDF5_ACCEPT_MOLECULE_KEYS\
   FloatKey x, FloatKey y, FloatKey z, FloatKey r,                       \
     FloatKey m, IndexKey e, IndexKey ib, IndexKey ie,                   \
-    StringKey rt
+    StringKey rt, FloatKey cr, FloatKey cg, FloatKey cb, StringKey tk,\
+    FloatKey dk
 
 #define IMP_HDF5_PASS_MOLECULE_KEYS\
-  x, y, z, r, m, e, ib, ie, rt
+  x, y, z, r, m, e, ib, ie, rt, cr, cg, cb, tk, dk
 
 namespace {
   std::string get_name(atom::Hierarchy h) {
@@ -94,6 +106,20 @@ namespace {
       set_one(n, ib, d.get_index_range().first, frame);
       set_one(n, ie, d.get_index_range().second, frame);
     }
+    if (display::Colored::particle_is_instance(h)) {
+      display::Colored d(h);
+      set_one(n, cr, d.get_color().get_red(), frame);
+      set_one(n, cg, d.get_color().get_green(), frame);
+      set_one(n, cb, d.get_color().get_blue(), frame);
+    }
+    if (core::Typed::particle_is_instance(h)) {
+      core::Typed d(h);
+      set_one(n, tk, d.get_type().get_string(), frame);
+    }
+    if (atom::Diffusion::particle_is_instance(h)) {
+      atom::Diffusion d(h);
+      set_one(n, dk, d.get_d_in_cm2_per_second(), frame);
+    }
   }
 
 
@@ -145,6 +171,21 @@ namespace {
         atom::Domain::setup_particle(cur, b, e);
       }
     }
+    if (ncur.get_has_value(cr)) {
+      float r= ncur.get_value(cr);
+      float g= ncur.get_value(cg);
+      float b= ncur.get_value(cb);
+      display::Colored::setup_particle(cur, display::Color(r,g,b));
+    }
+    if (ncur.get_has_value(tk)) {
+      std::string t= ncur.get_value(tk);
+      core::ParticleType pt(t);
+      core::Typed::setup_particle(cur, pt);
+    }
+    if (ncur.get_has_value(dk)) {
+      double dv= ncur.get_value(dk);
+      atom::Diffusion::setup_particle(cur, dv);
+    }
   }
 
 
@@ -180,8 +221,8 @@ namespace {
   }
 }
 
-void save_conformation(atom::Hierarchy hs, RootHandle fh,
-                       unsigned int frame) {
+void save_configuration(atom::Hierarchy hs, RootHandle fh,
+                        unsigned int frame) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {
@@ -309,7 +350,7 @@ namespace {
   }
 }
 
-void load_conformation(RootHandle fh,
+void load_configuration(RootHandle fh,
                        atom::Hierarchy hs,
                        unsigned int frame) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);

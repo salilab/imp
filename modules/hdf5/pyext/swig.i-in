@@ -37,6 +37,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5NodeIDDataSet, HDF5NodeIDDataSet, HDF5Nod
 %include "IMP/hdf5/operations.h"
 %include "IMP/hdf5/atom_io.h"
 %include "IMP/hdf5/restraint_io.h"
+%include "IMP/hdf5/particle_io.h"
 
 %template(HDF5FloatDataSet) IMP::hdf5::HDF5DataSet<IMP::hdf5::FloatTraits>;
 %template(HDF5StringDataSet) IMP::hdf5::HDF5DataSet<IMP::hdf5::StringTraits>;
