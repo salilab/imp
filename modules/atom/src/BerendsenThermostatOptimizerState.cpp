@@ -34,7 +34,7 @@ void BerendsenThermostatOptimizerState::rescale_velocities() const
              "the molecular dynamics optimizer.");
 
   double kinetic_temp = md->get_kinetic_temperature(md->get_kinetic_energy());
-  double rescale = std::sqrt(1.0 + (md->get_time_step() / tau_)
+  double rescale = std::sqrt(1.0 + (md->get_last_time_step() / tau_)
                              * (temperature_ / kinetic_temp - 1.0));
 
   for (unsigned int i=0; i< pis_.size(); ++i) {

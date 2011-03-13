@@ -10,7 +10,8 @@
 #define IMPATOM_MOLECULAR_DYNAMICS_H
 
 #include "atom_config.h"
-
+#include "Simulator.h"
+#include "atom_macros.h"
 #include <IMP/Particle.h>
 #include <IMP/Optimizer.h>
 
@@ -28,14 +29,11 @@ IMPATOM_BEGIN_NAMESPACE
     \see BerendsenThermostatOptimizerState
     \see RemoveRigidMotionOptimizerState
  */
-class IMPATOMEXPORT MolecularDynamics : public Optimizer
+class IMPATOMEXPORT MolecularDynamics : public Simulator
 {
 public:
   /** Score based on the provided model */
   MolecularDynamics(Model *m);
-
-  /** */
-  MolecularDynamics();
 
   //! \return the current kinetic energy of the system, in kcal/mol
   Float get_kinetic_energy() const;
@@ -44,15 +42,6 @@ public:
   /** \param[in] ekinetic kinetic energy, e.g. from get_kinetic_energy()
    */
   Float get_kinetic_temperature(Float ekinetic) const;
-
-  IMP_OPTIMIZER(MolecularDynamics);
-
-  //! Set time step in fs
-  /** The default time step is 4.0 fs.
-    */
-  void set_time_step(Float t) { time_step_ = t; }
-
-  double get_time_step() const {return time_step_;}
 
   //! Set maximum velocity in A/fs
   /** At each dynamics time step, the absolute value of each velocity
@@ -68,28 +57,15 @@ public:
 
   //! Assign velocities representative of the given temperature
   void assign_velocities(Float temperature);
-
-  IMP_LIST(private, Particle, particle, Particle*, Particles);
-
-protected:
-  //! Perform a single dynamics step; return the system score for the new state.
-  virtual double step();
-
+  IMP_SIMULATOR(MolecularDynamics);
 private:
   void initialize();
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  void propagate_coordinates();
+  void propagate_coordinates(const ParticlesTemp &ps, double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  void propagate_velocities();
-
-  //! Get the set of particles to use in this optimization.
-  /** Scans for particles which have the necessary attributes to be
-      optimized. Particles without optimized x,y,z and nonoptimized
-      mass are skipped.
-   */
-  void setup_particles();
+  void propagate_velocities(const ParticlesTemp &ps, double step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {
@@ -99,9 +75,6 @@ private:
       vel = std::max(vel, -velocity_cap_);
     }
   }
-
-  //! Time step in fs
-  Float time_step_;
 
   //! Keys of the xyz velocities
   FloatKey vs_[3];

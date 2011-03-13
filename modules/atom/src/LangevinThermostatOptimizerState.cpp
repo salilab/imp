@@ -31,7 +31,7 @@ void LangevinThermostatOptimizerState::rescale_velocities() const
 {
   static const double gas_constant = 8.31441e-7;
   MolecularDynamics *md = dynamic_cast<MolecularDynamics *>(get_optimizer());
-  double c1 = exp(-gamma_*md->get_time_step());
+  double c1 = exp(-gamma_*md->get_last_time_step());
   double c2 = sqrt((1.0-c1)*gas_constant*temperature_);
   IMP_INTERNAL_CHECK(md, "Can only use velocity scaling with "
              "the molecular dynamics optimizer.");
