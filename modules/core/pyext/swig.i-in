@@ -84,6 +84,8 @@ IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
 IMP_SWIG_DECORATOR( IMP::core, Cover, Covers);
+IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
+IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
 
 IMP_SWIG_VALUE( IMP::core, HierarchyCounter, HierarchyCounters);
@@ -224,6 +226,7 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/WriteModelOptimizerState.h"
 %include "IMP/core/StatisticalPairScore.h"
 %include "IMP/core/MoveStatisticsScoreState.h"
+%include "IMP/core/Typed.h"
 
 %inline %{
 namespace IMP {
@@ -248,5 +251,7 @@ namespace IMP {
     %template(TruncatedHarmonicBound) ::IMP::core::TruncatedHarmonic<BOTH>;
     // swig screws up on scopes, I can't be bothered to fix it
     //%template(show_named_hierarchy) show<::IMP::core::Name>;
+   %template(ParticleType) ::IMP::Key<IMP_PARTICLE_TYPE_INDEX, true>;
+
   }
 }
