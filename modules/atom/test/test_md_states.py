@@ -80,7 +80,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
             scaler = IMP.atom.BerendsenThermostatOptimizerState(
                                               ps, 298.0, coupling)
             md = IMP.atom.MolecularDynamics(m)
-            md.set_time_step(4.0)
+            md.set_maximum_time_step(4.0)
             md.add_optimizer_state(scaler)
             md.optimize(0)
             ts = []
@@ -103,7 +103,7 @@ class MolecularDynamicsStateTests(IMP.test.TestCase):
         scaler = IMP.atom.LangevinThermostatOptimizerState(
                                               ps, 298.0, 0.1)
         md = IMP.atom.MolecularDynamics(m)
-        md.set_time_step(4.0)
+        md.set_maximum_time_step(4.0)
         md.add_optimizer_state(scaler)
         md.optimize(0)
         ts = []

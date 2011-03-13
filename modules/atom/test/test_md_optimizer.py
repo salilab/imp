@@ -64,8 +64,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
         self.particles.append(self.create_point_particle(self.model,
                                                          -43.0, 65.0, 93.0))
         self.particles[-1].add_attribute(masskey, cmass, False)
-        self.md = IMP.atom.MolecularDynamics()
-        self.md.set_model(self.model)
+        self.md = IMP.atom.MolecularDynamics(self.model)
 
     def _check_trajectory(self, coor, traj, timestep, vxfunc):
         """Check generated trajectory against that predicted using vxfunc"""
@@ -94,7 +93,7 @@ class MolecularDynamicsTests(IMP.test.TestCase):
                  for p in self.model.get_particles()]
         state = WriteTrajState(traj)
         self.md.add_optimizer_state(state)
-        self.md.set_time_step(timestep)
+        self.md.set_maximum_time_step(timestep)
         self.md.optimize(50)
         return start, traj
 
