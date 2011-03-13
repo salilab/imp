@@ -84,7 +84,7 @@ int do_benchmark() {
   //## Molecular Dynamics
   IMP_NEW(MolecularDynamics, md, (m));
   md->assign_velocities(300);
-  md->set_time_step(2.0);
+  md->set_maximum_time_step(2.0);
   /*## therm legend
     # 0 :: nve
     # 1 :: rescale velocities
