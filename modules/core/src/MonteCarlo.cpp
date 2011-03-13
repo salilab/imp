@@ -218,6 +218,12 @@ Float MonteCarlo::do_optimize(unsigned int max_steps)
 }
 
 
+void MonteCarlo::set_use_basin_hopping(bool tf) {
+  IMP_USAGE_CHECK(cg_, "A local optimizer must be set for "
+                  << "basin hopping to be used.");
+  basin_hopping_=tf;
+}
+
 void MonteCarlo::set_local_optimizer(Optimizer* cg)
 {
   cg_= cg;
