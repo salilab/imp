@@ -7,6 +7,7 @@
  */
 
 #include <IMP/hdf5/particle_io.h>
+#include <IMP/hdf5/operations.h>
 IMPHDF5_BEGIN_NAMESPACE
 
 
