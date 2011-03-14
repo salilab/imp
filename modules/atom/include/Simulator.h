@@ -31,40 +31,69 @@ public:
   Simulator(Model *m,
             std::string name= "Simulator %1%");
 
-  IMP_LIST(public, Particle, particle, Particle*, Particles);
-
   //! Simulate until the given time in fs
   double simulate(double time_in_fs);
 
   double get_temperature() const {
     return temperature_;
   }
-  double get_maximum_time_step() const {
-    return max_time_step_;
-  }
   void set_temperature(double d) {
     temperature_=d;
   }
+  /** \name Time steps
+      The simulator has a maximum allowed time step. It can take
+      shorter ones if needed due to stability concerns.
+
+      As with all times in \imp, the time step is in fs.
+      @{
+  */
   void set_maximum_time_step(double ts) {
     max_time_step_=ts;
   }
+  double get_maximum_time_step() const {
+    return max_time_step_;
+  }
+  double get_last_time_step() const {
+    if (last_time_step_ <0) return get_maximum_time_step();
+    else return last_time_step_;
+  }
+  /** @} */
   double get_current_time() const {
     return current_time_;
   }
   void set_current_time(double ct) {
     current_time_=ct;
   }
-  double get_last_time_step() const {
-    return last_time_step_;
-  }
+  /** Get the set of particles used in the simulation.
+      This may be different then the stored set, eg if
+      no particles are stored, the Model is searched for
+      appropriate particles.
+  */
   ParticlesTemp get_simulation_particles() const;
+  /** \name Explicitly specifying particles
+
+      One can explicitly specify which particles should be used for
+      molecular dynamics. Each particle must be a Mass and
+      core::XYZ particle. If none are specified, the model
+      is searched for appropriate particles.
+      @{
+  */
+  IMP_LIST(public, Particle, particle, Particle*, Particles);
+  /** @} */
   IMP_OPTIMIZER(Simulator);
 protected:
+  /** A Simulator class can perform setup operations before a series
+      of simulation steps is taken. */
   virtual void setup(const ParticlesTemp &) {};
 
-  // return the actual time step taken
+  /** Perform a single time step and return the amount that time
+      should be advanced. A maximum time step value is passed.
+  */
   virtual double do_step(const ParticlesTemp &sc, double dt)=0;
 
+  /** Return true if the passed particle is appropriate for
+      the simulation.
+  */
   virtual bool get_is_simulation_particle(Particle*p) const=0;
  private:
   double temperature_;
