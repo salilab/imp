@@ -11,7 +11,9 @@
 
 #include "hdf5_config.h"
 #include "NodeHandle.h"
+#include "RootHandle.h"
 #include <IMP/atom/Hierarchy.h>
+#include <IMP/OptimizerState.h>
 
 IMPHDF5_BEGIN_NAMESPACE
 
@@ -49,6 +51,16 @@ IMPHDF5EXPORT void load_configuration(RootHandle fh,
                                       atom::Hierarchy hs,
                                       unsigned int frame);
 /** @} */
+
+class IMPHDF5EXPORT SaveHierarchyConfigurationOptimizerState:
+  public OptimizerState {
+  atom::Hierarchies hs_;
+  RootHandle fh_;
+ public:
+  SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
+                                           RootHandle fh);
+  IMP_PERIODIC_OPTIMIZER_STATE(SaveHierarchyConfigurationOptimizerState);
+};
 
 
 IMPHDF5_END_NAMESPACE

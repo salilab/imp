@@ -358,4 +358,25 @@ void load_configuration(RootHandle fh,
 }
 
 
+SaveHierarchyConfigurationOptimizerState::
+SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
+                                         RootHandle fh):
+  OptimizerState("SaveHierarchyConfigurationOptimizerState %1%"),
+  hs_(hs),
+  fh_(fh){}
+
+
+void SaveHierarchyConfigurationOptimizerState::do_update(unsigned int k) {
+  for (unsigned int i=0;i< hs_.size(); ++i) {
+    save_configuration(hs_[i], fh_, k);
+  }
+}
+
+void SaveHierarchyConfigurationOptimizerState
+::do_show(std::ostream &out) const {
+  out << "  file: " << fh_ << std::endl;
+  for (unsigned int i=0; i< hs_.size(); ++i) {
+    out << "  hierarchy: " << hs_[i]->get_name() << std::endl;
+  }
+}
 IMPHDF5_END_NAMESPACE
