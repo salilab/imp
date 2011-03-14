@@ -24,12 +24,12 @@ class GenericTest(IMP.test.TestCase):
         IMP.hdf5.write_hierarchy(h, f)
         for i in range(0,nf):
             d.set_x(i)
-            IMP.hdf5.save_conformation(h, f, i)
+            IMP.hdf5.save_configuration(h, f, i)
         del f
         f= IMP.hdf5.RootHandle(self.get_tmp_file_name("test_mf.rh"), False)
         [h]= IMP.hdf5.read_all_hierarchies(f, m)
         for i in range(0,nf):
-            IMP.hdf5.load_conformation( f, h, i)
+            IMP.hdf5.load_configuration( f, h, i)
             d= IMP.core.XYZR(h)
             self.assertEqual(d.get_x(), i)
 
