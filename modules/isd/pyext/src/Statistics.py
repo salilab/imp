@@ -224,6 +224,8 @@ class Statistics:
         fl.close()
         #write trajs
         for key,name in self.coordinates:
+            if self.categories[key][name] is None:
+                raise ValueError, "The trajectory was not passed to the stats class!"
             if self.append:
                 fl=open(self.prefix+'_traj.pdb', 'a')
             else:
