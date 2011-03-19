@@ -23,7 +23,7 @@ WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
   initialize_model_density_map(weight_key);
 }
 void WeightedExcludedVolumeRestraint::initialize_model_density_map(
-  FloatKey weight_key) {
+  FloatKey ) {
   for (core::RigidBodies::const_iterator it = rbs_.begin();
        it != rbs_.end();it++){
     core::RigidBody rb=*it;

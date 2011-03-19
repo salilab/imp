@@ -38,7 +38,7 @@ public:
   unsigned int get_number_of_transformations() const {
     return all_rt_.size();
   }
-  void update_score(float s) {
+  void update_score(float ) {
     //score_ += s;
   }
   algebra::Transformation3D get_representative_transformation() const {

@@ -150,7 +150,7 @@ void write_segment_as_pdb(const DataPointsAssignment &dpa,
 
 void write_segment_as_mrc(em::DensityMap *dmap,
 const DataPointsAssignment &dpa,int segment_id,
-Float resolution, Float apix,const std::string &filename) {
+Float , Float ,const std::string &filename) {
   Pointer<em::DensityMap> segment_map(
 new em::DensityMap(*(dmap->get_header())));
   segment_map->reset_data(0.);

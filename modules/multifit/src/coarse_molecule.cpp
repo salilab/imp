@@ -18,7 +18,7 @@ namespace {
   {
   atom::Hierarchy ret_prot=
     atom::Hierarchy::setup_particle(new Particle(mdl));
-  for (int i=0;i<vecs.size();i++){
+  for (unsigned int i=0;i<vecs.size();i++){
     core::XYZR bead_child=core::XYZR::setup_particle(
              new Particle(mdl),
              algebra::Sphere3D(vecs[i],bead_radius));
