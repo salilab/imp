@@ -40,6 +40,8 @@ void Em2DRestraint::set_fast_mode(unsigned int n) {
 double
 Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
+  IMP_UNUSED(accum);
+  IMP_USAGE_CHECK(!accum, "No derivatives provided");
   IMP_NEW(Model,model,());
   model=get_model();
   // Project the model

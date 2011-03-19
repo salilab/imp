@@ -69,7 +69,7 @@ public:
               unsigned int optimization_steps = 5,
               double simplex_initial_length =0.1,
               double simplex_minimum_size =0.01) {
-
+    IMP_UNUSED(optimization_steps);
   apix_ =apix;
   resolution_ = resolution;
   finder_.setup(score_function,
