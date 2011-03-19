@@ -68,6 +68,8 @@ IMP_SWIG_OBJECT( IMP::core, SphereDistanceToSingletonScore, SphereDistanceToSing
 IMP_SWIG_OBJECT( IMP::core, SteepestDescent, SteepestDescents);
 IMP_SWIG_OBJECT( IMP::core, TableRefiner, TableRefiners);
 IMP_SWIG_OBJECT( IMP::core, Transform, Transforms);
+IMP_SWIG_OBJECT( IMP::core, TransformationAndReflectionSymmetry, TransformationAndReflectionSymmetries);
+IMP_SWIG_OBJECT( IMP::core, TransformationSymmetry, TransformationSymmetries);
 IMP_SWIG_OBJECT( IMP::core, TransformedDistancePairScore, TransformedDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, TripletConstraint, TripletConstraints);
 IMP_SWIG_OBJECT( IMP::core, TripletRestraint, TripletRestraints);
@@ -84,6 +86,7 @@ IMP_SWIG_DECORATOR( IMP::core, RigidBody, RigidBodies);
 IMP_SWIG_DECORATOR( IMP::core, RigidMember, RigidMembers);
 IMP_SWIG_DECORATOR( IMP::core, Centroid, Centroids);
 IMP_SWIG_DECORATOR( IMP::core, Cover, Covers);
+IMP_SWIG_DECORATOR( IMP::core, Reference, References);
 IMP_SWIG_VALUE_INSTANCE(IMP::core, ParticleType, ParticleType, ParticleTypes);
 IMP_SWIG_DECORATOR( IMP::core, Typed, Typeds);
 IMP_SWIG_DECORATOR_WITH_TRAITS( IMP::core, Hierarchy, GenericHierarchies);
@@ -131,6 +134,7 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/DerivativesToRefined.h"
 %include "IMP/core/DiameterRestraint.h"
 %include "IMP/core/Transform.h"
+%include "IMP/core/symmetry.h"
 %include "IMP/core/DihedralRestraint.h"
 %include "IMP/core/DistancePairScore.h"
 %include "IMP/core/DistanceRestraint.h"
