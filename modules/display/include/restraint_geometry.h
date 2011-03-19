@@ -22,7 +22,6 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 //! Draw edges for various core::PairRestraint.
 /** This currently can handle
-    - IMP::container::PairsRestraint
     - IMP::core::PairRestraint
 
 */
@@ -40,7 +39,6 @@ public:
 //! Draw edges for various container::PasirRestraint.
 /** This currently can handle
     - IMP::container::PairsRestraint
-    - IMP::core::PairRestraint
 
 */
 class IMPDISPLAYEXPORT PairsRestraintGeometry: public Geometry
@@ -52,6 +50,17 @@ public:
     return r_;
   }
   IMP_GEOMETRY(PairsRestraintGeometry);
+};
+
+//! Try to draw some stuff for a generic restraint
+class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
+  IMP::Pointer<Restraint> r_;
+public:
+  RestraintGeometry(Restraint *p);
+  Restraint *get_restraint() const {
+    return r_;
+  }
+  IMP_GEOMETRY(RestraintGeometry);
 };
 
 //! Draw edges for core::ConnectivityRestraint.
