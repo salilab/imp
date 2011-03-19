@@ -1,6 +1,11 @@
 /** \page recent Change History
 
+\par Spring 2011
+- Preliminary symmetry support has been added via the IMP::core::TransfomrationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
+
 \par Winter 2011
+- There now is a common base class IMP::atom::Simulation for IMP::atom::BrownianDynamics and IMP::atom::MolecularDynamics. In merging them there were several minor changes made to both. The most noticeable may be that the function for setting the maximum time step length is now IMP::atom::Simulation::set_maximum_time_step(). The last time step length can be extracted by IMP::atom::Simulation::get_last_time_step()
+- IMP::core::MonteCarlo::set_temperature() was renamed to IMP::core::MonteCarlo::set_kt() as that is what it is doing.
 - A new module IMP.hdf5 has been added to provide more general support for saving and loading IMP::atom::Hierarchy structures to files. Multiple conformations of each hierarchy can be saved as well as information about geometry and restraints (although these can't be read at the moment, so they are not so useful).
 - IMP::algebra::grids::GridD now supports dense grids in arbitrary dimension through use of IMP::algebra::grids::DenseGridStorageD.
 - IMP::Optimizer now can use a list of restraint sets to compute the score rather than the complete Model score.
