@@ -66,10 +66,13 @@ public:
       \param[in] voxel_data_threshold voxels with value lower than threshold
                  in model_map are not summed (avoid calculating correlation on
                  voxels below the threshold)
-      \param[in] recalc_ccnormfac determines wheather the model_map should be
+      \param[in] recalc_ccnormfac Ignored. The purpose is to determines wheather
+                 the model_map should be
                  normalized prior to the correlation calculation. false is
                  faster, but potentially innacurate
       \return the convolution value between two density maps
+
+      \note recalc_ccnormfac is ignored.
    */
   static float convolution(const DensityMap *em_map,DensityMap *model_map,
                            float voxel_data_threshold,
