@@ -18,6 +18,7 @@
 
 #include <IMP/exception.h>
 #include <IMP/RefCounted.h>
+#include <limits>
 
 
 #ifdef SWIG
@@ -65,7 +66,7 @@ struct IMPHDF5EXPORT FloatTraits {
   static const double& get_null_value();
   static const double& get_fill_value();
   static bool get_is_null_value(const double& f) {
-    return f >= std::numeric_limits<double>::max();
+    return (f >= std::numeric_limits<double>::max());
   }
   static std::string get_name();
   static unsigned int get_index() {
