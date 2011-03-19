@@ -260,7 +260,8 @@ int ImageHeader::read(const String filename, bool skip_type_check,
     IMP_THROW("ImageHeader::read: file " + filename + " not found",
               IOException);
   }
-  result = read(f, force_reversed);
+  result = read(f, skip_type_check, force_reversed,
+                skip_extra_checkings);
   f.close();
   return result;
 }
