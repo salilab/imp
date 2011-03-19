@@ -8,7 +8,7 @@
 #define IMPCORE_SYMMETRY_H
 #include "core_config.h"
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/algebra/Reflection3D257.h>
+#include <IMP/algebra/Reflection3D.h>
 #include "XYZ.h"
 #include "rigid_bodies.h"
 
