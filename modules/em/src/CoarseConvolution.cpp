@@ -13,7 +13,7 @@ IMPEM_BEGIN_NAMESPACE
 
 float CoarseConvolution::convolution(const DensityMap *f, DensityMap *g,
                                      float voxel_data_threshold,
-                                     bool recalc_ccnormfac)
+                                     bool)
 {
   const DensityHeader *f_header = f->get_header();
   const DensityHeader *g_header = g->get_header();
