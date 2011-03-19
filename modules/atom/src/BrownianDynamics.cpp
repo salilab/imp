@@ -59,8 +59,10 @@ void BrownianDynamics::setup(const ParticlesTemp&) {
 }
 double BrownianDynamics::do_step(const ParticlesTemp &ps,
                                  double dt) {
+  unit::Femtosecond dtfs(dt);
   unit::Divide<unit::Femtosecond,
-               unit::Femtojoule>::type dtikt=unit::Femtosecond(dt)
+               unit::Femtojoule>::type dtikt
+    =dtfs
     /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
   for (unsigned int i=0; i< ps.size(); ++i) {
     Diffusion d(ps[i]);
@@ -89,7 +91,7 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
               < std::numeric_limits<double>::max(),
               "Bad diffusion coefficient on particle " << ps[i]->get_name());
     double random[3];
-    unit::Angstrom sigma= sqrt(2.0*d.get_d()*unit::Femtosecond(dt));
+    unit::Angstrom sigma= sqrt(2.0*d.get_d()*dtfs);
     for (unsigned j = 0; j < 3; ++j) {
       double rv= sampler_();
       random[j]=unit::Angstrom(sigma*rv).get_value();
