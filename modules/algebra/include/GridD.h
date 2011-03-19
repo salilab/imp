@@ -571,7 +571,7 @@ namespace grids {
     return true;
   }
 #endif
-  IMP_SHOWABLE_INLINE(DenseGridStorageD,);
+    IMP_SHOWABLE_INLINE(DenseGridStorageD,IMP_UNUSED(out););
   const VT* get_raw_data() const {
     return data_.get();
   }
