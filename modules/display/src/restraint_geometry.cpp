@@ -145,6 +145,47 @@ void ConnectivityRestraintGeometry::do_show(std::ostream &out) const {
 }
 
 
+RestraintGeometry::RestraintGeometry(Restraint*r): Geometry(r->get_name()),
+                                                   r_(r){}
+
+
+IMP::display::Geometries RestraintGeometry::get_components() const {
+  IMP_CHECK_OBJECT(r_);
+  Restraints rs= r_->get_instant_decomposition();
+  IMP::display::Geometries ret;
+  if (rs.size()==1) {
+    ParticlesTemp ps= r_->get_input_particles();
+    for (unsigned int i=0; i < ps.size(); ++i) {
+      if (!core::XYZ::particle_is_instance(ps[i])) continue;
+      core::XYZ di(ps[i]);
+      for (unsigned int j=0; j< i; ++j) {
+        if (!core::XYZ::particle_is_instance(ps[j])) continue;
+        core::XYZ dj(ps[j]);
+        ret.push_back(new SegmentGeometry
+                      (algebra::Segment3D(di.get_coordinates(),
+                                          dj.get_coordinates())));
+      }
+    }
+  } else {
+    for (unsigned int i=0; i< rs.size(); ++i) {
+      Restraint *rc=rs[i];
+      core::PairRestraint *pr= dynamic_cast<core::PairRestraint*>(rc);
+      if (pr) {
+        ret.push_back(new PairRestraintGeometry(pr));
+      } else {
+        ret.push_back(new RestraintGeometry(rs[i]));
+      }
+    }
+  }
+  return ret;
+}
+
+void RestraintGeometry::do_show(std::ostream &out) const {
+  out << "  restraint: " << r_->get_name() << std::endl;
+}
+
+
+
 
 Geometry* create_restraint_geometry(Restraint*r) {
   if (dynamic_cast<core::PairRestraint*>(r)) {
@@ -155,8 +196,7 @@ Geometry* create_restraint_geometry(Restraint*r) {
     return new
    ConnectivityRestraintGeometry(dynamic_cast<core::ConnectivityRestraint*>(r));
   } else {
-    IMP_THROW("Can't handle restraint " << r->get_name()
-              << " of type " << r->get_type_name(), ValueException);
+    return new RestraintGeometry(r);
   }
 }
 
