@@ -65,12 +65,12 @@ void set(unsigned int i, WrappedDecorator d) {                          \
 WrappedDecorator back() const {                                         \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
                   "Can't call back on empty Decorators");               \
-  return WrappedDecorator(ParentDecorators::back());                    \
+  return operator[](ParentDecorators::size()-1);                        \
 }                                                                       \
 WrappedDecorator front() const {                                        \
   IMP_USAGE_CHECK(!ParentDecorators::empty(),                           \
                   "Can't call front on empty Decorators");              \
-  return WrappedDecorator(ParentDecorators::front());                   \
+  return operator[](0);                                                 \
 }                                                                       \
 typedef internal::IndexingIterator<Accessor> iterator;                  \
 typedef internal::IndexingIterator<Accessor> const_iterator;            \
