@@ -16,6 +16,7 @@ def get_sphere(v):
 
 IMP_SWIG_VALUE(IMP::algebra, Rotation2D, Rotation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Rotation3D, Rotation3Ds);
+IMP_SWIG_VALUE(IMP::algebra, Reflection3D, Reflection3Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation2D, Transformation2Ds);
 IMP_SWIG_VALUE(IMP::algebra, Transformation3D, Transformation3Ds);
 IMP_SWIG_VALUE(IMP::algebra, SphericalVector3D, SphericalVector3Ds);
@@ -89,6 +90,7 @@ IMP_SWIG_ALGEBRA_TEMPLATE_D(IMP::algebra, Sphere);
 %include "IMP/algebra/LinearFit.h"
 %include "IMP/algebra/ParabolicFit.h"
 %include "IMP/algebra/Plane3D.h"
+%include "IMP/algebra/Reflection3D.h"
 %include "IMP/algebra/Cylinder3D.h"
 %include "IMP/algebra/Ellipsoid3D.h"
 
