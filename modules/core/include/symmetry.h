@@ -53,6 +53,7 @@ IMP_DECORATORS(Reference,References, Particles);
 //! Set the coordinates of a particle to be a transformed version of a reference
 /** The passed particles must be Reference particles and XYZ particles and must
     not be RigidBody particles.
+    \see TransformationSymmetry
  */
 class IMPCOREEXPORT TransformationAndReflectionSymmetry
   : public SingletonModifier
@@ -70,6 +71,7 @@ public:
 //! Set the coordinates of a particle to be a transformed version of a reference
 /** The passed particles must be Reference particles and XYZ particles and
     can be RigidBody particles iff the reference particle is a rigid body.
+    \see TransformationAndReflectionSymmetry
  */
 class IMPCOREEXPORT TransformationSymmetry : public SingletonModifier
 {
