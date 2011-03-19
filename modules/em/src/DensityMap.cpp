@@ -945,7 +945,7 @@ void get_transformed_into(const DensityMap *from,
   }
 }
 
-DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
+DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float) {
   Pointer<DensityMap> ret(new DensityMap(header_));
   //calculate the new extent
   int new_ext[3];
