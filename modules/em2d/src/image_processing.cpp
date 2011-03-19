@@ -611,7 +611,7 @@ void apply_variance_filter(const cv::Mat &input,
 
 
 void add_noise(cv::Mat &v,
-               double op1,double op2, const String &mode, double df)
+               double op1,double op2, const String &mode, double /*df*/)
 {
   // Generator
   typedef boost::mt19937 base_generator_type;

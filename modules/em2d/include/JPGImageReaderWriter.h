@@ -69,6 +69,7 @@ public:
    */
   void write_to_ints(const String &filename, em::ImageHeader& header,
                                         const cv::Mat &data) const {
+    IMP_UNUSED(header);
     // discard header
     IMP_LOG(IMP::WARNING,"Writing with JPGImageReaderWriter "
                   "discards image header " << std::endl);

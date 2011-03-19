@@ -63,7 +63,7 @@ void ProjectionParametersScoreState::do_before_evaluate() {
 
 
 void ProjectionParametersScoreState::do_after_evaluate(
-                                                DerivativeAccumulator *accpt) {
+                                                DerivativeAccumulator *) {
 
   IMP_LOG(IMP::VERBOSE,ProjectionParameters(proj_params_));
 }
