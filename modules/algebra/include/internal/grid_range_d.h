@@ -17,7 +17,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
-  template <unsigned int D>
+  template <int D>
   struct GridRangeData: public RefCounted {
     const BoundingBoxD<D> bb;
     double step;
@@ -25,7 +25,7 @@ namespace {
                   double stp): bb(ibb), step(stp){}
   };
 
-  template <unsigned int D>
+  template <int D>
   std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
     out << d.min << " " << d.max << " " << d.step << std::endl;
     return out;
