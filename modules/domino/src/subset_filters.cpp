@@ -471,9 +471,9 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
 
 
 namespace {
-
+#if !defined(__clang__)
   void dummy_f_destructor(){}
-
+#endif
   class  ListSubsetFilter: public SubsetFilter {
     Pointer<const ListSubsetFilterTable> keepalive_;
     Ints indexes_;
