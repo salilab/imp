@@ -33,7 +33,7 @@ void Scale::show(std::ostream &out) const {
 void Scale::set_upper(Float d) {
     Float d_;
     if (d < 0) {
-        d_ = std::numeric_limits<double>::infinity();
+        d_ = -1; //std::numeric_limits<double>::infinity();
     } else {
         d_ = d;
     }
@@ -59,38 +59,21 @@ void Scale::set_scale(Float d) {
     get_particle()->set_value(get_scale_key(), d_);
 }
 
-Scale Scale::setup_particle(Particle *p) {
-    p->add_attribute(get_scale_key(), 1.0);
-    p->add_attribute(get_upper_key(), std::numeric_limits<double>::infinity());
-    p->add_attribute(get_lower_key(), 0.0);
-    return Scale(p);
-}
-
-Scale Scale::setup_particle(Particle *p, double scale) {
-    if (scale < 0) {
-        IMP_THROW("Scale is positive!", ModelException);
-    }
-    p->add_attribute(get_scale_key(), scale);
-    p->add_attribute(get_upper_key(), std::numeric_limits<double>::infinity());
-    p->add_attribute(get_lower_key(), 0.0);
-    return Scale(p);
-}
-
 Scale Scale::setup_particle(Particle *p, double scale, 
         double lower, double upper) {
     double lo_ = std::max(lower,0.0);
     double up_;
     if (upper < lo_) {
-        up_ = std::numeric_limits<double>::infinity();
+        up_ = -1; //std::numeric_limits<double>::infinity();
     } else {
         up_ = upper;
     }
-    if (lo_ > scale || up_ < scale) {
+    if (lo_ > scale || (up_ < scale && up_ > -0.5) ) {
         IMP_THROW("scale value out of bounds!", ModelException);
     }
-    p->add_attribute(get_scale_key(), scale);
-    p->add_attribute(get_upper_key(), up_);
     p->add_attribute(get_lower_key(), lo_);
+    p->add_attribute(get_upper_key(), up_);
+    p->add_attribute(get_scale_key(), scale);
     return Scale(p);
 }
 
