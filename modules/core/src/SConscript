@@ -63,6 +63,7 @@ files = [
          'XYZ.cpp',
          'XYZR.cpp',
          'rigid_bodies.cpp',
+         'symmetry.cpp',
          'utility.cpp',
         ] \
         + SConscript('internal/SConscript')

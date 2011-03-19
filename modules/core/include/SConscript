@@ -75,6 +75,7 @@ files = [
          'generic.h',
          'python_only.h',
          'rigid_bodies.h',
+         'symmetry.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')
