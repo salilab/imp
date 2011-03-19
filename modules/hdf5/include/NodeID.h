@@ -20,7 +20,7 @@ IMPHDF5_BEGIN_NAMESPACE
 class NodeID {
   int i_;
   friend class NodeHandle;
-  friend class NodeIDTraits;
+  friend struct NodeIDTraits;
   friend class RootHandle;
   NodeID(unsigned int i): i_(i){}
 public:
