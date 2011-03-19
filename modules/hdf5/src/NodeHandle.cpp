@@ -63,10 +63,10 @@ namespace {
                  const std::vector<KT> &ks,
                  int frame, std::string prefix) {
     for (unsigned int i=0; i< ks.size(); ++i) {
-      if (n.get_root_handle().get_is_per_frame(ks[i])
-          && n.get_has_value(ks[i], frame)
-          || !n.get_root_handle().get_is_per_frame(ks[i])
-          && n.get_has_value(ks[i])) {
+      if ((n.get_root_handle().get_is_per_frame(ks[i])
+           && n.get_has_value(ks[i], frame))
+          || (!n.get_root_handle().get_is_per_frame(ks[i])
+              && n.get_has_value(ks[i]))) {
         if (n.get_root_handle().get_is_per_frame(ks[i])) {
           out << std::endl << prefix
               << n.get_root_handle().get_name(ks[i]) << ": "

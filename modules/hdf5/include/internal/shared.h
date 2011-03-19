@@ -186,7 +186,7 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
                                                  nm, (per_frame?3:2));
         Ints sz= ds.get_size();
         if (vi >= sz[0] || k.get_index() >= sz[1]
-            || per_frame && frame >= static_cast<unsigned int>(sz[2])) {
+            || (per_frame && frame >= static_cast<unsigned int>(sz[2]))) {
           return TypeTraits::get_null_value();
         } else if (per_frame){
           return ds.get_value(make_index(vi, k.get_index(), frame));
