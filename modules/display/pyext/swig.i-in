@@ -16,7 +16,6 @@ IMP_SWIG_OBJECT(IMP::display, SegmentGeometry, SegmentGeometries);
 IMP_SWIG_OBJECT(IMP::display, PolygonGeometry, PolygonGeometries);
 IMP_SWIG_OBJECT(IMP::display, ReferenceFrameGeometry, ReferenceFrameGeometries);
 IMP_SWIG_OBJECT(IMP::display, BoundingBoxGeometry, BoundingBoxGeometries);
-IMP_SWIG_OBJECT(IMP::display, PlaneGeometry, PlaneGeometries);
 IMP_SWIG_OBJECT(IMP::display, LabelGeometry, LabelGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZRGeometry, XYZRGeometries);
 IMP_SWIG_OBJECT(IMP::display, XYZRsGeometry, XYZRsGeometries);
@@ -41,9 +40,13 @@ IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
 IMP_SWIG_OBJECT(IMP::display, ConnectivityRestraintGeometry, ConnectivityRestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, HierarchiesGeometry, HierarchiesGeometries);
 IMP_SWIG_OBJECT(IMP::display, TriangleGeometry, TriangleGeometries);
+IMP_SWIG_OBJECT(IMP::display, SurfaceMeshGeometry, SurfaceMeshGeometries);
+
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
+IMP_SWIG_OBJECT(IMP::display, PlaneGeometry, PlaneGeometries);
 IMP_SWIG_OBJECT(IMP::display, IsosurfaceGeometry, IsosurfaceGeometries);
 IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
-IMP_SWIG_OBJECT(IMP::display, SurfaceMeshGeometry, SurfaceMeshGeometries);
+#endif
 
 
 %warnfilter(403) Geometry;
