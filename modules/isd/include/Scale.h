@@ -25,10 +25,9 @@ IMPISD_BEGIN_NAMESPACE
 class IMPISDEXPORT Scale: public Decorator
 {
 public:
-  static Scale setup_particle(Particle *p); 
-  static Scale setup_particle(Particle *p, double scale); 
-  static Scale setup_particle(Particle *p, double scale, 
-          double lower, double upper); 
+  static Scale setup_particle(Particle *p, double scale=1.0, 
+          double lower=0.0, 
+          double upper=-1.0); //std::numeric_limits<double>::infinity()); 
 
   static bool particle_is_instance(Particle *p) {
     return p->has_attribute(get_scale_key());
@@ -39,7 +38,12 @@ public:
   }
 
   Float get_upper() const {
-    return get_particle()->get_value(get_upper_key());
+    double upper = get_particle()->get_value(get_upper_key());
+    if (upper < -0.5) {
+        return std::numeric_limits<double>::infinity(); 
+    } else {
+        return upper;
+    }
   }
 
   Float get_lower() const {
@@ -70,8 +74,6 @@ public:
   static FloatKey get_lower_key();
 
 };
-
-IMP_OUTPUT_OPERATOR(Scale);
 
 typedef Decorators<Scale, Particles> Scales;
 
