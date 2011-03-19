@@ -11,7 +11,7 @@ def _check(context):
         context.Message("Checking endianess... ")
         text = """
 #include <stdio.h>
-int main(int argc, char ** argv) {
+int main(int , char **) {
   union {
     char array[4];
     int integer;
