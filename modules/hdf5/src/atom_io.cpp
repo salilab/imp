@@ -188,7 +188,7 @@ namespace {
     }
   }
 
-
+#if 0
   atom::Hierarchy get_hierarchy(int id, std::vector<Particle*> &map, Model *m) {
     if (map.size() > static_cast<unsigned int>(id) && map[id]) {
       return atom::Hierarchy(map[id]);
@@ -196,6 +196,7 @@ namespace {
       return atom::Hierarchy::setup_particle(new Particle(m));
     }
   }
+#endif
 }
 
 
