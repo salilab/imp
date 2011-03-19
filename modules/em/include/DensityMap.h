@@ -359,7 +359,7 @@ public:
       number of margin voxels to add on both right and left on the Y axis
    \param[in] mrg_z
       number of margin voxels to add on both right and left on the Z axis
-   \param[in] val   all additional voxels will have this value
+   \param[in] val   ignored
    \exception if the input  x/y/z voxels is smaller than the one
               currently in the map
    */
