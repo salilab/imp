@@ -86,7 +86,7 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::VectorD<3> &anchor_centroid,
               core::RigidBody *rb, Refiner *refiner, core::MonteCarlo *opt,
-              FittingSolutions &fr, Model *mdl) {
+              FittingSolutions &fr, Model *) {
   Float e;
   core::XYZsTemp xyz_t(refiner->get_refined(*rb));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
