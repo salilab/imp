@@ -76,6 +76,8 @@ RadiusOfGyrationRestraint::RadiusOfGyrationRestraint(Particles ps,
 double
 RadiusOfGyrationRestraint::unprotected_evaluate(DerivativeAccumulator *accum)
 const {
+  IMP_UNUSED(accum);
+  IMP_USAGE_CHECK(!accum, "No derivatives computed");
   //calculate actual rog
   //todo - do not use get_input_particles function
   float actual_rog=get_actual_radius_of_gyration(get_input_particles());
