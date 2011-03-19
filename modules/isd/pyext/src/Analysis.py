@@ -93,6 +93,7 @@ if __name__ == '__main__':
     import sys
     a=Analysis()
     h=a.read_stats(sys.argv[1])
+    h.toc()
     
         
 
