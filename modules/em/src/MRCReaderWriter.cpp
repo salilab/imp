@@ -79,11 +79,9 @@ namespace {
   /** Swaps the byte order in an array of 32-bit ints */
   void byte_swap(unsigned char *ch, int n_array)
   {
-    int i;
-    unsigned char tmp;
-
-    for (i = n_array * 4 - 4; i >= 0; i -= 4) {
-      tmp = ch[i];
+    for (int c = n_array -1; c >= 0; --c) {
+      int i=c*4;
+      unsigned char tmp = ch[i];
       ch[i] = ch[i + 3];
       ch[i + 3] = tmp;
       tmp = ch[i + 1];
