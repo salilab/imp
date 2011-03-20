@@ -18,7 +18,7 @@
 
 
 IMPALGEBRA_BEGIN_NAMESPACE
-template <int D>
+inline template <int D>
 VectorD<D> get_random_vector_on(const SphereD<D> &s);
 IMPALGEBRA_END_NAMESPACE
 

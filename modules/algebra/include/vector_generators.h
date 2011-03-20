@@ -80,7 +80,7 @@ get_random_vector_in(const SphereD<D> &s){
     \relatesalso SphereD
  */
 template <int D>
-VectorD<D>
+inline VectorD<D>
 get_random_vector_on(const SphereD<D> &s) {
   double cur_radius2=square(s.get_radius());
   Floats up(s.get_center().get_dimension());
