@@ -11,7 +11,7 @@ def _check(context):
             std::cout << "Hello world" <<std::endl;
             return 0;
         }
-        """, '.cpp')
+""", '.cpp')
     context.Result(ret)
     return ret
 
