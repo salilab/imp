@@ -36,7 +36,7 @@ def _get_version(context, name, includepath, versioncpp, versionheader):
             std::cout << """+vs +"""<<std::endl;
             return 0;
         }
-        """, '.cpp')
+""", '.cpp')
         if includepath:
             context.env.Replace(CPPPATH=oldcpp)
         if not r[0]:
