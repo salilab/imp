@@ -15,7 +15,7 @@ def _check(context):
             std::cout << BOOST_LIB_VERSION <<std::endl;
             return 0;
         }
-        """, '.cpp')
+""", '.cpp')
     context.Result(ret[1].replace("_", ".").split('\n')[0])
     if ret[0]:
         try:
