@@ -75,9 +75,7 @@ def _tr1check(context):
 def configure_tr1_check(env):
     if env.GetOption('help'):
         return
-    rv=env['BOOST_LIB_VERSION']
-    version=float(rv[0:rv.rfind(".")].replace("_", "."))
-    if  version < 1.34:
+    if  scons_tools.data.get(env).dependencies['Boost'].version < 103500:
         return
     custom_tests = {'CheckTR1':_tr1check}
     conf = env.Configure(custom_tests=custom_tests)
