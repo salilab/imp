@@ -59,7 +59,7 @@ def find_lib_version(env):
     env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env.get('BOOST_LIBSUFFIX', '')+"'"])
 
 def _tr1check(context):
-    context.Message('Checking that boost tr1 and gcc tr1 can coexist')
+    context.Message('Checking that boost tr1 and gcc tr1 can coexist...')
     rett = context.TryCompile("""
 #include <tr1/tuple>
 #include <boost/tuple/tuple.hpp>
@@ -67,7 +67,7 @@ def _tr1check(context):
     {
     return 0;
     }
-    """, '.cpp')
+""", '.cpp')
     context.Result(rett)
     return rett
 
