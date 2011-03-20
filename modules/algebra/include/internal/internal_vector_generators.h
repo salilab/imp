@@ -65,7 +65,7 @@ native_uniform_cover_unit_sphere(unsigned int d,
     }
   }
   for (unsigned int i=(ALL?2*d:d); i< n; ++i) {
-    VectorD<D> v= get_random_vector_on(get_unit_sphere_kd(d));
+    VectorD<D> v= internal::get_random_vector_on(get_unit_sphere_kd(d));
     if (!ALL && v[d-1]<= 0) v=-v;
     ret[i]=v;
   }
