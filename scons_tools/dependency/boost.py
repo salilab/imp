@@ -59,7 +59,7 @@ def find_lib_version(env):
     env.Append(IMP_CONFIGURATION=["boostlibsuffix='"+env.get('BOOST_LIBSUFFIX', '')+"'"])
 
 def _tr1check(context):
-    context.Message('Checking if Boost and gcc tr1 coexist ...')
+    context.Message('Checking that boost tr1 and gcc tr1 can coexist')
     rett = context.TryCompile("""
 #include <tr1/tuple>
 #include <boost/tuple/tuple.hpp>
@@ -73,6 +73,12 @@ def _tr1check(context):
 
 
 def configure_tr1_check(env):
+    if env.GetOption('help'):
+        return
+    rv=env['BOOST_LIB_VERSION']
+    version=float(rv[0:rv.rfind(".")].replace("_", "."))
+    if  version < 1.34:
+        return
     custom_tests = {'CheckTR1':_tr1check}
     conf = env.Configure(custom_tests=custom_tests)
     if not conf.CheckTR1():
