@@ -73,7 +73,7 @@ double Optimizer::evaluate(bool compute_derivatives) const {
     IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
               std::vector<double>(flattened_restraints_.size(), 1),
                                            compute_derivatives);
-    return std::accumulate(ret.begin(), ret.end(), 0);
+    return std::accumulate(ret.begin(), ret.end(), 0.0);
   }
 }
 
