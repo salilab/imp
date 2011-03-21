@@ -16,11 +16,13 @@ if scons_tools.dependency.gcc.get_is_gcc(env):
     cxxflags=[]
     yeslist=['trapping-math',
              'signaling-nans',
-             'rounding-math']
+             'rounding-math',
+                         'float-store']
     nolist=['finite-math-only',
-            'float-store',
             'strict-aliasing',
-            'tree-vectorize']
+            'tree-vectorize',
+                        'unsafe-loop-optimizations',
+                        'fast-math']
     if scons_tools.dependency.gcc.get_version(env)>= 4.3:
         yeslist.append('signed-zeros')
         nolist+=['reciprocal-math', 'associative-math']
