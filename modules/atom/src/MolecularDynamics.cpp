@@ -59,6 +59,15 @@ bool MolecularDynamics::get_is_simulation_particle(Particle *p) const {
 
 void MolecularDynamics::setup(const ParticlesTemp &ps)
 {
+  // Get starting score and derivatives, for first dynamics step velocities
+  evaluate(true);
+
+  setup_degrees_of_freedom(ps);
+}
+
+
+void MolecularDynamics::setup_degrees_of_freedom(const ParticlesTemp &ps)
+{
   degrees_of_freedom_ = 3*ps.size();
 
   // If global rotation and translation have been removed, reduce degrees
@@ -173,7 +182,7 @@ Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
 void MolecularDynamics::assign_velocities(Float temperature)
 {
   ParticlesTemp ps=get_simulation_particles();
-  setup(ps);
+  setup_degrees_of_freedom(ps);
 
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<RandomNumberGenerator&,

@@ -61,6 +61,8 @@ public:
 private:
   void initialize();
 
+  void setup_degrees_of_freedom(const ParticlesTemp &ps);
+
   //! First part of velocity Verlet (update coordinates and half-step velocity)
   void propagate_coordinates(const ParticlesTemp &ps, double step_size);
 
