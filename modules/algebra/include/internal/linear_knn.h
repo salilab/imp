@@ -15,7 +15,7 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 template <int D>
 struct LinearKNNData {
-  void linear_nearest_neighbor(IMP_RESTRICT const VectorD<D> &q,
+  void linear_nearest_neighbor(const VectorD<D> &q,
                                unsigned int k, Ints &ret) const {
     MinimalSet<double, int > retds(k);
     for (unsigned int i=0; i< data_.size(); ++i) {
