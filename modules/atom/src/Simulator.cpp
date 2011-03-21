@@ -29,7 +29,7 @@ double Simulator::simulate(double time) {
     current_time_+= last_time_step_;
     update_states();
   }
-  return get_model()->evaluate(false);
+  return Optimizer::evaluate(false);
 }
 
 ParticlesTemp Simulator::get_simulation_particles() const {
