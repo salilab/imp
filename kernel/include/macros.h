@@ -1746,11 +1746,11 @@ protected:                                      \
              DerivativeAccumulator &) const {                           \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
-    }                                                                   \
+D    }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
-  ParticlesTemp get_output_particles(Particle *p) const;                \
-  ContainersTemp get_input_containers(Particle *p) const;               \
+I  ParticlesTemp get_output_particles(Particle *p) const;                \
+S  ContainersTemp get_input_containers(Particle *p) const;               \
   ContainersTemp get_output_containers(Particle *p) const;              \
   IMP_OBJECT(Name)
 
@@ -2528,7 +2528,7 @@ public:                                                                 \
 #define IMP_UNUSED(variable) if (0) std::cout << variable;
 
 #ifndef IMP_DOXYGEN
-#ifdef __GNU__
+#ifdef __GNUC__
 //! Use this to label a function with no side effects
 /** \advanced */
 #define IMP_NO_SIDEEFFECTS __attribute__ ((pure))
@@ -2537,12 +2537,23 @@ public:                                                                 \
 #define IMP_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
 //! restrict means that a variable is not aliased with this function
 #define IMP_RESTRICT __restrict__
-#define IMP_WARN_PREPROCESS(message) #warning message
+#define IMP_STRINGIFY(x) #x
+#define IMP_WARN_PREPROCESS(msg) _Pragma(IMP_STRINGIFY(message #msg))
+
+//#if __GNUC_PREREQ(4,2)
+#define IMP_GCC_DISABLE_WARNING(name)\
+_Pragma(IMP_STRINGIFY(GCC diagnostic ignored name))
+
+/*#else
+#define IMP_GCC_DISABLE_WARNING(name)
+#endif*/
+
 #else
 #define IMP_NO_SIDEEFFECTS
 #define IMP_WARN_UNUSED_RESULT
 #define IMP_RESTRICT
 #define IMP_WARN_PREPROCESS(message)
+#define IMP_GCC_DISABLE_WARNING(name)
 #endif
 
 #endif
