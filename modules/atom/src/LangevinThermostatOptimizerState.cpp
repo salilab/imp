@@ -26,7 +26,7 @@ void LangevinThermostatOptimizerState::update()
 {
     rescale_velocities();
 }
-
+IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void LangevinThermostatOptimizerState::rescale_velocities() const
 {
   static const double gas_constant = 8.31441e-7;
