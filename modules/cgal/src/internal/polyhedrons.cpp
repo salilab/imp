@@ -20,7 +20,12 @@
 #include <CGAL/Complex_2_in_triangulation_3.h>
 #include <CGAL/make_surface_mesh.h>
 #include <CGAL/Implicit_surface_3.h>
-
+#include <CGAL/Surface_mesh_simplification/HalfedgeGraph_Polyhedron_3.h>
+#include <CGAL/Surface_mesh_simplification/edge_collapse.h>
+/*#include <CGAL/Surface_mesh_simplification/Policies/
+Edge_collapse/Count_stop_predicate.h>
+*/
+#include <CGAL/IO/output_surface_facets_to_polyhedron.h>
 
 
 namespace {
@@ -69,10 +74,14 @@ namespace CGAL {
 }
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-// /Users/drussel/fs/include/CGAL/Nef_3/Halfedge.h:110:
-// error: 'ORIGIN' is not a member of 'CGAL'
-
 namespace {
+
+  struct AddressLess {
+    template <class T>
+    bool operator()(const T&a, const T&b) const {
+      return &*a < &*b;
+    }
+  };
 
   template <class K>
   algebra::VectorD<3> trp(const typename CGAL::Point_3<K> pt) {
@@ -117,31 +126,34 @@ namespace {
   template <class K>
   std::pair<std::vector<algebra::VectorD<3> >,Ints >
   get_indexed_facets(  CGAL::Polyhedron_3<K> &p) {
-    CGAL_postcondition( p.is_valid());
+    if (!p.is_valid(true)) {
+      IMP_WARN("Invalid polyhedron. Proceeding anyway.");
+    }
+    //CGAL_precondition( p.is_valid(true));
     Ints faces;
     std::vector<algebra::VectorD<3> > coords;
-    typename IMP::internal::Map<typename CGAL::Polyhedron_3<K>::Vertex_handle,
-                                int> vertices;
-  //std::map<Polyhedron::Vertex_handle, int> vertices;
-  for (typename CGAL::Polyhedron_3<K>::Face_iterator it= p.facets_begin();
-       it != p.facets_end(); ++it) {
-    typename CGAL::Polyhedron_3<K>::Facet
-      ::Halfedge_around_facet_circulator c= it->facet_begin();
-    do {
-      typename CGAL::Polyhedron_3<K>::Vertex_handle vh= c->vertex();
-      if (vertices.find(vh) == vertices.end()) {
-        vertices[vh]= coords.size();
-        coords.push_back(trp<K>(vh->point()));
+    typename std::map<typename CGAL::Polyhedron_3<K>::Vertex_handle,
+                      int, AddressLess> vertices;
+    //std::map<Polyhedron::Vertex_handle, int> vertices;
+    for (typename CGAL::Polyhedron_3<K>::Face_iterator it= p.facets_begin();
+         it != p.facets_end(); ++it) {
+      typename CGAL::Polyhedron_3<K>::Facet
+        ::Halfedge_around_facet_circulator c= it->facet_begin();
+      do {
+        typename CGAL::Polyhedron_3<K>::Vertex_handle vh= c->vertex();
+        if (vertices.find(vh) == vertices.end()) {
+          vertices[vh]= coords.size();
+          coords.push_back(trp(vh->point()));
+        }
+        faces.push_back(vertices.find(vh)->second);
+        ++c;
+      } while (c != it->facet_begin());
+      if (!faces.empty() && faces.back()!=-1) {
+        faces.push_back(-1);
       }
-      faces.push_back(vertices.find(vh)->second);
-      ++c;
-    } while (c != it->facet_begin());
-    if (!faces.empty() && faces.back()!=-1) {
-      faces.push_back(-1);
     }
+    return std::make_pair(coords, faces);
   }
-  return std::make_pair(coords, faces);
-}
 
   template <class K>
   std::pair<std::vector<algebra::VectorD<3> >,Ints >
@@ -265,6 +277,17 @@ get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
     skin_surface(l.begin(), l.end());
   CGAL::mesh_skin_surface_3(skin_surface, p);
   //CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
+  namespace SMS= CGAL::Surface_mesh_simplification;
+  SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
+  IMP_LOG(TERSE, "Simplifying polyhedron from "
+          << std::distance(p.facets_begin(), p.facets_end())
+          << " faces from " << ss.size() << " balls" << std::endl);
+  /*SMS::edge_collapse(p, stop,
+                  CGAL::vertex_index_map(boost::get(CGAL::vertex_external_index,
+                                                       p))
+                     .edge_index_map(boost::get(CGAL::edge_external_index, p)));
+  IMP_LOG(TERSE, "Simplified polyhedron to "
+  << std::distance(p.facets_begin(), p.facets_end()) << std::endl);*/
   return get_indexed_facets(p);
 }
 
@@ -359,7 +382,7 @@ namespace {
     //std::cerr << "Computing mesh with seed " << emf.centers()[i] << std::endl;
     IMP_LOG(TERSE, "Beginning surface meshing." << std::endl);
     CGAL::make_surface_mesh(c2t3, surface, criteria,
-                            CGAL::Non_manifold_tag());
+                            CGAL::Manifold_tag());
     IMP_LOG(TERSE, "Ending surface meshing." << std::endl);
     //CGAL::make_surface_mesh(c2t3, surface, criteria, CGAL::Manifold_tag());
 
@@ -372,7 +395,7 @@ namespace {
     return f->first->vertex(tr.vertex_triple_index(f->second, i));
   }
 
-  template <class HDS, class C2T3>
+  /*template <class HDS, class C2T3>
   class Build_triangle : public CGAL::Modifier_base<HDS> {
     C2T3 &c2t3_;
   public:
@@ -413,7 +436,7 @@ namespace {
       }
       B.end_surface();
     }
-  };
+    };*/
 
 
   template <class Grid>
@@ -422,7 +445,7 @@ namespace {
     Tr tr;            // 3D-Delaunay triangulation
     C2t3 c2t3 (tr);   // 2D-complex in 3D-Delaunay triangulation
     cgal_triangulate_surface(grid, iso_level, c2t3);
-    std::pair<std::vector<algebra::VectorD<3> >,Ints > ret;
+    /*std::pair<std::vector<algebra::VectorD<3> >,Ints > ret;
     std::map<C2t3::Vertex_handle, int> map;
     for (C2t3::Vertex_iterator it= c2t3.vertices_begin();
          it != c2t3.vertices_end(); ++it) {
@@ -438,11 +461,6 @@ namespace {
         facet.push_back(map.find(get_vertex(c2t3.triangulation(),
                                             it, i))->second);
       }
-      /*algebra::Vector3D c(0,0,0);
-      for (unsigned int i=0; i< 4; ++i) {
-        c+= trp(it->first->vertex(i)->point());
-      }
-      c/=4.0;*/
       algebra::Vector3D n=
         algebra::get_vector_product(ret.first[facet[1]]- ret.first[facet[0]],
                               ret.first[facet[2]]- ret.first[facet[0]]);
@@ -454,8 +472,9 @@ namespace {
         ret.second.insert(ret.second.end(), facet.rbegin(), facet.rend());
       }
       ret.second.push_back(-1);
-    }
-
+    }*/
+    CGAL::Polyhedron_3<GT> poly;
+    CGAL::output_surface_facets_to_polyhedron(c2t3, poly);
     /*typedef CGAL::Polyhedron_3<IKernel>         Polyhedron;
     typedef Polyhedron::HalfedgeDS             HalfedgeDS;
     Polyhedron p;
@@ -463,7 +482,7 @@ namespace {
     std::cout << "building polyhedron" << std::endl;
     p.delegate( triangle);
     std::cout << "returning facets" << std::endl;*/
-    return ret;
+    return get_indexed_facets(poly);
   }
 
 }

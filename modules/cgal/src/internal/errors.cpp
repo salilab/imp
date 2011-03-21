@@ -16,9 +16,9 @@ namespace {
                             const char *explanation) {
     std::ostringstream oss;
     oss << type << " error in CGAL " << expression << " at " << file << ": "
-        << line << ": " << explanation;
+        << line << ": " << explanation << std::endl;
     IMP::internal::assert_fail(oss.str().c_str());
-    IMP_THROW(oss.str(), IMP::ValueException);
+    throw IMP::UsageException(oss.str().c_str());
   }
   struct Registrar {
     Registrar() {
