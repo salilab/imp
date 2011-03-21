@@ -17,6 +17,19 @@ namespace {
   std::vector<bool> context_initializeds;
 }
 
+std::string get_context_message() {
+  if (contexts.empty()) return std::string();
+  std::ostringstream oss;
+  oss << "\nContext: ";
+  for (unsigned int i=0; i< contexts.size(); ++i) {
+    if (i != 0) {
+      oss << "/";
+    }
+    oss << contexts[i];
+  }
+  return oss.str();
+}
+
 void set_log_level(LogLevel l) {
   IMP_USAGE_CHECK(l >= SILENT && l < ALL_LOG,
             "Setting log to invalid level: " << l);
