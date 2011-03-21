@@ -48,4 +48,8 @@ void MoverBase::reset_move()
     });
 }
 
+MoverBase::~MoverBase()
+{
+}
+
 IMPCORE_END_NAMESPACE
