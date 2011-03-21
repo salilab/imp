@@ -27,9 +27,13 @@ class GenericTest(IMP.test.TestCase):
         self.assertEqual(len(h2), 1)
         self.assertEqual(len(IMP.atom.get_leaves(h)),
                          len(IMP.atom.get_leaves(h2[0])))
-        print IMP.atom.get_mass(h), IMP.atom.get_mass(h2[0])
-        print IMP.atom.get_surface_area(h), IMP.atom.get_surface_area(h2[0])
-        print IMP.atom.get_volume(h), IMP.atom.get_volume(h2[0])
+        self.assertAlmostEqual(IMP.atom.get_mass(h),
+                               IMP.atom.get_mass(h2[0]), delta=1e-4)
+        if IMP.atom.has_cgal:
+            self.assertAlmostEqual(IMP.atom.get_surface_area(h),
+                                   IMP.atom.get_surface_area(h2[0]), delta=1e-4)
+            self.assertAlmostEqual(IMP.atom.get_volume(h),
+                                   IMP.atom.get_volume(h2[0]), delta=1e-4)
 
 if __name__ == '__main__':
     unittest.main()
