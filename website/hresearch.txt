@@ -1,9 +1,12 @@
 <p>
-<a href="http://salilab.org/npc.html">
-<img src="images/npc.png" alt="Nuclear Pore Complex"></a>
+IMP has been used by researchers at the Centro de Investigación Príncipe Felipe
+in Spain, in combination with chromosome conformation capture carbon copy (5C)
+technology, to generate high-resolution three-dimensional models of chromatin
+at the megabase scale.
+<a href="http://www.ncbi.nlm.nih.gov/pubmed/21131981">more...</a>
 </p>
 
 <p>
-Researchers from UCSF and the Rockefeller University have used IMP for modeling the Nuclear Pore Complex.<br>
+Researchers from UCSF and the Rockefeller University have used IMP for modeling the Nuclear Pore Complex.
 <a href="http://salilab.org/npc.html">more...</a>
 </p>
