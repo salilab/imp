@@ -609,7 +609,7 @@ void apply_variance_filter(const cv::Mat &input,
   }
 }
 
-
+IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void add_noise(cv::Mat &v,
                double op1,double op2, const String &mode, double /*df*/)
 {
