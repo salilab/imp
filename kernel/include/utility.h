@@ -25,27 +25,35 @@ IMP_BEGIN_NAMESPACE
 
 #ifndef IMP_DOXYGEN
 
+#ifndef SWIG
+template <class T>
+inline T square(T t) IMP_NO_SIDEEFFECTS;
+template <class T>
+inline T cube(T t) IMP_NO_SIDEEFFECTS;
+template <class T>
+inline bool is_nan(const T& a) IMP_NO_SIDEEFFECTS;
+#endif
+
 //! Compute the square of a number
 template <class T>
-inline T square(T t) IMP_NO_SIDEEFFECTS
+inline T square(T t)
 {
   return t*t;
 }
 
 //! Compute the cube of a number
 template <class T>
-inline T cube(T t) IMP_NO_SIDEEFFECTS
+inline T cube(T t)
 {
   return t*t*t;
 }
-
 
 //! Return true if a number is NaN
 /** With certain compiler settings the compiler can optimize
  out a!=a (and certain intel chips had issues with it too).
  */
 template <class T>
-inline bool is_nan(const T& a) IMP_NO_SIDEEFFECTS {
+inline bool is_nan(const T& a) {
 #if defined(_GLIBCXX_USE_C99_MATH)
   // Not all gcc versions include C99 math
   return (std::isnan)(a);
