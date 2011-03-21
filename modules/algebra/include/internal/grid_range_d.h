@@ -15,25 +15,20 @@
 
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-namespace {
-  template <int D>
-  struct GridRangeData: public RefCounted {
-    const BoundingBoxD<D> bb;
-    double step;
-    GridRangeData(const BoundingBoxD<D> &ibb,
-                  double stp): bb(ibb), step(stp){}
-  };
+template <int D>
+struct GridRangeData: public RefCounted {
+  const BoundingBoxD<D> bb;
+  double step;
+  GridRangeData(const BoundingBoxD<D> &ibb,
+                double stp): bb(ibb), step(stp){}
+};
 
-  template <int D>
-  std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
-    out << d.min << " " << d.max << " " << d.step << std::endl;
-    return out;
-  }
+template <int D>
+std::ostream &operator<<(std::ostream &out, const GridRangeData<D> &d) {
+  out << d.min << " " << d.max << " " << d.step << std::endl;
+  return out;
 }
-#endif
 
-#if !defined(SWIG)
 template <int D>
 class GridIteratorD
 {
@@ -87,7 +82,6 @@ public:
     return compare(cur_, o.cur_) >0;
   }
 };
-#endif
 
 IMP_OUTPUT_OPERATOR_D(GridIteratorD);
 
