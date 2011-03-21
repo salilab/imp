@@ -116,28 +116,37 @@ void DensityMap::Read(const char *filename, MapReaderWriter *reader) {
 }
 #endif
 
-DensityMap* read_map(const char *filename) {
-  std::string name(filename);
-  IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
+
+namespace {
+  MapReaderWriter *create_reader_writer_from_name(const char *filename) {
+    std::string name(filename);
+    IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
                   "No suffix in file name: " << filename);
-  std::string suf=name.substr(name.rfind('.'));
-  if (suf == ".mrc") {
-    IMP_NEW(MRCReaderWriter, rw, ());
-    return read_map(filename, rw);
-  } else if (suf == ".em") {
-    IMP_NEW(EMReaderWriter, rw, ());
-    return read_map(filename, rw);
-  } else if (suf == ".vol") {
-    IMP_NEW(SpiderMapReaderWriter, rw, ());
-    return read_map(filename, rw);
-  } else if (suf == ".xplor") {
-    IMP_NEW(XplorReaderWriter, rw, ());
-    return read_map(filename, rw);
-  } else {
-    IMP_THROW("Unable to determine type for file "<< filename
-              << " with suffix " << suf,
-              IOException);
+    std::string suf=name.substr(name.rfind('.'));
+    if (suf == ".mrc") {
+      return new MRCReaderWriter();
+    } else if (suf == ".em") {
+      return new EMReaderWriter();
+    } else if (suf == ".vol") {
+      return new SpiderMapReaderWriter();
+    } else if (suf == ".xplor") {
+      return new XplorReaderWriter();
+    } else {
+      IMP_THROW("Unable to determine type for file "<< filename
+                << " with suffix " << suf,
+                IOException);
+    }
   }
+}
+
+DensityMap* read_map(const char *filename) {
+  Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
+  return read_map(filename, rw);
+}
+
+void write_map(DensityMap *dm, const char *filename) {
+  Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
+  write_map(dm, filename, rw);
 }
 
 void DensityMap::update_header() {
@@ -240,6 +249,7 @@ DensityMap* read_map(const char *filename, MapReaderWriter *reader)
   Pointer<DensityMap> m= new DensityMap();
   float *f_data=NULL;
   reader->read(filename, &f_data, m->header_);
+  reader->set_was_used(true);
   boost::scoped_array<float> f_datap(f_data);
   m->float2real(f_datap.get(), m->data_);
   m->normalized_ = false;
@@ -289,6 +299,8 @@ void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
 void write_map(DensityMap *d, const char *filename, MapReaderWriter *writer)
 {
   IMP::Pointer<MapReaderWriter> pt(writer);
+  writer->set_was_used(true);
+  d->set_was_used(true);
   boost::scoped_array<float> f_data;
   d->real2float(d->data_.get(), f_data);
   writer->write(filename, f_data.get(), d->header_);

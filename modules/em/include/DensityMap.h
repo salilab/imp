@@ -48,6 +48,19 @@ IMPEMEXPORT DensityMap* read_map(const char *filename);
 */
 IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
                            MapReaderWriter *writer);
+
+/** Write a density map to a file.
+    Guess the file type from the
+    file name. The file formats supported are:
+    - .mrc
+    - .em
+    - .vol
+    - .xplor
+    \relatesalso DensityMap
+*/
+IMPEMEXPORT void write_map(DensityMap* m, const char *filename);
+
+
 //!
 /**
 \param[in] m a density map
