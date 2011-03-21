@@ -101,6 +101,7 @@ IMPEXPORT CheckLevel get_maximum_check_level();
 namespace internal {
   IMPEXPORT extern CheckLevel check_mode;
 }
+IMPEXPORT std::string get_context_message();
 #endif
 
 
@@ -278,8 +279,9 @@ IMPEXPORT void set_print_exceptions(bool tf);
   do {                                                          \
     if (IMP::get_check_level() >= IMP::USAGE_AND_INTERNAL && !(expr)) { \
       std::ostringstream oss;                                   \
-      oss << message << std::endl                               \
+      oss << "Internal check failure: " << message << std::endl \
           << "  File \"" << __FILE__ << "\", line " << __LINE__ \
+          << IMP::get_context_message()                         \
           << std::endl;                                         \
       IMP::internal::assert_fail(oss.str().c_str());            \
       throw IMP::InternalException(oss.str().c_str());          \
@@ -289,7 +291,9 @@ IMPEXPORT void set_print_exceptions(bool tf);
   do {                                                          \
     if (IMP::get_check_level() >= IMP::USAGE && !(expr)) {      \
       std::ostringstream oss;                                   \
-      oss << message << std::endl;                              \
+      oss << "Usage check failure: " << message                 \
+          << IMP::get_context_message()                         \
+          << std::endl;                                         \
       IMP::internal::assert_fail(oss.str().c_str());            \
       throw IMP::UsageException(oss.str().c_str());             \
     }                                                           \

@@ -13,6 +13,37 @@
 #include <cstring>
 #include <boost/lambda/lambda.hpp>
 
+#ifdef __GNUC__
+#include <execinfo.h>
+
+
+namespace {
+  bool
+  get_is_python () {
+    const unsigned int sz=15;
+    void *array[sz];
+    size_t size = backtrace(array, sz);
+    char **strings = backtrace_symbols (array, size);
+    for (size_t i = 0; i < size; i++) {
+      if (std::string(strings[i]).find("Python") != std::string::npos) {
+        free (strings);
+        return true;
+      }
+    }
+    free (strings);
+    return false;
+  }
+}
+#else
+namespace {
+  bool
+  get_is_python() {
+    return false;
+  }
+}
+#endif
+
+
 IMP_BEGIN_NAMESPACE
 
 
@@ -28,6 +59,7 @@ namespace internal {
 void assert_fail(const char *msg)
 {
   static bool is_handling=false;
+
   if (is_handling) {
     return;
   }
@@ -42,7 +74,7 @@ void assert_fail(const char *msg)
                << e.what() << std::endl);
     }
   }
-  if (print_exceptions) IMP_ERROR(msg);
+  if (print_exceptions || !get_is_python()) IMP_ERROR(msg);
   is_handling=false;
 }
 }
