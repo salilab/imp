@@ -58,6 +58,12 @@ public:
     else return last_time_step_;
   }
   /** @} */
+#ifndef IMP_DOXYGEN
+  void set_time_step(double ts) {
+    set_maximum_time_step(ts);
+  }
+#endif
+
   double get_current_time() const {
     return current_time_;
   }
