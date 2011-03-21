@@ -265,6 +265,7 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
 
 std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
+  IMP_FUNCTION_LOG;
   typedef IKernel::Point_3                                     Bare_point;
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
   std::vector<Weighted_point> l(ss.size());
@@ -278,10 +279,10 @@ get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
   CGAL::mesh_skin_surface_3(skin_surface, p);
   //CGAL::make_skin_surface_mesh_3(p, l.begin(), l.end(), 1.0);
   namespace SMS= CGAL::Surface_mesh_simplification;
-  SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
+  /*SMS::Count_stop_predicate<CGAL::Polyhedron_3<IKernel> > stop(10*ss.size());
   IMP_LOG(TERSE, "Simplifying polyhedron from "
           << std::distance(p.facets_begin(), p.facets_end())
-          << " faces from " << ss.size() << " balls" << std::endl);
+          << " faces from " << ss.size() << " balls" << std::endl);*/
   /*SMS::edge_collapse(p, stop,
                   CGAL::vertex_index_map(boost::get(CGAL::vertex_external_index,
                                                        p))
@@ -493,6 +494,7 @@ std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                                          algebra::grids::DenseGridStorageD<3,
                                            double> > &grid, double iso_level) {
+  IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);
 }
 
@@ -501,7 +503,7 @@ std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                                algebra::grids::DenseGridStorageD<3,
                                   float> > &grid, double iso_level) {
-
+  IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);
 }
 
