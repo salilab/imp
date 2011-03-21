@@ -51,7 +51,10 @@ IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);
 IMPALGEBRAEXPORT Transformation3D
    get_transformation_from_first_triangle_to_second(
                       Triangle3D first_tri,Triangle3D second_tri);
-
+//! Return true if the three points are not co-linear
+IMPALGEBRAEXPORT bool
+get_can_form_triangle(
+      const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
 
 IMPALGEBRA_END_NAMESPACE
 

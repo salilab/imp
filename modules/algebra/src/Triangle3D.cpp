@@ -20,6 +20,14 @@ bool get_are_parallel(const VectorD<3> &v1,
 }
 }
 
+bool
+get_can_form_triangle(
+         const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3){
+  //check that the three points are not on the same line
+  algebra::Vector3D v1=p1-p2;
+  algebra::Vector3D v2=p1-p3;
+  return !get_are_parallel(v1,v2);
+}
 
 Triangle3D::Triangle3D(
       const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3) {
@@ -27,9 +35,7 @@ Triangle3D::Triangle3D(
   p_[1]=p2;
   p_[2]=p3;
   //check that the three points are not on the same line
-  algebra::Vector3D v1=p_[0]-p_[1];
-  algebra::Vector3D v2=p_[0]-p_[2];
-  IMP_USAGE_CHECK(!get_are_parallel(v1,v2),
+  IMP_USAGE_CHECK(get_can_form_triangle(p_[0],p_[1],p_[2]),
                   "Three co-linear points can not form a triangle\n");
 }
 Floats Triangle3D::get_edge_lengths()const {
