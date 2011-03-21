@@ -128,11 +128,11 @@ struct DenseGrid3D:
   public grids::GridD<3, grids::DenseGridStorageD<3, VT> > {
   typedef grids::GridD<3, grids::DenseGridStorageD<3,  VT> > P;
   DenseGrid3D(double side,
-                   const BoundingBoxD<3> &bb,
-                   VT def=VT()): P(side, bb, def) {}
+              const BoundingBoxD<3> &bb,
+              VT def=VT()): P(side, bb, def) {}
   DenseGrid3D(int xd, int yd, int zd,
-                   const BoundingBoxD<3> &bb,
-                   VT def=VT()): P(xd, yd, zd, bb, def) {}
+              const BoundingBoxD<3> &bb,
+              VT def=VT()): P(xd, yd, zd, bb, def) {}
   DenseGrid3D(){}
 
 };
@@ -183,11 +183,11 @@ IMPALGEBRA_END_NAMESPACE
 #define IMP_GRID3D_FOREACH_VOXEL(g, action)                             \
   {                                                                     \
     unsigned int next_loop_voxel_index=0;                               \
-    const algebra::Vector3D macro_map_unit_cell=g.get_unit_cell();      \
+    const IMP::algebra::Vector3D macro_map_unit_cell=g.get_unit_cell(); \
     const unsigned int macro_map_nx=g.get_number_of_voxels(0);          \
     const unsigned int macro_map_ny=g.get_number_of_voxels(1);          \
     const unsigned int macro_map_nz=g.get_number_of_voxels(2);          \
-    const algebra::Vector3D macro_map_origin                            \
+    const IMP::algebra::Vector3D macro_map_origin                       \
       =g.get_origin();                                                  \
     unsigned int voxel_index[3];                                        \
     IMP::algebra::VectorD<3> voxel_center;                              \
