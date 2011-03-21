@@ -138,9 +138,10 @@ def _add_platform_flags(env):
 
 
     if dependency.gcc.get_is_gcc_like(env):
-        env.Append(CXXFLAGS=["-Wall", "-Wextra", "-Werror", "-Wno-deprecated",
+        # "-Werror",  "-Wno-uninitialized"
+        env.Append(CXXFLAGS=["-Wall", "-Wextra",  "-Wno-deprecated",
                              "-Winit-self", "-Wstrict-aliasing=2",
-                             "-Wcast-align", "-Wno-uninitialized"])
+                             "-Wcast-align"])
         #if dependency.gcc.get_version(env)>= 4.3:
         #    env.Append(CXXFLAGS=["-Wunsafe-loop-optimizations"])
         # gcc 4.0 on Mac doesn't like -isystem, so we don't use it there.
