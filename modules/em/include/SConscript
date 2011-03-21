@@ -28,6 +28,7 @@ files = [
          'rigid_fitting.h',
          'density_utilities.h',
          'density_map_volumetrics.h',
+         'EnvelopePenetrationRestraint.h',
         ] \
         + SConscript('internal/SConscript')
 
