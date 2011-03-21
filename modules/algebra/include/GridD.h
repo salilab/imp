@@ -555,6 +555,15 @@ namespace grids {
       set_number_of_voxels(dims);
     }
     IMP_BRACKET(VT, GridIndexD<D>, true, return data_[index(i)]);
+    /** \name Direct indexing
+        One can directly access a particular voxel based on its index
+        in the array of all voxels. This can be faster than using a
+        GridIndexD.
+        @{
+     */
+    IMP_BRACKET(VT, unsigned int, i<extent_, return data_[i]);
+    /** @}
+     */
 #ifndef IMP_DOXYGEN
     DenseGridStorageD(const VT &def=VT()): extent_(0), default_(def) {
     }
