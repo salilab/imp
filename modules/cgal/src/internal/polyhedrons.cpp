@@ -126,9 +126,6 @@ namespace {
   template <class K>
   std::pair<std::vector<algebra::VectorD<3> >,Ints >
   get_indexed_facets(  CGAL::Polyhedron_3<K> &p) {
-    if (!p.is_valid(true)) {
-      IMP_WARN("Invalid polyhedron. Proceeding anyway.");
-    }
     //CGAL_precondition( p.is_valid(true));
     Ints faces;
     std::vector<algebra::VectorD<3> > coords;
