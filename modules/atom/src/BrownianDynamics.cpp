@@ -57,6 +57,8 @@ bool BrownianDynamics::get_is_simulation_particle(Particle *p) const {
 
 void BrownianDynamics::setup(const ParticlesTemp&) {
 }
+IMP_GCC_DISABLE_WARNING("-Wuninitialized")
+
 double BrownianDynamics::do_step(const ParticlesTemp &ps,
                                  double dt) {
   unit::Femtosecond dtfs(dt);

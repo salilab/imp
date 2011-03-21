@@ -21,7 +21,7 @@ NormalMover::NormalMover(SingletonContainer *sc,
   add_float_keys(vars);
   set_sigma(max);
 }
-
+IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void NormalMover::do_move(Float probability)
 {
   boost::uniform_real<> rand(0,1);
@@ -43,7 +43,6 @@ void NormalMover::do_move(Float probability)
     }
   }
 }
-
 void NormalMover::do_show(std::ostream &out) const {
   out << "sigma " << stddev_ << std::endl;
 }
