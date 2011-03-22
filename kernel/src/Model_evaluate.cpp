@@ -253,13 +253,14 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      bool calc_derivs,
                                      WhichRestraints incremental_restraints,
                                      bool incremental_evaluation) const {
+  IMP_FUNCTION_LOG;
   IMP_IF_LOG(TERSE) {
     std::string which;
     if (incremental_restraints== ALL) which="all";
     else if (incremental_restraints== NONINCREMENTAL) which="non-incremental";
     else which = "incremental";
     IMP_LOG(TERSE,
-            "Begin " << (incremental_evaluation ? "incremental-":"")
+            (incremental_evaluation ? "incremental-":"")
             << "evaluate of "
             << which << " restraints "
             << (calc_derivs?"with derivatives":"without derivatives")
@@ -302,7 +303,6 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     }
     ret.push_back(wvalue);
   }
-  IMP_LOG(TERSE, "End evaluate restraints." << std::endl);
   if (std::accumulate(ret.begin(), ret.end(), 0.0) > max_score_) {
     has_good_score_=false;
   }
