@@ -277,7 +277,7 @@ namespace {
 
 
 IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
-                                                   int num_res) {
+                                                         int num_res) {
   if (in.get_number_of_children() ==0) {
     return Hierarchy();
   }
@@ -337,6 +337,33 @@ create_simplified_along_backbone(Chain in,
   if (!cur.empty()) {
     root.add_child(create_approximation_of_residues(cur));
   }
+#ifdef IMP_ATOM_USE_IMP_CGAL
+  double ov= get_volume(in);
+  double cv= get_volume(root);
+  double scale=1;
+  ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
+  std::vector<double> radii(rt.size());
+  for (unsigned int i=0; i< rt.size(); ++i) {
+    core::XYZR d(rt[i]);
+    radii[i]=d.get_radius();
+  }
+  do {
+    show(root);
+    double f= ov/cv*scale;
+    scale*=.95;
+    IMP_LOG(TERSE, "Bumping radius by " << f << std::endl);
+    for (unsigned int i=0; i< rt.size(); ++i) {
+      core::XYZR d(rt[i]);
+      d.set_radius(radii[i]*f);
+    }
+    double nv=get_volume(root);
+    IMP_LOG(TERSE, "Got volume " << nv << " " << ov << std::endl);
+    if (nv < ov) {
+      break;
+    }
+  } while (true);
+#else
+#endif
   IMP_INTERNAL_CHECK(root.get_is_valid(true),
                      "Invalid hierarchy produced " << root);
   return root;
@@ -397,14 +424,14 @@ ResidueType get_residue_type(Hierarchy h) {
     IMP_THROW("Hierarchy " << h << " has no residue type.",
               ValueException);
 }
-char get_chain(Hierarchy h) {
-  do {
-    if (Chain::particle_is_instance(h)) {
-      return Chain(h).get_id();
-    }
-  } while ((h=h.get_parent()));
+int get_chain_id(Hierarchy h) {
+  Chain c= get_chain(h);
+  if (!c) {
     IMP_THROW("Hierarchy " << h << " has no chain.",
               ValueException);
+  } else {
+    return c.get_id();
+  }
 }
 AtomType get_atom_type(Hierarchy h) {
   do {
@@ -448,7 +475,7 @@ bool Selection::check_nonradius(Hierarchy h) const {
                               rt)) return false;
     }
     if (!chains_.empty()) {
-      char chain= get_chain(h);
+      int chain= get_chain_id(h);
       if (!std::binary_search(chains_.begin(), chains_.end(),
                               chain)) return false;
     }

@@ -92,7 +92,7 @@ IMPATOMEXPORT Hierarchy create_simplified_along_backbone(Chain in,
 IMPATOMEXPORT std::string get_molecule_name(Hierarchy h);
 IMPATOMEXPORT Ints get_residue_indexes(Hierarchy h);
 IMPATOMEXPORT ResidueType get_residue_type(Hierarchy h);
-IMPATOMEXPORT char get_chain(Hierarchy h);
+IMPATOMEXPORT int get_chain_id(Hierarchy h);
 IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
 /** @} */

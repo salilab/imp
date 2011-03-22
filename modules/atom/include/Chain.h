@@ -62,6 +62,10 @@ IMP_DECORATORS(Chain,Chains, Hierarchies);
 
 IMP_OUTPUT_OPERATOR(Chain);
 
+/** Get the containing chain or Chain() if there is none*/
+IMPATOMEXPORT
+Chain get_chain(Hierarchy h);
+
 IMPATOM_END_NAMESPACE
 
 #endif  /* IMPATOM_CHAIN_H */
