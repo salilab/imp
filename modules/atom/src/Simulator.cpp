@@ -19,6 +19,7 @@ Simulator::Simulator(Model *m,
 
 
 double Simulator::simulate(double time) {
+  IMP_FUNCTION_LOG;
   set_was_used(true);
   ParticlesTemp ps= get_simulation_particles();
 
@@ -33,6 +34,7 @@ double Simulator::simulate(double time) {
 }
 
 ParticlesTemp Simulator::get_simulation_particles() const {
+  IMP_FUNCTION_LOG;
   ParticlesTemp ps;
   if (get_number_of_particles()==0) {
     for (Model::ParticleIterator it = get_model()->particles_begin();
