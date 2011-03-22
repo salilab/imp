@@ -21,4 +21,15 @@ void Chain::show(std::ostream &out) const {
   out << "Chain " << get_id();
 }
 
+
+IMPATOMEXPORT
+Chain get_chain(Hierarchy h) {
+do {
+    if (Chain::particle_is_instance(h)) {
+      return Chain(h);
+    }
+  } while ((h=h.get_parent()));
+ return Chain();
+}
+
 IMPATOM_END_NAMESPACE
