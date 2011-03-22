@@ -17,6 +17,10 @@ import sys
 print "hi"
 print sys.argv
 
+if not IMP.has_netcdfcpp:
+    print >> sys.stderr, "This script requires IMP to be built with NetCDF"
+    sys.exit(0)
+
 # find acceptable conformations of the model
 def get_conformations(m, gs, n):
     sampler= IMP.core.MCCGSampler(m)
