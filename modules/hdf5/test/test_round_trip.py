@@ -29,7 +29,7 @@ class GenericTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h2[0])))
         self.assertAlmostEqual(IMP.atom.get_mass(h),
                                IMP.atom.get_mass(h2[0]), delta=1e-4)
-        if IMP.atom.has_cgal:
+        if hasattr(IMP.atom, 'get_surface_area'):
             self.assertAlmostEqual(IMP.atom.get_surface_area(h),
                                    IMP.atom.get_surface_area(h2[0]), delta=1e-4)
             self.assertAlmostEqual(IMP.atom.get_volume(h),
