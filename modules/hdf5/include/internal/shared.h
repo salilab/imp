@@ -197,6 +197,9 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
     }
   }
  public:
+  HDF5Group get_group() const {
+    return file_;
+  }
   void set_association(int id, void *d) {
     if (association_.size() <= static_cast<unsigned int>(id)) {
       association_.resize(id+1, NULL);
