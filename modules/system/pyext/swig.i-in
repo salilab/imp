@@ -96,51 +96,34 @@ def _create_parser():
 parser=_create_parser()
 (options, args) = parser.parse_args()
 
-def _argument_error():
-    print >> sys.stderr, parser
-    os.exit(2)
-
-
 def get_sample_parameters():
     """Return the index and the number of parts to divide the job in to."""
     if options.test:
        if options.job_index or options.num_jobs:
-          print "--test and -j or -n cannot be specified at the same time."
-          _argument_error()
+          parser.error("--test and -j or -n cannot be specified at "
+                       "the same time.")
        return (0, 1000)
-    try:
-       return (int(options.job_index),int(options.num_jobs))
-    except:
-       _argument_error()
+   return (int(options.job_index),int(options.num_jobs))
 
 def get_is_test():
     """Return whether this run is called with --test. Scripts that use this can't don't expect -j and -n and so an error will be thrown if they are passed."""
     if options.job_index or options.num_jobs:
-       print "This sampling script cannot be broken up into jobs. Only --test is supported."
-       _argument_error()
-    try:
-       return options.test
-    except:
-       _argument_error()
+       parser.error("This sampling script cannot be broken up into jobs. "
+                    "Only --test is supported.")
+   return options.test
 
 
 
 def get_input_path(name):
     """Get the path where the current script should find output of the last script"""
-    try:
-       id=options.input_dir
-    except:
-       _argument_error()
+    id=options.input_dir
     if id=="auto":
        id= _get_default_input()
     return os.path.join(id, name)
 
 def get_output_path(name):
     """Get the path to where the current script should write output files"""
-    try:
-       od=options.output_dir
-    except:
-       _argument_error()
+    od=options.output_dir
     if od=="auto":
        od= _get_default_output()
     os.system("mkdir -p "+od)
