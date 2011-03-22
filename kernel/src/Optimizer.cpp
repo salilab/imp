@@ -39,12 +39,15 @@ void Optimizer::update_states() const
 }
 
 double Optimizer::optimize(unsigned int max_steps) {
+  IMP_FUNCTION_LOG;
   if (!model_) {
     IMP_THROW("Must give the optimizer a model to optimize",
               ValueException);
   }
   set_was_used(true);
-  flattened_restraints_=IMP::get_restraints(RestraintsTemp(restraints_.begin(),
+  boost::tie(flattened_restraints_,
+             flattened_weights_)
+    =IMP::get_restraints_and_weights(RestraintsTemp(restraints_.begin(),
                                                       restraints_.end()));
   return do_optimize(max_steps);
 }
@@ -67,11 +70,12 @@ void Optimizer::set_restraints(const RestraintSetsTemp &rs) {
 }
 
 double Optimizer::evaluate(bool compute_derivatives) const {
+  IMP_FUNCTION_LOG;
   if (restraints_.empty()) {
     return get_model()->evaluate(compute_derivatives);
   } else {
     IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
-              std::vector<double>(flattened_restraints_.size(), 1),
+                                           flattened_weights_,
                                            compute_derivatives);
     return std::accumulate(ret.begin(), ret.end(), 0.0);
   }
