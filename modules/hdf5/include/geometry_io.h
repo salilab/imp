@@ -23,6 +23,9 @@ IMPHDF5EXPORT void write_geometry(display::Geometry *r,
 IMPHDF5EXPORT void save_conformation(display::Geometry *r,
                                               RootHandle parent, int frame);
 
+
+IMPHDF5EXPORT display::Geometries read_all_geometries(RootHandle parent,
+                                                      int frame);
 IMPHDF5_END_NAMESPACE
 
 #endif /* IMPHDF5_GEOMETRY_IO_H */

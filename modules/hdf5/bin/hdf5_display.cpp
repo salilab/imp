@@ -7,6 +7,7 @@
 #include <IMP/display/geometry.h>
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>
+#include <IMP/hdf5/geometry_io.h>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -68,6 +69,11 @@ int main(int argc, char **argv) {
       }
       w->add_geometry(g);
     }
+  }
+  IMP::display::Geometries gs=
+    IMP::hdf5::read_all_geometries(rh);
+  for (unsigned int i=0; i< gs.size(); ++i) {
+    w->add_geometry(gs[i]);
   }
   return 0;
 }

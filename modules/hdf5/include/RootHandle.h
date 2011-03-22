@@ -121,6 +121,10 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
     NodeID idb= nb.get_id();
     shared_->add_bond(ida.get_index(), idb.get_index(), type);
   }
+
+  HDF5Group get_hdf5_group() const {
+    return shared_->get_group();
+  }
 };
 IMP_VALUES(RootHandle, RootHandles);
 
