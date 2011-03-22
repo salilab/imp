@@ -209,7 +209,7 @@ def _action_simple_swig(target, source, env):
     else:
         warnings=["-Wextra"]
 
-    command = [env['SWIG'], "-castmode -Werror -interface", "_IMP%(module_suffix)s",
+    command = [env['SWIG'], "-castmode -interface", "_IMP%(module_suffix)s",
                "-DPySwigIterator=%(PREPROC)s_PySwigIterator",
                "-DSwigPyIterator=%(PREPROC)s_SwigPyIterator",
                "-python", "-c++", "-naturalvar",
