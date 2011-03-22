@@ -110,7 +110,7 @@ namespace {
                   }
         for (unsigned int j=0; j < ct.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
-          if (!get_has_edge(dg, rv, cv)) {
+          if (!get_has_edge(dg, rv, cv) && !get_has_edge(dg, cv, rv)) {
             add_edge(dg, cv, rv);
           }
         }
@@ -122,7 +122,7 @@ namespace {
           }
         for (unsigned int j=0; j < pt.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
-          if (!get_has_edge(dg, rv, cv)) {
+          if (!get_has_edge(dg, rv, cv) && !get_has_edge(dg, cv, rv)) {
             add_edge(dg, cv, rv);
           }
         }
