@@ -38,13 +38,47 @@
 IMP_BEGIN_NAMESPACE
 typedef ::boost::graph_traits<DependencyGraph> MDGTraits;
 typedef MDGTraits::vertex_descriptor VD;
+typedef MDGTraits::edge_descriptor ED;
 typedef internal::Map<Object*, VD> DGIndex;
 typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
 MDGConstVertexMap;
 
-
+  struct cycle_detector : public boost::default_dfs_visitor {
+    std::vector<VD> cycle_;
+    template <class VD>
+    void start_vertex(VD v, const DependencyGraph&) {
+      cycle_.push_back(v);
+    }
+    template <class VD>
+    void finish_vertex(VD v, const DependencyGraph&) {
+      IMP_USAGE_CHECK(cycle_.back()==v, "They don't match");
+        cycle_.pop_back();
+    }
+    template <class ED>
+    void back_edge(ED e, const DependencyGraph&g) {
+      VD t= boost::target(e, g);
+      std::vector<VD>::iterator it= std::find(cycle_.begin(), cycle_.end(), t);
+      IMP_USAGE_CHECK(it != cycle_.end(),
+                      "The vertex is not there. Conceptual bug.");
+      cycle_.erase(cycle_.begin(), it);
+      cycle_.push_back(t);
+      throw cycle_;
+    }
+  };
 
 namespace {
+
+  std::vector<VD> get_cycle(const DependencyGraph &g) {
+    cycle_detector vis;
+    try {
+      boost::vector_property_map<int> color(boost::num_vertices(g));
+      boost::depth_first_search(g, boost::visitor(vis).color_map(color));
+    } catch (std::vector<VD> cycle) {
+      return cycle;
+    }
+    return std::vector<VD>();
+  }
+
   template <class C>
   C filter(C c) {
     std::sort(c.begin(), c.end());
@@ -110,7 +144,7 @@ namespace {
                   }
         for (unsigned int j=0; j < ct.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
-          if (!get_has_edge(dg, rv, cv) && !get_has_edge(dg, cv, rv)) {
+          if (!get_has_edge(dg, rv, cv)) {
             add_edge(dg, cv, rv);
           }
         }
@@ -122,7 +156,7 @@ namespace {
           }
         for (unsigned int j=0; j < pt.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
-          if (!get_has_edge(dg, rv, cv) && !get_has_edge(dg, cv, rv)) {
+          if (!get_has_edge(dg, rv, cv)) {
             add_edge(dg, cv, rv);
           }
         }
@@ -164,30 +198,29 @@ namespace {
       IMP_LOG(VERBOSE, std::endl);
     }
   }
-}
-
-inline DependencyGraph
-get_dependency_graph(const ScoreStatesTemp &ss,
-                     const RestraintsTemp &rs) {
-  IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
-          << " restraints and " << ss.size() << " score states."
-          << std::endl);
-  DGIndex index;
-  DependencyGraph ret(ss.size()+rs.size());
-  boost::property_map<DependencyGraph, boost::vertex_name_t>::type
-    vm = boost::get(boost::vertex_name, ret);
-  for (unsigned int i=0; i< ss.size(); ++i) {
-    vm[i]= ss[i];
-    index[ss[i]]=i;
+  DependencyGraph
+  get_dependency_graph(const ScoreStatesTemp &ss,
+                       const RestraintsTemp &rs) {
+    IMP_LOG(VERBOSE, "Making dependency graph on " << rs.size()
+            << " restraints and " << ss.size() << " score states."
+            << std::endl);
+    DGIndex index;
+    DependencyGraph ret(ss.size()+rs.size());
+    boost::property_map<DependencyGraph, boost::vertex_name_t>::type
+      vm = boost::get(boost::vertex_name, ret);
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      vm[i]= ss[i];
+      index[ss[i]]=i;
+    }
+    for (unsigned int i=0; i< rs.size(); ++i) {
+      vm[i+ss.size()]= rs[i];
+      index[rs[i]]=i+ss.size();
+    }
+    build_outputs_graph(ss.begin(), ss.end(), ret, index);
+    build_inputs_graph(ss.begin(), ss.end(), ret, index);
+    build_inputs_graph(rs.begin(), rs.end(), ret, index);
+    return ret;
   }
-  for (unsigned int i=0; i< rs.size(); ++i) {
-    vm[i+ss.size()]= rs[i];
-    index[rs[i]]=i+ss.size();
-  }
-  build_outputs_graph(ss.begin(), ss.end(), ret, index);
-  build_inputs_graph(ss.begin(), ss.end(), ret, index);
-  build_inputs_graph(rs.begin(), rs.end(), ret, index);
-  return ret;
 }
 
 DependencyGraph
@@ -309,8 +342,14 @@ namespace {
     } catch (...) {
       TextOutput out=create_temporary_file();
       internal::show_as_graphviz(dg, out);
+      std::vector<VD> cycle= get_cycle(dg);
+      std::ostringstream oss;
+      for (unsigned int i=0; i< cycle.size(); ++i) {
+        oss << om[cycle[i]]->get_name() << " -- ";
+      }
       IMP_THROW("Topological sort failed, probably due to loops in "
-                << " dependency graph. See \"" << out.get_name() << "\"",
+                << " dependency graph. See \"" << out.get_name() << "\""
+                << " The cycle is " << oss.str(),
                 ValueException);
     }
     for (int i=sorted.size()-1; i > -1; --i) {
