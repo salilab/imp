@@ -9,6 +9,7 @@
 #include "IMP/Optimizer.h"
 #include "IMP/OptimizerState.h"
 #include "IMP/internal/utility.h"
+#include <boost/tuple/tuple.hpp>
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
