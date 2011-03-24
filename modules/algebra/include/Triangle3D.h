@@ -23,15 +23,11 @@ class IMPALGEBRAEXPORT Triangle3D
 {
  public:
   Triangle3D(){}
+  //! The passed points must not be colinear
   Triangle3D(const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
   //! Get the start=0/end=1 point of the segment
   const VectorD<3>& get_point(unsigned int i) const {
-    //#if defined(IMP_SWIG_WRAPPER)
     IMP_USAGE_CHECK(i<3,"invalid point index");
-    //TODO - ask Daniel if we really need that
-// #else
-//     IMP_INTERNAL_CHECK(i<2, "Invalid point index");
-// #endif
     return p_[i];
   }
   IMP_SHOWABLE_INLINE(Triangle3D, out << "(" << p_[0] << ", "
@@ -51,9 +47,9 @@ IMPALGEBRAEXPORT Triangle3D get_largest_triangle(const Vector3Ds &points);
 IMPALGEBRAEXPORT Transformation3D
    get_transformation_from_first_triangle_to_second(
                       Triangle3D first_tri,Triangle3D second_tri);
-//! Return true if the three points are not co-linear
+//! Return true if the three points are co-linear
 IMPALGEBRAEXPORT bool
-get_can_form_triangle(
+get_are_colinear(
       const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
 
 IMPALGEBRA_END_NAMESPACE
