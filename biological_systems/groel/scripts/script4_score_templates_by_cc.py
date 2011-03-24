@@ -14,11 +14,13 @@ for line in open(templates_file):
         continue
     if not(int(s[4])-int(s[3])>480):
         print "Not including:",s[0],s[1]
+        continue
     templates.append([s[1][:4],s[1][-1]])
     seq_ids.append(s[10])
+print "number of seq:",len(seq_ids)
 templates_dir="data/templates/"
 #--- load the target density map
-dmap=IMP.em.read_map("groel_subunit_8.mrc",IMP.em.MRCReaderWriter())
+dmap=IMP.em.read_map("groel_subunit_11.mrc",IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(10)
 #--- load IMP model
 mdl=IMP.Model()
