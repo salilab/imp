@@ -27,10 +27,10 @@ class IMPSTATISTICSEXPORT PartitionalClustering: public Object {
   virtual unsigned int get_number_of_clusters() const=0;
   /** Return the list of indexes in the ith cluster.
    */
-  virtual const Ints& get_cluster(unsigned int i) const =0;
+  virtual const Ints& get_cluster(unsigned int cluster_index) const =0;
   /** Return the index of an item that "typifies" the ith cluster.
    */
-  virtual int get_cluster_representative(unsigned int i) const=0;
+  virtual int get_cluster_representative(unsigned int cluster_index) const=0;
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(PartitionalClustering);
 };
 
