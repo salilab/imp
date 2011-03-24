@@ -8,7 +8,7 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>
 #include <IMP/hdf5/geometry_io.h>
-
+#include <boost/format.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
@@ -26,7 +26,8 @@ int main(int argc, char **argv) {
     ("help,h", "Translate an hdf5 file to graphics.")
     ("recolor,c", "Recolor the hierarchies using the display colors.")
     ("frame,f", po::value< int >(&frame),
-     "Frame to use")
+     "Frame to use. Do '-1' for all frames, if that is done the output "\
+     "file name must contain %1%.")
     ("input-file,i", po::value< std::string >(&input),
      "input hdf5 file")
     ("output-file,o", po::value< std::string >(&output),
@@ -45,35 +46,54 @@ int main(int argc, char **argv) {
   IMP::hdf5::RootHandle rh(input, false);
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchies hs= IMP::hdf5::read_all_hierarchies(rh, m);
-  IMP::Pointer<IMP::display::Writer> w= IMP::display::create_writer(output);
-  for (unsigned int i=0; i< hs.size(); ++i) {
-    if (frame!= 0) {
-      IMP::hdf5::load_configuration(rh, hs[i], frame);
-    }
-    IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
-    if (vm.count("recolor")) {
-      g->set_color(IMP::display::get_display_color(i));
-    }
-    w->add_geometry(g);
-  }
   IMP::ParticlesTemp ps= IMP::hdf5::read_all_particles(rh, m);
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    /*if (frame!= 0) {
-      IMP::hdf5::load_configuration(rh, hs[i], frame);
-      }*/
-    if (IMP::core::XYZR::particle_is_instance(ps[i])) {
-      IMP::core::XYZR d(ps[i]);
-      IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+  int minframe, maxframe;
+  if (frame>=0) {
+    minframe=frame;
+    maxframe=minframe+1;
+  } else {
+    minframe=0;
+    IMP::hdf5::FloatKey xk
+      =rh.get_key<IMP::hdf5::FloatTraits>(IMP::hdf5::Physics, "cartesian x");
+    std::cout << xk << std::endl;
+    maxframe= rh.get_number_of_frames(xk)+1;
+  }
+  std::cout << "Reading frames [" << minframe << ", "
+            << maxframe << ")" <<std::endl;
+  for (int cur_frame=minframe; cur_frame < maxframe; ++cur_frame) {
+    std::string name=output;
+    if (frame<0) {
+      std::ostringstream oss;
+      oss << boost::format(output)%cur_frame;
+      name=oss.str();
+    }
+    IMP::Pointer<IMP::display::Writer> w= IMP::display::create_writer(name);
+    for (unsigned int i=0; i< hs.size(); ++i) {
+      IMP::hdf5::load_configuration(rh, hs[i], cur_frame);
+      IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
       if (vm.count("recolor")) {
         g->set_color(IMP::display::get_display_color(i));
       }
       w->add_geometry(g);
     }
-  }
-  IMP::display::Geometries gs=
-    IMP::hdf5::read_all_geometries(rh, frame);
-  for (unsigned int i=0; i< gs.size(); ++i) {
-    w->add_geometry(gs[i]);
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      /*if (frame!= 0) {
+        IMP::hdf5::load_configuration(rh, hs[i], frame);
+        }*/
+      if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+        IMP::core::XYZR d(ps[i]);
+        IMP_NEW(IMP::display::XYZRGeometry, g, (ps[i]));
+        if (vm.count("recolor")) {
+          g->set_color(IMP::display::get_display_color(i));
+        }
+        w->add_geometry(g);
+      }
+    }
+    IMP::display::Geometries gs=
+      IMP::hdf5::read_all_geometries(rh, frame);
+    for (unsigned int i=0; i< gs.size(); ++i) {
+      w->add_geometry(gs[i]);
+    }
   }
   return 0;
 }

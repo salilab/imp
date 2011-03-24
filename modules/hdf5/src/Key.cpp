@@ -19,6 +19,7 @@ KeyCategory KeyCategory::add_key_category(std::string name) {
 }
 
 std::string KeyCategory::get_name() const {
+  if (i_ < 0) return "invalid";
   return category_names[i_];
 }
 
