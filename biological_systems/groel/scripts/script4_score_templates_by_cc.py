@@ -60,17 +60,17 @@ for i,t in enumerate(templates):
 template_fit_sols=sorted(template_fit_sols,key=lambda fit: fit[2],reverse=True)
 #--- write the best fitting score for each template
 output=open("score_templates_by_cc.log","w")
-output.write('{0:<12}{1:<12}{2:<12} {3:<}\n'.format('name','seq id','cc score','transformation'))
+output.write('%(a)-12s%(b)-12s%(c)-12s%(d)-30s\n'%{'a':'name','b':'seq id','c':'cc score','d':'transformation'})
 print len(template_fit_sols[0])
 print template_fit_sols[0]
 for i,trans,score,t in template_fit_sols:
     rot=trans.get_rotation().get_quaternion()
     v=trans.get_translation()
-    pretty_trans='{0:3.6f} {1:3.6f} {2:3.6f} {3:3.6f} {4:3.6f} {5:3.6f} {6:3.6f}\n'.format(
-        rot[0],rot[1],rot[2],rot[3],v[0],v[1],v[2])
-    output.write('{0:<12}{1:<12}{2:<12} {3:<}\n'.format(
-        t[0]+t[1],
-        seq_ids[i],
-        score,
-        pretty_trans))
+    pretty_trans='%(a)6.3f %(b)6.3f %(c)6.3f %(d)6.3f %(e)6.3f %(f)6.3f %(g)6.3f\n'%{
+        'a':rot[0],'b':rot[1],'c':rot[2],'d':rot[3],'e':v[0],'f':v[1],'g':v[2]}
+    output.write('%(a)-12s%(b)-12s%(c)-12.3f%(d)-30s\n'%{
+        'a':t[0]+t[1], \
+        'b':seq_ids[i], \
+        'c':score, \
+        'd':pretty_trans})
 output.close()
