@@ -36,7 +36,7 @@ std::vector<NodeHandle> NodeHandle::get_children() const {
   Ints children= shared_->get_children(node_);
   std::vector<NodeHandle> ret(children.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeHandle(children[i], shared_);
+    ret[i]= NodeHandle(children[ret.size()-i-1], shared_);
   }
   return ret;
 }
