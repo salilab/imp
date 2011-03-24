@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
     }
   }
   IMP::display::Geometries gs=
-    IMP::hdf5::read_all_geometries(rh);
+    IMP::hdf5::read_all_geometries(rh, frame);
   for (unsigned int i=0; i< gs.size(); ++i) {
     w->add_geometry(gs[i]);
   }

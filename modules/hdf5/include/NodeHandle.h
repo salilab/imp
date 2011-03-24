@@ -33,6 +33,8 @@ class IMPHDF5EXPORT NodeHandle {
   Pointer<internal::SharedData> shared_;
   NodeHandle(int node, internal::SharedData *shared);
  public:
+  IMP_COMPARISONS_2(NodeHandle, node_, shared_);
+  IMP_HASHABLE_INLINE(NodeHandle, return node_);
   NodeHandle():node_(-1){}
   /** Create a new node as a child of this one.
    */
