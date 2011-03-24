@@ -39,6 +39,19 @@ void write_particle(Particle* ps, RootHandle fh) {
                                                false);
     n.set_value(fk, ps->get_value(*it));
   }
+  for (Particle::ParticleKeyIterator it= ps->particle_keys_begin();
+       it != ps->particle_keys_end(); ++it) {
+    IndexKey fk= get_or_add_key<IndexTraits>(fh, IMP, it->get_string(),
+                                               false);
+    NodeHandle nh= fh.get_node_handle_from_association(ps->get_value(*it));
+    if (nh== NodeHandle()) {
+      IMP_THROW("Particle " << ps->get_name()
+                << " references particle " << ps->get_value(*it)->get_name()
+                << " which is not already part of the file.",
+                IOException);
+    }
+    n.set_value(fk, nh.get_id().get_index());
+  }
 }
 
 ParticlesTemp read_all_particles(RootHandle fh, Model *m) {
@@ -49,6 +62,7 @@ ParticlesTemp read_all_particles(RootHandle fh, Model *m) {
     if (ch[i].get_type()==CUSTOM) {
       bool has_data=false;
       IMP_NEW(Particle, p, (m));
+      ch[i].set_association(p);
       {
         std::vector<FloatKey> fks= fh.get_keys<FloatTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
@@ -76,6 +90,20 @@ ParticlesTemp read_all_particles(RootHandle fh, Model *m) {
             has_data=true;
             p->add_attribute(IMP::StringKey(fh.get_name(fks[i])),
                              cur.get_value(fks[i]));
+          }
+        }
+      }
+      {
+        std::vector<IndexKey> fks= fh.get_keys<IndexTraits>(IMP);
+        for (unsigned int i=0; i< fks.size(); ++i) {
+          if (cur.get_has_value(fks[i])) {
+            has_data=true;
+            NodeHandle nh
+              = fh.get_node_handle_from_id(NodeID(cur.get_value(fks[i])));
+            Particle *op= reinterpret_cast<Particle*>(nh.get_association());
+            IMP_CHECK_OBJECT(op);
+            p->add_attribute(IMP::ParticleKey(fh.get_name(fks[i])),
+                             op);
           }
         }
       }
