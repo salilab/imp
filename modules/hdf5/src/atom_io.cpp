@@ -143,6 +143,8 @@ namespace {
       GET_DECORATOR(core::XYZR);
       d.set_radius(ncur.get_value(r, frame));
     }
+    // evil hack
+    if (frame != 0) return;
     if (ncur.get_has_value(e)) {
       if (!atom::get_atom_type_exists(ncur.get_name())) {
         atom::AtomType at=atom::add_atom_type(ncur.get_name(),
