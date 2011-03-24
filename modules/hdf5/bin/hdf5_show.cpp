@@ -36,6 +36,6 @@ int main(int argc, char **argv) {
     return 1;
   }
   IMP::hdf5::RootHandle rh(input, false);
-  IMP::hdf5::show_hierarchy(rh, std::cout, verbose, frame);
+  IMP::hdf5::show_hierarchy(rh, std::cout, vm.count("verbose"), frame);
   return 0;
 }
