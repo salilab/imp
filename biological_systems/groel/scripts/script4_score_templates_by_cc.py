@@ -30,6 +30,7 @@ best_fit=1.
 best_temp=[]
 dens_threshold=0.02
 #--- iterate over the templates and fit each of them
+dmap.show()
 for i,t in enumerate(templates):
     print "fitting template "+t[0]+t[1]
     #load the template
@@ -38,7 +39,6 @@ for i,t in enumerate(templates):
     mh_chain=IMP.atom.get_by_type(mh,IMP.atom.CHAIN_TYPE)[ord(t[1])-ord('A')]
     rb=IMP.atom.setup_as_rigid_body(mh_chain)
     #fit the template to the density map
-    dmap.show()
     sols=IMP.multifit.pca_based_rigid_fitting(rb,rb_refiner,dmap,dens_threshold)
     IMP.core.transform(rb,sols.get_transformation(0))
     #refine the best scoring fit
@@ -46,10 +46,10 @@ for i,t in enumerate(templates):
     mhs.append(mh_chain)
     pdb_opt_state=None #IMP.atom.WritePDBOptimizerState(mhs,"refined_temp_%03d.pdb")
     #todo - return refinement
-    refined_sols = IMP.em.local_rigid_fitting(
-        rb,rb_refiner,
-        IMP.atom.Mass.get_mass_key(),dmap,[],1,3,100)
-    #refined_sols = sols
+    #refined_sols = IMP.em.local_rigid_fitting(
+    #    rb,rb_refiner,
+    #    IMP.atom.Mass.get_mass_key(),dmap,[],1,3,100)
+    refined_sols = sols
     IMP.core.transform(rb,refined_sols.get_transformation(0))
     IMP.atom.write_pdb(mh_chain,t[0]+t[1]+"_fitted.pdb")
     template_fit_sols.append([
