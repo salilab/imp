@@ -363,9 +363,9 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
       std::string nm= get_key_list_attribute_name<TypeTraits>(category_id,
                                                               per_frame);
       std::vector<std::string> names = file_.get_attribute<StringTraits>(nm);
-      for (unsigned int i=0; i< names.size(); ++i) {
-        if (names[i] == name) {
-          return Key<TypeTraits>(category_id, i, per_frame);
+      for (unsigned int j=0; j< names.size(); ++j) {
+        if (names[j] == name) {
+          return Key<TypeTraits>(category_id, j, per_frame);
         }
       }
     }

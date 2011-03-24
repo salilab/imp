@@ -131,20 +131,21 @@ namespace {
   } else {                                                              \
     d= type::setup_particle(cur);                                       \
   }
-  void copy_data(NodeHandle ncur, atom::Hierarchy cur, unsigned int frame,
+  void copy_data(NodeHandle ncur, atom::Hierarchy cur, int frame,
                  IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
-    if (ncur.get_has_value(x, frame)) {
+    int real_frame=std::max(frame, 0);
+    if (ncur.get_has_value(x, real_frame)) {
       GET_DECORATOR(core::XYZ);
-      d.set_x(ncur.get_value(x, frame));
-      d.set_y(ncur.get_value(y, frame));
-      d.set_z(ncur.get_value(z, frame));
+      d.set_x(ncur.get_value(x, real_frame));
+      d.set_y(ncur.get_value(y, real_frame));
+      d.set_z(ncur.get_value(z, real_frame));
     }
     if (ncur.get_has_value(r)) {
       GET_DECORATOR(core::XYZR);
-      d.set_radius(ncur.get_value(r, frame));
+      d.set_radius(ncur.get_value(r, real_frame));
     }
     // evil hack
-    if (frame != 0) return;
+    if (frame >= 0) return;
     if (ncur.get_has_value(e)) {
       if (!atom::get_atom_type_exists(ncur.get_name())) {
         atom::AtomType at=atom::add_atom_type(ncur.get_name(),
@@ -295,7 +296,7 @@ namespace {
     atom::Hierarchy cur= atom::Hierarchy::setup_particle(new Particle(model));
     cur->set_name(ncur.get_name());
     ncur.set_association(cur);
-    copy_data(ncur, cur, 0, IMP_HDF5_PASS_MOLECULE_KEYS);
+    copy_data(ncur, cur, -1, IMP_HDF5_PASS_MOLECULE_KEYS);
     NodeHandles children= ncur.get_children();
     for (unsigned int i=0; i < children.size(); ++i) {
       atom::Hierarchy h= read_internal(children[i], model,
