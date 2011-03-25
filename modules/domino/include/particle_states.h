@@ -45,7 +45,7 @@ IMP_OBJECTS(ParticleStates, ParticleStatesList);
     this class, but I haven't thought of a better way to store
     the information that is easily exposed to python
     and gets to all the right places. It is initialized internally
-    in the DominoSampler
+    in the DominoSampler.
  */
 class IMPDOMINOEXPORT ParticleStatesTable: public Object {
   typedef std::map<Particle*, IMP::internal::OwnerPointer<ParticleStates> > Map;
@@ -74,9 +74,10 @@ public:
   Subset get_subset() const {
     return Subset(get_particles(), true);
   }
+  /** One can set the states more than once. If you do that, be
+      careful.
+  */
   void set_particle_states(Particle *p, ParticleStates *e) {
-    IMP_USAGE_CHECK(enumerators_.find(p) == enumerators_.end(),
-                    "Enumerator already set for particle " << p->get_name());
     IMP_USAGE_CHECK(e->get_number_of_particle_states() >0,
                     "Cannot have 0 states for a particle: \""
                     << p->get_name() << "\"\n");
