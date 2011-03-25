@@ -72,11 +72,28 @@ IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(BoundingBoxGeometry,
                                                          get_name());
                                      });
 
-
-IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(CompoundGeometry,
-                                      Geometries,
-                                      {ret=get_geometry();
-                                      });
+namespace {
+  void own(const Geometries &g) {
+    for (unsigned int i=0; i< g.size(); ++i) {
+      g[i]->set_was_used(true);
+    }
+  }
+}
+CompoundGeometry::CompoundGeometry(const Geometries &v):
+  Geometry("CompoundGeometry %1%"), v_(v){own(v_);}
+CompoundGeometry::CompoundGeometry(const Geometries &v, const Color &c):
+  Geometry(c, "CompoundGeometry %1%"), v_(v) {own(v_);}
+CompoundGeometry::CompoundGeometry(const Geometries &v, const std::string n):
+  Geometry(n), v_(v) {own(v_);}
+CompoundGeometry::CompoundGeometry(const Geometries &v, const Color &c,
+                                   std::string n):
+  Geometry(c,n), v_(v) {own(v_);}
+void CompoundGeometry::do_show(std::ostream &out) const {
+  out << get_geometry();
+}
+Geometries CompoundGeometry::get_components() const {
+  return get_geometry();
+}
 
 namespace {
   Geometries get_frame(const algebra::Transformation3D &tr) {

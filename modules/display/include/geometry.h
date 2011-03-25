@@ -68,7 +68,18 @@ public:
 
 /** \brief Group of set of geometric elements
  */
-IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(CompoundGeometry, Geometries);
+class IMPDISPLAYEXPORT CompoundGeometry: public Geometry {
+  Geometries v_;
+ public:
+  CompoundGeometry(const Geometries &v);
+  CompoundGeometry(const Geometries &v, const Color &c);
+  CompoundGeometry(const Geometries &v, const std::string n);
+  CompoundGeometry(const Geometries &v, const Color &c, std::string n);
+  Geometries get_geometry() const {
+    return v_;
+  }
+  IMP_GEOMETRY(CompoundGeometry);
+};
 
 /** \brief Display a sphere.
 */
