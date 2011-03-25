@@ -84,6 +84,23 @@ namespace {
     cur.set_value(r, s.get_radius(), frame);
   }
 
+  void process(display::SegmentGeometry *sg, NodeHandle cur, int frame,
+               IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(cr);
+    IMP_UNUSED(cg);
+    IMP_UNUSED(cb);
+    IMP_UNUSED(vn);
+    IMP_UNUSED(in);
+    IMP_UNUSED(r);
+    algebra::Segment3D s= sg->get_geometry();
+    cur.set_value(x, s.get_point(0)[0], frame);
+    cur.set_value(y, s.get_point(0)[1], frame);
+    cur.set_value(z, s.get_point(0)[2], frame);
+    cur.set_value(xp, s.get_point(1)[0], frame);
+    cur.set_value(yp, s.get_point(1)[1], frame);
+    cur.set_value(zp, s.get_point(1)[2], frame);
+  }
+
 
   void process(display::SurfaceMeshGeometry *sg, NodeHandle cur, int,
                IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
@@ -159,16 +176,23 @@ namespace {
     NodeHandle cur= parent.add_child(g->get_name(), GEOMETRY);
     cur.set_association(g);
     IMP_TRY(display::SphereGeometry)
-    else IMP_TRY(display::CylinderGeometry);
-    display::Geometries gt= g->get_components();
+    else IMP_TRY(display::CylinderGeometry)
+    else IMP_TRY(display::SegmentGeometry)
+    else {
+      display::Geometries gt= g->get_components();
+      if (gt.size()==1 && gt[0]== g) {
+        IMP_THROW("Unable to process geometry of type "
+                  << g->get_type_name(), IOException);
+      }
+      for (unsigned int i=0; i< gt.size(); ++i) {
+        add_internal(cur, gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+      }
+    }
     if (g->get_has_color()) {
       display::Color c= g->get_color();
       cur.set_value(cr, c.get_red(), frame);
       cur.set_value(cg, c.get_green(), frame);
       cur.set_value(cb, c.get_blue(), frame);
-    }
-    for (unsigned int i=0; i< gt.size(); ++i) {
-      add_internal(cur, gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
     }
   }
 }
@@ -270,6 +294,28 @@ namespace {
     else return NULL;
   }
 
+  display::Geometry *try_read_segment(NodeHandle cur, int frame,
+                            IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
+    IMP_UNUSED(cr);
+    IMP_UNUSED(cg);
+    IMP_UNUSED(cb);
+    IMP_UNUSED(vn);
+    IMP_UNUSED(in);
+    IMP_UNUSED(r);
+    if (cur.get_has_value(x) && cur.get_has_value(xp)) {
+      algebra::Segment3D
+        s(algebra::Vector3D(cur.get_value(x, frame),
+                            cur.get_value(y, frame),
+                            cur.get_value(z, frame)),
+          algebra::Vector3D(cur.get_value(xp, frame),
+                            cur.get_value(yp, frame),
+                            cur.get_value(zp, frame)));
+      Pointer<display::Geometry> ret=new display::SegmentGeometry(s);
+      return ret.release();
+    }
+    else return NULL;
+  }
+
 
   display::Geometry *try_read_surface(NodeHandle cur,
                             IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
@@ -317,6 +363,8 @@ namespace {
       if (ch[i].get_type()== GEOMETRY) {
         if (curg=try_read_cylinder(ch[i], frame,
                                IMP_HDF5_PASS_GEOMETRY_KEYS));
+        else if (curg=try_read_segment(ch[i], frame,
+                                  IMP_HDF5_PASS_GEOMETRY_KEYS));
         else if (curg=try_read_sphere(ch[i], frame,
                                  IMP_HDF5_PASS_GEOMETRY_KEYS));
         else if (curg=try_read_surface(ch[i],
