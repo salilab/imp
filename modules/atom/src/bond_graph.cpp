@@ -78,10 +78,10 @@ void bgl_concept_checks() {
   BondGraph a,b;
   IntKey index("crazy temp index");
   ParticleKey pk("isomaping");
-  boost::isomorphism(a,b,
+  /*boost::isomorphism(a,b,
          boost::isomorphism_map(BondGraph::VertexVertexPropertyMap(pk))
                      .vertex_index1_map(a.get_vertex_index_map())
-                     .vertex_index2_map(b.get_vertex_index_map()));
+                     .vertex_index2_map(b.get_vertex_index_map()));*/
 
   boost::dijkstra_shortest_paths(a, Bonded(),
         boost::predecessor_map(BondGraph::VertexVertexPropertyMap(pk))
