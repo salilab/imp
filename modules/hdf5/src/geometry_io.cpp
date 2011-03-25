@@ -279,7 +279,8 @@ namespace {
     IMP_UNUSED(cb);
     IMP_UNUSED(vn);
     IMP_UNUSED(in);
-    if (cur.get_has_value(x) && cur.get_has_value(xp) && cur.get_has_value(r)) {
+    if (cur.get_has_value(x, frame) && cur.get_has_value(xp, frame)
+        && cur.get_has_value(r, frame)) {
       algebra::Cylinder3D
         s(algebra::Segment3D(algebra::Vector3D(cur.get_value(x, frame),
                                                cur.get_value(y, frame),
@@ -302,7 +303,7 @@ namespace {
     IMP_UNUSED(vn);
     IMP_UNUSED(in);
     IMP_UNUSED(r);
-    if (cur.get_has_value(x) && cur.get_has_value(xp)) {
+    if (cur.get_has_value(x, frame) && cur.get_has_value(xp, frame)) {
       algebra::Segment3D
         s(algebra::Vector3D(cur.get_value(x, frame),
                             cur.get_value(y, frame),
