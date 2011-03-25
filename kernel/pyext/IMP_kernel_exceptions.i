@@ -103,6 +103,7 @@ static PyObject *imp_exception, *imp_internal_exception, *imp_model_exception,
 
 %{
 #ifdef IMP_KERNEL_USE_BOOST_FILESYSTEM
+#define BOOST_FILESYSTEM_VERSION 2
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/exception.hpp>
 #endif
