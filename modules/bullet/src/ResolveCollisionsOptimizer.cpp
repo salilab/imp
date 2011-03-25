@@ -46,8 +46,8 @@ namespace {
       btg_(internal::get_as_bt(vertices, faces)){}
     /*const algebra::Vector3Ds& get_vertices() const {
       return vertices_;
-    }
-    const std::vector<Ints>& get_faces() const {
+      }
+      const std::vector<Ints>& get_faces() const {
       return faces_;
       }*/
     const std::vector<btScalar> &get_coordinates() const {
@@ -62,7 +62,7 @@ namespace {
   void SurfaceMeshObject::do_show(std::ostream &) const {
   }
 
-  const double damping=1;
+  const double damping=20;
   btRigidBody *add_endpoint(btRigidBody *rb,
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
@@ -117,7 +117,7 @@ namespace {
 
 
   void add_rb_anchor(btRigidBody *rb0, double k,
-                  btDiscreteDynamicsWorld* world,
+                     btDiscreteDynamicsWorld* world,
                      internal::Memory &memory) {
     if (!memory.empty_shape.get()) {
       memory.empty_shape.reset(new btEmptyShape());
@@ -125,7 +125,7 @@ namespace {
     btScalar mass =0;
     btRigidBody *anchor
       = internal::create_rigid_body(memory.empty_shape.get(),
-                     internal::tr(rb0->getCenterOfMassTransform()),
+                    internal::tr(rb0->getCenterOfMassTransform()),
                                     mass,
                                     world,memory);
     // add pivot
@@ -179,12 +179,12 @@ namespace {
     }
     btRigidBody *rb
       = internal::create_rigid_body(shape,
-              algebra::Transformation3D(d.get_coordinates()),
+           algebra::Transformation3D(d.get_coordinates()),
                                     mass,
                                     world,
                                     memory);
     rb->setCenterOfMassTransform(btTransform(btQuaternion(btVector3(1,0,0), 2),
-                                  rb->getCenterOfMassTransform().getOrigin()));
+                      rb->getCenterOfMassTransform().getOrigin()));
     map[p]= rb;
     if (local>0) {
       add_spring(rb, NULL,
@@ -208,14 +208,14 @@ namespace {
       mass=.01;
       /*if (atom::Mass::particle_is_instance(p)) {
         mass= atom::Mass(p).get_mass();
-      } else {
+        } else {
         mass=0;
         for (unsigned int i=0; i< rp.size(); ++i) {
-          if (atom::Mass::particle_is_instance(rp[i])) {
-            mass += atom::Mass(rp[i]).get_mass();
-          } else {
-            mass += 1;
-          }
+        if (atom::Mass::particle_is_instance(rp[i])) {
+        mass += atom::Mass(rp[i]).get_mass();
+        } else {
+        mass += 1;
+        }
         }
         }*/
     } else {
@@ -249,7 +249,7 @@ namespace {
                                       const_cast<int*>(&smo->get_faces()[0]),
                                       3*sizeof(int),
                                       smo->get_coordinates().size()/3,
-                            const_cast<btScalar*>(&smo->get_coordinates()[0]),
+                    const_cast<btScalar*>(&smo->get_coordinates()[0]),
                                       3*sizeof(btScalar));
     memory.meshes.push_back(arr);
     btGImpactMeshShape *mesh= new btGImpactMeshShape(&memory.meshes.back());
@@ -257,17 +257,17 @@ namespace {
     mesh->updateBound();
     btRigidBody *fallRigidBody
       = internal::create_rigid_body(mesh,
-                               d.get_reference_frame().get_transformation_to(),
+                            d.get_reference_frame().get_transformation_to(),
                                     mass, dynamicsWorld, memory);
 
-      /*btCollisionShape* shape= new btMultiSphereShape(&centers[0], &radii[0],
-                                                    centers.size());
-    btRigidBody *fallRigidBody
+    /*btCollisionShape* shape= new btMultiSphereShape(&centers[0], &radii[0],
+      centers.size());
+      btRigidBody *fallRigidBody
       = internal::create_rigid_body(shape,
-                        algebra::Transformation3D(d.get_coordinates()),
-                                    mass,
-                                    dynamicsWorld,
-                                    memory);*/
+      algebra::Transformation3D(d.get_coordinates()),
+      mass,
+      dynamicsWorld,
+      memory);*/
     map[p]=fallRigidBody;
     if (local > 0) {
       add_rb_anchor(fallRigidBody, local,
@@ -291,7 +291,7 @@ namespace {
       =new btBvhTriangleMeshShape(&memory.meshes.back(),
                                   true);
     internal::create_rigid_body(shape,
-                   algebra::Transformation3D(algebra::Vector3D(0,0,0)),
+               algebra::Transformation3D(algebra::Vector3D(0,0,0)),
                                 0,
                                 dynamicsWorld, memory);
   }
@@ -303,7 +303,7 @@ namespace {
    decompose restraints
    find all restraints with a harmonic distance pair score
    and implement those
- */
+*/
 
 ResolveCollisionsOptimizer
 ::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs):
@@ -367,156 +367,177 @@ bool handle_ev() {
 
 /*
   Must pass rbs + normal particles to special case
- */
+*/
 
 
 double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
+  RestraintSets before_sets= get_restraints();
+  Restraints before_restraints= IMP::get_restraints(before_sets.begin(),
+                                                    before_sets.end());
   {
-  IMP_OBJECT_LOG;
-  internal::Memory memory;
-  // http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
-  // change from btDbvtBroadphase
-  IMP_BNEW(btSimpleBroadphase, broadphase, ());
-  IMP_BNEW(btDefaultCollisionConfiguration, collisionConfiguration, ());
-  IMP_BNEW(btCollisionDispatcher, dispatcher,
-           (collisionConfiguration.get()));
-  IMP_BNEW(btSequentialImpulseConstraintSolver, solver, ());
-  IMP_BNEW(btDiscreteDynamicsWorld,
-           dynamicsWorld, (dispatcher.get(),broadphase.get(),
-                           solver.get(),collisionConfiguration.get()));
 
-  dynamicsWorld->setGravity(btVector3(0,0,0));
+    IMP_OBJECT_LOG;
+    internal::Memory memory;
+    // http://bulletphysics.org/mediawiki-1.5.8/index.php/Hello_World
+    // change from btDbvtBroadphase
+    IMP_BNEW(btSimpleBroadphase, broadphase, ());
+    IMP_BNEW(btDefaultCollisionConfiguration, collisionConfiguration, ());
+    IMP_BNEW(btCollisionDispatcher, dispatcher,
+             (collisionConfiguration.get()));
+    IMP_BNEW(btSequentialImpulseConstraintSolver, solver, ());
+    IMP_BNEW(btDiscreteDynamicsWorld,
+             dynamicsWorld, (dispatcher.get(),broadphase.get(),
+                             solver.get(),collisionConfiguration.get()));
 
-  // for concave
-  btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher.get());
+    dynamicsWorld->setGravity(btVector3(0,0,0));
 
-  ParticlesTemp ps;
-  if (ps_.empty()) {
-    for (Model::ParticleIterator pit= get_model()->particles_begin();
-         pit != get_model()->particles_end(); ++pit) {
-      if (core::XYZR::particle_is_instance(*pit)
-          && !core::RigidBody::particle_is_instance(*pit)) {
-        ps.push_back(*pit);
+    // for concave
+    btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher.get());
+
+    ParticlesTemp ps;
+    if (ps_.empty()) {
+      for (Model::ParticleIterator pit= get_model()->particles_begin();
+           pit != get_model()->particles_end(); ++pit) {
+        if (core::XYZR::particle_is_instance(*pit)
+            && !core::RigidBody::particle_is_instance(*pit)) {
+          ps.push_back(*pit);
+        }
+      }
+    } else {
+      ps= ps_;
+    }
+
+
+    internal::RigidBodyMap map;
+    IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
+    ParticlesTemp xyzr_particles;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      if (core::RigidMember::particle_is_instance(ps[i])) {
+        core::RigidBody d= core::RigidMember(ps[i]).get_rigid_body();
+        handled_bodies[d].push_back(ps[i]);
+      } else if (core::RigidBody::particle_is_instance(ps[i])) {
+        IMP_THROW("Please pass rigid members not rigid body",
+                  ValueException);
+        //http://www.bulletphysics.com/Bullet/BulletFull/classbtMultiSphereShape.html
+      } else if (core::XYZR::particle_is_instance(ps[i])){
+        handle_xyzr(ps[i], local_, map,
+                    dynamicsWorld.get(), memory);
+        xyzr_particles.push_back(ps[i]);
       }
     }
-  } else {
-    ps= ps_;
-  }
-
-
-  internal::RigidBodyMap map;
-  IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
-  ParticlesTemp xyzr_particles;
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    if (core::RigidMember::particle_is_instance(ps[i])) {
-      core::RigidBody d= core::RigidMember(ps[i]).get_rigid_body();
-      handled_bodies[d].push_back(ps[i]);
-    } else if (core::RigidBody::particle_is_instance(ps[i])) {
-      IMP_THROW("Please pass rigid members not rigid body",
-                ValueException);
-      //http://www.bulletphysics.com/Bullet/BulletFull/classbtMultiSphereShape.html
-    } else if (core::XYZR::particle_is_instance(ps[i])){
-      handle_xyzr(ps[i], local_, map,
-                  dynamicsWorld.get(), memory);
-      xyzr_particles.push_back(ps[i]);
+    for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
+           handled_bodies.begin(); it != handled_bodies.end(); ++it) {
+      handle_rigidbody(it->first, it->second, local_, map,
+                       dynamicsWorld.get(), memory);
     }
-  }
-  for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
-         handled_bodies.begin(); it != handled_bodies.end(); ++it) {
-    handle_rigidbody(it->first, it->second, local_, map,
-                     dynamicsWorld.get(), memory);
-  }
-  get_model()->update();
-  ParticlesTemp root_particles= xyzr_particles;
-  for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
-         handled_bodies.begin(); it != handled_bodies.end(); ++it) {
+    get_model()->update();
+    ParticlesTemp root_particles= xyzr_particles;
+    for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
+           handled_bodies.begin(); it != handled_bodies.end(); ++it) {
       root_particles.push_back(it->first);
-  }
-  IMP::atom::internal::SpecialCaseRestraints scr(get_model(), root_particles);
-  RestraintSets rs= Optimizer::get_restraint_sets();
-  for (unsigned int i=0; i< rs.size(); ++i) {
-    scr.add_restraint_set(rs[i],
-                          boost::bind(handle_harmonic, dynamicsWorld.get(),
-                                      map, &memory, _1, _2, _3),
-                          handle_ev);
-  }
-  for (unsigned int i=0; i< obstacles_.size(); ++i) {
-    handle_obstacle(obstacles_[i].first, obstacles_[i].second,
-                    dynamicsWorld.get(),
-                    memory);
-  }
-  IMP_IF_LOG(TERSE) {
-    ScoreStatesTemp sst
-      = get_required_score_states(RestraintsTemp(rs.begin(), rs.end()));
-    {
-      IMP_LOG(TERSE, "Score states are ");
-      for (unsigned int i=0; i< sst.size(); ++i) {
-        IMP_LOG(TERSE, sst[i]->get_name() << " ");
-      }
-      IMP_LOG(TERSE, std::endl);
     }
-    unsigned int rrs=0;
+    IMP::atom::internal::SpecialCaseRestraints scr(get_model(), root_particles);
+    RestraintSets rs= Optimizer::get_restraint_sets();
     for (unsigned int i=0; i< rs.size(); ++i) {
-      rrs+=IMP::get_restraints(rs[i]).size();
+      scr.add_restraint_set(rs[i],
+                            boost::bind(handle_harmonic, dynamicsWorld.get(),
+                                        map, &memory, _1, _2, _3),
+                            handle_ev);
     }
-    IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
-    {
+    for (unsigned int i=0; i< obstacles_.size(); ++i) {
+      handle_obstacle(obstacles_[i].first, obstacles_[i].second,
+                      dynamicsWorld.get(),
+                      memory);
+    }
+    IMP_IF_LOG(TERSE) {
+      ScoreStatesTemp sst
+        = get_required_score_states(RestraintsTemp(rs.begin(), rs.end()));
+      {
+        IMP_LOG(TERSE, "Score states are ");
+        for (unsigned int i=0; i< sst.size(); ++i) {
+          IMP_LOG(TERSE, sst[i]->get_name() << " ");
+        }
+        IMP_LOG(TERSE, std::endl);
+      }
+      unsigned int rrs=0;
       for (unsigned int i=0; i< rs.size(); ++i) {
-        Restraints crs= IMP::get_restraints(rs[i]);
-        for (unsigned int j=0; j< crs.size(); ++j) {
-          IMP_LOG(TERSE, crs[j]->get_name() <<" ");
-        }
+        rrs+=IMP::get_restraints(rs[i]).size();
       }
-      IMP_LOG(TERSE, std::endl);
+      IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
+      {
+        for (unsigned int i=0; i< rs.size(); ++i) {
+          Restraints crs= IMP::get_restraints(rs[i]);
+          for (unsigned int j=0; j< crs.size(); ++j) {
+            IMP_LOG(TERSE, crs[j]->get_name() <<" ");
+          }
+        }
+        IMP_LOG(TERSE, std::endl);
+      }
     }
-  }
-  RestraintsTemp utrestraints;
-  std::vector<double> weights;
-  boost::tie(utrestraints, weights)
-    = get_restraints_and_weights(rs.begin(), rs.end());
-  for (unsigned int i=0; i< iter; ++i) {
-    if (get_model()->get_number_of_restraints() > 0
-        || get_number_of_optimizer_states() > 0) {
-      internal::copy_back_coordinates(map);
-      get_model()->evaluate(get_model()->get_number_of_restraints() >0);
-      update_states();
-      for (internal::RigidBodyMap::const_iterator
-             it = map.begin(); it != map.end(); ++it) {
-        // need to handle rigid bodies
-        btTransform full_xform;
-        it->second->getMotionState()->getWorldTransform(full_xform);
-        btTransform xform(full_xform.getRotation());
-        //std::cout << it->first->get_name() << std::endl;
-        if (core::RigidBody::particle_is_instance(it->first)) {
-          core::RigidBody d(it->first);
-          algebra::Rotation3D out
-            = d.get_reference_frame().get_transformation_from().get_rotation();
+    RestraintsTemp utrestraints;
+    std::vector<double> weights;
+    boost::tie(utrestraints, weights)
+      = get_restraints_and_weights(rs.begin(), rs.end());
+    for (unsigned int i=0; i< iter; ++i) {
+      if (get_model()->get_number_of_restraints() > 0
+          || get_number_of_optimizer_states() > 0) {
+        internal::copy_back_coordinates(map);
+        get_model()->evaluate(get_model()->get_number_of_restraints() >0);
+        update_states();
+        for (internal::RigidBodyMap::const_iterator
+               it = map.begin(); it != map.end(); ++it) {
+          // need to handle rigid bodies
+          btTransform full_xform;
+          it->second->getMotionState()->getWorldTransform(full_xform);
+          btTransform xform(full_xform.getRotation());
+          //std::cout << it->first->get_name() << std::endl;
+          if (core::RigidBody::particle_is_instance(it->first)) {
+            core::RigidBody d(it->first);
+            algebra::Rotation3D out
+  = d.get_reference_frame().get_transformation_from().get_rotation();
+            if (d.get_coordinates_are_optimized()
+                && d.get_torque().get_squared_magnitude() >0) {
+              algebra::Vector3D torque= d.get_torque();
+              //std::cout << "torque " << torque << std::endl;
+              it->second->applyTorqueImpulse(internal::tr(torque));
+            }
+          }
+          core::XYZ d(it->first);
           if (d.get_coordinates_are_optimized()
-              && d.get_torque().get_squared_magnitude() >0) {
-            algebra::Vector3D torque= d.get_torque();
-            //std::cout << "torque " << torque << std::endl;
-            it->second->applyTorqueImpulse(internal::tr(torque));
+              && d.get_derivatives().get_squared_magnitude() >0) {
+            algebra::Vector3D force=-d.get_derivatives();
+            //std::cout << "force " << force << std::endl;
+            if (force.get_squared_magnitude() > 5) {
+              force= force.get_unit_vector()*5;
+            }
+            it->second->applyCentralForce(/*xform
+                                          **/internal::tr(force));
           }
-        }
-        core::XYZ d(it->first);
-        if (d.get_coordinates_are_optimized()
-            && d.get_derivatives().get_squared_magnitude() >0) {
-          algebra::Vector3D force=-d.get_derivatives();
-          //std::cout << "force " << force << std::endl;
-          if (force.get_squared_magnitude() > 5) {
-            force= force.get_unit_vector()*5;
-          }
-          it->second->applyCentralForce(/*xform
-                                        **/internal::tr(force));
         }
       }
+      dynamicsWorld->stepSimulation(5/60.f,10);
     }
-    dynamicsWorld->stepSimulation(5/60.f,10);
-  }
-  internal::copy_back_coordinates(map);
+    internal::copy_back_coordinates(map);
   } // clean up restraints
   double ret= get_model()->evaluate(false);
   update_states();
+
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    RestraintSets after_sets= get_restraints();
+    Restraints after_restraints= IMP::get_restraints(after_sets.begin(),
+                                                   after_sets.end());\
+    RestraintsTemp bt= before_restraints;
+    RestraintsTemp at= after_restraints;
+    std::sort(bt.begin(), bt.end());
+    std::sort(at.begin(), at.end());
+    RestraintsTemp diff;
+    std::set_difference(at.begin(), at.end(), bt.begin(), bt.end(),
+                        std::back_inserter(diff));
+    std::set_difference(bt.begin(), bt.end(), at.begin(), at.end(),
+                        std::back_inserter(diff));
+    IMP_USAGE_CHECK(diff.empty(), "Restraints not restored "
+                    << Restraints(diff));
+  }
   return ret;
 }
 
