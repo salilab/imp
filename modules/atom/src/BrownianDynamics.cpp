@@ -56,6 +56,24 @@ bool BrownianDynamics::get_is_simulation_particle(Particle *p) const {
 }
 
 namespace {
+  unit::Angstrom get_force(Particle *p, unsigned int i,
+                           unit::Divide<unit::Femtosecond,
+                                        unit::Femtojoule>::type dtikt) {
+    Diffusion d(p);
+    unit::KilocaloriePerAngstromPerMol
+      cforce( -d.get_derivative(i));
+    unit::Femtonewton nforce
+      = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
+    //unit::Angstrom R(sampler_());
+    unit::Angstrom force_term(nforce*d.get_d()*dtikt);
+    /*if (force_term > unit::Angstrom(.5)) {
+      std::cout << "Forces on " << _1->get_name() << " are "
+      << force << " and " << nforce
+      << " and " << force_term <<
+      " vs " << delta[j] << ", " << sigma << std::endl;
+      }*/
+    return force_term;
+  }
   unit::Angstrom get_sigma(Particle *p, unit::Femtosecond dtfs) {
     return sqrt(2.0*Diffusion(p).get_d()*dtfs);
   }
@@ -63,19 +81,32 @@ namespace {
 
 void BrownianDynamics::setup(const ParticlesTemp& ps) {
   IMP_IF_LOG(TERSE) {
+    unit::Femtosecond dtfs=unit::Femtosecond(get_maximum_time_step());
+    unit::Divide<unit::Femtosecond,
+                 unit::Femtojoule>::type dtikt
+      =dtfs
+      /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
     double ms=0;
+    double mf=0;
+    evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
       double c= strip_units(get_sigma(ps[i],
-                             unit::Femtosecond(get_maximum_time_step())));
+                                      dtfs));
       ms= std::max(ms, c);
+      for (unsigned int j=0; j< 3; ++j) {
+        double f= strip_units(get_force(ps[i], j, dtikt));
+        mf=std::max(mf, f);
+      }
     }
     IMP_LOG(TERSE, "Maximum sigma is " << ms << std::endl);
+    IMP_LOG(TERSE, "Maximum force is " << mf << std::endl);
   }
 }
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 
 double BrownianDynamics::do_step(const ParticlesTemp &ps,
                                  double dt) {
+  evaluate(true);
   unit::Femtosecond dtfs(dt);
   unit::Divide<unit::Femtosecond,
                unit::Femtojoule>::type dtikt
@@ -119,24 +150,7 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
       << " " << d.get_d()*dt << std::endl;*/
     double force[3];
     for (unsigned j = 0; j < 3; ++j) {
-      unit::KilocaloriePerAngstromPerMol
-        cforce( -d.get_derivative(j));
-      unit::Femtonewton nforce
-        = unit::convert_Cal_to_J(cforce/unit::ATOMS_PER_MOL);
-      //unit::Angstrom R(sampler_());
-      unit::Angstrom force_term(nforce*d.get_d()*dtikt);
-      /*if (force_term > unit::Angstrom(.5)) {
-        std::cout << "Forces on " << _1->get_name() << " are "
-                  << force << " and " << nforce
-                  << " and " << force_term <<
-          " vs " << delta[j] << ", " << sigma << std::endl;
-          }*/
-      if (force_term > 3.0*sigma) {
-        force_term= 3.0*sigma;
-      } else if (force_term < -3.0*sigma) {
-        force_term= -3.0*sigma;
-      }
-      force[j]= unit::strip_units(force_term);
+      force[j]= strip_units(get_force(ps[i], j, dtikt));
     }
 
     //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
@@ -148,9 +162,14 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
             << random[1] << " " << random[2]
             << " from a force of "
             << force[0]<< " " << force[1] << " " << force[2] << std::endl);
-    for (unsigned int j=0; j< 3; ++j) {
-      d.set_coordinate(j, d.get_coordinate(j) + random[j]+force[j]);
+    algebra::Vector3D sum;
+    double nus3=3.0*strip_units(sigma);
+    for (unsigned int j=0;j< 3; ++j) {
+      sum[j]= force[j]+random[j];
+      sum[j]= std::min(sum[j], nus3);
+      sum[j]= std::max(sum[j], -nus3);
     }
+    d.set_coordinates(d.get_coordinates()+sum);
   };
   return dt;
 }
