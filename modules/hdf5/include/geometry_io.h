@@ -21,7 +21,7 @@ IMPHDF5EXPORT void write_geometry(display::Geometry *r,
                                 RootHandle parent);
 /** Save the geometry for the specified frame. */
 IMPHDF5EXPORT void save_conformation(display::Geometry *r,
-                                              RootHandle parent, int frame);
+                                     RootHandle parent, int frame);
 
 
 IMPHDF5EXPORT display::Geometries read_all_geometries(RootHandle parent,
