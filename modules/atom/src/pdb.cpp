@@ -23,6 +23,7 @@
 #include <iomanip>
 
 #ifdef IMP_ATOM_USE_BOOST_FILESYSTEM
+#define BOOST_FILESYSTEM_VERSION 2
 #include <boost/filesystem/path.hpp>
 #include <boost/version.hpp>
 #endif
