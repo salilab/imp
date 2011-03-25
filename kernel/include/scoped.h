@@ -90,19 +90,34 @@ template <class SS>
 class GenericScopedRemoveRestraint {
   Pointer<SS> ss_;
   Pointer<RestraintSet> rs_;
-public:
-  IMP_RAII(GenericScopedRemoveRestraint, (SS *ss, RestraintSet *rs),{}, {
-      ss_=ss;
-      rs_=rs;
-      rs_->remove_restraint(ss);
-    }, {
-      if (rs_ && rs_->get_is_part_of_model()) {
+  void cleanup() {
+    if (rs_ && rs_->get_is_part_of_model()) {
+        IMP_LOG(VERBOSE, "Restoring restraint "
+                << ss_->get_name() << " to "
+                << rs_->get_name() << std::endl);
         IMP_CHECK_OBJECT(ss_);
         IMP_CHECK_OBJECT(rs_->get_model());
         rs_->add_restraint(ss_);
         ss_=NULL;
         rs_=NULL;
+      } else if (ss_) {
+        IMP_LOG(VERBOSE, "Not restoring restraint "
+                << ss_->get_name() << std::endl);
       }
+  }
+  void setup(Restraint* ss, RestraintSet *rs) {
+    ss_=ss;
+    rs_=rs;
+    rs_->remove_restraint(ss);
+    IMP_LOG(VERBOSE, "Removing restraint "
+            << ss_->get_name() << " from "
+            << rs_->get_name() << std::endl);
+  }
+public:
+  IMP_RAII(GenericScopedRemoveRestraint, (SS *ss, RestraintSet *rs),{}, {
+      setup(ss, rs);
+    }, {
+      cleanup();
     }, {
       if (ss_) out << "(Scoped removal of " <<ss_->get_name() << ")";
       else out << "(Unset scoped restraint)";
