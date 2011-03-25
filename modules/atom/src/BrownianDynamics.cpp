@@ -55,7 +55,22 @@ bool BrownianDynamics::get_is_simulation_particle(Particle *p) const {
           && IMP::core::XYZ(p).get_coordinates_are_optimized());
 }
 
-void BrownianDynamics::setup(const ParticlesTemp&) {
+namespace {
+  unit::Angstrom get_sigma(Particle *p, unit::Femtosecond dtfs) {
+    return sqrt(2.0*Diffusion(p).get_d()*dtfs);
+  }
+}
+
+void BrownianDynamics::setup(const ParticlesTemp& ps) {
+  IMP_IF_LOG(TERSE) {
+    double ms=0;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      double c= strip_units(get_sigma(ps[i],
+                             unit::Femtosecond(get_maximum_time_step())));
+      ms= std::max(ms, c);
+    }
+    IMP_LOG(TERSE, "Maximum sigma is " << ms << std::endl);
+  }
 }
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 
@@ -93,11 +108,11 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
               < std::numeric_limits<double>::max(),
               "Bad diffusion coefficient on particle " << ps[i]->get_name());
     double random[3];
-    unit::Angstrom sigma= sqrt(2.0*d.get_d()*dtfs);
+    unit::Angstrom sigma= get_sigma(ps[i], dtfs);
     for (unsigned j = 0; j < 3; ++j) {
       double rv= sampler_();
       random[j]=unit::Angstrom(sigma*rv).get_value();
-      if (rv < 0) random[j]=-random[j];
+      //if (rv < 0) random[j]=-random[j];
       //delta[j]=unit::Angstrom(0);
     }
     /*std::cout << d.get_d() << " " << sigma << " " << dt
