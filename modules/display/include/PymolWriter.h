@@ -31,6 +31,8 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT PymolWriter: public Writer
 {
+  std::string lastname_;
+
   friend class CGOAnimationWriter;
   void setup(std::string name);
   void cleanup(std::string name, bool close=true);
@@ -52,7 +54,6 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
                Color color, std::string name);
 
 public:
-
   IMP_WRITER(PymolWriter);
 };
 

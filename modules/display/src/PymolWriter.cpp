@@ -12,32 +12,41 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+
 namespace {
   std::string strip_quotes(std::string in) {
     std::vector<char> v(in.begin(), in.end());
     return std::string(v.begin(),
                        std::remove(v.begin(), v.end(), '\''));
   }
+  const std::string placeholder_name;
 }
 
 void PymolWriter::handle_open() {
+  lastname_=placeholder_name;
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "from pymol.vfont import plain\ndata= {}\n";
 }
 
 void PymolWriter::handle_close() {
+  cleanup(lastname_);
   get_stream() << "\n\nfor k in data.keys():\n  cmd.load_cgo(data[k], k, 0)\n";
 }
 
 
 void PymolWriter::cleanup(std::string name, bool close){
   if (close) get_stream() << "]\n";
+  lastname_=placeholder_name;
   get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
   get_stream() << "if k in data.keys():\n"
                << "  data[k]= data[k]+curdata\nelse:\n"
                << "  data[k]= curdata\n\n";
 }
 void PymolWriter::setup(std::string name){
+  if (name==lastname_) return;
+  else if (lastname_ != placeholder_name) {
+    cleanup(lastname_);
+  }
   if (name.empty()) {
     name="unnamed";
   }
@@ -45,6 +54,7 @@ void PymolWriter::setup(std::string name){
   get_stream() << "if not k in data.keys():\n"
                << "   data[k]=[]\n";
   get_stream() << "curdata=[\n";
+  lastname_=name;
 }
 namespace {
   void write_color(std::ostream &out, Color color) {
@@ -63,7 +73,6 @@ bool PymolWriter::handle(SphereGeometry *g,
                << algebra::commas_io(g->get_geometry().get_center())
                << ", "
                << g->get_geometry().get_radius() << ",\n";
-  cleanup(name);
 
   return true;
 }
@@ -111,7 +120,6 @@ bool PymolWriter::handle(PointGeometry *g,
   get_stream() << "SPHERE, "
                << algebra::commas_io(g->get_geometry()) << ", "
                << .1 << ",\n";
-  cleanup(name);
   return true;
 }
 bool PymolWriter::handle(SegmentGeometry *g,
@@ -131,7 +139,6 @@ bool PymolWriter::handle(SegmentGeometry *g,
                << ", " << color.get_green()
                << ", " << color.get_blue()
                << ",\n";
-  cleanup(name);
   return true;
 }
 
@@ -178,7 +185,6 @@ bool PymolWriter::handle(PolygonGeometry *g,
     }
     get_stream() << "END,\n";
   }
-  cleanup(name);
   return true;
 }
 
@@ -191,7 +197,6 @@ bool PymolWriter::handle(TriangleGeometry *g,
   write_triangle(g->get_geometry().at(0), g->get_geometry().at(1),
                  g->get_geometry().at(2), color, get_stream());
   get_stream() << "END,\n";
-  cleanup(name);
   return true;
 }
 
@@ -214,7 +219,6 @@ bool PymolWriter::handle(SurfaceMeshGeometry *g,
     }
   }
   get_stream() << "END,\n";
-  cleanup(name);
   return true;
 }
 

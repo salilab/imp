@@ -28,12 +28,12 @@ void Writer::add_geometry(Geometry *g) {
 }
 
 
-Writer *create_writer(std::string name) {
+Writer *create_writer(std::string name, bool append) {
   for (std::map<std::string, internal::WriterFactory *>::iterator
          it= internal::get_writer_factory_table().begin();
        it != internal::get_writer_factory_table().end(); ++it) {
     if (boost::algorithm::ends_with(name, it->first)) {
-      return it->second->create(name);
+      return it->second->create(name, append);
     }
   }
   IMP_THROW("No writer found for file " << name,

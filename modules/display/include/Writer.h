@@ -112,7 +112,8 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 };
 
 /** Create an appropriate writer based on the file suffix. */
-IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
+IMPDISPLAYEXPORT Writer *create_writer(std::string filename,
+                                       bool append=false);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #define IMP_REGISTER_WRITER(Name, suffix)                               \
