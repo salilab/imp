@@ -35,6 +35,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
         print 5
         sampler= IMP.domino.DominoSampler(m, pst)
+        sampler.set_use_cross_subset_filtering(True)
         sampler.set_log_level(IMP.VERBOSE)
         m.set_maximum_score(.1)
         cs= sampler.get_sample()
