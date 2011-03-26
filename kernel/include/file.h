@@ -51,11 +51,11 @@ class IMPEXPORT TextOutput
   // SWIG needs these here for some bizarre reason
   TextOutput(int);
   TextOutput(double);
-  TextOutput(const char *c);
+  TextOutput(const char *c, bool append=false);
   TextOutput(TextProxy<std::ostream> p);
 #endif
   TextOutput(){}
-  TextOutput(std::string file_name);
+  TextOutput(std::string file_name, bool append=false);
 #ifndef SWIG
   TextOutput(std::ostream &out, std::string name="C++ stream");
 #endif

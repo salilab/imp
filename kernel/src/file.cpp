@@ -28,12 +28,18 @@ struct LazyFileStorage: public internal::IOStorage<BaseStream> {
   typedef internal::IOStorage<BaseStream> P;
   std::string name_;
   bool open_;
+  bool append_;
   FileStream stream_;
-  LazyFileStorage(std::string name): P(name),
-                                     open_(false){}
+  LazyFileStorage(std::string name, bool append=false):
+    P(name),
+    open_(false), append_(append){}
   BaseStream& get_stream() {
     if (!open_) {
-      stream_.open(P::get_name().c_str());
+      if (append_) {
+        stream_.open(P::get_name().c_str(), std::fstream::app);
+      } else {
+        stream_.open(P::get_name().c_str());
+      }
       if (!stream_) {
         IMP_THROW("Unable to open file " << P::get_name(),
                   IOException);
@@ -86,10 +92,10 @@ struct OwnedStreamStorage: public internal::IOStorage<BaseStream>{
 
 }
 
-TextOutput::TextOutput(const char *c):
-  out_(new LazyFileStorage<std::ostream, std::ofstream>(c)){}
-TextOutput::TextOutput(std::string c):
-  out_(new LazyFileStorage<std::ostream, std::ofstream>(c)){}
+TextOutput::TextOutput(const char *c, bool append):
+  out_(new LazyFileStorage<std::ostream, std::ofstream>(c, append)){}
+TextOutput::TextOutput(std::string c, bool append):
+  out_(new LazyFileStorage<std::ostream, std::ofstream>(c, append)){}
 TextOutput::TextOutput(std::ostream &in, std::string name):
   out_(new StreamStorage<std::ostream>(in, name)){}
 TextOutput::TextOutput(TextProxy<std::ostream> out):
