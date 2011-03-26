@@ -16,6 +16,19 @@
 
 IMPHDF5_BEGIN_NAMESPACE
 
+/** \name Geometry I/O
+
+    The geometry I/O support currently handles geometry composed of
+    - IMP::display::SegmentGeometry
+    - IMP::display::CylinderGeometry
+    - IMP::display::SphereGeometry
+    - IMP::display::SurfaceMeshGeometry
+
+    Other types can be supported when requested. Be aware, many
+    more complex geometry types are automatically decomposed into
+    the above types and so, more or less, supported.
+    @{
+ */
 /** Add the geometry to the file */
 IMPHDF5EXPORT void write_geometry(display::Geometry *r,
                                 RootHandle parent);
@@ -26,6 +39,7 @@ IMPHDF5EXPORT void save_conformation(display::Geometry *r,
 
 IMPHDF5EXPORT display::Geometries read_all_geometries(RootHandle parent,
                                                       int frame);
+/** @} */
 IMPHDF5_END_NAMESPACE
 
 #endif /* IMPHDF5_GEOMETRY_IO_H */
