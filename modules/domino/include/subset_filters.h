@@ -272,6 +272,9 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
   }
   unsigned int get_number_of_particle_states(Particle *p) const {
     int i= get_index(p);
+    if (i==-1) {
+      return pst_->get_particle_states(p)->get_number_of_particle_states();
+    }
     IMP_USAGE_CHECK(i>=0, "Particle " << p->get_name()
                     << " is unknown. It probably is not in the "
                     << " ParticleStatesTable. Boom.");
