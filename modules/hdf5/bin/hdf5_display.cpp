@@ -62,12 +62,16 @@ int main(int argc, char **argv) {
             << maxframe << ")" <<std::endl;
   for (int cur_frame=minframe; cur_frame < maxframe; ++cur_frame) {
     std::string name=output;
-    if (frame<0) {
+    bool append=false;
+    if (frame<0 && name.find("%1%")==std::string::npos) {
+      append=cur_frame >minframe;
+    } else if (frame<0) {
       std::ostringstream oss;
       oss << boost::format(output)%cur_frame;
       name=oss.str();
     }
-    IMP::Pointer<IMP::display::Writer> w= IMP::display::create_writer(name);
+    IMP::Pointer<IMP::display::Writer> w
+      = IMP::display::create_writer(name, append);
     for (unsigned int i=0; i< hs.size(); ++i) {
       IMP::hdf5::load_configuration(rh, hs[i], cur_frame);
       IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
