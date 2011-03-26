@@ -20,15 +20,15 @@ class WriterFactory {
 public:
   WriterFactory();
   virtual ~WriterFactory();
-  virtual Writer *create(std::string name) const=0;
+  virtual Writer *create(std::string name, bool append) const=0;
 };
 
 template <class Wr>
 class WriterFactoryHelper: public WriterFactory {
 public:
   WriterFactoryHelper(){}
-  Writer *create(std::string name) const {
-    return new Wr(TextOutput(name));
+  Writer *create(std::string name, bool append) const {
+    return new Wr(TextOutput(name, append));
   }
 };
 
