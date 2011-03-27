@@ -260,6 +260,7 @@ void RMSDClustering<TransT>::prepare(const Particles& ps) {
 template<class TransT>
 int RMSDClustering<TransT>::fast_clustering(float max_dist,
        std::vector<TransformationRecord*>& recs) {
+  IMP_LOG(VERBOSE,"start fast clsutering with "<<recs.size()<<" records\n");
   int num_joins = 0;
   bool used[recs.size()];
   Hash3 g_hash((double)(bin_size_));
@@ -280,7 +281,8 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
   for (Hash3::GeomMap::const_iterator bucket = M.begin();
        bucket != M.end() ; ++bucket){
     const Hash3::PointList &pb = bucket->second;
-    if (pb.size()<2) continue;
+    IMP_LOG(VERBOSE,"Bucket size:"<<pb.size()<<"\n");
+    //    if (pb.size()<2) continue;
     Graph g;
     std::vector<std::pair<RCEdge,float> > edge_weight;
     build_graph(pb,recs,max_dist,g);
@@ -297,6 +299,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
 template<class TransT>
 int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
            std::vector<RMSDClustering<TransT>::TransformationRecord *>& recs) {
+  IMP_LOG(VERBOSE,"start full clsutering with "<< recs.size()<<" records \n");
   if (recs.size()<2) return 0;
   bool used[recs.size()];
   Hash3 ghash((double)(max_dist));
@@ -353,13 +356,15 @@ void RMSDClustering<TransT>::cluster(float max_dist,
   while (exhaustive_clustering(max_dist, *records)){
     clean(records);
   }
-  clean(records);
+  //  clean(records);
   //build the vector for output
+  IMP_LOG(VERBOSE,"build output of "<<records->size()<<" records \n");
   for (int i = 0 ; i < (int)records->size() ; ++i){
     output.push_back((*records)[i]->get_record());
     delete((*records)[i]);
   }
   delete(records);
+  IMP_LOG(VERBOSE,"returning "<< output.size()<<" records \n");
 }
 
 IMPMULTIFIT_END_NAMESPACE
