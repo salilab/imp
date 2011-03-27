@@ -22,12 +22,6 @@ class ToParticlesTest(IMP.test.TestCase):
         self.imp_model = IMP.Model()
         self.load_density_maps()
 
-    def _test_density2particles_map1(self):
-        # Disabled
-        m = IMP.Model()
-        ps = IMP.em.density2particles(self.scene1,self.scene1.get_min_value()+0.1,m)
-        self.assertGreater(ps.size(), 0)
-
     def test_density2particles_map2(self):
         """Test conversion of a density map into a set of particles
            This is done after updating the voxel size of the map"""
@@ -36,5 +30,32 @@ class ToParticlesTest(IMP.test.TestCase):
         ps=IMP.em.density2particles(self.scene2,9.0,m)
         self.assertGreater(len(ps), 0)
 
+    def test_particles2density(self):
+        """Test conversion of particles to a density map"""
+        m = IMP.Model()
+        ps=[]
+        res=3
+        apix=1
+        radius_key = IMP.core.XYZR.get_radius_key()
+        weight_key = IMP.atom.Mass.get_mass_key()
+        for i in range(10):
+            ps.append(self.create_point_particle(m,i,i,i))
+            ps[-1].add_attribute(radius_key, 5)
+            ps[-1].add_attribute(weight_key, 100.0)
+        dmap = IMP.em.particles2density(ps,res,apix)
+        dmap.calcRMS()
+        self.assertGreater(dmap.get_header().rms, 0)
+        #check origin:
+        rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        r = IMP.em.FitRestraint(ps,dmap,rb_refiner)
+        m.add_restraint(r)
+        score = self.imp_model.evaluate(False)
+        self.assertLess(score, 0.01)
+        print "score:",score,r.evaluate(None)
+        #check origin
+        ps_centroid=IMP.core.get_centroid(IMP.core.XYZs(ps))
+        map_centroid=dmap.get_centroid()
+        self.assertLess(IMP.algebra.get_distance(ps_centroid,map_centroid),
+                        0.01)
 if __name__ == '__main__':
     IMP.test.main()
