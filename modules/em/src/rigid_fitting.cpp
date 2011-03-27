@@ -13,6 +13,7 @@
 #include <IMP/algebra/vector_generators.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/core/Transform.h>
+#include <IMP/core/SteepestDescent.h>
 #include <IMP/atom/pdb.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/em/converters.h>
@@ -57,7 +58,7 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    return rsrs;
 }
 
-core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
+core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
    core::RigidBody rb,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
   //create a rigid body mover
@@ -70,15 +71,17 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerState *display_log,
   opt->set_return_best(true);//return the lowest energy state visited
   IMP::set_print_exceptions(true);
 
+  //  core::SteepestDescent *lopt = new core::SteepestDescent();
   core::ConjugateGradients *lopt = new core::ConjugateGradients();
   lopt->set_threshold(0.001);
+  //  lopt->set_step_size(0.05);
   opt->set_local_optimizer(lopt);
   opt->set_local_steps(number_of_cg_steps);
 
   //set the logging if provided
-  if (display_log != NULL) {
-    lopt->add_optimizer_state(display_log);
-    display_log->update();
+  for(int i=0;i<(int)display_log.size();i++){
+    lopt->add_optimizer_state(display_log[i]);
+    display_log[i]->update();
   }
   return opt.release();
 }
@@ -123,7 +126,7 @@ FittingSolutions local_rigid_fitting_around_point(
    core::RigidBody rb,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
-   OptimizerState *display_log,
+   OptimizerStates display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation,
    bool fast) {
@@ -173,7 +176,7 @@ FittingSolutions local_rigid_fitting_around_points(
    core::RigidBody rb,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
-   OptimizerState *display_log,
+   OptimizerStates display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
   FittingSolutions fr;
@@ -288,44 +291,78 @@ FittingSolutions local_rigid_fitting_grid_search(
 FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
   const FloatKey &wei_key,
-  const std::vector<IMP::algebra::Transformation3D>& transformations,
+  IMP::algebra::Transformation3Ds transformations,
                                         bool fast_version,
                                         bool local) {
   FittingSolutions fr;
+  //move the particles to the center of the map
+  algebra::Transformation3D move_ps_to_map_center=
+    algebra::Transformation3D(
+      algebra::get_identity_rotation_3d(),
+      em_map->get_centroid()-core::get_centroid(core::XYZsTemp(ps)));
+  IMP_LOG(TERSE,"moving particles to center:"<<move_ps_to_map_center<<"\n");
+  core::XYZs ps_xyz(ps);
+  for(int i=0;i<(int)ps_xyz.size();i++) {
+    ps_xyz[i].set_coordinates(
+         move_ps_to_map_center.get_transformed(ps_xyz[i].get_coordinates()));
+  }
+  //now update all of the transformations accordinly
+  algebra::Transformation3Ds trans_for_fit;
+  for(int i=0;i<(int)transformations.size();i++) {
+    trans_for_fit.push_back(transformations[i]*
+                            move_ps_to_map_center.get_inverse());
+    IMP_LOG(VERBOSE,"Using transformation:"<<trans_for_fit[i]<<" instead of"
+            <<transformations[i]<<std::endl);
+  }
   IMP_NEW(IMP::em::SampledDensityMap,model_dens_map,
          (*(em_map->get_header())));
   model_dens_map->set_particles(ps,wei_key);
-    model_dens_map->resample();
-    model_dens_map->calcRMS();
-    IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(em_map),
+  model_dens_map->resample();
+  model_dens_map->calcRMS();
+  std::cout<<"RMS: "<< model_dens_map->get_header()->rms<<std::endl;
+  IMP_INTERNAL_CHECK(model_dens_map->same_dimensions(em_map),
                        "sampled density map is of wrong dimensions"<<std::endl);
-    float score;
-    if (!fast_version) {
-      core::XYZsTemp ps_xyz=core::XYZsTemp(ps);
-      IMP_LOG(IMP::VERBOSE,"running slow version of compute_fitting_scores"
-              <<std::endl);
-      IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
-              (*(em_map->get_header())));
-      model_dens_map2->set_particles(ps,wei_key);
-      algebra::Vector3Ds original_cooridnates;
-      for(core::XYZsTemp::const_iterator it = ps_xyz.begin();
-          it != ps_xyz.end(); it++) {
-        original_cooridnates.push_back(it->get_coordinates());
+  float score;
+  if ((model_dens_map->get_header()->rms<EPS) && fast_version) {
+    IMP_WARN("Map is empty, fast mode will return nan for all "<<
+             "transformations\n");
+  }
+  if (!fast_version) {
+    IMP_LOG(IMP::VERBOSE,"running slow version of compute_fitting_scores"
+            <<std::endl);
+    IMP_NEW(IMP::em::SampledDensityMap,model_dens_map2,
+            (*(em_map->get_header())));
+    model_dens_map2->set_particles(ps,wei_key);
+    model_dens_map2->resample();
+    model_dens_map2->calcRMS();
+    IMP_LOG(VERBOSE,
+     "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
+              " particles centroid: "<<
+            core::get_centroid(core::XYZsTemp(ps))<<std::endl);
+    algebra::Vector3Ds original_cooridnates;
+    for(core::XYZs::const_iterator it = ps_xyz.begin();
+        it != ps_xyz.end(); it++) {
+      original_cooridnates.push_back(it->get_coordinates());
+    }
+    for (algebra::Transformation3Ds::const_iterator it =
+           trans_for_fit.begin(); it != trans_for_fit.end();it++) {
+      //transform the particles
+      for(unsigned int i=0;i<ps_xyz.size();i++){
+        ps_xyz[i].set_coordinates(
+                       it->get_transformed(original_cooridnates[i]));
       }
-      for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
-         transformations.begin(); it != transformations.end();it++) {
-        //transform the particles
-        for(unsigned int i=0;i<ps_xyz.size();i++){
-          ps_xyz[i].set_coordinates(
-             it->get_transformed(original_cooridnates[i]));
-        }
-        model_dens_map2->resample();
-        model_dens_map2->calcRMS();
-        float threshold = model_dens_map2->get_header()->dmin-EPS;
-        if (!local) {
+      model_dens_map2->resample();
+      model_dens_map2->calcRMS();
+      IMP_LOG(VERBOSE,
+        "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
+        " particles centroid: "<< core::get_centroid(core::XYZsTemp(ps))<<
+              "trans: "<< *it<<
+        std::endl);
+      float threshold = model_dens_map2->get_header()->dmin-EPS;
+      if (!local) {
         score  = 1.-
           CoarseCC::cross_correlation_coefficient(em_map,
-             model_dens_map2,threshold,true);
+                     model_dens_map2,threshold,true);
         }
         else {
         score  = 1.-
@@ -333,7 +370,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
              model_dens_map2,threshold);
         }
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
-        fr.add_solution(*it,score);
+        fr.add_solution(*it*move_ps_to_map_center,score);
       }
       //move back to original coordinates
       for(unsigned int i=0;i<ps_xyz.size();i++){
@@ -343,36 +380,36 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
     }
     else { //fast version
       // static int counter=0;
-      // MRCReaderWriter mrw;
-      //      write_map(model_dens_map,"model_dens_map.mrc",mrw);
       IMP_LOG(IMP::VERBOSE,
               "running fast version of compute_fitting_scores"<<std::endl);
-      for (std::vector<IMP::algebra::Transformation3D>::const_iterator it =
-         transformations.begin(); it != transformations.end();it++) {
+      for (algebra::Transformation3Ds::const_iterator it =
+         trans_for_fit.begin(); it != trans_for_fit.end();it++) {
         Pointer<DensityMap> transformed_sampled_map = get_transformed(
               model_dens_map,*it);
         IMP_INTERNAL_CHECK(
            transformed_sampled_map->same_dimensions(model_dens_map),
            "sampled density map changed dimensions after transformation"
            <<std::endl);
-        // std::stringstream ss;
-        // counter++;
-        // ss<<"transformed_map_"<<counter<<".mrc";
-        // write_map(transformed_sampled_map,ss.str().c_str(),mrw);
         IMP_INTERNAL_CHECK(transformed_sampled_map->same_dimensions(em_map),
                  "sampled density map is of wrong dimensions"<<std::endl);
         float threshold = transformed_sampled_map->get_header()->dmin;
-        std::cout<<"before cc"<<std::endl;
         score  = 1.-
           CoarseCC::cross_correlation_coefficient(em_map,
              transformed_sampled_map,threshold,true);
-        std::cout<<"after cc"<<std::endl;
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
-        fr.add_solution(*it,score);
+        fr.add_solution(*it*move_ps_to_map_center,score);
         transformed_sampled_map=NULL;
       }
     }
     model_dens_map=NULL;
+  //move the particles back to original position
+    algebra::Transformation3D move_ps_to_map_center_inv =
+      move_ps_to_map_center.get_inverse();
+    for(int i=0;i<(int)ps_xyz.size();i++) {
+      ps_xyz[i].set_coordinates(
+       move_ps_to_map_center_inv.get_transformed(ps_xyz[i].get_coordinates()));
+    }
+    //return results
     return fr;
 }
 
