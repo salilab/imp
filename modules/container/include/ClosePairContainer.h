@@ -74,6 +74,7 @@ public:
            PairFilter*, PairFilters);
    /**@}*/
   void set_slack(double s);
+  double get_slack() const;
   bool get_is_up_to_date() const;
   IMP_PAIR_CONTAINER(ClosePairContainer);
 #else
