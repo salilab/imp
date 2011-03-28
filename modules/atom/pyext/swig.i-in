@@ -26,6 +26,7 @@ IMP_SWIG_DECORATOR(IMP::atom, LennardJones, LennardJonesList);
 IMP_SWIG_DECORATOR(IMP::atom, Mass, Masses);
 IMP_SWIG_DECORATOR(IMP::atom, Molecule, Molecules);
 IMP_SWIG_DECORATOR(IMP::atom, Residue, Residues);
+IMP_SWIG_DECORATOR(IMP::atom, Copy, Copies);
 IMP_SWIG_BASE_OBJECT(IMP::atom, Simulator, Simulators);
 IMP_SWIG_DIRECTOR(IMP::atom, PDBSelector);
 IMP_SWIG_OBJECT(IMP::atom, ATOMPDBSelector, ATOMPDBSelectors);
@@ -118,7 +119,9 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
                  atom_type=None,
                  residue_type=None,
                  terminus=None,
-                 domain=None):
+                 domain=None,
+                 copy_number=-1,
+                 copy_numbers=None):
       if hierarchy:
         this = _IMP_atom.new_Selection(hierarchy)
         try: self.this.append(this)
@@ -153,6 +156,10 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
          domains.append(domain)
       if terminus:
          self.set_terminus(terminus)
+      if not copies:
+         copies=[]
+      if copy_number !=-1:
+         copy_numbers.append(copy_number)
       presidue_indexes=[]
       for ri in residue_indexes:
          if type(ri) == type(()):
@@ -166,6 +173,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       self.set_residue_types(residue_types);
       self.set_domains(domains);
       self.set_target_radius(target_radius);
+      self.set_copy_numbers(copy_numbers)
 %}
 }
 
@@ -225,6 +233,7 @@ namespace IMP {
 %include "IMP/atom/Atom.h"
 %include "IMP/atom/Residue.h"
 %include "IMP/atom/Molecule.h"
+%include "IMP/atom/Copy.h"
 %include "IMP/atom/ForceFieldParameters.h"
 %include "IMP/atom/charmm_topology.h"
 %include "IMP/atom/CHARMMAtom.h"

@@ -29,6 +29,7 @@ IMPHDF5_BEGIN_NAMESPACE
     - IMP::display::Colored
     - IMP::atom::Domain
     - IMP::atom::Molecule
+    - IMP::atom::Copy
     @{
  */
 
