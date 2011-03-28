@@ -18,6 +18,7 @@
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/estimates.h>
 #include <IMP/atom/Molecule.h>
+#include <IMP/atom/distance.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/ClosePairsPairScore.h>
@@ -816,21 +817,21 @@ void transform(Hierarchy h, const algebra::Transformation3D &tr) {
 }
 
 
-double get_mass(Hierarchy h) {
-  if (Mass::particle_is_instance(h)) {
-    return Mass(h).get_mass();
-  } else {
-    double mass=0;
-    for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-      mass+= get_mass(h.get_child(i));
-    }
-    return mass;
+double get_mass(Selection h) {
+  double ret=0;
+  ParticlesTemp ps=h.get_selected_particles();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    ret+= Mass(ps[i]).get_mass();
   }
+  return ret;
 }
 
+
+#ifdef IMP_ALGEBRA_USE_IMP_CGAL
+
 namespace {
-  algebra::Sphere3Ds get_representation(Hierarchy h) {
-    HierarchiesTemp leaves= get_leaves(h);
+  algebra::Sphere3Ds get_representation(Selection h) {
+    ParticlesTemp leaves=h.get_selected_particles();
     algebra::Sphere3Ds ret(leaves.size());
     for (unsigned int i=0; i< leaves.size(); ++i) {
       ret[i] = core::XYZR(leaves[i]).get_sphere();
@@ -839,15 +840,18 @@ namespace {
   }
 }
 
-#ifdef IMP_ALGEBRA_USE_IMP_CGAL
-double get_volume(Hierarchy h) {
+double get_volume(Selection h) {
   return algebra::get_surface_area_and_volume(get_representation(h)).second;
 }
 
-double get_surface_area(Hierarchy h) {
+double get_surface_area(Selection h) {
   return algebra::get_surface_area_and_volume(get_representation(h)).first;
 }
 #endif
+
+double get_radius_of_gyration(Selection h) {
+  return get_radius_of_gyration(h.get_selected_particles());
+}
 
 
 IMPATOM_END_NAMESPACE

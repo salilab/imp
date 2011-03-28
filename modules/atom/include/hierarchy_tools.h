@@ -309,19 +309,21 @@ IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 
 /** Get the total mass of a hierarchy. In daltons.
  */
-IMPATOMEXPORT double get_mass(Hierarchy h);
+IMPATOMEXPORT double get_mass(Selection h);
 
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 /** Get the total volume of a hierarchy. In cubic angstroms.
     \requires{get_volume, CGAL}*/
-IMPATOMEXPORT double get_volume(Hierarchy h);
+IMPATOMEXPORT double get_volume(Selection h);
 
 /** Get the total surface area of a hiearrchy. In square angstroms.
     \requires{get_volume, CGAL}
 */
-IMPATOMEXPORT double get_surface_area(Hierarchy h);
+IMPATOMEXPORT double get_surface_area(Selection h);
 #endif
+
+IMPATOMEXPORT double get_radius_of_gyration(Selection h);
 
 IMPATOM_END_NAMESPACE
 
