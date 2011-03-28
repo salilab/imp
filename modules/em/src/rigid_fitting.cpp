@@ -291,9 +291,9 @@ FittingSolutions local_rigid_fitting_grid_search(
 FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
   const FloatKey &wei_key,
-  IMP::algebra::Transformation3Ds transformations,
-                                        bool fast_version,
-                                        bool local) {
+  const algebra::Transformation3Ds &transformations,
+  bool fast_version,
+  bool local) {
   FittingSolutions fr;
   //move the particles to the center of the map
   algebra::Transformation3D move_ps_to_map_center=
@@ -393,9 +393,16 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
         IMP_INTERNAL_CHECK(transformed_sampled_map->same_dimensions(em_map),
                  "sampled density map is of wrong dimensions"<<std::endl);
         float threshold = transformed_sampled_map->get_header()->dmin;
-        score  = 1.-
+        if (!local) {
+          score  = 1.-
           CoarseCC::cross_correlation_coefficient(em_map,
-             transformed_sampled_map,threshold,true);
+                     transformed_sampled_map,threshold,true);
+        }
+        else {
+        score  = 1.-
+          CoarseCC::local_cross_correlation_coefficient(em_map,
+             transformed_sampled_map,threshold);
+        }
         IMP_LOG(VERBOSE,"adding score:"<<score<<std::endl);
         fr.add_solution(*it*move_ps_to_map_center,score);
         transformed_sampled_map=NULL;
