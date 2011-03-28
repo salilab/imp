@@ -453,6 +453,16 @@ std::string get_domain_name(Hierarchy h) {
               ValueException);
 }
 
+int get_copy_index(Hierarchy h) {
+  do {
+    if (Copy::particle_is_instance(h)) {
+      return Copy(h).get_copy_index();
+    }
+  } while ((h=h.get_parent()));
+    IMP_THROW("Hierarchy " << h << " has number.",
+              ValueException);
+}
+
 
 bool Selection::check_nonradius(Hierarchy h) const {
   try {
@@ -489,6 +499,11 @@ bool Selection::check_nonradius(Hierarchy h) const {
       std::string chain= get_domain_name(h);
       if (!std::binary_search(domains_.begin(), domains_.end(),
                               chain)) return false;
+    }
+    if (!copies_.empty()) {
+      int copy=get_copy_index(h);
+      if (!std::binary_search(copies_.begin(), copies_.end(),
+                              copy)) return false;
     }
   } catch (ValueException) {
     return false;

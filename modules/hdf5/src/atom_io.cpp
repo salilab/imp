@@ -12,6 +12,7 @@
 #include <IMP/atom/Mass.h>
 #include <IMP/atom/Domain.h>
 #include <IMP/atom/Diffusion.h>
+#include <IMP/atom/Copy.h>
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/hdf5/operations.h>
@@ -41,16 +42,17 @@ IMPHDF5_BEGIN_NAMESPACE
   FloatKey cb= get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",  \
                                            false);                      \
   FloatKey dk= get_or_add_key<FloatTraits>(f, Physics, "D in cm2/s");   \
-  StringKey rt= get_or_add_key<StringTraits>(f, Sequence, "residue type");
+  StringKey rt= get_or_add_key<StringTraits>(f, Sequence, "residue type");\
+  IntKey nk= get_or_add_key<IntTraits>(f, Sequence, "copy index");
 
 #define IMP_HDF5_ACCEPT_MOLECULE_KEYS\
   FloatKey x, FloatKey y, FloatKey z, FloatKey r,                       \
     FloatKey m, IndexKey e, IndexKey ib, IndexKey ie,                   \
     StringKey rt, FloatKey cr, FloatKey cg, FloatKey cb, StringKey tk,\
-    FloatKey dk
+    FloatKey dk, IntKey nk
 
 #define IMP_HDF5_PASS_MOLECULE_KEYS\
-  x, y, z, r, m, e, ib, ie, rt, cr, cg, cb, tk, dk
+  x, y, z, r, m, e, ib, ie, rt, cr, cg, cb, tk, dk, nk
 
 namespace {
   std::string get_name(atom::Hierarchy h) {
@@ -120,6 +122,10 @@ namespace {
       atom::Diffusion d(h);
       set_one(n, dk, d.get_d_in_cm2_per_second(), frame);
     }
+    if (atom::Copy::particle_is_instance(h)) {
+      atom::Copy d(h);
+      set_one(n, nk, d.get_copy_index(), frame);
+    }
   }
 
 
@@ -188,6 +194,10 @@ namespace {
     if (ncur.get_has_value(dk)) {
       double dv= ncur.get_value(dk);
       atom::Diffusion::setup_particle(cur, dv);
+    }
+    if (ncur.get_has_value(nk)) {
+      int dv= ncur.get_value(nk);
+      atom::Copy::setup_particle(cur, dv);
     }
   }
 

@@ -95,6 +95,7 @@ IMPATOMEXPORT ResidueType get_residue_type(Hierarchy h);
 IMPATOMEXPORT int get_chain_id(Hierarchy h);
 IMPATOMEXPORT AtomType get_atom_type(Hierarchy h);
 IMPATOMEXPORT std::string get_domain_name(Hierarchy h);
+IMPATOMEXPORT int get_copy_index(Hierarchy h);
 /** @} */
 
 
@@ -130,6 +131,7 @@ class IMPATOMEXPORT Selection {
   Strings domains_;
   double radius_;
   Terminus terminus_;
+  Ints copies_;
   bool check_nonradius(Hierarchy h) const;
   bool operator()(Hierarchy h) const;
  public:
@@ -140,21 +142,24 @@ class IMPATOMEXPORT Selection {
       of hierarchy or hierarchies must be provided).
   */
   Selection(Hierarchy hierarchy=None,
-        Hierarchies hierarchies=[],
-        Strings molecules=[],
-        Ints residue_indexes=[],
-        Strings chains=[],
-        AtomTypes atom_types=[],
-        ResidueTypes residue_types=[],
-        Strings domains=[],
-        double target_radius=0,
-        std::string molecule=None,
-        int residue_index=None,
-        char chain=None,
-        AtomType atom_type=None,
-        ResidueType residue_type=None,
-        Terminus terminus=None,
-        std::string domain=None);
+            Hierarchies hierarchies=[],
+            Strings molecules=[],
+            Ints residue_indexes=[],
+            Strings chains=[],
+            AtomTypes atom_types=[],
+            ResidueTypes residue_types=[],
+            Strings domains=[],
+            double target_radius=0,
+            std::string molecule=None,
+            int residue_index=None,
+            char chain=None,
+            AtomType atom_type=None,
+            ResidueType residue_type=None,
+            Terminus terminus=None,
+            std::string domain=None,
+            int copy_index=-1,
+            Ints copy_indexs=[]
+            );
 #endif
   Selection(){
     radius_=-1;
@@ -234,6 +239,13 @@ class IMPATOMEXPORT Selection {
   }
   void set_domain(std::string name) {
     domains_= Strings(1, name);
+  }
+  void set_copy_index(unsigned int copy) {
+    copies_=Ints(1, copy);
+  }
+  void set_copy_indexs(const Ints &copies) {
+    copies_=copies;
+    std::sort(copies_.begin(), copies_.end());
   }
   //! Get the selected particles
   ParticlesTemp get_selected_particles() const;
