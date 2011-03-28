@@ -120,8 +120,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
                  residue_type=None,
                  terminus=None,
                  domain=None,
-                 copy_number=-1,
-                 copy_numbers=None):
+                 copy_index=-1,
+                 copy_indexes=None):
       if hierarchy:
         this = _IMP_atom.new_Selection(hierarchy)
         try: self.this.append(this)
@@ -156,10 +156,10 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
          domains.append(domain)
       if terminus:
          self.set_terminus(terminus)
-      if not copy_numbers:
-         copy_numbers=[]
-      if copy_number !=-1:
-         copy_numbers.append(copy_number)
+      if not copy_indexes:
+         copy_indexes=[]
+      if copy_index !=-1:
+         copy_indexes.append(copy_number)
       presidue_indexes=[]
       for ri in residue_indexes:
          if type(ri) == type(()):
@@ -173,7 +173,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       self.set_residue_types(residue_types);
       self.set_domains(domains);
       self.set_target_radius(target_radius);
-      self.set_copy_numbers(copy_numbers)
+      self.set_copy_indexes(copy_indexes)
 %}
 }
 
