@@ -159,7 +159,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
       if not copy_indexes:
          copy_indexes=[]
       if copy_index !=-1:
-         copy_indexes.append(copy_number)
+         copy_indexes.append(copy_index)
       presidue_indexes=[]
       for ri in residue_indexes:
          if type(ri) == type(()):
