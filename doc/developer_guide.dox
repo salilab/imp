@@ -2,8 +2,7 @@
 
 This page presents instructions on how to develop code using
 \imp. Developers who wish to contribute code back to \imp or
-distribute their code should also read the \ref contributing
-"Contributing code to IMP" page.
+distribute their code should also read the \ref contributing "Contributing code to IMP" page.
 
 -# \ref gettingaround "Getting around"
 -# \ref usage "Writing new functions and classes"
