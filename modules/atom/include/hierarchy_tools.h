@@ -243,7 +243,7 @@ class IMPATOMEXPORT Selection {
   void set_copy_index(unsigned int copy) {
     copies_=Ints(1, copy);
   }
-  void set_copy_indexs(const Ints &copies) {
+  void set_copy_indexes(const Ints &copies) {
     copies_=copies;
     std::sort(copies_.begin(), copies_.end());
   }
