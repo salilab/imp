@@ -74,6 +74,8 @@ public:
   }
   //! Log the points and queries to a file for performance studies
   void set_query_log(std::string fname) {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
 #if IMP_BUILD < IMP_FAST
     query_log_.open(fname.c_str());
     for (unsigned int i=0; i< data_.get_number_of_points(); ++i) {
@@ -84,6 +86,8 @@ public:
   }
 
   unsigned int get_nearest_neighbor(const VectorD<D> &q) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
 #if IMP_BUILD < IMP_FAST
     if (query_log_) {
       query_log_ << spaces_io(q) << " " << 1 << std::endl;
@@ -95,6 +99,8 @@ public:
   }
   /** Search using the ith point in the input set. */
   unsigned int get_nearest_neighbor(unsigned int i) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
 #if IMP_BUILD < IMP_FAST
     if (query_log_) {
       query_log_ << i << " " << 1 << std::endl;
@@ -107,6 +113,8 @@ public:
   /** Search using the ith point in the input set. Return the k
       nearest neighbors.*/
   Ints get_nearest_neighbors(unsigned int i, unsigned int k) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
 #if IMP_BUILD < IMP_FAST
     if (query_log_) {
       query_log_ << i << " " << k << std::endl;
@@ -118,6 +126,8 @@ public:
   }
   Ints get_nearest_neighbors(const algebra::VectorD<D> &v,
                              unsigned int k) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
 #if IMP_BUILD < IMP_FAST
     if (query_log_) {
       query_log_ << v << " " << k << std::endl;
@@ -129,12 +139,16 @@ public:
   }
   /** Find all points within the provided distance. */
   Ints get_in_ball(unsigned int i, double distance) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
     Ints ret;
     data_.fill_nearest_neighbors(data_.get_point(i), distance, eps_, ret);
     return Ints(++ret.begin(), ret.end());
   }
   /** Find all points within the provided distance. */
   Ints get_in_ball(const VectorD<D> &pt, double distance) const {
+    IMP_OBJECT_LOG;
+    set_was_used(true);
     Ints ret;
     data_.fill_nearest_neighbors(pt, distance, eps_, ret);
     return ret;
