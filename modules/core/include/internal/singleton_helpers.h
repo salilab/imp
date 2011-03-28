@@ -79,6 +79,7 @@ protected:
       get_removed()->data_=removed;
     }
     swap(data_, cur);
+    changed_=true;
   }
   void add_to_list(ParticlesTemp &cur) {
     std::sort(cur.begin(), cur.end());
