@@ -156,8 +156,8 @@ IMP_SWIG_VALUE_INSTANCE(IMP::atom, CHARMMAngle, CHARMMConnection, CHARMMAngles);
          domains.append(domain)
       if terminus:
          self.set_terminus(terminus)
-      if not copies:
-         copies=[]
+      if not copy_numbers:
+         copy_numbers=[]
       if copy_number !=-1:
          copy_numbers.append(copy_number)
       presidue_indexes=[]
