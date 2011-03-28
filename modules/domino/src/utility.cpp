@@ -106,6 +106,9 @@ void load_particle_states(const Subset &s,
                           const SubsetState &ss,
                           const ParticleStatesTable *pst) {
   internal::load_particle_states(s.begin(), s.end(), ss, pst);
+  if (s.size()!=0) {
+    s[0]->get_model()->update();
+  }
 }
 namespace {
 RestraintsAndWeights get_restraints_and_weights(const Subset &s,
