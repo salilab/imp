@@ -290,10 +290,10 @@ FittingSolutions local_rigid_fitting_grid_search(
 
 FittingSolutions compute_fitting_scores(const Particles &ps,
   DensityMap *em_map,
-  const FloatKey &wei_key,
   const algebra::Transformation3Ds &transformations,
   bool fast_version,
-  bool local) {
+  bool local,
+  const FloatKey &wei_key) {
   FittingSolutions fr;
   //move the particles to the center of the map
   algebra::Transformation3D move_ps_to_map_center=

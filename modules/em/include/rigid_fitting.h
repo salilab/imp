@@ -122,7 +122,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
    core::RigidBody rb, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
-   OptimizerState *display_log,
+   OptimizerStates display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=.3,bool fast=false);
@@ -160,7 +160,7 @@ inline FittingSolutions local_rigid_fitting(
    core::RigidBody rb, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap,
-   OptimizerState *display_log=NULL,
+   OptimizerStates display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=.3,
@@ -201,7 +201,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
    core::RigidBody rb,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
-   OptimizerState *display_log,
+   OptimizerStates display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
    Float max_translation=2., Float max_rotation=.3);
@@ -260,9 +260,9 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_grid_search(
  */
 IMPEMEXPORT FittingSolutions compute_fitting_scores(const Particles &ps,
    DensityMap *em_map,
-   const FloatKey &wei_key,
-   const algebra::Transformation3Ds& transformations,
-   bool fast_version=false, bool local_score=false);
+   const algebra::Transformation3Ds &transformations,
+   bool fast_version=false, bool local_score=false,
+   const FloatKey &wei_key=atom::Mass::get_mass_key());
 
 
 //! Compute fitting scores for a given set of rigid transformations
@@ -283,7 +283,7 @@ inline FittingSolutions compute_fitting_scores(
    const algebra::Transformation3Ds& transformations,
    const FloatKey &wei_key=atom::Mass::get_mass_key()) {
   return compute_fitting_scores(refiner->get_refined(rb),em_map,
-                                wei_key,transformations,true);
+                                transformations,true);
 }
 
 
