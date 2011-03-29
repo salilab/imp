@@ -39,6 +39,8 @@ VectorOfRefCounted<FailureHandler*> handlers;
 
 
 // logging
+bool print_time;
+boost::timer log_timer;
 
 LogLevel log_level= TERSE;
 unsigned int log_indent=0;

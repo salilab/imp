@@ -11,6 +11,7 @@
 #include "../kernel_config.h"
 #include "../file.h"
 #include <istream>
+#include <sstream>
 #include <boost/iostreams/categories.hpp>
 #include <boost/iostreams/operations.hpp>
 #include <boost/iostreams/filtering_stream.hpp>
@@ -35,6 +36,16 @@ class LogStream:
         to_indent_=true;
       } else if (to_indent_) {
         for (unsigned int i=0; i< log_indent; ++i) {
+          boost::iostreams::put(sink, ' ');
+        }
+        if (print_time) {
+          std::ostringstream oss;
+          oss << log_timer.elapsed();
+          std::string str= oss.str();
+          for (unsigned int i=0; i< str.size(); ++i) {
+            boost::iostreams::put(sink, str[i]);
+          }
+          boost::iostreams::put(sink, ':');
           boost::iostreams::put(sink, ' ');
         }
         to_indent_=false;

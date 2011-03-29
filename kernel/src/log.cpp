@@ -51,6 +51,16 @@ IMPEXPORT void push_log_context(std::string name) {
   context_initializeds.push_back(false);
 }
 
+void set_log_timer(bool tb) {
+  internal::print_time=tb;
+  reset_log_timer();
+}
+
+void reset_log_timer() {
+  internal::log_timer= boost::timer();
+}
+
+
 IMPEXPORT void pop_log_context() {
   if (context_initializeds.back()) {
     internal::log_indent-=2;
