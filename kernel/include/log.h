@@ -10,6 +10,7 @@
 
 #include "kernel_config.h"
 #include "macros.h"
+#include <boost/timer.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -72,6 +73,8 @@ enum LogLevel {DEFAULT=-1, SILENT=0, WARNING=1, PROGRESS=2,
 namespace internal {
   IMPEXPORT extern LogLevel log_level;
   IMPEXPORT extern unsigned int log_indent;
+  IMPEXPORT extern bool print_time;
+  IMPEXPORT extern boost::timer log_timer;
 }
 #endif
 
@@ -91,6 +94,12 @@ IMPEXPORT void add_to_log(std::string to_write);
 /** Note that this should not, currently, be used directly
     during Model::evaluate() calls. */
 IMPEXPORT void set_log_level(LogLevel l);
+
+//! Set whether log messages are tagged with the current log time
+IMPEXPORT void set_log_timer(bool tb);
+
+//! Reset the log timer
+IMPEXPORT void reset_log_timer();
 
 
 //! Get the currently active log level

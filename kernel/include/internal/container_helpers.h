@@ -222,10 +222,12 @@ public:                                                         \
 
 #define IMP_ACTIVE_CONTAINER_DEF(Name, extra_objects_log)               \
   void Name::Ticker::do_before_evaluate() {                             \
+    IMP_CHECK_OBJECT(back_);                                            \
     back_->do_before_evaluate();                                        \
     back_->eval_update_= back_->get_model()->get_evaluation();          \
   }                                                                     \
   void Name::Ticker::do_after_evaluate(DerivativeAccumulator*) {        \
+    IMP_CHECK_OBJECT(back_);                                            \
     back_->do_after_evaluate();                                         \
   }                                                                     \
   ContainersTemp Name::Ticker::get_input_containers() const {           \

@@ -43,5 +43,14 @@ class LogTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         IMP._test_log()
         print "done"
+
+    def test_log_time_functions(self):
+        """Test time log looks ok"""
+        # I don't feel like arranging to capture the output...
+        print "calling"
+        IMP.set_log_timer(True)
+        IMP.set_log_level(IMP.VERBOSE)
+        IMP._test_log()
+        print "done"
 if __name__ == '__main__':
     IMP.test.main()
