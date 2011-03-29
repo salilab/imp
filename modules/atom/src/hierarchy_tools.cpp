@@ -19,6 +19,7 @@
 #include <IMP/atom/estimates.h>
 #include <IMP/atom/Molecule.h>
 #include <IMP/atom/distance.h>
+#include <IMP/atom/Copy.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
 #include <IMP/core/ClosePairsPairScore.h>
