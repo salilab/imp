@@ -28,7 +28,7 @@ statistics::Histogram get_density_histogram(const DensGrid *dmap,
        it != dmap->indexes_end(lb, ub); ++it) {
     if ((*dmap)[*it]>max_val) max_val=(*dmap)[*it];
   }
-  //  std::cout<<"max hit:"<<max_val<<std::endl;
+  //std::cout<<"max hit:"<<max_val<<std::endl;
   statistics::Histogram hist(threshold-em::EPS,max_val+.1,
                              num_bins);
   for (DensGrid::IndexIterator it= dmap->indexes_begin(lb,ub);
