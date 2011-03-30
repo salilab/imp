@@ -64,7 +64,11 @@ void CoreClosePairContainer::initialize(SingletonContainer *c, double distance,
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer,
-                         moved_->set_log_level(l));
+                         {
+                           IMP_CHECK_OBJECT(moved_);
+                           IMP_CHECK_OBJECT(this);
+                           moved_->set_log_level(l);
+                         });
 
 
 void CoreClosePairContainer::set_slack(double s) {
