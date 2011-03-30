@@ -61,6 +61,7 @@ DiscreteSampler
 
 SubsetStates DiscreteSampler
 ::get_sample_states(const Subset &known_particles) const {
+  IMP_OBJECT_LOG;
   set_was_used(true);
   return do_get_sample_states(known_particles);
 }

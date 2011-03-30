@@ -111,6 +111,7 @@ namespace {
 
   Ints initialize_order(const Subset &s,
                         const SubsetFilterTables &sft) {
+    IMP_FUNCTION_LOG;
     Ints order;
     Ints remaining;
     for (unsigned int i=0; i< s.size(); ++i) {
@@ -182,7 +183,7 @@ namespace {
                          "Duplicate elements in order "
                          << taken.size() << " " << order.size());
     }
-    IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::flush);
+    IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::endl);
 
     IMP_CHECK_OBJECT(table);
     // create lists
@@ -243,6 +244,13 @@ namespace {
       }*/
 
   filter:
+    IMP_IF_LOG(VERBOSE) {
+      IMP_LOG(VERBOSE, "Current counter is ");
+      for (unsigned int i=0; i< order.size(); ++i) {
+        IMP_LOG(VERBOSE, cur[order[i]] << " ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
     //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       /*for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
@@ -261,6 +269,8 @@ namespace {
         }
         }*/
     }
+    // reset the increment
+    incr=1;
     for (int i=changed_digit; i >=0; --i) {
       for (unsigned int j=0; j < filters[i].size(); ++j) {
         // use boost iterator wrapper TODO
@@ -291,6 +301,9 @@ namespace {
           IMP_USAGE_CHECK(pos != -1, "Particle not found " << s << " vs "
                           << subset << " " << s[order[i]]->get_name());
           incr= filters[i][j]->get_next_state(pos, state)- state[pos];
+          IMP_LOG(VERBOSE, "Next state for " <<  filters[i][j]->get_name()
+                  << " is " << incr+state[pos] << " from " << state[pos]
+                  << " in " << state << " on " << subset << std::endl);
           IMP_USAGE_CHECK(incr>0, "invalid next state returned by "
                           << filters[i][j]->get_name()
                           << " " << filters[i][j]->get_next_state(pos, state));
@@ -308,6 +321,7 @@ namespace {
       unsigned int sz= states_.size();
       SubsetState to_push(cur);
       IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
+      incr=1;
       try {
         states_.push_back(to_push);
       } catch (std::bad_alloc) {
@@ -327,8 +341,15 @@ namespace {
     for (unsigned int i=0; i< current_digit; ++i) {
       cur[order[i]]=0;
     }
+    /*#if IMP_BUILD < IMP_FAST
+    for (unsigned int i=current_digit+1; i< order.size(); ++i) {
+      cur[order[i]]=-1;
+    }
+    #endif*/
     for (unsigned int i=current_digit; i < cur.size(); ++i) {
       cur[order[i]]+=incr;
+      // just use the increment of 1 for later states
+      incr=1;
       if (cur[order[i]]>=maxs[order[i]]) {
         cur[order[i]]=0;
       } else {
