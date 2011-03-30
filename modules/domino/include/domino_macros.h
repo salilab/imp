@@ -91,6 +91,7 @@
   IMP::domino::SubsetFilter* Name##SubsetFilterTable::                  \
   get_subset_filter(const IMP::domino::Subset &s,                       \
                     const IMP::domino::Subsets &excluded) const{        \
+    IMP_OBJECT_LOG;                                                     \
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
@@ -101,6 +102,7 @@
   double                                                                \
   Name##SubsetFilterTable::get_strength(const IMP::domino::Subset &s,   \
                         const IMP::domino::Subsets &excluded) const{    \
+    IMP_OBJECT_LOG;                                                     \
     set_was_used(true);                                                 \
     std::vector<Ints> all;                                              \
     Ints used;                                                          \
