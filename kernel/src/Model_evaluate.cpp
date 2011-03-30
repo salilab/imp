@@ -268,12 +268,13 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
   }
   Floats ret;
   boost::timer timer;
-  for (unsigned int i=0; i< restraints.size(); ++i) {
+  const unsigned int rsz=restraints.size();
+  for (unsigned int i=0; i< rsz; ++i) {
     double value=0;
     DerivativeAccumulator accum(weights[i]);
     if (gather_statistics_) timer.restart();
-    if (restraints[i]->get_supports_incremental()
-        && incremental_restraints != NONINCREMENTAL) {
+    if (incremental_restraints != NONINCREMENTAL
+        && restraints[i]->get_supports_incremental()) {
       if (incremental_evaluation) {
         WRAP_EVALUATE_CALL(restraints[i],
                            value=restraints[i]
@@ -285,8 +286,8 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                            restraints[i]->unprotected_evaluate(calc_derivs?
                                                                 &accum:NULL));
       }
-    } else if (!restraints[i]->get_supports_incremental()
-               && incremental_restraints != INCREMENTAL) {
+    } else if (incremental_restraints != INCREMENTAL
+               && !restraints[i]->get_supports_incremental()) {
       WRAP_EVALUATE_CALL(restraints[i],
                          value=
                          restraints[i]->unprotected_evaluate(calc_derivs?
