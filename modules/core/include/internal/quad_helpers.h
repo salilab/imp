@@ -273,6 +273,9 @@ protected:
   }
   ParticlesTemp get_contained_particles() const;
   bool get_contained_particles_changed() const;
+  bool get_listed_particle_quad_changed() const {
+    return changed_;
+  }
   QuadContainerPair get_added_and_removed_containers() const;
   bool get_contains_particle_quad(const ParticleQuad& p) const;
   unsigned int get_number_of_particle_quads() const;
