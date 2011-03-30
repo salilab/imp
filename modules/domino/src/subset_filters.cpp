@@ -333,6 +333,8 @@ DisjointSetsSubsetFilterTable::get_indexes(const Subset &s,
 
 
 void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
+  IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
+                  << " and explicitly are mutually exclusive.");
   if (ps.empty()) return;
   int set_index= get_index(ps[0]);
   for (unsigned int i=1; i< ps.size(); ++i) {
@@ -342,6 +344,8 @@ void DisjointSetsSubsetFilterTable::add_set(const ParticlesTemp &ps) {
   sets_.clear();
 }
 void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
+  IMP_USAGE_CHECK(!pst_, "Defining sets through the ParticleStatesTable"
+                  << " and explicitly are mutually exclusive.");
   int set_index= get_index(pp[0]);
   int index= get_index(pp[1]);
   disjoint_sets_.union_set(set_index, index);
