@@ -163,11 +163,15 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
             << " from a force of "
             << force[0]<< " " << force[1] << " " << force[2] << std::endl);
     algebra::Vector3D sum;
-    double nus3=3.0*strip_units(sigma);
+    double nus3=5.0*strip_units(sigma);
     for (unsigned int j=0;j< 3; ++j) {
       sum[j]= force[j]+random[j];
-      sum[j]= std::min(sum[j], nus3);
-      sum[j]= std::max(sum[j], -nus3);
+      if (std::abs(sum[j]) > nus3) {
+        std::cerr << "Truncating motion: " << sum[j] << " to " << nus3
+                  << std::endl;
+        sum[j]= std::min(sum[j], nus3);
+        sum[j]= std::max(sum[j], -nus3);
+      }
     }
     d.set_coordinates(d.get_coordinates()+sum);
   };
