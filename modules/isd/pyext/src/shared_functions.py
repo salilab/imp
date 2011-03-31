@@ -208,11 +208,11 @@ class sfo_common():
                 atom_type=IMP.atom.AtomType(atom[1])
                 ).get_selected_particles()
             if len(sel) > 1:
-                print "found multiple atoms for atom %d %s!" % (r2,at2)
+                print "found multiple atoms for atom %d %s!" % atom
                 return
             p0=IMP.core.XYZ(sel[0])
         except:
-            print "atom %d %s not found" % (r2,at2)
+            print "atom %d %s not found" % atom
             return
         return p0
 
@@ -227,7 +227,8 @@ class sfo_common():
         p0=self.find_atom(atoms[0], prot)
         p1=self.find_atom(atoms[1], prot)
         #create lognormal restraint using gamma_data = 1
-        return IMP.isd.NOERestraint(p0,p1,sigma,gamma,distance**(-6))
+        ln = IMP.isd.NOERestraint(p0,p1,sigma,gamma,distance**(-6))
+        return ln
 
     def init_model_ambiguous_NOE_restraint(self, contributions, distance, 
             sigma, gamma):
@@ -337,9 +338,9 @@ class sfo_common():
             os=IMP.atom.LangevinThermostatOptimizerState(
                     IMP.atom.get_leaves(prot), temperature, coupling)
             md.add_optimizer_state(os)
-            cen = IMP.atom.RemoveTranslationOptimizerState(
-                    IMP.atom.get_leaves(prot), recenter)
-            md.add_optimizer_state(cen)
+            #cen = IMP.atom.RemoveTranslationOptimizerState(
+            #        IMP.atom.get_leaves(prot), recenter)
+            #md.add_optimizer_state(cen)
         else:            
             raise NotImplementedError, thermostat
 
@@ -383,7 +384,7 @@ class sfo_common():
         #why is this returning an int?
         mc.add_mover(mover)
         #set same temp as MD, careful with units
-        mc.set_temperature(kB*temperature)
+        mc.set_kt(kB*temperature)
         #allow to go uphill
         mc.set_return_best(False)
         #update all particles each time
@@ -393,14 +394,48 @@ class sfo_common():
             mc.set_restraints(mc_restraints)
         return mc
 
-    def init_simulation_setup_protein_hmc(self, prot, temperature=300.0,
-            thermostat='berendsen', coupling=500, n_md_steps=10,
-            md_restraints=None, mc_restraints=None, timestep=1.0):
-        """setup hybrid monte-carlo on protein.
+    def init_simulation_setup_protein_hmc_hopper(self, prot, temperature=300.0,
+            gamma=0.01, n_md_steps=10,
+            md_restraints=None, mc_restraints=None, timestep=1.0,
+            sd_threshold=0.0, sd_stepsize=0.01, sd_maxsteps=100):
+        """setup hybrid monte-carlo on protein. Uses basin hopping with steepest
+        descent minimization.
         - prot: protein hierarchy.
         - temperature: target temperature.
-        - thermostat: one of 'NVE', rescale_velocities',
-                                'berendsen', 'langevin'
+        - gamma: coupling constant for langevin (/fs)
+        - n_md_steps: number of md steps per mc step
+        - md_restraints: if not None, specify the terms of the energy to be used
+                            during the md steps.
+        - mc_restraints: if not None, use these energy terms for the metropolis
+                            criterion.
+        - timestep: time step for md, in femtoseconds.
+        - sd_threshold: stop steepest descent after energy difference drops
+                below that threshold
+        - sd_stepsize: stepsize to use for the steepest descent, in angstrom.
+        - sd_maxsteps: maximum number of steps for steepest descent
+        Returns: hmc, mdmover, md and OptimizerState (thermostat)
+        """
+        raise NotImplementedError
+        md, os = self._setup_md(prot, temperature=temperature,
+                thermostat='langevin', coupling=gamma,
+                md_restraints=md_restraints, timestep=timestep)
+        particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
+        mdmover = self._setup_md_mover(md, particles, temperature, n_md_steps)
+        hmc = self._setup_mc(mdmover, temperature, mc_restraints)
+        sd=IMP.core.SteepestDescent(self._m)
+        sd.set_threshold(sd_threshold)
+        sd.set_step_size(sd_stepsize)
+        hmc.set_local_optimizer(sd)
+        hmc.set_local_steps(sd_maxsteps)
+        hmc.set_use_basin_hopping(True)
+        return hmc, mdmover, md, os
+
+    def init_simulation_setup_protein_hmc_nve(self, prot, temperature=300.0,
+            n_md_steps=100, md_restraints=None, mc_restraints=None,
+            timestep=1.0):
+        """setup hybrid monte-carlo on protein. Uses NVE MD and tries the full
+        - prot: protein hierarchy.
+        - temperature: target temperature.
         - coupling: coupling constant (tau (fs) for berendsen, 
                                         gamma (/fs) for langevin)
         - n_md_steps: number of md steps per mc step
@@ -409,14 +444,25 @@ class sfo_common():
         - mc_restraints: if not None, use these energy terms for the metropolis
                             criterion.
         - timestep: time step for md, in femtoseconds.
+        - sd_threshold: stop steepest descent after energy difference drops
+                below that threshold
+        - sd_stepsize: stepsize to use for the steepest descent, in angstrom.
+        - sd_maxsteps: maximum number of steps for steepest descent
         Returns: hmc, mdmover, md and OptimizerState (thermostat)
         """
+        raise NotImplementedError
         md, os = self._setup_md(prot, temperature=temperature,
                 thermostat=thermostat, coupling=coupling,
                 md_restraints=md_restraints, timestep=timestep)
         particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         mdmover = self._setup_md_mover(md, particles, temperature, n_md_steps)
         hmc = self._setup_mc(mdmover, temperature, mc_restraints)
+        sd=IMP.core.SteepestDescent(self._m)
+        sd.set_threshold(sd_threshold)
+        sd.set_step_size(sd_stepsize)
+        hmc.set_local_optimizer(sd)
+        hmc.set_local_steps(sd_maxsteps)
+        hmc.set_use_basin_hopping(True)
         return hmc, mdmover, md, os
 
     def init_simulation_setup_scale_mc(self, scale, temperature=300.0,
@@ -441,14 +487,13 @@ class sfo_common():
         update stepsize and store nsteps, acceptance and stepsize in the
         statistics instance self.stat by using the key stats_key.
         """
-        before = mc.get_number_of_forward_steps()
         #do the monte carlo
         mc.optimize(nsteps)
-        after = mc.get_number_of_forward_steps()
+        naccept = mc.get_number_of_forward_steps()
         #increment the counter for this simulation
         self.stat.increment_counter(stats_key, nsteps)
         #get the acceptance rate, stepsize
-        accept = float(after-before)/nsteps
+        accept = float(naccept)/nsteps
         self.stat.update(stats_key, 'acceptance', accept)
         stepsize = nm.get_sigma()
         self.stat.update(stats_key, 'stepsize', stepsize)
@@ -468,13 +513,12 @@ class sfo_common():
         steps to reach a target acceptance between 0.4 and 0.6, sends
         statistics to self.stat. MD steps are always at least 10 and at most 500.
         """
-        before = hmc.get_number_of_forward_steps()
         hmc.optimize(nsteps)
-        after = hmc.get_number_of_forward_steps()
+        naccept = hmc.get_number_of_forward_steps()
         self.stat.increment_counter(stats_key, nsteps)
-        accept = float(after-before)/nsteps
+        accept = float(naccept)/nsteps
         self.stat.update(stats_key, 'acceptance', accept)
-        mdsteps = mv.get_nsteps()
+        mdsteps = mv.get_number_of_steps()
         self.stat.update(stats_key, 'n_md_steps', mdsteps)
         if adjust_stepsize:
             if 0.4 < accept < 0.6:
@@ -526,6 +570,7 @@ class sfo_common():
         #create category
         mc_key = stat.add_category(name=name)
         #giving None as argument is a way to create a static entry.
+        stat.add_entry(mc_key, entry=Entry('temperature', '%10f', None))
         stat.add_entry(mc_key, entry=Entry('acceptance', '%10f', None))
         stat.add_entry(mc_key, entry=Entry('stepsize', '%10f', None))
         #special call to add coordinates to be dumped
@@ -560,8 +605,10 @@ class sfo_common():
         #create category
         hmc_key = stat.add_category(name=name)
         #giving None as argument is a way to create a static entry.
+        stat.add_entry(hmc_key, entry=Entry('temperature', '%10f', None))
         stat.add_entry(hmc_key, entry=Entry('acceptance', '%10f', None))
         stat.add_entry(hmc_key, entry=Entry('n_md_steps', '%10d', None))
+        stat.add_entry(hmc_key, entry=Entry('E_kinetic', '%10f', None))
         #special call to add coordinates to be dumped
         stat.add_coordinates(hmc_key, coord)
         #add the counter to the output
