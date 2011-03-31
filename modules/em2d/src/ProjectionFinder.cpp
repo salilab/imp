@@ -76,8 +76,10 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
     polar_params_.create_maps_for_resampling();
   }
 
+  projections_.clear();
   projections_.resize(projections.size());
   unsigned int n_projections = projections_.size();
+  PROJECTIONS_POLAR_AUTOC_.clear();
   PROJECTIONS_POLAR_AUTOC_.resize(n_projections);
   projections_cog_.resize(n_projections);
   boost::timer preprocessing_timer;
