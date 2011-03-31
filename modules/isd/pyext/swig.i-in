@@ -8,7 +8,11 @@
   */
 IMP_SWIG_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
+IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
+IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
+IMP_SWIG_OBJECT(IMP::isd, vonMises, vonMisess);
+IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
@@ -16,6 +20,7 @@ IMP_SWIG_OBJECT(IMP::isd, ScaleRangeModifier, ScaleRangeModifiers);
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
+IMP_SWIG_OBJECT(IMP::isd, LognormalSAXSRestraint, LognormalSAXSRestraints);
 
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
@@ -41,11 +46,16 @@ def create_model_and_particles():
 %include "IMP/isd/ScaleRangeModifier.h"
 %include "IMP/isd/JeffreysRestraint.h"
 %include "IMP/isd/FNormal.h"
+%include "IMP/isd/vonMises.h"
+%include "IMP/isd/vonMisesSufficient.h"
+%include "IMP/isd/vonMisesKappaJeffreysRestraint.h"
+%include "IMP/isd/vonMisesKappaConjugateRestraint.h"
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/LogicalORRestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/RegularRepulsiveDistancePairScore.h"
 %include "IMP/isd/AmbiguousRestraint.h"
+%include "IMP/isd/LognormalSAXSRestraint.h"
 
 namespace IMP {
   namespace atom {
