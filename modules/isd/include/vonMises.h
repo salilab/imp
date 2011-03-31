@@ -62,10 +62,12 @@ class vonMises : public Object
     mu_=mu;
   }
   void set_kappa(double kappa) {
-    kappa_ = kappa;
-    I0_ = boost::math::cyl_bessel_i(0, kappa);
-    I1_ = boost::math::cyl_bessel_i(1, kappa);
-    logterm_ = log(2*IMP::PI*I0_);
+    if (kappa_ != kappa) {
+        kappa_ = kappa;
+        I0_ = boost::math::cyl_bessel_i(0, kappa);
+        I1_ = boost::math::cyl_bessel_i(1, kappa);
+        logterm_ = log(2*IMP::PI*I0_);
+    }
   }
 
   IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
