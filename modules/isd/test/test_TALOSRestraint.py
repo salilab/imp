@@ -1,0 +1,202 @@
+#!/usr/bin/env python
+
+#general imports
+from numpy import *
+from random import gauss,uniform,randint
+from scipy.special import i0,i1
+
+
+#imp general
+import IMP
+
+#our project
+from IMP.isd import Scale,TALOSRestraint
+
+#unit testing framework
+import IMP.test
+
+class TestTALOSRestraint(IMP.test.TestCase):
+    "simple test cases to check if TALOSRestraint works"
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        #IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        #setup dihedral angle of pi/2
+        self.p0 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                IMP.algebra.Vector3D(1,0,0))
+        self.p1 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                IMP.algebra.Vector3D(0,0,0))
+        self.p2 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                IMP.algebra.Vector3D(0,1,0))
+        self.p3 = IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                IMP.algebra.Vector3D(0,1,1))
+        #scale particle
+        self.kappa = Scale.setup_particle(IMP.Particle(self.m), 2.0)
+        self.DA = IMP.DerivativeAccumulator()
+
+    def setup_restraint(self):
+        N=randint(1,20)
+        self.N=N
+        self.meanv=uniform(-pi,pi)
+        self.stdev=uniform(0,2*pi)
+        self.obs = array([gauss(self.meanv,self.stdev) for i in xrange(N)])
+        self.cosbar = (cos(self.obs).sum())/N
+        self.sinbar = (sin(self.obs).sum())/N
+        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
+                self.kappa, N, self.cosbar, self.sinbar)
+        self.m.add_restraint(self.talos)
+
+    def test_statistics(self):
+        "tests the sufficient statistics"
+        for i in xrange(100):
+            N=randint(1,20)
+            meanv=uniform(-pi,pi)
+            stdev=uniform(0,2*pi)
+            obs = array([gauss(meanv,stdev) for j in xrange(N)])
+            cosbar = (cos(obs).sum())/N
+            sinbar = (sin(obs).sum())/N
+            cpp = IMP.isd.TALOSRestraint.get_sufficient_statistics(obs)
+            self.assertEqual(cpp[0],N)
+            self.assertAlmostEqual(cpp[1],cosbar)
+            self.assertAlmostEqual(cpp[2],sinbar)
+
+    def testValueDDist(self):
+        """test derivatives for the angle using a small CG minimization"""
+        self.N=10
+        #self.meanv=pi/2
+        #self.stdev=pi/4
+        #obs = array([gauss(self.meanv,self.stdev) for j in xrange(self.N)])
+        #self.cosbar = (cos(obs).sum())/self.N
+        #self.sinbar = (sin(obs).sum())/self.N
+        #
+        #case of perfectly matching observations. Mode does not change if sinbar
+        # changes.
+        self.cosbar = cos(pi/3)
+        self.sinbar = sin(pi/3)
+        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
+                self.kappa, self.N, self.cosbar, self.sinbar)
+        self.m.add_restraint(self.talos)
+        #constrain particles to a fixed "bondlength" of 1
+        uf=IMP.core.Harmonic(1,100)
+        df = IMP.core.DistancePairScore(uf)
+        self.m.add_restraint(
+                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p0,self.p1)))
+        self.m.add_restraint(
+                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p1,self.p2)))
+        self.m.add_restraint(
+                IMP.core.PairRestraint(df, IMP.ParticlePair(self.p2,self.p3)))
+        self.p3.set_coordinates_are_optimized(True)
+        self.p2.set_coordinates_are_optimized(False)
+        self.p1.set_coordinates_are_optimized(False)
+        self.p0.set_coordinates_are_optimized(False)
+        cg=IMP.core.ConjugateGradients(self.m)
+        for i in xrange(10):
+            x=i/(2*pi)
+            self.p3.set_coordinates(IMP.algebra.Vector3D(
+                cos(2*pi-x),1,sin(2*pi-x)))
+            kappa = uniform(1,5)
+            self.kappa.set_scale(kappa)
+            cg.optimize(100)
+            self.talos.evaluate(self.DA)
+            pos=self.p3.get_coordinates()
+            obssin=-pos[2]/sqrt(pos[0]**2+pos[2]**2)
+            obscos=pos[0]/sqrt(pos[0]**2+pos[2]**2)
+            self.assertAlmostEqual(obscos,cos(pi/3),delta=1e-6)
+            self.assertAlmostEqual(obssin,sin(pi/3),delta=1e-6)
+    
+    def testValueDKappa1(self):
+        """test derivatives for kappa by varying kappa"""
+        self.setup_restraint()
+        self.p3.set_coordinates(IMP.algebra.Vector3D(0,1,-1))
+        for i in xrange(100):
+            kappa = uniform(0.1,10)
+            self.kappa.set_scale(kappa)
+            self.talos.evaluate(self.DA)
+            py=self.N*i1(kappa)/i0(kappa) - self.N*self.sinbar
+            cpp=self.kappa.get_scale_derivative()
+            if py == 0:
+                self.assertEqual(cpp,0)
+            else:
+                self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
+
+    def testValueDKappa2(self):
+        """test derivatives for kappa by varying the angle"""
+        self.setup_restraint()
+        for i in xrange(100):
+            x=i/(2*pi)
+            self.p3.set_coordinates(IMP.algebra.Vector3D(
+                cos(2*pi-x),1,sin(2*pi-x)))
+            kappa = self.kappa.get_scale()
+            self.talos.evaluate(self.DA)
+            py=self.N*i1(kappa)/i0(kappa) - self.N*(cos(x)*self.cosbar +
+                    sin(x)*self.sinbar)
+            cpp=self.kappa.get_scale_derivative()
+            if py == 0:
+                self.assertEqual(cpp,0)
+            else:
+                self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
+    
+    def testValueEDist(self):
+        """test energy of the restraint by varying p3"""
+        self.setup_restraint()
+        for i in xrange(100):
+            x=i/(2*pi)
+            self.p3.set_coordinates(IMP.algebra.Vector3D(
+                cos(2*pi-x),1,sin(2*pi-x)))
+            kappa = self.kappa.get_scale()
+            cpp=self.talos.evaluate(None)
+            py=log(2*pi*i0(kappa)**self.N) - self.N*kappa*(cos(x)*self.cosbar +
+                    sin(x)*self.sinbar)
+            if py == 0:
+                self.assertEqual(cpp,0)
+            else:
+                self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
+    
+    def testValueEKappa(self):
+        """test energy of the restraint by varying kappa"""
+        self.setup_restraint()
+        self.p3.set_coordinates(IMP.algebra.Vector3D(0,1,-1))
+        for i in xrange(100):
+            kappa = uniform(0.1,10)
+            self.kappa.set_scale(kappa)
+            cpp=self.talos.evaluate(None)
+            py=log(2*pi*i0(kappa)**self.N) - self.N*kappa*self.sinbar
+            if py == 0:
+                self.assertEqual(cpp,0)
+            else:
+                self.assertAlmostEqual(cpp/py,1.0,delta=1e-6)
+    
+    def testParticles(self):
+        "test get_input_particles"
+        self.setup_restraint()
+        self.assertEqual(self.talos.get_input_particles(),
+                [self.p0,self.p1,self.p2,self.p3,self.kappa])
+
+    def testContainers(self):
+        "test get_input_containers"
+        self.setup_restraint()
+        self.assertEqual(self.talos.get_input_containers(),[])
+
+    def testSanityEP(self):
+        "test if score is -log(prob)"
+        self.setup_restraint()
+        for i in xrange(100):
+            no=uniform(0.1,10)
+            self.kappa.set_scale(no)
+            self.assertAlmostEqual(self.talos.unprotected_evaluate(self.DA),
+                    -log(self.talos.get_probability()),delta=0.001)
+
+    def testSanityPE(self):
+        "test if prob is exp(-score)"
+        self.setup_restraint()
+        for i in xrange(100):
+            no=uniform(0.1,10)
+            self.kappa.set_scale(no)
+            self.assertAlmostEqual(self.talos.get_probability(),
+                    exp(-self.talos.unprotected_evaluate(self.DA)),delta=0.001)
+
+if __name__ == '__main__':
+    IMP.test.main()
+
+
