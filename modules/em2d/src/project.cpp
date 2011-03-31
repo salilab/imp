@@ -118,7 +118,6 @@ void do_project_particles(const ParticlesTemp &ps,
   }
   // Centroid
   unsigned long n_particles = ps.size();
-
   algebra::Vector3D centroid(0.0,0.0,0.0);
   for (unsigned long i=0; i<n_particles; i++) {
     core::XYZ xyz(ps[i]);
