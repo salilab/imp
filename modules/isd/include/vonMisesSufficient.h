@@ -84,11 +84,13 @@ class vonMisesSufficient : public Object
   }
 
   void set_kappa(double kappa) {
-    kappa_ = kappa;
-    I0_ = double(boost::math::cyl_bessel_i(0, kappa));
-    I1_ = double(boost::math::cyl_bessel_i(1, kappa));
-    I0N_=pow(I0_,N_);
-    logterm_ = log(2*IMP::PI*I0N_);
+    if (kappa_ != kappa) {
+        kappa_ = kappa;
+        I0_ = double(boost::math::cyl_bessel_i(0, kappa));
+        I1_ = double(boost::math::cyl_bessel_i(1, kappa));
+        I0N_=pow(I0_,N_);
+        logterm_ = log(2*IMP::PI*I0N_);
+    }
   }
 
   IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_ << ", " << N_
