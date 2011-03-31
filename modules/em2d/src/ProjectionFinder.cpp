@@ -43,10 +43,14 @@ IMPEM2D_BEGIN_NAMESPACE
     polar_params_.create_maps_for_resampling();
   }
   boost::timer preprocessing_timer;
+  subjects_.clear(); // caution measure if the finder is called more than once
   subjects_.resize(subjects.size());
   unsigned int n_subjects = subjects_.size();
+  registration_results_.clear();
   registration_results_.resize(n_subjects);
+  SUBJECTS_.clear();
   SUBJECTS_.resize(n_subjects);
+  SUBJECTS_POLAR_AUTOC_.clear();
   SUBJECTS_POLAR_AUTOC_.resize(n_subjects);
   subjects_cog_.resize(n_subjects);
   for (unsigned int i=0;i<n_subjects;++i) {
