@@ -43,6 +43,12 @@
 #define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname)
 #endif // SWIG
 
+#ifdef GCC_VISIBILITY
+# define IMP_FORCE_EXPORT(x) __attribute__ ((visibility("default"))) x
+#else
+# define IMP_FORCE_EXPORT(x) x
+#endif
+
 /**  \brief  A macro to provide a uniform interface for storing lists of
      objects.
 
@@ -140,7 +146,12 @@ struct Ucname##DataWrapper: public PluralData {                         \
   }                                                                     \
   template <class TT>                                                   \
   static void do_handle_remove( Data d, TT *container);                 \
-  ~Ucname##DataWrapper();                                               \
+  /* Older GCC (e.g. on Mac OS X 10.4) does not correctly export the
+     symbol for this destructor even when the surrounding class is itself
+     exported, causing lookup failures in DSOs that use the class.
+     Work around this by forcing the symbol to be exported. Ideally, we
+     should have a configure check for this problem... */               \
+  IMP_FORCE_EXPORT(~Ucname##DataWrapper());                             \
 };                                                                      \
 friend struct Ucname##DataWrapper;                                      \
 IMP_NO_DOXYGEN(Ucname##DataWrapper lcname##_vector_;)                   \
