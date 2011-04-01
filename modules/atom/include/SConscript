@@ -45,6 +45,7 @@ files = [
          'bond_graph.h',
          'charmm_segment_topology.h',
          'charmm_topology.h',
+         'dihedrals.h',
          'distance.h',
          'element.h',
          'estimates.h',
