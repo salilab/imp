@@ -1,6 +1,8 @@
 import IMP
 import IMP.test
 import IMP.atom
+import IMP.core
+import math
 
 class DihedralTests(IMP.test.TestCase):
     """Test dihedral functions"""
@@ -27,8 +29,15 @@ class DihedralTests(IMP.test.TestCase):
         # both are defined for all other residues
         for h_r in res[1:-2]:
             r = IMP.atom.Residue(h_r)
-            self.assertEqual(len(IMP.atom.get_phi_dihedral(r)), 4)
-            self.assertEqual(len(IMP.atom.get_psi_dihedral(r)), 4)
+            phi = IMP.atom.get_phi_dihedral(r)
+            psi = IMP.atom.get_psi_dihedral(r)
+            self.assertEqual(len(phi), 4)
+            self.assertEqual(len(psi), 4)
+            # phi and psi should both be -pi for extended chain conformation
+            d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in phi])
+            self.assertAlmostEqual(d, -math.pi, delta=1e-4)
+            d = IMP.core.get_dihedral(*[IMP.core.XYZ(x) for x in psi])
+            self.assertAlmostEqual(d, -math.pi, delta=1e-4)
         # phi/psi cease to be defined if at least one atom is missing
         r = IMP.atom.Residue(res[2])
         a = IMP.atom.get_atom(r, IMP.atom.AT_CA)

@@ -10,6 +10,7 @@
 
 #include "core_config.h"
 #include "../macros.h"
+#include "internal/dihedral_helpers.h"
 
 #include <IMP/Decorator.h>
 #include <IMP/algebra/Vector3D.h>
@@ -144,6 +145,14 @@ IMP_OUTPUT_OPERATOR(XYZ);
  */
 inline double get_distance(XYZ a, XYZ b) {
   return algebra::get_distance(a.get_coordinates(),b.get_coordinates());
+}
+
+//! Compute the dihedral angle (in radians) between the four particles
+/** \ingroup helper
+    \relatesalso XYZ
+ */
+inline double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
+  return internal::dihedral(a, b, c, d, NULL, NULL, NULL, NULL);
 }
 
 //! Apply a transformation to the particle
