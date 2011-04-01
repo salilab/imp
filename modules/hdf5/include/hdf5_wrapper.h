@@ -290,6 +290,12 @@ class IMPHDF5EXPORT HDF5Group {
 IMP_VALUES(HDF5Group, HDF5Groups);
 
 
+inline int get_number_of_open_hdf5_handles() {
+  H5garbage_collect();
+  return H5Fget_obj_count(H5F_OBJ_ALL, H5F_OBJ_ALL);
+}
+
+
 IMPHDF5_END_NAMESPACE
 
 #endif /* IMPHDF5_HDF5_WRAPPER_H */
