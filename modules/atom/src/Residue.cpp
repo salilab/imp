@@ -129,6 +129,14 @@ Hierarchy get_next_residue(Residue rd) {
   return r;
 }
 
+Hierarchy get_previous_residue(Residue rd) {
+  // only handle simple case so far
+  Hierarchy p= rd.get_parent();
+  Chain c= p.get_as_chain();
+  Hierarchy r=get_residue(c, rd.get_index()-1);
+  return r;
+}
+
 namespace {
   struct RP: public std::pair<char, ResidueType> {
     RP(ResidueType rt, char c): std::pair<char, ResidueType>(c, rt) {}

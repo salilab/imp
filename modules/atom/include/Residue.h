@@ -211,7 +211,7 @@ IMPATOMEXPORT Chain get_chain(Residue rd, bool nothrow=false);
 /** \relatesalso Residue
 
     Return the residue from the same chain with one
-    higher index, or Residue().
+    higher index, or Hierarchy().
 
     \note Currently, this function only works if
     the parent of rd is the chain. This should be fixed
@@ -222,6 +222,14 @@ IMPATOMEXPORT Chain get_chain(Residue rd, bool nothrow=false);
     be a Residue particle.
  */
 IMPATOMEXPORT Hierarchy get_next_residue(Residue rd);
+
+/** \relatesalso Residue
+
+    Return the residue from the same chain with one
+    lower index, or Hierarchy().
+    \see get_next_residue
+ */
+IMPATOMEXPORT Hierarchy get_previous_residue(Residue rd);
 
 /** Get the residue type from the 1-letter amino acid
     code.
