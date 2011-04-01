@@ -106,12 +106,16 @@ std::string IndexTraits::get_name() {
 
 namespace {
   const size_t max_length=40;
+  hid_t get_string_type() {
+    hid_t r= H5Tcopy(H5T_C_S1);
+    IMP_HDF5_CALL(H5Tset_size(r, max_length));
+    IMP_HDF5_CALL(H5Tset_strpad(r, H5T_STR_NULLTERM));
+    return r;
+  }
+  HDF5Handle string_type(get_string_type(), H5Tclose);
 }
 hid_t StringTraits::get_hdf5_type() {
-  hid_t r= H5Tcopy(H5T_C_S1);
-  IMP_HDF5_CALL(H5Tset_size(r, max_length));
-  IMP_HDF5_CALL(H5Tset_strpad(r, H5T_STR_NULLTERM));
-  return r;
+  return string_type;
 }
 void StringTraits::write_value_dataset(hid_t d, hid_t is,
                                          hid_t s, std::string str) {
@@ -146,7 +150,6 @@ void StringTraits::write_values_attribute(hid_t d,
 }
 std::vector<std::string> StringTraits::read_values_attribute(hid_t d,
                                                              unsigned int num) {
-  // memory leak...
   boost::scoped_array<char> buf(new char[num*max_length]);
   std::fill(buf.get(), buf.get()+num*max_length, '\0');
   char *ptr= buf.get();
