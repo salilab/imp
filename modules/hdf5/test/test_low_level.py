@@ -17,9 +17,12 @@ class GenericTest(IMP.test.TestCase):
         self._show(f)
         del g
         del f
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 1)
         f= IMP.hdf5.HDF5Group(self.get_tmp_file_name("test.hdf5"), False)
         print "showing"
         self._show(f)
+        del f
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 1)
 
     def test_ds(self):
         """Test low level usage of hdf5 with datasets"""
@@ -46,7 +49,10 @@ class GenericTest(IMP.test.TestCase):
         ds.set_value([0,0,0],1)
         print ds.get_value([0,0,0]);
         self.assertEqual(ds.get_value([0,0,0]), 1)
-
+        del f
+        del g
+        del ds
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 1)
     def test_dsgrow(self):
         """Test low level usage of hdf5 with datasets that grow"""
         f= IMP.hdf5.HDF5Group(self.get_tmp_file_name("testdg.hdf5"), True)
@@ -77,22 +83,38 @@ class GenericTest(IMP.test.TestCase):
         print "getting",1,1,1
         print ds.get_value([1,1,1])
 
+        del ds
+        del f
+        del g
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 1)
+
 
     def test_as(self):
         """Test low level usage of hdf5 with attributes"""
         f= IMP.hdf5.HDF5Group(self.get_tmp_file_name("testa.hdf5"), True)
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 2)
         self._show(f)
         print "adding"
         g= f.add_child("hi")
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         print "float"
         f.set_float_attribute("at", [2.0])
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         print f.get_float_attribute("at")
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         self.assertEqual(f.get_float_attribute("at"), [2.0])
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         print "string"
         f.set_string_attribute("str", ["there", "not there"])
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         self._show(f)
         print f.get_string_attribute("str")
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 3)
         self.assertEqual(f.get_string_attribute("str"), ["there", "not there"])
+        del g
+        del f
+        print "done"
+        self.assertEqual(IMP.hdf5.get_number_of_open_hdf5_handles(), 1)
 
 if __name__ == '__main__':
     unittest.main()
