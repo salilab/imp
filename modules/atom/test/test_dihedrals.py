@@ -22,15 +22,15 @@ class DihedralTests(IMP.test.TestCase):
         first_r = IMP.atom.Residue(res[0])
         last_r = IMP.atom.Residue(res[-1])
         # phi/psi are not defined for first/last residue in chain
-        self.assertEqual(len(IMP.atom.get_phi_dihedral(first_r)), 0)
-        self.assertEqual(len(IMP.atom.get_phi_dihedral(last_r)), 4)
-        self.assertEqual(len(IMP.atom.get_psi_dihedral(first_r)), 4)
-        self.assertEqual(len(IMP.atom.get_psi_dihedral(last_r)), 0)
+        self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(first_r)), 0)
+        self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(last_r)), 4)
+        self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(first_r)), 4)
+        self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(last_r)), 0)
         # both are defined for all other residues
         for h_r in res[1:-2]:
             r = IMP.atom.Residue(h_r)
-            phi = IMP.atom.get_phi_dihedral(r)
-            psi = IMP.atom.get_psi_dihedral(r)
+            phi = IMP.atom.get_phi_dihedral_atoms(r)
+            psi = IMP.atom.get_psi_dihedral_atoms(r)
             self.assertEqual(len(phi), 4)
             self.assertEqual(len(psi), 4)
             # phi and psi should both be -pi for extended chain conformation
@@ -42,8 +42,8 @@ class DihedralTests(IMP.test.TestCase):
         r = IMP.atom.Residue(res[2])
         a = IMP.atom.get_atom(r, IMP.atom.AT_CA)
         IMP.atom.destroy(a)
-        self.assertEqual(len(IMP.atom.get_phi_dihedral(r)), 0)
-        self.assertEqual(len(IMP.atom.get_psi_dihedral(r)), 0)
+        self.assertEqual(len(IMP.atom.get_phi_dihedral_atoms(r)), 0)
+        self.assertEqual(len(IMP.atom.get_psi_dihedral_atoms(r)), 0)
 
 
 

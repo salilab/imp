@@ -44,7 +44,7 @@ namespace {
     }
   };
 
-  Atoms get_dihedral(Residue rd, const DihedralAtom *dihedral)
+  Atoms get_dihedral_atoms(Residue rd, const DihedralAtom *dihedral)
   {
     Atoms atoms;
     for (int i = 0; i < 4; ++i) {
@@ -59,7 +59,7 @@ namespace {
   }
 }
 
-Atoms get_phi_dihedral(Residue rd)
+Atoms get_phi_dihedral_atoms(Residue rd)
 {
   static DihedralAtom dihedral[4] = {
     DihedralAtom(DihedralAtom::PREV, AT_C),
@@ -67,10 +67,10 @@ Atoms get_phi_dihedral(Residue rd)
     DihedralAtom(DihedralAtom::THIS, AT_CA),
     DihedralAtom(DihedralAtom::THIS, AT_C)
   };
-  return get_dihedral(rd, dihedral);
+  return get_dihedral_atoms(rd, dihedral);
 }
 
-Atoms get_psi_dihedral(Residue rd)
+Atoms get_psi_dihedral_atoms(Residue rd)
 {
   static DihedralAtom dihedral[4] = {
     DihedralAtom(DihedralAtom::THIS, AT_N),
@@ -78,7 +78,7 @@ Atoms get_psi_dihedral(Residue rd)
     DihedralAtom(DihedralAtom::THIS, AT_C),
     DihedralAtom(DihedralAtom::NEXT, AT_N)
   };
-  return get_dihedral(rd, dihedral);
+  return get_dihedral_atoms(rd, dihedral);
 }
 
 IMPATOM_END_NAMESPACE
