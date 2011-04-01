@@ -46,6 +46,13 @@ IMPHDF5EXPORT void write_hierarchy(atom::Hierarchy hs, RootHandle fh);
  */
 IMPHDF5EXPORT atom::Hierarchies read_all_hierarchies(RootHandle fh, Model *m);
 
+
+/** Associate the passed hierarchies with all the hierarchies in the file.
+    They must match exactly.
+*/
+IMPHDF5EXPORT void associate_all_hierarchies(RootHandle rh,
+                                             atom::Hierarchies hs);
+
 /** Read the ith frame from a file as a new hierarchy.
  */
 IMPHDF5EXPORT void load_configuration(RootHandle fh,
