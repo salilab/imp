@@ -58,9 +58,11 @@ int main(int argc, char **argv) {
     std::cout << xk << std::endl;
     maxframe= rh.get_number_of_frames(xk)+1;
   }
+  int step=1;
+  if (frame<0) step=std::abs(frame);
   std::cout << "Reading frames [" << minframe << ", "
-            << maxframe << ")" <<std::endl;
-  for (int cur_frame=minframe; cur_frame < maxframe; ++cur_frame) {
+            << maxframe << ": " << step << ")" <<std::endl;
+  for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
     std::string name=output;
     bool append=false;
     if (frame<0 && name.find("%1%")==std::string::npos) {
