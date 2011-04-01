@@ -42,6 +42,10 @@ bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
   }
 }
 
+SharedData::~SharedData() {
+  H5garbage_collect();
+}
+
 void SharedData::check_node(unsigned int node) const {
   IMP_USAGE_CHECK(names_.get_size()[0] > int(node), "Invalid node specified: "
                   << node);

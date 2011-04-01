@@ -373,6 +373,7 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
   }
 
   SharedData(std::string name, bool clear);
+  ~SharedData();
   int add_node(std::string name, unsigned int type);
   int get_first_child(unsigned int node) const;
   int get_sibling(unsigned int node) const;
