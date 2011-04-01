@@ -393,4 +393,25 @@ void SaveHierarchyConfigurationOptimizerState
     out << "  hierarchy: " << hs_[i]->get_name() << std::endl;
   }
 }
+
+namespace {
+  void associate_internal(NodeHandle nh, atom::Hierarchy h) {
+    nh.set_association(h);
+    NodeHandles children= nh.get_children();
+    for (unsigned int i=0; i< children.size(); ++i) {
+      associate_internal(children[i], h.get_child(i));
+    }
+  }
+}
+
+void associate_all_hierarchies(RootHandle rh, atom::Hierarchies hs) {
+  NodeHandle root= rh;
+  NodeHandles children= root.get_children();
+  for (unsigned int i=0; i< children.size(); ++i) {
+    if (children[i].get_type()== REPRESENTATION) {
+      associate_internal(children[i], hs[i]);
+    }
+  }
+}
+
 IMPHDF5_END_NAMESPACE
