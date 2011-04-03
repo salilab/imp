@@ -506,6 +506,16 @@ bool Selection::check_nonradius(Hierarchy h) const {
       if (!std::binary_search(copies_.begin(), copies_.end(),
                               copy)) return false;
     }
+    if (!types_.empty()) {
+      if (!core::Typed::particle_is_instance(h)) {
+        return false;
+      } else {
+        core::Typed d(h);
+        if (!std::binary_search(types_.begin(), types_.end(), d.get_type())) {
+          return false;
+        }
+      }
+    }
   } catch (ValueException) {
     return false;
   }
