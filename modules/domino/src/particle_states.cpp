@@ -40,7 +40,8 @@ unsigned int XYZStates::get_number_of_particle_states() const {
   return states_.size();
 }
 void XYZStates::load_particle_state(unsigned int i, Particle *p) const {
-  IMP_USAGE_CHECK(i < states_.size(), "Out of range " << i);
+  IMP_USAGE_CHECK(i < states_.size(), "XYZStates::load_particle_state "
+                  << "Out of range " << i << ">= "<<states_.size());
   core::XYZ(p).set_coordinates(states_[i]);
 }
 
@@ -61,6 +62,17 @@ void RigidBodyStates::do_show(std::ostream &out) const{
   out << "size: " << states_.size() << std::endl;
 }
 
+unsigned int NestedRigidBodyStates::get_number_of_particle_states() const {
+  return states_.size();
+}
+void NestedRigidBodyStates::load_particle_state(unsigned int i,
+                                                Particle *p) const {
+  core::RigidMember(p).set_internal_transformation(states_[i]);
+}
+
+void NestedRigidBodyStates::do_show(std::ostream &out) const{
+  out << "size: " << get_number_of_particle_states() << std::endl;
+}
 
 unsigned int CompoundStates::get_number_of_particle_states() const {
   IMP_USAGE_CHECK(a_->get_number_of_particle_states()
