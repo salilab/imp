@@ -13,6 +13,7 @@
 #include "Hierarchy.h"
 #include "Residue.h"
 #include "Atom.h"
+#include <IMP/core/Typed.h>
 #include <IMP/core/XYZR.h>
 
 
@@ -132,6 +133,7 @@ class IMPATOMEXPORT Selection {
   double radius_;
   Terminus terminus_;
   Ints copies_;
+  core::ParticleTypes types_;
   bool check_nonradius(Hierarchy h) const;
   bool operator()(Hierarchy h) const;
  public:
@@ -157,6 +159,8 @@ class IMPATOMEXPORT Selection {
             ResidueType residue_type=None,
             Terminus terminus=None,
             std::string domain=None,
+            core::ParticleType particle_type=None,
+            core::ParticleTypes particle_types=[],
             int copy_index=-1,
             Ints copy_indexs=[]
             );
@@ -246,6 +250,13 @@ class IMPATOMEXPORT Selection {
   void set_copy_indexes(const Ints &copies) {
     copies_=copies;
     std::sort(copies_.begin(), copies_.end());
+  }
+  void set_particle_type(core::ParticleType t) {
+    types_= core::ParticleTypes(1,t);
+  }
+  void set_particle_types(core::ParticleTypes t) {
+    types_= t;
+    std::sort(types_.begin(), types_.end());
   }
   //! Get the selected particles
   ParticlesTemp get_selected_particles() const;
