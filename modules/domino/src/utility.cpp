@@ -72,32 +72,39 @@ namespace {
 
 
 ParticlesTemp get_dependent_particles(Particle *p,
+                                      const ParticlesTemp &all,
                                       const DependencyGraph &dg) {
   // find p in graph, ick
   DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
   std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
     = boost::vertices(dg);
+  IMP::internal::Set<Object*> block(all.begin(), all.end());
+  boost::vector_property_map<int> color(boost::num_vertices(dg));
+  int start=-1;
   for (; be.first != be.second; ++be.first) {
     if (dpm[*be.first]==p) {
-      break;
+      start=*be.first;
+    } else if (block.find(dpm[*be.first]) != block.end()) {
+      // block traversal though the other nodes
+      color[*be.first]= boost::color_traits<int>::black();
     }
   }
-  if (be.first == be.second) {
+  if (start==-1) {
     return ParticlesTemp();
   }
   ParticlesTemp pt;
   DirectCollectVisitor<DependencyGraph> cv(dg, pt);
-  boost::vector_property_map<int> color(boost::num_vertices(dg));
-  boost::depth_first_visit(dg, *be.first, cv, color);
+  boost::depth_first_visit(dg, start, cv, color);
   return cv.get_collected();
 }
 
-ParticlesTemp get_dependent_particles(Particle *p) {
+ParticlesTemp get_dependent_particles(Particle *p,
+                                      const ParticlesTemp &all) {
   Model *m= p->get_model();
   DependencyGraph dg
     = get_dependency_graph(get_restraints(m->restraints_begin(),
                                           m->restraints_end()));
-  return get_dependent_particles(p, dg);
+  return get_dependent_particles(p, all, dg);
 }
 
 
