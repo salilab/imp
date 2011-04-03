@@ -141,7 +141,10 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
     }*/
   Subset ps= pst->get_subset();
   for (unsigned int i=0; i< ps.size(); ++i) {
-    ParticlesTemp t= get_dependent_particles(ps[i], dg);
+    ParticlesTemp t= get_dependent_particles(ps[i],
+                                             ParticlesTemp(ps.begin(),
+                                                           ps.end()),
+                                             dg);
     for (unsigned int j=0; j< t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "
@@ -454,7 +457,10 @@ InteractionGraph get_interaction_graph(RestraintSet *irs,
     IMP::internal::show_as_graphviz(dg, std::cout);
     }*/
   for (unsigned int i=0; i< ps.size(); ++i) {
-    ParticlesTemp t= get_dependent_particles(ps[i], dg);
+    ParticlesTemp t= get_dependent_particles(ps[i],
+                                             ParticlesTemp(ps.begin(),
+                                                           ps.end()),
+                                             dg);
     for (unsigned int j=0; j< t.size(); ++j) {
       IMP_USAGE_CHECK(map.find(t[j]) == map.end(),
                       "Currently particles which depend on more "

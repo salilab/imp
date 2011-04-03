@@ -60,7 +60,7 @@ void ModelData::initialize() {
   IMP::internal::Map<Particle*, Particle*> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
     Particle *p= all[i];
-    ParticlesTemp ps= get_dependent_particles(p, dg);
+    ParticlesTemp ps= get_dependent_particles(p, all, dg);
     for (unsigned int j=0; j< ps.size(); ++j) {
       idm[ps[j]]=p;
     }

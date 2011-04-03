@@ -38,18 +38,21 @@ IMPDOMINO_BEGIN_NAMESPACE
  */
 
 /** Returns the subset of particles that depend on p as input. This
-    will include p.
+    will include p. The variable all is the set of all other particles
+    of interest, they will block dependency propagation.
 
     \note This function is here to aid in debugging of optimization
     protocols that use Domino2. As a result, its signature and
     functionality may change without notice.
  */
-IMPDOMINOEXPORT ParticlesTemp get_dependent_particles(Particle *p);
+IMPDOMINOEXPORT ParticlesTemp get_dependent_particles(Particle *p,
+                                                      const ParticlesTemp &all);
 
 /** \copydoc get_dependent_particles(Particle*)
  */
 IMPDOMINOEXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
+                        const ParticlesTemp &all,
                         const DependencyGraph &dg);
 
 
