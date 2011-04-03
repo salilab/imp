@@ -18,6 +18,7 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
 #include <IMP/internal/OwnerPointer.h>
 #include <map>
@@ -122,6 +123,20 @@ public:
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 
+/** Store a set of states which explicitly define the
+    internal transformation of a rigid member
+*/
+class IMPDOMINOEXPORT NestedRigidBodyStates: public ParticleStates {
+  algebra::Transformation3Ds states_;//states of a nested rigid body
+public:
+  /**
+     \param[in] states states of a rigid member with respect to its parent
+   */
+  NestedRigidBodyStates(const algebra::Transformation3Ds &states):
+    ParticleStates("NestedRigidBodyStates %1%"), states_(states){}
+  IMP_PARTICLE_STATES(NestedRigidBodyStates);
+};
+
 /** Combine two particle states together. They must both have the same
     number of states.
 */
@@ -132,7 +147,6 @@ public:
     ParticleStates("CompoundStates %1%"), a_(a), b_(b){}
   IMP_PARTICLE_STATES(CompoundStates);
 };
-
 
 /** Load particle states for a set of particles based on the state
     index of a single particle, This can be used to implement compound
