@@ -1,15 +1,14 @@
-import numpy as np
 import IMP
-import IMP.multifit
-import IMP.multifit2
-import IMP.restrainer
 import IMP.test
+import IMP.atom
+import IMP.domino
 import sys
 class PointAlignmentTests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.SILENT)#TERSE)#VERBOSE)
     def test_docking_solutions(self):
+        """Test nested rigid bodies"""
         #load components
         mdl=IMP.Model()
         mhs=[]
@@ -31,8 +30,8 @@ class PointAlignmentTests(IMP.test.TestCase):
         for i in range(3):
             rbs[0].add_member(rbs[i+1])
         #set ev
-        sev=IMP.restrainer.create_simple_excluded_volume_on_rigid_bodies(rbs)
-        mdl.add_restraint(sev.get_restraint())
+        sev=IMP.atom.create_excluded_volume_restraint(mhs, 1)
+        mdl.add_restraint(sev)
         mdl.evaluate(False)
         #set states
         pst=IMP.domino.ParticleStatesTable()
@@ -44,7 +43,7 @@ class PointAlignmentTests(IMP.test.TestCase):
         pst.set_particle_states(mhs[0],IMP.domino.RigidBodyStates(id_trans))
         ds=IMP.domino.DominoSampler(mdl,pst)
         cg=ds.get_sample()
-        print len(cg)
+        print cg.get_number_of_configurations()
 
 if __name__ == '__main__':
     IMP.test.main()
