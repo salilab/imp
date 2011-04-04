@@ -127,6 +127,7 @@ void CoreClosePairContainer::do_before_evaluate() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(c_);
   IMP_CHECK_OBJECT(cpf_);
+  set_was_used(true);
   IMP_INTERNAL_CHECK(c_->get_is_up_to_date(),
                      "Input container is not up to date.");
   try {
