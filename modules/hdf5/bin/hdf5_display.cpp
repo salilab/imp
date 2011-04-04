@@ -8,17 +8,101 @@
 #include <IMP/display/particle_geometry.h>
 #include <IMP/display/Writer.h>
 #include <IMP/hdf5/geometry_io.h>
+#include <IMP/hdf5/restraint_io.h>
 #include <boost/format.hpp>
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
 std::string input, output;
 po::options_description desc("Usage: input_hdf5 output_graphics");
-bool help=false;
-bool recolor=false;
+double restraint_max=-1;
+
 int frame=0;
 void print_help() {
   std::cerr << desc << std::endl;
+}
+
+IMP::core::XYZRs get_xyzr_particles(IMP::hdf5::NodeHandle nh,
+                                    IMP::hdf5::NodeIDKeys &niks,
+                                    int frame) {
+  IMP::ParticlesTemp ps= IMP::hdf5::get_restraint_particles(nh, niks, frame);
+  IMP::core::XYZRs ret;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (IMP::core::XYZR::particle_is_instance(ps[i])) {
+      ret.push_back(IMP::core::XYZR(ps[i]));
+    }
+  }
+  return ret;
+}
+
+void set_color(IMP::hdf5::NodeHandle nh,
+               int frame, IMP::display::Geometry *g) {
+  if (restraint_max==-1) {
+    return;
+  } else {
+    double score= IMP::hdf5::get_restraint_score(nh, frame);
+    if (score <= -std::numeric_limits<double>::max()) return;
+    double nscore= score/restraint_max;
+    if (nscore<0) nscore=0;
+    if (nscore>1) nscore=1;
+    g->set_color( IMP::display::get_jet_color(nscore));
+  }
+}
+
+IMP::display::Geometry *create_restraint_geometry(IMP::hdf5::NodeHandle nh,
+                                                  IMP::hdf5::NodeIDKeys &niks,
+                                                  int frame) {
+  double score=IMP::hdf5::get_restraint_score(nh, frame);
+  if (score < -std::numeric_limits<double>::max()) return NULL;
+  IMP::hdf5::NodeHandles children=nh.get_children();
+  IMP::display::Geometries gs;
+  for (unsigned int i=0; i< children.size(); ++i) {
+    IMP::display::Geometry* g
+      = create_restraint_geometry(children[i], niks, frame);
+    if (g) {
+      IMP::Pointer<IMP::display::Geometry> gp(g);
+      gs.push_back(g);
+    }
+  }
+  IMP::core::XYZRs ds= get_xyzr_particles(nh, niks, frame);
+  if (ds.size()==2) {
+    IMP::algebra::Segment3D s(ds[0].get_coordinates(), ds[1].get_coordinates());
+    gs.push_back(new IMP::display::SegmentGeometry(s));
+    gs.back()->set_name(nh.get_name());
+  } else {
+    for (unsigned int i=0; i< ds.size(); ++i) {
+      gs.push_back(new IMP::display::SphereGeometry(ds[i].get_sphere()));
+      gs.back()->set_name(nh.get_name());
+    }
+  }
+  if (gs.empty()) {
+    return NULL;
+  } else if (gs.size()==1) {
+    set_color(nh, frame, gs[0]);
+    IMP::Pointer<IMP::display::Geometry> ret(gs[0]);
+    gs.clear();
+    return ret.release();
+  } else {
+    IMP_NEW(IMP::display::CompoundGeometry, ret, (gs, nh.get_name()));
+    set_color(nh, frame, ret);
+    return ret.release();
+  }
+}
+
+void add_restraints(IMP::hdf5::RootHandle rh,
+                    int frame,
+                    IMP::display::Writer *w) {
+  IMP::hdf5::NodeIDKeys niks;
+  IMP::hdf5::NodeHandles children = rh.get_children();
+  for (unsigned int i=0; i< children.size(); ++i) {
+    IMP::display::Geometry* g= create_restraint_geometry(children[i],
+                                                         niks, frame);
+    if (g) {
+      IMP::Pointer<IMP::display::Geometry> gp(g);
+      g->set_color(IMP::display::get_display_color(i));
+      w->add_geometry(g);
+    }
+  }
 }
 
 int main(int argc, char **argv) {
@@ -26,8 +110,10 @@ int main(int argc, char **argv) {
     ("help,h", "Translate an hdf5 file to graphics.")
     ("recolor,c", "Recolor the hierarchies using the display colors.")
     ("frame,f", po::value< int >(&frame),
-     "Frame to use. Do '-1' for all frames, if that is done the output "\
-     "file name must contain %1%.")
+     "Frame to use. Do '-#' for every #th frame (eg -1 is every frame).")
+    ("score,s", po::value< double >(&restraint_max),
+     "The upper bound for the restraints scores to color the "\
+     "restraints by score.")
     ("input-file,i", po::value< std::string >(&input),
      "input hdf5 file")
     ("output-file,o", po::value< std::string >(&output),
@@ -100,6 +186,7 @@ int main(int argc, char **argv) {
     for (unsigned int i=0; i< gs.size(); ++i) {
       w->add_geometry(gs[i]);
     }
+    add_restraints(rh, cur_frame, w);
   }
   return 0;
 }
