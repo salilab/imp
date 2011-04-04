@@ -38,7 +38,7 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
 */
 class IMPATOMEXPORT SpecialCaseRestraints {
   boost::ptr_vector< ScopedRemoveRestraint,
-                     boost::heap_clone_allocator> restraints_;
+                     boost::view_clone_allocator> restraints_;
   ParticlesTemp ps_;
   DependencyGraph dg_;
 
