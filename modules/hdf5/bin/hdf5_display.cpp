@@ -51,14 +51,15 @@ void set_color(IMP::hdf5::NodeHandle nh,
 
 IMP::display::Geometry *create_restraint_geometry(IMP::hdf5::NodeHandle nh,
                                                   IMP::hdf5::NodeIDKeys &niks,
+                                                  IMP::hdf5::FloatKey &rsk,
                                                   int frame) {
-  double score=IMP::hdf5::get_restraint_score(nh, frame);
+  double score=IMP::hdf5::get_restraint_score(nh, rsk, frame);
   if (score < -std::numeric_limits<double>::max()) return NULL;
   IMP::hdf5::NodeHandles children=nh.get_children();
   IMP::display::Geometries gs;
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g
-      = create_restraint_geometry(children[i], niks, frame);
+      = create_restraint_geometry(children[i], niks, rsk, frame);
     if (g) {
       IMP::Pointer<IMP::display::Geometry> gp(g);
       gs.push_back(g);
@@ -93,10 +94,12 @@ void add_restraints(IMP::hdf5::RootHandle rh,
                     int frame,
                     IMP::display::Writer *w) {
   IMP::hdf5::NodeIDKeys niks;
+  IMP::hdf5::FloatKey rsk;
   IMP::hdf5::NodeHandles children = rh.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g= create_restraint_geometry(children[i],
-                                                         niks, frame);
+                                                         niks, rsk,
+                                                         frame);
     if (g) {
       IMP::Pointer<IMP::display::Geometry> gp(g);
       g->set_color(IMP::display::get_display_color(i));
@@ -149,6 +152,9 @@ int main(int argc, char **argv) {
   std::cout << "Reading frames [" << minframe << ", "
             << maxframe << ": " << step << ")" <<std::endl;
   for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
+    if (cur_frame%10==0) {
+      std::cout << cur_frame << " ";
+    }
     std::string name=output;
     bool append=false;
     if (frame<0 && name.find("%1%")==std::string::npos) {
