@@ -1,6 +1,8 @@
 ; NSIS (http://nsis.sf.net/) install script
 
 !include "MUI2.nsh"
+!include "WinVer.nsh"
+!include "LogicLib.nsh"
 
 ; Use solid LZMA compression
 SetCompressor /SOLID lzma
@@ -96,3 +98,17 @@ Section "Uninstall"
   DeleteRegKey HKLM "Software\Python\PythonCore\2.6\PythonPath\${PRODVER}"
  
 SectionEnd
+
+Function .onInit
+  ${If} ${IsWinXP}
+  ${AndIf} ${AtLeastServicePack} 2
+  ${OrIf} ${AtLeastWin2003}
+    Goto version_check_done
+  ${Else}
+    MessageBox MB_OK \
+        "IMP can only be installed on Windows XP Service Pack 2 or later." \
+        /SD IDOK
+    Quit
+  ${EndIf}
+  version_check_done:
+FunctionEnd
