@@ -20,9 +20,8 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 namespace {
 
   std::pair<Subset, NodeData>
-  get_best_conformations_internal(const SubsetGraph &jt,
+  get_best_conformations_internal(const MergeTree &jt,
                                   unsigned int root,
-                                  unsigned int parent,
                                   const Subset& all,
                                   const SubsetFilterTables &filters,
                                   const SubsetStatesTable *states,
@@ -30,58 +29,60 @@ namespace {
                                   InferenceStatistics &stats,
                                   unsigned int max,
                                   boost::progress_display *progress) {
+    typedef boost::property_map< MergeTree, boost::vertex_name_t>::const_type
+      SubsetMap;
+    typedef boost::graph_traits<MergeTree>::adjacency_iterator
+      NeighborIterator;
+
     SubsetMap subset_map= boost::get(boost::vertex_name, jt);
     IMP_FUNCTION_LOG;
-    Subset s;
-    bool initialized=false;
-    NodeData nd;
-    for (std::pair<NeighborIterator, NeighborIterator> be
-           = boost::adjacent_vertices(root, jt);
-         be.first != be.second; ++be.first) {
-      if (*be.first == parent) continue;
-      // compute intersection set and index map in one direction
-      // for each pattern of that in me, compute subset score
-      // subtract the min of mine (assume scores positive)
-      // for merged score, subtract off edge value
-      std::pair<Subset, NodeData> cpd
-        = get_best_conformations_internal(jt, *be.first, root, all,
+    std::pair<NeighborIterator, NeighborIterator> be
+      = boost::adjacent_vertices(root, jt);
+    if (std::distance(be.first, be.second)==0) {
+      // leaf
+      std::pair<Subset, NodeData> ret;
+      ret.first= boost::get(subset_map, root);
+      IMP_LOG(VERBOSE, "Looking at leaf " << ret.first << std::endl);
+      ret.second= get_node_data(ret.first, states);
+      if (lsft) update_list_subset_filter_table(lsft, ret.first,
+                                                ret.second.subset_states);
+      IMP_LOG(VERBOSE, "Subset data is\n" << ret.second << std::endl);
+      stats.add_graph_subset(ret.first, ret.second.subset_states);
+      return ret;
+    } else {
+      // merge
+      IMP_INTERNAL_CHECK(std::distance(be.first, be.second)==2,
+                         "Not a binary tree");
+      std::pair<Subset, NodeData> cpd0
+        = get_best_conformations_internal(jt, *be.first, all,
                                           filters,
                                           states, lsft,
                                           stats, max, progress);
-      if (!initialized) {
-        s= boost::get(subset_map, root);
-        IMP_LOG(VERBOSE, "Looking at subset " << s << std::endl);
-        nd= get_node_data(s, states);
-        if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
-        IMP_LOG(VERBOSE, "Subset data is\n" << nd << std::endl);
-        initialized=true;
-        stats.add_graph_subset(s, nd.subset_states);
-      }
-      EdgeData ed= get_edge_data(s, cpd.first, filters);
-      nd= get_union(s, cpd.first, nd, cpd.second, ed, max);
-      stats.add_merged_subset(ed.union_subset, nd.subset_states);
-      s= ed.union_subset;
-      if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
-      IMP_LOG(VERBOSE, "After merge, set is " << s
-              << " and data is\n" << nd << std::endl);
+      ++be.first;
+      std::pair<Subset, NodeData> cpd1
+        = get_best_conformations_internal(jt, *be.first, all,
+                                          filters,
+                                          states, lsft,
+                                          stats, max, progress);
+      EdgeData ed= get_edge_data(cpd0.first, cpd1.first, filters);
+      std::pair<Subset, NodeData> ret;
+      ret.first= ed.union_subset;
+      ret.second= get_union(cpd0.first, cpd1.first, cpd0.second, cpd1.second,
+                            ed, max);
+      stats.add_merged_subset(ed.union_subset, ret.second.subset_states);
+      if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
+                                                ret.second.subset_states);
+      IMP_LOG(VERBOSE, "After merge, set is " << ret.first
+              << " and data is\n" << ret.second << std::endl);
       if (progress) {
         ++(*progress);
       }
+      return ret;
     }
-    if (!initialized) {
-      IMP_LOG(TERSE, "Looking at subset " << s << std::endl);
-      s= boost::get(subset_map, root);
-      nd= get_node_data(s, states);
-      if (lsft) update_list_subset_filter_table(lsft, s, nd.subset_states);
-      IMP_LOG(TERSE, "Subset data is\n" << nd << std::endl);
-      initialized=true;
-      stats.add_graph_subset(s, nd.subset_states);
-    }
-    return std::make_pair(s, nd);
   }
 }
 
-SubsetStates get_best_conformations(const SubsetGraph &jt,
+SubsetStates get_best_conformations(const MergeTree &mt,
                                     int root,
                                     const Subset& all_particles,
                                     const SubsetFilterTables &filters,
@@ -91,9 +92,9 @@ SubsetStates get_best_conformations(const SubsetGraph &jt,
                                     unsigned int max) {
   boost::scoped_ptr<boost::progress_display> progress;
   if (get_log_level() == PROGRESS) {
-    progress.reset(new boost::progress_display(boost::num_vertices(jt)));
+    progress.reset(new boost::progress_display(boost::num_vertices(mt)));
   }
-  return get_best_conformations_internal(jt, root, root,
+  return get_best_conformations_internal(mt, root,
                                          all_particles,
                                          filters,
                                          states, lsft,

@@ -40,6 +40,8 @@ namespace {
       subset_map= boost::get(boost::vertex_name, sg);
     data.resize(boost::num_vertices(sg));
     for (unsigned int i=0; i< data.size(); ++i) {
+      typedef boost::graph_traits<SubsetGraph>::adjacency_iterator
+        NeighborIterator;
       for (std::pair<NeighborIterator, NeighborIterator> be
              = boost::adjacent_vertices(i, sg);
            be.first != be.second; ++be.first) {
@@ -105,6 +107,8 @@ namespace {
       subset_map= boost::get(boost::vertex_name, sg);
     for (unsigned int i=0; i< data.size(); ++i) {
       int j=0;
+      typedef boost::graph_traits<SubsetGraph>::adjacency_iterator
+        NeighborIterator;
       for (std::pair<NeighborIterator, NeighborIterator> be
              = boost::adjacent_vertices(i, sg);
            be.first != be.second; ++be.first) {

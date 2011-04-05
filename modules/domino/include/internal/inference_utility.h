@@ -176,12 +176,6 @@ inline EdgeData get_edge_data(const Subset&s0,
 }
 
 
-
-typedef boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
-SubsetMap;
-
-typedef boost::graph_traits<SubsetGraph>::adjacency_iterator NeighborIterator;
-
 //! return true if the two states are equal on the entries in the lists
 inline bool get_are_equal(const SubsetState &ss0,
                           const Ints &i0,

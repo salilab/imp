@@ -17,7 +17,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 
-/** A directed graph on subsets of vertices. Each vertex is
+/** An undirected graph on subsets of vertices. Each vertex is
     named with an Subset.
  */
 IMP_GRAPH(SubsetGraph, undirected, Subset, int);
@@ -96,6 +96,19 @@ IMPDOMINOEXPORT display::Geometries
 get_subset_graph_geometry(const SubsetGraph &ig);
 
 
+/** A directed graph on subsets of vertices. Each vertex is
+    named with an Subset.
+ */
+IMP_GRAPH(MergeTree, bidirectional, Subset, int);
+
+
+IMPDOMINOEXPORT
+MergeTree get_merge_tree(const SubsetGraph &junction_tree/*, int start=0*/);
+
+
+
+IMPDOMINOEXPORT
+bool get_is_merge_tree(const MergeTree &tree, Subset all, bool verbose=true);
 
 
 IMPDOMINO_END_NAMESPACE

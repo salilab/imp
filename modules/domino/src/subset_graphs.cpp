@@ -23,6 +23,7 @@
 #endif
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
+#include <boost/graph/connected_components.hpp>
 
 
 
@@ -558,5 +559,143 @@ get_subset_graph_geometry(const SubsetGraph &ig) {
   return ret;
 }
 
+/* DFV
+   on end child:
+    union sets
+    create child node with cur union
+    link created child node to child being visited
+   on visit:
+    look up cur node in map
+
+
+ */
+
+
+namespace {
+typedef boost::graph_traits<MergeTree> MTTraits;
+typedef CGTraits::vertex_descriptor MTVertex;
+typedef CGTraits::edge_descriptor MTEdge;
+typedef boost::property_map<MergeTree,
+                            boost::vertex_name_t>::type MTVertexMap;
+
+
+
+  int create_set_node(const Subset &s,
+                      MergeTree& merge_tree,
+                      boost::property_map<MergeTree,
+                                    boost::vertex_name_t>::type &mt_sets) {
+    int vi= boost::add_vertex(merge_tree);
+    mt_sets[vi]=s;
+    return vi;
+  }
+  int create_merge_tree_internal(const SubsetGraph& junction_tree,
+                                 const  boost::property_map<SubsetGraph,
+                                   boost::vertex_name_t>::const_type &jt_sets,
+                                 int cur_jt,
+                                 int last_jt, // avoid parent
+                                 MergeTree& merge_tree,
+                                 boost::property_map<MergeTree,
+                                        boost::vertex_name_t>::type &mt_sets) {
+    Subset cur_subset=jt_sets[cur_jt];
+    int cur_merge= create_set_node(cur_subset, merge_tree, mt_sets);
+    for (std::pair<SGTraits::out_edge_iterator,
+           SGTraits::out_edge_iterator> ebe= boost::out_edges(cur_jt,
+                                                              junction_tree);
+         ebe.first != ebe.second; ++ebe.first) {
+      int target= boost::target(*ebe.first, junction_tree);
+      if (target== last_jt) continue;
+      int child= create_merge_tree_internal(junction_tree,
+                                            jt_sets,
+                                            target, cur_jt,
+                                            merge_tree, mt_sets);
+      Subset child_set= mt_sets[child];
+      Subset u= get_union(child_set,cur_subset);
+      int merged= create_set_node(u, merge_tree, mt_sets);
+      boost::add_edge(merged, cur_merge, merge_tree);
+      boost::add_edge(merged, child, merge_tree);
+      cur_merge=merged;
+      cur_subset=u;
+    }
+    return cur_merge;
+  }
+}
+
+
+MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
+  IMP_IF_CHECK(USAGE) {
+    std::vector<int> comp(boost::num_vertices(junction_tree));
+    int cc= boost::connected_components(junction_tree, &comp[0]);
+    IMP_USAGE_CHECK(cc==1, "Graph is not connected: " << cc);
+  }
+  int start =0;
+  MergeTree merge_tree;
+   boost::property_map<MergeTree,
+                       boost::vertex_name_t>::type mt_sets
+     =boost::get(boost::vertex_name, merge_tree);
+  unsigned int root= create_merge_tree_internal(junction_tree,
+                                       boost::get(boost::vertex_name,
+                                                  junction_tree),
+                                       start, -1,
+                                       merge_tree,
+                                       mt_sets);
+  IMP_USAGE_CHECK(root== boost::num_vertices(merge_tree)-1,
+                  "Root is not last vertex");
+  // create dfv
+  // add first node to jt/merge map/merge graph with all particles
+  // do dft add nodes and computing graph as we go
+  return merge_tree;
+}
+
+namespace {
+  bool get_is_merge_tree(const MergeTree& tree,
+                         const boost::property_map<MergeTree,
+                                             boost::vertex_name_t>::const_type&
+                         mt_sets,
+                         bool verbose,
+                         int cur, int parent) {
+    Subset cur_set= mt_sets[cur];
+    Subset children;
+    int nc=0;
+    bool ret=true;
+    for (std::pair<MTTraits::out_edge_iterator,
+           MTTraits::out_edge_iterator> ebe= boost::out_edges(cur, tree);
+         ebe.first != ebe.second; ++ebe.first) {
+      int target= boost::target(*ebe.first, tree);
+      if (target== parent) continue;
+      ++nc;
+      Subset curs = mt_sets[target];
+      children= get_union(children, curs);
+      ret= ret&& get_is_merge_tree(tree, mt_sets, verbose, target, cur);
+    }
+    if (cur_set != children) {
+      if (verbose) {
+        IMP_WARN("Subsets don't match " << cur_set << " vs " << children);
+        return false;
+      }
+    }
+    if (nc != 2 && nc != 0) {
+      IMP_WARN("It is not a binary tree");
+      return false;
+    }
+    return ret;
+  }
+}
+
+bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
+  boost::property_map<MergeTree,
+                      boost::vertex_name_t>::const_type mt_sets
+    = boost::get(boost::vertex_name, tree);
+  int nv= boost::num_vertices(tree);
+  Subset maybeall= mt_sets[nv-1];
+  if (maybeall != all) {
+    if (verbose) {
+      IMP_WARN("Root does not contain all particles: " << all
+               << " vs " << maybeall);
+      return false;
+    }
+  }
+  return get_is_merge_tree(tree, mt_sets,
+                           verbose, nv-1, -1);
+}
 
 IMPDOMINO_END_NAMESPACE
