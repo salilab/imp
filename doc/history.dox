@@ -1,7 +1,8 @@
 /** \page recent Change History
 
 \par Spring 2011
-- Preliminary symmetry support has been added via the IMP::core::TransfomrationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
+- IMP::domino::DominoSampler now allows you to specify the tree on which merges occur directly. Also, you now need to specify the merge tree rather than the JunctionTree if you want to do non-loopy inference and specify something about how it is done. Sorry, it makes the code a lot easier.
+- Preliminary symmetry support has been added via the IMP::core::TransformationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
 
 \par Winter 2011
 - There now is a common base class IMP::atom::Simulation for IMP::atom::BrownianDynamics and IMP::atom::MolecularDynamics. In merging them there were several minor changes made to both. The most noticeable may be that the function for setting the maximum time step length is now IMP::atom::Simulation::set_maximum_time_step(). The last time step length can be extracted by IMP::atom::Simulation::get_last_time_step()
