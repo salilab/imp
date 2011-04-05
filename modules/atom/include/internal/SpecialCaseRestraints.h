@@ -220,6 +220,13 @@ class IMPATOMEXPORT SpecialCaseRestraints {
       }
     }
   }
+  ~SpecialCaseRestraints() {
+    for (boost::ptr_vector< ScopedRemoveRestraint,
+                            boost::view_clone_allocator>::iterator it=
+           restraints_.begin(); it != restraints_.end(); ++it) {
+      delete &*it;
+    }
+  }
 };
 
 
