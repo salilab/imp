@@ -43,7 +43,6 @@ IMPEM2D_BEGIN_NAMESPACE
     polar_params_.create_maps_for_resampling();
   }
   boost::timer preprocessing_timer;
-  subjects_.clear(); // caution measure if the finder is called more than once
   subjects_.resize(subjects.size());
   unsigned int n_subjects = subjects_.size();
   registration_results_.clear();
@@ -55,6 +54,9 @@ IMPEM2D_BEGIN_NAMESPACE
   subjects_cog_.resize(n_subjects);
   for (unsigned int i=0;i<n_subjects;++i) {
     subjects_[i]=subjects[i]; // doest not copy
+    std::ostringstream oss;
+    oss << "Image subject " << i;
+    subjects_[i]->set_name(oss.str());
     do_preprocess_subject(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
@@ -76,15 +78,17 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
     polar_params_.create_maps_for_resampling();
   }
 
-  projections_.clear();
   projections_.resize(projections.size());
   unsigned int n_projections = projections_.size();
   PROJECTIONS_POLAR_AUTOC_.clear();
   PROJECTIONS_POLAR_AUTOC_.resize(n_projections);
   projections_cog_.resize(n_projections);
   boost::timer preprocessing_timer;
-  for (unsigned int i=0;i<n_projections;++i) {
-    projections_[i]=projections[i]; // does not copy
+  for (unsigned int i = 0; i < n_projections; ++i) {
+    projections_[i] = projections[i]; // does not copy
+    std::ostringstream oss;
+    oss << "Projection" << i;
+    projections_[i]->set_name(oss.str());
     do_preprocess_projection(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
@@ -93,16 +97,15 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
 }
 
 
-
 void ProjectionFinder::set_model_particles(const ParticlesTemp &ps) {
-  IMP_LOG(IMP::TERSE,"ProjectionFinder: Setting model particles" << std::endl);
+  IMP_LOG(IMP::TERSE, "ProjectionFinder: Setting model particles" << std::endl);
 
   if(parameters_setup_==false) {
     IMP_THROW("The ProjectionFinder is not initialized",ValueException);
   }
   model_particles_= ps;
   // Check the particles for coordinates, radius and mass
-  for (unsigned int i=0;i<model_particles_.size();++i) {
+  for (unsigned int i=0; i<model_particles_.size() ; ++i) {
     IMP_USAGE_CHECK((core::XYZR::particle_is_instance(model_particles_[i]) &&
               atom::Mass::particle_is_instance(model_particles_[i])),
        "Particle " << i
@@ -296,8 +299,10 @@ void ProjectionFinder::get_complete_registration() {
   IMP_NEW(em2d::SpiderImageReaderWriter, srw, ());
   unsigned int rows= subjects_[0]->get_header().get_number_of_rows();
   unsigned int cols= subjects_[0]->get_header().get_number_of_columns();
-  IMP_NEW(em2d::Image,match,());
+  IMP_NEW(em2d::Image, match, ());
+
   match->set_size(rows,cols);
+  match->set_name("match image");
 
   // Set optimizer
   IMP_NEW(Model,scoring_model,());
@@ -343,7 +348,7 @@ void ProjectionFinder::get_complete_registration() {
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       coarse_RRs[k].set_in_image(subjects_[i]->get_header());
-      IMP_LOG(IMP::VERBOSE,"Setting subjec image to "
+      IMP_LOG(IMP::TERSE,"Setting subjec image to "
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);

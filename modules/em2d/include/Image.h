@@ -94,11 +94,11 @@ public:
   IMP_OBJECT_INLINE(Image, show(out), destroyed_msg());
 
   void destroyed_msg() {
-    IMP_LOG(IMP::VERBOSE, "Image destroyed " << this->name_ << std::endl);
+    IMP_LOG(IMP::TERSE, "Image destroyed " << this->name_ << std::endl);
   }
 
   void set_name(const String &name) {
-    name_=name;
+    name_ = name;
   }
 
   String get_name() const {

@@ -18,7 +18,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
  void Em2DRestraint::set_images(const em2d::Images em_images) {
    em_images_ = em_images;
-   finder_.set_subjects(em_images_);
+   finder_->set_subjects(em_images_);
    for (unsigned int i=0;i<em_images_.size();++i) {
      em_images_[i]->set_was_used(true);
    }
@@ -27,7 +27,7 @@ IMPEM2D_BEGIN_NAMESPACE
  void Em2DRestraint::set_particles(SingletonContainer *particles_container) {
   particles_container_ = particles_container;
   particles_container_->set_was_used(true);
-  finder_.set_model_particles(particles_container_->get_particles());
+  finder_->set_model_particles(particles_container_->get_particles());
  }
 
 
@@ -53,12 +53,12 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   em2d::Images projections=get_projections(
           particles_container_->get_particles(),evenly_regs,rows,cols,
                                 resolution_,apix_,srw);
-  finder_.set_projections(projections);
+  finder_->set_projections(projections);
   if(fast_optimization_mode_) {
-    finder_.set_fast_mode(number_of_optimized_projections_);
+    finder_->set_fast_mode(number_of_optimized_projections_);
   }
-  finder_.get_complete_registration();
-  return finder_.get_global_score();
+  finder_->get_complete_registration();
+  return finder_->get_global_score();
 }
 
 // We also need to know which particles are used (as some are

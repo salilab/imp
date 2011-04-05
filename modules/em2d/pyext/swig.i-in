@@ -1,6 +1,5 @@
 IMP_SWIG_VALUE(IMP::em2d, PolarResamplingParameters,
                                           PolarResamplingParametersList);
-IMP_SWIG_VALUE(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_VALUE(IMP::em2d, ProjectionMask, ProjectionMasks);
 IMP_SWIG_VALUE(IMP::em2d, MasksManager ,MasksManagers);
 IMP_SWIG_VALUE(IMP::em2d, RegistrationResult, RegistrationResults);
@@ -13,6 +12,7 @@ IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 
 IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
 
+IMP_SWIG_OBJECT(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_OBJECT(IMP::em2d, ScoreFunction,ScoreFunctions);
 IMP_SWIG_OBJECT(IMP::em2d, ChiSquaredScore,ChiSquaredScores);
 IMP_SWIG_OBJECT(IMP::em2d, EM2DScore,EM2DScores);

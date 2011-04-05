@@ -249,9 +249,10 @@ int main(int argc, char **argv) {
   boost::timer registration_timer;
   int coarse_method = em2d::ALIGN2D_PREPROCESSING;
   double simplex_initial_length = 0.1;
-  em2d::ProjectionFinder finder;
+
   IMP_NEW(em2d::EM2DScore,score_function,());
-  finder.setup(score_function,
+  IMP_NEW(em2d::ProjectionFinder, finder,());
+  finder->setup(score_function,
                apix,
                 resolution,
                 coarse_method,
@@ -259,11 +260,11 @@ int main(int argc, char **argv) {
                 optimization_steps,
                 simplex_initial_length,
                 simplex_minimum_size);
-  finder.set_model_particles(ps);
-  finder.set_subjects(subjects);
-  double time_preprocess_subjects =  finder.get_preprocessing_time();
-  finder.set_projections(projections);
-  double time_preprocess_projections = finder.get_preprocessing_time();
+  finder->set_model_particles(ps);
+  finder->set_subjects(subjects);
+  double time_preprocess_subjects =  finder->get_preprocessing_time();
+  finder->set_projections(projections);
+  double time_preprocess_projections = finder->get_preprocessing_time();
   // Time
   *out << "# Preprocessing images " << subjects.size()
                   << " Time: " << time_preprocess_subjects <<std::endl;
@@ -277,7 +278,7 @@ int main(int argc, char **argv) {
     *out << "# Set fast mode, use "
                     << n_coarse_results_optimized
                     << " best coarse results " <<std::endl;
-    finder.set_fast_mode(n_coarse_results_optimized);
+    finder->set_fast_mode(n_coarse_results_optimized);
   }
 
   unsigned int registration_option = COMPLETE_REGISTRATION;
@@ -285,18 +286,18 @@ int main(int argc, char **argv) {
 
 
   if(registration_option==COMPLETE_REGISTRATION) {
-    finder.get_complete_registration();
+    finder->get_complete_registration();
     *out << "# Coarse registration Time: "
-                    << finder.get_coarse_registration_time() <<std::endl;
+                    << finder->get_coarse_registration_time() <<std::endl;
     *out << "# Fine registration Time: "
-                    << finder.get_fine_registration_time() <<std::endl;
+                    << finder->get_fine_registration_time() <<std::endl;
   } else if (registration_option == ONLY_COARSE_REGISTRATION) {
-    finder.get_coarse_registration();
+    finder->get_coarse_registration();
     *out << "# Coarse registration: images " << subjects.size()
         << " projections " << projections.size()
-        << " Time: " << finder.get_coarse_registration_time() <<std::endl;
+        << " Time: " << finder->get_coarse_registration_time() <<std::endl;
   }
-  double Score = finder.get_global_score();
+  double Score = finder->get_global_score();
 
   double total_time=registration_timer.elapsed();
     *out << "# Registration: images " << subjects.size()
@@ -304,7 +305,7 @@ int main(int argc, char **argv) {
         << " Total time: " << total_time <<std::endl;
 
   em2d::RegistrationResults registration_results=
-                      finder.get_registration_results();
+                      finder->get_registration_results();
 
   *out << "# REGISTRATION RESULTS " << std::endl;
   registration_results[0].write_comment_line(*out);
