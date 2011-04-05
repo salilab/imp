@@ -121,6 +121,21 @@ inline std::size_t hash_value(const Subset &t) {
 }
 #endif
 
+inline
+Subset get_union(Subset &a, Subset &b) {
+  ParticlesTemp pt;
+  set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(pt));
+  return Subset(pt);
+}
+
+inline
+Subset get_intersection(Subset &a, Subset &b) {
+  ParticlesTemp pt;
+  set_intersection(a.begin(), a.end(), b.begin(), b.end(),
+                   std::back_inserter(pt));
+  return Subset(pt);
+}
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_H */

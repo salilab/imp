@@ -28,7 +28,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 DominoSampler::DominoSampler(Model *m, ParticleStatesTable* pst,
                              std::string name):
-  DiscreteSampler(m, pst, name), has_sg_(false), csf_(false) {
+  DiscreteSampler(m, pst, name), has_sg_(false), has_mt_(false), csf_(false) {
 }
 
 DominoSampler::DominoSampler(Model *m, std::string name):
@@ -58,34 +58,13 @@ namespace {
   }
 }
 
-SubsetStates DominoSampler
-::do_get_sample_states(const Subset &known_particles) const {
-  IMP_LOG(TERSE, "Sampling with " << known_particles.size()
-          << " particles as " << known_particles << std::endl);
-  IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
-  Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
-    OptimizeRestraints ro(rs, get_particle_states_table());
-  ParticlesTemp pt(known_particles.begin(), known_particles.end());
-  SubsetGraph jt;
-  if (has_sg_) {
-    jt= sg_;
-  } else {
-    ParticlesTemp kppt(known_particles.begin(),
-                       known_particles.end());
-    jt= get_junction_tree(get_interaction_graph(rs,
-                                                get_particle_states_table()));
-  }
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Subset graph is ");
-    //std::ostringstream oss;
-    IMP::internal::show_as_graphviz(jt, std::cout);
-    //oss << std::endl;
-    //IMP_LOG(TERSE, oss.str() << std::endl);
-  }
-  IMP_IF_CHECK(USAGE) {
+template <class G>
+void check_graph(const G &jt,
+                 Subset known_particles) {
+ IMP_IF_CHECK(USAGE) {
     IMP::internal::Set<Particle*> used;
-    boost::property_map< SubsetGraph, boost::vertex_name_t>::type subset_map=
-      boost::get(boost::vertex_name, jt);
+    typename boost::property_map< G, boost::vertex_name_t>::const_type
+      subset_map= boost::get(boost::vertex_name, jt);
     for (unsigned int i=0; i< boost::num_vertices(jt); ++i) {
       Subset s= boost::get(subset_map, i);
       used.insert(s.begin(), s.end());
@@ -94,6 +73,18 @@ SubsetStates DominoSampler
                     "Unexpected number of particles found in graph. Expected "
                     << known_particles.size() << " found " << used.size());
   }
+}
+
+SubsetStates DominoSampler
+::do_get_sample_states(const Subset &known_particles) const {
+  IMP_LOG(TERSE, "Sampling with " << known_particles.size()
+          << " particles as " << known_particles << std::endl);
+  IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
+  Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
+    OptimizeRestraints ro(rs, get_particle_states_table());
+  ParticlesTemp pt(known_particles.begin(), known_particles.end());
+
+
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
                                              get_particle_states_table());
   IMP_IF_LOG(TERSE) {
@@ -107,29 +98,41 @@ SubsetStates DominoSampler
     = DiscreteSampler::get_subset_states_table_to_use(sfts);
 
   SubsetStates final_solutions;
-  if (get_is_tree(jt)) {
-    ListSubsetFilterTable* lsft=NULL;
-    if (csf_) {
-      lsft= new ListSubsetFilterTable(get_particle_states_table());
-      sfts.push_back(lsft);
-    }
-    internal::InferenceStatistics stats;
+  if (has_sg_) {
+    check_graph(sg_, known_particles);
     final_solutions
-      = internal::get_best_conformations(jt, 0,
-                                         known_particles,
-                                         sfts, sst, lsft, stats,
-                                         get_maximum_number_of_states());
-    if (lsft) {
-      IMP_LOG(TERSE, lsft->get_ok_rate()
-              << " were ok with the cross set filtering"
-              << std::endl);
-    }
-    stats=internal::InferenceStatistics();
-  } else {
-    final_solutions
-      = internal::loopy_get_best_conformations(jt, known_particles,
+      = internal::loopy_get_best_conformations(sg_, known_particles,
                                                sfts, sst,
                                                get_maximum_number_of_states());
+  } else {
+    MergeTree mt;
+    if (has_mt_) {
+      mt= mt_;
+      check_graph(mt_, known_particles);
+      IMP_USAGE_CHECK(get_is_merge_tree(mt, known_particles, true),
+                      "Not a merge tree");
+    } else {
+      SubsetGraph jt= get_junction_tree(get_interaction_graph(rs,
+                                               get_particle_states_table()));
+      MergeTree mt= get_merge_tree(jt);
+      ListSubsetFilterTable* lsft=NULL;
+      if (csf_) {
+        lsft= new ListSubsetFilterTable(get_particle_states_table());
+        sfts.push_back(lsft);
+      }
+      internal::InferenceStatistics stats;
+      final_solutions
+        = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
+                                           known_particles,
+                                           sfts, sst, lsft, stats,
+                                           get_maximum_number_of_states());
+      if (lsft) {
+        IMP_LOG(TERSE, lsft->get_ok_rate()
+                << " were ok with the cross set filtering"
+                << std::endl);
+      }
+      stats=internal::InferenceStatistics();
+    }
   }
   return final_solutions;
 }
@@ -141,8 +144,22 @@ void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
     IMP_USAGE_CHECK(cc==1, "Graph must have exactly one connected component."
                     << " It has " << cc);
   }
+  if (get_is_tree(sg_)) {
+    IMP_WARN("A tree has been specified for the inference graph. Now if you "
+             << "want to do"
+             << " non-loopy inference and specify things manually, please "
+             << "specify the "
+             << "merge tree instead. Just call "
+             << "sample.set_merge_tree(get_merge_tree(junction_tree))");
+  }
   sg_=sg;
   has_sg_=true;
+}
+
+
+void DominoSampler::set_merge_tree(const MergeTree &sg) {
+  mt_=sg;
+  has_mt_=true;
 }
 
 void DominoSampler::do_show(std::ostream &out) const {
