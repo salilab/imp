@@ -15,22 +15,36 @@ IMPHDF5_BEGIN_NAMESPACE
 namespace {
   typedef IMP::internal::Map<IMP::domino::Subset, NodeHandle> Index;
   void build_index(NodeHandle parent,
-                   const NodeIDKeys &fks,
+                   NodeIDKeys &fks,
                    Index &nodes) {
     NodeHandles children= parent.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       ParticlesTemp pt;
-      for (unsigned int j=0; j< fks.size(); ++j) {
-        if (children[i].get_has_value(fks[i])) {
-          NodeID id= children[i].get_value(fks[i]);
+      unsigned int j=0;
+      while (true) {
+        if (fks.size() <= j) {
+          std::ostringstream oss;
+          oss << "representation" << j;
+          fks.push_back(get_or_add_key<NodeIDTraits>(parent.get_root_handle(),
+                                                     Feature, oss.str(),
+                                                     false));
+        }
+        if (children[i].get_has_value(fks[j])) {
+          NodeID id= children[i].get_value(fks[j]);
           NodeHandle nh= parent.get_root_handle().get_node_handle_from_id(id);
           Particle *p= reinterpret_cast<Particle*>(nh.get_association());
           pt.push_back(p);
+          ++j;
         } else {
           break;
         }
       }
+      IMP_USAGE_CHECK(!pt.empty(), "No used particles found. Not so good: "
+                      << children[i].get_name());
       IMP::domino::Subset s(pt);
+      /*std::cout << "Adding index entry for " << s << " to "
+        << parent.get_name()
+        << std::endl;*/
       nodes[s]=children[i];
     }
   }
@@ -58,7 +72,9 @@ namespace {
     ParticlesTemp ip= r->get_input_particles();
     IMP::domino::Subset s(ip);
     if (nodes.find(s) == nodes.end()) {
-      NodeHandle c= parent.add_child(r->get_name(), FEATURE);
+      NodeHandle c= parent.add_child(s.get_name(), FEATURE);
+      /*std::cout << "Created node for " << s
+        << " under " << parent.get_name() << std::endl;*/
       nodes[s]=c;
       c.set_association(r);
       set_particles(c, fks, ip);
@@ -122,7 +138,7 @@ namespace {
         rd[i]->set_was_used(true);
         NodeHandle rc=get_child(rn, fks, &*sr, index);
         double score = sr->evaluate(false);
-        rc.set_value(sk, score, 0);
+        rc.set_value(sk, score, frame);
       }
     }
   }
