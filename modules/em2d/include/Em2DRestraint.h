@@ -39,7 +39,9 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
   //! SingletonContainer to store the particles that are restrained
   Pointer<SingletonContainer> particles_container_;
   // mutable because it has to change to get projections while evaluating
-  mutable ProjectionFinder finder_;
+//  mutable ProjectionFinder finder_;
+  mutable Pointer<ProjectionFinder> finder_;
+
   //! Projection Masks to fast model projection
   em2d::Images em_images_;
   unsigned int n_projections_for_coarse_registration_,
@@ -72,7 +74,8 @@ public:
     IMP_UNUSED(optimization_steps);
   apix_ =apix;
   resolution_ = resolution;
-  finder_.setup(score_function,
+  finder_ = new ProjectionFinder;
+  finder_->setup(score_function,
                 apix_,
                 resolution_ ,
                 coarse_registration_method,

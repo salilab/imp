@@ -34,15 +34,10 @@ const unsigned int ALIGN2D_WITH_CENTERS = 2;
 
 
 //! class to perform registration of model projections to images images
-class IMPEM2DEXPORT ProjectionFinder
-{
+class IMPEM2DEXPORT ProjectionFinder: public Object {
 public:
 
   ProjectionFinder(): parameters_setup_(false),registration_done_(false) {};
-
-  ~ProjectionFinder() {
-    IMP_LOG(IMP::VERBOSE, "ProjectionFinder destroyed " << std::endl);
-  }
 
   //! Initializes the parameters to generate and match projections
   /*!
@@ -151,6 +146,8 @@ public:
   //! Time employed for the fine registration part
   double get_fine_registration_time() const;
 
+  IMP_OBJECT_INLINE(ProjectionFinder, show(out), {});
+
 protected:
 
   double preprocessing_time_,coarse_registration_time_,fine_registration_time_;
@@ -206,7 +203,9 @@ protected:
 **/
   MasksManagerPtr masks_manager_;
 };
-IMP_VALUES(ProjectionFinder,ProjectionFinders);
+
+IMP_OBJECTS(ProjectionFinder, ProjectionFinders);
+IMP_OUTPUT_OPERATOR(ProjectionFinder);
 
 IMPEM2D_END_NAMESPACE
 
