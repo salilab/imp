@@ -47,7 +47,7 @@ namespace {
       if (lsft) update_list_subset_filter_table(lsft, ret.first,
                                                 ret.second.subset_states);
       IMP_LOG(VERBOSE, "Subset data is\n" << ret.second << std::endl);
-      stats.add_graph_subset(ret.first, ret.second.subset_states);
+      stats.add_subset(ret.first, ret.second.subset_states);
       return ret;
     } else {
       // merge
@@ -69,7 +69,7 @@ namespace {
       ret.first= ed.union_subset;
       ret.second= get_union(cpd0.first, cpd1.first, cpd0.second, cpd1.second,
                             ed, max);
-      stats.add_merged_subset(ed.union_subset, ret.second.subset_states);
+      stats.add_subset(ed.union_subset, ret.second.subset_states);
       if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
                                                 ret.second.subset_states);
       IMP_LOG(VERBOSE, "After merge, set is " << ret.first

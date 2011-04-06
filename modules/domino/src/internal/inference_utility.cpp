@@ -18,19 +18,10 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 InferenceStatistics::InferenceStatistics(){}
 
-void InferenceStatistics::write_data(const Data &data,
-                                     std::ostream &out) const {
-  out << data.subset << ": " << data.size << ": ";
-  for (unsigned int i=0; i< data.sample.size(); ++i) {
-    out << data.sample[i] << " ";
-  }
-  out << std::endl;
-}
 
 InferenceStatistics::Data
 InferenceStatistics::get_data(const Subset &s, SubsetStates ss) const {
   Data ret;
-  ret.subset=s;
   ret.size= ss.size();
   std::random_shuffle(ss.begin(), ss.end());
   ret.sample=SubsetStates(ss.begin(), ss.begin()
@@ -38,26 +29,39 @@ InferenceStatistics::get_data(const Subset &s, SubsetStates ss) const {
   return ret;
 }
 
-void InferenceStatistics::add_graph_subset(const Subset &s,
+void InferenceStatistics::add_subset(const Subset &s,
                                            const SubsetStates &ss) {
-  graph_subsets_.push_back(get_data(s, ss));
+  subsets_[s]=get_data(s, ss);
 }
 
-void InferenceStatistics::add_merged_subset(const Subset &s,
-                                            const SubsetStates &ss) {
-  merged_subsets_.push_back(get_data(s, ss));
-}
 
 
 InferenceStatistics::~InferenceStatistics() {
-  for (unsigned int i=0; i< graph_subsets_.size(); ++i) {
+  /*for (unsigned int i=0; i< graph_subsets_.size(); ++i) {
     std::cerr << "Leaf ";
     write_data(graph_subsets_[i], std::cerr);
   }
   for (unsigned int i=0; i< graph_subsets_.size(); ++i) {
     std::cerr << "Merged ";
     write_data(graph_subsets_[i], std::cerr);
-  }
+    }*/
+}
+
+unsigned int
+InferenceStatistics::get_number_of_subset_states(Subset subset) const {
+  return get_data(subset).size;
+}
+
+SubsetStates
+InferenceStatistics::get_sample_subset_states(Subset subset) const {
+  return get_data(subset).sample;
+}
+
+const InferenceStatistics::Data &
+InferenceStatistics::get_data(const Subset &s) const {
+  IMP_USAGE_CHECK(subsets_.find(s) != subsets_.end(),
+                  "Unknown subset " << s);
+  return subsets_.find(s)->second;
 }
 
   SubsetState get_merged_subset_state(const Subset &s,

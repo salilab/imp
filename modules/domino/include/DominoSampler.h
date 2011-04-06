@@ -13,6 +13,7 @@
 //#include "Evaluator.h"
 #include "DiscreteSampler.h"
 #include "subset_graphs.h"
+#include "internal/inference_utility.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/internal/OwnerPointer.h>
@@ -34,6 +35,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   MergeTree mt_;
   bool has_sg_, has_mt_;
   bool csf_;
+  mutable internal::InferenceStatistics stats_;
  public:
   DominoSampler(Model *m, std::string name= "DominoSampler %1%");
   DominoSampler(Model*m, ParticleStatesTable *pst,
@@ -58,6 +60,17 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   void set_use_cross_subset_filtering(bool tf) {
     csf_=tf;
   }
+
+  /** \name Statistics
+      If you specify the merge tree explicitly, you can query
+      for statistics about particular nodes in the merge tree.
+      @{
+  */
+  //! Get the number of states found for the merge at that vertex of the tree
+  unsigned int get_number_of_subset_states(unsigned int tree_vertex) const;
+  //! Return a few subset states from that merge
+  SubsetStates get_sample_subset_states(unsigned int tree_vertex) const;
+  /** @} */
 };
 
 

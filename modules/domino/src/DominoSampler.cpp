@@ -120,18 +120,17 @@ SubsetStates DominoSampler
         lsft= new ListSubsetFilterTable(get_particle_states_table());
         sfts.push_back(lsft);
       }
-      internal::InferenceStatistics stats;
+      stats_=internal::InferenceStatistics();
       final_solutions
         = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
                                            known_particles,
-                                           sfts, sst, lsft, stats,
+                                           sfts, sst, lsft, stats_,
                                            get_maximum_number_of_states());
       if (lsft) {
         IMP_LOG(TERSE, lsft->get_ok_rate()
                 << " were ok with the cross set filtering"
                 << std::endl);
       }
-      stats=internal::InferenceStatistics();
     }
   }
   return final_solutions;
@@ -165,5 +164,25 @@ void DominoSampler::set_merge_tree(const MergeTree &sg) {
 void DominoSampler::do_show(std::ostream &out) const {
   out << "pst: " << *get_particle_states_table() << std::endl;
 }
+
+
+unsigned int
+DominoSampler::get_number_of_subset_states(unsigned int tree_vertex) const {
+  IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
+                  << " if you set one.");
+  boost::property_map< MergeTree, boost::vertex_name_t>::const_type
+      subset_map= boost::get(boost::vertex_name, mt_);
+  return stats_.get_number_of_subset_states(subset_map[tree_vertex]);
+}
+SubsetStates
+DominoSampler::get_sample_subset_states(unsigned int tree_vertex) const {
+  IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
+                  << " if you set one.");
+  boost::property_map< MergeTree, boost::vertex_name_t>::const_type
+      subset_map= boost::get(boost::vertex_name, mt_);
+  return stats_.get_sample_subset_states(subset_map[tree_vertex]);
+
+}
+
 
 IMPDOMINO_END_NAMESPACE

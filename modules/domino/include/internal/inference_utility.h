@@ -32,18 +32,17 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 class InferenceStatistics {
   struct Data {
-    Subset subset;
     int size;
     SubsetStates sample;
   };
-  void write_data(const Data &data, std::ostream &out) const;
   Data get_data(const Subset &s, SubsetStates ss) const;
-  std::vector<Data> graph_subsets_;
-  std::vector<Data> merged_subsets_;
+  IMP::internal::Map<Subset, Data> subsets_;
+  const Data & get_data(const Subset &s) const;
 public:
   InferenceStatistics();
-  void add_graph_subset(const Subset &s, const SubsetStates &ss);
-  void add_merged_subset(const Subset &s, const SubsetStates &ss);
+  void add_subset(const Subset &s, const SubsetStates &ss);
+  unsigned int get_number_of_subset_states(Subset subset) const;
+  SubsetStates get_sample_subset_states(Subset subset) const;
   ~InferenceStatistics();
 };
 
