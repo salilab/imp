@@ -58,12 +58,16 @@ public:
   /** If sc is not null, that container will be used to find particles
       to move, otherwise the model will be searched.*/
   BrownianDynamics(Model *m);
+  void set_maximum_move(double ms) {
+    max_step_=ms;
+  }
   IMP_SIMULATOR(BrownianDynamics);
  private:
   boost::normal_distribution<double> nd_;
   typedef boost::variate_generator<RandomNumberGenerator&,
                                    boost::normal_distribution<double> > RNG;
   RNG sampler_;
+  double max_step_;
 };
 
 

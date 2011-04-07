@@ -36,7 +36,8 @@ unit::Shift<unit::Multiply<unit::Pascal,
 
 BrownianDynamics::BrownianDynamics(Model *m) :
   Simulator(m, "BrownianDynamics %1%"), nd_(0,1),
-  sampler_(random_number_generator, nd_){
+  sampler_(random_number_generator, nd_),
+  max_step_(std::numeric_limits<double>::max()){
 }
 
 
@@ -163,14 +164,14 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
             << " from a force of "
             << force[0]<< " " << force[1] << " " << force[2] << std::endl);
     algebra::Vector3D sum;
-    double nus3=5.0*strip_units(sigma);
+    //double nus3=5.0*strip_units(sigma);
     for (unsigned int j=0;j< 3; ++j) {
       sum[j]= force[j]+random[j];
-      if (std::abs(sum[j]) > nus3) {
-        std::cerr << "Truncating motion: " << sum[j] << " to " << nus3
+      if (std::abs(sum[j]) > max_step_) {
+        std::cerr << "Truncating motion: " << sum[j] << " to " << max_step_
                   << std::endl;
-        sum[j]= std::min(sum[j], nus3);
-        sum[j]= std::max(sum[j], -nus3);
+        sum[j]= std::min(sum[j], max_step_);
+        sum[j]= std::max(sum[j], -max_step_);
       }
     }
     d.set_coordinates(d.get_coordinates()+sum);
