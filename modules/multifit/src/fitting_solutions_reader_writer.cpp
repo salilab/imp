@@ -15,6 +15,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 FittingSolutionRecord parse_fitting_line(const std::string &line) {
+  IMP_LOG(VERBOSE,"line:"<<line<<std::endl);
   FittingSolutionRecord fit_sol;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
@@ -22,7 +23,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   std::vector<std::string> line_split,fit_rotation_split,fit_translation_split,
     dock_rotation_split,dock_translation_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  IMP_USAGE_CHECK(line_split.size() == 10,
+  IMP_USAGE_CHECK(line_split.size() == 11,
      "FittingSolutionRecord::parse_fitting_line Wrong format of input line : "<<
       "not enough fields:"<<line);
   boost::split(fit_rotation_split, line_split[2], boost::is_any_of(" "));
@@ -33,12 +34,12 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   boost::split(fit_translation_split, line_split[3], boost::is_any_of(" "));
   IMP_USAGE_CHECK(fit_translation_split.size() == 3,
            "Wrong format of input line: wrong translation format"<<std::endl);
-  boost::split(dock_rotation_split, line_split[7], boost::is_any_of(" "));
+  boost::split(dock_rotation_split, line_split[8], boost::is_any_of(" "));
   IMP_USAGE_CHECK(dock_rotation_split.size() == 4,
      "Wrong format of input line: wrong rotation format "<<
      "(expected 4 blocks and got "<< fit_rotation_split.size()<<")"<<std::endl);
-  IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[8]<<std::endl);
-  boost::split(dock_translation_split, line_split[8], boost::is_any_of(" "));
+  IMP_LOG(VERBOSE,"going to parse translation:"<<line_split[9]<<std::endl);
+  boost::split(dock_translation_split, line_split[9], boost::is_any_of(" "));
   IMP_USAGE_CHECK(dock_translation_split.size() == 3,
            "Wrong format of input line: wrong translation format"<<std::endl);
   fit_sol.set_index(boost::lexical_cast<int>(line_split[0]));
@@ -60,7 +61,9 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
   fit_sol.set_match_size(boost::lexical_cast<int>(line_split[4]));
   fit_sol.set_match_average_distance(
      boost::lexical_cast<float>(line_split[5]));
-  fit_sol.set_fitting_score(boost::lexical_cast<float>(line_split[6]));
+  fit_sol.set_envelope_penetration_score(
+     boost::lexical_cast<float>(line_split[6]));
+  fit_sol.set_fitting_score(boost::lexical_cast<float>(line_split[7]));
   fit_sol.set_dock_transformation(
      algebra::Transformation3D(
        algebra::Rotation3D(
@@ -72,7 +75,7 @@ FittingSolutionRecord parse_fitting_line(const std::string &line) {
          boost::lexical_cast<float>(dock_translation_split[0]),
          boost::lexical_cast<float>(dock_translation_split[1]),
          boost::lexical_cast<float>(dock_translation_split[2]))));
-  fit_sol.set_rmsd_to_reference(boost::lexical_cast<float>(line_split[9]));
+  fit_sol.set_rmsd_to_reference(boost::lexical_cast<float>(line_split[10]));
   IMP_LOG(VERBOSE,"finish parsing line"<<std::endl);
   return fit_sol;
 }
@@ -109,10 +112,7 @@ void write_fitting_solutions(const char *fitting_fn,
   IMP_USAGE_CHECK(out.good(), "Problem openning file " <<
                   fitting_fn << " for writing"<<std::endl);
   //write header
-  out<<"solution index | solution filename | fit rotation | fit translation  |"
-     <<" match size | match average distance | cluster size |"
-     <<" fitting score | dock rotation | dock translation |"
-     <<" RMSD to reference"<<std::endl;
+  out<<FittingSolutionRecord::get_record_header();
   for(int i=0;i<num_sols;i++) {
     fit_sols[i].show(out);
     out<<std::endl;
