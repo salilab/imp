@@ -47,6 +47,7 @@ FittingSolutionRecord::FittingSolutionRecord() {
   match_avg_dist_=-1;
   fitting_score_=-1;
   rmsd_to_ref_=-1;
+  env_pen_=-1;
   fit_transformation_=algebra::get_identity_transformation_3d();
   dock_transformation_=algebra::get_identity_transformation_3d();
 }
@@ -67,6 +68,8 @@ void FittingSolutionRecord::show(std::ostream& out) const {
   out<<"|";
   //if (is_initialized(match_avg_dist_)) out<<match_avg_dist_;
   if (true) out<<match_avg_dist_;
+  out<<"|";
+  if (true) out<<env_pen_;
   out<<"|";
   //if (is_initialized(fitting_score_)) out<<fitting_score_;
   if (true) out<<fitting_score_;
@@ -91,4 +94,5 @@ FittingSolutionRecords generate_fitting_records(
   return fit_records;
 }
 */
+
 IMPMULTIFIT_END_NAMESPACE

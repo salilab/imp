@@ -13,7 +13,6 @@
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/Model.h>
 #include <IMP/core/Hierarchy.h>
-#include <IMP/Object.h>
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
 
@@ -51,11 +50,22 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
   {return dock_transformation_;}
   void set_dock_transformation(algebra::Transformation3D t)
    {dock_transformation_=t;}
+  inline Float get_envelope_penetration_score() const {return env_pen_;}
+  void set_envelope_penetration_score(Float s){env_pen_=s;}
   //! Show
   /**
   \todo consider using initialization mechanism
   */
   void show(std::ostream& out=std::cout) const;
+  static std::string get_record_header() {
+    std::stringstream ss;
+    ss<<"solution index | solution filename | fit rotation | fit translation  |"
+     <<" match size | match average distance | "
+      <<" envelope penetration score | fitting score|"<<
+      "dock rotation | dock translation |"
+     <<" RMSD to reference"<<std::endl;
+    return ss.str();
+  }
  protected:
   unsigned int index_;
   std::string sol_fn_;
@@ -63,12 +73,11 @@ class IMPMULTIFITEXPORT FittingSolutionRecord {
   algebra::Transformation3D dock_transformation_;//best geo dock to partners
   unsigned int match_size_;
   Float match_avg_dist_;
+  Float env_pen_;
   Float fitting_score_;
   Float rmsd_to_ref_;
 };
 
 typedef std::vector<FittingSolutionRecord> FittingSolutionRecords;
-// IMPMULTIFITEXPORT FittingSolutionRecords generate_fitting_records(
-//   const em::FittingSolutions &sols);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTION_RECORD_H */
