@@ -29,15 +29,16 @@ ComponentHeader *parse_component_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  IMP_USAGE_CHECK(line_split.size() == 7,
+  IMP_USAGE_CHECK(line_split.size() == 8,
            "Wrong format of input line : not enough fields in line:"<<line);
   IMP_NEW(ComponentHeader, comp, ());
   comp->set_name(boost::lexical_cast<std::string>(line_split[0]));
   comp->set_filename(join_path(path, line_split[1]));
-  comp->set_txt_ap_fn(join_path(path, line_split[2]));
-  comp->set_num_ap(boost::lexical_cast<int>(line_split[3]));
-  comp->set_transformations_fn(join_path(path, line_split[4]));
-  comp->set_reference_fn(join_path(path, line_split[5]));
+  comp->set_surface_fn(join_path(path, line_split[2]));
+  comp->set_txt_ap_fn(join_path(path, line_split[3]));
+  comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
+  comp->set_transformations_fn(join_path(path, line_split[5]));
+  comp->set_reference_fn(join_path(path, line_split[6]));
   return comp.release();
   }
   catch (IMP::Exception &e) {
@@ -81,7 +82,7 @@ SettingsData *read_settings(const char *filename,const char *data_path) {
     getline(in, line); //skip header line
     std::vector<std::string> line_split;
     boost::split(line_split, line, boost::is_any_of("|"));
-    if ((line_split.size() == 7) && (status == 0)) {//protein  line
+    if ((line_split.size() == 8) && (status == 0)) {//protein  line
       header->add_component_header(parse_component_line(data_path,line));
     }
     else if (status==0) {//map header line
