@@ -25,6 +25,7 @@ class IMPMULTIFITEXPORT ComponentHeader : public Object {
     ComponentHeader() {
       name_="";
       filename_="";
+      surface_fn_="";
       pdb_ap_fn_="";
       num_ap_=0;
       transformations_fn_="";
@@ -33,8 +34,10 @@ class IMPMULTIFITEXPORT ComponentHeader : public Object {
     }
     void set_name(const std::string &name) {name_=name;}
     inline std::string get_name() const {return name_;}
-    void set_filename(const std::string &filename){filename_=filename;}
     inline std::string get_filename() const {return filename_;}
+    void set_filename(const std::string &filename){filename_=filename;}
+    inline std::string get_surface_fn() const {return surface_fn_;}
+    void set_surface_fn(const std::string &fn){surface_fn_=fn;}
     void set_txt_ap_fn(const std::string &pdb_ap_fn) {pdb_ap_fn_=pdb_ap_fn;}
     inline std::string get_txt_ap_fn() const {return pdb_ap_fn_;}
     void set_num_ap(int num_ap) {num_ap_=num_ap;}
@@ -47,13 +50,14 @@ class IMPMULTIFITEXPORT ComponentHeader : public Object {
     void set_reference_fn(const std::string &ref_fn){reference_fn_=ref_fn;}
     std::string get_reference_fn() const {return reference_fn_;}
     IMP_OBJECT_INLINE(ComponentHeader, {
-       out<<name_<<"|"<<filename_<<"|"<<pdb_ap_fn_<<"|";
-       out<<num_ap_<<"|"<<transformations_fn_<<"|"<<reference_fn_
+        out<<name_<<"|"<<filename_<<"|"<<surface_fn_<<"|"<<pdb_ap_fn_<<"|";
+        out<<num_ap_<<"|"<<transformations_fn_<<"|"<<reference_fn_
           <<"|"<<std::endl; }, {});
 
   protected:
     std::string name_;
     std::string filename_;
+    std::string surface_fn_;
     std::string pdb_ap_fn_;
     int num_ap_;
     std::string transformations_fn_;
@@ -111,7 +115,7 @@ public:
   SettingsData(){
     data_path_="./";}
   void show_component_header_line(std::ostream& out = std::cout) const {
-    out<<"name|protein|pdb_anchor_points|number of anchor points|"<<
+    out<<"name|protein|surface|pdb_anchor_points|number of anchor points|"<<
          "transformations|ref filename|"<<std::endl;
   }
   void show_density_header_line(std::ostream& out = std::cout) const {
