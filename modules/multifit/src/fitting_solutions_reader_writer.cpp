@@ -145,5 +145,26 @@ em::FittingSolutions convert_multifit_to_em_format(
   return output;
 }
 
+FittingSolutionRecords
+  convert_transformations_to_multifit_format(
+        const algebra::Transformation3Ds &trans) {
+  FittingSolutionRecords ret;
+  for (int i=0;i<trans.size();i++) {
+    FittingSolutionRecord rec;
+    rec.set_fit_transformation(trans[i]);
+    ret.push_back(rec);
+  }
+  return ret;
+}
+
+algebra::Transformation3Ds
+  convert_multifit_format_to_transformations(
+       const FittingSolutionRecords &recs) {
+  algebra::Transformation3Ds ret;
+  for (int i=0;i<recs.size();i++) {
+    ret.push_back(recs[i].get_fit_transformation());
+  }
+  return ret;
+}
 
 IMPMULTIFIT_END_NAMESPACE
