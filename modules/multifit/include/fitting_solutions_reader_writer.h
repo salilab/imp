@@ -41,5 +41,13 @@ IMPMULTIFITEXPORT FittingSolutionRecords convert_em_to_multifit_format(
 IMPMULTIFITEXPORT em::FittingSolutions convert_multifit_to_em_format(
     const FittingSolutionRecords &multifit_fits);
 
+IMPMULTIFITEXPORT FittingSolutionRecords
+  convert_transformations_to_multifit_format(
+            const algebra::Transformation3Ds &trans);
+
+IMPMULTIFITEXPORT algebra::Transformation3Ds
+  convert_multifit_format_to_transformations(
+            const FittingSolutionRecords &recs);
+
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_FITTING_SOLUTIONS_READER_WRITER_H */
