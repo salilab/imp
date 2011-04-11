@@ -49,28 +49,28 @@ DiscreteSampler
   }
 }
 
-SubsetStatesTable*
+AssignmentsTable*
 DiscreteSampler
-::get_subset_states_table_to_use(const SubsetFilterTables &sfts) const {
+::get_assignments_table_to_use(const SubsetFilterTables &sfts) const {
   if (sst_) return sst_;
-  IMP_NEW(BranchAndBoundSubsetStatesTable, dsst, (pst_, sfts, max_));
+  IMP_NEW(BranchAndBoundAssignmentsTable, dsst, (pst_, sfts, max_));
   dsst->set_was_used(true);
   return dsst.release();
 }
 
 
-SubsetStates DiscreteSampler
-::get_sample_states(const Subset &known_particles) const {
+Assignments DiscreteSampler
+::get_sample_assignments(const Subset &known_particles) const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  return do_get_sample_states(known_particles);
+  return do_get_sample_assignments(known_particles);
 }
 
 ConfigurationSet *DiscreteSampler::do_sample() const {
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   ret->set_log_level(SILENT);
   Subset known_particles= get_particle_states_table()->get_subset();
-  SubsetStates final_solutions= do_get_sample_states(known_particles);
+  Assignments final_solutions= do_get_sample_assignments(known_particles);
   for (unsigned int i=0; i< final_solutions.size(); ++i) {
     //IMP_LOG(TERSE, "Solution is " << final_solutions[i] << std::endl);
     IMP_INTERNAL_CHECK(final_solutions[i].size()

@@ -10,14 +10,14 @@
 #include <IMP/internal/map.h>
 #include <set>
 #include <boost/version.hpp>
-#include <IMP/domino/subset_states.h>
+#include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <boost/iterator/permutation_iterator.hpp>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
-SubsetStatesTable::~SubsetStatesTable(){}
+AssignmentsTable::~AssignmentsTable(){}
 
 typedef std::vector<int> Ints;
 
@@ -58,7 +58,7 @@ namespace {
     return rs;
   }
   template <class Ints>
-  SubsetState get_sub_subset_state(const Subset &s, const Ints &ss,
+  Assignment get_sub_assignment(const Subset &s, const Ints &ss,
                                    const Subset sub_s) {
     Ints ret(sub_s.size());
     for (unsigned int i=0; i< sub_s.size(); ++i) {
@@ -68,7 +68,7 @@ namespace {
         }
       }
     }
-    return SubsetState(ret);
+    return Assignment(ret);
   }
 
 
@@ -159,7 +159,7 @@ namespace {
                         ParticleStatesTable *table,
                         const SubsetFilterTables &sft,
                         unsigned int max,
-                        SubsetStates &states_) {
+                        Assignments &states_) {
     //std::cout << "Searching order for " << s << std::endl;
 
     IMP_FUNCTION_LOG;
@@ -218,7 +218,7 @@ namespace {
       //Ints pstate(state.begin(), state.begin()+i);
       Subset csub= get_sub_subset(s, order.begin(),
       order.begin()+i);
-      SubsetState cstate= get_sub_subset_state(s,
+      Assignment cstate= get_sub_assignment(s,
       state,
       csub);
       for (unsigned int j=0; j < csub.size(); ++j) {
@@ -232,7 +232,7 @@ namespace {
       //Ints pstate(state.begin()+i, state.end());
       Subset csub= get_sub_subset(s, order.begin()+i,
       order.end());
-      SubsetState cstate= get_sub_subset_state(s, state, csub);
+      Assignment cstate= get_sub_assignment(s, state, csub);
       for (unsigned int j=0; j < csub.size(); ++j) {
       IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
       "Wrong state found in back " << cstate
@@ -255,7 +255,7 @@ namespace {
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       /*for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
-        SubsetState sub_state= get_sub_subset_state(s, cur, subset);
+        Assignment sub_state= get_sub_assignment(s, cur, subset);
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         IMP_INTERNAL_CHECK(subset== filter_subsets[i],
         "Expected and found subsets don't match "
@@ -276,7 +276,7 @@ namespace {
         // use boost iterator wrapper TODO
         // check +i is correct
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
-        SubsetState state= get_sub_subset_state(s, cur, subset);
+        Assignment state= get_sub_assignment(s, cur, subset);
         /*std::cout << "filtering " << i << " " << j
           << " on state " << state
           << " got " << filters[i][j]->get_is_ok(state)
@@ -319,7 +319,7 @@ namespace {
     {
       current_digit=0;
       unsigned int sz= states_.size();
-      SubsetState to_push(cur);
+      Assignment to_push(cur);
       IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
       incr=1;
       try {
@@ -372,12 +372,12 @@ namespace {
   }
 }
 
-BranchAndBoundSubsetStatesTable
-::BranchAndBoundSubsetStatesTable(ParticleStatesTable *pst,
+BranchAndBoundAssignmentsTable
+::BranchAndBoundAssignmentsTable(ParticleStatesTable *pst,
                                   const SubsetFilterTables &sft,
                                   unsigned int max):
   pst_(pst), sft_(sft), max_(max){
-  IMP_LOG(TERSE, "Created BranchAndBoundSubsetStates with filters: ");
+  IMP_LOG(TERSE, "Created BranchAndBoundAssignments with filters: ");
   IMP_IF_LOG(TERSE) {
     for (unsigned int i=0; i< sft.size(); ++i) {
       IMP_LOG(TERSE, *sft[i] << std::endl);
@@ -386,24 +386,24 @@ BranchAndBoundSubsetStatesTable
 }
 
 
-SubsetStates BranchAndBoundSubsetStatesTable
-::get_subset_states(const Subset&s) const {
+Assignments BranchAndBoundAssignmentsTable
+::get_assignments(const Subset&s) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  SubsetStates ssl;
+  Assignments ssl;
   fill_states_list(s, pst_, sft_, max_, ssl);
   return ssl;
 }
 
-void BranchAndBoundSubsetStatesTable::do_show(std::ostream &) const {
+void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
 }
 
 
-ListSubsetStatesTable
-::ListSubsetStatesTable(std::string name): SubsetStatesTable(name) {}
+ListAssignmentsTable
+::ListAssignmentsTable(std::string name): AssignmentsTable(name) {}
 
-SubsetStates ListSubsetStatesTable
-::get_subset_states(const Subset &s) const {
+Assignments ListAssignmentsTable
+::get_assignments(const Subset &s) const {
   set_was_used(true);
   IMP_USAGE_CHECK(states_.find(s) != states_.end(),
                   "I don't know anything about subset " << s);
@@ -411,7 +411,7 @@ SubsetStates ListSubsetStatesTable
 }
 
 
-void ListSubsetStatesTable::do_show(std::ostream &) const {
+void ListAssignmentsTable::do_show(std::ostream &) const {
 }
 
 

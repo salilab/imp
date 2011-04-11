@@ -75,8 +75,8 @@ void check_graph(const G &jt,
   }
 }
 
-SubsetStates DominoSampler
-::do_get_sample_states(const Subset &known_particles) const {
+Assignments DominoSampler
+::do_get_sample_assignments(const Subset &known_particles) const {
   IMP_LOG(TERSE, "Sampling with " << known_particles.size()
           << " particles as " << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
@@ -94,16 +94,16 @@ SubsetStates DominoSampler
     }
     IMP_LOG(TERSE, std::endl);
   }
-  IMP::internal::OwnerPointer<SubsetStatesTable> sst
-    = DiscreteSampler::get_subset_states_table_to_use(sfts);
+  IMP::internal::OwnerPointer<AssignmentsTable> sst
+    = DiscreteSampler::get_assignments_table_to_use(sfts);
 
-  SubsetStates final_solutions;
+  Assignments final_solutions;
   if (has_sg_) {
     check_graph(sg_, known_particles);
     final_solutions
       = internal::loopy_get_best_conformations(sg_, known_particles,
                                                sfts, sst,
-                                               get_maximum_number_of_states());
+                                    get_maximum_number_of_assignments());
   } else {
     MergeTree mt;
     if (has_mt_) {
@@ -125,7 +125,7 @@ SubsetStates DominoSampler
         = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
                                            known_particles,
                                            sfts, sst, lsft, stats_,
-                                           get_maximum_number_of_states());
+                                    get_maximum_number_of_assignments());
       if (lsft) {
         IMP_LOG(TERSE, lsft->get_ok_rate()
                 << " were ok with the cross set filtering"
@@ -167,20 +167,20 @@ void DominoSampler::do_show(std::ostream &out) const {
 
 
 unsigned int
-DominoSampler::get_number_of_subset_states(unsigned int tree_vertex) const {
+DominoSampler::get_number_of_assignments(unsigned int tree_vertex) const {
   IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
                   << " if you set one.");
   boost::property_map< MergeTree, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, mt_);
-  return stats_.get_number_of_subset_states(subset_map[tree_vertex]);
+  return stats_.get_number_of_assignments(subset_map[tree_vertex]);
 }
-SubsetStates
-DominoSampler::get_sample_subset_states(unsigned int tree_vertex) const {
+Assignments
+DominoSampler::get_sample_assignments(unsigned int tree_vertex) const {
   IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
                   << " if you set one.");
   boost::property_map< MergeTree, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, mt_);
-  return stats_.get_sample_subset_states(subset_map[tree_vertex]);
+  return stats_.get_sample_assignments(subset_map[tree_vertex]);
 
 }
 

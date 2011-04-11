@@ -25,12 +25,12 @@ class SubsetGraph;
 
 //! Sample best solutions using Domino
 /** Note that if there are many solutions, the ConfigurationSet returned
-    by get_sample() might be huge. The SubsetStates returned by
-    get_sample_states() can be a lot smaller.
+    by get_sample() might be huge. The Assignments returned by
+    get_sample_assignments() can be a lot smaller.
  */
 class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
 {
-  Pointer<SubsetStatesTable> sst_;
+  Pointer<AssignmentsTable> sst_;
   SubsetGraph sg_;
   MergeTree mt_;
   bool has_sg_, has_mt_;
@@ -67,9 +67,9 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
       @{
   */
   //! Get the number of states found for the merge at that vertex of the tree
-  unsigned int get_number_of_subset_states(unsigned int tree_vertex) const;
+  unsigned int get_number_of_assignments(unsigned int tree_vertex) const;
   //! Return a few subset states from that merge
-  SubsetStates get_sample_subset_states(unsigned int tree_vertex) const;
+  Assignments get_sample_assignments(unsigned int tree_vertex) const;
   /** @} */
 };
 

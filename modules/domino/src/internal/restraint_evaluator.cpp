@@ -216,7 +216,7 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
 
 
 
-double SubsetData::get_score(const SubsetState &state) const {
+double SubsetData::get_score(const Assignment &state) const {
   double score=0;
   /*std::cout << "Scoring " << state << " on " << ris_.size()
     << " restraints" << std::endl;*/
@@ -225,7 +225,7 @@ double SubsetData::get_score(const SubsetState &state) const {
     for (unsigned int j=0; j< ssi.size();++j) {
       ssi[j]= state[indices_[i][j]];
     }
-    SubsetState ss(ssi);
+    Assignment ss(ssi);
     ParticlesTemp ps(ss.size());
     for (unsigned int j=0; j< ss.size(); ++j) {
       ps[j]= s_[indices_[i][j]];
@@ -237,7 +237,7 @@ double SubsetData::get_score(const SubsetState &state) const {
   return score;
 }
 
-bool SubsetData::get_is_ok(const SubsetState &state,
+bool SubsetData::get_is_ok(const Assignment &state,
                            double total_max) const {
   /*std::cout << "For subset " << s_ << " got state "
     << state << std::endl;*/
@@ -247,7 +247,7 @@ bool SubsetData::get_is_ok(const SubsetState &state,
     for (unsigned int j=0; j< ssi.size();++j) {
       ssi[j]= state[indices_[i][j]];
     }
-    SubsetState ss(ssi);
+    Assignment ss(ssi);
     ParticlesTemp ps(ss.size());
     for (unsigned int j=0; j< ss.size(); ++j) {
       ps[j]= s_[indices_[i][j]];
@@ -270,7 +270,7 @@ bool SubsetData::get_is_ok(const SubsetState &state,
       for (unsigned int j=0; j< ssi.size();++j) {
         ssi[j]= state[set_indices_[h][i][j]];
       }
-      SubsetState ss(ssi);
+      Assignment ss(ssi);
       ParticlesTemp ps(ss.size());
       for (unsigned int j=0; j< ss.size(); ++j) {
         ps[j]= s_[set_indices_[h][i][j]];
@@ -289,7 +289,7 @@ bool SubsetData::get_is_ok(const SubsetState &state,
 }
 void ModelData
 ::add_score(Restraint *r, const Subset &subset,
-               const SubsetState &state, double score) {
+               const Assignment &state, double score) {
   if (preload_.find(r) == preload_.end()) {
     preload_[r]= PreloadData();
     preload_[r].s= subset;

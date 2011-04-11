@@ -10,7 +10,7 @@
 #define IMPDOMINO_DISCRETE_SAMPLER_H
 
 #include "domino_config.h"
-#include "subset_states.h"
+#include "assignment_tables.h"
 #include "particle_states.h"
 #include "subset_filters.h"
 #include <IMP/Sampler.h>
@@ -51,19 +51,19 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT DiscreteSampler : public Sampler
 {
   IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
-  IMP::internal::OwnerPointer<SubsetStatesTable> sst_;
+  IMP::internal::OwnerPointer<AssignmentsTable> sst_;
   unsigned int max_;
 #ifndef IMP_DOXYGEN
  protected:
   SubsetFilterTables
     get_subset_filter_tables_to_use(RestraintSet *rs,
                                     ParticleStatesTable *pst) const;
-  SubsetStatesTable*
-    get_subset_states_table_to_use(const SubsetFilterTables &sfts) const;
+  AssignmentsTable*
+    get_assignments_table_to_use(const SubsetFilterTables &sfts) const;
 #endif
   ConfigurationSet* do_sample() const;
  protected:
-  virtual SubsetStates do_get_sample_states(const Subset& all) const=0;
+  virtual Assignments do_get_sample_assignments(const Subset& all) const=0;
 public:
   DiscreteSampler(Model*m, ParticleStatesTable *pst, std::string name);
 
@@ -78,13 +78,13 @@ public:
     pst_->set_particle_states(p, se);
   }
 
-  /** Return the SubsetState objects describing the subsets fitting
+  /** Return the Assignment objects describing the subsets fitting
       the description.
 
      \note At the moment, Subset must be equal to
      ParticleStatesTable::get_particles().
    */
-  SubsetStates get_sample_states(const Subset &s) const;
+  Assignments get_sample_assignments(const Subset &s) const;
 
   /** \name Advanced
       Default values are provided, you only need to replace these
@@ -95,7 +95,7 @@ public:
   void set_particle_states_table(ParticleStatesTable *cse) {
     pst_= cse;
   }
-  void set_subset_states_table(SubsetStatesTable *sst) {
+  void set_assignments_table(AssignmentsTable *sst) {
     sst_=sst;
   }
   ParticleStatesTable* get_particle_states_table() const {
@@ -112,10 +112,10 @@ public:
       many states would otherwise be produced. A warning
       will be emitted whenever the limit eliminates states.
   */
-  void set_maximum_number_of_states(unsigned int mx) {
+  void set_maximum_number_of_assignments(unsigned int mx) {
     max_=mx;
   }
-  unsigned int get_maximum_number_of_states() const {
+  unsigned int get_maximum_number_of_assignments() const {
     return max_;
   }
 };

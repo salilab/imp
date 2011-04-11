@@ -55,8 +55,8 @@ def create_sampler(m, pst):
     filters.append(IMP.domino.ExclusionSubsetFilterTable(pst))
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
-    states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
-    s.set_subset_states_table(states)
+    states= IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
+    s.set_assignments_table(states)
     s.set_subset_filter_tables(filters)
     return s
 

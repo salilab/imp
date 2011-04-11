@@ -9,7 +9,7 @@
 #define IMPDOMINO_UTILITY_H
 
 #include "domino_config.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include "Subset.h"
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
@@ -61,7 +61,7 @@ class ParticleStatesTable;
 
 /** Load the appropriate state for each particle in a Subset. */
 IMPDOMINOEXPORT void load_particle_states(const Subset &s,
-                                           const SubsetState &ss,
+                                           const Assignment &ss,
                                            const ParticleStatesTable *pst);
 
 

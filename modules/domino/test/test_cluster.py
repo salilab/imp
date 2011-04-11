@@ -37,8 +37,8 @@ class DOMINOTests(IMP.test.TestCase):
         states=[]
         for i in fa:
             for j in fb:
-                states.append(IMP.domino.SubsetState([i,j]))
-                states.append(IMP.domino.SubsetState([j,i]))
+                states.append(IMP.domino.Assignment([i,j]))
+                states.append(IMP.domino.Assignment([j,i]))
         pst= IMP.domino.ParticleStatesTable()
         ps=IMP.domino.XYZStates(pts)
         pst.set_particle_states(p0, ps)

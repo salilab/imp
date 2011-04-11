@@ -48,8 +48,8 @@ class DOMINOTests(IMP.test.TestCase):
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
         s= IMP.domino.Subset(ps)
-        sst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [eqft])
-        ss= sst.get_subset_states(s)
+        sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft])
+        ss= sst.get_assignments(s)
         print ss
         self.assertEqual(len(ss), 1)
     def _test_global_min3(self):

@@ -12,7 +12,7 @@
 #include "domino_config.h"
 #include "domino_macros.h"
 #include "Subset.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include <IMP/Sampler.h>
 #include <IMP/macros.h>
 #include <IMP/SingletonContainer.h>
@@ -156,12 +156,12 @@ public:
 */
 class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
   Subset s_;
-  SubsetStates ss_;
+  Assignments ss_;
   IMP::internal::OwnerPointer<ParticleStatesTable> pst_;
   ScopedScoreState sss_;
  public:
   RecursiveStates(Particle *p,
-                  Subset s, const SubsetStates &ss,
+                  Subset s, const Assignments &ss,
                   ParticleStatesTable * pst);
   IMP_PARTICLE_STATES(RecursiveStates);
 };

@@ -7,7 +7,7 @@
  */
 
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/domino/subset_states.h>
+#include <IMP/domino/assignment_tables.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -24,7 +24,7 @@ namespace {
                                   unsigned int root,
                                   const Subset& all,
                                   const SubsetFilterTables &filters,
-                                  const SubsetStatesTable *states,
+                                  const AssignmentsTable *states,
                                   ListSubsetFilterTable *lsft,
                                   InferenceStatistics &stats,
                                   unsigned int max,
@@ -45,9 +45,9 @@ namespace {
       IMP_LOG(VERBOSE, "Looking at leaf " << ret.first << std::endl);
       ret.second= get_node_data(ret.first, states);
       if (lsft) update_list_subset_filter_table(lsft, ret.first,
-                                                ret.second.subset_states);
+                                                ret.second.assignments);
       IMP_LOG(VERBOSE, "Subset data is\n" << ret.second << std::endl);
-      stats.add_subset(ret.first, ret.second.subset_states);
+      stats.add_subset(ret.first, ret.second.assignments);
       return ret;
     } else {
       // merge
@@ -69,9 +69,9 @@ namespace {
       ret.first= ed.union_subset;
       ret.second= get_union(cpd0.first, cpd1.first, cpd0.second, cpd1.second,
                             ed, max);
-      stats.add_subset(ed.union_subset, ret.second.subset_states);
+      stats.add_subset(ed.union_subset, ret.second.assignments);
       if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
-                                                ret.second.subset_states);
+                                                ret.second.assignments);
       IMP_LOG(VERBOSE, "After merge, set is " << ret.first
               << " and data is\n" << ret.second << std::endl);
       if (progress) {
@@ -82,11 +82,11 @@ namespace {
   }
 }
 
-SubsetStates get_best_conformations(const MergeTree &mt,
+Assignments get_best_conformations(const MergeTree &mt,
                                     int root,
                                     const Subset& all_particles,
                                     const SubsetFilterTables &filters,
-                                    const SubsetStatesTable *states,
+                                    const AssignmentsTable *states,
                                     ListSubsetFilterTable *lsft,
                                     InferenceStatistics &stats,
                                     unsigned int max) {
@@ -99,7 +99,7 @@ SubsetStates get_best_conformations(const MergeTree &mt,
                                          filters,
                                          states, lsft,
                                          stats, max,
-                                         progress.get()).second.subset_states;
+                                         progress.get()).second.assignments;
 }
 
 

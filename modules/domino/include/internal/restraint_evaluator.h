@@ -10,7 +10,7 @@
 #define IMPDOMINO_INTERNAL_RESTRAINT_EVALUATOR_H
 
 #include "../Subset.h"
-#include "../SubsetState.h"
+#include "../Assignment.h"
 #include "../utility.h"
 #include "../particle_states.h"
 //#include "inference.h"
@@ -21,7 +21,7 @@
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 template <class It>
-inline void load_particle_states(It b, It e, const SubsetState &ss,
+inline void load_particle_states(It b, It e, const Assignment &ss,
                           const ParticleStatesTable *pst) {
   IMP_USAGE_CHECK(std::distance(b,e)
                   == static_cast< typename std::iterator_traits<It>
@@ -42,7 +42,7 @@ inline void load_particle_states(It b, It e, const SubsetState &ss,
   - cache of scores for subset state
  */
 class RestraintData {
-  typedef IMP::internal::Map<SubsetState, double> Scores;
+  typedef IMP::internal::Map<Assignment, double> Scores;
   mutable Scores scores_;
   Pointer<Restraint> r_;
   double weight_;
@@ -56,7 +56,7 @@ public:
     filter_attempts_=0;
     filter_passes_=0;
   }
-  void set_score(const SubsetState &ss, double s) {
+  void set_score(const Assignment &ss, double s) {
     IMP_USAGE_CHECK(scores_.find(ss) == scores_.end(),
                     "Cannot preload scores twice for state "
                     << ss);
@@ -67,7 +67,7 @@ public:
   template <bool Filter>
   double get_score(ParticleStatesTable *pst,
                    const ParticlesTemp &ps,
-                   const SubsetState &state) const {
+                   const Assignment &state) const {
     Scores::const_iterator it= scores_.find(state);
     if (it != scores_.end()) {
       /*std::cout << "Found cached score for " << r_->get_name()
@@ -122,8 +122,8 @@ public:
     indices_(indices),
     set_ris_(set_ris), set_indices_(set_indices), set_weights_(set_weights),
     s_(s){}
-  double get_score(const SubsetState &state) const;
-  bool get_is_ok(const SubsetState &state, double max) const;
+  double get_score(const Assignment &state) const;
+  bool get_is_ok(const Assignment &state, double max) const;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
@@ -136,7 +136,7 @@ public:
 struct IMPDOMINOEXPORT ModelData: public RefCounted {
   struct PreloadData {
     Subset s;
-    SubsetStates sss;
+    Assignments sss;
     Floats scores;
   };
   typedef IMP::internal::Map<Restraint*, PreloadData> Preload;
@@ -184,7 +184,7 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   const SubsetData &get_subset_data(const Subset &s,
                                     const Subsets &exclude=Subsets()) const;
   void add_score(Restraint *r, const Subset &subset,
-                 const SubsetState &state, double score);
+                 const Assignment &state, double score);
   IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 

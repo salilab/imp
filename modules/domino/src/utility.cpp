@@ -110,7 +110,7 @@ ParticlesTemp get_dependent_particles(Particle *p,
 
 
 void load_particle_states(const Subset &s,
-                          const SubsetState &ss,
+                          const Assignment &ss,
                           const ParticleStatesTable *pst) {
   internal::load_particle_states(s.begin(), s.end(), ss, pst);
   if (s.size()!=0) {

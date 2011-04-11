@@ -81,9 +81,9 @@ def create_sampler(m, ps, pst):
     mf=MyFilterTable(ps[1], 0)
     # try with and without this line
     filters.append(mf)
-    states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
+    states= IMP.domino.BranchAndBoundAssignmentsTable(pst, filters)
     #states.set_log_level(IMP.SILENT);
-    s.set_subset_states_table(states)
+    s.set_assignments_table(states)
     s.set_subset_filter_tables(filters)
     return s
 

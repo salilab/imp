@@ -124,7 +124,7 @@ namespace {
 
 
 RecursiveStates::RecursiveStates(Particle *p,
-                                 Subset s, const SubsetStates &ss,
+                                 Subset s, const Assignments &ss,
                   ParticleStatesTable * pst):
     ParticleStates("RecursiveStates %1%"),
     s_(s), ss_(ss), pst_(pst), sss_(new DummyConstraint(p,

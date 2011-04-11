@@ -1,18 +1,18 @@
 Import('env')
 
 files = [
+         'Assignment.h',
          'BranchAndBoundSampler.h',
          'DiscreteSampler.h',
          'DominoSampler.h',
          'Subset.h',
-         'SubsetState.h',
          'analysis.h',
+         'assignment_tables.h',
          'domino_macros.h',
          'optimize_restraints.h',
          'particle_states.h',
          'subset_filters.h',
          'subset_graphs.h',
-         'subset_states.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')

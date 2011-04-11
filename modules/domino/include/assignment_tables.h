@@ -1,18 +1,18 @@
 /**
- *  \file domino/subset_states.h
+ *  \file domino/assignment_tables.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPDOMINO_SUBSET_SUBSET_STATES_H
-#define IMPDOMINO_SUBSET_SUBSET_STATES_H
+#ifndef IMPDOMINO_ASSIGNMENT_TABLES_H
+#define IMPDOMINO_ASSIGNMENT_TABLES_H
 
 
 #include "particle_states.h"
 #include "subset_filters.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include "Subset.h"
 #include "domino_config.h"
 #include "domino_macros.h"
@@ -29,18 +29,18 @@
 IMPDOMINO_BEGIN_NAMESPACE
 class DominoSampler;
 
-/** The base class for classes that create SubsetStates, one per
-    subset. The main method of interest is get_subset_states()
-    which returns a SubsetStates containing the valid states.
+/** The base class for classes that create Assignments, one per
+    subset. The main method of interest is get_assignments()
+    which returns a Assignments containing the valid states.
 */
-class IMPDOMINOEXPORT SubsetStatesTable: public Object {
+class IMPDOMINOEXPORT AssignmentsTable: public Object {
  public:
-  SubsetStatesTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
-  virtual SubsetStates get_subset_states(const Subset &s) const=0;
-  ~SubsetStatesTable();
+  AssignmentsTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
+  virtual Assignments get_assignments(const Subset &s) const=0;
+  ~AssignmentsTable();
 };
 
-IMP_OBJECTS(SubsetStatesTable, SubsetStatesTables);
+IMP_OBJECTS(AssignmentsTable, AssignmentsTables);
 
 
 /** Enumerate states based on provided ParticleStates
@@ -49,7 +49,7 @@ IMP_OBJECTS(SubsetStatesTable, SubsetStatesTables);
     The produced states are filtered using a variety of methods
     - no two particles which have the same ParticleStates object
     in the ParticleStatesTable can be assigned the same state.
-    That is for a given Subset s and SubsetState ss, if
+    That is for a given Subset s and Assignment ss, if
 \code
     ParticleStatesTable::get_particle_states(s[i])
     ==ParticleStatesTable::get_particle_states(s[j])
@@ -59,8 +59,8 @@ IMP_OBJECTS(SubsetStatesTable, SubsetStatesTables);
     - If a SubsetFilterTable objects are provided, the branch and bound
     is used to eliminate states using them.
 */
-class IMPDOMINOEXPORT BranchAndBoundSubsetStatesTable:
-  public SubsetStatesTable {
+class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable:
+  public AssignmentsTable {
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 /* MSVC/Sun gcc appears confused by a friend class in the anonymous namespace */
 public:
@@ -69,33 +69,33 @@ public:
   unsigned int max_;
 #endif
  public:
-  BranchAndBoundSubsetStatesTable(ParticleStatesTable* pst,
+  BranchAndBoundAssignmentsTable(ParticleStatesTable* pst,
                                   const SubsetFilterTables &sft
                                   = SubsetFilterTables(),
                                   unsigned int max
                                   = std::numeric_limits<unsigned int>::max());
-  IMP_SUBSET_STATES_TABLE(BranchAndBoundSubsetStatesTable);
+  IMP_ASSIGNMENTS_TABLE(BranchAndBoundAssignmentsTable);
 };
 
 
-/** Store a map of SubsetStates objects and return them on demand.
-    \untested{ListSubsetStatesTable}
+/** Store a map of Assignments objects and return them on demand.
+    \untested{ListAssignmentsTable}
 */
-class IMPDOMINOEXPORT ListSubsetStatesTable: public SubsetStatesTable {
-  IMP::internal::Map<Subset, SubsetStates> states_;
+class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
+  IMP::internal::Map<Subset, Assignments> states_;
  public:
-  ListSubsetStatesTable(std::string name="ListSubsetStatesTable %1%");
+  ListAssignmentsTable(std::string name="ListSubsetStatesTable %1%");
   /** There must not be any duplicates in the list */
-  void set_subset_states(const Subset &s, const SubsetStates &lsc) {
+  void set_assignments(const Subset &s, const Assignments &lsc) {
     IMP_IF_CHECK(USAGE) {
-      SubsetStates l= lsc;
+      Assignments l= lsc;
       std::sort(l.begin(), l.end());
       IMP_USAGE_CHECK(std::unique(l.begin(), l.end())== l.end(),
                       "There are duplicated subset states in the passed list");
     }
     states_[s]=lsc;
   }
-  IMP_SUBSET_STATES_TABLE(ListSubsetStatesTable);
+  IMP_ASSIGNMENTS_TABLE(ListAssignmentsTable);
 };
 
 
@@ -108,4 +108,4 @@ IMPDOMINOEXPORT Ints get_order(const Subset &s,
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_SUBSET_SUBSET_STATES_H */
+#endif  /* IMPDOMINO_ASSIGNMENT_TABLES_H */

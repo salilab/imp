@@ -9,7 +9,7 @@
 #define IMPDOMINO_ANALYSIS_H
 
 #include "domino_config.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include "Subset.h"
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -25,8 +25,8 @@ class ParticleStatesTable;
     to statistics::ParticleEmbedding which has a method
     which takes a particle.
  */
-IMPDOMINOEXPORT SubsetStates get_state_clusters(const Subset &subset,
-                                                 const SubsetStates &states,
+IMPDOMINOEXPORT Assignments get_state_clusters(const Subset &subset,
+                                                 const Assignments &states,
                                                  ParticleStatesTable *pst,
                                                  double resolution);
 

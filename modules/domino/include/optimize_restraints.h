@@ -9,7 +9,7 @@
 #define IMPDOMINO_OPTIMIZE_RESTRAINTS_H
 
 #include "domino_config.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include "Subset.h"
 #include "particle_states.h"
 #include <IMP/Particle.h>

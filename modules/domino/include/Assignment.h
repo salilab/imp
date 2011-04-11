@@ -1,13 +1,13 @@
 /**
- *  \file domino/SubsetState.h
+ *  \file domino/Assignment.h
  *  \brief A beyesian infererence-based sampler.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPDOMINO_SUBSET_STATE_H
-#define IMPDOMINO_SUBSET_STATE_H
+#ifndef IMPDOMINO_ASSIGNMENT_H
+#define IMPDOMINO_ASSIGNMENT_H
 
 #include "domino_config.h"
 #include "IMP/macros.h"
@@ -22,25 +22,25 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a configuration of a subset.
 /** This class stores a configuration of a Subset object. The
-    indices of the corresponding Subset/SubsetState objects
+    indices of the corresponding Subset/Assignment objects
     correspond. That is, the state of the ith particle in
-    a Subset is the ith value in the SubsetState.
+    a Subset is the ith value in the Assignment.
 
-    Like Subset objects, SubsetState objects cannot be
+    Like Subset objects, Assignment objects cannot be
     modified and provide a std::vector/python list like
     interface.
 */
-class IMPDOMINOEXPORT SubsetState {
+class IMPDOMINOEXPORT Assignment {
   // store the ref count in the first entry of the block
   static std::vector<std::vector<int*> > free_;
   int* v_;
   unsigned int sz_;
-  int compare(const SubsetState &o) const {
+  int compare(const Assignment &o) const {
     IMP_USAGE_CHECK(std::find(o.begin(), o.end(), -1)
                     ==  o.end(),
-                    "SubsetState not initialize yet.");
+                    "Assignment not initialize yet.");
     IMP_USAGE_CHECK(std::find(begin(), end(), -1) == end(),
-                    "SubsetState not initialize yet.");
+                    "Assignment not initialize yet.");
     IMP_USAGE_CHECK(o.size() == size(), "Sizes don't match");
     for (unsigned int i=1; i< size()+1; ++i) {
       if (v_[i] < o.v_[i]) return -1;
@@ -77,7 +77,7 @@ class IMPDOMINOEXPORT SubsetState {
     v_[0]=1;
     sz_=sz;
   }
-  void copy_from(const SubsetState &o) {
+  void copy_from(const Assignment &o) {
     validate();
     o.validate();
     teardown();
@@ -88,33 +88,33 @@ class IMPDOMINOEXPORT SubsetState {
     }
   }
 public:
-  ~SubsetState() {
+  ~Assignment() {
     teardown();
   }
-  SubsetState(): v_(0), sz_(0){}
+  Assignment(): v_(0), sz_(0){}
   template <class It>
-  SubsetState(It b, It e) {
+  Assignment(It b, It e) {
     create(std::distance(b,e));
     std::copy(b,e, v_+1);
     validate();
   }
-  SubsetState(const Ints &i) {
+  Assignment(const Ints &i) {
     create(i.size());
     std::copy(i.begin(), i.end(), v_+1);
     validate();
   }
   // can't use due to sz_
-  // IMP_COPY_CONSTRUCTOR(SubsetState);
+  // IMP_COPY_CONSTRUCTOR(Assignment);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  SubsetState(const SubsetState &o):v_(0), sz_(0){
+  Assignment(const Assignment &o):v_(0), sz_(0){
     copy_from(o);
   }
-  SubsetState& operator=(const SubsetState &o) {
+  Assignment& operator=(const Assignment &o) {
     copy_from(o);
     return *this;
   }
 #endif
-  IMP_COMPARISONS(SubsetState);
+  IMP_COMPARISONS(Assignment);
 #ifndef SWIG
   int operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i < sz_, "Out of range");
@@ -135,7 +135,7 @@ public:
     return sz_;
   }
 #endif
-  IMP_SHOWABLE_INLINE(SubsetState, {
+  IMP_SHOWABLE_INLINE(Assignment, {
       out << "[";
       for (unsigned int i=0; i< size(); ++i) {
         out << v_[i+1];
@@ -152,19 +152,19 @@ public:
     return v_+1+size();
   }
 #endif
-  IMP_HASHABLE_INLINE(SubsetState, return boost::hash_range(begin(),
+  IMP_HASHABLE_INLINE(Assignment, return boost::hash_range(begin(),
                                                        end()););
 };
 
-IMP_VALUES(SubsetState, SubsetStates);
+IMP_VALUES(Assignment, Assignments);
 
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-inline std::size_t hash_value(const SubsetState &t) {
+inline std::size_t hash_value(const Assignment &t) {
   return t.__hash__();
 }
 #endif
 
 IMPDOMINO_END_NAMESPACE
 
-#endif  /* IMPDOMINO_SUBSET_STATE_H */
+#endif  /* IMPDOMINO_ASSIGNMENT_H */
