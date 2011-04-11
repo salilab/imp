@@ -3,11 +3,11 @@
 
 import sys, os
 import IMP.isd
-from IMP.isd.utils import Load
+from IMP.isd.utils import Load, read_sequence_file
 #from Isd.io.nomenclature import IUPAC_CONVENTION
 IUPAC_CONVENTION='iupac'
 TYPE_AMINO_ACID = 'AMINO_ACID'
-pseudoatoms_dict = IMP.isd.get_data_path('pseudoatoms.dict')
+pseudoatoms_dict = IMP.isd.get_data_path('CHARMM_pseudoatoms.dict')
 
 def del_comment(x):
 
@@ -29,10 +29,10 @@ class TBLReader:
 
     pseudoatom_char = '*', '%', '#'
 
-    def __init__(self, sequence, first_residue_number=1, ignore_warnings=False):
+    def __init__(self, sequence, ignore_warnings=False):
 
-        self.sequence = sequence
-        self.first_residue_number = first_residue_number
+        self.sequence = [sequence[i] for i in sorted(sequence.keys())]
+        self.first_residue_number = min(sequence.keys())
         self.ignore = ignore_warnings
         self.pseudo_dict = Load(pseudoatoms_dict)
 
@@ -540,6 +540,7 @@ class TBLReader:
 if __name__ == '__main__':                    
 
     noe = 'noe.tbl'
-    reader = TBLReader(first_residue_number=1, ignore_warnings=True)
+    sequence = read_sequence_file('seq.dat', first_residue_number=1)
+    reader = TBLReader(sequence, ignore_warnings=True)
     reader.read_distances(noe, key='test')
     
