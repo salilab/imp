@@ -23,9 +23,38 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
-          Particle *kappa, unsigned N, double cosbar, double sinbar) : 
-    kappa_(kappa), N_(N), cosbar_(cosbar), sinbar_(sinbar)
+TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa) :kappa_(kappa) {
+  if (p.size() != 4){
+          IMP_THROW("please provide a list with 4 particles!", ModelException);
+      }
+  p_[0]=p[0];
+  p_[1]=p[1];
+  p_[2]=p[2];
+  p_[3]=p[3];
+  // create von Mises
+  double kappaval=Scale(kappa_).get_scale();
+  mises_ = new vonMisesSufficient(0, data, kappaval);
+  mises_->set_was_used(true);
+  }
+
+TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
+          chiexp, Particle *kappa) : kappa_(kappa) { 
+  if (p.size() != 4)
+      {
+        IMP_THROW("please provide a list with 4 particles!", ModelException); 
+      }
+  p_[0]=p[0];
+  p_[1]=p[1];
+  p_[2]=p[2];
+  p_[3]=p[3];
+  // create von Mises
+  double kappaval=Scale(kappa_).get_scale();
+  mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
+  mises_->set_was_used(true);
+  }
+
+TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, 
+        Floats data, Particle * kappa) : kappa_(kappa) 
 {
   p_[0]=p1;
   p_[1]=p2;
@@ -33,27 +62,21 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particl
   p_[3]=p4;
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
-  mises_ = new vonMisesSufficient(0, N_, cosbar_, sinbar_, kappaval);
+  mises_ = new vonMisesSufficient(0, data, kappaval);
   mises_->set_was_used(true);
 }
 
-Floats TALOSRestraint::get_sufficient_statistics(Floats data)
+TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
+          unsigned N, double R0, double chiexp, Particle *kappa) : kappa_(kappa)
 {
-    unsigned N = data.size();
-    //mean cosine
-    double cosbar=0;
-    double sinbar=0;
-    for (unsigned i=0; i<N; ++i){
-        cosbar += cos(data[i]);
-        sinbar += sin(data[i]);
-    }
-    cosbar = cosbar/double(N);
-    sinbar = sinbar/double(N);
-    Floats retval (3);
-    retval[0]=N;
-    retval[1]=cosbar;
-    retval[2]=sinbar;
-    return retval;
+  p_[0]=p1;
+  p_[1]=p2;
+  p_[2]=p3;
+  p_[3]=p4;
+  // create von Mises
+  double kappaval=Scale(kappa_).get_scale();
+  mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
+  mises_->set_was_used(true);
 }
 
 //! Calculate the score for this dihedral restraint.

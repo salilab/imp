@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 #general imports
+from math import *
 from numpy import *
 from random import gauss,uniform,randint
 from scipy.special import i0,i1
@@ -41,41 +42,50 @@ class TestTALOSRestraint(IMP.test.TestCase):
         self.meanv=uniform(-pi,pi)
         self.stdev=uniform(0,2*pi)
         self.obs = array([gauss(self.meanv,self.stdev) for i in xrange(N)])
-        self.cosbar = (cos(self.obs).sum())/N
-        self.sinbar = (sin(self.obs).sum())/N
-        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
-                self.kappa, N, self.cosbar, self.sinbar)
+        self.cosbar = cos(self.obs).sum()
+        self.sinbar = sin(self.obs).sum()
+        self.R=sqrt(self.cosbar**2+self.sinbar**2)
+        R=self.R
+        self.chiexp=acos(self.cosbar/R)
+        if self.sinbar <0:
+            self.chiexp = -self.chiexp
+        self.talos = IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
+                self.obs, self.kappa)
+        #self.talos = IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
+        #        N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(self.talos)
 
-    def test_statistics(self):
-        "tests the sufficient statistics"
-        for i in xrange(100):
-            N=randint(1,20)
-            meanv=uniform(-pi,pi)
-            stdev=uniform(0,2*pi)
-            obs = array([gauss(meanv,stdev) for j in xrange(N)])
-            cosbar = (cos(obs).sum())/N
-            sinbar = (sin(obs).sum())/N
-            cpp = IMP.isd.TALOSRestraint.get_sufficient_statistics(obs)
-            self.assertEqual(cpp[0],N)
-            self.assertAlmostEqual(cpp[1],cosbar)
-            self.assertAlmostEqual(cpp[2],sinbar)
+    def testAlternatives(self):
+        """ test different constructors """
+        self.setup_restraint()
+        talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
+                self.N, self.R, self.chiexp, self.kappa)
+        self.m.add_restraint(talos1)
+        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
+
+    def testAlternatives2(self):
+        """ test different constructors """
+        self.setup_restraint()
+        talos1=IMP.isd.TALOSRestraint(self.p0, self.p1, self.p2, self.p3,
+                self.obs, self.kappa)
+        self.m.add_restraint(talos1)
+        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
+
+    def testAlternatives3(self):
+        """ test different constructors """
+        self.setup_restraint()
+        talos1=IMP.isd.TALOSRestraint([self.p0, self.p1, self.p2, self.p3],
+                self.obs, self.kappa)
+        self.m.add_restraint(talos1)
+        self.assertEqual(self.talos.evaluate(None), talos1.evaluate(None))
 
     def testValueDDist(self):
         """test derivatives for the angle using a small CG minimization"""
         self.N=10
-        #self.meanv=pi/2
-        #self.stdev=pi/4
-        #obs = array([gauss(self.meanv,self.stdev) for j in xrange(self.N)])
-        #self.cosbar = (cos(obs).sum())/self.N
-        #self.sinbar = (sin(obs).sum())/self.N
-        #
-        #case of perfectly matching observations. Mode does not change if sinbar
-        # changes.
-        self.cosbar = cos(pi/3)
-        self.sinbar = sin(pi/3)
+        self.R=3
+        self.chiexp = pi/3
         self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
-                self.kappa, self.N, self.cosbar, self.sinbar)
+                self.N, self.R, self.chiexp, self.kappa)
         self.m.add_restraint(self.talos)
         #constrain particles to a fixed "bondlength" of 1
         uf=IMP.core.Harmonic(1,100)
@@ -113,7 +123,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
             kappa = uniform(0.1,10)
             self.kappa.set_scale(kappa)
             self.talos.evaluate(self.DA)
-            py=self.N*i1(kappa)/i0(kappa) - self.N*self.sinbar
+            py=self.N*i1(kappa)/i0(kappa) - self.R*cos(pi/2-self.chiexp)
             cpp=self.kappa.get_scale_derivative()
             if py == 0:
                 self.assertEqual(cpp,0)
@@ -129,8 +139,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                 cos(2*pi-x),1,sin(2*pi-x)))
             kappa = self.kappa.get_scale()
             self.talos.evaluate(self.DA)
-            py=self.N*i1(kappa)/i0(kappa) - self.N*(cos(x)*self.cosbar +
-                    sin(x)*self.sinbar)
+            py=self.N*i1(kappa)/i0(kappa) - self.R*cos(x-self.chiexp)
             cpp=self.kappa.get_scale_derivative()
             if py == 0:
                 self.assertEqual(cpp,0)
@@ -146,8 +155,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
                 cos(2*pi-x),1,sin(2*pi-x)))
             kappa = self.kappa.get_scale()
             cpp=self.talos.evaluate(None)
-            py=log(2*pi*i0(kappa)**self.N) - self.N*kappa*(cos(x)*self.cosbar +
-                    sin(x)*self.sinbar)
+            py=log(2*pi*i0(kappa)**self.N) - self.R*kappa*cos(x-self.chiexp)
             if py == 0:
                 self.assertEqual(cpp,0)
             else:
@@ -161,7 +169,7 @@ class TestTALOSRestraint(IMP.test.TestCase):
             kappa = uniform(0.1,10)
             self.kappa.set_scale(kappa)
             cpp=self.talos.evaluate(None)
-            py=log(2*pi*i0(kappa)**self.N) - self.N*kappa*self.sinbar
+            py=log(2*pi*i0(kappa)**self.N) - self.R*kappa*cos(pi/2-self.chiexp)
             if py == 0:
                 self.assertEqual(cpp,0)
             else:
