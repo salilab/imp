@@ -18,51 +18,74 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! phi/psi dihedral restraint between four particles, using data from TALOS.
+/** The likelihood is
+       \f[ 
+       f(\chi_{exp}^1,\cdots,\chi_{exp)^N|\chi(X),\kappa,I) 
+        = \frac{1]{2\pi I_0(\kappa)^N}
+        \exp \left(R_0 \kappa \cos (\chi_{exp}-\chi(X)) \right)
+      \f]
+      where the sufficient statistics are \f$N\f$ the number of observations, R and \chi_{exp}.
+      \see vonMisesSufficient.h for further detail.
+*/
+
 class IMPISDEXPORT TALOSRestraint : public Restraint
 {
 public:
-  //! Create the von Mises dihedral restraint on one dihedral angle given a number of observations.
-  /** The likelihood is
-       \f[ 
-       f(\chi_{exp}^1,\cdots,\chi_{exp)^N|\chi(X),\kappa,I) 
-        = \frac{\exp \left(N \kappa 
-           \left( \cos \chi_{exp} \cos \chi(X) 
-                + \sin \chi_{exp} \sin \chi(X)
-           \right)\right)}
-               {2\pi I_0(\kappa)^N} 
-      \f]
-      where the sufficient statistics are \f$N\f$ the number of observations, and
-      \f[
-        \cos\chi_{exp} = \frac{1}{N} \sum_{i=1}^N \cos\chi_{exp}^i
-        \quad
-        \sin\chi_{exp} = \frac{1}{N} \sum_{i=1}^N \sin\chi_{exp}^i
-      \f]
 
+    /** create restraint from a list of particles and the data.
+      \param[in] p list of 4 particles that make the dihedral angle.
+      \param[in] data list of observations for that angle.
+      \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
+   */
+  TALOSRestraint(Particles p, Floats data, Particle *kappa); 
+
+   /** create restraint from 4 particles and the data.
       \param[in] p1 Pointer to first particle in dihedral restraint.
       \param[in] p2 Pointer to second particle in dihedral restraint.
       \param[in] p3 Pointer to third particle in dihedral restraint.
       \param[in] p4 Pointer to fourth particle in dihedral restraint.
+      \param[in] data list of observations for that angle.
       \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
-      \param[in] N Number of observations
-      \param[in] cosbar Average of the cosines of the observations
-      \param[in] sinbar Average of the sines of the observations
-
-      \note For now, does not use vonMises.h for efficiency reasons.
-   */
-  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, Particle *kappa, 
-          unsigned N, double cosbar, double sinbar);
-
-
-  //! compute sufficient statistics from a list of "observations"
-  /** returns the number of observations, the average of cosines and the average of
-      sines of the input values.
   */
-  static Floats get_sufficient_statistics(Floats data);
+  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, Floats data, Particle *kappa); 
+
+    /** create restraint from a list of particles and the sufficient statistics.
+      \param[in] p list of 4 particles that make the dihedral angle.
+      \param[in] N Number of observations
+      \param[in] R0 component on the x axis
+      \param[in] chiexp average observed angle.
+      \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
+  */
+  TALOSRestraint(Particles p, unsigned N, double R0, double chiexp, Particle *kappa);
+
+    /** create restraint from 4 particles and the sufficient statistics.
+      \param[in] p1 Pointer to first particle in dihedral restraint.
+      \param[in] p2 Pointer to second particle in dihedral restraint.
+      \param[in] p3 Pointer to third particle in dihedral restraint.
+      \param[in] p4 Pointer to fourth particle in dihedral restraint.
+      \param[in] N Number of observations
+      \param[in] R0 component on the x axis
+      \param[in] chiexp average observed angle.
+      \param[in] kappa Pointer to the \f$\kappa\f$ concentration particle.
+  */
+  TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
+          unsigned N, double R0, double chiexp, Particle *kappa);
+
 
   /* call for probability */
   double get_probability() const
   {
     return exp(-unprotected_evaluate(NULL));
+  }
+
+  double get_R0() const
+  {
+      return mises_->get_R0();
+  }
+
+  double get_chiexp() const
+  {
+      return mises_->get_chiexp();
   }
 
   IMP_RESTRAINT(TALOSRestraint);
@@ -71,8 +94,6 @@ private:
   IMP::Pointer<Particle> p_[4];
   IMP::Pointer<Particle> kappa_;
   IMP::Pointer<vonMisesSufficient> mises_;
-  unsigned int N_;
-  double cosbar_, sinbar_;
 };
 
 IMPISD_END_NAMESPACE
