@@ -22,8 +22,9 @@
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
+#ifdef IMP_BULLET_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
-
+#endif
 #include <btBulletDynamicsCommon.h>
 #include <boost/ptr_container/ptr_vector.hpp>
 #include <boost/bind.hpp>
@@ -234,12 +235,17 @@ namespace {
       if (spheres.empty()) {
         std::cout << "Empty: "<< p->get_name() << std::endl;
       }
+#ifdef IMP_BULLET_USE_IMP_CGAL
       std::pair<algebra::Vector3Ds, Ints > impfaces
         = IMP::cgal::internal::get_skin_surface(spheres);
       Pointer<SurfaceMeshObject> smo= new SurfaceMeshObject(impfaces.first,
                                                             impfaces.second);
       p->add_attribute(surface_key, smo);
       IMP::core::add_rigid_body_cache_key(surface_key);
+#else
+      IMP_THROW("Rigid bodies cannot be used with CGAL",
+                ErrorException);
+#endif
     }
     SurfaceMeshObject *smo
       = dynamic_cast<SurfaceMeshObject*>(p->get_value(surface_key));
