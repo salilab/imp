@@ -410,7 +410,8 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 
 //! Rigidify a molecule or collection of molecules.
 /** The rigid body created has all the leaves as members and a
-    member rigid body for each internal node in the tree.
+    member rigid body for each internal node in the tree. The
+    particle created to be the rigid body is returned.
 
     A name can be passed as it is not easy to automatically pick
     a decent name.
