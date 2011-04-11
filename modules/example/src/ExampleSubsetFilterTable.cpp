@@ -19,7 +19,7 @@ namespace {
     }
     IMP_SUBSET_FILTER(ExampleSubsetFilter);
   };
-  bool ExampleSubsetFilter::get_is_ok(const domino::SubsetState &state) const{
+  bool ExampleSubsetFilter::get_is_ok(const domino::Assignment &state) const{
       IMP_OBJECT_LOG;
       for (unsigned int i=0; i< state.size(); ++i) {
         if (values_[i] >=0 && state[i] != values_[i]) return false;
