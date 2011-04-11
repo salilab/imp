@@ -96,10 +96,9 @@ namespace {
     double s=r->evaluate(false);
     cur.set_value(sk, s, 0);
 
-    set_particles(cur, fks, ip);
-    Index index;
     Restraints rd= r->get_instant_decomposition();
     if (rd.size() >1) {
+      Index index;
       for (unsigned int i=0; i< rd.size(); ++i) {
         ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rd[i]->set_was_used(true);
@@ -107,6 +106,8 @@ namespace {
         double score = sr->evaluate(false);
         rc.set_value(sk, score, 0);
       }
+    } else {
+      set_particles(cur, fks, ip);
     }
   }
 }
