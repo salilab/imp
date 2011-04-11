@@ -48,7 +48,7 @@ class DOMINOTests(IMP.test.TestCase):
             s=[]
             for p in ps:
                 s.append(p.get_value(IMP.IntKey("hi")))
-            ss= IMP.domino.SubsetState(s)
+            ss= IMP.domino.Assignment(s)
             #print all_states
             self.assertNotIn(s, all_states)
             all_states.append(s)

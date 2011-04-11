@@ -14,16 +14,16 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 class SubsetEvaluatorTable;
-class SubsetStatesTable;
+class AssignmentsTable;
 IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINOEXPORT
-SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
+Assignments loopy_get_best_conformations(const SubsetGraph &sg,
                                           const Subset& all_particles,
                                           const SubsetFilterTables &filters,
-                                          const SubsetStatesTable *sst,
+                                          const AssignmentsTable *sst,
                                           unsigned int max);
 
 

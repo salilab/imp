@@ -23,12 +23,12 @@
 
 
 /** This macro declares
-    - IMP::domino::SubsetStateTable::get_subset_states()
+    - IMP::domino::AssignmentTable::get_assignments()
 */
-#define IMP_SUBSET_STATES_TABLE(Name)                                   \
+#define IMP_ASSIGNMENTS_TABLE(Name)                                   \
   public:                                                               \
-  virtual IMP::domino::SubsetStates                                     \
-  get_subset_states(const IMP::domino::Subset&s) const;                 \
+  virtual IMP::domino::Assignments                                     \
+  get_assignments(const IMP::domino::Subset&s) const;                 \
   IMP_OBJECT(Name)
 
 
@@ -48,8 +48,8 @@
 
 /** This macro defines a class NameSubsetFilterTable from a method
     which is applied to disjoint sets. The code should assume there is
-    a SubsetState state and an Ints members which ordered indices into
-    the SubsetState for the current set.
+    a Assignment state and an Ints members which ordered indices into
+    the Assignment for the current set.
 */
 #define IMP_DISJOINT_SUBSET_FILTER_TABLE_DECL(Name)                     \
   class IMPDOMINOEXPORT Name##SubsetFilterTable:                        \
@@ -68,7 +68,7 @@
 #define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter, strength,    \
                                              next)                      \
   struct Name##Filter {                                                 \
-    bool operator()(const SubsetState &state,                           \
+    bool operator()(const Assignment &state,                           \
                     const Ints &members) const {                        \
       filter;                                                           \
     }                                                                   \
@@ -81,7 +81,7 @@
     }                                                                   \
   };                                                                    \
   struct Name##Next {                                                   \
-    double operator()(int pos, const SubsetState& state,                \
+    double operator()(int pos, const Assignment& state,                \
                       const Ints &set) const {                          \
       next;                                                             \
     }                                                                   \
@@ -119,16 +119,17 @@
 */
 #define IMP_SUBSET_FILTER(Name)                                         \
   public:                                                               \
-  virtual bool get_is_ok(const IMP::domino::SubsetState& state) const;  \
+  virtual bool get_is_ok(const IMP::domino::Assignment& assignment) const;  \
  IMP_OBJECT(Name)
 
 
 /** This macro declares
-    - IMP::domino::DiscreteSampler::do_get_sample_states()
+    - IMP::domino::DiscreteSampler::do_get_sample_assignments()
 */
 #define IMP_DISCRETE_SAMPLER(Name)                                      \
   public:                                                               \
-  SubsetStates do_get_sample_states(const IMP::domino::Subset &known) const; \
+  Assignments do_get_sample_assignments(const IMP::domino::Subset &known) \
+  const;                                                                \
   IMP_OBJECT(Name)
 
 

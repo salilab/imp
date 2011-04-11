@@ -7,7 +7,7 @@
  */
 
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/domino/subset_states.h>
+#include <IMP/domino/assignment_tables.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
@@ -20,17 +20,17 @@ InferenceStatistics::InferenceStatistics(){}
 
 
 InferenceStatistics::Data
-InferenceStatistics::get_data(const Subset &s, SubsetStates ss) const {
+InferenceStatistics::get_data(const Subset &, Assignments ss) const {
   Data ret;
   ret.size= ss.size();
   std::random_shuffle(ss.begin(), ss.end());
-  ret.sample=SubsetStates(ss.begin(), ss.begin()
+  ret.sample=Assignments(ss.begin(), ss.begin()
                           +std::min(ss.size(), size_t(10)));
   return ret;
 }
 
 void InferenceStatistics::add_subset(const Subset &s,
-                                           const SubsetStates &ss) {
+                                           const Assignments &ss) {
   subsets_[s]=get_data(s, ss);
 }
 
@@ -48,12 +48,12 @@ InferenceStatistics::~InferenceStatistics() {
 }
 
 unsigned int
-InferenceStatistics::get_number_of_subset_states(Subset subset) const {
+InferenceStatistics::get_number_of_assignments(Subset subset) const {
   return get_data(subset).size;
 }
 
-SubsetStates
-InferenceStatistics::get_sample_subset_states(Subset subset) const {
+Assignments
+InferenceStatistics::get_sample_assignments(Subset subset) const {
   return get_data(subset).sample;
 }
 
@@ -64,10 +64,10 @@ InferenceStatistics::get_data(const Subset &s) const {
   return subsets_.find(s)->second;
 }
 
-  SubsetState get_merged_subset_state(const Subset &s,
-                                      const SubsetState &ss0,
+  Assignment get_merged_assignment(const Subset &s,
+                                      const Assignment &ss0,
                                       const Ints &i0,
-                                      const SubsetState &ss1,
+                                      const Assignment &ss1,
                                       const Ints &i1) {
     Ints ret(s.size(), -1);
     IMP_USAGE_CHECK(ss0.size() == i0.size(), "Don't match");
@@ -83,7 +83,7 @@ InferenceStatistics::get_data(const Subset &s) const {
         IMP_USAGE_CHECK(ret[i] >=0, "Not all set");
       }
     }
-    return SubsetState(ret);
+    return Assignment(ret);
   }
 
 
@@ -97,13 +97,13 @@ InferenceStatistics::get_data(const Subset &s) const {
     Ints ui0= get_index(ed.union_subset, s0);
     Ints ui1= get_index(ed.union_subset, s1);
     Ints uii= get_index(ed.union_subset, ed.intersection_subset);
-    for (unsigned int i=0; i< nd0.subset_states.size(); ++i) {
-      for (unsigned int j=0; j< nd1.subset_states.size(); ++j) {
-        if (get_are_equal(nd0.subset_states[i], ii0,
-                          nd1.subset_states[j], ii1)) {
-          SubsetState ss= get_merged_subset_state(ed.union_subset,
-                                                  nd0.subset_states[i], ui0,
-                                                  nd1.subset_states[j], ui1);
+    for (unsigned int i=0; i< nd0.assignments.size(); ++i) {
+      for (unsigned int j=0; j< nd1.assignments.size(); ++j) {
+        if (get_are_equal(nd0.assignments[i], ii0,
+                          nd1.assignments[j], ii1)) {
+          Assignment ss= get_merged_assignment(ed.union_subset,
+                                                  nd0.assignments[i], ui0,
+                                                  nd1.assignments[j], ui1);
           bool ok=true;
           for (unsigned int i=0; i< ed.filters.size(); ++i) {
             if (ed.filters[i]->get_is_ok(ss)) {
@@ -114,8 +114,8 @@ InferenceStatistics::get_data(const Subset &s) const {
             }
           }
           if (ok) {
-            ret.subset_states.push_back(ss);
-            if (ret.subset_states.size() > max) {
+            ret.assignments.push_back(ss);
+            if (ret.assignments.size() > max) {
               IMP_WARN("Truncated number of states at " << max
                        << " when merging " << s0 << " and " << s1);
               return ret;

@@ -6,7 +6,7 @@
  *
  */
 
-#include <IMP/domino/subset_states.h>
+#include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/internal/inference_utility.h>
 #include <algorithm>
 #include <boost/graph/copy.hpp>
@@ -24,7 +24,7 @@
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 namespace {
   void fill_node_data(const SubsetGraph &sg,
-                      const SubsetStatesTable *sst,
+                      const AssignmentsTable *sst,
                       std::vector<NodeData> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
@@ -65,14 +65,14 @@ namespace {
     Ints ui1= get_index(ed.union_subset, s1);
     Ints uii= get_index(ed.union_subset, ed.intersection_subset);
     Ints to_erase;
-    for (unsigned int i=0; i< nd0.subset_states.size(); ++i) {
+    for (unsigned int i=0; i< nd0.assignments.size(); ++i) {
       bool ok=false;
-      for (unsigned int j=0; j< nd1.subset_states.size(); ++j) {
-        if (get_are_equal(nd0.subset_states[i], ii0,
-                          nd1.subset_states[j], ii1)) {
-          SubsetState ss= get_merged_subset_state(ed.union_subset,
-                                                  nd0.subset_states[i], ui0,
-                                                  nd1.subset_states[j], ui1);
+      for (unsigned int j=0; j< nd1.assignments.size(); ++j) {
+        if (get_are_equal(nd0.assignments[i], ii0,
+                          nd1.assignments[j], ii1)) {
+          Assignment ss= get_merged_assignment(ed.union_subset,
+                                                  nd0.assignments[i], ui0,
+                                                  nd1.assignments[j], ui1);
           bool filter_ok=true;
           for (unsigned int i=0; i< ed.filters.size(); ++i) {
             if (ed.filters[i]->get_is_ok(ss)) {
@@ -92,9 +92,9 @@ namespace {
       }
     }
     for (int i=to_erase.size()-1; i>=0; --i) {
-      IMP_LOG(VERBOSE, "Erasing " << nd0.subset_states[to_erase[i]]
+      IMP_LOG(VERBOSE, "Erasing " << nd0.assignments[to_erase[i]]
               << " from " << s0 << std::endl);
-      nd0.subset_states.erase(nd0.subset_states.begin()+to_erase[i]);
+      nd0.assignments.erase(nd0.assignments.begin()+to_erase[i]);
     }
     return !to_erase.empty();
   }
@@ -136,18 +136,18 @@ namespace {
     IMP_LOG(TERSE, name << " states are:\n");
     for (unsigned int i=0; i< nds.size(); ++i) {
       IMP_LOG(TERSE, subset_map[i] << ": ");
-      for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
-        IMP_LOG(TERSE, nds[i].subset_states[j] << " ");
+      for (unsigned int j=0; j< nds[i].assignments.size(); ++j) {
+        IMP_LOG(TERSE, nds[i].assignments[j] << " ");
       }
       IMP_LOG(TERSE, std::endl);
     }
   }
 
 }
-SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
+Assignments loopy_get_best_conformations(const SubsetGraph &sg,
                                           const Subset&,
                                           const SubsetFilterTables &filters,
-                                          const SubsetStatesTable *sst,
+                                          const AssignmentsTable *sst,
                                           unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
   std::vector<NodeData> nds;
@@ -175,7 +175,7 @@ SubsetStates loopy_get_best_conformations(const SubsetGraph &sg,
     curd= get_union(s, si, curd, nds[i], ed, max);
     s= ed.union_subset;
   }
-  return curd.subset_states;
+  return curd.assignments;
 }
 
 
@@ -186,7 +186,7 @@ namespace {
   struct FastNodeData: public NodeData {
     boost::dynamic_bitset<> alive;
     FastNodeData(const NodeData &nd): NodeData(nd) {
-      alive.resize(nd.subset_states.size(),true);
+      alive.resize(nd.assignments.size(),true);
     }
     FastNodeData(){}
   };
@@ -197,7 +197,7 @@ namespace {
   typedef std::vector<FastEdgeData> FastEdgeDatas;
 
   void fast_fill_node_data(const SubsetGraph &sg,
-                           const SubsetStatesTable *sst,
+                           const AssignmentsTable *sst,
                            std::vector<FastNodeData> &data) {
     boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, sg);
@@ -222,20 +222,20 @@ namespace {
         EdgeData ed= get_edge_data(s0, s1,
                                    sft);
         data[i].push_back(FastEdgeData());
-        data[i].back().support.resize(nds[i].subset_states.size());
+        data[i].back().support.resize(nds[i].assignments.size());
 
         Ints ii0= get_index(s0, ed.intersection_subset);
         Ints ii1= get_index(s1, ed.intersection_subset);
         Ints ui0= get_index(ed.union_subset, s0);
         Ints ui1= get_index(ed.union_subset, s1);
         Ints uii= get_index(ed.union_subset, ed.intersection_subset);
-        for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
-          for (unsigned int k=0; k< nds[*be.first].subset_states.size(); ++k) {
-            if (get_are_equal(nds[i].subset_states[j], ii0,
-                              nds[*be.first].subset_states[k], ii1)) {
-              SubsetState ss= get_merged_subset_state(ed.union_subset,
-                                            nds[i].subset_states[j], ui0,
-                                      nds[*be.first].subset_states[k], ui1);
+        for (unsigned int j=0; j< nds[i].assignments.size(); ++j) {
+          for (unsigned int k=0; k< nds[*be.first].assignments.size(); ++k) {
+            if (get_are_equal(nds[i].assignments[j], ii0,
+                              nds[*be.first].assignments[k], ii1)) {
+              Assignment ss= get_merged_assignment(ed.union_subset,
+                                            nds[i].assignments[j], ui0,
+                                      nds[*be.first].assignments[k], ui1);
               bool filter_ok=true;
               for (unsigned int l=0; l< ed.filters.size(); ++l) {
                 if (ed.filters[l]->get_is_ok(ss)) {
@@ -259,7 +259,7 @@ namespace {
                               const FastNodeData &nd1,
                               const FastEdgeData &ed) {
     bool change=false;
-    for (unsigned int i=0; i< nd0.subset_states.size(); ++i) {
+    for (unsigned int i=0; i< nd0.assignments.size(); ++i) {
       if (!nd0.alive[i]) continue;
       bool ok=false;
       for (unsigned int j=0; j< ed.support[i].size(); ++j) {
@@ -294,9 +294,9 @@ namespace {
 
 
   void fast_collapse(FastNodeData &nd) {
-    for (int i=nd.subset_states.size()-1; i >=0; --i) {
+    for (int i=nd.assignments.size()-1; i >=0; --i) {
       if (!nd.alive[i]) {
-        nd.subset_states.erase(nd.subset_states.begin()+i);
+        nd.assignments.erase(nd.subset_states.begin()+i);
       }
     }
   }
@@ -309,9 +309,9 @@ namespace {
     IMP_LOG(TERSE, name << " states are \n");
     for (unsigned int i=0; i< nds.size(); ++i) {
       IMP_LOG(TERSE, subset_map[i] << ": ");
-      for (unsigned int j=0; j< nds[i].subset_states.size(); ++j) {
+      for (unsigned int j=0; j< nds[i].assignments.size(); ++j) {
         if (nds[i].alive[j]) {
-          IMP_LOG(TERSE, nds[i].subset_states[j] << " ");
+          IMP_LOG(TERSE, nds[i].assignments[j] << " ");
         }
       }
       IMP_LOG(TERSE, std::endl);
@@ -320,10 +320,10 @@ namespace {
 }
 
 namespace {
-SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
+Assignments fast_loopy_get_best_conformations(const SubsetGraph &sg,
                                                const Subset& all_particles,
                                          const SubsetFilterTables &filters,
-                                               const SubsetStatesTable *sst,
+                                               const AssignmentsTable *sst,
                                                unsigned int max) {
   IMP_USAGE_CHECK(boost::num_vertices(sg) >0, "Must have a non-empty graph");
   std::vector<FastNodeData> nds;
@@ -354,7 +354,7 @@ SubsetStates fast_loopy_get_best_conformations(const SubsetGraph &sg,
     curd= get_union(s, si, curd, nds[i], ed, max);
     s= ed.union_subset;
   }
-  return curd.subset_states;
+  return curd.assignments;
 }
 }*/
 

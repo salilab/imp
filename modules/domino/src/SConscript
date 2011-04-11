@@ -1,17 +1,17 @@
 Import('env')
 
 files = [
+         'Assignment.cpp',
          'BranchAndBoundSampler.cpp',
          'DiscreteSampler.cpp',
          'DominoSampler.cpp',
          'Subset.cpp',
-         'SubsetState.cpp',
          'analysis.cpp',
+         'assignment_tables.cpp',
          'optimize_restraints.cpp',
          'particle_states.cpp',
          'subset_filters.cpp',
          'subset_graphs.cpp',
-         'subset_states.cpp',
          'utility.cpp',
         ] \
         + SConscript('internal/SConscript')

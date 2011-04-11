@@ -12,8 +12,8 @@ class DOMINOTests(IMP.test.TestCase):
 
     def _get_full_list(self, pst, lsc):
         print 'getting'
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [])
-        ss= dsst.get_subset_states(lsc)
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
+        ss= dsst.get_assignments(lsc)
         print "got all"
         all_states=[]
         for state in ss:
@@ -62,10 +62,10 @@ class DOMINOTests(IMP.test.TestCase):
         ds= IMP.domino.DominoSampler(m)
         m.set_maximum_score(.5)
         rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [rssft])
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
-        ss= dsst.get_subset_states(lsc)
+        ss= dsst.get_assignments(lsc)
         print len(ss), "states"
         found_states=[]
         print repr(lsc)
@@ -104,10 +104,10 @@ class DOMINOTests(IMP.test.TestCase):
         m.set_maximum_score(.6)
         ds= IMP.domino.DominoSampler(m)
         rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [rssft])
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
-        ss= dsst.get_subset_states(lsc)
+        ss= dsst.get_assignments(lsc)
         print len(ss), "states"
         found_states=[]
         print repr(lsc)

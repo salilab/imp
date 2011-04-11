@@ -67,16 +67,16 @@ namespace {
     return ret;
   }
 
-  SubsetStates filter_states(const Subset &,
-                             const SubsetStates &in,
+  Assignments filter_states(const Subset &,
+                             const Assignments &in,
                              const std::vector<Ints> &clustering) {
-    SubsetStates ret;
+    Assignments ret;
     for (unsigned int i=0; i< in.size(); ++i) {
       Ints cur(in[i].size(), -1);
       for (unsigned int j=0; j< in[i].size(); ++j) {
         cur[j]= clustering[j][in[i][j]];
       }
-      SubsetState curs(cur.begin(), cur.end());
+      Assignment curs(cur.begin(), cur.end());
       ret.push_back(curs);
     }
     std::sort(ret.begin(), ret.end());
@@ -86,8 +86,8 @@ namespace {
     return ret;
   }
 }
-SubsetStates get_state_clusters(const Subset &subset,
-                                const SubsetStates &states,
+Assignments get_state_clusters(const Subset &subset,
+                                const Assignments &states,
                                 ParticleStatesTable *pst,
                                 double resolution) {
   std::vector<Ints> rotated(subset.size(), Ints(states.size(), -1));

@@ -10,7 +10,7 @@
 #define IMPDOMINO_SUBSET_FILTERS_H
 
 #include "particle_states.h"
-#include "SubsetState.h"
+#include "Assignment.h"
 #include "particle_states.h"
 #include "internal/restraint_evaluator.h"
 #include "Subset.h"
@@ -38,12 +38,12 @@ IMPDOMINO_BEGIN_NAMESPACE
 
 /** An instance of this type is created by the
     SubsetFilterTable::get_subset_filter method(). It's job
-    is to reject some of the SubsetStates correspinding to the
+    is to reject some of the Assignments correspinding to the
     Subset it was created with. It has one
     method of interest, get_is_ok() which true if the state
     passes the filter.
 
-    The passed SubsetState has the particles ordered in the
+    The passed Assignment has the particles ordered in the
     same order as they were in the Subset that was passed to the
     table in order to create the filter.
 */
@@ -52,7 +52,7 @@ public:
   SubsetFilter(std::string name= "SubsetFilter %1%");
   //! Return true if the given state passes this filter for the Subset
   //! it was created with
-  virtual bool get_is_ok(const SubsetState& state) const=0;
+  virtual bool get_is_ok(const Assignment& state) const=0;
 
   //! Return a next possible acceptable state for the particle in pos
   /** The default implementation returns the current value +1. This method
@@ -61,7 +61,7 @@ public:
       The method can assume \c !get_is_ok(state) and that the state
       minus pos is ok.
   */
-  virtual int get_next_state(int pos, const SubsetState& state) const {
+  virtual int get_next_state(int pos, const Assignment& state) const {
     return state[pos]+1;
   }
 
@@ -145,7 +145,7 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
                                   ParticleStatesTable *pst);
   /** Add a precomputed score for a restraint.*/
   void add_score(Restraint *r, const Subset &subset,
-                 const SubsetState &state, double score);
+                 const Assignment &state, double score);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 

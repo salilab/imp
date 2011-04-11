@@ -7,7 +7,7 @@
  */
 #include <IMP/domino/domino_config.h>
 #include <IMP/domino/DominoSampler.h>
-#include <IMP/domino/subset_states.h>
+#include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/domino/internal/inference_utility.h>
@@ -23,7 +23,7 @@ SubsetFilterTable::~SubsetFilterTable(){}
 
 /***************************SCORE ******************************/
 
-bool RestraintScoreSubsetFilter::get_is_ok(const SubsetState &state) const{
+bool RestraintScoreSubsetFilter::get_is_ok(const Assignment &state) const{
   /*IMP_IF_CHECK(USAGE) {
     IMP_USAGE_CHECK(called_.find(state)
     == called_.end(),
@@ -131,7 +131,7 @@ double RestraintScoreSubsetFilterTable
 
 void RestraintScoreSubsetFilterTable
 ::add_score(Restraint *r, const Subset &subset,
-            const SubsetState &state, double score) {
+            const Assignment &state, double score) {
   mset_->add_score(r, subset, state, score);
 }
 
@@ -193,7 +193,7 @@ namespace {
       }
     }
     IMP_OBJECT(DisjointSetsSubsetFilter);
-    bool get_is_ok(const SubsetState &state) const{
+    bool get_is_ok(const Assignment &state) const{
       IMP_OBJECT_LOG;
       set_was_used(true);
       Filter f;
@@ -202,7 +202,7 @@ namespace {
       }
       return true;
     }
-    int get_next_state(int pos, const SubsetState& state) const {
+    int get_next_state(int pos, const Assignment& state) const {
       for (unsigned int i=0; i< sets_.size(); ++i) {
         for (unsigned int j=0; j< sets_[i].size(); ++j) {
           if (sets_[i][j]==pos) {
@@ -353,7 +353,7 @@ void DisjointSetsSubsetFilterTable::add_pair(const ParticlePair &pp) {
 }
 
 namespace {
-  int get_next_exclusion(int pos, const SubsetState& state,
+  int get_next_exclusion(int pos, const Assignment& state,
                          const Ints &set) {
     Ints used;
     for (unsigned int i=0; i<set.size();++i){
@@ -372,7 +372,7 @@ namespace {
                     "Found");
     return st;
   }
-  int get_next_equality(int pos, const SubsetState& state,
+  int get_next_equality(int pos, const Assignment& state,
                          const Ints &set) {
     for (unsigned int i=0; i<set.size();++i){
       if (set[i] != -1 && state[set[i]] != state[pos]) {
@@ -439,7 +439,7 @@ namespace {
     return ret;
   }
 
-  int get_next_permutation(int pos, const SubsetState& state,
+  int get_next_permutation(int pos, const Assignment& state,
                            const Ints &set) {
     int mx=-1;
     for (unsigned int i=0; i<set.size();++i){
@@ -488,11 +488,11 @@ namespace {
       keepalive_(ka), indexes_(indexes) {
     }
     int get_next_state(int pos,
-                       const SubsetState& state) const;
+                       const Assignment& state) const;
     IMP_SUBSET_FILTER(ListSubsetFilter);
   };
 
-  bool ListSubsetFilter::get_is_ok(const SubsetState &state) const{
+  bool ListSubsetFilter::get_is_ok(const Assignment &state) const{
     ++keepalive_->num_test_;
     for (unsigned int i=0; i < state.size(); ++i) {
       if (indexes_[i]>=0) {
@@ -508,7 +508,7 @@ namespace {
   }
 
   int ListSubsetFilter::get_next_state(int pos,
-                                       const SubsetState& state) const {
+                                       const Assignment& state) const {
     unsigned int i=state[pos]+1;
     while (i < keepalive_->states_[indexes_[pos]].size()
            && !keepalive_->states_[indexes_[pos]][i]) ++i;

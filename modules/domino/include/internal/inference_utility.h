@@ -12,7 +12,7 @@
 #include "../domino_config.h"
 #include "../utility.h"
 #include "../subset_filters.h"
-#include "../subset_states.h"
+#include "../assignment_tables.h"
 #include "../subset_graphs.h"
 
 #include <IMP/Model.h>
@@ -25,7 +25,7 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 class SubsetEvaluatorTable;
-class SubsetStatesTable;
+class AssignmentsTable;
 IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
@@ -33,16 +33,16 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 class InferenceStatistics {
   struct Data {
     int size;
-    SubsetStates sample;
+    Assignments sample;
   };
-  Data get_data(const Subset &s, SubsetStates ss) const;
+  Data get_data(const Subset &s, Assignments ss) const;
   IMP::internal::Map<Subset, Data> subsets_;
   const Data & get_data(const Subset &s) const;
 public:
   InferenceStatistics();
-  void add_subset(const Subset &s, const SubsetStates &ss);
-  unsigned int get_number_of_subset_states(Subset subset) const;
-  SubsetStates get_sample_subset_states(Subset subset) const;
+  void add_subset(const Subset &s, const Assignments &ss);
+  unsigned int get_number_of_assignments(Subset subset) const;
+  Assignments get_sample_assignments(Subset subset) const;
   ~InferenceStatistics();
 };
 
@@ -120,22 +120,22 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
 }
 
 struct NodeData {
-  SubsetStates subset_states;
+  Assignments assignments;
 };
 
 
 inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
-  for (SubsetStates::const_iterator it = nd.subset_states.begin();
-       it != nd.subset_states.end(); ++it) {
+  for (Assignments::const_iterator it = nd.assignments.begin();
+       it != nd.assignments.end(); ++it) {
     out << *it << std::endl;
   }
   return out;
 }
 
-inline NodeData get_node_data(const Subset &s, const SubsetStatesTable *sst) {
+inline NodeData get_node_data(const Subset &s, const AssignmentsTable *sst) {
   NodeData ret;
-  ret.subset_states= sst->get_subset_states(s);
-  if (ret.subset_states.empty()) {
+  ret.assignments= sst->get_assignments(s);
+  if (ret.assignments.empty()) {
     IMP_THROW("Empty state encountered with subset " << s, ValueException);
   }
   return ret;
@@ -176,9 +176,9 @@ inline EdgeData get_edge_data(const Subset&s0,
 
 
 //! return true if the two states are equal on the entries in the lists
-inline bool get_are_equal(const SubsetState &ss0,
+inline bool get_are_equal(const Assignment &ss0,
                           const Ints &i0,
-                          const SubsetState &ss1,
+                          const Assignment &ss1,
                           const Ints &i1) {
   IMP_USAGE_CHECK(i0.size() == i1.size(), "Sizes don't match");
   for (unsigned int i=0; i< i0.size(); ++i) {
@@ -189,10 +189,10 @@ inline bool get_are_equal(const SubsetState &ss0,
 
 
 IMPDOMINOEXPORT
-SubsetState get_merged_subset_state(const Subset &s,
-                                    const SubsetState &ss0,
+Assignment get_merged_assignment(const Subset &s,
+                                    const Assignment &ss0,
                                     const Ints &i0,
-                                    const SubsetState &ss1,
+                                    const Assignment &ss1,
                                     const Ints &i1) ;
 
 IMPDOMINOEXPORT NodeData
@@ -203,7 +203,7 @@ get_union(const Subset &s0, const Subset &s1,
 
 inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
                                      const Subset &s,
-                                     const SubsetStates &states) {
+                                     const Assignments &states) {
   for (unsigned int i=0; i< s.size(); ++i) {
     boost::dynamic_bitset<> bs(lsft->get_number_of_particle_states(s[i]));
     bs.reset();

@@ -30,11 +30,11 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino.Subset(ps)
-        ss= dsst.get_subset_states(lsc)
+        ss= dsst.get_assignments(lsc)
         self.assertEqual(len(ss), ns**len(ps))
         all_states=[]
         for state in ss:
@@ -58,10 +58,10 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
-        ss= dsst.get_subset_states(lsc)
+        ss= dsst.get_assignments(lsc)
         self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
         print "testing"
@@ -87,10 +87,10 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable()
         pft.add_pair((ps[0], ps[1]))
-        dsst= IMP.domino.BranchAndBoundSubsetStatesTable(pst, [pft])
+        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
-        ss= dsst.get_subset_states(lsc)
+        ss= dsst.get_assignments(lsc)
         self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
         print "testing"

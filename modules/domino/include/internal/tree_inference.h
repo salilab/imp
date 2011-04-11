@@ -17,17 +17,17 @@
 
 IMPDOMINO_BEGIN_NAMESPACE
 class SubsetEvaluatorTable;
-class SubsetStatesTable;
+class AssignmentsTable;
 IMPDOMINO_END_NAMESPACE
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINOEXPORT
-SubsetStates get_best_conformations(const MergeTree &jt,
+Assignments get_best_conformations(const MergeTree &jt,
                                     int root,
                                     const Subset& all_particles,
                                     const SubsetFilterTables &filters,
-                                    const SubsetStatesTable *states,
+                                    const AssignmentsTable *states,
                                     ListSubsetFilterTable *lsft,
                                     InferenceStatistics &stats,
                                     unsigned int max);
