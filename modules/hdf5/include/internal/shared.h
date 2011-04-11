@@ -33,6 +33,7 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
   std::vector<int> free_bonds_;
   std::vector<void*> association_;
   IMP::internal::Map<void*, int> back_association_;
+  unsigned int frames_hint_;
 
   // caches
   mutable std::vector<int> max_cache_;
@@ -295,7 +296,7 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
       delta=true;
     }
     if (per_frame && static_cast<unsigned int>(sz[2]) <= frame) {
-      sz[2] =frame+1;
+      sz[2] =std::max(frame+1, frames_hint_);
       delta=true;
     }
     if (delta) {
@@ -385,6 +386,9 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
 
   int add_child(int node, std::string name, int t);
   Ints get_children(int node) const;
+  void set_frames_hint(int i) {
+    frames_hint_=i;
+  }
 };
 
 

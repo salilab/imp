@@ -15,7 +15,7 @@ HDF5Group::HDF5Group(std::string name, bool clear) {
   bool exists= (!clear && boost::filesystem::exists(name));
   HDF5Handle plist(H5Pcreate(H5P_FILE_ACCESS), &H5Pclose);
   IMP_HDF5_CALL(H5Pset_sieve_buf_size(plist, 1000000));
-  IMP_HDF5_CALL(H5Pset_cache(plist, 0, 100000, 100000000, 0.0));
+  IMP_HDF5_CALL(H5Pset_cache(plist, 0, 1000, 1000000, 0.0));
   if (exists) {
     h_= new HDF5SharedHandle(H5Fopen(name.c_str(), H5F_ACC_RDWR, plist),
                              &H5Fclose);

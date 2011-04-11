@@ -19,6 +19,7 @@ node_data_(file_.get_child_data_set<IndexTraits>(get_node_data_data_set_name(),
                                                    2)),
 bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
                                                    2)),
+  frames_hint_(0),
   last_node_(-1), last_vi_(-1)
 {
   Ints dim= node_data_.get_size();

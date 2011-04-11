@@ -125,6 +125,9 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
   HDF5Group get_hdf5_group() const {
     return shared_->get_group();
   }
+  void set_number_of_frames_hint(unsigned int i) {
+    shared_->set_frames_hint(i);
+  }
 };
 IMP_VALUES(RootHandle, RootHandles);
 
