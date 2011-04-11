@@ -509,7 +509,8 @@ IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
 Name(): Parent(){}                                                      \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
-                     "Particle missing required attributes for decorator " \
+                     "Particle " << p->get_name()                       \
+                     << " missing required attributes for decorator "   \
                      << #Name << "\n" << *p);                           \
 }                                                                       \
 static Name decorate_particle(::IMP::Particle *p) {                     \
@@ -545,7 +546,8 @@ public:                                                                 \
       const TraitsType &tr=default_traits):                             \
    Parent(p), traits_(tr) {                                             \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
-                      "Particle missing required attributes "           \
+                      "Particle " << p->get_name()                      \
+                      << " missing required attributes "                \
                       << " for decorator "                              \
                       << #Name << "\n" << *p);                          \
  }                                                                      \
