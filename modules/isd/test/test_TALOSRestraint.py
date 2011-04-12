@@ -204,6 +204,34 @@ class TestTALOSRestraint(IMP.test.TestCase):
             self.assertAlmostEqual(self.talos.get_probability(),
                     exp(-self.talos.unprotected_evaluate(self.DA)),delta=0.001)
 
+    def testModeKappa(self):
+        """perform a small CG on kappa to find the mode. For N=10 cos(chi)=1 and
+        R=9, the mode should be
+        E = -10.125165226189658481
+        kappa = 5.3046890629577175140
+        """
+        self.N=10
+        self.R=9
+        self.chiexp = -pi/2
+        self.talos = IMP.isd.TALOSRestraint(self.p0,self.p1, self.p2, self.p3,
+                self.N, self.R, self.chiexp, self.kappa)
+        self.m.add_restraint(self.talos)
+        #constrain particles to a fixed "bondlength" of 1
+        self.p3.set_coordinates_are_optimized(False)
+        self.p2.set_coordinates_are_optimized(False)
+        self.p1.set_coordinates_are_optimized(False)
+        self.p0.set_coordinates_are_optimized(False)
+        self.kappa.set_is_optimized(IMP.FloatKey("scale"),True)
+        cg=IMP.core.ConjugateGradients(self.m)
+        self.kappa.set_scale(3)
+        cg.optimize(100)
+        kappa=self.kappa.get_scale()
+        E=self.m.evaluate(None)
+        expE = -10.125165226189658481
+        expkappa = 5.3046890629577175140
+        self.assertAlmostEqual(kappa,expkappa,delta=1e-6)
+        self.assertAlmostEqual(E,expE,delta=1e-6)
+    
 if __name__ == '__main__':
     IMP.test.main()
 
