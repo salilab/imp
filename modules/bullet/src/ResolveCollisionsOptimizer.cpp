@@ -244,7 +244,7 @@ namespace {
       IMP::core::add_rigid_body_cache_key(surface_key);
 #else
       IMP_THROW("Rigid bodies cannot be used with CGAL",
-                ErrorException);
+                ValueException);
 #endif
     }
     SurfaceMeshObject *smo
