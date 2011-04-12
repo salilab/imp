@@ -37,7 +37,8 @@ unit::Shift<unit::Multiply<unit::Pascal,
 BrownianDynamics::BrownianDynamics(Model *m) :
   Simulator(m, "BrownianDynamics %1%"), nd_(0,1),
   sampler_(random_number_generator, nd_),
-  max_step_(std::numeric_limits<double>::max()){
+  max_step_(std::numeric_limits<double>::max()),
+  srk_(false) {
 }
 
 
@@ -102,80 +103,67 @@ void BrownianDynamics::setup(const ParticlesTemp& ps) {
     IMP_LOG(TERSE, "Maximum sigma is " << ms << std::endl);
     IMP_LOG(TERSE, "Maximum force is " << mf << std::endl);
   }
+  forces_.resize(ps.size());
 }
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 
+namespace {
+  void check_delta(algebra::Vector3D &delta,
+                   double max_step) {
+    for (unsigned int j=0; j< 3; ++j) {
+        if (std::abs(delta[j]) > max_step) {
+          std::cerr << "Truncating motion: " << delta[j] << " to " << max_step
+                    << std::endl;
+          delta[j]= std::min(delta[j], max_step);
+          delta[j]= std::max(delta[j], -max_step);
+        }
+      }
+  }
+}
+/**
+    dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
+ */
 double BrownianDynamics::do_step(const ParticlesTemp &ps,
                                  double dt) {
-  evaluate(true);
   unit::Femtosecond dtfs(dt);
   unit::Divide<unit::Femtosecond,
                unit::Femtojoule>::type dtikt
     =dtfs
     /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
+  evaluate(true);
   for (unsigned int i=0; i< ps.size(); ++i) {
     Diffusion d(ps[i]);
-
-    IMP_IF_CHECK(USAGE) {
-      for (unsigned int j=0; j< 3; ++j) {
-        // GDB 6.6 prints infinity as 0 on 64 bit machines. Grumble.
-        /*int szf= sizeof(Float);
-          int szi= sizeof(int);
-          Float one=1;*/
-        double mx= std::numeric_limits<double>::max();
-        double c= d.get_coordinate(j);
-        bool ba= is_nan(c);
-        bool bb = (c >= mx);
-        bool bc= -d.get_coordinate(j) >= std::numeric_limits<double>::max();
-        if (ba || bb || bc ) {
-          IMP_WARN("Bad value for coordinate in Brownian Dynamics on "
-                   << "particle " << ps[i]->get_name() << std::endl);
-          throw ValueException("Bad coordinate value");
-        }
-      }
+    core::XYZ xd(ps[i]);
+    double sigma= get_sigma(ps[i], dtfs).get_value();
+    algebra::Vector3D random(sigma*sampler_(),
+                             sigma*sampler_(),
+                             sigma*sampler_());
+    algebra::Vector3D force(get_force(ps[i], 0, dtikt).get_value(),
+                            get_force(ps[i], 1, dtikt).get_value(),
+                            get_force(ps[i], 2, dtikt).get_value());
+    if (srk_) {
+      forces_[i]=force;
     }
-
-    IMP_USAGE_CHECK(unit::strip_units(d.get_d()) > 0
-              && unit::strip_units(d.get_d())
-              < std::numeric_limits<double>::max(),
-              "Bad diffusion coefficient on particle " << ps[i]->get_name());
-    double random[3];
-    unit::Angstrom sigma= get_sigma(ps[i], dtfs);
-    for (unsigned j = 0; j < 3; ++j) {
-      double rv= sampler_();
-      random[j]=unit::Angstrom(sigma*rv).get_value();
-      //if (rv < 0) random[j]=-random[j];
-      //delta[j]=unit::Angstrom(0);
+    algebra::Vector3D delta=random+force;
+    if (!srk_) {
+      check_delta(delta, max_step_);
     }
-    /*std::cout << d.get_d() << " " << sigma << " " << dt
-      << " " << d.get_d()*dt << std::endl;*/
-    double force[3];
-    for (unsigned j = 0; j < 3; ++j) {
-      force[j]= strip_units(get_force(ps[i], j, dtikt));
+    xd.set_coordinates(xd.get_coordinates()+delta);
+  }
+  if (srk_) {
+    evaluate(true);
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      Diffusion d(ps[i]);
+      core::XYZ xd(ps[i]);
+      unit::Angstrom sigma= get_sigma(ps[i], dtfs);
+      algebra::Vector3D force(get_force(ps[i], 0, dtikt).get_value(),
+                              get_force(ps[i], 1, dtikt).get_value(),
+                              get_force(ps[i], 2, dtikt).get_value());
+      algebra::Vector3D delta=(force-forces_[i])/2.0;
+      check_delta(delta, max_step_);
+      xd.set_coordinates(xd.get_coordinates()+delta);
     }
-
-    //unit::Angstrom max_motion= unit::Scalar(4)*sigma;
-    /*std::cout << "delta is " << delta << " mag is "
-      << delta.get_magnitude() << " sigma " << sigma << std::endl;*/
-
-    IMP_LOG(VERBOSE, "For particle " << ps[i]->get_name()
-            << " random is " << random[0] << " "
-            << random[1] << " " << random[2]
-            << " from a force of "
-            << force[0]<< " " << force[1] << " " << force[2] << std::endl);
-    algebra::Vector3D sum;
-    //double nus3=5.0*strip_units(sigma);
-    for (unsigned int j=0;j< 3; ++j) {
-      sum[j]= force[j]+random[j];
-      if (std::abs(sum[j]) > max_step_) {
-        std::cerr << "Truncating motion: " << sum[j] << " to " << max_step_
-                  << std::endl;
-        sum[j]= std::min(sum[j], max_step_);
-        sum[j]= std::max(sum[j], -max_step_);
-      }
-    }
-    d.set_coordinates(d.get_coordinates()+sum);
-  };
+  }
   return dt;
 }
 

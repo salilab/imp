@@ -61,6 +61,9 @@ public:
   void set_maximum_move(double ms) {
     max_step_=ms;
   }
+  void set_use_stochastic_runge_kutta(bool tf) {
+    srk_=tf;
+  }
   IMP_SIMULATOR(BrownianDynamics);
  private:
   boost::normal_distribution<double> nd_;
@@ -68,6 +71,8 @@ public:
                                    boost::normal_distribution<double> > RNG;
   RNG sampler_;
   double max_step_;
+  bool srk_;
+  std::vector<algebra::Vector3D> forces_;
 };
 
 
