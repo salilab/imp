@@ -64,6 +64,8 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
     terminated when there are a set number of
     connected components. Other termination criteria
     can be added if someone proposes them.
+
+    Only items closer than far are connected.
  */
 IMPSTATISTICSEXPORT
 PartitionalClustering *create_centrality_clustering(Metric *d,
