@@ -18,10 +18,12 @@ namespace {
   inline bool get_interiors_intersect(const algebra::Vector3D &v,
                                       double ra, double rb) {
     double sr= ra+rb;
-    for (unsigned int i=0; i< 3; ++i) {
-      double a=std::abs(v[i]);
-      if (a >= sr) return false;
-    }
+    double a0=std::abs(v[0]);
+    if (a0 >= sr) return false;
+    double a1=std::abs(v[1]);
+    if (a1 >= sr) return false;
+    double a2=std::abs(v[2]);
+    if (a2 >= sr) return false;
     return v*v < square(sr);
   }
 
