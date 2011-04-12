@@ -867,15 +867,24 @@ namespace {
 }
 
 double get_volume(Selection h) {
+  IMP_FUNCTION_LOG;
+  IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
+                  "No particles selected.");
   return algebra::get_surface_area_and_volume(get_representation(h)).second;
 }
 
 double get_surface_area(Selection h) {
+  IMP_FUNCTION_LOG;
+  IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
+                  "No particles selected.");
   return algebra::get_surface_area_and_volume(get_representation(h)).first;
 }
 #endif
 
 double get_radius_of_gyration(Selection h) {
+  IMP_FUNCTION_LOG;
+  IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
+                  "No particles selected.");
   return get_radius_of_gyration(h.get_selected_particles());
 }
 
