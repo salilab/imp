@@ -122,6 +122,8 @@ def _get_info_variables(context, env, name, has_version):
         vers= env.get(lcname+'version')
         if vers.find(" ") != -1:
             vers=vers.split()
+        else:
+            vers=[vers]
     context.Result("yes")
     return (True, env.get(lcname+"libs").split(":"),
             vers, None, None)
