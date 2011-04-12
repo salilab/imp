@@ -137,6 +137,8 @@ namespace {
     ret.bd= new BrownianDynamics(ret.m);
     //double ts=Diffusion(ret.all[0]).get_time_step_from_sigma(sigma);
     ret.bd->set_maximum_time_step(ret.sp->get_value(tsk));
+    //std::cout << ret.sp->get_value(tsk) << std::endl;
+    ret.bd->set_maximum_move(10);
     // from test below is 640
     return ret;
   }
