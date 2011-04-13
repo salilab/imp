@@ -22,12 +22,14 @@ ModelData::ModelData(RestraintSet *rs,
 }
 
 namespace {
-  RestraintData handle_restraint(Restraint *r,
+  void handle_restraint(Restraint *r,
                                  double weight,
                         const IMP::internal::Map<Particle*, Particle*> &idm,
       const IMP::internal::Map<Restraint*, ModelData::PreloadData> &preload,
                                  std::vector<Subset> &dependencies,
-                        ParticlesTemp ip) {
+                                 ParticlesTemp ip,
+                                 std::vector<RestraintData> &rdata,
+                                 IMP::internal::Map<Restraint*, Ints> &index) {
     ParticlesTemp oip;
     for (unsigned int i=0; i< ip.size(); ++i) {
       if (idm.find(ip[i]) != idm.end()) {
@@ -48,7 +50,8 @@ namespace {
         ret.set_score(data.sss[i], data.scores[i]);
       }
     }
-    return ret;
+    rdata.push_back(ret);
+    index[r].push_back(rdata.size()-1);
   }
 }
 
@@ -65,16 +68,16 @@ void ModelData::initialize() {
       idm[ps[j]]=p;
     }
   }
-  IMP::internal::Map<Restraint*, int> index;
+  IMP::internal::Map<Restraint*, Ints> index;
   Restraints restraints= get_restraints(rs_->restraints_begin(),
                                         rs_->restraints_end());
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
     double weight=rs_->get_model()->get_weight(*rit);
-    rdata_.push_back(handle_restraint(*rit, weight, idm, preload_,
-                                      dependencies_, ip));
-    index[*rit]=rdata_.size()-1;
+    handle_restraint(*rit, weight, idm, preload_,
+                     dependencies_, ip,
+                     rdata_, index);
   }
   RestraintSets restraint_sets= get_restraint_sets(rs_->restraints_begin(),
                                                    rs_->restraints_end());
@@ -95,7 +98,8 @@ void ModelData::initialize() {
     Ints curi;
     Floats curw;
     for (unsigned int j=0; j< cur.first.size(); ++j) {
-      curi.push_back(index[cur.first[j]]);
+      curi.insert(curi.end(), index[cur.first[j]].begin(),
+                  index[cur.first[j]].end());
       curw.push_back(cur.second[j]);
     }
     sets_.push_back(std::make_pair(max, curi));
@@ -144,10 +148,16 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
     std::vector<Ints> inds;
     Ints total_ris;
     std::vector<Ints> total_inds;
+    IMP::internal::Set<Restraint*> found;
     //std::cout << "Find data for subset " << s << std::endl;
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
+        if (found.find(rdata_[i].get_restraint()) != found.end()) {
+          // restraints with multiple support sets
+          continue;
+        }
+        found.insert(rdata_[i].get_restraint());
         bool exclude=false;
         {for (unsigned int j=0; j< exclusions.size(); ++j) {
             if (std::includes(exclusions[j].begin(),
