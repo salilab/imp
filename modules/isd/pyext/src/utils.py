@@ -30,6 +30,30 @@ from threading import Thread
 
 debug = False
 
+code={
+        'A':'ALA',
+        'R':'ARG',
+        'N':'ASN',
+        'D':'ASP',
+        'C':'CYS',
+        'E':'GLU',
+        'Q':'GLN',
+        'G':'GLY',
+        'H':'HIS',
+        'I':'ILE',
+        'L':'LEU',
+        'K':'LYS',
+        'M':'MET',
+        'F':'PHE',
+        'P':'PRO',
+        'S':'SER',
+        'T':'THR',
+        'W':'TRP',
+        'Y':'TYR',
+        'V':'VAL'
+        }
+
+
 def average(x):
     return sum(x)/float(len(x))
 
@@ -297,27 +321,63 @@ def touch(filename):
         else:
             raise IOError, error
 
-def read_sequence_file(filename):
+#Yannick
+def read_sequence_file(filename, first_residue_number=1):
+    """read sequence of ONE chain, 1-letter or 3-letter, returns dict of
+    no:3-letter code. Fails on unknown amino acids.
+    """
 
     filename = os.path.abspath(filename)
-
     try:
         f = open(filename)
-
     except IOError, msg:
-
         raise IOError, 'Could not open sequence file "%s".' % filename
+    seq = f.read().upper()
 
-    seq = f.readlines()
+    if seq.startswith('>'):
+        print "Detected FASTA 1-letter sequence"
+        pos=seq.find('\n')
+        #get rid of first line and get sequence in one line
+        seq=''.join(seq[pos+1:].split())
+        names = [code[i] for i in seq]
+        numbers = range(first_residue_number, first_residue_number+len(seq))
+        return dict(zip(numbers,names))
+    else:
+        l=seq.split()
+        for x in l:
+            if not x in code.values():
+                print 'Warning: unknown 3-letter code: %s' % x
+        numbers = range(first_residue_number, first_residue_number+len(l))
+        return dict(zip(numbers,l))
 
-    l = []
+#Yannick
+def check_residue(a,b):
+    "checks whether residue codes a and b are the same, doing necessary conversions"
+    a=a.upper()
+    b=b.upper()
+    if len(a) == 1:
+        if a not in code:
+            print 'Warning: unknown 1-letter code: %s' % a
+            return False
+        a=code[a]
+    if len(b) == 1:
+        if b not in code:
+            print 'Warning: unknown 1-letter code: %s' % b
+            return False
+        b=code[b]
+    if len(a) != 3:
+        print 'Unknown residue code %s' % a
+        return False
+    if len(b) != 3:
+        print 'Unknown residue code %s' % b
+        return False
+    if a != b:
+        print 'Residues %s and %s are not the same' % (a,b)
+        return False
+    else:
+        return True
 
-    for x in seq:
-        l += x.split()
 
-    return [x.upper() for x in l]
-
- 
 
 def my_glob(x, do_touch=False):
 
