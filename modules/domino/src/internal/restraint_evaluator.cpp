@@ -24,7 +24,7 @@ ModelData::ModelData(RestraintSet *rs,
 namespace {
   void handle_restraint(Restraint *r,
                                  double weight,
-                        const IMP::internal::Map<Particle*, Particle*> &idm,
+                        const IMP::internal::Map<Particle*, ParticlesTemp> &idm,
       const IMP::internal::Map<Restraint*, ModelData::PreloadData> &preload,
                                  std::vector<Subset> &dependencies,
                                  ParticlesTemp ip,
@@ -33,7 +33,7 @@ namespace {
     ParticlesTemp oip;
     for (unsigned int i=0; i< ip.size(); ++i) {
       if (idm.find(ip[i]) != idm.end()) {
-        oip.push_back(idm.find(ip[i])->second);
+        oip.push_back(idm.find(ip[i])->second[0]);
       }
     }
     std::sort(oip.begin(), oip.end());
@@ -60,12 +60,12 @@ void ModelData::initialize() {
   //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
-  IMP::internal::Map<Particle*, Particle*> idm;
+  IMP::internal::Map<Particle*, ParticlesTemp> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
     Particle *p= all[i];
     ParticlesTemp ps= get_dependent_particles(p, all, dg);
     for (unsigned int j=0; j< ps.size(); ++j) {
-      idm[ps[j]]=p;
+      idm[ps[j]].push_back(p);
     }
   }
   IMP::internal::Map<Restraint*, Ints> index;
