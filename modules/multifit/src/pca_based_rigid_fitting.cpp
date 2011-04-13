@@ -33,7 +33,7 @@ em::FittingSolutions pca_based_rigid_fitting(
 em::FittingSolutions pca_based_rigid_fitting(
   Particles ps,
   em::DensityMap *em_map,Float threshold,
-  FloatKey wei_key,
+  FloatKey ,
   algebra::PrincipalComponentAnalysis dens_pca_input) {
 
 
