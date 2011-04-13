@@ -20,4 +20,4 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                             'get_heavy_atom_CHARMM_parameters'],
                   spelling_exceptions=['lennard', 'charmm', "jones", "impropers",
                                        "rmsd", "pdb", "multimodel", "conect", 'rescale',
-                                       'Berendsen', 'Langevin'])
+                                       'Berendsen', 'Langevin', 'runge', 'kutta'])
