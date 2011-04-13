@@ -145,7 +145,7 @@ public:
   RMSDCalculator() {}
   //! Constructor
   /**
-   \param[in] the particles on which the transformation operate.
+   \param[in] ps the particles on which the transformation operate.
                RMSD will be calculate on these particles.
    */
   RMSDCalculator(const ParticlesTemp &ps);
