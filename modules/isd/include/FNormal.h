@@ -29,7 +29,7 @@ IMPISD_BEGIN_NAMESPACE
  *  program will not check for that.
  */
 
-class FNormal : public Object
+class IMPISDEXPORT FNormal : public Object
 {
  public:
   FNormal(double FA, double JA, double FM, double sigma): 
