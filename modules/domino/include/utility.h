@@ -48,7 +48,7 @@ IMPDOMINO_BEGIN_NAMESPACE
 IMPDOMINOEXPORT ParticlesTemp get_dependent_particles(Particle *p,
                                                       const ParticlesTemp &all);
 
-/** \copydoc get_dependent_particles(Particle*)
+/** \copydoc get_dependent_particles(Particle*,const ParticlesTemp&)
  */
 IMPDOMINOEXPORT ParticlesTemp
 get_dependent_particles(Particle *p,
