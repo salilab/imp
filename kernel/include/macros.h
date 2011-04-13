@@ -1031,7 +1031,10 @@ protection:                                                             \
 /** The docs for the graph should appear before the macro
     invocation.
  */
-#define IMP_GRAPH(Name, type, VertexName, EdgeName) typedef boost::graph Name
+#define IMP_GRAPH(Name, type, VertexName, EdgeName)     \
+  /** See \ref graphs "Graphs" for more information.*/  \
+  typedef boost::graph Name
+
 #elif defined(SWIG)
 #define IMP_GRAPH(Name, type, VertexName, EdgeName)  class Name
 #else
