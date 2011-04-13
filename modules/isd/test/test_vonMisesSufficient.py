@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 #general imports
+from math import *
 from numpy import *
 from scipy.special import i0,i1
-from random import uniform,randint
+from random import uniform,randint,gauss
 
 
 #imp general
@@ -25,46 +26,80 @@ class TestvonMisesSufficient(IMP.test.TestCase):
         #IMP.set_log_level(IMP.MEMORY)
         IMP.set_log_level(0)
 
+    def testAlternative(self):
+        "test alternative constructor"
+        for i in xrange(100):
+            x=uniform(-4*pi,4*pi)
+            N=randint(1,20)
+            meanv=uniform(-pi,pi)
+            stdev=uniform(0,2*pi)
+            obs = array([gauss(meanv,stdev) for j in xrange(N)])
+            cosbar = cos(obs).sum()
+            sinbar = sin(obs).sum()
+            R=sqrt(cosbar**2+sinbar**2)
+            chiexp=acos(cosbar/R)
+            if sinbar <0:
+                chiexp = -chiexp
+            kappa=uniform(0.1,100)
+            fn=vonMisesSufficient(x,N,R,chiexp,kappa)
+            fn2=vonMisesSufficient(x,obs,kappa)
+            self.assertAlmostEqual(fn.evaluate(), fn2.evaluate(), delta=1e-6)
+
+    def testStatistics(self):
+        "tests the sufficient statistics"
+        for i in xrange(100):
+            N=randint(1,20)
+            meanv=uniform(-pi,pi)
+            stdev=uniform(0,2*pi)
+            obs = array([gauss(meanv,stdev) for j in xrange(N)])
+            cpp = IMP.isd.vonMisesSufficient.get_sufficient_statistics(obs)
+            cosbar = cos(obs).sum()
+            sinbar = sin(obs).sum()
+            R=sqrt(cosbar**2+sinbar**2)
+            chiexp=acos(cosbar/R)
+            if sinbar <0:
+                chiexp = -chiexp
+            self.assertEqual(cpp[0],N)
+            self.assertAlmostEqual(cpp[1],R,delta=1e-6)
+            self.assertAlmostEqual(cpp[2],chiexp,delta=1e-6)
+
     def testEvaluate(self):
         "tests vonMisesSufficient.evaluate"
         for i in xrange(100):
-            #x, N, cmu1, smu2, kappa
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
-            cmu1=uniform(-1,1)
-            smu2=uniform(-1,1)
+            R=randint(1,N)
+            chiexp=uniform(-pi,pi)
             kappa=uniform(0.1,100)
-            fn=vonMisesSufficient(x,N,cmu1,smu2,kappa)
+            fn=vonMisesSufficient(x,N,R,chiexp,kappa)
             self.assertAlmostEqual(fn.evaluate(),
-                    log(2*pi*i0(kappa)**N) - N*kappa*(cos(x)*cmu1+sin(x)*smu2),
+                    log(2*pi*i0(kappa)**N) - R*kappa*cos(x-chiexp),
                     delta=0.001)
 
     def testEvaluateDX(self):
         "tests vonMisesSufficient.evaluate_derivative_x"
         for i in xrange(100):
-            #x, N, cmu1, smu2, kappa
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
-            cmu1=uniform(-1,1)
-            smu2=uniform(-1,1)
+            R=randint(1,N)
+            chiexp=uniform(-pi,pi)
             kappa=uniform(0.1,100)
-            fn=vonMisesSufficient(x,N,cmu1,smu2,kappa)
+            fn=vonMisesSufficient(x,N,R,chiexp,kappa)
             self.assertAlmostEqual(fn.evaluate_derivative_x(),
-                    N*kappa*sin(x)*cmu1 - N*kappa*cos(x)*smu2,
+                    R*kappa*sin(x-chiexp),
                     delta=0.001)
 
     def testEvaluateDKappa(self):
         "tests vonMisesSufficient.evaluate_derivative_kappa"
         for i in xrange(100):
-            #x, N, cmu1, smu2, kappa
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
-            cmu1=uniform(-1,1)
-            smu2=uniform(-1,1)
+            R=randint(1,N)
+            chiexp=uniform(-pi,pi)
             kappa=uniform(0.1,100)
-            fn=vonMisesSufficient(x,N,cmu1,smu2,kappa)
+            fn=vonMisesSufficient(x,N,R,chiexp,kappa)
             self.assertAlmostEqual(fn.evaluate_derivative_kappa(),
-                    N*i1(kappa)/i0(kappa) - N*(cos(x)*cmu1 + sin(x)*smu2),
+                    N*i1(kappa)/i0(kappa) - R*cos(x-chiexp),
                     delta=0.001)
 
     def testDensity(self):
@@ -73,12 +108,12 @@ class TestvonMisesSufficient(IMP.test.TestCase):
             #x, N, cmu1, smu2, kappa
             x=uniform(-4*pi,4*pi)
             N=randint(1,20)
-            cmu1=uniform(-1,1)
-            smu2=uniform(-1,1)
+            R=randint(1,N)
+            chiexp=uniform(-pi,pi)
             kappa=uniform(0.1,10)
-            fn=vonMisesSufficient(x,N,cmu1,smu2,kappa)
+            fn=vonMisesSufficient(x,N,R,chiexp,kappa)
             cpp=fn.density()
-            py=exp(N*kappa*(cos(x)*cmu1+sin(x)*smu2))/(2*pi*i0(kappa)**N)
+            py=exp(R*kappa*cos(x-chiexp))/(2*pi*i0(kappa)**N)
             if py == 0.0:
                self.assertAlmostEqual(cpp,0.0,delta=0.001)
             else:
@@ -86,7 +121,7 @@ class TestvonMisesSufficient(IMP.test.TestCase):
 
 class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
     """the sufficient von Mises should reduce to the von Mises 
-    when N=1 and mu1=mu2
+    when N=R=1
     """
 
     def setUp(self):
@@ -100,7 +135,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
             fn=vonMises(*randno)
-            fn2=vonMisesSufficient(randno[0],1,cos(randno[1]),sin(randno[1]),randno[2])
+            fn2=vonMisesSufficient(randno[0],1,1,randno[1],randno[2])
             self.assertAlmostEqual(fn.evaluate(), fn2.evaluate(), delta=0.001)
 
     def testEvaluateDX(self):
@@ -109,7 +144,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
             fn=vonMises(*randno)
-            fn2=vonMisesSufficient(randno[0],1,cos(randno[1]),sin(randno[1]),randno[2])
+            fn2=vonMisesSufficient(randno[0],1,1,randno[1],randno[2])
             self.assertAlmostEqual(fn.evaluate_derivative_x(),
                     fn2.evaluate_derivative_x(),
                     delta=0.001)
@@ -120,7 +155,7 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
             fn=vonMises(*randno)
-            fn2=vonMisesSufficient(randno[0],1,cos(randno[1]),sin(randno[1]),randno[2])
+            fn2=vonMisesSufficient(randno[0],1,1,randno[1],randno[2])
             self.assertAlmostEqual(fn.evaluate_derivative_kappa(),
                     fn2.evaluate_derivative_kappa(),
                     delta=0.001)
@@ -131,23 +166,11 @@ class TestvonMisesSufficientDegenerate(IMP.test.TestCase):
             randno = [uniform(-4*pi,4*pi), uniform(-pi,pi),
                     uniform(0.1,100)]
             fn=vonMises(*randno)
-            fn2=vonMisesSufficient(randno[0],1,cos(randno[1]),sin(randno[1]),randno[2])
+            fn2=vonMisesSufficient(randno[0],1,1,randno[1],randno[2])
             self.assertAlmostEqual(fn.density(),
                     fn2.density(),
                     delta=0.001)
 
 if __name__ == '__main__':
     IMP.test.main()
-
-
-
-
-        
-        
-        
-
-
-
-
-        
 
