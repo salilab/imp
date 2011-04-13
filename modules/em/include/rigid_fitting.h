@@ -281,7 +281,7 @@ inline FittingSolutions compute_fitting_scores(
    DensityMap *em_map,
    core::RigidBody rb,Refiner *refiner,
    const algebra::Transformation3Ds& transformations,
-   const FloatKey &wei_key=atom::Mass::get_mass_key()) {
+   const FloatKey &/*wei_key*/=atom::Mass::get_mass_key()) {
   return compute_fitting_scores(refiner->get_refined(rb),em_map,
                                 transformations,true);
 }
