@@ -28,12 +28,9 @@ m.add_restraint(r)
 
 ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
                                      pst)
-#ig.show_dotty()
 jt= IMP.domino.get_junction_tree(ig)
 print dir(jt)
-#jt.show_dotty()
 print type(jt)
 mt= IMP.domino.get_merge_tree(jt)
-mt.show_dotty()
 s=pst.get_subset()
 print s, type(s)
