@@ -24,6 +24,7 @@ class IMPATOMEXPORT MDMover :public core::MoverBase
 public:
   /**  \param[in] sc The set of particles to perturb.
    *   \param[in] md The MD Optimizer to use
+   *   \param[in] temperature The temperature to perform simulations at.
    *   \param[in] nsteps The number of MD steps to generate one candidate.
    */
   MDMover(SingletonContainer *sc,
