@@ -1,11 +1,8 @@
-import sys
 import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
-import IMP.restrainer
-import time
 
 class TrivialParticleStates(IMP.domino.ParticleStates):
     def __init__(self, n):

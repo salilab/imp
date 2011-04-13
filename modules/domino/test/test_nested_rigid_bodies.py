@@ -2,7 +2,8 @@ import IMP
 import IMP.test
 import IMP.atom
 import IMP.domino
-import sys
+
+
 class PointAlignmentTests(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)

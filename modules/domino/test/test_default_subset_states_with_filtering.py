@@ -1,12 +1,9 @@
-import sys
 import IMP
 import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
-import IMP.restrainer
 import IMP.algebra
-import time
 
 class DOMINOTests(IMP.test.TestCase):
 
