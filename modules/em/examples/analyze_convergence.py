@@ -59,28 +59,35 @@ steps=4
 m.set_log_level(IMP.SILENT)
 
 opt= IMP.core.ConjugateGradients(m)
-for i in range(-bd, bd+1, 2*bd/steps):
-    for j in range(-bd, bd+1, 2*bd/steps):
-        for k in range(-bd, bd+1, 2*bd/steps):
-            print "trying", i,j,k
-            vc=IMP.algebra.Vector3D(i,j,k)
-            to_move.set_coordinates(vc)
-            # display the score at this position
-            cg= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
-            cg.set_name("score")
-            v=m.evaluate(True)
-            cg.set_color(IMP.display.get_hot_color(v))
-            w.add_geometry(cg)
-            print "score and derivatives", v, to_move.get_derivatives()
-            w.add_geometry(g)
 
-            opt.optimize(10)
-            print "after", d.get_coordinates()
-            mag= to_move.get_coordinates().get_magnitude()
+def try_point(i, j, k):
+    print "trying", i,j,k
+    vc=IMP.algebra.Vector3D(i,j,k)
+    to_move.set_coordinates(vc)
+    # display the score at this position
+    cg= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
+    cg.set_name("score")
+    v=m.evaluate(True)
+    cg.set_color(IMP.display.get_hot_color(v))
+    w.add_geometry(cg)
+    print "score and derivatives", v, to_move.get_derivatives()
+    w.add_geometry(g)
 
-            converge_color= IMP.display.get_grey_color(1.0/(1.0+mag))
-            # display the distance after optimization at this position
-            g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
-            g.set_color(converge_color)
-            g.set_name("converge")
-            w.add_geometry(g)
+    opt.optimize(10)
+    print "after", d.get_coordinates()
+    mag= to_move.get_coordinates().get_magnitude()
+
+    converge_color= IMP.display.get_grey_color(1.0/(1.0+mag))
+    # display the distance after optimization at this position
+    sg= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(vc, 1))
+    sg.set_color(converge_color)
+    sg.set_name("converge")
+    w.add_geometry(sg)
+
+try_point(-bd,-bd,-bd)
+
+# For a more informative (but much slower) test, use the following instead:
+#for i in range(-bd, bd+1, 2*bd/steps):
+#    for j in range(-bd, bd+1, 2*bd/steps):
+#        for k in range(-bd, bd+1, 2*bd/steps):
+#            try_point(i, j, k)
