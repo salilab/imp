@@ -151,7 +151,7 @@ class sfo_common():
         self._m = IMP.Model()
 
     def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
-            ff_temp=300.0):
+            ff_temp=300.0, disulfides=None):
         """creates a CHARMM protein representation.  
         creates the charmm force field, bonded and nonbonded.
         - initpdb: initial structure in pdb format
@@ -166,6 +166,9 @@ class sfo_common():
             RepulsiveDistancePairScore(0,1)
         - ff_temp is the temperature at which the force field should be
           simulated.
+        - disulfides: if not None, a list of tuples corresponding to residue
+                      numbers that should be cross-linked. Residues should be
+                      cysteines, and residue numbering should start at 0.
         Returns: prot, ff, rsb, rs
             - prot: the protein
             - ff: the force field
@@ -189,6 +192,20 @@ class sfo_common():
         # applying the CHARMM CTER and NTER patches. Patches can also be manually
         # applied at this point, e.g. to add disulfide bridges.
         topology.apply_default_patches()
+        #disulfides
+        if disulfides:
+            s=topology.get_segment(0)
+            dis=ff.get_patch('DISU')
+            for (i,j) in disulfides:
+                self.find_atom((i, 'SG'), prot)
+                self.find_atom((j, 'SG'), prot)
+                r0=s.get_residue(i)
+                r1=s.get_residue(j)
+                if i==0:
+                    r0.set_patched(False)
+                if j==0:
+                    r1.set_patched(False)
+                dis.apply(r0,r1)
         # Make the PDB file conform with the topology; i.e. if it contains extra
         # atoms that are not in the CHARMM topology file, remove them; if it is
         # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
@@ -285,7 +302,14 @@ class sfo_common():
 
     def find_atom(self, atom, prot):
         """scans the prot hierarchy and tries to find atom = (resno, name)
-        assumes that resno starts at 0"""
+        assumes that resno starts at 0. Stores already found atoms for increased speed.
+        """
+        if not hasattr(self,'__memoized'):
+            self.__memoized={prot:{}}
+        try:
+            return self.__memoized[prot][atom]
+        except:
+            pass
         try:
             sel=IMP.atom.Selection(hierarchy=prot,
                 residue_index=atom[0]+1,
@@ -298,6 +322,7 @@ class sfo_common():
         except:
             print "atom %d %s not found" % atom
             return
+        self.__memoized[prot][atom] = p0
         return p0
 
     def init_model_vonMises_restraint_full(self, atoms, data, kappa):
