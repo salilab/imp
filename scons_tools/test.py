@@ -40,7 +40,7 @@ def _action_unit_test(target, source, env):
         for d in data.get(env).modules.keys():
             if not data.get(env).modules[d].ok:
                 dmod.append(d)
-        cmd= cmd+ " "+":".join(dmod)
+        cmd= cmd+ ' "'+":".join(dmod) + '"'
     elif type=='system':
         cmd= File("#/scons_tools/run-all-system.py").abspath + " " +Dir("#/build/tmp").abspath
     else:
