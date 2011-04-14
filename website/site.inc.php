@@ -14,9 +14,18 @@
    function GetDocumentation() {
 print <<< END
 <ul>
-<li><a href="http://salilab.org/imp/1.0/doc/html/">1.0 release</a></li>
-<li><a href="http://salilab.org/imp/nightly/doc/html/">Latest nightly
-build</a></li>
+<li>IMP 1.0 stable release
+  <ul>
+  <li><a href="1.0/tutorial/">Introductory tutorial</a></li>
+  <li><a href="1.0/doc/html/">Manual</a></li>
+  </ul>
+</li>
+
+<li>Latest nightly build
+  <ul>
+  <li><a href="http://salilab.org/imp/nightly/doc/html/">Manual</a></li>
+  </ul>
+</li>
 </ul>
 END;
    }

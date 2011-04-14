@@ -14,8 +14,20 @@
       }
       $co = GetContentsFile('./' . $f);
       $lines = preg_split("/\n/",$co);
+      if (!array_key_exists('TOPDIR', $_ENV)) {
+         $topdir = '';
+      } else {
+         $topdir = $_ENV['TOPDIR'];
+         if ($topdir == '.' || $topdir == '') {
+           $topdir = '';
+         } else {
+           $topdir = $topdir . '/';
+         }
+      }
       foreach ($lines as $ln_num => $line) {
-         echo str_replace('$title', "IMP Community", $line) . "\n";
+         $rline = str_replace('$title', "IMP Community", $line);
+         $rline = str_replace('@TOPDIR@', $topdir, $rline);
+         echo $rline . "\n";
       }
    }
    
@@ -58,7 +70,7 @@
    }
 
    function print_page_header() {
-      PrintFile("header.txt");
+      PrintFile($_ENV['TOPDIR'] . "/header.txt");
       print <<<END
   <div id="container">
    <table class="tcon">
@@ -72,7 +84,7 @@ END;
       print "   </table>\n";
       print "     </div>\n\n";
       print "<div id=\"footer\">\n";
-      PrintFile("footer.txt");
+      PrintFile($_ENV['TOPDIR'] . "/footer.txt");
       print <<<END
 </div>
 
@@ -80,5 +92,17 @@ END;
 </html>
 END;
    }
+
+function example_file($dir, $file) {
+  if (!file_exists("$dir/$file")) {
+    die("File $dir/$file does not exist");
+  }
+  $handle = popen("pygmentize -f html -O cssclass=pygments $dir/$file", "r");
+  while(!feof($handle)) {
+    print fread($handle, 1024);
+    flush();
+  }
+  pclose($handle);
+}
 
 ?>
