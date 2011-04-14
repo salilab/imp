@@ -60,6 +60,13 @@ void Image::update_header() {
 
 
 
+void  Image::get_min_and_max_values(double *min, double *max) const {
+  cv::Point minLoc,maxLoc; // dummy here
+  cv::minMaxLoc(data_, min, max, &minLoc,&maxLoc);
+}
+
+
+
 
 Images read_images(const Strings &names,
                    const em2d::ImageReaderWriter *rw) {

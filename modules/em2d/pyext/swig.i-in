@@ -16,6 +16,7 @@ IMP_SWIG_OBJECT(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_OBJECT(IMP::em2d, ScoreFunction,ScoreFunctions);
 IMP_SWIG_OBJECT(IMP::em2d, ChiSquaredScore,ChiSquaredScores);
 IMP_SWIG_OBJECT(IMP::em2d, EM2DScore,EM2DScores);
+IMP_SWIG_OBJECT(IMP::em2d, MeanAbsoluteDifference,MeanAbsoluteDifferences);
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionParametersScoreState,
                                      ProjectionParametersScoreStates);

@@ -58,14 +58,14 @@ class IMPEM2DEXPORT ScoreFunction: public Object {
 public:
   ScoreFunction() {}
   //! Given an image and a projection, returns the appropiate score
-  double get_score(Image *image,Image *projection) const {
+  double get_score(Image *image, Image *projection) const {
     // trying to use the non-virtual interface (Alexandrescu, 39)
-    return get_private_score(image,projection);
+    return get_private_score(image, projection);
   }
 
   IMP_OBJECT_INLINE(ScoreFunction, IMP_UNUSED(out), {});
 private:
-  virtual double get_private_score(Image *image,Image *projection) const = 0;
+  virtual double get_private_score(Image *image, Image *projection) const = 0;
 };
 IMP_OBJECTS(ScoreFunction,ScoreFunctions);
 IMP_OUTPUT_OPERATOR(ScoreFunction);
@@ -77,7 +77,7 @@ class IMPEM2DEXPORT ChiSquaredScore: public ScoreFunction {
 public:
   ChiSquaredScore() {}
 private:
-  double get_private_score(Image *,Image *) const {
+  double get_private_score(Image *, Image *) const {
     return 0.0;
   }
 };
@@ -92,14 +92,23 @@ class IMPEM2DEXPORT EM2DScore: public ScoreFunction {
 public:
   EM2DScore() {}
 private:
-  double get_private_score(Image *image,Image *projection) const {
-    return 1-get_cross_correlation_coefficient(image->get_data(),
+  double get_private_score(Image *image, Image *projection) const {
+    return 1 - get_cross_correlation_coefficient(image->get_data(),
                                              projection->get_data());
   }
 };
 IMP_OBJECTS(EM2DScore,EM2DScores);
 IMP_OUTPUT_OPERATOR(EM2DScore);
 
+
+class IMPEM2DEXPORT MeanAbsoluteDifference: public ScoreFunction {
+public:
+  MeanAbsoluteDifference() {}
+private:
+  double get_private_score(Image *image, Image *projection) const;
+};
+IMP_OBJECTS(MeanAbsoluteDifference, MeanAbsoluteDifferences);
+IMP_OUTPUT_OPERATOR(MeanAbsoluteDifference);
 
 
 
@@ -112,7 +121,7 @@ class HasHigherCCC
 #endif
  {
 public:
-  bool operator()(const T &a,const T &b) const {
+  bool operator()(const T &a, const T &b) const {
     return a.get_ccc() >= b.get_ccc();
   }
   void show(std::ostream &) const {}
@@ -124,11 +133,11 @@ template<class T>
 class LessPairBySecond
 #ifndef SWIG
 :
-   public std::binary_function< T ,T , bool>
+   public std::binary_function< T, T, bool>
 #endif
  {
 public:
-  bool operator()(const T &a,const T &b) const {
+  bool operator()(const T &a, const T &b) const {
     return a.second < b.second;
   }
   void show(std::ostream &) const {}
