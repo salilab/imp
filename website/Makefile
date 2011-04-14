@@ -1,10 +1,12 @@
-WEB=~www/html/imp/
+WEB=${WEBTOP}
+TOPDIR=.
+SUBDIRS=1.0/tutorial
 
-.PHONY: all
+include ${TOPDIR}/Makefile.include
 
-all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/imp.css \
+all: ${WEB}/groups.html ${WEB}/index.html ${WEB}/imp.css ${WEB}/pygments.css \
      ${WEB}/images ${WEB}/doc.html  ${WEB}/download.html ${WEB}/get.php \
-     ${WEB}/download-windows.html ${WEB}/download-mac.html
+     ${WEB}/download-windows.html ${WEB}/download-mac.html ${SUBDIRS}
 
 ${WEB}/groups.html::
 	@if [ ! -d ${WEB} ]; then mkdir -p ${WEB}; fi
@@ -49,6 +51,9 @@ ${WEB}/get.php: get.php get.php.in misc.inc.php header.txt footer.txt
 
 ${WEB}/imp.css: imp.css
 	cp $< $@
+
+${WEB}/pygments.css::
+	pygmentize -f html -S tango -a .pygments > $@
 
 ${WEB}/images: images/*
 	@if [ ! -d ${WEB}/images ]; then mkdir -p ${WEB}/images; fi

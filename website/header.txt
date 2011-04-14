@@ -6,7 +6,8 @@
 <meta name="description" content="IMP Community site for the development of an Integrative Modeling Platform" />
 <meta name="keywords" content="IMP, Integrative, Modeling, Platform" />
 <title>$title</title>
-<link href="imp.css" rel="stylesheet" type="text/css"/>
+<link href="@TOPDIR@imp.css" rel="stylesheet" type="text/css"/>
+<link href="@TOPDIR@pygments.css" rel="stylesheet" type="text/css"/>
 <!-- DOXYGEN STUFF GOES HERE-->
 
 <script type="text/javascript"><!--

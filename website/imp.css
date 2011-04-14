@@ -204,6 +204,11 @@ a.codeRef {
    padding: 10px;
    float: center;
 }
+#tutorial {
+   background: #F0F0F0;
+   padding: 10px;
+   float: center;
+}
 
 .wel h2 {
 }
@@ -738,4 +743,24 @@ address {
 
 a.directdownload {
 	font-size: small;
+}
+
+.pygments {
+	border: 1px dashed #666666;
+	padding: 1em;
+}
+
+span.filename {
+	font-family: Courier, monospace;
+	font-weight: bold;
+}
+
+p.textfigure {
+	text-align:center;
+}
+
+img.textfigure {
+	padding: 4px;
+	background: white;
+	border: 1px solid;
 }
