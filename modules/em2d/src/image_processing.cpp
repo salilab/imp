@@ -22,92 +22,6 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
-//void apply_mask(const algebra::Matrix2D_d &m,algebra::Matrix2D_d &result,
-//          const algebra::Matrix2D<int> &mask,double value) {
-//  IMP_USAGE_CHECK((m.get_number_of_rows()==result.get_number_of_rows()) &&
-//                  (m.get_number_of_columns()==result.get_number_of_columns()),
-//                  "em2d::apply_mask: Matrices have different size.");
-//
-//  for (unsigned int i=0;i<m.num_elements();++i) {
-//    if(mask.data()[i]==1) {
-//      result.data()[i] = m.data()[i];
-//    } else {
-//      result.data()[i] = value;
-//    }
-//  }
-//}
-//
-
-
-//void do_dilate_and_shrink_warp(algebra::Matrix2D_d &m,
-//                            const algebra::Matrix2D_d &greyscale,
-//                            algebra::Matrix2D_d &kernel) {
-//
-//
-//  IMP_USAGE_CHECK((m.get_number_of_rows()==greyscale.get_number_of_rows()) &&
-//            (m.get_number_of_columns()==greyscale.get_number_of_columns()),
-//            "em2d::do_dilate_an_shrink: Matrices have different size.");
-//
-//  int background = 0;
-//  int foreground = 1;
-//  algebra::Matrix2D_d mask, temp,boundary;
-//  mask.reshape(m);
-//  temp.reshape(m);
-//  boundary.reshape(m);
-//  temp.copy(m);
-//  algebra::Matrix2D_d temp_kernel(3,3);
-//  temp_kernel.set_zero();
-//  unsigned int size_in_pixels,new_size_in_pixels;
-//  do {
-//    size_in_pixels=0;
-//    for (unsigned int i=0;i<temp.num_elements();++i) {
-//      if (algebra::get_rounded(temp.data()[i])>background) {
-//           size_in_pixels++;
-//        }
-//    }
-//    // Dilate to get a new mask
-//    do_dilation(temp,kernel,mask);
-//    // Compute mean of the grayscale inside the mask and its size
-//    double mean=0.0;
-//    new_size_in_pixels = 0;
-//    for (unsigned int i=0;i<mask.num_elements();++i) {
-//      if (algebra::get_rounded(mask.data()[i])>background) {
-//        new_size_in_pixels++;
-//        mean += greyscale.data()[i];
-//      }
-//    }
-//    mean /= (double)new_size_in_pixels++;
-//
-//    boundary = mask - temp;
-////    xxx.set_data(boundary);
-////    xxx.write("boundary.spi",srw);
-//    // Erode the mask if pixels in the grayscale are below the mean
-//    // and are in the boundary
-//    for (unsigned int i=0;i<greyscale.num_elements();++i) {
-//      if(algebra::get_rounded(mask.data()[i]) == background) {
-//        // pixel outside the mask
-//        temp.data()[i] = background;
-//      } else if(algebra::get_rounded(boundary.data()[i])==foreground &&
-//                greyscale.data()[i]<mean) {
-//        // boundary pixel below the mean, erode
-//        temp.data()[i] = background;
-//        new_size_in_pixels--;
-//      } else {
-//        temp.data()[i] = foreground;
-//      }
-//    }
-//    // Now temp contains the new mask with size new_size_in_pixels
-//    /*******/
-////    xxx.set_data(temp);
-////    xxx.write("temp.spi",srw);
-//    /*******/
-//  } while( std::abs(static_cast<int>(new_size_in_pixels)
-//                    -static_cast<int>(size_in_pixels))>1);
-////  } while( new_size_in_pixels != size_in_pixels);
-//  m.copy(temp);
-//}
-//
-
 //void do_histogram_stretching(algebra::Matrix2D_d &m,
 //                          int boxes,int offset) {
 //  // Number of possible values for the histogram and maximum value for
@@ -317,29 +231,41 @@ void do_dilate_and_shrink_warp(cv::Mat &m,
 
 
 
+void apply_threshold(cv::Mat &m, cv::Mat &result, double threshold) {
+
+  cv::Mat temp, temp2;
+  m.convertTo(temp,CV_32FC1); // float, threshold does not work with doubles
+  // Remove everything below threshold
+  double dummy = 0.0;
+  cv::threshold(temp, temp2, threshold, dummy, cv::THRESH_TOZERO);
+  temp2.convertTo(result, CV_64FC1);
+}
 
 
 void do_combined_fill_holes_and_threshold(cv::Mat &m,
                                           cv::Mat &result,
-                                          double n_stddevs) {
+                                          double n_stddevs,
+                                          double threshold) {
   do_normalize(m);
   cv::Mat temp,temp2;
   do_fill_holes(m,temp,n_stddevs);
   do_normalize(temp);
-  temp.convertTo(temp2,CV_32FC1); // threshold does not work with doubles
-  // Remove everything below 0
-  double threshold = 0.0;
-  cv::threshold(temp2,temp,threshold,0.0,cv::THRESH_TOZERO);
-  temp.convertTo(result,CV_64FC1);
+  apply_threshold(temp, result, threshold);
+
+//  temp.convertTo(temp2,CV_32FC1); // threshold does not work with doubles
+//  // Remove everything below threshold
+//  double dummy = 0.0
+//  cv::threshold(temp2,temp,threshold, dummy,cv::THRESH_TOZERO);
+//  temp.convertTo(result, CV_64FC1);
   do_normalize(result);
 }
 
-void do_morphological_reconstruction(const cv::Mat &mask,
+void do_morphologic_reconstruction(const cv::Mat &mask,
                                       cv::Mat &marker,
                                       int neighbors_mode) {
 
   IMP_USAGE_CHECK((mask.rows==marker.rows) && (mask.cols==marker.cols),
-        "em2d::morfological_reconstruction: Matrices have different size.");
+        "em2d::morphologic_reconstruction: Matrices have different size.");
 
   // Scan in raster order
   for (int i=0;i<mask.rows;++i) {
@@ -409,7 +335,7 @@ void do_fill_holes(const cv::Mat &m,cv::Mat &result,double h) {
   // The result is the marker. It should be max_plus_m - m - h, but is the same
   cv::Scalar sc(max_m,0,0,0);
   cv::subtract(sc,m,marker); // this does max_m-m
-  do_morphological_reconstruction(mask,marker,8);
+  do_morphologic_reconstruction(mask,marker,8);
   cv::subtract(s,marker,result); // result = max_plus_h - marker
 }
 
@@ -419,7 +345,7 @@ void get_domes(cv::Mat &m,cv::Mat &result,double h) {
   cv::Scalar s(h,0,0,0);
   cv::Mat marker;
   cv::subtract(m,h,marker);
-  do_morphological_reconstruction(m,marker,8);
+  do_morphologic_reconstruction(m,marker,8);
   cv::subtract(m,marker,result);
 }
 
@@ -503,7 +429,8 @@ void do_segmentation(const cv::Mat &m,
 
   do_combined_fill_holes_and_threshold(temp2, //input
                                        temp1, // result with holes filled
-                                       params.fill_holes_stddevs);
+                                       params.fill_holes_stddevs,
+                                       params.threshold);
   // opening
   temp1.convertTo(aux,CV_32FC1);
   cv::morphologyEx(aux, // input
@@ -554,7 +481,17 @@ void apply_mask(const cv::Mat &m,
 
 
 
-
+void apply_circular_mask(const cv::Mat &mat,
+                         cv::Mat &result,
+                         int radius,
+                         double val) {
+  cv::Mat mask, temp;
+  mask = cv::Mat::zeros(mat.rows, mat.cols,CV_16UC1);
+  cv::Point center( floor(mat.rows/2), floor(mat.cols/2));
+  cv::Scalar color(1, 0, 0, 0);
+  cv::circle(mask, center, radius, color, -1);
+  apply_mask(mat, result, mask, val);
+}
 
 
 
@@ -710,6 +647,43 @@ void do_extend_borders(cv::Mat &orig, cv::Mat &dst,unsigned int pix) {
       Dst(i,j)=Orig(i,j);
     }
   }
+}
+
+void do_morphologic_contrast_enhancement(const cv::Mat &m, cv::Mat &result,
+                                        const cv::Mat &kernel,
+                          unsigned int  iterations) {
+  // Bovik, pg 143
+
+  cv::Mat dilated, eroded, condition;
+  cv::Mat temp;
+  m.convertTo(temp,CV_32FC1); // dilate and erode don't work with doubles
+
+
+  for (unsigned int i=0; i < iterations; ++i) {
+    cv::dilate(temp, dilated, kernel);
+    cv::erode(temp, eroded, kernel);
+    condition = (eroded + dilated) * 0.5;
+    for (int i = 0; i < temp.rows; ++i) {
+      for (int j=0; j< temp.cols; ++j) {
+        temp.at<float>(i,j) = temp.at<float>(i,j) < condition.at<float>(i,j) ?
+                          eroded.at<float>(i,j) : dilated.at<float>(i,j);
+      }
+    }
+  }
+  temp.convertTo(result, CV_64FC1);
+}
+
+void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
+                                        const cv::Mat &kernel) {
+  // Bovik, pg 147
+
+  cv::Mat dilated, eroded, condition;
+  cv::Mat temp;
+  m.convertTo(temp, CV_32FC1); // dilate and erode don't work with doubles
+  cv::dilate(temp, dilated, kernel);
+  cv::erode(temp, eroded, kernel);
+  temp = dilated - eroded;
+  temp.convertTo(result, CV_64FC1);
 }
 
 IMPEM2D_END_NAMESPACE

@@ -48,6 +48,7 @@ public:
   double remove_sizing_percentage;
   int binary_background;
   int binary_foreground;
+  double threshold; // values of the image below the threshold will be set to 0
 
   SegmentationParameters(): image_pixel_size(1),
                             diffusion_beta(45),
@@ -55,7 +56,8 @@ public:
                             fill_holes_stddevs(1.0),
                             remove_sizing_percentage (0.1),
                             binary_background(0),
-                            binary_foreground(1) {
+                            binary_foreground(1),
+                            threshold(0.0) {
     opening_kernel = cv::Mat::ones(3,3,CV_64FC1);
   }
 
@@ -103,6 +105,18 @@ IMPEM2DEXPORT void apply_mask(const cv::Mat &m,
                               const cvIntMat &mask,
                               double val);
 
+//! Applies a circular to a matrix. The center of the mask is the center of the
+//! matrx.
+/*!
+  \param[in] Radius of the mask
+*/
+IMPEM2DEXPORT void apply_circular_mask(const cv::Mat &mat,
+                                       cv::Mat &result,
+                                       int radius,
+                                       double mask =0.0);
+
+
+
 
 //! Removes small objects from a matrix of integers.
 /*!
@@ -135,15 +149,15 @@ IMPEM2DEXPORT void do_remove_small_objects(cvIntMat &m,
 
 
 
-//! Morphological grayscale reconstruction (L Vincent, 1993)
+//! morphologic grayscale reconstruction (L Vincent, 1993)
 /*!
   \param[in] mask image to reconstruct
   \param[out] marker this image contains the initial marker points and will
               contain the final result
   \param[in] neighbors_mode number of neighbors for a pixel to consider when
-             doing the morphological reconstruction (values: 4, 8).
+             doing the morphologic reconstruction (values: 4, 8).
 */
-void IMPEM2DEXPORT do_morphological_reconstruction(const cv::Mat &mask,
+void IMPEM2DEXPORT do_morphologic_reconstruction(const cv::Mat &mask,
                                       cv::Mat &marker,
                                       int neighbors_mode=4);
 
@@ -225,12 +239,14 @@ IMPEM2DEXPORT void get_domes(cv::Mat &m,cv::Mat &result,double h) ;
   \param[in] m Input matrix
   \param[out] result the result matrix
   \param[in] n_stddevs Number of standard deviations used to compute the holes
+  \param[in] threshold Removes values below the threshold value
   \note The function does normalize -> fill_holes -> normalize -> threshold ->
     normalize
 */
 IMPEM2DEXPORT void do_combined_fill_holes_and_threshold(cv::Mat &m,
                                      cv::Mat &result,
-                                     double n_stddevs);
+                                     double n_stddevs,
+                                     double threshold=0.0);
 
 
 
@@ -311,6 +327,32 @@ IMPEM2DEXPORT void do_extend_borders(cv::Mat &orig,
                                   unsigned int pix);
 
 
+/*! Applys a threshold to an image
+  \param[in] threshold. all pixels below this value are set to zero
+*/
+IMPEM2DEXPORT void apply_threshold(cv::Mat &m,
+                                   cv::Mat &result,
+                                   double threshold=0.0);
+
+/*! morphologic enhancement of the contrast
+  This function detects areas in the images and enhances the contrast between
+  them
+  \param[in] m Imput matrix
+  \param[out] result
+  \param[in] kernel morphologic kernel to use
+  \param[in] iterations Higher number, more contrast
+*/
+IMPEM2DEXPORT void do_morphologic_contrast_enhancement(const cv::Mat &m,
+                                                      cv::Mat &result,
+                                                      const cv::Mat &kernel,
+                                                      unsigned int  iterations);
+/*! Morphologic gradient: dilation-erosion
+  \param[in] m Input matrix
+  \param[out] result
+  \param[in] kernel morphologic kernel
+*/
+IMPEM2DEXPORT void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
+                                        const cv::Mat &kernel);
 
 IMPEM2D_END_NAMESPACE
 

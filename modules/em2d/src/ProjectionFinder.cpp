@@ -348,7 +348,7 @@ void ProjectionFinder::get_complete_registration() {
     for (unsigned int k=0;k<n_optimized;++k) {
       // Fine registration of the subject using simplex
       coarse_RRs[k].set_in_image(subjects_[i]->get_header());
-      IMP_LOG(IMP::TERSE,"Setting subjec image to "
+      IMP_LOG(IMP::TERSE,"Setting subject image to "
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);

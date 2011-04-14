@@ -45,7 +45,7 @@ public:
   //! Sets the entire matrix of data
   void set_data(const cv::Mat &mat);
 
-  void set_value(int i, int j,double val) {
+  void set_value(int i, int j, double val) {
     data_.at<double>(i,j) = val;
   }
 
@@ -104,6 +104,8 @@ public:
   String get_name() const {
     return name_;
   }
+
+  void get_min_and_max_values(double *min, double *max) const;
 
 protected:
   void set_size_data(int rows,int cols);
