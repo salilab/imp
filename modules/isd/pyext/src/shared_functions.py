@@ -206,6 +206,7 @@ class sfo_common():
                 if j==0:
                     r1.set_patched(False)
                 dis.apply(r0,r1)
+                print "added disulfide bridge between cysteines %d and %d" % (i,j)
         # Make the PDB file conform with the topology; i.e. if it contains extra
         # atoms that are not in the CHARMM topology file, remove them; if it is
         # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
