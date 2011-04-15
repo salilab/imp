@@ -36,8 +36,10 @@ IMP_GRAPH(InteractionGraph, undirected, Particle*, Object*);
 IMPDOMINOEXPORT Subsets get_subsets(const SubsetGraph &g);
 
 
-/** Compute the exact junction tree for an interaction graph. The resulting
-    graph has the junction tree properties
+/** Compute the exact
+    \external{en.wikipedia.org/wiki/Junction_tree,junction tree}
+    for an interaction graph. The resulting graph has the junction tree
+    properties
     - it is a tree
     - for any two vertices whose subsets both contain a vertex, that vertex
     is contained in all subsets along the path connecting those two vertices.
