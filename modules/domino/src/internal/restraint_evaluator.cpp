@@ -30,28 +30,46 @@ namespace {
                                  ParticlesTemp ip,
                                  std::vector<RestraintData> &rdata,
                                  IMP::internal::Map<Restraint*, Ints> &index) {
-    ParticlesTemp oip;
+    std::vector<ParticlesTemp> oip;
+    oip.push_back(ParticlesTemp());
     for (unsigned int i=0; i< ip.size(); ++i) {
       if (idm.find(ip[i]) != idm.end()) {
-        oip.push_back(idm.find(ip[i])->second[0]);
+        if (idm.find(ip[i])->second.size() > 1) {
+          std::vector<ParticlesTemp> noip;
+          int last=0;
+          for (unsigned int j=0; j< idm.find(ip[i])->second.size(); ++j) {
+            noip.insert(noip.end(), oip.begin(), oip.end());
+            for (unsigned int k=last; k< noip.size(); ++k) {
+              noip[k].push_back(idm.find(ip[i])->second[j]);
+            }
+            last= noip.size();
+          }
+          std::swap(noip, oip);
+        } else {
+          for (unsigned int j=0; j< oip.size(); ++j) {
+            oip[j].push_back(idm.find(ip[i])->second[0]);
+          }
+        }
       }
     }
-    std::sort(oip.begin(), oip.end());
-    oip.erase(std::unique(oip.begin(), oip.end()), oip.end());
-    dependencies.push_back(Subset(oip, true));
-    RestraintData ret(r, weight);
-    if (preload.find(r) != preload.end()){
-      const ModelData::PreloadData &data= preload.find(r)->second;
-      IMP_USAGE_CHECK(dependencies.back() == data.s,
-                      "Was passed subset " << data.s
-                      << " but expected subset " << dependencies.back()
-                      << " for restraint " << r->get_name());
-      for (unsigned int i=0; i< data.scores.size(); ++i) {
-        ret.set_score(data.sss[i], data.scores[i]);
+    for (unsigned int i=0; i< oip.size(); ++i) {
+      std::sort(oip[i].begin(), oip[i].end());
+      oip[i].erase(std::unique(oip[i].begin(), oip[i].end()), oip[i].end());
+      dependencies.push_back(Subset(oip[i], true));
+      RestraintData ret(r, weight);
+      if (preload.find(r) != preload.end()){
+        const ModelData::PreloadData &data= preload.find(r)->second;
+        IMP_USAGE_CHECK(dependencies.back() == data.s,
+                        "Was passed subset " << data.s
+                        << " but expected subset " << dependencies.back()
+                        << " for restraint " << r->get_name());
+        for (unsigned int j=0; j< data.scores.size(); ++j) {
+          ret.set_score(data.sss[j], data.scores[j]);
+        }
       }
+      rdata.push_back(ret);
+      index[r].push_back(rdata.size()-1);
     }
-    rdata.push_back(ret);
-    index[r].push_back(rdata.size()-1);
   }
 }
 
@@ -125,7 +143,7 @@ void ModelData::validate() const {
   IMP_USAGE_CHECK(get_restraints(rs_->restraints_begin(),
                                  rs_->restraints_end()).size()
                   == dependencies_.size(),
-                     "The restraints changed after Domino2 was set up. "
+                     "The restraints changed after Domino was set up. "
                   << "This is a bad thing: "
                   << get_restraints(rs_->restraints_begin(),
                                     rs_->restraints_end()).size()
