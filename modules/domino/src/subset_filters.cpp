@@ -602,4 +602,123 @@ void ListSubsetFilterTable::mask_allowed_states(Particle *p,
   }
 }
 
+
+
+
+
+
+/*************************************************************************/
+
+
+
+namespace {
+  struct CP {
+    bool operator()(const IntPair &pa,
+                    const IntPair &pb) const {
+      if (pa.first < pb.first) return true;
+      else if (pa.first > pb.first) return false;
+      else if (pa.second < pb.second) return true;
+      else return false;
+    }
+  };
+
+  class  PairListSubsetFilter: public SubsetFilter {
+    IntPairs indexes_;
+    std::vector<IntPairs> allowed_;
+  public:
+    PairListSubsetFilter(const IntPairs &i,
+                         const std::vector<IntPairs> &a):
+      SubsetFilter("Pair list score filter"),
+      indexes_(i), allowed_(a) {
+    }
+    IMP_SUBSET_FILTER(PairListSubsetFilter);
+  };
+
+  bool PairListSubsetFilter::get_is_ok(const Assignment &state) const{
+    for (unsigned int i=0; i< indexes_.size(); ++i) {
+      IntPair ip(state[indexes_[i].first], state[indexes_[i].second]);
+      bool c= std::binary_search(allowed_[i].begin(),
+                                 allowed_[i].end(), ip, CP());
+      if (!c) return false;
+    }
+    return true;
+  }
+
+  void PairListSubsetFilter::do_show(std::ostream &) const{}
+}
+
+
+void PairListSubsetFilterTable
+::fill(const Subset &s,
+            const Subsets &e,
+            IntPairs& indexes,
+       std::vector<IntPairs>& allowed) const {
+for (unsigned int i=0; i< s.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ParticlePair pp(s[j], s[i]);
+      if (allowed_.find(pp) == allowed_.end()) continue;
+      bool fp=false;
+      for (unsigned int k=0; k< e.size(); ++k) {
+        bool f0=false, f1=false;
+        for (unsigned int l=0; l < e[k].size(); ++l) {
+          if (e[k][l]==pp[0]) {
+            f0=true;
+          } else if (e[k][l]==pp[1]) {
+            f1=true;
+          }
+          if (f0&&f1) {
+            fp=true;
+            break;
+          }
+        }
+        if (fp) break;
+      }
+      if (fp) continue;
+      indexes.push_back(IntPair(j,i));
+      allowed.push_back(allowed_.find(pp)->second);
+    }
+  }
+}
+
+SubsetFilter*
+PairListSubsetFilterTable
+::get_subset_filter(const Subset &s,
+                    const Subsets &e) const {
+  IntPairs indexes;
+  std::vector<IntPairs> allowed;
+  fill(s,e,indexes, allowed);
+  if (!indexes.empty()) {
+    return new PairListSubsetFilter(indexes, allowed);
+  } else {
+    return NULL;
+  }
+}
+
+double PairListSubsetFilterTable::get_strength(const Subset &s,
+                                           const Subsets &e) const {
+  IntPairs indexes;
+  std::vector<IntPairs> allowed;
+  fill(s,e,indexes, allowed);
+  return 1-std::pow(.9, static_cast<double>(indexes.size()));
+}
+
+PairListSubsetFilterTable::PairListSubsetFilterTable(){}
+
+void PairListSubsetFilterTable::do_show(std::ostream &) const {
+}
+
+void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
+                                                   const IntPairs &states) {
+  IMP_USAGE_CHECK(allowed_.find(p) == allowed_.end(),
+                  "Allowed states for " << p
+                  << " already set.");
+  if (p[0] < p[1]) p= ParticlePair(p[1], p[0]);
+  allowed_[p]=states;
+  std::sort(allowed_[p].begin(), allowed_[p].end(), CP());
+}
+
+
+
+
+
 IMPDOMINO_END_NAMESPACE
