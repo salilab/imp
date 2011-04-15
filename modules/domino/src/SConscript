@@ -3,6 +3,7 @@ Import('env')
 files = [
          'Assignment.cpp',
          'BranchAndBoundSampler.cpp',
+         'DependencyScoreState.cpp',
          'DiscreteSampler.cpp',
          'DominoSampler.cpp',
          'Subset.cpp',

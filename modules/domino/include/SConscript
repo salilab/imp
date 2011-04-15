@@ -3,6 +3,7 @@ Import('env')
 files = [
          'Assignment.h',
          'BranchAndBoundSampler.h',
+         'DependencyScoreState.h',
          'DiscreteSampler.h',
          'DominoSampler.h',
          'Subset.h',
