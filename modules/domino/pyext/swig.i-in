@@ -38,6 +38,7 @@ IMP_SWIG_OBJECT(IMP::domino, RestraintScoreSubsetFilterTable, RestraintScoreSubs
 IMP_SWIG_OBJECT(IMP::domino, RigidBodyStates, RigidBodyStatess);
 IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatesList);
 IMP_SWIG_OBJECT(IMP::domino, NestedRigidBodyStates, NestedRigidBodyStatesList);
+IMP_SWIG_OBJECT(IMP::domino, DependencyScoreState, DependencyScoreStates);
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
@@ -54,4 +55,5 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/BranchAndBoundSampler.h"
 %include "IMP/domino/utility.h"
 %include "IMP/domino/analysis.h"
+%include "IMP/domino/DependencyScoreState.h"
 
