@@ -1,4 +1,6 @@
 #!/usr/bin/env ptyhon
+from numpy import *
+import sys
 
 class History:
     """Class that contains the output of one replica, used by the 
@@ -41,17 +43,63 @@ class History:
     def get_data(self, cat, name):
         return self.data[cat][name]
 
+    def get_categories(self):
+        i=sorted(self.data.keys())
+        if 'step' in i:
+            i.remove('step')
+            i=['step']+i
+        return i
+
+    def get_entries(self,cat):
+        i=sorted(self.data[cat].keys())
+        if 'step' in i:
+            i.remove('step')
+            i=['step']+i
+        return i
+
     def remove_NAs(self):
         for cat in self.data:
             for name in self.data[cat]:
                 self.data[cat][name] = [i for i in self.data[cat][name] \
                         if i != 'N/A']
 
-    def toc(self):
-        """print the "table of contents" of this History"""
+    def toc(self, out=sys.stdout):
+        """print the "table of contents" of this History
+        tendency is a comparison of the last 200 frames, and whether it goes up
+        or down.
+        mean100 is the average over the last 100 frames
+        """
+        if not type(out) == file:
+            out=open(out,'w')
+        out.write("category\tkey_name\tn_frames\ttype\taverage\tstd\tmean100\ttendency\n")
         for cat in self.data:
-            print cat
+            out.write(cat+'\n')
             for name in self.data[cat]:
                 ent=self.data[cat][name]
-                print "\t%20s\t%12d\t%20s" % (name, len(ent),type(ent[-1]))
+                tp=type(ent[-1])
+                if tp==float:
+                    tp='float'
+                elif tp==int:
+                    tp='int'
+                if tp=='float':
+                    try:
+                        ent=array(ent)
+                        avg=mean(ent)
+                        avg100=mean(ent[-100:])
+                        avg200=mean(ent[-200:-100])
+                        st=std(ent)
+                        st200=std(ent[-200])
+                        if st200 ==0 or abs(avg200 - avg100)/st200 > 3:
+                            if avg200>avg100:
+                                tend='\\'
+                            else:
+                                tend='/'
+                        else:
+                            tend='--'
+                        out.write("\t%20s\t%12d\t%20s\t%10f\t%10f\t%10f\t%5s\n" % \
+                                (name, len(ent),tp,avg,st,avg100,tend))
+                        continue
+                    except:
+                        pass
+                out.write("\t%20s\t%12d\t%20s\n" % (name, len(ent),tp))
 
