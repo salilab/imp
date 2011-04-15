@@ -289,6 +289,31 @@ IMP_OBJECTS(ListSubsetFilterTable,
 
 
 
+/** For provided pairs of particles, on all them to be in certain
+    explicitly lists pairs of states. That is, if the particle
+    pair (p0, p1) is added, with the list [(0,1), (3,4)], then
+    (p0, p1) can only be in (0,1) or (3,4). Note, this class
+    assumes that the single particles are handled appropriately.
+    That is, that something else is restricting p0 to only 0 or 3.
+*/
+class IMPDOMINOEXPORT PairListSubsetFilterTable:
+  public SubsetFilterTable {
+  IMP::internal::Map<ParticlePair, IntPairs> allowed_;
+  void fill(const Subset &s,
+            const Subsets &e,
+            IntPairs& indexes,
+            std::vector<IntPairs>& allowed) const;
+ public:
+  PairListSubsetFilterTable();
+  void set_allowed_states(ParticlePair p, const IntPairs &states);
+  IMP_SUBSET_FILTER_TABLE(PairListSubsetFilterTable);
+};
+
+IMP_OBJECTS(PairListSubsetFilterTable,
+            PairListSubsetFilterTables);
+
+
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_SUBSET_FILTERS_H */
