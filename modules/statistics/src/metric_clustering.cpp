@@ -6,9 +6,7 @@
  *
  */
 #include <IMP/statistics/metric_clustering.h>
-#include <IMP/statistics/internal/KMData.h>
-#include <IMP/statistics/internal/KMTerminationCondition.h>
-#include <IMP/statistics/internal/KMLocalSearchLloyd.h>
+#include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/atom/distance.h>
@@ -99,5 +97,88 @@ PartitionalClustering *create_centrality_clustering(Metric *d,
   }
   return internal::get_centrality_clustering(g, k);
 }
+
+
+
+PartitionalClustering *create_diameter_clustering(Metric *d,
+                                                  double maximum_diameter) {
+  d->set_was_used(true);
+  IMP_FUNCTION_LOG;
+  IMP_LOG(TERSE, "Extracting distance matrix..." << std::endl);
+  std::vector<Floats> matrix(d->get_number_of_items(),
+                             Floats(d->get_number_of_items(), 0));
+  Ints unclaimed;
+  for (unsigned int i=0; i< matrix.size(); ++i) {
+    unclaimed.push_back(i);
+    for (unsigned int j=0; j< i; ++j) {
+      matrix[i][j]= d->get_distance(i,j);
+      matrix[j][i]= matrix[i][j];
+    }
+    matrix[i][i]=0;
+  }
+  IMP_LOG(TERSE, "done" << std::endl);
+  std::vector<Ints> clusters;
+  while (!unclaimed.empty()) {
+    clusters.push_back(Ints());
+    clusters.back().push_back(unclaimed.back());
+    unclaimed.pop_back();
+    for ( int i=unclaimed.size()-1; i>=0; --i) {
+      bool bad=0;
+      for (unsigned int j=0; j< clusters.back().size(); ++j) {
+        if (matrix[clusters.back()[j]][unclaimed[i]] > maximum_diameter) {
+          bad=true;
+          break;
+        }
+      }
+      if (!bad) {
+        clusters.back().push_back(unclaimed[i]);
+        unclaimed.erase(unclaimed.begin()+i);
+      }
+    }
+  }
+  return new internal::TrivialPartitionalClustering(clusters);
+}
+
+
+
+RecursivePartitionalClusteringMetric
+::RecursivePartitionalClusteringMetric(Metric *metric,
+                                       PartitionalClustering *clustering):
+  Metric("RecursivePartitionalClusteringMetric %1%"),
+  metric_(metric), clustering_(clustering){
+
+}
+
+PartitionalClustering*
+ RecursivePartitionalClusteringMetric
+::create_full_clustering(PartitionalClustering *center_cluster) {
+  std::vector<Ints> clusters(center_cluster->get_number_of_clusters());
+  Ints reps(clusters.size());
+  for (unsigned int i=0; i< clusters.size(); ++i) {
+    Ints outer= center_cluster->get_cluster(i);
+    reps[i]=clustering_->get_cluster_representative(
+             center_cluster->get_cluster_representative(i));
+    for (unsigned int j=0; j< outer.size(); ++j) {
+      Ints inner= clustering_->get_cluster(outer[j]);
+      clusters[i].insert(clusters[i].end(),inner.begin(), inner.end());
+    }
+  }
+  return new internal::TrivialPartitionalClustering(clusters, reps);
+}
+
+
+double RecursivePartitionalClusteringMetric::get_distance(unsigned int i,
+                                       unsigned int j) const {
+  return metric_->get_distance(clustering_->get_cluster_representative(i),
+                               clustering_->get_cluster_representative(j));
+}
+
+unsigned int RecursivePartitionalClusteringMetric::get_number_of_items() const {
+  return clustering_->get_number_of_clusters();
+}
+
+void RecursivePartitionalClusteringMetric::do_show(std::ostream &) const {
+}
+
 
 IMPSTATISTICS_END_NAMESPACE

@@ -7,6 +7,7 @@
 #include <IMP/statistics/internal/centrality_clustering.h>
 #include <IMP/statistics/statistics_macros.h>
 #include <IMP/statistics/PartitionalClustering.h>
+#include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <IMP/Pointer.h>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -68,42 +69,6 @@ namespace {
     }
   };
 
-
-  class IMPSTATISTICSEXPORT TrivialPartitionalClustering:
-    public PartitionalClustering {
-    std::vector<Ints> clusters_;
-  public:
-    TrivialPartitionalClustering(const std::vector<Ints> &clusters):
-      PartitionalClustering("trivial"),
-      clusters_(clusters){}
-    IMP_CLUSTERING(TrivialPartitionalClustering);
-  };
-
-
-  unsigned int TrivialPartitionalClustering::get_number_of_clusters() const {
-    IMP_CHECK_OBJECT(this);
-  return clusters_.size();
-}
-const Ints&TrivialPartitionalClustering::get_cluster(unsigned int i) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(i < get_number_of_clusters(),
-                      "There are only " << get_number_of_clusters()
-                      << " clusters. Not " << i);
-  set_was_used(true);
-  return clusters_[i];
-}
-int TrivialPartitionalClustering
-::get_cluster_representative(unsigned int i) const {
-  IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(i < get_number_of_clusters(),
-                      "There are only " << get_number_of_clusters()
-                      << " clusters. Not " << i);
-  return clusters_[i][0];
-}
-void TrivialPartitionalClustering::do_show(std::ostream &out) const {
-  out << clusters_.size() << " centers." << std::endl;
-}
-
 }
 
 PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
@@ -127,7 +92,7 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }
-  IMP_NEW(TrivialPartitionalClustering, ret, (clusters));
+  IMP_NEW(internal::TrivialPartitionalClustering, ret, (clusters));
   return ret.release();
 }
 

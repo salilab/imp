@@ -59,6 +59,24 @@ class IMPSTATISTICSEXPORT ConfigurationSetRMSDMetric: public Metric {
 
 
 
+/** Represent a metric for clustering data that has already been clustered
+    once. To use it, cluster things once, create one of these with the metric
+    you want (created with the original data). When you pass this metric to
+    the clustering algorithm, it will cluster the centers. You can extract the
+    clustering of the original elements using create_full_clustering().
+*/
+class IMPSTATISTICSEXPORT RecursivePartitionalClusteringMetric: public Metric {
+  IMP::internal::OwnerPointer<Metric> metric_;
+  IMP::internal::OwnerPointer<PartitionalClustering> clustering_;
+ public:
+  RecursivePartitionalClusteringMetric(Metric *metric,
+                                       PartitionalClustering *clustering);
+  PartitionalClustering*
+    create_full_clustering(PartitionalClustering *center_cluster);
+  IMP_METRIC(RecursivePartitionalClusteringMetric);
+};
+
+
 /** Cluster by repeatedly removing edges which have lots
     of shortest paths passing through them. The process is
     terminated when there are a set number of
@@ -71,6 +89,14 @@ IMPSTATISTICSEXPORT
 PartitionalClustering *create_centrality_clustering(Metric *d,
                                                  double far,
                                                  int k);
+
+
+/** Cluster the elements into clusters with at most the specified
+    diameter.
+ */
+IMPSTATISTICSEXPORT
+PartitionalClustering *create_diameter_clustering(Metric *d,
+                                                  double maximum_diameter);
 
 IMPSTATISTICS_END_NAMESPACE
 
