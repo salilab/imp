@@ -98,11 +98,38 @@ PartitionalClustering *create_centrality_clustering(Metric *d,
   return internal::get_centrality_clustering(g, k);
 }
 
-
+namespace {
+  double get_min_distance(int cur, const std::vector<Ints> &clusters,
+                          const std::vector<Floats>& matrix) {
+    double ret=std::numeric_limits<double>::max();
+    for (unsigned int i=0; i< clusters.size(); ++i) {
+      for (unsigned int j=0; j< clusters[i].size(); ++j) {
+        double d= matrix[cur][clusters[i][j]];
+        ret=std::min(d, ret);
+      }
+    }
+    return ret;
+  }
+  int get_far(const Ints &unclaimed,
+              const std::vector<Ints> &clusters,
+              const std::vector<Floats>& matrix) {
+    if (clusters.empty()) return unclaimed.size()-1;
+    double mdf=0;
+    int mdi=-1;
+    for (unsigned int i=0; i< unclaimed.size(); ++i) {
+      double cd= get_min_distance(unclaimed[i], clusters, matrix);
+      if (cd > mdf) {
+        mdf=cd;
+        mdi=i;
+      }
+    }
+    return mdi;
+  }
+}
 
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
-  d->set_was_used(true);
+  IMP::internal::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
   IMP_LOG(TERSE, "Extracting distance matrix..." << std::endl);
   std::vector<Floats> matrix(d->get_number_of_items(),
@@ -120,8 +147,9 @@ PartitionalClustering *create_diameter_clustering(Metric *d,
   std::vector<Ints> clusters;
   while (!unclaimed.empty()) {
     clusters.push_back(Ints());
-    clusters.back().push_back(unclaimed.back());
-    unclaimed.pop_back();
+    int cur= get_far(unclaimed, clusters, matrix);
+    clusters.back().push_back(cur);
+    unclaimed.erase(unclaimed.begin()+cur);
     for ( int i=unclaimed.size()-1; i>=0; --i) {
       bool bad=0;
       for (unsigned int j=0; j< clusters.back().size(); ++j) {
