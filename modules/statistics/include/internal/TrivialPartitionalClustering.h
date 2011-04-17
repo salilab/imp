@@ -34,11 +34,13 @@ public:
 };
 
 
-unsigned int TrivialPartitionalClustering::get_number_of_clusters() const {
+inline unsigned int
+TrivialPartitionalClustering::get_number_of_clusters() const {
   IMP_CHECK_OBJECT(this);
   return clusters_.size();
 }
-const Ints&TrivialPartitionalClustering::get_cluster(unsigned int i) const {
+inline const Ints&
+TrivialPartitionalClustering::get_cluster(unsigned int i) const {
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < get_number_of_clusters(),
                       "There are only " << get_number_of_clusters()
@@ -46,7 +48,7 @@ const Ints&TrivialPartitionalClustering::get_cluster(unsigned int i) const {
   set_was_used(true);
   return clusters_[i];
 }
-int TrivialPartitionalClustering
+inline int TrivialPartitionalClustering
 ::get_cluster_representative(unsigned int i) const {
   IMP_CHECK_OBJECT(this);
   IMP_USAGE_CHECK(i < get_number_of_clusters(),
@@ -54,7 +56,7 @@ int TrivialPartitionalClustering
                       << " clusters. Not " << i);
   return reps_[i];
 }
-void TrivialPartitionalClustering::do_show(std::ostream &out) const {
+inline void TrivialPartitionalClustering::do_show(std::ostream &out) const {
   out << clusters_.size() << " centers." << std::endl;
 }
 
