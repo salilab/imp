@@ -16,15 +16,15 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
                 vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 5)))
         e= IMP.statistics.VectorDEmbedding(vs)
         m= IMP.statistics.EuclideanMetric(e)
-        c= IMP.statistics.create_diameter_clustering(m, 10)
-        self.assertEqual(c.get_number_of_clusters(), 3)
+        c= IMP.statistics.create_diameter_clustering(m, 14)
+        self.assert_(c.get_number_of_clusters()<= 5)
 
         for i in range(0, c.get_number_of_clusters()):
             cl= c.get_cluster(i)
             for a in cl:
                 for b in cl:
                     d= (vs[a]-vs[b]).get_magnitude()
-                    self.assert_(d < 10)
+                    self.assert_(d < 14)
 
 if __name__ == '__main__':
     IMP.test.main()

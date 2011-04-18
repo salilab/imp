@@ -98,6 +98,14 @@ IMPSTATISTICSEXPORT
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter);
 
+/**Two points, \f$p_i\f$, \f$p_j\f$ are in the same cluster if
+    there is a sequence of points \f$\left(p^{ij}_{0}\dots p^{ij}_k\right)\f$
+    such that \f$\forall l ||p^{ij}_l-p^{ij}_{l+1}|| < d\f$.
+ */
+IMPSTATISTICSEXPORT PartitionalClustering*
+create_connectivity_clustering(Metric *metric,
+                               double dist);
+
 IMPSTATISTICS_END_NAMESPACE
 
 #endif /* IMPSTATISTICS_METRIC_CLUSTERING_H */
