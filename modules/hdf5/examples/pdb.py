@@ -5,9 +5,8 @@ h= IMP.atom.read_pdb(IMP.hdf5.get_example_path("simple.pdb"), m)
 
 # create a tmp file and overwrite the contents
 # sorry about the silliness necessary to get binary access to a temp file
-tf=IMP.create_temporary_file()
-tfn=tf.get_name()
-del tf
+tfn=IMP.create_temporary_file_name("pdb", "hdf5")
+
 print "File name is", tfn
 rh = IMP.hdf5.RootHandle(tfn, True)
 # write the hierarchy to the file
@@ -23,3 +22,5 @@ hps= IMP.hdf5.read_all_hierarchies(rh, m)
 
 # load the second configuration into hps
 IMP.hdf5.load_configuration(rh, hps[0], 1)
+
+print "Try running hdf5_display or hdf5_show on", tfn
