@@ -21,7 +21,7 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
         self.assertEqual(c.get_number_of_clusters(), 2)
 
     def test_connectivity_clustering(self):
-        """Connectivity clustering"""
+        """Test connectivity clustering"""
         vs= IMP.algebra.Vector3Ds()
         centers=(IMP.algebra.Vector3D(0,0,0),
                  IMP.algebra.Vector3D(10,15,20),
@@ -47,6 +47,23 @@ class ConnectivityClusteringTests(IMP.test.TestCase):
                 if d < 2:
                     found=True
             self.assertTrue(found)
+    def test_connectivity_clustering_metric(self):
+        """Test metric connectivity clustering"""
+        vs= IMP.algebra.Vector3Ds()
+        centers=(IMP.algebra.Vector3D(0,0,0),
+                 IMP.algebra.Vector3D(10,15,20),
+                 IMP.algebra.Vector3D(60,30,12))
+        for i in range(0,3):
+            for j in range(0,150):
+                vs.append(IMP.algebra.get_random_vector_in(IMP.algebra.Sphere3D(centers[i], 5)))
+        e= IMP.statistics.VectorDEmbedding(vs)
+        m= IMP.statistics.EuclideanMetric(e)
+        c= IMP.statistics.create_connectivity_clustering(m, 5)
+        self.assertEqual(c.get_number_of_clusters(), 3)
+        #print c.get_cluster_center(0)
+        #print c.get_cluster_center(1)
+        #print c.get_cluster_center(2)
+
 
 if __name__ == '__main__':
     IMP.test.main()

@@ -11,6 +11,13 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/atom/distance.h>
 #include <IMP/statistics/internal/centrality_clustering.h>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
+#include <boost/pending/disjoint_sets.hpp>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
@@ -99,6 +106,20 @@ PartitionalClustering *create_centrality_clustering(Metric *d,
 }
 
 namespace {
+  void fill_distance_matrix(Metric *d,
+                            std::vector<Floats>& matrix) {
+    IMP_LOG(TERSE, "Extracting distance matrix..." << std::endl);
+    matrix=std::vector<Floats>(d->get_number_of_items(),
+                               Floats(d->get_number_of_items(), 0));
+    for (unsigned int i=0; i< matrix.size(); ++i) {
+      for (unsigned int j=0; j< i; ++j) {
+        matrix[i][j]= d->get_distance(i,j);
+        matrix[j][i]= matrix[i][j];
+      }
+      matrix[i][i]=0;
+    }
+    IMP_LOG(TERSE, "done" << std::endl);
+  }
   double get_min_distance(int cur, const std::vector<Ints> &clusters,
                           const std::vector<Floats>& matrix) {
     double ret=std::numeric_limits<double>::max();
@@ -127,24 +148,55 @@ namespace {
   }
 }
 
+PartitionalClustering *create_connectivity_clustering(Metric *d,
+                                                      double maximum_distance) {
+  IMP::internal::OwnerPointer<Metric> mp(d);
+  IMP_FUNCTION_LOG;
+  std::vector<Floats> matrix;
+  fill_distance_matrix(d, matrix);
+  typedef boost::vector_property_map<unsigned int> Index;
+  typedef Index Parent;
+  typedef boost::disjoint_sets<Index,Parent> UF;
+  Index id;
+  Parent pt;
+  UF uf(id, pt);
+  for (unsigned int i=0; i< matrix.size(); ++i) {
+    uf.make_set(i);
+  }
+  for (unsigned int i=0; i< matrix.size(); ++i) {
+    for (unsigned int j=0; j < i; ++j) {
+      if (matrix[i][j] < maximum_distance) {
+        //std::cout << "Unioning " << i << " and " << ns[j] << std::endl;
+        uf.union_set(static_cast<int>(i), static_cast<int>(j));
+      }
+    }
+  }
+  std::map<int,int> cluster_map;
+  std::vector<Ints> clusters;
+  for (unsigned int i=0; i < matrix.size(); ++i) {
+    int p= uf.find_set(i);
+    if (cluster_map.find(p) == cluster_map.end()) {
+      cluster_map[p]= clusters.size();
+      clusters.push_back(Ints());
+    }
+    int ci= cluster_map.find(p)->second;
+    clusters[ci].push_back(i);
+  }
+  return new internal::TrivialPartitionalClustering(clusters);
+}
+
+
 PartitionalClustering *create_diameter_clustering(Metric *d,
                                                   double maximum_diameter) {
   IMP::internal::OwnerPointer<Metric> mp(d);
   IMP_FUNCTION_LOG;
-  IMP_LOG(TERSE, "Extracting distance matrix..." << std::endl);
-  std::vector<Floats> matrix(d->get_number_of_items(),
-                             Floats(d->get_number_of_items(), 0));
-  Ints unclaimed;
-  for (unsigned int i=0; i< matrix.size(); ++i) {
-    unclaimed.push_back(i);
-    for (unsigned int j=0; j< i; ++j) {
-      matrix[i][j]= d->get_distance(i,j);
-      matrix[j][i]= matrix[i][j];
-    }
-    matrix[i][i]=0;
-  }
-  IMP_LOG(TERSE, "done" << std::endl);
+  std::vector<Floats> matrix;
+  fill_distance_matrix(d, matrix);
   std::vector<Ints> clusters;
+  Ints unclaimed(matrix.size());
+  for (unsigned int i=0; i< matrix.size(); ++i) {
+    unclaimed[i]=i;
+  }
   while (!unclaimed.empty()) {
     clusters.push_back(Ints());
     int cur= get_far(unclaimed, clusters, matrix);
