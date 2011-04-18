@@ -143,6 +143,12 @@ namespace {
 
 TextOutput create_temporary_file(std::string prefix,
                                  std::string suffix) {
+  return TextOutput(create_temporary_file_name(prefix, suffix));
+}
+
+
+std::string create_temporary_file_name(std::string prefix,
+                                       std::string suffix) {
   char *env = getenv("IMP_BUILD_ROOT");
   std::string imp_tmp;
   if (env) {
@@ -164,7 +170,7 @@ TextOutput create_temporary_file(std::string prefix,
   if (GetTempFileName(tpathstr.c_str(), prefix.c_str(), 0, filename)==0) {
      IMP_THROW("Unable to create temp file in " << tpathstr, IOException);
   }
-  return TextOutput(std::string(filename)+suffix);
+  return std::string(filename)+suffix;
 #else
   std::string pathprefix;
   if (imp_tmp.empty()) {
@@ -197,9 +203,13 @@ TextOutput create_temporary_file(std::string prefix,
   std::copy(suffix.begin(), suffix.end(), filename.get()+templ.size());
   filename[templ.size()+ suffix.size()]='\0';
 #endif
-  return TextOutput(filename.get());
+  return std::string(filename.get());
 #endif
 }
+
+
+
+
 
 
 std::string get_relative_path(std::string base,
