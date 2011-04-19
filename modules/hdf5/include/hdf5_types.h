@@ -129,6 +129,7 @@ struct IMPHDF5EXPORT StringTraits {
     return 3;
   }
 };
+
 /** Store the Node for other nodes in the hierarchy. */
 struct IMPHDF5EXPORT NodeIDTraits {
   typedef NodeID Type;
@@ -150,6 +151,16 @@ struct IMPHDF5EXPORT NodeIDTraits {
   static std::string get_name();
   static unsigned int get_index() {
     return 4;
+  }
+};
+
+/** An HDF5 data set. Currently, the type of data stored in the data
+    set must be known implicitly. The path to the HDF5 data
+    set relative to the node containing the data is passed.*/
+struct IMPHDF5EXPORT DataSetTraits: public StringTraits {
+  static std::string get_name();
+  static unsigned int get_index() {
+    return 5;
   }
 };
 /** @} */

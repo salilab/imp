@@ -37,14 +37,14 @@ namespace {
   FloatKey cb= get_or_add_key<FloatTraits>(f, Shape, "rgb color blue",  \
                                            false);                      \
   FloatKey r= get_or_add_key<FloatTraits>(f, Shape, "radius", false);   \
-  StringKey vn= get_or_add_key<StringTraits>(f, Shape, "vertices", false);\
-  StringKey in= get_or_add_key<StringTraits>(f, Shape, "indices", false);
+  DataSetKey vn= get_or_add_key<DataSetTraits>(f, Shape, "vertices", false);\
+  DataSetKey in= get_or_add_key<DataSetTraits>(f, Shape, "indices", false);
 
 #define IMP_HDF5_ACCEPT_GEOMETRY_KEYS                   \
   FloatKey x, FloatKey y, FloatKey z,                   \
                                FloatKey xp, FloatKey yp, FloatKey zp,   \
                                FloatKey cr, FloatKey cg, FloatKey cb,   \
-                               FloatKey r, StringKey vn, StringKey in
+                               FloatKey r, DataSetKey vn, DataSetKey in
 
 #define IMP_HDF5_PASS_GEOMETRY_KEYS                             \
   x,y,z,xp, yp,                                                 \

@@ -175,6 +175,11 @@ std::string StringTraits::get_name() {
 }
 
 
+std::string DataSetTraits::get_name() {
+  return std::string("dataset");
+}
+
+
 
 
 

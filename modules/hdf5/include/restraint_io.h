@@ -14,7 +14,18 @@
 #include <IMP/Restraint.h>
 
 IMPHDF5_BEGIN_NAMESPACE
-
+/** \name Restraint I/O
+    Restraint I/O is quite limited as it is not practical to write enough
+    information to the file to recreate actual IMP::Restraint objects
+    at the moment. Instead, all that is written is the name, the particles
+    used and the score. Restraints that can be decomposed are then
+    decomposed and their the decomposed restraints are written as children.
+    When the decomposition changes from frame to frame (eg restraints on
+    IMP::container::ClosePairContainer containers), the list of particles
+    will be empty for frames where that bit of the decomposed restraint
+    is not found.
+    @{
+*/
 /** Add a restraint to the file.*/
 IMPHDF5EXPORT void write_restraint(Restraint *r,
                                  RootHandle parent);
@@ -45,6 +56,8 @@ IMPHDF5EXPORT double get_restraint_score(NodeHandle f,
                                          FloatKey &fk,
                                          int frame);
 #endif
+
+/** @} */
 IMPHDF5_END_NAMESPACE
 
 #endif /* IMPHDF5_RESTRAINT_IO_H */

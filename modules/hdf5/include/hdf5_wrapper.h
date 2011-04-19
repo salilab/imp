@@ -143,11 +143,13 @@ typedef HDF5DataSet<StringTraits> HDF5StringDataSet;
 typedef HDF5DataSet<IntTraits> HDF5IntDataSet;
 typedef HDF5DataSet<IndexTraits> HDF5IndexDataSet;
 typedef HDF5DataSet<NodeIDTraits> HDF5NodeIDDataSet;
+typedef HDF5DataSet<DataSetTraits> HDF5DataSetDataSet;
 typedef std::vector<HDF5FloatDataSet> HDF5FloatDataSets;
 typedef std::vector<HDF5StringDataSet> HDF5StringDataSets;
 typedef std::vector<HDF5IntDataSet> HDF5IntDataSets;
 typedef std::vector<HDF5IndexDataSet> HDF5IndexDataSets;
 typedef std::vector<HDF5NodeIDDataSet> HDF5NodeIDDataSets;
+typedef std::vector<HDF5DataSetDataSet> HDF5DataSetDataSets;
 
 
 /** Wrap an HDF5 Group. */
@@ -204,6 +206,8 @@ class IMPHDF5EXPORT HDF5Group {
   IMP_HDF5_DATA_SET_METHODS(index, Index);
   IMP_HDF5_DATA_SET_METHODS(float, Float);
   IMP_HDF5_DATA_SET_METHODS(string, String);
+  IMP_HDF5_DATA_SET_METHODS(data_set, DataSet);
+  IMP_HDF5_DATA_SET_METHODS(node_id, NodeID);
   unsigned int get_number_of_children() const;
   std::string get_child_name(unsigned int i) const;
   bool get_has_child(std::string name) const;
