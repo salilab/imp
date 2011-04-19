@@ -36,7 +36,8 @@ def generate_doxygen_header(target, source, env):
             if env['DOXYGENVERSION'] >= (1,6,0):
                 outfile.write("""<link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javaScript" src="search/search.js"></script>""");
-        else:
+        elif l.find('@TOPDIR@pygments.css') == -1:
+            l = l.replace('@TOPDIR@', '')
             outfile.write(l)
 
 # Generate doxygen.conf from doxygen.conf.in
