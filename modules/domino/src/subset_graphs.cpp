@@ -643,6 +643,8 @@ MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
   // create dfv
   // add first node to jt/merge map/merge graph with all particles
   // do dft add nodes and computing graph as we go
+  IMP_INTERNAL_CHECK(get_is_merge_tree(merge_tree, mt_sets[root], true),
+                  "Returned tree is not merge tree");
   return merge_tree;
 }
 
@@ -657,16 +659,19 @@ namespace {
     Subset children;
     int nc=0;
     bool ret=true;
+    bool has_children=false;
     for (std::pair<MTTraits::out_edge_iterator,
            MTTraits::out_edge_iterator> ebe= boost::out_edges(cur, tree);
          ebe.first != ebe.second; ++ebe.first) {
       int target= boost::target(*ebe.first, tree);
+      has_children=true;
       if (target== parent) continue;
       ++nc;
       Subset curs = mt_sets[target];
       children= get_union(children, curs);
       ret= ret&& get_is_merge_tree(tree, mt_sets, verbose, target, cur);
     }
+    if (!has_children) return cur_set.size()>0;
     if (cur_set != children) {
       if (verbose) {
         IMP_WARN("Subsets don't match " << cur_set << " vs " << children);
