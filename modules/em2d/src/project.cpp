@@ -105,7 +105,8 @@ void do_project_particles(const ParticlesTemp &ps,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManagerPtr masks) {
+             MasksManagerPtr masks,
+             bool clear_matrix_before) {
   IMP_LOG(IMP::VERBOSE,"Projecting particles" << std::endl
           );
   if(m2.empty()) {
@@ -125,7 +126,7 @@ void do_project_particles(const ParticlesTemp &ps,
   }
   centroid /= n_particles;
   // clear data before creating a new projection
-  m2.setTo(0.0);
+  if(clear_matrix_before) m2.setTo(0.0);
   // Project
   for (unsigned long i=0; i<n_particles; i++) {
     // Coordinates respect to the centroid

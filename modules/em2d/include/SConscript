@@ -24,6 +24,7 @@ files = [
     "TIFFImageReaderWriter.h",
     "ImageReaderWriter.h",
     "hierarchical_clustering.h",
+    "CollisionCrossSection.h",
       ] + SConscript("internal/SConscript")
 
 # Install the include files:

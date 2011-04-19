@@ -29,6 +29,7 @@ IMP_SWIG_OBJECT(IMP::em2d, ImageReaderWriter, ImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, JPGImageReaderWriter, JPGImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, TIFFImageReaderWriter, TIFFImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, SpiderImageReaderWriter, SpiderImageReaderWriters);
+IMP_SWIG_OBJECT(IMP::em2d, CollisionCrossSection, CollisionCrossSections);
 
 
 
@@ -57,6 +58,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/ProjectionFinder.h"
 %include "IMP/em2d/Em2DRestraint.h"
 %include "IMP/em2d/hierarchical_clustering.h"
+%include "IMP/em2d/CollisionCrossSection.h"
 
 
 namespace IMP {
