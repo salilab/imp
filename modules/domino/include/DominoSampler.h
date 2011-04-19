@@ -25,8 +25,9 @@ class SubsetGraph;
 
 //! Sample best solutions using Domino
 /** Note that if there are many solutions, the ConfigurationSet returned
-    by get_sample() might be huge. The Assignments returned by
-    get_sample_assignments() can be a lot smaller.
+    by get_sample() might be huge (in terms of memory usage) and slow to
+    generate. The Assignments returned by get_sample_assignments() can be
+    a lot smaller and faster.
  */
 class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
 {
