@@ -6,6 +6,7 @@ namespace hdf5 {
 %rename(_IntTraits) IntTraits;
 %rename(_IndexTraits) IndexTraits;
 %rename(_NodeIDTraits) NodeIDTraits;
+%rename(_DataSetTraits) DataSetTraits;
 }
 }
 
@@ -19,6 +20,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, IntKey, IntKey, IntKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, StringKey, StringKey, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, IndexKey, IndexKey, IndexKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, NodeIDKey, NodeIDKey, NodeIDKeys);
+IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, DataSetKey, DataSetKey, DataSetKeys);
 IMP_SWIG_VALUE(IMP::hdf5, HDF5Group, HDF5Groups);
 IMP_SWIG_VALUE_TEMPLATE(IMP::hdf5, HDF5DataSet);
 IMP_SWIG_VALUE_INSTANCE(IMP::hdf5, HDF5FloatDataSet, HDF5FloatDataSet, HDF5FloatDataSets);
@@ -49,3 +51,4 @@ IMP_SWIG_OBJECT(IMP::hdf5, SaveHierarchyConfigurationOptimizerState, SaveHierarc
 %template(StringKey) IMP::hdf5::Key<IMP::hdf5::StringTraits>;
 %template(IndexKey) IMP::hdf5::Key<IMP::hdf5::IndexTraits>;
 %template(NodeIDKey) IMP::hdf5::Key<IMP::hdf5::NodeIDTraits>;
+%template(DataSetKey) IMP::hdf5::Key<IMP::hdf5::DataSetKey>;

@@ -109,6 +109,7 @@ class IMPHDF5EXPORT NodeHandle {
   IMP_HDF5_NODE_KEY_TYPE_METHODS(string, String);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(index, Index);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(node_id, NodeID);
+  IMP_HDF5_NODE_KEY_TYPE_METHODS(data_set, DataSet);
   /** @} */
   void show(std::ostream &out= std::cout) const {
     out << "NodeHandle " << get_type();

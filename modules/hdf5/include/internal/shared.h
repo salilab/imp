@@ -51,6 +51,8 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
     float_data_sets_;
   mutable IMP::internal::Map<std::string, HDF5DataSet<NodeIDTraits> >
     node_id_data_sets_;
+  mutable IMP::internal::Map<std::string, HDF5DataSet<DataSetTraits> >
+    data_set_data_sets_;
 
   template <class Traits>
     HDF5DataSet<Traits>
@@ -93,6 +95,10 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
   HDF5DataSet<NodeIDTraits> get_data_set(NodeIDTraits,
                                         std::string name, int dims) const {
     return generic_get_data_set(node_id_data_sets_, name, dims);
+  }
+  HDF5DataSet<DataSetTraits> get_data_set(DataSetTraits,
+                                          std::string name, int dims) const {
+    return generic_get_data_set(data_set_data_sets_, name, dims);
   }
 
   enum Indexes {TYPE=0, CHILD=1, SIBLING=2, FIRST_KEY=3};

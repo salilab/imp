@@ -67,6 +67,8 @@ typedef Key<IndexTraits> IndexKey;
 IMP_VALUES(IndexKey, IndexKeys);
 typedef Key<NodeIDTraits> NodeIDKey;
 IMP_VALUES(NodeIDKey, NodeIDKeys);
+typedef Key<DataSetTraits> DataSetKey;
+IMP_VALUES(DataSetKey, DataSetKeys);
 
 
 IMPHDF5_END_NAMESPACE
