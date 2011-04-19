@@ -60,6 +60,10 @@ IMPHDF5EXPORT void load_configuration(RootHandle fh,
                                       unsigned int frame);
 /** @} */
 
+
+/** Periodically call the save_configuration() method to save the hierarchy
+    to the given file.
+*/
 class IMPHDF5EXPORT SaveHierarchyConfigurationOptimizerState:
   public OptimizerState {
   atom::Hierarchies hs_;
