@@ -21,7 +21,10 @@ for p in m.get_particles():
 cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(m.get_particles()),
                                      1, 0)
 m.update()
-acp= IMP.container.ListPairContainer(cp.get_particle_pairs())
+if cp.get_number_of_particle_pairs()>0:
+    acp= IMP.container.ListPairContainer(cp.get_particle_pairs())
+else:
+    acp= IMP.container.ListPairContainer(m)
 ps= IMP.core.SoftSpherePairScore(1)
 r= IMP.container.PairsRestraint(ps, acp)
 m.add_restraint(r)
