@@ -156,7 +156,8 @@ s.add_optimizer_state(ostate2)
 # m.set_gather_statistics(True) # Writes a lot of information!
 temperatures=[200,100,60,40,20,5]
 optimization_steps = 200
-for temp in temperatures:
+for T in temperatures:
+    s.set_kt(T)
     s.optimize(optimization_steps)
 atom.write_pdb(prot,"solution.pdb")
 

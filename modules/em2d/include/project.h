@@ -83,6 +83,9 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   \param[in] ps particles to project
   \param[in] R rotation to apply to the particles (respect to the centroid)
   \param[in] translation Translation to apply after rotation
+  \param[in] clear_matrix_before If true the matrix is set to zero before
+             projecting the particles. You want this 99% of the time, as
+             setting to false will add one projection on top of the other
   \note See the function get_projection() for the rest of the parameters
 */
 IMPEMEXPORT void do_project_particles(const ParticlesTemp &ps,
@@ -90,7 +93,8 @@ IMPEMEXPORT void do_project_particles(const ParticlesTemp &ps,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
              double resolution, double pixelsize,
-             MasksManagerPtr masks);
+             MasksManagerPtr masks,
+             bool clear_matrix_before = true);
 
 //! Project the points contained in Vector3Ds to gen vectors in 2D
 /*!

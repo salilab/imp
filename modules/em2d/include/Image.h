@@ -20,6 +20,11 @@
 #include <limits>
 #include <typeinfo>
 
+
+
+
+
+
 IMPEM2D_BEGIN_NAMESPACE
 
 //! 2D Electron Microscopy images in IMP
@@ -94,7 +99,7 @@ public:
   IMP_OBJECT_INLINE(Image, show(out), destroyed_msg());
 
   void destroyed_msg() {
-    IMP_LOG(IMP::TERSE, "Image destroyed " << this->name_ << std::endl);
+    IMP_LOG(TERSE, "Image destroyed " << this->name_ << std::endl);
   }
 
   void set_name(const String &name) {
