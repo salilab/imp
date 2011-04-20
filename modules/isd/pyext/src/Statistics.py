@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 from IMP.isd.Entry import Entry
+import gzip
+import os
 
 class Statistics:
     """Statistics gathering and printing class for ISD gibbs sampling.
@@ -9,25 +11,31 @@ class Statistics:
     - rate: print statistics every so many gibbs sampling steps
     - statfile: suffix of the statistics file
     - append: whether to append to a trajectory or to write multiple files.
-      For the statistics class, a trajectory is just a string, you can stuff
-      whatever you want in it. If append is False, files will be numbered
-      according to the counter of their category.
+              For the statistics class, a trajectory is just a string, you can
+              stuff whatever you want in it. If append is False, files will be
+              numbered according to the counter of their category.
     - num_entries_per_line: number of entries per line in the output. -1 to
-      disable wrapping. 
+                            disable wrapping. 
     - repeat_title: if 0 (default) only print it in the beginning. Else repeat
-      it every 'repeat_title' outputted lines in the statistics file.
+                    it every 'repeat_title' outputted lines in the statistics file.
     - separate_lines: If False the entries are not separated (default). If True,
-      the lines are separated with stars.
+                      the lines are separated with stars.
+    - compress: If set to a positive number of steps, compress trajectories each
+                time so many steps have elapsed, appending the current frame
+                number to the filename. Only works in append mode, and when it
+                is set to a multiple of rate.
+                
     TODO: check if everything was updated nicely
     """
 
     def __init__(self, prefix='r01', rate=1, statfile='_stats.txt', 
             append=True, num_entries_per_line=5, repeat_title=0,
-            separate_lines=False):
+            separate_lines=False,compress=2):
         self.prefix = prefix
         self.rate=rate
         self.statfile=prefix+statfile
         self.append=append
+        self.compress=compress
         #list of the things that will be printed to the stats file, in order.
         self.entries=[]
         #list of coordinate entries
@@ -197,6 +205,14 @@ class Statistics:
             out += '\n'
         return out
 
+    def compress_file(self, fname):
+        gz=gzip.open(fname+'.gz','wb')
+        fl=open(fname,'rb')
+        gz.writelines(fl)
+        gz.close()
+        fl.close()
+        os.system('rm %s' % fname)
+
     def write_stats(self):
         """Writes statistics to the stats file and writes/appends
         trajectories. Only does that if the global step matches 
@@ -227,7 +243,12 @@ class Statistics:
             if self.categories[key][name] is None:
                 raise ValueError, "The trajectory was not passed to the stats class!"
             if self.append:
-                fl=open(self.prefix+'_traj.pdb', 'a')
+                pdbname=self.prefix+'_traj.pdb'
+                if self.compress > 0 and stepno % self.compress == 0:
+                    newname = "%s_traj_%d.pdb" % (self.prefix, stepno)
+                    os.system('mv %s %s' % (pdbname, newname))
+                    self.compress_file(newname)
+                fl=open(pdbname, 'a')
             else:
                 num=self.categories[key]['counter'].get_raw_value()
                 fl=open(self.prefix + ('_%s_%010d.pdb' % (name,num)), 'w')
