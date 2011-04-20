@@ -138,10 +138,22 @@ def create_restraints(m, chain, tbr, TMH):
         hub= IMP.core.HarmonicUpperBound(3.454,1)
         sd=  IMP.core.SphereDistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
-        ir=  IMP.container.PairsRestraint(kc, lpc)
+        ir=  IMP.container.PairsRestraint(kc,lpc)
         m.add_restraint(ir)
-        m.set_maximum_score(ir, .01)
+        m.set_maximum_score(ir,.01)
         return ir
+
+    def add_diameter_restraint(diameter):
+        lrb= IMP.container.ListSingletonContainer(m)
+        for h in TMH:
+            s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
+            rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+            lrb.add_particle(rb)
+        h=IMP.core.HarmonicUpperBound(0,1000)
+        r=IMP.core.DiameterRestraint(h, lrb, diameter)
+        m.add_restraint(r)
+        m.set_maximum_score(r,.01)
+
 
 # assembling all the restraints
     rset=IMP.RestraintSet()
@@ -155,10 +167,11 @@ def create_restraints(m, chain, tbr, TMH):
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
         length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         dr=add_distance_restraint(p0,p1,length,1000)
-        rdr=add_distance_restraint(rb0,rb1,30.0,1000)
-        rset.add_restraint(rdr)
+        #rdr=add_distance_restraint(rb0,rb1,30.0,1000)
+        rset.add_restraint(dr)
     add_packing_restraint()
     add_DOPE()
+    add_diameter_restraint(35.0)
     ir0=add_interacting_restraint(TMH[0],TMH[1])
     ir1=add_interacting_restraint(TMH[5],TMH[6])
     rset.add_restraint(ir0)
@@ -227,6 +240,7 @@ def create_sampler(m, rset, pst):
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
     states= IMP.domino.BranchAndBoundSubsetStatesTable(pst, filters)
+    s.set_use_cross_subset_filtering(True)
     s.set_subset_states_table(states)
     s.set_subset_filter_tables(filters)
     return s
