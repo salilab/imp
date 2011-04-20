@@ -179,37 +179,43 @@ def create_restraints(m, chain, tbr, TMH):
     return rset
 
 # creating the discrete states for domino
-def  create_discrete_states(m,chain,TMH):
+def create_discrete_states(m,chain,TMH):
+     # sampling parameters
+# bin size
+    Dtilt=math.radians(30)
+    Dswing=math.radians(30)
+    Drot=math.radians(30)
+    Dx=0.5
+# nbin
+    itilt=int(math.radians(60)/Dtilt)
+    iswing=int(math.radians(360)/Dswing)
+    irot=int(math.radians(360)/Drot)
+    ix=int(35.0/Dx)
+    iz=int(5.0/Dx)
 #   store initial rotation to have the right topology
     rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
-    trs0=[]; trs1=[]; trs2=[]; trs3=[]; trs4=[]; trs5=[]; trs6=[]
-    for i in range(0,4):
-        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), i*math.pi/2)
-        for t in range(0,2):
-            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), t*math.pi/6)
+    trs0=[]; trs1=[]; trs2=[]; trs3=[];
+    for i in range(irot):
+        rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), float(i)*Drot)
+        for t in range(itilt+1):
+            tilt=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), float(t)*Dtilt)
             rot1=IMP.algebra.compose(tilt,rotz)
-            for s in range(0,4):
+            for s in range(iswing):
                 if ( t == 0 ) and ( s != 0 ) : break
-                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), s*math.pi/2)
+                swing=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), float(s)*Dswing)
                 rot2=IMP.algebra.compose(swing,rot1)
-                trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(0,0,0))))
-                for dx in range(0,40,1):
-                    if ( dx >= 7 ):
-                        trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                    IMP.algebra.Vector3D(dx,0,0))))
-                    for dz in range(0,1):
-                        for dy in range(0,40,1):
+                for dz in range(-iz,iz+1):
+                    trs0.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
+                                            IMP.algebra.Vector3D(0,0,float(dz)*Dx))))
+                    for dx in range(-ix,ix+1):
+                        if ( float(dx)*Dx >= 6.0 ):
+                            trs1.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
+                                        IMP.algebra.Vector3D(float(dx)*Dx,0,float(dz)*Dx))))
+                        for dy in range(-ix,ix+1):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                                        IMP.algebra.Vector3D(float(dx)*Dx,float(dy)*Dx,float(dz)*Dx))))
                             trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs4.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs5.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
-                            trs6.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(dx,dy,dz))))
+                                        IMP.algebra.Vector3D(float(dx)*Dx,float(dy)*Dx,float(dz)*Dx))))
 
     pst= IMP.domino.ParticleStatesTable()
     pstate=[]
@@ -217,9 +223,6 @@ def  create_discrete_states(m,chain,TMH):
     pstate.append(IMP.domino.RigidBodyStates(trs1))
     pstate.append(IMP.domino.RigidBodyStates(trs2))
     pstate.append(IMP.domino.RigidBodyStates(trs3))
-    pstate.append(IMP.domino.RigidBodyStates(trs4))
-    pstate.append(IMP.domino.RigidBodyStates(trs5))
-    pstate.append(IMP.domino.RigidBodyStates(trs6))
     for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
