@@ -194,8 +194,10 @@ Notes on how to work around various platform issues can be found at
 
 \subsection mac Getting prerequisites on a Mac
 
-Mac users must first install the
-\external{developer.apple.com/technologies/xcode.html,Apple Developer tools}
+Mac users must first install Xcode (previously known as Developer Tools)
+which is not installed by default with OS X, but is available on the OS X
+DVD. Newer versions of Xcode
+\external{developer.apple.com/technologies/xcode.html,are also available}
 from the App Store (the cost is $5).
 
 Then mac users should use one of the available collections of Unix tools,
