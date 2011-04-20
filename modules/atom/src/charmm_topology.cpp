@@ -400,7 +400,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
                                                            res1, res2, res)));
   }
 
-  // Add impropers
+  // Add internal coordinates
   for (unsigned int i = 0; i < get_number_of_internal_coordinates(); ++i) {
     CHARMMInternalCoordinate ic = get_internal_coordinate(i);
     CHARMMResidueTopology *res =
