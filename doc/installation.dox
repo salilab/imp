@@ -200,7 +200,7 @@ DVD. Newer versions of Xcode
 \external{developer.apple.com/technologies/xcode.html,are also available}
 from the App Store (the cost is $5).
 
-Then mac users should use one of the available collections of Unix tools,
+Then Mac users should use one of the available collections of Unix tools,
 either \external{www.macports.org/, MacPorts} (recommended) or
 \external{www.finkproject.org/, Fink}. If you use MacPorts, you must
 add \c /opt/local/bin to your path (either by modifying your shell's
