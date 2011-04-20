@@ -370,6 +370,9 @@ class CHARMMResidueTopology;
 class IMPATOMEXPORT CHARMMPatch : public CHARMMResidueTopologyBase {
   std::vector<std::string> deleted_atoms_;
 public:
+  //! Construct a new, empty patch residue.
+  /** To get an existing patch, use CHARMMParameters::get_patch() instead.
+   */
   CHARMMPatch(std::string type) : CHARMMResidueTopologyBase(type) {
     set_name(std::string("CHARMM patching residue ") + type);
   }
