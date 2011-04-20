@@ -123,7 +123,7 @@ def create_restraints(m, chain, tbr, TMH):
         dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
         f=IMP.membrane.SameHelixPairFilter()
         dpc.add_pair_filter(f)
-        dps=IMP.atom.DopePairScore(15.0, IMP.atom.get_data_path("dope_new.lib"))
+        dps=IMP.atom.DopePairScore(15.0)#, IMP.atom.get_data_path("dope_new.lib"))
         dope=IMP.container.PairsRestraint(dps, dpc)
         m.add_restraint(dope)
         m.set_maximum_score(dope, .01)
@@ -172,8 +172,8 @@ def create_restraints(m, chain, tbr, TMH):
     add_packing_restraint()
     add_DOPE()
     add_diameter_restraint(35.0)
-    ir0=add_interacting_restraint(TMH[0],TMH[1])
-    ir1=add_interacting_restraint(TMH[5],TMH[6])
+    ir0=add_interacting_restraint(TMH[1],TMH[2])
+    ir1=add_interacting_restraint(TMH[0],TMH[3])
     rset.add_restraint(ir0)
     rset.add_restraint(ir1)
     return rset
@@ -183,18 +183,18 @@ def create_discrete_states(m,chain,TMH):
      # sampling parameters
 # bin size
     Dtilt=math.radians(30)
-    Dswing=math.radians(30)
-    Drot=math.radians(30)
-    Dx=0.5
+    Dswing=math.radians(90)
+    Drot=math.radians(90)
+    Dx=5.0
 # nbin
-    itilt=int(math.radians(60)/Dtilt)
+    itilt=int(math.radians(30)/Dtilt)
     iswing=int(math.radians(360)/Dswing)
     irot=int(math.radians(360)/Drot)
-    ix=int(35.0/Dx)
+    ix=int(15.0/Dx)
     iz=int(5.0/Dx)
 #   store initial rotation to have the right topology
     rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
-    trs0=[]; trs1=[]; trs2=[]; trs3=[];
+    trs0=[]; trs1=[]; trs2=[];
     for i in range(irot):
         rotz=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1), float(i)*Drot)
         for t in range(itilt+1):
@@ -214,15 +214,14 @@ def create_discrete_states(m,chain,TMH):
                         for dy in range(-ix,ix+1):
                             trs2.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
                                         IMP.algebra.Vector3D(float(dx)*Dx,float(dy)*Dx,float(dz)*Dx))))
-                            trs3.append(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D(IMP.algebra.compose(rot2,rot0),
-                                        IMP.algebra.Vector3D(float(dx)*Dx,float(dy)*Dx,float(dz)*Dx))))
+                            #print i, t, s, dx, dy, dz
 
     pst= IMP.domino.ParticleStatesTable()
     pstate=[]
     pstate.append(IMP.domino.RigidBodyStates(trs0))
     pstate.append(IMP.domino.RigidBodyStates(trs1))
     pstate.append(IMP.domino.RigidBodyStates(trs2))
-    pstate.append(IMP.domino.RigidBodyStates(trs3))
+    pstate.append(IMP.domino.RigidBodyStates(trs2))
     for i,h in enumerate(TMH):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -268,10 +267,10 @@ def display(m,chain,TMH,name):
 #IMP.set_log_level(IMP.VERBOSE)
 
 # TM regions
-TMH= [[3, 26], [33, 56], [70, 92], [94, 118], [122, 150], [153, 181], [189, 219]]
+TMH= [[24,48], [75,94], [220,238], [254,276]]
 
 # define TMH sequences
-seq0=("M","V","G","L","T","T","L","F","W","L","G","A","I","G","M","L","V","G","T","L","A","F","A","W","A","G","R","D","A","G","S","G","E","R","R","Y","Y","V","T","L","V","G","I","S","G","I","A","A","V","A","Y","V","V","M","A","L","G","V","G","W","V","P","V","A","E","R","T","V","F","A","P","R","Y","I","D","W","I","L","T","T","P","L","I","V","Y","F","L","G","L","L","A","G","L","D","S","R","E","F","G","I","V","I","T","L","N","T","V","V","M","L","A","G","F","A","G","A","M","V","P","G","I","E","R","Y","A","L","F","G","M","G","A","V","A","F","L","G","L","V","Y","Y","L","V","G","P","M","T","E","S","A","S","Q","R","S","S","G","I","K","S","L","Y","V","R","L","R","N","L","T","V","I","L","W","A","I","Y","P","F","I","W","L","L","G","P","P","G","V","A","L","L","T","P","T","V","D","V","A","L","I","V","Y","L","D","L","V","T","K","V","G","F","G","F","I","A","L","D","A","A","A","T","L")
+seq0=("M","L","I","H","N","W","I","L","T","F","S","I","F","R","E","H","P","S","T","V","F","Q","I","F","T","K","C","I","L","V","S","S","S","F","L","L","F","Y","T","L","L","P","H","G","L","L","E","D","L","M","R","R","V","G","D","S","L","V","D","L","I","V","I","C","E","D","S","Q","G","Q","H","L","S","S","F","C","L","F","V","A","T","L","Q","S","P","F","S","A","G","V","S","G","L","C","K","A","I","L","L","P","S","K","Q","I","H","V","M","I","Q","S","V","D","L","S","I","G","I","T","N","S","L","T","N","E","Q","L","C","G","F","G","F","F","L","N","V","K","T","N","L","H","C","S","R","I","P","L","I","T","N","L","F","L","S","A","R","H","M","S","L","D","L","E","N","S","V","G","S","Y","H","P","R","M","I","W","S","V","T","W","Q","W","S","N","Q","V","P","A","F","G","E","T","S","L","G","F","G","M","F","Q","E","K","G","Q","R","H","Q","N","Y","E","F","P","C","R","C","I","G","T","C","G","R","G","S","V","Q","C","A","G","L","I","S","L","P","I","A","I","E","F","T","Y","Q","L","T","S","S","P","T","C","I","V","R","P","W","R","F","P","N","I","F","P","L","I","A","C","I","L","L","L","S","M","N","S","T","L","S","L","F","S","F","S","G","G","R","S","G","Y","V","L","M","L","S","S","K","Y","Q","D","S","F","T","S","K","T","R","N","K","R","E","N","S","I","F","F","L","G","L","N","T","F","T","D","F","R","H","T","I","N","G","P","I","S","P","L","M","R","S","L","T","R","S","T","V","E")
 
 # storing sequences of TMH
 seq=[]
@@ -282,7 +281,7 @@ for h in TMH:
     seq.append(tmp)
 
 # define the topology
-topo=[-1.0,1.0,-1.0,1.0,-1.0,1.0,-1.0]
+topo=[1.0,-1.0,1.0,-1.0]
 
 print "creating representation"
 (m,chain,tbr)=create_representation(seq,TMH,topo)
@@ -296,6 +295,8 @@ pst=create_discrete_states(m,chain,TMH)
 print "creating sampler"
 s=create_sampler(m, rset, pst)
 
+
+exit()
 print "sampling"
 ass=IMP.domino.Subset(pst.get_particles())
 cs=s.get_sample_states(ass)
