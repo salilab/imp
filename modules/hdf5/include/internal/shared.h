@@ -211,6 +211,8 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
     if (association_.size() <= static_cast<unsigned int>(id)) {
       association_.resize(id+1, NULL);
     }
+    IMP_USAGE_CHECK(!association_[id],
+                    "Associations can only be set once");
     association_[id]=d;
     back_association_[d]=id;
   }
