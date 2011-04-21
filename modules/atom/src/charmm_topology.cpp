@@ -292,11 +292,27 @@ void CHARMMIdealResidueTopology::remove_atom(std::string name)
                                   bond_has_atom<4>(name)), impropers_.end());
 }
 
+namespace {
+  void check_empty_patch(const CHARMMPatch *patch) {
+    if (patch->get_number_of_atoms() == 0
+        && patch->get_number_of_removed_atoms() == 0
+        && patch->get_number_of_bonds() == 0
+        && patch->get_number_of_angles() == 0
+        && patch->get_number_of_dihedrals() == 0
+        && patch->get_number_of_impropers() == 0
+        && patch->get_number_of_internal_coordinates() == 0) {
+      IMP_WARN(*patch << " appears to be empty - nothing done"
+               << std::endl);
+    }
+  }
+}
+
 void CHARMMPatch::apply(CHARMMResidueTopology *res) const
 {
   if (res->get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
   }
+  check_empty_patch(this);
 
   // Copy or update atoms
   for (std::vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
@@ -349,6 +365,7 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   if (res2->get_patched()) {
     IMP_THROW("Cannot patch an already-patched residue", ValueException);
   }
+  check_empty_patch(this);
 
   // Copy or update atoms
   for (std::vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
