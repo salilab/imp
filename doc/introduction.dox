@@ -517,7 +517,7 @@ generate the connection between the two languages. Key differences are
 \section graphs 8. Graphs
 
 Graphs in \imp are represented using the \external{www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
-are either \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, and are BidirectionalGraphs}.
+are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
 The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper which looks as follows
 \code
