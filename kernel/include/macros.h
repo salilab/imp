@@ -1235,26 +1235,27 @@ protected:                                      \
     is the number of the optimization step, and call_number is the number
     of the call to do_update.
     It also defines
-    - void set_skip_steps(unsigned int)
+    - void set_periodicity(unsigned int)
 
     If you use this macro, you should also include IMP/internal/utility.h.
 */
 #define IMP_PERIODIC_OPTIMIZER_STATE(Name)                              \
   virtual void update() {                                               \
-    if (call_number_%(skip_steps_+1) ==0) {                             \
+    ++call_number_;                                                     \
+    if (call_number_%(skip_+1) ==0) {                                   \
       do_update(update_number_);                                        \
       ++update_number_;                                                 \
     }                                                                   \
-    ++call_number_;                                                     \
   }                                                                     \
   void do_update(unsigned int call_number);                             \
-  void set_skip_steps(unsigned int k) {                                 \
-    skip_steps_=k;                                                      \
-    call_number_=0;                                                     \
+  IMP_NO_DOXYGEN(void set_skip_steps(unsigned int k) {set_period(k+1);}); \
+  void set_period(unsigned int p) {                                     \
+    IMP_USAGE_CHECK(p>0, "Period must be positive.");                   \
+    skip_=p-1; call_number_=0;                                          \
   }                                                                     \
   IMP_OBJECT(Name);                                                     \
   private:                                                              \
-  ::IMP::internal::Counter skip_steps_, call_number_, update_number_    \
+  ::IMP::internal::Counter skip_, call_number_, update_number_          \
 
 //! Define the basics needed for a ScoreState
 /** In addition to the methods done by IMP_OBJECT, it declares
