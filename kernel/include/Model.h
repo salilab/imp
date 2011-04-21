@@ -29,6 +29,33 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 
+/** A structure used for returning restraint statistics from the model.*/
+class RestraintStatistics {
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+public:
+#endif
+  double minimum_score;
+  double maximum_score;
+  double average_score;
+  double last_score;
+  double average_time;
+public:
+  RestraintStatistics(){};
+  double get_minimum_score() const {return minimum_score;}
+  double get_maximum_score() const {return maximum_score;}
+  double get_average_score() const {return average_score;}
+  double get_last_score() const {return last_score;}
+  double get_average_time() const {return average_time;}
+  IMP_SHOWABLE_INLINE(RestraintStatistics, {
+      out << "minimum score= " << minimum_score << "\n";
+      out << "maximum score= " << maximum_score << "\n";
+      out << "average score= " << average_score << "\n";
+      out << "last score= " << last_score << "\n";
+      out << "average time= " << average_time << "\n";
+    });
+};
+
+IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 
 //! Class for storing model, its restraints, constraints, and particles.
 /** The Model maintains a standard \imp container for each of Particle,
@@ -432,6 +459,7 @@ public:
   void show_all_statistics(std::ostream &out=std::cout) const;
   void show_restraint_time_statistics(std::ostream &out=std::cout) const;
   void show_restraint_score_statistics(std::ostream &out=std::cout) const;
+  RestraintStatistics get_restraint_statistics(Restraint *r) const;
   void show_score_state_time_statistics(std::ostream &out=std::cout) const;
   /** @} */
 };
