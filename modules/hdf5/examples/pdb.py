@@ -17,6 +17,12 @@ IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 # add the new configuration to the file
 IMP.hdf5.save_configuration(h, rh, 1)
 
+# close the file
+del rh
+
+# reopen it
+rh= IMP.hdf5.RootHandle(tfn, False)
+
 # hps is a list with one element which is a copy of h
 hps= IMP.hdf5.read_all_hierarchies(rh, m)
 
