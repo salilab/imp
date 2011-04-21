@@ -12,6 +12,8 @@ class GenericTest(IMP.test.TestCase):
     def _test_round_trip(self, h0, name):
         f= IMP.hdf5.RootHandle(name, True)
         IMP.hdf5.write_hierarchy(h0, f)
+        del f
+        f= IMP.hdf5.RootHandle(name, False)
         h1= IMP.hdf5.read_all_hierarchies(f, h0.get_model())
         self._assert_same(h0, h1[0])
     def _show(self, g):
