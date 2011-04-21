@@ -367,6 +367,14 @@ void CHARMMPatch::apply(CHARMMResidueTopology *res1,
   }
   check_empty_patch(this);
 
+  // Extra checks for the commonly-used CHARMM DISU patch
+  if (get_type() == "DISU"
+      && (res1->get_type() != "CYS" || res2->get_type() != "CYS")) {
+    IMP_WARN("Applying a DISU patch to two residues that are not both 'CYS' "
+             "(they are " << *res1 << " and " << *res2 << "). This is "
+             "probably not what was intended." << std::endl);
+  }
+
   // Copy or update atoms
   for (std::vector<CHARMMAtomTopology>::const_iterator it = atoms_.begin();
        it != atoms_.end(); ++it) {
