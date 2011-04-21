@@ -159,6 +159,7 @@ IMP_SWIG_RAII(IMP, SaveOptimizeds);
 IMP_SWIG_RAII(IMP, CreateLogContext)
 IMP_SWIG_RAII(IMP, WarningContext)
 
+IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 
 
 

@@ -79,6 +79,20 @@ void Model::show_restraint_score_statistics(std::ostream &out) const {
   }
 }
 
+RestraintStatistics Model::get_restraint_statistics(Restraint *r) const {
+  if (stats_data_.find(r) == stats_data_.end()) {
+    IMP_THROW("Invalid restraint", ValueException);
+  }
+  RestraintStatistics ret;
+  internal::Map<Object*, Statistics>::const_iterator it= stats_data_.find(r);
+  ret.minimum_score=it->second.min_value_;
+  ret.maximum_score=it->second.max_value_;
+  ret.average_score=it->second.total_value_/ it->second.calls_;
+  ret.last_score=it->second.last_value_;
+  ret.average_time=it->second.total_time_/ it->second.calls_;
+  return ret;
+}
+
 
 void Model::clear_all_statistics() {
   for (ScoreStateConstIterator it= score_states_begin();
