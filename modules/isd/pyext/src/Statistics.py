@@ -30,7 +30,7 @@ class Statistics:
 
     def __init__(self, prefix='r01', rate=1, statfile='_stats.txt', 
             append=True, num_entries_per_line=5, repeat_title=0,
-            separate_lines=False,compress=2):
+            separate_lines=False,compress=10000):
         self.prefix = prefix
         self.rate=rate
         self.statfile=prefix+statfile
@@ -61,6 +61,7 @@ class Statistics:
         self.separator=' '
         self.repeat_title = repeat_title
         self.separate_lines = separate_lines
+        self.comment_marker='#'
 
     def _get_unique_category_name(self, name):
         if name:
@@ -213,6 +214,12 @@ class Statistics:
         fl.close()
         os.system('rm %s' % fname)
 
+    def new_stage(self, name):
+        fl=open(self.statfile,'a')
+        fl.write("### STAGE %s\n" % name)
+        fl.close()
+
+
     def write_stats(self):
         """Writes statistics to the stats file and writes/appends
         trajectories. Only does that if the global step matches 
@@ -228,7 +235,7 @@ class Statistics:
         if self.write_title:
             self.write_title = False
             titles = self.format_titles()
-            fl.write(self.prepare_line(titles, marker='#'))
+            fl.write(self.prepare_line(titles, marker=self.comment_marker))
         elif self.repeat_title > 0:
             if (stepno/self.rate) % self.repeat_title == 0:
                 self.write_title = True
