@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Spring 2011
+- One can now access the model restraint evaluation statistics programmatically using IMP::Model::get_restaint_statistics(). Restraint statistics can be logged to a file during optimization using IMP::core::WriteRestraintScoreStatisticsOptimizerState.
 - IMP::domino::DominoSampler now allows you to specify the tree on which merges occur directly. Also, you now need to specify the merge tree rather than the JunctionTree if you want to do non-loopy inference and specify something about how it is done. Sorry, it makes the code a lot easier.
 - Preliminary symmetry support has been added via the IMP::core::TransformationSymmetry and IMP::core::TransformationAndReflectionSymmetry classes.
 
