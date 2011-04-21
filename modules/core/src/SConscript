@@ -62,6 +62,7 @@ files = [
          'VolumeRestraint.cpp',
          'XYZ.cpp',
          'XYZR.cpp',
+         'model_statistics.cpp',
          'rigid_bodies.cpp',
          'symmetry.cpp',
          'utility.cpp',
