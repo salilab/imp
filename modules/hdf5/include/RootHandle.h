@@ -26,6 +26,10 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
   friend class NodeHandle;
   RootHandle(internal::SharedData *shared_);
  public:
+  /** \param[in] name The name of the file to open.
+      \param[in] clear If clear is true and the file exists, the current
+      contents are cleared before the file is opened.
+  */
   RootHandle(std::string name, bool clear);
   /** Get an existing key that has the given name of the
       given type.
@@ -126,7 +130,7 @@ class IMPHDF5EXPORT RootHandle: public NodeHandle {
     return shared_->get_group();
   }
   void set_number_of_frames_hint(unsigned int i) {
-    shared_->set_frames_hint(i);
+    shared_->save_frames_hint(i);
   }
 };
 IMP_VALUES(RootHandle, RootHandles);

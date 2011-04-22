@@ -39,9 +39,9 @@ int main(int argc, char **argv) {
   }
   IMP::hdf5::RootHandle rh(input, false);
   IMP_NEW(IMP::Model, m, ());
-  IMP::atom::Hierarchies hs=IMP::hdf5::read_all_hierarchies(rh, m);
+  IMP::atom::Hierarchies hs=IMP::hdf5::create_hierarchies(rh, m);
   for (unsigned int i=0; i< hs.size(); ++i) {
-    IMP::hdf5::load_configuration(rh, hs[i], frame);
+    IMP::hdf5::load_frame(rh, frame, hs[i]);
   }
   IMP::TextOutput to(output);
   IMP::atom::write_pdb(hs, to);

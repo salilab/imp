@@ -202,8 +202,7 @@ namespace {
 //IMP_REGISTER_WRITER(HDF5Writer, ".pym")
 
 
-void write_geometry(display::Geometry *g,
-                    RootHandle parent) {
+void add_geometry(RootHandle parent, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   add_internal(parent, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -225,8 +224,7 @@ namespace {
   }
 }
 
-void save_conformation(display::Geometry *g,
-                   RootHandle parent, int frame) {
+void save_frame(RootHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   save_internal(parent, frame, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
@@ -389,7 +387,7 @@ namespace {
   }
 }
 
-display::Geometries read_all_geometries(RootHandle parent,
+display::Geometries create_geometries(RootHandle parent,
                                         int frame) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
   display::Geometries ret=

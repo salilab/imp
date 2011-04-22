@@ -14,7 +14,7 @@
 IMPHDF5_BEGIN_NAMESPACE
 
 
-void write_particle(Particle* ps, RootHandle fh) {
+void add_particle(RootHandle fh, Particle* ps) {
   NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
   n.set_association(ps);
   for (Particle::FloatKeyIterator it= ps->float_keys_begin();
@@ -54,7 +54,7 @@ void write_particle(Particle* ps, RootHandle fh) {
   }
 }
 
-ParticlesTemp read_all_particles(RootHandle fh, Model *m) {
+ParticlesTemp create_particles(RootHandle fh, Model *m) {
   std::vector<NodeHandle> ch= fh.get_children();
   ParticlesTemp ret;
   for (unsigned int i=0; i< ch.size(); ++i) {

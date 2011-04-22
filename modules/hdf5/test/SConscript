@@ -5,6 +5,6 @@ Import('env')
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
                   value_object_exceptions=[],
-                  function_name_exceptions=['associate_all_hierarchies'],
+                  function_name_exceptions=[],
                   show_exceptions=[],
                   spelling_exceptions=[])
