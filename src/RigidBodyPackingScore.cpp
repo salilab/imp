@@ -29,7 +29,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
 {
   // turn on logging for this method
-  IMP_OBJECT_LOG;
+  // IMP_OBJECT_LOG;
   // assume they have an helix decorator
   membrane::HelixDecorator d0(p[0]);
   membrane::HelixDecorator d1(p[1]);

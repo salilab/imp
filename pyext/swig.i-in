@@ -11,6 +11,7 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyPackingScore, RigidBodyPackingScores);
 IMP_SWIG_OBJECT(IMP::membrane, AttributeDistancePairScore, AttributeDistancePairScores);
 IMP_SWIG_OBJECT(IMP::membrane, SameHelixPairFilter, SameHelixPairFilters); 
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
+IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -18,4 +19,5 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 %include "IMP/membrane/RigidBodyPackingScore.h"
 %include "IMP/membrane/AttributeDistancePairScore.h"
 %include "IMP/membrane/SameHelixPairFilter.h"
+%include "IMP/membrane/TiltSingletonScore.h"
 %include "IMP/membrane/RigidBodyNewMover.h"
