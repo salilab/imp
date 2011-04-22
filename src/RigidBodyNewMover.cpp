@@ -43,17 +43,23 @@ void RigidBodyNewMover::propose_move(Float f) {
   algebra::VectorD<3> translation
     = algebra::VectorD<3>(tr_x[0],tr_y[1],tr_z[2]);
 
-  algebra::VectorD<3> axis =
-    algebra::get_random_vector_on(algebra::Sphere3D(algebra::VectorD<3>(0.0,
-                                                                        0.0,
-                                                                        0.0),
-                                                    1.));
+
   ::boost::uniform_real<> rand(-max_angle_,max_angle_);
   Float angle =rand(random_number_generator);
-  algebra::Rotation3D r
-    = algebra::get_rotation_about_axis(axis, angle);
+
+  algebra::Rotation3D rotz
+    = algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),  angle);
+
+  algebra::Rotation3D tilt
+    = algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),  angle);
+
+  algebra::Rotation3D swing
+    = algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1), angle);
+
   algebra::Rotation3D rc
-    = r*d_.get_reference_frame().get_transformation_to().get_rotation();
+    = d_.get_reference_frame().get_transformation_to().get_rotation()
+      *(swing*(tilt*rotz));
+
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"RigidBodyNewMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
