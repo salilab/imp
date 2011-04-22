@@ -141,7 +141,7 @@ namespace {
       .add_child_data_set<IndexTraits>(inm, 1);
     HDF5DataSet<IndexTraits> vd
       = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<IndexTraits>(vnm, 1);
+      .add_child_data_set<IndexTraits>(vnm, 2);
     Ints isz(1, sg->get_faces().size());
     id.set_size(isz);
     for (unsigned int i=0; i< sg->get_faces().size(); ++i) {
@@ -347,7 +347,7 @@ namespace {
       Ints is(id.get_size()[0]);
       Ints ids(1);
       for (ids[0]=0; ids[0]< static_cast<int>(is.size()); ++ids[0]) {
-        is[ids[0]]=vd.get_value(ids);
+        is[ids[0]]=id.get_value(ids);
       }
       Pointer<display::Geometry> ret=new display::SurfaceMeshGeometry(vs, is);
       return ret.release();
