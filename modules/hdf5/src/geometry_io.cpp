@@ -128,19 +128,20 @@ namespace {
         ins << " " << offset;
       }
       if (!cur.get_root_handle().get_hdf5_group().get_has_child(vns.str())
-          && !!cur.get_root_handle().get_hdf5_group()
+          && !cur.get_root_handle().get_hdf5_group()
           .get_has_child(ins.str())) {
         vnm= vns.str();
         inm= ins.str();
         break;
       }
+      ++offset;
     } while (true);
     HDF5DataSet<IndexTraits> id
       = cur.get_root_handle().get_hdf5_group()
-      .get_child_data_set<IndexTraits>(inm);
+      .add_child_data_set<IndexTraits>(inm, 1);
     HDF5DataSet<IndexTraits> vd
       = cur.get_root_handle().get_hdf5_group()
-      .get_child_data_set<IndexTraits>(vnm);
+      .add_child_data_set<IndexTraits>(vnm, 1);
     Ints isz(1, sg->get_faces().size());
     id.set_size(isz);
     for (unsigned int i=0; i< sg->get_faces().size(); ++i) {
@@ -178,6 +179,7 @@ namespace {
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry)
     else IMP_TRY(display::SegmentGeometry)
+    else IMP_TRY(display::SurfaceMeshGeometry)
     else {
       display::Geometries gt= g->get_components();
       if (gt.size()==1 && gt[0]== g) {
