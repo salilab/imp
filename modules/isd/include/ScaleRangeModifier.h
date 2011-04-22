@@ -6,8 +6,8 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  */
 
-#ifndef IMPISD_ISD_SINGLETON_MODIFIER_H
-#define IMPISD_ISD_SINGLETON_MODIFIER_H
+#ifndef IMPISD_SINGLETON_MODIFIER_H
+#define IMPISD_SINGLETON_MODIFIER_H
 
 #include "isd_config.h"
 #include <IMP/SingletonModifier.h>
@@ -38,4 +38,4 @@ public:
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_ISD_SCALE_RANGE_MODIFIER_H */
+#endif  /* IMPISD_SCALE_RANGE_MODIFIER_H */
