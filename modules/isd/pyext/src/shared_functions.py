@@ -21,10 +21,9 @@ from random import random
 kB= (1.381 * 6.02214) / 4184.0
 
 class PyMDMover():
-    def __init__(self, cont, md, temperature, n_md_steps):
+    def __init__(self, cont, md, n_md_steps):
         self.cont = cont
         self.md = md
-        self.temperature = temperature
         self.n_md_steps = n_md_steps
         self.velkeys=[IMP.FloatKey("vx"), 
                     IMP.FloatKey("vy"), IMP.FloatKey("vz")]
@@ -56,6 +55,7 @@ class PyMDMover():
         self.n_md_steps = nsteps
 
 class PyMC():
+    debug =True
     
     def __init__(self,model):
         self.m=model
@@ -78,7 +78,8 @@ class PyMC():
 
     def metropolis(self, old, new):
         deltaE=new-old
-        print ": old %f new %f deltaE %f new_epot: %f" % (old,new,deltaE,
+        if self.debug:
+            print ": old %f new %f deltaE %f new_epot: %f" % (old,new,deltaE,
                 self.m.evaluate(False)),
         kT=self.kT
         if deltaE < 0:
@@ -94,7 +95,7 @@ class PyMC():
         for i in xrange(nsteps):
             print "MC step %d " % i,
             #draw new velocities
-            self.mv.md.assign_velocities(self.mv.temperature)
+            self.mv.md.assign_velocities(self.kT / kB)
             #get total energy
             old=self.get_energy()
             #make a MD move
@@ -256,7 +257,7 @@ class sfo_common():
         #constrain it also for the optimizers
         if lower != -1 or upper != -1:
             m.add_score_state(IMP.core.SingletonConstraint(
-                            IMP.isd.ScaleRangeModifier(),None,scale))
+                            IMP.isd.ScaleRangeModifier(),IMP.isd.ScaleRangeModifier(),scale))
         return scale
 
     def init_model_jeffreys_kappa(self, scales, prior_rs=None):
@@ -690,7 +691,7 @@ class sfo_common():
         particles=IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         cont=IMP.container.ListSingletonContainer(self._m)
         cont.add_particles(particles)
-        mdmover = PyMDMover(cont, md, temperature, n_md_steps)
+        mdmover = PyMDMover(cont, md, n_md_steps)
         mdmover.m=self._m
         #mdmover = IMP.atom.MDMover(cont, md, temperature, n_md_steps)
         mc = PyMC(self._m)
