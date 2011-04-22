@@ -11,7 +11,6 @@ IMPCORE_BEGIN_NAMESPACE
 WriteRestraintScoresOptimizerState
 ::WriteRestraintScoresOptimizerState(const Restraints &rs,
                                      TextOutput out): rs_(rs), out_(out){
-  out_.get_stream() << "# ";
   for (unsigned int i=0; i< rs_.size(); ++i) {
     if (i!= 0) out_.get_stream() << ", ";
     out_.get_stream() << rs_[i]->get_name();
