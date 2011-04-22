@@ -82,7 +82,16 @@ class IMPHDF5EXPORT HDF5DataSet {
     HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
     dim_=H5Sget_simple_extent_ndims(s);
   }
-
+  void check_index(const Ints &ijk) const {
+    Ints sz= get_size();
+    IMP_USAGE_CHECK(ijk.size()==sz.size(), "Index dimensions don't match: "
+                    << sz.size() << " != " << ijk.size());
+    for (unsigned int i=0; i< sz.size(); ++i) {
+      IMP_USAGE_CHECK(ijk[i] >=0, "Index is negative: " << ijk[i]);
+      IMP_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
+                      << ijk[i] << " >= " << sz[i]);
+    }
+  }
  public:
   void show(std::ostream &out) const {
     out << "HDF5DataSet";
@@ -100,6 +109,9 @@ class IMPHDF5EXPORT HDF5DataSet {
 
   void set_value(const Ints &ijk,
                  typename TypeTraits::Type value) {
+    IMP_IF_CHECK(USAGE) {
+      check_index(ijk);
+    }
     HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
     hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
     hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
@@ -121,6 +133,9 @@ class IMPHDF5EXPORT HDF5DataSet {
                                               s);
                                               }*/
   typename TypeTraits::Type get_value(const Ints &ijk) const {
+    IMP_IF_CHECK(USAGE) {
+      check_index(ijk);
+    }
     HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
     hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
     hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
