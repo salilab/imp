@@ -394,7 +394,7 @@ class IMPHDF5EXPORT SharedData: public RefCounted {
 
   int add_child(int node, std::string name, int t);
   Ints get_children(int node) const;
-  void set_frames_hint(int i) {
+  void save_frames_hint(int i) {
     frames_hint_=i;
   }
 };

@@ -11,10 +11,10 @@ class GenericTest(IMP.test.TestCase):
                          len(IMP.atom.get_leaves(h1)))
     def _test_round_trip(self, h0, name):
         f= IMP.hdf5.RootHandle(name, True)
-        IMP.hdf5.write_hierarchy(h0, f)
+        IMP.hdf5.add_hierarchy(f, h0)
         del f
         f= IMP.hdf5.RootHandle(name, False)
-        h1= IMP.hdf5.read_all_hierarchies(f, h0.get_model())
+        h1= IMP.hdf5.create_hierarchies(f, h0.get_model())
         self._assert_same(h0, h1[0])
     def _show(self, g):
         for i in range(0, g.get_number_of_children()):

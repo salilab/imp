@@ -235,8 +235,8 @@ namespace {
   }
 }
 
-void save_configuration(atom::Hierarchy hs, RootHandle fh,
-                        unsigned int frame) {
+void save_frame(RootHandle fh,
+               unsigned int frame, atom::Hierarchy hs) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {
@@ -277,7 +277,7 @@ namespace {
 
 
 }
-void write_hierarchy(atom::Hierarchy hs, RootHandle fh) {
+void add_hierarchy(RootHandle fh, atom::Hierarchy hs) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {
@@ -317,7 +317,7 @@ namespace {
   }
 }
 
-atom::Hierarchies read_all_hierarchies(RootHandle fh, Model *model) {
+atom::Hierarchies create_hierarchies(RootHandle fh, Model *model) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   NodeHandle root= fh;
   atom::Hierarchies ret;
@@ -364,9 +364,9 @@ namespace {
   }
 }
 
-void load_configuration(RootHandle fh,
-                       atom::Hierarchy hs,
-                       unsigned int frame) {
+void load_frame(RootHandle fh,
+                unsigned int frame,
+                atom::Hierarchy hs) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   load_internal(fh, hs, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
 }
@@ -382,7 +382,7 @@ SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
 
 void SaveHierarchyConfigurationOptimizerState::do_update(unsigned int k) {
   for (unsigned int i=0;i< hs_.size(); ++i) {
-    save_configuration(hs_[i], fh_, k);
+    save_frame(fh_, k, hs_[i]);
   }
 }
 
@@ -404,7 +404,7 @@ namespace {
   }
 }
 
-void associate_all_hierarchies(RootHandle rh, atom::Hierarchies hs) {
+void set_hierarchies(RootHandle rh, atom::Hierarchies hs) {
   NodeHandle root= rh;
   NodeHandles children= root.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {

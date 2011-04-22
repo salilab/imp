@@ -27,11 +27,9 @@ IMPHDF5_BEGIN_NAMESPACE
     @{
 */
 /** Add a restraint to the file.*/
-IMPHDF5EXPORT void write_restraint(Restraint *r,
-                                 RootHandle parent);
+IMPHDF5EXPORT void add_restraint(RootHandle parent, Restraint *r);
 /** Add the current score of the restraint to the given frame.*/
-IMPHDF5EXPORT void save_restraint(Restraint *r,
-                                  RootHandle parent, int frame);
+IMPHDF5EXPORT void save_frame(RootHandle parent, int frame, Restraint *r);
 
 /** Return the list of particles for a restraint node. This is not
     such a nice interface, but I can't think of a better one at the

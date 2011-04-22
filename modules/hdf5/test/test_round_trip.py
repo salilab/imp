@@ -21,9 +21,9 @@ class GenericTest(IMP.test.TestCase):
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
         f= IMP.hdf5.RootHandle(self.get_tmp_file_name("test_rt.rh"), True)
-        IMP.hdf5.write_hierarchy(h, f)
+        IMP.hdf5.add_hierarchy(f, h)
         f= IMP.hdf5.RootHandle(self.get_tmp_file_name("test_rt.rh"), False)
-        h2=IMP.hdf5.read_all_hierarchies(f, m)
+        h2=IMP.hdf5.create_hierarchies(f, m)
         self.assertEqual(len(h2), 1)
         self.assertEqual(len(IMP.atom.get_leaves(h)),
                          len(IMP.atom.get_leaves(h2[0])))

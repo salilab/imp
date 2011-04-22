@@ -19,9 +19,9 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 
 -# The \imp layer: supports I/O of IMP::atom::Hierarchy and associated
    types as well as output of IMP::display::Geometry, IMP::Restraint and arbitrary IMP::Particles. These
-   work by having a \c write_X method which adds the object to the file and then
-   \c save_conformation methods which can add another conformation of the object to
-   the file. Similarly, there are \c read_X and \c load_conformation methods which create
+   work by having an \c add_X() method which adds the object to the file and then
+   \c set_frame() methods can set the ith frame of the object from the objects current
+   state. Similarly, there are \c create_Xs and \c load_frame() methods which create
    an object of the type in question and load the data from the corresponding frame
    into already created objects.
 -# The hierarchy layer: supports general traversal of the encoded hierarchy
@@ -33,6 +33,15 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    This layer consists of IMP::hdf5::HDF5DataSet and IMP::hdf5::HDF5Group along
    with the IMP::hdf5::HDF5Handle and type traits classes. It acts as a more useful,
    but limited, replacement for the HDF5 C++ bindings.
+
+   \section assoc Associations
+   The RMF wrapper has the concept of an association between nodes in its hierarchy
+   and objects in the program accessing. Such association is used in \imp to,
+   for example, map between particles and the nodes on disk saving data for that
+   particle. This association can only be set once each time the file is open,
+   trying to reset is an error. It is set either when an object is added to the file
+   eg IMP::hdf5::add_hierarchy() or when explicitly requested,
+   eg IMP::hdf5::set_hierarchies().
 
    \section bins Helper programs
 

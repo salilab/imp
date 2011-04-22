@@ -10,12 +10,12 @@ tfn=IMP.create_temporary_file_name("pdb", "hdf5")
 print "File name is", tfn
 rh = IMP.hdf5.RootHandle(tfn, True)
 # write the hierarchy to the file
-IMP.hdf5.write_hierarchy(h, rh)
+IMP.hdf5.add_hierarchy(rh, h)
 
 # change a coordinate
 IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
 # add the new configuration to the file
-IMP.hdf5.save_configuration(h, rh, 1)
+IMP.hdf5.save_frame(rh, 1, h)
 
 # close the file
 del rh
@@ -24,9 +24,9 @@ del rh
 rh= IMP.hdf5.RootHandle(tfn, False)
 
 # hps is a list with one element which is a copy of h
-hps= IMP.hdf5.read_all_hierarchies(rh, m)
+hps= IMP.hdf5.create_hierarchies(rh, m)
 
 # load the second configuration into hps
-IMP.hdf5.load_configuration(rh, hps[0], 1)
+IMP.hdf5.load_frame(rh, 1, hps[0])
 
 print "Try running hdf5_display or hdf5_show on", tfn

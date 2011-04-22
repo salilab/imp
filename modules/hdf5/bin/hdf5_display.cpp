@@ -134,8 +134,8 @@ int main(int argc, char **argv) {
   }
   IMP::hdf5::RootHandle rh(input, false);
   IMP_NEW(IMP::Model, m, ());
-  IMP::atom::Hierarchies hs= IMP::hdf5::read_all_hierarchies(rh, m);
-  IMP::ParticlesTemp ps= IMP::hdf5::read_all_particles(rh, m);
+  IMP::atom::Hierarchies hs= IMP::hdf5::create_hierarchies(rh, m);
+  IMP::ParticlesTemp ps= IMP::hdf5::create_particles(rh, m);
   int minframe, maxframe;
   if (frame>=0) {
     minframe=frame;
@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
     IMP::Pointer<IMP::display::Writer> w
       = IMP::display::create_writer(name, append);
     for (unsigned int i=0; i< hs.size(); ++i) {
-      IMP::hdf5::load_configuration(rh, hs[i], cur_frame);
+      IMP::hdf5::load_frame(rh, cur_frame, hs[i]);
       IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
       if (vm.count("recolor")) {
         g->set_color(IMP::display::get_display_color(i));
@@ -188,7 +188,7 @@ int main(int argc, char **argv) {
       }
     }
     IMP::display::Geometries gs=
-      IMP::hdf5::read_all_geometries(rh, cur_frame);
+      IMP::hdf5::create_geometries(rh, cur_frame);
     for (unsigned int i=0; i< gs.size(); ++i) {
       w->add_geometry(gs[i]);
     }

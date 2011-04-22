@@ -36,32 +36,32 @@ IMPHDF5_BEGIN_NAMESPACE
 /** Write the hierarchies as a file with data store in the frame. The
     hierarchies must have been previously read from the file if you are
     adding a frame.*/
-IMPHDF5EXPORT void save_configuration(atom::Hierarchy hs, RootHandle fh,
-                                     unsigned int frame);
+IMPHDF5EXPORT void save_frame(RootHandle fh,
+                             unsigned int frame, atom::Hierarchy hs);
 
-IMPHDF5EXPORT void write_hierarchy(atom::Hierarchy hs, RootHandle fh);
+IMPHDF5EXPORT void add_hierarchy(RootHandle fh, atom::Hierarchy hs);
 
 
 /** Create a hierarchy from part of the file.
  */
-IMPHDF5EXPORT atom::Hierarchies read_all_hierarchies(RootHandle fh, Model *m);
+IMPHDF5EXPORT atom::Hierarchies create_hierarchies(RootHandle fh, Model *m);
 
 
 /** Associate the passed hierarchies with all the hierarchies in the file.
     They must match exactly.
 */
-IMPHDF5EXPORT void associate_all_hierarchies(RootHandle rh,
-                                             atom::Hierarchies hs);
+IMPHDF5EXPORT void set_hierarchies(RootHandle rh,
+                                   atom::Hierarchies hs);
 
 /** Read the ith frame from a file as a new hierarchy.
  */
-IMPHDF5EXPORT void load_configuration(RootHandle fh,
-                                      atom::Hierarchy hs,
-                                      unsigned int frame);
+IMPHDF5EXPORT void load_frame(RootHandle fh,
+                              unsigned int frame,
+                              atom::Hierarchy hs);
 /** @} */
 
 
-/** Periodically call the save_configuration() method to save the hierarchy
+/** Periodically call the save_frame() method to save the hierarchy
     to the given file.
 */
 class IMPHDF5EXPORT SaveHierarchyConfigurationOptimizerState:

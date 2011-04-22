@@ -112,8 +112,7 @@ namespace {
   }
 }
 
-void write_restraint(Restraint *r,
-                   RootHandle parent) {
+void add_restraint(RootHandle parent, Restraint *r) {
   NodeIDKeys fks;
   FloatKey sk= get_or_add_key<FloatTraits>(parent.get_root_handle(),
                                            Feature, "score", true);
@@ -145,8 +144,7 @@ namespace {
   }
 }
 
-void save_restraint(Restraint *r,
-                    RootHandle f, int frame) {
+void save_frame(RootHandle f, int frame, Restraint *r) {
    NodeIDKeys fks;
   FloatKey sk= get_or_add_key<FloatTraits>(f,
                                            Feature, "score", true);

@@ -91,20 +91,20 @@ namespace {
     IMP::hdf5::RootHandle r(name, false);
     It ret;
     ret.m= new Model();
-    ret.chains= IMP::hdf5::read_all_hierarchies(r, ret.m);
-    ret.sp= IMP::hdf5::read_all_particles(r, ret.m)[0];
+    ret.chains= IMP::hdf5::create_hierarchies(r, ret.m);
+    ret.sp= IMP::hdf5::create_particles(r, ret.m)[0];
     return ret;
   }
 
   void write_particles(It cur, IMP::hdf5::RootHandle rh, int frame) {
     if (frame==0) {
       for (unsigned int i=0; i< cur.chains.size(); ++i) {
-        IMP::hdf5::write_hierarchy(cur.chains[i], rh);
+        IMP::hdf5::add_hierarchy(rh, cur.chains[i]);
       }
-      IMP::hdf5::write_particle(cur.sp, rh);
+      IMP::hdf5::add_particle(rh, cur.sp);
     } else {
       for (unsigned int i=0; i< cur.chains.size(); ++i) {
-        IMP::hdf5::save_configuration(cur.chains[i], rh, frame);
+        IMP::hdf5::save_frame(rh, frame, cur.chains[i]);
       }
     }
   }

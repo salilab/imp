@@ -21,15 +21,15 @@ class GenericTest(IMP.test.TestCase):
         nf=10
         IMP.set_log_level(IMP.PROGRESS)
         f=IMP.hdf5.RootHandle(self.get_tmp_file_name("test_mf.rh"), True)
-        IMP.hdf5.write_hierarchy(h, f)
+        IMP.hdf5.add_hierarchy(f, h)
         for i in range(0,nf):
             d.set_x(i)
-            IMP.hdf5.save_configuration(h, f, i)
+            IMP.hdf5.save_frame(f, i, h)
         del f
         f= IMP.hdf5.RootHandle(self.get_tmp_file_name("test_mf.rh"), False)
-        [h]= IMP.hdf5.read_all_hierarchies(f, m)
+        [h]= IMP.hdf5.create_hierarchies(f, m)
         for i in range(0,nf):
-            IMP.hdf5.load_configuration( f, h, i)
+            IMP.hdf5.load_frame( f, i, h)
             d= IMP.core.XYZR(h)
             self.assertEqual(d.get_x(), i)
 
