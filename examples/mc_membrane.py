@@ -259,8 +259,6 @@ for i,h in enumerate(TMH):
 
 mc.set_kt(3.0)
 mc.set_return_best(False)
-#score=m.evaluate(False)
-#display(m,chain,TMH,"initial.score_"+str(score)+".pym")
 
 print "sampling"
 for steps in range(1000):
