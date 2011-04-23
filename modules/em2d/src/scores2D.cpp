@@ -71,14 +71,8 @@ double get_shift_error(const RegistrationResult &rr1,
 double get_global_score(const RegistrationResults &RRs) {
 
   double global_score = 0.0;
-  if(RRs[0].get_is_optimized_result()) {
-    for (unsigned int i=0;i < RRs.size();++i) {
-      global_score += RRs[i].get_score();
-    }
-  } else {
-    for (unsigned int i=0;i < RRs.size();++i) {
-      global_score += RRs[i].get_ccc();
-    }
+  for (unsigned int i=0;i < RRs.size();++i) {
+    global_score += RRs[i].get_score();
   }
   return global_score/RRs.size();
 }
@@ -86,7 +80,7 @@ double get_global_score(const RegistrationResults &RRs) {
 
 double MeanAbsoluteDifference::get_private_score(Image *image,
                                                Image *projection) const {
-  double result;
+  double result =0.0;
   cvDoubleConstMatIterator img_it = image->get_data().begin<double>();
   cvDoubleConstMatIterator prj_it = projection->get_data().begin<double>();
   double n = 0;

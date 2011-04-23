@@ -48,7 +48,7 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
                number_of_optimized_projections_;
   double apix_,resolution_;
   bool fast_optimization_mode_;
-
+  bool only_coarse_registration_;
 public:
 
   //! Create the restraint.
@@ -84,6 +84,7 @@ public:
                 simplex_minimum_size);
   n_projections_for_coarse_registration_ = n_projections;
   fast_optimization_mode_ = false;
+  only_coarse_registration_ = false;
 }
 
 
@@ -93,8 +94,27 @@ public:
   //! Sets the EM images to use as restraints
   void set_images(const em2d::Images em_images);
 
-  //! Sets fast mode for computing the restraint.
+  /*! Sets fast mode for computing the restraint. This mode only makes sense
+      it the set_coarse_registration_mode option is false. This option only
+      optimizes some coarse results (those given by the argument)
+      to get the refined value.
+      This option is very fast compared to a full optimization, and almost
+      always is a good idea to use it with 1-5 results.
+      This mode is still significantly slow compared to
+      set_coarse_registration_mode(), but the values optimized are optimum.
+  */
   void set_fast_mode(unsigned int n);
+
+  /*! If the value provided to this function is true, restraint operates
+      only using a coarse registration scheme (maximizing the CCC).
+      This option (which is set to false by default) can speed the evaluation
+      of the restraint by a order of magnitude, but the values obtained are
+      not going to be optimum. You could wnat to activate it at the beginning of
+      an optimization.
+  */
+  void set_coarse_registration_mode(bool opt) {
+    if(opt) only_coarse_registration_ = true;
+  }
 
   IMP_RESTRAINT(Em2DRestraint);
 };

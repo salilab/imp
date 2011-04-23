@@ -78,7 +78,7 @@ public:
   inline double get_ccc() const { return ccc_;}
 
   inline void set_ccc(double ccc) {
-    ccc_=ccc;
+    ccc_ = ccc;
     is_optimized_result_ = false;
   }
 
