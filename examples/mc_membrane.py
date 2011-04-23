@@ -118,7 +118,7 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         ps=  IMP.membrane.RigidBodyPackingScore(tbr, om_b, om_e, dd_b, dd_e)
         prs= IMP.container.PairsRestraint(ps, nrb)
         m.add_restraint(prs)
-        m.set_maximum_score(prs, .01)
+        m.set_maximum_score(prs, .001)
 
 ## DOPE/GQ scoring
     def add_DOPE():
@@ -140,12 +140,10 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h1[0])
         rb0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
         rb1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
-        lpc= IMP.container.ListPairContainer(m)
-        lpc.add_particle_pair([rb0,rb1])
         hub= IMP.core.HarmonicUpperBound(8.0,1000.0)
         sd=  IMP.core.DistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
-        ir=  IMP.container.PairsRestraint(kc,lpc)
+        ir=  IMP.core.PairRestraint(kc,[rb0,rb1])
         m.add_restraint(ir)
         m.set_maximum_score(ir,.01)
         return ir
@@ -156,10 +154,10 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
             s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
-        h=IMP.core.HarmonicUpperBound(0,1000)
-        r=IMP.core.DiameterRestraint(h, lrb, diameter)
-        m.add_restraint(r)
-        m.set_maximum_score(r,.01)
+        hub=IMP.core.HarmonicUpperBound(0,1000)
+        dr=IMP.core.DiameterRestraint(hub, lrb, diameter)
+        m.add_restraint(dr)
+        m.set_maximum_score(dr,.01)
 
     def add_depth_restraint(range):
         lrb= IMP.container.ListSingletonContainer(m)
