@@ -18,7 +18,7 @@ def create_representation(seq,tmh,topo):
         for i in range(nres):
             x=2.3*math.cos(math.radians(100.0)*float(i))
             y=2.3*math.sin(math.radians(100.0)*float(i))
-            z=sign*1.51*(float(i)-float((nres-1))/2.0)
+            z=1.51*(float(i)-float((nres-1))/2.0)
             # set up residue
             p=IMP.Particle(m)
             r=IMP.atom.Residue.setup_particle(p, IMP.atom.get_residue_type(seq[i]), i+tmh[0])
@@ -34,17 +34,25 @@ def create_representation(seq,tmh,topo):
             r.add_child(a)
             all.add_child(r)
             atoms.append(ad)
-            if ( i == 0 ):      bb=z
-            if ( i == nres-1 ): ee=z
+            if (i == 0):      begin=p1
+            if (i == nres-1): end=p1
         rb=IMP.Particle(m)
         rb=IMP.atom.create_rigid_body(atoms,"TM"+str(id))
         tbr.add_particle(rb,atoms)
+        # adjust axis to match topology
+        bb=IMP.core.RigidMember(begin).get_internal_coordinates()[0]
+        ee=IMP.core.RigidMember(end).get_internal_coordinates()[0]
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
+        if ( sign * ( ee - bb ) > 0 ): rot0= -math.pi/2.0
+        else :                         rot0=  math.pi/2.0
+        return rot0
 
+    rot0=[]
     for i in range(len(seq)):
-        generate_balls(i,seq[i],tmh[i],topo[i])
+        rot=generate_balls(i,seq[i],tmh[i],topo[i])
+        rot0.append(rot)
 
-    return m,all,tbr
+    return m,all,tbr,rot0
 
 def create_restraints(m, chain, tbr, TMH):
 
@@ -193,6 +201,7 @@ def create_discrete_states(m,chain,TMH):
     ix=int(15.0/Dx)
     iz=int(5.0/Dx)
 #   store initial rotation to have the right topology
+#   TO_DO!!!
     rot0=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0), math.pi/2.0)
     trs0=[]; trs1=[]; trs2=[];
     for i in range(irot):
@@ -284,7 +293,7 @@ for h in TMH:
 topo=[1.0,-1.0,1.0,-1.0]
 
 print "creating representation"
-(m,chain,tbr)=create_representation(seq,TMH,topo)
+(m,chain,tbr,rot0_ang)=create_representation(seq,TMH,topo)
 
 print "creating restraints"
 rset=create_restraints(m,chain,tbr,TMH)
@@ -296,7 +305,6 @@ print "creating sampler"
 s=create_sampler(m, rset, pst)
 
 
-exit()
 print "sampling"
 ass=IMP.domino.Subset(pst.get_particles())
 cs=s.get_sample_states(ass)
