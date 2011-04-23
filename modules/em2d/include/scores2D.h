@@ -78,7 +78,7 @@ public:
   ChiSquaredScore() {}
 private:
   double get_private_score(Image *, Image *) const {
-    return 0.0;
+    return 0.0; //  TO DO
   }
 };
 IMP_OBJECTS(ChiSquaredScore,ChiSquaredScores);

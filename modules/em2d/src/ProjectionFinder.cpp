@@ -207,6 +207,17 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
                                                                 euler[2]);
     RegistrationResult projection_result(R,shift,j,i);
     projection_result.set_ccc(RA.second);
+
+
+    // The coarse registration is based on maximizing the
+    // cross-correlation-coefficient, but any other score can be calculated
+    // at this point. It will not be optimal, though.
+    IMP_NEW(em2d::Image,aux,());
+    get_transformed(projections_[j]->get_data(), aux->get_data(), RA.first);
+    double score = score_function_->get_score(subjects_[i], aux);
+    projection_result.set_score(score);
+
+
     // add the 2D alignment transformation to the registration result
     // for the projection
     projection_result.add_in_plane_transformation(RA.first);

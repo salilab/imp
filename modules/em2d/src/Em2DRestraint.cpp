@@ -43,21 +43,26 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_UNUSED(accum);
   IMP_USAGE_CHECK(!accum, "No derivatives provided");
   IMP_NEW(Model,model,());
-  model=get_model();
+  model = get_model();
   // Project the model
-  RegistrationResults evenly_regs=get_evenly_distributed_registration_results(
+  RegistrationResults regs = get_evenly_distributed_registration_results(
                                   n_projections_for_coarse_registration_);
   unsigned int rows =  em_images_[0]->get_header().get_number_of_rows();
   unsigned int cols =  em_images_[0]->get_header().get_number_of_columns();
   IMP_NEW(SpiderImageReaderWriter, srw, ());
   em2d::Images projections=get_projections(
-          particles_container_->get_particles(),evenly_regs,rows,cols,
-                                resolution_,apix_,srw);
+          particles_container_->get_particles(), regs, rows, cols,
+                                resolution_, apix_, srw);
   finder_->set_projections(projections);
-  if(fast_optimization_mode_) {
-    finder_->set_fast_mode(number_of_optimized_projections_);
+
+  if(only_coarse_registration_) {
+    finder_->get_coarse_registration();
+  } else {
+    if(fast_optimization_mode_) {
+      finder_->set_fast_mode(number_of_optimized_projections_);
+    }
+    finder_->get_complete_registration();
   }
-  finder_->get_complete_registration();
   return finder_->get_global_score();
 }
 
