@@ -20,6 +20,7 @@ Optimizer::Optimizer(Model *m, std::string name): Object(name)
   set_was_used(true);
   min_score_= -std::numeric_limits<double>::max();
   stop_on_good_score_=false;
+  last_score_= std::numeric_limits<double>::max();
 }
 
 Optimizer::~Optimizer()
@@ -73,13 +74,14 @@ void Optimizer::set_restraints(const RestraintSetsTemp &rs) {
 double Optimizer::evaluate(bool compute_derivatives) const {
   IMP_FUNCTION_LOG;
   if (restraints_.empty()) {
-    return get_model()->evaluate(compute_derivatives);
+    last_score_= get_model()->evaluate(compute_derivatives);
   } else {
     IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
                                            flattened_weights_,
                                            compute_derivatives);
-    return std::accumulate(ret.begin(), ret.end(), 0.0);
+    last_score_= std::accumulate(ret.begin(), ret.end(), 0.0);
   }
+  return last_score_;
 }
 
 

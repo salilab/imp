@@ -75,6 +75,10 @@ class IMPEXPORT Optimizer: public Object
   bool get_stop_on_good_score() const {
     return stop_on_good_score_;
   }
+  //! Return the score found in the last evaluate
+  double get_last_score() const {
+    return last_score_;
+  }
 
   //! Get the model being optimized
   Model *get_model() const {
@@ -333,6 +337,7 @@ class IMPEXPORT Optimizer: public Object
   RestraintSets restraints_;
   RestraintsTemp flattened_restraints_;
   Floats flattened_weights_;
+  mutable double last_score_;
 };
 
 
