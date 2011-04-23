@@ -215,9 +215,16 @@ class BoostDigraph: public Object {
   typedef typename boost::property_map<BG,
                               boost::vertex_name_t>::type VertexMap;
   VertexMap vm_;
+  // keep vertex indices stable under removals
+  Ints index_map_;
   template <class It>
   int distance(std::pair<It, It> r) const {
     return std::distance(r.first, r.second);
+  }
+  int get_vertex(int v) const{
+    IMP_USAGE_CHECK(index_map_.size() > v, "Out of range: " << v);
+    IMP_USAGE_CHECK(index_map_[v] >=0, "Removed vertex requested: " << v);
+    return boost::vertex(index_map_[v], bg_);
   }
 public:
   BoostDigraph(){
@@ -238,6 +245,9 @@ public:
                          << " vs "
                          << distance(boost::out_edges(i, bg)));
     }
+    std::pair<typename Traits::vertex_iterator,
+      typename Traits::vertex_iterator> be= boost::vertices(bg_);
+    index_map_=Ints(be.first, be.second);
   }
 #endif
 #ifndef SWIG
@@ -254,9 +264,13 @@ public:
   VertexDescriptors get_vertices() const {
     set_was_used(true);
     IMP_CHECK_OBJECT(this);
-    std::pair<typename Traits::vertex_iterator,
-      typename Traits::vertex_iterator> be= boost::vertices(bg_);
-    return Ints(be.first, be.second);
+    Ints ret;
+    for (unsigned int i=0; i< index_map_.size(); ++i) {
+      if (index_map_[i] >=0) {
+        ret.push_back(i);
+      }
+    }
+    return ret;
   }
 
   VertexName get_vertex_name(VertexDescriptor i) const {
@@ -264,7 +278,7 @@ public:
     IMP_USAGE_CHECK(i < boost::num_vertices(bg_),
                     "Out of range vertex " << i
                     << " " << boost::num_vertices(bg_));
-    return boost::get(vm_, boost::vertex(i, bg_));
+    return boost::get(vm_, get_vertex(i));
   }
   VertexDescriptors get_in_neighbors(VertexDescriptor v) const {
     set_was_used(true);
@@ -272,7 +286,7 @@ public:
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::in_edge_iterator IEIt;
-    std::pair<IEIt, IEIt> be= boost::in_edges(boost::vertex(v, bg_), bg_);
+    std::pair<IEIt, IEIt> be= boost::in_edges(get_vertex(v), bg_);
     Ints ret;
     for (; be.first != be.second; ++be.first) {
       ret.push_back(boost::source(*be.first, bg_));
@@ -285,7 +299,7 @@ public:
                     "Out of range vertex " << v
                     << " " << boost::num_vertices(bg_));
     typedef typename Traits::out_edge_iterator IEIt;
-    std::pair<IEIt, IEIt> be= boost::out_edges(boost::vertex(v, bg_), bg_);
+    std::pair<IEIt, IEIt> be= boost::out_edges(get_vertex(v), bg_);
     IMP_INTERNAL_CHECK(std::distance(be.first, be.second)< 10000,
                        "Insane number of neighbors "
                        << std::distance(be.first, be.second));
@@ -315,7 +329,16 @@ public:
   VertexDescriptor add_vertex(VertexName l) {
     VertexDescriptor v=boost::add_vertex(bg_);
     boost::put(vm_, v, l);
-    return v;
+    index_map_.push_back(v);
+    return index_map_.size()-1;
+  }
+  void remove_vertex(VertexDescriptor l) {
+    boost::clear_vertex(get_vertex(l), bg_);
+    boost::remove_vertex(get_vertex(l), bg_);
+    index_map_[l]=-1;
+    for (unsigned int i=l+1; i < index_map_.size(); ++i) {
+      --index_map_[i];
+    }
   }
 };
 
