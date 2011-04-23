@@ -12,13 +12,16 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                                Float max_y_translation, Float max_z_translation,
-                               Float max_angle) {
+                               Float max_a_angle, Float max_b_angle,
+                               Float max_c_angle) {
   IMP_LOG(VERBOSE,"start RigidBodyNewMover constructor");
-  max_x_translation_=max_x_translation;
-  max_y_translation_=max_y_translation;
-  max_z_translation_=max_z_translation;
-  max_angle_ =max_angle;
-  d_= d;
+  max_x_translation_ = max_x_translation;
+  max_y_translation_ = max_y_translation;
+  max_z_translation_ = max_z_translation;
+  max_a_angle_ = max_a_angle;
+  max_b_angle_ = max_b_angle;
+  max_c_angle_ = max_c_angle;
+  d_ = d;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
@@ -44,17 +47,23 @@ void RigidBodyNewMover::propose_move(Float f) {
     = algebra::VectorD<3>(tr_x[0],tr_y[1],tr_z[2]);
 
 
-  ::boost::uniform_real<> rand(-max_angle_,max_angle_);
-  Float angle =rand(random_number_generator);
+  ::boost::uniform_real<> rand_a(-max_a_angle_,max_a_angle_);
+  Float a_angle =rand_a(random_number_generator);
 
   algebra::Rotation3D rotz
-    = algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),  angle);
+    = algebra::get_rotation_about_axis(algebra::Vector3D(1,0,0), a_angle);
+
+  ::boost::uniform_real<> rand_b(-max_b_angle_,max_b_angle_);
+  Float b_angle =rand_b(random_number_generator);
 
   algebra::Rotation3D tilt
-    = algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),  angle);
+    = algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), b_angle);
+
+  ::boost::uniform_real<> rand_c(-max_c_angle_,max_c_angle_);
+  Float c_angle =rand_c(random_number_generator);
 
   algebra::Rotation3D swing
-    = algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1), angle);
+    = algebra::get_rotation_about_axis(algebra::Vector3D(1,0,0), c_angle);
 
   algebra::Rotation3D rc
     = d_.get_reference_frame().get_transformation_to().get_rotation()
@@ -77,6 +86,8 @@ void RigidBodyNewMover::do_show(std::ostream &out) const {
   out << "max x translation: " << max_x_translation_ << "\n";
   out << "max y translation: " << max_y_translation_ << "\n";
   out << "max z translation: " << max_z_translation_ << "\n";
-  out << "max angle: " << max_angle_ << "\n";
+  out << "max a angle: " << max_a_angle_ << "\n";
+  out << "max b angle: " << max_b_angle_ << "\n";
+  out << "max c angle: " << max_c_angle_ << "\n";
 }
 IMPMEMBRANE_END_NAMESPACE

@@ -37,7 +37,7 @@ Float TiltSingletonScore::evaluate(Particle *b,
   algebra::VectorD<3> origin
    = rf.get_global_coordinates(algebra::VectorD<3>(0.0,0.0,0.0));
 
-  //std::cout << local2global << global_ <<std::endl;
+  //std::cout << local2global-origin << global_ <<std::endl;
 
   // now calculate the angle
   Float angle
