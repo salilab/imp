@@ -155,11 +155,25 @@ namespace {
   std::string do_show(Particle*p) {
     return p->get_name();
   }
+  std::string do_show(const ParticlesTemp&p) {
+    std::ostringstream oss;
+    for (unsigned int i=0; i< p.size(); ++i) {
+      oss << do_show(p[i]) << " ";
+    }
+    return oss.str();
+  }
   /*algebra::BoundingBox3D do_show(algebra::BoundingBox3D bb) {
     return bb;
     }*/
   unsigned int do_show(unsigned int i) {
     return i;
+  }
+  std::string do_show(const std::vector<unsigned int>&p) {
+    std::ostringstream oss;
+    for (unsigned int i=0; i< p.size(); ++i) {
+      oss << do_show(p[i]) << " ";
+    }
+    return oss.str();
   }
 
   template <class IDF, class CenterF,
@@ -456,7 +470,9 @@ namespace {
         = get_nearby(gg, gg.get_extended_index(index), half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
-                << std::endl);
+                << ": " << do_show(gg[ids[i]])
+                << " and " << do_show(gg[index])
+                << " which is " << do_show(qps) << std::endl);
         IMP_INTERNAL_CHECK(!half || ids[i] != index,
                            "Index returned by get nearby");
         do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
@@ -489,7 +505,9 @@ namespace {
                      bblb, bbub, merged, half);
       for (unsigned int i=0; i< ids.size(); ++i) {
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
-                << std::endl);
+                << ": " << do_show(gg[ids[i]])
+                << " and " << do_show(gg[index])
+                << " which is " << do_show(qps) << std::endl);
         do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
                                        gg[ids[i]].end(),
                                        qps.begin(), qps.end(),
@@ -604,7 +622,7 @@ namespace {
 
       partition_points(psg, distance, bin_contents_g, bin_ubs);
       partition_points(psq, distance, bin_contents_q, bin_ubs);
-      IMP_LOG(VERBOSE, "Divided pints into " << bin_contents_g.size()
+      IMP_LOG(VERBOSE, "Divided points into " << bin_contents_g.size()
               << " and " << bin_contents_q.size() << " bins ("
               << bin_ubs.size() << ") " << maxr << std::endl);
       IMP_IF_LOG(VERBOSE) {
