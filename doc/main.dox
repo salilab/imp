@@ -35,8 +35,7 @@ An overview of the various modules currently available. Representative classes a
 <td>IMP::Particle</td>
 <td>IMP::Restraint</td>
 <td>IMP::Optimizer, IMP::Sampler</td>
-<td>\ref model_text_io "IMP::write_particles(), IMP::read_particles()",
-\ref model_binary_io "IMP::write_particles_binary(), IMP::read_particles_binary()"</td>
+<td></td>
 </tr>
 <tr>
 <td>IMP::core</td>
@@ -119,6 +118,13 @@ An overview of the various modules currently available. Representative classes a
 <td>IMP::modeller</td>
 <td></td>
 <td>Access to the Modeller scoring functions</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>IMP::hdf5</td>
+<td></td>
+<td>IO for IMP::atom::Hierarchy, IMP::Particle and IMP::Geometry</td>
 <td></td>
 <td></td>
 </tr>
