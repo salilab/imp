@@ -1,0 +1,73 @@
+Import('env')
+
+env.IMPModuleDoc(env.IMPModuleGetDocs(),
+                 authors=["Daniel Russel"],
+                 brief="This module provides RMF I/O for \imp.",
+                 overview="""This modules provides support for RMF file format
+                 for storing hierarchical molecular data (such as atomic
+                 or coarge grained representations of proteins), along with
+                 markup, including geometry and score data. The format uses
+                 the hdf5 library to manage the data on disk.
+
+
+                 \section contents Contents
+                 The module provides code for general purpose I/O of such data,
+                 designed to be used in other packages (we have not yet separated
+                 it out into a separate library), along with \imp specific code.
+                 Accordingly, support is provided at three different levels, in
+                 order of increasing generality:
+
+-# The \imp layer: supports I/O of IMP::atom::Hierarchy and associated
+   types as well as output of IMP::display::Geometry, IMP::Restraint and arbitrary IMP::Particles. These
+   work by having an \c add_X() method which adds the object to the file and then
+   \c set_frame() methods can set the ith frame of the object from the objects current
+   state. Similarly, there are \c create_Xs and \c load_frame() methods which create
+   an object of the type in question and load the data from the corresponding frame
+   into already created objects.
+-# The hierarchy layer: supports general traversal of the encoded hierarchy
+   and addition and reading of arbitrary hierarchical data. This layer primarily
+   consists of IMP::hdf5::RootHandle and IMP::hdf5::NodeHandle. It is designed
+   to be used by programs to traverse the file while they create their own data
+   structures.
+-# The HDF5 layer: provides a C++ interface to access the raw HDF5 file.
+   This layer consists of IMP::hdf5::HDF5DataSet and IMP::hdf5::HDF5Group along
+   with the IMP::hdf5::HDF5Handle and type traits classes. It acts as a more useful,
+   but limited, replacement for the HDF5 C++ bindings.
+
+   \section assoc Associations
+   The RMF wrapper has the concept of an association between nodes in its hierarchy
+   and objects in the program accessing. Such association is used in \imp to,
+   for example, map between particles and the nodes on disk saving data for that
+   particle. This association can only be set once each time the file is open,
+   trying to reset is an error. It is set either when an object is added to the file
+   eg IMP::hdf5::add_hierarchy() or when explicitly requested,
+   eg IMP::hdf5::set_hierarchies().
+
+   \section bins Helper programs
+
+   Several helper programs are provided. They all take the name of the RMF file as
+   the first argument and an argument "-f" which is the frame to act on. Negative
+   values for the frame are treated as every nth frame. That is, "-f -2" means take
+   every other frame.
+
+   - \c hdf5_display outputs an arbitrary
+   hdf5 file to pymol or chimera as appropriate (based on the file name of the
+   second argument). It supports hierarchies, restraints and geometry.
+
+   - \c hdf5_show prints out the hierarchy written to the file.
+
+   - \c hdf5_to_pdb converts an hdf5 file to a PDB file, assuming all hierarchies
+   in the hdf5 file are atomic resolution.
+
+   \section ff RMF Files
+   The RMF file format stores a hierarchy of data in an HDF5 node. Each node in the RMF
+   hierarchy has a type (IMP::hdf5::NodeType), a name (IMP::hdf5::NodeHandle::get_name(),
+   and associated attributes. Each attribute is identified by a key (IMP::hdf5::Key) and
+   consists of a unique combination of a type, category (IMP::hdf5::KeyCategory) and name
+   (IMP::hdf5::Key::get_name(). On a per RMF basis, the data with each key can either have
+   one value for each node which has that attribute, or one value per frame per node with
+   the attribute. The methods in IMP::hdf5::NodeHandle to get and set the attributes take
+   an optional frame number.
+""",
+                 publications=env.IMPStandardPublications(),
+                 license=env.IMPStandardLicense())

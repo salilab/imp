@@ -6,7 +6,7 @@
 #include <IMP/algebra.h>
 #include <IMP/atom.h>
 #include <IMP/display.h>
-#include <IMP/hdf5.h>
+#include <IMP/rmf.h>
 #include <IMP/benchmark/utility.h>
 #include <IMP/benchmark/benchmark_macros.h>
 #include <IMP/container.h>
@@ -88,23 +88,23 @@ namespace {
   }
 
   It create_particles(std::string name) {
-    IMP::hdf5::RootHandle r(name, false);
+    IMP::rmf::RootHandle r(name, false);
     It ret;
     ret.m= new Model();
-    ret.chains= IMP::hdf5::create_hierarchies(r, ret.m);
-    ret.sp= IMP::hdf5::create_particles(r, ret.m)[0];
+    ret.chains= IMP::rmf::create_hierarchies(r, ret.m);
+    ret.sp= IMP::rmf::create_particles(r, ret.m)[0];
     return ret;
   }
 
-  void write_particles(It cur, IMP::hdf5::RootHandle rh, int frame) {
+  void write_particles(It cur, IMP::rmf::RootHandle rh, int frame) {
     if (frame==0) {
       for (unsigned int i=0; i< cur.chains.size(); ++i) {
-        IMP::hdf5::add_hierarchy(rh, cur.chains[i]);
+        IMP::rmf::add_hierarchy(rh, cur.chains[i]);
       }
-      IMP::hdf5::add_particle(rh, cur.sp);
+      IMP::rmf::add_particle(rh, cur.sp);
     } else {
       for (unsigned int i=0; i< cur.chains.size(); ++i) {
-        IMP::hdf5::save_frame(rh, frame, cur.chains[i]);
+        IMP::rmf::save_frame(rh, frame, cur.chains[i]);
       }
     }
   }
@@ -207,7 +207,7 @@ namespace {
              }, runtime);
     IMP::benchmark::report(std::string("bd ")+name, runtime, total);
     if (argc>2) {
-      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::hdf5::RootHandle(argv[2],
+      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::rmf::RootHandle(argv[2],
                                                                         true),
                                               0));
     }
@@ -247,7 +247,7 @@ namespace {
     }
 
     if (argc>2) {
-      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::hdf5::RootHandle(argv[2],
+      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::rmf::RootHandle(argv[2],
                                                                         true),
                                               0));
     }
@@ -267,12 +267,12 @@ int main(int argc , char **argv) {
                                     new AttributeSingletonScore(new HLB(0,kk),
                                                                 xk), o);
     {
-      IMP::hdf5::RootHandle fh(argv[2], true);
+      IMP::rmf::RootHandle fh(argv[2], true);
       write_particles(it, fh, 0);
     }
     std::cout << it.m->evaluate(false) << " is the score " << std::endl;
     initialize(it);
-    IMP::hdf5::RootHandle fh(argv[2], true);
+    IMP::rmf::RootHandle fh(argv[2], true);
     write_particles(it, fh, 0);
   } else if (argc >=2 && std::string(argv[1])=="-t") {
     It cur;
