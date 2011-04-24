@@ -130,6 +130,7 @@ void CoreClosePairContainer::do_before_evaluate() {
   set_was_used(true);
   IMP_INTERNAL_CHECK(c_->get_is_up_to_date(),
                      "Input container is not up to date.");
+  IMP_CHECK_CODE(ParticlesTemp debug_moved);
   try {
     if (first_call_) {
       IMP_LOG(TERSE, "Handling first call of ClosePairContainer." << std::endl);
@@ -153,12 +154,15 @@ void CoreClosePairContainer::do_before_evaluate() {
       IMP_INTERNAL_CHECK(moved_->get_is_up_to_date(),
                          "Moved container is not up to date.");
       if (moved_->get_number_of_particles() != 0) {
+        IMP_CHECK_CODE(debug_moved= moved_->get_particles());
         if (moved_->get_particles().size() < c_->get_number_of_particles()*.2) {
           IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer."
                   << std::endl);
           ParticlesTemp moved=moved_->get_particles();
           ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles(),
                                                        moved);
+          ParticlePairsTemp ret1= cpf_->get_close_pairs(moved);
+          ret.insert(ret.begin(), ret1.begin(), ret1.end());
           // make one pass
           internal::filter_close_pairs(this, ret);
           if (false) {
@@ -231,6 +235,7 @@ void CoreClosePairContainer::do_before_evaluate() {
                        "Not all particle pairs in list are unique: "
                        << num
                        << " vs " << existings.size() << std::endl);
+    IMP_CHECK_CODE(std::sort(debug_moved.begin(), debug_moved.end()));
     for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
         XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
@@ -252,7 +257,21 @@ void CoreClosePairContainer::do_before_evaluate() {
                              << " and " << b->get_name()
                              << " not found in list: "
                              << IMP::core::XYZR(a) << std::endl
-                             << IMP::core::XYZR(b));
+                             << IMP::core::XYZR(b)
+                             << " distance "
+                             << core::get_distance(a, b)
+                             << " vs " << distance_ << ". "
+                             << debug_moved.size() << " were moved. "
+                             << " vs " << c_->get_number_of_particles()*.2
+                             << ". This"
+                             << " moved= "
+                             << std::binary_search(debug_moved.begin(),
+                                                   debug_moved.end(),
+                                                   a)
+                             << " and "
+                             <<  std::binary_search(debug_moved.begin(),
+                                                    debug_moved.end(),
+                                                    b));
         }
       }
     }
