@@ -19,6 +19,7 @@
 
 IMP_BEGIN_NAMESPACE
 
+#ifdef IMP_USE_DEPRECATED
 class Model;
 
 /** \name Model IO
@@ -62,41 +63,6 @@ IMPEXPORT void read_particles(TextInput in,
                           const FloatKeys &keys);
 /** @} */
 
-#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
-IMP_DEPRECATED_WARN
-inline void write_model(Model *m,
-                     const ParticlesTemp &particles,
-                        TextOutput out) {
-  write_particles(particles, out);
-}
-IMP_DEPRECATED_WARN
-inline void write_model(const ParticlesTemp &particles,
-                        TextOutput out) {
-  write_particles(particles, out);
-}
-IMP_DEPRECATED_WARN
-inline void read_model(TextInput in,
-                       const ParticlesTemp &particles
-                       ,Model *m=NULL
-                       ) {
-  read_particles(in, particles, m);
-}
-IMP_DEPRECATED_WARN
-inline void write_model(const ParticlesTemp &particles,
-                           const FloatKeys &keys,
-                        TextOutput out) {
-  write_particles(particles, keys, out);
-}
-IMP_DEPRECATED_WARN
-inline void read_model(TextInput in,
-                          const ParticlesTemp &particles,
-                       const FloatKeys &keys) {
-  read_particles(in, particles, keys);
-}
-
-#endif
-
-
 #if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** \name Binary I/O
     \anchor model_binary_io
@@ -132,24 +98,10 @@ IMPEXPORT void read_particles_binary(std::string filename,
                            const FloatKeys &keys,
                            int frame=-1);
 
-#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
-IMP_DEPRECATED_WARN
-inline void write_binary_model(const ParticlesTemp &particles,
-                                  const FloatKeys &keys,
-                                  std::string filename,
-                                  bool append=false) {
-  write_particles_binary(particles, keys, filename, append);
-}
-IMP_DEPRECATED_WARN
-inline void read_binary_model(std::string filename,
-                           const ParticlesTemp &particles,
-                           const FloatKeys &keys,
-                                  int frame=-1) {
-  read_particles_binary(filename, particles, keys, frame);
-}
-#endif
+
 /** @} */
-#endif
+#endif // netcdf and doxygen
+#endif // IMP_USE_DEPRECATED
 
 /** \name Buffer I/O
     Write/read the state of the particles to/from a buffer in memory.
@@ -175,6 +127,7 @@ IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
 
 /** @} */
 
+#ifdef IMP_USE_DEPRECATED
 /** \class WriteParticlesOptimizerState
     Write conformations to different text files.
 
@@ -215,16 +168,9 @@ IMP_MODEL_SAVE(WriteParticlesBinary, (const ParticlesTemp &ps,
                  write_particles_binary(ps_,fks_,file_name, !first_);
                  first_=false;
                });
-#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
-typedef WriteParticlesBinaryOptimizerState WriteBinaryOptimizerState;
-#endif
 
-#endif
-
-#if defined(IMP_USE_DEPRECATED) && !defined(IMP_DOXYGEN)
-typedef WriteParticlesOptimizerState WriteOptimizerState;
-#endif
-
+#endif // doxygen and netcdf
+#endif // IMP_USE_DEPRECATED
 
 IMP_END_NAMESPACE
 

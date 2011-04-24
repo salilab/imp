@@ -95,6 +95,7 @@ void ConfigurationSet::do_show(std::ostream &out) const {
       << " configurations." << std::endl;
 }
 
+#ifdef IMP_USE_DEPRECATED
 #ifdef IMP_KERNEL_USE_NETCDFCPP
 // in io.cpp
 void read_particles_binary(NcFile &f,
@@ -105,6 +106,7 @@ void read_particles_binary(NcFile &f,
 ConfigurationSet* read_configuration_set(std::string filename,
                                          const Particles &ps,
                                          const FloatKeys &keys) {
+  IMP_DEPRECATED(read_configuration_set, IMP.hdf5);
   IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
   read_configuration_set(filename, ps, keys, ret);
   return ret.release();
@@ -114,6 +116,7 @@ void read_configuration_set(std::string filename,
                             const Particles &ps,
                             const FloatKeys &keys,
                             ConfigurationSet *ret) {
+  IMP_DEPRECATED(ret_configuration_set, IMP.hdf5);
   if (ps.empty()) {
     return;
   }
@@ -135,6 +138,7 @@ void write_configuration_set(ConfigurationSet *cs,
                              const Particles &ps,
                              const FloatKeys &keys,
                              std::string fname) {
+  IMP_DEPRECATED(write_configuration_set, IMP.hdf5);
   IMP_NEW(Configuration, c, (cs->get_model()));
   for (unsigned int i=0; i< cs->get_number_of_configurations(); ++i) {
     cs->load_configuration(i);
@@ -143,5 +147,6 @@ void write_configuration_set(ConfigurationSet *cs,
   c->load_configuration();
 }
 #endif
+#endif // IMP_USE_DEPRECATED
 
 IMP_END_NAMESPACE

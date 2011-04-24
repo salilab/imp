@@ -51,7 +51,7 @@ IMP_END_NAMESPACE
   if (::IMP::internal::get_print_deprecation_message(#old_classname)) { \
     IMP_LOG(WARNING, "WARNING: Class " << #old_classname                \
             << " is deprecated "                                        \
-            << "and should not be used.\nUse the class "                \
+            << "and should not be used.\nUse "                          \
             << #replacement_classname << " instead." << std::endl);     \
     ::IMP::internal::set_printed_deprecation_message(#old_classname,    \
                                                            true);       \

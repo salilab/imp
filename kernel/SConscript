@@ -5,14 +5,17 @@ import scons_tools.dependency.boost
 config=[]
 
 scons_tools.dependency.boost.configure_tr1_check(env)
-
-scons_tools.dependency.add_external_library(env, "NetCDFCPP", ["netcdf_c++", 'netcdf'],
-                                                "netcdfcpp.h")
+deplist=[]
+if env.get('deprecated', None):
+    scons_tools.dependency.add_external_library(env, "NetCDFCPP", ["netcdf_c++", 'netcdf'],
+                                            "netcdfcpp.h")
+    deplist.append('NetCDFCPP')
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
                                                body="boost::filesystem::path p;",
                                                extra_boost_libs=["system"])
+deplist.append('Boost.FileSystem')
 
 if not env.GetOption('help'):
     if not env.get('deprecated', True):
@@ -46,4 +49,4 @@ env.IMPModuleBuild(version='SVN', config_macros=config,
                    module_preproc="IMP",
                    module_namespace="IMP",
                    required_dependencies=['Boost'],
-                   optional_dependencies=['Boost.FileSystem', 'NetCDFCPP'])
+                   optional_dependencies=deplist)
