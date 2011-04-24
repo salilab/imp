@@ -18,7 +18,7 @@ def _forward_set_value(self, name, value):
 
 %extend IMP::internal::BoostDigraph {
 %pythoncode %{
-      def show_dotty(self):
+      def show_with_altgraph(self):
            def clean(name):
               try:
                 n0=name.get_name()
@@ -113,11 +113,13 @@ IMP_SWIG_OBJECT(IMP, SingletonsScoreRestraint,SingletonsScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletScoreRestraint,TripletScoreRestraints);
 IMP_SWIG_OBJECT(IMP, TripletsScoreRestraint, TripletsScoreRestraints);
 
+#ifdef IMP_USE_DEPRECATED
 IMP_SWIG_OBJECT(IMP, WriteParticlesOptimizerState, WriteParticlesOptimizerStates);
 IMP_SWIG_OBJECT(IMP, WriteParticlesFailureHandler, WriteParticlesFailureHandlers);
 #ifdef IMP_KERNEL_USE_NETCDFCPP
 IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryOptimizerState, WriteParticlesBinaryOptimizerStates);
 IMP_SWIG_OBJECT(IMP, WriteParticlesBinaryFailureHandler, WriteParticlesBinaryFailureHandlers);
+#endif
 #endif
 
 IMP_SWIG_OBJECT(IMP, SaveToConfigurationSetOptimizerState, SaveToConfigurationSetOptimizerStates);
