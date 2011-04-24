@@ -17,7 +17,7 @@ g.show_graphviz()
 
 # the thing below requires the altgraph python package
 try:
-    g.show_dotty()
+    g.show_with_altgraph()
 except:
     print "no altgraph found"
 
