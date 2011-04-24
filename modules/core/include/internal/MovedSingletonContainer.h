@@ -264,6 +264,7 @@ class MovedSingletonContainerImpl:
 {
   std::vector<Data> backup_;
   virtual void save() {
+    IMP_OBJECT_LOG;
     //backup_.clear();
     backup_.resize(MovedSingletonContainer
                    ::pc_->get_number_of_particles());
@@ -272,6 +273,7 @@ class MovedSingletonContainerImpl:
     MovedSingletonContainer::pc_->apply(rv);
   }
   virtual void save_moved() {
+    IMP_OBJECT_LOG;
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
       IMP_NEW(SaveMoved,  cv, (backup_, get_access()));
       cv->set_was_used(true);
@@ -279,6 +281,7 @@ class MovedSingletonContainerImpl:
     }
   }
   virtual void update_list() {
+    IMP_OBJECT_LOG;
     if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
       bool incr= MovedSingletonContainer
         ::pc_->get_particle(0)->get_model()->get_is_incremental();
