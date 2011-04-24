@@ -38,7 +38,6 @@ class IMPEXPORT OptimizerState : public Object
 {
   friend class Optimizer;
   void set_optimizer(Optimizer* optimizer);
-
 public:
   OptimizerState(std::string name="OptimizerState %1%");
 

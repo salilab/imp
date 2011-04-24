@@ -23,6 +23,51 @@
 
 IMP_BEGIN_NAMESPACE
 
+
+namespace {
+  void write_particles_to_buffer(const ParticlesTemp &particles,
+                          const FloatKeys &keys,
+                          char *buf, unsigned int size) {
+    IMP_USAGE_CHECK(size>= particles.size()*keys.size()*sizeof(double),
+                    "Not enough space: " << size << " vs "
+                    << particles.size()*keys.size()*sizeof(double));
+    boost::iostreams::stream<boost::iostreams::array_sink>  in(buf, size);
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      for (unsigned int j=0; j< keys.size(); ++j) {
+        double value=0;
+        if (particles[i]->has_attribute(keys[j])) {
+          value=particles[i]->get_value(keys[j]);
+        }
+        in.write(reinterpret_cast<char*>(&value), sizeof(double));
+        if (!in) {
+          IMP_THROW("Error reading writing to buffer", IOException);
+        }
+      }
+    }
+  }
+  void read_particles_from_buffer( const char *buffer, unsigned int size,
+                          const ParticlesTemp &particles,
+                          const FloatKeys &keys) {
+    IMP_USAGE_CHECK(size== particles.size()*keys.size()*sizeof(double),
+                    "Not enough data to read: " << size
+                    << " vs " << particles.size()*keys.size()*sizeof(double));
+    boost::iostreams::stream<boost::iostreams::array_source>  in(buffer, size);
+    for (unsigned int i=0; i< particles.size(); ++i) {
+      for (unsigned int j=0; j< keys.size(); ++j) {
+        double value;
+        in.read(reinterpret_cast<char*>(&value), sizeof(double));
+        if (!in) {
+          IMP_THROW("Error reading from buffer", IOException);
+        }
+        if (particles[i]->has_attribute(keys[j])) {
+          particles[i]->set_value(keys[j], value);
+        }
+      }
+    }
+  }
+}
+
+#ifdef IMP_USE_DEPRECATED
 // not yet exposed
 void check_particle(Particle*p);
 
@@ -165,48 +210,7 @@ void read_particles(TextInput in,
 }
 
 
-namespace {
-  void write_particles_to_buffer(const ParticlesTemp &particles,
-                          const FloatKeys &keys,
-                          char *buf, unsigned int size) {
-    IMP_USAGE_CHECK(size>= particles.size()*keys.size()*sizeof(double),
-                    "Not enough space: " << size << " vs "
-                    << particles.size()*keys.size()*sizeof(double));
-    boost::iostreams::stream<boost::iostreams::array_sink>  in(buf, size);
-    for (unsigned int i=0; i< particles.size(); ++i) {
-      for (unsigned int j=0; j< keys.size(); ++j) {
-        double value=0;
-        if (particles[i]->has_attribute(keys[j])) {
-          value=particles[i]->get_value(keys[j]);
-        }
-        in.write(reinterpret_cast<char*>(&value), sizeof(double));
-        if (!in) {
-          IMP_THROW("Error reading writing to buffer", IOException);
-        }
-      }
-    }
-  }
-  void read_particles_from_buffer( const char *buffer, unsigned int size,
-                          const ParticlesTemp &particles,
-                          const FloatKeys &keys) {
-    IMP_USAGE_CHECK(size== particles.size()*keys.size()*sizeof(double),
-                    "Not enough data to read: " << size
-                    << " vs " << particles.size()*keys.size()*sizeof(double));
-    boost::iostreams::stream<boost::iostreams::array_source>  in(buffer, size);
-    for (unsigned int i=0; i< particles.size(); ++i) {
-      for (unsigned int j=0; j< keys.size(); ++j) {
-        double value;
-        in.read(reinterpret_cast<char*>(&value), sizeof(double));
-        if (!in) {
-          IMP_THROW("Error reading from buffer", IOException);
-        }
-        if (particles[i]->has_attribute(keys[j])) {
-          particles[i]->set_value(keys[j], value);
-        }
-      }
-    }
-  }
-}
+
 
 #ifdef IMP_KERNEL_USE_NETCDFCPP
 
@@ -214,6 +218,7 @@ void write_particles_binary(const ParticlesTemp &particles,
                             const FloatKeys &keys,
                             std::string filename,
                             bool append) {
+  IMP_DEPRECATED(write_particles_binary, IMP.hdf5);
   NcFile::FileMode mode;
   // replace on 0 also
   if (append) {
@@ -263,6 +268,7 @@ void read_particles_binary(NcFile &f,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
                        int var_index) {
+  IMP_DEPRECATED(read_particles_binary, IMP.hdf5);
   if (var_index >= f.num_vars()) {
     IMP_THROW("Illegal component of file requested " << var_index
               << ">=" << f.num_vars(), IOException);
@@ -280,6 +286,7 @@ void read_particles_binary(std::string filename,
                        const ParticlesTemp &particles,
                        const FloatKeys &keys,
                        int frame) {
+  IMP_DEPRECATED(read_particles_binary, IMP.hdf5);
   NcFile f(filename.c_str(), NcFile::ReadOnly
            /*,NULL, 0, NcFile::Netcdf4*/);
   if (!f.is_valid()) {
@@ -315,6 +322,7 @@ void read_particles_binary(std::string filename,
 #endif
 
 
+#endif // IMP_USE_DEPRECATED
 
 
 
@@ -339,7 +347,5 @@ IMPEXPORT void read_particles_from_buffer( const std::vector<char> &buffer,
                              buffer.size()*sizeof(double), particles, keys);
   IMP_CHECK_MODEL_PARTICLES(particles[0]->get_model());
 }
-
-
 
 IMP_END_NAMESPACE
