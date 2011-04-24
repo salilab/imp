@@ -16,7 +16,10 @@ g.show_graphviz()
 # drussel@udp012430uds:debug> dot /tmp/graph.dot -Tpdf > /tmp/out.pdf
 
 # the thing below requires the altgraph python package
-g.show_dotty()
+try:
+    g.show_dotty()
+except:
+    print "no altgraph found"
 
 g.remove_vertex(0)
 g.show_graphviz()
