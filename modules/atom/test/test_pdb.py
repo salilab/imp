@@ -113,6 +113,15 @@ class PDBReadWriteTest(IMP.test.TestCase):
         mp= IMP.atom.read_pdb(self.open_input_file("problem_lines.pdb"), m)
         a= IMP.atom.get_leaves(mp)
         self.assertEqual(len(a), 1)
+    def test_read_one_model(self):
+        """Check that only the first model is read"""
+        m = IMP.Model()
+        h= IMP.atom.read_pdb(self.open_input_file("multimodel.pdb"), m,
+                             IMP.atom.AllPDBSelector(), True)
+        #print m.number
+        ln= IMP.atom.get_leaves(h)
+        print len(ln)
+        self.assert_(len(ln) < 1000)
 
 if __name__ == '__main__':
     IMP.test.main()

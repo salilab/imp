@@ -283,6 +283,7 @@ namespace {
         root_name= oss.str();
         root_p=NULL;
       }
+      first_model_read=true;
     }
 
     // check that line is an HETATM or ATOM rec and that selector accepts line.
