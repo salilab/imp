@@ -68,7 +68,6 @@ files = [
          'Typed.h',
          'TypedPairScore.h',
          'VolumeRestraint.h',
-         'WriteModelOptimizerState.h',
          'XYZ.h',
          'XYZR.h',
          'core_macros.h',
