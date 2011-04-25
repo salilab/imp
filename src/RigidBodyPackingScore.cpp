@@ -71,17 +71,6 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   b1=algebra::VectorD<3>(d1.get_begin(),0.0,0.0);
   e1=algebra::VectorD<3>(d1.get_end(),0.0,0.0);
 
-/**
-  IMP_LOG(VERBOSE, "** BEFORE b0[0] " << b0[0] << " b0[1] "<<
-                    b0[1] << " b0[2] " << b0[2] << std::endl);
-  IMP_LOG(VERBOSE, "** BEFORE e0[0] " << e0[0] << " e0[1] "<<
-                    e0[1] << " e0[2] " << e0[2] << std::endl);
-  IMP_LOG(VERBOSE, "** BEFORE b1[0] " << b1[0] << " b1[1] "<<
-                    b1[1] << " b1[2] " << b1[2] << std::endl);
-  IMP_LOG(VERBOSE, "** BEFORE e1[0] " << e1[0] << " e1[1] "<<
-                    e1[1] << " e1[2] " << e1[2] << std::endl);
-**/
-
   // get rigid body transformation
   tr0=core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
   tr1=core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
@@ -91,16 +80,8 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   e0=tr0.get_transformed(e0);
   b1=tr1.get_transformed(b1);
   e1=tr1.get_transformed(e1);
-/**
-  IMP_LOG(VERBOSE, "** AFTER b0[0] " << b0[0] << " b0[1] "<<
-                    b0[1] << " b0[2] " << b0[2] << std::endl);
-  IMP_LOG(VERBOSE, "** AFTER e0[0] " << e0[0] << " e0[1] "<<
-                    e0[1] << " e0[2] " << e0[2] << std::endl);
-  IMP_LOG(VERBOSE, "** AFTER b1[0] " << b1[0] << " b1[1] "<<
-                    b1[1] << " b1[2] " << b1[2] << std::endl);
-  IMP_LOG(VERBOSE, "** AFTER e1[0] " << e1[0] << " e1[1] "<<
-                    e1[1] << " e1[2] " << e1[2] << std::endl);
-**/
+
+  //std::cout << b0 << " " << e0 << " " << b1 << " " << e1 <<std::endl;
 
   // get shortest segment
   segment=algebra::get_shortest_segment(algebra::Segment3D(b0,e0),
@@ -108,25 +89,45 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   t0=segment.get_point(0);
   t1=segment.get_point(1);
 
-/**
-  IMP_LOG(VERBOSE, "** t0[0] " << t0[0] << " t0[1] "<<
-                    t0[1] << " t0[2] " << t0[2] << std::endl);
-  IMP_LOG(VERBOSE, "** t1[0] " << t1[0] << " t1[1] "<<
-                    t1[1] << " t1[2] " << t1[2] << std::endl);
-**/
+  double sign = 1.0;
+  algebra::VectorD<3> tmp0=e0;
+  algebra::VectorD<3> tmp1=e1;
 
-  omega=core::internal::dihedral(e0,t0,t1,e1,NULL,NULL,NULL,NULL);
+  // choose more convenient points for dihedral calculation
+  if ((e0-t0).get_magnitude() < (b0-t0).get_magnitude()){
+   tmp0=b0;
+   sign *= -1.0;
+  }
+  if ((e1-t1).get_magnitude() < (b1-t1).get_magnitude()){
+   tmp1=b1;
+   sign *= -1.0;
+  }
+
+  //std::cout << tmp0 << " " << t0 << " " << t1 << " " << tmp1 <<std::endl;
+
+  double pi=acos(-1.0);
+
+  omega=core::internal::dihedral(tmp0,t0,t1,tmp1,NULL,NULL,NULL,NULL);
+
+  //std::cout << omega << std::endl;
+
+  // correction for having changed dihedral points
+  omega += (sign-1.0)*pi/2.0;
+  if ( omega < -pi ) omega += 2.0*pi;
+
   dist =segment.get_length();
+
+  //std::cout << " OMEGA " << omega << " LENGTH " << dist << std::endl;
 
   // log something
   IMP_LOG(VERBOSE, "** The crossing angle is " << omega <<
                    " and the distance is " << dist << std::endl);
 
   // calculate the score
-  double score=1.0;
+  double score=1000.0;
   for(unsigned int i=0;i<omb_.size();i++)
-   if(omega > omb_[i] && omega < ome_[i] &&
-      dist > ddb_[i] && dist < dde_[i]) score=0.;
+   if(omega >= omb_[i] && omega <= ome_[i] &&
+      dist >= ddb_[i] && dist <= dde_[i]) score=0.;
 
   return score;
 }
