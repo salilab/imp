@@ -15,4 +15,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            'QuadFunctor', 'RandomNumberGenerator', 'RefCounted',
                                            'SingletonFunctor', 'TripletFunctor', 'UsageException',
                                            'ValueException', 'WarningContext', 'DerivativeAccumulator',
-                                           'FailureHandlerBase'])
+                                           'FailureHandlerBase'],
+                  spelling_exceptions=['altgraph'])
