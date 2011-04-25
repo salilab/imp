@@ -64,13 +64,12 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         m.add_restraint(evr)
         m.set_maximum_score(evr, 0.01)
 
-    def add_distance_restraint(s0, s1, x0, k):
+    def add_loop_restraint(s0, s1, x0, k):
         hub= IMP.core.HarmonicUpperBound(x0,k)
         df= IMP.core.DistancePairScore(hub)
         dr= IMP.core.PairRestraint(df, IMP.ParticlePair(s0, s1))
         m.add_restraint(dr)
         m.set_maximum_score(dr, .01)
-        return dr
 
     def add_packing_restraint():
 ## if the helices are interacting, apply a filter on the crossing angle
@@ -120,7 +119,6 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         m.add_restraint(prs)
         m.set_maximum_score(prs, .001)
 
-## DOPE/GQ scoring
     def add_DOPE():
         IMP.atom.add_dope_score_data(chain)
         dsc=IMP.container.ListSingletonContainer(m)
@@ -146,7 +144,6 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         ir=  IMP.core.PairRestraint(kc,[rb0,rb1])
         m.add_restraint(ir)
         m.set_maximum_score(ir,.01)
-        return ir
 
     def add_diameter_restraint(diameter):
         lrb= IMP.container.ListSingletonContainer(m)
@@ -195,15 +192,14 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
         length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
-        dr=add_distance_restraint(p0,p1,length,1000)
-        #rdr=add_distance_restraint(rb0,rb1,30.0,1000)
+        add_loop_restraint(p0,p1,length,1000)
     add_packing_restraint()
     add_DOPE()
     add_diameter_restraint(35.0)
-    add_depth_restraint([-5.0,5.0])
+    add_depth_restraint([-4.0,4.0])
     add_tilt_restraint([0,math.radians(40)],rot0)
-    ir0=add_interacting_restraint(TMH[1],TMH[2])
-    #ir1=add_interacting_restraint(TMH[0],TMH[1])
+    add_interacting_restraint(TMH[1],TMH[2])
+    add_interacting_restraint(TMH[0],TMH[3])
 
 def display(m,chain,TMH,name):
     m.update()
@@ -225,7 +221,7 @@ def display(m,chain,TMH,name):
 #IMP.set_log_level(IMP.VERBOSE)
 
 # TM regions
-TMH= [[24,48], [75,94], [220,238]]#, [254,276]]
+TMH= [[24,48], [75,94], [220,238], [254,276]]
 
 # define TMH sequences
 seq0=("M","L","I","H","N","W","I","L","T","F","S","I","F","R","E","H","P","S","T","V","F","Q","I","F","T","K","C","I","L","V","S","S","S","F","L","L","F","Y","T","L","L","P","H","G","L","L","E","D","L","M","R","R","V","G","D","S","L","V","D","L","I","V","I","C","E","D","S","Q","G","Q","H","L","S","S","F","C","L","F","V","A","T","L","Q","S","P","F","S","A","G","V","S","G","L","C","K","A","I","L","L","P","S","K","Q","I","H","V","M","I","Q","S","V","D","L","S","I","G","I","T","N","S","L","T","N","E","Q","L","C","G","F","G","F","F","L","N","V","K","T","N","L","H","C","S","R","I","P","L","I","T","N","L","F","L","S","A","R","H","M","S","L","D","L","E","N","S","V","G","S","Y","H","P","R","M","I","W","S","V","T","W","Q","W","S","N","Q","V","P","A","F","G","E","T","S","L","G","F","G","M","F","Q","E","K","G","Q","R","H","Q","N","Y","E","F","P","C","R","C","I","G","T","C","G","R","G","S","V","Q","C","A","G","L","I","S","L","P","I","A","I","E","F","T","Y","Q","L","T","S","S","P","T","C","I","V","R","P","W","R","F","P","N","I","F","P","L","I","A","C","I","L","L","L","S","M","N","S","T","L","S","L","F","S","F","S","G","G","R","S","G","Y","V","L","M","L","S","S","K","Y","Q","D","S","F","T","S","K","T","R","N","K","R","E","N","S","I","F","F","L","G","L","N","T","F","T","D","F","R","H","T","I","N","G","P","I","S","P","L","M","R","S","L","T","R","S","T","V","E")
@@ -239,7 +235,7 @@ for h in TMH:
     seq.append(tmp)
 
 # define the topology
-topo=[1.0,-1.0,1.0]#,-1.0]
+topo=[1.0,-1.0,1.0,-1.0]
 
 print "creating representation"
 (m,chain,tbr,rot0)=create_representation(seq,TMH,topo)
@@ -247,8 +243,15 @@ print "creating representation"
 print "creating restraints"
 create_restraints(m,chain,tbr,TMH,rot0,topo)
 
-print "creating movers"
+print "creating sampler"
 mc= IMP.core.MonteCarlo(m)
+# minimum and maximum temperature
+temp0=3.0
+temp1=5.0
+DeltaT=0.0
+temp=temp0
+mc.set_return_best(False)
+
 for i,h in enumerate(TMH):
     s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
     rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -257,11 +260,22 @@ for i,h in enumerate(TMH):
     if ( i > 1 ):  mv= IMP.membrane.RigidBodyNewMover(rb, 0.5, 0.5, 0.5, 0.05, 0.05, 0.05)
     mc.add_mover(mv)
 
-mc.set_kt(3.0)
-mc.set_return_best(False)
+print "initiazing system"
+for i,h in enumerate(TMH):
+    s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
+    rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+    rot=IMP.algebra.get_identity_rotation_3d()
+    tr=IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(i*12.0,0,0))
+    IMP.core.transform(rb,tr)
+
+#display(m,chain,TMH,"initial.pym")
 
 print "sampling"
 for steps in range(1000):
-    mc.optimize(1000)
+    temp=temp+DeltaT
+    if ( temp >= temp1 ): DeltaT *= -1.0
+    if ( temp <= temp0 ): DeltaT *= -1.0
+    mc.set_kt(temp)
+    mc.optimize(100)
     score=m.evaluate(False)
     display(m,chain,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
