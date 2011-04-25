@@ -228,7 +228,6 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 %include "IMP/core/RigidBodyMover.h"
 %include "IMP/core/VolumeRestraint.h"
 %include "IMP/core/utility.h"
-%include "IMP/core/WriteModelOptimizerState.h"
 %include "IMP/core/StatisticalPairScore.h"
 %include "IMP/core/MoveStatisticsScoreState.h"
 %include "IMP/core/Typed.h"
