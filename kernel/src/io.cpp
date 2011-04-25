@@ -23,6 +23,8 @@
 
 IMP_BEGIN_NAMESPACE
 
+// not yet exposed
+void check_particle(Particle*p);
 
 namespace {
   void write_particles_to_buffer(const ParticlesTemp &particles,
@@ -68,8 +70,7 @@ namespace {
 }
 
 #ifdef IMP_USE_DEPRECATED
-// not yet exposed
-void check_particle(Particle*p);
+
 
 void write_particles(const ParticlesTemp &particles,
                      TextOutput out) {
