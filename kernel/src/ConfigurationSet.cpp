@@ -103,14 +103,6 @@ void read_particles_binary(NcFile &f,
                            const FloatKeys &keys,
                            int var_index);
 
-ConfigurationSet* read_configuration_set(std::string filename,
-                                         const Particles &ps,
-                                         const FloatKeys &keys) {
-  IMP_DEPRECATED(read_configuration_set, IMP.hdf5);
-  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
-  read_configuration_set(filename, ps, keys, ret);
-  return ret.release();
-}
 
 void read_configuration_set(std::string filename,
                             const Particles &ps,
@@ -131,6 +123,16 @@ void read_configuration_set(std::string filename,
     ret->save_configuration();
   }
 }
+
+ConfigurationSet* read_configuration_set(std::string filename,
+                                         const Particles &ps,
+                                         const FloatKeys &keys) {
+  IMP_DEPRECATED(read_configuration_set, IMP.hdf5);
+  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
+  read_configuration_set(filename, ps, keys, ret);
+  return ret.release();
+}
+
 
 
 
