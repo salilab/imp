@@ -50,13 +50,13 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    values for the frame are treated as every nth frame. That is, "-f -2" means take
    every other frame.
 
-   - \c hdf5_display outputs an arbitrary
+   - \c rmf_display outputs an arbitrary
    hdf5 file to pymol or chimera as appropriate (based on the file name of the
    second argument). It supports hierarchies, restraints and geometry.
 
-   - \c hdf5_show prints out the hierarchy written to the file.
+   - \c rmf_show prints out the hierarchy written to the file.
 
-   - \c hdf5_to_pdb converts an hdf5 file to a PDB file, assuming all hierarchies
+   - \c rmf_to_pdb converts an hdf5 file to a PDB file, assuming all hierarchies
    in the hdf5 file are atomic resolution.
 
    \section ff RMF Files
