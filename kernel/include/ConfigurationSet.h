@@ -61,7 +61,7 @@ class IMPEXPORT ConfigurationSet: public Object
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
-#ifdef IMP_USED_DEPRECATED
+#ifdef IMP_USE_DEPRECATED
 
 #if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
 /** Read a set of configurations from a file created by write_binary_model().
