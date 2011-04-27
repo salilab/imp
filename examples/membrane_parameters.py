@@ -1,11 +1,11 @@
 import math
 
 # various parameters are specified here
-# general for restraints
+# general parameters for restraints
 kappa_=1000.0
 max_score_=0.01
 
-# packing restraint
+# packing restraint cluster stuff
 packing_nsig_=3
 packing_ncl_=13
 
@@ -19,9 +19,9 @@ z_range_=[-3.5,3.5]
 tilt_range_=[0,math.radians(45)]
 
 # monte carlo
-mc_kt=1.0
-mc_loops=100
-mc_steps=100
+mc_kt=3.0
+mc_loops=1000
+mc_steps=10
 
 # trajectory file
 mc_traj_file="traj.hdf5"
@@ -39,7 +39,7 @@ def setup_protein():
 # name of the TMH
     names=["TM0","TM1","TM2"]#,"TM3"]
 # interacting pairs
-    TM_inter=[["TM0","TM1"]]
+    TM_inter=[["TM1","TM2"]]
 
 # storing sequences of TMH
     seq=[]

@@ -142,8 +142,6 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo, tm_inter):
         s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i+1][0])
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
-        rb0=IMP.core.RigidMember(p0).get_rigid_body()
-        rb1=IMP.core.RigidMember(p1).get_rigid_body()
         length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
         lr=add_loop_restraint(p0,p1,length,1000)
         rset.add_restraint(lr)

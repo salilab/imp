@@ -27,7 +27,7 @@ print "creating representation"
 print "creating restraints"
 rset=create_restraints(m,chain,tbr,TMH,rot0,topo,TM_inter)
 
-print "getting IG and JT"
+print "visualizing IG and JT"
 (ig,jt)=get_graphs(m,chain,TMH,rset)
 print ig,jt
 
