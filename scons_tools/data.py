@@ -33,7 +33,18 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                                 "get_connectivity_clustering":\
                                 "(Embedding*,double)"},
                   "algebra":{"get_random_vector_in":"(const SphereD<D>&)",
-                             "get_random_vector_on":"(const SphereD<D>&)"}
+                             "get_random_vector_on":"(const SphereD<D>&)"},
+                  "hdf5":{"add_hierarchy":"(RootHandle, Hierarchy)",
+                          "save_frame":"(RootHandle, int, Hierarchy)",
+                          "load_frame":"(RootHandle, int, Hierarchy)",
+                          "create_hierarchies":"(RootHandle, Model*)",
+                          "set_hierarchies":"(RootHandle, Model*)",
+                          "add_geometry":"(RootHandle, Geometry*)",
+                          "save_frame":"(RootHandle, int, Geometry*)",
+                          "create_geometry":"(RootHandle, int)",
+                          "add_particle":"(RootHandle, Particle*)",
+                          "create_particles":"(RootHandle, Model*)",
+                          }
                   }
 
 
