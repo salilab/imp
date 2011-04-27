@@ -97,6 +97,7 @@ IMP_SWIG_BASE_OBJECT(IMP,TripletModifier, TripletModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
 IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
+IMP_SWIG_OBJECT(IMP,Configuration, Configurations);
 IMP_SWIG_OBJECT(IMP,Model, Models);
 //IMP_SWIG_OBJECT(IMP,Object, Objects);
 IMP_SWIG_OBJECT(IMP,Particle, Particles);
@@ -298,6 +299,7 @@ namespace IMP {
 %include "IMP_kernel_random.i"
 %include "IMP/Optimizer.h"
 %include "IMP/ConfigurationSet.h"
+%include "IMP/Configuration.h"
 %include "IMP/Sampler.h"
 %include "IMP/SingletonScore.h"
 %include "IMP/PairScore.h"
