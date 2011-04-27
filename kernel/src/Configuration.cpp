@@ -29,6 +29,7 @@ Configuration::Configuration(Model *m, std::string name): Object(name),
 
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
+  set_was_used(true);
   Particles to_remove;
   // do not invalidate my iterator
   for (Model::ParticleIterator it= model_->particles_begin();
