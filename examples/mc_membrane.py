@@ -253,7 +253,7 @@ print "creating sampler"
 mc= IMP.core.MonteCarlo(m)
 mc.set_return_best(False)
 # minimum and maximum temperature
-temp0=3.0
+temp0=0.5
 temp1=5.0
 DeltaT=0.0
 temp=temp0
@@ -279,22 +279,23 @@ for i,h in enumerate(TMH):
 
 # preparing hdf5 file
 tfn="traj.hdf5"
-rh = IMP.rmf.RootHandle(tfn, True)
-#rh = IMP.rmf.RootHandle(tfn, False)
+#rh = IMP.rmf.RootHandle(tfn, True)
+rh = IMP.rmf.RootHandle(tfn, False)
 # write the hierarchy to the file
-IMP.rmf.add_hierarchy(rh, chain)
-#IMP.rmf.set_hierarchies(rh, [chain])
+#for hs in chain.get_children():
+#    IMP.rmf.add_hierarchy(rh, hs)
+IMP.rmf.set_hierarchies(rh, chain.get_children())
 
 print "sampling"
 for steps in range(100):
     temp=temp+DeltaT
     if ( temp >= temp1 or temp <= temp0 ): DeltaT *= -1.0
     mc.set_kt(temp)
-    mc.optimize(100)
-    #IMP.rmf.load_frame(rh, steps+1, chain)
-    score=m.evaluate(False)
+    #mc.optimize(100)
+    #print steps. m.evaluate(False)
     #display(m,chain,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
-    print steps, score
-    IMP.rmf.save_frame(rh, steps+1, chain)
+    for hs in chain.get_children():
+    #    IMP.rmf.save_frame(rh, steps+1, hs)
+        IMP.rmf.load_frame(rh, steps+1, hs)
 # close file
 del rh
