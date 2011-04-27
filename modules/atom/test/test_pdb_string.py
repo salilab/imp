@@ -37,7 +37,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
             s = StringIO()
             IMP.atom.write_pdb(pdb, s)
-            self.assertEqual(s.getvalue()[12:16].strip(), atom)
+            print s.getvalue()
+            self.assertEqual(s.getvalue()[15+12:15+16].strip(), atom)
 
 if __name__ == '__main__':
     IMP.test.main()

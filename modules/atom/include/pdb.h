@@ -353,11 +353,13 @@ IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(Hierarchy mhd,
-                             TextOutput out);
+                             TextOutput out,
+                             unsigned int model=0);
 /** \relatesalso Hierarchy
 */
 IMPATOMEXPORT void write_pdb(const Hierarchies &mhd,
-                             TextOutput out);
+                             TextOutput out,
+                             unsigned int model=0);
 
 /** \relatesalso Hierarchy
 */
@@ -397,9 +399,9 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int,int);
 
 /** \class WritePDBOptimizerState
     This writes a PDB file at the specified interval during optimization.
-    The file name should not contain
-    %1% (if it does not, the same file will be overwritten each time).
-
+    If the file name contains %1% then a new file is written each time
+    with the %1% replaced by the index. Otherwise a new model is written
+    each time to the same file.
     \class WritePDBFailureHandler
     Write a PDB when an error occurs.
 
@@ -410,8 +412,9 @@ IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                mh_=mh;,
                ,
                {
+                 TextOutput to(file_name, append);
                  IMP_LOG(TERSE, "Writing pdb file " << file_name << std::endl);
-                 atom::write_pdb(mh_,file_name);
+                 atom::write_pdb(mh_,to, append?call:0);
                });
 
 
