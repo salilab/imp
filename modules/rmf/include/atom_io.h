@@ -53,11 +53,14 @@ IMPRMFEXPORT atom::Hierarchies create_hierarchies(RootHandle fh, Model *m);
 IMPRMFEXPORT void set_hierarchies(RootHandle rh,
                                    atom::Hierarchies hs);
 
-/** Read the ith frame from a file as a new hierarchy.
+/** Read the ith frame from a file as a new hierarchy. If there are
+    particles involved in a core::RigidBody, the core::RigidBody
+    will have its orientation updated based on the loaded coordinates
+    of the core::RigidMember particles.
  */
 IMPRMFEXPORT void load_frame(RootHandle fh,
-                              unsigned int frame,
-                              atom::Hierarchy hs);
+                             unsigned int frame,
+                             atom::Hierarchy hs);
 /** @} */
 
 
