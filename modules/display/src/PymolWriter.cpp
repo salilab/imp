@@ -115,7 +115,6 @@ bool PymolWriter::handle(CylinderGeometry *g,
                << ", " << color.get_green()
                << ", " << color.get_blue()
                << ",\n";
-  cleanup(name);
   return true;
 }
 bool PymolWriter::handle(PointGeometry *g,
