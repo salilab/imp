@@ -234,9 +234,6 @@ public:
   BoostDigraph(const BG& bg): Object("Graph"){
     boost::copy_graph(bg, bg_);
     vm_= boost::get(boost::vertex_name, bg_);
-    IMP_INTERNAL_CHECK(get_vertices().size() == distance(boost::vertices(bg_)),
-                       "Vertices don't match " << get_vertices().size()
-                       << " vs " << distance(boost::vertices(bg_)));
     for (int i=0; i< boost::num_vertices(bg_); ++i) {
       IMP_INTERNAL_CHECK(distance(boost::out_edges(i, bg_))
                          == distance(boost::out_edges(i, bg)),
@@ -248,6 +245,9 @@ public:
     std::pair<typename Traits::vertex_iterator,
       typename Traits::vertex_iterator> be= boost::vertices(bg_);
     index_map_=Ints(be.first, be.second);
+    IMP_INTERNAL_CHECK(get_vertices().size() == distance(boost::vertices(bg_)),
+                       "Vertices don't match " << get_vertices().size()
+                       << " vs " << distance(boost::vertices(bg_)));
   }
 #endif
 #ifndef SWIG
