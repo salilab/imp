@@ -16,6 +16,9 @@
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/rmf/operations.h>
+#include <IMP/internal/Map.h>
+#include <IMP/core/rigid_bodies.h>
+#include <IMP/algebra/geometric_alignment.h>
 #include <boost/progress.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
@@ -352,14 +355,41 @@ atom::Hierarchies create_hierarchies(RootHandle fh, Model *model) {
 
 
 namespace {
+  typedef IMP::internal::Map<Particle*, ParticlesTemp> RBM;
   void load_internal(RootHandle file, atom::Hierarchy h, unsigned int frame,
+                     RBM &rigid_bodies,
                      IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     NodeHandle ncur= file.get_node_handle_from_association(h.get_particle());
     copy_data(ncur, h, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
+    if (core::RigidMember::particle_is_instance(h)) {
+      Particle *rb= core::RigidMember(h).get_rigid_body();
+      rigid_bodies[rb].push_back(h);
+    }
     atom::HierarchiesTemp children= h.get_children();
     for (unsigned int i=0; i < children.size(); ++i) {
-      load_internal(file, children[i], frame,
+      load_internal(file, children[i], frame, rigid_bodies,
                     IMP_HDF5_PASS_MOLECULE_KEYS);
+    }
+  }
+  void fix_rigid_body(core::RigidBody rb, core::RigidMembers rms) {
+    algebra::Vector3Ds local(rms.size());
+    algebra::Vector3Ds global(rms.size());
+    for (unsigned int i=0; i< rms.size(); ++i) {
+      local[i]= rms[i].get_internal_coordinates();
+      global[i]= rms[i].get_coordinates();
+    }
+    algebra::Transformation3D t3
+      = algebra::get_transformation_aligning_first_to_second(local, global);
+    rb.set_reference_frame(algebra::ReferenceFrame3D(t3));
+    core::RigidBody cur= rb;
+    while (core::RigidMember::particle_is_instance(cur)) {
+      core::RigidMember rm(cur);
+      core::RigidBody parent= rm.get_rigid_body();
+      // t0= tp*tl -> tp= t0*tl-1
+      algebra::Transformation3D t3
+        = cur.get_reference_frame().get_transformation_to()
+        *rm.get_internal_transformation().get_inverse();
+      cur=parent;
     }
   }
 }
@@ -368,7 +398,18 @@ void load_frame(RootHandle fh,
                 unsigned int frame,
                 atom::Hierarchy hs) {
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
-  load_internal(fh, hs, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
+  RBM rigid_bodies;
+  load_internal(fh, hs, frame, rigid_bodies, IMP_HDF5_PASS_MOLECULE_KEYS);
+  for (RBM::const_iterator it= rigid_bodies.begin();
+       it != rigid_bodies.end(); ++it) {
+    if (it->second.size()<3) {
+      IMP_WARN("Too few particles to update rigid body: "
+               << it->first->get_name());
+    } else {
+      fix_rigid_body(core::RigidBody(it->first),
+                     core::RigidMembers(it->second));
+    }
+  }
 }
 
 
