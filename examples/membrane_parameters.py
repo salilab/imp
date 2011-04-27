@@ -14,7 +14,11 @@ score_name_="dope_score.lib"
 
 # other restraints
 d0_inter_=8.0
-diameter_=35.0
+# max diameter
+# nTMH::  2   3   4   5   6   7   8   9   10   11   12   13   14
+# d   :: 16  35  26  51  48  51  50  34   39   52   48   43   42
+diameter_=26.0
+# these two parameters should depend on helix length
 z_range_=[-3.5,3.5]
 tilt_range_=[0,math.radians(45)]
 
