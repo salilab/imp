@@ -18,6 +18,7 @@
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/core/Hierarchy.h>
 #include <boost/algorithm/string.hpp>
+#include <boost/format.hpp>
 #include <locale>
 #include <fstream>
 #include <iomanip>
@@ -409,7 +410,7 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model,
 bool check_arbond(Particle* atom_p);
 
 namespace {
-void write_pdb(const Particles& ps, TextOutput out)
+  void write_pdb(const Particles& ps, TextOutput out)
 {
   IMP_FUNCTION_LOG;
   int last_index=0;
@@ -463,32 +464,31 @@ void write_pdb(const Particles& ps, TextOutput out)
     }
   }
 }
-}
 
-void write_pdb(Hierarchy mhd, TextOutput out)
-{
-  Particles ps= get_leaves(mhd);
-  write_pdb(ps, out);
-}
-
-void write_pdb(const Hierarchies& mhd, TextOutput out)
-{
-  for (unsigned int i=0; i< mhd.size(); ++i) {
-    write_pdb(mhd[i], out);
+  void write_model(const Hierarchies& hs, TextOutput out, unsigned int model) {
+    out.get_stream() << boost::format("MODEL%1$9d")%model << std::endl;
+    for (unsigned int i=0; i< hs.size(); ++i) {
+      write_pdb(get_leaves(hs[i]), out);
+    }
+    out.get_stream() << "ENDMDL" << std::endl;
   }
+}
+
+void write_pdb(Hierarchy mhd, TextOutput out, unsigned int model)
+{
+  write_model(Hierarchies(1, mhd), out, model);
+}
+
+void write_pdb(const Hierarchies& mhd, TextOutput out, unsigned int model)
+{
+  write_model(mhd, out, model);
 }
 
 
 void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 {
-  std::ostream &out=oout;
   for (unsigned int i=0; i< mhd.size(); ++i) {
-    out << "MODEL   ";
-    out.setf(std::ios::right, std::ios::adjustfield);
-    out.width(4);
-    out << (i+1) << std::endl;
-    write_pdb(mhd[i], out);
-    out << "ENDMDL" << std::endl;
+    write_model(Hierarchies(1, mhd[i]), oout, i);
   }
 }
 
