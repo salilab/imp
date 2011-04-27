@@ -16,7 +16,7 @@
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/rmf/operations.h>
-#include <IMP/internal/Map.h>
+#include <IMP/internal/map.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <boost/progress.hpp>
