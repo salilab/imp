@@ -1,6 +1,7 @@
 import math
 
-# various parameters for restraint are specified here
+# various parameters are specified here
+# general for restraints
 kappa_=1000.0
 max_score_=0.01
 
@@ -17,6 +18,15 @@ diameter_=35.0
 z_range_=[-3.5,3.5]
 tilt_range_=[0,math.radians(45)]
 
+# monte carlo
+mc_kt=1.0
+mc_loops=100
+mc_steps=100
+
+# trajectory file
+mc_traj_file="traj.hdf5"
+
+# protein setup and parameters
 
 def setup_protein():
 # define TMH sequences

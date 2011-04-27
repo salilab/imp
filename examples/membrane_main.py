@@ -32,20 +32,18 @@ print "getting IG and JT"
 print ig,jt
 
 print "creating sampler"
-kt=1.0
-mc=setup_MonteCarlo(m,chain,TMH,kt)
+mc=setup_MonteCarlo(m,chain,TMH,mc_kt)
 
 # preparing hdf5 file
-tfn= "traj.hdf5"
-rh = IMP.rmf.RootHandle(tfn, True)
-#rh = IMP.rmf.RootHandle(tfn, False)
+rh = IMP.rmf.RootHandle(mc_traj_file, True)
+#rh = IMP.rmf.RootHandle(mc_traj_file, False)
 for hs in chain.get_children():
     IMP.rmf.add_hierarchy(rh, hs)
 #IMP.rmf.set_hierarchies(rh, chain.get_children())
 
 print "sampling"
-for steps in range(100):
-    mc.optimize(100)
+for steps in range(mc_loops):
+    mc.optimize(mc_steps)
     #print steps. m.evaluate(False)
     #display(m,chain,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
     for hs in chain.get_children():
