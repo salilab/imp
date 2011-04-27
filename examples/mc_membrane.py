@@ -4,15 +4,19 @@ import IMP.algebra
 import IMP.domino
 import IMP.atom
 import IMP.membrane
+import IMP.rmf
 import math
 
-def create_representation(seq,tmh,topo):
+def create_representation(seq,names,tmh,topo):
 
     m=IMP.Model()
     tbr= IMP.core.TableRefiner()
     all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 
-    def generate_balls(id,seq,tmh,sign):
+    def generate_tm(seq,name,tmh,sign):
+        pm=IMP.Particle(m)
+        tm=IMP.atom.Molecule.setup_particle(pm)
+        tm.set_name(name)
         nres=len(seq)
         atoms=[]
         for i in range(nres):
@@ -34,10 +38,11 @@ def create_representation(seq,tmh,topo):
             if (i == 0):      begin=p1
             if (i == nres-1): end=p1
             r.add_child(a)
-            all.add_child(r)
+            tm.add_child(r)
             atoms.append(ad)
+        all.add_child(tm)
         rb=IMP.Particle(m)
-        rb=IMP.atom.create_rigid_body(atoms,"TM"+str(id))
+        rb=IMP.atom.create_rigid_body(atoms,name)
         tbr.add_particle(rb,atoms)
         # adjust axis to match topology
         bb=IMP.core.RigidMember(begin).get_internal_coordinates()[0]
@@ -49,7 +54,7 @@ def create_representation(seq,tmh,topo):
 
     rot0=[]
     for i in range(len(seq)):
-        rot=generate_balls(i,seq[i],tmh[i],topo[i])
+        rot=generate_tm(seq[i],names[i],tmh[i],topo[i])
         rot0.append(rot)
     return m,all,tbr,rot0
 
@@ -199,7 +204,7 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
     add_depth_restraint([-4.0,4.0])
     add_tilt_restraint([0,math.radians(40)],rot0)
     add_interacting_restraint(TMH[1],TMH[2])
-    add_interacting_restraint(TMH[0],TMH[3])
+    #add_interacting_restraint(TMH[0],TMH[3])
 
 def display(m,chain,TMH,name):
     m.update()
@@ -217,11 +222,9 @@ def display(m,chain,TMH,name):
             g.set_color(IMP.display.get_display_color(c))
             w.add_geometry(g)
 
-# Here starts the real job...
-#IMP.set_log_level(IMP.VERBOSE)
 
 # TM regions
-TMH= [[24,48], [75,94], [220,238], [254,276]]
+TMH= [[24,48], [75,94], [220,238]]#, [254,276]]
 
 # define TMH sequences
 seq0=("M","L","I","H","N","W","I","L","T","F","S","I","F","R","E","H","P","S","T","V","F","Q","I","F","T","K","C","I","L","V","S","S","S","F","L","L","F","Y","T","L","L","P","H","G","L","L","E","D","L","M","R","R","V","G","D","S","L","V","D","L","I","V","I","C","E","D","S","Q","G","Q","H","L","S","S","F","C","L","F","V","A","T","L","Q","S","P","F","S","A","G","V","S","G","L","C","K","A","I","L","L","P","S","K","Q","I","H","V","M","I","Q","S","V","D","L","S","I","G","I","T","N","S","L","T","N","E","Q","L","C","G","F","G","F","F","L","N","V","K","T","N","L","H","C","S","R","I","P","L","I","T","N","L","F","L","S","A","R","H","M","S","L","D","L","E","N","S","V","G","S","Y","H","P","R","M","I","W","S","V","T","W","Q","W","S","N","Q","V","P","A","F","G","E","T","S","L","G","F","G","M","F","Q","E","K","G","Q","R","H","Q","N","Y","E","F","P","C","R","C","I","G","T","C","G","R","G","S","V","Q","C","A","G","L","I","S","L","P","I","A","I","E","F","T","Y","Q","L","T","S","S","P","T","C","I","V","R","P","W","R","F","P","N","I","F","P","L","I","A","C","I","L","L","L","S","M","N","S","T","L","S","L","F","S","F","S","G","G","R","S","G","Y","V","L","M","L","S","S","K","Y","Q","D","S","F","T","S","K","T","R","N","K","R","E","N","S","I","F","F","L","G","L","N","T","F","T","D","F","R","H","T","I","N","G","P","I","S","P","L","M","R","S","L","T","R","S","T","V","E")
@@ -235,23 +238,27 @@ for h in TMH:
     seq.append(tmp)
 
 # define the topology
-topo=[1.0,-1.0,1.0,-1.0]
+topo=[1.0,-1.0,1.0]#,-1.0]
+
+# name of the TMH
+names=["TM0","TM1","TM2"]
 
 print "creating representation"
-(m,chain,tbr,rot0)=create_representation(seq,TMH,topo)
+(m,chain,tbr,rot0)=create_representation(seq,names,TMH,topo)
 
 print "creating restraints"
 create_restraints(m,chain,tbr,TMH,rot0,topo)
 
 print "creating sampler"
 mc= IMP.core.MonteCarlo(m)
+mc.set_return_best(False)
 # minimum and maximum temperature
 temp0=3.0
 temp1=5.0
 DeltaT=0.0
 temp=temp0
-mc.set_return_best(False)
 
+# Movers
 for i,h in enumerate(TMH):
     s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h[0])
     rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
@@ -270,12 +277,24 @@ for i,h in enumerate(TMH):
 
 #display(m,chain,TMH,"initial.pym")
 
+# preparing hdf5 file
+tfn="traj.hdf5"
+rh = IMP.rmf.RootHandle(tfn, True)
+#rh = IMP.rmf.RootHandle(tfn, False)
+# write the hierarchy to the file
+IMP.rmf.add_hierarchy(rh, chain)
+#IMP.rmf.set_hierarchies(rh, [chain])
+
 print "sampling"
-for steps in range(1000):
+for steps in range(100):
     temp=temp+DeltaT
-    if ( temp >= temp1 ): DeltaT *= -1.0
-    if ( temp <= temp0 ): DeltaT *= -1.0
+    if ( temp >= temp1 or temp <= temp0 ): DeltaT *= -1.0
     mc.set_kt(temp)
     mc.optimize(100)
+    #IMP.rmf.load_frame(rh, steps+1, chain)
     score=m.evaluate(False)
-    display(m,chain,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
+    #display(m,chain,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
+    print steps, score
+    IMP.rmf.save_frame(rh, steps+1, chain)
+# close file
+del rh
