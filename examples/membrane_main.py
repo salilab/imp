@@ -40,7 +40,7 @@ print "creating representation"
 (chain,tbr,rot0)=create_representation(m,seq,names,TMH,topo)
 
 print "creating restraints"
-create_restraints(m,chain,tbr,TMH,rot0,topo)
+rset=create_restraints(m,chain,tbr,TMH,rot0,topo)
 
 print "creating sampler"
 kt=1.0

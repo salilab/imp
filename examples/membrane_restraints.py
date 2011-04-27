@@ -23,6 +23,7 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         dr= IMP.core.PairRestraint(df, IMP.ParticlePair(s0, s1))
         m.add_restraint(dr)
         m.set_maximum_score(dr, .01)
+        return dr
 
     def add_packing_restraint():
 ## if the helices are interacting, apply a filter on the crossing angle
@@ -97,6 +98,7 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         ir=  IMP.core.PairRestraint(kc,[rb0,rb1])
         m.add_restraint(ir)
         m.set_maximum_score(ir,.01)
+        return ir
 
     def add_diameter_restraint(diameter):
         lrb= IMP.container.ListSingletonContainer(m)
@@ -136,6 +138,7 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
             m.set_maximum_score(sr,.01)
 
 # assembling all the restraints
+    rset=IMP.RestraintSet()
     add_excluded_volume()
     for i in range(len(TMH)-1):
         s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
@@ -145,11 +148,13 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
         length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
-        add_loop_restraint(p0,p1,length,1000)
+        lr=add_loop_restraint(p0,p1,length,1000)
+        rset.add_restraint(lr)
     add_packing_restraint()
     add_DOPE()
     add_diameter_restraint(35.0)
     add_depth_restraint([-3.5,3.5])
     add_tilt_restraint([0,math.radians(45)],rot0)
-    add_interacting_restraint(TMH[1],TMH[2])
-    #add_interacting_restraint(TMH[0],TMH[3])
+    ir=add_interacting_restraint(TMH[1],TMH[2])
+    rset.add_restraint(ir)
+    return rset
