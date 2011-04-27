@@ -2284,9 +2284,9 @@ S  ContainersTemp get_input_containers(Particle *p) const;               \
         } catch(...){                                                   \
         }                                                               \
         if (formatted) {                                                \
-          write(oss.str());                                             \
+          write(oss.str(), false);                                      \
         } else {                                                        \
-          write(file_name_);                                            \
+          write(file_name_, update_number_!=0);                         \
         }                                                               \
         ++update_number_;                                               \
       }                                                                 \
@@ -2305,9 +2305,11 @@ skip_steps steps. The file_name constructor argument should contain
       skip_steps_=k;                                                    \
       call_number_=0;                                                   \
     }                                                                   \
-    void write(std::string file_name) const {                           \
-      save_action                                                       \
-        }                                                               \
+void write(std::string file_name, unsigned int call=0,                  \
+           bool append=false) const {                                   \
+  IMP_UNUSED(call); IMP_UNUSED(append);                                 \
+  save_action                                                           \
+    }                                                                   \
   private:                                                              \
     void do_update(unsigned int call_number);                           \
     IMP_OBJECT_INLINE(Name##OptimizerState,                             \
@@ -2326,6 +2328,8 @@ class Name##FailureHandler: public FailureHandler {                     \
   functs                                                                \
   void handle_failure() {                                               \
     const std::string file_name=file_name_;                             \
+    bool append=false; unsigned int call=0;                             \
+    IMP_UNUSED(append); IMP_UNUSED(call);                               \
     save_action                                                         \
       }                                                                 \
   IMP_OBJECT_INLINE(Name##FailureHandler,                               \
