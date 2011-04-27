@@ -13,6 +13,8 @@ from membrane_represent  import *
 from membrane_restraints import *
 #sampler
 from membrane_MonteCarlo import *
+#domino stuff
+from membrane_domino     import *
 
 # TM regions
 TMH= [[24,48], [75,94], [220,238]]#, [254,276]]
@@ -41,6 +43,10 @@ print "creating representation"
 
 print "creating restraints"
 rset=create_restraints(m,chain,tbr,TMH,rot0,topo)
+
+print "getting IG and JT"
+(ig,jt)=get_graphs(m,chain,TMH,rset)
+print ig,jt
 
 print "creating sampler"
 kt=1.0
