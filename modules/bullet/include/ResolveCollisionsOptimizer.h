@@ -59,6 +59,12 @@ public:
 
 IMP_OBJECTS(ResolveCollisionsOptimizer, ResolveCollisionsOptimizers);
 
+/** Show information about how the restraints will be special cased
+    in the optimizer. */
+IMPBULLETEXPORT void show_restraint_handling(RestraintSets rs,
+                                             Model *m, ParticlesTemp ps,
+                                             std::ostream &out=std::cout);
+
 IMPBULLET_END_NAMESPACE
 
 #endif  /* IMPBULLET_RESOLVE_COLLISIONS_OPTIMIZER_H */

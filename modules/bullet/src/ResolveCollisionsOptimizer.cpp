@@ -30,6 +30,13 @@
 #include <boost/bind.hpp>
 
 
+#include <IMP/container/generic.h>
+#include <IMP/core/DistancePairScore.h>
+#include <IMP/Pointer.h>
+#include <IMP/container/ListPairContainer.h>
+#include <boost/scoped_ptr.hpp>
+
+
 IMPBULLET_BEGIN_NAMESPACE
 
 
@@ -249,6 +256,7 @@ namespace {
     }
     SurfaceMeshObject *smo
       = dynamic_cast<SurfaceMeshObject*>(p->get_value(surface_key));
+    IMP_CHECK_OBJECT(smo);
     memory.geometry.push_back( smo );
     btTriangleIndexVertexArray *arr
       =new btTriangleIndexVertexArray(smo->get_faces().size()/3,
@@ -302,6 +310,21 @@ namespace {
                                 dynamicsWorld, memory);
   }
 
+  void test_cast() {
+    IMP_NEW(Model, m, ());
+    IMP_NEW(core::HarmonicDistancePairScore, hdps, (0,1));
+    IMP_NEW(Particle, p0, (m));
+    IMP_NEW(Particle, p1, (m));
+    core::XYZ::setup_particle(p0);
+    core::XYZ::setup_particle(p1);
+    ParticlePairs pp;
+    pp.push_back(ParticlePair(p0, p1));
+    IMP_NEW(container::ListPairContainer, lpc, (pp));
+    Pointer<Restraint> r= container::create_restraint(hdps, lpc);
+    r->set_was_used(true);
+    PairsScoreRestraint *psr= dynamic_cast<PairsScoreRestraint*>(r.get());
+    IMP_USAGE_CHECK(psr, "Not cast");
+  }
 }
 
 /**
@@ -354,6 +377,9 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
   }
   if (map.find(rp0) == map.end() || map.find(rp1) == map.end()) {
     // some of the particles are not being considered, so ignore restraint
+    IMP_LOG(VERBOSE, "Particles not being used "
+            << rp0->get_name() << " or " << rp1->get_name()
+            << std::endl);
     return false;
   }
   btRigidBody *r0= map.find(rp0)->second;
@@ -366,6 +392,11 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
   return true;
 }
 
+bool dont_handle_harmonic(
+                     const ParticlePair &,
+                     double, double) {
+  return true;
+}
 
 bool handle_ev() {
   return true;
@@ -375,8 +406,26 @@ bool handle_ev() {
   Must pass rbs + normal particles to special case
 */
 
+void show_restraint_handling(RestraintSets rs, Model *m, ParticlesTemp ps,
+                             std::ostream &out) {
+  boost::scoped_ptr<SetLogState> sll(new SetLogState(SILENT));
+  IMP::atom::internal::SpecialCaseRestraints scr(m, ps);
+  sll.reset(NULL);
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    scr.add_restraint_set(rs[i],
+                          dont_handle_harmonic,
+                          handle_ev);
+    for (unsigned int j=0; j< rs[i]->get_number_of_restraints(); ++j) {
+      out << rs[i]->get_restraint(j)->get_name() << " remains" << std::endl;
+    }
+  }
+}
+
+
 
 double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
+  IMP_OBJECT_LOG;
+  test_cast();
   RestraintSets before_sets= get_restraints();
   Restraints before_restraints= IMP::get_restraints(before_sets.begin(),
                                                     before_sets.end());
@@ -429,6 +478,9 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
         handle_xyzr(ps[i], local_, map,
                     dynamicsWorld.get(), memory);
         xyzr_particles.push_back(ps[i]);
+      } else {
+        IMP_LOG(VERBOSE, "Not handling particle "
+                << ps[i]->get_name() << std::endl);
       }
     }
     for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
