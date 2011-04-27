@@ -80,7 +80,6 @@ class CGOptimizerTests(IMP.test.TestCase):
             #    g= IMP.display.XYZRGeometry(d)
             #    w.add_geometry(g)
             self.check_model(m, lsc, lpc)
-        os.unlink( self.get_tmp_file_name("mccg.0.imp"))
 
 
 
