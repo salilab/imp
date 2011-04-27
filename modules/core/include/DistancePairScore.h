@@ -38,7 +38,7 @@ class IMPCOREEXPORT HarmonicDistancePairScore: public PairScore
 {
   const double x0_, k_;
 public:
-  HarmonicDistancePairScore(double x0, double k):  x0_(x0), k_(k){}
+  HarmonicDistancePairScore(double x0, double k);
   double get_rest_length() const {
     return x0_;
   }
@@ -49,6 +49,7 @@ public:
 };
 
 IMP_OBJECTS(HarmonicDistancePairScore, HarmonicDistancePairScores);
+
 
 #ifndef IMP_DOXYGEN
 inline double HarmonicDistancePairScore::evaluate(const ParticlePair &p,
