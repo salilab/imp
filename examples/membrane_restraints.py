@@ -7,7 +7,7 @@ import math
 
 from membrane_parameters import *
 
-def create_restraints(m, chain, tbr, TMH, rot0, topo):
+def create_restraints(m, chain, tbr, TMH, rot0, topo, tm_inter):
 
     def add_excluded_volume():
         lsc= IMP.container.ListSingletonContainer(m)
@@ -88,12 +88,8 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
         m.add_restraint(dope)
         m.set_maximum_score(dope, max_score_)
 
-    def add_interacting_restraint(h0, h1):
-        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h0[0])
-        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, residue_index = h1[0])
-        rb0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-        rb1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
-        hub= IMP.core.HarmonicUpperBound(8.0, kappa_)
+    def add_interacting_restraint(rb0, rb1):
+        hub= IMP.core.HarmonicUpperBound(d0_inter_, kappa_)
         sd=  IMP.core.DistancePairScore(hub)
         kc=  IMP.core.KClosePairsPairScore(sd,tbr,1)
         ir=  IMP.core.PairRestraint(kc,[rb0,rb1])
@@ -156,6 +152,11 @@ def create_restraints(m, chain, tbr, TMH, rot0, topo):
     add_diameter_restraint(diameter_)
     add_depth_restraint(z_range_)
     add_tilt_restraint(tilt_range_,rot0)
-    ir=add_interacting_restraint(TMH[1],TMH[2])
-    rset.add_restraint(ir)
+    for ps in tm_inter:
+        s0=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, molecule = ps[0])
+        s1=IMP.atom.Selection(chain, atom_type = IMP.atom.AT_CA, molecule = ps[1])
+        rb0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
+        rb1=IMP.core.RigidMember(s1.get_selected_particles()[0]).get_rigid_body()
+        ir=add_interacting_restraint(rb0,rb1)
+        rset.add_restraint(ir)
     return rset
