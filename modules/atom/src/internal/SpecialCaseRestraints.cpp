@@ -11,6 +11,7 @@
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 SpecialCaseRestraints::SpecialCaseRestraints(Model *m,
                                              const ParticlesTemp &ps): ps_(ps) {
+  SetLogState ss(SILENT); // don't print all the dep graph crap
   RestraintsTemp rs= get_restraints(m->get_root_restraint_set());
   dg_=get_dependency_graph(rs);
 }
