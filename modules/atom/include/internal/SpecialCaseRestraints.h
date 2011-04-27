@@ -45,6 +45,13 @@ class IMPATOMEXPORT SpecialCaseRestraints {
   bool get_harmonic_info(PairScore*ps, const ParticlePair &pp,
                          double &x0,
                          double &k) {
+    IMP_INTERNAL_CHECK(dynamic_cast<core::HarmonicDistancePairScore*>(ps)
+                       || ps->get_type_name() != "HarmonicDistancePairScore",
+                       "Casts are not working properly for HDPS");
+    IMP_INTERNAL_CHECK(dynamic_cast<core::HarmonicSphereDistancePairScore*>(ps)
+                       || ps->get_type_name()
+                       != "HarmonicSphereDistancePairScore",
+                       "Casts are not working properly for HDPS");
     if (dynamic_cast<core::HarmonicDistancePairScore*>(ps)) {
       core::HarmonicDistancePairScore *hdps
         = dynamic_cast<core::HarmonicDistancePairScore*>(ps);
@@ -59,6 +66,9 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         k= h->get_k();
         x0= h->get_mean();
         return true;
+      } else {
+        IMP_LOG(VERBOSE, "DPS does not have a harmonic term: "
+                << uf->get_type_name() << std::endl);
       }
     } else if (dynamic_cast<core::SphereDistancePairScore*>(ps))  {
       core::SphereDistancePairScore *dps
@@ -70,6 +80,9 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         x0= h->get_mean()+ core::XYZR(pp[0]).get_radius()
           + core::XYZR(pp[1]).get_radius();
         return true;
+      } else {
+        IMP_LOG(VERBOSE, "SDPS does not have a harmonic term: "
+                << uf->get_type_name() << std::endl);
       }
     } else if (dynamic_cast<core::HarmonicSphereDistancePairScore*>(ps))  {
       core::HarmonicSphereDistancePairScore *dps
@@ -79,6 +92,8 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         + core::XYZR(pp[1]).get_radius();
       return true;
     }
+    IMP_LOG(VERBOSE, "Failed to get harmonic info from object of type "
+            << ps->get_type_name() << std::endl);
     return false;
   }
   bool get_harmonic_info(SingletonScore*ps, Particle *p,
@@ -132,13 +147,25 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         double x0, k;
         if (get_harmonic_info(ps, ppts[i], x0,k)) {
           ParticlePair pp= ppts[i];
-          handled= fh(pp, x0, k);
+          bool chandled= fh(pp, x0, k);
+          IMP_USAGE_CHECK(!handled || chandled,
+                          "Can't mix handled and unhandled: "
+                          << pp);
+          if (!chandled) {
+            IMP_LOG(VERBOSE, "Pair " << pp
+                    << " rejected by functor." << std::endl);
+          }
+          handled=chandled;
         } else {
           IMP_USAGE_CHECK(!handled, "Can't mix harmonics and not.");
+          break;
         }
       }
       if (handled) {
         restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+      } else {
+        IMP_LOG(VERBOSE, "Can't handle static pairs score, no harmonic: "
+                << ppts.size() << std::endl);
       }
     } else {
       if (dynamic_cast<core::SoftSpherePairScore*>(ps)) {
@@ -147,6 +174,9 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         if (fev()) {
           restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
         }
+      } else {
+        IMP_LOG(VERBOSE, "Can't handle dynamic pairs score restraint"
+                << std::endl);
       }
     }
   }
@@ -195,6 +225,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     void add_restraint_set(RestraintSet *rs,
                            Harmonic fh,
                            EV fev) {
+    IMP_FUNCTION_LOG;
     Restraints rss(rs->restraints_begin(), rs->restraints_end());
     for (unsigned int i=0; i < rss.size(); ++i) {
       IMP_LOG(VERBOSE, "Inspecting restraint " << rss[i]->get_name()
@@ -204,6 +235,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         handle_pair_score_restraint(dynamic_cast<PairScoreRestraint*>(r),
                                    rs, fh, fev);
       } else if (dynamic_cast<PairsScoreRestraint*>(r)) {
+        IMP_LOG(VERBOSE, "PairsScoreRestraint found." << std::endl);
         handle_pairs_score_restraint(dynamic_cast<PairsScoreRestraint*>(r),
                                      rs, fh, fev);
       } else if (dynamic_cast<SingletonScoreRestraint*>(r)) {
@@ -217,6 +249,8 @@ class IMPATOMEXPORT SpecialCaseRestraints {
       } else if (dynamic_cast<RestraintSet*>(r)) {
         add_restraint_set(dynamic_cast<RestraintSet*>(r),
                           fh, fev);
+      } else {
+        IMP_LOG(VERBOSE, "No casts accepted." << std::endl);
       }
     }
   }
