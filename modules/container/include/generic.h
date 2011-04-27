@@ -16,6 +16,8 @@
 #include <IMP/core/internal/quad_helpers.h>
 #include <IMP/base_types.h>
 #include <IMP/Object.h>
+#include <IMP/Constraint.h>
+#include <IMP/Restraint.h>
 #include <IMP/PairFilter.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
