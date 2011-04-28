@@ -26,6 +26,8 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   friend class NodeHandle;
   RootHandle(internal::SharedData *shared_);
  public:
+  //! Empty root handle, no open file.
+  RootHandle(){}
   /** \param[in] name The name of the file to open.
       \param[in] clear If clear is true and the file exists, the current
       contents are cleared before the file is opened.

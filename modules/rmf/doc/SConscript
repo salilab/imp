@@ -56,8 +56,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 
    - \c rmf_show prints out the hierarchy written to the file.
 
-   - \c rmf_to_pdb converts an hdf5 file to a PDB file, assuming all hierarchies
-   in the hdf5 file are atomic resolution.
+   - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
+   in the rmf file are atomic resolution.
 
    \section ff RMF Files
    The RMF file format stores a hierarchy of data in an HDF5 node. Each node in the RMF
