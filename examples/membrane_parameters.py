@@ -17,40 +17,40 @@ d0_inter_=8.0
 # max diameter
 # nTMH::  2   3   4   5   6   7   8   9   10   11   12   13   14
 # d   :: 16  35  26  51  48  51  50  34   39   52   48   43   42
-diameter_=26.0
+diameter_=51.0
 # these two parameters should depend on helix length
 z_range_=[-3.5,3.5]
-tilt_range_=[0,math.radians(45)]
+tilt_range_=[0,math.radians(40)]
 
 # monte carlo
 mc_kt=3.0
-mc_loops=100
+mc_loops=1000
 mc_steps=10
 
 # trajectory file
-mc_traj_file="traj.hdf5"
+mc_traj_file="traj_0.rmf"
 
-# protein setup and parameters
+# protein data
 
-def setup_protein():
-# define TMH sequences
-    seq0=("M","L","I","H","N","W","I","L","T","F","S","I","F","R","E","H","P","S","T","V","F","Q","I","F","T","K","C","I","L","V","S","S","S","F","L","L","F","Y","T","L","L","P","H","G","L","L","E","D","L","M","R","R","V","G","D","S","L","V","D","L","I","V","I","C","E","D","S","Q","G","Q","H","L","S","S","F","C","L","F","V","A","T","L","Q","S","P","F","S","A","G","V","S","G","L","C","K","A","I","L","L","P","S","K","Q","I","H","V","M","I","Q","S","V","D","L","S","I","G","I","T","N","S","L","T","N","E","Q","L","C","G","F","G","F","F","L","N","V","K","T","N","L","H","C","S","R","I","P","L","I","T","N","L","F","L","S","A","R","H","M","S","L","D","L","E","N","S","V","G","S","Y","H","P","R","M","I","W","S","V","T","W","Q","W","S","N","Q","V","P","A","F","G","E","T","S","L","G","F","G","M","F","Q","E","K","G","Q","R","H","Q","N","Y","E","F","P","C","R","C","I","G","T","C","G","R","G","S","V","Q","C","A","G","L","I","S","L","P","I","A","I","E","F","T","Y","Q","L","T","S","S","P","T","C","I","V","R","P","W","R","F","P","N","I","F","P","L","I","A","C","I","L","L","L","S","M","N","S","T","L","S","L","F","S","F","S","G","G","R","S","G","Y","V","L","M","L","S","S","K","Y","Q","D","S","F","T","S","K","T","R","N","K","R","E","N","S","I","F","F","L","G","L","N","T","F","T","D","F","R","H","T","I","N","G","P","I","S","P","L","M","R","S","L","T","R","S","T","V","E")
+# sequence
+seq0=("M","V","G","L","T","T","L","F","W","L","G","A","I","G","M","L","V","G","T","L","A","F","A","W","A","G","R","D","A","G","S","G","E","R","R","Y","Y","V","T","L","V","G","I","S","G","I","A","A","V","A","Y","V","V","M","A","L","G","V","G","W","V","P","V","A","E","R","T","V","F","A","P","R","Y","I","D","W","I","L","T","T","P","L","I","V","Y","F","L","G","L","L","A","G","L","D","S","R","E","F","G","I","V","I","T","L","N","T","V","V","M","L","A","G","F","A","G","A","M","V","P","G","I","E","R","Y","A","L","F","G","M","G","A","V","A","F","L","G","L","V","Y","Y","L","V","G","P","M","T","E","S","A","S","Q","R","S","S","G","I","K","S","L","Y","V","R","L","R","N","L","T","V","I","L","W","A","I","Y","P","F","I","W","L","L","G","P","P","G","V","A","L","L","T","P","T","V","D","V","A","L","I","V","Y","L","D","L","V","T","K","V","G","F","G","F","I","A","L","D","A","A","A","T","L")
 
 # TM regions
-    TMH= [[24,48], [75,94], [220,238]]#, [254,276]]
+#TM_res= [[121,141],[163,180],[190,211]]
+TM_res= [[141,161],[163,180],[190,211]]
 # define the topology
-    topo=[1.0,-1.0,1.0]#,-1.0]
+TM_topo=[-1.0,1.0,-1.0]
 # name of the TMH
-    names=["TM0","TM1","TM2"]#,"TM3"]
+TM_names=["TM4","TM5","TM6"]
 # interacting pairs
-    TM_inter=[["TM1","TM2"]]
+TM_inter=[["TM5","TM6"]]
+# adjacent pairs
+TM_loop=[["TM4","TM5"],["TM5","TM6"]]
 
 # storing sequences of TMH
-    seq=[]
-    for h in TMH:
-        tmp=[]
-        for j in range(h[0],h[1]+1):
-            tmp.append(seq0[j-1])
-        seq.append(tmp)
-
-    return seq,names,TMH,topo,TM_inter
+TM_seq=[]
+for h in TM_res:
+    tmp=[]
+    for j in range(h[0],h[1]+1):
+        tmp.append(seq0[j-1])
+    TM_seq.append(tmp)

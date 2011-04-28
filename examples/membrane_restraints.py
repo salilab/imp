@@ -7,11 +7,11 @@ import math
 
 from membrane_parameters import *
 
-def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
+def create_restraints(m,protein,tbr,rot0):
 
     def add_excluded_volume():
         lsc= IMP.container.ListSingletonContainer(m)
-        for h in TMH:
+        for h in TM_res:
             s=IMP.atom.Selection(protein, residue_indexes=[(h[0],h[1]+1)])
             lsc.add_particles(s.get_selected_particles())
         evr=IMP.core.ExcludedVolumeRestraint(lsc,kappa_)
@@ -64,7 +64,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
                 dd_b.append(ddb)
                 dd_e.append(dde)
         lrb= IMP.container.ListSingletonContainer(m)
-        for h in TMH:
+        for h in TM_res:
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
@@ -77,7 +77,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
     def add_DOPE():
         IMP.atom.add_dope_score_data(protein)
         dsc=IMP.container.ListSingletonContainer(m)
-        for h in TMH:
+        for h in TM_res:
             s=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_indexes=[(h[0],h[1]+1)])
             dsc.add_particles(s.get_selected_particles())
         dpc=IMP.container.ClosePairContainer(dsc, 15.0, 0.0)
@@ -99,7 +99,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
 
     def add_diameter_restraint(diameter):
         lrb= IMP.container.ListSingletonContainer(m)
-        for h in TMH:
+        for h in TM_res:
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
@@ -110,7 +110,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
 
     def add_depth_restraint(range):
         lrb= IMP.container.ListSingletonContainer(m)
-        for h in TMH:
+        for h in TM_res:
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
@@ -123,7 +123,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
     def add_tilt_restraint(range0,rot0):
         laxis=(1.0,0.0,0.0)
         zaxis=(0.0,0.0,1.0)
-        for i,h in enumerate(TMH):
+        for i,h in enumerate(TM_res):
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             if ( rot0[i] > 0 ): range=[math.pi-range0[1],math.pi-range0[0]]
@@ -137,13 +137,15 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
 # assembling all the restraints
     rset=IMP.RestraintSet()
     add_excluded_volume()
-    for i in range(len(TMH)-1):
-        s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = TMH[i][1])
-        s1=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = TMH[i+1][0])
+    for ps in TM_loop:
+        i0=TM_names.index(ps[0])
+        i1=TM_names.index(ps[1])
+        s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = TM_res[i0][1])
+        s1=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = TM_res[i1][0])
         p0=s0.get_selected_particles()[0]
         p1=s1.get_selected_particles()[0]
-# End-to-End distance restraint (add +4 to account for errors?)
-        length=1.6*(TMH[i+1][0]-TMH[i][1]+1)+7.4
+# End-to-End distance restraint
+        length=1.6*(TM_res[i1][0]-TM_res[i0][1]+1)+7.4
         lr=add_distance_restraint(p0,p1,length,kappa_)
         rset.add_restraint(lr)
 # COM-COM distance restraint
@@ -155,7 +157,7 @@ def create_restraints(m, protein, tbr, TMH, rot0, topo, tm_inter):
     add_diameter_restraint(diameter_)
     add_depth_restraint(z_range_)
     add_tilt_restraint(tilt_range_,rot0)
-    for ps in tm_inter:
+    for ps in TM_inter:
         s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, molecule = ps[0])
         s1=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, molecule = ps[1])
         rb0=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()

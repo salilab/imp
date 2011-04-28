@@ -7,6 +7,8 @@ import IMP.membrane
 import IMP.rmf
 import math
 
+#parameters
+from membrane_parameters import *
 #representation
 from membrane_represent  import *
 #restraints
@@ -18,21 +20,22 @@ from membrane_domino     import *
 
 m=IMP.Model()
 
-print "reading protein data"
-(seq,names,TMH,topo,TM_inter)=setup_protein()
-
 print "creating representation"
-(protein,tbr,rot0)=create_representation(m,seq,names,TMH,topo)
+(protein,tbr,rot0)=create_representation(m)
 
 print "creating restraints"
-rset=create_restraints(m,protein,tbr,TMH,rot0,topo,TM_inter)
+rset=create_restraints(m,protein,tbr,rot0)
 
-print "visualizing IG and JT"
-(ig,jt)=get_graphs(m,protein,TMH,rset)
-print ig,jt
+#print "visualizing IG and JT"
+#(ig,jt)=get_graphs(m,protein,rset)
+#print ig,jt
 
 print "creating sampler"
-mc=setup_MonteCarlo(m,protein,TMH,mc_kt)
+mc_tilt=setup_MonteCarlo_1(m,protein)
+mc=setup_MonteCarlo_2(m,protein)
+
+# short run to adjust the topology
+mc_tilt.optimize(500)
 
 # preparing hdf5 file
 rh = IMP.rmf.RootHandle(mc_traj_file, True)
@@ -44,7 +47,7 @@ for hs in protein.get_children():
 print "sampling"
 for steps in range(mc_loops):
     mc.optimize(mc_steps)
-    print steps, m.evaluate(False)
+    #print steps, m.evaluate(False)
     #display(m,protein,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
     for hs in protein.get_children():
         IMP.rmf.save_frame(rh, steps+1, hs)

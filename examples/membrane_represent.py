@@ -5,12 +5,15 @@ import IMP.atom
 import IMP.membrane
 import math
 
-def create_representation(m,seq,names,tmh,topo):
+#parameters
+from membrane_parameters import *
+
+def create_representation(m):
 
     tbr= IMP.core.TableRefiner()
     all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 
-    def generate_tm(seq,name,tmh,sign):
+    def generate_tm(seq,name,res,sign):
         pm=IMP.Particle(m)
         tm=IMP.atom.Molecule.setup_particle(pm)
         tm.set_name(name)
@@ -22,11 +25,11 @@ def create_representation(m,seq,names,tmh,topo):
             z=1.51*(float(i)-float((nres-1))/2.0)
             # set up residue
             p=IMP.Particle(m)
-            r=IMP.atom.Residue.setup_particle(p, IMP.atom.get_residue_type(seq[i]), i+tmh[0])
+            r=IMP.atom.Residue.setup_particle(p, IMP.atom.get_residue_type(seq[i]), i+res[0])
             rt=r.get_residue_type()
             vol=IMP.atom.get_volume_from_residue_type(rt)
-            #rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
-            rg=2.273
+            rg=IMP.algebra.get_ball_radius_from_volume_3d(vol)
+            #rg=2.273
             rd=IMP.core.XYZR.setup_particle(p, IMP.algebra.Sphere3D(IMP.algebra.Vector3D(x,y,z),rg))
             # set up atom
             p1=IMP.Particle(m)
@@ -50,7 +53,7 @@ def create_representation(m,seq,names,tmh,topo):
         return rot0
 
     rot0=[]
-    for i in range(len(seq)):
-        rot=generate_tm(seq[i],names[i],tmh[i],topo[i])
+    for i in range(len(TM_seq)):
+        rot=generate_tm(TM_seq[i],TM_names[i],TM_res[i],TM_topo[i])
         rot0.append(rot)
     return all,tbr,rot0

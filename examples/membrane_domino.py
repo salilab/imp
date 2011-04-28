@@ -1,11 +1,14 @@
 import IMP
 import IMP.domino
 
-def get_graphs(m,protein,TMH,rset):
+#parameters
+from membrane_parameters import *
+
+def get_graphs(m,protein,rset):
 # setup fake pst
     pst=IMP.domino.ParticleStatesTable()
     rbs=IMP.domino.RigidBodyStates([IMP.algebra.ReferenceFrame3D()])
-    for i,h in enumerate(TMH):
+    for i,h in enumerate(TM_res):
         s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
         rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
         pst.set_particle_states(rb, rbs)
