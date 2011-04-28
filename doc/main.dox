@@ -122,7 +122,7 @@ An overview of the various modules currently available. Representative classes a
 <td></td>
 </tr>
 <tr>
-<td>IMP::hdf5</td>
+<td>IMP::rmf</td>
 <td></td>
 <td>IO for IMP::atom::Hierarchy, IMP::Particle and IMP::Geometry</td>
 <td></td>
