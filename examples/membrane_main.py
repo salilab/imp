@@ -26,9 +26,9 @@ print "creating representation"
 print "creating restraints"
 rset=create_restraints(m,protein,tbr,rot0)
 
-#print "visualizing IG and JT"
-#(ig,jt)=get_graphs(m,protein,rset)
-#print ig,jt
+print "computing IG and JT"
+(ig,jt)=get_graphs(m,protein,rset)
+print ig,jt
 
 print "creating sampler"
 mc_tilt=setup_MonteCarlo_1(m,protein)
