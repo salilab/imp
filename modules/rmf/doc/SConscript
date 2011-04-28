@@ -26,12 +26,12 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    into already created objects.
 -# The hierarchy layer: supports general traversal of the encoded hierarchy
    and addition and reading of arbitrary hierarchical data. This layer primarily
-   consists of IMP::hdf5::RootHandle and IMP::hdf5::NodeHandle. It is designed
+   consists of IMP::rmf::RootHandle and IMP::rmf::NodeHandle. It is designed
    to be used by programs to traverse the file while they create their own data
    structures.
 -# The HDF5 layer: provides a C++ interface to access the raw HDF5 file.
-   This layer consists of IMP::hdf5::HDF5DataSet and IMP::hdf5::HDF5Group along
-   with the IMP::hdf5::HDF5Handle and type traits classes. It acts as a more useful,
+   This layer consists of IMP::rmf::HDF5DataSet and IMP::rmf::HDF5Group along
+   with the IMP::rmf::HDF5Handle and type traits classes. It acts as a more useful,
    but limited, replacement for the HDF5 C++ bindings.
 
    \section assoc Associations
@@ -40,8 +40,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    for example, map between particles and the nodes on disk saving data for that
    particle. This association can only be set once each time the file is open,
    trying to reset is an error. It is set either when an object is added to the file
-   eg IMP::hdf5::add_hierarchy() or when explicitly requested,
-   eg IMP::hdf5::set_hierarchies().
+   eg IMP::rmf::add_hierarchy() or when explicitly requested,
+   eg IMP::rmf::set_hierarchies().
 
    \section bins Helper programs
 
@@ -61,12 +61,12 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
 
    \section ff RMF Files
    The RMF file format stores a hierarchy of data in an HDF5 node. Each node in the RMF
-   hierarchy has a type (IMP::hdf5::NodeType), a name (IMP::hdf5::NodeHandle::get_name(),
-   and associated attributes. Each attribute is identified by a key (IMP::hdf5::Key) and
-   consists of a unique combination of a type, category (IMP::hdf5::KeyCategory) and name
-   (IMP::hdf5::Key::get_name(). On a per RMF basis, the data with each key can either have
+   hierarchy has a type (IMP::rmf::NodeType), a name (IMP::rmf::NodeHandle::get_name(),
+   and associated attributes. Each attribute is identified by a key (IMP::rmf::Key) and
+   consists of a unique combination of a type, category (IMP::rmf::KeyCategory) and name
+   (IMP::rmf::Key::get_name(). On a per RMF basis, the data with each key can either have
    one value for each node which has that attribute, or one value per frame per node with
-   the attribute. The methods in IMP::hdf5::NodeHandle to get and set the attributes take
+   the attribute. The methods in IMP::rmf::NodeHandle to get and set the attributes take
    an optional frame number.
 """,
                  publications=env.IMPStandardPublications(),
