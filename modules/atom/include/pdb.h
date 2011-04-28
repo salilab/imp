@@ -331,6 +331,10 @@ read_pdb(TextInput in,
 IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
                                               Model *model,
                                               PDBSelector* selector);
+/** \relatesalso Hierarchy
+ */
+IMPATOMEXPORT Hierarchies read_multimodel_pdb(TextInput in,
+                                              Model *model);
 /** @} */
 
 /** @name PDB Writing

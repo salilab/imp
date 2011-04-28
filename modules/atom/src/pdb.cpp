@@ -406,6 +406,12 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                   true, false);
 }
 
+Hierarchies read_multimodel_pdb(TextInput in, Model *model)
+{
+  IMP_NEW(AllPDBSelector, s, ());
+  return read_multimodel_pdb(in, model, s);
+}
+
 // mol2.cpp
 bool check_arbond(Particle* atom_p);
 
