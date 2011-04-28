@@ -24,7 +24,7 @@ tilt_range_=[0,math.radians(45)]
 
 # monte carlo
 mc_kt=3.0
-mc_loops=1000
+mc_loops=100
 mc_steps=10
 
 # trajectory file
