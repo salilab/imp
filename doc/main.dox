@@ -63,7 +63,7 @@ An overview of the various modules currently available. Representative classes a
 <td></td>
 <td></td>
 <td></td>
-<td>IMP::statistics::get_lloyds_kmeans(), IMP::statistics::get_connectivity_clustering()</td>
+<td>IMP::statistics::create_lloyds_kmeans(), IMP::statistics::create_connectivity_clustering()</td>
 </tr>
 <tr>
 <td>IMP::em</td>
