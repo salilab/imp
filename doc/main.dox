@@ -124,9 +124,9 @@ An overview of the various modules currently available. Representative classes a
 <tr>
 <td>IMP::rmf</td>
 <td></td>
-<td>IO for IMP::atom::Hierarchy, IMP::Particle and IMP::Geometry</td>
+<td>/td>
 <td></td>
-<td></td>
+<td>IO for IMP::atom::Hierarchy, IMP::Particle, IMP::Restraint and IMP::display::Geometry<</td>
 </tr>
 </table>
 
