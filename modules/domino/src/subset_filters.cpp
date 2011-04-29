@@ -11,6 +11,7 @@
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/domino/internal/inference_utility.h>
+#include <IMP/random.h>
 #include <limits>
 
 
@@ -719,6 +720,51 @@ void PairListSubsetFilterTable::set_allowed_states(ParticlePair p,
 
 
 
+/*************************************************************************/
 
+
+
+namespace {
+  class  ProbabilisticSubsetFilter: public SubsetFilter {
+    double p_;
+    mutable boost::uniform_real<> r_;
+  public:
+    ProbabilisticSubsetFilter(double p):
+      SubsetFilter("ProbabilisticSubsetFilter %1%"),
+      p_(p), r_(0,1) {
+    }
+    IMP_SUBSET_FILTER(ProbabilisticSubsetFilter);
+  };
+
+  bool ProbabilisticSubsetFilter::get_is_ok(const Assignment &) const{
+    return r_(random_number_generator) <p_;
+  }
+
+  void ProbabilisticSubsetFilter::do_show(std::ostream &) const{}
+}
+
+
+SubsetFilter*
+ProbabilisticSubsetFilterTable
+::get_subset_filter(const Subset &,
+                    const Subsets &e) const {
+  if (e.size() >0 && leaves_only_) return 0;
+  else return new ProbabilisticSubsetFilter(p_);
+}
+
+double ProbabilisticSubsetFilterTable::get_strength(const Subset &,
+                                           const Subsets &e) const {
+  if (e.size() >0 && leaves_only_) return 0;
+  else return p_;
+}
+
+ProbabilisticSubsetFilterTable
+::ProbabilisticSubsetFilterTable(double p,
+                                 bool lo):
+  SubsetFilterTable("ProbabilisticSubsetFilterTable %1%"),
+  p_(p), leaves_only_(lo){}
+
+void ProbabilisticSubsetFilterTable::do_show(std::ostream &) const {
+}
 
 IMPDOMINO_END_NAMESPACE
