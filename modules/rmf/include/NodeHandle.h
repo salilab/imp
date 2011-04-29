@@ -21,7 +21,21 @@ enum NodeType {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 ROOT,
 #endif
-REPRESENTATION, GEOMETRY, FEATURE, CUSTOM};
+//! Represent part of a molecule
+REPRESENTATION,
+//! Store a geometric object
+GEOMETRY,
+//! Store information about some feature of the system
+/** For example, the particles involved in scoring
+    functions and their score can be encoded as feature
+    nodes.
+*/
+FEATURE,
+//! Arbitrary data that is not standardized
+/** Programs can use these keys to store any extra data
+    they want to put into the file.
+*/
+CUSTOM};
 
 
 class RootHandle;
