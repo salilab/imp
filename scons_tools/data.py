@@ -41,7 +41,7 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                           "set_hierarchies":"(RootHandle, Model*)",
                           "add_geometry":"(RootHandle, Geometry*)",
                           "save_frame":"(RootHandle, int, Geometry*)",
-                          "create_geometry":"(RootHandle, int)",
+                          "create_geometries":"(RootHandle, int)",
                           "add_particle":"(RootHandle, Particle*)",
                           "create_particles":"(RootHandle, Model*)",
                           }
