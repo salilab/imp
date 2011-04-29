@@ -23,9 +23,9 @@ z_range_=[-3.5,3.5]
 tilt_range_=[0,math.radians(40)]
 
 # monte carlo
-mc_kt=2.0
+mc_kt=2.5
 mc_loops=2000
-mc_steps=100
+mc_steps=50
 
 # trajectory file
 mc_traj_file="traj_2.rmf"
