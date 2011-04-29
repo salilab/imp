@@ -40,7 +40,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    for example, map between particles and the nodes on disk saving data for that
    particle. This association can only be set once each time the file is open,
    trying to reset is an error. It is set either when an object is added to the file
-   eg IMP::rmf::add_hierarchy() or when explicitly requested,
+   eg IMP::rmf::add_hierarchies() or when explicitly requested,
    eg IMP::rmf::set_hierarchies().
 
    \section bins Helper programs
@@ -64,7 +64,8 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    hierarchy has a type (IMP::rmf::NodeType), a name (IMP::rmf::NodeHandle::get_name(),
    and associated attributes. Each attribute is identified by a key (IMP::rmf::Key) and
    consists of a unique combination of a type, category (IMP::rmf::KeyCategory) and name
-   (IMP::rmf::Key::get_name(). On a per RMF basis, the data with each key can either have
+   (IMP::rmf::RootHandle::get_name(IMP::rmf::Key). On a per RMF basis, the data with each
+   key can either have
    one value for each node which has that attribute, or one value per frame per node with
    the attribute. The methods in IMP::rmf::NodeHandle to get and set the attributes take
    an optional frame number.
