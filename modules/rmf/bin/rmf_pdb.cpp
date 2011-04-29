@@ -57,30 +57,61 @@ int main(int argc, char **argv) {
   }
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchies inhs;
+  IMP::rmf::RootHandle rh;
+  int nframes=-1;
   if (get_suffix(input) == ".pdb") {
-    if (frame != 0) {
-      std::cerr << "Multiframe pdbs not supported yet." << std::endl;
-      print_help();
-      exit(1);
-    }
-    IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::Hierarchies(1,
-                                          IMP::atom::read_pdb(input, m)));
+    IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
+    nframes=inhs.size();
   } else {
-    IMP::rmf::RootHandle rh;
     IMP_CATCH_AND_TERMINATE(rh= IMP::rmf::RootHandle(input, false));
     inhs= IMP::rmf::create_hierarchies(rh, m);
-    for (unsigned int i=0; i< inhs.size(); ++i) {
-      IMP_CATCH_AND_TERMINATE(IMP::rmf::load_frame(rh, frame, inhs[i]));
-    }
+    IMP::rmf::FloatKey xk
+      =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
+    std::cout << xk << std::endl;
+    nframes= rh.get_number_of_frames(xk)+1;
   }
-  if (get_suffix(output) == ".pdb") {
-    IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, output));
+  int minframe, maxframe, step;
+  if (frame>=0) {
+    minframe=frame;
+    maxframe=frame;
+    step =1;
   } else {
-    IMP::rmf::RootHandle rh;
-    IMP_CATCH_AND_TERMINATE(rh=IMP::rmf::RootHandle(output, true));
-    for (unsigned int i=0; i< inhs.size(); ++i) {
-      IMP::rmf::add_hierarchy(rh, inhs[i]);
+    minframe=0;
+    maxframe=nframes;
+    step=-frame;
+  }
+  IMP::rmf::RootHandle rho;
+  int outframe=0;
+  for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
+    if (outframe%10==0) {
+      std::cout << outframe << " ";
     }
+    IMP::atom::Hierarchies cur;
+    if (get_suffix(input) == ".pdb") {
+      cur= IMP::atom::Hierarchies(1, inhs[cur_frame]);
+    } else {
+      for (unsigned int i=0; i< inhs.size(); ++i) {
+        IMP::rmf::load_frame(rh, cur_frame, inhs[i]);
+      }
+      cur= inhs;
+    }
+    if (get_suffix(output) == ".pdb") {
+      IMP::TextOutput out(output, outframe!=0);
+      IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, out, outframe));
+    } else {
+      if (outframe==0) {
+        rho= IMP::rmf::RootHandle(output, true);
+        for (unsigned int i=0; i< cur.size(); ++i) {
+          IMP::rmf::add_hierarchy(rh, cur[i]);
+        }
+      } else {
+        IMP::rmf::set_hierarchies(rh, cur);
+        for (unsigned int i=0; i< cur.size(); ++i) {
+          IMP::rmf::save_frame(rh, outframe, cur[i]);
+        }
+      }
+    }
+    ++outframe;
   }
   return 0;
 }

@@ -57,16 +57,25 @@ std::ostream &operator<<(std::ostream &out, Key<TypeTraits> k) {
   return out;
 }
 
+//! Store an arbitrary floating point value
 typedef Key<FloatTraits> FloatKey;
 IMP_VALUES(FloatKey, FloatKeys);
+//! Store an abitrary integer value
 typedef Key<IntTraits> IntKey;
 IMP_VALUES(IntKey, IntKeys);
+//! Store an arbitrary string value
 typedef Key<StringTraits> StringKey;
 IMP_VALUES(StringKey, StringKeys);
+//! Store a zero-based index to something
 typedef Key<IndexTraits> IndexKey;
 IMP_VALUES(IndexKey, IndexKeys);
+//! Store the ID of an existing node in the RMF file
 typedef Key<NodeIDTraits> NodeIDKey;
 IMP_VALUES(NodeIDKey, NodeIDKeys);
+//! Store the name of a data set in the hdf5 file
+/** The handling of this data type may change as
+    it is currently a bit limited.
+*/
 typedef Key<DataSetTraits> DataSetKey;
 IMP_VALUES(DataSetKey, DataSetKeys);
 

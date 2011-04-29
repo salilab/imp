@@ -159,12 +159,14 @@ typedef HDF5DataSet<IntTraits> HDF5IntDataSet;
 typedef HDF5DataSet<IndexTraits> HDF5IndexDataSet;
 typedef HDF5DataSet<NodeIDTraits> HDF5NodeIDDataSet;
 typedef HDF5DataSet<DataSetTraits> HDF5DataSetDataSet;
+#ifndef IMP_DOXYGEN
 typedef std::vector<HDF5FloatDataSet> HDF5FloatDataSets;
 typedef std::vector<HDF5StringDataSet> HDF5StringDataSets;
 typedef std::vector<HDF5IntDataSet> HDF5IntDataSets;
 typedef std::vector<HDF5IndexDataSet> HDF5IndexDataSets;
 typedef std::vector<HDF5NodeIDDataSet> HDF5NodeIDDataSets;
 typedef std::vector<HDF5DataSetDataSet> HDF5DataSetDataSets;
+#endif
 
 
 /** Wrap an HDF5 Group. */

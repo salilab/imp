@@ -168,8 +168,10 @@ struct IMPRMFEXPORT DataSetTraits: public StringTraits {
 
 
 #ifndef SWIG
+#ifndef IMP_DOXYGEN
 //! The signature for the HDF5 close functions
-typedef herr_t (*CloseFunction)(hid_t) ;
+typedef herr_t (*HDF5CloseFunction)(hid_t) ;
+#endif
 
 //! Make sure an HDF5 handle is released
 /** CloseFunction should be an appropriate close function
@@ -177,9 +179,9 @@ typedef herr_t (*CloseFunction)(hid_t) ;
 */
 class IMPRMFEXPORT HDF5Handle {
   hid_t h_;
-  CloseFunction f_;
+  HDF5CloseFunction f_;
 public:
-  HDF5Handle(hid_t h, CloseFunction f): h_(h), f_(f) {
+  HDF5Handle(hid_t h, HDF5CloseFunction f): h_(h), f_(f) {
     if (h_<0) {
       IMP_THROW("Invalid handle returned", ValueException);
     }
@@ -195,7 +197,7 @@ public:
   bool get_is_open() const {
     return h_ != -1;
   }
-  void open(hid_t h, CloseFunction f) {
+  void open(hid_t h, HDF5CloseFunction f) {
     if (get_is_open()) {
       close();
     }
@@ -218,7 +220,7 @@ public:
 class IMPRMFEXPORT HDF5SharedHandle: public RefCounted,
                                       public HDF5Handle {
 public:
-  HDF5SharedHandle(hid_t h, CloseFunction f): HDF5Handle(h, f) {
+  HDF5SharedHandle(hid_t h, HDF5CloseFunction f): HDF5Handle(h, f) {
   }
 };
 #endif
