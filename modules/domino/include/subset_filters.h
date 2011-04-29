@@ -313,6 +313,24 @@ IMP_OBJECTS(PairListSubsetFilterTable,
             PairListSubsetFilterTables);
 
 
+/** Randomly reject some of the states. The purpose of this is
+    to try to generate a sampling of the total states when there
+    are a very large number of acceptable states.
+*/
+class IMPDOMINOEXPORT ProbabilisticSubsetFilterTable:
+  public SubsetFilterTable {
+  double p_;
+  bool leaves_only_;
+ public:
+  /** param[in] p Allow states to pass with probability p
+      param[in] leaves_only If true, only filter the leaves of
+      the merge tree.
+  */
+  ProbabilisticSubsetFilterTable(double p,
+                                 bool leaves_only=false);
+  IMP_SUBSET_FILTER_TABLE(ProbabilisticSubsetFilterTable);
+};
+
 
 IMPDOMINO_END_NAMESPACE
 
