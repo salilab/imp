@@ -51,11 +51,13 @@ public:
   IMP_COMPARISONS_2(Key, ci_, i_);
   IMP_HASHABLE_INLINE(Key, return i_*ci_.get_index());
 };
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 template <class TypeTraits>
 std::ostream &operator<<(std::ostream &out, Key<TypeTraits> k) {
   out << k;
   return out;
 }
+#endif
 
 //! Store an arbitrary floating point value
 typedef Key<FloatTraits> FloatKey;
