@@ -15,9 +15,7 @@ class Test(IMP.test.TestCase):
         m= IMP.Model()
         p0= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         rb0= IMP.atom.create_rigid_body(p0)
-        refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
-        print "size:",refiner.get_refined(rb0)
-        self.assertGreater(refiner.get_refined(rb0),5)
+        self.assertEqual(len(rb0.get_members()),15)
 
 
 if __name__ == '__main__':
