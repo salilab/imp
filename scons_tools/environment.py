@@ -149,6 +149,9 @@ def _add_platform_flags(env):
         if sys.platform != 'darwin' or dependency.gcc.get_version(env) > 4.0:
             env.Append(CXXFLAGS=["-Wundef"])
         #-Werror=
+        if dependency.gcc.get_version(env)>= 4.3:
+            # we can turn off individual warnings as needed
+            env.Append(CXXFLAGS='-Werror')
         env.Append(CXXFLAGS=["-Woverloaded-virtual"])
         if env['build'] == 'fast':
             env.Append(CXXFLAGS=["-O3", "-fexpensive-optimizations",
