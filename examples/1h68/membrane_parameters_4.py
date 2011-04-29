@@ -23,7 +23,7 @@ z_range_=[-3.5,3.5]
 tilt_range_=[0,math.radians(40)]
 
 # monte carlo
-mc_kt=2.5
+mc_kt=4.0
 mc_loops=2000
 mc_steps=50
 
