@@ -84,6 +84,28 @@ namespace {
   }
 
 
+  double get_volume_measurement(algebra::Sphere3Ds ss,
+                                double resolution) {
+#ifdef IMP_ATOM_USE_IMP_CGAL
+     // smooth
+     for (unsigned int i=0; i< ss.size(); ++i) {
+       ss[i]= algebra::Sphere3D(ss[i].get_center(),
+                                ss[i].get_radius()+resolution);
+     }
+     double v= algebra::get_surface_area_and_volume(ss).second;
+     return  4.0/3.0*PI*cube(algebra::get_ball_radius_from_volume_3d(v)
+                             -resolution);
+#else
+     IMP_UNUSED(resolution);
+     double v=0;
+     for (unsigned int i=0; i< ss.size(); ++i) {
+       v+= algebra::get_volume(ss[i]);
+     }
+     return v;
+#endif
+  }
+
+
  void setup_as_approximation_internal(Particle* p,
                                       const ParticlesTemp &other,
                                       double resolution=-1,
@@ -133,24 +155,10 @@ namespace {
      s=algebra::SphereD<3>(center,
                            algebra::get_ball_radius_from_volume_3d(volume));
    } else {
-#ifdef IMP_ATOM_USE_IMP_CGAL
-     // smooth
-     for (unsigned int i=0; i< ss.size(); ++i) {
-       ss[i]= algebra::Sphere3D(ss[i].get_center(),
-                                ss[i].get_radius()+resolution);
-     }
-     double v= algebra::get_surface_area_and_volume(ss).second;
-     s=algebra::SphereD<3>(center,
-                           algebra::get_ball_radius_from_volume_3d(v)
-                           - resolution);
-#else
-     double v=0;
-     for (unsigned int i=0; i< other.size(); ++i) {
-       v+= algebra::get_volume(ss[i]);
-     }
+     IMP_LOG(TERSE, "Approximating volume." << std::endl);
+     double v= get_volume_measurement(ss, resolution);
      s=algebra::SphereD<3>(center,
                            algebra::get_ball_radius_from_volume_3d(v));
-#endif
    }
 
    if (core::XYZR::particle_is_instance(p)) {
@@ -254,9 +262,14 @@ namespace {
         v+= get_volume_from_residue_type(rt);
       } catch (ValueException) {
         IMP_WARN_ONCE(rt.get_string(),
-                      "Using volume estimate for ARG for non-standard residue "
+                      "Computing volume for non-standard residue "
                       << rt, wc);
-        v+= get_volume_from_residue_type(ResidueType("ARG"));
+        algebra::Sphere3Ds ss;
+        HierarchiesTemp gl= get_leaves(t[i]);
+        for (unsigned int i=0; i< gl.size(); ++i) {
+          ss.push_back(core::XYZR(gl[i]).get_sphere());
+        }
+        v+= get_volume_measurement(ss, 5.0);
       }
     }
     Model *mm= t[0]->get_model();
@@ -339,7 +352,7 @@ create_simplified_along_backbone(Chain in,
   if (!cur.empty()) {
     root.add_child(create_approximation_of_residues(cur));
   }
-#ifdef IMP_ATOM_USE_IMP_CGAL
+  /*#ifdef IMP_ATOM_USE_IMP_CGAL
   double ov= get_volume(in);
   double cv= get_volume(root);
   double scale=1;
@@ -365,7 +378,7 @@ create_simplified_along_backbone(Chain in,
     }
   } while (true);
 #else
-#endif
+#endif*/
   IMP_INTERNAL_CHECK(root.get_is_valid(true),
                      "Invalid hierarchy produced " << root);
   return root;
