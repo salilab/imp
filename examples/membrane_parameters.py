@@ -24,7 +24,7 @@ tilt_range_=[0,math.radians(40)]
 
 # monte carlo
 mc_kt=2.0
-mc_loops=1000
+mc_loops=10000
 mc_steps=50
 mc_dx=0.5
 mc_dang=0.2
