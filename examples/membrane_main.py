@@ -31,11 +31,10 @@ print "computing IG and JT"
 print ig,jt
 
 print "creating sampler"
-mc_tilt=setup_MonteCarlo_1(m,protein)
-mc=setup_MonteCarlo_2(m,protein)
+mc=setup_MonteCarlo(m,protein)
 
-# short run to adjust the topology
-mc_tilt.optimize(500)
+#WTE
+#mc.mtd_setup(0.01, 5.0, -100.0, 0.0)
 
 # preparing hdf5 file
 rh = IMP.rmf.RootHandle(mc_traj_file, True)
@@ -47,8 +46,7 @@ for hs in protein.get_children():
 print "sampling"
 for steps in range(mc_loops):
     mc.optimize(mc_steps)
-    #print mc_kt, mc_steps, mc.get_number_of_forward_steps()
-    #print steps, m.evaluate(False)
+    #print steps, m.evaluate(False), mc_steps, mc.get_number_of_forward_steps()
     #display(m,protein,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
     for hs in protein.get_children():
         IMP.rmf.save_frame(rh, steps+1, hs)

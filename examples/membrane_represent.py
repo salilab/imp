@@ -13,7 +13,7 @@ def create_representation(m):
     tbr= IMP.core.TableRefiner()
     all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 
-    def generate_tm(seq,name,res,sign):
+    def generate_tm(id,seq,name,res,sign):
         pm=IMP.Particle(m)
         tm=IMP.atom.Molecule.setup_particle(pm)
         tm.set_name(name)
@@ -44,16 +44,21 @@ def create_representation(m):
         rb=IMP.Particle(m)
         rb=IMP.atom.create_rigid_body(atoms,name)
         tbr.add_particle(rb,atoms)
-        # adjust axis to match topology
+        # initialize helix decorator
         bb=IMP.core.RigidMember(begin).get_internal_coordinates()[0]
         ee=IMP.core.RigidMember(end).get_internal_coordinates()[0]
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(rb,bb,ee)
         if ( sign * ( ee - bb ) > 0 ): rot0= -math.pi/2.0
         else :                         rot0=  math.pi/2.0
+        # initialize system to match topology
+        if ( sign  < 0 ): rot=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0),math.pi)
+        else            : rot=IMP.algebra.get_identity_rotation_3d()
+        tr=IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(id*15.0,0,0))
+        IMP.core.transform(rb,tr)
         return rot0
 
     rot0=[]
     for i in range(len(TM_seq)):
-        rot=generate_tm(TM_seq[i],TM_names[i],TM_res[i],TM_topo[i])
+        rot=generate_tm(i,TM_seq[i],TM_names[i],TM_res[i],TM_topo[i])
         rot0.append(rot)
     return all,tbr,rot0
