@@ -266,28 +266,54 @@ class IMPATOMEXPORT Selection {
 IMP_VALUES(Selection, Selections);
 
 /** Create a distance restraint between the selections.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
+    \relatesalso Selection
  */
 IMPATOMEXPORT Restraint* create_distance_restraint(const Selection &n0,
                                                    const Selection &n1,
                                                    double x0, double k);
 
 
-/** Create a restraint connecting the selections.*/
+/** Create a restraint connecting the selections.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
+    \relatesalso Selection
+*/
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
                                                        double k);
 
 /** Create a restraint connecting the selections. The particles are
- allowed to be appart by x0 and still count as connected. */
+ allowed to be appart by x0 and still count as connected.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
+     \relatesalso Selection
+*/
 IMPATOMEXPORT Restraint* create_connectivity_restraint(const Selections &s,
                                                        double x0, double k);
 
-/** Create a restraint connecting the selection.*/
+/** Create a restraint connecting the selection.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
+
+    \relatesalso Selection
+*/
 IMPATOMEXPORT Restraint*
 create_internal_connectivity_restraint(const Selection &s,
                                        double k);
 
 /** Create a restraint connecting the selection. The particles are
- allowed to be appart by x0 and still count as connected. */
+ allowed to be appart by x0 and still count as connected.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
+
+ \relatesalso Selection
+*/
 IMPATOMEXPORT Restraint*
 create_internal_connectivity_restraint(const Selection &s,
                                        double x0, double k);
@@ -296,6 +322,9 @@ create_internal_connectivity_restraint(const Selection &s,
 /** Create an excluded volume restraint for the included molecules. If a
     value is provided for resolution, then something less than the full
     resolution representation will be used.
+
+    If one or more of the selections is a rigid body, this will be used
+    to accelerate the computation.
  */
 IMPATOMEXPORT Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
                                                           double resolution=-1);
@@ -331,21 +360,27 @@ IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
 
 
 /** Get the total mass of a hierarchy. In daltons.
+    \relatesalso Selection
  */
 IMPATOMEXPORT double get_mass(Selection h);
 
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 /** Get the total volume of a hierarchy. In cubic angstroms.
-    \requires{get_volume, CGAL}*/
+    \requires{get_volume, CGAL}
+    \relatesalso Selection
+*/
 IMPATOMEXPORT double get_volume(Selection h);
 
 /** Get the total surface area of a hiearrchy. In square angstroms.
     \requires{get_volume, CGAL}
+    \relatesalso Selection
 */
 IMPATOMEXPORT double get_surface_area(Selection h);
 #endif
 
+/**     \relatesalso Selection
+ */
 IMPATOMEXPORT double get_radius_of_gyration(Selection h);
 
 IMPATOM_END_NAMESPACE
