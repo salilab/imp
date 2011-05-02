@@ -44,6 +44,7 @@ def get_nice_name(h):
     return nm[nm.find('-')+1:nm.rfind('.')]
 
 def add_axis(h, c, w, chain_colors):
+    """Add a coordinate axis to show the relative orientation of the protein"""
     for hc in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         rb= IMP.core.RigidMember(hc).get_rigid_body()
         g= IMP.display.ReferenceFrameGeometry(rb.get_reference_frame())
@@ -55,6 +56,8 @@ def add_axis(h, c, w, chain_colors):
         w.add_geometry(g)
 
 def add_skeleton(h, c, r, w, chain_colors):
+    """Show the connectivity skeleton of the conformation to give an idea of
+    how things are layed out"""
     for hc0 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
         for hc1 in IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE):
             if hc1 <= hc0:
@@ -104,6 +107,8 @@ for i, h in enumerate(hs):
             crb=IMP.atom.create_rigid_body(hc)
         else:
             # make sure the rigid bodies have equivalent defining reference frames
+            # if we just used IMP.atom.create_rigid_body, globular proteins are likely
+            # to have different axis computed when starting in different orientations
             crb=IMP.atom.create_compatible_rigid_body(hc, base_chains[c.get_id()])
     print " ",i
 
@@ -123,6 +128,8 @@ add_markers(hs[0], IMP.display.Color(1,1,1), w)
 hso= hs[1:]
 
 
+# sort them spatially so the colors are nicely arranged and allow one to visually connect
+# the position of one end with that of the other
 hso.sort(lambda h0, h1:  cmp(IMP.core.XYZ(IMP.atom.Selection(h0, chain='I',
                                                              residue_index=237).get_selected_particles()[0]).get_z(),
                              IMP.core.XYZ(IMP.atom.Selection(h1, chain='I',
