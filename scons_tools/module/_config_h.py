@@ -226,7 +226,7 @@ inline std::string get_module_name() {
    return "%(namespace)s";
 }
 
-//! Return the path to installed data for this module
+//! Return the full path to installed data
 /** Each module has its own data directory, so be sure to use
     the version of this function in the correct module. To read
     the data file "data_library" that was placed in the \c data
