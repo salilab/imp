@@ -1,26 +1,31 @@
 import IMP.atom
 import IMP.rmf
 m= IMP.Model()
+
+# Create a new IMP.atom.Hierarchy from the contents of the pdb file
 h= IMP.atom.read_pdb(IMP.rmf.get_example_path("simple.pdb"), m)
 
-# create a tmp file and overwrite the contents
-# sorry about the silliness necessary to get binary access to a temp file
+# find the name for a temporary file to use to for writing the hdf5 file
 tfn=IMP.create_temporary_file_name("pdb", "hdf5")
 
 print "File name is", tfn
+
+# open the temporary file, clearing any existing contents
 rh = IMP.rmf.RootHandle(tfn, True)
-# write the hierarchy to the file
+
+# add the hierarchy to the file
 IMP.rmf.add_hierarchy(rh, h)
 
 # change a coordinate
 IMP.core.XYZ(IMP.atom.get_leaves(h)[0]).set_x(0)
-# add the new configuration to the file
+
+# add the new configuration to the file as frame 1
 IMP.rmf.save_frame(rh, 1, h)
 
 # close the file
 del rh
 
-# reopen it
+# reopen it, don't clear the file when opening it
 rh= IMP.rmf.RootHandle(tfn, False)
 
 # hps is a list with one element which is a copy of h
