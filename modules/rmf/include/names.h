@@ -16,6 +16,12 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
+/** \name Data set names
+    The RMF format stores various pieces of data in data sets and attributes
+    attached to the HDF5 group which is acting as the root. These functions
+    return the names for the various data sets.
+    @{
+*/
 #ifndef IMP_DOXYGEN
 inline std::string get_per_frame_name(bool per_frame) {
   return per_frame? "dynamic" : "static";
@@ -69,6 +75,7 @@ inline std::string get_static_storage_attribute_name(KeyCategory category_id) {
       << "storage";
   return oss.str();
 }
+/** @} */
 
 IMPRMF_END_NAMESPACE
 
