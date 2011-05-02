@@ -48,13 +48,20 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
             IMP.domino.SubsetFilter.__init__(self, "MF"+str(pos) + " " +str(value))
             self.pos=pos
             self.value=value
+        def get_next_state(self, pos, s):
+            # suggest that the sampler try the correct state
+            # this method is only called if the filter failed, so pos must be
+            # self.pos
+            return self.value
         def get_is_ok(self, state):
+            # it is only OK if it has the required state
             ret= state[self.pos]==self.value
             return ret
     def get_strength(self, s, excluded):
-        # return the maximum value since it dictates the position
+        # return the maximum value since it dictates the state for the particle
         return 1
     def __init__(self, p, s):
+        # set the name of the object to something vaguely useful
         IMP.domino.SubsetFilterTable.__init__(self, "MFT"+p.get_name()+" at "+str(s))
         self.p=p
         self.s=s

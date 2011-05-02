@@ -5,8 +5,10 @@ import IMP.core
 #set restraints
 def create_scoring(m, ps):
     pairs=[[0,1],[0,2],[1,3],[2,3],[3,4],[4,5],[1,5]]
+    # we will restrain various pairs to be 1 apart
     score= IMP.core.HarmonicDistancePairScore(1, 1)
     # the restraint will be broken apart during optimization
+    # map the indices above to actual particles
     pc= IMP.container.ListPairContainer([(ps[p[0]], ps[p[1]]) for p in pairs],
                                          "Restrained pairs")
     pr= IMP.container.PairsRestraint(score, pc)
@@ -24,6 +26,7 @@ def create_scoring(m, ps):
 
 def create_representation(m):
     ps=[]
+    # create size particles, initial coordinates don't matter.
     for i in range(0,6):
         p=IMP.Particle(m)
         IMP.core.XYZ.setup_particle(p,IMP.algebra.Vector3D(i,0.,0.))
@@ -41,11 +44,13 @@ def create_discrete_states(ps):
     print len(vs), "states for each particle"
     states= IMP.domino.XYZStates(vs)
     # special case ps[0] to remove a sliding degree of freedom
+    # all other particles are given the same set of states
     for p in ps[1:]:
         pst.set_particle_states(p, states)
     return pst
 
 def create_sampler(m, pst):
+    # create the sampler and pass it the states for each patricle
     s=IMP.domino.DominoSampler(m, pst)
     # the following lines recreate the defaults and so are optional
     filters=[]
@@ -55,6 +60,7 @@ def create_sampler(m, pst):
     # filter states that score worse than the cutoffs in the Model
     filters.append(IMP.domino.RestraintScoreSubsetFilterTable(m, pst))
     filters[-1].set_log_level(IMP.SILENT)
+    # try to be intelligent about enumerating the states in each subset
     states= IMP.domino.BranchAndBoundAssignmentsTable(pst, filters);
     states.set_log_level(IMP.SILENT);
     s.set_assignments_table(states)
@@ -64,6 +70,7 @@ def create_sampler(m, pst):
 
 IMP.set_log_level(IMP.TERSE)
 m=IMP.Model()
+# don't print information during Model.evaluate
 m.set_log_level(IMP.SILENT)
 
 print "creating representation"
@@ -76,6 +83,10 @@ print "creating sampler"
 s=create_sampler(m, pst)
 
 print "sampling"
+# get an IMP.ConfigurationSet with the sampled states. If there are very
+# many, it might be better to use s.get_sample_states() and then
+# IMP.domino.load_particle_states() to handle the states as that takes
+# much less memory, and time.
 cs=s.get_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"

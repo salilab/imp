@@ -6,6 +6,7 @@ import IMP.algebra
 
 IMP.set_log_level(IMP.TERSE)
 m=IMP.Model()
+# don't print messages about evaluation
 m.set_log_level(IMP.SILENT)
 
 bb= IMP.algebra.BoundingBox3D((0,0,0), (10,10,10))
@@ -18,22 +19,27 @@ pst= IMP.domino.ParticleStatesTable()
 ss= IMP.domino.XYZStates(allc)
 for p in m.get_particles():
     pst.set_particle_states(p, ss)
-cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(m.get_particles()),
-                                     1, 0)
-m.update()
-if cp.get_number_of_particle_pairs()>0:
-    acp= IMP.container.ListPairContainer(cp.get_particle_pairs())
+# generate a set of restraints based on the close pairs in this randomly chosen configuration
+cp= IMP.core.GridClosePairFinder(1)
+cps=cp.get_close_pairs(m.get_particles())
+
+if len(cps)>0:
+    # one cannot create a container from an empty list
+    acp= IMP.container.ListPairContainer(cps)
 else:
     acp= IMP.container.ListPairContainer(m)
 ps= IMP.core.SoftSpherePairScore(1)
 r= IMP.container.PairsRestraint(ps, acp)
 m.add_restraint(r)
 
+# compute the interaction graph based on all the restraints
 ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(),
                                      pst)
+# generate a junction tree from the interaction graph
 jt= IMP.domino.get_junction_tree(ig)
 print dir(jt)
 print type(jt)
+# create a merge tree from the junction tree, this can be passed to IMP.domin.DominoSampler
 mt= IMP.domino.get_merge_tree(jt)
 s=pst.get_subset()
 print s, type(s)
