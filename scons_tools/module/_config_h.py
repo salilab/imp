@@ -215,6 +215,11 @@ namespace IMP {
 }
 
 %(PREPROC)s_BEGIN_NAMESPACE
+/** \name Standard module methods
+  All \imp modules have a set of standard methods to help get information
+  about the module and about file associated with the modules.
+  @{
+  */
 %(PREPROC)sEXPORT const VersionInfo& get_module_version_info();
 
 inline std::string get_module_name() {
@@ -250,6 +255,7 @@ inline std::string get_data_path(std::string file_name) {
 inline std::string get_example_path(std::string file_name)  {
   return IMP::internal::get_example_path("%(module)s", file_name);
 }
+/** @} */
 
 
 %(PREPROC)s_END_NAMESPACE
