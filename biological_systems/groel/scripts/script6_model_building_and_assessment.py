@@ -40,7 +40,7 @@ for mdl_fn in truncated_models_fn:
     norm_dope_scores.append(mdl.assess_normalized_dope())
 
 # score models by em
-dmap=IMP.em.read_map("groel_subunit_8.mrc",IMP.em.MRCReaderWriter())
+dmap=IMP.em.read_map("output/groel_subunit_11.mrc",IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(11.5)
 imp_mdl=IMP.Model()
 rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
@@ -53,18 +53,23 @@ for mdl_fn in truncated_models_fn:
     sols=IMP.multifit.pca_based_rigid_fitting(rb,rb_refiner,dmap,0.02)
     #refine the top fit
     IMP.core.transform(rb,sols.get_transformation(0))
+    '''
     refined_sols = IMP.em.local_rigid_fitting(
         rb,rb_refiner,
         IMP.atom.Mass.get_mass_key(),dmap,[],1,1)
+    '''
+    refined_sols = IMP.em.FittingSolutions()
+    refined_sols.add_solution(IMP.algebra.get_identity_transformation_3d(),
+                              sols.get_score(0))
     #write the fitted model
     IMP.core.transform(rb,refined_sols.get_transformation(0))
-    IMP.atom.write_pdb(IMP.atom.Hierarchy(rb),mdl_fn.split(".pdb")[0]+".fitted.pdb")
+    IMP.atom.write_pdb(IMP.atom.Hierarchy(rb),"output/"+mdl_fn.split(".pdb")[0]+".fitted.pdb")
     IMP.core.transform(rb,refined_sols.get_transformation(0).get_inverse())
     IMP.core.transform(rb,sols.get_transformation(0).get_inverse())
     fitting_scores.append(1.-refined_sols.get_score(0))
 
 #print model names and their scores into a output file
-output=open("model_building.scores.output","w")
+output=open("output/model_building.scores.output","w")
 output.write('%(a)-40s%(b)-25s%(c)-25s%(d)-25s\n'%{'a':"name",'b':"full model norm_dope",'c':"truncated model norm_dope",'d':"cc"})
 for i ,mdl_fn in enumerate(truncated_models_fn):
     output.write('%(a)-40s%(b)-25.3f%(c)-25.3f%(d)-25.3f\n'%{'a':mdl_fn,'b':full_model_norm_dope_scores[i],'c':norm_dope_scores[i],'d':fitting_scores[i]})

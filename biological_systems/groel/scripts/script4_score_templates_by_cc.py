@@ -3,7 +3,7 @@ import IMP.atom
 import IMP.multifit
 IMP.set_log_level(IMP.NONE)
 #--- parse the templates file
-templates_file="build_profile.prf"
+templates_file="output/build_profile.prf"
 templates=[]
 seq_ids=[]
 for line in open(templates_file):
@@ -12,7 +12,7 @@ for line in open(templates_file):
     s=line.split()
     if int(s[0])==1:
         continue
-    if not(int(s[4])-int(s[3])>480):
+    if not(int(s[4])-int(s[3])>400):
         print "Not including:",s[0],s[1]
         continue
     templates.append([s[1][:4],s[1][-1]])
@@ -20,7 +20,7 @@ for line in open(templates_file):
 print "number of seq:",len(seq_ids)
 templates_dir="data/templates/"
 #--- load the target density map
-dmap=IMP.em.read_map("groel_subunit_11.mrc",IMP.em.MRCReaderWriter())
+dmap=IMP.em.read_map("output/groel_subunit_11.mrc",IMP.em.MRCReaderWriter())
 dmap.get_header_writable().set_resolution(10)
 #--- load IMP model
 mdl=IMP.Model()
@@ -49,9 +49,11 @@ for i,t in enumerate(templates):
     #refined_sols = IMP.em.local_rigid_fitting(
     #    rb,rb_refiner,
     #    IMP.atom.Mass.get_mass_key(),dmap,[],1,3,100)
-    refined_sols = sols
+    refined_sols = IMP.em.FittingSolutions()
+    refined_sols.add_solution(IMP.algebra.get_identity_transformation_3d(),
+                              sols.get_score(0))
     IMP.core.transform(rb,refined_sols.get_transformation(0))
-    IMP.atom.write_pdb(mh_chain,t[0]+t[1]+"_fitted.pdb")
+    IMP.atom.write_pdb(mh_chain,"output/"+t[0]+t[1]+"_fitted.pdb")
     template_fit_sols.append([
         i,refined_sols.get_transformation(0)*sols.get_transformation(0),1.-refined_sols.get_score(0),t])
     IMP.core.transform(rb,refined_sols.get_transformation(0).get_inverse())
@@ -59,7 +61,7 @@ for i,t in enumerate(templates):
 #-- sort the results by the cross correlation scores
 template_fit_sols=sorted(template_fit_sols,key=lambda fit: fit[2],reverse=True)
 #--- write the best fitting score for each template
-output=open("score_templates_by_cc.log","w")
+output=open("output/score_templates_by_cc.log","w")
 output.write('%(a)-12s%(b)-12s%(c)-12s%(d)-30s\n'%{'a':'name','b':'seq id','c':'cc score','d':'transformation'})
 print len(template_fit_sols[0])
 print template_fit_sols[0]
