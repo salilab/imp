@@ -21,7 +21,10 @@ class DerivativeAccumulator;
 
 //! Abstract class to implement hierarchical methods.
 /** The job of this class is to take a single particle and, if
-    appropriate, return a list of particles.
+    appropriate, return a list of particles. These lists can
+    reflect existing relationships, such as the
+    IMP::core::LeavesRefiner or arbitrary relationships set up
+    for a particular purpose, such as IMP::core::TableRefiner.
 
     Implementors should see IMP_REFINER().
 */
