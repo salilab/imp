@@ -22,6 +22,7 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                           "(const Selection &,const Selection &,double, double)",
                           "create_connectivity_restraint":"(const Selections &,double)",
                           "create_excluded_volume_restraint":"(const Hierarchies &,double)",
+                          "create_cover":"(Selection,std::string)",
                           "setup_as_approximation":"(Hierarchy)",
                           "create_clone":"(Hierarchy)",
                           "destroy":"(Hierarchy)"
