@@ -15,7 +15,7 @@ g.show_graphviz()
 # ./tools/imppy.sh python ../svn/kernel/examples/graph.py >/tmp/graph.dot
 # drussel@udp012430uds:debug> dot /tmp/graph.dot -Tpdf > /tmp/out.pdf
 
-# the thing below requires the altgraph python package
+# the method below requires the altgraph python package
 try:
     g.show_with_altgraph()
 except:
