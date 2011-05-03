@@ -21,7 +21,7 @@ nbl= IMP.container.ClosePairContainer(ps, 0.0, 3.0)
 nbl.add_pair_filter(IMP.atom.BondedPairFilter())
 
 # Set up excluded volume
-sdps= IMP.core.SphereDistancePairScore(IMP.core.HarmonicLowerBound(0,1))
+sdps= IMP.core.SoftSpherePairScore(1)
 evr= IMP.container.PairsRestraint(sdps, nbl)
 m.add_restraint(evr)
 
