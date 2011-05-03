@@ -36,7 +36,7 @@ class XYZR;
  of the atoms of a protein by a sphere per residue.
  \htmlinclude cover_particles.py
 
- \note The particle passed must be an XYZR with the given radius key.
+ \note The particle passed must be an XYZR.
  \uses{class CoverRefined, CGAL}
  */
 class IMPCOREEXPORT CoverRefined: public SingletonModifier
@@ -58,8 +58,10 @@ public:
 };
 
 //! A particle which covers a set of other particles.
-/** A decorator which sets up a particle to be the centroid of a
-    set of other particles.
+/** A decorator which sets up a particle to be a cover of a
+    set of other particles. That is, the sphere defined by
+    its XYZR decorator will always contain the passed
+    particles.
 
     \usesconstraint
 */
