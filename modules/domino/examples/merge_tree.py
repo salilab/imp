@@ -20,7 +20,8 @@ ss= IMP.domino.XYZStates(allc)
 for p in m.get_particles():
     pst.set_particle_states(p, ss)
 # generate a set of restraints based on the close pairs in this randomly chosen configuration
-cp= IMP.core.GridClosePairFinder(1)
+cp= IMP.core.GridClosePairsFinder()
+cp.set_distance(1)
 cps=cp.get_close_pairs(m.get_particles())
 
 if len(cps)>0:
