@@ -20,6 +20,7 @@
 #include <IMP/display/geometry.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/SingletonScore.h>
+#include <IMP/atom/hierarchy_tools.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -269,6 +270,33 @@ class HierarchiesGeometry: public SingletonsGeometry {
   }
   IMP_OBJECT_INLINE(HierarchiesGeometry,
                     out <<  get_container() << std::endl;,{});
+};
+
+
+
+/** \class SelectionGeometry
+    \brief Display an IMP::atom::Selection.
+*/
+class SelectionGeometry: public Geometry {
+  atom::Selection res_;
+public:
+  SelectionGeometry(atom::Selection d,
+                    std::string name="Selection"):
+    Geometry(name), res_(d) {}
+  Geometries get_components() const {
+    Geometries ret;
+    ParticlesTemp ps= res_.get_selected_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(ps[i])));
+      ret.push_back(g);
+      ret.back()->set_name(get_name());
+      if (get_has_color()) {
+        ret.back()->set_color(get_color());
+      }
+    }
+    return ret;
+  }
+  IMP_OBJECT_INLINE(SelectionGeometry,IMP_UNUSED(out);,);
 };
 
 IMPDISPLAY_END_NAMESPACE
