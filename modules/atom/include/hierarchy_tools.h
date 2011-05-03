@@ -354,6 +354,22 @@ IMPATOMEXPORT void setup_as_approximation(Hierarchy h
 );
 
 
+/** Create an XYZR particle which always includes the particles
+    in the selection in its bounding volume. If all the particles
+    in the selection are part of the same rigid body, then the
+    created particle is added as part of that rigid body. Otherwise
+    it uses an IMP::core::Cover to maintain the cover property.
+
+    Doing this can be a useful way to accelerate computations
+    when it is OK to replace a potential complicated set of
+    geometry represented by the selection with a much simpler
+    one.
+
+    \relatesalso Selection
+*/
+IMPATOMEXPORT core::XYZR create_cover(Selection s,
+                                      std::string name=std::string());
+
 /** Transform a hierarchy. This is aware of rigid bodies.
  */
 IMPATOMEXPORT void transform(Hierarchy h, const algebra::Transformation3D &tr);
