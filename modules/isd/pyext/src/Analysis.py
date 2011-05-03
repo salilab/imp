@@ -43,6 +43,8 @@ class Analysis:
             if line.startswith('*'):
                 continue
             tokens=line.split()
+            if not tokens[0][1].isdigit():
+                continue
             lineno = int(tokens[0][1:])-1
             if line.startswith('#'):
                 if read_title:
