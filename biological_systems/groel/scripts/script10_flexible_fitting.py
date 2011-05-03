@@ -10,10 +10,11 @@ class general_parameters:
     # Parts of the protein kept fixed (the don't move). If ''
     # all the protein is mobile
     fixed_filename = ''
-    path = '/flex-EM-1iok/' # directory path
+    os.system("mkdir ./flex-EM-1iok")
+    path = '.' # directory path
     code = 'grol'               # 4 letter code of the structure
     input_pdb_file = 'P0A6F5.B99990006.pdb' # input model for optimization
-    em_map_file = 'monomer_map.mrc'   # name of EM density map (mrc)
+    em_map_file = 'groel_subunit_8.mrc'   # name of EM density map (mrc)
     format='MRC'              # map format: MRC or XPLOR
     apix=2.7                # voxel size: A/pixel
     box_size=28             # size of the density map (cubic)
