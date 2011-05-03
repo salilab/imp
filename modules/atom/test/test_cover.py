@@ -21,12 +21,16 @@ class PDBReadWriteTest(IMP.test.TestCase):
             dist= IMP.algebra.get_distance(d.get_coordinates(),
                                            sph.get_center())
             self.assert_(dist < 1.1*sph.get_radius())
-    def _display(self, mp, name, c):
+        self.assert_(c.get_radius() < 8)
+    def _display(self, mp, name, c, s):
         g= IMP.display.XYZRGeometry(c)
         gp= IMP.display.HierarchyGeometry(mp)
-        w= IMP.display.PymolWriter(self.get_tmp_file_name(name))
+        gs=IMP.display.SelectionGeometry(s)
+        gs.set_color(IMP.display.Color(1,0,0))
+        w= IMP.display.PymolWriter(self.get_tmp_file_name(name)+".pym")
         w.add_geometry(g)
         w.add_geometry(gp)
+        w.add_geometry(gs)
     def test_nonrigid(self):
         """Check cover from selection"""
         m = IMP.Model()
@@ -37,10 +41,11 @@ class PDBReadWriteTest(IMP.test.TestCase):
         s= IMP.atom.Selection(mp, residue_indexes=[26, 123])
         d= IMP.atom.create_cover(s, "my cover")
         m.update()
-        self._display(mp, "before", d)
+        print d.get_radius()
+        self._display(mp, "before", d, s)
         self._perturb(mp)
         m.update()
-        self._display(mp, "after", d)
+        self._display(mp, "after", d, s)
         self._check(mp, s, d)
     def test_rigid(self):
         """Check cover from rigid selection"""
@@ -50,13 +55,20 @@ class PDBReadWriteTest(IMP.test.TestCase):
         mp= IMP.atom.read_pdb(self.open_input_file("input.pdb"),
                               m, IMP.atom.NonWaterPDBSelector())
         rb= IMP.atom.create_rigid_body(mp)
+        #IMP.set_log_level(IMP.VERBOSE)
+        #IMP.atom.show_molecular_hierarchy(mp)
         s= IMP.atom.Selection(mp, residue_indexes=[26, 123])
+        print "selected:"
+        for p in s.get_selected_particles():
+            print p.get_name()
+        print "onward"
         d= IMP.atom.create_cover(s, "my cover")
         m.update()
-        self._display(mp, "before_rigid", d)
+        print d.get_radius()
+        self._display(mp, "before_rigid", d, s)
         self._perturb(mp, rb)
         m.update()
-        self._display(mp, "after_rigid", d)
+        self._display(mp, "after_rigid", d, s)
         self._check(mp, s, d)
 
 if __name__ == '__main__':
