@@ -52,7 +52,11 @@ class MyFilterTable(IMP.domino.SubsetFilterTable):
             # suggest that the sampler try the correct state
             # this method is only called if the filter failed, so pos must be
             # self.pos
-            return self.value
+            if s[self.pos] > self.value:
+                # a very large number
+                return 2**29
+            else:
+                return self.value
         def get_is_ok(self, state):
             # it is only OK if it has the required state
             ret= state[self.pos]==self.value
