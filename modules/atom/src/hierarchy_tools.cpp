@@ -28,6 +28,7 @@
 #include <IMP/core/PairRestraint.h>
 #include <IMP/core/TableRefiner.h>
 #include <IMP/core/ExcludedVolumeRestraint.h>
+#include <IMP/core/CoverRefined.h>
 #include <algorithm>
 
 IMPATOM_BEGIN_NAMESPACE
@@ -757,7 +758,44 @@ Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
 }
 
 
+core::XYZR create_cover(Selection s,
+                        std::string name) {
+  if (name.empty()) {
+    name="atom cover";
+  }
+  ParticlesTemp ps= s.get_selected_particles();
+  IMP_USAGE_CHECK(!ps.empty(),
+                  "No particles selected.");
+  Particle *p= new Particle(ps[0]->get_model());
+  p->set_name(name);
+  core::RigidBody rb;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    if (core::RigidMember::particle_is_instance(ps[i])) {
+      if (!rb) {
+        rb= core::RigidMember(ps[i]).get_rigid_body();
+      } else {
+        if (rb != core::RigidMember(ps[i]).get_rigid_body()) {
+          rb= core::RigidBody();
+          break;
+        }
+      }
+    }
+  }
 
+  if (rb) {
+    algebra::Sphere3Ds ss;
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      ss.push_back(core::XYZR(ps[i]).get_sphere());
+    }
+    algebra::Sphere3D s= algebra::get_enclosing_sphere(ss);
+    core::XYZR d= core::XYZR::setup_particle(p, s);
+    rb.add_member(d);
+    return d;
+  } else {
+    core::Cover c=core::Cover::setup_particle(p, core::XYZRs(ps));
+    return c;
+  }
+}
 
 
 void Selection::show(std::ostream &out) const {
