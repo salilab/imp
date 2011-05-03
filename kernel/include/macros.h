@@ -2301,8 +2301,9 @@ skip_steps steps. The file_name constructor argument should contain
     OptimizerState(std::string("Writer to ")+file_name),                \
       file_name_(file_name) {constr}                                    \
     functs                                                              \
-    void set_skip_steps(unsigned int k) {                               \
-      skip_steps_=k;                                                    \
+    IMP_NO_DOXYGEN(void set_skip_steps(unsigned int k) {set_period(k+1);}); \
+    void set_period(unsigned int p) {                                   \
+      skip_steps_=p-1;                                                  \
       call_number_=0;                                                   \
     }                                                                   \
 void write(std::string file_name, unsigned int call=0,                  \
