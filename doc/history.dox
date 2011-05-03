@@ -1,6 +1,7 @@
 /** \page recent Change History
 
 \par Spring 2011
+- IMP.atom.create_cover() was added to facilitate creating a summary particle for part of a hierarchy in order to accelerate restraints.
 - IMP.hdf5 was renamed to IMP.rmf, the proposed name of the file format that it supports. That also better separates the hdf5 support from the file format support.
 - The old I/O functions have been marked as deprecated in favor of IMP.hdf5. You may need to compile with deprecated="yes" if you use them.
 - The undocumented show_dotty() method on python graphs has been renamed to the still undocumented show_with_altgraph(), but at least it is clearly different from show_graphviz().
