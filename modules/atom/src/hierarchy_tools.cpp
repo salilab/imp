@@ -140,8 +140,7 @@ namespace {
    }
    if (!Residue::particle_is_instance(p)
        && !Fragment::particle_is_instance(p)
-       && !Domain::particle_is_instance(p)
-       && !Chain::particle_is_instance(p)) {
+       && !Domain::particle_is_instance(p)) {
      Fragment f= Fragment::setup_particle(p);
      f.set_residue_indexes(inds);
    }
@@ -544,11 +543,17 @@ bool Selection::operator()(Hierarchy h) const
     bool found=false;
     for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
       if (check_nonradius(h.get_child(i))) {
-        if (core::XYZR::particle_is_instance(h)
-            && core::XYZR(h).get_radius() >radius_) {
+        if (core::XYZR::particle_is_instance(h.get_child(i))
+            && core::XYZR(h.get_child(i)).get_radius() >radius_) {
           found=true;
           break;
+        } else {
+          /*std::cout << "Child " << h.get_child(i)->get_name()
+            << " fails radius check" << std::endl;*/
         }
+      } else {
+        /*std::cout << "Child " << h.get_child(i)->get_name()
+          << " fails non-radius check" << std::endl;*/
       }
     }
     if (found) return false;
