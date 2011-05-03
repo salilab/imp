@@ -1,0 +1,214 @@
+#!/usr/bin/env python
+
+#general imports
+from numpy import *
+from random import uniform
+
+
+#imp general
+import IMP
+
+#our project
+from IMP.isd import Scale,JeffreysRestraint,MarginalNOERestraint
+
+#unit testing framework
+import IMP.test
+
+class TestMarginalNOERestraint(IMP.test.TestCase):
+    "simple test cases to check if MarginalNOERestraint works"
+    def setUp(self):
+        IMP.test.TestCase.setUp(self)
+        #IMP.set_log_level(IMP.MEMORY)
+        IMP.set_log_level(0)
+        self.m = IMP.Model()
+        self.p0=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(0,0,0))
+        self.p1=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(1,1,1))
+        self.p2=IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+            IMP.algebra.Vector3D(1,0,0))
+        self.DA = IMP.DerivativeAccumulator()
+        self.V_obs=3.0
+        self.ls = \
+           IMP.container.ListPairContainer([(self.p0,self.p1),(self.p0,self.p2)])
+        self.noe = IMP.isd.MarginalNOERestraint()
+
+    def testValuePDist1(self):
+        """test probability on three particles"""
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        self.noe.add_contribution(self.p0,self.p1,1.0)
+        self.noe.add_contribution(IMP.container.ListPairContainer([(self.p0,self.p2)]),2.0)
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            for p in [self.p0,self.p1,self.p2]:
+                p.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            dist1=IMP.core.get_distance(p0,p1)**-6
+            dist2=IMP.core.get_distance(p0,p2)**-6
+            v=sqrt(v1/dist1 * v2/dist2)
+            b=log(v1/(dist1*v))**2 + log(v2/(dist2*v))**2
+            expected=b**(-1./2)
+            self.assertAlmostEqual(self.noe.get_probability(),
+                    expected,delta=0.001)
+
+    def testValueEDist1(self):
+        """test energy on three particles"""
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        self.noe.add_contribution(self.p0,self.p1,v1)
+        self.noe.add_contribution(IMP.container.ListPairContainer([(self.p0,self.p2)]), v2)
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            for p in [self.p0,self.p1,self.p2]:
+                p.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            dist1=IMP.core.get_distance(p0,p1)**-6
+            dist2=IMP.core.get_distance(p0,p2)**-6
+            v=sqrt(v1/dist1 * v2/dist2)
+            b=log(v1/(dist1*v))**2 + log(v2/(dist2*v))**2
+            expected=0.5*log(b)
+            self.noe.evaluate(None)
+            self.assertAlmostEqual(self.noe.evaluate(None),
+                    expected,delta=0.001)
+
+    def testValuePDist2(self):
+        """test probability on n particles"""
+        pairs=[]
+        volumes=[]
+        distances=[]
+        self.m.add_restraint(self.noe)
+        for i in xrange(2,100):
+            while len(pairs) <= i:
+                pair=[IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                    IMP.algebra.Vector3D(*[uniform(-10,10) for r in range(3)]))
+                        for p in range(2)]
+                pairs.append(pair)
+                distances.append(IMP.core.get_distance(pair[0],pair[1]))
+                volumes.append(uniform(0.1,10))
+                self.noe.add_contribution(IMP.container.ListPairContainer([pair]),
+                        volumes[-1])
+            v=1.0
+            for j in xrange(len(pairs)):
+                v *= volumes[j]*distances[j]**6
+            v = v**(1.0/len(pairs))
+            b=0
+            for j in xrange(len(pairs)):
+                b += log(volumes[j]*distances[j]**6/v)**2
+            expected = b**(-(len(pairs)-1)/2.0)
+            self.assertAlmostEqual(self.noe.get_probability(),
+                    expected,delta=0.001)
+
+    def testValueEDist2(self):
+        """test energy on n particles"""
+        pairs=[]
+        volumes=[]
+        distances=[]
+        self.m.add_restraint(self.noe)
+        for i in xrange(2,100):
+            while len(pairs) <= i:
+                pair=[IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                    IMP.algebra.Vector3D(*[uniform(-10,10) for r in range(3)]))
+                        for p in range(2)]
+                pairs.append(pair)
+                distances.append(IMP.core.get_distance(pair[0],pair[1]))
+                volumes.append(uniform(0.1,10))
+                self.noe.add_contribution(IMP.container.ListPairContainer([pair]),
+                        volumes[-1])
+            v=1.0
+            for j in xrange(len(pairs)):
+                v *= volumes[j]*distances[j]**6
+            v = v**(1.0/len(pairs))
+            b=0
+            for j in xrange(len(pairs)):
+                b += log(volumes[j]*distances[j]**6/v)**2
+            expected = (len(pairs)-1)/2.0 * log(b)
+            self.assertAlmostEqual(self.noe.evaluate(None),
+                    expected,delta=0.001)
+
+    def testDerivative(self):
+        """test derivative wrt x for 3 particles and 2 contributions"""
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        self.noe.add_contribution(self.p0,self.p1,v1)
+        self.noe.add_contribution(IMP.container.ListPairContainer([(self.p0,self.p2)]),v2)
+        self.m.add_restraint(self.noe)
+        p0.set_coordinates(IMP.algebra.Vector3D(0,0,0))
+        p1.set_coordinates(IMP.algebra.Vector3D(1,1,1))
+        p2.set_coordinates(IMP.algebra.Vector3D(1,0,0))
+        self.noe.evaluate(self.DA)
+        #p0
+        self.assertAlmostEqual(self.p0.get_derivative(0),
+                    1.53687,delta=0.001)
+        self.assertAlmostEqual(self.p0.get_derivative(1),
+                   -0.76843,delta=0.001)
+        self.assertAlmostEqual(self.p0.get_derivative(2),
+                   -0.76843,delta=0.001)
+        #p1
+        self.assertAlmostEqual(self.p1.get_derivative(0),
+                    0.76843,delta=0.001)
+        self.assertAlmostEqual(self.p1.get_derivative(1),
+                    0.76843,delta=0.001)
+        self.assertAlmostEqual(self.p1.get_derivative(2),
+                    0.76843,delta=0.001)
+        #p2
+        self.assertAlmostEqual(self.p2.get_derivative(0),
+                   -2.30530,delta=0.001)
+        self.assertAlmostEqual(self.p2.get_derivative(1),
+                    0.,delta=0.001)
+        self.assertAlmostEqual(self.p2.get_derivative(2),
+                    0.,delta=0.001)
+
+    def testParticles(self):
+        "test get_input_particles"
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        self.noe.add_contribution(self.p0,self.p1,v1)
+        self.noe.add_contribution(IMP.container.ListPairContainer([(self.p0,self.p2)]),v2)
+        self.assertEqual(self.noe.get_input_particles(),
+                [self.p0,self.p1,self.p0,self.p2])
+
+    def testContainers(self):
+        "test get_input_containers"
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
+        c2=IMP.container.ListPairContainer([(self.p0,self.p2)])
+        self.noe.add_contribution(c1,v1)
+        self.noe.add_contribution(c2,v2)
+        self.assertEqual(self.noe.get_input_containers(),[c1,c2])
+
+    def testSanityEP(self):
+        "test if score is -log(prob)"
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
+        c2=IMP.container.ListPairContainer([(self.p0,self.p2)])
+        self.noe.add_contribution(c1,v1)
+        self.noe.add_contribution(c2,v2)
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10,10) for i in
+                range(3)]))
+            self.assertAlmostEqual(self.noe.evaluate(None),
+                    -log(self.noe.get_probability()),delta=0.001)
+
+    def testSanityPE(self):
+        "test if prob is exp(-score)"
+        v1,v2=1.0,2.0
+        p0,p1,p2=self.p0,self.p1,self.p2
+        c1=IMP.container.ListPairContainer([(self.p0,self.p1)])
+        c2=IMP.container.ListPairContainer([(self.p0,self.p2)])
+        self.noe.add_contribution(c1,v1)
+        self.noe.add_contribution(c2,v2)
+        self.m.add_restraint(self.noe)
+        for i in xrange(100):
+            p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(-10,10) for i in
+                range(3)]))
+            self.assertAlmostEqual(self.noe.get_probability(),
+                    exp(-self.noe.evaluate(None)),delta=0.001)
+
+if __name__ == '__main__':
+    IMP.test.main()
+
+
