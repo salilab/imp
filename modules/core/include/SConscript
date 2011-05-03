@@ -42,6 +42,7 @@ files = [
          'MoveStatisticsScoreState.h',
          'Mover.h',
          'MoverBase.h',
+         'MSConnectivityRestraint.h',
          'NearestNeighborsClosePairsFinder.h',
          'NormalMover.h',
          'OpenCubicSpline.h',

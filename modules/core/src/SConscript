@@ -36,6 +36,7 @@ files = [
          'MonteCarlo.cpp',
          'MoveStatisticsScoreState.cpp',
          'MoverBase.cpp',
+         'MSConnectivityRestraint.cpp',
          'NearestNeighborsClosePairsFinder.cpp',
          'NormalMover.cpp',
          'OpenCubicSpline.cpp',
