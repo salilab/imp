@@ -28,6 +28,7 @@
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
+#include <boost/graph/lookup_edge.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -294,7 +295,10 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
         IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
         for (unsigned int j=0; j< c.in.size(); ++j) {
           for (unsigned int k=0; k< c.out.size(); ++k) {
-            boost::add_edge(c.in[j], c.out[k], full);
+            if (!boost::lookup_edge(c.in[j], c.out[k], full).second) {
+              // why am I doing this anyway?
+              //boost::add_edge(c.in[j], c.out[k], full);
+            }
           }
         }
         boost::clear_vertex(i, full);
