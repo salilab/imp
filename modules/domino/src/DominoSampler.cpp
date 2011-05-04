@@ -167,7 +167,8 @@ void DominoSampler::do_show(std::ostream &out) const {
 
 
 unsigned int
-DominoSampler::get_number_of_assignments(unsigned int tree_vertex) const {
+DominoSampler::get_number_of_assignments_for_vertex(unsigned int tree_vertex)
+  const {
   IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
                   << " if you set one.");
   boost::property_map< MergeTree, boost::vertex_name_t>::const_type
@@ -175,7 +176,8 @@ DominoSampler::get_number_of_assignments(unsigned int tree_vertex) const {
   return stats_.get_number_of_assignments(subset_map[tree_vertex]);
 }
 Assignments
-DominoSampler::get_sample_assignments(unsigned int tree_vertex) const {
+DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
+  const {
   IMP_USAGE_CHECK(has_mt_, "Can only query statistics of the merge tree"
                   << " if you set one.");
   boost::property_map< MergeTree, boost::vertex_name_t>::const_type
