@@ -188,9 +188,6 @@ typedef IMP::Decorators< Hierarchy,
       on their index
     - all Atom children in of a particle appear in order of their
       AtomType
-    - if a non-Residue parent contains information about which residue
-      indexes are in its subtree, and then the children also have
-      information about the indexes.
 
     The get_is_valid() method checks some of these properties. Any
     method taking a hierarchy as an argument should do
