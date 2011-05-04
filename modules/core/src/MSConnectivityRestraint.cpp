@@ -179,7 +179,7 @@ void ExperimentalTree::desc_to_label(const std::string &desc,
     if ( !protein_names[i].empty() )
     {
       size_t id = protein_to_id(protein_names[i]);
-      if ( label.empty() or label.back().first != id )
+      if ( label.empty() || label.back().first != id )
         label.push_back(std::make_pair(id, 1));
       else
         label.back().second++;
