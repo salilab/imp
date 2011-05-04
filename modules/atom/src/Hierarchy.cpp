@@ -254,14 +254,14 @@ namespace {
                     << " cannot be a child of its parent "
                     << h.get_parent());
         }
-        if (p.get_as_fragment() || p.get_as_domain()) {
+        /*if (p.get_as_fragment() || p.get_as_domain()) {
           if (!h.get_as_fragment() && !h.get_as_domain()
               && !h.get_as_residue()) {
             TEST_FAIL("Node " << h
                       << " has a parent with residue index information"
                       << " but does not itself has index information.");
           }
-        }
+          }*/
       }
       if ((h.get_as_atom() && (h.get_as_residue()
                               || h.get_as_domain()
