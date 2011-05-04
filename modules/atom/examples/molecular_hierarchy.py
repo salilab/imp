@@ -26,6 +26,14 @@ IMP.atom.destroy(mp0)
 # load another copy
 mp1= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 
+# create a graph from the hierarchy
+mp1t= IMP.atom.get_hierarchy_tree(mp1)
+# try to display it graphically, assuming altgraph is installed
+try:
+    mp1t.show_with_altgraph()
+except:
+    pass
+
 # make this one rigid
 IMP.atom.create_rigid_body(mp1)
 

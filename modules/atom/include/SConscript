@@ -36,6 +36,7 @@ files = [
          'RemoveTranslationOptimizerState.h',
          'Residue.h',
          'SameResiduePairFilter.h',
+         'Selection.h',
          'Simulator.h',
          'StereochemistryPairFilter.h',
          'VelocityScalingOptimizerState.h',

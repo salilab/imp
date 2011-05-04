@@ -16,11 +16,10 @@
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/bond_decorators.h>
 #include <IMP/atom/Hierarchy.h>
-#include <IMP/atom/hierarchy_tools.h>
 #include <IMP/display/geometry.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/SingletonScore.h>
-#include <IMP/atom/hierarchy_tools.h>
+#include <IMP/atom/Selection.h>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 

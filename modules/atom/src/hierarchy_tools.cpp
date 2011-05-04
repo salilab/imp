@@ -30,7 +30,12 @@
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/core/CoverRefined.h>
 #include <algorithm>
-
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
@@ -942,6 +947,29 @@ double get_radius_of_gyration(Selection h) {
   IMP_USAGE_CHECK(!h.get_selected_particles().empty(),
                   "No particles selected.");
   return get_radius_of_gyration(h.get_selected_particles());
+}
+
+HierarchyTree get_hierarchy_tree(Hierarchy h) {
+  HierarchyTree ret;
+  typedef boost::property_map<HierarchyTree,
+                      boost::vertex_name_t>::type VM;
+  VM vm= boost::get(boost::vertex_name, ret);
+  std::vector<std::pair<int, Hierarchy> > queue;
+  int v= boost::add_vertex(ret);
+  vm[v]= h;
+  queue.push_back(std::make_pair(v, h));
+  do {
+    int v= queue.back().first;
+    Hierarchy c= queue.back().second;
+    queue.pop_back();
+    for (unsigned int i=0; i< c.get_number_of_children(); ++i) {
+      int vc= boost::add_vertex(ret);
+      vm[vc]= c.get_child(i);
+      boost::add_edge(v, vc, ret);
+      queue.push_back(std::make_pair(vc, c.get_child(i)));
+    }
+  } while (!queue.empty());
+  return ret;
 }
 
 
