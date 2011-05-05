@@ -103,8 +103,6 @@ public:
     std::copy(i.begin(), i.end(), v_+1);
     validate();
   }
-  // can't use due to sz_
-  // IMP_COPY_CONSTRUCTOR(Assignment);
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   Assignment(const Assignment &o):v_(0), sz_(0){
     copy_from(o);
