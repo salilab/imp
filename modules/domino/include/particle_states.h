@@ -109,6 +109,11 @@ class IMPDOMINOEXPORT XYZStates: public ParticleStates {
 public:
   XYZStates(const algebra::Vector3Ds &states):
     ParticleStates("XYZStates %1%"), states_(states){}
+  algebra::Vector3D get_vector(unsigned int i) const {
+    IMP_USAGE_CHECK(i < states_.size(),
+                    "Out of range");
+    return states_[i];
+  }
   IMP_PARTICLE_STATES(XYZStates);
 };
 
@@ -120,6 +125,11 @@ class IMPDOMINOEXPORT RigidBodyStates: public ParticleStates {
 public:
   RigidBodyStates(const algebra::ReferenceFrame3Ds &states):
     ParticleStates("RigidBodyStates %1%"), states_(states){}
+  algebra::ReferenceFrame3D get_reference_frame(unsigned int i) const {
+    IMP_USAGE_CHECK(i < states_.size(),
+                    "Out of range");
+    return states_[i];
+  }
   IMP_PARTICLE_STATES(RigidBodyStates);
 };
 
@@ -134,6 +144,11 @@ public:
    */
   NestedRigidBodyStates(const algebra::Transformation3Ds &states):
     ParticleStates("NestedRigidBodyStates %1%"), states_(states){}
+  algebra::Transformation3D get_transformation(unsigned int i) const {
+    IMP_USAGE_CHECK(i < states_.size(),
+                    "Out of range");
+    return states_[i];
+  }
   IMP_PARTICLE_STATES(NestedRigidBodyStates);
 };
 
