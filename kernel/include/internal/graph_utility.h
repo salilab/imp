@@ -50,7 +50,7 @@ class ObjectNameWriter {
     }
   };
   template <class T>
-  struct Name<T*, typename enable_if<is_base_of<Object, T> >::type> {
+  struct Name<T*> {
     static std::string get(const T *t) {
       return t->get_name();
     }

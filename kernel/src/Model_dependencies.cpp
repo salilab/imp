@@ -24,11 +24,12 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_concepts.hpp>
 #include <boost/graph/visitors.hpp>
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #include <boost/graph/topological_sort.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
-#include <boost/graph/lookup_edge.hpp>
+//#include <boost/graph/lookup_edge.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -295,10 +296,10 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
         IMP_LOG(VERBOSE, "Removing object " << vm[i]->get_name() << std::endl);
         for (unsigned int j=0; j< c.in.size(); ++j) {
           for (unsigned int k=0; k< c.out.size(); ++k) {
-            if (!boost::lookup_edge(c.in[j], c.out[k], full).second) {
+            //if (!boost::lookup_edge(c.in[j], c.out[k], full).second) {
               // why am I doing this anyway?
               //boost::add_edge(c.in[j], c.out[k], full);
-            }
+            //}
           }
         }
         boost::clear_vertex(i, full);
@@ -342,7 +343,9 @@ namespace {
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
+#pragma GCC diagnostic ignored "-Wunused-parameter"
       boost::topological_sort(dg, std::back_inserter(sorted));
+#pragma GCC diagnostic error "-Wunused-parameter"
     } catch (...) {
       TextOutput out=create_temporary_file();
       internal::show_as_graphviz(dg, out);
