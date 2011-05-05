@@ -52,6 +52,17 @@ IMP_DECORATORS(RigidBody,RigidBodies, XYZs);
     passed to the constructor, based on diagonalizing the
     inertial tensor (which is not stored, currently).
 
+    RigidBodies can be nested (that is, a RigidBody can have
+    another RigidBody as a member). This can be useful for
+    organizational reasons as well as for accelerating
+    computations since since operations are affected by
+    the total number of children contained in the rigid body
+    being operated on. Examples of this include collision detection
+    where if you have multiple representations of geometry at
+    different resolutions it is faster to put each of them
+    in a separate rigid body and then creat one rigid body
+    containing all of them.
+
     It is often desirable to randomize the orientation of a rigid
     body:
     \pythonexample{randomize_rigid_body}
