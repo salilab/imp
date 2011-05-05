@@ -84,7 +84,6 @@ Assignments DominoSampler
     OptimizeRestraints ro(rs, get_particle_states_table());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
-
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
                                              get_particle_states_table());
   IMP_IF_LOG(TERSE) {
@@ -99,19 +98,24 @@ Assignments DominoSampler
 
   Assignments final_solutions;
   if (has_sg_) {
+    IMP_LOG(TERSE,"DOMINOO running loopy"<<std::endl);
     check_graph(sg_, known_particles);
     final_solutions
       = internal::loopy_get_best_conformations(sg_, known_particles,
                                                sfts, sst,
                                     get_maximum_number_of_assignments());
+    IMP_LOG(TERSE,"DOMINOO end running loopy"<<std::endl);
   } else {
     MergeTree mt;
     if (has_mt_) {
+      IMP_LOG(TERSE,"DOMINOO has merge tree"<<std::endl);
       mt= mt_;
       check_graph(mt_, known_particles);
       IMP_USAGE_CHECK(get_is_merge_tree(mt, known_particles, true),
                       "Not a merge tree");
+      IMP_LOG(TERSE,"DOMINOO END merge tree"<<std::endl);
     } else {
+      IMP_LOG(TERSE,"DOMINOO has junction tree"<<std::endl);
       SubsetGraph jt= get_junction_tree(get_interaction_graph(rs,
                                                get_particle_states_table()));
       MergeTree mt= get_merge_tree(jt);
@@ -120,17 +124,21 @@ Assignments DominoSampler
         lsft= new ListSubsetFilterTable(get_particle_states_table());
         sfts.push_back(lsft);
       }
+      IMP_LOG(TERSE,"domino::DominoSampler entering InferenceStatistics\n");
       stats_=internal::InferenceStatistics();
+      IMP_LOG(TERSE,"domino::DominoSampler entering get_best_conformations\n");
       final_solutions
         = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
                                            known_particles,
                                            sfts, sst, lsft, stats_,
                                     get_maximum_number_of_assignments());
+      IMP_LOG(TERSE,"domino::DominoSampler end get_best_conformations\n");
       if (lsft) {
         IMP_LOG(TERSE, lsft->get_ok_rate()
                 << " were ok with the cross set filtering"
                 << std::endl);
       }
+      IMP_LOG(TERSE,"DOMINOO FINISH junction tree"<<std::endl);
     }
   }
   return final_solutions;
@@ -175,6 +183,7 @@ DominoSampler::get_number_of_assignments_for_vertex(unsigned int tree_vertex)
       subset_map= boost::get(boost::vertex_name, mt_);
   return stats_.get_number_of_assignments(subset_map[tree_vertex]);
 }
+/*
 Assignments
 DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
   const {
@@ -184,7 +193,7 @@ DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
       subset_map= boost::get(boost::vertex_name, mt_);
   return stats_.get_sample_assignments(subset_map[tree_vertex]);
 
-}
+  }*/
 
 
 IMPDOMINO_END_NAMESPACE
