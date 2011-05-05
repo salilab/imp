@@ -28,6 +28,9 @@ mp1= IMP.atom.read_pdb(IMP.atom.get_example_path('example_protein.pdb'), m)
 
 # create a graph from the hierarchy
 mp1t= IMP.atom.get_hierarchy_tree(mp1)
+# process the file with dot like
+# dot -Tpdf hierarchy.dot > hierarchy.pdf
+mp1t.show_graphviz(open("hierarchy.dot", "w"))
 # try to display it graphically, assuming altgraph is installed
 try:
     mp1t.show_with_altgraph()
