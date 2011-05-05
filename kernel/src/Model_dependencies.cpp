@@ -337,15 +337,14 @@ public:
 };
 
 namespace {
+#pragma GCC diagnostic ignored "-Wunused-parameter"
   void order_score_states(const DependencyGraph &dg,
                           ScoreStatesTemp &out) {
     std::vector<MDGTraits::vertex_descriptor> sorted;
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     ScoreStatesTemp ret;
     try {
-#pragma GCC diagnostic ignored "-Wunused-parameter"
       boost::topological_sort(dg, std::back_inserter(sorted));
-#pragma GCC diagnostic error "-Wunused-parameter"
     } catch (...) {
       TextOutput out=create_temporary_file();
       internal::show_as_graphviz(dg, out);
@@ -367,6 +366,7 @@ namespace {
       }
     }
   }
+#pragma GCC diagnostic error "-Wunused-parameter"
 
 
   void
