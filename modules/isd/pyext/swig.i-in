@@ -16,6 +16,7 @@ IMP_SWIG_OBJECT(IMP::isd, vonMisesSufficient, vonMisesSufficients);
 IMP_SWIG_DECORATOR(IMP::isd, Scale, Scales);
 IMP_SWIG_OBJECT(IMP::isd, NOERestraint, NOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousNOERestraint, AmbigousNOERestraints);
+IMP_SWIG_OBJECT(IMP::isd, MarginalNOERestraint, AmbigousNOERestraints);
 IMP_SWIG_OBJECT(IMP::isd, TALOSRestraint, TALOSRestraints);
 IMP_SWIG_OBJECT(IMP::isd, LogicalORRestraint, LogicalORRestraints);
 IMP_SWIG_OBJECT(IMP::isd, ScaleRangeModifier, ScaleRangeModifiers);
@@ -23,10 +24,12 @@ IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstr
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
-/*IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1LN, SAXSRestraint_1LNs);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1N, SAXSRestraint_1Ns);*/
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1LN, SAXSRestraint_1LNs);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1N, SAXSRestraint_1Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_N, SAXSRestraint_empirical_Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_LN, SAXSRestraint_empirical_LNs);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_marginal_N, SAXSRestraint_empirical_marginal_Ns);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_marginal_LN, SAXSRestraint_empirical_marginal_LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_multiple_N, SAXSRestraint_empirical_multiple_Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_multiple_LN, SAXSRestraint_empirical_multiple_LNs);
 
@@ -61,15 +64,18 @@ def create_model_and_particles():
 %include "IMP/isd/vonMisesKappaConjugateRestraint.h"
 %include "IMP/isd/NOERestraint.h"
 %include "IMP/isd/AmbiguousNOERestraint.h"
+%include "IMP/isd/MarginalNOERestraint.h"
 %include "IMP/isd/TALOSRestraint.h"
 %include "IMP/isd/LogicalORRestraint.h"
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/RegularRepulsiveDistancePairScore.h"
 %include "IMP/isd/AmbiguousRestraint.h"
-/*%include "IMP/isd/SAXSRestraint_1LN.h"
-%include "IMP/isd/SAXSRestraint_1N.h"*/
+%include "IMP/isd/SAXSRestraint_1LN.h"
+%include "IMP/isd/SAXSRestraint_1N.h"
 %include "IMP/isd/SAXSRestraint_empirical_N.h"
 %include "IMP/isd/SAXSRestraint_empirical_LN.h"
+%include "IMP/isd/SAXSRestraint_empirical_marginal_N.h"
+%include "IMP/isd/SAXSRestraint_empirical_marginal_LN.h"
 %include "IMP/isd/SAXSRestraint_empirical_multiple_N.h"
 %include "IMP/isd/SAXSRestraint_empirical_multiple_LN.h"
 
