@@ -8,7 +8,7 @@ namespace atom {
 
 
 
-IMP_GRAPH(IMP::atom, HierarchyTree, HierarchyTrees, IMP::atom::Hierarchy);
+IMP_SWIG_GRAPH(IMP::atom, HierarchyTree, HierarchyTree, IMP::atom::Hierarchy);
 IMP_SWIG_BASE_OBJECT(IMP::atom, PDBSelector, PDBSelectors);
 IMP_SWIG_DECORATOR(IMP::atom, Angle, Angles);
 IMP_SWIG_DECORATOR(IMP::atom, Atom, Atoms);
