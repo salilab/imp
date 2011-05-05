@@ -1,5 +1,5 @@
 /**
- *  \file Key.h    \brief Keys to cache lookup of attribute strings.
+ *  \file IMP/Key.h    \brief Keys to cache lookup of attribute strings.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
