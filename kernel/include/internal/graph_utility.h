@@ -10,6 +10,7 @@
 
 #include "../kernel_config.h"
 #include "../Particle.h"
+#include "../Decorator.h"
 #include "map.h"
 #include <cctype>
 #include <algorithm>
@@ -17,6 +18,9 @@
 #include <boost/graph/graphviz.hpp>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
+#include <boost/utility/enable_if.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/mpl/not.hpp>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
 #else
@@ -26,32 +30,61 @@
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
+namespace OWN {
+  using boost::enable_if;
+  using boost::mpl::and_;
+  using boost::mpl::not_;
+  using boost::is_convertible;
+  using boost::is_base_of;
+  using boost::is_pointer;
 
 template <class Graph>
 class ObjectNameWriter {
+
   typedef typename boost::property_map<Graph,
                           boost::vertex_name_t>::const_type VertexMap;
+  template <class T, class Enabled=void>
+  struct Name {
+    static std::string get(const T &t) {
+      return t.get_name();
+    }
+  };
+  template <class T>
+  struct Name<T*, typename enable_if<is_base_of<Object, T> >::type> {
+    static std::string get(const T *t) {
+      return t->get_name();
+    }
+  };
+  template <class T>
+  struct Name<T, typename enable_if<is_base_of<Decorator, T> >::type> {
+    static std::string get(const T &t) {
+      return t->get_name();
+    }
+  };
+  template <class T>
+  struct Name<Pointer<T> > {
+    static std::string get(T t) {
+      return t->get_name();
+    }
+  };
   VertexMap om_;
-  template <class T>
-  std::string get_name(const T&t) const {return t.get_name();}
-  template <class T>
-  std::string get_name(T* t) const { return t->get_name();}
-  template <class T>
-  std::string get_name(Pointer<T> t) const { return t->get_name();}
 public:
   ObjectNameWriter( const Graph&g): om_(boost::get(boost::vertex_name,g)){}
   void operator()(std::ostream& out, int v) const {
-    std::string nm=get_name(boost::get(om_, v));
+    typedef typename boost::property_traits<typename boost::property_map<Graph,
+                           boost::vertex_name_t>::const_type>::value_type VT;
+    std::string nm=Name<VT>::get(boost::get(om_, v));
     std::vector<char> vnm(nm.begin(), nm.end());
     out << "[label=\""
         << std::string(vnm.begin(), std::remove(vnm.begin(), vnm.end(),
                                                 '\"')) << "\"]";
   }
 };
+}
 
 template <class Graph>
 inline void show_as_graphviz(const Graph &g, std::ostream &out) {
-  ObjectNameWriter<Graph> onw(g);
+  OWN::ObjectNameWriter<Graph> onw(g);
   boost::write_graphviz(out, g, onw);
 }
 
