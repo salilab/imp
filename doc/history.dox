@@ -1,10 +1,10 @@
 /** \page recent Change History
 
 \par Spring 2011
+- The python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of \imp graphs. Unfortunately, they still pale compared to graphviz.
 - IMP.atom.create_cover() was added to facilitate creating a summary particle for part of a hierarchy in order to accelerate restraints.
 - IMP.hdf5 was renamed to IMP.rmf, the proposed name of the file format that it supports. That also better separates the hdf5 support from the file format support.
 - The old I/O functions have been marked as deprecated in favor of IMP.hdf5. You may need to compile with deprecated="yes" if you use them.
-- The undocumented show_dotty() method on python graphs has been renamed to the still undocumented show_with_altgraph(), but at least it is clearly different from show_graphviz().
 - The python graph interface now has a remove_vertex method.
 - One can now access the model restraint evaluation statistics programmatically using IMP::Model::get_restaint_statistics(). Restraint statistics can be logged to a file during optimization using IMP::core::WriteRestraintScoreStatisticsOptimizerState.
 - IMP::domino::DominoSampler now allows you to specify the tree on which merges occur directly. Also, you now need to specify the merge tree rather than the JunctionTree if you want to do non-loopy inference and specify something about how it is done. Sorry, it makes the code a lot easier.
