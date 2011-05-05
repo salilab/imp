@@ -54,6 +54,7 @@ files = [
          'io.h',
          'log.h',
          'macros.h',
+         'python_only.h',
          'random.h',
          'scoped.h',
          'utility.h',
