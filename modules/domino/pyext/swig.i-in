@@ -7,6 +7,12 @@ namespace domino {
 }
 }
 
+namespace IMP {
+namespace domino {
+  %template(_Ints) ::std::vector<int>;
+  %template(_IntsList) ::std::vector<::IMP::Ints>;
+/*  %template(_IntsLists) ::std::vector<::IMP::domino::IntsList>; */
+}}
 
 
 /* Tell swig how to treat various types when moving them to and from pyton */
@@ -44,7 +50,6 @@ IMP_SWIG_OBJECT(IMP::domino, PairListSubsetFilterTable, PairListSubsetFilterTabl
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
-
 %include "IMP/domino/Subset.h"
 %include "IMP/domino/Assignment.h"
 %include "IMP/domino/particle_states.h"
@@ -56,6 +61,6 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/DominoSampler.h"
 %include "IMP/domino/BranchAndBoundSampler.h"
 %include "IMP/domino/utility.h"
-%include "IMP/domino/analysis.h"
+/*%include "IMP/domino/analysis.h"*/
 %include "IMP/domino/DependencyScoreState.h"
 
