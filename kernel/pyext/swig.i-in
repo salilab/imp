@@ -16,31 +16,6 @@ def _forward_set_value(self, name, value):
     self.get_particle().set_value(name, value)
 %}
 
-%extend IMP::internal::BoostDigraph {
-%pythoncode %{
-      def show_with_altgraph(self):
-           def clean(name):
-              try:
-                n0=name.get_name()
-              except:
-                n0=str(name)
-              n1= str(n0).replace('"','')
-              n2= n1.replace("\n",'')
-              return n2
-           import altgraph
-           from altgraph import Graph, Dot
-           graph= Graph.Graph()
-           for i,v in enumerate(self.get_vertices()):
-               graph.add_node(i) #, node_data=self.get_vertex_name(v)
-           for i,v in enumerate(self.get_vertices()):
-               for n in self.get_out_neighbors(v):
-                  graph.add_edge(v, n)
-           dot = Dot.Dot(graph) #, graph_type="digraph"
-           for i,v in enumerate(self.get_vertices()):
-               dot.node_style(i, label=clean(self.get_vertex_name(v)))
-           dot.display()
-%}
-}
 
 
 
@@ -336,4 +311,51 @@ used_modules=[]
 def show_used_modules():
     for m in used_modules:
         print "%-20s %s" % (m.get_module(), m.get_version())
+
+
+def get_networkx_graph(ig):
+   import networkx
+   g= networkx.DiGraph()
+   if len(ig.get_vertices())==0:
+       return g
+   class NodeWrapper:
+     def __init__(self, p):
+        self.p=p
+     def __str__(self):
+        return self.p.get_name()
+     def __call__(self, name):
+        return self.p.__call__(name)
+     
+   for vi in ig.get_vertices():
+      n= ig.get_vertex_name(vi)
+      g.add_node(NodeWrapper(n))
+   for vi in ig.get_vertices():
+      n= ig.get_vertex_name(vi)
+      for ni in ig.get_out_neighbors(vi):
+         nn= ig.get_vertex_name(ni)
+         g.add_edge(NodeWrapper(n), NodeWrapper(nn))
+   return g
+
+
+def show_altgraph(g):
+           def clean(name):
+              try:
+                n0=name.get_name()
+              except:
+                n0=str(name)
+              n1= str(n0).replace('"','')
+              n2= n1.replace("\n",'')
+              return n2
+           import altgraph
+           from altgraph import Graph, Dot
+           graph= Graph.Graph()
+           for i,v in enumerate(g.get_vertices()):
+               graph.add_node(i) #, node_data=g.get_vertex_name(v)
+           for i,v in enumerate(g.get_vertices()):
+               for n in g.get_out_neighbors(v):
+                  graph.add_edge(v, n)
+           dot = Dot.Dot(graph) #, graph_type="digraph"
+           for i,v in enumerate(g.get_vertices()):
+               dot.node_style(i, label=clean(g.get_vertex_name(v)))
+           dot.display()
 %}
