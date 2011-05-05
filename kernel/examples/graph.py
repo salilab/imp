@@ -15,11 +15,22 @@ g.show_graphviz()
 # ./tools/imppy.sh python ../svn/kernel/examples/graph.py >/tmp/graph.dot
 # drussel@udp012430uds:debug> dot /tmp/graph.dot -Tpdf > /tmp/out.pdf
 
-# the method below requires the altgraph python package
+
 try:
-    g.show_with_altgraph()
+    import matplotlib
+    # the engine to be used must be selected before pyplot is imported
+    matplotlib.use("macosx")
+    import matplotlib.pyplot as plt
+
+    # the method below requires the altgraph python package
+    xg=IMP.get_networkx_graph(g)
+
+    import networkx
+    networkx.draw(xg)
+    networkx.draw_shell(xg)
+    plt.show()
 except:
-    print "no altgraph found"
+    print "networkx not fully installed"
 
 g.remove_vertex(0)
 g.show_graphviz()
