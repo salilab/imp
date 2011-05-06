@@ -37,8 +37,8 @@ void MarginalNOERestraint::add_contribution(PairContainer *pc, double Iexp)
 double
 MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
-    //compute v and store distances
-    double v=1;
+    //compute gammahat and store distances
+    double gammahat=1;
     std::vector<double> meandists; //mean distances^-6, length(volumes_)
     std::vector<std::vector<double> > alldists; //store interparticle distances^-6
     int ncontribs = volumes_.size();
@@ -58,25 +58,28 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
         }
         meandists.push_back(mean);
         if (accum) alldists.push_back(dists);
-        v *= volumes_[i]/mean;
+        gammahat *= volumes_[i]/mean;
     }
-    v = pow(v,1.0/ncontribs);
-    //compute b
-    double b = 0;
+    gammahat = pow(gammahat,1.0/ncontribs);
+    const_cast<MarginalNOERestraint *>(this)->set_gammahat(gammahat);
+
+    //compute SS
+    double SS = 0;
     std::vector<double> logterms;
     for (int i=0; i < ncontribs; ++i)
     {
-        double val = log(volumes_[i]/(v*meandists[i]));
-        b += square(val);
+        double val = log(volumes_[i]/(gammahat_*meandists[i]));
+        SS += square(val);
         logterms.push_back(val);
     }
-    double score = log(b)*(ncontribs -1)/2.0;
+    const_cast<MarginalNOERestraint *>(this)->set_SS(SS);
+    double score = log(SS)*(ncontribs -1)/2.0;
 
     if (accum)
     {
         for (int i=0; i<ncontribs; ++i)
         {
-            double deriv_mean = logterms[i]*6*(ncontribs - 1)/(b*pow(meandists[i],-1./6));
+            double deriv_mean = logterms[i]*6*(ncontribs - 1)/(SS*pow(meandists[i],-1./6));
             int npairs = contribs_[i]->get_number_of_particle_pairs(); 
             for (int p=0; p<npairs; ++p)
             {

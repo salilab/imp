@@ -21,9 +21,9 @@ IMPISD_BEGIN_NAMESPACE
 //add_contribution() command. Supports ambiguous NOEs and derivatives.
 //
 /** 
-   \f[p(D|X,I) = b^{-\frac{N-1}{2}} \quad
-    b = \sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}{d_i^{-6}(X) v}\right) \quad
-    v = \left(\prod_{i=1}^N \frac{V_i^{exp}}{d_i^{-6}}\right)^{1/N}
+   \f[p(D|X,I) = SS^{-\frac{N-1}{2}} \quad
+    SS = \sum_{i=1}^N \log^2\left(\frac{V_i^{exp}}{d_i^{-6}(X) \hat{\gamma}}\right) \quad
+    \hat{\gamma} = \left(\prod_{i=1}^N \frac{V_i^{exp}}{d_i^{-6}}\right)^{1/N}
     \f]
 
     The source code is as follows:
@@ -34,6 +34,10 @@ class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
 {
     PairContainers contribs_;
     std::vector<double> volumes_;
+    double gammahat_;
+    void set_gammahat(double gammahat) {gammahat_=gammahat;}
+    double SS_;
+    void set_SS(double SS) {SS_=SS;}
 
 public:
   //! Create the restraint.
@@ -49,6 +53,12 @@ public:
   //add a contribution: general case
   void add_contribution(PairContainer *pc, double Iexp);
 
+  //return the estimate of gamma given the current structure.
+  double get_gammahat() const {return gammahat_;}
+
+  //return the sum of squares wrt current structure.
+  double get_SS() const {return SS_;}
+
   /* call for probability */
   double get_probability() const
   {
@@ -59,6 +69,7 @@ public:
   /** This macro declares the basic needed methods: evaluate and show
    */
   IMP_RESTRAINT(MarginalNOERestraint);
+
 
 };
 

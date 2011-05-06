@@ -126,6 +126,59 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.evaluate(None),
                     expected,delta=0.001)
 
+    def testValueGammaHat(self):
+        """test gamma hat on n particles"""
+        pairs=[]
+        volumes=[]
+        distances=[]
+        self.m.add_restraint(self.noe)
+        for i in xrange(2,100):
+            while len(pairs) <= i:
+                pair=[IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                    IMP.algebra.Vector3D(*[uniform(-10,10) for r in range(3)]))
+                        for p in range(2)]
+                pairs.append(pair)
+                distances.append(IMP.core.get_distance(pair[0],pair[1]))
+                volumes.append(uniform(0.1,10))
+                self.noe.add_contribution(IMP.container.ListPairContainer([pair]),
+                        volumes[-1])
+            v=1.0
+            for j in xrange(len(pairs)):
+                v *= volumes[j]*distances[j]**6
+            v = v**(1.0/len(pairs))
+            expected = v
+            self.noe.evaluate(None)
+            self.assertAlmostEqual(self.noe.get_gammahat(),
+                    expected,delta=0.001)
+
+    def testValueSS(self):
+        """test sum of squares on n particles"""
+        pairs=[]
+        volumes=[]
+        distances=[]
+        self.m.add_restraint(self.noe)
+        for i in xrange(2,100):
+            while len(pairs) <= i:
+                pair=[IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                    IMP.algebra.Vector3D(*[uniform(-10,10) for r in range(3)]))
+                        for p in range(2)]
+                pairs.append(pair)
+                distances.append(IMP.core.get_distance(pair[0],pair[1]))
+                volumes.append(uniform(0.1,10))
+                self.noe.add_contribution(IMP.container.ListPairContainer([pair]),
+                        volumes[-1])
+            v=1.0
+            for j in xrange(len(pairs)):
+                v *= volumes[j]*distances[j]**6
+            v = v**(1.0/len(pairs))
+            b=0
+            for j in xrange(len(pairs)):
+                b += log(volumes[j]*distances[j]**6/v)**2
+            expected = b
+            self.noe.evaluate(None)
+            self.assertAlmostEqual(self.noe.get_SS(),
+                    expected,delta=0.001)
+
     def testDerivative(self):
         """test derivative wrt x for 3 particles and 2 contributions"""
         v1,v2=1.0,2.0
