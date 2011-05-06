@@ -366,7 +366,7 @@ namespace {
       }
     }
   }
-#pragma GCC diagnostic error "-Wunused-parameter"
+  //#pragma GCC diagnostic warn "-Wunused-parameter"
 
 
   void
