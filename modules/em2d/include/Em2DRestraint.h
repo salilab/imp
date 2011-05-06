@@ -14,6 +14,7 @@
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/scores2D.h"
+#include "IMP/em2d/RegistrationResult.h"
 #include <IMP/Restraint.h>
 #include <IMP/log.h>
 #include <IMP/SingletonContainer.h>
@@ -114,6 +115,10 @@ public:
   */
   void set_coarse_registration_mode(bool opt) {
     if(opt) only_coarse_registration_ = true;
+  }
+
+  RegistrationResults get_registration_results() const {
+    return finder_->get_registration_results();
   }
 
   IMP_RESTRAINT(Em2DRestraint);
