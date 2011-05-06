@@ -8,7 +8,6 @@
 
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/Em2DRestraint.h"
-#include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em/SpiderReaderWriter.h"
 
@@ -79,7 +78,6 @@ ParticlesTemp Em2DRestraint::get_input_particles() const
   return ret;
 }
 
-
 ContainersTemp Em2DRestraint::get_input_containers() const
 {
   // Returns a vector of one container with the particles
@@ -91,7 +89,5 @@ void Em2DRestraint::do_show(std::ostream& out) const
 {
   out << "container " << *particles_container_ << std::endl;
 }
-
-
 
 IMPEM2D_END_NAMESPACE
