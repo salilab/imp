@@ -3,10 +3,9 @@ import IMP.test
 import IMP.core
 import IMP.atom
 import IMP.container
-import math
 
-class AngleRestraintTests(IMP.test.TestCase):
-    """Tests for angle restraints"""
+class ExcludedVolumeRestraintTests(IMP.test.TestCase):
+    """Tests for excluded volume restraints"""
     def _setup_ev_restraint(self):
         #IMP.set_log_level(IMP.VERBOSE)
         m= IMP.Model()
