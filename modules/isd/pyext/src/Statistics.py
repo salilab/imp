@@ -9,6 +9,7 @@ class Statistics:
     Also manages the restart file (TODO).
     - prefix: all outputted files will have this prefix
     - rate: print statistics every so many gibbs sampling steps
+    - trajrate: print trajectories (pdb) every multiple of rate (default 1).
     - statfile: suffix of the statistics file
     - append: whether to append to a trajectory or to write multiple files.
               For the statistics class, a trajectory is just a string, you can
@@ -28,11 +29,12 @@ class Statistics:
     TODO: check if everything was updated nicely
     """
 
-    def __init__(self, prefix='r01', rate=1, statfile='_stats.txt', 
+    def __init__(self, prefix='r01', rate=1, trajrate=1, statfile='_stats.txt', 
             append=True, num_entries_per_line=5, repeat_title=0,
             separate_lines=False,compress=10000):
         self.prefix = prefix
         self.rate=rate
+        self.trajrate=trajrate
         self.statfile=prefix+statfile
         self.append=append
         self.compress=compress
@@ -219,11 +221,10 @@ class Statistics:
         fl.write("### STAGE %s\n" % name)
         fl.close()
 
-
     def write_stats(self):
         """Writes statistics to the stats file and writes/appends
         trajectories. Only does that if the global step matches 
-        the output rate.
+        the output rate. Trajectories are written more sparsely, see trajrate.
         Returns: True if data was written, False if not.
         """
         stepno = self.categories['global']['counter'].get_raw_value() 
@@ -246,6 +247,8 @@ class Statistics:
             fl.write('*'*80+'\n')
         fl.close()
         #write trajs
+        if stepno % (self.rate*self.trajrate) != 0:
+            return True
         for key,name in self.coordinates:
             if self.categories[key][name] is None:
                 raise ValueError, "The trajectory was not passed to the stats class!"
