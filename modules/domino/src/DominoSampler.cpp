@@ -183,7 +183,7 @@ DominoSampler::get_number_of_assignments_for_vertex(unsigned int tree_vertex)
       subset_map= boost::get(boost::vertex_name, mt_);
   return stats_.get_number_of_assignments(subset_map[tree_vertex]);
 }
-/*
+
 Assignments
 DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
   const {
@@ -193,7 +193,7 @@ DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
       subset_map= boost::get(boost::vertex_name, mt_);
   return stats_.get_sample_assignments(subset_map[tree_vertex]);
 
-  }*/
+  }
 
 
 IMPDOMINO_END_NAMESPACE
