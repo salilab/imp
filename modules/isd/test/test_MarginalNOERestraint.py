@@ -179,6 +179,26 @@ class TestMarginalNOERestraint(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.get_SS(),
                     expected,delta=0.001)
 
+    def testValueN(self):
+        """test n on n particles"""
+        pairs=[]
+        volumes=[]
+        distances=[]
+        self.m.add_restraint(self.noe)
+        for i in xrange(2,100):
+            while len(pairs) <= i:
+                pair=[IMP.core.XYZ.setup_particle(IMP.Particle(self.m),
+                    IMP.algebra.Vector3D(*[uniform(-10,10) for r in range(3)]))
+                        for p in range(2)]
+                pairs.append(pair)
+                distances.append(IMP.core.get_distance(pair[0],pair[1]))
+                volumes.append(uniform(0.1,10))
+                self.noe.add_contribution(IMP.container.ListPairContainer([pair]),
+                        volumes[-1])
+            expected = len(volumes)
+            self.assertAlmostEqual(self.noe.get_number_of_contributions(),
+                    expected,delta=0.001)
+
     def testDerivative(self):
         """test derivative wrt x for 3 particles and 2 contributions"""
         v1,v2=1.0,2.0

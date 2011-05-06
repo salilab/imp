@@ -59,6 +59,8 @@ public:
   //return the sum of squares wrt current structure.
   double get_SS() const {return SS_;}
 
+  double get_number_of_contributions() const {return volumes_.size();}
+
   /* call for probability */
   double get_probability() const
   {
