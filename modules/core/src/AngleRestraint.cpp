@@ -24,5 +24,8 @@ AngleRestraint::AngleRestraint(UnaryFunction* score_func,
 {
 }
 
+void AngleRestraint::do_show(std::ostream &out) const
+{
+}
 
 IMPCORE_END_NAMESPACE

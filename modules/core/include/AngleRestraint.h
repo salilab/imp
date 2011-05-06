@@ -35,6 +35,8 @@ public:
 
   AngleRestraint(UnaryFunction* score_func,
                  XYZ p0, XYZ p1, XYZ p2);
+
+  IMP_OBJECT(AngleRestraint);
 };
 
 IMPCORE_END_NAMESPACE
