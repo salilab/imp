@@ -31,6 +31,8 @@ class IMPISDEXPORT AmbiguousNOERestraint : public ISDRestraint
   Pointer<Particle> sigma_;
   Pointer<Particle> gamma_;
   double Vexp_;
+  double chi_;
+  void set_chi(double chi) { chi_ = chi; }
 public:
   //! Create the restraint.
   /** Restraints should store the particles they are to act on,
@@ -43,6 +45,9 @@ public:
   {
     return exp(-unprotected_evaluate(NULL));
   }
+
+  double get_chi() const
+  {return chi_; }
 
 
   /** This macro declares the basic needed methods: evaluate and show

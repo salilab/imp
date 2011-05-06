@@ -47,6 +47,8 @@ NOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   lognormal->set_was_used(true); // get rid of warning
   /* get score */
   double score= lognormal->evaluate();
+  const_cast<NOERestraint *>(this)->set_chi(FA-FM);
+
   if (accum)
   {
       /* derivative for coordinates */

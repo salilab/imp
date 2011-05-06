@@ -165,7 +165,6 @@ class SAXSRestraint_empirical_N_Test(IMP.test.TestCase):
             self.sigma.set_scale(float(i)*9+1)
             expected=self.compute_ene()
             observed =self.sr.evaluate(None)
-            print observed/expected
             if expected != 0:
                 self.assertAlmostEqual(observed/expected,1,delta=0.001)
             else:

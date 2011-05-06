@@ -138,6 +138,27 @@ class TestNOERestraintSimple(IMP.test.TestCase):
             self.assertAlmostEqual(self.noe.unprotected_evaluate(None),
                     expected,delta=0.001)
 
+    def testValueChi(self):
+        """test if score is equal to
+        0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
+        by changing distance of 0.
+        """
+        for i in xrange(100):
+            p0=self.p0
+            p1=self.p1
+            p2=self.p2
+            no=self.sigma.get_scale()
+            gamma=self.gamma.get_scale()
+            p0.set_coordinates(IMP.algebra.Vector3D(*[uniform(0.1,100) \
+                    for i in range(3)]))
+            dist1=IMP.core.get_distance(p0,p1)
+            dist2=IMP.core.get_distance(p0,p2)
+            dist=(dist1**-6+dist2**-6)**(-1./6)
+            expected=-log(gamma*dist**-6/self.V_obs)
+            self.noe.unprotected_evaluate(None)
+            self.assertAlmostEqual(self.noe.get_chi(),
+                    expected,delta=0.001)
+
     def testValueESigma(self):
         """test if score is equal to
         0.5*log(2*pi) + log(sigma*V_obs) + 1/(2sigma^2)*log^2(gamma*d^-6/Vobs)
