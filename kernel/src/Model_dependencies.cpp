@@ -478,8 +478,8 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
               << " has weight 0" << std::endl);
     }
     int index=restraint_index_.find(restraints[i])->second;
-    IMP_LOG(VERBOSE, restraints[i]->get_name() << ": "
-            << restraint_dependencies_[index] << std::endl);
+    /*IMP_LOG(VERBOSE, restraints[i]->get_name() << ": "
+      << restraint_dependencies_[index] << std::endl);*/
     bs|= restraint_dependencies_[index];
   }
   ScoreStatesTemp ss;
