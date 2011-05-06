@@ -55,7 +55,7 @@ public:
   //return the sum inside the parentheses
   double get_logsquares() const {return logsquares_;}
 
-  double get_number_of_contributions() const {return volumes_.size();}
+  unsigned get_number_of_contributions() const {return volumes_.size();}
 
   /* call for probability */
   double get_probability() const
