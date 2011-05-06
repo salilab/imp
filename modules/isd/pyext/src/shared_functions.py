@@ -54,7 +54,7 @@ class PyMDMover():
     def set_number_of_steps(self, nsteps):
         self.n_md_steps = nsteps
 
-class PyMC():
+class PyMC(IMP.Optimizer):
     debug =True
     
     def __init__(self,model):
@@ -73,6 +73,7 @@ class PyMC():
 
     def get_energy(self):
         pot=self.m.evaluate(False)
+        #pot=self.get_restraints().evaluate(False)
         kin=self.mv.md.get_kinetic_energy()
         return pot+kin
 
@@ -423,6 +424,82 @@ class sfo_common():
         rs.set_weight(1.0)
         self._m.add_restraint(rs) 
         return rs, prior_rs, sigma, gamma
+
+    def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
+            verbose=True):
+        """read TBL file and store NOE restraints, using the marginal of the
+        lognormal with one sigma and one gamma, for the whole dataset.
+        - prot: protein hierarchy
+        - seqfile: a file with 3-letter sequence
+        - tblfile: a TBL file with the restraints
+        - name: an optional name for the restraintset
+        - verbose: be verbose (default True)
+        Returns: data_rs
+        """
+        #likelihood
+        rs = IMP.RestraintSet(name)
+        #use the TBLReader to parse the TBL file.
+        sequence = IMP.isd.utils.read_sequence_file(seqfile)
+        tblr = IMP.isd.TBLReader.TBLReader(sequence)
+        restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
+        ln = IMP.isd.MarginalNOERestraint()
+        for i,restraint in enumerate(restraints):
+            if verbose and i % 100 == 0:
+               print "\r%d" % i,
+               sys.stdout.flush()
+            #a restraint is (contributions, dist, upper, lower, volume)
+            #where contributions is a tuple of contributing pairs
+            #and a pair is (c1, c2), where c1 is of the form (resno, atname)
+            #residue numbers start at 0
+            pairs=[(self.find_atom(i, prot).get_particle(),
+                    self.find_atom(j, prot).get_particle()) for (i,j) in
+                    restraint[0]]
+            pairs = IMP.container.ListPairContainer(pairs)
+            ln.add_contribution(pairs, restraint[4])
+        rs.add_restraint(ln)
+        if verbose:
+            print "\r%d NOE contributions added" % (len(restraints))
+        rs.set_weight(1.0)
+        self._m.add_restraint(rs)
+        return rs
+
+    def init_model_HBonds_marginal(self, prot, seqfile, tblfile, name='NOE',
+            verbose=True):
+        """read TBL file and store lognormal restraints, using the marginal of the
+        lognormal with one sigma and gamma=1, for the whole dataset.
+        - prot: protein hierarchy
+        - seqfile: a file with 3-letter sequence
+        - tblfile: a TBL file with the restraints
+        - name: an optional name for the restraintset
+        - verbose: be verbose (default True)
+        Returns: data_rs
+        """
+        #likelihood
+        rs = IMP.RestraintSet(name)
+        #use the TBLReader to parse the TBL file.
+        sequence = IMP.isd.utils.read_sequence_file(seqfile)
+        tblr = IMP.isd.TBLReader.TBLReader(sequence)
+        restraints = tblr.read_distances(tblfile, 'HBond')['HBond']
+        ln = IMP.isd.MarginalHBondRestraint()
+        for i,restraint in enumerate(restraints):
+            if verbose and i % 100 == 0:
+               print "\r%d" % i,
+               sys.stdout.flush()
+            #a restraint is (contributions, dist, upper, lower, volume)
+            #where contributions is a tuple of contributing pairs
+            #and a pair is (c1, c2), where c1 is of the form (resno, atname)
+            #residue numbers start at 0
+            pairs=[(self.find_atom(i, prot).get_particle(),
+                    self.find_atom(j, prot).get_particle()) for (i,j) in
+                    restraint[0]]
+            pairs = IMP.container.ListPairContainer(pairs)
+            ln.add_contribution(pairs, restraint[4])
+        rs.add_restraint(ln)
+        if verbose:
+            print "\r%d Hbond contributions added" % (len(restraints))
+        rs.set_weight(1.0)
+        self._m.add_restraint(rs)
+        return rs
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
             first_residue_number=1,name='TALOS', prior_rs=None,
