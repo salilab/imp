@@ -74,7 +74,6 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     }
     const_cast<MarginalNOERestraint *>(this)->set_SS(SS);
     double score = log(SS)*(ncontribs -1)/2.0;
-    std::cout << " SS " << SS << " score " << score << std::endl;
 
     if (accum)
     {
