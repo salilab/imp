@@ -76,6 +76,7 @@ ContainersTemp RestraintSet::get_input_containers() const {
 
 void RestraintSet::do_show(std::ostream& out) const
 {
+  IMP_CHECK_OBJECT(this);
   for (RestraintConstIterator it= restraints_begin();
        it != restraints_end(); ++it) {
     (*it)->show(out);
