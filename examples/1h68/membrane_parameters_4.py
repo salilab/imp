@@ -26,6 +26,8 @@ tilt_range_=[0,math.radians(40)]
 mc_kt=4.0
 mc_loops=2000
 mc_steps=50
+mc_dx=0.5
+mc_dang=0.2
 
 # trajectory file
 mc_traj_file="traj_4.rmf"
