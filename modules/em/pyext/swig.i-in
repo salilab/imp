@@ -9,6 +9,7 @@ IMP_SWIG_OBJECT(IMP::em, DensityMap, DensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SampledDensityMap, SampledDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, SurfaceShellDensityMap, SurfaceShellDensityMaps);
 IMP_SWIG_OBJECT(IMP::em, FitRestraint, FitRestraints);
+IMP_SWIG_OBJECT(IMP::em, EnvelopePenetrationRestraint, EnvelopePenetrationRestraints);
 IMP_SWIG_VALUE(IMP::em, RadiusDependentKernelParameters, RadiusDependentKernelParametersList);
 IMP_SWIG_VALUE(IMP::em, KernelParameters, KernelParametersList);
 IMP_SWIG_OBJECT(IMP::em, HighDensityEmbedding, HighDensityEmbeddings);
