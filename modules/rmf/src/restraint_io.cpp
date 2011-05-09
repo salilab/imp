@@ -8,12 +8,82 @@
 
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/operations.h>
-#include <IMP/domino/Subset.h>
 #include <IMP/scoped.h>
+#include <boost/smart_ptr/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
 namespace {
-  typedef IMP::internal::Map<IMP::domino::Subset, NodeHandle> Index;
+
+  class  Subset {
+    boost::shared_array<Particle*> ps_;
+    unsigned int sz_;
+    int compare(const Subset &o) const {
+      if (sz_ < o.sz_) return -1;
+      else if (sz_ > o.sz_) return 1;
+      for (unsigned int i=0; i< size(); ++i) {
+        if (ps_[i] < o[i]) return -1;
+        else if (ps_[i] > o[i]) return 1;
+      }
+      return 0;
+    }
+  public:
+    Subset(): sz_(0){}
+    Subset(ParticlesTemp ps):
+      ps_(new Particle*[ps.size()]),
+      sz_(ps.size()) {
+      std::sort(ps.begin(), ps.end());
+      std::copy(ps.begin(), ps.end(), ps_.get());
+      IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
+                      "Duplicate particles in set");
+      IMP_IF_CHECK(USAGE) {
+        for (unsigned int i=0; i< ps.size(); ++i) {
+          IMP_CHECK_OBJECT(ps[i]);
+        }
+      }
+    }
+    unsigned int size() const {
+      return sz_;
+    }
+    Particle *operator[](unsigned int i) const {
+      IMP_USAGE_CHECK( i < sz_, "Out of range");
+      return ps_[i];
+    }
+    typedef Particle** const_iterator;
+    const_iterator begin() const {
+      return ps_.get();
+    }
+    const_iterator end() const {
+      return ps_.get()+sz_;
+    }
+    IMP_SHOWABLE(Subset);
+    std::string get_name() const;
+    IMP_HASHABLE_INLINE(Subset, return boost::hash_range(begin(),
+                                                         end()););
+    IMP_COMPARISONS(Subset);
+  };
+
+  IMP_VALUES(Subset, Subsets);
+
+  void Subset::show(std::ostream &out) const {
+    out << "[";
+    for (unsigned int i=0; i< size(); ++i) {
+      out << "\"" <<  ps_[i]->get_name() << "\" ";
+    }
+    out << "]";
+  }
+
+  std::string Subset::get_name() const {
+    std::ostringstream oss;
+    show(oss);
+    return oss.str();
+  }
+
+  inline std::size_t hash_value(const Subset &t) {
+    return t.__hash__();
+  }
+
+
+  typedef IMP::internal::Map<Subset, NodeHandle> Index;
   void build_index(NodeHandle parent,
                    NodeIDKeys &fks,
                    Index &nodes) {
@@ -41,7 +111,7 @@ namespace {
       }
       IMP_USAGE_CHECK(!pt.empty(), "No used particles found. Not so good: "
                       << children[i].get_name());
-      IMP::domino::Subset s(pt);
+      Subset s(pt);
       /*std::cout << "Adding index entry for " << s << " to "
         << parent.get_name()
         << std::endl;*/
@@ -70,7 +140,7 @@ namespace {
                        Restraint *r,
                        Index &nodes) {
     ParticlesTemp ip= r->get_input_particles();
-    IMP::domino::Subset s(ip);
+    Subset s(ip);
     if (nodes.find(s) == nodes.end()) {
       NodeHandle c= parent.add_child(s.get_name(), FEATURE);
       /*std::cout << "Created node for " << s
@@ -145,7 +215,7 @@ namespace {
 }
 
 void save_frame(RootHandle f, int frame, Restraint *r) {
-   NodeIDKeys fks;
+  NodeIDKeys fks;
   FloatKey sk= get_or_add_key<FloatTraits>(f,
                                            Feature, "score", true);
 
