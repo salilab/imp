@@ -46,8 +46,7 @@ for hs in protein.get_children():
 print "sampling"
 for steps in range(mc_loops):
     mc.optimize(mc_steps)
-    print steps, m.evaluate(False), mc_steps, mc.get_number_of_forward_steps()
-    #display(m,protein,TMH,"conf_"+str(steps)+".score_"+str(score)+".pym")
+    #print steps, m.evaluate(False), mc_steps, mc.get_number_of_forward_steps()
     for hs in protein.get_children():
         IMP.rmf.save_frame(rh, steps+1, hs)
     #    IMP.rmf.load_frame(rh, steps+1, hs)
