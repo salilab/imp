@@ -26,6 +26,12 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(m.get_root_restraint_set().evaluate(False), 3)
         self.assertEqual(m.get_root_restraint_set().get_restraint(0).evaluate(False), 2)
 
+    def test_printing(self):
+        """Test that sets can be printed"""
+        (m, rs, r0, r1, r2)= self._make_stuff()
+        self.assertEqual(m.evaluate(False), 2)
+        print rs
+
     def test_restraints(self):
         """Check access to RestraintSet's restraints"""
         (m, rs, r0, r1, r2)= self._make_stuff()
