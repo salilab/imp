@@ -199,6 +199,19 @@ public:
    */
   Particles add_bonds(Hierarchy hierarchy) const;
 
+  //! Add dihedrals to the given Hierarchy using this topology, and return them.
+  /** The primary sequence of the Hierarchy must match that of the topology.
+
+      Typically, dihedrals are auto-generated from the existing bond
+      graph (see CHARMMParameters::create_dihedrals()) rather than using
+      this function.
+
+      \return a list of the generated Dihedral decorators.
+
+      \see add_bonds().
+   */
+  Particles add_dihedrals(Hierarchy hierarchy) const;
+
   //! Add impropers to the given Hierarchy using this topology, and return them.
   /** The primary sequence of the Hierarchy must match that of the topology.
 

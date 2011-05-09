@@ -289,6 +289,10 @@ public:
       StereochemistryPairFilter to exclude 1-4 interactions from the
       nonbonded list, or to a DihedralSingletonScore to score each dihedral.
 
+      If dihedrals are explicitly listed in the CHARMM topology file, they
+      can be created if desired by calling CHARMMTopology::add_dihedrals()
+      rather than this function.
+
       \return a list of the newly-created Dihedral particles.
 
       \see CHARMMTopology::add_bonds().
