@@ -34,8 +34,8 @@ class IMPISDEXPORT MarginalNOERestraint : public ISDRestraint
 {
     PairContainers contribs_;
     std::vector<double> volumes_;
-    double gammahat_;
-    void set_gammahat(double gammahat) {gammahat_=gammahat;}
+    double loggammahat_;
+    void set_log_gammahat(double loggammahat) {loggammahat_=loggammahat;}
     double SS_;
     void set_SS(double SS) {SS_=SS;}
 
@@ -54,7 +54,7 @@ public:
   void add_contribution(PairContainer *pc, double Iexp);
 
   //return the estimate of gamma given the current structure.
-  double get_gammahat() const {return gammahat_;}
+  double get_log_gammahat() const {return loggammahat_;}
 
   //return the sum of squares wrt current structure.
   double get_SS() const {return SS_;}
