@@ -10,10 +10,6 @@ import glob
 import os.path
 import sys
 
-if not IMP.has_netcdfcpp:
-    print >> sys.stderr, "This script requires IMP to be built with NetCDF"
-    sys.exit(0)
-
 # cluster the conformations and write them to a file
 def analyze_conformations(cs, all, gs):
     # we want to cluster the configurations to make them easier to understand
