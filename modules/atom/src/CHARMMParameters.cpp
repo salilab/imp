@@ -9,6 +9,7 @@
 #include <IMP/atom/CHARMMAtom.h>
 #include <IMP/atom/charmm_segment_topology.h>
 #include <IMP/atom/angle_decorators.h>
+#include <IMP/atom/internal/charmm_helpers.h>
 
 #include <boost/algorithm/string.hpp>
 #include <boost/assign.hpp>
@@ -854,7 +855,7 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const
 
           // Avoid generating dihedrals for three-membered rings
           if (p1 != p4 && p2 != p4) {
-            add_dihedral(p1, p2, p3, p4, ps);
+            internal::add_dihedral_to_list(this, p1, p2, p3, p4, ps);
           }
         }
       }
@@ -862,41 +863,6 @@ Particles CHARMMParameters::create_dihedrals(Particles bonds) const
   }
   return ps;
 }
-
-void CHARMMParameters::add_dihedral(Particle *p1, Particle *p2, Particle *p3,
-                                    Particle *p4, Particles &ps) const
-{
-  IMP_OBJECT_LOG;
-  try {
-    std::vector<CHARMMDihedralParameters> p
-          = get_dihedral_parameters(CHARMMAtom(p1).get_charmm_type(),
-                                    CHARMMAtom(p2).get_charmm_type(),
-                                    CHARMMAtom(p3).get_charmm_type(),
-                                    CHARMMAtom(p4).get_charmm_type());
-    for (std::vector<CHARMMDihedralParameters>::const_iterator it = p.begin();
-         it != p.end(); ++it) {
-      Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
-                                             core::XYZ(p1), core::XYZ(p2),
-                                             core::XYZ(p3), core::XYZ(p4));
-      dd.set_ideal(it->ideal / 180.0 * PI);
-      dd.set_multiplicity(it->multiplicity);
-      if (it->force_constant < 0.0) {
-        dd.set_stiffness(-std::sqrt(-it->force_constant * 2.0));
-      } else {
-        dd.set_stiffness(std::sqrt(it->force_constant * 2.0));
-      }
-      ps.push_back(dd);
-    }
-  } catch (const IndexException &e) {
-    // If no parameters, warn, and create an empty dihedral
-    IMP_WARN(e.what() << std::endl);
-    Dihedral dd = Dihedral::setup_particle(new Particle(p1->get_model()),
-                                           core::XYZ(p1), core::XYZ(p2),
-                                           core::XYZ(p3), core::XYZ(p4));
-    ps.push_back(dd);
-  }
-}
-
 
 CHARMMParameters* get_heavy_atom_CHARMM_parameters() {
   static IMP::Pointer<CHARMMParameters> ret

@@ -1,5 +1,6 @@
 files = [
          'SpecialCaseRestraints.cpp',
+         'charmm_helpers.cpp',
          'mol2.cpp',
          'pdb.cpp',
         ]

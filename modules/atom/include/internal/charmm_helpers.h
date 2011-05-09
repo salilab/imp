@@ -12,6 +12,11 @@
 #include "../atom_config.h"
 
 #include <IMP/base_types.h>
+#include <IMP/Particle.h>
+
+IMPATOM_BEGIN_NAMESPACE
+class CHARMMParameters;
+IMPATOM_END_NAMESPACE
 
 IMPATOM_BEGIN_INTERNAL_NAMESPACE
 
@@ -85,6 +90,12 @@ public:
     return std::min(n_match, n_match_rev);
   }
 };
+
+//! Create a Dihedral on the given Particles, and add it to the list
+IMPATOMEXPORT void add_dihedral_to_list(const CHARMMParameters *param,
+                                        Particle *p1, Particle *p2,
+                                        Particle *p3, Particle *p4,
+                                        Particles &ps);
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

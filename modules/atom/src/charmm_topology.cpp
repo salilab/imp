@@ -82,6 +82,25 @@ namespace {
     }
   }
 
+  void add_residue_dihedrals(const CHARMMResidueTopology *current_residue,
+                             const CHARMMResidueTopology *previous_residue,
+                             const CHARMMResidueTopology *next_residue,
+                             const std::map<const CHARMMResidueTopology *,
+                                            Hierarchy> &resmap,
+                             const CHARMMParameters *ff,
+                             Particles &ps)
+  {
+    for (unsigned int ndih = 0;
+         ndih < current_residue->get_number_of_dihedrals(); ++ndih) {
+      Atoms as = current_residue->get_dihedral(ndih).get_atoms(
+                                   current_residue, previous_residue,
+                                   next_residue, resmap);
+      if (as.size() > 0) {
+        internal::add_dihedral_to_list(ff, as[0], as[1], as[2], as[3], ps);
+      }
+    }
+  }
+
   void add_residue_impropers(const CHARMMResidueTopology *current_residue,
                              const CHARMMResidueTopology *previous_residue,
                              const CHARMMResidueTopology *next_residue,
@@ -1010,6 +1029,29 @@ Particles CHARMMTopology::add_impropers(Hierarchy hierarchy) const
                nres < seg->get_number_of_residues() - 1 ?
                seg->get_residue(nres + 1) : NULL;
       add_residue_impropers(cur, prev, next, resmap, force_field_, ps);
+      prev = cur;
+    }
+  }
+  return ps;
+}
+
+Particles CHARMMTopology::add_dihedrals(Hierarchy hierarchy) const
+{
+  ResMap resmap;
+  map_residue_topology_to_hierarchy(hierarchy, resmap);
+  Particles ps;
+
+  for (CHARMMSegmentTopologyConstIterator segit = segments_begin();
+       segit != segments_end(); ++segit) {
+    const CHARMMSegmentTopology *seg = *segit;
+    const CHARMMResidueTopology *prev = NULL;
+    for (unsigned int nres = 0; nres < seg->get_number_of_residues();
+         ++nres) {
+      const CHARMMResidueTopology *cur = seg->get_residue(nres);
+      const CHARMMResidueTopology *next =
+               nres < seg->get_number_of_residues() - 1 ?
+               seg->get_residue(nres + 1) : NULL;
+      add_residue_dihedrals(cur, prev, next, resmap, force_field_, ps);
       prev = cur;
     }
   }

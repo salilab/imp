@@ -371,6 +371,33 @@ class CHARMMTopologyTests(IMP.test.TestCase):
         a2 = IMP.atom.get_atom(r2, IMP.atom.AT_N)
         self.assertAtomsBonded(a1, a2, 'C', 'NH1', 1.3450, 27.203)
 
+    def test_add_dihedrals(self):
+        """Test add_dihedrals() method"""
+        # Dihedrals with missing atoms should not be created; dihedrals
+        # with missing parameters should be (but with no parameters)
+        for atoms,num_dihed,stiff in [(['C', 'CA', 'CB', 'HB1'], 1, 0.6325),
+                                      (['C', 'CA', 'N', 'O'], 1, 0.0),
+                                      (['N', 'C', 'CA', 'MG'], 0, None),
+                                      (['N', 'CA', 'C', '+N'], 0, None)]:
+            m = IMP.Model()
+            ff = IMP.atom.CHARMMParameters(IMP.atom.get_data_path("top.lib"),
+                                           IMP.atom.get_data_path("par.lib"))
+            res = ff.get_residue_topology(IMP.atom.ResidueType('ALA'))
+            res.add_dihedral(IMP.atom.CHARMMDihedral(atoms))
+            topology = IMP.atom.CHARMMTopology(ff)
+            topology.add_sequence('PA')
+            h = topology.create_hierarchy(m)
+            for a in IMP.atom.get_by_type(h, IMP.atom.ATOM_TYPE):
+                IMP.core.XYZ.setup_particle(a.get_particle(),
+                                            IMP.algebra.Vector3D(0,0,0))
+            topology.add_atom_types(h)
+            d = topology.add_dihedrals(h)
+            self.assertEqual(len(d), num_dihed)
+            if stiff is not None:
+                self.assertAlmostEqual(stiff,
+                                       IMP.atom.Dihedral(d[0]).get_stiffness(),
+                                       delta=1e-3)
+
     def test_dihedral_stiffness(self):
         """Make sure dihedrals can have negative stiffness"""
         m = IMP.Model()
