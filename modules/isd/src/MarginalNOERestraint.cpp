@@ -38,7 +38,7 @@ double
 MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {
     //compute gammahat and store distances
-    double gammahat=1;
+    double loggammahat=1;
     std::vector<double> meandists; //mean distances^-6, length(volumes_)
     std::vector<std::vector<double> > alldists; //store interparticle distances^-6
     int ncontribs = volumes_.size();
@@ -58,36 +58,38 @@ MarginalNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
         }
         meandists.push_back(mean);
         if (accum) alldists.push_back(dists);
-        gammahat *= volumes_[i]/mean;
+        loggammahat += log(volumes_[i]/mean);
     }
-    gammahat = pow(gammahat,1.0/ncontribs);
-    const_cast<MarginalNOERestraint *>(this)->set_gammahat(gammahat);
+    loggammahat = loggammahat / ncontribs;
+    const_cast<MarginalNOERestraint *>(this)->set_log_gammahat(loggammahat);
 
     //compute SS
     double SS = 0;
     std::vector<double> logterms;
     for (int i=0; i < ncontribs; ++i)
     {
-        double val = log(volumes_[i]/(gammahat_*meandists[i]));
+        double val = log(volumes_[i]/meandists[i])-loggammahat_;
         SS += square(val);
         logterms.push_back(val);
     }
     const_cast<MarginalNOERestraint *>(this)->set_SS(SS);
     double score = log(SS)*(ncontribs -1)/2.0;
+    std::cout << " SS " << SS << " score " << score << std::endl;
 
     if (accum)
     {
         for (int i=0; i<ncontribs; ++i)
         {
-            double deriv_mean = logterms[i]*6*(ncontribs - 1)/(SS*pow(meandists[i],-1./6));
+            double deriv_mean = logterms[i]*6*(ncontribs - 1)/SS;
             int npairs = contribs_[i]->get_number_of_particle_pairs(); 
             for (int p=0; p<npairs; ++p)
             {
                 ParticlePair pair = contribs_[i]->get_particle_pair(p);
-                double deriv_pair = pow(alldists[i][p]/meandists[i],-7./6);
+                double deriv_pair = alldists[i][p]/meandists[i];
+                if (abs(deriv_pair) > 1e2) {std::cout << "NOE derivative warning : deriv mean " << deriv_mean << " pair " << deriv_pair << std::endl;}
                 core::XYZ d0(pair[0]),d1(pair[1]);
                 algebra::Vector3D dev = (d1.get_coordinates() - d0.get_coordinates());
-                double dist = dev.get_magnitude();
+                double dist = dev.get_squared_magnitude();
                 algebra::Vector3D deriv = deriv_mean * deriv_pair * dev / dist;
                 d1.add_to_derivatives(deriv, *accum);
                 d0.add_to_derivatives(-deriv, *accum);
