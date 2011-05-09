@@ -33,6 +33,10 @@
 IMPCORE_BEGIN_NAMESPACE
 
 
+void ExperimentalTree::do_show(std::ostream & /*out*/) const
+{
+}
+
 bool ExperimentalTree::is_consistent(size_t node_index) const
 {
   const Node *node = get_node(node_index);

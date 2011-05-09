@@ -46,6 +46,7 @@ IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
 IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
+IMP_SWIG_OBJECT( IMP::core, ExperimentalTree, ExperimentalTrees);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MoverBase, MoverBases);

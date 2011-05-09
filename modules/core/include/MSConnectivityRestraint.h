@@ -37,17 +37,8 @@ public:
   size_t add_node(const std::string &desc);
   void connect(size_t parent, size_t child);
   void finalize();
-  std::string get_type_name() const
-  {
-    return "ExperimentalTree";
-  }
-  IMP::VersionInfo get_version_info() const
-  {
-    return IMP::VersionInfo("Core::MSConnectivityRestraint", "1.0");
-  }
-  void do_show (std::ostream & /*out*/) const
-  {
-  }
+
+  IMP_OBJECT(ExperimentalTree);
 
 private:
 
