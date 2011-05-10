@@ -19,6 +19,10 @@
 #include <IMP/display/Writer.h>
 #include <IMP/dependency_graph.h>
 
+#ifdef IMP_DOMINO_USE_IMP_RMF
+#include <IMP/rmf/hdf5_wrapper.h>
+#endif
+
 
 IMP_BEGIN_NAMESPACE
 class Model;
@@ -104,6 +108,29 @@ IMPDOMINOEXPORT Ints get_index(const ParticlesTemp &particles,
 IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
                                const Subset &subset, const Subsets &excluded);
 
+
+#if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
+/** \name HDF5 I/O
+    Lists of assignments can be written to HDF5 data sets and read back. The
+    passed list of particles is used to figure out the order when reading things
+    back, it (as well as the subset) must match across setting and getting for
+    the results to make sense.
+
+    The dimension of the data set must be 2.
+    @{
+*/
+/** The existing data set is completely rewritten.*/
+IMPDOMINOEXPORT void set_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                                     const Assignments &assignments,
+                                     const Subset &s,
+                                     const ParticlesTemp &all_particles);
+
+IMPDOMINOEXPORT Assignments
+get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                const Subset &s,
+                const ParticlesTemp &all_particles);
+/** @} */
+#endif
 
 IMPDOMINO_END_NAMESPACE
 
