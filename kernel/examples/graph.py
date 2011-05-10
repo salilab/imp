@@ -10,10 +10,12 @@ for i in range(0,10):
     vs.append(g.add_vertex(ps[-1]));
 g.add_edge(vs[0], vs[1])
 g.add_edge(vs[1], vs[2])
-g.show_graphviz()
-# use (graphviz) dot to render the above graph
-# ./tools/imppy.sh python ../svn/kernel/examples/graph.py >/tmp/graph.dot
-# drussel@udp012430uds:debug> dot /tmp/graph.dot -Tpdf > /tmp/out.pdf
+
+#try to use the altgraph package to visualize
+try:
+    IMP.show_altgraph(g)
+except:
+    print "Oh well, no altgraph"
 
 
 try:
@@ -33,7 +35,14 @@ except:
     print "networkx not fully installed"
 
 g.remove_vertex(0)
-g.show_graphviz()
+
+# we can also try another show method
+try:
+    IMP.show_graphviz(g)
+except:
+    print "oh well, something not working with graphviz"
+
+# finally, we can
 # in and out neighbors are the same
 for n in g.get_in_neighbors(8):
     print g.get_vertex_name(n).get_name()
