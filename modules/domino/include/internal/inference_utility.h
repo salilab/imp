@@ -119,25 +119,14 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
   return ret;
 }
 
-struct NodeData {
-  Assignments assignments;
-};
 
-
-inline std::ostream &operator<<(std::ostream &out, const NodeData &nd) {
-  for (Assignments::const_iterator it = nd.assignments.begin();
-       it != nd.assignments.end(); ++it) {
-    out << *it << std::endl;
-  }
-  return out;
-}
-
-inline NodeData get_node_data(const Subset &s, const AssignmentsTable *sst) {
-  NodeData ret;
-  ret.assignments= sst->get_assignments(s);
-  if (ret.assignments.empty()) {
-    IMP_THROW("Empty state encountered with subset " << s, ValueException);
-  }
+inline Assignments get_node_data(const Subset &s, const AssignmentsTable *sst) {
+  Assignments ret;
+  ret= sst->get_assignments(s);
+  /*if (ret.empty()) {
+    IMP_THROW("Empty state encountered with subset " << s
+              << ". There will be no solutions.", ValueException);
+              }*/
   return ret;
 }
 
@@ -195,9 +184,9 @@ Assignment get_merged_assignment(const Subset &s,
                                     const Assignment &ss1,
                                     const Ints &i1) ;
 
-IMPDOMINOEXPORT NodeData
+IMPDOMINOEXPORT Assignments
 get_union(const Subset &s0, const Subset &s1,
-          const NodeData &nd0, const NodeData &nd1,
+          const Assignments &nd0, const Assignments &nd1,
           const EdgeData &ed,
           unsigned int max);
 
