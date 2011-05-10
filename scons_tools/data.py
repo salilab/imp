@@ -47,7 +47,12 @@ included_methods={"kernel":{"set_check_level":"(CheckLevel)",
                           "create_geometries":"(RootHandle, int)",
                           "add_particle":"(RootHandle, Particle*)",
                           "create_particles":"(RootHandle, Model*)",
-                          }
+                          },
+                  "domino":{"set_assignments":"(rmf::HDF5DataSet<rmf::IndexTraits>, const Assignments &,const Subset &,const ParticlesTemp&)",
+                            "get_assignments":"(rmf::HDF5DataSet<rmf::IndexTraits>,const Subset &,const ParticlesTemp&)",
+                            "get_junction_tree":"(const InteractionGraph&)",
+                            "get_merge_tree":"(const SubsetGraph&)"
+                      },
                   }
 
 
