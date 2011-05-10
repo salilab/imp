@@ -41,9 +41,6 @@ public core::internal::CoreSingletonsRestraint
 #endif
 {
   typedef core::internal::CoreSingletonsRestraint P;
-  IMP::internal::OwnerPointer<SingletonScore> ss_;
-  IMP::internal::OwnerPointer<SingletonContainer> pc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container

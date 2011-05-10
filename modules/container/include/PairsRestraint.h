@@ -41,9 +41,6 @@ public core::internal::CorePairsRestraint
 #endif
 {
   typedef core::internal::CorePairsRestraint P;
-  IMP::internal::OwnerPointer<PairScore> ss_;
-  IMP::internal::OwnerPointer<PairContainer> pc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container
