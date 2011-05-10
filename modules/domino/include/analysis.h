@@ -26,9 +26,9 @@ class ParticleStatesTable;
     which takes a particle.
  */
 IMPDOMINOEXPORT Assignments get_state_clusters(const Subset &subset,
-                                                 const Assignments &states,
-                                                 ParticleStatesTable *pst,
-                                                 double resolution);
+                                               const Assignments &states,
+                                               ParticleStatesTable *pst,
+                                               double resolution);
 
 IMPDOMINO_END_NAMESPACE
 
