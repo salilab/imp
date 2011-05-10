@@ -311,12 +311,17 @@ public:
   }
   void do_show(std::ostream &out) const {
     set_was_used(true);
-    show_graphviz(out);
-  }
-  void show_graphviz(std::ostream &out=std::cout) const {
-    set_was_used(true);
-    IMP_CHECK_OBJECT(this);
     show_as_graphviz(bg_, out);
+  }
+  void show_graphviz(std::ostream &out) const {
+    set_was_used(true);
+    show_as_graphviz(bg_, out);
+  }
+  std::string get_graphviz_string() const {
+    set_was_used(true);
+    std::ostringstream oss;
+    show_as_graphviz(bg_, oss);
+    return oss.str();
   }
   std::string get_type_name() const {return "Graph";}
   ::IMP::VersionInfo get_version_info() const {

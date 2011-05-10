@@ -358,4 +358,15 @@ def show_altgraph(g):
            for i,v in enumerate(g.get_vertices()):
                dot.node_style(i, label=clean(g.get_vertex_name(v)))
            dot.display()
+
+def show_graphviz(g):
+           tfn= create_temporary_file_name("graph", ".dot")
+           tfon= create_temporary_file_name("graph", ".pdf")
+           st= g.get_graphviz_string()
+           open(tfn, "w").write(st)
+           import subprocess
+           sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
+           sp.wait()
+           subprocess.Popen(["open", tfon])
+           return tfon
 %}

@@ -369,6 +369,13 @@ generate the connection between the two languages. Key differences are
     clearly and accompanied by an explaination of why the normal units
     could not be used.
 
+    \subsection bionames Biological names
+    When describing biological entities, natural biological
+    names should be used as much as possible. That means,
+    residues should be referred to by their index in the protein
+    (that is the residue index in the pdb), rather than their
+    offset from the beginning of the loaded set of residues.
+
     \subsection storage Passing and storing data
 
     - 3D points and vectors are stored and passed using
@@ -519,25 +526,7 @@ generate the connection between the two languages. Key differences are
 Graphs in \imp are represented using the \external{www.boost.org/doc/libs/release/libs/graph, Boost Graph Library}. All graphs used in \imp are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/VertexAndEdgeListGraph.html, VertexAndEdgeListGraphs}, have vertex_name properties,
 are \external{www.boost.org/doc/libs/1_43_0/libs/graph/doc/BidirectionalGraph.html, BidirectionalGraphs} if they are directed.
 
-The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper which looks as follows
-\code
-class Graph {
-public:
-  class VertexDescriptor;
-  class VertexDescriptors;
-  class VertexName;
-  Vertices get_vertices();
-  VertexDescriptors get_in_neighbors(VertexDescriptor);
-  VertexDescriptors get_out_neighbors(VertexDescriptor);
-  void add_edge(VertexDescriptor, VertexDescriptor);
-  void show_dotty();
-  VertexDescriptor add_vertex(VertexName);
-  void remove_vertex(VertexDescriptor);
-};
-\endcode
-Each vertex has a descriptor which provides a unique identifier for the vertex as well as a name, which need not be unique. The \c show_dotty() method attempts to display the graphically. It requires the \c altgraph python package be installed and that x-windows be running. Any less primitive replacements are welcome.
-
-The python wrapper should be considered unstable. If there is a python graph library which users would like to use, we will adapt the python interface for that library.
+The Boost.Graph interface cannot be easily exported to Python so we instead provide a simple wrapper IMP::PythonDirectedGraph.
 
 \section fasterfaster 9. Making IMP run faster
 
