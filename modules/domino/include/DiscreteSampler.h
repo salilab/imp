@@ -60,7 +60,8 @@ class IMPDOMINOEXPORT DiscreteSampler : public Sampler
     get_subset_filter_tables_to_use(RestraintSet *rs,
                                     ParticleStatesTable *pst) const;
   AssignmentsTable*
-    get_assignments_table_to_use(const SubsetFilterTables &sfts) const;
+    get_assignments_table_to_use(const SubsetFilterTables &sfts,
+                    unsigned int max=std::numeric_limits<int>::max()) const;
 #endif
   ConfigurationSet* do_sample() const;
  protected:

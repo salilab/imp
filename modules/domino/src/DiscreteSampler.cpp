@@ -51,9 +51,11 @@ DiscreteSampler
 
 AssignmentsTable*
 DiscreteSampler
-::get_assignments_table_to_use(const SubsetFilterTables &sfts) const {
+::get_assignments_table_to_use(const SubsetFilterTables &sfts,
+                               unsigned int max) const {
   if (sst_) return sst_;
-  IMP_NEW(BranchAndBoundAssignmentsTable, dsst, (pst_, sfts, max_));
+  IMP_NEW(BranchAndBoundAssignmentsTable, dsst,
+          (pst_, sfts, std::min(max,max_)));
   dsst->set_was_used(true);
   return dsst.release();
 }
