@@ -74,6 +74,9 @@ SubsetGraph get_restraint_graph(RestraintSet *rs,
     rigid body, then an restraint which uses a member of the rigid
     body will have an edge from the rigid body particle.
 
+    \note You may want to create an OptimizeRestraints object before
+    calling this function.
+
     \note This function is here to aid in debugging of optimization
     protocols that use Domino2. As a result, its signature and
     functionality may change without notice.
@@ -103,7 +106,20 @@ get_subset_graph_geometry(const SubsetGraph &ig);
  */
 IMP_GRAPH(MergeTree, bidirectional, Subset, int);
 
+/** \see get_merge_tree(const SubsetGraph&)
 
+    Compute the merge tree for a given restraint set and
+    particle states table. An OptimizeRestraints object is
+    created to improve the InteractionGraph used internally.
+ */
+IMPDOMINOEXPORT
+MergeTree get_merge_tree(RestraintSet *rs,
+                         const ParticleStatesTable *pst);
+
+/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
+
+    Compute the merge tree from a junction tree.
+ */
 IMPDOMINOEXPORT
 MergeTree get_merge_tree(const SubsetGraph &junction_tree/*, int start=0*/);
 

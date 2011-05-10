@@ -703,4 +703,15 @@ bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
                            verbose, nv-1, -1);
 }
 
+
+
+
+MergeTree get_merge_tree(RestraintSet *rs,
+                         const ParticleStatesTable *pst) {
+  OptimizeRestraints ors(rs, pst);
+  InteractionGraph ig= get_interaction_graph(rs, pst);
+  SubsetGraph jt= get_junction_tree(ig);
+  return get_merge_tree(jt);
+}
+
 IMPDOMINO_END_NAMESPACE
