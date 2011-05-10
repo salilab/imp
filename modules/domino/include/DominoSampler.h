@@ -37,6 +37,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   bool has_sg_, has_mt_;
   bool csf_;
   mutable internal::InferenceStatistics stats_;
+
  public:
   DominoSampler(Model *m, std::string name= "DominoSampler %1%");
   DominoSampler(Model*m, ParticleStatesTable *pst,
@@ -73,6 +74,32 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   //! Return a few subset states from that merge
   Assignments
     get_sample_assignments_for_vertex(unsigned int tree_vertex) const;
+  /** @} */
+
+  /** \name Interactive mode
+      Once a merge tree is specified, one can interactively perform the
+      sampling by requesting that domino fill in the Assignments for a
+      given node of the merge tree from the assignments for the children.
+      This can be useful for debugging Domino as well as for providing
+      a distributed implementation.
+
+      For each method, you can pass max_states to limit how many states are
+      generated.
+      @{
+  */
+  //! Fill in assignments for a leaf
+  Assignments get_vertex_assignments(unsigned int node_index,
+                                     unsigned int max_states
+                                     =std::numeric_limits<int>::max()) const;
+  //! Fill in assignments for an internal node
+  /** The passed assignments, the ordering for the children is based
+      on the node index for the children.
+  */
+  Assignments get_vertex_assignments(unsigned int node_index,
+                                         const Assignments &first,
+                                         const Assignments &second,
+                                         unsigned int max_states
+                                       =std::numeric_limits<int>::max()) const;
   /** @} */
 };
 

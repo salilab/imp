@@ -17,6 +17,7 @@ class PointAlignmentTests(IMP.test.TestCase):
             fn ="small_protein.pdb"
             mhs.append(IMP.atom.read_pdb(self.get_input_file_name(fn),
                                          mdl,IMP.atom.CAlphaPDBSelector()))
+            mhs[-1].set_name("molecule"+str(i))
             IMP.atom.setup_as_rigid_body(mhs[-1])
         rbs=IMP.core.RigidBodies(mhs)
         ts=[]
