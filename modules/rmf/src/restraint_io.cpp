@@ -9,7 +9,7 @@
 #include <IMP/rmf/restraint_io.h>
 #include <IMP/rmf/operations.h>
 #include <IMP/scoped.h>
-#include <boost/smart_ptr/shared_array.hpp>
+#include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
 namespace {
