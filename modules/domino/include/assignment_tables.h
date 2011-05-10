@@ -46,18 +46,12 @@ IMP_OBJECTS(AssignmentsTable, AssignmentsTables);
 /** Enumerate states based on provided ParticleStates
     objects.
 
-    The produced states are filtered using a variety of methods
-    - no two particles which have the same ParticleStates object
-    in the ParticleStatesTable can be assigned the same state.
-    That is for a given Subset s and Assignment ss, if
-\code
-    ParticleStatesTable::get_particle_states(s[i])
-    ==ParticleStatesTable::get_particle_states(s[j])
-\endcode
-    then ss[i] != ss[j]
-
-    - If a SubsetFilterTable objects are provided, the branch and bound
-    is used to eliminate states using them.
+    The produced states are filtered using the provided
+    SubsetFilterTable objects. Branch and bound is used
+    to try to make this process more efficient. To do that
+    the SubsetFilterTable::get_strength() method is used
+    to order the particles from most restricted to least
+    restricted.
 */
 class IMPDOMINOEXPORT BranchAndBoundAssignmentsTable:
   public AssignmentsTable {
@@ -78,8 +72,10 @@ public:
 };
 
 
-/** Store a map of Assignments objects and return them on demand.
-    \untested{ListAssignmentsTable}
+/** Store a map of Assignments objects and return them on demand. This table
+    should be used when each subset is sampled using some other protocol
+    (eg Monte Carlo or molecular dynamics) and those states are then fed
+    in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
   IMP::internal::Map<Subset, Assignments> states_;
