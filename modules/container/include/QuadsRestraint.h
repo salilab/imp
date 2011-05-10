@@ -41,9 +41,6 @@ public core::internal::CoreQuadsRestraint
 #endif
 {
   typedef core::internal::CoreQuadsRestraint P;
-  IMP::internal::OwnerPointer<QuadScore> ss_;
-  IMP::internal::OwnerPointer<QuadContainer> pc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container

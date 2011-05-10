@@ -41,9 +41,6 @@ public core::internal::CoreTripletsRestraint
 #endif
 {
   typedef core::internal::CoreTripletsRestraint P;
-  IMP::internal::OwnerPointer<TripletScore> ss_;
-  IMP::internal::OwnerPointer<TripletContainer> pc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container

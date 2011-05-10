@@ -41,9 +41,6 @@ public core::internal::CoreCLASSNAMEsRestraint
 #endif
 {
   typedef core::internal::CoreCLASSNAMEsRestraint P;
-  IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
-  IMP::internal::OwnerPointer<CLASSNAMEContainer> pc_;
-  mutable double score_;
 public:
 
  //! Create the restraint with a shared container

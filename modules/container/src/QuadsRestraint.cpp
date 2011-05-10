@@ -23,8 +23,7 @@ QuadsRestraint
 
 void QuadsRestraint::do_show(std::ostream& out) const
 {
-  out << "score " << *ss_ << std::endl;
-  out << "container " << *pc_ << std::endl;
+  P::do_show(out);
 }
 
 IMPCONTAINER_END_NAMESPACE

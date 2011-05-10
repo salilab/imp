@@ -107,8 +107,8 @@ Restraints CoreSingletonsRestraint::get_decomposition() const {
 
 void CoreSingletonsRestraint::do_show(std::ostream& out) const
 {
-  out << "score " << *ss_ << std::endl;
-  out << "container " << *pc_ << std::endl;
+  out << "score " << ss_->get_name() << std::endl;
+  out << "container " << pc_->get_name() << std::endl;
 }
 
 IMPCORE_END_INTERNAL_NAMESPACE
