@@ -8,6 +8,14 @@ namespace IMP {
     std::cout << its << std::endl;
   }
 }
+namespace IMP {
+  namespace sub {
+    void testf() {
+      Ints its;
+      std::cout << its << std::endl;
+    }
+  }
+}
 int main(int, char *[]) {
   using namespace IMP;
   Ints its;
