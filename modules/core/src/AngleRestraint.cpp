@@ -24,7 +24,7 @@ AngleRestraint::AngleRestraint(UnaryFunction* score_func,
 {
 }
 
-void AngleRestraint::do_show(std::ostream &out) const
+void AngleRestraint::do_show(std::ostream &) const
 {
 }
 
