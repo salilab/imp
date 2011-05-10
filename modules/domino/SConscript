@@ -2,4 +2,5 @@ Import('env')
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['display', 'algebra'],
+                   optional_modules=['rmf'],
                    lib_only_required_modules=['statistics', 'core', 'container'])

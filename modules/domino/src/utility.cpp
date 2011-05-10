@@ -198,6 +198,68 @@ Ints get_index(const ParticlesTemp &particles,
 }
 
 
+#ifdef IMP_DOMINO_USE_IMP_RMF
+namespace {
+  Ints get_order(const Subset &s,
+                 const ParticlesTemp &all_particles) {
+    Ints ret(s.size(), -1);
+    int cur=0;
+    for (unsigned int i=0; i< all_particles.size(); ++i) {
+      for (unsigned int j=0; j< s.size(); ++j) {
+        if (all_particles[i]==s[j]) {
+          ret[j]=cur;
+          ++cur;
+        }
+      }
+    }
+    return ret;
+  }
+}
+
+void set_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                     const Assignments &assignments,
+                     const Subset &s,
+                     const ParticlesTemp &all_particles) {
+  IMP_FUNCTION_LOG;
+  Ints order= get_order(s, all_particles);
+  Ints sz(2);
+  sz[0]= s.size();
+  sz[1]= assignments.size();
+  dataset.set_size(sz);
+  Ints cur(2);
+  for (unsigned int i=0; i< assignments.size(); ++i) {
+    cur[1]=i;
+    for (unsigned int j=0; j< s.size(); ++j) {
+      cur[0]= j;
+      int state= assignments[i][order[j]];
+      dataset.set_value(cur, state);
+    }
+  }
+}
+Assignments get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                            const Subset &s,
+                            const ParticlesTemp &all_particles) {
+  IMP_FUNCTION_LOG;
+  Ints order= get_order(s, all_particles);
+  Ints sz= dataset.get_size();
+  Assignments ret(sz[1]);
+  IMP_USAGE_CHECK(sz[0]== static_cast<int>(s.size()),
+                  "Sizes done't match: " << sz[0] << "!="
+                  << s.size());
+  Ints cur(2);
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    cur[1]=i;
+    Ints curs(s.size());
+    for (unsigned int j=0; j< s.size(); ++j) {
+      cur[0]= j;
+      curs[order[j]]=dataset.get_value(cur);
+    }
+    ret[i]=Assignment(curs);
+  }
+  return ret;
+}
+#endif
+
 
 
 IMPDOMINO_END_NAMESPACE
