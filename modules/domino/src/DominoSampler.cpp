@@ -81,7 +81,7 @@ Assignments DominoSampler
           << " particles as " << known_particles << std::endl);
   IMP_USAGE_CHECK(known_particles.size()>0, "No particles to sample");
   Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
-    OptimizeRestraints ro(rs, get_particle_states_table());
+  OptimizeRestraints ro(rs, get_particle_states_table());
   ParticlesTemp pt(known_particles.begin(), known_particles.end());
 
   SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
@@ -118,28 +118,28 @@ Assignments DominoSampler
       IMP_LOG(TERSE,"DOMINOO has junction tree"<<std::endl);
       SubsetGraph jt= get_junction_tree(get_interaction_graph(rs,
                                                get_particle_states_table()));
-      MergeTree mt= get_merge_tree(jt);
-      ListSubsetFilterTable* lsft=NULL;
-      if (csf_) {
-        lsft= new ListSubsetFilterTable(get_particle_states_table());
-        sfts.push_back(lsft);
-      }
-      IMP_LOG(TERSE,"domino::DominoSampler entering InferenceStatistics\n");
-      stats_=internal::InferenceStatistics();
-      IMP_LOG(TERSE,"domino::DominoSampler entering get_best_conformations\n");
-      final_solutions
-        = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
-                                           known_particles,
-                                           sfts, sst, lsft, stats_,
-                                    get_maximum_number_of_assignments());
-      IMP_LOG(TERSE,"domino::DominoSampler end get_best_conformations\n");
-      if (lsft) {
-        IMP_LOG(TERSE, lsft->get_ok_rate()
-                << " were ok with the cross set filtering"
-                << std::endl);
-      }
-      IMP_LOG(TERSE,"DOMINOO FINISH junction tree"<<std::endl);
+      mt= get_merge_tree(jt);
     }
+    ListSubsetFilterTable* lsft=NULL;
+    if (csf_) {
+      lsft= new ListSubsetFilterTable(get_particle_states_table());
+      sfts.push_back(lsft);
+    }
+    IMP_LOG(TERSE,"domino::DominoSampler entering InferenceStatistics\n");
+    stats_=internal::InferenceStatistics();
+    IMP_LOG(TERSE,"domino::DominoSampler entering get_best_conformations\n");
+    final_solutions
+      = internal::get_best_conformations(mt, boost::num_vertices(mt)-1,
+                                         known_particles,
+                                         sfts, sst, lsft, stats_,
+                                         get_maximum_number_of_assignments());
+    IMP_LOG(TERSE,"domino::DominoSampler end get_best_conformations\n");
+    if (lsft) {
+      IMP_LOG(TERSE, lsft->get_ok_rate()
+              << " were ok with the cross set filtering"
+              << std::endl);
+    }
+    IMP_LOG(TERSE,"DOMINOO FINISH junction tree"<<std::endl);
   }
   return final_solutions;
 }
@@ -192,8 +192,87 @@ DominoSampler::get_sample_assignments_for_vertex(unsigned int tree_vertex)
   boost::property_map< MergeTree, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, mt_);
   return stats_.get_sample_assignments(subset_map[tree_vertex]);
+}
 
+
+
+
+Assignments DominoSampler::get_vertex_assignments(unsigned int node_index,
+                                          unsigned int max_states) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(has_mt_,
+                  "Must set merge tree before using interactive functions.");
+  typedef boost::property_map< MergeTree, boost::vertex_name_t>::const_type
+      SubsetMap;
+  typedef boost::graph_traits<MergeTree>::adjacency_iterator
+    NeighborIterator;
+  SubsetMap subset_map= boost::get(boost::vertex_name, mt_);
+
+  Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
+  OptimizeRestraints ro(rs, get_particle_states_table());
+  //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
+                                         get_particle_states_table());
+  IMP::internal::OwnerPointer<AssignmentsTable> sst
+    = DiscreteSampler::get_assignments_table_to_use(sfts, max_states);
+  ListSubsetFilterTable* lsft=NULL;
+  if (csf_) {
+    lsft= new ListSubsetFilterTable(get_particle_states_table());
+    sfts.push_back(lsft);
   }
+  std::pair<NeighborIterator, NeighborIterator> be
+      = boost::adjacent_vertices(node_index, mt_);
+  IMP_USAGE_CHECK(std::distance(be.first, be.second)==0,
+                  "Not a binary tree leaf");
+  Subset curs=boost::get(subset_map, node_index);
+  return internal::get_leaf_assignments(curs,
+                                        sst, lsft, stats_);
+}
+
+
+Assignments DominoSampler::get_vertex_assignments(unsigned int node_index,
+                                                  const Assignments &first,
+                                                  const Assignments &second,
+                                              unsigned int max_states) const {
+  set_was_used(true);
+  IMP_OBJECT_LOG;
+  IMP_USAGE_CHECK(has_mt_,
+                  "Must set merge tree before using interactive functions.");
+  typedef boost::property_map< MergeTree, boost::vertex_name_t>::const_type
+      SubsetMap;
+  typedef boost::graph_traits<MergeTree>::adjacency_iterator
+    NeighborIterator;
+  SubsetMap subset_map= boost::get(boost::vertex_name, mt_);
+
+  Pointer<RestraintSet> rs= get_model()->get_root_restraint_set();
+  OptimizeRestraints ro(rs, get_particle_states_table());
+  //ParticlesTemp known_particles= get_particle_states_table()->get_particles();
+  //ParticlesTemp pt(known_particles.begin(), known_particles.end())
+  SubsetFilterTables sfts= get_subset_filter_tables_to_use(rs,
+                                         get_particle_states_table());
+  ListSubsetFilterTable* lsft=NULL;
+  if (csf_) {
+    lsft= new ListSubsetFilterTable(get_particle_states_table());
+    sfts.push_back(lsft);
+  }
+  std::pair<NeighborIterator, NeighborIterator> be
+      = boost::adjacent_vertices(node_index, mt_);
+  IMP_USAGE_CHECK(std::distance(be.first, be.second)==2,
+                  "Not a binary tree node");
+  int firsti= *be.first, secondi= *(++be.first);
+  if (firsti > secondi) {
+    std::swap(firsti, secondi);
+  }
+  Subset firsts=boost::get(subset_map, firsti);
+  Subset seconds=boost::get(subset_map, secondi);
+  return internal::get_merged_assignments(firsts, first,
+                                       seconds, second,
+                                       sfts, lsft, stats_,
+                                       max_states);
+}
+
+
 
 
 IMPDOMINO_END_NAMESPACE
