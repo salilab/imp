@@ -19,6 +19,29 @@ IMP_BEGIN_NAMESPACE
     The following functions are only available in python.
     @{
 */
+/** The boost graphs used on the C++ side in \imp cannot easily be
+    exported to python. Instead we provide a simple graph wrapper and
+    a set of helper functions.
+
+    Each node of the graph has an associated vertex name, the exact type
+    of which depends on the graph.
+
+    \note This class is only available in Python.
+*/
+class PythonDirectedGraph {
+public:
+  class VertexDescriptor;
+  class VertexDescriptors;
+  class VertexName;
+  Vertices get_vertices() const;
+  VertexName get_vertex_name(VertexDescriptor v) const;
+  VertexDescriptors get_in_neighbors(VertexDescriptor) const;
+  VertexDescriptors get_out_neighbors(VertexDescriptor) const;
+  void add_edge(VertexDescriptor, VertexDescriptor);
+  VertexDescriptor add_vertex(VertexName);
+  void remove_vertex(VertexDescriptor);
+};
+
 /** Use the python \external{packages.python.org/altgraph/core.html,altgraph}
     package to graphically display a graph.
     Note that is requires X11 to be running (you can find it in
@@ -52,6 +75,12 @@ plt.show()
 \endcode
  */
 networkx::DiGraph get_networkx_graph(Graph g);
+
+
+/** Generate a nice pdf of the graph and attempt to open the pdf. The name
+    of the pdf will be returned in case the attempt to open it fails.
+*/
+std::string show_graphviz(Graph g);
 /** @} */
 #endif
 
