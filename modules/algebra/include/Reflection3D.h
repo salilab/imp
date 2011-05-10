@@ -1,5 +1,5 @@
 /**
- *  \file Reflection.h   \brief Reflect about a plane in 3D.
+ *  \file Reflection3D.h   \brief Reflect about a plane in 3D.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
