@@ -87,23 +87,23 @@ InferenceStatistics::get_data(const Subset &s) const {
   }
 
 
-  NodeData
+  Assignments
   get_union(const Subset &s0, const Subset &s1,
-            const NodeData &nd0, const NodeData &nd1,
+            const Assignments &nd0, const Assignments &nd1,
             const EdgeData &ed, unsigned int max) {
-    NodeData ret;
+    Assignments ret;
     Ints ii0= get_index(s0, ed.intersection_subset);
     Ints ii1= get_index(s1, ed.intersection_subset);
     Ints ui0= get_index(ed.union_subset, s0);
     Ints ui1= get_index(ed.union_subset, s1);
     Ints uii= get_index(ed.union_subset, ed.intersection_subset);
-    for (unsigned int i=0; i< nd0.assignments.size(); ++i) {
-      for (unsigned int j=0; j< nd1.assignments.size(); ++j) {
-        if (get_are_equal(nd0.assignments[i], ii0,
-                          nd1.assignments[j], ii1)) {
+    for (unsigned int i=0; i< nd0.size(); ++i) {
+      for (unsigned int j=0; j< nd1.size(); ++j) {
+        if (get_are_equal(nd0[i], ii0,
+                          nd1[j], ii1)) {
           Assignment ss= get_merged_assignment(ed.union_subset,
-                                                  nd0.assignments[i], ui0,
-                                                  nd1.assignments[j], ui1);
+                                                  nd0[i], ui0,
+                                                  nd1[j], ui1);
           bool ok=true;
           for (unsigned int i=0; i< ed.filters.size(); ++i) {
             if (ed.filters[i]->get_is_ok(ss)) {
@@ -114,8 +114,8 @@ InferenceStatistics::get_data(const Subset &s) const {
             }
           }
           if (ok) {
-            ret.assignments.push_back(ss);
-            if (ret.assignments.size() > max) {
+            ret.push_back(ss);
+            if (ret.size() > max) {
               IMP_WARN("Truncated number of states at " << max
                        << " when merging " << s0 << " and " << s1);
               return ret;
