@@ -46,6 +46,8 @@ IMP_SWIG_OBJECT(IMP::rmf, SaveHierarchyConfigurationOptimizerState, SaveHierarch
 %template(HDF5FloatDataSet) IMP::rmf::HDF5DataSet<IMP::rmf::FloatTraits>;
 %template(HDF5StringDataSet) IMP::rmf::HDF5DataSet<IMP::rmf::StringTraits>;
 %template(HDF5IntDataSet) IMP::rmf::HDF5DataSet<IMP::rmf::IntTraits>;
+%template(HDF5IndexDataSet) IMP::rmf::HDF5DataSet<IMP::rmf::IndexTraits>;
+%template(HDF5NodeIDDataSet) IMP::rmf::HDF5DataSet<IMP::rmf::NodeIDTraits>;
 %template(FloatKey) IMP::rmf::Key<IMP::rmf::FloatTraits>;
 %template(IntKey) IMP::rmf::Key<IMP::rmf::IntTraits>;
 %template(StringKey) IMP::rmf::Key<IMP::rmf::StringTraits>;
