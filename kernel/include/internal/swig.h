@@ -313,7 +313,7 @@ public:
     set_was_used(true);
     show_as_graphviz(bg_, out);
   }
-  void show_graphviz(std::ostream &out) const {
+  void show_graphviz(std::ostream &out=std::cout) const {
     set_was_used(true);
     show_as_graphviz(bg_, out);
   }
