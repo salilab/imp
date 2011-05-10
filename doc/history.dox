@@ -1,6 +1,10 @@
 /** \page recent Change History
 
 \par Spring 2011
+- An interactive mode has been added to IMP::domino::DominoSampler. The interactive mode is useful for understanding domino sampling runs and distributing domino comptutations across a cluster.
+- Functions IMP::domino::set_assignments() and IMP::domino::get_assignments() were added which support
+  writing subset assignments to data fields in hdf5 files. These can be used to helping to distribute
+  domino on a cluster as well as debugging the sampling process.
 - The python functions IMP.show_altgraph() and IMP.get_networkx_graph() have been added to provide alternatives for quick viewing of \imp graphs. Unfortunately, they still pale compared to graphviz.
 - IMP.atom.create_cover() was added to facilitate creating a summary particle for part of a hierarchy in order to accelerate restraints.
 - IMP.hdf5 was renamed to IMP.rmf, the proposed name of the file format that it supports. That also better separates the hdf5 support from the file format support.
