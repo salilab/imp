@@ -305,14 +305,15 @@ namespace {
 
 
 SubsetGraph get_junction_tree(const InteractionGraph &ig) {
+  IMP_FUNCTION_LOG;
   InteractionGraph cig;
   IGVertexMap pm= boost::get(boost::vertex_name, cig);
   boost::copy_graph(ig, cig);
   /*std::cout << "Input graph is " << std::endl;
     IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
-  /* std::cout << "Triangulated graph is " << std::endl;
-     IMP::internal::show_as_graphviz(cig, std::cout);*/
+  IMP_LOG(VERBOSE, "Triangulated graph is " << std::endl);
+  IMP_LOG_WRITE(VERBOSE, IMP::internal::show_as_graphviz(cig, IMP_STREAM));
   typedef std::vector<IGVertex> Clique;
   std::vector<Clique> cliques;
   internal::maximal_cliques(cig, std::back_inserter(cliques));
