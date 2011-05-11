@@ -15,7 +15,7 @@ class ProjectTests(IMP.test.TestCase):
         srw = IMP.em2d.SpiderImageReaderWriter()
         img=IMP.em2d.Image()
         img.read(
-              self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi"),srw);
+              self.get_input_file_name("1gyt-subject-1-0.5-SNR.spi"),srw)
 
         rows=int(img.get_header().get_number_of_rows())
         cols=int(img.get_header().get_number_of_columns())
@@ -27,7 +27,7 @@ class ProjectTests(IMP.test.TestCase):
         img.write(temp,srw)
 
         img2=IMP.em2d.Image()
-        img2.read(temp,srw);
+        img2.read(temp,srw)
 
         for i in range(0,rows):
             for j in range(0,cols):
@@ -42,7 +42,7 @@ class ProjectTests(IMP.test.TestCase):
         srw = IMP.em2d.SpiderImageReaderWriter()
         img=IMP.em2d.Image()
         img.read(
-              self.get_input_file_name("1z5s-projection-2.spi"),srw);
+              self.get_input_file_name("1z5s-projection-2.spi"),srw)
 
         filtered=IMP.em2d.Image()
         kernelsize=7
@@ -109,8 +109,8 @@ class ProjectTests(IMP.test.TestCase):
         rows =int( jpg_img.get_header().get_number_of_rows())
         cols = int(jpg_img.get_header().get_number_of_columns())
 
-        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows);
-        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols);
+        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows)
+        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols)
 
         for i in range(0,rows):
             for j in range(0,cols):
@@ -156,8 +156,8 @@ class ProjectTests(IMP.test.TestCase):
         rows =int( tif_img.get_header().get_number_of_rows())
         cols = int(tif_img.get_header().get_number_of_columns())
 
-        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows);
-        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols);
+        self.assertEqual(spider_img.get_header().get_number_of_rows(),rows)
+        self.assertEqual(spider_img.get_header().get_number_of_columns(),cols)
         ccc=IMP.em2d.get_cross_correlation_coefficient(tif_img.get_data(),
                                                   spider_img.get_data())
         self.assertAlmostEqual(ccc,1,delta=0.01,msg="ccc ins not 1")
