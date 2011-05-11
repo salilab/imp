@@ -142,14 +142,8 @@ class ProjectTests(IMP.test.TestCase):
         jrw = IMP.em2d.JPGImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.jpg")
         img1=IMP.em2d.Image(fn_img1,jrw)
-        try:
-            fn_img2 = self.get_input_file_name("temp.xxx")
-            img1.write(fn_img2,jrw)
-        except:
-            # Make sure a exception is sent
-            self.assertTrue(True);
-            return
-        self.assertTrue(False);
+        fn_img2 = self.get_input_file_name("temp.xxx")
+        self.assertRaises(IOError, img1.write, fn_img2, jrw)
 
     def test_read_tiff(self):
         """Test of TIFFReaderWriter reading"""
@@ -190,16 +184,8 @@ class ProjectTests(IMP.test.TestCase):
         trw = IMP.em2d.TIFFImageReaderWriter()
         fn_img1 = self.get_input_file_name("lena-256x256.tif")
         img1=IMP.em2d.Image(fn_img1,trw)
-        try:
-            fn_img2 = self.get_input_file_name("temp.xxx")
-            img1.write(fn_img2,trw)
-        except:
-            # Make sure a exception is sent
-            self.assertTrue(True);
-            return
-        self.assertTrue(False);
-
-
+        fn_img2 = self.get_input_file_name("temp.xxx")
+        self.assertRaises(IOError, img1.write, fn_img2, trw)
 
     def test_do_extend_borders(self):
         """Test that extending the borders of an image is done correctly"""
