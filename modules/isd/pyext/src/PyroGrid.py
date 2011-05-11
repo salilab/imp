@@ -34,12 +34,22 @@ Pyro.config.PYRO_PRINT_REMOTE_TRACEBACK = 1
 Pyro.config.PYRO_DETAILED_TRACEBACK = 1
 Pyro.config.PYRO_MOBILE_CODE = 1
 
+def get_sge_host_list():
+    """parse the sge variable $PE_HOSTLIST"""
+    hostlist = []
+    for line in open(os.environ('PE_HOSTLIST')):
+        tokens=line.split()
+        rep = int(tokens[1])
+        for i in xrange(rep):
+            hostlist.append(tokens[0])
+    return hostlist
+
 class PyroGrid(AbstractGrid):
 
     def __init__(self, hosts, src_path, display, X11_delay, 
                  debug, verbose, 
                  shared_temp_path, nshost, terminate_during_publish, 
-                 method='ssh', qsub_config=None):
+                 method='ssh'):
         
         AbstractGrid.__init__(self, hosts, src_path, display, X11_delay,\
                               debug, verbose, shared_temp_path)
@@ -58,10 +68,6 @@ class PyroGrid(AbstractGrid):
 
         #number of hosts
         self.n_hosts = len(hosts)
-        if qsub_config:
-            #qsub_config syntax: string with all needed options to qrsh.
-            self.qsub_config=qsub_config
-        
 
         #name of the host having the pyro-ns nameserver
         self.nshost = nshost         
@@ -116,7 +122,7 @@ class PyroGrid(AbstractGrid):
         if self.method == 'ssh':
             cmd  = "ssh %s '%s' " % (host.name, cmd)
         else:
-            cmd = "qrsh %s '%s' " % (self.qsub_config, cmd)
+            cmd = "qrsh -inherit %s '%s' " % (host.name, cmd)
 
         #if debug then be verbose. In any case do this in background.
         if self.debug: 
