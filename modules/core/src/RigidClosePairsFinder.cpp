@@ -83,11 +83,12 @@ namespace {
     } else {
       for (unsigned int i=0; i< ps.size(); ++i) {
         if (RigidMember::particle_is_instance(ps[i])) {
-          if (members.find(RigidMember(ps[i]).get_rigid_body())
+          RigidBody rb=RigidMember(ps[i]).get_rigid_body();
+          if (members.find(rb)
               == members.end()) {
-            out.push_back(RigidMember(ps[i]).get_rigid_body());
+            out.push_back(rb);
           }
-          members[RigidMember(ps[i]).get_rigid_body()].push_back(ps[i]);
+          members[rb].push_back(ps[i]);
         } else {
           out.push_back(ps[i]);
         }
@@ -98,7 +99,9 @@ namespace {
       std::sort(check_out.begin(), check_out.end());
       check_out.erase(std::unique(check_out.begin(), check_out.end()),
                       check_out.end());
-      IMP_INTERNAL_CHECK(check_out.size() == out.size(), "Values added twice");
+      IMP_INTERNAL_CHECK(check_out.size() == out.size(), "Values added twice: "
+                         << check_out.size() << " vs " << out.size()
+                         << ": " << out << " vs " << check_out);
     }
     /*std::cout << "Found " << members.size() << " rigid bodies and "
               << insc->get_number_of_particles()
