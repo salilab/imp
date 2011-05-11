@@ -221,6 +221,9 @@ public:
   bool fits(unsigned int i) const {
     return P::fits(i-OFFSET);
   }
+  void resize(unsigned int i, typename Traits::PassValue v) {
+    P::resize(i-OFFSET, v);
+  }
   unsigned int get_length() const {
     return OFFSET+P::get_length();
   }
@@ -286,6 +289,7 @@ inline void swap(FixedInlineStorage<V,S> &a,
 
 class SphereInlineStorage {
   algebra::SphereD<3> data_;
+  double d_;
 public:
   struct Traits {
     static double get_invalid() {
@@ -320,16 +324,20 @@ public:
     IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i < 3) {
       return data_.get_center()[i];
-    } else {
+    } else if (i==3) {
       return data_.get_radius();
+    } else {
+      return d_;
     }
   }
   void set(unsigned int i, double v) {
     IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     if (i < 3) {
       data_._access_center()[i]=v;
-    } else {
+    } else if (i==3) {
       data_._set_radius(v);
+    } else {
+      d_=v;
     }
   }
   void add(unsigned int i, double v) {
@@ -341,15 +349,15 @@ public:
     set(i, Traits::get_invalid());
   }
   bool fits(unsigned int i) const {
-    return (i < 4);
+    return (i < 5);
   }
   void clear() {
-    for (unsigned int i=0; i< 4; ++i) {
+    for (unsigned int i=0; i< 5; ++i) {
       remove(i);
     }
   }
   unsigned int get_length() const {
-    return 4;
+    return 5;
   }
   const algebra::Sphere3D &get_data() const {
     return data_;
@@ -358,7 +366,7 @@ public:
     return data_;
   }
   void fill(double v) {
-    for (unsigned int i=0; i< 4; ++i) {
+    for (unsigned int i=0; i< 5; ++i) {
       set(i,v);
     }
   }

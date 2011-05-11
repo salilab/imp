@@ -90,7 +90,8 @@ struct IMPEXPORT ParticleStorage {
     FloatTable;
   typedef ArrayStorage<BoolAttributeTableTraits>
     OptimizedTable;
-  typedef ArrayStorage<IntAttributeTableTraits>
+  typedef OffsetStorage<
+    ArrayStorage<IntAttributeTableTraits>, IMP_NUM_INLINE>
     IntTable;
   typedef ArrayStorage<StringAttributeTableTraits>
     StringTable;
@@ -98,7 +99,8 @@ struct IMPEXPORT ParticleStorage {
     ParticleTable;
   typedef RefCountedStorage<ObjectsAttributeTableTraits>
     ObjectTable;
-  typedef ArrayStorage<DoubleAttributeTableTraits>
+  typedef OffsetStorage<ArrayStorage<DoubleAttributeTableTraits>
+                        , IMP_NUM_INLINE>
     DerivativeTable;
 
   FloatTable floats_;

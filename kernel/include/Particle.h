@@ -245,9 +245,18 @@ class IMPEXPORT Particle : public Container
     }
   }*/
   void validate_float_derivatives() const {
-    for (unsigned int i=0; i< ps_->derivatives_.get_length(); ++i) {
+    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
       if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
-        if (! (ps_->derivatives_.get(i) < std::numeric_limits<double>::max())) {
+        if (! (derivatives_.get(i) < std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+    for (unsigned int i=IMP_NUM_INLINE;
+         i< ps_->derivatives_.get_length(); ++i) {
+      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
+        if (! (ps_->derivatives_.get(i)
+               < std::numeric_limits<double>::max())) {
           IMP_THROW("Bad attribute value", ModelException);
         }
       }
@@ -287,13 +296,14 @@ class IMPEXPORT Particle : public Container
   // end incremental
 
   typedef internal::SphereInlineStorage FloatTable;
-  typedef internal::ParticleStorage::IntTable IntTable;
+  typedef internal::FixedInlineStorage<internal::IntAttributeTableTraits,
+                                       IMP_NUM_INLINE> IntTable;
+  //typedef internal::ParticleStorage::IntTable IntTable;
   typedef internal::ParticleStorage::StringTable StringTable;
   typedef internal::ParticleStorage::ParticleTable ParticleTable;
   typedef internal::ParticleStorage::ObjectTable ObjectTable;
 
-  typedef internal::ArrayStorage<internal::DoubleAttributeTableTraits>
-    DerivativeTable;
+  typedef internal::SphereInlineStorage DerivativeTable;
   typedef internal::ParticleKeyIterator<FloatKey, Particle,
     internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
   typedef internal::ParticleKeyIterator<IntKey, Particle,
@@ -311,6 +321,8 @@ class IMPEXPORT Particle : public Container
 
  private:
   FloatTable floats_;
+  DerivativeTable derivatives_;
+  IntTable ints_;
   boost::scoped_ptr<internal::ParticleStorage> ps_;
   bool dirty_;
 #endif
@@ -340,11 +352,20 @@ class IMPEXPORT Particle : public Container
   IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
                               name.get_index() < IMP_NUM_INLINE,
                               floats_, ps_->floats_,
-                              { ps_->derivatives_.add(name.get_index(), 0);},
+                              { if (name.get_index() < IMP_NUM_INLINE) {
+                                  derivatives_.add(name.get_index(), 0);
+                                } else {
+                                  ps_->derivatives_.add(name.get_index(), 0);
+                                }
+                              },
                               {if (ps_->optimizeds_.fits(name.get_index())) {
                                   ps_->optimizeds_.remove(name.get_index());
                                 }
-                                ps_->derivatives_.remove(name.get_index());});
+                                if (name.get_index() < IMP_NUM_INLINE) {
+                                  derivatives_.remove(name.get_index());
+                                } else {
+                                  ps_->derivatives_.remove(name.get_index());
+                                }});
 
 #ifdef IMP_DOXYGEN
   class OptimizedKeyIterator;
@@ -363,7 +384,8 @@ class IMPEXPORT Particle : public Container
                                                     ps_->floats_.get_length());
   }
   IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
-                              true, ps_->ints_,ps_->ints_,{},{});
+                              name.get_index() < IMP_NUM_INLINE,
+                              ints_,ps_->ints_,{},{});
   IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,
                               true,ps_->strings_,ps_->strings_,{},{});
   IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
@@ -500,7 +522,11 @@ inline Float Particle::get_derivative(FloatKey name) const
   IMP_INTERNAL_CHECK(has_attribute(name), "Particle " << get_name()
              << " does not have attribute " << name);
   IMP_CHECK_VALID_DERIVATIVES;
-  return ps_->derivatives_.get(name.get_index());
+  if (name.get_index() < IMP_NUM_INLINE) {
+    return derivatives_.get(name.get_index());
+  } else {
+    return ps_->derivatives_.get(name.get_index());
+  }
 }
 
 
@@ -543,9 +569,15 @@ inline void Particle::add_to_derivative(FloatKey name, Float value,
   IMP_IF_CHECK(USAGE_AND_INTERNAL) { assert_can_change_derivatives();}
   IMP_INTERNAL_CHECK(name.get_index() < ps_->derivatives_.get_length(),
              "Something is wrong with derivative table.");
-  ps_->derivatives_.set(name.get_index(),
-                        ps_->derivatives_.get(name.get_index())
-                        + da(value));
+  if (name.get_index() < IMP_NUM_INLINE) {
+    derivatives_.set(name.get_index(),
+                     derivatives_.get(name.get_index())
+                     + da(value));
+  } else {
+    ps_->derivatives_.set(name.get_index(),
+                          ps_->derivatives_.get(name.get_index())
+                          + da(value));
+  }
 }
 
 
