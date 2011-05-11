@@ -7,21 +7,22 @@ from IMP.isd.utils import check_residue, read_sequence_file
 class TALOSReader:
     """ reads a TALOS file, or a TALOS folder, and stores the data """
 
-    def __init__(self, sequence, detailed_input, keep_all=False):
+    def __init__(self, sequence, detailed_input, keep_all=False,
+            sequence_match=(1,1)):
         """start the TALOSReader
         sequence : a dictionnary of sequence number keys and 3-letter code
                    values.
-        first_residue_number: TALOS starts at 1, but your protein might start
-                              elsewhere
         detailed_input : True if the input will be either predAll.tab or the
                          pred/res???.tab files. False if it's pred.tab
         keep_all : whether to keep outliers or not, when detailed_input==True.
+        sequence_match : in the form (talos_no, sequence_no), assigns a
+        correspondence between residue numberings.
         """
-        self.first_residue_number=min(sequence.keys())
         self.detailed_input = detailed_input
         self.data={}
         self.keep_all=keep_all
         self.sequence=sequence
+        self.offset = sequence_match[1]-sequence_match[0]
 
     def add_full_datum(self, resno, phi, psi):
         """in the case of a list of predictions for one residue, add an entry to
@@ -54,11 +55,13 @@ class TALOSReader:
 
     def _read_one_residue(self,fname):
         fl=open(fname)
-        resno = int(fname[3:6]) - 1 + self.first_residue_number
+        resno = int(os.path.basename(fname)[3:6]) + self.offset
         phi=[]
         psi=[]
         for line in fl:
             tokens=line.split()
+            if len(tokens) < 1:
+                continue
             if tokens[1] == 'RESNAMES':
                 check_residue(self.sequence[resno], tokens[3])
                 continue
@@ -78,7 +81,7 @@ class TALOSReader:
             if len(tokens) == 0 or not tokens[0].isdigit():
                 continue
             oldresno = resno
-            resno = int(tokens[1]) + self.first_residue_number - 1
+            resno = int(tokens[1]) + self.offset
             if resno != oldresno:
                 if oldresno != -1:
                     self.add_full_datum(resno, phi, psi)
@@ -103,7 +106,7 @@ class TALOSReader:
             tokens=line.split()
             if not tokens[0].isdigit():
                 continue
-            resno = int(tokens[0]) - 1 + self.first_residue_number
+            resno = int(tokens[0]) + self.offset
             check_residue(resno,tokens[1])
             phi,psi,dphi,dpsi = map(lambda a: 2*pi*float(a)/360.,
                                     tokens[2:6])
@@ -127,7 +130,7 @@ class TALOSReader:
 if __name__ == '__main__':
 
     talos = 'pred.tab'
-    sequence = read_sequence_file('seq.dat', first_residue_number=1)
+    sequence = read_sequence_file('seq.dat', sequence_match=(1,5))
     reader = TALOSReader(sequence)
     reader.read(talos)
     data=reader.get_data()

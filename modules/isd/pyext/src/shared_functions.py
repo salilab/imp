@@ -258,7 +258,7 @@ class sfo_common():
         #constrain it also for the optimizers
         if lower != -1 or upper != -1:
             m.add_score_state(IMP.core.SingletonConstraint(
-                            IMP.isd.ScaleRangeModifier(),IMP.isd.ScaleRangeModifier(),scale))
+                            IMP.isd.ScaleRangeModifier(),None,scale))
         return scale
 
     def init_model_jeffreys_kappa(self, scales, prior_rs=None):
@@ -376,7 +376,8 @@ class sfo_common():
         return ln
 
     def init_model_NOEs(self, prot, seqfile, tblfile, name='NOE', prior_rs=None,
-            bounds_sigma=(1.0,0.1,100), bounds_gamma=(1.0,0.1,100), verbose=True):
+            bounds_sigma=(1.0,0.1,100), bounds_gamma=(1.0,0.1,100),
+            verbose=True, sequence_match=(1,1)):
         """read TBL file and store NOE restraints, using one sigma and one gamma
         for the whole dataset. Creates the necessary uninformative priors.
         - prot: protein hierarchy
@@ -388,6 +389,7 @@ class sfo_common():
         - bounds_sigma or gamma: tuple of (initial value, lower, upper bound)
             bounds can be -1 to set to default range [0,+inf]
         - verbose: be verbose (default True)
+        - sequence_match : (noe_start, sequence_start)
         Returns: data_rs, prior_rs, sigma, gamma
         """
         #prior
@@ -399,8 +401,10 @@ class sfo_common():
         #likelihood
         rs = IMP.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
-        sequence = IMP.isd.utils.read_sequence_file(seqfile)
-        tblr = IMP.isd.TBLReader.TBLReader(sequence)
+        sequence = IMP.isd.utils.read_sequence_file(seqfile,
+                first_residue_number=sequence_match[1])
+        tblr = IMP.isd.TBLReader.TBLReader(sequence,
+                sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         for i,restraint in enumerate(restraints):
             if verbose and i % 100 == 0:
@@ -426,7 +430,7 @@ class sfo_common():
         return rs, prior_rs, sigma, gamma
 
     def init_model_NOEs_marginal(self, prot, seqfile, tblfile, name='NOE',
-            verbose=True):
+            verbose=True, sequence_match=(1,1)):
         """read TBL file and store NOE restraints, using the marginal of the
         lognormal with one sigma and one gamma, for the whole dataset.
         - prot: protein hierarchy
@@ -434,13 +438,16 @@ class sfo_common():
         - tblfile: a TBL file with the restraints
         - name: an optional name for the restraintset
         - verbose: be verbose (default True)
+        - sequence_match : (noe_start, sequence_start)
         Returns: data_rs
         """
         #likelihood
         rs = IMP.RestraintSet(name)
         #use the TBLReader to parse the TBL file.
-        sequence = IMP.isd.utils.read_sequence_file(seqfile)
-        tblr = IMP.isd.TBLReader.TBLReader(sequence)
+        sequence = IMP.isd.utils.read_sequence_file(seqfile,
+                first_residue_number=sequence_match[1])
+        tblr = IMP.isd.TBLReader.TBLReader(sequence,
+                sequence_match=sequence_match)
         restraints = tblr.read_distances(tblfile, 'NOE')['NOE']
         ln = IMP.isd.MarginalNOERestraint()
         for i,restraint in enumerate(restraints):
@@ -502,7 +509,7 @@ class sfo_common():
         return rs
 
     def init_model_TALOS(self, prot, seqfile, talos_data, fulldata=True,
-            first_residue_number=1,name='TALOS', prior_rs=None,
+            sequence_match=(1,1),name='TALOS', prior_rs=None,
             bounds_kappa=(1.0, 0.1,10), verbose=True, prior='jeffreys',
             keep_all=False):
         """read TALOS dihedral angle data, and create restraints for phi/psi
@@ -517,18 +524,18 @@ class sfo_common():
         - fulldata : either True or False, whether the data is the full TALOS
                      output (predAll.tab or pred/ folder), or just the averages
                      (pred.tab)
-        - first_residue_number: since TALOS starts at residue 1, you can provide the
-                            correct residue number here.
+        - sequence_match : (talos_no, sequence_no) to adjust for different
+                           residue numberings
         - name: an optional name for the restraintset
         - prior_rs: when not None, add new kappa(s) to this RestraintSet instance.
         - bounds_kappa: tuple of (initial value, lower, upper bound)
-            bounds can be -1 to set to default range [0,+inf]
+                        bounds can be -1 to set to default range [0,+inf]
         - verbose: be verbose (default True)
         - prior: either 'jeffreys' or a tuple (R,c), which signifies to use the
-          conjugate prior of the von Mises restraint, with parameters R and c.
-          Good values are R=0 and c=10. Default: jeffreys prior.
+                 conjugate prior of the von Mises restraint, with parameters R
+                 and c.  Good values are R=0 and c=10. Default: jeffreys prior.
         - keep_all: in case of a folder for 'talos_data', whether to keep
-          candidates marked as 'outliers' by TALOS, or to include them.
+                    candidates marked as 'outliers' by TALOS, or to include them.
         Returns: data_rs, prior_rs, kappa
 
         """
@@ -541,9 +548,11 @@ class sfo_common():
         if verbose:
             print "reading data"
         rs=IMP.RestraintSet(name)
-        sequence= IMP.isd.utils.read_sequence_file(seqfile)
+        sequence= IMP.isd.utils.read_sequence_file(seqfile,
+                first_residue_no=sequence_match[1])
         if fulldata:
-            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, True, keep_all)
+            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, True, keep_all,
+                    sequence_match=sequence_match)
             if os.path.isdir(talos_data):
                 #using pred/res???.tab files
                 for i,res in enumerate(glob(os.path.join(talos_data,'res???.tab'))):
@@ -556,7 +565,8 @@ class sfo_common():
                 talosr.read(talos_data)
         else:
             #using pred.tab file and correcting for estimates
-            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, False, keep_all)
+            talosr=IMP.isd.TALOSReader.TALOSReader(sequence, False, keep_all,
+                    sequence_match=sequence_match)
             talosr.read(talos_data)
         #get harvested data and create restraints
         data = talosr.get_data()
@@ -888,11 +898,11 @@ class sfo_common():
         #create category
         mc_key = stat.add_category(name=name)
         #giving None as argument is a way to create a static entry.
-        stat.add_entry(mc_key, entry=Entry('temperature', '%10f', None))
-        stat.add_entry(mc_key, entry=Entry('acceptance', '%10f', None))
-        stat.add_entry(mc_key, entry=Entry('stepsize', '%10f', None))
+        stat.add_entry(mc_key, entry=Entry('temperature', '%10G', None))
+        stat.add_entry(mc_key, entry=Entry('acceptance', '%10G', None))
+        stat.add_entry(mc_key, entry=Entry('stepsize', '%10G', None))
         #special call to add coordinates to be dumped
-        stat.add_entry(mc_key, entry=Entry(coord, '%10f', None))
+        stat.add_entry(mc_key, entry=Entry(coord, '%10G', None))
         #add the counter to the output
         stat.add_entry(mc_key, name='counter')
         return mc_key
@@ -906,9 +916,9 @@ class sfo_common():
         #create category
         md_key = stat.add_category(name=name)
         #giving None as argument is a way to create a static entry.
-        stat.add_entry(md_key, entry=Entry('target_temp', '%10f', None))
-        stat.add_entry(md_key, entry=Entry('instant_temp', '%10f', None))
-        stat.add_entry(md_key, entry=Entry('E_kinetic', '%10f', None))
+        stat.add_entry(md_key, entry=Entry('target_temp', '%10G', None))
+        stat.add_entry(md_key, entry=Entry('instant_temp', '%10G', None))
+        stat.add_entry(md_key, entry=Entry('E_kinetic', '%10G', None))
         #special call to add coordinates to be dumped
         stat.add_coordinates(md_key, coord)
         #add the counter to the output
@@ -923,10 +933,10 @@ class sfo_common():
         #create category
         hmc_key = stat.add_category(name=name)
         #giving None as argument is a way to create a static entry.
-        stat.add_entry(hmc_key, entry=Entry('temperature', '%10f', None))
-        stat.add_entry(hmc_key, entry=Entry('acceptance', '%10f', None))
-        stat.add_entry(hmc_key, entry=Entry('n_md_steps', '%10d', None))
-        stat.add_entry(hmc_key, entry=Entry('E_kinetic', '%10f', None))
+        stat.add_entry(hmc_key, entry=Entry('temperature', '%10G', None))
+        stat.add_entry(hmc_key, entry=Entry('acceptance', '%10G', None))
+        stat.add_entry(hmc_key, entry=Entry('n_md_steps', '%10G', None))
+        stat.add_entry(hmc_key, entry=Entry('E_kinetic', '%10G', None))
         #special call to add coordinates to be dumped
         stat.add_coordinates(hmc_key, coord)
         #add the counter to the output
