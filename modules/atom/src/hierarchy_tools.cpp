@@ -547,11 +547,14 @@ bool Selection::operator()(Hierarchy h) const
     if (!core::XYZ::particle_is_instance(h)) return false;
     bool found=false;
     for (unsigned int i=0; i< h.get_number_of_children(); ++i) {
-      if (check_nonradius(h.get_child(i))) {
-        if (core::XYZR::particle_is_instance(h.get_child(i))
-            && core::XYZR(h.get_child(i)).get_radius() >radius_) {
-          found=true;
-          break;
+      Hierarchy c= h.get_child(i);
+      if (check_nonradius(c)) {
+        if (core::XYZR::particle_is_instance(c)) {
+          double r= core::XYZR(c).get_radius();
+          if (r >radius_) {
+            found=true;
+            break;
+          }
         } else {
           /*std::cout << "Child " << h.get_child(i)->get_name()
             << " fails radius check" << std::endl;*/
@@ -739,17 +742,10 @@ Restraint* create_internal_connectivity_restraint(const Selection &s,
 }
 
 
-
-Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
-                                            double resolution) {
+Restraint* create_excluded_volume_restraint(Selections ss) {
   ParticlesTemp ps;
-  for (unsigned int i=0; i< hs.size(); ++i) {
-    Selection s(hs[i]);
-    s.set_target_radius(resolution);
-    IMP_LOG(TERSE, "Looking for particles for excluded volume in "
-            << hs[i]->get_name()
-            << " with resolution " << resolution << std::endl);
-    ParticlesTemp cps= s.get_selected_particles();
+  for (unsigned int i=0; i< ss.size(); ++i) {
+    ParticlesTemp cps= ss[i].get_selected_particles();
     IMP_IF_LOG(TERSE) {
       IMP_LOG(TERSE, "Found ");
       for (unsigned int i=0; i< cps.size(); ++i) {
@@ -765,6 +761,18 @@ Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
   IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc));
   evr->set_name("Hierarchy EV");
   return evr.release();
+}
+
+
+Restraint* create_excluded_volume_restraint(const Hierarchies &hs,
+                                            double resolution) {
+  Selections ss;
+  for (unsigned int i=0; i< hs.size(); ++i) {
+    Selection s(hs[i]);
+    s.set_target_radius(resolution);
+    ss.push_back(s);
+  }
+  return create_excluded_volume_restraint(ss);
 }
 
 
