@@ -10,9 +10,9 @@ class RegistrationResultTests(IMP.test.TestCase):
     def test_rotation_error(self):
         """ Test the rotation error between 2 RegistrationResults classes"""
         shift = IMP.algebra.Vector2D(-1,3)
-        rot = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.1);
+        rot = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.1)
         rr1=IMP.em2d.RegistrationResult(rot,shift)
-        rot2 = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.3);
+        rot2 = IMP.algebra.get_rotation_from_fixed_zyz(0.5,0.2,0.3)
         rr2=IMP.em2d.RegistrationResult(rot2,shift)
         angle = IMP.em2d.get_rotation_error(rr1,rr2)
         self.assertAlmostEqual(angle,0.2, delta=0.0001)

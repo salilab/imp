@@ -55,7 +55,7 @@ class ClusteringTests(IMP.test.TestCase):
         fn_models = IMP.em2d.read_selection_file(fn_selection)
         n_models = len(fn_models)
         for fn in fn_models:
-            h=IMP.atom.read_pdb(fn,model,ssel,True,True);
+            h=IMP.atom.read_pdb(fn,model,ssel,True,True)
             xyz=IMP.core.XYZs(IMP.atom.get_leaves(h))
             coords.append( [x.get_coordinates() for x in xyz])
         # compute rmsds

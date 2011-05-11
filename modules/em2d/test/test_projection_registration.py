@@ -57,11 +57,11 @@ class ProjectTests(IMP.test.TestCase):
                           simplex_initial_length,
                           simplex_minimum_size)
 
-        finder.set_model_particles(particles);
-        finder.set_subjects(subjects);
-        finder.set_projections(projections);
+        finder.set_model_particles(particles)
+        finder.set_subjects(subjects)
+        finder.set_projections(projections)
         finder.set_fast_mode(2)
-        finder.get_complete_registration();
+        finder.get_complete_registration()
         # Recover the registration results:
         registration_parameters=finder.get_registration_results()
         fn_registration_results=self.get_input_file_name(
