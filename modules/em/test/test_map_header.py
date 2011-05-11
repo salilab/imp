@@ -13,11 +13,11 @@ class HeaderTest(IMP.test.TestCase):
         #Read PDB
         self.mdl=IMP.Model()
         self.mh = IMP.atom.read_pdb(self.get_input_file_name("input1.pdb"),self.mdl,IMP.atom.CAlphaPDBSelector())
-        self.ps = IMP.core.get_leaves(self.mh);
-        IMP.atom.add_radii(self.mh);
+        self.ps = IMP.core.get_leaves(self.mh)
+        IMP.atom.add_radii(self.mh)
         self.voxel_size=2.0
         print "before"
-        self.dmap =IMP.em.SampledDensityMap(self.ps,10.0,self.voxel_size);
+        self.dmap =IMP.em.SampledDensityMap(self.ps,10.0,self.voxel_size)
         print "after"
     def test_header_values(self):
         self.assertEqual(self.dmap.get_spacing(),self.voxel_size, "the voxel size is wrong")

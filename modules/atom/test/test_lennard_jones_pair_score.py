@@ -17,7 +17,7 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     p1 = IMP.Particle(m)
     IMP.core.XYZR.setup_particle(p1, sph)
     d1 = IMP.atom.LennardJones.setup_particle(p1, 1.0)
-    sm = IMP.atom.ForceSwitch(min_distance, max_distance);
+    sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.LennardJonesPairScore(sm)
     r = IMP.core.PairRestraint(c, IMP.ParticlePair(p0, p1))
     m.add_restraint(r)

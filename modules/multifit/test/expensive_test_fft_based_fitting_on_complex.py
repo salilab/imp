@@ -76,9 +76,9 @@ class FFTFittingTest(IMP.test.TestCase):
             best_score=0
             best_trans=""
             for j in range(sols.get_number_of_solutions()):
-                IMP.core.transform(rb,sols.get_transformation(j));
+                IMP.core.transform(rb,sols.get_transformation(j))
                 rmsd=IMP.atom.get_rmsd(xyz_ref,xyz)
-                IMP.core.transform(rb,sols.get_transformation(j).get_inverse());
+                IMP.core.transform(rb,sols.get_transformation(j).get_inverse())
                 if best_rmsd>rmsd:
                     best_rmsd=rmsd
                     best_score=sols.get_score(j)

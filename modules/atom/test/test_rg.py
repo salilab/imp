@@ -8,7 +8,7 @@ class DecoratorTests(IMP.test.TestCase):
         """Check radius of gyration """
         m = IMP.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
-                                     IMP.algebra.Vector3D(120, 120, 120));
+                                     IMP.algebra.Vector3D(120, 120, 120))
         ps = []
         vs = []
         for i in range(0,400):
@@ -25,8 +25,8 @@ class DecoratorTests(IMP.test.TestCase):
         """Check radius of gyration of a ball"""
         m = IMP.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
-                                     IMP.algebra.Vector3D(120, 120, 120));
-        s= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20);
+                                     IMP.algebra.Vector3D(120, 120, 120))
+        s= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)
         print s
         p= IMP.Particle(m)
         IMP.core.XYZR.setup_particle(p, s)
@@ -41,9 +41,9 @@ class DecoratorTests(IMP.test.TestCase):
         """Check radius of gyration with two balls"""
         m = IMP.Model()
         bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(20,20,20),
-                                     IMP.algebra.Vector3D(120, 120, 120));
-        s0= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20);
-        s1= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 30);
+                                     IMP.algebra.Vector3D(120, 120, 120))
+        s0= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 20)
+        s1= IMP.algebra.Sphere3D(IMP.algebra.get_random_vector_in(bb), 30)
         print s0, s1
         p0= IMP.Particle(m)
         IMP.core.XYZR.setup_particle(p0, s0)

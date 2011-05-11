@@ -14,15 +14,15 @@ class DOMINOTests(IMP.test.TestCase):
         m= IMP.Model()
         ps=[]
         pst= IMP.domino.ParticleStatesTable()
-        state= IMP.domino.IndexStates(10);
+        state= IMP.domino.IndexStates(10)
         for i in range(0,10):
-            ps.append(IMP.Particle(m));
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
         s= IMP.domino.Subset(ps)
         order= IMP.domino.get_order(IMP.domino.Subset(ps),
-                                    [eqft]);
+                                    [eqft])
         print "order is", order
         print s
         self._print_order(order, s)
@@ -37,9 +37,9 @@ class DOMINOTests(IMP.test.TestCase):
         ps=[]
         #IMP.set_log_level(IMP.VERBOSE)
         pst= IMP.domino.ParticleStatesTable()
-        state= IMP.domino.IndexStates(20);
+        state= IMP.domino.IndexStates(20)
         for i in range(0,20):
-            ps.append(IMP.Particle(m));
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
@@ -53,18 +53,18 @@ class DOMINOTests(IMP.test.TestCase):
         m= IMP.Model()
         ps=[]
         pst= IMP.domino.ParticleStatesTable()
-        state= IMP.domino.IndexStates(10);
+        state= IMP.domino.IndexStates(10)
         for i in range(0,4):
-            ps.append(IMP.Particle(m));
+            ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         statep= IMP.domino.IndexStates(8)
-        pp=IMP.Particle(m);
+        pp=IMP.Particle(m)
         pst.set_particle_states(pp, statep)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
         ps.sort()
         s=IMP.domino.Subset(ps+[pp])
         order= IMP.domino.get_order(s,
-                                    [eqft]);
+                                    [eqft])
         print "order is", order
         self._print_order(order, s)
         for i,e in enumerate(order):

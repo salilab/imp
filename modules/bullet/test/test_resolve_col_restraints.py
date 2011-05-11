@@ -10,7 +10,7 @@ import math
 class AngleRestraintTests(IMP.test.TestCase):
     """Tests for angle restraints"""
     def count_hits(self, ps):
-        ret=0;
+        ret=0
         for i in range(0, len(ps)):
             for j in range(0,i):
                 pi= ps[i]
@@ -74,7 +74,7 @@ class AngleRestraintTests(IMP.test.TestCase):
                 ls= d.get_sphere()
                 d.set_coordinates_are_optimized(False)
                 rbps.append(p)
-                ps.append(d);
+                ps.append(d)
             IMP.core.RigidBody.setup_particle(rbp, rbps).set_coordinates_are_optimized(True)
         r= IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(ps))
         m.add_restraint(r)
@@ -107,11 +107,11 @@ class AngleRestraintTests(IMP.test.TestCase):
         opt.set_xyzrs(ps)
         opt.set_local_stiffness(.5)
         self.display(ps, 0)
-        opt.optimize(0);
+        opt.optimize(0)
         for i in range(0,100):
             print i
             self.display(ps, i+1)
-            opt.optimize(10);
+            opt.optimize(10)
             m.show_restraint_score_statistics()
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
         self.assertEqual(self.count_hits(ps), 0)
@@ -141,7 +141,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         opt.set_xyzrs(ps)
         for i in range(0,100):
             self.display(ps, i, r)
-            opt.optimize(10);
+            opt.optimize(10)
             m.show_restraint_score_statistics()
             print "intesections:", self.count_hits(ps), "annulus:",self.count_annulus(ps)
         self.assertEqual(self.count_hits(ps), 0)

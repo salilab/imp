@@ -14,7 +14,7 @@ class ConeTests(IMP.test.TestCase):
                                        IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d()))
 
         d= a/b
-        x= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d());
+        x= IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
         ax= a.get_transformed(x)
         bx= b.get_transformed(x)
         dbx= d.get_transformed(bx)
@@ -28,16 +28,16 @@ class Transformation2DTests(IMP.test.TestCase):
 
     def test_transformation_from_point_sets(self):
         """Check building a Transformation2D from point sets"""
-        x1 = IMP.algebra.Vector2D(1,2);
-        x2 = IMP.algebra.Vector2D(6,8);
+        x1 = IMP.algebra.Vector2D(1,2)
+        x2 = IMP.algebra.Vector2D(6,8)
         angle_applied = math.pi/4.
-        shift_applied = IMP.algebra.Vector2D(-2,4);
-        R = IMP.algebra.Rotation2D(angle_applied);
-        y1 = R.get_rotated(x1)+shift_applied;
-        y2 = R.get_rotated(x2)+shift_applied;
+        shift_applied = IMP.algebra.Vector2D(-2,4)
+        R = IMP.algebra.Rotation2D(angle_applied)
+        y1 = R.get_rotated(x1)+shift_applied
+        y2 = R.get_rotated(x2)+shift_applied
         set1 = [x1, x2]
         set2 = [y1, y2]
-        T = IMP.algebra.get_transformation_aligning_pair(set1,set2);
+        T = IMP.algebra.get_transformation_aligning_pair(set1,set2)
         self.assertAlmostEqual(angle_applied,T.get_rotation().get_angle(),
                                delta=.01)
         self.assertAlmostEqual(shift_applied[0],T.get_translation()[0],
@@ -55,8 +55,8 @@ class Transformation2DTests(IMP.test.TestCase):
         angle_applied = random.uniform(-math.pi,math.pi)
         shift_applied = IMP.algebra.Vector2D(random.uniform(-10.,10.),
                                              random.uniform(-10,10))
-        R = IMP.algebra.Rotation2D(angle_applied);
-        t2d = IMP.algebra.Transformation2D(R,shift_applied);
+        R = IMP.algebra.Rotation2D(angle_applied)
+        t2d = IMP.algebra.Transformation2D(R,shift_applied)
         t3d=IMP.algebra.get_transformation_3d(t2d)
         v1 = t3d.get_transformed(v)
         print "V1: " + str(v1)
@@ -94,15 +94,15 @@ class Transformation3DTests(IMP.test.TestCase):
     def test_build_from2D(self):
         """Check building a Transformation3D from Transformation2D"""
         angle_applied = math.pi/4.
-        shift_applied = IMP.algebra.Vector2D(-2,4);
-        r2d = IMP.algebra.Rotation2D(angle_applied);
-        t2d = IMP.algebra.Transformation2D(r2d,shift_applied);
+        shift_applied = IMP.algebra.Vector2D(-2,4)
+        r2d = IMP.algebra.Rotation2D(angle_applied)
+        t2d = IMP.algebra.Transformation2D(r2d,shift_applied)
         t3d = IMP.algebra.get_transformation_3d(t2d)
         r3d = t3d.get_rotation()
         p2d = IMP.algebra.Vector2D(9,10.5)
         p3d = IMP.algebra.Vector3D(9,10.5,0.0)
-        q3d = r3d.get_rotated(p3d) + t3d.get_translation();
-        q2d = r2d.get_rotated(p2d) + shift_applied;
+        q3d = r3d.get_rotated(p3d) + t3d.get_translation()
+        q2d = r2d.get_rotated(p2d) + shift_applied
         self.assertAlmostEqual(q2d[0],q3d[0], delta=.05)
         self.assertAlmostEqual(q2d[1],q3d[1], delta=.05)
         self.assertAlmostEqual(0.0   ,q3d[2], delta=.05)

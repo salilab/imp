@@ -70,7 +70,7 @@ class FFTFittingTest(IMP.test.TestCase):
         hit_map=fs.get_max_cc_map()
         self.scene.std_normalize()
         for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(self.prob,sols.get_transformation(i));
+            IMP.core.transform(self.prob,sols.get_transformation(i))
             print sols.get_transformation(i)
             sampled_dmap=IMP.em.SampledDensityMap(self.scene.get_header())
             sampled_dmap.set_particles(self.refiner.get_refined(self.prob))
@@ -85,7 +85,7 @@ class FFTFittingTest(IMP.test.TestCase):
             IMP.em.write_map(sampled_dmap,"sampled.mrc",IMP.em.MRCReaderWriter())
             IMP.em.write_map(self.scene,"scene.mrc",IMP.em.MRCReaderWriter())
             rmsd=IMP.atom.get_rmsd(xyz,xyz_ref)
-            IMP.core.transform(self.prob,sols.get_transformation(i).get_inverse());
+            IMP.core.transform(self.prob,sols.get_transformation(i).get_inverse())
             corr_sol = sols.get_score(i)
             print "score:",corr,corr_sol,rmsd
             self.assertLess(rmsd,4.)

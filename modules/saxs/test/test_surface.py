@@ -21,8 +21,8 @@ class SurfaceTest(IMP.test.TestCase):
         particles = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
 
         #! calculate surface aceesability
-        s = IMP.saxs.SolventAccessibleSurface();
-        surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles));
+        s = IMP.saxs.SolventAccessibleSurface()
+        surface_area = s.get_solvent_accessibility(IMP.core.XYZRs(particles))
 
         #! sum up
         total_area = 0.0

@@ -11,7 +11,7 @@ def make_test_pair_score(min_distance=9.0, max_distance=10.0):
     d0 = IMP.atom.Charged.setup_particle(p0, IMP.algebra.Vector3D(0,0,0), 0.0)
     p1 = IMP.Particle(m)
     d1 = IMP.atom.Charged.setup_particle(p1, IMP.algebra.Vector3D(0,0,0), 0.0)
-    sm = IMP.atom.ForceSwitch(min_distance, max_distance);
+    sm = IMP.atom.ForceSwitch(min_distance, max_distance)
     c = IMP.atom.CoulombPairScore(sm)
     r = IMP.core.PairRestraint(c, IMP.ParticlePair(p0, p1))
     m.add_restraint(r)

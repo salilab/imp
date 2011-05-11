@@ -42,11 +42,11 @@ class FFTFittingTest(IMP.test.TestCase):
         sols.sort(True)
         print "number of solutions:",sols.get_number_of_solutions()
         for i in range(sols.get_number_of_solutions()):
-            IMP.core.transform(self.rb,sols.get_transformation(i));
+            IMP.core.transform(self.rb,sols.get_transformation(i))
             rmsd=IMP.atom.get_rmsd(self.mh_ref_xyz,self.mh_xyz)
             print i,"rmsd:",rmsd," score:",sols.get_score(i)
             IMP.core.transform(self.rb,
-                               sols.get_transformation(i).get_inverse());
+                               sols.get_transformation(i).get_inverse())
 
         sols_clustered=IMP.em.FittingSolutions()
         IMP.multifit.fitting_clustering (self.mh,
@@ -57,10 +57,10 @@ class FFTFittingTest(IMP.test.TestCase):
         print "From:",sols.get_number_of_solutions()," clustered to:",sols_clustered.get_number_of_solutions()
 
 
-        IMP.core.transform(self.rb,sols.get_transformation(0));
+        IMP.core.transform(self.rb,sols.get_transformation(0))
         rmsd=IMP.atom.get_rmsd(self.mh_ref_xyz,self.mh_xyz)
         self.assertLess(rmsd,2)
         IMP.core.transform(self.rb,
-                           sols.get_transformation(0).get_inverse());
+                           sols.get_transformation(0).get_inverse())
 if __name__ == '__main__':
     IMP.test.main()

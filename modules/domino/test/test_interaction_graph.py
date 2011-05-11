@@ -21,7 +21,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(p.get_particle())
             IMP.atom.setup_as_rigid_body(p)
         cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1, 0)
-        r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
+        r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp)
         m.add_restraint(r)
         print "computing graph"
         pst= IMP.domino.ParticleStatesTable()
@@ -59,7 +59,7 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.container.ListSingletonContainer(IMP.atom.get_leaves(p))
         cp= cpf.get_close_pairs(lsc)
         for pr in cp:
-            r=IMP.core.PairRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), pr);
+            r=IMP.core.PairRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), pr)
             m.add_restraint(r)
             r.set_name("pair")
         print "computing graph"

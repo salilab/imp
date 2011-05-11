@@ -35,7 +35,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 4060)
         #IMP.atom.show_molecular_hierarchy(mp)
         IMP.atom.show(mp)
@@ -47,7 +47,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         # read another PDB
         mp = IMP.atom.read_pdb(self.open_input_file("1aon.pdb"),
                               m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 58870)
 
 

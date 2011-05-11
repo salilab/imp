@@ -57,7 +57,7 @@ class FFTFittingTest(IMP.test.TestCase):
             print "number of solutions:",sols.get_number_of_solutions()
             for i in range(sols.get_number_of_solutions()):
                 print sols.get_transformation(i), sols.get_score(i)
-            IMP.core.transform(self.rb_copy,sols.get_transformation(0));
+            IMP.core.transform(self.rb_copy,sols.get_transformation(0))
 
             rmsd=IMP.atom.get_rmsd(self.xyz,self.xyz_copy)
             w= IMP.display.BildWriter("test.%d.bild"%i)
@@ -67,7 +67,7 @@ class FFTFittingTest(IMP.test.TestCase):
             w=None
             print "rmsd:",rmsd
             IMP.core.transform(self.rb_copy,
-                               sols.get_transformation(0).get_inverse());
+                               sols.get_transformation(0).get_inverse())
             IMP.core.transform(self.rb,t.get_inverse())
             self.assertLess(rmsd,5.)
             #check that the rmsd is low

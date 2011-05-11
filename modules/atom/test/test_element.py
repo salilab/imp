@@ -39,7 +39,7 @@ class ElementTableTest(IMP.test.TestCase):
         #! read PDB
         mp = IMP.atom.read_pdb(self.open_input_file("elements.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 13)
         self.assertEqual(IMP.atom.Atom(ps[0].get_particle()).get_element(), IMP.atom.P)
         self.assertEqual(IMP.atom.Atom(ps[1].get_particle()).get_element(), IMP.atom.O)

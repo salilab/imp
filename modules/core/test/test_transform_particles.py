@@ -8,7 +8,7 @@ class ParticleTransformationTests(IMP.test.TestCase):
     def test_transformation(self):
         """Test the TransformationFunction class"""
         imp_model = IMP.Model()
-        particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0);
+        particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0)
 
         coords= [x.get_coordinates() for x in particles]
         r = IMP.algebra.get_rotation_from_fixed_xyz(0.2,0.8,-0.4)
@@ -26,7 +26,7 @@ class ParticleTransformationTests(IMP.test.TestCase):
     def test_transformation2(self):
         """Test the TransformationFunction class with map"""
         imp_model = IMP.Model()
-        particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0);
+        particles = IMP.core.create_xyzr_particles(imp_model, 4, 1.0)
 
         coords= [x.get_coordinates() for x in particles]
         r = IMP.algebra.get_rotation_from_fixed_xyz(0.2,0.8,-0.4)
