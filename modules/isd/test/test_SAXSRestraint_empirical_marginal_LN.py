@@ -82,6 +82,66 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
         expected = log(expected)*((self.exp_profile.size()-1)/2.0)
         return expected
 
+    def test_contribs(self):
+        "compute number of contributions of current model"
+        self.perturb_particles()
+        expected = self.exp_profile.size()
+        self.sr.evaluate(None)
+        observed=self.sr.get_number_of_contributions()
+        self.assertEqual(observed,expected)
+
+    def test_W(self):
+        "compute W of current model"
+        self.perturb_particles()
+        wx = [(1.0/self.exp_profile.get_error(i))**2
+                for i in xrange(self.exp_profile.size())]
+        gammahat=0.0
+        W=sum(wx)
+        expected = W
+        self.sr.evaluate(None)
+        observed=self.sr.get_W()
+        self.assertAlmostEqual(observed/expected,1,delta=0.001)
+
+    def test_gammahat(self):
+        "compute gammahat of current model"
+        for i in xrange(10):
+            self.perturb_particles()
+            model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
+            model_profile.calculate_profile(self.particles)
+            wx = [(1.0/self.exp_profile.get_error(i))**2
+                    for i in xrange(self.exp_profile.size())]
+            gammahat=0.0
+            W=sum(wx)
+            for i in xrange(self.exp_profile.size()):
+                    gammahat += log((self.exp_profile.get_intensity(i)/
+                            model_profile.get_intensity(i)))*(wx[i]/W)
+            expected = gammahat
+            self.sr.evaluate(None)
+            observed=self.sr.get_log_gammahat()
+            self.assertAlmostEqual(observed/expected,1,delta=0.001)
+
+    def test_SS(self):
+        "compute SS of current model"
+        for i in xrange(10):
+            self.perturb_particles()
+            model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
+            model_profile.calculate_profile(self.particles)
+            wx = [(1.0/self.exp_profile.get_error(i))**2
+                    for i in xrange(self.exp_profile.size())]
+            gammahat=0.0
+            W=sum(wx)
+            for i in xrange(self.exp_profile.size()):
+                    gammahat += log((self.exp_profile.get_intensity(i)/
+                            model_profile.get_intensity(i)))*(wx[i]/W)
+            expected = 0.0
+            for i in xrange(self.exp_profile.size()):
+                iexp=self.exp_profile.get_intensity(i)
+                icalc=model_profile.get_intensity(i)
+                expected += wx[i]*(log(iexp/icalc)-gammahat)**2
+            self.sr.evaluate(None)
+            observed=self.sr.get_SS()
+            self.assertAlmostEqual(observed/expected,1,delta=0.001)
+
     def testSanityPE(self):
         "test if prob is exp(-score)"
         for i in xrange(10):

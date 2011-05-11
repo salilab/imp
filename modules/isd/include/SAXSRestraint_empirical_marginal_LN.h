@@ -74,6 +74,14 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
 
   double get_probability() const { return std::exp(-unprotected_evaluate(NULL));}
 
+  double get_number_of_contributions() const { return exp_profile_.size(); }
+
+  double get_W() const { return W_; }
+
+  double get_SS() const { return SS_; }
+
+  double get_log_gammahat() const { return loggammahat_; }
+
  private:
   void compute_profile(saxs::Profile& model_profile);
   Particles particles_; // non-rigid bodies particles
@@ -82,6 +90,13 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
   saxs::Profile rigid_bodies_profile_; // non-changing part of the profile
   saxs::Profile exp_profile_; // experimental profile
   saxs::FormFactorType ff_type_; // type of the form factors to use
+  double W_,loggammahat_,SS_;
+  
+  void set_W(double W) { W_=W; }
+  
+  void set_SS(double SS) { SS_=SS; }
+  
+  void set_log_gammahat(double loggammahat) { loggammahat_=loggammahat; }
 };
 
 IMPISD_END_NAMESPACE

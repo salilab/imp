@@ -29,16 +29,16 @@ IMPISD_BEGIN_NAMESPACE
 
     The likelihood of this model is an improper Student t distribution. Assume M
     data points.  
-    \f[p(D | X,\sigma,\gamma, I) = 
+    \f[p(D | X, I) = 
     \left(
     \sum{q=q_{min}}^{q_{max}} w_X(q)
-    \left[ \frac{I_{exp}(q)}{I_{calc}(q)} - \hat{\gamma} \right]
+    \left[ \frac{I_{exp}(q)}{I_{calc}(q)} - \hat{\gamma} \right]^2
     \right)^{-\frac{M-1}{2}}
     \f]
     \f[ \hat{\gamma} = \frac{1}{W_X}
     \sum{q=q_{min}}^{q_{max}} w_X(q) \frac{I_{exp}(q)}{I_{calc}(q)}
     \quad
-    \W_X = \sum{q=q_{min}}^{q_{max}} w_X(q)
+    W_X = \sum{q=q_{min}}^{q_{max}} w_X(q)
     \quad w_X(q) = \frac{I^2_{calc}(q)}{\sigma^2_{exp}(q)}
     \f]
 
@@ -60,8 +60,6 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_N : public ISDRestraint
   //! Constructor
   /**
      \param[in] particles The particles that generated the profile, usually atoms of a protein.
-     \param[in] gamma An ISD Scale particle that will set the scaling factor \f$\gamma\f$ 
-                between experiment and mock data.
      \param[in] exp_profile  The experimental profile used to restrain the structure.
      \param[in] ff_type Type of the form factors for profile calculations:
                 ALL_ATOMS - all atoms including hydrogens

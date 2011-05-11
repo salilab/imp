@@ -66,8 +66,6 @@ ContainersTemp SAXSRestraint_empirical_marginal_LN::get_input_containers() const
   return ContainersTemp();
 }
 
-
-
 void SAXSRestraint_empirical_marginal_LN::compute_profile(saxs::Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
@@ -120,21 +118,24 @@ double SAXSRestraint_empirical_marginal_LN::unprotected_evaluate(DerivativeAccum
       wx.push_back(weight);
       Wx += weight;
   }
+  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_W(Wx);
   //compute gammahat
-  double gammahat=1;
+  double loggammahat=0;
   for (unsigned iq=0; iq<profile_size; ++iq)
   {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      gammahat *= pow(Iexp/Icalc, wx[iq]/Wx);
+      loggammahat += log(Iexp/Icalc) * wx[iq]/Wx;
   }
+  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_log_gammahat(loggammahat);
   //compute posterior
   double score=0;
   for (unsigned int iq=0; iq<profile_size; iq++) {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      score += wx[iq]*square(log(Iexp/(Icalc*gammahat)));
+      score += wx[iq]*square(log(Iexp/Icalc) -loggammahat);
       }
+  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_SS(score);
   score = 0.5*(profile_size - 1 )*log(score);
 
   if (!acc) return score;
