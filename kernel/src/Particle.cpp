@@ -40,6 +40,7 @@ Particle::Particle(Model *m, std::string name):
 
 void Particle::zero_derivatives()
 {
+  derivatives_.fill(0);
   ps_->derivatives_.fill(0);
 }
 
@@ -60,22 +61,41 @@ void Particle::do_show(std::ostream& out) const
          ++it) {
       FloatKey k =*it;
       preout << k << ": " << get_value(k);
-      if (ps_->derivatives_.fits(k.get_index())){
-        preout << " ("
-               << ps_->derivatives_.get(k.get_index()) << ") ";
+      if (k.get_index() < IMP_NUM_INLINE) {
+        if (derivatives_.fits(k.get_index())){
+          preout << " ("
+                 << derivatives_.get(k.get_index()) << ") ";
+        } else {
+          preout << " (-) ";
+        }
       } else {
-        preout << " (-) ";
+        if (ps_->derivatives_.fits(k.get_index())){
+          preout << " ("
+                 << ps_->derivatives_.get(k.get_index()) << ") ";
+        } else {
+          preout << " (-) ";
+        }
       }
       preout << (get_is_optimized(k)?" (optimized)":"");
       if (get_model()->get_is_incremental()
           && get_prechange_particle()->has_attribute(k)) {
         preout << " was " << get_prechange_particle()->get_value(k);
-        if (get_prechange_particle()->ps_->derivatives_.fits(k.get_index())){
-          preout << " ("
-                 << get_prechange_particle()
-            ->ps_->derivatives_.get(k.get_index()) << ") ";
+        if (k.get_index() < IMP_NUM_INLINE) {
+          if (get_prechange_particle()->ps_->derivatives_.fits(k.get_index())){
+            preout << " ("
+                   << get_prechange_particle()
+              ->ps_->derivatives_.get(k.get_index()) << ") ";
+          } else {
+            preout << " (-) ";
+          }
         } else {
-          preout << " (-) ";
+          if (get_prechange_particle()->derivatives_.fits(k.get_index())){
+            preout << " ("
+                   << get_prechange_particle()
+              ->derivatives_.get(k.get_index()) << ") ";
+          } else {
+            preout << " (-) ";
+          }
         }
       }
       preout << std::endl;
@@ -121,8 +141,15 @@ void Particle::do_show(std::ostream& out) const
 // methods for incremental
 
 void Particle::move_derivatives_to_shadow() {
+  for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
+    ps_->shadow_->derivatives_.set(i,
+                                   ps_->shadow_->derivatives_.get(i)
+                                   + derivatives_.get(i));
+    derivatives_.set(i, 0);
+  }
+
   ps_->shadow_->ps_->derivatives_.resize(ps_->derivatives_.get_length(), 0);
-  for (unsigned int i=0; i< ps_->derivatives_.get_length(); ++i) {
+  for (unsigned int i=IMP_NUM_INLINE; i< ps_->derivatives_.get_length(); ++i) {
     ps_->shadow_->ps_->derivatives_.set(i,
                                         ps_->shadow_->ps_->derivatives_.get(i)
                                         + ps_->derivatives_.get(i));
@@ -131,13 +158,26 @@ void Particle::move_derivatives_to_shadow() {
 }
 
 void Particle::accumulate_derivatives_from_shadow() {
+
+  IMP_INTERNAL_CHECK(derivatives_.get_length()
+             == ps_->shadow_->derivatives_.get_length(),
+             "The tables do not match on size "
+             << derivatives_.get_length()
+             << " " << ps_->shadow_->derivatives_.get_length()
+             << std::endl);
+  for (unsigned int i=0; i < derivatives_.get_length(); ++i) {
+    derivatives_.set(i, derivatives_.get(i)
+                     + ps_->shadow_->derivatives_.get(i));
+  }
+
+
   IMP_INTERNAL_CHECK(ps_->derivatives_.get_length()
              == ps_->shadow_->ps_->derivatives_.get_length(),
              "The tables do not match on size "
              << ps_->derivatives_.get_length()
              << " " << ps_->shadow_->ps_->derivatives_.get_length()
              << std::endl);
-  for (unsigned int i=0; i < ps_->derivatives_.get_length(); ++i) {
+  for (unsigned int i=IMP_NUM_INLINE; i < ps_->derivatives_.get_length(); ++i) {
     ps_->derivatives_.set(i, ps_->derivatives_.get(i)
                           + ps_->shadow_->ps_->derivatives_.get(i));
   }
@@ -157,10 +197,18 @@ void Particle::setup_incremental() {
     ps_->shadow_->m_= m_;
   }
   dirty_=true;
+
+
+  ps_->shadow_->derivatives_
+    =
+    DerivativeTable(derivatives_.get_length());
+  ps_->shadow_->derivatives_.fill(0);
+
   ps_->shadow_->ps_->derivatives_
     = internal::ParticleStorage::
     DerivativeTable(ps_->derivatives_.get_length());
   ps_->shadow_->ps_->derivatives_.fill(0);
+
   ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
 }
 

@@ -318,12 +318,16 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
                                           double score) {
   CreateLogContext clc("validate_incremental");
   {
-    std::vector<internal::ParticleStorage::DerivativeTable>
+    std::vector<Particle::DerivativeTable>
       derivs;
+    std::vector<internal::ParticleStorage::DerivativeTable>
+      ederivs;
     derivs.reserve(get_number_of_particles());
+    ederivs.reserve(get_number_of_particles());
     for (ParticleIterator it= particles_begin();
          it != particles_end(); ++it) {
-      derivs.push_back((*it)->ps_->derivatives_);
+      derivs.push_back((*it)->derivatives_);
+      ederivs.push_back((*it)->ps_->derivatives_);
       (*it)->zero_derivatives();
     }
     bool ogather_stats=gather_statistics_;
@@ -355,10 +359,10 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
            it != particles_end(); ++it) {
         for (unsigned int j=0; j< derivs[i].get_length(); ++j) {
           IMP_INTERNAL_CHECK(std::abs(derivs[i].get(j)
-                                      -(*it)->ps_->derivatives_.get(j))
+                                      -(*it)->derivatives_.get(j))
                              < .01
                              + .01*std::abs(derivs[i].get(j)
-                                            +(*it)->ps_->derivatives_.get(j)),
+                                            +(*it)->derivatives_.get(j)),
                              "Derivatives do not match in incremental "
                              << "vs non-incremental " <<
                              "for particle " << (*it)->get_name()
@@ -366,11 +370,29 @@ void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
                              << FloatKey(j) << ". Incremental was "
                              << derivs[i].get(j)
                              << " where as regular was "
+                             << (*it)->derivatives_.get(j)
+                             << " particle is "
+                             << *(*it));
+        }
+        for (unsigned int j=IMP_NUM_INLINE; j< ederivs[i].get_length(); ++j) {
+          IMP_INTERNAL_CHECK(std::abs(ederivs[i].get(j)
+                                      -(*it)->ps_->derivatives_.get(j))
+                             < .01
+                             + .01*std::abs(ederivs[i].get(j)
+                                            +(*it)->ps_->derivatives_.get(j)),
+                             "Derivatives do not match in incremental "
+                             << "vs non-incremental " <<
+                             "for particle " << (*it)->get_name()
+                             << " on attribute "
+                             << FloatKey(j) << ". Incremental was "
+                             << ederivs[i].get(j)
+                             << " where as regular was "
                              << (*it)->ps_->derivatives_.get(j)
                              << " particle is "
                              << *(*it));
         }
-        (*it)->ps_->derivatives_=derivs[i];
+        (*it)->derivatives_=derivs[i];
+        (*it)->ps_->derivatives_=ederivs[i];
         ++i;
       }
       IMP_INTERNAL_CHECK(i== derivs.size(), "Number of particles changed.");
