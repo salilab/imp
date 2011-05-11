@@ -17,7 +17,7 @@ class TestBL(IMP.test.TestCase):
         print "reading"
         try:
             import IMP.cgal
-        except:
+        except ImportError:
             self.skipTest("IMP.cgal is disabled")
         h= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"), m)
         hs = IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]), 1)
