@@ -24,7 +24,7 @@ class TestBL(IMP.test.TestCase):
         w.add_geometry(pg)
         poly.reverse()
         pg= IMP.display.PolygonGeometry(poly)
-        pg.set_name("reversed");
+        pg.set_name("reversed")
         w.add_geometry(pg)
 
 if __name__ == '__main__':

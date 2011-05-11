@@ -11,7 +11,7 @@ class RotationTests(IMP.test.TestCase):
         if not hasattr(IMP, 'cgal'):
             self.skipTest("IMP.cgal module disabled")
         print "Getting them"
-        rots= IMP.algebra.get_uniform_cover_rotations_3d(100);
+        rots= IMP.algebra.get_uniform_cover_rotations_3d(100)
         print "got them"
         pts= [IMP.algebra.Vector3D(1,0,0),
               IMP.algebra.Vector3D(0,1,0)]

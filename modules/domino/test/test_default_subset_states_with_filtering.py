@@ -53,7 +53,7 @@ class DOMINOTests(IMP.test.TestCase):
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,2),
                                       lsc[1],
                                       lsc[2])
-        r.set_name("1 2");
+        r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
         m.add_restraint(r)
         ds= IMP.domino.DominoSampler(m)
@@ -89,13 +89,13 @@ class DOMINOTests(IMP.test.TestCase):
         r0= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1),
                                       lsc[1],
                                       lsc[2])
-        r0.set_name("1 2");
+        r0.set_name("1 2")
         r0.set_log_level(IMP.VERBOSE)
         m.add_restraint(r0)
         r1= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1),
                                       lsc[0],
                                       lsc[1])
-        r1.set_name("0 1");
+        r1.set_name("0 1")
         r1.set_log_level(IMP.VERBOSE)
         m.add_restraint(r1)
         m.set_maximum_score(.6)

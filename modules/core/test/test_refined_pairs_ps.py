@@ -26,7 +26,7 @@ class Test(IMP.test.TestCase):
         ppp=IMP.ParticlePair(pp, pp)
         print type(rps)
         print type(rps.evaluate)
-        da=IMP.DerivativeAccumulator();
+        da=IMP.DerivativeAccumulator()
         print type(pp)
         print type(ppp)
         self.assertEqual(rps.evaluate(ppp, da), 100)

@@ -51,7 +51,7 @@ class RBDTests(IMP.test.TestCase):
         p01= IMP.Particle(m)
         rb0= IMP.core.RigidBody.setup_particle(p0, [ps[0], ps[1]])
         rb1= IMP.core.RigidBody.setup_particle(p1, [ps[2], ps[3]])
-        rb01= IMP.core.RigidBody.setup_particle(p01, [rb0, rb1]);
+        rb01= IMP.core.RigidBody.setup_particle(p01, [rb0, rb1])
 
         self._perturb_all(ds+[rb0, rb1, rb01])
         self._check_distance(ps[0], ps[1], 1)

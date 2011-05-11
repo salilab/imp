@@ -51,7 +51,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
             vs[ps[-1]]=ig.add_vertex(ps[-1])
         for i in range(1, np):
-            ig.add_edge(vs[ps[i-1]], vs[ps[i]]);
+            ig.add_edge(vs[ps[i-1]], vs[ps[i]])
         for i in range(0, ne):
             p0= random.choice(ps)
             p1= random.choice(ps)

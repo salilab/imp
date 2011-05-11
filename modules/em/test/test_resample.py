@@ -11,7 +11,7 @@ class VolumeTest(IMP.test.TestCase):
         for i in range(1, m.get_number_of_voxels()):
             v= m.get_value(i)
             if v< min:
-                min=v;
+                min=v
             if v > max:
                 max=v
         return (min, max)

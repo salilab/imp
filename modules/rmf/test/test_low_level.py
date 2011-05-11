@@ -31,23 +31,23 @@ class GenericTest(IMP.test.TestCase):
         print "adding"
         g= f.add_child("hi")
         self._show(f)
-        ds= f.add_child_float_data_set("x", 3);
+        ds= f.add_child_float_data_set("x", 3)
         self._show(f)
         ds.set_size([1,1,1])
         ds.set_value([0,0,0], 1)
-        print ds.get_value([0,0,0]);
+        print ds.get_value([0,0,0])
         self.assertEqual(ds.get_value([0,0,0]), 1)
-        ds= f.add_child_string_data_set("str", 3);
+        ds= f.add_child_string_data_set("str", 3)
         self._show(f)
         ds.set_size([2,1,1])
         ds.set_value([1,0,0],"there")
-        print ds.get_value([1,0,0]);
+        print ds.get_value([1,0,0])
         self.assertEqual(ds.get_value([1,0,0]), "there")
-        ds= f.add_child_int_data_set("int", 3);
+        ds= f.add_child_int_data_set("int", 3)
         self._show(f)
         ds.set_size([1,1,1])
         ds.set_value([0,0,0],1)
-        print ds.get_value([0,0,0]);
+        print ds.get_value([0,0,0])
         self.assertEqual(ds.get_value([0,0,0]), 1)
         del f
         del g
@@ -61,13 +61,13 @@ class GenericTest(IMP.test.TestCase):
         g= f.add_child("hi")
         self._show(f)
         ds= f.add_child_float_data_set("coords",
-                                 3);
+                                 3)
         print "setting num"
         ds.set_size([1,3,1])
         print "setting values",[0,0,0]
         ds.set_value([0,0,0], 1)
         print "getting", [0,0,0]
-        print ds.get_value([0,0,0]);
+        print ds.get_value([0,0,0])
         self.assertEqual(ds.get_value([0,0,0]), 1)
         print "setting",0,2
         ds.set_value([0,2,0], 2)

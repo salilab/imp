@@ -37,7 +37,7 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         return (m, r, sc)
     def test_ev(self):
         """Testing excluded volume restraint"""
-        (m,r, sc)= self._setup_ev_restraint();
+        (m,r, sc)= self._setup_ev_restraint()
         print "mc"
         o= IMP.core.MonteCarlo()
         # very dumb op

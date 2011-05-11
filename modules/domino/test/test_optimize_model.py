@@ -21,7 +21,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, IMP.domino.XYZStates(vs))
         IMP.set_log_level(IMP.VERBOSE)
         cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1)
-        r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp);
+        r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp)
         m.add_restraint(r)
         print "getting graph"
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])

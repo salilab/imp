@@ -10,7 +10,7 @@ class Vector3DTests(IMP.test.TestCase):
         n=50
         r=1.2
         chain= IMP.algebra.get_random_chain(n,r)
-        self.assertEqual(len(chain), n);
+        self.assertEqual(len(chain), n)
         for i in range(0, len(chain)-1):
             self.assertAlmostEqual(IMP.algebra.get_distance(chain[i], chain[i+1]),
                                    2*r, delta=.1*2*r)

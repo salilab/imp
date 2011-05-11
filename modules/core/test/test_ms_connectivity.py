@@ -14,7 +14,7 @@ class MSConnectivityTests(IMP.test.TestCase):
         self.m = IMP.Model()
         self.ps= self.create_particles_in_box(self.m,6)
         self.ds= map(lambda p: IMP.core.XYZ.decorate_particle(p), self.ps)
-        idk = IMP.StringKey("id");
+        idk = IMP.StringKey("id")
         self.ds[0].add_attribute(idk, "A")
         self.ds[1].add_attribute(idk, "A")
         self.ds[2].add_attribute(idk, "B")
@@ -58,7 +58,7 @@ class MSConnectivityTests(IMP.test.TestCase):
         self.m.add_restraint(r)
         r.add_particles(self.ps)
 
-        idk = IMP.StringKey("id");
+        idk = IMP.StringKey("id")
         connections = list()
         pps= r.get_connected_pairs()
         for p in pps:

@@ -12,7 +12,7 @@ class CylinderTests(IMP.test.TestCase):
         direction = IMP.algebra.Vector3D(0.0,0.0,1.0)
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,-4.0),
                                                            IMP.algebra.Vector3D(0.0,0.0,4.0)),
-                                   5.0);
+                                   5.0)
         self.assertEqual((cyl.get_segment().get_middle_point()-center).get_magnitude() < 0.01,True)
         self.assertEqual((cyl.get_segment().get_direction()-direction).get_magnitude() < 0.01,True)
         self.assertEqual(cyl.get_radius(),5.0)
@@ -31,7 +31,7 @@ class CylinderTests(IMP.test.TestCase):
         direction = IMP.algebra.Vector3D(0.0,0.0,1.0)
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(0.0,0.0,-4.0),
                                                            IMP.algebra.Vector3D(0.0,0.0,4.0)),
-                                   5.0);
+                                   5.0)
         points = IMP.algebra.get_grid_surface_cover(cyl,8,8)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
@@ -49,7 +49,7 @@ class CylinderTests(IMP.test.TestCase):
         direction = IMP.algebra.Vector3D(0.0,0.0,1.0)
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(5.0,4.0,-2.0),
                                                            IMP.algebra.Vector3D(5.0,4.0,8.0)),
-                                   5.0);
+                                   5.0)
         f= self.get_tmp_file_name("cylinder_shifted.pym")
         points = IMP.algebra.get_grid_surface_cover(cyl,8,8)
         #check that the centroid is still the center
@@ -68,7 +68,7 @@ class CylinderTests(IMP.test.TestCase):
         direction = IMP.algebra.Vector3D(12.0,3.0,13.0).get_unit_vector()
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(3.0,4.0,-3.0),
                                                            IMP.algebra.Vector3D(15.0,7.0,10.0)),
-                                   5.0);
+                                   5.0)
         points=IMP.algebra.get_grid_surface_cover(cyl,12,12)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)
@@ -86,7 +86,7 @@ class CylinderTests(IMP.test.TestCase):
         direction = IMP.algebra.Vector3D(12.0,3.0,13.0).get_unit_vector()
         cyl = IMP.algebra.Cylinder3D(IMP.algebra.Segment3D(IMP.algebra.Vector3D(3.0,4.0,-3.0),
                                                            IMP.algebra.Vector3D(15.0,7.0,10.0)),
-                                   5.0);
+                                   5.0)
         points=IMP.algebra.get_uniform_surface_cover(cyl,1000)
         #check that the centroid is still the center
         sampled_centroid = IMP.algebra.Vector3D(0.0,0.0,0.0)

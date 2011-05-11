@@ -56,7 +56,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         # one more test for DNA
         mp = IMP.atom.read_pdb(self.open_input_file("single_dna.pdb"),
                                m, IMP.atom.NonWaterPDBSelector())
-        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE);
+        ps = IMP.atom.get_by_type(mp, IMP.atom.ATOM_TYPE)
         self.assertEqual(len(ps), 3011)
 
     def test_read_non_water(self):
