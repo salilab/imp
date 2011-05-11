@@ -29,10 +29,11 @@ class TBLReader:
 
     pseudoatom_char = '*', '%', '#'
 
-    def __init__(self, sequence, ignore_warnings=False):
+    def __init__(self, sequence, ignore_warnings=False, sequence_match=(1,1)):
 
-        self.sequence = [sequence[i] for i in sorted(sequence.keys())]
-        self.first_residue_number = min(sequence.keys())
+        self.sequence = sequence
+        #sequence_match = (a,b) a: NOE numbering, b: sequence numbering
+        self.offset = sequence_match[1]-sequence_match[0]
         self.ignore = ignore_warnings
         self.pseudo_dict = Load(pseudoatoms_dict)
 
@@ -175,7 +176,7 @@ class TBLReader:
             return ''
         
         raise KeyError, msg
-                        
+
     def extract_atom(self, a):
 
         atom = dict(self.atom_dict)
@@ -215,7 +216,7 @@ class TBLReader:
                 raise KeyError, 'Value or keyword "%s" unknown. Source: "%s", decomposed into "%s"' % \
                       (word, str(a), str(words))
 
-        atom['resid'] = int(atom['resid']) - self.first_residue_number
+        atom['resid'] = int(atom['resid']) + self.offset
         atom['name'] = atom['name'].upper()
 
         return atom
@@ -268,16 +269,19 @@ class TBLReader:
 
         values = line[end+1:].split()
 
-        distances = [float(x) for x in values[:3]]
+        try:
+            distances = [float(x) for x in values[:3]]
+        except:
+            distances = None
 
         ## read volume from ARIA 1.x restraint files
 
         val = line.split('volume=')
 
         if len(val) > 1:
-            volume = val[1].split()[0].split(',')[0]
+            volume = float(val[1].split()[0].split(',')[0])
         else:
-            
+
             volume = None
 
         return distances, volume
@@ -385,8 +389,13 @@ class TBLReader:
             contribs[0] += ' ' + distances
                  
         return contribs
-    
+
     def create_distance_restraint(self, distances, volume, contributions):
+        if distances is None and volume is None:
+            raise ValueError, "could not find either volume or "\
+                        "distance: %s %s %s" % (distances,volume,contributions)
+        if distances is None:
+            distances = [volume**(-1./6),0,0]
         dist = distances[0]
         if volume is None:
             volume = dist ** (-6)
@@ -415,8 +424,8 @@ class TBLReader:
                 continue
 
             distances, volume = self.extract_target_values(contribs[0])
-                
-            if not distances:
+
+            if (distances is None and volume is None):
                 distances, volume = self.extract_target_values(contribs[-1])
 
             new_contribs = self.extract_contributions(contribs)
@@ -431,7 +440,7 @@ class TBLReader:
                 contributions += self.build_contributions(atoms)
 
             if contributions:
-                r = self.create_distance_restraint(distances, volume, 
+                r = self.create_distance_restraint(distances, volume,
                     contributions)
 
                 restraints.append(r)
@@ -523,7 +532,7 @@ class TBLReader:
 
                 atoms = self.split_contribution(contrib)
                 atoms = [self.extract_atom(x) for x in atoms]
-                
+
                 atoms = [a for a in atoms if not a['name'] in fake_atom_names]
 
                 contributions += self.build_contributions(atoms)
@@ -537,10 +546,10 @@ class TBLReader:
         if restraints:
             return restraints
 
-if __name__ == '__main__':                    
+if __name__ == '__main__':
 
     noe = 'noe.tbl'
     sequence = read_sequence_file('seq.dat', first_residue_number=1)
     reader = TBLReader(sequence, ignore_warnings=True)
     reader.read_distances(noe, key='test')
-    
+
