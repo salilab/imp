@@ -15,6 +15,10 @@ class TestBL(IMP.test.TestCase):
         """Testing skin surface"""
         m= IMP.Model()
         print "reading"
+        try:
+            import IMP.cgal
+        except:
+            self.skipTest("IMP.cgal is disabled")
         h= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"), m)
         hs = IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]), 1)
         ss=[]
