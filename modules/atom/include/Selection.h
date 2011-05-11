@@ -282,6 +282,8 @@ IMPATOMEXPORT double get_surface_area(Selection h);
  */
 IMPATOMEXPORT double get_radius_of_gyration(Selection h);
 
+/** Create an excluded volume restraint for a list of selections.*/
+IMPATOMEXPORT Restraint* create_excluded_volume_restraint(Selections ss);
 
 IMPATOM_END_NAMESPACE
 
