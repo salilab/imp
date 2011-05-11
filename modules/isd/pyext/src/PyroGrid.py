@@ -37,7 +37,7 @@ Pyro.config.PYRO_MOBILE_CODE = 1
 def get_sge_host_list():
     """parse the sge variable $PE_HOSTLIST"""
     hostlist = []
-    for line in open(os.environ('PE_HOSTLIST')):
+    for line in open(os.environ['PE_HOSTLIST']):
         tokens=line.split()
         rep = int(tokens[1])
         for i in xrange(rep):
