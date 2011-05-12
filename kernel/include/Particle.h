@@ -272,6 +272,7 @@ class IMPEXPORT Particle : public Container
       ps_->shadow_->floats_= floats_;
       ps_->shadow_->ps_->floats_= ps_->floats_;
       ps_->shadow_->ps_->strings_= ps_->strings_;
+      ps_->shadow_->ints_= ints_;
       ps_->shadow_->ps_->ints_= ps_->ints_;
       ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
       ps_->shadow_->ps_->particles_.clear();
@@ -416,7 +417,11 @@ class IMPEXPORT Particle : public Container
     IMP_USAGE_CHECK(IntTable::Traits::get_is_valid(value),
                     "Initial value is not valid when adding attribute"
                     << name << " to particle " << get_name());
-    ps_->ints_.add(name.get_index(), value);
+    if (name.get_index() < IMP_NUM_INLINE) {
+      ints_.add(name.get_index(), value);
+    } else {
+      ps_->ints_.add(name.get_index(), value);
+    }
   }
   void add_cache_attribute(ObjectKey name, Object *value) {
     IMP_CHECK_ACTIVE;
