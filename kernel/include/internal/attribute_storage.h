@@ -54,6 +54,8 @@ public:
     map_[i]=v;
   }
   void add(unsigned int i,  typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1),
                 Traits::get_invalid());
     map_[i]= v;
@@ -98,6 +100,8 @@ public:
     map_.set(i,v);
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     map_.resize(std::max(static_cast<unsigned int>(map_.size()), i+1));
     map_.set(i, v);
   }
@@ -155,6 +159,8 @@ public:
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     if (!fits(i)) resize(i+1, Traits::get_invalid());
     data_[i]= v;
   }
@@ -213,6 +219,8 @@ public:
     return P::set(i-OFFSET, v);
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     return P::add(i-OFFSET, v);
   }
   void remove(unsigned int i) {
@@ -250,6 +258,8 @@ public:
     data_[i]=v;
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     IMP_INTERNAL_CHECK(fits(i), "Out of range attribute: " << i);
     set(i, v);
   }
@@ -403,6 +413,8 @@ public:
     else {overflow_.set(i-SIZE, v);}
   }
   void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_USAGE_CHECK(i < std::numeric_limits<unsigned int>::max()/4,
+                    "Bad attribute added: " << i);
     if (i >= SIZE) {
       overflow_.add(i-SIZE, v);
     }
