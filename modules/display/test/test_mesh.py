@@ -6,19 +6,14 @@ import IMP.display
 import os
 
 class TestBL(IMP.test.TestCase):
-    def setUp(self):
-        IMP.test.TestCase.setUp(self)
-        IMP.set_log_level(IMP.TERSE)
-
-
     def test_3(self):
         """Testing skin surface"""
-        m= IMP.Model()
-        print "reading"
         try:
             import IMP.cgal
         except ImportError:
             self.skipTest("IMP.cgal is disabled")
+        m= IMP.Model()
+        print "reading"
         h= IMP.atom.read_pdb(self.get_input_file_name("1d3d-protein.pdb"), m)
         hs = IMP.atom.create_simplified_along_backbone(IMP.atom.Chain(IMP.atom.get_by_type(h, IMP.atom.CHAIN_TYPE)[0]), 1)
         ss=[]
