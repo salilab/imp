@@ -367,6 +367,9 @@ def show_graphviz(g):
            import subprocess
            sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
            sp.wait()
-           subprocess.Popen(["open", tfon])
+           try:
+             subprocess.Popen(["open", tfon])
+           except:
+             subprocess.Popen(["acroread", tfon])
            return tfon
 %}
