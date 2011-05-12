@@ -11,6 +11,7 @@
 #include <IMP/domino/utility.h>
 #include <IMP/domino/optimize_restraints.h>
 #include <IMP/domino/particle_states.h>
+#include <IMP/internal/graph_utility.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
