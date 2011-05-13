@@ -136,13 +136,20 @@ def create_restraints(m,protein,tbr,rot0):
 
     def add_x_restraint(x0):
         ha=IMP.core.Harmonic(x0, kappa_)
-        ass=IMP.core.AttributeSingletonScore(ha,IMP.FloatKey("x"))
+        hal=IMP.core.HarmonicLowerBound(x0, kappa_)
+        ass1=IMP.core.AttributeSingletonScore(ha,IMP.FloatKey("x"))
+        ass2=IMP.core.AttributeSingletonScore(hal,IMP.FloatKey("x"))
         for i,h in enumerate(TM_res):
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-            if( i == 0 ): sr=IMP.core.SingletonRestraint(ass, rb)
-        m.add_restraint(sr)
-        m.set_maximum_score(sr, max_score_)
+            if( i == 0 ):
+                sr=IMP.core.SingletonRestraint(ass1, rb)
+                m.add_restraint(sr)
+                m.set_maximum_score(sr, max_score_)
+            if( i == 1 ):
+                sr=IMP.core.SingletonRestraint(ass2, rb)
+                m.add_restraint(sr)
+                m.set_maximum_score(sr, max_score_)
 
     def add_y_restraint(y0):
         lrb= IMP.container.ListSingletonContainer(m)
