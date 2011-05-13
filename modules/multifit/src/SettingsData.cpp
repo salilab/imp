@@ -29,7 +29,7 @@ ComponentHeader *parse_component_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  IMP_USAGE_CHECK(line_split.size() == 8,
+  IMP_USAGE_CHECK(line_split.size() == 10,
            "Wrong format of input line : not enough fields in line:"<<line);
   IMP_NEW(ComponentHeader, comp, ());
   comp->set_name(boost::lexical_cast<std::string>(line_split[0]));
@@ -37,8 +37,10 @@ ComponentHeader *parse_component_line(
   comp->set_surface_fn(join_path(path, line_split[2]));
   comp->set_txt_ap_fn(join_path(path, line_split[3]));
   comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
-  comp->set_transformations_fn(join_path(path, line_split[5]));
-  comp->set_reference_fn(join_path(path, line_split[6]));
+  comp->set_txt_fine_ap_fn(join_path(path, line_split[5]));
+  comp->set_num_fine_ap(boost::lexical_cast<int>(line_split[6]));
+  comp->set_transformations_fn(join_path(path, line_split[7]));
+  comp->set_reference_fn(join_path(path, line_split[8]));
   return comp.release();
   }
   catch (IMP::Exception &e) {
@@ -52,8 +54,8 @@ AssemblyHeader *parse_assembly_line(
   IMP_LOG(VERBOSE,"going to parse:"<<line);
   std::vector<std::string> line_split;
   boost::split(line_split, line, boost::is_any_of("|"));
-  IMP_USAGE_CHECK(line_split.size() == 10,
-     "Expecting 10 fileds in input line, got "<<
+  IMP_USAGE_CHECK(line_split.size() == 12,
+     "Expecting 12 fileds in input line, got "<<
      line_split.size() << " : " <<line);
   IMP_NEW(AssemblyHeader, dens, ());
   dens->set_dens_fn(join_path(path, line_split[0]));
@@ -64,8 +66,10 @@ AssemblyHeader *parse_assembly_line(
     boost::lexical_cast<float>(line_split[4]),
     boost::lexical_cast<float>(line_split[5]),
     boost::lexical_cast<float>(line_split[6])));
-  dens->set_txt_ap_fn(join_path(path, line_split[7]));
-  dens->set_txt_finer_ap_fn(join_path(path, line_split[8]));
+  dens->set_coarse_ap_fn(join_path(path, line_split[7]));
+  dens->set_coarse_over_sampled_ap_fn(join_path(path, line_split[8]));
+  dens->set_fine_ap_fn(join_path(path, line_split[9]));
+  dens->set_fine_over_sampled_ap_fn(join_path(path, line_split[10]));
   return dens.release();
 }
 
@@ -82,18 +86,21 @@ SettingsData *read_settings(const char *filename,const char *data_path) {
     getline(in, line); //skip header line
     std::vector<std::string> line_split;
     boost::split(line_split, line, boost::is_any_of("|"));
-    if ((line_split.size() == 8) && (status == 0)) {//protein  line
+    if ((line_split.size() == 10) && (status == 0)) {//protein  line
+      IMP_LOG(VERBOSE,"parsing component line:"<<line<<std::endl);
       header->add_component_header(parse_component_line(data_path,line));
     }
     else if (status==0) {//map header line
       status=1;
     }
     else if (status==1){ //map line
+      IMP_LOG(VERBOSE,"parsing EM line:"<<line<<std::endl);
       header->set_assembly_header(parse_assembly_line(data_path,line));
       status=2;
     }
     else {//(status == 2)
-      IMP_WARN("the line was not parsed:"<<line);
+      IMP_WARN("the line was not parsed:"<<line
+               <<"| with status:"<<status<<std::endl);
     }
   }
   in.close();
