@@ -305,7 +305,8 @@ class sfo_common():
 
     def find_atom(self, atom, prot):
         """scans the prot hierarchy and tries to find atom = (resno, name)
-        assumes that resno starts at 0. Stores already found atoms for increased speed.
+        assumes that resno follows the same numbering as the sequence. 
+        Stores already found atoms for increased speed.
         """
         if not hasattr(self,'__memoized'):
             self.__memoized={prot:{}}
@@ -315,7 +316,7 @@ class sfo_common():
             pass
         try:
             sel=IMP.atom.Selection(hierarchy=prot,
-                residue_index=atom[0]+1,
+                residue_index=atom[0],
                 atom_type=IMP.atom.AtomType(atom[1])
                 ).get_selected_particles()
             if len(sel) > 1:
