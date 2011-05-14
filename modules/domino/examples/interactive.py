@@ -24,8 +24,10 @@ m.set_log_level(IMP.SILENT)
 
 # make sure to break up the
 mt= IMP.domino.get_merge_tree(m.get_root_restraint_set(), pst)
-IMP.show_graphviz(mt)
-
+try:
+    IMP.show_graphviz(mt)
+except:
+    print "Unable to display graph using 'dot'"
 
 ds= IMP.domino.DominoSampler(m, pst)
 ds.set_merge_tree(mt)
