@@ -211,10 +211,10 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
   });
 
 
-/** \class BondGeometry
+/** \class EdgePairGeometry
     \brief Display an IMP::atom::Bond particle as a segment.
 
-    \class BondsGeometry
+    \class EdgePairsGeometry
     \brief Display an IMP::SingletonContainer of IMP::atom::Bond particles
     as segments.
 */
