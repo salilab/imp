@@ -748,7 +748,7 @@ SubsetFilter*
 ProbabilisticSubsetFilterTable
 ::get_subset_filter(const Subset &,
                     const Subsets &e) const {
-  if (e.size() >0 && leaves_only_) return 0;
+  if (e.size() >1 && leaves_only_) return 0;
   else return new ProbabilisticSubsetFilter(p_);
 }
 
