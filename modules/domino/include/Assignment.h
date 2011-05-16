@@ -94,11 +94,15 @@ public:
   Assignment(): v_(0), sz_(0){}
   template <class It>
   Assignment(It b, It e) {
+    IMP_USAGE_CHECK(std::distance(b,e) > 0,
+                    "Can't create Assignment from empty list");
     create(std::distance(b,e));
     std::copy(b,e, v_+1);
     validate();
   }
   Assignment(const Ints &i) {
+    IMP_USAGE_CHECK(!i.empty(),
+                    "Can't create Assignment from empty list");
     create(i.size());
     std::copy(i.begin(), i.end(), v_+1);
     validate();

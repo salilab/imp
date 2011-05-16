@@ -48,6 +48,7 @@ class IMPDOMINOEXPORT Subset {
   Subset(const ParticlesTemp &ps, bool):
     ps_(new Particle*[ps.size()]),
     sz_(ps.size()){
+    IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
     std::copy(ps.begin(), ps.end(), ps_.get());
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< sz_; ++i) {
@@ -60,9 +61,12 @@ class IMPDOMINOEXPORT Subset {
   }
 #endif
   Subset(): sz_(0){}
+  /** Construct a subset from a non-empty list of particles.
+   */
   Subset(ParticlesTemp ps):
     ps_(new Particle*[ps.size()]),
     sz_(ps.size()) {
+    IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
     std::sort(ps.begin(), ps.end());
     std::copy(ps.begin(), ps.end(), ps_.get());
     IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
