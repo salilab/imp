@@ -1,6 +1,7 @@
 files = [
          'FFTWGrid.h',
          'FFTWPlan.h',
+         'SurfaceMatching.h',
         ]
 
 files = [File(x) for x in files]

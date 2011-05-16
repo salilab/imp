@@ -31,7 +31,9 @@ public:
   typedef boost::array<int, D> Bucket;
   typedef std::pair< Point, T > ValueType;
   typedef std::vector< ValueType > PointList;
-  typedef std::map<Bucket, PointList> GeomMap;
+  typedef std::map<const Bucket, PointList> GeomMap;
+  typedef typename GeomMap::iterator iterator;
+  typedef typename GeomMap::const_iterator const_iterator;
   typedef std::vector< const ValueType *> HashResult;
   typedef std::vector<T> HashResultT;
   typedef std::vector<Bucket> BucketList;
@@ -147,6 +149,26 @@ public:
   GeomMap const &Map() const
   {
     return gmap_;
+  }
+
+  iterator begin()
+  {
+    return gmap_.begin();
+  }
+
+  iterator end()
+  {
+    return gmap_.end();
+  }
+
+  const_iterator begin() const
+  {
+    return gmap_.begin();
+  }
+
+  const_iterator end() const
+  {
+    return gmap_.end();
   }
 
   /* Return vector of buckets */
