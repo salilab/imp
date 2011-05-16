@@ -32,7 +32,8 @@ class RBDTests(IMP.test.TestCase):
             hd.add_child(chd)
         return rd.get_particle()
 
-    def _test_create_one(self):
+    def test_create_one(self):
+        """Testing create_rigid_body"""
         count=1
         success=0
         for i in range(0, count):
@@ -62,23 +63,17 @@ class RBDTests(IMP.test.TestCase):
         self.assertGreater(success, count/2)
 
 
-    def test_create_one(self):
-        """Testing create_rigid_body"""
-        print "1"
-        self._test_create_one()
-
-    def _test_create_one_from_pdb(self):
+    def test_create_one_from_pdb(self):
         """Testing create_rigid_bodies"""
         m= IMP.Model()
         h= IMP.atom.read_pdb(self.get_input_file_name("input.pdb"), m)
         print "done reading"
-        rs= IMP.atom.setup_as_rigid_body(h)
-        IMP.core.RigidBody(h.get_particle()).set_coordinates_are_optimized(True)
+        rb= IMP.atom.create_rigid_body(h)
+        rb.set_coordinates_are_optimized(True)
         print "done setting up"
-        m.add_score_state(rs)
         ls= IMP.core.get_leaves(h)
         keypts= [ls[0], ls[-1], ls[len(ls)/3], ls[len(ls)/3*2]]
-        tr= IMP.algebra.Transformation3D(IMP.algebra.random_rotation(),
+        tr= IMP.algebra.Transformation3D(IMP.algebra.get_random_rotation_3d(),
                                          IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0), IMP.algebra.Vector3D(500, 500, 500))))
         for p in keypts:
             mp= IMP.core.RigidMember(p.get_particle())
@@ -90,11 +85,10 @@ class RBDTests(IMP.test.TestCase):
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)
         cg.optimize(100)
-        rb= IMP.core.RigidBody(h.get_particle())
-        ntr= rb.get_transformation()
+        ntr= rb.get_reference_frame().get_transformation_to()
         print ntr
         print tr
-        self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 1)
+        self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2)
 
     # test one with snap and non-snap
     # test setting things to be optimized or not
