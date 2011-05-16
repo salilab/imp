@@ -12,7 +12,7 @@ env= env.IMPSystem(version="SVN",
                    """,
                    license=env.IMPStandardLicense(),
                    publications=[],
-                   required_modules=['core', 'atom'],
+                   required_modules=['core', 'atom', 'rmf'],
                    last_imp_version="""core SVN 7432M with CGAL
 atom SVN 7432M with CGAL, Boost.FileSystem
 container SVN 7432

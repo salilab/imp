@@ -4,6 +4,7 @@ import IMP.container
 import IMP.display
 import IMP.statistics
 import IMP.example
+import IMP.rmf
 import IMP.system
 from IMP.example_system_local import *
 import parameters
@@ -64,11 +65,12 @@ cs= get_conformations(m, gs, 2000.0/n)
 IMP.set_log_level(IMP.TERSE)
 
 print "found", cs.get_number_of_configurations(), "solutions"
+
+out= IMP.rmf.RootHandle(IMP.system.get_output_path("configurations_"+str(i)+".rmf"), True)
+IMP.rmf.add_hierarchy(out, all)
 for i in range(0, cs.get_number_of_configurations()):
     cs.load_configuration(i)
+    IMP.rmf.save_frame(out, i, all)
     w= IMP.display.PymolWriter(IMP.system.get_output_path("struct.%d.pym"%i))
     for g in gs:
         w.add_geometry(g)
-keys=IMP.core.XYZ.get_xyz_keys()
-IMP.write_configuration_set(cs, IMP.atom.get_leaves(all), keys,
-                            IMP.system.get_output_path("configurations_"+str(i)+".bimp"))
