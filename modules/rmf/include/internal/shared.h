@@ -207,12 +207,15 @@ class IMPRMFEXPORT SharedData: public RefCounted {
   HDF5Group get_group() const {
     return file_;
   }
-  void set_association(int id, void *d) {
+  void set_association(int id, void *d, bool overwrite) {
     if (association_.size() <= static_cast<unsigned int>(id)) {
       association_.resize(id+1, NULL);
     }
-    IMP_USAGE_CHECK(!association_[id],
+    IMP_USAGE_CHECK(overwrite || !association_[id],
                     "Associations can only be set once");
+    if (overwrite && association_[id]) {
+      back_association_.erase(association_[id]);
+    }
     association_[id]=d;
     back_association_[d]=id;
   }

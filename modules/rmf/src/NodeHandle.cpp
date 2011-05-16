@@ -21,8 +21,8 @@ NodeHandle NodeHandle::add_child(std::string name, NodeType t) {
 }
 
 
-void NodeHandle::set_association(void *d) {
-  shared_->set_association(node_, d);
+void NodeHandle::set_association(void *d, bool overwrite) {
+  shared_->set_association(node_, d, overwrite);
 }
 void* NodeHandle::get_association() const {
   return shared_->get_association(node_);

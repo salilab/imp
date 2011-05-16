@@ -413,6 +413,14 @@ void load_frame(RootHandle fh,
 }
 
 
+unsigned int get_number_of_frames(RootHandle fh,
+                                  atom::Hierarchy) {
+    FloatKey x= get_or_add_key<FloatTraits>(fh, Physics, "cartesian x",
+                                            true);
+    return fh.get_number_of_frames(x);
+}
+
+
 SaveHierarchyConfigurationOptimizerState::
 SaveHierarchyConfigurationOptimizerState(atom::Hierarchies hs,
                                          RootHandle fh):
@@ -436,23 +444,26 @@ void SaveHierarchyConfigurationOptimizerState
 }
 
 namespace {
-  void associate_internal(NodeHandle nh, atom::Hierarchy h) {
-    nh.set_association(h);
+  void associate_internal(NodeHandle nh, atom::Hierarchy h,
+                          bool overwrite) {
+    nh.set_association(h, overwrite);
     NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
-      associate_internal(children[i], h.get_child(i));
+      associate_internal(children[i], h.get_child(i), overwrite);
     }
   }
 }
 
-void set_hierarchies(RootHandle rh, atom::Hierarchies hs) {
+void set_hierarchies(RootHandle rh, atom::Hierarchies hs,
+                     bool overwrite) {
   NodeHandle root= rh;
   NodeHandles children= root.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     if (children[i].get_type()== REPRESENTATION) {
-      associate_internal(children[i], hs[i]);
+      associate_internal(children[i], hs[i], overwrite);
     }
   }
 }
+
 
 IMPRMF_END_NAMESPACE

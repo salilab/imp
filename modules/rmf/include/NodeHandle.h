@@ -60,7 +60,10 @@ class IMPRMFEXPORT NodeHandle {
   }
   std::vector<NodeHandle> get_children() const;
 
-  void set_association(void *d);
+  /** Either the association must not have been set before
+      or overwrite must be true.
+  */
+  void set_association(void *d, bool overwrite=false);
   void* get_association() const;
 
   //! get the type of this node
