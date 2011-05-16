@@ -34,8 +34,12 @@ def analyze_conformations(cs, all, gs):
 gs= setup.create_geometry(all)
 
 cs= IMP.ConfigurationSet(m)
-for f in glob.glob(IMP.system.get_input_path("configurations_*.bimp")):
+for f in glob.glob(IMP.system.get_input_path("configurations_*.rmf")):
     print f
-    IMP.read_configuration_set(f, IMP.atom.get_leaves(all), IMP.core.XYZ.get_xyz_keys(), cs)
+    fh= IMP.rmf.RootHandle(f, False)
+    IMP.rmf.set_hierarchies(fh, [all])
+    for i in range(0, IMP.rmf.get_number_of_frames(fh, all)):
+        IMP.rmf.load_frame(fh, i, all)
+        cs.save_configuration()
 
 analyze_conformations(cs, all, gs)
