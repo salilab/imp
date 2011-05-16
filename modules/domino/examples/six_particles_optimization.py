@@ -22,6 +22,7 @@ def create_scoring(m, ps):
     # we are not interested in conformations which don't fit the distances
     # exactly, but using 0 is tricky
     m.set_maximum_score(dr, .01)
+    print m.get_root_restraint_set()
     return m.get_restraints()
 
 def create_representation(m):

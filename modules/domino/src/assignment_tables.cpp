@@ -171,8 +171,12 @@ namespace {
     for (unsigned int i=0; i< order.size(); ++i) {
       ParticlesTemp ps= get_sub_particles(s, order.begin()+i, order.end());
       Subset sc(ps);
-      Subset ex(ParticlesTemp(ps.begin()+1, ps.end()));
-      SubsetFilters fts= get_filters(sc, Subsets(1, ex), sft);
+      Subsets ex;
+      ParticlesTemp pt(ps.begin()+1, ps.end());
+      if (!pt.empty()) {
+        ex.push_back(Subset(pt));
+      }
+      SubsetFilters fts= get_filters(sc, ex, sft);
       filter_subsets.push_back(sc);
       filters.push_back(fts);
     }

@@ -19,7 +19,7 @@ class DOMINOTests(IMP.test.TestCase):
             p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
             p.set_name("protein"+str(i))
             ps.append(p.get_particle())
-            IMP.atom.setup_as_rigid_body(p)
+            IMP.atom.create_rigid_body(p)
         cp= IMP.container.ClosePairContainer(IMP.container.ListSingletonContainer(ps), 1, 0)
         r=IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), cp)
         m.add_restraint(r)
@@ -46,10 +46,9 @@ class DOMINOTests(IMP.test.TestCase):
         """Test that showing interaction graphs is fine"""
         m= IMP.Model()
         IMP.set_log_level(IMP.SILENT)
-        ps=[]
         p= IMP.atom.read_pdb(self.get_input_file_name("small_protein.pdb"), m)
-        IMP.atom.add_radii(p)
         p.show()
+        ps= IMP.core.get_leaves(p)
         #print "radius is ", IMP.core.XYZR(IMP.atom.get_leaves(p)[0]).get_radius()
         #exit(1)
         #sp= IMP.atom.get_simplified_by_residue(p, 1)
