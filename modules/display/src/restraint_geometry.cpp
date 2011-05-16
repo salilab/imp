@@ -43,7 +43,7 @@ IMP::display::Geometries PairRestraintGeometry::get_components() const {
     non_empty=true;
     mp=.5*(v0+v1);
   }
-  double s= r_->evaluate(false);
+  double s= r_->unprotected_evaluate(false);
   std::ostringstream oss;
   oss << s;
   ret.push_back(new LabelGeometry(mp, oss.str()));
@@ -151,9 +151,10 @@ RestraintGeometry::RestraintGeometry(Restraint*r): Geometry(r->get_name()),
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
+  r_->get_model()->update();
   Restraints rs= r_->get_instant_decomposition();
   IMP::display::Geometries ret;
-  if (rs.size()==1) {
+  if (rs.size()==1 && rs[0]== r_) {
     ParticlesTemp ps= r_->get_input_particles();
     for (unsigned int i=0; i < ps.size(); ++i) {
       if (!core::XYZ::particle_is_instance(ps[i])) continue;
