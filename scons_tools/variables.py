@@ -207,6 +207,12 @@ def add_common_variables(vars, package):
     vars.Add('pythoncxxflags', 'C++ flags for building the python libraries (e.g. "-fno-rounding:-DFOOBAR")',
              None)
 
+    vars.Add(EnumVariable('boost_autolink',
+                          'Whether to use Boost autolinking to find Boost '
+                          'dynamic or static libraries on supported platforms',
+                          'disable', ['disable', 'static', 'dynamic'],
+                          ignorecase=1))
+
     vars.Add('linkflags', 'Link flags for all linking (e.g. "-lefence"). See pythonlinkflags, arliblinkflags, shliblinkflags.', None)
     vars.Add('environment', "Add entries to the environment in which tools are run. The variable should be a comma separated list of name=value pairs.", "")
     vars.Add('pythonlinkflags', 'Link flags for linking python libraries (e.g. "-lefence")', "")

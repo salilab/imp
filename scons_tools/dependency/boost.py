@@ -5,6 +5,18 @@ import gcc
 import scons_tools.data
 import scons_tools.utility
 
+def configure_env_for_auto_link(env):
+    autolink = env['boost_autolink']
+    if autolink == 'disable':
+        # Disable boost auto-linking (default, since it sometimes gets
+        # the names incorrect or links libraries we didn't use; we manually
+        # link libraries we use anyway)
+        env.Append(CPPDEFINES=["BOOST_ALL_NO_LIB"])
+    elif autolink == 'dynamic':
+        env.Append(CPPDEFINES=["BOOST_ALL_DYN_LINK"])
+    # Note that when autolinking is enabled, we must also not link libraries
+    # explicitly; configure checks below are accordingly aware
+
 def _check(context):
     context.Message('Checking for Boost lib version ... ')
     ret = context.TryRun("""#include <boost/version.hpp>
@@ -29,7 +41,7 @@ def _check(context):
 
 def _checks(context):
     version=context.env['BOOST_LIB_VERSION']
-    if version is not None:
+    if version is not None and context.env['boost_autolink'] == 'disable':
         for suffix in ['-mt', '', '-'+version+'-mt', '-'+version]:
             ret= context.sconf.CheckLib('boost_filesystem'+suffix, language="c++", autoadd=False)
             if ret:
@@ -90,12 +102,16 @@ def get_boost_lib_name(env, name):
     return "boost_"+name+env.get("BOOST_LIBSUFFIX", "")
 
 def add_boost_library(env, nicename, libname, header_name, body=[], extra_boost_libs=[]):
-    real_libname=scons_tools.dependency.boost.get_boost_lib_name(env,libname)
     real_dep_names=[]
-    for d in extra_boost_libs:
-        real_dep_names.append(scons_tools.dependency.boost.get_boost_lib_name(env,d))
+    if env['boost_autolink'] == 'disable':
+        real_libnames = [scons_tools.dependency.boost.get_boost_lib_name(env,
+                                                                     libname)]
+        for d in extra_boost_libs:
+            real_dep_names.append(scons_tools.dependency.boost.get_boost_lib_name(env,d))
+    else:
+        real_libnames = [None]
     lname="Boost."+nicename
-    scons_tools.dependency.add_external_library(env, lname, [real_libname],
+    scons_tools.dependency.add_external_library(env, lname, real_libnames,
                                                 header_name,
                                                 body=body,
                                                 extra_libs=real_dep_names)

@@ -14,7 +14,11 @@ def _search_for_deps(context, libname, extra_libs, headers, body, possible_deps)
                                              autoadd=False)
         context.env.Replace(LIBS=olibs)
         if ret:
-            return (True, [libname]+lc, None)
+            if libname is None:
+                libs = lc
+            else:
+                libs = [libname] + lc
+            return (True, libs, None)
     return (False, None, None)
 
 def add_dependency_link_flags(env, dependencies):
