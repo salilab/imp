@@ -49,9 +49,13 @@ IMPRMFEXPORT atom::Hierarchies create_hierarchies(RootHandle fh, Model *m);
 
 /** Associate the passed hierarchies with all the hierarchies in the file.
     They must match exactly.
+
+    If overwrite is false, then it is an error if the file already is
+    associated with something.
 */
 IMPRMFEXPORT void set_hierarchies(RootHandle rh,
-                                   atom::Hierarchies hs);
+                                  atom::Hierarchies hs,
+                                  bool overwrite=false);
 
 /** Read the ith frame from a file as a new hierarchy. If there are
     particles involved in a core::RigidBody, the core::RigidBody
@@ -61,6 +65,9 @@ IMPRMFEXPORT void set_hierarchies(RootHandle rh,
 IMPRMFEXPORT void load_frame(RootHandle fh,
                              unsigned int frame,
                              atom::Hierarchy hs);
+
+IMPRMFEXPORT unsigned int get_number_of_frames(RootHandle fh,
+                                               atom::Hierarchy h);
 /** @} */
 
 
