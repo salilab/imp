@@ -45,7 +45,7 @@ class Alignment_Rigid_BodiesTests(IMP.test.TestCase):
             xyz.set_coordinates(rand_t.get_transformed(xyz.get_coordinates()))
             vec2.append(xyz.get_coordinates())
 
-        rb1=IMP.atom.setup_as_rigid_body(mh1)
+        rb1=IMP.atom.create_rigid_body(mh1)
         print "initial rb", rb1.get_reference_frame()
         #align mh1 onto mh2
         align_t=IMP.algebra.get_transformation_aligning_first_to_second(vec1,vec2)
