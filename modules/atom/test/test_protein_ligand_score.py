@@ -20,8 +20,8 @@ class ScoreTest(IMP.test.TestCase):
         #print "ligand"
         #IMP.atom.show_molecular_hierarchy(l)
         print "rigid bodies"
-        rbp= IMP.atom.setup_as_rigid_body(p)
-        rbl= IMP.atom.setup_as_rigid_body(l)
+        rbp= IMP.atom.create_rigid_body(p)
+        rbl= IMP.atom.create_rigid_body(l)
         it=IMP.algebra.Transformation3D(IMP.algebra.get_identity_rotation_3d(),
                                         IMP.algebra.Vector3D(0,0,0))
         rbp.set_transformation(it)
