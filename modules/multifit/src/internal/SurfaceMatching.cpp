@@ -4,6 +4,7 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
+#include <IMP/constants.h>
 #include <IMP/multifit/internal/SurfaceMatching.h>
 #include <IMP/multifit/internal/GeometricHash.h>
 #include <algorithm>
@@ -152,7 +153,7 @@ void classify_voxels(BoundaryHash &boundary, BoundaryHash::HashResult &knobs,
 void calculate_shape_function(const InsideHash &inside,
   BoundaryHash &boundary, double radius, double unit_volume)
 {
-  double sphere_volume = 4*M_PI*radius*radius*radius/3.0;
+  double sphere_volume = 4*PI*radius*radius*radius/3.0;
   for ( BoundaryHash::iterator p = boundary.begin(); p != boundary.end(); ++p )
   {
     BoundaryHash::PointList &points = p->second;
@@ -190,7 +191,7 @@ double get_unit_angle(const IMP::algebra::Vector3D &unit0,
   if ( dot >= 1 )
     return 0;
   else if ( dot <= -1 )
-    return M_PI;
+    return PI;
   else
     return std::acos(dot);
 }
