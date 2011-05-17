@@ -1,4 +1,5 @@
-cxxflags="/DWIN32 /DGSL_DLL"    # Needed to link with GSL DLL
+cxxflags="/DWIN32 /DGSL_DLL /D_HDF5USEDLL_"  # Needed to link with
+                                             # GSL and HDF5 DLLs
 boost_autolink="dynamic"        # Needed to link with Boost DLLs
-hdf5="yes"
-hdf5libs="libhdf5_dll.lib"      # Needed to link with HDF5 DLL
+fftw3="yes"
+fftw3libs="libfftw3-3.lib"      # Needed to link with FFTW3 DLL
