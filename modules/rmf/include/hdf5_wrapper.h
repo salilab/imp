@@ -23,7 +23,7 @@ class HDF5Group;
 
 /** Wrap an HDF5 data set.*/
 template <class TypeTraits>
-class IMPRMFEXPORT HDF5DataSet {
+class HDF5DataSet {
   static const int max_dims=3;
   Pointer<HDF5SharedHandle> h_;
   Pointer<HDF5SharedHandle> ids_;
