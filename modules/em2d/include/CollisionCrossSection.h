@@ -33,7 +33,6 @@ public:
                pixel_size * projection_image_size >= Max distance between two
                particles.
   */
-  IMPEM2DEXPORT
   CollisionCrossSection(unsigned int  n_projections,
                         double resolution,
                         double pixel_size,
