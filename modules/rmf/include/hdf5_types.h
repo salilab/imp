@@ -60,7 +60,13 @@ struct IMPRMFEXPORT FloatTraits {
                                    hid_t s,
                                   double v);
   static double read_value_dataset(hid_t d, hid_t is,
-                                  hid_t sp);
+                                   hid_t sp);
+  static void write_values_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                   const std::vector<double>& v);
+  static std::vector<double> read_values_dataset(hid_t d, hid_t is,
+                                                 hid_t sp,
+                                                 unsigned int sz);
   static std::vector<double> read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a, const std::vector<double> &v);
   static const double& get_null_value();
@@ -81,7 +87,13 @@ struct IMPRMFEXPORT IntTraits {
                                    hid_t s,
                                   int v);
   static int read_value_dataset(hid_t d, hid_t is,
-                                  hid_t sp);
+                                hid_t sp);
+  static void write_values_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                   const std::vector<int>& v);
+  static std::vector<int> read_values_dataset(hid_t d, hid_t is,
+                                              hid_t sp,
+                                              unsigned int sz);
   static std::vector<int> read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a, const std::vector<int> &v);
   static const int& get_fill_value();
@@ -114,7 +126,13 @@ struct IMPRMFEXPORT StringTraits {
                                    hid_t s,
                                   std::string v);
   static std::string read_value_dataset(hid_t d, hid_t is,
-                                  hid_t sp);
+                                        hid_t sp);
+  static void write_values_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                  const std::vector<std::string>& v);
+  static std::vector<std::string> read_values_dataset(hid_t d, hid_t is,
+                                                      hid_t sp,
+                                                      unsigned int sz);
   static std::vector<std::string>
     read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a,
@@ -138,7 +156,13 @@ struct IMPRMFEXPORT NodeIDTraits {
                                   hid_t s,
                                   NodeID v);
   static NodeID read_value_dataset(hid_t d, hid_t is,
-                                        hid_t sp);
+                                   hid_t sp);
+  static void write_values_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                   const std::vector<NodeID>& v);
+  static std::vector<NodeID> read_values_dataset(hid_t d, hid_t is,
+                                                 hid_t sp,
+                                                 unsigned int sz);
   static std::vector<NodeID>
     read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a,
