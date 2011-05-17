@@ -108,7 +108,7 @@ Array1DD DensityDataPoints::sample() const {
           statistics::internal::random_uniform()+min_value_) {
         found = true;
       }
-    }while ((not found) and (num_trails<150)); //TODO - add to multifit param
+    }while (!found && num_trails<150); //TODO - add to multifit param
     if (!found) {
       std::cerr<< "Could not sample DensityDataPoints."
                <<"Probably a problem with reading the map" <<std::endl;
