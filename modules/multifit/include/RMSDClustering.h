@@ -298,7 +298,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
 
 template<class TransT>
 int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
-           std::vector<RMSDClustering<TransT>::TransformationRecord *>& recs) {
+           std::vector<TransformationRecord *>& recs) {
   IMP_LOG(VERBOSE,"start full clsutering with "<< recs.size()<<" records \n");
   if (recs.size()<2) return 0;
   bool used[recs.size()];
