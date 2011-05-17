@@ -30,6 +30,23 @@ double FloatTraits::read_value_dataset(hid_t d, hid_t is,
                         is, sp, H5P_DEFAULT, &ret));
   return ret;
 }
+void FloatTraits::write_values_dataset(hid_t d, hid_t is,
+                                       hid_t s,
+                                       const std::vector<double>& v) {
+  IMP_HDF5_CALL(H5Dwrite(d,
+                         H5T_NATIVE_DOUBLE, is, s,
+                         H5P_DEFAULT, &v[0]));
+}
+std::vector<double> FloatTraits::read_values_dataset(hid_t d, hid_t is,
+                                                    hid_t sp,
+                                                    unsigned int sz) {
+  std::vector<double> ret(sz);
+  IMP_HDF5_CALL(H5Dread(d,
+                        get_hdf5_type(),
+                        is, sp, H5P_DEFAULT, &ret[0]));
+  return ret;
+}
+
 std::vector<double>
 FloatTraits::read_values_attribute(hid_t a, unsigned int size) {
   std::vector<double> v(size);
@@ -68,6 +85,22 @@ int IntTraits::read_value_dataset(hid_t d, hid_t is,
   int ret;
   IMP_HDF5_CALL(H5Dread(d,
                         get_hdf5_type(), is, sp, H5P_DEFAULT, &ret));
+  return ret;
+}
+void IntTraits::write_values_dataset(hid_t d, hid_t is,
+                                       hid_t s,
+                                       const std::vector<int>& v) {
+  IMP_HDF5_CALL(H5Dwrite(d,
+                         get_hdf5_type(), is, s,
+                         H5P_DEFAULT, &v[0]));
+}
+std::vector<int> IntTraits::read_values_dataset(hid_t d, hid_t is,
+                                                hid_t sp,
+                                                unsigned int sz) {
+  std::vector<int> ret(sz);
+  IMP_HDF5_CALL(H5Dread(d,
+                        get_hdf5_type(),
+                        is, sp, H5P_DEFAULT, &ret[0]));
   return ret;
 }
 std::vector<int> IntTraits::read_values_attribute(hid_t a,
@@ -134,6 +167,24 @@ std::string StringTraits::read_value_dataset(hid_t d,
                         get_hdf5_type(), is, sp, H5P_DEFAULT, &buf));
   return std::string(buf);
 }
+void StringTraits::write_values_dataset(hid_t d, hid_t is,
+                                       hid_t s,
+                                        const std::vector<std::string>& ) {
+  IMP_UNUSED(d);
+  IMP_UNUSED(is);
+  IMP_UNUSED(s);
+  //IMP_UNUSED(v);
+  IMP_NOT_IMPLEMENTED;
+}
+std::vector<std::string> StringTraits::read_values_dataset(hid_t d, hid_t is,
+                                                           hid_t sp,
+                                                           unsigned int sz) {
+  IMP_UNUSED(d);
+  IMP_UNUSED(is);
+  IMP_UNUSED(sp);
+  IMP_UNUSED(sz);
+  IMP_NOT_IMPLEMENTED;
+}
 
 void StringTraits::write_values_attribute(hid_t d,
                                 const std::vector<std::string> &values) {
@@ -197,7 +248,25 @@ NodeID NodeIDTraits::read_value_dataset(hid_t d,
   if (i>=0) return NodeID(i);
   else return NodeID();
 }
-
+void NodeIDTraits::write_values_dataset(hid_t d, hid_t is,
+                                       hid_t s,
+                                       const std::vector<NodeID>& v) {
+  std::vector<int> vi(v.size());
+  for (unsigned int i=0; i< v.size(); ++i) {
+    vi[i]= v[i].get_index();
+  }
+  IntTraits::write_values_dataset(d, is, s, vi);
+}
+std::vector<NodeID> NodeIDTraits::read_values_dataset(hid_t d, hid_t is,
+                                                hid_t sp,
+                                                unsigned int sz) {
+  std::vector<int> reti= IntTraits::read_values_dataset(d, is, sp, sz);
+  std::vector<NodeID> ret(reti.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= NodeID(reti[i]);
+  }
+  return ret;
+}
 void NodeIDTraits::write_values_attribute(hid_t d,
                                 const std::vector<NodeID> &values) {
   Ints is(values.size());

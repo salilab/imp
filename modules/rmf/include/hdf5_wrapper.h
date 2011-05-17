@@ -27,9 +27,17 @@ class IMPRMFEXPORT HDF5DataSet {
   static const int max_dims=3;
   Pointer<HDF5SharedHandle> h_;
   Pointer<HDF5SharedHandle> ids_;
+  mutable Pointer<HDF5SharedHandle> rds_;
   unsigned int dim_;
   bool get_is_null_value(const Ints &ijk) const {
     return TypeTraits::get_is_null_value(get_value(ijk));
+  }
+  const HDF5Handle& get_row_data_space() const {
+    if (!rds_) {
+      hsize_t dim= get_size().back();
+      rds_=new HDF5SharedHandle(H5Screate_simple(1, &dim, NULL), &H5Sclose);
+    }
+    return *rds_;
   }
   friend class HDF5Group;
   HDF5DataSet(HDF5SharedHandle* parent, std::string name,  int num_dims) {
@@ -143,12 +151,48 @@ class IMPRMFEXPORT HDF5DataSet {
                                       &ones[0], &ones[0],
                                       NULL));
     return TypeTraits::read_value_dataset(h_->get_hid(), ids_->get_hid(),
-                                              s);
+                                           s);
+  }
+  void set_row( Ints ijk,
+               typename std::vector<typename TypeTraits::Type>& value) {
+    ijk.push_back(0);
+    IMP_IF_CHECK(USAGE) {
+      check_index(ijk);
+    }
+    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
+    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
+    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
+    hsize_t size[max_dims]; std::fill(size, size+dim_-1, 1);
+    size[dim_-1]= get_size().back(); // set last to size of row
+    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
+                                      &ones[0], &size[0],
+                                      NULL));
+    TypeTraits::write_values_dataset(h_->get_hid(),
+                                     get_row_data_space().get_hid(),
+                                         s, value);
+  }
+  typename std::vector<typename TypeTraits::Type> get_row( Ints ijk) const {
+    ijk.push_back(0);
+    IMP_IF_CHECK(USAGE) {
+      check_index(ijk);
+    }
+    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
+    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
+    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
+    hsize_t size[max_dims]; std::fill(size, size+dim_-1, 1);
+    size[dim_-1]= get_size().back(); // set last to size of row
+    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
+                                      &ones[0], &size[0],
+                                      NULL));
+    return TypeTraits::read_values_dataset(h_->get_hid(),
+                                           get_row_data_space().get_hid(),
+                                           s, size[dim_-1]);
   }
   void set_size(const Ints &ijk) {
     hsize_t nd[max_dims]; std::copy(ijk.begin(), ijk.end(), nd);;
     IMP_HDF5_CALL(H5Dset_extent(h_->get_hid(),
                                 &nd[0]));
+    rds_=NULL;
   }
 };
 
