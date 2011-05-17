@@ -487,7 +487,7 @@ void apply_circular_mask(const cv::Mat &mat,
                          double val) {
   cv::Mat mask, temp;
   mask = cv::Mat::zeros(mat.rows, mat.cols,CV_16UC1);
-  cv::Point center( floor(mat.rows/2), floor(mat.cols/2));
+  cv::Point center( floor(mat.rows/2.), floor(mat.cols/2.));
   cv::Scalar color(1, 0, 0, 0);
   cv::circle(mask, center, radius, color, -1);
   apply_mask(mat, result, mask, val);
