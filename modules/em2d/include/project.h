@@ -88,7 +88,7 @@ IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
              setting to false will add one projection on top of the other
   \note See the function get_projection() for the rest of the parameters
 */
-IMPEMEXPORT void do_project_particles(const ParticlesTemp &ps,
+IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
