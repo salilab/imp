@@ -7,7 +7,7 @@ ps= [IMP.Particle(m) for i in range(0,10)]
 # create a subset with a few of the particles
 ss= IMP.domino.Subset([ps[3], ps[5], ps[7]])
 
-file_name= IMP.create_temporary_file_name("assignments", "hdf5")
+file_name= IMP.create_temporary_file_name("assignments", ".hdf5")
 
 print "File name is", file_name
 
@@ -27,6 +27,7 @@ IMP.domino.set_assignments(data_set, asl, ss, ps)
 
 # to check, we can read it back immediately
 back_asl= IMP.domino.get_assignments(data_set, ss, ps)
+
 
 if back_asl==asl:
     print "They match!"
