@@ -67,8 +67,11 @@ inline Subset get_intersection(const Subset &a, const Subset &b) {
   std::set_intersection(a.begin(), a.end(),
                         b.begin(), b.end(),
                         std::back_inserter(rs));
-  Subset ret(rs, true);
-  return ret;
+  if (rs.empty()) {
+    return Subset();
+  } else {
+    return Subset(rs, true);
+  }
 }
 
 inline Subset get_union(const Subset &a, const Subset &b) {
