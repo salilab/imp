@@ -262,7 +262,7 @@ int RMSDClustering<TransT>::fast_clustering(float max_dist,
        std::vector<TransformationRecord*>& recs) {
   IMP_LOG(VERBOSE,"start fast clsutering with "<<recs.size()<<" records\n");
   int num_joins = 0;
-  bool used[recs.size()];
+  boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 g_hash((double)(bin_size_));
 
   //load the hash
@@ -301,7 +301,7 @@ int RMSDClustering<TransT>::exhaustive_clustering(float max_dist,
            std::vector<TransformationRecord *>& recs) {
   IMP_LOG(VERBOSE,"start full clsutering with "<< recs.size()<<" records \n");
   if (recs.size()<2) return 0;
-  bool used[recs.size()];
+  boost::scoped_array<bool> used(new bool[recs.size()]);
   Hash3 ghash((double)(max_dist));
 
   //load the hash
