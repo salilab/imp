@@ -223,17 +223,17 @@ void set_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
   IMP_FUNCTION_LOG;
   Ints order= get_order(s, all_particles);
   Ints sz(2);
-  sz[0]= s.size();
-  sz[1]= assignments.size();
+  sz[1]= s.size();
+  sz[0]= assignments.size();
   dataset.set_size(sz);
-  Ints cur(2);
+  Ints cur(1);
   for (unsigned int i=0; i< assignments.size(); ++i) {
-    cur[1]=i;
+    cur[0]=i;
+    Ints as(s.size());
     for (unsigned int j=0; j< s.size(); ++j) {
-      cur[0]= j;
-      int state= assignments[i][order[j]];
-      dataset.set_value(cur, state);
+      as[j]= assignments[i][order[j]];
     }
+    dataset.set_row(cur, as);
   }
 }
 Assignments get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
@@ -242,19 +242,19 @@ Assignments get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
   IMP_FUNCTION_LOG;
   Ints order= get_order(s, all_particles);
   Ints sz= dataset.get_size();
-  Assignments ret(sz[1]);
-  IMP_USAGE_CHECK(sz[0]== static_cast<int>(s.size()),
-                  "Sizes done't match: " << sz[0] << "!="
+  Assignments ret(sz[0]);
+  IMP_USAGE_CHECK(sz[1]== static_cast<int>(s.size()),
+                  "Sizes done't match: " << sz[1] << "!="
                   << s.size());
-  Ints cur(2);
+  Ints cur(1);
   for (unsigned int i=0; i< ret.size(); ++i) {
-    cur[1]=i;
-    Ints curs(s.size());
-    for (unsigned int j=0; j< s.size(); ++j) {
-      cur[0]= j;
-      curs[order[j]]=dataset.get_value(cur);
+    cur[0]=i;
+    Ints curs= dataset.get_row(cur);
+    Ints cursp(curs.size());
+    for (unsigned int j=0; j< cursp.size(); ++j) {
+      cursp[order[j]]= curs[j];
     }
-    ret[i]=Assignment(curs);
+    ret[i]=Assignment(cursp);
   }
   return ret;
 }
