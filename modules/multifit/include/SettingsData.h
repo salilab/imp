@@ -22,7 +22,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 //! Holds data about a component needed for optimization
 class IMPMULTIFITEXPORT ComponentHeader : public Object {
   public:
-    ComponentHeader() {
+  ComponentHeader(): Object("ComponentHeader%1%") {
       name_="";
       filename_="";
       surface_fn_="";
@@ -78,7 +78,7 @@ IMP_OBJECTS(ComponentHeader, ComponentHeaders);
 //! Holds data about the assembly density needed for optimization
 class IMPMULTIFITEXPORT AssemblyHeader : public Object {
   public:
-    AssemblyHeader(){
+  AssemblyHeader(): Object("AssemblyHeader%1%") {
       dens_fn_="";
       resolution_=0.;
       spacing_=0.;
@@ -134,7 +134,7 @@ class IMPMULTIFITEXPORT AssemblyHeader : public Object {
 //! Holds header data for optimization
 class IMPMULTIFITEXPORT SettingsData : public Object {
 public:
-  SettingsData(){
+  SettingsData(): Object("SettingsData%1%"){
     data_path_="./";}
   static void show_component_header_line(std::ostream& out = std::cout)  {
     out<<get_component_header_line();
