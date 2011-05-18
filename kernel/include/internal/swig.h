@@ -227,7 +227,7 @@ class BoostDigraph: public Object {
     return boost::vertex(index_map_[v], bg_);
   }
 public:
-  BoostDigraph(){
+  BoostDigraph(): Object("Graph%1%"){
     vm_= boost::get(boost::vertex_name, bg_);
   }
 #ifndef SWIG

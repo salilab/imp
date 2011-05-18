@@ -24,6 +24,7 @@ IMPATOM_BEGIN_NAMESPACE
  */
 class IMPATOMEXPORT Mol2Selector: public Object {
  public:
+  Mol2Selector():Object("Mol2Selector%1%"){}
   virtual bool get_is_selected(const std::string& atom_line) const=0;
   virtual ~Mol2Selector();
 };

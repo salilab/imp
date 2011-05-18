@@ -241,7 +241,9 @@ protected:
   CHARMMDihedrals impropers_;
   CHARMMInternalCoordinates internal_coordinates_;
 
-  CHARMMResidueTopologyBase(std::string type) : type_(type) {
+  CHARMMResidueTopologyBase(std::string type) :
+    Object("CharmmResidueTopoBase%1%"),
+    type_(type) {
     set_name(std::string("CHARMM residue ") + type);
   }
 public:

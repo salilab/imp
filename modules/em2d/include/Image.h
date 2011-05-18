@@ -38,7 +38,8 @@ public:
   Image(int rows, int cols);
 
   //! Create the image reading from a file
-  Image(String filename, const ImageReaderWriter *reader) {
+  Image(String filename, const ImageReaderWriter *reader):
+    Object("Image%1%"){
     read(filename,reader);
   }
 

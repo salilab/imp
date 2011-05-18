@@ -29,7 +29,7 @@ class IMPEMEXPORT CoarseCC : public Object
 {
 
 public:
-
+  CoarseCC():Object("CoarseCC%1%"){}
   //! Calculates the value of the EM fitting term.
   /** \note The function returns scalefac*(1-ccc)
             to support minimization optimization. The ccc value (cross

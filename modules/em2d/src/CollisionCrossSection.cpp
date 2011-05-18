@@ -18,11 +18,13 @@ CollisionCrossSection::CollisionCrossSection(unsigned int  n_projections,
                         double resolution,
                         double pixel_size,
                         double projection_image_size
-                        ): n_projections_(n_projections),
-                        resolution_(resolution),
-                        pixel_size_(pixel_size),
-                        img_size_(projection_image_size),
-                        particles_set_(false) {
+                                             ):
+  Object("CollisionCrossSection%1%"),
+  n_projections_(n_projections),
+  resolution_(resolution),
+  pixel_size_(pixel_size),
+  img_size_(projection_image_size),
+  particles_set_(false) {
 
   regs_ = em2d::get_evenly_distributed_registration_results(n_projections_);
   average_projection_.create(img_size_, img_size_, CV_64FC1);

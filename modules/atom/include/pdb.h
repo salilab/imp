@@ -38,6 +38,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT PDBSelector: public Object {
  public:
+  PDBSelector(): Object("PDBSelector%1%"){}
   //! Return true if the line should be processed
   virtual bool get_is_selected(const std::string& pdb_line) const=0;
   virtual ~PDBSelector();
