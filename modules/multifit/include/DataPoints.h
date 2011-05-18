@@ -34,7 +34,7 @@ typedef IMP::algebra::DenseGrid3D<double> DensGrid;
 //! Holds the data points to be used in the clustering procedure
 class DataPoints : public Object {
  public:
-  DataPoints(){
+  DataPoints(): Object("DataPoints%1%"){
     atts_ = core::XYZ::get_xyz_keys();
     data_=Array1DD_VEC();
   }
