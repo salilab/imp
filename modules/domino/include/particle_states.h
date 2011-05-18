@@ -52,7 +52,8 @@ class IMPDOMINOEXPORT ParticleStatesTable: public Object {
   typedef std::map<Particle*, IMP::internal::OwnerPointer<ParticleStates> > Map;
   Map enumerators_;
   friend class DominoSampler;
-public:
+ public:
+  ParticleStatesTable(): Object("ParticleStatesTable%1%"){}
   // implementation methods use this to get the enumerator
   ParticleStates* get_particle_states(Particle *p) const {
     IMP_USAGE_CHECK(enumerators_.find(p) != enumerators_.end(),
