@@ -262,7 +262,7 @@ namespace {
     IMP_UNUSED(cb);
     IMP_UNUSED(vn);
     IMP_UNUSED(in);
-    if (cur.get_has_value(x) && cur.get_has_value(r)) {
+    if (cur.get_has_value(x, frame) && cur.get_has_value(r, frame)) {
       algebra::Sphere3D s(algebra::Vector3D(cur.get_value(x, frame),
                                             cur.get_value(y, frame),
                                             cur.get_value(z, frame)),
