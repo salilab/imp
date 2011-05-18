@@ -29,7 +29,8 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb.rh"))
 
-    def test_huge(self):
+    # disable as it clobbers machines without much memory
+    def _test_huge(self):
         """Test writing a huge hierarchy"""
         m= IMP.Model()
         print "reading pdb"
