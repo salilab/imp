@@ -8,7 +8,7 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-SmoothingFunction::SmoothingFunction() {}
+SmoothingFunction::SmoothingFunction(): Object("SmoothingFunction%1%") {}
 
 void ForceSwitch::do_show(std::ostream &out) const {
   out << "switching between " << min_distance_

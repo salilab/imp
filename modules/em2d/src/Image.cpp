@@ -12,7 +12,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-Image::Image() {
+Image::Image(): Object("Image%1%") {
   name_ = "";
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);
   // Stats not computed
@@ -22,7 +22,7 @@ Image::Image() {
 
 
 //! Constructor with size
-Image::Image(int rows, int cols) {
+Image::Image(int rows, int cols): Object("Image%1%") {
   set_size_data(rows,cols);
   header_.set_header();
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);

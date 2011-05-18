@@ -25,6 +25,7 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT MapReaderWriter : public Object
 {
 public:
+  MapReaderWriter(): Object("MapReaderWriter%1%"){}
 #ifndef DOXYGEN
   virtual void read(const char *filename, float **data, DensityHeader &header)
     =0;

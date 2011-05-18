@@ -37,7 +37,8 @@ const unsigned int ALIGN2D_WITH_CENTERS = 2;
 class IMPEM2DEXPORT ProjectionFinder: public Object {
 public:
 
-  ProjectionFinder(): parameters_setup_(false),registration_done_(false) {};
+  ProjectionFinder(): Object("ProjectionFinder%1%"),
+    parameters_setup_(false),registration_done_(false) {};
 
   //! Initializes the parameters to generate and match projections
   /*!

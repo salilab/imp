@@ -17,7 +17,7 @@ IMPATOM_BEGIN_NAMESPACE
 //! Storage and access to force field
 class IMPATOMEXPORT ForceFieldParameters: public Object {
 public:
-
+  ForceFieldParameters(): Object("ForceFieldParameters%1%"){}
   //! get radius
   Float get_radius(Atom atom) const;
 

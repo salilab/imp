@@ -18,7 +18,7 @@ IMPEM2D_BEGIN_NAMESPACE
 class ImageReaderWriter : public Object
 {
 public:
-
+  ImageReaderWriter(): Object("ImageReaderWriter%1%"){}
   virtual void read(const String &filename, em::ImageHeader& header,
                     cv::Mat &data) const = 0;
 

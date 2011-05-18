@@ -89,7 +89,8 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
    is itself). Encode being a leaf by having a negative last index, that being
    the index into the array of particles.
 */
-RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d): rb_(d) {
+RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d):
+  Object("RigidBodyHierarchy%1%"), rb_(d) {
   set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name()
