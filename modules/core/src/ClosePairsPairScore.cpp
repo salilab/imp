@@ -124,6 +124,7 @@ get_close_pairs(const ParticlePair &p) const {
   } else {
     last_distance_= dist*.5;
   }
+  last_distance_= std::min(1.0, last_distance_);
   ParticlePairsTemp retps;
   for (int i=0; i < k_; ++i) {
     retps.push_back(ms[i].second);
