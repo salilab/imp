@@ -63,11 +63,13 @@ class NearestNeighborD: public Object {
 public:
   template <class It>
   NearestNeighborD(It b, It e, double epsilon=0):
+    Object("NearestNeighbor%1%"),
     data_(b,e), eps_(epsilon){
     instantiate(b,e);
   }
   NearestNeighborD(const std::vector<VectorD<D> > &vs,
                    double epsilon=0):
+    Object("NearestNeighbor%1%"),
     data_(vs.begin(), vs.end()),
     eps_(epsilon) {
     instantiate(vs.begin(), vs.end());
