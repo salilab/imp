@@ -62,6 +62,7 @@ class IMPCOREEXPORT HierarchyTraits
   template <class HD>
   void on_add(Particle * p, HD d, unsigned int i) const {
     d.get_particle()->add_attribute(P::get_data().parent_key_, p);
+    d.get_particle()->set_is_ref_counted(P::get_data().parent_key_, false);
     d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
     clear_caches(d);
   }

@@ -30,6 +30,8 @@ Particle* graph_connect(Particle* a, Particle* b, GraphData &d)
   Particle *p= new Particle(m);
   p->add_attribute(d.node_keys_[0], a);
   p->add_attribute(d.node_keys_[1], b);
+  p->set_is_ref_counted(d.node_keys_[0], false);
+  p->set_is_ref_counted(d.node_keys_[1], false);
   for (int i=0; i< 2; ++i) {
     Particle *cp=((i==0)?a:b);
     d.push_back(cp, p);
