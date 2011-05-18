@@ -7,6 +7,7 @@
 #include <IMP/constants.h>
 #include <IMP/multifit/internal/SurfaceMatching.h>
 #include <IMP/multifit/internal/GeometricHash.h>
+#include <IMP/algebra/geometric_alignment.h>
 #include <algorithm>
 #include <cmath>
 
