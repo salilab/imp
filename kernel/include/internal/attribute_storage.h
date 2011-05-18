@@ -86,7 +86,8 @@ IMP_SWAP_1(VectorStorage);
 
 template <class TraitsT>
 class RefCountedStorage {
-  VectorOfRefCounted<typename TraitsT::Value> map_;
+  VectorOfRefCounted<typename TraitsT::Value,
+                     typename TraitsT::Policy> map_;
 public:
   typedef TraitsT Traits;
   RefCountedStorage(){}
