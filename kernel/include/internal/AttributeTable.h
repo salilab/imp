@@ -56,18 +56,43 @@ struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
   }
 };
 
-
+class ParticleWrapper {
+  Particle *p_;
+  bool rc_;
+public:
+  ParticleWrapper(): p_(NULL), rc_(true){}
+  ParticleWrapper(Particle *p): p_(p), rc_(true){}
+  ParticleWrapper(Particle *p, bool t): p_(p), rc_(t){}
+  bool get_is_ref_counted() const {return rc_;}
+  void set_is_ref_counted(bool tf) {
+    if (!tf && rc_) {
+      internal::release(p_);
+    } else if (tf && !rc_) {
+      IMP::internal::ref(p_);
+    }
+    rc_=tf;
+  }
+  operator Particle *() const {return p_;}
+  IMP_COMPARISONS_1(ParticleWrapper, p_);
+  bool operator!=(Particle *o) const {
+    return p_ != o;
+  }
+  bool operator==(Particle *o) const {
+    return p_ == o;
+  }
+};
 
 struct ParticlesAttributeTableTraits
 {
-  typedef Particle* Value;
-  typedef Particle* PassValue;
+  typedef ParticleWrapper Value;
+  typedef ParticleWrapper PassValue;
+  typedef ControllableRefCountPolicy Policy;
   typedef ParticleKey Key;
   static Value get_invalid() {
-    return NULL;
+    return ParticleWrapper();
   }
   static bool get_is_valid(const Value& f) {
-    return f!= NULL;
+    return f!= ParticleWrapper();
   }
 };
 
@@ -76,6 +101,7 @@ struct ObjectsAttributeTableTraits
   typedef Object* Value;
   typedef Object* PassValue;
   typedef ObjectKey Key;
+  typedef RefCountPolicy Policy;
   static Value get_invalid() {
     return NULL;
   }

@@ -391,6 +391,15 @@ class IMPEXPORT Particle : public Container
                               true,ps_->strings_,ps_->strings_,{},{});
   IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
                               true,ps_->particles_,ps_->particles_,{},{});
+  /** It is sometimes necessary to tell the particle not to reference
+      count its releationship to another pointer in order to avoid cycles.
+      See RefCounted for more detail.
+  */
+  void set_is_ref_counted(ParticleKey k, bool tf) {
+    ps_->particles_.set(k.get_index(),
+           internal::ParticleWrapper(ps_->particles_.get(k.get_index()),
+                                                  tf));
+  }
   IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
                               true,ps_->objects_,ps_->objects_,{},{});
 
@@ -495,10 +504,12 @@ class IMPEXPORT Particle : public Container
   }
   /** @} */
 
+#if 0
 #if !defined(IMP_DOXYGEN)&& !defined(SWIG)
   void *operator new(std::size_t sz, void*p);
   void operator delete(void *p);
   void *operator new(std::size_t sz);
+#endif
 #endif
 
 #if !defined(IMP_DOXYGEN)

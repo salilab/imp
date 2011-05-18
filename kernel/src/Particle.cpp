@@ -242,7 +242,7 @@ void Particle::clear_caches() {
   ps_->cache_objects_.clear();
 }
 
-
+#if 0
 namespace {
   const std::size_t num_blocks=15000;
   const std::size_t int_size= sizeof(int);
@@ -342,6 +342,7 @@ void Particle::operator delete(void *p) {
   }
   IMP_FAILURE("Particle being deleted was not allocated properly.");
 }
+#endif
 
 /*
 namespace internal {
