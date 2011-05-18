@@ -255,6 +255,7 @@ namespace {
                        bool noradii)
 {
   IMP_FUNCTION_LOG;
+  Pointer<PDBSelector> sp(selector);
   // hierarchy decorator
   Hierarchies ret;
   std::string root_name;

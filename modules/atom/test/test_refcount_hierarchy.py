@@ -4,7 +4,7 @@ import IMP.core
 import IMP.atom
 
 class DecoratorTests(IMP.test.TestCase):
-    def test_simple(self):
+    def _test_simple(self):
         """Check that hierarchies don't have circular ref counts """
         # make sure internal things are created
         m= IMP.Model()
@@ -20,7 +20,7 @@ class DecoratorTests(IMP.test.TestCase):
         del hc
         del h
         refcnt.assert_number(0)
-    def test_simple_bond(self):
+    def _test_simple_bond(self):
         """Check that bonded don't have circular ref counts """
         m= IMP.Model()
         h= IMP.atom.Bonded.setup_particle(IMP.Particle(m))
@@ -45,11 +45,11 @@ class DecoratorTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.MEMORY)
         refcnt = IMP.test.RefCountChecker(self)
         m= IMP.Model()
+        print "reading"
         h= IMP.atom.read_pdb(self.get_input_file_name("mini.pdb"), m)
         del m
         del h
-        # not sure what the 2 are
-        refcnt.assert_number(2)
+        refcnt.assert_number(0)
 
 if __name__ == '__main__':
     IMP.test.main()
