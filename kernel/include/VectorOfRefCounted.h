@@ -36,6 +36,20 @@ struct NoRefCountPolicy {
   static void unref(O) {
   }
 };
+struct ControllableRefCountPolicy {
+  template <class O>
+  static void ref(O o) {
+    if (o.get_is_ref_counted()) {
+      IMP::internal::ref(static_cast<Object*>(o));
+    }
+  }
+  template <class O>
+  static void unref(O o) {
+    if (o.get_is_ref_counted()) {
+      IMP::internal::unref(static_cast<Object*>(o));
+    }
+  }
+};
 #endif
 
 class Object;
