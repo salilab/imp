@@ -16,6 +16,7 @@ namespace po = boost::program_options;
 std::string input, output;
 po::options_description desc("Usage: input_hdf5 output_graphics");
 double restraint_max=-1;
+std::string file_type="auto";
 
 int frame=0;
 void print_help() {
@@ -117,6 +118,8 @@ int main(int argc, char **argv) {
     ("score,s", po::value< double >(&restraint_max),
      "The upper bound for the restraints scores to color the "\
      "restraints by score.")
+    ("type,T", po::value< std::string >(&file_type),
+     "The program to display with (one of pymol or chimera or auto).")
     ("input-file,i", po::value< std::string >(&input),
      "input hdf5 file")
     ("output-file,o", po::value< std::string >(&output),
@@ -128,10 +131,27 @@ int main(int argc, char **argv) {
   po::store(
       po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
   po::notify(vm);
-  if (vm.count("help") || input.empty() || output.empty()) {
+  if (vm.count("help") || input.empty()) {
     print_help();
     return 1;
   }
+  bool exec=false;
+  if (output.empty()) {
+    exec=true;
+    if (file_type=="auto") {
+      print_help();
+      return 1;
+    }
+    if (file_type=="pymol") {
+      output= IMP::create_temporary_file_name("display", ".pym");
+    } else if (file_type=="chimera") {
+      output= IMP::create_temporary_file_name("display", ".py");
+    } else {
+      print_help();
+      return 1;
+    }
+  }
+
   IMP::rmf::RootHandle rh(input, false);
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
@@ -194,5 +214,13 @@ int main(int argc, char **argv) {
     }
     add_restraints(rh, cur_frame, w);
   }
-  return 0;
+  if (exec) {
+    if (file_type=="pymol") {
+      return system((std::string("pymol")+" "+output).c_str());
+    } else {
+      return system((std::string("chimera")+" "+output).c_str());
+    }
+  } else {
+    return 0;
+  }
 }
