@@ -43,7 +43,7 @@ IMP::display::Geometries PairRestraintGeometry::get_components() const {
     non_empty=true;
     mp=.5*(v0+v1);
   }
-  double s= r_->unprotected_evaluate(false);
+  double s= r_->unprotected_evaluate(NULL);
   std::ostringstream oss;
   oss << s;
   ret.push_back(new LabelGeometry(mp, oss.str()));
@@ -67,7 +67,7 @@ IMP::display::Geometries PairsRestraintGeometry::get_components() const {
         non_empty=true;
         mp=.5*(v0+v1);
     });
-  double s= r_->evaluate(false);
+  double s= r_->evaluate(NULL);
   std::ostringstream oss;
   oss << s;
   ret.push_back(new LabelGeometry(mp, oss.str()));
@@ -132,7 +132,7 @@ IMP::display::Geometries ConnectivityRestraintGeometry::get_components() const {
     ret.back()->set_name(r_->get_name()+" edges");
   }
 
-  double s= r_->evaluate(false);
+  double s= r_->evaluate(NULL);
   std::ostringstream oss;
   oss << s;
   ret.push_back(new LabelGeometry(mv, oss.str()));
