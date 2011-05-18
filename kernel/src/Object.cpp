@@ -47,7 +47,7 @@ Object::Object(std::string name)
   } else {
     name_=name;
   }
-  IMP_LOG(MEMORY, "Creating object \"" << name
+  IMP_LOG(MEMORY, "Creating object \"" << name_
           << "\" (" << this << ")" << std::endl);
 }
 
