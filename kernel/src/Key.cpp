@@ -9,6 +9,7 @@
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
 #include "IMP/internal/map.h"
+#include "IMP/Particle.h"
 #include "IMP/internal/AttributeTable.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
