@@ -25,7 +25,7 @@
 
 
 IMP_BEGIN_NAMESPACE
-bool
+IMPEXPORT bool
 get_is_static_container(Container *c,
                         const DependencyGraph &dg,
                         const ParticlesTemp &pst);
