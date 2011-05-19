@@ -9,36 +9,34 @@
 using namespace IMP;
 using namespace IMP::membrane;
 
-int main(int  , char **)
+std::vector<double> generate_TM
+(Model *m,atom::Hierarchy *protein,core::TableRefiner *tbr)
 {
-
-// create a new model
-IMP_NEW(Model,m,());
-
-// create representation
-IMP_NEW(core::TableRefiner,tbr,());
-// root hierarchy
-IMP_NEW(Particle,ph,(m));
-atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
+std::vector<double> rot0;
+int nres,jseq;
+double x,y,z;
+double vol,rg,bb,ee;
+algebra::Rotation3D rot;
+algebra::Transformation3D tr;
 
 for(int i=0;i<TM_num;i++){
  IMP_NEW(Particle,pm,(m));
  atom::Molecule tm=atom::Molecule::setup_particle(pm);
  tm->set_name(TM_names[i]);
- int nres=TM_res[i][1]-TM_res[i][0]+1;
+ nres=TM_res[i][1]-TM_res[i][0]+1;
  core::XYZs atoms;
 // cycle on the number of residues
  for(int j=0;j<nres;j++){
-  double x=2.3*cos(radians(100.0)*double(j));
-  double y=2.3*sin(radians(100.0)*double(j));
-  double z=1.51*(double(j)-double((nres-1))/2.0);
+  x=2.3*cos(radians(100.0)*double(j));
+  y=2.3*sin(radians(100.0)*double(j));
+  z=1.51*(double(j)-double((nres-1))/2.0);
   // set up residue
   IMP_NEW(Particle,pr,(m));
-  int jseq=TM_res[i][0]+j;
+  jseq=TM_res[i][0]+j;
   atom::Residue
 r=atom::Residue::setup_particle(pr,atom::get_residue_type(TM_seq[jseq-1]),jseq);
-  double vol=atom::get_volume_from_residue_type(r.get_residue_type());
-  double rg=algebra::get_ball_radius_from_volume_3d(vol);
+  vol=atom::get_volume_from_residue_type(r.get_residue_type());
+  rg=algebra::get_ball_radius_from_volume_3d(vol);
   //rg=2.273
   //set up atom
   IMP_NEW(Particle,pa,(m));
@@ -49,30 +47,122 @@ algebra::Sphere3D(algebra::Vector3D(x,y,z),rg));
   tm.add_child(r);
   atoms.push_back(ad);
  }
- all.add_child(tm);
+ protein->add_child(tm);
  // create rigid body
  IMP_NEW(Particle,prb,(m));
  core::RigidBody rb=core::RigidBody::setup_particle(prb,atoms);
  rb->set_name(TM_names[i]);
  tbr->add_particle(prb,atoms);
  //initialize helix decorator
- double bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
- double ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
+ bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
+ ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
  membrane::HelixDecorator d_rbs=
 membrane::HelixDecorator::setup_particle(prb,bb,ee);
- if ( TM_topo[i]*(ee-bb)>0.0 ) rot0[i]=-IMP::PI/2.0;
- else rot0[i]=IMP::PI/2.0;
+ if ( TM_topo[i]*(ee-bb)>0.0 ) rot0.push_back(-IMP::PI/2.0);
+ else rot0.push_back(IMP::PI/2.0);
  //initialize system to match topology
- algebra::Rotation3D rot;
  if ( TM_topo[i]<0.0 )
-rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),IMP::PI);
- else                   rot=algebra::get_identity_rotation_3d();
- algebra::Transformation3D
-tr=algebra::Transformation3D(rot,algebra::Vector3D(double(i)*15.0,0,0));
+  rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),IMP::PI);
+ else rot=algebra::get_identity_rotation_3d();
+ tr=algebra::Transformation3D(rot,algebra::Vector3D(double(i)*15.0,0,0));
  core::transform(rb,tr);
 }
+return rot0;
+}
+
+void add_excluded_volume (Model *m,atom::Hierarchy protein)
+{
+IMP_NEW(container::ListSingletonContainer, lsc, (m));
+atom::Selection s=atom::Selection(protein);
+s.set_atom_type(atom::AT_CA);
+lsc->add_particles(s.get_selected_particles());
+IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, kappa_));
+m->add_restraint(evr);
+m->set_maximum_score(evr, max_score_);
+return;
+}
+
+core::PairRestraint *add_distance_restraint
+ (Model *m,Particle *s0,Particle *s1,double x0,double k)
+{
+core::HarmonicUpperBound *hub = new core::HarmonicUpperBound(x0,k);
+core::DistancePairScore *df = new core::DistancePairScore(hub);
+core::PairRestraint *dr = new core::PairRestraint(df, ParticlePair(s0, s1));
+m->add_restraint(dr);
+m->set_maximum_score(dr, max_score_);
+return dr;
+}
+
+RestraintSet *create_restraints
+(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
+{
+RestraintSet *rset = new RestraintSet;
+add_excluded_volume(m,protein);
+for(int i=0;i<TM_nloop;i++){
+    int i0=TM_loop[i][0];
+    int i1=TM_loop[i][1];
+    atom::Selection s0=atom::Selection(protein);
+    s0.set_atom_type(atom::AT_CA);
+    s0.set_residue_index(TM_res[i0][1]);
+    atom::Selection s1=atom::Selection(protein);
+    s1.set_atom_type(atom::AT_CA);
+    s1.set_residue_index(TM_res[i1][0]);
+    Particle *p0=s0.get_selected_particles()[0];
+    Particle *p1=s1.get_selected_particles()[0];
+// End-to-End distance restraint
+   double length=1.6*(double(TM_res[i1][0]-TM_res[i0][1]+1))+7.4;
+   //core::PairRestraint *lr=add_distance_restraint(m,p0,p1,length,kappa_)
+// COM-COM distance restraint
+   core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
+   core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
+   core::PairRestraint *lrb=add_distance_restraint(m,rb0,rb1,35.0,kappa_);
+   rset->add_restraint(lrb);
+}
+//add_packing_restraint()
+//add_DOPE()
+//add_diameter_restraint(diameter_)
+//add_depth_restraint(z_range_)
+//add_tilt_restraint(tilt_range_,rot0)
+//add_x_restraint(0.0)
+//add_y_restraint(0.0)
+/*
+for(i=0;i<TM_ninter;i++){
+    int i0=TM_inter[i][0];
+    int i1=TM_inter[i][1];
+    atom::Selection s0=atom::Selection(protein);
+    s0.set_molecule(TM_names[i0]);
+    atom::Selection s1=atom::Selection(protein);
+    s1.set_molecule(TM_names[i1]);
+    core::RigidBody rb0
+    =core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
+    core::RigidBody rb1
+    =core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
+    core::PairRestraint *ir=add_interacting_restraint(rb0,rb1)
+    rset->add_restraint(ir)
+}
+*/
+return rset;
+}
+
+
+int main(int  , char **)
+{
+
+// parsing input
+
+// create a new model
+IMP_NEW(Model,m,());
+// table refiner for rigid bodies
+IMP_NEW(core::TableRefiner,tbr,());
+// root hierarchy
+IMP_NEW(Particle,ph,(m));
+atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
+
+// create representation
+TM_rot0=generate_TM(m,&all,tbr);
 
 // create restraints
+RestraintSet *rset=create_restraints(m,all,tbr);
 
 // create discrete states
 

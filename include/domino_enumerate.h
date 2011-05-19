@@ -15,6 +15,7 @@
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/membrane/HelixDecorator.h>
+#include <IMP/atom/Atom.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -87,11 +88,13 @@ const double TM_topo[TM_num]={-1.0,1.0};
 // name of the TMH
 const std::string TM_names[TM_num]={"TM4","TM5"};
 // initial rotation
-double rot0[TM_num];
+std::vector<double> TM_rot0;
 // interacting pairs
-const std::string TM_inter[1][2]={{"TM5","TM6"}};
+const int TM_ninter=1;
+const int TM_inter[TM_ninter][2]={{0,1}};
 // adjacent pairs
-const std::string TM_loop[1][2]={{"TM4","TM5"}};
+const int TM_nloop=1;
+const int TM_loop[TM_nloop][2]={{0,1}};
 
 IMPMEMBRANE_END_NAMESPACE
 
