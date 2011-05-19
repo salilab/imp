@@ -33,7 +33,7 @@ void PymolWriter::handle_close() {
   get_stream() << "\n\ntry:\n";
   get_stream() << "  state+1\n";
   get_stream() << "except:\n";
-  get_stream() << "  state=0\n";
+  get_stream() << "  state=1\n";
   get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, state)\n";
   get_stream() << "state+=1\n";
 }
