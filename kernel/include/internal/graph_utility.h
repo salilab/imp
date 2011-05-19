@@ -46,7 +46,9 @@ class ObjectNameWriter {
   template <class T, class Enabled=void>
   struct Name {
     static std::string get(const T &t) {
-      return t.get_name();
+      std::ostringstream oss;
+      oss << t;
+      return oss.str();
     }
   };
   template <class T>
