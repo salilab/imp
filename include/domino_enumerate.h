@@ -35,6 +35,9 @@ const double max_score_=0.01;
 const int packing_nsig_=3;
 const int packing_ncl_=13;
 
+// depth range
+const IMP::FloatRange z_range_ = IMP::FloatRange(-5.0,5.0);
+
 // scoring function
 const std::string score_name_="dope_score.lib";
 

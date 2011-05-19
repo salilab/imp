@@ -144,6 +144,26 @@ m->add_restraint(sr);
 m->set_maximum_score(sr, max_score_);
 }
 
+void add_depth_restraint(Model *m, atom::Hierarchy protein)
+{
+IMP_NEW(container::ListSingletonContainer, lrb, (m));
+for(int i=0;i<TM_num;i++)
+{
+ atom::Selection s0=atom::Selection(protein);
+ s0.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
+ lrb->add_particle(rb);
+}
+core::HarmonicWell *well = new core::HarmonicWell(z_range_,kappa_);
+core::AttributeSingletonScore *ass = new
+core::AttributeSingletonScore(well,FloatKey("z"));
+IMP_NEW(container::SingletonsRestraint, sr, (ass, lrb));
+sr->set_name("Depth restraint");
+m->add_restraint(sr);
+m->set_maximum_score(sr, max_score_);
+}
+
 RestraintSet *create_restraints
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
 {
@@ -172,7 +192,7 @@ for(int i=0;i<TM_nloop;i++){
 //add_packing_restraint()
 //add_DOPE()
 //add_diameter_restraint(diameter_)
-//add_depth_restraint(z_range_)
+add_depth_restraint(m,protein);
 //add_tilt_restraint(tilt_range_,rot0)
 add_x_restraint(m,protein,0.0);
 add_y_restraint(m,protein,0.0);
