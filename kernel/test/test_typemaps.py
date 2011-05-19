@@ -241,7 +241,8 @@ class ParticleTests(IMP.test.TestCase):
                     "get_is_scored",
                     "set_is_scored",
                     "get_from",
-                    "get_is_shared"
+                    "get_is_shared",
+                    "set_is_ref_counted"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
