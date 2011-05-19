@@ -15,7 +15,9 @@
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/membrane/HelixDecorator.h>
+#include <IMP/membrane/RigidBodyPackingScore.h>
 #include <IMP/membrane/SameHelixPairFilter.h>
+#include <IMP/membrane/TiltSingletonScore.h>
 #include <IMP/atom/Atom.h>
 #include <iostream>
 #include <string>
@@ -38,6 +40,9 @@ const int packing_ncl_=13;
 
 // depth range
 const IMP::FloatRange z_range_ = IMP::FloatRange(-5.0,5.0);
+
+// tilt range
+const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(40.0));
 
 // scoring function
 std::string score_name_="dope_score.lib";
@@ -94,8 +99,8 @@ const std::string TM_names[TM_num]={"TM4","TM5"};
 // initial rotation
 std::vector<double> TM_rot0;
 // interacting pairs
-const int TM_ninter=0;
-//const int TM_inter[TM_ninter][2]={{0,1}};
+const int TM_ninter=1;
+const int TM_inter[TM_ninter][2]={{0,1}};
 // adjacent pairs
 const int TM_nloop=1;
 const int TM_loop[TM_nloop][2]={{0,1}};

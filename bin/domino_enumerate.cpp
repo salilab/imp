@@ -99,6 +99,53 @@ m->add_restraint(dope);
 m->set_maximum_score(dope, max_score_);
 }
 
+void add_packing_restraint
+(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
+{
+//if the helices are interacting, apply a filter on the crossing angle
+//first define the allowed intervals, by specifying the center
+//of the distributions (Walters and DeGrado PNAS (2007) 103:13658)
+const double om0[]={-156.5, 146.4, -37.9, 13.8, 178.0, 25.5, -161.1, 44.8,
+127.4, -60.2, -129.2, 2.4, 161.0};
+//the sigmas
+const double sig_om0[]={10.1, 13.6, 7.50, 16.6, 20.8, 11.2, 10.3, 8.8, 12.3,
+14.8, 12.9, 16.2, 17.6};
+//  distance cutoff
+const double dd0[]={8.61, 8.57, 7.93, 9.77, 9.14, 8.55, 9.30, 7.96, 9.40, 8.61,
+8.97, 8.55, 8.75};
+//  and distance sigmas
+const double sig_dd0[]={0.89, 0.99, 0.88, 1.18, 1.47, 1.05, 1.57, 1.13, 1.0,
+1.04, 1.65, 0.78, 1.33};
+//  the allowed number of sigma
+int nsig=packing_nsig_;
+//  and the number of clusters
+int ncl=packing_ncl_;
+// create allowed intervals (omega in radians)
+std::vector<double> om_b, om_e, dd_b, dd_e;
+
+for(int i=0;i<ncl;i++)
+{
+ dd_b.push_back(dd0[i]-double(nsig)*sig_dd0[i]);
+ dd_e.push_back(dd0[i]+double(nsig)*sig_dd0[i]);
+ om_b.push_back(std::max(radians(om0[i]-double(nsig)*sig_om0[i]),-IMP::PI));
+ om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]), IMP::PI));
+}
+IMP_NEW(container::ListSingletonContainer,lrb,(m));
+for(int i=0;i<TM_num;i++)
+{
+ atom::Selection s=atom::Selection(protein);
+ s.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
+ lrb->add_particle(rb);
+}
+IMP_NEW(container::ClosePairContainer,nrb,(lrb, 25.0));
+IMP_NEW(RigidBodyPackingScore,ps,(tbr, om_b, om_e, dd_b, dd_e));
+IMP_NEW(container::PairsRestraint,prs,(ps, nrb));
+m->add_restraint(prs);
+m->set_maximum_score(prs, max_score_);
+}
+
 core::PairRestraint* add_distance_restraint
  (Model *m,Particle *s0,Particle *s1,double x0)
 {
@@ -111,10 +158,10 @@ m->set_maximum_score(dr, max_score_);
 return dr.release();
 }
 
-void add_x_restraint(Model *m, atom::Hierarchy protein, double x0)
+void add_x_restraint(Model *m, atom::Hierarchy protein)
 {
-IMP_NEW(core::Harmonic,ha,(x0,kappa_));
-IMP_NEW(core::HarmonicLowerBound,hal,(x0,kappa_));
+IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
+IMP_NEW(core::HarmonicLowerBound,hal,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass1,(ha,FloatKey("x")));
 IMP_NEW(core::AttributeSingletonScore,ass2,(hal,FloatKey("x")));
 for(int i=0;i<TM_num;i++)
@@ -138,9 +185,9 @@ for(int i=0;i<TM_num;i++)
 }
 }
 
-void add_y_restraint(Model *m, atom::Hierarchy protein, double x0)
+void add_y_restraint(Model *m, atom::Hierarchy protein)
 {
-IMP_NEW(core::Harmonic,ha,(x0,kappa_));
+IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass,(ha,FloatKey("y")));
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
 for(int i=0;i<TM_num;i++)
@@ -207,6 +254,29 @@ m->add_restraint(dr);
 m->set_maximum_score(dr, max_score_);
 }
 
+void add_tilt_restraint(Model *m, atom::Hierarchy protein)
+{
+Float x0,x1;
+algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
+algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
+for(int i=0;i<TM_num;i++)
+{
+ atom::Selection s=atom::Selection(protein);
+ s.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
+ if ( TM_rot0[i]>0.0 )
+      {x0=IMP::PI-tilt_range_.second; x1=IMP::PI-tilt_range_.first;}
+ else {x0=tilt_range_.first;          x1=tilt_range_.second;}
+ IMP::FloatRange range=IMP::FloatRange(x0,x1);
+ IMP_NEW(core::HarmonicWell,well,(range, kappa_));
+ IMP_NEW(TiltSingletonScore,tss,(well, laxis, zaxis));
+ IMP_NEW(core::SingletonRestraint,sr,(tss, rb));
+ m->add_restraint(sr);
+ m->set_maximum_score(sr, max_score_);
+}
+}
+
 RestraintSet* create_restraints
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
 {
@@ -232,13 +302,13 @@ for(int i=0;i<TM_nloop;i++){
    core::PairRestraint* lrb=add_distance_restraint(m,rb0,rb1,35.0);
    rset->add_restraint(lrb);
 }
-//add_packing_restraint()
+add_packing_restraint(m,protein,tbr);
 add_DOPE(m,protein);
 add_diameter_restraint(m,protein);
 add_depth_restraint(m,protein);
-//add_tilt_restraint(tilt_range_,rot0)
-add_x_restraint(m,protein,0.0);
-add_y_restraint(m,protein,0.0);
+add_tilt_restraint(m,protein);
+add_x_restraint(m,protein);
+add_y_restraint(m,protein);
 for(int i=0;i<TM_ninter;i++){
     int i0=TM_inter[i][0];
     int i1=TM_inter[i][1];
