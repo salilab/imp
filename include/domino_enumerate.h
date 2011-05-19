@@ -94,8 +94,8 @@ const std::string TM_names[TM_num]={"TM4","TM5"};
 // initial rotation
 std::vector<double> TM_rot0;
 // interacting pairs
-const int TM_ninter=1;
-const int TM_inter[TM_ninter][2]={{0,1}};
+const int TM_ninter=0;
+//const int TM_inter[TM_ninter][2]={{0,1}};
 // adjacent pairs
 const int TM_nloop=1;
 const int TM_loop[TM_nloop][2]={{0,1}};
