@@ -31,7 +31,7 @@ inline btVector3 tr(const algebra::VectorD<3> &v) {
 inline const algebra::VectorD<3> tr(const btVector3 &v) {
   return algebra::VectorD<3>(v[0], v[1], v[2]);
 }
-inline const algebra::Rotation3D tr(const btQuaternion q) {
+inline const algebra::Rotation3D tr(const btQuaternion &q) {
   return algebra::Rotation3D(q[3], q[0], q[1], q[2]);
 }
 inline const btQuaternion tr(const algebra::Rotation3D& q) {
