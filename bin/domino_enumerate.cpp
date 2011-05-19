@@ -77,20 +77,71 @@ atom::Selection s=atom::Selection(protein);
 s.set_atom_type(atom::AT_CA);
 lsc->add_particles(s.get_selected_particles());
 IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, kappa_));
+evr->set_name("Excluded Volume");
 m->add_restraint(evr);
 m->set_maximum_score(evr, max_score_);
 return;
 }
 
 core::PairRestraint *add_distance_restraint
- (Model *m,Particle *s0,Particle *s1,double x0,double k)
+ (Model *m,Particle *s0,Particle *s1,double x0)
 {
-core::HarmonicUpperBound *hub = new core::HarmonicUpperBound(x0,k);
+core::HarmonicUpperBound *hub = new core::HarmonicUpperBound(x0,kappa_);
 core::DistancePairScore *df = new core::DistancePairScore(hub);
 core::PairRestraint *dr = new core::PairRestraint(df, ParticlePair(s0, s1));
+dr->set_name("Distance restraint");
 m->add_restraint(dr);
 m->set_maximum_score(dr, max_score_);
 return dr;
+}
+
+void add_x_restraint(Model *m, atom::Hierarchy protein, double x0)
+{
+core::Harmonic *ha= new core::Harmonic(x0,kappa_);
+core::HarmonicLowerBound *hal= new core::HarmonicLowerBound(x0,kappa_);
+core::AttributeSingletonScore *ass1 = new
+core::AttributeSingletonScore(ha,FloatKey("x"));
+core::AttributeSingletonScore *ass2 = new
+core::AttributeSingletonScore(hal,FloatKey("x"));
+for(int i=0;i<TM_num;i++)
+{
+ atom::Selection s0=atom::Selection(protein);
+ s0.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
+ if( i == 0 ){
+  IMP_NEW(core::SingletonRestraint, sr, (ass1, rb));
+  sr->set_name("Fix x for particle "+TM_names[i]);
+  m->add_restraint(sr);
+  m->set_maximum_score(sr, max_score_);
+ }
+ if( i == 1 ){
+  IMP_NEW(core::SingletonRestraint, sr, (ass2, rb));
+  sr->set_name("Fix x for particle "+TM_names[i]);
+  m->add_restraint(sr);
+  m->set_maximum_score(sr, max_score_);
+ }
+}
+}
+
+void add_y_restraint(Model *m, atom::Hierarchy protein, double x0)
+{
+core::Harmonic *ha= new core::Harmonic(x0,kappa_);
+core::AttributeSingletonScore *ass = new
+core::AttributeSingletonScore(ha,FloatKey("y"));
+IMP_NEW(container::ListSingletonContainer, lrb, (m));
+for(int i=0;i<TM_num;i++)
+{
+ atom::Selection s0=atom::Selection(protein);
+ s0.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
+ if( i < 2 ) lrb->add_particle(rb);
+}
+IMP_NEW(container::SingletonsRestraint, sr, (ass, lrb));
+sr->set_name("Fix y for at most two particles ");
+m->add_restraint(sr);
+m->set_maximum_score(sr, max_score_);
 }
 
 RestraintSet *create_restraints
@@ -111,11 +162,11 @@ for(int i=0;i<TM_nloop;i++){
     Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
    double length=1.6*(double(TM_res[i1][0]-TM_res[i0][1]+1))+7.4;
-   //core::PairRestraint *lr=add_distance_restraint(m,p0,p1,length,kappa_)
+   //core::PairRestraint *lr=add_distance_restraint(m,p0,p1,length)
 // COM-COM distance restraint
    core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
    core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
-   core::PairRestraint *lrb=add_distance_restraint(m,rb0,rb1,35.0,kappa_);
+   core::PairRestraint *lrb=add_distance_restraint(m,rb0,rb1,35.0);
    rset->add_restraint(lrb);
 }
 //add_packing_restraint()
@@ -123,8 +174,8 @@ for(int i=0;i<TM_nloop;i++){
 //add_diameter_restraint(diameter_)
 //add_depth_restraint(z_range_)
 //add_tilt_restraint(tilt_range_,rot0)
-//add_x_restraint(0.0)
-//add_y_restraint(0.0)
+add_x_restraint(m,protein,0.0);
+add_y_restraint(m,protein,0.0);
 /*
 for(i=0;i<TM_ninter;i++){
     int i0=TM_inter[i][0];
