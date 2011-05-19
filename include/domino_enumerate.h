@@ -15,6 +15,7 @@
 #include <IMP/atom.h>
 #include <IMP/container.h>
 #include <IMP/membrane/HelixDecorator.h>
+#include <IMP/membrane/SameHelixPairFilter.h>
 #include <IMP/atom/Atom.h>
 #include <iostream>
 #include <string>
@@ -39,7 +40,7 @@ const int packing_ncl_=13;
 const IMP::FloatRange z_range_ = IMP::FloatRange(-5.0,5.0);
 
 // scoring function
-const std::string score_name_="dope_score.lib";
+std::string score_name_="dope_score.lib";
 
 // other restraints
 const double d0_inter_=8.0;

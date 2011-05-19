@@ -70,7 +70,7 @@ membrane::HelixDecorator::setup_particle(prb,bb,ee);
 return rot0;
 }
 
-void add_excluded_volume (Model *m,atom::Hierarchy protein)
+void add_excluded_volume (Model *m, atom::Hierarchy protein)
 {
 IMP_NEW(container::ListSingletonContainer, lsc, (m));
 atom::Selection s=atom::Selection(protein);
@@ -80,7 +80,24 @@ IMP_NEW(core::ExcludedVolumeRestraint, evr, (lsc, kappa_));
 evr->set_name("Excluded Volume");
 m->add_restraint(evr);
 m->set_maximum_score(evr, max_score_);
-return;
+}
+
+void add_DOPE(Model *m, atom::Hierarchy protein)
+{
+atom::add_dope_score_data(protein);
+IMP_NEW(container::ListSingletonContainer, lsc, (m));
+atom::Selection s=atom::Selection(protein);
+s.set_atom_type(atom::AT_CA);
+lsc->add_particles(s.get_selected_particles());
+container::ClosePairContainer *cpc=new container::ClosePairContainer(lsc, 15.0);
+SameHelixPairFilter *f=new SameHelixPairFilter();
+cpc->add_pair_filter(f);
+atom::DopePairScore *dps=new atom::DopePairScore(15.0,
+atom::get_data_path(score_name_));
+container::PairsRestraint *dope = new container::PairsRestraint(dps,cpc);
+dope->set_name("DOPE scoring function");
+m->add_restraint(dope);
+m->set_maximum_score(dope, max_score_);
 }
 
 core::PairRestraint *add_distance_restraint
@@ -190,7 +207,7 @@ for(int i=0;i<TM_nloop;i++){
    rset->add_restraint(lrb);
 }
 //add_packing_restraint()
-//add_DOPE()
+add_DOPE(m,protein);
 //add_diameter_restraint(diameter_)
 add_depth_restraint(m,protein);
 //add_tilt_restraint(tilt_range_,rot0)
