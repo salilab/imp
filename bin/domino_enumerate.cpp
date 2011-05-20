@@ -129,16 +129,14 @@ int ncl=packing_ncl_;
 // create allowed intervals (omega in radians)
 std::vector<double> om_b, om_e, dd_b, dd_e;
 
-for(int i=0;i<ncl;i++)
-{
+for(int i=0;i<ncl;i++){
  dd_b.push_back(dd0[i]-double(nsig)*sig_dd0[i]);
  dd_e.push_back(dd0[i]+double(nsig)*sig_dd0[i]);
  om_b.push_back(std::max(radians(om0[i]-double(nsig)*sig_om0[i]),-IMP::PI));
  om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]), IMP::PI));
 }
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -170,8 +168,7 @@ IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::HarmonicLowerBound,hal,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass1,(ha,FloatKey("x")));
 IMP_NEW(core::AttributeSingletonScore,ass2,(hal,FloatKey("x")));
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -196,8 +193,7 @@ void add_y_restraint(Model *m, atom::Hierarchy protein)
 IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass,(ha,FloatKey("y")));
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -213,8 +209,7 @@ m->set_maximum_score(sr, max_score_);
 void add_depth_restraint(Model *m, atom::Hierarchy protein)
 {
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -245,8 +240,7 @@ return ir.release();
 void add_diameter_restraint(Model *m, atom::Hierarchy protein)
 {
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -265,8 +259,7 @@ void add_tilt_restraint(Model *m, atom::Hierarchy protein)
 Float x0,x1;
 algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
 algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
-for(int i=0;i<TM_num;i++)
-{
+for(int i=0;i<TM_num;i++){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
@@ -383,6 +376,23 @@ for(int i=0;i<TM_num;i++){
  return pst.release();
 }
 
+domino::DominoSampler* create_sampler
+(Model *m, RestraintSet *rset, domino::ParticleStatesTable *pst)
+{
+domino::SubsetFilterTables filters=domino::SubsetFilterTables();
+IMP_NEW(domino::DominoSampler,s,(m,pst));
+domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
+domino::SubsetGraph jt=domino::get_junction_tree(ig);
+IMP_NEW(domino::ExclusionSubsetFilterTable,esft,(pst));
+IMP_NEW(domino::RestraintScoreSubsetFilterTable,rssft,(m,pst));
+filters.push_back(esft);
+filters.push_back(rssft);
+IMP_NEW(domino::BranchAndBoundAssignmentsTable,states,(pst,filters));
+s->set_assignments_table(states);
+s->set_subset_filter_tables(filters);
+return s.release();
+}
+
 int main(int  , char **)
 {
 
@@ -406,7 +416,7 @@ RestraintSet* rset=create_restraints(m,all,tbr);
 domino::ParticleStatesTable* pst=create_states(all);
 
 // create sampler
-
+domino::DominoSampler* s=create_sampler(m,rset,pst);
 // sampling
 
 // writing things to file
