@@ -53,7 +53,7 @@ const double grid_Dx=1.0;
 // nbin
 const int grid_itilt=int(radians(45.0)/grid_Dtilt);
 const int grid_iswing=int(radians(360.0)/grid_Dswing);
-const int grid_irot=int(radians(45.0)/grid_Drot);
+const int grid_irot=int(radians(360.0)/grid_Drot);
 const int grid_ix=int(diameter_/grid_Dx);
 const int grid_iy=int(diameter_/grid_Dx);
 const int grid_iz=int(5.0/grid_Dx);
