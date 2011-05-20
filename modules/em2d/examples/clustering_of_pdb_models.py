@@ -3,6 +3,7 @@ import IMP.core as core
 import IMP.atom as atom
 import IMP.em2d as em2d
 import os
+import sys
 import csv
 """
     Clustering of pdb models.
@@ -14,6 +15,10 @@ import csv
 
 
 """
+
+if sys.platform == 'win32':
+    sys.stderr.write("this example does not currently work on Windows\n")
+    sys.exit(0)
 
 def get_columns(fn,cols=[],delimiter=" ",comment="#"):
     """ ge the columns of a file:
