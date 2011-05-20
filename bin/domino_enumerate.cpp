@@ -417,7 +417,12 @@ domino::ParticleStatesTable* pst=create_states(all);
 
 // create sampler
 domino::DominoSampler* s=create_sampler(m,rset,pst);
+
 // sampling
+domino::Subset ass=domino::Subset(pst->get_particles());
+
+domino::Assignments cs=s->get_sample_assignments(ass);
+std::cout << "Found " << cs.size() <<" solutions" << std::endl;
 
 // writing things to file
 
