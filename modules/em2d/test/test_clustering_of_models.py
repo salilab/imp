@@ -44,6 +44,8 @@ class ClusteringTests(IMP.test.TestCase):
 
     def test_cluster_of_models(self):
         """Test hierarchical clustering of models"""
+        if sys.platform == 'win32':
+            self.skipTest("clustering does not work on Windows")
         input_dir=self.get_input_file_name("")
         sub_dir = input_dir+"/clustering/"
         os.chdir(sub_dir)
