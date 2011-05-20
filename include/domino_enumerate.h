@@ -10,16 +10,6 @@
 #define IMPMEMBRANE_DOMINO_ENUMERATE_H
 #include "membrane_config.h"
 #include <IMP.h>
-#include <IMP/core.h>
-#include <IMP/algebra.h>
-#include <IMP/atom.h>
-#include <IMP/container.h>
-#include <IMP/membrane/HelixDecorator.h>
-#include <IMP/membrane/RigidBodyPackingScore.h>
-#include <IMP/membrane/SameHelixPairFilter.h>
-#include <IMP/membrane/TiltSingletonScore.h>
-#include <IMP/atom/Atom.h>
-#include <iostream>
 #include <string>
 #include <vector>
 

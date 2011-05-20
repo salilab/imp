@@ -6,6 +6,12 @@
  *
  */
 #include <IMP/membrane/domino_enumerate.h>
+#include <IMP/core.h>
+#include <IMP/algebra.h>
+#include <IMP/atom.h>
+#include <IMP/container.h>
+#include <IMP/domino.h>
+#include <IMP/membrane.h>
 using namespace IMP;
 using namespace IMP::membrane;
 
@@ -309,6 +315,7 @@ add_depth_restraint(m,protein);
 add_tilt_restraint(m,protein);
 add_x_restraint(m,protein);
 add_y_restraint(m,protein);
+/*
 for(int i=0;i<TM_ninter;i++){
     int i0=TM_inter[i][0];
     int i1=TM_inter[i][1];
@@ -322,8 +329,58 @@ for(int i=0;i<TM_ninter;i++){
     =core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
     core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr);
     rset->add_restraint(ir);
-}
+}*/
 return rset.release();
+}
+
+domino::ParticleStatesTable* create_states(atom::Hierarchy protein)
+{
+double xx,yy,zz,rg;
+algebra::Rotation3D rotz,tilt,rot1,swing,rot2;
+algebra::Rotation3D rot0=
+algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), IMP::PI/2.0);
+std::vector<algebra::ReferenceFrame3D> trs;
+for(int i=-grid_ix;i<grid_ix+1;i++){
+ xx=double(i)*grid_Dx;
+ for(int j=-grid_iy;j<grid_iy+1;j++){
+  yy=double(j)*grid_Dx;
+  rg=sqrt(xx*xx+yy*yy);
+  if ( rg > diameter_ ) continue;
+  for(int k=-grid_iz;k<grid_iz+1;k++){
+   zz=double(k)*grid_Dx;
+   for(int ii=0;ii<grid_irot;ii++){
+    rotz=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
+double(ii)*grid_Drot);
+    for(int jj=0;jj<grid_itilt+1;jj++){
+     tilt=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
+double(jj)*grid_Dtilt);
+     rot1 = algebra::compose(tilt,rotz);
+     for(int kk=0;kk<grid_iswing;kk++){
+      if ( jj == 0  && kk != 0 )  break;
+      swing=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
+double(kk)*grid_Dswing);
+      rot2=algebra::compose(swing,rot1);
+      algebra::ReferenceFrame3D frame=
+      algebra::ReferenceFrame3D(algebra::Transformation3D
+      (algebra::compose(rot2,rot0),algebra::Vector3D(xx,yy,zz)));
+      trs.push_back(frame);
+     }
+    }
+   }
+  }
+ }
+}
+
+IMP_NEW(domino::ParticleStatesTable,pst,());
+IMP_NEW(domino::RigidBodyStates,rbs,(trs));
+for(int i=0;i<TM_num;i++){
+ atom::Selection s=atom::Selection(protein);
+ s.set_molecule(TM_names[i]);
+ core::RigidBody rb
+ =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
+ pst->set_particle_states(rb,rbs);
+ }
+ return pst.release();
 }
 
 int main(int  , char **)
@@ -345,9 +402,8 @@ TM_rot0=generate_TM(m,&all,tbr);
 // create restraints
 RestraintSet* rset=create_restraints(m,all,tbr);
 
-m->update();
-std::cout << *rset << std::endl;
 // create discrete states
+domino::ParticleStatesTable* pst=create_states(all);
 
 // create sampler
 
