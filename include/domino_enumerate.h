@@ -11,7 +11,6 @@
 #include "membrane_config.h"
 #include <IMP.h>
 #include <string>
-#include <vector>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
