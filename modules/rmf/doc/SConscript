@@ -5,7 +5,7 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  brief="This module provides RMF I/O for \imp.",
                  overview="""This modules provides support for RMF file format
                  for storing hierarchical molecular data (such as atomic
-                 or coarge grained representations of proteins), along with
+                 or coarse grained representations of proteins), along with
                  markup, including geometry and score data. The format uses
                  the hdf5 library to manage the data on disk.
 
