@@ -16,15 +16,14 @@
 using namespace IMP;
 using namespace IMP::membrane;
 
-std::vector<double> generate_TM
-(Model *m,atom::Hierarchy *protein,core::TableRefiner *tbr)
+core::TableRefiner* generate_TM(Model *m,atom::Hierarchy *protein)
 {
-std::vector<double> rot0;
 int nres,jseq;
 double x,y,z;
 double vol,rg,bb,ee;
 algebra::Rotation3D rot;
 algebra::Transformation3D tr;
+IMP_NEW(core::TableRefiner,tbr,());
 
 for(int i=0;i<TM_num;i++){
  IMP_NEW(Particle,pm,(m));
@@ -59,22 +58,31 @@ algebra::Sphere3D(algebra::Vector3D(x,y,z),rg));
  IMP_NEW(Particle,prb,(m));
  core::RigidBody rb=core::RigidBody::setup_particle(prb,atoms);
  rb->set_name(TM_names[i]);
+ // TableRefiner
  tbr->add_particle(prb,atoms);
+ // Check orientation of x-axis and topology
+ bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
+ ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
+ if ( TM_topo[i]*(ee-bb)<0.0 ){
+  for(unsigned int i=0;i<atoms.size();i++){
+   algebra::Vector3D coord=
+    core::RigidMember(atoms[i]).get_internal_coordinates();
+   rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+   tr=algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
+   core::RigidMember(atoms[i]).set_internal_coordinates
+    (tr.get_transformed(coord));
+  }
+ }
+ rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
+      (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+       algebra::Vector3D(0,0,0))));
  //initialize helix decorator
  bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
  ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
  membrane::HelixDecorator d_rbs=
-membrane::HelixDecorator::setup_particle(prb,bb,ee);
- if ( TM_topo[i]*(ee-bb)>0.0 ) rot0.push_back(-IMP::PI/2.0);
- else rot0.push_back(IMP::PI/2.0);
- //initialize system to match topology
- if ( TM_topo[i]<0.0 )
-  rot=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),IMP::PI);
- else rot=algebra::get_identity_rotation_3d();
- tr=algebra::Transformation3D(rot,algebra::Vector3D(double(i)*15.0,0,0));
- core::transform(rb,tr);
-}
-return rot0;
+  membrane::HelixDecorator::setup_particle(prb,bb,ee);
+ }
+return tbr.release();
 }
 
 void add_excluded_volume (Model *m, atom::Hierarchy protein)
@@ -145,10 +153,10 @@ for(int i=0;i<TM_num;i++){
  lrb->add_particle(rb);
 }
 IMP_NEW(container::ClosePairContainer,nrb,(lrb, 25.0));
-IMP_NEW(RigidBodyPackingScore,ps,(tbr, om_b, om_e, dd_b, dd_e));
-IMP_NEW(container::PairsRestraint,prs,(ps, nrb));
+IMP_NEW(RigidBodyPackingScore,ps,(tbr,om_b,om_e,dd_b,dd_e));
+IMP_NEW(container::PairsRestraint,prs,(ps,nrb));
 m->add_restraint(prs);
-m->set_maximum_score(prs, max_score_);
+m->set_maximum_score(prs,max_score_);
 }
 
 core::PairRestraint* add_distance_restraint
@@ -257,7 +265,6 @@ m->set_maximum_score(dr, max_score_);
 
 void add_tilt_restraint(Model *m, atom::Hierarchy protein)
 {
-Float x0,x1;
 algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
 algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
 for(int i=0;i<TM_num;i++){
@@ -265,11 +272,7 @@ for(int i=0;i<TM_num;i++){
  s.set_molecule(TM_names[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
- if ( TM_rot0[i]>0.0 )
-      {x0=IMP::PI-tilt_range_.second; x1=IMP::PI-tilt_range_.first;}
- else {x0=tilt_range_.first;          x1=tilt_range_.second;}
- IMP::FloatRange range=IMP::FloatRange(x0,x1);
- IMP_NEW(core::HarmonicWell,well,(range, kappa_));
+ IMP_NEW(core::HarmonicWell,well,(tilt_range_, kappa_));
  IMP_NEW(TiltSingletonScore,tss,(well, laxis, zaxis));
  IMP_NEW(core::SingletonRestraint,sr,(tss, rb));
  m->add_restraint(sr);
@@ -401,14 +404,12 @@ int main(int  , char **)
 
 // create a new model
 IMP_NEW(Model,m,());
-// table refiner for rigid bodies
-IMP_NEW(core::TableRefiner,tbr,());
 // root hierarchy
 IMP_NEW(Particle,ph,(m));
 atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 
 // create representation
-TM_rot0=generate_TM(m,&all,tbr);
+core::TableRefiner* tbr=generate_TM(m,&all);
 
 // create restraints
 RestraintSet* rset=create_restraints(m,all,tbr);

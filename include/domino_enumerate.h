@@ -86,8 +86,7 @@ const int TM_res[TM_num][2] = {{121,141},{163,180}};
 const double TM_topo[TM_num]={-1.0,1.0};
 // name of the TMH
 const std::string TM_names[TM_num]={"TM4","TM5"};
-// initial rotation
-std::vector<double> TM_rot0;
+
 // interacting pairs
 const int TM_ninter=1;
 const int TM_inter[TM_ninter][2]={{0,1}};
