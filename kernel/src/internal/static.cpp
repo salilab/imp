@@ -7,6 +7,7 @@
 
 #include "IMP/internal/static.h"
 #include "IMP/Particle.h"
+#include "IMP/internal/map.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /*
@@ -59,5 +60,21 @@ IMP_END_INTERNAL_NAMESPACE
 IMP_BEGIN_NAMESPACE
 #if IMP_BUILD < IMP_FAST
 unsigned int IMP::RefCounted::live_objects_=0;
+internal::Set<Object*> live_;
+
+Strings Object::get_live_object_names() {
+  Strings ret;
+  for (internal::Set<Object*>::const_iterator it = live_.begin();
+       it != live_.end(); ++it) {
+    ret.push_back((*it)->get_name());
+  }
+  return ret;
+}
+void Object::add_live_object(Object*o) {
+  live_.insert(o);
+}
+void Object::remove_live_object(Object*o) {
+  live_.erase(o);
+}
 #endif
 IMP_END_NAMESPACE
