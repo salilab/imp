@@ -90,9 +90,6 @@ Parameters get_parameters(TextInput in) {
  std::vector<char> v(sequence.begin(), sequence.end());
  ret.TM.seq = v;
 
- for(unsigned int i=0;i<ret.TM.seq.size();++i)
-  std::cout << ret.TM.seq[i] << std::endl;
-
  if (vm.count("residues")){
   res = vm["residues"].as< std::vector<std::string> >();
   for(unsigned int i=0;i<res.size();++i){
