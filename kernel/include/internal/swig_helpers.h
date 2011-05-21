@@ -350,7 +350,11 @@ namespace swig {
       for (unsigned int i=0; i< PySequence_Length(in); ++i) {
         PyObject *o = PySequence_GetItem(in,i);
         if(! Convert<V>::get_is_cpp_object(o, st, particle_st,
-                                           decorator_st)) return false;
+                                           decorator_st)) {
+          Py_DECREF(o);
+          return false;
+        }
+        Py_DECREF(o);
       }
       return true;
     }
@@ -367,6 +371,7 @@ namespace swig {
           =Convert<V>::get_cpp_object(o,st,
                                       particle_st, decorator_st);
         Assign<C, VT>::assign(t, i, vs);
+        IMP_USAGE_CHECK(o->ob_refcnt >1, "Small refcount");
         Py_DECREF(o);
       }
     }
@@ -400,6 +405,8 @@ namespace swig {
       PyObject *ret= PyTuple_New(T::static_size);
       for (unsigned int i=0; i< T::static_size; ++i) {
         PyObject *o = Convert<VT>::create_python_object(t[i], st, OWN);
+        //std::cout << o->ob_refcnt << std::endl;
+        IMP_USAGE_CHECK(o->ob_refcnt==1, "Bad ref count " << o->ob_refcnt);
         PyTuple_SetItem(ret,i,o);
         //Py_DECREF(o);
       }
@@ -443,9 +450,11 @@ namespace swig {
       PyObject *ret= PyTuple_New(2);
       PyObject *of = Convert<VT>::create_python_object(t.first, st, OWN);
       PyTuple_SetItem(ret,0,of);
+      //std::cout << of->ob_refcnt << std::endl;
       //Py_DECREF(of);
       PyObject *os = Convert<VT>::create_python_object(t.second, st, OWN);
       PyTuple_SetItem(ret,1,os);
+      //std::cout << os->ob_refcnt << std::endl;
       //Py_DECREF(os);
       return ret;
     }
@@ -476,9 +485,8 @@ namespace swig {
       PyObject *ret= PyList_New(t.size());
       for (unsigned int i=0; i< t.size(); ++i) {
         PyObject *o = Convert<VT>::create_python_object(t[i], st, OWN);
-        // this doesn't seem to increment the ref count for some reason
+        // this does not increment the ref count
         PyList_SetItem(ret, i, o);
-        //Py_DECREF(o);
       }
       return ret;
     }
@@ -526,7 +534,7 @@ namespace swig {
     template <class SwigData>
     static PyObject* create_python_object(std::string f, SwigData st, int OWN) {
       PyObject *o = PyString_FromString(f.c_str());
-      Py_INCREF(o);
+      //Py_INCREF(o);
       return o;
     }
   };
@@ -550,7 +558,7 @@ namespace swig {
     template <class SwigData>
     static PyObject* create_python_object(float f, SwigData st, int OWN) {
       PyObject *o = PyFloat_FromDouble(f);
-      Py_INCREF(o);
+      //Py_INCREF(o);
       return o;
     }
   };
@@ -589,7 +597,8 @@ namespace swig {
     template <class SwigData>
     static PyObject* create_python_object(int f, SwigData st, int OWN) {
       PyObject *o = PyInt_FromLong(f);
-      Py_INCREF(o);
+      //Py_INCREF(o);
+      //IMP_USAGE_CHECK(o->ob_refcnt==1, "Bad ref count");
       return o;
     }
   };
