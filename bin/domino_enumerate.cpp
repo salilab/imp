@@ -49,7 +49,7 @@ std::cout << "Found " << ass.size() << " solutions" << std::endl;
 
 // write output
 std::cout << "Writing output" << std::endl;
-write_output(&all,pst,&subs,&ass,&mydata);
+write_output(all,pst,&subs,&ass,&mydata);
 
 return 0;
 }

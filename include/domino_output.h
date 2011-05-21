@@ -16,7 +16,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT void write_output
-(atom::Hierarchy *protein, domino::ParticleStatesTable* pst,
+(atom::Hierarchy protein, domino::ParticleStatesTable* pst,
  domino::Subset* subs, domino::Assignments* ass, Parameters *myparam);
 
 IMPMEMBRANE_END_NAMESPACE
