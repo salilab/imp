@@ -316,6 +316,7 @@ public:                                                                 \
                       std::string(#Name "updater for ")+p->get_name()); \
       p->add_attribute(get_constraint_key(), ss);                       \
       p->get_model()->add_score_state(ss);                              \
+      p->set_is_ref_counted(get_constraint_key(), false);               \
     }                                                                   \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE
