@@ -17,7 +17,8 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT core::TableRefiner*
- generate_TM(IMP::Model *m, IMP::atom::Hierarchy *protein);
+ generate_TM(IMP::Model *m,
+ IMP::atom::Hierarchy *protein, HelixData *TM);
 
 IMPMEMBRANE_END_NAMESPACE
 

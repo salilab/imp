@@ -18,6 +18,7 @@ int main(int  , char **)
 {
 
 // parsing input
+Parameters mydata=get_parameters("config.ini");
 
 // create a new model
 IMP_NEW(Model,m,());
@@ -26,13 +27,13 @@ IMP_NEW(Particle,ph,(m));
 atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 
 // create representation
-core::TableRefiner* tbr=generate_TM(m,&all);
+core::TableRefiner* tbr=generate_TM(m,&all,&(mydata.TM));
 
 // create restraints
-RestraintSet* rset=create_restraints(m,all,tbr);
+RestraintSet* rset=create_restraints(m,all,tbr,&mydata);
 
 // create discrete states
-domino::ParticleStatesTable* pst=create_states(all);
+domino::ParticleStatesTable* pst=create_states(all,&mydata);
 
 // create sampler
 domino::DominoSampler* s=create_sampler(m,rset,pst);
@@ -43,8 +44,8 @@ domino::Assignments cs=s->get_sample_assignments(ass);
 std::cout << "Found " << cs.size() << " solutions" << std::endl;
 
 // writing things to file
-//rmf::HDF5Group rt= rmf::HDF5Group(ass_file, true);
-//rmf::HDF5Group rt= rmf::HDF5Group(ass_file, false);
+//rmf::HDF5Group rt= rmf::HDF5Group(mydata.ass_file, true);
+//rmf::HDF5Group rt= rmf::HDF5Group(mydata.ass_file, false);
 
 //rmf::HDF5DataSet<rmf::IndexTraits> data_set=
 //rt.add_child_index_data_set("node_1_assignments", 2);

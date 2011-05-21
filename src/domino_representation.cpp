@@ -14,7 +14,8 @@ using namespace IMP;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-core::TableRefiner* generate_TM(Model *m,atom::Hierarchy *protein)
+core::TableRefiner* generate_TM(Model *m,
+ atom::Hierarchy *protein, HelixData *TM)
 {
 int nres,jseq;
 double x,y,z;
@@ -23,11 +24,11 @@ algebra::Rotation3D rot;
 algebra::Transformation3D tr;
 IMP_NEW(core::TableRefiner,tbr,());
 
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  IMP_NEW(Particle,pm,(m));
  atom::Molecule tm=atom::Molecule::setup_particle(pm);
- tm->set_name(TM_names[i]);
- nres=TM_res[i][1]-TM_res[i][0]+1;
+ tm->set_name(TM->name[i]);
+ nres=TM->resid[i].second-TM->resid[i].first+1;
  core::XYZs atoms;
 // cycle on the number of residues
  for(int j=0;j<nres;j++){
@@ -36,9 +37,9 @@ for(int i=0;i<TM_num;i++){
   z=1.51*(double(j)-double((nres-1))/2.0);
   // set up residue
   IMP_NEW(Particle,pr,(m));
-  jseq=TM_res[i][0]+j;
-  atom::Residue
-r=atom::Residue::setup_particle(pr,atom::get_residue_type(TM_seq[jseq-1]),jseq);
+  jseq=TM->resid[i].first+j;
+  atom::Residue r=atom::Residue::setup_particle
+(pr,atom::get_residue_type(TM->seq[jseq-1]),jseq);
   vol=atom::get_volume_from_residue_type(r.get_residue_type());
   rg=algebra::get_ball_radius_from_volume_3d(vol);
   //rg=2.273
@@ -55,13 +56,13 @@ algebra::Sphere3D(algebra::Vector3D(x,y,z),rg));
  // create rigid body
  IMP_NEW(Particle,prb,(m));
  core::RigidBody rb=core::RigidBody::setup_particle(prb,atoms);
- rb->set_name(TM_names[i]);
+ rb->set_name(TM->name[i]);
  // TableRefiner
  tbr->add_particle(prb,atoms);
  // Check orientation of x-axis and topology
  bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
  ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
- if ( TM_topo[i]*(ee-bb)<0.0 ){
+ if ( TM->topo[i]*(ee-bb)<0.0 ){
   for(unsigned int i=0;i<atoms.size();i++){
    algebra::Vector3D coord=
     core::RigidMember(atoms[i]).get_internal_coordinates();

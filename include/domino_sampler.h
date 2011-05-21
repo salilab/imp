@@ -17,7 +17,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT domino::ParticleStatesTable*
- create_states(atom::Hierarchy protein);
+ create_states(atom::Hierarchy protein, Parameters *myparam);
 
 IMPMEMBRANEEXPORT domino::DominoSampler* create_sampler
 (Model *m, RestraintSet *rset, domino::ParticleStatesTable *pst);

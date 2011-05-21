@@ -17,53 +17,53 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 RestraintSet* create_restraints
-(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
+(Model *m, atom::Hierarchy protein,
+core::TableRefiner *tbr, Parameters* myparam)
 {
+HelixData *TM=&(myparam->TM);
 IMP_NEW(RestraintSet,rset,());
-for(int i=0;i<TM_nloop;i++){
-    int i0=TM_loop[i][0];
-    int i1=TM_loop[i][1];
+for(unsigned int i=0;i<TM->loop.size();i++){
+    int i0=TM->loop[i].first;
+    int i1=TM->loop[i].second;
     atom::Selection s0=atom::Selection(protein);
     s0.set_atom_type(atom::AT_CA);
-    s0.set_residue_index(TM_res[i0][1]);
+    s0.set_residue_index(TM->resid[i0].second);
     atom::Selection s1=atom::Selection(protein);
     s1.set_atom_type(atom::AT_CA);
-    s1.set_residue_index(TM_res[i1][0]);
+    s1.set_residue_index(TM->resid[i1].first);
     Particle *p0=s0.get_selected_particles()[0];
     Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
-   double length=1.6*(double(TM_res[i1][0]-TM_res[i0][1]+1))+7.4;
-   //core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length)
+   double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
+   core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length);
 // COM-COM distance restraint
    core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
    core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
-   core::PairRestraint* lrb=add_distance_restraint(m,rb0,rb1,35.0);
+   core::PairRestraint* lrb=add_distance_restraint(m,rb0,rb1,cm_dist_);
    rset->add_restraint(lrb);
 }
 add_excluded_volume(m,protein);
-add_packing_restraint(m,protein,tbr);
-add_DOPE(m,protein);
-add_diameter_restraint(m,protein);
-add_tilt_restraint(m,protein);
-// XYZ filters
-add_x_restraint(m,protein);
-add_y_restraint(m,protein);
-add_depth_restraint(m,protein);
-/*
-for(int i=0;i<TM_ninter;i++){
-    int i0=TM_inter[i][0];
-    int i1=TM_inter[i][1];
+add_DOPE(m,protein,myparam->score_name);
+add_packing_restraint(m,protein,tbr,TM);
+add_x_restraint(m,protein,TM);
+add_y_restraint(m,protein,TM);
+add_depth_restraint(m,protein,TM);
+add_diameter_restraint(m,protein,myparam->diameter,TM);
+add_tilt_restraint(m,protein,TM);
+for(unsigned int i=0;i<TM->inter.size();i++){
+    int i0=TM->inter[i].first;
+    int i1=TM->inter[i].second;
     atom::Selection s0=atom::Selection(protein);
-    s0.set_molecule(TM_names[i0]);
+    s0.set_molecule(TM->name[i0]);
     atom::Selection s1=atom::Selection(protein);
-    s1.set_molecule(TM_names[i1]);
+    s1.set_molecule(TM->name[i1]);
     core::RigidBody rb0
     =core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
     core::RigidBody rb1
     =core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
     core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr);
     rset->add_restraint(ir);
-}*/
+}
 return rset.release();
 }
 
@@ -79,7 +79,7 @@ m->add_restraint(evr);
 m->set_maximum_score(evr, max_score_);
 }
 
-void add_DOPE(Model *m, atom::Hierarchy protein)
+void add_DOPE(Model *m, atom::Hierarchy protein, std::string sname)
 {
 atom::add_dope_score_data(protein);
 IMP_NEW(container::ListSingletonContainer,lsc,(m));
@@ -89,7 +89,7 @@ lsc->add_particles(s.get_selected_particles());
 IMP_NEW(container::ClosePairContainer,cpc,(lsc, 15.0));
 IMP_NEW(SameHelixPairFilter,f,());
 cpc->add_pair_filter(f);
-IMP_NEW(atom::DopePairScore,dps,(15.0,atom::get_data_path(score_name_)));
+IMP_NEW(atom::DopePairScore,dps,(15.0,atom::get_data_path(sname)));
 IMP_NEW(container::PairsRestraint,dope,(dps,cpc));
 dope->set_name("DOPE scoring function");
 m->add_restraint(dope);
@@ -97,7 +97,8 @@ m->set_maximum_score(dope, max_score_);
 }
 
 void add_packing_restraint
-(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr)
+(Model *m, atom::Hierarchy protein,
+core::TableRefiner *tbr, HelixData *TM)
 {
 //if the helices are interacting, apply a filter on the crossing angle
 //first define the allowed intervals, by specifying the center
@@ -127,9 +128,9 @@ for(int i=0;i<ncl;i++){
  om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]), IMP::PI));
 }
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  lrb->add_particle(rb);
@@ -153,40 +154,40 @@ m->set_maximum_score(dr, max_score_);
 return dr.release();
 }
 
-void add_x_restraint(Model *m, atom::Hierarchy protein)
+void add_x_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::HarmonicLowerBound,hal,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass1,(ha,FloatKey("x")));
 IMP_NEW(core::AttributeSingletonScore,ass2,(hal,FloatKey("x")));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  if( i == 0 ){
   IMP_NEW(core::SingletonRestraint, sr, (ass1, rb));
-  sr->set_name("Fix x for particle "+TM_names[i]);
+  sr->set_name("Fix x for particle "+TM->name[i]);
   m->add_restraint(sr);
   m->set_maximum_score(sr, max_score_);
  }
  if( i == 1 ){
   IMP_NEW(core::SingletonRestraint, sr, (ass2, rb));
-  sr->set_name("Fix x for particle "+TM_names[i]);
+  sr->set_name("Fix x for particle "+TM->name[i]);
   m->add_restraint(sr);
   m->set_maximum_score(sr, max_score_);
  }
 }
 }
 
-void add_y_restraint(Model *m, atom::Hierarchy protein)
+void add_y_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass,(ha,FloatKey("y")));
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  if( i < 2 ) lrb->add_particle(rb);
@@ -197,12 +198,12 @@ m->add_restraint(sr);
 m->set_maximum_score(sr, max_score_);
 }
 
-void add_depth_restraint(Model *m, atom::Hierarchy protein)
+void add_depth_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  lrb->add_particle(rb);
@@ -228,36 +229,38 @@ m->set_maximum_score(ir, max_score_);
 return ir.release();
 }
 
-void add_diameter_restraint(Model *m, atom::Hierarchy protein)
+void add_diameter_restraint(Model *m, atom::Hierarchy protein,
+double diameter, HelixData *TM)
 {
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  lrb->add_particle(rb);
 }
 IMP_NEW(core::HarmonicUpperBound,hub,(0.0,kappa_));
-IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter_));
+IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter));
 dr->set_name("Diameter restraint");
 m->add_restraint(dr);
 m->set_maximum_score(dr, max_score_);
 }
 
-void add_tilt_restraint(Model *m, atom::Hierarchy protein)
+void add_tilt_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
 algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<TM->num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(TM->name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  IMP_NEW(core::HarmonicWell,well,(tilt_range_, kappa_));
  IMP_NEW(TiltSingletonScore,tss,(well, laxis, zaxis));
  IMP_NEW(core::SingletonRestraint,sr,(tss, rb));
  m->add_restraint(sr);
+ sr->set_name("Tilt restraint");
  m->set_maximum_score(sr, max_score_);
 }
 }

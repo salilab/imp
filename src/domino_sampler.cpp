@@ -16,32 +16,43 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-domino::ParticleStatesTable* create_states(atom::Hierarchy protein)
+domino::ParticleStatesTable* create_states
+(atom::Hierarchy protein, Parameters *myparam)
 {
 double xx,yy,zz,rg;
 algebra::Rotation3D rotz,tilt,rot1,swing,rot2;
 algebra::Rotation3D rot0=
 algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), IMP::PI/2.0);
-std::vector<algebra::ReferenceFrame3D> trs;
-for(int i=-grid_ix;i<grid_ix+1;i++){
- xx=double(i)*grid_Dx;
- for(int j=-grid_iy;j<grid_iy+1;j++){
-  yy=double(j)*grid_Dx;
+algebra::ReferenceFrame3Ds trs=algebra::ReferenceFrame3Ds();
+GridParameters *grid=&(myparam->grid);
+
+//grid parameters
+const int ix     = int(grid->xmax/grid->x);
+const int iy     = int(grid->xmax/grid->x);
+const int iz     = int(grid->zmax/grid->x);
+const int irot   = int(grid->rotmax/grid->rot);
+const int itilt  = int(grid->tiltmax/grid->tilt);
+const int iswing = int(grid->swingmax/grid->swing);
+
+for(int i=-ix;i<ix+1;i++){
+ xx=double(i)*grid->x;
+ for(int j=-iy;j<iy+1;j++){
+  yy=double(j)*grid->x;
   rg=sqrt(xx*xx+yy*yy);
-  if ( rg > diameter_ ) continue;
-  for(int k=-grid_iz;k<grid_iz+1;k++){
-   zz=double(k)*grid_Dx;
-   for(int ii=0;ii<grid_irot;ii++){
+  if ( rg > myparam->diameter ) continue;
+  for(int k=-iz;k<iz+1;k++){
+   zz=double(k)*grid->x;
+   for(int ii=0;ii<irot;ii++){
     rotz=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
-double(ii)*grid_Drot);
-    for(int jj=0;jj<grid_itilt+1;jj++){
+double(ii)*grid->rot);
+    for(int jj=0;jj<itilt+1;jj++){
      tilt=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
-double(jj)*grid_Dtilt);
+double(jj)*grid->tilt);
      rot1 = algebra::compose(tilt,rotz);
-     for(int kk=0;kk<grid_iswing;kk++){
+     for(int kk=0;kk<iswing;kk++){
       if ( jj == 0  && kk != 0 )  break;
       swing=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
-double(kk)*grid_Dswing);
+double(kk)*grid->swing);
       rot2=algebra::compose(swing,rot1);
       algebra::ReferenceFrame3D frame=
       algebra::ReferenceFrame3D(algebra::Transformation3D
@@ -55,9 +66,9 @@ double(kk)*grid_Dswing);
 }
 IMP_NEW(domino::ParticleStatesTable,pst,());
 IMP_NEW(domino::RigidBodyStates,rbs,(trs));
-for(int i=0;i<TM_num;i++){
+for(int i=0;i<myparam->TM.num;i++){
  atom::Selection s=atom::Selection(protein);
- s.set_molecule(TM_names[i]);
+ s.set_molecule(myparam->TM.name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  pst->set_particle_states(rb,rbs);
