@@ -56,13 +56,15 @@ struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
   }
 };
 
-class ParticleWrapper {
-  Particle *p_;
+
+template <class O>
+class ObjectWrapper {
+  O *p_;
   bool rc_;
 public:
-  ParticleWrapper(): p_(NULL), rc_(true){}
-  ParticleWrapper(Particle *p): p_(p), rc_(true){}
-  ParticleWrapper(Particle *p, bool t): p_(p), rc_(t){}
+  ObjectWrapper(): p_(NULL), rc_(true){}
+  ObjectWrapper(O *p): p_(p), rc_(true){}
+  ObjectWrapper(O *p, bool t): p_(p), rc_(t){}
   bool get_is_ref_counted() const {return rc_;}
   void set_is_ref_counted(bool tf) {
     if (!tf && rc_) {
@@ -72,41 +74,43 @@ public:
     }
     rc_=tf;
   }
-  operator Particle *() const {return p_;}
-  IMP_COMPARISONS_1(ParticleWrapper, p_);
-  bool operator!=(Particle *o) const {
+  operator O *() const {return p_;}
+  IMP_COMPARISONS_1(ObjectWrapper, p_);
+  bool operator!=(O *o) const {
     return p_ != o;
   }
-  bool operator==(Particle *o) const {
+  bool operator==(O *o) const {
     return p_ == o;
   }
 };
 
+
+
 struct ParticlesAttributeTableTraits
 {
-  typedef ParticleWrapper Value;
-  typedef ParticleWrapper PassValue;
+  typedef ObjectWrapper<Particle> Value;
+  typedef ObjectWrapper<Particle> PassValue;
   typedef ControllableRefCountPolicy Policy;
   typedef ParticleKey Key;
   static Value get_invalid() {
-    return ParticleWrapper();
+    return ObjectWrapper<Particle>();
   }
   static bool get_is_valid(const Value& f) {
-    return f!= ParticleWrapper();
+    return f!= ObjectWrapper<Particle>();
   }
 };
 
 struct ObjectsAttributeTableTraits
 {
-  typedef Object* Value;
-  typedef Object* PassValue;
+  typedef ObjectWrapper<Object> Value;
+  typedef ObjectWrapper<Object> PassValue;
   typedef ObjectKey Key;
-  typedef RefCountPolicy Policy;
+  typedef ControllableRefCountPolicy Policy;
   static Value get_invalid() {
-    return NULL;
+    return ObjectWrapper<Object>();
   }
   static bool get_is_valid(const Value& f) {
-    return f!= NULL;
+    return f!= ObjectWrapper<Object>();
   }
 };
 
