@@ -207,5 +207,19 @@ class RefCountTests(IMP.test.TestCase):
         self.assertEqual(len(ps), 0, "Should be no particles")
 
 
+    def test_sequence(self):
+        """Test that sequences are refcounted properly"""
+        refcnt = IMP.test.RefCountChecker(self)
+        m= IMP.Model()
+        p= IMP.Particle(m)
+        ps= m.get_particles()
+        print IMP._take_particles(ps)
+        del m
+        del ps
+        del p
+        print "live are", IMP.Object.get_live_object_names()
+        refcnt.assert_number(0)
+
+
 if __name__ == '__main__':
     IMP.test.main()
