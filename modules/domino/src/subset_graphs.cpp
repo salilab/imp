@@ -31,38 +31,6 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 
-template <class Graph>
-class CollectVisitor: public boost::default_dfs_visitor {
-  const IMP::internal::Map<Particle*, Ints> *lu_;
-  typename boost::property_map<Graph,
-                      boost::vertex_name_t>::const_type vm_;
-  Ints &vals_;
-public:
-  const Ints &get_collected() {
-    std::sort(vals_.begin(), vals_.end());
-    vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
-    return vals_;
-  }
-  CollectVisitor(const Graph &g,
-                 const IMP::internal::Map<Particle*, Ints>&lu,
-                 Ints &vals):
-    lu_(&lu),
-    vm_(boost::get(boost::vertex_name, g)),
-    vals_(vals){}
-  void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph&) {
-    Object *o= vm_[u];
-    Particle *p=dynamic_cast<Particle*>(o);
-    if (p) {
-      IMP::internal::Map<Particle*, Ints>::const_iterator it= lu_->find(p);
-      if (it != lu_->end()) {
-        vals_.insert(vals_.end(),it->second.begin(),
-                     it->second.end());
-      }
-    }
-  }
-};
-
 namespace {
   typedef boost::graph_traits<InteractionGraph> IGTraits;
   typedef IGTraits::edge_descriptor IGEdge;
