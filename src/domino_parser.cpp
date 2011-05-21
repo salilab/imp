@@ -26,12 +26,13 @@ Parameters get_parameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- std::string score_name, ass_file, sequence;
+ std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res, inter, loop;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
  desc.add_options()("ass_file",    value< std::string >(&ass_file),    "ciao");
+ desc.add_options()("traj_file",   value< std::string >(&traj_file),   "ciao");
  desc.add_options()("sequence",    value< std::string >(&sequence),    "ciao");
  desc.add_options()("residues",    value< std::vector<std::string> >(),"ciao");
  desc.add_options()("topology",    value< std::vector<double> >(),     "ciao");
@@ -72,6 +73,7 @@ Parameters get_parameters(TextInput in) {
  ret.diameter=diameter;
  ret.score_name=score_name;
  ret.ass_file=ass_file;
+ ret.traj_file=traj_file;
 
 // Grid Parameters
  ret.grid.tilt=radians(tilt);
