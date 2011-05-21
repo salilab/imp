@@ -140,9 +140,14 @@ if (vm.count("loop")){
   }
  }
 
-IMP_USAGE_CHECK(ret.TM.num==ret.TM.name.size(), "Check the name list!");
-IMP_USAGE_CHECK(ret.TM.num==ret.TM.topo.size(), "Check the topology list!");
-IMP_USAGE_CHECK(ret.TM.num==ret.TM.resid.size(),"Check the residues list!");
+if(ret.TM.num!=ret.TM.name.size())
+IMP_FAILURE("Check the name list!");
+if(ret.TM.num!=ret.TM.topo.size())
+IMP_FAILURE("Check the topology list!");
+if(ret.TM.num!=ret.TM.resid.size())
+IMP_FAILURE("Check the residues list!");
+if(ret.TM.num!=ret.TM.struct_file.size())
+IMP_FAILURE("Check the structure list!");
 
  return ret;
 #else

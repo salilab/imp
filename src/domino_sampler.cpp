@@ -65,7 +65,6 @@ double(kk)*grid->swing);
  }
 }
 
-std::cout << "#STATES " << trs.size() << std::endl;
 IMP_NEW(domino::ParticleStatesTable,pst,());
 IMP_NEW(domino::RigidBodyStates,rbs,(trs));
 for(int i=0;i<myparam->TM.num;i++){

@@ -44,15 +44,15 @@ domino::Assignments cs=s->get_sample_assignments(ass);
 std::cout << "Found " << cs.size() << " solutions" << std::endl;
 
 // writing things to file
-//rmf::HDF5Group rt= rmf::HDF5Group(mydata.ass_file, true);
+rmf::HDF5Group rt= rmf::HDF5Group(mydata.ass_file, true);
 //rmf::HDF5Group rt= rmf::HDF5Group(mydata.ass_file, false);
 
+rmf::HDF5DataSet<rmf::IndexTraits> data_set=
+rt.add_child_index_data_set("node_assignments", 2);
 //rmf::HDF5DataSet<rmf::IndexTraits> data_set=
-//rt.add_child_index_data_set("node_1_assignments", 2);
-//rmf::HDF5DataSet<rmf::IndexTraits> data_set=
-//rt.get_child_index_data_set("node_1_assignments", 2);
+//rt.get_child_index_data_set("node_assignments", 2);
 
-//domino::set_assignments(data_set, cs, ass, pst->get_particles());
+domino::set_assignments(data_set, cs, ass, pst->get_particles());
 //domino::Assignments cs=
 //domino::get_assignments(data_set, ass, pst->get_particles());
 
