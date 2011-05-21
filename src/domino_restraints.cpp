@@ -22,7 +22,7 @@ core::TableRefiner *tbr, Parameters* myparam)
 {
 HelixData *TM=&(myparam->TM);
 IMP_NEW(RestraintSet,rset,());
-for(unsigned int i=0;i<TM->loop.size();i++){
+for(unsigned int i=0;i<TM->loop.size();++i){
     int i0=TM->loop[i].first;
     int i1=TM->loop[i].second;
     atom::Selection s0=atom::Selection(protein);
@@ -50,7 +50,7 @@ add_y_restraint(m,protein,TM);
 add_depth_restraint(m,protein,TM);
 add_diameter_restraint(m,protein,myparam->diameter,TM);
 add_tilt_restraint(m,protein,TM);
-for(unsigned int i=0;i<TM->inter.size();i++){
+for(unsigned int i=0;i<TM->inter.size();++i){
     int i0=TM->inter[i].first;
     int i1=TM->inter[i].second;
     atom::Selection s0=atom::Selection(protein);
@@ -121,14 +121,14 @@ int ncl=packing_ncl_;
 // create allowed intervals (omega in radians)
 std::vector<double> om_b, om_e, dd_b, dd_e;
 
-for(int i=0;i<ncl;i++){
+for(int i=0;i<ncl;++i){
  dd_b.push_back(dd0[i]-double(nsig)*sig_dd0[i]);
  dd_e.push_back(dd0[i]+double(nsig)*sig_dd0[i]);
  om_b.push_back(std::max(radians(om0[i]-double(nsig)*sig_om0[i]),-IMP::PI));
  om_e.push_back(std::min(radians(om0[i]+double(nsig)*sig_om0[i]), IMP::PI));
 }
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb
@@ -160,7 +160,7 @@ IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::HarmonicLowerBound,hal,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass1,(ha,FloatKey("x")));
 IMP_NEW(core::AttributeSingletonScore,ass2,(hal,FloatKey("x")));
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb
@@ -185,7 +185,7 @@ void add_y_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
 IMP_NEW(core::AttributeSingletonScore,ass,(ha,FloatKey("y")));
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb
@@ -201,7 +201,7 @@ m->set_maximum_score(sr, max_score_);
 void add_depth_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 IMP_NEW(container::ListSingletonContainer, lrb, (m));
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb
@@ -233,7 +233,7 @@ void add_diameter_restraint(Model *m, atom::Hierarchy protein,
 double diameter, HelixData *TM)
 {
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb
@@ -251,7 +251,7 @@ void add_tilt_restraint(Model *m, atom::Hierarchy protein, HelixData *TM)
 {
 algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
 algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
-for(int i=0;i<TM->num;i++){
+for(int i=0;i<TM->num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(TM->name[i]);
  core::RigidBody rb

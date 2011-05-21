@@ -19,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 domino::ParticleStatesTable* create_states
 (atom::Hierarchy protein, Parameters *myparam)
 {
-double xx,yy,zz,rg;
+double xx,yy,zz;
 algebra::Rotation3D rotz,tilt,rot1,swing,rot2;
 algebra::Rotation3D rot0=
 algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), -IMP::PI/2.0);
@@ -27,29 +27,29 @@ algebra::ReferenceFrame3Ds trs=algebra::ReferenceFrame3Ds();
 GridParameters *grid=&(myparam->grid);
 
 //grid parameters
-const int ix     = int(grid->xmax/grid->x);
-const int iy     = int(grid->xmax/grid->x);
-const int iz     = int(grid->zmax/grid->x);
-const int irot   = int(grid->rotmax/grid->rot);
-const int itilt  = int(grid->tiltmax/grid->tilt);
-const int iswing = int(grid->swingmax/grid->swing);
+int ix     = int(grid->xmax/grid->x);
+int iy     = int(grid->xmax/grid->x);
+int iz     = int(grid->zmax/grid->x);
+int irot   = int(grid->rotmax/grid->rot);
+int itilt  = int(grid->tiltmax/grid->tilt);
+int iswing = int(grid->swingmax/grid->swing);
 
-for(int i=-ix;i<ix+1;i++){
+for(int i=-ix;i<ix+1;++i){
  xx=double(i)*grid->x;
- for(int j=-iy;j<iy+1;j++){
+ for(int j=-iy;j<iy+1;++j){
   yy=double(j)*grid->x;
-  rg=sqrt(xx*xx+yy*yy);
+  double rg=sqrt(xx*xx+yy*yy);
   if ( rg > myparam->diameter ) continue;
-  for(int k=-iz;k<iz+1;k++){
+  for(int k=-iz;k<iz+1;++k){
    zz=double(k)*grid->x;
-   for(int ii=0;ii<irot;ii++){
+   for(int ii=0;ii<irot;++ii){
     rotz=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
 double(ii)*grid->rot);
-    for(int jj=0;jj<itilt+1;jj++){
+    for(int jj=0;jj<itilt+1;++jj){
      tilt=algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
 double(jj)*grid->tilt);
      rot1 = algebra::compose(tilt,rotz);
-     for(int kk=0;kk<iswing;kk++){
+     for(int kk=0;kk<iswing;++kk){
       if ( jj == 0  && kk != 0 )  break;
       swing=algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
 double(kk)*grid->swing);
@@ -64,6 +64,8 @@ double(kk)*grid->swing);
   }
  }
 }
+
+std::cout << "#STATES " << trs.size() << std::endl;
 IMP_NEW(domino::ParticleStatesTable,pst,());
 IMP_NEW(domino::RigidBodyStates,rbs,(trs));
 for(int i=0;i<myparam->TM.num;i++){
