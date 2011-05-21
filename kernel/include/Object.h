@@ -14,6 +14,7 @@
 #include "exception.h"
 #include "VersionInfo.h"
 #include "macros.h"
+#include "base_types.h"
 #include "log.h"
 #include "SetLogState.h"
 #ifdef __clang__
@@ -64,7 +65,7 @@ class IMPEXPORT Object: public RefCounted
     else return 0;
   }
 protected:
-  Object(std::string name="Object %1%");
+  Object(std::string name);
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Object);
 public:
 #ifndef IMP_DOXYGEN
@@ -172,11 +173,19 @@ public:
 #endif
   }
 #endif
+
+#if IMP_BUILD < IMP_FAST
+  static Strings get_live_object_names();
+#endif
+
  private:
   Object(const Object &): RefCounted() {}
   const Object& operator=(const Object &) {return *this;}
 
 #if IMP_BUILD < IMP_FAST
+  static void add_live_object(Object*o);
+  static void remove_live_object(Object*o);
+
   LogLevel log_level_;
   mutable bool was_owned_;
   double check_value_;

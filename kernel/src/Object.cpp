@@ -28,6 +28,7 @@ Object::Object(std::string name)
   log_level_=DEFAULT;
   check_value_=111111111;
   was_owned_=false;
+  add_live_object(this);
 #endif
   if (std::find(name.begin(), name.end(), '%') != name.end()) {
     if (internal::object_type_counts.find(name)
@@ -64,6 +65,7 @@ Object::~Object()
              << " See the IMP::Object documentation for an explanation."
              << std::endl);
   }
+  remove_live_object(this);
 #endif
   IMP_LOG(MEMORY, "Destroying object \"" << get_name() << "\" ("
           << this << ")" << std::endl);
