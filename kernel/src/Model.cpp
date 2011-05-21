@@ -95,6 +95,10 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                if(container) container->reset_dependencies(); });
 
 void Model::set_score_state_model(ScoreState *ss, Model *model) {
+  IMP_CHECK_OBJECT(ss);
+  if (model) {
+    IMP_CHECK_OBJECT(model);
+  }
   ss->set_model(model);
 }
 
