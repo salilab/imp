@@ -22,7 +22,7 @@ domino::ParticleStatesTable* create_states
 double xx,yy,zz,rg;
 algebra::Rotation3D rotz,tilt,rot1,swing,rot2;
 algebra::Rotation3D rot0=
-algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), IMP::PI/2.0);
+algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), -IMP::PI/2.0);
 algebra::ReferenceFrame3Ds trs=algebra::ReferenceFrame3Ds();
 GridParameters *grid=&(myparam->grid);
 
