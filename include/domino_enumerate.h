@@ -49,6 +49,7 @@ HelixData      TM;
 double         diameter;
 std::string    score_name;
 std::string    ass_file;
+std::string    traj_file;
 };
 
 //general parameters for restraints
