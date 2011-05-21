@@ -29,7 +29,7 @@ class IMPCOREEXPORT ExperimentalTree
 public:
 
   ExperimentalTree()
-    : root_(-1)
+    : Object("Tree%1%"), root_(-1)
     , number_of_proteins_(0)
     , finalized_(false)
   {}
