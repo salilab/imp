@@ -168,6 +168,8 @@ class ParticleTests(IMP.test.TestCase):
         p1= IMP.Particle(m)
         pp= (p0, p1)
         ppo= IMP._pass_particle_pair(pp)
+        print [x.get_name() for x in pp]
+        print [x.get_name() for x in ppo]
         self.assertEqual(ppo[0], pp[0])
         self.assertEqual(ppo[1], pp[1])
     def test_overload_dec(self):
@@ -242,7 +244,9 @@ class ParticleTests(IMP.test.TestCase):
                     "set_is_scored",
                     "get_from",
                     "get_is_shared",
-                    "set_is_ref_counted"
+                    "set_is_ref_counted",
+                    "get_is_ref_counted",
+                    "get_live_object_names",
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
