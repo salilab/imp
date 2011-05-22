@@ -168,12 +168,12 @@ return dr.release();
 UnaryFunction* fscore(double x0,double kappa_,int id)
 {
 if( id == 0 ){
-IMP_NEW(core::Harmonic,ha,(x0,kappa_));
-return ha.release();
+ IMP_NEW(core::Harmonic,ha,(x0,kappa_));
+ return ha.release();
 }
 if( id == 1 ){
-IMP_NEW(core::HarmonicLowerBound,ha,(x0,kappa_));
-return ha.release();
+ IMP_NEW(core::HarmonicLowerBound,ha,(x0,kappa_));
+ return ha.release();
 }
 }
 

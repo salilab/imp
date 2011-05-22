@@ -11,6 +11,7 @@
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/domino/particle_states.h>
 
+
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 RigidBodyGridStates::RigidBodyGridStates
@@ -23,7 +24,7 @@ RigidBodyGridStates::RigidBodyGridStates
   rot0_=rot0;
   nstates_ = 1;
   for(int i=0;i<6;++i){
-   nbin_[i]=int((end_[i]-begin_[i])/binsize_[i]);
+   nbin_[i]=int((end_[i]-begin_[i])/binsize_[i])+1;
    nstates_ *= nbin_[i];
   }
 }
@@ -51,16 +52,17 @@ IMP_USAGE_CHECK(i < nstates_, "Out of range");
  algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0), rot0_);
  algebra::Rotation3D rotz=
  algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
- float(nindex[3])*binsize_[3]);
+ double(nindex[3])*binsize_[3]+begin_[3]);
  algebra::Rotation3D tilt=
  algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),
- float(nindex[4])*binsize_[4]);
+ double(nindex[4])*binsize_[4]+begin_[4]);
  algebra::Rotation3D swing=
  algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),
- float(nindex[5])*binsize_[5]);
+ double(nindex[5])*binsize_[5]+begin_[5]);
  algebra::Vector3D trans=
- algebra::Vector3D(float(nindex[0])*binsize_[0],
- float(nindex[1])*binsize_[1],float(nindex[2])*binsize_[2]);
+ algebra::Vector3D(double(nindex[0])*binsize_[0]+begin_[0],
+ double(nindex[1])*binsize_[1]+begin_[1],
+ double(nindex[2])*binsize_[2]+begin_[2]);
  algebra::ReferenceFrame3D state= algebra::ReferenceFrame3D
  (algebra::Transformation3D(algebra::compose(swing,
   algebra::compose(tilt,algebra::compose(rotz,rot0))),trans));
