@@ -498,30 +498,22 @@ try:
     import subprocess
     class _SubprocessWrapper(subprocess.Popen):
         def __init__(self, app, args):
-            appdir, appname = os.path.split(app)
-            self.__appcopy = None
             # For (non-Python) applications to work on Windows, the
-            # application must be run from the same directory as the DLLs
+            # PATH must include the directory containing built DLLs
             if sys.platform == 'win32' and app != sys.executable:
                 # Hack to find the location of build/lib/
                 libdir = os.environ['PYTHONPATH'].split(';')[0]
-                self.__appcopy = os.path.join(libdir, appname)
-                shutil.copy(app, libdir)
-                app = self.__appcopy
+                env = os.environ.copy()
+                env['PATH'] += ';' + libdir
+            else:
+                env = None
             subprocess.Popen.__init__(self, [app]+list(args),
                                       stdin=subprocess.PIPE,
                                       stdout=subprocess.PIPE,
-                                      stderr=subprocess.PIPE)
-        def __del__(self):
-            self.__delete_copy()
-        def __delete_copy(self):
-            if self.__appcopy:
-                os.unlink(self.__appcopy)
-            self.__appcopy = None
+                                      stderr=subprocess.PIPE, env=env)
         def wait(self):
             err = self.stderr.read()
             ret = subprocess.Popen.wait(self)
-            self.__delete_copy()
             return ret, err
 except ImportError:
     # Provide a subprocess workalike for Python 2.3 systems (e.g. old Macs)
@@ -551,7 +543,12 @@ class ApplicationTestCase(TestCase):
         """
         filename = self._get_application_file_name(app)
         print "running ", filename
-        return _SubprocessWrapper(filename, args)
+        if sys.platform == 'win32':
+            # Cannot rely on PATH on wine builds, so use full pathname
+            return _SubprocessWrapper(os.path.join(os.environ['IMP_BIN_DIR'],
+                                                   filename), args)
+        else:
+            return _SubprocessWrapper(filename, args)
 
     def run_python_application(self, app, args):
         """Run a Python application with the given list of arguments.
