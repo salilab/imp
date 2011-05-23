@@ -28,6 +28,7 @@ Parameters get_parameters(TextInput in) {
  options_description desc;
  std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res, inter, loop;
+ bool add_dope, add_pack;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
@@ -40,6 +41,10 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("structure",   value< std::vector<std::string> >(),"ciao");
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
  desc.add_options()("loop",        value< std::vector<std::string> >(),"ciao");
+ desc.add_options()("add_dope",    value< bool >(&add_dope),           "ciao");
+ desc.add_options()("add_pack",    value< bool >(&add_pack),           "ciao");
+
+
 
  OPTION(double, diameter);
  OPTION(double, tilt);
@@ -74,6 +79,9 @@ Parameters get_parameters(TextInput in) {
  ret.score_name=score_name;
  ret.ass_file=ass_file;
  ret.traj_file=traj_file;
+ ret.add_dope=add_dope;
+ ret.add_pack=add_pack;
+
 
 // Grid Parameters
  ret.grid.tilt=radians(tilt);

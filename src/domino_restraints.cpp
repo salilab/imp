@@ -37,8 +37,8 @@ for(int i=0;i<TM->num;++i){
 }
 // multi-body restraints
 add_excluded_volume(m,protein);
-add_DOPE(m,protein,myparam->score_name);
-add_packing_restraint(m,protein,tbr,TM);
+if(myparam->add_dope) add_DOPE(m,protein,myparam->score_name);
+if(myparam->add_pack) add_packing_restraint(m,protein,tbr,TM);
 add_diameter_restraint(m,protein,myparam->diameter,TM);
 // two-body restraints
 for(unsigned int i=0;i<TM->loop.size();++i){
