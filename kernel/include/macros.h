@@ -1738,7 +1738,7 @@ protected:                                      \
     - IMP::PairModifier::get_output_particles()
     \see IMP_PAIR_MODIFIER_DA
 */
-#define IMP_PAIR_MODIFIER(Name)                                          \
+#define IMP_PAIR_MODIFIER(Name)                                         \
   void apply(const ParticlePair &p) const;                              \
   void apply(const ParticlePair &p, DerivativeAccumulator&) const{      \
     apply(p);                                                           \
@@ -1752,11 +1752,11 @@ protected:                                      \
              DerivativeAccumulator &) const {                           \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
-D    }                                                                   \
+    }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
-I  ParticlesTemp get_output_particles(Particle *p) const;                \
-S  ContainersTemp get_input_containers(Particle *p) const;               \
+  ParticlesTemp get_output_particles(Particle *p) const;                \
+  ContainersTemp get_input_containers(Particle *p) const;               \
   ContainersTemp get_output_containers(Particle *p) const;              \
   IMP_OBJECT(Name)
 
