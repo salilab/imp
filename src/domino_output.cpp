@@ -36,7 +36,7 @@ if(myparam->traj_file.length()>0.0){
  for(unsigned int i=0;i<ass->size();++i){
   domino::load_particle_states(*subs,(*ass)[i],pst);
   for(unsigned int j=0;j<hs.size();++j){
-   rmf::save_frame(rh, i+1, hs[j]);
+   rmf::save_frame(rh, i, hs[j]);
   }
  }
 }
