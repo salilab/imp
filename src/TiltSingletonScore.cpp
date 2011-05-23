@@ -6,7 +6,8 @@
  */
 
 #include <IMP/membrane/TiltSingletonScore.h>
-#include <IMP/algebra/Vector3D.h>
+#include <IMP/core.h>
+#include <IMP/algebra.h>
 #include <IMP/UnaryFunction.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE

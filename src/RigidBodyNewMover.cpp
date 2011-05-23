@@ -6,8 +6,9 @@
  *
  */
 #include <IMP/membrane/RigidBodyNewMover.h>
-#include <IMP/core/XYZ.h>
-#include <IMP/algebra/vector_generators.h>
+#include <IMP/core.h>
+#include <IMP/algebra.h>
+
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 RigidBodyNewMover::RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
