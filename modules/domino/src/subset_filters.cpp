@@ -136,6 +136,12 @@ void RestraintScoreSubsetFilterTable
   mset_->add_score(r, subset, state, score);
 }
 
+
+void RestraintScoreSubsetFilterTable
+::set_use_caching(bool tf) {
+  mset_->set_use_caching(tf);
+}
+
 void RestraintScoreSubsetFilterTable::do_show(std::ostream &) const {
 }
 
