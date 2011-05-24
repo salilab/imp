@@ -456,6 +456,7 @@ public:
 }
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
+  inline bool get_rms_calculated() const {return rms_calculated_;}
 protected:
   int get_dim_index_by_location(float loc_val,
                               int ind) const;
@@ -581,6 +582,9 @@ IMPEMEXPORT void get_transformed_into(const DensityMap *from,
                                       const algebra::Transformation3D &tr,
                                       DensityMap *into,
                                        bool calc_rms=true);
+IMPEMEXPORT void get_transformed_into2(const DensityMap *from,
+                                      const algebra::Transformation3D &tr,
+                                       DensityMap *into);
 
 inline bool get_interiors_intersect(const DensityMap *d1,
                                     const DensityMap *d2){
@@ -610,10 +614,20 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *map_to_segment,
                                     int ny_start,int ny_end,
                                     int nz_start,int nz_end);
 
+//! Get a segment of the map covered by the input points
+IMPEMEXPORT DensityMap* get_segment(DensityMap *map_to_segment,
+                                    algebra::Vector3Ds vecs,float dist);
+
 //! Return a map with 0 for all voxels below the
 //! threshold and 1 for thoes above
+/**
+\param[in] orig_map the map to binarize
+\param[in] threshold values below the threshold are set to 0 and 1 otherwise
+\param[in] reverse if true values above the threshold
+                   are set to 0 and 1 otherwise
+ */
 IMPEMEXPORT DensityMap* binarize(DensityMap *orig_map,
-                                 float threshold);
+                                 float threshold,bool reverse=false);
 //! Return a density map for which voxel i contains the result of
 //! m1[i]*m2[i]. The function assumes m1 and m2 are of the same dimensions.
 IMPEMEXPORT DensityMap* multiply(const DensityMap *m1,

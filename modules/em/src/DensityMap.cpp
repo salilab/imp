@@ -470,7 +470,7 @@ emreal DensityMap::calcRMS()
 
   stdval = sqrt(stdval/nvox-meanval*meanval);
   header_.rms = stdval;
-
+  rms_calculated_=true;
   return stdval;
 }
 
@@ -527,6 +527,9 @@ bool DensityMap::same_voxel_size(const DensityMap *other) const
 }
 
 algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
+  //todo - remove this line
+  show();
+  std::cout<<"Max value:"<<get_max_value()<<" thre:"<<threshold<<std::endl;
   IMP_CHECK_CODE(emreal max_val = get_max_value());
   IMP_USAGE_CHECK(threshold < max_val,
             "The input threshold with value " << threshold
@@ -602,9 +605,9 @@ void DensityMap::add(const DensityMap *other) {
             "The voxel sizes of the two maps differ ( "
             << header_.get_spacing() << " != "
             << other->header_.get_spacing());
-  IMP_INTERNAL_CHECK(
+  /*  IMP_INTERNAL_CHECK(
           get_bounding_box(this).get_contains(get_bounding_box(other)),
-          "Other map should be contained in this map\n");
+          "Other map should be contained in this map\n");*/
   //find the intersecting bounding box
   algebra::BoundingBox3D bb =
     get_intersection(em::get_bounding_box(this),em::get_bounding_box(other));
@@ -720,7 +723,9 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
       ++counter;
      }
    }
-  return d->get_spacing()*counter/1.21;
+  double cube_factor=1.21*1.21*1.21;
+  double cube_spacing=d->get_spacing()*d->get_spacing()*d->get_spacing();
+  return cube_spacing*counter/cube_factor;
  }
 
 
@@ -957,7 +962,15 @@ void get_transformed_into(const DensityMap *from,
   }
 }
 
-DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float) {
+void get_transformed_into2(const DensityMap *from,
+   const algebra::Transformation3D &tr,
+                           DensityMap *into){
+  algebra::BoundingBox3D obb(from->get_origin(),from->get_top());
+  get_transformed_internal(from,tr,into);
+  into->get_header_writable()->compute_xyz_top();
+}
+
+DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
   Pointer<DensityMap> ret(new DensityMap(header_));
   //calculate the new extent
   int new_ext[3];
@@ -974,6 +987,8 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float) {
   int nx=header_.get_nx();
   int n_nx=new_header->get_nx();
   emreal *new_data = ret->get_data();
+  long n_xyz=get_number_of_voxels();
+  long new_n_xyz=ret->get_number_of_voxels();
   for(int iz=0;iz<header_.get_nz();iz++){ //z slowest
     z_term_curr = iz*nxny;
     z_term_new = (iz+mrg_z)*n_nxny;
@@ -983,6 +998,10 @@ DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float) {
       for(int ix=0;ix<nx;ix++){
         curr_ind = zy_term_curr+ix;
         new_ind = zy_term_new+ix+mrg_x;
+        IMP_INTERNAL_CHECK(new_ind<new_n_xyz,
+                           "Index problem with new map!"<<std::endl);
+        IMP_INTERNAL_CHECK(curr_ind<n_xyz,
+                           "Index problem with old map!"<<std::endl);
         new_data[new_ind]=data_[curr_ind];
       }
     }
@@ -1194,7 +1213,7 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
 }
 
 DensityMap* binarize(DensityMap *orig_map,
-                     float threshold) {
+                     float threshold,bool reverse) {
   const DensityHeader *header = orig_map->get_header();
   //create a new map
   DensityMap * bin_map =
@@ -1205,11 +1224,19 @@ DensityMap* binarize(DensityMap *orig_map,
   emreal *orig_data=orig_map->get_data();
   emreal *bin_data=bin_map->get_data();
   for(long i=0;i<header->get_number_of_voxels();i++){
-    if (orig_data[i]<threshold) {
-      bin_data[i]=0.;
+    if (!reverse) {
+      if (orig_data[i]<threshold) {
+        bin_data[i]=0.;
+      } else {
+        bin_data[i]=1.;
+      }
     }
     else {
-      bin_data[i]=1.;
+      if (orig_data[i]>threshold) {
+        bin_data[i]=0.;
+      } else {
+        bin_data[i]=1.;
+      }
     }
   }
   return bin_map;
@@ -1291,5 +1318,36 @@ DensityMap* get_max_map(DensityMaps maps){
   return max_map.release();
 }
 
+//! Get a segment of the map covered by the input points
+DensityMap* get_segment(DensityMap *map_to_segment,
+                        algebra::Vector3Ds vecs,float radius) {
+  IMP_NEW(DensityMap,ret,(*(map_to_segment->get_header())));
+  const DensityHeader *header=map_to_segment->get_header();
+  emreal *dmap_data=map_to_segment->get_data();
+  emreal *segment_data=ret->get_data();
+  ret->reset_data(0.);
+  int  ivox, ivoxx, ivoxy, ivoxz, iminx, imaxx, iminy, imaxy, iminz, imaxz;
+  int nxny=header->get_nx()*header->get_ny(); int znxny;
+  for(int i=0;i<(int)vecs.size();i++) {
+    int count=0;
+    algebra::Vector3D point=vecs[i];
+    calc_local_bounding_box(map_to_segment,
+                            vecs[i][0],vecs[i][1],vecs[i][2],
+                            radius,
+                            iminx, iminy, iminz, imaxx, imaxy, imaxz);
+    for (ivoxz=iminz;ivoxz<=imaxz;ivoxz++) {
+      znxny=ivoxz * nxny;
+      for (ivoxy=iminy;ivoxy<=imaxy;ivoxy++)  {
+        // we increment ivox this way to avoid unneceessary multiplication
+        // operations.
+        ivox = znxny + ivoxy * header->get_nx() + iminx;
+        for (ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
+          segment_data[ivox]=dmap_data[ivox];
+          ivox++;++count;
+        }
+      }if (count<3)std::cout<<"Particle "<<i<<" has no data"<<std::endl;}
+  }
+  return ret.release();
+}
 
 IMPEM_END_NAMESPACE
