@@ -153,11 +153,11 @@ class sfo_common():
         self._m = IMP.Model()
 
     def init_model_charmm_protein_and_ff(self, initpdb, top, par, selector, pairscore,
-            ff_temp=300.0, disulfides=None):
+            ff_temp=300.0, disulfides=None, representation='custom'):
         """creates a CHARMM protein representation.  
         creates the charmm force field, bonded and nonbonded.
         - initpdb: initial structure in pdb format
-        - top is a CHARMM top.lib
+        - top is a CHARMM top.lib, read if representation=='custom' (default)
         - par is a CHARMM par.lib
         - selector is an instance of
             one of the selectors of IMP.atom, for example
@@ -171,6 +171,14 @@ class sfo_common():
         - disulfides: if not None, a list of tuples corresponding to residue
                       numbers that should be cross-linked. Residues should be
                       cysteines, and residue numbering should start at 0.
+        - representation: 'full' : all-atom CHARMM force field
+                          'heavy': heavy atom CHARMM forcefield with polar H
+                          'calpha': only C alphas, ball and stick model with
+                                    bondlength 3.78 angstrom, beads at VdW
+                                    contact, and harmonic restraint between
+                                    them.
+                          'custom' (default) : read given CHARMM top and par
+                                               files.
         Returns: prot, ff, rsb, rs
             - prot: the protein
             - ff: the force field
@@ -182,52 +190,101 @@ class sfo_common():
         prot = IMP.atom.read_pdb(initpdb, m, selector)
         if not prot.get_is_valid(True):
             raise ValueError, "invalid hierarchy!"
-        # Read in the CHARMM heavy atom topology and parameter files
-        ff = IMP.atom.CHARMMParameters(top,par)
-        # equivalent:
-        # ff = IMP.atom.get_heavy_atom_CHARMM_parameters()
-        #
-        # Using the CHARMM libraries, determine the ideal topology (atoms and their
-        # connectivity) for the PDB file's primary sequence
-        topology = ff.create_topology(prot)
-        # Typically this modifies the C and N termini of each chain in the protein by
-        # applying the CHARMM CTER and NTER patches. Patches can also be manually
-        # applied at this point, e.g. to add disulfide bridges.
-        topology.apply_default_patches()
-        #disulfides
-        if disulfides:
-            s=topology.get_segment(0)
-            dis=ff.get_patch('DISU')
-            for (i,j) in disulfides:
-                self.find_atom((i, 'SG'), prot)
-                self.find_atom((j, 'SG'), prot)
-                r0=s.get_residue(i)
-                r1=s.get_residue(j)
-                if i==0:
-                    r0.set_patched(False)
-                if j==0:
-                    r1.set_patched(False)
-                dis.apply(r0,r1)
-                print "added disulfide bridge between cysteines %d and %d" % (i,j)
-        # Make the PDB file conform with the topology; i.e. if it contains extra
-        # atoms that are not in the CHARMM topology file, remove them; if it is
-        # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
-        # add them and construct their Cartesian coordinates from internal coordinate
-        # information.
-        topology.setup_hierarchy(prot)
-        # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
-        # impropers) of the CHARMM forcefield
-        r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
-        rsb = IMP.RestraintSet("bonded")
-        rsb.add_restraint(r)
-        m.add_restraint(rsb)
-        #
-        # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
-        # know the radii and well depths for each atom, so add them from the forcefield
-        # (they can also be assigned manually using the XYZR or LennardJones
-        # decorators):
-        ff.add_radii(prot)
-        ff.add_well_depths(prot)
+        if representation == 'custom':
+            # Read in the CHARMM heavy atom topology and parameter files
+            ff = IMP.atom.CHARMMParameters(top,par)
+        elif representation == 'heavy':
+            ff= IMP.atom.get_heavy_atom_CHARMM_parameters()
+        elif representation == 'full':
+            ff= IMP.atom.get_all_atom_CHARMM_parameters()
+        elif representation == 'calpha':
+            pass
+        else:
+            raise NotImplementedError, representation
+        if representation == 'calpha':
+            print "setting up simplified C alpha force field"
+            # set radii
+            for ca in IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE):
+                IMP.core.XYZR(ca.get_particle()).set_radius(1.89)
+                #IMP.atom.Mass(ca.get_particle()).set_mass(1.) 
+            #create bonds by getting pairs and applying a pairscore
+            pairs=[]
+            for chain in prot.get_children():
+                residues=[(chain.get_child(i),chain.get_child(i+1))
+                            for i in xrange(chain.get_number_of_children()-1)]
+                residues=[(i.get_child(0).get_particle(),
+                           j.get_child(0).get_particle())
+                            for (i,j) in residues]
+                pairs.extend(residues)
+            bonds=[]
+            for (i,j) in pairs:
+                #check, because it fails if you try twice
+                if IMP.atom.Bonded.particle_is_instance(i):
+                    bi = IMP.atom.Bonded(i)
+                else:
+                    bi = IMP.atom.Bonded.setup_particle(i)
+                if IMP.atom.Bonded.particle_is_instance(j):
+                    bi = IMP.atom.Bonded(i)
+                else:
+                    bj = IMP.atom.Bonded.setup_particle(j)
+                bond=IMP.atom.create_custom_bond(bi,bj,3.78,10) #stiff
+                bonds.append(bond)
+            bonds_container = IMP.container.ListSingletonContainer(bonds)
+            hdps = IMP.core.Harmonic(0,1)
+            bs = IMP.atom.BondSingletonScore(hdps)
+            br = IMP.container.SingletonsRestraint(bs, bonds_container)
+            rsb = IMP.RestraintSet("bonded")
+            rsb.add_restraint(br)
+            rsb.set_weight(1.0/(kB*ff_temp))
+            m.add_restraint(rsb)
+            nonbonded_pair_filter = IMP.atom.StereochemistryPairFilter()
+            nonbonded_pair_filter.set_bonds(bonds)
+            ff=None
+        else:
+            print "setting up CHARMM forcefield"
+            #
+            # Using the CHARMM libraries, determine the ideal topology (atoms and their
+            # connectivity) for the PDB file's primary sequence
+            topology = ff.create_topology(prot)
+            # Typically this modifies the C and N termini of each chain in the protein by
+            # applying the CHARMM CTER and NTER patches. Patches can also be manually
+            # applied at this point, e.g. to add disulfide bridges.
+            topology.apply_default_patches()
+            #disulfides
+            if disulfides:
+                s=topology.get_segment(0)
+                dis=ff.get_patch('DISU')
+                for (i,j) in disulfides:
+                    self.find_atom((i, 'SG'), prot)
+                    self.find_atom((j, 'SG'), prot)
+                    r0=s.get_residue(i)
+                    r1=s.get_residue(j)
+                    if i==0:
+                        r0.set_patched(False)
+                    if j==0:
+                        r1.set_patched(False)
+                    dis.apply(r0,r1)
+                    print "added disulfide bridge between cysteines %d and %d" % (i,j)
+            # Make the PDB file conform with the topology; i.e. if it contains extra
+            # atoms that are not in the CHARMM topology file, remove them; if it is
+            # missing atoms (e.g. sidechains, hydrogens) that are in the CHARMM topology,
+            # add them and construct their Cartesian coordinates from internal coordinate
+            # information.
+            topology.setup_hierarchy(prot)
+            # Set up and evaluate the stereochemical part (bonds, angles, dihedrals,
+            # impropers) of the CHARMM forcefield
+            r = IMP.atom.CHARMMStereochemistryRestraint(prot, topology)
+            rsb = IMP.RestraintSet("bonded")
+            rsb.add_restraint(r)
+            m.add_restraint(rsb)
+            #
+            # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
+            # know the radii and well depths for each atom, so add them from the forcefield
+            # (they can also be assigned manually using the XYZR or LennardJones
+            # decorators):
+            ff.add_radii(prot)
+            ff.add_well_depths(prot)
+            nonbonded_pair_filter = r.get_pair_filter()
         # Get a list of all atoms in the protein, and put it in a container
         atoms = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
         cont = IMP.container.ListSingletonContainer(atoms)
@@ -239,7 +296,7 @@ class sfo_common():
         # potential. Finally, a PairsRestraint is used which simply applies the
         # LennardJonesPairScore to each pair in the ClosePairContainer.
         nbl = IMP.container.ClosePairContainer(cont, 4.0)
-        nbl.add_pair_filter(r.get_pair_filter())
+        nbl.add_pair_filter(nonbonded_pair_filter)
         #should weight the ff restraint by a temperature, set to 300K.
         pr = IMP.container.PairsRestraint(pairscore, nbl)
         rs = IMP.RestraintSet('phys')
@@ -607,19 +664,20 @@ class sfo_common():
         self._m.add_restraint(rs)
         return rs, prior_rs, kappa
 
-    def init_model_standard_SAXS_restraint(self, prot, profilefile, name='SAXS'):
+    def init_model_standard_SAXS_restraint(self, prot, profilefile, name='SAXS',
+            ff_type=IMP.saxs.HEAVY_ATOMS):
         """read experimental SAXS profile and apply restraint the standard
         way (like foxs)
-        Returns: a restraintset
+        Returns: a restraintset and the experimental profile
         """
         rs = IMP.RestraintSet(name)
         saxs_profile = IMP.saxs.Profile(profilefile)
         particles = IMP.atom.get_by_type(prot, IMP.atom.ATOM_TYPE)
-        saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile)
+        saxs_restraint = IMP.saxs.Restraint(particles, saxs_profile, ff_type)
         rs.add_restraint(saxs_restraint)
         rs.set_weight(1.0)
         self._m.add_restraint(rs)
-        return rs
+        return rs, saxs_profile
 
     def _setup_md(self,prot, temperature=300.0, thermostat='berendsen',
             coupling=500, md_restraints=None, timestep=1.0, recenter=1000,
@@ -864,9 +922,7 @@ class sfo_common():
         prot.
         """
         output = StringIO()
-        output.write('MODEL\n')
         IMP.atom.write_pdb(prot, output)
-        output.write('ENDMDL\n')
         return output.getvalue()
 
     def get_netcdf(self, prot):
