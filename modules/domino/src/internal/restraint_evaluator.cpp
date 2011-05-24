@@ -19,6 +19,14 @@ ModelData::ModelData(RestraintSet *rs,
   rs_=rs;
   pst_=pst;
   initialized_=false;
+  cache_=false;
+}
+
+void ModelData::set_use_caching(bool tf) {
+  cache_= tf;
+  for (unsigned int i=0; i < rdata_.size(); ++i) {
+    rdata_[i].set_use_caching(tf);
+  }
 }
 
 namespace {

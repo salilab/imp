@@ -146,6 +146,11 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
   /** Add a precomputed score for a restraint.*/
   void add_score(Restraint *r, const Subset &subset,
                  const Assignment &state, double score);
+  /** By default the filter table caches each score that it computes.
+      While this can often accelerate things, that is not always the
+      case and the memory usage can be quite high.
+  */
+  void set_use_caching(bool tf);
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 

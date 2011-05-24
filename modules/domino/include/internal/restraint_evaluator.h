@@ -47,6 +47,7 @@ class RestraintData {
   Pointer<Restraint> r_;
   double weight_;
   double max_;
+  bool cache_;
   mutable int filter_attempts_;
   mutable int filter_passes_;
 public:
@@ -55,6 +56,7 @@ public:
                                 max_(std::numeric_limits<double>::max()){
     filter_attempts_=0;
     filter_passes_=0;
+    cache_=true;
   }
   void set_score(const Assignment &ss, double s) {
     IMP_USAGE_CHECK(scores_.find(ss) == scores_.end(),
@@ -97,6 +99,12 @@ public:
   }
   std::pair<int,int> get_statistics() const {
     return std::make_pair(filter_attempts_, filter_passes_);
+  }
+  void set_use_caching(bool tf) {
+    cache_=tf;
+    if (!cache_) {
+      scores_.clear();
+    }
   }
 };
 
@@ -141,7 +149,6 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   };
   typedef IMP::internal::Map<Restraint*, PreloadData> Preload;
   Preload preload_;
-
   struct SubsetID {
     const Subset s_;
     const Subsets excluded_;
@@ -162,7 +169,7 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
     }
   };
 
-  bool initialized_;
+  bool initialized_, cache_;
   mutable Pointer<RestraintSet> rs_;
 
   std::vector<RestraintData> rdata_;
@@ -185,6 +192,7 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
                                     const Subsets &exclude=Subsets()) const;
   void add_score(Restraint *r, const Subset &subset,
                  const Assignment &state, double score);
+  void set_use_caching(bool tf);
   IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 
