@@ -36,7 +36,7 @@ void FittingSolutions::sort(bool reverse) {
 
 namespace {
 RestraintSet * add_restraints(Model *model, DensityMap *dmap,
-                              core::RigidBody rb,Refiner *leaves_ref,
+                              Particle *p,Refiner *leaves_ref,
                 const FloatKey &wei_key,
                 bool fast=false) {
   RestraintSet *rsrs = new RestraintSet();
@@ -45,22 +45,24 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    Pointer<FitRestraint> fit_rs;
    FloatPair no_norm_factors(0.,0.);
    if (fast) {
-     fit_rs = new FitRestraint(rb.get_particle(),
+     fit_rs = new FitRestraint(p,
                                dmap,leaves_ref,no_norm_factors,
                                wei_key,1.0);
    }
    else {
-     fit_rs = new FitRestraint(leaves_ref->get_refined(rb),
+     fit_rs = new FitRestraint(leaves_ref->get_refined(p),
                                dmap,leaves_ref,no_norm_factors,
-                               wei_key,1.0);
+                               wei_key,1.0,false);
    }
    rsrs->add_restraint(fit_rs);
    return rsrs;
 }
 
 core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
-   core::RigidBody rb,
+                                Particle *p,Refiner *refiner,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
+  core::RigidBody rb =
+    core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
   //create a rigid body mover
   core::RigidBodyMover *rb_mover =
      new core::RigidBodyMover(rb,max_translation,max_rotation);
@@ -88,13 +90,15 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
 
 void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
               const algebra::VectorD<3> &anchor_centroid,
-              core::RigidBody *rb, Refiner *refiner, core::MonteCarlo *opt,
+              Particle *p, Refiner *refiner, core::MonteCarlo *opt,
               FittingSolutions &fr, Model *) {
   Float e;
-  core::XYZsTemp xyz_t(refiner->get_refined(*rb));
+  core::RigidBody rb =
+    core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
+  core::XYZsTemp xyz_t(refiner->get_refined(p));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
   //save starting configuration
-    algebra::Transformation3D starting_trans = rb->get_reference_frame()
+    algebra::Transformation3D starting_trans = rb.get_reference_frame()
       .get_transformation_to();
   algebra::Transformation3D move2centroid(algebra::get_identity_rotation_3d(),
                                           anchor_centroid-ps_centroid);
@@ -102,7 +106,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   for(int i=0;i<number_of_optimization_runs;i++) {
     IMP_LOG(VERBOSE, "number of optimization run is : "<< i << std::endl);
     //TODO - should we return this line?
-    rb->set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
+    rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
     //set the centroid of the rigid body to be on the anchor centroid
     //make sure that all of the members are in the correct transformation
     //TODO - should we keep this?
@@ -110,7 +114,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     //optimize
     try {
       e = opt->optimize(number_of_mc_steps);
-      fr.add_solution(rb->get_reference_frame()
+      fr.add_solution(rb.get_reference_frame()
                       .get_transformation_to()/starting_trans,e);
     } catch (ModelException err) {
       IMP_WARN("Optimization run " << i << " failed to converge."
@@ -118,12 +122,12 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
     }
   }
   //return the rigid body to the original position
-  rb->set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
+  rb.set_reference_frame(algebra::ReferenceFrame3D(starting_trans));
 }
 }
 
 FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb,Refiner *refiner,
+   Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerStates display_log,
@@ -143,18 +147,18 @@ FittingSolutions local_rigid_fitting_around_point(
               <<"of the density"<<std::endl);
    }
    //add restraints
-   Model *model = rb.get_members()[0].get_particle()->get_model();
-   RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
+   Model *model = p->get_model();
+   RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key,fast);
    //create a rigid body mover and set the optimizer
-   core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
+   core::MonteCarlo *opt = set_optimizer(model, display_log, p,refiner,
                            number_of_cg_steps, max_translation, max_rotation);
 
    //optimize
 
    IMP_LOG(VERBOSE,"before optimizer"<<std::endl);
    optimize(number_of_optimization_runs, number_of_mc_steps,
-            anchor_centroid, &rb, refiner,opt, fr, model);
+            anchor_centroid, p, refiner,opt, fr, model);
 
    fr.sort();
    IMP_IF_LOG(TERSE) {
@@ -173,7 +177,7 @@ FittingSolutions local_rigid_fitting_around_point(
 }
 
 FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,Refiner *refiner,
+   Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerStates display_log,
@@ -186,11 +190,11 @@ FittingSolutions local_rigid_fitting_around_points(
            " MC optimization runs, each with " << number_of_mc_steps <<
            " Monte Carlo steps , each with " << number_of_cg_steps <<
            " Conjugate Gradients rounds. " << std::endl);
-   Model *model = rb.get_members()[0].get_particle()->get_model();
+   Model *model = p->get_model();
 
-   RestraintSet *rsrs = add_restraints(model, dmap, rb,refiner,
+   RestraintSet *rsrs = add_restraints(model, dmap, p,refiner,
                                        wei_key);
-   core::MonteCarlo *opt = set_optimizer(model, display_log, rb,
+   core::MonteCarlo *opt = set_optimizer(model, display_log, p,refiner,
                            number_of_cg_steps,max_translation, max_rotation);
 
    for(std::vector<algebra::VectorD<3> >::const_iterator it
@@ -200,7 +204,7 @@ FittingSolutions local_rigid_fitting_around_points(
                 "The centroid is not part of the map");
      IMP_LOG(VERBOSE, "optimizing around anchor point " << *it << std::endl);
      optimize(number_of_optimization_runs,
-              number_of_mc_steps,*it,&rb,refiner,opt,fr,model);
+              number_of_mc_steps,*it,p,refiner,opt,fr,model);
    }
    fr.sort();
    model->remove_restraint(rsrs);

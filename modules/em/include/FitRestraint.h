@@ -40,7 +40,6 @@ public:
     \param[in] norm_factors if set, they are used as normalization factors
        for the cross correlation calculations. This is relevant when the
        cross-correlation score of the entire system is decomposed.
-    \param[in] radius_key the name of the radius attribute of the particles
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
                      by this value
@@ -55,7 +54,8 @@ public:
                Refiner *refiner,
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
-               float scale=1);
+               float scale=1,
+               bool use_rigid_bodies=true);
   //! \return the predicted density map of the model
   SampledDensityMap * get_model_dens_map() {
     return model_dens_map_;
@@ -91,13 +91,15 @@ private:
   //  bool special_treatment_of_particles_outside_of_density_;
   //rigid bodies handling
   IMP::Particles not_rb_; //all particles that are not part of a rigid body
-  IMP::core::RigidBodies rbs_;
-  std::vector<IMP::algebra::Transformation3D> rbs_orig_trans_;
-  IMP::internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
+  core::RigidBodies rbs_;
+  Particles mhs_;//mhs_ are the root hierarhices of the rigid bodies
+  algebra::ReferenceFrame3Ds rbs_orig_rf_;
+  IMP::internal::OwnerPointer<Refiner> refiner_;//refiner for rigid bodies
   FloatKey weight_key_;
   KernelParameters *kernel_params_;
   DistanceMask *dist_mask_;
   FloatPair norm_factors_;
+  bool use_rigid_bodies_;
 };
 
 IMPEM_END_NAMESPACE

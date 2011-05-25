@@ -18,10 +18,14 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP::algebra::Vector3D vec = t.get_transformed(xyz[i].get_coordinates());
     if (!dmap->is_part_of_volume(vec)) {
+      IMP_LOG(IMP::VERBOSE,"position: "<<vec<<" is out of density"<<std::endl);
       out_of_dens++;
     }
     else {
       if (dmap->get_value(vec)<thr) {
+        IMP_LOG(IMP::VERBOSE,"position: "<<vec<<" has density value "<<
+                dmap->get_value(vec)<<
+                " with is lower than required"<<std::endl);
         out_of_dens++;
       }
     }

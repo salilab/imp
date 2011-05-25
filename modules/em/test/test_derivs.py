@@ -85,6 +85,9 @@ class DerivativesTest(IMP.test.TestCase):
         em_map.get_header_writable().set_zorigin(zorigin)
         em_map.get_header_writable().compute_xyz_top()
         em_map.get_header_writable().set_resolution(resolution)
+        print "rms_calc",em_map.get_rms_calculated()
+        em_map.calcRMS()
+        print "rms_calc",em_map.get_rms_calculated()
         ind_emrsr = []
         ind_emrsr.append(IMP.em.FitRestraint(self.particles,
                                              em_map,
@@ -197,7 +200,7 @@ class DerivativesTest(IMP.test.TestCase):
         fp= d
         to_move=d
         d.set_coordinates_are_optimized(True)
-        refiner=None
+        refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 
         bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-bd-radius, -bd-radius, -bd-radius),
                                       IMP.algebra.Vector3D( bd+radius,  bd+radius,  bd+radius))
@@ -209,7 +212,9 @@ class DerivativesTest(IMP.test.TestCase):
 
         dmap.resample()
         # computes statistic stuff about the map and insert it in the header
+        print "BEFORE calcRMS",dmap.get_rms_calculated()
         dmap.calcRMS()
+        print "AFTER calcRMS",dmap.get_rms_calculated()
         IMP.em.write_map(dmap,"map.mrc",IMP.em.MRCReaderWriter())
         rs= IMP.RestraintSet()
         m.add_restraint(rs)

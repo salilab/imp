@@ -25,8 +25,9 @@ class CorrelationDecompositionTest(IMP.test.TestCase):
                                        self.imp_model, IMP.atom.CAlphaPDBSelector()))
         for mh in self.mhs:
             IMP.atom.add_radii(mh)
-            rb=IMP.atom.setup_as_rigid_body(mh)
-            self.ps = self.ps + self.leaves_ref.get_refined(rb.get_particle())
+            IMP.atom.create_rigid_body(mh)
+            rb=IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
+            self.ps = self.ps + self.leaves_ref.get_refined(mh)
             self.rbs.append(rb)
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
@@ -117,18 +118,24 @@ class CorrelationDecompositionTest(IMP.test.TestCase):
         #full sampled map
         decomposed_score=0.
         for i in range(len(self.mhs)):
+            print "iindex:",i,"mol size",len(IMP.core.get_leaves(self.mhs[i]))
             r=IMP.em.FitRestraint(IMP.core.get_leaves(self.mhs[i]),self.scene,
                                   self.leaves_ref,self.norm_factors,
                                   IMP.atom.Mass.get_mass_key(),
-                                  1.)
+                                  1.,False)
+            print "finish set fit restraint"
             self.imp_model.add_restraint(r)
+            print "add rstraint"
             decomposed_score += r.evaluate(None)
-        full_r=IMP.em.FitRestraint(self.all_ps,self.scene,self.leaves_ref)
+            print "after evaluate"
+        full_r=IMP.em.FitRestraint(self.all_ps,self.scene,self.leaves_ref,[0,0],
+                                   IMP.atom.Mass.get_mass_key(),
+                                  1.,False)
         self.imp_model.add_restraint(full_r)
         full_score=full_r.evaluate(None)
         print "decomposed score:",decomposed_score-(len(self.mhs)-1)
         print "decomposed score normalized:",full_score
-        self.assertAlmostEqual(decomposed_score-(len(self.mhs)-1),full_score,2)
+        self.assertAlmostEqual(decomposed_score-(len(self.mhs)-1),full_score,1)
 
 if __name__ == '__main__':
     IMP.test.main()

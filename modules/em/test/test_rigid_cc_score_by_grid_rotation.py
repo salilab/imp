@@ -58,12 +58,10 @@ class RigidBodyCorrelationByGridRotation(IMP.test.TestCase):
         scores_fast = IMP.em.compute_fitting_scores(
             self.particles,
             self.scene,
-            self.weight_key,
             ts,True)
         scores_slow = IMP.em.compute_fitting_scores(
             self.particles,
             self.scene,
-            self.weight_key,
             ts,False)
         #check that the functions calculated 20 scores
         self.assertEqual(scores_fast.get_number_of_solutions(), len(ts))

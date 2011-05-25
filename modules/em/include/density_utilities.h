@@ -25,5 +25,6 @@ IMPEM_BEGIN_NAMESPACE
  */
 IMPEMEXPORT DensityMap* mask_and_norm(em::DensityMap *dmap,
                                          em::DensityMap *mask);
+
 IMPEM_END_NAMESPACE
 #endif  /* IMPEM_DENSITY_UTILITIES_H */

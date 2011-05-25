@@ -40,4 +40,5 @@ DensityMap* mask_and_norm(em::DensityMap *dmap,em::DensityMap *mask) {
   }
   return ret.release();
 }
+
 IMPEM_END_NAMESPACE

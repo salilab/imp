@@ -5,15 +5,14 @@
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
-
 #include <IMP/em/FitRestraint.h>
+#include <IMP/em/MRCReaderWriter.h>
 #include <IMP/em/envelope_penetration.h>
 #include <IMP/core/internal/evaluate_distance_pair_score.h>
 #include <IMP/core/HarmonicUpperBound.h>
 #include "IMP/container_macros.h"
 #include <IMP/log.h>
-//todo - revmoe
-#include <IMP/atom/pdb.h>
+
 IMPEM_BEGIN_NAMESPACE
 
 FitRestraint::FitRestraint(
@@ -22,16 +21,19 @@ FitRestraint::FitRestraint(
    Refiner *refiner,
    FloatPair norm_factors,
    FloatKey weight_key,
-   float scale
+   float scale,
+   bool use_rigid_bodies
    ): Restraint("Fit restraint")
 {
+  use_rigid_bodies_=use_rigid_bodies;
   IMP_LOG(TERSE,"Load fit restraint with the following input:"<<
           "number of particles:"<<ps.size()<<" scale:"<<scale<<
            "\n");
   // special_treatment_of_particles_outside_of_density_=
   //   special_treatment_of_particles_outside_of_density;
   target_dens_map_ = em_map;
-  rb_refiner_=refiner;
+  IMP_USAGE_CHECK(refiner!=NULL,"Refiner can not be NULL\n");
+  refiner_=refiner;
   weight_key_=weight_key;
   norm_factors_=norm_factors;
   IMP_IF_CHECK(USAGE) {
@@ -40,28 +42,29 @@ FitRestraint::FitRestraint(
                       "Particle " << ps[i]->get_name()
                       << " is not XYZR"
                       << std::endl);
+      /*
       if (!core::RigidBody::particle_is_instance(ps[i])) {
       IMP_USAGE_CHECK(ps[i]->has_attribute(weight_key),
                 "Particle " << ps[i]->get_name()
                 << " is missing the mass "<< weight_key
                 << std::endl);
-      }
+                }*/
     }
   }
   scalefac_ = scale;
   Particles all_ps;
   //get all leaves particles for derivaties
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
-    if (core::RigidBody::particle_is_instance(*it)) {
-      Particles rb_ps=rb_refiner_->get_refined(*it);
-      all_ps.insert(all_ps.end(),rb_ps.begin(),rb_ps.end());
+    if (refiner_->get_can_refine(*it)) {
+      Particles hps = refiner_->get_refined(*it);
+      all_ps.insert(all_ps.end(),hps.begin(),hps.end());
     }
     else {
       all_ps.push_back(*it);
     }
   }
   add_particles(ps);
-  IMP_LOG(TERSE,"after adding particles"<<std::endl);
+  IMP_LOG(TERSE,"after adding "<< all_ps.size()<<" particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
   model_dens_map_->set_particles(all_ps,weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
@@ -72,20 +75,31 @@ FitRestraint::FitRestraint(
    // initialize the derivatives
   int not_rb_size=0;
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
-    if (core::RigidBody::particle_is_instance(*it)) {
-      rb_refined_dx_.push_back(std::vector<float>());
-      rb_refined_dy_.push_back(std::vector<float>());
-      rb_refined_dz_.push_back(std::vector<float>());
-      rb_refined_dx_[rb_refined_dx_.size()-1].resize(
-         rb_refiner_->get_refined(*it).size(),0.0);
-      rb_refined_dy_[rb_refined_dy_.size()-1].resize(
-         rb_refiner_->get_refined(*it).size(),0.0);
-      rb_refined_dz_[rb_refined_dz_.size()-1].resize(
-         rb_refiner_->get_refined(*it).size(),0.0);
-
-    }
-    else {
-      not_rb_size++;
+    bool is_rb=false;
+    IMP_LOG(TERSE,"Adding particle:"<<(*it)->get_name()<<std::endl);
+    if (refiner_->get_can_refine(*it)) {
+      Particles leaves = refiner_->get_refined(*it);
+      if (use_rigid_bodies_ &&
+          (core::RigidMember::particle_is_instance(leaves[0]))) {
+        is_rb=true;
+        IMP_LOG(TERSE,"particle rigid"<<std::endl);
+        rb_refined_dx_.push_back(std::vector<float>());
+        rb_refined_dy_.push_back(std::vector<float>());
+        rb_refined_dz_.push_back(std::vector<float>());
+        rb_refined_dx_[rb_refined_dx_.size()-1].resize(
+                                                       leaves.size(),0.0);
+        rb_refined_dy_[rb_refined_dy_.size()-1].resize(
+                                                       leaves.size(),0.0);
+        rb_refined_dz_[rb_refined_dz_.size()-1].resize(
+                                                       leaves.size(),0.0);
+      }}
+    if (!is_rb) {
+      IMP_LOG(TERSE,"particle not rigid"<<std::endl);
+      if (refiner_->get_can_refine(*it)) {
+        Particles leaves = refiner_->get_refined(*it);
+        not_rb_size+=leaves.size();
+      }
+      else {++not_rb_size;}
     }
   }
   not_rb_dx_.resize(not_rb_size, 0.0);
@@ -107,39 +121,50 @@ void FitRestraint::initialize_model_density_map(
   none_rb_model_dens_map_->set_name(get_name()+" scratch map");
   none_rb_model_dens_map_->reset_data(0.0);
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
-    if (core::RigidBody::particle_is_instance(*it)) {
-      IMP_LOG(VERBOSE,"Particle:"<<
-              (*it)->get_name()<<" is handeled as a rigid body\n");
-      core::RigidBody rb = core::RigidBody(*it);
-      rbs_.push_back(rb);
-      //The rigid body may be outside of the density. This means
-      //that the generated SampledDensityMap will be empty,
-      //as it ignore particles outside of the boundaries.
-      //To overcome that, we tranform the rb to the center of the
-      //density map, resample in this transformation and then move
-      //the rigid body back to its correct position.
-      Particles rb_ps=rb_refiner_->get_refined(*it);
-      algebra::Vector3D rb_centroid = core::get_centroid(core::XYZsTemp(rb_ps));
-      algebra::Transformation3D move2map_center(
-       algebra::get_identity_rotation_3d(),
-       target_dens_map_->get_centroid()-rb_centroid);
-      core::transform(rb,move2map_center);
-      rbs_orig_trans_.push_back(rb.get_reference_frame()
-                                .get_transformation_to().get_inverse());
-      rb_model_dens_map_.push_back(
-        new SampledDensityMap(*(target_dens_map_->get_header())));
-      rb_model_dens_map_.back()->set_was_used(true);
-      rb_model_dens_map_.back()->set_name(get_name()+" internal rb map");
-      rb_model_dens_map_[rb_model_dens_map_.size()-1]->
-        set_particles(rb_ps,weight_key);
-      rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
-      rb_model_dens_map_[rb_model_dens_map_.size()-1]->calcRMS();
-      core::transform(rb,move2map_center.get_inverse());
-    }
-    else {
+    bool is_rb=false;
+    if (refiner_->get_can_refine(*it)){
+      Particles leaves = refiner_->get_refined(*it);
+      if (use_rigid_bodies_
+          &&(core::RigidMember::particle_is_instance(leaves[0]))) {
+        IMP_LOG(VERBOSE,"Particle:"<<
+                (*it)->get_name()<<" is handeled as a rigid body\n");
+        core::RigidBody rb = core::RigidMember(leaves[0]).get_rigid_body();
+        is_rb=true;
+        rbs_.push_back(rb);
+        mhs_.push_back(*it);
+        //The rigid body may be outside of the density. This means
+        //that the generated SampledDensityMap will be empty,
+        //as it ignore particles outside of the boundaries.
+        //To overcome that, we tranform the rb to the center of the
+        //density map, resample in this transformation and then move
+        //the rigid body back to its correct position.
+        algebra::Vector3D rb_centroid =
+          core::get_centroid(core::XYZsTemp(leaves));
+        algebra::Transformation3D move2map_center(
+                              algebra::get_identity_rotation_3d(),
+                              target_dens_map_->get_centroid()-rb_centroid);
+        core::transform(rb,move2map_center);
+        rbs_orig_rf_.push_back(rb.get_reference_frame());
+        rb_model_dens_map_.push_back(
+                    new SampledDensityMap(*(target_dens_map_->get_header())));
+        rb_model_dens_map_.back()->set_was_used(true);
+        rb_model_dens_map_.back()->set_name(get_name()+" internal rb map");
+        rb_model_dens_map_[rb_model_dens_map_.size()-1]->
+          set_particles(leaves,weight_key);
+        rb_model_dens_map_[rb_model_dens_map_.size()-1]->resample();
+        rb_model_dens_map_[rb_model_dens_map_.size()-1]->calcRMS();
+        core::transform(rb,move2map_center.get_inverse());
+      }}
+    if (!is_rb) {
       IMP_LOG(VERBOSE,"Particle:"<<
               (*it)->get_name()<<" is handeled as none rigid body particle\n");
+      if (refiner_->get_can_refine(*it)) {
+        Particles leaves = refiner_->get_refined(*it);
+        not_rb_.insert(not_rb_.end(),leaves.begin(),leaves.end());
+      }
+      else {
       not_rb_.push_back(*it);
+      }
     }
   }
   IMP_LOG(IMP::TERSE,"in initialize_model_density_map the number of"
@@ -157,11 +182,13 @@ void FitRestraint::initialize_model_density_map(
   else{
     model_dens_map_->reset_data(0.);
   }
-  for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
+  for(unsigned int rb_i=0;rb_i<mhs_.size();rb_i++) {
+    algebra::Transformation3D rb_t=
+         algebra::get_transformation_from_first_to_second(
+                                       rbs_orig_rf_[rb_i],
+                                       rbs_[rb_i].get_reference_frame());
     Pointer<DensityMap> transformed = get_transformed(
-         rb_model_dens_map_[rb_i],
-         rbs_[rb_i].get_reference_frame().get_transformation_to()
-         *rbs_orig_trans_[rb_i]);
+                                       rb_model_dens_map_[rb_i],rb_t);
       model_dens_map_->add(transformed);
   }
 }
@@ -180,10 +207,13 @@ void FitRestraint::resample() const {
     IMP_LOG(VERBOSE,"Rb model dens map size:"<<
         get_bounding_box(rb_model_dens_map_[rb_i],-1000.)<<
         "\n Target size:"<<get_bounding_box(target_dens_map_,-1000.)<<"\n");
+    algebra::Transformation3D rb_t=
+         algebra::get_transformation_from_first_to_second(
+                                             rbs_orig_rf_[rb_i],
+                                             rbs_[rb_i].get_reference_frame());
     Pointer<DensityMap> transformed = get_transformed(
-         rb_model_dens_map_[rb_i],
-         rbs_[rb_i].get_reference_frame().get_transformation_to()
-         *rbs_orig_trans_[rb_i]);
+                                                      rb_model_dens_map_[rb_i],
+                                                      rb_t);
       IMP_LOG(VERBOSE,"transformed map size:"<<
                     get_bounding_box(transformed,-1000.)<<std::endl);
       model_dens_map_->add(transformed);
@@ -219,7 +249,6 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   // To smooth the score,
   //we start considering centroids distance once 80% of the particles
   //are outside of the density.
-
   escore = CoarseCC::calc_score(
                     const_cast<DensityMap*>(target_dens_map_.get()),
                     const_cast<SampledDensityMap*>(model_dens_map_.get()),
@@ -243,19 +272,17 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for rigid body number "<<
               rb_i<<"\n");
+    algebra::Transformation3D rb_t=
+         algebra::get_transformation_from_first_to_second(
+                                             rbs_orig_rf_[rb_i],
+                                             rbs_[rb_i].get_reference_frame());
       Pointer<DensityMap> transformed = get_transformed(
-              rb_model_dens_map_[rb_i],
-              rbs_[rb_i].get_reference_frame().get_transformation_to()
-              *rbs_orig_trans_[rb_i]);
-      // it is not necessarily a hierarchy
-      if (atom::Hierarchy::particle_is_instance(rbs_[rb_i])) {
-        write_pdb(atom::Hierarchy(rbs_[rb_i]),"temp_deriv.pdb");
-      }
+                                             rb_model_dens_map_[rb_i],rb_t);
       CoarseCC::calc_derivatives(
               target_dens_map_,
               //*(rb_model_dens_map_[rb_i]),
               transformed,
-              rb_refiner_->get_refined(rbs_[rb_i]),
+              refiner_->get_refined(mhs_[rb_i]),
               weight_key_,kernel_params_,
               scalefac_,
               const_cast<FitRestraint*>(this)->rb_refined_dx_[rb_i],
@@ -277,15 +304,14 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                                           *accum);
     }
     for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
-      core::RigidBody rb=rbs_[rb_i];
-      core::RigidMembers rb_mbrs=
-         core::RigidMembers(rb_refiner_->get_refined(rb));
+      IMP::Particles rb_mbrs=refiner_->get_refined(mhs_[rb_i]);
       for(unsigned int mbr_i =0; mbr_i<rb_mbrs.size(); mbr_i++){
-        rb.add_to_derivatives(algebra::Vector3D(rb_refined_dx_[rb_i][mbr_i],
-                                                rb_refined_dy_[rb_i][mbr_i],
-                                                rb_refined_dz_[rb_i][mbr_i]),
-                              rb_mbrs[mbr_i].get_internal_coordinates(),
-                              *accum);
+        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
+                                          rb_refined_dx_[rb_i][mbr_i],*accum);
+        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
+                                          rb_refined_dy_[rb_i][mbr_i],*accum);
+        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
+                                          rb_refined_dz_[rb_i][mbr_i],*accum);
       }
     }//for rb_i
   }
@@ -299,29 +325,23 @@ ParticlesTemp FitRestraint::get_input_particles() const
   ParticlesTemp pt;
   for (ParticleConstIterator it= particles_begin();
        it != particles_end(); ++it) {
-    if (core::RigidBody::particle_is_instance(*it)) {
-      ParticlesTemp cur= rb_refiner_->get_input_particles(*it);
+    if (refiner_->get_can_refine(*it)){
+      ParticlesTemp cur= refiner_->get_input_particles(*it);
       pt.insert(pt.end(), cur.begin(), cur.end());
-      ParticlesTemp curr= rb_refiner_->get_refined(*it);
+      ParticlesTemp curr= refiner_->get_refined(*it);
       pt.insert(pt.end(), curr.begin(), curr.end());
     } else {
       pt.push_back(*it);
     }
   }
+  for(int i=0;i<(int)rbs_.size();i++) {
+    pt.push_back(rbs_[i]);
+  }
   return pt;
 }
 
 ContainersTemp FitRestraint::get_input_containers() const {
-  ContainersTemp pt;
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-    if (core::RigidBody::particle_is_instance(*it)) {
-      ContainersTemp cur= rb_refiner_->get_input_containers(*it);
-      pt.insert(pt.end(), cur.begin(), cur.end());
-    } else {
-    }
-  }
-  return pt;
+  return ContainersTemp();
 }
 
 void FitRestraint::do_show(std::ostream& out) const
