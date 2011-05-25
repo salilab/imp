@@ -527,9 +527,8 @@ bool DensityMap::same_voxel_size(const DensityMap *other) const
 }
 
 algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
-  //todo - remove this line
-  show();
-  std::cout<<"Max value:"<<get_max_value()<<" thre:"<<threshold<<std::endl;
+  IMP_LOG(VERBOSE,
+          "Max value:"<<get_max_value()<<" thre:"<<threshold<<std::endl);
   IMP_CHECK_CODE(emreal max_val = get_max_value());
   IMP_USAGE_CHECK(threshold < max_val,
             "The input threshold with value " << threshold

@@ -355,22 +355,28 @@ void CoarseCC::calc_derivatives(
   int nx=em_header->get_nx();
   int ny=em_header->get_ny();
   //int nz=em_header->get_nz();
-  double lower_comp= em_header->rms * model_header->rms;
+  IMP_INTERNAL_CHECK(em_map->get_rms_calculated(),
+                     "RMS should be calculated for calculating derivatives \n");
+  long nvox = em_header->get_number_of_voxels();
+  double lower_comp= 1.*nvox*em_header->rms * model_header->rms;
 
   for (unsigned int ii=0; ii<model_ps.size(); ii++) {
     float x,y,z;
     x=model_xyzr[ii].get_x();y=model_xyzr[ii].get_y();
     z=model_xyzr[ii].get_z();
+    IMP_IF_LOG(VERBOSE){
     algebra::Vector3D vv(x,y,z);
     IMP_LOG(VERBOSE,"start value:: ("<<x<<","<<y<<","<<z<<" ) "<<
             em_map->get_value(x,y,z)<<" : "<<
             em_map->get_dim_index_by_location(vv,0)<<","<<
             em_map->get_dim_index_by_location(vv,1)<<","<<
             em_map->get_dim_index_by_location(vv,2)<<std::endl);
+    }
     const RadiusDependentKernelParameters *params =
       kernel_params->get_params(
             model_xyzr[ii].get_radius());
-    calc_local_bounding_box(em_map,
+    calc_local_bounding_box(//em_map,
+                            model_map,
                             x,y,z,
                             params->get_kdist(),
                             iminx, iminy, iminz,
@@ -384,10 +390,10 @@ void CoarseCC::calc_derivatives(
         ivox = ivoxz * nx * ny
           + ivoxy * nx + iminx;
         for (int ivoxx=iminx;ivoxx<=imaxx;ivoxx++) {
-          if (em_data[ivox]<EPS) {
+          /*          if (em_data[ivox]<EPS) {
             ivox++;
             continue;
-          }
+            }*/
           float dx = x_loc[ivox] - x;
           float dy = y_loc[ivox] - y;
           float dz = z_loc[ivox] - z;
@@ -419,94 +425,6 @@ void CoarseCC::calc_derivatives(
 
   }//particles
 }
-
-
-void CoarseCC::calc_derivatives_fast(
-             DensityMap *em_map,
-              DensityMap *model_map,
-             Particles model_ps, FloatKey w_key,
-             KernelParameters *kernel_params,
-             DistanceMask *dist_mask,
-             float scalefac,
-             std::vector<float> &dvx, std::vector<float>&dvy,
-             std::vector<float>&dvz) {
-
-  float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
-
-  const DensityHeader *model_header = model_map->get_header();
-  const DensityHeader *em_header = em_map->get_header();
-  const float *x_loc = model_map->get_x_loc();
-  const float *y_loc = model_map->get_y_loc();
-  const float *z_loc = model_map->get_z_loc();
-  IMP_INTERNAL_CHECK(model_ps.size()==dvx.size(),
-    "input derivatives array size does not match "<<
-    "the number of particles in the model map\n");
-  core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
-  //this would go away once we have XYZRW decorator
-  const emreal *em_data = em_map->get_data();
-  float lim = kernel_params->get_lim();
-  long nvox = em_header->get_number_of_voxels();
-  long ivox,voxel_ind;
-  // validate that the model and em maps are not empty
-  IMP_USAGE_CHECK(em_header->rms >= EPS,
-            "EM map is empty ! em_header->rms = " << em_header->rms);
-  // Compute the derivatives
-  for (unsigned int ii=0; ii<model_ps.size(); ii++) {
-    float x,y,z;
-    x=model_xyzr[ii].get_x();y=model_xyzr[ii].get_y();
-    z=model_xyzr[ii].get_z();
-
-    if (!em_map->is_part_of_volume(x,y,z)){
-      continue;
-    }
-    const RadiusDependentKernelParameters *params =
-      kernel_params->get_params(model_xyzr[ii].get_radius());
-    tdvx = .0;tdvy=.0; tdvz=.0;
-    const RadiusDependentDistanceMask* rad_mask =
-      dist_mask->get_mask(params->get_kdist());
-    if (rad_mask==NULL) {
-      rad_mask=dist_mask->set_mask(params->get_kdist());
-    }
-    const std::vector<double> *neighbor_shift =rad_mask->get_neighbor_shift();
-    //    const std::vector<double> *neighbor_dist =
-    //      rad_mask->get_neighbor_dist();
-    const std::vector<double> *neighbor_dist_exp =
-      rad_mask->get_neighbor_dist_exp();
-
-    voxel_ind=em_map->get_voxel_by_location(x,y,z);
-    for (unsigned int j = 0; j < neighbor_shift->size(); j++) {
-      ivox = voxel_ind + (*neighbor_shift)[j];
-      if (!((ivox>-1)&&(ivox<nvox))) {
-        continue;
-      }
-      if (em_data[ivox]<EPS) {
-        continue;
-      }
-      rsq = (*neighbor_dist_exp)[j];
-      tmp = (x-x_loc[ivox]) * rsq;
-      if (std::abs(tmp) > lim) {
-        tdvx += tmp * em_data[ivox];
-      }
-      tmp = (y-y_loc[ivox]) * rsq;
-      if (std::abs(tmp) > lim) {
-        tdvy += tmp * em_data[ivox];
-      }
-      tmp = (z-z_loc[ivox]) * rsq;
-      if (std::abs(tmp) > lim) {
-        tdvz += tmp * em_data[ivox];
-      }
-    }//j
-    //update particle derivatives
-    tmp =model_ps[ii]->get_value(w_key) * 2.*params->get_inv_sigsq()
-          * scalefac
-          * params->get_normfac() /
-          (1.0*nvox * em_header->rms * model_header->rms);
-    dvx[ii] =  tdvx * tmp;
-    dvy[ii] =  tdvy * tmp;
-    dvz[ii] =  tdvz * tmp;
-  }//particles
-}
-
 
 
 IMPEM_END_NAMESPACE

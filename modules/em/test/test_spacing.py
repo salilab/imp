@@ -19,7 +19,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         IMP.atom.add_radii(self.mh)
-        IMP.atom.setup_as_rigid_body(self.mh)
+        IMP.atom.create_rigid_body(self.mh)
         self.particles = IMP.core.get_leaves(self.mh)
 
     def setUp(self):

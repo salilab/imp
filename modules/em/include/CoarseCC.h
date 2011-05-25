@@ -118,17 +118,8 @@ public:
 static float local_cross_correlation_coefficient(const DensityMap *em_map,
                                               DensityMap *model_map,
                                                  float voxel_data_threshold);
-static void calc_derivatives_fast(
-             DensityMap *em_map,
-             DensityMap *model_map,
-             Particles model_ps,FloatKey w_key,
-             KernelParameters *kernel_params,
-             DistanceMask *dist_mask,
-             float scalefac,
-             std::vector<float> &dvx, std::vector<float>&dvy,
-             std::vector<float>&dvz);
 
-  IMP_OBJECT_INLINE(CoarseCC, {out << "CoarseCC";}, {});
+IMP_OBJECT_INLINE(CoarseCC, {out << "CoarseCC";}, {});
 };
 
 

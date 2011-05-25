@@ -18,16 +18,18 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def load_proteins(self,pdb_filenames):
         self.mhs=IMP.atom.Hierarchies()
         self.ps = []
-        self.rbs=IMP.core.RigidBodies()
+        self.rbs=[]
         self.leaves_ref = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
         for pf in pdb_filenames:
             self.mhs.append(IMP.atom.read_pdb(self.open_input_file(pf),
                                        self.imp_model, IMP.atom.CAlphaPDBSelector()))
-        for mh in self.mhs:
+        for i,mh in enumerate(self.mhs):
             IMP.atom.add_radii(mh)
-            rb=IMP.atom.setup_as_rigid_body(mh)
-            self.ps = self.ps + self.leaves_ref.get_refined(rb.get_particle())
-            self.rbs.append(rb)
+            mh.set_name("mol_"+str(i))
+            IMP.atom.create_rigid_body(mh)
+            members=self.leaves_ref.get_refined(mh)
+            self.ps = self.ps + members
+            self.rbs.append(IMP.core.RigidMember(members[-1]).get_rigid_body())
         self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
     def setUp(self):
@@ -43,7 +45,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
 
     def test_cc_derivaties_using_rigid_body_fast_mode(self):
         """Test that multiple rigid bodies are correctly pulled into the density"""
-        fit_r = IMP.em.FitRestraint(self.rbs,
+        print self.leaves_ref.get_can_refine(self.mhs[0])
+        fit_r = IMP.em.FitRestraint(self.mhs,
                                     self.scene,
                                     self.leaves_ref)
         self.imp_model.add_restraint(fit_r)

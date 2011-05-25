@@ -295,6 +295,8 @@ float SampledDensityMap::get_minimum_resampled_value() {
       min_weight=get_value(pos);
     }}}}
   }
+  IMP_INTERNAL_CHECK(min_weight<INT_MAX-100,
+                     "no minimum value found");
   return min_weight;
 }
 

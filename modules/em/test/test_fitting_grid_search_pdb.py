@@ -44,8 +44,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
             self.particles,
             self.weight_key,
             self.scene,
-            2,1,0.174,10)
-
+            2,1,0.174,3)
+        print "end"
         #test that if you apply the transformation on the original configuration you get the same result
         # (in rmsd and score)
 
@@ -57,6 +57,7 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
         self.assertLess(fr.get_score(0), fr.get_score(1),
                         "solutions are not sorted")
         for i in xrange(fr.get_number_of_solutions()):
+            print "score",fr.get_score(i)
             self.assertLess(fr.get_score(i), 1.0, "wrong CC values")
 
 if __name__ == '__main__':

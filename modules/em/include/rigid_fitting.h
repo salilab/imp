@@ -119,7 +119,7 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
-   core::RigidBody rb, Refiner *refiner,
+ Particle *p, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
    OptimizerStates display_log,
@@ -138,8 +138,8 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
       minimize a scroing function. Thus a score of 1 means no-correlation
       and a score of 0. is perfect correlation.
 \note The input rigid body should be also IMP::atom::Hierarchy
-\param[in] rb          The rigid body to fit
-\param[in] radius_key  The raidus key of the particles in the rigid body
+\param[in] p           The root of the hierarchy to fit
+\param[in] refiner     The refiner to get the leaves of the particle
 \param[in] weight_key  The weight key of the particles in the rigid body
 \param[in] dmap        The density map to fit to
 \param[in] display_log If provided, then intermediate states
@@ -157,7 +157,7 @@ IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
 */
 
 inline FittingSolutions local_rigid_fitting(
-   core::RigidBody rb, Refiner *refiner,
+   Particle *p, Refiner *refiner,
    const FloatKey &weight_key,
    DensityMap *dmap,
    OptimizerStates display_log,
@@ -167,10 +167,10 @@ inline FittingSolutions local_rigid_fitting(
    bool fast=true) {
   IMP_LOG(VERBOSE,"Start: local_rigid_fitting\n");
    algebra::Vector3D rb_cen=
-     IMP::core::get_centroid(core::XYZsTemp(refiner->get_refined(rb)));
+     IMP::core::get_centroid(core::XYZsTemp(refiner->get_refined(p)));
    IMP_LOG(VERBOSE,"centroid is:"<<rb_cen<<"\n");
    return local_rigid_fitting_around_point(
-     rb, refiner,weight_key, dmap,
+     p, refiner,weight_key, dmap,
      rb_cen,display_log,
      number_of_optimization_runs, number_of_mc_steps,
      number_of_cg_steps, max_translation, max_rotation,fast);
@@ -198,7 +198,7 @@ inline FittingSolutions local_rigid_fitting(
 \return the refined fitting solutions
 */
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
-   core::RigidBody rb,Refiner *refiner,
+   Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
    DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
    OptimizerStates display_log,
