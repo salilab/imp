@@ -75,8 +75,8 @@ public:
      const DensityMap *em_map, const DensityMap *model_map,
      const Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
-     const float &scalefac, std::vector<float> &dvx,
-     std::vector<float>&dvy,std::vector<float>&dvz);
+     const float &scalefac, std::vector<double> &dvx,
+     std::vector<double>&dvy,std::vector<double>&dvz);
 
 
   //!Calculates the cross correlation coefficient between two maps

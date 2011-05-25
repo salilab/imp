@@ -50,9 +50,9 @@ void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
 
 float CoarseCCatIntervals::evaluate(DensityMap *em_map,
                                     SampledDensityMap *model_map,
-                                    std::vector<float> &dvx,
-                                    std::vector<float> &dvy,
-                                    std::vector<float> &dvz,
+                                    std::vector<double> &dvx,
+                                    std::vector<double> &dvy,
+                                    std::vector<double> &dvz,
                                     float scalefac, bool lderiv,
                                     unsigned long eval_interval) {
 // eval_interval is the interval size before recalculating the CC score

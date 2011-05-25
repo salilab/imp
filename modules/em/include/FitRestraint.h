@@ -53,7 +53,7 @@ public:
                DensityMap *em_map,
                Refiner *refiner,
                FloatPair norm_factors=FloatPair(0.,0.),
-               FloatKey weight_key= IMP::atom::Mass::get_mass_key(),
+               FloatKey weight_key= atom::Mass::get_mass_key(),
                float scale=1,
                bool use_rigid_bodies=true);
   //! \return the predicted density map of the model
@@ -83,14 +83,13 @@ private:
   algebra::BoundingBoxD<3> target_bounding_box_;
   // reference to the IMP environment
   float scalefac_;
-  IMP::core::XYZs xyz_;
+  core::XYZs xyz_;
   // derivatives
-  std::vector<float> not_rb_dx_, not_rb_dy_ , not_rb_dz_;
-  std::vector<std::vector<float> >rb_refined_dx_,
-                                  rb_refined_dy_ , rb_refined_dz_;
+  std::vector<double> dx_, dy_ , dz_;
   //  bool special_treatment_of_particles_outside_of_density_;
   //rigid bodies handling
-  IMP::Particles not_rb_; //all particles that are not part of a rigid body
+  Particles all_ps_;
+  Particles not_rb_; //all particles that are not part of a rigid body
   core::RigidBodies rbs_;
   Particles mhs_;//mhs_ are the root hierarhices of the rigid bodies
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
