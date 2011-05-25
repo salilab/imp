@@ -236,7 +236,7 @@ core::ExcludedVolumeRestraint* add_excluded_volume
  IMP_NEW(container::ListSingletonContainer,lsc,(m));
  lsc->add_particles(tbr->get_refined(rb0));
  lsc->add_particles(tbr->get_refined(rb1));
- IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa_));
+ IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,1000.0));
  m->add_restraint(evr);
  return evr.release();
 }
