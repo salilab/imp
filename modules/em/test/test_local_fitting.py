@@ -16,7 +16,6 @@ class LocalFittingTest(IMP.test.TestCase):
         self.m = IMP.Model()
         self.mh= IMP.atom.read_pdb(self.open_input_file(pdb_filename),
                               self.m, IMP.atom.CAlphaPDBSelector())
-        self.radius_key = IMP.core.XYZR.get_radius_key()
         self.weight_key = IMP.atom.Mass.get_mass_key()
         IMP.atom.add_radii(self.mh)
         IMP.atom.create_rigid_body(self.mh)

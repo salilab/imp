@@ -319,9 +319,9 @@ void CoarseCC::calc_derivatives(
              const Particles &model_ps,const FloatKey &w_key,
              KernelParameters *kernel_params,
              const float &scalefac,
-             std::vector<float> &dvx, std::vector<float>&dvy,
-             std::vector<float>&dvz) {
-  float tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
+             std::vector<double> &dvx, std::vector<double>&dvy,
+             std::vector<double>&dvz) {
+  double tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
   const DensityHeader *model_header = model_map->get_header();

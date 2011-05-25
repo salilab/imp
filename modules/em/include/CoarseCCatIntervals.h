@@ -54,8 +54,8 @@ the same value before computing the values again
   \return the value of the cross correlation term: scalefac * (1-CCC)
    */
   float evaluate(DensityMap *em_map, SampledDensityMap *model_map,
-                 std::vector<float> &dvx, std::vector<float>&dvy,
-                 std::vector<float>&dvz, float scalefac, bool lderiv,
+                 std::vector<double> &dvx, std::vector<double>&dvy,
+                 std::vector<double>&dvz, float scalefac, bool lderiv,
                  unsigned long eval_interval);
 
   IMP_OBJECT_INLINE(CoarseCCatIntervals, {out << "CoarseCCatIntervals";}, {});

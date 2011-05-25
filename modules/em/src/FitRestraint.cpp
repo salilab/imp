@@ -52,59 +52,29 @@ FitRestraint::FitRestraint(
     }
   }
   scalefac_ = scale;
-  Particles all_ps;
   //get all leaves particles for derivaties
   for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
     if (refiner_->get_can_refine(*it)) {
       Particles hps = refiner_->get_refined(*it);
-      all_ps.insert(all_ps.end(),hps.begin(),hps.end());
+      all_ps_.insert(all_ps_.end(),hps.begin(),hps.end());
     }
     else {
-      all_ps.push_back(*it);
+      all_ps_.push_back(*it);
     }
   }
   add_particles(ps);
-  IMP_LOG(TERSE,"after adding "<< all_ps.size()<<" particles"<<std::endl);
+  IMP_LOG(TERSE,"after adding "<< all_ps_.size()<<" particles"<<std::endl);
   model_dens_map_ = new SampledDensityMap(*em_map->get_header());
-  model_dens_map_->set_particles(all_ps,weight_key);
+  model_dens_map_->set_particles(all_ps_,weight_key);
   kernel_params_=model_dens_map_->get_kernel_params();
   dist_mask_=new DistanceMask(model_dens_map_->get_header());
   IMP_LOG(TERSE,"going to initialize_model_density_map"<<std::endl);
   initialize_model_density_map(ps,weight_key);
   IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
    // initialize the derivatives
-  int not_rb_size=0;
-  for(Particles::iterator it = ps.begin(); it != ps.end();it++) {
-    bool is_rb=false;
-    IMP_LOG(TERSE,"Adding particle:"<<(*it)->get_name()<<std::endl);
-    if (refiner_->get_can_refine(*it)) {
-      Particles leaves = refiner_->get_refined(*it);
-      if (use_rigid_bodies_ &&
-          (core::RigidMember::particle_is_instance(leaves[0]))) {
-        is_rb=true;
-        IMP_LOG(TERSE,"particle rigid"<<std::endl);
-        rb_refined_dx_.push_back(std::vector<float>());
-        rb_refined_dy_.push_back(std::vector<float>());
-        rb_refined_dz_.push_back(std::vector<float>());
-        rb_refined_dx_[rb_refined_dx_.size()-1].resize(
-                                                       leaves.size(),0.0);
-        rb_refined_dy_[rb_refined_dy_.size()-1].resize(
-                                                       leaves.size(),0.0);
-        rb_refined_dz_[rb_refined_dz_.size()-1].resize(
-                                                       leaves.size(),0.0);
-      }}
-    if (!is_rb) {
-      IMP_LOG(TERSE,"particle not rigid"<<std::endl);
-      if (refiner_->get_can_refine(*it)) {
-        Particles leaves = refiner_->get_refined(*it);
-        not_rb_size+=leaves.size();
-      }
-      else {++not_rb_size;}
-    }
-  }
-  not_rb_dx_.resize(not_rb_size, 0.0);
-  not_rb_dy_.resize(not_rb_size, 0.0);
-  not_rb_dz_.resize(not_rb_size, 0.0);
+  dx_.resize(all_ps_.size(), 0.0);
+  dy_.resize(all_ps_.size(), 0.0);
+  dz_.resize(all_ps_.size(), 0.0);
 
   // normalize the target density data
   //target_dens_map->std_normalize();
@@ -255,9 +225,21 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
                scalefac_,true,false,norm_factors_);
   if (calc_deriv) {
     //calculate the derivatives for non rigid bodies
-    if (not_rb_.size()>0) {
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for none_rb_model_dens_map_\n");
+           CoarseCC::calc_derivatives(
+             target_dens_map_,
+             model_dens_map_,
+             all_ps_,
+             weight_key_,kernel_params_,
+             scalefac_,
+             const_cast<FitRestraint*>(this)->dx_,
+             const_cast<FitRestraint*>(this)->dy_,
+             const_cast<FitRestraint*>(this)->dz_);
+      IMP_LOG(VERBOSE,
+              "Finish calculating derivatives for none_rb_model_dens_map_\n");
+      /*
+    if (not_rb_.size()>0) {
       CoarseCC::calc_derivatives(
              target_dens_map_,
              none_rb_model_dens_map_,
@@ -289,31 +271,21 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
               const_cast<FitRestraint*>(this)->rb_refined_dy_[rb_i],
               const_cast<FitRestraint*>(this)->rb_refined_dz_[rb_i]);
     }
-  }
+      */
+    }
   Float score=escore;
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {
-    for(unsigned int i=0;i<not_rb_.size();i++) {
-      Particle *p=not_rb_[i];
-      p->add_to_derivative(xyz_keys[0], not_rb_dx_[i],
+    for(unsigned int i=0;i<all_ps_.size();i++) {
+      Particle *p=all_ps_[i];
+      p->add_to_derivative(xyz_keys[0], dx_[i],
                                           *accum);
-      p->add_to_derivative(xyz_keys[1], not_rb_dy_[i],
+      p->add_to_derivative(xyz_keys[1], dy_[i],
                                           *accum);
-      p->add_to_derivative(xyz_keys[2], not_rb_dz_[i],
+      p->add_to_derivative(xyz_keys[2], dz_[i],
                                           *accum);
     }
-    for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
-      IMP::Particles rb_mbrs=refiner_->get_refined(mhs_[rb_i]);
-      for(unsigned int mbr_i =0; mbr_i<rb_mbrs.size(); mbr_i++){
-        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
-                                          rb_refined_dx_[rb_i][mbr_i],*accum);
-        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
-                                          rb_refined_dy_[rb_i][mbr_i],*accum);
-        rb_mbrs[mbr_i]->add_to_derivative(xyz_keys[0],
-                                          rb_refined_dz_[rb_i][mbr_i],*accum);
-      }
-    }//for rb_i
   }
   IMP_LOG(VERBOSE, "Finish calculating fit restraint with emscore of : "
          << score << std::endl);
