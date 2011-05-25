@@ -67,6 +67,7 @@ domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
 domino::SubsetGraph jt=domino::get_junction_tree(ig);
 IMP_NEW(domino::ExclusionSubsetFilterTable,esft,(pst));
 IMP_NEW(domino::RestraintScoreSubsetFilterTable,rssft,(m,pst));
+rssft->set_use_caching(false);
 filters.push_back(esft);
 filters.push_back(rssft);
 IMP_NEW(domino::BranchAndBoundAssignmentsTable,states,(pst,filters));
