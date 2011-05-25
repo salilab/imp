@@ -12,7 +12,7 @@
 #include <IMP.h>
 #include <IMP/membrane.h>
 #include <IMP/domino.h>
-
+#include <IMP/atom.h>
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT void write_output

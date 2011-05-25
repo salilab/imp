@@ -28,7 +28,7 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 
 // create representation
 std::cout << "Creating representation" << std::endl;
-core::TableRefiner* tbr=generate_TM(m,&all,&(mydata.TM));
+core::TableRefiner* tbr=generate_TM(m,all,&(mydata.TM));
 
 // create restraints
 std::cout << "Creating restraints" << std::endl;

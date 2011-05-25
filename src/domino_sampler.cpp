@@ -24,21 +24,38 @@ GridParameters *gg=&(myparam->grid);
 
 IMP_NEW(domino::ParticleStatesTable,pst,());
 
-double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
-double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
 double bs[]={gg->x,gg->x,gg->x,gg->rot,gg->tilt,gg->swing};
-algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+algebra::Vector6D binsize(bs, bs+6);
 
-IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
-
-for(int i=0;i<myparam->TM.num;i++){
+for(int i=0;i<myparam->TM.num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(myparam->TM.name[i]);
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
- pst->set_particle_states(rb,rbs);
+ if ( i == 0 ){
+  double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
+  double e[]={0.0,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
  }
- return pst.release();
+ if( i == 1 ){
+  double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
+  double e[]={gg->xmax,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
+ }
+ if( i > 1 ){
+  double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
+  double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
+ }
+}
+
+return pst.release();
 }
 
 domino::DominoSampler* create_sampler

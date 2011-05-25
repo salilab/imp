@@ -15,7 +15,7 @@ using namespace IMP;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 core::TableRefiner* generate_TM(Model *m,
- atom::Hierarchy *protein, HelixData *TM)
+ atom::Hierarchy protein, HelixData *TM)
 {
 int nres,jseq;
 double x,y,z;
@@ -82,7 +82,7 @@ for(int i=0;i<TM->num;++i){
   atoms.push_back(ad);
  }
  if(read_struct) atom::destroy(helixpdb);
- protein->add_child(tm);
+ protein.add_child(tm);
  // create rigid body
  IMP_NEW(Particle,prb,(m));
  core::RigidBody rb=core::RigidBody::setup_particle(prb,atoms);

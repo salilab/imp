@@ -30,10 +30,10 @@ for(int i=0;i<TM->num;++i){
  core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  add_depth_restraint(m,rb);
  add_tilt_restraint(m,rb);
- if( i < 2 ){
-  add_x_restraint(m,rb,i);
-  add_y_restraint(m,rb);
- }
+ //if( i < 2 ){
+ // add_x_restraint(m,rb,i);
+ // add_y_restraint(m,rb);
+ //}
 }
 // multi-body restraints
 add_excluded_volume(m,protein);
