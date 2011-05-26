@@ -83,7 +83,6 @@ namespace IMP {
       }
     }
     %template(floats) ::std::vector<float>;
-
-
+    %template(ScorePair) ::std::pair<double,IMP::algebra::Vector3Ds>;
   }
 }
