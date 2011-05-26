@@ -23,7 +23,7 @@ IMPDOMINO_END_NAMESPACE
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINOEXPORT
-void fill_merged_assignments(const Subset &first_subset,
+void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer *first,
                              const Subset &second_subset,
                              AssignmentContainer *second,
@@ -34,14 +34,14 @@ void fill_merged_assignments(const Subset &first_subset,
                              AssignmentContainer *out);
 
 IMPDOMINOEXPORT
-void fill_leaf_assignments(const Subset &merged_subset,
+void load_leaf_assignments(const Subset &merged_subset,
                            const AssignmentsTable *states,
                            ListSubsetFilterTable *lsft,
                            InferenceStatistics &stats,
                            AssignmentContainer *out);
 
 IMPDOMINOEXPORT
-void fill_best_conformations(const MergeTree &jt,
+void load_best_conformations(const MergeTree &jt,
                              int root,
                              const Subset& all_particles,
                              const SubsetFilterTables &filters,

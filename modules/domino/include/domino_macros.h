@@ -28,7 +28,7 @@
 #define IMP_ASSIGNMENTS_TABLE(Name)                                     \
   public:                                                               \
   virtual void                                                          \
-  fill_assignments(const IMP::domino::Subset&s,                         \
+  load_assignments(const IMP::domino::Subset&s,                         \
                    AssignmentContainer *ac) const;                      \
   IMP_OBJECT(Name)
 

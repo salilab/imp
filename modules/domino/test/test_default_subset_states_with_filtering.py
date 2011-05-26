@@ -11,7 +11,7 @@ class DOMINOTests(IMP.test.TestCase):
         print 'getting'
         dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print "got all"
         all_states=[]
@@ -65,7 +65,7 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print len(ss), "states"
         found_states=[]
@@ -109,7 +109,7 @@ class DOMINOTests(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print len(ss), "states"
         found_states=[]

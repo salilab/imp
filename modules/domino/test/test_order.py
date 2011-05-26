@@ -46,7 +46,7 @@ class DOMINOTests(IMP.test.TestCase):
         s= IMP.domino.Subset(ps)
         sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft])
         pss= IMP.domino.PackedAssignmentContainer()
-        sst.fill_assignments(s, pss)
+        sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print ss
         self.assertEqual(len(ss), 1)

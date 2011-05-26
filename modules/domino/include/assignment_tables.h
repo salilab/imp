@@ -36,7 +36,7 @@ class DominoSampler;
 class IMPDOMINOEXPORT AssignmentsTable: public Object {
  public:
   AssignmentsTable(std::string name= "SubsetStatesTable %1%"): Object(name){}
-  virtual void fill_assignments(const Subset &s,
+  virtual void load_assignments(const Subset &s,
                                 AssignmentContainer *ac) const=0;
   ~AssignmentsTable();
 };

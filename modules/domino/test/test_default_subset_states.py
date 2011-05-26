@@ -32,7 +32,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino.Subset(ps)
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns**len(ps))
         all_states=[]
@@ -61,7 +61,7 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]
@@ -92,7 +92,7 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
-        dsst.fill_assignments(lsc, pss)
+        dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns**(len(ps)-2)*(ns)*(ns-1))
         all_states=[]

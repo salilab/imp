@@ -15,7 +15,7 @@
 
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
-void fill_merged_assignments(const Subset &first_subset,
+void load_merged_assignments(const Subset &first_subset,
                              AssignmentContainer *first,
                              const Subset &second_subset,
                              AssignmentContainer *second,
@@ -29,7 +29,7 @@ void fill_merged_assignments(const Subset &first_subset,
     secondp(second);
   IMP_FUNCTION_LOG;
   EdgeData ed= get_edge_data(first_subset, second_subset, filters);
-  fill_union(first_subset, second_subset, first, second,
+  load_union(first_subset, second_subset, first, second,
              ed, max, out);
   stats.add_subset(ed.union_subset, out);
   if (lsft) update_list_subset_filter_table(lsft, ed.union_subset,
@@ -38,7 +38,7 @@ void fill_merged_assignments(const Subset &first_subset,
   IMP_LOG(VERBOSE, "After merge, set is " << merged_subset
   << " and data is\n" << ret << std::endl);*/
 }
-void fill_leaf_assignments(const Subset &merged_subset,
+void load_leaf_assignments(const Subset &merged_subset,
                            const AssignmentsTable *states,
                            ListSubsetFilterTable *lsft,
                            InferenceStatistics &stats,
@@ -46,7 +46,7 @@ void fill_leaf_assignments(const Subset &merged_subset,
   IMP::Pointer<AssignmentContainer> outp(out);
   IMP_FUNCTION_LOG;
   IMP_LOG(VERBOSE, "Looking at leaf " << merged_subset << std::endl);
-  fill_node_data(merged_subset, states, out);
+  load_node_data(merged_subset, states, out);
   if (lsft) update_list_subset_filter_table(lsft, merged_subset,
                                             out);
   //using namespace IMP;
@@ -57,7 +57,7 @@ void fill_leaf_assignments(const Subset &merged_subset,
 namespace {
 
   void
-  fill_best_conformations_internal(const MergeTree &jt,
+  load_best_conformations_internal(const MergeTree &jt,
                                   unsigned int root,
                                   const Subset& all,
                                   const AssignmentsTable *states,
@@ -78,7 +78,7 @@ namespace {
     std::pair<NeighborIterator, NeighborIterator> be
       = boost::adjacent_vertices(root, jt);
     if (std::distance(be.first, be.second)==0) {
-      fill_leaf_assignments(boost::get(subset_map, root),
+      load_leaf_assignments(boost::get(subset_map, root),
                             states, lsft, stats, out);
     } else {
       // merge
@@ -88,14 +88,14 @@ namespace {
       int secondi= *(++be.first);
       IMP_NEW(PackedAssignmentContainer, cpd0, ());
       IMP_NEW(PackedAssignmentContainer, cpd1, ());
-      fill_best_conformations_internal(jt, firsti, all, states,
+      load_best_conformations_internal(jt, firsti, all, states,
                                           filters, lsft,
                                            stats, max, progress, cpd0);
-      fill_best_conformations_internal(jt, secondi, all, states,
+      load_best_conformations_internal(jt, secondi, all, states,
                                        filters, lsft,
                                        stats, max, progress,
                                        cpd1);
-      fill_merged_assignments(boost::get(subset_map, firsti),
+      load_merged_assignments(boost::get(subset_map, firsti),
                               cpd0,
                               boost::get(subset_map, secondi),
                               cpd1,
@@ -108,7 +108,7 @@ namespace {
   }
 }
 
-void fill_best_conformations(const MergeTree &mt,
+void load_best_conformations(const MergeTree &mt,
                              int root,
                              const Subset& all_particles,
                              const SubsetFilterTables &filters,
@@ -122,7 +122,7 @@ void fill_best_conformations(const MergeTree &mt,
   if (get_log_level() == PROGRESS) {
     progress.reset(new boost::progress_display(boost::num_vertices(mt)));
   }
-  return fill_best_conformations_internal(mt, root,
+  return load_best_conformations_internal(mt, root,
                                          all_particles,states,
                                          filters,
                                          lsft,
