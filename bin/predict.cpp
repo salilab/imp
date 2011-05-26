@@ -33,6 +33,7 @@ std::vector<double>               topo;
 std::vector<std::string>          name;
 std::vector<double>               hl;
 std::vector<std::pair<int,int> >  resid;
+bool with_packing;
 };
 
 // convert degrees to radians
@@ -52,11 +53,14 @@ Parameters get_parameters(TextInput in){
  options_description desc;
  std::string score_name,sequence;
  std::vector<std::string> res;
+ bool with_packing;
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
+ desc.add_options()("packing",     value< bool >(&with_packing),       "ciao");
  desc.add_options()("sequence",    value< std::string >(&sequence),    "ciao");
  desc.add_options()("residues",    value< std::vector<std::string> >(),"ciao");
  desc.add_options()("topology",    value< std::vector<double> >(),     "ciao");
+
 
  OPTION(double, tilt);
  OPTION(double, swing);
@@ -86,9 +90,7 @@ Parameters get_parameters(TextInput in){
 
  Parameters ret;
 
-// General Parameters
  ret.score_name=score_name;
-// Grid Parameters
  ret.tilt=radians(tilt);
  ret.swing=radians(swing);
  ret.rot=radians(rot);
@@ -98,8 +100,8 @@ Parameters get_parameters(TextInput in){
  ret.rotmax=radians(rotmax);
  ret.xmin=xmin;
  ret.xmax=xmax;
-// HelixData
  ret.num=number;
+ ret.with_packing=with_packing;
 
  std::vector<char> v(sequence.begin(), sequence.end());
  ret.seq = v;
@@ -335,6 +337,7 @@ double t0,p0,s0,t1,p1,s1,xx1;
 algebra::Vector3D A, B;
 int idpair;
 
+if(mydata.with_packing){
 for(int id1=0;id1<mydata.num-1;++id1){
  for(int id2=id1+1;id2<mydata.num;++id2){
   idpair= id1*mydata.num-id1*(id1+1)/2+id2-(id1+1);
@@ -413,6 +416,44 @@ for(int id1=0;id1<mydata.num-1;++id1){
    }
   }
  }
+}
+}else{
+for(int id1=0;id1<mydata.num-1;++id1){
+ for(int id2=id1+1;id2<mydata.num;++id2){
+  idpair= id1*mydata.num-id1*(id1+1)/2+id2-(id1+1);
+  for(int i0=0;i0<itilt+1;++i0){
+   t0=double(i0)*mydata.tilt;
+   for(int j0=0;j0<iswing;++j0){
+    if ( i0 == 0 && j0 != 0 ) break;
+    p0=double(j0)*mydata.swing;
+    for(int k0=0;k0<irot;++k0){
+     s0=double(k0)*mydata.rot;
+     do_transform(rbs[id1],s0,t0,p0,0.0);
+     for(int x1=0;x1<ix+1;++x1){
+      xx1=mydata.xmin+double(x1)*mydata.x;
+      for(int i1=0;i1<itilt+1;++i1){
+       t1=double(i1)*mydata.tilt;
+       for(int j1=0;j1<iswing;++j1){
+        if ( i1 == 0 && j1 != 0 ) break;
+        p1=double(j1)*mydata.swing;
+        for(int k1=0;k1<irot;++k1){
+         s1=double(k1)*mydata.rot;
+         do_transform(rbs[id2],s1,t1,p1,xx1);
+         double tmpscore=evs[idpair]->evaluate(false);
+         if ( tmpscore < 0.01 ){
+          double dopescore=dopes[idpair]->evaluate(false);
+          score[idpair] += exp(-dopescore);
+          if ( dopescore < minscore[idpair] ) minscore[idpair]=dopescore;
+         }
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ }
+}
 }
 
 std::cout << "** FINAL SCORE" << std::endl;
