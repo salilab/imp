@@ -84,7 +84,7 @@ private:
   float scalefac_;
   core::XYZs xyz_;
   // derivatives
-  std::vector<double> dx_, dy_ , dz_;
+  algebra::Vector3Ds dv_;
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
   FloatKey weight_key_;
   KernelParameters *kernel_params_;

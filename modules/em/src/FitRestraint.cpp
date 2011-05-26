@@ -56,9 +56,7 @@ FitRestraint::FitRestraint(
   initialize_model_density_map(weight_key);
   IMP_LOG(TERSE,"going to initialize derivatives"<<std::endl);
    // initialize the derivatives
-  dx_.resize(all_ps_.size(), 0.0);
-  dy_.resize(all_ps_.size(), 0.0);
-  dz_.resize(all_ps_.size(), 0.0);
+  dv_.insert(dv_.end(),all_ps_.size(),algebra::Vector3D(0.,0.,0.));
 
   // normalize the target density data
   //target_dens_map->std_normalize();
@@ -192,63 +190,29 @@ double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
     //calculate the derivatives for non rigid bodies
       IMP_LOG(VERBOSE,
               "Going to calc derivatives for none_rb_model_dens_map_\n");
+      const_cast<FitRestraint*>(this)->dv_=
            CoarseCC::calc_derivatives(
-             target_dens_map_,
-             model_dens_map_,
-             all_ps_,
-             weight_key_,kernel_params_,
-             scalefac_,
-             const_cast<FitRestraint*>(this)->dx_,
-             const_cast<FitRestraint*>(this)->dy_,
-             const_cast<FitRestraint*>(this)->dz_);
+                                       target_dens_map_,
+                                       model_dens_map_,
+                                       all_ps_,
+                                       weight_key_,kernel_params_,
+                                       scalefac_,dv_);
+
+
       IMP_LOG(VERBOSE,
               "Finish calculating derivatives for none_rb_model_dens_map_\n");
-      /*
-    if (not_rb_.size()>0) {
-      CoarseCC::calc_derivatives(
-             target_dens_map_,
-             none_rb_model_dens_map_,
-             not_rb_,
-             weight_key_,kernel_params_,
-             scalefac_,
-             const_cast<FitRestraint*>(this)->not_rb_dx_,
-             const_cast<FitRestraint*>(this)->not_rb_dy_,
-             const_cast<FitRestraint*>(this)->not_rb_dz_);
-    }
-    for(unsigned int rb_i=0;rb_i<rbs_.size();rb_i++) {
-      IMP_LOG(VERBOSE,
-              "Going to calc derivatives for rigid body number "<<
-              rb_i<<"\n");
-    algebra::Transformation3D rb_t=
-         algebra::get_transformation_from_first_to_second(
-                                             rbs_orig_rf_[rb_i],
-                                             rbs_[rb_i].get_reference_frame());
-      Pointer<DensityMap> transformed = get_transformed(
-                                             rb_model_dens_map_[rb_i],rb_t);
-      CoarseCC::calc_derivatives(
-              target_dens_map_,
-              //*(rb_model_dens_map_[rb_i]),
-              transformed,
-              refiner_->get_refined(mhs_[rb_i]),
-              weight_key_,kernel_params_,
-              scalefac_,
-              const_cast<FitRestraint*>(this)->rb_refined_dx_[rb_i],
-              const_cast<FitRestraint*>(this)->rb_refined_dy_[rb_i],
-              const_cast<FitRestraint*>(this)->rb_refined_dz_[rb_i]);
-    }
-      */
-    }
+  }
   Float score=escore;
   // now update the derivatives
   FloatKeys xyz_keys=IMP::core::XYZR::get_xyz_keys();
   if (calc_deriv) {
     for(unsigned int i=0;i<all_ps_.size();i++) {
       Particle *p=all_ps_[i];
-      p->add_to_derivative(xyz_keys[0], dx_[i],
+      p->add_to_derivative(xyz_keys[0], dv_[i][0],
                                           *accum);
-      p->add_to_derivative(xyz_keys[1], dy_[i],
+      p->add_to_derivative(xyz_keys[1], dv_[i][1],
                                           *accum);
-      p->add_to_derivative(xyz_keys[2], dz_[i],
+      p->add_to_derivative(xyz_keys[2], dv_[i][2],
                                           *accum);
     }
   }

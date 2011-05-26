@@ -104,14 +104,16 @@ class CrossCorrelationTests(IMP.test.TestCase):
         interval=5;         times=10;
         scores_intervals=[]
         scores_wo_intervals=[]
-        dvx = IMP.em.floats(); dvy= IMP.em.floats(); dvz= IMP.em.floats()
+        dv = IMP.algebra.Vector3Ds()
+        for i in range(len(self.atoms)):
+            dv.append(IMP.algebra.Vector3D())
         translation=IMP.algebra.Transformation3D(
             IMP.algebra.get_identity_rotation_3d(),
             IMP.algebra.Vector3D(0.1,0.1,0.1))
         #calculate correlation
         for i in xrange(0,times):
             scores_wo_intervals.append(self.ccc.calc_score(self.EM_map,self.model_map,1.0))
-            scores_intervals.append(self.ccc_intervals.evaluate(self.EM_map,self.model_map,dvx,dvy,dvz,1.0,False,interval))
+            scores_intervals.append(self.ccc_intervals.evaluate(self.EM_map,self.model_map,dv,1.0,False,interval))
 
             #transform the atoms
             for xyz in IMP.core.XYZs(self.atoms):
@@ -119,9 +121,9 @@ class CrossCorrelationTests(IMP.test.TestCase):
             # check that the scores are equal when they have to be due to the function skipping computations
         for i in xrange(0,times):
             if(i%interval==0):
-                result=scores_intervals[i]
-                self.assertAlmostEqual(scores_wo_intervals[i],scores_intervals[i])
-            self.assertEqual(result,scores_intervals[i],2)
+                result=scores_intervals[i][0]
+                self.assertAlmostEqual(scores_wo_intervals[i],scores_intervals[i][0])
+            self.assertEqual(result,scores_intervals[i][0],2)
 
 if __name__=='__main__':
     IMP.test.main()
