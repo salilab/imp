@@ -155,7 +155,7 @@ namespace {
     }
     return order;
   }
-  void fill_states_list(const Subset &s,
+  void load_states_list(const Subset &s,
                         ParticleStatesTable *table,
                         const SubsetFilterTables &sft,
                         unsigned int max,
@@ -391,11 +391,11 @@ BranchAndBoundAssignmentsTable
 
 
 void BranchAndBoundAssignmentsTable
-::fill_assignments(const Subset&s,
+::load_assignments(const Subset&s,
                    AssignmentContainer *out) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  fill_states_list(s, pst_, sft_, max_, out);
+  load_states_list(s, pst_, sft_, max_, out);
 }
 
 void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
@@ -406,7 +406,7 @@ ListAssignmentsTable
 ::ListAssignmentsTable(std::string name): AssignmentsTable(name) {}
 
 void ListAssignmentsTable
-::fill_assignments(const Subset &s,
+::load_assignments(const Subset &s,
                    AssignmentContainer *out) const {
   set_was_used(true);
   IMP_USAGE_CHECK(states_.find(s) != states_.end(),

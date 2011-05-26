@@ -266,7 +266,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
   Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
   int get_index(Particle*p) const;
-  void fill_indexes(const Subset &s,
+  void load_indexes(const Subset &s,
                     Ints &indexes) const;
   void mask_allowed_states(Particle *p, const boost::dynamic_bitset<> &bs);
 #endif

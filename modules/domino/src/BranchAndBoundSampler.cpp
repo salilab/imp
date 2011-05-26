@@ -36,7 +36,7 @@ Assignments BranchAndBoundSampler
   IMP::internal::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts);
   IMP_NEW(PackedAssignmentContainer, pac, ());
-  sst->fill_assignments(s, pac);
+  sst->load_assignments(s, pac);
   return pac->get_assignments(IntRange(0, pac->get_number_of_assignments()));
 }
 

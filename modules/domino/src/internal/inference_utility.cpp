@@ -90,7 +90,7 @@ Assignment get_merged_assignment(const Subset &s,
 
 
 void
-fill_union(const Subset &s0, const Subset &s1,
+load_union(const Subset &s0, const Subset &s1,
            AssignmentContainer *nd0, AssignmentContainer *nd1,
            const EdgeData &ed, unsigned int max,
            AssignmentContainer *out) {

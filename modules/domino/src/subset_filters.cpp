@@ -545,7 +545,7 @@ int ListSubsetFilterTable
 }
 
 void ListSubsetFilterTable
-::fill_indexes(const Subset &s,
+::load_indexes(const Subset &s,
                Ints &indexes) const {
   ParticlesTemp cur(s.begin(), s.end());
   indexes.resize(cur.size(), -1);
@@ -559,7 +559,7 @@ ListSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &) const {
   Ints indexes;
-  fill_indexes(s, indexes);
+  load_indexes(s, indexes);
   return new ListSubsetFilter(this, indexes);
 }
 
@@ -568,7 +568,7 @@ double ListSubsetFilterTable::get_strength(const Subset &s,
   // really bad estimate
   set_was_used(true);
   Ints indexes;
-  fill_indexes(s, indexes);
+  load_indexes(s, indexes);
   int sz=0;
   for (unsigned int i=0; i< s.size(); ++i) {
     if (indexes[i]>=0) ++sz;

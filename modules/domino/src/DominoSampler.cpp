@@ -131,7 +131,7 @@ Assignments DominoSampler
     IMP_LOG(TERSE,"domino::DominoSampler entering get_best_conformations\n");
     IMP_NEW(PackedAssignmentContainer, as, ());
     as->set_was_used(true);
-    internal::fill_best_conformations(mt, boost::num_vertices(mt)-1,
+    internal::load_best_conformations(mt, boost::num_vertices(mt)-1,
                                          known_particles,
                                          sfts, sst, lsft, stats_,
                                           get_maximum_number_of_assignments(),
@@ -203,7 +203,7 @@ Assignments DominoSampler::get_vertex_assignments(unsigned int node_index,
                                              unsigned int max_states) const {
   IMP_NEW(PackedAssignmentContainer, ret,());
   ret->set_was_used(true);
-  fill_vertex_assignments(node_index, ret, max_states);
+  load_vertex_assignments(node_index, ret, max_states);
   return ret->get_assignments(IntRange(0, ret->get_number_of_assignments()));
 }
 Assignments DominoSampler::get_vertex_assignments(unsigned int node_index,
@@ -216,12 +216,12 @@ Assignments DominoSampler::get_vertex_assignments(unsigned int node_index,
   IMP_NEW(PackedAssignmentContainer, secondc, ());
   secondc->add_assignments(second);
   ret->set_was_used(true);
-  fill_vertex_assignments(node_index, firstc, secondc, ret, max_states);
+  load_vertex_assignments(node_index, firstc, secondc, ret, max_states);
   return ret->get_assignments(IntRange(0, ret->get_number_of_assignments()));
 }
 
 
-void DominoSampler::fill_vertex_assignments(unsigned int node_index,
+void DominoSampler::load_vertex_assignments(unsigned int node_index,
                                             AssignmentContainer *ac,
                                             unsigned int max_states) const {
   set_was_used(true);
@@ -251,13 +251,13 @@ void DominoSampler::fill_vertex_assignments(unsigned int node_index,
   IMP_USAGE_CHECK(std::distance(be.first, be.second)==0,
                   "Not a binary tree leaf");
   Subset curs=boost::get(subset_map, node_index);
-  internal::fill_leaf_assignments(curs,
+  internal::load_leaf_assignments(curs,
                                   sst, lsft, stats_,
                                   ac);
 }
 
 
-void DominoSampler::fill_vertex_assignments(unsigned int node_index,
+void DominoSampler::load_vertex_assignments(unsigned int node_index,
                                                   AssignmentContainer* first,
                                                   AssignmentContainer* second,
                                                   AssignmentContainer* ret,
@@ -293,7 +293,7 @@ void DominoSampler::fill_vertex_assignments(unsigned int node_index,
   }
   Subset firsts=boost::get(subset_map, firsti);
   Subset seconds=boost::get(subset_map, secondi);
-  internal::fill_merged_assignments(firsts, first,
+  internal::load_merged_assignments(firsts, first,
                                     seconds, second,
                                     sfts, lsft, stats_,
                                     max_states, ret);

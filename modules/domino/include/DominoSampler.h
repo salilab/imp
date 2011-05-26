@@ -103,7 +103,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
 
 
   //! Fill in assignments for a leaf
-  void fill_vertex_assignments(unsigned int node_index,
+  void load_vertex_assignments(unsigned int node_index,
                                AssignmentContainer *ac,
                                unsigned int max_states
                                =std::numeric_limits<int>::max()) const;
@@ -111,7 +111,7 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
   /** The passed assignments, the ordering for the children is based
       on the node index for the children.
   */
-  void fill_vertex_assignments(unsigned int node_index,
+  void load_vertex_assignments(unsigned int node_index,
                                AssignmentContainer *first,
                                AssignmentContainer *second,
                                AssignmentContainer *ac,

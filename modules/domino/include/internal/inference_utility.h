@@ -123,9 +123,9 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
 }
 
 
-inline void fill_node_data(const Subset &s, const AssignmentsTable *sst,
+inline void load_node_data(const Subset &s, const AssignmentsTable *sst,
                            AssignmentContainer *out) {
-  sst->fill_assignments(s, out);
+  sst->load_assignments(s, out);
 }
 
 
@@ -183,7 +183,7 @@ Assignment get_merged_assignment(const Subset &s,
                                  const Ints &i1) ;
 
 IMPDOMINOEXPORT void
-fill_union(const Subset &s0, const Subset &s1,
+load_union(const Subset &s0, const Subset &s1,
            AssignmentContainer* nd0, AssignmentContainer* nd1,
            const EdgeData &ed,
            unsigned int max,
