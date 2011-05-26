@@ -24,6 +24,7 @@ if use_rigid_bodies:
     refiner.add_particle(prb, [p])
     to_move= drb
     print [p.get_name() for p in refiner.get_refined(prb)]
+    fp=d
 else:
     fp= d
     to_move=d
@@ -49,7 +50,7 @@ m.add_restraint(rs)
 
 # if rigid bodies are used, we need to define a refiner as
 # FitRestraint doesn't support just passing all the geometry
-r= IMP.em.FitRestraint([fp], dmap, refiner)
+r= IMP.em.FitRestraint([fp], dmap)
 rs.add_restraint(r)
 g= IMP.display.XYZDerivativeGeometry(d)
 g.set_name("deriv")

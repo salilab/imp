@@ -36,22 +36,24 @@ public:
   /**
     \param[in] ps The particles participating in the fitting score
     \param[in] em_map  The density map used in the fitting score
-    \param[in] refiner rigid body refiner
     \param[in] norm_factors if set, they are used as normalization factors
        for the cross correlation calculations. This is relevant when the
        cross-correlation score of the entire system is decomposed.
     \param[in] weight_key the name of the weight attribute of the particles
     \param[in] scale multiply the fitting restraint score and derivatives
                      by this value
-    \note Particles that are rigid-bodies are interpolated and not resampled.
+    \param[in] use_rigid_bodies is some of the particles are part of
+               a rigid body,
+               use the rigid body for faster calculations
+    \note Rigid-bodies are interpolated and not resampled
+          if use_rigid_bodies option
+          is selected.
           This significantly reduces the running time but is less accurate.
           If the user prefers to get more accurate results, provide
           its members as input particles and not the rigid body.
-    \todo we currently assume rigid bodies are also molecular hierarchies.
    */
   FitRestraint(Particles ps,
                DensityMap *em_map,
-               Refiner *refiner,
                FloatPair norm_factors=FloatPair(0.,0.),
                FloatKey weight_key= atom::Mass::get_mass_key(),
                float scale=1,
@@ -65,15 +67,12 @@ public:
 
   IMP_LIST(private, Particle, particle, Particle*, Particles);
 private:
+  //! Store particles
+  void store_particles(Particles ps);
   //! Resample the model density map
   void resample() const;
   //! Create density maps: one for each rigid body and one for the rest.
-  /**
-  \todo the user should pass a refiner for each rigid body. For now we
-        assume that each rigid body is a molecular hierarchy
-   */
-  void initialize_model_density_map(Particles ps,
-                                    FloatKey weight_key);
+  void initialize_model_density_map(FloatKey weight_key);
 
   IMP::internal::OwnerPointer<DensityMap> target_dens_map_;
   mutable IMP::internal::OwnerPointer<SampledDensityMap> model_dens_map_;
@@ -86,19 +85,19 @@ private:
   core::XYZs xyz_;
   // derivatives
   std::vector<double> dx_, dy_ , dz_;
-  //  bool special_treatment_of_particles_outside_of_density_;
-  //rigid bodies handling
-  Particles all_ps_;
-  Particles not_rb_; //all particles that are not part of a rigid body
-  core::RigidBodies rbs_;
-  Particles mhs_;//mhs_ are the root hierarhices of the rigid bodies
   algebra::ReferenceFrame3Ds rbs_orig_rf_;
-  IMP::internal::OwnerPointer<Refiner> refiner_;//refiner for rigid bodies
   FloatKey weight_key_;
   KernelParameters *kernel_params_;
   DistanceMask *dist_mask_;
   FloatPair norm_factors_;
   bool use_rigid_bodies_;
+  //particle handling
+  //map particles to their rigid bodies
+  IMP::internal::Map<core::RigidBody, Particles> member_map_;
+  Particles all_ps_;
+  Particles not_part_of_rb_; //all particles that are not part of a rigid body
+  Particles part_of_rb_;
+  core::RigidBodies rbs_;
 };
 
 IMPEM_END_NAMESPACE

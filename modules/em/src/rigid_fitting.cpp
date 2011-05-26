@@ -45,13 +45,13 @@ RestraintSet * add_restraints(Model *model, DensityMap *dmap,
    Pointer<FitRestraint> fit_rs;
    FloatPair no_norm_factors(0.,0.);
    if (fast) {
-     fit_rs = new FitRestraint(p,
-                               dmap,leaves_ref,no_norm_factors,
+     fit_rs = new FitRestraint(leaves_ref->get_refined(p),
+                               dmap,no_norm_factors,
                                wei_key,1.0);
    }
    else {
      fit_rs = new FitRestraint(leaves_ref->get_refined(p),
-                               dmap,leaves_ref,no_norm_factors,
+                               dmap,no_norm_factors,
                                wei_key,1.0,false);
    }
    rsrs->add_restraint(fit_rs);

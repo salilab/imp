@@ -12,7 +12,7 @@ class ProteinFittingTest(IMP.test.TestCase):
         for fn,res in data:
             scene = IMP.em.read_map(self.get_input_file_name(fn), self.mrw)
             scene.get_header_writable().set_resolution(res)
-            r = IMP.em.FitRestraint(self.particles,scene,self.refiner)
+            r = IMP.em.FitRestraint(self.particles,scene)
             self.imp_model.add_restraint(r)
             score = self.imp_model.evaluate(False)
             print "EM score (1-CC) = "+str(score), " filename:",fn," res:", res
@@ -37,10 +37,9 @@ class ProteinFittingTest(IMP.test.TestCase):
         self.mh = IMP.atom.read_pdb(name,
                                     self.imp_model,IMP.atom.CAlphaPDBSelector())
         IMP.atom.add_radii(self.mh)
-        IMP.atom.setup_as_rigid_body(self.mh)
+        IMP.atom.create_rigid_body(self.mh)
         #self.particles = IMP.Particles(IMP.core.get_leaves(self.mh))
         self.particles = []
-        self.particles.append(self.mh)
-        self.refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
+        self.particles+=IMP.core.get_leaves(self.mh)
 if __name__ == '__main__':
     IMP.test.main()
