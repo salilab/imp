@@ -120,7 +120,7 @@ class CorrelationDecompositionTest(IMP.test.TestCase):
         for i in range(len(self.mhs)):
             print "iindex:",i,"mol size",len(IMP.core.get_leaves(self.mhs[i]))
             r=IMP.em.FitRestraint(IMP.core.get_leaves(self.mhs[i]),self.scene,
-                                  self.leaves_ref,self.norm_factors,
+                                  self.norm_factors,
                                   IMP.atom.Mass.get_mass_key(),
                                   1.,False)
             print "finish set fit restraint"
@@ -128,7 +128,7 @@ class CorrelationDecompositionTest(IMP.test.TestCase):
             print "add rstraint"
             decomposed_score += r.evaluate(None)
             print "after evaluate"
-        full_r=IMP.em.FitRestraint(self.all_ps,self.scene,self.leaves_ref,[0,0],
+        full_r=IMP.em.FitRestraint(self.all_ps,self.scene,[0,0],
                                    IMP.atom.Mass.get_mass_key(),
                                   1.,False)
         self.imp_model.add_restraint(full_r)

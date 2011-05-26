@@ -21,6 +21,7 @@ class ResamplingTest(IMP.test.TestCase):
         self.mhs=[] #3 molecular hierarchies
         self.pss=[] #3 particles
         self.mhs_copy=[] #3 copies of the molecular hierarchies used later as rigid bodies
+        self.all_ps_copy=[]
         self.rbs_of_copy=IMP.core.RigidBodies() #3 rigid bodies
         sel=IMP.atom.CAlphaPDBSelector()
         for n,fn in enumerate(fnames):
@@ -31,6 +32,7 @@ class ResamplingTest(IMP.test.TestCase):
                                               self.imp_model,sel))
             self.mhs_copy[-1].set_name("mol"+str(n))
             IMP.atom.add_radii(self.mhs[n])
+            self.all_ps_copy+=IMP.core.get_leaves(self.mhs_copy[-1])
             IMP.atom.add_radii(self.mhs_copy[n])
             self.pss.append(IMP.core.get_leaves(self.mhs[n]))
             IMP.atom.create_rigid_body(self.mhs_copy[n])
@@ -42,7 +44,6 @@ class ResamplingTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)#VERBOSE)
         self.imp_model = IMP.Model()
         self.load_proteins()
-        self.rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def test_resample(self):
         """test resampling with and without rigid bodies"""
         #load as lots of particles, generate EM map, use it to define restraint
@@ -51,8 +52,8 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.mhs_copy,map,self.rb_refiner)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,[0.,0.],IMP.atom.Mass.get_mass_key(),1,False)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.all_ps_copy,map,[0.,0.],IMP.atom.Mass.get_mass_key(),1,True)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         score1=self.restr_ps_all.evaluate(False)
@@ -91,9 +92,9 @@ class ResamplingTest(IMP.test.TestCase):
             self.ps_all+=self.pss[n]
         map=IMP.em.particles2density(self.ps_all,8,1.5)
         map.calcRMS()
-        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,self.rb_refiner,self.radius_key,self.weight_key,1)
-        self.restr_rb_all_fast=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
-        self.restr_rb_all_slow=IMP.em.FitRestraint(self.rbs_of_copy,map,self.rb_refiner,self.radius_key,self.weight_key,1)
+        self.restr_ps_all=IMP.em.FitRestraint(self.ps_all,map,[0.,0.],self.weight_key,1,False)
+        self.restr_rb_all_fast=IMP.em.FitRestraint(self.all_ps_copy,map,[0.,0.],self.weight_key,1,True)
+        self.restr_rb_all_slow=IMP.em.FitRestraint(self.all_ps_copy,map,[0.,0.],self.weight_key,1,False)
         self.imp_model.add_restraint(self.restr_ps_all)
         self.imp_model.add_restraint(self.restr_rb_all_fast)
         self.imp_model.add_restraint(self.restr_rb_all_slow)

@@ -69,7 +69,6 @@ class FittingTest(IMP.test.TestCase):
         self.load_particles()
 
         self.opt = IMP.core.ConjugateGradients()
-        self.rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
     def test_load_nonexistent_file(self):
         """Check that load of nonexistent file is handled cleanly"""
 #        scene = EM.DensityMap()
@@ -80,7 +79,7 @@ class FittingTest(IMP.test.TestCase):
         """Check that correlation of particles with their own density is 1"""
         for p in self.particles:
             print "is rigid body?",IMP.core.RigidBody.particle_is_instance(p)
-        r = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
+        r = IMP.em.FitRestraint(self.particles,self.scene)
         self.imp_model.add_restraint(r)
         score = self.imp_model.evaluate(False)
         print "EM score (1-CC) = "+str(score)
@@ -89,7 +88,7 @@ class FittingTest(IMP.test.TestCase):
     def test_cast(self):
         """Make sure that we can cast Restraint* to FitRestraint*"""
         m = self.imp_model
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
+        r1 = IMP.em.FitRestraint(self.particles,self.scene)
         sf = IMP.core.Harmonic(10.0, 0.1)
         r2 = IMP.core.DistanceRestraint(sf, self.particles[0],
                                         self.particles[1])

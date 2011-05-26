@@ -51,7 +51,8 @@ local_trans=IMP.algebra.Transformation3D(r,translation)
 # for xyz in prot_xyz:
 #     xyz.set_coordinates(local_trans.get_transformed(xyz.get_coordinates()))
 ##4.2 set the protein as a rigid body
-prot_rb = IMP.atom.setup_as_rigid_body(mh)
+IMP.atom.create_rigid_body(mh)
+prot_rb=IMP.core.RigidMember(IMP.core.get_leaves(mh)[0]).get_rigid_body()
 ##4.3 apply the trasnformation to the protein
 IMP.core.transform(prot_rb,local_trans)
 m.evaluate(None)#to make sure the transformation was applied
@@ -82,23 +83,23 @@ print "The score after centering is:",score2, "with rmsd of:",rmsd
 #    IMP.atom.Mass.get_mass_key(),
 #    dmap,fitting_sols)
 
-num_sol=2
 refiner = IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
 fitting_sols=IMP.em.local_rigid_fitting(
-   prot_rb,refiner,
+   mh.get_particle(),refiner,
    IMP.atom.Mass.get_mass_key(),
-   dmap,None,num_sol,2,10,10)
+   dmap,[],2,10,10)
 
 ## 5.2 report best result
 ### 5.2.1 transform the protein to the preferred transformation
 print "The start score is:",start_score, "with rmsd of:",start_rmsd
 for i in range(fitting_sols.get_number_of_solutions()):
-    #IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
-    prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
+    IMP.core.transform(prot_rb,fitting_sols.get_transformation(i))
+    #prot_rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(fitting_sols.get_transformation(i)))
     m.evaluate(None)#to make sure the transformation was applied
 ## 5.2.2 calc rmsd to native configuration
     rmsd=IMP.atom.get_rmsd(IMP.core.XYZs(ps),IMP.core.XYZs(IMP.core.get_leaves(mh_ref)))
     IMP.atom.write_pdb(mh,"temp_"+str(i)+".pdb")
     print "Fit with index:",i," with cc: ",1.-fitting_sols.get_score(i), " and rmsd to native of:",rmsd
     IMP.atom.write_pdb(mh,"sol_"+str(i)+".pdb")
+    IMP.core.transform(prot_rb,fitting_sols.get_transformation(i).get_inverse())
 print "done"

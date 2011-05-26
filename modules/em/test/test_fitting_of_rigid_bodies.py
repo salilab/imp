@@ -46,9 +46,8 @@ class ProteinRigidFittingTest(IMP.test.TestCase):
     def test_cc_derivaties_using_rigid_body_fast_mode(self):
         """Test that multiple rigid bodies are correctly pulled into the density"""
         print self.leaves_ref.get_can_refine(self.mhs[0])
-        fit_r = IMP.em.FitRestraint(self.mhs,
-                                    self.scene,
-                                    self.leaves_ref)
+        fit_r = IMP.em.FitRestraint(self.ps,
+                                    self.scene)
         self.imp_model.add_restraint(fit_r)
         #randomize the position of the protein
 

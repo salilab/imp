@@ -46,8 +46,7 @@ class ToParticlesTest(IMP.test.TestCase):
         dmap.calcRMS()
         self.assertGreater(dmap.get_header().rms, 0)
         #check origin:
-        rb_refiner=IMP.core.LeavesRefiner(IMP.atom.Hierarchy.get_traits())
-        r = IMP.em.FitRestraint(ps,dmap,rb_refiner)
+        r = IMP.em.FitRestraint(ps,dmap)
         m.add_restraint(r)
         score = self.imp_model.evaluate(False)
         self.assertLess(score, 0.01)
