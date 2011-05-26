@@ -25,10 +25,11 @@
 /** This macro declares
     - IMP::domino::AssignmentTable::get_assignments()
 */
-#define IMP_ASSIGNMENTS_TABLE(Name)                                   \
+#define IMP_ASSIGNMENTS_TABLE(Name)                                     \
   public:                                                               \
-  virtual IMP::domino::Assignments                                     \
-  get_assignments(const IMP::domino::Subset&s) const;                 \
+  virtual void                                                          \
+  fill_assignments(const IMP::domino::Subset&s,                         \
+                   AssignmentContainer *ac) const;                      \
   IMP_OBJECT(Name)
 
 
@@ -141,5 +142,43 @@
   public:                                                               \
   SubsetGraph get_subset_graph(IMP::domino::ParticleStatesTable *pst) const; \
 IMP_OBJECT(Name)
+
+
+/** This macro declares:
+    - AssignmentsContainer::get_number_of_assignments()
+    - AssignmentsContainer::get_assignment()
+    - AssignmentsContainer::add_assignment()
+    and defines:
+    - AssignmentsContainer::get_assignments(IntRange)
+    - AssignmentsContainer::add_assignments()
+    - AssignmentsContainer::get_assignments(unsigned int)
+    in addition to the IMP_OBJECT() declarations and definitions.
+*/
+#define IMP_ASSIGNMENT_CONTAINER(Name)                                 \
+  public:                                                               \
+  virtual unsigned int get_number_of_assignments() const;               \
+  virtual Assignment get_assignment(unsigned int i) const;              \
+  virtual Assignments get_assignments(IntRange r) const {               \
+    Assignments ret(r.second-r.first);                                  \
+    for (int i=0; i != r.second-r.first; ++i) {                         \
+      ret[i]= Name::get_assignment(r.first+i);                          \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  virtual void add_assignment(Assignment a);                            \
+  virtual void add_assignments(const Assignments &as) {                 \
+  for (unsigned int i=0; i< as.size(); ++i) {                           \
+    Name::add_assignment(as[i]);                                        \
+  }                                                                     \
+  }                                                                     \
+  virtual Ints get_assignments(unsigned int index) const {              \
+    Ints ret(Name::get_number_of_assignments());                        \
+    for (unsigned int i=0; i< Name::get_number_of_assignments();        \
+         ++i) {                                                         \
+      ret[i]= get_assignment(i)[index];                                 \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  IMP_OBJECT(Name)
 
 #endif  /* IMPDOMINO_MACROS_H */

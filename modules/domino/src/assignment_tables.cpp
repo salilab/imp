@@ -159,7 +159,7 @@ namespace {
                         ParticleStatesTable *table,
                         const SubsetFilterTables &sft,
                         unsigned int max,
-                        Assignments &states_) {
+                        AssignmentContainer *states) {
     //std::cout << "Searching order for " << s << std::endl;
 
     IMP_FUNCTION_LOG;
@@ -322,18 +322,18 @@ namespace {
     }
     {
       current_digit=0;
-      unsigned int sz= states_.size();
+      unsigned int sz= states->get_number_of_assignments();
       Assignment to_push(cur);
       IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
       incr=1;
       try {
-        states_.push_back(to_push);
+        states->add_assignment(to_push);
       } catch (std::bad_alloc) {
         IMP_THROW("Ran out of memory when enumerating states for " << s
                   << " with " << sz << " states found so far."
                   << " Last state is " << to_push, ValueException);
       }
-      if (states_.size() > max) {
+      if (states->get_number_of_assignments() > max) {
         IMP_WARN("Truncated subset states at " << max
                  << " for subset " << s);
         goto done;
@@ -362,14 +362,14 @@ namespace {
       }
     }
   done:
-    std::sort(states_.begin(), states_.end());
+    //std::sort(states_.begin(), states_.end());
     IMP_IF_LOG(TERSE) {
       std::size_t possible=1;
       for (unsigned int i=0; i< s.size(); ++i) {
         Pointer<ParticleStates> ps= table->get_particle_states(s[i]);
         possible= possible*ps->get_number_of_particle_states();
       }
-      IMP_LOG(TERSE, "In total found " << states_.size()
+      IMP_LOG(TERSE, "In total found " << states->get_number_of_assignments()
               << " for subset " << s << " of " << possible
               << " possible states." << std::endl);
     }
@@ -390,13 +390,12 @@ BranchAndBoundAssignmentsTable
 }
 
 
-Assignments BranchAndBoundAssignmentsTable
-::get_assignments(const Subset&s) const {
+void BranchAndBoundAssignmentsTable
+::fill_assignments(const Subset&s,
+                   AssignmentContainer *out) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  Assignments ssl;
-  fill_states_list(s, pst_, sft_, max_, ssl);
-  return ssl;
+  fill_states_list(s, pst_, sft_, max_, out);
 }
 
 void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
@@ -406,12 +405,13 @@ void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
 ListAssignmentsTable
 ::ListAssignmentsTable(std::string name): AssignmentsTable(name) {}
 
-Assignments ListAssignmentsTable
-::get_assignments(const Subset &s) const {
+void ListAssignmentsTable
+::fill_assignments(const Subset &s,
+                   AssignmentContainer *out) const {
   set_was_used(true);
   IMP_USAGE_CHECK(states_.find(s) != states_.end(),
                   "I don't know anything about subset " << s);
-  return states_.find(s)->second;
+  out->add_assignments(states_.find(s)->second);
 }
 
 

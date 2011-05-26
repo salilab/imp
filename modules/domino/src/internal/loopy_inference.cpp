@@ -14,14 +14,15 @@
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/dynamic_bitset.hpp>
 
+IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
+#if 0
 /** This should be sped up by tracking which neighbor states are used
     to keep alive each state in a node and then removing the
     node when these lists are empty. This would avoid rechecking
     filters and make it purely a matter of pushing ints around.
 */
 
-IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 namespace {
   void fill_node_data(const SubsetGraph &sg,
                       const AssignmentsTable *sst,
@@ -358,4 +359,5 @@ Assignments fast_loopy_get_best_conformations(const SubsetGraph &sg,
 }
 }*/
 
+#endif
 IMPDOMINO_END_INTERNAL_NAMESPACE

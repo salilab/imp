@@ -35,12 +35,12 @@ class InferenceStatistics {
     int size;
     Assignments sample;
   };
-  Data get_data(const Subset &s, Assignments ss) const;
+  Data get_data(const Subset &s, AssignmentContainer* ss) const;
   IMP::internal::Map<Subset, Data> subsets_;
   const Data & get_data(const Subset &s) const;
 public:
   InferenceStatistics();
-  void add_subset(const Subset &s, const Assignments &ss);
+  void add_subset(const Subset &s, AssignmentContainer *ss);
   unsigned int get_number_of_assignments(Subset subset) const;
   Assignments get_sample_assignments(Subset subset) const;
   ~InferenceStatistics();
@@ -123,14 +123,9 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
 }
 
 
-inline Assignments get_node_data(const Subset &s, const AssignmentsTable *sst) {
-  Assignments ret;
-  ret= sst->get_assignments(s);
-  /*if (ret.empty()) {
-    IMP_THROW("Empty state encountered with subset " << s
-              << ". There will be no solutions.", ValueException);
-              }*/
-  return ret;
+inline void fill_node_data(const Subset &s, const AssignmentsTable *sst,
+                           AssignmentContainer *out) {
+  sst->fill_assignments(s, out);
 }
 
 
@@ -182,25 +177,27 @@ inline bool get_are_equal(const Assignment &ss0,
 
 IMPDOMINOEXPORT
 Assignment get_merged_assignment(const Subset &s,
-                                    const Assignment &ss0,
-                                    const Ints &i0,
-                                    const Assignment &ss1,
-                                    const Ints &i1) ;
+                                 const Assignment& ss0,
+                                 const Ints &i0,
+                                 const Assignment& ss1,
+                                 const Ints &i1) ;
 
-IMPDOMINOEXPORT Assignments
-get_union(const Subset &s0, const Subset &s1,
-          const Assignments &nd0, const Assignments &nd1,
-          const EdgeData &ed,
-          unsigned int max);
+IMPDOMINOEXPORT void
+fill_union(const Subset &s0, const Subset &s1,
+           AssignmentContainer* nd0, AssignmentContainer* nd1,
+           const EdgeData &ed,
+           unsigned int max,
+           AssignmentContainer* out);
 
 inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
                                      const Subset &s,
-                                     const Assignments &states) {
+                                     AssignmentContainer* ac) {
   for (unsigned int i=0; i< s.size(); ++i) {
     boost::dynamic_bitset<> bs(lsft->get_number_of_particle_states(s[i]));
     bs.reset();
-    for (unsigned int j=0; j< states.size(); ++j) {
-      bs.set(states[j][i]);
+    Ints cur= ac->get_assignments(i);
+    for (unsigned int j=0; j< cur.size(); ++j) {
+      bs.set(cur[j]);
     }
     lsft->mask_allowed_states(s[i], bs);
   }

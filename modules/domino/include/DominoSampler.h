@@ -100,6 +100,24 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
                                          const Assignments &second,
                                          unsigned int max_states
                                        =std::numeric_limits<int>::max()) const;
+
+
+  //! Fill in assignments for a leaf
+  void fill_vertex_assignments(unsigned int node_index,
+                               AssignmentContainer *ac,
+                               unsigned int max_states
+                               =std::numeric_limits<int>::max()) const;
+  //! Fill in assignments for an internal node
+  /** The passed assignments, the ordering for the children is based
+      on the node index for the children.
+  */
+  void fill_vertex_assignments(unsigned int node_index,
+                               AssignmentContainer *first,
+                               AssignmentContainer *second,
+                               AssignmentContainer *ac,
+                               unsigned int max_states
+                               =std::numeric_limits<int>::max()) const;
+
   /** @} */
 };
 
