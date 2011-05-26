@@ -34,7 +34,7 @@ void PackedAssignmentContainer::do_show(std::ostream &out) const {
   out << "width: " << width_ << std::endl;
 }
 
-
+#ifdef IMP_DOMINO_USE_IMP_RMF
 
 HDF5AssignmentContainer::HDF5AssignmentContainer(rmf::HDF5Group parent,
                                                  std::string name):
@@ -74,7 +74,7 @@ void HDF5AssignmentContainer::do_show(std::ostream &) const {
   //out << "dataset: " << ds_.get_name() << std::endl;
 }
 
-
+#endif
 
 
 IMPDOMINO_END_NAMESPACE
