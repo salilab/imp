@@ -101,7 +101,7 @@ class FittingTest(IMP.test.TestCase):
         self.assertIsNone(IMP.em.FitRestraint.cast(r2))
     def test_get_methods(self):
         """Check FitRestraint's get methods"""
-        r1 = IMP.em.FitRestraint(self.particles,self.scene,self.rb_refiner)
+        r1 = IMP.em.FitRestraint(self.particles,self.scene)
         self.assertIsInstance(r1.get_model_dens_map(),
                               IMP.em.SampledDensityMap)
 
