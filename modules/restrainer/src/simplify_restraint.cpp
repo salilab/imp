@@ -222,30 +222,17 @@ SimpleEMFit create_simple_em_fit(atom::Hierarchies const &mhs,
   size_t mhs_size = mhs.size();
 
   IMP_USAGE_CHECK(mhs_size > 0, "At least one hierarchy should be given");
-
   Particles ps;
   for ( size_t i=0; i<mhs_size; ++i )
   {
-    if (core::RigidBody::particle_is_instance(mhs[i])) {
-      ps.push_back(mhs[i].get_particle());
-    }
-    else {
-      Particles pss = core::get_leaves(mhs[i]);
-      for ( size_t j=0; j<pss.size(); ++j ){
-        ps.push_back(pss[j]);
-      }
-    }
+    Particles pss = core::get_leaves(mhs[i]);
+    ps.insert(ps.end(),pss.begin(),pss.end());
   }
-  //define the refiner for the rigid bodies
-  IMP_NEW(core::LeavesRefiner,leaves_ref,(atom::Hierarchy::get_traits()));
-  IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,leaves_ref,
+
+  IMP_NEW(em::FitRestraint, fit_rs, (ps, dmap,
         FloatPair(0.,0.),
         atom::Mass::get_mass_key(),
         1.0));
-  //Model *mdl = mhs[0].get_particle()->get_model();
-  //fit_rs->set_model(mdl);
-  //mdl->add_restraint(fit_rs);
-
   return SimpleEMFit(fit_rs);
 }
 
