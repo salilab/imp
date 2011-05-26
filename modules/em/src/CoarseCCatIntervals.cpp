@@ -36,9 +36,9 @@ void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
   if (dv_memory_allocated_)
     return;
   // Allocate memmory for the derivative terms if not done yet
-  stored_dvx_=new float [ncd];
-  stored_dvy_=new float [ncd];
-  stored_dvz_=new float [ncd];
+  stored_dvx_=new double [ncd];
+  stored_dvy_=new double [ncd];
+  stored_dvz_=new double [ncd];
 
   for (int i=0;i<ncd;i++) {
      stored_dvx_[i] = 0.0;
@@ -48,15 +48,14 @@ void CoarseCCatIntervals::allocate_derivatives_array(int ncd)
   dv_memory_allocated_ = true;
 }
 
-float CoarseCCatIntervals::evaluate(DensityMap *em_map,
+std::pair<double,algebra::Vector3Ds> CoarseCCatIntervals::evaluate(
+                                    DensityMap *em_map,
                                     SampledDensityMap *model_map,
-                                    std::vector<double> &dvx,
-                                    std::vector<double> &dvy,
-                                    std::vector<double> &dvz,
+                                    const algebra::Vector3Ds &deriv,
                                     float scalefac, bool lderiv,
                                     unsigned long eval_interval) {
 // eval_interval is the interval size before recalculating the CC score
-
+  algebra::Vector3Ds out_dv;
   unsigned int number_of_particles=model_map->get_xyzr_particles().size();
   // If the function requires to be evaluated
   if  (calls_counter_ % eval_interval == 0) {
@@ -64,11 +63,11 @@ float CoarseCCatIntervals::evaluate(DensityMap *em_map,
     stored_cc_ = CoarseCC::calc_score(em_map, model_map,
                                     scalefac);
     if (lderiv) {
-      CoarseCC::calc_derivatives(em_map, model_map,
+      out_dv = CoarseCC::calc_derivatives(em_map, model_map,
                                  model_map->get_sampled_particles(),
                                  model_map->get_weight_key(),
                                  model_map->get_kernel_params(),
-                                 scalefac, dvx, dvy, dvz);
+                                 scalefac, deriv);
     }
 
     calls_counter_ = 1;
@@ -76,25 +75,27 @@ float CoarseCCatIntervals::evaluate(DensityMap *em_map,
       // sync the derivatives.
       allocate_derivatives_array(number_of_particles);
       for (unsigned int i=0;i < number_of_particles;i++) {
-        stored_dvx_[i] = dvx[i];
-        stored_dvy_[i] = dvy[i];
-        stored_dvz_[i] = dvz[i];
+        stored_dvx_[i] = out_dv[i][0];
+        stored_dvy_[i] = out_dv[i][1];
+        stored_dvz_[i] = out_dv[i][2];
       }
     }
   }
   // If the evaluation was not required, return the previously stored values
   else {
+    algebra::Vector3D v0(0.,0.,0.);
+    out_dv.insert(out_dv.end(),number_of_particles,v0);
     for (unsigned int i=0;i<number_of_particles;i++) {
       if (lderiv) {
-        dvx[i] = stored_dvx_[i];
-        dvy[i] = stored_dvy_[i];
-        dvz[i] = stored_dvz_[i];
+        out_dv[i][0] = stored_dvx_[i];
+        out_dv[i][1] = stored_dvy_[i];
+        out_dv[i][2] = stored_dvz_[i];
       }
     }
     ++calls_counter_;
   }
 
-  return stored_cc_;
+  return std::pair<double,algebra::Vector3Ds>(stored_cc_,out_dv);
 }
 
 IMPEM_END_NAMESPACE

@@ -313,14 +313,15 @@ float CoarseCC::local_cross_correlation_coefficient(const DensityMap *em_map,
 
 }
 
-void CoarseCC::calc_derivatives(
+algebra::Vector3Ds CoarseCC::calc_derivatives(
              const DensityMap *em_map,
              const DensityMap *model_map,
              const Particles &model_ps,const FloatKey &w_key,
              KernelParameters *kernel_params,
              const float &scalefac,
-             std::vector<double> &dvx, std::vector<double>&dvy,
-             std::vector<double>&dvz) {
+             const algebra::Vector3Ds &dv) {
+  algebra::Vector3Ds dv_out;
+  dv_out.insert(dv_out.end(),dv.size(),algebra::Vector3D(0.,0.,0.));
   double tdvx = 0., tdvy = 0., tdvz = 0., tmp,rsq;
   int iminx, iminy, iminz, imaxx, imaxy, imaxz;
 
@@ -329,7 +330,7 @@ void CoarseCC::calc_derivatives(
   const float *x_loc = em_map->get_x_loc();
   const float *y_loc = em_map->get_y_loc();
   const float *z_loc = em_map->get_z_loc();
-  IMP_INTERNAL_CHECK(model_ps.size()==dvx.size(),
+  IMP_INTERNAL_CHECK(model_ps.size()==dv.size(),
     "input derivatives array size does not match "<<
     "the number of particles in the model map\n");
   core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
@@ -419,11 +420,12 @@ void CoarseCC::calc_derivatives(
           * scalefac * params->get_normfac() / lower_comp;
     IMP_LOG(VERBOSE,"for particle:"<<ii<<" ("<<tdvx<<","<<tdvy<<
             ","<<tdvz<<")"<<std::endl);
-    dvx[ii] = tdvx * tmp;
-    dvy[ii] = tdvy * tmp;
-    dvz[ii] = tdvz * tmp;
+    dv_out[ii][0] = tdvx * tmp;
+    dv_out[ii][1] = tdvy * tmp;
+    dv_out[ii][2] = tdvz * tmp;
 
   }//particles
+  return dv_out;
 }
 
 

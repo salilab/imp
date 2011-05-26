@@ -71,12 +71,11 @@ public:
  \param[out] dvz vector to contain the z partial derivatives
  \note: The function assumes that correct RMS are calculated for the densities
 */
-  static void calc_derivatives(
+  static algebra::Vector3Ds calc_derivatives(
      const DensityMap *em_map, const DensityMap *model_map,
      const Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
-     const float &scalefac, std::vector<double> &dvx,
-     std::vector<double>&dvy,std::vector<double>&dvz);
+     const float &scalefac, const algebra::Vector3Ds &dv);
 
 
   //!Calculates the cross correlation coefficient between two maps

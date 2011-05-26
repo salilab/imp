@@ -53,9 +53,10 @@ correlation term
 the same value before computing the values again
   \return the value of the cross correlation term: scalefac * (1-CCC)
    */
-  float evaluate(DensityMap *em_map, SampledDensityMap *model_map,
-                 std::vector<double> &dvx, std::vector<double>&dvy,
-                 std::vector<double>&dvz, float scalefac, bool lderiv,
+  std::pair<double,algebra::Vector3Ds> evaluate(
+                 DensityMap *em_map, SampledDensityMap *model_map,
+                 const algebra::Vector3Ds &deriv,
+                 float scalefac, bool lderiv,
                  unsigned long eval_interval);
 
   IMP_OBJECT_INLINE(CoarseCCatIntervals, {out << "CoarseCCatIntervals";}, {});
@@ -69,7 +70,7 @@ protected:
   //! Stored correlation value
   float stored_cc_ ;
   //! Stored derivative terms
-  float *stored_dvx_,*stored_dvy_,*stored_dvz_;
+  double *stored_dvx_,*stored_dvy_,*stored_dvz_;
   // true when memory for the terms storing the derivatives has been assigned
   bool dv_memory_allocated_;
 };
