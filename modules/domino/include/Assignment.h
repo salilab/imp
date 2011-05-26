@@ -179,8 +179,8 @@ class IMPDOMINOEXPORT AssignmentContainer: public Object {
 
 IMP_OBJECTS(AssignmentContainer, AssignmentContainers);
 
-/**
-
+/** Store a set of assignments in a somewhat more compact form in memory
+    than the ListAssignmentContainer.
  */
 class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
   // store all as one vector
@@ -213,7 +213,8 @@ inline void PackedAssignmentContainer::add_assignment(Assignment a) {
   d_.insert(d_.end(), a.begin(), a.end());
 }
 
-/**
+/** Simple storage of a set of Assignments. Prefer PackedAssignmentContainer,
+    I think.
  */
 class IMPDOMINOEXPORT ListAssignmentContainer: public AssignmentContainer {
   // store all as one vector
