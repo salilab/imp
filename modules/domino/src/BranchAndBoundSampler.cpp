@@ -35,8 +35,9 @@ Assignments BranchAndBoundSampler
                                       get_particle_states_table());
   IMP::internal::OwnerPointer<AssignmentsTable> sst
     = DiscreteSampler::get_assignments_table_to_use(sfts);
-  const Assignments ret  = sst->get_assignments(s);
-  return ret;
+  IMP_NEW(PackedAssignmentContainer, pac, ());
+  sst->fill_assignments(s, pac);
+  return pac->get_assignments(IntRange(0, pac->get_number_of_assignments()));
 }
 
 void BranchAndBoundSampler::do_show(std::ostream &out) const {

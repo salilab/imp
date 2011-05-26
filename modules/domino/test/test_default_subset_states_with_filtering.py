@@ -10,7 +10,9 @@ class DOMINOTests(IMP.test.TestCase):
     def _get_full_list(self, pst, lsc):
         print 'getting'
         dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [])
-        ss= dsst.get_assignments(lsc)
+        pss= IMP.domino.PackedAssignmentContainer()
+        dsst.fill_assignments(lsc, pss)
+        ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print "got all"
         all_states=[]
         for state in ss:
@@ -62,7 +64,9 @@ class DOMINOTests(IMP.test.TestCase):
         dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
-        ss= dsst.get_assignments(lsc)
+        pss= IMP.domino.PackedAssignmentContainer()
+        dsst.fill_assignments(lsc, pss)
+        ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print len(ss), "states"
         found_states=[]
         print repr(lsc)
@@ -104,7 +108,9 @@ class DOMINOTests(IMP.test.TestCase):
         dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
-        ss= dsst.get_assignments(lsc)
+        pss= IMP.domino.PackedAssignmentContainer()
+        dsst.fill_assignments(lsc, pss)
+        ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print len(ss), "states"
         found_states=[]
         print repr(lsc)

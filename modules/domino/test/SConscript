@@ -4,4 +4,8 @@ Import('env')
 # matching test_*.cpp
 env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   cpp_tests= env.IMPModuleGetCPPTests(),
-                  spelling_exceptions=["altgraph"])
+                  spelling_exceptions=["altgraph"],
+                  function_name_exceptions=["AssignmentsTable.fill_assignments",
+                                            "BranchAndBoundAssignmentsTable.fill_assignments",
+                                            "DominoSampler.fill_vertex_assignments",
+                                            "ListAssignmentsTable.fill_assignments"])

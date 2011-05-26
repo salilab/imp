@@ -23,30 +23,33 @@ IMPDOMINO_END_NAMESPACE
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 IMPDOMINOEXPORT
-Assignments get_merged_assignments(const Subset &first_subset,
-                                   const Assignments &first,
-                                   const Subset &second_subset,
-                                   const Assignments &second,
-                                   const SubsetFilterTables &filters,
-                                   ListSubsetFilterTable *lsft,
-                                   InferenceStatistics &stats,
-                                   unsigned int max);
+void fill_merged_assignments(const Subset &first_subset,
+                             AssignmentContainer *first,
+                             const Subset &second_subset,
+                             AssignmentContainer *second,
+                             const SubsetFilterTables &filters,
+                             ListSubsetFilterTable *lsft,
+                             InferenceStatistics &stats,
+                             unsigned int max,
+                             AssignmentContainer *out);
 
 IMPDOMINOEXPORT
-Assignments get_leaf_assignments(const Subset &merged_subset,
-                                 const AssignmentsTable *states,
-                                 ListSubsetFilterTable *lsft,
-                                 InferenceStatistics &stats);
+void fill_leaf_assignments(const Subset &merged_subset,
+                           const AssignmentsTable *states,
+                           ListSubsetFilterTable *lsft,
+                           InferenceStatistics &stats,
+                           AssignmentContainer *out);
 
 IMPDOMINOEXPORT
-Assignments get_best_conformations(const MergeTree &jt,
-                                    int root,
-                                    const Subset& all_particles,
-                                    const SubsetFilterTables &filters,
-                                    const AssignmentsTable *states,
-                                    ListSubsetFilterTable *lsft,
-                                    InferenceStatistics &stats,
-                                    unsigned int max);
+void fill_best_conformations(const MergeTree &jt,
+                             int root,
+                             const Subset& all_particles,
+                             const SubsetFilterTables &filters,
+                             const AssignmentsTable *states,
+                             ListSubsetFilterTable *lsft,
+                             InferenceStatistics &stats,
+                             unsigned int max,
+                             AssignmentContainer *out);
 
 
 IMPDOMINO_END_INTERNAL_NAMESPACE

@@ -12,6 +12,7 @@
 #include "../domino_config.h"
 #include "../subset_filters.h"
 
+#if 0
 IMPDOMINO_BEGIN_NAMESPACE
 class SubsetEvaluatorTable;
 class AssignmentsTable;
@@ -28,5 +29,5 @@ Assignments loopy_get_best_conformations(const SubsetGraph &sg,
 
 
 IMPDOMINO_END_INTERNAL_NAMESPACE
-
+#endif
 #endif  /* IMPDOMINO_INTERNAL_LOOPY_INFERENCE_H */

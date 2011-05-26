@@ -23,6 +23,7 @@ IMP_SWIG_BASE_OBJECT(IMP::domino, ParticleStates, ParticleStatesList);
 IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilter, SubsetFilters);
 IMP_SWIG_BASE_OBJECT(IMP::domino, SubsetFilterTable, SubsetFilterTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino, AssignmentsTable, AssignmentsTables);
+IMP_SWIG_BASE_OBJECT(IMP::domino, AssignmentContainer, AssignmentContainers);
 IMP_SWIG_GRAPH(IMP::domino, InteractionGraph, InteractionGraph, IMP::Particle*);
 IMP_SWIG_GRAPH(IMP::domino, SubsetGraph, SubsetGraph, IMP::domino::Subset );
 IMP_SWIG_GRAPH(IMP::domino, MergeTree, MergeTree, IMP::domino::Subset );
@@ -47,6 +48,11 @@ IMP_SWIG_OBJECT(IMP::domino, XYZStates, XYZStatesList);
 IMP_SWIG_OBJECT(IMP::domino, NestedRigidBodyStates, NestedRigidBodyStatesList);
 IMP_SWIG_OBJECT(IMP::domino, DependencyScoreState, DependencyScoreStates);
 IMP_SWIG_OBJECT(IMP::domino, PairListSubsetFilterTable, PairListSubsetFilterTables);
+IMP_SWIG_OBJECT(IMP::domino, ListAssignmentContainer, ListAssignmentContainers);
+IMP_SWIG_OBJECT(IMP::domino, PackedAssignmentContainer, PackedAssignmentContainers);
+#ifdef IMP_DOMINO_USE_IMP_RMF
+IMP_SWIG_OBJECT(IMP::domino, HDF5AssignmentContainer, HDF5AssignmentContainers);
+#endif
 IMP_SWIG_RAII(IMP::domino, OptimizeRestraints);
 IMP_SWIG_VALUE(IMP::domino, Subset, Subsets);
 IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);

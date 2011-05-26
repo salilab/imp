@@ -45,7 +45,9 @@ class DOMINOTests(IMP.test.TestCase):
         ps.sort()
         s= IMP.domino.Subset(ps)
         sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft])
-        ss= sst.get_assignments(s)
+        pss= IMP.domino.PackedAssignmentContainer()
+        sst.fill_assignments(s, pss)
+        ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         print ss
         self.assertEqual(len(ss), 1)
     def _test_global_min3(self):
