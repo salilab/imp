@@ -45,7 +45,7 @@ bool is_interaction_line(const std::string &line) {
 
 void parse_protein_line(
                         const std::string &line,
-                        ProteomicsData &dp){
+                        ProteomicsData *dp){
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 0,"no data to parse"<<std::endl);
   IMP_LOG(VERBOSE,"going to parse:"<<line);
@@ -73,18 +73,18 @@ void parse_protein_line(
   if (!boost::iends_with(surface_filename,".ms")) {
     surface_filename="";
   }
-  dp.add_protein(
-                 boost::lexical_cast<std::string>(line_split[0]),
-                 boost::lexical_cast<int>(line_split[1]),
-                 boost::lexical_cast<int>(line_split[2]),
-                 prot_filename,surface_filename,
-                 ref_filename
+  dp->add_protein(
+                  boost::lexical_cast<std::string>(line_split[0]),
+                  boost::lexical_cast<int>(line_split[1]),
+                  boost::lexical_cast<int>(line_split[2]),
+                  prot_filename,surface_filename,
+                  ref_filename
                  );
 }
 
 void parse_interaction_line(
      const std::string &line,
-     ProteomicsData &dp){
+     ProteomicsData *dp){
   std::vector<int> inter_prots;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 2,
@@ -97,24 +97,24 @@ void parse_interaction_line(
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   for(unsigned int i=0;i<line_split.size()-2;i++) {//last two are header
     std::string name =  boost::lexical_cast<std::string>(line_split[i]);
-    int index = dp.find(name);
+    int index = dp->find(name);
     IMP_USAGE_CHECK(index != -1,
                  "The protein "<<name<<
                  " was not specified in the proteins list"<<std::endl);
     inter_prots.push_back(index);
   }
-  dp.add_interaction(inter_prots);
+  dp->add_interaction(inter_prots);
 }
 
-ProteomicsData read_proteomics_data(const char *prot_fn) {
+ProteomicsData *read_proteomics_data(const char *prot_fn) {
   std::fstream in;
-  ProteomicsData data;
+  IMP_NEW(ProteomicsData, data, ());
   in.open(prot_fn, std::fstream::in);
   if (! in.good()) {
     IMP_WARN("Problem openning file " << prot_fn <<
                   " for reading; returning empty proteomics data" << std::endl);
     in.close();
-    return data;
+    return data.release();
   }
   std::string line;
   getline(in, line); //skip proteins header line
@@ -128,23 +128,23 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
     parse_interaction_line(line,data);
   }
   in.close();
-  return data;
+  return data.release();
 }
 
-ProteomicsData get_partial_proteomics_data(
-                       const ProteomicsData &pd,
+ProteomicsData *get_partial_proteomics_data(
+                       const ProteomicsData *pd,
                        const Strings &prot_names) {
-  ProteomicsData ret;
+  IMP_NEW(ProteomicsData, ret, ());
   std::map<int,int> index_map;//orig protein index, new protein index
   for (Strings::const_iterator it = prot_names.begin();
        it != prot_names.end(); it++) {
-    IMP_INTERNAL_CHECK(pd.find(*it) != -1,"Protein:"<<*it<<" was not found\n");
-    int cur_ind=pd.find(*it);
-    index_map[cur_ind]=ret.add_protein(pd.get_protein_data(cur_ind));
+    IMP_INTERNAL_CHECK(pd->find(*it) != -1,"Protein:"<<*it<<" was not found\n");
+    int cur_ind=pd->find(*it);
+    index_map[cur_ind]=ret->add_protein(pd->get_protein_data(cur_ind));
   }
   //update the interaction map
-  for(int i=0;i<pd.get_number_of_interactions();i++) {
-    Ints inds = pd.get_interaction(i);
+  for(int i=0;i<pd->get_number_of_interactions();i++) {
+    Ints inds = pd->get_interaction(i);
     //check if all of the proteins are in the new list
     bool found=true;
     for(Ints::iterator it = inds.begin(); it != inds.end();it++) {
@@ -157,9 +157,9 @@ ProteomicsData get_partial_proteomics_data(
       for(Ints::iterator it = inds.begin(); it != inds.end();it++) {
         new_inds.push_back(index_map[*it]);
       }
-      ret.add_interaction(new_inds);
+      ret->add_interaction(new_inds);
     }
   }
-  return ret;
+  return ret.release();
 }
 IMPMULTIFIT_END_NAMESPACE
