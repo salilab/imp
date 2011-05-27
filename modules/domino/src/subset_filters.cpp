@@ -558,6 +558,7 @@ SubsetFilter*
 ListSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &) const {
+  set_was_used(true);
   Ints indexes;
   load_indexes(s, indexes);
   return new ListSubsetFilter(this, indexes);
@@ -691,6 +692,7 @@ SubsetFilter*
 PairListSubsetFilterTable
 ::get_subset_filter(const Subset &s,
                     const Subsets &e) const {
+  set_was_used(true);
   IntPairs indexes;
   std::vector<IntPairs> allowed;
   fill(s,e,indexes, allowed);
@@ -754,6 +756,7 @@ SubsetFilter*
 ProbabilisticSubsetFilterTable
 ::get_subset_filter(const Subset &,
                     const Subsets &e) const {
+  set_was_used(true);
   if (e.size() >1 && leaves_only_) return 0;
   else return new ProbabilisticSubsetFilter(p_);
 }
