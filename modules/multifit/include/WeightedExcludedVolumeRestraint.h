@@ -21,7 +21,7 @@
 #include <IMP/VersionInfo.h>
 #include <IMP/Refiner.h>
 
-IMPEM_BEGIN_NAMESPACE
+IMPMULTIFIT_BEGIN_NAMESPACE
 
 //! Calculate score based on fit to EM map
 /** \ingroup exp_restraint
@@ -55,7 +55,7 @@ private:
   void initialize_model_density_map(FloatKey weight_key);
   core::RigidBodies rbs_;
   //one surface map for each rigid body
-  mutable SurfaceShellDensityMaps rbs_surface_maps_;
+  mutable em::SurfaceShellDensityMaps rbs_surface_maps_;
   // reference to the IMP environment
   // derivatives
   std::vector<std::vector<float> >rb_refined_dx_,
@@ -66,6 +66,6 @@ private:
   IMP::internal::OwnerPointer<Refiner> rb_refiner_;//refiner for rigid bodies
 };
 
-IMPEM_END_NAMESPACE
+IMPMULTIFIT_END_NAMESPACE
 
 #endif  /* IMPMULTIFIT_WEIGHTED_EXCLUDED_VOLUME_RESTRAINT_H */
