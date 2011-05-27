@@ -22,7 +22,7 @@ domino::Assignments* ass, Parameters *myparam)
 //if(myparam->ass_file.length()>0.0){
 // rmf::HDF5Group rt= rmf::HDF5Group(myparam->ass_file, true);
 // rmf::HDF5DataSet<rmf::IndexTraits> data_set=
-//rt.add_child_index_data_set("node_assignments", 2);
+// rt.add_child_index_data_set("node_assignments", 2);
 // domino::set_assignments(data_set, *ass, *subs, pst->get_particles());
 //}
 

@@ -50,8 +50,8 @@ domino::Assignments ass=s->get_sample_assignments(subs);
 std::cout << "Found " << ass.size() << " solutions" << std::endl;
 
 // write output
-std::cout << "Writing output" << std::endl;
-write_output(all,pst,&subs,&ass,&mydata);
+//std::cout << "Writing output" << std::endl;
+//write_output(all,pst,&subs,&ass,&mydata);
 
 return 0;
 }

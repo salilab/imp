@@ -26,6 +26,8 @@ GridParameters *gg=&(myparam->grid);
 double bs[]={gg->x,gg->x,gg->x,gg->rot,gg->tilt,gg->swing};
 //algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
 
+
+
 for(int i=0;i<myparam->TM.num;++i){
  atom::Selection s=atom::Selection(protein);
  s.set_molecule(myparam->TM.name[i]);
@@ -57,7 +59,9 @@ if ( i > 1 ){
 IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
 
 /*
+
 IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+unsigned int nstates=rbs->get_number_of_particle_states();
 
 for(int i=0;i<myparam->TM.num;++i){
  atom::Selection s=atom::Selection(protein);
@@ -75,13 +79,12 @@ for(int i=0;i<myparam->TM.num;++i){
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  Ints states;
- unsigned int nstates=rbs->get_number_of_particle_states();
  for(unsigned int j=0;j<nstates;++j){
   Ints nindex = rbs->get_index(j);
   double xx=double(nindex[0])*gg->x-gg->xmax;
   double yy=double(nindex[1])*gg->x-gg->xmax;
   if( i==0 && fabs(xx)<0.0001 && fabs(yy)<0.0001) states.push_back(j);
-  if( i==1 && xx>0.0          && fabs(yy)<0.0001) states.push_back(j);
+  if( i==1 && xx>=0.0         && fabs(yy)<0.0001) states.push_back(j);
   if( i > 1 ) states.push_back(j);
  }
  lsft->set_allowed_states(rb, states);
