@@ -53,7 +53,10 @@ class VolumeTest(IMP.test.TestCase):
                     p= m.get_value(indexes[0]+i, indexes[1]+j, indexes[2]+k)
                     if p < lb: lb=p
                     if p > ub: ub=p
-        self.assertTrue(val <= ub and val >= lb,
+
+        # Tolerate the density exceeding the bounds by 1e-6 to allow for
+        # limited machine precision
+        self.assertTrue(val <= ub + 1e-6 and val >= lb - 1e-6,
                      "Density %g is not within bounds %g to %g" % (val, lb, ub))
 
 if __name__ == '__main__':
