@@ -55,7 +55,7 @@ located in the top-level \imp directory (the one containing the \c SConstruct fi
 For %example one of ours looks like
 \include "example_config.py"
 
-For simple setups (such as a linux build with no dependencies installed in odd places) the following would suffice.
+For simple setups (such as a Linux build with no dependencies installed in odd places) the following would suffice.
 \include "example_simple_config.py"
 When building a module or biological system externally to the main \imp directory (but still using an svn copy of IMP, something like the following will do:
 \include "example_external_config.py"
@@ -244,7 +244,7 @@ better functionality.
 Building the documentation requires \external{www.doxygen.org/,Doxygen}.
 In addition the documentation will look prettier if you have
 \external{www.graphviz.org/,graphviz} installed. It is available as
-part of most unix tool sets (MacPorts, all linux distributions etc.).
+part of most Unix tool sets (MacPorts, all Linux distributions etc.).
 
 \subsubsection modeller MODELLER
 \anchor modeller
@@ -262,9 +262,9 @@ It is available as a prebuilt package on all supported platforms.
 
 \subsubsection CGAL CGAL
 \anchor CGAL
-A wide variety geometric computations will be faster, better or more reliable
+A wide variety of geometric computations will be faster, better or more reliable
 if \ref cgal "CGAL" is installed. CGAL is available as part of most
-linux distributions and can be built from source on Mac OS or Linux. It
+Linux distributions and can be built from source on Mac OS or Linux. It
 is free for academic use, but commercial use requires a license.
 
 \subsubsection ANN ANN
