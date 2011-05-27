@@ -249,10 +249,10 @@ part of most unix tool sets (MacPorts, all linux distributions etc.).
 \subsubsection modeller MODELLER
 \anchor modeller
 If you want to use \imp with MODELLER, you should use version 9v7 or
-later and use the following argument to scons
+later. If you installed the MODELLER Linux RPM or Mac package, it should be
+detected automatically. Otherwise, tell scons where you installed MODELLER
+using the following argument:
 \command{scons modeller=path/to/modeller}
-(The Linux Modeller RPM installs in /usr/, while the Mac
-installer installs in /Library/modeller9v7/.)
 
 \subsubsection NetCDF NetCDF
 \anchor NetCDF
