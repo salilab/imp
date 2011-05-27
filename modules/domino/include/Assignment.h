@@ -159,21 +159,15 @@ class IMPDOMINOEXPORT AssignmentContainer: public Object {
   AssignmentContainer(std::string name="AssignmentsContainer %1%");
   virtual unsigned int get_number_of_assignments() const=0;
   virtual Assignment get_assignment(unsigned int i) const=0;
-  virtual Assignments get_assignments(IntRange ir) const=0; /* {
-    Assignments ret(r.second-r.first);
-    for (int i=0; i != r.second-r.first; ++i) {
-      ret[i]= get_assignment(r.first+i);
-    }
-    return ret;
-    }*/
+  virtual Assignments get_assignments(IntRange ir) const=0;
+  Assignments get_assignments() const {
+    return get_assignments(IntRange(0, get_number_of_assignments()));
+  }
   virtual void add_assignment(Assignment a)=0;
-  virtual void add_assignments(const Assignments &as)=0; /* {
-    for (unsigned int i=0; i< as.size(); ++i) {
-      add_assignment(as);
-    }
-    }*/
+  virtual void add_assignments(const Assignments &as)=0;
   //! Get all the assignments for the ith particle
   virtual Ints get_assignments(unsigned int i) const=0;
+
   virtual ~AssignmentContainer();
 };
 

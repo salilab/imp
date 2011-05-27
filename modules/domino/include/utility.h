@@ -126,9 +126,9 @@ IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
                              rmf::HDF5DataSet<rmf::IndexTraits> dataset);
 
 IMPDOMINOEXPORT AssignmentContainer*
-create_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                   const Subset &s,
-                   const ParticlesTemp &all_particles);
+create_assignments_container(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                             const Subset &s,
+                             const ParticlesTemp &all_particles);
 /** @} */
 #endif
 
