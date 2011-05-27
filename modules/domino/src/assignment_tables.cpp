@@ -391,11 +391,10 @@ BranchAndBoundAssignmentsTable
 
 
 void BranchAndBoundAssignmentsTable
-::load_assignments(const Subset&s,
-                   AssignmentContainer *out) const {
+::load_assignments(const Subset&s, AssignmentContainer*pac) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  load_states_list(s, pst_, sft_, max_, out);
+  load_states_list(s, pst_, sft_, max_, pac);
 }
 
 void BranchAndBoundAssignmentsTable::do_show(std::ostream &) const {
@@ -411,7 +410,8 @@ void ListAssignmentsTable
   set_was_used(true);
   IMP_USAGE_CHECK(states_.find(s) != states_.end(),
                   "I don't know anything about subset " << s);
-  out->add_assignments(states_.find(s)->second);
+  out->add_assignments(states_.find(s)->second->get_assignments(IntRange(0,
+                   states_.find(s)->second->get_number_of_assignments())));
 }
 
 

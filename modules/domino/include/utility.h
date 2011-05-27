@@ -120,15 +120,15 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
     @{
 */
 /** The existing data set is completely rewritten.*/
-IMPDOMINOEXPORT void set_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                                     const Assignments &assignments,
-                                     const Subset &s,
-                                     const ParticlesTemp &all_particles);
+IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
+                                      const Subset &s,
+                                      const ParticlesTemp &all_particles,
+                             rmf::HDF5DataSet<rmf::IndexTraits> dataset);
 
-IMPDOMINOEXPORT Assignments
-get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                const Subset &s,
-                const ParticlesTemp &all_particles);
+IMPDOMINOEXPORT AssignmentContainer*
+create_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                   const Subset &s,
+                   const ParticlesTemp &all_particles);
 /** @} */
 #endif
 

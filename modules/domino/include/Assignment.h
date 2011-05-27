@@ -12,6 +12,7 @@
 #include "domino_config.h"
 #include "IMP/macros.h"
 #include "domino_macros.h"
+#include "Subset.h"
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/Pointer.h>
 #ifdef IMP_DOMINO_USE_IMP_RMF
@@ -246,8 +247,18 @@ inline void ListAssignmentContainer::add_assignment(Assignment a) {
 class IMPDOMINOEXPORT HDF5AssignmentContainer: public AssignmentContainer {
   rmf::HDF5DataSet<rmf::IndexTraits> ds_;
   bool init_;
+  Ints order_;
  public:
-  HDF5AssignmentContainer(rmf::HDF5Group parent, std::string name);
+  HDF5AssignmentContainer(rmf::HDF5Group parent,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name);
+
+  HDF5AssignmentContainer(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name);
+
   IMP_ASSIGNMENT_CONTAINER(HDF5AssignmentContainer);
 };
 #endif

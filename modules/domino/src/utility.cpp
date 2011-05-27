@@ -199,7 +199,6 @@ Ints get_index(const ParticlesTemp &particles,
 
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
-namespace {
   Ints get_order(const Subset &s,
                  const ParticlesTemp &all_particles) {
     Ints ret(s.size(), -1);
@@ -214,49 +213,36 @@ namespace {
     }
     return ret;
   }
-}
 
-void set_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                     const Assignments &assignments,
-                     const Subset &s,
-                     const ParticlesTemp &all_particles) {
+void save_assignments(AssignmentContainer *assignments,
+                      const Subset &s,
+                      const ParticlesTemp &all_particles,
+                      rmf::HDF5DataSet<rmf::IndexTraits> dataset
+                     ) {
   IMP_FUNCTION_LOG;
+  IMP::internal::OwnerPointer<AssignmentContainer> op(assignments);
   Ints order= get_order(s, all_particles);
   Ints sz(2);
   sz[1]= s.size();
-  sz[0]= assignments.size();
+  sz[0]= assignments->get_number_of_assignments();
   dataset.set_size(sz);
   Ints cur(1);
-  for (unsigned int i=0; i< assignments.size(); ++i) {
+  for ( int i=0; i< sz[0]; ++i) {
     cur[0]=i;
     Ints as(s.size());
+    Assignment cas= assignments->get_assignment(i);
     for (unsigned int j=0; j< s.size(); ++j) {
-      as[j]= assignments[i][order[j]];
+      as[j]= cas[order[j]];
     }
     dataset.set_row(cur, as);
   }
 }
-Assignments get_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                            const Subset &s,
-                            const ParticlesTemp &all_particles) {
-  IMP_FUNCTION_LOG;
-  Ints order= get_order(s, all_particles);
-  Ints sz= dataset.get_size();
-  Assignments ret(sz[0]);
-  IMP_USAGE_CHECK(sz[1]== static_cast<int>(s.size()),
-                  "Sizes done't match: " << sz[1] << "!="
-                  << s.size());
-  Ints cur(1);
-  for (unsigned int i=0; i< ret.size(); ++i) {
-    cur[0]=i;
-    Ints curs= dataset.get_row(cur);
-    Ints cursp(curs.size());
-    for (unsigned int j=0; j< cursp.size(); ++j) {
-      cursp[order[j]]= curs[j];
-    }
-    ret[i]=Assignment(cursp);
-  }
-  return ret;
+AssignmentContainer*
+create_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                   const Subset &s,
+                   const ParticlesTemp &all_particles) {
+  return new HDF5AssignmentContainer(dataset, s, all_particles,
+                                     "Assignments from file %1%");
 }
 #endif
 

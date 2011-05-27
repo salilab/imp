@@ -79,17 +79,12 @@ public:
     in to domino.
 */
 class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
-  IMP::internal::Map<Subset, Assignments> states_;
+  IMP::internal::Map<Subset, IMP::internal::OwnerPointer<AssignmentContainer> >
+    states_;
  public:
   ListAssignmentsTable(std::string name="ListSubsetStatesTable %1%");
   /** There must not be any duplicates in the list */
-  void set_assignments(const Subset &s, const Assignments &lsc) {
-    IMP_IF_CHECK(USAGE) {
-      Assignments l= lsc;
-      std::sort(l.begin(), l.end());
-      IMP_USAGE_CHECK(std::unique(l.begin(), l.end())== l.end(),
-                      "There are duplicated subset states in the passed list");
-    }
+  void set_assignments(const Subset &s,  AssignmentContainer *lsc) {
     states_[s]=lsc;
   }
   IMP_ASSIGNMENTS_TABLE(ListAssignmentsTable);
