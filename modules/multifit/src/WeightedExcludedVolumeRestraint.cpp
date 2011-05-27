@@ -9,7 +9,7 @@
 #include <IMP/multifit/WeightedExcludedVolumeRestraint.h>
 #include <IMP/log.h>
 
-IMPEM_BEGIN_NAMESPACE
+IMPMULTIFIT_BEGIN_NAMESPACE
 
 WeightedExcludedVolumeRestraint::WeightedExcludedVolumeRestraint(
   core::RigidBodies rbs,
@@ -31,7 +31,7 @@ void WeightedExcludedVolumeRestraint::initialize_model_density_map(
     std::cout<<"Creating a density map for:"
              <<rb_ps.size()<<" particles"<<std::endl;
     rbs_surface_maps_.push_back(
-                                new SurfaceShellDensityMap(rb_ps,1));
+                                new em::SurfaceShellDensityMap(rb_ps,1));
     rbs_orig_trans_.push_back(rb.get_reference_frame().get_transformation_to()
                               .get_inverse());
   }
@@ -72,16 +72,16 @@ double WeightedExcludedVolumeRestraint::unprotected_evaluate(
   //     }
   //   }
   // }
-  SurfaceShellDensityMaps resampled_surfaces;
+  em::SurfaceShellDensityMaps resampled_surfaces;
   for(unsigned int i=0;i<rbs_.size();i++){
     Particles rb_ps=rb_refiner_->get_refined(rbs_[i]);
-    resampled_surfaces.push_back(new SurfaceShellDensityMap(rb_ps,1.));
+    resampled_surfaces.push_back(new em::SurfaceShellDensityMap(rb_ps,1.));
   }
   for(unsigned int i=0;i<rbs_.size();i++){
     for(unsigned int j=i+1;j<rbs_.size();j++){
       if (get_interiors_intersect(resampled_surfaces[i],
                                   resampled_surfaces[j])){
-      score += CoarseCC::cross_correlation_coefficient(
+      score += em::CoarseCC::cross_correlation_coefficient(
                                resampled_surfaces[i],
                                resampled_surfaces[j],1.,true,FloatPair(0.,0.));
       }
@@ -137,4 +137,4 @@ IMP_LIST_IMPL(WeightedExcludedVolumeRestraint,
               },{},{});
 
 
-IMPEM_END_NAMESPACE
+IMPMULTIFIT_END_NAMESPACE
