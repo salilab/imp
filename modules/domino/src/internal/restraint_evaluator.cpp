@@ -19,7 +19,7 @@ ModelData::ModelData(RestraintSet *rs,
   rs_=rs;
   pst_=pst;
   initialized_=false;
-  cache_=false;
+  cache_=true;
 }
 
 void ModelData::set_use_caching(bool tf) {
