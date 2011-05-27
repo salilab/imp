@@ -35,11 +35,13 @@ std::cout << "Creating restraints" << std::endl;
 RestraintSet* rset=create_restraints(m,all,tbr,&mydata);
 
 // create discrete states
-std::cout << "Creating sampler" << std::endl;
-domino::ParticleStatesTable* pst=create_states(all,&mydata);
+std::cout << "Creating states" << std::endl;
+IMP_NEW(domino::ParticleStatesTable,pst,());
+domino::ListSubsetFilterTable* lsft=create_states(all,&mydata,pst);
 
 // create sampler
-domino::DominoSampler* s=create_sampler(m,rset,pst);
+std::cout << "Creating sampler" << std::endl;
+domino::DominoSampler* s=create_sampler(m,rset,pst,lsft);
 
 // sampling
 std::cout << "Sampling" << std::endl;

@@ -30,13 +30,8 @@ IMPMEMBRANEEXPORT void add_packing_restraint
 IMPMEMBRANEEXPORT core::PairRestraint* add_distance_restraint
 (Model *m, Particle *p0, Particle *p1, double x0);
 
-IMPMEMBRANEEXPORT void add_x_restraint(Model *m, Particle *p, int id);
-
-IMPMEMBRANEEXPORT UnaryFunction* fscore(double x0,double kappa_,int id);
-
-IMPMEMBRANEEXPORT void add_y_restraint(Model *m, Particle *p);
-
-IMPMEMBRANEEXPORT void add_depth_restraint(Model *m, Particle *p);
+IMPMEMBRANEEXPORT void add_depth_restraint
+(Model *m, Particle *p);
 
 IMPMEMBRANEEXPORT core::PairRestraint* add_interacting_restraint
 (Model *m,Particle *rb0,Particle *rb1,core::TableRefiner *tbr);

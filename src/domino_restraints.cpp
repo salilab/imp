@@ -30,10 +30,6 @@ for(int i=0;i<TM->num;++i){
  core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  add_depth_restraint(m,rb);
  add_tilt_restraint(m,rb);
- //if( i < 2 ){
- // add_x_restraint(m,rb,i);
- // add_y_restraint(m,rb);
- //}
 }
 // multi-body restraints
 add_excluded_volume(m,protein);
@@ -163,38 +159,6 @@ dr->set_name("Distance restraint");
 m->add_restraint(dr);
 m->set_maximum_score(dr, max_score_);
 return dr.release();
-}
-
-UnaryFunction* fscore(double x0,double kappa_,int id)
-{
-if( id == 0 ){
- IMP_NEW(core::Harmonic,ha,(x0,kappa_));
- return ha.release();
-}
-if( id == 1 ){
- IMP_NEW(core::HarmonicLowerBound,ha,(x0,kappa_));
- return ha.release();
-}
-}
-
-void add_x_restraint(Model *m, Particle *p, int id)
-{
-IMP_NEW(core::AttributeSingletonScore,ass,
- (fscore(0.0,kappa_,id),FloatKey("x")));
-IMP_NEW(core::SingletonRestraint, sr, (ass, p));
-sr->set_name("Fix x coordinate");
-m->add_restraint(sr);
-m->set_maximum_score(sr, max_score_);
-}
-
-void add_y_restraint(Model *m, Particle *p)
-{
-IMP_NEW(core::Harmonic,ha,(0.0,kappa_));
-IMP_NEW(core::AttributeSingletonScore,ass,(ha,FloatKey("y")));
-IMP_NEW(core::SingletonRestraint, sr, (ass, p));
-sr->set_name("Fix y coordinate");
-m->add_restraint(sr);
-m->set_maximum_score(sr, max_score_);
 }
 
 void add_depth_restraint(Model *m, Particle *p)

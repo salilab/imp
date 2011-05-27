@@ -16,11 +16,13 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT domino::ParticleStatesTable*
- create_states(atom::Hierarchy protein, Parameters *myparam);
+IMPMEMBRANEEXPORT domino::ListSubsetFilterTable* create_states
+(atom::Hierarchy protein, Parameters *myparam,
+ domino::ParticleStatesTable* pst);
 
 IMPMEMBRANEEXPORT domino::DominoSampler* create_sampler
-(Model *m, RestraintSet *rset, domino::ParticleStatesTable *pst);
+(Model *m, RestraintSet *rset, domino::ParticleStatesTable *pst,
+ domino::ListSubsetFilterTable* lsft);
 
 IMPMEMBRANE_END_NAMESPACE
 

@@ -300,6 +300,7 @@ for(int i=0;i<mydata.num-1;++i){
  }
 }
 
+// Crossing angle and distances from DeGrado PNAS
 double om0[]={-156.5, 146.4, -37.9, 13.8, 178.0, 25.5, -161.1,
                 44.8, 127.4, -60.2, -129.2, 2.4, 161.0};
 double sig_om0[]={10.1, 13.6, 7.50, 16.6, 20.8, 11.2, 10.3,
