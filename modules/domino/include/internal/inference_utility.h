@@ -189,7 +189,7 @@ inline void update_list_subset_filter_table(ListSubsetFilterTable *lsft,
   for (unsigned int i=0; i< s.size(); ++i) {
     boost::dynamic_bitset<> bs(lsft->get_number_of_particle_states(s[i]));
     bs.reset();
-    Ints cur= ac->get_assignments(i);
+    Ints cur= ac->get_particle_assignments(i);
     for (unsigned int j=0; j< cur.size(); ++j) {
       bs.set(cur[j]);
     }

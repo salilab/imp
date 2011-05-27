@@ -165,13 +165,16 @@ IMP_OBJECT(Name)
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  virtual Assignments get_assignments() const {                         \
+    return get_assignments(IntRange(0, get_number_of_assignments()));   \
+  }                                                                     \
   virtual void add_assignment(Assignment a);                            \
   virtual void add_assignments(const Assignments &as) {                 \
   for (unsigned int i=0; i< as.size(); ++i) {                           \
     Name::add_assignment(as[i]);                                        \
   }                                                                     \
   }                                                                     \
-  virtual Ints get_assignments(unsigned int index) const {              \
+  virtual Ints get_particle_assignments(unsigned int index) const {     \
     Ints ret(Name::get_number_of_assignments());                        \
     for (unsigned int i=0; i< Name::get_number_of_assignments();        \
          ++i) {                                                         \
