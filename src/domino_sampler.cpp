@@ -21,12 +21,42 @@ domino::ListSubsetFilterTable* create_states
 (atom::Hierarchy protein,Parameters *myparam,domino::ParticleStatesTable* pst)
 {
 GridParameters *gg=&(myparam->grid);
-double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
-double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+//double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
+//double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
 double bs[]={gg->x,gg->x,gg->x,gg->rot,gg->tilt,gg->swing};
-algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+//algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+
+for(int i=0;i<myparam->TM.num;++i){
+ atom::Selection s=atom::Selection(protein);
+ s.set_molecule(myparam->TM.name[i]);
+ core::RigidBody rb
+ =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
+ if ( i == 0 ){
+  double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
+  double e[]={0.0,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
+ }
+if ( i == 1 ){
+  double b[]={0.0,0.0,-gg->zmax,0.0,0.0,0.0};
+  double e[]={gg->xmax,0.0,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
+ }
+if ( i > 1 ){
+  double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
+  double e[]={gg->xmax,gg->xmax,gg->zmax,gg->rotmax,gg->tiltmax,gg->swingmax};
+  algebra::Vector6D begin(b, b+6), end(e, e+6), binsize(bs, bs+6);
+  IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
+  pst->set_particle_states(rb,rbs);
+ }
+}
 
 IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
+
+/*
 IMP_NEW(membrane::RigidBodyGridStates,rbs,(begin,end,binsize,-IMP::PI/2.0));
 
 for(int i=0;i<myparam->TM.num;++i){
@@ -35,6 +65,15 @@ for(int i=0;i<myparam->TM.num;++i){
  core::RigidBody rb
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  pst->set_particle_states(rb,rbs);
+}
+
+IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
+
+for(int i=0;i<myparam->TM.num;++i){
+ atom::Selection s=atom::Selection(protein);
+ s.set_molecule(myparam->TM.name[i]);
+ core::RigidBody rb
+ =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  Ints states;
  unsigned int nstates=rbs->get_number_of_particle_states();
  for(unsigned int j=0;j<nstates;++j){
@@ -47,6 +86,7 @@ for(int i=0;i<myparam->TM.num;++i){
  }
  lsft->set_allowed_states(rb, states);
 }
+*/
 return lsft.release();
 }
 
@@ -67,7 +107,7 @@ IMP_NEW(domino::RestraintScoreSubsetFilterTable,rssft,(m,pst));
 rssft->set_use_caching(false);
 filters.push_back(esft);
 filters.push_back(rssft);
-filters.push_back(lsft);
+//filters.push_back(lsft);
 IMP_NEW(domino::BranchAndBoundAssignmentsTable,states,(pst,filters));
 s->set_assignments_table(states);
 s->set_subset_filter_tables(filters);

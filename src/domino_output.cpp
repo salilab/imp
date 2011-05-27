@@ -19,12 +19,12 @@ domino::ParticleStatesTable* pst, domino::Subset* subs,
 domino::Assignments* ass, Parameters *myparam)
 {
 // writing assignments
-if(myparam->ass_file.length()>0.0){
- rmf::HDF5Group rt= rmf::HDF5Group(myparam->ass_file, true);
- rmf::HDF5DataSet<rmf::IndexTraits> data_set=
-rt.add_child_index_data_set("node_assignments", 2);
- domino::set_assignments(data_set, *ass, *subs, pst->get_particles());
-}
+//if(myparam->ass_file.length()>0.0){
+// rmf::HDF5Group rt= rmf::HDF5Group(myparam->ass_file, true);
+// rmf::HDF5DataSet<rmf::IndexTraits> data_set=
+//rt.add_child_index_data_set("node_assignments", 2);
+// domino::set_assignments(data_set, *ass, *subs, pst->get_particles());
+//}
 
 // writing configurations
 if(myparam->traj_file.length()>0.0){
