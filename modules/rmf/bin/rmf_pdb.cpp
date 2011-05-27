@@ -73,7 +73,7 @@ int main(int argc, char **argv) {
   int minframe, maxframe, step;
   if (frame>=0) {
     minframe=frame;
-    maxframe=frame;
+    maxframe=frame+1;
     step =1;
   } else {
     minframe=0;
