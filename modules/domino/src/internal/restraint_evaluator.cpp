@@ -37,7 +37,8 @@ namespace {
                                  std::vector<Subset> &dependencies,
                                  ParticlesTemp ip,
                                  std::vector<RestraintData> &rdata,
-                                 IMP::internal::Map<Restraint*, Ints> &index) {
+                        IMP::internal::Map<Restraint*, Ints> &index,
+                        bool cache) {
     std::vector<ParticlesTemp> oip;
     oip.push_back(ParticlesTemp());
     for (unsigned int i=0; i< ip.size(); ++i) {
@@ -75,6 +76,7 @@ namespace {
           ret.set_score(data.sss[j], data.scores[j]);
         }
       }
+      ret.set_use_caching(cache);
       rdata.push_back(ret);
       index[r].push_back(rdata.size()-1);
     }
@@ -103,7 +105,7 @@ void ModelData::initialize() {
     double weight=rs_->get_model()->get_weight(*rit);
     handle_restraint(*rit, weight, idm, preload_,
                      dependencies_, ip,
-                     rdata_, index);
+                     rdata_, index, cache_);
   }
   RestraintSets restraint_sets= get_restraint_sets(rs_->restraints_begin(),
                                                    rs_->restraints_end());
