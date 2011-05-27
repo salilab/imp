@@ -6,7 +6,7 @@
  *
  */
 #include <IMP/domino/Assignment.h>
-
+#include <IMP/domino/Subset.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -36,10 +36,24 @@ void PackedAssignmentContainer::do_show(std::ostream &out) const {
 
 #ifdef IMP_DOMINO_USE_IMP_RMF
 
+Ints get_order(const Subset &s,
+               const ParticlesTemp &all_particles);
+
 HDF5AssignmentContainer::HDF5AssignmentContainer(rmf::HDF5Group parent,
+                                                 const Subset &s,
+                                           const ParticlesTemp &all_particles,
                                                  std::string name):
   AssignmentContainer(name), ds_(parent.add_child_index_data_set(name, 2)),
-  init_(false) {}
+  init_(false), order_(get_order(s, all_particles)) {}
+
+
+HDF5AssignmentContainer
+::HDF5AssignmentContainer(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                          const Subset &s,
+                          const ParticlesTemp &all_particles,
+                          std::string name):
+  AssignmentContainer(name), ds_(dataset),
+  init_(true), order_(get_order(s, all_particles)) {}
 
 
 unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
@@ -48,7 +62,12 @@ unsigned int HDF5AssignmentContainer::get_number_of_assignments() const {
 
 Assignment HDF5AssignmentContainer::get_assignment(unsigned int i) const {
   Ints is= ds_.get_row(Ints(1,i));
-  return Assignment(is.begin(), is.end());
+  Ints ret(is.size());
+  IMP_USAGE_CHECK(ret.size()== order_.size(), "Wrong size assignment");
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[order_[i]]=is[i];
+  }
+  return Assignment(ret);
 }
 
 void HDF5AssignmentContainer::add_assignment(Assignment a) {
@@ -58,7 +77,11 @@ void HDF5AssignmentContainer::add_assignment(Assignment a) {
     ds_.set_size(sz);
     init_=true;
   }
-  Ints is(a.begin(), a.end());
+  Ints is(a.size());
+  IMP_USAGE_CHECK(a.size()== order_.size(), "Wrong size assignment");
+  for (unsigned int i=0; i< a.size(); ++i) {
+    is[i]= a[order_[i]];
+  }
   Ints sz= ds_.get_size();
   ++sz[0];
   ds_.set_size(sz);

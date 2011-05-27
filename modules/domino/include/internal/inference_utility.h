@@ -123,12 +123,6 @@ inline Ints get_index(const Subset &s, const Subset &subs) {
 }
 
 
-inline void load_node_data(const Subset &s, const AssignmentsTable *sst,
-                           AssignmentContainer *out) {
-  sst->load_assignments(s, out);
-}
-
-
 struct EdgeData {
   Subset intersection_subset;
   Subset union_subset;

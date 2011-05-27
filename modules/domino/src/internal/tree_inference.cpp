@@ -46,7 +46,7 @@ void load_leaf_assignments(const Subset &merged_subset,
   IMP::Pointer<AssignmentContainer> outp(out);
   IMP_FUNCTION_LOG;
   IMP_LOG(VERBOSE, "Looking at leaf " << merged_subset << std::endl);
-  load_node_data(merged_subset, states, out);
+  states->load_assignments(merged_subset, out);
   if (lsft) update_list_subset_filter_table(lsft, merged_subset,
                                             out);
   //using namespace IMP;

@@ -71,7 +71,7 @@ public:
                    const ParticlesTemp &ps,
                    const Assignment &state) const {
     Scores::const_iterator it= scores_.find(state);
-    if (it != scores_.end()) {
+    if (cache_ && it != scores_.end()) {
       /*std::cout << "Found cached score for " << r_->get_name()
         << " on " << state << "= " << it->second
         << "(" << it->first << ")" << std::endl;*/
@@ -87,7 +87,9 @@ public:
           ++filter_passes_;
         }
       }
-      scores_[state]=score;
+      if (cache_) {
+        scores_[state]=score;
+      }
       IMP_LOG(VERBOSE, "State " << state << " of particles "
               << Particles(ps) << " has score "
               << score << " for restraint " << r_->get_name()
