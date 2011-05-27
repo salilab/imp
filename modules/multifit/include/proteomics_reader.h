@@ -61,10 +61,10 @@ public:
     std::string surface_filename_;
     std::string ref_filename_;
   };
-class IMPMULTIFITEXPORT ProteomicsData {
+class IMPMULTIFITEXPORT ProteomicsData : public Object {
  protected:
  public:
-  ProteomicsData(){}
+  ProteomicsData() : Object("ProteomicsData%1%") {}
   /** return the assigned index
    */
   int add_protein(std::string name,int start_res,
@@ -92,23 +92,6 @@ class IMPMULTIFITEXPORT ProteomicsData {
   }
   void add_interaction(const Ints &ii) {
     interactions_.push_back(ii);
-  }
-  void show(std::ostream& out=std::cout) const {
-    out<<"Proteins:";
-    for(std::vector<ProteinRecordData>::const_iterator it = prot_data_.begin();
-        it != prot_data_.end();it++){
-      out<<it->name_<<",";
-    }
-    out<<std::endl;
-    out<<"Interactions:"<<std::endl;
-    for(std::vector<std::vector<int> >::const_iterator
-          it = interactions_.begin();it != interactions_.end();it++){
-      for(std::vector<int>::const_iterator it1 = it->begin();
-          it1 != it->end();it1++){
-        out<<prot_data_[*it1].name_<<",";
-      }
-      out<<std::endl;
-    }
   }
   int get_number_of_proteins() const {return prot_data_.size();}
   int get_number_of_interactions() const {return interactions_.size();}
@@ -150,6 +133,23 @@ class IMPMULTIFITEXPORT ProteomicsData {
   ProteinRecordData get_protein_data(int protein_ind) const {
     IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),"index out of range\n");
     return prot_data_[protein_ind];}
+
+  IMP_OBJECT_INLINE(ProteomicsData, {
+        out<<"Proteins:";
+        for(std::vector<ProteinRecordData>::const_iterator
+            it = prot_data_.begin(); it != prot_data_.end();it++){
+          out<<it->name_<<",";
+        }
+        out<<std::endl;
+        out<<"Interactions:"<<std::endl;
+        for(std::vector<std::vector<int> >::const_iterator
+              it = interactions_.begin();it != interactions_.end();it++){
+          for(std::vector<int>::const_iterator it1 = it->begin();
+              it1 != it->end();it1++){
+            out<<prot_data_[*it1].name_<<",";
+          }
+          out<<std::endl;
+        } }, {});
  protected:
   std::vector<ProteinRecordData> prot_data_;
   std::map<std::string,int> prot_map_;
@@ -160,11 +160,11 @@ class IMPMULTIFITEXPORT ProteomicsData {
 /**
 \todo consider using TextInput
  */
-IMPMULTIFITEXPORT ProteomicsData read_proteomics_data(
+IMPMULTIFITEXPORT ProteomicsData *read_proteomics_data(
   const char *proteomics_fn);
 IMPMULTIFITEXPORT
-ProteomicsData get_partial_proteomics_data(
-                       const ProteomicsData &pd,
+ProteomicsData *get_partial_proteomics_data(
+                       const ProteomicsData *pd,
                        const std::vector<std::string> &prot_names);
 IMPMULTIFIT_END_NAMESPACE
 #endif /* IMPMULTIFIT_PROTEOMICS_READER_H */
