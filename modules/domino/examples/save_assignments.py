@@ -18,18 +18,18 @@ rt= IMP.rmf.HDF5Group(file_name, True)
 data_set= rt.add_child_index_data_set("node_1_assignments", 2)
 
 # create a list of assignments
-asl=[]
+asl=IMP.domino.PackedAssignmentContainer()
 for i in range(0,5):
     for j in range(0,5):
         for k in range(0,5):
-            asl.append(IMP.domino.Assignment([i,j,k]))
-IMP.domino.set_assignments(data_set, asl, ss, ps)
+            asl.add_assignment(IMP.domino.Assignment([i,j,k]))
+IMP.domino.save_assignments(asl, ss, ps, data_set)
 
 # to check, we can read it back immediately
-back_asl= IMP.domino.get_assignments(data_set, ss, ps)
+back_asl= IMP.domino.create_assignments_container(data_set, ss, ps)
 
 
-if back_asl==asl:
+if back_asl.get_assignments()==asl.get_assignments():
     print "They match!"
 else:
     print "They don't match :-("
@@ -44,7 +44,7 @@ ssp= IMP.domino.Subset([psp[3], psp[5], psp[7]])
 
 print "Note the subsets are differently ordered (most of the time): ", ss, ssp
 
-back_aslp= IMP.domino.get_assignments(data_set, ssp, psp)
+back_aslp= IMP.domino.create_assignments_container(data_set, ssp, psp)
 
 # however, the states are demuxed so they match
-print [str(a) for a in back_aslp]
+print [str(a) for a in back_aslp.get_assignments()]

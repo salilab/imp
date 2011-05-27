@@ -36,7 +36,7 @@ class DOMINOTests(IMP.test.TestCase):
         lsc= IMP.domino.Subset(ps)
         tfn= self.get_tmp_file_name("subsetassignments.hdf5")
         h5= IMP.rmf.HDF5Group(tfn, True)
-        pss= IMP.domino.HDF5AssignmentContainer(h5, "assignments")
+        pss= IMP.domino.HDF5AssignmentContainer(h5, lsc, ps, "assignments")
         dsst.load_assignments(lsc, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
         self.assertEqual(len(ss), ns**len(ps))
