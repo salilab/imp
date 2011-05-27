@@ -238,9 +238,9 @@ void save_assignments(AssignmentContainer *assignments,
   }
 }
 AssignmentContainer*
-create_assignments(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
-                   const Subset &s,
-                   const ParticlesTemp &all_particles) {
+create_assignments_container(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
+                             const Subset &s,
+                             const ParticlesTemp &all_particles) {
   return new HDF5AssignmentContainer(dataset, s, all_particles,
                                      "Assignments from file %1%");
 }
