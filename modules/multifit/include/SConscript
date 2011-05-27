@@ -25,7 +25,7 @@ files = [
 #         'mc_cg_refinement.h'
          'RMSDClustering.h',
          'fitting_clustering.h',
-        'internal/GeometricHash.h',
+        'GeometricHash.h',
         'proteomics_reader.h',
         'anchors_reader.h',
         'coarse_molecule.h',

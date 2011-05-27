@@ -9,7 +9,7 @@
 #define IMPMULTIFIT_RMSD_CLUSTERING_H
 
 #include "multifit_config.h"
-#include "internal/GeometricHash.h"
+#include "GeometricHash.h"
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/Transformation3D.h>
 #include <IMP/algebra/vector_search.h>
@@ -65,7 +65,7 @@ protected:
 };
 typedef std::vector<TransformationRecord> TransformationRecords;
 public:
-  typedef internal::GeometricHash<int, 3> Hash3;
+  typedef GeometricHash<int, 3> Hash3;
   typedef boost::property<boost::edge_weight_t, short> ClusEdgeWeightProperty;
   typedef boost::property<boost::vertex_index_t, int> ClusVertexIndexProperty;
   // Graph type

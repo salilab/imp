@@ -12,10 +12,10 @@
 #include <ostream>
 #include <cmath>
 #include <boost/array.hpp>
-#include "../multifit_config.h"
+#include "multifit_config.h"
 #include "IMP/algebra/VectorD.h"
 
-IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
+IMPMULTIFIT_BEGIN_NAMESPACE
 
 
 /* This is the definition of Geometric Hash table.
@@ -94,6 +94,18 @@ public:
       return points_in_sphere(inside_sphere(center, radius));
     else
       return points_in_sphere(inside_sphere_inf(center, radius));
+  }
+
+  // For Swig
+  HashResultT neighbors_data(Distance dt, const Point &center,
+      double radius) const
+  {
+    HashResult r = neighbors(dt, center, radius);
+    HashResultT tr;
+    tr.reserve(r.size());
+    for ( size_t i=0; i<r.size(); ++i )
+      tr.push_back(r[i]->second);
+    return tr;
   }
 
   template < typename X >
@@ -386,5 +398,5 @@ private:
   double radii_[D];
 };
 
-IMPMULTIFIT_END_INTERNAL_NAMESPACE
+IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_GEOMETRIC_HASH_H */

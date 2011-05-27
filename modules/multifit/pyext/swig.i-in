@@ -26,6 +26,7 @@ IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 %include "IMP/multifit/WeightedExcludedVolumeRestraint.h"
 %include "IMP/multifit/fft_based_rigid_fitting.h"
 %include "IMP/multifit/density_analysis.h"
+%include "IMP_multifit_GeometricHash.i"
 IMP_SWIG_PAIR(IMP, Int, IntPair, IntPairs);
 namespace IMP {
  namespace multifit {
