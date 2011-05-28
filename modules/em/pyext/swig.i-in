@@ -47,7 +47,6 @@ namespace IMP {
  }
 }
 
-IMP_SWIG_SEQUENCE_PAIR(IMP::em, double, IMP::algebra::Vector3Ds, ScorePair);
 
 /* Wrap our own classes */
 %include "IMP/em/def.h"
@@ -84,5 +83,6 @@ namespace IMP {
       }
     }
     %template(floats) ::std::vector<float>;
+    %template(ScorePair) ::std::pair<double,IMP::algebra::Vector3Ds>;
   }
 }

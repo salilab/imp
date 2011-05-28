@@ -169,5 +169,5 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            'CoarseConvolution', 'floats',
                                            'DistanceMask', 'ImageHeader',
                                            'RadiusDependentDistanceMask',
-                                           'SpiderHeader'],
-                  show_exceptions=['CoarseConvolution', 'floats'])
+                                           'SpiderHeader', 'ScorePair'],
+                  show_exceptions=['CoarseConvolution', 'floats', 'ScorePair'])
