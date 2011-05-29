@@ -50,6 +50,7 @@ IMP_SWIG_OBJECT(IMP::domino, DependencyScoreState, DependencyScoreStates);
 IMP_SWIG_OBJECT(IMP::domino, PairListSubsetFilterTable, PairListSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, ListAssignmentContainer, ListAssignmentContainers);
 IMP_SWIG_OBJECT(IMP::domino, PackedAssignmentContainer, PackedAssignmentContainers);
+IMP_SWIG_OBJECT(IMP::domino, SampleAssignmentContainer, SampleAssignmentContainers);
 #ifdef IMP_DOMINO_USE_IMP_RMF
 IMP_SWIG_OBJECT(IMP::domino, HDF5AssignmentContainer, HDF5AssignmentContainers);
 #endif

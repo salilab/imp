@@ -23,6 +23,9 @@
 #include <algorithm>
 #include <boost/functional/hash/hash.hpp>
 
+#include <IMP/random.h>
+#include <boost/random.hpp>
+
 IMPDOMINO_BEGIN_NAMESPACE
 
 //! Store a configuration of a subset.
@@ -229,6 +232,41 @@ ListAssignmentContainer::get_assignment(unsigned int i) const {
 inline void ListAssignmentContainer::add_assignment(Assignment a) {
   d_.push_back(a);
 }
+
+
+
+
+
+
+/** Store a list of k assignments chosen from all of the ones added to this
+    table. The states are chosen uniformly.
+ */
+class IMPDOMINOEXPORT SampleAssignmentContainer: public AssignmentContainer {
+  // store all as one vector
+  std::vector<int> d_;
+  int width_;
+  unsigned int k_;
+  unsigned int i_;
+  boost::uniform_01<double> select_;
+  boost::uniform_int<> place_;
+ public:
+  SampleAssignmentContainer(unsigned int k,
+                            std::string name="SampleAssignmentsContainer %1%");
+  IMP_ASSIGNMENT_CONTAINER(SampleAssignmentContainer);
+};
+
+
+inline unsigned int
+SampleAssignmentContainer::get_number_of_assignments() const {
+  return d_.size()/width_;
+}
+
+inline Assignment
+SampleAssignmentContainer::get_assignment(unsigned int i) const {
+  return Assignment(d_.begin()+i*width_,
+                    d_.begin()+(i+1)*width_);
+}
+
 
 
 
