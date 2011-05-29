@@ -34,6 +34,37 @@ void PackedAssignmentContainer::do_show(std::ostream &out) const {
   out << "width: " << width_ << std::endl;
 }
 
+
+
+SampleAssignmentContainer::SampleAssignmentContainer(unsigned int k,
+                                                     std::string name):
+  AssignmentContainer(name), width_(-1), k_(k), i_(0), place_(0, k_-1) {}
+
+
+void SampleAssignmentContainer::do_show(std::ostream &out) const {
+  out << "size: " << get_number_of_assignments() << std::endl;
+  out << "width: " << width_ << std::endl;
+}
+
+void SampleAssignmentContainer::add_assignment(Assignment a) {
+  IMP_USAGE_CHECK(width_==-1 || static_cast<int>(a.size())== width_,
+                  "Sizes don't match " << width_
+                  << " vs " << a.size());
+  if (width_==-1) {
+    width_=a.size();
+  }
+  ++i_;
+  if (get_number_of_assignments() < k_) {
+    d_.insert(d_.end(), a.begin(), a.end());
+  } else {
+    double prob= static_cast<double>(k_)/i_;
+    if (select_(random_number_generator) < prob) {
+      int replace= place_(random_number_generator);
+      std::copy(a.begin(), a.end(), d_.begin()+width_*replace);
+    }
+  }
+}
+
 #ifdef IMP_DOMINO_USE_IMP_RMF
 
 Ints get_order(const Subset &s,

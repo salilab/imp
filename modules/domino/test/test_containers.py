@@ -47,6 +47,15 @@ class DOMINOTests(IMP.test.TestCase):
             self.assertNotIn(state, all_states)
             all_states.append(state)
 
+    def test_sample(self):
+        """Testing default sample container"""
+        sac= IMP.domino.SampleAssignmentContainer(10)
+        for i in range(0,25):
+            ass= IMP.domino.Assignment([i])
+            sac.add_assignment(ass)
+        self.assertEqual(sac.get_number_of_assignments(), 10)
+        print sac.get_assignments()
+
 
 if __name__ == '__main__':
     IMP.test.main()
