@@ -28,7 +28,7 @@ Parameters get_parameters(TextInput in) {
  options_description desc;
  std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res, inter, loop;
- bool add_dope, add_pack;
+ bool add_dope, add_pack, use_volume;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
@@ -43,6 +43,8 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("loop",        value< std::vector<std::string> >(),"ciao");
  desc.add_options()("add_dope",    value< bool >(&add_dope),           "ciao");
  desc.add_options()("add_pack",    value< bool >(&add_pack),           "ciao");
+ desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
+
 
 
 
@@ -81,6 +83,7 @@ Parameters get_parameters(TextInput in) {
  ret.traj_file=traj_file;
  ret.add_dope=add_dope;
  ret.add_pack=add_pack;
+ ret.use_volume=use_volume;
 
 
 // Grid Parameters

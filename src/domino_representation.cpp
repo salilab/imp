@@ -15,7 +15,7 @@ using namespace IMP;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 core::TableRefiner* generate_TM(Model *m,
- atom::Hierarchy protein, HelixData *TM)
+ atom::Hierarchy protein, Parameters *myparam)
 {
 int nres,jseq;
 double x,y,z;
@@ -26,6 +26,7 @@ atom::Hierarchy helixpdb;
 Particles ps;
 atom::ResidueType restype, check;
 bool read_struct;
+HelixData* TM=&(myparam->TM);
 IMP_NEW(core::TableRefiner,tbr,());
 
 for(int i=0;i<TM->num;++i){
@@ -62,8 +63,8 @@ for(int i=0;i<TM->num;++i){
   atom::Atom a=atom::Atom::setup_particle(pa,atom::AT_CA);
   // calculate radius
   vol=atom::get_volume_from_residue_type(restype);
-  rg=algebra::get_ball_radius_from_volume_3d(vol);
-  //rg=2.273
+  if(myparam->use_volume) rg=algebra::get_ball_radius_from_volume_3d(vol);
+  else rg=2.273;
   // coordinates
   if(read_struct){
    core::XYZR aa=core::XYZR(ps[j]);

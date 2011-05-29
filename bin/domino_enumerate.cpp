@@ -28,7 +28,7 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 
 // create representation
 std::cout << "Creating representation" << std::endl;
-core::TableRefiner* tbr=generate_TM(m,all,&(mydata.TM));
+core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 
 // create restraints
 std::cout << "Creating restraints" << std::endl;
@@ -50,8 +50,8 @@ domino::Assignments ass=s->get_sample_assignments(subs);
 std::cout << "Found " << ass.size() << " solutions" << std::endl;
 
 // write output
-//std::cout << "Writing output" << std::endl;
-//write_output(all,pst,&subs,&ass,&mydata);
+std::cout << "Writing output" << std::endl;
+write_output(all,pst,&subs,&ass,&mydata);
 
 return 0;
 }

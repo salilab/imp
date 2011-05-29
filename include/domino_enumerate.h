@@ -52,6 +52,7 @@ std::string    ass_file;
 std::string    traj_file;
 bool           add_dope;
 bool           add_pack;
+bool           use_volume;
 };
 
 //general parameters for restraints
