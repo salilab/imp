@@ -38,7 +38,8 @@ void PackedAssignmentContainer::do_show(std::ostream &out) const {
 
 SampleAssignmentContainer::SampleAssignmentContainer(unsigned int k,
                                                      std::string name):
-  AssignmentContainer(name), width_(-1), k_(k), i_(0), place_(0, k_-1) {}
+  AssignmentContainer(name), width_(-1), k_(k), i_(0), select_(0,1),
+  place_(0, k_-1) {}
 
 
 void SampleAssignmentContainer::do_show(std::ostream &out) const {
