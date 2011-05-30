@@ -22,8 +22,10 @@ IMPCORE_BEGIN_NAMESPACE
 
 ClosePairsPairScore::ClosePairsPairScore(PairScore *f,
                                          Refiner *r,
-                                         Float thre): r_(r), f_(f),
-                                                      th_(thre){
+                                         Float thre):
+  PairScore("ClosePairsPirScore%1%"),
+  r_(r), f_(f),
+  th_(thre){
   IMP_USAGE_CHECK(thre >= 0, "The threshold must be non-negative.");
 
   cpf_=new RigidClosePairsFinder();
@@ -32,8 +34,10 @@ ClosePairsPairScore::ClosePairsPairScore(PairScore *f,
 
 KClosePairsPairScore::KClosePairsPairScore(PairScore *f,
                                            Refiner *r,
-                                           int k): r_(r), f_(f),
-                                                   k_(k)
+                                           int k):
+  PairScore("KClosePairsPairScore %1%"),
+  r_(r), f_(f),
+  k_(k)
 {
   last_distance_=1;
   cpf_= new RigidClosePairsFinder();
@@ -58,6 +62,8 @@ namespace {
     IMP_USAGE_CHECK(p[0] != p[1],
                     "The particles passed must be different: "
                     << p[0]->get_name());
+    IMP_USAGE_CHECK(dist > 0,
+                    "The distance must be positive");
     cpf->set_distance(dist);
     pairs= cpf->get_close_pairs(pa, pb);
     /*for (unsigned int i=0; i< ppt.size(); ++i) {
@@ -124,7 +130,7 @@ get_close_pairs(const ParticlePair &p) const {
   } else {
     last_distance_= dist*.5;
   }
-  last_distance_= std::min(1.0, last_distance_);
+  last_distance_= std::max(1.0, last_distance_);
   ParticlePairsTemp retps;
   for (int i=0; i < k_; ++i) {
     retps.push_back(ms[i].second);
