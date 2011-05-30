@@ -247,7 +247,7 @@ class IMPDOMINOEXPORT SampleAssignmentContainer: public AssignmentContainer {
   int width_;
   unsigned int k_;
   unsigned int i_;
-  boost::uniform_01<double> select_;
+  boost::uniform_real<double> select_;
   boost::uniform_int<> place_;
  public:
   SampleAssignmentContainer(unsigned int k,
