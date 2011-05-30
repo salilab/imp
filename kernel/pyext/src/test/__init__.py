@@ -161,6 +161,9 @@ class TestCase(unittest.TestCase):
             os.mkdir(dirpath)
         return os.path.join(dirpath, filename)
 
+    def get_magnitude(self, vector):
+        return sum([x*x for x in vector], 0)**.5
+
     def assertXYZDerivativesInTolerance(self, model, xyz, tolerance=0,
                                         percentage=0):
         """Assert that x,y,z analytical derivatives match numerical within
@@ -170,6 +173,9 @@ class TestCase(unittest.TestCase):
         derivs = xyz.get_derivatives()
         num_derivs = xyz_numerical_derivatives(model, xyz, 0.01)
         pct = percentage / 100.0
+        self.assertAlmostEqual(self.get_magnitude(derivs-num_derivs),0,
+                               delta=tolerance+percentage*self.get_magnitude(num_derivs),
+                               msg="Don't match "+str(derivs) + str(num_derivs))
         self.assertAlmostEqual(derivs[0], num_derivs[0],
                                delta=max(tolerance, abs(derivs[0]) * pct))
         self.assertAlmostEqual(derivs[1], num_derivs[1],
@@ -628,6 +634,7 @@ class RefCountChecker(object):
     def assert_number(self, expected):
         "Make sure that the number of references matches the expected value."
         t = self.__testcase
+        IMP._director_objects.cleanup()
         if IMP.build != "fast":
             t.assertEqual(IMP.RefCounted.get_number_of_live_objects() \
                           - self.__basenum, expected)
