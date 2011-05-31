@@ -17,6 +17,7 @@
 #include <IMP/Optimizer.h>
 //#include <btBulletDynamicsCommon.h>
 #include <LinearMath/btScalar.h>
+#include <IMP/display/Writer.h>
 IMPBULLET_BEGIN_NAMESPACE
 
 /** It uses the Bullet physics engine to handle collisions between the
@@ -39,6 +40,9 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
   mutable std::vector<Obstacle> obstacles_;
   void set_xyzrs_internal(const core::XYZRsTemp &ps);
   double local_;
+  double damp_;
+  IMP::internal::OwnerPointer<display::Writer> debug_writer_;
+  int debug_period_;
 public:
   ResolveCollisionsOptimizer(Model *m);
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
@@ -46,13 +50,20 @@ public:
     set_xyzrs_internal(core::XYZRsTemp(ps));
   }
 
-  void add_obstacle(const algebra::Vector3Ds &vertices,
-                    const Ints &tris);
+  void add_obstacle(display::SurfaceMeshGeometry *sg);
 
   void set_local_stiffness(double tf) {
     local_= tf;
   }
-
+  void set_damping(double d) {
+    damp_=d;
+  }
+  void set_debug_writer(display::Writer*w) {
+    debug_writer_=w;
+  }
+  void set_debug_period(unsigned int p) {
+    debug_period_=p;
+  }
   IMP_OPTIMIZER(ResolveCollisionsOptimizer);
 };
 

@@ -7,7 +7,8 @@
  */
 
 #include "IMP/bullet/ResolveCollisionsOptimizer.h"
-
+#include "IMP/bullet/internal/writer.h"
+#include "IMP/display/PymolWriter.h"
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/core/XYZR.h>
 #include <IMP/atom/Mass.h>
@@ -70,7 +71,6 @@ namespace {
   void SurfaceMeshObject::do_show(std::ostream &) const {
   }
 
-  const double damping=20;
   btRigidBody *add_endpoint(btRigidBody *rb,
                             const algebra::Vector3D &center,
                             btDiscreteDynamicsWorld* world,
@@ -98,7 +98,7 @@ namespace {
   void add_spring(btRigidBody *rb0, btRigidBody *rb1,
                   const algebra::Vector3D &center0,
                   const algebra::Vector3D &center1,
-                  double x0, double k,
+                  double x0, double k,double damping,
                   btDiscreteDynamicsWorld* world,
                   internal::Memory &memory) {
     btRigidBody *anchor0= add_endpoint(rb0, center0, world,
@@ -124,9 +124,9 @@ namespace {
   }
 
 
-  void add_rb_anchor(btRigidBody *rb0, double k,
+  void add_rb_anchor(btRigidBody *rb0, double k,double damping,
                      btDiscreteDynamicsWorld* world,
-                     internal::Memory &memory) {
+                     internal::Memory &memory ) {
     if (!memory.empty_shape.get()) {
       memory.empty_shape.reset(new btEmptyShape());
     }
@@ -160,7 +160,7 @@ namespace {
 
 
   void handle_xyzr(Particle *p,
-                   double local,
+                   double local, double damping,
                    internal::RigidBodyMap& map,
                    btDiscreteDynamicsWorld* world,
                    internal::Memory &memory) {
@@ -196,7 +196,7 @@ namespace {
     map[p]= rb;
     if (local>0) {
       add_spring(rb, NULL,
-                 d.get_coordinates(), d.get_coordinates(), 0, local,
+                 d.get_coordinates(), d.get_coordinates(), 0, local, damping,
                  world, memory);
     }
   }
@@ -206,7 +206,7 @@ namespace {
 
   void handle_rigidbody(Particle *p,
                         const ParticlesTemp &rp,
-                        double local,
+                        double local, double damping,
                         internal::RigidBodyMap& map,
                         btDiscreteDynamicsWorld* dynamicsWorld,
                         internal::Memory &memory) {
@@ -250,7 +250,7 @@ namespace {
       p->add_attribute(surface_key, smo);
       IMP::core::add_rigid_body_cache_key(surface_key);
 #else
-      IMP_THROW("Rigid bodies cannot be used with CGAL",
+      IMP_THROW("Rigid bodies cannot be used without CGAL",
                 ValueException);
 #endif
     }
@@ -284,7 +284,7 @@ namespace {
       memory);*/
     map[p]=fallRigidBody;
     if (local > 0) {
-      add_rb_anchor(fallRigidBody, local,
+      add_rb_anchor(fallRigidBody, local, damping,
                     dynamicsWorld, memory);
     }
   }
@@ -337,12 +337,12 @@ namespace {
 ResolveCollisionsOptimizer
 ::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs):
   Optimizer(rs[0]->get_model(), "ResolveCollisionsOptimizer %1%"),
-  local_(0){
+  local_(0), damp_(40){
   Optimizer::set_restraints(rs);
 }
 
 ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
-  Optimizer(m, "ResolveCollisionsOptimizer %1%"), local_(0){
+  Optimizer(m, "ResolveCollisionsOptimizer %1%"), local_(0), debug_period_(1){
 }
 
 
@@ -351,9 +351,9 @@ void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRsTemp &ps) {
 }
 
 void ResolveCollisionsOptimizer
-::add_obstacle(const algebra::Vector3Ds &vertices,
-               const Ints &tris) {
-  obstacles_.push_back(internal::get_as_bt(vertices, tris));
+::add_obstacle(display::SurfaceMeshGeometry *sg) {
+  obstacles_.push_back(internal::get_as_bt(sg->get_vertices(),
+                                           sg->get_faces()));
 }
 
 
@@ -363,7 +363,7 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
                      const internal::RigidBodyMap &map,
                      internal::Memory* memory,
                      const ParticlePair &pp,
-                     double x0, double k) {
+                     double x0, double k, double damping) {
   Particle *rp0, *rp1;
   if (core::RigidMember::particle_is_instance(pp[0])) {
     rp0= core::RigidMember(pp[0]).get_rigid_body();
@@ -387,7 +387,7 @@ bool handle_harmonic(btDiscreteDynamicsWorld *world,
 
   add_spring(r0, r1, core::XYZ(pp[0]).get_coordinates(),
              core::XYZ(pp[1]).get_coordinates(),
-             x0, k, world,
+             x0, k, damping, world,
              *memory);
   return true;
 }
@@ -445,7 +445,13 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
                              solver.get(),collisionConfiguration.get()));
 
     dynamicsWorld->setGravity(btVector3(0,0,0));
-
+    boost::scoped_ptr<internal::DebugWriter> writer;
+    Pointer<display::Writer> pymolwriter;
+    if (debug_writer_) {
+      writer.reset(new internal::DebugWriter());
+      writer->set_writer(debug_writer_);
+    }
+    dynamicsWorld->setDebugDrawer(writer.get());
     // for concave
     btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher.get());
 
@@ -475,7 +481,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
                   ValueException);
         //http://www.bulletphysics.com/Bullet/BulletFull/classbtMultiSphereShape.html
       } else if (core::XYZR::particle_is_instance(ps[i])){
-        handle_xyzr(ps[i], local_, map,
+        handle_xyzr(ps[i], local_, damp_, map,
                     dynamicsWorld.get(), memory);
         xyzr_particles.push_back(ps[i]);
       } else {
@@ -485,7 +491,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
     }
     for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
            handled_bodies.begin(); it != handled_bodies.end(); ++it) {
-      handle_rigidbody(it->first, it->second, local_, map,
+      handle_rigidbody(it->first, it->second, local_, damp_, map,
                        dynamicsWorld.get(), memory);
     }
     get_model()->update();
@@ -499,7 +505,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
     for (unsigned int i=0; i< rs.size(); ++i) {
       scr.add_restraint_set(rs[i],
                             boost::bind(handle_harmonic, dynamicsWorld.get(),
-                                        map, &memory, _1, _2, _3),
+                                        map, &memory, _1, _2, _3, damp_),
                             handle_ev);
     }
     for (unsigned int i=0; i< obstacles_.size(); ++i) {
@@ -574,6 +580,10 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
         }
       }
       dynamicsWorld->stepSimulation(5/60.f,10);
+      if (debug_writer_ && (i+1)%debug_period_==0) {
+        debug_writer_->set_frame(debug_writer_->get_frame()+1);
+        dynamicsWorld->debugDrawWorld();
+      }
     }
     internal::copy_back_coordinates(map);
   } // clean up restraints

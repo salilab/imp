@@ -1,5 +1,6 @@
 files = [
          'utility.cpp',
+         'writer.cpp',
         ]
 
 files = [File(x) for x in files]
