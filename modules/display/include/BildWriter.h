@@ -25,7 +25,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     you want a human-readable file. ChimeraWriter supports better
     interactivity and more types of geometry.
  */
-class IMPDISPLAYEXPORT BildWriter: public Writer
+class IMPDISPLAYEXPORT BildWriter: public TextWriter
 {
  protected:
   void handle(Color color) {
@@ -59,7 +59,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
     handle(color);
     get_stream() << ".polygon ";
     for (unsigned int i=0; i< 3; ++i) {
-      get_stream() << " " << algebra::spaces_io(g->get_geometry().at(i));
+      get_stream() << " " << algebra::spaces_io(g->get_geometry().get_point(i));
     }
     get_stream() << "\n";
     return true;
@@ -84,7 +84,7 @@ class IMPDISPLAYEXPORT BildWriter: public Writer
   }
 public:
 
-  IMP_WRITER(BildWriter);
+  IMP_TEXT_WRITER(BildWriter);
 };
 
 

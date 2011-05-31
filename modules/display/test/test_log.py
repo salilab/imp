@@ -9,12 +9,10 @@ class TestBL(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
 
-    def _testit(self, pref, suf, writer):
+    def _testit(self, writer):
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
         o.set_model(m)
-        nm = self.get_tmp_file_name(pref + ".%1%."+suf)
-        print nm
         p0= IMP.Particle(m)
         d0= IMP.core.XYZR.setup_particle(p0)
         d0.set_radius(1.5)
@@ -29,7 +27,7 @@ class TestBL(IMP.test.TestCase):
         d1.set_z(1)
         d1.set_radius(1)
         IMP.set_log_level(IMP.VERBOSE)
-        a= IMP.display.WriteOptimizerState(writer, nm)
+        a= IMP.display.WriteOptimizerState(writer)
         g= IMP.display.XYZRGeometry(d0)
         #ge= IMP.display.XYZRGeometryExtractor(rk)
         ps= IMP.container.ListSingletonContainer(m)
@@ -38,19 +36,13 @@ class TestBL(IMP.test.TestCase):
         a.add_geometry(g)
         o.add_optimizer_state(a)
         a.update()
-
-    def _test_1(self):
-        """Testing the VRML log"""
-        self._testit("testvrml", "vrml", IMP.display.VRMLWriter())
-
-    def _test_2(self):
-        """Testing the CMM log"""
-        self._testit("testcmm", "cmm", IMP.display.CMMWriter())
-
+        a.update()
+        a.update()
+        open(self.get_tmp_file_name("testbild.2.bild"), "r").read()
 
     def test_3(self):
         """Testing the Bild log"""
-        self._testit("testbild", "bild", IMP.display.BildWriter())
+        self._testit(IMP.display.BildWriter(self.get_tmp_file_name("testbild.%1%.bild")))
 
 if __name__ == '__main__':
     IMP.test.main()

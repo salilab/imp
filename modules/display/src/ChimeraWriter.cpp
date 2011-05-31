@@ -115,7 +115,7 @@ bool ChimeraWriter::handle(TriangleGeometry *g,
   cleanup(name, false, true);
   get_stream() << "v=[";
   for (unsigned int i=0; i< 3; ++i) {
-    get_stream() << "(" << commas_io(g->get_geometry().at(i)) << "), ";
+    get_stream() << "(" << commas_io(g->get_geometry().get_point(i)) << "), ";
   }
   get_stream() << "]\n";
   get_stream() << "vi=[";
@@ -145,7 +145,7 @@ bool ChimeraWriter::handle(EllipsoidGeometry *g,
   return true;
 }
 
-void ChimeraWriter::handle_open() {
+void ChimeraWriter::do_open() {
   get_stream() << "import _surface\n";
   get_stream() << "import chimera\n";
   get_stream() << "try:\n";
@@ -163,7 +163,7 @@ void ChimeraWriter::handle_open() {
   get_stream() << "marker_sets={}\n";
   get_stream() << "surf_sets={}\n";
 }
-void ChimeraWriter::handle_close() {
+void ChimeraWriter::do_close() {
   get_stream() << "for k in surf_sets.keys():\n";
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
 }

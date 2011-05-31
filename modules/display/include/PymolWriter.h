@@ -28,11 +28,12 @@ IMPDISPLAY_BEGIN_NAMESPACE
     become sequential frames in a movie. The frame numbers are determined
     sequentially from the file load order (so they can form a subset of
     the generated files).
+
+    This writer will write many frames to the same file.
  */
-class IMPDISPLAYEXPORT PymolWriter: public Writer
+class IMPDISPLAYEXPORT PymolWriter: public TextWriter
 {
   std::string lastname_;
-
   friend class CGOAnimationWriter;
   void setup(std::string name);
   void cleanup(std::string name, bool close=true);
@@ -53,8 +54,10 @@ class IMPDISPLAYEXPORT PymolWriter: public Writer
   bool handle(SurfaceMeshGeometry *g,
                Color color, std::string name);
 
+  void do_set_frame();
+
 public:
-  IMP_WRITER(PymolWriter);
+  IMP_TEXT_WRITER(PymolWriter);
 };
 
 

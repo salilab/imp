@@ -8,19 +8,27 @@
 #ifndef IMPDISPLAY_MACROS_H
 #define IMPDISPLAY_MACROS_H
 
-//! Define information for an Writer object
-/** This macro declares the methods on_open, on_close, add_geometry
+//! Define information for an TextWriter object
+/** This macro declares the methods do_open, do_close, add_geometry
     and show, and defines the destructor and get_version_info.
 */
-#define IMP_WRITER(Name)                                                \
-  Name(TextOutput of): Writer(of, #Name)                                \
-  {}                                                                    \
-  Name(): Writer(#Name){}                                               \
-  IMP_OBJECT_INLINE(Name,if (0) out << "Hi",close());                   \
+#define IMP_TEXT_WRITER(Name)                                           \
+  Name(TextOutput of): TextWriter(of)                                   \
+  {do_open();}                                                          \
+  Name(std::string name): TextWriter(name){do_open();}                  \
+  IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \
- virtual void handle_open();                                            \
- virtual void handle_close()
+ virtual void do_open();                                                \
+ virtual void do_close()
+
+
+#define IMP_WRITER(Name)                                                \
+  IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
+protected:                                                              \
+ using Writer::handle;                                                  \
+ virtual void do_open();                                                \
+ virtual void do_close()
 
 
 //! Define information for an Geometry object

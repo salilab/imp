@@ -24,9 +24,9 @@ class TestBL(IMP.test.TestCase):
             print "add 1"
             w.add_geometry(sg)
         if triangle:
-            vs= IMP.algebra.Vector3Ds([IMP.algebra.Vector3D(1,2,3),
+            vs= IMP.algebra.Triangle3D(IMP.algebra.Vector3D(1,2,3),
                                        IMP.algebra.Vector3D(4,5,6),
-                                       IMP.algebra.Vector3D(0,8,9)])
+                                       IMP.algebra.Vector3D(0,8,9))
             sg=IMP.display.TriangleGeometry(vs)
             sg.set_color(IMP.display.Color(0,0,1))
             w.add_geometry(sg)
@@ -34,31 +34,27 @@ class TestBL(IMP.test.TestCase):
     def test_2(self):
         """Testing the CMM writer"""
         nm=self.get_tmp_file_name("test.cmm")
-        w=IMP.display.CMMWriter()
-        w.set_file_name(nm)
+        w=IMP.display.CMMWriter(nm)
         self._testit(w, cylinder=False, triangle=False)
 
 
     def test_3(self):
         """Testing the Bild writer"""
         nm=self.get_tmp_file_name("test.bild")
-        w=IMP.display.BildWriter()
-        w.set_file_name(nm)
+        w=IMP.display.BildWriter(nm)
         self._testit(w)
 
     def test_4(self):
         """Testing the chimera writer"""
         nm=self.get_tmp_file_name("test.chimera.py")
-        w=IMP.display.ChimeraWriter()
-        w.set_file_name(nm)
+        w=IMP.display.ChimeraWriter(nm)
         e= IMP.algebra.Ellipsoid3D(IMP.algebra.Vector3D(10,10,10), 1,2,3, IMP.algebra.Rotation3D(1,0,0,0))
         w.add_geometry(IMP.display.EllipsoidGeometry(e))
         self._testit(w)
     def test_5(self):
         """Testing the CGO writer"""
         nm=self.get_tmp_file_name("test.pymol.pym")
-        w=IMP.display.PymolWriter()
-        w.set_file_name(nm)
+        w=IMP.display.PymolWriter(nm)
         self._testit(w)
 
 

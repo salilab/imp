@@ -29,59 +29,28 @@ IMPDISPLAY_BEGIN_NAMESPACE
  */
 class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 {
-  TextOutput out_;
-  bool on_open_called_;
- protected:
-  //! Get the stream for inhereting classes to write to
-  std::ostream &get_stream() {
-    if (! on_open_called_) {
-      // can't call virtual functions from constructor reliably
-      on_open_called_=true;
-      handle_open();
-    }
-    return out_;
-  }
-
+  int frame_;
  public:
   //! Create a writer opening the file with the passed name
-  Writer(TextOutput fn, std::string name);
   Writer(std::string name);
-
-  // Ideally this would be const, but std::ostream::is_open is unfortunately
-  // defined non-const in older versions of the C++ standard, so need to leave
-  // this as non-const until we can require g++ later than 3.5.
-  //! Return whether a file is open for writing
-  bool get_stream_is_open() {
-    return out_;
-  }
-
-  //! Open a new file with the given name
-  /** Set it to "" to close. */
-  virtual void set_file_name(std::string name) {
-    if (!name.empty()) {
-      set_output(TextOutput(name));
-    } else {
-      set_output(TextOutput());
-    }
-  }
-
-  virtual void set_output(TextOutput f) {
-    if (get_stream_is_open()) handle_close();
-    out_= f;
-    if (get_stream_is_open()) {
-      set_was_used(true);
-      handle_open();
-    }
-  }
-
-  //! Close the stream. You shouldn't need this, but it doesn't hurt
-  void close() {
-    if (get_stream_is_open()) handle_close();
-    out_= TextOutput();
-  }
 
   //! Write the data and close the file
   virtual ~Writer();
+
+  /** \name Frames
+      The writer has a concept of the current frame. Depending on
+      the implementation, each frame might be stored in a separate
+      file or they might all be in one file. If using a writer that
+      stores frames in multiple files, you should include a %1% in the
+      filename which will get replaced by the frame number.
+      @{
+  */
+  void set_frame(unsigned int i);
+  int get_frame() const {
+    return frame_;
+  }
+  /** @} */
+
 
   /** @name Geometry Addition methods
       These methods can be used to add geometry to the model.
@@ -106,10 +75,40 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 
  protected:
   //! A hook for implementation classes to use to take actions on file close
-  virtual void handle_close()=0;
+  virtual void do_close()=0;
   //! A hook for implementation classes to use to take actions on file open
-  virtual void handle_open()=0;
+  virtual void do_open()=0;
+
+  //! in case you want to take action on a new frame
+  virtual void do_set_frame() {}
 };
+
+
+/** A base class for writers which write to text files. By default,
+    separate frames are stored in separate files. To change this,
+    override the do_set_frame() method.
+ */
+class IMPDISPLAYEXPORT TextWriter: public Writer
+{
+  std::string file_name_;
+  TextOutput out_;
+ protected:
+  //! Get the stream for inhereting classes to write to
+  std::ostream &get_stream() {
+    return out_;
+  }
+
+  void do_set_frame();
+
+ public:
+  //! Create a writer opening the file with the passed name
+  TextWriter(TextOutput fn);
+  TextWriter(std::string name);
+
+  //! Write the data and close the file
+  virtual ~TextWriter();
+};
+
 
 /** Create an appropriate writer based on the file suffix. */
 IMPDISPLAYEXPORT Writer *create_writer(std::string filename,
@@ -124,6 +123,7 @@ IMPDISPLAYEXPORT Writer *create_writer(std::string filename,
 #endif
 
 IMP_OBJECTS(Writer, Writers);
+IMP_OBJECTS(TextWriter, TextWriters);
 
 IMPDISPLAY_END_NAMESPACE
 

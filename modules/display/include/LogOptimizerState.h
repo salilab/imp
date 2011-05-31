@@ -20,33 +20,27 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+/** Write to a Writer periodically.
+ */
+class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
+  ::IMP::internal::Counter skip_steps_, call_number_, update_number_;
+  IMP::internal::OwnerPointer<Writer> writer_;
+  void update();
+ public:
+  WriteOptimizerState(Writer *w) :
+    OptimizerState("WriteOptimizerState%1%"),
+    writer_(w) {}
+  void set_period(unsigned int p) {
+    skip_steps_=p-1;
+    call_number_=0;
+  }
+  IMP_LIST_PLURAL(public, Geometry, Geometries, geometry, geometries,
+                  Geometry*, Geometries);
+  IMP_OBJECT_INLINE(WriteOptimizerState,
+                    out << "  writer: " << writer_->get_name() << std::endl;,);
+};
+IMP_OBJECTS(WriteOptimizerState, WriteOptimizerStates);
 
-IMP_MODEL_SAVE(Write, (Writer *writer, std::string file_name),
-               mutable IMP::internal::OwnerPointer<Writer> writer_;
-               Geometries gdata_;,
-                writer_=writer;,
-                void add_geometry(Geometry* g) {
-                  gdata_.push_back(g);
-                  g->set_was_used(true);
-                }
-                void add_geometry(const Geometries& g) {
-                  for (unsigned int i=0; i< g.size(); ++i) {
-                    add_geometry(g);
-                  }
-                },
-                {
-                  IMP_LOG(TERSE, "Writing log file " << file_name << std::endl);
-                  writer_->set_output(file_name);
-                  for (unsigned int i=0; i < gdata_.size(); ++i) {
-                    writer_->add_geometry(gdata_[i]);
-                  }
-                  writer_->close();
-                });
-
-#ifndef IMP_DOXYGEN
-typedef WriteOptimizerState LogOptimizerState;
-typedef WriteFailureHandler DisplayModelOnFailure;
-#endif
 
 IMPDISPLAY_END_NAMESPACE
 

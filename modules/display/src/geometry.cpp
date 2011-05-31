@@ -124,7 +124,7 @@ IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(ReferenceFrameGeometry,
 IMP_DISPLAY_GEOMETRY_DEF(PointGeometry, algebra::VectorD<3>);
 IMP_DISPLAY_GEOMETRY_DEF(SegmentGeometry, algebra::Segment3D);
 IMP_DISPLAY_GEOMETRY_DEF(PolygonGeometry, std::vector<algebra::VectorD<3> >);
-IMP_DISPLAY_GEOMETRY_DEF(TriangleGeometry, std::vector<algebra::VectorD<3> >);
+IMP_DISPLAY_GEOMETRY_DEF(TriangleGeometry, algebra::Triangle3D);
 
 
 Geometries LabelGeometry::get_components() const {
@@ -169,7 +169,8 @@ Geometries SurfaceMeshGeometry::get_components() const {
   for (unsigned int i=0; i< faces_.size(); ++i) {
     if (faces_[i]==-1) {
       if (cur.size()==3) {
-        ret.push_back(new TriangleGeometry(cur));
+        ret.push_back(new TriangleGeometry(algebra::Triangle3D(cur[0],
+                                                      cur[1], cur[2])));
       } else {
         ret.push_back(new PolygonGeometry(cur));
       }

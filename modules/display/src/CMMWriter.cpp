@@ -11,12 +11,12 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
-void CMMWriter::handle_open() {
+void CMMWriter::do_open() {
   get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
   marker_index_=0;
 }
 
-void CMMWriter::handle_close() {
+void CMMWriter::do_close() {
   get_stream() << "</marker_set>" << std::endl;
 }
 
