@@ -1,4 +1,7 @@
 /** \page recent Change History
+\par Summer 2011
+- IMP::display::Writer has been revised to better support writers that write multiple frames to a single file and ones that write binary data. The noticeable changes are that the existing IMP::display::Writer instances must be created with a file name. And the IMP::display::WriteOptimizerState just takes a writer rather than a write and a file name template. IMP::display::Writer::set_frame() has been added so that you can directly control the frame being written.
+- IMP::rmf::RMFWriter has been added which writes geometry to an RMF file.
 
 \par Spring 2011
 - An interactive mode has been added to IMP::domino::DominoSampler. The interactive mode is useful for understanding domino sampling runs and distributing domino comptutations across a cluster.
