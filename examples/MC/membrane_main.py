@@ -15,20 +15,14 @@ from membrane_represent  import *
 from membrane_restraints import *
 #sampler
 from membrane_MonteCarlo import *
-#domino stuff
-from membrane_domino     import *
 
 m=IMP.Model()
 
 print "creating representation"
-(protein,tbr,rot0)=create_representation(m)
+(protein,tbr)=create_representation(m)
 
 print "creating restraints"
-rset=create_restraints(m,protein,tbr,rot0)
-
-print "computing IG and JT"
-(ig,jt)=get_graphs(m,protein,rset)
-print ig,jt
+rset=create_restraints(m,protein,tbr)
 
 print "creating sampler"
 mc=setup_MonteCarlo(m,protein)
