@@ -4,6 +4,7 @@ import IMP.algebra
 import IMP.atom
 import IMP.membrane
 import math
+import random
 
 #parameters
 from membrane_parameters import *
@@ -13,7 +14,7 @@ def create_representation(m):
     tbr= IMP.core.TableRefiner()
     all=IMP.atom.Hierarchy.setup_particle(IMP.Particle(m))
 
-    def generate_tm(name,res,topo,sfile):
+    def generate_tm(id,name,res,topo,sfile):
         pm=IMP.Particle(m)
         tm=IMP.atom.Molecule.setup_particle(pm)
         tm.set_name(name)
@@ -64,13 +65,16 @@ def create_representation(m):
                 rot=IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,0,1),math.pi)
                 tr=IMP.algebra.Transformation3D(rot,IMP.algebra.Vector3D(0,0,0))
                 IMP.core.RigidMember(ps).set_internal_coordinates(tr.get_transformed(coord))
+        if ( id == 0 ): xx=0; yy=0;
+        if ( id == 1 ): yy=0; xx=random.randrange(0, diameter_)
+        if ( id > 1  ): xx=random.randrange(-diameter_, diameter_); yy=random.randrange(-diameter_, diameter_)
         rb.set_reference_frame(IMP.algebra.ReferenceFrame3D(IMP.algebra.Transformation3D
         (IMP.algebra.get_rotation_about_axis(IMP.algebra.Vector3D(0,1,0),-math.pi/2.0),
-         IMP.algebra.Vector3D(0,0,0))))
+         IMP.algebra.Vector3D(xx,yy,0))))
         bb=IMP.core.RigidMember(atoms[0]).get_internal_coordinates()[0]
         ee=IMP.core.RigidMember(atoms[-1]).get_internal_coordinates()[0]
         d_rbs=IMP.membrane.HelixDecorator.setup_particle(prb,bb,ee)
 
     for i in range(len(TM_names)):
-        generate_tm(TM_names[i],TM_res[i],TM_topo[i],TM_struct[i])
+        generate_tm(i,TM_names[i],TM_res[i],TM_topo[i],TM_struct[i])
     return all,tbr

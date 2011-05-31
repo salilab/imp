@@ -113,14 +113,16 @@ def create_restraints(m,protein,tbr):
     def add_tilt_restraint(range):
         laxis=(1.0,0.0,0.0)
         zaxis=(0.0,0.0,1.0)
+        lrb= IMP.container.ListSingletonContainer(m)
         for i,h in enumerate(TM_res):
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-            well=IMP.core.HarmonicWell(range, kappa_)
-            tss=IMP.membrane.TiltSingletonScore(well, laxis, zaxis)
-            sr=IMP.core.SingletonRestraint(tss, rb)
-            m.add_restraint(sr)
-            m.set_maximum_score(sr, max_score_)
+            lrb.add_particle(rb)
+        well=IMP.core.HarmonicWell(range, kappa_)
+        tss=IMP.membrane.TiltSingletonScore(well, laxis, zaxis)
+        sr=IMP.container.SingletonsRestraint(tss, lrb)
+        m.add_restraint(sr)
+        m.set_maximum_score(sr, max_score_)
 
 # assembling all the restraints
     rset=IMP.RestraintSet()

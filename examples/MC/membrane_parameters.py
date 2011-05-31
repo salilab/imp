@@ -2,7 +2,7 @@ import math
 
 # various parameters are specified here
 # general parameters for restraints
-kappa_=100.0
+kappa_=1000.0
 max_score_=0.01
 
 # packing restraint cluster stuff
@@ -19,12 +19,12 @@ d0_inter_=8.0
 # d   :: 16  35  26  51  48  51  50  34   39   52   48   43   42
 diameter_=51.0
 # these two parameters should depend on helix length
-z_range_=[-3.5,3.5]
+z_range_=[-3.0,3.0]
 tilt_range_=[0,math.radians(40)]
 
 # monte carlo
-mc_kt=4.0
-mc_loops=3000000
+mc_kt=2.0
+mc_loops=100000
 mc_steps=50
 mc_dx=0.5
 mc_dang=0.2
