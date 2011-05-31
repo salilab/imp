@@ -20,6 +20,6 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
 
 env.IMPModuleBuild(version='SVN',
                    required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
-                                     'statistics', 'display'],
+                                     'statistics', 'display', "display"],
                    required_dependencies=['HDF5', "Boost.FileSystem",
                                           "Boost.ProgramOptions"])

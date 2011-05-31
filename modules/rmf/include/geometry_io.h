@@ -39,6 +39,22 @@ IMPRMFEXPORT void save_frame(RootHandle parent, int frame,
 IMPRMFEXPORT display::Geometries create_geometries(RootHandle parent,
                                                         int frame);
 /** @} */
+
+class IMPRMFEXPORT RMFWriter: public display::Writer {
+  RootHandle rh_;
+  void on_set_frame();
+  bool handle(display::SphereGeometry *g,
+               display::Color color, std::string name);
+  bool handle(display::CylinderGeometry *g,
+               display::Color color, std::string name);
+  bool handle(display::SegmentGeometry *g,
+               display::Color color, std::string name);
+  bool handle(display::SurfaceMeshGeometry *g,
+               display::Color color, std::string name);
+ public:
+  RMFWriter(RootHandle rh);
+  IMP_WRITER(RMFWriter);
+};
 IMPRMF_END_NAMESPACE
 
 #endif /* IMPRMF_GEOMETRY_IO_H */

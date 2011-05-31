@@ -397,4 +397,58 @@ display::Geometries create_geometries(RootHandle parent,
 }
 
 
+RMFWriter::RMFWriter(RootHandle rh): Writer("RMFWriter%1%"), rh_(rh){}
+
+void RMFWriter::on_set_frame() {
+}
+bool RMFWriter::handle(display::SphereGeometry *g,
+                       display::Color color, std::string name) {
+  // kind of evil, but
+  g->set_name(name);
+  g->set_color(color);
+  if (get_frame()==0) {
+    IMP::rmf::add_geometry(rh_, g);
+  }
+  save_frame(rh_, get_frame(), g);
+  return true;
+}
+bool RMFWriter::handle(display::CylinderGeometry *g,
+                       display::Color color, std::string name) {
+  // kind of evil, but
+  g->set_name(name);
+  g->set_color(color);
+  if (get_frame()==0) {
+    IMP::rmf::add_geometry(rh_, g);
+  }
+  save_frame(rh_, get_frame(), g);
+  return true;
+}
+bool RMFWriter::handle(display::SegmentGeometry *g,
+                       display::Color color, std::string name) {
+  // kind of evil, but
+  g->set_name(name);
+  g->set_color(color);
+  if (get_frame()==0) {
+    IMP::rmf::add_geometry(rh_, g);
+  }
+  save_frame(rh_, get_frame(), g);
+  return true;
+}
+bool RMFWriter::handle(display::SurfaceMeshGeometry *g,
+                       display::Color color, std::string name) {
+  // kind of evil, but
+  g->set_name(name);
+  g->set_color(color);
+  if (get_frame()==0) {
+    IMP::rmf::add_geometry(rh_, g);
+  }
+  save_frame(rh_, get_frame(), g);
+  return true;
+}
+
+
+void RMFWriter::do_open(){}
+void RMFWriter::do_close(){}
+
+
 IMPRMF_END_NAMESPACE
