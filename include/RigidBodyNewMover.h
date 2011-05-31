@@ -33,7 +33,7 @@ public:
    */
   RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
                  Float max_y_translation, Float max_z_translation,
-                 Float max_a_rot, Float max_b_rot, Float max_c_rot);
+                 Float max_rot);
   void reset_move();
   void propose_move(Float f);
   IMP_OBJECT(RigidBodyNewMover);
@@ -42,9 +42,7 @@ private:
   Float max_x_translation_;
   Float max_y_translation_;
   Float max_z_translation_;
-  Float max_a_angle_;
-  Float max_b_angle_;
-  Float max_c_angle_;
+  Float max_angle_;
   core::RigidBody d_;
 };
 
