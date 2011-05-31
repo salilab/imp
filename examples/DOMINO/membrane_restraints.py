@@ -7,7 +7,7 @@ import math
 
 from membrane_parameters import *
 
-def create_restraints(m,protein,tbr,rot0):
+def create_restraints(m,protein,tbr):
 
     def add_excluded_volume():
         lsc= IMP.container.ListSingletonContainer(m)
@@ -53,16 +53,6 @@ def create_restraints(m,protein,tbr,rot0):
             om_e.append(min(ome,math.pi))
             dd_b.append(ddb)
             dd_e.append(dde)
-            if ( omb < -math.pi ):
-                om_b.append(2*math.pi+omb)
-                om_e.append(math.pi)
-                dd_b.append(ddb)
-                dd_e.append(dde)
-            if ( ome > math.pi ):
-                om_b.append(-math.pi)
-                om_e.append(-2*math.pi+ome)
-                dd_b.append(ddb)
-                dd_e.append(dde)
         lrb= IMP.container.ListSingletonContainer(m)
         for h in TM_res:
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
@@ -120,14 +110,12 @@ def create_restraints(m,protein,tbr,rot0):
         m.add_restraint(sr)
         m.set_maximum_score(sr, max_score_)
 
-    def add_tilt_restraint(range0,rot0):
+    def add_tilt_restraint(range):
         laxis=(1.0,0.0,0.0)
         zaxis=(0.0,0.0,1.0)
         for i,h in enumerate(TM_res):
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
-            if ( rot0[i] > 0 ): range=[math.pi-range0[1],math.pi-range0[0]]
-            else              : range=[range0[0],range0[1]]
             well=IMP.core.HarmonicWell(range, kappa_)
             tss=IMP.membrane.TiltSingletonScore(well, laxis, zaxis)
             sr=IMP.core.SingletonRestraint(tss, rb)
@@ -184,8 +172,8 @@ def create_restraints(m,protein,tbr,rot0):
     add_packing_restraint()
     add_DOPE()
     add_diameter_restraint(diameter_)
-    ##add_depth_restraint(z_range_)
-    ##add_tilt_restraint(tilt_range_,rot0)
+    add_depth_restraint(z_range_)
+    add_tilt_restraint(tilt_range_)
     add_x_restraint(0.0)
     add_y_restraint(0.0)
     for ps in TM_inter:
