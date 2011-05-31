@@ -55,7 +55,7 @@ native_uniform_cover_unit_sphere(unsigned int d,
                                  unsigned int n,bool ALL) {
   BOOST_STATIC_ASSERT(D!=3);
   std::vector<VectorD<D> > ret(n);
-  for (unsigned int i=0; i< d; ++i) {
+  for (unsigned int i=0; i< std::min(d, n/(ALL?2:1)); ++i) {
     VectorD<D> v= get_basis_vector_kd(d, i);
     if(ALL) {
       ret[2*i]=v;
