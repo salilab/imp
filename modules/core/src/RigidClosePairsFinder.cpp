@@ -131,7 +131,9 @@ ParticlePairsTemp RigidClosePairsFinder
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Rigid add_close_pairs called with "
           << pa.size() << " and "
-          << pb.size() << std::endl);
+          << pb.size()
+          << " and distance " << get_distance()
+          << std::endl);
   check_particles(pa);
   check_particles(pb);
   IMP::internal::Map<Particle*, ParticlesTemp> ma, mb;
