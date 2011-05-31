@@ -23,11 +23,13 @@ class IMPBULLETEXPORT DebugWriter: public btIDebugDraw {
   void set_writer(display::Writer *w);
   void drawLine (const btVector3 &from, const btVector3 &to,
                  const btVector3 &color);
+  using btIDebugDraw::drawLine;
   /*void drawLine (const btVector3 &from, const btVector3 &to,
     const btVector3 &fromColor, const btVector3 &toColor);
     void drawSphere (btScalar radius, const btTransform &transform,
     const btVector3 &color)*/
   void drawSphere (const btVector3 &p, btScalar radius, const btVector3 &color);
+  using btIDebugDraw::drawSphere;
   /*void drawTriangle (const btVector3 &v0,
     const btVector3 &v1, const btVector3 &v2,
   const btVector3 &, const btVector3 &, const btVector3 &,
@@ -35,6 +37,7 @@ class IMPBULLETEXPORT DebugWriter: public btIDebugDraw {
   */
   void drawTriangle (const btVector3 &v0, const btVector3 &v1,
                      const btVector3 &v2, const btVector3 &color, btScalar);
+  using btIDebugDraw::drawTriangle;
   void drawContactPoint (const btVector3 &PointOnB,
                          const btVector3 &normalOnB, btScalar distance,
                          int lifeTime, const btVector3 &color);
@@ -45,8 +48,8 @@ class IMPBULLETEXPORT DebugWriter: public btIDebugDraw {
   void drawAabb (const btVector3 &from, const btVector3 &to,
                  const btVector3 &color);
   /*void drawTransform (const btTransform &transform, btScalar orthoLen)
-  /*void drawArc (const btVector3 &center,
-  const btVector3 &normal, const btVector3 &axis,
+    void drawArc (const btVector3 &center,
+    const btVector3 &normal, const btVector3 &axis,
     btScalar radiusA, btScalar radiusB, btScalar minAngle,
     btScalar maxAngle, const btVector3 &color,
     bool drawSect, btScalar stepDegrees=btScalar(10.f))
@@ -57,6 +60,7 @@ class IMPBULLETEXPORT DebugWriter: public btIDebugDraw {
     const btVector3 &color, btScalar stepDegrees=btScalar(10.f))*/
   void drawBox(const btVector3 &bbMin, const btVector3 &bbMax,
                const btVector3 &color);
+  using btIDebugDraw::drawBox;
   /*void drawBox (const btVector3 &bbMin, const btVector3 &bbMax,
     const btTransform &trans, const btVector3 &color)*/
 };
