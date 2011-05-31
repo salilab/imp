@@ -25,22 +25,24 @@
 
 #ifndef SWIG
 /** Internal use only. */
-#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname) \
+#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, Ucnames,\
+                             lcname, lcnames)                           \
   IMP_SWITCH_DOXYGEN(class Ucname##Iterator;                            \
                      class Ucname##ConstIterator,                       \
                      typedef ContainerType::iterator Ucname##Iterator;  \
                      typedef ContainerType::const_iterator              \
                      Ucname##ConstIterator);                            \
-  Ucname##Iterator lcname##s_begin() {return container_name.begin();}   \
-  Ucname##Iterator lcname##s_end() {return container_name.end();}       \
-  Ucname##ConstIterator lcname##s_begin() const {                       \
+  Ucname##Iterator lcnames##_begin() {return container_name.begin();}   \
+  Ucname##Iterator lcnames##_end() {return container_name.end();}       \
+  Ucname##ConstIterator lcnames##_begin() const {                       \
     return container_name.begin();                                      \
   }                                                                     \
-  Ucname##ConstIterator lcname##s_end() const {                         \
+  Ucname##ConstIterator lcnames##_end() const {                         \
     return container_name.end();}                                       \
 
 #else
-#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, Ucname, lcname)
+#define IMP_EXPOSE_ITERATORS(ContainerType, container_name, \
+                             Ucname, Ucnames,lcname, lcnames)
 #endif // SWIG
 
 #ifdef GCC_VISIBILITY
@@ -48,6 +50,9 @@
 #else
 # define IMP_FORCE_EXPORT(x) x
 #endif
+
+
+
 
 /**  \brief  A macro to provide a uniform interface for storing lists of
      objects.
@@ -86,63 +91,72 @@
      \endverbatim
  */
 #define IMP_LIST(protection, Ucname, lcname, Data, PluralData)          \
+  IMP_LIST_PLURAL(protection, Ucname, Ucname##s, lcname,                \
+                  lcname##s, Data, PluralData)
+
+
+/** A version of IMP_LIST() for types where the spelling of the plural is
+    irregular (eg geometry-> geometries)
+*/
+#define IMP_LIST_PLURAL(protection, Ucname, Ucnames, lcname, lcnames,\
+                        Data, PluralData)                               \
   IMP_PROTECTION(protection)                                            \
   /** \brief Remove any occurences of d from the container. */          \
   void remove_##lcname(Data d);                                         \
   /** \brief Remove any occurrences for which f is true */              \
   template <class F>                                                    \
-  void remove_##lcname##s_if(const F &f) {                              \
-    for (Ucname##Iterator it= lcname##s_begin(); it != lcname##s_end(); \
+  void remove_##lcnames##_if(const F &f) {                              \
+    for (Ucname##Iterator it= lcnames##_begin(); it != lcnames##_end(); \
          ++it) {                                                        \
       if (f(*it)) lcname##_handle_remove(*it);                          \
     }                                                                   \
     IMP::internal::remove_if(lcname##_vector_, f);                      \
-    lcname##_handle_change();                                          \
+    lcname##_handle_change();                                           \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
-  void remove_##lcname##s(const PluralData& d);                         \
+  void remove_##lcnames(const PluralData& d);                           \
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
-void set_##lcname##s(const PluralData &ps) {                            \
+void set_##lcnames(const PluralData &ps) {                              \
   /* Bad things can happen if we use a Temp, as things get unreffed
      before being reffed if they are in both lists */                   \
-    clear_##lcname##s();                                                \
-    add_##lcname##s(ps);                                                \
+  clear_##lcnames();                                                    \
+  add_##lcnames(ps);                                                    \
   }                                                                     \
 /** Must be the same set, just in a different order. */                 \
-void set_##lcname##s_order(const PluralData &ps);                       \
+void set_##lcnames##_order(const PluralData &ps);                       \
 /** \return index of object within the object
 */                                                                      \
 unsigned int add_##lcname(Data obj);                                    \
 /** Add several objects to the container. They are not necessarily
     added at the end.
 */                                                                      \
-void add_##lcname##s(const PluralData& obj);                            \
-void clear_##lcname##s();                                               \
-unsigned int get_number_of_##lcname##s() const {                        \
+void add_##lcnames(const PluralData& obj);                              \
+void clear_##lcnames();                                                 \
+unsigned int get_number_of_##lcnames() const {                          \
   return lcname##_vector_.size();}                                      \
 /** \brief return true if there are any objects in the container*/      \
-bool get_has_##lcname##s() const {                                      \
+bool get_has_##lcnames() const {                                        \
   return !lcname##_vector_.empty();}                                    \
 /** Get the object refered to by the index
     \throws IndexException in Python if the index is out of range
-*/                                                                     \
-Data get_##lcname(unsigned int i) const {                              \
-  return lcname##_vector_[i];                                          \
-}                                                                      \
-void reserve_##lcname##s(unsigned int sz) {                             \
+*/                                                                      \
+Data get_##lcname(unsigned int i) const {                               \
+  return lcname##_vector_[i];                                           \
+}                                                                       \
+void reserve_##lcnames(unsigned int sz) {                               \
   lcname##_vector_.reserve(sz);                                         \
 }                                                                       \
 IMP_EXPOSE_ITERATORS(IMP::VectorOfRefCounted<Data>,                     \
-                     lcname##_vector_, Ucname, lcname);                 \
+                     lcname##_vector_, Ucname, Ucnames, lcname, lcnames); \
 private:                                                                \
-const PluralData &access_##lcname##s() const {return lcname##_vector_;} \
+const PluralData &access_##lcnames() const {return lcname##_vector_;} \
 void lcname##_handle_remove( Data d);                                   \
 void lcname##_handle_change();                                          \
 struct Ucname##DataWrapper: public PluralData {                         \
   template <class F>                                                    \
   void remove_if(const F &f) {                                          \
-    IMP::internal::remove_if(*static_cast<PluralData*>(this), f);        \
+    IMP::internal::remove_if(*static_cast<PluralData*>(this), f);       \
   }                                                                     \
   template <class TT>                                                   \
   static void do_handle_remove( Data d, TT *container);                 \
@@ -179,6 +193,12 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 */
 #define IMP_LIST_IMPL(Class, Ucname, lcname, Data, PluralData, OnAdd,   \
                       OnChanged, OnRemoved)                             \
+  IMP_LIST_PLURAL_IMPL(Class, Ucname, Ucname##s, lcname, lcname##s,     \
+                       Data, PluralData, OnAdd, OnChanged, OnRemoved)
+
+#define IMP_LIST_PLURAL_IMPL(Class, Ucname, Ucnames, lcname, lcnames,   \
+                             Data, PluralData, OnAdd,                   \
+                             OnChanged, OnRemoved)                      \
   template <class TT>                                                   \
   void Class::Ucname##DataWrapper::do_handle_remove(Data obj,           \
                                                     TT *container) {    \
@@ -191,7 +211,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
       do_handle_remove(operator[](i), static_cast<Class*>(0));          \
     }                                                                   \
   }                                                                     \
-  void Class::set_##lcname##s_order(const PluralData &ps) {              \
+  void Class::set_##lcnames##_order(const PluralData &ps) {             \
     IMP_USAGE_CHECK(ps.size() == lcname##_vector_.size(),               \
                     "Reordered elements don't match.");                 \
     lcname##_vector_.clear();                                           \
@@ -212,7 +232,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     if (false) {index=index; obj=obj;};                                 \
     return index;                                                       \
   }                                                                     \
-  void Class::add_##lcname##s(const PluralData &objs) {                 \
+  void Class::add_##lcnames(const PluralData &objs) {                   \
     unsigned int osz= lcname##_vector_.size();                          \
     lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),       \
                             objs.end());                                \
@@ -224,7 +244,7 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     }                                                                   \
     lcname##_handle_change();                                           \
   }                                                                     \
-  void Class::remove_##lcname##s(const PluralData& d) {                 \
+  void Class::remove_##lcnames(const PluralData& d) {                   \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
@@ -232,13 +252,13 @@ IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
     }                                                                   \
     lcname##_vector_.remove_if(::IMP::internal::list_contains(ds));     \
   }                                                                     \
-  void Class::clear_##lcname##s(){                                      \
+  void Class::clear_##lcnames(){                                        \
     lcname##_vector_.clear();                                           \
     lcname##_handle_change();                                           \
   }                                                                     \
   void Class::remove_##lcname(Data d) {                                 \
-    for (Ucname##Iterator it= lcname##s_begin();                        \
-         it != lcname##s_end(); ++it) {                                 \
+    for (Ucname##Iterator it= lcnames##_begin();                        \
+         it != lcnames##_end(); ++it) {                                 \
       if (*it == d) {                                                   \
         lcname##_handle_remove(*it);                                    \
         lcname##_vector_.erase(it); break;                              \
