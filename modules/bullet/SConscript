@@ -13,7 +13,7 @@ scons_tools.dependency.add_external_library(env, "Bullet", ["BulletDynamics", "B
 
 
 env.IMPModuleBuild(version='SVN',
-                   required_modules=['container'],
+                   required_modules=['container', 'display'],
                    optional_modules=['cgal'],
                    lib_only_required_modules=['atom', 'domino'],
                    required_dependencies=["Bullet"])
