@@ -22,25 +22,32 @@ namespace {
   const std::string placeholder_name;
 }
 
-void PymolWriter::handle_open() {
+void PymolWriter::do_set_frame() {
+    // write all frames to same file
+    if (lastname_!= placeholder_name) {
+      do_close();
+    }
+  }
+
+void PymolWriter::do_open() {
   lastname_=placeholder_name;
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "from pymol.vfont import plain\ndata= {}\n";
+  get_stream() << "curdata= []\n";
 }
 
-void PymolWriter::handle_close() {
+void PymolWriter::do_close() {
   cleanup(lastname_);
-  get_stream() << "\n\ntry:\n";
-  get_stream() << "  state+1\n";
-  get_stream() << "except:\n";
-  get_stream() << "  state=1\n";
-  get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, state)\n";
-  get_stream() << "state+=1\n";
+  int frame= get_frame();
+  if (frame==-1) frame=0;
+  get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, " << frame
+               << ")\n";
+  get_stream() << "data= {}\n";
 }
 
 
 void PymolWriter::cleanup(std::string name, bool close){
-  if (close) get_stream() << "]\n";
+  if (close && lastname_ != placeholder_name) get_stream() << "]\n";
   lastname_=placeholder_name;
   get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
   get_stream() << "if k in data.keys():\n"
@@ -129,20 +136,17 @@ bool PymolWriter::handle(PointGeometry *g,
 bool PymolWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
   setup(name);
-  double r= .01*(g->get_geometry().get_point(0)- g->get_geometry()
-                 .get_point(1)).get_magnitude();
-  get_stream() << "CYLINDER,\n"
-               << algebra::commas_io(g->get_geometry().get_point(0)) << ",\n"
-               << algebra::commas_io(g->get_geometry().get_point(1)) << ",\n"
-               << r << ",\n";
-  get_stream() << color.get_red()
-               << ", " << color.get_green()
-               << ", " << color.get_blue()
-               << ",\n";
-  get_stream() << color.get_red()
-               << ", " << color.get_green()
-               << ", " << color.get_blue()
-               << ",\n";
+  /*double r= .01*(g->get_geometry().get_point(0)- g->get_geometry()
+    .get_point(1)).get_magnitude();*/
+  get_stream() << "BEGIN, LINES,\n";
+  write_color(get_stream(), color);
+  get_stream() << "VERTEX, "
+               << algebra::commas_io(g->get_geometry().get_point(0))
+               << ",\n"
+               << "VERTEX, "
+               << algebra::commas_io(g->get_geometry().get_point(1))
+               << ",\n"
+               << "END,\n";
   return true;
 }
 
@@ -198,8 +202,9 @@ bool PymolWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
   setup(name);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  write_triangle(g->get_geometry().at(0), g->get_geometry().at(1),
-                 g->get_geometry().at(2), color, get_stream());
+  write_triangle(g->get_geometry().get_point(0),
+                 g->get_geometry().get_point(1),
+                 g->get_geometry().get_point(2), color, get_stream());
   get_stream() << "END,\n";
   return true;
 }

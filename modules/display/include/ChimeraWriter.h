@@ -19,7 +19,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     and surfaces.  Since these are native chimera objects, they are
     handled a bit better than vrml ones.
  */
-class IMPDISPLAYEXPORT ChimeraWriter: public Writer
+class IMPDISPLAYEXPORT ChimeraWriter: public TextWriter
 {
   void cleanup(std::string name,
                bool need_ms, bool need_surf=false);
@@ -38,7 +38,7 @@ class IMPDISPLAYEXPORT ChimeraWriter: public Writer
   bool handle(EllipsoidGeometry *g,
                Color color, std::string name);
 public:
-  IMP_WRITER(ChimeraWriter);
+  IMP_TEXT_WRITER(ChimeraWriter);
 };
 
 

@@ -1,4 +1,7 @@
+
+
 IMP_SWIG_BASE_OBJECT(IMP::display, Writer, Writers);
+IMP_SWIG_BASE_OBJECT(IMP::display, TextWriter, TextWriters);
 IMP_SWIG_BASE_OBJECT(IMP::display, Geometry, Geometries);
 IMP_SWIG_OBJECT(IMP::display, SingletonGeometry, SingletonGeometries);
 IMP_SWIG_OBJECT(IMP::display, PairGeometry, PairGeometries);
@@ -37,7 +40,7 @@ IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
-IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
+//IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
 
 IMP_SWIG_OBJECT(IMP::display, ConnectivityRestraintGeometry, ConnectivityRestraintGeometries);
 IMP_SWIG_OBJECT(IMP::display, HierarchiesGeometry, HierarchiesGeometries);
@@ -57,6 +60,8 @@ IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 %warnfilter(403) SingletonsGeometry;
 %warnfilter(403) PairGeometry;
 %warnfilter(403) PairsGeometry;
+%warnfilter(403) TextWriter;
+
 
 /* Wrap our own classes */
 %include "IMP/display/display_macros.h"

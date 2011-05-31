@@ -17,7 +17,7 @@ class TestBL(IMP.test.TestCase):
             g[i]=100-m
         #for i in g.get_all_indexes():
         #    print i, g.get_center(i), g[i]
-        gg= IMP.display.IsosurfaceGeometry(g, 95)
+        gg= IMP.display.IsosurfaceGeometry(g, 95.0)
         gg.set_name("isosurface")
         w= IMP.display.PymolWriter(self.get_tmp_file_name("iso.pym"))
         w.add_geometry(gg)

@@ -22,6 +22,7 @@
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Plane3D.h>
 #include <IMP/algebra/ReferenceFrame3D.h>
+#include <IMP/algebra/Triangle3D.h>
 #include <IMP/algebra/Grid3D.h>
 #ifdef IMP_DISPLAY_USE_IMP_CGAL
 #include <IMP/cgal/internal/polyhedrons.h>
@@ -104,7 +105,7 @@ IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
 /** \brief Display a triangule.
 */
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,
-                          std::vector<algebra::VectorD<3> >);
+                          algebra::Triangle3D);
 /** \brief Display a bounding box.
 */
 IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DECL(BoundingBoxGeometry,

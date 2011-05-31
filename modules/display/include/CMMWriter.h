@@ -25,7 +25,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
     which writes a python file, readable by Chimera as it supports
     more types of geometry.
  */
-class IMPDISPLAYEXPORT CMMWriter: public Writer
+class IMPDISPLAYEXPORT CMMWriter: public TextWriter
 {
   unsigned int marker_index_;
   bool handle(SphereGeometry *g,
@@ -34,7 +34,7 @@ class IMPDISPLAYEXPORT CMMWriter: public Writer
               Color color, std::string name);
 public:
 
-  IMP_WRITER(CMMWriter);
+  IMP_TEXT_WRITER(CMMWriter);
 };
 
 
