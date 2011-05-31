@@ -68,9 +68,9 @@ void DebugWriter::drawBox(const btVector3 &from, const btVector3 &to,
 
 
 void DebugWriter::drawContactPoint (const btVector3 &PointOnB,
-                                    const btVector3 &normalOnB,
-                                    btScalar distance,
-                                    int lifeTime, const btVector3 &color) {
+                                    const btVector3 &/*normalOnB*/,
+                                    btScalar /*distance*/,
+                                    int /*lifeTime*/, const btVector3 &color) {
   algebra::Sphere3D s(tr(PointOnB), 1);
   IMP_NEW(display::SphereGeometry, g, (s));
   g->set_color(display::Color(color[0], color[1], color[2]));
