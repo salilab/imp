@@ -36,8 +36,7 @@ void Writer::add_geometry(Geometry *g) {
 TextWriter::TextWriter(TextOutput fn): Writer(fn.get_name()), out_(fn){
   set_was_used(true);
 }
-TextWriter::TextWriter(std::string name): Writer(name), file_name_(name),
-                                          out_(name){
+TextWriter::TextWriter(std::string name): Writer(name), file_name_(name) {
   set_was_used(true);
 }
 

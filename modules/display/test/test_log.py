@@ -8,7 +8,8 @@ class TestBL(IMP.test.TestCase):
     def setUp(self):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
-
+    def _testopen(self, fname):
+        open(fname, "r")
     def _testit(self, writer):
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
@@ -39,6 +40,7 @@ class TestBL(IMP.test.TestCase):
         a.update()
         a.update()
         open(self.get_tmp_file_name("testbild.2.bild"), "r").read()
+        self.assertRaises(IOError, self._testopen, self.get_tmp_file_name("testbild.%1%.bild"))
 
     def test_3(self):
         """Testing the Bild log"""
