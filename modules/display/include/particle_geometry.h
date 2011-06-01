@@ -234,6 +234,7 @@ IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
 */
 class HierarchyGeometry: public SingletonGeometry {
   double res_;
+  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
 public:
   HierarchyGeometry(core::Hierarchy d, double resolution=-1):
     SingletonGeometry(d), res_(resolution){}
@@ -244,8 +245,11 @@ public:
     sel.set_target_radius(res_);
     ParticlesTemp ps= sel.get_selected_particles();
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_NEW(XYZRGeometry, g, (core::XYZR(ps[i])));
-      ret.push_back(g);
+      if (components_.find(ps[i])== components_.end()) {
+        IMP_NEW(XYZRGeometry, g, (core::XYZR(ps[i])));
+        components_[ps[i]]=g;
+      }
+      ret.push_back(components_.find(ps[i])->second);
     }
     return ret;
   }
@@ -254,6 +258,7 @@ public:
 };
 class HierarchiesGeometry: public SingletonsGeometry {
   double res_;
+  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
   public:
   HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
     SingletonsGeometry(sc), res_(resolution){}
@@ -262,8 +267,12 @@ class HierarchiesGeometry: public SingletonsGeometry {
     for (unsigned int i=0;
          i< get_container()->get_number_of_particles();
          ++i) {
-      IMP_NEW(HierarchyGeometry, g, (get_container()->get_particle(i), res_));
-      ret.push_back(g);
+      if (components_.find(get_container()->get_particle(i))
+          == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (get_container()->get_particle(i), res_));
+        components_[get_container()->get_particle(i)]= g;
+      }
+      ret.push_back(components_.find(get_container()->get_particle(i))->second);
     }
     return ret;
   }
@@ -278,6 +287,7 @@ class HierarchiesGeometry: public SingletonsGeometry {
 */
 class SelectionGeometry: public Geometry {
   atom::Selection res_;
+  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
 public:
   SelectionGeometry(atom::Selection d,
                     std::string name="Selection"):
@@ -286,12 +296,15 @@ public:
     Geometries ret;
     ParticlesTemp ps= res_.get_selected_particles();
     for (unsigned int i=0; i< ps.size(); ++i) {
-      IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(ps[i])));
-      ret.push_back(g);
-      ret.back()->set_name(get_name());
-      if (get_has_color()) {
-        ret.back()->set_color(get_color());
+      if (components_.find(ps[i]) == components_.end()) {
+        IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(ps[i])));
+        components_[ps[i]]= g;
+        g->set_name(get_name());
+        if (get_has_color()) {
+          ret.back()->set_color(get_color());
+        }
       }
+      ret.push_back(components_.find(ps[i])->second);
     }
     return ret;
   }
