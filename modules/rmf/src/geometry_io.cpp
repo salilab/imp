@@ -139,9 +139,9 @@ namespace {
     HDF5DataSet<IndexTraits> id
       = cur.get_root_handle().get_hdf5_group()
       .add_child_data_set<IndexTraits>(inm, 1);
-    HDF5DataSet<IndexTraits> vd
+    HDF5DataSet<FloatTraits> vd
       = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<IndexTraits>(vnm, 2);
+      .add_child_data_set<FloatTraits>(vnm, 2);
     Ints isz(1, sg->get_faces().size());
     id.set_size(isz);
     for (unsigned int i=0; i< sg->get_faces().size(); ++i) {
