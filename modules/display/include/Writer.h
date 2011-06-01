@@ -95,6 +95,9 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
  protected:
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
+    if (out_== TextOutput()) {
+      out_= TextOutput(file_name_);
+    }
     return out_;
   }
 
