@@ -38,6 +38,7 @@ TextWriter::TextWriter(TextOutput fn): Writer(fn.get_name()), out_(fn){
 }
 TextWriter::TextWriter(std::string name): Writer(name), file_name_(name),
                                           out_(name){
+  set_was_used(true);
 }
 
 TextWriter::~TextWriter(){
