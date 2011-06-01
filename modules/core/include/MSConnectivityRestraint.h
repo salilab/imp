@@ -23,109 +23,6 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-class IMPCOREEXPORT ExperimentalTree
-    : public IMP::Object
-{
-public:
-
-  ExperimentalTree()
-    : Object("Tree%1%"), root_(-1)
-    , number_of_proteins_(0)
-    , finalized_(false)
-  {}
-
-  size_t add_node(const std::string &desc);
-  void connect(size_t parent, size_t child);
-  void finalize();
-
-  IMP_OBJECT(ExperimentalTree);
-
-private:
-
-  friend class MSConnectivityScore;
-
-  class Node
-  {
-  public:
-    Node()
-      : visited_(false)
-    {}
-    size_t get_number_of_parents() const
-    {
-      return parents_.size();
-    }
-    bool is_root() const
-    {
-      return get_number_of_parents() == 0;
-    }
-    size_t get_number_of_children() const
-    {
-      return children_.size();
-    }
-    bool is_leaf() const
-    {
-      return get_number_of_children() == 0;
-    }
-    size_t get_parent(size_t idx) const
-    {
-      return parents_[idx];
-    }
-    size_t get_child(size_t idx) const
-    {
-      return children_[idx];
-    }
-    typedef std::vector< std::pair<size_t, int> > Label;
-    const Label &get_label() const
-    {
-      return label_;
-    }
-
-
-    friend class ExperimentalTree;
-
-  private:
-    std::vector<size_t> parents_;
-    std::vector<size_t> children_;
-    Label label_;
-    bool visited_;
-  };
-
-  bool find_cycle(size_t node_index);
-  bool is_consistent(size_t node_index) const;
-
-  const Node *get_node(size_t index) const
-  {
-    return &nodes_[index];
-  }
-  size_t get_number_of_nodes() const
-  {
-    return nodes_.size();
-  }
-  size_t get_root() const
-  {
-    return root_;
-  }
-  size_t classify_protein(const std::string &desc) const;
-  std::string const &class_name(size_t id) const
-  {
-    return id_to_protein_[id];
-  }
-  size_t get_number_of_classes() const
-  {
-    return number_of_proteins_;
-  }
-
-  void desc_to_label(const std::string &desc, Node::Label &label);
-  size_t protein_to_id(const std::string &desc);
-
-  typedef std::map<std::string, size_t> ProteinMap;
-  ProteinMap protein_to_id_;
-  std::vector<Node> nodes_;
-  std::vector<std::string> id_to_protein_;
-  size_t root_;
-  size_t number_of_proteins_;
-  bool finalized_;
-};
 
 
 //! Ensure that a set of particles remains connected with one another.
@@ -147,35 +44,36 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
 {
   IMP::internal::OwnerPointer<PairScore> ps_;
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
-  IMP::internal::OwnerPointer<ExperimentalTree> tree_;
   double eps_;
-public:
+  public:
   //! Use the given PairScore
   /** If sc is NULL, a ListSingletonContainer is created internally.
-      eps is set to 0.1 by default.
+    eps is set to 0.1 by default.
    */
-  MSConnectivityRestraint(PairScore* ps, ExperimentalTree *tree,
-    double eps=0.1, SingletonContainer *sc=NULL);
+  MSConnectivityRestraint(PairScore* ps, double eps=0.1);
   /** @name Particles to be connected
 
-       The following methods are used to manipulate the list of particles
-       that are to be connected. Each particle should have all the
-       attributes expected by the PairScore used.
+    The following methods are used to manipulate the list of particles
+    that are to be connected. Each particle should have all the
+    attributes expected by the PairScore used.
 
-       Ideally, one should pass a singleton container instead. These
-       can only be used if none is passed.
-  */
+    Ideally, one should pass a singleton container instead. These
+    can only be used if none is passed.
+   */
   /*@{*/
-  void add_particle(Particle *p);
-  void add_particles(const Particles &ps);
-  void set_particles(const Particles &ps);
+  size_t add_type(const Particles &ps);
+  size_t add_composite(const std::vector<size_t> &components);
+  size_t add_composite(const std::vector<size_t> &components, size_t parent);
+  //void add_particle(Particle *p);
+  //void add_particles(const Particles &ps);
+  //void set_particles(const Particles &ps);
   /*@}*/
 
   //! Return the set of pairs which are connected by the restraint
   /** This set of pairs reflects the current configuration at the time of
-      the get_connected_pairs() call, not the set at the time of the last
-      evaluate() call.
-  */
+    the get_connected_pairs() call, not the set at the time of the last
+    evaluate() call.
+   */
   ParticlePairs get_connected_pairs() const;
 
   //! Return the pair score used for scoring
@@ -186,6 +84,213 @@ public:
   Restraints get_instant_decomposition() const;
 
   IMP_RESTRAINT(MSConnectivityRestraint);
+
+  private:
+
+  class ParticleMatrix
+  {
+    public:
+
+      class ParticleData
+      {
+        public:
+          ParticleData(Particle *p, size_t id)
+            : particle_(p)
+              , id_(id)
+        {}
+
+          Particle *get_particle() const
+          {
+            return particle_;
+          }
+
+          size_t get_id() const
+          {
+            return id_;
+          }
+        private:
+          Particle *particle_;
+          size_t id_;
+      };
+
+      ParticleMatrix(size_t number_of_classes)
+        : protein_by_class_(number_of_classes)
+          , min_distance_(std::numeric_limits<double>::max())
+          , max_distance_(0)
+          , current_id_(0)
+    {}
+
+      ParticleMatrix()
+        : min_distance_(std::numeric_limits<double>::max())
+          , max_distance_(0)
+          , current_id_(0)
+    {}
+
+      void resize(size_t number_of_classes)
+      {
+        protein_by_class_.resize(number_of_classes);
+      }
+
+      size_t add_particle(Particle *p, size_t id);
+      size_t add_type(const Particles &ps);
+      void create_distance_matrix(const PairScore *ps);
+      void clear_particles()
+      {
+        particles_.clear();
+        for ( size_t i = 0; i < protein_by_class_.size(); ++i )
+          protein_by_class_[i].clear();
+      }
+      size_t size() const
+      {
+        return particles_.size();
+      }
+      size_t get_number_of_classes() const
+      {
+        return protein_by_class_.size();
+      }
+      double get_distance(size_t p1, size_t p2) const
+      {
+        return dist_matrix_[p1*size() + p2];
+      }
+      std::vector<size_t> const &get_ordered_neighbors(size_t p) const
+      {
+        return order_[p];
+      }
+      ParticleData const &get_particle(size_t p) const
+      {
+        return particles_[p];
+      }
+      std::vector<size_t> const &get_all_proteins_in_class(
+          size_t id) const
+      {
+        return protein_by_class_[id];
+      }
+      double max_distance() const
+      {
+        return max_distance_;
+      }
+      double min_distance() const
+      {
+        return min_distance_;
+      }
+    private:
+      class DistCompare
+      {
+        public:
+          DistCompare(size_t source, ParticleMatrix const &parent)
+            : parent_(parent)
+              , source_(source)
+        {}
+
+          bool operator()(size_t p1, size_t p2) const
+          {
+            return parent_.get_distance(source_, p1) <
+              parent_.get_distance(source_, p2);
+          }
+        private:
+          ParticleMatrix const &parent_;
+          size_t source_;
+      };
+
+      std::vector<ParticleData> particles_;
+      std::vector<double> dist_matrix_;
+      std::vector< std::vector<size_t> > order_;
+      std::vector< std::vector<size_t> > protein_by_class_;
+      double min_distance_;
+      double max_distance_;
+      size_t current_id_;
+  };
+
+  class ExperimentalTree
+  {
+  public:
+    ExperimentalTree()
+      : root_(-1)
+      , finalized_(false)
+    {}
+
+    void connect(size_t parent, size_t child);
+    void finalize();
+    size_t add_composite(const std::vector<size_t> &components);
+    size_t add_composite(const std::vector<size_t> &components, size_t parent);
+
+  private:
+    friend class MSConnectivityScore;
+
+    class Node
+    {
+      public:
+        Node()
+          : visited_(false)
+        {}
+        size_t get_number_of_parents() const
+        {
+          return parents_.size();
+        }
+        bool is_root() const
+        {
+          return get_number_of_parents() == 0;
+        }
+        size_t get_number_of_children() const
+        {
+          return children_.size();
+        }
+        bool is_leaf() const
+        {
+          return get_number_of_children() == 0;
+        }
+        size_t get_parent(size_t idx) const
+        {
+          return parents_[idx];
+        }
+        size_t get_child(size_t idx) const
+        {
+          return children_[idx];
+        }
+        typedef std::vector< std::pair<size_t, int> > Label;
+        const Label &get_label() const
+        {
+          return label_;
+        }
+
+
+        friend class ExperimentalTree;
+
+      private:
+        std::vector<size_t> parents_;
+        std::vector<size_t> children_;
+        Label label_;
+        bool visited_;
+    };
+
+    bool find_cycle(size_t node_index);
+    bool is_consistent(size_t node_index) const;
+
+    const Node *get_node(size_t index) const
+    {
+      return &nodes_[index];
+    }
+    size_t get_number_of_nodes() const
+    {
+      return nodes_.size();
+    }
+    size_t get_root() const
+    {
+      return root_;
+    }
+    void desc_to_label(const std::vector<size_t> &components,
+                       Node::Label &label);
+
+    std::vector<Node> nodes_;
+    size_t root_;
+    bool finalized_;
+  };
+
+  mutable ParticleMatrix particle_matrix_;
+  mutable ExperimentalTree tree_;
+
+  friend class MSConnectivityScore;
+
 };
 
 IMPCORE_END_NAMESPACE
