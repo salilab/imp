@@ -168,14 +168,15 @@ namespace {
             IMP_HDF5_PASS_GEOMETRY_KEYS);                        \
   }
 
-  void add_internal(NodeHandle parent, display::Geometry *g,
+  void add_internal(NodeHandle parent,  display::Geometry *tag,
+                    display::Geometry *g,
                     IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     int frame=0;
     IMP::Pointer<display::Geometry> gp(g);
     gp->set_was_used(true);
     // get_has_color, get_color, get_name, get_components
     NodeHandle cur= parent.add_child(g->get_name(), GEOMETRY);
-    cur.set_association(g);
+    cur.set_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry)
     else IMP_TRY(display::SegmentGeometry)
@@ -186,8 +187,12 @@ namespace {
         IMP_THROW("Unable to process geometry of type "
                   << g->get_type_name(), IOException);
       }
-      for (unsigned int i=0; i< gt.size(); ++i) {
-        add_internal(cur, gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+      if (gt.size()==1) {
+        add_internal(cur, tag, gt.front(), IMP_HDF5_PASS_GEOMETRY_KEYS);
+      } else {
+        for (unsigned int i=0; i< gt.size(); ++i) {
+          add_internal(cur, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+        }
       }
     }
     if (g->get_has_color()) {
@@ -204,29 +209,35 @@ namespace {
 
 void add_geometry(RootHandle parent, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
-  add_internal(parent, g,
+  add_internal(parent, g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
 }
 
 namespace {
-  void save_internal(RootHandle parent,int frame, display::Geometry *g,
+  void save_internal(RootHandle parent,int frame, display::Geometry *tag,
+                     display::Geometry *g,
                      IMP_HDF5_ACCEPT_GEOMETRY_KEYS) {
     IMP::Pointer<display::Geometry> gp(g);
     gp->set_was_used(true);
     // get_has_color, get_color, get_name, get_components
-    NodeHandle cur= parent.get_node_handle_from_association(g);
+    NodeHandle cur= parent.get_node_handle_from_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry);
     display::GeometriesTemp gt= g->get_components();
-    for (unsigned int i=0; i< gt.size(); ++i) {
-      save_internal(parent, frame, gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+    if (gt.size()==1) {
+      save_internal(parent, frame, tag, gt.front(),
+                    IMP_HDF5_PASS_GEOMETRY_KEYS);
+    } else {
+      for (unsigned int i=0; i< gt.size(); ++i) {
+        save_internal(parent, frame, gt[i], gt[i], IMP_HDF5_PASS_GEOMETRY_KEYS);
+      }
     }
   }
 }
 
 void save_frame(RootHandle parent, int frame, display::Geometry *g) {
   IMP_HDF5_CREATE_GEOMETRY_KEYS(parent);
-  save_internal(parent, frame, g,
+  save_internal(parent, frame, g, g,
                IMP_HDF5_PASS_GEOMETRY_KEYS);
 }
 
