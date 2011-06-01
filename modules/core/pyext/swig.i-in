@@ -46,7 +46,6 @@ IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
 IMP_SWIG_OBJECT( IMP::core, MCCGSampler, MCCGSamplers);
 IMP_SWIG_OBJECT( IMP::core, MonteCarlo, MonteCarlos);
-IMP_SWIG_OBJECT( IMP::core, ExperimentalTree, ExperimentalTrees);
 IMP_SWIG_OBJECT( IMP::core, MSConnectivityRestraint, MSConnectivityRestraints);
 IMP_SWIG_OBJECT( IMP::core, NormalMover, NormalMovers);
 IMP_SWIG_OBJECT( IMP::core, MoverBase, MoverBases);
@@ -130,7 +129,7 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
-%include "IMP/core/MSConnectivityRestraint.h"
+%include "IMP_core_MSConnectivityRestraint.i"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
 %include "IMP/core/CoverRefined.h"

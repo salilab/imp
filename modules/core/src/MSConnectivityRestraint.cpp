@@ -33,11 +33,8 @@
 IMPCORE_BEGIN_NAMESPACE
 
 
-void ExperimentalTree::do_show(std::ostream & /*out*/) const
-{
-}
-
-bool ExperimentalTree::is_consistent(size_t node_index) const
+bool MSConnectivityRestraint::ExperimentalTree::is_consistent(
+  size_t node_index) const
 {
   const Node *node = get_node(node_index);
   const Node::Label &label = node->get_label();
@@ -83,19 +80,8 @@ bool ExperimentalTree::is_consistent(size_t node_index) const
 }
 
 
-size_t ExperimentalTree::add_node(const std::string &desc)
-{
-  if ( finalized_ )
-    IMP_THROW("Cannot add new nodes to finalized tree", IMP::ValueException);
-  Node node;
-  desc_to_label(desc, node.label_);
-  size_t idx = nodes_.size();
-  nodes_.push_back(node);
-  return idx;
-}
-
-
-void ExperimentalTree::connect(size_t parent, size_t child)
+void MSConnectivityRestraint::ExperimentalTree::connect(
+  size_t parent, size_t child)
 {
   if ( finalized_ )
     IMP_THROW("Cannot add new edges to finalized tree", IMP::ValueException);
@@ -104,7 +90,7 @@ void ExperimentalTree::connect(size_t parent, size_t child)
 }
 
 
-void ExperimentalTree::finalize()
+void MSConnectivityRestraint::ExperimentalTree::finalize()
 {
   if ( finalized_ )
     return;
@@ -130,7 +116,7 @@ void ExperimentalTree::finalize()
 }
 
 
-bool ExperimentalTree::find_cycle(size_t node_index)
+bool MSConnectivityRestraint::ExperimentalTree::find_cycle(size_t node_index)
 {
   Node &node = nodes_[node_index];
   if ( node.visited_ )
@@ -148,195 +134,70 @@ bool ExperimentalTree::find_cycle(size_t node_index)
 }
 
 
-size_t ExperimentalTree::classify_protein(
-    const std::string &desc) const
+size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
+  const std::vector<size_t> &components)
 {
-  ProteinMap::const_iterator p = protein_to_id_.find(desc);
-  if ( p == protein_to_id_.end() )
-    return size_t(-1);
-  return p->second;
+  if ( finalized_ )
+    IMP_THROW("Cannot add new nodes to finalized tree", IMP::ValueException);
+  Node node;
+  desc_to_label(components, node.label_);
+  size_t idx = nodes_.size();
+  nodes_.push_back(node);
+  return idx;
 }
 
 
-size_t ExperimentalTree::protein_to_id(
-    const std::string &desc)
+size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
+  const std::vector<size_t> &components, size_t parent)
 {
-  size_t id = classify_protein(desc);
-  if ( id == size_t(-1) )
-  {
-    id = number_of_proteins_++;
-    protein_to_id_[desc] = id;
-    id_to_protein_.push_back(desc);
-  }
-  return id;
+  size_t child = add_composite(components);
+  connect(parent, child);
+  return child;
 }
 
 
-void ExperimentalTree::desc_to_label(const std::string &desc,
-    Node::Label &label)
+void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
+    const std::vector<size_t> &components, Node::Label &label)
 {
   label.clear();
-  std::vector<std::string> protein_names;
-  boost::split(protein_names, desc, boost::is_space());
-  std::sort(protein_names.begin(), protein_names.end());
-  for ( size_t i=0; i<protein_names.size(); ++i )
-    if ( !protein_names[i].empty() )
-    {
-      size_t id = protein_to_id(protein_names[i]);
-      if ( label.empty() || label.back().first != id )
-        label.push_back(std::make_pair(id, 1));
-      else
-        label.back().second++;
-    }
-  std::sort(label.begin(), label.end());
+  std::vector<size_t> sorted_components(components);
+  std::sort(sorted_components.begin(), sorted_components.end());
+  for ( size_t i=0; i<sorted_components.size(); ++i )
+  {
+    size_t id = sorted_components[i];
+    if ( label.empty() || label.back().first != id )
+      label.push_back(std::make_pair(id, 1));
+    else
+      label.back().second++;
+  }
 }
 
 
 
-MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps,
-  ExperimentalTree *tree, double eps,
-                                             SingletonContainer *sc):
+MSConnectivityRestraint::MSConnectivityRestraint(PairScore *ps, double eps):
   Restraint("MSConnectivityRestraint %1%"),
   ps_(ps),
-  tree_(tree),
   eps_(eps)
 {
-  if (sc) {
-    sc_= sc;
-  } else {
-  }
-  tree_->finalize();
 }
 
 
 
-namespace
+size_t MSConnectivityRestraint::ParticleMatrix::add_type(const Particles &ps)
 {
-
-
-
-class ParticleMatrix
-{
-public:
-
-  class ParticleData
+  protein_by_class_.push_back(std::vector<size_t>());
+  for ( size_t i = 0; i < ps.size(); ++i )
   {
-  public:
-    ParticleData(Particle *p, size_t id)
-      : particle_(p)
-      , id_(id)
-    {}
-
-    Particle *get_particle() const
-    {
-      return particle_;
-    }
-
-    size_t get_id() const
-    {
-      return id_;
-    }
-  private:
-    Particle *particle_;
-    size_t id_;
-  };
-
-  ParticleMatrix(size_t number_of_classes)
-    : protein_by_class_(number_of_classes)
-    , min_distance_(std::numeric_limits<double>::max())
-    , max_distance_(0)
-  {}
-
-  ParticleMatrix()
-    : min_distance_(std::numeric_limits<double>::max())
-    , max_distance_(0)
-  {}
-
-  void resize(size_t number_of_classes)
-  {
-    protein_by_class_.resize(number_of_classes);
+    size_t n = particles_.size();
+    particles_.push_back(ParticleData(ps[i], current_id_));
+    protein_by_class_.back().push_back(n);
   }
-
-  size_t add_particle(Particle *p, size_t id);
-  void create_distance_matrix(const PairScore *ps);
-  void clear_particles()
-  {
-    particles_.clear();
-    for ( size_t i = 0; i < protein_by_class_.size(); ++i )
-      protein_by_class_[i].clear();
-  }
-  size_t size() const
-  {
-    return particles_.size();
-  }
-  size_t get_number_of_classes() const
-  {
-    return protein_by_class_.size();
-  }
-  double get_distance(size_t p1, size_t p2) const
-  {
-    return dist_matrix_[p1*size() + p2];
-  }
-  std::vector<size_t> const &get_ordered_neighbors(size_t p) const
-  {
-    return order_[p];
-  }
-  ParticleData const &get_particle(size_t p) const
-  {
-    return particles_[p];
-  }
-  std::vector<size_t> const &get_all_proteins_in_class(
-      size_t id) const
-  {
-    return protein_by_class_[id];
-  }
-  double max_distance() const
-  {
-    return max_distance_;
-  }
-  double min_distance() const
-  {
-    return min_distance_;
-  }
-private:
-  class DistCompare
-  {
-  public:
-    DistCompare(size_t source, ParticleMatrix const &parent)
-      : parent_(parent)
-      , source_(source)
-    {}
-
-    bool operator()(size_t p1, size_t p2) const
-    {
-      return parent_.get_distance(source_, p1) <
-        parent_.get_distance(source_, p2);
-    }
-  private:
-    ParticleMatrix const &parent_;
-    size_t source_;
-  };
-
-  std::vector<ParticleData> particles_;
-  std::vector<double> dist_matrix_;
-  std::vector< std::vector<size_t> > order_;
-  std::vector< std::vector<size_t> > protein_by_class_;
-  double min_distance_;
-  double max_distance_;
-};
-
-
-size_t ParticleMatrix::add_particle(Particle *p, size_t id)
-{
-  int n = particles_.size();
-  particles_.push_back(ParticleData(p, id));
-  if ( id < protein_by_class_.size() )
-    protein_by_class_[id].push_back(n);
-  return n;
+  return current_id_++;
 }
 
 
-void ParticleMatrix::create_distance_matrix(const PairScore *ps)
+void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
+  const PairScore *ps)
 {
   size_t n = size();
   dist_matrix_.resize(n*n);
@@ -492,15 +353,13 @@ EdgeSet mst(NNGraph &G)
   return edges;
 }
 
-}
-
 
 class MSConnectivityScore
 {
 public:
-  MSConnectivityScore(const ExperimentalTree &tree,
-    const SingletonContainer *sc,
-    const PairScore *ps, double eps);
+  MSConnectivityScore(const MSConnectivityRestraint::ExperimentalTree &tree,
+    const PairScore *ps, double eps,
+    MSConnectivityRestraint::ParticleMatrix &pm);
   double score(DerivativeAccumulator *accum) const;
   EdgeSet get_connected_pairs() const;
   Particle *get_particle(size_t p) const
@@ -520,29 +379,22 @@ private:
   NNGraph pick_graph(EdgeSet const &picked) const;
   NNGraph find_threshold() const;
 
-  ParticleMatrix pm_;
+  MSConnectivityRestraint::ParticleMatrix &pm_;
   const PairScore *ps_;
-  const ExperimentalTree &tree_;
+  const MSConnectivityRestraint::ExperimentalTree &tree_;
   double eps_;
 };
 
 
-MSConnectivityScore::MSConnectivityScore(const ExperimentalTree &tree,
-  const SingletonContainer *sc, const PairScore *ps, double eps)
-    : pm_(tree.get_number_of_classes())
+MSConnectivityScore::MSConnectivityScore(
+  const MSConnectivityRestraint::ExperimentalTree &tree,
+  const PairScore *ps, double eps,
+  MSConnectivityRestraint::ParticleMatrix &pm)
+    : pm_(pm)
     , ps_(ps)
     , tree_(tree)
     , eps_(eps)
 {
-  StringKey id_key("id");
-  for ( unsigned i = 0; i < sc->get_number_of_particles(); ++i )
-  {
-    Particle *p = sc->get_particle(i);
-    size_t id = tree.classify_protein(p->get_value(id_key));
-    if ( id == size_t(-1) )
-      continue;
-    pm_.add_particle(p, id);
-  }
   pm_.create_distance_matrix(ps);
 }
 
@@ -621,8 +473,10 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
     std::vector<Tuples> const &all_tuples,
     EdgeSet &picked) const
 {
-  ExperimentalTree::Node const *node = tree_.get_node(node_handle);
-  ExperimentalTree::Node::Label const &lb = node->get_label();
+  MSConnectivityRestraint::ExperimentalTree::Node const *node =
+       tree_.get_node(node_handle);
+  MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
+       node->get_label();
   std::vector<Tuples> new_tuples;
   std::vector<size_t> empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
@@ -689,8 +543,10 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
   EdgeSet &picked) const
 {
   size_t root_handle = tree_.get_root();
-  ExperimentalTree::Node const *node = tree_.get_node(root_handle);
-  ExperimentalTree::Node::Label const &lb = node->get_label();
+  MSConnectivityRestraint::ExperimentalTree::Node const *node =
+       tree_.get_node(root_handle);
+  MSConnectivityRestraint::ExperimentalTree::Node::Label const &lb =
+       node->get_label();
   std::vector<Tuples> tuples;
   std::vector<size_t> empty_vector;
   for ( size_t i = 0; i < lb.size(); ++i )
@@ -852,28 +708,28 @@ namespace {
   }
 }
 
-void MSConnectivityRestraint::set_particles(const Particles &ps) {
-  if (!sc_ && !ps.empty()) {
-    sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
-                                                  "msconnectivity list");
-  }
-  ms_get_list(sc_)->set_particles(ps);
-}
-
-void MSConnectivityRestraint::add_particles(const Particles &ps) {
+size_t MSConnectivityRestraint::add_type(const Particles &ps)
+{
   if (!sc_&& !ps.empty()) {
     sc_= new internal::CoreListSingletonContainer(ps[0]->get_model(),
                                                   "msconnectivity list");
   }
   ms_get_list(sc_)->add_particles(ps);
+  return particle_matrix_.add_type(ps);
 }
 
-void MSConnectivityRestraint::add_particle(Particle *ps) {
-  if (!sc_) {
-    sc_= new internal::CoreListSingletonContainer(ps->get_model(),
-                                                  "msconnectivity list");
-  }
-  ms_get_list(sc_)->add_particle(ps);
+
+size_t MSConnectivityRestraint::add_composite(
+       const std::vector<size_t> &composite)
+{
+  return tree_.add_composite(composite);
+}
+
+
+size_t MSConnectivityRestraint::add_composite(
+       const std::vector<size_t> &composite, size_t parent)
+{
+  return tree_.add_composite(composite, parent);
 }
 
 
@@ -883,7 +739,8 @@ MSConnectivityRestraint::unprotected_evaluate(
 {
   IMP_CHECK_OBJECT(ps_.get());
   IMP_OBJECT_LOG;
-  MSConnectivityScore mcs(*tree_, sc_.get(), ps_.get(), eps_);
+  tree_.finalize();
+  MSConnectivityScore mcs(tree_, ps_.get(), eps_, particle_matrix_);
   return mcs.score(accum);
 }
 
@@ -903,7 +760,8 @@ Restraints MSConnectivityRestraint::get_instant_decomposition() const {
 
 ParticlePairs MSConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
-  MSConnectivityScore mcs(*tree_, sc_.get(), ps_.get(), eps_);
+  tree_.finalize();
+  MSConnectivityScore mcs(tree_, ps_.get(), eps_, particle_matrix_);
   EdgeSet edges = mcs.get_connected_pairs();
   ParticlePairs ret(edges.size());
   unsigned index = 0;
