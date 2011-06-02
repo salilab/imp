@@ -29,6 +29,7 @@ IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5StringDataSet, HDF5StringDataSet, HDF5Stri
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5IndexDataSet, HDF5IndexDataSet, HDF5IndexDataSets);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5NodeIDDataSet, HDF5NodeIDDataSet, HDF5NodeIDDataSets);
 IMP_SWIG_OBJECT(IMP::rmf, SaveHierarchyConfigurationOptimizerState, SaveHierarchyConfigurationOptimizerStates);
+IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
 
 %include "IMP/rmf/NodeID.h"
 %include "IMP/rmf/hdf5_types.h"
