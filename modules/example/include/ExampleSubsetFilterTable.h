@@ -14,19 +14,26 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-//! A dumb filter that forces the ith particle to be in the ith state.
-/** The source code is as follows:
+/** Filter a set of particles based on the maximum difference
+    in state indexes between them (a completely silly criteria).
+    The thing to note is how the filter table determines when
+    it should be applied and how it sets up the filters.
     \include ExampleSubsetFilterTable.h
     \include ExampleSubsetFilterTable.cpp
 */
-class IMPEXAMPLEEXPORT ExampleSubsetFilterTable :
+class IMPEXAMPLEEXPORT ExampleSubsetFilterTable:
   public domino::SubsetFilterTable
 {
-  std::map<Particle*, int> index_;
-public:
-  ExampleSubsetFilterTable(const ParticlesTemp &order);
+  int max_diff_;
+  const Particles ps_;
+  Ints get_indexes(const domino::Subset &s,
+                   const domino::Subsets& prior_subsets) const;
+ public:
+  ExampleSubsetFilterTable(unsigned int max_diff, const ParticlesTemp &pt);
+
   IMP_SUBSET_FILTER_TABLE(ExampleSubsetFilterTable);
 };
+
 
 IMPEXAMPLE_END_NAMESPACE
 
