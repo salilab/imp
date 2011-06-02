@@ -12,11 +12,11 @@ IMP_SWIG_OBJECT(IMP::example, ExampleUnaryFunction, ExampleUnaryFunctions);
 IMP_SWIG_OBJECT(IMP::example, ExampleSingletonModifier, ExampleSingletonModifiers);
 IMP_SWIG_OBJECT(IMP::example, ExamplePairScore, ExamplePairScores);
 IMP_SWIG_OBJECT(IMP::example, ExampleRefCounted, ExampleRefCounteds);
+IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 // don't ask why the _NAME, it will be fixed at some point
 IMP_SWIG_VALUE_INSTANCE(IMP::example, ExampleTemplateClass3D, ExampleTemplateClassD, ExampleTemplateClass3Ds);
 IMP_SWIG_VALUE_TEMPLATE(IMP::example, ExampleTemplateClassD)
 
-IMP_SWIG_OBJECT(IMP::example, ExampleSubsetFilterTable, ExampleSubsetFilterTables);
 
 /* One can add python methods to your module by putting code in %pythoncode blocks
    This function can be called as IMP.examples.say_hello(). */
