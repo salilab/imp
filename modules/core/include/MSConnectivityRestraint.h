@@ -62,8 +62,8 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
    */
   /*@{*/
   size_t add_type(const Particles &ps);
-  size_t add_composite(const std::vector<size_t> &components);
-  size_t add_composite(const std::vector<size_t> &components, size_t parent);
+  size_t add_composite(const Ints &components);
+  size_t add_composite(const Ints &components, size_t parent);
   //void add_particle(Particle *p);
   //void add_particles(const Particles &ps);
   //void set_particles(const Particles &ps);
@@ -211,8 +211,8 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
 
     void connect(size_t parent, size_t child);
     void finalize();
-    size_t add_composite(const std::vector<size_t> &components);
-    size_t add_composite(const std::vector<size_t> &components, size_t parent);
+    size_t add_composite(const Ints &components);
+    size_t add_composite(const Ints &components, size_t parent);
 
   private:
     friend class MSConnectivityScore;
@@ -278,7 +278,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
     {
       return root_;
     }
-    void desc_to_label(const std::vector<size_t> &components,
+    void desc_to_label(const Ints &components,
                        Node::Label &label);
 
     std::vector<Node> nodes_;

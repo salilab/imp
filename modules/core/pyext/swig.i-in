@@ -129,7 +129,6 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/ClosePairsPairScore.h"
 %include "IMP/core/ConjugateGradients.h"
 %include "IMP/core/ConnectivityRestraint.h"
-%include "IMP_core_MSConnectivityRestraint.i"
 %include "IMP/core/ConstantRestraint.h"
 %include "IMP/core/Cosine.h"
 %include "IMP/core/CoverRefined.h"
@@ -150,6 +149,7 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/HarmonicWell.h"
 %include "IMP/core/HarmonicLowerBound.h"
 %include "IMP/core/HarmonicUpperBound.h"
+%include "IMP/core/MSConnectivityRestraint.h"
 %inline %{
 namespace IMP {
 namespace core {
