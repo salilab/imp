@@ -62,8 +62,6 @@ namespace {
     IMP_USAGE_CHECK(p[0] != p[1],
                     "The particles passed must be different: "
                     << p[0]->get_name());
-    IMP_USAGE_CHECK(dist > 0,
-                    "The distance must be positive");
     cpf->set_distance(dist);
     pairs= cpf->get_close_pairs(pa, pb);
     /*for (unsigned int i=0; i< ppt.size(); ++i) {
