@@ -135,7 +135,7 @@ bool MSConnectivityRestraint::ExperimentalTree::find_cycle(size_t node_index)
 
 
 size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
-  const std::vector<size_t> &components)
+  const Ints &components)
 {
   if ( finalized_ )
     IMP_THROW("Cannot add new nodes to finalized tree", IMP::ValueException);
@@ -148,7 +148,7 @@ size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
 
 
 size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
-  const std::vector<size_t> &components, size_t parent)
+  const Ints &components, size_t parent)
 {
   size_t child = add_composite(components);
   connect(parent, child);
@@ -157,10 +157,11 @@ size_t MSConnectivityRestraint::ExperimentalTree::add_composite(
 
 
 void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
-    const std::vector<size_t> &components, Node::Label &label)
+    const Ints &components, Node::Label &label)
 {
   label.clear();
-  std::vector<size_t> sorted_components(components);
+  std::vector<size_t> sorted_components(components.begin(),
+                                        components.end());
   std::sort(sorted_components.begin(), sorted_components.end());
   for ( size_t i=0; i<sorted_components.size(); ++i )
   {
@@ -720,14 +721,14 @@ size_t MSConnectivityRestraint::add_type(const Particles &ps)
 
 
 size_t MSConnectivityRestraint::add_composite(
-       const std::vector<size_t> &composite)
+       const Ints &composite)
 {
   return tree_.add_composite(composite);
 }
 
 
 size_t MSConnectivityRestraint::add_composite(
-       const std::vector<size_t> &composite, size_t parent)
+       const Ints &composite, size_t parent)
 {
   return tree_.add_composite(composite, parent);
 }
@@ -753,6 +754,7 @@ Restraints MSConnectivityRestraint::get_instant_decomposition() const {
     std::ostringstream oss;
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
+    ret[i]=pr;
   }
   return ret;
 }
