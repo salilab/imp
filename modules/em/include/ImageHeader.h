@@ -315,14 +315,14 @@ public:
                              spider_header_.fPsi2);
   }
 
-  void set_euler_angles(algebra::Vector3D &euler) {
+  void set_euler_angles(const algebra::Vector3D &euler) {
     spider_header_.fIangle = 1;
     spider_header_.fPhi = euler[0]; // z
     spider_header_.fTheta = euler[1]; // y
     spider_header_.fPsi = euler[2]; //z
   }
 
-  void set_euler_angles1(algebra::Vector3D &euler) {
+  void set_euler_angles1(const algebra::Vector3D &euler) {
     if (spider_header_.fFlag != 2.f){
       spider_header_.fFlag = 1.f;
     }
@@ -331,7 +331,7 @@ public:
     spider_header_.fPsi1 = euler[2]; //z
   }
 
-  void set_euler_angles2(algebra::Vector3D &euler) {
+  void set_euler_angles2(const algebra::Vector3D &euler) {
     spider_header_.fFlag = 2;
     spider_header_.fPhi2 = euler[0]; // z
     spider_header_.fTheta2 = euler[1]; // y
