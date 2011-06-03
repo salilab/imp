@@ -8,7 +8,7 @@ IMP_SWIG_OBJECT(IMP::multifit, ComponentHeader, ComponentHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, AssemblyHeader, AssemblyHeaders);
 IMP_SWIG_OBJECT(IMP::multifit, SettingsData, SettingsDataList);
 IMP_SWIG_OBJECT(IMP::multifit, WeightedExcludedVolumeRestraint, WeightedExcludedVolumeRestraints);
-IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList);
+/*IMP_SWIG_OBJECT(IMP::multifit, ProteomicsData, ProteomicsDataList); */
 
 /* Make selected classes extensible in Python */
 #IMP_SWIG_OBJECT(IMP::em, DataContainer,DataContainers);
