@@ -26,6 +26,7 @@ IMPATOM_BEGIN_NAMESPACE
 struct CHARMMBondParameters {
   double force_constant;
   double ideal;
+  CHARMMBondParameters(){}
   IMP_SHOWABLE_INLINE(CHARMMBondParameters,
                       {out << "force constant: " << force_constant
                        << "; ideal value: " << ideal;});
@@ -38,6 +39,7 @@ struct CHARMMDihedralParameters {
   double force_constant;
   int multiplicity;
   double ideal;
+  CHARMMDihedralParameters(){}
   IMP_SHOWABLE_INLINE(CHARMMDihedralParameters,
                       {out << "force constant: " << force_constant
                        << "; multiplicity: " << multiplicity
