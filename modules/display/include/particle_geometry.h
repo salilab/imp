@@ -301,7 +301,7 @@ public:
         components_[ps[i]]= g;
         g->set_name(get_name());
         if (get_has_color()) {
-          ret.back()->set_color(get_color());
+          components_[ps[i]]->set_color(get_color());
         }
       }
       ret.push_back(components_.find(ps[i])->second);

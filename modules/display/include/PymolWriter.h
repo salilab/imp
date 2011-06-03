@@ -34,8 +34,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT PymolWriter: public TextWriter
 {
   std::string lastname_;
+  enum Type {NONE=0, LINES, TRIANGLES, OTHER};
+  Type open_type_;
   friend class CGOAnimationWriter;
-  void setup(std::string name);
+  void setup(std::string name, Type type);
   void cleanup(std::string name, bool close=true);
   bool handle(SphereGeometry *g,
                Color color, std::string name);
