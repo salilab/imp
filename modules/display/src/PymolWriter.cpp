@@ -34,6 +34,7 @@ void PymolWriter::do_open() {
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "from pymol.vfont import plain\ndata= {}\n";
   get_stream() << "curdata= []\n";
+  open_type_=NONE;
 }
 
 void PymolWriter::do_close() {
@@ -47,6 +48,10 @@ void PymolWriter::do_close() {
 
 
 void PymolWriter::cleanup(std::string name, bool close){
+  if (open_type_!= NONE) {
+    get_stream() << "END,\n";
+    open_type_=NONE;
+  }
   if (close && lastname_ != placeholder_name) get_stream() << "]\n";
   lastname_=placeholder_name;
   get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
@@ -54,8 +59,14 @@ void PymolWriter::cleanup(std::string name, bool close){
                << "  data[k]= data[k]+curdata\nelse:\n"
                << "  data[k]= curdata\n\n";
 }
-void PymolWriter::setup(std::string name){
-  if (name==lastname_) return;
+void PymolWriter::setup(std::string name, Type type){
+  if (name==lastname_) {
+    if (open_type_!= type && open_type_ != NONE) {
+      get_stream() << "END,\n";
+      open_type_=NONE;
+    }
+    return;
+  }
   else if (lastname_ != placeholder_name) {
     cleanup(lastname_);
   }
@@ -79,7 +90,7 @@ namespace {
 
 bool PymolWriter::handle(SphereGeometry *g,
                           Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   write_color(get_stream(), color);
   get_stream() << "SPHERE, "
                << algebra::commas_io(g->get_geometry().get_center())
@@ -90,7 +101,7 @@ bool PymolWriter::handle(SphereGeometry *g,
 }
 bool PymolWriter::handle(LabelGeometry *g,
                           Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   write_color(get_stream(), color);
   get_stream() << "  ]\ncyl_text(curdata,plain, ["
                << g->get_location().get_center()[0]
@@ -107,7 +118,7 @@ bool PymolWriter::handle(LabelGeometry *g,
 }
 bool PymolWriter::handle(CylinderGeometry *g,
                             Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   get_stream() << "CYLINDER,\n"
                << algebra::commas_io(g->get_geometry()
                                      .get_segment().get_point(0)) << ",\n"
@@ -126,7 +137,7 @@ bool PymolWriter::handle(CylinderGeometry *g,
 }
 bool PymolWriter::handle(PointGeometry *g,
                             Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   write_color(get_stream(),color);
   get_stream() << "SPHERE, "
                << algebra::commas_io(g->get_geometry()) << ", "
@@ -135,18 +146,21 @@ bool PymolWriter::handle(PointGeometry *g,
 }
 bool PymolWriter::handle(SegmentGeometry *g,
                             Color color, std::string name) {
-  setup(name);
+  setup(name, LINES);
   /*double r= .01*(g->get_geometry().get_point(0)- g->get_geometry()
     .get_point(1)).get_magnitude();*/
-  get_stream() << "BEGIN, LINES,\n";
+  if (!open_type_) {
+    get_stream() << "BEGIN, LINES,\n";
+    open_type_=LINES;
+  }
   write_color(get_stream(), color);
   get_stream() << "VERTEX, "
                << algebra::commas_io(g->get_geometry().get_point(0))
                << ",\n"
                << "VERTEX, "
                << algebra::commas_io(g->get_geometry().get_point(1))
-               << ",\n"
-               << "END,\n";
+               << ",\n";
+  //<< "END,\n";
   return true;
 }
 
@@ -177,7 +191,7 @@ namespace {
 
 bool PymolWriter::handle(PolygonGeometry *g,
                           Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   std::pair<std::vector<algebra::Vector3Ds>,
             algebra::Vector3D> polys
             = internal::get_convex_polygons(g->get_geometry());
@@ -200,7 +214,7 @@ bool PymolWriter::handle(PolygonGeometry *g,
 
 bool PymolWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
-  setup(name);
+  setup(name, OTHER);
   get_stream() << "BEGIN, TRIANGLE_FAN, ";
   write_triangle(g->get_geometry().get_point(0),
                  g->get_geometry().get_point(1),
@@ -211,8 +225,11 @@ bool PymolWriter::handle(TriangleGeometry *g,
 
 bool PymolWriter::handle(SurfaceMeshGeometry *g,
                          Color color, std::string name) {
-  setup(name);
-  get_stream() << "BEGIN, TRIANGLES, ";
+  setup(name, TRIANGLES);
+  if (!open_type_) {
+    get_stream() << "BEGIN, TRIANGLES, ";
+    open_type_=TRIANGLES;
+  }
   algebra::Vector3Ds cur;
   for (unsigned int i=0; i< g->get_faces().size(); ++i) {
     if (g->get_faces()[i]==-1) {
@@ -227,7 +244,7 @@ bool PymolWriter::handle(SurfaceMeshGeometry *g,
       cur.push_back(g->get_vertices()[g->get_faces()[i]]);
     }
   }
-  get_stream() << "END,\n";
+  //get_stream() << "END,\n";
   return true;
 }
 
