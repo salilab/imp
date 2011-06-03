@@ -11,10 +11,9 @@
 #include "ForceFieldParameters.h"
 #include "charmm_topology.h"
 #include "atom_macros.h"
+#include <IMP/file.h>
 
 #include <string>
-#include <fstream>
-
 // swig is being dumb
 IMP_BEGIN_NAMESPACE
 class VersionInfo;
@@ -104,8 +103,8 @@ public:
         removing the HN, HN and O atoms respectively, and adding excess bonds
         to these atoms.
    */
-  CHARMMParameters(const String& topology_file_name,
-                   const String& par_file_name = std::string(),
+  CHARMMParameters(TextInput topology_file_name,
+                   TextInput par_file_name = TextInput(),
                    bool translate_names_to_pdb=false);
 
   /** \name Residue topology
@@ -306,9 +305,9 @@ private:
 
   virtual String get_force_field_atom_type(Atom atom) const;
 
-  void read_parameter_file(std::ifstream& input_file);
+  void read_parameter_file(TextInput input_file);
   // read topology file
-  void read_topology_file(std::ifstream& input_file,
+  void read_topology_file(TextInput input_file,
                           bool translate_names_to_pdb);
 
   void add_angle(Particle *p1, Particle *p2, Particle *p3, Particles &ps) const;
