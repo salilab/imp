@@ -181,10 +181,11 @@ class IMPDISPLAYEXPORT IsosurfaceGeometry: public SurfaceMeshGeometry {
                         "IsosurfaceGeometry %1%"){}
 #ifdef SWIG
   IsosurfaceGeometry(const algebra::grids::GridD<3,
-                      algebra::grids::DenseGridStorageD<3, double> > &grid,
+                     algebra::grids::DenseGridStorageD<3, double>, double >
+                     &grid,
                      double iso);
   IsosurfaceGeometry(const algebra::grids::GridD<3,
-                       algebra::grids::DenseGridStorageD<3, float> > &grid,
+                     algebra::grids::DenseGridStorageD<3, float>, float > &grid,
                      double iso);
 #endif
 };
