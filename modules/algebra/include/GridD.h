@@ -829,7 +829,7 @@ namespace grids {
   template <int D,
             class Storage,
             // swig needs this for some reason
-            class Value=typename Storage::Value>
+            class Value>
   class GridD: public Storage
   {
   private:
@@ -840,8 +840,8 @@ namespace grids {
 #ifndef IMP_DOXYGEN
   protected:
     struct GetVoxel {
-      mutable GridD<D, Storage> *home_;
-      GetVoxel(GridD<D, Storage> *home): home_(home) {}
+      mutable GridD<D, Storage, Value> *home_;
+      GetVoxel(GridD<D, Storage, Value> *home): home_(home) {}
       typedef Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
@@ -851,8 +851,8 @@ namespace grids {
     };
 
     struct ConstGetVoxel {
-      const GridD<D, Storage> *home_;
-      ConstGetVoxel(const GridD<D, Storage> *home): home_(home) {}
+      const GridD<D, Storage, Value> *home_;
+      ConstGetVoxel(const GridD<D, Storage, Value> *home): home_(home) {}
       typedef const Value& result_type;
       typedef const GridIndexD<D>& argument_type;
       result_type operator()(argument_type i) const {
@@ -1212,9 +1212,11 @@ namespace grids {
 template <int D, class VT>
 struct SparseUnboundedGridD:
   public grids::GridD<D, grids::SparseGridStorageD<D, VT,
-                                           grids::UnboundedGridStorageD<D> > >{
+                                 grids::UnboundedGridStorageD<D> >,
+                      VT>{
   typedef grids::GridD<D, grids::SparseGridStorageD<D, VT,
-                                         grids::UnboundedGridStorageD<D> > > P;
+                                 grids::UnboundedGridStorageD<D> >,
+                       VT> P;
   SparseUnboundedGridD(double side,
                        const VectorD<D> &origin,
                        VT def=VT()): P(side, origin, def){}
