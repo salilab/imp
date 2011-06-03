@@ -41,6 +41,7 @@ struct sort_by_cc
   }
 };
 public:
+ FittingSolutions(){}
   //! Get the number of solutions in the set
   inline int get_number_of_solutions() const {return fs_.size();}
   //! Get the score of the i'th solution
