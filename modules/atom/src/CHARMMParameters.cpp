@@ -308,33 +308,20 @@ namespace {
 
 }
 
-CHARMMParameters::CHARMMParameters(const String& top_file_name,
-                                   const String& par_file_name,
+CHARMMParameters::CHARMMParameters(TextInput top_file,
+                                   TextInput par_file,
                                    bool translate_names_to_pdb)
 {
   // Parameter objects are not designed to be added into other containers
   set_was_used(true);
-
-  std::ifstream top_file(top_file_name.c_str());
-  if(!top_file) {
-    IMP_THROW("Can't open topology file " << top_file_name,
-              IOException);
-  }
   read_topology_file(top_file, translate_names_to_pdb);
-  top_file.close();
 
-  if(!par_file_name.empty()) {
-    std::ifstream par_file(par_file_name.c_str());
-    if(!par_file) {
-      IMP_THROW("Can't open charmm file " << par_file_name,
-                  IOException);
-    }
+  if(par_file != TextInput()) {
     read_parameter_file(par_file);
-    par_file.close();
   }
 }
 
-void CHARMMParameters::read_topology_file(std::ifstream& input_file,
+void CHARMMParameters::read_topology_file(TextInput input_file,
                                           bool translate_names_to_pdb)
 {
   IMP_OBJECT_LOG;
@@ -358,9 +345,9 @@ void CHARMMParameters::read_topology_file(std::ifstream& input_file,
   Pointer<CHARMMPatch> patch;
 
   ResidueType curr_res_type;
-  while (!input_file.eof()) {
+  while (!input_file.get_stream().eof()) {
     String line;
-    getline(input_file, line);
+    getline(input_file.get_stream(), line);
     boost::trim(line); // remove all spaces
     // skip comments or empty lines
     if (line[0] == '!' || line[0] == '*' || line.length() == 0) continue;
@@ -622,7 +609,7 @@ void CHARMMParameters::parse_dihedrals_parameters_line(String line,
                                                   split_results[3]), p));
 }
 
-void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
+void CHARMMParameters::read_parameter_file(TextInput input_file) {
   IMP_OBJECT_LOG;
   const String BONDS_LINE = "BOND";
   const String ANGLES_LINE = "ANGL";
@@ -635,9 +622,9 @@ void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
   const String NONBONDED_LINE2 = "NBON";
   enum { NONE, BONDS, ANGLES, DIHEDRALS, IMPROPERS, NONBONDED } section = NONE;
 
-  while (!input_file.eof()) {
+  while (!input_file.get_stream().eof()) {
     String line;
-    getline(input_file, line);
+    getline(input_file.get_stream(), line);
 
     boost::trim(line); // remove all spaces
     // skip comments or empty lines
@@ -646,7 +633,7 @@ void CHARMMParameters::read_parameter_file(std::ifstream& input_file) {
     if (line.substr(0, NONBONDED_LINE.length()) == NONBONDED_LINE
         || line.substr(0, NONBONDED_LINE2.length()) == NONBONDED_LINE2) {
       section = NONBONDED;
-      getline(input_file, line); //remove second line of NONBONDED
+      getline(input_file.get_stream(), line); //remove second line of NONBONDED
     } else if (line.substr(0, BONDS_LINE.length()) == BONDS_LINE) {
       section = BONDS;
     } else if (line.substr(0, ANGLES_LINE.length()) == ANGLES_LINE
