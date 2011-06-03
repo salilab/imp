@@ -53,12 +53,14 @@ public:
           << ")";
     });
 #ifndef IMP_DOXYGEN
+#ifndef SWIG
   VectorD<D> &_access_center() {
     return center_;
   }
   void _set_radius(double d) {
     radius_=d;
   }
+#endif
 #endif
   unsigned int get_dimension() const {
     return center_.get_dimension();
