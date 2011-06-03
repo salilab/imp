@@ -32,7 +32,7 @@ typedef IMP::algebra::DenseGrid3D<double> DensGrid;
 
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
-class DataPoints : public Object {
+class IMPMULTIFITEXPORT DataPoints : public Object {
  public:
   DataPoints(): Object("DataPoints%1%"){
     atts_ = core::XYZ::get_xyz_keys();
@@ -44,14 +44,12 @@ class DataPoints : public Object {
   }
   const Array1DD_VEC *get_data() const {return &data_;}
   int get_number_of_data_points()const {return data_.size();}
-
   IMP_OBJECT_INLINE(DataPoints, { out << "DataPoints" << std::endl; }, {});
 protected:
   FloatKeys atts_;
   Array1DD_VEC data_;
 };
 IMP_OBJECTS(DataPoints, DataPointsList);
-
 class IMPMULTIFITEXPORT XYZDataPoints : public DataPoints {
 public:
   XYZDataPoints():DataPoints(){}
@@ -109,7 +107,7 @@ protected:
   void set_max_min_density_values();
   void set_density(em::DensityMap *d);
   //TODO - change back once DensityMap will be Grid3D
-  //  Pointer<DensGrid> dens_; /// TODO - make the class an object
+  //Pointer<DensGrid> dens_; /// TODO - make the class an object
   boost::scoped_ptr<DensGrid> dens_;
   //  em::DensityMap *dens_;
   double max_value_,min_value_;

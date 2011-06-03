@@ -106,45 +106,44 @@ void parse_interaction_line(
   dp->add_interaction(inter_prots);
 }
 
-ProteomicsData *read_proteomics_data(const char *prot_fn) {
+ProteomicsData read_proteomics_data(const char *prot_fn) {
   std::fstream in;
-  IMP_NEW(ProteomicsData, data, ());
+  ProteomicsData data;
   in.open(prot_fn, std::fstream::in);
   if (! in.good()) {
     IMP_WARN("Problem openning file " << prot_fn <<
                   " for reading; returning empty proteomics data" << std::endl);
     in.close();
-    return data.release();
+    return data;
   }
   std::string line;
   getline(in, line); //skip proteins header line
   getline(in, line); //skip proteins header line
   while ((!in.eof()) && (!is_interaction_line(line))){
-    parse_protein_line(line,data);
+    parse_protein_line(line,&data);
     if (!getline(in, line)) break;
   }
   while (!in.eof()){
     if (!getline(in, line)) break;
-    parse_interaction_line(line,data);
+    parse_interaction_line(line,&data);
   }
   in.close();
-  return data.release();
 }
 
-ProteomicsData *get_partial_proteomics_data(
-                       const ProteomicsData *pd,
+ProteomicsData get_partial_proteomics_data(
+                       const ProteomicsData &pd,
                        const Strings &prot_names) {
-  IMP_NEW(ProteomicsData, ret, ());
+  ProteomicsData ret;
   std::map<int,int> index_map;//orig protein index, new protein index
   for (Strings::const_iterator it = prot_names.begin();
        it != prot_names.end(); it++) {
-    IMP_INTERNAL_CHECK(pd->find(*it) != -1,"Protein:"<<*it<<" was not found\n");
-    int cur_ind=pd->find(*it);
-    index_map[cur_ind]=ret->add_protein(pd->get_protein_data(cur_ind));
+    IMP_INTERNAL_CHECK(pd.find(*it) != -1,"Protein:"<<*it<<" was not found\n");
+    int cur_ind=pd.find(*it);
+    index_map[cur_ind]=ret.add_protein(pd.get_protein_data(cur_ind));
   }
   //update the interaction map
-  for(int i=0;i<pd->get_number_of_interactions();i++) {
-    Ints inds = pd->get_interaction(i);
+  for(int i=0;i<pd.get_number_of_interactions();i++) {
+    Ints inds = pd.get_interaction(i);
     //check if all of the proteins are in the new list
     bool found=true;
     for(Ints::iterator it = inds.begin(); it != inds.end();it++) {
@@ -157,9 +156,9 @@ ProteomicsData *get_partial_proteomics_data(
       for(Ints::iterator it = inds.begin(); it != inds.end();it++) {
         new_inds.push_back(index_map[*it]);
       }
-      ret->add_interaction(new_inds);
+      ret.add_interaction(new_inds);
     }
   }
-  return ret.release();
+  return ret;
 }
 IMPMULTIFIT_END_NAMESPACE
