@@ -36,7 +36,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 \note the function assumes the density map holds its density
 */
 IMPMULTIFITEXPORT em::FittingSolutions pca_based_rigid_fitting(
-  core::RigidBody &rb, Refiner *rb_refiner,
+  core::RigidBody rb, Refiner *rb_refiner,
   em::DensityMap *em_map,Float threshold,
   FloatKey wei_key=atom::Mass::get_mass_key(),
   algebra::PrincipalComponentAnalysis dens_pca_input=
