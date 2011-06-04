@@ -126,18 +126,32 @@ inline std::size_t hash_value(const Subset &t) {
 #endif
 
 inline
-Subset get_union(Subset &a, Subset &b) {
+Subset get_union(const Subset &a, const Subset &b) {
   ParticlesTemp pt;
   set_union(a.begin(), a.end(), b.begin(), b.end(), std::back_inserter(pt));
-  return Subset(pt);
+  return Subset(pt, true);
 }
 
 inline
-Subset get_intersection(Subset &a, Subset &b) {
+Subset get_intersection(const Subset &a, const Subset &b) {
   ParticlesTemp pt;
   set_intersection(a.begin(), a.end(), b.begin(), b.end(),
                    std::back_inserter(pt));
-  return Subset(pt);
+  if (pt.empty()) {
+    return Subset();
+  } else {
+    return Subset(pt, true);
+  }
+}
+
+
+inline Subset get_difference(const Subset &a, const Subset &b) {
+  ParticlesTemp rs;
+  std::set_difference(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      std::back_inserter(rs));
+  Subset ret(rs, true);
+  return ret;
 }
 
 IMPDOMINO_END_NAMESPACE

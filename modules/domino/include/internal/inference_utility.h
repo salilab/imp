@@ -62,35 +62,6 @@ struct AsIndexes {
 IMP_VALUES(AsIndexes, AsIndexesList);
 
 
-inline Subset get_intersection(const Subset &a, const Subset &b) {
-  ParticlesTemp rs;
-  std::set_intersection(a.begin(), a.end(),
-                        b.begin(), b.end(),
-                        std::back_inserter(rs));
-  if (rs.empty()) {
-    return Subset();
-  } else {
-    return Subset(rs, true);
-  }
-}
-
-inline Subset get_union(const Subset &a, const Subset &b) {
-  ParticlesTemp rs;
-  std::set_union(a.begin(), a.end(),
-                 b.begin(), b.end(),
-                 std::back_inserter(rs));
-  Subset ret(rs, true);
-  return ret;
-}
-
-inline Subset get_difference(const Subset &a, const Subset &b) {
-  ParticlesTemp rs;
-  std::set_difference(a.begin(), a.end(),
-                      b.begin(), b.end(),
-                      std::back_inserter(rs));
-  Subset ret(rs, true);
-  return ret;
-}
 
 
 
