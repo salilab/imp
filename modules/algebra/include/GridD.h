@@ -581,9 +581,11 @@ namespace grids {
   }
 #endif
     IMP_SHOWABLE_INLINE(DenseGridStorageD,IMP_UNUSED(out););
+#ifndef SWIG
   const VT* get_raw_data() const {
     return data_.get();
   }
+#endif
 
 #ifndef IMP_DOXYGEN
     void add_voxel(const ExtendedGridIndexD<D>&, const VT&) {
