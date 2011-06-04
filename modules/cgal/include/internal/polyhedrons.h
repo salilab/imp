@@ -47,13 +47,13 @@ IMPCGALEXPORT
 std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                     algebra::grids::DenseGridStorageD<3,
-        double> > &grid, double iso_level);
+                                double>, double > &grid, double iso_level);
 
 IMPCGALEXPORT
 std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                    algebra::grids::DenseGridStorageD<3,
-        float> > &grid, double iso_level);
+                                   float>, float > &grid, double iso_level);
 
 
 IMPCGAL_END_INTERNAL_NAMESPACE
