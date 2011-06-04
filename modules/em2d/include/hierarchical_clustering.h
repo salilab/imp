@@ -132,6 +132,7 @@ IMP_VALUES(ClusterSet,ClusterSets);
 // Functor for hierarchical clustering based on single linkage
 class IMPEM2DEXPORT SingleLinkage {
 public:
+  SingleLinkage(){}
   /*!
     \param[in] id1 identity of cluster 1 to merge
     \param[in] id2 identity of cluster 2 to merge
@@ -158,6 +159,7 @@ IMP_VALUES(SingleLinkage,SingleLinkages);
 // Functor for hierarchical clustering based on complete linkage
 class IMPEM2DEXPORT CompleteLinkage {
 public:
+  CompleteLinkage(){}
   // Distance between the clusters
   /*!
     \note See SingleLinkage class for the meaning of the arguments
@@ -182,6 +184,7 @@ IMP_VALUES(CompleteLinkage,CompleteLinkages);
 // Functor for hierarchical clustering based on average-linkage
 class IMPEM2DEXPORT AverageDistanceLinkage {
 public:
+  AverageDistanceLinkage(){}
   // Distance between the clusters
   /*!
     \note See SingleLinkage class for the meaning of the arguments
