@@ -306,7 +306,7 @@ public:
   }
 #endif
 
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   const double *get_data() const {return data_.get_data();}
 #endif
   unsigned int get_dimension() const {
