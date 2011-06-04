@@ -42,8 +42,8 @@ FloatKey* ProjectionParameters::get_keys() {
 }
 
 void ProjectionParameters::set_proper_ranges_for_keys(Model *m,
-                                algebra::Vector3D &min_translation_values,
-                                algebra::Vector3D &max_translation_values) {
+                           const algebra::Vector3D &min_translation_values,
+                           const algebra::Vector3D &max_translation_values) {
   // Range for the quaternion of the rotation
   IMP::FloatRange range_q(0,1);
   for (unsigned int i=0;i<4;++i) {
