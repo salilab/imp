@@ -55,7 +55,10 @@ ConfigurationSetXYZEmbedding
                                SingletonContainer *sc,
                                bool align):
   Embedding("ConfiguringEmbedding"),
-  cs_(cs), sc_(sc), align_(align){}
+  cs_(cs), sc_(sc), align_(align){
+  IMP_USAGE_CHECK(sc->get_number_of_particles()>0,
+                  "No particles in container");
+}
 
 algebra::VectorKD
 ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
