@@ -439,6 +439,7 @@ public:
     return stddev;
   }
 
+#ifndef SWIG
   //! Compute average, standard deviation, minimum and maximum values
   void compute_stats(double& avg, double& stddev, T& minval, T& maxval) const {
     if (is_void()) {
@@ -469,7 +470,7 @@ public:
       }
     }
   }
-
+#endif
   //! Normalize the values of the MultiArray to mean value 0 and standard
   //! deviation 1.
   void normalize() {
