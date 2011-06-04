@@ -163,7 +163,7 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
                      << " vs " << ps.size());*/
   for (unsigned int i=0; i< boost::num_vertices(ret); ++i) {
     for (unsigned int j=0; j< i; ++j) {
-      if (internal::get_intersection(pm[i], pm[j]).size() >0) {
+      if (get_intersection(pm[i], pm[j]).size() >0) {
         boost::add_edge(i,j,ret);
         IMP_LOG(VERBOSE, "Connecting " << rs[i]->get_name()
                 << " with " << rs[j]->get_name() << std::endl);
