@@ -20,7 +20,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 
 em::FittingSolutions pca_based_rigid_fitting(
-  core::RigidBody &rb, Refiner *rb_refiner,
+  core::RigidBody rb, Refiner *rb_refiner,
     em::DensityMap *em_map,
     Float threshold,
   FloatKey wei_key,
