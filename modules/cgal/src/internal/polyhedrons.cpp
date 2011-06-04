@@ -489,8 +489,8 @@ namespace {
 
 std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
-                                         algebra::grids::DenseGridStorageD<3,
-                                           double> > &grid, double iso_level) {
+                                   algebra::grids::DenseGridStorageD<3,
+                            double>, double > &grid, double iso_level) {
   IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);
 }
@@ -499,7 +499,7 @@ get_iso_surface(const algebra::grids::GridD<3,
 std::pair<std::vector<algebra::VectorD<3> >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                                algebra::grids::DenseGridStorageD<3,
-                                  float> > &grid, double iso_level) {
+                                    float>, float > &grid, double iso_level) {
   IMP_FUNCTION_LOG;
   return get_iso_surface_t(grid, iso_level);
 }
