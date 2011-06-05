@@ -174,6 +174,7 @@ IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
                 cvIntMat &mat_to_label);
 
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 //! Segmentation of images
 /*!
   \param[in] m The EM image to segment
@@ -181,7 +182,8 @@ IMPEM2DEXPORT int do_labeling(const cvIntMat &m,
 */
 IMPEM2DEXPORT void do_segmentation(const cv::Mat &m,
                                    cv::Mat &result,
-                                   SegmentationParameters &params);
+                                   const SegmentationParameters &params);
+#endif
 
 //! Smoothing filter by application of the reaction-diffusion
 //! equation of Beltrami flow. Adiga, JSB, 2005
