@@ -415,7 +415,7 @@ void apply_diffusion_filter(const cv::Mat &m,
 
 void do_segmentation(const cv::Mat &m,
                      cv::Mat &result,
-                     SegmentationParameters &params) {
+                     const SegmentationParameters &params) {
   IMP_LOG(IMP::VERBOSE,"Segmenting image" << std::endl);
   cv::Mat temp1,temp2; // to store doubles
   cv::Mat aux,aux2; // to store floats
