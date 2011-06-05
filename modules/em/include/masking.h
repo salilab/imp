@@ -48,7 +48,7 @@ public:
   }
 
   void show(std::ostream& out) const { out << "DistanceMask"; }
-
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   //! Sets the parameters that depend on the radius of a given particle.
   const RadiusDependentDistanceMask* set_mask(float radius);
 
@@ -64,6 +64,7 @@ public:
   */
   const RadiusDependentDistanceMask* get_mask(
         float radius,float eps=0.001) const;
+#endif
   bool is_mask_set(float radius,float eps=0.001) {
     return get_mask(radius, eps) != NULL;
   }
