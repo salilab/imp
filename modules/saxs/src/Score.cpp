@@ -91,7 +91,7 @@ Float Score::compute_offset(const Profile& model_profile) const {
 }
 
 
-Float Score::fit_profile(Profile& partial_profile, float& C1, float& C2,
+Float Score::fit_profile(Profile partial_profile, float& C1, float& C2,
                          bool fixed_c1, bool fixed_c2, bool use_offset,
                          const std::string fit_file_name) const {
   // compute chi value for default c1/c1 (remove?)
