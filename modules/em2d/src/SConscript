@@ -18,6 +18,10 @@ files = [
   "Image.cpp",
   "hierarchical_clustering.cpp",
   "CollisionCrossSection.cpp",
+  #"domino_particle_states.cpp",
+  #"domino_filters.cpp",
+  #"domino_filter_tables.cpp",
+
           ]\
         + SConscript("internal/SConscript")
 

@@ -97,6 +97,7 @@ void ProjectionMask::apply(cv::Mat &m,
 
 
 ProjectionMaskPtr MasksManager::find_mask(double radius) {
+  IMP_LOG(IMP::VERBOSE,"Finding mask for radius " << radius << std::endl);
   std::map<double,  ProjectionMaskPtr >::iterator iter
                                     = radii2mask_.find(radius);
   if(iter == radii2mask_.end())
@@ -127,7 +128,10 @@ void MasksManager::create_mask(double radius) {
     IMP_THROW("MasksManager: kernel not setup",ValueException);
   }
   const  em::RadiusDependentKernelParameters *params;
-  kernel_params_.set_params(radius);
+  // kernel_params_.set_params(radius); // Due to numerical instability with
+                                        // doubles, this call can throw an
+                                        // exception
+  // This call creates the params, but gives a warning
   params = kernel_params_.get_params(radius);
   ProjectionMaskPtr ptr(new ProjectionMask(kernel_params_,params,pixelsize_));
   radii2mask_[radius]=ptr;

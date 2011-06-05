@@ -11,8 +11,10 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/PolarResamplingParameters.h"
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/base_types.h"
 #include <algorithm>
 #include <cmath>
+
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -355,6 +357,22 @@ IMPEM2DEXPORT void do_morphologic_contrast_enhancement(const cv::Mat &m,
 */
 IMPEM2DEXPORT void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
                                         const cv::Mat &kernel);
+
+/*! Get the percentage of overlap between two matrices.
+  Two images are overlapping in a pixel if both have values > 0.
+  The overlap is (pixels overlapping) / (pixels > 0 in m2)
+
+  \param[in] m1 First matrix
+  \param[in] m2 Matrix used to check the overlap. This matrix can be of the
+            same size of m1 or smaller.
+  \param[in] center Indicates the position of m1 where to put
+             the center m2. E.g., if center is (32,16) the center
+             of m2 will be in the pixel (32,16) of m1.
+*/
+IMPEM2DEXPORT double get_overlap_percentage( cv::Mat &m1,
+                                             cv::Mat &m2,
+                                             const IntPair &center);
+
 
 IMPEM2D_END_NAMESPACE
 

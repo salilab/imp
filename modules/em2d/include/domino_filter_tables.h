@@ -18,6 +18,7 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
+/*
 class IMPEM2DEXPORT ProjectionOverlapFilterTable:
                       public domino::SubsetFilterTable {
 protected:
@@ -36,6 +37,30 @@ public:
 
 };
 IMP_OBJECTS(ProjectionOverlapFilterTable,ProjectionOverlapFilterTables);
+
+*/
+
+/*! Table to create DistanceFilters on demand
+  \param[in]
+*/
+class IMPEM2DEXPORT DistanceFilterTable: public domino::SubsetFilterTable {
+protected:
+  domino::Subset my_subset_;
+  domino::ParticleStatesTable ps_table_;
+  double max_distance_; // max distance tolerated between the particles
+
+public:
+
+  DistanceFilterTable(const domino::Subset &subset_to_act_on,
+                      const domino::ParticleStatesTable &ps_table,
+                      double max_distance_) :
+                    my_subset_(subset_to_act_on), ps_table_(ps_table),
+                    max_distance_(max_distance) {};
+
+
+  IMP_SUBSET_FILTER_TABLE(DistanceFilterTable);
+ };
+IMP_OBJECTS(DistanceFilterTable,DistanceFilterTables);
 
 IMPEM2D_END_NAMESPACE
 

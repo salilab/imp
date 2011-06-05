@@ -117,6 +117,7 @@ public:
 
 protected:
   void set_size_data(int rows,int cols);
+  void set_defaults();
 
   //! Name of the image. Frequently it will be the name of the file
   String name_;

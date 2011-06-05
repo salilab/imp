@@ -15,9 +15,7 @@ IMPEM2D_BEGIN_NAMESPACE
 Image::Image(): Object("Image%1%") {
   name_ = "";
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);
-  // Stats not computed
-  header_.set_fSig(-1);
-  header_.set_fImami(0);
+  set_defaults();
 }
 
 
@@ -26,10 +24,15 @@ Image::Image(int rows, int cols): Object("Image%1%") {
   set_size_data(rows,cols);
   header_.set_header();
   header_.set_image_type(em::ImageHeader::IMG_IMPEM);
-  header_.set_fSig(-1);
-  header_.set_fImami(0);
+  set_defaults();
 }
 
+void Image::set_defaults() {
+  // Stats not computed
+  header_.set_fSig(-1);
+  header_.set_fImami(0);
+  header_.set_object_pixel_size(1.0);
+}
 
 void Image::set_size(int rows,int cols) {
   set_size_data(rows,cols);

@@ -25,6 +25,9 @@ files = [
     "ImageReaderWriter.h",
     "hierarchical_clustering.h",
     "CollisionCrossSection.h",
+    #"domino_particle_states.h",
+    #"domino_filters.h",
+    #"domino_filter_tables.h",
       ] + SConscript("internal/SConscript")
 
 # Install the include files:
