@@ -42,6 +42,7 @@ public:
     return sqrt(compute_chi_square_score(model_profile,
                                          use_offset, fit_file_name));
   }
+
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
@@ -51,13 +52,13 @@ public:
      c2 - adjusts the density of hydration layer, valid range [-4.0 - 4.0]
      \return chi value
   */
-  Float fit_profile(Profile& partial_profile, float& c1, float& c2,
+  Float fit_profile(Profile partial_profile, float& c1, float& c2,
                     bool fixed_c1 = false, bool fixed_c2 = false,
                     bool use_offset = false,
                     const std::string fit_file_name = "") const;
-
+#endif
   //! fit experimental profile through optimization of c1 and c2 parameters
-  Float fit_profile(Profile& partial_profile,
+  Float fit_profile(const Profile& partial_profile,
                     bool use_offset = false,
                     const std::string fit_file_name = "") const {
     // this function version is for python
@@ -65,7 +66,6 @@ public:
     return fit_profile(partial_profile, c1, c2, false, false,
                        use_offset, fit_file_name);
   }
-#endif
 
   //! compute squared chi value
   Float compute_chi_square_score(const Profile& model_profile,
