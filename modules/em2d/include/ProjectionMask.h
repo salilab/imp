@@ -33,9 +33,11 @@ typedef boost::shared_ptr<MasksManager> MasksManagerPtr;
 //! Mask that contains the projection of a given particles. This matrices
 //! speed up projecting because the only have to be computed once for a model
 class IMPEM2DEXPORT ProjectionMask {
-
+#ifdef SWIG
+  ProjectionMask(){}
+#endif
 public:
-
+#if !defined(DOXYGEN) && !defined(SWIG)
   ProjectionMask(const em::KernelParameters &KP,
             const em::RadiusDependentKernelParameters *params,double voxelsize);
 
@@ -46,6 +48,7 @@ public:
   */
   void create(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params);
+#endif
 
   //! Adds the values of the mask to a matrix at the given pixel
   /*!
