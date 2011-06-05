@@ -21,7 +21,7 @@ IMPMULTIFIT_BEGIN_NAMESPACE
 
 //create a density hit map from a set of fitting solutions
 IMPMULTIFITEXPORT
-em::DensityMap* create_hit_map(core::RigidBody &rb, Refiner *rb_ref,
+em::DensityMap* create_hit_map(core::RigidBody rb, Refiner *rb_ref,
                             const FittingSolutionRecords &sols,
                             em::DensityMap *damp
                             );
