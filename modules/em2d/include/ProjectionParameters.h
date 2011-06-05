@@ -29,8 +29,10 @@ public:
 
   ~ProjectionParameters() {};
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Keys of the decorator
   static FloatKey* get_keys();
+#endif
 
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
