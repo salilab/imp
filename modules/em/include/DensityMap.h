@@ -30,7 +30,7 @@ class DensityMap;
 /** Read a density map from a file and return it.
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter *reader);
+IMPEMEXPORT DensityMap* read_map(std::string filename, MapReaderWriter *reader);
 
 /** Read a density map from a file and return it. Guess the file type from the
     file name. The file formats supported are:
@@ -40,13 +40,13 @@ IMPEMEXPORT DensityMap* read_map(const char *filename, MapReaderWriter *reader);
     - .xplor
     \relatesalso DensityMap
 */
-IMPEMEXPORT DensityMap* read_map(const char *filename);
+IMPEMEXPORT DensityMap* read_map(std::string filename);
 
 
 /** Write a density map to a file.
     \relatesalso DensityMap
 */
-IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
+IMPEMEXPORT void write_map(DensityMap* m, std::string filename,
                            MapReaderWriter *writer);
 
 /** Write a density map to a file.
@@ -58,7 +58,7 @@ IMPEMEXPORT void write_map(DensityMap* m, const char *filename,
     - .xplor
     \relatesalso DensityMap
 */
-IMPEMEXPORT void write_map(DensityMap* m, const char *filename);
+IMPEMEXPORT void write_map(DensityMap* m, std::string filename);
 
 
 //!
@@ -86,10 +86,10 @@ IMPEMEXPORT Float approximate_molecular_mass(DensityMap* m, Float threshold);
 class IMPEMEXPORT DensityMap: public Object
 {
   typedef IMP::algebra::DenseGrid3D<double> DGrid;
-  IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(const char *filename,
+  IMP_NO_SWIG(friend IMPEMEXPORT DensityMap* read_map(std::string filename,
                                           MapReaderWriter *reader));
   IMP_NO_SWIG(friend IMPEMEXPORT void write_map(DensityMap* m,
-                                                const char *filename,
+                                                std::string filename,
                                                 MapReaderWriter *writer));
 
 public:
@@ -265,6 +265,7 @@ public:
   //! Returns a pointer to the header of the map in a writable version
   DensityHeader *get_header_writable() {return &header_;}
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Returns the x-location of the map
   /**
   \exception InvalidStateException The locations have not been calculated.
@@ -294,6 +295,7 @@ public:
   }
 
   emreal* get_data() const {return data_.get();}
+#endif
 
   //! Checks if two maps have the same origin
   /** \param[in] other the map to compare with
@@ -422,6 +424,7 @@ public:
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
   //! copy map into this map
   void copy_map(const DensityMap *other);
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Convolution a kernel with the map
   /**
 \param[in] kernel an array of kernel values. The data is in ZYX
@@ -453,7 +456,8 @@ public:
              }}} // for iz2,iy2,ix2
           }//if val>EPS
       }}} // for iz,iy,ix
-}
+  }
+#endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   inline bool get_rms_calculated() const {return rms_calculated_;}
@@ -499,6 +503,8 @@ IMPEMEXPORT DensityMap *create_density_map(
 IMPEMEXPORT DensityMap *create_density_map(
                                            int nx,int ny,int nz,
                                            double spacing);
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
  //! Calculate a bounding box around a 3D point within the EM grid
  /**
 \param[in] d_map the density map
@@ -527,6 +533,7 @@ inline void calc_local_bounding_box(
   imaxy = d_map->upper_voxel_shift(y, kdist,h->get_yorigin(),h->get_ny());
   imaxz = d_map->upper_voxel_shift(z, kdist,h->get_zorigin(),h->get_nz());
 }
+#endif
 
 //! rotate a grid
 /**
