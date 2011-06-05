@@ -71,7 +71,7 @@ bool operator<(const TransScore& a, const TransScore& b) {
 }
 
 FFTFitting::FFTFitting(em::DensityMap *dmap,
-                       core::RigidBody &rb,
+                       core::RigidBody rb,
                        Refiner *rb_refiner,
                        FloatKey mass_key){
   mass_key_=mass_key;
@@ -685,7 +685,7 @@ algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
 }
 
 FFTFittingResults fft_based_rigid_fitting(
-   core::RigidBody &rb,Refiner *rb_refiner,
+   core::RigidBody rb,Refiner *rb_refiner,
    em::DensityMap *dmap, Float threshold,
    const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation, bool local,
