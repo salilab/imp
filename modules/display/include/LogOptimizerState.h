@@ -27,7 +27,7 @@ class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
   IMP::internal::OwnerPointer<Writer> writer_;
   void update();
  public:
-  WriteOptimizerState(Writer *w) :
+  WriteOptimizerState(WriterOutput w) :
     OptimizerState("WriteOptimizerState%1%"),
     writer_(w) {}
   void set_period(unsigned int p) {
@@ -36,6 +36,7 @@ class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
   }
   IMP_LIST_PLURAL(public, Geometry, Geometries, geometry, geometries,
                   Geometry*, Geometries);
+  void write(WriterOutput w) const;
   IMP_OBJECT_INLINE(WriteOptimizerState,
                     out << "  writer: " << writer_->get_name() << std::endl;,);
 };

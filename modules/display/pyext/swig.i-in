@@ -38,6 +38,7 @@ IMP_SWIG_OBJECT(IMP::display, CompoundGeometry, CompoundGeometries);
 IMP_SWIG_OBJECT(IMP::display, SelectionGeometry, SelectionGeometries);
 IMP_SWIG_DECORATOR(IMP::display, Colored, Coloreds);
 IMP_SWIG_VALUE(IMP::display, Color, Colors);
+IMP_SWIG_VALUE(IMP::display, WriterOutput, WriterOutputs);
 IMP_SWIG_OBJECT(IMP::display, FilterGeometry, FilterGeometries);
 IMP_SWIG_OBJECT(IMP::display, WriteOptimizerState, WriteOptimizerStates);
 //IMP_SWIG_OBJECT(IMP::display, WriteFailureHandler, WriteFailureHandlers);
@@ -52,6 +53,12 @@ IMP_SWIG_OBJECT(IMP::display, PlaneGeometry, PlaneGeometries);
 IMP_SWIG_OBJECT(IMP::display, IsosurfaceGeometry, IsosurfaceGeometries);
 IMP_SWIG_OBJECT(IMP::display, SkinSurfaceGeometry, SkinSurfaceGeometries);
 #endif
+
+namespace IMP {
+namespace display {
+%implicitconv WriterOutput;
+}
+}
 
 
 %warnfilter(403) Geometry;

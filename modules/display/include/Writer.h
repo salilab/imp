@@ -114,8 +114,7 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 
 
 /** Create an appropriate writer based on the file suffix. */
-IMPDISPLAYEXPORT Writer *create_writer(std::string filename,
-                                       bool append=false);
+IMPDISPLAYEXPORT Writer *create_writer(std::string filename);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 #define IMP_REGISTER_WRITER(Name, suffix)                               \
@@ -127,6 +126,33 @@ IMPDISPLAYEXPORT Writer *create_writer(std::string filename,
 
 IMP_OBJECTS(Writer, Writers);
 IMP_OBJECTS(TextWriter, TextWriters);
+
+
+/** An adaptor for functions that should take a writer as an input.
+    It can be implicitly constructed from either a Writer or a string.
+    In the later case it determines what type of writer is needed from
+    the file suffix. */
+class IMPDISPLAYEXPORT WriterOutput {
+  IMP::internal::OwnerPointer<Writer> writer_;
+ public:
+  WriterOutput(std::string name): writer_(create_writer(name)){}
+  WriterOutput(Writer *w): writer_(w){}
+#ifndef SWIG
+  Writer* operator->() const {
+    return writer_;
+  }
+  operator Writer*() const {
+    return writer_;
+  }
+#endif
+  Writer* get_writer() const {
+    return writer_;
+  }
+  IMP_SHOWABLE_INLINE(WriterOutput, out << writer_->get_name());
+  ~WriterOutput();
+};
+
+IMP_VALUES(WriterOutput, WriterOutputs);
 
 IMPDISPLAY_END_NAMESPACE
 

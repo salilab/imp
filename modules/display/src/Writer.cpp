@@ -54,16 +54,18 @@ void TextWriter::do_set_frame() {
 
 
 
-Writer *create_writer(std::string name, bool append) {
+Writer *create_writer(std::string name) {
   for (std::map<std::string, internal::WriterFactory *>::iterator
          it= internal::get_writer_factory_table().begin();
        it != internal::get_writer_factory_table().end(); ++it) {
     if (boost::algorithm::ends_with(name, it->first)) {
-      return it->second->create(name, append);
+      return it->second->create(name);
     }
   }
   IMP_THROW("No writer found for file " << name,
             ValueException);
 }
+
+WriterOutput::~WriterOutput(){}
 
 IMPDISPLAY_END_NAMESPACE
