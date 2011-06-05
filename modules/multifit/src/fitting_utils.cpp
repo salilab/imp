@@ -9,7 +9,7 @@
 #include <IMP/algebra/vector_search.h>
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-em::DensityMap* create_hit_map(core::RigidBody &rb, Refiner *rb_ref,
+em::DensityMap* create_hit_map(core::RigidBody rb, Refiner *rb_ref,
                             const FittingSolutionRecords &sols,
                             em::DensityMap *dmap
                             ) {
