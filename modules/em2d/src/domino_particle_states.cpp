@@ -1,5 +1,5 @@
 /**
- *  \file RigidBodyProjectionStates.cpp
+ *  \file domino_particle_states.cpp
  *  \brief
  *
  *  Copyright 2007-2010 IMP Inventors. All rights reserved.
@@ -7,6 +7,8 @@
  */
 
 #include "IMP/em2d/domino_particle_states.h"
+#include "IMP/core/XYZ.h"
+#include "IMP/algebra/Transformation3D.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -17,31 +19,57 @@ IMPEM2D_BEGIN_NAMESPACE
   }
 
  void ProjectionStates::load_particle_state(unsigned int i,
-                                            Particle *p) const {};
+                                            Particle *p) const {
+   GridStates::load_particle_state(i,p);
+ }
 
 
+/*! Returns the projection corresponding;
+  \param[in] i
+*/
+Image* ProjectionStates::get_projection(unsigned int  i) const {
+  IMP_USAGE_CHECK(i < number_of_states_,
+                  "ProjectionStates: index out of range ");
+  unsigned int position_index = floor(i/projections_.size() );
+  unsigned int index = i - position_index*projections_.size();
+  return projections_[index];
+}
 
-  /*! Returns the projection corresponding;
-    \param[in] i
-  */
-  Image* ProjectionStates::get_projection(unsigned int  i) const {
-    IMP_USAGE_CHECK(i < number_of_states_,
-                    "ProjectionStates: index out of range ");
-    unsigned int position_index = floor(i/projections_.size() );
-    unsigned int index = i - position_index*projections_.size();
-    return projections_[index];
-  }
-
-  algebra::Vector3D ProjectionStates::get_position(unsigned int  i) const {
-    IMP_USAGE_CHECK(i < number_of_states_,
+   IMP_USAGE_CHECK(i < number_of_states_,
                     "ProjectionStates: index out of range ");
     unsigned int index = floor(i/projections_.size() );
     return positions_[index];
   }
 
-  void ProjectionStates::do_show(std::ostream &out) const {
-    out << "ProjectionStates" << std::endl;
+void ProjectionStates::do_show(std::ostream &out) const {
+  out << "ProjectionStates" << std::endl;
+}
+
+  algebra::Vector3D GridStates::get_position(unsigned int  i) const {
+    IMP_USAGE_CHECK(i < number_of_states_,
+                    "GridStates: index out of range ");
+    unsigned int index = floor(i/positions_.size() );
+    return positions_[index];
   }
+
+  algebra::Rotation3D GridStates::get_orientation(unsigned int  i) const {
+    IMP_USAGE_CHECK(i < number_of_states_,
+                    "GridStates: index out of range ");
+    unsigned int position_index = floor(i/orientations_.size() );
+    unsigned int index = i - position_index*orientations_.size();
+    return orientations_[index];
+  }
+
+void GridStates::do_show(std::ostream &out) const {
+  out << "GridStates" << std::endl;
+}
+
+void GridStates::load_particle_state(unsigned int i,
+                                            Particle *p) const {
+  algebra::Transformation3D T(get_rotation(i), get_position(i));
+  core::XYZ xyz(p);
+  core::transform(xyz,T);
+}
 
 
 IMPEM2D_END_NAMESPACE

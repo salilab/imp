@@ -55,11 +55,18 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   finder_->set_projections(projections);
 
   if(only_coarse_registration_) {
+    IMP_LOG(IMP::TERSE,
+     "Em2DRestraint::unprotected::evaluate: Coarse registration" <<std::endl);
     finder_->get_coarse_registration();
   } else {
     if(fast_optimization_mode_) {
+      IMP_LOG(IMP::TERSE, "Em2DRestraint::unprotected::evaluate: Fast Mode " <<
+      number_of_optimized_projections_ <<" projections optimized" <<std::endl);
+
       finder_->set_fast_mode(number_of_optimized_projections_);
     }
+    IMP_LOG(IMP::TERSE,
+     "Em2DRestraint::unprotected::evaluate: Complete registration" <<std::endl);
     finder_->get_complete_registration();
   }
   return finder_->get_global_score();

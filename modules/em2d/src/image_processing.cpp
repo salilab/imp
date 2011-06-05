@@ -686,4 +686,32 @@ void get_morphologic_gradient(const cv::Mat &m, cv::Mat &result,
   temp.convertTo(result, CV_64FC1);
 }
 
+
+double get_overlap_percentage(cv::Mat &m1, cv::Mat &m2,
+                               const IntPair &center) {
+
+  CenteredMat M1(m1, center.first, center.second);
+  CenteredMat M2(m2);
+  IMP_USAGE_CHECK((M2.get_start(0) < M1.get_start(0) ||
+                   M2.get_start(1) < M1.get_start(1) ||
+                   M2.get_end(0) > M1.get_end(0) ||
+                   M2.get_end(1) > M1.get_end(1)),
+     "em2d::get_overlap_percentage: Second Matrix is not contained in first");
+
+  double pixels_m2 = 0;
+  double pixels_overlap = 0;
+  for (int i=M2.get_start(0); i < M2.get_end(0); ++i) {
+    for (int j=M2.get_start(1); j< M2.get_end(1); ++j) {
+      if(M2(i,j) > 0) {
+        pixels_m2 += 1;
+      } else {
+        continue;
+      }
+      if(M1(i,j) > 0) pixels_overlap += 1;
+    }
+  }
+  return pixels_overlap/pixels_m2;
+}
+
+
 IMPEM2D_END_NAMESPACE
