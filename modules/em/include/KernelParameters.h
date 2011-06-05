@@ -82,6 +82,7 @@ public:
     initialized_ = true;
   }
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Sets the parameters that depend on the radius of a given particle.
   /** The other variables of the parameters
     (rsigsq,timessig,sq2pi3,inv_rsigsq,rnormfac,rkdist) must have been set.
@@ -102,6 +103,7 @@ public:
   */
   const RadiusDependentKernelParameters* get_params(
         float radius,float eps=0.001);
+#endif
   bool are_params_set(float radius,float eps=0.001) {
     return get_params(radius, eps) != NULL;
   }
@@ -132,7 +134,7 @@ public:
 protected:
   float rsig_,rsigsq_,timessig_,sq2pi3_,inv_rsigsq_,rnormfac_,rkdist_,lim_;
   bool initialized_;
-  std::map <float,const RadiusDependentKernelParameters *> radii2params_;
+  std::map <float,const RadiusDependentKernelParameters* > radii2params_;
   void init(float resolution);
 };
 
