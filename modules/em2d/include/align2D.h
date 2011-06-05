@@ -97,6 +97,7 @@ IMPEM2DEXPORT ResultAlign2D get_translational_alignment_no_preprocessing(
                                                      const cv::Mat &M2);
 
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 //! Performs a peak search in a matrix
 /*!
   \param[in] m matrix
@@ -104,7 +105,7 @@ IMPEM2DEXPORT ResultAlign2D get_translational_alignment_no_preprocessing(
   \return the position of the peak. Subpixel precision, using interpolation
 */
 IMPEM2DEXPORT algebra::Vector2D get_peak(cv::Mat &m,double *value);
-
+#endif
 
 //! computes the weighted centroid of a matrix, with the values of the matrix
 IMPEM2DEXPORT algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
