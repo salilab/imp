@@ -56,7 +56,7 @@ public:
    bool recalc_rms=true,bool resample=true,
    FloatPair norm_factors=FloatPair(0.,0.));
 
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 /*!
  Computes the derivatives of the cross correlation term scalefac*(1-ccc) at each
  voxel of the map.
@@ -76,7 +76,7 @@ public:
      const Particles &model_ps,const FloatKey &mass_key,
      KernelParameters *kernel_params,
      const float &scalefac, const algebra::Vector3Ds &dv);
-
+#endif
 
   //!Calculates the cross correlation coefficient between two maps
   /** Cross correlation coefficient between the em density and the density of a
