@@ -348,14 +348,18 @@ public:
     return false;
   }
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // Date and Time
   char* get_date() const;
   char* get_time() const;
+#endif
   void set_date();
   void set_time();
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   // Title
   char* get_title() const;
+#endif
 
   //! Set title of image in the header
   void set_title(String newName);
