@@ -21,6 +21,7 @@ IMPEM_BEGIN_NAMESPACE
 
 class IMPEMEXPORT XplorReaderWriter : public MapReaderWriter
 {
+#if !defined(DOXYGEN) && !defined(SWIG)
 public:
   void read(const char *filename, float **data, DensityHeader &header);
   void write(const char *filename, const float *data,
@@ -29,7 +30,7 @@ protected:
   int read_header(std::ifstream & XPLORstream, internal::XplorHeader &header);
   int read_map(std::ifstream &XPLORstream, float *data,
                internal::XplorHeader &header);
-
+#endif
   IMP_OBJECT_INLINE(XplorReaderWriter, {out << "XplorReaderWriter";}, {});
 };
 

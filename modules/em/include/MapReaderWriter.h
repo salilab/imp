@@ -26,11 +26,18 @@ class IMPEMEXPORT MapReaderWriter : public Object
 {
 public:
   MapReaderWriter(): Object("MapReaderWriter%1%"){}
-#ifndef DOXYGEN
-  virtual void read(const char *filename, float **data, DensityHeader &header)
-    =0;
+#if !defined(DOXYGEN) && !defined(SWIG)
+  // since swig can't see these methods, it wants to create a wrapper
+  // for the class
+  virtual void read(const char *filename, float **data, DensityHeader &) {
+    IMP_UNUSED(filename); IMP_UNUSED(data);
+    IMP_FAILURE("Don't use the base class");
+};
   virtual void write(const char *filename, const float *data,
-                     const DensityHeader &header) =0;
+                     const DensityHeader &) {
+    IMP_UNUSED(filename); IMP_UNUSED(data);
+    IMP_FAILURE("Don't use the base class");
+  };
 #endif
 
   IMP_OBJECT_INLINE(MapReaderWriter, {out << "MapReaderWriter";}, {});

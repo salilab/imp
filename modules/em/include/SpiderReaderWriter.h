@@ -63,7 +63,7 @@ public:
     force_reversed_=force_reversed;
     skip_extra_checkings_=skip_extra_checkings;
   }
-
+#if !defined(DOXYGEN) && !defined(SWIG)
   //! Reads a map in Spider format and transfers the data and header.
   /**
    *  \param[in] filename file to read
@@ -82,7 +82,7 @@ public:
    */
   void write(const char *filename,
              const float *data,const DensityHeader &header);
-
+#endif
   IMP_OBJECT_INLINE(SpiderMapReaderWriter,
                     {out << "SpiderMapReaderWriter";}, {});
 };
