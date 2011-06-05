@@ -67,18 +67,18 @@ core::MonteCarlo* set_optimizer(Model *model, OptimizerStates display_log,
   core::RigidBodyMover *rb_mover =
      new core::RigidBodyMover(rb,max_translation,max_rotation);
   //preform mc search
-  Pointer<core::MonteCarlo> opt(new core::MonteCarlo());
-  opt->set_model(model);
+  //  core::SteepestDescent *lopt = new core::SteepestDescent();
+  IMP_NEW(core::ConjugateGradients, lopt, (model));
+  Pointer<core::MonteCarloWithLocalOptimization>
+    opt(new core::MonteCarloWithLocalOptimization(lopt, number_of_cg_steps));
   opt->add_mover(rb_mover);
   opt->set_return_best(true);//return the lowest energy state visited
   IMP::set_print_exceptions(true);
 
-  //  core::SteepestDescent *lopt = new core::SteepestDescent();
-  core::ConjugateGradients *lopt = new core::ConjugateGradients();
   lopt->set_threshold(0.001);
   //  lopt->set_step_size(0.05);
-  opt->set_local_optimizer(lopt);
-  opt->set_local_steps(number_of_cg_steps);
+  //opt->set_local_optimizer(lopt);
+  //opt->set_local_steps(number_of_cg_steps);
 
   //set the logging if provided
   for(int i=0;i<(int)display_log.size();i++){

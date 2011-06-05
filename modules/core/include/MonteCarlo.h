@@ -10,7 +10,7 @@
 
 #include "core_config.h"
 #include "Mover.h"
-
+#include "core_macros.h"
 #include <IMP/Optimizer.h>
 #include <IMP/container_macros.h>
 #include <IMP/Configuration.h>
@@ -39,32 +39,6 @@ public:
 
   IMP_OPTIMIZER(MonteCarlo);
  public:
-  /** \name Local optimization
-
-      The MonteCarlo optimizer can run a local optimizer following
-      each Monte-Carlo move and before it decides whether or not to
-      accept the step. Steps taken by the local optimizer do not count
-      towards the total number of steps passed to the
-      Optimizer::optimize() call. The local optimizer must not have
-      OptimizerState objects which change the set of optimized
-      particles/attributes. This is not checked.
-
-      @{
-  */
-  void set_local_optimizer(Optimizer* cg);
-
-  Optimizer *get_local_optimizer() const {
-    return cg_.get();
-  }
-
-  int get_local_steps() const {
-    return num_local_steps_;
-  }
-  void set_local_steps(unsigned int n) {
-    num_local_steps_=n;
-  }
-  /** @} */
-
   /** By default, the optimizer returns the lowest score state
       found so far. If, instead, you wish to return the last accepted
       state, set return best to false.
@@ -98,6 +72,9 @@ public:
     IMP_USAGE_CHECK(p > 0 && p <= 1, "Not a valid probability");
     probability_=p;
   }
+  double get_move_probability() const {
+    return probability_;
+  }
   /** \name Statistics
       @{
    */
@@ -111,12 +88,6 @@ public:
   }
   /** @} */
 
-  /** Basin hopping runs the local optimizer before evaluating the
-      acceptance criteria, but takes the next MC step from the
-      conformation prior to optimization.
-   */
-  void set_use_basin_hopping(bool tf);
-
   /** @name Movers
 
        The following methods are used to manipulate the list of Movers.
@@ -126,25 +97,67 @@ public:
   */
   IMP_LIST(public, Mover, mover, Mover*, Movers);
   /** @} */
+ protected:
+  /** Note that if return best is true, this will save the current
+      state of the model. Also, if the move is accepted, the
+      optimizer states will be updated.
+  */
+  bool do_accept_or_reject_move(double score);
+  void do_move(double probability);
+  //! a class that inherits from this should override this method
+  virtual void do_step();
 private:
-
-  double do_step(double pe, double &best_energy,
-                 IMP::internal::OwnerPointer<Configuration> &best_state,
-                 int &failures);
-  bool get_accept(double prior_energy, double next_energy);
-  Float temp_;
+  double temp_;
+  double last_energy_;
+  double best_energy_;
   Float probability_;
-  IMP::internal::OwnerPointer<Optimizer> cg_;
-  unsigned int num_local_steps_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
   unsigned int stat_num_failures_;
   bool return_best_;
-  bool basin_hopping_;
+  IMP::internal::OwnerPointer<Configuration> best_;
   ::boost::uniform_real<> rand_;
 };
 
-IMP_OUTPUT_OPERATOR(MonteCarlo);
+
+
+//! This variant of Monte Carlo that relaxes after each move
+class IMPCOREEXPORT MonteCarloWithLocalOptimization: public MonteCarlo
+{
+  IMP::internal::OwnerPointer<Optimizer> opt_;
+  unsigned int num_local_;
+public:
+  MonteCarloWithLocalOptimization(Optimizer *opt,
+                               unsigned int steps);
+
+  unsigned int get_number_of_steps() const {
+    return num_local_;
+  }
+
+  Optimizer* get_local_optimizer() const {
+    return opt_;
+  }
+
+  IMP_MONTE_CARLO(MonteCarloWithLocalOptimization);
+};
+
+//! This variant of Monte Carlo uses basis hopping
+/** Basin hopping is where, after a move, a local optimizer is used to relax
+    the model before the energy computation. However, the pre-relaxation state
+    of the model is used as the starting point for the next step. The idea
+    is that models are accepted or rejected based on the score of the nearest
+    local minima, but they can still climb the barriers in between as the model
+    is not reset to the minima after each step.
+ */
+class IMPCOREEXPORT MonteCarloWithBasinHopping:
+public MonteCarloWithLocalOptimization
+{
+public:
+  MonteCarloWithBasinHopping(Optimizer *opt, unsigned int ns);
+
+  IMP_MONTE_CARLO(MonteCarloWithBasinHopping);
+};
+
 
 IMPCORE_END_NAMESPACE
 
