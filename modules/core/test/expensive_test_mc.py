@@ -45,26 +45,20 @@ class MCOptimizerTest(IMP.test.TestCase):
         """test montecarlo 1"""
         (model, opt)= self._setup_opt()
         opt.set_log_level(IMP.VERBOSE)
-        lopt= IMP.core.ConjugateGradients()
-        lopt.set_log_level(IMP.SILENT)
-        opt.set_local_optimizer(lopt)
         self._test_starting_conditions(model, opt, (-3.0, -1.0, -3.0, -1.0), 5)
     def test_c2(self):
         """test montecarlo 2"""
         (model, opt)= self._setup_opt()
-        lopt= IMP.core.ConjugateGradients()
-        opt.set_local_optimizer(lopt)
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
     def test_c3(self):
         """test montecarlo 3"""
         (model, opt)= self._setup_opt()
-        lopt= IMP.core.ConjugateGradients()
-        opt.set_local_optimizer(lopt)
         self._test_starting_conditions(model, opt, (2.0, 3.0, 8.0, -5.0), 5)
 
     def _setup_opt(self):
         model = IMP.Model()
-        opt = IMP.core.MonteCarlo()
+        lopt= IMP.core.ConjugateGradients(model)
+        opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 1000)
         opt.set_score_threshold(.01)
         opt.set_model(model)
         for value in (-3.0, -1.0, -3.0, -1.0):

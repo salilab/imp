@@ -19,6 +19,14 @@
   virtual void reset_move();                            \
   IMP_OBJECT(Name)
 
+/** Helper macro for implementing IMP::core::MonteCarlo. In
+    addition to the IMP_OBJECT methods, it declares
+    - IMP::core::MonteCarlo::do_step()
+ */
+#define IMP_MONTE_CARLO(Name)                           \
+  virtual void do_step();                               \
+  IMP_OBJECT(Name)
+
 /** Helper macro for implementing
     IMP::core::ClosePairsFinder objects. In addition to the
     IMP_OBJECT methods it declares:

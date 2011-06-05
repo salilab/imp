@@ -350,14 +350,13 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   //get_model()->set_is_incremental(true);
   Pointer<ConfigurationSet> ret= new ConfigurationSet(get_model());
   Parameters pms= fill_in_parameters();
-  IMP_NEW(MonteCarlo, mc, (get_model()));
+  IMP_NEW(MonteCarloWithLocalOptimization, mc, (pms.local_opt_,
+                                             pms.cg_steps_));
   //mc->set_log_level(mll);
   mc->set_stop_on_good_score(true);
   mc->add_optimizer_states(OptimizerStatesTemp(optimizer_states_begin(),
                                                optimizer_states_end()));
-  mc->set_local_optimizer(pms.local_opt_);
   pms.local_opt_->set_log_level(mll);
-  mc->set_local_steps(pms.cg_steps_);
   mc->set_return_best(true);
   Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
   if (sc->get_number_of_particles()==0) {

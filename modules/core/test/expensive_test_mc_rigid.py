@@ -51,15 +51,12 @@ class MCOptimizerTest(IMP.test.TestCase):
             if score >0:
                 break
         #optimize
-        opt = IMP.core.MonteCarlo()
-        opt.set_model(self.m)
+        lopt= IMP.core.ConjugateGradients(self.m)
+        opt = IMP.core.MonteCarloWithLocalOptimization(lopt, 100)
         mover1 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m1),5.,15.)
         opt.add_mover(mover1)
         mover2 = IMP.core.RigidBodyMover(IMP.core.RigidBody(self.m2),5.,15.)
         opt.add_mover(mover2)
-        lopt= IMP.core.ConjugateGradients()
-        lopt.set_model(self.m)
-        opt.set_local_optimizer(lopt)
         opt.set_score_threshold(.001)
         for i in range(0,5):
             print "run", i
