@@ -88,8 +88,9 @@ void project (const Particles &ps,
  void set_particles(const IMP::Particles &ps,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
 
+#if !defined(DOXYGEN) && !defined(SWIG)
   KernelParameters *get_kernel_params()  { return &kernel_params_;}
-
+#endif
 
   inline const core::XYZRs & get_xyzr_particles() const {return xyzr_;}
  // would go away on§ce we have a XYZRW decorator and the next function as well
