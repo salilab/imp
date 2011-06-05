@@ -20,6 +20,7 @@ IMPEM_BEGIN_NAMESPACE
 class IMPEMEXPORT EMReaderWriter : public MapReaderWriter
 {
 public:
+#if !defined(DOXYGEN) && !defined(SWIG)
  //! Reads a density file in EM format and stores the information
  /**
   \param[in] filename name of the file to read
@@ -36,6 +37,7 @@ public:
   */
   void write(const char* filename, const float *data,
              const DensityHeader &header);
+#endif
 protected:
   //! Reads the header
   //! Reads the data
