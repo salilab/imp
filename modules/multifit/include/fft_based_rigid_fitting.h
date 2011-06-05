@@ -28,7 +28,7 @@ typedef std::vector<TransScore> TransScores;
 
 class IMPMULTIFITEXPORT FFTFitting {
 public:
-  FFTFitting(em::DensityMap *dmap,core::RigidBody &rb,Refiner *rb_refiner,
+  FFTFitting(em::DensityMap *dmap,core::RigidBody rb,Refiner *rb_refiner,
      IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
   ~FFTFitting();
   void prepare(float threshold);
@@ -48,7 +48,7 @@ public:
   void calculate_local_correlation();
   TransScores search_for_best_translations(
              int num_solutions, bool gmm_based=true);
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
 //! get the unwrapped index
 /**
 The convolution result is in a wrapped around order,
@@ -98,6 +98,8 @@ The function returns the original index in its wrapped order
 **/
   void get_wrapped_index(int x,int y,int z,
                          int &wx,int &wy,int &wz) const;
+#endif
+
   //for python
   int get_wrapped_index(int x,int y,int z,int ind) const {
     int wx,wy,wz;
@@ -115,9 +117,11 @@ The function returns the original index in its wrapped order
   em::DensityMap* get_variance_map() const;
   em::DensityMap* get_padded_asmb_map() const {return padded_asmb_map_;}
   em::DensityMap* get_padded_mol_map() const {return mol_map_;}
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //note the map is returned as is, in a wrapped order
   double* get_wrapped_correlation_map(int &nx,int &ny,int &nz) const {
     nx=fftw_nx_;ny=fftw_ny_; nz=fftw_nz_; return fftw_r_grid_cc_;}
+#endif
   //! Get a density map which is the result of moving to Fourier space and back
   /**
    \note This function is used for testing normalization issuses
@@ -233,14 +237,14 @@ class IMPMULTIFITEXPORT FFTFittingResults {
   void set_max_cc_map(em::DensityMap* d) {max_cc_map_=d;}
   em::DensityMap* get_max_cc_map() {return max_cc_map_;}
   em::FittingSolutions get_solutions() {return sols_;}
-  void set_solutions(em::FittingSolutions &sols) {sols_=sols;}
+  void set_solutions(const em::FittingSolutions &sols) {sols_=sols;}
  private:
   em::FittingSolutions sols_;
   em::DensityMap *max_cc_map_;
 };
 
 IMPMULTIFITEXPORT FFTFittingResults fft_based_rigid_fitting(
-   core::RigidBody &rb,Refiner *rb_refiner,
+   core::RigidBody rb,Refiner *rb_refiner,
    em::DensityMap *dmap, Float threshold,
    const algebra::Rotation3Ds &rots,
    int num_top_fits_to_store_for_each_rotation=10,
