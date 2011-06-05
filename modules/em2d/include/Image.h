@@ -111,7 +111,9 @@ public:
     return name_;
   }
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   void get_min_and_max_values(double *min, double *max) const;
+#endif
 
 protected:
   void set_size_data(int rows,int cols);
@@ -214,7 +216,7 @@ inline void do_extend_borders(Image *im1,Image *im2,unsigned int pix) {
 
 inline void do_segmentation(Image *input,
                             Image *result,
-                            SegmentationParameters &params) {
+                            const SegmentationParameters &params) {
   do_segmentation(input->get_data(),result->get_data(),params);
 }
 
