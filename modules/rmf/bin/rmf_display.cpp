@@ -171,21 +171,14 @@ int main(int argc, char **argv) {
   if (frame<0) step=std::abs(frame);
   std::cout << "Reading frames [" << minframe << ", "
             << maxframe << ": " << step << ")" <<std::endl;
+
+  IMP::Pointer<IMP::display::Writer> w
+    = IMP::display::create_writer(output);
   for (int cur_frame=minframe; cur_frame < maxframe; cur_frame+=step) {
     if (cur_frame%10==0) {
       std::cout << cur_frame << " ";
     }
-    std::string name=output;
-    bool append=false;
-    if (frame<0 && name.find("%1%")==std::string::npos) {
-      append=cur_frame >minframe;
-    } else if (frame<0) {
-      std::ostringstream oss;
-      oss << boost::format(output)%cur_frame;
-      name=oss.str();
-    }
-    IMP::Pointer<IMP::display::Writer> w
-      = IMP::display::create_writer(name, append);
+    w->set_frame((cur_frame-minframe)/step);
     for (unsigned int i=0; i< hs.size(); ++i) {
       IMP::rmf::load_frame(rh, cur_frame, hs[i]);
       IMP_NEW(IMP::display::HierarchyGeometry, g, (hs[i]));
