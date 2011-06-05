@@ -7,7 +7,8 @@
  */
 
 #include "IMP/em2d/domino_filter_tables.h"
-#include @IMP/em2d/domino_filters.h"
+#include "IMP/em2d/domino_filters.h"
+#include "IMP/macros.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -40,8 +41,8 @@ double ProjectionOverlapFilterTable::get_strength(
 }
 
 */
-void DistanceFilterTable::show(std::ostream &out = std::cout) const {
-  std::cout << "DistanceFilterTable" << std::endl;
+void DistanceFilterTable::do_show(std::ostream &out) const {
+  this->show(out);
 }
 
 domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
@@ -50,14 +51,16 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
   // Check that the subset only has 2 particles
   if(subset.size() != 2) return NULL;
   // Check if the subset contains the particles of my_subset
-  for(Subset::const_iterator it = subset.begin(); it =! subset.end(), ++it) {
-    if (! std::binary_search(my_subset.begin(), my_subset.end(), *it)) {
+  for(domino::Subset::const_iterator it = subset.begin();
+                                     it != subset.end();
+                                     ++it) {
+    if (! std::binary_search(my_subset_.begin(), my_subset_.end(), *it)) {
       return NULL;
     }
   }
-  domino::SubsetFilter *p = new DistanceFilter(my_subset,
+  domino::SubsetFilter *p = new DistanceFilter(my_subset_,
                                                ps_table_,
-                                               distance_);
+                                               max_distance_);
   return p;
 }
 

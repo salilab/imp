@@ -32,9 +32,12 @@ IMP_SWIG_OBJECT(IMP::em2d, SpiderImageReaderWriter, SpiderImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, CollisionCrossSection, CollisionCrossSections);
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionStates, ProjectionStatesList);
-IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilter, ProjectionOverlapFilters);
-IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilterTable,
-                                        ProjectionOverlapFilterTable);
+//IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilter, ProjectionOverlapFilters);
+//IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilterTable,
+//                                        ProjectionOverlapFilterTable);
+IMP_SWIG_OBJECT(IMP::em2d, GridStates, GridStatesList);
+IMP_SWIG_OBJECT(IMP::em2d, DistanceFilter, DistanceFilters);
+IMP_SWIG_OBJECT(IMP::em2d, DistanceFilterTable,DistanceFilterTables);
 
 
 // wrapping of a decorator with swigg. Parameters: namespace, name, plural name
@@ -63,9 +66,9 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/Em2DRestraint.h"
 %include "IMP/em2d/hierarchical_clustering.h"
 %include "IMP/em2d/CollisionCrossSection.h"
-//%include "IMP/em2d/domino_particle_states.h"
-//%include "IMP/em2d/dompino_filters.h"
-//%include "IMP/em2d/domino_filter_tables.h"
+%include "IMP/em2d/domino_particle_states.h"
+%include "IMP/em2d/domino_filters.h"
+%include "IMP/em2d/domino_filter_tables.h"
 
 
 namespace IMP {

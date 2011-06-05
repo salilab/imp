@@ -10,7 +10,7 @@
 
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
-#include "IMP/em2d/ProjectionStates.h"
+#include "IMP/em2d/domino_particle_states.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/domino/subset_filters.h"
 #include "IMP/domino/Assignment.h"
@@ -19,14 +19,13 @@
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
-
+/*
 class IMPEM2DEXPORT ProjectionOverlapFilter: public domino::SubsetFilter {
 
 protected:
 
   Pointer<Image> image_;
-
-  Pointer<ProjectionStates> states_; ----> ParticlesStatesTable !!!!
+  ParticlesStatesTable ps_states_;
   double minimum_overlap_;
 
   IntPair get_position_in_image(algebra::Vector3D &position) const {
@@ -40,7 +39,7 @@ protected:
 public:
 
   ProjectionOverlapFilter(Image *img,
-                          ProjectionStates *states,
+                          ParticlesStatesTable ps_states,
                           String name = "ProjectionOverlapFilter %1%") :
              SubsetFilter(name),
              image_(img), states_(states) {}
@@ -58,33 +57,31 @@ public:
 
 };
 IMP_OBJECTS(ProjectionOverlapFilter,ProjectionOverlapFilters);
+*/
 
 
-
-class IMPEM2DEXPORT DistanceFilter {
+class IMPEM2DEXPORT DistanceFilter: public domino::SubsetFilter {
 
 protected:
   domino::Subset my_subset_;
-  domino::ParticleStatesTable ps_table_;
+  Pointer<domino::ParticleStatesTable> ps_table_;
   double max_distance_;
-
 
 public:
 
   DistanceFilter(const domino::Subset &subset_to_act_on,
-                 const domino::ParticleStatesTable &ps_table,
-                 double max_distance_) :  my_subset_(subset_to_act_on),
+                 domino::ParticleStatesTable *ps_table,
+                 double max_distance) :  my_subset_(subset_to_act_on),
                                           ps_table_(ps_table),
                                           max_distance_(max_distance) {};
-
   void show(std::ostream &out = std::cout) const {
-    std::out << "DistanceFilter" << std::endl;
+    out << "DistanceFilter" << std::endl;
   }
 
   IMP_SUBSET_FILTER(DistanceFilter);
 
 };
-IMP_VALUES_OR_OBJECT(DistanceFilter,DistanceFilters);
+IMP_OBJECTS(DistanceFilter,DistanceFilters);
 
 IMPEM2D_END_NAMESPACE
 

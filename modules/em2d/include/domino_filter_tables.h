@@ -10,8 +10,7 @@
 #define IMPEM2D_DOMINO_FILTER_TABLES_H
 
 #include "IMP/em2d/Image.h"
-#include "IMP/em2d/ProjectionStates.h"
-#include "IMP/em2d/ProjectionOverlapFilter.h"
+#include "IMP/em2d/domino_particle_states.h"
 #include "IMP/domino/Subset.h"
 #include "IMP/domino/subset_filters.h"
 
@@ -46,21 +45,24 @@ IMP_OBJECTS(ProjectionOverlapFilterTable,ProjectionOverlapFilterTables);
 class IMPEM2DEXPORT DistanceFilterTable: public domino::SubsetFilterTable {
 protected:
   domino::Subset my_subset_;
-  domino::ParticleStatesTable ps_table_;
+  Pointer<domino::ParticleStatesTable> ps_table_;
   double max_distance_; // max distance tolerated between the particles
 
 public:
 
   DistanceFilterTable(const domino::Subset &subset_to_act_on,
-                      const domino::ParticleStatesTable &ps_table,
-                      double max_distance_) :
+                      domino::ParticleStatesTable *ps_table,
+                      double max_distance) :
                     my_subset_(subset_to_act_on), ps_table_(ps_table),
-                    max_distance_(max_distance) {};
+                      max_distance_(max_distance) {};
 
+  void show(std::ostream &out = std::cout) const {
+    out << "DistanceFilterTable" << std::endl;
+  };
 
   IMP_SUBSET_FILTER_TABLE(DistanceFilterTable);
  };
-IMP_OBJECTS(DistanceFilterTable,DistanceFilterTables);
+IMP_OBJECTS(DistanceFilterTable, DistanceFilterTables);
 
 IMPEM2D_END_NAMESPACE
 

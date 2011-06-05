@@ -20,7 +20,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
  void ProjectionStates::load_particle_state(unsigned int i,
                                             Particle *p) const {
-   GridStates::load_particle_state(i,p);
+   GridStates::load_particle_state(i, p);
  }
 
 
@@ -35,30 +35,27 @@ Image* ProjectionStates::get_projection(unsigned int  i) const {
   return projections_[index];
 }
 
-   IMP_USAGE_CHECK(i < number_of_states_,
-                    "ProjectionStates: index out of range ");
-    unsigned int index = floor(i/projections_.size() );
-    return positions_[index];
-  }
 
 void ProjectionStates::do_show(std::ostream &out) const {
   out << "ProjectionStates" << std::endl;
 }
 
-  algebra::Vector3D GridStates::get_position(unsigned int  i) const {
-    IMP_USAGE_CHECK(i < number_of_states_,
-                    "GridStates: index out of range ");
-    unsigned int index = floor(i/positions_.size() );
-    return positions_[index];
-  }
 
-  algebra::Rotation3D GridStates::get_orientation(unsigned int  i) const {
-    IMP_USAGE_CHECK(i < number_of_states_,
-                    "GridStates: index out of range ");
-    unsigned int position_index = floor(i/orientations_.size() );
-    unsigned int index = i - position_index*orientations_.size();
-    return orientations_[index];
-  }
+
+algebra::Vector3D GridStates::get_position(unsigned int  i) const {
+  IMP_USAGE_CHECK(i < number_of_states_,
+                  "GridStates: index out of range ");
+  unsigned int index = floor(i/positions_.size() );
+  return positions_[index];
+}
+
+algebra::Rotation3D GridStates::get_orientation(unsigned int  i) const {
+  IMP_USAGE_CHECK(i < number_of_states_,
+                  "GridStates: index out of range ");
+  unsigned int position_index = floor(i/orientations_.size() );
+  unsigned int index = i - position_index*orientations_.size();
+  return orientations_[index];
+}
 
 void GridStates::do_show(std::ostream &out) const {
   out << "GridStates" << std::endl;
@@ -66,10 +63,13 @@ void GridStates::do_show(std::ostream &out) const {
 
 void GridStates::load_particle_state(unsigned int i,
                                             Particle *p) const {
-  algebra::Transformation3D T(get_rotation(i), get_position(i));
+  algebra::Transformation3D T(get_orientation(i), get_position(i));
   core::XYZ xyz(p);
   core::transform(xyz,T);
 }
 
+  unsigned int GridStates::get_number_of_particle_states() const {
+    return number_of_states_;
+  }
 
 IMPEM2D_END_NAMESPACE
