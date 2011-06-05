@@ -118,10 +118,9 @@ void DensityMap::Read(const char *filename, MapReaderWriter *reader) {
 
 
 namespace {
-  MapReaderWriter *create_reader_writer_from_name(const char *filename) {
-    std::string name(filename);
+  MapReaderWriter *create_reader_writer_from_name(std::string name) {
     IMP_USAGE_CHECK(name.rfind('.') != std::string::npos,
-                  "No suffix in file name: " << filename);
+                  "No suffix in file name: " << name);
     std::string suf=name.substr(name.rfind('.'));
     if (suf == ".mrc") {
       return new MRCReaderWriter();
@@ -132,19 +131,19 @@ namespace {
     } else if (suf == ".xplor") {
       return new XplorReaderWriter();
     } else {
-      IMP_THROW("Unable to determine type for file "<< filename
+      IMP_THROW("Unable to determine type for file "<< name
                 << " with suffix " << suf,
                 IOException);
     }
   }
 }
 
-DensityMap* read_map(const char *filename) {
+DensityMap* read_map(std::string filename) {
   Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
   return read_map(filename, rw);
 }
 
-void write_map(DensityMap *dm, const char *filename) {
+void write_map(DensityMap *dm, std::string  filename) {
   Pointer<MapReaderWriter> rw= create_reader_writer_from_name(filename);
   write_map(dm, filename, rw);
 }
@@ -240,7 +239,7 @@ void DensityMap::update_header() {
                            "The resolution was not initialized"<<std::endl);
 }
 
-DensityMap* read_map(const char *filename, MapReaderWriter *reader)
+DensityMap* read_map(std::string filename, MapReaderWriter *reader)
 {
   // TODO: we need to decide who does the allocation ( mapreaderwriter or
   // density)? if we keep the current implementation ( mapreaderwriter )
@@ -248,7 +247,7 @@ DensityMap* read_map(const char *filename, MapReaderWriter *reader)
   Pointer<MapReaderWriter> ptr(reader);
   Pointer<DensityMap> m= new DensityMap();
   float *f_data=NULL;
-  reader->read(filename, &f_data, m->header_);
+  reader->read(filename.c_str(), &f_data, m->header_);
   reader->set_was_used(true);
   boost::scoped_array<float> f_datap(f_data);
   m->float2real(f_datap.get(), m->data_);
@@ -296,14 +295,14 @@ void DensityMap::Write(const char *filename, MapReaderWriter *writer) {
 }
 #endif
 
-void write_map(DensityMap *d, const char *filename, MapReaderWriter *writer)
+void write_map(DensityMap *d, std::string  filename, MapReaderWriter *writer)
 {
   IMP::Pointer<MapReaderWriter> pt(writer);
   writer->set_was_used(true);
   d->set_was_used(true);
   boost::scoped_array<float> f_data;
   d->real2float(d->data_.get(), f_data);
-  writer->write(filename, f_data.get(), d->header_);
+  writer->write(filename.c_str(), f_data.get(), d->header_);
 }
 
 long DensityMap::get_number_of_voxels() const {
@@ -915,7 +914,8 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
                                         ret->get_data()
                                         +ret->get_number_of_voxels())
           << std::endl);
-  IMP_LOG(TERSE, "Old map was " << in->get_header()->get_nx() << " "
+  IMP_LOG(TERSE, "Old map was "
+          << in->get_header()->get_nx() << " "
           << in->get_header()->get_ny() << " " << in->get_header()->get_nz()
           << std::endl);
   if (in->get_header()->get_has_resolution()) {
@@ -969,7 +969,8 @@ void get_transformed_into2(const DensityMap *from,
   into->get_header_writable()->compute_xyz_top();
 }
 
-DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y, int mrg_z,float val) {
+DensityMap* DensityMap::pad_margin(int mrg_x, int mrg_y,
+                                   int mrg_z,float /*val*/) {
   Pointer<DensityMap> ret(new DensityMap(header_));
   //calculate the new extent
   int new_ext[3];
