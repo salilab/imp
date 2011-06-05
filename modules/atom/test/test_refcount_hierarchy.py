@@ -62,7 +62,11 @@ class DecoratorTests(IMP.test.TestCase):
         del m
         del h
         print "initial live"
-        print IMP.Object.get_live_object_names()
+        try:
+            print IMP.Object.get_live_object_names()
+        except:
+            #for fast
+            pass
         while (True):
             # charm creates all sorts of things
             refcnt = IMP.test.RefCountChecker(self)
