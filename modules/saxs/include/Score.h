@@ -42,7 +42,7 @@ public:
     return sqrt(compute_chi_square_score(model_profile,
                                          use_offset, fit_file_name));
   }
-
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! fit experimental profile through optimization of c1 and c2 parameters
   /**
      \param[in] partial_profile  partial profiles computed
@@ -65,6 +65,7 @@ public:
     return fit_profile(partial_profile, c1, c2, false, false,
                        use_offset, fit_file_name);
   }
+#endif
 
   //! compute squared chi value
   Float compute_chi_square_score(const Profile& model_profile,
