@@ -17,6 +17,13 @@ def _forward_set_value(self, name, value):
 %}
 
 
+%typemap(in) char * {
+  strings_must_be_passed_by_std_string;
+}
+%typemap(out) char * {
+  strings_must_be_passed_by_std_string;
+}
+
 
 
 #if IMP_BUILD == IMP_FAST
@@ -117,15 +124,13 @@ IMP_SWIG_VALUE_INSTANCE(IMP, StringKey, Key, StringKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ParticleKey, Key, ParticleKeys);
 IMP_SWIG_VALUE_INSTANCE(IMP, ObjectKey, Key, ObjectKeys);
 IMP_SWIG_VALUE_TEMPLATE(IMP, Key);
-IMP_SWIG_VALUE_INSTANCE(IMP, Float, Float, Floats);
-IMP_SWIG_VALUE_INSTANCE(IMP, Int, Int, Ints);
-IMP_SWIG_VALUE_INSTANCE(IMP, String, String, Strings);
+IMP_SWIG_VALUE_BUILTIN(IMP, Float, Floats, double);
+IMP_SWIG_VALUE_BUILTIN(IMP, Int, Ints, int);
+IMP_SWIG_VALUE_BUILTIN(IMP, String, Strings, std::string);
 IMP_SWIG_NATIVE_VALUE(float);
 IMP_SWIG_NATIVE_VALUE(double);
 IMP_SWIG_NATIVE_VALUE(int);
 IMP_SWIG_NATIVE_VALUE(std::string);
-IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
-IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
 IMP_SWIG_RAII(IMP, SetLogState);
 IMP_SWIG_RAII(IMP, SetLogTarget);
 IMP_SWIG_RAII(IMP, ScopedFailureHandler);
@@ -138,6 +143,10 @@ IMP_SWIG_RAII(IMP, SaveOptimizeds);
 IMP_SWIG_RAII(IMP, CreateLogContext)
 IMP_SWIG_RAII(IMP, WarningContext)
 
+
+IMP_SWIG_VALUE(IMP, TextOutput, TextOutputs);
+IMP_SWIG_VALUE(IMP, TextInput, TextInputs);
+
 IMP_SWIG_VALUE(IMP, RestraintStatistics, RestraintStatisticsList);
 
 
@@ -149,6 +158,10 @@ IMP_SWIG_OBJECT(IMP::internal, _ConstRestraint, _ConstRestraints);
 IMP_SWIG_OBJECT(IMP::internal, _ConstOptimizer, _ConstOptimizers);
 IMP_SWIG_VALUE(IMP::internal, _Value, _Values);
 IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
+
+/*%typemap(in) IMP::VersionInfo* {
+ values_like_##Name##_must_be_passed_by_value_or_const_ref;
+}*/
 
 %extend IMP::Object {
   bool __eq__(const Object *o) const {
@@ -207,8 +220,8 @@ namespace IMP {
   %template(StringKey) ::IMP::Key<2, true>;
   %template(ParticleKey) ::IMP::Key<3, true>;
   %template(ObjectKey) ::IMP::Key<4, true>;
-  %implicitconv InputFile;
-  %implicitconv OutputFile;
+  %implicitconv TextInput;
+  %implicitconv TextOutput;
 }
 
 %inline %{

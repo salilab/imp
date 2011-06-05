@@ -165,60 +165,44 @@ _object_types.append(#Name)
 
 
 
-%define IMP_SWIG_VALUE_CHECKS_BASE(Namespace, Name)
-%typemap(out) Namespace::Name& {
-  values_like_##Name##_must_be_returned_by_value_or_const_ref;
- }
-%typemap(in) Namespace::Name& {
-  values_like_##Name##_must_be_passed_by_value_or_const_ref;
+
+
+%define IMP_SWIG_VALUE_CHECKS(Namespace, Name, Type)
+%typemap(in) Namespace::Name const& = Type const &;
+%typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name const& = Type const &;
+%typemap(in) Namespace::Name & {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+
+%typemap(in) Namespace::Name *self = Type *;
+%typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name *self = Type *;
+%typemap(in) Namespace::Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorin) Namespace::Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
   }
-%enddef
 
 
 
+//%typemap(out) Namespace::Name const& = SWIGTYPE const &;
+%typemap(out) Namespace::Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+}
 
-%define IMP_SWIG_VALUE_CHECKS(Namespace, Name)
- /* %typemap(in) Namespace::Name const& {
-  try {
-    // hack to get around swig's value wrapper being randomly used
-    IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::Exception &e) {
-    //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
-    PyErr_SetString(PyExc_TypeError, e.what());
-    return NULL;
-  }
- }
-%typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name const& {
-  std::cout << "Checking " << #Name << std::endl;
-  $1= IMP::internal::swig::Convert<Namespace::Name >::get_is_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*));
-  std::cout << "Got " << $1 << std::endl;
- }
-%typemap(out) Namespace::Name const& {
-  $result = IMP::internal::swig::Convert<Namespace::Name >::create_python_object(IMP::internal::swig::ValueOrObject<Namespace::Name >::get($1), $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
-  }*/
-/*%typemap(freearg) Namespace::Name const& {
-  IMP::internal::swig::delete_if_pointer($1);
- }
+%typemap(out) Namespace::Name *self = Type *;
+%typemap(out) Namespace::Name *Namespace::Name = Type *;
+%typemap(out) Namespace::Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
 
-*/
-/*%typemap(directorout) Namespace::Name const& {
-  // hack to get around swig's evil value wrapper being randomly used
-  IMP::internal::swig::assign($result, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name*), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
- }
-%typemap(directorin) Namespace::Name const& {
-  $input = IMP::internal::swig::Convert<Namespace::Name >::create_python_object($1_name, $descriptor(Namespace::Name*), SWIG_POINTER_OWN);
-  }*/
-IMP_VALUE_CHECKS_BASE(Namespace, Name);
-/*%typemap(in) Namespace::Name* {
-  BOOST_STATIC_ASSERT($argnum==1 && "Values like "#Namespace"::"#Name" must be passed by value or const ref");
-try {
-  IMP::internal::swig::assign($1, IMP::internal::swig::Convert<Namespace::Name >::get_cpp_object($input, $descriptor(Namespace::Name), $descriptor(IMP::Particle*), $descriptor(IMP::Decorator*)));
-  } catch (const IMP::Exception &e) {
-  //PyErr_SetString(PyExc_ValueError,"Wrong type in sequence");
-  PyErr_SetString(PyExc_TypeError, e.what());
-  return NULL;
-  }
-  }*/
+
+%typemap(directorout) Namespace::Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorout) Namespace::Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
 %enddef
 
 
@@ -232,6 +216,7 @@ try {
 
 
 %define IMP_SWIG_OBJECT_INSTANCE(Namespace,Name, Nicename, PluralName)
+IMP_SWIG_VALUE_CHECKS(Namespace, PluralName, SWIGTYPE);
 %typemap(out) Namespace::Name* {
   if (!($owner & SWIG_POINTER_NEW)) {
     // out typemaps are also called for constructors, which already use %ref
@@ -247,7 +232,6 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
-IMP_SWIG_VALUE_CHECKS_BASE(Namespace, PluralName);
 IMP_SWIG_OBJECT_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
@@ -370,6 +354,7 @@ IMP_SWIG_FORWARD_1(has_attribute, bool, IMP::Key);
 
 
 %define IMP_SWIG_DECORATOR_BASE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
@@ -443,7 +428,6 @@ IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
      return self->get_particle() > d;
   }
 }
-IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %feature("valuewrapper") PluralName;
 %feature("valuewrapper") PluralName##Temp;
 IMP_SWIG_SHOWABLE(Namespace, Name);
@@ -486,13 +470,13 @@ _value_types.append(#Name)
 
 
 %define IMP_SWIG_OBJECT_TUPLE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, PluralName,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, PluralName##Temp, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, PluralName##Temp,);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, Name, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Particle, Name,);
-IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
 PluralName=list
 _plural_types.append(#PluralName)
@@ -524,7 +508,6 @@ IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
 %typemap(directorin) Namespace::Name const& {
   $input = SWIG_NewPointerObj(new Namespace::Name($1_name), $descriptor(Namespace::Name*), SWIG_POINTER_OWN | %newpointer_flags);
  }
-IMP_SWIG_VALUE_CHECKS(Namespace, Name);
 %pythoncode %{
 PluralName=list
 _plural_types.append(#PluralName)
@@ -546,11 +529,48 @@ _value_types.append(#Name)
 
 
 %define IMP_SWIG_VALUE_INSTANCE(Namespace, Name, TemplateName, PluralName)
+IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
+IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
+%enddef
+
+
+%define IMP_SWIG_VALUE_BUILTIN(Namespace, Name, PluralName, Type)
+%typemap(in) Namespace::Name const& = Type const &;
+%typecheck(SWIG_TYPECHECK_POINTER) Namespace::Name const& = Type const &;
+%typemap(in) Namespace::Name & {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(in) Namespace::Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorin) Namespace::Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+  }
+//%typemap(out) Namespace::Name const& = SWIGTYPE const &;
+%typemap(out) Namespace::Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+}
+
+%typemap(out) Namespace::Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
+%typemap(directorout) Namespace::Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorout) Namespace::Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
 IMP_SWIG_VALUE_IMPL(Namespace, Name, TemplateName, PluralName, PluralName);
 %enddef
 
 %define IMP_SWIG_VALUE(Namespace, Name, PluralName)
 IMP_SWIG_VALUE_INSTANCE(Namespace, Name, Name, PluralName)
+IMP_SWIG_SHOWABLE(Namespace, Name);
+%enddef
+
+ // a value that has implicit constructors
+%define IMP_SWIG_VALUE_IMPLICIT(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_IMPL(Namespace, Name, Name, PluralName, PluralName);
 IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 
@@ -562,6 +582,29 @@ IMP_SWIG_SHOWABLE(Namespace, Name);
 
 
 %define IMP_SWIG_NATIVE_VALUE(Name)
+
+%typemap(in) Name & {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(in) Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorin) Name * {
+  values_like_##Name##_must_be_passed_by_value_or_const_ref_not_non_const_ref;
+  }
+//%typemap(out) Namespace::Name const& = SWIGTYPE const &;
+/*%typemap(out) Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+  }*/
+%typemap(out) Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
+%typemap(directorout) Name & {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_non_const_ref;
+}
+%typemap(directorout) Name * {
+  values_like_##Name##_must_be_returned_by_value_or_const_ref_not_pointer;
+}
 %typemap(in) std::vector<Name> const& {
   try {
     // hack to get around swig's value wrapper being randomly used
