@@ -56,6 +56,8 @@ class BinormalTerm
   double evaluate(const double dihedral[2], double &sin1, double &sin2,
                   double &cos1, double &cos2, double &rho) const;
 public:
+  BinormalTerm(): correlation_(-1), weight_(-1),
+                  means_(-1,-1), stdevs_(-1,-1){}
   friend class MultipleBinormalRestraint;
 
   void set_correlation(double correlation) { correlation_ = correlation; }
