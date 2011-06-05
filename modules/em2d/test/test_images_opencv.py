@@ -212,7 +212,10 @@ class ProjectTests(IMP.test.TestCase):
                     self.assertAlmostEqual(img2(i,j),0,delta=0.001,
                          msg="Borders are not zero at row %d col %d" % (i,j))
 
-
+    def test_get_overlap_percentage(self):
+        """ Test that the function returns > 0 when there is overlap, and 0
+          otherwise """
+        pass
 
 
 if __name__ == '__main__':

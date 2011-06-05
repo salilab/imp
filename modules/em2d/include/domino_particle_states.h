@@ -28,7 +28,7 @@ IMPEM2D_BEGIN_NAMESPACE
     of the projections of the particles.
   \param[in]
 */
-class IMPEM2DEXPORT GridStates: public domino::GridStates {
+class IMPEM2DEXPORT GridStates: public domino::ParticleStates {
 
 protected:
 
@@ -69,6 +69,7 @@ public:
   IMP_PARTICLE_STATES(GridStates);
 
  };
+IMP_OBJECTS(GridStates, GridStatesList);
 
 
 /*! States that a set of Particles can have according to their positions
@@ -76,7 +77,7 @@ public:
     of the projections of the particles.
   \param[in]
 */
-class IMPEM2DEXPORT ProjectionStates: public domino::GridStates {
+class IMPEM2DEXPORT ProjectionStates: public GridStates {
 
 protected:
 
@@ -99,10 +100,8 @@ public:
   ProjectionStates(const algebra::Vector3Ds &positions,
                             const algebra::Rotation3Ds &orientations,
                             const Images &projections,
-                            const String &name="ProjectionStates") :
-                            GridStates(name),
-                           positions_(positions),
-                           orientations_(orientations),
+                            const String &name="ProjectionStates")  :
+                            GridStates(positions, orientations, name),
                            projections_(projections) {
     number_of_states_ = positions_.size()*orientations_.size();
   };
@@ -114,6 +113,7 @@ public:
 
   IMP_PARTICLE_STATES(ProjectionStates);
  };
+IMP_OBJECTS(ProjectionStates, ProjectionStatesList);
 
 
 
