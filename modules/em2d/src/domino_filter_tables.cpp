@@ -48,8 +48,12 @@ void DistanceFilterTable::do_show(std::ostream &out) const {
 domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
                             const domino::Subset &subset,
                             const domino::Subsets &prior_subsets) const {
+  IMP_LOG(IMP::VERBOSE, " get_subset_filter " << std::endl);
+  subset.show();
+
   // Check that the subset only has 2 particles
   if(subset.size() != 2) return NULL;
+
   // Check if the subset contains the particles of my_subset
   for(domino::Subset::const_iterator it = subset.begin();
                                      it != subset.end();
@@ -58,6 +62,8 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
       return NULL;
     }
   }
+
+  IMP_LOG(IMP::TERSE, "creating DistanceFilter" << std::endl);
   domino::SubsetFilter *p = new DistanceFilter(my_subset_,
                                                ps_table_,
                                                max_distance_);

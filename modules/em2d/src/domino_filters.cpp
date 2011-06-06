@@ -8,6 +8,7 @@
 
 #include "IMP/em2d/domino_filters.h"
 #include "IMP/Pointer.h"
+#include "IMP/log.h"
 
 IMPEM2D_BEGIN_NAMESPACE
 
@@ -46,8 +47,12 @@ bool DistanceFilter::get_is_ok(const domino::Assignment& assignment)const {
   }
   core::XYZ xyz0(my_subset_[0]);
   core::XYZ xyz1(my_subset_[1]);
-  bool  ok = core::get_distance( xyz0, xyz1) > max_distance_ ? true : false;
-  return ok;
+
+  IMP_LOG(IMP::VERBOSE, "xyz0 " << xyz0.get_coordinates()
+          << " xyz1 " << xyz1.get_coordinates() << " Checking distance: "
+          << core::get_distance( xyz0, xyz1) << std::endl);
+  if( core::get_distance( xyz0, xyz1) <= max_distance_) return true;
+  return false;
 }
 
 

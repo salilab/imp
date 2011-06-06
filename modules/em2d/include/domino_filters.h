@@ -16,6 +16,7 @@
 #include "IMP/domino/Assignment.h"
 #include "IMP/Pointer.h"
 #include "IMP/base_types.h"
+#include "IMP/log.h"
 #include <iostream>
 
 IMPEM2D_BEGIN_NAMESPACE
@@ -73,7 +74,9 @@ public:
                  domino::ParticleStatesTable *ps_table,
                  double max_distance) :  my_subset_(subset_to_act_on),
                                           ps_table_(ps_table),
-                                          max_distance_(max_distance) {};
+                                          max_distance_(max_distance) {
+  IMP_LOG(IMP::TERSE, "DistanceFilter created" << std::endl);
+                                          };
   void show(std::ostream &out = std::cout) const {
     out << "DistanceFilter" << std::endl;
   }
