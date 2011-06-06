@@ -48,6 +48,7 @@ void DistanceFilterTable::do_show(std::ostream &out) const {
 domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
                             const domino::Subset &subset,
                             const domino::Subsets &prior_subsets) const {
+  IMP_UNUSED(prior_subsets.size());
   IMP_LOG(IMP::VERBOSE, " get_subset_filter " << std::endl);
   subset.show();
 
@@ -71,8 +72,10 @@ domino::SubsetFilter* DistanceFilterTable::get_subset_filter(
 }
 
 double DistanceFilterTable::get_strength(
-                              const domino::Subset  &susbset,
+                              const domino::Subset  &subset,
                               const domino::Subsets &prior_subsets) const {
+  IMP_UNUSED(subset);
+  IMP_UNUSED(prior_subsets.size());
   return 1;
 }
 
