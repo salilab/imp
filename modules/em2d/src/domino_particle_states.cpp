@@ -30,7 +30,7 @@ IMPEM2D_BEGIN_NAMESPACE
 Image* ProjectionStates::get_projection(unsigned int  i) const {
   IMP_USAGE_CHECK(i < number_of_states_,
                   "ProjectionStates: index out of range ");
-  unsigned int position_index = floor(i/projections_.size() );
+  unsigned int position_index = i/projections_.size();
   unsigned int index = i - position_index*projections_.size();
   return projections_[index];
 }
@@ -45,14 +45,14 @@ void ProjectionStates::do_show(std::ostream &out) const {
 algebra::Vector3D GridStates::get_position(unsigned int  i) const {
   IMP_USAGE_CHECK(i < number_of_states_,
                   "GridStates: index out of range ");
-  unsigned int index = floor(i/positions_.size() );
+  unsigned int index = i/orientations_.size();
   return positions_[index];
 }
 
 algebra::Rotation3D GridStates::get_orientation(unsigned int  i) const {
   IMP_USAGE_CHECK(i < number_of_states_,
                   "GridStates: index out of range ");
-  unsigned int position_index = floor(i/orientations_.size() );
+  unsigned int position_index = i/orientations_.size();
   unsigned int index = i - position_index*orientations_.size();
   return orientations_[index];
 }
