@@ -29,16 +29,14 @@ public:
 
   ~ProjectionParameters() {};
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Keys of the decorator
-  static FloatKey* get_keys();
-#endif
+  static FloatKeys get_keys();
 
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
   void set_proper_ranges_for_keys(Model *m,
-                        const algebra::Vector3D &min_translation_values,
-                        const algebra::Vector3D &max_translation_values);
+                  const algebra::Vector3D &min_translation_values,
+                  const algebra::Vector3D &max_translation_values);
 
   //! Create the proper attributes for a particle
   static ProjectionParameters setup_particle(Particle *p);
