@@ -31,13 +31,14 @@ void ProjectionParameters::show(std::ostream &os) const {
      << " | Tranlation (x,y,z) = " << get_translation();
 }
 
-FloatKey* ProjectionParameters::get_keys() {
-  static FloatKey keys[]= {FloatKey("rot_q1"),
-                           FloatKey("rot_q2"),
-                           FloatKey("rot_q3"),
-                           FloatKey("rot_q4"),
-                           FloatKey("translation_x"),
-                           FloatKey("translation_y")};
+FloatKeys ProjectionParameters::get_keys() {
+  static FloatKeys keys;
+  keys.push_back(FloatKey("rot_q1"));
+  keys.push_back(FloatKey("rot_q2"));
+  keys.push_back(FloatKey("rot_q3"));
+  keys.push_back(FloatKey("rot_q4"));
+  keys.push_back(FloatKey("translation_x"));
+  keys.push_back(FloatKey("translation_y"));
   return keys;
 }
 
