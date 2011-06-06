@@ -182,6 +182,34 @@ class IMPDOMINOEXPORT RecursiveStates: public ParticleStates {
   IMP_PARTICLE_STATES(RecursiveStates);
 };
 
+
+/** Permute the states of a particle. This might be useful when
+    trying to sample from a too large set of Assignments. However,
+    it will break many filters, so use with care.
+*/
+class IMPDOMINOEXPORT PermutationStates: public ParticleStates {
+  IMP::internal::OwnerPointer<ParticleStates> inner_;
+  Ints permutation_;
+ public:
+  PermutationStates(ParticleStates *inner);
+  /** Return the index of the ith state in the inner ParticleState
+      object.*/
+  unsigned int get_inner_state(unsigned int i) const {
+    return permutation_[i];
+  }
+  IMP_PARTICLE_STATES(PermutationStates);
+};
+
+
+inline unsigned int
+PermutationStates::get_number_of_particle_states() const {
+  return inner_->get_number_of_particle_states();
+}
+inline void
+PermutationStates::load_particle_state(unsigned int i, Particle *p) const {
+  return inner_->load_particle_state(get_inner_state(i), p);
+}
+
 IMPDOMINO_END_NAMESPACE
 
 #endif  /* IMPDOMINO_PARTICLE_STATES_H */

@@ -9,6 +9,8 @@
 #include <IMP/domino/particle_states.h>
 #include <IMP/core/XYZ.h>
 #include <IMP/core/rigid_bodies.h>
+#include <boost/random.hpp>
+#include <algorithm>
 
 IMPDOMINO_BEGIN_NAMESPACE
 ParticleStates::~ParticleStates(){}
@@ -147,6 +149,32 @@ void RecursiveStates::load_particle_state(unsigned int i, Particle *) const {
 void RecursiveStates::do_show(std::ostream &out) const{
   out << "particles: " << s_ << std::endl;
   out << "states: " << ss_.size() << std::endl;
+}
+
+
+namespace {
+  struct RandomWrapper {
+    int operator()(int i) {
+      boost::uniform_int<int> ri(0,i);
+      return ri(random_number_generator);
+    }
+  };
+}
+
+
+PermutationStates::PermutationStates(ParticleStates *inner):
+    ParticleStates("PermutationStates %1%"),
+    inner_(inner), permutation_(inner->get_number_of_particle_states(), 0)
+{
+  for (unsigned int i=0; i< permutation_.size(); ++i) {
+    permutation_[i]=i;
+  }
+  RandomWrapper rr;
+  std::random_shuffle(permutation_.begin(), permutation_.end(),
+                      rr);
+}
+
+void PermutationStates::do_show(std::ostream &) const{
 }
 
 
