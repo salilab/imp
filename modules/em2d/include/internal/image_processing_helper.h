@@ -11,6 +11,7 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
+#include "IMP/algebra/Vector2D.h"
 
 IMPEM2D_BEGIN_INTERNAL_NAMESPACE
 
@@ -127,6 +128,16 @@ void do_binary_matrix_scan(const cvIntMat &m,
 
 
 
+//! Performs a peak search in a matrix
+/*!
+  \param[in] m matrix
+  \param[out] value the value at the peak
+  \return the position of the peak. Subpixel precision, using interpolation
+*/
+algebra::Vector2D get_peak(cv::Mat &m,double *value);
+
+//! computes the weighted centroid of a matrix, with the values of the matrix
+algebra::Vector2D get_weighted_centroid(const cv::Mat &m);
 
 
 IMPEM2D_END_INTERNAL_NAMESPACE

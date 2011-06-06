@@ -17,6 +17,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/Object.h>
 #include "IMP/VectorOfRefCounted.h"
+#include "IMP/base_types.h"
 #include <limits>
 #include <typeinfo>
 
@@ -111,9 +112,7 @@ public:
     return name_;
   }
 
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  void get_min_and_max_values(double *min, double *max) const;
-#endif
+  FloatRange get_min_and_max_values() const;
 
 protected:
   void set_size_data(int rows,int cols);
