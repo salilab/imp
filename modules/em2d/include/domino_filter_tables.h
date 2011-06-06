@@ -13,6 +13,7 @@
 #include "IMP/em2d/domino_particle_states.h"
 #include "IMP/domino/Subset.h"
 #include "IMP/domino/subset_filters.h"
+#include "IMP/log.h"
 
 
 IMPEM2D_BEGIN_NAMESPACE
