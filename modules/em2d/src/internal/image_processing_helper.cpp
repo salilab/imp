@@ -296,4 +296,76 @@ int get_label_using_decission_tree(const cvPixel &p,
 }
 
 
+
+algebra::Vector2D get_peak(cv::Mat &m,double *value) {
+  // Find maximum value and location
+  IMP_LOG(IMP::VERBOSE,"starting peak seach on a matrix " << std::endl);
+
+  algebra::Vector2D peak;
+  double minVal,maxVal;
+  cv::Point minLoc,maxLoc;
+  cv::minMaxLoc(m, &minVal,&maxVal, &minLoc,&maxLoc);
+  *value = maxVal;
+  // Perform a weighted centroiding with the neighbours to find the actual
+  // maximum value. Performs as well as parabolic fit (Paulo, Opt. Eng. 2007)
+  // Careful here. I interpret translations as row,col, and OpenCV as col,row
+  int col0=0,row0=0;
+  int coln=m.cols-1;
+  int rown=m.rows-1;
+  int col=maxLoc.x,row=maxLoc.y;
+
+  if((row==row0 && col==col0) || (col==col0 && row==rown) ||
+     (col==coln && row==row0) || (col==coln && row==rown) ) {
+    // For corners just return the values
+    peak[0]=col; peak[1]=row;
+  } else if(row==row0 || row==rown) {
+    // row borders, average
+    peak[1]=row;
+    double w1 = m.at<double>(row,col-1);
+    double w2 = m.at<double>(row,  col);
+    double w3 = m.at<double>(row,col+1);
+    peak[0]=((col-1) *w1 + col*w2 + (col+1) * w3)/(w1+w2+w3);
+  } else if(col==col0 || col==coln) {
+    // Column borders, average
+    double w1 = m.at<double>(row-1,col);
+    double w2 = m.at<double>(row  ,col);
+    double w3 = m.at<double>(row+1,col);
+    peak[1]=((row-1)*w1+row*w2+(row+1)*w3)/(w1+w2+w3);
+    peak[0]=col;
+  } else {
+    // Points inside the matrix
+    unsigned int row_origin = row-1;
+    unsigned int col_origin = col-1;
+    // Weight on a region 3x3
+    cv::Mat region(m,cv::Rect(col_origin,row_origin,3,3));
+    algebra::Vector2D v = internal::get_weighted_centroid(region);
+    peak[0]=col_origin + v[0];
+    peak[1]=row_origin + v[1];
+  }
+  return peak;
+}
+
+
+algebra::Vector2D get_weighted_centroid(const cv::Mat &m) {
+  algebra::Vector2D center(0.,0.);
+  double denominator=0.0;
+  for (int i=1;i<=m.cols;++i) {
+    for (int j=1;j<=m.rows;++j) {
+//      double value = m.at<double>(i-1,j-1);
+      double value = m.at<double>(i-1,j-1);
+      denominator+= value;
+      center[0] += value*i;
+      center[1] += value*j;
+    }
+  }
+  // Adjust center for the fact that the  indices of m start at 0.
+  center = center/denominator;
+  // Following OpenCV convention the center is (col,row)
+  center[0] -= 1;
+  center[1] -= 1;
+  return center;
+}
+
+
+
 IMPEM2D_END_INTERNAL_NAMESPACE

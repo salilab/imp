@@ -15,6 +15,7 @@
 #include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/image_processing.h"
+#include "IMP/em2d/internal/image_processing_helper.h"
 #include "IMP/atom/Mass.h"
 #include "IMP/gsl/Simplex.h"
 #include "IMP/log.h"
@@ -449,7 +450,7 @@ void ProjectionFinder::do_preprocess_for_fast_coarse_registration(
   cv::minMaxLoc(m,&min_value);
   cv::Mat result;
   result -= min_value;
-  center=get_weighted_centroid(m);
+  center= internal::get_weighted_centroid(m);
   // Center the image in the weighted centroid
   algebra::Transformation2D T((-1)*center);
   get_transformed(m,result,T);
