@@ -500,6 +500,7 @@ namespace {
   };
 
   bool ListSubsetFilter::get_is_ok(const Assignment &state) const{
+    set_was_used(true);
     ++keepalive_->num_test_;
     for (unsigned int i=0; i < state.size(); ++i) {
       if (indexes_[i]>=0) {
@@ -516,10 +517,9 @@ namespace {
 
   int ListSubsetFilter::get_next_state(int pos,
                                        const Assignment& state) const {
-    unsigned int i=state[pos]+1;
-    while (i < keepalive_->states_[indexes_[pos]].size()
-           && !keepalive_->states_[indexes_[pos]][i]) ++i;
-    return i;
+    int ret= keepalive_->states_[indexes_[pos]].find_next(state[pos]);
+    if (ret==-1) return keepalive_->states_[indexes_[pos]].size();
+    return ret;
   }
 
   void ListSubsetFilter::do_show(std::ostream &) const{}
@@ -584,18 +584,21 @@ void ListSubsetFilterTable::do_show(std::ostream &) const {
 
 void ListSubsetFilterTable::set_allowed_states(Particle *p,
                                                const Ints &states) {
-  IMP_USAGE_CHECK(map_.find(p) == map_.end(),
-                  "Allowed states for " << p->get_name()
-                  << " already set.");
+  int index;
+  if (map_.find(p) != map_.end()) {
+    index= map_.find(p)->second;
+  } else {
+    index= states_.size();
+    states_.push_back(boost::dynamic_bitset<>());
+    map_[p]=index;
+  }
   boost::dynamic_bitset<> s(pst_->get_particle_states(p)
                             ->get_number_of_particle_states(),
                             false);
   for (unsigned int i=0; i< states.size(); ++i) {
     s[states[i]]=true;
   }
-  int sz= states_.size();
-  states_.push_back(s);
-  map_[p]=sz;
+  states_[index]=s;
 }
 
 
