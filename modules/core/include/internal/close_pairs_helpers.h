@@ -11,13 +11,12 @@
 #include "../core_config.h"
 #include "../BoxSweepClosePairsFinder.h"
 #include "../GridClosePairsFinder.h"
-#include "../QuadraticClosePairsFinder.h"
 #include "../XYZR.h"
 #include "CoreListPairContainer.h"
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-inline ClosePairsFinder *default_cpf(unsigned int) {
+inline ClosePairsFinder *default_cpf(unsigned int ) {
   return new GridClosePairsFinder();
 }
 
@@ -77,15 +76,29 @@ inline void filter_same(ParticlePairsTemp &c) {
 }
 
 
+inline bool get_are_close(Particle *a, Particle *b,
+                          double distance) {
+  XYZ da(a);
+  XYZ db(b);
+  Float ra= XYZR(a).get_radius();
+  Float rb= XYZR(b).get_radius();
+  Float sr= ra+rb+distance;
+  for (unsigned int i=0; i< 3; ++i) {
+    double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
+    if (delta >= sr) {
+      return false;
+    }
+  }
+  return get_interiors_intersect(algebra::SphereD<3>(da.get_coordinates(),
+                                                     ra+distance),
+                                 algebra::SphereD<3>(db.get_coordinates(), rb));
+}
 
 struct FarParticle {
   double d_;
   FarParticle(double d): d_(d){}
   bool operator()(const ParticlePair& pp) const {
-    return algebra::
-      get_interiors_intersect(XYZR(pp[0]).get_sphere(),
-                              algebra::Sphere3D(XYZR(pp[1]).get_coordinates(),
-                                                XYZR(pp[1]).get_radius()+d_));
+    return !get_are_close(pp[0], pp[1], d_);
   }
 };
 
