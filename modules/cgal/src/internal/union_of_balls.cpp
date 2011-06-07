@@ -18,6 +18,13 @@
 //#include <CGAL/Triangulation_data_structure_3.h>
 #include <CGAL/Weighted_alpha_shape_euclidean_traits_3.h>
 #include <CGAL/Regular_triangulation_3.h>
+#include <CGAL/version.h>
+
+#if CGAL_VERSION_NR > 1030701000
+#include <CGAL/Fixed_alpha_shape_3.h>
+#include <CGAL/Fixed_alpha_shape_vertex_base_3.h>
+#include <CGAL/Fixed_alpha_shape_cell_base_3.h>
+#endif
 
 /* To access specialized predicates for orthocenter localization
  uncomment one of the followings :*/
@@ -38,20 +45,29 @@ typedef K::Vector_3 Vector;
 typedef K::Line_3 Line;
 typedef K::Triangle_3 Triangle3;
 
-typedef CGAL::Weighted_alpha_shape_euclidean_traits_3<K> Gt;
 //typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
-typedef Gt::Point Wpoint;
+#if CGAL_VERSION_NR > 1030701000
+typedef CGAL::Regular_triangulation_euclidean_traits_3<K> Gt;
+typedef CGAL::Fixed_alpha_shape_vertex_base_3<Gt> Vb;
+typedef CGAL::Fixed_alpha_shape_cell_base_3<Gt> Fb;
+typedef CGAL::Triangulation_data_structure_3<Vb, Fb> TDS;
+typedef CGAL::Regular_triangulation_3<Gt, TDS> Triangulation;
+typedef CGAL::Fixed_alpha_shape_3<Triangulation> Alpha_shape;
+#else
+typedef CGAL::Weighted_alpha_shape_euclidean_traits_3<K> Gt;
 typedef CGAL::Triangulation_vertex_base_3<Gt> Vf;
 typedef CGAL::Alpha_shape_vertex_base_3<Gt, Vf> Vb;
 
 typedef CGAL::Triangulation_cell_base_3<Gt> Df;
 typedef CGAL::Alpha_shape_cell_base_3<Gt, Df> Fb;
-
 typedef CGAL::Triangulation_data_structure_3<Vb,Fb> Tds;
 typedef CGAL::Regular_triangulation_3<Gt,Tds> Triangulation;
 
 typedef CGAL::Alpha_shape_3<Triangulation> Alpha_shape;
 
+#endif
+
+typedef Gt::Point Wpoint;
 typedef Alpha_shape::Cell Cell;
 typedef Alpha_shape::Vertex Vertex;
 typedef Alpha_shape::Edge Edge;
@@ -1715,12 +1731,21 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
  double tmpA = 0;
  // VERTICES (BALLS)
  {std::list<Vertex_handle> vertices;
+#if CGAL_VERSION_NR > 1030701000
+ A.get_alpha_shape_vertices(std::back_inserter(vertices),
+                            Alpha_shape::INTERIOR);
+ A.get_alpha_shape_vertices(std::back_inserter(vertices),
+                            Alpha_shape::REGULAR);
+ A.get_alpha_shape_vertices(std::back_inserter(vertices),
+                            Alpha_shape::SINGULAR);
+#else
  A.get_alpha_shape_vertices(std::back_inserter(vertices),
                             Alpha_shape::INTERIOR,0);
  A.get_alpha_shape_vertices(std::back_inserter(vertices),
                             Alpha_shape::REGULAR,0);
  A.get_alpha_shape_vertices(std::back_inserter(vertices),
                             Alpha_shape::SINGULAR,0);
+#endif
  for (std::list<Vertex_handle>::iterator cit
         =vertices.begin();cit!=vertices.end();++cit){
  tmpV += spacefill.ball_V((*cit)->point());
@@ -1734,9 +1759,15 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 
  // EDGES
  {std::list<Edge> edges;
+#if CGAL_VERSION_NR > 1030701000
+ A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::INTERIOR);
+ A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::REGULAR);
+ A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::SINGULAR);
+#else
  A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::INTERIOR,0);
  A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::REGULAR,0);
  A.get_alpha_shape_edges(std::back_inserter(edges),Alpha_shape::SINGULAR,0);
+#endif
  for (std::list<Edge>::iterator cit=edges.begin();cit!=edges.end();++cit){
  tmpV -= spacefill.ballInter2_V(cit->first->vertex(cit->second)->point(),
  cit->first->vertex(cit->third)->point());
@@ -1768,7 +1799,11 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
    // cit->first->vertex((cit->second+2)&3)->point(),
    // cit->first->vertex((cit->second+3)&3)->point());
  // }
+#if CGAL_VERSION_NR > 1030701000
+ A.get_alpha_shape_facets(std::back_inserter(facets),Alpha_shape::SINGULAR);
+#else
  A.get_alpha_shape_facets(std::back_inserter(facets),Alpha_shape::SINGULAR,0);
+#endif
  for (std::list<Facet>::iterator cit=facets.begin();cit!=facets.end();++cit){
  tmpV += spacefill.ballInter3_V(cit->first->vertex((cit->second+1)&3)->point(),
                                 cit->first->vertex((cit->second+2)&3)->point(),
@@ -1778,7 +1813,12 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
                                 cit->first->vertex((cit->second+3)&3)->point());
  }
  facets.clear();
+#if CGAL_VERSION_NR > 1030701000
+ A.get_alpha_shape_facets(std::back_inserter(facets),Alpha_shape::REGULAR);
+
+#else
  A.get_alpha_shape_facets(std::back_inserter(facets),Alpha_shape::REGULAR,0);
+#endif
  for (std::list<Facet>::iterator cit=facets.begin();cit!=facets.end();++cit){
  tmpV +=
    0.5*spacefill.ballInter3_V(cit->first->vertex((cit->second+1)&3)->point(),
@@ -1797,7 +1837,11 @@ std::pair<double,double> computeVolumetrics(Alpha_shape const &A){
 
  // TETRAHEDRA
  {std::list<Cell_handle> cells;
+#if CGAL_VERSION_NR > 1030701000
+ A.get_alpha_shape_cells(std::back_inserter(cells),Alpha_shape::INTERIOR);
+#else
  A.get_alpha_shape_cells(std::back_inserter(cells),Alpha_shape::INTERIOR,0);
+#endif
  for (std::list<Cell_handle>::iterator
         cit=cells.begin();cit!=cells.end();++cit){
  // tmpA-= ballInter4_A((*cit)->vertex(0)->point(),(*cit)->vertex(1)->point(),
@@ -1827,13 +1871,14 @@ get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
   // first of all, if there are no atoms, there is no computation
   if (ss.size() == 0) return std::pair<double,double>(0,0);
   //
-  Triangulation T;
+  std::vector<Wpoint> pts;
   for (unsigned int i=0; i< ss.size(); ++i) {
-    T.insert(Wpoint(Point(ss[i].get_center()[0],
-                          ss[i].get_center()[1],
-                          ss[i].get_center()[2]),
-                    square(ss[i].get_radius())));
+    pts.push_back(Wpoint(Point(ss[i].get_center()[0],
+                               ss[i].get_center()[1],
+                               ss[i].get_center()[2]),
+                         square(ss[i].get_radius())));
   }
+  Triangulation T(pts.begin(), pts.end());
 
 //  Triangulation T(myPoints.begin(), myPoints.end());
   // If needed insert dummy corner points to level the dimension
@@ -1857,7 +1902,11 @@ get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss) {
                             bb.get_corner(1)[2]),0));
     }
   }
+#if CGAL_VERSION_NR > 1030701000
+  Alpha_shape A(T, 0);
+#else
   Alpha_shape A(T, 0, Alpha_shape::GENERAL);
+#endif
   std::pair<double, double> dp= computeVolumetrics(A);
   return std::make_pair(dp.second, dp.first);
 }
