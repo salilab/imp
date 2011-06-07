@@ -50,11 +50,6 @@ namespace {
       }
     }
     Subset rs(pt);
-    /*std::cout << "SubSubset " << s << " ";
-      for (It c= b; c!= e; ++c) {
-      std::cout << *c << " ";
-      }
-      std::cout << " is " << rs << std::endl;*/
     return rs;
   }
   template <class Ints>
@@ -80,11 +75,8 @@ namespace {
       SubsetFilter* f= sft[i]->get_subset_filter(sc, excluded);
       if (f) {
         ret.push_back(f);
+        ret.back()->set_was_used(true);
       } else {
-        /*std::cout << "No filter for " << sft[i]->get_name()
-                  << " on " << sc
-                  << " minus " << (excluded.empty()?Subset(): excluded[0])
-                  << std::endl;*/
       }
     }
     return ret;
@@ -95,11 +87,9 @@ namespace {
                         const SubsetFilterTables &sft) {
     ParticlesTemp sorted= get_sub_particles(s, order.begin(), order.end());
     Subset sc(sorted);
-    //std::cout << "sc is " << sc << std::endl;
     sorted.pop_back();
     Subsets excluded;
     if (!sorted.empty()) {
-      //std::cout << "excluded is " << Subset(sorted) << std::endl;
       excluded.push_back(Subset(sorted));
     }
     double ret=0;
@@ -120,11 +110,6 @@ namespace {
     while (order.size() != s.size()) {
       double max_restraint=-1;
       int max_j=-1;
-      /*std::cout << "Cur order is ";
-      for (unsigned int i=0; i< order.size(); ++i) {
-        std::cout << order[i] << " ";
-      }
-      std::cout << std::endl;*/
       for (unsigned int j=0; j< remaining.size(); ++j) {
         //std::cout << "Trying " << remaining[j] << std::endl;
         int cur= remaining[j];
@@ -133,12 +118,6 @@ namespace {
         // ask all tables about subset of taken+this particle - taken
         double cur_restraint=evaluate_order(order, s, sft);
 
-        /*std::cout << "Of " << s[remaining[j]]->get_name()
-          << " plus " << excluded << " got strength "
-          << cur_restraint
-          << std::endl;*/
-        /*std::cout << "For " << remaining[j] << " got "
-          << cur_restraint << std::endl;*/
         if (cur_restraint >= max_restraint) {
           max_restraint=cur_restraint;
           max_j=j;
@@ -205,48 +184,6 @@ namespace {
       cur[i]=0;
     }
 
-    /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      Ints state;
-      std::map<Particle*, int> map;
-      for (unsigned int i=0; i< s.size(); ++i) {
-      state.push_back(i);
-      map[s[i]]=i;
-      }
-      IMP_LOG(VERBOSE,"Order is: ");
-      for (unsigned int i=0; i< order.size(); ++i) {
-      IMP_LOG(VERBOSE, order[i] << " ");
-      }
-      IMP_LOG(VERBOSE, std::endl);
-      for (unsigned int i=0; i< s.size(); ++i) {
-      {
-      //Ints pstate(state.begin(), state.begin()+i);
-      Subset csub= get_sub_subset(s, order.begin(),
-      order.begin()+i);
-      Assignment cstate= get_sub_assignment(s,
-      state,
-      csub);
-      for (unsigned int j=0; j < csub.size(); ++j) {
-      IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
-      "Wrong state found in " << cstate
-      << " for " << csub << " from "
-      << s << std::endl);
-      }
-      }
-      {
-      //Ints pstate(state.begin()+i, state.end());
-      Subset csub= get_sub_subset(s, order.begin()+i,
-      order.end());
-      Assignment cstate= get_sub_assignment(s, state, csub);
-      for (unsigned int j=0; j < csub.size(); ++j) {
-      IMP_INTERNAL_CHECK(cstate[j] == map.find(csub[j])->second,
-      "Wrong state found in back " << cstate
-      << " for " << csub << " from "
-      << s << std::endl);
-      }
-      }
-      }
-      }*/
-
   filter:
     IMP_IF_LOG(VERBOSE) {
       IMP_LOG(VERBOSE, "Current counter is ");
@@ -254,24 +191,6 @@ namespace {
         IMP_LOG(VERBOSE, cur[order[i]] << " ");
       }
       IMP_LOG(VERBOSE, std::endl);
-    }
-    //std::cout << "Filtering " << cur << " on " << changed_digit << std::endl;
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      /*for (unsigned int i=changed_digit+1; i < cur.size(); ++i) {
-        Subset subset= get_sub_subset(s, order.begin()+i, order.end());
-        Assignment sub_state= get_sub_assignment(s, cur, subset);
-        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-        IMP_INTERNAL_CHECK(subset== filter_subsets[i],
-        "Expected and found subsets don't match "
-        << filter_subsets[i] << " vs " << subset);
-        }
-        for (unsigned int j=0; j< filters[i].size(); ++j) {
-        IMP_INTERNAL_CHECK(filters[i][j]->get_is_ok(sub_state),
-        "Subset should have been passed before "
-        << get_sub_subset(s, order.begin()+i, order.end())
-        << " with " << sub_state << std::endl);
-        }
-        }*/
     }
     // reset the increment
     incr=1;
@@ -281,10 +200,6 @@ namespace {
         // check +i is correct
         Subset subset= get_sub_subset(s, order.begin()+i, order.end());
         Assignment state= get_sub_assignment(s, cur, subset);
-        /*std::cout << "filtering " << i << " " << j
-          << " on state " << state
-          << " got " << filters[i][j]->get_is_ok(state)
-          << std::endl;*/
         IMP_IF_CHECK(USAGE_AND_INTERNAL) {
           IMP_INTERNAL_CHECK(subset== filter_subsets[i],
                              "Expected and found subsets don't match "
@@ -316,7 +231,6 @@ namespace {
       }
       continue;
     bad:
-      //std::cout << "Failed at " << i << std::endl;
       current_digit=i;
       goto increment;
     }
@@ -340,16 +254,9 @@ namespace {
       }
     }
   increment:
-    //std::cout << "Incrementing " << cur << " on "
-    //<< current_digit << std::endl;
     for (unsigned int i=0; i< current_digit; ++i) {
       cur[order[i]]=0;
     }
-    /*#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=current_digit+1; i< order.size(); ++i) {
-      cur[order[i]]=-1;
-    }
-    #endif*/
     for (unsigned int i=current_digit; i < cur.size(); ++i) {
       cur[order[i]]+=incr;
       // just use the increment of 1 for later states
@@ -362,7 +269,6 @@ namespace {
       }
     }
   done:
-    //std::sort(states_.begin(), states_.end());
     IMP_IF_LOG(TERSE) {
       std::size_t possible=1;
       for (unsigned int i=0; i< s.size(); ++i) {
