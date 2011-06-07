@@ -220,9 +220,9 @@ ParticlesTemp pt= c_->get_particles();
       rss->add_restraints(rs);
       double max= r->get_maximum_score();
       if (max < std::numeric_limits<double>::max()) {
-        std::cout << "Setting maximum score of " << rss->get_name()
-                  << " to " << max << std::endl;
-          rss->set_maximum_score(max);
+        /*std::cout << "Setting maximum score of " << rss->get_name()
+          << " to " << max << std::endl;*/
+        rss->set_maximum_score(max);
       }
       removed.push_back(new ScopedRemoveRestraint(r, p));
     } else {
