@@ -21,9 +21,7 @@ class IMPCOREEXPORT QuadraticClosePairsFinder : public ClosePairsFinder
 {
  public:
   QuadraticClosePairsFinder();
-  bool get_are_close(Particle *a, Particle *b) const;
-  IMP_CLOSE_PAIRS_FINDER(QuadraticClosePairsFinder);
-
+  IMP_OBJECT(QuadraticClosePairsFinder);
 };
 
 IMPCORE_END_NAMESPACE

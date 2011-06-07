@@ -737,6 +737,9 @@ ParticlePairsTemp GridClosePairsFinder
                          get_distance(), bb_, merged_,
                          out);
   } else {
+    if (ca.size()+cb.size() < 200) {
+      return ClosePairsFinder::get_close_pairs(ca, cb);
+    }
     ParticleHelper
       ::fill_close_pairs(ParticleHelper
                          ::get_particle_set(ca.begin(),
@@ -775,6 +778,9 @@ ParticlePairsTemp GridClosePairsFinder
                          get_distance(), bb_, merged_,
                          out);
   } else {
+    if (c.size() < 200) {
+      return ClosePairsFinder::get_close_pairs(c);
+    }
     ParticleHelper
       ::fill_close_pairs(ParticleHelper::get_particle_set(c.begin(),
                                                           c.end(),
@@ -810,6 +816,9 @@ IntPairs GridClosePairsFinder
                                        get_distance()),
                        get_distance(), bb_, merged_, out);
   } else {
+    if (bas.size() +bbs.size() < 200) {
+      return ClosePairsFinder::get_close_pairs(bas, bbs);
+    }
     BBHelper::
       fill_close_pairs(BBHelper::get_particle_set(bas.begin(),
                                                   bas.end(),
@@ -843,6 +852,9 @@ IntPairs GridClosePairsFinder
                                          bb_, merged_, get_distance()),
                          get_distance(), bb_, merged_, out);
   } else {
+    if (bas.size() < 200) {
+      return ClosePairsFinder::get_close_pairs(bas);
+    }
     BBHelper
       ::fill_close_pairs(BBHelper::get_particle_set(bas.begin(),
                                                     bas.end(),
