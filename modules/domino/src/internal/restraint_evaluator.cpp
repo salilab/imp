@@ -140,8 +140,6 @@ void ModelData::initialize() {
 
   for (unsigned int i=0; i< rdata_.size(); ++i) {
     double max= rdata_[i].get_restraint()->get_maximum_score();
-    /*std::cout << "Restraint " << rdata_[i].get_restraint()->get_name()
-      << " has max of " << max << std::endl;*/
     IMP_LOG(TERSE, "Restraint " << rdata_[i].get_restraint()->get_name()
             << " has max of " << max << std::endl);
     rdata_[i].set_max(max);
@@ -177,7 +175,6 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
     Ints total_ris;
     std::vector<Ints> total_inds;
     IMP::internal::Set<Restraint*> found;
-    //std::cout << "Find data for subset " << s << std::endl;
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {
@@ -197,7 +194,6 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
             }
           }}
         if(!exclude) {
-          //std::cout << "Found restraint " << (*rit)->get_name() << std::endl;
           ris.push_back(i);
           inds.push_back(Ints());
           for (unsigned int j=0; j< dependencies_[i].size(); ++j) {
@@ -256,8 +252,6 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
 
 double SubsetData::get_score(const Assignment &state) const {
   double score=0;
-  /*std::cout << "Scoring " << state << " on " << ris_.size()
-    << " restraints" << std::endl;*/
   for (unsigned int i=0; i< ris_.size(); ++i) {
     Ints ssi(indices_[i].size());
     for (unsigned int j=0; j< ssi.size();++j) {
@@ -277,8 +271,6 @@ double SubsetData::get_score(const Assignment &state) const {
 
 bool SubsetData::get_is_ok(const Assignment &state,
                            double total_max) const {
-  /*std::cout << "For subset " << s_ << " got state "
-    << state << std::endl;*/
   double total=0;
   for (unsigned int i=0; i< ris_.size(); ++i) {
     Ints ssi(indices_[i].size());
@@ -297,7 +289,6 @@ bool SubsetData::get_is_ok(const Assignment &state,
     }
     total+=ms;
     if (total > total_max) {
-      //std::cout << "Rejected by restraint " << i << std::endl;
       return false;
     }
   }
@@ -321,8 +312,6 @@ bool SubsetData::get_is_ok(const Assignment &state,
       }
     }
   }
-  /*std::cout << "Total score is " << total << " max is " << total_max
-    << " over " << ris_.size() << " and " << total_ris_.size() << std::endl;*/
   return true;
 }
 void ModelData
