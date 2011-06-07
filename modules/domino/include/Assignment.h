@@ -124,12 +124,12 @@ public:
   }
 #endif
   IMP_SHOWABLE_INLINE(Assignment, {
-      out << "[";
+      out << "(";
       for (unsigned int i=0; i< size(); ++i) {
         out << v_[i];
         if (i != size()-1) out << " ";
       }
-      out << "]";
+      out << ")";
     });
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   typedef const int * const_iterator;
