@@ -554,6 +554,37 @@ template <int D>
 inline void set_vector_d_geometry(VectorD<D> &g, const VectorD<D> &v) {g=v;}
 
 
+/** \relatesalso VectorD
+    Return the vector that is the elementwise product of the two.
+*/
+template <int D>
+inline VectorD<D> get_elementwise_product(const algebra::VectorD<D>& a,
+                                   const algebra::VectorD<D>& b) {
+  VectorD<D> ret(a);
+  for (unsigned int i=0; i< ret.get_dimension(); ++i) {
+    ret[i]*=b[i];
+  }
+  return ret;
+}
+
+/** \relatesalso VectorD
+    Return the vector that is the elementwise product of the two.
+*/
+template <int D>
+inline VectorD<D> get_elementwise_product(const Ints& a,
+                                   const algebra::VectorD<D>& b) {
+  IMP_USAGE_CHECK(a.size()== b.get_dimension(),
+                  "Dimensions don't match,");
+  VectorD<D> ret(b);
+  for (unsigned int i=0; i< ret.get_dimension(); ++i) {
+    ret[i]*=a[i];
+  }
+  return ret;
+}
+
+
+
+
 
 IMPALGEBRA_END_NAMESPACE
 
