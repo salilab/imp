@@ -133,7 +133,7 @@ IMP_SWIG_ALGEBRA_FUNCTION_D_D(Vector, get_random_vector_in, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_DD(BoundingBox, get_intersection, BoundingBox, BoundingBox);
 IMP_SWIG_ALGEBRA_FUNCTION_D_D(BoundingBox, get_bounding_box, Sphere);
 IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_uniform_surface_cover, Sphere, unsigned int);
-IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_volume_cover_by_spacing, BoundingBox, double);
+IMP_SWIG_ALGEBRA_FUNCTION_DS_DN(Vector, get_grid_interior_cover_by_spacing, BoundingBox, double);
 
 namespace IMP {
  namespace algebra {
@@ -148,7 +148,6 @@ namespace IMP {
    %template(DenseDoubleGrid3D) GridD<3, DenseGridStorageD<3, double>, double >;
    %template(DenseFloatGrid3D) GridD<3, DenseGridStorageD<3, float>, float >;
    %template(_AxisAnglePair) ::std::pair<IMP::algebra::VectorD<3>,double>;
-
    }
 
 

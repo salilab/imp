@@ -152,10 +152,45 @@ IMPALGEBRAEXPORT  std::vector<VectorD<3> >
 get_uniform_surface_cover(const Cone3D &cone,
                           unsigned int number_of_points);
 
+/** Cover the interior of the bounding box by equal sized
+    parallelograms of approximately full-width s, returning the
+    list of centers of the cubes.
+ */
 template <int D>
 std::vector<VectorD<D> >
-get_grid_volume_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
-  return internal::GridRangeD<D>(bb, s).get();
+get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
+  const int dim= bb.get_dimension();
+  Ints ns(dim);
+  algebra::VectorD<D> start(bb.get_corner(0));
+  algebra::VectorD<D> spacing(bb.get_corner(0));
+  for (unsigned int i=0; i< dim; ++i) {
+    double w= bb.get_corner(1)[i]- bb.get_corner(0)[i];
+    if (w < s) {
+      start[i]= bb.get_corner(0)[i]+w*.5;
+      spacing[i]=1;
+      ns[i]=1;
+    } else {
+      ns[i]= static_cast<int>(std::floor(w/s));
+      spacing[i]= w/ns[i];
+      start[i]=bb.get_corner(0)[i]+spacing[i]*.5;
+    }
+  }
+  Ints cur(D,0);
+  std::vector<VectorD<D> > ret;
+  do {
+    ret.push_back(start+get_elementwise_product(cur, spacing));
+    unsigned int i;
+    for (i=0; i< dim; ++i) {
+      ++cur[i];
+      if (cur[i]==ns[i]) {
+        cur[i]=0;
+      } else {
+        break;
+      }
+    }
+    if (i==dim) break;
+  } while(true);
+  return ret;
 }
 
 
