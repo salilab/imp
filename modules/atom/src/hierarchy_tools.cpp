@@ -29,6 +29,10 @@
 #include <IMP/core/TableRefiner.h>
 #include <IMP/core/ExcludedVolumeRestraint.h>
 #include <IMP/core/CoverRefined.h>
+#include <IMP/core/generic.h>
+#include <IMP/container/generic.h>
+#include <IMP/container/AllBipartitePairContainer.h>
+#include <IMP/container/ConnectingPairContainer.h>
 #include <algorithm>
 #if BOOST_VERSION > 103900
 #include <boost/property_map/property_map.hpp>
@@ -603,9 +607,10 @@ ParticlesTemp Selection::get_selected_particles() const {
 
 
 namespace {
+  template <class PS>
   Restraint* create_distance_restraint(const Selection &n0,
                                        const Selection &n1,
-                                       PairScore *ps) {
+                                       PS *ps) {
     ParticlesTemp p0= n0.get_selected_particles();
     ParticlesTemp p1= n1.get_selected_particles();
     IMP_IF_CHECK(USAGE) {
@@ -623,20 +628,20 @@ namespace {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << p0[0]->get_name() << " and "
               << p1[0]->get_name() << std::endl);
-      ret= new core::PairRestraint(ps,
-                                   ParticlePair(p0[0], p1[0]),
-                                   "Atom distance restraint %1%");
+      ret= core::create_restraint(ps,
+                                  ParticlePair(p0[0], p1[0]),
+                                  "Atom distance restraint %1%");
     } else {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << n0 << " and "
               << n1 << std::endl);
+
       Pointer<core::TableRefiner> r= new core::TableRefiner();
       r->add_particle(p0[0], p0);
       r->add_particle(p1[0], p1);
-      Pointer<PairScore> nps
-        = new core::KClosePairsPairScore(ps,
-                                         r, 1);
-      ret= new core::PairRestraint(nps, ParticlePair(p0[0],
+      IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
+                                                 r, 1));
+      ret= core::create_restraint(nps, ParticlePair(p0[0],
                                                     p1[0]),
                                    "Atom k distance restraint %1%");
     }
@@ -648,7 +653,7 @@ Restraint* create_distance_restraint(const Selection &n0,
                                      const Selection &n1,
                                      double x0, double k) {
   IMP_NEW(core::HarmonicSphereDistancePairScore, ps, (x0, k));
-  return create_distance_restraint(n0, n1, ps);
+  return create_distance_restraint(n0, n1, ps.get());
 }
 
 
@@ -659,7 +664,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
   if (s.size() < 2) return NULL;
   if (s.size() ==2) {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, ps, (x0, k));
-    Restraint *r= create_distance_restraint(s[0], s[1], ps);
+    Restraint *r= create_distance_restraint(s[0], s[1], ps.get());
     return r;
   } else {
     unsigned int max=0;
@@ -674,11 +679,10 @@ Restraint* create_connectivity_restraint(const Selections &s,
       for (unsigned int i=0; i< s.size(); ++i) {
         particles.push_back(s[i].get_selected_particles()[0]);
       }
-      IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
-              (particles[0]->get_model(), "Connectivity particles"));
-      lsc->set_particles(particles);
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
-      IMP_NEW(core::ConnectivityRestraint, cr, (hdps, lsc));
+      IMP_NEW(container::ListSingletonContainer, lsc, (particles));
+      IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1, false));
+      Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
       return cr.release();
     } else {
       IMP_NEW(core::TableRefiner, tr, ());
@@ -726,11 +730,10 @@ Restraint* create_internal_connectivity_restraint(const Selection &ss,
     IMP_NEW(core::PairRestraint, r, (ps, ParticlePair(s[0], s[1])));
     return r.release();
   } else {
-    IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
-            (s[0]->get_model(), "Connectivity particles"));
-    lsc->set_particles(s);
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
-    IMP_NEW(core::ConnectivityRestraint, cr, (hdps, lsc));
+    IMP_NEW(container::ListSingletonContainer, lsc, (s));
+    IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1, false));
+    Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
     return cr.release();
   }
 }
