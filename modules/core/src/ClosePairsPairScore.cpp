@@ -104,6 +104,8 @@ get_close_pairs(const ParticlePair &p) const {
   //double mr= std::max(max_radius(psa), max_radius(psb));
   ParticlePairsTemp ppt;
   ParticlesTemp ps0= expand(p[0],r_), ps1= expand(p[1], r_);
+
+  if (ps0.size()+ps1.size()>50) {
   Floats dists;
   double dist=last_distance_;
   IMP_USAGE_CHECK(ps0.size() > 0, "Empty set of particles used for "
@@ -130,7 +132,7 @@ get_close_pairs(const ParticlePair &p) const {
   }
   last_distance_= std::max(1.0, last_distance_);
   ParticlePairsTemp retps;
-  for (int i=0; i < k_; ++i) {
+  for (unsigned int i=0; i < ms.size(); ++i) {
     retps.push_back(ms[i].second);
   }
   IMP_INTERNAL_CHECK(retps.size()==static_cast<unsigned int>(k_),
@@ -154,6 +156,22 @@ get_close_pairs(const ParticlePair &p) const {
     }
   }
   return retps;
+  } else {
+    algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
+    for (unsigned int i=0; i< ps0.size(); ++i) {
+      algebra::Sphere3D c0= XYZR(ps0[i]).get_sphere();
+      for (unsigned int j=0; j< ps1.size(); ++j) {
+        algebra::Sphere3D c1= XYZR(ps1[j]).get_sphere();
+        double d= get_distance(c0, c1);
+        ms.insert(d, ParticlePair(ps0[i], ps1[j]));
+      }
+    }
+    ParticlePairsTemp retps;
+    for (unsigned int i=0; i< ms.size(); ++i) {
+      retps.push_back(ms[i].second);
+    }
+    return retps;
+  }
 }
 
 double KClosePairsPairScore::evaluate(const ParticlePair &p,
