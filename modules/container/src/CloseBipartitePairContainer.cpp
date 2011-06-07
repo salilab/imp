@@ -35,7 +35,8 @@ CloseBipartitePairContainer
                               double slack):
   P(a->get_model(), "CloseBipartitePairContainer") {
   initialize(a,b, distance, slack,
-             core::internal::default_cpf());
+             core::internal::default_cpf(a->get_number_of_particles()
+                                         +b->get_number_of_particles()));
 }
 
 CloseBipartitePairContainer
