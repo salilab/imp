@@ -59,7 +59,7 @@ public:
                float scale=1,
                bool use_rigid_bodies=true);
   //! \return the predicted density map of the model
-  SampledDensityMap * get_model_dens_map() {
+  SampledDensityMap * get_model_dens_map() const {
     return model_dens_map_;
   }
 
