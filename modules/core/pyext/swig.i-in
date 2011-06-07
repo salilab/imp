@@ -1,6 +1,10 @@
 %include "IMP/core/core_macros.h"
 
-
+namespace IMP {
+namespace core {
+%warnfilter(403) ClosePairsFinder;
+}
+}
 IMP_SWIG_CONTAINER(IMP::core, IMP::core, MonteCarlo, Mover, mover);
 
 IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);

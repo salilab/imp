@@ -40,6 +40,25 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   ClosePairsFinder(std::string name);
   ~ClosePairsFinder();
 
+  //! Return whether the two particles are close
+  bool get_are_close(Particle *a, Particle *b) const {
+      XYZ da(a);
+      XYZ db(b);
+      Float ra= XYZR(a).get_radius();
+      Float rb= XYZR(b).get_radius();
+      Float sr= ra+rb+get_distance();
+      for (unsigned int i=0; i< 3; ++i) {
+        double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
+        if (delta >= sr) {
+          return false;
+        }
+      }
+      return get_interiors_intersect(algebra::SphereD<3>(da.get_coordinates(),
+                                                         ra+get_distance()),
+                                     algebra::SphereD<3>(db.get_coordinates(),
+                                                         rb));
+  }
+
   /** \name Methods to find close pairs
       The methods add appropriately close pairs of particles from the
       input list (or lists, for the bipartite version) to the out
@@ -56,13 +75,13 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
     return get_close_pairs(pca->get_particles(),
                            pcb->get_particles());
   }
-  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const =0;
+  virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const;
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
-                                            const ParticlesTemp &pcb) const =0;
+                                            const ParticlesTemp &pcb) const;
 
-  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const=0;
+  virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
-                                   const algebra::BoundingBox3Ds &bbs) const=0;
+                                   const algebra::BoundingBox3Ds &bbs) const;
   /** @} */
 
   /** \name The distance threshold
@@ -82,8 +101,8 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       Return all the particles touched in processing the passed ones.
       @{
   */
-  virtual ParticlesTemp get_input_particles(const ParticlesTemp &ps) const=0;
-  virtual ContainersTemp get_input_containers(const ParticlesTemp &ps) const=0;
+  virtual ParticlesTemp get_input_particles(const ParticlesTemp &ps) const;
+  virtual ContainersTemp get_input_containers(const ParticlesTemp &ps) const;
   /** @} */
 #ifndef SWIG
   /** \brief Return a container which lists all particles which moved more
