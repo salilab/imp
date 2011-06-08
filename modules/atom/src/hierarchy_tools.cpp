@@ -22,6 +22,7 @@
 #include <IMP/atom/Copy.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
+#include <IMP/core/KClosePairsRestraint.h>
 #include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/SphereDistancePairScore.h>
@@ -32,6 +33,7 @@
 #include <IMP/core/generic.h>
 #include <IMP/container/generic.h>
 #include <IMP/container/AllBipartitePairContainer.h>
+#include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
 #include <algorithm>
 #if BOOST_VERSION > 103900
@@ -635,15 +637,20 @@ namespace {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << n0 << " and "
               << n1 << std::endl);
-
-      Pointer<core::TableRefiner> r= new core::TableRefiner();
-      r->add_particle(p0[0], p0);
-      r->add_particle(p1[0], p1);
-      IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
-                                                 r, 1));
-      ret= core::create_restraint(nps, ParticlePair(p0[0],
-                                                    p1[0]),
-                                   "Atom k distance restraint %1%");
+      if (p0.size()+p1.size() < 100) {
+        ret=new core::KClosePairsRestraint(ps,
+                                           p0, p1, 1,
+                                           "Atom k distance restraint %1%");
+      } else {
+        Pointer<core::TableRefiner> r= new core::TableRefiner();
+        r->add_particle(p0[0], p0);
+        r->add_particle(p1[0], p1);
+        IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
+                                                   r, 1));
+        ret= core::create_restraint(nps, ParticlePair(p0[0],
+                                                      p1[0]),
+                                    "Atom k distance restraint %1%");
+      }
     }
     return ret.release();
   }
@@ -687,24 +694,17 @@ Restraint* create_connectivity_restraint(const Selections &s,
     } else {
       IMP_NEW(core::TableRefiner, tr, ());
       ParticlesTemp rps;
-      bool multiple=false;
       for (unsigned int i=0; i< s.size(); ++i) {
         ParticlesTemp ps= s[i].get_selected_particles();
         IMP_USAGE_CHECK(!ps.empty(), "Selection " << s[i]
                         << " does not contain any particles.");
         tr->add_particle(ps[0], ps);
-        if (ps.size() > 0) multiple=true;
         rps.push_back(ps[0]);
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       Pointer<PairScore> ps;
-      if (multiple) {
-        IMP_LOG(TERSE, "Using closest pair score." << std::endl);
-        ps=new core::KClosePairsPairScore(hdps, tr);
-      } else {
-        IMP_LOG(TERSE, "Using distance pair score." << std::endl);
-        ps= hdps;
-      }
+      IMP_LOG(TERSE, "Using closest pair score." << std::endl);
+      ps=new core::KClosePairsPairScore(hdps, tr);
       IMP_NEW(core::internal::CoreListSingletonContainer, lsc,
               (rps[0]->get_model(), "Connectivity particles"));
       lsc->set_particles(rps);
