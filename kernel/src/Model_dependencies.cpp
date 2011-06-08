@@ -221,6 +221,19 @@ namespace {
     build_outputs_graph(ss.begin(), ss.end(), ret, index);
     build_inputs_graph(ss.begin(), ss.end(), ret, index);
     build_inputs_graph(rs.begin(), rs.end(), ret, index);
+    std::vector<std::pair<Object*, Object*> > extra;
+    if (!ss.empty()) {
+      extra=ss[0]->get_model()->get_extra_dependency_edges();
+    } else if (!rs.empty()) {
+      extra=rs[0]->get_model()->get_extra_dependency_edges();
+    }
+    for (unsigned int i=0; i< extra.size(); ++i) {
+      int va= index[extra[i].first];
+      int vb= index[extra[i].second];
+      if (!get_has_edge(ret, va, vb)) {
+        boost::add_edge(va, vb, ret);
+      }
+    }
     return ret;
   }
 }
@@ -368,6 +381,18 @@ namespace {
   }
   //#pragma GCC diagnostic warn "-Wunused-parameter"
 
+  internal::Map<Object*, int> get_index(const DependencyGraph &dg) {
+    internal::Map<Object*, int> ret;
+    MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
+    for (std::pair<MDGTraits::vertex_iterator,
+           MDGTraits::vertex_iterator> be= boost::vertices(dg);
+         be.first != be.second; ++be.first) {
+      Object *o= om[*be.first];
+      ret[o]= *be.first;
+    }
+    return ret;
+  }
+
 
   void
   compute_restraint_dependencies(const DependencyGraph &dg,
@@ -380,21 +405,14 @@ namespace {
     }
     bs.resize(ordered_restraints.size(),
               boost::dynamic_bitset<>(ordered_score_states.size(), false));
+    internal::Map<Object*, int> index= get_index(dg);
+    boost::vector_property_map<int> color(boost::num_vertices(dg));
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
-    for (std::pair<MDGTraits::vertex_iterator,
-           MDGTraits::vertex_iterator> be= boost::vertices(dg);
-         be.first != be.second; ++be.first) {
-      Object *o= om[*be.first];
-      for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
-        if (o== ordered_restraints[i]) {
-          //std::cout << "Finding deps for " << o->get_name() << std::endl;
-          // cannot reuse this
-          boost::vector_property_map<int> color(boost::num_vertices(dg));
-          boost::depth_first_visit(boost::make_reverse_graph(dg), *be.first,
-                                   ScoreDependencies(bs[i], ssindex, om),
-                                   color);
-        }
-      }
+    for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
+      boost::depth_first_visit(boost::make_reverse_graph(dg),
+                               index.find(ordered_restraints[i])->second,
+                               ScoreDependencies(bs[i], ssindex, om),
+                               color);
     }
   }
 }
@@ -558,5 +576,9 @@ Floats Model::evaluate( RestraintsTemp restraints,
   return ret;
 }
 
+
+void Model::add_dependency_edge(ScoreState *from, ScoreState *to) {
+  extra_edges_.push_back(std::pair<Object*, Object*>(from, to));
+}
 
 IMP_END_NAMESPACE
