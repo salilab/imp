@@ -87,7 +87,7 @@
   std::string __repr__() const {
     std::ostringstream out;
     self->show(out);
-    return std::string(#Name) + "("+out.str()+")";
+    return out.str();
   }
 %enddef
 
