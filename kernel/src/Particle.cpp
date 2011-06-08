@@ -11,6 +11,16 @@
 #include "IMP/internal/utility.h"
 #include "IMP/internal/PrefixStream.h"
 
+
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/depth_first_search.hpp>
+#if BOOST_VERSION > 103900
+#include <boost/property_map/property_map.hpp>
+#else
+#include <boost/property_map.hpp>
+#include <boost/vector_property_map.hpp>
+#endif
+
 IMP_BEGIN_INTERNAL_NAMESPACE
 ReadLockedParticleException
 ::ReadLockedParticleException(const Particle *p): p_(p){}
@@ -375,5 +385,67 @@ namespace internal {
     return ret;
   }
   }*/
+
+namespace {
+  IMP_GRAPH(ParticleGraph, directed, Particle*, int);
+}
+
+class CycleVisitor: public boost::default_dfs_visitor {
+  std::vector<unsigned int> stack_;
+  boost::property_map<ParticleGraph,
+                      boost::vertex_name_t>::const_type vm_;
+public:
+  CycleVisitor(const ParticleGraph &g):
+    vm_(boost::get(boost::vertex_name, g)){}
+  void discover_vertex( boost::graph_traits<ParticleGraph>::vertex_descriptor u,
+                       const ParticleGraph&) {
+    stack_.push_back(u);
+  }
+  void finish_vertex( boost::graph_traits<ParticleGraph>::vertex_descriptor u,
+                       const ParticleGraph&) {
+    IMP_USAGE_CHECK(stack_.back()==u, "Expected " << stack_.back()
+                   << " but found " << u << std::endl);
+    stack_.pop_back();
+  }
+  void back_edge( boost::graph_traits<ParticleGraph>::edge_descriptor e,
+                       const ParticleGraph&g) {
+    std::cout << "Ref counted cycle: ";
+    //unsigned int source= boost::source(e, g);
+    unsigned int target= boost::target(e, g);
+    bool print=false;
+    for (unsigned int i=0; i < stack_.size(); ++i) {
+      if (stack_[i]== target) {
+        print=true;
+      }
+      if (print) {
+        std::cout << vm_[stack_[i]]->get_name() << "--";
+      }
+    }
+    std::cout << vm_[target]->get_name() << "--" << std::endl;
+  }
+};
+
+void show_ref_counting_cycles(const ParticlesTemp &ps) {
+  ParticleGraph pg;
+  internal::Map<Particle*, int> pvm;
+  boost::property_map<ParticleGraph, boost::vertex_name_t>::type
+    vpm = boost::get(boost::vertex_name, pg);
+  for (unsigned int i=0; i < ps.size(); ++i) {
+    int vi= boost::add_vertex(pg);
+    vpm[vi]= ps[i];
+    pvm[ps[i]] = vi;
+  }
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    for (Particle::ParticleKeyIterator pki= ps[i]->particle_keys_begin();
+         pki != ps[i]->particle_keys_end(); ++pki) {
+      if (ps[i]->get_is_ref_counted(*pki)) {
+        boost::add_edge(pvm[ps[i]], pvm[ps[i]->get_value(*pki)], pg);
+      }
+    }
+  }
+  CycleVisitor cv(pg);
+  boost::vector_property_map<int> color(boost::num_vertices(pg));
+  boost::depth_first_search(pg, cv, color);
+}
 
 IMP_END_NAMESPACE
