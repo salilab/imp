@@ -22,7 +22,6 @@
 #include <IMP/atom/Copy.h>
 #include <IMP/core/ConnectivityRestraint.h>
 #include <IMP/core/DistancePairScore.h>
-#include <IMP/core/KClosePairsRestraint.h>
 #include <IMP/core/ClosePairsPairScore.h>
 #include <IMP/core/Harmonic.h>
 #include <IMP/core/SphereDistancePairScore.h>
@@ -637,20 +636,20 @@ namespace {
       IMP_LOG(TERSE, "Creating distance restraint between "
               << n0 << " and "
               << n1 << std::endl);
-      if (p0.size()+p1.size() < 100) {
+      /*if (p0.size()+p1.size() < 100) {
         ret=new core::KClosePairsRestraint(ps,
                                            p0, p1, 1,
                                            "Atom k distance restraint %1%");
-      } else {
-        Pointer<core::TableRefiner> r= new core::TableRefiner();
-        r->add_particle(p0[0], p0);
-        r->add_particle(p1[0], p1);
-        IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
-                                                   r, 1));
-        ret= core::create_restraint(nps, ParticlePair(p0[0],
-                                                      p1[0]),
-                                    "Atom k distance restraint %1%");
-      }
+                                           } else {*/
+      Pointer<core::TableRefiner> r= new core::TableRefiner();
+      r->add_particle(p0[0], p0);
+      r->add_particle(p1[0], p1);
+      IMP_NEW(core::KClosePairsPairScore,  nps, (ps,
+      r, 1));
+      ret= core::create_restraint(nps, ParticlePair(p0[0],
+      p1[0]),
+      "Atom k distance restraint %1%");
+      //}
     }
     return ret.release();
   }
