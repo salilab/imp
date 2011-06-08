@@ -108,6 +108,7 @@ private:
   bool first_call_;
   double max_score_;
   mutable bool has_good_score_;
+  std::vector<std::pair<Object*, Object*> > extra_edges_;
 
 
   // statistics
@@ -462,6 +463,22 @@ public:
   RestraintStatistics get_restraint_statistics(Restraint *r) const;
   void show_score_state_time_statistics(std::ostream &out=std::cout) const;
   /** @} */
+
+#ifndef IMP_DOXYGEN
+  /** Sometimes there are dependencies among score states that require
+      an ordering that cannot be derived automatically. For example score
+      states that read and write the same set of particles and have to
+      do so in a certain order.
+  */
+  void add_dependency_edge(ScoreState *from, ScoreState *to);
+#endif
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  const std::vector<std::pair<Object*, Object*> >&
+    get_extra_dependency_edges() const {
+    return extra_edges_;
+  }
+#endif
 };
 
 IMP_OUTPUT_OPERATOR(Model);
@@ -514,6 +531,12 @@ inline void Particle::assert_valid_derivatives() const {
 #endif
 
 IMP_OBJECTS(Model,Models);
+
+/** The function checks for reference counting cycles in the set of particles
+    in the model and prints out any that are found.
+*/
+IMPEXPORT void show_ref_counting_cycles(const ParticlesTemp &ps);
+
 
 IMP_END_NAMESPACE
 
