@@ -299,7 +299,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     if (gather_statistics_) {
       add_to_restraint_evaluate(restraints[i], timer.elapsed(), wvalue);
     }
-    if (value > restraint_max_scores_[i]) {
+    if (value > restraints[i]->get_maximum_score()) {
       has_good_score_=false;
     }
     ret.push_back(wvalue);
