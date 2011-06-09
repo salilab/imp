@@ -161,7 +161,7 @@ namespace {
     }
 
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      std::set<int> taken(order.begin(), order.end());
+      IMP::internal::Set<int> taken(order.begin(), order.end());
       IMP_INTERNAL_CHECK(taken.size() == order.size(),
                          "Duplicate elements in order "
                          << taken.size() << " " << order.size());
