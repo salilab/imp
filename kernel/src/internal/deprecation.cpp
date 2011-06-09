@@ -7,16 +7,16 @@
 
 #include "IMP/deprecation.h"
 #include "IMP/log.h"
+#include "IMP/internal/map.h"
 #include <iostream>
-#include <set>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
 namespace {
 
-bool print_deprecation_messages=true;
+  bool print_deprecation_messages=true;
 
-std::set<std::string> printed_deprecation_messages;
+  internal::Set<std::string> printed_deprecation_messages;
 
 }
 
