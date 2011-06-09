@@ -68,6 +68,42 @@ inline double get_native_overlap(const Vecto3DsOrXYZs0& m1,
 }
 
 
+/*! Distance-RMS between two sets of points, defined as:
+    sqrt( sum[ (d1ij**2 - d2ij**2)**2]/(4 * sum[d1ij**2]) )
+    (Levitt, 1992)
+    d1ij - distance between points i and j in set m1 (the "reference" set)
+    d2ij - distance between points i and j in set m2
+  \param[in] m1 set of points
+  \param[in] m2 set of points
+*/
+template <class Vecto3DsOrXYZs0, class Vecto3DsOrXYZs1>
+inline double get_drms(const Vecto3DsOrXYZs0& m1,
+                      const Vecto3DsOrXYZs1& m2) {
+  IMP_USAGE_CHECK(m1.size()==m2.size(),
+            "native_verlap: The input sets of XYZ points "
+            <<"should be of the same size");
+
+  unsigned int n = m1.size();
+  double drms = 0.0;
+  double sum_d1ij = 0.0;
+  for (unsigned int i=0; i < n; ++i) {
+    for (unsigned int j= i+1; j< n; ++j) {
+      double sqd1 = algebra::get_squared_distance(get_vector_d_geometry(m1[i]),
+                                          get_vector_d_geometry(m1[j]));
+      double sqd2 = algebra::get_squared_distance(get_vector_d_geometry(m2[i]),
+                                          get_vector_d_geometry(m2[j]));
+      drms += (sqd1 - sqd2)*(sqd1 - sqd2);
+      sum_d1ij += sqd1;
+    }
+  }
+  double N = static_cast<double>(n);
+  drms /= (4 * sum_d1ij);
+  return sqrt(drms);
+}
+
+
+
+
 //! Measure the difference between two placements of the same set of points
 /**
    \param[in] from The reference placement represented by XYZ coordinates

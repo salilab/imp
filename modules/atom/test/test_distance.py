@@ -4,7 +4,6 @@ import IMP.core
 import IMP.atom
 
 
-
 class DistanceTest(IMP.test.TestCase):
     def test_placement_score(self):
         """Testing the mass and volume estimates"""
@@ -54,8 +53,35 @@ class DistanceTest(IMP.test.TestCase):
         for d in xyz2_mdl: IMP.core.transform(d, t)
         da1=IMP.atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
         da2=IMP.atom.get_component_placement_score(xyz1_ref,xyz2_ref,xyz1_mdl,xyz2_mdl)
-        self.assertAlmostEqual(da1[0],da2[0])
         self.assertAlmostEqual(da1[1],da2[1])
+
+    def test_drms(self):
+        """ Test drms measure """
+        m = IMP.Model()
+        sel = IMP.atom.CAlphaPDBSelector()
+        prot1 = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
+        prot2 = IMP.atom.read_pdb(self.open_input_file("1DQK.pdb"), m, sel)
+        xyzs1 = IMP.core.XYZs(IMP.atom.get_leaves(prot1))
+        xyzs2 = IMP.core.XYZs(IMP.atom.get_leaves(prot2))
+        drms = IMP.atom.get_drms(xyzs1, xyzs2)
+        # Molecule with itself
+        self.assertAlmostEqual(drms, 0)
+        R = IMP.algebra.get_random_rotation_3d()
+        v = IMP.algebra.get_random_vector_in(IMP.algebra.get_unit_bounding_box_3d())
+        T = IMP.algebra.Transformation3D(R,v)
+        for x in xyzs2:
+            IMP.core.transform(x, T)
+        drms = IMP.atom.get_drms(xyzs1, xyzs2)
+        # Same thing after transformation
+        self.assertAlmostEqual(drms, 0)
+        #
+        for x in xyzs2:
+            R = IMP.algebra.get_random_rotation_3d()
+            T = IMP.algebra.Transformation3D(R,v)
+            IMP.core.transform(x, T)
+        # After distorting the molecule
+        drms = IMP.atom.get_drms(xyzs1, xyzs2)
+        self.assertTrue(drms > 0)
 
 
 if __name__ == '__main__':
