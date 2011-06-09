@@ -154,13 +154,13 @@ IMP_OBJECT(Name)
     - AssignmentsContainer::get_assignments(unsigned int)
     in addition to the IMP_OBJECT() declarations and definitions.
 */
-#define IMP_ASSIGNMENT_CONTAINER(Name)                                 \
+#define IMP_ASSIGNMENT_CONTAINER(Name)                                  \
   public:                                                               \
   virtual unsigned int get_number_of_assignments() const;               \
   virtual Assignment get_assignment(unsigned int i) const;              \
   virtual Assignments get_assignments(IntRange r) const {               \
     Assignments ret(r.second-r.first);                                  \
-    for (int i=0; i != r.second-r.first; ++i) {                         \
+    for (unsigned int i=0; i != ret.size(); ++i) {                      \
       ret[i]= Name::get_assignment(r.first+i);                          \
     }                                                                   \
     return ret;                                                         \
