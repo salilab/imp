@@ -398,7 +398,6 @@ Hierarchy read_pdb(TextInput in, Model *model,
 }
 
 
-
 Hierarchies read_multimodel_pdb(TextInput in, Model *model,
                                 PDBSelector* selector)
 {
