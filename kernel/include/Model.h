@@ -143,10 +143,9 @@ private:
   // dependencies
   mutable internal::Map<Restraint *, int> restraint_index_;
   mutable RestraintsTemp ordered_restraints_;
-  mutable std::vector<boost::dynamic_bitset<> > restraint_dependencies_;
+  mutable std::vector<Ints > restraint_dependencies_;
   mutable std::vector<double> restraint_weights_;
   mutable ScoreStatesTemp ordered_score_states_;
-  mutable std::vector<double> restraint_max_scores_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
     return (!ordered_restraints_.empty()

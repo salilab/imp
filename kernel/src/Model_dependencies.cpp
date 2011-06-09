@@ -93,12 +93,13 @@ namespace {
   bool get_has_edge(const DependencyGraph &graph,
                     MDGTraits::vertex_descriptor va,
                     MDGTraits::vertex_descriptor vb) {
-    std::pair<MDGTraits::out_edge_iterator,
+    /*std::pair<MDGTraits::out_edge_iterator,
       MDGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
     for (; edges.first != edges.second;++edges.first) {
       if (boost::target(*edges.first, graph) == vb) return true;
     }
-    return false;
+    return false;*/
+    return boost::edge(va, vb, graph).second;
   }
 
   void add_edge(DependencyGraph &graph,
@@ -177,10 +178,12 @@ namespace {
         << (*c)->get_name()  << "\"");
       {
         ContainersTemp ct= filter((*c)->get_output_containers());
-        if (!ct.empty()) {
-          IMP_LOG(VERBOSE, ", containers are "
-                  << Containers(ct));
-                  }
+        IMP_IF_LOG(VERBOSE) {
+          if (!ct.empty()) {
+            IMP_LOG(VERBOSE, ", containers are "
+                    << Containers(ct));
+          }
+        }
         for (unsigned int j=0; j < ct.size(); ++j) {
           MDGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
           add_edge(dg, rv, cv);
@@ -230,9 +233,7 @@ namespace {
     for (unsigned int i=0; i< extra.size(); ++i) {
       int va= index[extra[i].first];
       int vb= index[extra[i].second];
-      if (!get_has_edge(ret, va, vb)) {
-        boost::add_edge(va, vb, ret);
-      }
+      boost::add_edge(va, vb, ret);
     }
     return ret;
   }
@@ -288,8 +289,17 @@ namespace {
         return 0;
       }
     }
+    IMP_HASHABLE_INLINE(Connections,
+                        return boost::hash_range(in.begin(),
+                                                 in.end())
+                        + boost::hash_range(out.begin(),
+                                            out.end()));
     IMP_COMPARISONS(Connections);
   };
+  //IMP_VALUES(Connections, ConnectionsList);
+  inline std::size_t hash_value(const Connections &t) {
+    return t.__hash__();
+  }
 }
 
 DependencyGraph
@@ -300,7 +310,7 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
   while (changed) {
     changed=false;
     IMP_LOG(VERBOSE, "Searching for vertices to prune" << std::endl);
-    std::set<Connections> connections;
+    internal::Set<Connections> connections;
     for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
@@ -328,11 +338,11 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
 
 
 class ScoreDependencies: public boost::default_dfs_visitor {
-  boost::dynamic_bitset<> &bs_;
+  Ints &bs_;
   const internal::Map<Object*, int> &ssindex_;
   MDGConstVertexMap vm_;
 public:
-  ScoreDependencies(boost::dynamic_bitset<> &bs,
+  ScoreDependencies(Ints &bs,
                     const internal::Map<Object*, int> &ssindex,
                     MDGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
                                           vm_(vm) {}
@@ -344,7 +354,7 @@ public:
     internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
       //std::cout << "setting " << it->second << std::endl;
-      bs_.set(it->second);
+      bs_.push_back(it->second);
     }
   }
 };
@@ -398,13 +408,12 @@ namespace {
   compute_restraint_dependencies(const DependencyGraph &dg,
                                  const RestraintsTemp &ordered_restraints,
                                  const ScoreStatesTemp &ordered_score_states,
-                                 std::vector<boost::dynamic_bitset<> >&bs) {
+                                 std::vector<Ints >&bs) {
     internal::Map<Object *, int> ssindex;
     for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
       ssindex[ordered_score_states[i]]=i;
     }
-    bs.resize(ordered_restraints.size(),
-              boost::dynamic_bitset<>(ordered_score_states.size(), false));
+    bs.resize(ordered_restraints.size());
     internal::Map<Object*, int> index= get_index(dg);
     boost::vector_property_map<int> color(boost::num_vertices(dg));
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
@@ -413,6 +422,8 @@ namespace {
                                index.find(ordered_restraints[i])->second,
                                ScoreDependencies(bs[i], ssindex, om),
                                color);
+      std::sort(bs[i].begin(), bs[i].end());
+      bs[i].erase(std::unique(bs[i].begin(), bs[i].end()), bs[i].end());
     }
   }
 }
@@ -448,10 +459,6 @@ void Model::compute_dependencies() const {
   compute_restraint_dependencies(dg, ordered_restraints_,
                                  ordered_score_states_,
                                  restraint_dependencies_);
-  restraint_max_scores_.resize(ordered_restraints_.size());
-  for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
-    restraint_max_scores_[i]= ordered_restraints_[i]->get_maximum_score();
-  }
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ScoreStates(ordered_score_states_) << std::endl);
   IMP_INTERNAL_CHECK(restraint_dependencies_.size()
@@ -484,7 +491,7 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
                       "Cannot pass restraint sets to get_score_states()");
     }
   }
-  boost::dynamic_bitset<> bs(ordered_score_states_.size(), false);
+  Ints bs;
   for (unsigned int i=0; i< restraints.size(); ++i) {
     IMP_USAGE_CHECK(restraints[i]->get_is_part_of_model(),
                     "Restraint must be added to model: "
@@ -498,11 +505,14 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
     int index=restraint_index_.find(restraints[i])->second;
     /*IMP_LOG(VERBOSE, restraints[i]->get_name() << ": "
       << restraint_dependencies_[index] << std::endl);*/
-    bs|= restraint_dependencies_[index];
+    bs.insert(bs.end(), restraint_dependencies_[index].begin(),
+              restraint_dependencies_[index].end());
   }
-  ScoreStatesTemp ss;
-  for (unsigned int i=0; i< ordered_score_states_.size(); ++i) {
-    if (bs[i]) ss.push_back(ordered_score_states_[i]);
+  std::sort(bs.begin(), bs.end());
+  bs.erase(std::unique(bs.begin(), bs.end()), bs.end());
+  ScoreStatesTemp ss(bs.size());
+  for (unsigned int i=0; i< bs.size(); ++i) {
+    ss[i]=ordered_score_states_[bs[i]];
   }
   return ss;
 }
