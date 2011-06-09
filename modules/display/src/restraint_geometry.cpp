@@ -146,12 +146,15 @@ void ConnectivityRestraintGeometry::do_show(std::ostream &out) const {
 
 
 RestraintGeometry::RestraintGeometry(Restraint*r): Geometry(r->get_name()),
-                                                   r_(r){}
+                                                   r_(r), m_(r_->get_model()){}
+RestraintGeometry::RestraintGeometry(Restraint*r, Model *m):
+  Geometry(r->get_name()),
+  r_(r), m_(m){}
 
 
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
-  r_->get_model()->update();
+  m_->update();
   Restraints rs= r_->get_instant_decomposition();
   IMP::display::Geometries ret;
   if (rs.size()==1 && rs[0]== r_) {
@@ -175,7 +178,7 @@ IMP::display::Geometries RestraintGeometry::get_components() const {
       if (pr) {
         ret.push_back(new PairRestraintGeometry(pr));
       } else {
-        ret.push_back(new RestraintGeometry(rs[i]));
+        ret.push_back(new RestraintGeometry(rs[i], m_));
       }
     }
   }
