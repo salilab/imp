@@ -84,7 +84,7 @@ IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
                 IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
                         << std::endl);
                 IMP_IF_CHECK(USAGE) {
-                  std::set<ScoreState*> in(score_states_begin(),
+                  internal::Set<ScoreState*> in(score_states_begin(),
                                            score_states_end());
                   IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
                                   "Score state already in model "
