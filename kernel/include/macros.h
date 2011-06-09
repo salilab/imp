@@ -241,7 +241,7 @@
   IMP_SWIG_COMPARISONS(Name)
 #endif
 
-
+#if !defined(SWIG)
 /** \name Swap helpers
 
     Use the swap_with member function to swap two objects. The two
@@ -278,6 +278,15 @@
   IMP_REQUIRE_SEMICOLON_NAMESPACE
 
 /** @} */
+#else
+#define IMP_SWAP(Name)
+
+#define IMP_SWAP_1(Name)
+
+#define IMP_SWAP_2(Name)
+
+#define IMP_SWAP_3(Name)
+#endif
 
 
 //! Swap two member variables assuming the other object is called o

@@ -139,13 +139,17 @@ public:
   const_iterator end() const {
     return v_.get()+size();
   }
+  void swap_with(Assignment &o) {
+    std::swap(sz_, o.sz_);
+    v_.swap(o.v_);
+  }
 #endif
   IMP_HASHABLE_INLINE(Assignment, return boost::hash_range(begin(),
                                                        end()););
 };
 
 IMP_VALUES(Assignment, Assignments);
-
+IMP_SWAP(Assignment);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 inline std::size_t hash_value(const Assignment &t) {
