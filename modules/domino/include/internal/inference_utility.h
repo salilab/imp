@@ -37,6 +37,8 @@ class InferenceStatistics {
   };
   Data get_data(const Subset &s, AssignmentContainer* ss) const;
   IMP::internal::Map<Subset, Data> subsets_;
+  mutable boost::uniform_real<double> select_;
+  mutable boost::uniform_int<> place_;
   const Data & get_data(const Subset &s) const;
 public:
   InferenceStatistics();

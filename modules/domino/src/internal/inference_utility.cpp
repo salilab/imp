@@ -14,9 +14,10 @@
 
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
+const unsigned int sample_size=20;
 
-
-InferenceStatistics::InferenceStatistics(){}
+InferenceStatistics::InferenceStatistics(): select_(0,1),
+                                            place_(0, sample_size-1) {}
 
 
 InferenceStatistics::Data
@@ -24,10 +25,23 @@ InferenceStatistics::get_data(const Subset &, AssignmentContainer* iss) const {
   Assignments ss
     = iss->get_assignments(IntRange(0, iss->get_number_of_assignments()));
   Data ret;
-  ret.size= ss.size();
-  std::random_shuffle(ss.begin(), ss.end());
-  ret.sample=Assignments(ss.begin(), ss.begin()
-                          +std::min(ss.size(), size_t(10)));
+  ret.size= iss->get_number_of_assignments();
+  Ints sample;
+  for (int i=0; i < ret.size;++i) {
+    if (sample.size() < sample_size) {
+      sample.push_back(i);
+    } else{
+      double prob= static_cast<double>(sample_size)/i;
+      if (select_(random_number_generator) < prob) {
+        int replace= place_(random_number_generator);
+        sample[replace]=i;
+      }
+    }
+  }
+  ret.sample.resize(sample.size());
+  for (unsigned int i=0; i< sample.size(); ++i) {
+    ret.sample[i]= iss->get_assignment(sample[i]);
+  }
   return ret;
 }
 
