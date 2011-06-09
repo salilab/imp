@@ -385,6 +385,9 @@ def show_graphviz(g):
            try:
              subprocess.Popen(["open", tfon])
            except:
-             subprocess.Popen(["acroread", tfon])
+             try:
+                subprocess.Popen(["acroread", tfon])
+             except:
+                print "Could not display file. It is saved at", tfon
            return tfon
 %}
