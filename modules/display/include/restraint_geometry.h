@@ -20,10 +20,13 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
+/** \name Restraint Geometry
+    \note All these methods are kind of flakey and in flux.
+@{
+*/
 //! Draw edges for various core::PairRestraint.
 /** This currently can handle
     - IMP::core::PairRestraint
-
 */
 class IMPDISPLAYEXPORT PairRestraintGeometry: public Geometry
 {
@@ -55,6 +58,9 @@ public:
 //! Try to draw some stuff for a generic restraint
 class IMPDISPLAYEXPORT RestraintGeometry: public Geometry {
   IMP::Pointer<Restraint> r_;
+  IMP::Pointer<Model> m_;
+  //! Use this if the restraint is not part of the model
+  RestraintGeometry(Restraint *p, Model *m);
 public:
   RestraintGeometry(Restraint *p);
   Restraint *get_restraint() const {
@@ -84,6 +90,8 @@ public:
  */
 IMPDISPLAYEXPORT Geometry* create_restraint_geometry(Restraint *r);
 
+
+/** @} */
 IMPDISPLAY_END_NAMESPACE
 
 #endif  /* IMPDISPLAY_RESTRAINT_GEOMETRY_H */
