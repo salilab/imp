@@ -94,28 +94,31 @@ create_restraints(m, all)
 # we can get the full dependency graph for the whole model with all the restraints
 # but it is pretty complex
 dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-dg.show_graphviz(open("full_dependency_graph.dot", "w"));
+IMP.show_graphviz(dg);
 
 # better thing to do is to get the "pruned" graph
 pdg= IMP.get_pruned_dependency_graph([m.get_root_restraint_set()])
 try:
-    import matplotlib
+    # these all open new windows which must be closed to continue
+    # also, the graph is no where near as nice as displayed by
+    # IMP.show_graphviz below
+
+    #import matplotlib
     # the engine to be used must be selected before pyplot is imported
-    matplotlib.use("macosx")
-    import matplotlib.pyplot as plt
+    #matplotlib.use("macosx")
+    #import matplotlib.pyplot as plt
 
     # the method below requires the altgraph python package
-    xg=IMP.get_networkx_graph(pdg)
+    #xg=IMP.get_networkx_graph(pdg)
 
-    import networkx
-    networkx.draw_spectral(xg)
-    plt.show()
+    #import networkx
+    #networkx.draw_spectral(xg)
+    #plt.show()
+    pass
 except:
     try:
         IMP.show_altgraph(pdg)
     except:
         print 'Need networkx and matplotlib or altgraph to display graphs interactively'
 
-# run the following file through dot with
-# dot -Tpdf dependency_graph.dot > dependency_graph.pdf
-pdg.show_graphviz(open("dependency_graph.dot", "w"));
+IMP.show_graphviz(pdg)
