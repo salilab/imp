@@ -62,8 +62,8 @@ void CloseBipartitePairContainer::initialize(SingletonContainer *a,
   cpf_=cpf;
   cpf_->set_distance(distance_+2*slack_);
   first_call_=true;
-  moveda_= cpf_->get_moved_singleton_container(a_, get_model(), slack_);
-  movedb_= cpf_->get_moved_singleton_container(b_, get_model(), slack_);
+  moveda_= cpf_->get_moved_singleton_container(a_, slack_);
+  movedb_= cpf_->get_moved_singleton_container(b_, slack_);
 }
 
 IMP_ACTIVE_CONTAINER_DEF(CloseBipartitePairContainer, {

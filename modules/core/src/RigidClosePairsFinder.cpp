@@ -341,18 +341,13 @@ RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
 
 internal::MovedSingletonContainer*
 RigidClosePairsFinder::get_moved_singleton_container(SingletonContainer *in,
-                                                 Model *m,
                                                      double threshold) const {
   if (r_) {
     return
-      new internal::MovedSingletonContainerImpl<std::pair<algebra::SphereD<3>,
-                                                          algebra::Rotation3D>,
-                                                internal::SaveXYZRRotValues,
-             internal::SaveMovedValues<internal::SaveXYZRRotValues>,
-                        internal::ListXYZRRotMovedParticles>(m, in, threshold);
+      new internal::RigidMovedSingletonContainer(in, threshold);
   } else {
     // make more efficient later
-    return ClosePairsFinder::get_moved_singleton_container(in, m, threshold);
+    return ClosePairsFinder::get_moved_singleton_container(in, threshold);
   }
 }
 

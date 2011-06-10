@@ -91,7 +91,6 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   */
   virtual internal::MovedSingletonContainer*
     get_moved_singleton_container(SingletonContainer *in,
-                                  Model *m,
                                   double threshold)const;
 #endif
 };

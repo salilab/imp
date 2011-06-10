@@ -91,7 +91,7 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 #ifndef IMP_SWIG
   internal::MovedSingletonContainer *
     get_moved_singleton_container(SingletonContainer *c,
-                                  Model *m, double thresold) const;
+                                  double thresold) const;
 #endif
   IMP_CLOSE_PAIRS_FINDER(RigidClosePairsFinder);
 
