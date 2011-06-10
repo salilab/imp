@@ -16,7 +16,11 @@ IMPATOM_BEGIN_NAMESPACE
 
 /** \name Dope scoring
 
-    \imp provides the DOPE scoring function for scoring proteins
+    \imp provides the DOPE scoring function for scoring proteins.
+
+    \note These are quite large objects as they store the whole
+    DOPE lookup table. It is much better to share them between
+    restraints than to create separate instances.
 
  */
 class DopePairScore;
