@@ -1,0 +1,19 @@
+Import('env')
+import scons_tools.dependency.boost
+scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options", 'boost/program_options.hpp',
+                                               extra_boost_libs=["system"])
+
+env= env.IMPApplication(name="rmf_tools", version="SVN",
+                        authors=["Daniel Russel"],
+                        brief="Various tools for handling rmf files",
+                        overview="",
+                        license=env.IMPStandardLicense(),
+                        publications=[],
+                        required_modules=['rmf'],
+                        required_dependencies=['Boost.ProgramOptions'],
+                        python=False)
+
+if env:
+    env.IMPCPPExecutable(target="rmf_pdb", source=["rmf_pdb.cpp"])
+    env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])
+    env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
