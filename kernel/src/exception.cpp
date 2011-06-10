@@ -60,21 +60,29 @@ void remove_failure_handler(FailureHandler *fh) {
   internal::handlers.remove_if(boost::lambda::_1 == fh);
 }
 
-
-
-Exception::~Exception() throw()
+ExceptionBase::~ExceptionBase() throw()
 {
   destroy();
 }
 
-Exception::Exception(const char *message) {
-    str_= new (std::nothrow) refstring();
-    if (str_ != NULL) {
-      str_->ct_=1;
-      std::strncpy(str_->message_, message, 4095);
-      str_->message_[4095]='\0';
-    }
+ExceptionBase::ExceptionBase(const char *message) {
+  str_= new (std::nothrow) refstring();
+  if (str_ != NULL) {
+    str_->ct_=1;
+    std::strncpy(str_->message_, message, 4095);
+    str_->message_[4095]='\0';
   }
+}
+
+
+
+Exception::~Exception() throw()
+{
+}
+
+Exception::Exception(const char *message):
+  ExceptionBase(message) {
+}
 
 InternalException::~InternalException() throw()
 {
