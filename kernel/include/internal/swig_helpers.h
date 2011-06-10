@@ -22,6 +22,45 @@
 IMP_BEGIN_INTERNAL_NAMESPACE
 namespace swig {
 #ifndef SWIG
+  template <bool REFED>
+  struct PyPointer: boost::noncopyable {
+    PyObject* ptr_;
+    PyPointer(PyObject* ptr): ptr_(ptr){
+      IMP_INTERNAL_CHECK(ptr, "NULL pointer passed");
+      if (!REFED) {
+        Py_INCREF(ptr_);
+      } else {
+        IMP_INTERNAL_CHECK(ptr_->ob_refcnt >=1, "No refcount");
+      }
+    }
+    operator PyObject*() const{
+      return ptr_;
+    }
+    PyObject* operator->() const {
+      return ptr_;
+    }
+    PyObject *release() {
+      IMP_INTERNAL_CHECK(ptr_->ob_refcnt >=1, "No refcount");
+      PyObject *ret=ptr_;
+      ptr_=NULL;
+      return ret;
+    }
+    ~PyPointer() {
+      if (ptr_) {
+        Py_DECREF(ptr_);
+      }
+    }
+  };
+  typedef PyPointer<true> PyReceivePointer;
+  typedef PyPointer<false> PyOwnerPointer;
+
+#define IMP_PYTHON_CALL(call) {int rc=call;                     \
+    if (rc != 0) {                                              \
+      IMP_INTERNAL_CHECK(0, "Python call failed: "<< #call      \
+                         << " with "  << rc);                   \
+    }                                                           \
+  }
+
   using boost::enable_if;
   using boost::mpl::and_;
   using boost::mpl::not_;
@@ -138,8 +177,8 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(T t, SwigData st, int OWN) {
-      PyObject *o = SWIG_NewPointerObj(new T(t), st, OWN);
-      return o;
+      PyReceivePointer o(SWIG_NewPointerObj(new T(t), st, OWN));
+      return o.release();
     }
   };
 
@@ -166,9 +205,9 @@ namespace swig {
     template <class SwigData>
     static PyObject* create_python_object( T* t, SwigData st, int OWN) {
       IMP_CHECK_OBJECT(t);
-      PyObject *o = SWIG_NewPointerObj(t, st, OWN);
+      PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
       internal::ref(t);
-      return o;
+      return o.release();
     }
   };
 
@@ -191,9 +230,9 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object( T* t, SwigData st, int OWN) {
-      PyObject *o = SWIG_NewPointerObj(t, st, OWN);
+      PyReceivePointer o(SWIG_NewPointerObj(t, st, OWN));
       internal::ref(t);
-      return o;
+      return o.release();
     }
   };
 
@@ -348,13 +387,11 @@ namespace swig {
         return false;
       }
       for (unsigned int i=0; i< PySequence_Length(in); ++i) {
-        PyObject *o = PySequence_GetItem(in,i);
+        PyReceivePointer o(PySequence_GetItem(in,i));
         if(! Convert<V>::get_is_cpp_object(o, st, particle_st,
                                            decorator_st)) {
-          Py_DECREF(o);
           return false;
         }
-        Py_DECREF(o);
       }
       return true;
     }
@@ -365,14 +402,13 @@ namespace swig {
         PyErr_SetString(PyExc_ValueError,"Expected a sequence");
       }
       unsigned int l= PySequence_Size(in);
+      IMP_INTERNAL_CHECK(in->ob_refcnt >0, "Freed sequence object found");
       for (unsigned int i=0; i< l; ++i) {
-        PyObject *o = PySequence_GetItem(in,i);
+        PyReceivePointer o(PySequence_GetItem(in,i));
         typename ValueOrObject<V>::store_type vs
           =Convert<V>::get_cpp_object(o,st,
                                       particle_st, decorator_st);
         Assign<C, VT>::assign(t, i, vs);
-        IMP_INTERNAL_CHECK(o->ob_refcnt >0, "Small refcount");
-        //Py_DECREF(o);
       }
     }
   };
@@ -402,15 +438,12 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(const T& t, SwigData st, int OWN) {
-      PyObject *ret= PyTuple_New(T::static_size);
+      PyReceivePointer ret(PyTuple_New(T::static_size));
       for (unsigned int i=0; i< T::static_size; ++i) {
-        PyObject *o = Convert<VT>::create_python_object(t[i], st, OWN);
-        //std::cout << o->ob_refcnt << std::endl;
-        IMP_INTERNAL_CHECK(o->ob_refcnt==1, "Bad ref count " << o->ob_refcnt);
-        PyTuple_SetItem(ret,i,o);
-        //Py_DECREF(o);
+        PyReceivePointer o(Convert<VT>::create_python_object(t[i], st, OWN));
+        IMP_PYTHON_CALL(PyTuple_SetItem(ret,i,o.release()));
       }
-      return ret;
+      return ret.release();
     }
   };
 
@@ -447,16 +480,12 @@ namespace swig {
     template <class SwigData>
     static PyObject* create_python_object(const std::pair<T,T>& t,
                                           SwigData st, int OWN) {
-      PyObject *ret= PyTuple_New(2);
-      PyObject *of = Convert<VT>::create_python_object(t.first, st, OWN);
-      PyTuple_SetItem(ret,0,of);
-      //std::cout << of->ob_refcnt << std::endl;
-      //Py_DECREF(of);
-      PyObject *os = Convert<VT>::create_python_object(t.second, st, OWN);
-      PyTuple_SetItem(ret,1,os);
-      //std::cout << os->ob_refcnt << std::endl;
-      //Py_DECREF(os);
-      return ret;
+      PyReceivePointer ret(PyTuple_New(2));
+      PyReceivePointer of(Convert<VT>::create_python_object(t.first, st, OWN));
+      IMP_PYTHON_CALL(PyTuple_SetItem(ret,0,of.release()));
+      PyReceivePointer os(Convert<VT>::create_python_object(t.second, st, OWN));
+      IMP_PYTHON_CALL(PyTuple_SetItem(ret,1,os.release()));
+      return ret.release();
     }
   };
 
@@ -482,13 +511,13 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(const T& t, SwigData st, int OWN) {
-      PyObject *ret= PyList_New(t.size());
+      PyReceivePointer ret(PyList_New(t.size()));
       for (unsigned int i=0; i< t.size(); ++i) {
-        PyObject *o = Convert<VT>::create_python_object(t[i], st, OWN);
+        PyReceivePointer o(Convert<VT>::create_python_object(t[i], st, OWN));
         // this does not increment the ref count
-        PyList_SetItem(ret, i, o);
+        IMP_PYTHON_CALL(PyList_SetItem(ret, i, o.release()));
       }
-      return ret;
+      return ret.release();
     }
   };
 
@@ -533,9 +562,7 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(std::string f, SwigData st, int OWN) {
-      PyObject *o = PyString_FromString(f.c_str());
-      //Py_INCREF(o);
-      return o;
+      return PyString_FromString(f.c_str());
     }
   };
 
@@ -557,9 +584,8 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(float f, SwigData st, int OWN) {
-      PyObject *o = PyFloat_FromDouble(f);
-      //Py_INCREF(o);
-      return o;
+      // these may or may not have a refcount
+      return PyFloat_FromDouble(f);
     }
   };
 
@@ -596,10 +622,8 @@ namespace swig {
     }
     template <class SwigData>
     static PyObject* create_python_object(int f, SwigData st, int OWN) {
-      PyObject *o = PyInt_FromLong(f);
-      //Py_INCREF(o);
-      //IMP_INTERNAL_CHECK(o->ob_refcnt==1, "Bad ref count");
-      return o;
+      // These may or may not have a ref count
+      return PyInt_FromLong(f);
     }
   };
 
