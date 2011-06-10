@@ -32,7 +32,7 @@ inline CoreListPairContainer *get_list(PairContainer *pc) {
 
 template <class C>
 inline void filter_close_pairs(C *c, ParticlePairsTemp &ps) {
-  for (typename C::PairFilterIterator it=c->pair_filters_begin();
+  for (typename C::PairFilterConstIterator it=c->pair_filters_begin();
        it != c->pair_filters_end(); ++it) {
     (*it)->filter_in_place(ps);
   }

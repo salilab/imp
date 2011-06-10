@@ -14,6 +14,7 @@
 #include <IMP/Particle.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
+#include "CoreListSingletonContainer.h"
 #include <IMP/algebra/Sphere3D.h>
 #include "../XYZR.h"
 #include "../rigid_bodies.h"
@@ -23,209 +24,21 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-namespace {
-  class SaveXYZRRotValues:public SingletonModifier {
-  protected:
-    std::vector<std::pair<algebra::SphereD<3>,
-                          algebra::Rotation3D> > &values_;
-    mutable int i_;
-    void do_apply(Particle *p) const {
-      XYZR d(p);
-      IMP_INTERNAL_CHECK(values_.size() > static_cast<unsigned int>(i_),
-                         "Wrong size of values_.");
-      values_[i_].first= d.get_sphere();
-      if (RigidBody::particle_is_instance(p)) {
-        RigidBody rb(p);
-        values_[i_].second
-          = rb.get_reference_frame().get_transformation_to().get_rotation();
-      }
-      ++i_;
-    }
-  public:
-    typedef std::pair<algebra::SphereD<3>, algebra::Rotation3D> Value;
-    SaveXYZRRotValues(std::vector<Value> &values):
-      SingletonModifier("SaveXYZRRotValues"), values_(values) {
-      i_=0;
-    }
-    IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRRotValues,
-                                    do_apply(p););
-  };
-
-  class SaveXYZRValues:public SingletonModifier {
-  protected:
-    std::vector<algebra::SphereD<3> > &values_;
-    mutable int i_;
-    void do_apply(Particle* p) const {
-      XYZR d(p);
-      IMP_INTERNAL_CHECK(values_.size() > static_cast<unsigned int>(i_),
-                         "Wrong size of values_.");
-      values_[i_]= d.get_sphere();
-      ++i_;
-    }
-  public:
-    typedef algebra::SphereD<3> Value;
-    SaveXYZRValues(std::vector<algebra::SphereD<3> > &values):
-      SingletonModifier("SaveXYZRValues"),
-      values_(values) {
-      i_=0;
-    }
-    IMP_INTERNAL_SINGLETON_MODIFIER(SaveXYZRValues,
-                                    {
-                                      do_apply(p);
-                                    });
-  };
-
-  template <class P>
-  class SaveMovedValues:public P {
-    const ParticlesTemp &moved_;
-    void do_apply(Particle *p) const {
-      if (std::binary_search(moved_.begin(),
-                             moved_.end(), p)) {
-        P::apply(p);
-      } else {
-        ++P::i_;
-      }
-    }
-  public:
-    SaveMovedValues(std::vector<typename P::Value> &values,
-                    const ParticlesTemp &moved):
-      P(values),
-      moved_(moved){
-    }
-    IMP_INTERNAL_SINGLETON_MODIFIER(SaveMovedValues,
-                                    do_apply(p););
-  };
-
-  inline bool moved_threshold(Particle *p, const algebra::SphereD<3> &old,
-                              bool incremental,
-                              double threshold, double &dist2, double &dr,
-                              double &dist, bool &has_dist) {
-    if (incremental && !p->get_is_changed()) {
-      IMP_LOG(VERBOSE, p->get_name() << " was not changed"
-              << std::endl);
-      has_dist=false;
-      return false;
-    }
-    XYZR d(p);
-    dist2=(d.get_coordinates()- old.get_center()).get_squared_magnitude();
-    dr= std::abs(old.get_radius()-d.get_radius());
-    if (square(threshold) > dist2+ dist2*dr + square(dr)) {
-      IMP_LOG(VERBOSE, p->get_name() << " rejected out of hand: "
-              << d.get_coordinates() << " vs " << old.get_center()
-              << " - " << dist2 << " - " << dr
-              << std::endl);
-      has_dist=false;
-      return false;
-    } else {
-      dist= std::sqrt(dist2);
-      IMP_LOG(VERBOSE, p->get_name() << " considered : "
-              << d.get_coordinates() << " vs " << old.get_center()
-              << " - " << dist << " - " << dr
-              << std::endl);
-      has_dist=true;
-      return threshold < dist + dr;
-    }
-  }
-
-  class ListXYZRRotMovedParticles:public SingletonModifier {
-    std::vector<std::pair<algebra::SphereD<3>,
-                          algebra::Rotation3D> > &values_;
-    mutable ParticlesTemp *pt_;
-    double threshold_;
-    mutable unsigned int i_;
-    bool incremental_;
-    void do_apply(Particle *p) const {
-      double dist2=-1, dr, dist;
-      bool has_dist=false; // suppress warning
-      //std::cout << "rapplying on " << p->get_name() << std::endl;
-      IMP_INTERNAL_CHECK(values_.size() > i_,
-                         "Wrong size of values_.");
-      if (moved_threshold(p, values_[i_].first, incremental_,
-                          threshold_, dist2, dr, dist, has_dist)) {
-        pt_->push_back(p);
-      } else {
-        if (!has_dist) {
-          dist= std::sqrt(dist2);
-        }
-        if (RigidBody::particle_is_instance(p)) {
-          RigidBody rb(p);
-          algebra::Rotation3D rd
-            = values_[i_].second
-            *rb.get_reference_frame().get_transformation_from().get_rotation();
-          algebra::VectorD<3> rv(0,0,XYZR(p).get_radius());
-          algebra::VectorD<3> rvr= rd.get_rotated(rv);
-          IMP_LOG(VERBOSE, p->get_name() << " rigid body : "
-                  << rv << " " << rvr
-                  << std::endl);
-          if (dist + (rv-rvr).get_magnitude() > threshold_) {
-            pt_->push_back(p);
-          }
-        }
-      }
-      ++i_;
-    }
-  public:
-    ListXYZRRotMovedParticles(std::vector<std::pair<algebra::SphereD<3>,
-                              algebra::Rotation3D> > &values,
-                ParticlesTemp &pt,
-                double threshold,
-                bool incremental):
-      SingletonModifier("ListXYZRRotMoved"),
-      values_(values),
-      pt_(&pt), threshold_(threshold),
-      i_(0), incremental_(incremental){
-    }
-
-    IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRRotMovedParticles,
-                                    do_apply(p););
-  };
-
-  class ListXYZRMovedParticles:public SingletonModifier {
-    std::vector<algebra::SphereD<3> > &values_;
-    mutable ParticlesTemp *pt_;
-    double threshold_;
-    mutable unsigned int i_;
-    bool incremental_;
-    void do_apply(Particle *p ) const {
-      double dist2, dr, dist;
-      bool has_dist=false;
-      //std::cout << "applying on " << p->get_name() << std::endl;
-      if (moved_threshold(p, values_[i_], incremental_,
-                          threshold_, dist2, dr, dist, has_dist)) {
-        pt_->push_back(p);
-      }
-      ++i_;
-    }
-  public:
-    ListXYZRMovedParticles(std::vector<algebra::SphereD<3> > &values,
-                ParticlesTemp &pt,
-                double threshold,
-                           bool incremental):
-      SingletonModifier("ListXYZRMoved"),
-      values_(values),
-      pt_(&pt), threshold_(threshold),
-      i_(0), incremental_(incremental){
-    }
-    IMP_INTERNAL_SINGLETON_MODIFIER(ListXYZRMovedParticles,
-                                    do_apply(p););
-  };
-}
-
 class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
 {
- protected:
+ private:
   double threshold_;
   Pointer<SingletonContainer> pc_, ac_, rc_;
   bool first_call_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
-  virtual void save()=0;
-  virtual void save_moved()=0;
-  virtual void update_list()=0;
+  virtual ParticlesTemp do_get_moved()=0;
+  virtual void do_reset_all()=0;
+  virtual void do_reset_moved()=0;
+  virtual double do_get_distance_moved(unsigned int i) const=0;
   using ListLikeSingletonContainer::update_list;
 public:
   //! Track the changes with the specified keys.
-  MovedSingletonContainer(Model *m,
-                          SingletonContainer *pc,
+  MovedSingletonContainer(SingletonContainer *pc,
                           double threshold);
 
   //! Measure differences from the current value.
@@ -239,7 +52,17 @@ public:
     return pc_;
   }
   void set_threshold(double d);
-
+  double get_threshold() const {
+    return threshold_;
+  }
+  double get_distance_moved(Particle *p) const {
+    for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
+      if (pc_->get_particle(i)==p) {
+        return do_get_distance_moved(i);
+      }
+    }
+    return -1;
+  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     if (get_model()->get_stage() != Model::NOT_EVALUATING) {
@@ -257,57 +80,64 @@ public:
   IMP_LISTLIKE_SINGLETON_CONTAINER(MovedSingletonContainer);
 };
 
-
-template <class Data, class Save, class SaveMoved, class ListMoved>
-class MovedSingletonContainerImpl:
+class IMPCOREEXPORT XYZRMovedSingletonContainer:
   public MovedSingletonContainer
 {
-  std::vector<Data> backup_;
-  virtual void save() {
-    IMP_OBJECT_LOG;
-    //backup_.clear();
-    backup_.resize(MovedSingletonContainer
-                   ::pc_->get_number_of_particles());
-    IMP_NEW(Save, rv, (backup_));
-    rv->set_was_used(true);
-    MovedSingletonContainer::pc_->apply(rv);
-  }
-  virtual void save_moved() {
-    IMP_OBJECT_LOG;
-    if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
-      IMP_NEW(SaveMoved,  cv, (backup_, get_access()));
-      cv->set_was_used(true);
-      MovedSingletonContainer::pc_->apply(cv);
-    }
-  }
-  virtual void update_list() {
-    IMP_OBJECT_LOG;
-    if (MovedSingletonContainer::pc_->get_number_of_particles() != 0) {
-      bool incr= MovedSingletonContainer
-        ::pc_->get_particle(0)->get_model()->get_is_incremental();
-      ParticlesTemp ret;
-      IMP_NEW(ListMoved,  cv, (backup_, ret,
-                               MovedSingletonContainer::threshold_, incr));
-      cv->set_was_used(true);
-      MovedSingletonContainer::pc_->apply(cv);
-      IMP_LOG(TERSE, "Found " << ret.size()
-              << " moved particles." << std::endl);
-      add_to_list(ret);
-    }
-  }
+  std::vector<algebra::Sphere3D> backup_;
+  Ints moved_;
+  virtual ParticlesTemp do_get_moved();
+  virtual void do_reset_all();
+  virtual void do_reset_moved();
+  virtual double do_get_distance_moved(unsigned int i) const;
 public:
   //! Track the changes with the specified keys.
-  MovedSingletonContainerImpl(Model *m,
-                              SingletonContainer *pc,
-                              double threshold):
-    MovedSingletonContainer(m,pc, threshold){
-    if (this==0) {
-      // is this legit?
-      save();
-      save_moved();
-      update_list();
+  XYZRMovedSingletonContainer(SingletonContainer *pc,
+                              double threshold);
+};
+
+
+class IMPCOREEXPORT RigidMovedSingletonContainer:
+  public MovedSingletonContainer
+{
+  IMP::internal::OwnerPointer<CoreListSingletonContainer> normal_;
+  IMP::internal::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
+  std::vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
+  ParticlesTemp rbs_;
+  Ints rbs_moved_;
+  IMP::internal::Map<RigidBody, Particles> rbs_members_;
+  virtual ParticlesTemp do_get_moved();
+  virtual void do_reset_all();
+  virtual void do_reset_moved();
+  virtual double do_get_distance_moved(unsigned int i) const;
+  double get_distance_estimate(Particle *p) const {
+    unsigned int i;
+    for (i=0; i< rbs_.size(); ++i) {
+      if (rbs_[i]==p) break;
     }
+    core::XYZR xyz(p);
+    core::RigidBody rb(p);
+    double dr= std::abs(xyz.get_radius()- rbs_backup_[i].first.get_radius());
+    double dx= (xyz.get_coordinates()
+                -rbs_backup_[i].first.get_center()).get_magnitude();
+    algebra::Rotation3D nrot=rb.get_reference_frame()
+      .get_transformation_to().get_rotation();
+    algebra::Rotation3D diffrot= rbs_backup_[i].second.get_inverse()*nrot;
+    double angle= algebra::get_axis_and_angle(diffrot).second;
+    double drot= std::abs(angle*xyz.get_radius()); // over estimate, but easy
+    return dr+dx+drot;
   }
+  std::pair<algebra::Sphere3D, algebra::Rotation3D>
+    get_data(Particle *p) const {
+    return std::make_pair(core::XYZR(p).get_sphere(),
+      core::RigidBody(p).get_reference_frame()
+                          .get_transformation_to().get_rotation());
+  }
+  ContainersTemp get_state_input_containers() const;
+  ParticlesTemp get_state_input_particles() const;
+public:
+  //! Track the changes with the specified keys.
+  RigidMovedSingletonContainer(SingletonContainer *pc,
+                               double threshold);
 };
 
 

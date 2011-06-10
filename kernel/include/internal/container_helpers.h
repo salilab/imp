@@ -211,11 +211,11 @@ inline std::string get_name(const ParticleTuple<D>& p) {
   unsigned int get_last_update_evaluation() const {             \
   return eval_update_;                                          \
   }                                                             \
-  void do_before_evaluate();                                    \
-  void do_after_evaluate();                                     \
+  virtual void do_before_evaluate();                            \
+  virtual void do_after_evaluate();                             \
   bool get_has_model() const { return ticker_.get_is_set();}    \
-  ParticlesTemp get_state_input_particles() const;              \
-  ContainersTemp get_state_input_containers() const;            \
+  virtual ParticlesTemp get_state_input_particles() const;      \
+  virtual ContainersTemp get_state_input_containers() const;    \
   void initialize_active_container(Model *m);                   \
 public:                                                         \
  void set_log_level(LogLevel l)

@@ -56,6 +56,7 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
 
 void ExcludedVolumeRestraint::set_log_level(LogLevel l) {
   sc_->set_log_level(l);
+  get_container()->set_log_level(l);
   Object::set_log_level(l);
 }
 

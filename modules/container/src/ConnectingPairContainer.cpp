@@ -128,10 +128,7 @@ void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   sc_=sc;
   fill_list(true);
   Model *m=sc->get_particle(0)->get_model();
-  mv_= new core::internal::MovedSingletonContainerImpl<algebra::SphereD<3>,
-    core::internal::SaveXYZRValues,
-    core::internal::SaveMovedValues<core::internal::SaveXYZRValues>,
-    core::internal::ListXYZRMovedParticles>(m, sc, error_);
+  mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_);
   initialize_active_container(m);
 }
 

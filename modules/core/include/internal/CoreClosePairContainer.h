@@ -28,12 +28,18 @@ public internal::ListLikePairContainer
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
   IMP::internal::OwnerPointer<internal::MovedSingletonContainer> moved_;
-  ParticlesTemp previous_moved_;
+  unsigned int moved_count_;
   bool first_call_;
   double distance_, slack_;
   IMP_ACTIVE_CONTAINER_DECL(CoreClosePairContainer);
   void initialize(SingletonContainer *c, double distance,
                   double slack, ClosePairsFinder *cpf);
+
+  void check_duplicates_input() const;
+  void check_list(bool include_slack) const;
+  void do_first_call();
+  void do_incremental();
+  void do_rebuild();
 public:
   CoreClosePairContainer(SingletonContainer *c, double distance,
                          ClosePairsFinder *cpf,
