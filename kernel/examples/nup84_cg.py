@@ -14,7 +14,7 @@ resolution=300
 bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                              IMP.algebra.Vector3D(300, 300, 300))
 
-
+IMP.random_number_generator.seed(2025)
 # this function creates the molecular hierarchies for the various involved proteins
 def create_representation():
     m= IMP.Model()
@@ -124,10 +124,11 @@ def analyze_conformations(cs, all, gs):
                  IMP.container.ListSingletonContainer(IMP.atom.get_leaves(all)), True)
     cluster= IMP.statistics.create_lloyds_kmeans(embed, 10, 10000)
     # dump each cluster center to a file so it can be viewed.
+    w= IMP.display.PymolWriter("cluster.pym")
     for i in range(cluster.get_number_of_clusters()):
         center= cluster.get_cluster_center(i)
         cs.load_configuration(i)
-        w= IMP.display.PymolWriter("cluster.%d.pym"%i)
+        w.set_frame(i)
         for g in gs:
             w.add_geometry(g)
 
@@ -156,9 +157,10 @@ cs= get_conformations(m)
 print "found", cs.get_number_of_configurations(), "solutions"
 
 # for each of the configuration, dump it to a file to view in pymol
+w= IMP.display.PymolWriter("config.pym")
 for i in range(0, cs.get_number_of_configurations()):
     cs.load_configuration(i)
-    w= IMP.display.PymolWriter("config.%d.pym"%i)
+    w.set_frame(i)
     for g in gs:
         w.add_geometry(g)
 
