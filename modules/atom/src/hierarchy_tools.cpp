@@ -284,9 +284,6 @@ namespace {
     }
     Model *mm= t[0]->get_model();
     Particle *p= new Particle(mm);
-    std::ostringstream oss;
-    oss << "Fragment";
-    p->set_name(oss.str());
     ParticlesTemp children;
     for (unsigned int i=0; i< t.size(); ++i) {
       HierarchiesTemp cur= t[i].get_children();
@@ -295,6 +292,15 @@ namespace {
     setup_as_approximation_internal(p, children,
                                     -1,
                                     v);
+    std::ostringstream oss;
+    Ints rids= Fragment(p).get_residue_indexes();
+    std::sort(rids.begin(), rids.end());
+    oss << "Fragment";
+    if (!rids.empty()) {
+      oss << " [" << rids.front() << "-" << rids.back()+1
+          << ")";
+    }
+    p->set_name(oss.str());
     wc.dump_warnings();
     return Hierarchy(p);
   }
