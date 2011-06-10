@@ -194,22 +194,26 @@ class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
 
 inline unsigned int
 PackedAssignmentContainer::get_number_of_assignments() const {
+  if (width_==-1) return 0;
   return d_.size()/width_;
 }
 
 inline Assignment
 PackedAssignmentContainer::get_assignment(unsigned int i) const {
+  IMP_USAGE_CHECK(i < get_number_of_assignments(),
+                  "Invalid assignment requested: " << i);
+  IMP_USAGE_CHECK(width_ >0, "Uninitualized PackedAssignmentContainer.");
   return Assignment(d_.begin()+i*width_,
                     d_.begin()+(i+1)*width_);
 }
 
 inline void PackedAssignmentContainer::add_assignment(Assignment a) {
-  IMP_USAGE_CHECK(width_==-1 || static_cast<int>(a.size())== width_,
-                  "Sizes don't match " << width_
-                  << " vs " << a.size());
   if (width_==-1) {
     width_=a.size();
   }
+  IMP_USAGE_CHECK(static_cast<int>(a.size())== width_,
+                  "Sizes don't match " << width_
+                  << " vs " << a.size());
   d_.insert(d_.end(), a.begin(), a.end());
 }
 
