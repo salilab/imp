@@ -41,10 +41,14 @@ IMP_BEGIN_NAMESPACE
     @{
  */
 
-//! The general base class for \imp exceptions
-/** Exceptions should be used to report all errors that occur within \imp.
+
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+/** This base class is for all \imp exceptions, including
+    UsageException and InternalException. You can catch
+    IMP::Exception without worrying about catching those
+    exceptions.
 */
-class IMPEXPORT Exception
+class IMPEXPORT ExceptionBase
 {
   struct refstring {
     char message_[4096];
@@ -55,15 +59,15 @@ class IMPEXPORT Exception
   const char *what() const throw() {
     return str_? str_->message_: NULL;
   }
-  Exception(const char *message);
+  ExceptionBase(const char *message);
   /* \note By making the destructor virtual and providing an implementation in
       each derived class, we force a strong definition of the exception object
       in the kernel DSO. This allows exceptions to be passed between DSOs.
   */
-  virtual ~Exception() throw();
+  virtual ~ExceptionBase() throw();
 
-  Exception(const Exception &o) {copy(o);}
-  Exception &operator=(const Exception &o) {
+  ExceptionBase(const ExceptionBase &o) {copy(o);}
+  ExceptionBase &operator=(const ExceptionBase &o) {
     destroy();
     copy(o);
     return *this;
@@ -75,10 +79,27 @@ class IMPEXPORT Exception
       if (str_->ct_==0) delete str_;
     }
   }
-  void copy(const Exception &o) {
+  void copy(const ExceptionBase &o) {
     str_=o.str_;
     if (str_!= NULL) ++str_->ct_;
   }
+};
+#endif
+
+//! The general base class for \imp exceptions
+/** Exceptions should be used to report all errors that occur within \imp.
+*/
+class IMPEXPORT Exception
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  : public ExceptionBase
+#endif
+{
+ public:
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+  const char *what() const throw();
+#endif
+  Exception(const char *message);
+  ~Exception() throw();
 };
 
 //! Determine the level of runtime checks performed
@@ -329,9 +350,12 @@ IMPEXPORT void assert_fail(const char *msg);
 /** This exception is thrown by the IMP_INTERNAL_CHECK() and
     IMP_FAILURE() macros. It should never be caught.
  */
-struct IMPEXPORT InternalException: public Exception
+struct IMPEXPORT InternalException
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  : public ExceptionBase
+#endif
 {
-  InternalException(const char *msg="Fatal error"): Exception(msg){}
+  InternalException(const char *msg="Fatal error"): ExceptionBase(msg){}
   ~InternalException() throw();
 };
 
@@ -345,10 +369,13 @@ struct IMPEXPORT InternalException: public Exception
     UsageExceptions are not considered part of the API and hence
     should not be documented or checked in test cases.
  */
-class IMPEXPORT UsageException : public Exception
+class IMPEXPORT UsageException
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  : public ExceptionBase
+#endif
 {
  public:
-  UsageException(const char *t): Exception(t){}
+  UsageException(const char *t): ExceptionBase(t){}
   ~UsageException() throw();
 };
 
