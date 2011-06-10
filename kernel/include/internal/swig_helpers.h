@@ -371,8 +371,8 @@ namespace swig {
           =Convert<V>::get_cpp_object(o,st,
                                       particle_st, decorator_st);
         Assign<C, VT>::assign(t, i, vs);
-        IMP_USAGE_CHECK(o->ob_refcnt >1, "Small refcount");
-        Py_DECREF(o);
+        IMP_INTERNAL_CHECK(o->ob_refcnt >0, "Small refcount");
+        //Py_DECREF(o);
       }
     }
   };
@@ -406,7 +406,7 @@ namespace swig {
       for (unsigned int i=0; i< T::static_size; ++i) {
         PyObject *o = Convert<VT>::create_python_object(t[i], st, OWN);
         //std::cout << o->ob_refcnt << std::endl;
-        IMP_USAGE_CHECK(o->ob_refcnt==1, "Bad ref count " << o->ob_refcnt);
+        IMP_INTERNAL_CHECK(o->ob_refcnt==1, "Bad ref count " << o->ob_refcnt);
         PyTuple_SetItem(ret,i,o);
         //Py_DECREF(o);
       }
@@ -598,7 +598,7 @@ namespace swig {
     static PyObject* create_python_object(int f, SwigData st, int OWN) {
       PyObject *o = PyInt_FromLong(f);
       //Py_INCREF(o);
-      //IMP_USAGE_CHECK(o->ob_refcnt==1, "Bad ref count");
+      //IMP_INTERNAL_CHECK(o->ob_refcnt==1, "Bad ref count");
       return o;
     }
   };
