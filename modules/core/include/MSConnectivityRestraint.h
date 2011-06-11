@@ -45,7 +45,7 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
   IMP::internal::OwnerPointer<PairScore> ps_;
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   double eps_;
-  public:
+public:
   //! Use the given PairScore
   /** If sc is NULL, a ListSingletonContainer is created internally.
     eps is set to 0.1 by default.
@@ -89,116 +89,116 @@ class IMPCOREEXPORT MSConnectivityRestraint : public Restraint
 
   class ParticleMatrix
   {
+  public:
+
+    class ParticleData
+    {
     public:
+      ParticleData(Particle *p, size_t id)
+          : particle_(p)
+            , id_(id)
+      {}
 
-      class ParticleData
+      Particle *get_particle() const
       {
-        public:
-          ParticleData(Particle *p, size_t id)
-            : particle_(p)
-              , id_(id)
-        {}
-
-          Particle *get_particle() const
-          {
-            return particle_;
-          }
-
-          size_t get_id() const
-          {
-            return id_;
-          }
-        private:
-          Particle *particle_;
-          size_t id_;
-      };
-
-      ParticleMatrix(size_t number_of_classes)
-        : protein_by_class_(number_of_classes)
-          , min_distance_(std::numeric_limits<double>::max())
-          , max_distance_(0)
-          , current_id_(0)
-    {}
-
-      ParticleMatrix()
-        : min_distance_(std::numeric_limits<double>::max())
-          , max_distance_(0)
-          , current_id_(0)
-    {}
-
-      void resize(size_t number_of_classes)
-      {
-        protein_by_class_.resize(number_of_classes);
+        return particle_;
       }
 
-      size_t add_particle(Particle *p, size_t id);
-      size_t add_type(const Particles &ps);
-      void create_distance_matrix(const PairScore *ps);
-      void clear_particles()
+      size_t get_id() const
       {
-        particles_.clear();
-        for ( size_t i = 0; i < protein_by_class_.size(); ++i )
-          protein_by_class_[i].clear();
-      }
-      size_t size() const
-      {
-        return particles_.size();
-      }
-      size_t get_number_of_classes() const
-      {
-        return protein_by_class_.size();
-      }
-      double get_distance(size_t p1, size_t p2) const
-      {
-        return dist_matrix_[p1*size() + p2];
-      }
-      std::vector<size_t> const &get_ordered_neighbors(size_t p) const
-      {
-        return order_[p];
-      }
-      ParticleData const &get_particle(size_t p) const
-      {
-        return particles_[p];
-      }
-      std::vector<size_t> const &get_all_proteins_in_class(
-          size_t id) const
-      {
-        return protein_by_class_[id];
-      }
-      double max_distance() const
-      {
-        return max_distance_;
-      }
-      double min_distance() const
-      {
-        return min_distance_;
+        return id_;
       }
     private:
-      class DistCompare
+      Particle *particle_;
+      size_t id_;
+    };
+
+    ParticleMatrix(size_t number_of_classes)
+        : protein_by_class_(number_of_classes)
+         , min_distance_(std::numeric_limits<double>::max())
+         , max_distance_(0)
+         , current_id_(0)
+    {}
+
+    ParticleMatrix()
+        : min_distance_(std::numeric_limits<double>::max())
+         , max_distance_(0)
+         , current_id_(0)
+    {}
+
+    void resize(size_t number_of_classes)
+    {
+      protein_by_class_.resize(number_of_classes);
+    }
+
+    size_t add_particle(Particle *p, size_t id);
+    size_t add_type(const Particles &ps);
+    void create_distance_matrix(const PairScore *ps);
+    void clear_particles()
+    {
+      particles_.clear();
+      for ( size_t i = 0; i < protein_by_class_.size(); ++i )
+        protein_by_class_[i].clear();
+    }
+    size_t size() const
+    {
+      return particles_.size();
+    }
+    size_t get_number_of_classes() const
+    {
+      return protein_by_class_.size();
+    }
+    double get_distance(size_t p1, size_t p2) const
+    {
+      return dist_matrix_[p1*size() + p2];
+    }
+    std::vector<size_t> const &get_ordered_neighbors(size_t p) const
+    {
+      return order_[p];
+    }
+    ParticleData const &get_particle(size_t p) const
+    {
+      return particles_[p];
+    }
+    std::vector<size_t> const &get_all_proteins_in_class(
+        size_t id) const
+    {
+      return protein_by_class_[id];
+    }
+    double max_distance() const
+    {
+      return max_distance_;
+    }
+    double min_distance() const
+    {
+      return min_distance_;
+    }
+  private:
+    class DistCompare
+    {
+    public:
+      DistCompare(size_t source, ParticleMatrix const &parent)
+        : parent_(parent)
+          , source_(source)
+      {}
+
+      bool operator()(size_t p1, size_t p2) const
       {
-        public:
-          DistCompare(size_t source, ParticleMatrix const &parent)
-            : parent_(parent)
-              , source_(source)
-        {}
+        return parent_.get_distance(source_, p1) <
+          parent_.get_distance(source_, p2);
+      }
+    private:
+      ParticleMatrix const &parent_;
+      size_t source_;
+    };
 
-          bool operator()(size_t p1, size_t p2) const
-          {
-            return parent_.get_distance(source_, p1) <
-              parent_.get_distance(source_, p2);
-          }
-        private:
-          ParticleMatrix const &parent_;
-          size_t source_;
-      };
-
-      std::vector<ParticleData> particles_;
-      std::vector<double> dist_matrix_;
-      std::vector< std::vector<size_t> > order_;
-      std::vector< std::vector<size_t> > protein_by_class_;
-      double min_distance_;
-      double max_distance_;
-      size_t current_id_;
+    std::vector<ParticleData> particles_;
+    std::vector<double> dist_matrix_;
+    std::vector< std::vector<size_t> > order_;
+    std::vector< std::vector<size_t> > protein_by_class_;
+    double min_distance_;
+    double max_distance_;
+    size_t current_id_;
   };
 
   class ExperimentalTree

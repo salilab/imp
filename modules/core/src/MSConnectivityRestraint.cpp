@@ -27,6 +27,7 @@
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/connected_components.hpp>
 #include <boost/algorithm/string.hpp>
+#include <boost/assert.hpp>
 
 #include <limits>
 
@@ -160,8 +161,7 @@ void MSConnectivityRestraint::ExperimentalTree::desc_to_label(
     const Ints &components, Node::Label &label)
 {
   label.clear();
-  std::vector<size_t> sorted_components(components.begin(),
-                                        components.end());
+  Ints sorted_components(components);
   std::sort(sorted_components.begin(), sorted_components.end());
   for ( size_t i=0; i<sorted_components.size(); ++i )
   {
@@ -203,7 +203,9 @@ void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
   size_t n = size();
   dist_matrix_.resize(n*n);
   for ( size_t r = 0; r < n; ++r )
-    for ( size_t c = r; c < n; ++ c )
+  {
+    dist_matrix_[r*n + r] = 0;
+    for ( size_t c = r + 1; c < n; ++ c )
     {
       double d = ps->evaluate(ParticlePair(particles_[r].get_particle(),
         particles_[c].get_particle()), 0);
@@ -211,6 +213,7 @@ void MSConnectivityRestraint::ParticleMatrix::create_distance_matrix(
       min_distance_ = std::min(min_distance_, d);
       max_distance_ = std::max(max_distance_, d);
     }
+  }
   order_.clear();
   order_.resize(n);
   for ( size_t i = 0; i < n; ++i )
@@ -337,24 +340,6 @@ bool is_connected(NNGraph &G)
 typedef std::set< std::pair<size_t, size_t> > EdgeSet;
 
 
-EdgeSet mst(NNGraph &G)
-{
-  boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
-    boost::get(boost::vertex_name, G);
-  typedef boost::graph_traits<NNGraph>::edge_descriptor Edge;
-  std::vector<Edge> spanning_tree;
-  boost::kruskal_minimum_spanning_tree(G, std::back_inserter(spanning_tree));
-  EdgeSet edges;
-  for ( size_t i = 0; i < spanning_tree.size(); ++i )
-  {
-    size_t src = boost::get(vertex_id, source(spanning_tree[i], G));
-    size_t dst = boost::get(vertex_id, target(spanning_tree[i], G));
-    edges.insert(std::make_pair(src, dst));
-  }
-  return edges;
-}
-
-
 class MSConnectivityScore
 {
 public:
@@ -367,8 +352,28 @@ public:
   {
     return pm_.get_particle(p).get_particle();
   }
+  void add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const;
+  EdgeSet get_all_edges(NNGraph &G) const;
 
 private:
+
+  struct EdgeScoreComparator
+  {
+    EdgeScoreComparator(const MSConnectivityRestraint::ParticleMatrix &pm)
+      : pm_(pm)
+    {}
+
+    bool operator()(const std::pair<size_t, size_t> &p1,
+        const std::pair<size_t, size_t> &p2)
+    {
+      double w1 = pm_.get_distance(p1.first, p1.second);
+      double w2 = pm_.get_distance(p2.first, p2.second);
+      return w1 < w2;
+    }
+
+    const MSConnectivityRestraint::ParticleMatrix &pm_;
+  };
+
   NNGraph create_nn_graph(double threshold) const;
   NNGraph build_subgraph_from_assignment(NNGraph &G,
     Assignment const &assignment, std::vector<Tuples> const &all_tuples) const;
@@ -385,6 +390,78 @@ private:
   const MSConnectivityRestraint::ExperimentalTree &tree_;
   double eps_;
 };
+
+
+EdgeSet MSConnectivityScore::get_all_edges(NNGraph &G) const
+{
+  boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
+    boost::get(boost::vertex_name, G);
+  EdgeSet result;
+  NNGraph::edge_iterator e, end;
+  for ( boost::tie(e, end) = edges(G); e != end; ++e )
+  {
+    size_t src = boost::get(vertex_id, source(*e, G));
+    size_t dst = boost::get(vertex_id, target(*e, G));
+    if ( src > dst )
+      std::swap(src, dst);
+    result.insert(std::make_pair(src, dst));
+  }
+  return result;
+}
+
+
+void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
+{
+  boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
+    boost::get(boost::vertex_name, G);
+  NNGraph ng(num_vertices(G));
+  std::vector<size_t> vertex_id_to_n(pm_.size(), -1);
+  for ( size_t i = 0; i < num_vertices(ng); ++i )
+  {
+    size_t id = boost::get(vertex_id, i);
+    vertex_id_to_n[id] = i;
+  }
+  for ( EdgeSet::iterator p = edge_set.begin(); p != edge_set.end(); ++p )
+  {
+    size_t i_from = vertex_id_to_n[(*p).first];
+    size_t i_to = vertex_id_to_n[(*p).second];
+    add_edge(i_from, i_to, ng);
+  }
+  std::vector<int> components(num_vertices(ng));
+  int ncomp = boost::connected_components(ng, &components[0]);
+  if ( ncomp == 1 )
+    return;
+  std::vector< std::pair<size_t, size_t> > candidates;
+  NNGraph::edge_iterator e, end;
+  for ( boost::tie(e, end) = edges(G); e != end; ++e )
+  {
+    size_t src = boost::get(vertex_id, source(*e, G));
+    size_t dst = boost::get(vertex_id, target(*e, G));
+    if ( src > dst )
+      std::swap(src, dst);
+    std::pair<size_t, size_t> candidate = std::make_pair(src, dst);
+    if ( edge_set.find(candidate) == edge_set.end() )
+      candidates.push_back(candidate);
+  }
+  std::sort(candidates.begin(), candidates.end(), EdgeScoreComparator(pm_));
+  size_t idx = 0;
+  while ( ncomp > 1 && idx < candidates.size() )
+  {
+    size_t i_from = vertex_id_to_n[candidates[idx].first];
+    size_t i_to = vertex_id_to_n[candidates[idx].second];
+    if ( components[i_from] != components[i_to] )
+    {
+      int old_comp = components[i_to];
+      for ( size_t i = 0; i < components.size(); ++i )
+        if ( components[i] == old_comp )
+          components[i] = components[i_from];
+      --ncomp;
+      edge_set.insert(candidates[idx]);
+    }
+    ++idx;
+  }
+  BOOST_ASSERT(ncomp == 1);
+}
 
 
 MSConnectivityScore::MSConnectivityScore(
@@ -517,7 +594,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
         new_tuples);
     if ( is_connected(ng) )
     {
-      EdgeSet n_picked = mst(ng);
+      EdgeSet n_picked;
       bool good = true;
       for ( size_t i = 0; i < node->get_number_of_children(); ++i )
       {
@@ -531,6 +608,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
       }
       if ( good )
       {
+        add_edges_to_set(ng, n_picked);
         picked.insert(n_picked.begin(), n_picked.end());
         return true;
       }
@@ -574,7 +652,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
     NNGraph ng = build_subgraph_from_assignment(G, assignment, tuples);
     if ( is_connected(ng) )
     {
-      EdgeSet n_picked = mst(ng);
+      EdgeSet n_picked;
       bool good = true;
       for ( size_t i = 0; i < node->get_number_of_children(); ++i )
       {
@@ -588,6 +666,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
       }
       if ( good )
       {
+        add_edges_to_set(ng, n_picked);
         picked.insert(n_picked.begin(), n_picked.end());
         return true;
       }
@@ -691,7 +770,7 @@ double MSConnectivityScore::score(DerivativeAccumulator *accum) const
 EdgeSet MSConnectivityScore::get_connected_pairs() const
 {
   NNGraph g = find_threshold();
-  EdgeSet edges = mst(g);
+  EdgeSet edges = get_all_edges(g);
   return edges;
 }
 
