@@ -34,7 +34,9 @@ namespace {
   class HierarchyCache: public Object {
   public:
     ParticlesTemp leaves;
-    HierarchyCache(): Object("HierarchyCache"){}
+    HierarchyCache(): Object("HierarchyCache"){
+      set_was_used(true);
+    }
     IMP_OBJECT(HierarchyCache);
   };
   void HierarchyCache::do_show(std::ostream &out) const {
