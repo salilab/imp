@@ -18,6 +18,8 @@
 #include <IMP/SingletonContainer.h>
 #include <IMP/RefCounted.h>
 
+#include <boost/format.hpp>
+
 IMPDISPLAY_BEGIN_NAMESPACE
 
 
@@ -73,7 +75,11 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   }
   /** @} */
 
+#if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
+ public:
+#else
  protected:
+#endif
   //! A hook for implementation classes to use to take actions on file close
   virtual void do_close()=0;
   //! A hook for implementation classes to use to take actions on file open
@@ -92,11 +98,22 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 {
   std::string file_name_;
   TextOutput out_;
+#if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
+ public:
+#else
  protected:
+#endif
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
     if (out_== TextOutput()) {
-      out_= TextOutput(file_name_);
+      if (file_name_.find("%1%") != std::string::npos) {
+        std::ostringstream oss;
+        oss << boost::format(file_name_)%get_frame();
+        out_= TextOutput(oss.str());
+      } else {
+        out_= TextOutput(file_name_);
+      }
+      do_open();
     }
     return out_;
   }
