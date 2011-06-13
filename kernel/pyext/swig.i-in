@@ -380,8 +380,13 @@ def show_graphviz(g):
            st= g.get_graphviz_string()
            open(tfn, "w").write(st)
            import subprocess
-           sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
-           sp.wait()
+           try:
+             sp=subprocess.Popen(["dot", "-Tpdf", tfn, "-o"+tfon])
+             sp.wait()
+           except:
+             import sys
+             print >> sys.stderr, "The dot command from the graphviz package was not found. Please make sure it is in the PATH passed to IMP."
+             return
            try:
              subprocess.Popen(["open", tfon])
            except:
