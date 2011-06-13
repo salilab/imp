@@ -10,7 +10,7 @@ class TestBL(IMP.test.TestCase):
         IMP.set_log_level(IMP.TERSE)
     def _testopen(self, fname):
         open(fname, "r")
-    def _testit(self, writer):
+    def _testit(self, writer, nm):
         m= IMP.Model()
         o= IMP.core.SteepestDescent()
         o.set_model(m)
@@ -39,12 +39,19 @@ class TestBL(IMP.test.TestCase):
         a.update()
         a.update()
         a.update()
-        open(self.get_tmp_file_name("testbild.2.bild"), "r").read()
-        self.assertRaises(IOError, self._testopen, self.get_tmp_file_name("testbild.%1%.bild"))
+        open(nm.replace("%1%", "2"), "r").read()
+        self.assertRaises(IOError, self._testopen, nm)
+
 
     def test_3(self):
         """Testing the Bild log"""
-        self._testit(IMP.display.BildWriter(self.get_tmp_file_name("testbild.%1%.bild")))
+        nm=self.get_tmp_file_name("testbild.%1%.bild")
+        self._testit(IMP.display.BildWriter(nm),
+                     nm)
+    def test_4(self):
+        """Testing the CMM log"""
+        nm=self.get_tmp_file_name("testcmm.%1%.cmm")
+        self._testit(IMP.display.CMMWriter(nm), nm)
 
 if __name__ == '__main__':
     IMP.test.main()

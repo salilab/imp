@@ -8,7 +8,6 @@
 
 #include "IMP/display/Writer.h"
 #include <boost/algorithm/string/predicate.hpp>
-#include <boost/format.hpp>
 
 IMPDISPLAY_BEGIN_NAMESPACE
 
@@ -47,9 +46,10 @@ void TextWriter::do_set_frame() {
   if (file_name_.empty() || file_name_.find("%1%")== std::string::npos) {
     IMP_FAILURE("Cannot set frame on writer without file name pattern.");
   }
-  std::ostringstream oss;
-  oss << boost::format(file_name_)%get_frame();
-  out_= TextOutput(oss.str());
+  if (out_!= TextOutput()) {
+    do_close();
+    out_=TextOutput();
+  }
 }
 
 
