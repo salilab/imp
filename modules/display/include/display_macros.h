@@ -14,8 +14,8 @@
 */
 #define IMP_TEXT_WRITER(Name)                                           \
   Name(TextOutput of): TextWriter(of)                                   \
-  {do_open();}                                                          \
-  Name(std::string name): TextWriter(name){do_open();}                  \
+  {}                                                                    \
+  Name(std::string name): TextWriter(name){}                            \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \
