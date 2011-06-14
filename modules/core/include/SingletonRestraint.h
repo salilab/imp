@@ -50,6 +50,8 @@ public:
   }
 
   IMP_INCREMENTAL_RESTRAINT(SingletonRestraint);
+
+  Restraints get_instant_decomposition() const;
 };
 
 IMPCORE_END_NAMESPACE

@@ -65,6 +65,8 @@ public:
   }
 
   Restraints get_decomposition() const;
+
+  Restraints get_instant_decomposition() const;
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE
