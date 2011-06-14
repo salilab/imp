@@ -41,7 +41,7 @@ public:
     make_empty();
   }
   //! Create an empty bounding box
-  BoundingBoxD(unsigned int d) {
+  explicit BoundingBoxD(unsigned int d) {
     IMP_USAGE_CHECK(D==-1, "The constructor can only be used "
                     << "with a variable dim bounding box.");
     Floats lb(d), ub(d);
