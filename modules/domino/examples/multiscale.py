@@ -4,8 +4,9 @@ import IMP.core
 m= IMP.Model()
 m.set_log_level(IMP.SILENT)
 ds= [IMP.core.XYZR.setup_particle(IMP.Particle(m)) for i in range(0,3)]
-for d in ds:
+for i,d in enumerate(ds):
     d.set_radius(1)
+    IMP.display.Colored.setup_particle(d, IMP.display.get_display_color(i))
 
 k=1
 h= IMP.core.Harmonic(0,k)
@@ -84,13 +85,13 @@ def display_mapping(index, cover0, cover1, mapping):
 
 
 
-for i in range(1,len(covers)):
-    scale= 4.0/2**i
+for curi in range(1,len(covers)):
+    scale= 4.0/2**curi
     print scale
-    mapping=get_mapping(covers[i-1], covers[i])
+    mapping=get_mapping(covers[curi-1], covers[curi])
     print mapping
-    display_mapping(i-1, covers[i-1], covers[i], mapping)
-    (sampler, lf, pst)= setup(covers[i], scale)
+    display_mapping(curi-1, covers[curi-1], covers[curi], mapping)
+    (sampler, lf, pst)= setup(covers[curi], scale)
     lac= ac
     cac=[]
     for a in lac:
@@ -102,11 +103,16 @@ for i in range(1,len(covers)):
         print a, ccac
         cac= cac+ccac
     ac= list(set(cac))
-print ac
-sw= IMP.display.PymolWriter("solutions.pym")
-for i,a in enumerate(ac):
-    IMP.domino.load_particle_states(subset, a, pst)
-    sw.set_frame(i)
-    for p in ds:
-        g= IMP.display.XYZRGeometry(p)
-        sw.add_geometry(g)
+    print "for scale", scale, "got", ac
+    sw= IMP.display.PymolWriter("solutions."+str(curi)+".pym")
+    for i,a in enumerate(ac):
+        IMP.domino.load_particle_states(subset, a, pst)
+        sw.set_frame(i)
+        for p in ds:
+            g= IMP.display.XYZRGeometry(p)
+            sw.add_geometry(g)
+        for c in covers[curi]:
+            g= IMP.display.PointGeometry(c)
+            g.set_color(IMP.display.Color(1,1,1))
+            g.set_name("grid")
+            sw.add_geometry(g)
