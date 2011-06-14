@@ -136,6 +136,7 @@ IMP_SWIG_RAII(IMP, SetLogTarget);
 IMP_SWIG_RAII(IMP, ScopedFailureHandler);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRestraint, GenericScopedRestraint);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveRestraint, GenericScopedRemoveRestraint);
+IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveScoreState, GenericScopedRemoveScoreState);
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedScoreState, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedRestraint);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedScoreState);
@@ -318,6 +319,7 @@ namespace IMP {
   %template(ScopedScoreState) ::IMP::GenericScopedScoreState< IMP::ScoreState>;
   %template(ScopedRestraint) ::IMP::GenericScopedRestraint< IMP::Restraint>;
   %template(ScopedRemoveRestraint) ::IMP::GenericScopedRemoveRestraint< IMP::Restraint>;
+  %template(ScopedRemoveScoreState) ::IMP::GenericScopedRemoveScoreState< IMP::ScoreState>;
 }
 
 

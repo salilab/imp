@@ -131,12 +131,61 @@ public:
 #endif
 };
 
+
+//! Removes the ScoreState until RAII object is destroyed
+/** It is templated so it can act as a general pointer
+    to the restraint.
+*/
+template <class SS>
+class GenericScopedRemoveScoreState {
+  Pointer<SS> ss_;
+  Pointer<Model> rs_;
+  void cleanup() {
+    if (rs_) {
+        IMP_LOG(VERBOSE, "Restoring restraint "
+                << ss_->get_name() << " to "
+                << rs_->get_name() << std::endl);
+        IMP_CHECK_OBJECT(ss_);
+        IMP_CHECK_OBJECT(rs_);
+        rs_->add_score_state(ss_);
+        ss_=NULL;
+        rs_=NULL;
+      }
+  }
+  void setup(ScoreState* ss, Model *rs) {
+    ss_=ss;
+    rs_=rs;
+    rs_->remove_score_state(ss);
+    IMP_LOG(VERBOSE, "Removing restraint "
+            << ss_->get_name() << " from "
+            << rs_->get_name() << std::endl);
+  }
+public:
+  IMP_RAII(GenericScopedRemoveScoreState, (SS *ss, Model *rs),{}, {
+      setup(ss, rs);
+    }, {
+      cleanup();
+    }, {
+      if (ss_) out << "(Scoped removal of " <<ss_->get_name() << ")";
+      else out << "(Unset scoped restraint)";
+    });
+  bool get_is_set() const {return ss_;}
+#ifndef SWIG
+  const SS* operator->() const {return ss_;}
+  const SS& operator*() const {return *ss_;}
+  SS* operator->() {return ss_;}
+  SS& operator*() {return *ss_;}
+#endif
+};
+
 //! Remove a score state when the object goes out of scope
 typedef GenericScopedScoreState<ScoreState> ScopedScoreState;
 //! Remove a restraint when the object goes out of scope
 typedef GenericScopedRestraint<Restraint> ScopedRestraint;
 //! Remove a restraint until the object goes out of scope
 typedef GenericScopedRemoveRestraint<Restraint> ScopedRemoveRestraint;
+//! Remove a score state until the object goes out of scope
+typedef GenericScopedRemoveScoreState<ScoreState> ScopedRemoveScoreState;
 
 
 
