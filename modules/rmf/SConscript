@@ -1,9 +1,6 @@
 Import('env')
 import scons_tools.dependency
 import scons_tools.dependency.boost
-scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options",
-                                               'boost/program_options.hpp',
-                                               extra_boost_libs=["system"])
 
 
 scons_tools.dependency.add_external_library(env, "HDF5", ["hdf5"],
@@ -21,5 +18,4 @@ scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
 env.IMPModuleBuild(version='SVN',
                    required_modules=['kernel', 'atom', 'core', 'algebra', 'container',
                                      'statistics', 'display', "display"],
-                   required_dependencies=['HDF5', "Boost.FileSystem",
-                                          "Boost.ProgramOptions"])
+                   required_dependencies=['HDF5', "Boost.FileSystem"])
