@@ -23,11 +23,11 @@ namespace {
 }
 
 void PymolWriter::do_set_frame() {
-    // write all frames to same file
-    if (lastname_!= placeholder_name) {
-      do_close();
-    }
+  // write all frames to same file
+  if (get_frame() != 0) {
+    do_close();
   }
+}
 
 void PymolWriter::do_open() {
   lastname_=placeholder_name;
@@ -48,11 +48,13 @@ void PymolWriter::do_close() {
 
 
 void PymolWriter::cleanup(std::string name, bool close){
-  if (open_type_!= NONE) {
-    get_stream() << "END,\n";
-    open_type_=NONE;
+  if (close) {
+    if (open_type_!= NONE) {
+      get_stream() << "END,\n";
+      open_type_=NONE;
+    }
+    if (lastname_ != placeholder_name) get_stream() << "]\n";
   }
-  if (close && lastname_ != placeholder_name) get_stream() << "]\n";
   lastname_=placeholder_name;
   get_stream() << "k= '" << strip_quotes(name) << "'" << std::endl;
   get_stream() << "if k in data.keys():\n"
