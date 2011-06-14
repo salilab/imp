@@ -65,7 +65,8 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 
 public:
   //! Get the individual particles from the passed SingletonContainer
-  AllPairContainer(SingletonContainer *c);
+  AllPairContainer(SingletonContainer *c,
+                   std::string name="AllPairContainer%1%");
 
   static AllPairContainer *create_untracked_container(SingletonContainer *c) {
     AllPairContainer *lsc = new AllPairContainer(c, false);
