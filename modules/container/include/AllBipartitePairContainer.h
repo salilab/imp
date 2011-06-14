@@ -64,7 +64,8 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
   }
 public:
   AllBipartitePairContainer(SingletonContainer *a,
-                                 SingletonContainer *b);
+                            SingletonContainer *b,
+                            std::string name="AllBipartitePairContainer%1%");
 
   static AllBipartitePairContainer *
     create_untracked_container(SingletonContainer *a,

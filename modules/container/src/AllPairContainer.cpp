@@ -26,7 +26,9 @@ AllPairContainer::AllPairContainer(SingletonContainer *c,
   i_=0;
 }
 
-AllPairContainer::AllPairContainer(SingletonContainer *c):
+AllPairContainer::AllPairContainer(SingletonContainer *c,
+                                   std::string name):
+  PairContainer(c->get_model(), name),
   c_(c),
   deps_(new DependenciesScoreState(this), c->get_model()){
   a_=1;

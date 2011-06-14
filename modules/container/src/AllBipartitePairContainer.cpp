@@ -28,7 +28,9 @@ AllBipartitePairContainer
 
 AllBipartitePairContainer
 ::AllBipartitePairContainer( SingletonContainer *a,
-                             SingletonContainer *b):
+                             SingletonContainer *b,
+                             std::string name):
+  PairContainer(a->get_model(), name),
   a_(a), b_(b),
   deps_(new DependenciesScoreState(this), a->get_model()){
 }
