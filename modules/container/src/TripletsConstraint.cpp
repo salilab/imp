@@ -129,7 +129,7 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
 }
 
 
-ScoreStates TripletsConstraint::get_instant_decomposition() const {
+ScoreStates TripletsConstraint::get_decomposition() const {
   ScoreStates ret(c_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new core::TripletConstraint(f_, af_, c_->get(i),

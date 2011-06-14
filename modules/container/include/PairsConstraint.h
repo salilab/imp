@@ -78,7 +78,7 @@ public:
     f_=f;
   }
 
-  ScoreStates get_instant_decomposition() const;
+  ScoreStates get_decomposition() const;
 
   IMP_CONSTRAINT(PairsConstraint);
 };
