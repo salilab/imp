@@ -69,6 +69,12 @@ class IMPEXPORT SingletonScore : public Object
   virtual ContainersTemp
     get_input_containers(Particle *p) const =0;
 
+  /** Decompose this pair score acting on the pair into a set of
+      restraints. The scoring function and derivatives should
+      be equal to the current score. The defualt implementation
+      just returns this object bound to the pair.*/
+  Restraints get_instant_decomposition(Particle* vt) const;
+
   IMP_REF_COUNTED_DESTRUCTOR(SingletonScore);
 };
 

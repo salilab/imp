@@ -9,7 +9,10 @@
 
 #include <IMP/TripletScore.h>
 #include <IMP/internal/utility.h>
-
+#include <IMP/Restraint.h>
+#include <IMP/macros.h>
+#include <IMP/TripletScore.h>
+#include <IMP/internal/container_helpers.h>
 IMP_BEGIN_NAMESPACE
 
 TripletScore::TripletScore(std::string name):
@@ -24,5 +27,78 @@ TripletScoreRestraint::TripletScoreRestraint(std::string name):
 
 TripletsScoreRestraint::TripletsScoreRestraint(std::string name):
   Restraint(name){}
+
+
+namespace {
+
+
+  class TripletRestraint :
+    public TripletScoreRestraint
+  {
+    IMP::internal::OwnerPointer<TripletScore> ss_;
+    ParticleTriplet v_;
+  public:
+    //! Create the restraint.
+    /** This function takes the function to apply to the
+        stored Triplet and the Triplet.
+    */
+    TripletRestraint(TripletScore *ss,
+                       const ParticleTriplet& vt,
+                       std::string name);
+
+    TripletScore* get_score() const {
+      return ss_;
+    }
+    ParticleTriplet get_argument() const {
+      return v_;
+    }
+
+    IMP_RESTRAINT(TripletRestraint);
+  };
+
+  TripletRestraint
+  ::TripletRestraint(TripletScore *ss,
+                       const ParticleTriplet& vt,
+                       std::string name):
+    TripletScoreRestraint(name),
+    ss_(ss),
+    v_(vt)
+  {
+  }
+
+  double TripletRestraint
+  ::unprotected_evaluate(DerivativeAccumulator *accum) const
+  {
+    IMP_OBJECT_LOG;
+    IMP_CHECK_OBJECT(ss_);
+    return ss_->evaluate(v_, accum);
+  }
+
+  ParticlesTemp TripletRestraint::get_input_particles() const
+  {
+    return IMP::internal::get_input_particles(ss_.get(), v_);
+  }
+
+  ContainersTemp TripletRestraint::get_input_containers() const
+  {
+    return IMP::internal::get_input_containers(ss_.get(), v_);
+  }
+
+  void TripletRestraint::do_show(std::ostream& out) const
+  {
+    out << "score " << ss_->get_name() << std::endl;
+    out << "data " << IMP::internal::streamable(v_) << std::endl;
+  }
+}
+
+
+Restraints
+TripletScore
+::get_instant_decomposition(const ParticleTriplet& vt) const {
+  return Restraints(1,
+                    new TripletRestraint(const_cast<TripletScore*>(this),
+                                           vt,
+                                           get_name()));
+}
 
 IMP_END_NAMESPACE
