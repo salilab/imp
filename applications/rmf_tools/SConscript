@@ -6,7 +6,20 @@ scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_o
 env= env.IMPApplication(name="rmf_tools", version="SVN",
                         authors=["Daniel Russel"],
                         brief="Various tools for handling rmf files",
-                        overview="",
+                        overview="""
+   Several helper programs are provided. They all take the name of the RMF file as
+   the first argument and an argument "-f" which is the frame to act on. Negative
+   values for the frame are treated as every nth frame. That is, "-f -2" means take
+   every other frame.
+
+   - \c rmf_display outputs an arbitrary
+   hdf5 file to pymol or chimera as appropriate (based on the file name of the
+   second argument). It supports hierarchies, restraints and geometry.
+
+   - \c rmf_show prints out the hierarchy written to the file.
+
+   - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
+   in the rmf file are atomic resolution.""",
                         license=env.IMPStandardLicense(),
                         publications=[],
                         required_modules=['rmf'],
