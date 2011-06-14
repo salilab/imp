@@ -38,6 +38,8 @@ IMPDOMINO_BEGIN_NAMESPACE
 class IMPDOMINOEXPORT OptimizeRestraints {
   boost::ptr_vector<ScopedRemoveRestraint> removed_;
   boost::ptr_vector<ScopedRestraint> added_;
+  boost::ptr_vector<ScopedScoreState> addeds_;
+  boost::ptr_vector<ScopedRemoveScoreState> removeds_;
   Pointer<RestraintSet> m_;
 
   void optimize_model(RestraintSet *m, const ParticleStatesTable *particles);
