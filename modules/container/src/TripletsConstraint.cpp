@@ -12,6 +12,7 @@
 
 #include "IMP/container/TripletsConstraint.h"
 #include "IMP/internal/container_helpers.h"
+#include <IMP/core/TripletConstraint.h>
 #include <utility>
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -123,6 +124,16 @@ ParticlesTemp TripletsConstraint::get_output_particles() const {
   } else {
     ret= IMP::internal::get_input_particles(af_.get(),
                                            c_->get_contained_particles());
+  }
+  return ret;
+}
+
+
+ScoreStates TripletsConstraint::get_instant_decomposition() const {
+  ScoreStates ret(c_->get_number());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= new core::TripletConstraint(f_, af_, c_->get(i),
+                                     get_name());
   }
   return ret;
 }
