@@ -9,6 +9,8 @@ class GenericTest(IMP.test.TestCase):
                                IMP.atom.get_mass(h1), delta=1)
         self.assertEqual(len(IMP.atom.get_leaves(h0)),
                          len(IMP.atom.get_leaves(h1)))
+        self.assertEqual(len(IMP.atom.get_internal_bonds(h0)),
+                         len(IMP.atom.get_internal_bonds(h1)))
     def _test_round_trip(self, h0, name):
         f= IMP.rmf.RootHandle(name, True)
         IMP.rmf.add_hierarchy(f, h0)
@@ -58,6 +60,23 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.PROGRESS)
         self._test_round_trip(h, self.get_tmp_file_name("test_large.rh"))
         print "done"
+
+    def test_navigation(self):
+        """Test that navigation of read hierarchies works"""
+        m= IMP.Model()
+        print "reading pdb"
+        h= IMP.atom.read_pdb(self.get_input_file_name("simple.pdb"), m,
+                             IMP.atom.NonAlternativePDBSelector())
+        IMP.set_log_level(IMP.SILENT)
+        IMP.atom.add_bonds(h)
+        name=self.get_tmp_file_name("test_large.rh")
+        f= IMP.rmf.RootHandle(name, True)
+        IMP.rmf.add_hierarchy(f, h)
+        del f
+        f= IMP.rmf.RootHandle(name, False)
+        h1= IMP.rmf.create_hierarchies(f, m)
+        res= IMP.atom.get_by_type(h1[0], IMP.atom.RESIDUE_TYPE)
+        nres= IMP.atom.get_next_residue(IMP.atom.Residue(res[0]))
 
 if __name__ == '__main__':
     unittest.main()
