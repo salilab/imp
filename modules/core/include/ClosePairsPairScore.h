@@ -37,6 +37,8 @@ public:
 
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
 
+  Restraints get_instant_decomposition(const ParticlePair &vt) const;
+
   IMP_PAIR_SCORE(KClosePairsPairScore);
 };
 
@@ -63,6 +65,8 @@ public:
                       Float max_distance);
 
   ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
+
+  Restraints get_instant_decomposition(const ParticlePair &vt) const;
 
   IMP_PAIR_SCORE(ClosePairsPairScore);
 };

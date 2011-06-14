@@ -16,6 +16,7 @@
 #include <IMP/core/internal/CoreListSingletonContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
 #include <IMP/algebra/internal/MinimalSet.h>
+#include <IMP/core/PairRestraint.h>
 #include <cmath>
 
 IMPCORE_BEGIN_NAMESPACE
@@ -39,6 +40,7 @@ KClosePairsPairScore::KClosePairsPairScore(PairScore *f,
   r_(r), f_(f),
   k_(k)
 {
+  IMP_USAGE_CHECK(k_ >0, "Scoring on 0 close pairs isn't very useful");
   last_distance_=1;
   cpf_= new RigidClosePairsFinder();
 }
@@ -123,6 +125,7 @@ get_close_pairs(const ParticlePair &p) const {
   algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
   for (unsigned int i=0; i< ppt.size(); ++i) {
     double d= get_distance(XYZR(ppt[i][0]), XYZR(ppt[i][1]));
+    std::cout << "Trying " << d << " " << ppt[i] << std::endl;
     ms.insert(d, ppt[i]);
   }
   if (ppt.size() > static_cast<unsigned int>(k_*2)) {
@@ -133,6 +136,7 @@ get_close_pairs(const ParticlePair &p) const {
   last_distance_= std::max(1.0, last_distance_);
   ParticlePairsTemp retps;
   for (unsigned int i=0; i < ms.size(); ++i) {
+    std::cout << "Got " << ms[i].second << std::endl;
     retps.push_back(ms[i].second);
   }
   IMP_INTERNAL_CHECK(retps.size()==static_cast<unsigned int>(k_),
@@ -163,11 +167,14 @@ get_close_pairs(const ParticlePair &p) const {
       for (unsigned int j=0; j< ps1.size(); ++j) {
         algebra::Sphere3D c1= XYZR(ps1[j]).get_sphere();
         double d= get_distance(c0, c1);
+        std::cout << "Trying " << d << " "
+                  <<  ParticlePair(ps0[i], ps1[j]) << std::endl;
         ms.insert(d, ParticlePair(ps0[i], ps1[j]));
       }
     }
     ParticlePairsTemp retps;
     for (unsigned int i=0; i< ms.size(); ++i) {
+      std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
     }
     return retps;
@@ -256,6 +263,28 @@ void KClosePairsPairScore::do_show(std::ostream &out) const
 {
   out << "function " << *f_;
   out << "\nrefiner " << *r_ << std::endl;
+}
+
+
+Restraints ClosePairsPairScore
+::get_instant_decomposition(const ParticlePair &pp) const {
+  ParticlePairsTemp ppt= get_close_pairs(pp);
+  Restraints ret(ppt.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= new PairRestraint(f_, ppt[i]);
+  }
+  return ret;
+}
+
+
+Restraints KClosePairsPairScore
+::get_instant_decomposition(const ParticlePair &pp) const {
+  ParticlePairsTemp ppt= get_close_pairs(pp);
+  Restraints ret(ppt.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= new PairRestraint(f_, ppt[i]);
+  }
+  return ret;
 }
 
 
