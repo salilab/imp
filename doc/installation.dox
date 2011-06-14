@@ -221,6 +221,9 @@ running `scons`.
 \note Do not install any C++ headers in `/usr/include` on your Mac as
 the compiler assumes any such headers are C headers.
 
+\note When installing HDF5 with MacPorts, be sure to install \c hdf5-18
+(version 1.8), rather than the older \c hdf5 (version 1.6.9).
+
 \subsection windows Getting prerequisites on Windows
 
 The SCons build system should work on Windows with the command line
@@ -254,10 +257,9 @@ detected automatically. Otherwise, tell scons where you installed MODELLER
 using the following argument:
 \command{scons modeller=path/to/modeller}
 
-\subsubsection NetCDF NetCDF
-\anchor NetCDF
-Binary IO (IMP::write_binary_model(), IMP::read_binary_model()) and
-related functionality requires \external{www.unidata.ucar.edu/software/netcdf/,NetCDF}.
+\subsubsection HDF5 HDF5
+\anchor HDF5
+Much IO support requires \external{www.hdf5.org, HDF5}.
 It is available as a prebuilt package on all supported platforms.
 
 \subsubsection CGAL CGAL
