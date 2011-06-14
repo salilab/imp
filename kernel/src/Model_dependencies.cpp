@@ -241,6 +241,7 @@ namespace {
 
 DependencyGraph
 get_dependency_graph(const RestraintsTemp &irs) {
+  IMP_FUNCTION_LOG;
   if (irs.empty()) return DependencyGraph();
   RestraintsTemp rs= get_restraints(irs.begin(), irs.end());
   ScoreStatesTemp ss
@@ -304,6 +305,7 @@ namespace {
 
 DependencyGraph
 get_pruned_dependency_graph(const RestraintsTemp &irs) {
+  IMP_FUNCTION_LOG;
   DependencyGraph full= get_dependency_graph(irs);
   typedef boost::graph_traits<DependencyGraph> T;
   bool changed=true;
