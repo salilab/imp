@@ -107,6 +107,7 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
   std::ostream &get_stream() {
     if (out_== TextOutput()) {
       if (file_name_.find("%1%") != std::string::npos) {
+        IMP_USAGE_CHECK(get_frame()>=0, "No frame set");
         std::ostringstream oss;
         oss << boost::format(file_name_)%get_frame();
         out_= TextOutput(oss.str());
