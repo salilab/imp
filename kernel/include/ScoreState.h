@@ -20,6 +20,10 @@
 
 IMP_BEGIN_NAMESPACE
 
+class ScoreState;
+IMP_OBJECTS(ScoreState,ScoreStates);
+
+
 //! Shared score state.
 /** ScoreStates allow code to be injected before and after the restraint
     evaluation process. Such code can be used to, for example:
@@ -87,6 +91,15 @@ public:
   virtual ParticlesTemp get_output_particles() const=0;
   /** @} */
 
+  //! Decompose this score state into constituent terms
+  /** Given the set of input particles, decompose the score state into as
+      simple parts as possible. For many restraints, the simplest
+      part is simply the restraint itself.
+   */
+  virtual ScoreStates get_decomposition() const {
+    return ScoreStates(1, const_cast<ScoreState*>(this));
+  }
+
 
 protected:
   // Update the state given the current state of the model.
@@ -113,7 +126,6 @@ protected:
 };
 
 class ScoreState;
-IMP_OBJECTS(ScoreState,ScoreStates);
 
 
 IMP_END_NAMESPACE
