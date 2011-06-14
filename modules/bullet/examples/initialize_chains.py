@@ -70,9 +70,9 @@ def create():
 def initialize_model(m, all, chains):
     opt= IMP.bullet.ResolveCollisionsOptimizer(m)
     opt.set_log_level(IMP.VERBOSE)
-    w=IMP.display.PymolWriter()
+    w=IMP.display.PymolWriter("frames.pym")
     w.set_log_level(IMP.SILENT)
-    log= IMP.display.WriteOptimizerState(w, "frame.%1%.pym")
+    log= IMP.display.WriteOptimizerState(w)
     add_geometry(log, chains)
     opt.add_optimizer_state(log)
     opt.optimize(10)
