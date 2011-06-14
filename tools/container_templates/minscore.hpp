@@ -28,6 +28,8 @@ public:
                        unsigned int n=1,
                        std::string name="CLASSNAMEScore %1%");
   IMP_HEADERNAME_SCORE(MINORMAXCLASSNAMEScore);
+
+  Restraints get_instant_decomposition(ARGUMENTTYPE vt) const;
 };
 
 IMP_OBJECTS(MINORMAXCLASSNAMEScore,MINORMAXCLASSNAMEScores);

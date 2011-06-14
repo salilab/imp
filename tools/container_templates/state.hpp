@@ -78,6 +78,8 @@ public:
     f_=f;
   }
 
+  ScoreStates get_instant_decomposition() const;
+
   IMP_CONSTRAINT(CLASSNAMEsConstraint);
 };
 
