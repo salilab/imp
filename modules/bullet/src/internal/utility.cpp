@@ -70,22 +70,31 @@ btRigidBody *create_rigid_body(btCollisionShape *shape,
   // create rigid body
   btDefaultMotionState* fallMotionState
     = new btDefaultMotionState(tr(center));
-  memory.motion_states.push_back(fallMotionState);
+    memory.motion_states.push_back(fallMotionState);
   btVector3 fallInertia(0,0,0);
-  //if (mass > 0) {
-  //shape->calculateLocalInertia(mass,fallInertia);
-  //} else if (mass < 0) {
-  fallInertia= btVector3(.01, .01, .01);
-  //}
+  //if (mass==0) mass =1;
+  IMP_USAGE_CHECK(mass>=0, "Negative mass provided");
+  if (mass >0) {
+    shape->calculateLocalInertia(mass,fallInertia);
+  }
+  std::cout << "Inertia is " << tr(fallInertia) << std::endl;
+  if (fallInertia[0]==0) {
+    fallInertia= btVector3(1,1,1);
+  }
+  if (mass > 0) {
+  } else  {
+    //fallInertia= btVector3(.01, .01, .01);
+  }
   btRigidBody::btRigidBodyConstructionInfo
-    fallRigidBodyCI((mass<0? .0001:mass),fallMotionState,shape,fallInertia);
+    fallRigidBodyCI(mass,fallMotionState,shape,fallInertia);
+
   btRigidBody* fallRigidBody= new btRigidBody(fallRigidBodyCI);
-  fallRigidBody->setDamping(.9, .9);
-  {
+  fallRigidBody->setDamping(1,1);
+  /*{
     btTransform trans;
     fallRigidBody->getMotionState()->getWorldTransform(trans);
     //std::cout << center << " vs " << internal::tr(trans) << std::endl;
-  }
+    }*/
   world->addRigidBody(fallRigidBody);
   memory.rigid_bodies.push_back(fallRigidBody);
   return fallRigidBody;
