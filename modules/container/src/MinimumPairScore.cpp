@@ -8,6 +8,7 @@
  */
 
 #include <IMP/container/MinimumPairScore.h>
+#include <IMP/core/PairRestraint.h>
 #include "IMP/algebra/internal/MinimalSet.h"
 
 IMPCONTAINER_BEGIN_NAMESPACE
@@ -81,6 +82,19 @@ ContainersTemp MinimumPairScore
   for (unsigned int i=0; i< scores_.size(); ++i) {
     ContainersTemp c= scores_[i]->get_input_containers(p);
     ret.insert(ret.end(), c.begin(), c.end());
+  }
+  return ret;
+}
+
+
+Restraints MinimumPairScore
+::get_instant_decomposition(const ParticlePair& vt) const {
+  Restraints ret;
+  MinimumPairScoreMS bestn
+    = find_minimal_set_MinimumPairScore(scores_.begin(),
+                                              scores_.end(), vt, n_);
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::PairRestraint(bestn[i].second, vt));
   }
   return ret;
 }

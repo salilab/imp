@@ -12,7 +12,7 @@
 #include "IMP/container/MinimumSingletonRestraint.h"
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/core/SingletonRestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +59,22 @@ double MinimumSingletonRestraint
 
   return score;
 }
+
+Restraints MinimumSingletonRestraint
+::get_instant_decomposition() const {
+  SingletonMinimumMS bestn
+    = find_minimal_set_SingletonMinimum(c_->particles_begin(),
+                                         c_->particles_end(),
+                                         f_.get(), n_);
+
+  Restraints ret;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::SingletonRestraint(f_, bestn[i].second));
+  }
+
+  return ret;
+}
+
 
 void MinimumSingletonRestraint::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;

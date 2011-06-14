@@ -43,6 +43,8 @@ public:
 
   //! Set the number of lowest scores to use.
   void set_n(unsigned int n) { n_=n;}
+
+  Restraints get_instant_decomposition() const;
 };
 
 IMP_OBJECTS(MinimumQuadRestraint,MinimumQuadRestraints);

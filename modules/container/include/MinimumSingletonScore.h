@@ -28,6 +28,8 @@ public:
                        unsigned int n=1,
                        std::string name="SingletonScore %1%");
   IMP_SINGLETON_SCORE(MinimumSingletonScore);
+
+  Restraints get_instant_decomposition(Particle* vt) const;
 };
 
 IMP_OBJECTS(MinimumSingletonScore,MinimumSingletonScores);
