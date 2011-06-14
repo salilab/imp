@@ -37,6 +37,7 @@ IMPRMF_BEGIN_NAMESPACE
   IndexKey ie= get_or_add_key<IndexTraits>(f, Sequence,                 \
                                            "residue index end");        \
   IndexKey e= get_or_add_key<IndexTraits>(f, Physics, "element");       \
+  IndexKey ci= get_or_add_key<IndexTraits>(f, Physics, "chain  id");    \
   StringKey tk= get_or_add_key<StringTraits>(f, Sequence, "type");      \
   FloatKey cr= get_or_add_key<FloatTraits>(f, Shape, "rgb color red",   \
                                            false);                      \
@@ -50,12 +51,12 @@ IMPRMF_BEGIN_NAMESPACE
 
 #define IMP_HDF5_ACCEPT_MOLECULE_KEYS\
   FloatKey x, FloatKey y, FloatKey z, FloatKey r,                       \
-    FloatKey m, IndexKey e, IndexKey ib, IndexKey ie,                   \
+    FloatKey m, IndexKey e, IndexKey ci, IndexKey ib, IndexKey ie,      \
     StringKey rt, FloatKey cr, FloatKey cg, FloatKey cb, StringKey tk,\
     FloatKey dk, IntKey nk
 
 #define IMP_HDF5_PASS_MOLECULE_KEYS\
-  x, y, z, r, m, e, ib, ie, rt, cr, cg, cb, tk, dk, nk
+  x, y, z, r, m, e, ci, ib, ie, rt, cr, cg, cb, tk, dk, nk
 
 namespace {
   std::string get_name(atom::Hierarchy h) {
@@ -120,6 +121,10 @@ namespace {
     if (core::Typed::particle_is_instance(h)) {
       core::Typed d(h);
       set_one(n, tk, d.get_type().get_string(), frame);
+    }
+    if (atom::Chain::particle_is_instance(h)) {
+      atom::Chain d(h);
+      set_one(n, ci, d.get_id(), frame);
     }
     if (atom::Diffusion::particle_is_instance(h)) {
       atom::Diffusion d(h);
@@ -188,6 +193,10 @@ namespace {
       float g= ncur.get_value(cg);
       float b= ncur.get_value(cb);
       display::Colored::setup_particle(cur, display::Color(r,g,b));
+    }
+    if (ncur.get_has_value(ci)) {
+      int cci= ncur.get_value(ci);
+      atom::Chain::setup_particle(cur, cci);
     }
     if (ncur.get_has_value(tk)) {
       std::string t= ncur.get_value(tk);
