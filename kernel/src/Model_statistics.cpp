@@ -61,9 +61,10 @@ void Model::show_all_statistics(std::ostream &out) const {
 }
 
 void Model::show_restraint_score_statistics(std::ostream &out) const {
-  boost::format format("%1%: [%15t%2% %30t%3%] %45t%4% %60t%5%\n");
+  boost::format format("%1%: [%15t%2% %30t%3%] %45t%4% %60t%5% %70t%6%\n");
   out << format
-    % "Restraints" % "min_value" % "max_value" % "average_value" % "last_value";
+    % "Restraints" % "min_value" % "max_value" % "average_value"
+    %"limit" % "last_value";
   RestraintsTemp r= get_restraints(restraints_begin(), restraints_end());
   for (RestraintsTemp::const_iterator it= r.begin();
        it != r.end(); ++it) {
@@ -72,6 +73,7 @@ void Model::show_restraint_score_statistics(std::ostream &out) const {
         % stats_data_[*it].min_value_
         % stats_data_[*it].max_value_
         % (stats_data_[*it].total_value_/ stats_data_[*it].calls_)
+        % (*it)->get_maximum_score()
         % stats_data_[*it].last_value_;
     } else {
       out << "  " << (*it)->get_name() << ":\n";
