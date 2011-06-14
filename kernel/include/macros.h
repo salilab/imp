@@ -1512,7 +1512,7 @@ protected:                                      \
 #define IMP_PAIR_SCORE(Name)                                            \
   bool get_is_changed(const ParticlePair &pp) const;                    \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
-  ContainersTemp get_input_containers(Particle *p) const;     \
+  ContainersTemp get_input_containers(Particle *p) const;               \
   IMP_PAIR_SCORE_BASE(Name)
 
 //! Declare the functions needed for a SingletonScore
@@ -1532,7 +1532,7 @@ protected:                                      \
     ParticlesTemp r(1, p);                                              \
     return r;                                                           \
   }                                                                     \
-  ContainersTemp get_input_containers(Particle *) const {    \
+  ContainersTemp get_input_containers(Particle *) const {               \
     return ContainersTemp();                                            \
   }                                                                     \
   IMP_PAIR_SCORE_BASE(Name)
