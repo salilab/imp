@@ -17,7 +17,7 @@ class TrivialParticleStates(IMP.domino.ParticleStates):
 
 class DOMINOTests(IMP.test.TestCase):
 
-    def test_global_min1(self):
+    def _test_basic(self, nm):
         """Testing default subset states"""
         m= IMP.Model()
         ps=[]
@@ -27,7 +27,7 @@ class DOMINOTests(IMP.test.TestCase):
             ps.append(IMP.Particle(m))
         pst= IMP.domino.ParticleStatesTable()
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
+        dsst= nm(pst, [pft])
         for p in ps:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         lsc= IMP.domino.Subset(ps)
@@ -42,7 +42,7 @@ class DOMINOTests(IMP.test.TestCase):
             self.assertNotIn(state, all_states)
             all_states.append(state)
 
-    def test_global_min2(self):
+    def _test_equivalencies(self, nm):
         """Testing default subset states with equivalencies"""
         m= IMP.Model()
         ps=[]
@@ -57,7 +57,7 @@ class DOMINOTests(IMP.test.TestCase):
         for p in ps[2:]:
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable(pst)
-        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
+        dsst= nm(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
@@ -72,7 +72,7 @@ class DOMINOTests(IMP.test.TestCase):
             self.assertNotIn(state, all_states)
             all_states.append(state)
 
-    def test_global_min3(self):
+    def _test_explicit(self, nm):
         """Testing default subset states with explicit equivalencies"""
         m= IMP.Model()
         ps=[]
@@ -88,7 +88,7 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, TrivialParticleStates(ns))
         pft= IMP.domino.ExclusionSubsetFilterTable()
         pft.add_pair((ps[0], ps[1]))
-        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [pft])
+        dsst= nm(pst, [pft])
         lsc= IMP.domino.Subset(ps)
         IMP.set_log_level(IMP.VERBOSE)
         pss= IMP.domino.PackedAssignmentContainer()
@@ -103,5 +103,20 @@ class DOMINOTests(IMP.test.TestCase):
             self.assertNotIn(state, all_states)
             all_states.append(state)
 
+    def test_bandb(self):
+        """Test branch and bound subset states"""
+        self._test_basic(IMP.domino.BranchAndBoundAssignmentsTable)
+        self._test_equivalencies(IMP.domino.BranchAndBoundAssignmentsTable)
+        self._test_explicit(IMP.domino.BranchAndBoundAssignmentsTable)
+    def test_simple(self):
+        """Test simple subset states"""
+        self._test_basic(IMP.domino.SimpleAssignmentsTable)
+        self._test_equivalencies(IMP.domino.SimpleAssignmentsTable)
+        self._test_explicit(IMP.domino.SimpleAssignmentsTable)
+    def test_recursive(self):
+        """Test recursive subset states"""
+        self._test_basic(IMP.domino.RecursiveAssignmentsTable)
+        self._test_equivalencies(IMP.domino.RecursiveAssignmentsTable)
+        self._test_explicit(IMP.domino.RecursiveAssignmentsTable)
 if __name__ == '__main__':
     IMP.test.main()

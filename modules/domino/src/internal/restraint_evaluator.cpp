@@ -142,6 +142,7 @@ void ModelData::initialize() {
     double max= rdata_[i].get_restraint()->get_maximum_score();
     IMP_LOG(TERSE, "Restraint " << rdata_[i].get_restraint()->get_name()
             << " has max of " << max << std::endl);
+    IMP_LOG(TERSE, " And particles " << dependencies_[i] << std::endl);
     rdata_[i].set_max(max);
   }
   initialized_=true;

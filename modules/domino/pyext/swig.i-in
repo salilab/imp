@@ -29,6 +29,8 @@ IMP_SWIG_GRAPH(IMP::domino, SubsetGraph, SubsetGraph, IMP::domino::Subset );
 IMP_SWIG_GRAPH(IMP::domino, MergeTree, MergeTree, IMP::domino::Subset );
 IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundSampler, BranchAndBoundSamplers);
 IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundAssignmentsTable, BranchAndBoundAssignmentsTables);
+IMP_SWIG_OBJECT(IMP::domino, RecursiveAssignmentsTable, RecursiveAssignmentsTables);
+IMP_SWIG_OBJECT(IMP::domino, SimpleAssignmentsTable, SimpleAssignmentsTables);
 IMP_SWIG_OBJECT(IMP::domino, CompoundStates, CompoundStatesList);
 IMP_SWIG_OBJECT(IMP::domino, DisjointSetsSubsetFilterTable, DisjointSetsSubsetFilterTables);
 IMP_SWIG_OBJECT(IMP::domino, DominoSampler, DominoSamplers);

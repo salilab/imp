@@ -44,6 +44,44 @@ class IMPDOMINOEXPORT AssignmentsTable: public Object {
 IMP_OBJECTS(AssignmentsTable, AssignmentsTables);
 
 
+/** The produced states are filtered using the provided
+    SubsetFilterTable objects. The assignments are enumerated
+    and filtered in a straight forward manner.
+*/
+class IMPDOMINOEXPORT SimpleAssignmentsTable:
+  public AssignmentsTable {
+  Pointer<ParticleStatesTable> pst_;
+  SubsetFilterTables sft_;
+  unsigned int max_;
+ public:
+  SimpleAssignmentsTable(ParticleStatesTable* pst,
+                         const SubsetFilterTables &sft
+                         = SubsetFilterTables(),
+                         unsigned int max
+                         = std::numeric_limits<unsigned int>::max());
+  IMP_ASSIGNMENTS_TABLE(SimpleAssignmentsTable);
+};
+
+
+/** The produced states are filtered using the provided
+    SubsetFilterTable objects. The assignments are enumerated
+    and filtered by recursively dividing the subset in half.
+*/
+class IMPDOMINOEXPORT RecursiveAssignmentsTable:
+  public AssignmentsTable {
+  Pointer<ParticleStatesTable> pst_;
+  SubsetFilterTables sft_;
+  unsigned int max_;
+ public:
+  RecursiveAssignmentsTable(ParticleStatesTable* pst,
+                         const SubsetFilterTables &sft
+                         = SubsetFilterTables(),
+                         unsigned int max
+                         = std::numeric_limits<unsigned int>::max());
+  IMP_ASSIGNMENTS_TABLE(RecursiveAssignmentsTable);
+};
+
+
 /** Enumerate states based on provided ParticleStates
     objects.
 
@@ -62,6 +100,9 @@ public:
   Pointer<ParticleStatesTable> pst_;
   SubsetFilterTables sft_;
   unsigned int max_;
+#if IMP_BUILD < IMP_FAST
+  IMP::internal::Map<Particle*, ParticlesTemp> rls_;
+#endif
 #endif
  public:
   BranchAndBoundAssignmentsTable(ParticleStatesTable* pst,
