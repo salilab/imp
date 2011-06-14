@@ -105,6 +105,20 @@ Restraints CoreQuadsRestraint::get_decomposition() const {
   return ret;
 }
 
+Restraints CoreQuadsRestraint::get_instant_decomposition() const {
+  Restraints ret;
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    Restraints cur=ss_->get_instant_decomposition(pc_->get(i));
+    ret.insert(ret.end(), cur.begin(), cur.end());
+  }
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    std::ostringstream oss;
+    oss << get_name() << " " << i;
+    ret[i]->set_name(oss.str());
+  }
+  return ret;
+}
+
 void CoreQuadsRestraint::do_show(std::ostream& out) const
 {
   out << "score " << ss_->get_name() << std::endl;

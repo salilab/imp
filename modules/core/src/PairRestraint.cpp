@@ -64,6 +64,11 @@ ContainersTemp PairRestraint::get_input_containers() const
   return IMP::internal::get_input_containers(ss_.get(), v_);
 }
 
+
+Restraints PairRestraint::get_instant_decomposition() const {
+  return ss_->get_instant_decomposition(v_);
+}
+
 void PairRestraint::do_show(std::ostream& out) const
 {
   out << "score " << ss_->get_name() << std::endl;
