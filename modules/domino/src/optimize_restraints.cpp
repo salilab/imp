@@ -269,6 +269,40 @@ ParticlesTemp pt= c_->get_particles();
       }
     }
   }
+  void optimize_score_state(ScoreState *ss,
+                            const DependencyGraph &dg,
+                            const IMP::internal::Map<Object*,
+                                           unsigned int> &index,
+                            const ParticleStatesTable *pst,
+                  boost::ptr_vector<ScopedRemoveScoreState> &removed,
+                  boost::ptr_vector<ScopedScoreState> &added) {
+    ContainersTemp ic= ss->get_input_containers();
+    ParticlesTemp optimized= pst->get_particles();
+    std::sort(optimized.begin(), optimized.end());
+    for (unsigned int i=0; i< ic.size(); ++i) {
+      if (!std::binary_search(optimized.begin(), optimized.end(), ic[i])) {
+        int start=index.find(ic[i])->second;
+        if (IMP::internal::get_has_ancestor(dg, start, optimized)) {
+          IMP_LOG(TERSE, "Container " << ic[i]->get_name()
+                  << " has an optimized anscestor" << std::endl);
+          return;
+        }
+      }
+    }
+    ScoreStates sss= ss->get_decomposition();
+    if (sss.size() >1) {
+      Model *m= ss->get_model();
+      IMP_LOG(TERSE, "Decomposing state " << ss->get_name()
+              << " into " << sss.size() << " states" << std::endl);
+      removed.push_back(new ScopedRemoveScoreState(ss, m));
+      for (unsigned int i=0; i< sss.size(); ++i) {
+        added.push_back(new ScopedScoreState(sss[i], m));
+      }
+    } else {
+      IMP_LOG(TERSE, "State " << ss->get_name()
+              << " cannot be decomposed" << std::endl);
+    }
+  }
 }
 
 
@@ -277,19 +311,41 @@ ParticlesTemp pt= c_->get_particles();
 void OptimizeRestraints::optimize_model(RestraintSet *m,
                                         const ParticleStatesTable *pst) {
   IMP_FUNCTION_LOG;
-  IMP::internal::Map<Object*, unsigned int> index;
   //std::cout << "new gra[j is \n";
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
-  const DependencyGraph dg
-    =get_dependency_graph(get_restraints(m));
-  DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
-  unsigned int nv=boost::num_vertices(dg);
-  for (unsigned int i=0; i< nv; ++i) {
-    index[vm[i]]= i;
+  {
+    const DependencyGraph dg
+      =get_dependency_graph(get_restraints(m));
+    DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
+    IMP::internal::Map<Object*, unsigned int> index;
+    unsigned int nv=boost::num_vertices(dg);
+    for (unsigned int i=0; i< nv; ++i) {
+      index[vm[i]]= i;
+    }
+    // optimize score states
+    ScoreStates ss(m->get_model()->score_states_begin(),
+                   m->get_model()->score_states_end());
+    for (unsigned int i=0; i< ss.size(); ++i) {
+      optimize_score_state(ss[i], dg, index, pst,
+                           removeds_, addeds_);
+    }
   }
-  optimize_restraint_parent(m,
-                            dg, index,
-                            pst, removed_,  added_);
+    // recompute graph
+
+  {
+    const DependencyGraph dg
+      =get_dependency_graph(get_restraints(m));
+    IMP::internal::Map<Object*, unsigned int> index;
+    // now do restraints
+    DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
+    unsigned int nv=boost::num_vertices(dg);
+    for (unsigned int i=0; i< nv; ++i) {
+      index[vm[i]]= i;
+    }
+    optimize_restraint_parent(m,
+                              dg, index,
+                              pst, removed_,  added_);
+  }
 }
 
 
