@@ -9,7 +9,10 @@
 
 #include <IMP/QuadScore.h>
 #include <IMP/internal/utility.h>
-
+#include <IMP/Restraint.h>
+#include <IMP/macros.h>
+#include <IMP/QuadScore.h>
+#include <IMP/internal/container_helpers.h>
 IMP_BEGIN_NAMESPACE
 
 QuadScore::QuadScore(std::string name):
@@ -24,5 +27,78 @@ QuadScoreRestraint::QuadScoreRestraint(std::string name):
 
 QuadsScoreRestraint::QuadsScoreRestraint(std::string name):
   Restraint(name){}
+
+
+namespace {
+
+
+  class QuadRestraint :
+    public QuadScoreRestraint
+  {
+    IMP::internal::OwnerPointer<QuadScore> ss_;
+    ParticleQuad v_;
+  public:
+    //! Create the restraint.
+    /** This function takes the function to apply to the
+        stored Quad and the Quad.
+    */
+    QuadRestraint(QuadScore *ss,
+                       const ParticleQuad& vt,
+                       std::string name);
+
+    QuadScore* get_score() const {
+      return ss_;
+    }
+    ParticleQuad get_argument() const {
+      return v_;
+    }
+
+    IMP_RESTRAINT(QuadRestraint);
+  };
+
+  QuadRestraint
+  ::QuadRestraint(QuadScore *ss,
+                       const ParticleQuad& vt,
+                       std::string name):
+    QuadScoreRestraint(name),
+    ss_(ss),
+    v_(vt)
+  {
+  }
+
+  double QuadRestraint
+  ::unprotected_evaluate(DerivativeAccumulator *accum) const
+  {
+    IMP_OBJECT_LOG;
+    IMP_CHECK_OBJECT(ss_);
+    return ss_->evaluate(v_, accum);
+  }
+
+  ParticlesTemp QuadRestraint::get_input_particles() const
+  {
+    return IMP::internal::get_input_particles(ss_.get(), v_);
+  }
+
+  ContainersTemp QuadRestraint::get_input_containers() const
+  {
+    return IMP::internal::get_input_containers(ss_.get(), v_);
+  }
+
+  void QuadRestraint::do_show(std::ostream& out) const
+  {
+    out << "score " << ss_->get_name() << std::endl;
+    out << "data " << IMP::internal::streamable(v_) << std::endl;
+  }
+}
+
+
+Restraints
+QuadScore
+::get_instant_decomposition(const ParticleQuad& vt) const {
+  return Restraints(1,
+                    new QuadRestraint(const_cast<QuadScore*>(this),
+                                           vt,
+                                           get_name()));
+}
 
 IMP_END_NAMESPACE
