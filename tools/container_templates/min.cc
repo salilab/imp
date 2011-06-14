@@ -12,7 +12,7 @@
 #include "IMP/container/MINORMAXCLASSNAMERestraint.h"
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/core/CLASSNAMERestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +59,22 @@ double MINORMAXCLASSNAMERestraint
 
   return score;
 }
+
+Restraints MINORMAXCLASSNAMERestraint
+::get_instant_decomposition() const {
+  CLASSNAMEMINORMAXMS bestn
+    = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
+                                         c_->FUNCTIONNAMEs_end(),
+                                         f_.get(), n_);
+
+  Restraints ret;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::CLASSNAMERestraint(f_, bestn[i].second));
+  }
+
+  return ret;
+}
+
 
 void MINORMAXCLASSNAMERestraint::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;
