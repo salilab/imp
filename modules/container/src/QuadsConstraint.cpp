@@ -129,7 +129,7 @@ ParticlesTemp QuadsConstraint::get_output_particles() const {
 }
 
 
-ScoreStates QuadsConstraint::get_instant_decomposition() const {
+ScoreStates QuadsConstraint::get_decomposition() const {
   ScoreStates ret(c_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new core::QuadConstraint(f_, af_, c_->get(i),

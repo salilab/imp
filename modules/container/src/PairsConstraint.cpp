@@ -129,7 +129,7 @@ ParticlesTemp PairsConstraint::get_output_particles() const {
 }
 
 
-ScoreStates PairsConstraint::get_instant_decomposition() const {
+ScoreStates PairsConstraint::get_decomposition() const {
   ScoreStates ret(c_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new core::PairConstraint(f_, af_, c_->get(i),
