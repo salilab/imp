@@ -81,7 +81,7 @@ namespace {
     btRigidBody *fallRigidBody
       = internal::create_rigid_body(memory.empty_shape.get(),
                                     algebra::Transformation3D(center),
-                                    rb? -1: 0,
+                                    0,
                                     world,memory);
     if (rb) {
       btTransform trans= rb->getCenterOfMassTransform().inverse();
@@ -304,11 +304,27 @@ namespace {
     btBvhTriangleMeshShape*shape
       =new btBvhTriangleMeshShape(&memory.meshes.back(),
                                   true);
+    memory.shapes.push_back(shape);
     internal::create_rigid_body(shape,
                algebra::Transformation3D(algebra::Vector3D(0,0,0)),
                                 0,
                                 dynamicsWorld, memory);
   }
+
+
+  void handle_box(algebra::Vector3D bb,
+                  algebra::Transformation3D trr,
+                  btDiscreteDynamicsWorld* dynamicsWorld,
+                  internal::Memory &memory) {
+    btBoxShape*shape
+      =new btBoxShape(internal::tr(.5*bb));
+    memory.shapes.push_back(shape);
+    internal::create_rigid_body(shape,
+                                trr,
+                                0,
+                                dynamicsWorld, memory);
+  }
+
 
   void test_cast() {
     IMP_NEW(Model, m, ());
@@ -356,6 +372,12 @@ void ResolveCollisionsOptimizer
                                            sg->get_faces()));
 }
 
+
+void ResolveCollisionsOptimizer
+::add_obstacle(algebra::Vector3D bb,
+               algebra::Transformation3D tr) {
+  boxes_.push_back(std::make_pair(bb, tr));
+}
 
 
 // not anon due to bind issues
@@ -513,6 +535,11 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
                       dynamicsWorld.get(),
                       memory);
     }
+    for (unsigned int i=0; i< boxes_.size(); ++i) {
+      handle_box(boxes_[i].first, boxes_[i].second,
+                 dynamicsWorld.get(),
+                 memory);
+    }
     IMP_IF_LOG(TERSE) {
       ScoreStatesTemp sst
         = get_required_score_states(RestraintsTemp(rs.begin(), rs.end()));
@@ -542,6 +569,10 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
     std::vector<double> weights;
     boost::tie(utrestraints, weights)
       = get_restraints_and_weights(rs.begin(), rs.end());
+    if (debug_writer_ && (0)%debug_period_==0) {
+        debug_writer_->set_frame(debug_writer_->get_frame()+1);
+        dynamicsWorld->debugDrawWorld();
+      }
     for (unsigned int i=0; i< iter; ++i) {
       if (get_model()->get_number_of_restraints() > 0
           || get_number_of_optimizer_states() > 0) {

@@ -43,6 +43,8 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
   double damp_;
   IMP::internal::OwnerPointer<display::Writer> debug_writer_;
   int debug_period_;
+  std::vector<std::pair<algebra::Vector3D, algebra::Transformation3D> >
+    boxes_;
 public:
   ResolveCollisionsOptimizer(Model *m);
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
@@ -51,7 +53,9 @@ public:
   }
 
   void add_obstacle(display::SurfaceMeshGeometry *sg);
-
+  //! Add a box with the given side widths
+  void add_obstacle(algebra::Vector3D bb,
+                    algebra::Transformation3D tr);
   void set_local_stiffness(double tf) {
     local_= tf;
   }
