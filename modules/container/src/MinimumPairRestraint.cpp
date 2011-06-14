@@ -12,7 +12,7 @@
 #include "IMP/container/MinimumPairRestraint.h"
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/core/PairRestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +59,22 @@ double MinimumPairRestraint
 
   return score;
 }
+
+Restraints MinimumPairRestraint
+::get_instant_decomposition() const {
+  PairMinimumMS bestn
+    = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
+                                         c_->particle_pairs_end(),
+                                         f_.get(), n_);
+
+  Restraints ret;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::PairRestraint(f_, bestn[i].second));
+  }
+
+  return ret;
+}
+
 
 void MinimumPairRestraint::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;

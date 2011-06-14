@@ -12,7 +12,7 @@
 #include "IMP/container/MinimumTripletRestraint.h"
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/core/TripletRestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +59,22 @@ double MinimumTripletRestraint
 
   return score;
 }
+
+Restraints MinimumTripletRestraint
+::get_instant_decomposition() const {
+  TripletMinimumMS bestn
+    = find_minimal_set_TripletMinimum(c_->particle_triplets_begin(),
+                                         c_->particle_triplets_end(),
+                                         f_.get(), n_);
+
+  Restraints ret;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::TripletRestraint(f_, bestn[i].second));
+  }
+
+  return ret;
+}
+
 
 void MinimumTripletRestraint::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;

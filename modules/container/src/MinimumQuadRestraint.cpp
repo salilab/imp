@@ -12,7 +12,7 @@
 #include "IMP/container/MinimumQuadRestraint.h"
 #include "IMP/algebra/internal/MinimalSet.h"
 #include <IMP/internal/container_helpers.h>
-
+#include <IMP/core/QuadRestraint.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -59,6 +59,22 @@ double MinimumQuadRestraint
 
   return score;
 }
+
+Restraints MinimumQuadRestraint
+::get_instant_decomposition() const {
+  QuadMinimumMS bestn
+    = find_minimal_set_QuadMinimum(c_->particle_quads_begin(),
+                                         c_->particle_quads_end(),
+                                         f_.get(), n_);
+
+  Restraints ret;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    ret.push_back(new core::QuadRestraint(f_, bestn[i].second));
+  }
+
+  return ret;
+}
+
 
 void MinimumQuadRestraint::do_show(std::ostream &out) const {
   out << "container " << *c_ << std::endl;
