@@ -180,6 +180,12 @@ public:
   void set_maximum_score(double s);
   /** @} */
 
+  /** \brief For python, cast a generic Object to this type. Throw a
+      ValueException of object is not the right type.*/
+  static Restraint* get_from(Object *o) {
+    return object_cast<Restraint>(o);
+  }
+
   IMP_REF_COUNTED_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
