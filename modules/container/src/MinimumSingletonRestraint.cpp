@@ -36,6 +36,8 @@ namespace {
     SingletonMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
+      IMP_LOG(VERBOSE, "Found " << score << " for "
+              << *it << std::endl);
       bestn.insert(score, *it);
     }
     return bestn;
@@ -44,6 +46,7 @@ namespace {
 
 double MinimumSingletonRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
   SingletonMinimumMS bestn
     = find_minimal_set_SingletonMinimum(c_->particles_begin(),
                                          c_->particles_end(),
@@ -56,7 +59,7 @@ double MinimumSingletonRestraint
     }
     score+= bestn[i].first;
   }
-
+  IMP_LOG(VERBOSE, "Total score is " << score << std::endl);
   return score;
 }
 
