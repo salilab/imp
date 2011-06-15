@@ -1,17 +1,22 @@
 import IMP
 import IMP.test
 import StringIO
+import random
 
 class DummyRestraint(IMP.Restraint):
     """Dummy do-nothing restraint"""
+    def __init__(self, ps=[], cs=[]):
+        IMP.Restraint.__init__(self)
+        self.ps=ps
+        self.cs=cs
     def unprotected_evaluate(self, accum):
         return 0.
     def get_version_info(self):
         return IMP.get_module_version_info()
     def get_input_particles(self):
-        return []
+        return self.ps
     def get_input_containers(self):
-        return IMP.ContainersTemp()
+        return self.cs
 
 
 class CustomError(Exception):
@@ -32,16 +37,23 @@ class FailingRestraint(IMP.Restraint):
 
 class DummyScoreState(IMP.ScoreState):
     """Dummy do-nothing score state"""
+    def __init__(self, ips=[], ics=[], ops=[], ocs=[]):
+        IMP.ScoreState.__init__(self)
+        self.ips=ips
+        self.ics=ics
+        self.ops=ops
+        self.ocs=ocs
     def update(self):
         pass
     def get_input_particles(self):
-        return []
+        return self.ips
     def get_output_particles(self):
-        return []
-    def get_input_objects(self):
-        return IMP.ObjectsTemp()
-    def get_output_objects(self):
-        return IMP.ObjectsTemp()
+        #print [type(p) for p in self.ops]
+        return self.ops
+    def get_input_containers(self):
+        return self.ics
+    def get_output_containers(self):
+        return self.ocs
 
 
 class ClassScoreState(IMP.ScoreState):
@@ -178,5 +190,45 @@ class ModelTests(IMP.test.TestCase):
         for s in m.get_particles():
             s.show()
 
+    def _select(self, ps, n):
+        ret=[]
+        for i in range(0,n):
+            ret.append(random.choice(ps))
+        return ret
+    def test_dependencies(self):
+        """Check dependencies with restraints and score states"""
+        m= IMP.Model()
+        ps=[IMP.Particle(m) for i in range(0,20)]
+        cs=[DummyScoreState(ips=self._select(ps[:5], 2),
+                            ops= self._select(ps[5:], 2))
+            for i in range(5)]
+        for c in cs:
+            m.add_score_state(c)
+        rs=[DummyRestraint(ps=self._select(ps, 4))
+            for i in range(5)]
+        for r in rs:
+            m.add_restraint(r)
+        dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
+        IMP.show_graphviz(dg)
+        for r in rs:
+            print "now restraint",r
+            rcsl=IMP.get_required_score_states([r])
+            rcs= set(rcsl)
+            rdg= IMP.get_dependency_graph([r])
+            IMP.show_graphviz(rdg)
+            ccsl=[]
+            for n in rdg.get_vertices():
+                nn= rdg.get_vertex_name(n)
+                print nn.get_name()
+                try:
+                    IMP.ScoreState.get_from(nn)
+                except:
+                    print "not", nn.get_name()
+                    pass
+                else:
+                    print "found", nn.get_name()
+                    ccsl.append(nn)
+            ccs= set(ccsl)
+            self.assertEqual(ccs, rcs)
 if __name__ == '__main__':
     IMP.test.main()
