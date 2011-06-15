@@ -29,6 +29,7 @@
  "col box 100000 0.01":0.005,
  "col grid 10000 0.1":0.00001,
  "col grid 100000 0.01":0.005,
+ "domino small":15,
  "rigid quadratic 100":.1,
  "rigid quadratic 1000":.1,
  "rigid hierarchy 100":.1,
