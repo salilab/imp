@@ -136,7 +136,7 @@ class IMPDOMINOEXPORT ListAssignmentsTable: public AssignmentsTable {
     enumeration. This function is there in order to expose internal
     functionality for easier testing and should not be depended upon.
 */
-IMPDOMINOEXPORT Ints get_order(const Subset &s,
+IMPDOMINOEXPORT ParticlesTemp get_order(const Subset &s,
                                const SubsetFilterTables &sft);
 
 IMPDOMINO_END_NAMESPACE

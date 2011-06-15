@@ -42,7 +42,7 @@ class DOMINOTests(IMP.test.TestCase):
         print "returning"
         return (m, pst, lsc)
 
-    def test_global_min1(self):
+    def _test_filtering(self, nm):
         """Testing default subset states with filtering"""
         (m, pst, lsc)= self._get_stuff()
         vs= self._get_positions()
@@ -50,18 +50,20 @@ class DOMINOTests(IMP.test.TestCase):
             pst.set_particle_states(p, IMP.domino.XYZStates(vs))
         print lsc[0].get_name()
         print lsc[1].get_name()
+        s= IMP.domino.Subset(lsc)
         all_states= self._get_full_list(pst, lsc)
         print "There are ", len(all_states), "states"
         r= IMP.core.DistanceRestraint(IMP.core.Harmonic(1,2),
-                                      lsc[1],
-                                      lsc[2])
+                                      s[1],
+                                      s[2])
         r.set_name("1 2")
         r.set_log_level(IMP.VERBOSE)
         m.add_restraint(r)
         ds= IMP.domino.DominoSampler(m)
         m.set_maximum_score(.5)
         rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
-        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
+        rssft.set_log_level(IMP.SILENT)
+        dsst= nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         pss= IMP.domino.PackedAssignmentContainer()
@@ -80,7 +82,7 @@ class DOMINOTests(IMP.test.TestCase):
                 print s
                 self.assertIn(s, found_states)
 
-    def test_global_min2(self):
+    def _test_total_filtering(self, nm):
         """Testing default subset states with total score filtering"""
         (m, pst, lsc)= self._get_stuff()
         vs= self._get_positions()
@@ -105,7 +107,7 @@ class DOMINOTests(IMP.test.TestCase):
         m.set_maximum_score(.6)
         ds= IMP.domino.DominoSampler(m)
         rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
-        dsst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [rssft])
+        dsst= nm(pst, [rssft])
         IMP.set_log_level(IMP.VERBOSE)
         print "setting"
         pss= IMP.domino.PackedAssignmentContainer()
@@ -124,6 +126,24 @@ class DOMINOTests(IMP.test.TestCase):
             if m.evaluate(False) < .6:
                 print s
                 self.assertIn(s, found_states)
+
+
+    def test_simple(self):
+        """Test filtering with simple"""
+        self._test_filtering(IMP.domino.SimpleAssignmentsTable)
+        self._test_total_filtering(IMP.domino.SimpleAssignmentsTable)
+
+
+    def test_recursive(self):
+        """Test filtering with recursive"""
+        self._test_filtering(IMP.domino.RecursiveAssignmentsTable)
+        self._test_total_filtering(IMP.domino.RecursiveAssignmentsTable)
+
+
+    def _test_bandb(self):
+        """Test filtering with branch and bound"""
+        self._test_filtering(IMP.domino.BranchAndBoundAssignmentsTable)
+        self._test_total_filtering(IMP.domino.BranchAndBoundAssignmentsTable)
 
 if __name__ == '__main__':
     IMP.test.main()

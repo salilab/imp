@@ -8,7 +8,7 @@
 #include <IMP/domino/domino_config.h>
 #include <IMP/domino/DominoSampler.h>
 #include <IMP/internal/map.h>
-#include <set>
+#include <algorithm>
 #include <boost/version.hpp>
 #include <IMP/domino/assignment_tables.h>
 #include <IMP/domino/particle_states.h>
@@ -22,6 +22,19 @@ AssignmentsTable::~AssignmentsTable(){}
 typedef std::vector<int> Ints;
 
 namespace {
+
+  template <class T>
+  std::ostream &operator<<(std::ostream &out,
+                           const std::vector<T> &v) {
+    out << "[";
+    for (unsigned int i=0; i< v.size(); ++i) {
+      if (i>0) out << ", ";
+      out << v[i];
+    }
+    out << "]";
+    return out;
+  }
+
   class Counter {
     Ints cur_;
     Ints maxs_;
@@ -102,13 +115,39 @@ namespace {
       Subset s0(ParticlesTemp(s.begin(), s.begin()+mp));
       Subset s1(ParticlesTemp(s.begin()+mp, s.end()));
       IMP_NEW(PackedAssignmentContainer, pac0, ());
+      pac0->set_was_used(true);
       IMP_NEW(PackedAssignmentContainer, pac1, ());
+      pac1->set_was_used(true);
       recursive_load_assignments(s0,
                                  pst, sft, max, sat, pac0);
       recursive_load_assignments(s1,
                                  pst, sft, max, sat, pac1);
+      IMP_LOG(TERSE, "Merging " << s0
+              << "(" << pac0->get_number_of_assignments()
+              << ") and " << s1 << "("
+              << pac1->get_number_of_assignments() << ")"
+              << std::endl);
       internal::EdgeData ed= internal::get_edge_data(s0, s1, sft);
-      internal::load_union(s0, s1, pac0, pac1, ed, max, pac);
+      Ints ui0= internal::get_index(ed.union_subset, s0);
+      Ints ui1= internal::get_index(ed.union_subset, s1);
+      for (unsigned int i=0; i< pac0->get_number_of_assignments(); ++i) {
+        Assignment a0= pac0->get_assignment(i);
+        Assignments a1= pac1->get_assignments();
+        for (unsigned int j=0; j< a1.size(); ++j) {
+          Assignment merged= internal::get_merged_assignment(s, a0, ui0,
+                                                             a1[j], ui1);
+          bool ok=true;
+          for (unsigned int k=0; k< ed.filters.size(); ++k) {
+            if (!ed.filters[k]->get_is_ok(merged)) {
+              ok=false;
+              break;
+            }
+          }
+          if (ok) {
+            pac->add_assignment(merged);
+          }
+        }
+      }
     }
   }
 
@@ -232,8 +271,8 @@ namespace {
     return ret;
   }
 
-  Ints initialize_order(const Subset &s,
-                        const SubsetFilterTables &sft) {
+  ParticlesTemp initialize_order(const Subset &s,
+                                 const SubsetFilterTables &sft) {
     IMP_FUNCTION_LOG;
     Ints order;
     Ints remaining;
@@ -265,10 +304,10 @@ namespace {
       Particles ps(get_sub_particles(s, order.begin(), order.end()));
       IMP_LOG(TERSE, ps << std::endl);
     }
-    return order;
+    return get_sub_particles(s, order.begin(), order.end());
   }
 
-  Assignment get_next_assignment_base(const ParticlesTemp &,
+  Assignment get_next_assignment_base(
                                  Ints cur,
                                  const Ints &maxs,
                                  const std::vector<SubsetFilters> &filters) {
@@ -294,247 +333,85 @@ namespace {
   }
 
   Assignment get_next_assignment(const ParticlesTemp &s,
+                                 const std::vector<Subset> &subsets,
+                                 const std::vector<Ints>& orders,
                                  Ints cur,
                                  const Ints &maxs,
                                 const std::vector<SubsetFilters> &filters);
 
   Assignment get_next_assignment_add(const ParticlesTemp &s,
+                                     const Subsets &subsets,
+                                     const std::vector<Ints>& orders,
                                      Ints cur,
                                      const Ints &maxs,
                                   const std::vector<SubsetFilters> &filters) {
     unsigned int increment=1;
     while (true) {
-      Assignment inner= get_next_assignment(ParticlesTemp(s.begin(), s.end()-1),
-                                            Ints(cur.begin(), cur.end()-1),
-                                            Ints(maxs.begin(), maxs.end()-1),
-                      std::vector<SubsetFilters>(filters.begin(),
-                                                 filters.end()-1));
-      if (inner.size()==0) {
-        // done
-        cur.back()+=increment;
-        if (cur.back() >= maxs.back()) {
-          return Assignment();
+      cur.back()+=increment;
+      if (cur.back() >= maxs.back()) {
+        cur.back()=0;
+        Assignment inner= get_next_assignment(ParticlesTemp(s.begin(),
+                                                            s.end()-1),
+                                             Subsets(subsets.begin(),
+                                                     subsets.end()-1),
+                                             std::vector<Ints>(orders.begin(),
+                                                               orders.end()-1),
+                                             Ints(cur.begin(), cur.end()-1),
+                                             Ints(maxs.begin(), maxs.end()-1),
+                                 std::vector<SubsetFilters>(filters.begin(),
+                                                            filters.end()-1));
+        if (inner.size()==0) {
+          return inner;
+        } else {
+          std::copy(inner.begin(), inner.end(), cur.begin());
         }
-        std::fill(cur.begin(), cur.begin()+cur.size()-1, 0);
-        cur[0]=-1;
-        // do the inner increment again
-        continue;
-      } else {
-        std::copy(inner.begin(), inner.end(), cur.begin());
       }
-      Assignment cura(cur);
+      Ints reordered_cur(cur.size());
+      for (unsigned int i=0; i< orders.back().size(); ++i) {
+        reordered_cur[i]= cur[orders.back()[i]];
+        IMP_INTERNAL_CHECK(subsets.back()[i]
+                           == s[orders.back()[i]],
+                           "Ordering doesn't match");
+      }
+      //std::cout << "Trying " << cur  << " = " << reordered_cur << std::endl;
+      Assignment cura(reordered_cur);
       bool ok=true;
       for (unsigned int i=0; i< filters.back().size(); ++i) {
         if (!filters.back()[i]->get_is_ok(cura)) {
           increment= filters.back()[i]
-            ->get_next_state(cur.size()-1, cura)- cur.back();
+            ->get_next_state(orders.back()[cur.size()-1],
+                             cura)- cur.back();
           ok=false;
           break;
         }
       }
       if (ok) {
-        return cura;
+        return Assignment(cur);
       }
     }
   }
 
 
   Assignment get_next_assignment(const ParticlesTemp &s,
+                                 const Subsets &subsets,
+                                 const std::vector<Ints>& orders,
                                  Ints cur,
                                  const Ints &maxs,
                                  const std::vector<SubsetFilters> &filters) {
     IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
     IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
+    IMP_INTERNAL_CHECK(s.size() == orders.size(),
+                       "Subset and orders don't match");
     IMP_INTERNAL_CHECK(s.size() == filters.size(),
                        "Subset and filters don't match");
     if (s.size()==1) {
-      return get_next_assignment_base(s, cur, maxs, filters);
+      return get_next_assignment_base(cur, maxs, filters);
     } else {
-      return get_next_assignment_add(s, cur, maxs, filters);
+      return get_next_assignment_add(s, subsets, orders, cur, maxs, filters);
     }
   }
 }
-#if 0
 
-  int do_increment(Ints &cur,
-                   const Ints &order,
-                   unsigned int current_digit,
-                   const Ints &maxs,
-                   unsigned int incr) {
-    for (unsigned int i=0; i< current_digit; ++i) {
-      cur[order[i]]=0;
-    }
-    for (unsigned int i=current_digit; i < cur.size(); ++i) {
-      cur[order[i]]+=incr;
-      // just use the increment of 1 for later states
-      incr=1;
-      if (cur[order[i]]>=maxs[order[i]]) {
-        cur[order[i]]=0;
-      } else {
-        return i;
-      }
-    }
-    return cur.size();
-  }
-
-  unsigned int add_assignment(const Ints &cur,
-                              const Subset &s,
-                              AssignmentContainer *states) {
-    unsigned int sz= states->get_number_of_assignments();
-    Assignment to_push(cur);
-    IMP_LOG(VERBOSE, "Found " << to_push << std::endl);
-    try {
-      states->add_assignment(to_push);
-    } catch (std::bad_alloc) {
-      IMP_THROW("Ran out of memory when enumerating states for " << s
-                << " with " << sz << " states found so far."
-                << " Last state is " << to_push, ValueException);
-    }
-    return states->get_number_of_assignments();
-  }
-
-  std::vector<SubsetFilters> create_filters(const SubsetFilterTables &sft,
-                                            const Ints& order,
-                                            const Subset &s,
-                                            Subsets &filter_subsets) {
-    std::vector<SubsetFilters> filters;
-    for (unsigned int i=0; i< order.size(); ++i) {
-      ParticlesTemp ps= get_sub_particles(s, order.begin()+i, order.end());
-      Subset sc(ps);
-      Subsets ex;
-      ParticlesTemp pt(ps.begin()+1, ps.end());
-      if (!pt.empty()) {
-        ex.push_back(Subset(pt));
-      }
-      SubsetFilters fts= get_filters(sc, ex, sft);
-      filter_subsets.push_back(sc);
-      filters.push_back(fts);
-    }
-    return filters;
-  }
-
-  int do_filter(unsigned int i, const std::vector<SubsetFilters> &filters,
-                const Subsets &filter_subsets,
-                const Subset &s, const Ints &order, const Ints &cur,
-                const IMP::internal::Map<Particle*, ParticlesTemp> rls) {
-    Subset subset= get_sub_subset(s, order.begin()+i, order.end());
-    Assignment state= get_sub_assignment(s, cur, subset);
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      IMP_INTERNAL_CHECK(subset== filter_subsets[i],
-                         "Expected and found subsets don't match "
-                         << filter_subsets[i] << " vs " << subset);
-    }
-    for (unsigned int j=0; j < filters[i].size(); ++j) {
-      // use boost iterator wrapper TODO
-      // check +i is correct
-      IMP_CHECK_OBJECT(filters[i][j]);
-      if (!filters[i][j]->get_is_ok(state)) {
-        IMP_LOG(VERBOSE, "Rejected state " << state
-                << " on prefix subset " << subset << " due to filter "
-                << *filters[i][j] << std::endl);
-        int pos=-1;
-        for (unsigned int k=0; k< subset.size(); ++k) {
-          if (subset[k]== s[order[i]]) {
-            pos=k;
-            break;
-          }
-        }
-        IMP_USAGE_CHECK(pos != -1, "Particle not found " << s << " vs "
-                        << subset << " " << s[order[i]]->get_name());
-        int ret= filters[i][j]->get_next_state(pos, state)- state[pos];
-        IMP_LOG(VERBOSE, "Next state for " <<  filters[i][j]->get_name()
-                << " is " << ret+state[pos] << " from " << state[pos]
-                << " in " << state << " on " << subset << std::endl);
-        IMP_USAGE_CHECK(ret>0, "invalid next state returned by "
-                        << filters[i][j]->get_name()
-                        << " " << filters[i][j]->get_next_state(pos, state));
-        return ret;
-      }
-    }
-    return 0;
-  }
-
-  void load_states_list(const Subset &s,
-                        ParticleStatesTable *table,
-                        const SubsetFilterTables &sft,
-                        unsigned int max,
-                        const IMP::internal::Map<Particle*, ParticlesTemp> rls,
-                        AssignmentContainer *states) {
-    //std::cout << "Searching order for " << s << std::endl;
-
-    IMP_FUNCTION_LOG;
-    Ints order=initialize_order(s, sft);
-    std::reverse(order.begin(), order.end());
-    std::vector<Subset> filter_subsets;
-    std::vector<SubsetFilters> filters=create_filters(sft, order, s,
-                                                      filter_subsets);
-    int incr=1;
-
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      IMP::internal::Set<int> taken(order.begin(), order.end());
-      IMP_INTERNAL_CHECK(taken.size() == order.size(),
-                         "Duplicate elements in order "
-                         << taken.size() << " " << order.size());
-    }
-    IMP_LOG(TERSE, "Enumerating states for " << s << "..." << std::endl);
-
-    IMP_CHECK_OBJECT(table);
-    // create lists
-
-    unsigned int sz=s.size();
-    Ints maxs(sz);
-    for (unsigned int i=0; i< sz; ++i) {
-      maxs[i]=table->get_particle_states(s[i])
-        ->get_number_of_particle_states();
-    }
-    Ints cur(sz, 0);
-    unsigned int changed_digit=cur.size()-1;
-    unsigned int current_digit=0;
-
-  filter:
-    IMP_IF_LOG(VERBOSE) {
-      IMP_LOG(VERBOSE, "Current counter is ");
-      for (unsigned int i=0; i< order.size(); ++i) {
-        IMP_LOG(VERBOSE, cur[order[i]] << " ");
-      }
-      IMP_LOG(VERBOSE, std::endl);
-    }
-    // reset the increment
-    for (int i=changed_digit; i >=0; --i) {
-      incr=do_filter(i, filters, filter_subsets,
-                     s, order, cur, rls);
-      if (incr > 0) {
-        current_digit=i;
-        break;
-      }
-    }
-    if (incr==0) {
-      //current_digit=0;
-      incr=1;
-      if (add_assignment(cur, s, states) ==max) {
-              IMP_WARN("Truncated subset states at " << max
-               << " for subset " << s);
-              goto done;
-      }
-    }
-    changed_digit=do_increment(cur, order, current_digit, maxs, incr);
-    if (changed_digit < order.size()) {
-      goto filter;
-    }
-  done:
-    IMP_IF_LOG(TERSE) {
-      std::size_t possible=1;
-      for (unsigned int i=0; i< s.size(); ++i) {
-        Pointer<ParticleStates> ps= table->get_particle_states(s[i]);
-        possible= possible*ps->get_number_of_particle_states();
-      }
-      IMP_LOG(TERSE, "In total found " << states->get_number_of_assignments()
-              << " for subset " << s << " of " << possible
-              << " possible states." << std::endl);
-    }
-  }
-}
-#endif
 
 BranchAndBoundAssignmentsTable
 ::BranchAndBoundAssignmentsTable(ParticleStatesTable *pst,
@@ -548,44 +425,41 @@ BranchAndBoundAssignmentsTable
       IMP_LOG(TERSE, *sft[i] << std::endl);
     }
   }
-  /*
-#if IMP_BUILD < IMP_FAST
-  ParticlesTemp ps=pst->get_particles();
-  if (!ps.empty()) {
-    Model*m= ps[0]->get_model();
-    DependencyGraph dg
-      = get_dependency_graph(RestraintsTemp(1,
-                                            m->get_root_restraint_set()));
-    const ParticlesTemp all= pst->get_particles();
-    for (unsigned int i=0; i < all.size(); ++i) {
-      Particle *p= all[i];
-      ParticlesTemp ps= get_dependent_particles(p, all, dg);
-      for (unsigned int j=0; j< ps.size(); ++j) {
-        rls_[p]=ps;
-      }
-    }
-  }
-  #endif*/
 }
+
+
 
 
 void BranchAndBoundAssignmentsTable
 ::load_assignments(const Subset&s, AssignmentContainer*pac) const {
   set_was_used(true);
   IMP_OBJECT_LOG;
-  ParticlesTemp spt(s.begin(), s.end());
-  Ints cur(s.size(), 0); cur.front()=-1;
+  ParticlesTemp spt=initialize_order(s, sft_);
+  //std::reverse(spt.begin(), spt.end());
+  Ints cur(s.size(), std::numeric_limits<int>::max()-3); cur.front()=-1;
   Ints maxs(cur.size());
   for (unsigned int i=0; i< maxs.size(); ++i) {
-    maxs[i]= pst_->get_particle_states(s[i])->get_number_of_particle_states();
+    maxs[i]= pst_->get_particle_states(spt[i])->get_number_of_particle_states();
   }
   std::vector<SubsetFilters> filters(maxs.size());
+  std::vector<Ints> orders(maxs.size());
+  Subsets subsets(maxs.size());
   for (unsigned int i=0; i< maxs.size(); ++i) {
     Subsets excluded;
     if (i>0) {
-      excluded.push_back(Subset(ParticlesTemp(s.begin(), s.begin()+i)));
+      excluded.push_back(Subset(ParticlesTemp(spt.begin(), spt.begin()+i)));
     }
-    Subset cur(ParticlesTemp(s.begin(), s.begin()+i+1));
+    Subset cur(ParticlesTemp(spt.begin(), spt.begin()+i+1));
+    Ints order(cur.size());
+    for (unsigned int j=0; j< cur.size(); ++j) {
+      for (unsigned int k=0;  k < cur.size(); ++k) {
+        if (cur[j]== spt[k]) {
+          order[j]=k;
+        }
+      }
+    }
+    subsets[i]=cur;
+    orders[i]=order;
     for (unsigned int j=0; j< sft_.size(); ++j) {
       SubsetFilter *sf= sft_[j]->get_subset_filter(cur, excluded);
       if (sf) {
@@ -595,32 +469,73 @@ void BranchAndBoundAssignmentsTable
   }
   do {
     Assignment cura= get_next_assignment(spt,
-                                        cur,
-                                        maxs,
-                                        filters);
+                                         subsets,
+                                         orders,
+                                         cur,
+                                         maxs,
+                                         filters);
     if (cura.size()>0) {
-      std::cout << "adding " << cura << std::endl;
-      pac->add_assignment(cura);
+      Ints cura_reordered(cura.size());
+      for (unsigned int i=0; i< cura.size(); ++i) {
+        cura_reordered[i]= cura[orders.back()[i]];
+      }
+      /*std::cout << "adding " << cura
+                << " = " << Assignment(cura_reordered)
+                << std::endl;*/
+      pac->add_assignment(Assignment(cura_reordered));
       std::copy(cura.begin(), cura.end(), cur.begin());
     } else {
       break;
     }
   } while (true);
-
-  if (pac->get_number_of_assignments()< 10000) {
-    IMP_NEW(PackedAssignmentContainer, cpac, ());
-    IMP_NEW(RecursiveAssignmentsTable, sat, (pst_, sft_, max_));
-    sat->load_assignments(s, cpac);
-    IMP_INTERNAL_CHECK(cpac->get_number_of_assignments()
-                       == pac->get_number_of_assignments(),
-                    "Numbers don't match " << cpac->get_number_of_assignments()
-                    << " vs " << pac->get_number_of_assignments());
-    Assignments paca= pac->get_assignments();
-    Assignments cpaca= cpac->get_assignments();
-    std::sort(paca.begin(), paca.end());
-    std::sort(cpaca.begin(), cpaca.end());
-    for (unsigned int i=0; i< paca.size(); ++i) {
-      IMP_INTERNAL_CHECK(paca[i]==cpaca[i], "Don't match.");
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    int space=1;
+    for (unsigned int i=0; i< s.size(); ++i) {
+      ParticleStates *ps=pst_->get_particle_states(s[i]);
+      IMP_CHECK_OBJECT(ps);
+      unsigned int n= ps->get_number_of_particle_states();
+      IMP_INTERNAL_CHECK(n>0 && n < 1000000, "Out of range num states"
+                         << n);
+      space*= n;
+      if (space > 10000) {
+        break;
+      }
+    }
+    if (space< 10000) {
+      IMP_LOG(TERSE, "Verifying output..." << std::endl);
+      IMP_NEW(PackedAssignmentContainer, cpac, ());
+      cpac->set_was_used(true);
+      IMP_NEW(RecursiveAssignmentsTable, sat, (pst_, sft_, max_));
+      //sat->set_log_level(SILENT);
+      sat->load_assignments(s, cpac);
+      using namespace IMP;
+      if (cpac->get_number_of_assignments()
+          != pac->get_number_of_assignments()) {
+        Assignments a0= cpac->get_assignments();
+        Assignments a1= pac->get_assignments();
+        std::sort(a0.begin(), a0.end());
+        std::sort(a1.begin(), a1.end());
+        Assignments diff;
+        std::set_symmetric_difference(a0.begin(), a0.end(),
+                                      a1.begin(), a1.end(),
+                            std::back_inserter(diff));
+        IMP_LOG(WARNING, a0
+                << "\n vs \n"
+                << a1
+                << "\n diff\n" << diff);
+        IMP_INTERNAL_CHECK(0,
+                           "Numbers don't match "
+                           << cpac->get_number_of_assignments()
+                           << " vs " << pac->get_number_of_assignments()
+                           << "\n");
+      }
+      Assignments paca= pac->get_assignments();
+      Assignments cpaca= cpac->get_assignments();
+      std::sort(paca.begin(), paca.end());
+      std::sort(cpaca.begin(), cpaca.end());
+      for (unsigned int i=0; i< paca.size(); ++i) {
+        IMP_INTERNAL_CHECK(paca[i]==cpaca[i], "Don't match.");
+      }
     }
   }
 }
@@ -647,9 +562,9 @@ void ListAssignmentsTable::do_show(std::ostream &) const {
 }
 
 
-Ints get_order(const Subset &s,
+ParticlesTemp get_order(const Subset &s,
                const SubsetFilterTables &sft) {
-  Ints order=initialize_order(s, sft);
+  ParticlesTemp order=initialize_order(s, sft);
   return order;
 }
 

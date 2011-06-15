@@ -47,6 +47,22 @@ void RestraintScoreSubsetFilter::do_show(std::ostream &out) const{
   out << "subset: " << data_.get_subset() << std::endl;
 }
 
+int RestraintScoreSubsetFilter::get_next_state(int pos,
+                                               const Assignment& state) const {
+  Particle *p= data_.get_subset()[pos];
+  unsigned int num
+    = keepalive_->pst_->get_particle_states(p)->get_number_of_particle_states();
+  Ints cur(state.begin(), state.end());
+  for (unsigned int i=state[pos]+1; i<num; ++i) {
+    cur[pos]=i;
+    Assignment as(cur);
+    if (get_is_ok(as)) {
+      return i;
+    }
+  }
+  return num;
+}
+
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Resraint filtration statistics (attempts, passes):\n");
@@ -561,7 +577,9 @@ ListSubsetFilterTable
   set_was_used(true);
   Ints indexes;
   load_indexes(s, indexes);
-  return new ListSubsetFilter(this, indexes);
+  IMP_NEW(ListSubsetFilter, ret, (this, indexes));
+  ret->set_log_level(get_log_level());
+  return ret.release();
 }
 
 double ListSubsetFilterTable::get_strength(const Subset &s,
@@ -761,7 +779,10 @@ ProbabilisticSubsetFilterTable
                     const Subsets &e) const {
   set_was_used(true);
   if (e.size() >1 && leaves_only_) return 0;
-  else return new ProbabilisticSubsetFilter(p_);
+  else{
+    IMP_NEW(ProbabilisticSubsetFilter, ret, (p_));
+    ret->set_log_level(get_log_level());
+  }
 }
 
 double ProbabilisticSubsetFilterTable::get_strength(const Subset &,
