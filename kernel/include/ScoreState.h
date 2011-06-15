@@ -100,7 +100,11 @@ public:
     return ScoreStates(1, const_cast<ScoreState*>(this));
   }
 
-
+  /** \brief For python, cast a generic Object to this type. Throw a
+      ValueException of object is not the right type.*/
+  static ScoreState* get_from(Object *o) {
+    return object_cast<ScoreState>(o);
+  }
 protected:
   // Update the state given the current state of the model.
   /* This is also called prior to every calculation of the model score.
