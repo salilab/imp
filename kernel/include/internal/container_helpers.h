@@ -107,8 +107,10 @@ inline std::string streamable(Particle *p) {
 }
 
 template <unsigned int D>
-inline const ParticleTuple<D>& streamable(const ParticleTuple<D> &p) {
-  return p;
+inline std::string streamable(const ParticleTuple<D> &p) {
+  std::ostringstream oss;
+  oss << p;
+  return oss.str();
 }
 
 
