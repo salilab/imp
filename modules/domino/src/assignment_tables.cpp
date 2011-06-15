@@ -495,7 +495,7 @@ void BranchAndBoundAssignmentsTable
       break;
     }
   } while (true);
-  if (false) {
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     int space=1;
     for (unsigned int i=0; i< s.size(); ++i) {
       ParticleStates *ps=pst_->get_particle_states(s[i]);
