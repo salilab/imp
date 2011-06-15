@@ -378,9 +378,16 @@ namespace {
       bool ok=true;
       for (unsigned int i=0; i< filters.back().size(); ++i) {
         if (!filters.back()[i]->get_is_ok(cura)) {
+          unsigned int pos=0;
+          for (; pos < cur.size(); ++pos) {
+            if (orders.back()[pos]== static_cast<int>(cur.size())-1) {
+              break;
+            }
+          }
           increment= filters.back()[i]
-            ->get_next_state(orders.back()[cur.size()-1],
+            ->get_next_state(pos,
                              cura)- cur.back();
+          IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive");
           ok=false;
           break;
         }
@@ -488,7 +495,7 @@ void BranchAndBoundAssignmentsTable
       break;
     }
   } while (true);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+  if (false) {
     int space=1;
     for (unsigned int i=0; i< s.size(); ++i) {
       ParticleStates *ps=pst_->get_particle_states(s[i]);
