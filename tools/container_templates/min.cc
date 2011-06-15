@@ -36,6 +36,8 @@ namespace {
     CLASSNAMEMINORMAXMS bestn(n);
     for (It it= b; it != e; ++it) {
       double score= f->evaluate(*it, NULL);
+      IMP_LOG(VERBOSE, "Found " << score << " for "
+              << *it << std::endl);
       bestn.insert(score, *it);
     }
     return bestn;
@@ -44,6 +46,7 @@ namespace {
 
 double MINORMAXCLASSNAMERestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
+  IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
     = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
                                          c_->FUNCTIONNAMEs_end(),
@@ -56,7 +59,7 @@ double MINORMAXCLASSNAMERestraint
     }
     score+= bestn[i].first;
   }
-
+  IMP_LOG(VERBOSE, "Total score is " << score << std::endl);
   return score;
 }
 

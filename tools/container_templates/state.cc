@@ -133,7 +133,7 @@ ScoreStates CLASSNAMEsConstraint::get_decomposition() const {
   ScoreStates ret(c_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= new core::CLASSNAMEConstraint(f_, af_, c_->get(i),
-                                     get_name());
+                        get_name()+internal::streamable(c_->get(i)));
   }
   return ret;
 }
