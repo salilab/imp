@@ -31,7 +31,7 @@ namespace {
   template <class It, class F>
   SingletonMinimumMS find_minimal_set_SingletonMinimum(It b, It e, F *f,
                                                          unsigned int n) {
-    IMP_LOG(TERSE, "Finding Minimum " << n << " of "
+    IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
     SingletonMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
@@ -65,6 +65,7 @@ double MinimumSingletonRestraint
 
 Restraints MinimumSingletonRestraint
 ::get_instant_decomposition() const {
+  IMP_OBJECT_LOG;
   SingletonMinimumMS bestn
     = find_minimal_set_SingletonMinimum(c_->particles_begin(),
                                          c_->particles_end(),

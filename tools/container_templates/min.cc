@@ -31,7 +31,7 @@ namespace {
   template <class It, class F>
   CLASSNAMEMINORMAXMS find_minimal_set_CLASSNAMEMINORMAX(It b, It e, F *f,
                                                          unsigned int n) {
-    IMP_LOG(TERSE, "Finding MINORMAX " << n << " of "
+    IMP_LOG(VERBOSE, "Finding MINORMAX " << n << " of "
             << std::distance(b,e) << std::endl);
     CLASSNAMEMINORMAXMS bestn(n);
     for (It it= b; it != e; ++it) {
@@ -65,6 +65,7 @@ double MINORMAXCLASSNAMERestraint
 
 Restraints MINORMAXCLASSNAMERestraint
 ::get_instant_decomposition() const {
+  IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
     = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
                                          c_->FUNCTIONNAMEs_end(),

@@ -31,7 +31,7 @@ namespace {
   template <class It, class F>
   PairMinimumMS find_minimal_set_PairMinimum(It b, It e, F *f,
                                                          unsigned int n) {
-    IMP_LOG(TERSE, "Finding Minimum " << n << " of "
+    IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
     PairMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
@@ -65,6 +65,7 @@ double MinimumPairRestraint
 
 Restraints MinimumPairRestraint
 ::get_instant_decomposition() const {
+  IMP_OBJECT_LOG;
   PairMinimumMS bestn
     = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
                                          c_->particle_pairs_end(),
