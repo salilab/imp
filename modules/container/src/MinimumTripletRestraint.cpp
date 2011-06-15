@@ -31,7 +31,7 @@ namespace {
   template <class It, class F>
   TripletMinimumMS find_minimal_set_TripletMinimum(It b, It e, F *f,
                                                          unsigned int n) {
-    IMP_LOG(TERSE, "Finding Minimum " << n << " of "
+    IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
     TripletMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
@@ -65,6 +65,7 @@ double MinimumTripletRestraint
 
 Restraints MinimumTripletRestraint
 ::get_instant_decomposition() const {
+  IMP_OBJECT_LOG;
   TripletMinimumMS bestn
     = find_minimal_set_TripletMinimum(c_->particle_triplets_begin(),
                                          c_->particle_triplets_end(),

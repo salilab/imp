@@ -31,7 +31,7 @@ namespace {
   template <class It, class F>
   QuadMinimumMS find_minimal_set_QuadMinimum(It b, It e, F *f,
                                                          unsigned int n) {
-    IMP_LOG(TERSE, "Finding Minimum " << n << " of "
+    IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
             << std::distance(b,e) << std::endl);
     QuadMinimumMS bestn(n);
     for (It it= b; it != e; ++it) {
@@ -65,6 +65,7 @@ double MinimumQuadRestraint
 
 Restraints MinimumQuadRestraint
 ::get_instant_decomposition() const {
+  IMP_OBJECT_LOG;
   QuadMinimumMS bestn
     = find_minimal_set_QuadMinimum(c_->particle_quads_begin(),
                                          c_->particle_quads_end(),
