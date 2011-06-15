@@ -214,6 +214,12 @@ inline void PackedAssignmentContainer::add_assignment(Assignment a) {
   IMP_USAGE_CHECK(static_cast<int>(a.size())== width_,
                   "Sizes don't match " << width_
                   << " vs " << a.size());
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< get_number_of_assignments(); ++i) {
+      IMP_INTERNAL_CHECK(get_assignment(i) != a,
+                         "Assignment " << a << " already here.");
+    }
+  }
   d_.insert(d_.end(), a.begin(), a.end());
 }
 
