@@ -357,6 +357,9 @@ public:
     if (it != ssindex_.end()) {
       //std::cout << "setting " << it->second << std::endl;
       bs_.push_back(it->second);
+    } else {
+      IMP_INTERNAL_CHECK(!dynamic_cast<ScoreState*>(o),
+                         "Score state jot in index");
     }
   }
 };
@@ -417,9 +420,16 @@ namespace {
     }
     bs.resize(ordered_restraints.size());
     internal::Map<Object*, int> index= get_index(dg);
-    boost::vector_property_map<int> color(boost::num_vertices(dg));
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
+      // make sure it is in the loop so it gets reset
+      boost::vector_property_map<int> color(boost::num_vertices(dg));
+      /*std::cout << "Finding dependencies for "
+        << ordered_restraints[i]->get_name()
+        << std::endl;*/
+      IMP_USAGE_CHECK(ordered_restraints[i]
+                      == om[index.find(ordered_restraints[i])->second],
+                      "Restraints and vertices don't match");
       boost::depth_first_visit(boost::make_reverse_graph(dg),
                                index.find(ordered_restraints[i])->second,
                                ScoreDependencies(bs[i], ssindex, om),
@@ -457,6 +467,7 @@ void Model::compute_dependencies() const {
           << " particles." << std::endl);
   DependencyGraph dg= get_dependency_graph(score_states,
                                            ordered_restraints_);
+  //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   order_score_states(dg, ordered_score_states_);
   compute_restraint_dependencies(dg, ordered_restraints_,
                                  ordered_score_states_,
@@ -505,8 +516,16 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
               << " has weight 0" << std::endl);
     }
     int index=restraint_index_.find(restraints[i])->second;
-    /*IMP_LOG(VERBOSE, restraints[i]->get_name() << ": "
-      << restraint_dependencies_[index] << std::endl);*/
+    IMP_IF_LOG(VERBOSE) {
+      IMP_LOG(VERBOSE, restraints[i]->get_name() << " depends on ");
+      for (unsigned int i=0; i< restraint_dependencies_[index].size(); ++i) {
+        IMP_LOG(VERBOSE,
+                ordered_score_states_[restraint_dependencies_[index][i]]
+                ->get_name()
+                << " ");
+      }
+      IMP_LOG(VERBOSE, std::endl);
+    }
     bs.insert(bs.end(), restraint_dependencies_[index].begin(),
               restraint_dependencies_[index].end());
   }
