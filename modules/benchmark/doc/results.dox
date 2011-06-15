@@ -99,4 +99,9 @@ These benchmarks look at various optimizations of brownian dynamics.
 
 \inlineimage{benchmark_brownian_dynamics.png, 480}
 
+\section domino domino
+Benchmark simple inference.
+
+\inlineimage{benchmark_domino.png, 480}
+
 */
