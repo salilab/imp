@@ -339,7 +339,7 @@ enum GetByType {
 
 /**
    Gather all the molecular particles of a certain level
-   in the molecular hierarchy
+   in the molecular hierarchy.
    \ingroup hierarchy
    \relatesalso Hierarchy
 */
