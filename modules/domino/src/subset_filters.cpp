@@ -782,6 +782,7 @@ ProbabilisticSubsetFilterTable
   else{
     IMP_NEW(ProbabilisticSubsetFilter, ret, (p_));
     ret->set_log_level(get_log_level());
+    return ret;
   }
 }
 
