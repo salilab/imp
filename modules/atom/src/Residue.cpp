@@ -125,6 +125,7 @@ Hierarchy get_next_residue(Residue rd) {
                         << " so far. Complain about it.");
                         }*/
   Chain c= p.get_as_chain();
+  IMP_USAGE_CHECK(c, "Parent of residue must be a chain. It is not.");
   Hierarchy r=get_residue(c, rd.get_index()+1);
   return r;
 }
