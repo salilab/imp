@@ -72,6 +72,6 @@ int main(int, char *[]) {
                Pointer<ConfigurationSet> cs= ds->get_sample();
                num+=cs->get_number_of_configurations();
              }, runtime);
-  IMP::benchmark::report("domino small ", runtime, num);
+  IMP::benchmark::report("domino small", runtime, num);
   return IMP::benchmark::get_return_value();
 }
