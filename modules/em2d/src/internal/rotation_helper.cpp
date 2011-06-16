@@ -14,12 +14,12 @@ void semispherical_spiral_distribution(const unsigned long N,
   vs.resize(N);
   double zenith,azimuth;
   for (unsigned long k=1;k<=N;++k) {
-    double h = 2*((double)k-1)/(2*N-1) - 1.0;
+    double h = 2 * (static_cast<double>(k) - 1) / (2*N - 1) - 1.0;
     zenith = acos(h);
     if(k==1) {
       azimuth=0;
     } else {
-      azimuth=(vs[k-2][2] + 3.6/sqrt((double)2*N*(1.0-h*h)));
+      azimuth=(vs[k-2][2] + 3.6/sqrt(static_cast<double>(N)*2*(1.0-h*h)));
       int div = azimuth/(2*PI);
       azimuth -= div*2*PI;
     }
@@ -35,12 +35,12 @@ void spherical_spiral_distribution(const unsigned long N,
   vs.resize(N);
   double zenith,azimuth;
   for (unsigned long k=1;k<=N;++k) {
-    double h = -1 + 2*((double)k-1)/(N-1);
+    double h = -1 + 2*(static_cast<double>(k) - 1)/(N-1);
     zenith = acos(h);
     if( k==1 || k==N) {
       azimuth=0;
     } else {
-      azimuth=(vs[k-2][2] + 3.6/sqrt((double)N*(1-h*h)));
+      azimuth=(vs[k-2][2] + 3.6/sqrt(static_cast<double>(N)*(1-h*h)));
 //       int div = azimuth/(2*PI);
 //       azimuth -= div*2*PI;
       int div = static_cast<int>( azimuth / (2*PI) );
@@ -60,7 +60,7 @@ void spherical_even_distribution(const unsigned long N,
   vs.resize(N);
   double ratio = (1+sqrt(5.))/2; // golden ratio
   double increment = 2*PI /  ratio; // how much to increment the longitude
-  double dz=2./(float)N; // unit sphere has diameter 2
+  double dz=2./static_cast<double>(N); // unit sphere has diameter 2
   for(unsigned i=0;i<N;++i) {
     double z=i*dz-1+dz/2.;  //  z location of each band/point
     double radius = sqrt(1-z*z);

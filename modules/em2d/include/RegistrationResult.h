@@ -190,7 +190,7 @@ IMPEM2DEXPORT RegistrationResults
 
 
 inline double get_random_between_zero_and_one() {
-  return ((double)rand() /((double)RAND_MAX+1));
+  return (static_cast<double>(rand()) /(static_cast<double>(RAND_MAX)+1));
 }
 
 IMPEM2D_END_NAMESPACE

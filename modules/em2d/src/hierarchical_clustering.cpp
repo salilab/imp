@@ -105,9 +105,9 @@ VectorOfFloats ClusterSet::get_linkage_matrix() const {
   VectorOfFloats mat(steps_);
   for (unsigned int i=0;i<steps_;++i) {
     mat[i].resize(3);
-    mat[i][0]=(double)joined_ids1_[i];
-    mat[i][1]=(double)joined_ids2_[i];
-    mat[i][2]= cluster_distances_[i];
+    mat[i][0] = static_cast<double>(joined_ids1_[i]);
+    mat[i][1] = static_cast<double>(joined_ids2_[i]);
+    mat[i][2] = cluster_distances_[i];
   }
   return mat;
 }

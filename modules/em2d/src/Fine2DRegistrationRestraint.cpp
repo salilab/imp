@@ -93,6 +93,7 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
 
 double Fine2DRegistrationRestraint::unprotected_evaluate(
                                        DerivativeAccumulator *accum) const {
+  calls_++;
   IMP_USAGE_CHECK(accum==NULL,
      "Fine2DRegistrationRestraint: This restraint does not "
                            "provide derivatives ");

@@ -37,12 +37,12 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
 
   double tmp,square_radius;
   for(int i=-dim_;i<=dim_;++i) {
-    double isq = (double)i*i;
+    double isq = static_cast<double>(i*i);
     for(int j=-dim_;j<=dim_;++j) {
-      double jsq = (double)j*j;
+      double jsq = static_cast<double>(j*j);
       double ijsq = isq+jsq;
       for(int k=-dim_;k<=dim_;++k) {
-        square_radius = (ijsq+(double)k*k)*sq_pixelsize_;
+        square_radius = (ijsq + static_cast<double>(k*k))*sq_pixelsize_;
         // Add the value to the mask
         tmp= em::EXP(-square_radius * params->get_inv_sigsq());
         // if statement to ensure even sampling within the box

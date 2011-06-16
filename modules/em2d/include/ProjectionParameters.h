@@ -30,7 +30,8 @@ public:
   ~ProjectionParameters() {};
 
   //! Keys of the decorator
-  static FloatKeys get_keys();
+  // FloatKeys get_keys();
+  static const FloatKeys& get_keys();
 
   //! ranges for the keys. Only adjust the translations, the rotations are
   //! self adjusted
@@ -98,6 +99,7 @@ public:
   }
 
 
+
   //! Get and set functions for the parameters
   IMP_DECORATOR_GET_SET(quaternion_1,get_keys()[0],Float,double);
   IMP_DECORATOR_GET_SET(quaternion_2,get_keys()[1],Float,double);
@@ -109,6 +111,7 @@ public:
 private:
   algebra::Rotation3D rotation_;
   algebra::Vector3D translation_;
+
 };
 
 IMP_OUTPUT_OPERATOR(ProjectionParameters);

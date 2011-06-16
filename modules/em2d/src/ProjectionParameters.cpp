@@ -15,6 +15,17 @@ bool ProjectionParameters::particle_is_instance(Particle *p) {
   return p->has_attribute(get_keys()[0]);
 }
 
+/*
+ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
+  p->add_attribute(get_keys()[0],0.0);
+  p->add_attribute(get_keys()[1],0.0);
+  p->add_attribute(get_keys()[2],0.0);
+  p->add_attribute(get_keys()[3],0.0);
+  p->add_attribute(get_keys()[4],0.0);
+  p->add_attribute(get_keys()[5],0.0);
+  return ProjectionParameters(p);
+}
+*/
 
 ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
   p->add_attribute(get_keys()[0],0.0);
@@ -26,21 +37,23 @@ ProjectionParameters ProjectionParameters::setup_particle(Particle *p) {
   return ProjectionParameters(p);
 }
 
+
 void ProjectionParameters::show(std::ostream &os) const {
   os << "ProjectionParameters: Rotation " << get_rotation()
      << " | Tranlation (x,y,z) = " << get_translation();
 }
 
-FloatKeys ProjectionParameters::get_keys() {
-  static FloatKeys keys;
-  keys.push_back(FloatKey("rot_q1"));
-  keys.push_back(FloatKey("rot_q2"));
-  keys.push_back(FloatKey("rot_q3"));
-  keys.push_back(FloatKey("rot_q4"));
-  keys.push_back(FloatKey("translation_x"));
-  keys.push_back(FloatKey("translation_y"));
+const FloatKeys& ProjectionParameters::get_keys() {
+  static FloatKeys keys(6);
+  keys[0] = FloatKey("rot_q1");
+  keys[1] = FloatKey("rot_q2");
+  keys[2] = FloatKey("rot_q3");
+  keys[3] = FloatKey("rot_q4");
+  keys[4] = FloatKey("translation_x");
+  keys[5] = FloatKey("translation_y");
   return keys;
 }
+
 
 void ProjectionParameters::set_proper_ranges_for_keys(Model *m,
                            const algebra::Vector3D &min_translation_values,

@@ -55,7 +55,8 @@ public:
     matrix_cols_ = cols;
     ending_radius_=std::min(rows/2.,cols/2.); // maximum radius, half the size
     n_rings_ = cv::getOptimalDFTSize((int)ending_radius_);
-    radius_step_ = (ending_radius_-starting_radius_)/((double)(n_rings_));
+    radius_step_ = (ending_radius_-starting_radius_)/
+                                            (static_cast<double>(n_rings_));
     parameters_set_ = true;
     IMP_LOG(IMP::VERBOSE,
        "PolarResamplingParameters setup. Input matrix: "
@@ -96,7 +97,7 @@ public:
   //! for an FFT based on this approximated number
   void set_estimated_number_of_angles(unsigned int aprox_value) {
     n_angles_ = cv::getOptimalDFTSize(aprox_value);
-    angle_step_ = (2*PI)/(double)n_angles_;
+    angle_step_ = (2*PI) / static_cast<double>(n_angles_);
   }
 
   //! Gets the number of points that are sampled for the angles
@@ -137,10 +138,10 @@ public:
         double r = get_radius(i);
         double theta = j*angle_step_;
         // row and col of input to use
-        double row = (double)matrix_rows_/2.0 + r* sin(theta);
-        double col = (double)matrix_cols_/2.0 + r* cos(theta);
-        polar_map_.at<cv::Vec2f>(i,j)[0] = (float)row;
-        polar_map_.at<cv::Vec2f>(i,j)[1] = (float)col;
+        double row = static_cast<double>(matrix_rows_)/2.0 + r* sin(theta);
+        double col = static_cast<double>(matrix_cols_)/2.0 + r* cos(theta);
+        polar_map_.at<cv::Vec2f>(i,j)[0] = static_cast<float>(row);
+        polar_map_.at<cv::Vec2f>(i,j)[1] = static_cast<float>(col);
       }
     }
     // Convert to fast maps

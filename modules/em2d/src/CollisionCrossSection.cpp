@@ -75,7 +75,7 @@ void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
 //    oss << "proj-" << i << ".spi";
 //    img->write(oss.str(), srw);
   }
-  collision_cross_section_ /= (double)n_projections_;
+  collision_cross_section_ /= static_cast<double>(n_projections_);
   particles_set_ = true;
 
 

@@ -27,12 +27,13 @@ class IMPEM2DEXPORT Fine2DRegistrationRestraint : public Restraint
 {
 public:
 
-  Fine2DRegistrationRestraint() {
+  Fine2DRegistrationRestraint(): calls_(0) {
     projection_ = new Image();
     projection_->set_name("projection-in-fine2d");
     subject_ = new Image();
     subject_->set_name("subject-in-fine2d");
   };
+
 
   //! Initialization function. To be called after setting the model for the
   //! restraint
@@ -67,7 +68,11 @@ public:
 
   ObjectsTemp get_input_objects() const;
 
+  unsigned int get_calls() const { return calls_;}
+
 private:
+
+
   Pointer<Image> subject_;
   mutable Pointer<Image> projection_;
   // Subject particle (it is going to be the parameters for the subject)
@@ -81,6 +86,8 @@ private:
   double resolution_,pixelsize_;
 //  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;
+
+  mutable unsigned int calls_;
 };
 
 IMP_OBJECTS(Fine2DRegistrationRestraint,Fine2DRegistrationRestraints);
