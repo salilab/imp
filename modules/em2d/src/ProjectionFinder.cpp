@@ -93,7 +93,8 @@ void ProjectionFinder::set_projections(const em2d::Images &projections) {
     do_preprocess_projection(i);
   }
   preprocessing_time_ = preprocessing_timer.elapsed();
-  IMP_LOG(IMP::TERSE,"ProjectionFinder: Projections set" << std::endl);
+  IMP_LOG(IMP::TERSE,"ProjectionFinder: Projections set: "
+          << projections_.size() << std::endl);
 
 }
 
@@ -131,6 +132,8 @@ void ProjectionFinder::set_fast_mode(unsigned int n) {
 
 
 void ProjectionFinder::do_preprocess_projection(unsigned int j) {
+  IMP_LOG(IMP::TERSE,"ProjectionFinder: Preprocessing projection " << j
+          << std::endl);
   // FFT PREPROCESSING
   if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
@@ -147,6 +150,9 @@ void ProjectionFinder::do_preprocess_projection(unsigned int j) {
 }
 
 void ProjectionFinder::do_preprocess_subject(unsigned int i) {
+  IMP_LOG(IMP::TERSE,"ProjectionFinder: Preprocessing subject " << i
+          << std::endl);
+
   if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
     get_fft_using_optimal_size(subjects_[i]->get_data(),SUBJECTS_[i]);
@@ -164,6 +170,8 @@ void ProjectionFinder::do_preprocess_subject(unsigned int i) {
 
 void ProjectionFinder::get_coarse_registrations_for_subject(
              unsigned int i,RegistrationResults &coarse_RRs) {
+  IMP_LOG(IMP::TERSE,"ProjectionFinder: Coarse registration for subject " << i
+          << std::endl);
   algebra::Transformation2D best_2d_transformation;
   double max_ccc=0.0;
   unsigned int projection_index = 0;
@@ -186,7 +194,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
 
     // Method with centers of gravity alignment
     if(coarse_registration_method_== ALIGN2D_WITH_CENTERS) {
-      RA=get_complete_alignment_with_centers_no_preprocessing(
+      RA = get_complete_alignment_with_centers_no_preprocessing(
                                                 subjects_cog_[i],
                                                 projections_cog_[j],
                                                 SUBJECTS_POLAR_AUTOC_[i],
@@ -203,7 +211,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     algebra::Vector2D shift(0.,0.);
     // Get values from the image
     algebra::Vector3D euler = projections_[j]->get_header().get_euler_angles();
-    algebra::Rotation3D R=algebra::get_rotation_from_fixed_zyz(euler[0],
+    algebra::Rotation3D R = algebra::get_rotation_from_fixed_zyz(euler[0],
                                                                 euler[1],
                                                                 euler[2]);
     RegistrationResult projection_result(R,shift,j,i);
@@ -321,6 +329,9 @@ void ProjectionFinder::get_complete_registration() {
   IMP_NEW(Fine2DRegistrationRestraint,fine2d,());
   IMP_NEW(IMP::gsl::Simplex,simplex_optimizer,());
 
+
+  IMP_LOG(IMP::TERSE,"ProjectionFinder: Setting Fine2DRegistrationRestraint "
+          << std::endl);
   fine2d->setup(model_particles_,
                      resolution_,
                      apix_,
@@ -364,7 +375,7 @@ void ProjectionFinder::get_complete_registration() {
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);
-      simplex_optimizer->optimize((double)optimization_steps_);
+      simplex_optimizer->optimize(static_cast<double>(optimization_steps_));
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
 
@@ -373,9 +384,15 @@ void ProjectionFinder::get_complete_registration() {
         best_fine_registration=fine_registration;
       }
     }
+
+
+
     fine_registration_time_ += timer_fine_subject.elapsed();
     best_fine_registration.set_image_index(i);
     registration_results_[i]=best_fine_registration;
+    IMP_LOG(IMP::TERSE,"Fine2DRegistrationRestraint calls: "
+                              << fine2d->get_calls() << std::endl);
+
     IMP_LOG(IMP::TERSE,"Fine registration: "
                               << registration_results_[i] << std::endl);
     // save if requested

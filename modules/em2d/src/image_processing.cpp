@@ -124,7 +124,8 @@ void do_histogram_stretching(cv::Mat &m,
   // Histogram of boxes posible values
   Ints hist(boxes,0.0);
   for (cvDoubleMatIterator it = m.begin<double>();it!=m.end<double>();++it) {
-    int k = algebra::get_rounded(((double)boxes-1)*( (*it) -min_val)/(maxmin));
+    double b = static_cast<double>(boxes);
+    int k = algebra::get_rounded((b-1) * ((*it) -min_val)/(maxmin));
     hist[k]++;
   }
 
@@ -197,6 +198,7 @@ void do_dilate_and_shrink_warp(cv::Mat &m,
         }
       }
     }
+    mean /= (double)new_size_in_pixels++;
     mean /= (double)new_size_in_pixels++;
     cv::subtract(mask,temp,boundary);
 
@@ -503,12 +505,12 @@ Floats get_histogram(const cv::Mat &m, int bins) {
   double min,max;
   cv::minMaxLoc(m, &min,&max,NULL,NULL);
   // Step
-  double step = (max-min)/(double)bins;
-  double n_points= (double)m.rows*(double)m.cols;
+  double step = (max - min) / static_cast<double>(bins);
+  long n_points= m.rows * m.cols;
   for(cvDoubleConstMatIterator it=m.begin<double>();
                                it!=m.end<double>();++it ) {
     int index = floor((*it -min)/step);
-    histogram[index] += 1.f/n_points;
+    histogram[index] += 1.f / static_cast<double>(n_points);
   }
   return histogram;
 }

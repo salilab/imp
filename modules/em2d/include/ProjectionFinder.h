@@ -147,6 +147,14 @@ public:
   //! Time employed for the fine registration part
   double get_fine_registration_time() const;
 
+  unsigned int get_number_of_subjects() const {
+    return subjects_.size();
+  }
+
+  unsigned int get_number_of_projections() const {
+    return projections_.size();
+  }
+
   IMP_OBJECT_INLINE(ProjectionFinder, show(out), {});
 
 protected:

@@ -119,7 +119,7 @@ public:
         algebra::reversed_read(reinterpret_cast< char* >(&aux),
                                               sizeof(float),1,in,true);
       }
-      (*it) = (double)aux;
+      (*it) = static_cast<double>(aux);
     }
     in.close();
   }

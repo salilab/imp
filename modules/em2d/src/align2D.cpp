@@ -124,8 +124,8 @@ ResultAlign2D get_translational_alignment(const cv::Mat &input,
   double max_cc;
   algebra::Vector2D peak = internal::get_peak(corr,&max_cc);
   // Convert the pixel with the maximum to a shift respect to the center
-  algebra::Vector2D shift(peak[0]-(double)corr.cols/2.,
-                          peak[1]-(double)corr.rows/2.);
+  algebra::Vector2D shift(peak[0] - static_cast<double>(corr.cols)/2.,
+                          peak[1] - static_cast<double>(corr.rows)/2.);
   algebra::Transformation2D t(shift);
   // Apply the shift if requested
   if(apply) {
@@ -234,8 +234,8 @@ ResultAlign2D get_translational_alignment_no_preprocessing(const cv::Mat &M1,
   algebra::Vector2D peak = internal::get_peak(corr,&max_cc);
 
   // Convert the pixel with the maximum to a shift respect to the center
-  algebra::Vector2D shift(peak[0]-(double)corr.cols/2.,
-                          peak[1]-(double)corr.rows/2.);
+  algebra::Vector2D shift(peak[0] - static_cast<double>(corr.cols)/2.,
+                          peak[1] - static_cast<double>(corr.rows)/2.);
   algebra::Transformation2D t(shift);
   IMP_LOG(IMP::VERBOSE," Translational Transformation = "  << t
                   << " cross_correlation = " << max_cc << std::endl);
