@@ -100,6 +100,7 @@ void get_projection(em2d::Image *img,const ParticlesTemp &ps,
   }
 }
 
+
 void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
@@ -119,36 +120,31 @@ void do_project_particles(const ParticlesTemp &ps,
   }
   // Centroid
   unsigned long n_particles = ps.size();
-  algebra::Vector3D centroid(0.0,0.0,0.0);
-  for (unsigned long i=0; i<n_particles; i++) {
-    core::XYZ xyz(ps[i]);
-    centroid += xyz.get_coordinates();
-  }
-  centroid /= n_particles;
+  core::XYZRsTemp xyzrs(ps);
+  algebra::Vector3D centroid = core::get_centroid(xyzrs);
+
   // clear data before creating a new projection
   if(clear_matrix_before) m2.setTo(0.0);
   // Project
+  double invp = 1.0/pixelsize;
+
   for (unsigned long i=0; i<n_particles; i++) {
     // Coordinates respect to the centroid
-    core::XYZR xyzr(ps[i]);
     atom::Mass mass(ps[i]);
-    algebra::Vector3D p=xyzr.get_coordinates()-centroid;
+    algebra::Vector3D p = xyzrs[i].get_coordinates()-centroid;
     // Pixel after trasformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
-    double pix_x = (R.get_rotated_one_coordinate(p,0)+translation[0])/pixelsize;
-    double pix_y = (R.get_rotated_one_coordinate(p,1)+translation[1])/pixelsize;
-    if(is_nan(pix_x) || is_nan(pix_y)) {
-      IMP_LOG(IMP::VERBOSE,"do_project_particles: " << n_particles
+    double pix_x = invp * (R.get_rotated_one_coordinate(p,0)+translation[0]);
+    double pix_y = invp * (R.get_rotated_one_coordinate(p,1)+translation[1]);
+
+    IMP_USAGE_CHECK( !is_nan(pix_x) || !is_nan(pix_y),
+                    "do_project_particles: " << n_particles
               << " resolution "  << resolution << " pixelsize "
               << pixelsize << std::endl);
-      IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation
-              << " pix_x "<< pix_x << " pix_y "<< pix_y << std::endl);
-      IMP_LOG(IMP::VERBOSE,"rot " << R << " trans " << translation
-              << " pix_x "<< pix_x << " pix_y "<< pix_y << std::endl);
-    }
+
     // Apply mask
-    ProjectionMaskPtr mask= masks->find_mask(xyzr.get_radius());
-    algebra::Vector2D pix(pix_x,pix_y);
+    ProjectionMaskPtr mask= masks->find_mask(xyzrs[i].get_radius());
+    algebra::Vector2D pix(pix_x, pix_y);
     mask->apply(m2,pix,mass.get_mass());
   }
   IMP_LOG(IMP::VERBOSE,"END of do_project_particles" << std::endl);

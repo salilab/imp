@@ -18,6 +18,7 @@
 #include "IMP/em/KernelParameters.h"
 #include "IMP/core/XYZR.h"
 #include "IMP/Particle.h"
+#include "IMP/exception.h"
 #include <complex>
 #include <boost/shared_ptr.hpp>
 
@@ -70,6 +71,60 @@ protected:
 };
 
 IMP_VALUES(ProjectionMask,ProjectionMasks);
+
+
+
+inline
+void ProjectionMask::apply(cv::Mat &m,
+                const algebra::Vector2D &v,double weight) {
+
+  // v is the vector of coordinates respect to the center of the matrix m
+  int vi= algebra::get_rounded(v[0]);
+  int vj= algebra::get_rounded(v[1]);
+  CenteredMat centered_mask(data_); // Now pass to CenteredMat
+  CenteredMat centered_m(m);
+
+  // Check range: If the vector is outside the matrix, don't do anything.
+  if(!centered_m.get_is_in_range(vi, vj)) return;
+
+  // Get the admisible range for the mask
+  int start_i = std::max(centered_m.get_start(0) - vi,
+                         centered_mask.get_start(0));
+  int start_j = std::max(centered_m.get_start(1) - vj,
+                         centered_mask.get_start(1));
+
+  int end_i = std::min(centered_m.get_end(0) - vi,
+                       centered_mask.get_end(0));
+  int end_j = std::min(centered_m.get_end(1) - vj,
+                       centered_mask.get_end(1));
+
+
+  double epsilon = 1.e-5;
+  for(int i = start_i; i <= end_i; ++i) {
+    int p = i+vi;
+    for(int j = start_j; j <= end_j; ++j) {
+      centered_m(p, j+vj) += centered_mask(i,j) * weight;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //! Manage of projection masks
 class IMPEM2DEXPORT MasksManager {

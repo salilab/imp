@@ -24,16 +24,16 @@ public:
   //! to be the center of the matrix
   CenteredMat(cv::Mat &m) {
     // m is not copied, just a reference is added.
-    if (m.rows == 0 || m.cols == 0) {
-       IMP_THROW("CenteredMat: Matrix passed is empty ",ValueException);
-     }
+
+    IMP_USAGE_CHECK( (m.rows != 0 && m.cols != 0),
+                    "CenteredMat: Matrix passed is empty");
     centered_ = m;
-    center_row_ = (int)m.rows/2;
-    center_col_ = (int)m.cols/2;
+    center_row_ = static_cast<int>(0.5*m.rows);
+    center_col_ = static_cast<int>(0.5*m.cols);
     set_starts_and_ends();
   }
 
-  //! Whe the pixel center of the matrix is explicitly established
+  //! Where the pixel center of the matrix is explicitly established
   CenteredMat(cv::Mat &m, int center_row, int center_col) {
     centered_ = m;
     if(center_row >= 0 && center_row < m.rows && center_col >=0 &&
