@@ -56,37 +56,6 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
 }
 
 
-void ProjectionMask::apply(cv::Mat &m,
-                const algebra::Vector2D &v,double weight) {
-  int vi= algebra::get_rounded(v[0]);
-  int vj= algebra::get_rounded(v[1]);
-  CenteredMat centered_mask(data_); // Now pass to CenteredMat
-  CenteredMat centered_m(m);
-/**
-  IMP_LOG(IMP::VERBOSE,"ProjectionMask::apply mask " << this->rows << "x"
-               << this->cols << " "           << centered_mask
-    << " vi " << vi << " vj " << vj << "Mat m " << m.rows
-    << "x" << m.cols << std::endl);
-  std::cout << "fast: ProjectionMask::apply mask " << this->rows << "x"
-           << this->cols << " "           << centered_mask
-          << " vi " << vi << " vj " << vj << "Mat m "
-            << m.rows << "x" << m.cols << std::endl;
-**/
-  for(int i=centered_mask.get_start(0);i <= centered_mask.get_end(0);++i) {
-    for(int j=centered_mask.get_start(1);j <= centered_mask.get_end(1);++j) {
-      // No interpolation is done, just round the values to integers
-      int row=i+vi;
-      int col=j+vj;
-      if(centered_m.get_is_in_range(row,col)) {
-        centered_m(row,col) += centered_mask(i,j)*weight;
-      }
-    }
-  }
-}
-
-
-
-
   void ProjectionMask::show(std::ostream &out) const {
     out << "ProjectionMask size " << data_.rows << "x" <<  data_.cols
         << std::endl;
