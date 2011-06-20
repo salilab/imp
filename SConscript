@@ -1,4 +1,5 @@
 Import('env')
+import scons_tools.dependency
 
 # Uncomment if you need to check for an external library on the system when
 # building this module.
@@ -13,12 +14,14 @@ Import('env')
 # See IMP.gsl for a working example of an external library dependency
 # (it requires GSL, the GNU Scientific Library).
 #
-#import scons_tools.dependency
 #scons_tools.dependency.add_external_library(env, "ExampleLib",
 #                                            "example_lib_name",
 #                                            "example_lib_header.h")
 
+scons_tools.dependency.boost.add_boost_library(env, "ProgramOptions", "program_options", 'boost/program_options.hpp',
+                                              extra_boost_libs=["system"])
 
 env.IMPModuleBuild(version='SVN',
                    # The required modules are the other IMP modules that must be built to use this one
-                   required_modules=['container', 'core', 'atom', 'domino', 'rmf'])
+                   required_modules=['container', 'core', 'atom', 'domino', 'rmf'],
+                   required_dependencies=['Boost.ProgramOptions'])
