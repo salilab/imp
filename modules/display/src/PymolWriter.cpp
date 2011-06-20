@@ -27,9 +27,11 @@ void PymolWriter::do_set_frame() {
   if (get_frame() != 0) {
     do_close();
   }
+  last_frame_=get_frame();
 }
 
 void PymolWriter::do_open() {
+  last_frame_= get_frame();
   lastname_=placeholder_name;
   get_stream() << "from pymol.cgo import *\nfrom pymol import cmd\n";
   get_stream() << "from pymol.vfont import plain\ndata= {}\n";
@@ -39,7 +41,7 @@ void PymolWriter::do_open() {
 
 void PymolWriter::do_close() {
   cleanup(lastname_);
-  int frame= get_frame();
+  int frame= last_frame_;
   if (frame==-1) frame=0;
   get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, " << frame
                << ")\n";

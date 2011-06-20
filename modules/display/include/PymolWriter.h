@@ -34,6 +34,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 class IMPDISPLAYEXPORT PymolWriter: public TextWriter
 {
   std::string lastname_;
+  int last_frame_;
   enum Type {NONE=0, LINES, TRIANGLES, OTHER};
   Type open_type_;
   friend class CGOAnimationWriter;
