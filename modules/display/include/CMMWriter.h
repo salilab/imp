@@ -33,7 +33,6 @@ class IMPDISPLAYEXPORT CMMWriter: public TextWriter
   bool handle(PointGeometry *g,
               Color color, std::string name);
 public:
-
   IMP_TEXT_WRITER(CMMWriter);
 };
 

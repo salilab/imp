@@ -20,6 +20,7 @@ void CMMWriter::do_close() {
   get_stream() << "</marker_set>" << std::endl;
 }
 
+
 bool CMMWriter::handle(SphereGeometry *g, Color color,
                         std::string name) {
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
