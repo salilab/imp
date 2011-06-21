@@ -333,33 +333,40 @@ namespace {
   }
 
   Assignment get_next_assignment(const ParticlesTemp &s,
-                                 const std::vector<Subset> &subsets,
-                                 const std::vector<Ints>& orders,
-                                 Ints cur,
-                                 const Ints &maxs,
-                                const std::vector<SubsetFilters> &filters);
-
-  Assignment get_next_assignment_add(const ParticlesTemp &s,
                                      const Subsets &subsets,
                                      const std::vector<Ints>& orders,
                                      Ints cur,
                                      const Ints &maxs,
                                   const std::vector<SubsetFilters> &filters) {
+    IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
+    IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
+    IMP_INTERNAL_CHECK(s.size() == orders.size(),
+                       "Subset and orders don't match");
+    IMP_INTERNAL_CHECK(s.size() == filters.size(),
+                       "Subset and filters don't match");
     unsigned int increment=1;
     while (true) {
       cur.back()+=increment;
       if (cur.back() >= maxs.back()) {
         cur.back()=0;
-        Assignment inner= get_next_assignment(ParticlesTemp(s.begin(),
-                                                            s.end()-1),
-                                             Subsets(subsets.begin(),
-                                                     subsets.end()-1),
-                                             std::vector<Ints>(orders.begin(),
-                                                               orders.end()-1),
-                                             Ints(cur.begin(), cur.end()-1),
-                                             Ints(maxs.begin(), maxs.end()-1),
-                                 std::vector<SubsetFilters>(filters.begin(),
-                                                            filters.end()-1));
+        Assignment inner;
+        if (s.size()==1) {
+          inner= get_next_assignment_base(Ints(cur.begin(), cur.end()-1),
+                                          Ints(maxs.begin(), maxs.end()-1),
+                              std::vector<SubsetFilters>(filters.begin(),
+                                                          filters.end()-1));
+        } else {
+          inner= get_next_assignment(ParticlesTemp(s.begin(),
+                                                   s.end()-1),
+                                     Subsets(subsets.begin(),
+                                             subsets.end()-1),
+                                     std::vector<Ints>(orders.begin(),
+                                                       orders.end()-1),
+                                     Ints(cur.begin(), cur.end()-1),
+                                     Ints(maxs.begin(), maxs.end()-1),
+                           std::vector<SubsetFilters>(filters.begin(),
+                                                      filters.end()-1));
+        }
         if (inner.size()==0) {
           return inner;
         } else {
@@ -384,9 +391,21 @@ namespace {
               break;
             }
           }
-          increment= filters.back()[i]
+          unsigned int next= filters.back()[i]
             ->get_next_state(pos,
-                             cura)- cur.back();
+                             cura);
+          IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+            for (unsigned int j=cura[pos]; j < next; ++j) {
+              reordered_cur[pos]=j;
+              Assignment curat(reordered_cur);
+              IMP_INTERNAL_CHECK(!filters.back()[i]->get_is_ok(curat),
+                                 "The filter " << filters.back()[i]->get_name()
+                                 << " said to skip, but also said it was OK at "
+                                 << "position " << pos << " of " << curat
+                                 << " skipping until " << next);
+            }
+          }
+          increment= next- cur.back();
           IMP_INTERNAL_CHECK(increment > 0, "Increment must be positive");
           ok=false;
           break;
@@ -395,26 +414,6 @@ namespace {
       if (ok) {
         return Assignment(cur);
       }
-    }
-  }
-
-
-  Assignment get_next_assignment(const ParticlesTemp &s,
-                                 const Subsets &subsets,
-                                 const std::vector<Ints>& orders,
-                                 Ints cur,
-                                 const Ints &maxs,
-                                 const std::vector<SubsetFilters> &filters) {
-    IMP_INTERNAL_CHECK(s.size() == cur.size(), "Subset and last don't match");
-    IMP_INTERNAL_CHECK(s.size() == maxs.size(), "Subset and maxs don't match");
-    IMP_INTERNAL_CHECK(s.size() == orders.size(),
-                       "Subset and orders don't match");
-    IMP_INTERNAL_CHECK(s.size() == filters.size(),
-                       "Subset and filters don't match");
-    if (s.size()==1) {
-      return get_next_assignment_base(cur, maxs, filters);
-    } else {
-      return get_next_assignment_add(s, subsets, orders, cur, maxs, filters);
     }
   }
 }
@@ -512,7 +511,7 @@ void BranchAndBoundAssignmentsTable
       IMP_LOG(TERSE, "Verifying output..." << std::endl);
       IMP_NEW(PackedAssignmentContainer, cpac, ());
       cpac->set_was_used(true);
-      IMP_NEW(RecursiveAssignmentsTable, sat, (pst_, sft_, max_));
+      IMP_NEW(SimpleAssignmentsTable, sat, (pst_, sft_, max_));
       //sat->set_log_level(SILENT);
       sat->load_assignments(s, cpac);
       using namespace IMP;
@@ -534,6 +533,7 @@ void BranchAndBoundAssignmentsTable
                            "Numbers don't match "
                            << cpac->get_number_of_assignments()
                            << " vs " << pac->get_number_of_assignments()
+                           << " for " << s
                            << "\n");
       }
       Assignments paca= pac->get_assignments();
