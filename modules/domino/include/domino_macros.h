@@ -69,7 +69,7 @@
 #define IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Name, filter, strength,    \
                                              next)                      \
   struct Name##Filter {                                                 \
-    bool operator()(const Assignment &state,                           \
+    bool operator()(const Assignment &state,                            \
                     const Ints &members) const {                        \
       filter;                                                           \
     }                                                                   \
@@ -82,7 +82,7 @@
     }                                                                   \
   };                                                                    \
   struct Name##Next {                                                   \
-    double operator()(int pos, const Assignment& state,                \
+    double operator()(int pos, const Assignment& state,                 \
                       const Ints &set) const {                          \
       next;                                                             \
     }                                                                   \
@@ -98,6 +98,7 @@
     Ints used;                                                          \
     get_indexes(s, excluded, all, 1, used);                             \
     return get_disjoint_set_filter<Name##Filter, Name##Next>(#Name, s,  \
+                                                       get_log_level(), \
                                                              all, used); \
   }                                                                     \
   double                                                                \
