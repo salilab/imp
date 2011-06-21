@@ -10,6 +10,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/CenteredMat.h"
+#include "IMP/atom/Mass.h"
 #include "IMP/em/exp.h"
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Vector2D.h"
@@ -40,15 +41,19 @@ class IMPEM2DEXPORT ProjectionMask {
 public:
 #if !defined(DOXYGEN) && !defined(SWIG)
   ProjectionMask(const em::KernelParameters &KP,
-            const em::RadiusDependentKernelParameters *params,double voxelsize);
+            const em::RadiusDependentKernelParameters *params,
+            double voxelsize,
+            double mass =1.0);
 
   //! Generates the mask
   /*!
     \param[in] KP Kernel parameteres to employ. See the EM module
     \param[in] params Kernel parameteres associated with radius to employ
+    \param[in] mass Mass to give to the mask
   */
   void create(const em::KernelParameters &KP,
-                 const em::RadiusDependentKernelParameters *params);
+                 const em::RadiusDependentKernelParameters *params,
+                 double mass = 1.0);
 #endif
 
   //! Adds the values of the mask to a matrix at the given pixel
@@ -58,7 +63,7 @@ public:
     \param[in] weight Weight given to the values of the mask.
   */
   void apply(cv::Mat &m,
-             const algebra::Vector2D &v,double weight);
+             const algebra::Vector2D &v);
 
   void show(std::ostream &out = std::cout) const;
 
@@ -73,7 +78,7 @@ protected:
 IMP_VALUES(ProjectionMask,ProjectionMasks);
 
 
-
+/*
 inline
 void ProjectionMask::apply(cv::Mat &m,
                 const algebra::Vector2D &v,double weight) {
@@ -99,7 +104,6 @@ void ProjectionMask::apply(cv::Mat &m,
                        centered_mask.get_end(1));
 
 
-  double epsilon = 1.e-5;
   for(int i = start_i; i <= end_i; ++i) {
     int p = i+vi;
     for(int j = start_j; j <= end_j; ++j) {
@@ -107,8 +111,63 @@ void ProjectionMask::apply(cv::Mat &m,
     }
   }
 }
+*/
 
 
+// Very ugly but very fast function replacing the above
+inline
+void ProjectionMask::apply(cv::Mat &m,
+                const algebra::Vector2D &v) {
+
+  // v is the vector of coordinates respect to the center of the matrix m
+  int vi= algebra::get_rounded(v[0]);
+  int vj= algebra::get_rounded(v[1]);
+
+  // Centers for the matrix
+  int center[2];
+  center[0] = static_cast<int>(0.5*m.rows);
+  center[1] = static_cast<int>(0.5*m.cols);
+
+  int start[2], end[2];
+  start[0] = -center[0];
+  start[1] = -center[1];
+  end[0]=m.rows - 1 - center[0];
+  end[1]=m.cols - 1 - center[1];
+
+  // Check range: If the vector is outside the matrix, don't do anything.
+  if(vi < start[0] || vi > end[0]) return;
+  if(vj < start[1] || vj > end[1]) return;
+
+
+  // Centers for the mask
+  int mcenter[2];
+  mcenter[0] = static_cast<int>(0.5*data_.rows);
+  mcenter[1] = static_cast<int>(0.5*data_.cols);
+
+  int mstart[2], mend[2];
+  mstart[0] = -mcenter[0];
+  mstart[1] = -mcenter[1];
+  mend[0]=data_.rows - 1 - mcenter[0];
+  mend[1]=data_.cols - 1 - mcenter[1];
+
+
+  // Get the admisible range for the mask
+  int start_i = std::max(start[0] - vi, mstart[0]);
+  int start_j = std::max(start[1] - vj, mstart[1]);
+  int end_i = std::min(end[0] - vi, mend[0]);
+  int end_j = std::min(end[1] - vj, mend[1]);
+
+
+  int row = vi+center[0];
+  int col = vj+center[0];
+
+  for(int i = start_i; i <= end_i; ++i) {
+    int p = i+row;
+    for(int j = start_j; j <= end_j; ++j) {
+      m.at<double>(p, j+col) += data_.at<double>(i+mcenter[0], j+mcenter[1]);
+    }
+  }
+}
 
 
 
@@ -152,8 +211,9 @@ public:
   /*!
     \param[in] params Kernel parameters for the particle
     \param[in] radius of the particle
+    \param[in] mass of the particle
   */
-  void create_mask(double radius);
+  void create_mask(double radius, double mass);
 
   //! Returns the adequate mask for a particle of given radius
   ProjectionMaskPtr find_mask(double radius);

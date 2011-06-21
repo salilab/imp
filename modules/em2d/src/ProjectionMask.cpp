@@ -15,7 +15,9 @@ ProjectionMask::~ProjectionMask() {
 }
 
 ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
-         const em::RadiusDependentKernelParameters *params,double pixelsize) {
+         const em::RadiusDependentKernelParameters *params,
+         double pixelsize,
+         double mass) {
   sq_pixelsize_ = pixelsize*pixelsize;
 //  dim_ = 2*floor(params->get_kdist()/pixelsize)+1;
 //  data_.create(dim_,dim_,CV_64FC1);
@@ -23,12 +25,13 @@ ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
   int mask_size = 2*dim_+1; // enough to go from -dim to dim
   data_.create(mask_size,mask_size,CV_64FC1);
   data_.setTo(0.0);
-  create(KP,params);
+  create(KP,params, mass);
 }
 
 
 void  ProjectionMask::create(const em::KernelParameters &KP,
-                 const em::RadiusDependentKernelParameters *params) {
+                 const em::RadiusDependentKernelParameters *params,
+                 double mass) {
 
   // Decorate the masks to use centered coordinates
   CenteredMat centered_mask(data_);
@@ -47,7 +50,7 @@ void  ProjectionMask::create(const em::KernelParameters &KP,
         tmp= em::EXP(-square_radius * params->get_inv_sigsq());
         // if statement to ensure even sampling within the box
         if (tmp> KP.get_lim() && centered_mask.get_is_in_range(i,j) ) {
-          centered_mask(i,j) += params->get_normfac()*tmp;
+          centered_mask(i,j) += params->get_normfac()*tmp * mass;
         }
       }
     }
@@ -84,13 +87,15 @@ void MasksManager::create_masks(const ParticlesTemp &ps) {
     double radius = xyzr.get_radius();
     mask = this->find_mask(radius);
     if (!mask) {
-      this->create_mask(radius);
+      atom::Mass mass(ps[i]);
+      double w = mass.get_mass();
+      this->create_mask(radius, w);
     }
   }
   IMP_LOG(IMP::TERSE,"Finished creating Projection Masks " << std::endl);
 }
 
-void MasksManager::create_mask(double radius) {
+void MasksManager::create_mask(double radius, double mass) {
   IMP_LOG(IMP::VERBOSE,"Creating a projection mask for radius " <<
             radius <<std::endl);
   if(is_setup_ == false) {
@@ -102,7 +107,9 @@ void MasksManager::create_mask(double radius) {
                                         // exception
   // This call creates the params, but gives a warning
   params = kernel_params_.get_params(radius);
-  ProjectionMaskPtr ptr(new ProjectionMask(kernel_params_,params,pixelsize_));
+  ProjectionMaskPtr ptr(new ProjectionMask(kernel_params_,
+                                           params,
+                                           pixelsize_));
   radii2mask_[radius]=ptr;
 }
 
