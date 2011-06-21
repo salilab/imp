@@ -17,7 +17,7 @@ class TestBL(IMP.test.TestCase):
         bstr= buf.getvalue()
         print bstr
         for i in range(0,5):
-            self.assert_(bstr.find("cmd.load_cgo(data[k], k, "+str(i)) != -1)
+            self.assert_(bstr.find("cmd.load_cgo(data[k], k, "+str(i+1)) != -1)
 
 if __name__ == '__main__':
     IMP.test.main()
