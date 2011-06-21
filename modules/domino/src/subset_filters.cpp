@@ -131,18 +131,9 @@ double RestraintScoreSubsetFilterTable
 ::get_strength(const Subset &s,
                const Subsets &excluded) const {
   set_was_used(true);
-  if (mset_->get_subset_data(s, excluded)
-      .get_number_of_total_restraints() ==0) {
-    IMP_LOG(VERBOSE, "none found" << std::endl);
-    return 0;
-  } else {
-    IMP_LOG(VERBOSE, mset_->get_subset_data(s, excluded)
-            .get_number_of_total_restraints() << " found" << std::endl);
-
-    return 1-std::pow(.5,
-                      static_cast<int>(mset_->get_subset_data(s,
-                                  excluded).get_number_of_restraints()));
-  }
+  unsigned int nr= mset_->get_number_of_restraints(s, excluded);
+  return 1-std::pow(.5,
+                    static_cast<int>(nr));
 }
 
 
@@ -246,11 +237,13 @@ namespace {
   DisjointSetsSubsetFilter<FF, Next>*
   get_disjoint_set_filter(std::string name,
                           const Subset &s,
+                          LogLevel ll,
                           const std::vector<Ints> &all,
                           const Ints &) {
     if (all.empty()) return NULL;
     typedef DisjointSetsSubsetFilter<FF, Next> CF;
     IMP_NEW(CF, f, (all));
+    f->set_log_level(ll);
     std::ostringstream oss;
     oss << name << " for " << s;
     f->set_name(oss.str());
@@ -470,22 +463,28 @@ namespace {
         mx=std::max(mx, state[set[i]]);
       }
     }
-    return std::max(mx+1, state[pos]+1);
+    return std::max(mx, state[pos]);
   }
 }
 
 IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
-    //IMP_LOG(TERSE, "State is " << state << " and ");
-    //logit(TERSE, members);
-    //IMP_LOG(TERSE, " are the members." << std::endl);
-    unsigned int last=0;
-    while (last < members.size() && members[last]==-1) ++last;
-    for (unsigned int i=last+1; i< members.size(); ++i) {
-      if (members[i] != -1) {
-        // it is too low an index to work globally
-        if (state[members[i]] < members[i]) return false;
-        if (state[members[last]] >= state[members[i]]) return false;
-        last=i;
+    IMP_LOG(TERSE, "State is " << state << " and ");
+    logit(TERSE, members);
+    IMP_LOG(TERSE, " are the members." << std::endl);
+    for (unsigned int i=1; i< members.size(); ++i) {
+      IMP_USAGE_CHECK(members[i]>=0, "Invalid member");
+      // it is too low an index to work globally
+      /*if (state[members[i]] < members[i]) {
+        IMP_LOG(VERBOSE, "Rejected due to index being too low"
+                << state << " at " << members[i]
+                << std::endl);
+        return false;
+        }*/
+      if (state[members[i-1]] > state[members[i]]) {
+        IMP_LOG(VERBOSE, "Rejected due order"
+                << state << " at " << members[i]
+                << " vs " << members[i-1] << std::endl);
+        return false;
       }
     }
     //IMP_LOG(TERSE, "ok" << std::endl);
