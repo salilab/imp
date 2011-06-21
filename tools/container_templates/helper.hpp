@@ -33,7 +33,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeCLASSNAMEContainer: public CLASSNAMEContainer {
 private:
   PLURALSTORAGETYPE data_;
-  bool changed_;
   typedef IMP::internal::Set<VARIABLETYPE> Index;
   mutable Index index_;
   void update_index() const {
@@ -79,7 +78,6 @@ protected:
       get_removed()->data_=removed;
     }
     swap(data_, cur);
-    changed_=true;
   }
   void add_to_list(PLURALVARIABLETYPE &cur) {
     std::sort(cur.begin(), cur.end());
@@ -96,7 +94,6 @@ protected:
       ac->data_.insert(ac->data_.end(), added.begin(), added.end());
     }
     swap(data_, newlist);
-    changed_=true;
   }
 
   template <class Table>
@@ -135,7 +132,6 @@ protected:
         }
       }
     }
-    changed_=true;
   }
   void remove_from_list(PLURALVARIABLETYPE &cur) {
     index_.clear();
@@ -149,7 +145,6 @@ protected:
       ListLikeCLASSNAMEContainer* ac=get_removed();
       ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
     }
-    changed_=true;
   }
   template <class F>
     struct AccIf {
@@ -166,7 +161,6 @@ protected:
   template <class F>
   void remove_from_list_if(F f) {
     index_.clear();
-    unsigned int sz= data_.size();
     if (get_has_added_and_removed_containers()) {
       PLURALVARIABLETYPE removed;
       data_.remove_if(AccIf<F>(f, removed));
@@ -175,7 +169,6 @@ protected:
     } else {
       data_.remove_if(f);
     }
-    changed_= data_.size() != sz;
   }
   void add_to_list(ARGUMENTTYPE cur) {
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
@@ -185,10 +178,9 @@ protected:
         ac->data_.push_back(cur);
       }
     }
-    changed_=true;
   }
   ListLikeCLASSNAMEContainer(Model *m, std::string name):
-    CLASSNAMEContainer(m,name), changed_(false){
+    CLASSNAMEContainer(m,name){
   }
   template <class F>
    void apply_to_contents(F f) const {
@@ -236,22 +228,6 @@ protected:
                         (ARGUMENTTYPE,DerivativeAccumulator*) const>
                                (&CLASSNAMEScore::evaluate), s, _1, da));
   }
-  template <class SS>
-  double template_evaluate_change(const SS *s,
-                                  DerivativeAccumulator *da) const {
-     return accumulate_over_contents(boost::bind(static_cast<double
-                                                (CLASSNAMEScore::*)
-                        (ARGUMENTTYPE,DerivativeAccumulator*) const>
-                       (&CLASSNAMEScore::evaluate_change), s, _1, da));
- }
-  template <class SS>
-  double template_evaluate_prechange(const SS *s,
-                                     DerivativeAccumulator *da) const {
-    return accumulate_over_contents(boost::bind(static_cast<double
-                                                (CLASSNAMEScore::*)
-                        (ARGUMENTTYPE,DerivativeAccumulator*) const>
-                    (&CLASSNAMEScore::evaluate_prechange), s, _1, da));
-  }
   void apply(const CLASSNAMEModifier *sm) {
     sm->apply(data_);
   }
@@ -263,19 +239,7 @@ protected:
                   DerivativeAccumulator *da) const {
     return s->evaluate(data_, da);
   }
-  double evaluate_change(const CLASSNAMEScore *s,
-                         DerivativeAccumulator *da) const {
-    return s->evaluate_change(data_, da);
-  }
-  double evaluate_prechange(const CLASSNAMEScore *s,
-                            DerivativeAccumulator *da) const {
-    return s->evaluate_prechange(data_, da);
-  }
   ParticlesTemp get_contained_particles() const;
-  bool get_contained_particles_changed() const;
-  bool get_listed_FUNCTIONNAME_changed() const {
-    return changed_;
-  }
   CLASSNAMEContainerPair get_added_and_removed_containers() const;
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const;
   unsigned int get_number_of_FUNCTIONNAMEs() const;
@@ -294,7 +258,6 @@ protected:
       get_added()->data_.clear();
       get_removed()->data_.clear();
     }
-    changed_=false;
   }
   void do_before_evaluate() {
     std::remove_if(data_.begin(), data_.end(),

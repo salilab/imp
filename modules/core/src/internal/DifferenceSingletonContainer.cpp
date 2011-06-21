@@ -63,10 +63,4 @@ ParticlesTemp DifferenceSingletonContainer::get_contained_particles() const {
   return ret;
 }
 
-bool DifferenceSingletonContainer::get_contained_particles_changed() const {
-  return a_->get_contained_particles_changed()
-    || b_->get_contained_particles_changed();
-}
-
-
 IMPCORE_END_INTERNAL_NAMESPACE

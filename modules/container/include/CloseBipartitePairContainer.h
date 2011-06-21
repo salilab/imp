@@ -76,7 +76,6 @@ public:
    /**@}*/
 #ifndef IMP_DOXYGEN
 #ifndef SWIG
-  bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
 #endif
   bool get_is_up_to_date() const {
@@ -85,15 +84,7 @@ public:
     } else {
       if (!a_->get_is_up_to_date()
           || !b_->get_is_up_to_date()) return false;
-      bool ret=true;
-      IMP_FOREACH_SINGLETON(a_,
-                            ret= !(imp_foreach_break
-                                   =_1->get_is_changed()););
-      if (!ret) return ret;
-      IMP_FOREACH_SINGLETON(b_,
-                            ret= !(imp_foreach_break
-                                   =_1->get_is_changed()););
-      return ret;;
+      return true;
     }
   }
 #endif

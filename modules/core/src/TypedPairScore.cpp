@@ -65,14 +65,6 @@ TypedPairScore::get_input_containers(Particle *) const {
   return ContainersTemp();
 }
 
-bool TypedPairScore::get_is_changed(const ParticlePair&p) const {
-  if (p[0]->get_is_changed() || p[1]->get_is_changed()) return true;
-  PairScore *ps= get_pair_score(p);
-  if (!ps) return false;
-  else return ps->get_is_changed(p);
-}
-
-
 void TypedPairScore::do_show(std::ostream &out) const
 {
   out << "key " << typekey_ << std::endl;

@@ -77,7 +77,7 @@ struct ReadLock;
 struct WriteLock;
 
 struct IMPEXPORT ParticleStorage {
-  ParticleStorage(): shadow_(NULL){
+  ParticleStorage() {
 #if IMP_BUILD < IMP_FAST
     read_locked_=false;
     write_locked_=false;
@@ -114,8 +114,6 @@ struct IMPEXPORT ParticleStorage {
   ObjectKeys cache_objects_;
 
   Storage::iterator iterator_;
-  // manually ref counted since Pointer requires the full definition
-  Particle* shadow_;
 
 #if IMP_BUILD < IMP_FAST
   // for testing get_read/written_particles()

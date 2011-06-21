@@ -42,7 +42,7 @@ public:
                      Container *pc,
                      std::string name="GroupnamesRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(ContainerRestraint);
+  IMP_RESTRAINT(ContainerRestraint);
 
   //! Get the container used to store Particles
   std::vector<typename Score::Argument> get_arguments() const {

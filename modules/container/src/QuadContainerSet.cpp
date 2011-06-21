@@ -134,24 +134,6 @@ double QuadContainerSet::evaluate(const QuadScore *s,
   return score;
 }
 
-double QuadContainerSet::evaluate_change(const QuadScore *s,
-                                              DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    score+=get_quad_container(i)->evaluate_change(s, da);
-  }
-  return score;
-}
-
-double QuadContainerSet::evaluate_prechange(const QuadScore *s,
-                                             DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    score+=get_quad_container(i)->evaluate_prechange(s, da);
-  }
-  return score;
-}
-
 
 ParticlesTemp QuadContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
@@ -162,14 +144,6 @@ ParticlesTemp QuadContainerSet::get_contained_particles() const {
   return ret;
 }
 
-bool QuadContainerSet::get_contained_particles_changed() const {
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    if (get_quad_container(i)->get_contained_particles_changed()) {
-      return true;
-    }
-  }
-  return false;
-}
 
 
 IMPCONTAINER_END_NAMESPACE

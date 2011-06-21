@@ -58,14 +58,6 @@ double MinimumPairScore::evaluate(const ParticlePair& v,
   return score;
 }
 
-bool MinimumPairScore::get_is_changed(const ParticlePair& v) const {
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    if (scores_[i]->get_is_changed(v)) return true;
-  }
-  return false;
-}
-
-
 ParticlesTemp MinimumPairScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

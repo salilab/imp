@@ -39,28 +39,6 @@ inline bool is_valid(const ParticleTuple<D> &p) {
   return true;
 }
 
-inline bool is_dirty(Particle *p) {
-  return p->get_is_changed();
-}
-template <unsigned int D>
-inline bool is_dirty( const ParticleTuple<D> &p) {
-  for (unsigned int i=0; i< D; ++i) {
-    if (p[i]->get_is_changed()) return true;
-  }
-  return false;
-}
-inline Particle* prechange(Particle*p) {
-  return p->get_prechange_particle();
-}
-
-template <unsigned int D>
-inline ParticleTuple<D> prechange(const ParticleTuple<D> &p) {
-  ParticleTuple<D> ret;
-  for (unsigned int i=0; i< D; ++i) {
-    ret[i]= p[i]->get_prechange_particle();
-  }
-  return ret;
-}
 
 inline bool is_inactive(const Particle *p) {
   return !p->get_is_active();

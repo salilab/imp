@@ -58,14 +58,6 @@ double MinimumTripletScore::evaluate(const ParticleTriplet& v,
   return score;
 }
 
-bool MinimumTripletScore::get_is_changed(const ParticleTriplet& v) const {
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    if (scores_[i]->get_is_changed(v)) return true;
-  }
-  return false;
-}
-
-
 ParticlesTemp MinimumTripletScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

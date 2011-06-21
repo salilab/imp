@@ -58,14 +58,6 @@ double MinimumSingletonScore::evaluate(Particle* v,
   return score;
 }
 
-bool MinimumSingletonScore::get_is_changed(Particle* v) const {
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    if (scores_[i]->get_is_changed(v)) return true;
-  }
-  return false;
-}
-
-
 ParticlesTemp MinimumSingletonScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

@@ -24,8 +24,6 @@ Model::Model(std::string name): Object(name),
                                 rs_(new RestraintSet())
 {
   cur_stage_=NOT_EVALUATING;
-  incremental_update_=false;
-  first_incremental_=true;
   gather_statistics_=false;
   eval_count_=0;
   set_was_used(true);
@@ -138,40 +136,13 @@ double Model::get_weight(Restraint *r) const {
 void Model::update() {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(this);
-  if (get_is_incremental() && !first_incremental_) {
-    evaluate(last_had_derivatives_);
-  } else {
-    if (!get_has_dependencies()) {
-      compute_dependencies();
-    }
-    Floats ret= do_evaluate(RestraintsTemp(),
-                            Floats(),
-                            ordered_score_states_,
-                            false);
+  if (!get_has_dependencies()) {
+    compute_dependencies();
   }
-}
-
-void Model::set_is_incremental(bool tf) {
-  DerivativeAccumulator da;
-  if (tf && !get_is_incremental()) {
-    first_incremental_=true;
-    for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
-      (*it)->setup_incremental();
-    }
-    RestraintsTemp rt= get_restraints(rs_);
-    for (unsigned int i=0; i< rt.size(); ++i) {
-      rt[i]->set_is_incremental(true);
-    }
-  } else if (!tf && get_is_incremental()) {
-    for (ParticleIterator it= particles_begin(); it != particles_end(); ++it) {
-      (*it)->teardown_incremental();
-    }
-    RestraintsTemp rt= get_restraints(rs_);
-    for (unsigned int i=0; i< rt.size(); ++i) {
-      rt[i]->set_is_incremental(false);
-    }
-  }
-  incremental_update_=tf;
+  Floats ret= do_evaluate(RestraintsTemp(),
+                          Floats(),
+                          ordered_score_states_,
+                          false);
 }
 
 void Model::do_show(std::ostream& out) const

@@ -64,37 +64,6 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
 
 
-    def test_irestraint(self):
-        """Test the incremental evaluation of the CLASSNAMEsRestraint"""
-        m= IMP.Model()
-        m.set_log_level(IMP.TERSE)
-        gs=self.create_CLASSFUNCTIONNAME_score()
-        c= IMP.container.ListCLASSNAMEContainer(m)
-        ps=[]
-        ps2=[]
-        f=0
-        for i in range(0,20):
-            p=self.create_FUNCTIONNAME(m)
-            ps.append(p)
-            f=f+gs.evaluate(p,None)
-        for i in range(0,10):
-            p=self.create_FUNCTIONNAME(m)
-            ps2.append(p)
-            #f=f+evaluate_FUNCTIONNAME_score(gs, p)
-        c.set_FUNCTIONNAMEs(ps)
-        r= IMP.container.CLASSNAMEsRestraint(gs, c)
-        m.add_restraint(r)
-        m.set_is_incremental(True)
-        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
-        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
-        ps= ps+ps2
-        f=0
-        for p in ps:
-            f=f+ gs.evaluate(p,None)
-        c.set_FUNCTIONNAMEs(ps)
-        self.assertAlmostEqual(m.evaluate(False), f, delta=.1*f)
-
-
     def test_srestraint(self):
         """Test the CLASSNAMERestraint"""
         m= IMP.Model()

@@ -23,8 +23,7 @@ CLASSNAMERestraint
                      std::string name):
   CLASSNAMEScoreRestraint(name),
   ss_(ss),
-  v_(vt),
-  score_(std::numeric_limits<double>::quiet_NaN())
+  v_(vt)
 {
   IMP_IF_CHECK(USAGE) {
     // check the arguments are OK
@@ -37,22 +36,9 @@ double CLASSNAMERestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  score_ = ss_->evaluate(v_, accum);
-
-  return score_;
+  return ss_->evaluate(v_, accum);
 }
 
-double CLASSNAMERestraint
-::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
-{
-  if (ss_->get_is_changed(v_)) {
-    score_+=ss_->evaluate_change(v_, accum);
-  }
-  return score_;
-}
-
-void CLASSNAMERestraint
-::set_is_incremental(bool) {}
 
 ParticlesTemp CLASSNAMERestraint::get_input_particles() const
 {

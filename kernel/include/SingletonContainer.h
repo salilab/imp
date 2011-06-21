@@ -118,12 +118,11 @@ public:
                           DerivativeAccumulator *da) const=0;
 
 
-  /** \name Incremental Scoring
-      When incremental scoring is used, the container keeps track of
-      changes to it since the last Model::evaluate() call.
-      \unstable{SingletonContainer::get_removed_container()}
-      The address of the objects returned should not change over the lifetime
-      of this container (but, of course, their contents will).
+  /** \name Tracking changes
+      The container can keep track of the changes since the last
+      Model::evaluate() call. To use this, make sure to call
+      get_removed_container() or get_added_container() before
+      Model::evaluate() so the container knows to track changes.
       @{
   */
   SingletonContainer* get_removed_container() const {
@@ -159,18 +158,6 @@ public:
                        << " to a SingletonContainer.");
     return ret;
   }
-  /** Return the change in score (and derivatives) since the last
-      evaluate of the current contents of the container.
-  */
-  virtual double evaluate_change(const SingletonScore *o,
-                                DerivativeAccumulator *da) const = 0;
-
-
-  /** Return the score of the last evaluate for the current contents of the
-      container.
-  */
-  virtual double evaluate_prechange(const SingletonScore *o,
-                                    DerivativeAccumulator *da) const = 0;
   /** @} */
 
 #ifndef IMP_DOXYGEN

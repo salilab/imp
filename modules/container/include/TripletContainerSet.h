@@ -62,10 +62,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
              DerivativeAccumulator &da);
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const;
-  double evaluate_change(const TripletScore *s,
-                         DerivativeAccumulator *da) const;
-  double evaluate_prechange(const TripletScore *s,
-                            DerivativeAccumulator *da) const;
  template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
@@ -88,27 +84,8 @@ class IMPCONTAINEREXPORT TripletContainerSet
     }
     return ret;
   }
-  template <class SS>
-  double template_evaluate_change(const SS *s,
-                                  DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-      ret+=get_triplet_container(i)->evaluate_change(s, da);
-    }
-    return ret;
- }
-  template <class SS>
-  double template_evaluate_prechange(const SS *s,
-                                     DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-      ret+=get_triplet_container(i)->evaluate_prechange(s, da);
-    }
-    return ret;
-  }
 
   ParticlesTemp get_contained_particles() const;
-  bool get_contained_particles_changed() const;
   IMP_OBJECT(TripletContainerSet);
 
   /** @name Methods to control the nested container

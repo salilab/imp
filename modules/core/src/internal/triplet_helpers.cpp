@@ -47,10 +47,6 @@ ParticlesTemp ListLikeTripletContainer
   return IMP::internal::flatten(data_);
 }
 
-bool ListLikeTripletContainer
-::get_contained_particles_changed() const {
-  return changed_;
-}
 
 TripletContainerPair ListLikeTripletContainer
 ::get_added_and_removed_containers() const {

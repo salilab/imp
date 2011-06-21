@@ -34,7 +34,6 @@ WriteLockedParticleException
 
 
 ParticleStorage::~ParticleStorage(){
-  if (shadow_) internal::unref(shadow_);
 }
 IMP_END_INTERNAL_NAMESPACE
 
@@ -58,10 +57,6 @@ void Particle::do_show(std::ostream& out) const
 {
   internal::PrefixStream preout(&out);
   preout << (get_is_active()? " (active)":" (dead)");
-  if (get_is_active() && get_model()->get_is_incremental()) {
-    if (dirty_) preout << " (changed)";
-    else preout << " (unchanged)";
-  }
   preout << std::endl;
 
   if (get_has_model()) {
@@ -87,27 +82,6 @@ void Particle::do_show(std::ostream& out) const
         }
       }
       preout << (get_is_optimized(k)?" (optimized)":"");
-      if (get_model()->get_is_incremental()
-          && get_prechange_particle()->has_attribute(k)) {
-        preout << " was " << get_prechange_particle()->get_value(k);
-        if (k.get_index() < IMP_NUM_INLINE) {
-          if (get_prechange_particle()->ps_->derivatives_.fits(k.get_index())){
-            preout << " ("
-                   << get_prechange_particle()
-              ->ps_->derivatives_.get(k.get_index()) << ") ";
-          } else {
-            preout << " (-) ";
-          }
-        } else {
-          if (get_prechange_particle()->derivatives_.fits(k.get_index())){
-            preout << " ("
-                   << get_prechange_particle()
-              ->derivatives_.get(k.get_index()) << ") ";
-          } else {
-            preout << " (-) ";
-          }
-        }
-      }
       preout << std::endl;
     }
 
@@ -147,89 +121,6 @@ void Particle::do_show(std::ostream& out) const
   }
 }
 
-
-// methods for incremental
-
-void Particle::move_derivatives_to_shadow() {
-  for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
-    ps_->shadow_->derivatives_.set(i,
-                                   ps_->shadow_->derivatives_.get(i)
-                                   + derivatives_.get(i));
-    derivatives_.set(i, 0);
-  }
-
-  ps_->shadow_->ps_->derivatives_.resize(ps_->derivatives_.get_length(), 0);
-  for (unsigned int i=IMP_NUM_INLINE; i< ps_->derivatives_.get_length(); ++i) {
-    ps_->shadow_->ps_->derivatives_.set(i,
-                                        ps_->shadow_->ps_->derivatives_.get(i)
-                                        + ps_->derivatives_.get(i));
-    ps_->derivatives_.set(i, 0);
-  }
-}
-
-void Particle::accumulate_derivatives_from_shadow() {
-
-  IMP_INTERNAL_CHECK(derivatives_.get_length()
-             == ps_->shadow_->derivatives_.get_length(),
-             "The tables do not match on size "
-             << derivatives_.get_length()
-             << " " << ps_->shadow_->derivatives_.get_length()
-             << std::endl);
-  for (unsigned int i=0; i < derivatives_.get_length(); ++i) {
-    derivatives_.set(i, derivatives_.get(i)
-                     + ps_->shadow_->derivatives_.get(i));
-  }
-
-
-  IMP_INTERNAL_CHECK(ps_->derivatives_.get_length()
-             == ps_->shadow_->ps_->derivatives_.get_length(),
-             "The tables do not match on size "
-             << ps_->derivatives_.get_length()
-             << " " << ps_->shadow_->ps_->derivatives_.get_length()
-             << std::endl);
-  for (unsigned int i=IMP_NUM_INLINE; i < ps_->derivatives_.get_length(); ++i) {
-    ps_->derivatives_.set(i, ps_->derivatives_.get(i)
-                          + ps_->shadow_->ps_->derivatives_.get(i));
-  }
-}
-
-Particle::Particle():
-  ps_(new internal::ParticleStorage()),
-  dirty_(false){
-}
-
-void Particle::setup_incremental() {
-  if (!ps_->shadow_) {
-    ps_->shadow_ = new Particle();
-    ps_->shadow_->set_was_used(true);
-    internal::ref(ps_->shadow_);
-    ps_->shadow_->set_name(get_name()+" history");
-    ps_->shadow_->m_= m_;
-  }
-  dirty_=true;
-
-
-  ps_->shadow_->derivatives_
-    =
-    DerivativeTable(derivatives_.get_length());
-  ps_->shadow_->derivatives_.fill(0);
-
-  ps_->shadow_->ps_->derivatives_
-    = internal::ParticleStorage::
-    DerivativeTable(ps_->derivatives_.get_length());
-  ps_->shadow_->ps_->derivatives_.fill(0);
-
-  ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
-}
-
-void Particle::teardown_incremental() {
-  if (!ps_->shadow_) {
-    IMP_FAILURE("Shadow particle was not created before disabling "
-                << "incremental for particle " << *this);
-  }
-  internal::unref(ps_->shadow_);
-  ps_->shadow_=NULL;
-}
 
 
 ContainersTemp Particle::get_input_containers() const {return ContainersTemp();}

@@ -50,7 +50,7 @@ public:
                       CLASSNAMEContainer *pc,
                       std::string name="CLASSNAMEsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreCLASSNAMEsRestraint);
+  IMP_RESTRAINT(CoreCLASSNAMEsRestraint);
 
   PLURALVARIABLETYPE get_arguments() const {
     return pc_->get();

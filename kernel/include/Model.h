@@ -97,10 +97,6 @@ private:
 
   // basic representation
   ParticleStorage particles_;
-  bool incremental_update_;
-  // true if a regular evaluate needs to be called first
-  bool first_incremental_;
-  bool last_had_derivatives_;
   std::map<FloatKey, FloatRange> ranges_;
   mutable Stage cur_stage_;
   unsigned int eval_count_;
@@ -119,24 +115,16 @@ private:
 
 
 
-  // evaluation
-  void validate_incremental_evaluate(const RestraintsTemp &restraints,
-                                     const std::vector<double> &weights,
-                                     bool calc_derivs,
-                                     double score);
   void validate_computed_derivatives() const;
   void before_evaluate(const ScoreStatesTemp &states) const;
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
-  void zero_derivatives(bool shadow_too=false) const;
+  void zero_derivatives() const;
   Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
                      const ScoreStatesTemp &states, bool calc_derivs);
-  enum WhichRestraints {ALL, INCREMENTAL, NONINCREMENTAL};
   Floats do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
-                                bool calc_derivs,
-                                WhichRestraints incremental_restraints,
-                                bool incremental_evaluation) const;
+                                bool calc_derivs) const;
 
 
 
@@ -167,11 +155,6 @@ private:
     particles_.push_back(p);
     p->ps_->iterator_= --particles_.end();
     internal::ref(p);
-    // particles will not be backed up properly, so don't do incremental
-    first_incremental_=true;
-    if (get_is_incremental()) {
-      p->setup_incremental();
-    }
   }
 
 
@@ -427,22 +410,6 @@ public:
     return "Model";
   }
 #endif
-
-  /** \name Incremental Updates
-
-      Control whether incremental updates are being used. See
-      the \ref incremental "incremental updates" page for a more
-      detailed description.
-      @{
-  */
-  /** Turn on or off incremental evaluation. */
-  void set_is_incremental(bool tf);
-
-  bool get_is_incremental() const {
-    return incremental_update_;
-  }
-  /** @} */
-
 
   /** \name Statistics
 

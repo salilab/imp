@@ -54,7 +54,7 @@ public:
                       std::string name="QuadsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(QuadsRestraint);
+  IMP_RESTRAINT(QuadsRestraint);
 
   //! Get the container used to store Particles
   ParticleQuadsTemp get_arguments() const;

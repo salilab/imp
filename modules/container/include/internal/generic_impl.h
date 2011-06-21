@@ -31,43 +31,6 @@ double ContainerRestraint<Score, C>
   return score_;
 }
 
-template <class Score, class C>
-double ContainerRestraint<Score, C>
-::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
-{
-  IMP_OBJECT_LOG;
-  IMP_CHECK_OBJECT(ss_);
-  IMP_CHECK_OBJECT(pc_);
-  IMP_LOG(VERBOSE, "Scores are " << score_);
-  score_+=pc_->template template_evaluate_change<Score>(ss_.get(), accum);
-  // compute the base for the added ones
-  IMP_LOG(VERBOSE, " " << score_);
-  // could be better...
-  score_ +=pc_->C::get_added_container()
-    ->evaluate_prechange(ss_, accum);
-  IMP_LOG(VERBOSE," " << score_);
-  if (accum) {
-    DerivativeAccumulator nda(*accum, -1);
-    score_ -=pc_->C::get_removed_container()
-      ->evaluate_prechange(ss_, &nda);
-  } else {
-    score_ -=pc_->get_removed_container()
-      ->evaluate_prechange(ss_, NULL);
-  }
-  IMP_LOG(VERBOSE," " << score_ << std::endl);
-  return score_;
-}
-
-template <class Score, class C>
-void ContainerRestraint<Score, C>::set_is_incremental(bool tf) {
-  if (tf) {
-    ac_=pc_->get_added_container();
-    rc_=pc_->get_removed_container();
-  } else {
-    ac_=NULL;
-    rc_=NULL;
-  }
-}
 
 template <class Score, class C>
 ParticlesTemp ContainerRestraint<Score, C>::get_input_particles() const

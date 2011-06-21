@@ -41,25 +41,6 @@ class IMPEXPORT PairScore : public Object
   virtual double evaluate(const ParticlePairsTemp &o,
                           DerivativeAccumulator *da) const = 0;
 
-  /** \name Incremental evaluation
-      Compute how much the score has changed since the last evaluate
-      (and writing derivatives if they have changed). Implementations
-      for these are provided by the IMP_PAIR_SCORE() macro.
-      @{
-  */
-  virtual double evaluate_change(const ParticlePair& vt,
-                                 DerivativeAccumulator *da) const = 0;
-
-  virtual double evaluate_change(const ParticlePairsTemp &o,
-                                 DerivativeAccumulator *da) const = 0;
-  virtual double evaluate_prechange(const ParticlePair& vt,
-                                    DerivativeAccumulator *da) const = 0;
-  virtual double evaluate_prechange(const ParticlePairsTemp &o,
-                                    DerivativeAccumulator *da) const = 0;
-  //! Return true if the score for vt might have changed.
-  virtual bool get_is_changed(const ParticlePair& vt) const =0;
-  /** @} */
-
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp
     get_input_particles(Particle *p) const =0;

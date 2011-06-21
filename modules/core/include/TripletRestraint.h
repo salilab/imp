@@ -32,7 +32,6 @@ class IMPCOREEXPORT TripletRestraint :
 {
   IMP::internal::OwnerPointer<TripletScore> ss_;
   ParticleTriplet v_;
-  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -49,7 +48,7 @@ public:
     return v_;
   }
 
-  IMP_INCREMENTAL_RESTRAINT(TripletRestraint);
+  IMP_RESTRAINT(TripletRestraint);
 
   Restraints get_instant_decomposition() const;
 };

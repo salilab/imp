@@ -124,11 +124,13 @@ class ParticleTests(IMP.test.TestCase):
         """Checking that conversion to/from pairs is OK"""
         p= (1.0, 2.0)
         op= IMP._pass_pair(p)
+        print "first"
         print p
         print op
         self.assertAlmostEqual(p[0], op[0], delta=.01)
         self.assertAlmostEqual(p[1], op[1], delta=.01)
         op= IMP._pass_plain_pair(p)
+        print "second"
         print p
         print op
         self.assertAlmostEqual(p[0], op[0], delta=.01)

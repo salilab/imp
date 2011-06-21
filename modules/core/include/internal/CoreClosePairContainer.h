@@ -53,11 +53,7 @@ public:
       return get_last_update_evaluation() == get_model()->get_evaluation();
     } else {
       if (!c_->get_is_up_to_date()) return false;
-      bool ret=true;
-      IMP_FOREACH_SINGLETON(c_,
-                            ret= !(imp_foreach_break
-                                   =_1->get_is_changed()););
-      return ret;
+      return true;
     }
   }
 #endif
@@ -72,7 +68,6 @@ public:
     do_before_evaluate();
   }
   SingletonContainer*get_singleton_container() const {return c_;}
-  bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
   ClosePairsFinder *get_close_pairs_finder() const {return cpf_;}
   void set_slack(double d);

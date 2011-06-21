@@ -65,8 +65,4 @@ ParticlesTemp ConsecutivePairContainer::get_contained_particles() const {
   return ps_;
 }
 
-bool ConsecutivePairContainer::get_contained_particles_changed() const {
-  return false;
-}
-
 IMPCONTAINER_END_NAMESPACE

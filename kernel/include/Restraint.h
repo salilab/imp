@@ -69,36 +69,6 @@ public:
    */
   double evaluate(bool calc_derivs) const;
 
-  /** \name Incremental Evaluation
-
-      When optimizers move the particles a few at a time, scoring can
-      be made more efficient by incremental score evaluation. To do
-      so, a Restraint must implement Restraint::get_is_incremental()
-      so that it returns \c true and implement
-      Restraint::incremental_evaluate() to do the following
-
-      - the return value should be the total score given the new
-        conformation
-
-      - for a Particle \c p, the sum of the derivatives of
-        p->get_prechange_particle()
-
-      and \c p should be equal to the difference in derivatives
-      between the current and prior conformations. This is most easily
-      done by accumulating the negative of the prior derivative in
-      p->get_prechange_particle() and the new derivative in p, for any
-      particle touched.
-
-      @{
-  */
-  //! Return true if the incremental_evaluate() function is implemented
-  virtual bool get_supports_incremental() const {return false;}
-  /** Do any prep work that needs to be done to prepare for incremental
-      evaluation.
-  */
-  virtual void set_is_incremental(bool ) {}
-  /** @} */
-
   /** \brief The restraint can override this in order to take action
       when added to a Model
 
@@ -126,11 +96,6 @@ public:
   }
 
 #ifndef IMP_DOXYGEN
-  virtual double
-    unprotected_incremental_evaluate(DerivativeAccumulator *) const {
-    IMP_FAILURE(get_name() << " does not support incremental evaluation.");
-    return 0;
-  }
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
 #endif
 

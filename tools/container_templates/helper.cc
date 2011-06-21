@@ -47,10 +47,6 @@ ParticlesTemp ListLikeCLASSNAMEContainer
   return IMP::internal::flatten(data_);
 }
 
-bool ListLikeCLASSNAMEContainer
-::get_contained_particles_changed() const {
-  return changed_;
-}
 
 CLASSNAMEContainerPair ListLikeCLASSNAMEContainer
 ::get_added_and_removed_containers() const {

@@ -134,24 +134,6 @@ double SingletonContainerSet::evaluate(const SingletonScore *s,
   return score;
 }
 
-double SingletonContainerSet::evaluate_change(const SingletonScore *s,
-                                              DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    score+=get_singleton_container(i)->evaluate_change(s, da);
-  }
-  return score;
-}
-
-double SingletonContainerSet::evaluate_prechange(const SingletonScore *s,
-                                             DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    score+=get_singleton_container(i)->evaluate_prechange(s, da);
-  }
-  return score;
-}
-
 
 ParticlesTemp SingletonContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
@@ -162,14 +144,6 @@ ParticlesTemp SingletonContainerSet::get_contained_particles() const {
   return ret;
 }
 
-bool SingletonContainerSet::get_contained_particles_changed() const {
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    if (get_singleton_container(i)->get_contained_particles_changed()) {
-      return true;
-    }
-  }
-  return false;
-}
 
 
 IMPCONTAINER_END_NAMESPACE

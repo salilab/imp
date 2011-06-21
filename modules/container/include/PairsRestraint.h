@@ -54,7 +54,7 @@ public:
                       std::string name="PairsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(PairsRestraint);
+  IMP_RESTRAINT(PairsRestraint);
 
   //! Get the container used to store Particles
   ParticlePairsTemp get_arguments() const;

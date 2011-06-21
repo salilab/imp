@@ -32,7 +32,6 @@ class IMPCOREEXPORT QuadRestraint :
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
   ParticleQuad v_;
-  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -49,7 +48,7 @@ public:
     return v_;
   }
 
-  IMP_INCREMENTAL_RESTRAINT(QuadRestraint);
+  IMP_RESTRAINT(QuadRestraint);
 
   Restraints get_instant_decomposition() const;
 };

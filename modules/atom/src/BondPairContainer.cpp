@@ -72,8 +72,5 @@ ParticlesTemp BondPairContainer::get_contained_particles() const {
   return ret;
 }
 
-bool BondPairContainer::get_contained_particles_changed() const {
-  return sc_->get_contained_particles_changed();
-}
 
 IMPATOM_END_NAMESPACE

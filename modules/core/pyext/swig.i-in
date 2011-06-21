@@ -40,7 +40,6 @@ IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBound, HarmonicUpperBounds);
 IMP_SWIG_OBJECT( IMP::core, HarmonicDistancePairScore, HarmonicDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 IMP_SWIG_OBJECT( IMP::core, HarmonicUpperBoundSphereDistancePairScore, HarmonicUpperBoundSphereDistancePairScores);
-IMP_SWIG_OBJECT( IMP::core, IncrementalBallMover, IncrementalBallMovers);
 IMP_SWIG_OBJECT( IMP::core, KClosePairsPairScore, KClosePairsPairScores);
 IMP_SWIG_OBJECT( IMP::core, LeavesRefiner, LeavesRefiners);
 IMP_SWIG_OBJECT( IMP::core, Linear, Linears);
@@ -122,7 +121,6 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
-%include "IMP/core/IncrementalBallMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
 %include "IMP/core/ChecksScoreState.h"

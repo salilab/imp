@@ -132,7 +132,6 @@ class TestBL(IMP.test.TestCase):
                                           IMP.core.QuadraticClosePairsFinder(),
                                           1)
         r= IMP.container.PairsRestraint(IMP.core.DistancePairScore(IMP.core.Harmonic(3, 1)), cpss)
-        m.set_is_incremental(True)
         m.add_restraint(r)
         for p in ps:
             d= IMP.core.XYZR.setup_particle(p)

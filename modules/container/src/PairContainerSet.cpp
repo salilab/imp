@@ -134,24 +134,6 @@ double PairContainerSet::evaluate(const PairScore *s,
   return score;
 }
 
-double PairContainerSet::evaluate_change(const PairScore *s,
-                                              DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    score+=get_pair_container(i)->evaluate_change(s, da);
-  }
-  return score;
-}
-
-double PairContainerSet::evaluate_prechange(const PairScore *s,
-                                             DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    score+=get_pair_container(i)->evaluate_prechange(s, da);
-  }
-  return score;
-}
-
 
 ParticlesTemp PairContainerSet::get_contained_particles() const {
   ParticlesTemp ret;
@@ -162,14 +144,6 @@ ParticlesTemp PairContainerSet::get_contained_particles() const {
   return ret;
 }
 
-bool PairContainerSet::get_contained_particles_changed() const {
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    if (get_pair_container(i)->get_contained_particles_changed()) {
-      return true;
-    }
-  }
-  return false;
-}
 
 
 IMPCONTAINER_END_NAMESPACE

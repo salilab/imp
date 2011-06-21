@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- incremental evaluation support was removed from \imp. The reason for doing this was that the code was complicated, created overhead even when incremental support was not used and was not commonly used. Further, decomposing the restraints and using the dependency graph yields similar results and is more transparent.
 - the RMF helper binaries have been moved to their own application so that they get installed.
 - IMP::display::Writer has been revised to better support writers that write multiple frames to a single file and ones that write binary data. The noticeable changes are that the existing IMP::display::Writer instances must be created with a file name. And the IMP::display::WriteOptimizerState just takes a writer rather than a write and a file name template. IMP::display::Writer::set_frame() has been added so that you can directly control the frame being written.
 - IMP::rmf::RMFWriter has been added which writes geometry to an RMF file.
