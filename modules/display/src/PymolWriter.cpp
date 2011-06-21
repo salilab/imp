@@ -43,7 +43,8 @@ void PymolWriter::do_close() {
   cleanup(lastname_);
   int frame= last_frame_;
   if (frame==-1) frame=0;
-  get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, " << frame
+  get_stream() << "for k in data.keys():\n  cmd.load_cgo(data[k], k, "
+               << frame+1
                << ")\n";
   get_stream() << "data= {}\n";
 }
