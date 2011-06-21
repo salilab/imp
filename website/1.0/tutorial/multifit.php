@@ -34,7 +34,7 @@ global solutions:</p>
 </p>
 
 <p>Currently, MultiFit is not distributed with IMP itself, and must be
-<a href="http://salilab.org/multifit/">downloaded separately</a>.
+<a href="http://salilab.org/multifit/download/">downloaded separately</a>.
 </p>
 
 <p>Here, we will demonstrate the use of multifit in building a model of
