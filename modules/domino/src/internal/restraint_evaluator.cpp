@@ -161,6 +161,38 @@ void ModelData::validate() const {
                      "Inconsistent data in Restraint evaluator or Filter");
 }
 
+unsigned int ModelData::get_number_of_restraints(const Subset &s,
+                                            const Subsets &exclusions) const {
+  if (!initialized_) {
+    const_cast<ModelData*>(this)->initialize();
+  }
+  SubsetID id(s, exclusions);
+  if (sdata_.find(id) != sdata_.end()) {
+    return sdata_.find(id)->second.get_number_of_restraints();
+  } else {
+    unsigned int ret=0;
+    for (unsigned int i=0; i< dependencies_.size(); ++i) {
+      if (std::includes(s.begin(), s.end(),
+                        dependencies_[i].begin(), dependencies_[i].end())) {
+        bool exclude=false;
+        {for (unsigned int j=0; j< exclusions.size(); ++j) {
+            if (std::includes(exclusions[j].begin(),
+                              exclusions[j].end(),
+                              dependencies_[i].begin(),
+                              dependencies_[i].end())) {
+              exclude=true;
+              break;
+            }
+          }}
+        if(!exclude) {
+          ++ret;
+        }
+      }
+    }
+    return ret;
+  }
+}
+
 const SubsetData &ModelData::get_subset_data(const Subset &s,
                                              const Subsets &exclusions) const {
   IMP_FUNCTION_LOG;

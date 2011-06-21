@@ -190,6 +190,8 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   Model *get_model() const {
     return rs_->get_model();
   }
+  unsigned int get_number_of_restraints(const Subset &s,
+                                        const Subsets &exclusions) const;
   const SubsetData &get_subset_data(const Subset &s,
                                     const Subsets &exclude=Subsets()) const;
   void add_score(Restraint *r, const Subset &subset,
