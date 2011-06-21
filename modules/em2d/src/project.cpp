@@ -10,7 +10,6 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/rotation_helper.h"
 #include "IMP/algebra/Vector2D.h"
-#include "IMP/atom/Mass.h"
 #include "IMP/Pointer.h"
 #include "IMP/core/utility.h"
 #include <boost/timer.hpp>
@@ -130,7 +129,6 @@ void do_project_particles(const ParticlesTemp &ps,
 
   for (unsigned long i=0; i<n_particles; i++) {
     // Coordinates respect to the centroid
-    atom::Mass mass(ps[i]);
     algebra::Vector3D p = xyzrs[i].get_coordinates()-centroid;
     // Pixel after trasformation to project in Z axis
     // Not necessary to compute pz, is going to be ignored
@@ -145,7 +143,7 @@ void do_project_particles(const ParticlesTemp &ps,
     // Apply mask
     ProjectionMaskPtr mask= masks->find_mask(xyzrs[i].get_radius());
     algebra::Vector2D pix(pix_x, pix_y);
-    mask->apply(m2,pix,mass.get_mass());
+    mask->apply(m2,pix);
   }
   IMP_LOG(IMP::VERBOSE,"END of do_project_particles" << std::endl);
 
