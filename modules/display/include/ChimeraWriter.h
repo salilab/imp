@@ -39,6 +39,13 @@ class IMPDISPLAYEXPORT ChimeraWriter: public TextWriter
                Color color, std::string name);
 public:
   IMP_TEXT_WRITER(ChimeraWriter);
+
+  //! Add some arbitrary python code to the chimera file
+  /** You should import the bits of Chimera that you need.
+      At the moment, you should not name a variable surf_sets
+      or marker_sets.
+   */
+  void add_python_code(std::string code);
 };
 
 

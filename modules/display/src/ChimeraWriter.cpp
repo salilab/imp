@@ -163,6 +163,11 @@ void ChimeraWriter::do_open() {
   get_stream() << "marker_sets={}\n";
   get_stream() << "surf_sets={}\n";
 }
+
+void ChimeraWriter::add_python_code(std::string code) {
+  get_stream() << code;
+}
+
 void ChimeraWriter::do_close() {
   get_stream() << "for k in surf_sets.keys():\n";
   get_stream() << "  chimera.openModels.add([surf_sets[k]])\n";
