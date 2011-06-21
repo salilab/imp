@@ -238,34 +238,17 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
   }
 }
 
-void Model::zero_derivatives(bool st) const {
+void Model::zero_derivatives() const {
   for (ParticleConstIterator pit = particles_begin();
        pit != particles_end(); ++pit) {
     (*pit)->zero_derivatives();
-    if (st) {
-      (*pit)->get_prechange_particle()->zero_derivatives();
-    }
   }
 }
 
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
-                                     bool calc_derivs,
-                                     WhichRestraints incremental_restraints,
-                                     bool incremental_evaluation) const {
+                                     bool calc_derivs) const {
   IMP_FUNCTION_LOG;
-  IMP_IF_LOG(TERSE) {
-    std::string which;
-    if (incremental_restraints== ALL) which="all";
-    else if (incremental_restraints== NONINCREMENTAL) which="non-incremental";
-    else which = "incremental";
-    IMP_LOG(TERSE,
-            (incremental_evaluation ? "incremental-":"")
-            << "evaluate of "
-            << which << " restraints "
-            << (calc_derivs?"with derivatives":"without derivatives")
-            << std::endl);
-  }
   Floats ret;
   boost::timer timer;
   const unsigned int rsz=restraints.size();
@@ -273,26 +256,10 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     double value=0;
     DerivativeAccumulator accum(weights[i]);
     if (gather_statistics_) timer.restart();
-    if (incremental_restraints != NONINCREMENTAL
-        && restraints[i]->get_supports_incremental()) {
-      if (incremental_evaluation) {
-        WRAP_EVALUATE_CALL(restraints[i],
-                           value=restraints[i]
-                           ->unprotected_incremental_evaluate(calc_derivs?
-                                                              &accum:NULL));
-      } else {
-        WRAP_EVALUATE_CALL(restraints[i],
-                           value=
-                           restraints[i]->unprotected_evaluate(calc_derivs?
-                                                                &accum:NULL));
-      }
-    } else if (incremental_restraints != INCREMENTAL
-               && !restraints[i]->get_supports_incremental()) {
-      WRAP_EVALUATE_CALL(restraints[i],
-                         value=
-                         restraints[i]->unprotected_evaluate(calc_derivs?
-                                                             &accum:NULL));
-    }
+    WRAP_EVALUATE_CALL(restraints[i],
+                       value=
+                       restraints[i]->unprotected_evaluate(calc_derivs?
+                                                           &accum:NULL));
     double wvalue= weights[i]*value;
     IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
               << wvalue << std::endl);
@@ -311,94 +278,6 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
 }
 
 
-
-void Model::validate_incremental_evaluate(const RestraintsTemp &restraints,
-                                          const std::vector<double> &weights,
-                                          bool calc_derivs,
-                                          double score) {
-  CreateLogContext clc("validate_incremental");
-  {
-    std::vector<Particle::DerivativeTable>
-      derivs;
-    std::vector<internal::ParticleStorage::DerivativeTable>
-      ederivs;
-    derivs.reserve(get_number_of_particles());
-    ederivs.reserve(get_number_of_particles());
-    for (ParticleIterator it= particles_begin();
-         it != particles_end(); ++it) {
-      derivs.push_back((*it)->derivatives_);
-      ederivs.push_back((*it)->ps_->derivatives_);
-      (*it)->zero_derivatives();
-    }
-    bool ogather_stats=gather_statistics_;
-    gather_statistics_=false;
-    Floats scores=
-      do_evaluate_restraints(restraints, weights,
-                             calc_derivs, ALL, false);
-    double nscore= std::accumulate(scores.begin(), scores.end(), 0.0);
-    gather_statistics_= ogather_stats;
-    if (std::abs(nscore -score)
-        > .001+.1*std::abs(nscore+score)) {
-      if (gather_statistics_) {
-        std::cerr << "Incremental:\n";
-        show_restraint_score_statistics(std::cerr);
-        do_evaluate_restraints(restraints, weights,
-                               calc_derivs, ALL, false);
-        std::cerr << "Non-incremental:\n";
-        show_restraint_score_statistics(std::cerr);
-      }
-      IMP_FAILURE("Incremental and non-incremental evaluation "
-                  << "do not agree."
-                  << " Incremental gets " << score
-                  << " but non-incremental "
-                  << "gets " << nscore);
-    }
-    if (calc_derivs) {
-      unsigned int i=0;
-      for (ParticleIterator it= particles_begin();
-           it != particles_end(); ++it) {
-        for (unsigned int j=0; j< derivs[i].get_length(); ++j) {
-          IMP_INTERNAL_CHECK(std::abs(derivs[i].get(j)
-                                      -(*it)->derivatives_.get(j))
-                             < .01
-                             + .01*std::abs(derivs[i].get(j)
-                                            +(*it)->derivatives_.get(j)),
-                             "Derivatives do not match in incremental "
-                             << "vs non-incremental " <<
-                             "for particle " << (*it)->get_name()
-                             << " on attribute "
-                             << FloatKey(j) << ". Incremental was "
-                             << derivs[i].get(j)
-                             << " where as regular was "
-                             << (*it)->derivatives_.get(j)
-                             << " particle is "
-                             << *(*it));
-        }
-        for (unsigned int j=IMP_NUM_INLINE; j< ederivs[i].get_length(); ++j) {
-          IMP_INTERNAL_CHECK(std::abs(ederivs[i].get(j)
-                                      -(*it)->ps_->derivatives_.get(j))
-                             < .01
-                             + .01*std::abs(ederivs[i].get(j)
-                                            +(*it)->ps_->derivatives_.get(j)),
-                             "Derivatives do not match in incremental "
-                             << "vs non-incremental " <<
-                             "for particle " << (*it)->get_name()
-                             << " on attribute "
-                             << FloatKey(j) << ". Incremental was "
-                             << ederivs[i].get(j)
-                             << " where as regular was "
-                             << (*it)->ps_->derivatives_.get(j)
-                             << " particle is "
-                             << *(*it));
-        }
-        (*it)->derivatives_=derivs[i];
-        (*it)->ps_->derivatives_=ederivs[i];
-        ++i;
-      }
-      IMP_INTERNAL_CHECK(i== derivs.size(), "Number of particles changed.");
-    }
-  }
-}
 
 void Model::validate_computed_derivatives() const {
   for (ParticleConstIterator it= particles_begin();
@@ -420,59 +299,18 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
-  IMP_LOG(TERSE,
-          "Begin Model::evaluate "
-          << (get_is_incremental() && first_incremental_ ? "first ":"")
-          << (get_is_incremental()?"incremental":"")
-          << std::endl);
   IMP_LOG(VERBOSE, "On restraints " << Restraints(restraints)
           << " and score states " << ScoreStates(states)
           << std::endl);
 
-  if (incremental_update_ && !last_had_derivatives_ && calc_derivs) {
-    first_incremental_=true;
-  }
-
-  last_had_derivatives_= calc_derivs;
-
   before_evaluate(states);
 
   cur_stage_= EVALUATE;
-  Floats ret;
-  if (get_is_incremental()) {
-    if (calc_derivs) zero_derivatives(first_incremental_);
-    Floats scores= do_evaluate_restraints(restraints, weights,
-                                   calc_derivs, INCREMENTAL,
-                                   !first_incremental_);
-    ret.insert(ret.end(), scores.begin(), scores.end());
-    if (calc_derivs) {
-      for (ParticleConstIterator pit = particles_begin();
-           pit != particles_end(); ++pit) {
-        (*pit)->move_derivatives_to_shadow();
-      }
-    }
-    Floats niscores=do_evaluate_restraints(restraints, weights,
-                                  calc_derivs, NONINCREMENTAL, false);
-    ret.insert(ret.end(), niscores.begin(), niscores.end());
-    if (calc_derivs) {
-      for (ParticleConstIterator pit = particles_begin();
-           pit != particles_end(); ++pit) {
-        (*pit)->accumulate_derivatives_from_shadow();
-      }
-    }
-    first_incremental_=false;
-    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-      validate_incremental_evaluate(restraints, weights, calc_derivs,
-                                    std::accumulate(ret.begin(),
-                                                    ret.end(), 0.0));
-    }
-  } else {
-    if (calc_derivs) {
-      zero_derivatives();
-    }
-    ret= do_evaluate_restraints(restraints, weights,
-                                  calc_derivs, ALL, false);
+  if (calc_derivs) {
+    zero_derivatives();
   }
+  std::vector<double> ret= do_evaluate_restraints(restraints, weights,
+                                  calc_derivs);
 
   after_evaluate(states, calc_derivs);
 
@@ -482,14 +320,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
       validate_computed_derivatives();
     }
   }
-  //if (get_is_incremental()) {
-  IMP_LOG(TERSE, "Backing up changed particles" << std::endl);
-  for (ParticleConstIterator pit = particles_begin();
-       pit != particles_end(); ++pit) {
-    (*pit)->set_is_not_changed();
-  }
-  //}
-  IMP_LOG(TERSE, "End Model::evaluate. Final score: "
+  IMP_LOG(TERSE, "Final score: "
           << std::accumulate(ret.begin(), ret.end(), 0.0) << std::endl);
   cur_stage_=NOT_EVALUATING;
   ++eval_count_;

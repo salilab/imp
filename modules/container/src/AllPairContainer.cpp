@@ -113,9 +113,6 @@ ParticlesTemp AllPairContainer::get_contained_particles() const {
   return c_->get_contained_particles();
 }
 
-bool AllPairContainer::get_contained_particles_changed() const {
-  return c_->get_contained_particles_changed();
-}
 
 
 IMPCONTAINER_END_NAMESPACE

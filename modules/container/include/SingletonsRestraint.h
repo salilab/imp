@@ -54,7 +54,7 @@ public:
                       std::string name="SingletonsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(SingletonsRestraint);
+  IMP_RESTRAINT(SingletonsRestraint);
 
   //! Get the container used to store Particles
   ParticlesTemp get_arguments() const;

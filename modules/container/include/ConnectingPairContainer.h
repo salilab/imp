@@ -65,9 +65,6 @@ public:
     } else {
       if (!sc_->get_is_up_to_date()) return false;
       bool ret=true;
-      IMP_FOREACH_SINGLETON(sc_,
-                            ret= !(imp_foreach_break
-                                   =_1->get_is_changed()););
       return ret;
     }
   }

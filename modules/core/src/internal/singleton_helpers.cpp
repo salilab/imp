@@ -47,10 +47,6 @@ ParticlesTemp ListLikeSingletonContainer
   return IMP::internal::flatten(data_);
 }
 
-bool ListLikeSingletonContainer
-::get_contained_particles_changed() const {
-  return changed_;
-}
 
 SingletonContainerPair ListLikeSingletonContainer
 ::get_added_and_removed_containers() const {

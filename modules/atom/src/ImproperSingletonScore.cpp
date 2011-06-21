@@ -65,14 +65,6 @@ ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {
   return ret;
 }
 
-bool ImproperSingletonScore::get_is_changed(Particle *p) const {
-  Dihedral b(p);
-  return b.get_particle(0)->get_is_changed()
-    || b.get_particle(1)->get_is_changed()
-    || b.get_particle(2)->get_is_changed()
-    || b.get_particle(3)->get_is_changed();
-}
-
 void ImproperSingletonScore::do_show(std::ostream &out) const
 {
   out << "function " << *f_ << std::endl;

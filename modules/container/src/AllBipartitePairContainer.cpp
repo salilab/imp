@@ -118,10 +118,5 @@ ParticlesTemp AllBipartitePairContainer::get_contained_particles() const {
   return ret;
 }
 
-bool AllBipartitePairContainer::get_contained_particles_changed() const {
-  return a_->get_contained_particles_changed()
-    || b_->get_contained_particles_changed();
-}
-
 
 IMPCONTAINER_END_NAMESPACE

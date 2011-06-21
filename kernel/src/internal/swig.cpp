@@ -38,8 +38,6 @@ _ConstSingletonScore::get_input_containers(Particle *) const {
 ParticlesTemp _ConstSingletonScore::get_input_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
-bool _ConstSingletonScore::get_is_changed(Particle *) const {return false;}
-
 
 
 
@@ -57,8 +55,6 @@ _ConstPairScore::get_input_containers(Particle*p) const {
 ParticlesTemp _ConstPairScore::get_input_particles(Particle *p) const {
   return ParticlesTemp(1,p);
 }
-bool _ConstPairScore::get_is_changed(const ParticlePair &) const {return false;}
-
 
 
 void _TrivialDecorator::show(std::ostream &out) const {

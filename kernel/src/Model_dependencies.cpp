@@ -483,12 +483,6 @@ void Model::compute_dependencies() const {
                      "Indexes do not match ordered restraints "
                      << restraint_index_.size() << " "
                      << ordered_restraints_.size());
-  if (get_is_incremental()) {
-    //first_incremental_=true;
-    for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
-      ordered_restraints_[i]->set_is_incremental(true);
-    }
-  }
 }
 
 

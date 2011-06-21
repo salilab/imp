@@ -47,10 +47,6 @@ ParticlesTemp ListLikeQuadContainer
   return IMP::internal::flatten(data_);
 }
 
-bool ListLikeQuadContainer
-::get_contained_particles_changed() const {
-  return changed_;
-}
 
 QuadContainerPair ListLikeQuadContainer
 ::get_added_and_removed_containers() const {

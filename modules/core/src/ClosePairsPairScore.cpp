@@ -225,10 +225,6 @@ ContainersTemp ClosePairsPairScore
 }
 
 
-bool ClosePairsPairScore::get_is_changed(const ParticlePair &) const {
-  return true;
-}
-
 void ClosePairsPairScore::do_show(std::ostream &out) const
 {
   out << "function " << *f_;
@@ -254,10 +250,6 @@ ContainersTemp KClosePairsPairScore
   return ret;
 }
 
-
-bool KClosePairsPairScore::get_is_changed(const ParticlePair &) const {
-  return true;
-}
 
 void KClosePairsPairScore::do_show(std::ostream &out) const
 {

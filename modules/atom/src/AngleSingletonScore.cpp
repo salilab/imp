@@ -62,13 +62,6 @@ ParticlesTemp AngleSingletonScore::get_input_particles(Particle *p) const {
   return ret;
 }
 
-bool AngleSingletonScore::get_is_changed(Particle *p) const {
-  Angle b(p);
-  return b.get_particle(0)->get_is_changed()
-    || b.get_particle(1)->get_is_changed()
-    || b.get_particle(2)->get_is_changed();
-}
-
 void AngleSingletonScore::do_show(std::ostream &out) const
 {
   out << "function " << *f_ << std::endl;

@@ -32,7 +32,6 @@ class IMPCOREEXPORT CLASSNAMERestraint :
 {
   IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
   STORAGETYPE v_;
-  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -49,7 +48,7 @@ public:
     return v_;
   }
 
-  IMP_INCREMENTAL_RESTRAINT(CLASSNAMERestraint);
+  IMP_RESTRAINT(CLASSNAMERestraint);
 
   Restraints get_instant_decomposition() const;
 };

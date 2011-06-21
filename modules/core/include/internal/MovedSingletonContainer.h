@@ -68,11 +68,7 @@ public:
     if (get_model()->get_stage() != Model::NOT_EVALUATING) {
       return get_last_update_evaluation() == get_model()->get_evaluation();
     } else {
-      bool ret=true;
-      IMP_FOREACH_SINGLETON(pc_,
-                            ret= !(imp_foreach_break
-                                   =_1->get_is_changed()););
-      return ret;
+      return true;
     }
   }
 #endif

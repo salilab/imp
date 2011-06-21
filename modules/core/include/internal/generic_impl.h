@@ -36,15 +36,6 @@ double TupleRestraint<Score>
   return score_;
 }
 
-template <class Score>
-double TupleRestraint<Score>
-::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
-{
-  if (ss_->get_is_changed(v_)) {
-    score_+=ss_->Score::evaluate_change(v_, accum);
-  }
-  return score_;
-}
 
 template <class Score>
 ParticlesTemp TupleRestraint<Score>::get_input_particles() const

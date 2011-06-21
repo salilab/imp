@@ -50,7 +50,7 @@ public:
                       QuadContainer *pc,
                       std::string name="QuadsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreQuadsRestraint);
+  IMP_RESTRAINT(CoreQuadsRestraint);
 
   ParticleQuadsTemp get_arguments() const {
     return pc_->get();

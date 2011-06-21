@@ -54,7 +54,7 @@ public:
                       std::string name="TripletsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(TripletsRestraint);
+  IMP_RESTRAINT(TripletsRestraint);
 
   //! Get the container used to store Particles
   ParticleTripletsTemp get_arguments() const;

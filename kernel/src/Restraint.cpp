@@ -44,12 +44,14 @@ double Restraint::evaluate(bool calc_derivs) const {
     restraints.push_back(const_cast<Restraint*>(this));
     weights.push_back(get_weight());
   }
-  IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
-          << " restraints in set.\n");
+  if (restraints.size() >1) {
+    IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
+            << " restraints in set.\n");
+  }
   Floats ret= get_model()->evaluate(restraints, weights, calc_derivs);
   double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
   IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Got " << rv << "\n");
+    IMP_LOG(VERBOSE, "Score is " << rv << "\n");
     for (unsigned int i=0; i< ret.size(); ++i) {
       IMP_LOG(VERBOSE, ret[i] << " for " << restraints[i]->get_name() << "\n");
     }

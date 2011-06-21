@@ -58,14 +58,6 @@ double MinimumQuadScore::evaluate(const ParticleQuad& v,
   return score;
 }
 
-bool MinimumQuadScore::get_is_changed(const ParticleQuad& v) const {
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    if (scores_[i]->get_is_changed(v)) return true;
-  }
-  return false;
-}
-
-
 ParticlesTemp MinimumQuadScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

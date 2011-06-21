@@ -68,7 +68,6 @@
     IMP_USAGE_CHECK(UCName##Table::Traits::get_is_valid(initial_value), \
                     "Initial value is not valid when adding attribute"  \
                     << name << " to particle " << get_name());          \
-    on_changed();                                                       \
     add_action;                                                         \
     if (cond) table0.add(name.get_index(), initial_value);              \
     else table1.add(name.get_index(), initial_value);                   \
@@ -78,7 +77,6 @@
     IMP_USAGE_CHECK(name != UCName##Key(),                              \
                     "Cannot use attributes without "                    \
                     << "naming them.");                                 \
-    on_changed();                                                       \
     remove_action;                                                      \
     IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot remove attribute " << name << " from particle "   \
@@ -131,7 +129,6 @@
     IMP_USAGE_CHECK(has_attribute(name),                                \
               "Cannot set value " << name << " from particle "          \
                     << get_name() << " as it is not there.");           \
-    on_changed();                                                       \
     if (cond) table0.set(name.get_index(), value);                      \
     else table1.set(name.get_index(), value);                           \
   }                                                                     \
@@ -226,75 +223,6 @@ class IMPEXPORT Particle : public Container
   void assert_can_change_derivatives() const;
 
   void assert_valid_derivatives() const;
-
-  /*void validate_float_attributes() const {
-    for (unsigned int i=0; i< floats_.get_length(); ++i) {
-      if (FloatTable::Traits::get_is_valid(floats_.get(i))) {
-        if (! (floats_.get(i) <= std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
-    for (unsigned int i=floats_.get_length();
-    i< ps_->floats_.get_length(); ++i) {
-      if (FloatTable::Traits::get_is_valid(ps_->floats_.get(i))) {
-        if (! (ps_->floats_.get(i) <= std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
-  }*/
-  void validate_float_derivatives() const {
-    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
-      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
-        if (! (derivatives_.get(i) < std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
-    for (unsigned int i=IMP_NUM_INLINE;
-         i< ps_->derivatives_.get_length(); ++i) {
-      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
-        if (! (ps_->derivatives_.get(i)
-               < std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
-  }
- // begin incremental
-  void on_changed() {
-    dirty_=true;
-  }
-
-  void set_is_not_changed() {
-    if (dirty_ && ps_->shadow_) {
-      ps_->shadow_->floats_= floats_;
-      ps_->shadow_->ps_->floats_= ps_->floats_;
-      ps_->shadow_->ps_->strings_= ps_->strings_;
-      ps_->shadow_->ints_= ints_;
-      ps_->shadow_->ps_->ints_= ps_->ints_;
-      ps_->shadow_->ps_->optimizeds_= ps_->optimizeds_;
-      ps_->shadow_->ps_->particles_.clear();
-      for (ParticleKeyIterator it= particle_keys_begin();
-           it != particle_keys_end(); ++it) {
-        ps_->shadow_->ps_->particles_.add(it->get_index(),
-                                          get_value(*it)->ps_->shadow_);
-      }
-    }
-    dirty_=false;
-  }
-
-  void setup_incremental();
-
-  void teardown_incremental();
-
-  // don't add the particle to the model, used for incremental
-  Particle();
-
-  void accumulate_derivatives_from_shadow();
-  void move_derivatives_to_shadow();
-  // end incremental
 
   typedef internal::SphereInlineStorage FloatTable;
   typedef internal::FixedInlineStorage<internal::IntAttributeTableTraits,
@@ -501,25 +429,6 @@ class IMPEXPORT Particle : public Container
     return get_has_model();
   }
 
-   /** \name Incremental Updates
-
-      Control whether incremental updates are being used. See
-      the \ref incremental "incremental updates" page for a more
-      detailed description.
-      @{
-  */
-  //! Return true if this particle has been changed since the last evaluate call
-  bool get_is_changed() const {
-    return dirty_;
-  }
-  /** \brief Return the shadow particle having attribute values from the last
-      evaluation
-  */
-  Particle *get_prechange_particle() const {
-    return ps_->shadow_;
-  }
-  /** @} */
-
 #if 0
 #if !defined(IMP_DOXYGEN)&& !defined(SWIG)
   void *operator new(std::size_t sz, void*p);
@@ -537,6 +446,25 @@ class IMPEXPORT Particle : public Container
     dirty_=true;
     return floats_.access_data();
   }
+  void validate_float_derivatives() const {
+    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
+      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
+        if (! (derivatives_.get(i) < std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+    for (unsigned int i=IMP_NUM_INLINE;
+         i< ps_->derivatives_.get_length(); ++i) {
+      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
+        if (! (ps_->derivatives_.get(i)
+               < std::numeric_limits<double>::max())) {
+          IMP_THROW("Bad attribute value", ModelException);
+        }
+      }
+    }
+  }
+
 #endif
   ContainersTemp get_input_containers() const;
   bool get_contained_particles_changed() const;

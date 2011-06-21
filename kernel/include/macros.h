@@ -1175,33 +1175,9 @@ private:                                                        \
     - IMP::Restraint::unprotected_evaluate()
     - IMP::Restraint::get_input_containers()
     - IMP::Restraint::get_input_particles()
-
-    It also defines
-    - IMP::Restraint::get_is_incremental() to return 0
-    - IMP::Restraint::incremental_evaluate() to throw an exception
 */
 #define IMP_RESTRAINT(Name)                                             \
   virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
-  ContainersTemp get_input_containers() const;                          \
-  ParticlesTemp get_input_particles() const;                            \
-  IMP_OBJECT(Name)
-
-//! Define the basic things you need for a Restraint.
-/** In addition to the methods declared and defined by IMP_OBJECT, it declares
-    - IMP::Restraint::unprotected_evaluate()
-    - IMP::Restraint::unprotected_incremental_evaluate()
-    - IMP::Restraint::get_input_containers()
-    - IMP::Restraint::get_input_particles()
-
-    and it defines
-    - IMP::Restraint::get_is_incremental() to return true
-*/
-#define IMP_INCREMENTAL_RESTRAINT(Name)                                 \
-  virtual double unprotected_evaluate(DerivativeAccumulator *accum) const; \
-  virtual bool get_supports_incremental() const {return true;}          \
-  virtual void set_is_incremental(bool tf);                             \
-  virtual double                                                        \
-  unprotected_incremental_evaluate(DerivativeAccumulator *accum) const; \
   ContainersTemp get_input_containers() const;                          \
   ParticlesTemp get_input_particles() const;                            \
   IMP_OBJECT(Name)
@@ -1358,40 +1334,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_change(Particle *a,                                   \
-                         DerivativeAccumulator *da) const {             \
-    if (get_is_changed(a)) {                                            \
-      DerivativeAccumulator nda;                                        \
-      if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(a->get_prechange_particle(),             \
-                               da? &nda:NULL);                          \
-      double rv= Name::evaluate(a, da)-v;                               \
-      return rv;                                                        \
-    } else {                                                            \
-      return 0;                                                         \
-    }                                                                   \
-  }                                                                     \
-  double evaluate_change(const ParticlesTemp &ps,                       \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_change(ps[i], da);                            \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_prechange(Particle *a,                                \
-                            DerivativeAccumulator *da) const {          \
-    return Name::evaluate(a->get_prechange_particle(),                  \
-                          da);                                          \
-  }                                                                     \
-  double evaluate_prechange(const ParticlesTemp &ps,                    \
-                            DerivativeAccumulator *da) const {          \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_prechange(ps[i], da);                         \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   IMP_OBJECT(Name)
 
 #else
@@ -1404,18 +1346,12 @@ protected:                                      \
     - IMP::SingletonScore::evaluate(IMP::Particle*,
     IMP::DerivativeAccumulator*)
     - IMP::SingletonScore::get_input_particles()
-    - IMP::SingletonScore::get_is_changed()
     - IMP::SingletonScore::get_output_particles()
-
-    The macro expects a class method
-    - bool get_is_changed(Particle*) which returns true if the score
-    needs to be recalculated.
 
     See IMP_SIMPLE_SINGLETON_SCORE() for a way of providing an
     implementation of that method.
 */
 #define IMP_SINGLETON_SCORE(Name)                               \
-  bool get_is_changed(Particle *p) const;                       \
   ParticlesTemp get_input_particles(Particle*) const;           \
   ContainersTemp get_input_containers(Particle *) const;        \
   IMP_SINGLETON_SCORE_BASE(Name)
@@ -1423,16 +1359,12 @@ protected:                                      \
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
     the macro provides an implementation of
-    - IMP::SingletonScore::get_is_changed()
-    - IMP::SingletonScore::get_input_particles()
+     - IMP::SingletonScore::get_input_particles()
     - IMP::SingletonScore::get_input_containers()
     which assume that only the passed particle serves as input to the
     score.
 */
 #define IMP_SIMPLE_SINGLETON_SCORE(Name)                        \
-  bool get_is_changed(Particle *p) const {                      \
-    return p->get_is_changed();                                 \
-  }                                                             \
   ParticlesTemp get_input_particles(Particle*p) const {         \
     return ParticlesTemp(1,p);                                  \
   }                                                             \
@@ -1454,42 +1386,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_change(const ParticlePair &p,                         \
-                         DerivativeAccumulator *da) const {             \
-    if (get_is_changed(p)){                                             \
-      DerivativeAccumulator nda;                                        \
-      if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(ParticlePair(p[0]->get_prechange_particle(), \
-                                            p[1]->get_prechange_particle()), \
-                               da? &nda:NULL);                          \
-      double rv= Name::evaluate(p, da)-v;                               \
-      return rv;                                                        \
-    } else {                                                            \
-      return 0;                                                         \
-    }                                                                   \
-  }                                                                     \
-  double evaluate_change(const ParticlePairsTemp &ps,                   \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_change(ps[i], da);                            \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_prechange(const ParticlePair &p,                      \
-                            DerivativeAccumulator *da) const {          \
-    return Name::evaluate(ParticlePair(p[0]->get_prechange_particle(),  \
-                                       p[1]->get_prechange_particle()), \
-                          da);                                          \
-  }                                                                     \
-  double evaluate_prechange(const ParticlePairsTemp &ps,                \
-                            DerivativeAccumulator *da) const {          \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_prechange(ps[i], da);                         \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   IMP_OBJECT(Name)
 #else
 #define IMP_PAIR_SCORE_BASE(Name)
@@ -1500,17 +1396,11 @@ protected:                                      \
     - IMP::PairScore::evaluate()
     - IMP::PairScore::get_input_particles()
     - IMP::PairScore::get_output_particles()
-    - IMP::PairScore::get_is_changed()
-
-    The macro expects a class method
-    - bool get_is_changed(const ParticlePair&) which returns true if the
-    score needs to be recalculated.
 
     See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
     implementation of that method.
 */
 #define IMP_PAIR_SCORE(Name)                                            \
-  bool get_is_changed(const ParticlePair &pp) const;                    \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
   IMP_PAIR_SCORE_BASE(Name)
@@ -1518,16 +1408,12 @@ protected:                                      \
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_PAIR_SCORE,
     the macro provides an implementation of
-    - IMP::PairScore::get_is_changed()
     - IMP::PairScore::get_input_particles()
     - IMP::PairScore::get_input_containers()
     which assume that only the 2 passed particles serve as inputs to the
     score.
 */
 #define IMP_SIMPLE_PAIR_SCORE(Name)                                     \
-  bool get_is_changed(const ParticlePair &p) const {                    \
-    return p[0]->get_is_changed() || p[1]->get_is_changed();            \
-  }                                                                     \
   ParticlesTemp get_input_particles(Particle *p) const {                \
     ParticlesTemp r(1, p);                                              \
     return r;                                                           \
@@ -1549,45 +1435,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_change(const ParticleTriplet &p,                      \
-                         DerivativeAccumulator *da) const {             \
-    if (get_is_changed(p)) {                                            \
-      DerivativeAccumulator nda;                                        \
-      if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v                                                          \
-        = Name::evaluate(ParticleTriplet(p[0]->get_prechange_particle(), \
-                                         p[1]->get_prechange_particle(), \
-                                         p[2]->get_prechange_particle()),\
-                               da? &nda:NULL);                          \
-      double rv= Name::evaluate(p, da)-v;                               \
-      return rv;                                                        \
-    } else {                                                            \
-      return 0;                                                         \
-    }                                                                   \
-  }                                                                     \
-  double evaluate_change(const ParticleTripletsTemp &ps,                \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_change(ps[i], da);                            \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_prechange(const ParticleTriplet &p,                   \
-                            DerivativeAccumulator *da) const {          \
-    return Name::evaluate(ParticleTriplet(p[0]->get_prechange_particle(), \
-                                          p[1]->get_prechange_particle(), \
-                                          p[1]->get_prechange_particle()), \
-                          da);                                          \
-  }                                                                     \
-  double evaluate_prechange(const ParticleTripletsTemp &ps,             \
-                            DerivativeAccumulator *da) const {          \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_prechange(ps[i], da);                         \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
   IMP_OBJECT(Name)
 #else
 #define IMP_TRIPLET_SCORE_BASE(Name)
@@ -1596,19 +1443,13 @@ protected:                                      \
 //! Declare the functions needed for a TripletScore
 /** In addition to the methods done by IMP_OBJECT(), it declares
     - IMP::TripletScore::evaluate()
-    - IMP::TripletScore::get_is_changed()
     - IMP::TripletScore::get_input_particles()
     - IMP::TripletScore::get_output_particles()
-
-    The macro expects a class method
-    - bool get_is_changed(ParticleTriplet) which returns true if the
-    score needs to be recalculated.
 
     See IMP_SIMPLE_TRIPLET_SCORE() for a way of providing an
     implementation of that method.
 */
 #define IMP_TRIPLET_SCORE(Name)                                         \
-  bool get_is_changed(const ParticleTriplet &p) const;                  \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
   IMP_TRIPLET_SCORE_BASE(Name)
@@ -1617,17 +1458,12 @@ protected:                                      \
 //! Declare the functions needed for a TripletScore
 /** In addition to the methods declared and defined by IMP_TRIPLET_SCORE,
     the macro provides an implementation of
-    - IMP::TripletScore::get_is_changed()
     - IMP::TripletScore::get_input_particles()
     - IMP::TripletScore::get_input_containers()
     which assume that only the 3 passed particles serve as inputs to the
     score.
 */
 #define IMP_SIMPLE_TRIPLET_SCORE(Name)                                  \
-  bool get_is_changed(const ParticleTriplet &p) const {                 \
-    return p[0]->get_is_changed() || p[1]->get_is_changed()             \
-      || p[1]->get_is_changed();                                        \
-  }                                                                     \
   ParticlesTemp get_input_particles(Particle *p) const {                \
     ParticlesTemp r(1,p);                                               \
     return r;                                                           \
@@ -1642,10 +1478,6 @@ protected:                                      \
     - IMP::QuadScore::evaluate()
     - IMP::QuadScore::get_input_particles()
     - IMP::QuadScore::get_output_particles()
-
-    The macro expects a class method
-    - bool get_is_changed(ParticleQuad) which returns true if the
-    score needs to be recalculated.
 */
 #define IMP_QUAD_SCORE(Name)                                            \
   double evaluate(const ParticleQuad &p,                                \
@@ -1662,48 +1494,6 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_change(const ParticleQuad &p,                         \
-                         DerivativeAccumulator *da) const {             \
-    if (p[0]->get_is_changed() || p[1]->get_is_changed()                \
-        || p[2]->get_is_changed() || p[3]->get_is_changed()) {          \
-      DerivativeAccumulator nda;                                        \
-      if (da) nda= DerivativeAccumulator(*da, -1);                      \
-      double v= Name::evaluate(ParticleQuad(p[0]->get_prechange_particle(), \
-                                            p[1]->get_prechange_particle(), \
-                                            p[2]->get_prechange_particle(), \
-                                            p[3]->get_prechange_particle()), \
-                               da? &nda:NULL);                          \
-      double rv= Name::evaluate(p, da)-v;                               \
-      return rv;                                                        \
-    } else {                                                            \
-      return 0;                                                         \
-    }                                                                   \
-  }                                                                     \
-  double evaluate_change(const ParticleQuadsTemp &ps,                   \
-                         DerivativeAccumulator *da) const {             \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_change(ps[i], da);                            \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  double evaluate_prechange(const ParticleQuad &p,                      \
-                            DerivativeAccumulator *da) const {          \
-    return Name::evaluate(ParticleQuad(p[0]->get_prechange_particle(),  \
-                                       p[1]->get_prechange_particle(),  \
-                                       p[2]->get_prechange_particle(),  \
-                                       p[3]->get_prechange_particle()), \
-                          da);                                          \
-  }                                                                     \
-  double evaluate_prechange(const ParticleQuadsTemp &ps,                \
-                            DerivativeAccumulator *da) const {          \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate_prechange(ps[i], da);                         \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  bool get_is_changed(const ParticleQuad &p) const;                     \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
   IMP_OBJECT(Name)
@@ -1960,22 +1750,6 @@ protected:                                      \
                               (PassValue,DerivativeAccumulator*) const> \
                                 (&Tuple##Score::evaluate), s, _1, da)); \
   }                                                                     \
-  template <class SS>                                                   \
-  double template_evaluate_change(const SS *s,                          \
-                                  DerivativeAccumulator *da) const {    \
-    return accumulate_over_contents(boost::bind(static_cast<double      \
-                                                (Tuple##Score::*)       \
-                              (PassValue,DerivativeAccumulator*) const> \
-                         (&Tuple##Score::evaluate_change), s, _1, da)); \
-  }                                                                     \
-  template <class SS>                                                   \
-  double template_evaluate_prechange(const SS *s,                       \
-                                     DerivativeAccumulator *da) const { \
-    return accumulate_over_contents(boost::bind(static_cast<double      \
-                                                (Tuple##Score::*)       \
-                              (PassValue,DerivativeAccumulator*) const> \
-                      (&Tuple##Score::evaluate_prechange), s, _1, da)); \
-  }                                                                     \
   void apply(const Tuple##Modifier *sm) {                               \
     template_apply(sm);                                                 \
   }                                                                     \
@@ -1987,14 +1761,6 @@ protected:                                      \
                   DerivativeAccumulator *da) const {                    \
     return template_evaluate(s, da);                                    \
   }                                                                     \
-  double evaluate_change(const Tuple##Score *s,                         \
-                         DerivativeAccumulator *da) const {             \
-    return template_evaluate_change(s, da);                             \
-  }                                                                     \
-  double evaluate_prechange(const Tuple##Score *s,                      \
-                            DerivativeAccumulator *da) const {          \
-    return template_evaluate_prechange(s, da);                          \
-  }                                                                     \
   template <class SM>                                                   \
   void template_apply(const SM *sm) {                                   \
     apply_to_contents(boost::bind(static_cast<void (Tuple##Modifier::*) \
@@ -2002,7 +1768,6 @@ protected:                                      \
                         sm, _1));                                       \
   }                                                                     \
   ParticlesTemp get_contained_particles() const;                        \
-  bool get_contained_particles_changed() const;                         \
   IMP_OBJECT(Name)
 #endif
 

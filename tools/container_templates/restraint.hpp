@@ -54,7 +54,7 @@ public:
                       std::string name="CLASSNAMEsRestraint %1%");
 
 #if defined(IMP_DOXYGEN) || defined(SWIG)
-  IMP_INCREMENTAL_RESTRAINT(CLASSNAMEsRestraint);
+  IMP_RESTRAINT(CLASSNAMEsRestraint);
 
   //! Get the container used to store Particles
   PLURALVARIABLETYPE get_arguments() const;

@@ -32,7 +32,6 @@ class IMPCOREEXPORT PairRestraint :
 {
   IMP::internal::OwnerPointer<PairScore> ss_;
   ParticlePair v_;
-  mutable double score_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -49,7 +48,7 @@ public:
     return v_;
   }
 
-  IMP_INCREMENTAL_RESTRAINT(PairRestraint);
+  IMP_RESTRAINT(PairRestraint);
 
   Restraints get_instant_decomposition() const;
 };

@@ -23,8 +23,7 @@ SingletonRestraint
                      std::string name):
   SingletonScoreRestraint(name),
   ss_(ss),
-  v_(vt),
-  score_(std::numeric_limits<double>::quiet_NaN())
+  v_(vt)
 {
   IMP_IF_CHECK(USAGE) {
     // check the arguments are OK
@@ -37,22 +36,9 @@ double SingletonRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  score_ = ss_->evaluate(v_, accum);
-
-  return score_;
+  return ss_->evaluate(v_, accum);
 }
 
-double SingletonRestraint
-::unprotected_incremental_evaluate(DerivativeAccumulator *accum) const
-{
-  if (ss_->get_is_changed(v_)) {
-    score_+=ss_->evaluate_change(v_, accum);
-  }
-  return score_;
-}
-
-void SingletonRestraint
-::set_is_incremental(bool) {}
 
 ParticlesTemp SingletonRestraint::get_input_particles() const
 {

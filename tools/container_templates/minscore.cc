@@ -58,14 +58,6 @@ double MINORMAXCLASSNAMEScore::evaluate(ARGUMENTTYPE v,
   return score;
 }
 
-bool MINORMAXCLASSNAMEScore::get_is_changed(ARGUMENTTYPE v) const {
-  for (unsigned int i=0; i< scores_.size(); ++i) {
-    if (scores_[i]->get_is_changed(v)) return true;
-  }
-  return false;
-}
-
-
 ParticlesTemp MINORMAXCLASSNAMEScore
 ::get_input_particles(Particle* p) const {
   ParticlesTemp ret;

@@ -50,7 +50,7 @@ public:
                       PairContainer *pc,
                       std::string name="PairsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CorePairsRestraint);
+  IMP_RESTRAINT(CorePairsRestraint);
 
   ParticlePairsTemp get_arguments() const {
     return pc_->get();

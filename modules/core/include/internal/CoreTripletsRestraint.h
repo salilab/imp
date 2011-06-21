@@ -50,7 +50,7 @@ public:
                       TripletContainer *pc,
                       std::string name="TripletsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreTripletsRestraint);
+  IMP_RESTRAINT(CoreTripletsRestraint);
 
   ParticleTripletsTemp get_arguments() const {
     return pc_->get();

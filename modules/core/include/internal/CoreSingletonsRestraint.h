@@ -50,7 +50,7 @@ public:
                       SingletonContainer *pc,
                       std::string name="SingletonsRestraint %1%");
 
-  IMP_INCREMENTAL_RESTRAINT(CoreSingletonsRestraint);
+  IMP_RESTRAINT(CoreSingletonsRestraint);
 
   ParticlesTemp get_arguments() const {
     return pc_->get();
