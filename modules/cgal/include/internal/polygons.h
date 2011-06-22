@@ -15,14 +15,17 @@
 
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
-IMPCGALEXPORT
-std::pair<std::vector<std::vector<algebra::VectorD<3> > >, algebra::VectorD<3> >
-get_convex_polygons(const std::vector<algebra::VectorD<3> > &poly);
 
 IMPCGALEXPORT std::vector<algebra::VectorD<3> >
 get_intersection(const algebra::VectorD<3> &normal,
                  double d,
                  const algebra::BoundingBoxD<3> &bb);
+
+IMPCGALEXPORT
+Ints
+get_convex_polygons(const Ints &indexes,
+                    const std::vector<algebra::VectorD<3> > &vertices);
+
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 
