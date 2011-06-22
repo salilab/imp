@@ -272,7 +272,7 @@ IMPATOMEXPORT double get_mass(Selection h);
 IMPATOMEXPORT double get_volume(Selection h);
 
 /** Get the total surface area of a hiearrchy. In square angstroms.
-    \requires{get_volume, CGAL}
+    \requires{get_surface_area, CGAL}
     \relatesalso Selection
 */
 IMPATOMEXPORT double get_surface_area(Selection h);
