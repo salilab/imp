@@ -122,7 +122,7 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
                       << "from the input set are not supported."
                       << "  Particle \"" << t[j]->get_name()
                       << "\" depends on \"" << ps[i]->get_name()
-                      << "\" and \"" << ps[map.find(t[i])->second]->get_name()
+                      << "\" and \"" << ps[map.find(t[j])->second]->get_name()
                       << "\"");
       map[t[j]]= i;
     }
