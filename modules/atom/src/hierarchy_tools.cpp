@@ -130,7 +130,7 @@ namespace {
    Ints inds;
    algebra::VectorD<3> vv(0,0,0);
    for (unsigned int i=0; i< other.size(); ++i) {
-     m+= get_mass(Hierarchy(other[i]));
+     m+= get_mass(Selection(Hierarchy(other[i])));
      gather_residue_indices(Hierarchy(other[i]), inds);
      core::XYZR d(other[i]);
      if (volume <0) {
@@ -921,6 +921,7 @@ void transform(Hierarchy h, const algebra::Transformation3D &tr) {
 
 
 double get_mass(Selection h) {
+  IMP_FUNCTION_LOG;
   double ret=0;
   ParticlesTemp ps=h.get_selected_particles();
   for (unsigned int i=0; i< ps.size(); ++i) {
