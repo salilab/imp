@@ -48,12 +48,6 @@ Float SoftCylinderPairScore::evaluate(const ParticlePair &p,
   }
 }
 
-bool SoftCylinderPairScore::get_is_changed(const ParticlePair &pp) const {
-  return atom::Bond(pp[0]).get_bonded(0)->get_is_changed()
-    || atom::Bond(pp[0]).get_bonded(1)->get_is_changed()
-    || atom::Bond(pp[1]).get_bonded(0)->get_is_changed()
-    || atom::Bond(pp[1]).get_bonded(1)->get_is_changed();
-}
 ParticlesTemp SoftCylinderPairScore::get_input_particles(Particle *p) const {
   ParticlesTemp ret;
   ret.push_back(p);
