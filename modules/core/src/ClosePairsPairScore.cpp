@@ -125,7 +125,7 @@ get_close_pairs(const ParticlePair &p) const {
   algebra::internal::MinimalSet<double, ParticlePair> ms(k_);
   for (unsigned int i=0; i< ppt.size(); ++i) {
     double d= get_distance(XYZR(ppt[i][0]), XYZR(ppt[i][1]));
-    std::cout << "Trying " << d << " " << ppt[i] << std::endl;
+    //std::cout << "Trying " << d << " " << ppt[i] << std::endl;
     ms.insert(d, ppt[i]);
   }
   if (ppt.size() > static_cast<unsigned int>(k_*2)) {
@@ -136,7 +136,7 @@ get_close_pairs(const ParticlePair &p) const {
   last_distance_= std::max(1.0, last_distance_);
   ParticlePairsTemp retps;
   for (unsigned int i=0; i < ms.size(); ++i) {
-    std::cout << "Got " << ms[i].second << std::endl;
+    //std::cout << "Got " << ms[i].second << std::endl;
     retps.push_back(ms[i].second);
   }
   IMP_INTERNAL_CHECK(retps.size()==static_cast<unsigned int>(k_),
@@ -167,14 +167,14 @@ get_close_pairs(const ParticlePair &p) const {
       for (unsigned int j=0; j< ps1.size(); ++j) {
         algebra::Sphere3D c1= XYZR(ps1[j]).get_sphere();
         double d= get_distance(c0, c1);
-        std::cout << "Trying " << d << " "
-                  <<  ParticlePair(ps0[i], ps1[j]) << std::endl;
+        /*std::cout << "Trying " << d << " "
+          <<  ParticlePair(ps0[i], ps1[j]) << std::endl;*/
         ms.insert(d, ParticlePair(ps0[i], ps1[j]));
       }
     }
     ParticlePairsTemp retps;
     for (unsigned int i=0; i< ms.size(); ++i) {
-      std::cout << "Got " << ms[i].second << std::endl;
+      //std::cout << "Got " << ms[i].second << std::endl;
       retps.push_back(ms[i].second);
     }
     return retps;
