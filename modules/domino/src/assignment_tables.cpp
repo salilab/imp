@@ -350,7 +350,7 @@ namespace {
       if (cur.back() >= maxs.back()) {
         cur.back()=0;
         Assignment inner;
-        if (s.size()==1) {
+        if (s.size()==2) {
           inner= get_next_assignment_base(Ints(cur.begin(), cur.end()-1),
                                           Ints(maxs.begin(), maxs.end()-1),
                               std::vector<SubsetFilters>(filters.begin(),
@@ -474,12 +474,18 @@ void BranchAndBoundAssignmentsTable
     }
   }
   do {
-    Assignment cura= get_next_assignment(spt,
-                                         subsets,
-                                         orders,
-                                         cur,
-                                         maxs,
-                                         filters);
+    Assignment cura;
+    if (spt.size()>1) {
+      cura=get_next_assignment(spt,
+                               subsets,
+                               orders,
+                               cur,
+                               maxs,
+                               filters);
+    } else {
+      cura=get_next_assignment_base(cur,
+                               maxs, filters);
+    }
     if (cura.size()>0) {
       Ints cura_reordered(cura.size());
       for (unsigned int i=0; i< cura.size(); ++i) {
