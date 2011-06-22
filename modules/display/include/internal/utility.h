@@ -11,11 +11,20 @@
 #include "../display_config.h"
 #include <IMP/algebra/Vector3D.h>
 
+IMPDISPLAY_BEGIN_NAMESPACE
+class SurfaceMeshGeometry;
+IMPDISPLAY_END_NAMESPACE
+
 IMPDISPLAY_BEGIN_INTERNAL_NAMESPACE
+IMPDISPLAYEXPORT
+Ints get_triangles(PolygonGeometry *sg);
 
 IMPDISPLAYEXPORT
-std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D>
-get_convex_polygons(const algebra::Vector3Ds &poly);
+Ints get_triangles(SurfaceMeshGeometry *sg);
+
+IMPDISPLAYEXPORT
+algebra::Vector3Ds get_normals(const Ints &faces,
+                               const algebra::Vector3Ds &vertices);
 
 IMPDISPLAY_END_INTERNAL_NAMESPACE
 

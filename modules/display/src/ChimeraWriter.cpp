@@ -88,26 +88,25 @@ bool ChimeraWriter::handle(SegmentGeometry *g,
   return true;
 }
 bool ChimeraWriter::handle(PolygonGeometry *g,
-                            Color color, std::string name) {
-  cleanup(name, false, true);
-  std::pair<std::vector<algebra::Vector3Ds>, algebra::Vector3D> polys
-    = internal::get_convex_polygons(g->get_geometry());
-  for (unsigned int i=0; i< polys.first.size(); ++i) {
-    get_stream() << "v=[";
-    for (unsigned int j=0; j< polys.first[i].size(); ++j) {
-      get_stream() << "(" << commas_io(polys.first[i][j]) << "), ";
-    }
-    get_stream() << "]\n";
-    get_stream() << "vi=[";
-    for (unsigned int j=2; j< polys.first[i].size(); ++j) {
-      get_stream() << "(";
-      get_stream() << "0" << ", " << j-1 << ", " << j;
-      get_stream() << "), ";
-    }
-    get_stream() << "]\n";
-    get_stream() << "m.addPiece(v, vi, (" << commas_io(color)
-                 << ", 1))\n";
+                           Color color, std::string name) {
+    cleanup(name, false, true);
+  Ints triangles
+    = internal::get_triangles(g);
+  get_stream() << "v=[";
+  for (unsigned int i=0; i< g->get_geometry().size(); ++i) {
+    get_stream() << "(" <<
+      commas_io(g->get_geometry()[i]) << "), ";
   }
+  get_stream() << "]\n";
+  get_stream() << "vi=[";
+  for (unsigned int i=0; i< triangles.size()/3; ++i) {
+    get_stream() << "(" << triangles[3*i]
+                 << ", " << triangles[3*i+1]
+                 << ", " << triangles[3*i+2] << "), ";
+  }
+  get_stream() << "]\n";
+  get_stream() << "m.addPiece(v, vi, (" << commas_io(color)
+               << ", 1))\n";
   return true;
 }
 bool ChimeraWriter::handle(TriangleGeometry *g,
@@ -126,7 +125,7 @@ bool ChimeraWriter::handle(TriangleGeometry *g,
   }
   get_stream() << "]\n";
   get_stream() << "m.addPiece(v, vi, (" << commas_io(color)
-               << ", 1))\n";
+  << ", 1))\n";
   return true;
 }
 bool ChimeraWriter::handle(EllipsoidGeometry *g,

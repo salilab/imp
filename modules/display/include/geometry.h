@@ -146,7 +146,7 @@ class IMPDISPLAYEXPORT SurfaceMeshGeometry: public Geometry {
  public:
   SurfaceMeshGeometry(const algebra::Vector3Ds& vertices,
                       const Ints &faces);
-  const algebra::Vector3Ds& get_vertices() const {return vertices_;}
+  const algebra::Vector3Ds& get_vertexes() const {return vertices_;}
   const Ints& get_faces() const {return faces_;}
   IMP_GEOMETRY(SurfaceMeshGeometry);
 };

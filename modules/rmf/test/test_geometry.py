@@ -21,6 +21,29 @@ class GenericTest(IMP.test.TestCase):
         gs[0].set_was_used(True)
         cg= gs[0].get_components()
         self.assertEqual(len(cg), 12)
+    def test_3(self):
+        """Testing surface geometry"""
+        if not hasattr(IMP, 'cgal'):
+            self.skipTest("IMP.cgal module disabled")
+        g=IMP.algebra.DenseDoubleGrid3D(1, IMP.algebra.BoundingBox3D((-10, -10, -10),
+                                                                     (10,10,10)))
+        for i in g.get_all_indexes():
+            c= g.get_center(i)
+            m= c.get_magnitude()
+            g[i]=100-m
+        #for i in g.get_all_indexes():
+        #    print i, g.get_center(i), g[i]
+        gg= IMP.display.IsosurfaceGeometry(g, 95.0)
+        gg.set_name("isosurface")
+        rmf= IMP.rmf.RootHandle(self.get_tmp_file_name("iso.rmf"), True)
+        IMP.rmf.add_geometry(rmf, gg)
+        del rmf
+        rmf= IMP.rmf.RootHandle(self.get_tmp_file_name("iso.rmf"), False)
+        gs= IMP.rmf.create_geometries(rmf,0)
+        w=IMP.display.PymolWriter(self.get_tmp_file_name("iso.pym"))
+        w.add_geometry(gg)
+        gs[0].set_name("after")
+        w.add_geometry(gs[0])
 
 if __name__ == '__main__':
     unittest.main()

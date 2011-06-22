@@ -138,25 +138,33 @@ namespace {
     } while (true);
     HDF5DataSet<IndexTraits> id
       = cur.get_root_handle().get_hdf5_group()
-      .add_child_data_set<IndexTraits>(inm, 1);
+      .add_child_data_set<IndexTraits>(inm, 2);
     HDF5DataSet<FloatTraits> vd
       = cur.get_root_handle().get_hdf5_group()
       .add_child_data_set<FloatTraits>(vnm, 2);
-    Ints isz(1, sg->get_faces().size());
-    id.set_size(isz);
-    for (unsigned int i=0; i< sg->get_faces().size(); ++i) {
-      isz[0]= i;
-      id.set_value(isz, sg->get_faces()[i]);
+
+    Ints tris
+      = display::internal::get_triangles(sg);
+    Ints size(2);
+    size[0]= tris.size()/3;
+    size[1]=3;
+    id.set_size(size);
+    Ints index(1);
+    for (unsigned int i=0; i< tris.size(); i+=3) {
+      Ints curtri(3);
+      std::copy(tris.begin()+i, tris.begin()+i+3, curtri.begin());
+      index[0]=i/3;
+      id.set_row(index, curtri);
     }
     Ints vsz(2);
-    vsz[0]= sg->get_vertices().size();
+    vsz[0]= sg->get_vertexes().size();
     vsz[1]= 3;
     vd.set_size(vsz);
-    for (unsigned int i=0; i< sg->get_vertices().size(); ++i) {
+    for (unsigned int i=0; i< sg->get_vertexes().size(); ++i) {
       vsz[0]= i;
       for (unsigned int j=0; j< 3; ++j) {
         vsz[1]=j;
-        vd.set_value(vsz, sg->get_vertices()[i][j]);
+        vd.set_value(vsz, sg->get_vertexes()[i][j]);
       }
     }
     cur.set_value(vn, vnm);
@@ -355,10 +363,14 @@ namespace {
           vs[vds[0]][vds[1]]=vd.get_value(vds);
         }
       }
-      Ints is(id.get_size()[0]);
+      Ints is(id.get_size()[0]*4, -1);
       Ints ids(1);
-      for (ids[0]=0; ids[0]< static_cast<int>(is.size()); ++ids[0]) {
-        is[ids[0]]=id.get_value(ids);
+      for (unsigned int i=0; i< is.size()/4; ++i) {
+        ids[0]= i;
+        Ints cur=id.get_row(ids);
+        IMP_USAGE_CHECK(cur.size()==3, "Triangle not found. Found face of size "
+                        << cur.size() << " instead.");
+        std::copy(cur.begin(), cur.end(), is.begin()+i*4);
       }
       Pointer<display::Geometry> ret=new display::SurfaceMeshGeometry(vs, is);
       return ret.release();

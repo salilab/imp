@@ -171,46 +171,35 @@ bool PymolWriter::handle(SegmentGeometry *g,
 
 
 namespace {
-  void write_triangle(algebra::Vector3D a,
-                      algebra::Vector3D b,
-                      algebra::Vector3D c,
+  void write_triangle(Ints::const_iterator b,
+                      Ints::const_iterator e,
+                      const algebra::Vector3Ds &vertices,
+                      const algebra::Vector3Ds &normals,
                       Color color,
                       std::ostream &out) {
-    algebra::VectorD<3> n=
-      get_vector_product(b-a,
-                         c-a).get_unit_vector();
     write_color(out, color);
-    out << "NORMAL, " << algebra::commas_io(n)
+    for (Ints::const_iterator c=b; c != e; ++c) {
+      out << "NORMAL, " << algebra::commas_io(normals[*c])
         << ",\n";
     out << "VERTEX, "
-        << algebra::commas_io(a)
+        << algebra::commas_io(vertices.at(*c))
         << ",\n";
-    out << "VERTEX, "
-        << algebra::commas_io(b)
-        << ",\n";
-    out << "VERTEX, "
-        << algebra::commas_io(c)
-        << ",\n";
+    }
   }
 }
 
 bool PymolWriter::handle(PolygonGeometry *g,
                           Color color, std::string name) {
-  setup(name, OTHER);
-  std::pair<std::vector<algebra::Vector3Ds>,
-            algebra::Vector3D> polys
-            = internal::get_convex_polygons(g->get_geometry());
-  for (unsigned int i=0; i< polys.first.size(); ++i) {
-    get_stream() << "BEGIN, TRIANGLE_FAN, ";
-    algebra::VectorD<3> n= polys.second;
-    write_color(get_stream(), color);
-    get_stream() << "NORMAL, " << algebra::commas_io(n)
-                 << ",\n";
-    for (unsigned int j=0; j< polys.first[i].size(); ++j) {
-      get_stream() << "VERTEX, " << algebra::commas_io(polys.first[i][j])
-                   << ", ";
-    }
-    get_stream() << "END,\n";
+  setup(name, TRIANGLES);
+  if (!open_type_) {
+    get_stream() << "BEGIN, TRIANGLES, ";
+    open_type_=TRIANGLES;
+  }
+  Ints tris= internal::get_triangles(g);
+  algebra::Vector3Ds normals= internal::get_normals(tris, g->get_geometry());
+  for (unsigned int i=0; i< tris.size()/3; ++i) {
+    write_triangle(tris.begin()+3*i, tris.begin()+3*i+3,
+                   g->get_geometry(), normals, color, get_stream());
   }
   return true;
 }
@@ -219,12 +208,19 @@ bool PymolWriter::handle(PolygonGeometry *g,
 
 bool PymolWriter::handle(TriangleGeometry *g,
                             Color color, std::string name) {
-  setup(name, OTHER);
-  get_stream() << "BEGIN, TRIANGLE_FAN, ";
-  write_triangle(g->get_geometry().get_point(0),
-                 g->get_geometry().get_point(1),
-                 g->get_geometry().get_point(2), color, get_stream());
-  get_stream() << "END,\n";
+  setup(name, TRIANGLES);
+  if (!open_type_) {
+    get_stream() << "BEGIN, TRIANGLES, ";
+    open_type_=TRIANGLES;
+  }
+  Ints tri(3); tri[0]=0; tri[1]=1; tri[2]=2;
+  algebra::Vector3Ds verts(3);
+  verts[0]= g->get_geometry().get_point(0);
+  verts[1]= g->get_geometry().get_point(1);
+  verts[2]= g->get_geometry().get_point(2);
+  algebra::Vector3Ds normals= internal::get_normals(tri, verts);
+  write_triangle(tri.begin(), tri.end(),
+                 verts, normals, color, get_stream());
   return true;
 }
 
@@ -235,21 +231,16 @@ bool PymolWriter::handle(SurfaceMeshGeometry *g,
     get_stream() << "BEGIN, TRIANGLES, ";
     open_type_=TRIANGLES;
   }
-  algebra::Vector3Ds cur;
-  for (unsigned int i=0; i< g->get_faces().size(); ++i) {
-    if (g->get_faces()[i]==-1) {
-      if (cur.size()==3) {
-        write_triangle(cur[0], cur[1], cur[2], color, get_stream());
-      } else {
-        //write_polygon(cur, color, get_stream());
-        IMP_NOT_IMPLEMENTED;
-      }
-      cur.clear();
-    } else {
-      cur.push_back(g->get_vertices()[g->get_faces()[i]]);
-    }
+  Ints triangles= internal::get_triangles(g);
+  algebra::Vector3Ds normals
+    = internal::get_normals(triangles, g->get_vertexes());
+  IMP_INTERNAL_CHECK(triangles.size()%3==0,
+                     "The returned triangles aren't triangles");
+  for (unsigned int i=0; i< triangles.size()/3; ++i) {
+    write_triangle(triangles.begin()+3*i, triangles.begin()+3*i+3,
+                   g->get_vertexes(), normals,
+                   color, get_stream());
   }
-  //get_stream() << "END,\n";
   return true;
 }
 
