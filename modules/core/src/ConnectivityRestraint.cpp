@@ -161,6 +161,7 @@ Restraints ConnectivityRestraint::get_instant_decomposition() const {
     std::ostringstream oss;
     oss << get_name() << " " << i;
     pr->set_name(oss.str());
+    ret[i]=pr;
   }
   return ret;
 }
