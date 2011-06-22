@@ -471,8 +471,9 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
     IMP_LOG(TERSE, "State is " << state << " and ");
     logit(TERSE, members);
     IMP_LOG(TERSE, " are the members." << std::endl);
-    for (unsigned int i=1; i< members.size(); ++i) {
-      IMP_USAGE_CHECK(members[i]>=0, "Invalid member");
+    int last=-1;
+    for (unsigned int i=0; i< members.size(); ++i) {
+      if (members[i]==-1) continue;
       // it is too low an index to work globally
       /*if (state[members[i]] < members[i]) {
         IMP_LOG(VERBOSE, "Rejected due to index being too low"
@@ -480,12 +481,14 @@ IMP_DISJOINT_SUBSET_FILTER_TABLE_DEF(Equivalence, {
                 << std::endl);
         return false;
         }*/
-      if (state[members[i-1]] > state[members[i]]) {
+      if (last > state[members[i]]) {
         IMP_LOG(VERBOSE, "Rejected due order"
-                << state << " at " << members[i]
-                << " vs " << members[i-1] << std::endl);
+                << state << " at " << i << " that is "
+                << state[members[i]]
+                << " vs " << last << std::endl);
         return false;
       }
+      last= state[members[i]];
     }
     //IMP_LOG(TERSE, "ok" << std::endl);
     return true;
