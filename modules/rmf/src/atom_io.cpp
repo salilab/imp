@@ -232,8 +232,14 @@ namespace {
                                   unsigned int frame,
                                   boost::progress_display* pd,
                                   IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
-    NodeHandle cur
-      = parent.get_node_handle_from_association(hierarchy.get_particle());
+    NodeHandle cur;
+    try {
+      cur= parent.get_node_handle_from_association(hierarchy.get_particle());
+    } catch (ValueException) {
+      IMP_THROW("Unable to find association for " << hierarchy
+                << " which is " << static_cast<void*>(hierarchy),
+                ValueException);
+    }
     copy_data(hierarchy, cur, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
     //std::cout << "Processing " << hierarchy->get_name() << std::endl;
     unsigned int nc=hierarchy.get_number_of_children();
@@ -249,6 +255,7 @@ namespace {
 
 void save_frame(RootHandle fh,
                unsigned int frame, atom::Hierarchy hs) {
+  IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {
@@ -290,6 +297,7 @@ namespace {
 
 }
 void add_hierarchy(RootHandle fh, atom::Hierarchy hs) {
+  IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   boost::scoped_ptr<boost::progress_display> pd;
   if (get_log_level()< TERSE) {
@@ -330,6 +338,7 @@ namespace {
 }
 
 atom::Hierarchies create_hierarchies(RootHandle fh, Model *model) {
+  IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   NodeHandle root= fh;
   atom::Hierarchies ret;
@@ -369,7 +378,9 @@ namespace {
                      RBM &rigid_bodies,
                      IMP_HDF5_ACCEPT_MOLECULE_KEYS) {
     NodeHandle ncur= file.get_node_handle_from_association(h.get_particle());
-    copy_data(ncur, h, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
+    if (ncur != NodeHandle()) {
+      copy_data(ncur, h, frame, IMP_HDF5_PASS_MOLECULE_KEYS);
+    }
     if (core::RigidMember::particle_is_instance(h)) {
       Particle *rb= core::RigidMember(h).get_rigid_body();
       rigid_bodies[rb].push_back(h);
@@ -406,6 +417,7 @@ namespace {
 void load_frame(RootHandle fh,
                 unsigned int frame,
                 atom::Hierarchy hs) {
+  IMP_FUNCTION_LOG;
   IMP_HDF5_CREATE_MOLECULE_KEYS(fh);
   RBM rigid_bodies;
   load_internal(fh, hs, frame, rigid_bodies, IMP_HDF5_PASS_MOLECULE_KEYS);
@@ -457,6 +469,9 @@ namespace {
                           bool overwrite) {
     nh.set_association(h, overwrite);
     NodeHandles children= nh.get_children();
+    if (h.get_number_of_children() != children.size()) {
+      IMP_THROW("Mismatched sizes at " << h, ValueException);
+    }
     for (unsigned int i=0; i< children.size(); ++i) {
       associate_internal(children[i], h.get_child(i), overwrite);
     }
@@ -465,12 +480,21 @@ namespace {
 
 void set_hierarchies(RootHandle rh, atom::Hierarchies hs,
                      bool overwrite) {
+  IMP_FUNCTION_LOG;
   NodeHandle root= rh;
   NodeHandles children= root.get_children();
+  unsigned int hsi=0;
   for (unsigned int i=0; i< children.size(); ++i) {
     if (children[i].get_type()== REPRESENTATION) {
-      associate_internal(children[i], hs[i], overwrite);
+      if (hs.size() <= hsi) {
+        IMP_THROW("Too few hierarchies for file", ValueException);
+      }
+      associate_internal(children[i], hs[hsi], overwrite);
+      ++hsi;
     }
+  }
+  if (hsi != hs.size()) {
+    IMP_THROW("Mismatched sizes", ValueException);
   }
 }
 

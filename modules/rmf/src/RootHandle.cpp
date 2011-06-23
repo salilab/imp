@@ -23,7 +23,11 @@ NodeHandle RootHandle::get_node_handle_from_id(NodeID id) const {
 
 
 NodeHandle RootHandle::get_node_handle_from_association(void*d) const {
-  return NodeHandle(shared_->get_association(d), shared_);
+  if (! shared_->get_has_association(d)) {
+    return NodeHandle();
+  } else {
+    return NodeHandle(shared_->get_association(d), shared_);
+  }
 }
 
 
