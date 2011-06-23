@@ -208,16 +208,43 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     return file_;
   }
   void set_association(int id, void *d, bool overwrite) {
+    if (!d) {
+      IMP_THROW("NULL association", ValueException);
+    }
     if (association_.size() <= static_cast<unsigned int>(id)) {
       association_.resize(id+1, NULL);
     }
     IMP_USAGE_CHECK(overwrite || !association_[id],
                     "Associations can only be set once");
     if (overwrite && association_[id]) {
-      back_association_.erase(association_[id]);
+      void *old=association_[id];
+      if (back_association_[old]==id) {
+        back_association_.erase(old);
+      }
     }
     association_[id]=d;
     back_association_[d]=id;
+    /*IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      unsigned int azs=0;
+      for (unsigned int i=0; i< association_.size(); ++i) {
+        if (association_[i]) ++azs;
+      }
+      IMP_INTERNAL_CHECK(azs== back_association_.size(),
+                         "Sizes don't match: " << azs
+                         << " vs " << back_association_.size());
+      for (unsigned int i=0; i< association_.size(); ++i) {
+        if (!association_[i]) continue;
+        IMP_INTERNAL_CHECK(back_association_.find(association_[i])
+                           != back_association_.end(),
+                           "Back and forth not found");
+        IMP_INTERNAL_CHECK(back_association_.find(association_[i])->second
+                           == i,
+                           "Back and forth don't match");
+      }
+      }*/
+  }
+  bool get_has_association(void* d) const {
+    return back_association_.find(d) != back_association_.end();
   }
   void* get_association(int id) const {
     IMP_USAGE_CHECK(static_cast<unsigned int>(id) < association_.size(),
@@ -225,8 +252,17 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     return association_[id];
   }
   int get_association(void* d) const {
-    IMP_USAGE_CHECK(back_association_.find(d) != back_association_.end(),
-                    "Unassociated id");
+    if (back_association_.find(d) == back_association_.end()) {
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        for (unsigned int i=0; i< association_.size(); ++i) {
+          IMP_INTERNAL_CHECK(association_[i] != d,
+                             "Association not in map, but found: "
+                             << d << " at " << i);
+        }
+      }
+      IMP_THROW("Unassociated id from " << back_association_.size(),
+                ValueException);
+    }
     return back_association_.find(d)->second;
   }
   template <class TypeTraits>
@@ -329,20 +365,27 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     // check that it is unique
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_attribute_name<TypeTraits>(category_id,
+      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
                                                               per_frame);
-      std::vector<std::string> names = file_.get_attribute<StringTraits>(nm);
-      for (unsigned int i=0; i< names.size(); ++i) {
-        IMP_USAGE_CHECK(names[i] != name, "Attribute name " << name
+      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      unsigned int sz= nameds.get_size()[0];
+      Ints index(1);
+      for (unsigned int i=0; i< sz; ++i) {
+        index[0]=i;
+        IMP_USAGE_CHECK(nameds.get_value(index) != name,
+                        "Attribute name " << name
                         << " already taken for that type.");
       }
     }
-    std::string nm= get_key_list_attribute_name<TypeTraits>(category_id,
+    std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
                                                             per_frame);
-    std::vector<std::string> names = file_.get_attribute<StringTraits>(nm);
-    int ret_index= names.size();
-    names.push_back(name);
-    file_.set_attribute<StringTraits>(nm, names);
+    HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+    Ints sz= nameds.get_size();
+    int ret_index= sz[0];
+    ++sz[0];
+    nameds.set_size(sz);
+    --sz[0];
+    nameds.set_value(sz, name);
     return Key<TypeTraits>(category_id, ret_index, per_frame);
   }
       // create the data sets and add rows to the table
@@ -351,32 +394,38 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     std::vector<Key<TypeTraits> > ret;
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_attribute_name<TypeTraits>(category_id,
+      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
                                                               per_frame);
-      std::vector<std::string> names = file_.get_attribute<StringTraits>(nm);
-      for (unsigned int i=0; i< names.size(); ++i) {
-        ret.push_back(Key<TypeTraits>(category_id, i, per_frame));
+      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      Ints sz= nameds.get_size();
+      for (int j=0; j< sz[0]; ++j) {
+        ret.push_back(Key<TypeTraits>(category_id, j, per_frame));
       }
     }
     return ret;
   }
   template <class TypeTraits>
   std::string get_name(Key<TypeTraits> k) {
-    std::string attr_nm
-      =get_key_list_attribute_name<TypeTraits>(k.get_category(),
+    std::string nm
+      =get_key_list_data_set_name<TypeTraits>(k.get_category(),
                                                k.get_is_per_frame());
-    return file_.get_attribute<StringTraits>(attr_nm)[k.get_index()];
+    HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+    Ints index(1, k.get_index());
+    return nameds.get_value(index);
   }
 
   template <class TypeTraits>
     Key<TypeTraits> get_key(KeyCategory category_id, std::string name) {
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_attribute_name<TypeTraits>(category_id,
+      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
                                                               per_frame);
-      std::vector<std::string> names = file_.get_attribute<StringTraits>(nm);
-      for (unsigned int j=0; j< names.size(); ++j) {
-        if (names[j] == name) {
+      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      Ints size= nameds.get_size();
+      for (int j=0; j< size[0]; ++j) {
+        Ints index(1,j);
+        std::string cur=nameds.get_value(index);
+        if (cur== name) {
           return Key<TypeTraits>(category_id, j, per_frame);
         }
       }

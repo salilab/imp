@@ -42,7 +42,7 @@ inline std::string get_bond_data_data_set_name() {
 }
 //! Get the name of the attribute which lists all the keys of the category
 template <class TypeTraits>
-inline std::string get_key_list_attribute_name(KeyCategory category_id,
+inline std::string get_key_list_data_set_name(KeyCategory category_id,
                                                bool per_frame) {
   std::ostringstream oss;
   oss << TypeTraits::get_name() << "_" << category_id.get_name() << "_"

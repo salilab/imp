@@ -28,10 +28,11 @@ namespace {
     }
   public:
     Subset(): sz_(0){}
-    Subset(ParticlesTemp ps):
-      ps_(new Particle*[ps.size()]),
-      sz_(ps.size()) {
+    Subset(ParticlesTemp ps) {
       std::sort(ps.begin(), ps.end());
+      ps.erase(std::unique(ps.begin(), ps.end()), ps.end());
+      sz_= ps.size();
+      ps_.reset(new Particle*[ps.size()]);
       std::copy(ps.begin(), ps.end(), ps_.get());
       IMP_USAGE_CHECK(std::unique(ps.begin(), ps.end()) == ps.end(),
                       "Duplicate particles in set");
@@ -167,22 +168,22 @@ namespace {
     cur.set_value(sk, s, 0);
 
     Restraints rd= r->get_instant_decomposition();
-    if (rd.size() >1) {
+    if (rd.size() >=1 && rd[0] != r) {
       Index index;
       for (unsigned int i=0; i< rd.size(); ++i) {
-        ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
+        //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rd[i]->set_was_used(true);
-        NodeHandle rc=get_child(cur, fks, &*sr, index);
-        double score = sr->evaluate(false);
+        NodeHandle rc=get_child(cur, fks, &*rd[i], index);
+        double score = rd[i]->unprotected_evaluate(NULL);
         rc.set_value(sk, score, 0);
       }
-    } else {
-      set_particles(cur, fks, ip);
     }
+    set_particles(cur, fks, ip);
   }
 }
 
 void add_restraint(RootHandle parent, Restraint *r) {
+  IMP_FUNCTION_LOG;
   NodeIDKeys fks;
   FloatKey sk= get_or_add_key<FloatTraits>(parent.get_root_handle(),
                                            Feature, "score", true);
@@ -204,10 +205,10 @@ namespace {
     Restraints rd= r->get_instant_decomposition();
     if (rd.size() >1) {
       for (unsigned int i=0; i< rd.size(); ++i) {
-        ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
+        //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rd[i]->set_was_used(true);
-        NodeHandle rc=get_child(rn, fks, &*sr, index);
-        double score = sr->evaluate(false);
+        NodeHandle rc=get_child(rn, fks, &*rd[i], index);
+        double score = rd[i]->unprotected_evaluate(NULL);
         rc.set_value(sk, score, frame);
       }
     }
@@ -215,6 +216,7 @@ namespace {
 }
 
 void save_frame(RootHandle f, int frame, Restraint *r) {
+  IMP_FUNCTION_LOG;
   NodeIDKeys fks;
   FloatKey sk= get_or_add_key<FloatTraits>(f,
                                            Feature, "score", true);
@@ -225,6 +227,7 @@ void save_frame(RootHandle f, int frame, Restraint *r) {
 ParticlesTemp get_restraint_particles(NodeHandle f,
                                       NodeIDKeys &ks,
                                       int frame) {
+  IMP_FUNCTION_LOG;
   IMP_USAGE_CHECK(f.get_type()== FEATURE,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
@@ -257,6 +260,7 @@ ParticlesTemp get_restraint_particles(NodeHandle f,
 
 ParticlesTemp get_restraint_particles(NodeHandle f,
                                       int frame) {
+  IMP_FUNCTION_LOG;
   NodeIDKeys t;
   return get_restraint_particles(f, t, frame);
 }
@@ -264,6 +268,7 @@ ParticlesTemp get_restraint_particles(NodeHandle f,
 double get_restraint_score(NodeHandle f,
                            FloatKey &fk,
                            int frame) {
+  IMP_FUNCTION_LOG;
   if (fk== FloatKey()) {
     fk= get_or_add_key<FloatTraits>(f.get_root_handle(),
                                     Feature, "score", true);
@@ -278,6 +283,7 @@ double get_restraint_score(NodeHandle f,
 
 double get_restraint_score(NodeHandle f,
                            int frame) {
+  IMP_FUNCTION_LOG;
   FloatKey sk;
   return get_restraint_score(f, sk, frame);
 }
