@@ -51,6 +51,9 @@ class IMPSTATISTICSEXPORT ConfigurationSetXYZEmbedding: public Embedding {
   IMP::internal::OwnerPointer<SingletonContainer> sc_;
   bool align_;
 public:
+  /** If align is true, all the configurations are rigidly aligned with
+      the first before generating their coordinates.
+  */
   ConfigurationSetXYZEmbedding(ConfigurationSet *cs,
                                SingletonContainer *sc,
                                bool align=false);
