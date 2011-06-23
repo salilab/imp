@@ -63,11 +63,22 @@ public:
   //! Set the bounding box for randomizing the Cartesian coordinates
   void set_bounding_box(const algebra::BoundingBoxD<3> &bb);
 
+  /** \name Number of steps
+      A sampling run proceeds as 3 nested loops
+      -# number of attempts
+      -# number of Monte Carlo steps
+      -# number of CG steps
+      @{
+  */
   //! Set the maximum number of attempts to find a solution
   void set_number_of_attempts(unsigned int att);
 
   //! Set the number of MC steps to take in each optimization run
   void set_number_of_monte_carlo_steps(unsigned int cg);
+
+  //! Set the number of CG steps to take after each MC step
+  void set_number_of_conjugate_gradient_steps(unsigned int cg);
+  /** @} */
 
   //! Set the maximum size of the MC step for all attributes
   void set_max_monte_carlo_step_size(double d);
@@ -77,9 +88,6 @@ public:
       x,y or z.
   */
   void set_max_monte_carlo_step_size(FloatKey k, double d);
-
-  //! Set the number of CG steps to take after each MC step
-  void set_number_of_conjugate_gradient_steps(unsigned int cg);
 
   //! if set to true, then do not randomize the configuration before
   //! sampling.
