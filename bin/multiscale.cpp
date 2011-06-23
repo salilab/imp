@@ -11,11 +11,76 @@
 #include <IMP/container.h>
 #include <IMP/base_types.h>
 #include <IMP/domino.h>
+#include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
 
 using namespace IMP;
 
+struct Parameters {
+double ds;
+double diameter;
+int    niter;
+int    nTMH;
+int    stride;
+std::vector<std::pair<int,int> > TM_inter;
+};
+
+#define OPTION(type, name)                                   \
+ type name=-1;                                              \
+ desc.add_options()(#name, value< type >(&name), #name);
+
+#define CHECK(type, name)                                    \
+ IMP_USAGE_CHECK(name >=0, #name << " is " << name);
+
+Parameters get_parameters(TextInput in){
+#if BOOST_VERSION >= 104100
+ using namespace boost::program_options;
+ options_description desc;
+ std::vector<std::string> inter;
+
+ desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
+
+ OPTION(double, ds);
+ OPTION(double, diameter);
+ OPTION(int,    niter);
+ OPTION(int,    number);
+ OPTION(int,    stride);
+
+ variables_map vm;
+ store(parse_config_file(in.get_stream(), desc, false), vm);
+ notify(vm);
+
+ CHECK(double, ds);
+ CHECK(double, diameter);
+ CHECK(int,    niter);
+ CHECK(int,    number);
+ CHECK(int,    stride);
+
+ Parameters ret;
+
+ ret.ds=ds;
+ ret.diameter=diameter;
+ ret.niter=niter;
+ ret.nTMH=number;
+ ret.stride=stride;
+
+ if (vm.count("interacting")){
+  inter = vm["interacting"].as< std::vector<std::string> >();
+  for(unsigned int i=0;i<inter.size();++i){
+   std::vector<std::string> strs;
+   boost::split(strs, inter[i], boost::is_any_of("\t "));
+   int pos1 = atoi(strs[0].c_str());
+   int pos2 = atoi(strs[1].c_str());
+   ret.TM_inter.push_back(std::pair<int,int> (pos1,pos2));
+  }
+ }
+
+return ret;
+#else
+ IMP_FAILURE("Need newer boost");
+#endif
+}
 
 core::PairRestraint* add_distance_restraint
  (Model *m, Particle *p0, Particle *p1,
@@ -101,11 +166,16 @@ int main(int  , char **)
 IMP_NEW(Model,m,());
 Particles all;
 
-// these should be read from file
-double ds=40.0;
+// read parameters from file
+Parameters mydata=get_parameters("config.ini");
+
+double ds=mydata.ds;
 double max_score_=0.9*ds*ds;
-int    niter=2;
-int    nTMH=7;
+double diameter=mydata.diameter;
+int    niter=mydata.niter;
+int    nTMH=mydata.nTMH;
+int    stride=mydata.stride;
+std::vector<std::pair<int,int> >  TM_inter=mydata.TM_inter;
 
 std::cout << "creating representation" << std::endl;
 for(int i=0;i<nTMH;++i){
@@ -118,7 +188,6 @@ for(int i=0;i<nTMH;++i){
 }
 
 std::cout << "creating restraints" << std::endl;
-
 IMP_NEW(RestraintSet,rset,());
 //distance between adjacent helices
 for(int i=0;i<nTMH-1;++i){
@@ -129,15 +198,7 @@ for(int i=0;i<nTMH-1;++i){
   "distance TM"+ss1.str()+"-TM"+ss2.str(),max_score_);
  rset->add_restraint(dr);
 }
-
-// these should be read from file
-//distance between interacting helices
-std::vector<std::pair<int,int> >  TM_inter;
-TM_inter.push_back(std::pair<int,int> (0,1));
-TM_inter.push_back(std::pair<int,int> (0,6));
-TM_inter.push_back(std::pair<int,int> (1,6));
-TM_inter.push_back(std::pair<int,int> (5,6));
-
+// interacting helices
 for(int i=0;i<TM_inter.size();++i){
  int i0=TM_inter[i].first;
  int i1=TM_inter[i].second;
@@ -150,9 +211,6 @@ for(int i=0;i<TM_inter.size();++i){
 }
 
 // diameter
-//nTMH::  2   3   4   5   6   7   8   9   10   11   12   13   14
-// d   :: 16  35  26  51  48  51  50  34   39   52   48   43   42
-double diameter=50.0;
 add_diameter_restraint(m,all,diameter,max_score_);
 
 std::cout << "creating states" << std::endl;
@@ -198,7 +256,6 @@ domino::Assignments ass=s->get_sample_assignments(subs);
 std::cout << "for scale " << ds << " got " << ass.size() <<
  " out of " << pow(cover[0].size(),nTMH-2)*cover_x[0].size() << std::endl;
 
-
 //next iterations
 for(int curi=1;curi<niter;++curi){
  double scale = ds/pow(2,curi);
@@ -215,7 +272,7 @@ for(int curi=1;curi<niter;++curi){
 
  domino::Assignments cac;
 
- for(unsigned int j=0;j<ass.size();++j){
+ for(unsigned int j=0;j<ass.size();j=j+stride){
   domino::Assignment a=ass[j];
   unsigned int outof=1;
   for(int i=0;i<a.size();++i)
@@ -235,8 +292,8 @@ for(int curi=1;curi<niter;++curi){
   domino::Assignments ccac=s->get_sample_assignments(subs);
   if (ccac.size()>0){
    cac.insert( cac.end(), ccac.begin(), ccac.end() );
-   std::cout << "doing " << j << " solutions " << ccac.size() <<
-     " out of " << outof << " tot " << cac.size() << std::endl;
+   //std::cout << "doing " << j << " solutions " << ccac.size() <<
+   //  " out of " << outof << " tot " << cac.size() << std::endl;
   }
  }
  ass= cac;
