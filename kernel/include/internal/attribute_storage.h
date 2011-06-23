@@ -128,6 +128,67 @@ public:
 };
 
 
+
+template <class TraitsT>
+class RefCountedMapStorage {
+  typedef Map<int, typename TraitsT::Value> M;
+  M map_;
+public:
+  typedef TraitsT Traits;
+  RefCountedMapStorage(){}
+  RefCountedMapStorage(unsigned int) {}
+  typename Traits::PassValue get(unsigned int i) const {
+    if (map_.find(i) != map_.end()) {
+      return map_.find(i)->second;
+    } else {
+      return Traits::get_invalid();
+    }
+  }
+  void set(unsigned int i, typename Traits::PassValue v) {
+    IMP_INTERNAL_CHECK(map_.find(i) != map_.end(), "Out of range traits.");
+    ControllableRefCountPolicy::unref(map_[i]);
+    map_[i]=v;
+    ControllableRefCountPolicy::ref(map_[i]);
+  }
+  void add(unsigned int i, typename Traits::PassValue v) {
+    IMP_INTERNAL_CHECK(map_.find(i) == map_.end(), "Out of range traits.");
+    map_[i]=v;
+    ControllableRefCountPolicy::ref(map_[i]);
+  }
+  void remove(unsigned int i) {
+    ControllableRefCountPolicy::unref(map_[i]);
+    map_.erase(i);
+  }
+  bool fits(unsigned int i) const {
+    return map_.find(i) != map_.end();
+  }
+  void clear() {
+    for (typename M::const_iterator it= map_.begin();
+         it != map_.end(); ++it) {
+      ControllableRefCountPolicy::unref(it->second);
+    }
+    map_.clear();
+  }
+  unsigned int get_length() const {
+    int max=-1;
+    for (typename M::const_iterator it= map_.begin();
+         it != map_.end(); ++it) {
+      max= std::max(it->first, max);
+    }
+    return max+1;
+  }
+
+  void swap_with(VectorStorage<Traits> &o) {
+    std::swap(map_, o.map_);
+  }
+  void fill(typename Traits::PassValue v) {
+    IMP_FAILURE("Not supported");
+  }
+  ~RefCountedMapStorage(){
+    clear();
+  }
+};
+
 // save a word since we don't need separate capacity
 template <class TraitsT>
 class ArrayStorage {

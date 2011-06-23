@@ -95,9 +95,9 @@ struct IMPEXPORT ParticleStorage {
     IntTable;
   typedef ArrayStorage<StringAttributeTableTraits>
     StringTable;
-  typedef RefCountedStorage<ParticlesAttributeTableTraits>
+  typedef RefCountedMapStorage<ParticlesAttributeTableTraits>
     ParticleTable;
-  typedef RefCountedStorage<ObjectsAttributeTableTraits>
+  typedef RefCountedMapStorage<ObjectsAttributeTableTraits>
     ObjectTable;
   typedef OffsetStorage<ArrayStorage<DoubleAttributeTableTraits>
                         , IMP_NUM_INLINE>
