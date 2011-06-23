@@ -194,7 +194,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
    if (vm.count("gmm_off")==1) {
      gmm_on=false;
    }
-   if (not (vm.count("threshold")+
+   if (! (vm.count("threshold")+
             vm.count("density")+vm.count("apix")+
             vm.count("res")+vm.count("protein")+vm.count("angle") == 6)){
      std::cout<<optional_params<<std::endl;

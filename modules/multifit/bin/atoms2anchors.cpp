@@ -65,7 +65,7 @@ int parse_input(int argc, char *argv[],std::string &pdb_filename,
      std::cout << optional_params << "\n";
      return 1;
    }
-   if (not (vm.count("pdb")+vm.count("num")+vm.count("output-pdb") == 3)) {
+   if (! (vm.count("pdb")+vm.count("num")+vm.count("output-pdb") == 3)) {
      std::cout<<optional_params<<std::endl;
      return 1;
    }
@@ -103,10 +103,10 @@ int main(int argc, char *argv[]) {
                           *(assignment.get_edges()));
   multifit::write_pdb(output_pdb_filename,assignment);
 
-  if (not (cmm_filename == "")) {
+  if (! (cmm_filename == "")) {
     multifit::write_cmm(cmm_filename,"anchor_graph",ad);
   }
-  if (not (txt_filename == "")) {
+  if (! (txt_filename == "")) {
     multifit::write_txt(txt_filename,ad);
    }
   return 0;

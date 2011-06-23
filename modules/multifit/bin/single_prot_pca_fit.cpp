@@ -134,7 +134,7 @@ int parse_input(int argc, char *argv[],std::string &density_filename,
      std::cout << optional_params << "\n";
      return 1;
    }
-   if (not (vm.count("threshold")+
+   if (! (vm.count("threshold")+
             vm.count("density")+vm.count("apix")+
             vm.count("res")+vm.count("protein") == 5)){
      std::cout<<optional_params<<std::endl;
