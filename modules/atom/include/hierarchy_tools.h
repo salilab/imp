@@ -32,8 +32,7 @@ IMPATOM_BEGIN_NAMESPACE
 
     Currently the function creates a set of balls with radii no greater
     than resolution which overlap by 20% and have a volume of their
-    union equal to the passed volume. The balls are held together by
-    a ConnectivityRestraint with the given spring constant.
+    union equal to the passed volume.
 
     The coordinates of the balls defining the protein are optimized
     by default, and have garbage coordinate values.
