@@ -81,11 +81,11 @@ algebra::Vector3Ds cover, algebra::Vector3Ds cover_x, double scale)
  return lsft.release();
 }
 
-std::vector< std::vector <unsigned int> > get_mapping
+std::vector<Ints> get_mapping
 (algebra::Vector3Ds cover0, algebra::Vector3Ds cover1)
 {
  IMP_NEW(algebra::NearestNeighbor3D,nn,(cover0));
- std::vector< std::vector <unsigned int> > ret;
+ std::vector<Ints> ret;
  ret.resize(cover0.size());
 
  for(unsigned int i=0;i<cover1.size();++i){
@@ -99,11 +99,13 @@ int main(int  , char **)
 {
 
 IMP_NEW(Model,m,());
-double ds=20.0;
+Particles all;
+
+// these should be read from file
+double ds=40.0;
 double max_score_=0.9*ds*ds;
 int    niter=2;
 int    nTMH=7;
-Particles all;
 
 std::cout << "creating representation" << std::endl;
 for(int i=0;i<nTMH;++i){
@@ -128,6 +130,7 @@ for(int i=0;i<nTMH-1;++i){
  rset->add_restraint(dr);
 }
 
+// these should be read from file
 //distance between interacting helices
 std::vector<std::pair<int,int> >  TM_inter;
 TM_inter.push_back(std::pair<int,int> (0,1));
@@ -194,6 +197,52 @@ domino::Assignments ass=s->get_sample_assignments(subs);
 
 std::cout << "for scale " << ds << " got " << ass.size() <<
  " out of " << pow(cover[0].size(),nTMH-2)*cover_x[0].size() << std::endl;
+
+
+//next iterations
+for(int curi=1;curi<niter;++curi){
+ double scale = ds/pow(2,curi);
+ std::vector<Ints> mapping=
+  get_mapping(cover[curi-1], cover[curi]);
+ std::vector<Ints> mapping_x=
+  get_mapping(cover_x[curi-1], cover_x[curi]);
+
+ IMP_NEW(domino::ParticleStatesTable,pst,());
+ IMP_NEW(domino::DominoSampler,s,(m,pst));
+
+ domino::ListSubsetFilterTable* lf=setup
+  (m,all,rset,pst,s,cover[curi],cover_x[curi],scale);
+
+ domino::Assignments cac;
+
+ for(unsigned int j=0;j<ass.size();++j){
+  domino::Assignment a=ass[j];
+  unsigned int outof=1;
+  for(int i=0;i<a.size();++i)
+  {
+   int s=a[i];
+   Particle *p=subs[i];
+   std::string name=core::XYZ(p)->get_name();
+   Ints allowed;
+   if (name=="TM0"){       allowed.push_back(s);
+   }else if (name=="TM1"){ allowed= mapping_x[s];
+   }else{                  allowed= mapping[s];
+   }
+   //std::cout << j << " " << name << " " << allowed << std::endl;
+   lf->set_allowed_states(p,allowed);
+   outof*=allowed.size();
+  }
+  domino::Assignments ccac=s->get_sample_assignments(subs);
+  if (ccac.size()>0){
+   cac.insert( cac.end(), ccac.begin(), ccac.end() );
+   std::cout << "doing " << j << " solutions " << ccac.size() <<
+     " out of " << outof << " tot " << cac.size() << std::endl;
+  }
+ }
+ ass= cac;
+ std::cout << "for scale " << scale << " got " << ass.size() << " out of "
+ << pow(cover[curi].size(),nTMH-2)*cover_x[curi].size() << std::endl;
+}
 
 return 0;
 }
