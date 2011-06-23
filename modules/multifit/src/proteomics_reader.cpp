@@ -128,6 +128,7 @@ ProteomicsData read_proteomics_data(const char *prot_fn) {
     parse_interaction_line(line,&data);
   }
   in.close();
+  return data;
 }
 
 ProteomicsData get_partial_proteomics_data(

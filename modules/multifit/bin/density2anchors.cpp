@@ -95,7 +95,7 @@ int parse_input(int argc, char *argv[],
     std::cout <<optional_params<< "\n";
     return 1;
   }
-  if (not (vm.count("density")+vm.count("num_means")+vm.count("t")+
+  if (! (vm.count("density")+vm.count("num_means")+vm.count("t")+
            vm.count("output-pdb")== 4)){
       std::cout<<optional_params<<std::endl;
       return 1;
@@ -163,17 +163,17 @@ int main(int argc, char *argv[]) {
                           *(assignment.get_edges()));
  multifit::write_pdb(pdb_filename,assignment);
  //also write cmm string into a file:
- if (not (cmm_filename == "")) {
+ if (! (cmm_filename == "")) {
    multifit::write_cmm(cmm_filename,"anchor_graph",ad);
  }
  /* if (not (cmm_max_filename == "")) {
    multifit::write_max_cmm(cmm_max_filename,dmap,"max_graph",assignment);
    }*/
-  if (not (seg_filename == "")) {
+  if (! (seg_filename == "")) {
     multifit::write_segments_as_mrc(dmap,assignment,apix,apix,
                                     density_threshold,seg_filename);
    }
-  if (not (txt_filename == "")) {
+  if (! (txt_filename == "")) {
     multifit::write_txt(txt_filename,ad);
    }
 
