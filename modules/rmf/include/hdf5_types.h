@@ -38,7 +38,9 @@ IMPRMF_BEGIN_NAMESPACE
 
 /** \name Traits classes
 
-    The traits class for mapping between C++ types and HDF5 types. It defines
+ The traits class for mapping between C++ types and HDF5 types. It defines
+ - Type: the C++ type of the data to store
+ - Types: the C++ type for more than one value of the data
  - static hid_t get_hdf5_type()
  - static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
@@ -50,11 +52,22 @@ IMPRMF_BEGIN_NAMESPACE
  - static const double& get_null_value()
  - static std::string get_name()
  - static unsigned int get_index()
+
+ Each type must be associated with a unique index. For the moment,
+ the integers are
+ - Int: 0
+ - Float: 1
+ - Index: 2
+ - String: 3
+ - NodeID: 4
+ - DataSet: 5
+ - Char: 6
 @{
 */
-/** */
+/** Store floating point numbers as doubles. */
 struct IMPRMFEXPORT FloatTraits {
   typedef double Type;
+  typedef std::vector<double> Types;
   static hid_t get_hdf5_type();
   static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
@@ -79,9 +92,10 @@ struct IMPRMFEXPORT FloatTraits {
     return 1;
   }
 };
-/** */
+/** Store integers.*/
 struct IMPRMFEXPORT IntTraits {
   typedef int Type;
+  typedef std::vector<int> Types;
   static hid_t get_hdf5_type();
   static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
@@ -106,6 +120,7 @@ struct IMPRMFEXPORT IntTraits {
     return 0;
   }
 };
+
 /** A non-negative index.*/
 struct IMPRMFEXPORT IndexTraits: IntTraits {
   static const int& get_null_value();
@@ -121,6 +136,7 @@ struct IMPRMFEXPORT IndexTraits: IntTraits {
 /** A string */
 struct IMPRMFEXPORT StringTraits {
   typedef std::string Type;
+  typedef std::vector<std::string> Types;
   static hid_t get_hdf5_type();
   static void write_value_dataset(hid_t d, hid_t is,
                                    hid_t s,
@@ -151,6 +167,7 @@ struct IMPRMFEXPORT StringTraits {
 /** Store the Node for other nodes in the hierarchy. */
 struct IMPRMFEXPORT NodeIDTraits {
   typedef NodeID Type;
+  typedef std::vector<NodeID> Types;
   static hid_t get_hdf5_type();
   static void write_value_dataset(hid_t d, hid_t is,
                                   hid_t s,
@@ -185,6 +202,36 @@ struct IMPRMFEXPORT DataSetTraits: public StringTraits {
   static std::string get_name();
   static unsigned int get_index() {
     return 5;
+  }
+};
+
+/** Store a single string. Currently this is not supported
+    for data sets.*/
+struct IMPRMFEXPORT CharTraits {
+  typedef char Type;
+  typedef std::string Types;
+  static hid_t get_hdf5_type();
+  /*static void write_value_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                  int v);
+  static int read_value_dataset(hid_t d, hid_t is,
+                                hid_t sp);
+  static void write_values_dataset(hid_t d, hid_t is,
+                                   hid_t s,
+                                   const std::vector<int>& v);
+  static std::string read_values_dataset(hid_t d, hid_t is,
+                                         hid_t sp,
+                                         unsigned int sz);*/
+  static std::string read_values_attribute(hid_t a, unsigned int size);
+  static void write_values_attribute(hid_t a, std::string v);
+  static char get_fill_value();
+  static char get_null_value();
+  static bool get_is_null_value(char i) {
+    return i== '\0';
+  }
+  static std::string get_name();
+  static unsigned int get_index() {
+    return 6;
   }
 };
 /** @} */
