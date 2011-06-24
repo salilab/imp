@@ -1359,7 +1359,7 @@ protected:                                      \
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_SINGLETON_SCORE,
     the macro provides an implementation of
-     - IMP::SingletonScore::get_input_particles()
+    - IMP::SingletonScore::get_input_particles()
     - IMP::SingletonScore::get_input_containers()
     which assume that only the passed particle serves as input to the
     score.
