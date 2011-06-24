@@ -47,6 +47,24 @@ SharedData::~SharedData() {
   H5garbage_collect();
 }
 
+void SharedData::audit_key_name(std::string name) const {
+  if (name.empty()) {
+    IMP_THROW("Empty key name", ValueException);
+  }
+  static const char *illegal="\\:=()[]{}\"'";
+  const char *cur=illegal;
+  while (*cur != '\0') {
+    if (name.find(*cur) != std::string::npos) {
+      IMP_THROW("Keys can't contain "<< *cur, ValueException);
+    }
+    ++cur;
+  }
+  if (name.find("  ") != std::string::npos) {
+    IMP_THROW("Keys can't contain two consecutive spaces",
+              ValueException);
+  }
+}
+
 void SharedData::check_node(unsigned int node) const {
   IMP_USAGE_CHECK(names_.get_size()[0] > int(node), "Invalid node specified: "
                   << node);

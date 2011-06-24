@@ -136,7 +136,7 @@ class IMPRMFEXPORT SharedData: public RefCounted {
       return ret;
     }
   }
-
+  void audit_key_name(std::string name) const;
   unsigned int get_column_maximum(KeyCategory cat) const {
     if (max_cache_.size() > cat.get_index()
         && max_cache_[cat.get_index()]>-2) {
@@ -361,7 +361,7 @@ class IMPRMFEXPORT SharedData: public RefCounted {
   template <class TypeTraits>
     Key<TypeTraits> add_key(KeyCategory category_id,
                        std::string name, bool per_frame) {
-    IMP_USAGE_CHECK(!name.empty(), "Key name cannot be empty");
+    audit_key_name(name);
     // check that it is unique
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
