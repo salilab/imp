@@ -165,7 +165,7 @@ namespace {
      s=algebra::SphereD<3>(center,
                            algebra::get_ball_radius_from_volume_3d(volume));
    } else {
-     IMP_LOG(TERSE, "Approximating volume." << std::endl);
+     IMP_LOG(VERBOSE, "Approximating volume." << std::endl);
      double v= get_volume_measurement(ss, resolution);
      s=algebra::SphereD<3>(center,
                            algebra::get_ball_radius_from_volume_3d(v));
@@ -693,7 +693,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       IMP_NEW(container::ListSingletonContainer, lsc, (particles));
-      IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1, false));
+      IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1));
       Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
       return cr.release();
     } else {
@@ -737,7 +737,7 @@ Restraint* create_internal_connectivity_restraint(const Selection &ss,
   } else {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
     IMP_NEW(container::ListSingletonContainer, lsc, (s));
-    IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1, false));
+    IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1.0/k));
     Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
     return cr.release();
   }
