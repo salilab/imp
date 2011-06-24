@@ -25,7 +25,6 @@ def create_representation():
     # amino acids.
     def create_protein(name, ds):
         h=IMP.atom.create_protein(m, name, resolution, ds)
-        leaves= IMP.atom.get_leaves(h)
         # for convenience, have one molecular hierarchy containing all molecules
         all.add_child(h)
         r=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c)\
