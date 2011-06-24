@@ -14,7 +14,7 @@ using namespace IMP::core;
 using namespace IMP::container;
 typedef IMP::atom::Hierarchy Hierarchy;
 
-int main(int, char *[]) {
+int main(int argc, char *[]) {
   IMP_NEW(Model, m, ());
   set_log_level(SILENT);
   m->set_log_level(SILENT);
@@ -67,10 +67,16 @@ int main(int, char *[]) {
   /*#ifndef NDEBUG
   ds->set_log_level(VERBOSE);
   #endif*/
+  int n=1;
+  if (argc>1) {
+    n=10;
+  }
   IMP_TIME(
              {
-               Pointer<ConfigurationSet> cs= ds->get_sample();
-               num+=cs->get_number_of_configurations();
+               for (int i=0; i< n; ++i) {
+                 Pointer<ConfigurationSet> cs= ds->get_sample();
+                 num+=cs->get_number_of_configurations();
+               }
              }, runtime);
   IMP::benchmark::report("domino small", runtime, num);
   return IMP::benchmark::get_return_value();
