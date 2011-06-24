@@ -56,7 +56,7 @@ public:
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before
    the set of edges is updated.*/
-  ConnectingPairContainer(SingletonContainer *sc, double error, bool mst);
+  ConnectingPairContainer(SingletonContainer *sc, double error);
 
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {

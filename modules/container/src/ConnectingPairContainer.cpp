@@ -96,7 +96,7 @@ namespace {
       Ints ni=nn->get_nearest_neighbors(i, nnn);
       for (unsigned int j=0; j< ni.size(); ++j) {
         core::XYZR dj(sc->get_particle(ni[j]));
-        double d= algebra::get_power_distance(di.get_sphere(), dj.get_sphere());
+        double d= algebra::get_distance(di.get_sphere(), dj.get_sphere());
         boost::add_edge(i, ni[j], Weight(d), g);
       }
     }
@@ -116,11 +116,11 @@ namespace {
 
 
 ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
-                                                 double error, bool mst):
+                                                 double error):
   IMP::core::internal::ListLikePairContainer(c->get_model(),
                                              "ConnectingPairContainer"),
   error_(error),
-  mst_(mst) {
+  mst_(true) {
   initialize(c);
 }
 
