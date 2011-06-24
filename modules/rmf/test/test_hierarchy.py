@@ -29,7 +29,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.SILENT)
         IMP.atom.add_bonds(h)
         IMP.set_log_level(IMP.VERBOSE)
-        self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb.rh"))
+        self._test_round_trip(h, self.get_tmp_file_name("test_small_pdb.rmf"))
 
     # disable as it clobbers machines without much memory
     def _test_huge(self):
@@ -44,7 +44,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
-        self._test_round_trip(h, self.get_tmp_file_name("test_huge.rh"))
+        self._test_round_trip(h, self.get_tmp_file_name("test_huge.rmf"))
         print "done"
     def test_large(self):
         """Test writing a large hierarchy"""
@@ -58,7 +58,7 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
-        self._test_round_trip(h, self.get_tmp_file_name("test_large.rh"))
+        self._test_round_trip(h, self.get_tmp_file_name("test_large.rmf"))
         print "done"
 
     def test_navigation(self):
@@ -69,7 +69,7 @@ class GenericTest(IMP.test.TestCase):
                              IMP.atom.NonAlternativePDBSelector())
         IMP.set_log_level(IMP.SILENT)
         IMP.atom.add_bonds(h)
-        name=self.get_tmp_file_name("test_large.rh")
+        name=self.get_tmp_file_name("test_large.rmf")
         f= IMP.rmf.RootHandle(name, True)
         IMP.rmf.add_hierarchy(f, h)
         del f
