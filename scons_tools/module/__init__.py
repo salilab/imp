@@ -335,8 +335,9 @@ def IMPModuleGetExamples(env):
     return rms+ex
 
 def IMPModuleGetExampleData(env):
-    ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat", "*.xml", "*.em", "*.imp", "*.impb",
-                                          "*.mol2"])
+    ret=  scons_tools.utility.get_matching_recursive(["*.pdb", "*.mrc", "*.dat",
+                                                      "*.xml", "*.em", "*.rmf",
+                                                      "*.hdf5", "*.mol2"])
     return ret
 
 def IMPModuleGetPythonTests(env):
