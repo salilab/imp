@@ -81,6 +81,8 @@ int main() {
     cpf->set_log_level(IMP::VERBOSE);
 #endif
     std::string name="grid";
+    test_one(name, cpf, 10, 0, .1, true);
+    test_one(name, cpf, 100, 0, .1, true);
     test_one(name, cpf, 1000, 0, .1, true);
     test_one(name, cpf, 1000, 0, .5, true);
     test_one(name, cpf, 1000, 0, 5, true);
@@ -124,6 +126,8 @@ int main() {
     IMP_NEW(QuadraticClosePairsFinder, cpf, ());
     //std::cout << "Quadratic:" << std::endl;
     // bi also twice as as slow
+    test_one("quadratic", cpf, 10, 0, .1);
+    test_one("quadratic", cpf, 100, 0, .1);
     test_one("quadratic", cpf, 1000, 0, .1);
     test_one("quadratic", cpf, 1000, 0, .5);
     test_one("quadratic", cpf, 1000, 0, 5);

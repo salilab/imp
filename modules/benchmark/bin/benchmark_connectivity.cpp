@@ -49,17 +49,10 @@ int main() {
     m->remove_restraint(r);
   }
   {
-    IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, false));
+    IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1));
     IMP_NEW(PairsRestraint, pr, (ss, cpc));
     m->add_restraint(pr);
     benchmark_it("connectivity fast", lsc, m);
-    m->remove_restraint(pr);
-  }
-  {
-    IMP_NEW(ConnectingPairContainer, cpc,(lsc, .1, true));
-    IMP_NEW(PairsRestraint, pr, (ss, cpc));
-    m->add_restraint(pr);
-    benchmark_it("connectivity fast mst", lsc, m);
     m->remove_restraint(pr);
   }
   return IMP::benchmark::get_return_value();
