@@ -19,7 +19,15 @@ env= env.IMPApplication(name="rmf_tools", version="SVN",
    - \c rmf_show prints out the hierarchy written to the file.
 
    - \c rmf_pdb converts an rmf file to or from a PDB file, assuming all hierarchies
-   in the rmf file are atomic resolution.""",
+   in the rmf file are atomic resolution.
+
+   - \c rmf_dot converts an rmf file to a graphviz graph, which can be displayed nicely
+   and rendered to pdf.
+
+   - \c rmf_xml converts an rmf file to an XML files that can be opened in an XML viewer
+   (eg Google Chrome or Firefox). These viewers support collapsing of subtrees, which
+   makes it much easier to get around large hierarchies.
+   """,
                         license=env.IMPStandardLicense(),
                         publications=[],
                         required_modules=['rmf'],
@@ -30,3 +38,5 @@ if env:
     env.IMPCPPExecutable(target="rmf_pdb", source=["rmf_pdb.cpp"])
     env.IMPCPPExecutable(target="rmf_display", source=["rmf_display.cpp"])
     env.IMPCPPExecutable(target="rmf_show", source=["rmf_show.cpp"])
+    env.IMPCPPExecutable(target="rmf_dot", source=["rmf_dot.cpp"])
+    env.IMPCPPExecutable(target="rmf_xml", source=["rmf_xml.cpp"])

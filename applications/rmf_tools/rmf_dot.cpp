@@ -3,7 +3,7 @@
  */
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/RootHandle.h>
-#include <IMP/rmf/geometry_io.h>
+#include <IMP/internal/graph_utility.h>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
@@ -19,7 +19,8 @@ void print_help() {
 
 int main(int argc, char **argv) {
   desc.add_options()
-    ("help,h", "Print the contents of an rmf file to the terminal.")
+    ("help,h",
+     "Print the contents of an rmf file to the terminal as a dot graph.")
     ("verbose,v", "Print lots of information about each node.")
     ("frame,f", po::value< int >(&frame),
      "Frame to use")
@@ -36,10 +37,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   IMP::rmf::RootHandle rh(input, false);
-  std::string descr= rh.get_description();
-  if (!descr.empty()) {
-    std::cout << descr << std::endl;
-  }
-  IMP::rmf::show_hierarchy(rh, std::cout, vm.count("verbose"), frame);
+  IMP::rmf::NodeTree nt= IMP::rmf::get_node_tree(rh);
+  IMP::internal::show_as_graphviz(nt, std::cout);
   return 0;
 }
