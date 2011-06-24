@@ -20,13 +20,13 @@ class GenericTest(IMP.test.TestCase):
         d.set_z(0)
         nf=10
         IMP.set_log_level(IMP.PROGRESS)
-        f=IMP.rmf.RootHandle(self.get_tmp_file_name("test_mf.rh"), True)
+        f=IMP.rmf.RootHandle(self.get_tmp_file_name("test_mf.rmf"), True)
         IMP.rmf.add_hierarchy(f, h)
         for i in range(0,nf):
             d.set_x(i)
             IMP.rmf.save_frame(f, i, h)
         del f
-        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_mf.rh"), False)
+        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_mf.rmf"), False)
         [h]= IMP.rmf.create_hierarchies(f, m)
         for i in range(0,nf):
             IMP.rmf.load_frame( f, i, h)

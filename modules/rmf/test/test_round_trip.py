@@ -20,9 +20,9 @@ class GenericTest(IMP.test.TestCase):
         IMP.set_log_level(IMP.VERBOSE)
         print "writing hierarchy"
         IMP.set_log_level(IMP.PROGRESS)
-        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_rt.rh"), True)
+        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_rt.rmf"), True)
         IMP.rmf.add_hierarchy(f, h)
-        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_rt.rh"), False)
+        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_rt.rmf"), False)
         h2=IMP.rmf.create_hierarchies(f, m)
         self.assertEqual(len(h2), 1)
         self.assertEqual(len(IMP.atom.get_leaves(h)),
