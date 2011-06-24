@@ -37,7 +37,7 @@ IMPRMF_BEGIN_NAMESPACE
   IndexKey ie= get_or_add_key<IndexTraits>(f, Sequence,                 \
                                            "residue index end");        \
   IndexKey e= get_or_add_key<IndexTraits>(f, Physics, "element");       \
-  IndexKey ci= get_or_add_key<IndexTraits>(f, Physics, "chain  id");    \
+  IndexKey ci= get_or_add_key<IndexTraits>(f, Sequence, "chain id");    \
   StringKey tk= get_or_add_key<StringTraits>(f, Sequence, "type");      \
   FloatKey cr= get_or_add_key<FloatTraits>(f, Shape, "rgb color red",   \
                                            false);                      \
@@ -124,7 +124,7 @@ namespace {
     }
     if (atom::Chain::particle_is_instance(h)) {
       atom::Chain d(h);
-      set_one(n, ci, d.get_id(), frame);
+      set_one(n, ci, d.get_id()-'A', frame);
     }
     if (atom::Diffusion::particle_is_instance(h)) {
       atom::Diffusion d(h);
@@ -196,7 +196,7 @@ namespace {
     }
     if (ncur.get_has_value(ci)) {
       int cci= ncur.get_value(ci);
-      atom::Chain::setup_particle(cur, cci);
+      atom::Chain::setup_particle(cur, cci+'A');
     }
     if (ncur.get_has_value(tk)) {
       std::string t= ncur.get_value(tk);
