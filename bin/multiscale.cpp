@@ -11,6 +11,7 @@
 #include <IMP/container.h>
 #include <IMP/base_types.h>
 #include <IMP/domino.h>
+#include <IMP/display.h>
 #include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
@@ -20,9 +21,12 @@ using namespace IMP;
 struct Parameters {
 double ds;
 double diameter;
+double cm_dist;
+double inter_dist;
 int    niter;
 int    nTMH;
 int    stride;
+bool   do_plot;
 std::vector<std::pair<int,int> > TM_inter;
 };
 
@@ -38,11 +42,16 @@ Parameters get_parameters(TextInput in){
  using namespace boost::program_options;
  options_description desc;
  std::vector<std::string> inter;
+ bool do_plot;
 
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
+ desc.add_options()("display",     value< bool >(&do_plot),            "ciao");
+
 
  OPTION(double, ds);
  OPTION(double, diameter);
+ OPTION(double, cm_dist);
+ OPTION(double, inter_dist);
  OPTION(int,    niter);
  OPTION(int,    number);
  OPTION(int,    stride);
@@ -53,6 +62,8 @@ Parameters get_parameters(TextInput in){
 
  CHECK(double, ds);
  CHECK(double, diameter);
+ CHECK(double, cm_dist);
+ CHECK(double, inter_dist);
  CHECK(int,    niter);
  CHECK(int,    number);
  CHECK(int,    stride);
@@ -61,9 +72,12 @@ Parameters get_parameters(TextInput in){
 
  ret.ds=ds;
  ret.diameter=diameter;
+ ret.cm_dist=cm_dist;
+ ret.inter_dist=inter_dist;
  ret.niter=niter;
  ret.nTMH=number;
  ret.stride=stride;
+ ret.do_plot=do_plot;
 
  if (vm.count("interacting")){
   inter = vm["interacting"].as< std::vector<std::string> >();
@@ -105,8 +119,8 @@ void add_diameter_restraint
     IMP_NEW(core::HarmonicUpperBound,hub,(diameter,1.0));
     IMP_NEW(core::DistancePairScore,df,(hub));
     IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(all[i], all[j])));
-    std::string name0=core::XYZ(all[i])->get_name();
-    std::string name1=core::XYZ(all[j])->get_name();
+    std::string name0=core::XYZR(all[i])->get_name();
+    std::string name1=core::XYZR(all[j])->get_name();
     dr->set_name("Diameter"+name0+"-"+name1);
     m->add_restraint(dr);
     m->set_maximum_score(dr, max_score);
@@ -137,9 +151,11 @@ algebra::Vector3Ds cover, algebra::Vector3Ds cover_x, double scale)
 
  IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
  IMP_NEW(domino::RestraintScoreSubsetFilterTable,rssft,(m, pst));
+ IMP_NEW(domino::ExclusionSubsetFilterTable,esft,(pst));
  domino::SubsetFilterTables fs=domino::SubsetFilterTables();
  fs.push_back(lsft);
  fs.push_back(rssft);
+ if(scale<=6.0) fs.push_back(esft);
  domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
  domino::SubsetGraph      jt=domino::get_junction_tree(ig);
  s->set_subset_filter_tables(fs);
@@ -172,15 +188,19 @@ Parameters mydata=get_parameters("config.ini");
 double ds=mydata.ds;
 double max_score_=0.9*ds*ds;
 double diameter=mydata.diameter;
+double cm_dist=mydata.cm_dist;
+double inter_dist=mydata.inter_dist;
 int    niter=mydata.niter;
 int    nTMH=mydata.nTMH;
 int    stride=mydata.stride;
+bool   do_plot=mydata.do_plot;
 std::vector<std::pair<int,int> >  TM_inter=mydata.TM_inter;
 
 std::cout << "creating representation" << std::endl;
 for(int i=0;i<nTMH;++i){
     IMP_NEW(Particle,p,(m));
-    core::XYZ xyz=core::XYZ::setup_particle(p, algebra::Vector3D(0,0,0));
+    core::XYZR xyz=core::XYZR::setup_particle(p,
+    algebra::Sphere3D(algebra::Vector3D(0,0,0),3.0));
     std::stringstream ss;
     ss << i;
     xyz->set_name("TM"+ss.str());
@@ -194,7 +214,7 @@ for(int i=0;i<nTMH-1;++i){
  std::stringstream ss1, ss2;
  ss1 << i;
  ss2 << i+1;
- core::PairRestraint* dr=add_distance_restraint(m,all[i],all[i+1],35.0,
+ core::PairRestraint* dr=add_distance_restraint(m,all[i],all[i+1],cm_dist,
   "distance TM"+ss1.str()+"-TM"+ss2.str(),max_score_);
  rset->add_restraint(dr);
 }
@@ -205,7 +225,7 @@ for(int i=0;i<TM_inter.size();++i){
  std::string name0=all[i0]->get_name();
  std::string name1=all[i1]->get_name();
  core::PairRestraint* dr=
- add_distance_restraint(m,all[i0],all[i1],20.0,
+ add_distance_restraint(m,all[i0],all[i1],inter_dist,
   "interaction "+name0+"-"+name1,max_score_);
  rset->add_restraint(dr);
 }
@@ -279,7 +299,7 @@ for(int curi=1;curi<niter;++curi){
   {
    int s=a[i];
    Particle *p=subs[i];
-   std::string name=core::XYZ(p)->get_name();
+   std::string name=core::XYZR(p)->get_name();
    Ints allowed;
    if (name=="TM0"){       allowed.push_back(s);
    }else if (name=="TM1"){ allowed= mapping_x[s];
@@ -296,9 +316,28 @@ for(int curi=1;curi<niter;++curi){
    //  " out of " << outof << " tot " << cac.size() << std::endl;
   }
  }
+
  ass= cac;
  std::cout << "for scale " << scale << " got " << ass.size() << " out of "
  << pow(cover[curi].size(),nTMH-2)*cover_x[curi].size() << std::endl;
+
+ if(do_plot){
+  std::stringstream ss;
+  ss << curi;
+  IMP_NEW(display::PymolWriter,sw,("solutions"+ss.str()+".pym"));
+  for(unsigned int i=0;i<ass.size();i=i+stride){
+   domino::load_particle_states(subs, ass[i], pst);
+   sw->set_frame(i/stride);
+   for(int j=0;j<(ass[i]).size();++j){
+    Particle *p=subs[j];
+    IMP_NEW(display::XYZRGeometry,g,(p));
+    std::string name=core::XYZR(p)->get_name();
+    g->set_name(name);
+    g->set_color(display::get_jet_color(1.0/double(j+1)));
+    sw->add_geometry(g);
+   }
+  }
+ }
 }
 
 return 0;
