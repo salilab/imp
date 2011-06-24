@@ -10,48 +10,48 @@ typedef_classes={"algebra":{"Vector3D":"VectorD",
                             "BoundingBox3D":"BoundingBoxD",
                             "Sphere3D":"SphereD",
                             "NearestNeighbor3D":"NearestNeighborD"}}
-included_methods={"kernel":{"set_check_level":"(CheckLevel)",
-                            "set_log_level":"(LogLevel)",
-                            "add_failure_handler":"(FailureHandler*)",
-                            "get_dependency_graph":"(const RestraintsTemp&)",
-                            "get_pruned_dependency_graph":"(const RestraintsTemp&)",},
-                  "atom":{"read_pdb":"(TextInput, Model*)",
+included_methods={"kernel":{"set_check_level":("void", "(CheckLevel)"),
+                            "set_log_level":("void", "(LogLevel)"),
+                            "add_failure_handler":("void", "(FailureHandler*)"),
+                            "get_dependency_graph":("DependencyGrah", "(const RestraintsTemp&)"),
+                            "get_pruned_dependency_graph":("DependencyGraph", "(const RestraintsTemp&)"),},
+                  "atom":{"read_pdb":("Hierarchy", "(TextInput, Model*)"),
                           "create_protein":\
-                          "(Model*,std::string,double,int,int,double)",
-                          "create_simplified_along_backbone":"(Chain,int)",
-                          "get_leaves":"(Hierarchy)",
+                          ("Hierarchy", "(Model*,std::string,double,int,int,double)"),
+                          "create_simplified_along_backbone":("Hierarchy", "(Chain,int)"),
+                          "get_leaves":("Hierarchies", "(Hierarchy)"),
                           "create_distance_restraint":\
-                          "(const Selection &,const Selection &,double, double)",
-                          "create_connectivity_restraint":"(const Selections &,double)",
-                          "create_excluded_volume_restraint":"(const Hierarchies &,double)",
-                          "create_cover":"(Selection,std::string)",
-                          "setup_as_approximation":"(Hierarchy)",
-                          "create_clone":"(Hierarchy)",
-                          "destroy":"(Hierarchy)"
+                          ("Restraint", "(const Selection &,const Selection &,double, double)"),
+                          "create_connectivity_restraint":("Restraint", "(const Selections &,double)"),
+                          "create_excluded_volume_restraint":("Restraint", "(const Hierarchies &,double)"),
+                          "create_cover":("core::Cover", "(Selection,std::string)"),
+                          "setup_as_approximation":("void", "(Hierarchy)"),
+                          "create_clone":("Hierarchy", "(Hierarchy)"),
+                          "destroy":("void", "(Hierarchy)")
                           },
-                  "display":{"get_display_color":"(unsigned int)",
-                             "get_jet_color":"(double)"},
+                  "display":{"get_display_color":("Color", "(unsigned int)"),
+                             "get_jet_color":("Color", "(double)")},
                   "statistics":{"create_lloyds_kmeans":\
-                                "(Embedding*,unsigned int, unsigned int)",
+                                ("PartitionalClusteringWithCenter", "(Embedding*,unsigned int, unsigned int)"),
                                 "get_connectivity_clustering":\
-                                "(Embedding*,double)"},
-                  "algebra":{"get_random_vector_in":"(const SphereD<D>&)",
-                             "get_random_vector_on":"(const SphereD<D>&)"},
-                  "rmf":{"add_hierarchy":"(RootHandle, atom::Hierarchy)",
-                          "save_frame":"(RootHandle, int, atom::Hierarchy)",
-                          "load_frame":"(RootHandle, int, atom::Hierarchy)",
-                          "create_hierarchies":"(RootHandle, Model*)",
-                          "set_hierarchies":"(RootHandle, Model*)",
-                          "add_geometry":"(RootHandle, Geometry*)",
-                          "save_frame":"(RootHandle, int, Geometry*)",
-                          "create_geometries":"(RootHandle, int)",
-                          "add_particle":"(RootHandle, Particle*)",
-                          "create_particles":"(RootHandle, Model*)",
+                                ("PartitionalClustering", "(Embedding*,double)")},
+                  "algebra":{"get_random_vector_in":("Vector3D", "(const SphereD<D>&)"),
+                             "get_random_vector_on":("Vector3D", "(const SphereD<D>&)")},
+                  "rmf":{"add_hierarchy":("void", "(RootHandle, atom::Hierarchy)"),
+                          "save_frame":("void", "(RootHandle, unsigned int, atom::Hierarchy)"),
+                          "load_frame":("void", "(RootHandle, unsigned int, atom::Hierarchy)"),
+                          "create_hierarchies":("atom::Hierarchies", "(RootHandle, Model*)"),
+                          "set_hierarchies":("void", "(RootHandle, atom::Hierarchies, bool)"),
+                          "add_geometry":("void", "(RootHandle, display::Geometry*)"),
+                          "save_frame":("void", "(RootHandle, int, display::Geometry*)"),
+                          "create_geometries":("display::Geometries", "(RootHandle, int)"),
+                          "add_particle":("void", "(RootHandle, Particle*)"),
+                          "create_particles":("ParticlesTemp", "(RootHandle, Model*)"),
                           },
-                  "domino":{"set_assignments":"(rmf::HDF5DataSet<rmf::IndexTraits>, const Assignments &,const Subset &,const ParticlesTemp&)",
-                            "get_assignments":"(rmf::HDF5DataSet<rmf::IndexTraits>,const Subset &,const ParticlesTemp&)",
-                            "get_junction_tree":"(const InteractionGraph&)",
-                            "get_merge_tree":"(const SubsetGraph&)"
+                  "domino":{"set_assignments":("void", "(AssignmentContainer *, const Subset &, const ParticlesTemp, rmf::HDF5DataSet<rmf::IndexTraits>)"),
+                            "create_assignments_container":("AssignmentContainer*", "(rmf::HDF5DataSet<rmf::IndexTraits>,const Subset &,const ParticlesTemp&)"),
+                            "get_junction_tree":("SubsetGraph", "(const InteractionGraph&)"),
+                            "get_merge_tree":("SubsetGraph", "(const SubsetGraph&)")
                       },
                   }
 
@@ -104,6 +104,7 @@ class IMPData:
         def set_processed(self, classes, methods):
             self.processed=True
             fclasses={}
+            #print "processed", methods.keys()
             for k in classes.keys():
                 if len(classes[k])==0:
                     continue
@@ -125,7 +126,7 @@ class IMPData:
                     if m in methods[k][i+1:]:
                         continue
                     if included_methods[k].has_key(m):
-                        fmethods[k].append(m+included_methods[k][m])
+                        fmethods[k].append(included_methods[k][m][0]+" "+m+included_methods[k][m][1])
             #print "for", self.file, "got", fclasses, fmethods
             self.classes=fclasses
             self.methods=fmethods
