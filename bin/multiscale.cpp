@@ -27,7 +27,8 @@ int    niter;
 int    nTMH;
 int    stride;
 bool   do_plot;
-std::vector<std::pair<int,int> > TM_inter;
+bool   do_statistics;
+std::vector< std::pair<int,int> > TM_inter;
 };
 
 #define OPTION(type, name)                                   \
@@ -42,10 +43,11 @@ Parameters get_parameters(TextInput in){
  using namespace boost::program_options;
  options_description desc;
  std::vector<std::string> inter;
- bool do_plot;
+ bool do_plot,do_statistics;
 
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
  desc.add_options()("display",     value< bool >(&do_plot),            "ciao");
+ desc.add_options()("statistics",     value< bool >(&do_statistics),   "ciao");
 
 
  OPTION(double, ds);
@@ -78,6 +80,8 @@ Parameters get_parameters(TextInput in){
  ret.nTMH=number;
  ret.stride=stride;
  ret.do_plot=do_plot;
+ ret.do_statistics=do_statistics;
+
 
  if (vm.count("interacting")){
   inter = vm["interacting"].as< std::vector<std::string> >();
@@ -123,7 +127,7 @@ void add_diameter_restraint
     std::string name1=core::XYZR(all[j])->get_name();
     dr->set_name("Diameter"+name0+"-"+name1);
     m->add_restraint(dr);
-    m->set_maximum_score(dr, max_score);
+    m->set_maximum_score(dr,max_score);
   }
  }
 }
@@ -194,7 +198,8 @@ int    niter=mydata.niter;
 int    nTMH=mydata.nTMH;
 int    stride=mydata.stride;
 bool   do_plot=mydata.do_plot;
-std::vector<std::pair<int,int> >  TM_inter=mydata.TM_inter;
+bool   do_statistics=mydata.do_statistics;
+std::vector< std::pair<int,int> > TM_inter=mydata.TM_inter;
 
 std::cout << "creating representation" << std::endl;
 for(int i=0;i<nTMH;++i){
@@ -241,7 +246,6 @@ algebra::BoundingBox2D(algebra::Vector2D(-diameter,-diameter),
 algebra::BoundingBox2D bbx=
 algebra::BoundingBox2D(algebra::Vector2D(-diameter,0.0),
                        algebra::Vector2D(diameter,0.0));
-
 
 std::vector<algebra::Vector3Ds> cover, cover_x;
 for(int i=0;i<niter;++i)
@@ -320,6 +324,36 @@ for(int curi=1;curi<niter;++curi){
  ass= cac;
  std::cout << "for scale " << scale << " got " << ass.size() << " out of "
  << pow(cover[curi].size(),nTMH-2)*cover_x[curi].size() << std::endl;
+
+ if(do_statistics){
+  double mean_dist[nTMH*(nTMH-1)/2];
+  double mean_dist2[nTMH*(nTMH-1)/2];
+  for(unsigned int i=0;i<ass.size();++i){
+   domino::load_particle_states(subs, ass[i], pst);
+   for(int i1=0;i1<nTMH-1;++i1){
+    for(int i2=i1+1;i2<nTMH;++i2){
+     int idpair=i1*nTMH-i1*(i1+1)/2+i2-(i1+1);
+     core::XYZR p1=core::XYZR(all[i1]);
+     core::XYZR p2=core::XYZR(all[i2]);
+     double dist=core::get_distance(p1,p2);
+     mean_dist[idpair]+=dist;
+     mean_dist2[idpair]+=dist*dist;
+    }
+   }
+  }
+  for(int i1=0;i1<nTMH-1;++i1){
+   for(int i2=i1+1;i2<nTMH;++i2){
+    std::string name1=core::XYZR(all[i1])->get_name();
+    std::string name2=core::XYZR(all[i2])->get_name();
+    int idpair=i1*nTMH-i1*(i1+1)/2+i2-(i1+1);
+    double ave=mean_dist[idpair]/double(ass.size());
+    double ave2=mean_dist2[idpair]/double(ass.size());
+    double sig=sqrt(ave2-ave*ave);
+    std::cout << name1 << " " << name2 << " " << idpair << " "
+              << ave << " " << sig << std::endl;
+   }
+  }
+ }
 
  if(do_plot){
   std::stringstream ss;
