@@ -9,9 +9,8 @@
 #ifndef IMPRMF_NODE_HANDLE_H
 #define IMPRMF_NODE_HANDLE_H
 
-
+// otherwise there are sometimes problems with certain Boost versions
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/functional/hash/extensions.hpp>
 
 #include "rmf_config.h"
 #include "hdf5_wrapper.h"
