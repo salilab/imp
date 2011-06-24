@@ -70,7 +70,7 @@ Restraints CoreQuadsRestraint::get_decomposition() const {
 
 Restraints CoreQuadsRestraint::get_instant_decomposition() const {
   Restraints ret;
-  for (unsigned int i=0; i< ret.size(); ++i) {
+  for (unsigned int i=0; i< pc_->get_number(); ++i) {
     Restraints cur=ss_->get_instant_decomposition(pc_->get(i));
     ret.insert(ret.end(), cur.begin(), cur.end());
   }
