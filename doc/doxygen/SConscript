@@ -175,8 +175,7 @@ if env['IMP_PROVIDE_PYTHON']:
         sources += Glob("#/build/lib/IMP/"+p+"/*.py", ondisk=False) \
                    + Glob("#/build/lib/IMP/"+p+"/*/*.py", ondisk=False)
 examples=[]
-for d in ["#/doc/",
-          "#/modules/example/src/",
+for d in ["#/modules/example/src/",
           "#/modules/example/include/",
           "#/modules/*/examples/",
           "#/biological_systems/*/doc/",
@@ -187,6 +186,12 @@ for d in ["#/doc/",
         cur=Glob(d+"*."+t)+Glob(d+"*/*."+t)
         #print "fund", [str(x) for x in cur]
         examples+=cur
+
+# skip layout.xml and footer.html
+for t in ["py", "cpp", "png", "png", "html", "xml"]:
+        #print "checking fr examples matching",d+"*."+t, d+"*/*."+t
+    cur=Glob("#/doc/*."+t)
+    examples+=cur
 
 #sources.sort()
 examples.sort()
