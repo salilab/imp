@@ -30,5 +30,22 @@ NodeHandle RootHandle::get_node_handle_from_association(void*d) const {
   }
 }
 
+std::string RootHandle::get_description() const {
+  return shared_->get_group().get_char_attribute("description");
+}
+void RootHandle::set_description(std::string descr) {
+  IMP_USAGE_CHECK(descr.empty()
+                  || descr[descr.size()-1]=='\n',
+                  "Description should end in a newline.");
+  shared_->get_group().set_char_attribute("description", descr);
+}
+
+std::vector<std::pair<NodeHandle, NodeHandle> > RootHandle::get_bonds() const {
+  std::vector<std::pair<NodeHandle, NodeHandle> > ret(get_number_of_bonds());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= get_bond(i);
+  }
+  return ret;
+}
 
 IMPRMF_END_NAMESPACE

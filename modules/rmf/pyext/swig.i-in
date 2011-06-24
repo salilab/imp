@@ -7,9 +7,10 @@ namespace rmf {
 %rename(_IndexTraits) IndexTraits;
 %rename(_NodeIDTraits) NodeIDTraits;
 %rename(_DataSetTraits) DataSetTraits;
+%rename(_CharTraits) CharTraits;
 }
 }
-
+IMP_SWIG_GRAPH(IMP::rmf, NodeTree, NodeTree, IMP::rmf::NodeHandle);
 IMP_SWIG_VALUE(IMP::rmf, NodeHandle, NodeHandles);
 IMP_SWIG_VALUE(IMP::rmf, RootHandle, RootHandles);
 IMP_SWIG_VALUE(IMP::rmf, NodeID, NodeIDs);
@@ -28,8 +29,21 @@ IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5IntDataSet, HDF5IntDataSet, HDF5IntDataSet
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5StringDataSet, HDF5StringDataSet, HDF5StringDataSets);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5IndexDataSet, HDF5IndexDataSet, HDF5IndexDataSets);
 IMP_SWIG_VALUE_INSTANCE(IMP::rmf, HDF5NodeIDDataSet, HDF5NodeIDDataSet, HDF5NodeIDDataSets);
+IMP_SWIG_PAIR(IMP::rmf, NodeHandle, BondPair, BondPairs)
 IMP_SWIG_OBJECT(IMP::rmf, SaveHierarchyConfigurationOptimizerState, SaveHierarchyConfigurationOptimizerStates);
 IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
+
+%extend IMP::rmf::RootHandle {
+   %pythoncode %{
+    def get_keys(self, kc):
+        ret=self.get_int_keys(kc)\
+            + self.get_float_keys(kc)\
+            + self.get_index_keys(kc)\
+            + self.get_node_id_keys(kc)\
+            + self.get_data_set_keys(kc)
+        return ret
+  %}
+}
 
 %include "IMP/rmf/NodeID.h"
 %include "IMP/rmf/hdf5_types.h"

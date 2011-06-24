@@ -41,22 +41,22 @@ std::vector<NodeHandle> NodeHandle::get_children() const {
   return ret;
 }
 
-namespace {
-  std::string get_type_string(NodeType t) {
-    switch (t) {
-    case ROOT:
-      return "root";
-    case REPRESENTATION:
-      return "rep";
-    case GEOMETRY:
-      return "geom";
-    case FEATURE:
-      return "feat";
-    default:
-      return "unknown";
-    }
+std::string get_type_name(NodeType t) {
+  switch (t) {
+  case ROOT:
+    return "root";
+  case REPRESENTATION:
+    return "rep";
+  case GEOMETRY:
+    return "geom";
+  case FEATURE:
+    return "feat";
+  default:
+    return "unknown";
   }
+}
 
+namespace {
   template <class KT>
   void show_data(NodeHandle n,
                  std::ostream &out,
@@ -87,7 +87,7 @@ namespace {
                  IndexKeys xks, StringKeys sks,
                  int frame,
                  std::string prefix) {
-    out << get_type_string(n.get_type()) << " "
+    out << get_type_name(n.get_type()) << " "
         << n.get_id() << " " << n.get_name();
     show_data(n, out, fks, frame, prefix);
     show_data(n, out, iks, frame, prefix);
@@ -130,5 +130,28 @@ void show_hierarchy(NodeHandle root,
                            prefix0+"   "));
 }
 
+namespace {
+  void fill_node_tree(NodeHandle n, int parent,
+                      NodeTree &tree) {
+    typedef boost::property_map<NodeTree,
+                                boost::vertex_name_t>::type VertexMap;
+    VertexMap pm= boost::get(boost::vertex_name, tree);
+    int vi= add_vertex(tree);
+    pm[vi]= n;
+    if (parent != -1) {
+      boost::add_edge(parent, vi, tree);
+    }
+    NodeHandles chs= n.get_children();
+    for (unsigned int i=0; i< chs.size(); ++i) {
+      fill_node_tree(chs[i], vi, tree);
+    }
+  }
+}
+
+NodeTree get_node_tree(NodeHandle n) {
+  NodeTree tree;
+  fill_node_tree(n, -1, tree);
+  return tree;
+}
 
 IMPRMF_END_NAMESPACE
