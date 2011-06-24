@@ -56,6 +56,9 @@ IMPRMFEXPORT extern const KeyCategory Physics;
     - "sequence" store the sequence as a series of space-deliminted 3-letter
     codes
     - "residue type" store the three letter code for the residue type
+    - "chain id" stores an integer for the chain identifier. When translating
+    from pdb files, the position in the alphabet of the chain should probably
+    be used (eg, chain 'A' is 0)
 */
 IMPRMFEXPORT extern const KeyCategory Sequence;
 
