@@ -18,7 +18,7 @@ def _check_default(context):
         ver = modeller.info.version
     except AttributeError, e:
         context.Result("'import modeller' succeeded, but the package does "
-                       "not appear to be MODELLER; p.rmfaps a 'modeller.py' "
+                       "not appear to be MODELLER; perhaps a 'modeller.py' "
                        "file in the current directory?")
         return False
     context.Result("found via Python 'import modeller'")
