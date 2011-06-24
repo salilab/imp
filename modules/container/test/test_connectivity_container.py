@@ -2,6 +2,7 @@ import IMP
 import IMP.test
 import IMP.atom
 import IMP.container
+import IMP.display
 import math
 
 def nudge_particle(p, sz):
@@ -13,7 +14,34 @@ def nudge_particle(p, sz):
 
 class TunnelTest(IMP.test.TestCase):
     """Tests for tunnel scores"""
-
+    def test_connectivity_zero_set(self):
+        """Test connectivity zero set"""
+        m= IMP.Model()
+        ps=[IMP.Particle(m) for i in range(0,15)]
+        ds=[IMP.core.XYZR.setup_particle(p) for p in ps]
+        bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+                                      IMP.algebra.Vector3D(10,10,10))
+        for d in ds:
+            d.set_coordinates(IMP.algebra.get_random_vector_in(bb))
+            d.set_radius(4)
+        lsc= IMP.container.ListSingletonContainer(ps)
+        cpc= IMP.container.ConnectingPairContainer(lsc, 0)
+        hub= IMP.core.HarmonicUpperBound(0,1)
+        sdps= IMP.core.SphereDistancePairScore(hub)
+        r= IMP.container.PairsRestraint(sdps, cpc)
+        m.add_restraint(r)
+        w= IMP.display.PymolWriter(self.get_tmp_file_name("connectivity.pym"))
+        for d in ds:
+            g= IMP.display.XYZRGeometry(d)
+            w.add_geometry(g)
+        g=IMP.display.RestraintGeometry(r)
+        w.add_geometry(g)
+        del w
+        m.evaluate(False)
+        for pr in cpc.get_particle_pairs():
+            dist= IMP.core.get_distance(IMP.core.XYZR(pr[0]),
+                                        IMP.core.XYZR(pr[1]))
+        self.assertEqual(m.evaluate(False), 0)
     def test_score(self):
         """Test connectivity"""
         IMP.set_log_level(IMP.VERBOSE)
@@ -22,7 +50,7 @@ class TunnelTest(IMP.test.TestCase):
         for p in ps:
             p.set_coordinates_are_optimized(True)
         lsc=IMP.container.ListSingletonContainer(ps)
-        cpc=IMP.container.ConnectingPairContainer(lsc, .1, False)
+        cpc=IMP.container.ConnectingPairContainer(lsc, .1)
         #m.add_restraint(pr)
         m.evaluate(False)
         for pp in cpc.get_particle_pairs():
