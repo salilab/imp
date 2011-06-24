@@ -154,7 +154,7 @@ class HDF5DataSet {
                                            s);
   }
   void set_row( Ints ijk,
-               typename std::vector<typename TypeTraits::Type>& value) {
+               const typename TypeTraits::Types& value) {
     ijk.push_back(0);
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
@@ -171,7 +171,7 @@ class HDF5DataSet {
                                      get_row_data_space().get_hid(),
                                          s, value);
   }
-  typename std::vector<typename TypeTraits::Type> get_row( Ints ijk) const {
+  typename TypeTraits::Types get_row( Ints ijk) const {
     ijk.push_back(0);
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
@@ -278,7 +278,7 @@ class IMPRMFEXPORT HDF5Group {
 
   template <class TypeTraits>
     void set_attribute(std::string name,
-                       std::vector< typename TypeTraits::Type> value) {
+                       typename TypeTraits::Types value) {
     if (value.empty()) {
       if (H5Aexists(h_->get_hid(), name.c_str())) {
         IMP_HDF5_CALL(H5Adelete(h_->get_hid(), name.c_str()));
@@ -314,17 +314,17 @@ class IMPRMFEXPORT HDF5Group {
     }
   }
   template <class TypeTraits>
-    std::vector<typename TypeTraits::Type>
+    typename TypeTraits::Types
     get_attribute(std::string name) const {
     if (!H5Aexists(h_->get_hid(), name.c_str())) {
-      return std::vector<typename TypeTraits::Type>();
+      return typename TypeTraits::Types();
     } else {
       HDF5Handle a(H5Aopen(h_->get_hid(), name.c_str(), H5P_DEFAULT),
                    &H5Aclose);
       HDF5Handle s(H5Aget_space(a), &H5Sclose);
       hsize_t dim, maxdim;
       IMP_HDF5_CALL(H5Sget_simple_extent_dims(s, &dim, &maxdim));
-      std::vector<typename TypeTraits::Type> ret
+      typename TypeTraits::Types ret
         = TypeTraits::read_values_attribute(a, dim);
       return ret;
     }
@@ -337,16 +337,17 @@ class IMPRMFEXPORT HDF5Group {
 
 #define IMP_HDF5_ATTRIBUTE(lcname, UCName)                              \
   void set_##lcname##_attribute(std::string nm,                         \
-                     const std::vector< UCName##Traits::Type> &value) { \
+                                const UCName##Traits::Types &value) {   \
     set_attribute< UCName##Traits>(nm, value);                          \
   }                                                                     \
-  std::vector< UCName##Traits::Type>                                    \
+  UCName##Traits::Types                                                 \
     get_##lcname##_attribute(std::string nm) const {                    \
     return get_attribute< UCName##Traits>(nm);                          \
   }                                                                     \
 
   IMP_HDF5_ATTRIBUTE(float, Float);
   IMP_HDF5_ATTRIBUTE(int, Int);
+  IMP_HDF5_ATTRIBUTE(char, Char);
   IMP_HDF5_ATTRIBUTE(string, String);
   IMP_HDF5_ATTRIBUTE(index, Index);
 };
