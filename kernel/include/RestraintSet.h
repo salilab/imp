@@ -11,7 +11,7 @@
 #include "kernel_config.h"
 #include "Restraint.h"
 #include "container_macros.h"
-#include "internal/map.h"
+#include "compatibility/map.h"
 #include <string>
 
 IMP_BEGIN_NAMESPACE
@@ -86,7 +86,7 @@ namespace {
   void get_restraints_and_weights_internal(It b, It e,
                                            double initial_weight,
                                            RestraintsAndWeights &ret,
-                                     internal::Map<Restraint*, int> &index) {
+                            compatibility::map<Restraint*, int> &index) {
     if (initial_weight ==0) return;
     for (It c=b; c!= e; ++c) {
       RestraintSet *rs=dynamic_cast<RestraintSet*>(*c);
@@ -139,7 +139,7 @@ namespace {
 template <class It>
 inline RestraintsAndWeights get_restraints_and_weights(It b, It e,
                                              double initial_weight=1) {
-  internal::Map<Restraint*, int> index;
+  compatibility::map<Restraint*, int> index;
   RestraintsAndWeights ret;
   get_restraints_and_weights_internal(b,e, initial_weight, ret,
                                       index);

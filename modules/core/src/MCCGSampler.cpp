@@ -20,13 +20,7 @@
 #include <IMP/core/core_macros.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/progress.hpp>
-
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 IMPCORE_BEGIN_NAMESPACE
 

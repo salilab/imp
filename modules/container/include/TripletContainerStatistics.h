@@ -13,7 +13,7 @@
 #include "container_config.h"
 #include <IMP/TripletContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/set.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT TripletContainerStatistics : public ScoreState
   unsigned int max_;
   unsigned int min_;
   bool track_unique_;
-  IMP::internal::Set<ParticleTriplet> unique_;
+  IMP::compatibility::set<ParticleTriplet> unique_;
 public:
   TripletContainerStatistics(TripletContainer *c);
   void show_statistics(std::ostream &out) const;

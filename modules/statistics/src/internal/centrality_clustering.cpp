@@ -9,12 +9,6 @@
 #include <IMP/statistics/PartitionalClustering.h>
 #include <IMP/statistics/internal/TrivialPartitionalClustering.h>
 #include <IMP/Pointer.h>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/adjacency_list.hpp>
@@ -82,13 +76,13 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);
-  IMP::internal::Map<int, Ints> sets;
+  IMP::compatibility::map<int, Ints> sets;
   for (unsigned int i=0; i< boost::num_vertices(g); ++i) {
     int s= ds.find_set(i);
     sets[s].push_back(i);
   }
   std::vector<Ints> clusters;
-  for (IMP::internal::Map<int, Ints>::const_iterator it
+  for (IMP::compatibility::map<int, Ints>::const_iterator it
          = sets.begin(); it != sets.end(); ++it) {
     clusters.push_back(it->second);
   }

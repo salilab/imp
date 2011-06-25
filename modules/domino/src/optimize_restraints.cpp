@@ -10,7 +10,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/domino/internal/restraint_evaluator.h>
@@ -100,7 +100,7 @@ ParticlesTemp pt= c_->get_particles();
 
   bool handle_nbl(Restraint *r, RestraintSet *p,
                           const DependencyGraph &,
-                          const IMP::internal::Map<Object*,
+                          const IMP::compatibility::map<Object*,
                           unsigned int> &,
                           const ParticleStatesTable *pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
@@ -115,7 +115,7 @@ ParticlesTemp pt= c_->get_particles();
     PairScore *ssps= pr->get_score();
     ParticlePairsTemp pairs= get_static_pairs(cpc, pst);
 
-    IMP::internal::Map<Particle*, ParticlesTemp> rbs;
+    IMP::compatibility::map<Particle*, ParticlesTemp> rbs;
     ParticlePairsTemp rb_pairs;
     ParticlePairsTemp stray_pairs;
     double max= r->get_maximum_score();
@@ -150,7 +150,7 @@ ParticlesTemp pt= c_->get_particles();
     }
     if (!rbs.empty()) {
       IMP_NEW(core::TableRefiner, tr, ());
-      for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator
+      for (IMP::compatibility::map<Particle*, ParticlesTemp>::const_iterator
              it= rbs.begin();
            it != rbs.end(); ++it) {
         tr->add_particle(it->first, it->second);
@@ -191,7 +191,7 @@ ParticlesTemp pt= c_->get_particles();
 
   bool handle_decomposable(Restraint *r, RestraintSet *p,
                            const DependencyGraph &dg,
-                           const IMP::internal::Map<Object*,
+                           const IMP::compatibility::map<Object*,
                                                     unsigned int> &index,
                            const ParticleStatesTable *pst,
                            boost::ptr_vector<ScopedRemoveRestraint> &removed,
@@ -234,7 +234,7 @@ ParticlesTemp pt= c_->get_particles();
 
   void optimize_restraint(Restraint *r, RestraintSet *p,
                           const DependencyGraph &dg,
-                          const IMP::internal::Map<Object*,
+                          const IMP::compatibility::map<Object*,
                           unsigned int> &index,
                           const ParticleStatesTable *pst,
                           boost::ptr_vector<ScopedRemoveRestraint> &removed,
@@ -250,7 +250,7 @@ ParticlesTemp pt= c_->get_particles();
 
   void optimize_restraint_parent(RestraintSet *p,
                                  const DependencyGraph &dg,
-                                 const IMP::internal::Map<Object*,
+                                 const IMP::compatibility::map<Object*,
                                  unsigned int> &index,
                                  const ParticleStatesTable *pst,
                            boost::ptr_vector<ScopedRemoveRestraint> &removed,
@@ -271,7 +271,7 @@ ParticlesTemp pt= c_->get_particles();
   }
   void optimize_score_state(ScoreState *ss,
                             const DependencyGraph &dg,
-                            const IMP::internal::Map<Object*,
+                            const IMP::compatibility::map<Object*,
                                            unsigned int> &index,
                             const ParticleStatesTable *pst,
                   boost::ptr_vector<ScopedRemoveScoreState> &removed,
@@ -317,7 +317,7 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
     const DependencyGraph dg
       =get_dependency_graph(get_restraints(m));
     DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
-    IMP::internal::Map<Object*, unsigned int> index;
+    IMP::compatibility::map<Object*, unsigned int> index;
     unsigned int nv=boost::num_vertices(dg);
     for (unsigned int i=0; i< nv; ++i) {
       index[vm[i]]= i;
@@ -335,7 +335,7 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
   {
     const DependencyGraph dg
       =get_dependency_graph(get_restraints(m));
-    IMP::internal::Map<Object*, unsigned int> index;
+    IMP::compatibility::map<Object*, unsigned int> index;
     // now do restraints
     DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
     unsigned int nv=boost::num_vertices(dg);

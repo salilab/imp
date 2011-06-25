@@ -19,9 +19,8 @@
 #include <IMP/rmf/hdf5_wrapper.h>
 #endif
 #include <boost/shared_array.hpp>
-#include <boost/functional/hash.hpp>
 #include <algorithm>
-#include <boost/functional/hash/hash.hpp>
+#include <IMP/compatibility/hash.h>
 
 #include <IMP/random.h>
 #include <boost/random.hpp>

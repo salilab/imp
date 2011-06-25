@@ -15,7 +15,7 @@
 #include "IMP/RestraintSet.h"
 #include "IMP/internal/graph_utility.h"
 #include "IMP/file.h"
-#include "IMP/internal/map.h"
+#include "IMP/compatibility/map.h"
 #include "IMP/dependency_graph.h"
 #include <boost/timer.hpp>
 #include <set>
@@ -30,18 +30,13 @@
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/dynamic_bitset.hpp>
 //#include <boost/graph/lookup_edge.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 IMP_BEGIN_NAMESPACE
 typedef ::boost::graph_traits<DependencyGraph> MDGTraits;
 typedef MDGTraits::vertex_descriptor VD;
 typedef MDGTraits::edge_descriptor ED;
-typedef internal::Map<Object*, VD> DGIndex;
+typedef compatibility::map<Object*, VD> DGIndex;
 typedef boost::property_map<DependencyGraph, boost::vertex_name_t>::const_type
 MDGConstVertexMap;
 
@@ -312,7 +307,7 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
   while (changed) {
     changed=false;
     IMP_LOG(VERBOSE, "Searching for vertices to prune" << std::endl);
-    internal::Set<Connections> connections;
+    compatibility::set<Connections> connections;
     for (unsigned int i=0; i< boost::num_vertices(full); ++i) {
       Connections c(i, full);
       if (connections.find(c) != connections.end()) {
@@ -341,11 +336,11 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
 
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
-  const internal::Map<Object*, int> &ssindex_;
+  const compatibility::map<Object*, int> &ssindex_;
   MDGConstVertexMap vm_;
 public:
   ScoreDependencies(Ints &bs,
-                    const internal::Map<Object*, int> &ssindex,
+                    const compatibility::map<Object*, int> &ssindex,
                     MDGConstVertexMap vm): bs_(bs), ssindex_(ssindex),
                                           vm_(vm) {}
   template <class G>
@@ -353,7 +348,7 @@ public:
                        const G&) {
     Object *o= vm_[u];
     //std::cout << "visiting " << o->get_name() << std::endl;
-    internal::Map<Object*, int>::const_iterator it= ssindex_.find(o);
+    compatibility::map<Object*, int>::const_iterator it= ssindex_.find(o);
     if (it != ssindex_.end()) {
       //std::cout << "setting " << it->second << std::endl;
       bs_.push_back(it->second);
@@ -396,8 +391,8 @@ namespace {
   }
   //#pragma GCC diagnostic warn "-Wunused-parameter"
 
-  internal::Map<Object*, int> get_index(const DependencyGraph &dg) {
-    internal::Map<Object*, int> ret;
+  compatibility::map<Object*, int> get_index(const DependencyGraph &dg) {
+    compatibility::map<Object*, int> ret;
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (std::pair<MDGTraits::vertex_iterator,
            MDGTraits::vertex_iterator> be= boost::vertices(dg);
@@ -414,12 +409,12 @@ namespace {
                                  const RestraintsTemp &ordered_restraints,
                                  const ScoreStatesTemp &ordered_score_states,
                                  std::vector<Ints >&bs) {
-    internal::Map<Object *, int> ssindex;
+    compatibility::map<Object *, int> ssindex;
     for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
       ssindex[ordered_score_states[i]]=i;
     }
     bs.resize(ordered_restraints.size());
-    internal::Map<Object*, int> index= get_index(dg);
+    compatibility::map<Object*, int> index= get_index(dg);
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
       // make sure it is in the loop so it gets reset

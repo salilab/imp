@@ -19,7 +19,7 @@
 #include "OptimizerState.h"
 #include "FailureHandler.h"
 #include "internal/utility.h"
-#include "internal/map.h"
+#include "compatibility/map.h"
 #include <set>
 
 IMP_BEGIN_NAMESPACE
@@ -34,8 +34,8 @@ class IMPEXPORT ConfigurationSet: public Object
 {
   mutable Pointer<Model> model_;
   typedef Pointer<Particle> PP;
-  typedef internal::Map<PP, internal::ParticleDiff> DiffMap;
-  typedef internal::Map<PP, internal::ParticleData> DataMap;
+  typedef compatibility::map<PP, internal::ParticleDiff> DiffMap;
+  typedef compatibility::map<PP, internal::ParticleData> DataMap;
   typedef std::set<Particle*> ParticleSet;
   internal::OwnerPointer<Configuration> base_;
   struct Diff {

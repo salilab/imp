@@ -16,12 +16,7 @@
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/graph/copy.hpp>
 #include <IMP/domino/internal/maximal_cliques.h>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 #include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -102,7 +97,7 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
           << rs.size() << " restraints." << std::endl);
-  IMP::internal::Map<Particle*, int> map;
+  IMP::compatibility::map<Particle*, int> map;
   SGVertexMap pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs);
   /*IMP_IF_LOG(VERBOSE) {
@@ -197,7 +192,7 @@ namespace {
       EdgeRange;
     InteractionGraph mig;
     boost::copy_graph(ig, mig);
-    IMP::internal::Map<Particle*, int> vmap;
+    IMP::compatibility::map<Particle*, int> vmap;
     IGVertexMap mpm= boost::get(boost::vertex_name, mig);
     for(VertexRange be = boost::vertices(ig);
         be.first != be.second; ++be.first) {
@@ -385,7 +380,7 @@ bool get_has_edge(InteractionGraph &graph,
 
   void add_edges( const Subset &ps,
                   ParticlesTemp pt,
-                  const IMP::internal::Map<Particle*, int> &map,
+                  const IMP::compatibility::map<Particle*, int> &map,
                 Object *blame,
                 InteractionGraph &g) {
   IGEdgeMap om= boost::get(boost::edge_name, g);
@@ -420,7 +415,7 @@ InteractionGraph get_interaction_graph(RestraintSet *irs,
   InteractionGraph ret(ps.size());
   RestraintsTemp rs= get_restraints(irs);
   //Model *m= ps[0]->get_model();
-  IMP::internal::Map<Particle*, int> map;
+  IMP::compatibility::map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
   DependencyGraph dg = get_dependency_graph(rs);
   /*IMP_IF_LOG(VERBOSE) {
@@ -478,7 +473,7 @@ get_interaction_graph_geometry(const InteractionGraph &ig) {
   display::Geometries ret;
   IGVertexConstMap vm= boost::get(boost::vertex_name, ig);
   IGEdgeConstMap em= boost::get(boost::edge_name, ig);
-  IMP::internal::Map<std::string, display::Color> colors;
+  IMP::compatibility::map<std::string, display::Color> colors;
   for (std::pair<IGTraits::vertex_iterator,
          IGTraits::vertex_iterator> be= boost::vertices(ig);
        be.first != be.second; ++be.first) {

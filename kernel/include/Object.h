@@ -17,15 +17,7 @@
 #include "base_types.h"
 #include "log.h"
 #include "SetLogState.h"
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmismatched-tags"
-#endif
-#include <boost/functional/hash.hpp>
-#include <boost/functional/hash/hash.hpp>
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+#include "compatibility/hash.h"
 
 #include <vector>
 

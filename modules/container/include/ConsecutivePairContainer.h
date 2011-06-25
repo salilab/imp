@@ -13,7 +13,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 #define IMP_CPC_METHOD 0
@@ -42,7 +42,7 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 #if IMP_CPC_METHOD ==0
   IntKey key_;
 #elif IMP_CPC_METHOD ==1
-  IMP::internal::Map<Particle*, int> index_;
+  IMP::compatibility::map<Particle*, int> index_;
 #else
 
 #endif
@@ -82,9 +82,11 @@ ConsecutivePairContainer
   int ib= p[1]->get_value(key_);
   return std::abs(ia-ib)==1;
 #elif IMP_CPC_METHOD==1
-  IMP::internal::Map<Particle*, int>::const_iterator it0= index_.find(p[0]);
+  IMP::compatibility::map<Particle*, int>::const_iterator it0
+    = index_.find(p[0]);
   if (it0==index_.end()) return false;
-  IMP::internal::Map<Particle*, int>::const_iterator it1= index_.find(p[1]);
+  IMP::compatibility::map<Particle*, int>::const_iterator it1
+    = index_.find(p[1]);
   if (it1==index_.end()) return false;
   else return std::abs(it0->second-it1->second) ==1;
 #else

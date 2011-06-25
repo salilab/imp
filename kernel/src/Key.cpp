@@ -8,7 +8,7 @@
 #include "IMP/Key.h"
 #include "IMP/exception.h"
 #include "IMP/base_types.h"
-#include "IMP/internal/map.h"
+#include "IMP/compatibility/map.h"
 #include "IMP/Particle.h"
 #include "IMP/internal/AttributeTable.h"
 
@@ -19,7 +19,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 static double heuristic_value=238471628;
 
 namespace {
-  struct KeyTable: public Map<unsigned int, KeyData> {
+  struct KeyTable: public compatibility::map<unsigned int, KeyData> {
     KeyTable() {
       unsigned int fk= FloatKey::get_ID();
       operator[](fk).add_key("x");

@@ -21,12 +21,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -91,8 +86,8 @@ inline void show_as_graphviz(const Graph &g, std::ostream &out) {
 }
 
 template <class Base, class Graph>
-inline Map<Base*, int> get_graph_index(const Graph &g) {
-  Map<Base*, int>ret;
+inline compatibility::map<Base*, int> get_graph_index(const Graph &g) {
+  compatibility::map<Base*, int>ret;
   typename boost::property_map<Graph,
                                boost::vertex_name_t>::const_type
     vm= boost::get(boost::vertex_name,g);

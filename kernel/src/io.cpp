@@ -8,7 +8,7 @@
 
 #include <IMP/io.h>
 #include <IMP/internal/particle_save.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #ifdef IMP_KERNEL_USE_NETCDFCPP
 #include <netcdfcpp.h>
 #endif
@@ -74,16 +74,17 @@ namespace {
 
 void write_particles(const ParticlesTemp &particles,
                      TextOutput out) {
-  internal::Map<Particle*, unsigned int> to;
+  compatibility::map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
   }
-  internal::Map<unsigned int, internal::ParticleData> data;
-  for (internal::Map<Particle*, unsigned int>::const_iterator it= to.begin();
+  compatibility::map<unsigned int, internal::ParticleData> data;
+  for (compatibility::map<Particle*, unsigned int>::const_iterator
+         it= to.begin();
        it != to.end(); ++it) {
     data[it->second]= internal::ParticleData(it->first);
   }
-  for (internal::Map<unsigned int,
+  for (compatibility::map<unsigned int,
          internal::ParticleData>::const_iterator it= data.begin();
        it != data.end(); ++it) {
     out.get_stream() << "particle: " << it->first << std::endl;
@@ -94,16 +95,17 @@ void write_particles(const ParticlesTemp &particles,
 void write_particles(const ParticlesTemp &particles,
                      const FloatKeys &keys,
                      TextOutput out) {
-  internal::Map<Particle*, unsigned int> to;
+  compatibility::map<Particle*, unsigned int> to;
   for (unsigned int i=0; i< particles.size(); ++i) {
     to[particles[i]]=i;
   }
-  internal::Map<unsigned int, internal::ParticleData> data;
-  for (internal::Map<Particle*, unsigned int>::const_iterator it= to.begin();
+  compatibility::map<unsigned int, internal::ParticleData> data;
+  for (compatibility::map<Particle*, unsigned int>::const_iterator
+         it= to.begin();
        it != to.end(); ++it) {
     data[it->second]= internal::ParticleData(it->first, keys);
   }
-  for (internal::Map<unsigned int,
+  for (compatibility::map<unsigned int,
          internal::ParticleData>::const_iterator it= data.begin();
        it != data.end(); ++it) {
     out.get_stream() << "particle: " << it->first << std::endl;
@@ -115,11 +117,11 @@ void read_particles(TextInput in,
                     const ParticlesTemp &particles,
                     Model *) {
   internal::LineStream ls(in);
-  internal::Map<unsigned int, Particle *> from;
+  compatibility::map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
     from[i]= particles[i];
   }
-  internal::Map<Particle*, internal::ParticleData> data;
+  compatibility::map<Particle*, internal::ParticleData> data;
   do {
     internal::LineStream::LinePair lp= ls.get_line();
     if (lp.first.empty()) break;
@@ -153,7 +155,7 @@ void read_particles(TextInput in,
               << from.size() << " got " << data.size(),
               IOException);
   }
-  for (internal::Map<Particle*, internal::ParticleData>::const_iterator
+  for (compatibility::map<Particle*, internal::ParticleData>::const_iterator
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first);
   }
@@ -165,11 +167,11 @@ void read_particles(TextInput in,
                     const ParticlesTemp &particles,
                     const FloatKeys &keys) {
   internal::LineStream ls(in);
-  internal::Map<unsigned int, Particle *> from;
+  compatibility::map<unsigned int, Particle *> from;
   for (unsigned int i=0; i< particles.size(); ++i) {
     from[i]= particles[i];
   }
-  internal::Map<Particle*, internal::ParticleData> data;
+  compatibility::map<Particle*, internal::ParticleData> data;
   do {
     internal::LineStream::LinePair lp= ls.get_line();
     if (lp.first.empty()) break;
@@ -203,7 +205,7 @@ void read_particles(TextInput in,
               << from.size() << " got " << data.size(),
               IOException);
   }
-  for (internal::Map<Particle*, internal::ParticleData>::const_iterator
+  for (compatibility::map<Particle*, internal::ParticleData>::const_iterator
          it= data.begin(); it != data.end(); ++it) {
     it->second.apply(it->first, keys);
   }

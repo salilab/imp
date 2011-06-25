@@ -18,17 +18,12 @@
 #include "domino_config.h"
 #include <IMP/Object.h>
 #include <IMP/Pointer.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <IMP/Configuration.h>
 #include <IMP/Model.h>
 #include <IMP/macros.h>
 #include <boost/dynamic_bitset.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 #include <boost/pending/disjoint_sets.hpp>
 
@@ -174,9 +169,9 @@ class IMPDOMINOEXPORT DisjointSetsSubsetFilterTable:
   boost::vector_property_map<int> parent_, rank_;
   mutable boost::disjoint_sets<boost::vector_property_map<int>,
                                boost::vector_property_map<int> > disjoint_sets_;
-  IMP::internal::Map<const Particle*, int> index_;
+  IMP::compatibility::map<const Particle*, int> index_;
   mutable std::vector<ParticlesTemp> sets_;
-  mutable IMP::internal::Map<const Particle *, int> set_indexes_;
+  mutable IMP::compatibility::map<const Particle *, int> set_indexes_;
 
   int get_index(Particle *p);
 
@@ -262,7 +257,7 @@ class IMPDOMINOEXPORT ListSubsetFilterTable:
   public SubsetFilterTable {
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  IMP::internal::Map<Particle*,int > map_;
+  IMP::compatibility::map<Particle*,int > map_;
   std::vector< boost::dynamic_bitset<> > states_;
   Pointer<ParticleStatesTable> pst_;
   mutable double num_ok_, num_test_;
@@ -304,7 +299,7 @@ IMP_OBJECTS(ListSubsetFilterTable,
 */
 class IMPDOMINOEXPORT PairListSubsetFilterTable:
   public SubsetFilterTable {
-  IMP::internal::Map<ParticlePair, IntPairs> allowed_;
+  IMP::compatibility::map<ParticlePair, IntPairs> allowed_;
   void fill(const Subset &s,
             const Subsets &e,
             IntPairs& indexes,

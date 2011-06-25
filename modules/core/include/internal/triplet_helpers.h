@@ -16,6 +16,7 @@
 #include <IMP/TripletModifier.h>
 #include <IMP/TripletScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/compatibility/set.h>
 #include <algorithm>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeTripletContainer: public TripletContainer {
 private:
   ParticleTriplets data_;
-  typedef IMP::internal::Set<ParticleTriplet> Index;
+  typedef IMP::compatibility::set<ParticleTriplet> Index;
   mutable Index index_;
   void update_index() const {
     if (index_.size()==data_.size()) return;

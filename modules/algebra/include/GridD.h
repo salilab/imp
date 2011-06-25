@@ -15,7 +15,7 @@
 #include "BoundingBoxD.h"
 #include "internal/grid_3d.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 
 #include <limits>
 
@@ -645,7 +645,7 @@ namespace grids {
       \see Grid3D
   */
   template <int D, class VT, class Base,
-            class Map=typename IMP::internal::Map<GridIndexD<D>, VT> >
+            class Map=typename IMP::compatibility::map<GridIndexD<D>, VT> >
   class SparseGridStorageD: public Base {
     typedef Map Data;
     struct GetIndex {

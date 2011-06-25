@@ -16,6 +16,7 @@
 #include <IMP/QuadModifier.h>
 #include <IMP/QuadScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/compatibility/set.h>
 #include <algorithm>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeQuadContainer: public QuadContainer {
 private:
   ParticleQuads data_;
-  typedef IMP::internal::Set<ParticleQuad> Index;
+  typedef IMP::compatibility::set<ParticleQuad> Index;
   mutable Index index_;
   void update_index() const {
     if (index_.size()==data_.size()) return;

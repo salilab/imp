@@ -115,7 +115,7 @@ void CoreClosePairContainer::check_duplicates_input() const {
 
 void CoreClosePairContainer::check_list(bool check_slack) const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-  IMP::internal::Set<ParticlePair> existings(particle_pairs_begin(),
+  IMP::compatibility::set<ParticlePair> existings(particle_pairs_begin(),
                                              particle_pairs_end());
   unsigned int num= std::distance(particle_pairs_begin(),
                                   particle_pairs_end());

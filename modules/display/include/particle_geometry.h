@@ -234,7 +234,7 @@ IMP_PARTICLE_PAIR_GEOMETRY(EdgePair, core::XYZ, {
 */
 class HierarchyGeometry: public SingletonGeometry {
   double res_;
-  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
+  mutable IMP::compatibility::map<Particle*, Pointer<Geometry> > components_;
 public:
   HierarchyGeometry(core::Hierarchy d, double resolution=-1):
     SingletonGeometry(d), res_(resolution){}
@@ -258,7 +258,7 @@ public:
 };
 class HierarchiesGeometry: public SingletonsGeometry {
   double res_;
-  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
+  mutable IMP::compatibility::map<Particle*, Pointer<Geometry> > components_;
   public:
   HierarchiesGeometry(SingletonContainer* sc, double resolution=-1):
     SingletonsGeometry(sc), res_(resolution){}
@@ -287,7 +287,7 @@ class HierarchiesGeometry: public SingletonsGeometry {
 */
 class SelectionGeometry: public Geometry {
   atom::Selection res_;
-  mutable IMP::internal::Map<Particle*, Pointer<Geometry> > components_;
+  mutable IMP::compatibility::map<Particle*, Pointer<Geometry> > components_;
 public:
   SelectionGeometry(atom::Selection d,
                     std::string name="Selection"):

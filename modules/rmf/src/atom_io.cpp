@@ -16,7 +16,7 @@
 #include <IMP/core/Typed.h>
 #include <IMP/display/Colored.h>
 #include <IMP/rmf/operations.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <IMP/core/rigid_bodies.h>
 #include <IMP/algebra/geometric_alignment.h>
 #include <boost/progress.hpp>
@@ -373,7 +373,7 @@ atom::Hierarchies create_hierarchies(RootHandle fh, Model *model) {
 
 
 namespace {
-  typedef IMP::internal::Map<Particle*, ParticlesTemp> RBM;
+  typedef IMP::compatibility::map<Particle*, ParticlesTemp> RBM;
   void load_internal(RootHandle file, atom::Hierarchy h, unsigned int frame,
                      RBM &rigid_bodies,
                      IMP_HDF5_ACCEPT_MOLECULE_KEYS) {

@@ -11,12 +11,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/atom/distance.h>
 #include <IMP/statistics/internal/centrality_clustering.h>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 
 IMPSTATISTICS_BEGIN_NAMESPACE

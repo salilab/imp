@@ -142,7 +142,7 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 
 struct ReadLock{
   Particles p_;
-  internal::Set<Object *> allowed_;
+  compatibility::set<Object *> allowed_;
 public:
   template <class It, class It1>
   ReadLock(It1 pa, It1 pb,
@@ -168,7 +168,7 @@ public:
 
 struct WriteLock{
   Particles p_;
-  internal::Set<Object *> allowed_;
+  compatibility::set<Object *> allowed_;
 public:
   template <class It, class It1>
   WriteLock(It1 pa, It1 pb,

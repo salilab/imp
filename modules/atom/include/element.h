@@ -16,7 +16,7 @@
 #include <boost/algorithm/string.hpp>
 
 #include <string>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 
 IMPATOM_BEGIN_NAMESPACE
 
@@ -68,8 +68,8 @@ public:
 
   static ElementString element_strings_[];
   static Float mass_[];
-  static IMP::internal::Map<std::string, Element> string_2_element_;
-  static IMP::internal::Map<Element, std::string> element_2_string_;
+  static IMP::compatibility::map<std::string, Element> string_2_element_;
+  static IMP::compatibility::map<Element, std::string> element_2_string_;
 };
 
 IMPATOMEXPORT ElementTable &get_element_table();

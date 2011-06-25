@@ -20,7 +20,7 @@
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 
 #include <boost/random/uniform_int.hpp>
 
@@ -323,7 +323,7 @@ create_fragment(const HierarchiesTemp &ps)
 Bonds get_internal_bonds(Hierarchy mhd)
 {
   Particles ps= core::get_all_descendants(mhd);
-  IMP::internal::Set<Particle*> sps(ps.begin(), ps.end());
+  IMP::compatibility::set<Particle*> sps(ps.begin(), ps.end());
   Bonds ret;
   for (Particles::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
     Particle *p = *pit;

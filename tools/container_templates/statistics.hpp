@@ -13,7 +13,7 @@
 #include "container_config.h"
 #include <IMP/CLASSNAMEContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/set.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerStatistics : public ScoreState
   unsigned int max_;
   unsigned int min_;
   bool track_unique_;
-  IMP::internal::Set<VARIABLETYPE> unique_;
+  IMP::compatibility::set<VARIABLETYPE> unique_;
 public:
   CLASSNAMEContainerStatistics(CLASSNAMEContainer *c);
   void show_statistics(std::ostream &out) const;
