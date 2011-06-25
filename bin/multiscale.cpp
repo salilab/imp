@@ -28,7 +28,12 @@ int    nTMH;
 int    stride;
 bool   do_plot;
 bool   do_statistics;
+bool   do_native;
 std::vector< std::pair<int,int> > TM_inter;
+std::vector< std::pair<int,int> > TM_dist;
+std::vector< double > TM_x0;
+std::vector< double > TM_kappa;
+std::vector< double > native;
 };
 
 #define OPTION(type, name)                                   \
@@ -42,12 +47,14 @@ Parameters get_parameters(TextInput in){
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- std::vector<std::string> inter;
+ std::vector<std::string> inter,distance,native;
  bool do_plot,do_statistics;
 
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
  desc.add_options()("display",     value< bool >(&do_plot),            "ciao");
- desc.add_options()("statistics",     value< bool >(&do_statistics),   "ciao");
+ desc.add_options()("statistics",  value< bool >(&do_statistics),      "ciao");
+ desc.add_options()("distance",    value< std::vector<std::string> >(),"ciao");
+ desc.add_options()("native",      value< std::vector<std::string> >(),"ciao");
 
 
  OPTION(double, ds);
@@ -81,7 +88,7 @@ Parameters get_parameters(TextInput in){
  ret.stride=stride;
  ret.do_plot=do_plot;
  ret.do_statistics=do_statistics;
-
+ ret.do_native=false;
 
  if (vm.count("interacting")){
   inter = vm["interacting"].as< std::vector<std::string> >();
@@ -91,6 +98,40 @@ Parameters get_parameters(TextInput in){
    int pos1 = atoi(strs[0].c_str());
    int pos2 = atoi(strs[1].c_str());
    ret.TM_inter.push_back(std::pair<int,int> (pos1,pos2));
+  }
+ }
+
+ if (vm.count("distance")){
+  distance = vm["distance"].as< std::vector<std::string> >();
+  for(unsigned int i=0;i<distance.size();++i){
+   std::vector<std::string> strs;
+   boost::split(strs, distance[i], boost::is_any_of("\t "));
+   int    pos1  = atoi(strs[0].c_str());
+   int    pos2  = atoi(strs[1].c_str());
+   double x0    = atof(strs[2].c_str());
+   double kappa = atof(strs[3].c_str());
+   ret.TM_dist.push_back(std::pair<int,int> (pos1,pos2));
+   ret.TM_x0.push_back(x0);
+   ret.TM_kappa.push_back(kappa);
+  }
+ }
+
+ if (vm.count("native")){
+  ret.do_native=true;
+  native = vm["native"].as< std::vector<std::string> >();
+  for(unsigned int i=0;i<native.size();++i){
+   std::vector<std::string> strs;
+   boost::split(strs, native[i], boost::is_any_of("\t "));
+   int    pos1  = atoi(strs[0].c_str());
+   int    pos2  = atoi(strs[1].c_str());
+   double dist  = atof(strs[2].c_str());
+   int idpair=pos1*number-pos1*(pos1+1)/2+pos2-(pos1+1);
+   if(idpair==i){
+    ret.native.push_back(dist);
+   }else{
+    std::cerr << "Wrong order for native distances" << std::endl;
+    exit;
+   }
   }
  }
 
@@ -111,6 +152,18 @@ core::PairRestraint* add_distance_restraint
  m->add_restraint(dr);
  m->set_maximum_score(dr, max_score);
  return dr.release();
+}
+
+void add_distance_restraint2
+ (Model *m, Particle *p0, Particle *p1,
+  double x0, double kappa, double max_score)
+{
+ IMP_NEW(core::Harmonic,h,(x0,kappa));
+ IMP_NEW(core::DistancePairScore,df,(h));
+ IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(p0, p1)));
+ m->add_restraint(dr);
+ m->set_maximum_score(dr, max_score);
+ dr->set_name("DISTANCE");
 }
 
 void add_diameter_restraint
@@ -151,7 +204,7 @@ algebra::Vector3Ds cover, algebra::Vector3Ds cover_x, double scale)
 
  RestraintSet *rs=m->get_root_restraint_set();
  for(unsigned int i=0;i<rs->get_number_of_restraints();++i)
-  rs->get_restraint(i)->set_maximum_score(0.9*scale*scale);
+   rs->get_restraint(i)->set_maximum_score(0.9*scale*scale);
 
  IMP_NEW(domino::ListSubsetFilterTable,lsft,(pst));
  IMP_NEW(domino::RestraintScoreSubsetFilterTable,rssft,(m, pst));
@@ -159,7 +212,7 @@ algebra::Vector3Ds cover, algebra::Vector3Ds cover_x, double scale)
  domino::SubsetFilterTables fs=domino::SubsetFilterTables();
  fs.push_back(lsft);
  fs.push_back(rssft);
- if(scale<=6.0) fs.push_back(esft);
+ if(scale<=12.0) fs.push_back(esft);
  domino::InteractionGraph ig=domino::get_interaction_graph(rset,pst);
  domino::SubsetGraph      jt=domino::get_junction_tree(ig);
  s->set_subset_filter_tables(fs);
@@ -238,6 +291,16 @@ for(int i=0;i<TM_inter.size();++i){
 // diameter
 add_diameter_restraint(m,all,diameter,max_score_);
 
+// additional distance restraint
+for(int i=0;i<mydata.TM_dist.size();++i){
+ int i0=mydata.TM_dist[i].first;
+ int i1=mydata.TM_dist[i].second;
+ double x0=mydata.TM_x0[i];
+ double kappa=1.0/pow(mydata.TM_kappa[i],2);
+ //std::cout << i0 << " " << i1 << " " << x0 << " " << kappa << std::endl;
+ add_distance_restraint2(m,all[i0],all[i1],x0,1.0,max_score_);
+}
+
 std::cout << "creating states" << std::endl;
 algebra::BoundingBox2D bb=
 algebra::BoundingBox2D(algebra::Vector2D(-diameter,-diameter),
@@ -267,7 +330,6 @@ for(int i=0;i<niter;++i)
 }
 
 // let's go with domino
-
 IMP_NEW(domino::ParticleStatesTable,pst,());
 IMP_NEW(domino::DominoSampler,s,(m,pst));
 
@@ -305,7 +367,7 @@ for(int curi=1;curi<niter;++curi){
    Particle *p=subs[i];
    std::string name=core::XYZR(p)->get_name();
    Ints allowed;
-   if (name=="TM0"){       allowed.push_back(s);
+   if       (name=="TM0"){ allowed.push_back(s);
    }else if (name=="TM1"){ allowed= mapping_x[s];
    }else{                  allowed= mapping[s];
    }
@@ -328,17 +390,29 @@ for(int curi=1;curi<niter;++curi){
  if(do_statistics){
   double mean_dist[nTMH*(nTMH-1)/2];
   double mean_dist2[nTMH*(nTMH-1)/2];
+  double mean_drmsd=0.0;
+  double mean_drmsd2=0.0;
+  double min_drmsd=10000.0;
+  int    min_index;
   for(unsigned int i=0;i<ass.size();++i){
    domino::load_particle_states(subs, ass[i], pst);
+   double drmsd=0.0;
    for(int i1=0;i1<nTMH-1;++i1){
     for(int i2=i1+1;i2<nTMH;++i2){
      int idpair=i1*nTMH-i1*(i1+1)/2+i2-(i1+1);
-     core::XYZR p1=core::XYZR(all[i1]);
-     core::XYZR p2=core::XYZR(all[i2]);
+     core::XYZ p1=core::XYZ(all[i1]);
+     core::XYZ p2=core::XYZ(all[i2]);
      double dist=core::get_distance(p1,p2);
      mean_dist[idpair]+=dist;
      mean_dist2[idpair]+=dist*dist;
+     if(mydata.do_native) drmsd+=pow(dist-mydata.native[idpair],2);
     }
+   }
+   if(mydata.do_native){
+    drmsd=sqrt(drmsd/(nTMH*(nTMH-1)/2));
+    mean_drmsd+=drmsd;
+    mean_drmsd2+=drmsd*drmsd;
+    if(drmsd<min_drmsd){min_drmsd=drmsd; min_index=i;}
    }
   }
   for(int i1=0;i1<nTMH-1;++i1){
@@ -353,15 +427,24 @@ for(int curi=1;curi<niter;++curi){
               << ave << " " << sig << std::endl;
    }
   }
+  if(mydata.do_native){
+   double ave=mean_drmsd/double(ass.size());
+   double ave2=mean_drmsd2/double(ass.size());
+   double sig=sqrt(ave2-ave*ave);
+   std::cout << std::endl;
+   std::cout << "DRMSD:: AVE " << ave << " SIGMA " << sig
+   << " MIN " << min_drmsd << " INDEX " << min_index << std::endl;
+  }
  }
 
- if(do_plot){
-  std::stringstream ss;
-  ss << curi;
-  IMP_NEW(display::PymolWriter,sw,("solutions"+ss.str()+".pym"));
-  for(unsigned int i=0;i<ass.size();i=i+stride){
+if(do_plot && curi==niter-1){
+  std::string file="solutions.pym";
+  IMP_NEW(display::PymolWriter,sw,(file));
+  int ii=0;
+  for(unsigned int i=0;i<ass.size();++i){
    domino::load_particle_states(subs, ass[i], pst);
-   sw->set_frame(i/stride);
+   sw->set_frame(ii);
+   ii++;
    for(int j=0;j<(ass[i]).size();++j){
     Particle *p=subs[j];
     IMP_NEW(display::XYZRGeometry,g,(p));
