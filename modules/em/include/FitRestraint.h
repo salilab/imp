@@ -93,7 +93,7 @@ private:
   bool use_rigid_bodies_;
   //particle handling
   //map particles to their rigid bodies
-  IMP::internal::Map<core::RigidBody, Particles> member_map_;
+  IMP::compatibility::map<core::RigidBody, Particles> member_map_;
   Particles all_ps_;
   Particles not_part_of_rb_; //all particles that are not part of a rigid body
   Particles part_of_rb_;

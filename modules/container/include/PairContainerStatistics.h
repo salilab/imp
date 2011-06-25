@@ -13,7 +13,7 @@
 #include "container_config.h"
 #include <IMP/PairContainer.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/set.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -29,7 +29,7 @@ class IMPCONTAINEREXPORT PairContainerStatistics : public ScoreState
   unsigned int max_;
   unsigned int min_;
   bool track_unique_;
-  IMP::internal::Set<ParticlePair> unique_;
+  IMP::compatibility::set<ParticlePair> unique_;
 public:
   PairContainerStatistics(PairContainer *c);
   void show_statistics(std::ostream &out) const;

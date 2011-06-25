@@ -86,7 +86,8 @@ RestraintStatistics Model::get_restraint_statistics(Restraint *r) const {
     IMP_THROW("Invalid restraint", ValueException);
   }
   RestraintStatistics ret;
-  internal::Map<Object*, Statistics>::const_iterator it= stats_data_.find(r);
+  compatibility::map<Object*, Statistics>::const_iterator
+    it= stats_data_.find(r);
   ret.minimum_score=it->second.min_value_;
   ret.maximum_score=it->second.max_value_;
   ret.average_score=it->second.total_value_/ it->second.calls_;

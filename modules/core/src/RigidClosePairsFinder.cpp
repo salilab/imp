@@ -50,7 +50,7 @@ RigidClosePairsFinder
 
 namespace {
   ParticlesTemp get_rigid_bodies(const ParticlesTemp &sc) {
-    IMP::internal::Set<Particle*> rets;
+    IMP::compatibility::set<Particle*> rets;
     for (unsigned int i=0; i< sc.size(); ++i) {
       if (RigidMember::particle_is_instance(sc[i])) {
         rets.insert(RigidMember(sc[i]).get_rigid_body());
@@ -68,7 +68,7 @@ namespace {
       });
     return ret;
     }*/
-  typedef IMP::internal::Map<Particle*, ParticlesTemp> RBM;
+  typedef IMP::compatibility::map<Particle*, ParticlesTemp> RBM;
   void divvy_up_particles(const ParticlesTemp &ps,
                           Refiner *r,
                           ParticlesTemp &out,
@@ -136,7 +136,7 @@ ParticlePairsTemp RigidClosePairsFinder
           << std::endl);
   check_particles(pa);
   check_particles(pb);
-  IMP::internal::Map<Particle*, ParticlesTemp> ma, mb;
+  IMP::compatibility::map<Particle*, ParticlesTemp> ma, mb;
   ParticlesTemp fa, fb;
   divvy_up_particles(pa, r_, fa, ma);
   divvy_up_particles(pb, r_, fb, mb);
@@ -172,7 +172,7 @@ ParticlePairsTemp RigidClosePairsFinder
   IMP_LOG(TERSE, "Adding close pairs from "
           << pa.size() << " particles." << std::endl);
   check_particles(pa);
-  IMP::internal::Map<Particle*, ParticlesTemp> m;
+  IMP::compatibility::map<Particle*, ParticlesTemp> m;
   ParticlesTemp fa;
   divvy_up_particles(pa, r_, fa, m);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa);
@@ -219,15 +219,18 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
     db= internal::get_rigid_body_hierarchy(RigidBody(b), k_);
   }
   if (da && db) {
-    out = internal::close_pairs(da, IMP::internal::Set<Particle*>(ma.begin(),
-                                                                  ma.end()),
-                              db, IMP::internal::Set<Particle*>(mb.begin(),
-                                                                mb.end()),
+    out = internal::close_pairs(da,
+                                IMP::compatibility::set<Particle*>(ma.begin(),
+                                                                   ma.end()),
+                                db,
+                                IMP::compatibility::set<Particle*>(mb.begin(),
+                                                                   mb.end()),
                               get_distance());
   } else if (da) {
     ParticlesTemp pt
-      = internal::close_particles(da, IMP::internal::Set<Particle*>(ma.begin(),
-                                                                    ma.end()),
+      = internal::close_particles(da,
+                                  IMP::compatibility::set<Particle*>(ma.begin(),
+                                                                     ma.end()),
                                   XYZR(b), get_distance());
     out.resize(pt.size());
     for (unsigned int i=0; i< pt.size(); ++i) {
@@ -235,8 +238,9 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
     }
   } else if (db) {
     ParticlesTemp pt
-      = internal::close_particles(db, IMP::internal::Set<Particle*>(mb.begin(),
-                                                                    mb.end()),
+      = internal::close_particles(db,
+                                  IMP::compatibility::set<Particle*>(mb.begin(),
+                                                                     mb.end()),
                                                 XYZR(a), get_distance());
     out.resize(pt.size());
     for (unsigned int i=0; i< pt.size(); ++i) {

@@ -280,7 +280,7 @@ int DisjointSetsSubsetFilterTable::get_index(Particle *p) {
 void DisjointSetsSubsetFilterTable::build_sets() const {
   if (!sets_.empty()) return;
   if (pst_) {
-    IMP::internal::Map<ParticleStates*, int> map;
+    IMP::compatibility::map<ParticleStates*, int> map;
     ParticlesTemp allps= pst_->get_particles();
     std::vector<ParticlesTemp> allsets;
     for (unsigned int i=0; i< allps.size(); ++i) {

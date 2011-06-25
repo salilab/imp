@@ -19,7 +19,8 @@
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 
-extern IMPEXPORT internal::Map<std::string, unsigned int> object_type_counts;
+extern IMPEXPORT compatibility::map<std::string,
+                                    unsigned int> object_type_counts;
 
 extern IMPEXPORT bool print_exceptions;
 

@@ -100,7 +100,7 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
   std::vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
   ParticlesTemp rbs_;
   Ints rbs_moved_;
-  IMP::internal::Map<RigidBody, Particles> rbs_members_;
+  IMP::compatibility::map<RigidBody, Particles> rbs_members_;
   virtual ParticlesTemp do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();

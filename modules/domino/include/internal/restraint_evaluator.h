@@ -42,7 +42,7 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
   - cache of scores for subset state
  */
 class RestraintData {
-  typedef IMP::internal::Map<Assignment, double> Scores;
+  typedef IMP::compatibility::map<Assignment, double> Scores;
   mutable Scores scores_;
   Pointer<Restraint> r_;
   double weight_;
@@ -149,7 +149,7 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
     Assignments sss;
     Floats scores;
   };
-  typedef IMP::internal::Map<Restraint*, PreloadData> Preload;
+  typedef IMP::compatibility::map<Restraint*, PreloadData> Preload;
   Preload preload_;
   struct SubsetID {
     const Subset s_;

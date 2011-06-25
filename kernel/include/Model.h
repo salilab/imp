@@ -19,7 +19,7 @@
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
-#include "internal/map.h"
+#include "compatibility/map.h"
 #include <boost/dynamic_bitset.hpp>
 
 
@@ -93,7 +93,7 @@ private:
                   last_value_(-1)
     {}
   };
-  mutable internal::Map<Object*, Statistics> stats_data_;
+  mutable compatibility::map<Object*, Statistics> stats_data_;
 
   // basic representation
   ParticleStorage particles_;
@@ -129,7 +129,7 @@ private:
 
 
   // dependencies
-  mutable internal::Map<Restraint *, int> restraint_index_;
+  mutable compatibility::map<Restraint *, int> restraint_index_;
   mutable RestraintsTemp ordered_restraints_;
   mutable std::vector<Ints > restraint_dependencies_;
   mutable std::vector<double> restraint_weights_;

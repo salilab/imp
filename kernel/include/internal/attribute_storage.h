@@ -11,6 +11,7 @@
 #include "../kernel_config.h"
 #include "../base_types.h"
 #include <IMP/algebra/SphereD.h>
+#include "../compatibility/map.h"
 
 #include <boost/scoped_array.hpp>
 #include <vector>
@@ -131,7 +132,7 @@ public:
 
 template <class TraitsT>
 class RefCountedMapStorage {
-  typedef Map<int, typename TraitsT::Value> M;
+  typedef compatibility::map<int, typename TraitsT::Value> M;
   M map_;
 public:
   typedef TraitsT Traits;

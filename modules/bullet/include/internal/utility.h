@@ -17,7 +17,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/domino/utility.h>
 #include <IMP/scoped.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 
 #include <btBulletDynamicsCommon.h>
@@ -56,8 +56,8 @@ IMPBULLETEXPORT
 ParticlesTemp get_particles(const ParticlesTemp &in);
 
 
-typedef IMP::internal::Map<Particle*, btRigidBody *> RigidBodyMap;
-typedef IMP::internal::Map<double, btCollisionShape*> SpheresMap;
+typedef IMP::compatibility::map<Particle*, btRigidBody *> RigidBodyMap;
+typedef IMP::compatibility::map<double, btCollisionShape*> SpheresMap;
 
 
 struct Memory {
@@ -67,7 +67,7 @@ struct Memory {
   boost::ptr_vector<btMotionState > motion_states;
   boost::ptr_vector<btRigidBody > rigid_bodies;
   boost::ptr_vector<btTypedConstraint > springs;
-  IMP::internal::Map<double, btCollisionShape*> spheres;
+  IMP::compatibility::map<double, btCollisionShape*> spheres;
   boost::scoped_ptr<btCollisionShape> empty_shape;
 };
 

@@ -129,10 +129,10 @@ class IMPEXPORT ParticleData {
   void apply(Particle *p,  const FloatKeys &keys) const;
   IMP_SHOWABLE(ParticleData);
   void write_yaml(std::ostream &out,
-                  const internal::Map<Particle*,
+                  const compatibility::map<Particle*,
                   unsigned int> &particles) const;
   void read_yaml(LineStream &in,
-                 const internal::Map<unsigned int, Particle*> &particles);
+                 const compatibility::map<unsigned int, Particle*> &particles);
 };
 IMP_OUTPUT_OPERATOR(ParticleData);
 

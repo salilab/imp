@@ -52,24 +52,24 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
 };
 
 IMPCOREEXPORT Particle* closest_particle(const RigidBodyHierarchy *da,
-                              const IMP::internal::Set<Particle*> &psa,
+                              const IMP::compatibility::set<Particle*> &psa,
                                          XYZR pt);
 
 
 IMPCOREEXPORT ParticlePair closest_pair(const RigidBodyHierarchy *da,
-                            const IMP::internal::Set<Particle*> &psa,
+                            const IMP::compatibility::set<Particle*> &psa,
                                         const RigidBodyHierarchy *db,
-                            const IMP::internal::Set<Particle*> &psb);
+                            const IMP::compatibility::set<Particle*> &psb);
 
 IMPCOREEXPORT
 ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
-                              const IMP::internal::Set<Particle*> &psa,
+                              const IMP::compatibility::set<Particle*> &psa,
                               const RigidBodyHierarchy *db,
-                              const IMP::internal::Set<Particle*> &psb,
+                              const IMP::compatibility::set<Particle*> &psb,
                               double dist);
 IMPCOREEXPORT
 ParticlesTemp close_particles(const RigidBodyHierarchy *da,
-                              const IMP::internal::Set<Particle*> &psa,
+                              const IMP::compatibility::set<Particle*> &psa,
                               XYZR pt, double dist);
 
 IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key();

@@ -322,7 +322,7 @@ distance_bound(const RigidBodyHierarchy *da, unsigned int i,
 }
 
 Particle* closest_particle(const RigidBodyHierarchy *da,
-                           const IMP::internal::Set<Particle*> &psa,
+                           const IMP::compatibility::set<Particle*> &psa,
                            XYZR pt) {
   typedef std::pair<double, int> QP;
   std::multimap<double, int> queue;
@@ -363,7 +363,7 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
 
 
 ParticlesTemp close_particles(const RigidBodyHierarchy *da,
-                              const IMP::internal::Set<Particle*> &psa,
+                              const IMP::compatibility::set<Particle*> &psa,
                               XYZR pt, double dist) {
   typedef std::pair<double, int> QP;
   ParticlesTemp ret;
@@ -403,9 +403,9 @@ ParticlesTemp close_particles(const RigidBodyHierarchy *da,
 
 
 ParticlePair closest_pair(const RigidBodyHierarchy *da,
-                          const IMP::internal::Set<Particle*> &psa,
+                          const IMP::compatibility::set<Particle*> &psa,
                           const RigidBodyHierarchy *db,
-                          const IMP::internal::Set<Particle*> &psb) {
+                          const IMP::compatibility::set<Particle*> &psb) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::multimap<double, IP> queue;
@@ -485,9 +485,9 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
 
 
 ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
-                              const IMP::internal::Set<Particle*> &psa,
+                              const IMP::compatibility::set<Particle*> &psa,
                               const RigidBodyHierarchy *db,
-                              const IMP::internal::Set<Particle*> &psb,
+                              const IMP::compatibility::set<Particle*> &psb,
                               double dist) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;

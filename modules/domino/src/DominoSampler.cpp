@@ -15,12 +15,6 @@
 #include <IMP/file.h>
 #include <boost/graph/connected_components.hpp>
 #include <IMP/domino/internal/loopy_inference.h>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -62,7 +56,7 @@ template <class G>
 void check_graph(const G &jt,
                  Subset known_particles) {
  IMP_IF_CHECK(USAGE) {
-    IMP::internal::Set<Particle*> used;
+    IMP::compatibility::set<Particle*> used;
     typename boost::property_map< G, boost::vertex_name_t>::const_type
       subset_map= boost::get(boost::vertex_name, jt);
     for (unsigned int i=0; i< boost::num_vertices(jt); ++i) {

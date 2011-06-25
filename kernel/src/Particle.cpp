@@ -14,12 +14,7 @@
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/depth_first_search.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 ReadLockedParticleException
@@ -318,7 +313,7 @@ public:
 
 void show_ref_counting_cycles(const ParticlesTemp &ps) {
   ParticleGraph pg;
-  internal::Map<Particle*, int> pvm;
+  compatibility::map<Particle*, int> pvm;
   boost::property_map<ParticleGraph, boost::vertex_name_t>::type
     vpm = boost::get(boost::vertex_name, pg);
   for (unsigned int i=0; i < ps.size(); ++i) {

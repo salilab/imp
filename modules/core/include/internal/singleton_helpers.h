@@ -16,6 +16,7 @@
 #include <IMP/SingletonModifier.h>
 #include <IMP/SingletonScore.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/compatibility/set.h>
 #include <algorithm>
 
 IMP_BEGIN_INTERNAL_NAMESPACE
@@ -33,7 +34,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeSingletonContainer: public SingletonContainer {
 private:
   Particles data_;
-  typedef IMP::internal::Set<Particle*> Index;
+  typedef IMP::compatibility::set<Particle*> Index;
   mutable Index index_;
   void update_index() const {
     if (index_.size()==data_.size()) return;

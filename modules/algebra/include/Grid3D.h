@@ -17,7 +17,7 @@
 #include "internal/grid_3d.h"
 #include "internal/grid_3d_impl.h"
 #include <boost/iterator/transform_iterator.hpp>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 
 #include <limits>
 /** \namespace IMP::algebra::grids

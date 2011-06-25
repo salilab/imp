@@ -17,7 +17,7 @@
 #include <IMP/container/PairsRestraint.h>
 #include <IMP/domino/utility.h>
 #include <IMP/scoped.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 
 #include <btBulletDynamicsCommon.h>

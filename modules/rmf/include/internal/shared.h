@@ -14,6 +14,7 @@
 #include "../hdf5_types.h"
 #include "../names.h"
 #include "../hdf5_wrapper.h"
+#include <IMP/compatibility/set.h>
 #include <boost/tuple/tuple.hpp>
 #include <hdf5.h>
 #include <algorithm>
@@ -32,34 +33,34 @@ class IMPRMFEXPORT SharedData: public RefCounted {
   std::vector<int> free_ids_;
   std::vector<int> free_bonds_;
   std::vector<void*> association_;
-  IMP::internal::Map<void*, int> back_association_;
+  IMP::compatibility::map<void*, int> back_association_;
   unsigned int frames_hint_;
 
   // caches
   mutable std::vector<int> max_cache_;
-  mutable IMP::internal::Set<std::string> known_data_sets_;
+  mutable IMP::compatibility::set<std::string> known_data_sets_;
   mutable int last_node_;
   mutable KeyCategory last_category_;
   mutable int last_vi_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<IntTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<IntTraits> >
     int_data_sets_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<StringTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<StringTraits> >
     string_data_sets_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<IndexTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<IndexTraits> >
     index_data_sets_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<FloatTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<FloatTraits> >
     float_data_sets_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<NodeIDTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<NodeIDTraits> >
     node_id_data_sets_;
-  mutable IMP::internal::Map<std::string, HDF5DataSet<DataSetTraits> >
+  mutable IMP::compatibility::map<std::string, HDF5DataSet<DataSetTraits> >
     data_set_data_sets_;
 
   template <class Traits>
     HDF5DataSet<Traits>
-    generic_get_data_set(IMP::internal::Map<std::string,
+    generic_get_data_set(IMP::compatibility::map<std::string,
                                             HDF5DataSet<Traits> > &cache,
                          std::string name, int dims) const {
-    typename IMP::internal::Map<std::string,
+    typename IMP::compatibility::map<std::string,
                                 HDF5DataSet<Traits> >::iterator it
       = cache.find(name);
     if (it == cache.end()) {

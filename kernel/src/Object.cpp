@@ -8,7 +8,7 @@
 
 #include "IMP/Object.h"
 #include "IMP/RefCounted.h"
-#include "IMP/internal/map.h"
+#include "IMP/compatibility/map.h"
 #include <boost/format.hpp>
 #include "IMP/internal/static.h"
 

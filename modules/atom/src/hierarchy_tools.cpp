@@ -35,12 +35,6 @@
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ConnectingPairContainer.h>
 #include <algorithm>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
 IMPATOM_BEGIN_NAMESPACE
 
 namespace {
@@ -621,7 +615,7 @@ namespace {
     ParticlesTemp p0= n0.get_selected_particles();
     ParticlesTemp p1= n1.get_selected_particles();
     IMP_IF_CHECK(USAGE) {
-      IMP::internal::Set<Particle*> all(p0.begin(), p0.end());
+      IMP::compatibility::set<Particle*> all(p0.begin(), p0.end());
       all.insert(p1.begin(), p1.end());
       IMP_USAGE_CHECK(all.size() == p0.size()+p1.size(),
                       "The two selections cannot overlap.");

@@ -9,7 +9,7 @@
 #include <IMP/domino/internal/restraint_evaluator.h>
 #include <IMP/domino/utility.h>
 #include <IMP/domino/internal/inference_utility.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <algorithm>
 
 
@@ -32,12 +32,14 @@ void ModelData::set_use_caching(bool tf) {
 namespace {
   void handle_restraint(Restraint *r,
                                  double weight,
-                        const IMP::internal::Map<Particle*, ParticlesTemp> &idm,
-      const IMP::internal::Map<Restraint*, ModelData::PreloadData> &preload,
+                        const IMP::compatibility::map<Particle*,
+                        ParticlesTemp> &idm,
+      const IMP::compatibility::map<Restraint*,
+                        ModelData::PreloadData> &preload,
                                  std::vector<Subset> &dependencies,
                                  ParticlesTemp ip,
                                  std::vector<RestraintData> &rdata,
-                        IMP::internal::Map<Restraint*, Ints> &index,
+                        IMP::compatibility::map<Restraint*, Ints> &index,
                         bool cache) {
     std::vector<ParticlesTemp> oip;
     oip.push_back(ParticlesTemp());
@@ -88,7 +90,7 @@ void ModelData::initialize() {
   //IMP_LOG(SILENT, "Initializing model score data" << std::endl);
   DependencyGraph dg= get_dependency_graph(RestraintsTemp(1, rs_));
   const ParticlesTemp all= pst_->get_particles();
-  IMP::internal::Map<Particle*, ParticlesTemp> idm;
+  IMP::compatibility::map<Particle*, ParticlesTemp> idm;
   for (unsigned int i=0; i < all.size(); ++i) {
     Particle *p= all[i];
     ParticlesTemp ps= get_dependent_particles(p, all, dg);
@@ -96,7 +98,7 @@ void ModelData::initialize() {
       idm[ps[j]].push_back(p);
     }
   }
-  IMP::internal::Map<Restraint*, Ints> index;
+  IMP::compatibility::map<Restraint*, Ints> index;
   Restraints restraints= get_restraints(rs_->restraints_begin(),
                                         rs_->restraints_end());
   for (Restraints::const_iterator rit= restraints.begin();
@@ -207,7 +209,7 @@ const SubsetData &ModelData::get_subset_data(const Subset &s,
     std::vector<Ints> inds;
     Ints total_ris;
     std::vector<Ints> total_inds;
-    IMP::internal::Set<Restraint*> found;
+    IMP::compatibility::set<Restraint*> found;
     for (unsigned int i=0; i< dependencies_.size(); ++i) {
       if (std::includes(s.begin(), s.end(),
                         dependencies_[i].begin(), dependencies_[i].end())) {

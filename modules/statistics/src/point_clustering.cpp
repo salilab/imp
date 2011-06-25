@@ -14,12 +14,7 @@
 #include <IMP/algebra/vector_search.h>
 #include <IMP/algebra/GridD.h>
 #include <IMP/algebra/geometric_alignment.h>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
 
 

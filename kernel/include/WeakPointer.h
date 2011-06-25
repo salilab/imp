@@ -18,8 +18,7 @@
 #include <boost/utility/enable_if.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/and.hpp>
-#include <boost/functional/hash.hpp>
-#include <boost/functional/hash/hash.hpp>
+#include <IMP/compatibility/hash.h>
 
 IMP_BEGIN_NAMESPACE
 

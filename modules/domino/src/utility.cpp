@@ -10,7 +10,7 @@
 #include <IMP/Model.h>
 #include <IMP/Restraint.h>
 #include <IMP/ScoreState.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <boost/graph/graphviz.hpp>
 #include <IMP/internal/graph_utility.h>
 #include <IMP/domino/internal/restraint_evaluator.h>
@@ -18,12 +18,7 @@
 #include <IMP/domino/particle_states.h>
 #include <boost/graph/depth_first_search.hpp>
 #include <boost/graph/reverse_graph.hpp>
-#if BOOST_VERSION > 103900
-#include <boost/property_map/property_map.hpp>
-#else
-#include <boost/property_map.hpp>
-#include <boost/vector_property_map.hpp>
-#endif
+#include <IMP/compatibility/vector_property_map.h>
 
 
 IMPDOMINO_BEGIN_NAMESPACE
@@ -78,7 +73,7 @@ ParticlesTemp get_dependent_particles(Particle *p,
   DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
   std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
     = boost::vertices(dg);
-  IMP::internal::Set<Object*> block(all.begin(), all.end());
+  IMP::compatibility::set<Object*> block(all.begin(), all.end());
   boost::vector_property_map<int> color(boost::num_vertices(dg));
   int start=-1;
   for (; be.first != be.second; ++be.first) {
@@ -128,7 +123,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
   std::set_difference(other.begin(), other.end(),
                       s.begin(), s.end(),
                       std::back_inserter(oms));
-  IMP::internal::Map<Restraint*, int> index
+  IMP::compatibility::map<Restraint*, int> index
     = IMP::internal::get_graph_index<Restraint>(dg);
   Ints to_remove;
   for (unsigned int i=0; i< rw.first.size(); ++i) {

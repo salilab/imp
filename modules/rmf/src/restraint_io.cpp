@@ -84,7 +84,7 @@ namespace {
   }
 
 
-  typedef IMP::internal::Map<Subset, NodeHandle> Index;
+  typedef IMP::compatibility::map<Subset, NodeHandle> Index;
   void build_index(NodeHandle parent,
                    NodeIDKeys &fks,
                    Index &nodes) {

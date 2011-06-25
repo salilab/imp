@@ -163,7 +163,7 @@ namespace {
                     RP(TRP, 'W'),
                     RP(VAL, 'V'),
                     RP(UNK, 'X')};
-  const IMP::internal::Map<char, ResidueType> rp_map(rp_names,
+  const IMP::compatibility::map<char, ResidueType> rp_map(rp_names,
                                         rp_names+sizeof(rp_names)/sizeof(RP));
 }
 

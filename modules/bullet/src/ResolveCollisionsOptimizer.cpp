@@ -19,7 +19,7 @@
 #include <IMP/bullet/internal/utility.h>
 #include <IMP/scoped.h>
 #include <IMP/internal/graph_utility.h>
-#include <IMP/internal/map.h>
+#include <IMP/compatibility/map.h>
 #include <IMP/atom/internal/SpecialCaseRestraints.h>
 #include "BulletCollision/Gimpact/btGImpactShape.h"
 #include "BulletCollision/Gimpact/btGImpactCollisionAlgorithm.h"
@@ -368,7 +368,7 @@ void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRsTemp &ps) {
 
 void ResolveCollisionsOptimizer
 ::add_obstacle(display::SurfaceMeshGeometry *sg) {
-  obstacles_.push_back(internal::get_as_bt(sg->get_vertices(),
+  obstacles_.push_back(internal::get_as_bt(sg->get_vertexes(),
                                            sg->get_faces()));
 }
 
@@ -492,7 +492,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
 
 
     internal::RigidBodyMap map;
-    IMP::internal::Map<Particle*, ParticlesTemp> handled_bodies;
+    IMP::compatibility::map<Particle*, ParticlesTemp> handled_bodies;
     ParticlesTemp xyzr_particles;
     for (unsigned int i=0; i< ps.size(); ++i) {
       if (core::RigidMember::particle_is_instance(ps[i])) {
@@ -511,14 +511,14 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
                 << ps[i]->get_name() << std::endl);
       }
     }
-    for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
+    for (IMP::compatibility::map<Particle*, ParticlesTemp>::const_iterator it=
            handled_bodies.begin(); it != handled_bodies.end(); ++it) {
       handle_rigidbody(it->first, it->second, local_, damp_, map,
                        dynamicsWorld.get(), memory);
     }
     get_model()->update();
     ParticlesTemp root_particles= xyzr_particles;
-    for (IMP::internal::Map<Particle*, ParticlesTemp>::const_iterator it=
+    for (IMP::compatibility::map<Particle*, ParticlesTemp>::const_iterator it=
            handled_bodies.begin(); it != handled_bodies.end(); ++it) {
       root_particles.push_back(it->first);
     }
