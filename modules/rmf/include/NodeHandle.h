@@ -141,8 +141,9 @@ class IMPRMFEXPORT NodeHandle {
   RootHandle get_root_handle() const;
 };
 
+#ifndef SWIG
 IMP_VALUES(NodeHandle, NodeHandles);
-
+#endif
 
 /** Print out the hierarchy as an ascii tree.
  */
