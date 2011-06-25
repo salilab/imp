@@ -32,7 +32,6 @@ bool   do_native;
 std::vector< std::pair<int,int> > TM_inter;
 std::vector< std::pair<int,int> > TM_dist;
 std::vector< double > TM_x0;
-std::vector< double > TM_kappa;
 std::vector< double > native;
 };
 
@@ -109,10 +108,8 @@ Parameters get_parameters(TextInput in){
    int    pos1  = atoi(strs[0].c_str());
    int    pos2  = atoi(strs[1].c_str());
    double x0    = atof(strs[2].c_str());
-   double kappa = atof(strs[3].c_str());
    ret.TM_dist.push_back(std::pair<int,int> (pos1,pos2));
    ret.TM_x0.push_back(x0);
-   ret.TM_kappa.push_back(kappa);
   }
  }
 
@@ -291,13 +288,11 @@ for(int i=0;i<TM_inter.size();++i){
 // diameter
 add_diameter_restraint(m,all,diameter,max_score_);
 
-// additional distance restraint
+// additional distance restraints
 for(int i=0;i<mydata.TM_dist.size();++i){
  int i0=mydata.TM_dist[i].first;
  int i1=mydata.TM_dist[i].second;
  double x0=mydata.TM_x0[i];
- double kappa=1.0/pow(mydata.TM_kappa[i],2);
- //std::cout << i0 << " " << i1 << " " << x0 << " " << kappa << std::endl;
  add_distance_restraint2(m,all[i0],all[i1],x0,1.0,max_score_);
 }
 
