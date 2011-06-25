@@ -24,7 +24,7 @@ struct LinearKNNData {
         retds.insert(cd, i);
       }
     }
-    for (unsigned int i=0; i< k; ++i) {
+    for (unsigned int i=0; i< retds.size(); ++i) {
       ret[i]=retds[i].second;
     }
   }
