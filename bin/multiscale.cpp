@@ -426,9 +426,9 @@ for(int curi=1;curi<niter;++curi){
    double ave=mean_drmsd/double(ass.size());
    double ave2=mean_drmsd2/double(ass.size());
    double sig=sqrt(ave2-ave*ave);
-   std::cout << std::endl;
-   std::cout << "DRMSD:: AVE " << ave << " SIGMA " << sig
+   std::cout << "** DRMSD:: AVE " << ave << " SIGMA " << sig
    << " MIN " << min_drmsd << " INDEX " << min_index << std::endl;
+   std::cout << std::endl;
   }
  }
 
