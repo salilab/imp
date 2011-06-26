@@ -1,5 +1,5 @@
 /**
- *  \file compatibility/map.h
+ *  \file IMP/compatibility/map.h
  *  \brief Declare an efficient stl-compatible map
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.

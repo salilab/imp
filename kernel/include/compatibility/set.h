@@ -1,5 +1,5 @@
 /**
- *  \file compatibility/set.h
+ *  \file IMP/compatibility/set.h
  *  \brief Declare an efficient stl-compatible set.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
