@@ -695,6 +695,18 @@ are committing patches to svn may want to subscribe to the \impcommits email
 list which receives notices of all changes made to the \imp SVN repository.
 
 
+\section crossplatform Cross platform compatibility
+
+\imp is designed to run on a wide variety of platforms. To detect problems on
+other platforms
+we provide \salilab{imp/nightly/tests.html,nightly test runs} on the supported
+platforms for code that is part of the \imp SVN repository.
+
+In order to make it more likely that your code works on all the supported platforms:
+- use the headers and classes in IMP::compatibility when appropriate
+- avoid the use of \c and and \c or in C++ code, use \c && and \c || instead.
+- avoid \c friend declarations involving templates, use \c #if blocks
+  on \c SWIG and \c IMP_DOXYGEN to hide code as needed instead.
 
 \section cpp Good programming practices
 
