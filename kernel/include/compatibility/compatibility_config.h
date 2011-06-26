@@ -27,7 +27,9 @@
     the best available implementation of some concept
     - IMP::compatibility::map
     - IMP::compatibility::set
+
     or headers that simply make sure the correct header is included
+
     - IMP/compatibility/vector_property_map.h
     - IMP/compatibility/hash.h
 */
