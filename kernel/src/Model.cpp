@@ -14,6 +14,7 @@
 #include "IMP/ScoreState.h"
 #include "IMP/RestraintSet.h"
 #include "IMP/dependency_graph.h"
+#include "IMP/compatibility/set.h"
 
 
 IMP_BEGIN_NAMESPACE

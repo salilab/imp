@@ -7,7 +7,7 @@
 
 #include "IMP/internal/static.h"
 #include "IMP/Particle.h"
-#include "IMP/compatibility/map.h"
+#include "IMP/compatibility/set.h"
 
 IMP_BEGIN_INTERNAL_NAMESPACE
 /*
