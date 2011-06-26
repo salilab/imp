@@ -9,7 +9,7 @@
 #define IMP_INTERNAL_PARTICLE_SAVE_H
 
 #include "../Particle.h"
-#include "map.h"
+#include "../compatibility/map.h"
 #include <iostream>
 #include <vector>
 

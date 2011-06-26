@@ -20,7 +20,7 @@
 #include <IMP/algebra/Sphere3D.h>
 #include <IMP/atom/hierarchy_tools.h>
 #include <IMP/algebra/geometric_alignment.h>
-#include <IMP/compatibility/map.h>
+#include <IMP/compatibility/set.h>
 
 #include <boost/random/uniform_int.hpp>
 

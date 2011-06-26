@@ -7,7 +7,7 @@
 
 #include "IMP/deprecation.h"
 #include "IMP/log.h"
-#include "IMP/compatibility/map.h"
+#include "IMP/compatibility/set.h"
 #include <iostream>
 
 IMP_BEGIN_INTERNAL_NAMESPACE

@@ -13,7 +13,7 @@
 #include "IMP/DerivativeAccumulator.h"
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
-#include <set>
+#include "IMP/compatibility/set.h"
 #include <numeric>
 
 

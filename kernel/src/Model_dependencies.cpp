@@ -18,7 +18,7 @@
 #include "IMP/compatibility/map.h"
 #include "IMP/dependency_graph.h"
 #include <boost/timer.hpp>
-#include <set>
+#include "IMP/compatibility/set.h"
 #include <numeric>
 
 #include <boost/graph/graph_traits.hpp>
