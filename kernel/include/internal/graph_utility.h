@@ -11,7 +11,7 @@
 #include "../kernel_config.h"
 #include "../Particle.h"
 #include "../Decorator.h"
-#include "map.h"
+#include "../compatibility/map.h"
 #include <cctype>
 #include <algorithm>
 #include <sstream>
