@@ -10,6 +10,10 @@ class TestBL(IMP.test.TestCase):
         IMP.set_log_level(IMP.TERSE)
     def test_4(self):
         """Testing trivial polygon decomposition and writing"""
+        try:
+            import IMP.cgal
+        except:
+            self.skipTest("IMP.cgal module disabled")
         IMP.set_log_level(IMP.VERBOSE)
         V=IMP.algebra.Vector3D
         o=10
@@ -26,6 +30,10 @@ class TestBL(IMP.test.TestCase):
 
     def test_3(self):
         """Testing polygon decomposition and writing"""
+        try:
+            import IMP.cgal
+        except:
+            self.skipTest("IMP.cgal module disabled")
         V=IMP.algebra.Vector3D
         o=10
         poly=[V(o,-10,-10), V(o, 10, -10), V(o, 10, 10),
