@@ -158,8 +158,8 @@ def analyze_conformations(cs, all, gs):
     cluster= IMP.statistics.create_lloyds_kmeans(embed, 10, 10000)
     # dump each cluster center to a file so it can be viewed.
     for i in range(cluster.get_number_of_clusters()):
-        center= cluster.get_cluster_center(i)
-        cs.load_configuration(center)
+        rep= cluster.get_cluster_representative(i)
+        cs.load_configuration(rep)
         w= IMP.display.PymolWriter("cluster.%d.pym"%i)
         for g in gs:
             w.add_geometry(g)
