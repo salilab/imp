@@ -15,6 +15,7 @@
 #include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
+#include <time.h>
 
 using namespace IMP;
 
@@ -29,6 +30,7 @@ int    stride;
 bool   do_plot;
 bool   do_statistics;
 bool   do_native;
+bool   do_random;
 std::vector< std::pair<int,int> > TM_inter;
 std::vector< std::pair<int,int> > TM_dist;
 std::vector< double > TM_x0;
@@ -47,11 +49,12 @@ Parameters get_parameters(TextInput in){
  using namespace boost::program_options;
  options_description desc;
  std::vector<std::string> inter,distance,native;
- bool do_plot,do_statistics;
+ bool do_plot,do_statistics,do_random;
 
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
  desc.add_options()("display",     value< bool >(&do_plot),            "ciao");
  desc.add_options()("statistics",  value< bool >(&do_statistics),      "ciao");
+ desc.add_options()("random",      value< bool >(&do_random),          "ciao");
  desc.add_options()("distance",    value< std::vector<std::string> >(),"ciao");
  desc.add_options()("native",      value< std::vector<std::string> >(),"ciao");
 
@@ -87,6 +90,7 @@ Parameters get_parameters(TextInput in){
  ret.stride=stride;
  ret.do_plot=do_plot;
  ret.do_statistics=do_statistics;
+ ret.do_random=do_random;
  ret.do_native=false;
 
  if (vm.count("interacting")){
@@ -246,10 +250,11 @@ double cm_dist=mydata.cm_dist;
 double inter_dist=mydata.inter_dist;
 int    niter=mydata.niter;
 int    nTMH=mydata.nTMH;
-int    stride=mydata.stride;
+int    stride;
 bool   do_plot=mydata.do_plot;
 bool   do_statistics=mydata.do_statistics;
 std::vector< std::pair<int,int> > TM_inter=mydata.TM_inter;
+srand ( time(NULL) );
 
 std::cout << "creating representation" << std::endl;
 for(int i=0;i<nTMH;++i){
@@ -353,7 +358,16 @@ for(int curi=1;curi<niter;++curi){
 
  domino::Assignments cac;
 
+ if(mydata.do_random){
+  stride=1;
+ }else{
+  stride=mydata.stride;
+ }
+
  for(unsigned int j=0;j<ass.size();j=j+stride){
+  //int rr=rand() % mydata.stride + 1;
+  //std::cout << j << " " << rr <<std::endl;
+  if(mydata.do_random && (rand() % mydata.stride + 1)!=1) continue;
   domino::Assignment a=ass[j];
   unsigned int outof=1;
   for(int i=0;i<a.size();++i)
