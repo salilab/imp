@@ -22,20 +22,43 @@ class IMPCONTAINEREXPORT ConsecutivePairContainer : public PairContainer
 {
   const Particles ps_;
   template <class F>
-    void apply_to_contents(F f) const {
+    void template_apply(F* f) const {
     unsigned int szc=ps_.size();
     for (unsigned int i=1; i< szc; ++i) {
       ParticlePair p(ps_[i-1], ps_[i]);
-      f(p);
+      call_apply(f, p);
     }
   }
   template <class F>
-    double accumulate_over_contents(F f) const {
+    void template_apply(F* f, DerivativeAccumulator &da) const {
+    unsigned int szc=ps_.size();
+    for (unsigned int i=1; i< szc; ++i) {
+      ParticlePair p(ps_[i-1], ps_[i]);
+      call_apply(f, p, da);
+    }
+  }
+  template <class F>
+    double template_evaluate(F* f, DerivativeAccumulator *da) const {
     double ret=0;
     unsigned int szc=ps_.size();
     for (unsigned int i=1; i< szc; ++i) {
       ParticlePair p(ps_[i-1], ps_[i]);
-      ret+=f(p);
+      ret+=call_evaluate(f, p, da);
+    }
+    return ret;
+  }
+  template <class F>
+    double template_evaluate_if_good(F* f,
+                                     DerivativeAccumulator *da,
+                                     double max) const {
+    double ret=0;
+    unsigned int szc=ps_.size();
+    for (unsigned int i=1; i< szc; ++i) {
+      ParticlePair p(ps_[i-1], ps_[i]);
+      double cur=call_evaluate_if_good(f, p, da, max);
+      ret+=cur;
+      max-=cur;
+      if (max <0) return ret;
     }
     return ret;
   }

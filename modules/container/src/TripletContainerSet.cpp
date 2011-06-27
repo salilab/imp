@@ -127,11 +127,13 @@ void TripletContainerSet::apply(const TripletModifier *sm,
 
 double TripletContainerSet::evaluate(const TripletScore *s,
                                        DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-    score+=get_triplet_container(i)->evaluate(s, da);
-  }
-  return score;
+  return template_evaluate(s, da);
+}
+
+double TripletContainerSet::evaluate_if_good(const TripletScore *s,
+                                               DerivativeAccumulator *da,
+                                               double max) const {
+  return template_evaluate_if_good(s, da, max);
 }
 
 

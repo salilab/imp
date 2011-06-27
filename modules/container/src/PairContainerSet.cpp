@@ -127,11 +127,13 @@ void PairContainerSet::apply(const PairModifier *sm,
 
 double PairContainerSet::evaluate(const PairScore *s,
                                        DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-    score+=get_pair_container(i)->evaluate(s, da);
-  }
-  return score;
+  return template_evaluate(s, da);
+}
+
+double PairContainerSet::evaluate_if_good(const PairScore *s,
+                                               DerivativeAccumulator *da,
+                                               double max) const {
+  return template_evaluate_if_good(s, da, max);
 }
 
 

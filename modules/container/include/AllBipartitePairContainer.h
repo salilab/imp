@@ -37,19 +37,31 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
   AllBipartitePairContainer(SingletonContainer *a,
                                  SingletonContainer *b, bool);
   template <class F>
-    void apply_to_contents(F f) const {
+    void template_apply(F* f) const {
     unsigned int sza=a_->get_number_of_particles();
     unsigned int szb=b_->get_number_of_particles();
     for (unsigned int i=0; i< sza; ++i) {
       Particle *a= a_->get_particle(i);
       for (unsigned int j=0; j< szb; ++j) {
         ParticlePair p(a, b_->get_particle(j));
-        f(p);
+        call_apply(f, p);
       }
     }
   }
   template <class F>
-    double accumulate_over_contents(F f) const {
+    void template_apply(F* f, DerivativeAccumulator &da) const {
+    unsigned int sza=a_->get_number_of_particles();
+    unsigned int szb=b_->get_number_of_particles();
+    for (unsigned int i=0; i< sza; ++i) {
+      Particle *a= a_->get_particle(i);
+      for (unsigned int j=0; j< szb; ++j) {
+        ParticlePair p(a, b_->get_particle(j));
+        call_apply(f, p, da);
+      }
+    }
+  }
+  template <class F>
+    double template_evaluate(F* f, DerivativeAccumulator *da) const {
     double ret=0;
     unsigned int sza=a_->get_number_of_particles();
     unsigned int szb=b_->get_number_of_particles();
@@ -57,7 +69,25 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
       Particle *a= a_->get_particle(i);
       for (unsigned int j=0; j< szb; ++j) {
         ParticlePair p(a, b_->get_particle(j));
-        ret+=f(p);
+        ret+=call_evaluate(f, p, da);
+      }
+    }
+    return ret;
+  }
+  template <class F>
+    double template_evaluate_if_good(F* f, DerivativeAccumulator *da,
+                                     double max) const {
+    double ret=0;
+    unsigned int sza=a_->get_number_of_particles();
+    unsigned int szb=b_->get_number_of_particles();
+    for (unsigned int i=0; i< sza; ++i) {
+      Particle *a= a_->get_particle(i);
+      for (unsigned int j=0; j< szb; ++j) {
+        ParticlePair p(a, b_->get_particle(j));
+        double cur=call_evaluate(f, p, da);
+        ret+=cur;
+        max-=cur;
+        if (max<0) return ret;
       }
     }
     return ret;

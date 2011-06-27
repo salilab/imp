@@ -69,6 +69,10 @@ public:
    */
   double evaluate(bool calc_derivs) const;
 
+
+  //! See Model::evaluate_if_good()
+  double evaluate_if_good(bool calc_derivatives) const;
+
   /** \brief The restraint can override this in order to take action
       when added to a Model
 
@@ -97,6 +101,10 @@ public:
 
 #ifndef IMP_DOXYGEN
   virtual double unprotected_evaluate(DerivativeAccumulator *) const=0;
+  virtual double unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                                              double /*max*/) const {
+    return unprotected_evaluate(da);
+  }
 #endif
 
   /** \name Interactions

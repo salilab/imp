@@ -127,11 +127,13 @@ void QuadContainerSet::apply(const QuadModifier *sm,
 
 double QuadContainerSet::evaluate(const QuadScore *s,
                                        DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-    score+=get_quad_container(i)->evaluate(s, da);
-  }
-  return score;
+  return template_evaluate(s, da);
+}
+
+double QuadContainerSet::evaluate_if_good(const QuadScore *s,
+                                               DerivativeAccumulator *da,
+                                               double max) const {
+  return template_evaluate_if_good(s, da, max);
 }
 
 

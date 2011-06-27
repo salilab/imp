@@ -19,11 +19,11 @@
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
+#include "SingletonScore.h"
+#include "SingletonModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
-class SingletonModifier;
-class SingletonScore;
 
 class SingletonContainer;
 typedef std::pair<SingletonContainer*,
@@ -68,6 +68,46 @@ class IMPEXPORT SingletonContainer : public Container
   SingletonContainer(){}
   SingletonContainer(Model *m,
                      std::string name="SingletonContainer %1%");
+#ifndef IMP_DOXYGEN
+  template <class S>
+    static double call_evaluate(const S *s, Particle* a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(a, da);
+  }
+  static double call_evaluate(const SingletonScore *s, Particle* a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        Particle* a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(a, da, max);
+  }
+  static double call_evaluate_if_good(const SingletonScore *s,
+                                      Particle* a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, Particle* a) {
+    s->S::apply(a);
+  }
+  static void call_apply(SingletonModifier *s, Particle* a) {
+    s->apply(a);
+  }
+  template <class S>
+    static void call_apply(const S *s, Particle* a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(a, da);
+  }
+  static void call_apply(const SingletonModifier *s, Particle* a,
+                           DerivativeAccumulator &da) {
+    s->apply(a, da);
+  }
+#endif
 public:
   typedef Particle* ContainedType;
   /** \note This function may be linear. Be aware of the complexity
@@ -116,6 +156,11 @@ public:
   //! Evaluate a score on the contents
   virtual double evaluate(const SingletonScore *s,
                           DerivativeAccumulator *da) const=0;
+
+  //! Evaluate a score on the contents
+  virtual double evaluate_if_good(const SingletonScore *s,
+                                  DerivativeAccumulator *da,
+                                  double max) const=0;
 
 
   /** \name Tracking changes

@@ -247,20 +247,33 @@ void Model::zero_derivatives() const {
 
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
-                                     bool calc_derivs) const {
+                                     bool calc_derivs,
+                                     bool if_good) {
   IMP_FUNCTION_LOG;
   Floats ret;
+  double remaining=get_maximum_score();
   boost::timer timer;
   const unsigned int rsz=restraints.size();
   for (unsigned int i=0; i< rsz; ++i) {
     double value=0;
     DerivativeAccumulator accum(weights[i]);
     if (gather_statistics_) timer.restart();
-    WRAP_EVALUATE_CALL(restraints[i],
-                       value=
-                       restraints[i]->unprotected_evaluate(calc_derivs?
-                                                           &accum:NULL));
+    if (if_good) {
+      double max=std::min(remaining,
+                          restraints[i]->get_maximum_score());
+      WRAP_EVALUATE_CALL(restraints[i],
+                         value=
+                   restraints[i]->unprotected_evaluate_if_good(calc_derivs?
+                                                              &accum:NULL,
+                                                                   max));
+    } else {
+      WRAP_EVALUATE_CALL(restraints[i],
+                         value=
+                         restraints[i]->unprotected_evaluate(calc_derivs?
+                                                             &accum:NULL));
+    }
     double wvalue= weights[i]*value;
+    remaining-=wvalue;
     IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
               << wvalue << std::endl);
     if (gather_statistics_) {
@@ -271,7 +284,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     }
     ret.push_back(wvalue);
   }
-  if (std::accumulate(ret.begin(), ret.end(), 0.0) > max_score_) {
+  if (remaining<0) {
     has_good_score_=false;
   }
   return ret;
@@ -295,7 +308,8 @@ void Model::validate_computed_derivatives() const {
 Floats Model::do_evaluate(const RestraintsTemp &restraints,
                           const std::vector<double> &weights,
                           const ScoreStatesTemp &states,
-                          bool calc_derivs) {
+                          bool calc_derivs,
+                          bool if_good) {
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
@@ -310,7 +324,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
     zero_derivatives();
   }
   std::vector<double> ret= do_evaluate_restraints(restraints, weights,
-                                  calc_derivs);
+                                                  calc_derivs, if_good);
 
   after_evaluate(states, calc_derivs);
 

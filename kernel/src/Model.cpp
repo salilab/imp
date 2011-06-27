@@ -143,7 +143,7 @@ void Model::update() {
   Floats ret= do_evaluate(RestraintsTemp(),
                           Floats(),
                           ordered_score_states_,
-                          false);
+                          false, true);
 }
 
 void Model::do_show(std::ostream& out) const

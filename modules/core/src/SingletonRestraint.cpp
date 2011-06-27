@@ -39,6 +39,16 @@ double SingletonRestraint
   return ss_->evaluate(v_, accum);
 }
 
+double SingletonRestraint
+::unprotected_evaluate_if_good(DerivativeAccumulator *accum,
+                               double max) const
+{
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(ss_);
+  return ss_->evaluate_if_good(v_, accum, max);
+}
+
+
 
 ParticlesTemp SingletonRestraint::get_input_particles() const
 {

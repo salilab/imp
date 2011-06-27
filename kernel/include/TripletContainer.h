@@ -19,11 +19,11 @@
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
+#include "TripletScore.h"
+#include "TripletModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
-class TripletModifier;
-class TripletScore;
 
 class TripletContainer;
 typedef std::pair<TripletContainer*,
@@ -68,6 +68,46 @@ class IMPEXPORT TripletContainer : public Container
   TripletContainer(){}
   TripletContainer(Model *m,
                      std::string name="TripletContainer %1%");
+#ifndef IMP_DOXYGEN
+  template <class S>
+    static double call_evaluate(const S *s, const ParticleTriplet& a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(a, da);
+  }
+  static double call_evaluate(const TripletScore *s, const ParticleTriplet& a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        const ParticleTriplet& a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(a, da, max);
+  }
+  static double call_evaluate_if_good(const TripletScore *s,
+                                      const ParticleTriplet& a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, const ParticleTriplet& a) {
+    s->S::apply(a);
+  }
+  static void call_apply(TripletModifier *s, const ParticleTriplet& a) {
+    s->apply(a);
+  }
+  template <class S>
+    static void call_apply(const S *s, const ParticleTriplet& a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(a, da);
+  }
+  static void call_apply(const TripletModifier *s, const ParticleTriplet& a,
+                           DerivativeAccumulator &da) {
+    s->apply(a, da);
+  }
+#endif
 public:
   typedef ParticleTriplet ContainedType;
   /** \note This function may be linear. Be aware of the complexity
@@ -116,6 +156,11 @@ public:
   //! Evaluate a score on the contents
   virtual double evaluate(const TripletScore *s,
                           DerivativeAccumulator *da) const=0;
+
+  //! Evaluate a score on the contents
+  virtual double evaluate_if_good(const TripletScore *s,
+                                  DerivativeAccumulator *da,
+                                  double max) const=0;
 
 
   /** \name Tracking changes

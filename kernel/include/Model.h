@@ -121,11 +121,16 @@ private:
   void zero_derivatives() const;
   Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
-                     const ScoreStatesTemp &states, bool calc_derivs);
+                     const ScoreStatesTemp &states, bool calc_derivs,
+                     bool if_good);
   Floats do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
-                                bool calc_derivs) const;
-
+                                bool calc_derivs,
+                                bool if_good);
+  Floats do_external_evaluate(const RestraintsTemp &restraints,
+                              const std::vector<double> &weights,
+                              bool calc_derivs,
+                              bool if_good);
 
 
   // dependencies
@@ -377,7 +382,6 @@ public:
   */
   virtual double evaluate(bool calc_derivs);
 
-#ifndef IMP_DOXYGEN
   //! Evaluate a subset of the restraints
   /** The passed restraints must have been added to this model already
       and must not be RestraintSets.
@@ -392,7 +396,22 @@ public:
   Floats evaluate( RestraintsTemp restraints,
                    std::vector<double> weights,
                    bool calc_derivs);
-#endif
+
+
+  //! Evaluate a subset of the restraints
+  /** In contrast to other evaluate methods,
+      this method is free to shortcut evaluation and return a very
+      large score if the total score at any point exceeds max or if
+      any of the restraints exceed their Restraint::get_maximum().
+
+      See evaluate(RestraintsTemp,std::vector<double>,bool) for more
+      information.
+  */
+  Floats evaluate_if_good( RestraintsTemp restraints,
+                           std::vector<double> weights,
+                           bool calc_derivs);
+
+
 
  //! Sometimes it is useful to be able to make sure the model is up to date
  /** This method updates all the state but does not necessarily compute the

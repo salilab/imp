@@ -1334,6 +1334,23 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  double evaluate_if_good(const ParticlesTemp &ps,                      \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(ps[i], da);                             \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(Particle*ps,                                  \
+                          DerivativeAccumulator *da,                    \
+                          double ) const {                              \
+    return Name::evaluate(ps, da);                                      \
+  }                                                                     \
   IMP_OBJECT(Name)
 
 #else
@@ -1386,6 +1403,23 @@ protected:                                      \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
+  double evaluate_if_good(const ParticlePairsTemp &ps,                  \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(ps[i], da);                             \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticlePair &ps,                       \
+                          DerivativeAccumulator *da,                    \
+                          double ) const {                              \
+    return Name::evaluate(ps, da);                                      \
+  }                                                                     \
   IMP_OBJECT(Name)
 #else
 #define IMP_PAIR_SCORE_BASE(Name)
@@ -1404,6 +1438,45 @@ protected:                                      \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
   IMP_PAIR_SCORE_BASE(Name)
+
+
+//! Declare the functions needed for a complex PairScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::PairScore::evaluate()
+    - IMP::PairScore::get_input_particles()
+    - IMP::PairScore::get_output_particles()
+    - IMP::PairScore::evaluate_if_good
+*/
+#define IMP_COMPLEX_PAIR_SCORE(Name)                                    \
+  ParticlesTemp get_input_particles(Particle *p) const;                 \
+  ContainersTemp get_input_containers(Particle *p) const;               \
+  double evaluate(const ParticlePair &p,                                \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate(const ParticlePairsTemp &ps,                          \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(ps[i], da);                                   \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticlePairsTemp &ps,                  \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate_if_good(ps[i], da, max);                \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticlePair &ps,                       \
+                          DerivativeAccumulator *da,                    \
+                          double ) const;                               \
+  IMP_OBJECT(Name)
+
 
 //! Declare the functions needed for a SingletonScore
 /** In addition to the methods declared and defined by IMP_PAIR_SCORE,
@@ -1434,6 +1507,23 @@ protected:                                      \
       ret+=Name::evaluate(ps[i],da);                                    \
     }                                                                   \
     return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticleTripletsTemp &ps,               \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(ps[i], da);                             \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticleTriplet &ps,                    \
+                          DerivativeAccumulator *da,                    \
+                          double ) const {                              \
+    return Name::evaluate(ps, da);                                      \
   }                                                                     \
   IMP_OBJECT(Name)
 #else
@@ -1493,6 +1583,23 @@ protected:                                      \
       ret+=Name::evaluate(ps[i], da);                                   \
     }                                                                   \
     return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticleQuadsTemp &ps,                  \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(ps[i], da);                             \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(const ParticleQuad &ps,                       \
+                          DerivativeAccumulator *da,                    \
+                          double ) const {                              \
+    return Name::evaluate(ps, da);                                      \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
@@ -1735,21 +1842,6 @@ protected:                                      \
 
 #ifndef IMP_DOXYGEN
 #define IMP_IMPLEMENT_CONTAINER(Name, Tuple, PassValue)                 \
-  template <class SM>                                                   \
-  void template_apply(const SM *sm,                                     \
-                      DerivativeAccumulator &da) {                      \
-    apply_to_contents(boost::bind(static_cast<void (Tuple##Modifier::*) \
-                        (PassValue,DerivativeAccumulator&) const>       \
-                        (&Tuple##Modifier::apply), sm, _1, da));        \
-  }                                                                     \
-  template <class SS>                                                   \
-  double template_evaluate(const SS *s,                                 \
-                           DerivativeAccumulator *da) const {           \
-    return accumulate_over_contents(boost::bind(static_cast<double      \
-                                                (Tuple##Score::*)       \
-                              (PassValue,DerivativeAccumulator*) const> \
-                                (&Tuple##Score::evaluate), s, _1, da)); \
-  }                                                                     \
   void apply(const Tuple##Modifier *sm) {                               \
     template_apply(sm);                                                 \
   }                                                                     \
@@ -1761,11 +1853,9 @@ protected:                                      \
                   DerivativeAccumulator *da) const {                    \
     return template_evaluate(s, da);                                    \
   }                                                                     \
-  template <class SM>                                                   \
-  void template_apply(const SM *sm) {                                   \
-    apply_to_contents(boost::bind(static_cast<void (Tuple##Modifier::*) \
-                        (PassValue) const>(&Tuple##Modifier::apply),    \
-                        sm, _1));                                       \
+  double evaluate_if_good(const Tuple##Score *s,                        \
+                          DerivativeAccumulator *da, double max) const { \
+    return template_evaluate_if_good(s, da, max);                       \
   }                                                                     \
   ParticlesTemp get_contained_particles() const;                        \
   IMP_OBJECT(Name)

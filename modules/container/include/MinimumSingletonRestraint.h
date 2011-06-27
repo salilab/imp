@@ -30,6 +30,8 @@ class IMPCONTAINEREXPORT MinimumSingletonRestraint
   IMP::internal::OwnerPointer<SingletonScore> f_;
   IMP::internal::OwnerPointer<SingletonContainer> c_;
   unsigned int n_;
+  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                                      double max) const;
 public:
   /** n is the number of LCMinimum scores to use.
    */

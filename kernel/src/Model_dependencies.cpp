@@ -547,15 +547,15 @@ double Model::evaluate(bool calc_derivs) {
   Floats ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
                      ordered_score_states_,
-                     calc_derivs);
+                          calc_derivs, false);
   first_call_=false;
   return std::accumulate(ret.begin(), ret.end(), 0.0);
 }
 
-Floats Model::evaluate( RestraintsTemp restraints,
-                        std::vector<double> weights,
-                       bool calc_derivs)
-{
+Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
+                                   const std::vector<double> &weights,
+                                   bool calc_derivs,
+                                   bool if_good) {
   IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
@@ -588,12 +588,26 @@ Floats Model::evaluate( RestraintsTemp restraints,
     }
     }*/
   Floats ret= do_evaluate(restraints, weights,
-                     ss, calc_derivs);
+                          ss, calc_derivs, if_good);
   IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
                      "The number of scores doesn't match the number of"
                      << " restraints: " << ret.size()
                      << " vs " << restraints.size());
   return ret;
+}
+
+Floats Model::evaluate( RestraintsTemp restraints,
+                        std::vector<double> weights,
+                       bool calc_derivs)
+{
+  return do_external_evaluate(restraints, weights, calc_derivs, false);
+}
+
+Floats Model::evaluate_if_good( RestraintsTemp restraints,
+                                std::vector<double> weights,
+                                bool calc_derivs)
+{
+  return do_external_evaluate(restraints, weights, calc_derivs, true);
 }
 
 

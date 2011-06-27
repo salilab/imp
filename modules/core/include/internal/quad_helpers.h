@@ -183,51 +183,42 @@ protected:
   ListLikeQuadContainer(Model *m, std::string name):
     QuadContainer(m,name){
   }
-  template <class F>
-   void apply_to_contents(F f) const {
-#if BOOST_VERSION > 103500
-    std::for_each(data_.begin(), data_.end(), f);
-#else
-    for (unsigned int i=0; i< data_.size(); ++i) {
-      ParticleQuad v= data_[i];
-      f(v);
-    }
-#endif
-  }
-  template <class F>
-    typename F::result_type accumulate_over_contents(F f) const {
-    typename F::result_type ret=0;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-#if BOOST_VERSION > 103500
-      ret+= f(data_[i]);
-#else
-      ParticleQuad v= data_[i];
-      ret+=f(v);
-#endif
-    }
-    return ret;
-  }
  public:
   template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
-     apply_to_contents(boost::bind(static_cast<void (QuadModifier::*)
-                        (const ParticleQuad&,DerivativeAccumulator&) const>
-                        (&QuadModifier::apply), sm, _1, da));
+     for (unsigned int i=0; i< data_.size(); ++i) {
+       call_appky(sm, data_[i], da);
+     }
  }
   template <class SM>
   void template_apply(const SM *sm) {
-    apply_to_contents(boost::bind(static_cast<void (QuadModifier::*)
-                    (const ParticleQuad&) const>(&QuadModifier::apply),
-                        sm, _1));
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      call_apply(sm, data_[i]);
+    }
   }
   template <class SS>
   double template_evaluate(const SS *s,
                            DerivativeAccumulator *da) const {
-    return accumulate_over_contents(boost::bind(static_cast<double
-                                                (QuadScore::*)
-                        (const ParticleQuad&,DerivativeAccumulator*) const>
-                               (&QuadScore::evaluate), s, _1, da));
+    double ret=0;
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      double cur=call_evaluate(s, data_[i], da);
+      ret+=cur;
+    }
+    return ret;
+  }
+  template <class SS>
+  double template_evaluate_if_good(const SS *s,
+                                   DerivativeAccumulator *da,
+                                   double max) const {
+    double ret=0;
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      double cur= call_evaluate_if_good(s, data_[i], da, max);
+      max-=cur;
+      ret+=cur;
+      if (max <0) break;
+    }
+    return ret;
   }
   void apply(const QuadModifier *sm) {
     sm->apply(data_);
@@ -239,6 +230,11 @@ protected:
   double evaluate(const QuadScore *s,
                   DerivativeAccumulator *da) const {
     return s->evaluate(data_, da);
+  }
+  double evaluate_if_good(const QuadScore *s,
+                          DerivativeAccumulator *da,
+                          double max) const {
+    return s->evaluate_if_good(data_, da, max);
   }
   ParticlesTemp get_contained_particles() const;
   QuadContainerPair get_added_and_removed_containers() const;
