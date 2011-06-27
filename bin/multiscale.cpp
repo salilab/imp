@@ -389,6 +389,10 @@ for(int curi=1;curi<niter;++curi){
   double mean_drmsd2=0.0;
   double min_drmsd=10000.0;
   int    min_index;
+  for(int i=0;i<nTMH*(nTMH-1)/2;++i){
+   mean_dist[i]=0.0;
+   mean_dist2[i]=0.0;
+  }
   for(unsigned int i=0;i<ass.size();++i){
    domino::load_particle_states(subs, ass[i], pst);
    double drmsd=0.0;
