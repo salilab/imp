@@ -12,7 +12,7 @@
 #include "log_stream.h"
 #include "../exception.h"
 #include "../FailureHandler.h"
-#include "map.h"
+#include "../compatibility/map.h"
 
 
 
