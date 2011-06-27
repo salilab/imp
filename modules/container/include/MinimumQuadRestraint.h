@@ -30,6 +30,8 @@ class IMPCONTAINEREXPORT MinimumQuadRestraint
   IMP::internal::OwnerPointer<QuadScore> f_;
   IMP::internal::OwnerPointer<QuadContainer> c_;
   unsigned int n_;
+  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                                      double max) const;
 public:
   /** n is the number of LCMinimum scores to use.
    */

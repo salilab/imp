@@ -35,20 +35,39 @@ class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
                                ret[1]=back_->b_;
                              });
   template <class F>
-    void apply_to_contents(F f) const {
+    void template_apply(F* f) const {
     unsigned int szc=get_number_of_particles();
     for (unsigned int i=0; i< szc; ++i) {
       Particle *a= get_particle(i);
-      f(a);
+      call_apply(f, a);
+    }
+  }
+   template <class F>
+     void template_apply(F* f, DerivativeAccumulator &da) const {
+    unsigned int szc=get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= get_particle(i);
+      call_apply(f, a, da);
     }
   }
   template <class F>
-    double accumulate_over_contents(F f) const {
+    double template_evaluate(F* f, DerivativeAccumulator *da) const {
     double ret=0;
     unsigned int szc=get_number_of_particles();
     for (unsigned int i=0; i< szc; ++i) {
       Particle *a= get_particle(i);
-      ret+=f(a);
+      ret+=call_evaluate(f, a, da);
+    }
+    return ret;
+  }
+  template <class F>
+    double template_evaluate_if_good(F* f, DerivativeAccumulator *da,
+                                     double max) const {
+    double ret=0;
+    unsigned int szc=get_number_of_particles();
+    for (unsigned int i=0; i< szc; ++i) {
+      Particle *a= get_particle(i);
+      ret+=call_evaluate_if_good(f, a, da, max);
     }
     return ret;
   }

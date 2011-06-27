@@ -62,6 +62,9 @@ class IMPCONTAINEREXPORT TripletContainerSet
              DerivativeAccumulator &da);
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_if_good(const TripletScore *s,
+                          DerivativeAccumulator *da,
+                          double max) const;
  template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
@@ -81,6 +84,18 @@ class IMPCONTAINEREXPORT TripletContainerSet
     double ret=0;
     for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
       ret+=get_triplet_container(i)->evaluate(s, da);
+    }
+    return ret;
+  }
+  template <class SS>
+    double template_evaluate_if_good(const SS *s,
+                                 DerivativeAccumulator *da, double max) const {
+    double ret=0;
+    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+      double cur=get_triplet_container(i)->evaluate_if_good(s, da, max);
+      ret+=cur;
+      max-=cur;
+      if (max < 0) break;
     }
     return ret;
   }

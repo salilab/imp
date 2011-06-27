@@ -33,30 +33,52 @@ void Restraint::set_model(Model* model)
   if (model) set_was_used(true);
 }
 
+namespace {
+  void fill_restraints_and_weights(RestraintsTemp &restraints,
+                                   std::vector<double> &weights,
+                                   const Restraint *me) {
+    if (dynamic_cast<const RestraintSet*>(me)) {
+      boost::tie(restraints, weights)=
+        get_restraints_and_weights(dynamic_cast<const RestraintSet*>(me));
+    } else {
+      restraints.push_back(const_cast<Restraint*>(me));
+      weights.push_back(restraints.back()->get_weight());
+    }
+    if (restraints.size() >1) {
+      IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
+              << " restraints in set.\n");
+    }
+  }
+  double finish(const Floats &ret,
+              const Restraint *me) {
+    double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
+    IMP_IF_LOG(VERBOSE) {
+      IMP_LOG(VERBOSE, "Score is " << rv << "\n");
+      for (unsigned int i=0; i< ret.size(); ++i) {
+        IMP_LOG(VERBOSE, ret[i] << " for " << me->get_name() << "\n");
+      }
+    }
+    return rv;
+  }
+}
+
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   RestraintsTemp restraints;
   std::vector<double> weights;
-  if (dynamic_cast<const RestraintSet*>(this)) {
-    boost::tie(restraints, weights)=
-      get_restraints_and_weights(dynamic_cast<const RestraintSet*>(this));
-  } else {
-    restraints.push_back(const_cast<Restraint*>(this));
-    weights.push_back(get_weight());
-  }
-  if (restraints.size() >1) {
-    IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
-            << " restraints in set.\n");
-  }
+  fill_restraints_and_weights(restraints, weights, this);
   Floats ret= get_model()->evaluate(restraints, weights, calc_derivs);
-  double rv=std::accumulate(ret.begin(), ret.begin()+ret.size(), 0.0);
-  IMP_IF_LOG(VERBOSE) {
-    IMP_LOG(VERBOSE, "Score is " << rv << "\n");
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      IMP_LOG(VERBOSE, ret[i] << " for " << restraints[i]->get_name() << "\n");
-    }
-  }
-  return rv;
+  return finish(ret, this);
+}
+
+
+double Restraint::evaluate_if_good(bool calc_derivs) const {
+  IMP_OBJECT_LOG;
+  RestraintsTemp restraints;
+  std::vector<double> weights;
+  fill_restraints_and_weights(restraints, weights, this);
+  Floats ret= get_model()->evaluate_if_good(restraints, weights, calc_derivs);
+  return finish(ret, this);
 }
 
 

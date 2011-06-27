@@ -62,6 +62,9 @@ class IMPCONTAINEREXPORT QuadContainerSet
              DerivativeAccumulator &da);
   double evaluate(const QuadScore *s,
                   DerivativeAccumulator *da) const;
+  double evaluate_if_good(const QuadScore *s,
+                          DerivativeAccumulator *da,
+                          double max) const;
  template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
@@ -81,6 +84,18 @@ class IMPCONTAINEREXPORT QuadContainerSet
     double ret=0;
     for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
       ret+=get_quad_container(i)->evaluate(s, da);
+    }
+    return ret;
+  }
+  template <class SS>
+    double template_evaluate_if_good(const SS *s,
+                                 DerivativeAccumulator *da, double max) const {
+    double ret=0;
+    for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+      double cur=get_quad_container(i)->evaluate_if_good(s, da, max);
+      ret+=cur;
+      max-=cur;
+      if (max < 0) break;
     }
     return ret;
   }

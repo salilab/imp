@@ -32,14 +32,28 @@ class IMPEXPORT PairScore : public Object
   PairScore(std::string name="PairScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticlePair& vt,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
 
   /** Implementations
       for these are provided by the IMP_PAIR_SCORE()
       macro.
   */
   virtual double evaluate(const ParticlePairsTemp &o,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate_if_good(const ParticlePair& vt,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
+
+  /** Implementations
+      for these are provided by the IMP_PAIR_SCORE()
+      macro.
+  */
+  virtual double evaluate_if_good(const ParticlePairsTemp &o,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp

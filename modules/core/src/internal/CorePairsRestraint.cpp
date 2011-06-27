@@ -39,6 +39,16 @@ double CorePairsRestraint
   return pc_->evaluate(ss_, accum);
 }
 
+double CorePairsRestraint
+::unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
+  IMP_OBJECT_LOG;
+  IMP_CHECK_OBJECT(ss_);
+  IMP_CHECK_OBJECT(pc_);
+
+  return pc_->evaluate_if_good(ss_, da, max);
+}
+
+
 
 ParticlesTemp CorePairsRestraint::get_input_particles() const
 {

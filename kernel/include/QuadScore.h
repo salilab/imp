@@ -32,14 +32,28 @@ class IMPEXPORT QuadScore : public Object
   QuadScore(std::string name="QuadScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(const ParticleQuad& vt,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
 
   /** Implementations
       for these are provided by the IMP_QUAD_SCORE()
       macro.
   */
   virtual double evaluate(const ParticleQuadsTemp &o,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate_if_good(const ParticleQuad& vt,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
+
+  /** Implementations
+      for these are provided by the IMP_QUAD_SCORE()
+      macro.
+  */
+  virtual double evaluate_if_good(const ParticleQuadsTemp &o,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp

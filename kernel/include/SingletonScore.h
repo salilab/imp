@@ -32,14 +32,28 @@ class IMPEXPORT SingletonScore : public Object
   SingletonScore(std::string name="SingletonScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(Particle* vt,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
 
   /** Implementations
       for these are provided by the IMP_SINGLETON_SCORE()
       macro.
   */
   virtual double evaluate(const ParticlesTemp &o,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate_if_good(Particle* vt,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
+
+  /** Implementations
+      for these are provided by the IMP_SINGLETON_SCORE()
+      macro.
+  */
+  virtual double evaluate_if_good(const ParticlesTemp &o,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp

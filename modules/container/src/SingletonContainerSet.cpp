@@ -127,11 +127,13 @@ void SingletonContainerSet::apply(const SingletonModifier *sm,
 
 double SingletonContainerSet::evaluate(const SingletonScore *s,
                                        DerivativeAccumulator *da) const {
-  double score=0;
-  for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-    score+=get_singleton_container(i)->evaluate(s, da);
-  }
-  return score;
+  return template_evaluate(s, da);
+}
+
+double SingletonContainerSet::evaluate_if_good(const SingletonScore *s,
+                                               DerivativeAccumulator *da,
+                                               double max) const {
+  return template_evaluate_if_good(s, da, max);
 }
 
 

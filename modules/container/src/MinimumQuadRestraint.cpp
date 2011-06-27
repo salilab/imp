@@ -63,6 +63,27 @@ double MinimumQuadRestraint
   return score;
 }
 
+double MinimumQuadRestraint
+::unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                               double max) const {
+  IMP_OBJECT_LOG;
+  QuadMinimumMS bestn
+    = find_minimal_set_QuadMinimum(c_->particle_quads_begin(),
+                                         c_->particle_quads_end(),
+                                         f_.get(), n_);
+
+  double score=0;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    if (da) {
+      f_->evaluate(bestn[i].second, da);
+    }
+    score+= bestn[i].first;
+    if (score > max) break;
+  }
+  IMP_LOG(VERBOSE, "Total score is " << score << std::endl);
+  return score;
+}
+
 Restraints MinimumQuadRestraint
 ::get_instant_decomposition() const {
   IMP_OBJECT_LOG;

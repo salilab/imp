@@ -19,11 +19,11 @@
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
+#include "QuadScore.h"
+#include "QuadModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
-class QuadModifier;
-class QuadScore;
 
 class QuadContainer;
 typedef std::pair<QuadContainer*,
@@ -68,6 +68,46 @@ class IMPEXPORT QuadContainer : public Container
   QuadContainer(){}
   QuadContainer(Model *m,
                      std::string name="QuadContainer %1%");
+#ifndef IMP_DOXYGEN
+  template <class S>
+    static double call_evaluate(const S *s, const ParticleQuad& a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(a, da);
+  }
+  static double call_evaluate(const QuadScore *s, const ParticleQuad& a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        const ParticleQuad& a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(a, da, max);
+  }
+  static double call_evaluate_if_good(const QuadScore *s,
+                                      const ParticleQuad& a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, const ParticleQuad& a) {
+    s->S::apply(a);
+  }
+  static void call_apply(QuadModifier *s, const ParticleQuad& a) {
+    s->apply(a);
+  }
+  template <class S>
+    static void call_apply(const S *s, const ParticleQuad& a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(a, da);
+  }
+  static void call_apply(const QuadModifier *s, const ParticleQuad& a,
+                           DerivativeAccumulator &da) {
+    s->apply(a, da);
+  }
+#endif
 public:
   typedef ParticleQuad ContainedType;
   /** \note This function may be linear. Be aware of the complexity
@@ -116,6 +156,11 @@ public:
   //! Evaluate a score on the contents
   virtual double evaluate(const QuadScore *s,
                           DerivativeAccumulator *da) const=0;
+
+  //! Evaluate a score on the contents
+  virtual double evaluate_if_good(const QuadScore *s,
+                                  DerivativeAccumulator *da,
+                                  double max) const=0;
 
 
   /** \name Tracking changes

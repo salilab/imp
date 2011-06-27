@@ -365,8 +365,7 @@ class TestCase(unittest.TestCase):
             fullname=prefix+"."+name
         else:
             fullname=name
-        old_exceptions=['unprotected_evaluate_subset',
-                        'unprotected_evaluate', "unprotected_incremental_evaluate",
+        old_exceptions=['unprotected_evaluate', "unprotected_evaluate_if_good",
                         "after_evaluate", "before_evaluate", "has_attribute",
                         "decorate_particle","particle_is_instance"]
         if name in old_exceptions:

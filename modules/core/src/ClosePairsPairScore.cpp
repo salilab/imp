@@ -74,12 +74,6 @@ namespace {
       }
       }*/
   }
-  double do_evaluate(const ParticlePairsTemp &ppt,
-                     PairScore *ps,
-                     DerivativeAccumulator *da) {
-    double ret=ps->evaluate(ppt, da);
-    return ret;
-  }
 }
 
 
@@ -96,7 +90,7 @@ double ClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const
 {
   IMP_OBJECT_LOG;
-  return do_evaluate(get_close_pairs(p), f_, da);
+  return f_->evaluate(get_close_pairs(p), da);
 }
 
 
@@ -184,8 +178,16 @@ get_close_pairs(const ParticlePair &p) const {
 double KClosePairsPairScore::evaluate(const ParticlePair &p,
                                      DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  return do_evaluate(get_close_pairs(p), f_, da);
+  return f_->evaluate(get_close_pairs(p), da);
 }
+
+double KClosePairsPairScore::evaluate_if_good(const ParticlePair &p,
+                                              DerivativeAccumulator *da,
+                                              double max) const {
+  IMP_OBJECT_LOG;
+  return f_->evaluate_if_good(get_close_pairs(p), da, max);
+}
+
 namespace {
   ParticlesTemp do_get_input_particles(Particle *p,
                                        Refiner *r,
