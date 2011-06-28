@@ -92,12 +92,19 @@ void KNNData::fill_nearest_neighbors_v(const algebra::VectorKD &g,
     K_neighbor_search search(dynamic_cast<RealRCTree*>(tree_.get())
                              ->tree,
                              d, k, eps);
-  IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
-                     == static_cast<int>(k),
-                     "Got the wrong number of points out from CGAL neighbor"
-                     << " search. Expected " << k
-                     << " got "
-                     << std::distance(search.begin(), search.end()));
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    int nump=std::distance(dynamic_cast<RealRCTree*>(tree_.get())
+                           ->tree.begin(),
+                           dynamic_cast<RealRCTree*>(tree_.get())
+                           ->tree.end());
+    int realk=std::min<int>(nump, k);
+    IMP_INTERNAL_CHECK(std::distance(search.begin(), search.end())
+                       == static_cast<int>(realk),
+                       "Got the wrong number of points out from CGAL neighbor"
+                       << " search. Expected " << realk
+                       << " got "
+                       << std::distance(search.begin(), search.end()));
+  }
   Ints::iterator rit = ret.begin();
   for ( RealRCTree::K_neighbor_search::iterator it = search.begin();
         it != search.end(); ++it) {
