@@ -58,16 +58,8 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
 {
   mutable IMP::internal::OwnerPointer<ClosePairsFinder> cpf_;
-  IMP::internal::OwnerPointer<Refiner> r_;
   ObjectKey k_;
  public:
-#ifndef IMP_DOXYGEN
-  //! Use the default choice for the ClosePairsFinder
-  /** Use rep to generate the list of representation particles. */
-  RigidClosePairsFinder(Refiner *r);
-  RigidClosePairsFinder(ClosePairsFinder *cpf,
-                        Refiner *r);
-#endif
   RigidClosePairsFinder(ClosePairsFinder *cpf=NULL);
 
   ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
@@ -78,17 +70,8 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
     cpf_->set_distance(d);
     ClosePairsFinder::set_distance(d);
   }
-#if 0
-  /** Return a pair of spheres which captures the interaction between the two,
-      typically rigid (but not necessarily) particles. The spheres are the
-      lowest point down the trees which cover all interactions between the
-      two.
-   */
-  std::pair<algebra::Sphere3D, algebra::Sphere3D>
-    get_close_sphere_pair(Particle *a, Particle *b) const;
-#endif
 
-#ifndef IMP_SWIG
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
   internal::MovedSingletonContainer *
     get_moved_singleton_container(SingletonContainer *c,
                                   double thresold) const;

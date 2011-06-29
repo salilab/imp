@@ -23,6 +23,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
     algebra::SphereD<3> s_;
   };
   std::vector<Data> tree_;
+  ParticlesTemp constituents_;
 
   typedef std::vector<unsigned int> SphereIndexes;
   typedef std::vector<SphereIndexes> SpheresSplit;
@@ -31,13 +32,16 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   void set_sphere(unsigned int ni, const algebra::SphereD<3> &s);
   void set_leaf(unsigned int ni, const std::vector<unsigned int> &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
+  void validate_internal(int cur, algebra::Sphere3Ds bounds) const;
  public:
   algebra::SphereD<3> get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
-    return algebra::SphereD<3>(rb_.get_reference_frame()
+    IMP_CHECK_OBJECT(rb_.get_particle());
+    algebra::SphereD<3> ret(rb_.get_reference_frame()
                                .get_global_coordinates(tree_[i]
                                                        .s_.get_center()),
-                             tree_[i].s_.get_radius());
+                            tree_[i].s_.get_radius());
+    return ret;
   }
   bool get_is_leaf(unsigned int ni) const;
   unsigned int get_number_of_particles(unsigned int ni) const;
@@ -45,48 +49,46 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   unsigned int get_child(unsigned int ni, unsigned int i) const;
   Particle* get_particle(unsigned int ni, unsigned int i) const;
   std::vector<algebra::SphereD<3> > get_all_spheres() const;
-  RigidBodyHierarchy(RigidBody rb);
+  RigidBodyHierarchy(RigidBody rb, const ParticlesTemp &constituents);
   std::vector<algebra::SphereD<3> > get_tree() const;
+  bool get_constituents_match( ParticlesTemp ps) const {
+    if (ps.size() != constituents_.size()) return false;
+    std::sort(ps.begin(), ps.end());
+    ParticlesTemp un;
+    std::set_union(ps.begin(), ps.end(),
+                   constituents_.begin(), constituents_.end(),
+                   std::back_inserter(un));
+    return (un.size()==ps.size());
+  }
+  const ParticlesTemp &get_constituents() const {
+    return constituents_;
+  }
   IMP_OBJECT(RigidBodyHierarchy);
   // for testing
   ParticlesTemp get_particles(unsigned int i) const;
+  void validate() const;
 };
 
 IMPCOREEXPORT Particle* closest_particle(const RigidBodyHierarchy *da,
-                              const IMP::compatibility::set<Particle*> &psa,
                                          XYZR pt);
 
 
 IMPCOREEXPORT ParticlePair closest_pair(const RigidBodyHierarchy *da,
-                            const IMP::compatibility::set<Particle*> &psa,
-                                        const RigidBodyHierarchy *db,
-                            const IMP::compatibility::set<Particle*> &psb);
+                                        const RigidBodyHierarchy *db);
 
 IMPCOREEXPORT
 ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
-                              const IMP::compatibility::set<Particle*> &psa,
                               const RigidBodyHierarchy *db,
-                              const IMP::compatibility::set<Particle*> &psb,
                               double dist);
 IMPCOREEXPORT
 ParticlesTemp close_particles(const RigidBodyHierarchy *da,
-                              const IMP::compatibility::set<Particle*> &psa,
                               XYZR pt, double dist);
 
-IMPCOREEXPORT ObjectKey get_rigid_body_hierarchy_key();
 
-inline
+IMPCOREEXPORT
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
-                                             ObjectKey k) {
-  if (rb.get_particle()->has_attribute(k)) {
-    return object_cast<RigidBodyHierarchy>(rb.get_particle()->get_value(k));
-  } else {
-    RigidBodyHierarchy *h= new RigidBodyHierarchy(rb);
-    rb.get_particle()->add_cache_attribute(k, h);
-    add_rigid_body_cache_key(k);
-    return h;
-  }
-}
+                                             const ParticlesTemp &constituents,
+                                             ObjectKey mykey= ObjectKey());
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
