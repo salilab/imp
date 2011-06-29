@@ -67,6 +67,9 @@ public:
   Restraints get_decomposition() const;
 
   Restraints get_instant_decomposition() const;
+
+  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                                      double max) const;
 };
 
 IMPCORE_END_INTERNAL_NAMESPACE

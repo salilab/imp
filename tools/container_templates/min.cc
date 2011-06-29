@@ -63,6 +63,27 @@ double MINORMAXCLASSNAMERestraint
   return score;
 }
 
+double MINORMAXCLASSNAMERestraint
+::unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                               double max) const {
+  IMP_OBJECT_LOG;
+  CLASSNAMEMINORMAXMS bestn
+    = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
+                                         c_->FUNCTIONNAMEs_end(),
+                                         f_.get(), n_);
+
+  double score=0;
+  for (unsigned int i=0; i< bestn.size(); ++i) {
+    if (da) {
+      f_->evaluate(bestn[i].second, da);
+    }
+    score+= bestn[i].first;
+    if (score > max) break;
+  }
+  IMP_LOG(VERBOSE, "Total score is " << score << std::endl);
+  return score;
+}
+
 Restraints MINORMAXCLASSNAMERestraint
 ::get_instant_decomposition() const {
   IMP_OBJECT_LOG;
