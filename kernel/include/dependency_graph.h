@@ -42,12 +42,18 @@ IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
 IMPEXPORT DependencyGraph
 get_dependency_graph(const RestraintsTemp &rs);
 
-/** The pruned dependency graph merges all particles which have the
+/** \name Pruned dependency graphs
+
+    The pruned dependency graph merges all particles which have the
     same dependencies to produce a simpler graph.
+@{
 */
 IMPEXPORT DependencyGraph
-get_pruned_dependency_graph(const RestraintsTemp &rs);
+get_pruned_dependency_graph(Model *m);
 
+IMPEXPORT DependencyGraph
+get_pruned_dependency_graph(const RestraintsTemp &rs);
+/** @} */
 
 /** Get the score states required by the passed restraints.*/
 IMPEXPORT ScoreStatesTemp
