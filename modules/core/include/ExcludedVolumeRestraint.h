@@ -40,14 +40,6 @@ class IMPCOREEXPORT ExcludedVolumeRestraint:
 {
   Pointer<SingletonContainer> sc_;
 public:
-#ifndef IMP_DOXYGEN
-  /** The SingletonContainer contains a set of XYZR particles and RigidBody
-      particles. The spring constant used is k.*/
-  ExcludedVolumeRestraint(SingletonContainer *sc,
-                          Refiner *r,
-                          double k=1);
-#endif
-
   /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The spring constant used is k.*/

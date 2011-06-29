@@ -24,14 +24,9 @@
 IMPCORE_BEGIN_NAMESPACE
 
 namespace {
-  PairContainer* get_close_pairs_container(SingletonContainer *sc,
-                                           Refiner *r) {
+  PairContainer* get_close_pairs_container(SingletonContainer *sc) {
     Pointer<RigidClosePairsFinder> rcpf;
-    if (r) {
-      rcpf= new RigidClosePairsFinder(r);
-    } else {
-      rcpf= new RigidClosePairsFinder();
-    }
+    rcpf= new RigidClosePairsFinder();
     return new internal::CoreClosePairContainer(sc, 0.0, rcpf, 10.0);
   }
   PairScore* get_sphere_distance_pair_score(double k) {
@@ -40,17 +35,9 @@ namespace {
 }
 
 ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
-                                                 Refiner *r,
                                                  double k):
   internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
-                               get_close_pairs_container(sc, r),
-                               "ExcludedVolumeRestraint %d"), sc_(sc){
-}
-
-ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
-                                                 double k):
-  internal::CorePairsRestraint(get_sphere_distance_pair_score(k),
-                               get_close_pairs_container(sc, NULL),
+                               get_close_pairs_container(sc),
                                "ExcludedVolumeRestraint %d"), sc_(sc){
 }
 
