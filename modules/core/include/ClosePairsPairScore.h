@@ -19,7 +19,9 @@
 #include <IMP/Refiner.h>
 
 IMPCORE_BEGIN_NAMESPACE
-/** Apply the score to either the k closest pairs (sphere distance).
+/** Apply the score to either the k closest pairs (sphere distance). The
+    envisioned use case is that the two particles each represent a protein
+    and the refiners return the geometry for that protein.
     \see ClosePairsScoreState
  */
 class IMPCOREEXPORT KClosePairsPairScore : public PairScore
