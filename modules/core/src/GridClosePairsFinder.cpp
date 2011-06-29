@@ -469,14 +469,15 @@ namespace {
       const std::vector<typename Grid::Index> ids
         = get_nearby(gg, gg.get_extended_index(index), half);
       for (unsigned int i=0; i< ids.size(); ++i) {
+        const IDs& ppt= gg[ids[i]];
         IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
-                << ": " << do_show(gg[ids[i]])
-                << " and " << do_show(gg[index])
+                << ": " << do_show(ppt)
+                << " and " << index
                 << " which is " << do_show(qps) << std::endl);
         IMP_INTERNAL_CHECK(!half || ids[i] != index,
                            "Index returned by get nearby");
-        do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
-                                       gg[ids[i]].end(),
+        do_fill_close_pairs_from_lists(ppt.begin(),
+                                       ppt.end(),
                                        qps.begin(), qps.end(),
                                        close, out);
       }
