@@ -19,11 +19,11 @@
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
+#include "CLASSNAMEScore.h"
+#include "CLASSNAMEModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
-class CLASSNAMEModifier;
-class CLASSNAMEScore;
 
 class CLASSNAMEContainer;
 typedef std::pair<CLASSNAMEContainer*,
@@ -68,6 +68,46 @@ class IMPEXPORT CLASSNAMEContainer : public Container
   CLASSNAMEContainer(){}
   CLASSNAMEContainer(Model *m,
                      std::string name="CLASSNAMEContainer %1%");
+#ifndef IMP_DOXYGEN
+  template <class S>
+    static double call_evaluate(const S *s, ARGUMENTTYPE a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(a, da);
+  }
+  static double call_evaluate(const CLASSNAMEScore *s, ARGUMENTTYPE a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        ARGUMENTTYPE a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(a, da, max);
+  }
+  static double call_evaluate_if_good(const CLASSNAMEScore *s,
+                                      ARGUMENTTYPE a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, ARGUMENTTYPE a) {
+    s->S::apply(a);
+  }
+  static void call_apply(CLASSNAMEModifier *s, ARGUMENTTYPE a) {
+    s->apply(a);
+  }
+  template <class S>
+    static void call_apply(const S *s, ARGUMENTTYPE a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(a, da);
+  }
+  static void call_apply(const CLASSNAMEModifier *s, ARGUMENTTYPE a,
+                           DerivativeAccumulator &da) {
+    s->apply(a, da);
+  }
+#endif
 public:
   typedef VARIABLETYPE ContainedType;
   /** \note This function may be linear. Be aware of the complexity
@@ -116,6 +156,11 @@ public:
   //! Evaluate a score on the contents
   virtual double evaluate(const CLASSNAMEScore *s,
                           DerivativeAccumulator *da) const=0;
+
+  //! Evaluate a score on the contents
+  virtual double evaluate_if_good(const CLASSNAMEScore *s,
+                                  DerivativeAccumulator *da,
+                                  double max) const=0;
 
 
   /** \name Tracking changes

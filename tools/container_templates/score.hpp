@@ -32,14 +32,28 @@ class IMPEXPORT CLASSNAMEScore : public Object
   CLASSNAMEScore(std::string name="CLASSNAMEScore %1%");
   //! Compute the score and the derivative if needed.
   virtual double evaluate(ARGUMENTTYPE vt,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
 
   /** Implementations
       for these are provided by the IMP_HEADERNAME_SCORE()
       macro.
   */
   virtual double evaluate(const PLURALVARIABLETYPE &o,
-                          DerivativeAccumulator *da) const = 0;
+                          DerivativeAccumulator *da) const =0;
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate_if_good(ARGUMENTTYPE vt,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
+
+  /** Implementations
+      for these are provided by the IMP_HEADERNAME_SCORE()
+      macro.
+  */
+  virtual double evaluate_if_good(const PLURALVARIABLETYPE &o,
+                                  DerivativeAccumulator *da,
+                                  double max) const =0;
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp

@@ -30,6 +30,8 @@ class IMPCONTAINEREXPORT MINORMAXCLASSNAMERestraint
   IMP::internal::OwnerPointer<CLASSNAMEScore> f_;
   IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
   unsigned int n_;
+  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
+                                      double max) const;
 public:
   /** n is the number of LCMINORMAX scores to use.
    */
