@@ -29,7 +29,8 @@ get_enclosing_sphere(const std::vector<algebra::SphereD<3> > &ss) {
     spheres.push_back(Sphere(Point(ss[i].get_center()[0],
                                    ss[i].get_center()[1],
                                    ss[i].get_center()[2]),
-                             ss[i].get_radius()));
+                             // this really is just radius
+                             (ss[i].get_radius())));
   }
   Min_sphere ms(spheres.begin(), spheres.end());
   algebra::SphereD<3> s(algebra::VectorD<3>(*ms.center_cartesian_begin(),
