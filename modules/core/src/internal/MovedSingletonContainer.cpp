@@ -230,8 +230,15 @@ RigidMovedSingletonContainer
 
 ParticlesTemp RigidMovedSingletonContainer
 ::get_state_input_particles() const {
-  ParticlesTemp ret= MovedSingletonContainer::get_particles();
-  ret.insert(ret.end(), rbs_.begin(), rbs_.end());
+  ParticlesTemp ret
+    = MovedSingletonContainer::get_singleton_container()
+    ->get_particles();
+  int sz= ret.size();
+  for (int i=0; i< sz; ++i) {
+    if (RigidMember::particle_is_instance(ret[i])) {
+      ret.push_back(RigidMember(ret[i]).get_rigid_body());
+    }
+  }
   return ret;
 }
 
