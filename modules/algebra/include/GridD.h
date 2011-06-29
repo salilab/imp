@@ -729,6 +729,8 @@ namespace grids {
         @{
     */
     IMP_BRACKET(VT, GridIndexD<D>, true,
+                IMP_USAGE_CHECK(data_.find(i) != data_.end(),
+                                "Invalid index " << i);
                 return data_.find(i)->second);
     /** @} */
 
