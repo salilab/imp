@@ -82,8 +82,7 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
       rbsp.set(i, rbs[i].get_particle());
     }
     lsc->set_particles(rbsp);
-    IMP_NEW(RigidClosePairsFinder, rcps,
-            (new LeavesRefiner(atom::Hierarchy::get_traits())));
+    IMP_NEW(RigidClosePairsFinder, rcps,());
     cpc= new ClosePairContainer(lsc, 0.0, rcps);
   } else {
     lsc->set_particles(atoms);
