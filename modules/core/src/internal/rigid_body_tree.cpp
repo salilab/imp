@@ -9,7 +9,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/Grid3D.h>
 #include <vector>
-//#include <pq>
+#include <queue>
 #include <typeinfo>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
