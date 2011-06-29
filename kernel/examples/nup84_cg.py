@@ -11,7 +11,7 @@ k=100
 # the representation used should be
 resolution=300
 # the box to perform everything in
-bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
+bb=IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-300,-300,-300),
                              IMP.algebra.Vector3D(300, 300, 300))
 
 IMP.random_number_generator.seed(2025)
@@ -32,7 +32,7 @@ def create_representation():
                                                  k)
         if r:
             m.add_restraint(r)
-            # only allow the particles to penetrate or separate by 1 angstrom
+            # only allow the particles to separate by 1 angstrom
             m.set_maximum_score(r, k)
     create_protein("Nup85", 570)
     ct= IMP.atom.Selection(all, molecule="Nup85", terminus= IMP.atom.Selection.C)
