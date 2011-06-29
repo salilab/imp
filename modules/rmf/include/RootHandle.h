@@ -127,7 +127,7 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   unsigned int get_number_of_bonds() const {
     return shared_->get_number_of_bonds();
   }
-  std::pair<NodeHandle, NodeHandle> get_bond(unsigned int i) const {
+  BondPair get_bond(unsigned int i) const {
     boost::tuple<int,int,int> t= shared_->get_bond(i);
     return std::make_pair(get_node_handle_from_id(t.get<0>()),
                           get_node_handle_from_id(t.get<1>()));
