@@ -333,6 +333,12 @@ get_pruned_dependency_graph(const RestraintsTemp &irs) {
   return full;
 }
 
+DependencyGraph
+get_pruned_dependency_graph(Model *m) {
+  RestraintsTemp rt= get_restraints(m->get_root_restraint_set());
+  return get_pruned_dependency_graph(rt);
+}
+
 
 class ScoreDependencies: public boost::default_dfs_visitor {
   Ints &bs_;
