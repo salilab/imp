@@ -26,6 +26,7 @@ files = [
          'rigid_body_tree.h',
          'singleton_helpers.h',
          'triplet_helpers.h',
+         'grid_close_pairs_impl.h',
          'truncated_harmonic.h',
         ]
 
