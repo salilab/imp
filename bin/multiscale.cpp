@@ -32,6 +32,7 @@ bool   do_statistics;
 bool   do_native;
 bool   do_random;
 std::vector< std::pair<int,int> > TM_inter;
+std::vector< std::pair<int,int> > TM_nointer;
 std::vector< std::pair<int,int> > TM_dist;
 std::vector< double > TM_x0;
 std::vector< double > native;
@@ -48,10 +49,12 @@ Parameters get_parameters(TextInput in){
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- std::vector<std::string> inter,distance,native;
+ std::vector<std::string> inter,nointer,distance,native;
  bool do_plot,do_statistics,do_random;
 
  desc.add_options()("interacting", value< std::vector<std::string> >(),"ciao");
+ desc.add_options()("not_interacting",
+  value< std::vector<std::string> >(),"ciao");
  desc.add_options()("display",     value< bool >(&do_plot),            "ciao");
  desc.add_options()("statistics",  value< bool >(&do_statistics),      "ciao");
  desc.add_options()("random",      value< bool >(&do_random),          "ciao");
@@ -104,6 +107,17 @@ Parameters get_parameters(TextInput in){
   }
  }
 
+if (vm.count("not_interacting")){
+  nointer = vm["not_interacting"].as< std::vector<std::string> >();
+  for(unsigned int i=0;i<nointer.size();++i){
+   std::vector<std::string> strs;
+   boost::split(strs, nointer[i], boost::is_any_of("\t "));
+   int pos1 = atoi(strs[0].c_str());
+   int pos2 = atoi(strs[1].c_str());
+   ret.TM_nointer.push_back(std::pair<int,int> (pos1,pos2));
+  }
+ }
+
  if (vm.count("distance")){
   distance = vm["distance"].as< std::vector<std::string> >();
   for(unsigned int i=0;i<distance.size();++i){
@@ -142,7 +156,7 @@ return ret;
 #endif
 }
 
-core::PairRestraint* add_distance_restraint
+core::PairRestraint* add_up_distance_restraint
  (Model *m, Particle *p0, Particle *p1,
   double x0, std::string name, double max_score)
 {
@@ -155,7 +169,7 @@ core::PairRestraint* add_distance_restraint
  return dr.release();
 }
 
-void add_distance_restraint2
+void add_distance_restraint
  (Model *m, Particle *p0, Particle *p1,
   double x0, double kappa, double max_score)
 {
@@ -165,6 +179,18 @@ void add_distance_restraint2
  m->add_restraint(dr);
  m->set_maximum_score(dr, max_score);
  dr->set_name("DISTANCE");
+}
+
+void add_low_distance_restraint
+ (Model *m, Particle *p0, Particle *p1,
+  double x0, std::string name, double max_score)
+{
+ IMP_NEW(core::HarmonicLowerBound,hub,(x0,1.0));
+ IMP_NEW(core::DistancePairScore,df,(hub));
+ IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(p0, p1)));
+ dr->set_name(name);
+ m->add_restraint(dr);
+ m->set_maximum_score(dr, max_score);
 }
 
 void add_diameter_restraint
@@ -254,6 +280,8 @@ int    stride;
 bool   do_plot=mydata.do_plot;
 bool   do_statistics=mydata.do_statistics;
 std::vector< std::pair<int,int> > TM_inter=mydata.TM_inter;
+std::vector< std::pair<int,int> > TM_nointer=mydata.TM_nointer;
+
 srand ( time(NULL) );
 
 std::cout << "creating representation" << std::endl;
@@ -274,7 +302,7 @@ for(int i=0;i<nTMH-1;++i){
  std::stringstream ss1, ss2;
  ss1 << i;
  ss2 << i+1;
- core::PairRestraint* dr=add_distance_restraint(m,all[i],all[i+1],cm_dist,
+ core::PairRestraint* dr=add_up_distance_restraint(m,all[i],all[i+1],cm_dist,
   "distance TM"+ss1.str()+"-TM"+ss2.str(),max_score_);
  rset->add_restraint(dr);
 }
@@ -285,9 +313,19 @@ for(int i=0;i<TM_inter.size();++i){
  std::string name0=all[i0]->get_name();
  std::string name1=all[i1]->get_name();
  core::PairRestraint* dr=
- add_distance_restraint(m,all[i0],all[i1],inter_dist,
+ add_up_distance_restraint(m,all[i0],all[i1],inter_dist,
   "interaction "+name0+"-"+name1,max_score_);
  rset->add_restraint(dr);
+}
+
+// non interacting helices
+for(int i=0;i<TM_nointer.size();++i){
+ int i0=TM_nointer[i].first;
+ int i1=TM_nointer[i].second;
+ std::string name0=all[i0]->get_name();
+ std::string name1=all[i1]->get_name();
+ add_low_distance_restraint(m,all[i0],all[i1],inter_dist,
+  "non-interaction "+name0+"-"+name1,max_score_);
 }
 
 // diameter
@@ -298,7 +336,7 @@ for(int i=0;i<mydata.TM_dist.size();++i){
  int i0=mydata.TM_dist[i].first;
  int i1=mydata.TM_dist[i].second;
  double x0=mydata.TM_x0[i];
- add_distance_restraint2(m,all[i0],all[i1],x0,1.0,max_score_);
+ add_distance_restraint(m,all[i0],all[i1],x0,1.0,max_score_);
 }
 
 std::cout << "creating states" << std::endl;
@@ -416,6 +454,8 @@ for(int curi=1;curi<niter;++curi){
      core::XYZ p1=core::XYZ(all[i1]);
      core::XYZ p2=core::XYZ(all[i2]);
      double dist=core::get_distance(p1,p2);
+     //if(curi==niter-1)
+     // std::cout << " DIST " << i1 << " " << i2 << " " << dist << std::endl;
      mean_dist[idpair]+=dist;
      mean_dist2[idpair]+=dist*dist;
      if(mydata.do_native) drmsd+=pow(dist-mydata.native[idpair],2);
@@ -428,6 +468,7 @@ for(int curi=1;curi<niter;++curi){
     if(drmsd<min_drmsd){min_drmsd=drmsd; min_index=i;}
    }
   }
+  double ave_sig=0.0;
   for(int i1=0;i1<nTMH-1;++i1){
    for(int i2=i1+1;i2<nTMH;++i2){
     std::string name1=core::XYZR(all[i1])->get_name();
@@ -436,10 +477,13 @@ for(int curi=1;curi<niter;++curi){
     double ave=mean_dist[idpair]/double(ass.size());
     double ave2=mean_dist2[idpair]/double(ass.size());
     double sig=sqrt(ave2-ave*ave);
+    ave_sig+=sig;
     std::cout << name1 << " " << name2 << " " << idpair << " "
               << ave << " " << sig << std::endl;
    }
   }
+  std::cout << "AVERAGE SIGMA " << ave_sig/(nTMH*(nTMH-1)/2.0)
+  << std::endl;
   if(mydata.do_native){
    double ave=mean_drmsd/double(ass.size());
    double ave2=mean_drmsd2/double(ass.size());
