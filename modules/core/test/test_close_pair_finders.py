@@ -10,23 +10,18 @@ class TestCPFL(IMP.test.TestCase):
         IMP.test.TestCase.setUp(self)
         IMP.set_log_level(IMP.TERSE)
 
-    def get_distance(self, rk, p0, p1):
-        r0=0
-        r1=0
-        if IMP.get_particle(p0).has_attribute(rk): r0= IMP.get_particle(p0).get_value(rk)
-        if IMP.get_particle(p1).has_attribute(rk): r1= IMP.get_particle(p1).get_value(rk)
-        d0=IMP.core.XYZ(p0)
-        d1=IMP.core.XYZ(p1)
+    def get_distance(self, p0, p1):
+        d0=IMP.core.XYZR(p0)
+        d1=IMP.core.XYZR(p1)
         d= IMP.core.get_distance(d0, d1)
         #print str(d0.get_x()) + " " + str(d0.get_y()) + " " + str(d0.get_z()) + " " + str(r0)
         #print str(d1.get_x()) + " " + str(d1.get_y()) + " " + str(d1.get_z()) + " " + str(r1)
-        return d-r0-r1
+        return d
     def do_test_periodic_points(self, cpf, bb, num, rmin, rmax):
         #IMP.set_log_level(IMP.SILENT)
         dist= random.uniform(rmin,rmax+1)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_radius_key()
         cpf.set_distance(dist)
         m=IMP.Model()
         ps= self.create_particles_in_box(m, num-2, bb.get_corner(0), bb.get_corner(1))
@@ -35,7 +30,7 @@ class TestCPFL(IMP.test.TestCase):
         for p in ps:
             print IMP.core.XYZ(p).get_coordinates()
         for i in range(0, len(ps)):
-            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
+            IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
         pc= IMP.container.ListSingletonContainer(ps)
         #pc.show()
         out= IMP.container.ListPairContainer(m)
@@ -79,13 +74,12 @@ class TestCPFL(IMP.test.TestCase):
         dist= random.uniform(rmin,rmax)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_radius_key()
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m=IMP.Model()
         ps= self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
-            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
+            IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
         pc= IMP.container.ListSingletonContainer(ps)
         #pc.show()
         out= IMP.container.ListPairContainer(m)
@@ -94,32 +88,30 @@ class TestCPFL(IMP.test.TestCase):
         cps= cpf.get_close_pairs(pc)
         out.set_particle_pairs(IMP.ParticlePairs(cps))
         print "done " + str(out.get_number_of_particle_pairs())
-        self._check_close_pairs(ps, dist, rk, out)
+        self._check_close_pairs(ps, dist, out)
         print "Done with all test "+str(out.get_number_of_particle_pairs())
     def do_test_bi_points(self, cpf, num, rmin, rmax):
         #IMP.set_log_level(IMP.SILENT)
         dist= random.uniform(0,2)
         #cpf.set_distance(dist)
         print 'Distance is ' + str(dist)
-        rk= IMP.core.XYZR.get_radius_key()
         #cpf.set_radius_key(rk)
         cpf.set_distance(dist)
         m=IMP.Model()
         ps= self.create_particles_in_box(m, num)
         for i in range(0, len(ps)):
-            ps[i].add_attribute(rk, random.uniform(rmin, rmax))
+            IMP.core.XYZR.setup_particle(ps[i], random.uniform(rmin, rmax))
         pc= IMP.container.ListSingletonContainer(ps)
         psp= self.create_particles_in_box(m, num)
         for i in range(0, len(psp)):
-            psp[i].add_attribute(rk, random.uniform(rmin, rmax))
+            IMP.core.XYZR.setup_particle(psp[i], random.uniform(rmin, rmax))
         pcp= IMP.container.ListSingletonContainer(psp)
         pc.show()
         out= IMP.container.ListPairContainer(m)
         out.show()
         cps= cpf.get_close_pairs(pc, pcp)
-        out.set_particle_pairs(IMP.ParticlePairs(cps))
         print "done " + str(out.get_number_of_particle_pairs())
-        self._check_biclose_pairs(ps, psp,dist, rk, out)
+        self._check_biclose_pairs(ps, psp,dist, cps)
         print "Done with all test "+str(out.get_number_of_particle_pairs())
 
 
@@ -130,7 +122,7 @@ class TestCPFL(IMP.test.TestCase):
         self.do_test_points(cpf, 100, 1,1)
 
 
-    def _check_close_pairs(self, ps, dist, rk, out):
+    def _check_close_pairs(self, ps, dist, out):
         print "testing results with "
         print " ".join([str((x[0].get_name(), x[1].get_name())) for x in out.get_particle_pairs()])
         found= out.get_particle_pairs()
@@ -139,7 +131,7 @@ class TestCPFL(IMP.test.TestCase):
             self.assertNotEqual(f[0], f[1])
         for i in range(0, len(ps)):
             for j in range(0,i):
-                d= self.get_distance(rk, ps[i], ps[j])
+                d= self.get_distance(ps[i], ps[j])
                 #d=1000
                 if d <= .99*dist:
                     #print "searching for "+str(ps[i].get_name()) + " "\
@@ -152,32 +144,32 @@ class TestCPFL(IMP.test.TestCase):
                                  + " not found " + str(d) + " " + str(dist))
                     print "found pair " +str(ps[i].get_name()) + " " + str(ps[j].get_name())
 
-    def _check_biclose_pairs(self, ps, ps2, dist, rk, out):
+    def _check_biclose_pairs(self, ps, ps2, dist, out):
         for i in range(0, len(ps)):
             for j in range(0,len(ps2)):
                 if ps[i]== ps2[j]: continue
                 #print "testing " + str(ps[i].get_name()) + " " + str(ps2[j].get_name())
-                d= self.get_distance(rk, ps[i], ps2[j])
+                d= self.get_distance(ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
-                                                                                 ps2[j])),
+                    self.assertTrue(IMP.ParticlePair(ps[i],
+                                                     ps2[j]) in out,
                                   "Pair " +str(ps[i]) + " " +str(ps2[j])
                                  + " not found " + str(d) + " " + str(dist))
         print "done with bipartite test"
-    def _check_abiclose_pairs(self, ps, ps2, dist, rk, out):
+    def _check_abiclose_pairs(self, ps, ps2, dist, out):
 
         for i in range(0, len(ps)):
             for j in range(0,len(ps2)):
                 if ps[i]== ps2[j]: continue
                 #print "testing " + str(ps[i].get_name()) + " " + str(ps2[j].get_name())
-                d= self.get_distance(rk, ps[i], ps2[j])
+                d= self.get_distance(ps[i], ps2[j])
                 #print d
                 if d <= .95*dist:
-                    self.assertTrue(out.get_contains_particle_pair(IMP.ParticlePair(ps[i],
-                                                                                 ps2[j]))
-                                 or out.get_contains_particle_pair(IMP.ParticlePair(ps2[j],
-                                                                                 ps[i])),
+                    self.assertTrue((IMP.ParticlePair(ps[i],
+                                                      ps2[j]) in out)
+                                 or (IMP.ParticlePair(ps2[j],
+                                                                                 ps[i]) in out),
                                   "Pair " +str(ps[i].get_name()) + " " +ps2[j].get_name()
                                  + " not found " + str(d) + " " + str(dist))
                     print "found pair " +str(ps[i].get_name()) + " " + str(ps2[j].get_name())
@@ -217,7 +209,8 @@ class TestCPFL(IMP.test.TestCase):
 
     def test_rigid(self):
         "Testing RigidClosePairsFinder"""
-        IMP.set_log_level(IMP.SILENT)
+        IMP.set_log_level(IMP.VERBOSE)
+        IMP.random_number_generator.seed(1)
         dist= random.uniform(0,2)
         nump=100
         #cpf.set_distance(dist)
@@ -239,36 +232,31 @@ class TestCPFL(IMP.test.TestCase):
             else:
                 fps.append(ps[i])
                 free_ps.append(ps[i])
-        rba= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsa))
-        rbb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), IMP.core.XYZs(rbpsb))
+        rba= IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsa)
+        rbb= IMP.core.RigidBody.setup_particle(IMP.Particle(m), rbpsb)
         rba.get_particle().set_name("rba")
         rbb.get_particle().set_name("rbb")
+        print "before", [IMP.core.XYZR(p) for p in rbpsa]
+        m.update()
+        print "after", [IMP.core.XYZR(p) for p in rbpsa]
         fps=fps+rba.get_members()
         fps=fps+rbb.get_members()
-        pc= IMP.container.ListSingletonContainer(fps)
-        pc.show()
-        out= IMP.container.ListPairContainer(m)
-        out.show()
         cpf= IMP.core.RigidClosePairsFinder()
         cpf.set_distance(dist)
-        cps=cpf.get_close_pairs(pc)
-        out.set_particle_pairs(IMP.ParticlePairs(cps))
-        self._check_abiclose_pairs(free_ps, free_ps, dist,
-                                   IMP.core.XYZR.get_radius_key(), out)
-        self._check_abiclose_pairs(free_ps, rbpsa, dist,
-                                   IMP.core.XYZR.get_radius_key(), out)
-        self._check_abiclose_pairs(free_ps, rbpsb, dist,
-                                   IMP.core.XYZR.get_radius_key(), out)
-        self._check_abiclose_pairs(rbpsa, rbpsb, dist,
-                                   IMP.core.XYZR.get_radius_key(), out)
-        print "Done with all test "+str(out.get_number_of_particle_pairs())
+        cps=cpf.get_close_pairs(fps)
+        self._check_abiclose_pairs(free_ps, free_ps, dist, cps)
+        self._check_abiclose_pairs(free_ps, rbpsa, dist, cps)
+        self._check_abiclose_pairs(free_ps, rbpsb, dist, cps)
+        self._check_abiclose_pairs(rbpsa, rbpsb, dist, cps)
+        print "Done with all test "+str(len(cps))
         ps2= self.create_particles_in_box(m, nump)
         rbpsa2= []
         rbpsb2= []
         fps2= []
+        s0= IMP.algebra.Sphere1D(IMP.algebra.Vector1D(.5), .5)
         for i in range(0, len(ps2)):
             ps2[i].add_attribute(IMP.core.XYZR.get_radius_key(),
-                                 random.uniform(0,1))
+                                 IMP.algebra.get_random_vector_in(s0)[0])
             if i%3==0:
                 rbpsa2.append(ps2[i])
             elif i%3==1:
@@ -282,15 +270,11 @@ class TestCPFL(IMP.test.TestCase):
         rba2.get_particle().set_name("rba2")
         rbb2.get_particle().set_name("rbb2")
 
-        pc2= IMP.container.ListSingletonContainer(ps2)
-        out= IMP.container.ListPairContainer(m)
-
-        cps=cpf.get_close_pairs(pc, pc2)
-        out.set_particle_pairs(IMP.ParticlePairs(cps))
-        print "done bipartite " + str(out.get_number_of_particle_pairs())
+        cps=cpf.get_close_pairs(fps, ps2)
+        print "done bipartite " + str(len(cps))
         print ps
         self._check_biclose_pairs(ps, ps2, dist,
-                                  IMP.core.XYZR.get_radius_key(), out)
+                                  cps)
 
 if __name__ == '__main__':
     IMP.test.main()
