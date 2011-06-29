@@ -176,7 +176,8 @@ private:
 
   virtual ~Model();
 public:
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+#if !defined(IMP_DOXYGEN)
+#ifndef SWIG
   Stage get_stage() const {
     return cur_stage_;
   }
@@ -185,9 +186,13 @@ public:
                     "Can only call get_evaluation() during evaluation");
     return eval_count_;
   }
+#endif
   // It is annoying to get the friend call right for VC
   void reset_dependencies();
   ScoreStatesTemp get_score_states(const RestraintsTemp &rs) const;
+  ScoreStatesTemp get_ordered_score_states() const {
+    return ordered_score_states_;
+  }
 #endif
 
   /** Construct an empty model */
