@@ -19,6 +19,7 @@
 #include <IMP/exception.h>
 #include <IMP/RefCounted.h>
 #include <limits>
+#include <boost/utility.hpp>
 
 
 #ifdef SWIG
@@ -248,7 +249,7 @@ typedef herr_t (*HDF5CloseFunction)(hid_t) ;
 /** CloseFunction should be an appropriate close function
     for the handle type, eg H5Aclose.
 */
-class IMPRMFEXPORT HDF5Handle {
+class IMPRMFEXPORT HDF5Handle: public boost::noncopyable {
   hid_t h_;
   HDF5CloseFunction f_;
 public:
@@ -257,7 +258,9 @@ public:
       IMP_THROW("Invalid handle returned", ValueException);
     }
   }
+  HDF5Handle(): h_(-1){}
   hid_t get_hid() const {
+    IMP_USAGE_CHECK(h_>=0, "Uninitialized handle used.");
     return h_;
   }
 #ifndef SWIG
