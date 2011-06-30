@@ -153,6 +153,14 @@ class HDF5DataSet {
     return TypeTraits::read_value_dataset(h_->get_hid(), ids_->get_hid(),
                                            s);
   }
+#if !defined(IMP_DOXYGE) && !defined(SWIG)
+  bool operator==(const HDF5DataSet &o) const {
+    IMP_USAGE_CHECK(dim_==0 || o.dim_==0,
+                    "Can only compare datasets against the default empty one");
+    if (dim_==0 && o.dim_==0) return true;
+    else return false;
+  }
+#endif
   void set_row( Ints ijk,
                const typename TypeTraits::Types& value) {
     ijk.push_back(0);
