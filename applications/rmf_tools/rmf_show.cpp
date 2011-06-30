@@ -9,7 +9,7 @@
 namespace po = boost::program_options;
 
 std::string input, output;
-po::options_description desc("Usage: input_hdf5");
+po::options_description desc("Usage: input.rmf");
 bool help=false;
 bool verbose=false;
 int frame=0;
