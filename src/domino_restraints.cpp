@@ -32,7 +32,7 @@ for(int i=0;i<TM->num;++i){
  add_tilt_restraint(m,rb);
 }
 // multi-body restraints
-add_excluded_volume(m,protein);
+//add_excluded_volume(m,protein);
 if(myparam->add_dope) add_DOPE(m,protein,myparam->score_name);
 if(myparam->add_pack) add_packing_restraint(m,protein,tbr,TM);
 add_diameter_restraint(m,protein,myparam->diameter,TM);
@@ -50,7 +50,7 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
  double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
- core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length);
+ //core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length);
 // COM-COM distance restraint
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
@@ -68,7 +68,8 @@ for(unsigned int i=0;i<TM->inter.size();++i){
  core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
  core::RigidBody rb1=
  core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
- core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr);
+ //core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr);
+ core::PairRestraint* ir=add_distance_restraint(m,rb0,rb1,20.0);
  rset->add_restraint(ir);
 }
 return rset.release();

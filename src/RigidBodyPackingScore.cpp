@@ -133,10 +133,6 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 }
 
 
-bool RigidBodyPackingScore::get_is_changed(const ParticlePair &pp) const {
-  // return whether the score may have changed since last invocation
-  return pp[0]->get_is_changed() || pp[1]->get_is_changed();
-}
 ParticlesTemp RigidBodyPackingScore::get_input_particles(Particle *p) const {
   // return any particles that would be read if p is one of the particles
   // being scored. Don't worry about returning duplicates.

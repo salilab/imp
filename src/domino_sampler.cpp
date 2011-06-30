@@ -114,6 +114,7 @@ filters.push_back(rssft);
 IMP_NEW(domino::BranchAndBoundAssignmentsTable,states,(pst,filters));
 s->set_assignments_table(states);
 s->set_subset_filter_tables(filters);
+//s->set_use_cross_subset_filtering(true);
 return s.release();
 }
 
