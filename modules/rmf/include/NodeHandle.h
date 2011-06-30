@@ -72,6 +72,9 @@ class IMPRMFEXPORT NodeHandle {
   std::string get_name() const {
     return shared_->get_name(node_);
   }
+  void set_name(std::string name) {
+    shared_->set_name(node_, name);
+  }
 #ifdef SWIG
   NodeHandles
 #else
@@ -123,6 +126,10 @@ class IMPRMFEXPORT NodeHandle {
                        << " " << frame);                                \
   }                                                                     \
   bool get_has_value(UCName##Key k, unsigned int frame=0) const {       \
+    IMP_USAGE_CHECK(frame==0                                            \
+                    || frame < shared_->get_number_of_frames(k),        \
+                    "Out of range frame: " << frame << " >= "           \
+                    << shared_->get_number_of_frames(k));               \
     return shared_->get_has_value<UCName##Traits>(node_, k, frame);     \
   }
 
