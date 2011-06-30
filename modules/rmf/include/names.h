@@ -41,20 +41,20 @@ inline std::string get_bond_data_data_set_name() {
   return "bond_data";
 }
 //! Get the name of the attribute which lists all the keys of the category
-template <class TypeTraits>
 inline std::string get_key_list_data_set_name(KeyCategory category_id,
+                                              std::string type_name,
                                                bool per_frame) {
   std::ostringstream oss;
-  oss << TypeTraits::get_name() << "_" << category_id.get_name() << "_"
+  oss << type_name << "_" << category_id.get_name() << "_"
       << get_per_frame_name(per_frame) << "_list";
   return oss.str();
 }
 //! Get the name of the data set for storing a particular type of data
-template <class TypeTraits>
 inline std::string get_data_data_set_name(KeyCategory category_id,
+                                          std::string type_name,
                                           bool per_frame) {
   std::ostringstream oss;
-  oss << TypeTraits::get_name() << "_" << category_id.get_name() << "_"
+  oss << type_name << "_" << category_id.get_name() << "_"
       << get_per_frame_name(per_frame) << "_storage";
   return oss.str();
 }
