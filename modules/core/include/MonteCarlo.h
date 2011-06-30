@@ -61,6 +61,11 @@ public:
     return temp_;
   }
   /** @} */
+  /** Return the energy of last accepted state.
+   */
+  double get_last_accepted_energy() const {
+    return last_energy_;
+  }
 
   //! Set the probability of each move being made
   /** Make this low if the space is rough and there are many particles.
@@ -106,6 +111,12 @@ public:
   void do_move(double probability);
   //! a class that inherits from this should override this method
   virtual void do_step();
+  //! Get the current energy
+  /** By default it just calls Optimizer::evaluate()
+   */
+  virtual double do_evaluate() const {
+    return evaluate(false);
+  }
 private:
   double temp_;
   double last_energy_;
