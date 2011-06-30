@@ -58,23 +58,6 @@ inline std::string get_data_data_set_name(KeyCategory category_id,
       << get_per_frame_name(per_frame) << "_storage";
   return oss.str();
 }
-
-//! Get the name of the data set for storing the index of per frame data
-template <class TypeTraits>
-inline std::string get_dynamic_index_attribute_name(KeyCategory category_id) {
-  std::ostringstream oss;
-  oss << TypeTraits::get_name() << "_" << category_id.get_name() << "_"
-      << "index";
-  return oss.str();
-}
-//! Get the name of the data set for storign the non-per frame data
-template <class TypeTraits>
-inline std::string get_static_storage_attribute_name(KeyCategory category_id) {
-  std::ostringstream oss;
-  oss << TypeTraits::get_name() << "_" << category_id.get_name() << "_"
-      << "storage";
-  return oss.str();
-}
 /** @} */
 
 IMPRMF_END_NAMESPACE

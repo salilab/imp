@@ -67,8 +67,10 @@ class IMPRMFEXPORT SharedData: public RefCounted {
       HDF5DataSet<Traits> ds;
       if (file_.get_has_child(name)) {
         ds= file_.get_child_data_set<Traits>(name);
-      } else {
+      } else if (dims >0) {
         ds= file_.add_child_data_set<Traits>(name, dims);
+      } else {
+        return HDF5DataSet<Traits>();
       }
       cache[name]=ds;
       return ds;
@@ -77,30 +79,49 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     }
   }
 
-  HDF5DataSet<IntTraits> get_data_set(IntTraits,
+  HDF5DataSet<IntTraits> get_data_set_i(IntTraits,
                                       std::string name, int dims) const {
     return generic_get_data_set(int_data_sets_, name, dims);
   }
-  HDF5DataSet<FloatTraits> get_data_set(FloatTraits,
+  HDF5DataSet<FloatTraits> get_data_set_i(FloatTraits,
                                         std::string name, int dims) const {
     return generic_get_data_set(float_data_sets_, name, dims);
   }
-  HDF5DataSet<StringTraits> get_data_set(StringTraits,
+  HDF5DataSet<StringTraits> get_data_set_i(StringTraits,
                                          std::string name, int dims) const {
     return generic_get_data_set(string_data_sets_, name, dims);
   }
-  HDF5DataSet<IndexTraits> get_data_set(IndexTraits,
+  HDF5DataSet<IndexTraits> get_data_set_i(IndexTraits,
                                         std::string name, int dims) const {
     return generic_get_data_set(index_data_sets_, name, dims);
   }
-  HDF5DataSet<NodeIDTraits> get_data_set(NodeIDTraits,
+  HDF5DataSet<NodeIDTraits> get_data_set_i(NodeIDTraits,
                                         std::string name, int dims) const {
     return generic_get_data_set(node_id_data_sets_, name, dims);
   }
-  HDF5DataSet<DataSetTraits> get_data_set(DataSetTraits,
+  HDF5DataSet<DataSetTraits> get_data_set_i(DataSetTraits,
                                           std::string name, int dims) const {
     return generic_get_data_set(data_set_data_sets_, name, dims);
   }
+
+  template <class TypeTraits>
+    HDF5DataSet<StringTraits> get_key_list_data_set(KeyCategory kc,
+                                                    bool per_frame,
+                                          bool create_if_needed) const {
+    std::string nm= get_key_list_data_set_name<TypeTraits>(kc,
+                                                           per_frame);
+    return get_data_set_i(StringTraits(), nm, create_if_needed?1:0);
+  }
+
+  template <class TypeTraits>
+    HDF5DataSet<TypeTraits> get_data_data_set(KeyCategory kc,
+                                              bool per_frame,
+                                              bool create_if_needed) const {
+    std::string nm=get_data_data_set_name<TypeTraits>(kc,
+                                                      per_frame);
+    return get_data_set_i(TypeTraits(), nm, create_if_needed?(per_frame?3:2):0);
+  }
+
 
   enum Indexes {TYPE=0, CHILD=1, SIBLING=2, FIRST_KEY=3};
   typedef std::vector<int> Ind;
@@ -186,22 +207,18 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     if (IndexTraits::get_is_null_value(vi)) {
       return TypeTraits::get_null_value();
     } else {
-      std::string nm= get_data_data_set_name<TypeTraits>(k.get_category(),
-                                                         per_frame);
-      if (!get_has_data_set(nm)) {
+      HDF5DataSet<TypeTraits> ds
+        = get_data_data_set<TypeTraits>(k.get_category(),
+                                        per_frame, false);
+      if (ds==HDF5DataSet<TypeTraits>()) return TypeTraits::get_null_value();
+      Ints sz= ds.get_size();
+      if (vi >= sz[0] || k.get_index() >= sz[1]
+          || (per_frame && frame >= static_cast<unsigned int>(sz[2]))) {
         return TypeTraits::get_null_value();
+      } else if (per_frame){
+        return ds.get_value(make_index(vi, k.get_index(), frame));
       } else {
-        HDF5DataSet<TypeTraits> ds= get_data_set(TypeTraits(),
-                                                 nm, (per_frame?3:2));
-        Ints sz= ds.get_size();
-        if (vi >= sz[0] || k.get_index() >= sz[1]
-            || (per_frame && frame >= static_cast<unsigned int>(sz[2]))) {
-          return TypeTraits::get_null_value();
-        } else if (per_frame){
-          return ds.get_value(make_index(vi, k.get_index(), frame));
-        } else {
-          return ds.get_value(make_index(vi, k.get_index()));
-        }
+        return ds.get_value(make_index(vi, k.get_index()));
       }
     }
   }
@@ -272,7 +289,10 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     if (!get_is_per_frame(k)) return 0;
     else {
       std::string nm=get_data_data_set_name<TypeTraits>(k.get_category(), true);
-      HDF5DataSet<TypeTraits> ds=get_data_set(TypeTraits(), nm, 3);
+      HDF5DataSet<TypeTraits> ds
+        =get_data_data_set<TypeTraits>(k.get_category(), true,
+                                       false);
+      if (ds== HDF5DataSet<TypeTraits>()) return 0;
       Ints sz= ds.get_size();
       return sz[2];
     }
@@ -303,8 +323,6 @@ class IMPRMFEXPORT SharedData: public RefCounted {
                    typename TypeTraits::Type v, unsigned int frame) {
     bool per_frame= get_is_per_frame(k);
     int vi=IndexTraits::get_null_value();
-    std::string nm=get_data_data_set_name<TypeTraits>(k.get_category(),
-                                                      per_frame);
     if (static_cast<int>(node)== last_node_ && k.get_category()
         == last_category_) {
       vi= last_vi_;
@@ -333,7 +351,8 @@ class IMPRMFEXPORT SharedData: public RefCounted {
       }
       last_vi_=vi;
     }
-    HDF5DataSet<TypeTraits> ds=get_data_set(TypeTraits(), nm, (per_frame?3:2));
+    HDF5DataSet<TypeTraits> ds
+      =get_data_data_set<TypeTraits>(k.get_category(), per_frame, true);
     Ints sz= ds.get_size();
     bool delta=false;
     if (sz[0] <= static_cast<int>(vi)) {
@@ -367,9 +386,9 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     // check that it is unique
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
-                                                              per_frame);
-      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      HDF5DataSet<StringTraits> nameds
+        = get_key_list_data_set<TypeTraits>(category_id,
+                                            per_frame, true);
       unsigned int sz= nameds.get_size()[0];
       Ints index(1);
       for (unsigned int i=0; i< sz; ++i) {
@@ -379,9 +398,10 @@ class IMPRMFEXPORT SharedData: public RefCounted {
                         << " already taken for that type.");
       }
     }
-    std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
-                                                            per_frame);
-    HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+    HDF5DataSet<StringTraits> nameds
+      = get_key_list_data_set<TypeTraits>(category_id,
+                                          per_frame,
+                                          true);
     Ints sz= nameds.get_size();
     int ret_index= sz[0];
     ++sz[0];
@@ -396,9 +416,10 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     std::vector<Key<TypeTraits> > ret;
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
-                                                              per_frame);
-      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      HDF5DataSet<StringTraits> nameds
+        = get_key_list_data_set<TypeTraits>(category_id,
+                                            per_frame, false);
+      if (nameds==HDF5DataSet<StringTraits>()) continue;
       Ints sz= nameds.get_size();
       for (int j=0; j< sz[0]; ++j) {
         ret.push_back(Key<TypeTraits>(category_id, j, per_frame));
@@ -408,10 +429,13 @@ class IMPRMFEXPORT SharedData: public RefCounted {
   }
   template <class TypeTraits>
   std::string get_name(Key<TypeTraits> k) {
-    std::string nm
-      =get_key_list_data_set_name<TypeTraits>(k.get_category(),
-                                               k.get_is_per_frame());
-    HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+    HDF5DataSet<StringTraits> nameds
+      = get_key_list_data_set<TypeTraits>(k.get_category(),
+                              k.get_is_per_frame(),
+                              false);
+    if (nameds==HDF5DataSet<StringTraits>()) {
+      IMP_THROW("No keys of the desired category found", ValueException);
+    }
     Ints index(1, k.get_index());
     return nameds.get_value(index);
   }
@@ -420,9 +444,12 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     Key<TypeTraits> get_key(KeyCategory category_id, std::string name) {
     for (unsigned int i=0; i< 2; ++i) {
       bool per_frame=(i==0);
-      std::string nm= get_key_list_data_set_name<TypeTraits>(category_id,
-                                                              per_frame);
-      HDF5DataSet<StringTraits> nameds= get_data_set(StringTraits(), nm, 1);
+      HDF5DataSet<StringTraits> nameds
+        = get_key_list_data_set<TypeTraits>(category_id, per_frame,
+                                                              false);
+      if (nameds==HDF5DataSet<StringTraits>()) {
+        return Key<TypeTraits>();
+      }
       Ints size= nameds.get_size();
       for (int j=0; j< size[0]; ++j) {
         Ints index(1,j);
