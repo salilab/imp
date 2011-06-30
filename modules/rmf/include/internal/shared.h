@@ -145,19 +145,6 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     return k.get_index()+FIRST_KEY;
   }
   void check_node(unsigned int node) const;
-
-
-  bool get_has_data_set(std::string name) const {
-    if (known_data_sets_.find(name) != known_data_sets_.end()) {
-      return true;
-    } else {
-      bool ret= file_.get_has_child(name);
-      if (ret) {
-        known_data_sets_.insert(name);
-      }
-      return ret;
-    }
-  }
   void audit_key_name(std::string name) const;
   void audit_node_name(std::string name) const;
   unsigned int get_column_maximum(KeyCategory cat) const {
