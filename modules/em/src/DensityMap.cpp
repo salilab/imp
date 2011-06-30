@@ -596,7 +596,15 @@ void DensityMap::multiply(float factor) {
     data_[i]= factor*data_[i];
   }
 }
-
+double get_sum(const DensityMap *m1) {
+  long size = m1->get_header()->get_number_of_voxels();
+  emreal *data = m1->get_data();
+  double sum_all=0.;
+  for (long i=0;i<size;i++){
+    sum_all+=data[i];
+  }
+  return sum_all;
+}
 void DensityMap::add(const DensityMap *other) {
   //check that the two maps have the same dimensions
   IMP_USAGE_CHECK(same_voxel_size(other),
@@ -1160,6 +1168,12 @@ int DensityMap::get_dim_index_by_location(const algebra::VectorD<3> &v,
   return get_dim_index_by_location(v[ind],ind);
 }
 
+
+DensityMap* get_segment(DensityMap *map_to_segment,
+                        DensityMap *mask,
+                        float mas_threshold) {
+}
+
 IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
                                     int nx_start,int nx_end,
                                     int ny_start,int ny_end,
@@ -1317,7 +1331,16 @@ DensityMap* get_max_map(DensityMaps maps){
       }}}
   return max_map.release();
 }
-
+DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
+                        DensityMap *mask,
+                        float mask_threshold) {
+  const DensityHeader *header=map_to_segment->get_header();
+  DensityMap *bin_map= binarize(mask,mask_threshold);
+  //clean isotlated zeros - to that with conn_comp
+  DensityMap *ret =  multiply(map_to_segment,bin_map);
+  std::cout<<"ret:"<<ret->get_min_value()<<","<<ret->get_max_value()<<std::endl;
+  return ret;
+}
 //! Get a segment of the map covered by the input points
 DensityMap* get_segment(DensityMap *map_to_segment,
                         algebra::Vector3Ds vecs,float radius) {

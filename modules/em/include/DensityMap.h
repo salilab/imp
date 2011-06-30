@@ -624,6 +624,10 @@ IMPEMEXPORT DensityMap* get_segment(DensityMap *map_to_segment,
 //! Get a segment of the map covered by the input points
 IMPEMEXPORT DensityMap* get_segment(DensityMap *map_to_segment,
                                     algebra::Vector3Ds vecs,float dist);
+//! Get a segment of the map covered by another map
+IMPEMEXPORT DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
+                                    DensityMap *mask,
+                                    float mas_threshold);
 
 //! Return a map with 0 for all voxels below the
 //! threshold and 1 for thoes above
@@ -642,6 +646,8 @@ IMPEMEXPORT DensityMap* multiply(const DensityMap *m1,
 //! Return a convolution between density maps m1 and m2.
 //! The function assumes m1 and m2 are of the same dimensions.
 IMPEMEXPORT double convolute(const DensityMap *m1,const DensityMap *m2);
+//! Return the sum of all voxels
+IMPEMEXPORT double get_sum(const DensityMap *m1);
 //!Return a density map for which each voxel is the maximum value from
 //!the input densities.
 /**
