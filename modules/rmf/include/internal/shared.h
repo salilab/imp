@@ -42,8 +42,9 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     typedef HDF5DataSet<TypeTraits> DS;
     typedef typename std::pair<DS, DS > Pair;
     mutable typename std::vector<Pair > cache_;
+    mutable HDF5DataSet<TypeTraits> null_;
  public:
-    HDF5DataSet<TypeTraits> get(HDF5Group file,
+    HDF5DataSet<TypeTraits>& get(HDF5Group file,
                                 KeyCategory kc,
                                 bool per_frame,
                                 bool create_if_needed) const {
@@ -52,10 +53,10 @@ class IMPRMFEXPORT SharedData: public RefCounted {
         found=false;
       } else if (per_frame
                  && cache_[kc.get_index()].first
-                 ==HDF5DataSet<TypeTraits>()
+                 ==null_
                  || !per_frame
                  && cache_[kc.get_index()].second
-                 ==HDF5DataSet<TypeTraits>()) {
+                 ==null_) {
         found=false;
       }
       if (!found) {
@@ -64,7 +65,7 @@ class IMPRMFEXPORT SharedData: public RefCounted {
                                                 per_frame);
         if (!file.get_has_child(nm)) {
           if (!create_if_needed) {
-            return HDF5DataSet<TypeTraits>();
+            return null_;
           } else {
             HDF5DataSet<TypeTraits> ds
               = file.add_child_data_set<TypeTraits>(nm, per_frame?3:2);
@@ -92,8 +93,9 @@ class KeyNameDataSetCache {
   typedef HDF5DataSet<StringTraits> DS;
   typedef std::pair<DS, DS> Pair;
   mutable std::vector<std::vector< Pair > > cache_;
+  mutable HDF5DataSet<StringTraits> null_;
 public:
-  HDF5DataSet<StringTraits> get(HDF5Group file,
+  HDF5DataSet<StringTraits>& get(HDF5Group file,
                                 KeyCategory kc,
                                 unsigned int type_index,
                                 std::string type_name,
@@ -106,10 +108,10 @@ public:
       found=false;
     } else if (per_frame
                && cache_[kc.get_index()][type_index].first
-               ==HDF5DataSet<StringTraits>()
+               ==null_
                || !per_frame
                && cache_[kc.get_index()][type_index].second
-               ==HDF5DataSet<StringTraits>()) {
+               ==null_) {
       found=false;
     }
     if (!found) {
@@ -118,7 +120,7 @@ public:
                                                    per_frame);
       if (!file.get_has_child(nm)) {
         if (!create_if_needed) {
-          return HDF5DataSet<StringTraits>();
+          return null_;
         } else {
           HDF5DataSet<StringTraits> ds
             = file.add_child_data_set<StringTraits>(nm, 1);
@@ -156,37 +158,37 @@ DataDataSetCache<NodeIDTraits> node_data_sets_;
 DataDataSetCache<DataSetTraits> set_data_sets_;
 KeyNameDataSetCache key_name_data_sets_;
 
-HDF5DataSet<IntTraits> get_data_set_i(IntTraits,
+HDF5DataSet<IntTraits>& get_data_set_i(IntTraits,
                                       KeyCategory kc,
                                       bool per_frame,
                                       bool create_if_needed) const {
   return int_data_sets_.get(file_, kc, per_frame, create_if_needed);
 }
-HDF5DataSet<FloatTraits> get_data_set_i(FloatTraits,
+HDF5DataSet<FloatTraits>& get_data_set_i(FloatTraits,
                                         KeyCategory kc,
                                         bool per_frame,
                                         bool create_if_needed) const {
   return float_data_sets_.get(file_, kc, per_frame, create_if_needed);
 }
-HDF5DataSet<StringTraits> get_data_set_i(StringTraits,
+HDF5DataSet<StringTraits>& get_data_set_i(StringTraits,
                                          KeyCategory kc,
                                          bool per_frame,
                                          bool create_if_needed) const {
   return string_data_sets_.get(file_, kc, per_frame, create_if_needed);
 }
-HDF5DataSet<IndexTraits> get_data_set_i(IndexTraits,
+HDF5DataSet<IndexTraits>& get_data_set_i(IndexTraits,
                                         KeyCategory kc,
                                         bool per_frame,
                                         bool create_if_needed) const {
   return index_data_sets_.get(file_, kc, per_frame, create_if_needed);
 }
-HDF5DataSet<NodeIDTraits> get_data_set_i(NodeIDTraits,
+HDF5DataSet<NodeIDTraits>& get_data_set_i(NodeIDTraits,
                                          KeyCategory kc,
                                          bool per_frame,
                                          bool create_if_needed) const {
   return node_data_sets_.get(file_, kc, per_frame, create_if_needed);
 }
-HDF5DataSet<DataSetTraits> get_data_set_i(DataSetTraits,
+HDF5DataSet<DataSetTraits>& get_data_set_i(DataSetTraits,
                                           KeyCategory kc,
                                           bool per_frame,
                                           bool create_if_needed) const {
@@ -194,7 +196,7 @@ HDF5DataSet<DataSetTraits> get_data_set_i(DataSetTraits,
 }
 
 template <class TypeTraits>
-HDF5DataSet<StringTraits> get_key_list_data_set(KeyCategory kc,
+HDF5DataSet<StringTraits>& get_key_list_data_set(KeyCategory kc,
                                                 bool per_frame,
                                                 bool create_if_needed) const {
   return key_name_data_sets_.get(file_, kc, TypeTraits::get_index(),
@@ -203,7 +205,7 @@ HDF5DataSet<StringTraits> get_key_list_data_set(KeyCategory kc,
 }
 
 template <class TypeTraits>
-HDF5DataSet<TypeTraits> get_data_data_set(KeyCategory kc,
+HDF5DataSet<TypeTraits>& get_data_data_set(KeyCategory kc,
                                           bool per_frame,
                                           bool create_if_needed) const {
   return get_data_set_i(TypeTraits(), kc, per_frame, create_if_needed);
@@ -281,10 +283,10 @@ typename TypeTraits::Type get_value_always(unsigned int node,
   if (IndexTraits::get_is_null_value(vi)) {
     return TypeTraits::get_null_value();
   } else {
-    HDF5DataSet<TypeTraits> ds
+    HDF5DataSet<TypeTraits> &ds
       = get_data_data_set<TypeTraits>(k.get_category(),
                                       per_frame, false);
-    if (ds==HDF5DataSet<TypeTraits>()) return TypeTraits::get_null_value();
+    if (!ds) return TypeTraits::get_null_value();
     Ints sz= ds.get_size();
     if (vi >= sz[0] || k.get_index() >= sz[1]
         || (per_frame && frame >= static_cast<unsigned int>(sz[2]))) {
@@ -362,10 +364,10 @@ template <class TypeTraits>
 unsigned int get_number_of_frames(Key<TypeTraits> k) const {
   if (!get_is_per_frame(k)) return 0;
   else {
-    HDF5DataSet<TypeTraits> ds
+    HDF5DataSet<TypeTraits> &ds
       =get_data_data_set<TypeTraits>(k.get_category(), true,
                                      false);
-    if (ds== HDF5DataSet<TypeTraits>()) return 0;
+    if (!ds) return 0;
     Ints sz= ds.get_size();
     return sz[2];
   }
@@ -424,7 +426,7 @@ void set_value(unsigned int node, Key<TypeTraits> k,
     }
     last_vi_=vi;
   }
-  HDF5DataSet<TypeTraits> ds
+  HDF5DataSet<TypeTraits> &ds
     =get_data_data_set<TypeTraits>(k.get_category(), per_frame, true);
   Ints sz= ds.get_size();
   bool delta=false;
@@ -459,7 +461,7 @@ Key<TypeTraits> add_key(KeyCategory category_id,
   // check that it is unique
   for (unsigned int i=0; i< 2; ++i) {
     bool per_frame=(i==0);
-    HDF5DataSet<StringTraits> nameds
+    HDF5DataSet<StringTraits> &nameds
       = get_key_list_data_set<TypeTraits>(category_id,
                                           per_frame, true);
     unsigned int sz= nameds.get_size()[0];
@@ -471,7 +473,7 @@ Key<TypeTraits> add_key(KeyCategory category_id,
                       << " already taken for that type.");
     }
   }
-  HDF5DataSet<StringTraits> nameds
+  HDF5DataSet<StringTraits>& nameds
     = get_key_list_data_set<TypeTraits>(category_id,
                                         per_frame,
                                         true);
@@ -489,10 +491,10 @@ std::vector<Key<TypeTraits> > get_keys(KeyCategory category_id) const {
   std::vector<Key<TypeTraits> > ret;
   for (unsigned int i=0; i< 2; ++i) {
     bool per_frame=(i==0);
-    HDF5DataSet<StringTraits> nameds
+    HDF5DataSet<StringTraits>& nameds
       = get_key_list_data_set<TypeTraits>(category_id,
                                           per_frame, false);
-    if (nameds==HDF5DataSet<StringTraits>()) continue;
+    if (!nameds) continue;
     Ints sz= nameds.get_size();
     for (int j=0; j< sz[0]; ++j) {
       ret.push_back(Key<TypeTraits>(category_id, j, per_frame));
@@ -502,11 +504,11 @@ std::vector<Key<TypeTraits> > get_keys(KeyCategory category_id) const {
 }
 template <class TypeTraits>
 std::string get_name(Key<TypeTraits> k) {
-  HDF5DataSet<StringTraits> nameds
+  HDF5DataSet<StringTraits>& nameds
     = get_key_list_data_set<TypeTraits>(k.get_category(),
                                         k.get_is_per_frame(),
                                         false);
-  if (nameds==HDF5DataSet<StringTraits>()) {
+  if (!nameds) {
     IMP_THROW("No keys of the desired category found", ValueException);
   }
   Ints index(1, k.get_index());
@@ -517,10 +519,10 @@ template <class TypeTraits>
 Key<TypeTraits> get_key(KeyCategory category_id, std::string name) {
   for (unsigned int i=0; i< 2; ++i) {
     bool per_frame=(i==0);
-    HDF5DataSet<StringTraits> nameds
+    HDF5DataSet<StringTraits>& nameds
       = get_key_list_data_set<TypeTraits>(category_id, per_frame,
                                           false);
-    if (nameds==HDF5DataSet<StringTraits>()) {
+    if (!nameds) {
       return Key<TypeTraits>();
     }
     Ints size= nameds.get_size();

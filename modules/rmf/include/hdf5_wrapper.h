@@ -16,6 +16,7 @@
 #include <boost/filesystem/operations.hpp>
 #include <algorithm>
 #include <IMP/Pointer.h>
+#include <boost/shared_array.hpp>
 
 
 IMPRMF_BEGIN_NAMESPACE
@@ -25,22 +26,42 @@ class HDF5Group;
 template <class TypeTraits>
 class HDF5DataSet {
   static const int max_dims=3;
-  Pointer<HDF5SharedHandle> h_;
-  Pointer<HDF5SharedHandle> ids_;
-  mutable Pointer<HDF5SharedHandle> rds_;
-  unsigned int dim_;
+  struct Data: public RefCounted {
+    HDF5Handle h_;
+    HDF5Handle ids_;
+    HDF5Handle rds_;
+    HDF5Handle sel_;
+    hsize_t ones_[max_dims];
+    mutable hsize_t pos_[max_dims];
+    unsigned int dim_;
+  };
+  Pointer<Data> data_;
   bool get_is_null_value(const Ints &ijk) const {
     return TypeTraits::get_is_null_value(get_value(ijk));
   }
   const HDF5Handle& get_row_data_space() const {
-    if (!rds_) {
-      hsize_t dim= get_size().back();
-      rds_=new HDF5SharedHandle(H5Screate_simple(1, &dim, NULL), &H5Sclose);
-    }
-    return *rds_;
+    return data_->rds_;
+  }
+  const HDF5Handle& get_data_space() const {
+    return data_->sel_;
+  }
+  void initialize_handles() {
+    data_->sel_.open(H5Dget_space(data_->h_.get_hid()), &H5Sclose);
+    // must be second
+    hsize_t dim= get_size().back();
+    data_->rds_.open(H5Screate_simple(1, &dim, NULL), &H5Sclose);
+  }
+  void initialize() {
+    hsize_t one=1;
+    data_->ids_.open(H5Screate_simple(1, &one, NULL), &H5Sclose);
+    std::fill(data_->ones_, data_->ones_+data_->dim_, 1);
+    //pos_.reset(new hsize_t[dim_]);
+    //sel_= new HDF5SharedHandle(H5Dget_space(h_->get_hid()), &H5Sclose);
+    initialize_handles();
   }
   friend class HDF5Group;
-  HDF5DataSet(HDF5SharedHandle* parent, std::string name,  int num_dims) {
+  HDF5DataSet(HDF5SharedHandle* parent, std::string name,  int num_dims):
+    data_(new Data()) {
     IMP_USAGE_CHECK(num_dims <= max_dims, "Currently it only supports "
                     << max_dims << " dims");
     //std::cout << "Creating data set " << name << std::endl;
@@ -68,27 +89,26 @@ class HDF5DataSet {
       32));*/
     IMP_HDF5_CALL(H5Pset_deflate(plist, 9));
     //std::cout << "creating..." << name << std::endl;
-    h_= new HDF5SharedHandle(H5Dcreate(parent->get_hid(),
-                                       name.c_str(),
-                                       TypeTraits::get_hdf5_type(),
-                                       ds, H5P_DEFAULT, plist, H5P_DEFAULT),
-                             &H5Dclose);
-    hsize_t one=1;
-    ids_=new HDF5SharedHandle(H5Screate_simple(1, &one, NULL), &H5Sclose);
-    dim_=num_dims;
+    data_->h_.open(H5Dcreate(parent->get_hid(),
+                             name.c_str(),
+                             TypeTraits::get_hdf5_type(),
+                             ds, H5P_DEFAULT, plist, H5P_DEFAULT),
+                   &H5Dclose);
+    data_->dim_=num_dims;
+    initialize();
     //std::cout << "done..." << std::endl;
   }
-  HDF5DataSet(HDF5SharedHandle* parent, std::string name) {
+  HDF5DataSet(HDF5SharedHandle* parent, std::string name): data_(new Data()) {
     IMP_USAGE_CHECK(H5Lexists(parent->get_hid(),
                               name.c_str(), H5P_DEFAULT),
                     "Data set " << name << " does not exist");
-    h_= new HDF5SharedHandle(H5Dopen(parent->get_hid(),
-                                     name.c_str(), H5P_DEFAULT),
-                             &H5Dclose);
-    hsize_t one=1;
-    ids_=new HDF5SharedHandle(H5Screate_simple(1, &one, NULL), &H5Sclose);
-    HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
-    dim_=H5Sget_simple_extent_ndims(s);
+    data_->h_.open(H5Dopen(parent->get_hid(),
+                           name.c_str(), H5P_DEFAULT),
+                   &H5Dclose);
+    //HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
+    HDF5Handle sel(H5Dget_space(data_->h_.get_hid()), &H5Sclose);
+    data_->dim_=H5Sget_simple_extent_ndims(sel);
+    initialize();
   }
   void check_index(const Ints &ijk) const {
     Ints sz= get_size();
@@ -104,15 +124,16 @@ class HDF5DataSet {
   void show(std::ostream &out) const {
     out << "HDF5DataSet";
   }
-  HDF5DataSet(): dim_(0){}
+  HDF5DataSet(){}
   Ints get_size() const {
-    HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
+    //HDF5Handle s(H5Dget_space(h_->get_hid()), H5Sclose);
     hsize_t ret[max_dims];
-    IMP_HDF5_CALL(H5Sget_simple_extent_dims(s, ret, NULL));
-    return Ints(ret, ret+dim_);
+    IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
+                                            ret, NULL));
+    return Ints(ret, ret+data_->dim_);
   }
   hid_t get_handle() const {
-    return h_->get_hid();
+    return data_->h_.get_hid();
   }
 
   void set_value(const Ints &ijk,
@@ -120,14 +141,14 @@ class HDF5DataSet {
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
     }
-    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
-    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
-    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
-    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
-                                      &ones[0], &ones[0],
+    std::copy(ijk.begin(), ijk.end(), data_->pos_);
+    //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+    IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                      H5S_SELECT_SET, data_->pos_,
+                                      data_->ones_, data_->ones_,
                                       NULL));
-    TypeTraits::write_value_dataset(h_->get_hid(), ids_->get_hid(),
-                                         s, value);
+    TypeTraits::write_value_dataset(data_->h_.get_hid(), data_->ids_.get_hid(),
+                                    get_data_space(), value);
   }
   /*std::vector<typename TypeTraits::Type get_row(unsigned int dim,
                                                 unsigned int index) const {
@@ -144,64 +165,67 @@ class HDF5DataSet {
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
     }
-    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
-    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
-    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
-    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
-                                      &ones[0], &ones[0],
+    std::copy(ijk.begin(), ijk.end(), data_->pos_);
+    //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+    IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                      H5S_SELECT_SET, data_->pos_,
+                                      data_->ones_, data_->ones_,
                                       NULL));
-    return TypeTraits::read_value_dataset(h_->get_hid(), ids_->get_hid(),
-                                           s);
+    return TypeTraits::read_value_dataset(data_->h_.get_hid(),
+                                          data_->ids_.get_hid(),
+                                          get_data_space());
   }
-#if !defined(IMP_DOXYGE) && !defined(SWIG)
-  bool operator==(const HDF5DataSet &o) const {
-    IMP_USAGE_CHECK(dim_==0 || o.dim_==0,
-                    "Can only compare datasets against the default empty one");
-    if (dim_==0 && o.dim_==0) return true;
-    else return false;
-  }
-#endif
   void set_row( Ints ijk,
                const typename TypeTraits::Types& value) {
     ijk.push_back(0);
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
     }
-    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
-    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
-    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
-    hsize_t size[max_dims]; std::fill(size, size+dim_-1, 1);
-    size[dim_-1]= get_size().back(); // set last to size of row
-    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
-                                      &ones[0], &size[0],
+    std::copy(ijk.begin(), ijk.end(), data_->pos_);
+    hsize_t size[max_dims]; std::fill(size, size+data_->dim_-1, 1);
+    size[data_->dim_-1]= get_size().back(); // set last to size of row
+    //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+    IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                      H5S_SELECT_SET, data_->pos_,
+                                      data_->ones_, &size[0],
                                       NULL));
-    TypeTraits::write_values_dataset(h_->get_hid(),
+    TypeTraits::write_values_dataset(data_->h_.get_hid(),
                                      get_row_data_space().get_hid(),
-                                         s, value);
+                                     get_data_space(), value);
   }
   typename TypeTraits::Types get_row( Ints ijk) const {
     ijk.push_back(0);
     IMP_IF_CHECK(USAGE) {
       check_index(ijk);
     }
-    HDF5Handle s(H5Dget_space(h_->get_hid()), &H5Sclose);
-    hsize_t pos[max_dims]; std::copy(ijk.begin(), ijk.end(), pos);
-    hsize_t ones[max_dims]; std::fill(ones, ones+dim_, 1);
-    hsize_t size[max_dims]; std::fill(size, size+dim_-1, 1);
-    size[dim_-1]= get_size().back(); // set last to size of row
-    IMP_HDF5_CALL(H5Sselect_hyperslab(s, H5S_SELECT_SET, &pos[0],
-                                      &ones[0], &size[0],
+    std::copy(ijk.begin(), ijk.end(), data_->pos_);
+    hsize_t size[max_dims]; std::fill(size, size+data_->dim_-1, 1);
+    size[data_->dim_-1]= get_size().back(); // set last to size of row
+    //HDF5Handle sel(H5Dget_space(h_->get_hid()), &H5Sclose);
+    IMP_HDF5_CALL(H5Sselect_hyperslab(get_data_space(),
+                                      H5S_SELECT_SET, data_->pos_,
+                                      data_->ones_, &size[0],
                                       NULL));
-    return TypeTraits::read_values_dataset(h_->get_hid(),
+    return TypeTraits::read_values_dataset(data_->h_.get_hid(),
                                            get_row_data_space().get_hid(),
-                                           s, size[dim_-1]);
+                                           get_data_space(),
+                                           size[data_->dim_-1]);
   }
   void set_size(const Ints &ijk) {
     hsize_t nd[max_dims]; std::copy(ijk.begin(), ijk.end(), nd);;
-    IMP_HDF5_CALL(H5Dset_extent(h_->get_hid(),
+    IMP_HDF5_CALL(H5Dset_extent(data_->h_.get_hid(),
                                 &nd[0]));
-    rds_=NULL;
+    initialize_handles();
   }
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  // replace with safe bool
+  operator bool() const {
+    return data_;
+  }
+  bool operator!() const {
+    return !data_;
+  }
+#endif
 };
 
 
