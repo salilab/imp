@@ -138,6 +138,7 @@ class IMPRMFEXPORT SharedData: public RefCounted {
     }
   }
   void audit_key_name(std::string name) const;
+  void audit_node_name(std::string name) const;
   unsigned int get_column_maximum(KeyCategory cat) const {
     if (max_cache_.size() > cat.get_index()
         && max_cache_[cat.get_index()]>-2) {
@@ -442,6 +443,7 @@ class IMPRMFEXPORT SharedData: public RefCounted {
   void set_first_child(unsigned int node, int child);
   void set_sibling(unsigned int node, int sibling);
   std::string get_name(unsigned int node) const;
+  void set_name(unsigned int node, std::string name);
   unsigned int get_type(unsigned int node) const;
 
 

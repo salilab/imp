@@ -55,13 +55,28 @@ void SharedData::audit_key_name(std::string name) const {
   const char *cur=illegal;
   while (*cur != '\0') {
     if (name.find(*cur) != std::string::npos) {
-      IMP_THROW("Keys can't contain "<< *cur, ValueException);
+      IMP_THROW("Key names can't contain "<< *cur, ValueException);
     }
     ++cur;
   }
   if (name.find("  ") != std::string::npos) {
-    IMP_THROW("Keys can't contain two consecutive spaces",
+    IMP_THROW("Key names can't contain two consecutive spaces",
               ValueException);
+  }
+}
+
+void SharedData::audit_node_name(std::string name) const {
+  if (name.empty()) {
+    IMP_THROW("Empty key name", ValueException);
+  }
+  static const char *illegal="\"";
+  const char *cur=illegal;
+  while (*cur != '\0') {
+    if (name.find(*cur) != std::string::npos) {
+      IMP_THROW("Node names names can't contain \""<< *cur
+                << "\", but \"" << name << "\" does.", ValueException);
+    }
+    ++cur;
   }
 }
 
@@ -84,11 +99,16 @@ int SharedData::add_node(std::string name, unsigned int type) {
     ret= free_ids_.back();
     free_ids_.pop_back();
   }
+  audit_node_name(name);
   names_.set_value(make_index(ret), name);
   node_data_.set_value(make_index(ret, TYPE), type);
   node_data_.set_value(make_index(ret, CHILD), IndexTraits::get_null_value());
   node_data_.set_value(make_index(ret, SIBLING), IndexTraits::get_null_value());
   return ret;
+}
+void SharedData::set_name(unsigned int node, std::string name) {
+  audit_node_name(name);
+  names_.set_value(make_index(node), name);
 }
 int SharedData::get_first_child(unsigned int node) const {
   check_node(node);
