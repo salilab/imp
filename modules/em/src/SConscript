@@ -25,6 +25,7 @@ files = [
          'density_utilities.cpp',
          'density_map_volumetrics.cpp',
          'EnvelopePenetrationRestraint.cpp',
+         'DensityFillingRestraint.cpp',
         ] \
         + SConscript('internal/SConscript')
 
