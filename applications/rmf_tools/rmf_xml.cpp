@@ -4,12 +4,13 @@
 #include <IMP/rmf/atom_io.h>
 #include <IMP/rmf/RootHandle.h>
 #include <IMP/internal/graph_utility.h>
+#include <sstream>
 
 #include <boost/program_options.hpp>
 namespace po = boost::program_options;
 
 std::string input, output;
-po::options_description desc("Usage: input_hdf5");
+po::options_description desc("Usage: input.rmf output.xml");
 bool help=false;
 bool verbose=false;
 int frame=0;
@@ -36,51 +37,93 @@ namespace {
   template <class TypeT>
   bool show_type_data_xml(IMP::rmf::NodeHandle nh,
                           IMP::rmf::KeyCategory kc,
-                          bool opened) {
+                          bool opened, std::ostream &out) {
     IMP::rmf::RootHandle rh= nh.get_root_handle();
     std::vector<IMP::rmf::Key<TypeT> > keys= rh.get_keys<TypeT>(kc);
     for (unsigned int i=0; i< keys.size(); ++i) {
-      if (nh.get_has_value(keys[i], frame)) {
-        if (!opened) {
-          std::cout << "<" << kc << "\n";
-          opened=true;
+      //std::cout << "key " << rh.get_name(keys[i]) << std::endl;
+      if (rh.get_is_per_frame(keys[i])) {
+        if (frame >=0) {
+          if (nh.get_has_value(keys[i], frame)) {
+            if (!opened) {
+              out << "<" << kc << "\n";
+              opened=true;
+            }
+            out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
+            out << nh.get_value(keys[i], frame) << "\"\n";
+          }
+        } else {
+          int skip=-frame;
+          std::ostringstream oss;
+          bool some=false;
+          for (unsigned int j=0; j< rh.get_number_of_frames(keys[i]); j+=skip) {
+            if (j != 0) {
+              oss << " ";
+            }
+            if (nh.get_has_value(keys[i], j)) {
+              oss << nh.get_value(keys[i], j);
+              some=true;
+            } else {
+              oss << "-";
+            }
+          }
+          if (some) {
+            if (!opened) {
+              out << "<" << kc << "\n";
+              opened=true;
+            }
+            out << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
+            out << oss.str() << "\"\n";
+          } else {
+            /*std::cout << "No frames " << rh.get_name(keys[i])
+                << " " << rh.get_is_per_frame(keys[i]) << " " << frame
+                << " " << nh.get_has_value(keys[i], frame) << std::endl;*/
+          }
         }
-        std::cout  << get_as_attribute_name(rh.get_name(keys[i])) << "=\""
-                  << nh.get_value(keys[i], frame) << "\"\n";
+      } else {
+        if (nh.get_has_value(keys[i])) {
+          if (!opened) {
+            out << "<" << kc << "\n";
+            opened=true;
+          }
+          out  << get_as_attribute_name(rh.get_name(keys[i])) << "=\"";
+          out << nh.get_value(keys[i]) << "\"\n";
+        }
       }
     }
     return opened;
   }
   void show_data_xml(IMP::rmf::NodeHandle nh,
-                     IMP::rmf::KeyCategory kc) {
+                     IMP::rmf::KeyCategory kc,
+                     std::ostream &out) {
     bool opened=false;
-    opened=show_type_data_xml<IMP::rmf::IntTraits>(nh, kc, opened);
-    opened=show_type_data_xml<IMP::rmf::FloatTraits>(nh, kc, opened);
-    opened=show_type_data_xml<IMP::rmf::IndexTraits>(nh, kc, opened);
-    opened=show_type_data_xml<IMP::rmf::StringTraits>(nh, kc, opened);
-    opened=show_type_data_xml<IMP::rmf::NodeIDTraits>(nh, kc, opened);
-    opened=show_type_data_xml<IMP::rmf::DataSetTraits>(nh, kc, opened);
+    opened=show_type_data_xml<IMP::rmf::IntTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<IMP::rmf::FloatTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<IMP::rmf::IndexTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<IMP::rmf::StringTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<IMP::rmf::NodeIDTraits>(nh, kc, opened, out);
+    opened=show_type_data_xml<IMP::rmf::DataSetTraits>(nh, kc, opened, out);
     if (opened) {
-      std::cout << "/>\n";
+      out << "/>\n";
     }
   }
 
-  void show_xml(IMP::rmf::NodeHandle nh) {
-    std::cout << "<node name=\"" << nh.get_name() << "\" id=\""
+  void show_xml(IMP::rmf::NodeHandle nh, std::ostream &out) {
+    out << "<node name=\"" << nh.get_name() << "\" id=\""
               << nh.get_id() << "\" "
               << "type=\"" << IMP::rmf::get_type_name(nh.get_type())
               << "\"/>\n";
     if (verbose) {
-      show_data_xml(nh, IMP::rmf::Physics);
-      show_data_xml(nh, IMP::rmf::Sequence);
-      show_data_xml(nh, IMP::rmf::Shape);
-      show_data_xml(nh, IMP::rmf::Feature);
+      show_data_xml(nh, IMP::rmf::Physics, out);
+      show_data_xml(nh, IMP::rmf::Sequence, out);
+      show_data_xml(nh, IMP::rmf::Shape, out);
+      show_data_xml(nh, IMP::rmf::Feature, out);
     }
     IMP::rmf::NodeHandles children= nh.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
-      std::cout << "<child>\n";
-      show_xml(children[i]);
-      std::cout << "</child>\n";
+      out << "<child>\n";
+      show_xml(children[i], out);
+      out << "</child>\n";
     }
   }
 }
@@ -93,9 +136,12 @@ int main(int argc, char **argv) {
     ("frame,f", po::value< int >(&frame),
      "Frame to use")
     ("input-file,i", po::value< std::string >(&input),
-     "input hdf5 file");
+     "input hdf5 file")
+    ("output-file,o", po::value< std::string >(&output),
+     "output xml file");
   po::positional_options_description p;
   p.add("input-file", 1);
+  p.add("output-file", 1);
   po::variables_map vm;
   po::store(
       po::command_line_parser(argc,argv).options(desc).positional(p).run(), vm);
@@ -106,25 +152,30 @@ int main(int argc, char **argv) {
     return 1;
   }
   IMP::rmf::RootHandle rh(input, false);
-  std::cout << "<?xml version=\"1.0\"?>\n";
-  std::cout << "<rmf>\n";
-  std::cout << "<description>\n";
-  std::cout << rh.get_description() <<std::endl;
-  std::cout << "</description>\n";
-  std::cout << "<path>\n";
-  std::cout << input <<std::endl;
-  std::cout << "</path>\n";
-  show_xml(rh);
+  std::ofstream out(output.c_str());
+  if (!out) {
+    std::cerr << "Error opening file " << output << std::endl;
+    return 1;
+  }
+  out << "<?xml version=\"1.0\"?>\n";
+  out << "<rmf>\n";
+  out << "<description>\n";
+  out << rh.get_description() <<std::endl;
+  out << "</description>\n";
+  out << "<path>\n";
+  out << input <<std::endl;
+  out << "</path>\n";
+  show_xml(rh, out);
   if (rh.get_number_of_bonds() >0) {
-    std::cout << "<bonds>\n";
+    out << "<bonds>\n";
     for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {
       std::pair<IMP::rmf::NodeHandle, IMP::rmf::NodeHandle> handles
         = rh.get_bond(i);
-      std::cout << "<bond id0=\""<< handles.first.get_id()
+      out << "<bond id0=\""<< handles.first.get_id()
                 << "\" id1=\"" << handles.second.get_id() << "\"/>\n";
     }
-    std::cout << "</bonds>\n";
+    out << "</bonds>\n";
   }
-  std::cout << "</rmf>\n";
+  out << "</rmf>\n";
   return 0;
 }
