@@ -13,6 +13,7 @@ IMP_SWIG_OBJECT(IMP::membrane, SameHelixPairFilter, SameHelixPairFilters);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess); 
+IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -23,3 +24,4 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess);
 %include "IMP/membrane/TiltSingletonScore.h"
 %include "IMP/membrane/RigidBodyNewMover.h"
 %include "IMP/membrane/RigidBodyGridStates.h"
+%include "IMP/membrane/MonteCarloWithWte.h"
