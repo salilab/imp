@@ -22,7 +22,7 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   dx_    = sigma / 3.0;
   nbin_  = ceil((emax-emin)/dx_)+1;
   bias_  = new double[nbin_];
-  for (unsigned int i=0; i<nbin_; ++i) bias_[i] = 0.0;
+  for (int i=0; i<nbin_; ++i) bias_[i] = 0.0;
   }
 
 double MonteCarloWithWte::get_bias(double score)
@@ -41,15 +41,22 @@ void MonteCarloWithWte::update_bias(double score)
   double ww = w0_*exp(-vbias/(get_kt()*(gamma_-1)));
 // we don't need to run over the entire grid
 // let's put a cutoff at 4 sigma
-  unsigned int i0=floor((score-4.0*sigma_-min_)/dx_);
-  unsigned int i1=floor((score+4.0*sigma_-min_)/dx_);
-  i0=max(i0,0);
-  i1=min(i1,nbin_);
-  for (unsigned int i = i0; i <= i1; ++i){
+  int i0=floor((score-4.0*sigma_-min_)/dx_);
+  int i1=floor((score+4.0*sigma_-min_)/dx_);
+  i0=std::max(i0,0);
+  i1=std::min(i1,nbin_);
+  for (int i = i0; i <= i1; ++i){
    double xx = min_ + i * dx_;
    double dp = ( xx - score ) / sigma_;
    bias_[i] += ww * exp ( - 0.5 * dp * dp );
   }
+}
+
+void MonteCarloWithWte::do_step() {
+  do_move(get_move_probability());
+  double energy= evaluate(false);
+  bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
+  if(do_accept) update_bias(energy);
 }
 
 IMPMEMBRANE_END_NAMESPACE
