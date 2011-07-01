@@ -41,8 +41,9 @@ Float TiltSingletonScore::evaluate(Particle *b,
   //std::cout << local2global-origin << global_ <<std::endl;
 
   // now calculate the angle
-  Float angle
-   = acos(global_.get_scalar_product(local2global-origin));
+  Float sp=std::max(-1.0,std::min(1.0,
+        global_.get_scalar_product(local2global-origin)));
+  Float angle = acos(sp);
 
   //std::cout << "ANGLE "<< angle <<std::endl;
 

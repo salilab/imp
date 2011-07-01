@@ -59,4 +59,12 @@ void MonteCarloWithWte::do_step() {
   if(do_accept) update_bias(energy);
 }
 
+//double MonteCarloWithWte::set_initial_last_energy() {
+// double score=evaluate(false);
+// return score+get_bias(score);
+//}
+
+void MonteCarloWithWte::do_show(std::ostream &) const {
+}
+
 IMPMEMBRANE_END_NAMESPACE
