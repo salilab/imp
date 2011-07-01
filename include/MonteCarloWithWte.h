@@ -14,7 +14,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-//! This variant of Monte Carlo that relaxes after each move
+//! MonteCarlo in the Well-Tempered Ensemble
 class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
 {
   double  min_, max_, sigma_, gamma_, dx_, w0_;
