@@ -10,8 +10,8 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin, double emax,
-                                     double sigma, double gamma):
+MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
+                                               double sigma, double gamma):
   core::MonteCarlo(m) {
   min_   = emin;
   max_   = emax;
