@@ -17,33 +17,16 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 //! This variant of Monte Carlo that relaxes after each move
 class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
 {
-  double  min_, max_, sigma_, gamma_, dx_;
+  double  min_, max_, sigma_, gamma_, dx_, w0_;
   double* bias_;
   unsigned int nbin_;
   void    update_bias(double score);
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,
-                              double sigma, double gamma);
-
-  double do_optimize(unsigned int max_steps);
+                              double sigma, double gamma,
+                              double w0);
 
   double get_bias(double score);
-
-  double get_min_energy() const {
-    return min_;
-  }
-
-  double get_max_energy() const {
-    return max_;
-  }
-
-  double get_sigma() const {
-    return sigma_;
-  }
-
-  double get_gamma() const {
-    return gamma_;
-  }
 
   IMP_MONTE_CARLO(MonteCarloWithWte);
 };
