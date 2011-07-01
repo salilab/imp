@@ -26,12 +26,14 @@ public:
   MonteCarloWithWte(Model *m, double gmin,  double gmax,
                               double sigma, double gamma);
 
+  double do_optimize(unsigned int max_steps);
+
   double get_min_energy() const {
-    return gmin_;
+    return min_;
   }
 
   double get_max_energy() const {
-    return gmax_;
+    return max_;
   }
 
   double get_sigma() const {

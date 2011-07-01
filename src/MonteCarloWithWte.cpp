@@ -7,7 +7,6 @@
  */
 #include <IMP/membrane/MonteCarloWithWte.h>
 #include <IMP/core.h>
-#include <IMP/algebra.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
@@ -22,12 +21,11 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double gmin, double gmax,
   nbin_  = ceil((gmax-gmin)/dx_)+1;
   bias_  = new double[nbin_];
   for (unsigned int i=0; i<nbin_; ++i) bias_[i] = 0.0;
-
   }
 
 double MonteCarloWithWte::get_bias(double score)
 {
-  unsigned int index = floor((score-min_)/dx_);
+  int index = floor((score-min_)/dx_);
   if (index < 0)       index=0;
   if (index >= nbin_)  index=nbin_-1;
   return bias_[index];
@@ -35,10 +33,10 @@ double MonteCarloWithWte::get_bias(double score)
 
 void MonteCarloWithWte::add_Gaussian(double score)
 {
-  if(score < min_ || score >= max_) return;
+  if(score < min_ || score > max_) return;
 // first update Gaussian height
   double vbias=get_bias(score);
-  double ww = exp(-vbias/(temp_*(gamma_-1)));
+  double ww = exp(-vbias/(get_kt()*(gamma_-1)));
   for (unsigned int i = 0; i < nbin_; ++i){
    double xx = min_ + i * dx_;
    double dp = ( xx - score ) / sigma_;
@@ -47,7 +45,7 @@ void MonteCarloWithWte::add_Gaussian(double score)
 }
 
 void MonteCarloWithWte::do_step() {
-  do_move(probability_);
+  do_move(get_move_probability());
   double energy= evaluate(false);
   bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
   if(do_accept) add_Gaussian(energy);
@@ -80,7 +78,6 @@ double MonteCarloWithWte::do_optimize(unsigned int max_steps) {
     do_step();
   }
 
-
   IMP_LOG(TERSE, "MC Final energy is " << last_energy_  << std::endl);
   if (return_best_) {
     //std::cout << "Final score is " << get_model()->evaluate(false)
@@ -100,6 +97,5 @@ double MonteCarloWithWte::do_optimize(unsigned int max_steps) {
     return last_energy_;
   }
 }
-
 
 IMPMEMBRANE_END_NAMESPACE
