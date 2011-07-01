@@ -31,7 +31,7 @@ double MonteCarloWithWte::get_bias(double score)
   return bias_[index];
 }
 
-void MonteCarloWithWte::add_Gaussian(double score)
+void MonteCarloWithWte::update_bias(double score)
 {
   if(score < min_ || score > max_) return;
 // first update Gaussian height
@@ -48,7 +48,7 @@ void MonteCarloWithWte::do_step() {
   do_move(get_move_probability());
   double energy= evaluate(false);
   bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
-  if(do_accept) add_Gaussian(energy);
+  if(do_accept) update_bias(energy);
 }
 
 double MonteCarloWithWte::do_optimize(unsigned int max_steps) {
