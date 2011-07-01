@@ -67,6 +67,14 @@ public:
     return last_energy_;
   }
 
+  /** If return best is on, you can get the best energy
+      found so far.*/
+  double get_best_accepted_energy() const {
+    IMP_USAGE_CHECK(return_best_, "Getting the best energy"
+                    << " requires return best being on.");
+    return best_energy_;
+  }
+
   //! Set the probability of each move being made
   /** Make this low if the space is rough and there are many particles.
       The movers should make each individual move with this probability.
