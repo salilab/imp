@@ -20,13 +20,14 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   double  min_, max_, sigma_, gamma_, dx_;
   double* bias_;
   unsigned int nbin_;
-  double  get_bias(double score);
-  void    add_Gaussian(double score);
+  void    update_bias(double score);
 public:
   MonteCarloWithWte(Model *m, double gmin,  double gmax,
                               double sigma, double gamma);
 
   double do_optimize(unsigned int max_steps);
+
+  double get_bias(double score);
 
   double get_min_energy() const {
     return min_;
