@@ -20,7 +20,7 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   gamma_ = gamma;
   w0_    = w0;
   dx_    = sigma / 3.0;
-  nbin_  = ceil((emax-emin)/dx_)+1;
+  nbin_  = floor((emax-emin)/dx_)+1;
   bias_  = new double[nbin_];
   for (int i=0; i<nbin_; ++i) bias_[i] = 0.0;
   }
