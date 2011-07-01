@@ -10,15 +10,15 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-MonteCarloWithWte::MonteCarloWithWte(Model *m, double gmin, double gmax,
+MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin, double emax,
                                      double sigma, double gamma):
   core::MonteCarlo(m) {
-  min_   = gmin;
-  max_   = gmax;
+  min_   = emin;
+  max_   = emax;
   sigma_ = sigma;
   gamma_ = gamma;
   dx_    = gamma / 3.0;
-  nbin_  = ceil((gmax-gmin)/dx_)+1;
+  nbin_  = ceil((emax-emin)/dx_)+1;
   bias_  = new double[nbin_];
   for (unsigned int i=0; i<nbin_; ++i) bias_[i] = 0.0;
   }
