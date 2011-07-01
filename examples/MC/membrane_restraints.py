@@ -114,7 +114,7 @@ def create_restraints(m,protein,tbr):
         laxis=(1.0,0.0,0.0)
         zaxis=(0.0,0.0,1.0)
         lrb= IMP.container.ListSingletonContainer(m)
-        for i,h in enumerate(TM_res):
+        for h in TM_res:
             s0=IMP.atom.Selection(protein, atom_type = IMP.atom.AT_CA, residue_index = h[0])
             rb=IMP.core.RigidMember(s0.get_selected_particles()[0]).get_rigid_body()
             lrb.add_particle(rb)
@@ -140,7 +140,7 @@ def create_restraints(m,protein,tbr):
 # COM-COM distance restraint
         rb0=IMP.core.RigidMember(p0).get_rigid_body()
         rb1=IMP.core.RigidMember(p1).get_rigid_body()
-        lrb=add_distance_restraint(rb0,rb1,35.0,kappa_)
+        lrb=add_distance_restraint(rb0,rb1,25.0,kappa_)
         rset.add_restraint(lrb)
     add_packing_restraint()
     add_DOPE()

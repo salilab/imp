@@ -21,7 +21,6 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   double* bias_;
   int     nbin_;
   void    update_bias(double score);
-  //double  set_initial_last_energy();
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,
                               double sigma, double gamma,

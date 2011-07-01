@@ -27,9 +27,6 @@ rset=create_restraints(m,protein,tbr)
 print "creating sampler"
 mc=setup_MonteCarlo(m,protein)
 
-#WTE
-#mc.mtd_setup(0.01, 5.0, -100.0, 0.0)
-
 # preparing hdf5 file
 rh = IMP.rmf.RootHandle(mc_traj_file, True)
 #rh = IMP.rmf.RootHandle(mc_traj_file, False)
@@ -46,4 +43,4 @@ for steps in range(mc_loops):
     #    IMP.rmf.load_frame(rh, steps+1, hs)
 
 # close file
-del rh
+#del rh

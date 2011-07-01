@@ -9,6 +9,7 @@ from membrane_parameters import *
 
 def setup_MonteCarlo(m,protein):
     mc=IMP.core.MonteCarlo(m)
+    #mc=IMP.membrane.MonteCarloWithWte(m,-100.0,0.0,10.0,9.0,0.01)
     mc.set_return_best(False)
     mc.set_kt(mc_kt)
 # create Movers

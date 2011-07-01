@@ -27,9 +27,8 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
 
 double MonteCarloWithWte::get_bias(double score)
 {
-  int index = floor((score-min_)/dx_);
-  if (index < 0)       index=0;
-  if (index >= nbin_)  index=nbin_-1;
+  int index=
+   std::max(0,std::min(nbin_-1,floor((score-min_)/dx_)));
   return bias_[index];
 }
 
@@ -38,17 +37,15 @@ void MonteCarloWithWte::update_bias(double score)
   if(score < min_ || score > max_) return;
 // first calculate current Gaussian height
   double vbias=get_bias(score);
-  double ww = w0_*exp(-vbias/(get_kt()*(gamma_-1)));
+  double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
 // we don't need to run over the entire grid
 // let's put a cutoff at 4 sigma
   int i0=floor((score-4.0*sigma_-min_)/dx_);
   int i1=floor((score+4.0*sigma_-min_)/dx_);
-  i0=std::max(i0,0);
-  i1=std::min(i1,nbin_);
-  for (int i = i0; i <= i1; ++i){
-   double xx = min_ + i * dx_;
-   double dp = ( xx - score ) / sigma_;
-   bias_[i] += ww * exp ( - 0.5 * dp * dp );
+  for (int i=std::max(i0,0); i<=std::min(i1,nbin_-1); ++i){
+   double xx=min_+i*dx_;
+   double dp=(xx-score)/sigma_;
+   bias_[i] += ww*exp(-0.5*dp*dp);
   }
 }
 
@@ -59,10 +56,10 @@ void MonteCarloWithWte::do_step() {
   if(do_accept) update_bias(energy);
 }
 
-//double MonteCarloWithWte::set_initial_last_energy() {
-// double score=evaluate(false);
-// return score+get_bias(score);
-//}
+double MonteCarloWithWte::do_evaluate() {
+    double score=evaluate(false);
+    return score+get_bias(score);
+}
 
 void MonteCarloWithWte::do_show(std::ostream &) const {
 }
