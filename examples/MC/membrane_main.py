@@ -28,10 +28,10 @@ print "creating sampler"
 mc=setup_MonteCarlo(m,protein)
 
 # preparing hdf5 file
-rh = IMP.rmf.RootHandle(mc_traj_file, True)
+#rh = IMP.rmf.RootHandle(mc_traj_file, True)
 #rh = IMP.rmf.RootHandle(mc_traj_file, False)
-for hs in protein.get_children():
-    IMP.rmf.add_hierarchy(rh, hs)
+#for hs in protein.get_children():
+#    IMP.rmf.add_hierarchy(rh, hs)
 #IMP.rmf.set_hierarchies(rh, protein.get_children())
 
 print "sampling"
@@ -41,8 +41,8 @@ for steps in range(mc_loops):
     if(mc_wte): bias_score=mc.get_bias(score)
     else:       bias_score=0.0
     print steps, score, bias_score, mc_steps, mc.get_number_of_forward_steps()
-    for hs in protein.get_children():
-        IMP.rmf.save_frame(rh, steps+1, hs)
+    #for hs in protein.get_children():
+    #    IMP.rmf.save_frame(rh, steps+1, hs)
     #    IMP.rmf.load_frame(rh, steps+1, hs)
 
 # close file
