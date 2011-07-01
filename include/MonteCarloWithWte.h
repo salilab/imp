@@ -21,6 +21,10 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   double* bias_;
   int     nbin_;
   void    update_bias(double score);
+  double  do_evaluate() {
+    double score=evaluate(false);
+    return score+get_bias(score);
+  }
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,
                               double sigma, double gamma,
