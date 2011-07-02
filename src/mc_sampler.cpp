@@ -19,9 +19,9 @@ core::MonteCarlo* setup_MonteCarlo(Model *m,
 {
  IMP_NEW(core::MonteCarlo,mc,(m));
  mc->set_return_best(false);
- for(int i=0;i<myparam->TM->num;++i){
+ for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);
-  s.set_molecule(myparam->TM->name[i]);
+  s.set_molecule(myparam->TM.name[i]);
   core::RigidBody rb=
   core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
   if(i==0){
