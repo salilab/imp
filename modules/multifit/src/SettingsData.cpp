@@ -50,8 +50,8 @@ ComponentHeader *parse_component_line(
   }
   catch(boost::bad_lexical_cast &) {
     comp->set_num_fine_ap(0);
-    IMP_WARN("Can not cast num_fine_ap filed for protein: "<<comp->get_name()<
-             <" seeting to 0"<<std::endl);
+    IMP_WARN("Can not cast num_fine_ap filed for protein: "<<comp->get_name()
+             <<" seeting to 0"<<std::endl);
   }
   comp->set_transformations_fn(join_path(path, line_split[7]));
   comp->set_reference_fn(join_path(path, line_split[8]));
