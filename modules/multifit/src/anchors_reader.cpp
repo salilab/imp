@@ -67,9 +67,9 @@ AnchorsData read_anchors_data(const char *txt_fn){
   std::fstream in;
   AnchorsData data;
   in.open(txt_fn, std::fstream::in);
-  if (! in.good()) {
-    IMP_WARN("Problem openning file " << txt_fn <<
-                  " for reading; returning empty anchors data" << std::endl);
+  if (!in.good()) {
+    std::cerr<<"Problem openning file " << txt_fn <<
+                  " for reading; returning empty anchors data" << std::endl;
     in.close();
     return data;
   }
