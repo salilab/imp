@@ -46,8 +46,6 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
 
 
-
-
  OPTION(double, diameter);
  OPTION(double, tilt);
  OPTION(double, swing);
@@ -59,6 +57,8 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, zmax);
  OPTION(double, tmin);
  OPTION(double, tmax);
+ OPTION(double, dx);
+ OPTION(double, dang);
  OPTION(int,    number);
  OPTION(int,    nexc);
  OPTION(int,    nsteps);
@@ -78,6 +78,8 @@ Parameters get_parameters(TextInput in) {
  CHECK(double, zmax);
  CHECK(double, tmin);
  CHECK(double, tmax);
+ CHECK(double, dx);
+ CHECK(double, dang);
  CHECK(int,    number);
  CHECK(int,    nexc);
  CHECK(int,    nsteps);
@@ -92,10 +94,14 @@ Parameters get_parameters(TextInput in) {
  ret.add_dope=add_dope;
  ret.add_pack=add_pack;
  ret.use_volume=use_volume;
- ret.tmin=tmin;
- ret.tmax=tmax;
- ret.nexc=nexc;
- ret.nsteps=nsteps;
+
+// MonteCarlo Parameters
+ ret.MC.tmin=tmin;
+ ret.MC.tmax=tmax;
+ ret.MC.nexc=nexc;
+ ret.MC.nsteps=nsteps;
+ ret.MC.dx=dx;
+ ret.MC.dang=dang;
 
 // Grid Parameters
  ret.grid.tilt=radians(tilt);

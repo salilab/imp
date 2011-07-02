@@ -17,6 +17,9 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 core::MonteCarlo* setup_MonteCarlo(Model *m,
  atom::Hierarchy protein, Parameters *myparam)
 {
+ double mc_dx_=myparam->MC.dx;
+ double mc_dang_=myparam->MC.dang;
+
  IMP_NEW(core::MonteCarlo,mc,(m));
  mc->set_return_best(false);
  for(int i=0;i<myparam->TM.num;++i){

@@ -29,34 +29,40 @@ struct GridParameters {
   double rotmax;
   double xmax;
   double zmax;
-} ;
+};
 
 struct HelixData {
-int num;
-std::vector<char>                 seq;
-std::vector<double>               topo;
-std::vector<std::pair<int,int> >  resid;
-std::vector<std::string>          name;
-std::vector<std::string>          struct_file;
-std::vector<std::pair<int,int> >  inter;
-std::vector<std::pair<int,int> >  loop;
-// add allowed tilt and z range as a function of length
+ int num;
+ std::vector<char>                 seq;
+ std::vector<double>               topo;
+ std::vector<std::pair<int,int> >  resid;
+ std::vector<std::string>          name;
+ std::vector<std::string>          struct_file;
+ std::vector<std::pair<int,int> >  inter;
+ std::vector<std::pair<int,int> >  loop;
+};
+
+struct MCParameters {
+ double         tmin;
+ double         tmax;
+ double         dx;
+ double         dang;
+ int            nexc;
+ int            nsteps;
+ bool           do_wte;
 };
 
 struct Parameters {
-GridParameters grid;
-HelixData      TM;
-double         diameter;
-std::string    score_name;
-std::string    ass_file;
-std::string    traj_file;
-bool           add_dope;
-bool           add_pack;
-bool           use_volume;
-double         tmin;
-double         tmax;
-int            nexc;
-int            nsteps;
+ GridParameters grid;
+ HelixData      TM;
+ MCParameters   MC;
+ double         diameter;
+ std::string    score_name;
+ std::string    ass_file;
+ std::string    traj_file;
+ bool           add_dope;
+ bool           add_pack;
+ bool           use_volume;
 };
 
 //general parameters for restraints
@@ -76,10 +82,6 @@ const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(50.0));
 // other restraints
 const double d0_inter_=8.0;
 const double cm_dist_=25.0;
-
-// MonteCarlo stuff
-const double mc_dx_=0.2;
-const double mc_dang_=0.1;
 
 IMPMEMBRANE_END_NAMESPACE
 
