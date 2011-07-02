@@ -53,10 +53,14 @@ std::string    traj_file;
 bool           add_dope;
 bool           add_pack;
 bool           use_volume;
+double         tmin;
+double         tmax;
+int            nexc;
+int            nsteps;
 };
 
 //general parameters for restraints
-const double kappa_=1000.0;
+const double kappa_=100.0;
 const double max_score_=0.01;
 
 // packing restraint cluster stuff
@@ -67,11 +71,11 @@ const int packing_ncl_=13;
 // depth range
 const IMP::FloatRange z_range_ = IMP::FloatRange(-5.0,5.0);
 // tilt range
-const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(45.0));
+const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(50.0));
 
 // other restraints
 const double d0_inter_=8.0;
-const double cm_dist_=35.0;
+const double cm_dist_=25.0;
 
 IMPMEMBRANE_END_NAMESPACE
 

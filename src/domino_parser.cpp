@@ -57,7 +57,11 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, swingmax);
  OPTION(double, rotmax);
  OPTION(double, zmax);
+ OPTION(double, tmin);
+ OPTION(double, tmax);
  OPTION(int,    number);
+ OPTION(int,    nexc);
+ OPTION(int,    nsteps);
 
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
@@ -72,7 +76,11 @@ Parameters get_parameters(TextInput in) {
  CHECK(double, swingmax);
  CHECK(double, rotmax);
  CHECK(double, zmax);
+ CHECK(double, tmin);
+ CHECK(double, tmax);
  CHECK(int,    number);
+ CHECK(int,    nexc);
+ CHECK(int,    nsteps);
 
  Parameters ret;
 
@@ -84,7 +92,10 @@ Parameters get_parameters(TextInput in) {
  ret.add_dope=add_dope;
  ret.add_pack=add_pack;
  ret.use_volume=use_volume;
-
+ ret.tmin=tmin;
+ ret.tmax=tmax;
+ ret.nexc=nexc;
+ ret.nsteps=nsteps;
 
 // Grid Parameters
  ret.grid.tilt=radians(tilt);

@@ -103,9 +103,21 @@ for(int i=0;i<TM->num;++i){
     (tr.get_transformed(coord));
   }
  }
+// randomize initial positions
+ double xx,yy;
+ if(i==0){
+  xx=0.0;
+  yy=0.0;
+ }else if(i==1){
+  xx=rand()*(myparam->diameter-5.0)/RAND_MAX+5.0;
+  yy=0.0;
+ }else{
+  xx=rand()*2.0*myparam->diameter/RAND_MAX-myparam->diameter;
+  yy=rand()*2.0*myparam->diameter/RAND_MAX-myparam->diameter;
+ }
  rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
-       algebra::Vector3D(0,0,0))));
+       algebra::Vector3D(xx,yy,0))));
  //initialize helix decorator
  bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
  ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
