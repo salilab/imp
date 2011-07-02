@@ -77,6 +77,10 @@ const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(50.0));
 const double d0_inter_=8.0;
 const double cm_dist_=25.0;
 
+// MonteCarlo stuff
+const double mc_dx_=0.2;
+const double mc_dang_=0.1;
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_DOMINO_ENUMERATE_H */

@@ -1,13 +1,12 @@
 /**
- *  \file domino_enumerate.cpp
- *  \brief Membrane domino stuff
+ *  \file mc_membrane.cpp
+ *  \brief Membrane MonteCarlo
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 #include <IMP/core.h>
 #include <IMP/atom.h>
-#include <IMP/domino.h>
 #include <IMP/membrane.h>
 
 using namespace IMP;
@@ -36,7 +35,7 @@ RestraintSet* rset=create_restraints(m,all,tbr,&mydata);
 
 // create sampler
 std::cout << "Creating sampler" << std::endl;
-//core::MonteCarlo* mc=setup_MonteCarlo(m,all,mydata.tmin);
+core::MonteCarlo* mc=setup_MonteCarlo(m,all,&mydata);
 
 // sampling
 std::cout << "Sampling" << std::endl;
