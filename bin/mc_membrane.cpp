@@ -49,7 +49,7 @@ int get_friend(int* index,int myrank,int step,int nrep)
  return frank;
 }
 
-bool get_acceptance(double score0, double score1, double T0, double T1)
+bool get_acceptance(double score0,double score1,double T0,double T1)
 {
  double accept;
  double delta=(score1-score0)*(1.0/T1-1.0/T0);
@@ -124,20 +124,25 @@ mc->set_kt(temp[index[myrank]]);
 // Monte Carlo loop
 for(int imc=0;imc<mydata.MC.nsteps;++imc)
 {
+// run optimizer
  mc->optimize(mydata.MC.nexc);
-// time for an exchange
- int    frank=get_friend(index,myrank,imc,nproc);
+
+// print statistics
  double myscore=m->evaluate(false);
- double fscore;
  int    myindex=index[myrank];
+ myfile << imc << " " << myindex << " " << myscore << " "
+ << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
+
+// now it's time to try an exchange
+ int    frank=get_friend(index,myrank,imc,nproc);
  int    findex=index[frank];
+ double fscore;
 // send and receive score
  MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
  MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
  bool do_accept=get_acceptance(myscore,fscore,temp[myindex],temp[findex]);
  if(do_accept){
   myindex=findex;
-  myscore=fscore;
   mc->set_kt(temp[myindex]);
  }
 // update index vector
@@ -145,8 +150,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  for(int i=0;i<nproc;++i) buf[i]=0;
  buf[myrank]=myindex;
  MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
- myfile << imc << " " << index[myrank] << " " << myscore << " "
- << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
 }
 
 myfile.close();
