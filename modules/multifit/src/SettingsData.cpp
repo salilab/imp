@@ -36,9 +36,23 @@ ComponentHeader *parse_component_line(
   comp->set_filename(join_path(path, line_split[1]));
   comp->set_surface_fn(join_path(path, line_split[2]));
   comp->set_txt_ap_fn(join_path(path, line_split[3]));
-  comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
+  try {
+    comp->set_num_ap(boost::lexical_cast<int>(line_split[4]));
+  }
+  catch(boost::bad_lexical_cast &) {
+    comp->set_num_ap(0);
+    IMP_WARN("Can not cast num_ap filed for protein: "
+             <<comp->get_name()<<std::endl);
+  }
   comp->set_txt_fine_ap_fn(join_path(path, line_split[5]));
-  comp->set_num_fine_ap(boost::lexical_cast<int>(line_split[6]));
+  try{
+    comp->set_num_fine_ap(boost::lexical_cast<int>(line_split[6]));
+  }
+  catch(boost::bad_lexical_cast &) {
+    comp->set_num_fine_ap(0);
+    IMP_WARN("Can not cast num_fine_ap filed for protein: "<<comp->get_name()<
+             <" seeting to 0"<<std::endl);
+  }
   comp->set_transformations_fn(join_path(path, line_split[7]));
   comp->set_reference_fn(join_path(path, line_split[8]));
   return comp.release();
@@ -59,13 +73,37 @@ AssemblyHeader *parse_assembly_line(
      line_split.size() << " : " <<line);
   IMP_NEW(AssemblyHeader, dens, ());
   dens->set_dens_fn(join_path(path, line_split[0]));
+  try{
   dens->set_resolution(boost::lexical_cast<float>(line_split[1]));
-  dens->set_spacing(boost::lexical_cast<float>(line_split[2]));
-  dens->set_threshold(boost::lexical_cast<float>(line_split[3]));
+  }
+  catch(boost::bad_lexical_cast &) {
+    dens->set_resolution(1.);
+    IMP_WARN("Can not cast resolution filed, setting to 1\n");
+  }
+  try{
+    dens->set_spacing(boost::lexical_cast<float>(line_split[2]));
+  }
+  catch(boost::bad_lexical_cast &) {
+    dens->set_spacing(1.);
+    IMP_WARN("Can not cast spacing filed, setting to 1\n");
+  }
+  try{
+    dens->set_threshold(boost::lexical_cast<float>(line_split[3]));
+  }
+  catch(boost::bad_lexical_cast &) {
+    dens->set_threshold(0.);
+    IMP_WARN("Can not cast threshold filed, setting to 0\n");
+  }
+  try{
   dens->set_origin(algebra::Vector3D(
     boost::lexical_cast<float>(line_split[4]),
     boost::lexical_cast<float>(line_split[5]),
     boost::lexical_cast<float>(line_split[6])));
+  }
+  catch(boost::bad_lexical_cast &) {
+    dens->set_origin(algebra::Vector3D(0,0,0));
+    IMP_WARN("Can not cast origin filed, setting to 0\n");
+  }
   dens->set_coarse_ap_fn(join_path(path, line_split[7]));
   dens->set_coarse_over_sampled_ap_fn(join_path(path, line_split[8]));
   dens->set_fine_ap_fn(join_path(path, line_split[9]));

@@ -154,6 +154,7 @@ Float , Float ,const std::string &filename) {
   Pointer<em::DensityMap> segment_map(
 new em::DensityMap(*(dmap->get_header())));
   segment_map->reset_data(0.);
+  //  segment_map->update_voxel_size(apix);
   algebra::Vector3Ds vecs =dpa.get_cluster_vectors(segment_id);
   for(unsigned int i=0;i<vecs.size();i++) {
     segment_map->set_value(
