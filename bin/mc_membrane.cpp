@@ -55,16 +55,17 @@ bool get_acceptance(double score0, double score1, double T0, double T1)
  double delta=(score1-score0)*(1.0/T1-1.0/T0);
  if(delta>=0.0) accept=1.0;
  else           accept=exp(delta);
- if(rand()/RAND_MAX<=accept) return true;
+ double random= (double) rand()/RAND_MAX;
+ if(random<=accept) return true;
  else return false;
 }
 
 int main(int argc, char* argv[])
 {
 
-int myrank, nproc;
+int myrank,nproc;
 MPI_Status  status;
-
+MPI_Request request;
 MPI_Init(&argc, &argv);
 MPI_Comm_size(MPI_COMM_WORLD,&nproc);
 MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
@@ -131,10 +132,8 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  int    myindex=index[myrank];
  int    findex=index[frank];
 // send and receive score
- MPI_Sendrecv(&myscore,1,MPI_DOUBLE,frank,123,
-              &fscore, 1,MPI_DOUBLE,frank,456, MPI_COMM_WORLD, &status);
- //MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
- //MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request2);
+ MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+ MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
  bool do_accept=get_acceptance(myscore,fscore,temp[myindex],temp[findex]);
  if(do_accept){
   myindex=findex;
@@ -142,9 +141,12 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   mc->set_kt(temp[myindex]);
  }
 // update index vector
- MPI_Allgather(&myindex,1,MPI_INT,index,nproc,MPI_INT,MPI_COMM_WORLD);
- myfile << imc << " " << myindex << " " << myscore << " " << mydata.MC.nexc
- << " " << mc->get_number_of_forward_steps() << "\n";
+ int buf[nproc];
+ for(int i=0;i<nproc;++i) buf[i]=0;
+ buf[myrank]=myindex;
+ MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ myfile << imc << " " << index[myrank] << " " << myscore << " "
+ << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
 }
 
 myfile.close();
