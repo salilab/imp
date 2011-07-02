@@ -40,5 +40,18 @@ core::MonteCarlo* mc=setup_MonteCarlo(m,all,&mydata);
 // sampling
 std::cout << "Sampling" << std::endl;
 
+// high temperature short run
+mc->set_kt(mydata.MC.tmax);
+mc->optimize(mydata.MC.nhot);
+// reset temperature
+mc->set_kt(mydata.MC.tmin);
+for(int i=0;i<mydata.MC.nsteps;++i)
+{
+ mc->optimize(mydata.MC.nexc);
+ double score=m->evaluate(false);
+ std::cout << i << " " << score << " " << mydata.MC.nexc
+ << " " << mc->get_number_of_forward_steps() << std::endl;
+}
+
 return 0;
 }

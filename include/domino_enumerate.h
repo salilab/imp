@@ -49,6 +49,7 @@ struct MCParameters {
  double         dang;
  int            nexc;
  int            nsteps;
+ int            nhot;
  bool           do_wte;
 };
 

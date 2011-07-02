@@ -62,6 +62,7 @@ Parameters get_parameters(TextInput in) {
  OPTION(int,    number);
  OPTION(int,    nexc);
  OPTION(int,    nsteps);
+ OPTION(int,    nhot);
 
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
@@ -83,6 +84,8 @@ Parameters get_parameters(TextInput in) {
  CHECK(int,    number);
  CHECK(int,    nexc);
  CHECK(int,    nsteps);
+ CHECK(int,    nhot);
+
 
  Parameters ret;
 
@@ -100,6 +103,7 @@ Parameters get_parameters(TextInput in) {
  ret.MC.tmax=tmax;
  ret.MC.nexc=nexc;
  ret.MC.nsteps=nsteps;
+ ret.MC.nhot=nhot;
  ret.MC.dx=dx;
  ret.MC.dang=dang;
 
