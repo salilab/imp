@@ -24,7 +24,7 @@ RstParameters *RST=&(myparam->RST);
 
 IMP_NEW(RestraintSet,rset,());
 FloatRange z_range = FloatRange(-RST->zeta,RST->zeta);
-FloatRange tilt_range = FloatRange(0.0,radians(RST->tilt));
+FloatRange tilt_range = FloatRange(0.0,RST->tilt);
 double kappa=RST->kappa;
 
 // single-body restraints
@@ -196,7 +196,7 @@ m->set_maximum_score(sr, max_score_);
 
 core::PairRestraint* add_interacting_restraint
 (Model *m,Particle *rb0,Particle *rb1,core::TableRefiner *tbr,
-double d0_inter,double kappa_)
+double d0_inter_,double kappa_)
 {
 IMP_NEW(core::HarmonicUpperBound,hub,(d0_inter_, kappa_));
 IMP_NEW(core::DistancePairScore,sd,(hub));

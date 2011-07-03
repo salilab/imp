@@ -46,55 +46,55 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
 
 
+ OPTION(double, grid_dtilt);
+ OPTION(double, grid_dswing);
+ OPTION(double, grid_drot);
+ OPTION(double, grid_dx);
+ OPTION(double, grid_tiltmax);
+ OPTION(double, grid_swingmax);
+ OPTION(double, grid_rotmax);
+ OPTION(double, grid_zmax);
+ OPTION(double, mc_tmin);
+ OPTION(double, mc_tmax);
+ OPTION(double, mc_dx);
+ OPTION(double, mc_dang);
  OPTION(double, diameter);
- OPTION(double, tilt);
- OPTION(double, swing);
- OPTION(double, rot);
- OPTION(double, x);
- OPTION(double, tiltmax);
- OPTION(double, swingmax);
- OPTION(double, rotmax);
- OPTION(double, zmax);
- OPTION(double, tmin);
- OPTION(double, tmax);
- OPTION(double, dx);
- OPTION(double, dang);
- OPTION(double, tilt);
- OPTION(double, zeta);
+ OPTION(double, tiltrange);
+ OPTION(double, zetarange);
  OPTION(double, kappa);
  OPTION(double, cm_dist);
  OPTION(double, d0_inter);
  OPTION(int,    number);
- OPTION(int,    nexc);
- OPTION(int,    nsteps);
- OPTION(int,    nhot);
+ OPTION(int,    mc_nexc);
+ OPTION(int,    mc_nsteps);
+ OPTION(int,    mc_nhot);
 
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
  notify(vm);
 
+ CHECK(double, grid_dtilt);
+ CHECK(double, grid_dswing);
+ CHECK(double, grid_drot);
+ CHECK(double, grid_dx);
+ CHECK(double, grid_tiltmax);
+ CHECK(double, grid_swingmax);
+ CHECK(double, grid_rotmax);
+ CHECK(double, grid_zmax);
+ CHECK(double, mc_tmin);
+ CHECK(double, mc_tmax);
+ CHECK(double, mc_dx);
+ CHECK(double, mc_dang);
  CHECK(double, diameter);
- CHECK(double, tilt);
- CHECK(double, swing);
- CHECK(double, rot);
- CHECK(double, x);
- CHECK(double, tiltmax);
- CHECK(double, swingmax);
- CHECK(double, rotmax);
- CHECK(double, zmax);
- CHECK(double, tmin);
- CHECK(double, tmax);
- CHECK(double, dx);
- CHECK(double, dang);
- CHECK(double, tilt);
- CHECK(double, zeta);
+ CHECK(double, tiltrange);
+ CHECK(double, zetarange);
  CHECK(double, kappa);
  CHECK(double, cm_dist);
  CHECK(double, d0_inter);
  CHECK(int,    number);
- CHECK(int,    nexc);
- CHECK(int,    nsteps);
- CHECK(int,    nhot);
+ CHECK(int,    mc_nexc);
+ CHECK(int,    mc_nsteps);
+ CHECK(int,    mc_nhot);
 
 
  Parameters ret;
@@ -104,13 +104,13 @@ Parameters get_parameters(TextInput in) {
  ret.traj_file=traj_file;
 
 // MonteCarlo Parameters
- ret.MC.tmin=tmin;
- ret.MC.tmax=tmax;
- ret.MC.nexc=nexc;
- ret.MC.nsteps=nsteps;
- ret.MC.nhot=nhot;
- ret.MC.dx=dx;
- ret.MC.dang=dang;
+ ret.MC.tmin=mc_tmin;
+ ret.MC.tmax=mc_tmax;
+ ret.MC.nexc=mc_nexc;
+ ret.MC.nsteps=mc_nsteps;
+ ret.MC.nhot=mc_nhot;
+ ret.MC.dx=mc_dx;
+ ret.MC.dang=mc_dang;
 
 // Restraints Parameters
  ret.RST.diameter=diameter;
@@ -118,22 +118,22 @@ Parameters get_parameters(TextInput in) {
  ret.RST.add_dope=add_dope;
  ret.RST.add_pack=add_pack;
  ret.RST.use_volume=use_volume;
- ret.RST.tilt=tilt;
- ret.RST.zeta=zeta;
+ ret.RST.tilt=radians(tiltrange);
+ ret.RST.zeta=zetarange;
  ret.RST.kappa=kappa;
  ret.RST.cm_dist=cm_dist;
  ret.RST.d0_inter=d0_inter;
 
 // Grid Parameters
- ret.grid.tilt=radians(tilt);
- ret.grid.swing=radians(swing);
- ret.grid.rot=radians(rot);
- ret.grid.x=x;
- ret.grid.tiltmax=radians(tiltmax);
- ret.grid.swingmax=radians(swingmax);
- ret.grid.rotmax=radians(rotmax);
+ ret.grid.tilt=radians(grid_dtilt);
+ ret.grid.swing=radians(grid_dswing);
+ ret.grid.rot=radians(grid_drot);
+ ret.grid.x=grid_dx;
+ ret.grid.tiltmax=radians(grid_tiltmax);
+ ret.grid.swingmax=radians(grid_swingmax);
+ ret.grid.rotmax=radians(grid_rotmax);
  ret.grid.xmax=diameter;
- ret.grid.zmax=zmax;
+ ret.grid.zmax=grid_zmax;
 
 // HelixData
  ret.TM.num=number;

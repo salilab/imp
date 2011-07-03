@@ -109,11 +109,11 @@ for(int i=0;i<TM->num;++i){
   xx=0.0;
   yy=0.0;
  }else if(i==1){
-  xx=rand()*(myparam->diameter-5.0)/RAND_MAX+5.0;
+  xx=rand()*(myparam->RST.diameter-5.0)/RAND_MAX+5.0;
   yy=0.0;
  }else{
-  xx=rand()*2.0*myparam->diameter/RAND_MAX-myparam->diameter;
-  yy=rand()*2.0*myparam->diameter/RAND_MAX-myparam->diameter;
+  xx=rand()*2.0*myparam->RST.diameter/RAND_MAX-myparam->RST.diameter;
+  yy=rand()*2.0*myparam->RST.diameter/RAND_MAX-myparam->RST.diameter;
  }
  rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
