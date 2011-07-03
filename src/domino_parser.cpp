@@ -72,7 +72,7 @@ Parameters get_parameters(TextInput in) {
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
  notify(vm);
-/*
+
  CHECK(double, grid_dtilt);
  CHECK(double, grid_dswing);
  CHECK(double, grid_drot);
@@ -95,7 +95,6 @@ Parameters get_parameters(TextInput in) {
  CHECK(int,    mc_nexc);
  CHECK(int,    mc_nsteps);
  CHECK(int,    mc_nhot);
-*/
 
  Parameters ret;
 
