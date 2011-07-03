@@ -21,9 +21,11 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 RigidBodyPackingScore::RigidBodyPackingScore(core::TableRefiner *tbr,
                                              Floats omb, Floats ome,
-                                             Floats ddb, Floats dde):
+                                             Floats ddb, Floats dde,
+                                             double kappa):
                                              tbr_(tbr), omb_(omb), ome_(ome),
-                                             ddb_(ddb), dde_(dde) {}
+                                             ddb_(ddb), dde_(dde),
+                                             kappa_(kappa) {}
 
 Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                                  DerivativeAccumulator *da) const
@@ -124,7 +126,7 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                    " and the distance is " << dist << std::endl);
 
   // calculate the score
-  double score=1000.0;
+  double score=kappa_;
   for(unsigned int i=0;i<omb_.size();i++)
    if(omega >= omb_[i] && omega <= ome_[i] &&
       dist >= ddb_[i] && dist <= dde_[i]) score=0.;

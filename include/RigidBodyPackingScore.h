@@ -21,9 +21,11 @@ class IMPMEMBRANEEXPORT RigidBodyPackingScore : public PairScore
 {
   internal::OwnerPointer<core::TableRefiner> tbr_;
   Floats omb_, ome_, ddb_, dde_;
+  double kappa_;
 public:
   RigidBodyPackingScore(core::TableRefiner *tbr,
-                        Floats omb, Floats ome, Floats ddb, Floats dde);
+                        Floats omb, Floats ome, Floats ddb,
+                        Floats dde, double kappa);
   IMP_PAIR_SCORE(RigidBodyPackingScore);
 };
 

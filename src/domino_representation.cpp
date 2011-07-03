@@ -63,7 +63,7 @@ for(int i=0;i<TM->num;++i){
   atom::Atom a=atom::Atom::setup_particle(pa,atom::AT_CA);
   // calculate radius
   vol=atom::get_volume_from_residue_type(restype);
-  if(myparam->use_volume) rg=algebra::get_ball_radius_from_volume_3d(vol);
+  if(myparam->RST.use_volume) rg=algebra::get_ball_radius_from_volume_3d(vol);
   else rg=2.273;
   // coordinates
   if(read_struct){

@@ -53,36 +53,34 @@ struct MCParameters {
  bool           do_wte;
 };
 
-struct Parameters {
- GridParameters grid;
- HelixData      TM;
- MCParameters   MC;
+struct RstParameters {
  double         diameter;
+ double         tilt;
+ double         zeta;
+ double         kappa;
+ double         d0_inter;
+ double         cm_dist;
  std::string    score_name;
- std::string    ass_file;
- std::string    traj_file;
  bool           add_dope;
  bool           add_pack;
  bool           use_volume;
 };
 
+struct Parameters {
+ GridParameters grid;
+ HelixData      TM;
+ MCParameters   MC;
+ RstParameters  RST;
+ std::string    ass_file;
+ std::string    traj_file;
+};
+
 //general parameters for restraints
-const double kappa_=100.0;
 const double max_score_=0.01;
 
 // packing restraint cluster stuff
 const int packing_nsig_=3;
 const int packing_ncl_=13;
-
-// TODO: move this stuff into HelixData
-// depth range
-const IMP::FloatRange z_range_ = IMP::FloatRange(-5.0,5.0);
-// tilt range
-const IMP::FloatRange tilt_range_ = IMP::FloatRange(0.0,radians(50.0));
-
-// other restraints
-const double d0_inter_=8.0;
-const double cm_dist_=25.0;
 
 IMPMEMBRANE_END_NAMESPACE
 

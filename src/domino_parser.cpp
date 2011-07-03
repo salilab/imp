@@ -59,6 +59,11 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, tmax);
  OPTION(double, dx);
  OPTION(double, dang);
+ OPTION(double, tilt);
+ OPTION(double, zeta);
+ OPTION(double, kappa);
+ OPTION(double, cm_dist);
+ OPTION(double, d0_inter);
  OPTION(int,    number);
  OPTION(int,    nexc);
  OPTION(int,    nsteps);
@@ -81,6 +86,11 @@ Parameters get_parameters(TextInput in) {
  CHECK(double, tmax);
  CHECK(double, dx);
  CHECK(double, dang);
+ CHECK(double, tilt);
+ CHECK(double, zeta);
+ CHECK(double, kappa);
+ CHECK(double, cm_dist);
+ CHECK(double, d0_inter);
  CHECK(int,    number);
  CHECK(int,    nexc);
  CHECK(int,    nsteps);
@@ -90,13 +100,8 @@ Parameters get_parameters(TextInput in) {
  Parameters ret;
 
 // General Parameters
- ret.diameter=diameter;
- ret.score_name=score_name;
  ret.ass_file=ass_file;
  ret.traj_file=traj_file;
- ret.add_dope=add_dope;
- ret.add_pack=add_pack;
- ret.use_volume=use_volume;
 
 // MonteCarlo Parameters
  ret.MC.tmin=tmin;
@@ -106,6 +111,18 @@ Parameters get_parameters(TextInput in) {
  ret.MC.nhot=nhot;
  ret.MC.dx=dx;
  ret.MC.dang=dang;
+
+// Restraints Parameters
+ ret.RST.diameter=diameter;
+ ret.RST.score_name=score_name;
+ ret.RST.add_dope=add_dope;
+ ret.RST.add_pack=add_pack;
+ ret.RST.use_volume=use_volume;
+ ret.RST.tilt=tilt;
+ ret.RST.zeta=zeta;
+ ret.RST.kappa=kappa;
+ ret.RST.cm_dist=cm_dist;
+ ret.RST.d0_inter=d0_inter;
 
 // Grid Parameters
  ret.grid.tilt=radians(tilt);

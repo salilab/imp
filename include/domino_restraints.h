@@ -19,28 +19,31 @@ IMPMEMBRANEEXPORT RestraintSet* create_restraints
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,Parameters* myparam);
 
 IMPMEMBRANEEXPORT void add_excluded_volume
-(Model *m, atom::Hierarchy protein);
+(Model *m,atom::Hierarchy protein,double kappa);
 
 IMPMEMBRANEEXPORT void add_DOPE
 (Model *m,atom::Hierarchy protein,std::string sname);
 
 IMPMEMBRANEEXPORT void add_packing_restraint
-(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,HelixData *TM);
+(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,
+ HelixData *TM,double kappa);
 
 IMPMEMBRANEEXPORT core::PairRestraint* add_distance_restraint
-(Model *m, Particle *p0, Particle *p1, double x0);
+(Model *m,Particle *p0,Particle *p1,double x0,double kappa);
 
 IMPMEMBRANEEXPORT void add_depth_restraint
-(Model *m, Particle *p);
+(Model *m,Particle *p,FloatRange zrange,double kappa);
 
 IMPMEMBRANEEXPORT core::PairRestraint* add_interacting_restraint
-(Model *m,Particle *rb0,Particle *rb1,core::TableRefiner *tbr);
+(Model *m,Particle *rb0,Particle *rb1,
+ core::TableRefiner *tbr,double dist,double kappa);
 
 IMPMEMBRANEEXPORT void add_diameter_restraint
-(Model *m, atom::Hierarchy protein, double diameter, HelixData *TM);
+(Model *m,atom::Hierarchy protein,double diameter,
+ HelixData *TM,double kappa);
 
 IMPMEMBRANEEXPORT void add_tilt_restraint
-(Model *m, Particle *p);
+(Model *m,Particle *p,FloatRange trange,double kappa);
 
 IMPMEMBRANE_END_NAMESPACE
 
