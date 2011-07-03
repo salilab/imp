@@ -39,7 +39,7 @@ void MonteCarloWithWte::update_bias(double score)
   double vbias=get_bias(score);
   double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
   for (int i=0; i<nbin_; ++i){
-   double xx=min_+double(i)*dx_;
+   double xx=min_+i*dx_;
    double dp=(xx-score)/sigma_;
    bias_[i] += ww*exp(-0.5*dp*dp);
   }

@@ -8,6 +8,7 @@
 #include <IMP/core.h>
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
+#include <IMP/rmf.h>
 #include <mpi.h>
 #include <time.h>
 #include <fstream>
@@ -78,13 +79,13 @@ MPI_Bcast(&iseed, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
 srand (iseed);
 
 // log file
-std::ofstream myfile;
+std::ofstream logfile;
 std::stringstream out;
 out << myrank;
-std::string names="log."+out.str();
+std::string names="log"+out.str();
 char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
 strcpy(name, names.c_str());
-myfile.open(name);
+logfile.open(name);
 
 // parsing input
 if(myrank==0) std::cout << "Parsing input file" << std::endl;
@@ -103,6 +104,13 @@ atom::Hierarchy all=atom::Hierarchy::setup_particle(ph);
 // create representation
 if(myrank==0) std::cout << "Creating representation" << std::endl;
 core::TableRefiner* tbr=generate_TM(m,all,&mydata);
+
+// trajectory file
+std::string trajname="traj"+out.str()+".rmf";
+rmf::RootHandle rh = rmf::RootHandle(trajname,true);
+atom::HierarchiesTemp hs=all.get_children();
+for(int i=0;i<hs.size();++i)
+ rmf::add_hierarchy(rh, hs[i]);
 
 // create restraints
 if(myrank==0) std::cout << "Creating restraints" << std::endl;
@@ -130,7 +138,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // print statistics
  double myscore=m->evaluate(false);
  int    myindex=index[myrank];
- myfile << imc << " " << myindex << " " << myscore << " "
+ logfile << imc << " " << myindex << " " << myscore << " "
  << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
 
 // now it's time to try an exchange
@@ -150,9 +158,13 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  for(int i=0;i<nproc;++i) buf[i]=0;
  buf[myrank]=myindex;
  MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+
+// save configuration to file
+ for(int i=0;i<hs.size();++i)
+  rmf::save_frame(rh,imc,hs[i]);
 }
 
-myfile.close();
+logfile.close();
 MPI_Finalize();
 return 0;
 }
