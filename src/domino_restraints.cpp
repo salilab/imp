@@ -36,11 +36,13 @@ for(int i=0;i<TM->num;++i){
  add_depth_restraint(m,rb,z_range,kappa);
  add_tilt_restraint(m,rb,tilt_range,kappa);
 }
+
 // multi-body restraints
 add_excluded_volume(m,protein,kappa);
 if(RST->add_dope) add_DOPE(m,protein,RST->score_name);
 if(RST->add_pack) add_packing_restraint(m,protein,tbr,TM,kappa);
 add_diameter_restraint(m,protein,RST->diameter,TM,kappa);
+
 // two-body restraints
 for(unsigned int i=0;i<TM->loop.size();++i){
  int i0=TM->loop[i].first;
@@ -112,7 +114,7 @@ m->set_maximum_score(dope, max_score_);
 }
 
 void add_packing_restraint
-(Model *m, atom::Hierarchy protein,core::TableRefiner *tbr,
+(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,
 HelixData *TM,double kappa_)
 {
 //if the helices are interacting, apply a filter on the crossing angle
