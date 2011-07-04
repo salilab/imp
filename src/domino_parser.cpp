@@ -27,8 +27,8 @@ Parameters get_parameters(TextInput in) {
  using namespace boost::program_options;
  options_description desc;
  std::string score_name,ass_file,traj_file,sequence;
- std::vector<std::string> res, inter, loop;
- bool add_dope, add_pack, use_volume;
+ std::vector<std::string> res,inter,loop;
+ bool add_dope,add_pack,use_volume,do_wte;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
@@ -44,6 +44,8 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("add_dope",    value< bool >(&add_dope),           "ciao");
  desc.add_options()("add_pack",    value< bool >(&add_pack),           "ciao");
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
+ desc.add_options()("do_wte",      value< bool >(&do_wte),             "ciao");
+
 
 
  OPTION(double, grid_dtilt);
@@ -64,10 +66,16 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, kappa);
  OPTION(double, cm_dist);
  OPTION(double, d0_inter);
+ OPTION(double, wte_w0);
+ OPTION(double, wte_sigma);
+ OPTION(double, wte_gamma);
+ OPTION(double, wte_emin);
+ OPTION(double, wte_emax);
  OPTION(int,    number);
  OPTION(int,    mc_nexc);
  OPTION(int,    mc_nsteps);
  OPTION(int,    mc_nhot);
+ OPTION(int,    mc_nwrite);
 
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
@@ -91,10 +99,16 @@ Parameters get_parameters(TextInput in) {
  CHECK(double, kappa);
  CHECK(double, cm_dist);
  CHECK(double, d0_inter);
+ CHECK(double, wte_w0);
+ CHECK(double, wte_sigma);
+ CHECK(double, wte_gamma);
+ CHECK(double, wte_emin);
+ CHECK(double, wte_emax);
  CHECK(int,    number);
  CHECK(int,    mc_nexc);
  CHECK(int,    mc_nsteps);
  CHECK(int,    mc_nhot);
+ CHECK(int,    mc_nwrite);
 
  Parameters ret;
 
@@ -108,8 +122,15 @@ Parameters get_parameters(TextInput in) {
  ret.MC.nexc=mc_nexc;
  ret.MC.nsteps=mc_nsteps;
  ret.MC.nhot=mc_nhot;
+ ret.MC.nwrite=mc_nwrite;
  ret.MC.dx=mc_dx;
  ret.MC.dang=mc_dang;
+ ret.MC.do_wte=do_wte;
+ ret.MC.wte_w0=wte_w0;
+ ret.MC.wte_sigma=wte_sigma;
+ ret.MC.wte_gamma=wte_gamma;
+ ret.MC.wte_emin=wte_emin;
+ ret.MC.wte_emax=wte_emax;
 
 // Restraints Parameters
  ret.RST.diameter=diameter;

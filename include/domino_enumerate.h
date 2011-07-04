@@ -47,8 +47,14 @@ struct MCParameters {
  double         tmax;
  double         dx;
  double         dang;
+ double         wte_w0;
+ double         wte_sigma;
+ double         wte_gamma;
+ double         wte_emin;
+ double         wte_emax;
  int            nexc;
  int            nsteps;
+ int            nwrite;
  int            nhot;
  bool           do_wte;
 };

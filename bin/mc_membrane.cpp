@@ -160,8 +160,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
 
 // save configuration to file
- for(int i=0;i<hs.size();++i)
-  rmf::save_frame(rh,imc,hs[i]);
+ if(imc%mydata.MC.nwrite==0){
+  for(int i=0;i<hs.size();++i)
+   rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[i]);
+ }
 }
 
 logfile.close();
