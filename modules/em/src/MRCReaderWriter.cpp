@@ -168,6 +168,9 @@ void MRCReaderWriter::write(const char *fn,const float *pt)
 
 void MRCReaderWriter::write_header(std::ofstream &s)
 {
+  header.ispg = 1065353216;
+  memcpy(header.map, "MAP ", 4);
+  //  header.machinestamp = get_machine_stamp();
   int wordsize=4;
   s.write((char *) &header.nx,wordsize);
   s.write((char *) &header.ny,wordsize);
