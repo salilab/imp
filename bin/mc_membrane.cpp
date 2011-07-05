@@ -10,6 +10,7 @@
 #include <IMP/membrane.h>
 #include <IMP/rmf.h>
 #include <mpi.h>
+#include <boost/scoped_array.hpp>
 #include <time.h>
 #include <fstream>
 #include <sstream>
@@ -53,7 +54,7 @@ int get_friend(int* index,int myrank,int step,int nrep)
 bool get_acceptance(double score0,double score1,double delta_wte,
                     double T0,double T1)
 {
- double accept, delta;
+ double accept,delta;
  delta=(score1-score0)*(1.0/T1-1.0/T0)+delta_wte;
  if(delta>=0.0){
   accept=1.0;
@@ -154,6 +155,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // send and receive score
  MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
  MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+
 // if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
  double delta_wte=0.0;
  if(mydata.MC.do_wte){
@@ -161,27 +163,38 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    dynamic_cast<membrane::MonteCarloWithWte*>(mc);
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
-  MPI_Isend(&U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
-  MPI_Recv(&U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
-  delta_wte=0.0;
+  MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+  MPI_Recv(U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+  delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
+            (U_fbias[0]-U_fbias[1])/temp[findex];
  }
+// calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
+// if accepted exchange what is needed
  if(do_accept){
   myindex=findex;
   mc->set_kt(temp[myindex]);
-// if WTE, change W0 and exchange bias
+// if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
    membrane::MonteCarloWithWte *ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc);
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
+   int     nbins=ptr->get_nbin;
+   double* mybias=ptr->get_bias_buffer();
+   double* fbias;
+   MPI_Isend(mybias, nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+   MPI_Recv(fbias,   nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+   Floats val(fbias, fbias+nbins);
+   ptr->set_bias(val);
   }
  }
-// update index vector
- int buf[nproc];
- for(int i=0;i<nproc;++i) {buf[i]=0;}
+
+// in any case, update index vector
+ boost::scoped_array<int> buf;
+ buf.reset(new int[nproc]);
  buf[myrank]=myindex;
- MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ MPI_Allreduce(buf.get(),index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
 
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){

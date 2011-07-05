@@ -10,6 +10,7 @@
 
 #include "membrane_config.h"
 
+#include <boost/scoped_array.hpp>
 #include <IMP/core.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -18,7 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
 {
   double  min_, max_, sigma_, gamma_, dx_, w0_;
-  double* bias_;
+  boost::scoped_array<double> bias_;
   int     nbin_;
   void    update_bias(double score);
   double  do_evaluate() {
@@ -32,17 +33,22 @@ public:
 
   double get_bias(double score);
 
-  void set_w0(double w0) {
-    w0_=w0;
-  }
-
-  void set_bias(double bias[]) {
-    for(int i=0;i<get_nbin();++i) bias_[i]=bias[i];
-  }
-
   int get_nbin() const {
-    return nbin_;
+   return nbin_;
   }
+
+  void set_w0(double w0) {w0_=w0;}
+
+  void set_bias(const Floats &bias) {
+   IMP_USAGE_CHECK(bias.size() == nbin_, "Don't match");
+   std::copy(bias.begin(), bias.end(), bias_.get());
+  }
+
+#ifndef SWIG
+  double* get_bias_buffer() const {
+   return bias_.get();
+  }
+#endif
 
   IMP_MONTE_CARLO(MonteCarloWithWte);
 };

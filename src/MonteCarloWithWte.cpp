@@ -21,8 +21,7 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   w0_    = w0;
   dx_    = sigma / 3.0;
   nbin_  = floor((emax-emin)/dx_)+1;
-  bias_  = new double[nbin_];
-  for (int i=0; i<nbin_; ++i) bias_[i] = 0.0;
+  bias_.reset(new double[nbin_]);
   }
 
 double MonteCarloWithWte::get_bias(double score)
@@ -35,7 +34,6 @@ double MonteCarloWithWte::get_bias(double score)
 void MonteCarloWithWte::update_bias(double score)
 {
   if(score < min_ || score > max_) return;
-// first calculate current Gaussian height
   double vbias=get_bias(score);
   double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
   for (int i=0; i<nbin_; ++i){
