@@ -36,7 +36,9 @@ void MonteCarloWithWte::update_bias(double score)
   if(score < min_ || score > max_) return;
   double vbias=get_bias(score);
   double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
-  for (int i=0; i<nbin_; ++i){
+  int i0=floor((score-4.0*sigma_-min_)/dx_);
+  int i1=floor((score+4.0*sigma_-min_)/dx_);
+  for (int i=std::max(0,i0);i<=std::min(i1,nbin_-1);++i){
    double xx=min_+i*dx_;
    double dp=(xx-score)/sigma_;
    bias_[i] += ww*exp(-0.5*dp*dp);
