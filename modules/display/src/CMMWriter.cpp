@@ -13,6 +13,7 @@ IMPDISPLAY_BEGIN_NAMESPACE
 
 void CMMWriter::do_open() {
   get_stream() << "<marker_set name=\"" <<get_name() << "\">"<<std::endl;
+  //std::cout << "Initializing" << std::endl;
   marker_index_=0;
 }
 
@@ -23,6 +24,13 @@ void CMMWriter::do_close() {
 
 bool CMMWriter::handle(SphereGeometry *g, Color color,
                         std::string name) {
+  // evil, need this first to make sure that marker_index_ is
+  // initialized. Otherwise marker_index_ is undefined in the
+  // statement below.
+  get_stream();
+  IMP_INTERNAL_CHECK(marker_index_
+                     < std::numeric_limits<unsigned int>::max()/10,
+                     "Uninitialized marker index id");
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
                << " x=\"" << g->get_geometry().get_center()[0] << "\""
                << " y=\"" << g->get_geometry().get_center()[1] << "\""
@@ -32,11 +40,17 @@ bool CMMWriter::handle(SphereGeometry *g, Color color,
                << " g=\"" << color.get_green() << "\""
                << " b=\"" << color.get_blue() <<  "\""
                << " note=\"" << name <<  "\"/>" << std::endl;
+  IMP_INTERNAL_CHECK(marker_index_
+                     < std::numeric_limits<unsigned int>::max()/10,
+                     "Uninitialized marker index id");
   return true;
 }
 
 bool CMMWriter::handle(PointGeometry *g, Color color,
                         std::string name) {
+  IMP_INTERNAL_CHECK(marker_index_
+                     < std::numeric_limits<unsigned int>::max()/10,
+                     "Uninitialized marker index id");
   get_stream() << "<marker id=\"" << ++marker_index_ << "\""
                << " x=\"" << g->get_geometry().operator[](0) << "\""
                << " y=\"" << g->get_geometry().operator[](1) << "\""
