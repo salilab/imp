@@ -51,12 +51,12 @@ class IMPRMFEXPORT SharedData: public RefCounted {
       bool found=true;
       if (cache_.size() <= kc.get_index()) {
         found=false;
-      } else if (per_frame
+      } else if ((per_frame
                  && cache_[kc.get_index()].first
-                 ==null_
-                 || !per_frame
+                  ==null_)
+                 || (!per_frame
                  && cache_[kc.get_index()].second
-                 ==null_) {
+                     ==null_)) {
         found=false;
       }
       if (!found) {
@@ -106,12 +106,12 @@ public:
       found=false;
     } else if (cache_[kc.get_index()].size() <= type_index) {
       found=false;
-    } else if (per_frame
+    } else if ((per_frame
                && cache_[kc.get_index()][type_index].first
-               ==null_
-               || !per_frame
+                ==null_)
+               || (!per_frame
                && cache_[kc.get_index()][type_index].second
-               ==null_) {
+                   ==null_)) {
       found=false;
     }
     if (!found) {
