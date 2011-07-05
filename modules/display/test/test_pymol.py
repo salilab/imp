@@ -16,6 +16,7 @@ class TestBL(IMP.test.TestCase):
         del w
         bstr= buf.getvalue()
         print bstr
+        self.assert_(bstr.find("from pymol.cgo import") != -1)
         for i in range(0,5):
             self.assert_(bstr.find("cmd.load_cgo(data[k], k, "+str(i+1)) != -1)
 
