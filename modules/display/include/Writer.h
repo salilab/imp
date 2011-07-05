@@ -106,14 +106,7 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
     if (out_== TextOutput()) {
-      if (file_name_.find("%1%") != std::string::npos) {
-        IMP_USAGE_CHECK(get_frame()>=0, "No frame set");
-        std::ostringstream oss;
-        oss << boost::format(file_name_)%get_frame();
-        out_= TextOutput(oss.str());
-      } else {
-        out_= TextOutput(file_name_);
-      }
+      out_=TextOutput(get_current_file_name());
       do_open();
     }
     return out_;
@@ -125,6 +118,18 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
   //! Create a writer opening the file with the passed name
   TextWriter(TextOutput fn);
   TextWriter(std::string name);
+
+  //! get the name of the current file being writter
+  std::string get_current_file_name() const {
+    if (file_name_.find("%1%") != std::string::npos) {
+      IMP_USAGE_CHECK(get_frame()>=0, "No frame set");
+      std::ostringstream oss;
+      oss << boost::format(file_name_)%get_frame();
+      return oss.str();
+    } else {
+      return file_name_;
+    }
+  }
 
   //! Write the data and close the file
   virtual ~TextWriter();
