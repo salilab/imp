@@ -64,9 +64,9 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
       how to write that particular sort of geometry.
       @{
   */
-  void add_geometry(Geometry* g);
+  virtual void add_geometry(Geometry* g);
 
-  void add_geometry(const Geometries &g) {
+  virtual void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
       IMP::internal::OwnerPointer<Geometry> gp(g[i]);
@@ -130,7 +130,8 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
       return file_name_;
     }
   }
-
+  void add_geometry(Geometry* g);
+  void add_geometry(const Geometries &g);
   //! Write the data and close the file
   virtual ~TextWriter();
 };

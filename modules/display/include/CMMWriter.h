@@ -34,6 +34,10 @@ class IMPDISPLAYEXPORT CMMWriter: public TextWriter
               Color color, std::string name);
 public:
   IMP_TEXT_WRITER(CMMWriter);
+ public:
+  unsigned int get_current_index() const {
+    return marker_index_;
+  }
 };
 
 

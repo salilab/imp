@@ -39,6 +39,18 @@ TextWriter::TextWriter(std::string name): Writer(name), file_name_(name) {
   set_was_used(true);
 }
 
+void TextWriter::add_geometry(Geometry* g) {
+  // make sure the stream is open as various writers depend on the
+  // do open method to initialize values and they might access
+  // them before they call get_stream
+  get_stream();
+  Writer::add_geometry(g);
+}
+
+void TextWriter::add_geometry(const Geometries &g) {
+  Writer::add_geometry(g);
+}
+
 TextWriter::~TextWriter(){
 }
 
