@@ -15,14 +15,20 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 core::MonteCarlo* setup_MonteCarlo(Model *m,
- atom::Hierarchy protein, Parameters *myparam)
+ atom::Hierarchy protein,double temp,Parameters *myparam)
 {
  MCParameters *MC=&(myparam->MC);
  double mc_dx_=MC->dx;
  double mc_dang_=MC->dang;
 
- IMP_NEW(core::MonteCarlo,mc,(m));
-
+ Pointer<core::MonteCarlo> mc;
+ if (MC->do_wte){
+  double w0=MC->wte_w0*temp/MC->tmin;
+  mc= new membrane::MonteCarloWithWte(m,MC->wte_emin,MC->wte_emax,
+                                      MC->wte_sigma,MC->wte_gamma,w0);
+ }else{
+  mc= new core::MonteCarlo(m);
+ }
  mc->set_return_best(false);
  for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);

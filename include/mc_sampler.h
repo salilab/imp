@@ -17,7 +17,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT core::MonteCarlo* setup_MonteCarlo
-(Model *m, atom::Hierarchy protein, Parameters *myparam);
+(Model *m, atom::Hierarchy protein, double temp, Parameters *myparam);
 
 IMPMEMBRANE_END_NAMESPACE
 
