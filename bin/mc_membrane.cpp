@@ -166,7 +166,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
   MPI_Recv(U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
-            (U_fbias[0]-U_fbias[1])/temp[findex];
+            (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
 // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
@@ -180,9 +180,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    membrane::MonteCarloWithWte *ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc);
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
-   int     nbins=ptr->get_nbin;
+   int     nbins=ptr->get_nbin();
    double* mybias=ptr->get_bias_buffer();
-   double* fbias;
+   double* fbias=new double[nbins];
    MPI_Isend(mybias, nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
    MPI_Recv(fbias,   nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
    Floats val(fbias, fbias+nbins);
@@ -191,10 +191,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  }
 
 // in any case, update index vector
- boost::scoped_array<int> buf;
- buf.reset(new int[nproc]);
+ int buf[nproc];
+ for(int i=0; i<nproc; ++i) {buf[i]=0;}
  buf[myrank]=myindex;
- MPI_Allreduce(buf.get(),index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
+ MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
 
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){
