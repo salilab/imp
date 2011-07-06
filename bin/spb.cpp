@@ -36,7 +36,8 @@ algebra::Vector2Ds do_shear
  return ret;
 }
 
-algebra::Vector3Ds grid_cell(double side, double ds, double z)
+algebra::Vector3Ds grid_cell
+(double side,double ds,double z,std::string cell_type)
 {
  algebra::BoundingBox2D bb=algebra::BoundingBox2D(algebra::Vector2D(0.0,0.0),
                                                algebra::Vector2D(side,side));
@@ -54,25 +55,38 @@ algebra::Vector3Ds grid_cell(double side, double ds, double z)
  }
  if(cell_type=="hexagon"){
   algebra::Vector3D tra=algebra::Vector3D(0.0,0.0,0.0);
-  for(i=0;i<3;++i){
+  for(int i=0;i<3;++i){
    algebra::Rotation3D rot=
    algebra::get_rotation_about_axis(algebra::Vector3D(0.0,0.0,1.0),
                                     (double)i * 2.0 * IMP::PI / 3.0);
    algebra::Transformation3D tr=algebra::Transformation3D(rot,tra);
-   for(j=0;j<positions.size();++j){
-    positions2.push_back(tr.get_trasformed(positions[j]));
+   for(int j=0;j<positions.size();++j){
+    positions2.push_back(tr.get_transformed(positions[j]));
    }
   }
  }
- positions+=positions2;
+ //positions+=positions2;
  return positions;
+}
+
+atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
+{
+ atom::Hierarchies hs=atom::Hierarchies();
+ for(int i=0;i<ncells;++i){
+  IMP_NEW(Particle,p,(m));
+  atom::Hierarchy h=atom::Hierarchy::setup_particle(p);
+  std::stringstream out;
+  out << i;
+  h->set_name(name+" hierarchy, cell " + out.str());
+  hs.push_back(h);
+ }
+ return hs;
 }
 
 int main(int  , char **)
 {
 
 // various parameters
-const double sqrt3=sqrt(3.0);
 const double ds=40.0;
 double       side=80.0;
 const int    niter=3;
@@ -80,7 +94,7 @@ bool         do_statistics=true;
 bool         do_random=true;
 bool         do_save_ass=false;
 const int    skip=100;
-std::string  cell_type="hexagon"
+std::string  cell_type="hexagon";
 int          num_cells;
 int          num_copies;
 double       error_bound;
@@ -97,7 +111,7 @@ if(cell_type=="rhombus"){
 }else if(cell_type=="square"){
  num_cells=9;
  num_copies=6;
- side=sqrt(1.5*pow(side,2)*sqrt3);
+ side=sqrt(1.5*pow(side,2)*sqrt(3.0));
  error_bound=pow(ds,2);
 }
 
