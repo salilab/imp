@@ -43,8 +43,14 @@ template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
 inline IMP::algebra::Transformation3D
 get_transformation_aligning_first_to_second(
+#if !defined(__clang__)
 IMP_RESTRICT const Vector3DsOrXYZs0 &from,
-IMP_RESTRICT const Vector3DsOrXYZs1 &to) {
+IMP_RESTRICT const Vector3DsOrXYZs1 &to
+#else
+const Vector3DsOrXYZs0 &from,
+const Vector3DsOrXYZs1 &to
+#endif
+) {
   IMP_INTERNAL_CHECK(from.size() == to.size(), "sizes don't match");
   IMP_INTERNAL_CHECK(from.size() >0, "Points are needed");
   // compute the centroid of the points and transform
