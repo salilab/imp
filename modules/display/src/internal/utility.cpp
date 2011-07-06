@@ -29,6 +29,7 @@ namespace {
                        == ret.end(), "Still -1 found");
     return ret;
   }
+#ifdef IMP_DISPLAY_USE_IMP_CGAL
   Ints get_triangulation_of_convex_faces(const Ints &faces) {
     using IMP::operator<<;
     IMP_LOG(VERBOSE, "Convex faces are " << faces << std::endl);
@@ -49,8 +50,10 @@ namespace {
     IMP_LOG(VERBOSE, "Triangles are " << ret << std::endl);
     return ret;
   }
+#endif
   Ints get_triangulation_of_face(const Ints &face,
                                  const algebra::Vector3Ds &vertices) {
+    IMP_UNUSED(vertices[0]);
     using IMP::operator<<;
     if (face.size()==3) {
       return face;
@@ -63,6 +66,7 @@ namespace {
       IMP_LOG(VERBOSE, "Triangles are " << ret << std::endl);
       return ret;
 #else
+      IMP_UNUSED(face.size());
       IMP_THROW("Non-triangular face found. Processing those requires CGAL.",
                 ValueException);
 #endif
