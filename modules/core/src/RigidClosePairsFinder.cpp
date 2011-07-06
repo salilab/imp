@@ -267,20 +267,6 @@ void RigidClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }
 
-namespace {
-  ContainersTemp fill_containers(Refiner *r, const ParticlesTemp &pa) {
-    ContainersTemp ret;
-    for (unsigned int i=0; i< pa.size(); ++i) {
-        if (RigidBody::particle_is_instance(pa[i])) {
-          ContainersTemp m= r->get_input_containers(pa[i]);
-          ret.insert(ret.end(), m.begin(), m.end());
-        }
-    };
-    IMP_LOG(VERBOSE, "Input containers are " << Containers(ret) << std::endl);
-    return ret;
-  }
-}
-
 ParticlesTemp
 RigidClosePairsFinder::get_input_particles(const ParticlesTemp &pa) const {
   ParticlesTemp ret= pa;

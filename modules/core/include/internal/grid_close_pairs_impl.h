@@ -10,6 +10,7 @@
 
 #include "../core_config.h"
 #include "../GridClosePairsFinder.h"
+#include "sinks.h"
 #include "IMP/core/QuadraticClosePairsFinder.h"
 #include "IMP/core/XYZR.h"
 #include <IMP/algebra/Grid3D.h>
@@ -57,24 +58,8 @@ struct ParticleClose {
                                    XYZR(a).get_radius());
   }
 };
-struct ParticlePairSink {
-  ParticlePairsTemp &out_;
-  ParticlePairSink(ParticlePairsTemp &out): out_(out){}
-  typedef ParticlePair argument_type;
-  bool operator()(const ParticlePair &c) {
-    out_.push_back(c);
-    return true;
-  }
-};
-struct ParticleSink {
-  ParticlesTemp &out_;
-  ParticleSink(ParticlesTemp &out): out_(out){}
-  typedef Particle* argument_type;
-  bool operator()( Particle* c) {
-    out_.push_back(c);
-    return true;
-  }
-};
+
+
 struct PeriodicParticleClose {
   algebra::Vector3D uc_;
   unsigned int merged_;

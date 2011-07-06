@@ -28,6 +28,7 @@ files = [
          'triplet_helpers.h',
          'grid_close_pairs_impl.h',
          'truncated_harmonic.h',
+         'sinks.h'
         ]
 
 files = [File(x) for x in files]
