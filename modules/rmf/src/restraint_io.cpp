@@ -63,8 +63,6 @@ namespace {
     IMP_COMPARISONS(Subset);
   };
 
-  IMP_VALUES(Subset, Subsets);
-
   void Subset::show(std::ostream &out) const {
     out << "[";
     for (unsigned int i=0; i< size(); ++i) {
@@ -78,10 +76,11 @@ namespace {
     show(oss);
     return oss.str();
   }
-
+#if !defined(__clang__)
   inline std::size_t hash_value(const Subset &t) {
     return t.__hash__();
   }
+#endif
 
 
   typedef IMP::compatibility::map<Subset, NodeHandle> Index;
