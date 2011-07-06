@@ -66,6 +66,15 @@ struct ParticlePairSink {
     return true;
   }
 };
+struct ParticleSink {
+  ParticlesTemp &out_;
+  ParticleSink(ParticlesTemp &out): out_(out){}
+  typedef Particle* argument_type;
+  bool operator()( Particle* c) {
+    out_.push_back(c);
+    return true;
+  }
+};
 struct PeriodicParticleClose {
   algebra::Vector3D uc_;
   unsigned int merged_;
@@ -172,10 +181,10 @@ struct BBPairSink {
     return true;
   }
 };
-std::string do_show(Particle*p) {
+inline std::string do_show(Particle*p) {
   return p->get_name();
 }
-std::string do_show(const ParticlesTemp&p) {
+inline std::string do_show(const ParticlesTemp&p) {
   std::ostringstream oss;
   for (unsigned int i=0; i< p.size(); ++i) {
     oss << do_show(p[i]) << " ";
@@ -185,10 +194,10 @@ std::string do_show(const ParticlesTemp&p) {
 /*algebra::BoundingBox3D do_show(algebra::BoundingBox3D bb) {
   return bb;
   }*/
-unsigned int do_show(unsigned int i) {
+inline unsigned int do_show(unsigned int i) {
   return i;
 }
-std::string do_show(const std::vector<unsigned int>&p) {
+inline std::string do_show(const std::vector<unsigned int>&p) {
   std::ostringstream oss;
   for (unsigned int i=0; i< p.size(); ++i) {
     oss << do_show(p[i]) << " ";

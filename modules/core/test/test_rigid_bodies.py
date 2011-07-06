@@ -88,7 +88,7 @@ class RBDTests(IMP.test.TestCase):
         ntr= rb.get_reference_frame().get_transformation_to()
         print ntr
         print tr
-        self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2)
+        self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2.2)
 
     # test one with snap and non-snap
     # test setting things to be optimized or not
