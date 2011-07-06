@@ -15,6 +15,19 @@
 #include <iostream>
 using namespace IMP;
 
+// various parameters
+const double ds=40.0;
+double       side=80.0;
+const int    niter=3;
+bool         do_statistics=true;
+bool         do_random=true;
+bool         do_save_ass=false;
+const int    skip=100;
+std::string  cell_type="hexagon";
+int          num_cells;
+int          num_copies;
+double       error_bound;
+
 algebra::Vector2Ds do_compress
 (algebra::Vector2Ds points, double xf, double yf)
 {
@@ -36,8 +49,7 @@ algebra::Vector2Ds do_shear
  return ret;
 }
 
-algebra::Vector3Ds grid_cell
-(double side,double ds,double z,std::string cell_type)
+algebra::Vector3Ds grid_cell(double side,double ds,double z)
 {
  algebra::BoundingBox2D bb=algebra::BoundingBox2D(algebra::Vector2D(0.0,0.0),
                                                algebra::Vector2D(side,side));
@@ -118,21 +130,54 @@ int copy,int start_residue=-1,int length=-1)
  return protein;
 }
 
+core::DistancePairScore* get_pair_score(FloatRange dist)
+{
+ IMP_NEW(core::HarmonicWell,hw,(dist,1.0));
+ IMP_NEW(core::DistancePairScore,ps,(hw));
+ return ps.release();
+}
+
+void add_internal_restraint(Model *m,std::string name,
+atom::Molecule protein_a,atom::Molecule protein_b,double dist)
+{
+ core::DistancePairScore* ps=get_pair_score(FloatRange(-500.0, dist));
+ atom::Selection sa=atom::Selection(protein_a);
+ atom::Selection sb=atom::Selection(protein_b);
+ sa.set_terminus(atom::Selection::C);
+ sa.set_terminus(atom::Selection::N);
+ Particle*  pa=sa.get_selected_particles()[0];
+ Particle*  pb=sb.get_selected_particles()[0];
+ IMP_NEW(core::PairRestraint,r,(ps,ParticlePair(pa, pb)));
+ r->set_name("IR " + name);
+ m->set_maximum_score(r, error_bound);
+ m->add_restraint(r);
+}
+
+atom::Molecule create_merged_protein
+(Model *m,std::string name,atom::Molecule protein_a,
+atom::Molecule protein_b,int copy,double dist=-1.0)
+{
+ IMP_NEW(Particle,p,(m));
+ atom::Molecule h=atom::Molecule::setup_particle(p);
+ h->set_name(name);
+ if (copy==0 and dist >=0.0){
+  add_internal_restraint(m,name,protein_a,protein_b,dist);
+ }
+ ParticlesTemp psa=protein_a.get_leaves();
+ for(int i=0;i<psa.size();++i){
+  protein_a.remove_child(atom::Domain(psa[i]));
+  h.add_child(atom::Domain(psa[i]));
+ }
+ ParticlesTemp psb=protein_b.get_leaves();
+ for(int i=0;i<psb.size();++i){
+  protein_b.remove_child(atom::Domain(psb[i]));
+  h.add_child(atom::Domain(psb[i]));
+ }
+ return h;
+}
+
 int main(int  , char **)
 {
-
-// various parameters
-const double ds=40.0;
-double       side=80.0;
-const int    niter=3;
-bool         do_statistics=true;
-bool         do_random=true;
-bool         do_save_ass=false;
-const int    skip=100;
-std::string  cell_type="hexagon";
-int          num_cells;
-int          num_copies;
-double       error_bound;
 
 // cell dependent parameters
 if(cell_type=="rhombus"){
