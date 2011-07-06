@@ -32,23 +32,19 @@ void Writer::add_geometry(Geometry *g) {
 
 
 
-TextWriter::TextWriter(TextOutput fn): Writer(fn.get_name()), out_(fn){
+TextWriter::TextWriter(TextOutput fn): Writer(fn.get_name()), out_(fn) {
   set_was_used(true);
 }
 TextWriter::TextWriter(std::string name): Writer(name), file_name_(name) {
   set_was_used(true);
 }
 
-void TextWriter::add_geometry(Geometry* g) {
-  // make sure the stream is open as various writers depend on the
-  // do open method to initialize values and they might access
-  // them before they call get_stream
-  get_stream();
-  Writer::add_geometry(g);
-}
-
-void TextWriter::add_geometry(const Geometries &g) {
-  Writer::add_geometry(g);
+void TextWriter::open() {
+  IMP_INTERNAL_CHECK(!(file_name_.find("%1%") != std::string::npos
+                       && get_frame() == -1),
+                     "Cant open file without a frame.");
+  out_=TextOutput(get_current_file_name());
+  do_open();
 }
 
 TextWriter::~TextWriter(){
@@ -62,6 +58,7 @@ void TextWriter::do_set_frame() {
     do_close();
     out_=TextOutput();
   }
+  open();
 }
 
 
