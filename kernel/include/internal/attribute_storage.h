@@ -182,7 +182,7 @@ public:
   void swap_with(VectorStorage<Traits> &o) {
     std::swap(map_, o.map_);
   }
-  void fill(typename Traits::PassValue v) {
+  void fill(typename Traits::PassValue) {
     IMP_FAILURE("Not supported");
   }
   ~RefCountedMapStorage(){
