@@ -385,14 +385,14 @@ namespace {
     for (unsigned int i=0; i< ch.size(); ++i) {
       Pointer<display::Geometry> curg;
       if (ch[i].get_type()== GEOMETRY) {
-        if (curg=try_read_cylinder(ch[i], frame,
-                               IMP_HDF5_PASS_GEOMETRY_KEYS));
-        else if (curg=try_read_segment(ch[i], frame,
-                                  IMP_HDF5_PASS_GEOMETRY_KEYS));
-        else if (curg=try_read_sphere(ch[i], frame,
-                                 IMP_HDF5_PASS_GEOMETRY_KEYS));
-        else if (curg=try_read_surface(ch[i],
-                                     IMP_HDF5_PASS_GEOMETRY_KEYS));
+        if ((curg=try_read_cylinder(ch[i], frame,
+                                    IMP_HDF5_PASS_GEOMETRY_KEYS)));
+        else if ((curg=try_read_segment(ch[i], frame,
+                                        IMP_HDF5_PASS_GEOMETRY_KEYS)));
+        else if ((curg=try_read_sphere(ch[i], frame,
+                                       IMP_HDF5_PASS_GEOMETRY_KEYS)));
+        else if ((curg=try_read_surface(ch[i],
+                                        IMP_HDF5_PASS_GEOMETRY_KEYS)));
         else {
           display::Geometries c=read_internal(ch[i], frame,
                                      IMP_HDF5_PASS_GEOMETRY_KEYS);
