@@ -219,11 +219,6 @@ namespace {
     static const IntKey ik("dope atom type");
     return ik;
   }
-
-  int get_index(Particle *p) {
-    return p->get_value(get_dope_type_key());
-  }
-
 }
 
 
