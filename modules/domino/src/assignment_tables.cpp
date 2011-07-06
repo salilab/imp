@@ -239,22 +239,6 @@ namespace {
   }
 
 
-  SubsetFilters get_filters(const Subset &sc,
-                            const Subsets &excluded,
-                            const SubsetFilterTables &sft) {
-    SubsetFilters ret;
-    for (unsigned int i=0; i< sft.size(); ++i) {
-      SubsetFilter* f= sft[i]->get_subset_filter(sc, excluded);
-      if (f) {
-        ret.push_back(f);
-        ret.back()->set_was_used(true);
-      } else {
-      }
-    }
-    return ret;
-  }
-
-
   double evaluate_order(const Ints &order, const Subset &s,
                         const SubsetFilterTables &sft) {
     ParticlesTemp sorted= get_sub_particles(s, order.begin(), order.end());
