@@ -21,6 +21,10 @@ IMPDISPLAY_BEGIN_NAMESPACE
 /** The CMM writer supports points and spheres. Cylinders can be added
     at some point.
 
+    This format creates one file per frame. So if you want to use frames
+    and save them all, make sure there is a "%1%" in the file name string
+    passed to the constructor.
+
     You are probably better off using the IMP::display::ChimeraWriter
     which writes a python file, readable by Chimera as it supports
     more types of geometry.

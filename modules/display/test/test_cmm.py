@@ -51,5 +51,30 @@ class TestBL(IMP.test.TestCase):
             print m
             self.assertLess(int(m), 3)
 
+    def test_1(self):
+        """Testing the CMM writer with a singlet file but frames"""
+        name=self.get_tmp_file_name("cmmframes.py")
+        m= IMP.Model()
+        p=IMP.Particle(m)
+        d= IMP.core.XYZR.setup_particle(p)
+        w=IMP.display.CMMWriter(name)
+        for i in range(0,10):
+            w.set_frame(i)
+            g= IMP.display.XYZRGeometry(p)
+            print "first"#, w.get_current_index()
+            w.add_geometry(g)
+            g= IMP.display.SphereGeometry(IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0), 1))
+            print "second", w.get_current_index()
+            w.add_geometry(g)
+            print "done",  w.get_current_index()
+        del w
+        print name
+        contents= open(name, "r").read()
+        cre=re.compile('id="([0123456789]*)"')
+        print "contents"
+        print contents
+        print "matches"
+        self.assertEqual(len(cre.findall(contents)), 2)
+
 if __name__ == '__main__':
     IMP.test.main()

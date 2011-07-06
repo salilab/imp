@@ -120,8 +120,18 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
   void do_set_frame();
 
  public:
-  //! Create a writer opening the file with the passed name
+  //! Create a writer opening the file with the passed sink
+  /** Frames are not supported with this constructor when using a format
+      such as CMM or Chimera that writes multiple frames to different
+      files.
+  */
   TextWriter(TextOutput fn);
+  //! Create a write for a file or files with the passed name or pattern
+  /** The name should contain %1% if you want to write different frames
+      to separate files. Otherwise, it will either write all frames to the
+      same file (Pymol) or overwrite the file with each new frame,
+      Chimera, CMM.
+  */
   TextWriter(std::string name);
 
   //! get the name of the current file being writter

@@ -40,9 +40,10 @@ TextWriter::TextWriter(std::string name): Writer(name), file_name_(name) {
 }
 
 void TextWriter::open() {
-  IMP_INTERNAL_CHECK(!(file_name_.find("%1%") != std::string::npos
+  /*IMP_INTERNAL_CHECK(!(file_name_.find("%1%") != std::string::npos
                        && get_frame() == -1),
-                     "Cant open file without a frame.");
+                       "Cant open file without a frame.");*/
+  out_= TextOutput();
   out_=TextOutput(get_current_file_name());
   do_open();
 }
@@ -51,7 +52,7 @@ TextWriter::~TextWriter(){
 }
 
 void TextWriter::do_set_frame() {
-  if (file_name_.empty() || file_name_.find("%1%")== std::string::npos) {
+  if (file_name_.empty()/* || file_name_.find("%1%")== std::string::npos*/) {
     IMP_FAILURE("Cannot set frame on writer without file name pattern.");
   }
   if (out_!= TextOutput()) {
