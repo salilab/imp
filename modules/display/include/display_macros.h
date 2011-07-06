@@ -14,8 +14,12 @@
 */
 #define IMP_TEXT_WRITER(Name)                                           \
   Name(TextOutput of): TextWriter(of)                                   \
-  {}                                                                    \
-  Name(std::string name): TextWriter(name){}                            \
+  {do_open();}                                                          \
+  Name(std::string name): TextWriter(name){                             \
+    if (name.find("%1%") == std::string::npos) {                        \
+      TextWriter::open();                                               \
+    }                                                                   \
+  }                                                                     \
   IMP_OBJECT_INLINE(Name,if (0) out << "Hi",do_close());                \
 protected:                                                              \
  using Writer::handle;                                                  \

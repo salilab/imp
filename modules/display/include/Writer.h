@@ -64,9 +64,9 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
       how to write that particular sort of geometry.
       @{
   */
-  virtual void add_geometry(Geometry* g);
+  void add_geometry(Geometry* g);
 
-  virtual void add_geometry(const Geometries &g) {
+  void add_geometry(const Geometries &g) {
     for (unsigned int i=0; i< g.size(); ++i) {
       IMP_CHECK_OBJECT(g[i]);
       IMP::internal::OwnerPointer<Geometry> gp(g[i]);
@@ -93,11 +93,20 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
 /** A base class for writers which write to text files. By default,
     separate frames are stored in separate files. To change this,
     override the do_set_frame() method.
+
+    \note If you inherit from this class, you must use the
+    IMP_TEXT_WRITER() macro and not provide any additional
+    constructors. Sorry, it is necessary in order to ensure
+    that the derived classes handler for opening a file
+    is successfully called, as it can't be directly
+    called from the TextWriter constructor.
  */
 class IMPDISPLAYEXPORT TextWriter: public Writer
 {
   std::string file_name_;
   TextOutput out_;
+ protected:
+  void open();
 #if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
  public:
 #else
@@ -105,10 +114,6 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
 #endif
   //! Get the stream for inhereting classes to write to
   std::ostream &get_stream() {
-    if (out_== TextOutput()) {
-      out_=TextOutput(get_current_file_name());
-      do_open();
-    }
     return out_;
   }
 
@@ -130,8 +135,6 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
       return file_name_;
     }
   }
-  void add_geometry(Geometry* g);
-  void add_geometry(const Geometries &g);
   //! Write the data and close the file
   virtual ~TextWriter();
 };
