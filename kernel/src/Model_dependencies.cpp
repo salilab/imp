@@ -293,9 +293,11 @@ namespace {
     IMP_COMPARISONS(Connections);
   };
   //IMP_VALUES(Connections, ConnectionsList);
+#if !defined(__clang__)
   inline std::size_t hash_value(const Connections &t) {
     return t.__hash__();
   }
+#endif
 }
 
 DependencyGraph
