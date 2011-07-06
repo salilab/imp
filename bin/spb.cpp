@@ -149,8 +149,19 @@ atom::Molecule protein_a,atom::Molecule protein_b,double dist)
  Particle*  pb=sb.get_selected_particles()[0];
  IMP_NEW(core::PairRestraint,r,(ps,ParticlePair(pa, pb)));
  r->set_name("IR " + name);
- m->set_maximum_score(r, error_bound);
  m->add_restraint(r);
+ m->set_maximum_score(r,error_bound);
+}
+
+void add_distance_restraint(Model *m,std::string name,Particle* p1,
+Particle* p2,core::TableRefiner *tbr,FloatRange dist)
+{
+ core::DistancePairScore* ps=get_pair_score(dist);
+ IMP_NEW(core::KClosePairsPairScore,kps,(ps,tbr,1.0));
+ IMP_NEW(core::PairRestraint,mpr,(kps,ParticlePair(p1,p2)));
+ mpr->set_name(name);
+ m->add_restraint(mpr);
+ m->set_maximum_score(mpr,error_bound);
 }
 
 atom::Molecule create_merged_protein
