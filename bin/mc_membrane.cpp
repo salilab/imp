@@ -182,10 +182,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();
    double* mybias=ptr->get_bias_buffer();
-   double* fbias=new double[nbins];
-   MPI_Isend(mybias, nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
-   MPI_Recv(fbias,   nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
-   Floats val(fbias, fbias+nbins);
+   double* fbias=new double[2*nbins];
+   MPI_Isend(mybias, 2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+   MPI_Recv(fbias,   2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+   Floats val(fbias, fbias+2*nbins);
    ptr->set_bias(val);
   }
  }

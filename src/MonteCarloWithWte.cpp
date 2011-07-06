@@ -21,14 +21,38 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   w0_    = w0;
   dx_    = sigma / 3.0;
   nbin_  = floor((emax-emin)/dx_)+1;
-  bias_.reset(new double[nbin_]);
+  bias_.reset(new double[2*nbin_]);
   }
 
 double MonteCarloWithWte::get_bias(double score)
 {
   int index=floor((score-min_)/dx_);
   index=std::max(0,std::min(nbin_-1,index));
-  return bias_[index];
+  return spline(score,index);
+  //return bias_[index];
+}
+
+double MonteCarloWithWte::spline(double score, int index)
+{
+ double where=score-min_-(double)index*dx_;
+ const int npoints=2;
+ int shift;
+ double spline=0.0;
+ for(int i=0;i<npoints;++i){
+  shift=i%2;
+  double X=fabs(where/dx_-(double)shift);
+  double X2=X*X;
+  double X3=X2*X;
+  double yy;
+  if(fabs(bias_[index+shift])<0.0000001){
+   yy=0.0;
+  }else{
+   yy=bias_[index+shift+nbin_]/bias_[index+shift];
+  }
+  double ff=(1.0-3.0*X2+2.0*X3)-(double)(shift?-1:1)*yy*(X-2.0*X2+X3)*dx_;
+  spline+=bias_[index+shift]*ff;
+ }
+ return spline;
 }
 
 void MonteCarloWithWte::update_bias(double score)
@@ -37,11 +61,13 @@ void MonteCarloWithWte::update_bias(double score)
   double vbias=get_bias(score);
   double ww=w0_*exp(-vbias/(get_kt()*(gamma_-1.0)));
   int i0=floor((score-4.0*sigma_-min_)/dx_);
-  int i1=floor((score+4.0*sigma_-min_)/dx_);
+  int i1=floor((score+4.0*sigma_-min_)/dx_)+1;
   for (int i=std::max(0,i0);i<=std::min(i1,nbin_-1);++i){
    double xx=min_ + ((double) i)*dx_;
    double dp=(xx-score)/sigma_;
-   bias_[i] += ww*exp(-0.5*dp*dp);
+   double newbias=ww*exp(-0.5*dp*dp);
+   bias_[i] += newbias;
+   bias_[i+nbin_] += newbias*dp/sigma_;
   }
 }
 

@@ -22,6 +22,7 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   boost::scoped_array<double> bias_;
   int     nbin_;
   void    update_bias(double score);
+  double  spline(double score, int index);
   double  do_evaluate() {
    double score=evaluate(false);
    return score+get_bias(score);
@@ -40,7 +41,7 @@ public:
   void set_w0(double w0) {w0_=w0;}
 
   void set_bias(const Floats &bias) {
-   IMP_USAGE_CHECK(bias.size() == nbin_, "Don't match");
+   IMP_USAGE_CHECK(bias.size() == 2*nbin_, "Don't match");
    std::copy(bias.begin(), bias.end(), bias_.get());
   }
 
