@@ -83,6 +83,41 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
  return hs;
 }
 
+atom::Molecule create_protein
+(Model *m,std::string name,double mass,int nbeads,
+int copy,int start_residue=-1,int length=-1)
+{
+ if(length==-1) {length=(int) mass*1000.0/110;}
+ IMP_NEW(Particle,p,(m));
+ atom::Molecule protein=atom::Molecule::setup_particle(p);
+ protein->set_name(name);
+ double vol=atom::get_volume_from_mass(1000.0*mass)/(double)nbeads;
+ double ms=1000.0*mass/(double)nbeads;
+ double rg=algebra::get_ball_radius_from_volume_3d(vol);
+ for(int i=0;i<nbeads;++i){
+  IMP_NEW(Particle,pp,(m));
+  int first=start_residue+i*(int)(length/nbeads);
+  int last=start_residue+(i+1)*(int)(length/nbeads);
+  std::stringstream out1,out2;
+  out1 << i;
+  out2 << copy;
+  atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
+  dom->set_name(name+out1.str()+"-"+out2.str());
+  core::XYZR d=core::XYZR::setup_particle(pp);
+  d.set_radius(rg);
+  atom::Mass mm=atom::Mass::setup_particle(pp,ms);
+  protein.add_child(dom);
+ }
+ if(nbeads>1 && copy==0){
+  //con=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c) \
+  //                             for c in protein.get_children()],1.0)
+  //con.set_name("Connectivity Restraint for "+name)
+  //model.add_restraint(con)
+  //model.set_maximum_score(con, error_bound)
+ }
+ return protein;
+}
+
 int main(int  , char **)
 {
 
