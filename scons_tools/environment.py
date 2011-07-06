@@ -9,6 +9,7 @@ import standards
 import dependency.compilation
 import module
 import dependency
+import dependency.clang
 import platform
 import biology
 import application
@@ -433,6 +434,9 @@ def get_pyext_environment(env, mod_prefix, cplusplus=True,
     _fix_aix_cpp_link(e, cplusplus, 'LDMODULEFLAGS')
     #print env['LDMODULEFLAGS']
     _add_flags(e, extra_modules=extra_modules)
+    if dependency.clang.get_is_clang(env):
+        # clang notices that python tuples are implemented using the array/struct hack
+        e.Append(CXXFLAGS='-Wno-array-bounds')
     return e
 
 def get_named_environment(env, name, modules, dependencies):
