@@ -96,7 +96,6 @@ inline double get_drms(const Vecto3DsOrXYZs0& m1,
       sum_d1ij += sqd1;
     }
   }
-  double N = static_cast<double>(n);
   drms /= (4 * sum_d1ij);
   return sqrt(drms);
 }
