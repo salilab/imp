@@ -35,8 +35,15 @@ NearestNeighborsClosePairsFinder::NearestNeighborsClosePairsFinder():
   ClosePairsFinder("NearestNeighborsCPF") {}
 
 ParticlePairsTemp NearestNeighborsClosePairsFinder
-::get_close_pairs(IMP_RESTRICT const ParticlesTemp &pa,
-                  IMP_RESTRICT const ParticlesTemp &pb) const {
+::get_close_pairs(
+#if !defined(__clang__)
+IMP_RESTRICT const ParticlesTemp &pa,
+IMP_RESTRICT const ParticlesTemp &pb
+#else
+const ParticlesTemp &pa,
+const ParticlesTemp &pb
+#endif
+) const {
   IMP_NEW(algebra::NearestNeighborD<3>, nn, (pa.begin(),
                                              pa.end(), 0));
   double rm= max_radius(pa.begin(), pa.end());
@@ -53,7 +60,11 @@ ParticlePairsTemp NearestNeighborsClosePairsFinder
   return ret;
 }
 ParticlePairsTemp NearestNeighborsClosePairsFinder
-::get_close_pairs(IMP_RESTRICT const ParticlesTemp &c) const {
+::get_close_pairs(
+#if !defined(__clang__)
+IMP_RESTRICT
+#endif
+const ParticlesTemp &c) const {
   IMP_NEW(algebra::NearestNeighborD<3>, nn,(c.begin(), c.end(), 0));
   double rm= max_radius(c.begin(), c.end());
   ParticlePairsTemp ret;
