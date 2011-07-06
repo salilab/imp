@@ -74,11 +74,9 @@ namespace {
   T pretty(T t) {
     return t;
   }
-  std::string pretty(Particle *p) {
-    return p->get_name();
-  }
-  std::string pretty(Object *p) {
-    return p->get_name();
+  template <class T>
+  std::string pretty(const internal::ObjectWrapper<T> &p) {
+    return static_cast<const T*>(p)->get_name();
   }
 
   template <class T, class Key>
