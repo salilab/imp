@@ -237,98 +237,131 @@ class Tuples
 public:
   Tuples(const std::vector<size_t> &elements, size_t k)
     : current_tuple_(k)
+    , indices_(k)
+    , elements_(elements)
     , k_(k)
+    , n_(elements_.size())
+    , empty_(k_ > n_)
   {
-    if ( k > 0 )
-      generate_all_tuples(0, 0, elements);
+    reset();
   }
-  size_t size() const
+
+  std::vector<size_t> const &get_tuple() const
   {
-    return all_tuples_.size();
+    return current_tuple_;
   }
-  std::vector<size_t> const &get_tuple(size_t i) const
+
+  bool next();
+
+  void reset();
+
+  bool empty() const
   {
-    return all_tuples_[i];
+    return empty_;
   }
 
 private:
-  void generate_all_tuples(size_t idx, size_t start,
-      const std::vector<size_t> &elements);
+  void create_current_tuple();
 
   std::vector<size_t> current_tuple_;
-  std::vector< std::vector<size_t> > all_tuples_;
+  std::vector<size_t> indices_;
+  std::vector<size_t> elements_;
   size_t k_;
+  size_t n_;
+  bool empty_;
 };
 
 
-void Tuples::generate_all_tuples(size_t idx, size_t start,
-    const std::vector<size_t> &elements)
+bool Tuples::next()
 {
-  if ( idx == k_ )
+  if ( empty_ )
+    return false;
+  size_t i = k_;
+  bool found = false;
+  while ( i > 0 )
   {
-    all_tuples_.push_back(current_tuple_);
-    return;
+    --i;
+    if ( indices_[i] != i + n_ - k_ )
+    {
+      found = true;
+      break;
+    }
   }
-  for ( size_t i = start; i < elements.size(); ++i )
+  if ( found )
   {
-    current_tuple_[idx] = elements[i];
-    generate_all_tuples(idx + 1, i + 1, elements);
+    ++indices_[i];
+    for ( size_t j = i + 1; j < k_; ++j )
+      indices_[j] = indices_[j - 1] + 1;
+    create_current_tuple();
+    return true;
   }
+  return false;
+}
+
+
+void Tuples::create_current_tuple()
+{
+  if ( not empty_ )
+  {
+    for ( size_t i = 0; i < k_; ++i )
+      current_tuple_[i] = elements_[indices_[i]];
+  }
+}
+
+
+void Tuples::reset()
+{
+  for ( size_t i = 0; i < k_; ++i )
+    indices_[i] = i;
+  create_current_tuple();
 }
 
 
 class Assignment
 {
 public:
-  Assignment(std::vector<Tuples> const &tuples)
-    : current_assignment_(tuples.size())
-    , tuples_(tuples)
+  Assignment(std::vector<Tuples> &tuples)
+    : tuples_(tuples)
   {
-    for ( size_t i=0; i<current_assignment_.size(); ++i )
-      if ( tuples[i].size() == 0 )
-        current_assignment_[i] = -1;
   }
 
-  size_t const &operator[](size_t i) const
+  Tuples const &operator[](size_t i) const
   {
-    return current_assignment_[i];
+    return tuples_[i];
   }
 
   bool empty() const
   {
-    for ( size_t i=0; i<current_assignment_.size(); ++i )
-      if ( current_assignment_[i] != size_t(-1) )
+    for ( size_t i = 0; i < tuples_.size(); ++i )
+      if ( not tuples_[i].empty() )
         return false;
     return true;
   }
 
   size_t size() const
   {
-    return current_assignment_.size();
+    return tuples_.size();
   }
 
   bool next();
 
 private:
-  std::vector<size_t> current_assignment_;
-  std::vector<Tuples> const &tuples_;
+  std::vector<Tuples> &tuples_;
 };
 
 
 bool Assignment::next()
 {
-  for ( size_t i = 0; i < current_assignment_.size(); ++i )
+  for ( size_t i = 0; i < tuples_.size(); ++i )
   {
-    if ( current_assignment_[i] == size_t(-1) )
+    if ( tuples_[i].empty() )
       continue;
-    ++current_assignment_[i];
-    if ( current_assignment_[i] < tuples_[i].size() )
+    if ( tuples_[i].next() )
       return true;
-    current_assignment_[i] = 0;
+    tuples_[i].reset();
   }
   return false;
 }
-
 
 bool is_connected(NNGraph &G)
 {
@@ -345,12 +378,12 @@ class MSConnectivityScore
 public:
   MSConnectivityScore(const MSConnectivityRestraint::ExperimentalTree &tree,
     const PairScore *ps, double eps,
-    MSConnectivityRestraint::ParticleMatrix &pm);
+    MSConnectivityRestraint &restraint);
   double score(DerivativeAccumulator *accum) const;
   EdgeSet get_connected_pairs() const;
   Particle *get_particle(size_t p) const
   {
-    return pm_.get_particle(p).get_particle();
+    return restraint_.particle_matrix_.get_particle(p).get_particle();
   }
   void add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const;
   EdgeSet get_all_edges(NNGraph &G) const;
@@ -359,33 +392,32 @@ private:
 
   struct EdgeScoreComparator
   {
-    EdgeScoreComparator(const MSConnectivityRestraint::ParticleMatrix &pm)
-      : pm_(pm)
+    EdgeScoreComparator(const MSConnectivityRestraint &restraint)
+      : restraint_(restraint)
     {}
 
     bool operator()(const std::pair<size_t, size_t> &p1,
         const std::pair<size_t, size_t> &p2)
     {
-      double w1 = pm_.get_distance(p1.first, p1.second);
-      double w2 = pm_.get_distance(p2.first, p2.second);
+      double w1 = restraint_.particle_matrix_.get_distance(p1.first, p1.second);
+      double w2 = restraint_.particle_matrix_.get_distance(p2.first, p2.second);
       return w1 < w2;
     }
 
-    const MSConnectivityRestraint::ParticleMatrix &pm_;
+    const MSConnectivityRestraint &restraint_;
   };
 
   NNGraph create_nn_graph(double threshold) const;
   NNGraph build_subgraph_from_assignment(NNGraph &G,
-    Assignment const &assignment, std::vector<Tuples> const &all_tuples) const;
+    Assignment const &assignment) const;
   bool check_assignment(NNGraph &G, size_t node_handle,
     Assignment const &assignment,
-    std::vector<Tuples> const &all_tuples,
     EdgeSet &picked) const;
   bool perform_search(NNGraph &G, EdgeSet &picked) const;
   NNGraph pick_graph(EdgeSet const &picked) const;
   NNGraph find_threshold() const;
 
-  MSConnectivityRestraint::ParticleMatrix &pm_;
+  MSConnectivityRestraint &restraint_;
   const PairScore *ps_;
   const MSConnectivityRestraint::ExperimentalTree &tree_;
   double eps_;
@@ -415,7 +447,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
   boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
     boost::get(boost::vertex_name, G);
   NNGraph ng(num_vertices(G));
-  std::vector<size_t> vertex_id_to_n(pm_.size(), -1);
+  std::vector<size_t> vertex_id_to_n(restraint_.particle_matrix_.size(), -1);
   for ( size_t i = 0; i < num_vertices(ng); ++i )
   {
     size_t id = boost::get(vertex_id, i);
@@ -443,7 +475,8 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
     if ( edge_set.find(candidate) == edge_set.end() )
       candidates.push_back(candidate);
   }
-  std::sort(candidates.begin(), candidates.end(), EdgeScoreComparator(pm_));
+  std::sort(candidates.begin(), candidates.end(),
+      EdgeScoreComparator(restraint_));
   size_t idx = 0;
   while ( ncomp > 1 && idx < candidates.size() )
   {
@@ -467,19 +500,19 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
 MSConnectivityScore::MSConnectivityScore(
   const MSConnectivityRestraint::ExperimentalTree &tree,
   const PairScore *ps, double eps,
-  MSConnectivityRestraint::ParticleMatrix &pm)
-    : pm_(pm)
+  MSConnectivityRestraint &restraint)
+    : restraint_(restraint)
     , ps_(ps)
     , tree_(tree)
     , eps_(eps)
 {
-  pm_.create_distance_matrix(ps);
+  restraint_.particle_matrix_.create_distance_matrix(ps);
 }
 
 
 NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
 {
-  size_t n = pm_.size();
+  size_t n = restraint_.particle_matrix_.size();
   NNGraph G(n);
   boost::property_map<NNGraph, boost::vertex_name_t>::type vertex_id =
     boost::get(boost::vertex_name, G);
@@ -488,10 +521,11 @@ NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
   for ( size_t i = 0; i < n; ++i )
   {
     boost::put(vertex_id, i, i);
-    std::vector<size_t> const &neighbors = pm_.get_ordered_neighbors(i);
+    std::vector<size_t> const &neighbors =
+      restraint_.particle_matrix_.get_ordered_neighbors(i);
     for ( size_t j = 0; j < neighbors.size(); ++j )
     {
-      double d = pm_.get_distance(i, neighbors[j]);
+      double d = restraint_.particle_matrix_.get_distance(i, neighbors[j]);
       if ( d > threshold )
         break;
       NNGraph::edge_descriptor e = boost::add_edge(i, neighbors[j], G).first;
@@ -503,15 +537,14 @@ NNGraph MSConnectivityScore::create_nn_graph(double threshold) const
 
 
 NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
-    Assignment const &assignment, std::vector<Tuples> const &all_tuples) const
+    Assignment const &assignment) const
 {
-  size_t num_particles = pm_.size();
+  size_t num_particles = restraint_.particle_matrix_.size();
   std::vector<size_t> vertices;
   for ( size_t i = 0; i < assignment.size(); ++i )
-    if ( assignment[i] != size_t(-1) )
+    if ( not assignment[i].empty() )
     {
-      std::vector<size_t> const &conf =
-        all_tuples[i].get_tuple(assignment[i]);
+      std::vector<size_t> const &conf = assignment[i].get_tuple();
       for ( size_t j = 0; j < conf.size(); ++j )
         vertices.push_back(conf[j]);
     }
@@ -548,7 +581,6 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
 
 bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
     Assignment const &assignment,
-    std::vector<Tuples> const &all_tuples,
     EdgeSet &picked) const
 {
   MSConnectivityRestraint::ExperimentalTree::Node const *node =
@@ -565,10 +597,10 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
       new_tuples.push_back(Tuples(empty_vector, 0));
     if ( prot_count > 0 )
     {
-      if ( assignment[id] != size_t(-1) )
+      if ( not assignment[id].empty() )
       {
         std::vector<size_t> const &configuration =
-          all_tuples[id].get_tuple(assignment[id]);
+          assignment[id].get_tuple();
         if ( prot_count > int(configuration.size()) )
         {
           IMP_THROW("Experimental tree is inconsistent", IMP::ValueException);
@@ -583,15 +615,15 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
     else
       new_tuples.push_back(Tuples(empty_vector, 0));
   }
-  while ( new_tuples.size() < pm_.get_number_of_classes() )
+  while ( new_tuples.size() <
+    restraint_.particle_matrix_.get_number_of_classes() )
     new_tuples.push_back(Tuples(empty_vector, 0));
   Assignment new_assignment(new_tuples);
   if ( new_assignment.empty() )
     return false;
   do
   {
-    NNGraph ng = build_subgraph_from_assignment(G, new_assignment,
-        new_tuples);
+    NNGraph ng = build_subgraph_from_assignment(G, new_assignment);
     if ( is_connected(ng) )
     {
       EdgeSet n_picked;
@@ -600,7 +632,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
       {
         size_t child_handle = node->get_child(i);
         if ( !check_assignment(ng, child_handle, new_assignment,
-              new_tuples, n_picked) )
+              n_picked) )
         {
           good = false;
           break;
@@ -636,20 +668,21 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
       tuples.push_back(Tuples(empty_vector, 0));
     if ( prot_count > 0 )
     {
-      tuples.push_back(Tuples(pm_.get_all_proteins_in_class(id),
+      tuples.push_back(Tuples(
+            restraint_.particle_matrix_.get_all_proteins_in_class(id),
             prot_count));
     }
     else
       tuples.push_back(Tuples(empty_vector, 0));
   }
-  while ( tuples.size() < pm_.get_number_of_classes() )
+  while ( tuples.size() < restraint_.particle_matrix_.get_number_of_classes() )
     tuples.push_back(Tuples(empty_vector, 0));
   Assignment assignment(tuples);
   if ( assignment.empty() )
     return false;
   do
   {
-    NNGraph ng = build_subgraph_from_assignment(G, assignment, tuples);
+    NNGraph ng = build_subgraph_from_assignment(G, assignment);
     if ( is_connected(ng) )
     {
       EdgeSet n_picked;
@@ -658,7 +691,7 @@ bool MSConnectivityScore::perform_search(NNGraph &G,
       {
         size_t child_handle = node->get_child(i);
         if ( !check_assignment(ng, child_handle, assignment,
-              tuples, n_picked) )
+              n_picked) )
         {
           good = false;
           break;
@@ -704,7 +737,7 @@ NNGraph MSConnectivityScore::pick_graph(EdgeSet const &picked) const
   {
     NNGraph::edge_descriptor e = boost::add_edge(idx_to_vtx[p->first],
         idx_to_vtx[p->second], ng).first;
-    double d = pm_.get_distance(p->first, p->second);
+    double d = restraint_.particle_matrix_.get_distance(p->first, p->second);
     boost::put(dist, e, d);
   }
   return ng;
@@ -713,7 +746,8 @@ NNGraph MSConnectivityScore::pick_graph(EdgeSet const &picked) const
 
 NNGraph MSConnectivityScore::find_threshold() const
 {
-  double max_dist = 1.1*pm_.max_distance(), min_dist = pm_.min_distance();
+  double max_dist = 1.1*restraint_.particle_matrix_.max_distance(),
+         min_dist = restraint_.particle_matrix_.min_distance();
   NNGraph g = create_nn_graph(min_dist);
   {
     std::set< std::pair<size_t, size_t> > picked;
@@ -755,12 +789,13 @@ double MSConnectivityScore::score(DerivativeAccumulator *accum) const
     if ( accum )
     {
       sc += ps_->evaluate(ParticlePair(
-        pm_.get_particle(p->first).get_particle(),
-        pm_.get_particle(p->second).get_particle()), accum);
+        restraint_.particle_matrix_.get_particle(p->first).get_particle(),
+        restraint_.particle_matrix_.get_particle(p->second).get_particle()),
+          accum);
     }
     else
     {
-      sc += pm_.get_distance(p->first, p->second);
+      sc += restraint_.particle_matrix_.get_distance(p->first, p->second);
     }
   }
   return sc;
@@ -820,7 +855,8 @@ MSConnectivityRestraint::unprotected_evaluate(
   IMP_CHECK_OBJECT(ps_.get());
   IMP_OBJECT_LOG;
   tree_.finalize();
-  MSConnectivityScore mcs(tree_, ps_.get(), eps_, particle_matrix_);
+  MSConnectivityScore mcs(tree_, ps_.get(), eps_,
+      *const_cast<MSConnectivityRestraint *>(this));
   return mcs.score(accum);
 }
 
@@ -842,7 +878,8 @@ Restraints MSConnectivityRestraint::get_instant_decomposition() const {
 ParticlePairs MSConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
   tree_.finalize();
-  MSConnectivityScore mcs(tree_, ps_.get(), eps_, particle_matrix_);
+  MSConnectivityScore mcs(tree_, ps_.get(), eps_,
+      *const_cast<MSConnectivityRestraint *>(this));
   EdgeSet edges = mcs.get_connected_pairs();
   ParticlePairs ret(edges.size());
   unsigned index = 0;

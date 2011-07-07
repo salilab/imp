@@ -24,6 +24,22 @@
 IMPCORE_BEGIN_NAMESPACE
 
 
+// Hopefully this would "fix" the problem with friend access
+// in older versions of gcc
+#ifdef __GNUC__
+  #define GCC_VERSION (__GNUC__ * 10000 \
+                               + __GNUC_MINOR__ * 100 \
+                               + __GNUC_PATCHLEVEL__)
+  #if GCC_VERSION >= 40100
+    #define IMPCORE_FRIEND_IS_OK
+  #endif
+#else
+  // assume that other compilers are fine
+  #define IMPCORE_FRIEND_IS_OK
+#endif
+
+
+
 
 //! Ensure that a set of particles remains connected with one another.
 /** The restraint implements ambiguous connectivity. That is, it takes
@@ -85,7 +101,9 @@ public:
 
   IMP_RESTRAINT(MSConnectivityRestraint);
 
+#ifdef IMPCORE_FRIEND_IS_OK
   private:
+#endif
 
   class ParticleMatrix
   {
@@ -214,9 +232,6 @@ public:
     size_t add_composite(const Ints &components);
     size_t add_composite(const Ints &components, size_t parent);
 
-  private:
-    friend class MSConnectivityScore;
-
     class Node
     {
       public:
@@ -254,9 +269,6 @@ public:
         }
 
 
-        friend class ExperimentalTree;
-
-      private:
         std::vector<size_t> parents_;
         std::vector<size_t> children_;
         Label label_;
@@ -286,7 +298,7 @@ public:
     bool finalized_;
   };
 
-  mutable ParticleMatrix particle_matrix_;
+  ParticleMatrix particle_matrix_;
   mutable ExperimentalTree tree_;
 
   friend class MSConnectivityScore;
