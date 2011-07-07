@@ -35,16 +35,17 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing enumeration with ordering"""
         m= IMP.Model()
         ps=[]
-        #IMP.set_log_level(IMP.VERBOSE)
+        IMP.set_log_level(IMP.SILENT)
         pst= IMP.domino.ParticleStatesTable()
         state= IMP.domino.IndexStates(20)
         for i in range(0,20):
             ps.append(IMP.Particle(m))
             pst.set_particle_states(ps[-1], state)
         eqft= IMP.domino.EquivalenceSubsetFilterTable(pst)
+        exft= IMP.domino.ExclusionSubsetFilterTable(pst)
         ps.sort()
         s= IMP.domino.Subset(ps)
-        sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft])
+        sst= IMP.domino.BranchAndBoundAssignmentsTable(pst, [eqft, exft])
         pss= IMP.domino.PackedAssignmentContainer()
         sst.load_assignments(s, pss)
         ss= pss.get_assignments((0, pss.get_number_of_assignments()))
