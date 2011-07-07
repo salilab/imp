@@ -29,8 +29,7 @@ int          num_cells;
 int          num_copies;
 double       error_bound;
 
-algebra::Vector2Ds do_compress
-(algebra::Vector2Ds points, double xf, double yf)
+algebra::Vector2Ds do_compress(algebra::Vector2Ds points,double xf,double yf)
 {
  algebra::Vector2Ds ret=algebra::Vector2Ds();
  for(int i=0;i<points.size();++i){
@@ -39,8 +38,7 @@ algebra::Vector2Ds do_compress
  return ret;
 }
 
-algebra::Vector2Ds do_shear
-(algebra::Vector2Ds points, double bh, double h)
+algebra::Vector2Ds do_shear(algebra::Vector2Ds points,double bh,double h)
 {
  algebra::Vector2Ds ret=algebra::Vector2Ds();
  double b=bh/h;
@@ -78,7 +76,9 @@ algebra::Vector3Ds grid_cell(double side,double ds,double z)
    }
   }
  }
- //positions+=positions2;
+ if(positions2.size()>0){
+  positions.insert(positions.end(),positions2.begin(),positions2.end());
+ }
  return positions;
 }
 
@@ -96,9 +96,8 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
  return hs;
 }
 
-atom::Molecule create_protein
-(Model *m,std::string name,double mass,int nbeads,
-int copy,int start_residue=-1,int length=-1)
+atom::Molecule create_protein(Model *m,std::string name,double mass,
+ int nbeads,int copy,int start_residue=-1,int length=-1)
 {
  if(length==-1) {length=(int) mass*1000.0/110;}
  IMP_NEW(Particle,p,(m));
