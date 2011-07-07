@@ -137,6 +137,13 @@ core::DistancePairScore* get_pair_score(FloatRange dist)
  return ps.release();
 }
 
+core::SphereDistancePairScore* get_sphere_pair_score(FloatRange dist)
+{
+ IMP_NEW(core::HarmonicWell,hw,(dist,1.0));
+ IMP_NEW(core::SphereDistancePairScore,ps,(hw));
+ return ps.release();
+}
+
 void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double dist)
 {
@@ -185,6 +192,188 @@ atom::Molecule protein_b,int copy,double dist=-1.0)
   h.add_child(atom::Domain(psb[i]));
  }
  return h;
+}
+
+FloatRange get_range_from_fret_class(std::string r_class)
+{
+ if (r_class=="High")   {return FloatRange(-500.0,  41.0);}
+ if (r_class=="Mod")    {return FloatRange(41.0, 55.5);}
+ if (r_class=="Low")    {return FloatRange(55.5, 66.0);}
+ if (r_class=="Lowest") {return FloatRange(66.0, 70.0);}
+ if (r_class=="None")   {return FloatRange(70.0, 100000.0);}
+}
+
+FloatRange get_range_from_fret_value(double r_value)
+{
+ std::string r_class;
+ if (r_value >= 2.0)                   {r_class="High";}
+ if (r_value >= 1.5 && r_value < 2.0)  {r_class="Mod";}
+ if (r_value >= 1.2 && r_value < 1.5)  {r_class="Low";}
+ if (r_value >= 1.05 && r_value < 1.2) {r_class="Lowest";}
+ if (r_value <  1.05)                  {r_class="None";}
+ return get_range_from_fret_class(r_class);
+}
+
+void add_fret_restraint
+(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies hb, std::string protein_b, std::string residues_b,
+ double r_value)
+{
+ atom::Selection sa=atom::Selection(ha);
+ sa.set_molecule(protein_a);
+ if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+ if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+ atom::Selection sb=atom::Selection(hb);
+ sb.set_molecule(protein_b);
+ if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+ if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ FloatRange range=get_range_from_fret_value(r_value);
+ core::DistancePairScore* ps=get_pair_score(range);
+ if(protein_a != protein_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a==residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp,(p1));
+  IMP_NEW(container::AllPairContainer,pc,(lp));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a!=residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }
+}
+
+void add_y2h_restraint
+(Model *m,atom::Hierarchies ha,std::string protein_a,Ints residues_a,
+ atom::Hierarchies hb,std::string protein_b,Ints residues_b)
+{
+ atom::Selection sa=atom::Selection(ha);
+ sa.set_molecule(protein_a);
+ sa.set_residue_indexes(residues_a);
+ atom::Selection sb=atom::Selection(hb);
+ sb.set_molecule(protein_b);
+ sb.set_residue_indexes(residues_b);
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ FloatRange range=FloatRange(-500,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ if(protein_a != protein_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a==residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp,(p1));
+  IMP_NEW(container::AllPairContainer,pc,(lp));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a!=residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }
+}
+
+void add_y2h_restraint
+(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies hb, std::string protein_b, std::string residues_b)
+{
+ atom::Selection sa=atom::Selection(ha);
+ sa.set_molecule(protein_a);
+ if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+ if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+ atom::Selection sb=atom::Selection(hb);
+ sb.set_molecule(protein_b);
+ if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+ if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ FloatRange range=FloatRange(-500,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ if(protein_a != protein_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a==residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp,(p1));
+  IMP_NEW(container::AllPairContainer,pc,(lp));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else if(protein_a==protein_b && residues_a!=residues_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }
+}
+
+void add_y2h_restraint
+(Model *m,atom::Hierarchies ha,std::string protein_a,Ints residues_a,
+ atom::Hierarchies hb, std::string protein_b, std::string residues_b)
+{
+ atom::Selection sa=atom::Selection(ha);
+ sa.set_molecule(protein_a);
+ sa.set_residue_indexes(residues_a);
+ atom::Selection sb=atom::Selection(hb);
+ sb.set_molecule(protein_b);
+ if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+ if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+ Particles p1=sa.get_selected_particles();
+ Particles p2=sb.get_selected_particles();
+ FloatRange range=FloatRange(-500,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ if(protein_a != protein_b){
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }else{
+  IMP_NEW(container::ListSingletonContainer,lp1,(p1));
+  IMP_NEW(container::ListSingletonContainer,lp2,(p2));
+  IMP_NEW(container::AllBipartitePairContainer,pc,(lp1,lp2));
+  IMP_NEW(container::MinimumPairRestraint,mpr,(ps,pc,1));
+  //f=IMP.atom.SameResiduePairFilter()
+  //pc.add_pair_filter(f)
+  m->add_restraint(mpr);
+  m->set_maximum_score(mpr, error_bound);
+ }
 }
 
 int main(int  , char **)
