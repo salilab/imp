@@ -26,6 +26,7 @@ IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo%1%"),
                                   temp_(1),
+                      max_difference_(std::numeric_limits<double>::max()),
                                   probability_(1),
                                   stat_forward_steps_taken_(0),
                                   stat_upward_steps_taken_(0),
