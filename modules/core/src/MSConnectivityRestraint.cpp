@@ -542,7 +542,7 @@ NNGraph MSConnectivityScore::build_subgraph_from_assignment(NNGraph &G,
   size_t num_particles = restraint_.particle_matrix_.size();
   std::vector<size_t> vertices;
   for ( size_t i = 0; i < assignment.size(); ++i )
-    if ( not assignment[i].empty() )
+    if ( ! assignment[i].empty() )
     {
       std::vector<size_t> const &conf = assignment[i].get_tuple();
       for ( size_t j = 0; j < conf.size(); ++j )
