@@ -3,7 +3,8 @@
  *  \brief manipulation of text, and Interconversion between text and numbers
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
 */
-
+// value in Lazy
+#pragma GCC diagnostic ignored "-Wuninitialized"
 #include <IMP/cgal/internal/polygons.h>
 #include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
 #include <CGAL/linear_least_squares_fitting_3.h>

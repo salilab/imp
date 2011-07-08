@@ -5,6 +5,7 @@
  */
 
 #include <IMP/cgal/internal/polyhedrons.h>
+#pragma GCC diagnostic ignored "-Wuninitialized"
 #include <CGAL/Origin.h>
 #include <CGAL/Nef_polyhedron_3.h>
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
