@@ -301,7 +301,7 @@ bool Tuples::next()
 
 void Tuples::create_current_tuple()
 {
-  if ( not empty_ )
+  if ( !empty_ )
   {
     for ( size_t i = 0; i < k_; ++i )
       current_tuple_[i] = elements_[indices_[i]];
@@ -333,7 +333,7 @@ public:
   bool empty() const
   {
     for ( size_t i = 0; i < tuples_.size(); ++i )
-      if ( not tuples_[i].empty() )
+      if ( ! tuples_[i].empty() )
         return false;
     return true;
   }
@@ -597,7 +597,7 @@ bool MSConnectivityScore::check_assignment(NNGraph &G, size_t node_handle,
       new_tuples.push_back(Tuples(empty_vector, 0));
     if ( prot_count > 0 )
     {
-      if ( not assignment[id].empty() )
+      if ( ! assignment[id].empty() )
       {
         std::vector<size_t> const &configuration =
           assignment[id].get_tuple();
