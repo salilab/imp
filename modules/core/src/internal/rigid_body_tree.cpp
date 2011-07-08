@@ -106,7 +106,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   set_name(std::string("Rigid body hierachy for particle "
                        + d.get_particle()->get_name()));
   // build spheres on internal coordinates
-  IMP_USAGE_CHECK(rb_.get_number_of_members() > 0,
+  IMP_USAGE_CHECK(constituents_.size() > 0,
                   "Rigid body has no members.");
   std::vector<algebra::SphereD<3> > spheres(constituents_.size());
   for (unsigned int i=0; i< spheres.size(); ++i) {
