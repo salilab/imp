@@ -9,14 +9,13 @@
 #ifndef IMPRMF_NODE_HANDLE_H
 #define IMPRMF_NODE_HANDLE_H
 
-// otherwise there are sometimes problems with certain Boost versions
-#include <boost/graph/adjacency_list.hpp>
-
 #include "rmf_config.h"
 #include "hdf5_wrapper.h"
 #include "internal/shared.h"
 #include "hdf5_types.h"
 #include "NodeID.h"
+#include <boost/graph/adjacency_list.hpp>
+
 IMPRMF_BEGIN_NAMESPACE
 #ifdef SWIG
 class NodeHandle;
