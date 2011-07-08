@@ -1,0 +1,143 @@
+/**
+ * Copyright 2007-2011 IMP Inventors. All rights reserved.
+ */
+
+#include <IMP.h>
+#include <IMP/core.h>
+#include <IMP/algebra.h>
+#include <IMP/atom.h>
+#include <IMP/container.h>
+#include <IMP/benchmark/utility.h>
+#include <IMP/benchmark/benchmark_macros.h>
+#include <IMP/container.h>
+
+using namespace IMP;
+using namespace IMP::core;
+using namespace IMP::algebra;
+using namespace IMP::benchmark;
+using namespace IMP::container;
+using namespace IMP::atom;
+using namespace IMP::container;
+
+/** One bringing slowly together and one jumping around randomly, with
+    all pairs, pair container, evr and evaluate if good or not for each
+*/
+
+namespace {
+  double get_val(double v) {
+    if (v>.1) return 0;
+    else return 1;
+  }
+
+void test_one(std::string name,
+              Model *m, XYZ to_move) {
+  set_log_level(SILENT);
+  set_check_level(IMP::NONE);
+
+  Restraints rs= get_restraints(m->get_root_restraint_set());
+  Floats weights(rs.size(), 1);
+
+  IMP::algebra::BoundingBox3D bb
+    = IMP::algebra::BoundingBox3D(IMP::algebra::Vector3D(-100,-100,-100),
+                                  IMP::algebra::Vector3D( 100, 100, 100));
+  {
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        for (unsigned int i=0; i< 100; ++i) {
+          to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
+          result+=get_val(m->evaluate(false));
+        }
+      }, runtime);
+    std::ostringstream oss;
+    oss << name << " random evaluate";
+    report(oss.str(), runtime, result);
+  }
+  {
+    to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        for (unsigned int i=0; i< 100; ++i) {
+          to_move.set_x(i);
+          result+=get_val(m->evaluate(false));
+        }
+      }, runtime);
+    std::ostringstream oss;
+    oss << name << " systematic evaluate";
+    report(oss.str(), runtime, result);
+  }
+  {
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        for (unsigned int i=0; i< 100; ++i) {
+          to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
+          result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+        }
+      }, runtime);
+    std::ostringstream oss;
+    oss << name << " random evaluate if good";
+    report(oss.str(), runtime, result);
+  }
+  {
+    to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        for (unsigned int i=0; i< 100; ++i) {
+          to_move.set_x(i);
+          result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+        }
+      }, runtime);
+    std::ostringstream oss;
+    oss << name << " systematic evaluate if good";
+    report(oss.str(), runtime, result);
+  }
+}
+}
+
+int main() {
+  IMP_NEW(Model, m, ());
+  atom::Hierarchy h0
+    = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
+  atom::Hierarchy h1
+    = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
+  RigidBody rb0= create_rigid_body(h0);
+  RigidBody rb1= create_rigid_body(h1);
+  rb0.set_coordinates(IMP::algebra::Vector3D(0,0,0));
+  rb1.set_coordinates(IMP::algebra::Vector3D(0,0,0));
+  //std::cout << core::XYZR(rb0).get_radius() << std::endl;
+  ParticlesTemp leaves= get_leaves(h0);
+  ParticlesTemp leaves1= get_leaves(h1);
+  leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());
+  IMP_NEW(ListSingletonContainer, lsc, (leaves));
+  {
+
+    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1));
+    evr->set_maximum_score(.1);
+    ScopedRestraint sr(evr.get(), m->get_root_restraint_set());
+    test_one("excluded volume", m, rb0);
+  }
+  {
+    IMP_NEW(ClosePairContainer, cpc, (lsc, 0));
+    IMP_NEW(SoftSpherePairScore, ps, (1));
+    ScopedRestraint sr(create_restraint(ps.get(), cpc.get()),
+                       m->get_root_restraint_set());
+    sr->set_maximum_score(.1);
+    test_one("pairs restraint", m, rb0);
+  }
+  {
+    IMP_NEW(SoftSpherePairScore, ps, (1));
+    IMP_NEW(TableRefiner, tr,());
+    tr->add_particle(rb0, get_leaves(h0));
+    tr->add_particle(rb1, get_leaves(h1));
+    IMP_NEW(KClosePairsPairScore, cpps, (ps, tr, 1));
+    ScopedRestraint sr(create_restraint(cpps.get(),
+                                        ParticlePair(rb0, rb1)),
+                       m->get_root_restraint_set());
+    sr->set_maximum_score(.1);
+    test_one("k close", m, rb0);
+  }
+  return IMP::benchmark::get_return_value();
+}
