@@ -122,15 +122,18 @@ private:
   Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
                      const ScoreStatesTemp &states, bool calc_derivs,
-                     bool if_good);
+                     bool if_good, bool if_max,
+                     double max= std::numeric_limits<double>::max());
   Floats do_evaluate_restraints(const RestraintsTemp &restraints,
                                 const std::vector<double> &weights,
                                 bool calc_derivs,
-                                bool if_good);
+                                bool if_good, bool if_max,
+                                double max= std::numeric_limits<double>::max());
   Floats do_external_evaluate(const RestraintsTemp &restraints,
                               const std::vector<double> &weights,
                               bool calc_derivs,
-                              bool if_good);
+                              bool if_good, bool if_max,
+                              double max= std::numeric_limits<double>::max());
 
 
   // dependencies
@@ -402,7 +405,6 @@ public:
                    std::vector<double> weights,
                    bool calc_derivs);
 
-
   //! Evaluate a subset of the restraints
   /** In contrast to other evaluate methods,
       this method is free to shortcut evaluation and return a very
@@ -415,7 +417,13 @@ public:
   Floats evaluate_if_good( RestraintsTemp restraints,
                            std::vector<double> weights,
                            bool calc_derivs);
-
+  /** Evaluate, returning the score if it below the max value.
+      Otherwise return a number above max. The restraint maxima
+      are ignored.
+  */
+  Floats evaluate_if_below( RestraintsTemp restraints,
+                           std::vector<double> weights,
+                            bool calc_derivs, double max);
 
 
  //! Sometimes it is useful to be able to make sure the model is up to date

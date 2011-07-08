@@ -84,6 +84,22 @@ double Optimizer::evaluate(bool compute_derivatives) const {
   return last_score_;
 }
 
+double Optimizer::evaluate_if_below(bool compute_derivatives,
+                                   double max) const {
+  IMP_FUNCTION_LOG;
+  RestraintsTemp rs= flattened_restraints_;
+  Floats ws= flattened_weights_;
+  if (rs.empty()) {
+    boost::tie(rs, ws)
+      = get_restraints_and_weights(get_model()->get_root_restraint_set());
+  }
+  IMP::Floats ret= get_model()->evaluate_if_below(flattened_restraints_,
+                                                  flattened_weights_,
+                                                  compute_derivatives, max);
+  last_score_= std::accumulate(ret.begin(), ret.end(), 0.0);
+  return last_score_;
+}
+
 
 RestraintSets Optimizer::get_restraints() const {
   if (restraints_.empty()) {
