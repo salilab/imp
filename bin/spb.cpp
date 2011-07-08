@@ -19,12 +19,12 @@ using namespace IMP;
 // various parameters
 const double ds=40.0;
 double       side=80.0;
-const int    niter=3;
+const int    niter=2;
 bool         do_statistics=true;
-bool         do_random=true;
+bool         do_random=false;
 bool         do_save_ass=false;
 const int    skip=100;
-std::string  cell_type="hexagon";
+std::string  cell_type="rhombus";
 int          num_cells;
 int          num_copies;
 double       error_bound;
@@ -511,7 +511,7 @@ int main(int  , char **)
 // cell dependent parameters
 if(cell_type=="rhombus"){
  num_cells=21;
- num_copies=2;
+ num_copies=1;
  error_bound=1.45*pow(ds,2);
 }else if(cell_type=="hexagon"){
  num_cells=7;
@@ -526,6 +526,149 @@ if(cell_type=="rhombus"){
 
 // create a new model
 IMP_NEW(Model,m,());
+//
+// gridding
+//
+std::vector<algebra::Vector3Ds> CP_covers;
+for(int i=0;i<niter;++i){
+ algebra::Vector3Ds CP_pos=grid_cell(side,ds/pow(2,i),0.0);
+ CP_covers.push_back(CP_pos);
+}
+std::cout << "Creating representation" << std::endl;
+//
+//h_CP: list of molecular hierarchies, containing
+//proteins in the primitive cell  h_CP[0]
+//proteins in the i-th      cell  h_CP[i]
+atom::Hierarchies h_CP=create_hierarchies(m,num_cells,"Central Plaque");
+//
+// PROTEIN REPRESENTATION
+//
+//1) proteins in the Central Plaque
+// Spc42p  (N)
+// Spc29p  (N and C)
+// Spc110p (C)
+// Cmd1p   (N and C)
+//
+// list of protein names used to create EquivalenceState filters
+std::vector<std::string> all_CP;
+all_CP.push_back("Spc42p_n");
+all_CP.push_back("Spc29p");
+all_CP.push_back("Spc110p_c");
+all_CP.push_back("Cmd1p");
 
+for(int i=0;i<num_cells;++i){
+ for(int j=0;j<num_copies;++j){
+  //Spc42p_n, 2 copies, 1 bead
+  atom::Molecule Spc42p_n_0=create_protein(m,"Spc42p_n", 7, 1, i);
+  atom::Molecule Spc42p_n_1=create_protein(m,"Spc42p_n", 7, 1, i);
+  h_CP[i].add_child(Spc42p_n_0);
+  h_CP[i].add_child(Spc42p_n_1);
+  //Spc29p, 2 beads
+  atom::Molecule Spc29p_n=create_protein(m,"Spc29p_n", 14.5, 1, i);
+  atom::Molecule Spc29p_c=create_protein(m,"Spc29p_c", 14.5, 1, i, 132);
+  atom::Molecule Spc29p=
+   create_merged_protein(m,"Spc29p",Spc29p_n,Spc29p_c,i,0.0);
+  h_CP[i].add_child(Spc29p);
+  //Spc110p_c, 3 beads
+  atom::Molecule Spc110p_c=create_protein(m,"Spc110p_c", 26, 1, i, 627+164);
+  h_CP[i].add_child(Spc110p_c);
+  //Cmd1p, 1 bead
+  atom::Molecule Cmd1p_n=create_protein(m,"Cmd1p_n", 8, 1, i);
+  atom::Molecule Cmd1p_c=create_protein(m,"Cmd1p_c", 8, 1, i, 80);
+  atom::Molecule Cmd1p=create_merged_protein(m,"Cmd1p",Cmd1p_n,Cmd1p_c,i,0.0);
+  h_CP[i].add_child(Cmd1p);
+ }
+}
+// CREATING RESTRAINTS
+std::cout << "Creating restraints" << std::endl;
+//
+// Symmetry
+//
+add_symmetry_restraint(m,h_CP);
+//
+// FRET
+//
+// intra-CP
+add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Cmd1p",     "C", 1.69);
+add_fret_restraint(m,h_CP, "Spc29p",   "N", h_CP, "Cmd1p",     "C", 1.75);
+add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Spc110p_c", "C", 1.37);
+add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Spc42p_n",  "N", 2.05);
+add_fret_restraint(m,h_CP, "Cmd1p",    "C", h_CP, "Spc42p_n",  "N", 2.07);
+add_fret_restraint(m,h_CP, "Cmd1p",    "C", h_CP, "Spc110p_c", "C", 2.15);
+add_fret_restraint(m,h_CP, "Spc42p_n", "N", h_CP, "Spc110p_c", "C", 2.02);
+//
+// TWO-HYBRID SCREENING
+//
+// CP
+add_y2h_restraint(m,h_CP, "Cmd1p",      "ALL",
+                    h_CP, "Spc110p_c", IntRange(900,1020));
+add_y2h_restraint(m,h_CP, "Spc42p_n",     "N",
+                    h_CP, "Spc110p_c",    "C");
+add_y2h_restraint(m,h_CP, "Spc29p",       "ALL",
+                    h_CP, "Spc110p_c", IntRange(811,944));
+add_y2h_restraint(m,h_CP, "Spc110p_c",    "C",
+                    h_CP, "Spc110p_c",    "C");
+add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
+                    h_CP, "Spc29p",       "ALL");
+add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
+                    h_CP, "Spc42p_n", IntRange(1,138));
+
+
+std::cout << "Setup sampler" << std::endl;
+Particles eq_ps;
+domino::EquivalenceSubsetFilterTable* esft=
+ add_equivalence_filters(all_CP,h_CP[0],eq_ps);
+IMP_NEW(domino::ParticleStatesTable,pst,());
+IMP_NEW(domino::DominoSampler,s,(m,pst));
+
+domino::ListSubsetFilterTable* lsft=setup_sampler
+(m,h_CP[0],CP_covers[0],ds,pst,s,esft);
+
+std::cout << "Sampling" << std::endl;
+domino::Subset subs=domino::Subset(pst->get_particles());
+domino::Assignments ass=s->get_sample_assignments(subs);
+
+std::cout << "for scale " << ds << " # solutions " << ass.size() << std::endl;
+
+//next iterations
+for(int curi=1;curi<niter;++curi){
+ double scale = ds/pow(2,curi);
+ std::vector<Ints> mapping=get_mapping(CP_covers[curi-1],CP_covers[curi]);
+
+ IMP_NEW(domino::ParticleStatesTable,pst,());
+ IMP_NEW(domino::DominoSampler,s,(m,pst));
+
+ domino::ListSubsetFilterTable* lsft=setup_sampler
+  (m,h_CP[0],CP_covers[curi],scale,pst,s,esft);
+
+ domino::Assignments cac;
+ int stride;
+ if(do_random){
+  stride=1;
+ }else{
+  stride=skip;
+ }
+ for(unsigned int j=0;j<ass.size();j=j+stride){
+  if(do_random && (rand() % skip + 1)!=1) continue;
+  domino::Assignment a=ass[j];
+  unsigned int outof=1;
+  for(int i=0;i<a.size();++i)
+  {
+   int s=a[i];
+   Particle *p=subs[i];
+   Ints allowed=mapping[s];
+   lsft->set_allowed_states(p,allowed);
+   outof*=allowed.size();
+  }
+  domino::Assignments ccac=s->get_sample_assignments(subs);
+  if (ccac.size()>0){
+   cac.insert( cac.end(), ccac.begin(), ccac.end() );
+  }
+ }
+
+ ass= cac;
+ std::cout << "for scale " << scale <<
+ " # solutions " << ass.size() << std::endl;
+}
 return 0;
 }
