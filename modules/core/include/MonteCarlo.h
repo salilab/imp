@@ -101,6 +101,18 @@ public:
   }
   /** @} */
 
+  /** Computations can be acceletating by throwing out
+      the tails of the distribution of accepted moves. To
+      do this, specific a maximum acceptable difference
+      between the before and after scores.
+  */
+  void set_maximum_difference(double d) {
+    max_difference_=d;
+  }
+
+  double get_maximum_difference() const {
+    return max_difference_;
+  }
   /** @name Movers
 
        The following methods are used to manipulate the list of Movers.
@@ -120,15 +132,24 @@ public:
   //! a class that inherits from this should override this method
   virtual void do_step();
   //! Get the current energy
-  /** By default it just calls Optimizer::evaluate()
+  /** By default it just calls Optimizer::evaluate() if there is
+      no maximum allowed difference or Optimizer::evaluate_if_below()
+      if there is. Classes which override this method should be
+      similarly aware for efficiency.
    */
   virtual double do_evaluate() const {
-    return evaluate(false);
+    if (get_maximum_difference()
+        < std::numeric_limits<double>::max()) {
+      return evaluate_if_below(false, last_energy_+max_difference_);
+    } else {
+      return evaluate(false);
+    }
   }
 private:
   double temp_;
   double last_energy_;
   double best_energy_;
+  double max_difference_;
   Float probability_;
   unsigned int stat_forward_steps_taken_;
   unsigned int stat_upward_steps_taken_;
