@@ -85,7 +85,8 @@ class MSConnectivityTests(IMP.test.TestCase):
         connections = list()
         pps= self.r.get_connected_pairs()
         for p in pps:
-            conn = sorted([p[0].get_value(idk), p[1].get_value(idk)])
+            conn = [p[0].get_value(idk), p[1].get_value(idk)]
+            conn.sort()
             connections.append('%s <-> %s' % (conn[0], conn[1]))
         connections.sort()
         connections = ', '.join(connections)
@@ -109,7 +110,8 @@ class MSConnectivityTests(IMP.test.TestCase):
         connections = list()
         pps= self.r2.get_connected_pairs()
         for p in pps:
-            conn = sorted([p[0].get_value(idk), p[1].get_value(idk)])
+            conn = [p[0].get_value(idk), p[1].get_value(idk)]
+            conn.sort()
             connections.append('%s <-> %s' % (conn[0], conn[1]))
         connections.sort()
         connections = ', '.join(connections)
