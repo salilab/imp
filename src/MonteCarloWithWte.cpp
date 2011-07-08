@@ -24,15 +24,14 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   bias_.reset(new double[2*nbin_]);
   }
 
-double MonteCarloWithWte::get_bias(double score)
+double MonteCarloWithWte::get_bias(double score) const
 {
   int index=floor((score-min_)/dx_);
   index=std::max(0,std::min(nbin_-1,index));
   return spline(score,index);
-  //return bias_[index];
 }
 
-double MonteCarloWithWte::spline(double score, int index)
+double MonteCarloWithWte::spline(double score, int index) const
 {
  double where=score-min_-(double)index*dx_;
  const int npoints=2;
@@ -76,6 +75,11 @@ void MonteCarloWithWte::do_step() {
   double energy= evaluate(false);
   bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
   if(do_accept) update_bias(energy);
+}
+
+double MonteCarloWithWte::do_evaluate() const {
+   double score=evaluate(false);
+   return score+get_bias(score);
 }
 
 void MonteCarloWithWte::do_show(std::ostream &) const {

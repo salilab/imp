@@ -22,17 +22,23 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   boost::scoped_array<double> bias_;
   int     nbin_;
   void    update_bias(double score);
-  double  spline(double score, int index);
-  double  do_evaluate() {
-   double score=evaluate(false);
-   return score+get_bias(score);
-  }
+  double  spline(double score, int index) const;
+
+private:
+  double do_evaluate() const;
+
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,
                               double sigma, double gamma,
                               double w0);
 
-  double get_bias(double score);
+  double get_bias(double score) const;
+
+#ifndef SWIG
+  double* get_bias_buffer() const {
+   return bias_.get();
+  }
+#endif
 
   int get_nbin() const {
    return nbin_;
@@ -44,12 +50,6 @@ public:
    IMP_USAGE_CHECK(bias.size() == 2*nbin_, "Don't match");
    std::copy(bias.begin(), bias.end(), bias_.get());
   }
-
-#ifndef SWIG
-  double* get_bias_buffer() const {
-   return bias_.get();
-  }
-#endif
 
   IMP_MONTE_CARLO(MonteCarloWithWte);
 };
