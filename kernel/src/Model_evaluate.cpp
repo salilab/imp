@@ -248,10 +248,15 @@ void Model::zero_derivatives() const {
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
                                      bool calc_derivs,
-                                     bool if_good) {
+                                     bool if_good, bool if_max,
+                                     double omax) {
   IMP_FUNCTION_LOG;
+  IMP_INTERNAL_CHECK(!if_good || !if_max, "Can't be both max and good");
   Floats ret;
-  double remaining=get_maximum_score();
+  double remaining=omax;
+  if (if_good) {
+    remaining=get_maximum_score();
+  }
   boost::timer timer;
   const unsigned int rsz=restraints.size();
   for (unsigned int i=0; i< rsz; ++i) {
@@ -266,6 +271,12 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                    restraints[i]->unprotected_evaluate_if_good(calc_derivs?
                                                               &accum:NULL,
                                                                    max));
+    } else if (if_max) {
+      WRAP_EVALUATE_CALL(restraints[i],
+                         value=
+                   restraints[i]->unprotected_evaluate_if_good(calc_derivs?
+                                                              &accum:NULL,
+                                                                   remaining));
     } else {
       WRAP_EVALUATE_CALL(restraints[i],
                          value=
@@ -309,7 +320,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
                           const std::vector<double> &weights,
                           const ScoreStatesTemp &states,
                           bool calc_derivs,
-                          bool if_good) {
+                          bool if_good, bool if_max, double max) {
   // make sure stage is restored on an exception
   SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
@@ -324,7 +335,9 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
     zero_derivatives();
   }
   std::vector<double> ret= do_evaluate_restraints(restraints, weights,
-                                                  calc_derivs, if_good);
+                                                  calc_derivs,
+                                                  if_good, if_max,
+                                                  max);
 
   after_evaluate(states, calc_derivs);
 

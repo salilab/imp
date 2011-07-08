@@ -127,6 +127,11 @@ class IMPEXPORT Optimizer: public Object
   //! if desired.
   double evaluate(bool compute_derivatives) const;
 
+  //! Evaluate the score of the model (or of a subset of the restraints
+  //! if desired.
+  double evaluate_if_below(bool compute_derivatives,
+                          double max) const;
+
   RestraintSets get_restraint_sets() const {
     if (!restraints_.empty()) {
       return restraints_;

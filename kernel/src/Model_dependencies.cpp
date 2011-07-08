@@ -555,7 +555,7 @@ double Model::evaluate(bool calc_derivs) {
   Floats ret= do_evaluate(ordered_restraints_,
                      restraint_weights_,
                      ordered_score_states_,
-                          calc_derivs, false);
+                          calc_derivs, false, false);
   first_call_=false;
   return std::accumulate(ret.begin(), ret.end(), 0.0);
 }
@@ -563,7 +563,7 @@ double Model::evaluate(bool calc_derivs) {
 Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
                                    const std::vector<double> &weights,
                                    bool calc_derivs,
-                                   bool if_good) {
+                                   bool if_good, bool if_max, double max) {
   IMP_CHECK_OBJECT(this);
   IMP_OBJECT_LOG;
   IMP_IF_CHECK(USAGE) {
@@ -596,7 +596,7 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
     }
     }*/
   Floats ret= do_evaluate(restraints, weights,
-                          ss, calc_derivs, if_good);
+                          ss, calc_derivs, if_good, if_max, max);
   IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
                      "The number of scores doesn't match the number of"
                      << " restraints: " << ret.size()
@@ -608,14 +608,24 @@ Floats Model::evaluate( RestraintsTemp restraints,
                         std::vector<double> weights,
                        bool calc_derivs)
 {
-  return do_external_evaluate(restraints, weights, calc_derivs, false);
+  return do_external_evaluate(restraints, weights, calc_derivs, false, false);
+}
+
+Floats Model::evaluate_if_below( RestraintsTemp restraints,
+                                std::vector<double> weights,
+                                bool calc_derivs,
+                                double max)
+{
+  return do_external_evaluate(restraints, weights, calc_derivs, true, false,
+                              max);
 }
 
 Floats Model::evaluate_if_good( RestraintsTemp restraints,
                                 std::vector<double> weights,
                                 bool calc_derivs)
 {
-  return do_external_evaluate(restraints, weights, calc_derivs, true);
+  return do_external_evaluate(restraints, weights, calc_derivs, true, false,
+                              get_maximum_score());
 }
 
 
