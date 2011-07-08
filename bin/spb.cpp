@@ -19,12 +19,12 @@ using namespace IMP;
 // various parameters
 const double ds=40.0;
 double       side=80.0;
-const int    niter=2;
+const int    niter=1;
 bool         do_statistics=true;
 bool         do_random=false;
 bool         do_save_ass=false;
 const int    skip=100;
-std::string  cell_type="rhombus";
+std::string  cell_type="hexagon";
 int          num_cells;
 int          num_copies;
 double       error_bound;
@@ -66,7 +66,7 @@ algebra::Vector3Ds grid_cell(double side,double ds,double z)
  }
  if(cell_type=="hexagon"){
   algebra::Vector3D tra=algebra::Vector3D(0.0,0.0,0.0);
-  for(int i=0;i<3;++i){
+  for(int i=1;i<3;++i){
    algebra::Rotation3D rot=
    algebra::get_rotation_about_axis(algebra::Vector3D(0.0,0.0,1.0),
                                     (double)i * 2.0 * IMP::PI / 3.0);
@@ -99,7 +99,7 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
 atom::Molecule create_protein(Model *m,std::string name,double mass,
  int nbeads,int copy,int start_residue=-1,int length=-1)
 {
- if(length==-1) {length=(int) mass*1000.0/110;}
+ if(length==-1) {length=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
  protein->set_name(name);
@@ -115,7 +115,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,
   out2 << copy;
   atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
   dom->set_name(name+out1.str()+"-"+out2.str());
-  core::XYZR d=core::XYZR::setup_particle(pp);
+  core::XYZR  d=core::XYZR::setup_particle(pp);
   d.set_radius(rg);
   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
   protein.add_child(dom);
@@ -151,7 +151,7 @@ atom::Molecule protein_a,atom::Molecule protein_b,double dist)
  atom::Selection sa=atom::Selection(protein_a);
  atom::Selection sb=atom::Selection(protein_b);
  sa.set_terminus(atom::Selection::C);
- sa.set_terminus(atom::Selection::N);
+ sb.set_terminus(atom::Selection::N);
  Particle*  pa=sa.get_selected_particles()[0];
  Particle*  pb=sb.get_selected_particles()[0];
  IMP_NEW(core::PairRestraint,r,(ps,ParticlePair(pa, pb)));
@@ -196,11 +196,13 @@ atom::Molecule protein_b,int copy,double dist=-1.0)
 
 FloatRange get_range_from_fret_class(std::string r_class)
 {
- if (r_class=="High")   {return FloatRange(-500.0,  41.0);}
- if (r_class=="Mod")    {return FloatRange(41.0, 55.5);}
- if (r_class=="Low")    {return FloatRange(55.5, 66.0);}
- if (r_class=="Lowest") {return FloatRange(66.0, 70.0);}
- if (r_class=="None")   {return FloatRange(70.0, 100000.0);}
+ FloatRange range;
+ if (r_class=="High")   {range=FloatRange(-500.0,  41.0);}
+ if (r_class=="Mod")    {range=FloatRange(41.0, 55.5);}
+ if (r_class=="Low")    {range=FloatRange(55.5, 66.0);}
+ if (r_class=="Lowest") {range=FloatRange(66.0, 70.0);}
+ if (r_class=="None")   {range=FloatRange(70.0, 100000.0);}
+ return range;
 }
 
 FloatRange get_range_from_fret_value(double r_value)
@@ -428,7 +430,7 @@ void add_symmetry_restraint(Model *m,atom::Hierarchies hs)
 }
 
 domino::EquivalenceSubsetFilterTable* add_equivalence_filters
-(std::vector<std::string> all,atom::Hierarchy h,Particles eq_ps)
+(std::vector<std::string> all,atom::Hierarchy h,Particles* eq_ps)
 {
  IMP_NEW(domino::EquivalenceSubsetFilterTable,f,());
  for(int i=0;i<all.size();++i){
@@ -444,7 +446,7 @@ domino::EquivalenceSubsetFilterTable* add_equivalence_filters
   int ncopies=ps.size();
   if(ncopies==1){
    for(int j=0;j<(ps[0]).size();++j){
-    eq_ps.push_back(ps[0][j]);
+    eq_ps->push_back(ps[0][j]);
    }
   }
   if(ncopies>1){
@@ -454,7 +456,7 @@ domino::EquivalenceSubsetFilterTable* add_equivalence_filters
      pps.push_back(ps[k][j]);
     }
     f->add_set(pps);
-    eq_ps.push_back(pps[0]);
+    eq_ps->push_back(pps[0]);
    }
   }
  }
@@ -511,7 +513,7 @@ int main(int  , char **)
 // cell dependent parameters
 if(cell_type=="rhombus"){
  num_cells=21;
- num_copies=1;
+ num_copies=2;
  error_bound=1.45*pow(ds,2);
 }else if(cell_type=="hexagon"){
  num_cells=7;
@@ -617,7 +619,8 @@ add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
 std::cout << "Setup sampler" << std::endl;
 Particles eq_ps;
 domino::EquivalenceSubsetFilterTable* esft=
- add_equivalence_filters(all_CP,h_CP[0],eq_ps);
+ add_equivalence_filters(all_CP,h_CP[0],&eq_ps);
+
 IMP_NEW(domino::ParticleStatesTable,pst,());
 IMP_NEW(domino::DominoSampler,s,(m,pst));
 
@@ -628,7 +631,9 @@ std::cout << "Sampling" << std::endl;
 domino::Subset subs=domino::Subset(pst->get_particles());
 domino::Assignments ass=s->get_sample_assignments(subs);
 
-std::cout << "for scale " << ds << " # solutions " << ass.size() << std::endl;
+std::cout << "for scale " << ds << " # solutions " << ass.size() <<
+             " out of " << pow(CP_covers[0].size(),pst->get_particles().size())
+          << std::endl;
 
 //next iterations
 for(int curi=1;curi<niter;++curi){
@@ -667,8 +672,10 @@ for(int curi=1;curi<niter;++curi){
  }
 
  ass= cac;
- std::cout << "for scale " << scale <<
- " # solutions " << ass.size() << std::endl;
+ std::cout << "for scale " << scale << " # solutions " << ass.size() <<
+  " out of " << pow(CP_covers[curi].size(),pst->get_particles().size())
+          << std::endl;
 }
+
 return 0;
 }
