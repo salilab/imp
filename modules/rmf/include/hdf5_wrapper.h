@@ -48,8 +48,21 @@ class HDF5DataSet {
   void initialize_handles() {
     data_->sel_.open(H5Dget_space(data_->h_.get_hid()), &H5Sclose);
     // must be second
-    hsize_t dim= get_size().back();
-    data_->rds_.open(H5Screate_simple(1, &dim, NULL), &H5Sclose);
+    hsize_t ret[max_dims]={-1,-1,-1};
+    IMP_HDF5_CALL(H5Sget_simple_extent_dims(get_data_space(),
+                                            ret, NULL));
+    IMP_INTERNAL_CHECK(ret[data_->dim_-1] <1000000,
+                       "extents not returned properly");
+    if (ret[data_->dim_-1] > 0) {
+      // some versions will spew an error on this
+      // we will call this function again before rds_ is needed
+      //std::cout << "inializing row to " << ret[data_->dim_-1] << std::endl;
+      data_->rds_.open(H5Screate_simple(1, ret+data_->dim_-1,
+                                        NULL), &H5Sclose);
+    } else {
+      //std::cout << "clearing row data" << std::endl;
+      data_->rds_.close();
+    }
   }
   void initialize() {
     hsize_t one=1;
