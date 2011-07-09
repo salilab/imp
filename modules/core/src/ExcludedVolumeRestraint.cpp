@@ -202,9 +202,9 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
   double ret= ssps_->evaluate(cur_list_, da);
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     ParticlesTemp all= sc_->get_particles();
-    if (all.size() < 1300) {
+    if (all.size() < 3000) {
       double check=0;
-      for (unsigned int i=0; all.size(); ++i) {
+      for (unsigned int i=0; i< all.size(); ++i) {
         for (unsigned int j=0; j< i; ++j) {
           check+= ssps_->evaluate(ParticlePair(all[i], all[j]), NULL);
         }
@@ -224,8 +224,8 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
   IMP_CHECK_CODE(double check=0);
   IMP_CHECK_CODE(ParticlesTemp all= sc_->get_particles());
   IMP_CHECK_CODE(IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (all.size() < 1300) {
-      for (unsigned int i=0; all.size(); ++i) {
+    if (all.size() < 3000) {
+      for (unsigned int i=0; i< all.size(); ++i) {
         for (unsigned int j=0; j< i; ++j) {
           check+= ssps_->evaluate(ParticlePair(all[i], all[j]), NULL);
         }
