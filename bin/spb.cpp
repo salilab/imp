@@ -20,11 +20,11 @@ using namespace IMP;
 const double ds=40.0;
 double       side=80.0;
 const int    niter=1;
-bool         do_statistics=true;
-bool         do_random=false;
-bool         do_save_ass=false;
+const bool   do_statistics=true;
+const bool   do_random=false;
+const bool   do_save_ass=false;
 const int    skip=100;
-std::string  cell_type="hexagon";
+const std::string  cell_type="hexagon";
 int          num_cells;
 int          num_copies;
 double       error_bound;
@@ -158,17 +158,6 @@ atom::Molecule protein_a,atom::Molecule protein_b,double dist)
  r->set_name("IR " + name);
  m->add_restraint(r);
  m->set_maximum_score(r,error_bound);
-}
-
-void add_distance_restraint(Model *m,std::string name,Particle* p1,
-Particle* p2,core::TableRefiner *tbr,FloatRange dist)
-{
- core::DistancePairScore* ps=get_pair_score(dist);
- IMP_NEW(core::KClosePairsPairScore,kps,(ps,tbr,1.0));
- IMP_NEW(core::PairRestraint,mpr,(kps,ParticlePair(p1,p2)));
- mpr->set_name(name);
- m->add_restraint(mpr);
- m->set_maximum_score(mpr,error_bound);
 }
 
 atom::Molecule create_merged_protein
@@ -659,9 +648,9 @@ for(int curi=1;curi<niter;++curi){
   unsigned int outof=1;
   for(int i=0;i<a.size();++i)
   {
-   int s=a[i];
+   int ss=a[i];
    Particle *p=subs[i];
-   Ints allowed=mapping[s];
+   Ints allowed=mapping[ss];
    lsft->set_allowed_states(p,allowed);
    outof*=allowed.size();
   }
