@@ -19,8 +19,6 @@
 #include <IMP/Restraint.h>
 #include <IMP/UnaryFunction.h>
 #include <IMP/Refiner.h>
-#include "RigidClosePairsFinder.h"
-#include <IMP/core/SphereDistancePairScore.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -29,51 +27,34 @@ IMPCORE_BEGIN_NAMESPACE
     restraint prevents the particles from interpenetrating. Such restraints
     are also known as steric clash restraints.
 
-    \note If any of the rigid bodies don't have radii, an appropriate radius
+    If any of the rigid bodies don't have radii, an appropriate radius
     will be added. Note, to take advantage of this, the RigidBody
     must be in the container before the Restraint is added to the model.
-
-    \note Changing the set of particles in the SingletonContainer is not
-    currently supported after the first evaluate call.
-
-    \not Currently the radius of all particles is assumed to be constant
  */
-class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
+class IMPCOREEXPORT ExcludedVolumeRestraint:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  public internal::CorePairsRestraint
+#else
+  public Restraint
+#endif
 {
   Pointer<SingletonContainer> sc_;
-  mutable ParticlePairsTemp cur_list_;
-  mutable bool was_bad_;
-  mutable bool initialized_;
-  ObjectKey key_;
-  IMP::internal::OwnerPointer<SoftSpherePairScore> ssps_;
-  IMP::internal::OwnerPointer<RigidClosePairsFinder> rcpf_;
-  // moved stuff
-  mutable ParticlesTemp rbs_;
-  mutable ParticlesTemp xyzrs_;
-  double slack_;
-  mutable std::vector<algebra::Transformation3D > rbs_backup_;
-  mutable std::vector<algebra::Vector3D> xyzrs_backup_;
-
-  void reset_moved() const;
-  void initialize() const;
-  int get_if_moved() const;
-  void fill_list() const;
-  double fill_list_if_good(double max) const;
 public:
   /** The SingletonContainer contains a set of XYZR particles and RigidMembers.
 
       The spring constant used is k.*/
   ExcludedVolumeRestraint(SingletonContainer *sc,
-                          double k=1, double slack_=10);
+                          double k=1);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  double unprotected_evaluate_if_good(DerivativeAccumulator *da,
-                                      double max) const;
+  double unprotected_evaluate(DerivativeAccumulator *) const;
 #endif
+
+  void set_log_level(LogLevel l);
+
+#ifdef SWIG
   IMP_RESTRAINT(ExcludedVolumeRestraint);
-  Restraints get_instantaneous_decomposition() const;
-  IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+#endif
 };
 
 
