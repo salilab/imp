@@ -107,17 +107,18 @@ resolution=1
 # Number of projections to use for the initial registration
 #  (coarse registration) to estimate the registration parameters
 n_projections=20
+params = em2d.Em2DRestraintParameters(apix,resolution,n_projections)
+
 # This method (recommended) uses preprocessing of the images and projections
 # to speed-up the registration
-coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
+params.coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
 # use true if you want to save the projections from the model that best
 # match the Em images
-save_match_images = False
+params.save_match_images = False
 
-
-score_function=em2d.EM2DScore()
-em2d_restraint.setup(score_function,apix,resolution,n_projections,
-                coarse_registration_method,save_match_images)
+score_function=IMP.em2d.EM2DScore()
+em2d_restraint = IMP.em2d.Em2DRestraint()
+em2d_restraint.setup(score_function, params)
 em2d_restraint.set_images(em_images)
 em2d_restraint.set_name("em2d restraint")
 container = IMP.container.ListSingletonContainer(core.get_leaves(prot))

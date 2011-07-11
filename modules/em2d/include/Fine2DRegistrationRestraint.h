@@ -8,6 +8,7 @@
 #define IMPEM2D_FINE_2DREGISTRATION_RESTRAINT_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/ProjectionParameters.h"
@@ -15,7 +16,6 @@
 #include "IMP/em2d/scores2D.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/atom/Atom.h"
-//#include "IMP/Restraint.h"
 #include "IMP/Pointer.h"
 #include "IMP/macros.h"
 
@@ -47,13 +47,10 @@ public:
                 of the model. If not given, it is generated
 
   */
-  void setup(ParticlesTemp &ps,
-                 double resolution,
-                 double pixelsize,
+  void setup(ParticlesTemp &ps, const ProjectingParameters &params,
                  Model *scoring_model,
                  ScoreFunction *score_function,
                  MasksManagerPtr masks=MasksManagerPtr());
-
 
 
   //! Sets the image to use by the restraint to perform the fine search of
@@ -86,6 +83,7 @@ private:
   double resolution_,pixelsize_;
 //  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;
+  ProjectingParameters params_;
 
   mutable unsigned int calls_;
 };

@@ -21,6 +21,7 @@ files = [
   "domino_particle_states.cpp",
   "domino_filters.cpp",
   "domino_filter_tables.cpp",
+#  "TemplateFinder.cpp",
 
           ]\
         + SConscript("internal/SConscript")

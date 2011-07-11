@@ -52,6 +52,12 @@ public:
   //! Sets the entire matrix of data
   void set_data(const cv::Mat &mat);
 
+  //! All pixels to 0
+  void set_zeros() {
+    cv::Scalar s(0,0,0,0);
+    data_ = s;
+  }
+
   void set_value(int i, int j, double val) {
     data_.at<double>(i,j) = val;
   }

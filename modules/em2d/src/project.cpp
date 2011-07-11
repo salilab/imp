@@ -9,9 +9,13 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/rotation_helper.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/Vector2D.h"
 #include "IMP/Pointer.h"
 #include "IMP/core/utility.h"
+#include "IMP/core/XYZ.h"
+#include "IMP/core/CoverRefined.h"
+#include "IMP.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 
@@ -150,7 +154,6 @@ void do_project_particles(const ParticlesTemp &ps,
 }
 
 
-// Core function for projection of particles
 algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation) {
@@ -158,8 +161,7 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
   return do_project_vectors(ps,R,translation,centroid);
 }
 
-// Core function for projection of particles. Rotates respect to the centroid
-// and translates
+
 algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
             const algebra::Rotation3D &R,const algebra::Vector3D &translation,
             const algebra::Vector3D &center) {
@@ -168,7 +170,7 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
   algebra::Vector3D p;
   algebra::Vector2Ds vs(n_particles);
   for (unsigned long i=0; i<n_particles; i++) {
-    // Coordinates respect to the centroid
+    // Coordinates respect to the center
     p[0] = ps[i][0] - center[0];
     p[1] = ps[i][1] - center[1];
     p[2] = ps[i][2] - center[2];
@@ -362,6 +364,35 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
 //  map->update_voxel_size(voxelsize);
 //  map->set_origin(orig3D);
 //}
+
+
+Images create_evenly_distributed_projections(const ParticlesTemp &ps,
+                                             unsigned int n,
+                                             ProjectingParameters params) {
+  IMP_LOG(IMP::TERSE, "creating evenly distributed projections"<< std::endl);
+
+  // Sphere that encloses_the_particles
+  IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
+  core::XYZsTemp xyzs(ps);
+  unsigned int size = get_enclosing_image_size(ps, params.pixel_size, 4);
+  IMP_NEW(SpiderImageReaderWriter, dummy, ());
+  RegistrationResults regs = get_evenly_distributed_registration_results(n);
+  Images projections = get_projections(ps, regs,
+                         size, size,
+                         params.resolution, params.pixel_size,
+                         dummy);
+  return projections;
+}
+
+unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
+                                      double pixel_size,
+                                      unsigned int slack) {
+  IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
+  core::XYZsTemp xyzs(ps);
+  double diameter = 2 * core::get_enclosing_sphere(xyzs).get_radius();
+  unsigned int size = static_cast<unsigned int>(diameter/pixel_size) + 2*slack;
+  return size;
+}
 
 
 IMPEM2D_END_NAMESPACE

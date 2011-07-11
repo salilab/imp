@@ -18,8 +18,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 void Fine2DRegistrationRestraint::setup(
                        ParticlesTemp &ps,
-                       double resolution,
-                       double pixelsize,
+                       const ProjectingParameters &params,
                        Model *scoring_model,
 //                       ScoreFunctionPtr score_function,
                        ScoreFunction *score_function,
@@ -27,12 +26,12 @@ void Fine2DRegistrationRestraint::setup(
 
   IMP_LOG(IMP::TERSE,"Initializing Fine2DRegistrationRestraint" <<std::endl);
   ps_ = ps;
-  resolution_= resolution;
-  pixelsize_ = pixelsize;
+  params_ = params;
   // Generate all the projection masks for the structure
   if(masks==MasksManagerPtr() ) {
     // Create the masks
-    masks_ = MasksManagerPtr(new MasksManager(resolution,pixelsize));
+    masks_ = MasksManagerPtr(new MasksManager(params.resolution,
+                                              params.pixel_size));
     masks_->create_masks(ps);
     IMP_LOG(IMP::VERBOSE, "Created " << masks_->get_number_of_masks()
            << " masks withing Fine2DRegistrationRestraint " << std::endl);
@@ -70,7 +69,8 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
                                                              euler[1],
                                                              euler[2]);
   algebra::Vector3D origin = subject->get_header().get_origin();
-  algebra::Vector3D translation(origin[0]*pixelsize_,origin[1]*pixelsize_,0.0);
+  algebra::Vector3D translation(origin[0]*params_.pixel_size,
+                                origin[1]*params_.pixel_size,0.0);
 
   subject_->set_data(subject->get_data()); // deep copy, avoids leaks
   unsigned int  rows = subject_->get_header().get_number_of_rows();
@@ -82,9 +82,9 @@ void Fine2DRegistrationRestraint::set_subject_image(em2d::Image *subject) {
 
   PP_.set_rotation(R);
   PP_.set_translation(translation);
-
-  algebra::Vector3D min_values(-pixelsize_*rows,-pixelsize_*cols,0.0);
-  algebra::Vector3D max_values( pixelsize_*rows, pixelsize_*cols,0.0);
+  double s = params_.pixel_size;
+  algebra::Vector3D min_values(-s*rows, -s*cols, 0.0);
+  algebra::Vector3D max_values( s*rows, s*cols, 0.0);
   PP_.set_proper_ranges_for_keys(this->get_model(),min_values,max_values);
 
   IMP_LOG(IMP::VERBOSE,"Subject set for Fine2DRegistrationRestraint"
@@ -104,8 +104,8 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
                           projection_->get_data(),
                           PP_.get_rotation(),
                           PP_.get_translation(),
-                          resolution_,
-                          pixelsize_,
+                          params_.resolution,
+                          params_.pixel_size,
                           masks_);
   double score = score_function_->get_score(subject_,projection_);
   IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);
@@ -134,8 +134,8 @@ RegistrationResult
   IMP_LOG(VERBOSE, "Retuning the final values for Fine2DRegistrationRestraint "
            <<std::endl);
   algebra::Vector3D translation= PP_.get_translation();
-  algebra::Vector2D shift(translation[0]/pixelsize_,
-                          translation[1]/pixelsize_);
+  double s = params_.pixel_size;
+  algebra::Vector2D shift(translation[0]/s, translation[1]/s);
   double score = unprotected_evaluate(NULL);
   RegistrationResult rr(PP_.get_rotation(),shift);
   rr.set_score(score);

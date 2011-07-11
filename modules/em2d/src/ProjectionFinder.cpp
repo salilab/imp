@@ -135,14 +135,14 @@ void ProjectionFinder::do_preprocess_projection(unsigned int j) {
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Preprocessing projection " << j
           << std::endl);
   // FFT PREPROCESSING
-  if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
+  if(params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
     em2d::get_autocorrelation2d(projections_[j]->get_data(),autoc);
     em2d::do_resample_polar(autoc,polar_autoc,polar_params_);
     get_fft_using_optimal_size(polar_autoc,PROJECTIONS_POLAR_AUTOC_[j]);
   }
   // CENTERS OF GRAVITY AND ROTATIONAL FFT PREPROCESSING
-  if(coarse_registration_method_== ALIGN2D_WITH_CENTERS) {
+  if(params_.coarse_registration_method == ALIGN2D_WITH_CENTERS) {
     do_preprocess_for_fast_coarse_registration(projections_[j]->get_data(),
                                            projections_cog_[j],
                                            SUBJECTS_POLAR_AUTOC_[j]);
@@ -153,14 +153,14 @@ void ProjectionFinder::do_preprocess_subject(unsigned int i) {
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Preprocessing subject " << i
           << std::endl);
 
-  if(coarse_registration_method_ == ALIGN2D_PREPROCESSING) {
+  if(params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
     cv::Mat autoc,polar_autoc;
     get_fft_using_optimal_size(subjects_[i]->get_data(),SUBJECTS_[i]);
     get_autocorrelation2d(subjects_[i]->get_data(),autoc);
     do_resample_polar(autoc,polar_autoc,polar_params_);
     get_fft_using_optimal_size(polar_autoc,SUBJECTS_POLAR_AUTOC_[i]);
   }
-  if(coarse_registration_method_ == ALIGN2D_WITH_CENTERS) {
+  if(params_.coarse_registration_method == ALIGN2D_WITH_CENTERS) {
     do_preprocess_for_fast_coarse_registration(subjects_[i]->get_data(),
                                             subjects_cog_[i],
                                             SUBJECTS_POLAR_AUTOC_[i]);
@@ -179,12 +179,12 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
   for(unsigned long j=0;j<projections_.size();++j) {
     ResultAlign2D RA;
     // Method without preprocessing
-    if(coarse_registration_method_== ALIGN2D_NO_PREPROCESSING) {
+    if(params_.coarse_registration_method == ALIGN2D_NO_PREPROCESSING) {
       RA=get_complete_alignment(subjects_[i]->get_data(),
                           projections_[j]->get_data(),false);
     }
     // Methods with preprocessing and FFT alignment
-    if(coarse_registration_method_== ALIGN2D_PREPROCESSING) {
+    if(params_.coarse_registration_method == ALIGN2D_PREPROCESSING) {
       RA=get_complete_alignment_no_preprocessing(subjects_[i]->get_data(),
                                            SUBJECTS_[i],
                                            SUBJECTS_POLAR_AUTOC_[i],
@@ -193,7 +193,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
     }
 
     // Method with centers of gravity alignment
-    if(coarse_registration_method_== ALIGN2D_WITH_CENTERS) {
+    if(params_.coarse_registration_method == ALIGN2D_WITH_CENTERS) {
       RA = get_complete_alignment_with_centers_no_preprocessing(
                                                 subjects_cog_[i],
                                                 projections_cog_[j],
@@ -248,7 +248,7 @@ void ProjectionFinder::get_coarse_registrations_for_subject(
 ///******/
   }
 
-  if(save_match_images_) {
+  if(params_.save_match_images) {
     IMP_NEW(em2d::Image,match,());
 
     get_transformed(projections_[projection_index]->get_data(),
@@ -332,15 +332,18 @@ void ProjectionFinder::get_complete_registration() {
 
   IMP_LOG(IMP::TERSE,"ProjectionFinder: Setting Fine2DRegistrationRestraint "
           << std::endl);
+  ProjectingParameters pp(params_.pixel_size, params_.resolution);
   fine2d->setup(model_particles_,
-                     resolution_,
-                     apix_,
-                     scoring_model,
-                     score_function_,
-                     masks_manager_);
+                pp,
+                scoring_model,
+                score_function_,
+                masks_manager_);
+
   simplex_optimizer->set_model(scoring_model);
-  simplex_optimizer->set_initial_length(simplex_initial_length_);
-  simplex_optimizer->set_minimum_size(simplex_minimum_size_);
+  simplex_optimizer->set_initial_length(params_.simplex_initial_length);
+  simplex_optimizer->set_minimum_size(params_.simplex_minimum_size);
+
+
 //  IMP::SetLogState log_state(fine2d,IMP::TERSE);
 
   // Computation
@@ -375,7 +378,8 @@ void ProjectionFinder::get_complete_registration() {
               "Fine2DRegistrationRestraint "
              "from ProjectionFinder" << std::endl);
       fine2d->set_subject_image(subjects_[i]);
-      simplex_optimizer->optimize(static_cast<double>(optimization_steps_));
+      simplex_optimizer->optimize(
+                            static_cast<double>(params_.optimization_steps));
       // Update the registration parameters
       RegistrationResult fine_registration = fine2d->get_final_registration();
 
@@ -396,9 +400,10 @@ void ProjectionFinder::get_complete_registration() {
     IMP_LOG(IMP::TERSE,"Fine registration: "
                               << registration_results_[i] << std::endl);
     // save if requested
-    if(save_match_images_) {
+    if(params_.save_match_images) {
       get_projection(match,model_particles_,registration_results_[i],
-                    resolution_,apix_,srw,false,masks_manager_);
+                    params_.resolution,
+                    params_.pixel_size,srw,false,masks_manager_);
       do_normalize(match,true);
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
@@ -483,13 +488,15 @@ void ProjectionFinder::show(std::ostream &out) const {
   << "Number of projections = " << projections_.size()  << std::endl
   << "Number of subject images = " << subjects_.size() << std::endl
   << "Working parameters: " << std::endl
-  << "Resolution: " <<  resolution_  << std::endl
-  << "A/pixel: " << apix_ << std::endl
-  << "Coarse egistration method: " << coarse_registration_method_ << std::endl
-  << "Simplex initial size: " <<  simplex_initial_length_ << std::endl
-  << "Simplex minimun size: " << simplex_minimum_size_ << std::endl
-  << "Simplex maximum optimization steps: " <<optimization_steps_ << std::endl
-  << "Save matching images: " << save_match_images_ << std::endl;
+  << "Resolution: " <<  params_.resolution  << std::endl
+  << "A/pixel: " << params_.pixel_size << std::endl
+  << "Coarse egistration method: "
+        << params_.coarse_registration_method << std::endl
+  << "Simplex initial size: " <<  params_.simplex_initial_length << std::endl
+  << "Simplex minimun size: " << params_.simplex_minimum_size << std::endl
+  << "Simplex maximum optimization steps: "
+                              << params_.optimization_steps << std::endl
+  << "Save matching images: " << params_.save_match_images << std::endl;
 }
 
 IMPEM2D_END_NAMESPACE

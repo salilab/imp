@@ -109,7 +109,8 @@ void MasksManager::create_mask(double radius, double mass) {
   params = kernel_params_.get_params(radius);
   ProjectionMaskPtr ptr(new ProjectionMask(kernel_params_,
                                            params,
-                                           pixelsize_));
+                                           pixelsize_,
+                                           mass));
   radii2mask_[radius]=ptr;
 }
 

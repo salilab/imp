@@ -57,11 +57,9 @@ class ProjectTests(IMP.test.TestCase):
                                                                   n_projections)
         projections = IMP.em2d.get_projections(particles,
                   registration_values,rows,cols,resolution,apix,srw)
-        for i, p in enumerate(projections):
-            p.write("caca-%d.spi" % i, srw)
         # Read the stored projections
         stored_projection_names= IMP.em2d.create_filenames(
-                                      n_projections,"1z5s-fast-projection","spi")
+                        n_projections,"1z5s-fast-projection","spi")
         for n in xrange(0,n_projections):
             stored_projection_names[n]=self.get_input_file_name(
                                             stored_projection_names[n])

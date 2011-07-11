@@ -11,6 +11,7 @@
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/align2D.h"
+#include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/opencv_interface.h"
 #include "IMP/em2d/Image.h"
@@ -31,6 +32,46 @@ IMPEM2D_BEGIN_NAMESPACE
 const unsigned int ALIGN2D_NO_PREPROCESSING = 0;
 const unsigned int ALIGN2D_PREPROCESSING = 1;
 const unsigned int ALIGN2D_WITH_CENTERS = 2;
+
+
+class IMPEM2DEXPORT Em2DRestraintParameters: public ProjectingParameters {
+
+  void init() {
+    coarse_registration_method = ALIGN2D_PREPROCESSING;
+    save_match_images = false;
+    optimization_steps = 5;
+    simplex_initial_length = 0.1;
+    simplex_minimum_size = 0.01;
+  }
+
+public:
+
+  // Number of model projections to generate when scoring
+  unsigned int n_projections;
+  unsigned int  coarse_registration_method;
+  bool save_match_images;
+  unsigned int  optimization_steps;
+  double simplex_initial_length;
+  double simplex_minimum_size;
+
+  Em2DRestraintParameters() {init();};
+
+  Em2DRestraintParameters(double ps, double res, unsigned int n_proj=20):
+      ProjectingParameters(ps, res), n_projections(n_proj) {
+    init();
+  }
+
+  void show(std::ostream &out = std::cout) const {
+    out << "Em2DRestraintParameters: " << std::endl
+        << "pixel_size " << pixel_size << " resolution " << resolution
+        << " coarse_registration_method " << coarse_registration_method
+        << " optimization_steps " << optimization_steps
+        << " simplex_initial_length " << simplex_initial_length
+        << " simplex_minimum_size " << simplex_minimum_size << std::endl;};
+};
+IMP_VALUES(Em2DRestraintParameters,Em2DRestraintParametersList);
+
+
 
 
 //! class to perform registration of model projections to images images
@@ -58,34 +99,20 @@ public:
     \param[in] Value of the simplex length stop the search. The smaller, the
                more accurate the finder, but slower
   */
-//  void setup(ScoreFunctionPtr score_function,
   void setup(ScoreFunction *score_function,
-              double apix,
-              double resolution =1,
-              int coarse_registration_method = ALIGN2D_PREPROCESSING,
-              bool save_match_images =false,
-              int optimization_steps = 5,
-              double simplex_initial_length =0.1,
-              double simplex_minimum_size =0.01) {
+             const Em2DRestraintParameters &params) {
 
-    score_function_=score_function;
-
-    resolution_ = resolution;
-    apix_ = apix;
-    coarse_registration_method_ = coarse_registration_method;
-    simplex_minimum_size_ = simplex_minimum_size;
-    optimization_steps_ = optimization_steps;
-    save_match_images_ = save_match_images;
-    simplex_initial_length_ = simplex_initial_length;
+    score_function_= score_function;
+    params_ = params;
     masks_manager_ = MasksManagerPtr(new MasksManager);
-    masks_manager_->setup_kernel(resolution_,apix_);
-
+    masks_manager_->setup_kernel(params.resolution,params.pixel_size);
     fast_optimization_mode_ = false;
     parameters_setup_=true;
     preprocessing_time_=0.0;
     coarse_registration_time_=0.0;
     fine_registration_time_ =0.0;
   }
+
 
   //! Set EM images to use as restraints
   void set_subjects(const em2d::Images &subjects);
@@ -103,11 +130,11 @@ public:
     fine_match-i.spi for full registration.
   */
   void set_save_match_images(bool x) {
-    save_match_images_=x;
+    params_.save_match_images = x;
   }
 
   bool get_save_match_images() const {
-     return save_match_images_;
+     return params_.save_match_images;
   }
   //! With this fast mode, only the first number n of best scoring
   //! projections during the coarse search are refined.
@@ -178,26 +205,16 @@ protected:
   RegistrationResults registration_results_;
   ParticlesTemp model_particles_;
 
+
 //  ScoreFunctionPtr score_function_;
   Pointer<ScoreFunction> score_function_;
 
-  //! resolution used to generate projections during the fine registration
-  double resolution_;
-  //! Sampling of the images in Amstrong/pixel
-  double apix_;
-
-  bool save_match_images_,
-       registration_results_set_,
-       particles_set_,
+  bool particles_set_,
        parameters_setup_,
        registration_done_,
        fast_optimization_mode_;
 
-  //! Coarse registration method
-  unsigned int coarse_registration_method_;
-  //! Simplex optimization parameters
-  double simplex_minimum_size_,simplex_initial_length_;
-  unsigned int optimization_steps_;
+
   unsigned int number_of_optimized_projections_;
   // FFT of subjects (storing the FFT of projections is not neccessary
   std::vector< cv::Mat > SUBJECTS_;
@@ -207,6 +224,8 @@ protected:
   algebra::Vector2Ds subjects_cog_;
   algebra::Vector2Ds projections_cog_;
   PolarResamplingParameters polar_params_;
+
+  Em2DRestraintParameters params_;
 /**
   MasksManager masks_manager_;
 **/

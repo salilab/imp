@@ -8,6 +8,8 @@
 
 #include "IMP/em2d/em2d_config.h"
 #include "IMP/em2d/ProjectionFinder.h"
+#include "IMP/em2d/Em2DRestraint.h"
+#include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/project.h"
 #include "IMP/em2d/filenames_manipulation.h"
 #include "IMP/em2d/model_interaction.h"
@@ -247,19 +249,14 @@ int main(int argc, char **argv) {
 
 
   boost::timer registration_timer;
-  int coarse_method = em2d::ALIGN2D_PREPROCESSING;
-  double simplex_initial_length = 0.1;
 
   IMP_NEW(em2d::EM2DScore,score_function,());
   IMP_NEW(em2d::ProjectionFinder, finder,());
-  finder->setup(score_function,
-               apix,
-                resolution,
-                coarse_method,
-                save_images,
-                optimization_steps,
-                simplex_initial_length,
-                simplex_minimum_size);
+  em2d::Em2DRestraintParameters params(apix, resolution, n_projections);
+  params.save_match_images = save_images;
+  params.optimization_steps = optimization_steps;
+  params.simplex_minimum_size = simplex_minimum_size;
+  finder->setup(score_function, params);
   finder->set_model_particles(ps);
   finder->set_subjects(subjects);
   double time_preprocess_subjects =  finder->get_preprocessing_time();

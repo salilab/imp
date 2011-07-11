@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.em2d
+import IMP.em2d as em2d
 import os
 from math import *
 
@@ -81,25 +81,25 @@ class ProjectTests(IMP.test.TestCase):
         self.assertEqual(m.get_number_of_restraints(),4,
                         "Incorrect number of distance restraints")
         # set em2D restraint
-        srw = IMP.em2d.SpiderImageReaderWriter()
+        srw = em2d.SpiderImageReaderWriter()
         selection_file=self.get_input_file_name("all-1z5s-projections.sel")
         images_to_read_names=[IMP.get_relative_path(selection_file, x) for x in
-                IMP.em2d.read_selection_file(selection_file)]
-        em_images =IMP.em2d.read_images(images_to_read_names,srw)
+                em2d.read_selection_file(selection_file)]
+        em_images =em2d.read_images(images_to_read_names,srw)
 
         self.assertEqual(len(em_images),3,"Incorrect number images read")
 
-        em2d_restraint = IMP.em2d.Em2DRestraint()
+
         apix=1.5
         resolution=1
         n_projections=20
-        coarse_registration_method = IMP.em2d.ALIGN2D_PREPROCESSING
-        save_match_images = False
+        params = em2d.Em2DRestraintParameters(apix,resolution,n_projections)
+        params.save_match_images = False
+        params.coarse_registration_method = em2d.ALIGN2D_PREPROCESSING
+        score_function=em2d.EM2DScore()
 
-        score_function=IMP.em2d.EM2DScore()
-        em2d_restraint.setup(score_function,
-                          apix,resolution,n_projections,
-                        coarse_registration_method,save_match_images)
+        em2d_restraint = em2d.Em2DRestraint()
+        em2d_restraint.setup(score_function, params)
         em2d_restraint.set_images(em_images)
         em2d_restraint.set_name("em2d restraint")
         container = IMP.container.ListSingletonContainer(

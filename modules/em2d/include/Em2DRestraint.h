@@ -10,6 +10,7 @@
 #define IMPEM2D_EM_2DRESTRAINT_H
 
 #include "IMP/em2d/em2d_config.h"
+#include "IMP/em2d/project.h"
 #include "IMP/em2d/ProjectionFinder.h"
 #include "IMP/em2d/ProjectionMask.h"
 #include "IMP/em2d/Image.h"
@@ -20,6 +21,7 @@
 #include <IMP/SingletonContainer.h>
 
 IMPEM2D_BEGIN_NAMESPACE
+
 
 
 
@@ -47,9 +49,9 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
   em2d::Images em_images_;
   unsigned int n_projections_for_coarse_registration_,
                number_of_optimized_projections_;
-  double apix_,resolution_;
   bool fast_optimization_mode_;
   bool only_coarse_registration_;
+  Em2DRestraintParameters params_;
 public:
 
   //! Create the restraint.
@@ -62,31 +64,15 @@ public:
     \param[in] n_projections number of projections to generate to perform
                the initial coarse registration.
   */
-//  void setup(ScoreFunctionPtr score_function,
   void setup(ScoreFunction *score_function,
-             double apix,
-             double resolution =1,
-              unsigned n_projections=20,
-              unsigned int coarse_registration_method = 1,
-              bool save_match_images =false,
-              unsigned int optimization_steps = 5,
-              double simplex_initial_length =0.1,
-              double simplex_minimum_size =0.01) {
-    IMP_UNUSED(optimization_steps);
-  apix_ =apix;
-  resolution_ = resolution;
+             const Em2DRestraintParameters &params) {
+  params_ = params;
   finder_ = new ProjectionFinder;
-  finder_->setup(score_function,
-                apix_,
-                resolution_ ,
-                coarse_registration_method,
-                save_match_images,
-                simplex_initial_length,
-                simplex_minimum_size);
-  n_projections_for_coarse_registration_ = n_projections;
+  finder_->setup(score_function, params);
   fast_optimization_mode_ = false;
   only_coarse_registration_ = false;
 }
+
 
 
   //! Sets the particles  that should correspond to the EM images.
