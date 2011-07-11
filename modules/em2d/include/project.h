@@ -13,6 +13,7 @@
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/RegistrationResult.h"
 #include "IMP/em2d/FFToperations.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/em/DensityMap.h"
 #include "IMP/em/MRCReaderWriter.h"
 #include "IMP/em/SpiderReaderWriter.h"
@@ -26,6 +27,25 @@
 
 
 IMPEM2D_BEGIN_NAMESPACE
+
+
+class IMPEM2DEXPORT ProjectingParameters {
+
+public:
+
+  double pixel_size, resolution;
+
+  ProjectingParameters() {};
+
+  ProjectingParameters(double ps, double res):
+                  pixel_size(ps), resolution(res) {};
+  void show(std::ostream &out = std::cout) const {
+    out << "ProjectingParameters " << pixel_size
+              << " " << resolution << std::endl;};
+};
+IMP_VALUES(ProjectingParameters,ProjectingParametersList);
+
+
 
 //! Generates projectios from particles
 /*!
@@ -96,6 +116,21 @@ IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
              MasksManagerPtr masks,
              bool clear_matrix_before = true);
 
+
+/*! This function is slightly different than the other ones.
+    Only generates evenly distributed projections and determines the size of
+    the images that encloses the particles. Should not be used unless this is
+    exactly what you want.
+*/
+IMPEM2DEXPORT Images create_evenly_distributed_projections(
+                                             const ParticlesTemp &ps,
+                                             unsigned int n,
+                                             ProjectingParameters params);
+
+
+
+
+
 //! Project the points contained in Vector3Ds to gen vectors in 2D
 /*!
   \param[in] ps the points
@@ -107,6 +142,8 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
             const algebra::Vector3Ds &ps,
             const algebra::Rotation3D &R,
             const  algebra::Vector3D &translation);
+
+
 
 
 //! Project the points contained in Vector3Ds
@@ -124,6 +161,12 @@ IMPEM2DEXPORT algebra::Vector2Ds do_project_vectors(
               const algebra::Vector3D &center);
 
 
+/*! Get an automatic size for an image that contains the particles
+  \param[in] slack is the number of pixels left as border
+*/
+IMPEM2DEXPORT unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
+                                                    double pixel_size,
+                                                    unsigned int slack);
 
 
 //! Generates projectios of a density map using ray casting (real space).

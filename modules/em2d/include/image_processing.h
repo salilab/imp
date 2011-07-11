@@ -93,6 +93,23 @@ public:
 IMP_VALUES(SegmentationParameters,SegmentationParametersList);
 
 
+/*! Information for the match of a template in one image. The pair is the
+    pixel of the image where the match is found.
+*/
+class IMPEM2DEXPORT MatchTemplateResult {
+public:
+  IntPair pair;
+  double cross_correlation;
+  MatchTemplateResult(IntPair p,double cc): pair(p), cross_correlation(cc) {};
+
+  void show(std::ostream &out = std::cout) const {
+    out << "MatchTemplateResult: Pair (" << pair.first << "," << pair.second
+        << ") ccc = " << cross_correlation << std::endl;
+  }
+
+};
+IMP_VALUES(MatchTemplateResult, MatchTemplateResults);
+
 
 //! Applies a binary mask to an image.
 /*!
@@ -371,6 +388,15 @@ IMPEM2DEXPORT double get_overlap_percentage( cv::Mat &m1,
                                              cv::Mat &m2,
                                              const IntPair &center);
 
+
+/*! Gets the n first matches between an image and a template
+  \param[in] m Matrix
+  \param[in] templ Matrix with a template to be found in m
+  \param[in] n Number of positions to recover
+*/
+IMPEM2DEXPORT MatchTemplateResults get_best_template_matches(const cv::Mat &m,
+                                        const cv::Mat &templ,
+                                        unsigned int  n);
 
 IMPEM2D_END_NAMESPACE
 

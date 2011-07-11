@@ -9,8 +9,11 @@ IMP_SWIG_VALUE(IMP::em2d, SingleLinkage, SingleLinkages);
 IMP_SWIG_VALUE(IMP::em2d, CompleteLinkage, CompleteLinkages);
 IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 
-
 IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
+IMP_SWIG_VALUE(IMP::em2d, MatchTemplateResult, MatchTemplateResults);
+IMP_SWIG_VALUE(IMP::em2d, ProjectingParameters, ProjectingParametersList);
+IMP_SWIG_VALUE(IMP::em2d, Em2DRestraintParameters, Em2DRestraintParametersList);
+
 
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionFinder, ProjectionFinders);
 IMP_SWIG_OBJECT(IMP::em2d, ScoreFunction,ScoreFunctions);
@@ -31,13 +34,12 @@ IMP_SWIG_OBJECT(IMP::em2d, TIFFImageReaderWriter, TIFFImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, SpiderImageReaderWriter, SpiderImageReaderWriters);
 IMP_SWIG_OBJECT(IMP::em2d, CollisionCrossSection, CollisionCrossSections);
 
-IMP_SWIG_OBJECT(IMP::em2d, ProjectionStates, ProjectionStatesList);
-//IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilter, ProjectionOverlapFilters);
-//IMP_SWIG_OBJECT(IMP::em2d, ProjectionOverlapFilterTable,
-//                                        ProjectionOverlapFilterTable);
 IMP_SWIG_OBJECT(IMP::em2d, GridStates, GridStatesList);
+IMP_SWIG_OBJECT(IMP::em2d, ProjectionStates, ProjectionStatesList);
 IMP_SWIG_OBJECT(IMP::em2d, DistanceFilter, DistanceFilters);
 IMP_SWIG_OBJECT(IMP::em2d, DistanceFilterTable,DistanceFilterTables);
+
+// IMP_SWIG_OBJECT(IMP::em2d, TemplateFinder, TemplateFinders);
 
 
 // wrapping of a decorator with swigg. Parameters: namespace, name, plural name
@@ -69,6 +71,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/domino_particle_states.h"
 %include "IMP/em2d/domino_filters.h"
 %include "IMP/em2d/domino_filter_tables.h"
+// %include "IMP/em2d/TemplateFinder.h"
 
 
 namespace IMP {

@@ -51,7 +51,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_NEW(SpiderImageReaderWriter, srw, ());
   em2d::Images projections=get_projections(
           particles_container_->get_particles(), regs, rows, cols,
-                                resolution_, apix_, srw);
+                                params_.resolution, params_.pixel_size, srw);
   finder_->set_projections(projections);
 
   if(only_coarse_registration_) {

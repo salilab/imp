@@ -7,6 +7,8 @@
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/CenteredMat.h"
 #include "IMP/em2d/internal/image_processing_helper.h"
+#include "IMP/em2d/Image.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/eigen_analysis.h"
 #include "IMP/exception.h"
 #include "IMP/macros.h"
@@ -715,6 +717,83 @@ double get_overlap_percentage(cv::Mat &m1, cv::Mat &m2,
     }
   }
   return pixels_overlap/pixels_m2;
+}
+
+MatchTemplateResults get_best_template_matches(const cv::Mat &m,
+                          const cv::Mat &templ,
+                          unsigned int  n) {
+  cv::Mat result, aux_m, aux_templ;
+  m.convertTo(aux_m,CV_32FC1); // float, matchTemplate
+  templ.convertTo(aux_templ,CV_32FC1); // float, matchTemplate
+
+  cv::matchTemplate(aux_m, aux_templ, result, CV_TM_CCORR_NORMED);
+  /* Write the image with the correlations
+  IMP_NEW(Image, img, ());
+  cv::Mat temp;
+  result.convertTo(temp,CV_64FC1);
+  img->set_data(temp);
+  IMP_NEW(SpiderImageReaderWriter, srw, ());
+  img->write("matches_template.spi", srw);
+  */
+  std::list<cvPixel> locations;
+  std::list<float> max_values;
+  for (int i=0; i<result.rows; ++i) {
+    for (int j=0; j<result.cols; ++j) {
+      cvPixel p(i, j);
+      float v = result.at<float>(p);
+      if(locations.size() == 0) {
+        locations.push_back(p);
+        max_values.push_back( v);
+      } else {
+        std::list<float>::iterator itv = max_values.begin();
+        std::list<cvPixel>::iterator itp = locations.begin();
+        for ( ; itv != max_values.end(); ++itv, ++itp) {
+          bool is_higher = v > *itv ? true : false;
+          if( is_higher) {
+            locations.insert(itp, p);
+            max_values.insert(itv, v);
+            if( max_values.size() > n) {
+              locations.pop_back();
+              max_values.pop_back();
+            }
+            break;
+          }
+        }
+        if(itv == max_values.end() && (max_values.size() < n) ) {
+          max_values.push_back( *itv);
+          locations.push_back( *itp);
+        }
+      }
+    }
+  }
+
+  std::list<cvPixel>::const_iterator itp = locations.begin();
+  std::list<float>::const_iterator itv = max_values.begin();
+  MatchTemplateResults best_locations;
+  IMP_LOG(IMP::VERBOSE,"Best template locations" << std::endl);
+
+  // int l = 0;
+  for (; itp != locations.end(); ++itp, ++itv) {
+    IMP_LOG(IMP::VERBOSE, "pixel (" << itp->y << "," << itp->x
+                                        << ") = " << *itv << std::endl);
+    MatchTemplateResult info( IntPair(itp->y, itp->x), *itv);
+    best_locations.push_back( info  );
+
+    /* Write the template on top of the image
+    cv::Mat mat;
+    m.copyTo(mat);
+    cv::Mat roi(mat, cv::Rect(itp->y, itp->x, templ.rows, templ.cols));
+    cv::Mat temp = templ * 3;
+    roi = roi + temp;
+    IMP_NEW(Image, xxx, ());
+    xxx->set_data(mat);
+    std::ostringstream oss2;
+    oss2 << "img-and-template-sol-" << l << ".spi";
+    xxx->write(oss2.str(), srw);
+    ++l;
+    */
+  }
+  return best_locations;
 }
 
 
