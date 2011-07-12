@@ -641,7 +641,7 @@ namespace grids {
       get_has_index() functions allow one to tell if a voxel has been added.
       \unstable{SparseGridStorageD}
 
-      Base should be one of BoundedGridStorage3D or UnboundedGridStorage3D.
+      Base should be one of BoundedGridStorageD or UnboundedGridStorageD.
       \see Grid3D
   */
   template <int D, class VT, class Base,
@@ -681,8 +681,14 @@ namespace grids {
                         << data_.size() << " cells set");
     //! Add a voxel to the storage, this voxel will now have a GridIndex3D
     void add_voxel(const ExtendedGridIndexD<D>& i, const VT& gi) {
-      IMP_USAGE_CHECK(Base::get_has_index(i), "Out of grid domain "
-                      << i);
+      IMP_IF_CHECK(USAGE) {
+        for (unsigned int ii=0; ii< i.get_dimension(); ++ii) {
+          IMP_USAGE_CHECK(i[ii] < int(Base::get_number_of_voxels(ii))
+                          && i[ii]>=0, "Out of grid domain "
+                          << i << " at " << ii
+                          << " on " << Base::get_number_of_voxels(ii));
+        }
+      }
       data_[GridIndexD<D>(i.begin(), i.end())]=gi;
     }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
