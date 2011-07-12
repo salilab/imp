@@ -57,6 +57,12 @@ struct ParticleClose {
                                    XYZR(b).get_radius()+d_,
                                    XYZR(a).get_radius());
   }
+  bool check_close(Particle *a, Particle *b) const {
+    return get_interiors_intersect(XYZR(a).get_coordinates()
+                                   -XYZR(b).get_coordinates(),
+                                   .95*(XYZR(b).get_radius()+d_),
+                                   .95*(XYZR(a).get_radius()));
+  }
 };
 
 
@@ -80,6 +86,9 @@ struct PeriodicParticleClose {
     }
     return get_interiors_intersect(diff, XYZR(a).get_radius(),
                                    XYZR(b).get_radius()+d_);
+  }
+  bool check_close(Particle *, Particle *) const {
+    return false;
   }
 };
 struct BBID {
@@ -144,6 +153,9 @@ struct PeriodicBBClose {
     }
     return true;
   }
+  bool check_close(unsigned int , unsigned int ) const {
+    return false;
+  }
 };
 struct BBClose {
   double d_;
@@ -155,6 +167,9 @@ struct BBClose {
     algebra::BoundingBox3D ag= *(it0_+a)+d_;
     return algebra::get_interiors_intersect(ag, *(it1_+b));
   }
+  bool check_close(unsigned int, unsigned int) const {
+    return false;
+  }
 };
 
 struct BBPairSink {
@@ -163,6 +178,9 @@ struct BBPairSink {
   typedef IntPair argument_type;
   bool operator()(const IntPair &ip) const {
     out_.push_back(ip);
+    return true;
+  }
+  bool check_contains(const IntPair &) const {
     return true;
   }
 };
@@ -190,8 +208,14 @@ inline std::string do_show(const std::vector<unsigned int>&p) {
   return oss.str();
 }
 
+inline std::ostream &operator<<(std::ostream &out,
+                                IntPair ip) {
+  out << "(" << ip.first << ", " << ip.second << ")";
+  return out;
+}
+
 template <class IDF, class CenterF,
-          class RadiusF, class CloseF, class Out>
+          class RadiusF, class CloseF>
 struct Helper {
   typedef typename IDF::result_type ID;
   typedef std::vector<ID> IDs;
@@ -437,7 +461,7 @@ struct Helper {
 
 
 
-  template <class It>
+  template <class It, class Out>
   static bool do_fill_close_pairs_from_list(It b, It e,
                                             CloseF close,
                                             Out out) {
@@ -460,7 +484,7 @@ struct Helper {
 
 
 
-  template <class ItA, class ItB>
+  template <class ItA, class ItB, class Out>
   static bool do_fill_close_pairs_from_lists(ItA ab, ItA ae,
                                              ItB bb, ItB be,
                                              CloseF close,
@@ -481,7 +505,7 @@ struct Helper {
 
 
 
-
+  template <class Out>
   static bool do_fill_close_pairs(const Grid &gg,
                                   typename Grid::Index index,
                                   const IDs &qps,
@@ -515,6 +539,7 @@ struct Helper {
     return true;
   }
 
+  template <class Out>
   static bool do_fill_close_pairs(const Grid &gg,
                                   typename Grid::Index index,
                                   const IDs &qps,
@@ -554,7 +579,7 @@ struct Helper {
   }
 
 
-  template <class It>
+  template <class It, class Out>
   static bool fill_close_pairs(const ParticleSet<It> &ps,
                                CloseF close,
                                double distance,
@@ -585,7 +610,7 @@ struct Helper {
     }
     for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
       if (bin_contents_g[i].empty()) continue;
-      if (bin_contents_g[i].size() < 5) {
+      if (bin_contents_g[i].size() < 10) {
         if (!do_fill_close_pairs_from_list(bin_contents_g[i].begin(),
                                            bin_contents_g[i].end(),
                                            close, out)) {
@@ -613,6 +638,20 @@ struct Helper {
           }
         }
       }
+
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
+          for (unsigned int j=0; j< k; ++j) {
+            if (close.check_close(bin_contents_g[i][k], bin_contents_g[i][j])) {
+              out.check_contains(typename
+                                 Out::argument_type(bin_contents_g[i][k],
+                                                    bin_contents_g[i][j])
+                                 );
+            }
+          }
+        }
+      }
+
       for (unsigned int j=0; j< i; ++j) {
         if (bin_contents_g[j].empty()) continue;
         algebra::BoundingBox3D bb= bbs[i]+bbs[j];
@@ -640,6 +679,29 @@ struct Helper {
             }
           }
         }
+
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
+            for (unsigned int l=0; l< k; ++l) {
+              if (close.check_close(bin_contents_g[i][k],
+                                    bin_contents_g[i][l])) {
+                out.check_contains(typename
+                                   Out::argument_type(bin_contents_g[i][k],
+                                                      bin_contents_g[i][l]));
+              }
+            }
+          }
+        }
+      }
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+      for (It it0= ps.b_; it0 != ps.e_; ++it0) {
+        for (It it1= ps.b_; it1 != it0; ++it1) {
+          if (close.check_close(ps.id_(*it0), ps.id_(*it1))) {
+            out.check_contains(typename Out::argument_type(ps.id_(*it0),
+                                                           ps.id_(*it1)));
+          }
+        }
       }
     }
     return true;
@@ -650,7 +712,7 @@ struct Helper {
 
 
 
-  template <class ItG, class ItQ>
+  template <class ItG, class ItQ, class Out>
   static bool fill_close_pairs(const ParticleSet<ItG> &psg,
                                const ParticleSet<ItQ> &psq,
                                CloseF close,
@@ -695,7 +757,7 @@ struct Helper {
       for (unsigned int j=0; j< bin_contents_q.size(); ++j) {
         if (bin_contents_q[j].empty()) continue;
         algebra::BoundingBox3D bb= bbs_g[i]+bbs_q[j];
-        if (bin_contents_g[i].size() < 5 && bin_contents_q[j].size() < 5) {
+        if (bin_contents_g[i].size() < 10 && bin_contents_q[j].size() < 10) {
           if (!do_fill_close_pairs_from_lists(bin_contents_g[i].begin(),
                                               bin_contents_g[i].end(),
                                               bin_contents_q[j].begin(),
@@ -738,6 +800,29 @@ struct Helper {
             }
           }
         }
+
+        IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+          for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
+            for (unsigned int l=0; l< bin_contents_q[j].size(); ++l) {
+              if (close.check_close(bin_contents_g[i][k],
+                                    bin_contents_q[j][l])) {
+                out.check_contains(typename
+                                   Out::argument_type(bin_contents_g[i][k],
+                                                      bin_contents_q[j][l]));
+              }
+            }
+          }
+        }
+      }
+    }
+    IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+       for (ItG it0= psg.b_; it0 != psg.e_; ++it0) {
+         for (ItQ it1= psq.b_; it1 != psq.e_; ++it1) {
+           if (close.check_close(psg.id_(*it0), psq.id_(*it1))) {
+             out.check_contains(typename Out::argument_type(psg.id_(*it0),
+                                                            psq.id_(*it1)));
+          }
+        }
       }
     }
     return true;
@@ -745,12 +830,11 @@ struct Helper {
 };
 
 typedef Helper<ParticleID, ParticleCenter, ParticleRadius,
-               ParticleClose, ParticlePairSink> ParticleHelper;
-typedef Helper<BBID, BBCenter, BBRadius, BBClose, BBPairSink> BBHelper;
+               ParticleClose> ParticleHelper;
+typedef Helper<BBID, BBCenter, BBRadius, BBClose> BBHelper;
 typedef Helper<ParticleID, ParticleCenter, ParticleRadius,
-               PeriodicParticleClose, ParticlePairSink> PParticleHelper;
-typedef Helper<BBID, BBCenter, BBRadius, PeriodicBBClose,
-               BBPairSink> PBBHelper;
+               PeriodicParticleClose> PParticleHelper;
+typedef Helper<BBID, BBCenter, BBRadius, PeriodicBBClose> PBBHelper;
 
 IMPCORE_END_INTERNAL_NAMESPACE
 
