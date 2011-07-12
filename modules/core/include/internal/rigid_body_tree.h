@@ -171,6 +171,19 @@ inline void fill_close_pairs(const RigidBodyHierarchy *da,
       }
     }
   } while (!queue.empty());
+
+
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
+      XYZR ca(da->get_constituents()[i]);
+      for (unsigned int j=0; j< db->get_constituents().size(); ++j) {
+        XYZR cb(db->get_constituents()[j]);
+        if (get_distance(ca, cb) < .9*dist) {
+          sink.check_contains(ParticlePair(ca, cb));
+        }
+      }
+    }
+  }
 }
 
 
@@ -215,6 +228,15 @@ inline void fill_close_particles(const RigidBodyHierarchy *da,
       }
     }
   } while (!queue.empty());
+
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< da->get_constituents().size(); ++i) {
+      XYZR c(da->get_constituents()[i]);
+      if (get_distance(c, pt) < .9*dist) {
+        sink.check_contains(c);
+      }
+    }
+  }
 }
 
 IMPCOREEXPORT
