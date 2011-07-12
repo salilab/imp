@@ -22,6 +22,13 @@ struct ParticleSink {
     out_.push_back(c);
     return true;
   }
+  void check_contains(Particle *c) const {
+    if (std::find(out_.begin(), out_.end(), c) == out_.end()) {
+      IMP_INTERNAL_CHECK(false, "Particle " << c->get_name()
+                         << " not found in list. Coordinates are "
+                         << XYZR(c));
+    }
+  }
 };
 
 struct ParticlePairSink {
@@ -31,6 +38,18 @@ struct ParticlePairSink {
   bool operator()(const ParticlePair &c) {
     out_.push_back(c);
     return true;
+  }
+  void check_contains(const ParticlePair &c) const {
+    if (std::find(out_.begin(), out_.end(), c) == out_.end()
+        && std::find(out_.begin(), out_.end(), ParticlePair(c[1], c[0]))
+        == out_.end()) {
+      IMP_INTERNAL_CHECK(false, "Particle pair " << c[0]->get_name()
+                         << ", " << c[1]->get_name()
+                         << " not found in list. Coordinates are "
+                         << XYZR(c[0]) << " and " << XYZR(c[1])
+                         << " and distance is " << get_distance(XYZR(c[0]),
+                                                                XYZR(c[1])));
+    }
   }
 };
 
@@ -62,6 +81,20 @@ struct ParticlePairSinkWithMax: public ParticlePairSink {
   }
 };
 
+struct HalfParticlePairSink: public ParticlePairSink {
+  Particle *p_;
+  HalfParticlePairSink(ParticlePairsTemp &out,
+                       Particle *p):
+    ParticlePairSink(out),
+    p_(p) {}
+  bool operator()(Particle *c) {
+    return ParticlePairSink::operator()(ParticlePair(p_, c));
+  }
+  void check_contains(Particle *c) const {
+    ParticlePairSink::check_contains(ParticlePair(p_, c));
+  }
+};
+
 template <class PS>
 struct HalfParticlePairSinkWithMax: public ParticlePairSinkWithMax<PS> {
   Particle *p_;
@@ -75,45 +108,116 @@ struct HalfParticlePairSinkWithMax: public ParticlePairSinkWithMax<PS> {
   bool operator()(Particle *c) {
     return ParticlePairSinkWithMax<PS>::operator()(ParticlePair(p_, c));
   }
+  void check_contains(Particle *c) const {
+    ParticlePairSinkWithMax<PS>::check_contains(ParticlePair(p_, c));
+  }
 };
 
+
+struct RigidBodyRigidBodyParticlePairSink:
+  public ParticlePairSink {
+  ObjectKey key_;
+  double dist_;
+  RigidBodyRigidBodyParticlePairSink(ParticlePairsTemp &out,
+                                     ObjectKey key,
+                                     double dist):
+    ParticlePairSink(out),
+    key_(key), dist_(dist){}
+  RigidBodyHierarchy *get_hierarchy(Particle *p) const {
+    IMP_INTERNAL_CHECK(p->has_attribute(key_),
+                       "Rigid body doesn't have tree yet");
+    return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+  }
+  bool operator()(const ParticlePair &c) {
+    IMP_LOG(VERBOSE, "Processing interesction between "
+            << c[0]->get_name() << " and "
+            << c[1]->get_name() << std::endl);
+    fill_close_pairs(get_hierarchy(c[0]),
+                     get_hierarchy(c[1]),
+                     dist_, static_cast<ParticlePairSink >(*this));
+    return true;
+  }
+  void check_contains(const ParticlePair &) const {
+    // can't look for root pair, too lazy to check for actual pairs
+  }
+};
+
+
+struct RigidBodyParticleParticlePairSink:
+  public ParticlePairSink {
+  ObjectKey key_;
+  double dist_;
+  RigidBodyParticleParticlePairSink(ParticlePairsTemp &out,
+                                    ObjectKey key, double dist):
+    ParticlePairSink(out),
+    key_(key), dist_(dist){}
+  RigidBodyHierarchy *get_hierarchy(Particle *p) const {
+    IMP_INTERNAL_CHECK(p->has_attribute(key_),
+                       "Rigid body doesn't have tree yet: " << *p);
+    return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+  }
+  bool operator()(const ParticlePair &c) {
+    IMP_LOG(VERBOSE, "Processing rb-p interesction between "
+            << c[0]->get_name() << " and "
+            << c[1]->get_name() << std::endl);
+    HalfParticlePairSink hps(out_, c[1]);
+    fill_close_particles(get_hierarchy(c[0]),
+                         XYZR(c[1]),
+                         dist_, hps);
+    return true;
+  }
+  void check_contains(const ParticlePair &) const {
+    // can't look for root pair, too lazy to check for actual pairs
+  }
+};
 
 template <class PS>
 struct RigidBodyParticlePairSinkWithMax:
   public ParticlePairSinkWithMax<PS> {
   ObjectKey key_;
+  double dist_;
   RigidBodyParticlePairSinkWithMax(ParticlePairsTemp &out,
                                    PS *ssps,
                                    DerivativeAccumulator *da,
                                    double &score,
                                    double max,
-                                   ObjectKey key):
+                                   ObjectKey key,
+                                   double dist):
     ParticlePairSinkWithMax<PS>(out, ssps, da, score, max),
-    key_(key){}
+    key_(key), dist_(dist){}
   RigidBodyHierarchy *get_hierarchy(Particle *p) const {
     IMP_INTERNAL_CHECK(p->has_attribute(key_),
                        "Rigid body doesn't have tree yet");
     return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+  }
+  void check_contains(const ParticlePair &c) const {
+    // can't look for root pair, too lazy to check for actual pairs
   }
 };
 
 template <class PS>
 struct RigidBodyRigidBodyParticlePairSinkWithMax:
   public RigidBodyParticlePairSinkWithMax<PS> {
+  typedef RigidBodyParticlePairSinkWithMax<PS> P;
   RigidBodyRigidBodyParticlePairSinkWithMax
   (ParticlePairsTemp &out,
    PS *ssps,
    DerivativeAccumulator *da,
    double &score,
    double max,
-   ObjectKey key): RigidBodyParticlePairSinkWithMax<PS>(out, ssps, da,
-                                                        score, max, key)
+   ObjectKey key, double dist): P(out, ssps, da,
+                                  score, max,
+                                  key, dist)
   {}
   bool operator()(const ParticlePair &c) {
     fill_close_pairs(RigidBodyParticlePairSinkWithMax<PS>::get_hierarchy(c[0]),
                      RigidBodyParticlePairSinkWithMax<PS>::get_hierarchy(c[1]),
-                     0, static_cast<ParticlePairSinkWithMax<PS> >(*this));
-    return RigidBodyParticlePairSinkWithMax<PS>::max_ > 0;
+                     P::dist_,
+                     static_cast<ParticlePairSinkWithMax<PS> >(*this));
+    return P::max_ > 0;
+  }
+  void check_contains(const ParticlePair &) const {
+    // can't look for root pair, too lazy to check for actual pairs
   }
 };
 
@@ -127,16 +231,21 @@ struct RigidBodyParticleParticlePairSinkWithMax:
    DerivativeAccumulator *da,
    double &score,
    double max,
-   ObjectKey key): P(out, ssps, da,
-                     score, max, key)
+   ObjectKey key, double dist): P(out, ssps, da,
+                                  score, max, key, dist)
   {}
   bool operator()(const ParticlePair &c) {
     fill_close_particles(P::get_hierarchy(c[0]),
-                         c[1],
-                         0, HalfParticlePairSinkWithMax<PS>(c[1], P::out_,
-                                                        P::score_, P::max_,
-                                                        P::ssps_, P::da_));
+                         XYZR(c[1]),
+                         P::dist_, HalfParticlePairSinkWithMax<PS>(P::out_,
+                                                                P::ssps_,
+                                                                P::da_,
+                                                                P::score_,
+                                                                P::max_, c[1]));
     return P::max_ > 0;
+  }
+  void check_contains(const ParticlePair &) const {
+    // can't look for root pair, too lazy to check for actual pairs
   }
 };
 
