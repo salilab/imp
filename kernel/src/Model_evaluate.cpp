@@ -254,7 +254,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
   IMP_INTERNAL_CHECK(!if_good || !if_max, "Can't be both max and good");
   Floats ret;
   double remaining=omax;
-  if (if_good) {
+  if (!if_max) {
     remaining=get_maximum_score();
   }
   boost::timer timer;
