@@ -126,7 +126,7 @@ class IMPData:
                     if m in methods[k][i+1:]:
                         continue
                     if included_methods[k].has_key(m):
-                        fmethods[k].append(included_methods[k][m][0]+" "+m+included_methods[k][m][1])
+                        fmethods[k].append(m+included_methods[k][m][1])
             #print "for", self.file, "got", fclasses, fmethods
             self.classes=fclasses
             self.methods=fmethods
