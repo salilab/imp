@@ -118,15 +118,17 @@ struct RigidBodyRigidBodyParticlePairSink:
   public ParticlePairSink {
   ObjectKey key_;
   double dist_;
+  const IMP::compatibility::map<RigidBody, Particles> &map_;
   RigidBodyRigidBodyParticlePairSink(ParticlePairsTemp &out,
                                      ObjectKey key,
-                                     double dist):
+                                     double dist,
+                      const IMP::compatibility::map<RigidBody, Particles>
+                                     &map):
     ParticlePairSink(out),
-    key_(key), dist_(dist){}
+    key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(Particle *p) const {
-    IMP_INTERNAL_CHECK(p->has_attribute(key_),
-                       "Rigid body doesn't have tree yet");
-    return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+    RigidBody rb(p);
+    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
   }
   bool operator()(const ParticlePair &c) {
     IMP_LOG(VERBOSE, "Processing interesction between "
@@ -147,14 +149,16 @@ struct RigidBodyParticleParticlePairSink:
   public ParticlePairSink {
   ObjectKey key_;
   double dist_;
+  const IMP::compatibility::map<RigidBody, Particles> &map_;
   RigidBodyParticleParticlePairSink(ParticlePairsTemp &out,
-                                    ObjectKey key, double dist):
+                                    ObjectKey key, double dist,
+               const IMP::compatibility::map<RigidBody, Particles>
+                                     &map):
     ParticlePairSink(out),
-    key_(key), dist_(dist){}
+    key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(Particle *p) const {
-    IMP_INTERNAL_CHECK(p->has_attribute(key_),
-                       "Rigid body doesn't have tree yet: " << *p);
-    return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+    RigidBody rb(p);
+    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
   }
   bool operator()(const ParticlePair &c) {
     IMP_LOG(VERBOSE, "Processing rb-p interesction between "
@@ -176,19 +180,21 @@ struct RigidBodyParticlePairSinkWithMax:
   public ParticlePairSinkWithMax<PS> {
   ObjectKey key_;
   double dist_;
+  const IMP::compatibility::map<RigidBody, Particles> &map_;
   RigidBodyParticlePairSinkWithMax(ParticlePairsTemp &out,
                                    PS *ssps,
                                    DerivativeAccumulator *da,
                                    double &score,
                                    double max,
                                    ObjectKey key,
-                                   double dist):
+                                   double dist,
+               const IMP::compatibility::map<RigidBody, Particles>
+                                     &map):
     ParticlePairSinkWithMax<PS>(out, ssps, da, score, max),
-    key_(key), dist_(dist){}
+    key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(Particle *p) const {
-    IMP_INTERNAL_CHECK(p->has_attribute(key_),
-                       "Rigid body doesn't have tree yet");
-    return dynamic_cast<RigidBodyHierarchy*>(p->get_value(key_));
+    RigidBody rb(p);
+    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
   }
   void check_contains(const ParticlePair &c) const {
     // can't look for root pair, too lazy to check for actual pairs
@@ -205,9 +211,11 @@ struct RigidBodyRigidBodyParticlePairSinkWithMax:
    DerivativeAccumulator *da,
    double &score,
    double max,
-   ObjectKey key, double dist): P(out, ssps, da,
-                                  score, max,
-                                  key, dist)
+   ObjectKey key, double dist,
+   const IMP::compatibility::map<RigidBody, Particles>
+   &map): P(out, ssps, da,
+            score, max,
+            key, dist, map)
   {}
   bool operator()(const ParticlePair &c) {
     fill_close_pairs(RigidBodyParticlePairSinkWithMax<PS>::get_hierarchy(c[0]),
@@ -231,8 +239,10 @@ struct RigidBodyParticleParticlePairSinkWithMax:
    DerivativeAccumulator *da,
    double &score,
    double max,
-   ObjectKey key, double dist): P(out, ssps, da,
-                                  score, max, key, dist)
+   ObjectKey key, double dist,
+   const IMP::compatibility::map<RigidBody, Particles>
+   &map): P(out, ssps, da,
+            score, max, key, dist, map)
   {}
   bool operator()(const ParticlePair &c) {
     fill_close_particles(P::get_hierarchy(c[0]),

@@ -24,13 +24,21 @@ using namespace IMP::container;
 */
 
 namespace {
+#if IMP_BUILD==IMP_FAST
+  const unsigned int nreps=400;
+#else
+  const unsigned int nreps=2;
+#endif
   double get_val(double v) {
     if (v>.1) return 0;
     else return 1;
   }
 
+  template <class Tag>
 void test_one(std::string name,
-              Model *m, XYZ to_move) {
+              Model *m, XYZ to_move,
+              bool eig,
+              int , char *[]) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
 
@@ -44,13 +52,17 @@ void test_one(std::string name,
     double result=0;
     double runtime;
     IMP_TIME({
-        for (unsigned int i=0; i< 100; ++i) {
+        for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
-          result+=get_val(m->evaluate(false));
+          if (eig) {
+            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+          } else {
+            result+=get_val(m->evaluate(false));
+          }
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " random evaluate";
+    oss << name << " random"<< (eig?" if good":"");
     report(oss.str(), runtime, result);
   }
   {
@@ -58,46 +70,59 @@ void test_one(std::string name,
     double result=0;
     double runtime;
     IMP_TIME({
-        for (unsigned int i=0; i< 100; ++i) {
-          to_move.set_x(i);
-          result+=get_val(m->evaluate(false));
+        for (unsigned int i=0; i< nreps; ++i) {
+          to_move.set_x(100.0*static_cast<double>(i)/nreps);
+          if (eig) {
+            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+          } else {
+            result+=get_val(m->evaluate(false));
+          }
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " systematic evaluate";
+    oss << name << " systematic"<< (eig?" if good":"");
     report(oss.str(), runtime, result);
   }
   {
+    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 60);
     double result=0;
     double runtime;
     IMP_TIME({
-        for (unsigned int i=0; i< 100; ++i) {
-          to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
-          result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+        for (unsigned int i=0; i< nreps; ++i) {
+          to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
+          if (eig) {
+            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+          } else {
+            result+=get_val(m->evaluate(false));
+          }
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " random evaluate if good";
+    oss << name << " far"<< (eig?" if good":"");
     report(oss.str(), runtime, result);
   }
   {
-    to_move.set_coordinates(IMP::algebra::Vector3D(0,0,0));
+    IMP::algebra::Sphere3D s(IMP::algebra::Vector3D(0,0,0), 4);
     double result=0;
     double runtime;
     IMP_TIME({
-        for (unsigned int i=0; i< 100; ++i) {
-          to_move.set_x(i);
-          result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+        for (unsigned int i=0; i< nreps; ++i) {
+          to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
+          if (eig) {
+            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+          } else {
+            result+=get_val(m->evaluate(false));
+          }
         }
       }, runtime);
     std::ostringstream oss;
-    oss << name << " systematic evaluate if good";
+    oss << name << " close"<< (eig?" if good":"");
     report(oss.str(), runtime, result);
   }
 }
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   IMP_NEW(Model, m, ());
   atom::Hierarchy h0
     = read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"), m);
@@ -111,23 +136,10 @@ int main() {
   ParticlesTemp leaves= get_leaves(h0);
   ParticlesTemp leaves1= get_leaves(h1);
   leaves.insert(leaves.end(), leaves1.begin(), leaves1.end());
+  std::cout << leaves.size() << " particles" << std::endl;
   IMP_NEW(ListSingletonContainer, lsc, (leaves));
-  {
-
-    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1));
-    evr->set_maximum_score(.1);
-    ScopedRestraint sr(evr.get(), m->get_root_restraint_set());
-    test_one("excluded volume", m, rb0);
-  }
-  {
-    IMP_NEW(ClosePairContainer, cpc, (lsc, 0));
-    IMP_NEW(SoftSpherePairScore, ps, (1));
-    ScopedRestraint sr(create_restraint(ps.get(), cpc.get()),
-                       m->get_root_restraint_set());
-    sr->set_maximum_score(.1);
-    test_one("pairs restraint", m, rb0);
-  }
-  {
+  lsc->set_was_used(true);
+  if (argc==1 || (argc >1 && argv[1][0]=='k')) {
     IMP_NEW(SoftSpherePairScore, ps, (1));
     IMP_NEW(TableRefiner, tr,());
     tr->add_particle(rb0, get_leaves(h0));
@@ -137,7 +149,28 @@ int main() {
                                         ParticlePair(rb0, rb1)),
                        m->get_root_restraint_set());
     sr->set_maximum_score(.1);
-    test_one("k close", m, rb0);
+    test_one<KClosePairsPairScore>("k close", m, rb0, false, argc, argv);
+    test_one<KClosePairsPairScore>("k close", m, rb0, true, argc, argv);
   }
+  if (argc==1 || (argc >1 && argv[1][0]=='e')) {
+
+    IMP_NEW(ExcludedVolumeRestraint, evr, (lsc,1, 5));
+    evr->set_maximum_score(.1);
+    ScopedRestraint sr(evr.get(), m->get_root_restraint_set());
+    test_one<ExcludedVolumeRestraint>("excluded volume", m, rb0,
+                                      false, argc, argv);
+    test_one<ExcludedVolumeRestraint>("excluded volume", m, rb0,
+                                      true, argc, argv);
+  }
+  if (argc==1 || (argc >1 && argv[1][0]=='p')) {
+    IMP_NEW(ClosePairContainer, cpc, (lsc, 0, 5));
+    IMP_NEW(SoftSpherePairScore, ps, (1));
+    ScopedRestraint sr(create_restraint(ps.get(), cpc.get()),
+                       m->get_root_restraint_set());
+    sr->set_maximum_score(.1);
+    test_one<ClosePairContainer>("pairs restraint", m, rb0, false, argc, argv);
+    test_one<ClosePairContainer>("pairs restraint", m, rb0, true, argc, argv);
+  }
+
   return IMP::benchmark::get_return_value();
 }

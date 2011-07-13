@@ -49,6 +49,7 @@ class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
   // moved stuff
   mutable ParticlesTemp rbs_;
   mutable ParticlesTemp xyzrs_;
+  mutable IMP::compatibility::map<RigidBody, Particles> constituents_;
   double slack_;
   mutable std::vector<algebra::Transformation3D > rbs_backup_;
   mutable std::vector<algebra::Vector3D> xyzrs_backup_;
