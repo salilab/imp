@@ -33,21 +33,24 @@ ExcludedVolumeRestraint::ExcludedVolumeRestraint(SingletonContainer *sc,
 {
   slack_=s;
   std::ostringstream oss;
-  oss << "hierarchy " << this;
+  oss << "ExcludedVolume " << get_name() << " hierarchy " << this;
   key_=ObjectKey(oss.str());
 }
 
 void ExcludedVolumeRestraint::
 initialize() const {
-  compatibility::map<RigidBody, ParticlesTemp> constituents;
+  IMP_OBJECT_LOG;
+  IMP_LOG(TERSE, "Initializing ExcludedVolumeRestraint with "
+          << sc_->get_number_of_particles() << " particles"
+          << std::endl);
   IMP_FOREACH_SINGLETON(sc_, {
       if (RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
         rbs_.push_back(rb);
-        if (constituents.find(rb) == constituents.end()) {
-          constituents.insert(std::make_pair(rb, ParticlesTemp(1,_1)));
+        if (constituents_.find(rb) == constituents_.end()) {
+          constituents_.insert(std::make_pair(rb, ParticlesTemp(1,_1)));
         } else {
-          constituents[rb].push_back(_1);
+          constituents_[rb].push_back(_1);
         }
       } else {
         xyzrs_.push_back(_1);
@@ -57,7 +60,7 @@ initialize() const {
   rbs_.erase(std::unique(rbs_.begin(), rbs_.end()), rbs_.end());
   for (unsigned int i=0; i < rbs_.size(); ++i) {
     internal::get_rigid_body_hierarchy(RigidBody(rbs_[i]),
-                                       constituents[RigidBody(rbs_[i])],
+                                       constituents_[RigidBody(rbs_[i])],
                                        key_);
   }
   reset_moved();
@@ -75,6 +78,7 @@ fill_list_if_good(double max) const {
   was_bad_=true;
   IMP_INTERNAL_CHECK(cur_list_.empty(), "List not empty");
   double score=0;
+  double myslack=0;
   algebra::BoundingBox3D bb;
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     bb+= core::XYZ(xyzrs_[i]).get_coordinates();
@@ -87,7 +91,7 @@ fill_list_if_good(double max) const {
                                             internal::ParticleCenter(),
                                             internal::ParticleRadius()),
                          internal::ParticleClose(0),
-                         0, bb, 0,
+                         myslack, bb, 0,
                          internal::ParticlePairSinkWithMax<SoftSpherePairScore>
                          (cur_list_,
                           ssps_.get(),
@@ -112,11 +116,11 @@ fill_list_if_good(double max) const {
                                             internal::ParticleCenter(),
                                             internal::ParticleRadius()),
                          internal::ParticleClose(0),
-                         0, bb, 0,
+                         myslack, bb, 0,
                          internal::RigidBodyParticleParticlePairSinkWithMax
                          <SoftSpherePairScore>(cur_list_, ssps_.get(),
                                                NULL, score, max,
-                                               key_, slack_));
+                                               key_, myslack, constituents_));
   }
   if (score< max) {
     internal::ParticleHelper
@@ -127,13 +131,13 @@ fill_list_if_good(double max) const {
                                             internal::ParticleCenter(),
                                             internal::ParticleRadius()),
                          internal::ParticleClose(0),
-                         0, bb, 0,
+                         myslack, bb, 0,
                          internal::RigidBodyRigidBodyParticlePairSinkWithMax
                          <SoftSpherePairScore>(cur_list_, ssps_.get(),
                                                NULL, score, max,
-                                               key_, slack_));
+                                               key_, myslack, constituents_));
     if (score < max) {
-      was_bad_=false;
+      //was_bad_=false;
     }
   }
   return score;
@@ -182,7 +186,8 @@ fill_list() const {
                        slack_, bb, 0,
                        internal::RigidBodyParticleParticlePairSink(cur_list_,
                                                                    key_,
-                                                                   slack_));
+                                                                   slack_,
+                                                            constituents_));
   internal::ParticleHelper
     ::fill_close_pairs(internal::ParticleHelper
                        ::get_particle_set(rbs_.begin(),
@@ -194,7 +199,8 @@ fill_list() const {
                        slack_, bb, 0,
                        internal::RigidBodyRigidBodyParticlePairSink(cur_list_,
                                                                     key_,
-                                                                    slack_));
+                                                                    slack_,
+                                                             constituents_));
   IMP_LOG(VERBOSE, "found " << cur_list_.size() << std::endl);
   reset_moved();
   was_bad_=false;
@@ -256,9 +262,34 @@ get_if_moved() const {
 double ExcludedVolumeRestraint::
 unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
-  if (!initialized_) initialize();
+  if (!initialized_) {
+    initialize();
+  } else {
+    IMP_IF_CHECK(USAGE) {
+      IMP_FOREACH_SINGLETON(sc_, {
+          if (RigidMember::particle_is_instance(_1)) {
+            RigidBody rb= RigidMember(_1).get_rigid_body();
+            using IMP::operator<<;
+            IMP_USAGE_CHECK(std::find(rbs_.begin(), rbs_.end(),
+                                      rb.get_particle())
+                            != rbs_.end(),
+                    "You cannot change the contents of the singleton container "
+                    << "passed to ExcludedVolume after the first evaluate."
+                    << " Found unexpected rigid body " << rb->get_name()
+                    << " not in " << rbs_);
+      } else {
+            IMP_USAGE_CHECK(std::find(xyzrs_.begin(), xyzrs_.end(), _1)
+                            != xyzrs_.end(),
+               "You cannot change the contents of the singleton container "
+               << "passed to ExcludedVolume after the first evaluate."
+               << " Found unexpected particle " << _1->get_name());
+          }
+        });
+    }
+  }
   bool recomputed=false;
   if (was_bad_ || get_if_moved()>0) {
+    cur_list_.clear();
     fill_list();
     recomputed=true;
   }
