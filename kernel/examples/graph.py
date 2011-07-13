@@ -27,10 +27,11 @@ try:
     # the method below requires the altgraph python package
     xg=IMP.get_networkx_graph(g)
 
-    import networkx
-    networkx.draw(xg)
-    networkx.draw_shell(xg)
-    plt.show()
+    # the networkx visualization tools suck, so skip them
+    #import networkx
+    #networkx.draw(xg)
+    #networkx.draw_shell(xg)
+    #plt.show()
 except:
     print "networkx not fully installed"
 
