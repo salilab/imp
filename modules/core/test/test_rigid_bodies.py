@@ -89,9 +89,20 @@ class RBDTests(IMP.test.TestCase):
         print ntr
         print tr
         self.assertLess((ntr.get_translation()- tr.get_translation()).get_magnitude(), 2.2)
-
-    # test one with snap and non-snap
-    # test setting things to be optimized or not
+    def test_teardown(self):
+        """Testing tearing down rigid bodies"""
+        m= IMP.Model()
+        ps=[IMP.core.XYZ.setup_particle(IMP.Particle(m)) for i in range(3)]
+        rbp0= IMP.Particle(m)
+        rbp0.set_name("rb0")
+        rb0=IMP.core.RigidBody.setup_particle(rbp0, ps)
+        rbp1= IMP.Particle(m)
+        rbp1.set_name("rb1")
+        rb1= IMP.core.RigidBody.setup_particle(rbp1, [rb0])
+        IMP.core.RigidBody.teardown_particle(rb1)
+        print "setting up again"
+        rb1= IMP.core.RigidBody.setup_particle(rbp1, [rb0])
+        IMP.core.RigidBody.teardown_particle(rb0)
 
 if __name__ == '__main__':
     IMP.test.main()

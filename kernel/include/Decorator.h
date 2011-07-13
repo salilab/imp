@@ -309,6 +309,7 @@ public:                                                                 \
       if (p->has_attribute(get_constraint_key())) {                     \
         p->get_model()->remove_score_state(dynamic_cast<ScoreState*>    \
                                  (p->get_value(get_constraint_key()))); \
+        p->remove_attribute(get_constraint_key());                      \
       }                                                                 \
     } else {                                                            \
       Constraint *ss= new SingletonConstraint(before,                   \

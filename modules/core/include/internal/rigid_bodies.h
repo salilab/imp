@@ -104,7 +104,9 @@ inline void add_required_attributes_for_body(Particle *p) {
   if (!Hierarchy::particle_is_instance(p, rigid_body_data().htraits_)) {
     Hierarchy::setup_particle(p, rigid_body_data().htraits_);
   }
-  Hierarchy::setup_particle(p, rigid_body_data().hbtraits_);
+  if (!Hierarchy::particle_is_instance(p, rigid_body_data().hbtraits_)) {
+    Hierarchy::setup_particle(p, rigid_body_data().hbtraits_);
+  }
   if (!XYZ::particle_is_instance(p)) {
       XYZ::setup_particle(p);
   }
@@ -112,6 +114,9 @@ inline void add_required_attributes_for_body(Particle *p) {
 inline void remove_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->remove_attribute(rigid_body_data().quaternion_[i]);
+  }
+  for (unsigned int i=0; i< 3; ++i) {
+    p->remove_attribute(rigid_body_data().torque_[i]);
   }
 }
 
@@ -129,6 +134,19 @@ inline void add_required_attributes_for_body_member(Particle *p) {
   add_required_attributes_for_member(p);
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().lquaternion_[i], 0);
+  }
+}
+
+inline void remove_required_attributes_for_member(Particle *p) {
+  for (unsigned int i=0; i< 3; ++i) {
+    p->remove_attribute(rigid_body_data().child_keys_[i]);
+  }
+}
+
+inline void remove_required_attributes_for_body_member(Particle *p) {
+  remove_required_attributes_for_member(p);
+  for (unsigned int i=0; i< 4; ++i) {
+    p->remove_attribute(rigid_body_data().lquaternion_[i]);
   }
 }
 
