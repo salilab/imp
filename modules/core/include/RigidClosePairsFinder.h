@@ -48,6 +48,9 @@ IMPCORE_BEGIN_NAMESPACE
     grid cells to use should be explored. In addition, with highly
     excentric sets of points, there will be too many cells.
 
+    \note Do not reuse RigidClosePairsFinders for different sets of
+    particles from the same rigid body.
+
     \pythonexample{rigid_collisions}
 
     \uses{class RigidClosePairsFinder, CGAL}
