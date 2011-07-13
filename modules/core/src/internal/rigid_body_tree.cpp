@@ -456,14 +456,15 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                              const ParticlesTemp &constituents,
                                              ObjectKey mykey) {
+  IMP_LOG(VERBOSE, "Fetching hierarchy from " << rb->get_name()
+          << " (" << mykey << ")" << std::endl);
   static ObjectKeys keys;
-  if (mykey!=ObjectKey()) {
-    if (rb->has_attribute(mykey)) {
-      RigidBodyHierarchy*ret=
-        object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
-      IMP_INTERNAL_CHECK(ret, "No hierarchy found");
-      return ret;
-    }
+  if (mykey!=ObjectKey() && rb->has_attribute(mykey)) {
+    RigidBodyHierarchy*ret=
+      object_cast<RigidBodyHierarchy>(rb->get_value(mykey));
+    IMP_INTERNAL_CHECK(ret, "No hierarchy found");
+    IMP_LOG(VERBOSE, "Cached" << std::endl);
+    return ret;
   }
   ObjectKey free;
   for (unsigned int i=0; i< keys.size(); ++i) {
@@ -477,10 +478,15 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
         }
         IMP_CHECK_OBJECT(cur);
         cur->validate();
+        if (mykey != ObjectKey()) {
+          IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
+          rb->add_cache_attribute(mykey, cur);
+        }
         return cur;
       }
     } else if (free== ObjectKey()) {
       free=keys[i];
+      break;
     }
   }
   if (free==ObjectKey()) {
@@ -493,6 +499,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
   RigidBodyHierarchy *h= new RigidBodyHierarchy(rb, constituents);
   rb.get_particle()->add_cache_attribute(free, h);
   if (mykey != ObjectKey()) {
+    IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
     rb->add_cache_attribute(mykey, h);
   }
   IMP_CHECK_OBJECT(h);
