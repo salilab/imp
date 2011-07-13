@@ -397,8 +397,23 @@ RigidBody RigidBody::setup_particle(Particle *p,
 }
 
 void RigidBody::teardown_particle(RigidBody rb) {
+  for (unsigned int i=0; i < rb.get_number_of_members(); ++i) {
+    RigidMember rm= rb.get_member(i);
+    std::cout << "Cleaning up " << rm->get_name()
+              << "--" << *rm.get_particle() << std::endl;
+    if (RigidBody::particle_is_instance(rm)) {
+      internal::remove_required_attributes_for_body_member(rm);
+    } else {
+      internal::remove_required_attributes_for_member(rm);
+    }
+  }
+  Hierarchy hc(rb, internal::rigid_body_data().htraits_);
+  Hierarchy hbc(rb, internal::rigid_body_data().hbtraits_);
+  hc.clear_children();
+  hbc.clear_children();
   rb.set_constraint(NULL, NULL, rb.get_particle());
   internal::remove_required_attributes_for_body(rb.get_particle());
+  std::cout << "all done " << *rb.get_particle() << std::endl;
 }
 
 void
