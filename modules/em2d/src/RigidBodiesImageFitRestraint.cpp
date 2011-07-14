@@ -15,6 +15,7 @@
 #include "IMP/algebra/Vector3D.h"
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/Transformation3D.h"
+#include "IMP/atom/Mass.h"
 #include <IMP/log.h>
 #include "IMP/exception.h"
 #include "IMP/Particle.h"
@@ -37,8 +38,8 @@ RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
   rigid_bodies_masks_.resize(rbs.size());
   projection_ = new Image();
   projection_->set_size(img);
-  IMP_LOG(IMP::TERSE, "Image for projection created. Size: "
-          << projection_->get_data().rows << "x"
+  IMP_LOG(IMP::TERSE, "RigidBodiesImageFitRestraint: Image for projection "
+          "created. Size: " << projection_->get_data().rows << "x"
           << projection_->get_data().cols << std::endl);
 }
 
@@ -94,7 +95,10 @@ void RigidBodiesImageFitRestraint::set_rotations(const core::RigidBody &rb,
   Particles ps;
 
   for (unsigned int i=0; i < rbm.size(); ++i) {
-    ps.push_back( rbm[i].get_particle() );
+    // Discard particles that do not have mass
+    if (atom::Mass::particle_is_instance(rbm[i].get_particle()) ) {
+      ps.push_back(rbm[i].get_particle());
+    }
   }
   unsigned int size = get_enclosing_image_size(ps, params_.pixel_size, 4);
 
