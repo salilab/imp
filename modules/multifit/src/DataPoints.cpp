@@ -118,4 +118,20 @@ Array1DD DensityDataPoints::sample() const {
     }
     return data_[p_ind];
   }
+
+em::DensityMap *grid2map(const DensGrid &dg,float spacing) {
+  algebra::BoundingBox3D bb = algebra::get_bounding_box(dg);
+  em::DensityMap *r_map = em::create_density_map(bb,spacing);
+  r_map->set_origin(dg.get_origin());
+  DensGrid::ExtendedIndex lb = dg.get_extended_index(bb.get_corner(0)),
+    ub = dg.get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= dg.indexes_begin(lb,ub);
+       it != dg.indexes_end(lb, ub); ++it) {
+    algebra::Vector3D cen=dg.get_center(*it);
+    r_map->set_value(cen[0],cen[1],cen[2],dg[*it]);
+  }
+  return r_map;
+}
+
+
 IMPMULTIFIT_END_NAMESPACE

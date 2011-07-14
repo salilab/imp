@@ -417,9 +417,6 @@ void FFTFitting::create_map_from_array(
 }
 
 em::DensityMap* FFTFitting::get_variance_map() const {
-
-
-
   const em::DensityHeader *from_header=asmb_map_->get_header();
   Pointer<em::DensityMap> r_map(new em::DensityMap(*from_header));
   int nx=asmb_map_->get_header()->get_nx();
@@ -636,12 +633,21 @@ algebra::Vector3Ds FFTFitting::heap_based_search_for_best_translations(
   }
   return ret_trans;
 }
+
 TransScores FFTFitting::search_for_best_translations(
                      int num_solutions,bool gmm_based) {
   TransScores best_trans;
   //find the best positions on the hit map
   //  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
   DensGrid hit_map = get_correlation_hit_map();
+  /*
+  em::DensityMap *hit_map_copy = grid2map(hit_map,asmb_map_->get_spacing());
+  static int kkk=0;
+  std::stringstream name;
+  name<<"debug.map."<<kkk<<".mrc";
+  em::write_map(hit_map_copy,name.str());
+  kkk+=1;
+  */
   algebra::Vector3Ds best_pos;
   if (gmm_based) {
     best_pos = gmm_based_search_for_best_translations(&hit_map,num_solutions);
@@ -654,7 +660,8 @@ TransScores FFTFitting::search_for_best_translations(
      TransScore out_ts;
      algebra::Transformation3D out_t = algebra::Transformation3D(
                 algebra::get_identity_rotation_3d(),
-                center_voxel-map_center_)*center_trans_;
+                center_voxel);
+     //                center_voxel-map_center_)*center_trans_;
      out_ts.first=out_t;
      out_ts.second=hit_map[hit_map.get_nearest_index(center_voxel)];
      best_trans.push_back(out_ts);
@@ -732,7 +739,8 @@ FFTFittingResults fft_based_rigid_fitting(
     for(unsigned int i=0;i<best_trans.size();i++) {
       //TODO: see if you can improve this test
       temp_fits.add_solution(
-                             best_trans[i].first*t1*shift_to_center,
+                             best_trans[i].first*
+                             t1*shift_to_center,
                              best_trans[i].second);
       //      std::cout<<"Transformation: "<<i<<" "<<best_trans[i].first<<","
       //<<t1<<","<<shift_to_center<<std::endl;
