@@ -35,8 +35,9 @@ class ProjectTests(IMP.test.TestCase):
         cols=128
         pixel_size = 1.5
         resolution = 1 # for generating projections, use a very high resolution
+        options = em2d.ProjectingOptions(pixel_size, resolution)
         projections = em2d.get_projections(particles,proj_params,
-                    rows,cols,resolution,pixel_size,srw)
+                    rows,cols, options)
         self.assertEqual(len(projections),n_projections,
                                           "Problem generating projections")
         # Prepare registration
@@ -80,7 +81,7 @@ class ProjectTests(IMP.test.TestCase):
             imgx=em2d.Image()
             imgx.set_size(rows,cols)
             em2d.get_projection(imgx,particles,
-                    registration_parameters[i],resolution,pixel_size,srw)
+                                      registration_parameters[i], options)
             ccc=em2d.get_cross_correlation_coefficient(subjects[i].get_data(),
                                                   imgx.get_data())
             print i,"ccc",ccc

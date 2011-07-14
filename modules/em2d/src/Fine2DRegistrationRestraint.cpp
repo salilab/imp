@@ -100,12 +100,12 @@ double Fine2DRegistrationRestraint::unprotected_evaluate(
 
   // projection_ needs to be mutable, son this const function can change it.
   // project_particles changes the matrix of projection_
-  em2d::do_project_particles(ps_,
+  ProjectingOptions options(params_.pixel_size,  params_.resolution);
+  do_project_particles(ps_,
                           projection_->get_data(),
                           PP_.get_rotation(),
                           PP_.get_translation(),
-                          params_.resolution,
-                          params_.pixel_size,
+                          options,
                           masks_);
   double score = score_function_->get_score(subject_,projection_);
   IMP_LOG(VERBOSE, "Fine2DRegistration. Score: " << score <<std::endl);

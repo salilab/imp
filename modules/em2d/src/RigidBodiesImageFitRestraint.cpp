@@ -1,0 +1,207 @@
+/**
+ *  \file RigidBodiesImageFitRestraint
+ *  \brief
+ *
+ *  Copyright 2007-2010 IMP Inventors. All rights reserved.
+ *
+ */
+
+#include "IMP/em2d/RigidBodiesImageFitRestraint.h"
+#include "IMP/em2d/RegistrationResult.h"
+#include "IMP/em2d/SpiderImageReaderWriter.h"
+#include "IMP/em2d/project.h"
+#include "IMP/algebra/utility.h"
+#include "IMP/algebra/VectorD.h"
+#include "IMP/algebra/Vector3D.h"
+#include "IMP/algebra/Rotation3D.h"
+#include "IMP/algebra/Transformation3D.h"
+#include <IMP/log.h>
+#include "IMP/exception.h"
+#include "IMP/Particle.h"
+#include <IMP/SingletonContainer.h>
+#include "IMP/container.h"
+#include <math.h>
+#include <iostream>
+
+
+IMPEM2D_BEGIN_NAMESPACE
+
+RigidBodiesImageFitRestraint::RigidBodiesImageFitRestraint(
+                          ScoreFunction *scf,
+                          const core::RigidBodies &rbs,
+                          Image *img): score_function_(scf),
+                          rigid_bodies_(rbs),
+                          image_(img),
+                          params_set_(false) {
+  maps_.resize(rbs.size());
+  rigid_bodies_masks_.resize(rbs.size());
+  projection_ = new Image();
+  projection_->set_size(img);
+  IMP_LOG(IMP::TERSE, "Image for projection created. Size: "
+          << projection_->get_data().rows << "x"
+          << projection_->get_data().cols << std::endl);
+}
+
+double
+RigidBodiesImageFitRestraint::unprotected_evaluate(
+                                          DerivativeAccumulator *accum) const {
+  IMP_UNUSED(accum);
+  IMP_USAGE_CHECK(!accum, "No derivatives provided");
+  IMP_LOG(IMP::TERSE, "RigidBodiesImageFitRestraint::unprotected_evaluate "
+           << "rigid bodies " << rigid_bodies_.size() <<std::endl);
+
+  projection_->set_zeros();
+  // Form the projection with the positions of the rigid bodies
+  for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
+    algebra::Transformation3D T =
+                rigid_bodies_[i].get_reference_frame().get_transformation_to();
+    Ints key = get_unique_index( T.get_rotation() );
+
+    // Get the precomputed projection mask for the rotation
+    KeyIndexMap::const_iterator it = maps_[i].find(key);
+    IMP_USAGE_CHECK(it != maps_[i].end(),
+                          "Key corresponding to the rotation not found");
+    unsigned int index = (*it).second;
+
+    // Place in the matrix
+    algebra::Vector3D t = T.get_translation();
+    algebra::Vector2D shift(t[0]/params_.pixel_size, t[1]/params_.pixel_size);
+    do_place(rigid_bodies_masks_[i][index]->get_data() ,
+             projection_->get_data(), shift);
+  }
+
+  /***************************
+  IMP_NEW(SpiderImageReaderWriter,srw,());
+  projection_->write("composed_projection.spi",srw);
+  ***************************/
+  do_normalize(projection_->get_data());
+  return score_function_->get_score(image_, projection_);
+}
+
+
+void RigidBodiesImageFitRestraint::set_rotations(const core::RigidBody &rb,
+                            const algebra::Rotation3Ds &rots) {
+
+  IMP_LOG(IMP::TERSE, "Setting rotations for " << rb->get_name() << std::endl);
+
+  IMP_USAGE_CHECK(params_set_ == true,
+      "RigidBodiesImageFitRestraint: Parameters for projecting are not set");
+
+  unsigned int j = get_rigid_body_index(rb);
+
+  // Get the particles of the rigid body
+  core::RigidMembers rbm = rb.get_members();
+  Particles ps;
+
+  for (unsigned int i=0; i < rbm.size(); ++i) {
+    ps.push_back( rbm[i].get_particle() );
+  }
+  unsigned int size = get_enclosing_image_size(ps, params_.pixel_size, 4);
+
+  // Project the rigid body with each rotation
+  Images masks(rots.size());
+  RegistrationResults regs;
+  KeyIndexMap kmap;
+  for (unsigned int i=0; i < rots.size(); ++i) {
+    algebra::Transformation3D T =
+                        rb.get_reference_frame().get_transformation_to();
+    algebra::Rotation3D R = algebra::compose(rots[i], T.get_rotation());
+    Ints ints = get_unique_index(R);
+    algebra::Vector2D v(0., 0.);
+    RegistrationResult reg(rots[i], v);
+    regs.push_back(reg);
+    kmap.insert ( KeyIndexPair(ints, i) );
+  }
+
+   ProjectingOptions options(params_.pixel_size, params_.resolution);
+   options.normalize = false; // Summing normalized masks does not make sense
+   masks = get_projections(ps, regs, size, size, options);
+
+   /***************************
+   IMP_NEW(SpiderImageReaderWriter,srw,());
+   for (unsigned int k=0; k< masks.size(); ++k) {
+     std::ostringstream oss;
+     oss << "rigid-body-" << j << "-mask-" << k << ".spi";
+     masks[k]->write(oss.str(), srw);
+   }
+   ***************************/
+
+  maps_[j] = kmap;
+  rigid_bodies_masks_[j] = masks;
+}
+
+
+void RigidBodiesImageFitRestraint::set_projecting_parameters(
+                                            const ProjectingParameters &p) {
+  params_ = p;
+  params_set_ = true;
+}
+
+
+ParticlesTemp RigidBodiesImageFitRestraint::get_input_particles() const
+{
+  ParticlesTemp ret;
+  for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
+    ret.push_back( rigid_bodies_[i].get_particle());
+  }
+  return ret;
+}
+
+ContainersTemp RigidBodiesImageFitRestraint::get_input_containers() const
+{
+  ContainersTemp ct;
+  return ct;
+}
+
+Ints get_unique_index(const algebra::Rotation3D &rot) {
+  Ints unique(4);
+  algebra::Vector4D v = rot.get_quaternion();
+  v = (v[0] > 0) ? v : (-1)*v;
+  // form the unique 4 ints ( 2 first decimal positions)
+  for (unsigned int i=0; i < unique.size(); ++i) {
+    unique[i] = floor(100*v[i]);
+  }
+  IMP_LOG(IMP::TERSE, "get_unique_index: quaternion " << v
+          << " index " << unique[0] << " " << unique[1] << " " << unique[2]
+          << " " << unique[3] << std::endl);
+  return unique;
+}
+
+  void RigidBodiesImageFitRestraint::do_show(
+                                  std::ostream &out = std::cout) const {
+    out << "RigidBodiesImageFitRestraint. Rigid_bodies: "
+       << rigid_bodies_.size() << " Masks: " << std::endl;
+    for (unsigned int i=0; i < rigid_bodies_.size(); ++i) {
+      out << "rigid body " << rigid_bodies_[i]->get_name() << " Masks "
+                                 << maps_[i].size() << std::endl;
+    }
+  }
+
+
+unsigned int RigidBodiesImageFitRestraint::get_rigid_body_index(
+                                        const core::RigidBody &rb) const {
+  IMP_LOG(IMP::TERSE, "Check rigid body index " << rb->get_name() << std::endl);
+  unsigned int   j = rigid_bodies_.size();
+  for ( uint i=0; i < rigid_bodies_.size(); ++i) {
+    IMP_LOG(IMP::VERBOSE,"Comparing " << rigid_bodies_[i].get_particle()
+            << " with " << rb.get_particle() << std::endl);
+
+    if(rb.get_particle() == rigid_bodies_[i].get_particle()) {
+      j = i;
+      break;
+    }
+  }
+  if(j == rigid_bodies_.size() ) {
+   IMP_THROW("The rigid body provided is not in the restraint", ValueException);
+  }
+  return j;
+}
+
+unsigned int RigidBodiesImageFitRestraint::get_number_of_masks(
+                                    const core::RigidBody &rb) const {
+  unsigned int j = get_rigid_body_index(rb);
+  return maps_[j].size();
+
+}
+
+IMPEM2D_END_NAMESPACE

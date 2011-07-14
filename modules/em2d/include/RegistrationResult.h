@@ -44,10 +44,11 @@ public:
                      String name="");
 
  RegistrationResult(algebra::Rotation3D R,
-                    algebra::Vector2D shift,
+                    algebra::Vector2D shift= algebra::Vector2D(0.,0.),
                     int projection_index=0,
                     int image_index=0,
                     String name = "");
+
 
   inline double get_phi() const { return phi_;}
   inline double get_theta() const { return theta_;}

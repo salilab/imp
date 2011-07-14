@@ -12,6 +12,7 @@ IMP_SWIG_VALUE(IMP::em2d, AverageDistanceLinkage, AverageDistanceLinkages);
 IMP_SWIG_VALUE(IMP::em2d, SegmentationParameters, SegmentationParametersList);
 IMP_SWIG_VALUE(IMP::em2d, MatchTemplateResult, MatchTemplateResults);
 IMP_SWIG_VALUE(IMP::em2d, ProjectingParameters, ProjectingParametersList);
+IMP_SWIG_VALUE(IMP::em2d, ProjectingOptions, ProjectingOptionsList);
 IMP_SWIG_VALUE(IMP::em2d, Em2DRestraintParameters, Em2DRestraintParametersList);
 
 
@@ -38,6 +39,12 @@ IMP_SWIG_OBJECT(IMP::em2d, GridStates, GridStatesList);
 IMP_SWIG_OBJECT(IMP::em2d, ProjectionStates, ProjectionStatesList);
 IMP_SWIG_OBJECT(IMP::em2d, DistanceFilter, DistanceFilters);
 IMP_SWIG_OBJECT(IMP::em2d, DistanceFilterTable,DistanceFilterTables);
+
+IMP_SWIG_OBJECT(IMP::em2d, RigidBodiesImageFitRestraint,
+                            RigidBodiesImageFitRestraints);
+
+
+
 
 // IMP_SWIG_OBJECT(IMP::em2d, TemplateFinder, TemplateFinders);
 
@@ -71,6 +78,7 @@ IMP_SWIG_DECORATOR(IMP::em2d, ProjectionParameters, ProjectionParametersList);
 %include "IMP/em2d/domino_particle_states.h"
 %include "IMP/em2d/domino_filters.h"
 %include "IMP/em2d/domino_filter_tables.h"
+%include "IMP/em2d/RigidBodiesImageFitRestraint.h"
 // %include "IMP/em2d/TemplateFinder.h"
 
 

@@ -220,8 +220,8 @@ int main(int argc, char **argv) {
     // Generate evenly distributed projections
     em2d::RegistrationResults evenly_regs=
           em2d::get_evenly_distributed_registration_results(n_projections);
-    projections= em2d::get_projections(ps,evenly_regs,rows,cols,
-                                                resolution,apix,srw);
+    em2d::ProjectingOptions options( apix, resolution);
+    projections= em2d::get_projections(ps, evenly_regs, rows, cols, options);
     for (unsigned int i=0;i<projections.size();++i) {
       std::ostringstream oss;
       oss << "projection-" << i <<std::endl;

@@ -401,10 +401,10 @@ void ProjectionFinder::get_complete_registration() {
                               << registration_results_[i] << std::endl);
     // save if requested
     if(params_.save_match_images) {
+      ProjectingOptions options(params_.pixel_size, params_.resolution);
+      options.normalize = true;
       get_projection(match,model_particles_,registration_results_[i],
-                    params_.resolution,
-                    params_.pixel_size,srw,false,masks_manager_);
-      do_normalize(match,true);
+                    options, masks_manager_);
       std::ostringstream strm;
       strm << "fine_match-" << i << ".spi";
       registration_results_[i].set_in_image(match->get_header());

@@ -215,6 +215,7 @@ class ProjectTests(IMP.test.TestCase):
     def test_get_overlap_percentage(self):
         """ Test that the function returns > 0 when there is overlap, and 0
           otherwise """
+        # TODO
         pass
 
 

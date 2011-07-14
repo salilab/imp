@@ -5,29 +5,23 @@
 */
 
 #include "IMP/em2d/project.h"
-#include "IMP/em2d/CenteredMat.h"
 #include "IMP/em2d/Image.h"
 #include "IMP/em2d/image_processing.h"
 #include "IMP/em2d/internal/rotation_helper.h"
-#include "IMP/em2d/SpiderImageReaderWriter.h"
 #include "IMP/algebra/Vector2D.h"
-#include "IMP/Pointer.h"
 #include "IMP/core/utility.h"
 #include "IMP/core/XYZ.h"
 #include "IMP/core/CoverRefined.h"
-#include "IMP.h"
 #include <boost/timer.hpp>
 #include <boost/progress.hpp>
 
 IMPEM2D_BEGIN_NAMESPACE
 
+
 em2d::Images get_projections(const ParticlesTemp &ps,
-                    const algebra::SphericalVector3Ds &vs,
-                    int rows, int cols,
-                    double resolution, double pixelsize,
-                    const em2d::ImageReaderWriter *srw,
-                    bool project_and_save,
-                    Strings names) {
+        const algebra::SphericalVector3Ds &vs,
+        int rows, int cols, const ProjectingOptions &options,
+        Strings names) {
   IMP_LOG(IMP::VERBOSE,
             "Generating projections from spherical vectors" << std::endl);
   unsigned long n_projs= vs.size();
@@ -39,21 +33,19 @@ em2d::Images get_projections(const ParticlesTemp &ps,
     RegistrationResult rr(R,shift);
     registration_values[i]=rr;
   }
-  return get_projections(ps,registration_values,rows,cols,resolution,
-                    pixelsize,srw,project_and_save,names);
+  return get_projections(ps,registration_values,rows,cols,options,names);
 }
 
+
+
 em2d::Images get_projections(const ParticlesTemp &ps,
-                    const RegistrationResults &registration_values,
-                    int rows, int cols,
-                    double resolution, double pixelsize,
-                    const em2d::ImageReaderWriter *srw,
-                    bool project_and_save,
-                    Strings names) {
+        const RegistrationResults &registration_values,
+        int rows, int cols, const ProjectingOptions &options,
+        Strings names) {
   IMP_LOG(IMP::VERBOSE,
           "Generating projections from registraion results" << std::endl);
 
-  if(project_and_save && (names.size() < registration_values.size() ) ) {
+  if(options.save_images && (names.size() < registration_values.size() ) ) {
     IMP_THROW("get_projections: Insufficient number of image names provided",
               IOException);
   }
@@ -61,64 +53,66 @@ em2d::Images get_projections(const ParticlesTemp &ps,
   unsigned long n_projs= registration_values.size();
   em2d::Images projections(n_projs);
   // Precomputation of all the possible projection masks for the particles
-  MasksManagerPtr masks(new MasksManager(resolution,pixelsize));
+  MasksManagerPtr masks(new MasksManager(options.resolution,
+                                         options.pixel_size));
   masks->create_masks(ps);
   for (unsigned long i=0;i<n_projs;++i) {
     IMP_NEW(em2d::Image,img,());
     img->set_size(rows,cols);
     String name="";
-    if(project_and_save) name = names[i];
-    get_projection(img,ps,registration_values[i],
-                resolution,pixelsize,srw,project_and_save,masks,name);
+    if(options.save_images) name = names[i];
+    get_projection(img,ps,registration_values[i], options, masks, name);
     projections.set(i,img);
   }
   return projections;
 }
 
+
+
 void get_projection(em2d::Image *img,const ParticlesTemp &ps,
-            const RegistrationResult &reg,
-            double resolution, double pixelsize,
-          const em2d::ImageReaderWriter *srw,bool save_image,
-           MasksManagerPtr masks,String name) {
+        const RegistrationResult &reg, const ProjectingOptions &options,
+        MasksManagerPtr masks, String name) {
   IMP_LOG(IMP::VERBOSE,"Generating projection in a em2d::Image" << std::endl);
 
   if(masks==MasksManagerPtr()) {
-    masks =MasksManagerPtr(new MasksManager(resolution,pixelsize));
+    masks =MasksManagerPtr(new MasksManager(options.resolution,
+                                            options.pixel_size));
     masks->create_masks(ps);
     IMP_LOG(IMP::VERBOSE,
           "Masks generated from get_projection()"  << std::endl);
   }
-  algebra::Vector3D translation = pixelsize*reg.get_shift_3d();
+  algebra::Vector3D translation = options.pixel_size*reg.get_shift_3d();
   algebra::Rotation3D R = reg.get_rotation();
-  do_project_particles(ps,img->get_data(),R,
-                        translation,resolution,pixelsize,masks);
-  em2d::do_normalize(img,true);
+
+  do_project_particles(ps, img->get_data(), R, translation, options, masks);
+  if(options.normalize) em2d::do_normalize(img,true);
   reg.set_in_image(img->get_header());
-  img->get_header().set_object_pixel_size(pixelsize);
-  if(save_image) {
+  img->get_header().set_object_pixel_size(options.pixel_size);
+  if(options.save_images) {
     if(name.empty()) {
       IMP_THROW("get_projection: File name string is empty ", IOException);
     }
-    img->write(name,srw);
+    img->write(name,options.srw);
   }
 }
+
+
 
 
 void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
-             double resolution, double pixelsize,
-             MasksManagerPtr masks,
-             bool clear_matrix_before) {
-  IMP_LOG(IMP::VERBOSE,"Projecting particles" << std::endl
-          );
+             const ProjectingOptions &options,
+             MasksManagerPtr masks) {
+  IMP_LOG(IMP::VERBOSE,"Projecting particles" << std::endl);
   if(m2.empty()) {
     IMP_THROW("Cannot project on a empty matrix",ValueException);
   }
   if(masks==MasksManagerPtr()) {
     // Create the masks
-    masks=MasksManagerPtr(new MasksManager(resolution,pixelsize));
+    masks=MasksManagerPtr(new MasksManager(options.resolution,
+                                           options.pixel_size));
     masks->create_masks(ps);
   }
   // Centroid
@@ -127,9 +121,9 @@ void do_project_particles(const ParticlesTemp &ps,
   algebra::Vector3D centroid = core::get_centroid(xyzrs);
 
   // clear data before creating a new projection
-  if(clear_matrix_before) m2.setTo(0.0);
+  if(options.clear_matrix_before_projecting) m2.setTo(0.0);
   // Project
-  double invp = 1.0/pixelsize;
+  double invp = 1.0/options.pixel_size;
 
   for (unsigned long i=0; i<n_particles; i++) {
     // Coordinates respect to the centroid
@@ -141,8 +135,8 @@ void do_project_particles(const ParticlesTemp &ps,
 
     IMP_USAGE_CHECK( !is_nan(pix_x) || !is_nan(pix_y),
                     "do_project_particles: " << n_particles
-              << " resolution "  << resolution << " pixelsize "
-              << pixelsize << std::endl);
+              << " resolution "  << options.resolution << " pixel size "
+              << options.pixel_size << std::endl);
 
     // Apply mask
     ProjectionMaskPtr mask= masks->find_mask(xyzrs[i].get_radius());
@@ -152,6 +146,7 @@ void do_project_particles(const ParticlesTemp &ps,
   IMP_LOG(IMP::VERBOSE,"END of do_project_particles" << std::endl);
 
 }
+
 
 
 algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
@@ -365,22 +360,17 @@ algebra::Vector2Ds do_project_vectors(const algebra::Vector3Ds &ps,
 //  map->set_origin(orig3D);
 //}
 
-
 Images create_evenly_distributed_projections(const ParticlesTemp &ps,
                                              unsigned int n,
-                                             ProjectingParameters params) {
+                                             const ProjectingOptions &options) {
   IMP_LOG(IMP::TERSE, "creating evenly distributed projections"<< std::endl);
 
   // Sphere that encloses_the_particles
   IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
   core::XYZsTemp xyzs(ps);
-  unsigned int size = get_enclosing_image_size(ps, params.pixel_size, 4);
-  IMP_NEW(SpiderImageReaderWriter, dummy, ());
+  unsigned int size = get_enclosing_image_size(ps, options.pixel_size, 4);
   RegistrationResults regs = get_evenly_distributed_registration_results(n);
-  Images projections = get_projections(ps, regs,
-                         size, size,
-                         params.resolution, params.pixel_size,
-                         dummy);
+  Images projections = get_projections(ps, regs, size, size, options);
   return projections;
 }
 
