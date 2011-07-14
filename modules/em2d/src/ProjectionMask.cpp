@@ -29,6 +29,15 @@ ProjectionMask::ProjectionMask(const em::KernelParameters &KP,
 }
 
 
+void ProjectionMask::apply(cv::Mat &m,
+                const algebra::Vector2D &v) {
+  do_place(data_, m, v);
+}
+
+
+
+
+
 void  ProjectionMask::create(const em::KernelParameters &KP,
                  const em::RadiusDependentKernelParameters *params,
                  double mass) {

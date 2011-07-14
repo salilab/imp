@@ -21,6 +21,8 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/SphericalVector3D.h"
 #include "IMP/core/XYZR.h"
+#include "IMP/Pointer.h"
+#include "IMP.h"
 #include <complex>
 #include <algorithm> // max,min
 #include <fstream>
@@ -28,15 +30,12 @@
 
 IMPEM2D_BEGIN_NAMESPACE
 
-
+// Parameters needed for the core projection routine
 class IMPEM2DEXPORT ProjectingParameters {
-
 public:
-
   double pixel_size, resolution;
 
   ProjectingParameters() {};
-
   ProjectingParameters(double ps, double res):
                   pixel_size(ps), resolution(res) {};
   void show(std::ostream &out = std::cout) const {
@@ -46,6 +45,33 @@ public:
 IMP_VALUES(ProjectingParameters,ProjectingParametersList);
 
 
+// Parameters given as options to the get_projections() functions
+class IMPEM2DEXPORT ProjectingOptions: public ProjectingParameters {
+
+  void init_defaults() {
+    srw = new SpiderImageReaderWriter();
+    save_images = false;
+    normalize = true;
+    clear_matrix_before_projecting = true;
+  }
+public:
+  ImageReaderWriter *srw; // Writer used to save the images
+  bool save_images; // Save images after projeting
+  bool normalize; // Normalize the projection after generating it
+  bool clear_matrix_before_projecting; // Set the matrix to zeros
+
+  ProjectingOptions() {init_defaults();}
+  ProjectingOptions(double ps, double res): ProjectingParameters(ps, res) {
+    init_defaults();
+  }
+
+
+  void show(std::ostream &out = std::cout) const {
+    out << "ProjectingOptions " << pixel_size
+              << " " << resolution << std::endl;};
+};
+IMP_VALUES(ProjectingOptions,ProjectingOptionsList);
+
 
 //! Generates projectios from particles
 /*!
@@ -53,18 +79,12 @@ IMP_VALUES(ProjectingParameters,ProjectingParametersList);
   \param[in] vs set of spherical vectors with the directions of projection
   \param[in] rows size of the images
   \param[in] cols
-  \param[in] resolution resolution used to generate the projections
-  \param[in] pixelsize in A/pixel
-  \param[in] srw Reader writer for the images. Currently uses Spider format
-  \param[in] project_and_save If true, save the images
+  \param[in] options Options for control the projecting
   \param[in] names names of the images
 */
 IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         const algebra::SphericalVector3Ds &vs,
-        int rows, int cols,
-        double resolution, double pixelsize,
-        const em2d::ImageReaderWriter *srw,
-        bool project_and_save=false,
+        int rows, int cols, const ProjectingOptions &options,
         Strings names=Strings());
 
 
@@ -76,10 +96,7 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
 */
 IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
         const RegistrationResults &registration_values,
-        int rows, int cols,
-        double resolution, double pixelsize,
-        const em2d::ImageReaderWriter *srw,
-        bool project_and_save=false,
+        int rows, int cols, const ProjectingOptions &options,
         Strings names=Strings());
 
 
@@ -94,9 +111,9 @@ IMPEM2DEXPORT em2d::Images get_projections(const ParticlesTemp &ps,
   \note See the function get_projections() for the rest of the parameters
 */
 IMPEM2DEXPORT void get_projection(em2d::Image *img,const ParticlesTemp &ps,
-        const RegistrationResult &reg,double resolution,double pixelsize,
-        const em2d::ImageReaderWriter *srw,bool save_image=false,
-        MasksManagerPtr masks=MasksManagerPtr(),String name="");
+        const RegistrationResult &reg, const ProjectingOptions &options,
+        MasksManagerPtr masks=MasksManagerPtr(), String name="");
+
 
 //! Projects a set of particles. This is the core function that others call
 /*!
@@ -112,9 +129,8 @@ IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
              cv::Mat &m2,
              const algebra::Rotation3D &R,
              const algebra::Vector3D &translation,
-             double resolution, double pixelsize,
-             MasksManagerPtr masks,
-             bool clear_matrix_before = true);
+             const ProjectingOptions &options,
+             MasksManagerPtr masks);
 
 
 /*! This function is slightly different than the other ones.
@@ -125,8 +141,7 @@ IMPEM2DEXPORT void do_project_particles(const ParticlesTemp &ps,
 IMPEM2DEXPORT Images create_evenly_distributed_projections(
                                              const ParticlesTemp &ps,
                                              unsigned int n,
-                                             ProjectingParameters params);
-
+                                             const ProjectingOptions &options);
 
 
 

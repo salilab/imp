@@ -60,13 +60,13 @@ void CollisionCrossSection::set_model_particles(const ParticlesTemp &ps) {
   // Compute projections
   collision_cross_section_ = 0.0;
   for (unsigned int i=0; i < n_projections_; ++i) {
+    ProjectingOptions options(pixel_size_, resolution_);
     do_project_particles(ps,
-                                 average_projection_,
-                                 regs_[i].get_rotation(),
-                                 pixel_size_*regs_[i].get_shift_3d(),
-                                 resolution_,
-                                 pixel_size_,
-                                 masks_manager_);
+                         average_projection_,
+                         regs_[i].get_rotation(),
+                         pixel_size_*regs_[i].get_shift_3d(),
+                         options,
+                         masks_manager_);
 
     collision_cross_section_ += get_projected_area(average_projection_);
 

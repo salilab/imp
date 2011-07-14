@@ -78,45 +78,77 @@ protected:
 IMP_VALUES(ProjectionMask,ProjectionMasks);
 
 
-/*
-inline
-void ProjectionMask::apply(cv::Mat &m,
-                const algebra::Vector2D &v,double weight) {
 
-  // v is the vector of coordinates respect to the center of the matrix m
-  int vi= algebra::get_rounded(v[0]);
-  int vj= algebra::get_rounded(v[1]);
-  CenteredMat centered_mask(data_); // Now pass to CenteredMat
-  CenteredMat centered_m(m);
+// Very ugly but very fast projecting function
+// Applies the mask to the matrix m in the position of the vector v
+//inline
+//void ProjectionMask::apply(cv::Mat &m,
+//                const algebra::Vector2D &v) {
+//
+//  // v is the vector of coordinates respect to the center of the matrix m
+//  int vi= algebra::get_rounded(v[0]);
+//  int vj= algebra::get_rounded(v[1]);
+//
+//  // Centers for the matrix
+//  int center[2];
+//  center[0] = static_cast<int>(0.5*m.rows);
+//  center[1] = static_cast<int>(0.5*m.cols);
+//
+//  int start[2], end[2];
+//  start[0] = -center[0];
+//  start[1] = -center[1];
+//  end[0]=m.rows - 1 - center[0];
+//  end[1]=m.cols - 1 - center[1];
+//
+//  // Check range: If the vector is outside the matrix, don't do anything.
+//  if(vi < start[0] || vi > end[0]) return;
+//  if(vj < start[1] || vj > end[1]) return;
+//
+//
+//  // Centers for the mask
+//  int mcenter[2];
+//  mcenter[0] = static_cast<int>(0.5*data_.rows);
+//  mcenter[1] = static_cast<int>(0.5*data_.cols);
+//
+//  int mstart[2], mend[2];
+//  mstart[0] = -mcenter[0];
+//  mstart[1] = -mcenter[1];
+//  mend[0]=data_.rows - 1 - mcenter[0];
+//  mend[1]=data_.cols - 1 - mcenter[1];
+//
+//
+//  // Get the admisible range for the mask
+//  int start_i = std::max(start[0] - vi, mstart[0]);
+//  int start_j = std::max(start[1] - vj, mstart[1]);
+//  int end_i = std::min(end[0] - vi, mend[0]);
+//  int end_j = std::min(end[1] - vj, mend[1]);
+//
+//
+//  int row = vi+center[0];
+//  int col = vj+center[0];
+//
+//  for(int i = start_i; i <= end_i; ++i) {
+//    int p = i+row;
+//    for(int j = start_j; j <= end_j; ++j) {
+//      m.at<double>(p, j+col) += data_.at<double>(i+mcenter[0], j+mcenter[1]);
+//    }
+//  }
+//}
+//
+//
 
-  // Check range: If the vector is outside the matrix, don't do anything.
-  if(!centered_m.get_is_in_range(vi, vj)) return;
-
-  // Get the admisible range for the mask
-  int start_i = std::max(centered_m.get_start(0) - vi,
-                         centered_mask.get_start(0));
-  int start_j = std::max(centered_m.get_start(1) - vj,
-                         centered_mask.get_start(1));
-
-  int end_i = std::min(centered_m.get_end(0) - vi,
-                       centered_mask.get_end(0));
-  int end_j = std::min(centered_m.get_end(1) - vj,
-                       centered_mask.get_end(1));
 
 
-  for(int i = start_i; i <= end_i; ++i) {
-    int p = i+vi;
-    for(int j = start_j; j <= end_j; ++j) {
-      centered_m(p, j+vj) += centered_mask(i,j) * weight;
-    }
-  }
-}
+// Place a matrix in another
+// Very ugly but very fast projecting function
+
+/*!
+  \param[in] mask matrix to place in m
+  \param[in] m matrix
+  \param[in] v Pixel of the matrix dest where the center of m is put.
 */
-
-
-// Very ugly but very fast function replacing the above
 inline
-void ProjectionMask::apply(cv::Mat &m,
+void do_place(cv::Mat &mask, cv::Mat &m,
                 const algebra::Vector2D &v) {
 
   // v is the vector of coordinates respect to the center of the matrix m
@@ -141,15 +173,14 @@ void ProjectionMask::apply(cv::Mat &m,
 
   // Centers for the mask
   int mcenter[2];
-  mcenter[0] = static_cast<int>(0.5*data_.rows);
-  mcenter[1] = static_cast<int>(0.5*data_.cols);
+  mcenter[0] = static_cast<int>(0.5*mask.rows);
+  mcenter[1] = static_cast<int>(0.5*mask.cols);
 
   int mstart[2], mend[2];
   mstart[0] = -mcenter[0];
   mstart[1] = -mcenter[1];
-  mend[0]=data_.rows - 1 - mcenter[0];
-  mend[1]=data_.cols - 1 - mcenter[1];
-
+  mend[0] = mask.rows - 1 - mcenter[0];
+  mend[1] = mask.cols - 1 - mcenter[1];
 
   // Get the admisible range for the mask
   int start_i = std::max(start[0] - vi, mstart[0]);
@@ -164,13 +195,10 @@ void ProjectionMask::apply(cv::Mat &m,
   for(int i = start_i; i <= end_i; ++i) {
     int p = i+row;
     for(int j = start_j; j <= end_j; ++j) {
-      m.at<double>(p, j+col) += data_.at<double>(i+mcenter[0], j+mcenter[1]);
+      m.at<double>(p, j+col) += mask.at<double>(i+mcenter[0], j+mcenter[1]);
     }
   }
 }
-
-
-
 
 
 

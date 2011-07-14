@@ -2,7 +2,7 @@ import IMP
 import IMP.test
 import IMP.core
 import IMP.atom
-import IMP.em2d
+import IMP.em2d as em2d
 import IMP.em
 import os
 
@@ -28,12 +28,14 @@ class ProjectTests(IMP.test.TestCase):
         cols = 80
         resolution = 1
         apix = 1.5
-        img=IMP.em2d.Image()
+        img=em2d.Image()
         img.set_size(rows,cols)
-        srw = IMP.em2d.SpiderImageReaderWriter()
-        rr=IMP.em2d.RegistrationResult()
+        srw = em2d.SpiderImageReaderWriter()
+        rr=em2d.RegistrationResult()
         rr.set_random_registration(0,5)
-        IMP.em2d.get_projection(img,particles,rr,resolution,apix,srw)
+        options = em2d.ProjectingOptions(apix, resolution)
+        options.srw = srw
+        em2d.get_projection(img,particles,rr,options)
         img.write(testfile,srw)
         self.assertTrue(os.path.isfile(testfile),
                         "Projection image not generated")
@@ -52,18 +54,19 @@ class ProjectTests(IMP.test.TestCase):
         cols = 80
         resolution = 1
         apix = 1.5
-        srw = IMP.em2d.SpiderImageReaderWriter()
-        registration_values=IMP.em2d.get_evenly_distributed_registration_results(
+        srw = em2d.SpiderImageReaderWriter()
+        registration_values=em2d.get_evenly_distributed_registration_results(
                                                                   n_projections)
-        projections = IMP.em2d.get_projections(particles,
-                  registration_values,rows,cols,resolution,apix,srw)
+        options = em2d.ProjectingOptions(apix, resolution)
+        projections = em2d.get_projections(particles,
+                  registration_values,rows,cols,options)
         # Read the stored projections
-        stored_projection_names= IMP.em2d.create_filenames(
+        stored_projection_names= em2d.create_filenames(
                         n_projections,"1z5s-fast-projection","spi")
         for n in xrange(0,n_projections):
             stored_projection_names[n]=self.get_input_file_name(
                                             stored_projection_names[n])
-        stored_projections=IMP.em2d.read_images(stored_projection_names,srw)
+        stored_projections=em2d.read_images(stored_projection_names,srw)
         # check
         for n in xrange(0,n_projections):
             for i in xrange(0,rows):
@@ -88,27 +91,28 @@ class ProjectTests(IMP.test.TestCase):
         noise_SNR = 0.5
         # read the stored noisy images
         stored_names=[]
-        srw = IMP.em2d.SpiderImageReaderWriter()
+        srw = em2d.SpiderImageReaderWriter()
         for i in xrange(0,n_projections):
             fn_subject = "1e6v-subject-%d-set-%d-%s-apix" \
                  "-%s-SNR.spi" % (i,n_projections,str(apix),str(noise_SNR))
             stored_names.append( self.get_input_file_name(fn_subject) )
-        stored_images = IMP.em2d.read_images(stored_names,srw)
+        stored_images = em2d.read_images(stored_names,srw)
 
         # Read registration parameters and generate new images
         fn_regs = self.get_input_file_name('1e6v-subjects-0.5.params')
-        Regs =IMP.em2d.read_registration_results(fn_regs)
-        projections = IMP.em2d.get_projections(particles,Regs,
-                               rows,cols,resolution,apix,srw)
+        Regs =em2d.read_registration_results(fn_regs)
+        options = em2d.ProjectingOptions(apix, resolution)
+        projections = em2d.get_projections(particles,Regs,
+                               rows,cols,options)
         # Add noise
         for i in xrange(0,n_projections):
-            IMP.em2d.do_normalize(projections[i],True)
-            IMP.em2d.add_noise(projections[i],
+            em2d.do_normalize(projections[i],True)
+            em2d.add_noise(projections[i],
                                 0.0,1./(noise_SNR**0.5), "gaussian",3)
         # theoretical ccc for same images at a level of noise
         theoretical_ccc=noise_SNR/(noise_SNR+1)
         for n in xrange(0,n_projections):
-            ccc=IMP.em2d.get_cross_correlation_coefficient(projections[n],
+            ccc=em2d.get_cross_correlation_coefficient(projections[n],
                                                       stored_images[n])
              # allow 3% difference in cross-correlation
             self.assertAlmostEqual(theoretical_ccc,ccc, delta=0.03,

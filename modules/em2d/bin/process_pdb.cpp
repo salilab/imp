@@ -204,13 +204,12 @@ int main(int argc, char **argv) {
     digest_parameter("proj_dist",vm,opt);
     em2d::RegistrationResults registration_values=
                             get_registration_values(opt,np);
+    em2d::ProjectingOptions options( apix, resolution);
     em2d::Images projections = em2d::get_projections(sps,
                                                      registration_values,
                                                      rows,
                                                      cols,
-                                                     resolution,
-                                                     apix,
-                                                     srw);
+                                                     options);
     // Normalize and add noise if requested
     np = registration_values.size(); // for the case when the values are read
     if(vm.count("SNR")) {

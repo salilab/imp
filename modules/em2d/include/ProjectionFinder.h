@@ -36,7 +36,7 @@ const unsigned int ALIGN2D_WITH_CENTERS = 2;
 
 class IMPEM2DEXPORT Em2DRestraintParameters: public ProjectingParameters {
 
-  void init() {
+  void init_defaults() {
     coarse_registration_method = ALIGN2D_PREPROCESSING;
     save_match_images = false;
     optimization_steps = 5;
@@ -54,11 +54,11 @@ public:
   double simplex_initial_length;
   double simplex_minimum_size;
 
-  Em2DRestraintParameters() {init();};
+  Em2DRestraintParameters() {init_defaults();};
 
   Em2DRestraintParameters(double ps, double res, unsigned int n_proj=20):
       ProjectingParameters(ps, res), n_projections(n_proj) {
-    init();
+    init_defaults();
   }
 
   void show(std::ostream &out = std::cout) const {
