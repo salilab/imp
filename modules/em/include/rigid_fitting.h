@@ -66,6 +66,12 @@ public:
        fs_.size()<<")"<<std::endl);
     return fs_[i].second;
   }
+  void set_score(unsigned int i,Float score) {
+    IMP_USAGE_CHECK(i<fs_.size(),"The index requested ("<<
+       i<<") in get_transformation is out of range ("<<
+       fs_.size()<<")"<<std::endl);
+    fs_[i].second=score;
+  }
   //! Add a solution to the fitting solution set
   void add_solution(const algebra::Transformation3D &t,Float score);
   //! Sort solutions by cross-correlation scores
