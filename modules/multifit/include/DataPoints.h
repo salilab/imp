@@ -30,6 +30,9 @@ typedef algebra::internal::TNT::Array1D<double> Array1DD;
 typedef std::vector<Array1DD> Array1DD_VEC;
 typedef IMP::algebra::DenseGrid3D<double> DensGrid;
 
+IMPMULTIFITEXPORT
+em::DensityMap *grid2map(const DensGrid &dg,float spacing);
+
 //density grid (to remove once DensityMap is grid3d)
 //! Holds the data points to be used in the clustering procedure
 class IMPMULTIFITEXPORT DataPoints : public Object {
