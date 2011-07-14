@@ -253,8 +253,6 @@ namespace grids {
                       << " with unbounded storage.");
     }
     unsigned int get_number_of_voxels(int) const {
-      IMP_USAGE_CHECK(false, "The method/constructor cannot be used"
-                      << " with unbounded storage.");
       return std::numeric_limits<int>::max();
     }
     static bool get_is_bounded() {
