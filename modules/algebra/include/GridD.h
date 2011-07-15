@@ -259,7 +259,6 @@ namespace grids {
       return false;
     }
 #endif
-
     bool get_has_index(const ExtendedGridIndexD<D>& ) const {
       return true;
     }
@@ -679,14 +678,8 @@ namespace grids {
                         << data_.size() << " cells set");
     //! Add a voxel to the storage, this voxel will now have a GridIndex3D
     void add_voxel(const ExtendedGridIndexD<D>& i, const VT& gi) {
-      IMP_IF_CHECK(USAGE) {
-        for (unsigned int ii=0; ii< i.get_dimension(); ++ii) {
-          IMP_USAGE_CHECK(i[ii] < int(Base::get_number_of_voxels(ii))
-                          && i[ii]>=0, "Out of grid domain "
-                          << i << " at " << ii
-                          << " on " << Base::get_number_of_voxels(ii));
-        }
-      }
+      IMP_USAGE_CHECK(Base::get_has_index(i), "Out of grid domain "
+                      << i);
       data_[GridIndexD<D>(i.begin(), i.end())]=gi;
     }
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
