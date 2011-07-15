@@ -16,7 +16,6 @@
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/algebra/Vector3D.h>
-#include <IMP/em/DensityMap.h>
 #include <IMP/algebra/VectorD.h>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
