@@ -346,6 +346,9 @@ public:
   ParticleConstIterator particles_end() const {
     return particles_.end();
   }
+  ParticlesTemp get_particles() const {
+    return ParticlesTemp(particles_.begin(), particles_.end());
+  }
 #endif
 
   /** @} */

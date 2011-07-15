@@ -147,89 +147,15 @@ class IMPEXPORT Optimizer: public Object
 
   struct FloatIndex
   {
-    /**
-       \todo mac gcc breaks on the protection and friends here
-    */
-    friend class Optimizer;
-    friend class FloatIndexIterator;
-    Model::ParticleConstIterator p_;
-    Particle::OptimizedKeyIterator fk_;
-    FloatIndex(Model::ParticleConstIterator p): p_(p){}
+    Particle* p_;
+    FloatKey fk_;
+    FloatIndex(Particle* p, FloatKey fk): p_(p), fk_(fk){}
   public:
     FloatIndex() {}
-    std::string get_string() const {
-      return (*p_)->get_name() + ": " + fk_->get_string();
-    }
   };
 
+  typedef std::vector<FloatIndex> FloatIndexes;
 
-  class FloatIndexIterator
-  {
-    Model::ParticleConstIterator pe_;
-    mutable FloatIndex i_;
-
-    void search_valid() const {
-      while (i_.fk_ == (*i_.p_)->optimized_keys_end()) {
-        if (i_.fk_ == (*i_.p_)->optimized_keys_end()) {
-          ++i_.p_;
-          if (i_.p_== pe_) return;
-          else {
-            i_.fk_= (*i_.p_)->optimized_keys_begin();
-          }
-        } else {
-          ++i_.fk_;
-        }
-      }
-      IMP_INTERNAL_CHECK(i_.p_ != pe_, "Should have just returned");
-      IMP_INTERNAL_CHECK(i_.fk_ != (*i_.p_)->optimized_keys_end(),
-                         "Broken iterator end");
-      IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
-                         "Why did the loop end?");
-    }
-    void find_next() const {
-      ++i_.fk_;
-      search_valid();
-    }
-  public:
-    FloatIndexIterator(Model::ParticleConstIterator pc,
-                       Model::ParticleConstIterator pe): pe_(pe), i_(pc) {
-      if (pc != pe) {
-        i_.fk_= (*pc)->optimized_keys_begin();
-        search_valid();
-      }
-    }
-    typedef FloatIndex value_type;
-    typedef FloatIndex& reference;
-    typedef FloatIndex* pointer;
-    typedef std::forward_iterator_tag iterator_category;
-    typedef int difference_type;
-
-    const FloatIndexIterator &operator++() {
-      find_next();
-      return *this;
-    }
-    FloatIndexIterator operator++(int) {
-      FloatIndexIterator ret=*this;
-      find_next();
-      return ret;
-    }
-    reference operator*() const {
-      IMP_INTERNAL_CHECK((*i_.p_)->get_is_optimized(*i_.fk_),
-                         "The iterator is broken");
-      return i_;
-    }
-    pointer operator->() const {
-      return &i_;
-    }
-    bool operator==(const FloatIndexIterator &o) const {
-      if (i_.p_ != o.i_.p_) return false;
-      if (i_.p_== pe_) return o.i_.p_ ==pe_;
-      else return i_.fk_ == o.i_.fk_;
-    }
-    bool operator!=(const FloatIndexIterator &o) const {
-      return !operator==(o);
-    }
-  };
 
 
   /** @name Methods for getting and setting optimized attributes
@@ -241,43 +167,36 @@ class IMPEXPORT Optimizer: public Object
       they can get and set the values and derivatives as needed.
   */
   //!@{
-
-  FloatIndexIterator float_indexes_begin() const {
-    return FloatIndexIterator(model_->particles_begin(),
-                              model_->particles_end());
-  }
-
-  FloatIndexIterator float_indexes_end() const {
-    return FloatIndexIterator(model_->particles_end(),
-                              model_->particles_end());
+  FloatIndexes get_optimized_attributes() const {
+    std::vector<FloatIndex> ret;
+    ParticlesTemp ps= get_model()->get_particles();
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      FloatKeys fks(ps[i]->float_keys_begin(), ps[i]->float_keys_end());
+      for (unsigned int j=0; j< fks.size(); ++j) {
+        if (ps[i]->get_is_optimized(fks[j])) {
+          ret.push_back(FloatIndex(ps[i], fks[j]));
+        }
+      }
+    }
+    return ret;
   }
 
   void set_value(FloatIndex fi, Float v) const {
-    IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
-                       "Out of range FloatIndex in Optimizer");
-    IMP_INTERNAL_CHECK((*fi.p_)->get_is_optimized(*fi.fk_),
+    IMP_INTERNAL_CHECK(fi.p_->get_is_optimized(fi.fk_),
                        "Keep your mits off unoptimized attributes "
-                       << (*fi.p_)->get_name() << " " << *fi.fk_ << std::endl);
-    (*fi.p_)->set_value(*fi.fk_, v);
+                       << fi.p_->get_name() << " " << fi.fk_ << std::endl);
+    fi.p_->set_value(fi.fk_, v);
   }
 
   Float get_value(FloatIndex fi) const {
-    /* cast to const needed here to help MSVC */
-    IMP_INTERNAL_CHECK(static_cast<Model::ParticleConstIterator>(fi.p_)
-                       != model_->particles_end(),
-                       "Out of range FloatIndex in Optimizer");
-    return (*fi.p_)->get_value(*fi.fk_);
+    return fi.p_->get_value(fi.fk_);
   }
 
   Float get_derivative(FloatIndex fi) const {
-    IMP_INTERNAL_CHECK(fi.p_ != model_->particles_end(),
-                       "Out of range FloatIndex in Optimizer");
-    return (*fi.p_)->get_derivative(*fi.fk_);
+    return fi.p_->get_derivative(fi.fk_);
   }
 
   //!@}
-
-  typedef std::vector<FloatIndex> FloatIndexes;
 
   double width(FloatKey k) const {
     if (!widths_.fits(k.get_index())
@@ -303,19 +222,19 @@ class IMPEXPORT Optimizer: public Object
   */
   //{@
   void set_scaled_value(FloatIndex fi, Float v) const {
-    double wid = width(*fi.fk_);
+    double wid = width(fi.fk_);
     set_value(fi, v*wid);
   }
 
   double get_scaled_value(FloatIndex fi) const  {
     double uv= get_value(fi);
-    double wid = width(*fi.fk_);
+    double wid = width(fi.fk_);
     return uv/wid;
   }
 
   double get_scaled_derivative(FloatIndex fi) const {
     double uv=get_derivative(fi);
-    double wid= width(*fi.fk_);
+    double wid= width(fi.fk_);
     return uv*wid;
   }
 

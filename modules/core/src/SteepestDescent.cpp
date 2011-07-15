@@ -30,8 +30,7 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
   // set up the indexes
 
 
-  FloatIndexes float_indexes(float_indexes_begin(),
-                             float_indexes_end());
+  FloatIndexes float_indexes=get_optimized_attributes();
   int opt_var_cnt = float_indexes.size();
 
   Float current_step_size = step_size_;

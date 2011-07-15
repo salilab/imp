@@ -277,8 +277,8 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
   int i;
   //ModelData* model_data = get_model()->get_model_data();
 
-  FloatIndexes float_indices(float_indexes_begin(),
-                             float_indexes_end());
+  FloatIndexes float_indices=get_optimized_attributes();
+
   int n = float_indices.size();
   if (n==0) {
     IMP_THROW("There are no optimizeable degrees of freedom.",
