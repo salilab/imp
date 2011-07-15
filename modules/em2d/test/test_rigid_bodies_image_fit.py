@@ -43,8 +43,12 @@ class ProjectTests(IMP.test.TestCase):
         rb_fit.set_projecting_parameters(pp)
         # set the trivial case:
         n_masks = 1
+
         for rb in components_rbs:
-            rb_fit.set_rotations(rb, [reg.get_rotation()])
+            # set as the only possible orientation the one that the rigid
+            # body already has
+            rb_fit.set_orientations(rb,
+            [rb.get_reference_frame().get_transformation_to().get_rotation()])
             self.assertEqual(rb_fit.get_number_of_masks(rb),n_masks,
                         "Incorrect number rigid body masks")
 

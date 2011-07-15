@@ -80,7 +80,7 @@ RigidBodiesImageFitRestraint::unprotected_evaluate(
 }
 
 
-void RigidBodiesImageFitRestraint::set_rotations(const core::RigidBody &rb,
+void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
                             const algebra::Rotation3Ds &rots) {
 
   IMP_LOG(IMP::TERSE, "Setting rotations for " << rb->get_name() << std::endl);
@@ -106,16 +106,37 @@ void RigidBodiesImageFitRestraint::set_rotations(const core::RigidBody &rb,
   Images masks(rots.size());
   RegistrationResults regs;
   KeyIndexMap kmap;
+//  for (unsigned int i=0; i < rots.size(); ++i) {
+//    algebra::Transformation3D T =
+//                        rb.get_reference_frame().get_transformation_to();
+//    algebra::Rotation3D R = algebra::compose(rots[i], T.get_rotation());
+//    Ints ints = get_unique_index(R);
+//    algebra::Vector2D v(0., 0.);
+//    RegistrationResult reg(rots[i], v);
+//    regs.push_back(reg);
+//    kmap.insert ( KeyIndexPair(ints, i) );
+//  }
+
+    /***************************/
+  algebra::Transformation3D T =
+                      rb.get_reference_frame().get_transformation_to();
+  // R0 is the initial rotation of the rigid body in its reference frame
+  algebra::Rotation3D R0 = T.get_rotation();
+  algebra::Rotation3D R0i = R0.get_inverse();
+
   for (unsigned int i=0; i < rots.size(); ++i) {
-    algebra::Transformation3D T =
-                        rb.get_reference_frame().get_transformation_to();
-    algebra::Rotation3D R = algebra::compose(rots[i], T.get_rotation());
-    Ints ints = get_unique_index(R);
+    // I treat the orientations in the parameter rots as absolute. The rotation
+    // specified by rots[i] is the rotation of the reference frame.
+    Ints ints = get_unique_index(rots[i]);
+    // To project from the absolute rotation given by rot[i], I have
+    // to account for the intial rotation in the reference frame, R0.
+    algebra::Rotation3D rotation_for_projecting=algebra::compose(rots[i], R0i);
     algebra::Vector2D v(0., 0.);
-    RegistrationResult reg(rots[i], v);
+    RegistrationResult reg(rotation_for_projecting, v);
     regs.push_back(reg);
     kmap.insert ( KeyIndexPair(ints, i) );
   }
+  /***************************/
 
    ProjectingOptions options(params_.pixel_size, params_.resolution);
    options.normalize = false; // Summing normalized masks does not make sense

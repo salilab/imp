@@ -76,7 +76,7 @@ public:
       the rigid body in all posible orientations is stored
     \param[in]
   */
-  void set_rotations(const core::RigidBody &rb,
+  void set_orientations(const core::RigidBody &rb,
                      const algebra::Rotation3Ds &rots);
 
   /*! Return the number of precomputed masks associated with the rigid body
