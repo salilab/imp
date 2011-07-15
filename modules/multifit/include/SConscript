@@ -4,8 +4,9 @@ files = [
 #        'random_rotations.h',
          'DataPoints.h',
          'DataPointsAssignment.h',
-         'VQClustering.h',
          'ClusteringEngine.h',
+         'VQClustering.h',
+#         'HVQClustering.h',
          'density_analysis.h',
          'fft_based_rigid_fitting.h',
          'MolCnSymmAxisDetector.h',
@@ -26,11 +27,13 @@ files = [
          'RMSDClustering.h',
          'fitting_clustering.h',
         'GeometricHash.h',
+        'TransformationClustering.h',
         'proteomics_reader.h',
         'anchors_reader.h',
         'coarse_molecule.h',
         'fitting_utils.h',
-        'RadiusOfGyrationRestraint.h'
+        'RadiusOfGyrationRestraint.h',
+#        'RigidBodiesRMSDClustering.h'
         ] \
         + SConscript('internal/SConscript')
 

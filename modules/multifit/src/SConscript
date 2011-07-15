@@ -5,6 +5,7 @@ files = [
          'DataPoints.cpp',
          'DataPointsAssignment.cpp',
          'VQClustering.cpp',
+#         'HVQClustering.cpp',
          'density_analysis.cpp',
          'fft_based_rigid_fitting.cpp',
          'MolCnSymmAxisDetector.cpp',
@@ -24,11 +25,13 @@ files = [
 #         'mc_cg_refinement.cpp'
          'RMSDClustering.cpp',
          'fitting_clustering.cpp',
+        'TransformationClustering.cpp',
         'proteomics_reader.cpp',
         'anchors_reader.cpp',
         'coarse_molecule.cpp',
         'fitting_utils.cpp',
         'RadiusOfGyrationRestraint.cpp',
+#        'RigidBodiesRMSDClustering.cpp',
         ]\
         + SConscript('internal/SConscript')
 
