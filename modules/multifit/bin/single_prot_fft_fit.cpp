@@ -17,6 +17,7 @@
 #include <IMP/multifit/fitting_clustering.h>
 #include <IMP/multifit/fft_based_rigid_fitting.h>
 #include <IMP/em/DensityMap.h>
+#include <IMP/multifit/TransformationClustering.h>
 #include <IMP/em/rigid_fitting.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/core/LeavesRefiner.h>
@@ -333,15 +334,30 @@ int main(int argc, char **argv) {
   std::cout<<"clustering solutions"<<std::endl;
   float cluster_rmsd=resolution/2; //TODO - make a parameter
   em::FittingSolutions sols_clustered;
-  multifit::fitting_clustering (mh,
-                                sols.get_solutions(),
-                                sols_clustered,
-                                dmap->get_spacing(),INT_MAX,cluster_rmsd);
-  std::cout<<"From:"<<sols.get_solutions().get_number_of_solutions()<<
-  " clustered to:"<<sols_clustered.get_number_of_solutions()<<std::endl;
-  //prepare output
-  sols_clustered.sort(true);
-  //note: these are CC scores coming from the FFT, not 1-CC.
+  em::FittingSolutions temp=sols.get_solutions();
+  algebra::Transformation3Ds sols_trans(temp.get_number_of_solutions());
+  for(int i=0;i<temp.get_number_of_solutions();i++) {
+    sols_trans[i]=temp.get_transformation(i);
+  }
+
+  algebra::Transformation3Ds sols_trans_clustered =
+     multifit::get_clustered(mh_xyz,
+                              sols_trans,
+                              dmap->get_header()->get_resolution()/2,
+                              PI*15./180,
+                              dmap->get_spacing()*2,
+                                           1);
+  std::cout<<"From:"<<temp.get_number_of_solutions()<<
+  " clustered to:"<<sols_trans_clustered.size()<<std::endl;
+  //rescore by CC scores
+  IMP_NEW(em::FitRestraint,fr,(mh_ps,dmap));
+  mdl->add_restraint(fr);
+  for(int i=0;i<sols_trans_clustered.size();i++) {
+    core::transform(rb,sols_trans_clustered[i]);
+    sols_clustered.add_solution(sols_trans_clustered[i],fr->evaluate(false));
+    core::transform(rb,sols_trans_clustered[i].get_inverse());
+  }
+  sols_clustered.sort();
   //save as multifit records
   multifit::FittingSolutionRecords final_fits;
   int num_sols=std::min(sols_clustered.get_number_of_solutions(),
