@@ -114,8 +114,8 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
     \anchor hdf5io
     Lists of assignments can be written to HDF5 data sets and read back. The
     passed list of particles is used to figure out the order when reading things
-    back, it (as well as the subset) must match across setting and getting for
-    the results to make sense.
+    back, it must match across setting and getting for the results to make
+    sense.
 
     The dimension of the data set must be 2.
     @{
