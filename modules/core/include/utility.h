@@ -24,6 +24,10 @@ IMPCORE_BEGIN_NAMESPACE
  */
 IMPCOREEXPORT algebra::VectorD<3> get_centroid(const XYZsTemp &ps);
 
+//! Get the bounding box
+/** Compute the boudning box of a set of particles
+ */
+IMPCOREEXPORT algebra::BoundingBoxD<3> get_bounding_box(const XYZRsTemp &ps);
 
 IMPCORE_END_NAMESPACE
 
