@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- IMP::rmf::create_hdf5_file() and IMP::rmf::open_hdf5_file() were added to avoid the dangerous and unclear bool paramter on the HDF5Group constructor. That constructor has been deprecated.
 - IMP::domino uses the new IMP::Model::evaluate_if_good() support to accelerate computations
 - IMP::core::MonteCarlo can use the IMP::Model::evaluate_if_good() support to more quickly reject
   very bad conformations. See IMP::core::MonteCarlo::set_maximum_difference().
