@@ -272,8 +272,11 @@ class IMPRMFEXPORT HDF5Group {
     out << "HDF5Group";
   }
 
+#ifndef IMP_DOXYGEN
   // create as root of file
   HDF5Group(std::string name, bool clear);
+#endif
+
   // create from an existing group
   HDF5Group(HDF5Group parent, std::string name);
   HDF5Group add_child(std::string name);
@@ -397,6 +400,18 @@ class IMPRMFEXPORT HDF5Group {
   IMP_HDF5_ATTRIBUTE(index, Index);
 };
 
+/** Create a new hdf5 file, clearing any existing file with the same
+    name if needed.
+*/
+inline HDF5Group create_hdf5_file(std::string name) {
+  return HDF5Group(name, true);
+}
+
+/** Open an existing hdf5 file.
+*/
+inline HDF5Group open_hdf5_file(std::string name) {
+  return HDF5Group(name, false);
+}
 
 IMP_VALUES(HDF5Group, HDF5Groups);
 

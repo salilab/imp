@@ -35,7 +35,7 @@ ds.set_log_level(IMP.SILENT)
 
 # create a database to store the results
 name=IMP.create_temporary_file_name("assignments", ".hdf5")
-root= IMP.rmf.HDF5Group(name, True)
+root= IMP.rmf.create_hdf5_file(name)
 
 # recurse down the tree getting the assignments and printing them
 def get_assignments(vertex):
