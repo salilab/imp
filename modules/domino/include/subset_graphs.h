@@ -121,8 +121,17 @@ MergeTree get_merge_tree(RestraintSet *rs,
     Compute the merge tree from a junction tree.
  */
 IMPDOMINOEXPORT
-MergeTree get_merge_tree(const SubsetGraph &junction_tree/*, int start=0*/);
+MergeTree get_merge_tree(const SubsetGraph &junction_tree);
 
+
+
+/** \see get_merge_tree(RestraintSet*,const ParticleStatesTable*)
+
+    Compute the merge tree from a junction tree, attempting to keep it fairly
+    balanced.
+ */
+IMPDOMINOEXPORT
+MergeTree get_balanced_merge_tree(const SubsetGraph &junction_tree);
 
 
 IMPDOMINOEXPORT

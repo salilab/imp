@@ -679,4 +679,108 @@ MergeTree get_merge_tree(RestraintSet *rs,
   return get_merge_tree(jt);
 }
 
+namespace {
+  typedef boost::adjacency_list<boost::listS,
+                                boost::listS,
+                                boost::undirectedS,
+                                boost::property<boost::vertex_name_t,
+                                                Subset>,
+                                boost::property<boost::edge_name_t,
+                                                int> > StableSubsetGraph;
+  typedef boost::graph_traits<StableSubsetGraph>::edge_descriptor SSGED;
+  typedef boost::graph_traits<StableSubsetGraph>::vertex_descriptor SSGVD;
+  std::vector<SSGED> get_independent_edge_set(const StableSubsetGraph &sg) {
+    std::vector<SSGED> ret;
+    compatibility::set<SSGVD> seen;
+    typedef boost::graph_traits<StableSubsetGraph>::edge_iterator EIt;
+    std::pair<EIt, EIt> ep= boost::edges(sg);
+    std::vector<SSGED> edges(ep.first, ep.second);
+    std::reverse(edges.begin(), edges.end());
+    for (unsigned int i=0; i< edges.size(); ++i) {
+      SSGVD source= boost::source(edges[i], sg);
+      SSGVD target= boost::target(edges[i], sg);
+      if (seen.find(source) == seen.end()
+          && seen.find(target) == seen.end()) {
+        ret.push_back(edges[i]);
+        seen.insert(source);
+        seen.insert(target);
+      }
+    }
+    return ret;
+  }
+  SSGVD merge_edge(SSGED e, StableSubsetGraph &jt) {
+    SSGVD source= boost::source(e, jt);
+    SSGVD target= boost::target(e, jt);
+    IMP_INTERNAL_CHECK(source!=target,
+                       "Can't handle self edges");
+    boost::property_map<StableSubsetGraph,
+                      boost::vertex_name_t>::type jt_sets
+    = boost::get(boost::vertex_name, jt);
+    typedef boost::graph_traits<StableSubsetGraph>::adjacency_iterator AIt;
+    std::pair<AIt, AIt> be  = boost::adjacent_vertices(target, jt);
+    const std::vector< SSGVD> neighbors(be.first, be.second);
+    for (unsigned int i=0; i< neighbors.size(); ++i) {
+      if (neighbors[i] != source) {
+        if (!boost::edge(source, neighbors[i], jt).second) {
+          boost::add_edge(source, neighbors[i], jt);
+        }
+      }
+    }
+    Subset u= get_union(jt_sets[source], jt_sets[target]);
+    jt_sets[source]=u;
+    boost::clear_vertex(target, jt);
+    boost::remove_vertex(target, jt);
+    return source;
+  }
+}
+
+
+MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
+  StableSubsetGraph junction_tree;
+  boost::copy_graph(jti, junction_tree);
+  MergeTree ret;
+  boost::property_map<StableSubsetGraph,
+                      boost::vertex_name_t>::type jt_sets
+    = boost::get(boost::vertex_name, junction_tree);
+  boost::property_map<MergeTree,
+                      boost::vertex_name_t>::type mt_sets
+    = boost::get(boost::vertex_name, ret);
+  compatibility::map<SSGVD,int> vertex_map;
+  for (unsigned int i=0; i< boost::num_vertices(junction_tree); ++i) {
+    SSGVD vd= boost::vertex(i, junction_tree);
+    mt_sets[boost::add_vertex(ret)]=jt_sets[vd];
+    vertex_map[vd]=i;
+  }
+  while (boost::num_vertices(junction_tree) >1) {
+    std::vector<SSGED> is= get_independent_edge_set(junction_tree);
+    IMP_INTERNAL_CHECK(is.size()>0, "No edges found");
+    for (unsigned int i=0; i< is.size(); ++i) {
+      int mn=boost::add_vertex(ret);
+      SSGVD source=boost::source(is[i], junction_tree);
+      SSGVD target=boost::target(is[i], junction_tree);
+      boost::add_edge(mn, vertex_map.find(source)->second, ret);
+      boost::add_edge(mn, vertex_map.find(target)->second, ret);
+      vertex_map.erase(source);
+      vertex_map.erase(target);
+      SSGVD jn= merge_edge(is[i], junction_tree);
+      mt_sets[mn]= jt_sets[jn];
+      vertex_map[jn]=mn;
+    }
+    //IMP::internal::show_as_graphviz(ret, std::cout);
+    /*{
+      SubsetGraph sg;
+      boost::copy_graph(junction_tree, sg);
+      IMP::internal::show_as_graphviz(sg, std::cout);
+      }*/
+  }
+  IMP_INTERNAL_CHECK(boost::num_vertices(junction_tree)==1,
+                     "There is not one vertext left");
+  IMP_INTERNAL_CHECK(get_is_merge_tree(ret,
+                                       jt_sets[*boost::vertices(junction_tree)
+                                               .first],
+                                       true),
+                     "Result is not merge tree");
+  return ret;
+}
+
 IMPDOMINO_END_NAMESPACE
