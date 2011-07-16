@@ -27,30 +27,21 @@ GSLOptimizer::~GSLOptimizer(){}
 
 gsl_vector* GSLOptimizer::get_state() const {
   gsl_vector *r= gsl_vector_alloc (get_dimension());
-  int i=0;
-  for (FloatIndexIterator it= float_indexes_begin();
-       it != float_indexes_end(); ++it) {
-    gsl_vector_set(r, i, get_scaled_value(*it));
-    ++i;
+  for (unsigned int i=0; i< fis_.size(); ++i) {
+    gsl_vector_set(r, i, get_scaled_value(fis_[i]));
   }
   return r;
 }
 
 void GSLOptimizer::update_state(gsl_vector*x) const {
-  int i=0;
-  for (FloatIndexIterator it= float_indexes_begin();
-       it != float_indexes_end(); ++it) {
-    gsl_vector_set(x, i, get_scaled_value(*it));
-    ++i;
+  for (unsigned int i=0; i< fis_.size(); ++i) {
+    gsl_vector_set(x, i, get_scaled_value(fis_[i]));
   }
 }
 
 void GSLOptimizer::write_state(const gsl_vector*x) const {
-  int i=0;
-  for (FloatIndexIterator it= float_indexes_begin();
-       it != float_indexes_end(); ++it) {
-    set_scaled_value(*it, gsl_vector_get(x, i));
-    ++i;
+  for (unsigned int i=0; i< fis_.size(); ++i) {
+    set_scaled_value(fis_[i], gsl_vector_get(x, i));
   }
 }
 
@@ -80,12 +71,9 @@ double GSLOptimizer::evaluate_derivative(const gsl_vector *v,
   }
   /* get derivatives */
   {
-    int i=0;
-    for (FloatIndexIterator it= float_indexes_begin();
-         it != float_indexes_end(); ++it) {
-      double d= get_scaled_derivative(*it);
+    for (unsigned int i=0; i< fis_.size(); ++i) {
+      double d= get_scaled_derivative(fis_[i]);
       gsl_vector_set(df, i, d);
-      ++i;
     }
   }
   return score;
@@ -95,6 +83,7 @@ double GSLOptimizer::optimize(unsigned int iter,
                               const gsl_multimin_fdfminimizer_type*t,
                               double step, double param,
                               double min_gradient) const {
+  fis_= get_optimized_attributes();
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();
   if (n ==0) {
@@ -142,6 +131,7 @@ double GSLOptimizer::optimize(unsigned int iter,
 double GSLOptimizer::optimize(unsigned int iter,
                               const gsl_multimin_fminimizer_type*t,
                               double ms, double mxs) const {
+  fis_= get_optimized_attributes();
   best_score_=std::numeric_limits<double>::max();
   unsigned int n= get_dimension();
   if (n ==0) {
