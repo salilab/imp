@@ -111,6 +111,7 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
 
 #if defined(IMP_DOMINO_USE_IMP_RMF) || defined(IMP_DOXYGEN)
 /** \name HDF5 I/O
+    \anchor hdf5io
     Lists of assignments can be written to HDF5 data sets and read back. The
     passed list of particles is used to figure out the order when reading things
     back, it (as well as the subset) must match across setting and getting for
@@ -119,12 +120,14 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
     The dimension of the data set must be 2.
     @{
 */
-/** The existing data set is completely rewritten.*/
+/** The existing data set is completely rewritten.
+    See \ref hdfio "HDF5 I/O".
+ */
 IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
                                       const Subset &s,
                                       const ParticlesTemp &all_particles,
                              rmf::HDF5DataSet<rmf::IndexTraits> dataset);
-
+/** See \ref hdfio "HDF5 I/O". */
 IMPDOMINOEXPORT AssignmentContainer*
 create_assignments_container(rmf::HDF5DataSet<rmf::IndexTraits> dataset,
                              const Subset &s,
