@@ -9,6 +9,36 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
                  markup, including geometry and score data. The format uses
                  the hdf5 library to manage the data on disk.
 
+   \section ff RMF Files
+   The RMF file format stores hierarchical data in a binary file. For example, a protein
+   can be stored as a hierarchy where the root is the whole molecule. The root has one node
+   per chain, each chain has one node per residue and each residue one node per atom. Each
+   node in the hierarchy has the appropriate data stored along with it. That is, a chain node
+   has the chain identifier, and a residue node has the type of the residue stored. Other types
+   of data can also be stored in the hierarchy such as arbitrary geometry or features which
+   describe some set of other nodes (such as marking a distance between a pair of residues
+   which had be labeled with FRET dyes).
+
+   The file can store multiple frames. Each frame has the same hierarchical structure, but
+   some aspects of the data (eg coordinates) can vary from frame to frame.
+
+   More technically, each node in the RMF
+   hierarchy has a type (IMP::rmf::NodeType), a name (IMP::rmf::NodeHandle::get_name(),
+   an ID (IMP::rmf::NodeHandle::get_id()) that is unique within the file,
+   and associated attributes. Each attribute is identified by a key (IMP::rmf::Key) and
+   consists of a unique combination of a type, category (IMP::rmf::KeyCategory) and name
+   (IMP::rmf::RootHandle::get_name(IMP::rmf::Key). On a per RMF basis, the data stored under a given
+   key can either have
+   one value for each node which has that attribute, or one value per frame per node with
+   the attribute. The methods in IMP::rmf::NodeHandle to get and set the attributes take
+   an optional frame number.
+
+   A number of data categories and values have been defined so far. New ones can be added as needed,
+   without affecting existing files. See the documentation for each data type for more information:
+   IMP::rmf::Physics, IMP::rmf::Sequence, IMP::rmf::Shape, IMP::rmf::Feature.
+
+   In addition, there are bonds associated with the root of the hierarchy. Bonds are identified by a pair of IMP::rmf::NodeHandles
+   and do not vary from frame to frame.
 
                  \section contents Contents
                  The module provides code for general purpose I/O of such data,
@@ -46,25 +76,6 @@ env.IMPModuleDoc(env.IMPModuleGetDocs(),
    \section bins Helper programs
 
    See the \\ref application_rmf_tools "RMF tools" application for helper programs.
-
-   \section ff RMF Files
-   The RMF file format stores a hierarchy of data in an HDF5 node. Each node in the RMF
-   hierarchy has a type (IMP::rmf::NodeType), a name (IMP::rmf::NodeHandle::get_name(),
-   an ID (IMP::rmf::NodeHandle::get_id()) that is unique within the file,
-   and associated attributes. Each attribute is identified by a key (IMP::rmf::Key) and
-   consists of a unique combination of a type, category (IMP::rmf::KeyCategory) and name
-   (IMP::rmf::RootHandle::get_name(IMP::rmf::Key). On a per RMF basis, the data stored under a given
-   key can either have
-   one value for each node which has that attribute, or one value per frame per node with
-   the attribute. The methods in IMP::rmf::NodeHandle to get and set the attributes take
-   an optional frame number.
-
-   A number of data categories and values have been defined so far. New ones can be added as needed,
-   without affecting existing files. See the documentation for each data type for more information:
-   IMP::rmf::Physics, IMP::rmf::Sequence, IMP::rmf::Shape, IMP::rmf::Feature.
-
-   In addition, there are bonds associated with the root of the hierarchy. Bonds are identified by a pair of IMP::rmf::NodeHandles.
-
 
    \section rmf_hdf5 RMF and HDF5
    The RMF data is stored in a single HDF Group. As a result, one could easily put multiple RMF
