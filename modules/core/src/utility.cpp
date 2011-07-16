@@ -18,4 +18,14 @@ algebra::VectorD<3> get_centroid(const XYZsTemp &ps) {
  return cen/ps.size();
 }
 
+algebra::BoundingBoxD<3> get_bounding_box(const XYZRsTemp &ps) {
+  algebra::BoundingBox3D bb;
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    bb+= algebra::get_bounding_box(ps[i].get_sphere());
+  }
+  IMP_LOG(VERBOSE, "Bounding box is " << bb << std::endl);
+  return bb;
+}
+
+
 IMPCORE_END_NAMESPACE
