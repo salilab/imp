@@ -23,6 +23,7 @@ class IMPGSLEXPORT GSLOptimizer: public Optimizer
 {
   double stop_score_;
   mutable double best_score_;
+  mutable FloatIndexes fis_;
 public:
   GSLOptimizer(Model *m);
 
@@ -34,7 +35,7 @@ public:
   void set_stop_score(double d) {
     stop_score_=d;
   }
-#ifndef IMP_DOXYGEN
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
   gsl_vector* get_state() const;
   void update_state(gsl_vector *x) const;
   void write_state(const gsl_vector *x) const;
@@ -42,7 +43,8 @@ public:
   double evaluate(const gsl_vector *v) const;
   double evaluate_derivative(const gsl_vector *v, gsl_vector *df) const;
   unsigned int get_dimension() const {
-    return std::distance(float_indexes_begin(), float_indexes_end());
+    IMP_USAGE_CHECK(!fis_.empty(), "not initialized properly");
+    return fis_.size();
   }
   double optimize(unsigned int n, const gsl_multimin_fdfminimizer_type*t,
                   double step, double param, double min_gradient) const;
