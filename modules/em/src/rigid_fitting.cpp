@@ -427,12 +427,58 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
 Float compute_fitting_score(const Particles &ps,
                             DensityMap *em_map,
                             FloatKey wei_key) {
-    IMP::em::SampledDensityMap *model_dens_map =
-      new IMP::em::SampledDensityMap(*(em_map->get_header()));
-   model_dens_map->set_particles(ps,wei_key);
-   model_dens_map->resample();
-   return em::CoarseCC::calc_score(em_map, model_dens_map,
-                                 1.0,true,false);
+  //create a grid that covers both the particles and the map
+  algebra::BoundingBox3D em_bb=
+    get_bounding_box(em_map,0.);
+  algebra::BoundingBox3D union_bb=algebra::get_union(
+                             get_bounding_box(em_map,0.),
+                             core::get_bounding_box(core::XYZRsTemp(ps)));
+  em::DensityMap *union_map =
+    create_density_map(union_bb,
+                       em_map->get_spacing());
+  union_map->get_header_writable()->set_resolution(
+                           em_map->get_header()->get_resolution());
+  //create a sampled map
+  IMP_NEW(em::SampledDensityMap,model_dens_map,
+          (*(union_map->get_header())));
+  // IMP::em::SampledDensityMap *model_dens_map =
+    //   new IMP::em::SampledDensityMap(*(em_map->get_header()));
+  model_dens_map->set_particles(ps,wei_key);
+  model_dens_map->resample();
+  //extend the density map to the new dimentions (use the union map)
+  union_map->reset_data();
+  const DensityHeader *uheader = union_map->get_header();
+  int onx=em_map->get_header()->get_nx();
+  int ony=em_map->get_header()->get_ny();
+  int onz=em_map->get_header()->get_nz();
+  int oz_temp,ozy_temp;
+  int uz_temp,uzy_temp;
+  int uz_start,uy_start,ux_start;
+  int uz_end,uy_end,ux_end;
+  ux_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),0);
+  uy_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),1);
+  uz_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),2);
+  ux_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),0);
+  uy_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),1);
+  uz_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),2);
+  for(int iz=uz_start;iz<uz_end;iz++){ //z slowest
+    uz_temp = iz*uheader->get_nx()*uheader->get_ny();
+    oz_temp = (iz-uz_start)*onx*ony;
+    for(int iy=uy_start;iy<uy_end;iy++){
+      uzy_temp = uz_temp+iy*uheader->get_nx();
+      ozy_temp = oz_temp+(iy-uy_start)*onx;
+      for(int ix=ux_start;ix<ux_end;ix++){
+        union_map->set_value(uzy_temp+ix,
+                             em_map->get_value(ozy_temp+ix-ux_start));
+      }
+    }
+  }
+  union_map->calcRMS();
+  model_dens_map->calcRMS();
+  write_map(model_dens_map,"temp1.mrc");
+  write_map(union_map,"temp2.mrc");
+  return em::CoarseCC::calc_score(union_map, model_dens_map,
+                                  1.0,true,false);
 }
 
 
