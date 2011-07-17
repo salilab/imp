@@ -197,11 +197,11 @@ IMP_BEGIN_NAMESPACE
 
 
 void Model::before_evaluate(const ScoreStatesTemp &states) const {
-  IMP_USAGE_CHECK(cur_stage_== NOT_EVALUATING,
+  IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
   CreateLogContext clc("update_score_states");
   {
-    cur_stage_= BEFORE_EVALUATE;
+    cur_stage_= internal::BEFORE_EVALUATING;
     boost::timer timer;
     for (unsigned int i=0; i< states.size(); ++i) {
       ScoreState *ss= states[i];
@@ -222,7 +222,7 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
   CreateLogContext clc("update_derivatives");
   {
     DerivativeAccumulator accum;
-    cur_stage_= AFTER_EVALUATE;
+    cur_stage_= internal::AFTER_EVALUATING;
     boost::timer timer;
     for (int i=states.size()-1; i>=0; --i) {
       ScoreState *ss= states[i];
@@ -322,7 +322,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
                           bool calc_derivs,
                           bool if_good, bool if_max, double max) {
   // make sure stage is restored on an exception
-  SetIt<Stage, NOT_EVALUATING> reset(&cur_stage_);
+  SetIt<IMP::internal::Stage, internal::NOT_EVALUATING> reset(&cur_stage_);
   IMP_CHECK_OBJECT(this);
   IMP_LOG(VERBOSE, "On restraints " << Restraints(restraints)
           << " and score states " << ScoreStates(states)
@@ -330,7 +330,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
 
   before_evaluate(states);
 
-  cur_stage_= EVALUATE;
+  cur_stage_= internal::EVALUATING;
   if (calc_derivs) {
     zero_derivatives();
   }
@@ -349,7 +349,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   }
   IMP_LOG(TERSE, "Final score: "
           << std::accumulate(ret.begin(), ret.end(), 0.0) << std::endl);
-  cur_stage_=NOT_EVALUATING;
+  cur_stage_=internal::NOT_EVALUATING;
   ++eval_count_;
   first_call_=false;
   return ret;

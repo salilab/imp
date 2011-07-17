@@ -30,9 +30,11 @@ public core::internal::CoreListPairContainer
   // for the change versions
   ListPairContainer();
 public:
+  ListPairContainer(const ParticlePairsTemp &ps);
+
   //! construct and pass an initial set of Pairs
   ListPairContainer(const ParticlePairsTemp &ps,
-                         std::string name= "ListPairContainer %1%");
+                         std::string name);
 
   ListPairContainer(Model *m,
                          std::string name= "ListPairContainer %1%");

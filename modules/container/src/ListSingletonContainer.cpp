@@ -22,6 +22,15 @@ ListSingletonContainer
   P(){}
 
 ListSingletonContainer
+::ListSingletonContainer(const ParticlesTemp &ps):
+  P(P::get_model(ps.begin(), ps.end()), "ListSingletonContainer%1%")
+{
+  IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
+                  "All particles must belong to the same model.");
+  set_particles(ps);
+}
+
+ListSingletonContainer
 ::ListSingletonContainer(const ParticlesTemp &ps,
                          std::string name):
   P(P::get_model(ps.begin(), ps.end()), name)

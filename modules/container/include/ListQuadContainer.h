@@ -30,9 +30,11 @@ public core::internal::CoreListQuadContainer
   // for the change versions
   ListQuadContainer();
 public:
+  ListQuadContainer(const ParticleQuadsTemp &ps);
+
   //! construct and pass an initial set of Quads
   ListQuadContainer(const ParticleQuadsTemp &ps,
-                         std::string name= "ListQuadContainer %1%");
+                         std::string name);
 
   ListQuadContainer(Model *m,
                          std::string name= "ListQuadContainer %1%");

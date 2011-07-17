@@ -60,7 +60,7 @@ public:
 
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
-    if (get_model()->get_stage() != Model::NOT_EVALUATING) {
+    if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {
       return get_last_update_evaluation() == get_model()->get_evaluation();
     } else {
       if (!sc_->get_is_up_to_date()) return false;

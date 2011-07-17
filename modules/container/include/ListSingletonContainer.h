@@ -30,9 +30,11 @@ public core::internal::CoreListSingletonContainer
   // for the change versions
   ListSingletonContainer();
 public:
+  ListSingletonContainer(const ParticlesTemp &ps);
+
   //! construct and pass an initial set of Singletons
   ListSingletonContainer(const ParticlesTemp &ps,
-                         std::string name= "ListSingletonContainer %1%");
+                         std::string name);
 
   ListSingletonContainer(Model *m,
                          std::string name= "ListSingletonContainer %1%");

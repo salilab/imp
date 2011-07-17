@@ -30,9 +30,11 @@ public core::internal::CoreListTripletContainer
   // for the change versions
   ListTripletContainer();
 public:
+  ListTripletContainer(const ParticleTripletsTemp &ps);
+
   //! construct and pass an initial set of Triplets
   ListTripletContainer(const ParticleTripletsTemp &ps,
-                         std::string name= "ListTripletContainer %1%");
+                         std::string name);
 
   ListTripletContainer(Model *m,
                          std::string name= "ListTripletContainer %1%");

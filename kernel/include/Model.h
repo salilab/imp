@@ -29,6 +29,12 @@ IMP_BEGIN_NAMESPACE
 
 class Particle;
 
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+namespace internal {
+  enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING};
+}
+#endif
+
 /** A structure used for returning restraint statistics from the model.*/
 class RestraintStatistics {
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
@@ -68,9 +74,6 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 class IMPEXPORT Model: public Object
 {
  public:
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  enum Stage {NOT_EVALUATING, BEFORE_EVALUATE, EVALUATE, AFTER_EVALUATE};
-#endif
 private:
   friend class Restraint;
   friend class Particle;
@@ -98,7 +101,7 @@ private:
   // basic representation
   ParticleStorage particles_;
   std::map<FloatKey, FloatRange> ranges_;
-  mutable Stage cur_stage_;
+  mutable IMP::internal::Stage cur_stage_;
   unsigned int eval_count_;
   internal::OwnerPointer<RestraintSet> rs_;
   bool first_call_;
@@ -181,11 +184,11 @@ private:
 public:
 #if !defined(IMP_DOXYGEN)
 #ifndef SWIG
-  Stage get_stage() const {
+  IMP::internal::Stage get_stage() const {
     return cur_stage_;
   }
   unsigned int get_evaluation() const {
-    IMP_USAGE_CHECK(get_stage() != NOT_EVALUATING,
+    IMP_USAGE_CHECK(get_stage() != internal::NOT_EVALUATING,
                     "Can only call get_evaluation() during evaluation");
     return eval_count_;
   }
@@ -296,7 +299,7 @@ public:
               "The particle does not belong to this model");
     IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
             << std::endl);
-    IMP_INTERNAL_CHECK(get_stage() == Model::NOT_EVALUATING,
+    IMP_INTERNAL_CHECK(get_stage() == IMP::internal::NOT_EVALUATING,
                "Particles cannot be removed from the model during evaluation");
     particles_.erase(p->ps_->iterator_);
     p->m_=NULL;
@@ -488,10 +491,11 @@ IMP_OUTPUT_OPERATOR(Model);
 // these require Model be defined
 
 inline void Particle::assert_values_mutable() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::EVALUATE,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() != IMP::internal::EVALUATING,
              "Restraints are not allowed to change attribute values during "
              << "evaluation.");
-  IMP_INTERNAL_CHECK(get_model()->get_stage() != Model::AFTER_EVALUATE,
+  IMP_INTERNAL_CHECK(get_model()->get_stage()
+                     != IMP::internal::AFTER_EVALUATING,
              "ScoreStates are not allowed to change attribute values after "
              << "evaluation.");
 #if IMP_BUILD < IMP_FAST
@@ -510,22 +514,22 @@ inline void Particle::assert_values_readable() const {
 }
 
 inline void Particle::assert_can_change_optimization() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::NOT_EVALUATING,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
              "The set of optimized attributes cannot be changed during "
              << "evaluation.");
 }
 
 inline void Particle::assert_can_change_derivatives() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::EVALUATE
-             || get_model()->get_stage() == Model::AFTER_EVALUATE
-             || get_model()->get_stage() == Model::NOT_EVALUATING,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::EVALUATING
+             || get_model()->get_stage() == IMP::internal::AFTER_EVALUATING
+             || get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
              "Derivatives can only be changed during restraint "
              << "evaluation and score state after evaluation calls.");
 }
 
 inline void Particle::assert_valid_derivatives() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == Model::AFTER_EVALUATE
-             || get_model()->get_stage() == Model::NOT_EVALUATING,
+  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::AFTER_EVALUATING
+             || get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
              "Derivatives can only be changed during restraint "
              << "evaluation and score state after evaluation calls.");
 }
