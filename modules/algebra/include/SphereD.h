@@ -60,6 +60,22 @@ public:
   void _set_radius(double d) {
     radius_=d;
   }
+  double &operator[](unsigned int i) {
+    IMP_USAGE_CHECK(i<D+1, "Out of range");
+    if (i <D) {
+      return center_[i];
+    } else {
+      return radius_;
+    }
+  }
+  const double operator[](unsigned int i) const {
+    IMP_USAGE_CHECK(i<D+1, "Out of range");
+    if (i <D) {
+      return center_[i];
+    } else {
+      return radius_;
+    }
+  }
 #endif
 #endif
   unsigned int get_dimension() const {
