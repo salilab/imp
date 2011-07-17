@@ -52,6 +52,7 @@ Particles density2particles(DensityMap *dmap, Float threshold,
           y = dmap->get_location_in_dim_by_voxel(ind,1);
           z = dmap->get_location_in_dim_by_voxel(ind,2);
           Voxel::setup_particle(p,IMP::algebra::VectorD<3>(x,y,z),r,val);
+          atom::Mass::setup_particle(p,val);
           ps.push_back(p);
         }
       }//k
