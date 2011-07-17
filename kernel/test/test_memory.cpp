@@ -2,7 +2,7 @@
  *   Copyright 2007-2011 IMP Inventors. All rights reserved
  */
 #include <IMP/Model.h>
-
+#include <IMP/Particle.h>
 int main(int, char*[]) {
   IMP::set_log_level(IMP::MEMORY);
   IMP_NEW(IMP::Model, m, ());
