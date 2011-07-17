@@ -35,10 +35,22 @@ void DensityDataPoints::set_density(em::DensityMap *dmap) {
   dens_.reset(new DensGrid(dmap->get_spacing(),bb));
   em::emreal* d_data = dmap->get_data();
   algebra::Vector3D loc;
-  std::cout<<"number of voxels:"<<dmap->get_number_of_voxels()<<std::endl;
   for(long l=0;l<dmap->get_number_of_voxels();l++) {
     loc = dmap->get_location_by_voxel(l);
     (*dens_)[dens_->get_nearest_index(loc)]=d_data[l];
+  }
+}
+
+void DensityDataPoints::set_density(const DensGrid &dens) {
+  algebra::BoundingBox3D bb = dens.get_bounding_box();
+  float spacing = dens.get_unit_cell()[0];
+  dens_.reset(new DensGrid(spacing,bb));
+  //copy data
+  DensGrid::ExtendedIndex lb = dens.get_extended_index(bb.get_corner(0)),
+      ub = dens.get_extended_index(bb.get_corner(1));
+  for (DensGrid::IndexIterator it= dens.indexes_begin(lb,ub);
+       it != dens.indexes_end(lb, ub); ++it) {
+    (*dens_)[*it]=dens[*it];
   }
 }
 
@@ -76,6 +88,12 @@ void DensityDataPoints::populate_data() {
        it != dens_->indexes_end(lb, ub); ++it) {
     if ((*dens_)[*it]>threshold_) {vecs.push_back(dens_->get_center(*it));}
   }
+  /*std::cout<<
+           "Number of data points were found above the input threshold ("<<
+    threshold_<<") is "<<vecs.size()<<" . The maximum value is"<<max_value_<<
+            " and the minimum value is : " << min_value_<<std::endl;
+  */
+
   IMP_INTERNAL_CHECK(vecs.size()>0,
            "No data points were found above the input threshold ("<<
             threshold_<<"). The maximum value is"<<max_value_<<
@@ -83,10 +101,10 @@ void DensityDataPoints::populate_data() {
   IMP_LOG(VERBOSE,"Number of data points:"<<vecs.size()<<std::endl);
   XYZDataPoints::populate_data_points(vecs);
 }
-DensityDataPoints::DensityDataPoints(DensGrid &dens,
+DensityDataPoints::DensityDataPoints(const DensGrid &dens,
                                      float density_threshold)
   : XYZDataPoints() {
-  dens_.reset(new DensGrid(dens));
+  set_density(dens);
   threshold_ = density_threshold;
   set_max_min_density_values();
   populate_data();

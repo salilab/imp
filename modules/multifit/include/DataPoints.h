@@ -97,7 +97,7 @@ class IMPMULTIFITEXPORT DensityDataPoints: public XYZDataPoints {
 public:
   DensityDataPoints(em::DensityMap *dens,
                     float density_threshold);
-  DensityDataPoints(DensGrid &dens,
+  DensityDataPoints(const DensGrid &dens,
                     float density_threshold);
   Array1DD sample() const;
 
@@ -109,6 +109,7 @@ protected:
   void populate_data();
   void set_max_min_density_values();
   void set_density(em::DensityMap *d);
+  void set_density(const DensGrid &dens);
   //TODO - change back once DensityMap will be Grid3D
   //Pointer<DensGrid> dens_; /// TODO - make the class an object
   boost::scoped_ptr<DensGrid> dens_;
