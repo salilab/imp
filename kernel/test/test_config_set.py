@@ -85,7 +85,7 @@ class ParticleTests(IMP.test.TestCase):
         m= IMP.Model()
         ps=[IMP.Particle(m), IMP.Particle(m), IMP.Particle(m)]
         self._add_attributes(ps[0], 0, ps[1])
-        self._add_attributes(ps[1], 1, ps[2])
+        self._add_attributes(ps[1], 1, ps[1])
         self._add_attributes(ps[2], 2, ps[0])
         m.remove_particle(ps[2])
         return (m, ps)
@@ -94,11 +94,11 @@ class ParticleTests(IMP.test.TestCase):
         (m, ps)= self._make_things()
         cs= IMP.ConfigurationSet(m)
         self._test_base(ps[0], 0, ps[1])
-        self._test_base(ps[1], 1, ps[2])
+        self._test_base(ps[1], 1, ps[1])
         #no-op
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
-        self._test_base(ps[1], 1, ps[2])
+        self._test_base(ps[1], 1, ps[1])
     def test_scramble(self):
         """Testing restore with ConfigurationSet"""
         (m, ps)= self._make_things()
@@ -108,23 +108,27 @@ class ParticleTests(IMP.test.TestCase):
         self._scramble(ps[1])
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
-        self._test_base(ps[1], 1, ps[2])
+        self._test_base(ps[1], 1, ps[1])
     def test_diff(self):
         """Testing restore a know state with ConfigurationSet"""
         (m, ps)= self._make_things()
         cs= IMP.ConfigurationSet(m)
         #self._test_base(ps[2], 2, ps[0])
-        self._set_attributes(ps[0], 0, ps[2])
+        self._set_attributes(ps[0], 0, ps[1])
         self._set_attributes(ps[1], 1, ps[0])
         cs.save_configuration()
         self._scramble(ps[0])
         self._scramble(ps[1])
+        print "load 0"
         cs.load_configuration(0)
-        self._test_set(ps[0], 0, ps[2])
+        print "testing"
+        self._test_set(ps[0], 0, ps[1])
+        print "testing"
         self._test_set(ps[1], 1, ps[0])
+        print "load -1"
         cs.load_configuration(-1)
         self._test_base(ps[0], 0, ps[1])
-        self._test_base(ps[1], 1, ps[2])
+        self._test_base(ps[1], 1, ps[1])
         for p in m.get_particles():
             p.show()
 
