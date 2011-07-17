@@ -24845,3 +24845,2938 @@ xyz particle huge,            3.96e+02,           6.3e+11
 xyz vector huge,              8.48e+01,           6.3e+11
 xyz struct huge,              8.48e+01,           6.3e+11
 xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/24/11
+mode,fast
+bd custom,                    2.79e-01,           5.4e+08
+bd scores,                    2.68e-01,           6.0e+08
+bd generic,                   6.02e-01,           3.0e+08
+cpf grid 1000 0.1,            2.00e-03,           0.0e+00
+cpf grid 1000 0.5,            9.43e-03,           1.0e+05
+cpf grid 1000 5,              2.00e-02,           1.9e+07
+cpf grid 10000 0.1,           2.23e-02,           3.4e+04
+cpf grid 10000 0.5,           8.62e-02,           1.0e+06
+cpf grid 10000 5,             1.48e+00,           3.2e+07
+cpf nn 1000 0.1,              1.58e-03,           7.9e+03
+bcpf nn 1000 0.1,             1.66e-03,           2.4e+04
+cpf nn 1000 0.5,              2.60e-03,           8.9e+05
+bcpf nn 1000 0.5,             2.56e-03,           1.7e+06
+cpf nn 1000 5,                2.56e-01,           3.1e+06
+bcpf nn 1000 5,               2.71e-01,           6.3e+06
+cpf nn 10000 0.1,             2.10e-02,           9.3e+04
+bcpf nn 10000 0.1,            2.14e-02,           1.8e+05
+cpf nn 10000 0.5,             1.15e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.24e-01,           3.8e+06
+cpf box 1000 0.1,             4.55e-04,           2.2e+04
+bcpf box 1000 0.1,            8.98e-04,           1.9e+04
+cpf box 1000 0.5,             1.19e-03,           7.5e+05
+bcpf box 1000 0.5,            2.34e-03,           7.4e+05
+cpf box 1000 5,               1.36e-02,           2.7e+07
+bcpf box 1000 5,              3.04e-02,           2.6e+07
+cpf box 10000 0.1,            1.59e-02,           4.7e+04
+bcpf box 10000 0.1,           3.19e-02,           4.9e+04
+cpf box 10000 0.5,            4.02e-02,           2.3e+06
+bcpf box 10000 0.5,           8.16e-02,           2.2e+06
+cpf box 10000 5,              1.35e+00,           3.1e+07
+bcpf box 10000 5,             2.84e+00,           3.1e+07
+cpf quadratic 1000 0.1,       3.45e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      8.01e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.45e-03,           2.0e+05
+bcpf quadratic 1000 0.5,      9.73e-03,           1.9e+05
+cpf quadratic 1000 5,         1.72e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.59e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.64e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     8.37e-01,           1.8e+03
+cpf quadratic 10000 0.5,      4.62e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.01e+00,           2.2e+05
+cpf quadratic 10000 5,        2.08e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.41e+00,           3.2e+07
+connectivity slow,            8.12e-01,           3.8e-02
+connectivity fast,            1.23e-02,           2.5e+02
+connectivity fast mst,        1.54e-02,           1.3e+00
+Number of solutions:1
+Number of particles:80
+0
+domino small,                 1.63e+01,           1.0e+00
+container direct list in 4950, 6.40e-05,          0.0e+00
+container ssps direct list in 4950, 6.49e-05,     0.0e+00
+container ssps direct call list in 4950, 3.11e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.92e-05, 0.0e+00
+container direct bind list in 4950, 5.93e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      9.02e-05,           0.0e+00
+container direct list in 499500, 7.31e-03,        0.0e+00
+container ssps direct list in 499500, 7.29e-03,   0.0e+00
+container ssps direct call list in 499500, 4.49e-03, 0.0e+00
+container ssps direct bind list in 499500, 6.89e-03, 0.0e+00
+container direct bind list in 499500, 6.87e-03,   0.0e+00
+container list in 499500,     4.89e-03,           0.0e+00
+container list out 499500,    1.05e-02,           0.0e+00
+container direct set in 2450, 3.08e-05,           0.0e+00
+container ssps direct set in 2450, 3.11e-05,      0.0e+00
+container ssps direct call set in 2450, 1.59e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.82e-05, 0.0e+00
+container direct bind set in 2450, 2.83e-05,      0.0e+00
+container set in 2450,        1.82e-05,           0.0e+00
+container set out 2450,       8.70e-05,           0.0e+00
+container direct set in 249500, 3.28e-03,         0.0e+00
+container ssps direct set in 249500, 3.30e-03,    0.0e+00
+container ssps direct call set in 249500, 1.92e-03, 0.0e+00
+container ssps direct bind set in 249500, 3.07e-03, 0.0e+00
+container direct bind set in 249500, 3.06e-03,    0.0e+00
+container set in 249500,      2.05e-03,           0.0e+00
+container set out 249500,     9.29e-03,           0.0e+00
+changing nonincremental,      1.18e-05,           3.2e+08
+changing incremental,         1.95e-05,           3.2e+08
+changing nonincremental score, 1.72e-05,          5.8e+08
+changing incremental score,   3.26e-05,           3.1e+08
+knn cgal uniform 10 0,        2.54e-05,           5.7e+05
+knn cgal uniform 10 0.1,      2.44e-05,           5.0e+05
+knn cgal uniform 10 0.5,      2.34e-05,           5.9e+05
+knn cgal uniform 100 0,       5.14e-04,           2.5e+05
+knn cgal uniform 100 0.1,     4.96e-04,           2.4e+05
+knn cgal uniform 100 0.5,     4.41e-04,           2.5e+05
+knn cgal uniform 1000 0,      8.33e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.49e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.31e-03,           2.0e+05
+knn linear uniform 10 0,      4.65e-06,           2.9e+06
+knn linear uniform 10 0.1,    4.86e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.57e-06,           2.4e+06
+knn linear uniform 100 0,     1.16e-04,           9.6e+05
+knn linear uniform 100 0.1,   1.14e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.53e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.56e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.53e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.47e-01,           1.7e+07
+col box 10000 0.5,            3.86e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.99e-01,           1.7e+07
+rigid quadratic 10,           2.85e-02,           0.0e+00
+rigid quadratic 30,           2.29e-02,           0.0e+00
+rigid hierarchy 10,           3.35e-01,           0.0e+00
+rigid hierarchy 30,           1.62e-01,           0.0e+00
+rotation (cache),             1.30e-04,           -1.8e+06
+rotation (nocache),           1.81e-04,           -1.5e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            3.98e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/25/11
+mode,fast
+bd custom,                    2.77e-01,           6.0e+08
+bd scores,                    2.67e-01,           6.0e+08
+bd generic,                   5.82e-01,           3.0e+08
+cpf grid 1000 0.1,            1.97e-03,           2.5e+03
+cpf grid 1000 0.5,            9.40e-03,           9.7e+04
+cpf grid 1000 5,              2.02e-02,           2.0e+07
+cpf grid 10000 0.1,           2.23e-02,           3.5e+04
+cpf grid 10000 0.5,           8.50e-02,           1.1e+06
+cpf grid 10000 5,             1.48e+00,           3.2e+07
+cpf nn 1000 0.1,              1.54e-03,           1.5e+04
+bcpf nn 1000 0.1,             1.66e-03,           1.8e+04
+cpf nn 1000 0.5,              2.62e-03,           8.3e+05
+bcpf nn 1000 0.5,             2.56e-03,           1.6e+06
+cpf nn 1000 5,                2.47e-01,           3.4e+06
+bcpf nn 1000 5,               2.63e-01,           6.2e+06
+cpf nn 10000 0.1,             2.07e-02,           8.9e+04
+bcpf nn 10000 0.1,            2.07e-02,           1.8e+05
+cpf nn 10000 0.5,             1.16e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.11e-01,           4.1e+06
+cpf box 1000 0.1,             4.51e-04,           1.7e+04
+bcpf box 1000 0.1,            8.74e-04,           1.7e+04
+cpf box 1000 0.5,             1.21e-03,           7.8e+05
+bcpf box 1000 0.5,            2.33e-03,           7.4e+05
+cpf box 1000 5,               1.45e-02,           2.8e+07
+bcpf box 1000 5,              3.07e-02,           2.6e+07
+cpf box 10000 0.1,            1.60e-02,           4.9e+04
+bcpf box 10000 0.1,           3.18e-02,           4.8e+04
+cpf box 10000 0.5,            3.97e-02,           2.3e+06
+bcpf box 10000 0.5,           8.19e-02,           2.2e+06
+cpf box 10000 5,              1.34e+00,           3.1e+07
+bcpf box 10000 5,             2.81e+00,           3.1e+07
+cpf quadratic 1000 0.1,       3.46e-03,           2.9e+03
+bcpf quadratic 1000 0.1,      7.89e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.42e-03,           2.0e+05
+bcpf quadratic 1000 0.5,      9.73e-03,           1.9e+05
+cpf quadratic 1000 5,         1.76e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.62e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.63e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     8.07e-01,           2.6e+03
+cpf quadratic 10000 0.5,      4.57e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.90e-01,           2.2e+05
+cpf quadratic 10000 5,        2.15e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.35e+00,           3.1e+07
+connectivity slow,            8.10e-01,           1.7e-02
+connectivity fast,            1.22e-02,           2.2e+02
+connectivity fast mst,        1.53e-02,           1.4e+00
+Number of solutions:1
+Number of particles:80
+0
+domino small,                 1.63e+01,           1.0e+00
+container direct list in 4950, 6.11e-05,          0.0e+00
+container ssps direct list in 4950, 6.15e-05,     0.0e+00
+container ssps direct call list in 4950, 3.17e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.62e-05, 0.0e+00
+container direct bind list in 4950, 5.62e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      8.86e-05,           0.0e+00
+container direct list in 499500, 7.29e-03,        9.5e-01
+container ssps direct list in 499500, 7.27e-03,   9.5e-01
+container ssps direct call list in 499500, 4.52e-03, 1.5e+00
+container ssps direct bind list in 499500, 6.89e-03, 1.0e+00
+container direct bind list in 499500, 6.87e-03,   1.0e+00
+container list in 499500,     4.89e-03,           1.4e+00
+container list out 499500,    1.04e-02,           6.7e-01
+container direct set in 2450, 3.08e-05,           0.0e+00
+container ssps direct set in 2450, 3.09e-05,      0.0e+00
+container ssps direct call set in 2450, 1.63e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.81e-05, 0.0e+00
+container direct bind set in 2450, 2.82e-05,      0.0e+00
+container set in 2450,        1.81e-05,           0.0e+00
+container set out 2450,       9.65e-05,           0.0e+00
+container direct set in 249500, 3.29e-03,         0.0e+00
+container ssps direct set in 249500, 3.30e-03,    0.0e+00
+container ssps direct call set in 249500, 1.91e-03, 0.0e+00
+container ssps direct bind set in 249500, 3.06e-03, 0.0e+00
+container direct bind set in 249500, 3.06e-03,    0.0e+00
+container set in 249500,      2.05e-03,           0.0e+00
+container set out 249500,     9.29e-03,           0.0e+00
+changing nonincremental,      1.27e-05,           3.0e+08
+changing incremental,         1.95e-05,           3.0e+08
+changing nonincremental score, 1.75e-05,          5.7e+08
+changing incremental score,   3.24e-05,           3.1e+08
+knn cgal uniform 10 0,        2.55e-05,           3.1e+05
+knn cgal uniform 10 0.1,      2.54e-05,           3.4e+05
+knn cgal uniform 10 0.5,      2.00e-05,           6.7e+05
+knn cgal uniform 100 0,       5.32e-04,           2.1e+05
+knn cgal uniform 100 0.1,     5.23e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.56e-04,           2.6e+05
+knn cgal uniform 1000 0,      8.20e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.81e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.36e-03,           2.0e+05
+knn linear uniform 10 0,      4.76e-06,           2.6e+06
+knn linear uniform 10 0.1,    4.65e-06,           1.9e+06
+knn linear uniform 10 0.5,    4.70e-06,           2.3e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.11e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.13e-04,           1.1e+06
+knn linear uniform 1000 0,    6.54e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.58e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.56e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.6e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.60e-01,           1.5e+07
+col box 10000 0.5,            3.81e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.96e-01,           1.7e+07
+rigid quadratic 10,           2.84e-02,           0.0e+00
+rigid quadratic 30,           2.30e-02,           0.0e+00
+rigid hierarchy 10,           3.43e-01,           0.0e+00
+rigid hierarchy 30,           1.74e-01,           0.0e+00
+rotation (cache),             1.30e-04,           2.1e+05
+rotation (nocache),           1.81e-04,           -6.6e+04
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            3.99e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/26/11
+mode,fast
+bd custom,                    2.79e-01,           5.4e+08
+bd scores,                    2.70e-01,           6.0e+08
+bd generic,                   5.80e-01,           3.0e+08
+cpf grid 1000 0.1,            1.97e-03,           5.1e+03
+cpf grid 1000 0.5,            9.19e-03,           9.9e+04
+cpf grid 1000 5,              2.02e-02,           1.9e+07
+cpf grid 10000 0.1,           2.22e-02,           3.3e+04
+cpf grid 10000 0.5,           8.62e-02,           1.1e+06
+cpf grid 10000 5,             1.48e+00,           3.2e+07
+cpf nn 1000 0.1,              1.54e-03,           9.7e+03
+bcpf nn 1000 0.1,             1.65e-03,           2.0e+04
+cpf nn 1000 0.5,              2.63e-03,           8.8e+05
+bcpf nn 1000 0.5,             2.60e-03,           1.7e+06
+cpf nn 1000 5,                2.38e-01,           3.3e+06
+bcpf nn 1000 5,               2.62e-01,           6.2e+06
+cpf nn 10000 0.1,             2.19e-02,           8.8e+04
+bcpf nn 10000 0.1,            2.10e-02,           1.8e+05
+cpf nn 10000 0.5,             1.15e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.22e-01,           3.7e+06
+cpf box 1000 0.1,             4.63e-04,           2.7e+04
+bcpf box 1000 0.1,            8.77e-04,           2.6e+04
+cpf box 1000 0.5,             1.22e-03,           7.4e+05
+bcpf box 1000 0.5,            2.36e-03,           8.2e+05
+cpf box 1000 5,               1.40e-02,           2.8e+07
+bcpf box 1000 5,              3.05e-02,           2.6e+07
+cpf box 10000 0.1,            1.60e-02,           5.2e+04
+bcpf box 10000 0.1,           3.20e-02,           4.8e+04
+cpf box 10000 0.5,            4.02e-02,           2.3e+06
+bcpf box 10000 0.5,           8.16e-02,           2.2e+06
+cpf box 10000 5,              1.36e+00,           3.2e+07
+bcpf box 10000 5,             2.85e+00,           3.1e+07
+cpf quadratic 1000 0.1,       3.50e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      7.79e-03,           1.9e+03
+cpf quadratic 1000 0.5,       4.39e-03,           2.2e+05
+bcpf quadratic 1000 0.5,      9.65e-03,           1.9e+05
+cpf quadratic 1000 5,         1.70e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.64e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.74e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     8.18e-01,           2.5e+03
+cpf quadratic 10000 0.5,      4.60e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.11e+00,           2.2e+05
+cpf quadratic 10000 5,        2.08e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.30e+00,           3.2e+07
+connectivity slow,            8.12e-01,           2.3e-02
+connectivity fast,            1.23e-02,           2.2e+02
+connectivity fast mst,        1.54e-02,           1.2e+00
+Number of solutions:1
+Number of particles:80
+0
+domino small,                 1.63e+01,           1.0e+00
+container direct list in 4950, 6.06e-05,          0.0e+00
+container ssps direct list in 4950, 6.08e-05,     0.0e+00
+container ssps direct call list in 4950, 3.17e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.55e-05, 0.0e+00
+container direct bind list in 4950, 5.55e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.85e-05,           0.0e+00
+container direct list in 499500, 7.29e-03,        2.4e+00
+container ssps direct list in 499500, 7.29e-03,   2.4e+00
+container ssps direct call list in 499500, 4.55e-03, 3.8e+00
+container ssps direct bind list in 499500, 6.89e-03, 2.5e+00
+container direct bind list in 499500, 6.91e-03,   2.5e+00
+container list in 499500,     4.87e-03,           3.6e+00
+container list out 499500,    1.05e-02,           1.7e+00
+container direct set in 2450, 3.05e-05,           0.0e+00
+container ssps direct set in 2450, 3.08e-05,      0.0e+00
+container ssps direct call set in 2450, 1.60e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.78e-05, 0.0e+00
+container direct bind set in 2450, 2.77e-05,      0.0e+00
+container set in 2450,        1.83e-05,           0.0e+00
+container set out 2450,       8.72e-05,           0.0e+00
+container direct set in 249500, 3.26e-03,         0.0e+00
+container ssps direct set in 249500, 3.29e-03,    0.0e+00
+container ssps direct call set in 249500, 1.91e-03, 0.0e+00
+container ssps direct bind set in 249500, 3.04e-03, 0.0e+00
+container direct bind set in 249500, 3.04e-03,    0.0e+00
+container set in 249500,      2.06e-03,           0.0e+00
+container set out 249500,     9.29e-03,           0.0e+00
+changing nonincremental,      1.18e-05,           3.2e+08
+changing incremental,         1.98e-05,           3.2e+08
+changing nonincremental score, 1.69e-05,          5.9e+08
+changing incremental score,   3.23e-05,           3.1e+08
+knn cgal uniform 10 0,        2.36e-05,           4.1e+05
+knn cgal uniform 10 0.1,      2.59e-05,           4.4e+05
+knn cgal uniform 10 0.5,      2.16e-05,           5.1e+05
+knn cgal uniform 100 0,       5.63e-04,           2.1e+05
+knn cgal uniform 100 0.1,     4.84e-04,           2.3e+05
+knn cgal uniform 100 0.5,     4.44e-04,           3.0e+05
+knn cgal uniform 1000 0,      7.99e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.40e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.49e-03,           1.9e+05
+knn linear uniform 10 0,      4.63e-06,           1.9e+06
+knn linear uniform 10 0.1,    4.69e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.94e-06,           2.5e+06
+knn linear uniform 100 0,     1.14e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.15e-04,           1.2e+06
+knn linear uniform 100 0.5,   1.15e-04,           1.2e+06
+knn linear uniform 1000 0,    6.54e-03,           2.0e+05
+knn linear uniform 1000 0.1,  6.53e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.53e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.55e-01,           1.5e+07
+col box 10000 0.5,            3.86e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.94e-01,           1.7e+07
+rigid quadratic 10,           2.85e-02,           0.0e+00
+rigid quadratic 30,           2.25e-02,           0.0e+00
+rigid hierarchy 10,           3.33e-01,           0.0e+00
+rigid hierarchy 30,           1.66e-01,           0.0e+00
+rotation (cache),             1.29e-04,           -9.5e+05
+rotation (nocache),           1.81e-04,           -3.4e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.59e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            3.99e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/27/11
+mode,fast
+bd custom,                    2.80e-01,           5.4e+08
+bd scores,                    2.68e-01,           6.0e+08
+bd generic,                   5.80e-01,           3.0e+08
+cpf grid 1000 0.1,            1.97e-03,           3.8e+03
+cpf grid 1000 0.5,            9.26e-03,           9.7e+04
+cpf grid 1000 5,              2.02e-02,           2.0e+07
+cpf grid 10000 0.1,           2.21e-02,           3.3e+04
+cpf grid 10000 0.5,           8.62e-02,           1.1e+06
+cpf grid 10000 5,             1.47e+00,           3.1e+07
+cpf nn 1000 0.1,              1.54e-03,           1.3e+04
+bcpf nn 1000 0.1,             1.67e-03,           1.3e+04
+cpf nn 1000 0.5,              2.62e-03,           8.2e+05
+bcpf nn 1000 0.5,             2.59e-03,           1.7e+06
+cpf nn 1000 5,                2.46e-01,           3.3e+06
+bcpf nn 1000 5,               2.67e-01,           6.2e+06
+cpf nn 10000 0.1,             2.23e-02,           9.0e+04
+bcpf nn 10000 0.1,            2.10e-02,           1.8e+05
+cpf nn 10000 0.5,             1.14e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.25e-01,           3.5e+06
+cpf box 1000 0.1,             4.84e-04,           5.2e+03
+bcpf box 1000 0.1,            8.61e-04,           2.6e+04
+cpf box 1000 0.5,             1.21e-03,           7.9e+05
+bcpf box 1000 0.5,            2.30e-03,           7.3e+05
+cpf box 1000 5,               1.41e-02,           2.9e+07
+bcpf box 1000 5,              3.09e-02,           2.6e+07
+cpf box 10000 0.1,            1.59e-02,           4.5e+04
+bcpf box 10000 0.1,           3.19e-02,           4.6e+04
+cpf box 10000 0.5,            3.98e-02,           2.3e+06
+bcpf box 10000 0.5,           8.16e-02,           2.2e+06
+cpf box 10000 5,              1.37e+00,           3.2e+07
+bcpf box 10000 5,             2.88e+00,           3.2e+07
+cpf quadratic 1000 0.1,       3.56e-03,           2.8e+03
+bcpf quadratic 1000 0.1,      7.84e-03,           3.5e+03
+cpf quadratic 1000 0.5,       4.40e-03,           1.9e+05
+bcpf quadratic 1000 0.5,      9.62e-03,           1.9e+05
+cpf quadratic 1000 5,         1.70e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.61e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.61e-01,           2.0e+03
+bcpf quadratic 10000 0.1,     8.18e-01,           2.5e+03
+cpf quadratic 10000 0.5,      4.65e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.01e+00,           2.2e+05
+cpf quadratic 10000 5,        2.07e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.31e+00,           3.1e+07
+connectivity slow,            8.12e-01,           2.1e-02
+connectivity fast,            1.23e-02,           1.9e+02
+connectivity fast mst,        1.52e-02,           1.4e+00
+Number of solutions:1
+Number of particles:80
+0
+domino small,                 1.63e+01,           1.0e+00
+container direct list in 4950, 6.13e-05,          0.0e+00
+container ssps direct list in 4950, 6.14e-05,     0.0e+00
+container ssps direct call list in 4950, 3.13e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.61e-05, 0.0e+00
+container direct bind list in 4950, 5.61e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      8.94e-05,           0.0e+00
+container direct list in 499500, 7.31e-03,        1.8e-01
+container ssps direct list in 499500, 7.31e-03,   1.8e-01
+container ssps direct call list in 499500, 4.50e-03, 3.0e-01
+container ssps direct bind list in 499500, 6.91e-03, 1.9e-01
+container direct bind list in 499500, 6.89e-03,   2.0e-01
+container list in 499500,     4.92e-03,           2.7e-01
+container list out 499500,    1.04e-02,           1.3e-01
+container direct set in 2450, 3.04e-05,           0.0e+00
+container ssps direct set in 2450, 3.07e-05,      0.0e+00
+container ssps direct call set in 2450, 1.61e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.78e-05, 0.0e+00
+container direct bind set in 2450, 2.78e-05,      0.0e+00
+container set in 2450,        1.81e-05,           0.0e+00
+container set out 2450,       8.71e-05,           0.0e+00
+container direct set in 249500, 3.39e-03,         0.0e+00
+container ssps direct set in 249500, 3.43e-03,    0.0e+00
+container ssps direct call set in 249500, 1.90e-03, 0.0e+00
+container ssps direct bind set in 249500, 3.18e-03, 0.0e+00
+container direct bind set in 249500, 3.18e-03,    0.0e+00
+container set in 249500,      2.06e-03,           0.0e+00
+container set out 249500,     9.29e-03,           0.0e+00
+changing nonincremental,      1.18e-05,           3.2e+08
+changing incremental,         1.97e-05,           3.2e+08
+changing nonincremental score, 1.69e-05,          5.9e+08
+changing incremental score,   3.22e-05,           3.1e+08
+knn cgal uniform 10 0,        2.42e-05,           4.8e+05
+knn cgal uniform 10 0.1,      2.44e-05,           3.8e+05
+knn cgal uniform 10 0.5,      2.59e-05,           3.8e+05
+knn cgal uniform 100 0,       5.42e-04,           2.3e+05
+knn cgal uniform 100 0.1,     5.08e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.46e-04,           2.9e+05
+knn cgal uniform 1000 0,      8.14e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.67e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.53e-03,           1.9e+05
+knn linear uniform 10 0,      4.57e-06,           2.7e+06
+knn linear uniform 10 0.1,    4.74e-06,           3.4e+06
+knn linear uniform 10 0.5,    4.81e-06,           2.8e+06
+knn linear uniform 100 0,     1.14e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.12e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.15e-04,           1.1e+06
+knn linear uniform 1000 0,    6.54e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.58e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.56e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.19e+00,           7.3e+06
+col box 10000 0.1,            2.47e-01,           1.7e+07
+col box 10000 0.5,            3.81e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.94e-01,           1.7e+07
+rigid quadratic 10,           2.84e-02,           0.0e+00
+rigid quadratic 30,           2.26e-02,           0.0e+00
+rigid hierarchy 10,           3.33e-01,           0.0e+00
+rigid hierarchy 30,           1.73e-01,           0.0e+00
+rotation (cache),             1.30e-04,           5.3e+05
+rotation (nocache),           1.81e-04,           2.3e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.59e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            3.98e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/28/11
+mode,fast
+cpf grid 10 0.1,              1.99e-05,           0.0e+00
+cpf grid 100 0.1,             2.00e-04,           0.0e+00
+cpf grid 1000 0.1,            1.98e-03,           3.8e+03
+cpf grid 1000 0.5,            9.47e-03,           9.6e+04
+cpf grid 1000 5,              1.97e-02,           2.0e+07
+cpf grid 10000 0.1,           2.23e-02,           3.9e+04
+cpf grid 10000 0.5,           8.47e-02,           1.1e+06
+cpf grid 10000 5,             1.46e+00,           3.1e+07
+cpf nn 1000 0.1,              1.53e-03,           1.6e+04
+bcpf nn 1000 0.1,             1.63e-03,           2.9e+04
+cpf nn 1000 0.5,              2.58e-03,           8.6e+05
+bcpf nn 1000 0.5,             2.50e-03,           1.8e+06
+cpf nn 1000 5,                2.44e-01,           3.3e+06
+bcpf nn 1000 5,               2.58e-01,           6.1e+06
+cpf nn 10000 0.1,             2.11e-02,           8.9e+04
+bcpf nn 10000 0.1,            2.09e-02,           1.8e+05
+cpf nn 10000 0.5,             1.09e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.67e-04,           2.1e+04
+bcpf box 1000 0.1,            8.78e-04,           2.0e+04
+cpf box 1000 0.5,             1.19e-03,           8.2e+05
+bcpf box 1000 0.5,            2.35e-03,           7.2e+05
+cpf box 1000 5,               1.40e-02,           2.9e+07
+bcpf box 1000 5,              2.96e-02,           2.6e+07
+cpf box 10000 0.1,            1.60e-02,           4.6e+04
+bcpf box 10000 0.1,           3.18e-02,           4.7e+04
+cpf box 10000 0.5,            4.03e-02,           2.3e+06
+bcpf box 10000 0.5,           8.26e-02,           2.3e+06
+cpf box 10000 5,              1.32e+00,           3.1e+07
+bcpf box 10000 5,             2.78e+00,           3.2e+07
+cpf quadratic 10 0.1,         9.98e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.49e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.42e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.50e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.47e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      7.94e-03,           2.5e+03
+cpf quadratic 1000 0.5,       4.50e-03,           2.0e+05
+bcpf quadratic 1000 0.5,      9.62e-03,           1.8e+05
+cpf quadratic 1000 5,         1.72e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.62e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.86e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     1.06e+00,           1.9e+03
+cpf quadratic 10000 0.5,      4.65e-01,           2.1e+05
+bcpf quadratic 10000 0.5,     9.97e-01,           2.2e+05
+cpf quadratic 10000 5,        2.09e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.30e+00,           3.1e+07
+connectivity slow,            8.12e-01,           3.2e-02
+connectivity fast,            1.51e-02,           1.4e+00
+domino small,                 7.16e+00,           1.0e+00
+container direct list in 4950, 5.50e-05,          0.0e+00
+container ssps direct list in 4950, 5.65e-05,     0.0e+00
+container ssps direct call list in 4950, 3.11e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.94e-05, 0.0e+00
+container direct bind list in 4950, 4.96e-05,     0.0e+00
+container list in 4950,       3.16e-05,           0.0e+00
+container list out 4950,      8.46e-05,           0.0e+00
+container direct list in 499500, 6.44e-03,        4.5e-01
+container ssps direct list in 499500, 6.51e-03,   4.5e-01
+container ssps direct call list in 499500, 4.54e-03, 6.4e-01
+container ssps direct bind list in 499500, 5.94e-03, 4.9e-01
+container direct bind list in 499500, 5.97e-03,   4.9e-01
+container list in 499500,     4.69e-03,           6.2e-01
+container list out 499500,    9.23e-03,           3.2e-01
+container direct set in 2450, 2.74e-05,           0.0e+00
+container ssps direct set in 2450, 2.83e-05,      0.0e+00
+container ssps direct call set in 2450, 1.62e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.47e-05, 0.0e+00
+container direct bind set in 2450, 2.46e-05,      0.0e+00
+container set in 2450,        1.64e-05,           0.0e+00
+container set out 2450,       8.42e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         6.4e-04
+container ssps direct set in 249500, 3.05e-03,    6.3e-04
+container ssps direct call set in 249500, 1.94e-03, 9.9e-04
+container ssps direct bind set in 249500, 2.72e-03, 7.1e-04
+container direct bind set in 249500, 2.72e-03,    7.0e-04
+container set in 249500,      2.03e-03,           9.5e-04
+container set out 249500,     8.83e-03,           2.2e-04
+changing nonincremental,      1.08e-05,           3.5e+08
+knn cgal uniform 10 0,        2.68e-05,           3.1e+05
+knn cgal uniform 10 0.1,      2.36e-05,           3.7e+05
+knn cgal uniform 10 0.5,      2.20e-05,           4.6e+05
+knn cgal uniform 100 0,       5.41e-04,           2.2e+05
+knn cgal uniform 100 0.1,     4.77e-04,           2.7e+05
+knn cgal uniform 100 0.5,     4.34e-04,           3.4e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.44e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.56e-03,           1.9e+05
+knn linear uniform 10 0,      5.03e-06,           2.8e+06
+knn linear uniform 10 0.1,    4.63e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.32e-06,           2.0e+06
+knn linear uniform 100 0,     1.19e-04,           9.8e+05
+knn linear uniform 100 0.1,   1.17e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.2e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.76e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.74e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.02e+00,           4.5e+06
+col quadratic 10000 0.5,      1.19e+00,           7.3e+06
+col box 10000 0.1,            2.50e-01,           1.5e+07
+col box 10000 0.5,            3.76e-01,           1.7e+07
+col grid 10000 0.1,           2.01e-01,           2.0e+07
+col grid 10000 0.5,           4.04e-01,           1.7e+07
+refiner children,             5.29e-02,           2.8e+07
+refiner leaves,               1.03e-03,           1.4e+09
+rigid quadratic 10,           2.84e-02,           0.0e+00
+rigid quadratic 30,           2.26e-02,           0.0e+00
+rigid hierarchy 10,           3.95e-01,           0.0e+00
+rigid hierarchy 30,           1.85e-01,           0.0e+00
+rotation (cache),             1.30e-04,           2.5e+04
+rotation (nocache),           1.81e-04,           -8.7e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/29/11
+mode,fast
+cpf grid 10 0.1,              2.01e-05,           0.0e+00
+cpf grid 100 0.1,             1.98e-04,           0.0e+00
+cpf grid 1000 0.1,            2.01e-03,           2.5e+03
+cpf grid 1000 0.5,            9.40e-03,           9.8e+04
+cpf grid 1000 5,              2.02e-02,           2.0e+07
+cpf grid 10000 0.1,           2.29e-02,           3.3e+04
+cpf grid 10000 0.5,           8.62e-02,           1.1e+06
+cpf grid 10000 5,             1.46e+00,           3.1e+07
+cpf nn 1000 0.1,              1.53e-03,           8.2e+03
+bcpf nn 1000 0.1,             1.47e-03,           3.2e+04
+cpf nn 1000 0.5,              2.59e-03,           8.8e+05
+bcpf nn 1000 0.5,             2.52e-03,           1.8e+06
+cpf nn 1000 5,                2.59e-01,           3.2e+06
+bcpf nn 1000 5,               2.60e-01,           6.2e+06
+cpf nn 10000 0.1,             2.06e-02,           9.6e+04
+bcpf nn 10000 0.1,            2.14e-02,           1.8e+05
+cpf nn 10000 0.5,             1.09e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.09e-01,           4.1e+06
+cpf box 1000 0.1,             4.79e-04,           1.6e+04
+bcpf box 1000 0.1,            8.93e-04,           2.2e+04
+cpf box 1000 0.5,             1.16e-03,           7.6e+05
+bcpf box 1000 0.5,            2.34e-03,           7.9e+05
+cpf box 1000 5,               1.11e-02,           3.4e+07
+bcpf box 1000 5,              2.35e-02,           3.3e+07
+cpf box 10000 0.1,            1.62e-02,           4.8e+04
+bcpf box 10000 0.1,           3.22e-02,           4.7e+04
+cpf box 10000 0.5,            3.92e-02,           2.3e+06
+bcpf box 10000 0.5,           8.06e-02,           2.2e+06
+cpf box 10000 5,              1.07e+00,           4.7e+07
+bcpf box 10000 5,             2.14e+00,           6.4e+07
+cpf quadratic 10 0.1,         9.76e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.38e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.42e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.46e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.45e-03,           2.9e+03
+bcpf quadratic 1000 0.1,      7.74e-03,           2.6e+03
+cpf quadratic 1000 0.5,       4.45e-03,           2.2e+05
+bcpf quadratic 1000 0.5,      9.69e-03,           2.1e+05
+cpf quadratic 1000 5,         1.67e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.64e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.64e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     8.07e-01,           2.5e+03
+cpf quadratic 10000 0.5,      4.60e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.00e+00,           2.2e+05
+cpf quadratic 10000 5,        2.05e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.34e+00,           3.1e+07
+connectivity slow,            7.97e-01,           2.4e-02
+connectivity fast,            1.51e-02,           1.3e+00
+domino small,                 7.08e+00,           1.0e+00
+container direct list in 4950, 5.47e-05,          0.0e+00
+container ssps direct list in 4950, 5.64e-05,     0.0e+00
+container ssps direct call list in 4950, 3.18e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.89e-05, 0.0e+00
+container direct bind list in 4950, 4.86e-05,     0.0e+00
+container list in 4950,       3.54e-05,           0.0e+00
+container list out 4950,      8.06e-05,           0.0e+00
+container direct list in 499500, 6.49e-03,        2.5e+00
+container ssps direct list in 499500, 6.58e-03,   2.5e+00
+container ssps direct call list in 499500, 4.51e-03, 3.6e+00
+container ssps direct bind list in 499500, 6.04e-03, 2.7e+00
+container direct bind list in 499500, 6.02e-03,   2.7e+00
+container list in 499500,     4.87e-03,           3.3e+00
+container list out 499500,    9.36e-03,           1.7e+00
+container direct set in 2450, 2.72e-05,           0.0e+00
+container ssps direct set in 2450, 2.80e-05,      0.0e+00
+container ssps direct call set in 2450, 1.56e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.43e-05, 0.0e+00
+container direct bind set in 2450, 2.43e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.45e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         0.0e+00
+container ssps direct set in 249500, 3.05e-03,    0.0e+00
+container ssps direct call set in 249500, 1.94e-03, 0.0e+00
+container ssps direct bind set in 249500, 2.72e-03, 0.0e+00
+container direct bind set in 249500, 2.72e-03,    0.0e+00
+container set in 249500,      2.12e-03,           0.0e+00
+container set out 249500,     8.80e-03,           0.0e+00
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.45e-05,           3.0e+05
+knn cgal uniform 10 0.1,      2.24e-05,           3.9e+05
+knn cgal uniform 10 0.5,      2.31e-05,           4.9e+05
+knn cgal uniform 100 0,       5.62e-04,           2.1e+05
+knn cgal uniform 100 0.1,     4.94e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.53e-04,           2.9e+05
+knn cgal uniform 1000 0,      8.36e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.91e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.41e-03,           1.9e+05
+knn linear uniform 10 0,      4.92e-06,           1.7e+06
+knn linear uniform 10 0.1,    4.46e-06,           1.6e+06
+knn linear uniform 10 0.5,    4.65e-06,           3.2e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.14e-04,           1.2e+06
+knn linear uniform 100 0.5,   1.15e-04,           1.1e+06
+knn linear uniform 1000 0,    6.72e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.68e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.72e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.21e-01,           1.8e+07
+col box 10000 0.5,            3.19e-01,           2.0e+07
+col grid 10000 0.1,           2.02e-01,           2.0e+07
+col grid 10000 0.5,           4.01e-01,           1.7e+07
+refiner children,             5.40e-02,           2.8e+07
+refiner leaves,               9.89e-04,           1.5e+09
+rigid quadratic 10,           2.69e-02,           0.0e+00
+rigid quadratic 30,           2.20e-02,           0.0e+00
+rotation (cache),             1.30e-04,           -9.3e+05
+rotation (nocache),           1.81e-04,           -5.8e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.59e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.69e+02,           6.3e+11
+xyz particle huge,            4.08e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.47e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  06/30/11
+mode,fast
+cpf grid 10 0.1,              1.88e-05,           0.0e+00
+cpf grid 100 0.1,             1.89e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           4.0e+03
+cpf grid 1000 0.5,            9.43e-03,           1.0e+05
+cpf grid 1000 5,              2.00e-02,           2.0e+07
+cpf grid 10000 0.1,           2.08e-02,           3.8e+04
+cpf grid 10000 0.5,           8.19e-02,           1.1e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.59e-03,           6.3e+03
+bcpf nn 1000 0.1,             1.69e-03,           2.7e+04
+cpf nn 1000 0.5,              2.63e-03,           8.6e+05
+bcpf nn 1000 0.5,             2.64e-03,           1.8e+06
+cpf nn 1000 5,                2.44e-01,           3.3e+06
+bcpf nn 1000 5,               2.50e-01,           6.0e+06
+cpf nn 10000 0.1,             2.11e-02,           8.7e+04
+bcpf nn 10000 0.1,            2.16e-02,           1.8e+05
+cpf nn 10000 0.5,             1.11e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.11e-01,           4.1e+06
+cpf box 1000 0.1,             4.49e-04,           5.6e+03
+bcpf box 1000 0.1,            8.70e-04,           1.7e+04
+cpf box 1000 0.5,             1.19e-03,           7.2e+05
+bcpf box 1000 0.5,            2.38e-03,           7.9e+05
+cpf box 1000 5,               1.31e-02,           2.8e+07
+bcpf box 1000 5,              2.83e-02,           2.8e+07
+cpf box 10000 0.1,            1.61e-02,           5.0e+04
+bcpf box 10000 0.1,           3.25e-02,           4.9e+04
+cpf box 10000 0.5,            4.00e-02,           2.3e+06
+bcpf box 10000 0.5,           8.23e-02,           2.3e+06
+cpf box 10000 5,              1.27e+00,           3.1e+07
+bcpf box 10000 5,             2.58e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.03e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.49e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.58e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.51e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.54e-03,           2.8e+03
+bcpf quadratic 1000 0.1,      7.84e-03,           1.3e+03
+cpf quadratic 1000 0.5,       4.51e-03,           1.8e+05
+bcpf quadratic 1000 0.5,      9.88e-03,           1.8e+05
+cpf quadratic 1000 5,         1.68e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.52e-02,           2.3e+07
+cpf quadratic 10000 0.1,      3.67e-01,           2.0e+03
+bcpf quadratic 10000 0.1,     1.02e+00,           1.8e+03
+cpf quadratic 10000 0.5,      4.67e-01,           2.1e+05
+bcpf quadratic 10000 0.5,     9.93e-01,           2.2e+05
+cpf quadratic 10000 5,        2.02e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.17e+00,           3.2e+07
+connectivity slow,            8.00e-01,           2.7e-02
+connectivity fast,            1.51e-02,           1.3e+00
+domino small,                 7.13e+00,           1.0e+00
+container direct list in 4950, 5.42e-05,          0.0e+00
+container ssps direct list in 4950, 5.59e-05,     0.0e+00
+container ssps direct call list in 4950, 3.08e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.84e-05, 0.0e+00
+container direct bind list in 4950, 4.82e-05,     0.0e+00
+container list in 4950,       3.49e-05,           0.0e+00
+container list out 4950,      8.10e-05,           0.0e+00
+container direct list in 499500, 6.41e-03,        3.6e-01
+container ssps direct list in 499500, 6.51e-03,   3.6e-01
+container ssps direct call list in 499500, 4.55e-03, 5.1e-01
+container ssps direct bind list in 499500, 5.97e-03, 3.9e-01
+container direct bind list in 499500, 5.95e-03,   3.9e-01
+container list in 499500,     4.84e-03,           4.8e-01
+container list out 499500,    9.33e-03,           2.5e-01
+container direct set in 2450, 2.72e-05,           0.0e+00
+container ssps direct set in 2450, 2.80e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.42e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       9.65e-05,           0.0e+00
+container direct set in 249500, 2.97e-03,         3.4e-01
+container ssps direct set in 249500, 3.05e-03,    3.3e-01
+container ssps direct call set in 249500, 1.93e-03, 5.3e-01
+container ssps direct bind set in 249500, 2.71e-03, 3.7e-01
+container direct bind set in 249500, 2.72e-03,    3.7e-01
+container set in 249500,      2.10e-03,           4.8e-01
+container set out 249500,     8.77e-03,           1.2e-01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.51e-05,           3.7e+05
+knn cgal uniform 10 0.1,      2.38e-05,           4.4e+05
+knn cgal uniform 10 0.5,      2.00e-05,           3.6e+05
+knn cgal uniform 100 0,       5.53e-04,           2.2e+05
+knn cgal uniform 100 0.1,     5.48e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.32e-04,           2.8e+05
+knn cgal uniform 1000 0,      8.17e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.55e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.36e-03,           2.0e+05
+knn linear uniform 10 0,      4.52e-06,           2.3e+06
+knn linear uniform 10 0.1,    4.81e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.75e-06,           2.1e+06
+knn linear uniform 100 0,     1.16e-04,           1.0e+06
+knn linear uniform 100 0.1,   1.15e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.68e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.6e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.45e-01,           1.7e+07
+col box 10000 0.5,            3.69e-01,           1.7e+07
+col grid 10000 0.1,           1.95e-01,           2.0e+07
+col grid 10000 0.5,           3.98e-01,           1.7e+07
+refiner children,             5.34e-02,           2.8e+07
+refiner leaves,               9.74e-04,           1.5e+09
+rigid quadratic 10,           2.62e-02,           0.0e+00
+rigid quadratic 30,           2.09e-02,           0.0e+00
+rigid hierarchy 10,           7.07e-04,           0.0e+00
+rigid hierarchy 30,           7.04e-04,           0.0e+00
+rotation (cache),             1.30e-04,           6.6e+04
+rotation (nocache),           1.81e-04,           -8.2e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.59e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.09e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/01/11
+mode,fast
+cpf grid 10 0.1,              1.89e-05,           0.0e+00
+cpf grid 100 0.1,             1.88e-04,           0.0e+00
+cpf grid 1000 0.1,            1.87e-03,           6.7e+03
+cpf grid 1000 0.5,            8.59e-03,           1.1e+05
+cpf grid 1000 5,              1.92e-02,           2.0e+07
+cpf grid 10000 0.1,           2.03e-02,           3.8e+04
+cpf grid 10000 0.5,           7.76e-02,           1.2e+06
+cpf grid 10000 5,             1.44e+00,           3.2e+07
+cpf nn 1000 0.1,              1.50e-03,           5.0e+03
+bcpf nn 1000 0.1,             1.60e-03,           2.3e+04
+cpf nn 1000 0.5,              2.52e-03,           9.1e+05
+bcpf nn 1000 0.5,             2.47e-03,           1.8e+06
+cpf nn 1000 5,                2.42e-01,           3.3e+06
+bcpf nn 1000 5,               2.53e-01,           6.1e+06
+cpf nn 10000 0.1,             2.08e-02,           9.2e+04
+bcpf nn 10000 0.1,            2.07e-02,           1.8e+05
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.55e-04,           2.2e+04
+bcpf box 1000 0.1,            8.88e-04,           2.0e+04
+cpf box 1000 0.5,             1.21e-03,           8.0e+05
+bcpf box 1000 0.5,            2.41e-03,           7.3e+05
+cpf box 1000 5,               1.37e-02,           2.9e+07
+bcpf box 1000 5,              2.90e-02,           2.7e+07
+cpf box 10000 0.1,            1.60e-02,           4.7e+04
+bcpf box 10000 0.1,           3.26e-02,           4.9e+04
+cpf box 10000 0.5,            4.02e-02,           2.3e+06
+bcpf box 10000 0.5,           8.19e-02,           2.3e+06
+cpf box 10000 5,              1.30e+00,           3.1e+07
+bcpf box 10000 5,             2.62e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.09e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.47e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.59e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.52e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.59e-03,           3.5e+03
+bcpf quadratic 1000 0.1,      7.86e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.50e-03,           2.1e+05
+bcpf quadratic 1000 0.5,      9.73e-03,           1.9e+05
+cpf quadratic 1000 5,         1.67e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.54e-02,           2.1e+07
+cpf quadratic 10000 0.1,      3.63e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     1.14e+00,           1.7e+03
+cpf quadratic 10000 0.5,      4.60e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.01e+00,           2.2e+05
+cpf quadratic 10000 5,        2.03e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.18e+00,           3.1e+07
+connectivity slow,            8.02e-01,           3.4e-02
+connectivity fast,            1.51e-02,           1.6e+00
+domino small,                 7.14e+00,           1.0e+00
+container direct list in 4950, 5.55e-05,          0.0e+00
+container ssps direct list in 4950, 5.70e-05,     0.0e+00
+container ssps direct call list in 4950, 3.14e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.99e-05, 0.0e+00
+container direct bind list in 4950, 4.97e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.10e-05,           0.0e+00
+container direct list in 499500, 6.49e-03,        3.1e+00
+container ssps direct list in 499500, 6.56e-03,   3.1e+00
+container ssps direct call list in 499500, 4.54e-03, 4.5e+00
+container ssps direct bind list in 499500, 6.04e-03, 3.4e+00
+container direct bind list in 499500, 6.02e-03,   3.4e+00
+container list in 499500,     4.87e-03,           4.2e+00
+container list out 499500,    9.26e-03,           2.2e+00
+container direct set in 2450, 2.77e-05,           0.0e+00
+container ssps direct set in 2450, 2.85e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.51e-05, 0.0e+00
+container direct bind set in 2450, 2.50e-05,      0.0e+00
+container set in 2450,        1.79e-05,           0.0e+00
+container set out 2450,       8.37e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         0.0e+00
+container ssps direct set in 249500, 3.06e-03,    0.0e+00
+container ssps direct call set in 249500, 1.94e-03, 0.0e+00
+container ssps direct bind set in 249500, 2.73e-03, 0.0e+00
+container direct bind set in 249500, 2.73e-03,    0.0e+00
+container set in 249500,      2.10e-03,           0.0e+00
+container set out 249500,     8.83e-03,           0.0e+00
+changing nonincremental,      1.08e-05,           3.5e+08
+knn cgal uniform 10 0,        2.17e-05,           4.0e+05
+knn cgal uniform 10 0.1,      2.21e-05,           7.0e+05
+knn cgal uniform 10 0.5,      2.38e-05,           6.0e+05
+knn cgal uniform 100 0,       5.38e-04,           2.4e+05
+knn cgal uniform 100 0.1,     5.07e-04,           2.2e+05
+knn cgal uniform 100 0.5,     4.42e-04,           2.5e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.60e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.49e-03,           1.9e+05
+knn linear uniform 10 0,      4.66e-06,           2.4e+06
+knn linear uniform 10 0.1,    4.76e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.53e-06,           2.7e+06
+knn linear uniform 100 0,     1.15e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.18e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.16e-04,           1.1e+06
+knn linear uniform 1000 0,    6.72e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.68e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.6e+06
+col quadratic 10000 0.5,      1.17e+00,           7.3e+06
+col box 10000 0.1,            2.45e-01,           1.7e+07
+col box 10000 0.5,            3.68e-01,           1.7e+07
+col grid 10000 0.1,           1.98e-01,           2.0e+07
+col grid 10000 0.5,           4.04e-01,           1.7e+07
+refiner children,             5.34e-02,           2.8e+07
+refiner leaves,               1.01e-03,           1.5e+09
+rigid quadratic 10,           2.62e-02,           0.0e+00
+rigid quadratic 30,           2.07e-02,           0.0e+00
+rigid hierarchy 10,           7.23e-04,           0.0e+00
+rigid hierarchy 30,           7.29e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.29e-04,           -1.6e+05
+rotation (nocache),           1.83e-04,           8.9e+04
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.69e+02,           6.3e+11
+xyz particle huge,            4.06e+02,           6.3e+11
+xyz vector huge,              8.47e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.47e+01,           6.3e+11
+date,  07/02/11
+mode,fast
+cpf grid 10 0.1,              1.90e-05,           0.0e+00
+cpf grid 100 0.1,             1.87e-04,           0.0e+00
+cpf grid 1000 0.1,            1.88e-03,           5.3e+03
+cpf grid 1000 0.5,            8.77e-03,           1.2e+05
+cpf grid 1000 5,              1.96e-02,           2.2e+07
+cpf grid 10000 0.1,           2.06e-02,           3.6e+04
+cpf grid 10000 0.5,           7.73e-02,           1.1e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.57e-03,           1.4e+04
+bcpf nn 1000 0.1,             1.59e-03,           2.7e+04
+cpf nn 1000 0.5,              2.58e-03,           9.0e+05
+bcpf nn 1000 0.5,             2.51e-03,           1.7e+06
+cpf nn 1000 5,                2.45e-01,           3.3e+06
+bcpf nn 1000 5,               2.56e-01,           6.1e+06
+cpf nn 10000 0.1,             2.13e-02,           9.4e+04
+bcpf nn 10000 0.1,            2.14e-02,           1.8e+05
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.12e-01,           4.1e+06
+cpf box 1000 0.1,             4.68e-04,           2.1e+04
+bcpf box 1000 0.1,            8.85e-04,           2.8e+04
+cpf box 1000 0.5,             1.20e-03,           6.3e+05
+bcpf box 1000 0.5,            2.30e-03,           7.8e+05
+cpf box 1000 5,               1.34e-02,           2.8e+07
+bcpf box 1000 5,              2.84e-02,           2.7e+07
+cpf box 10000 0.1,            1.62e-02,           5.2e+04
+bcpf box 10000 0.1,           3.35e-02,           4.6e+04
+cpf box 10000 0.5,            4.03e-02,           2.2e+06
+bcpf box 10000 0.5,           8.23e-02,           2.2e+06
+cpf box 10000 5,              1.28e+00,           3.1e+07
+bcpf box 10000 5,             2.59e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.06e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.49e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.61e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.41e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.53e-03,           7.1e+02
+bcpf quadratic 1000 0.1,      7.94e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.46e-03,           2.0e+05
+bcpf quadratic 1000 0.5,      9.51e-03,           2.1e+05
+cpf quadratic 1000 5,         1.69e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.55e-02,           2.3e+07
+cpf quadratic 10000 0.1,      3.63e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     9.03e-01,           1.9e+03
+cpf quadratic 10000 0.5,      4.65e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.01e+00,           2.2e+05
+cpf quadratic 10000 5,        2.04e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.18e+00,           3.2e+07
+connectivity slow,            7.97e-01,           3.0e-02
+connectivity fast,            1.52e-02,           1.3e+00
+domino small,                 7.11e+00,           1.0e+00
+container direct list in 4950, 5.56e-05,          0.0e+00
+container ssps direct list in 4950, 5.71e-05,     0.0e+00
+container ssps direct call list in 4950, 3.08e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.01e-05, 0.0e+00
+container direct bind list in 4950, 4.97e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.05e-05,           0.0e+00
+container direct list in 499500, 6.35e-03,        4.0e+00
+container ssps direct list in 499500, 6.48e-03,   3.9e+00
+container ssps direct call list in 499500, 4.48e-03, 5.7e+00
+container ssps direct bind list in 499500, 5.88e-03, 4.3e+00
+container direct bind list in 499500, 5.87e-03,   4.3e+00
+container list in 499500,     4.86e-03,           5.2e+00
+container list out 499500,    9.23e-03,           2.8e+00
+container direct set in 2450, 2.75e-05,           0.0e+00
+container ssps direct set in 2450, 2.86e-05,      0.0e+00
+container ssps direct call set in 2450, 1.59e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.48e-05, 0.0e+00
+container direct bind set in 2450, 2.47e-05,      0.0e+00
+container set in 2450,        1.79e-05,           0.0e+00
+container set out 2450,       8.45e-05,           0.0e+00
+container direct set in 249500, 3.00e-03,         1.3e-01
+container ssps direct set in 249500, 3.08e-03,    1.2e-01
+container ssps direct call set in 249500, 1.96e-03, 2.0e-01
+container ssps direct bind set in 249500, 2.74e-03, 1.4e-01
+container direct bind set in 249500, 2.74e-03,    1.4e-01
+container set in 249500,      2.11e-03,           1.8e-01
+container set out 249500,     9.09e-03,           4.2e-02
+changing nonincremental,      1.08e-05,           3.5e+08
+knn cgal uniform 10 0,        2.56e-05,           3.2e+05
+knn cgal uniform 10 0.1,      1.99e-05,           4.4e+05
+knn cgal uniform 10 0.5,      2.27e-05,           5.7e+05
+knn cgal uniform 100 0,       5.59e-04,           2.1e+05
+knn cgal uniform 100 0.1,     4.65e-04,           2.7e+05
+knn cgal uniform 100 0.5,     4.52e-04,           2.9e+05
+knn cgal uniform 1000 0,      8.04e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.67e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.53e-03,           1.9e+05
+knn linear uniform 10 0,      4.80e-06,           2.9e+06
+knn linear uniform 10 0.1,    4.71e-06,           2.1e+06
+knn linear uniform 10 0.5,    4.66e-06,           2.9e+06
+knn linear uniform 100 0,     1.18e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.17e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.74e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.68e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.18e+00,           7.4e+06
+col box 10000 0.1,            2.46e-01,           1.7e+07
+col box 10000 0.5,            3.68e-01,           1.7e+07
+col grid 10000 0.1,           1.99e-01,           2.0e+07
+col grid 10000 0.5,           3.99e-01,           1.7e+07
+refiner children,             5.23e-02,           2.8e+07
+refiner leaves,               1.03e-03,           1.4e+09
+rigid quadratic 10,           2.60e-02,           0.0e+00
+rigid quadratic 30,           2.08e-02,           0.0e+00
+rigid hierarchy 10,           7.06e-04,           0.0e+00
+rigid hierarchy 30,           7.07e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.30e-04,           2.6e+05
+rotation (nocache),           1.81e-04,           -4.0e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.59e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.70e+02,           6.3e+11
+xyz particle huge,            4.07e+02,           6.3e+11
+xyz vector huge,              8.47e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/03/11
+mode,fast
+cpf grid 10 0.1,              1.89e-05,           0.0e+00
+cpf grid 100 0.1,             1.88e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           6.6e+03
+cpf grid 1000 0.5,            8.83e-03,           9.5e+04
+cpf grid 1000 5,              1.91e-02,           2.0e+07
+cpf grid 10000 0.1,           2.07e-02,           3.7e+04
+cpf grid 10000 0.5,           7.76e-02,           1.2e+06
+cpf grid 10000 5,             1.44e+00,           3.1e+07
+cpf nn 1000 0.1,              1.56e-03,           1.3e+04
+bcpf nn 1000 0.1,             1.64e-03,           2.0e+04
+cpf nn 1000 0.5,              2.62e-03,           8.7e+05
+bcpf nn 1000 0.5,             2.54e-03,           1.7e+06
+cpf nn 1000 5,                2.45e-01,           3.4e+06
+bcpf nn 1000 5,               2.55e-01,           6.1e+06
+cpf nn 10000 0.1,             2.11e-02,           9.3e+04
+bcpf nn 10000 0.1,            2.21e-02,           1.7e+05
+cpf nn 10000 0.5,             1.09e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.2e+06
+cpf box 1000 0.1,             4.59e-04,           1.6e+04
+bcpf box 1000 0.1,            9.03e-04,           1.9e+04
+cpf box 1000 0.5,             1.19e-03,           7.1e+05
+bcpf box 1000 0.5,            2.35e-03,           7.7e+05
+cpf box 1000 5,               1.34e-02,           2.8e+07
+bcpf box 1000 5,              2.87e-02,           2.8e+07
+cpf box 10000 0.1,            1.60e-02,           4.8e+04
+bcpf box 10000 0.1,           3.19e-02,           4.6e+04
+cpf box 10000 0.5,            3.98e-02,           2.3e+06
+bcpf box 10000 0.5,           8.26e-02,           2.3e+06
+cpf box 10000 5,              1.28e+00,           3.1e+07
+bcpf box 10000 5,             2.65e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.02e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.47e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.59e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.58e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.51e-03,           2.9e+03
+bcpf quadratic 1000 0.1,      7.79e-03,           2.6e+03
+cpf quadratic 1000 0.5,       4.47e-03,           1.8e+05
+bcpf quadratic 1000 0.5,      9.51e-03,           1.8e+05
+cpf quadratic 1000 5,         1.68e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.55e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.77e-01,           2.3e+03
+bcpf quadratic 10000 0.1,     1.00e+00,           1.9e+03
+cpf quadratic 10000 0.5,      4.58e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.80e-01,           2.1e+05
+cpf quadratic 10000 5,        2.02e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.17e+00,           3.1e+07
+connectivity slow,            8.07e-01,           3.6e-02
+connectivity fast,            1.52e-02,           1.6e+00
+domino small,                 7.11e+00,           1.0e+00
+container direct list in 4950, 5.53e-05,          0.0e+00
+container ssps direct list in 4950, 5.69e-05,     0.0e+00
+container ssps direct call list in 4950, 3.10e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.98e-05, 0.0e+00
+container direct bind list in 4950, 4.95e-05,     0.0e+00
+container list in 4950,       3.49e-05,           0.0e+00
+container list out 4950,      8.07e-05,           0.0e+00
+container direct list in 499500, 6.51e-03,        2.9e-02
+container ssps direct list in 499500, 6.58e-03,   2.9e-02
+container ssps direct call list in 499500, 4.57e-03, 4.2e-02
+container ssps direct bind list in 499500, 6.05e-03, 3.1e-02
+container direct bind list in 499500, 6.04e-03,   3.2e-02
+container list in 499500,     4.84e-03,           3.9e-02
+container list out 499500,    9.19e-03,           2.1e-02
+container direct set in 2450, 2.96e-05,           0.0e+00
+container ssps direct set in 2450, 3.01e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.64e-05, 0.0e+00
+container direct bind set in 2450, 2.64e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.58e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         1.2e+00
+container ssps direct set in 249500, 3.06e-03,    1.1e+00
+container ssps direct call set in 249500, 1.94e-03, 1.8e+00
+container ssps direct bind set in 249500, 2.72e-03, 1.3e+00
+container direct bind set in 249500, 2.72e-03,    1.3e+00
+container set in 249500,      2.11e-03,           1.6e+00
+container set out 249500,     8.80e-03,           3.9e-01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.38e-05,           5.6e+05
+knn cgal uniform 10 0.1,      2.22e-05,           4.6e+05
+knn cgal uniform 10 0.5,      2.53e-05,           3.4e+05
+knn cgal uniform 100 0,       5.92e-04,           2.0e+05
+knn cgal uniform 100 0.1,     5.25e-04,           2.3e+05
+knn cgal uniform 100 0.5,     4.48e-04,           2.7e+05
+knn cgal uniform 1000 0,      8.20e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.53e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.49e-03,           1.9e+05
+knn linear uniform 10 0,      4.66e-06,           2.6e+06
+knn linear uniform 10 0.1,    4.64e-06,           2.6e+06
+knn linear uniform 10 0.5,    4.77e-06,           2.6e+06
+knn linear uniform 100 0,     1.16e-04,           1.2e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.12e-04,           1.0e+06
+knn linear uniform 1000 0,    6.70e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.68e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.6e+06
+col quadratic 10000 0.5,      1.19e+00,           7.4e+06
+col box 10000 0.1,            2.45e-01,           1.7e+07
+col box 10000 0.5,            3.74e-01,           1.7e+07
+col grid 10000 0.1,           1.95e-01,           2.0e+07
+col grid 10000 0.5,           3.99e-01,           1.7e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               1.00e-03,           1.5e+09
+rigid quadratic 10,           2.63e-02,           0.0e+00
+rigid quadratic 30,           2.10e-02,           0.0e+00
+rigid hierarchy 10,           7.28e-04,           0.0e+00
+rigid hierarchy 30,           7.27e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.30e-04,           -1.3e+06
+rotation (nocache),           1.81e-04,           -3.4e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.05e+02,           6.3e+11
+xyz vector huge,              8.47e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/04/11
+mode,fast
+cpf grid 10 0.1,              1.92e-05,           0.0e+00
+cpf grid 100 0.1,             1.89e-04,           0.0e+00
+cpf grid 1000 0.1,            1.88e-03,           6.6e+03
+cpf grid 1000 0.5,            8.74e-03,           1.1e+05
+cpf grid 1000 5,              1.92e-02,           2.0e+07
+cpf grid 10000 0.1,           2.05e-02,           3.7e+04
+cpf grid 10000 0.5,           7.79e-02,           1.2e+06
+cpf grid 10000 5,             1.46e+00,           3.2e+07
+cpf nn 1000 0.1,              1.55e-03,           9.7e+03
+bcpf nn 1000 0.1,             1.56e-03,           3.0e+04
+cpf nn 1000 0.5,              2.57e-03,           9.0e+05
+bcpf nn 1000 0.5,             2.44e-03,           1.7e+06
+cpf nn 1000 5,                2.45e-01,           3.3e+06
+bcpf nn 1000 5,               2.59e-01,           6.2e+06
+cpf nn 10000 0.1,             2.10e-02,           9.3e+04
+bcpf nn 10000 0.1,            2.17e-02,           1.8e+05
+cpf nn 10000 0.5,             1.07e-01,           2.2e+06
+bcpf nn 10000 0.5,            1.13e-01,           4.2e+06
+cpf box 1000 0.1,             4.73e-04,           1.1e+04
+bcpf box 1000 0.1,            8.87e-04,           1.1e+04
+cpf box 1000 0.5,             1.19e-03,           7.2e+05
+bcpf box 1000 0.5,            2.34e-03,           7.5e+05
+cpf box 1000 5,               1.34e-02,           2.9e+07
+bcpf box 1000 5,              2.89e-02,           2.8e+07
+cpf box 10000 0.1,            1.60e-02,           4.7e+04
+bcpf box 10000 0.1,           3.22e-02,           4.9e+04
+cpf box 10000 0.5,            4.05e-02,           2.3e+06
+bcpf box 10000 0.5,           8.23e-02,           2.3e+06
+cpf box 10000 5,              1.29e+00,           3.1e+07
+bcpf box 10000 5,             2.67e+00,           3.2e+07
+cpf quadratic 10 0.1,         9.71e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.39e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.58e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.55e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.56e-03,           2.1e+03
+bcpf quadratic 1000 0.1,      7.67e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.46e-03,           1.9e+05
+bcpf quadratic 1000 0.5,      9.58e-03,           2.0e+05
+cpf quadratic 1000 5,         1.66e-02,           2.5e+07
+bcpf quadratic 1000 5,        3.52e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.73e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     1.48e+00,           1.2e+03
+cpf quadratic 10000 0.5,      4.65e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.11e+00,           2.1e+05
+cpf quadratic 10000 5,        2.05e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.24e+00,           3.1e+07
+connectivity slow,            8.10e-01,           3.3e-02
+connectivity fast,            1.52e-02,           1.3e+00
+domino small,                 7.10e+00,           1.0e+00
+container direct list in 4950, 5.38e-05,          0.0e+00
+container ssps direct list in 4950, 5.61e-05,     0.0e+00
+container ssps direct call list in 4950, 3.07e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.82e-05, 0.0e+00
+container direct bind list in 4950, 4.80e-05,     0.0e+00
+container list in 4950,       3.49e-05,           0.0e+00
+container list out 4950,      8.07e-05,           0.0e+00
+container direct list in 499500, 6.39e-03,        2.9e+00
+container ssps direct list in 499500, 6.48e-03,   2.9e+00
+container ssps direct call list in 499500, 4.49e-03, 4.2e+00
+container ssps direct bind list in 499500, 5.91e-03, 3.2e+00
+container direct bind list in 499500, 5.91e-03,   3.2e+00
+container list in 499500,     4.83e-03,           3.9e+00
+container list out 499500,    9.33e-03,           2.0e+00
+container direct set in 2450, 2.71e-05,           0.0e+00
+container ssps direct set in 2450, 2.82e-05,      0.0e+00
+container ssps direct call set in 2450, 1.56e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.43e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.41e-05,           0.0e+00
+container direct set in 249500, 3.00e-03,         1.1e+01
+container ssps direct set in 249500, 3.08e-03,    1.1e+01
+container ssps direct call set in 249500, 1.95e-03, 1.7e+01
+container ssps direct bind set in 249500, 2.74e-03, 1.2e+01
+container direct bind set in 249500, 2.74e-03,    1.2e+01
+container set in 249500,      2.10e-03,           1.6e+01
+container set out 249500,     8.83e-03,           3.7e+00
+changing nonincremental,      1.06e-05,           3.5e+08
+knn cgal uniform 10 0,        2.58e-05,           4.5e+05
+knn cgal uniform 10 0.1,      2.89e-05,           4.1e+05
+knn cgal uniform 10 0.5,      2.26e-05,           4.3e+05
+knn cgal uniform 100 0,       5.19e-04,           2.2e+05
+knn cgal uniform 100 0.1,     4.88e-04,           2.4e+05
+knn cgal uniform 100 0.5,     4.34e-04,           2.8e+05
+knn cgal uniform 1000 0,      8.06e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.60e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.53e-03,           1.9e+05
+knn linear uniform 10 0,      4.83e-06,           2.4e+06
+knn linear uniform 10 0.1,    4.37e-06,           1.8e+06
+knn linear uniform 10 0.5,    4.47e-06,           2.1e+06
+knn linear uniform 100 0,     1.17e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.17e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.68e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.6e+06
+col quadratic 10000 0.5,      1.17e+00,           7.5e+06
+col box 10000 0.1,            2.46e-01,           1.7e+07
+col box 10000 0.5,            3.79e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.99e-01,           1.7e+07
+refiner children,             5.23e-02,           2.8e+07
+refiner leaves,               1.01e-03,           1.5e+09
+rigid quadratic 10,           2.63e-02,           0.0e+00
+rigid quadratic 30,           2.09e-02,           0.0e+00
+rigid hierarchy 10,           7.19e-04,           0.0e+00
+rigid hierarchy 30,           7.26e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.30e-04,           -1.1e+05
+rotation (nocache),           1.82e-04,           2.3e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/05/11
+mode,fast
+cpf grid 10 0.1,              1.78e-05,           0.0e+00
+cpf grid 100 0.1,             1.88e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           7.9e+03
+cpf grid 1000 0.5,            8.90e-03,           1.1e+05
+cpf grid 1000 5,              1.92e-02,           2.0e+07
+cpf grid 10000 0.1,           2.07e-02,           3.9e+04
+cpf grid 10000 0.5,           7.84e-02,           1.2e+06
+cpf grid 10000 5,             1.46e+00,           3.2e+07
+cpf nn 1000 0.1,              1.62e-03,           1.7e+04
+bcpf nn 1000 0.1,             1.62e-03,           1.9e+04
+cpf nn 1000 0.5,              2.69e-03,           8.3e+05
+bcpf nn 1000 0.5,             2.48e-03,           1.7e+06
+cpf nn 1000 5,                2.38e-01,           3.3e+06
+bcpf nn 1000 5,               2.54e-01,           6.1e+06
+cpf nn 10000 0.1,             2.18e-02,           9.1e+04
+bcpf nn 10000 0.1,            2.12e-02,           1.8e+05
+cpf nn 10000 0.5,             1.09e-01,           2.0e+06
+bcpf nn 10000 0.5,            1.11e-01,           4.1e+06
+cpf box 1000 0.1,             4.64e-04,           5.4e+03
+bcpf box 1000 0.1,            8.81e-04,           2.6e+04
+cpf box 1000 0.5,             1.20e-03,           7.7e+05
+bcpf box 1000 0.5,            2.32e-03,           7.1e+05
+cpf box 1000 5,               1.35e-02,           2.9e+07
+bcpf box 1000 5,              2.91e-02,           2.7e+07
+cpf box 10000 0.1,            1.62e-02,           4.8e+04
+bcpf box 10000 0.1,           3.22e-02,           4.8e+04
+cpf box 10000 0.5,            4.00e-02,           2.3e+06
+bcpf box 10000 0.5,           8.16e-02,           2.3e+06
+cpf box 10000 5,              1.30e+00,           3.1e+07
+bcpf box 10000 5,             2.68e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.02e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.47e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.57e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.45e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.53e-03,           7.1e+02
+bcpf quadratic 1000 0.1,      7.99e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.43e-03,           1.8e+05
+bcpf quadratic 1000 0.5,      9.69e-03,           2.0e+05
+cpf quadratic 1000 5,         1.64e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.54e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.63e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     1.15e+00,           2.0e+03
+cpf quadratic 10000 0.5,      4.62e-01,           2.1e+05
+bcpf quadratic 10000 0.5,     9.97e-01,           2.2e+05
+cpf quadratic 10000 5,        2.06e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.22e+00,           3.1e+07
+connectivity slow,            8.07e-01,           2.4e-02
+connectivity fast,            1.53e-02,           1.4e+00
+domino small,                 7.11e+00,           1.0e+00
+container direct list in 4950, 5.45e-05,          0.0e+00
+container ssps direct list in 4950, 5.67e-05,     0.0e+00
+container ssps direct call list in 4950, 3.08e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.90e-05, 0.0e+00
+container direct bind list in 4950, 4.86e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.05e-05,           0.0e+00
+container direct list in 499500, 6.41e-03,        2.8e-01
+container ssps direct list in 499500, 6.54e-03,   2.7e-01
+container ssps direct call list in 499500, 4.58e-03, 3.9e-01
+container ssps direct bind list in 499500, 5.97e-03, 3.0e-01
+container direct bind list in 499500, 5.95e-03,   3.0e-01
+container list in 499500,     4.86e-03,           3.6e-01
+container list out 499500,    9.23e-03,           1.9e-01
+container direct set in 2450, 2.72e-05,           0.0e+00
+container ssps direct set in 2450, 2.81e-05,      0.0e+00
+container ssps direct call set in 2450, 1.56e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.43e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.47e-05,           0.0e+00
+container direct set in 249500, 2.99e-03,         4.5e+00
+container ssps direct set in 249500, 3.06e-03,    4.4e+00
+container ssps direct call set in 249500, 1.94e-03, 7.0e+00
+container ssps direct bind set in 249500, 2.73e-03, 5.0e+00
+container direct bind set in 249500, 2.74e-03,    4.9e+00
+container set in 249500,      2.11e-03,           6.4e+00
+container set out 249500,     8.87e-03,           1.5e+00
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.74e-05,           3.7e+05
+knn cgal uniform 10 0.1,      2.12e-05,           4.7e+05
+knn cgal uniform 10 0.5,      2.13e-05,           4.8e+05
+knn cgal uniform 100 0,       5.62e-04,           2.2e+05
+knn cgal uniform 100 0.1,     5.53e-04,           2.3e+05
+knn cgal uniform 100 0.5,     4.55e-04,           2.7e+05
+knn cgal uniform 1000 0,      8.04e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.81e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.46e-03,           1.9e+05
+knn linear uniform 10 0,      4.69e-06,           2.7e+06
+knn linear uniform 10 0.1,    4.68e-06,           2.2e+06
+knn linear uniform 10 0.5,    4.79e-06,           2.6e+06
+knn linear uniform 100 0,     1.19e-04,           9.9e+05
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.68e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      1.01e+00,           4.5e+06
+col quadratic 10000 0.5,      1.19e+00,           7.4e+06
+col box 10000 0.1,            2.53e-01,           1.5e+07
+col box 10000 0.5,            3.79e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.99e-01,           1.7e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               1.03e-03,           1.4e+09
+rigid quadratic 10,           2.60e-02,           0.0e+00
+rigid quadratic 30,           2.07e-02,           0.0e+00
+rigid hierarchy 10,           7.05e-04,           0.0e+00
+rigid hierarchy 30,           7.01e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.31e-04,           -8.9e+05
+rotation (nocache),           1.81e-04,           1.6e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.06e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/06/11
+mode,fast
+cpf grid 10 0.1,              1.91e-05,           0.0e+00
+cpf grid 100 0.1,             1.86e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           5.3e+03
+cpf grid 1000 0.5,            8.71e-03,           1.1e+05
+cpf grid 1000 5,              1.95e-02,           2.0e+07
+cpf grid 10000 0.1,           2.07e-02,           3.4e+04
+cpf grid 10000 0.5,           7.67e-02,           1.2e+06
+cpf grid 10000 5,             1.44e+00,           3.1e+07
+cpf nn 1000 0.1,              1.50e-03,           1.0e+04
+bcpf nn 1000 0.1,             1.47e-03,           2.2e+04
+cpf nn 1000 0.5,              2.57e-03,           8.6e+05
+bcpf nn 1000 0.5,             2.53e-03,           1.8e+06
+cpf nn 1000 5,                2.49e-01,           3.4e+06
+bcpf nn 1000 5,               2.51e-01,           6.0e+06
+cpf nn 10000 0.1,             2.09e-02,           9.1e+04
+bcpf nn 10000 0.1,            2.12e-02,           1.8e+05
+cpf nn 10000 0.5,             1.08e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.14e-01,           4.0e+06
+cpf box 1000 0.1,             4.59e-04,           4.4e+04
+bcpf box 1000 0.1,            8.74e-04,           1.1e+04
+cpf box 1000 0.5,             1.22e-03,           7.5e+05
+bcpf box 1000 0.5,            2.30e-03,           7.4e+05
+cpf box 1000 5,               1.37e-02,           2.9e+07
+bcpf box 1000 5,              2.93e-02,           2.8e+07
+cpf box 10000 0.1,            1.62e-02,           5.0e+04
+bcpf box 10000 0.1,           3.29e-02,           5.0e+04
+cpf box 10000 0.5,            3.97e-02,           2.3e+06
+bcpf box 10000 0.5,           8.13e-02,           2.2e+06
+cpf box 10000 5,              1.30e+00,           3.2e+07
+bcpf box 10000 5,             2.61e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.00e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.42e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.35e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.02e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.43e-03,           2.2e+03
+bcpf quadratic 1000 0.1,      7.79e-03,           2.2e+03
+cpf quadratic 1000 0.5,       4.30e-03,           1.9e+05
+bcpf quadratic 1000 0.5,      9.43e-03,           1.9e+05
+cpf quadratic 1000 5,         1.62e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.50e-02,           2.3e+07
+cpf quadratic 10000 0.1,      3.70e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     2.17e+00,           1.2e+03
+cpf quadratic 10000 0.5,      4.55e-01,           2.1e+05
+bcpf quadratic 10000 0.5,     9.87e-01,           2.2e+05
+cpf quadratic 10000 5,        2.02e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.18e+00,           3.2e+07
+connectivity slow,            8.02e-01,           2.2e-02
+connectivity fast,            1.53e-02,           1.4e+00
+domino small,                 7.08e+00,           1.0e+00
+container direct list in 4950, 5.70e-05,          0.0e+00
+container ssps direct list in 4950, 5.90e-05,     0.0e+00
+container ssps direct call list in 4950, 3.36e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.16e-05, 0.0e+00
+container direct bind list in 4950, 5.13e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      8.13e-05,           0.0e+00
+container direct list in 499500, 6.38e-03,        7.3e-01
+container ssps direct list in 499500, 6.49e-03,   7.2e-01
+container ssps direct call list in 499500, 4.48e-03, 1.0e+00
+container ssps direct bind list in 499500, 5.94e-03, 7.9e-01
+container direct bind list in 499500, 5.92e-03,   7.9e-01
+container list in 499500,     4.95e-03,           9.5e-01
+container list out 499500,    9.33e-03,           5.0e-01
+container direct set in 2450, 2.83e-05,           0.0e+00
+container ssps direct set in 2450, 2.93e-05,      0.0e+00
+container ssps direct call set in 2450, 1.70e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.57e-05, 0.0e+00
+container direct bind set in 2450, 2.56e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.39e-05,           0.0e+00
+container direct set in 249500, 2.99e-03,         0.0e+00
+container ssps direct set in 249500, 3.07e-03,    0.0e+00
+container ssps direct call set in 249500, 1.96e-03, 0.0e+00
+container ssps direct bind set in 249500, 2.73e-03, 0.0e+00
+container direct bind set in 249500, 2.73e-03,    0.0e+00
+container set in 249500,      2.11e-03,           0.0e+00
+container set out 249500,     8.80e-03,           0.0e+00
+changing nonincremental,      1.06e-05,           3.5e+08
+knn cgal uniform 10 0,        2.08e-05,           6.2e+05
+knn cgal uniform 10 0.1,      2.22e-05,           3.9e+05
+knn cgal uniform 10 0.5,      2.32e-05,           6.2e+05
+knn cgal uniform 100 0,       5.00e-04,           2.5e+05
+knn cgal uniform 100 0.1,     5.11e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.39e-04,           2.4e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.60e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.58e-03,           1.9e+05
+knn linear uniform 10 0,      4.98e-06,           2.2e+06
+knn linear uniform 10 0.1,    4.55e-06,           2.6e+06
+knn linear uniform 10 0.5,    4.59e-06,           2.4e+06
+knn linear uniform 100 0,     1.15e-04,           1.2e+06
+knn linear uniform 100 0.1,   1.14e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.12e-04,           1.1e+06
+knn linear uniform 1000 0,    6.72e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.76e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.72e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.83e-01,           4.6e+06
+col quadratic 10000 0.5,      1.14e+00,           7.3e+06
+col box 10000 0.1,            2.44e-01,           1.7e+07
+col box 10000 0.5,            3.71e-01,           1.7e+07
+col grid 10000 0.1,           1.95e-01,           2.0e+07
+col grid 10000 0.5,           4.09e-01,           1.7e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               9.97e-04,           1.5e+09
+rigid quadratic 10,           2.61e-02,           0.0e+00
+rigid quadratic 30,           2.12e-02,           0.0e+00
+rigid hierarchy 10,           7.28e-04,           0.0e+00
+rigid hierarchy 30,           7.29e-04,           0.0e+00
+rmf large,                    1.84e+01,           3.7e+09
+rotation (cache),             1.29e-04,           -4.1e+05
+rotation (nocache),           1.81e-04,           -1.9e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.09e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/07/11
+mode,fast
+cpf grid 10 0.1,              1.89e-05,           0.0e+00
+cpf grid 100 0.1,             1.88e-04,           0.0e+00
+cpf grid 1000 0.1,            1.90e-03,           1.3e+03
+cpf grid 1000 0.5,            8.68e-03,           1.0e+05
+cpf grid 1000 5,              1.98e-02,           2.0e+07
+cpf grid 10000 0.1,           2.08e-02,           3.6e+04
+cpf grid 10000 0.5,           7.76e-02,           1.2e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.54e-03,           1.3e+04
+bcpf nn 1000 0.1,             1.55e-03,           3.4e+04
+cpf nn 1000 0.5,              2.57e-03,           8.7e+05
+bcpf nn 1000 0.5,             2.52e-03,           1.7e+06
+cpf nn 1000 5,                2.52e-01,           3.1e+06
+bcpf nn 1000 5,               2.47e-01,           6.6e+06
+cpf nn 10000 0.1,             2.05e-02,           9.4e+04
+bcpf nn 10000 0.1,            2.10e-02,           1.9e+05
+cpf nn 10000 0.5,             1.06e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.13e-01,           4.2e+06
+cpf box 1000 0.1,             4.60e-04,           1.1e+04
+bcpf box 1000 0.1,            8.86e-04,           3.1e+04
+cpf box 1000 0.5,             1.15e-03,           6.8e+05
+bcpf box 1000 0.5,            2.31e-03,           7.5e+05
+cpf box 1000 5,               1.37e-02,           3.0e+07
+bcpf box 1000 5,              2.87e-02,           2.6e+07
+cpf box 10000 0.1,            1.61e-02,           5.1e+04
+bcpf box 10000 0.1,           3.29e-02,           4.7e+04
+cpf box 10000 0.5,            3.97e-02,           2.3e+06
+bcpf box 10000 0.5,           8.13e-02,           2.2e+06
+cpf box 10000 5,              1.28e+00,           3.2e+07
+bcpf box 10000 5,             2.57e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.05e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.45e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.35e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.06e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.45e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      7.86e-03,           1.9e+03
+cpf quadratic 1000 0.5,       4.41e-03,           2.2e+05
+bcpf quadratic 1000 0.5,      9.47e-03,           1.9e+05
+cpf quadratic 1000 5,         1.62e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.47e-02,           2.1e+07
+cpf quadratic 10000 0.1,      3.66e-01,           1.9e+03
+bcpf quadratic 10000 0.1,     2.11e+00,           1.3e+03
+cpf quadratic 10000 0.5,      4.62e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.08e+00,           2.2e+05
+cpf quadratic 10000 5,        1.99e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.12e+00,           3.2e+07
+connectivity slow,            8.07e-01,           5.0e-02
+connectivity fast,            1.52e-02,           1.3e+00
+domino small,                 7.07e+00,           1.0e+00
+container direct list in 4950, 5.43e-05,          0.0e+00
+container ssps direct list in 4950, 5.60e-05,     0.0e+00
+container ssps direct call list in 4950, 3.13e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.82e-05, 0.0e+00
+container direct bind list in 4950, 4.81e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      8.02e-05,           0.0e+00
+container direct list in 499500, 6.41e-03,        7.5e-02
+container ssps direct list in 499500, 6.53e-03,   7.3e-02
+container ssps direct call list in 499500, 4.60e-03, 1.0e-01
+container ssps direct bind list in 499500, 6.00e-03, 8.0e-02
+container direct bind list in 499500, 5.94e-03,   8.1e-02
+container list in 499500,     4.85e-03,           9.9e-02
+container list out 499500,    9.33e-03,           5.1e-02
+container direct set in 2450, 2.71e-05,           0.0e+00
+container ssps direct set in 2450, 2.81e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.42e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.45e-05,           0.0e+00
+container direct set in 249500, 3.00e-03,         1.0e+01
+container ssps direct set in 249500, 3.08e-03,    1.0e+01
+container ssps direct call set in 249500, 1.95e-03, 1.6e+01
+container ssps direct bind set in 249500, 2.75e-03, 1.1e+01
+container direct bind set in 249500, 2.75e-03,    1.1e+01
+container set in 249500,      2.12e-03,           1.5e+01
+container set out 249500,     8.83e-03,           3.5e+00
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.16e-05,           6.3e+05
+knn cgal uniform 10 0.1,      2.28e-05,           5.3e+05
+knn cgal uniform 10 0.5,      2.03e-05,           4.7e+05
+knn cgal uniform 100 0,       5.60e-04,           2.1e+05
+knn cgal uniform 100 0.1,     5.18e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.30e-04,           2.7e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.67e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.38e-03,           2.0e+05
+knn linear uniform 10 0,      4.90e-06,           2.4e+06
+knn linear uniform 10 0.1,    4.32e-06,           2.3e+06
+knn linear uniform 10 0.5,    4.54e-06,           2.0e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.17e-04,           1.0e+06
+knn linear uniform 1000 0,    6.68e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.74e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.99e-01,           4.5e+06
+col quadratic 10000 0.5,      1.19e+00,           7.4e+06
+col box 10000 0.1,            2.45e-01,           1.7e+07
+col box 10000 0.5,            3.68e-01,           1.7e+07
+col grid 10000 0.1,           1.99e-01,           2.0e+07
+col grid 10000 0.5,           4.01e-01,           1.7e+07
+refiner children,             5.23e-02,           2.8e+07
+refiner leaves,               1.02e-03,           1.4e+09
+rigid quadratic 10,           2.62e-02,           0.0e+00
+rigid quadratic 30,           2.09e-02,           0.0e+00
+rigid hierarchy 10,           7.18e-04,           0.0e+00
+rigid hierarchy 30,           7.26e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.31e-04,           -3.7e+05
+rotation (nocache),           1.81e-04,           -1.7e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.47e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/08/11
+mode,fast
+cpf grid 10 0.1,              1.84e-05,           0.0e+00
+cpf grid 100 0.1,             1.85e-04,           1.3e+04
+cpf grid 1000 0.1,            1.87e-03,           5.3e+03
+cpf grid 1000 0.5,            8.68e-03,           1.1e+05
+cpf grid 1000 5,              1.92e-02,           2.0e+07
+cpf grid 10000 0.1,           2.06e-02,           3.9e+04
+cpf grid 10000 0.5,           7.73e-02,           1.2e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.53e-03,           1.6e+04
+bcpf nn 1000 0.1,             1.59e-03,           2.0e+04
+cpf nn 1000 0.5,              2.54e-03,           8.3e+05
+bcpf nn 1000 0.5,             2.57e-03,           1.8e+06
+cpf nn 1000 5,                2.62e-01,           3.2e+06
+bcpf nn 1000 5,               2.57e-01,           6.2e+06
+cpf nn 10000 0.1,             2.07e-02,           9.2e+04
+bcpf nn 10000 0.1,            2.12e-02,           1.9e+05
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.66e-04,           5.4e+03
+bcpf box 1000 0.1,            8.81e-04,           1.7e+04
+cpf box 1000 0.5,             1.20e-03,           7.5e+05
+bcpf box 1000 0.5,            2.39e-03,           8.6e+05
+cpf box 1000 5,               1.36e-02,           3.0e+07
+bcpf box 1000 5,              2.87e-02,           2.7e+07
+cpf box 10000 0.1,            1.61e-02,           4.8e+04
+bcpf box 10000 0.1,           3.21e-02,           4.8e+04
+cpf box 10000 0.5,            4.02e-02,           2.3e+06
+bcpf box 10000 0.5,           8.23e-02,           2.3e+06
+cpf box 10000 5,              1.29e+00,           3.2e+07
+bcpf box 10000 5,             2.60e+00,           3.2e+07
+cpf quadratic 10 0.1,         1.01e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.38e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.38e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.01e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.44e-03,           1.5e+03
+bcpf quadratic 1000 0.1,      7.79e-03,           9.6e+02
+cpf quadratic 1000 0.5,       4.36e-03,           2.3e+05
+bcpf quadratic 1000 0.5,      9.58e-03,           1.8e+05
+cpf quadratic 1000 5,         1.63e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.50e-02,           2.3e+07
+cpf quadratic 10000 0.1,      3.87e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     8.70e-01,           1.9e+03
+cpf quadratic 10000 0.5,      4.55e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     1.02e+00,           2.2e+05
+cpf quadratic 10000 5,        2.01e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.11e+00,           3.1e+07
+connectivity slow,            7.70e-01,           5.1e-02
+connectivity fast,            1.52e-02,           1.2e+00
+domino small,                 7.14e+00,           1.0e+00
+container direct list in 4950, 5.49e-05,          0.0e+00
+container ssps direct list in 4950, 5.66e-05,     0.0e+00
+container ssps direct call list in 4950, 3.14e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.91e-05, 0.0e+00
+container direct bind list in 4950, 4.86e-05,     0.0e+00
+container list in 4950,       3.54e-05,           0.0e+00
+container list out 4950,      8.07e-05,           0.0e+00
+container direct list in 499500, 6.63e-03,        1.9e+00
+container ssps direct list in 499500, 6.76e-03,   1.9e+00
+container ssps direct call list in 499500, 4.63e-03, 2.7e+00
+container ssps direct bind list in 499500, 6.19e-03, 2.0e+00
+container direct bind list in 499500, 6.20e-03,   2.0e+00
+container list in 499500,     4.86e-03,           2.6e+00
+container list out 499500,    9.33e-03,           1.3e+00
+container direct set in 2450, 2.71e-05,           0.0e+00
+container ssps direct set in 2450, 2.81e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.42e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.42e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         8.7e-01
+container ssps direct set in 249500, 3.06e-03,    8.5e-01
+container ssps direct call set in 249500, 1.94e-03, 1.3e+00
+container ssps direct bind set in 249500, 2.72e-03, 9.5e-01
+container direct bind set in 249500, 2.72e-03,    9.6e-01
+container set in 249500,      2.09e-03,           1.2e+00
+container set out 249500,     8.80e-03,           3.0e-01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.54e-05,           6.0e+05
+knn cgal uniform 10 0.1,      2.27e-05,           4.1e+05
+knn cgal uniform 10 0.5,      2.50e-05,           5.9e+05
+knn cgal uniform 100 0,       5.29e-04,           2.2e+05
+knn cgal uniform 100 0.1,     5.19e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.44e-04,           2.8e+05
+knn cgal uniform 1000 0,      7.99e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.65e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.35e-03,           2.0e+05
+knn linear uniform 10 0,      4.99e-06,           2.5e+06
+knn linear uniform 10 0.1,    4.75e-06,           2.4e+06
+knn linear uniform 10 0.5,    4.52e-06,           1.8e+06
+knn linear uniform 100 0,     1.14e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.16e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.68e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.96e-01,           4.6e+06
+col quadratic 10000 0.5,      1.14e+00,           7.4e+06
+col box 10000 0.1,            2.47e-01,           1.7e+07
+col box 10000 0.5,            3.75e-01,           1.7e+07
+col grid 10000 0.1,           1.92e-01,           2.0e+07
+col grid 10000 0.5,           3.98e-01,           1.7e+07
+refiner children,             5.27e-02,           2.8e+07
+refiner leaves,               1.00e-03,           1.5e+09
+rigid quadratic 10,           2.62e-02,           0.0e+00
+rigid quadratic 30,           2.08e-02,           0.0e+00
+rigid hierarchy 10,           7.32e-04,           0.0e+00
+rigid hierarchy 30,           7.41e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.31e-04,           -1.4e+05
+rotation (nocache),           1.81e-04,           1.9e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/09/11
+mode,fast
+cpf grid 10 0.1,              1.85e-05,           0.0e+00
+cpf grid 100 0.1,             1.89e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           6.6e+03
+cpf grid 1000 0.5,            8.50e-03,           9.9e+04
+cpf grid 1000 5,              1.92e-02,           2.0e+07
+cpf grid 10000 0.1,           2.06e-02,           3.9e+04
+cpf grid 10000 0.5,           7.64e-02,           1.2e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.51e-03,           1.5e+04
+bcpf nn 1000 0.1,             1.61e-03,           2.5e+04
+cpf nn 1000 0.5,              2.57e-03,           9.3e+05
+bcpf nn 1000 0.5,             2.52e-03,           1.9e+06
+cpf nn 1000 5,                2.51e-01,           3.1e+06
+bcpf nn 1000 5,               2.57e-01,           6.2e+06
+cpf nn 10000 0.1,             2.04e-02,           9.1e+04
+bcpf nn 10000 0.1,            2.16e-02,           1.8e+05
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.50e-04,           2.2e+04
+bcpf box 1000 0.1,            8.87e-04,           1.4e+04
+cpf box 1000 0.5,             1.19e-03,           7.1e+05
+bcpf box 1000 0.5,            2.36e-03,           7.7e+05
+cpf box 1000 5,               1.31e-02,           2.8e+07
+bcpf box 1000 5,              2.85e-02,           2.7e+07
+cpf box 10000 0.1,            1.60e-02,           4.4e+04
+bcpf box 10000 0.1,           3.33e-02,           4.5e+04
+cpf box 10000 0.5,            4.05e-02,           2.3e+06
+bcpf box 10000 0.5,           8.13e-02,           2.2e+06
+cpf box 10000 5,              1.28e+00,           3.1e+07
+bcpf box 10000 5,             2.56e+00,           3.1e+07
+cpf quadratic 10 0.1,         9.69e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.36e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.38e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.02e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.43e-03,           0.0e+00
+bcpf quadratic 1000 0.1,      7.79e-03,           1.9e+03
+cpf quadratic 1000 0.5,       4.38e-03,           2.2e+05
+bcpf quadratic 1000 0.5,      9.43e-03,           1.9e+05
+cpf quadratic 1000 5,         1.61e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.45e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.63e-01,           2.3e+03
+bcpf quadratic 10000 0.1,     1.92e+00,           1.2e+03
+cpf quadratic 10000 0.5,      4.60e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.77e-01,           2.2e+05
+cpf quadratic 10000 5,        2.00e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.09e+00,           3.1e+07
+connectivity slow,            8.15e-01,           5.6e-02
+connectivity fast,            1.53e-02,           1.4e+00
+domino small,                 7.10e+00,           1.0e+00
+container direct list in 4950, 5.46e-05,          0.0e+00
+container ssps direct list in 4950, 5.67e-05,     0.0e+00
+container ssps direct call list in 4950, 3.09e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.88e-05, 0.0e+00
+container direct bind list in 4950, 4.88e-05,     0.0e+00
+container list in 4950,       3.51e-05,           0.0e+00
+container list out 4950,      1.31e-04,           0.0e+00
+container direct list in 499500, 6.43e-03,        1.0e+00
+container ssps direct list in 499500, 6.53e-03,   1.0e+00
+container ssps direct call list in 499500, 4.51e-03, 1.5e+00
+container ssps direct bind list in 499500, 5.98e-03, 1.1e+00
+container direct bind list in 499500, 6.01e-03,   1.1e+00
+container list in 499500,     4.84e-03,           1.4e+00
+container list out 499500,    9.23e-03,           7.2e-01
+container direct set in 2450, 2.71e-05,           0.0e+00
+container ssps direct set in 2450, 2.82e-05,      0.0e+00
+container ssps direct call set in 2450, 1.56e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.42e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.41e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         2.4e-01
+container ssps direct set in 249500, 3.06e-03,    2.4e-01
+container ssps direct call set in 249500, 1.95e-03, 3.7e-01
+container ssps direct bind set in 249500, 2.73e-03, 2.6e-01
+container direct bind set in 249500, 2.73e-03,    2.6e-01
+container set in 249500,      2.10e-03,           3.4e-01
+container set out 249500,     8.80e-03,           8.2e-02
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.31e-05,           3.5e+05
+knn cgal uniform 10 0.1,      2.51e-05,           4.7e+05
+knn cgal uniform 10 0.5,      2.13e-05,           4.8e+05
+knn cgal uniform 100 0,       5.43e-04,           2.5e+05
+knn cgal uniform 100 0.1,     4.85e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.25e-04,           3.0e+05
+knn cgal uniform 1000 0,      8.39e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.84e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.58e-03,           1.9e+05
+knn linear uniform 10 0,      4.43e-06,           2.1e+06
+knn linear uniform 10 0.1,    4.54e-06,           2.3e+06
+knn linear uniform 10 0.5,    4.58e-06,           2.1e+06
+knn linear uniform 100 0,     1.15e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.15e-04,           1.2e+06
+knn linear uniform 100 0.5,   1.17e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.89e-01,           4.5e+06
+col quadratic 10000 0.5,      1.15e+00,           7.4e+06
+col box 10000 0.1,            2.46e-01,           1.7e+07
+col box 10000 0.5,            3.79e-01,           1.7e+07
+col grid 10000 0.1,           1.90e-01,           2.1e+07
+col grid 10000 0.5,           3.92e-01,           1.7e+07
+refiner children,             5.27e-02,           2.8e+07
+refiner leaves,               9.99e-04,           1.5e+09
+rigid quadratic 10,           2.63e-02,           0.0e+00
+rigid quadratic 30,           2.09e-02,           0.0e+00
+rigid hierarchy 10,           7.10e-04,           0.0e+00
+rigid hierarchy 30,           7.11e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.31e-04,           -1.2e+05
+rotation (nocache),           1.82e-04,           -8.3e+04
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.47e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/10/11
+mode,fast
+cpf grid 10 0.1,              1.90e-05,           0.0e+00
+cpf grid 100 0.1,             1.87e-04,           0.0e+00
+cpf grid 1000 0.1,            1.87e-03,           8.0e+03
+cpf grid 1000 0.5,            8.71e-03,           1.2e+05
+cpf grid 1000 5,              1.95e-02,           2.1e+07
+cpf grid 10000 0.1,           2.05e-02,           3.6e+04
+cpf grid 10000 0.5,           7.70e-02,           1.2e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.52e-03,           1.6e+03
+bcpf nn 1000 0.1,             1.55e-03,           3.2e+04
+cpf nn 1000 0.5,              2.59e-03,           8.1e+05
+bcpf nn 1000 0.5,             2.47e-03,           1.8e+06
+cpf nn 1000 5,                2.44e-01,           3.3e+06
+bcpf nn 1000 5,               2.54e-01,           6.1e+06
+cpf nn 10000 0.1,             2.05e-02,           9.2e+04
+bcpf nn 10000 0.1,            2.13e-02,           1.9e+05
+cpf nn 10000 0.5,             1.13e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.54e-04,           5.5e+03
+bcpf box 1000 0.1,            8.74e-04,           1.1e+04
+cpf box 1000 0.5,             1.20e-03,           7.5e+05
+bcpf box 1000 0.5,            2.31e-03,           7.9e+05
+cpf box 1000 5,               1.37e-02,           2.8e+07
+bcpf box 1000 5,              2.93e-02,           2.8e+07
+cpf box 10000 0.1,            1.59e-02,           4.9e+04
+bcpf box 10000 0.1,           3.21e-02,           4.7e+04
+cpf box 10000 0.5,            4.00e-02,           2.3e+06
+bcpf box 10000 0.5,           8.19e-02,           2.3e+06
+cpf box 10000 5,              1.28e+00,           3.1e+07
+bcpf box 10000 5,             2.62e+00,           3.2e+07
+cpf quadratic 10 0.1,         9.65e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.47e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.50e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.47e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.55e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      7.72e-03,           2.3e+03
+cpf quadratic 1000 0.5,       4.41e-03,           1.9e+05
+bcpf quadratic 1000 0.5,      9.51e-03,           1.9e+05
+cpf quadratic 1000 5,         1.61e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.47e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.64e-01,           2.3e+03
+bcpf quadratic 10000 0.1,     1.07e+00,           1.9e+03
+cpf quadratic 10000 0.5,      4.53e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.73e-01,           2.1e+05
+cpf quadratic 10000 5,        2.01e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.13e+00,           3.1e+07
+connectivity slow,            7.70e-01,           3.7e-02
+connectivity fast,            1.52e-02,           1.2e+00
+domino small,                 7.15e+00,           1.0e+00
+container direct list in 4950, 5.69e-05,          0.0e+00
+container ssps direct list in 4950, 5.90e-05,     0.0e+00
+container ssps direct call list in 4950, 3.35e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.15e-05, 0.0e+00
+container direct bind list in 4950, 5.14e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.18e-05,           0.0e+00
+container direct list in 499500, 6.44e-03,        2.0e+00
+container ssps direct list in 499500, 6.53e-03,   2.0e+00
+container ssps direct call list in 499500, 4.55e-03, 2.9e+00
+container ssps direct bind list in 499500, 5.97e-03, 2.2e+00
+container direct bind list in 499500, 5.97e-03,   2.2e+00
+container list in 499500,     4.96e-03,           2.7e+00
+container list out 499500,    9.40e-03,           1.4e+00
+container direct set in 2450, 2.84e-05,           0.0e+00
+container ssps direct set in 2450, 2.93e-05,      0.0e+00
+container ssps direct call set in 2450, 1.69e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.57e-05, 0.0e+00
+container direct bind set in 2450, 2.56e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.43e-05,           0.0e+00
+container direct set in 249500, 2.99e-03,         1.3e+00
+container ssps direct set in 249500, 3.08e-03,    1.3e+00
+container ssps direct call set in 249500, 1.96e-03, 2.0e+00
+container ssps direct bind set in 249500, 2.73e-03, 1.5e+00
+container direct bind set in 249500, 2.73e-03,    1.5e+00
+container set in 249500,      2.11e-03,           1.9e+00
+container set out 249500,     8.80e-03,           4.5e-01
+excluded volume random evaluate, 1.79e-01,        1.4e+03
+excluded volume systematic evaluate, 2.17e+00,    1.4e+02
+excluded volume random evaluate if good, 3.14e-02, 7.2e+03
+excluded volume systematic evaluate if good, 3.14e-02, 3.4e+03
+pairs restraint random evaluate, 7.37e-01,        0.0e+00
+pairs restraint systematic evaluate, 7.97e-01,    0.0e+00
+pairs restraint random evaluate if good, 7.32e-01, 0.0e+00
+pairs restraint systematic evaluate if good, 7.97e-01, 0.0e+00
+k close random evaluate,      1.24e+01,           9.7e+01
+k close systematic evaluate,  3.75e+00,           7.1e+01
+k close random evaluate if good, 1.12e+01,        9.7e+01
+k close systematic evaluate if good, 3.75e+00,    7.1e+01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.56e-05,           5.9e+05
+knn cgal uniform 10 0.1,      2.31e-05,           5.3e+05
+knn cgal uniform 10 0.5,      2.35e-05,           5.9e+05
+knn cgal uniform 100 0,       5.77e-04,           2.0e+05
+knn cgal uniform 100 0.1,     5.05e-04,           2.4e+05
+knn cgal uniform 100 0.5,     4.23e-04,           2.6e+05
+knn cgal uniform 1000 0,      7.91e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.69e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.54e-03,           1.9e+05
+knn linear uniform 10 0,      4.58e-06,           2.7e+06
+knn linear uniform 10 0.1,    4.78e-06,           2.7e+06
+knn linear uniform 10 0.5,    5.17e-06,           2.5e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.17e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.17e-04,           9.8e+05
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.72e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.73e-01,           4.5e+06
+col quadratic 10000 0.5,      1.17e+00,           7.4e+06
+col box 10000 0.1,            2.51e-01,           1.5e+07
+col box 10000 0.5,            3.72e-01,           1.7e+07
+col grid 10000 0.1,           1.98e-01,           2.0e+07
+col grid 10000 0.5,           4.11e-01,           1.7e+07
+refiner children,             5.29e-02,           2.8e+07
+refiner leaves,               9.92e-04,           1.5e+09
+rigid quadratic 10,           2.63e-02,           0.0e+00
+rigid quadratic 30,           2.13e-02,           0.0e+00
+rigid hierarchy 10,           7.31e-04,           0.0e+00
+rigid hierarchy 30,           7.42e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.29e-04,           3.3e+05
+rotation (nocache),           1.82e-04,           2.6e+04
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.14e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            4.10e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.47e+01,           6.3e+11
+date,  07/11/11
+mode,fast
+cpf grid 10 0.1,              1.95e-05,           0.0e+00
+cpf grid 100 0.1,             1.90e-04,           0.0e+00
+cpf grid 1000 0.1,            1.89e-03,           5.3e+03
+cpf grid 1000 0.5,            8.65e-03,           1.0e+05
+cpf grid 1000 5,              1.93e-02,           2.1e+07
+cpf grid 10000 0.1,           2.07e-02,           3.6e+04
+cpf grid 10000 0.5,           7.67e-02,           1.2e+06
+cpf grid 10000 5,             1.43e+00,           3.1e+07
+cpf nn 1000 0.1,              1.52e-03,           1.6e+04
+bcpf nn 1000 0.1,             1.58e-03,           2.7e+04
+cpf nn 1000 0.5,              2.59e-03,           8.4e+05
+bcpf nn 1000 0.5,             2.58e-03,           1.8e+06
+cpf nn 1000 5,                2.45e-01,           3.4e+06
+bcpf nn 1000 5,               2.60e-01,           6.2e+06
+cpf nn 10000 0.1,             2.07e-02,           9.5e+04
+bcpf nn 10000 0.1,            2.17e-02,           1.7e+05
+cpf nn 10000 0.5,             1.08e-01,           2.2e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.72e-04,           1.6e+04
+bcpf box 1000 0.1,            8.86e-04,           1.4e+04
+cpf box 1000 0.5,             1.22e-03,           7.7e+05
+bcpf box 1000 0.5,            2.29e-03,           8.0e+05
+cpf box 1000 5,               1.36e-02,           3.0e+07
+bcpf box 1000 5,              2.79e-02,           2.7e+07
+cpf box 10000 0.1,            1.60e-02,           5.2e+04
+bcpf box 10000 0.1,           3.25e-02,           4.7e+04
+cpf box 10000 0.5,            4.00e-02,           2.3e+06
+bcpf box 10000 0.5,           8.16e-02,           2.2e+06
+cpf box 10000 5,              1.30e+00,           3.2e+07
+bcpf box 10000 5,             2.60e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.03e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.46e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.57e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.50e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.49e-03,           2.9e+03
+bcpf quadratic 1000 0.1,      7.96e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.39e-03,           2.0e+05
+bcpf quadratic 1000 0.5,      9.51e-03,           2.0e+05
+cpf quadratic 1000 5,         1.64e-02,           2.5e+07
+bcpf quadratic 1000 5,        3.49e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.74e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     1.12e+00,           1.9e+03
+cpf quadratic 10000 0.5,      4.53e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.77e-01,           2.2e+05
+cpf quadratic 10000 5,        2.01e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.14e+00,           3.2e+07
+connectivity slow,            7.62e-01,           4.7e-02
+connectivity fast,            1.53e-02,           1.3e+00
+domino small,                 7.12e+00,           1.0e+00
+container direct list in 4950, 5.46e-05,          0.0e+00
+container ssps direct list in 4950, 5.65e-05,     0.0e+00
+container ssps direct call list in 4950, 3.13e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.87e-05, 0.0e+00
+container direct bind list in 4950, 4.87e-05,     0.0e+00
+container list in 4950,       3.49e-05,           0.0e+00
+container list out 4950,      8.11e-05,           0.0e+00
+container direct list in 499500, 6.67e-03,        4.3e-01
+container ssps direct list in 499500, 6.78e-03,   4.2e-01
+container ssps direct call list in 499500, 4.68e-03, 6.1e-01
+container ssps direct bind list in 499500, 6.25e-03, 4.6e-01
+container direct bind list in 499500, 6.22e-03,   4.6e-01
+container list in 499500,     4.87e-03,           5.9e-01
+container list out 499500,    9.33e-03,           3.1e-01
+container direct set in 2450, 2.72e-05,           0.0e+00
+container ssps direct set in 2450, 2.80e-05,      0.0e+00
+container ssps direct call set in 2450, 1.60e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.43e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.43e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         7.7e+00
+container ssps direct set in 249500, 3.04e-03,    7.5e+00
+container ssps direct call set in 249500, 1.95e-03, 1.2e+01
+container ssps direct bind set in 249500, 2.71e-03, 8.4e+00
+container direct bind set in 249500, 2.71e-03,    8.4e+00
+container set in 249500,      2.10e-03,           1.1e+01
+container set out 249500,     8.80e-03,           2.6e+00
+excluded volume random evaluate, 1.84e-01,        1.4e+03
+excluded volume systematic evaluate, 2.21e+00,    1.4e+02
+excluded volume random evaluate if good, 3.14e-02, 7.2e+03
+excluded volume systematic evaluate if good, 3.11e-02, 3.4e+03
+pairs restraint random evaluate, 7.35e-01,        0.0e+00
+pairs restraint systematic evaluate, 8.07e-01,    0.0e+00
+pairs restraint random evaluate if good, 7.32e-01, 0.0e+00
+pairs restraint systematic evaluate if good, 7.97e-01, 0.0e+00
+k close random evaluate,      1.30e+01,           9.5e+01
+k close systematic evaluate,  3.48e+00,           7.1e+01
+k close random evaluate if good, 1.33e+01,        9.6e+01
+k close systematic evaluate if good, 4.22e+00,    7.1e+01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.85e-05,           2.7e+05
+knn cgal uniform 10 0.1,      2.34e-05,           4.1e+05
+knn cgal uniform 10 0.5,      2.12e-05,           4.8e+05
+knn cgal uniform 100 0,       5.52e-04,           2.2e+05
+knn cgal uniform 100 0.1,     4.87e-04,           2.6e+05
+knn cgal uniform 100 0.5,     4.64e-04,           2.7e+05
+knn cgal uniform 1000 0,      8.06e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.79e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.56e-03,           1.9e+05
+knn linear uniform 10 0,      4.40e-06,           2.0e+06
+knn linear uniform 10 0.1,    4.65e-06,           2.1e+06
+knn linear uniform 10 0.5,    4.64e-06,           2.2e+06
+knn linear uniform 100 0,     1.16e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.21e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.76e-01,           4.5e+06
+col quadratic 10000 0.5,      1.16e+00,           7.4e+06
+col box 10000 0.1,            2.49e-01,           1.7e+07
+col box 10000 0.5,            3.72e-01,           1.7e+07
+col grid 10000 0.1,           1.91e-01,           2.1e+07
+col grid 10000 0.5,           3.95e-01,           1.7e+07
+refiner children,             5.27e-02,           2.8e+07
+refiner leaves,               9.99e-04,           1.5e+09
+rigid quadratic 10,           2.62e-02,           0.0e+00
+rigid quadratic 30,           2.10e-02,           0.0e+00
+rigid hierarchy 10,           7.25e-04,           0.0e+00
+rigid hierarchy 30,           7.34e-04,           0.0e+00
+rmf large,                    1.84e+01,           3.7e+09
+rotation (cache),             1.31e-04,           -4.8e+05
+rotation (nocache),           1.80e-04,           -9.3e+04
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.20e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.11e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/12/11
+mode,fast
+cpf grid 10 0.1,              1.93e-05,           0.0e+00
+cpf grid 100 0.1,             1.90e-04,           0.0e+00
+cpf grid 1000 0.1,            1.90e-03,           3.9e+03
+cpf grid 1000 0.5,            8.68e-03,           1.1e+05
+cpf grid 1000 5,              1.94e-02,           2.1e+07
+cpf grid 10000 0.1,           2.07e-02,           4.1e+04
+cpf grid 10000 0.5,           7.79e-02,           1.2e+06
+cpf grid 10000 5,             1.47e+00,           3.2e+07
+cpf nn 1000 0.1,              1.55e-03,           9.7e+03
+bcpf nn 1000 0.1,             1.60e-03,           2.8e+04
+cpf nn 1000 0.5,              2.62e-03,           8.8e+05
+bcpf nn 1000 0.5,             2.50e-03,           1.8e+06
+cpf nn 1000 5,                2.65e-01,           3.2e+06
+bcpf nn 1000 5,               2.63e-01,           6.3e+06
+cpf nn 10000 0.1,             2.05e-02,           8.9e+04
+bcpf nn 10000 0.1,            2.10e-02,           1.8e+05
+cpf nn 10000 0.5,             1.09e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.13e-01,           4.1e+06
+cpf box 1000 0.1,             4.64e-04,           1.6e+04
+bcpf box 1000 0.1,            8.67e-04,           2.3e+04
+cpf box 1000 0.5,             1.18e-03,           7.5e+05
+bcpf box 1000 0.5,            2.36e-03,           7.9e+05
+cpf box 1000 5,               1.34e-02,           2.9e+07
+bcpf box 1000 5,              2.90e-02,           2.8e+07
+cpf box 10000 0.1,            1.60e-02,           5.0e+04
+bcpf box 10000 0.1,           3.27e-02,           4.8e+04
+cpf box 10000 0.5,            3.95e-02,           2.3e+06
+bcpf box 10000 0.5,           8.23e-02,           2.3e+06
+cpf box 10000 5,              1.29e+00,           3.1e+07
+bcpf box 10000 5,             2.64e+00,           3.1e+07
+cpf quadratic 10 0.1,         1.01e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.53e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.57e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.43e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.53e-03,           2.1e+03
+bcpf quadratic 1000 0.1,      7.76e-03,           1.6e+03
+cpf quadratic 1000 0.5,       4.42e-03,           1.9e+05
+bcpf quadratic 1000 0.5,      9.40e-03,           1.8e+05
+cpf quadratic 1000 5,         1.63e-02,           2.3e+07
+bcpf quadratic 1000 5,        3.50e-02,           2.3e+07
+cpf quadratic 10000 0.1,      3.67e-01,           2.3e+03
+bcpf quadratic 10000 0.1,     8.80e-01,           1.9e+03
+cpf quadratic 10000 0.5,      4.60e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.77e-01,           2.2e+05
+cpf quadratic 10000 5,        2.01e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.21e+00,           3.2e+07
+connectivity slow,            7.70e-01,           4.3e-02
+connectivity fast,            1.53e-02,           1.2e+00
+domino small,                 7.13e+00,           1.0e+00
+container direct list in 4950, 5.48e-05,          0.0e+00
+container ssps direct list in 4950, 5.67e-05,     0.0e+00
+container ssps direct call list in 4950, 3.10e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.93e-05, 0.0e+00
+container direct bind list in 4950, 4.91e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.06e-05,           0.0e+00
+container direct list in 499500, 6.53e-03,        1.4e-01
+container ssps direct list in 499500, 6.58e-03,   1.4e-01
+container ssps direct call list in 499500, 4.60e-03, 2.0e-01
+container ssps direct bind list in 499500, 6.04e-03, 1.6e-01
+container direct bind list in 499500, 6.02e-03,   1.6e-01
+container list in 499500,     4.87e-03,           1.9e-01
+container list out 499500,    9.26e-03,           1.0e-01
+container direct set in 2450, 2.80e-05,           0.0e+00
+container ssps direct set in 2450, 2.89e-05,      0.0e+00
+container ssps direct call set in 2450, 1.61e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.53e-05, 0.0e+00
+container direct bind set in 2450, 2.54e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.45e-05,           0.0e+00
+container direct set in 249500, 2.98e-03,         4.2e-01
+container ssps direct set in 249500, 3.05e-03,    4.1e-01
+container ssps direct call set in 249500, 1.95e-03, 6.4e-01
+container ssps direct bind set in 249500, 2.73e-03, 4.6e-01
+container direct bind set in 249500, 2.71e-03,    4.6e-01
+container set in 249500,      2.11e-03,           5.9e-01
+container set out 249500,     8.80e-03,           1.4e-01
+excluded volume random evaluate, 1.80e-01,        1.4e+03
+excluded volume systematic evaluate, 2.25e+00,    1.4e+02
+excluded volume random evaluate if good, 3.11e-02, 7.3e+03
+excluded volume systematic evaluate if good, 3.10e-02, 3.4e+03
+pairs restraint random evaluate, 7.40e-01,        0.0e+00
+pairs restraint systematic evaluate, 8.00e-01,    0.0e+00
+pairs restraint random evaluate if good, 7.27e-01, 0.0e+00
+pairs restraint systematic evaluate if good, 8.00e-01, 0.0e+00
+k close random evaluate,      1.26e+01,           9.7e+01
+k close systematic evaluate,  4.09e+00,           7.1e+01
+k close random evaluate if good, 1.24e+01,        9.6e+01
+k close systematic evaluate if good, 3.75e+00,    7.1e+01
+changing nonincremental,      1.08e-05,           3.5e+08
+knn cgal uniform 10 0,        2.47e-05,           4.4e+05
+knn cgal uniform 10 0.1,      2.44e-05,           4.1e+05
+knn cgal uniform 10 0.5,      2.11e-05,           6.4e+05
+knn cgal uniform 100 0,       5.22e-04,           2.5e+05
+knn cgal uniform 100 0.1,     5.47e-04,           2.3e+05
+knn cgal uniform 100 0.5,     4.49e-04,           2.6e+05
+knn cgal uniform 1000 0,      8.01e-03,           1.5e+05
+knn cgal uniform 1000 0.1,    7.76e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.27e-03,           2.0e+05
+knn linear uniform 10 0,      4.59e-06,           2.2e+06
+knn linear uniform 10 0.1,    4.56e-06,           1.8e+06
+knn linear uniform 10 0.5,    4.58e-06,           2.5e+06
+knn linear uniform 100 0,     1.12e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.16e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.17e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.73e-01,           4.5e+06
+col quadratic 10000 0.5,      1.19e+00,           7.5e+06
+col box 10000 0.1,            2.47e-01,           1.7e+07
+col box 10000 0.5,            3.75e-01,           1.7e+07
+col grid 10000 0.1,           1.96e-01,           2.0e+07
+col grid 10000 0.5,           4.11e-01,           1.7e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               1.01e-03,           1.5e+09
+rigid quadratic 10,           2.61e-02,           0.0e+00
+rigid quadratic 30,           2.11e-02,           0.0e+00
+rigid hierarchy 10,           7.24e-04,           0.0e+00
+rigid hierarchy 30,           7.35e-04,           0.0e+00
+rmf large,                    1.84e+01,           3.7e+09
+rotation (cache),             1.30e-04,           -3.3e+04
+rotation (nocache),           1.81e-04,           7.7e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.74e+02,           6.3e+11
+xyz particle huge,            4.11e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/13/11
+mode,fast
+cpf grid 10 0.1,              1.86e-05,           0.0e+00
+cpf grid 100 0.1,             1.83e-04,           0.0e+00
+cpf grid 1000 0.1,            1.83e-03,           4.1e+03
+cpf grid 1000 0.5,            8.77e-03,           1.0e+05
+cpf grid 1000 5,              2.39e-02,           1.6e+07
+cpf grid 10000 0.1,           2.02e-02,           3.5e+04
+cpf grid 10000 0.5,           8.23e-02,           1.1e+06
+cpf grid 10000 5,             1.81e+00,           3.1e+07
+cpf nn 1000 0.1,              1.55e-03,           1.1e+04
+bcpf nn 1000 0.1,             1.57e-03,           4.6e+04
+cpf nn 1000 0.5,              2.54e-03,           8.5e+05
+bcpf nn 1000 0.5,             2.51e-03,           1.8e+06
+cpf nn 1000 5,                2.45e-01,           3.3e+06
+bcpf nn 1000 5,               2.51e-01,           6.0e+06
+cpf nn 10000 0.1,             2.08e-02,           9.6e+04
+bcpf nn 10000 0.1,            2.10e-02,           1.8e+05
+cpf nn 10000 0.5,             1.06e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.61e-04,           0.0e+00
+bcpf box 1000 0.1,            9.03e-04,           1.7e+04
+cpf box 1000 0.5,             1.20e-03,           7.5e+05
+bcpf box 1000 0.5,            2.35e-03,           7.7e+05
+cpf box 1000 5,               1.12e-02,           3.6e+07
+bcpf box 1000 5,              2.35e-02,           3.3e+07
+cpf box 10000 0.1,            1.61e-02,           4.7e+04
+bcpf box 10000 0.1,           3.35e-02,           4.7e+04
+cpf box 10000 0.5,            3.94e-02,           2.3e+06
+bcpf box 10000 0.5,           8.13e-02,           2.3e+06
+cpf box 10000 5,              1.08e+00,           4.8e+07
+bcpf box 10000 5,             2.13e+00,           6.4e+07
+cpf quadratic 10 0.1,         1.01e-06,           0.0e+00
+bcpf quadratic 10 0.1,        1.38e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.66e-05,           0.0e+00
+bcpf quadratic 100 0.1,       7.43e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.50e-03,           1.4e+03
+bcpf quadratic 1000 0.1,      7.69e-03,           2.0e+03
+cpf quadratic 1000 0.5,       4.45e-03,           2.2e+05
+bcpf quadratic 1000 0.5,      9.51e-03,           1.9e+05
+cpf quadratic 1000 5,         1.70e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.55e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.67e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     2.17e+00,           1.2e+03
+cpf quadratic 10000 0.5,      4.62e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.80e-01,           2.2e+05
+cpf quadratic 10000 5,        2.03e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.18e+00,           3.1e+07
+connectivity slow,            7.70e-01,           3.9e-02
+connectivity fast,            1.52e-02,           1.2e+00
+domino small,                 7.12e+00,           1.0e+00
+container direct list in 4950, 5.50e-05,          0.0e+00
+container ssps direct list in 4950, 5.67e-05,     0.0e+00
+container ssps direct call list in 4950, 3.16e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.90e-05, 0.0e+00
+container direct bind list in 4950, 4.87e-05,     0.0e+00
+container list in 4950,       3.54e-05,           0.0e+00
+container list out 4950,      8.89e-05,           0.0e+00
+container direct list in 499500, 6.54e-03,        0.0e+00
+container ssps direct list in 499500, 6.63e-03,   0.0e+00
+container ssps direct call list in 499500, 4.53e-03, 0.0e+00
+container ssps direct bind list in 499500, 6.07e-03, 0.0e+00
+container direct bind list in 499500, 6.05e-03,   0.0e+00
+container list in 499500,     4.88e-03,           0.0e+00
+container list out 499500,    9.33e-03,           0.0e+00
+container direct set in 2450, 2.71e-05,           0.0e+00
+container ssps direct set in 2450, 2.81e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.42e-05, 0.0e+00
+container direct bind set in 2450, 2.42e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.44e-05,           0.0e+00
+container direct set in 249500, 2.99e-03,         7.8e+00
+container ssps direct set in 249500, 3.06e-03,    7.6e+00
+container ssps direct call set in 249500, 1.95e-03, 1.2e+01
+container ssps direct bind set in 249500, 2.73e-03, 8.5e+00
+container direct bind set in 249500, 2.73e-03,    8.5e+00
+container set in 249500,      2.12e-03,           1.1e+01
+container set out 249500,     8.80e-03,           2.6e+00
+excluded volume random evaluate, 7.20e-01,        3.9e+02
+excluded volume systematic evaluate, 2.94e+00,    1.4e+02
+excluded volume random evaluate if good, 3.40e+00, 9.7e+01
+excluded volume systematic evaluate if good, 2.67e+00, 7.0e+01
+pairs restraint random evaluate, 9.97e-01,        0.0e+00
+pairs restraint systematic evaluate, 1.10e+00,    0.0e+00
+pairs restraint random evaluate if good, 9.90e-01, 0.0e+00
+pairs restraint systematic evaluate if good, 1.10e+00, 0.0e+00
+k close random evaluate,      1.57e+01,           9.7e+01
+k close systematic evaluate,  4.29e+00,           7.1e+01
+k close random evaluate if good, 1.24e+01,        9.8e+01
+k close systematic evaluate if good, 3.99e+00,    7.1e+01
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.64e-05,           3.2e+05
+knn cgal uniform 10 0.1,      2.37e-05,           4.2e+05
+knn cgal uniform 10 0.5,      2.33e-05,           4.3e+05
+knn cgal uniform 100 0,       5.38e-04,           2.3e+05
+knn cgal uniform 100 0.1,     5.24e-04,           2.4e+05
+knn cgal uniform 100 0.5,     4.49e-04,           2.6e+05
+knn cgal uniform 1000 0,      8.06e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.72e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.30e-03,           2.0e+05
+knn linear uniform 10 0,      4.32e-06,           1.8e+06
+knn linear uniform 10 0.1,    4.67e-06,           2.1e+06
+knn linear uniform 10 0.5,    4.63e-06,           2.3e+06
+knn linear uniform 100 0,     1.16e-04,           1.0e+06
+knn linear uniform 100 0.1,   1.14e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.16e-04,           1.2e+06
+knn linear uniform 1000 0,    6.70e-03,           1.8e+05
+knn linear uniform 1000 0.1,  6.72e-03,           1.8e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.8e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.86e-01,           4.6e+06
+col quadratic 10000 0.5,      1.22e+00,           7.4e+06
+col box 10000 0.1,            2.14e-01,           1.8e+07
+col box 10000 0.5,            3.19e-01,           2.0e+07
+col grid 10000 0.1,           2.76e-01,           1.5e+07
+col grid 10000 0.5,           5.45e-01,           1.2e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               1.00e-03,           1.5e+09
+rigid quadratic 10,           3.53e-02,           0.0e+00
+rigid quadratic 30,           2.69e-02,           0.0e+00
+rigid hierarchy 10,           6.97e-04,           0.0e+00
+rigid hierarchy 30,           7.01e-04,           0.0e+00
+rmf large,                    1.84e+01,           3.7e+09
+rotation (cache),             1.30e-04,           3.0e+05
+rotation (nocache),           1.81e-04,           -2.0e+05
+xyz decorator small,          3.59e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.72e+02,           6.3e+11
+xyz particle huge,            4.11e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/14/11
+mode,fast
+cpf grid 10 0.1,              1.88e-05,           0.0e+00
+cpf grid 100 0.1,             1.83e-04,           0.0e+00
+cpf grid 1000 0.1,            1.84e-03,           0.0e+00
+cpf grid 1000 0.5,            8.50e-03,           1.1e+05
+cpf grid 1000 5,              2.41e-02,           1.6e+07
+cpf grid 10000 0.1,           2.01e-02,           3.7e+04
+cpf grid 10000 0.5,           8.06e-02,           1.1e+06
+cpf grid 10000 5,             1.82e+00,           3.1e+07
+cpf nn 1000 0.1,              1.53e-03,           2.0e+04
+bcpf nn 1000 0.1,             1.47e-03,           1.7e+04
+cpf nn 1000 0.5,              2.56e-03,           8.4e+05
+bcpf nn 1000 0.5,             2.51e-03,           1.8e+06
+cpf nn 1000 5,                2.42e-01,           3.4e+06
+bcpf nn 1000 5,               2.55e-01,           6.1e+06
+cpf nn 10000 0.1,             2.09e-02,           9.5e+04
+bcpf nn 10000 0.1,            2.05e-02,           1.9e+05
+cpf nn 10000 0.5,             1.08e-01,           2.2e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.67e-04,           1.6e+04
+bcpf box 1000 0.1,            8.76e-04,           5.7e+03
+cpf box 1000 0.5,             1.20e-03,           7.6e+05
+bcpf box 1000 0.5,            2.33e-03,           7.6e+05
+cpf box 1000 5,               1.14e-02,           3.6e+07
+bcpf box 1000 5,              2.38e-02,           3.5e+07
+cpf box 10000 0.1,            1.61e-02,           5.1e+04
+bcpf box 10000 0.1,           3.26e-02,           5.1e+04
+cpf box 10000 0.5,            3.97e-02,           2.2e+06
+bcpf box 10000 0.5,           8.16e-02,           2.3e+06
+cpf box 10000 5,              1.09e+00,           4.8e+07
+bcpf box 10000 5,             2.15e+00,           6.3e+07
+cpf quadratic 10 0.1,         9.85e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.34e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.17e-05,           0.0e+00
+bcpf quadratic 100 0.1,       6.70e-05,           3.7e+04
+cpf quadratic 1000 0.1,       3.38e-03,           3.0e+03
+bcpf quadratic 1000 0.1,      7.86e-03,           2.2e+03
+cpf quadratic 1000 0.5,       4.30e-03,           2.1e+05
+bcpf quadratic 1000 0.5,      9.43e-03,           1.9e+05
+cpf quadratic 1000 5,         1.67e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.59e-02,           2.2e+07
+cpf quadratic 10000 0.1,      3.60e-01,           2.1e+03
+bcpf quadratic 10000 0.1,     8.53e-01,           1.9e+03
+cpf quadratic 10000 0.5,      4.48e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.77e-01,           2.2e+05
+cpf quadratic 10000 5,        2.02e+00,           3.2e+07
+bcpf quadratic 10000 5,       4.17e+00,           3.1e+07
+connectivity slow,            7.65e-01,           4.2e-02
+connectivity fast,            1.52e-02,           1.4e+00
+domino small,                 7.08e+00,           1.0e+00
+container direct list in 4950, 5.64e-05,          0.0e+00
+container ssps direct list in 4950, 5.82e-05,     0.0e+00
+container ssps direct call list in 4950, 3.36e-05, 0.0e+00
+container ssps direct bind list in 4950, 5.09e-05, 0.0e+00
+container direct bind list in 4950, 5.08e-05,     0.0e+00
+container list in 4950,       3.52e-05,           0.0e+00
+container list out 4950,      8.06e-05,           0.0e+00
+container direct list in 499500, 6.44e-03,        1.1e-03
+container ssps direct list in 499500, 6.49e-03,   1.0e-03
+container ssps direct call list in 499500, 4.47e-03, 1.5e-03
+container ssps direct bind list in 499500, 5.94e-03, 1.1e-03
+container direct bind list in 499500, 5.95e-03,   1.1e-03
+container list in 499500,     4.83e-03,           1.4e-03
+container list out 499500,    9.33e-03,           7.3e-04
+container direct set in 2450, 2.86e-05,           0.0e+00
+container ssps direct set in 2450, 2.95e-05,      0.0e+00
+container ssps direct call set in 2450, 1.72e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.60e-05, 0.0e+00
+container direct bind set in 2450, 2.59e-05,      0.0e+00
+container set in 2450,        1.78e-05,           0.0e+00
+container set out 2450,       8.44e-05,           0.0e+00
+container direct set in 249500, 3.01e-03,         6.9e+00
+container ssps direct set in 249500, 3.07e-03,    6.7e+00
+container ssps direct call set in 249500, 1.96e-03, 1.1e+01
+container ssps direct bind set in 249500, 2.75e-03, 7.5e+00
+container direct bind set in 249500, 2.74e-03,    7.5e+00
+container set in 249500,      2.10e-03,           9.8e+00
+container set out 249500,     1.24e-02,           1.7e+00
+2418 particles
+k close random,               6.46e+01,           3.9e+02
+k close systematic,           1.63e+01,           2.8e+02
+k close far,                  3.44e+00,           4.0e+02
+k close close,                1.50e+01,           0.0e+00
+k close random if good,       6.35e+01,           3.9e+02
+k close systematic if good,   1.62e+01,           2.8e+02
+k close far if good,          3.52e+00,           4.0e+02
+k close close if good,        1.49e+01,           0.0e+00
+excluded volume random,       3.12e-01,           3.1e+03
+excluded volume systematic,   6.65e-01,           1.1e+03
+excluded volume far,          1.24e-01,           8.4e+03
+excluded volume close,        2.31e+01,           0.0e+00
+excluded volume random if good, 8.20e-01,         1.5e+03
+excluded volume systematic if good, 7.27e-01,     1.1e+03
+excluded volume far if good,  8.15e-01,           1.6e+03
+excluded volume close if good, 1.22e-01,          0.0e+00
+pairs restraint random,       1.77e+01,           0.0e+00
+pairs restraint systematic,   4.24e+00,           0.0e+00
+pairs restraint far,          1.75e+01,           0.0e+00
+pairs restraint close,        2.18e+01,           0.0e+00
+pairs restraint random if good, 1.77e+01,         0.0e+00
+pairs restraint systematic if good, 4.24e+00,     0.0e+00
+pairs restraint far if good,  1.76e+01,           0.0e+00
+pairs restraint close if good, 2.30e+01,          0.0e+00
+changing nonincremental,      1.07e-05,           3.5e+08
+knn cgal uniform 10 0,        2.70e-05,           3.8e+05
+knn cgal uniform 10 0.1,      2.35e-05,           4.8e+05
+knn cgal uniform 10 0.5,      2.28e-05,           4.3e+05
+knn cgal uniform 100 0,       5.78e-04,           2.1e+05
+knn cgal uniform 100 0.1,     4.88e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.38e-04,           2.9e+05
+knn cgal uniform 1000 0,      8.17e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.79e-03,           1.6e+05
+knn cgal uniform 1000 0.5,    6.48e-03,           2.0e+05
+knn linear uniform 10 0,      4.24e-06,           2.9e+06
+knn linear uniform 10 0.1,    4.75e-06,           2.2e+06
+knn linear uniform 10 0.5,    4.71e-06,           2.8e+06
+knn linear uniform 100 0,     1.15e-04,           1.2e+06
+knn linear uniform 100 0.1,   1.13e-04,           1.0e+06
+knn linear uniform 100 0.5,   1.14e-04,           1.1e+06
+knn linear uniform 1000 0,    6.70e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.68e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.76e-01,           4.5e+06
+col quadratic 10000 0.5,      1.21e+00,           7.4e+06
+col box 10000 0.1,            2.22e-01,           1.8e+07
+col box 10000 0.5,            3.31e-01,           2.0e+07
+col grid 10000 0.1,           2.77e-01,           1.4e+07
+col grid 10000 0.5,           5.41e-01,           1.2e+07
+refiner children,             5.27e-02,           2.8e+07
+refiner leaves,               1.05e-03,           1.4e+09
+rigid quadratic 10,           3.55e-02,           0.0e+00
+rigid quadratic 30,           2.60e-02,           0.0e+00
+rigid hierarchy 10,           6.96e-04,           0.0e+00
+rigid hierarchy 30,           7.03e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.29e-04,           2.4e+05
+rotation (nocache),           1.81e-04,           2.4e+05
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.57e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.59e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.71e+02,           6.3e+11
+xyz particle huge,            4.08e+02,           6.3e+11
+xyz vector huge,              8.47e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.48e+01,           6.3e+11
+date,  07/15/11
+mode,fast
+cpf grid 10 0.1,              1.90e-05,           0.0e+00
+cpf grid 100 0.1,             1.84e-04,           1.4e+04
+cpf grid 1000 0.1,            1.84e-03,           1.4e+03
+cpf grid 1000 0.5,            8.45e-03,           1.1e+05
+cpf grid 1000 5,              2.42e-02,           1.7e+07
+cpf grid 10000 0.1,           2.02e-02,           4.0e+04
+cpf grid 10000 0.5,           8.16e-02,           1.1e+06
+cpf grid 10000 5,             1.82e+00,           3.1e+07
+cpf nn 1000 0.1,              1.52e-03,           1.5e+04
+bcpf nn 1000 0.1,             1.61e-03,           2.2e+04
+cpf nn 1000 0.5,              2.54e-03,           7.6e+05
+bcpf nn 1000 0.5,             2.51e-03,           1.8e+06
+cpf nn 1000 5,                2.45e-01,           3.4e+06
+bcpf nn 1000 5,               2.54e-01,           6.1e+06
+cpf nn 10000 0.1,             2.08e-02,           9.8e+04
+bcpf nn 10000 0.1,            2.03e-02,           1.9e+05
+cpf nn 10000 0.5,             1.07e-01,           2.1e+06
+bcpf nn 10000 0.5,            1.10e-01,           4.1e+06
+cpf box 1000 0.1,             4.72e-04,           1.1e+04
+bcpf box 1000 0.1,            8.79e-04,           2.0e+04
+cpf box 1000 0.5,             1.23e-03,           7.5e+05
+bcpf box 1000 0.5,            2.33e-03,           7.5e+05
+cpf box 1000 5,               1.11e-02,           3.5e+07
+bcpf box 1000 5,              2.32e-02,           3.4e+07
+cpf box 10000 0.1,            1.63e-02,           5.3e+04
+bcpf box 10000 0.1,           3.29e-02,           4.8e+04
+cpf box 10000 0.5,            3.97e-02,           2.2e+06
+bcpf box 10000 0.5,           8.13e-02,           2.2e+06
+cpf box 10000 5,              1.09e+00,           4.7e+07
+bcpf box 10000 5,             2.15e+00,           6.2e+07
+cpf quadratic 10 0.1,         9.97e-07,           0.0e+00
+bcpf quadratic 10 0.1,        1.34e-06,           0.0e+00
+cpf quadratic 100 0.1,        3.17e-05,           0.0e+00
+bcpf quadratic 100 0.1,       6.69e-05,           0.0e+00
+cpf quadratic 1000 0.1,       3.42e-03,           3.6e+03
+bcpf quadratic 1000 0.1,      7.86e-03,           3.8e+03
+cpf quadratic 1000 0.5,       4.30e-03,           2.1e+05
+bcpf quadratic 1000 0.5,      9.58e-03,           1.9e+05
+cpf quadratic 1000 5,         1.67e-02,           2.4e+07
+bcpf quadratic 1000 5,        3.55e-02,           2.1e+07
+cpf quadratic 10000 0.1,      3.61e-01,           2.2e+03
+bcpf quadratic 10000 0.1,     8.00e-01,           2.6e+03
+cpf quadratic 10000 0.5,      4.50e-01,           2.2e+05
+bcpf quadratic 10000 0.5,     9.97e-01,           2.2e+05
+cpf quadratic 10000 5,        2.02e+00,           3.1e+07
+bcpf quadratic 10000 5,       4.23e+00,           3.2e+07
+connectivity slow,            7.70e-01,           3.4e-02
+connectivity fast,            1.54e-02,           1.4e+00
+domino small,                 7.11e+00,           1.0e+00
+container direct list in 4950, 5.49e-05,          0.0e+00
+container ssps direct list in 4950, 5.66e-05,     0.0e+00
+container ssps direct call list in 4950, 3.12e-05, 0.0e+00
+container ssps direct bind list in 4950, 4.87e-05, 0.0e+00
+container direct bind list in 4950, 4.89e-05,     0.0e+00
+container list in 4950,       3.50e-05,           0.0e+00
+container list out 4950,      8.04e-05,           0.0e+00
+container direct list in 499500, 6.43e-03,        4.9e+00
+container ssps direct list in 499500, 6.54e-03,   4.8e+00
+container ssps direct call list in 499500, 4.55e-03, 6.9e+00
+container ssps direct bind list in 499500, 6.00e-03, 5.2e+00
+container direct bind list in 499500, 5.95e-03,   5.3e+00
+container list in 499500,     4.86e-03,           6.5e+00
+container list out 499500,    9.26e-03,           3.4e+00
+container direct set in 2450, 2.73e-05,           0.0e+00
+container ssps direct set in 2450, 2.81e-05,      0.0e+00
+container ssps direct call set in 2450, 1.57e-05, 0.0e+00
+container ssps direct bind set in 2450, 2.43e-05, 0.0e+00
+container direct bind set in 2450, 2.41e-05,      0.0e+00
+container set in 2450,        1.79e-05,           0.0e+00
+container set out 2450,       9.10e-05,           0.0e+00
+container direct set in 249500, 3.00e-03,         9.5e-05
+container ssps direct set in 249500, 3.06e-03,    9.3e-05
+container ssps direct call set in 249500, 1.95e-03, 1.5e-04
+container ssps direct bind set in 249500, 2.73e-03, 1.0e-04
+container direct bind set in 249500, 2.73e-03,    1.0e-04
+container set in 249500,      2.11e-03,           1.4e-04
+container set out 249500,     9.69e-03,           2.9e-05
+2418 particles
+k close random,               6.65e+01,           3.9e+02
+k close systematic,           1.61e+01,           2.8e+02
+k close far,                  3.41e+00,           4.0e+02
+k close close,                1.48e+01,           0.0e+00
+k close random if good,       5.65e+01,           3.9e+02
+k close systematic if good,   1.61e+01,           2.8e+02
+k close far if good,          3.50e+00,           4.0e+02
+k close close if good,        1.48e+01,           0.0e+00
+excluded volume random,       3.24e-01,           3.1e+03
+excluded volume systematic,   6.65e-01,           1.1e+03
+excluded volume far,          1.24e-01,           8.4e+03
+excluded volume close,        2.21e+01,           0.0e+00
+excluded volume random if good, 8.07e-01,         1.5e+03
+excluded volume systematic if good, 7.40e-01,     1.1e+03
+excluded volume far if good,  8.00e-01,           1.6e+03
+excluded volume close if good, 1.22e-01,          0.0e+00
+pairs restraint random,       1.76e+01,           0.0e+00
+pairs restraint systematic,   4.23e+00,           0.0e+00
+pairs restraint far,          1.75e+01,           0.0e+00
+pairs restraint close,        2.22e+01,           0.0e+00
+pairs restraint random if good, 1.76e+01,         0.0e+00
+pairs restraint systematic if good, 4.23e+00,     0.0e+00
+pairs restraint far if good,  1.75e+01,           0.0e+00
+pairs restraint close if good, 2.22e+01,          0.0e+00
+changing nonincremental,      1.06e-05,           3.5e+08
+knn cgal uniform 10 0,        2.64e-05,           3.7e+05
+knn cgal uniform 10 0.1,      2.25e-05,           3.8e+05
+knn cgal uniform 10 0.5,      2.37e-05,           3.9e+05
+knn cgal uniform 100 0,       5.03e-04,           2.4e+05
+knn cgal uniform 100 0.1,     4.83e-04,           2.5e+05
+knn cgal uniform 100 0.5,     4.57e-04,           2.9e+05
+knn cgal uniform 1000 0,      8.06e-03,           1.6e+05
+knn cgal uniform 1000 0.1,    7.49e-03,           1.7e+05
+knn cgal uniform 1000 0.5,    6.17e-03,           2.0e+05
+knn linear uniform 10 0,      4.85e-06,           2.2e+06
+knn linear uniform 10 0.1,    4.18e-06,           2.5e+06
+knn linear uniform 10 0.5,    4.07e-06,           2.1e+06
+knn linear uniform 100 0,     1.15e-04,           1.1e+06
+knn linear uniform 100 0.1,   1.14e-04,           1.1e+06
+knn linear uniform 100 0.5,   1.15e-04,           1.1e+06
+knn linear uniform 1000 0,    6.67e-03,           1.9e+05
+knn linear uniform 1000 0.1,  6.70e-03,           1.9e+05
+knn linear uniform 1000 0.5,  6.70e-03,           1.9e+05
+md charmm,                    inf,                0.0e+00
+col quadratic 10000 0.1,      9.76e-01,           4.5e+06
+col quadratic 10000 0.5,      1.15e+00,           7.4e+06
+col box 10000 0.1,            2.22e-01,           1.8e+07
+col box 10000 0.5,            3.19e-01,           2.0e+07
+col grid 10000 0.1,           2.74e-01,           1.5e+07
+col grid 10000 0.5,           5.47e-01,           1.2e+07
+refiner children,             5.25e-02,           2.8e+07
+refiner leaves,               1.08e-03,           1.4e+09
+rigid quadratic 10,           3.59e-02,           0.0e+00
+rigid quadratic 30,           2.67e-02,           0.0e+00
+rigid hierarchy 10,           6.94e-04,           0.0e+00
+rigid hierarchy 30,           7.05e-04,           0.0e+00
+rmf large,                    1.83e+01,           3.7e+09
+rotation (cache),             1.29e-04,           6.0e+05
+rotation (nocache),           1.82e-04,           -4.0e+04
+xyz decorator small,          3.57e-02,           4.1e+09
+xyz particle small,           7.17e-02,           2.1e+09
+xyz vector small,             3.59e-02,           4.1e+09
+xyz struct small,             3.57e-02,           4.1e+09
+xyz vector space small,       3.57e-02,           4.1e+09
+xyz decorator large,          1.14e+00,           1.0e+10
+xyz particle large,           2.29e+00,           6.8e+09
+xyz vector large,             1.14e+00,           1.0e+10
+xyz struct large,             1.14e+00,           1.0e+10
+xyz vector space large,       1.14e+00,           1.0e+10
+xyz decorator huge,           1.73e+02,           6.3e+11
+xyz particle huge,            4.11e+02,           6.3e+11
+xyz vector huge,              8.48e+01,           6.3e+11
+xyz struct huge,              8.48e+01,           6.3e+11
+xyz vector space huge,        8.47e+01,           6.3e+11
