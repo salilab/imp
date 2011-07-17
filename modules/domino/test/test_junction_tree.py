@@ -3,6 +3,7 @@ import IMP.test
 import IMP.domino
 import IMP.core
 import IMP.atom
+import random
 
 
 class DOMINOTests(IMP.test.TestCase):
@@ -39,7 +40,7 @@ class DOMINOTests(IMP.test.TestCase):
                     for i in intersection:
                         print i.get_name()
                         self.assertIn(i, set)
-    def _test_global_min2(self):
+    def test_global_min2(self):
         """Testing random junction tree"""
         m= IMP.Model()
         ps=[]
