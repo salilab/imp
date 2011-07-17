@@ -201,6 +201,8 @@ class VectorOfRefCounted {
   void reserve(unsigned int i){ data_.reserve(i);}
   size_type size() const {return data_.size();}
   void resize(unsigned int i) {data_.resize(i);}
+  //! for compatibility, the value is ignored
+  void resize(unsigned int i, const_reference) {data_.resize(i);}
   // god swig is dumb
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
   typedef typename Data::iterator iterator;
