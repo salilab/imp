@@ -44,6 +44,7 @@ public:
   void set_random_offset(double o){random_offset_=o;}
   const DataPoints *get_full_data() const {return full_data_;}
   void set_fast_clustering();
+  void set_status_bar(bool status) {show_status_bar_=status;}
 protected:
   /**
   Sample possible centers.
@@ -81,6 +82,7 @@ protected:
   //sample initial centers from the data
   void center_sampling( Array1DD_VEC *centers_sample);
   int dim_;
+  bool show_status_bar_;
   int k_;//number of centers
   bool is_set_; //is_set_ is true if the clustering was preformed
   const Array1DD_VEC * data_;

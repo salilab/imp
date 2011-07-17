@@ -350,11 +350,13 @@ int main(int argc, char **argv) {
   std::cout<<"From:"<<temp.get_number_of_solutions()<<
   " clustered to:"<<sols_trans_clustered.size()<<std::endl;
   //rescore by CC scores
-  IMP_NEW(em::FitRestraint,fr,(mh_ps,dmap));
+  IMP_NEW(em::FitRestraint,fr,(mh_ps,dmap,FloatPair(0.,0.),
+                               atom::Mass::get_mass_key(),1,false));
   mdl->add_restraint(fr);
-  for(int i=0;i<sols_trans_clustered.size();i++) {
+  for(int i=0;i<(int)sols_trans_clustered.size();i++) {
     core::transform(rb,sols_trans_clustered[i]);
-    sols_clustered.add_solution(sols_trans_clustered[i],fr->evaluate(false));
+    sols_clustered.add_solution(sols_trans_clustered[i],//fr->evaluate(false));
+                                em::compute_fitting_score(mh_xyz,dmap));
     core::transform(rb,sols_trans_clustered[i].get_inverse());
   }
   sols_clustered.sort();

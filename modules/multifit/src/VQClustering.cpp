@@ -37,10 +37,12 @@ protected:
 
 VQClustering::VQClustering() {
   is_set_ = false;
+  show_status_bar_=true;
 }
 VQClustering::VQClustering(DataPoints *data, int k)
   : k_(k) {
   //store relevate particle data in a more efficeint data structure
+  show_status_bar_=true;
   full_data_ = data;
   data_ = full_data_->get_data();
   IMP_INTERNAL_CHECK(data_->size()>0,"no data points to cluster");
@@ -78,10 +80,16 @@ void VQClustering::sampling(Array1DD_VEC *tracking) {
   order_track.insert(order_track.end(),k_,0);
   order_centers_indexes.insert(order_centers_indexes.end(),k_,0);
   CenterSorter sorter;
-  boost::progress_display show_progress(number_of_runs_);
+  int show_number_of_runs=0;
+  if (show_status_bar_) {
+    show_number_of_runs=number_of_runs_;
+  }
+  boost::progress_display show_progress(show_number_of_runs);
   Array1DD_VEC centers_sample;
   for (int run_ind=0; run_ind<number_of_runs_; ++run_ind) {
-    ++show_progress;
+    if (show_status_bar_) {
+      ++show_progress;
+    }
     IMP_LOG(IMP::VERBOSE,"TRN clustering run number : " << run_ind <<std::endl);
     //randomly sample centers from the data points
     //data_->sample_centers(centers_sample,k_,random_offset_,false);
@@ -209,15 +217,18 @@ void VQClustering::run(DataPoints *starting_centers){
   //the initial centers to the clustering are the results of the first run
   //TODO - maybe we can improve that ?
   if (starting_centers == NULL) {
-  for(int i=0;i<k_;i++) {
-    centers_.push_back(tracking[i]);
-  }
+    for(int i=0;i<k_;i++) {
+      centers_.push_back(tracking[i]);
+    }
   }
   else {
-    IMP_INTERNAL_CHECK(k_==starting_centers->get_number_of_data_points(),
-                       "The starting centers are not of size K"<<std::endl);
-    for(int i=0;i<k_;i++) {
+    //add all precalculated centers
+    for(int i=0;i<starting_centers->get_number_of_data_points();i++) {
       centers_.push_back((*(starting_centers->get_data()))[i]);
+    }
+    //rest are sampled
+    for(int i=starting_centers->get_number_of_data_points();i<k_;i++) {
+      centers_.push_back(tracking[i]);
     }
   }
   IMP_LOG(IMP::VERBOSE,"VQClustering::run before clustering"<<std::endl);

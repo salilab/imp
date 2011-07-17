@@ -6,6 +6,8 @@
  *
  */
 #include <IMP/multifit/fft_based_rigid_fitting.h>
+#include <IMP/multifit/DataPointsAssignment.h>
+#include <IMP/multifit/anchors_reader.h>
 #include <IMP/core/utility.h>
 #include <IMP/em/MRCReaderWriter.h>
 #include <IMP/statistics/Histogram.h>
@@ -641,7 +643,7 @@ TransScores FFTFitting::search_for_best_translations(
   //  Pointer<em::DensityMap> hit_map = get_correlation_hit_map();
   DensGrid hit_map = get_correlation_hit_map();
   /*
-  em::DensityMap *hit_map_copy = grid2map(hit_map,asmb_map_->get_spacing());
+    em::DensityMap *hit_map_copy = grid2map(hit_map,asmb_map_->get_spacing());
   static int kkk=0;
   std::stringstream name;
   name<<"debug.map."<<kkk<<".mrc";
@@ -675,18 +677,35 @@ algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
   algebra::Vector3Ds best_trans;
   statistics::Histogram hist = get_density_histogram(hit_map,
                                 0,100);
-  float density_threshold = 0.08;//std::min(0.1,hist.get_top(0.3)-EPS);
+  float density_threshold = hist.get_top(0.9)-EPS;
   //todo - make this a parameter
   //  std::cout<<"= density threshold for gmm:"<<density_threshold<<std::endl;
   IMP_NEW(DensityDataPoints, ddp, (*hit_map,density_threshold));
+  IMP_INTERNAL_CHECK(ddp->get_number_of_data_points()<0,
+           "No data points found above the input threshold "<<
+                     density_threshold<<std::endl);
   VQClustering vq(ddp,num_solutions);
   vq.set_fast_clustering();
+  vq.set_status_bar(false);
   vq.run();
   DataPointsAssignment asgn(ddp,&vq);
+  /*
+  std::stringstream name;
+  static int jjj=0;
+  name<<"pick.anchors."<<jjj<<".cmm";
+  multifit::write_cmm(name.str(),name.str(),
+                      multifit::AnchorsData(
+                         asgn.get_centers(),
+                         *(asgn.get_edges())));
+  jjj=jjj+1;
+  */
   for( int i=0;i<asgn.get_number_of_clusters();i++) {
      algebra::Vector3D center_voxel =
        get_segment_maximum(asgn,hit_map,i);
-     best_trans.push_back(center_voxel);
+     algebra::Transformation3D t =
+       algebra::Transformation3D(algebra::get_identity_rotation_3d(),
+                                 center_voxel-map_center_)*center_trans_;
+     best_trans.push_back(t.get_translation());
   }
   return best_trans;
 }
