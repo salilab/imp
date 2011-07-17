@@ -475,8 +475,6 @@ Float compute_fitting_score(const Particles &ps,
   }
   union_map->calcRMS();
   model_dens_map->calcRMS();
-  write_map(model_dens_map,"temp1.mrc");
-  write_map(union_map,"temp2.mrc");
   return em::CoarseCC::calc_score(union_map, model_dens_map,
                                   1.0,true,false);
 }
