@@ -24,7 +24,7 @@ IMP_BEGIN_NAMESPACE
 Model::Model(std::string name): Object(name),
                                 rs_(new RestraintSet())
 {
-  cur_stage_=NOT_EVALUATING;
+  cur_stage_=internal::NOT_EVALUATING;
   gather_statistics_=false;
   eval_count_=0;
   set_was_used(true);
@@ -75,7 +75,7 @@ Model::RestraintConstIterator Model::restraints_end() const {
 
 IMP_LIST_IMPL(Model, ScoreState, score_state, ScoreState*,
               ScoreStates,
-              {IMP_INTERNAL_CHECK(cur_stage_== NOT_EVALUATING,
+              {IMP_INTERNAL_CHECK(cur_stage_== internal::NOT_EVALUATING,
                      "The set of score states cannot be changed during"
                                   << "evaluation.");
                 Model::set_score_state_model(obj, this);

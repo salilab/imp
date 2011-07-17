@@ -22,6 +22,15 @@ ListPairContainer
   P(){}
 
 ListPairContainer
+::ListPairContainer(const ParticlePairsTemp &ps):
+  P(P::get_model(ps.begin(), ps.end()), "ListSingletonContainer%1%")
+{
+  IMP_USAGE_CHECK(is_ok(ps.begin(), ps.end()),
+                  "All particles must belong to the same model.");
+  set_particle_pairs(ps);
+}
+
+ListPairContainer
 ::ListPairContainer(const ParticlePairsTemp &ps,
                          std::string name):
   P(P::get_model(ps.begin(), ps.end()), name)
