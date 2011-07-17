@@ -31,7 +31,9 @@ namespace IMP {
   /* Ignore C++ return value from inplace operators, so that SWIG does not
      generate a new SWIG wrapper for the return value (see above). */
   void __iadd__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+=(o); }
+  void __iadd__(const IMP::algebra::VectorD<D> &o) { self->operator+=(o); }
   void __iadd__(double o) { self->operator+=(o); }
+  void __add__(const IMP::algebra::BoundingBoxD<D> &o) { self->operator+(o); }
     unsigned int __len__() {return 2;}
 };
 

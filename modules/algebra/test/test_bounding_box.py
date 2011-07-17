@@ -27,6 +27,7 @@ class BoundingBoxTests(IMP.test.TestCase):
                                       IMP.algebra.Vector3D(9,9,9))
         b2= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(-5,-5,-5),
                                       IMP.algebra.Vector3D(3,3,3))
+        bup= b1+b2
         bu=IMP.algebra.get_union(b1,b2)
         self.assertAlmostEqual(IMP.algebra.get_distance(bu.get_corner(0),
                                                         IMP.algebra.Vector3D(-5,-5,-5)),0.001,places=1)

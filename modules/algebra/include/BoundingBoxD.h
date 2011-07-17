@@ -81,7 +81,7 @@ public:
     return get_corner(0).get_dimension();
   }
 
-  //! merge two bounding boxes
+  //! extend the current bounding box to include the other
   const BoundingBoxD<D>& operator+=(const BoundingBoxD<D> &o) {
     for (unsigned int i=0; i< get_dimension(); ++i) {
       b_[0][i]= std::min(o.get_corner(0)[i], get_corner(0)[i]);
@@ -90,7 +90,7 @@ public:
     return *this;
   }
 
-  //! merge two bounding boxes
+  //! extend the current bounding box to include the point
   const BoundingBoxD<D>& operator+=(const VectorD<D> &o) {
     for (unsigned int i=0; i< get_dimension(); ++i) {
       b_[0][i]= std::min(o[i], b_[0][i]);
@@ -107,7 +107,14 @@ public:
     }
     return *this;
   }
-
+  //! Returning a bounding box containing both
+  template <class O>
+  const BoundingBoxD<D> operator+(const BoundingBoxD<D> &o) const {
+    BoundingBoxD<D> ret(*this);
+    ret+= o;
+    return ret;
+  }
+  //! Return a bounding box grown by o on all sides
   template <class O>
   const BoundingBoxD<D> operator+(const O &o) const {
     BoundingBoxD<D> ret(*this);
@@ -208,23 +215,12 @@ inline BoundingBoxD<D> get_intersection(const BoundingBoxD<D> &a,
 
 
 //! Return the union bounding box
+/** This is the same as doing a+b. */
 template <int D>
-inline BoundingBoxD<D> get_union(const BoundingBoxD<D> &a,
+inline BoundingBoxD<D> get_union(BoundingBoxD<D> a,
                                  const BoundingBoxD<D> &b) {
-  VectorD<D> ic[2];
-  //set low
-  int j=0;
-  for (unsigned int i=0; i< a.get_dimension(); ++i) {
-    if (a.get_corner(j)[i] < b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
-    else {ic[j][i]=b.get_corner(j)[i];}
-  }
-  //set top
-  j=1;
-  for (unsigned int i=0; i< a.get_dimension(); ++i) {
-    if (a.get_corner(j)[i] > b.get_corner(j)[i]) {ic[j][i]=a.get_corner(j)[i];}
-    else {ic[j][i]=b.get_corner(j)[i];}
-  }
-  return BoundingBoxD<D>(ic[0],ic[1]);
+  a+=b;
+  return a;
 }
 
 //! Return the maximum axis aligned extent
