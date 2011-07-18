@@ -516,6 +516,12 @@ public:                                                                 \
      macros*/                                                           \
 IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                         \
 Name(): Parent(){}                                                      \
+Name(Model *m, ParticleIndex id): Parent(m, id) {                       \
+  IMP_INTERNAL_CHECK(particle_is_instance(m->get_particle(id)),         \
+                     "Particle " << m->get_particle(id)->get_name()     \
+                     << " missing required attributes for decorator "   \
+                     << #Name << "\n" << *m->get_particle(id));         \
+}                                                                       \
 explicit Name(::IMP::Particle *p): Parent(p) {                          \
   IMP_INTERNAL_CHECK(particle_is_instance(p),                           \
                      "Particle " << p->get_name()                       \
@@ -549,6 +555,13 @@ IMP_SHOWABLE(Name)
 public:                                                                 \
  IMP_NO_DOXYGEN(typedef Parent ParentDecorator);                        \
  Name(){}                                                               \
+ Name(Model *m, ParticleIndex id, const TraitsType &tr): Parent(m, id), \
+                                                         traits_(tr) {  \
+   IMP_INTERNAL_CHECK(particle_is_instance(m->get_particle(id), tr),    \
+                     "Particle " << m->get_particle(id)->get_name()     \
+                     << " missing required attributes for decorator "   \
+                     << #Name << "\n" << *m->get_particle(id));         \
+}                                                                       \
  Name(const TraitsType &tr):                                            \
    traits_(tr) {}                                                       \
  Name(::IMP::Particle *p,                                               \
@@ -597,8 +610,9 @@ public:                                                                 \
 */
 #define IMP_DECORATOR_GET(AttributeKey, Type, has_action, not_has_action) \
   do {                                                                  \
-    if (get_particle()->has_attribute(AttributeKey)) {                  \
-      Type VALUE =  get_particle()->get_value(AttributeKey);            \
+    if (get_model()->get_has_attribute(AttributeKey, get_particle_index())) { \
+      Type VALUE =  get_model()->get_attribute(AttributeKey,            \
+                                               get_particle_index());   \
       has_action;                                                       \
     } else {                                                            \
       not_has_action;                                                   \
@@ -614,13 +628,18 @@ public:                                                                 \
     \see IMP_DECORATOR_GET()
     \see IMP_DECORATOR_GET_SET()
 */
-#define IMP_DECORATOR_SET(AttributeKey, value)           \
-  do {                                                   \
-  if (get_particle()->has_attribute(AttributeKey)) {     \
-    get_particle()->set_value(AttributeKey, value)  ;    \
-  } else {                                               \
-    get_particle()->add_attribute(AttributeKey, value);  \
-  }                                                      \
+#define IMP_DECORATOR_SET(AttributeKey, value)                  \
+  do {                                                          \
+    if (get_model()->get_has_attribute(AttributeKey,            \
+                                       get_particle_index())) { \
+      get_model()->set_attribute(AttributeKey,                  \
+                                 get_particle_index(),          \
+                                 value);                        \
+    } else {                                                    \
+      get_model()->add_attribute(AttributeKey,                  \
+                                 get_particle_index(),          \
+                                 value);                        \
+    }                                                           \
   } while (false)
 
 
@@ -637,10 +656,12 @@ public:                                                                 \
 */
 #define IMP_DECORATOR_GET_SET(name, AttributeKey, Type, ReturnType)     \
   ReturnType get_##name() const {                                       \
-    return static_cast<ReturnType>(get_particle()->get_value(AttributeKey)); \
+    return static_cast<ReturnType>(get_model()                          \
+                                   ->get_attribute(AttributeKey,        \
+                                                   get_particle_index())); \
   }                                                                     \
   void set_##name(ReturnType t) {                                       \
-    get_particle()->set_value(AttributeKey, t);                         \
+    get_model()->set_attribute(AttributeKey, get_particle_index(), t);  \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_CLASS(getset##name)
 

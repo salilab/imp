@@ -100,8 +100,15 @@ namespace {
 #endif
     algebra::Rotation3D rot= rb.get_reference_frame().get_transformation_from()\
       .get_rotation();
-    for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
-      RigidMember d= rb.get_member(i);
+    const ParticleIndexes &rbis= rb.get_member_particle_indexes();
+    for (unsigned int i=0; i< rbis.size(); ++i) {
+      RigidMember d(rb.get_model(), rbis[i]);
+      algebra::VectorD<3> dv= rot*d.get_derivatives();
+      rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
+    }
+    const ParticleIndexes &rbbis= rb.get_body_member_particle_indexes();
+    for (unsigned int i=0; i< rbbis.size(); ++i) {
+      RigidMember d(rb.get_model(), rbbis[i]);
       algebra::VectorD<3> dv= rot*d.get_derivatives();
       rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
     }
@@ -218,13 +225,31 @@ IMP_CONSTRAINT_DECORATOR_DEF(RigidBody);
 
 void RigidBody::on_change() {
    double md=0;
-   for (unsigned int i=0; i< get_number_of_members(); ++i) {
-     double cd= (get_coordinates()
-                 -get_member(i).get_coordinates()).get_magnitude();
-     if (get_member(i)->has_attribute(XYZR::get_radius_key())) {
-       cd+= get_member(i)->get_value(XYZR::get_radius_key());
+   {
+     const ParticleIndexes& members= get_member_particle_indexes();
+     for (unsigned int i=0; i< members.size(); ++i) {
+       double cd= (get_coordinates()
+                   -XYZ(get_model(),
+                        members[i]).get_coordinates()).get_magnitude();
+       if (get_model()->get_has_attribute(XYZR::get_radius_key(),
+                                          members[i])) {
+         cd+= get_model()->get_attribute(XYZR::get_radius_key(),
+                                         members[i]);
+       }
+       md=std::max(cd, md);
      }
-     md=std::max(cd, md);
+   }
+   {
+     const ParticleIndexes& members= get_body_member_particle_indexes();
+     for (unsigned int i=0; i< members.size(); ++i) {
+       double cd= (get_coordinates()
+                   -XYZ(get_model(),
+                        members[i]).get_coordinates()).get_magnitude();
+       if (get_model()->get_has_attribute(XYZR::get_radius_key(), members[i])) {
+         cd+= get_model()->get_attribute(XYZR::get_radius_key(), members[i]);
+       }
+       md=std::max(cd, md);
+     }
    }
    if (get_particle()->has_attribute(XYZR::get_radius_key())) {
      get_particle()->set_value(XYZR::get_radius_key(), md);
@@ -242,7 +267,9 @@ void RigidBody::on_change() {
 
 RigidBody RigidBody::internal_setup_particle(Particle *p,
                                              const XYZs &members) {
-  IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_body(p),
+  IMP_USAGE_CHECK(!internal::
+                  get_has_required_attributes_for_body(p->get_model(),
+                                                       p->get_index()),
                   "The RigidBody is already set up.");
 
   XYZs ds;
@@ -397,23 +424,22 @@ RigidBody RigidBody::setup_particle(Particle *p,
 }
 
 void RigidBody::teardown_particle(RigidBody rb) {
-  for (unsigned int i=0; i < rb.get_number_of_members(); ++i) {
-    RigidMember rm= rb.get_member(i);
-    std::cout << "Cleaning up " << rm->get_name()
-              << "--" << *rm.get_particle() << std::endl;
-    if (RigidBody::particle_is_instance(rm)) {
-      internal::remove_required_attributes_for_body_member(rm);
-    } else {
+  {
+    const ParticleIndexes& members= rb.get_member_particle_indexes();
+    for (unsigned int i=0; i < members.size(); ++i) {
+      RigidMember rm(rb.get_model(), members[i]);
       internal::remove_required_attributes_for_member(rm);
     }
   }
-  Hierarchy hc(rb, internal::rigid_body_data().htraits_);
-  Hierarchy hbc(rb, internal::rigid_body_data().hbtraits_);
-  hc.clear_children();
-  hbc.clear_children();
+  {
+    const ParticleIndexes& members= rb.get_body_member_particle_indexes();
+    for (unsigned int i=0; i < members.size(); ++i) {
+      RigidMember rm(rb.get_model(), members[i]);
+      internal::remove_required_attributes_for_body_member(rm);
+    }
+  }
   rb.set_constraint(NULL, NULL, rb.get_particle());
   internal::remove_required_attributes_for_body(rb.get_particle());
-  std::cout << "all done " << *rb.get_particle() << std::endl;
 }
 
 void
@@ -440,22 +466,29 @@ RigidBody::normalize_rotation() {
 void RigidBody::update_members() {
   normalize_rotation();
   algebra::Transformation3D tr= get_reference_frame().get_transformation_to();
-  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  for (unsigned int i=0; i< hd.get_number_of_children(); ++i) {
-    RigidMember rm(hd.get_child(i));
-    rm.set_coordinates(tr.get_transformed(rm.get_internal_coordinates()));
+  {
+    const ParticleIndexes&members= get_member_particle_indexes();
+    for (unsigned int i=0; i< members.size(); ++i) {
+      RigidMember rm(get_model(), members[i]);
+      rm.set_coordinates(tr.get_transformed(rm.get_internal_coordinates()));
+    }
   }
-  Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
-  for (unsigned int i=0; i< hdb.get_number_of_children(); ++i) {
-    RigidMember rm(hdb.get_child(i));
-    RigidBody rb(rm);
-    rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr
-                                     *rm.get_internal_transformation()));
+  {
+    const ParticleIndexes&members= get_body_member_particle_indexes();
+    for (unsigned int i=0; i< members.size(); ++i) {
+      RigidBody rb(get_model(), members[i]);
+      rb.set_reference_frame_lazy(algebra::ReferenceFrame3D(tr
+                                                *RigidMember(get_model(),
+                             members[i]).get_internal_transformation()));
+    }
   }
   for (unsigned int i=0; i< 3; ++i) {
-    get_particle()->set_value(internal::rigid_body_data().torque_[0], 0);
-    get_particle()->set_value(internal::rigid_body_data().torque_[1], 0);
-    get_particle()->set_value(internal::rigid_body_data().torque_[2], 0);
+    get_model()->set_attribute(internal::rigid_body_data().torque_[0],
+                               get_particle_index(), 0);
+    get_model()->set_attribute(internal::rigid_body_data().torque_[1],
+                               get_particle_index(), 0);
+    get_model()->set_attribute(internal::rigid_body_data().torque_[2],
+                               get_particle_index(), 0);
   }
 }
 
@@ -479,30 +512,24 @@ RigidBody::get_reference_frame() const {
 
 RigidMembers
 RigidBody::get_members() const {
-  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  RigidMembers rbms(get_number_of_members());
-  for (unsigned int i=0; i< rbms.size(); ++i) {
-    rbms[i]= get_member(i);
+  RigidMembers ret;
+  {
+    ParticleIndexes pis= get_member_particle_indexes();
+    for (unsigned int i=0; i< pis.size(); ++i) {
+      ret.push_back(RigidMember(get_model(), pis[i]));
+    }
   }
-  return rbms;
+  {
+   ParticleIndexes pis= get_body_member_particle_indexes();
+   for (unsigned int i=0; i< pis.size(); ++i) {
+     ret.push_back(RigidMember(get_model(), pis[i]));
+    }
+  }
+  return ret;
 }
 
-unsigned int RigidBody::get_number_of_members() const {
-  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
-  return hd.get_number_of_children()+hdb.get_number_of_children();
-}
 
-RigidMember RigidBody::get_member(unsigned int i) const {
-  Hierarchy hd(get_particle(), internal::rigid_body_data().htraits_);
-  if (i < hd.get_number_of_children()) {
-    return RigidMember(hd.get_child(i).get_particle());
-  } else {
-    Hierarchy hdb(get_particle(), internal::rigid_body_data().hbtraits_);
-    return RigidMember(hdb.get_child(i
-                             -hd.get_number_of_children()).get_particle());
-  }
-}
+
 
 void RigidBody::add_member(XYZ d) {
   add_member_internal(d, get_reference_frame());
@@ -511,22 +538,42 @@ void RigidBody::add_member(XYZ d) {
 
 void RigidBody::add_member_internal(XYZ d,
                                     const algebra::ReferenceFrame3D &ref) {
-  internal::add_required_attributes_for_member(d);
+  internal::add_required_attributes_for_member(d, get_particle());
   RigidMember cm(d);
-  Hierarchy hc(d, internal::rigid_body_data().htraits_);
-  Hierarchy hd(*this, internal::rigid_body_data().htraits_);
-  hd.add_child(hc);
+  if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
+                                     get_particle_index())) {
+    ParticleIndexes members
+      =get_model()->get_attribute(internal::rigid_body_data().members_,
+                                  get_particle_index());
+    members.push_back(d.get_particle_index());
+    get_model()->set_attribute(internal::rigid_body_data().members_,
+                               get_particle_index(), members);
+  } else {
+    get_model()->add_attribute(internal::rigid_body_data().members_,
+                               get_particle_index(),
+                               ParticleIndexes(1, d.get_particle_index()));
+  }
   algebra::VectorD<3> lc=ref.get_local_coordinates(d.get_coordinates());
   cm.set_internal_coordinates(lc);
 }
 
 void RigidBody::add_member(RigidBody d) {
   algebra::ReferenceFrame3D r= get_reference_frame();
-  internal::add_required_attributes_for_body_member(d);
+  internal::add_required_attributes_for_body_member(d, get_particle());
   RigidMember cm(d);
-  Hierarchy hc(d, internal::rigid_body_data().hbtraits_);
-  Hierarchy hd(*this, internal::rigid_body_data().hbtraits_);
-  hd.add_child(hc);
+  if (get_model()->get_has_attribute(internal::rigid_body_data().body_members_,
+                                     get_particle_index())) {
+    ParticleIndexes members
+      =get_model()->get_attribute(internal::rigid_body_data().body_members_,
+                                                       get_particle_index());
+    members.push_back(d.get_particle_index());
+    get_model()->set_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(), members);
+  } else {
+    get_model()->add_attribute(internal::rigid_body_data().body_members_,
+                               get_particle_index(),
+                               ParticleIndexes(1, d.get_particle_index()));
+  }
   // want tr*ltr= btr, so ltr= tr-1*btr
   algebra::Transformation3D tr
     =r.get_transformation_from()
@@ -570,6 +617,19 @@ void RigidBody::set_coordinates_are_optimized(bool tf) {
   }
 }
 
+RigidMember RigidBody::get_member(unsigned int i) const {
+  IMP_USAGE_CHECK(i < get_number_of_members(),
+                  "Out of range member requested: " << i
+                  << " of " << get_number_of_members());
+  unsigned int sz=get_member_particle_indexes().size();
+  if (i < sz) {
+    return RigidMember(get_model(), get_member_particle_indexes()[i]);
+  } else {
+    return RigidMember(get_model(),
+                       get_body_member_particle_indexes()[i-sz]);
+  }
+}
+
 algebra::VectorD<3> RigidBody::get_coordinates(RigidMember p)
   const {
   algebra::VectorD<3> lp= p.get_internal_coordinates();
@@ -590,10 +650,23 @@ void RigidBody
 void RigidBody
   ::set_reference_frame(const IMP::algebra::ReferenceFrame3D &tr) {
   set_reference_frame_lazy(tr);
-  for (unsigned int i=0; i< get_number_of_members(); ++i) {
-    get_member(i)
-      .set_coordinates(tr.get_global_coordinates(get_member(i)
-                                                 .get_internal_coordinates()));
+  {
+    const ParticleIndexes &members= get_member_particle_indexes();
+    for (unsigned int i=0; i< members.size(); ++i) {
+      XYZ(get_model(), members[i])
+        .set_coordinates(tr.get_global_coordinates(RigidMember(get_model(),
+                                                               members[i])
+                                             .get_internal_coordinates()));
+    }
+  }
+  {
+    const ParticleIndexes &members= get_body_member_particle_indexes();
+    for (unsigned int i=0; i< members.size(); ++i) {
+      XYZ(get_model(), members[i])
+        .set_coordinates(tr.get_global_coordinates(RigidMember(get_model(),
+                                                               members[i])
+                                             .get_internal_coordinates()));
+    }
   }
 }
 
@@ -620,13 +693,15 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   }
   XYZ::add_to_derivatives(deriv_global, da);
   for (unsigned int j=0; j< 4; ++j) {
-    get_particle()->add_to_derivative(internal::rigid_body_data()
-                                         .quaternion_[j], q[j],da);
+    get_model()->add_to_derivative(internal::rigid_body_data()
+                                   .quaternion_[j], get_particle_index(),
+                                   q[j],da);
   }
   algebra::Vector3D torque= algebra::get_vector_product(local, deriv_local);
   for (unsigned int i=0; i< 3; ++i) {
-    get_particle()->add_to_derivative(internal::rigid_body_data().torque_[i],
-                                      torque[i], da);
+    get_model()->add_to_derivative(internal::rigid_body_data().torque_[i],
+                                   get_particle_index(),
+                                   torque[i], da);
   }
 }
 
@@ -662,13 +737,8 @@ void RigidMember::show(std::ostream &out) const {
 
 
 RigidBody RigidMember::get_rigid_body() const {
-  if (internal::get_has_required_attributes_for_body_member(*this)) {
-    Hierarchy hd(*this, internal::rigid_body_data().hbtraits_);
-    return RigidBody(hd.get_parent());
-  } else {
-    Hierarchy hc(*this, internal::rigid_body_data().htraits_);
-    return RigidBody(hc.get_parent());
-  }
+  return RigidBody(get_particle()
+                   ->get_value(internal::rigid_body_data().body_));
 }
 
 

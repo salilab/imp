@@ -474,13 +474,17 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
       IMP_CHECK_OBJECT(cur);
       if (cur->get_constituents_match(constituents)) {
         if (mykey != ObjectKey()) {
-          rb->add_cache_attribute(mykey, cur);
+          rb.get_model()->add_cache_attribute(mykey,
+                                              rb.get_particle_index(),
+                                              cur.get());
         }
         IMP_CHECK_OBJECT(cur);
         cur->validate();
         if (mykey != ObjectKey()) {
           IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
-          rb->add_cache_attribute(mykey, cur);
+          rb.get_model()->add_cache_attribute(mykey,
+                                              rb.get_particle_index(),
+                                              cur.get());
         }
         return cur;
       }
@@ -496,11 +500,12 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     free=keys.back();
     add_rigid_body_cache_key(keys.back());
   }
-  RigidBodyHierarchy *h= new RigidBodyHierarchy(rb, constituents);
-  rb.get_particle()->add_cache_attribute(free, h);
+  Pointer<RigidBodyHierarchy> h= new RigidBodyHierarchy(rb, constituents);
   if (mykey != ObjectKey()) {
     IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
-    rb->add_cache_attribute(mykey, h);
+    rb.get_model()->add_cache_attribute(mykey,
+                                        rb.get_particle_index(),
+                                        h.get());
   }
   IMP_CHECK_OBJECT(h);
   h->validate();

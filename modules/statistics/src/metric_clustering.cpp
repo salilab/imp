@@ -50,7 +50,7 @@ namespace {
     algebra::Vector3Ds ret(sc->get_number_of_particles());
     cs->load_configuration(i);
     IMP_FOREACH_SINGLETON(sc, {
-        ret[_2]= _1->_get_coordinates().get_center();
+        ret[_2]= cs->get_model()->get_sphere(_1->get_index()).get_center();
       });
     return ret;
   }

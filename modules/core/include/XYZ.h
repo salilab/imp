@@ -55,32 +55,33 @@ class IMPCOREEXPORT XYZ: public Decorator
   IMP_DECORATOR_GET_SET(z, get_coordinate_key(2), Float, Float);
   //! set the ith coordinate
   void set_coordinate(unsigned int i, Float v) {
-    get_particle()->set_value(get_coordinate_key(i), v);
+    get_model()->get_sphere(get_particle_index())[i]=v;
   }
   //! set all coordinates from a vector
   void set_coordinates(const algebra::VectorD<3> &v) {
-    get_particle()->_access_coordinates()._access_center()=v;
+    get_model()->get_sphere(get_particle_index())[0]=v[0];
+    get_model()->get_sphere(get_particle_index())[1]=v[1];
+    get_model()->get_sphere(get_particle_index())[2]=v[2];
   }
 
   //! Get the ith coordinate
   Float get_coordinate(int i) const {
-    return get_coordinates()[i];
+    return get_model()->get_sphere(get_particle_index())[i];
   }
   //! Get the ith coordinate derivative
   Float get_derivative(int i) const {
-    return get_particle()->get_derivative(get_coordinate_key(i));
+    return get_derivatives()[i];
   }
   //! Add something to the derivative of the ith coordinate
   void add_to_derivative(int i, Float v,
-                                    DerivativeAccumulator &d) {
+                         DerivativeAccumulator &d) {
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
   void add_to_derivatives(const algebra::VectorD<3>& v,
                           DerivativeAccumulator &d) {
-    add_to_derivative(0, v[0], d);
-    add_to_derivative(1, v[1], d);
-    add_to_derivative(2, v[2], d);
+    get_model()->add_to_coordinate_derivatives(get_particle_index(),
+                                               v, d);
   }
   //! Get whether the coordinates are optimized
   /** \return true only if all of them are optimized.
@@ -99,25 +100,21 @@ class IMPCOREEXPORT XYZ: public Decorator
 
   //! Get the vector from this particle to another
   algebra::VectorD<3> get_vector_to(const XYZ &b) const {
-    return algebra::VectorD<3>(b.get_coordinate(0) - get_coordinate(0),
-                    b.get_coordinate(1) - get_coordinate(1),
-                    b.get_coordinate(2) - get_coordinate(2));
+    return b.get_coordinates()-get_coordinates();;
   }
 
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
   const algebra::VectorD<3>& get_coordinates() const {
-    return get_particle()->_get_coordinates().get_center();;
+    return get_model()->get_sphere(get_particle_index()).get_center();
   }
 
   //! Get the vector of derivatives.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
   algebra::VectorD<3> get_derivatives() const {
-    return algebra::VectorD<3>(get_derivative(0),
-                             get_derivative(1),
-                             get_derivative(2));
+    return get_model()->get_coordinate_derivatives(get_particle_index());
   }
 
   static bool particle_is_instance(Particle *p) {

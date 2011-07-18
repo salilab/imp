@@ -72,6 +72,20 @@ struct Counter {
     } while (!queue.empty());                                           \
   }                                                                     \
 
+
+typedef bool (*ParticleFunction)(Particle*);
+
+IMPEXPORT
+void add_particle_check(ParticleFunction instance, ParticleFunction check);
+
+
+struct ParticleCheck {
+  ParticleCheck(ParticleFunction instance, ParticleFunction check) {
+    add_particle_check(instance, check);
+  }
+};
+
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_UTILITY_H */

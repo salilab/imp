@@ -18,11 +18,14 @@ IMP_BEGIN_NAMESPACE
 
 Configuration::Configuration(Model *m, std::string name): Object(name),
   model_(m){
-  for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-    PP pp(*it);
-    base_[pp]= internal::ParticleData(*it);
-  }
+  floats_= *m;
+  strings_=*m;
+  ints_=*m;
+  objects_=*m;
+  ints_lists_=*m;
+  objects_lists_=*m;
+  particles_=*m;
+  particles_lists_=*m;
 }
 
 
@@ -31,29 +34,14 @@ Configuration::Configuration(Model *m, std::string name): Object(name),
 void Configuration::load_configuration() const {
   IMP_OBJECT_LOG;
   set_was_used(true);
-  Particles to_remove;
-  // do not invalidate my iterator
-  for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-    PP pp(*it);
-    if (base_.find(pp) == base_.end()) {
-      to_remove.push_back(*it);
-    }
-  }
-  for (unsigned int i=0; i< to_remove.size(); ++i) {
-    IMP_LOG(VERBOSE, "Removing particle " << to_remove[i]->get_name()
-            << " from model." << std::endl);
-    model_->remove_particle(to_remove[i]);
-  }
-  compatibility::set<Particle*> active(model_->particles_begin(),
-                             model_->particles_end());
-  for (DataMap::const_iterator it= base_.begin(); it != base_.end(); ++it) {
-    PP pp(it->first);
-    if (active.find(pp) == active.end()) {
-      model_->restore_particle(it->first);
-    }
-    it->second.apply(it->first);
-  }
+  static_cast<FloatAttributeTable&>(*model_)= floats_;
+  static_cast<StringAttributeTable&>(*model_)= strings_;
+  static_cast<IntAttributeTable&>(*model_)= objects_;
+  static_cast<ObjectAttributeTable&>(*model_)= ints_lists_;
+  static_cast<IntsAttributeTable&>(*model_)= objects_lists_;
+  static_cast<ObjectsAttributeTable&>(*model_)= particles_;
+  static_cast<ParticleAttributeTable&>(*model_)= particles_lists_;
+  static_cast<ParticlesAttributeTable&>(*model_)= ints_;
 }
 
 

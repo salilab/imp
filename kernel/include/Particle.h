@@ -11,7 +11,6 @@
 #include "kernel_config.h"
 #include "base_types.h"
 #include "Object.h"
-#include "internal/particle.h"
 #include "utility.h"
 #include "Key.h"
 #include "internal/AttributeTable.h"
@@ -20,138 +19,57 @@
 #include "VectorOfRefCounted.h"
 #include "container_base.h"
 #include <utility>
-#include <boost/scoped_ptr.hpp>
 
 
-// should use this once we move to a new enough boost (1.35)
-//#include <boost/intrusive/list.hpp>
-
-#include <list>
-
-#define IMP_PI(func) if (name.get_index() < IMP_NUM_INLINE) floats_.func;\
-  else ps_->floats_.func;
-#define IMP_RPI(func) if (name.get_index() < IMP_NUM_INLINE) {  \
-    return floats_.func;                                        \
-  }                                                             \
-  else return ps_->floats_.func;
+#define IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(UCName, lcname, Value)         \
+  void add_attribute(UCName##Key name, Value initial_value);            \
+  void remove_attribute(UCName##Key name);                              \
+  bool has_attribute(UCName##Key name) const;                           \
+  Value get_value(UCName##Key name) const;                              \
+  void set_value(UCName##Key name, Value value);                        \
+  void add_cache_attribute(UCName##Key name, Value value);              \
+  UCName##Keys get_##lcname##_keys() const
 
 
-#if IMP_BUILD < IMP_FAST
-#define IMP_CHECK_ACTIVE                                                \
-  IMP_USAGE_CHECK(get_is_active(), "Particle " << get_name() << " is inactive");
-
-#define IMP_CHECK_READABLE IMP_IF_CHECK(USAGE) {assert_values_readable();}
-#define IMP_CHECK_MUTABLE IMP_IF_CHECK(USAGE) {assert_values_mutable();}
-#define IMP_CHECK_VALID_DERIVATIVES IMP_IF_CHECK(USAGE) \
-  {assert_valid_derivatives();}
-
-#else
-#define IMP_CHECK_ACTIVE
-#define IMP_CHECK_READABLE
-#define IMP_CHECK_MUTABLE
-#define IMP_CHECK_VALID_DERIVATIVES
-
-#endif
-
-#define IMP_PARTICLE_ATTRIBUTE_TYPE(UCName, lcname, Value, cond,        \
-                                    table0, table1,                     \
-                                    add_action, remove_action)          \
-  void add_attribute(UCName##Key name, Value initial_value){            \
-    IMP_CHECK_ACTIVE;                                                   \
-    IMP_CHECK_MUTABLE;                                                  \
-    IMP_USAGE_CHECK(name != UCName##Key(),                              \
-                    "Cannot use attributes without "                    \
-                    << "naming them.");                                 \
-    IMP_USAGE_CHECK(!has_attribute(name),                               \
-              "Cannot add attribute " << name << " to particle "        \
-                    << get_name() << " twice.");                        \
-    IMP_USAGE_CHECK(UCName##Table::Traits::get_is_valid(initial_value), \
-                    "Initial value is not valid when adding attribute"  \
-                    << name << " to particle " << get_name());          \
-    add_action;                                                         \
-    if (cond) table0.add(name.get_index(), initial_value);              \
-    else table1.add(name.get_index(), initial_value);                   \
+#define IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(UCName, lcname, Value)          \
+  inline void Particle::add_attribute(UCName##Key name, Value initial_value){ \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    get_model()->add_attribute(name, id_, initial_value);               \
   }                                                                     \
-  void remove_attribute(UCName##Key name) {                             \
-    IMP_CHECK_ACTIVE;                                                   \
-    IMP_USAGE_CHECK(name != UCName##Key(),                              \
-                    "Cannot use attributes without "                    \
-                    << "naming them.");                                 \
-    remove_action;                                                      \
-    IMP_USAGE_CHECK(has_attribute(name),                                \
-              "Cannot remove attribute " << name << " from particle "   \
-                    << get_name() << " as it is not there.");           \
-    if (cond) table0.remove(name.get_index());                          \
-    else table1.remove(name.get_index());                               \
+  inline void Particle::remove_attribute(UCName##Key name) {            \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    get_model()->remove_attribute(name, id_);                           \
   }                                                                     \
-  bool has_attribute(UCName##Key name) const{                           \
-    IMP_USAGE_CHECK(name != UCName##Key(),                              \
-                    "Cannot use attributes without "                    \
-                    << "naming them.");                                 \
-    IMP_CHECK_ACTIVE;                                                   \
-    if (cond) {                                                         \
-      if (!table0.fits(name.get_index())) return false;                 \
-      else {                                                            \
-        return UCName##Table::Traits::get_is_valid(                     \
-                                         table0.get(name.get_index())); \
-      }                                                                 \
-    } else {                                                            \
-      if (!table1.fits(name.get_index())) return false;                 \
-      else {                                                            \
-        return UCName##Table::Traits::get_is_valid(                     \
-                                         table1.get(name.get_index())); \
-      }                                                                 \
-    }                                                                   \
+  inline bool Particle::has_attribute(UCName##Key name) const{          \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    return get_model()->get_has_attribute(name, id_);                   \
   }                                                                     \
-  inline Value get_value(UCName##Key name) const {                      \
-    IMP_CHECK_ACTIVE;                                                   \
-    IMP_CHECK_READABLE;                                                 \
-    IMP_USAGE_CHECK(name != UCName##Key(),                              \
-                    "Cannot use attributes without "                    \
-                    << "naming them.");                                 \
-    IMP_USAGE_CHECK(has_attribute(name),                                \
-              "Cannot get value " << name << " from particle "          \
-                    << get_name() << " as it is not there.");           \
-    if (cond) return table0.get(name.get_index());                      \
-    else return table1.get(name.get_index());                           \
+  inline Value Particle::get_value(UCName##Key name) const {            \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    return get_model()->get_attribute(name, id_);                       \
   }                                                                     \
-  void set_value(UCName##Key name, Value value) {                       \
-    IMP_USAGE_CHECK(name != UCName##Key(),                              \
-                    "Cannot use attributes without "                    \
-                    << "naming them.");                                 \
-    if (!UCName##Table::Traits::get_is_valid(value)) {                  \
-      IMP_THROW("Cannot set value of " << name                          \
-                << " to " << value                                      \
-                << " on particle " << get_name(), ModelException);      \
-    }                                                                   \
-    IMP_CHECK_ACTIVE;                                                   \
-    IMP_CHECK_MUTABLE;                                                  \
-    IMP_USAGE_CHECK(has_attribute(name),                                \
-              "Cannot set value " << name << " from particle "          \
-                    << get_name() << " as it is not there.");           \
-    if (cond) table0.set(name.get_index(), value);                      \
-    else table1.set(name.get_index(), value);                           \
+  inline void Particle::set_value(UCName##Key name, Value value) {      \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    get_model()->set_attribute(name, id_, value);                       \
   }                                                                     \
-  IMP_SWITCH_DOXYGEN(class UCName##KeyIterator,                         \
-         typedef UCName##IteratorTraits::Iterator UCName##KeyIterator); \
-  UCName##KeyIterator lcname##_keys_begin() const {                     \
-    return UCName##IteratorTraits::create_iterator(this, 0,             \
-                                                   table1.get_length()); \
+  inline UCName##Keys Particle::get_##lcname##_keys() const {           \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    return get_model()->UCName##AttributeTable::get_attribute_keys(id_); \
   }                                                                     \
-  UCName##KeyIterator lcname##_keys_end() const {                       \
-    return UCName##IteratorTraits::create_iterator(this,                \
-                                                   table1.get_length(), \
-                                                   table1.get_length()); \
-  }                                                                     \
-  UCName##Keys get_##lcname##_attributes() const {                      \
-    return UCName##Keys(lcname##_keys_begin(),                          \
-                        lcname##_keys_end());                           \
-  }                                                                     \
-  IMP_REQUIRE_SEMICOLON_CLASS(lcname)
+  inline void Particle::add_cache_attribute(UCName##Key name,           \
+                                            Value value) {              \
+    IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");        \
+    return get_model()->add_cache_attribute(name, id_, value);          \
+  }
 
 
 
 IMP_BEGIN_NAMESPACE
+#ifndef IMP_DOXYGEN
+typedef int ParticleIndex;
+static const int InvalidParticleIndex=-1;
+typedef std::vector<ParticleIndex> ParticleIndexes;
+#endif
 
 class Model;
 class Changed;
@@ -207,55 +125,8 @@ class IMPEXPORT Particle : public Container
   // doxygen produces funny docs for these things
 #ifndef IMP_DOXYGEN
   friend class Model;
-  friend class Changed;
-  friend class SaveOptimizeds;
-  friend struct internal::ReadLock;
-  friend struct internal::WriteLock;
-  //typedef internal::ObjectContainer<Particle, unsigned int> Storage;
-  typedef internal::ParticleStorage::Storage Storage;
-  void zero_derivatives();
-
-  void assert_values_mutable() const;
-  void assert_values_readable() const;
-
-  void assert_can_change_optimization() const;
-
-  void assert_can_change_derivatives() const;
-
-  void assert_valid_derivatives() const;
-
-  typedef internal::SphereInlineStorage FloatTable;
-  typedef internal::FixedInlineStorage<internal::IntAttributeTableTraits,
-                                       IMP_NUM_INLINE> IntTable;
-  //typedef internal::ParticleStorage::IntTable IntTable;
-  typedef internal::ParticleStorage::StringTable StringTable;
-  typedef internal::ParticleStorage::ParticleTable ParticleTable;
-  typedef internal::ParticleStorage::ObjectTable ObjectTable;
-
-  typedef internal::SphereInlineStorage DerivativeTable;
-  typedef internal::ParticleKeyIterator<FloatKey, Particle,
-    internal::IsAttribute<FloatKey, Particle> > FloatIteratorTraits;
-  typedef internal::ParticleKeyIterator<IntKey, Particle,
-    internal::IsAttribute<IntKey, Particle> > IntIteratorTraits;
-  typedef internal::ParticleKeyIterator<StringKey, Particle,
-    internal::IsAttribute<StringKey, Particle> > StringIteratorTraits;
-  typedef internal::ParticleKeyIterator<ParticleKey, Particle,
-    internal::IsAttribute<ParticleKey, Particle> > ParticleIteratorTraits;
-  typedef internal::ParticleKeyIterator<ObjectKey, Particle,
-    internal::IsAttribute<ObjectKey, Particle> > ObjectIteratorTraits;
-
-
-  typedef internal::ParticleKeyIterator<FloatKey, Particle,
-    internal::IsOptimized<FloatKey, Particle> > OptimizedIteratorTraits;
-
- private:
-  FloatTable floats_;
-  DerivativeTable derivatives_;
-  IntTable ints_;
-  boost::scoped_ptr<internal::ParticleStorage> ps_;
-  bool dirty_;
 #endif
-
+  ParticleIndex id_;
   IMP_OBJECT(Particle);
  public:
 
@@ -278,120 +149,12 @@ class IMPEXPORT Particle : public Container
   /* @} */
 #else
 
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Float, float, Float,
-                              name.get_index() < IMP_NUM_INLINE,
-                              floats_, ps_->floats_,
-                              { if (name.get_index() < IMP_NUM_INLINE) {
-                                  derivatives_.add(name.get_index(), 0);
-                                } else {
-                                  ps_->derivatives_.add(name.get_index(), 0);
-                                }
-                              },
-                              {if (ps_->optimizeds_.fits(name.get_index())) {
-                                  ps_->optimizeds_.remove(name.get_index());
-                                }
-                                if (name.get_index() < IMP_NUM_INLINE) {
-                                  derivatives_.remove(name.get_index());
-                                } else {
-                                  ps_->derivatives_.remove(name.get_index());
-                                }});
-
-#ifdef IMP_DOXYGEN
-  class OptimizedKeyIterator;
-#else
-  typedef OptimizedIteratorTraits::Iterator OptimizedKeyIterator;
-#endif
-
-
-  OptimizedKeyIterator optimized_keys_begin() const {
-    return OptimizedIteratorTraits::create_iterator(this, 0,
-                                                    ps_->floats_.get_length());
-  }
-  OptimizedKeyIterator optimized_keys_end() const {
-    return OptimizedIteratorTraits::create_iterator(this,
-                                                    ps_->floats_.get_length(),
-                                                    ps_->floats_.get_length());
-  }
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Int, int, Int,
-                              name.get_index() < IMP_NUM_INLINE,
-                              ints_,ps_->ints_,{},{});
-  IMP_PARTICLE_ATTRIBUTE_TYPE(String, string, String,
-                              true,ps_->strings_,ps_->strings_,{},{});
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Particle, particle, Particle*,
-                              true,ps_->particles_,ps_->particles_,{},{});
-  IMP_PARTICLE_ATTRIBUTE_TYPE(Object, object, Object*,
-                              true,ps_->objects_,ps_->objects_,{},{});
-
-  /** \name Breaking cycles
-
-      It is sometimes necessary to tell the particle not to reference
-      count its releationship to another in order to avoid cycles.
-      See RefCounted for more detail.
-      @{
-  */
-  void set_is_ref_counted(ParticleKey k, bool tf) {
-    ps_->particles_.set(k.get_index(),
-           internal::ObjectWrapper<Particle>(ps_->particles_.get(k.get_index()),
-                                                  tf));
-  }
-  bool get_is_ref_counted(ParticleKey k) const {
-    return ps_->particles_.get(k.get_index()).get_is_ref_counted();
-  }
-  void set_is_ref_counted(ObjectKey k, bool tf) {
-    ps_->objects_.set(k.get_index(),
-   internal::ObjectWrapper<Object>(ps_->objects_.get(k.get_index()),
-                                                  tf));
-  }
-  bool get_is_ref_counted(ObjectKey k) const {
-    return ps_->objects_.get(k.get_index()).get_is_ref_counted();
-  }
-  /** @} */
+  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Float, float, Float);
+  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Int, int, Int);
+  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(String, string, String);
+  IMP_PARTICLE_ATTRIBUTE_TYPE_DECL(Object, object, Object*);
 
 #endif
-
-  /** \name  Add cached data to a particle
-      Restraints and Constraints can cache data in a particle in order
-      to accelerate computations. This data must obey the following rules:
-      - it must be optional
-      - if multiple restraints add the same attribute, it must all be equivalent
-
-      When a Particle is changed in such a way that the cached data might
-      be affected, the clear_caches() method should be called. Yes, this
-      is very vague. We don't have a more precise prescription yet.
-      @{
-  */
-  void add_cache_attribute(IntKey name, unsigned int value) {
-    IMP_USAGE_CHECK(name != IntKey(),
-                    "Cannot use attributes without "
-                    << "naming them.");
-    IMP_USAGE_CHECK(!has_attribute(name),
-              "Cannot add attribute " << name << " to particle "
-                    << get_name() << " twice.");
-    IMP_USAGE_CHECK(IntTable::Traits::get_is_valid(value),
-                    "Initial value is not valid when adding attribute"
-                    << name << " to particle " << get_name());
-    if (name.get_index() < IMP_NUM_INLINE) {
-      ints_.add(name.get_index(), value);
-    } else {
-      ps_->ints_.add(name.get_index(), value);
-    }
-  }
-  void add_cache_attribute(ObjectKey name, Object *value) {
-    IMP_CHECK_ACTIVE;
-    IMP_USAGE_CHECK(name != ObjectKey(), "Cannot use attributes without "
-                    << "naming them.");
-    IMP_USAGE_CHECK(!has_attribute(name),
-                    "Cannot add attribute " << name << " to particle "
-                    << get_name() << " twice.");
-    IMP_USAGE_CHECK(ObjectTable::Traits::get_is_valid(value),
-                    "Initial value is not valid when adding attribute"
-                    << name << " to particle " << get_name());
-    ps_->objects_.add(name.get_index(), value);
-    ps_->cache_objects_.push_back(name);
-  }
-
-  void clear_caches();
-  /** @} */
 
  /** @name Float Attributes
       Float attributes can be optimized, meaning the optimizer is
@@ -403,10 +166,7 @@ class IMPEXPORT Particle : public Container
       and derivatives in kcal/mol angstrom. This is not enforced.
   */
   /*@{*/
-  void add_attribute(FloatKey name, const Float initial_value, bool optimized){
-    add_attribute(name, initial_value);
-    if (optimized) set_is_optimized(name, optimized);
-  }
+  void add_attribute(FloatKey name, const Float initial_value, bool optimized);
 
   void add_to_derivative(FloatKey key, Float value,
                          const DerivativeAccumulator &da);
@@ -415,8 +175,18 @@ class IMPEXPORT Particle : public Container
 
   bool get_is_optimized(FloatKey k) const;
 
-  Float get_derivative(FloatKey name) const;
+  Float get_derivative(FloatKey name) const ;
+  /** @} */
 
+  /** \name Particle attributes
+      @{
+  */
+  void add_attribute(ParticleKey k, Particle *v);
+  bool has_attribute(ParticleKey k);
+  void set_value(ParticleKey k, Particle *v);
+  Particle *get_value(ParticleKey k) const;
+  void remove_attribute(ParticleKey k);
+  ParticleKeys get_particle_keys() const;
   /** @} */
 
   //! Get whether the particle is active.
@@ -437,115 +207,23 @@ class IMPEXPORT Particle : public Container
 #endif
 #endif
 
-#if !defined(IMP_DOXYGEN)
-#if !defined(SWIG)
-  const algebra::Sphere3D &_get_coordinates() const {
-    return floats_.get_data();
-  }
-  algebra::Sphere3D &_access_coordinates() {
-    dirty_=true;
-    return floats_.access_data();
-  }
-  void validate_float_derivatives() const {
-    for (unsigned int i=0; i< derivatives_.get_length(); ++i) {
-      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
-        if (! (derivatives_.get(i) < std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
-    for (unsigned int i=IMP_NUM_INLINE;
-         i< ps_->derivatives_.get_length(); ++i) {
-      if (ps_->optimizeds_.fits(i) && ps_->optimizeds_.get(i)) {
-        if (! (ps_->derivatives_.get(i)
-               < std::numeric_limits<double>::max())) {
-          IMP_THROW("Bad attribute value", ModelException);
-        }
-      }
-    }
+  ParticleIndex get_index() const {
+    return id_;
   }
 
-#endif
+#if !defined(IMP_DOXYGEN)
   ContainersTemp get_input_containers() const;
   bool get_contained_particles_changed() const;
   ParticlesTemp get_contained_particles() const;
   bool get_is_up_to_date() const { return true;}
+  void clear_caches();
 #endif
 };
 
-
 IMP_OUTPUT_OPERATOR(Particle);
-
-inline Float Particle::get_derivative(FloatKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  IMP_INTERNAL_CHECK(has_attribute(name), "Particle " << get_name()
-             << " does not have attribute " << name);
-  IMP_CHECK_VALID_DERIVATIVES;
-  if (name.get_index() < IMP_NUM_INLINE) {
-    return derivatives_.get(name.get_index());
-  } else {
-    return ps_->derivatives_.get(name.get_index());
-  }
-}
-
-
-inline bool Particle::get_is_optimized(FloatKey name) const
-{
-  IMP_CHECK_ACTIVE;
-  if (!ps_->optimizeds_.fits(name.get_index())) return false;
-  else return ps_->optimizeds_.get(name.get_index());
-}
-
-inline void Particle::set_is_optimized(FloatKey name, bool tf)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_USAGE_CHECK(has_attribute(name), "set_is_optimized called "
-            << "with invalid attribute" << name);
-  IMP_IF_CHECK(USAGE) {assert_can_change_optimization();}
-
-  if (tf) {
-    ps_->optimizeds_.add(name.get_index(), true);
-  } else {
-    ps_->optimizeds_.remove(name.get_index());
-  }
-}
-
-inline void Particle::add_to_derivative(FloatKey name, Float value,
-                                        const DerivativeAccumulator &da)
-{
-  IMP_CHECK_ACTIVE;
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (is_nan(value) || !DerivativeTable::Traits::get_is_valid(value)) {
-      std::string message
-        =std::string("Can't add NaN to derivative in particle ")+
-        get_name();
-      internal::assert_fail(message.c_str());
-      throw ModelException(message.c_str());
-    }
-  }
-  IMP_INTERNAL_CHECK(has_attribute(name), "Particle " << get_name()
-             << " does not have attribute " << name);
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) { assert_can_change_derivatives();}
-  IMP_INTERNAL_CHECK(name.get_index() < ps_->derivatives_.get_length(),
-             "Something is wrong with derivative table.");
-  if (name.get_index() < IMP_NUM_INLINE) {
-    derivatives_.set(name.get_index(),
-                     derivatives_.get(name.get_index())
-                     + da(value));
-  } else {
-    ps_->derivatives_.set(name.get_index(),
-                          ps_->derivatives_.get(name.get_index())
-                          + da(value));
-  }
-}
 
 
 IMP_END_NAMESPACE
-
-#undef IMP_CHECK_ACTIVE
-#undef IMP_CHECK_MUTABLE
-#undef IMP_CHECK_VALID_DERIVATIVES
 
 #include "Model.h"
 

@@ -102,6 +102,7 @@ class RBDTests(IMP.test.TestCase):
         IMP.core.RigidBody.teardown_particle(rb1)
         print "setting up again"
         rb1= IMP.core.RigidBody.setup_particle(rbp1, [rb0])
+        print "tearing down"
         IMP.core.RigidBody.teardown_particle(rb0)
 
 if __name__ == '__main__':

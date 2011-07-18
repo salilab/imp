@@ -8,8 +8,6 @@
 #ifndef IMP_BASE_TYPES_H
 #define IMP_BASE_TYPES_H
 
-#define IMP_NUM_INLINE 5
-
 #include "kernel_config.h"
 #include "Key.h"
 #include <string>
@@ -55,6 +53,10 @@ typedef std::vector<Int> Ints;
 //! Standard way to pass a bunch of String values
 typedef std::vector<String> Strings;
 
+#ifndef IMP_DOXYGEN
+class Particle;
+typedef std::vector<Particle*> ParticlesTemp;
+#endif
 
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
@@ -73,6 +75,12 @@ IMP_DECLARE_KEY_TYPE(StringKey, 2);
 IMP_DECLARE_KEY_TYPE(ParticleKey, 3);
 //! The type used to identify a particle attribute in the Particles
 IMP_DECLARE_KEY_TYPE(ObjectKey, 4);
+//! The type used to identify int attributes in the Particles
+IMP_DECLARE_KEY_TYPE(IntsKey, 5);
+//! The type used to identify a particle attribute in the Particles
+IMP_DECLARE_KEY_TYPE(ParticlesKey, 6);
+//! The type used to identify a particle attribute in the Particles
+IMP_DECLARE_KEY_TYPE(ObjectsKey, 7);
 
 /** @} */
 

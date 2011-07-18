@@ -30,9 +30,11 @@ public core::internal::CoreListCLASSNAMEContainer
   // for the change versions
   ListCLASSNAMEContainer();
 public:
+  ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps);
+
   //! construct and pass an initial set of CLASSNAMEs
   ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps,
-                         std::string name= "ListCLASSNAMEContainer %1%");
+                         std::string name);
 
   ListCLASSNAMEContainer(Model *m,
                          std::string name= "ListCLASSNAMEContainer %1%");

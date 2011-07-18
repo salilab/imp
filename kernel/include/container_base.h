@@ -18,7 +18,7 @@
 IMP_BEGIN_NAMESPACE
 class Model;
 class Particle;
-IMP_OBJECTS(Particle,Particles);
+typedef VectorOfRefCounted<Particle*> Particles;
 
 template <unsigned int D>
 class ParticleTuple;

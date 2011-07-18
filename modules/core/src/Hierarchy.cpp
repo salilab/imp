@@ -52,9 +52,17 @@ namespace {
 
   HierarchyCache* rebuild_cache(Hierarchy h) {
     Pointer<HierarchyCache> c= new HierarchyCache();
-    h.get_particle()->add_cache_attribute(h.get_traits().get_data().cache_key_,
-                                          c);
     c->leaves= get_leaves(h);
+    for (unsigned int i=0; i< c->leaves.size(); ++i) {
+      IMP_CHECK_OBJECT(c->leaves[i]);
+    }
+    h.get_model()->add_cache_attribute(h.get_traits().get_data().cache_key_,
+                                       h.get_particle_index(),
+                                       c.get());
+    IMP_INTERNAL_CHECK(h.get_model()
+                       ->get_attribute(h.get_traits().get_data().cache_key_,
+                                       h.get_particle_index()) == c.get(),
+                       "Cache not added properly");
     return c;
   }
 }
@@ -65,6 +73,13 @@ const ParticlesTemp& Hierarchy::get_leaves() const {
   HierarchyCache *c= get_cache(*this);
   if (!c) {
     c=rebuild_cache(*this);
+  } else {
+    IMP_CHECK_OBJECT(c);
+  }
+  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+    for (unsigned int i=0; i< c->leaves.size(); ++i) {
+      IMP_CHECK_OBJECT(c->leaves[i]);
+    }
   }
   return c->leaves;
 }

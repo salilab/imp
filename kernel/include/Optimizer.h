@@ -145,17 +145,6 @@ class IMPEXPORT Optimizer: public Object
   //! Update optimizer state, should be called at each successful step
   void update_states() const ;
 
-  struct FloatIndex
-  {
-    Particle* p_;
-    FloatKey fk_;
-    FloatIndex(Particle* p, FloatKey fk): p_(p), fk_(fk){}
-  public:
-    FloatIndex() {}
-  };
-
-  typedef std::vector<FloatIndex> FloatIndexes;
-
 
 
   /** @name Methods for getting and setting optimized attributes
@@ -167,33 +156,21 @@ class IMPEXPORT Optimizer: public Object
       they can get and set the values and derivatives as needed.
   */
   //!@{
-  FloatIndexes get_optimized_attributes() const {
-    std::vector<FloatIndex> ret;
-    ParticlesTemp ps= get_model()->get_particles();
-    for (unsigned int i=0; i< ps.size(); ++i) {
-      FloatKeys fks(ps[i]->float_keys_begin(), ps[i]->float_keys_end());
-      for (unsigned int j=0; j< fks.size(); ++j) {
-        if (ps[i]->get_is_optimized(fks[j])) {
-          ret.push_back(FloatIndex(ps[i], fks[j]));
-        }
-      }
-    }
-    return ret;
+  typedef Model::FloatIndex FloatIndex;
+  typedef std::vector<FloatIndex> FloatIndexes;
+  std::vector<Model::FloatIndex> get_optimized_attributes() const {
+    return get_model()->get_optimized_attributes();
+  }
+  void set_value(Model::FloatIndex fi, double v) const {
+    get_model()->set_attribute(fi.k_, fi.p_, v);
   }
 
-  void set_value(FloatIndex fi, Float v) const {
-    IMP_INTERNAL_CHECK(fi.p_->get_is_optimized(fi.fk_),
-                       "Keep your mits off unoptimized attributes "
-                       << fi.p_->get_name() << " " << fi.fk_ << std::endl);
-    fi.p_->set_value(fi.fk_, v);
+  Float get_value(Model::FloatIndex fi) const {
+    return get_model()->get_attribute(fi.k_, fi.p_);
   }
 
-  Float get_value(FloatIndex fi) const {
-    return fi.p_->get_value(fi.fk_);
-  }
-
-  Float get_derivative(FloatIndex fi) const {
-    return fi.p_->get_derivative(fi.fk_);
+  Float get_derivative(Model::FloatIndex fi) const {
+    return get_model()->get_derivative(fi.k_, fi.p_);
   }
 
   //!@}
@@ -221,20 +198,20 @@ class IMPEXPORT Optimizer: public Object
       them and unscale them before setting them.
   */
   //{@
-  void set_scaled_value(FloatIndex fi, Float v) const {
-    double wid = width(fi.fk_);
+  void set_scaled_value(Model::FloatIndex fi, Float v) const {
+    double wid = width(fi.k_);
     set_value(fi, v*wid);
   }
 
-  double get_scaled_value(FloatIndex fi) const  {
+  double get_scaled_value(Model::FloatIndex fi) const  {
     double uv= get_value(fi);
-    double wid = width(fi.fk_);
+    double wid = width(fi.k_);
     return uv/wid;
   }
 
-  double get_scaled_derivative(FloatIndex fi) const {
+  double get_scaled_derivative(Model::FloatIndex fi) const {
     double uv=get_derivative(fi);
-    double wid= width(fi.fk_);
+    double wid= width(fi.k_);
     return uv*wid;
   }
 
@@ -264,27 +241,6 @@ class IMPEXPORT Optimizer: public Object
   mutable double last_score_;
 };
 
-
-//! Save and restore the set of optimized attributes for a set of particles
-class SaveOptimizeds {
-  ParticlesTemp pt_;
-  std::vector<internal::ParticleStorage::OptimizedTable> saved_;
-public:
-  IMP_RAII(SaveOptimizeds, (const ParticlesTemp &pt),{},
-           {
-             pt_=pt;
-             saved_= std::vector<internal::ParticleStorage::OptimizedTable>
-               (pt_.size());
-             for (unsigned int i=0; i< pt_.size(); ++i) {
-               saved_[i]= pt_[i]->ps_->optimizeds_;
-             }
-           },
-           {
-             for (unsigned int i=0; i< pt_.size(); ++i) {
-               pt_[i]->ps_->optimizeds_= saved_[i];
-             }
-           },);
-};
 
 IMP_OBJECTS(Optimizer,Optimizers);
 

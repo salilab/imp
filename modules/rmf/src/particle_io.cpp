@@ -17,40 +17,50 @@ IMPRMF_BEGIN_NAMESPACE
 void add_particle(RootHandle fh, Particle* ps) {
   NodeHandle n= fh.add_child(ps->get_name(), CUSTOM);
   n.set_association(ps);
-  for (Particle::FloatKeyIterator it= ps->float_keys_begin();
-       it != ps->float_keys_end(); ++it) {
-    bool mf=false;
-    if (*it== IMP::core::XYZ::get_xyz_keys()[0]
-        || *it== IMP::core::XYZ::get_xyz_keys()[1]
-        || *it== IMP::core::XYZ::get_xyz_keys()[2]) {
-      mf=true;
+  {
+    IMP::FloatKeys fks= ps->get_float_keys();
+    for (unsigned int i=0; i< fks.size(); ++i) {
+      bool mf=false;
+      if (fks[i]== IMP::core::XYZ::get_xyz_keys()[0]
+          || fks[i]== IMP::core::XYZ::get_xyz_keys()[1]
+          || fks[i]== IMP::core::XYZ::get_xyz_keys()[2]) {
+        mf=true;
+      }
+      FloatKey fk= get_or_add_key<FloatTraits>(fh, IMP,
+                                               fks[i].get_string(), mf);
+      n.set_value(fk, ps->get_value(fks[i]));
     }
-    FloatKey fk= get_or_add_key<FloatTraits>(fh, IMP, it->get_string(), mf);
-    n.set_value(fk, ps->get_value(*it));
   }
-  for (Particle::IntKeyIterator it= ps->int_keys_begin();
-       it != ps->int_keys_end(); ++it) {
-    IntKey fk= get_or_add_key<IntTraits>(fh, IMP, it->get_string(), false);
-    n.set_value(fk, ps->get_value(*it));
-  }
-  for (Particle::StringKeyIterator it= ps->string_keys_begin();
-       it != ps->string_keys_end(); ++it) {
-    StringKey fk= get_or_add_key<StringTraits>(fh, IMP, it->get_string(),
-                                               false);
-    n.set_value(fk, ps->get_value(*it));
-  }
-  for (Particle::ParticleKeyIterator it= ps->particle_keys_begin();
-       it != ps->particle_keys_end(); ++it) {
-    IndexKey fk= get_or_add_key<IndexTraits>(fh, IMP, it->get_string(),
-                                               false);
-    NodeHandle nh= fh.get_node_handle_from_association(ps->get_value(*it));
-    if (nh== NodeHandle()) {
-      IMP_THROW("Particle " << ps->get_name()
-                << " references particle " << ps->get_value(*it)->get_name()
-                << " which is not already part of the file.",
-                IOException);
+  {
+    IMP::IntKeys fks= ps->get_int_keys();
+    for (unsigned int i=0; i< fks.size(); ++i) {
+      IntKey fk= get_or_add_key<IntTraits>(fh, IMP, fks[i].get_string(), false);
+      n.set_value(fk, ps->get_value(fks[i]));
     }
-    n.set_value(fk, nh.get_id().get_index());
+  }
+  {
+    IMP::StringKeys fks= ps->get_string_keys();
+    for (unsigned int i=0; i< fks.size(); ++i) {
+      StringKey fk= get_or_add_key<StringTraits>(fh, IMP, fks[i].get_string(),
+                                                 false);
+      n.set_value(fk, ps->get_value(fks[i]));
+    }
+  }
+  {
+    IMP::ParticleKeys fks= ps->get_particle_keys();
+    for (unsigned int i=0; i< fks.size(); ++i) {
+      IndexKey fk= get_or_add_key<IndexTraits>(fh, IMP, fks[i].get_string(),
+                                               false);
+      NodeHandle nh= fh.get_node_handle_from_association(ps->get_value(fks[i]));
+      if (nh== NodeHandle()) {
+        IMP_THROW("Particle " << ps->get_name()
+                  << " references particle "
+                  << ps->get_value(fks[i])->get_name()
+                  << " which is not already part of the file.",
+                  IOException);
+      }
+      n.set_value(fk, nh.get_id().get_index());
+    }
   }
 }
 

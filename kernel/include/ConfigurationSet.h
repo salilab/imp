@@ -13,7 +13,6 @@
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"
-#include "internal/particle_save.h"
 #include "Configuration.h"
 #include "internal/OwnerPointer.h"
 #include "OptimizerState.h"
@@ -33,17 +32,8 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT ConfigurationSet: public Object
 {
   mutable Pointer<Model> model_;
-  typedef Pointer<Particle> PP;
-  typedef compatibility::map<PP, internal::ParticleDiff> DiffMap;
-  typedef compatibility::map<PP, internal::ParticleData> DataMap;
-  typedef std::set<Particle*> ParticleSet;
-  internal::OwnerPointer<Configuration> base_;
-  struct Diff {
-    DiffMap diffs_;
-    DataMap added_;
-    ParticleSet removed_;
-  };
-  std::vector<Diff> configurations_;
+  Pointer<Configuration> base_;
+  VectorOfRefCounted<Configuration*> configurations_;
  public:
   ConfigurationSet(Model *m, std::string name="ConfigurationSet %1%");
   //! Save the current configuration of the Model
