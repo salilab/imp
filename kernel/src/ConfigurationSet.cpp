@@ -10,9 +10,6 @@
 #include "IMP/ConfigurationSet.h"
 #include "IMP/internal/utility.h"
 #include "IMP/io.h"
-#ifdef IMP_KERNEL_USE_NETCDFCPP
-#include <netcdfcpp.h>
-#endif
 
 IMP_BEGIN_NAMESPACE
 
@@ -89,61 +86,5 @@ void ConfigurationSet::do_show(std::ostream &out) const {
   out <<  get_number_of_configurations()
       << " configurations." << std::endl;
 }
-
-#ifdef IMP_USE_DEPRECATED
-#ifdef IMP_KERNEL_USE_NETCDFCPP
-// in io.cpp
-void read_particles_binary(NcFile &f,
-                           const ParticlesTemp &particles,
-                           const FloatKeys &keys,
-                           int var_index);
-
-
-void read_configuration_set(std::string filename,
-                            const Particles &ps,
-                            const FloatKeys &keys,
-                            ConfigurationSet *ret) {
-  IMP_DEPRECATED(ret_configuration_set, IMP.hdf5);
-  if (ps.empty()) {
-    return;
-  }
-  NcFile f(filename.c_str(), NcFile::ReadOnly/*,
-                    NULL, 0, NcFile::Netcdf4*/);
-  if (!f.is_valid()) {
-    IMP_THROW("Unable to open file " << filename << " for reading",
-              IOException);
-  }
-  for (int i=0; i< f.num_vars(); ++i) {
-    read_particles_binary(f, ps, keys, i);
-    ret->save_configuration();
-  }
-}
-
-ConfigurationSet* read_configuration_set(std::string filename,
-                                         const Particles &ps,
-                                         const FloatKeys &keys) {
-  IMP_DEPRECATED(read_configuration_set, IMP.hdf5);
-  IMP_NEW(ConfigurationSet, ret, (ps[0]->get_model()));
-  read_configuration_set(filename, ps, keys, ret);
-  return ret.release();
-}
-
-
-
-
-void write_configuration_set(ConfigurationSet *cs,
-                             const Particles &ps,
-                             const FloatKeys &keys,
-                             std::string fname) {
-  IMP_DEPRECATED(write_configuration_set, IMP.hdf5);
-  IMP_NEW(Configuration, c, (cs->get_model()));
-  for (unsigned int i=0; i< cs->get_number_of_configurations(); ++i) {
-    cs->load_configuration(i);
-    write_particles_binary(ps, keys, fname, i!= 0);
-  }
-  c->load_configuration();
-}
-#endif
-#endif // IMP_USE_DEPRECATED
 
 IMP_END_NAMESPACE

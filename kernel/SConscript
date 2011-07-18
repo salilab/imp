@@ -6,10 +6,6 @@ config=[]
 
 scons_tools.dependency.boost.configure_tr1_check(env)
 deplist=[]
-if env.get('deprecated', None):
-    scons_tools.dependency.add_external_library(env, "NetCDFCPP", ["netcdf_c++", 'netcdf'],
-                                            "netcdfcpp.h")
-    deplist.append('NetCDFCPP')
 
 scons_tools.dependency.boost.add_boost_library(env, "FileSystem", "filesystem",
                                                'boost/filesystem/path.hpp',
