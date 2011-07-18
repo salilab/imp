@@ -30,7 +30,8 @@ ParticlePairsTemp GridClosePairsFinder
                                            cb.end(), 1),
                         internal::ParticleTraits(ca[0]->get_model(),
                                                  get_distance()),
-                        internal::ParticlePairSink(out));
+                        internal::ParticlePairSink(ca[0]->get_model(),
+                                                   out));
   return out;
 }
 
@@ -46,7 +47,7 @@ ParticlePairsTemp GridClosePairsFinder
                                                                   c.end(),0),
                        internal::ParticleTraits(c[0]->get_model(),
                                                 get_distance()),
-                       internal::ParticlePairSink(out));
+                       internal::ParticlePairSink(c[0]->get_model(), out));
   return out;
 }
 
