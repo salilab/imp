@@ -8,7 +8,6 @@ files = [
          'SoftCylinderPairScore.h',
          'StateAdaptor.h',
          'WormLikeChain.h',
-         'attribute_statistics.h',
          'interaction_graph.h',
         ]
 
