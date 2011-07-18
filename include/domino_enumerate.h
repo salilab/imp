@@ -70,6 +70,7 @@ struct RstParameters {
  bool           add_dope;
  bool           add_pack;
  bool           use_volume;
+ bool           add_endtoend;
 };
 
 struct Parameters {

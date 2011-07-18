@@ -57,7 +57,8 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
  double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
- core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length,kappa);
+ if(RST->add_endtoend)
+  core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length,kappa);
 // COM-COM distance restraint
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();

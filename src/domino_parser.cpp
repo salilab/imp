@@ -28,7 +28,7 @@ Parameters get_parameters(TextInput in) {
  options_description desc;
  std::string score_name,ass_file,traj_file,sequence;
  std::vector<std::string> res,inter,loop;
- bool add_dope,add_pack,use_volume,do_wte;
+ bool add_dope,add_pack,use_volume,do_wte,add_endtoend;
 
 
  desc.add_options()("score_name",  value< std::string >(&score_name),  "ciao");
@@ -43,6 +43,7 @@ Parameters get_parameters(TextInput in) {
  desc.add_options()("loop",        value< std::vector<std::string> >(),"ciao");
  desc.add_options()("add_dope",    value< bool >(&add_dope),           "ciao");
  desc.add_options()("add_pack",    value< bool >(&add_pack),           "ciao");
+ desc.add_options()("add_endtoend",value< bool >(&add_endtoend),       "ciao");
  desc.add_options()("use_volume",  value< bool >(&use_volume),         "ciao");
  desc.add_options()("do_wte",      value< bool >(&do_wte),             "ciao");
 
@@ -137,6 +138,7 @@ Parameters get_parameters(TextInput in) {
  ret.RST.score_name=score_name;
  ret.RST.add_dope=add_dope;
  ret.RST.add_pack=add_pack;
+ ret.RST.add_endtoend=add_endtoend;
  ret.RST.use_volume=use_volume;
  ret.RST.tilt=radians(tiltrange);
  ret.RST.zeta=zetarange;
