@@ -390,7 +390,7 @@ public:
     }
   }
   void clear_attributes(ParticleIndex particle) {
-    if (spheres_.size()>= static_cast<size_t>(particle)) {
+    if (spheres_.size()> static_cast<size_t>(particle)) {
       spheres_[particle]= get_invalid_sphere();
       sphere_derivatives_[particle]=get_invalid_sphere();
     }
