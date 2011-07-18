@@ -72,7 +72,7 @@ em::FittingSolutions pca_based_rigid_fitting(
     algebra::get_alignments_from_first_to_second(ps_pca,dens_pca);
   em::FittingSolutions fs =
     em::compute_fitting_scores(ps,em_map,
-                               all_trans,true);
+                               all_trans,false);
   fs.sort();
   //compose the center translation to the results
   em::FittingSolutions returned_fits;
