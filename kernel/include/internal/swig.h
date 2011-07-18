@@ -151,8 +151,6 @@ inline IMP::Particle *get_particle(IMP::Particle *p) {
    return p;
 }
 
-IMPEXPORT std::string _take_container(SingletonContainer *sc);
-
 IMPEXPORT std::string _test_ifile(TextInput a);
 IMPEXPORT std::string _test_ofile(TextOutput a);
 // overload
