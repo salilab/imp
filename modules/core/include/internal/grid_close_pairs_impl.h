@@ -30,29 +30,28 @@ inline bool get_interiors_intersect(const algebra::Vector3D &v,
   return v*v < square(sr);
 }
 struct ParticleTraits {
-  typedef Particle* ID;
+  typedef ParticleIndex ID;
   Model *m_;
   double d_;
   ParticleTraits(Model *m, double d): m_(m), d_(d){}
-  typedef Particle* result_type;
-  Particle* get_id(Particle *p, int) const {return p;}
-  algebra::Vector3D get_center(Particle *p, int) const {
-    return XYZ(p).get_coordinates();
+  ParticleIndex get_id(Particle* p, int) const {return p->get_index();}
+  algebra::Vector3D get_center(ParticleIndex p, int) const {
+    return m_->get_sphere(p).get_center();
   }
-  double get_radius(Particle *p, int) const {
-    return XYZR(p).get_radius();
+  double get_radius(ParticleIndex p, int) const {
+    return m_->get_sphere(p).get_radius();
   }
-  bool get_is_close(Particle *a, Particle *b) const {
-    return get_interiors_intersect(XYZR(a).get_coordinates()
-                                   -XYZR(b).get_coordinates(),
-                                   XYZR(b).get_radius()+d_,
-                                   XYZR(a).get_radius());
+  bool get_is_close(ParticleIndex a, ParticleIndex b) const {
+    return get_interiors_intersect(get_center(a,0)
+                                   -get_center(b,0),
+                                   get_radius(b,0)+d_,
+                                   get_radius(a,0));
   }
-  bool check_close(Particle *a, Particle *b) const {
-    return get_interiors_intersect(XYZR(a).get_coordinates()
-                                   -XYZR(b).get_coordinates(),
-                                   .95*(XYZR(b).get_radius()+d_),
-                                   .95*(XYZR(a).get_radius()));
+  bool check_close(ParticleIndex a, ParticleIndex b) const {
+    return get_interiors_intersect(get_center(a,0)
+                                   -get_center(b,0),
+                                   .95*(get_radius(b, 0)+d_),
+                                   .95*(get_radius(a, 0)));
   }
   double get_distance() const {
     return d_;
@@ -67,7 +66,6 @@ struct BoundingBoxTraits {
   BoundingBoxTraits(algebra::BoundingBox3Ds::const_iterator it0,
                     algebra::BoundingBox3Ds::const_iterator it1, double d):
     it0_(it0), it1_(it1), d_(d){}
-  typedef unsigned int result_type;
   algebra::BoundingBox3Ds::const_iterator get_it(int which) const {
     switch(which) {
     case 0:
@@ -102,43 +100,16 @@ struct BBPairSink {
   IntPairs &out_;
   BBPairSink(IntPairs &out): out_(out){}
   typedef IntPair argument_type;
-  bool operator()(const IntPair &ip) const {
-    out_.push_back(ip);
+  bool operator()(unsigned int a,
+                  unsigned int b) const {
+    out_.push_back(IntPair(a,b));
     return true;
   }
-  bool check_contains(const IntPair &) const {
+  bool check_contains(unsigned int, unsigned int) const {
     return true;
   }
 };
-inline std::string do_show(Particle*p) {
-  return p->get_name();
-}
-inline std::string do_show(const ParticlesTemp&p) {
-  std::ostringstream oss;
-  for (unsigned int i=0; i< p.size(); ++i) {
-    oss << do_show(p[i]) << " ";
-  }
-  return oss.str();
-}
-/*algebra::BoundingBox3D do_show(algebra::BoundingBox3D bb) {
-  return bb;
-  }*/
-inline unsigned int do_show(unsigned int i) {
-  return i;
-}
-inline std::string do_show(const std::vector<unsigned int>&p) {
-  std::ostringstream oss;
-  for (unsigned int i=0; i< p.size(); ++i) {
-    oss << do_show(p[i]) << " ";
-  }
-  return oss.str();
-}
 
-inline std::ostream &operator<<(std::ostream &out,
-                                IntPair ip) {
-  out << "(" << ip.first << ", " << ip.second << ")";
-  return out;
-}
 
 template <class Traits>
 struct Helper {
@@ -149,6 +120,14 @@ struct Helper {
     IDs(ID id, int which): std::vector<ID>(1,id), which_(which){}
     IDs(): which_(-1){}
   };
+  static inline std::string do_show(const IDs&p) {
+    std::ostringstream oss;
+    for (unsigned int i=0; i< p.size(); ++i) {
+      oss << do_show(p[i]) << " ";
+    }
+    return oss.str();
+  }
+
   typedef typename algebra::SparseGrid3D<IDs> Grid;
   typedef std::vector<Grid> Grids;
 
@@ -315,7 +294,7 @@ struct Helper {
         if (tr.get_is_close(*c, *cp)) {
           IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
                   << do_show(*cp) << std::endl);
-          if (!out( typename Out::argument_type(*c, *cp))) {
+          if (!out(*c, *cp)) {
             return false;
           }
         }
@@ -339,7 +318,7 @@ struct Helper {
         if (tr.get_is_close(*c, *cp)) {
           IMP_LOG(VERBOSE, "Found pair " << do_show(*c) << " "
                   << do_show(*cp) << std::endl);
-          if (!out( typename Out::argument_type(*c, *cp))) {
+          if (!out( *c, *cp)) {
             return false;
           }
         }
@@ -477,9 +456,8 @@ struct Helper {
         for (unsigned int k=0; k< bin_contents_g[i].size(); ++k) {
           for (unsigned int j=0; j< k; ++j) {
             if (tr.check_close(bin_contents_g[i][k], bin_contents_g[i][j])) {
-              out.check_contains(typename
-                                 Out::argument_type(bin_contents_g[i][k],
-                                                    bin_contents_g[i][j])
+              out.check_contains(bin_contents_g[i][k],
+                                 bin_contents_g[i][j]
                                  );
             }
           }
@@ -512,9 +490,8 @@ struct Helper {
             for (unsigned int l=0; l< k; ++l) {
               if (tr.check_close(bin_contents_g[i][k],
                                     bin_contents_g[i][l])) {
-                out.check_contains(typename
-                                   Out::argument_type(bin_contents_g[i][k],
-                                                      bin_contents_g[i][l]));
+                out.check_contains(bin_contents_g[i][k],
+                                   bin_contents_g[i][l]);
               }
             }
           }
@@ -525,8 +502,8 @@ struct Helper {
       for (It it0= ps.b_; it0 != ps.e_; ++it0) {
         for (It it1= ps.b_; it1 != it0; ++it1) {
           if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {
-            out.check_contains(typename Out::argument_type(tr.get_id(*it0, 0),
-                                                           tr.get_id(*it1, 1)));
+            out.check_contains(tr.get_id(*it0, 0),
+                               tr.get_id(*it1, 1));
           }
         }
       }
@@ -623,9 +600,8 @@ struct Helper {
             for (unsigned int l=0; l< bin_contents_q[j].size(); ++l) {
               if (tr.check_close(bin_contents_g[i][k],
                                     bin_contents_q[j][l])) {
-                out.check_contains(typename
-                                   Out::argument_type(bin_contents_g[i][k],
-                                                      bin_contents_q[j][l]));
+                out.check_contains(bin_contents_g[i][k],
+                                   bin_contents_q[j][l]);
               }
             }
           }
@@ -636,8 +612,8 @@ struct Helper {
        for (ItG it0= psg.b_; it0 != psg.e_; ++it0) {
          for (ItQ it1= psq.b_; it1 != psq.e_; ++it1) {
            if (tr.check_close(tr.get_id(*it0, 0), tr.get_id(*it1, 1))) {
-             out.check_contains(typename Out::argument_type(tr.get_id(*it0, 0),
-                                                         tr.get_id(*it1, 1)));
+             out.check_contains(tr.get_id(*it0, 0),
+                                tr.get_id(*it1, 1));
           }
         }
       }

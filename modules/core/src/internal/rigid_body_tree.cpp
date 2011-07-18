@@ -93,9 +93,10 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
    the index into the array of particles.
 */
 RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
-                                       const ParticlesTemp &constituents):
+                                       const ParticleIndexes &constituents):
   Object("RigidBodyHierarchy%1%"), rb_(d),
   constituents_(constituents){
+  Model *m= d.get_model();
   std::sort(constituents_.begin(), constituents_.end());
   set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
@@ -110,9 +111,9 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
                   "Rigid body has no members.");
   std::vector<algebra::SphereD<3> > spheres(constituents_.size());
   for (unsigned int i=0; i< spheres.size(); ++i) {
-    Particle *rp= constituents_[i];
-    double r =XYZR(rp).get_radius();
-    algebra::VectorD<3> v= RigidMember(rp).get_internal_coordinates();
+    ParticleIndex rp= constituents_[i];
+    double r =XYZR(m, rp).get_radius();
+    algebra::VectorD<3> v= RigidMember(m, rp).get_internal_coordinates();
     spheres[i]= algebra::SphereD<3>(v, r);
   }
   // call internal setup on spheres, 0, all indexes
@@ -120,6 +121,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   for (unsigned int i=0; i< leaves.size(); ++i) {
     leaves[i]=i;
   }
+  std::sort(leaves.begin(), leaves.end());
 
   typedef std::pair<unsigned int, SphereIndexes> Node;
   std::vector<Node> stack;
@@ -146,8 +148,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
       }
     }
     if (cur.second.size() <MAX_LEAF_SIZE) {
-      set_leaf(cur.first, cur.second);
-      validate_internal(cur.first, algebra::Sphere3Ds());
+      ParticleIndexes particles(cur.second.size());
+      for (unsigned int i=0; i< particles.size(); ++i) {
+        particles[i]= constituents_[cur.second[i]];
+      }
+      set_leaf(cur.first, particles);
+      validate_internal(m, cur.first, algebra::Sphere3Ds());
     } else {
       SpheresSplit ss= divide_spheres(spheres, cur.second);
       unsigned int nc= add_children(cur.first, ss.size());
@@ -156,7 +162,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
       }
     }
   } while (!stack.empty());
-  validate();
+  validate(m);
 }
 
 
@@ -166,7 +172,7 @@ void RigidBodyHierarchy::set_sphere(unsigned int ni,
   tree_[ni].s_=s;
 }
 void RigidBodyHierarchy::set_leaf(unsigned int ni,
-                                  const std::vector<unsigned int> &ids) {
+                                  const ParticleIndexes &ids) {
   IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].children_.resize(ids.size());
   for (unsigned int i=0; i< ids.size(); ++i) {
@@ -185,80 +191,18 @@ unsigned int RigidBodyHierarchy::add_children(unsigned int ni,
   }
   return ret;
 }
-bool RigidBodyHierarchy::get_is_leaf(unsigned int ni) const {
-  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
-  IMP_INTERNAL_CHECK(!tree_[ni].children_.empty(),
-             "Everything must have particles or children");
-  return tree_[ni].children_[0] < 0;
-}
-unsigned int
-RigidBodyHierarchy::get_number_of_particles(unsigned int ni) const  {
-  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
-  IMP_INTERNAL_CHECK(get_is_leaf(ni), "Only leaves have particles");
-  return tree_[ni].children_.size();
-}
-unsigned int
-RigidBodyHierarchy::get_number_of_children(unsigned int ni) const  {
-  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
-  if (!get_is_leaf(ni)) {
-    return tree_[ni].children_.size();
-  } else {
-    return 1;
-  }
-}
-unsigned int RigidBodyHierarchy::get_child(unsigned int ni,
-                                           unsigned int i) const  {
-  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
-  IMP_INTERNAL_CHECK(tree_[ni].children_.size() > i,
-             "Out of range in particle");
-  if (!get_is_leaf(ni)) {
-    return tree_[ni].children_[i];
-  } else {
-    return ni;
-  }
-}
 
 
-Particle* RigidBodyHierarchy::get_particle(unsigned int ni,
-                                           unsigned int i) const  {
-  IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
-  IMP_INTERNAL_CHECK(tree_[ni].children_.size() > i,
-             "Out of range in particle");
-  IMP_INTERNAL_CHECK(tree_[ni].children_[i] < 0,
-             "Not a leaf node");
-  int index= std::abs(tree_[ni].children_[i])-1;
-  Particle *ret= constituents_[index];
-  IMP_CHECK_OBJECT(ret);
-  return ret;
-}
-
-ParticlesTemp RigidBodyHierarchy::get_particles(unsigned int i) const {
-  ParticlesTemp ret;
-  std::vector<int> stack(1, i);
-  do {
-    unsigned int i= stack.back();
-    stack.pop_back();
-    if (get_is_leaf(i)) {
-      for (unsigned int j=0; j< get_number_of_particles(i); ++j) {
-        ret.push_back(get_particle(i,j));
-      }
-    } else {
-      for (unsigned int j=0; j< get_number_of_children(i); ++j){
-        stack.push_back(get_child(i,j));
-      }
-    }
-  } while (!stack.empty());
-  return ret;
-}
 
 
-void RigidBodyHierarchy::validate_internal(int cur,
+
+void RigidBodyHierarchy::validate_internal(Model *m, int cur,
                                            algebra::Sphere3Ds bounds) const {
   bounds.push_back(algebra::Sphere3D(get_sphere(cur).get_center(),
                                      get_sphere(cur).get_radius()*1.1));
   if (get_is_leaf(cur)) {
     for (unsigned int i=0; i< get_number_of_particles(cur); ++i) {
-      XYZR p(get_particle(cur, i));
+      XYZR p(m, get_particle(cur, i));
       for (unsigned int j=0; j< bounds.size(); ++j) {
         IMP_INTERNAL_CHECK(bounds[j].get_contains(p.get_sphere()),
                            "Particle is not in bound " << p
@@ -269,14 +213,14 @@ void RigidBodyHierarchy::validate_internal(int cur,
   } else {
     for (unsigned int i=0; i< get_number_of_children(cur); ++i) {
       int ci= get_child(cur, i);
-      validate_internal(ci, bounds);
+      validate_internal(m, ci, bounds);
     }
   }
 }
 
 
-void RigidBodyHierarchy::validate() const {
-  validate_internal(0, algebra::Sphere3Ds());
+void RigidBodyHierarchy::validate(Model *m) const {
+  validate_internal(m, 0, algebra::Sphere3Ds());
 }
 
 
@@ -286,7 +230,7 @@ void RigidBodyHierarchy::do_show(std::ostream &out) const {
     out << "Node " << i << ": ";
     if (get_is_leaf(i)) {
       for (unsigned int j=0; j< tree_[i].children_.size(); ++j) {
-        out << get_particle(i, j)->get_name() << " ";
+        out << get_particle(i, j) << " ";
       }
     } else {
       for (unsigned int j=0; j< tree_[i].children_.size(); ++j) {
@@ -310,15 +254,15 @@ RigidBodyHierarchy::get_tree() const {
 
 
 
-Particle* closest_particle(const RigidBodyHierarchy *da,
+Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
                            XYZR pt, double dist
                            =std::numeric_limits<double>::max()) {
   typedef std::pair<double, int> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
-  double d= distance_bound(da, 0, pt);
+  double d= distance_bound(m, da, 0, pt.get_particle_index());
   queue.push(QP(d, 0));
   double best_d=dist;
-  Particle *bp=NULL;
+  ParticleIndex bp=NULL;
   do {
     std::pair<double, int> v= queue.top();
     queue.pop();
@@ -326,9 +270,10 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
     if (da->get_is_leaf(v.second)) {
       for (unsigned int i=0; i< da->get_number_of_particles(v.second);
            ++i) {
-        Particle *p= da->get_particle(v.second, i);
-        XYZR dd(p);
-        double d= get_distance(dd, pt);
+        ParticleIndex p= da->get_particle(v.second, i);
+        XYZR dd(m, p);
+        double d= algebra::get_distance(m->get_sphere(p),
+                                        m->get_sphere(pt.get_particle_index()));
         if (d < best_d) {
           best_d= d;
           bp= p;
@@ -338,7 +283,7 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
       for (unsigned int i=0; i< da->get_number_of_children(v.second);
            ++i) {
         unsigned int c= da->get_child(v.second, i);
-        double d= distance_bound(da, c, pt);
+        double d= distance_bound(m, da, c, pt.get_particle_index());
         if (d < best_d) {
           queue.push(QP(d, c));
         }
@@ -346,9 +291,9 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
     }
   } while (!queue.empty());
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    ParticlesTemp ps= da->get_constituents();
+    ParticleIndexes ps= da->get_constituents();
     for (unsigned int i=0; i< ps.size(); ++i) {
-      XYZR d0(ps[i]);
+      XYZR d0(m, ps[i]);
       double d= get_distance(d0, pt);
       IMP_INTERNAL_CHECK(d>.9*best_d,
                          "Missed the particle: " << d0
@@ -356,19 +301,19 @@ Particle* closest_particle(const RigidBodyHierarchy *da,
                          << " vs " << best_d << " for " << bp);
     }
   }
-  return bp;
+  return m->get_particle(bp);
 }
 
 
 
 
-ParticlePair closest_pair(const RigidBodyHierarchy *da,
+ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
                           const RigidBodyHierarchy *db,
                           double dist=std::numeric_limits<double>::max()) {
   typedef std::pair<int,int> IP;
   typedef std::pair<double, IP> QP;
   std::priority_queue<QP, std::vector<QP>, LessFirst> queue;
-  double d= distance_bound(da, 0, db, 0);
+  double d= distance_bound(m, da, 0, db, 0);
   queue.push(QP(d, IP(0,0)));
   double best_d=dist;
   ParticlePair bp;
@@ -381,10 +326,10 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
     if (da->get_is_leaf(v.second.first) && db->get_is_leaf(v.second.second)) {
       for (unsigned int i=0;
            i< da->get_number_of_particles(v.second.first); ++i) {
-        XYZR deca(da->get_particle(v.second.first, i));
+        XYZR deca(m, da->get_particle(v.second.first, i));
         for (unsigned int j=0;
              j< db->get_number_of_particles(v.second.second); ++j) {
-          XYZR decb(db->get_particle(v.second.second, j));
+          XYZR decb(m, db->get_particle(v.second.second, j));
           double d= get_distance(deca, decb);
           if (d < best_d) {
             bp= ParticlePair(deca, decb);
@@ -400,7 +345,7 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
         for (unsigned int j=0;
              j< db->get_number_of_children(v.second.second); ++j) {
           unsigned int child = db->get_child(v.second.second, j);
-          double d= distance_bound(da, v.second.first,
+          double d= distance_bound(m, da, v.second.first,
                                                      db, child);
           if (d < best_d) {
             queue.push(QP(d, IP(v.second.first, child)));
@@ -410,7 +355,7 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
       for (unsigned int i=0;
            i< da->get_number_of_children(v.second.first); ++i) {
         unsigned int child = da->get_child(v.second.first, i);
-          double d= distance_bound(da, child,
+        double d= distance_bound(m, da, child,
                                    db, v.second.second);
           if (d < best_d) {
             queue.push(QP(d, IP(child, v.second.second)));
@@ -423,7 +368,7 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
         for (unsigned int j=0;
              j< db->get_number_of_children(v.second.second); ++j) {
           unsigned int childb = db->get_child(v.second.second, j);
-          double d= distance_bound(da, childa,
+          double d= distance_bound(m, da, childa,
                                    db, childb);
           if (d < best_d) {
             queue.push(QP(d, IP(childa, childb)));
@@ -433,12 +378,12 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
     }
   } while (!queue.empty());
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    ParticlesTemp psa= da->get_constituents();
-    ParticlesTemp psb= db->get_constituents();
+    ParticleIndexes psa= da->get_constituents();
+    ParticleIndexes psb= db->get_constituents();
     for (unsigned int i=0; i< psa.size(); ++i) {
       for (unsigned int j=0; j< psb.size(); ++j) {
-        XYZR d0a(psa[i]);
-        XYZR d0b(psb[j]);
+        XYZR d0a(m, psa[i]);
+        XYZR d0b(m, psb[j]);
         double d= get_distance(d0a, d0b);
         IMP_INTERNAL_CHECK(d > .9*best_d,
                            "Missed the pair: " << d0a << " and " << d0b
@@ -454,7 +399,7 @@ ParticlePair closest_pair(const RigidBodyHierarchy *da,
 
 
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
-                                             const ParticlesTemp &constituents,
+                                             const ParticlesTemp &pconstituents,
                                              ObjectKey mykey) {
   IMP_LOG(VERBOSE, "Fetching hierarchy from " << rb->get_name()
           << " (" << mykey << ")" << std::endl);
@@ -466,6 +411,11 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     IMP_LOG(VERBOSE, "Cached" << std::endl);
     return ret;
   }
+  ParticleIndexes constituents(pconstituents.size());
+  for (unsigned int i=0; i< constituents.size(); ++i) {
+    constituents[i]=pconstituents[i]->get_index();
+  }
+  std::sort(constituents.begin(), constituents.end());
   ObjectKey free;
   for (unsigned int i=0; i< keys.size(); ++i) {
     if (rb->has_attribute(keys[i])) {
@@ -479,7 +429,7 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                               cur.get());
         }
         IMP_CHECK_OBJECT(cur);
-        cur->validate();
+        cur->validate(rb.get_model());
         if (mykey != ObjectKey()) {
           IMP_LOG(TERSE, "Storing tree at " << mykey << std::endl);
           rb.get_model()->add_cache_attribute(mykey,
@@ -508,24 +458,25 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
                                         h.get());
   }
   IMP_CHECK_OBJECT(h);
-  h->validate();
+  h->validate(rb.get_model());
   return h;
 }
 
 
-ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
+ParticlePairsTemp close_pairs(Model *m,
+                              const RigidBodyHierarchy *da,
                               const RigidBodyHierarchy *db,
                               double dist) {
   ParticlePairsTemp ret;
-  fill_close_pairs(da, db, dist, ParticlePairSink(ret));
+  fill_close_pairs(m, da, db, dist, ParticlePairSink(m, ret));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());
-    ParticlesTemp psa= da->get_constituents();
-    ParticlesTemp psb= db->get_constituents();
+    ParticleIndexes psa= da->get_constituents();
+    ParticleIndexes psb= db->get_constituents();
     for (unsigned int i=0; i< psa.size(); ++i) {
       for (unsigned int j=0; j< psb.size(); ++j) {
-        XYZR d0a(psa[i]);
-        XYZR d0b(psb[j]);
+        XYZR d0a(m, psa[i]);
+        XYZR d0b(m, psb[j]);
         double d= get_distance(d0a, d0b);
         if (d < dist) {
           IMP_INTERNAL_CHECK(std::binary_search(ret.begin(), ret.end(),
@@ -541,18 +492,21 @@ ParticlePairsTemp close_pairs(const RigidBodyHierarchy *da,
 }
 
 
-ParticlesTemp close_particles(const RigidBodyHierarchy *da,
+ParticlesTemp close_particles(Model *m,
+                              const RigidBodyHierarchy *da,
                               XYZR pt, double dist) {
   ParticlesTemp ret;
-  fill_close_particles(da, pt, dist, ParticleSink(ret));
+  fill_close_particles(m, da, pt.get_particle_index(),
+                       dist, ParticleSink(m, ret));
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     std::sort(ret.begin(), ret.end());
-    ParticlesTemp ps= da->get_constituents();
+    ParticleIndexes ps= da->get_constituents();
     for (unsigned int i=0; i< ps.size(); ++i) {
-      XYZR d0(ps[i]);
+      XYZR d0(m, ps[i]);
       double d= get_distance(d0, pt);
       if (d < .9*dist) {
-        IMP_INTERNAL_CHECK(std::binary_search(ret.begin(), ret.end(), ps[i]),
+        IMP_INTERNAL_CHECK(std::binary_search(ret.begin(), ret.end(),
+                                              m->get_particle(ps[i])),
                            "Missed a particle: " << d0
                            << " for " << pt << " at " << d);
       }

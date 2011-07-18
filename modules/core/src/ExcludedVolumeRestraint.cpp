@@ -89,7 +89,7 @@ fill_list_if_good(double max) const {
                                             xyzrs_.end(),0),
                          internal::ParticleTraits(get_model(), myslack),
                          internal::ParticlePairSinkWithMax<SoftSpherePairScore>
-                         (cur_list_,
+                         (get_model(), cur_list_,
                           ssps_.get(),
                           NULL,
                           score,
@@ -107,7 +107,8 @@ fill_list_if_good(double max) const {
                                             rbs_.end(),1),
                          internal::ParticleTraits(get_model(), myslack),
                          internal::RigidBodyParticleParticlePairSinkWithMax
-                         <SoftSpherePairScore>(cur_list_, ssps_.get(),
+                         <SoftSpherePairScore>(get_model(), cur_list_,
+                                               ssps_.get(),
                                                NULL, score, max,
                                                key_, myslack, constituents_));
   }
@@ -118,7 +119,8 @@ fill_list_if_good(double max) const {
                                             rbs_.end(),0),
                          internal::ParticleTraits(get_model(), myslack),
                          internal::RigidBodyRigidBodyParticlePairSinkWithMax
-                         <SoftSpherePairScore>(cur_list_, ssps_.get(),
+                         <SoftSpherePairScore>(get_model(), cur_list_,
+                                               ssps_.get(),
                                                NULL, score, max,
                                                key_, myslack, constituents_));
     if (score < max) {
@@ -146,7 +148,7 @@ fill_list() const {
                          ::get_particle_set(xyzrs_.begin(),
                                             xyzrs_.end(),0),
                          internal::ParticleTraits(get_model(), slack_),
-                         internal::ParticlePairSink(cur_list_));
+                         internal::ParticlePairSink(get_model(), cur_list_));
   for (unsigned int i=0; i< rbs_.size(); ++i) {
     bb+= core::XYZ(rbs_[i]).get_coordinates();
   }
@@ -158,7 +160,8 @@ fill_list() const {
                        ::get_particle_set(xyzrs_.begin(),
                                           xyzrs_.end(),1),
                        internal::ParticleTraits(get_model(), slack_),
-                       internal::RigidBodyParticleParticlePairSink(cur_list_,
+                       internal::RigidBodyParticleParticlePairSink(get_model(),
+                                                                   cur_list_,
                                                                    key_,
                                                                    slack_,
                                                             constituents_));
@@ -167,7 +170,8 @@ fill_list() const {
                        ::get_particle_set(rbs_.begin(),
                                           rbs_.end(),0),
                        internal::ParticleTraits(get_model(), slack_),
-                       internal::RigidBodyRigidBodyParticlePairSink(cur_list_,
+                       internal::RigidBodyRigidBodyParticlePairSink(get_model(),
+                                                                    cur_list_,
                                                                     key_,
                                                                     slack_,
                                                              constituents_));

@@ -203,12 +203,13 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
   IMP_INTERNAL_CHECK(RigidBody::particle_is_instance(b)==(db!=NULL),
   "Rigid body does not imply hierarchy");*/
   if (da && db) {
-    out = internal::close_pairs(da,
+    out = internal::close_pairs(a->get_model(),
+                                da,
                                 db,
                                 get_distance());
   } else if (da) {
     ParticlesTemp pt
-      = internal::close_particles(da,
+      = internal::close_particles(a->get_model(), da,
                                   XYZR(b), get_distance());
     out.resize(pt.size());
     for (unsigned int i=0; i< pt.size(); ++i) {
@@ -216,7 +217,7 @@ RigidClosePairsFinder::get_close_pairs(Particle *a,
     }
   } else if (db) {
     ParticlesTemp pt
-      = internal::close_particles(db,
+      = internal::close_particles(a->get_model(), db,
                                   XYZR(a), get_distance());
     out.resize(pt.size());
     for (unsigned int i=0; i< pt.size(); ++i) {
