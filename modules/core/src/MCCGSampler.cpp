@@ -20,6 +20,7 @@
 #include <IMP/core/core_macros.h>
 #include <boost/graph/reverse_graph.hpp>
 #include <boost/progress.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <IMP/compatibility/vector_property_map.h>
 
 IMPCORE_BEGIN_NAMESPACE
