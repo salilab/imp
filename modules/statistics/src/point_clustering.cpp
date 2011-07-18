@@ -16,7 +16,7 @@
 #include <IMP/algebra/geometric_alignment.h>
 #include <IMP/compatibility/vector_property_map.h>
 #include <boost/pending/disjoint_sets.hpp>
-
+#include <boost/scoped_ptr.hpp>
 
 IMPSTATISTICS_BEGIN_NAMESPACE
 
