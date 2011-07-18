@@ -61,41 +61,6 @@ class IMPEXPORT ConfigurationSet: public Object
 
 IMP_OBJECTS(ConfigurationSet,ConfigurationSets);
 
-#ifdef IMP_USE_DEPRECATED
-
-#if defined(IMP_KERNEL_USE_NETCDFCPP) || defined(IMP_DOXYGEN)
-/** Read a set of configurations from a file created by write_binary_model().
-    \requires{function read_configuration_set(), NetCDF}
-    \relatesalso ConfigurationSet
- */
-IMPEXPORT ConfigurationSet* read_configuration_set(std::string fname,
-                                                   const Particles &ps,
-                                                   const FloatKeys &keys);
-
-/** Read a set of configurations from a file created by write_binary_model()
-    into an existing configuration set.
-    \requires{function read_configuration_set(), NetCDF}
-    \relatesalso ConfigurationSet
- */
-IMPEXPORT  void read_configuration_set(std::string fname,
-                                       const Particles &ps,
-                                       const FloatKeys &keys,
-                                       ConfigurationSet *out);
-
-
-/** Write a configuration set to a file.
-    \requires{function write_configuration_set(), NetCDF}
-    \relatesalso ConfigurationSet
- */
-IMPEXPORT void write_configuration_set(ConfigurationSet *cs,
-                                       const Particles &ps,
-                                       const FloatKeys &keys,
-                                       std::string fname);
-
-#endif
-#endif // IMP_USE_DEPRECATED
-
-
 IMP_MODEL_SAVE(SaveToConfigurationSet,
                (ConfigurationSet *cs, std::string file_name),
                mutable internal::OwnerPointer<ConfigurationSet> cs_;,
