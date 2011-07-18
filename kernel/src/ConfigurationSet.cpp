@@ -16,7 +16,7 @@ IMP_BEGIN_NAMESPACE
 ConfigurationSet::ConfigurationSet(Model *m,
                                    std::string nm):
   Object(nm),
-  model_(m), base_(new Configuration(m, nm +" base")){
+  model_(m), base_(new Configuration(m)){
 }
 
 
@@ -24,25 +24,7 @@ void ConfigurationSet::save_configuration() {
   IMP_OBJECT_LOG;
   set_was_used(true);
   IMP_LOG(TERSE, "Adding configuration to set " << get_name() << std::endl);
-  configurations_.push_back(Diff());
-  for (Model::ParticleIterator it= model_->particles_begin();
-       it != model_->particles_end(); ++it) {
-    PP pp(*it);
-    if (base_->get_has_particle(pp)) {
-      configurations_.back().diffs_[pp]
-        = internal::ParticleDiff(base_->get_data(pp), pp);
-    } else {
-      configurations_.back().added_[pp]= internal::ParticleData(pp);
-    }
-  }
-  for (Configuration::iterator it= base_->begin(); it != base_->end(); ++it) {
-    PP pp(it->first);
-    if (configurations_.back().diffs_.find(pp)
-        == configurations_.back().diffs_.end()) {
-      // removed particle
-      configurations_.back().removed_.insert(it->first);
-    }
-  }
+  configurations_.push_back(new Configuration(model_));
 }
 
 void ConfigurationSet::remove_configuration(unsigned int i) {
@@ -62,22 +44,10 @@ void ConfigurationSet::load_configuration(int i) const {
   IMP_USAGE_CHECK(i < static_cast<int>(get_number_of_configurations())
                   && i >= -1,
                   "Invalid configuration requested.");
-  base_->load_configuration();
-  if (i == -1) return;
-  const Diff &d= configurations_[i];
-  // do something
-  for (DiffMap::const_iterator it= d.diffs_.begin();
-       it != d.diffs_.end(); ++it) {
-    it->second.apply(it->first);
-  }
-  for (DataMap::const_iterator it= d.added_.begin();
-       it != d.added_.end(); ++it) {
-    model_->restore_particle(it->first);
-    it->second.apply(it->first);
-  }
-  for (ParticleSet::const_iterator it= d.removed_.begin();
-       it != d.removed_.end(); ++it) {
-    model_->remove_particle(*it);
+  if (i==-1) {
+    base_->load_configuration();
+  } else {
+    configurations_[i]->load_configuration();
   }
 }
 

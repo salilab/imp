@@ -12,23 +12,25 @@
 #include "kernel_config.h"
 #include "Object.h"
 #include "VectorOfRefCounted.h"
-#include "Particle.h"
 #include "Restraint.h"
 #include "RestraintSet.h"
 #include "ScoreState.h"
 #include "container_macros.h"
 #include "base_types.h"
 #include "VersionInfo.h"
+#include "Particle.h"
 #include "compatibility/map.h"
-#include <boost/dynamic_bitset.hpp>
+#include "compatibility/set.h"
+#include "internal/AttributeTable.h"
+#include <IMP/algebra/SphereD.h>
+#include <boost/iterator/transform_iterator.hpp>
+#include <boost/iterator/filter_iterator.hpp>
+#include <vector>
 
 
 #include <limits>
 
 IMP_BEGIN_NAMESPACE
-
-class Particle;
-
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
   enum Stage {NOT_EVALUATING, BEFORE_EVALUATING, EVALUATING, AFTER_EVALUATING};
@@ -61,6 +63,371 @@ public:
     });
 };
 
+#ifndef SWIG
+#define IMP_MODEL_IMPORT(Base)                  \
+  using Base::add_attribute;                    \
+  using Base::add_cache_attribute;              \
+  using Base::remove_attribute;                 \
+  using Base::get_has_attribute;                \
+  using Base::set_attribute;                    \
+  using Base::get_attribute
+#else
+#define IMP_MODEL_IMPORT(Base)
+#endif
+
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class Traits>
+class BasicAttributeTable {
+public:
+  typedef typename Traits::Key Key;
+private:
+  typename std::vector<typename Traits::Container > data_;
+  compatibility::set<Key> caches_;
+
+   void do_add_attribute(Key k, ParticleIndex particle,
+                           typename Traits::PassValue value) {
+     IMP_USAGE_CHECK(Traits::get_is_valid(value), "Can't set to invalid value: "
+                     << value << " for attribute " << k);
+    if (data_.size() <= k.get_index()) {
+      data_.resize(k.get_index()+1);
+    }
+    if (data_[k.get_index()].size() <= static_cast<unsigned int>(particle)) {
+      data_[k.get_index()].resize(particle+1, Traits::get_invalid());
+    }
+    data_[k.get_index()][particle]=value;
+  }
+public:
+  BasicAttributeTable(){}
+
+  void add_attribute(Key k, ParticleIndex particle,
+                     typename Traits::PassValue value) {
+    do_add_attribute(k, particle, value);
+  }
+  void add_cache_attribute(Key k, ParticleIndex particle,
+                           typename Traits::PassValue value) {
+    caches_.insert(k);
+    do_add_attribute(k, particle, value);
+  }
+  void clear_caches(ParticleIndex particle) {
+    for (typename compatibility::set<Key>::const_iterator it=caches_.begin();
+         it != caches_.end(); ++it) {
+      if (data_.size() > static_cast<unsigned int>(it->get_index())
+          && data_[it->get_index()].size()
+          > static_cast<unsigned int>(particle)) {
+        data_[it->get_index()][particle]= Traits::get_invalid();
+      }
+    }
+  }
+  void remove_attribute(Key k, ParticleIndex particle) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't remove attribute if it isn't there");
+    data_[k.get_index()][particle]=Traits::get_invalid();
+  }
+  bool get_has_attribute(Key k, ParticleIndex particle) const {
+    if (data_.size() <= k.get_index()) return false;
+    else if (data_[k.get_index()].size()
+             <= static_cast<unsigned int>(particle)) return false;
+    else return Traits::get_is_valid(data_[k.get_index()][particle]);
+  }
+  void set_attribute(Key k, ParticleIndex particle,
+                     typename Traits::PassValue value) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Setting invalid attribute: " << k
+                    << " of particle " << particle);
+    data_[k.get_index()][particle]= value;
+  }
+  typename Traits::PassValue get_attribute(Key k,
+                                           ParticleIndex particle) const {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Requested invalid attribute: " << k
+                    << " of particle " << particle);
+    return data_[k.get_index()][particle];
+  }
+  std::pair<typename Traits::Value,
+            typename Traits::Value> get_range_internal(Key k) const {
+    std::pair<typename Traits::Value,
+              typename Traits::Value>  ret;
+    IMP_USAGE_CHECK(data_.size() > k.get_index(),
+                    "Cannot request range of an unused key.");
+    if (data_[k.get_index()].size()==0) return ret;
+    ret.first=data_[k.get_index()][0];
+    ret.second=ret.first;
+    for (unsigned int i=1; i< data_[k.get_index()].size(); ++i) {
+      if (Traits::get_is_valid(data_[k.get_index()][i])) {
+        ret.first=std::min(ret.first, data_[k.get_index()][i]);
+        ret.second=std::min(ret.second, data_[k.get_index()][i]);
+      }
+    }
+    return ret;
+  }
+  void clear_attributes(ParticleIndex particle) {
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      if (data_[i].size() > static_cast<unsigned int>(particle)) {
+        data_[i][particle]= Traits::get_invalid();
+      }
+    }
+  }
+
+  std::vector<Key> get_attribute_keys(ParticleIndex particle) const {
+    std::vector<Key> ret;
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      if (data_[i].size() > static_cast<unsigned int>(particle)
+          && Traits::get_is_valid(data_[i][particle])) {
+        ret.push_back(Key(i));
+      }
+    }
+    return ret;
+  }
+  void fill(typename Traits::PassValue value) {
+    for (unsigned int i=0; i< data_.size(); ++i) {
+      std::fill(data_[i].begin(), data_[i].end(), value);
+    }
+  }
+  unsigned int size() const {return data_.size();}
+  unsigned int size(unsigned int i) const {return data_[i].size();}
+};
+
+
+
+class FloatAttributeTable {
+  //std::vector<algebra::Sphere3D> spheres_;
+  //std::vector<algebra::Sphere3D> sphere_derivatives_;
+  std::vector<algebra::SphereD<3> > spheres_;
+  std::vector<algebra::SphereD<3> > sphere_derivatives_;
+  BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
+  BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
+  // make use bitset
+  BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
+  std::vector<FloatRange> ranges_;
+  algebra::SphereD<3> get_invalid_sphere() const {
+    double iv= internal::FloatAttributeTableTraits::get_invalid();
+    algebra::SphereD<3> ivs(algebra::VectorD<3>(iv, iv, iv), iv);
+    return ivs;
+  }
+public:
+  FloatAttributeTable(){}
+
+  // make sure you know what you are doing
+  algebra::Sphere3D& get_sphere(ParticleIndex particle) {
+    return spheres_[particle];
+  }
+
+  void add_to_coordinate_derivatives(ParticleIndex particle,
+                                     const algebra::Vector3D &v,
+                                     const DerivativeAccumulator &da) {
+    IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
+                    "Particle does not have coordinates");
+    sphere_derivatives_[particle][0]+=da(v[0]);
+    sphere_derivatives_[particle][1]+=da(v[1]);
+    sphere_derivatives_[particle][2]+=da(v[2]);
+  }
+  const algebra::Vector3D&
+  get_coordinate_derivatives(ParticleIndex particle) const {
+    IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
+                    "Particle does not have coordinates");
+    return sphere_derivatives_[particle].get_center();
+    }
+  void zero_derivatives() {
+    /*std::fill(sphere_derivatives_.begin(), sphere_derivatives_.end(),
+      algebra::Sphere3D(algebra::Vector3D(0,0,0), 0));*/
+    // make more efficient
+    std::fill(sphere_derivatives_.begin(),
+              sphere_derivatives_.end(),
+              algebra::SphereD<3>(algebra::VectorD<3>(0,0,0),0));
+    derivatives_.fill(0);
+  }
+  void clear_caches(ParticleIndex ) {
+  }
+  void add_cache_attribute(FloatKey , ParticleIndex, double ){
+    IMP_NOT_IMPLEMENTED;
+  }
+  void remove_attribute(FloatKey k, ParticleIndex particle) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't remove attribute that isn't there");
+    if (k.get_index() < 4) {
+      spheres_[particle][k.get_index()]
+        = internal::FloatAttributeTableTraits::get_invalid();
+      sphere_derivatives_[particle][k.get_index()]
+        = internal::FloatAttributeTableTraits::get_invalid();
+    } else {
+      data_.remove_attribute(FloatKey(k.get_index()-4), particle);
+      derivatives_.remove_attribute(FloatKey(k.get_index()-4), particle);
+    }
+    if (optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.remove_attribute(k, particle);
+    }
+  }
+  bool get_is_optimized(FloatKey k, ParticleIndex particle) const {
+    return optimizeds_.get_has_attribute(k, particle);
+  }
+  // check NOT_EVALUATING
+  void set_is_optimized(FloatKey k, ParticleIndex particle, bool tf) {
+    if (tf && !optimizeds_.get_has_attribute(k, particle)) {
+      optimizeds_.add_attribute(k, particle, true);
+    } else if (!tf && optimizeds_.get_has_attribute(k, particle)){
+      optimizeds_.remove_attribute(k, particle);
+    }
+  }
+  // check AFTER_EVALUATE, NOT_EVALUATING
+  double get_derivative(FloatKey k, ParticleIndex particle) const {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there");
+    if (k.get_index() < 4) {
+      return sphere_derivatives_[particle][k.get_index()];
+    } else {
+      return derivatives_.get_attribute(FloatKey(k.get_index()-4), particle);
+    }
+  }
+  // check can change EVALUATE, AFTER_EVALUATE< NOT_EVALUATING
+  void add_to_derivative(FloatKey k, ParticleIndex particle, double v,
+                         const DerivativeAccumulator &da) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get derivative that isn't there");
+    if (k.get_index() < 4) {
+      sphere_derivatives_[particle][k.get_index()]+=da(v);;
+    } else {
+      FloatKey nk(k.get_index()-4);
+      derivatives_.set_attribute(nk, particle,
+                                 derivatives_.get_attribute(nk,
+                                                            particle)+da(v));
+    }
+  }
+  void add_attribute(FloatKey k, ParticleIndex particle, double v,
+                     bool opt=false) {
+    IMP_USAGE_CHECK(!get_has_attribute(k, particle),
+                    "Can't add attribute that is there");
+    if (k.get_index() <4) {
+      if (spheres_.size() <= static_cast<size_t>(particle)) {
+        spheres_.resize(particle+1, get_invalid_sphere());
+        sphere_derivatives_.resize(particle+1, get_invalid_sphere());
+      }
+      spheres_[particle][k.get_index()]=v;
+    } else {
+      FloatKey nk(k.get_index()-4);
+      data_.add_attribute(nk, particle, v);
+      derivatives_.add_attribute(nk, particle, 0);
+    }
+    if (opt) optimizeds_.add_attribute(k, particle, true);
+    ranges_.resize(std::max(ranges_.size(),
+                            static_cast<size_t>(k.get_index()+1)),
+                   FloatRange(-std::numeric_limits<double>::max(),
+                               std::numeric_limits<double>::max()));
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't attribute was not added");
+  }
+  bool get_has_attribute(FloatKey k, ParticleIndex particle) const {
+    if (k.get_index() < 4) {
+      if (spheres_.size() <= static_cast<size_t>(particle)) return false;
+      else if (!internal::FloatAttributeTableTraits
+               ::get_is_valid(spheres_[particle][k.get_index()])){
+        return false;
+      }
+      return true;
+    } else {
+      return data_.get_has_attribute(FloatKey(k.get_index()-4), particle);
+    }
+  }
+  void set_attribute(FloatKey k, ParticleIndex particle,
+                     double v) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't set attribute that is not there");
+    if (k.get_index() <4) {
+      spheres_[particle][k.get_index()]=v;
+    } else {
+      data_.set_attribute(FloatKey(k.get_index()-4), particle, v);
+    }
+  }
+  double get_attribute(FloatKey k,
+                       ParticleIndex particle) const {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get attribute that is not there");
+    if (k.get_index()<4) {
+      return spheres_[particle][k.get_index()];
+    } else {
+      return data_.get_attribute(FloatKey(k.get_index()-4), particle);
+    }
+  }
+  struct FloatIndex
+  {
+    ParticleIndex p_;
+    FloatKey k_;
+    FloatIndex(FloatKey k, ParticleIndex p): p_(p), k_(k){}
+    FloatIndex() {}
+  };
+  std::vector<FloatIndex> get_optimized_attributes() const {
+    std::vector<FloatIndex> ret;
+    for (unsigned int i=0; i< optimizeds_.size(); ++i) {
+      for (unsigned int j=0; j< optimizeds_.size(i); ++j) {
+        if (optimizeds_.get_has_attribute(FloatKey(i), j)) {
+          ret.push_back(FloatIndex(FloatKey(i), j));
+        }
+      }
+    }
+    return ret;
+  }
+  void set_range(FloatKey k, FloatRange fr) {
+    ranges_[k.get_index()]=fr;
+  }
+  FloatRange get_range(FloatKey k) {
+    FloatRange ret= ranges_[k.get_index()];
+    if (ret.first==-std::numeric_limits<double>::max()) {
+      if (k.get_index() <4) {
+        std::swap(ret.first, ret.second);
+        for (unsigned int i=0; i< spheres_.size(); ++i) {
+          if (internal::FloatAttributeTableTraits
+              ::get_is_valid(spheres_[i][k.get_index()])) {
+            ret.first= std::min(ret.first, spheres_[i][k.get_index()]);
+            ret.second= std::max(ret.second, spheres_[i][k.get_index()]);
+          }
+        }
+        return ret;
+      } else {
+        return data_.get_range_internal(FloatKey(k.get_index()-4));
+      }
+    } else {
+      return ret;
+    }
+  }
+  void clear_attributes(ParticleIndex particle) {
+    if (spheres_.size()>= static_cast<size_t>(particle)) {
+      spheres_[particle]= get_invalid_sphere();
+      sphere_derivatives_[particle]=get_invalid_sphere();
+    }
+    data_.clear_attributes(particle);
+    derivatives_.clear_attributes(particle);
+    optimizeds_.clear_attributes(particle);
+  }
+  std::vector<FloatKey> get_attribute_keys(ParticleIndex particle) const {
+    std::vector<FloatKey> ret=data_.get_attribute_keys(particle);
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= FloatKey(ret[i].get_index()+4);
+    }
+    for (unsigned int i=0; i< 4; ++i) {
+      if (get_has_attribute(FloatKey(i),particle)) {
+        ret.push_back(FloatKey(i));
+      }
+    }
+    return ret;
+  }
+};
+
+typedef BasicAttributeTable<internal::StringAttributeTableTraits>
+StringAttributeTable;
+typedef BasicAttributeTable<internal::IntAttributeTableTraits>
+IntAttributeTable;
+typedef BasicAttributeTable<internal::ObjectAttributeTableTraits>
+ObjectAttributeTable;
+typedef BasicAttributeTable<internal::IntsAttributeTableTraits>
+IntsAttributeTable;
+typedef BasicAttributeTable<internal::ObjectsAttributeTableTraits>
+ObjectsAttributeTable;
+typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
+ParticleAttributeTable;
+typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
+ParticlesAttributeTable;
+#endif
+
 IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 
 //! Class for storing model, its restraints, constraints, and particles.
@@ -71,16 +438,39 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
           of Particles or Restraints. Most operations should be done using
           a user-passed set of Particles or Restraints instead.
  */
-class IMPEXPORT Model: public Object
+class IMPEXPORT Model:
+  public Object
+#if !defined(SWIG) && !defined(IMP_DOXYGEN)
+  , public FloatAttributeTable,
+  public StringAttributeTable,
+  public IntAttributeTable,
+  public ObjectAttributeTable,
+  public IntsAttributeTable,
+  public ObjectsAttributeTable,
+  public ParticleAttributeTable,
+  public ParticlesAttributeTable
+#endif
 {
  public:
+  IMP_MODEL_IMPORT(FloatAttributeTable);
+  IMP_MODEL_IMPORT(StringAttributeTable);
+  IMP_MODEL_IMPORT(IntAttributeTable);
+  IMP_MODEL_IMPORT(ObjectAttributeTable);
+  IMP_MODEL_IMPORT(IntsAttributeTable);
+  IMP_MODEL_IMPORT(ObjectsAttributeTable);
+  IMP_MODEL_IMPORT(ParticleAttributeTable);
+  IMP_MODEL_IMPORT(ParticlesAttributeTable);
+  void clear_particle_caches(ParticleIndex pi) {
+    FloatAttributeTable::clear_caches(pi);
+    StringAttributeTable::clear_caches(pi);
+    IntAttributeTable::clear_caches(pi);
+    ObjectAttributeTable::clear_caches(pi);
+    IntsAttributeTable::clear_caches(pi);
+    ObjectsAttributeTable::clear_caches(pi);
+    ParticleAttributeTable::clear_caches(pi);
+    ParticlesAttributeTable::clear_caches(pi);
+  }
 private:
-  friend class Restraint;
-  friend class Particle;
-  friend class RestraintSet;
-  typedef Particle::Storage ParticleStorage;
-
-
   struct Statistics {
     double total_time_;
     double total_time_after_;
@@ -99,9 +489,8 @@ private:
   mutable compatibility::map<Object*, Statistics> stats_data_;
 
   // basic representation
-  ParticleStorage particles_;
   std::map<FloatKey, FloatRange> ranges_;
-  mutable IMP::internal::Stage cur_stage_;
+  mutable internal::Stage cur_stage_;
   unsigned int eval_count_;
   internal::OwnerPointer<RestraintSet> rs_;
   bool first_call_;
@@ -109,7 +498,11 @@ private:
   mutable bool has_good_score_;
   std::vector<std::pair<Object*, Object*> > extra_edges_;
 
+  Ints free_particles_;
+  unsigned int next_particle_;
+  Particles particle_index_;
 
+ private:
   // statistics
   bool gather_statistics_;
   void add_to_update_before_time(ScoreState *s, double t) const;
@@ -118,10 +511,9 @@ private:
 
 
 
-  void validate_computed_derivatives() const;
+  void validate_computed_derivatives() const{}
   void before_evaluate(const ScoreStatesTemp &states) const;
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
-  void zero_derivatives() const;
   Floats do_evaluate(const RestraintsTemp &restraints,
                      const std::vector<double> &weights,
                      const ScoreStatesTemp &states, bool calc_derivs,
@@ -159,16 +551,6 @@ private:
      member classes as friends) */
   static void set_score_state_model(ScoreState *ss, Model *model);
 
-  void add_particle_internal(Particle *p) {
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(p);
-    p->set_was_used(true);
-    particles_.push_back(p);
-    p->ps_->iterator_= --particles_.end();
-    internal::ref(p);
-  }
-
-
   void do_show(std::ostream& out) const;
 
 #if defined(SWIG)
@@ -184,7 +566,7 @@ private:
 public:
 #if !defined(IMP_DOXYGEN)
 #ifndef SWIG
-  IMP::internal::Stage get_stage() const {
+  internal::Stage get_stage() const {
     return cur_stage_;
   }
   unsigned int get_evaluation() const {
@@ -280,82 +662,6 @@ public:
   bool get_has_good_score() const;
   /** @} */
 
-  //! Remove the particle from this model
-  /** Since particles are ref counted the object will still be valid
-      until all references are removed, however attributes of
-      removed particles cannot be changed or inspected.
-
-      \note It is an error to remove particles from the model during
-      Restraint evaluation or ScoreState evaluation. It is OK to
-      remove them during OptimizerState updates, although not all
-      optimizers support this yet.
-
-  */
-  void remove_particle(Particle *p) {
-    IMP_OBJECT_LOG;
-    IMP_CHECK_OBJECT(this);
-    IMP_CHECK_OBJECT(p);
-    IMP_USAGE_CHECK(p->get_model() == this,
-              "The particle does not belong to this model");
-    IMP_LOG(VERBOSE, "Removing particle " << p->get_name()
-            << std::endl);
-    IMP_INTERNAL_CHECK(get_stage() == IMP::internal::NOT_EVALUATING,
-               "Particles cannot be removed from the model during evaluation");
-    particles_.erase(p->ps_->iterator_);
-    p->m_=NULL;
-    internal::unref(p);
-  }
-
-  //! Sometimes it is useful to put a particle back into a model
-  /** When restoring the state of a Model, it is useful to be able to restore
-      a particle back to the model it used to be part of.
-  */
-  void restore_particle(Particle *p) {
-    add_particle_internal(p);
-  }
-
-  /** @name Methods to debug particles
-      It is sometimes useful to inspect the list of all particles when
-      debugging. These methods allow you to do that.
-      \note Only use this if you really know what you are doing as
-      Particles can be added to the object from many different places.
-
-      The value type for the iterators is a Particle*.
-   */
-  /**@{*/
-  unsigned int get_number_of_particles() const {
-    return particles_.size();
-  }
-
-#ifndef SWIG
-#ifdef IMP_DOXYGEN
-  class ParticleInterator; class ParticleConstIterator;
-#else
- typedef ParticleStorage::const_iterator ParticleConstIterator;
- typedef ParticleStorage::iterator ParticleIterator;
-#endif
-  ParticleIterator particles_begin() {
-    return particles_.begin();
-  }
-  ParticleIterator particles_end() {
-    return particles_.end();
-  }
-#endif
-
-#ifndef SWIG
-  ParticleConstIterator particles_begin() const {
-    return particles_.begin();
-  }
-  ParticleConstIterator particles_end() const {
-    return particles_.end();
-  }
-  ParticlesTemp get_particles() const {
-    return ParticlesTemp(particles_.begin(), particles_.end());
-  }
-#endif
-
-  /** @} */
-
   /** @name Float Attribute Ranges
       Each Float attribute has an associated range which reflects the
       range of values that it is expected to take on during optimization.
@@ -370,11 +676,6 @@ public:
       IMP::example::ExampleSingletonModifier.
       @{
   */
-  FloatRange get_range(FloatKey k) const;
-
-  void set_range(FloatKey k, FloatRange range) {
-    ranges_[k]=range;
-  }
   /** @} */
 
   /** \name Evaluation
@@ -432,11 +733,11 @@ public:
                             bool calc_derivs, double max);
 
 
- //! Sometimes it is useful to be able to make sure the model is up to date
- /** This method updates all the state but does not necessarily compute the
-     score.
- */
- void update();
+  //! Sometimes it is useful to be able to make sure the model is up to date
+  /** This method updates all the state but does not necessarily compute the
+      score.
+  */
+  void update();
 
 #ifndef IMP_DOXYGEN
   VersionInfo get_version_info() const {
@@ -448,6 +749,8 @@ public:
     return "Model";
   }
 #endif
+
+  void remove_particle(Particle *p);
 
   /** \name Statistics
 
@@ -482,67 +785,111 @@ public:
     get_extra_dependency_edges() const {
     return extra_edges_;
   }
+  void add_particle_internal(Particle *p);
 #endif
+/** @name Methods to debug particles
+      It is sometimes useful to inspect the list of all particles when
+      debugging. These methods allow you to do that.
+      \note Only use this if you really know what you are doing as
+      Particles can be added to the object from many different places.
+
+      The value type for the iterators is a Particle*.
+      @{
+   */
+  unsigned int get_number_of_particles() const {
+    return get_particles().size();
+  }
+  ParticlesTemp get_particles() const;
+  Particle* get_particle(ParticleIndex p) const  {
+    IMP_USAGE_CHECK(particle_index_.size() > static_cast<unsigned int>(p),
+                    "Invalid particle requested");
+    IMP_USAGE_CHECK(particle_index_[p],
+                    "Invalid particle requested");
+    return particle_index_[p];
+  }
+#ifndef SWIG
+#ifdef IMP_DOXYGEN
+  class ParticleIterator;
+#else
+  struct NotNull{
+    bool operator()(Object*p) {
+      return p;
+    }
+  };
+  typedef boost::filter_iterator<NotNull, Particles::iterator> ParticleIterator;
+
+#endif
+  ParticleIterator particles_begin() {
+    return ParticleIterator(NotNull(), particle_index_.begin(),
+                            particle_index_.end());
+  }
+  ParticleIterator particles_end() {
+    return ParticleIterator(NotNull(), particle_index_.end(),
+                            particle_index_.end());
+}
+#endif
+  /** @} */
 };
 
 IMP_OUTPUT_OPERATOR(Model);
 
-#ifndef IMP_DOXYGEN
-// these require Model be defined
-
-inline void Particle::assert_values_mutable() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() != IMP::internal::EVALUATING,
-             "Restraints are not allowed to change attribute values during "
-             << "evaluation.");
-  IMP_INTERNAL_CHECK(get_model()->get_stage()
-                     != IMP::internal::AFTER_EVALUATING,
-             "ScoreStates are not allowed to change attribute values after "
-             << "evaluation.");
-#if IMP_BUILD < IMP_FAST
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (ps_->write_locked_) throw internal::WriteLockedParticleException(this);
-  }
-#endif
-}
-
-inline void Particle::assert_values_readable() const {
-#if IMP_BUILD < IMP_FAST
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    if (ps_->read_locked_) throw internal::ReadLockedParticleException(this);
-  }
-#endif
-}
-
-inline void Particle::assert_can_change_optimization() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
-             "The set of optimized attributes cannot be changed during "
-             << "evaluation.");
-}
-
-inline void Particle::assert_can_change_derivatives() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::EVALUATING
-             || get_model()->get_stage() == IMP::internal::AFTER_EVALUATING
-             || get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
-             "Derivatives can only be changed during restraint "
-             << "evaluation and score state after evaluation calls.");
-}
-
-inline void Particle::assert_valid_derivatives() const {
-  IMP_INTERNAL_CHECK(get_model()->get_stage() == IMP::internal::AFTER_EVALUATING
-             || get_model()->get_stage() == IMP::internal::NOT_EVALUATING,
-             "Derivatives can only be changed during restraint "
-             << "evaluation and score state after evaluation calls.");
-}
-#endif
-
 IMP_OBJECTS(Model,Models);
 
-/** The function checks for reference counting cycles in the set of particles
-    in the model and prints out any that are found.
-*/
-IMPEXPORT void show_ref_counting_cycles(const ParticlesTemp &ps);
 
 
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Float, float, Float);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Int, int, Int);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(String, string, String);
+IMP_PARTICLE_ATTRIBUTE_TYPE_DEF(Object, object, Object*);
+
+
+inline void Particle::add_attribute(FloatKey name,
+                                    const Float initial_value, bool optimized){
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_attribute(name, id_, initial_value);
+  get_model()->set_is_optimized(name, id_, optimized);
+}
+inline void Particle::add_to_derivative(FloatKey key, Float value,
+                                        const DerivativeAccumulator &da) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_to_derivative(key, id_, value, da);
+}
+inline void Particle::set_is_optimized(FloatKey k, bool tf) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->set_is_optimized(k, id_, tf);
+}
+inline bool Particle::get_is_optimized(FloatKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_is_optimized(k, id_);
+}
+inline Float Particle::get_derivative(FloatKey name) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_derivative(name, id_);
+}
+inline void Particle::add_attribute(ParticleKey k, Particle *v) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->add_attribute(k, id_, v->get_index());
+}
+inline bool Particle::has_attribute(ParticleKey k) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_has_attribute(k, id_);
+}
+inline void Particle::set_value(ParticleKey k, Particle *v) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->set_attribute(k, id_, v->get_index());
+}
+inline Particle *Particle::get_value(ParticleKey k) const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->get_particle(get_model()->get_attribute(k, id_));
+}
+inline void Particle::remove_attribute(ParticleKey k) {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  get_model()->remove_attribute(k, id_);
+}
+inline ParticleKeys Particle::get_particle_keys() const {
+  IMP_USAGE_CHECK(get_is_active(), "Inactive particle used.");
+  return get_model()->ParticleAttributeTable::get_attribute_keys(id_);
+}
 IMP_END_NAMESPACE
 
 #endif  /* IMP_MODEL_H */

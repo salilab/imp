@@ -140,7 +140,6 @@ IMP_SWIG_RAII_INSTANCE(IMP, ScopedRemoveScoreState, GenericScopedRemoveScoreStat
 IMP_SWIG_RAII_INSTANCE(IMP, ScopedScoreState, GenericScopedScoreState);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedRestraint);
 IMP_SWIG_RAII_TEMPLATE(IMP, GenericScopedScoreState);
-IMP_SWIG_RAII(IMP, SaveOptimizeds);
 IMP_SWIG_RAII(IMP, CreateLogContext)
 IMP_SWIG_RAII(IMP, WarningContext)
 
@@ -209,7 +208,6 @@ IMP_SWIG_GRAPH(IMP, DependencyGraph, DependencyGraph, IMP::Object*);
 IMP_SWIG_CONTAINER(IMP, IMP, RestraintSet, Restraint, restraint)
 IMP_SWIG_CONTAINER(IMP, IMP, Model, ScoreState, score_state)
 IMP_SWIG_CONTAINER(IMP, IMP, Model, Restraint, restraint)
-IMP_SWIG_CONTAINER(IMP, IMP, Model, Particle, particle)
 IMP_SWIG_CONTAINER(IMP, IMP, Optimizer, OptimizerState, optimizer_state)
 
 %include "IMP/utility.h"
@@ -270,8 +268,6 @@ class ParticleQuadsTemp;
 %include "IMP/FailureHandler.h"
 %include "IMP/DerivativeAccumulator.h"
 %include "IMP/container_base.h"
-%include "IMP_kernel_particle.i"
-%include "IMP/Decorator.h"
 
 namespace IMP {
   class Restraints;
@@ -281,7 +277,9 @@ namespace IMP {
 %include "IMP/Restraint.h"
 %include "IMP/RestraintSet.h"
 %include "IMP/ScoreState.h"
+%include "IMP_kernel_particle.i"
 %include "IMP/Model.h"
+%include "IMP/Decorator.h"
 %include "IMP/UnaryFunction.h"
 %include "IMP/Constraint.h"
 %include "IMP/OptimizerState.h"

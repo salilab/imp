@@ -30,168 +30,16 @@ namespace {
 
 #if IMP_BUILD < IMP_FAST
 #define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
-  {                                                                     \
-    IMP_IF_CHECK(first_call_ && USAGE_AND_INTERNAL) {                   \
-      ParticlesTemp rpl;                                                \
-      if (!exchange) rpl= (restraint)->get_input_particles();           \
-      else rpl= (restraint)->get_output_particles();                    \
-      ParticlesTemp wpl;                                                \
-      if (!exchange) wpl= (restraint)->get_output_particles();          \
-      else wpl= (restraint)->get_input_particles();                     \
-      wpl.insert(wpl.end(), rpl.begin(), rpl.end());                    \
-      if (exchange) {                                                   \
-        rpl.insert(rpl.end(), wpl.begin(), wpl.end());                  \
-      }                                                                 \
-      ContainersTemp cpl= (restraint)->get_input_containers();          \
-      {for (unsigned int i=0; i < cpl.size(); ++i) {                    \
-        if (dynamic_cast<Particle*>(cpl[i])) {                          \
-          if (exchange) {                                               \
-            wpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
-          } else {                                                      \
-            rpl.push_back(dynamic_cast<Particle*>(cpl[i]));             \
-          }                                                             \
-        }                                                               \
-        }}                                                              \
-      ContainersTemp cpo= (restraint)->get_output_containers();         \
-      {for (unsigned int i=0; i < cpo.size(); ++i) {                    \
-        if (dynamic_cast<Particle*>(cpo[i])) {                          \
-          if (!exchange) {                                              \
-            wpl.push_back(dynamic_cast<Particle*>(cpo[i]));             \
-          } else {                                                      \
-            rpl.push_back(dynamic_cast<Particle*>(cpo[i]));             \
-          }                                                             \
-        }                                                               \
-        }}                                                              \
-      internal::ReadLock rl(particles_begin(), particles_end(),         \
-                            rpl.begin(), rpl.end());                    \
-      internal::WriteLock wl(particles_begin(), particles_end(),        \
-                             wpl.begin(), wpl.end());                   \
-      try {                                                             \
-        expr;                                                           \
-      } catch (internal::ReadLockedParticleException &e) {              \
-        std::ostringstream oss;                                         \
-        for (unsigned int i=0; i< rpl.size(); ++i) {                    \
-          oss << rpl[i]->get_name() << " ";                             \
-        }                                                               \
-        IMP_ERROR("Particle " << e.p_->get_name()                       \
-                  << " is not in the input particles list of "          \
-                  << (restraint)->get_name() << " but should be. "      \
-                  << "The list contains " << oss.str()                  \
-                  << std::endl);                                        \
-        throw InternalException("Invalid particle used ");              \
-      } catch (internal::WriteLockedParticleException &e) {             \
-        std::ostringstream oss;                                         \
-        for (unsigned int i=0; i< wpl.size(); ++i) {                    \
-          oss << wpl[i]->get_name() << " ";                             \
-        }                                                               \
-        IMP_ERROR("Particle " << e.p_->get_name()                       \
-                  << " is not in the write particles list of "          \
-                  << (restraint)->get_name() << " but should be."       \
-                  << "The list contains " << oss.str()                  \
-                  << std::endl);                                        \
-        throw InternalException("Invalid particle used");               \
-      }                                                                 \
-    } else {                                                            \
-      expr;                                                             \
-    }                                                                   \
-  }
+  expr
 
 #define WRAP_EVALUATE_CALL(restraint, expr)                             \
-  {                                                                     \
-    IMP_IF_CHECK(first_call_ && USAGE_AND_INTERNAL) {                   \
-      ParticlesTemp rpl= (restraint)->get_input_particles();            \
-      ContainersTemp cpl= (restraint)->get_input_containers();          \
-      {for (unsigned int i=0; i < cpl.size(); ++i) {                    \
-        if (dynamic_cast<Particle*>(cpl[i])) {                          \
-          rpl.push_back(dynamic_cast<Particle*>(cpl[i]));               \
-        }                                                               \
-        }}                                                              \
-      internal::ReadLock rl(particles_begin(), particles_end(),         \
-                            rpl.begin(), rpl.end());                    \
-      internal::WriteLock wl(particles_begin(), particles_end(),        \
-                             rpl.begin(), rpl.end());                   \
-      try {                                                             \
-        expr;                                                           \
-      } catch (internal::ReadLockedParticleException e) {               \
-        IMP_ERROR("Particle " << e.p_->get_name()                       \
-                  << " is not in the input particles list of "          \
-                  << (restraint)->get_name() << " but should be."       \
-                  << "The list contains " << Particles(rpl)             \
-                  << std::endl);                                        \
-        throw InternalException("Invalid particle used");               \
-      } catch (internal::WriteLockedParticleException e) {              \
-        IMP_ERROR("Particle " << e.p_->get_name()                       \
-                  << " is not in the output particles list of "         \
-                  << (restraint)->get_name() << " but should be."       \
-                  << "The list contains " << Particles(rpl)             \
-                  << std::endl);                                        \
-        throw InternalException("Invalid particle used");               \
-      }                                                                 \
-    } else {                                                            \
-      expr;                                                             \
-    }                                                                   \
-  }
+  expr
+
 #else
 #define WRAP_UPDATE_CALL(restraint, expr, exchange) expr
 #define WRAP_EVALUATE_CALL(restraint, expr) expr
 
 #endif
-
-
-IMP_BEGIN_INTERNAL_NAMESPACE
-
-struct ReadLock{
-  Particles p_;
-  compatibility::set<Object *> allowed_;
-public:
-  template <class It, class It1>
-  ReadLock(It1 pa, It1 pb,
-           It ab, It ae): p_(pa, pb),
-                          allowed_(ab, ae){
-#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=0; i< p_.size(); ++i) {
-      if (allowed_.find(p_[i]) == allowed_.end()) {
-        p_[i]->ps_->read_locked_=true;
-      }
-    }
-#endif
-  }
-  ~ReadLock() {
-#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=0; i< p_.size(); ++i) {
-      p_[i]->ps_->read_locked_=false;
-    }
-#endif
-  }
-};
-
-
-struct WriteLock{
-  Particles p_;
-  compatibility::set<Object *> allowed_;
-public:
-  template <class It, class It1>
-  WriteLock(It1 pa, It1 pb,
-            It ab, It ae): p_(pa, pb),
-                           allowed_(ab, ae){
-#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=0; i< p_.size(); ++i) {
-      if (allowed_.find(p_[i]) == allowed_.end()) {
-        p_[i]->ps_->write_locked_=true;
-      }
-    }
-#endif
-  }
-  ~WriteLock() {
-#if IMP_BUILD < IMP_FAST
-    for (unsigned int i=0; i< p_.size(); ++i) {
-      p_[i]->ps_->write_locked_=false;
-    }
-#endif
-  }
-};
-
-IMP_END_INTERNAL_NAMESPACE
 
 IMP_BEGIN_NAMESPACE
 
@@ -238,12 +86,6 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
   }
 }
 
-void Model::zero_derivatives() const {
-  for (ParticleConstIterator pit = particles_begin();
-       pit != particles_end(); ++pit) {
-    (*pit)->zero_derivatives();
-  }
-}
 
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                                      const std::vector<double> &weights,
@@ -299,16 +141,6 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
     has_good_score_=false;
   }
   return ret;
-}
-
-
-
-void Model::validate_computed_derivatives() const {
-  for (ParticleConstIterator it= particles_begin();
-       it != particles_end(); ++it) {
-    Particle *p= *it;
-    p->validate_float_derivatives();
-  }
 }
 
 

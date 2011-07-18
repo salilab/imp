@@ -32,6 +32,8 @@ Model::Model(std::string name): Object(name),
   first_call_=true;
   max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
+
+  next_particle_=0;
 }
 
 
@@ -40,10 +42,11 @@ Model::~Model()
 {
   IMP_CHECK_OBJECT(this);
   rs_->set_model(NULL);
-  for (ParticleIterator it= particles_begin();
-       it != particles_end(); ++it) {
-    (*it)->m_ = NULL;
-    internal::unref(*it);
+  for (unsigned int i=0; i< particle_index_.size(); ++i) {
+    if (particle_index_[i]) {
+      Object* op=particle_index_[i];
+      dynamic_cast<Particle*>(op)->m_=NULL;
+    }
   }
 }
 
@@ -102,25 +105,6 @@ void Model::set_score_state_model(ScoreState *ss, Model *model) {
 }
 
 
-FloatRange Model::get_range(FloatKey k) const {
-  IMP_CHECK_OBJECT(this);
-  if (ranges_.find(k) != ranges_.end()) {
-    return ranges_.find(k)->second;
-  } else {
-    FloatRange r(std::numeric_limits<Float>::max(),
-                 -std::numeric_limits<Float>::max());
-    for (ParticleConstIterator it= particles_begin();
-         it != particles_end(); ++it) {
-      if ((*it)->has_attribute(k)) {
-        Float v= (*it)->get_value(k);
-        r.first = std::min(r.first, v);
-        r.second= std::max(r.second, v);
-      }
-    }
-    return r;
-  }
-}
-
 double Model::get_weight(Restraint *r) const {
   if (!get_has_dependencies()) {
     compute_dependencies();
@@ -130,7 +114,35 @@ double Model::get_weight(Restraint *r) const {
 }
 
 
+ParticlesTemp Model::get_particles() const {
+  ParticlesTemp ret;
+  for (unsigned int i=0; i< particle_index_.size(); ++i) {
+    if (particle_index_[i]) {
+      ret.push_back(dynamic_cast<Particle*>(particle_index_[i]));
+    }
+  }
+  return ret;
+}
 
+
+void Model::add_particle_internal(Particle *p) {
+    IMP_CHECK_OBJECT(this);
+    IMP_CHECK_OBJECT(p);
+    p->set_was_used(true);
+    int id;
+    if (free_particles_.empty()){
+      id= next_particle_;
+      ++next_particle_;
+    } else {
+      id= free_particles_.back();
+      free_particles_.pop_back();
+    }
+    p->id_=id;
+    int maxp= std::max(particle_index_.size(),
+                       static_cast<size_t>(p->id_+1));
+    particle_index_.resize(maxp);
+    particle_index_[p->id_]=p;
+  }
 
 
 
@@ -148,7 +160,7 @@ void Model::update() {
 
 void Model::do_show(std::ostream& out) const
 {
-  out << get_number_of_particles() << " particles" << std::endl;
+  out << get_particles().size() << " particles" << std::endl;
   out << get_number_of_restraints() << " restraints" << std::endl;
   out << get_number_of_score_states() << " score states" << std::endl;
 
@@ -156,11 +168,24 @@ void Model::do_show(std::ostream& out) const
   IMP_CHECK_OBJECT(this);
 }
 
+void Model::remove_particle(Particle *p) {
+  int pi= p->get_index();
+  free_particles_.push_back(pi);
+  particle_index_[pi]=NULL;
+  p->m_=NULL;
+  FloatAttributeTable::clear_attributes(pi);
+  StringAttributeTable::clear_attributes(pi);
+  IntAttributeTable::clear_attributes(pi);
+  ObjectAttributeTable::clear_attributes(pi);
+  IntsAttributeTable::clear_attributes(pi);
+  ObjectsAttributeTable::clear_attributes(pi);
+  ParticleAttributeTable::clear_attributes(pi);
+  ParticlesAttributeTable::clear_attributes(pi);
+}
 
 
 bool Model::get_has_good_score() const {
   return has_good_score_;
 }
-
 
 IMP_END_NAMESPACE

@@ -32,6 +32,8 @@ class ParticleTests(IMP.test.TestCase):
         # add additional attributes to particle 11
         for i in range(0,6):
             p1.add_attribute(IMP.FloatKey("attr_" + str(i)), 3.5 * i, False)
+        # clear derivatives
+        self.model.evaluate(True)
 
     def test_no_model(self):
         """Check that operations fail on particles once the model is gone"""
@@ -41,9 +43,10 @@ class ParticleTests(IMP.test.TestCase):
         # Particles left over after a model is deleted should act as if
         # they are inactive
         self.assertEqual(p1.get_is_active(), False)
-        self.assertRaises(ValueError, p1.add_attribute, IMP.IntKey("Test"), 0)
-        self.assertRaises(ValueError, p1.get_value, xkey)
-        self.assertRaises(ValueError, p1.set_value, xkey, 0.0)
+        # this should be a usageexception as it is expensive
+        #self.assertRaises(ValueError, p1.add_attribute, IMP.IntKey("Test"), 0)
+        #self.assertRaises(ValueError, p1.get_value, xkey)
+        #self.assertRaises(ValueError, p1.set_value, xkey, 0.0)
 
     def test_equality(self):
         """Check particle identity"""
@@ -76,7 +79,8 @@ class ParticleTests(IMP.test.TestCase):
         d[td]=3
         self.assertEqual(d[p0], 3)
 
-    def test_bad_attributes(self):
+    # no good reason to special case particles, just use UsageExceptions
+    def _test_bad_attributes(self):
         """Asking for non-existent attributes should cause an exception"""
         p1 = self.particles[0]
         self.assertRaises(IndexError, p1.get_value, IMP.FloatKey("notexist"))
@@ -133,11 +137,11 @@ class ParticleTests(IMP.test.TestCase):
         ict=0
         fct=0
         sct=0
-        for s in p.get_string_attributes():
+        for s in p.get_string_keys():
             sct += 1
-        for s in p.get_float_attributes():
+        for s in p.get_float_keys():
             fct += 1
-        for s in p.get_int_attributes():
+        for s in p.get_int_keys():
             ict += 1
         self.assertEqual(ict, 2)
         self.assertEqual(fct, 4)

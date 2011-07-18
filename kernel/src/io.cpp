@@ -7,7 +7,6 @@
  */
 
 #include <IMP/io.h>
-#include <IMP/internal/particle_save.h>
 #include <IMP/compatibility/map.h>
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>

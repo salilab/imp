@@ -11,8 +11,9 @@
 #include "Object.h"
 #include "Pointer.h"
 #include "utility.h"
-#include "Particle.h"
+#include "Model.h"
 #include "Constraint.h"
+#include "internal/utility.h"
 
 IMP_BEGIN_NAMESPACE
 class Model;
@@ -106,17 +107,24 @@ use the Decorator::get_particle() function in Python.
 class Decorator
 {
 private:
-  Particle *particle_;
+  Model *model_;
+  ParticleIndex pi_;
 protected:
-  Decorator(Particle *p): particle_(p) {}
-  Decorator() :particle_(NULL)
+  Decorator(Model *m, ParticleIndex pi): model_(m),
+                                         pi_(pi) {}
+  Decorator(Particle *p): model_(p->get_model()),
+                          pi_(p->get_index()){}
+  Decorator() :model_(NULL), pi_(-1)
   {}
   int compare(Particle *o) const {
-    if (o < particle_) return -1;
-    else if (o > particle_) return 1;
+    if (o < get_particle()) return -1;
+    else if (o > get_particle()) return 1;
     else return 0;
   }
 public:
+ ParticleIndex get_particle_index() const {
+    return pi_;
+  }
 #ifdef _MSC_VER
   // needed to get Particle in VectorOfRefCounted
   typedef Particle* ParticleP;
@@ -169,25 +177,22 @@ public:
 
   /** Returns the particle decorated by this decorator.*/
   Particle *get_particle() const {
-    IMP_USAGE_CHECK(particle_,
-                    "You must give the decorator a particle to decorate.");
-    IMP_CHECK_OBJECT(particle_);
-    return particle_;
+    if (!model_) return NULL;
+    else return model_->get_particle(pi_);
   }
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   operator Particle*() const {
-    return particle_;
+    return get_particle();
   }
   Particle* operator->() const {
-    return particle_;
+    return get_particle();
   }
 #endif
 
   /** \brief Returns the Model containing the particle. */
   Model *get_model() const {
-    IMP_CHECK_OBJECT(particle_->get_model());
-    return particle_->get_model();
+    return model_;
   }
   // here just to make the docs symmetric
 private:
@@ -248,8 +253,6 @@ public:
   //! @}
 #endif
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  typedef void (Decorator::*bool_type)() const;
-  void safe_bool_function() const {};
   typedef boost::false_type DecoratorHasTraits;
 #endif
 };
@@ -317,7 +320,6 @@ public:                                                                 \
                       std::string(#Name "updater for ")+p->get_name()); \
       p->add_attribute(get_constraint_key(), ss);                       \
       p->get_model()->add_score_state(ss);                              \
-      p->set_is_ref_counted(get_constraint_key(), false);               \
     }                                                                   \
   }                                                                     \
   IMP_REQUIRE_SEMICOLON_NAMESPACE

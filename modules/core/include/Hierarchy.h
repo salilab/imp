@@ -62,7 +62,7 @@ class IMPCOREEXPORT HierarchyTraits
   template <class HD>
   void on_add(Particle * p, HD d, unsigned int i) const {
     d.get_particle()->add_attribute(P::get_data().parent_key_, p);
-    d.get_particle()->set_is_ref_counted(P::get_data().parent_key_, false);
+    //d.get_particle()->set_is_ref_counted(P::get_data().parent_key_, false);
     d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
     clear_caches(d);
   }
@@ -207,9 +207,16 @@ public:
       if it has no parent.
    */
   Hierarchy get_parent() const {
-    IMP_DECORATOR_GET(get_decorator_traits().get_data().parent_key_, Particle*,
-                      return Hierarchy(VALUE, get_decorator_traits()),
-                      return Hierarchy());
+    if (get_model()->get_has_attribute(get_decorator_traits()
+                                       .get_data().parent_key_,
+                                       get_particle_index())) {
+      int VALUE =  get_model()->get_attribute(get_decorator_traits()
+                                              .get_data().parent_key_,
+                                              get_particle_index());
+      return Hierarchy(get_model(), VALUE, get_decorator_traits());
+    } else {
+      return Hierarchy();
+    }
   }
 
   //! Get the index of this particle in the list of children

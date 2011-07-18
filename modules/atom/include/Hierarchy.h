@@ -223,6 +223,9 @@ public:
   explicit Hierarchy(Particle *p): H(p, get_traits()) {
   }
 
+  Hierarchy(Model *m, ParticleIndex pi): H(m, pi, get_traits()) {
+  }
+
   //! null constructor
   Hierarchy() {}
 

@@ -70,18 +70,18 @@ public:
     return get_sphere().get_radius();
   }
   void set_radius(double r) const {
-    return get_particle()->_access_coordinates()._set_radius(r);
+     get_model()->get_sphere(get_particle_index())[3]=r;
   }
 
 
   //! Return a sphere object
   const algebra::SphereD<3>& get_sphere() const {
-    return get_particle()->_get_coordinates();
+    return get_model()->get_sphere(get_particle_index());
   }
 
   //! Set the attributes from a sphere
   void set_sphere(const algebra::SphereD<3> &s) {
-    get_particle()->_access_coordinates()=s;
+    get_model()->get_sphere(get_particle_index())=s;
   }
   //! Get the default radius key.
   static FloatKey get_radius_key() {

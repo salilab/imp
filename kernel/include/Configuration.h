@@ -13,7 +13,6 @@
 #include "Object.h"
 #include "Pointer.h"
 #include "Model.h"
-#include "internal/particle_save.h"
 #include "compatibility/map.h"
 
 IMP_BEGIN_NAMESPACE
@@ -24,19 +23,14 @@ IMP_BEGIN_NAMESPACE
 class IMPEXPORT Configuration: public Object
 {
   mutable Pointer<Model> model_;
-  typedef Pointer<Particle> PP;
-  typedef compatibility::map<PP, internal::ParticleData> DataMap;
-  DataMap base_;
-  friend class ConfigurationSet;
-  bool get_has_particle(Particle *p) const {
-    return base_.find(p) != base_.end();
-  }
-  const internal::ParticleData& get_data(Particle *p) const {
-    return base_.find(p)->second;
-  }
-  typedef DataMap::const_iterator iterator;
-  iterator begin() const {return base_.begin();}
-  iterator end() const {return base_.end();}
+  FloatAttributeTable floats_;
+  StringAttributeTable strings_;
+  IntAttributeTable objects_;
+  ObjectAttributeTable ints_lists_;
+  IntsAttributeTable objects_lists_;
+  ObjectsAttributeTable particles_;
+  ParticleAttributeTable particles_lists_;
+  ParticlesAttributeTable ints_;
  public:
   Configuration(Model *m, std::string name="Configuration %1%");
   void load_configuration() const;

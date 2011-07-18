@@ -15,6 +15,7 @@
 #include "../macros.h"
 #include "../VectorOfRefCounted.h"
 #include "attribute_storage.h"
+#include <boost/dynamic_bitset.hpp>
 
 #include <limits>
 
@@ -30,96 +31,34 @@ IMP_BEGIN_INTERNAL_NAMESPACE
 template <class T, class K >
 struct DefaultTraits
 {
+  typedef std::vector<T> Container;
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
 };
 
-
-struct FloatAttributeTableTraits: public DefaultTraits<float, FloatKey>
+template <class T, class K >
+struct ArrayTraits
 {
-  static float get_invalid() {
-    /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
-    /*if (std::numeric_limits<float>::has_quiet_NaN) {
-      return std::numeric_limits<float>::quiet_NaN();
-      } else*/ if (std::numeric_limits<float>::has_infinity) {
-      return std::numeric_limits<float>::infinity();
-    } else {
-      return std::numeric_limits<float>::max();
-    }
-  }
-  static bool get_is_valid(float f) {
-    /*if (std::numeric_limits<float>::has_quiet_NaN) {
-      return !is_nan(f);
-      } else*/
-    return f< std::numeric_limits<float>::max();
-  }
-};
-
-
-template <class O>
-class ObjectWrapper {
-  O *p_;
-  bool rc_;
-public:
-  ObjectWrapper(): p_(NULL), rc_(true){}
-  ObjectWrapper(O *p): p_(p), rc_(true){}
-  ObjectWrapper(O *p, bool t): p_(p), rc_(t){}
-  bool get_is_ref_counted() const {return rc_;}
-  void set_is_ref_counted(bool tf) {
-    if (!tf && rc_) {
-      internal::release(p_);
-    } else if (tf && !rc_) {
-      IMP::internal::ref(p_);
-    }
-    rc_=tf;
-  }
-  operator O *() const {return p_;}
-  IMP_COMPARISONS_1(ObjectWrapper, p_);
-  bool operator!=(O *o) const {
-    return p_ != o;
-  }
-  bool operator==(O *o) const {
-    return p_ == o;
-  }
-};
-
-
-
-struct ParticlesAttributeTableTraits
-{
-  typedef ObjectWrapper<Particle> Value;
-  typedef ObjectWrapper<Particle> PassValue;
-  typedef ControllableRefCountPolicy Policy;
-  typedef ParticleKey Key;
+  typedef std::vector<T> Value;
+  typedef std::vector<Value> Container;
+  typedef const Value& PassValue;
+  typedef K Key;
   static Value get_invalid() {
-    return ObjectWrapper<Particle>();
+    return Value();
   }
-  static bool get_is_valid(const Value& f) {
-    return f!= ObjectWrapper<Particle>();
-  }
-};
-
-struct ObjectsAttributeTableTraits
-{
-  typedef ObjectWrapper<Object> Value;
-  typedef ObjectWrapper<Object> PassValue;
-  typedef ObjectKey Key;
-  typedef ControllableRefCountPolicy Policy;
-  static Value get_invalid() {
-    return ObjectWrapper<Object>();
-  }
-  static bool get_is_valid(const Value& f) {
-    return f!= ObjectWrapper<Object>();
+  static bool get_is_valid(const Value &v) {
+    return !v.empty();
   }
 };
 
-struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
+
+struct FloatAttributeTableTraits: public DefaultTraits<double, FloatKey>
 {
   static double get_invalid() {
     /* do not use NaN as sometimes GCC will optimize things incorrectly.*/
-    /*if (std::numeric_limits<double>::has_quiet_NaN) {
-      return std::numeric_limits<double>::quiet_NaN();
+    /*if (std::numeric_limits<float>::has_quiet_NaN) {
+      return std::numeric_limits<float>::quiet_NaN();
       } else*/ if (std::numeric_limits<double>::has_infinity) {
       return std::numeric_limits<double>::infinity();
     } else {
@@ -127,12 +66,62 @@ struct DoubleAttributeTableTraits: public DefaultTraits<double, FloatKey>
     }
   }
   static bool get_is_valid(double f) {
-    /*if (std::numeric_limits<double>::has_quiet_NaN) {
+    /*if (std::numeric_limits<float>::has_quiet_NaN) {
       return !is_nan(f);
-      } else*/ {
-      return f < std::numeric_limits<double>::max();
-    }
+      } else*/
+    return f< std::numeric_limits<double>::max();
   }
+};
+
+
+struct ParticleAttributeTableTraits:
+  public DefaultTraits<int, ParticleKey>
+{
+  static Value get_invalid() {
+    return -1;
+  }
+  static bool get_is_valid(const Value& f) {
+    return f >=0;
+  }
+};
+
+struct ParticlesAttributeTableTraits:
+  public ArrayTraits<int, ParticlesKey>
+{
+};
+
+struct ObjectAttributeTableTraits
+{
+  typedef Object* Value;
+  typedef Object* PassValue;
+  typedef ObjectKey Key;
+  typedef Objects Container;
+  static Value get_invalid() {
+    return NULL;
+  }
+  static bool get_is_valid(const Value& f) {
+    return f;
+  }
+};
+
+struct ObjectsAttributeTableTraits
+{
+  typedef Objects Value;
+  typedef const Objects& PassValue;
+  typedef ObjectsKey Key;
+  typedef std::vector<Objects> Container;
+  static Value get_invalid() {
+    return Value();
+  }
+  static bool get_is_valid(const Value& f) {
+    return !f.empty();
+  }
+};
+
+
+struct IntsAttributeTableTraits:
+  ArrayTraits<int, IntsKey>
+{
 };
 
 struct IntAttributeTableTraits: public DefaultTraits<Int, IntKey>
@@ -147,10 +136,11 @@ struct IntAttributeTableTraits: public DefaultTraits<Int, IntKey>
 
 struct BoolAttributeTableTraits: public DefaultTraits<bool, FloatKey>
 {
+  typedef boost::dynamic_bitset<> Container;
   static bool get_invalid() {
     return false;
   }
-  static bool get_is_valid(Int f) {
+  static bool get_is_valid(bool f) {
     return f;
   }
 };

@@ -91,6 +91,33 @@ public:
 
   RigidMembers get_members() const;
 
+  //! Return the members as particle pointers
+  /** This member function is here
+      for efficiency.*/
+  const ParticleIndexes& get_member_particle_indexes() const {
+    static ParticleIndexes empty;
+    if (get_model()->get_has_attribute(internal::rigid_body_data().members_,
+                                       get_particle_index())) {
+      return get_model()->get_attribute(internal::rigid_body_data().members_,
+                                        get_particle_index());
+    } else {
+      return empty;
+    }
+  }
+
+  const ParticleIndexes& get_body_member_particle_indexes() const {
+    static ParticleIndexes empty;
+    if (get_model()
+        ->get_has_attribute(internal::rigid_body_data().body_members_,
+                                       get_particle_index())) {
+      return get_model()
+        ->get_attribute(internal::rigid_body_data().body_members_,
+                                        get_particle_index());
+    } else {
+      return empty;
+    }
+  }
+
   IMP_DECORATOR(RigidBody, XYZ);
 
   /** Merge several rigid bodies into on.
@@ -147,7 +174,13 @@ public:
 
   //!Return true of the particle is a rigid body
   static bool particle_is_instance(Particle *p) {
-    return internal::get_has_required_attributes_for_body(p);
+    return internal::get_has_required_attributes_for_body(p->get_model(),
+                                                          p->get_index());
+  }
+
+  //!Return true of the particle is a rigid body
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return internal::get_has_required_attributes_for_body(m, pi);
   }
 
   // swig doesn't support using, so the method is wrapped
@@ -198,7 +231,10 @@ public:
   //! Get the derivatives of the quaternion
   algebra::VectorD<4> get_rotational_derivatives() const;
 
-  unsigned int get_number_of_members() const;
+  unsigned int get_number_of_members() const {
+    return get_body_member_particle_indexes().size()
+      + get_member_particle_indexes().size();
+  }
 
   RigidMember get_member(unsigned int i) const;
 
@@ -234,12 +270,18 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
   //! Return the current orientation of the body
   algebra::VectorD<3> get_internal_coordinates() const {
-    return algebra::VectorD<3>(get_particle()
-                    ->get_value(internal::rigid_body_data().child_keys_[0]),
-                    get_particle()
-                    ->get_value(internal::rigid_body_data().child_keys_[1]),
-                    get_particle()
-                    ->get_value(internal::rigid_body_data().child_keys_[2]));
+    return algebra::VectorD<3>(get_model()
+                               ->get_attribute(internal::rigid_body_data()
+                                               .child_keys_[0],
+                                               get_particle_index()),
+                               get_model()
+                               ->get_attribute(internal::rigid_body_data()
+                                               .child_keys_[1],
+                                               get_particle_index()),
+                               get_model()
+                               ->get_attribute(internal::rigid_body_data()
+                                               .child_keys_[2],
+                                               get_particle_index()));
   }
 
   //! set the internal coordinates for this member
@@ -254,7 +296,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   //! Member must be a rigid body
   void set_internal_transformation(const  algebra::Transformation3D& v) {
     IMP_USAGE_CHECK(
- get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
+   get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
          "Can only set the internal transformation if member is"
          << " a rigid body itself.");
     get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
