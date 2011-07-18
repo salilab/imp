@@ -86,12 +86,8 @@ fill_list_if_good(double max) const {
   internal::ParticleHelper
       ::fill_close_pairs(internal::ParticleHelper
                          ::get_particle_set(xyzrs_.begin(),
-                                            xyzrs_.end(),
-                                            internal::ParticleID(),
-                                            internal::ParticleCenter(),
-                                            internal::ParticleRadius()),
-                         internal::ParticleClose(0),
-                         myslack, bb, 0,
+                                            xyzrs_.end(),0),
+                         internal::ParticleTraits(get_model(), myslack),
                          internal::ParticlePairSinkWithMax<SoftSpherePairScore>
                          (cur_list_,
                           ssps_.get(),
@@ -105,18 +101,11 @@ fill_list_if_good(double max) const {
     internal::ParticleHelper
       ::fill_close_pairs(internal::ParticleHelper
                          ::get_particle_set(xyzrs_.begin(),
-                                            xyzrs_.end(),
-                                            internal::ParticleID(),
-                                            internal::ParticleCenter(),
-                                            internal::ParticleRadius()),
+                                            xyzrs_.end(),0),
                          internal::ParticleHelper
                          ::get_particle_set(rbs_.begin(),
-                                            rbs_.end(),
-                                            internal::ParticleID(),
-                                            internal::ParticleCenter(),
-                                            internal::ParticleRadius()),
-                         internal::ParticleClose(0),
-                         myslack, bb, 0,
+                                            rbs_.end(),1),
+                         internal::ParticleTraits(get_model(), myslack),
                          internal::RigidBodyParticleParticlePairSinkWithMax
                          <SoftSpherePairScore>(cur_list_, ssps_.get(),
                                                NULL, score, max,
@@ -126,12 +115,8 @@ fill_list_if_good(double max) const {
     internal::ParticleHelper
       ::fill_close_pairs(internal::ParticleHelper
                          ::get_particle_set(rbs_.begin(),
-                                            rbs_.end(),
-                                          internal::ParticleID(),
-                                            internal::ParticleCenter(),
-                                            internal::ParticleRadius()),
-                         internal::ParticleClose(0),
-                         myslack, bb, 0,
+                                            rbs_.end(),0),
+                         internal::ParticleTraits(get_model(), myslack),
                          internal::RigidBodyRigidBodyParticlePairSinkWithMax
                          <SoftSpherePairScore>(cur_list_, ssps_.get(),
                                                NULL, score, max,
@@ -159,12 +144,8 @@ fill_list() const {
   internal::ParticleHelper
       ::fill_close_pairs(internal::ParticleHelper
                          ::get_particle_set(xyzrs_.begin(),
-                                            xyzrs_.end(),
-                                            internal::ParticleID(),
-                                            internal::ParticleCenter(),
-                                            internal::ParticleRadius()),
-                         internal::ParticleClose(slack_),
-                         slack_, bb, 0,
+                                            xyzrs_.end(),0),
+                         internal::ParticleTraits(get_model(), slack_),
                          internal::ParticlePairSink(cur_list_));
   for (unsigned int i=0; i< rbs_.size(); ++i) {
     bb+= core::XYZ(rbs_[i]).get_coordinates();
@@ -172,18 +153,11 @@ fill_list() const {
   internal::ParticleHelper
     ::fill_close_pairs(internal::ParticleHelper
                        ::get_particle_set(rbs_.begin(),
-                                          rbs_.end(),
-                                          internal::ParticleID(),
-                                          internal::ParticleCenter(),
-                                          internal::ParticleRadius()),
+                                          rbs_.end(),0),
                        internal::ParticleHelper
                        ::get_particle_set(xyzrs_.begin(),
-                                          xyzrs_.end(),
-                                          internal::ParticleID(),
-                                          internal::ParticleCenter(),
-                                          internal::ParticleRadius()),
-                       internal::ParticleClose(slack_),
-                       slack_, bb, 0,
+                                          xyzrs_.end(),1),
+                       internal::ParticleTraits(get_model(), slack_),
                        internal::RigidBodyParticleParticlePairSink(cur_list_,
                                                                    key_,
                                                                    slack_,
@@ -191,12 +165,8 @@ fill_list() const {
   internal::ParticleHelper
     ::fill_close_pairs(internal::ParticleHelper
                        ::get_particle_set(rbs_.begin(),
-                                          rbs_.end(),
-                                          internal::ParticleID(),
-                                          internal::ParticleCenter(),
-                                          internal::ParticleRadius()),
-                       internal::ParticleClose(slack_),
-                       slack_, bb, 0,
+                                          rbs_.end(),0),
+                       internal::ParticleTraits(get_model(), slack_),
                        internal::RigidBodyRigidBodyParticlePairSink(cur_list_,
                                                                     key_,
                                                                     slack_,
