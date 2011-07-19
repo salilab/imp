@@ -213,7 +213,7 @@ namespace {
           }*/
       }
       if (h.get_as_residue()) {
-        if (h.get_parent_index()==0
+        if (h.get_parent() && h.get_parent().get_child(0)==h
             && (Residue(h).get_is_protein()
                 || Residue(h).get_is_dna()
                 || Residue(h).get_is_rna())){
@@ -300,7 +300,7 @@ create_fragment(const HierarchiesTemp &ps)
 {
   IMP_USAGE_CHECK(!ps.empty(), "Need some particles");
   Hierarchy parent= ps[0].get_parent();
-  unsigned int index= ps[0].get_parent_index();
+  unsigned int index= ps[0].get_child_index();
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< ps.size(); ++i) {
       IMP_USAGE_CHECK(ps[i].get_parent() == parent,

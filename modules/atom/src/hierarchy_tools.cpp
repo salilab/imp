@@ -577,7 +577,7 @@ bool Selection::operator()(Hierarchy h) const
       do {
         Hierarchy p= cur.get_parent();
         if (!p) break;
-        unsigned int i= p.get_child_index(cur);
+        unsigned int i= cur.get_child_index();
         if (terminus_==C && i+1 != p.get_number_of_children()){
           fail=true;
           break;

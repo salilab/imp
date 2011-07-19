@@ -44,71 +44,23 @@ class Hierarchy;
     \pythonexample{custom_hierarchy}
     \see Hierarchy
 */
-class IMPCOREEXPORT HierarchyTraits
-#ifndef SWIG
-  : public internal::ArrayOnAttributesHelper<ParticleKey, Particle*,
-                                             internal::HierarchyData>
-#endif
-{
-  template <class HD>
-    void clear_caches(HD d) const {
-    d.get_particle()->clear_caches();
-    if (d.get_parent()) clear_caches(d.get_parent());
-  }
-  friend class Hierarchy;
-  typedef internal::ArrayOnAttributesHelper<ParticleKey, Particle*,
-    internal::HierarchyData> P;
-
-  template <class HD>
-  void on_add(Particle * p, HD d, unsigned int i) const {
-    d.get_particle()->add_attribute(P::get_data().parent_key_, p);
-    //d.get_particle()->set_is_ref_counted(P::get_data().parent_key_, false);
-    d.get_particle()->add_attribute(P::get_data().parent_index_key_, i);
-    clear_caches(d);
-  }
-  void on_change(Particle *, Particle* p, unsigned int,
-                        unsigned int ni) const {
-    p->set_value(P::get_data().parent_index_key_, ni);
-  }
-  template <class HD>
-  void on_remove(Particle *, HD d) const {
-    clear_caches(d);
-    d.get_particle()->remove_attribute(P::get_data().parent_index_key_);
-    d.get_particle()->remove_attribute(P::get_data().parent_key_);
-  }
-  template <class HD>
-  Particle *get_value(HD d) const {
-    return d.get_particle();
-  }
-  template <class HD>
-  unsigned int get_index(Particle *, HD d) const {
-    return d.get_parent_index();
-  }
-  // otherwise it is masked
-  using P::get_value;
-
-  template <class T>
-  void audit_value(T t) const {
-    IMP_USAGE_CHECK(t.get_traits().get_name() == get_name(),
-              "Mixing hierarchies of type " << get_name()
-              << " and type " << t.get_traits().get_name());
-  }
-
-  const Hierarchy wrap(Particle* p) const;
-
+class IMPCOREEXPORT HierarchyTraits {
+  ParticlesKey children_;
+  ParticleKey parent_;
 public:
   HierarchyTraits(){}
   //! Create a HierarchyTraits with the given name
   HierarchyTraits(std::string name);
-  //! Get the name used to identify this traits.
-  std::string get_name() const {
-    return get_prefix();
+  ParticlesKey get_children_key() const {
+    return children_;
   }
-
+  ParticleKey get_parent_key() const {
+    return parent_;
+  }
   bool operator==(const HierarchyTraits &o) const {
-    return get_name() == o.get_name();
+    return parent_ == o.parent_;
   }
-  IMP_SHOWABLE_INLINE(HierarchyTraits, out<< get_name());
+  IMP_SHOWABLE_INLINE(HierarchyTraits, out<< parent_);
 };
 
 IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
@@ -146,10 +98,6 @@ GenericHierarchiesTemp;
  */
 class IMPCOREEXPORT Hierarchy: public Decorator
 {
-
-  IMP_DECORATOR_ARRAY_DECL(public, Hierarchy, Child, child, children,
-                           get_decorator_traits(),
-                           Hierarchy, GenericHierarchies);
 public:
   IMP_DECORATOR_WITH_TRAITS(Hierarchy, Decorator,
                        HierarchyTraits, traits,
@@ -160,7 +108,6 @@ public:
   static Hierarchy setup_particle(Particle *p,
                           HierarchyTraits traits
                           =Hierarchy::get_default_traits()) {
-    add_required_attributes_for_child(p, traits);
     return Hierarchy(p, traits);
   }
 
@@ -172,46 +119,36 @@ public:
                           const Particles &children,
                           HierarchyTraits traits
                           =Hierarchy::get_default_traits()) {
-    add_required_attributes_for_child(p, traits);
     Hierarchy h(p, traits);
+    ParticleIndexes vs(children.size());
     for (unsigned int i=0; i< children.size(); ++i) {
-      if (!Hierarchy::particle_is_instance(children[i], traits)) {
-        add_required_attributes_for_child(children[i], traits);
-      }
-      Hierarchy c(children[i], traits);
-      h.add_child(c);
+      vs[i]=children[i]->get_index();
+      h.get_model()->add_attribute(traits.get_parent_key(),
+                                   vs[i],
+                                   h.get_particle_index());
     }
+    h.get_model()->add_attribute(traits.get_children_key(),
+                                 h.get_particle_index(),
+                                 vs);
     return h;
   }
 
   /** Check if the particle has the needed attributes for a
    cast to succeed */
-  static bool particle_is_instance(Particle *p,
-                             HierarchyTraits traits
+  static bool particle_is_instance(Particle *,
+                             HierarchyTraits
                              =Hierarchy::get_default_traits()){
-    return has_required_attributes_for_child(p, traits);
+    return true;
   }
-#if 0
-  /** Return the particles of the children
-   */
-  GenericHierarchiesTemp get_children() const {
-    GenericHierarchiesTemp ps(get_number_of_children(), get_traits());
-    for (unsigned int i=0; i< get_number_of_children(); ++i) {
-      ps.set(i, get_child(i));
-    }
-    return ps;
-  }
-#endif
-
   /** \return the parent particle, or Hierarchy()
       if it has no parent.
    */
   Hierarchy get_parent() const {
     if (get_model()->get_has_attribute(get_decorator_traits()
-                                       .get_data().parent_key_,
+                                       .get_parent_key(),
                                        get_particle_index())) {
       int VALUE =  get_model()->get_attribute(get_decorator_traits()
-                                              .get_data().parent_key_,
+                                              .get_parent_key(),
                                               get_particle_index());
       return Hierarchy(get_model(), VALUE, get_decorator_traits());
     } else {
@@ -219,28 +156,94 @@ public:
     }
   }
 
-  //! Get the index of this particle in the list of children
-  /** \return index in the list of children of the parent, or -1 if
-      it does not have a parent.
-   */
-  int get_parent_index() const {
-    IMP_DECORATOR_GET(get_decorator_traits().get_data().parent_index_key_,
-                      Int, return VALUE, return -1);
+  unsigned int get_number_of_children() const {
+    if (get_model()->get_has_attribute(get_traits().get_children_key(),
+                                       get_particle_index())) {
+      return get_model()->get_attribute(get_traits().get_children_key(),
+                                        get_particle_index()).size();
+    } else {
+      return 0;
+    }
   }
-
-  //! Get the index of a specific child in this particle.
-  /** This takes linear time.
-      \note This is mostly useful for debugging as you can always call
-      get_parent_index() on the child.
-      \return the index, or -1 if there is no such child.
-   */
-  int get_child_index(Hierarchy c) const;
-
+  Hierarchy get_child(unsigned int i) const {
+    IMP_USAGE_CHECK(i < get_number_of_children(),
+                    "Invalid child requested");
+    return Hierarchy(get_model(),
+                     get_model()->get_attribute(get_traits().get_children_key(),
+                                                get_particle_index())[i],
+                     get_traits());
+  }
+  void remove_child(unsigned int i) {
+    IMP_USAGE_CHECK(i < get_number_of_children(),
+                    "Invalid child requested");
+    Hierarchy c= get_child(i);
+    ParticleIndexes &pis
+      = get_model()->access_attribute(get_traits().get_children_key(),
+                                      get_particle_index());
+    pis.erase(pis.begin()+i);
+    get_model()->remove_attribute(get_traits().get_parent_key(),
+                                  c.get_particle_index());
+  }
+  void remove_child(Hierarchy h) {
+    remove_child(h.get_child_index());
+  }
+  void clear_children() {
+    ParticleIndexes &pis
+      = get_model()->access_attribute(get_traits().get_children_key(),
+                                      get_particle_index());
+    for (unsigned int i=0; i< pis.size(); ++i) {
+      get_model()->remove_attribute(get_traits().get_parent_key(),
+                                    pis[i]);
+    }
+    get_model()->remove_attribute(get_traits().get_children_key(),
+                                  get_particle_index());
+  }
+  void add_child(Hierarchy h) const {
+    if (get_model()->get_has_attribute(get_traits().get_children_key(),
+                                       get_particle_index())) {
+      get_model()->access_attribute(get_traits().get_children_key(),
+                                    get_particle_index())
+        .push_back(h.get_particle_index());
+    } else {
+      get_model()->add_attribute(get_traits().get_children_key(),
+                                 get_particle_index(),
+                                 ParticleIndexes(1, h.get_particle_index()));
+    }
+    get_model()->add_attribute(get_traits().get_parent_key(),
+                               h.get_particle_index(), get_particle_index());
+  }
+  void add_child_at(Hierarchy h, unsigned int pos) {
+    IMP_USAGE_CHECK(get_number_of_children()>=pos,
+                    "Invalid position");
+    if (get_model()->get_has_attribute(get_traits().get_children_key(),
+                                       get_particle_index())) {
+      ParticleIndexes &pis
+        =get_model()->access_attribute(get_traits().get_children_key(),
+                                       get_particle_index());
+      pis.insert(pis.begin()+pos, h.get_particle_index());
+    } else {
+      get_model()->add_attribute(get_traits().get_children_key(),
+                                 get_particle_index(),
+                                 ParticleIndexes(1, h.get_particle_index()));
+    }
+    get_model()->add_attribute(get_traits().get_parent_key(),
+                               h.get_particle_index(), get_particle_index());
+  }
+  int get_child_index() const {
+    if (!get_parent()) return -1;
+    else {
+      ParticleIndex pi
+        = get_model()->get_attribute(get_traits().get_parent_key(),
+                                     get_particle_index());
+      const ParticleIndexes &pis
+        = get_model()->get_attribute(get_traits().get_children_key(),
+                                     pi);
+      return std::find(pis.begin(), pis.end(),
+                       get_particle_index())-pis.begin();
+    }
+  }
   //! Get the default hierarchy traits
   static const HierarchyTraits& get_default_traits();
-#ifndef IMP_DOXYGEN
-  const ParticlesTemp& get_leaves() const;
-#endif
 };
 
 
@@ -313,10 +316,6 @@ private:
 
 }
 #endif
-
-inline const Hierarchy HierarchyTraits::wrap(Particle* p) const {
-  return Hierarchy(p, *this);
-}
 
 
 
