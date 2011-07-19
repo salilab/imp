@@ -18,6 +18,7 @@
 #include "Pointer.h"
 #include "VectorOfRefCounted.h"
 #include "container_base.h"
+#include "particle_index.h"
 #include <utility>
 
 
@@ -65,11 +66,6 @@
 
 
 IMP_BEGIN_NAMESPACE
-#ifndef IMP_DOXYGEN
-typedef int ParticleIndex;
-static const int InvalidParticleIndex=-1;
-typedef std::vector<ParticleIndex> ParticleIndexes;
-#endif
 
 class Model;
 class Changed;
