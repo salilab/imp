@@ -78,7 +78,9 @@ public:
       return it->second;
     } else {
       load_particle_states(ps.begin(), ps.end(), state, pst);
-      double score= r_->evaluate(false)*weight_;
+      RestraintsTemp rs(1, r_);
+      Floats weights(1,weight_);
+      double score= r_->get_model()->evaluate_if_good(rs, weights, false)[0];
       if (Filter) {
         ++filter_attempts_;
         if (score >max_) {
