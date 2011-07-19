@@ -123,12 +123,12 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
   for (ParticlePairIterator it=particle_pairs_begin();
        it != particle_pairs_end(); ++it) {
     for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
-      IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains_particle_pair(*it),
+      IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains(*it),
                          "Pair " << *it
                          << " should have been filtered by filter "
                          << get_pair_filter(i)->get_name());
       IMP_INTERNAL_CHECK(!get_pair_filter(i)
-                         ->get_contains_particle_pair(ParticlePair((*it)[0],
+                         ->get_contains(ParticlePair((*it)[0],
                                                                    (*it)[1])),
                          "Filter is not symmetric on pair " << *it
                          << get_pair_filter(i)->get_name());
