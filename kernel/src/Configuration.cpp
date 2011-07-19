@@ -44,6 +44,21 @@ void Configuration::load_configuration() const {
   static_cast<ParticlesAttributeTable&>(*model_)= ints_;
 }
 
+void Configuration::swap_configuration() {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  using IMP::swap;
+  using std::swap;
+  swap(static_cast<FloatAttributeTable&>(*model_), floats_);
+  swap(static_cast<StringAttributeTable&>(*model_), strings_);
+  swap(static_cast<IntAttributeTable&>(*model_), objects_);
+  swap(static_cast<ObjectAttributeTable&>(*model_), ints_lists_);
+  swap(static_cast<IntsAttributeTable&>(*model_), objects_lists_);
+  swap(static_cast<ObjectsAttributeTable&>(*model_), particles_);
+  swap(static_cast<ParticleAttributeTable&>(*model_), particles_lists_);
+  swap(static_cast<ParticlesAttributeTable&>(*model_), ints_);
+}
+
 
 void Configuration::do_show(std::ostream &out) const {
   out <<  "configuration" << std::endl;
