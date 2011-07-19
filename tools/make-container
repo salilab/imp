@@ -69,6 +69,9 @@ def make_one(params, test=True):
               ("modules/core/src/internal/CoreList"+multi + "Container.cpp",
                path+"/tools/container_templates/corelist.cc"),
 
+              ("kernel/include/"+multi.lower() + "_macros.h",
+               path+"/tools/container_templates/macros.hpp"),
+
 
               ("modules/core/include/"+multi + "Restraint.h",
                path+"/tools/container_templates/srestraint.hpp"),

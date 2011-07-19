@@ -30,7 +30,7 @@ public:
 };
 
 inline bool BondedPairFilter
-::get_contains_particle_pair(const ParticlePair& pp) const {
+::get_contains(const ParticlePair& pp) const {
   if (!Bonded::particle_is_instance(pp[0])
       || ! Bonded::particle_is_instance(pp[1])) {
     return false;

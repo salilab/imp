@@ -41,7 +41,7 @@ public:
 
   Restraints get_instant_decomposition(const ParticlePair &vt) const;
 
-  IMP_COMPLEX_PAIR_SCORE(KClosePairsPairScore);
+  IMP_COMPOSITE_PAIR_SCORE(KClosePairsPairScore);
 };
 
 

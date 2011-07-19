@@ -174,6 +174,19 @@ inline std::string get_name(const ParticleTuple<D>& p) {
 }
 
 
+template <class Filter>
+class GetContains {
+  const Filter* back_;
+public:
+  GetContains(const Filter *n): back_(n){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains(p);
+  }
+};
+
+
+
 #define IMP_ACTIVE_CONTAINER_DECL(Name)                         \
   private:                                                      \
   unsigned int eval_update_;                                    \

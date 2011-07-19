@@ -11,26 +11,18 @@
 #include "IMP/TripletFilter.h"
 #include "IMP/internal/utility.h"
 #include "IMP/TripletModifier.h"
+#include "IMP/internal/container_helpers.h"
 #include <algorithm>
 
 IMP_BEGIN_NAMESPACE
 
 TripletFilter::TripletFilter(std::string name): Object(name) {
 }
-namespace {
-struct TripletGCP {
-  const TripletFilter *back_;
-  TripletGCP(const TripletFilter *n): back_(n){}
-  template <class T>
-  bool operator()(const T &p) const {
-    return back_->get_contains_particle_triplet(p);
-  }
-};
-}
+
 void TripletFilter
 ::filter_in_place(ParticleTripletsTemp &ps) const {
   ps.erase(std::remove_if(ps.begin(), ps.end(),
-                          TripletGCP(this)),
+         internal::GetContains<TripletFilter>(this)),
            ps.end());
 
 }

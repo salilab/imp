@@ -34,7 +34,7 @@ public:
 };
 
 inline bool InContainerCLASSNAMEFilter
-::get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const {
+::get_contains(ARGUMENTTYPE p) const {
   return c_->get_contains_FUNCTIONNAME(p);
 }
 

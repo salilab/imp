@@ -17,7 +17,7 @@ StereochemistryPairFilter::StereochemistryPairFilter() {
 }
 
 bool StereochemistryPairFilter
-::get_contains_particle_pair(const ParticlePair& pp) const {
+::get_contains(const ParticlePair& pp) const {
   return excluded_map_.find(internal::ExcludedPair(pp[0], pp[1]))
          != excluded_map_.end();
 }
