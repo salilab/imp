@@ -262,7 +262,7 @@ Particle* closest_particle(Model *m, const RigidBodyHierarchy *da,
   double d= distance_bound(m, da, 0, pt.get_particle_index());
   queue.push(QP(d, 0));
   double best_d=dist;
-  ParticleIndex bp=NULL;
+  ParticleIndex bp=-1;
   do {
     std::pair<double, int> v= queue.top();
     queue.pop();
