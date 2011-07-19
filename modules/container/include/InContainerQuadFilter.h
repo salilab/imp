@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/QuadFilter.h>
 #include <IMP/QuadContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -34,7 +35,7 @@ public:
 };
 
 inline bool InContainerQuadFilter
-::get_contains_particle_quad(const ParticleQuad& p) const {
+::get_contains(const ParticleQuad& p) const {
   return c_->get_contains_particle_quad(p);
 }
 

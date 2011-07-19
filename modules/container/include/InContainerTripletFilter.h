@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/TripletFilter.h>
 #include <IMP/TripletContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -34,7 +35,7 @@ public:
 };
 
 inline bool InContainerTripletFilter
-::get_contains_particle_triplet(const ParticleTriplet& p) const {
+::get_contains(const ParticleTriplet& p) const {
   return c_->get_contains_particle_triplet(p);
 }
 
