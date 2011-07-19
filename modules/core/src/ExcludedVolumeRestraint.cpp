@@ -118,9 +118,11 @@ fill_list_if_good(double max) const {
                                                ssps_.get(),
                                                NULL, score, max,
                                                key_, myslack, constituents_));
-    if (score < max) {
-      //was_bad_=false;
-    }
+    /* Assume incoherent motion
+       if (score < max) {
+      was_bad_=false;
+      reset_moved();
+      }*/
   }
   return score;
 }

@@ -17,96 +17,16 @@ const HierarchyTraits& Hierarchy::get_default_traits() {
   return ret;
 }
 
-HierarchyTraits::HierarchyTraits(std::string name): P(name)
+HierarchyTraits::HierarchyTraits(std::string name)
 {
-  P::get_data().parent_key_=ParticleKey((name+"_parent").c_str());
-  P::get_data().parent_index_key_= IntKey((name+"_parent_index").c_str());
-  P::get_data().cache_key_= ObjectKey((name+"_cache").c_str());
+  parent_=ParticleKey((name+"_parent").c_str());
+  children_= ParticlesKey((name+"_children").c_str());
 }
 
 
 void Hierarchy::show(std::ostream &out) const
 {
   out << "Hierarchy";
-}
-
-namespace {
-  class HierarchyCache: public Object {
-  public:
-    ParticlesTemp leaves;
-    HierarchyCache(): Object("HierarchyCache"){
-      set_was_used(true);
-    }
-    IMP_OBJECT(HierarchyCache);
-  };
-  void HierarchyCache::do_show(std::ostream &out) const {
-    out << "HierarchyCache";
-  }
-
-  HierarchyCache* get_cache(Hierarchy h) {
-    ObjectKey k= h.get_traits().get_data().cache_key_;
-    if (!h->has_attribute(k)) return NULL;
-    Object *o= h->get_value(k);
-    return dynamic_cast<HierarchyCache*>(o);
-  }
-
-  HierarchyCache* rebuild_cache(Hierarchy h) {
-    Pointer<HierarchyCache> c= new HierarchyCache();
-    c->leaves= get_leaves(h);
-    for (unsigned int i=0; i< c->leaves.size(); ++i) {
-      IMP_CHECK_OBJECT(c->leaves[i]);
-    }
-    h.get_model()->add_cache_attribute(h.get_traits().get_data().cache_key_,
-                                       h.get_particle_index(),
-                                       c.get());
-    IMP_INTERNAL_CHECK(h.get_model()
-                       ->get_attribute(h.get_traits().get_data().cache_key_,
-                                       h.get_particle_index()) == c.get(),
-                       "Cache not added properly");
-    return c;
-  }
-}
-
-
-
-const ParticlesTemp& Hierarchy::get_leaves() const {
-  HierarchyCache *c= get_cache(*this);
-  if (!c) {
-    c=rebuild_cache(*this);
-  } else {
-    IMP_CHECK_OBJECT(c);
-  }
-  IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    for (unsigned int i=0; i< c->leaves.size(); ++i) {
-      IMP_CHECK_OBJECT(c->leaves[i]);
-    }
-  }
-  return c->leaves;
-}
-/*
-namespace {
-unsigned int count_hierarchy(Hierarchy h)
-{
-  HierarchyCounter hc;
-  visit_depth_first(h,hc);
-  return hc.get_count();
-}
-}
-*/
-
-
-
-int Hierarchy::get_child_index(Hierarchy c) const
-{
-  IMP_USAGE_CHECK(get_decorator_traits().get_name()
-                  == c.get_decorator_traits().get_name(),
-            "Attemping to mix hierarchy of type "
-                  << get_decorator_traits().get_name()
-            << " with one of type " << c.get_decorator_traits().get_name());
-  for (unsigned int i=0; i< get_number_of_children(); ++i ) {
-    if (get_child(i) == c) return i;
-  }
-  return -1;
 }
 
 

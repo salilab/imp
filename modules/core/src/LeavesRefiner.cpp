@@ -26,12 +26,12 @@ bool LeavesRefiner::get_can_refine(Particle *p) const
 
 Particle* LeavesRefiner::get_refined(Particle *p, unsigned int i) const
 {
-  return core::Hierarchy(p, traits_).get_leaves()[i];
+  return core::get_leaves(Hierarchy(p, traits_))[i];
 }
 
 unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 {
-  return core::Hierarchy(p, traits_).get_leaves().size();
+  return core::get_leaves(Hierarchy(p, traits_)).size();
 }
 
 
@@ -39,7 +39,7 @@ unsigned int LeavesRefiner::get_number_of_refined(Particle *p) const
 const ParticlesTemp LeavesRefiner::get_refined(Particle *p) const{
   // force filling of the cache, yeah, its not good organization
   IMP_INTERNAL_CHECK(get_can_refine(p), "Trying to refine the unrefinable");
-  return core::Hierarchy(p, traits_).get_leaves();
+  return core::get_leaves(Hierarchy(p, traits_));
 }
 
 ParticlesTemp LeavesRefiner::get_input_particles(Particle *) const {

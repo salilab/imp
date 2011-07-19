@@ -265,20 +265,10 @@ public:
   /** A child must have a type that is listed before the parent in the
       Type enum list.
    */
-  unsigned int add_child(Hierarchy o) {
+  void add_child(Hierarchy o) {
     IMP_USAGE_CHECK(o != *this, "Can't add something as its own child: "
                     << o);
-    return H::add_child(o);
-  }
-
-  //! Add a child and check that the types are appropriate
-  /** A child must have a type that is listed before the parent in the
-      Type enum list.
-   */
-  void add_child_at(Hierarchy o, unsigned int i) {
-    IMP_USAGE_CHECK(o != *this, "Can't add something as its own child: "
-                    << o);
-    H::add_child_at(o, i);
+    H::add_child(o);
   }
 
   /** Get the ith child */
