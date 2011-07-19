@@ -70,7 +70,8 @@ public:
   using Base::remove_attribute;                 \
   using Base::get_has_attribute;                \
   using Base::set_attribute;                    \
-  using Base::get_attribute
+  using Base::get_attribute;                    \
+  using Base::access_attribute
 #else
 #define IMP_MODEL_IMPORT(Base)
 #endif
@@ -143,6 +144,13 @@ public:
   }
   typename Traits::PassValue get_attribute(Key k,
                                            ParticleIndex particle) const {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Requested invalid attribute: " << k
+                    << " of particle " << particle);
+    return data_[k.get_index()][particle];
+  }
+  typename Traits::Value& access_attribute(Key k,
+                                           ParticleIndex particle) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Requested invalid attribute: " << k
                     << " of particle " << particle);
@@ -360,6 +368,16 @@ public:
       return spheres_[particle][k.get_index()];
     } else {
       return data_.get_attribute(FloatKey(k.get_index()-4), particle);
+    }
+  }
+  double& access_attribute(FloatKey k,
+                       ParticleIndex particle) {
+    IMP_USAGE_CHECK(get_has_attribute(k, particle),
+                    "Can't get attribute that is not there");
+    if (k.get_index()<4) {
+      return spheres_[particle][k.get_index()];
+    } else {
+      return data_.access_attribute(FloatKey(k.get_index()-4), particle);
     }
   }
   struct FloatIndex
