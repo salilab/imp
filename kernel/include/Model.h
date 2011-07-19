@@ -98,6 +98,10 @@ private:
     data_[k.get_index()][particle]=value;
   }
 public:
+  void swap_with(BasicAttributeTable<Traits> &o) {
+    IMP_SWAP_MEMBER(data_);
+    IMP_SWAP_MEMBER(caches_);
+  }
   BasicAttributeTable(){}
 
   void add_attribute(Key k, ParticleIndex particle,
@@ -187,6 +191,7 @@ public:
   unsigned int size() const {return data_.size();}
   unsigned int size(unsigned int i) const {return data_[i].size();}
 };
+IMP_SWAP_1(BasicAttributeTable);
 
 
 
@@ -206,6 +211,15 @@ class FloatAttributeTable {
     return ivs;
   }
 public:
+  void swap_with(FloatAttributeTable&o) {
+    using IMP::swap;
+    using std::swap;
+    IMP_SWAP_MEMBER(spheres_);
+    IMP_SWAP_MEMBER(sphere_derivatives_);
+    IMP_SWAP_MEMBER(data_);
+    IMP_SWAP_MEMBER(derivatives_);
+    IMP_SWAP_MEMBER(optimizeds_);
+  }
   FloatAttributeTable(){}
 
   // make sure you know what you are doing
@@ -411,6 +425,8 @@ public:
     return ret;
   }
 };
+
+IMP_SWAP(FloatAttributeTable);
 
 typedef BasicAttributeTable<internal::StringAttributeTableTraits>
 StringAttributeTable;
