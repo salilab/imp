@@ -68,7 +68,7 @@ public:
       return radius_;
     }
   }
-  const double operator[](unsigned int i) const {
+  double operator[](unsigned int i) const {
     IMP_USAGE_CHECK(i<D+1, "Out of range");
     if (i <D) {
       return center_[i];
