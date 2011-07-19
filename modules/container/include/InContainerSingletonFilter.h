@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/SingletonFilter.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -34,7 +35,7 @@ public:
 };
 
 inline bool InContainerSingletonFilter
-::get_contains_particle(Particle* p) const {
+::get_contains(Particle* p) const {
   return c_->get_contains_particle(p);
 }
 

@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/PairFilter.h>
 #include <IMP/PairContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
@@ -34,7 +35,7 @@ public:
 };
 
 inline bool InContainerPairFilter
-::get_contains_particle_pair(const ParticlePair& p) const {
+::get_contains(const ParticlePair& p) const {
   return c_->get_contains_particle_pair(p);
 }
 
