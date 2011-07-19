@@ -7,6 +7,7 @@ class DirectoriesTests(IMP.test.TestCase):
 
     def test_data_directory(self):
         """Test that conversions to input files work properly"""
+        print "starting"
         IMP.set_log_level(IMP.MEMORY)
         v= IMP._test_ifile(self.get_input_file_name("text"))
         self.assertEqual(v, "word")
@@ -16,9 +17,11 @@ class DirectoriesTests(IMP.test.TestCase):
         s=StringIO("hi there")
         v= IMP._test_ifile(s)
         self.assertEqual(v, "hithere")
+        print "done"
 
     def test_odata_directory(self):
         """Test that conversions to output files work properly"""
+        print "starting"
         IMP.set_log_level(IMP.MEMORY)
         IMP._test_ofile("ofile_test")
         self.assertRaises(IOError, IMP._test_ofile, "nodir/hi" )
@@ -32,8 +35,10 @@ class DirectoriesTests(IMP.test.TestCase):
             pass
         self.assertRaises(TypeError, IMP._test_ofile, NoMethods)
         del f
-        os.unlink('ofile_test')
-        os.unlink('hi')
+        print "unlinking"
+        #os.unlink('ofile_test')
+        #os.unlink('hi')
+        print "done"
 
     def test_odata_directory_2(self):
         """Test temporary files"""
