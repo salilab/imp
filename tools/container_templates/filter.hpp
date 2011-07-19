@@ -34,7 +34,7 @@ public:
   /** \note This function may be linear. Be aware of the complexity
       bounds of your particular filter.
    */
-  virtual bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const =0;
+  virtual bool get_contains(ARGUMENTTYPE p) const =0;
 
   /** \name Interactions
       Return the set of particles used when applied to the passed
