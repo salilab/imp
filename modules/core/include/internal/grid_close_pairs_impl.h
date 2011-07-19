@@ -59,6 +59,12 @@ struct ParticleTraits {
 };
 
 
+struct ParticleIndexTraits: ParticleTraits {
+  ParticleIndexTraits(Model *m, double d):ParticleTraits(m, d) {}
+  ParticleIndex get_id(ParticleIndex p, int) const {return p;}
+};
+
+
 struct BoundingBoxTraits {
   typedef unsigned int ID;
   algebra::BoundingBox3Ds::const_iterator it0_, it1_;
@@ -623,6 +629,7 @@ struct Helper {
 };
 
 typedef Helper<ParticleTraits> ParticleHelper;
+typedef Helper<ParticleIndexTraits> ParticleIndexHelper;
 typedef Helper<BoundingBoxTraits> BBHelper;
 
 IMPCORE_END_INTERNAL_NAMESPACE
