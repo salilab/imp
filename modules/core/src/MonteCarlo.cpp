@@ -120,7 +120,7 @@ double MonteCarlo::do_optimize(unsigned int max_steps) {
   if (return_best_) {
     //std::cout << "Final score is " << get_model()->evaluate(false)
     //<< std::endl;
-    best_->load_configuration();
+    best_->swap_configuration();
     IMP_LOG(TERSE, "MC Returning energy " << best_energy_ << std::endl);
     IMP_IF_CHECK(USAGE) {
       IMP_CHECK_CODE(double e= do_evaluate());
@@ -157,7 +157,7 @@ void MonteCarloWithLocalOptimization::do_step() {
   Pointer<Configuration> cs= new Configuration(get_model());
   double ne =opt_->optimize(num_local_);
   if (!do_accept_or_reject_move(ne)) {
-    cs->load_configuration();
+    cs->swap_configuration();
   }
 }
 
@@ -178,7 +178,7 @@ void MonteCarloWithBasinHopping::do_step() {
           << do_evaluate() << std::endl);
   Pointer<Configuration> cs= new Configuration(get_model());
   double ne =get_local_optimizer()->optimize(get_number_of_steps());
-  cs->load_configuration();
+  cs->swap_configuration();
   do_accept_or_reject_move(ne);
 }
 
