@@ -66,8 +66,8 @@ class IMPCOREEXPORT RigidClosePairsFinder : public ClosePairsFinder
   RigidClosePairsFinder(ClosePairsFinder *cpf=NULL);
 
   ParticlePairsTemp get_close_pairs(Particle *a, Particle *b,
-                                    const ParticlesTemp &pa,
-                                    const ParticlesTemp &pb) const;
+                                    const ParticleIndexes &pa,
+                                    const ParticleIndexes &pb) const;
 
   void set_distance(double d) {
     cpf_->set_distance(d);

@@ -183,6 +183,8 @@ class IMPCOREEXPORT SoftSpherePairScore: public PairScore {
 public:
   SoftSpherePairScore(double k): k_(k){}
   IMP_SIMPLE_PAIR_SCORE(SoftSpherePairScore);
+  double evaluate(Model *m, ParticleIndexPair pa,
+                  DerivativeAccumulator *da) const;
 };
 
 
@@ -213,6 +215,35 @@ inline double SoftSpherePairScore::evaluate(const ParticlePair &p,
 
   return score;
 }
+
+inline double SoftSpherePairScore
+::evaluate(Model *m, ParticleIndexPair pp,
+           DerivativeAccumulator *da) const {
+  algebra::VectorD<3> delta;
+  for (int i = 0; i < 3; ++i) {
+    delta[i] = m->get_sphere(pp[0]).get_center()[i]
+      - m->get_sphere(pp[1]).get_center()[i];
+  }
+  static const double MIN_DISTANCE = .00001;
+  double distance2= delta.get_squared_magnitude();
+  double rs= m->get_sphere(pp[0]).get_radius()
+    + m->get_sphere(pp[1]).get_radius();
+  if (distance2 > square(rs)) return 0;
+  double distance=std::sqrt(distance2);
+  double shifted_distance = distance- rs;
+  double deriv= k_*shifted_distance;
+  double score= .5*deriv*shifted_distance;
+  if (!da || distance < MIN_DISTANCE) return score;
+  algebra::Vector3D uv= delta/distance;
+  if (da) {
+    m->add_to_coordinate_derivatives(pp[0], uv*deriv, *da);
+    m->add_to_coordinate_derivatives(pp[1], -uv*deriv, *da);
+  }
+  return score;
+}
+
+
+
 #endif
 
 

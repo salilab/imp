@@ -399,7 +399,7 @@ ParticlePair closest_pair(Model *m, const RigidBodyHierarchy *da,
 
 
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
-                                             const ParticlesTemp &pconstituents,
+                                             ParticleIndexes constituents,
                                              ObjectKey mykey) {
   IMP_LOG(VERBOSE, "Fetching hierarchy from " << rb->get_name()
           << " (" << mykey << ")" << std::endl);
@@ -410,10 +410,6 @@ RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
     IMP_INTERNAL_CHECK(ret, "No hierarchy found");
     IMP_LOG(VERBOSE, "Cached" << std::endl);
     return ret;
-  }
-  ParticleIndexes constituents(pconstituents.size());
-  for (unsigned int i=0; i< constituents.size(); ++i) {
-    constituents[i]=pconstituents[i]->get_index();
   }
   std::sort(constituents.begin(), constituents.end());
   ObjectKey free;

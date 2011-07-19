@@ -46,21 +46,23 @@ initialize() const {
   IMP_FOREACH_SINGLETON(sc_, {
       if (RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
-        rbs_.push_back(rb);
-        if (constituents_.find(rb) == constituents_.end()) {
-          constituents_.insert(std::make_pair(rb, ParticlesTemp(1,_1)));
+        ParticleIndex pi= rb.get_particle_index();
+        rbs_.push_back(rb.get_particle_index());
+        if (constituents_.find(pi) == constituents_.end()) {
+          constituents_.insert(std::make_pair(pi, ParticleIndexes(1,
+                                                 _1->get_index())));
         } else {
-          constituents_[rb].push_back(_1);
+          constituents_[pi].push_back(_1->get_index());
         }
       } else {
-        xyzrs_.push_back(_1);
+        xyzrs_.push_back(_1->get_index());
       }
     });
   std::sort(rbs_.begin(), rbs_.end());
   rbs_.erase(std::unique(rbs_.begin(), rbs_.end()), rbs_.end());
   for (unsigned int i=0; i < rbs_.size(); ++i) {
-    internal::get_rigid_body_hierarchy(RigidBody(rbs_[i]),
-                                       constituents_[RigidBody(rbs_[i])],
+    internal::get_rigid_body_hierarchy(RigidBody(get_model(), rbs_[i]),
+                                       constituents_[rbs_[i]],
                                        key_);
   }
   reset_moved();
@@ -79,46 +81,39 @@ fill_list_if_good(double max) const {
   IMP_INTERNAL_CHECK(cur_list_.empty(), "List not empty");
   double score=0;
   double myslack=0;
-  algebra::BoundingBox3D bb;
-  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
-    bb+= core::XYZ(xyzrs_[i]).get_coordinates();
-  }
-  internal::ParticleHelper
-      ::fill_close_pairs(internal::ParticleHelper
+  internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
                          ::get_particle_set(xyzrs_.begin(),
                                             xyzrs_.end(),0),
-                         internal::ParticleTraits(get_model(), myslack),
-                         internal::ParticlePairSinkWithMax<SoftSpherePairScore>
+                         internal::ParticleIndexTraits(get_model(), myslack),
+                 internal::ParticleIndexPairSinkWithMax<SoftSpherePairScore>
                          (get_model(), cur_list_,
                           ssps_.get(),
                           NULL,
                           score,
                           max));
   if (score < max) {
-    for (unsigned int i=0; i< rbs_.size(); ++i) {
-      bb+= core::XYZ(rbs_[i]).get_coordinates();
-    }
-    internal::ParticleHelper
-      ::fill_close_pairs(internal::ParticleHelper
+    internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
                          ::get_particle_set(xyzrs_.begin(),
                                             xyzrs_.end(),0),
-                         internal::ParticleHelper
+                         internal::ParticleIndexHelper
                          ::get_particle_set(rbs_.begin(),
                                             rbs_.end(),1),
-                         internal::ParticleTraits(get_model(), myslack),
-                         internal::RigidBodyParticleParticlePairSinkWithMax
+                         internal::ParticleIndexTraits(get_model(), myslack),
+                         internal::RigidBodyParticleParticleIndexPairSinkWithMax
                          <SoftSpherePairScore>(get_model(), cur_list_,
                                                ssps_.get(),
                                                NULL, score, max,
                                                key_, myslack, constituents_));
   }
   if (score< max) {
-    internal::ParticleHelper
-      ::fill_close_pairs(internal::ParticleHelper
+    internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
                          ::get_particle_set(rbs_.begin(),
                                             rbs_.end(),0),
-                         internal::ParticleTraits(get_model(), myslack),
-                         internal::RigidBodyRigidBodyParticlePairSinkWithMax
+                         internal::ParticleIndexTraits(get_model(), myslack),
+                     internal::RigidBodyRigidBodyParticleIndexPairSinkWithMax
                          <SoftSpherePairScore>(get_model(), cur_list_,
                                                ssps_.get(),
                                                NULL, score, max,
@@ -139,38 +134,31 @@ fill_list() const {
     xyzrs_backup_.clear();
   rbs_backup_.clear();
   IMP_INTERNAL_CHECK(cur_list_.empty(), "List not empty");
-  algebra::BoundingBox3D bb;
-  for (unsigned int i=0; i< xyzrs_.size(); ++i) {
-    bb+= core::XYZ(xyzrs_[i]).get_coordinates();
-  }
-  internal::ParticleHelper
-      ::fill_close_pairs(internal::ParticleHelper
+  internal::ParticleIndexHelper
+      ::fill_close_pairs(internal::ParticleIndexHelper
                          ::get_particle_set(xyzrs_.begin(),
                                             xyzrs_.end(),0),
-                         internal::ParticleTraits(get_model(), slack_),
-                         internal::ParticlePairSink(get_model(), cur_list_));
-  for (unsigned int i=0; i< rbs_.size(); ++i) {
-    bb+= core::XYZ(rbs_[i]).get_coordinates();
-  }
-  internal::ParticleHelper
-    ::fill_close_pairs(internal::ParticleHelper
+                         internal::ParticleIndexTraits(get_model(), slack_),
+                   internal::ParticleIndexPairSink(get_model(), cur_list_));
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
                        ::get_particle_set(rbs_.begin(),
                                           rbs_.end(),0),
-                       internal::ParticleHelper
+                       internal::ParticleIndexHelper
                        ::get_particle_set(xyzrs_.begin(),
                                           xyzrs_.end(),1),
-                       internal::ParticleTraits(get_model(), slack_),
-                       internal::RigidBodyParticleParticlePairSink(get_model(),
+                       internal::ParticleIndexTraits(get_model(), slack_),
+               internal::RigidBodyParticleParticleIndexPairSink(get_model(),
                                                                    cur_list_,
                                                                    key_,
                                                                    slack_,
                                                             constituents_));
-  internal::ParticleHelper
-    ::fill_close_pairs(internal::ParticleHelper
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
                        ::get_particle_set(rbs_.begin(),
                                           rbs_.end(),0),
-                       internal::ParticleTraits(get_model(), slack_),
-                       internal::RigidBodyRigidBodyParticlePairSink(get_model(),
+                       internal::ParticleIndexTraits(get_model(), slack_),
+               internal::RigidBodyRigidBodyParticleIndexPairSink(get_model(),
                                                                     cur_list_,
                                                                     key_,
                                                                     slack_,
@@ -184,11 +172,11 @@ void ExcludedVolumeRestraint::
 reset_moved() const {
   xyzrs_backup_.resize(xyzrs_.size());
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
-    xyzrs_backup_[i]= XYZ(xyzrs_[i]).get_coordinates();
+    xyzrs_backup_[i]= get_model()->get_sphere(xyzrs_[i]).get_center();
   }
   rbs_backup_.resize(rbs_.size());
   for (unsigned int i=0; i< rbs_.size(); ++i) {
-    rbs_backup_[i]= RigidBody(rbs_[i]).get_reference_frame()
+    rbs_backup_[i]= RigidBody(get_model(), rbs_[i]).get_reference_frame()
       .get_transformation_to();
   }
 }
@@ -202,7 +190,7 @@ get_if_moved() const {
   for (unsigned int i=0; i< xyzrs_.size(); ++i) {
     double diff2=0;
     for (unsigned int j=0; j< 3; ++j) {
-      double diffc2= square(XYZ(xyzrs_[i]).get_coordinate(j)
+      double diffc2= square(get_model()->get_sphere(xyzrs_[i]).get_center()[j]
                             - xyzrs_backup_[i][j]);
       diff2+=diffc2;
       if (diff2> s22) {
@@ -213,19 +201,20 @@ get_if_moved() const {
   for (unsigned int i=0; i< rbs_.size(); ++i) {
     double diff2=0;
     for (unsigned int j=0; j< 3; ++j) {
-      double diffc2= square(XYZ(rbs_[i]).get_coordinate(j)
+      double diffc2= square(get_model()->get_sphere(rbs_[i]).get_center()[j]
                             - rbs_backup_[i].get_translation()[j]);
       diff2+=diffc2;
       if (diff2> s22) {
         return true;
       }
     }
-    algebra::Rotation3D nrot=RigidBody(rbs_[i]).get_reference_frame()
+    algebra::Rotation3D nrot=RigidBody(get_model(),
+                                       rbs_[i]).get_reference_frame()
       .get_transformation_to().get_rotation();
     algebra::Rotation3D diffrot
       = rbs_backup_[i].get_rotation().get_inverse()*nrot;
     double angle= algebra::get_axis_and_angle(diffrot).second;
-    double drot= std::abs(angle*XYZR(rbs_[i]).get_radius());
+    double drot= std::abs(angle*get_model()->get_sphere(rbs_[i]).get_radius());
     if (s22 < square(drot)+drot*std::sqrt(diff2)+ diff2) {
       return true;
     }
@@ -245,14 +234,15 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
             RigidBody rb= RigidMember(_1).get_rigid_body();
             using IMP::operator<<;
             IMP_USAGE_CHECK(std::find(rbs_.begin(), rbs_.end(),
-                                      rb.get_particle())
+                                      rb.get_particle()->get_index())
                             != rbs_.end(),
                     "You cannot change the contents of the singleton container "
                     << "passed to ExcludedVolume after the first evaluate."
                     << " Found unexpected rigid body " << rb->get_name()
                     << " not in " << rbs_);
       } else {
-            IMP_USAGE_CHECK(std::find(xyzrs_.begin(), xyzrs_.end(), _1)
+            IMP_USAGE_CHECK(std::find(xyzrs_.begin(), xyzrs_.end(),
+                                      _1->get_index())
                             != xyzrs_.end(),
                "You cannot change the contents of the singleton container "
                << "passed to ExcludedVolume after the first evaluate."
@@ -267,7 +257,11 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
     fill_list();
     recomputed=true;
   }
-  double ret= ssps_->evaluate(cur_list_, da);
+  double ret=0;
+  for (unsigned int i=0; i< cur_list_.size(); ++i) {
+    ret+=ssps_->evaluate(get_model(), ParticleIndexPair(cur_list_[i][0],
+                                                        cur_list_[i][1]), da);
+  }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
     ParticlesTemp all= sc_->get_particles();
     if (all.size() < 3000) {
@@ -284,10 +278,12 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
             if (cur > 0) {
               ++found;
               bool cur_found=std::find(cur_list_.begin(), cur_list_.end(),
-                                       ParticlePair(all[i], all[j]))
+                                       ParticleIndexPair(all[i]->get_index(),
+                                                         all[j]->get_index()))
                 != cur_list_.end()
                 || std::find(cur_list_.begin(), cur_list_.end(),
-                                       ParticlePair(all[j], all[i]))
+                             ParticleIndexPair(all[j]->get_index(),
+                                               all[i]->get_index()))
                 != cur_list_.end();
               IMP_INTERNAL_CHECK(cur_found, "Pair " << all[i]->get_name()
                                  << " " << all[j]->get_name() << " is close "
@@ -331,12 +327,18 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
       }
     }
     });
-  double cur= ssps_->evaluate_if_good(cur_list_, da, max);
-  if (cur > max) {
-    IMP_INTERNAL_CHECK(all.size() >=3000 || check > max,
-                       "I think it is bad, but it isn't: "
-                       << cur << " vs " << check);
-    return cur;
+  double cur=0;
+  for (unsigned int i=0; i< cur_list_.size(); ++i) {
+    double c=ssps_->evaluate(get_model(), ParticleIndexPair(cur_list_[i][0],
+                                                       cur_list_[i][1]), da);
+    cur+=c;
+    max-=c;
+    if (max<0) {
+      IMP_INTERNAL_CHECK(all.size() >=3000 || check > max,
+                         "I think it is bad, but it isn't: "
+                         << cur << " vs " << check);
+      return cur;
+    };
   }
   if (was_bad_ || get_if_moved()>0) {
     double ret= fill_list_if_good(max);
@@ -368,7 +370,9 @@ ParticlesTemp ExcludedVolumeRestraint
 ::get_input_particles() const {
   if (!initialized_) initialize();
   ParticlesTemp ret= sc_->get_contained_particles();
-  ret.insert(ret.end(), rbs_.begin(), rbs_.end());
+  for (unsigned int i=0; i< rbs_.size(); ++i) {
+    ret.push_back(get_model()->get_particle(rbs_[i]));
+  }
   return ret;
 }
 
@@ -382,7 +386,9 @@ Restraints ExcludedVolumeRestraint
   unprotected_evaluate_if_good(NULL, get_maximum_score());
   Restraints ret(cur_list_.size());
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    ret[i]= new PairRestraint(ssps_, cur_list_[i]);
+    ret[i]= new PairRestraint(ssps_,
+               ParticlePair(get_model()->get_particle(cur_list_[i][0]),
+                          get_model()->get_particle(cur_list_[i][1])));
   }
   return ret;
 }

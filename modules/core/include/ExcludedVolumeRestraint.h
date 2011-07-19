@@ -41,15 +41,15 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT ExcludedVolumeRestraint: public Restraint
 {
   Pointer<SingletonContainer> sc_;
-  mutable ParticlePairsTemp cur_list_;
+  mutable ParticleIndexPairs cur_list_;
   mutable bool was_bad_;
   mutable bool initialized_;
   ObjectKey key_;
   IMP::internal::OwnerPointer<SoftSpherePairScore> ssps_;
   // moved stuff
-  mutable ParticlesTemp rbs_;
-  mutable ParticlesTemp xyzrs_;
-  mutable IMP::compatibility::map<RigidBody, Particles> constituents_;
+  mutable ParticleIndexes rbs_;
+  mutable ParticleIndexes xyzrs_;
+  mutable IMP::compatibility::map<ParticleIndex, ParticleIndexes> constituents_;
   double slack_;
   mutable std::vector<algebra::Transformation3D > rbs_backup_;
   mutable std::vector<algebra::Vector3D> xyzrs_backup_;

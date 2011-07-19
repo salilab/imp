@@ -33,6 +33,7 @@ struct ParticleSink {
   }
 };
 
+
 struct ParticlePairSink {
   Model *m_;
   ParticlePairsTemp &out_;
@@ -56,6 +57,28 @@ struct ParticlePairSink {
                          << XYZR(pp[0]) << " and " << XYZR(pp[1])
                          << " and distance is " << get_distance(XYZR(pp[0]),
                                                                 XYZR(pp[1])));
+    }
+  }
+};
+
+
+struct ParticleIndexPairSink {
+  Model *m_;
+  ParticleIndexPairs &out_;
+  ParticleIndexPairSink(Model *m, ParticleIndexPairs &out):
+    m_(m), out_(out){}
+  bool operator()(ParticleIndex a, ParticleIndex b) {
+    out_.push_back(ParticleIndexPair(a,b));
+    return true;
+  }
+  void check_contains(ParticleIndex a, ParticleIndex b) const {
+    ParticleIndexPair pp(a,b);
+    ParticleIndexPair opp(b,a);
+    if (std::find(out_.begin(), out_.end(), pp) == out_.end()
+        && std::find(out_.begin(), out_.end(), opp)
+        == out_.end()) {
+      IMP_INTERNAL_CHECK(false, "Particle pair " << pp
+                         << " not found in list.");
     }
   }
 };
@@ -89,6 +112,36 @@ struct ParticlePairSinkWithMax: public ParticlePairSink {
   }
 };
 
+
+
+template <class PS>
+struct ParticleIndexPairSinkWithMax: public ParticleIndexPairSink {
+  double &score_;
+  double max_;
+  PS *ssps_;
+  DerivativeAccumulator *da_;
+  ParticleIndexPairSinkWithMax(Model *m, ParticleIndexPairs &out,
+                          PS *ssps,
+                          DerivativeAccumulator *da,
+                          double &score,
+                          double max):
+    ParticleIndexPairSink(m, out),
+    score_(score),
+    max_(max),
+    ssps_(ssps), da_(da) {}
+  bool operator()(ParticleIndex a, ParticleIndex b) {
+    ParticleIndexPairSink::operator()(a,b);
+    double cur= ssps_->PS::evaluate(ParticleIndexPairSink::m_,
+                                    ParticleIndexPair(a,b), da_);
+    max_-=cur;
+    score_+=cur;
+    if (max_ < 0) {
+      return false;
+    }
+    return true;
+  }
+};
+
 struct HalfParticlePairSink: public ParticlePairSink {
   ParticleIndex p_;
   HalfParticlePairSink(Model *m, ParticlePairsTemp &out,
@@ -100,6 +153,20 @@ struct HalfParticlePairSink: public ParticlePairSink {
   }
   void check_contains(ParticleIndex c) const {
     ParticlePairSink::check_contains(p_, c);
+  }
+};
+
+struct HalfParticleIndexPairSink: public ParticleIndexPairSink {
+  ParticleIndex p_;
+  HalfParticleIndexPairSink(Model *m, ParticleIndexPairs &out,
+                            ParticleIndex p):
+    ParticleIndexPairSink(m, out),
+    p_(p) {}
+  bool operator()(ParticleIndex c) {
+    return ParticleIndexPairSink::operator()(p_, c);
+  }
+  void check_contains(ParticleIndex c) const {
+    ParticleIndexPairSink::check_contains(p_, c);
   }
 };
 
@@ -122,23 +189,45 @@ struct HalfParticlePairSinkWithMax: public ParticlePairSinkWithMax<PS> {
   }
 };
 
+template <class PS>
+struct HalfParticleIndexPairSinkWithMax:
+  public ParticleIndexPairSinkWithMax<PS> {
+  ParticleIndex p_;
+  HalfParticleIndexPairSinkWithMax(Model *m,
+                              ParticleIndexPairs &out,
+                              PS *ssps,
+                              DerivativeAccumulator *da,
+                              double &score,
+                              double max, ParticleIndex p):
+    ParticleIndexPairSinkWithMax<PS>(m, out, ssps, da, score, max),
+    p_(p) {}
+  bool operator()(ParticleIndex c) {
+    return ParticleIndexPairSinkWithMax<PS>::operator()(p_, c);
+  }
+  void check_contains(ParticleIndex c) const {
+    ParticleIndexPairSinkWithMax<PS>::check_contains(p_, c);
+  }
+};
 
-struct RigidBodyRigidBodyParticlePairSink:
-  public ParticlePairSink {
+
+struct RigidBodyRigidBodyParticleIndexPairSink:
+  public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<RigidBody, Particles> &map_;
-  RigidBodyRigidBodyParticlePairSink(Model *m,
-                                     ParticlePairsTemp &out,
+  const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map_;
+  RigidBodyRigidBodyParticleIndexPairSink(Model *m,
+                                     ParticleIndexPairs &out,
                                      ObjectKey key,
                                      double dist,
-                      const IMP::compatibility::map<RigidBody, Particles>
+                      const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes>
                                      &map):
-    ParticlePairSink(m, out),
+    ParticleIndexPairSink(m, out),
     key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(ParticleIndex p) const {
     RigidBody rb(m_, p);
-    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
+    return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(ParticleIndex a, ParticleIndex b) {
     IMP_LOG(VERBOSE, "Processing interesction between "
@@ -146,7 +235,7 @@ struct RigidBodyRigidBodyParticlePairSink:
             << b << std::endl);
     fill_close_pairs(m_, get_hierarchy(a),
                      get_hierarchy(b),
-                     dist_, static_cast<ParticlePairSink >(*this));
+                     dist_, static_cast<ParticleIndexPairSink >(*this));
     return true;
   }
   void check_contains(ParticleIndex, ParticleIndex) const {
@@ -155,27 +244,28 @@ struct RigidBodyRigidBodyParticlePairSink:
 };
 
 
-struct RigidBodyParticleParticlePairSink:
-  public ParticlePairSink {
+struct RigidBodyParticleParticleIndexPairSink:
+  public ParticleIndexPairSink {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<RigidBody, Particles> &map_;
-  RigidBodyParticleParticlePairSink(Model *m,
-                                    ParticlePairsTemp &out,
+  const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map_;
+  RigidBodyParticleParticleIndexPairSink(Model *m,
+                                    ParticleIndexPairs &out,
                                     ObjectKey key, double dist,
-               const IMP::compatibility::map<RigidBody, Particles>
-                                     &map):
-    ParticlePairSink(m, out),
+               const IMP::compatibility::map<ParticleIndex,
+                                    ParticleIndexes> &map):
+    ParticleIndexPairSink(m, out),
     key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(ParticleIndex p) const {
     RigidBody rb(m_, p);
-    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
+    return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   bool operator()(ParticleIndex a, ParticleIndex b) {
     IMP_LOG(VERBOSE, "Processing rb-p interesction between "
             << a << " and "
             << b << std::endl);
-    HalfParticlePairSink hps(m_, out_, b);
+    HalfParticleIndexPairSink hps(m_, out_, b);
     fill_close_particles(m_, get_hierarchy(a),
                          b,
                          dist_, hps);
@@ -187,26 +277,27 @@ struct RigidBodyParticleParticlePairSink:
 };
 
 template <class PS>
-struct RigidBodyParticlePairSinkWithMax:
-  public ParticlePairSinkWithMax<PS> {
+struct RigidBodyParticleIndexPairSinkWithMax:
+  public ParticleIndexPairSinkWithMax<PS> {
   ObjectKey key_;
   double dist_;
-  const IMP::compatibility::map<RigidBody, Particles> &map_;
-  RigidBodyParticlePairSinkWithMax(Model *m,
-                                   ParticlePairsTemp &out,
+  const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map_;
+  RigidBodyParticleIndexPairSinkWithMax(Model *m,
+                                   ParticleIndexPairs &out,
                                    PS *ssps,
                                    DerivativeAccumulator *da,
                                    double &score,
                                    double max,
                                    ObjectKey key,
                                    double dist,
-               const IMP::compatibility::map<RigidBody, Particles>
-                                     &map):
-    ParticlePairSinkWithMax<PS>(m, out, ssps, da, score, max),
+  const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map):
+    ParticleIndexPairSinkWithMax<PS>(m, out, ssps, da, score, max),
     key_(key), dist_(dist), map_(map){}
   RigidBodyHierarchy *get_hierarchy(ParticleIndex p) const {
-    RigidBody rb(ParticlePairSinkWithMax<PS>::m_, p);
-    return get_rigid_body_hierarchy(rb, map_.find(rb)->second, key_);
+    RigidBody rb(ParticleIndexPairSinkWithMax<PS>::m_, p);
+    return get_rigid_body_hierarchy(rb, map_.find(p)->second, key_);
   }
   void check_contains(ParticleIndex, ParticleIndex) const {
     // can't look for root pair, too lazy to check for actual pairs
@@ -214,28 +305,29 @@ struct RigidBodyParticlePairSinkWithMax:
 };
 
 template <class PS>
-struct RigidBodyRigidBodyParticlePairSinkWithMax:
-  public RigidBodyParticlePairSinkWithMax<PS> {
-  typedef RigidBodyParticlePairSinkWithMax<PS> P;
-  RigidBodyRigidBodyParticlePairSinkWithMax
+struct RigidBodyRigidBodyParticleIndexPairSinkWithMax:
+  public RigidBodyParticleIndexPairSinkWithMax<PS> {
+  typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
+  RigidBodyRigidBodyParticleIndexPairSinkWithMax
   (Model *m,
-   ParticlePairsTemp &out,
+   ParticleIndexPairs &out,
    PS *ssps,
    DerivativeAccumulator *da,
    double &score,
    double max,
    ObjectKey key, double dist,
-   const IMP::compatibility::map<RigidBody, Particles>
-   &map): P(m, out, ssps, da,
-            score, max,
-            key, dist, map)
+   const IMP::compatibility::map<ParticleIndex,
+                                ParticleIndexes> &map):
+    P(m, out, ssps, da,
+      score, max,
+      key, dist, map)
   {}
   bool operator()(ParticleIndex a, ParticleIndex b) {
     fill_close_pairs(P::m_,
-                     RigidBodyParticlePairSinkWithMax<PS>::get_hierarchy(a),
-                     RigidBodyParticlePairSinkWithMax<PS>::get_hierarchy(b),
+            RigidBodyParticleIndexPairSinkWithMax<PS>::get_hierarchy(a),
+            RigidBodyParticleIndexPairSinkWithMax<PS>::get_hierarchy(b),
                      P::dist_,
-                     static_cast<ParticlePairSinkWithMax<PS> >(*this));
+                     static_cast<ParticleIndexPairSinkWithMax<PS> >(*this));
     return P::max_ > 0;
   }
   void check_contains(ParticleIndex, ParticleIndex) const {
@@ -244,18 +336,19 @@ struct RigidBodyRigidBodyParticlePairSinkWithMax:
 };
 
 template <class PS>
-struct RigidBodyParticleParticlePairSinkWithMax:
-  public RigidBodyParticlePairSinkWithMax<PS> {
-  typedef RigidBodyParticlePairSinkWithMax<PS> P;
-  RigidBodyParticleParticlePairSinkWithMax
+struct RigidBodyParticleParticleIndexPairSinkWithMax:
+  public RigidBodyParticleIndexPairSinkWithMax<PS> {
+  typedef RigidBodyParticleIndexPairSinkWithMax<PS> P;
+  RigidBodyParticleParticleIndexPairSinkWithMax
   (Model *m,
-   ParticlePairsTemp &out,
+   ParticleIndexPairs &out,
    PS *ssps,
    DerivativeAccumulator *da,
    double &score,
    double max,
    ObjectKey key, double dist,
-   const IMP::compatibility::map<RigidBody, Particles>
+   const IMP::compatibility::map<ParticleIndex,
+   ParticleIndexes>
    &map): P(m, out, ssps, da,
             score, max, key, dist, map)
   {}
@@ -264,7 +357,7 @@ struct RigidBodyParticleParticlePairSinkWithMax:
                          P::get_hierarchy(a),
                          b,
                          P::dist_,
-                         HalfParticlePairSinkWithMax<PS>(P::m_,
+                         HalfParticleIndexPairSinkWithMax<PS>(P::m_,
                                                          P::out_,
                                                          P::ssps_,
                                                          P::da_,

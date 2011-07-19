@@ -55,7 +55,7 @@ namespace {
       });
     return ret;
     }*/
-  typedef IMP::compatibility::map<Particle*, ParticlesTemp> RBM;
+  typedef IMP::compatibility::map<Particle*, ParticleIndexes> RBM;
   void divvy_up_particles(const ParticlesTemp &ps,
                           ParticlesTemp &out,
                           RBM &members) {
@@ -66,7 +66,7 @@ namespace {
             == members.end()) {
           out.push_back(rb);
         }
-        members[rb].push_back(ps[i]);
+        members[rb].push_back(ps[i]->get_index());
       } else {
         out.push_back(ps[i]);
       }
@@ -113,7 +113,7 @@ ParticlePairsTemp RigidClosePairsFinder
           << std::endl);
   check_particles(pa);
   check_particles(pb);
-  IMP::compatibility::map<Particle*, ParticlesTemp> ma, mb;
+  IMP::compatibility::map<Particle*, ParticleIndexes> ma, mb;
   ParticlesTemp fa, fb;
   divvy_up_particles(pa, fa, ma);
   divvy_up_particles(pb, fb, mb);
@@ -124,7 +124,7 @@ ParticlePairsTemp RigidClosePairsFinder
        it != ppt.end(); ++it) {
     // skip within one rigid body
     if (it->get(0) == it->get(1)) continue;
-    ParticlesTemp ps0, ps1;
+    ParticleIndexes ps0, ps1;
     if (ma.find(it->get(0)) != ma.end()) {
       ps0= ma.find(it->get(0))->second;
     }
@@ -149,7 +149,7 @@ ParticlePairsTemp RigidClosePairsFinder
   IMP_LOG(TERSE, "Adding close pairs from "
           << pa.size() << " particles." << std::endl);
   check_particles(pa);
-  IMP::compatibility::map<Particle*, ParticlesTemp> m;
+  IMP::compatibility::map<Particle*, ParticleIndexes> m;
   ParticlesTemp fa;
   divvy_up_particles(pa, fa, m);
   ParticlePairsTemp ppt= cpf_->get_close_pairs(fa);
@@ -162,7 +162,7 @@ ParticlePairsTemp RigidClosePairsFinder
   ParticlePairsTemp ret;
   for (ParticlePairsTemp::const_iterator it= ppt.begin();
        it != ppt.end(); ++it) {
-    ParticlesTemp ps0, ps1;
+    ParticleIndexes ps0, ps1;
     IMP_LOG(VERBOSE, "Processing close pair " << *it << std::endl);
     if (m.find(it->get(0)) != m.end()) {
       ps0= m.find(it->get(0))->second;
@@ -185,8 +185,8 @@ ParticlePairsTemp RigidClosePairsFinder
 ParticlePairsTemp
 RigidClosePairsFinder::get_close_pairs(Particle *a,
                                        Particle *b,
-                                       const ParticlesTemp &ma,
-                                       const ParticlesTemp &mb) const {
+                                       const ParticleIndexes &ma,
+                                       const ParticleIndexes &mb) const {
   IMP_INTERNAL_CHECK(a!= b, "Can't pass equal particles");
   internal::RigidBodyHierarchy *da=NULL, *db=NULL;
   ParticlePairsTemp out;

@@ -301,7 +301,7 @@ ParticlesTemp close_particles(Model *m,
 
 IMPCOREEXPORT
 RigidBodyHierarchy *get_rigid_body_hierarchy(RigidBody rb,
-                                             const ParticlesTemp &constituents,
+                                             ParticleIndexes constituents,
                                              ObjectKey mykey= ObjectKey());
 
 IMPCORE_END_INTERNAL_NAMESPACE
