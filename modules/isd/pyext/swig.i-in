@@ -8,6 +8,7 @@
   */
 IMP_SWIG_OBJECT(IMP::isd, ISDRestraint, ISDRestraints);
 IMP_SWIG_OBJECT(IMP::isd, JeffreysRestraint, JeffreysRestraints);
+IMP_SWIG_OBJECT(IMP::isd, SlidingPriorRestraint, SlidingPriorRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaJeffreysRestraint, vonMisesKappaJeffreysRestraints);
 IMP_SWIG_OBJECT(IMP::isd, vonMisesKappaConjugateRestraint, vonMisesKappaConjugateRestraints);
 IMP_SWIG_OBJECT(IMP::isd, FNormal, FNormals);
@@ -29,6 +30,8 @@ IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1LN, SAXSRestraint_1LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1N, SAXSRestraint_1Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_N, SAXSRestraint_empirical_Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_LN, SAXSRestraint_empirical_LNs);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_N, SAXSRestraint_sliding_Ns);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_LN, SAXSRestraint_sliding_LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_marginal_N, SAXSRestraint_empirical_marginal_Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_marginal_LN, SAXSRestraint_empirical_marginal_LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_multiple_N, SAXSRestraint_empirical_multiple_Ns);
@@ -58,6 +61,7 @@ def create_model_and_particles():
 %include "IMP/isd/ScaleRangeModifier.h"
 %include "IMP/isd/MaintainScaleOrderConstraint.h"
 %include "IMP/isd/JeffreysRestraint.h"
+%include "IMP/isd/SlidingPriorRestraint.h"
 %include "IMP/isd/FNormal.h"
 %include "IMP/isd/vonMises.h"
 %include "IMP/isd/vonMisesSufficient.h"
@@ -76,6 +80,8 @@ def create_model_and_particles():
 %include "IMP/isd/SAXSRestraint_1N.h"
 %include "IMP/isd/SAXSRestraint_empirical_N.h"
 %include "IMP/isd/SAXSRestraint_empirical_LN.h"
+%include "IMP/isd/SAXSRestraint_sliding_N.h"
+%include "IMP/isd/SAXSRestraint_sliding_LN.h"
 %include "IMP/isd/SAXSRestraint_empirical_marginal_N.h"
 %include "IMP/isd/SAXSRestraint_empirical_marginal_LN.h"
 %include "IMP/isd/SAXSRestraint_empirical_multiple_N.h"
