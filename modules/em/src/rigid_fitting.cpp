@@ -431,7 +431,7 @@ Float compute_fitting_score(const Particles &ps,
   algebra::BoundingBox3D em_bb=
     get_bounding_box(em_map,0.);
   algebra::BoundingBox3D union_bb=algebra::get_union(
-                             get_bounding_box(em_map,0.),
+                             em_bb,
                              core::get_bounding_box(core::XYZRsTemp(ps)));
   em::DensityMap *union_map =
     create_density_map(union_bb,
@@ -455,12 +455,16 @@ Float compute_fitting_score(const Particles &ps,
   int uz_temp,uzy_temp;
   int uz_start,uy_start,ux_start;
   int uz_end,uy_end,ux_end;
-  ux_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),0);
-  uy_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),1);
-  uz_start=union_map->get_dim_index_by_location(em_bb.get_corner(0),2);
-  ux_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),0);
-  uy_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),1);
-  uz_end=union_map->get_dim_index_by_location(em_bb.get_corner(1),2);
+  union_map->get_header_writable()->compute_xyz_top();
+  algebra::Vector3D half_vox=
+    algebra::Vector3D(1,1,1)*union_map->get_spacing()/2;
+  ux_start=union_map->get_dim_index_by_location(
+                         em_bb.get_corner(0)+half_vox,0);
+  uy_start=union_map->get_dim_index_by_location(em_bb.get_corner(0)+half_vox,1);
+  uz_start=union_map->get_dim_index_by_location(em_bb.get_corner(0)+half_vox,2);
+  ux_end=union_map->get_dim_index_by_location(em_bb.get_corner(1)-half_vox,0);
+  uy_end=union_map->get_dim_index_by_location(em_bb.get_corner(1)-half_vox,1);
+  uz_end=union_map->get_dim_index_by_location(em_bb.get_corner(1)-half_vox,2);
   for(int iz=uz_start;iz<uz_end;iz++){ //z slowest
     uz_temp = iz*uheader->get_nx()*uheader->get_ny();
     oz_temp = (iz-uz_start)*onx*ony;
