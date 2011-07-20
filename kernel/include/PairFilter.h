@@ -15,7 +15,7 @@
 #include "macros.h"
 #include "VersionInfo.h"
 #include "ParticleTuple.h"
-
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 

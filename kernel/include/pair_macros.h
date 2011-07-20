@@ -245,7 +245,7 @@ public:                                                                 \
  ContainersTemp get_input_containers(Particle* t) const;                \
  void filter_in_place(ParticlePairsTemp &ps) const {                   \
    ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           internal::GetContains<Name>(this)),          \
+                           IMP::internal::GetContains<Name>(this)),     \
             ps.end());                                                  \
  }                                                                      \
  IMP_OBJECT(Name)

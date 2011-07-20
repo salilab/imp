@@ -15,7 +15,7 @@ SameResiduePairFilter
 ::SameResiduePairFilter(){
 }
 
-bool SameResiduePairFilter::get_contains_particle_pair(const ParticlePair &pp)
+bool SameResiduePairFilter::get_contains(const ParticlePair &pp)
  const {
      return Hierarchy(pp[0]).get_parent() ==
             Hierarchy(pp[1]).get_parent();
