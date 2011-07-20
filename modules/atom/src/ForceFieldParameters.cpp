@@ -28,7 +28,7 @@ Float ForceFieldParameters::get_epsilon(Atom atom) const
 void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
                                      FloatKey radius_key) const
 {
-  Particles ps = get_by_type(mhd, ATOM_TYPE);
+  ParticlesTemp ps = get_from<ParticlesTemp>(get_by_type(mhd, ATOM_TYPE));
   for(unsigned int i=0; i<ps.size(); i++) {
     Float radius = get_radius(Atom(ps[i])) * scale;
     if (ps[i]->has_attribute(radius_key)) {
@@ -43,7 +43,7 @@ void ForceFieldParameters::add_radii(Hierarchy mhd, double scale,
 
 void ForceFieldParameters::add_well_depths(Hierarchy mhd) const
 {
-  Particles ps = get_by_type(mhd, ATOM_TYPE);
+  ParticlesTemp ps = get_from<ParticlesTemp>(get_by_type(mhd, ATOM_TYPE));
   for (unsigned int i=0; i<ps.size(); i++) {
     Float epsilon = get_epsilon(Atom(ps[i]));
     LennardJones::setup_particle(ps[i], -epsilon);
