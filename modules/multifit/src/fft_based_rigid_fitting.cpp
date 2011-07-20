@@ -679,9 +679,9 @@ algebra::Vector3Ds FFTFitting::gmm_based_search_for_best_translations(
                                 0,100);
   float density_threshold = hist.get_top(0.9)-EPS;
   //todo - make this a parameter
-  //  std::cout<<"= density threshold for gmm:"<<density_threshold<<std::endl;
+  //    std::cout<<"= density threshold for gmm:"<<density_threshold<<std::endl;
   IMP_NEW(DensityDataPoints, ddp, (*hit_map,density_threshold));
-  IMP_INTERNAL_CHECK(ddp->get_number_of_data_points()<0,
+  IMP_INTERNAL_CHECK(ddp->get_number_of_data_points()>0,
            "No data points found above the input threshold "<<
                      density_threshold<<std::endl);
   VQClustering vq(ddp,num_solutions);
