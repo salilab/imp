@@ -64,13 +64,13 @@ typedef std::vector<Particle*> ParticlesTemp;
     are transparent in python, but require this cast in C++.
  */
 template <class Out, class In>
-Out get_as(const In &in) {
+Out get_from(const In &in) {
   return Out(in.begin(), in.end());
 }
 
 #ifndef IMP_DOXYGEN
 template <class IO>
-const IO& get_as(const IO &in) {
+const IO& get_from(const IO &in) {
   return in;
 }
 #endif
