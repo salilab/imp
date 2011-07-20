@@ -24,7 +24,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 BondGraph::BondGraph(Hierarchy bd):
-  sc_(new container::ListSingletonContainer(get_leaves(bd))) {
+  sc_(new container::ListSingletonContainer
+      (get_from<ParticlesTemp>(get_leaves(bd)))) {
    for (container::ListSingletonContainer::ParticleIterator
          it= sc_->particles_begin();
        it != sc_->particles_end(); ++it) {
