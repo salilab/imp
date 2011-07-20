@@ -106,7 +106,7 @@ class IMPATOMEXPORT Selection {
   // for C++
   Selection(Hierarchy h,
         std::string molname,
-        int residue_index): h_(h), molecules_(1,molname),
+            int residue_index): h_(1, h), molecules_(1,molname),
     residue_indices_(1, residue_index),
     radius_(-1), terminus_(NONE){
     IMP_USAGE_CHECK(h.get_is_valid(true), "Hierarchy " << h
