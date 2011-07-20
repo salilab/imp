@@ -12,9 +12,7 @@
 #include "Particle.h"
 #include "VersionInfo.h"
 #include "RefCounted.h"
-#include "Pointer.h"
 #include "internal/IndexingIterator.h"
-#include <vector>
 
 IMP_BEGIN_NAMESPACE
 
@@ -74,8 +72,10 @@ public:
 
   IMP_REF_COUNTED_DESTRUCTOR(Refiner);
 };
+//! a collection of Refiner objects
+typedef VectorOfRefCounted<Refiner*> Refiners;
 
-IMP_OBJECTS(Refiner, Refiners);
+IMP_OUTPUT_OPERATOR(Refiner);
 
 #ifndef SWIG
 struct Refiner::Accessor {
