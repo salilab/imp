@@ -277,7 +277,7 @@ inline Constraint *create_constraint(Pointer<C> c, Before* b,
 
 template <class C>
 bool GenericInContainerPairFilter<C>
-::get_contains_particle_pair(const ParticlePair& p) const {
+::get_contains(const ParticlePair& p) const {
   return c_->C::get_contains_particle_pair(p);
 }
 
