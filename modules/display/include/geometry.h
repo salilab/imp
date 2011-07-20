@@ -30,7 +30,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
-typedef std::vector<Pointer< Geometry > > Geometries;
+typedef VectorOfRefCounted<Geometry*> Geometries;
 typedef std::vector<Geometry*> GeometriesTemp;
 
 
@@ -61,7 +61,7 @@ public:
   }
 
   //! Return a set of geometry composing this one
-  virtual Geometries get_components() const {return Geometries();}
+  virtual Geometries get_components() const {return GeometriesTemp();}
 
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };

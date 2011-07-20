@@ -58,24 +58,6 @@ class Particle;
 typedef std::vector<Particle*> ParticlesTemp;
 #endif
 
-#ifndef SWIG
-
-/** Convert an input list to the desired output list. These conversions
-    are transparent in python, but require this cast in C++.
- */
-template <class Out, class In>
-Out get_from(const In &in) {
-  return Out(in.begin(), in.end());
-}
-
-#ifndef IMP_DOXYGEN
-template <class IO>
-const IO& get_from(const IO &in) {
-  return in;
-}
-#endif
-#endif
-
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
     be constructed from a string. Such construction can be expensive
