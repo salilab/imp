@@ -20,7 +20,7 @@ void CommonEndpointPairFilter::do_show(std::ostream &) const {
 }
 
 bool CommonEndpointPairFilter
-::get_contains_particle_pair(const ParticlePair& p) const {
+::get_contains(const ParticlePair& p) const {
   if (!IMP::atom::Bond::particle_is_instance(p[0])
       || !IMP::atom::Bond::particle_is_instance(p[1])) {
     return false;
