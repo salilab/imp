@@ -11,6 +11,7 @@
 #include "atom_config.h"
 #include <IMP/PairFilter.h>
 #include <IMP/atom/internal/ExcludedPair.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPATOM_BEGIN_NAMESPACE
 

@@ -39,13 +39,22 @@ class IMPEXPORT SingletonScore : public Object
       macro.
   */
   virtual double evaluate(const ParticlesTemp &o,
-                          DerivativeAccumulator *da) const =0;
+                          DerivativeAccumulator *da) const {
+    double ret=0;
+    for (unsigned int i=0; i< o.size(); ++i) {
+      ret+= evaluate(o[i], da);
+    }
+    return ret;
+  }
 
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate_if_good(Particle* vt,
                                   DerivativeAccumulator *da,
-                                  double max) const =0;
+                                  double max) const {
+    IMP_UNUSED(max);
+    return evaluate(vt, da);
+  }
 
   /** Implementations
       for these are provided by the IMP_SINGLETON_SCORE()
@@ -53,7 +62,16 @@ class IMPEXPORT SingletonScore : public Object
   */
   virtual double evaluate_if_good(const ParticlesTemp &o,
                                   DerivativeAccumulator *da,
-                                  double max) const =0;
+                                  double max) const {
+    double ret=0;
+    for (unsigned int i=0; i< o.size(); ++i) {
+      double cur= evaluate(o[i], da);
+      max-=cur;
+      ret+=cur;
+      if (max<0) break;
+    }
+    return ret;
+  }
 
   /** Get the set of particles read when applied to the arguments. */
   virtual ParticlesTemp

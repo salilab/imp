@@ -13,6 +13,7 @@
 #include "container_config.h"
 #include <IMP/CLASSNAMEFilter.h>
 #include <IMP/CLASSNAMEContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 

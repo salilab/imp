@@ -15,7 +15,7 @@
 IMP_BEGIN_NAMESPACE
 #ifndef IMP_DOXYGEN
 typedef int ParticleIndex;
-static const int InvalidParticleIndex=-1;
+static const int INVALID_PARTICLE_INDEX=-1;
 typedef std::vector<ParticleIndex> ParticleIndexes;
 
 
