@@ -94,7 +94,26 @@
   IMP_LIST_ACTION(protection, Ucname, Ucname##s, lcname,        \
                   lcname##s, Data, PluralData,,,)
 
+#ifdef SWIG
 
+#define IMP_LIST_ACTION(protection, Ucname, Ucnames, lcname, lcnames,   \
+                        Data, PluralData,OnAdd,                         \
+                        OnChanged, OnRemoved)                           \
+  public:                                                               \
+  void remove_##lcname(Data d);                                         \
+  void remove_##lcnames(const PluralData& d);                           \
+  void set_##lcnames(const PluralData&  ps);                            \
+  void set_##lcnames##_order(const PluralData& objs);                   \
+  unsigned int add_##lcname(Data obj);                                  \
+  void add_##lcnames(const PluralData& objs);                           \
+  void clear_##lcnames();                                               \
+  unsigned int get_number_of_##lcnames() const;                         \
+  bool get_has_##lcnames();                                             \
+  Data get_##lcname(unsigned int i) const;                              \
+  void reserve_##lcnames(unsigned int sz)
+
+
+#else
 /** A version of IMP_LIST() for types where the spelling of the plural is
     irregular (eg geometry-> geometries) and where actions can be taken
     upon addition and removal:
@@ -129,7 +148,8 @@
     lcname##_handle_change();                                           \
   }                                                                     \
   /** \brief Remove any occurences of each item in d. */                \
-  void remove_##lcnames(const PluralData& d) {                          \
+  template <class List>                                                 \
+  void remove_##lcnames(List d) {                                       \
     std::vector<Data> ds(d.begin(), d.end());                           \
     std::sort(ds.begin(), ds.end());                                    \
     for (unsigned int i=0; i< ds.size(); ++i) {                         \
@@ -139,14 +159,16 @@
   }                                                                     \
   /** Set the contents of the container to ps removing all its current
       contents. */                                                      \
-void set_##lcnames(const PluralData &ps) {                              \
+template <class List>                                                   \
+void set_##lcnames(List ps) {                                           \
   /* Bad things can happen if we use a Temp, as things get unreffed
      before being reffed if they are in both lists */                   \
   clear_##lcnames();                                                    \
   add_##lcnames(ps);                                                    \
 }                                                                       \
 /** Must be the same set, just in a different order. */                 \
-void set_##lcnames##_order(const PluralData &ps) {                      \
+template <class List>                                                   \
+void set_##lcnames##_order(List ps) {                                   \
   IMP_USAGE_CHECK(ps.size() == lcname##_vector_.size(),                 \
                   "Reordered elements don't match.");                   \
   lcname##_vector_.clear();                                             \
@@ -166,7 +188,8 @@ unsigned int add_##lcname(Data obj) {                                   \
 /** Add several objects to the container. They are not necessarily
     added at the end.
 */                                                                      \
-void add_##lcnames(const PluralData& objs) {                            \
+template <class List>                                                   \
+void add_##lcnames(List objs) {                                         \
   unsigned int osz= lcname##_vector_.size();                            \
   lcname##_vector_.insert(lcname##_vector_.end(), objs.begin(),         \
                           objs.end());                                  \
@@ -229,7 +252,7 @@ IMP_NO_DOXYGEN(Ucname##DataWrapper lcname##_vector_;)                   \
 IMP_PROTECTION(protection)                                              \
 IMP_REQUIRE_SEMICOLON_CLASS(list##lcname)
 
-
+#endif
 
 
 //! This should go in a .cpp file for the respective class.
