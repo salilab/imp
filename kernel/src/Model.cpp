@@ -93,8 +93,7 @@ double Model::get_weight(Restraint *r) const {
   if (!get_has_dependencies()) {
     compute_dependencies();
   }
-  if (restraint_index_.find(r) == restraint_index_.end()) return 0;
-  else return restraint_weights_[restraint_index_.find(r)->second];
+  return r->model_weight_;
 }
 
 
@@ -137,7 +136,6 @@ void Model::update() {
     compute_dependencies();
   }
   Floats ret= do_evaluate(RestraintsTemp(),
-                          Floats(),
                           ordered_score_states_,
                           false, true, false);
 }

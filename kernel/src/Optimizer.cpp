@@ -47,10 +47,9 @@ double Optimizer::optimize(unsigned int max_steps) {
               ValueException);
   }
   set_was_used(true);
-  boost::tie(flattened_restraints_,
-             flattened_weights_)
-    =IMP::get_restraints_and_weights(RestraintsTemp(restraints_.begin(),
-                                                      restraints_.end()));
+  flattened_restraints_
+    =IMP::get_restraints(RestraintsTemp(restraints_.begin(),
+                                        restraints_.end()));
   return do_optimize(max_steps);
 }
 
@@ -73,7 +72,6 @@ double Optimizer::evaluate(bool compute_derivatives) const {
     last_score_= get_model()->evaluate(compute_derivatives);
   } else {
     IMP::Floats ret= get_model()->evaluate(flattened_restraints_,
-                                           flattened_weights_,
                                            compute_derivatives);
     last_score_= std::accumulate(ret.begin(), ret.end(), 0.0);
   }
@@ -84,13 +82,11 @@ double Optimizer::evaluate_if_below(bool compute_derivatives,
                                    double max) const {
   IMP_FUNCTION_LOG;
   RestraintsTemp rs= flattened_restraints_;
-  Floats ws= flattened_weights_;
   if (rs.empty()) {
-    boost::tie(rs, ws)
-      = get_restraints_and_weights(get_model()->get_root_restraint_set());
+    rs
+      = IMP::get_restraints(get_model()->get_root_restraint_set());
   }
-  IMP::Floats ret= get_model()->evaluate_if_below(flattened_restraints_,
-                                                  flattened_weights_,
+  IMP::Floats ret= get_model()->evaluate_if_below(rs,
                                                   compute_derivatives, max);
   last_score_= std::accumulate(ret.begin(), ret.end(), 0.0);
   return last_score_;

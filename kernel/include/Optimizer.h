@@ -243,7 +243,6 @@ class IMPEXPORT Optimizer: public Object
   bool stop_on_good_score_;
   RestraintSets restraints_;
   RestraintsTemp flattened_restraints_;
-  Floats flattened_weights_;
   mutable double last_score_;
 };
 

@@ -88,7 +88,6 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
 
 
 Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
-                                     const std::vector<double> &weights,
                                      bool calc_derivs,
                                      bool if_good, bool if_max,
                                      double omax) {
@@ -103,7 +102,8 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
   const unsigned int rsz=restraints.size();
   for (unsigned int i=0; i< rsz; ++i) {
     double value=0;
-    DerivativeAccumulator accum(weights[i]);
+    double weight=restraints[i]->model_weight_;
+    DerivativeAccumulator accum(weight);
     if (gather_statistics_) timer.restart();
     if (if_good) {
       double max=std::min(remaining,
@@ -125,7 +125,7 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
                          restraints[i]->unprotected_evaluate(calc_derivs?
                                                              &accum:NULL));
     }
-    double wvalue= weights[i]*value;
+    double wvalue= weight*value;
     remaining-=wvalue;
     IMP_LOG(TERSE, restraints[i]->get_name()<<  " score is "
               << wvalue << std::endl);
@@ -149,7 +149,6 @@ Floats Model::do_evaluate_restraints(const RestraintsTemp &restraints,
 
 
 Floats Model::do_evaluate(const RestraintsTemp &restraints,
-                          const std::vector<double> &weights,
                           const ScoreStatesTemp &states,
                           bool calc_derivs,
                           bool if_good, bool if_max, double max) {
@@ -166,7 +165,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   if (calc_derivs) {
     zero_derivatives();
   }
-  std::vector<double> ret= do_evaluate_restraints(restraints, weights,
+  std::vector<double> ret= do_evaluate_restraints(restraints,
                                                   calc_derivs,
                                                   if_good, if_max,
                                                   max);

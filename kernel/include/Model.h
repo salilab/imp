@@ -549,27 +549,21 @@ private:
   void before_evaluate(const ScoreStatesTemp &states) const;
   void after_evaluate(const ScoreStatesTemp &states, bool calc_derivs) const;
   Floats do_evaluate(const RestraintsTemp &restraints,
-                     const std::vector<double> &weights,
                      const ScoreStatesTemp &states, bool calc_derivs,
                      bool if_good, bool if_max,
                      double max= std::numeric_limits<double>::max());
   Floats do_evaluate_restraints(const RestraintsTemp &restraints,
-                                const std::vector<double> &weights,
                                 bool calc_derivs,
                                 bool if_good, bool if_max,
                                 double max= std::numeric_limits<double>::max());
   Floats do_external_evaluate(const RestraintsTemp &restraints,
-                              const std::vector<double> &weights,
                               bool calc_derivs,
                               bool if_good, bool if_max,
                               double max= std::numeric_limits<double>::max());
 
 
   // dependencies
-  mutable compatibility::map<Restraint *, int> restraint_index_;
   mutable RestraintsTemp ordered_restraints_;
-  mutable std::vector<Ints > restraint_dependencies_;
-  mutable std::vector<double> restraint_weights_;
   mutable ScoreStatesTemp ordered_score_states_;
   void compute_dependencies() const;
   bool get_has_dependencies() const {
@@ -761,7 +755,6 @@ public:
       Restraints or ScoreStates change. This can be fixed if requested.
   */
   Floats evaluate( RestraintsTemp restraints,
-                   std::vector<double> weights,
                    bool calc_derivs);
 
   //! Evaluate a subset of the restraints
@@ -774,14 +767,12 @@ public:
       information.
   */
   Floats evaluate_if_good( RestraintsTemp restraints,
-                           std::vector<double> weights,
                            bool calc_derivs);
   /** Evaluate, returning the score if it below the max value.
       Otherwise return a number above max. The restraint maxima
       are ignored.
   */
   Floats evaluate_if_below( RestraintsTemp restraints,
-                           std::vector<double> weights,
                             bool calc_derivs, double max);
 
 
