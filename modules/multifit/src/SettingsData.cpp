@@ -113,8 +113,10 @@ AssemblyHeader *parse_assembly_line(
 SettingsData *read_settings(const char *filename,const char *data_path) {
   std::fstream in;
   in.open(filename, std::fstream::in);
-  IMP_USAGE_CHECK(in.good(), "Problem openning file " << filename <<
-                  " for reading " << std::endl);
+  if (!in.good()){
+    IMP_THROW("Problem openning file " << filename <<
+              " for reading " << std::endl,ValueException);
+  }
   std::string line;
   IMP_NEW(SettingsData, header, ());
   getline(in, line); //skip header line
