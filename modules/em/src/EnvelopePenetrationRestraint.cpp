@@ -75,14 +75,7 @@ void EnvelopePenetrationRestraint::do_show(std::ostream& out) const
 }
 
 IMP_LIST_IMPL(
-  EnvelopePenetrationRestraint, Particle, particle,Particle*, Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                         == (*particles_begin())->get_model(),
-         "All particles in EnvelopePenetrationRestraint must belong to the "
-                         "same Model.");
-              },{},{});
+  EnvelopePenetrationRestraint, Particle, particle,Particle*, Particles);
 
 
 

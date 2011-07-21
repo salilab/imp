@@ -103,8 +103,10 @@ public:
   ParticleStatesTable* get_particle_states_table() const {
     return pst_;
   }
-  IMP_LIST(public, SubsetFilterTable, subset_filter_table,
-           SubsetFilterTable*, SubsetFilterTables);
+  IMP_LIST_ACTION(public, SubsetFilterTable, SubsetFilterTables,
+                  subset_filter_table, subset_filter_tables,
+                  SubsetFilterTable*, SubsetFilterTables,
+                  obj->set_was_used(true),,);
   /** @} */
 
   /** Limit the number of states that is ever produced for any

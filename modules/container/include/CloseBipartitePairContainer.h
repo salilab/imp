@@ -71,8 +71,9 @@ public:
      will be excluded from the close pairs list.
   */
   /**@{*/
-  IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+  IMP_LIST_ACTION(public, PairFilter, PairFilters, pair_filter,
+                  pair_filters,
+                  PairFilter*, PairFilters, obj->set_was_used(true);,,);
    /**@}*/
 #ifndef IMP_DOXYGEN
 #ifndef SWIG

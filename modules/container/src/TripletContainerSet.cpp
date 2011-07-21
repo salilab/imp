@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  TripletContainerSet* get_set(TripletContainer* c) {
-    return dynamic_cast<TripletContainerSet*>(c);
-  }
-}
 
 TripletContainerSet
 ::TripletContainerSet() {
@@ -95,21 +90,7 @@ IMP_LIST_IMPL(TripletContainerSet,
               TripletContainer,
               triplet_container,
               TripletContainer*,
-              TripletContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_triplet_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_triplet_container(obj
-                       ->get_removed_container());
-              });
+              TripletContainers);
 
 
 void TripletContainerSet::apply(const TripletModifier *sm) {

@@ -26,7 +26,7 @@ void WriteOptimizerState::update() {
   }
   ++call_number_;
 }
-IMP_LIST_PLURAL_IMPL(WriteOptimizerState, Geometry, Geometries,
-                     geometry, geometries, Geometry*, Geometries,,,);
+IMP_LIST_ACTION_IMPL(WriteOptimizerState, Geometry, Geometries,
+                     geometry, geometries, Geometry*, Geometries);
 
 IMPDISPLAY_END_NAMESPACE

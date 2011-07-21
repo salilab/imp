@@ -35,6 +35,9 @@ IMP_BEGIN_NAMESPACE
 */
 class IMPEXPORT RestraintSet : public Restraint
 {
+  void on_add(Restraint*r);
+  void on_change();
+  static void on_remove(RestraintSet *container, Restraint *r);
  public:
   //! Create an empty set
   RestraintSet(double weight,
@@ -50,7 +53,10 @@ class IMPEXPORT RestraintSet : public Restraint
       manipulate the stored set use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+  IMP_LIST_ACTION(public, Restraint, Restraints, restraint, restraints,
+                  Restraint*, Restraints,
+                  on_add(obj), on_change(),
+                  if (container) on_remove(container, obj));
   /**@}*/
  public:
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)

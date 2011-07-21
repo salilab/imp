@@ -107,8 +107,14 @@ class IMPEXPORT Optimizer: public Object
       To manipulate the list of optimizer states use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, OptimizerState, optimizer_state, OptimizerState*,
-           OptimizerStates);
+  IMP_LIST_ACTION(public, OptimizerState, OptimizerStates,
+                  optimizer_state, optimizer_states, OptimizerState*,
+                  OptimizerStates,
+                  {
+                    Optimizer::set_optimizer_state_optimizer(obj, this);
+                    obj->set_was_used(true);
+                  },{},
+                  {Optimizer::set_optimizer_state_optimizer(obj, NULL);});
   /**@}*/
 
   /** \brief The optimizer can be told to use only a subset of the

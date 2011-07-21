@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  CLASSNAMEContainerSet* get_set(CLASSNAMEContainer* c) {
-    return dynamic_cast<CLASSNAMEContainerSet*>(c);
-  }
-}
 
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet() {
@@ -95,21 +90,7 @@ IMP_LIST_IMPL(CLASSNAMEContainerSet,
               CLASSNAMEContainer,
               CLASSFUNCTIONNAME_container,
               CLASSNAMEContainer*,
-              CLASSNAMEContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_CLASSFUNCTIONNAME_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_CLASSFUNCTIONNAME_container(obj
-                       ->get_removed_container());
-              });
+              CLASSNAMEContainers);
 
 
 void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) {

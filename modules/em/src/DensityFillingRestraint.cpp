@@ -77,14 +77,7 @@ void DensityFillingRestraint::do_show(std::ostream& out) const
 }
 
 IMP_LIST_IMPL(
-  DensityFillingRestraint, Particle, particle,Particle*, Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                         == (*particles_begin())->get_model(),
-         "All particles in DensityFillingRestraint must belong to the "
-                         "same Model.");
-              },{},{});
+  DensityFillingRestraint, Particle, particle,Particle*, Particles);
 
 
 

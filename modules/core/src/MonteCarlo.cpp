@@ -19,10 +19,7 @@ IMPCORE_BEGIN_NAMESPACE
 
 Mover::Mover(std::string name):Object(name) {}
 
-IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers,
-              {obj->set_optimizer(this);
-                obj->set_was_used(true);
-              },{},{});
+IMP_LIST_IMPL(MonteCarlo, Mover, mover, Mover*, Movers);
 
 MonteCarlo::MonteCarlo(Model *m): Optimizer(m, "MonteCarlo%1%"),
                                   temp_(1),

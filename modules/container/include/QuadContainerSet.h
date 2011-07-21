@@ -33,6 +33,9 @@ class IMPCONTAINEREXPORT QuadContainerSet
                                           back_->quad_containers_begin(),
                                           back_->quad_containers_end());
                              });
+  static QuadContainerSet* get_set(QuadContainer* c) {
+    return dynamic_cast<QuadContainerSet*>(c);
+  }
   // to not have added and removed
   QuadContainerSet();
   QuadContainerPair get_added_and_removed_containers() const {
@@ -109,8 +112,23 @@ class IMPCONTAINEREXPORT QuadContainerSet
       or remove nested containers, use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, QuadContainer, quad_container,
-           QuadContainer*, QuadContainers);
+  IMP_LIST_ACTION(public, QuadContainer, QuadContainers,
+                  quad_container, quad_containers,
+                  QuadContainer*, QuadContainers,
+              {
+                if (get_has_added_and_removed_containers()) {
+                  get_set(get_added_container())
+                    ->add_quad_container(obj
+                           ->get_added_container());
+                }
+                obj->set_was_used(true);
+              },{},
+              if (container
+                  && container->get_has_added_and_removed_containers()) {
+                get_set(container->get_removed_container())
+                  ->add_quad_container(obj
+                       ->get_removed_container());
+              });
   /**@}*/
 
   static QuadContainerSet *create_untracked_container() {

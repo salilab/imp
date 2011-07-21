@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  SingletonContainerSet* get_set(SingletonContainer* c) {
-    return dynamic_cast<SingletonContainerSet*>(c);
-  }
-}
 
 SingletonContainerSet
 ::SingletonContainerSet() {
@@ -95,21 +90,7 @@ IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,
               singleton_container,
               SingletonContainer*,
-              SingletonContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_singleton_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_singleton_container(obj
-                       ->get_removed_container());
-              });
+              SingletonContainers);
 
 
 void SingletonContainerSet::apply(const SingletonModifier *sm) {

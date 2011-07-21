@@ -120,7 +120,10 @@ public:
        to change the current configuration.
        @{
   */
-  IMP_LIST(public, Mover, mover, Mover*, Movers);
+  IMP_LIST_ACTION(public, Mover, Movers, mover, movers, Mover*, Movers,
+                  {obj->set_optimizer(this);
+                    obj->set_was_used(true);
+                  },{},{obj->set_optimizer(NULL);});
   /** @} */
  protected:
   /** Note that if return best is true, this will save the current

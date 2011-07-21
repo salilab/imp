@@ -32,9 +32,7 @@ IMP_LIST_IMPL(CoreClosePairContainer,
               PairFilter,
               pair_filter,
               PairFilter*,
-              PairFilters, obj->set_was_used(true);first_call_=true;,
-              {first_call_=true;},
-              {if (container) container->first_call_=true;});
+              PairFilters);
 
 
 CoreClosePairContainer::CoreClosePairContainer(SingletonContainer *c,

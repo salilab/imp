@@ -45,8 +45,12 @@ public:
                          ClosePairsFinder *cpf,
                          double slack=1);
 
-  IMP_LIST(public, PairFilter, pair_filter,
-           PairFilter*, PairFilters);
+  IMP_LIST_ACTION(public, PairFilter, PairFilters,
+                  pair_filter, pair_filters,
+                  PairFilter*, PairFilters,
+                  obj->set_was_used(true);first_call_=true;,
+                  {first_call_=true;},
+                  {if (container) container->first_call_=true;});
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     if (get_model()->get_stage() != IMP::internal::NOT_EVALUATING) {

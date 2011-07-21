@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-namespace {
-  QuadContainerSet* get_set(QuadContainer* c) {
-    return dynamic_cast<QuadContainerSet*>(c);
-  }
-}
 
 QuadContainerSet
 ::QuadContainerSet() {
@@ -95,21 +90,7 @@ IMP_LIST_IMPL(QuadContainerSet,
               QuadContainer,
               quad_container,
               QuadContainer*,
-              QuadContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_quad_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_quad_container(obj
-                       ->get_removed_container());
-              });
+              QuadContainers);
 
 
 void QuadContainerSet::apply(const QuadModifier *sm) {

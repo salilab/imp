@@ -61,5 +61,5 @@ void Simulator::do_show(std::ostream &out) const {
 
 
 IMP_LIST_IMPL(Simulator, Particle, particle, Particle*,
-              Particles,,,);
+              Particles);
 IMPATOM_END_NAMESPACE
