@@ -420,8 +420,7 @@ void MCCGSampler::do_show(std::ostream &out) const {
 
 
 IMP_LIST_IMPL(MCCGSampler, OptimizerState, optimizer_state,
-              OptimizerState*, OptimizerStates, {},{},
-              {});
+              OptimizerState*, OptimizerStates);
 
 
 

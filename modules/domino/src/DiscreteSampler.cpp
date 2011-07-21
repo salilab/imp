@@ -23,9 +23,7 @@ DiscreteSampler::~DiscreteSampler()
 
 IMP_LIST_IMPL(DiscreteSampler, SubsetFilterTable,
               subset_filter_table, SubsetFilterTable*,
-              SubsetFilterTables,
-              {obj->set_was_used(true);},{},
-              {});
+              SubsetFilterTables);
 
 
 SubsetFilterTables

@@ -33,6 +33,9 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                                           back_->CLASSFUNCTIONNAME_containers_begin(),
                                           back_->CLASSFUNCTIONNAME_containers_end());
                              });
+  static CLASSNAMEContainerSet* get_set(CLASSNAMEContainer* c) {
+    return dynamic_cast<CLASSNAMEContainerSet*>(c);
+  }
   // to not have added and removed
   CLASSNAMEContainerSet();
   CLASSNAMEContainerPair get_added_and_removed_containers() const {
@@ -109,8 +112,23 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
       or remove nested containers, use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, CLASSNAMEContainer, CLASSFUNCTIONNAME_container,
-           CLASSNAMEContainer*, CLASSNAMEContainers);
+  IMP_LIST_ACTION(public, CLASSNAMEContainer, CLASSNAMEContainers,
+                  CLASSFUNCTIONNAME_container, CLASSFUNCTIONNAME_containers,
+                  CLASSNAMEContainer*, CLASSNAMEContainers,
+              {
+                if (get_has_added_and_removed_containers()) {
+                  get_set(get_added_container())
+                    ->add_CLASSFUNCTIONNAME_container(obj
+                           ->get_added_container());
+                }
+                obj->set_was_used(true);
+              },{},
+              if (container
+                  && container->get_has_added_and_removed_containers()) {
+                get_set(container->get_removed_container())
+                  ->add_CLASSFUNCTIONNAME_container(obj
+                       ->get_removed_container());
+              });
   /**@}*/
 
   static CLASSNAMEContainerSet *create_untracked_container() {

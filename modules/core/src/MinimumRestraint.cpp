@@ -20,21 +20,7 @@ MinimumRestraint::MinimumRestraint(unsigned int num,
 }
 
 
-IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint*, Restraints,
-              {
-                if (get_is_part_of_model()) {
-                  get_model()->reset_dependencies();
-                  obj->set_model(get_model());
-                }
-              }
-              ,{
-                if (get_is_part_of_model()) {
-                  get_model()->reset_dependencies();
-                }
-              }, {
-                if (container) obj->get_model()->reset_dependencies();
-                obj->set_model(NULL);
-              });
+IMP_LIST_IMPL(MinimumRestraint, Restraint, restraint, Restraint*, Restraints);
 
 
 double

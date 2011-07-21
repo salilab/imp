@@ -175,8 +175,10 @@ public:
 
   IMP_OBJECT_INLINE(SettingsData, { out << "Settings data"; }, {});
 
-  IMP_LIST(public, ComponentHeader, component_header, ComponentHeader*,
-           ComponentHeaders);
+  IMP_LIST_ACTION(public, ComponentHeader, ComponentHeaders,
+                  component_header, component_headers,
+                  ComponentHeader*,
+                  ComponentHeaders, obj->set_was_used(true);,,);
 
 protected:
   IMP::internal::OwnerPointer<AssemblyHeader> dens_data_;

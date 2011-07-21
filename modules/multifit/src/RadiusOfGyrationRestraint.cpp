@@ -89,14 +89,7 @@ const {
 
 
 IMP_LIST_IMPL(RadiusOfGyrationRestraint,
-              Particle, particle,Particle*, Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                         == (*particles_begin())->get_model(),
-                "All particles in RadiusOfGyrationRestraint must belong to the "
-                "same Model.");
-              },{},{});
+              Particle, particle,Particle*, Particles);
 
 
 

@@ -25,7 +25,7 @@ IMP_LIST_IMPL(CloseBipartitePairContainer,
               PairFilter,
               pair_filter,
               PairFilter*,
-              PairFilters, obj->set_was_used(true);,{},{});
+              PairFilters);
 
 
 CloseBipartitePairContainer

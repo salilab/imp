@@ -26,8 +26,9 @@ class IMPATOMEXPORT CHARMMSegmentTopology : public Object {
       The segment contains a chain of residues.
    */
   /**@{*/
-  IMP_LIST(public, CHARMMResidueTopology, residue, CHARMMResidueTopology*,
-           CHARMMResidueTopologies);
+  IMP_LIST_ACTION(public, CHARMMResidueTopology,CHARMMResidueTopologies,
+                  residue, residues, CHARMMResidueTopology*,
+                  CHARMMResidueTopologies, obj->set_was_used(true),,);
   /**@}*/
 
   IMP_OBJECT(CHARMMSegmentTopology);
@@ -229,8 +230,9 @@ public:
       The topology contains a list of segments, one for each chain.
    */
   /**@{*/
-  IMP_LIST(public, CHARMMSegmentTopology, segment, CHARMMSegmentTopology*,
-           CHARMMSegmentTopologies);
+  IMP_LIST_ACTION(public, CHARMMSegmentTopology, CHARMMSegmentTopologies,
+                  segment, segments, CHARMMSegmentTopology*,
+                  CHARMMSegmentTopologies, obj->set_was_used(true),,);
   /**@}*/
 
   IMP_OBJECT(CHARMMTopology);

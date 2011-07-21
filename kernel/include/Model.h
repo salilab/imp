@@ -635,7 +635,25 @@ public:
       \advancedmethod
   */
   /**@{*/
-  IMP_LIST(public, ScoreState, score_state, ScoreState*, ScoreStates);
+  IMP_LIST_ACTION(public, ScoreState, ScoreStates,
+                  score_state, score_states, ScoreState*, ScoreStates,
+              {IMP_INTERNAL_CHECK(cur_stage_== internal::NOT_EVALUATING,
+                     "The set of score states cannot be changed during"
+                                  << "evaluation.");
+                Model::set_score_state_model(obj, this);
+                obj->set_was_used(true);
+                IMP_LOG(VERBOSE, "Added score state " << obj->get_name()
+                        << std::endl);
+                IMP_IF_CHECK(USAGE) {
+                  compatibility::set<ScoreState*> in(score_states_begin(),
+                                           score_states_end());
+                  IMP_USAGE_CHECK(in.size() == get_number_of_score_states(),
+                                  "Score state already in model "
+                                  << obj->get_name());
+                }
+              },{reset_dependencies();},
+              {Model::set_score_state_model(obj, NULL);
+               if(container) container->reset_dependencies(); });
   /**@}*/
 
   /** @name Restraints

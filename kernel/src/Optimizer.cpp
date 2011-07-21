@@ -55,11 +55,7 @@ double Optimizer::optimize(unsigned int max_steps) {
 }
 
 IMP_LIST_IMPL(Optimizer, OptimizerState, optimizer_state,
-              OptimizerState*, OptimizerStates, {
-                Optimizer::set_optimizer_state_optimizer(obj, this);
-                obj->set_was_used(true);
-              },{},
-              {Optimizer::set_optimizer_state_optimizer(obj, NULL);});
+              OptimizerState*, OptimizerStates);
 
 void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 {

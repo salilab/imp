@@ -33,6 +33,9 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                                           back_->singleton_containers_begin(),
                                           back_->singleton_containers_end());
                              });
+  static SingletonContainerSet* get_set(SingletonContainer* c) {
+    return dynamic_cast<SingletonContainerSet*>(c);
+  }
   // to not have added and removed
   SingletonContainerSet();
   SingletonContainerPair get_added_and_removed_containers() const {
@@ -109,8 +112,23 @@ class IMPCONTAINEREXPORT SingletonContainerSet
       or remove nested containers, use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, SingletonContainer, singleton_container,
-           SingletonContainer*, SingletonContainers);
+  IMP_LIST_ACTION(public, SingletonContainer, SingletonContainers,
+                  singleton_container, singleton_containers,
+                  SingletonContainer*, SingletonContainers,
+              {
+                if (get_has_added_and_removed_containers()) {
+                  get_set(get_added_container())
+                    ->add_singleton_container(obj
+                           ->get_added_container());
+                }
+                obj->set_was_used(true);
+              },{},
+              if (container
+                  && container->get_has_added_and_removed_containers()) {
+                get_set(container->get_removed_container())
+                  ->add_singleton_container(obj
+                       ->get_removed_container());
+              });
   /**@}*/
 
   static SingletonContainerSet *create_untracked_container() {

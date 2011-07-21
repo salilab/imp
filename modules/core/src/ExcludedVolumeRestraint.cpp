@@ -395,10 +395,9 @@ Restraints ExcludedVolumeRestraint
   return ret;
 }
 
-IMP_LIST_PLURAL_IMPL(ExcludedVolumeRestraint, PairFilter,
-                     PairFilters, pair_filter,
-                     pair_filters,
-                     PairFilter*, PairFilters, ,,);
+IMP_LIST_IMPL(ExcludedVolumeRestraint, PairFilter,
+              pair_filter,
+              PairFilter*, PairFilters);
 
 
 IMPCORE_END_NAMESPACE

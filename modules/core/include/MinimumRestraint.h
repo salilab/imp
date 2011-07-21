@@ -29,7 +29,22 @@ public:
 
   IMP_RESTRAINT(MinimumRestraint);
 
-  IMP_LIST(public, Restraint, restraint, Restraint*, Restraints);
+  IMP_LIST_ACTION(public, Restraint, Restraints,
+                  restraint, restraints, Restraint*, Restraints,
+            {
+                if (get_is_part_of_model()) {
+                  get_model()->reset_dependencies();
+                  obj->set_model(get_model());
+                }
+              }
+              ,{
+                if (get_is_part_of_model()) {
+                  get_model()->reset_dependencies();
+                }
+              }, {
+                if (container) obj->get_model()->reset_dependencies();
+                obj->set_model(NULL);
+              });
   void set_model(Model *m);
 };
 

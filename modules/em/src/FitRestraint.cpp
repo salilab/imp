@@ -152,14 +152,7 @@ void FitRestraint::resample() const {
       model_dens_map_->add(transformed);
   }
 }
-IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                         == (*particles_begin())->get_model(),
-                         "All particles in FitRestraint must belong to the "
-                         "same Model.");
-              },{},{});
+IMP_LIST_IMPL(FitRestraint, Particle, particle,Particle*, Particles);
 
 double FitRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 {

@@ -1094,11 +1094,9 @@ void CHARMMTopology::setup_hierarchy(Hierarchy hierarchy) const
 }
 
 IMP_LIST_IMPL(CHARMMSegmentTopology, CHARMMResidueTopology, residue,
-              CHARMMResidueTopology *, CHARMMResidueTopologies,
-              { obj->set_was_used(true); }, {}, {});
+              CHARMMResidueTopology *, CHARMMResidueTopologies);
 
 IMP_LIST_IMPL(CHARMMTopology, CHARMMSegmentTopology, segment,
-              CHARMMSegmentTopology *, CHARMMSegmentTopologies,
-              { obj->set_was_used(true); }, {}, {});
+              CHARMMSegmentTopology *, CHARMMSegmentTopologies);
 
 IMPATOM_END_NAMESPACE

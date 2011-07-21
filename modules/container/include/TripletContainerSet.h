@@ -33,6 +33,9 @@ class IMPCONTAINEREXPORT TripletContainerSet
                                           back_->triplet_containers_begin(),
                                           back_->triplet_containers_end());
                              });
+  static TripletContainerSet* get_set(TripletContainer* c) {
+    return dynamic_cast<TripletContainerSet*>(c);
+  }
   // to not have added and removed
   TripletContainerSet();
   TripletContainerPair get_added_and_removed_containers() const {
@@ -109,8 +112,23 @@ class IMPCONTAINEREXPORT TripletContainerSet
       or remove nested containers, use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, TripletContainer, triplet_container,
-           TripletContainer*, TripletContainers);
+  IMP_LIST_ACTION(public, TripletContainer, TripletContainers,
+                  triplet_container, triplet_containers,
+                  TripletContainer*, TripletContainers,
+              {
+                if (get_has_added_and_removed_containers()) {
+                  get_set(get_added_container())
+                    ->add_triplet_container(obj
+                           ->get_added_container());
+                }
+                obj->set_was_used(true);
+              },{},
+              if (container
+                  && container->get_has_added_and_removed_containers()) {
+                get_set(container->get_removed_container())
+                  ->add_triplet_container(obj
+                       ->get_removed_container());
+              });
   /**@}*/
 
   static TripletContainerSet *create_untracked_container() {

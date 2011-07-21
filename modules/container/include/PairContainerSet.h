@@ -33,6 +33,9 @@ class IMPCONTAINEREXPORT PairContainerSet
                                           back_->pair_containers_begin(),
                                           back_->pair_containers_end());
                              });
+  static PairContainerSet* get_set(PairContainer* c) {
+    return dynamic_cast<PairContainerSet*>(c);
+  }
   // to not have added and removed
   PairContainerSet();
   PairContainerPair get_added_and_removed_containers() const {
@@ -109,8 +112,23 @@ class IMPCONTAINEREXPORT PairContainerSet
       or remove nested containers, use the methods below.
   */
   /**@{*/
-  IMP_LIST(public, PairContainer, pair_container,
-           PairContainer*, PairContainers);
+  IMP_LIST_ACTION(public, PairContainer, PairContainers,
+                  pair_container, pair_containers,
+                  PairContainer*, PairContainers,
+              {
+                if (get_has_added_and_removed_containers()) {
+                  get_set(get_added_container())
+                    ->add_pair_container(obj
+                           ->get_added_container());
+                }
+                obj->set_was_used(true);
+              },{},
+              if (container
+                  && container->get_has_added_and_removed_containers()) {
+                get_set(container->get_removed_container())
+                  ->add_pair_container(obj
+                       ->get_removed_container());
+              });
   /**@}*/
 
   static PairContainerSet *create_untracked_container() {

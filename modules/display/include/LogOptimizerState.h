@@ -34,8 +34,8 @@ class IMPDISPLAYEXPORT WriteOptimizerState: public OptimizerState {
     skip_steps_=p-1;
     call_number_=0;
   }
-  IMP_LIST_PLURAL(public, Geometry, Geometries, geometry, geometries,
-                  Geometry*, Geometries);
+  IMP_LIST_ACTION(public, Geometry, Geometries, geometry, geometries,
+                  Geometry*, Geometries,,,);
   void write(WriterOutput w) const;
   IMP_OBJECT_INLINE(WriteOptimizerState,
                     out << "  writer: " << writer_->get_name() << std::endl;,);

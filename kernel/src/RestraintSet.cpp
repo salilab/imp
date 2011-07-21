@@ -34,21 +34,7 @@ RestraintSet::RestraintSet(const std::string& name)
 
 
 IMP_LIST_IMPL(RestraintSet, Restraint, restraint, Restraint*,
-              Restraints,
-              {
-                if (get_is_part_of_model()) {
-                  obj->set_model(get_model());
-                  get_model()->reset_dependencies();
-                }
-                obj->set_was_used(true);
-                IMP_USAGE_CHECK(obj != this,
-                                "Cannot add a restraint set to itself");
-              },if (get_is_part_of_model()) {
-                  get_model()->reset_dependencies();
-              },{
-                if (container) obj->get_model()->reset_dependencies();
-                obj->set_model(NULL);
-              });
+              Restraints);
 
 
 double
@@ -82,6 +68,26 @@ void RestraintSet::do_show(std::ostream& out) const
     (*it)->show(out);
   }
   out << "... end restraint set " << get_name() << std::endl;
+}
+
+
+void RestraintSet::on_add(Restraint*obj) {
+if (get_is_part_of_model()) {
+                      obj->set_model(get_model());
+                      get_model()->reset_dependencies();
+                    }
+                    obj->set_was_used(true);
+                    IMP_USAGE_CHECK(obj != this,
+                                    "Cannot add a restraint set to itself");
+}
+void RestraintSet::on_change() {
+  if (get_is_part_of_model()) {
+    get_model()->reset_dependencies();
+  }
+}
+void RestraintSet::on_remove(RestraintSet *container, Restraint* obj) {
+  if (container) obj->get_model()->reset_dependencies();
+  obj->set_model(NULL);
 }
 
 

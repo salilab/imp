@@ -126,15 +126,7 @@ void WeightedExcludedVolumeRestraint::do_show(std::ostream& out) const
   out<<"WeightedExcludedVolumeRestraint"<<std::endl;
 }
 IMP_LIST_IMPL(WeightedExcludedVolumeRestraint,
-              Particle, particle,Particle*, Particles,
-              {
-              IMP_INTERNAL_CHECK(get_number_of_particles()==0
-                         || obj->get_model()
-                         == (*particles_begin())->get_model(),
-                         "All particles in WeightedExcludedVolumeRestraint"
-                         " must belong to the "
-                         "same Model.");
-              },{},{});
+              Particle, particle,Particle*, Particles);
 
 
 IMPMULTIFIT_END_NAMESPACE
