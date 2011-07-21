@@ -64,6 +64,7 @@ struct RstParameters {
  double         tilt;
  double         zeta;
  double         kappa;
+ double         kappa2;
  double         d0_inter;
  double         cm_dist;
  std::string    score_name;

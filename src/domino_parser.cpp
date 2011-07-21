@@ -65,6 +65,7 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, tiltrange);
  OPTION(double, zetarange);
  OPTION(double, kappa);
+ OPTION(double, kappa2);
  OPTION(double, cm_dist);
  OPTION(double, d0_inter);
  OPTION(double, wte_w0);
@@ -98,6 +99,7 @@ Parameters get_parameters(TextInput in) {
  CHECK(double, tiltrange);
  CHECK(double, zetarange);
  CHECK(double, kappa);
+ CHECK(double, kappa2);
  CHECK(double, cm_dist);
  CHECK(double, d0_inter);
  CHECK(double, wte_w0);
@@ -143,6 +145,7 @@ Parameters get_parameters(TextInput in) {
  ret.RST.tilt=radians(tiltrange);
  ret.RST.zeta=zetarange;
  ret.RST.kappa=kappa;
+ ret.RST.kappa2=kappa2;
  ret.RST.cm_dist=cm_dist;
  ret.RST.d0_inter=d0_inter;
 

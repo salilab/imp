@@ -26,6 +26,7 @@ IMP_NEW(RestraintSet,rset,());
 FloatRange z_range = FloatRange(-RST->zeta,RST->zeta);
 FloatRange tilt_range = FloatRange(0.0,RST->tilt);
 double kappa=RST->kappa;
+double kappa2=RST->kappa2;
 
 // single-body restraints
 for(int i=0;i<TM->num;++i){
@@ -33,8 +34,8 @@ for(int i=0;i<TM->num;++i){
  s.set_molecule(TM->name[i]);
  core::RigidBody rb=
  core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
- add_depth_restraint(m,rb,z_range,kappa);
- add_tilt_restraint(m,rb,tilt_range,kappa);
+ add_depth_restraint(m,rb,z_range,kappa2);
+ add_tilt_restraint(m,rb,tilt_range,kappa2);
 }
 
 // multi-body restraints
