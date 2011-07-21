@@ -12,7 +12,7 @@
 #include <boost/graph/copy.hpp>
 #include <boost/pending/indirect_cmp.hpp>
 #include <boost/progress.hpp>
-
+#include <boost/scoped_ptr.hpp>
 
 IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 void load_merged_assignments(const Subset &first_subset,
