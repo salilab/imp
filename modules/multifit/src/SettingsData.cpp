@@ -11,7 +11,7 @@
 IMPMULTIFIT_BEGIN_NAMESPACE
 
 IMP_LIST_IMPL(SettingsData, ComponentHeader, component_header,
-              ComponentHeader*, ComponentHeaders);
+              ComponentHeader*, ComponentHeaders,{},{},{});
 
 namespace {
   std::string join_path(const std::string &path, const std::string &name)
