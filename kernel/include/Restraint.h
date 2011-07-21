@@ -168,6 +168,12 @@ private:
 
   double weight_;
   double max_;
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+ public:
+  // data cached by the model
+  mutable Ints model_dependencies_;
+  mutable double model_weight_;
+#endif
 };
 
 IMP_END_NAMESPACE

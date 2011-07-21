@@ -18,7 +18,8 @@
 IMP_BEGIN_NAMESPACE
 
 Restraint::Restraint(std::string name):
-  Object(name), weight_(1), max_(std::numeric_limits<double>::max())
+  Object(name), weight_(1), max_(std::numeric_limits<double>::max()),
+  model_weight_(0)
 {
 }
 
@@ -34,15 +35,13 @@ void Restraint::set_model(Model* model)
 }
 
 namespace {
-  void fill_restraints_and_weights(RestraintsTemp &restraints,
-                                   std::vector<double> &weights,
-                                   const Restraint *me) {
+  void fill_restraints(RestraintsTemp &restraints,
+                       const Restraint *me) {
     if (dynamic_cast<const RestraintSet*>(me)) {
-      boost::tie(restraints, weights)=
-        get_restraints_and_weights(dynamic_cast<const RestraintSet*>(me));
+      restraints=
+        get_restraints(dynamic_cast<const RestraintSet*>(me));
     } else {
       restraints.push_back(const_cast<Restraint*>(me));
-      weights.push_back(restraints.back()->get_weight());
     }
     if (restraints.size() >1) {
       IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
@@ -65,9 +64,8 @@ namespace {
 double Restraint::evaluate(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   RestraintsTemp restraints;
-  std::vector<double> weights;
-  fill_restraints_and_weights(restraints, weights, this);
-  Floats ret= get_model()->evaluate(restraints, weights, calc_derivs);
+  fill_restraints(restraints, this);
+  Floats ret= get_model()->evaluate(restraints, calc_derivs);
   return finish(ret, this);
 }
 
@@ -75,9 +73,8 @@ double Restraint::evaluate(bool calc_derivs) const {
 double Restraint::evaluate_if_good(bool calc_derivs) const {
   IMP_OBJECT_LOG;
   RestraintsTemp restraints;
-  std::vector<double> weights;
-  fill_restraints_and_weights(restraints, weights, this);
-  Floats ret= get_model()->evaluate_if_good(restraints, weights, calc_derivs);
+  fill_restraints(restraints, this);
+  Floats ret= get_model()->evaluate_if_good(restraints, calc_derivs);
   return finish(ret, this);
 }
 

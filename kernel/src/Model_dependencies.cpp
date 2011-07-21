@@ -415,13 +415,11 @@ namespace {
   void
   compute_restraint_dependencies(const DependencyGraph &dg,
                                  const RestraintsTemp &ordered_restraints,
-                                 const ScoreStatesTemp &ordered_score_states,
-                                 std::vector<Ints >&bs) {
+                                 const ScoreStatesTemp &ordered_score_states) {
     compatibility::map<Object *, int> ssindex;
     for (unsigned int i=0; i < ordered_score_states.size(); ++i) {
       ssindex[ordered_score_states[i]]=i;
     }
-    bs.resize(ordered_restraints.size());
     compatibility::map<Object*, int> index= get_index(dg);
     MDGConstVertexMap om= boost::get(boost::vertex_name, dg);
     for (unsigned int i=0; i< ordered_restraints.size(); ++i) {
@@ -433,21 +431,20 @@ namespace {
       IMP_USAGE_CHECK(ordered_restraints[i]
                       == om[index.find(ordered_restraints[i])->second],
                       "Restraints and vertices don't match");
+      Ints cur;
       boost::depth_first_visit(boost::make_reverse_graph(dg),
                                index.find(ordered_restraints[i])->second,
-                               ScoreDependencies(bs[i], ssindex, om),
+                               ScoreDependencies(cur, ssindex, om),
                                color);
-      std::sort(bs[i].begin(), bs[i].end());
-      bs[i].erase(std::unique(bs[i].begin(), bs[i].end()), bs[i].end());
+      std::sort(cur.begin(), cur.end());
+      cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
+      ordered_restraints[i]->model_dependencies_=cur;
     }
   }
 }
 
 
 void Model::reset_dependencies() {
-  restraint_index_.clear();
-  restraint_dependencies_.clear();
-  restraint_weights_.clear();
   ordered_restraints_.clear();
   ordered_score_states_.clear();
   first_call_=true;
@@ -456,15 +453,16 @@ void Model::reset_dependencies() {
 void Model::compute_dependencies() const {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
+  std::vector<double> weights;
   boost::tie(ordered_restraints_,
-             restraint_weights_)
+             weights)
     = get_restraints_and_weights(restraints_begin(),
                                  restraints_end());
   for (unsigned int i=0; i< ordered_restraints_.size(); ++i) {
-    restraint_index_[ordered_restraints_[i]]= i;
+    ordered_restraints_[i]->model_weight_= weights[i];
   }
   ScoreStates score_states= access_score_states();
-  IMP_LOG(VERBOSE, "Making dependency graph on " << restraint_weights_.size()
+  IMP_LOG(VERBOSE, "Making dependency graph on " << weights.size()
           << " restraints " << score_states.size() << " score states "
           << " and " << get_number_of_particles()
           << " particles." << std::endl);
@@ -473,19 +471,9 @@ void Model::compute_dependencies() const {
   //internal::show_as_graphviz(boost::make_reverse_graph(dg), std::cout);
   order_score_states(dg, ordered_score_states_);
   compute_restraint_dependencies(dg, ordered_restraints_,
-                                 ordered_score_states_,
-                                 restraint_dependencies_);
+                                 ordered_score_states_);
   IMP_LOG(VERBOSE, "Ordered score states are "
           << ScoreStates(ordered_score_states_) << std::endl);
-  IMP_INTERNAL_CHECK(restraint_dependencies_.size()
-                     ==ordered_restraints_.size(),
-                     "Dependencies do not match ordered restraints "
-                     << restraint_dependencies_.size() << " "
-                     << ordered_restraints_.size());
-  IMP_INTERNAL_CHECK(restraint_index_.size() ==ordered_restraints_.size(),
-                     "Indexes do not match ordered restraints "
-                     << restraint_index_.size() << " "
-                     << ordered_restraints_.size());
 }
 
 
@@ -507,24 +495,23 @@ Model::get_score_states(const RestraintsTemp &restraints) const {
                     "Restraint must be added to model: "
                     << restraints[i]->get_name());
     // weight 0
-    if (restraint_index_.find(restraints[i])
-        == restraint_index_.end()) {
+    if (restraints[i]->model_weight_==0) {
       IMP_LOG(VERBOSE, "Restraint " << restraints[i]->get_name()
               << " has weight 0" << std::endl);
     }
-    int index=restraint_index_.find(restraints[i])->second;
     IMP_IF_LOG(VERBOSE) {
       IMP_LOG(VERBOSE, restraints[i]->get_name() << " depends on ");
-      for (unsigned int i=0; i< restraint_dependencies_[index].size(); ++i) {
+      for (unsigned int j=0; j< restraints[i]->model_dependencies_.size();
+           ++j) {
         IMP_LOG(VERBOSE,
-                ordered_score_states_[restraint_dependencies_[index][i]]
+                ordered_score_states_[restraints[i]->model_dependencies_[j]]
                 ->get_name()
                 << " ");
       }
       IMP_LOG(VERBOSE, std::endl);
     }
-    bs.insert(bs.end(), restraint_dependencies_[index].begin(),
-              restraint_dependencies_[index].end());
+    bs.insert(bs.end(), restraints[i]->model_dependencies_.begin(),
+              restraints[i]->model_dependencies_.end());
   }
   std::sort(bs.begin(), bs.end());
   bs.erase(std::unique(bs.begin(), bs.end()), bs.end());
@@ -553,7 +540,6 @@ double Model::evaluate(bool calc_derivs) {
     compute_dependencies();
   }
   Floats ret= do_evaluate(ordered_restraints_,
-                     restraint_weights_,
                      ordered_score_states_,
                           calc_derivs, false, false);
   first_call_=false;
@@ -561,7 +547,6 @@ double Model::evaluate(bool calc_derivs) {
 }
 
 Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
-                                   const std::vector<double> &weights,
                                    bool calc_derivs,
                                    bool if_good, bool if_max, double max) {
   IMP_CHECK_OBJECT(this);
@@ -580,10 +565,6 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
     for (unsigned int i=0; i< restraints.size(); ++i) {
       IMP_USAGE_CHECK(!dynamic_cast<RestraintSet*>(restraints[i]),
                       "Cannot pass restraint sets to model to evaluate");
-      IMP_USAGE_CHECK(restraint_index_.find(restraints[i])
-                      != restraint_index_.end(),
-                      "You must add restraints to model before "
-                      << "asking it to evaluate them");
     }
   }
   ScoreStatesTemp ss= get_score_states(restraints);
@@ -595,7 +576,7 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
       max_scores[i]= max_scores_.find(restraints[i])->second;
     }
     }*/
-  Floats ret= do_evaluate(restraints, weights,
+  Floats ret= do_evaluate(restraints,
                           ss, calc_derivs, if_good, if_max, max);
   IMP_INTERNAL_CHECK(ret.size()== restraints.size(),
                      "The number of scores doesn't match the number of"
@@ -605,26 +586,23 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
 }
 
 Floats Model::evaluate( RestraintsTemp restraints,
-                        std::vector<double> weights,
                        bool calc_derivs)
 {
-  return do_external_evaluate(restraints, weights, calc_derivs, false, false);
+  return do_external_evaluate(restraints, calc_derivs, false, false);
 }
 
 Floats Model::evaluate_if_below( RestraintsTemp restraints,
-                                std::vector<double> weights,
                                 bool calc_derivs,
                                 double max)
 {
-  return do_external_evaluate(restraints, weights, calc_derivs, true, false,
+  return do_external_evaluate(restraints, calc_derivs, true, false,
                               max);
 }
 
 Floats Model::evaluate_if_good( RestraintsTemp restraints,
-                                std::vector<double> weights,
                                 bool calc_derivs)
 {
-  return do_external_evaluate(restraints, weights, calc_derivs, true, false,
+  return do_external_evaluate(restraints, calc_derivs, true, false,
                               get_maximum_score());
 }
 

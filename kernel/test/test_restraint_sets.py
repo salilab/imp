@@ -22,7 +22,7 @@ class RestraintSetTests(IMP.test.TestCase):
         self.assertEqual(m.evaluate(False), 2)
         rs.set_weight(1)
         self.assertEqual(m.evaluate(False), 3)
-        self.assertEqual(sum(m.evaluate_if_good([r0,r1,r2], [1,1,1], False)), 3)
+        self.assertEqual(sum(m.evaluate_if_good([r0,r1,r2], False)), 3)
         self.assertEqual(rs.evaluate(False), 2)
         self.assertEqual(m.get_root_restraint_set().evaluate(False), 3)
         self.assertEqual(m.get_root_restraint_set().get_restraint(0).evaluate(False), 2)
@@ -45,7 +45,7 @@ class RestraintSetTests(IMP.test.TestCase):
         """Test evaluate() of RestraintSets and their children"""
         (m, rs, r0, r1, r2)= self._make_stuff()
         self.assertEqual(rs.evaluate(False), 1)
-        self.assertEqual(r0.evaluate(False), 1)
+        self.assertEqual(r0.evaluate(False), .5)
     def test_evaluate_2(self):
         """Test restraints added multiple times"""
         (m, rs, r0, r1, r2)= self._make_stuff()
