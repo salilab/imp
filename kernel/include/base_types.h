@@ -120,35 +120,6 @@ template <class T>
 inline std::size_t hash_value(const T &t) {
   return t.__hash__();
 }
-
-template <class T>
-inline std::ostream &operator<<(std::ostream &out,
-                                const std::vector<T> &data) {
-  out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i];
-  }
-  out << "]";
-  return out;
-}
-
-
-template <class T>
-inline std::ostream &operator<<(std::ostream &out,
-                                const std::vector<T*> &data) {
-  out << "[";
-  for (unsigned int i=0; i< data.size(); ++i) {
-    if (i != 0) {
-      out << ", ";
-    }
-    out << data[i]->get_name();
-  }
-  out << "]";
-  return out;
-}
 #endif
 
 IMP_END_NAMESPACE

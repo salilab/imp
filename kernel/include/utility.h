@@ -14,6 +14,8 @@
 #include <boost/utility.hpp>
 #include <algorithm>
 #include <cmath>
+#include <vector>
+#include <iostream>
 #include "macros.h"
 
 #if !defined(_GLIBCXX_USE_C99_MATH) && BOOST_VERSION >= 103500
@@ -78,6 +80,30 @@ inline int compare(const T &a, const T &b) {
   return a.compare(b);
 }
 #endif
+
+/** Convert between different types of lists.
+ */
+template <class Out, class In>
+inline Out get_as(const In &in) {
+  return Out(in.begin(), in.end());
+}
+
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class T>
+std::ostream &operator<<(std::ostream &out,
+                         const std::vector<T> &data) {
+  out << "[";
+  for (unsigned int i=0; i< data.size(); ++i) {
+    if (i != 0) {
+      out << ", ";
+    }
+    out << data[i];
+  }
+  out << "]";
+  return out;
+}
+#endif
+
 
 IMP_END_NAMESPACE
 
