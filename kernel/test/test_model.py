@@ -209,13 +209,13 @@ class ModelTests(IMP.test.TestCase):
         for r in rs:
             m.add_restraint(r)
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        IMP.show_graphviz(dg)
+        #IMP.show_graphviz(dg)
         for r in rs:
             print "now restraint",r
             rcsl=IMP.get_required_score_states([r])
             rcs= set(rcsl)
             rdg= IMP.get_dependency_graph([r])
-            IMP.show_graphviz(rdg)
+            #IMP.show_graphviz(rdg)
             ccsl=[]
             for n in rdg.get_vertices():
                 nn= rdg.get_vertex_name(n)

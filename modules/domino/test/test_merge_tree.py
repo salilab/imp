@@ -16,11 +16,11 @@ class DOMINOTests(IMP.test.TestCase):
         vs= jt.get_vertices()
         for i in range(1,10):
             jt.add_edge(i-1,i)
-        IMP.show_graphviz(jt)
+        #IMP.show_graphviz(jt)
         print jt
         print type(jt)
         mbt= IMP.domino.get_balanced_merge_tree(jt)
-        IMP.show_graphviz(mbt)
+        #IMP.show_graphviz(mbt)
 
 if __name__ == '__main__':
     IMP.test.main()
