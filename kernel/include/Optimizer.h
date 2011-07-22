@@ -182,18 +182,18 @@ class IMPEXPORT Optimizer: public Object
   //!@}
 
   double width(FloatKey k) const {
-    if (!widths_.fits(k.get_index())
-        || !FloatTable::Traits::get_is_valid(widths_.get(k.get_index())) ) {
+    if (widths_.size() <=k.get_index() || widths_[k.get_index()]==0) {
       FloatRange w= model_->get_range(k);
       double wid=static_cast<double>(w.second)- w.first;
+      widths_.resize(std::max(widths_.size(), size_t(k.get_index()+1)), 0.0);
       if (wid > .0001) {
         //double nwid= std::pow(2, std::ceil(log2(wid)));
-        widths_.add(k.get_index(), wid);
+        widths_[k.get_index()]= wid;
       } else {
-        widths_.add(k.get_index(), 1);
+        widths_[k.get_index()]= 1.0;
       }
     }
-    return widths_.get(k.get_index());
+    return widths_[k.get_index()];
     //return 1.0;
   }
 
@@ -235,9 +235,7 @@ class IMPEXPORT Optimizer: public Object
  private:
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
 
-  typedef internal::VectorStorage<internal::FloatAttributeTableTraits>
-    FloatTable;
-  mutable FloatTable widths_;
+  mutable std::vector<double> widths_;
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;

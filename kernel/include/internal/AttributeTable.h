@@ -12,8 +12,6 @@
 #include "../utility.h"
 #include "../log.h"
 #include "../Pointer.h"
-#include "../macros.h"
-#include "attribute_storage.h"
 #include <boost/dynamic_bitset.hpp>
 
 #include <limits>
