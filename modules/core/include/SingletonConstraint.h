@@ -14,6 +14,7 @@
 
 #include "core_config.h"
 #include <IMP/SingletonModifier.h>
+#include <IMP/SingletonDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 

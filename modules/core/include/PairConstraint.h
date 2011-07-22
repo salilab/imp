@@ -14,6 +14,7 @@
 
 #include "core_config.h"
 #include <IMP/PairModifier.h>
+#include <IMP/PairDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 

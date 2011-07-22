@@ -14,6 +14,7 @@
 
 #include "core_config.h"
 #include <IMP/CLASSNAMEModifier.h>
+#include <IMP/CLASSNAMEDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
