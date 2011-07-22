@@ -534,7 +534,7 @@ private:
 
   Ints free_particles_;
   unsigned int next_particle_;
-  Particles particle_index_;
+  std::vector<Pointer<Particle> > particle_index_;
 
  private:
   // statistics
@@ -855,18 +855,19 @@ public:
   class ParticleIterator;
 #else
   struct NotNull{
-    bool operator()(Object*p) {
+    bool operator()(const Pointer<Particle>& p) {
       return p;
     }
   };
-  typedef boost::filter_iterator<NotNull, Particles::iterator> ParticleIterator;
+  typedef boost::filter_iterator<NotNull,
+      std::vector<Pointer<Particle> >::const_iterator> ParticleIterator;
 
 #endif
-  ParticleIterator particles_begin() {
+  ParticleIterator particles_begin() const {
     return ParticleIterator(NotNull(), particle_index_.begin(),
                             particle_index_.end());
   }
-  ParticleIterator particles_end() {
+  ParticleIterator particles_end() const {
     return ParticleIterator(NotNull(), particle_index_.end(),
                             particle_index_.end());
 }

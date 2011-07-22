@@ -98,13 +98,8 @@ double Model::get_weight(Restraint *r) const {
 
 
 ParticlesTemp Model::get_particles() const {
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< particle_index_.size(); ++i) {
-    if (particle_index_[i]) {
-      ret.push_back(dynamic_cast<Particle*>(particle_index_[i]));
-    }
-  }
-  return ret;
+  return ParticlesTemp(particles_begin(),
+                       particles_end());
 }
 
 
