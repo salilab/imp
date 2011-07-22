@@ -13,7 +13,7 @@
 #include "XYZ.h"
 #include <IMP/Refiner.h>
 #include <IMP/Pointer.h>
-#include <IMP/SingletonModifier.h>
+#include <IMP/SingletonDerivativeModifier.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
