@@ -59,7 +59,7 @@ void test_one(std::string name,
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_in(bb));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+            result+=get_val(m->evaluate_if_good(rs, false)[0]);
           } else {
             result+=get_val(m->evaluate(false));
           }
@@ -78,7 +78,7 @@ void test_one(std::string name,
           to_move.set_x(100.0*static_cast<double>(i)/nreps);
           if (eig) {
             result+=get_val(m->evaluate_if_good(rs,
-                                           weights, false)[0]);
+                                                false)[0]);
           } else {
             result+=get_val(m->evaluate(false));
           }
@@ -96,7 +96,7 @@ void test_one(std::string name,
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+            result+=get_val(m->evaluate_if_good(rs, false)[0]);
           } else {
             result+=get_val(m->evaluate(false));
           }
@@ -114,7 +114,7 @@ void test_one(std::string name,
         for (unsigned int i=0; i< nreps; ++i) {
           to_move.set_coordinates(IMP::algebra::get_random_vector_on(s));
           if (eig) {
-            result+=get_val(m->evaluate_if_good(rs, weights, false)[0]);
+            result+=get_val(m->evaluate_if_good(rs, false)[0]);
           } else {
             result+=get_val(m->evaluate(false));
           }
