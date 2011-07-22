@@ -36,6 +36,14 @@ public:
    */
   virtual bool get_contains(const ParticleQuad& p) const =0;
 
+  /** \note This function may be linear. Be aware of the complexity
+      bounds of your particular filter.
+   */
+  virtual bool get_contains(Model *m,
+                            const ParticleIndexQuad& p) const {
+    return get_contains(internal::get_particle(m,p));
+  }
+
   /** \name Interactions
       Return the set of particles used when applied to the passed
       list.

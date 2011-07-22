@@ -95,7 +95,7 @@ class IMPEXPORT CLASSNAMEContainer : public Container
     static void call_apply(const S *s, ARGUMENTTYPE a) {
     s->S::apply(a);
   }
-  static void call_apply(CLASSNAMEModifier *s, ARGUMENTTYPE a) {
+  static void call_apply(const CLASSNAMEModifier *s, ARGUMENTTYPE a) {
     s->apply(a);
   }
   template <class S>

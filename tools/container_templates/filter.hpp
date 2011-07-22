@@ -36,6 +36,14 @@ public:
    */
   virtual bool get_contains(ARGUMENTTYPE p) const =0;
 
+  /** \note This function may be linear. Be aware of the complexity
+      bounds of your particular filter.
+   */
+  virtual bool get_contains(Model *m,
+                            PASSINDEXTYPE p) const {
+    return get_contains(internal::get_particle(m,p));
+  }
+
   /** \name Interactions
       Return the set of particles used when applied to the passed
       list.

@@ -11,12 +11,7 @@
 
 #include "../base_types.h"
 #include "../Particle.h"
-#include "../SingletonScore.h"
-#include "../PairScore.h"
-#include "../SingletonContainer.h"
-#include "../PairContainer.h"
 #include "../ScoreState.h"
-#include "../scoped.h"
 #include "utility.h"
 #include <boost/bind.hpp>
 #include <boost/bind/placeholders.hpp>
@@ -155,6 +150,32 @@ inline ContainersTemp get_input_containers(S *s,
 }
 
 
+inline
+Particle* get_particle(Model *m, ParticleIndex pi) {
+  return m->get_particle(pi);
+}
+template <unsigned int D>
+ParticleTuple<D> get_particle(Model *m, const ParticleIndexTuple<D> &in) {
+  ParticleTuple<D> ret;
+  for (unsigned int i=0; i< D; ++i) {
+    ret[i]= get_particle(m, in[i]);
+  }
+  return ret;
+}
+
+inline
+ParticleIndex get_index(Particle*p) {
+  return p->get_index();
+}
+template <unsigned int D>
+ParticleIndexTuple<D> get_index(const ParticleTuple<D> &in) {
+  ParticleIndexTuple<D> ret;
+  for (unsigned int i=0; i< D; ++i) {
+    ret[i]= get_index(in[i]);
+  }
+  return ret;
+}
+
 inline Model *get_model(Particle*p) {
   return p->get_model();
 }
@@ -182,6 +203,19 @@ public:
   template <class T>
   bool operator()(const T &p) const {
     return back_->get_contains(p);
+  }
+};
+
+template <class Filter>
+class GetContainsIndex {
+  const Filter* back_;
+  Model *m_;
+public:
+  GetContainsIndex(const Filter *n,
+              Model *m): back_(n), m_(m){}
+  template <class T>
+  bool operator()(const T &p) const {
+    return back_->get_contains(m_, p);
   }
 };
 

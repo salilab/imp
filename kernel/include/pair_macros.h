@@ -13,8 +13,6 @@
 #ifndef IMP_DOXYGEN
 
 #define IMP_PAIR_SCORE_BASE(Name)                                 \
-  double evaluate(const ParticlePair& a,                                  \
-                  DerivativeAccumulator *da) const;                     \
   double evaluate(const ParticlePairsTemp &ps,                         \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
@@ -35,12 +33,28 @@
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_if_good(const ParticlePair& ps,                         \
+  double evaluate(Model *m, const ParticleIndexPairs &ps,                  \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(m, ps[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(Model *m, const ParticleIndexPairs &ps,          \
                           DerivativeAccumulator *da,                    \
-                          double ) const {                              \
-    return Name::evaluate(ps, da);                                      \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(m, ps[i], da);                          \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+
 
 #else
 #define IMP_PAIR_SCORE_BASE(Name)
@@ -57,9 +71,28 @@
     See IMP_SIMPLE_PAIR_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_PAIR_SCORE(Name)                              \
-  ParticlesTemp get_input_particles(Particle*) const;           \
-  ContainersTemp get_input_containers(Particle *) const;        \
+#define IMP_PAIR_SCORE(Name)                                      \
+  double evaluate(const ParticlePair& p,                              \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(const ParticlePair& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexPair& p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexPair& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const ;                 \
+  ContainersTemp get_input_containers(Particle *) const ;               \
   IMP_PAIR_SCORE_BASE(Name)
 
 //! Declare the functions needed for a PairScore
@@ -70,13 +103,32 @@
     which assume that only the passed particle serves as input to the
     score.
 */
-#define IMP_SIMPLE_PAIR_SCORE(Name)                       \
-  ParticlesTemp get_input_particles(Particle*p) const {         \
-    return ParticlesTemp(1,p);                                  \
-  }                                                             \
-  ContainersTemp get_input_containers(Particle *) const {       \
-    return ContainersTemp();                                    \
-  }                                                             \
+#define IMP_SIMPLE_PAIR_SCORE(Name)                               \
+  double evaluate(const ParticlePair& p,                        \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(const ParticlePair& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexPair& p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexPair& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const {                 \
+    return ParticlesTemp(1,p);                                          \
+  }                                                                     \
+  ContainersTemp get_input_containers(Particle *) const {               \
+    return ContainersTemp();                                            \
+  }                                                                     \
   IMP_PAIR_SCORE_BASE(Name)
 
 
@@ -91,32 +143,57 @@
 #define IMP_COMPOSITE_PAIR_SCORE(Name)                            \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
-  double evaluate(const ParticlePair& p,                                  \
+  double evaluate(const ParticlePair& p,                              \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate(const ParticlePairsTemp& ps,                         \
+  double evaluate_if_good(const ParticlePair& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const;                            \
+  double evaluate(Model *m, const ParticleIndexPair& p,                     \
                   DerivativeAccumulator *da) const {                    \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(ps[i], da);                                   \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
   }                                                                     \
-  double evaluate_if_good(const ParticlePairsTemp &ps,                 \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexPair& p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const {                           \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      double cur=Name::evaluate_if_good(ps[i], da, max);                \
-      max-=cur;                                                         \
-      ret+=cur;                                                         \
-      if (max <0) break;                                                \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate_if_good(IMP::internal::get_particle(m,p),           \
+                            da, max);                                   \
   }                                                                     \
-  double evaluate_if_good( const ParticlePair& ps,                        \
+  IMP_PAIR_SCORE_BASE(Name)
+
+//! Declare the functions needed for a complex PairScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::PairScore::evaluate()
+    - IMP::PairScore::get_input_particles()
+    - IMP::PairScore::get_output_particles()
+    - IMP::PairScore::evaluate_if_good
+*/
+#define IMP_INDEX_PAIR_SCORE(Name)                                \
+  ParticlesTemp get_input_particles(Particle *p) const;                 \
+  ContainersTemp get_input_containers(Particle *p) const;               \
+  double evaluate(const ParticlePair& p,                             \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_model(p),                        \
+                  IMP::internal::get_index(p),                          \
+                  da);                                                  \
+  }                                                                     \
+  double evaluate_if_good(const ParticlePair& p,                     \
                           DerivativeAccumulator *da,                    \
-                          double ) const;                               \
-  IMP_OBJECT(Name)
+                          double max) const{                            \
+    return evaluate_if_good(IMP::internal::get_model(p),                \
+                            IMP::internal::get_index(p),                \
+                            da, max);                                   \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexPair& p,                   \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexPair& p,                      \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  IMP_PAIR_SCORE_BASE(Name)
 
 
 
@@ -134,6 +211,14 @@
   void apply(const ParticlePairsTemp &ps) const {                      \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
+    }                                                                   \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexPair& a) const {            \
+    return Name::apply(get_particle(m,a));                              \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexPairs &ps) const {               \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i]);                                            \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
@@ -154,6 +239,16 @@
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i], da);                                           \
+    }                                                                   \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexPair& a,\
+             DerivativeAccumulator&da) const {                          \
+    return Name::apply(get_particle(m,a), da);                          \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexPairs &ps,                       \
+             DerivativeAccumulator&da) const {                          \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i], da);                                        \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
@@ -219,6 +314,9 @@
 #define IMP_PAIR_FILTER(Name)                                     \
 public:                                                                 \
  bool get_contains(const ParticlePair& p) const;                   \
+ bool get_contains(Model *m,const ParticleIndexPair& p) const {         \
+   return get_contains(IMP::internal::get_particle(m,p));               \
+ }                                                                      \
  ParticlesTemp get_input_particles(Particle* t) const;                  \
  ContainersTemp get_input_containers(Particle* t) const;                \
  void filter_in_place(ParticlePairsTemp &ps) const {                   \
@@ -226,10 +324,16 @@ public:                                                                 \
                            IMP::internal::GetContains<Name>(this)),     \
             ps.end());                                                  \
  }                                                                      \
+ void filter_in_place(Model *m, ParticleIndexPairs &ps) const {             \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                IMP::internal::GetContainsIndex<Name>(this, m)), \
+            ps.end());                                                  \
+ }                                                                      \
  IMP_OBJECT(Name)
 #else
 #define IMP_PAIR_FILTER(Name)                                     \
   bool get_contains(const ParticlePair& p) const;                    \
+  bool get_contains(Model *m,const ParticleIndexPair& p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \
   ContainersTemp get_input_containers(Particle*t) const;                \
   IMP_OBJECT(Name)

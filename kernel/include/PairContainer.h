@@ -95,7 +95,7 @@ class IMPEXPORT PairContainer : public Container
     static void call_apply(const S *s, const ParticlePair& a) {
     s->S::apply(a);
   }
-  static void call_apply(PairModifier *s, const ParticlePair& a) {
+  static void call_apply(const PairModifier *s, const ParticlePair& a) {
     s->apply(a);
   }
   template <class S>
