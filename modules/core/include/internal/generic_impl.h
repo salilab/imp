@@ -175,7 +175,7 @@ ParticlesTemp TupleConstraint<Before, After>::get_output_particles() const {
 
 template <class Before, class After>
 void TupleConstraint<Before, After>::do_show(std::ostream &out) const {
-  out << "on " << IMP::internal::streamable(v_).get_name() << std::endl;
+  out << "on " << IMP::internal::streamable(v_) << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
   if (af_) out << "after " << *af_ << std::endl;
 }
