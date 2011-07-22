@@ -14,6 +14,7 @@
 #include "DerivativeAccumulator.h"
 #include "base_types.h"
 #include "ParticleTuple.h"
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 // to keep swig happy
@@ -35,15 +36,25 @@ public:
   PairModifier(std::string name="PairModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(const ParticlePair&) const {
-    IMP_FAILURE("This PairModifier must be called with a"
-                << " DerivativeAccumulator.");
+  virtual void apply(const ParticlePair&) const =0;
+
+  /** Apply the function to a collection of ParticlePairsTemp */
+  virtual void apply(const ParticlePairsTemp &o) const {
+    for (unsigned int i=0; i < o.size(); ++i) {
+      apply(o[i]);
+    }
+  }
+
+ /** Apply the function to a single value*/
+  virtual void apply(Model *m, const ParticleIndexPair& v) const {
+    apply(internal::get_particle(m, v));
   }
 
   /** Apply the function to a collection of ParticlePairsTemp */
-  virtual void apply(const ParticlePairsTemp &) const {
-    IMP_FAILURE("This PairModifier must be called with a"
-                << " DerivativeAccumulator.");
+  virtual void apply(Model *m, const ParticleIndexPairs &o) const {
+    for (unsigned int i=0; i < o.size(); ++i) {
+      apply(m, o[i]);
+    }
   }
 
   /** Get the set of particles read when applied to the arguments.*/

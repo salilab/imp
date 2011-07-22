@@ -95,7 +95,7 @@ class IMPEXPORT QuadContainer : public Container
     static void call_apply(const S *s, const ParticleQuad& a) {
     s->S::apply(a);
   }
-  static void call_apply(QuadModifier *s, const ParticleQuad& a) {
+  static void call_apply(const QuadModifier *s, const ParticleQuad& a) {
     s->apply(a);
   }
   template <class S>

@@ -140,4 +140,16 @@ void SoftSpherePairScore::do_show(std::ostream &out) const {
   out << "k=" << k_ << std::endl;
 }
 
+ParticlesTemp SoftSpherePairScore
+::get_input_particles(Particle*p) const {
+  return ParticlesTemp(1, p);
+}
+
+ContainersTemp SoftSpherePairScore
+::get_input_containers(Particle*) const {
+  return ContainersTemp();
+}
+
+
+
 IMPCORE_END_NAMESPACE

@@ -14,6 +14,7 @@
 #include "base_types.h"
 #include "ParticleTuple.h"
 #include "DerivativeAccumulator.h"
+#include "internal/container_helpers.h"
 
 IMP_BEGIN_NAMESPACE
 
@@ -66,6 +67,54 @@ class IMPEXPORT TripletScore : public Object
     double ret=0;
     for (unsigned int i=0; i< o.size(); ++i) {
       double cur= evaluate(o[i], da);
+      max-=cur;
+      ret+=cur;
+      if (max<0) break;
+    }
+    return ret;
+  }
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate(Model *m, const ParticleIndexTriplet& vt,
+                          DerivativeAccumulator *da) const {
+    return evaluate(internal::get_particle(m, vt), da);
+  }
+
+  /** Implementations
+      for these are provided by the IMP_TRIPLET_SCORE()
+      macro.
+  */
+  virtual double evaluate(Model *m,
+                          const ParticleIndexTriplets &o,
+                          DerivativeAccumulator *da) const {
+    double ret=0;
+    for (unsigned int i=0; i< o.size(); ++i) {
+      ret+= evaluate(m, o[i], da);
+    }
+    return ret;
+  }
+
+
+  //! Compute the score and the derivative if needed.
+  virtual double evaluate_if_good(Model *m, const ParticleIndexTriplet& vt,
+                                  DerivativeAccumulator *da,
+                                  double max) const {
+    IMP_UNUSED(max);
+    return evaluate(m, vt, da);
+  }
+
+  /** Implementations
+      for these are provided by the IMP_TRIPLET_SCORE()
+      macro.
+  */
+  virtual double evaluate_if_good(Model *m,
+                                  const ParticleIndexTriplets &o,
+                                  DerivativeAccumulator *da,
+                                  double max) const {
+    double ret=0;
+    for (unsigned int i=0; i< o.size(); ++i) {
+      double cur= evaluate(m, o[i], da);
       max-=cur;
       ret+=cur;
       if (max<0) break;

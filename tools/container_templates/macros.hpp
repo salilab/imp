@@ -13,8 +13,6 @@
 #ifndef IMP_DOXYGEN
 
 #define IMP_HEADERNAME_SCORE_BASE(Name)                                 \
-  double evaluate(ARGUMENTTYPE a,                                  \
-                  DerivativeAccumulator *da) const;                     \
   double evaluate(const PLURALVARIABLETYPE &ps,                         \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
@@ -35,12 +33,28 @@
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_if_good(ARGUMENTTYPE ps,                         \
+  double evaluate(Model *m, const PLURALINDEXTYPE &ps,                  \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(m, ps[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(Model *m, const PLURALINDEXTYPE &ps,          \
                           DerivativeAccumulator *da,                    \
-                          double ) const {                              \
-    return Name::evaluate(ps, da);                                      \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(m, ps[i], da);                          \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+
 
 #else
 #define IMP_HEADERNAME_SCORE_BASE(Name)
@@ -57,9 +71,28 @@
     See IMP_SIMPLE_HEADERNAME_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_HEADERNAME_SCORE(Name)                              \
-  ParticlesTemp get_input_particles(Particle*) const;           \
-  ContainersTemp get_input_containers(Particle *) const;        \
+#define IMP_HEADERNAME_SCORE(Name)                                      \
+  double evaluate(ARGUMENTTYPE p,                              \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(ARGUMENTTYPE p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, PASSINDEXTYPE p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          PASSINDEXTYPE p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const ;                 \
+  ContainersTemp get_input_containers(Particle *) const ;               \
   IMP_HEADERNAME_SCORE_BASE(Name)
 
 //! Declare the functions needed for a CLASSNAMEScore
@@ -70,13 +103,32 @@
     which assume that only the passed particle serves as input to the
     score.
 */
-#define IMP_SIMPLE_HEADERNAME_SCORE(Name)                       \
-  ParticlesTemp get_input_particles(Particle*p) const {         \
-    return ParticlesTemp(1,p);                                  \
-  }                                                             \
-  ContainersTemp get_input_containers(Particle *) const {       \
-    return ContainersTemp();                                    \
-  }                                                             \
+#define IMP_SIMPLE_HEADERNAME_SCORE(Name)                               \
+  double evaluate(ARGUMENTTYPE p,                        \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(ARGUMENTTYPE p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, PASSINDEXTYPE p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          PASSINDEXTYPE p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const {                 \
+    return ParticlesTemp(1,p);                                          \
+  }                                                                     \
+  ContainersTemp get_input_containers(Particle *) const {               \
+    return ContainersTemp();                                            \
+  }                                                                     \
   IMP_HEADERNAME_SCORE_BASE(Name)
 
 
@@ -91,32 +143,57 @@
 #define IMP_COMPOSITE_HEADERNAME_SCORE(Name)                            \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
-  double evaluate(ARGUMENTTYPE p,                                  \
+  double evaluate(ARGUMENTTYPE p,                              \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate(const PLURALVARIABLETYPE& ps,                         \
+  double evaluate_if_good(ARGUMENTTYPE p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const;                            \
+  double evaluate(Model *m, PASSINDEXTYPE p,                     \
                   DerivativeAccumulator *da) const {                    \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(ps[i], da);                                   \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
   }                                                                     \
-  double evaluate_if_good(const PLURALVARIABLETYPE &ps,                 \
+  double evaluate_if_good(Model *m,                                     \
+                          PASSINDEXTYPE p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const {                           \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      double cur=Name::evaluate_if_good(ps[i], da, max);                \
-      max-=cur;                                                         \
-      ret+=cur;                                                         \
-      if (max <0) break;                                                \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate_if_good(IMP::internal::get_particle(m,p),           \
+                            da, max);                                   \
   }                                                                     \
-  double evaluate_if_good( ARGUMENTTYPE ps,                        \
+  IMP_HEADERNAME_SCORE_BASE(Name)
+
+//! Declare the functions needed for a complex CLASSNAMEScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::CLASSNAMEScore::evaluate()
+    - IMP::CLASSNAMEScore::get_input_particles()
+    - IMP::CLASSNAMEScore::get_output_particles()
+    - IMP::CLASSNAMEScore::evaluate_if_good
+*/
+#define IMP_INDEX_HEADERNAME_SCORE(Name)                                \
+  ParticlesTemp get_input_particles(Particle *p) const;                 \
+  ContainersTemp get_input_containers(Particle *p) const;               \
+  double evaluate(ARGUMENTTYPE p,                             \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_model(p),                        \
+                  IMP::internal::get_index(p),                          \
+                  da);                                                  \
+  }                                                                     \
+  double evaluate_if_good(ARGUMENTTYPE p,                     \
                           DerivativeAccumulator *da,                    \
-                          double ) const;                               \
-  IMP_OBJECT(Name)
+                          double max) const{                            \
+    return evaluate_if_good(IMP::internal::get_model(p),                \
+                            IMP::internal::get_index(p),                \
+                            da, max);                                   \
+  }                                                                     \
+  double evaluate(Model *m, PASSINDEXTYPE p,                   \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(Model *m,                                     \
+                          PASSINDEXTYPE p,                      \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  IMP_HEADERNAME_SCORE_BASE(Name)
 
 
 
@@ -136,7 +213,7 @@
       Name::apply(ps[i]);                                               \
     }                                                                   \
   }                                                                     \
-  void apply(Model *m, PASSINDEXTYPE a) const {                   \
+  void apply(Model *m, PASSINDEXTYPE a) const {            \
     return Name::apply(get_particle(m,a));                              \
   }                                                                     \
   void apply(Model *m, const PLURALINDEXTYPE &ps) const {               \
@@ -169,7 +246,7 @@
     return Name::apply(get_particle(m,a), da);                          \
   }                                                                     \
   void apply(Model *m, const PLURALINDEXTYPE &ps,                       \
-             , DerivativeAccumulator&da) const {                        \
+             DerivativeAccumulator&da) const {                          \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(m, ps[i], da);                                        \
     }                                                                   \
@@ -237,6 +314,9 @@
 #define IMP_HEADERNAME_FILTER(Name)                                     \
 public:                                                                 \
  bool get_contains(ARGUMENTTYPE p) const;                   \
+ bool get_contains(Model *m,PASSINDEXTYPE p) const {         \
+   return get_contains(IMP::internal::get_particle(m,p));               \
+ }                                                                      \
  ParticlesTemp get_input_particles(Particle* t) const;                  \
  ContainersTemp get_input_containers(Particle* t) const;                \
  void filter_in_place(PLURALVARIABLETYPE &ps) const {                   \
@@ -244,10 +324,16 @@ public:                                                                 \
                            IMP::internal::GetContains<Name>(this)),     \
             ps.end());                                                  \
  }                                                                      \
+ void filter_in_place(Model *m, PLURALINDEXTYPE &ps) const {             \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                IMP::internal::GetContainsIndex<Name>(this, m)), \
+            ps.end());                                                  \
+ }                                                                      \
  IMP_OBJECT(Name)
 #else
 #define IMP_HEADERNAME_FILTER(Name)                                     \
   bool get_contains(ARGUMENTTYPE p) const;                    \
+  bool get_contains(Model *m,PASSINDEXTYPE p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \
   ContainersTemp get_input_containers(Particle*t) const;                \
   IMP_OBJECT(Name)

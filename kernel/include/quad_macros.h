@@ -13,8 +13,6 @@
 #ifndef IMP_DOXYGEN
 
 #define IMP_QUAD_SCORE_BASE(Name)                                 \
-  double evaluate(const ParticleQuad& a,                                  \
-                  DerivativeAccumulator *da) const;                     \
   double evaluate(const ParticleQuadsTemp &ps,                         \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
@@ -35,12 +33,28 @@
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_if_good(const ParticleQuad& ps,                         \
+  double evaluate(Model *m, const ParticleIndexQuads &ps,                  \
+                  DerivativeAccumulator *da) const {                    \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      ret+=Name::evaluate(m, ps[i], da);                                \
+    }                                                                   \
+    return ret;                                                         \
+  }                                                                     \
+  double evaluate_if_good(Model *m, const ParticleIndexQuads &ps,          \
                           DerivativeAccumulator *da,                    \
-                          double ) const {                              \
-    return Name::evaluate(ps, da);                                      \
+                          double max) const {                           \
+    double ret=0;                                                       \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      double cur=Name::evaluate(m, ps[i], da);                          \
+      max-=cur;                                                         \
+      ret+=cur;                                                         \
+      if (max <0) break;                                                \
+    }                                                                   \
+    return ret;                                                         \
   }                                                                     \
   IMP_OBJECT(Name)
+
 
 #else
 #define IMP_QUAD_SCORE_BASE(Name)
@@ -57,9 +71,28 @@
     See IMP_SIMPLE_QUAD_SCORE() for a way of providing an
     implementation of that method.
 */
-#define IMP_QUAD_SCORE(Name)                              \
-  ParticlesTemp get_input_particles(Particle*) const;           \
-  ContainersTemp get_input_containers(Particle *) const;        \
+#define IMP_QUAD_SCORE(Name)                                      \
+  double evaluate(const ParticleQuad& p,                              \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(const ParticleQuad& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexQuad& p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexQuad& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const ;                 \
+  ContainersTemp get_input_containers(Particle *) const ;               \
   IMP_QUAD_SCORE_BASE(Name)
 
 //! Declare the functions needed for a QuadScore
@@ -70,13 +103,32 @@
     which assume that only the passed particle serves as input to the
     score.
 */
-#define IMP_SIMPLE_QUAD_SCORE(Name)                       \
-  ParticlesTemp get_input_particles(Particle*p) const {         \
-    return ParticlesTemp(1,p);                                  \
-  }                                                             \
-  ContainersTemp get_input_containers(Particle *) const {       \
-    return ContainersTemp();                                    \
-  }                                                             \
+#define IMP_SIMPLE_QUAD_SCORE(Name)                               \
+  double evaluate(const ParticleQuad& p,                        \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(const ParticleQuad& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(p, da);                                             \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexQuad& p,                     \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
+  }                                                                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexQuad& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const{                            \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  ParticlesTemp get_input_particles(Particle*p) const {                 \
+    return ParticlesTemp(1,p);                                          \
+  }                                                                     \
+  ContainersTemp get_input_containers(Particle *) const {               \
+    return ContainersTemp();                                            \
+  }                                                                     \
   IMP_QUAD_SCORE_BASE(Name)
 
 
@@ -91,32 +143,57 @@
 #define IMP_COMPOSITE_QUAD_SCORE(Name)                            \
   ParticlesTemp get_input_particles(Particle *p) const;                 \
   ContainersTemp get_input_containers(Particle *p) const;               \
-  double evaluate(const ParticleQuad& p,                                  \
+  double evaluate(const ParticleQuad& p,                              \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate(const ParticleQuadsTemp& ps,                         \
+  double evaluate_if_good(const ParticleQuad& p,                       \
+                          DerivativeAccumulator *da,                    \
+                          double max) const;                            \
+  double evaluate(Model *m, const ParticleIndexQuad& p,                     \
                   DerivativeAccumulator *da) const {                    \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(ps[i], da);                                   \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate(IMP::internal::get_particle(m,p), da);              \
   }                                                                     \
-  double evaluate_if_good(const ParticleQuadsTemp &ps,                 \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexQuad& p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const {                           \
-    double ret=0;                                                       \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      double cur=Name::evaluate_if_good(ps[i], da, max);                \
-      max-=cur;                                                         \
-      ret+=cur;                                                         \
-      if (max <0) break;                                                \
-    }                                                                   \
-    return ret;                                                         \
+    return evaluate_if_good(IMP::internal::get_particle(m,p),           \
+                            da, max);                                   \
   }                                                                     \
-  double evaluate_if_good( const ParticleQuad& ps,                        \
+  IMP_QUAD_SCORE_BASE(Name)
+
+//! Declare the functions needed for a complex QuadScore
+/** In addition to the methods done by IMP_OBJECT(), it declares
+    - IMP::QuadScore::evaluate()
+    - IMP::QuadScore::get_input_particles()
+    - IMP::QuadScore::get_output_particles()
+    - IMP::QuadScore::evaluate_if_good
+*/
+#define IMP_INDEX_QUAD_SCORE(Name)                                \
+  ParticlesTemp get_input_particles(Particle *p) const;                 \
+  ContainersTemp get_input_containers(Particle *p) const;               \
+  double evaluate(const ParticleQuad& p,                             \
+                  DerivativeAccumulator *da) const {                    \
+    return evaluate(IMP::internal::get_model(p),                        \
+                  IMP::internal::get_index(p),                          \
+                  da);                                                  \
+  }                                                                     \
+  double evaluate_if_good(const ParticleQuad& p,                     \
                           DerivativeAccumulator *da,                    \
-                          double ) const;                               \
-  IMP_OBJECT(Name)
+                          double max) const{                            \
+    return evaluate_if_good(IMP::internal::get_model(p),                \
+                            IMP::internal::get_index(p),                \
+                            da, max);                                   \
+  }                                                                     \
+  double evaluate(Model *m, const ParticleIndexQuad& p,                   \
+                  DerivativeAccumulator *da) const;                     \
+  double evaluate_if_good(Model *m,                                     \
+                          const ParticleIndexQuad& p,                      \
+                          DerivativeAccumulator *da,                    \
+                          double max) const {                           \
+    IMP_UNUSED(max);                                                    \
+    return evaluate(m, p, da);                                          \
+  }                                                                     \
+  IMP_QUAD_SCORE_BASE(Name)
 
 
 
@@ -134,6 +211,14 @@
   void apply(const ParticleQuadsTemp &ps) const {                      \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
+    }                                                                   \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexQuad& a) const {            \
+    return Name::apply(get_particle(m,a));                              \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexQuads &ps) const {               \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i]);                                            \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
@@ -154,6 +239,16 @@
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i], da);                                           \
+    }                                                                   \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexQuad& a,\
+             DerivativeAccumulator&da) const {                          \
+    return Name::apply(get_particle(m,a), da);                          \
+  }                                                                     \
+  void apply(Model *m, const ParticleIndexQuads &ps,                       \
+             DerivativeAccumulator&da) const {                          \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i], da);                                        \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
@@ -219,6 +314,9 @@
 #define IMP_QUAD_FILTER(Name)                                     \
 public:                                                                 \
  bool get_contains(const ParticleQuad& p) const;                   \
+ bool get_contains(Model *m,const ParticleIndexQuad& p) const {         \
+   return get_contains(IMP::internal::get_particle(m,p));               \
+ }                                                                      \
  ParticlesTemp get_input_particles(Particle* t) const;                  \
  ContainersTemp get_input_containers(Particle* t) const;                \
  void filter_in_place(ParticleQuadsTemp &ps) const {                   \
@@ -226,10 +324,16 @@ public:                                                                 \
                            IMP::internal::GetContains<Name>(this)),     \
             ps.end());                                                  \
  }                                                                      \
+ void filter_in_place(Model *m, ParticleIndexQuads &ps) const {             \
+   ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
+                IMP::internal::GetContainsIndex<Name>(this, m)), \
+            ps.end());                                                  \
+ }                                                                      \
  IMP_OBJECT(Name)
 #else
 #define IMP_QUAD_FILTER(Name)                                     \
   bool get_contains(const ParticleQuad& p) const;                    \
+  bool get_contains(Model *m,const ParticleIndexQuad& p) const;           \
   ParticlesTemp get_input_particles(Particle*t) const;                  \
   ContainersTemp get_input_containers(Particle*t) const;                \
   IMP_OBJECT(Name)

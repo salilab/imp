@@ -15,6 +15,8 @@
 #include <IMP/internal/container_helpers.h>
 #include "HELPERNAME_helpers.h"
 #include <IMP/ScoreState.h>
+#include <IMP/scoped.h>
+#include "../generic.h"
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 

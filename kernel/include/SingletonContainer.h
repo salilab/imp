@@ -95,7 +95,7 @@ class IMPEXPORT SingletonContainer : public Container
     static void call_apply(const S *s, Particle* a) {
     s->S::apply(a);
   }
-  static void call_apply(SingletonModifier *s, Particle* a) {
+  static void call_apply(const SingletonModifier *s, Particle* a) {
     s->apply(a);
   }
   template <class S>

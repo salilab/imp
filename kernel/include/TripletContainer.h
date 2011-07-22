@@ -95,7 +95,7 @@ class IMPEXPORT TripletContainer : public Container
     static void call_apply(const S *s, const ParticleTriplet& a) {
     s->S::apply(a);
   }
-  static void call_apply(TripletModifier *s, const ParticleTriplet& a) {
+  static void call_apply(const TripletModifier *s, const ParticleTriplet& a) {
     s->apply(a);
   }
   template <class S>
