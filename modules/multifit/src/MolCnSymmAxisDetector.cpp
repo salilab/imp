@@ -15,7 +15,7 @@ void MolCnSymmAxisDetector::init_from_protein(const atom::Hierarchies &mhs) {
   mhs_=mhs;
   for (atom::Hierarchies::const_iterator it = mhs_.begin();
        it != mhs_.end(); it++) {
-    core::XYZsTemp temp_ps = core::XYZsTemp(core::get_leaves(*it));
+    core::XYZs temp_ps = core::XYZs(core::get_leaves(*it));
     for(unsigned int i=0;i<temp_ps.size();i++) {
       vecs_.push_back(temp_ps[i].get_coordinates());
     }
@@ -87,11 +87,11 @@ float MolCnSymmAxisDetector::calc_symm_score(
   float rmsd2=0;
   float rmsd3=0.;
   atom::Hierarchy mh1=mhs_[0];
-  core::XYZsTemp mh1_xyz = core::XYZsTemp(core::get_leaves(mh1));
+  core::XYZs mh1_xyz = core::XYZs(core::get_leaves(mh1));
   atom::Hierarchy mh2=mhs_[mhs_.size()-1];
-  core::XYZsTemp mh2_xyz = core::XYZsTemp(core::get_leaves(mh2));
+  core::XYZs mh2_xyz = core::XYZs(core::get_leaves(mh2));
   atom::Hierarchy mh3=mhs_[1];
-  core::XYZsTemp mh3_xyz = core::XYZsTemp(core::get_leaves(mh3));
+  core::XYZs mh3_xyz = core::XYZs(core::get_leaves(mh3));
   algebra::Vector3D loc,loc2,loc3,symm_loc;
   //we use both mh2 and mh3 because sometimes the input
   //is clock wise and sometimes

@@ -58,7 +58,7 @@ void TemplateFinder::create_particles_projections(unsigned int n) {
 
   // Sphere that encloses_the_particles
   IMP_NEW(Particle, p, (my_particles_[0]->get_model(), "cover Particle") );
-  core::XYZsTemp xyzs(my_particles_);
+  core::XYZs xyzs(my_particles_);
 
   double diameter = 2 * get_enclosing_sphere(xyzs).get_radius();
 

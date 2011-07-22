@@ -197,13 +197,13 @@ void SampledDensityMap::project (const Particles &ps,
   int nx_half=header_.get_nx()/2;
   int ny_half=header_.get_ny()/2;
   int nz_half=header_.get_nz()/2;
-  core::XYZsTemp ps_xyz(ps);
+  core::XYZs ps_xyz(ps);
   float spacing = header_.get_spacing();
   int x0,y0,z0,x1,y1,z1;
   double a, b, c;
   double ab, ab1, a1b, a1b1;
 
-  for (core::XYZsTemp::const_iterator it = ps_xyz.begin();
+  for (core::XYZs::const_iterator it = ps_xyz.begin();
             it != ps_xyz.end(); it++) {
     //find the position of the protein in the density
     //assuming it is in the center

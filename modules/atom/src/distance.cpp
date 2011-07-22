@@ -124,9 +124,9 @@ double get_radius_of_gyration(const ParticlesTemp &ps) {
 
 
 RMSDCalculator::RMSDCalculator(const ParticlesTemp &ps){
-  core::XYZsTemp xyzs(ps);
+  core::XYZs xyzs(ps);
   algebra::Vector3Ds vecs;
-  for ( core::XYZsTemp::const_iterator it = xyzs.begin();
+  for ( core::XYZs::const_iterator it = xyzs.begin();
         it != xyzs.end();it++){
     vecs.push_back(it->get_coordinates());
   }

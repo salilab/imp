@@ -69,24 +69,16 @@ IMP_VALUES(HierarchyTraits, HierarchyTraitsList);
 class Hierarchy;
 
 #ifdef IMP_DOXYGEN
-/**  A type to store a collection of Hierarchy decorators.
+
+/**  A type to pass a collection of Hierarchy decorators.
 
      It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
      See \ref tempornot "when to use Temp" for details on using this type.
 */
-class GenericHierarchies: public GenericHierarchiesTemp {};
-
-/**  A type to store a collection of Hierarchy decorators.
-
-     It looks like a \c std::vector<Hierarchy> in C++ and a \c list in Python.
-     See \ref tempornot "when to use Temp" for details on using this type.
-*/
-class GenericHierarchiesTemp: public IMP::ParticlesTemp {};
+class GenericHierarchies: public IMP::ParticlesTemp {};
 
 #else
-typedef Decorators<Hierarchy, Particles> GenericHierarchies;
-typedef Decorators<Hierarchy, ParticlesTemp>
-GenericHierarchiesTemp;
+typedef Decorators<Hierarchy, ParticlesTemp> GenericHierarchies;
 #endif
 
 //! A decorator for helping deal with a hierarchy.
@@ -590,19 +582,19 @@ inline HD find_breadth_first(HD h, F f)
 
     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchiesTemp
+IMPCOREEXPORT GenericHierarchies
 get_leaves(Hierarchy mhd);
 
 //! Get all the non-leaves of the bit of hierarchy
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchiesTemp
+IMPCOREEXPORT GenericHierarchies
 get_internal(Hierarchy mhd);
 
 //! Get all the particles in the subtree
 /**     \relatesalso Hierarchy
  */
-IMPCOREEXPORT GenericHierarchiesTemp
+IMPCOREEXPORT GenericHierarchies
 get_all_descendants(Hierarchy mhd);
 
 //! Return the root of the hierarchy

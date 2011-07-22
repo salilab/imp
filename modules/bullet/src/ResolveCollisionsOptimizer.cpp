@@ -362,7 +362,7 @@ ResolveCollisionsOptimizer::ResolveCollisionsOptimizer(Model *m):
 }
 
 
-void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRsTemp &ps) {
+void ResolveCollisionsOptimizer::set_xyzrs_internal(const core::XYZRs &ps) {
   ps_=core::XYZRs(ps);
 }
 

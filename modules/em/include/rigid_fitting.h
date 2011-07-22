@@ -174,7 +174,7 @@ inline FittingSolutions local_rigid_fitting(
    bool fast=true) {
   IMP_LOG(VERBOSE,"Start: local_rigid_fitting\n");
    algebra::Vector3D rb_cen=
-     IMP::core::get_centroid(core::XYZsTemp(refiner->get_refined(p)));
+     IMP::core::get_centroid(core::XYZs(refiner->get_refined(p)));
    IMP_LOG(VERBOSE,"centroid is:"<<rb_cen<<"\n");
    return local_rigid_fitting_around_point(
      p, refiner,weight_key, dmap,

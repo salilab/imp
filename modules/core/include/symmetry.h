@@ -43,7 +43,7 @@ class IMPCOREEXPORT Reference: public Decorator
 
 IMP_OUTPUT_OPERATOR(Reference);
 
-IMP_DECORATORS(Reference,References, Particles);
+IMP_DECORATORS(Reference,References, ParticlesTemp);
 
 
 

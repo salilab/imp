@@ -98,6 +98,14 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   constituents_(constituents){
   Model *m= d.get_model();
   std::sort(constituents_.begin(), constituents_.end());
+  IMP_IF_CHECK(USAGE) {
+    for (unsigned int i=0; i< constituents_.size(); ++i) {
+      for (unsigned int j=0; j< 4; ++j) {
+        IMP_USAGE_CHECK(m->get_has_attribute(FloatKey(j), constituents_[i]),
+                        "Missing coordinates or radius");
+      }
+    }
+  }
   set_was_used(true);
   IMP_LOG(TERSE, "Building rigid body hierarchy for particle "
           << d.get_particle()->get_name()

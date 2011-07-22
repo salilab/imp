@@ -50,7 +50,7 @@ class IMPATOMEXPORT Copy: public Molecule
 
 IMP_OUTPUT_OPERATOR(Copy);
 
-IMP_DECORATORS(Copy,Copies, Particles);
+IMP_DECORATORS(Copy,Copies, ParticlesTemp);
 
 
 IMPATOM_END_NAMESPACE

@@ -531,19 +531,19 @@ void CHARMMTopology::add_sequence(std::string sequence)
 void CHARMMTopology::map_residue_topology_to_hierarchy(Hierarchy hierarchy,
                                                        ResMap &resmap) const
 {
-  HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
+  Hierarchies chains = get_by_type(hierarchy, CHAIN_TYPE);
   IMP_USAGE_CHECK(chains.size() == get_number_of_segments(),
                   "Hierarchy does not match topology");
 
   unsigned int nseg = 0;
-  for (HierarchiesTemp::iterator chainit = chains.begin();
+  for (Hierarchies::iterator chainit = chains.begin();
        chainit != chains.end(); ++chainit, ++nseg) {
     CHARMMSegmentTopology *topseg = get_segment(nseg);
-    HierarchiesTemp residues = get_by_type(*chainit, RESIDUE_TYPE);
+    Hierarchies residues = get_by_type(*chainit, RESIDUE_TYPE);
     IMP_USAGE_CHECK(residues.size() == topseg->get_number_of_residues(),
                     "Hierarchy does not match topology");
     unsigned int nres = 0;
-    for (HierarchiesTemp::iterator resit = residues.begin();
+    for (Hierarchies::iterator resit = residues.begin();
          resit != residues.end(); ++resit, ++nres) {
       resmap[topseg->get_residue(nres)] = *resit;
     }
@@ -556,8 +556,8 @@ void CHARMMTopology::add_atom_types(Hierarchy hierarchy) const
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
   for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
-    HierarchiesTemp atoms = get_by_type(it->second, ATOM_TYPE);
-    for (HierarchiesTemp::iterator atit = atoms.begin(); atit != atoms.end();
+    Hierarchies atoms = get_by_type(it->second, ATOM_TYPE);
+    for (Hierarchies::iterator atit = atoms.begin(); atit != atoms.end();
          ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
       if (!CHARMMAtom::particle_is_instance(*atit)) {
@@ -595,9 +595,9 @@ void CHARMMTopology::add_missing_atoms(Hierarchy hierarchy) const
   for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
 
     // Get atoms currently in this residue
-    HierarchiesTemp h = get_by_type(it->second, ATOM_TYPE);
+    Hierarchies h = get_by_type(it->second, ATOM_TYPE);
     std::set<std::string> existing_atoms;
-    for (HierarchiesTemp::iterator atit = h.begin(); atit != h.end(); ++atit) {
+    for (Hierarchies::iterator atit = h.begin(); atit != h.end(); ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
       existing_atoms.insert(typ.get_string());
     }
@@ -968,8 +968,8 @@ void CHARMMTopology::add_charges(Hierarchy hierarchy) const
   map_residue_topology_to_hierarchy(hierarchy, resmap);
 
   for (ResMap::iterator it = resmap.begin(); it != resmap.end(); ++it) {
-    HierarchiesTemp atoms = get_by_type(it->second, ATOM_TYPE);
-    for (HierarchiesTemp::iterator atit = atoms.begin(); atit != atoms.end();
+    Hierarchies atoms = get_by_type(it->second, ATOM_TYPE);
+    for (Hierarchies::iterator atit = atoms.begin(); atit != atoms.end();
          ++atit) {
       AtomType typ = Atom(*atit).get_atom_type();
       try {

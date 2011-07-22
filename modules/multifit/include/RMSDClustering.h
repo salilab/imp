@@ -127,7 +127,7 @@ void build_graph(const Hash3::PointList &inds,
  // The centroid of the molecule
  algebra::Vector3D centroid_;
  Particles ps_;
- core::XYZsTemp xyzs_;
+ core::XYZs xyzs_;
  //fast RMSD computation
  atom::RMSDCalculator rmsd_calc_;
  bool is_ready_;
@@ -249,8 +249,8 @@ void RMSDClustering<TransT>::prepare(const Particles& ps) {
   rmsd_calc_=atom::RMSDCalculator(ps);
   // save centroid
   centroid_ = algebra::Vector3D(0,0,0);
-  core::XYZsTemp xyzs(ps);
-  for (core::XYZsTemp::iterator it =  xyzs.begin(); it != xyzs.end(); it++) {
+  core::XYZs xyzs(ps);
+  for (core::XYZs::iterator it =  xyzs.begin(); it != xyzs.end(); it++) {
     centroid_ += it->get_coordinates();
   }
   centroid_ /= ps.size();

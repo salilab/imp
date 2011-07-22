@@ -167,7 +167,7 @@ inline void set_vector_d_geometry(XYZ d, const algebra::VectorD<3> &v) {
   d.set_coordinates(v);
 }
 
-IMP_DECORATORS(XYZ,XYZs, Particles);
+IMP_DECORATORS(XYZ,XYZs, ParticlesTemp);
 
 
 IMPCORE_END_NAMESPACE

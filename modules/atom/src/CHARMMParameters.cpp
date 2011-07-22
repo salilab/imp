@@ -700,13 +700,13 @@ CHARMMTopology *CHARMMParameters::create_topology(Hierarchy hierarchy) const
   IMP_OBJECT_LOG;
   IMP_NEW(CHARMMTopology, topology, (this));
 
-  HierarchiesTemp chains = get_by_type(hierarchy, CHAIN_TYPE);
+  Hierarchies chains = get_by_type(hierarchy, CHAIN_TYPE);
 
-  for (HierarchiesTemp::iterator chainit = chains.begin();
+  for (Hierarchies::iterator chainit = chains.begin();
        chainit != chains.end(); ++chainit) {
     IMP_NEW(CHARMMSegmentTopology, segment, ());
-    HierarchiesTemp residues = get_by_type(*chainit, RESIDUE_TYPE);
-    for (HierarchiesTemp::iterator resit = residues.begin();
+    Hierarchies residues = get_by_type(*chainit, RESIDUE_TYPE);
+    for (Hierarchies::iterator resit = residues.begin();
          resit != residues.end(); ++resit) {
       ResidueType restyp = Residue(*resit).get_residue_type();
       try {

@@ -96,8 +96,6 @@ class Hierarchy;
 #else
 typedef IMP::Decorators< Hierarchy,
                          IMP::core::GenericHierarchies> Hierarchies;
-typedef IMP::Decorators< Hierarchy,
-                         IMP::core::GenericHierarchiesTemp> HierarchiesTemp;
 #endif
 
 //! The standard decorator for manipulating molecular structures.
@@ -276,8 +274,8 @@ public:
     H hd=  H::get_child(i);
     return Hierarchy(hd);
   }
-  HierarchiesTemp get_children() const {
-    HierarchiesTemp ret(get_number_of_children());
+  Hierarchies get_children() const {
+    Hierarchies ret(get_number_of_children());
     for (unsigned int i=0; i< get_number_of_children(); ++i) {
       ret[i]= get_child(i);
     }
@@ -336,7 +334,7 @@ enum GetByType {
    \ingroup hierarchy
    \relatesalso Hierarchy
 */
-IMPATOMEXPORT HierarchiesTemp
+IMPATOMEXPORT Hierarchies
 get_by_type(Hierarchy mhd, GetByType t);
 
 
@@ -369,7 +367,7 @@ get_residue(Hierarchy mhd, unsigned int index);
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT Hierarchy
-create_fragment(const HierarchiesTemp &ps);
+create_fragment(const Hierarchies &ps);
 
 //! Get the bonds internal to this tree
 /**     \relatesalso Hierarchy
@@ -390,8 +388,8 @@ inline Hierarchy get_root(Hierarchy h) {
 }
 
 /** \relatesalso Hierarchy */
-inline HierarchiesTemp get_leaves(Hierarchy h) {
-  return HierarchiesTemp(IMP::core::get_leaves(h));
+inline Hierarchies get_leaves(Hierarchy h) {
+  return Hierarchies(IMP::core::get_leaves(h));
 }
 
 //! Print out a molecular hierarchy
@@ -415,7 +413,7 @@ inline void show(Hierarchy h, std::ostream &out=std::cout) {
 IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(const Hierarchies& h,
                         std::string name=std::string("created rigid body"));
 
-/** \see create_rigid_body(const HierarchiesTemp&)
+/** \see create_rigid_body(const Hierarchies&)
  */
 IMPATOMEXPORT IMP::core::RigidBody create_rigid_body(Hierarchy h);
 

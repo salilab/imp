@@ -15,7 +15,7 @@ em::DensityMap* create_hit_map(core::RigidBody rb, Refiner *rb_ref,
                             ) {
   //get center
   algebra::Vector3D cen =
-    core::get_centroid(core::XYZsTemp(rb_ref->get_refined(rb)));
+    core::get_centroid(core::XYZs(rb_ref->get_refined(rb)));
   //create a return map
   Pointer<em::DensityMap> ret(new em::DensityMap(*(dmap->get_header())));
   ret->reset_data(0.);
@@ -39,7 +39,7 @@ namespace{
   float max_dist2=max_dist*max_dist;
   //index leaves of the molecule in a knn
   algebra::Vector3Ds all_cen;
-  core::XYZsTemp all_xyz(core::get_leaves(mh));
+  core::XYZs all_xyz(core::get_leaves(mh));
   for(int i=0;i<(int)all_xyz.size();i++) {
     all_cen.push_back(all_xyz[i].get_coordinates());
   }

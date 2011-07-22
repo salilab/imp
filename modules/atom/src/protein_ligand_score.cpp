@@ -263,13 +263,13 @@ void ProteinLigandRestraint::initialize(Hierarchy protein,
   add_protein_ligand_score_data(protein);
   add_protein_ligand_score_data(ligand);
   IMP_IF_CHECK(USAGE) {
-    HierarchiesTemp pr= get_by_type(protein, RESIDUE_TYPE);
+    Hierarchies pr= get_by_type(protein, RESIDUE_TYPE);
     for (unsigned int i=0; i< pr.size(); ++i) {
       IMP_USAGE_CHECK(!get_is_heterogen(pr[i]),
                       "Some of protein is actually a heterogen "
                       <<  pr[i]);
     }
-    HierarchiesTemp lr= get_by_type(ligand, RESIDUE_TYPE);
+    Hierarchies lr= get_by_type(ligand, RESIDUE_TYPE);
     for (unsigned int i=0; i< lr.size(); ++i) {
       IMP_USAGE_CHECK(get_is_heterogen(lr[i]),
                       "Some of ligand is actually protein "
@@ -362,7 +362,7 @@ void add_protein_ligand_score_data(Atom atom) {
 }
 
 void add_protein_ligand_score_data(Hierarchy h) {
-  HierarchiesTemp atoms= get_by_type(h, ATOM_TYPE);
+  Hierarchies atoms= get_by_type(h, ATOM_TYPE);
   for (unsigned int i= 0; i< atoms.size(); ++i) {
     add_protein_ligand_score_data(Atom(atoms[i]));
   }

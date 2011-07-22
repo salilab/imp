@@ -48,10 +48,10 @@ struct MHDMatchingLeaves
 } // namespace
 
 
-GenericHierarchiesTemp
+GenericHierarchies
 get_leaves(Hierarchy mhd)
 {
-  GenericHierarchiesTemp out;
+  GenericHierarchies out;
   gather(mhd, MHDMatchingLeaves(mhd.get_traits()),
                    std::back_inserter(out));
   return out;
@@ -75,10 +75,10 @@ struct MHDNotMatchingLeaves
 } // namespace
 
 
-GenericHierarchiesTemp
+GenericHierarchies
 get_internal(Hierarchy mhd)
 {
-  GenericHierarchiesTemp out;
+  GenericHierarchies out;
   gather(mhd, MHDNotMatchingLeaves(mhd.get_traits()),
          std::back_inserter(out));
   return out;
@@ -98,10 +98,10 @@ struct MHDMatchingAll
 
 } // namespace
 
-GenericHierarchiesTemp
+GenericHierarchies
 get_all_descendants(Hierarchy mhd)
 {
-  GenericHierarchiesTemp out;
+  GenericHierarchies out;
   gather(mhd, MHDMatchingAll(),
          std::back_inserter(out));
   return out;

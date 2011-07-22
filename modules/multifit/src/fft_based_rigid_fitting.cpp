@@ -260,7 +260,7 @@ void FFTFitting::set_parameters() {
 }
 
 void FFTFitting::resmooth_mol(){
-  core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
+  core::XYZs xyzs=core::XYZs(rb_refiner_->get_refined(rb_));
   orig_prot_center_ = core::get_centroid(xyzs);
   center_trans_ = algebra::Transformation3D(
                                algebra::get_identity_rotation_3d(),
@@ -282,7 +282,7 @@ void FFTFitting::resmooth_mol(){
 void FFTFitting::smooth_mol(){
   //move the protein to the center of the assembly map
   const em::DensityHeader *padded_asmb_h = padded_asmb_map_->get_header();
-  core::XYZsTemp xyzs=core::XYZsTemp(rb_refiner_->get_refined(rb_));
+  core::XYZs xyzs=core::XYZs(rb_refiner_->get_refined(rb_));
   orig_prot_center_ = core::get_centroid(xyzs);
   map_center_=asmb_map_->get_centroid(-INT_MAX);
   center_trans_ = algebra::Transformation3D(
@@ -718,12 +718,12 @@ FFTFittingResults fft_based_rigid_fitting(
    bool pick_search_by_gmm) {
   IMP_USAGE_CHECK(dmap->get_header()->get_has_resolution(),
                   "Resolution has not been set\n");
-  core::XYZsTemp ps_xyz =  core::XYZsTemp(rb_refiner->get_refined(rb));
+  core::XYZs ps_xyz =  core::XYZs(rb_refiner->get_refined(rb));
   //shift the fitted molecule to the center of the map
   algebra::Transformation3D shift_to_center(
        algebra::get_identity_rotation_3d(),
        dmap->get_centroid(-INT_MAX)-
-       core::get_centroid(core::XYZsTemp(ps_xyz)));
+       core::get_centroid(core::XYZs(ps_xyz)));
   core::transform(rb,shift_to_center);
   IMP_LOG(TERSE,"==== Going to run FFT on each rotation"<<std::endl);
   boost::progress_display show_progress(rots.size());

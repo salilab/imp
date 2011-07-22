@@ -357,8 +357,6 @@ IMP_SWIG_FORWARD_1(has_attribute, bool, IMP::Key);
 IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName, const&);
 IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName,);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp, const&);
-IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, Name, PluralName##Temp,);
 %pythoncode %{
 def PluralName(l=[]):
     return [Name(x) for x in l]
@@ -422,7 +420,6 @@ IMP_SWIG_FORWARD_1(get_is_optimized, bool, IMP::FloatKey);
   }
 }
 %feature("valuewrapper") PluralName;
-%feature("valuewrapper") PluralName##Temp;
 IMP_SWIG_SHOWABLE(Namespace, Name);
 %enddef
 

@@ -95,7 +95,7 @@ void optimize(Int number_of_optimization_runs, Int number_of_mc_steps,
   Float e;
   core::RigidBody rb =
     core::RigidMember(refiner->get_refined(p)[0]).get_rigid_body();
-  core::XYZsTemp xyz_t(refiner->get_refined(p));
+  core::XYZs xyz_t(refiner->get_refined(p));
     algebra::VectorD<3> ps_centroid = IMP::core::get_centroid(xyz_t);
   //save starting configuration
     algebra::Transformation3D starting_trans = rb.get_reference_frame()
@@ -262,7 +262,7 @@ FittingSolutions local_rigid_fitting_grid_search(
      IMP_LOG(IMP::TERSE,"working on rotation "<<
          rot_ind<<" out of "<< rots.size()<<std::endl);
      algebra::Transformation3D t1 =algebra::get_rotation_about_point(
-                                 core::get_centroid(core::XYZsTemp(ps)),*it);
+                                 core::get_centroid(core::XYZs(ps)),*it);
      Pointer<DensityMap> rotated_sampled_map =
        get_transformed(model_dens_map,t1);
      rotated_sampled_map->calcRMS();
@@ -303,7 +303,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
   algebra::Transformation3D move_ps_to_map_center=
     algebra::Transformation3D(
       algebra::get_identity_rotation_3d(),
-      em_map->get_centroid()-core::get_centroid(core::XYZsTemp(ps)));
+      em_map->get_centroid()-core::get_centroid(core::XYZs(ps)));
   IMP_LOG(TERSE,"moving particles to center:"<<move_ps_to_map_center<<"\n");
   core::XYZs ps_xyz(ps);
   for(int i=0;i<(int)ps_xyz.size();i++) {
@@ -342,7 +342,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
     IMP_LOG(VERBOSE,
      "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
               " particles centroid: "<<
-            core::get_centroid(core::XYZsTemp(ps))<<std::endl);
+            core::get_centroid(core::XYZs(ps))<<std::endl);
     algebra::Vector3Ds original_cooridnates;
     for(core::XYZs::const_iterator it = ps_xyz.begin();
         it != ps_xyz.end(); it++) {
@@ -359,7 +359,7 @@ FittingSolutions compute_fitting_scores(const Particles &ps,
       model_dens_map2->calcRMS();
       IMP_LOG(VERBOSE,
         "model_dens_map2 rms:"<<model_dens_map2->get_header()->rms<<
-        " particles centroid: "<< core::get_centroid(core::XYZsTemp(ps))<<
+        " particles centroid: "<< core::get_centroid(core::XYZs(ps))<<
               "trans: "<< *it<<
         std::endl);
       float threshold = model_dens_map2->get_header()->dmin-EPS;
@@ -432,7 +432,7 @@ Float compute_fitting_score(const Particles &ps,
     get_bounding_box(em_map,0.);
   algebra::BoundingBox3D union_bb=algebra::get_union(
                              em_bb,
-                             core::get_bounding_box(core::XYZRsTemp(ps)));
+                             core::get_bounding_box(core::XYZRs(ps)));
   em::DensityMap *union_map =
     create_density_map(union_bb,
                        em_map->get_spacing());

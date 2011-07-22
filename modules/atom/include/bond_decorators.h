@@ -197,8 +197,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(Bonded);
 
-IMP_DECORATORS(Bonded,Bondeds, Particles);
-IMP_DECORATORS(Bond,Bonds, Particles);
+IMP_DECORATORS(Bonded,Bondeds, ParticlesTemp);
+IMP_DECORATORS(Bond,Bonds, ParticlesTemp);
 
 
 inline Bonded Bond::get_bonded(unsigned int i) const

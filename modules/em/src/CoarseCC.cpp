@@ -333,7 +333,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
   IMP_INTERNAL_CHECK(model_ps.size()==dv.size(),
     "input derivatives array size does not match "<<
     "the number of particles in the model map\n");
-  core::XYZRsTemp model_xyzr = core::XYZRsTemp(model_ps);
+  core::XYZRs model_xyzr = core::XYZRs(model_ps);
   //this would go away once we have XYZRW decorator
   const emreal *em_data = em_map->get_data();
   float lim = kernel_params->get_lim();
@@ -346,7 +346,7 @@ algebra::Vector3Ds CoarseCC::calc_derivatives(
   // if (model_header->rms <= EPS){
   // IMP_WARN("Model map is empty ! model_header->rms = " << model_header->rms
   //           <<" derivatives are not calculated. the model centroid is : " <<
-  //           core::get_centroid(core::XYZsTemp(model_ps))<<
+  //           core::get_centroid(core::XYZs(model_ps))<<
   //           " the map centroid is " << em_map->get_centroid()<<
   //                 "number of particles in model:"<<model_ps.size()
   //<<std::endl);
