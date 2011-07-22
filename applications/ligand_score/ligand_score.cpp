@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     l= IMP::atom::read_mol2(mol2name, m);
     IMP::atom::add_protein_ligand_score_data(l);
   }
-  IMP::atom::HierarchiesTemp mols
+  IMP::atom::Hierarchies mols
     = IMP::atom::get_by_type(l, IMP::atom::RESIDUE_TYPE);
   IMP::Pointer<IMP::atom::ProteinLigandAtomPairScore> ps;
   if (lib) {
