@@ -16,6 +16,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/Decorator.h>
 #include <IMP/SingletonModifier.h>
+#include "DerivativesToRefined.h"
 
 
 IMPCORE_BEGIN_NAMESPACE
