@@ -15,7 +15,7 @@
 #include "../Restraint.h"
 #include "../SingletonScore.h"
 #include "../macros.h"
-#include "../VectorOfRefCounted.h"
+#include "../Object.h"
 #include <boost/array.hpp>
 #include <vector>
 

@@ -9,7 +9,7 @@
 #define IMP_CONTAINER_MACROS_H
 
 #include "RefCounted.h"
-#include "VectorOfRefCounted.h"
+#include "Object.h"
 #include "internal/Vector.h"
 #include "macros.h"
 

@@ -8,7 +8,7 @@
 #include "IMP/exception.h"
 #include "IMP/FailureHandler.h"
 #include "IMP/log.h"
-#include "IMP/VectorOfRefCounted.h"
+#include "IMP/Object.h"
 #include "IMP/internal/static.h"
 #include <cstring>
 #include <boost/lambda/lambda.hpp>

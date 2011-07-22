@@ -14,7 +14,7 @@
 #include "IMP/internal/IndexingIterator.h"
 
 #include <IMP/base_types.h>
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 #include <IMP/Particle.h>
 
 #include <string>
@@ -50,7 +50,7 @@ inline std::ostream &operator<<(std::ostream &out,
 }
 
 // to avoid having memory leaks reported
-IMPCOREEXPORT extern VectorOfRefCounted<ArrayDataBase*> array_datas;
+IMPCOREEXPORT extern std::vector<Pointer<ArrayDataBase> > array_datas;
 
 
 template <class KeyT, class ValueT, class DataT=Empty>

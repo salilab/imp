@@ -16,7 +16,7 @@
 #include <IMP/algebra/Vector3D.h>
 #include <IMP/algebra/BoundingBoxD.h>
 #include <IMP/algebra/Transformation3D.h>
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 #include <boost/scoped_array.hpp>
 #include <iostream>
 #include <iomanip>

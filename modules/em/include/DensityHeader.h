@@ -17,7 +17,7 @@
 #include <cstring>
 #include <limits>
 #include <IMP/algebra/BoundingBoxD.h>
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 IMPEM_BEGIN_NAMESPACE
 
 /** \todo change so that the att will not be encoded but loaded from

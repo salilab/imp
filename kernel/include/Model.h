@@ -11,7 +11,6 @@
 
 #include "kernel_config.h"
 #include "Object.h"
-#include "VectorOfRefCounted.h"
 #include "Restraint.h"
 #include "RestraintSet.h"
 #include "ScoreState.h"

@@ -13,7 +13,6 @@
 #include "../log.h"
 #include "../Pointer.h"
 #include "../macros.h"
-#include "../VectorOfRefCounted.h"
 #include "attribute_storage.h"
 #include <boost/dynamic_bitset.hpp>
 

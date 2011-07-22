@@ -24,7 +24,7 @@ extern IMPEXPORT compatibility::map<std::string,
 
 extern IMPEXPORT bool print_exceptions;
 
-extern IMPEXPORT VectorOfRefCounted<FailureHandler*> handlers;
+extern IMPEXPORT FailureHandlers handlers;
 
 extern IMPEXPORT CheckLevel check_mode;
 
