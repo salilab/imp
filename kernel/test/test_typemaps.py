@@ -249,6 +249,7 @@ class ParticleTests(IMP.test.TestCase):
                     "set_is_ref_counted",
                     "get_is_ref_counted",
                     "get_live_object_names",
+                    "add_cache_attribute"
                     ]
         md= dir(IMP._TrivialDecorator)
         for m in dir(IMP.Particle):
