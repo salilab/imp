@@ -315,7 +315,7 @@ public:                                                                 \
         p->remove_attribute(get_constraint_key());                      \
       }                                                                 \
     } else {                                                            \
-      Constraint *ss= core::create_constraint(before,                   \
+      Constraint *ss= new SingletonConstraint(before,                   \
                                               after, p,                 \
                       std::string(#Name "updater for ")+p->get_name()); \
       p->add_attribute(get_constraint_key(), ss);                       \
