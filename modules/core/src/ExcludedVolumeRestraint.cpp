@@ -78,7 +78,7 @@ fill_list_if_good(double max) const {
   xyzrs_backup_.clear();
   rbs_backup_.clear();
   was_bad_=true;
-  IMP_INTERNAL_CHECK(cur_list_.empty(), "List not empty");
+  cur_list_.clear();
   double score=0;
   double myslack=0;
   internal::ParticleIndexHelper
@@ -135,7 +135,7 @@ fill_list() const {
           << " on " << sc_->get_number_of_particles() << " partcles");
     xyzrs_backup_.clear();
   rbs_backup_.clear();
-  IMP_INTERNAL_CHECK(cur_list_.empty(), "List not empty");
+  cur_list_.clear();
   internal::ParticleIndexHelper
       ::fill_close_pairs(internal::ParticleIndexHelper
                          ::get_particle_set(xyzrs_.begin(),
