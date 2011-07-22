@@ -173,6 +173,13 @@ public:
                                                 get_particle_index())[i],
                      get_traits());
   }
+  GenericHierarchies get_children() const {
+    GenericHierarchies ret(get_number_of_children());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= get_child(i);
+    }
+    return ret;
+  }
   void remove_child(unsigned int i) {
     IMP_USAGE_CHECK(i < get_number_of_children(),
                     "Invalid child requested");
