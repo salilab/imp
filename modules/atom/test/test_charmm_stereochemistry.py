@@ -29,7 +29,7 @@ class CHARMMStereochemistry(IMP.test.TestCase):
         return atoms
 
     def assertContainsPair(self, pf, atoms, a1, a2):
-        self.assertEquals(pf.get_contains_particle_pair([atoms[a1],atoms[a2]]),
+        self.assertEquals(pf.get_contains([atoms[a1],atoms[a2]]),
                           True)
 
     def test_score(self):
