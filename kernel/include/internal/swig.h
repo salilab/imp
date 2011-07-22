@@ -13,6 +13,7 @@
 #include "../ParticleTuple.h"
 #include "../Restraint.h"
 #include "../SingletonScore.h"
+#include "../PairScore.h"
 #include "../macros.h"
 #include "../Decorator.h"
 #include "../file.h"
