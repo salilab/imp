@@ -30,8 +30,7 @@
 
 IMPDISPLAY_BEGIN_NAMESPACE
 class Geometry;
-typedef VectorOfRefCounted<Geometry*> Geometries;
-typedef std::vector<Geometry*> GeometriesTemp;
+IMP_OBJECTS(Geometry, Geometries);
 
 
 //! The base class for geometry.
