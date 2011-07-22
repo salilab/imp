@@ -15,6 +15,7 @@
 #include <IMP/PairModifier.h>
 #include <IMP/PairScore.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/scoped.h>
 #include <IMP/internal/container_helpers.h>
 
 IMPATOM_BEGIN_NAMESPACE
