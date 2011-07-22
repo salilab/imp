@@ -47,12 +47,6 @@ atom::Hierarchies h_CP=create_hierarchies(m,mydata.num_cells,"Central Plaque");
 // Spc110p (C)
 // Cmd1p   (N and C)
 //
-// list of protein names used to create EquivalenceState filters
-std::vector<std::string> all_CP;
-all_CP.push_back("Spc42p_n");
-all_CP.push_back("Spc29p");
-all_CP.push_back("Spc110p_c");
-all_CP.push_back("Cmd1p");
 
 for(int i=0;i<mydata.num_cells;++i){
  for(int j=0;j<mydata.num_copies;++j){
@@ -120,12 +114,11 @@ add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
 
 
 std::cout << "Setup sampler" << std::endl;
-mc=setup_SPBMonteCarlo(m,h_CP[0],mydata);
-
+atom::Hierarchies hs;
+hs.push_back(h_CP[0]);
+core::MonteCarlo* mc=setup_SPBMonteCarlo(m,hs,mydata.MC.tmin,mydata.MC);
 
 std::cout << "Sampling" << std::endl;
-
-
 // Monte Carlo loop
 for(int imc=0;imc<mydata.MC.nsteps;++imc)
 {
@@ -135,7 +128,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // print statistics
  double myscore=m->evaluate(false);
  logfile << imc << " " << myscore << " " <<
- mc->get_number_of_forward_steps() << "\n";
+  mc->get_number_of_forward_steps() << "\n";
 
 }
 

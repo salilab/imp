@@ -15,25 +15,27 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 core::MonteCarlo* setup_SPBMonteCarlo
- (Model *m,atom::Hierarchy h,SPBParameters myparam)
+ (Model *m,atom::Hierarchies hs,double temp,MCParameters myparam)
 {
- MCParameters MC=myparam.MC;
- double mc_dx_=MC.dx;
- double mc_dang_=MC.dang;
+ double mc_dx_=myparam.dx;
+ double mc_dang_=myparam.dang;
 
  Pointer<core::MonteCarlo> mc;
- if (MC.do_wte){
-  double w0=MC.wte_w0*temp/MC.tmin;
-  mc= new membrane::MonteCarloWithWte(m,MC.wte_emin,MC.wte_emax,
-                                      MC.wte_sigma,MC.wte_gamma,w0);
+ if (myparam.do_wte){
+  double w0=myparam.wte_w0*temp/myparam.tmin;
+  mc= new membrane::MonteCarloWithWte(m,myparam.wte_emin,myparam.wte_emax,
+                                      myparam.wte_sigma,myparam.wte_gamma,w0);
  }else{
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
 
 // create movers
- Particles ps=h.get_leaves();
- IMP_NEW(container::ListSingletonContainer,lsc,(ps));
+ IMP_NEW(container::ListSingletonContainer,lsc,(m));
+ for(int i=0;i<hs.size();++i){
+  Particles ps=hs[i].get_leaves();
+  lsc->add_particles(ps);
+ }
 
  FloatKeys keys;
  keys.push_back(FloatKey("x"));
