@@ -31,7 +31,7 @@ IMP_NEW(Model,m,());
 std::cout << "Parsing input file" << std::endl;
 SPBParameters mydata=get_SPBParameters("config.ini");
 
-//
+
 std::cout << "Creating representation" << std::endl;
 //
 //h_CP: list of molecular hierarchies, containing
@@ -120,6 +120,7 @@ add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
 
 
 std::cout << "Setup sampler" << std::endl;
+mc=setup_SPBMonteCarlo(m,h_CP[0],mydata);
 
 
 std::cout << "Sampling" << std::endl;
@@ -129,12 +130,12 @@ std::cout << "Sampling" << std::endl;
 for(int imc=0;imc<mydata.MC.nsteps;++imc)
 {
 // run optimizer
- //mc->optimize(mydata.MC.nexc);
+ mc->optimize(mydata.MC.nexc);
 
 // print statistics
- //double myscore=m->evaluate(false);
- //logfile << imc << " " << myscore << " " <<
- //mc->get_number_of_forward_steps() << "\n";
+ double myscore=m->evaluate(false);
+ logfile << imc << " " << myscore << " " <<
+ mc->get_number_of_forward_steps() << "\n";
 
 }
 
