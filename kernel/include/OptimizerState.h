@@ -12,7 +12,7 @@
 #include "VersionInfo.h"
 #include "RefCounted.h"
 #include "Pointer.h"
-#include "VectorOfRefCounted.h"
+#include "Object.h"
 
 #include <iostream>
 

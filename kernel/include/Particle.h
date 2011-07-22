@@ -16,7 +16,6 @@
 #include "internal/AttributeTable.h"
 #include "DerivativeAccumulator.h"
 #include "Pointer.h"
-#include "VectorOfRefCounted.h"
 #include "container_base.h"
 #include "particle_index.h"
 #include <utility>

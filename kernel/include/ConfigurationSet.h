@@ -33,7 +33,7 @@ class IMPEXPORT ConfigurationSet: public Object
 {
   mutable Pointer<Model> model_;
   Pointer<Configuration> base_;
-  VectorOfRefCounted<Configuration*> configurations_;
+  std::vector<Pointer<Configuration> > configurations_;
  public:
   ConfigurationSet(Model *m, std::string name="ConfigurationSet %1%");
   //! Save the current configuration of the Model

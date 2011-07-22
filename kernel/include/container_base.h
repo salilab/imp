@@ -11,14 +11,13 @@
 
 #include "kernel_config.h"
 #include "Object.h"
-#include "VectorOfRefCounted.h"
 #include "macros.h"
 #include "WeakPointer.h"
 
 IMP_BEGIN_NAMESPACE
 class Model;
 class Particle;
-typedef VectorOfRefCounted<Particle*> Particles;
+IMP_OBJECTS(Particle, Particles);
 
 template <unsigned int D>
 class ParticleTuple;

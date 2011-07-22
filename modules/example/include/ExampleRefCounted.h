@@ -12,7 +12,7 @@
 
 #include <IMP/RefCounted.h>
 #include <IMP/macros.h>
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
@@ -48,8 +48,8 @@ public:
 
 IMP_OUTPUT_OPERATOR(ExampleRefCounted);
 
-typedef VectorOfRefCounted<ExampleRefCounted> ExampleRefCounteds;
-
+typedef std::vector<Pointer<ExampleRefCounted> > ExampleRefCounteds;
+typedef std::vector<WeakPointer<ExampleRefCounted> > ExampleRefCountedsTemp;
 
 IMPEXAMPLE_END_NAMESPACE
 

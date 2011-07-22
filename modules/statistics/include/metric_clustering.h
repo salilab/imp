@@ -14,7 +14,7 @@
 #include "point_clustering.h"
 #include <IMP/algebra/VectorD.h>
 #include <IMP/macros.h>
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 #include <IMP/ConfigurationSet.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/internal/OwnerPointer.h>

@@ -126,7 +126,6 @@ public:
     return pi_;
   }
 #ifdef _MSC_VER
-  // needed to get Particle in VectorOfRefCounted
   typedef Particle* ParticleP;
 #endif
 #ifndef IMP_DOXYGEN

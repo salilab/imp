@@ -10,6 +10,7 @@
 
 #include "core_config.h"
 #include <IMP/Restraint.h>
+#include <IMP/Model.h>
 #include <IMP/macros.h>
 
 IMPCORE_BEGIN_NAMESPACE

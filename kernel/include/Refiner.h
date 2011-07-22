@@ -73,9 +73,7 @@ public:
   IMP_REF_COUNTED_DESTRUCTOR(Refiner);
 };
 //! a collection of Refiner objects
-typedef VectorOfRefCounted<Refiner*> Refiners;
-
-IMP_OUTPUT_OPERATOR(Refiner);
+IMP_OBJECTS(Refiner, Refiners);
 
 #ifndef SWIG
 struct Refiner::Accessor {

@@ -11,7 +11,6 @@
 #include "base_types.h"
 #include "Object.h"
 #include "Pointer.h"
-#include "VectorOfRefCounted.h"
 
 IMP_BEGIN_NAMESPACE
 

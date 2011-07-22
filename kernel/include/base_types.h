@@ -53,11 +53,6 @@ typedef std::vector<Int> Ints;
 //! Standard way to pass a bunch of String values
 typedef std::vector<String> Strings;
 
-#ifndef IMP_DOXYGEN
-class Particle;
-typedef std::vector<Particle*> ParticlesTemp;
-#endif
-
 /** @name Attribute Keys
     Each type of attribute has an associated type of key. The keys can
     be constructed from a string. Such construction can be expensive

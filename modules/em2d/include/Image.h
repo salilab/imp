@@ -16,7 +16,7 @@
 #include "IMP/em/ImageHeader.h"
 #include <IMP/Pointer.h>
 #include <IMP/Object.h>
-#include "IMP/VectorOfRefCounted.h"
+#include "IMP/Object.h"
 #include "IMP/base_types.h"
 #include <limits>
 #include <typeinfo>

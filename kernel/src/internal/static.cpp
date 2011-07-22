@@ -25,7 +25,7 @@ compatibility::map<std::string, unsigned int> object_type_counts;
 // The error message is already in the exception
 bool print_exceptions=true;
 
-VectorOfRefCounted<FailureHandler*> handlers;
+FailureHandlers handlers;
 
 
  CheckLevel check_mode =

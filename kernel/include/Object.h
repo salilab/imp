@@ -277,4 +277,6 @@ IMP_END_NAMESPACE
 #define IMP_OBJECT_LOG
 #define IMP_FUNCTION_LOG
 #endif // fast
+
+#include "VectorOfRefCounted.h"
 #endif  /* IMP_OBJECT_H */

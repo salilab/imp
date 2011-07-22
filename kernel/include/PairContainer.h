@@ -15,7 +15,6 @@
 #include "Particle.h"
 #include "container_base.h"
 #include "VersionInfo.h"
-#include "VectorOfRefCounted.h"
 #include "DerivativeAccumulator.h"
 #include "internal/OwnerPointer.h"
 #include "ParticleTuple.h"
