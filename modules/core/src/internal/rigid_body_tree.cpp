@@ -145,13 +145,15 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
       ss[i]= spheres[cur.second[i]];
     }
     algebra::SphereD<3> ec= algebra::get_enclosing_sphere(ss);
-    set_sphere(cur.first, algebra::SphereD<3>(ec.get_center(),
-                                            ec.get_radius()*EXPANSION));
+    algebra::SphereD<3> bs=algebra::SphereD<3>(ec.get_center(),
+                                               ec.get_radius()*EXPANSION
+                                               +.1);
+    set_sphere(cur.first, bs);
     IMP_IF_CHECK(USAGE_AND_INTERNAL) {
       for (unsigned int i=0; i< cur.second.size(); ++i) {
-        algebra::Sphere3D bd(ec.get_center(), 1.1*ec.get_radius());
+        algebra::Sphere3D bd(bs.get_center(), 1.1*bs.get_radius());
         IMP_INTERNAL_CHECK(bd.get_contains(spheres[cur.second[i]]),
-                           "Sphere not contained " << ec
+                           "Sphere not contained " << bs
                            << " not around " << spheres[cur.second[i]]);
       }
     }
