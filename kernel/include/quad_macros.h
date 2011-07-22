@@ -243,7 +243,7 @@
   }                                                                     \
   void apply(Model *m, const ParticleIndexQuad& a,\
              DerivativeAccumulator&da) const {                          \
-    return Name::apply(get_particle(m,a), da);                          \
+    return Name::apply(IMP::internal::get_particle(m,a), da);           \
   }                                                                     \
   void apply(Model *m, const ParticleIndexQuads &ps,                       \
              DerivativeAccumulator&da) const {                          \
