@@ -35,15 +35,25 @@ public:
   CLASSNAMEModifier(std::string name="CLASSNAMEModifier %1%");
 
   /** Apply the function to a single value*/
-  virtual void apply(ARGUMENTTYPE) const {
-    IMP_FAILURE("This CLASSNAMEModifier must be called with a"
-                << " DerivativeAccumulator.");
+  virtual void apply(ARGUMENTTYPE) const =0;
+
+  /** Apply the function to a collection of PLURALVARIABLETYPE */
+  virtual void apply(const PLURALVARIABLETYPE &o) const {
+    for (unsigned int i=0; i < o.size(); ++i) {
+      apply(o[i]);
+    }
+  }
+
+ /** Apply the function to a single value*/
+  virtual void apply(Model *m, PASSINDEXTYPE v) const {
+    apply(get_particle(m, v));
   }
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
-  virtual void apply(const PLURALVARIABLETYPE &) const {
-    IMP_FAILURE("This CLASSNAMEModifier must be called with a"
-                << " DerivativeAccumulator.");
+  virtual void apply(Model *m, const PLURALINDEXTYPE &o) const {
+    for (unsigned int i=0; i < o.size(); ++i) {
+      apply(m, o[i]);
+    }
   }
 
   /** Get the set of particles read when applied to the arguments.*/

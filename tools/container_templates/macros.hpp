@@ -136,6 +136,14 @@
       Name::apply(ps[i]);                                               \
     }                                                                   \
   }                                                                     \
+  void apply(Model *m, PASSINDEXTYPE a) const {                   \
+    return Name::apply(get_particle(m,a));                              \
+  }                                                                     \
+  void apply(Model *m, const PLURALINDEXTYPE &ps) const {               \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i]);                                            \
+    }                                                                   \
+  }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ParticlesTemp get_output_particles(Particle*) const;                  \
   ContainersTemp get_input_containers(Particle*) const;                 \
@@ -154,6 +162,16 @@
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i], da);                                           \
+    }                                                                   \
+  }                                                                     \
+  void apply(Model *m, PASSINDEXTYPE a,\
+             DerivativeAccumulator&da) const {                          \
+    return Name::apply(get_particle(m,a), da);                          \
+  }                                                                     \
+  void apply(Model *m, const PLURALINDEXTYPE &ps,                       \
+             , DerivativeAccumulator&da) const {                        \
+    for (unsigned int i=0; i< ps.size(); ++i) {                         \
+      Name::apply(m, ps[i], da);                                        \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
