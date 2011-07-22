@@ -9,6 +9,7 @@
 #include <IMP/algebra/eigen_analysis.h>
 #include <IMP/algebra/Grid3D.h>
 #include <IMP/core/internal/grid_close_pairs_impl.h>
+#include <IMP/utility.h>
 #include <vector>
 
 #include <typeinfo>
@@ -211,13 +212,25 @@ void RigidBodyHierarchy::validate_internal(Model *m, int cur,
   bounds.push_back(algebra::Sphere3D(get_sphere(cur).get_center(),
                                      get_sphere(cur).get_radius()*1.1));
   if (get_is_leaf(cur)) {
-    for (unsigned int i=0; i< get_number_of_particles(cur); ++i) {
-      XYZR p(m, get_particle(cur, i));
-      for (unsigned int j=0; j< bounds.size(); ++j) {
-        IMP_INTERNAL_CHECK(bounds[j].get_contains(p.get_sphere()),
+    for (unsigned int j=0; j< bounds.size(); ++j) {
+      for (unsigned int i=0; i< get_number_of_particles(cur); ++i) {
+        XYZR p(m, get_particle(cur, i));
+        RigidMember rm(m, get_particle(cur, i));
+        algebra::Sphere3D sc(rb_.get_reference_frame()
+                .get_global_coordinates(rm.get_internal_coordinates()),
+                            p.get_radius());
+        IMP_INTERNAL_CHECK(bounds[j].get_contains(sc),
                            "Particle is not in bound " << p
+                           << " has index " <<  get_particle(cur, i)
+                           << " and internal coordinates "
+                           << rm.get_internal_coordinates()
+                           << " which map to "
+                           << rb_.get_reference_frame()
+                    .get_global_coordinates(rm.get_internal_coordinates())
                            << " bound " << bounds[j]
-                           << " is " << j << " of " << bounds.size());
+                           << " is " << j << " of " << bounds.size()
+                           << " and untransformed sphere is "
+                           << tree_[cur].s_);
       }
     }
   } else {
