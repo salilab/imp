@@ -15,6 +15,7 @@
 #include <IMP/internal/container_helpers.h>
 #include <IMP/SingletonContainer.h>
 #include <IMP/SingletonModifier.h>
+#include <IMP/scoped.h>
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
