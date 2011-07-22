@@ -35,18 +35,19 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT QuadConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<QuadModifier> f_;
-  IMP::internal::OwnerPointer<QuadModifier> af_;
+  IMP::internal::OwnerPointer<QuadDerivativeModifier> af_;
   ParticleQuad v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
   QuadConstraint(QuadModifier *before,
-                      QuadModifier *after, const ParticleQuad& vt,
+                      QuadDerivativeModifier *after,
+                      const ParticleQuad& vt,
                       std::string name="QuadConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(QuadModifier* f) {
+  void set_after_evaluate_modifier(QuadDerivativeModifier* f) {
     af_=f;
   }
 

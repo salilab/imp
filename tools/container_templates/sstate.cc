@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 CLASSNAMEConstraint::CLASSNAMEConstraint(CLASSNAMEModifier *before,
-                                         CLASSNAMEModifier *after,
+                                CLASSNAMEDerivativeModifier *after,
                                          ARGUMENTTYPE vt,
                                          std::string name):
   Constraint(name), v_(vt){

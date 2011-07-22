@@ -61,7 +61,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
   unsigned int get_number_of_FUNCTIONNAMEs() const;
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
   void apply(const CLASSNAMEModifier *sm);
-  void apply(const CLASSNAMEModifier *sm,
+  void apply(const CLASSNAMEDerivativeModifier *sm,
              DerivativeAccumulator &da);
   double evaluate(const CLASSNAMEScore *s,
                   DerivativeAccumulator *da) const;

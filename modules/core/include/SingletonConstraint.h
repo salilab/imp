@@ -35,18 +35,19 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT SingletonConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<SingletonModifier> f_;
-  IMP::internal::OwnerPointer<SingletonModifier> af_;
+  IMP::internal::OwnerPointer<SingletonDerivativeModifier> af_;
   Pointer<Particle> v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
   SingletonConstraint(SingletonModifier *before,
-                      SingletonModifier *after, Particle* vt,
+                      SingletonDerivativeModifier *after,
+                      Particle* vt,
                       std::string name="SingletonConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(SingletonModifier* f) {
+  void set_after_evaluate_modifier(SingletonDerivativeModifier* f) {
     af_=f;
   }
 

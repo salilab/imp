@@ -23,26 +23,16 @@ class Particle;
 /** The primary function of such a class is to change
     the passed particles.
 
-    A given PairModifier may only work when passed a
-    DerivativeAccumulator or when not passed one.
-
     \see IMP::PairFunctor
 
-    Implementors should see IMP_PAIR_MODIFIER() and
-    IMP_PAIR_MODIFIER_DA().
+    Implementors should see IMP_PAIR_MODIFIER(). Also see
+    PairDerivativeModifier.
  */
 class IMPEXPORT PairModifier : public Object
 {
 public:
   typedef ParticlePair Argument;
   PairModifier(std::string name="PairModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(const ParticlePair&,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This PairModifier must be called without a"
-                << " DerivativeAccumulator.");
-  }
 
   /** Apply the function to a single value*/
   virtual void apply(const ParticlePair&) const {
@@ -53,13 +43,6 @@ public:
   /** Apply the function to a collection of ParticlePairsTemp */
   virtual void apply(const ParticlePairsTemp &) const {
     IMP_FAILURE("This PairModifier must be called with a"
-                << " DerivativeAccumulator.");
-  }
-
-  /** Apply the function to a collection of ParticlePairsTemp */
-  virtual void apply(const ParticlePairsTemp &,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This PairModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
@@ -103,21 +86,11 @@ IMP_OBJECTS(PairModifier,PairModifiers);
  */
 class PairFunctor {
   Pointer<const PairModifier> f_;
-  DerivativeAccumulator *da_;
 public:
   //! Store the PairModifier and the optional DerivativeAccumulator
-  PairFunctor(const PairModifier *f): f_(f), da_(NULL){}
-  PairFunctor(const PairModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
+  PairFunctor(const PairModifier *f): f_(f){}
   void operator()( ParticlePair p) const {
-    if (da_) {
-      f_->apply(p, *da_);
-    } else {
-      f_->apply(p);
-    }
+    f_->apply(p);
   }
 };
 

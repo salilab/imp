@@ -17,17 +17,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-PairsConstraint::PairsConstraint(PairContainer *c,
-                                           PairModifier *before,
-                                           PairModifier *after,
-                                           std::string name):
-  Constraint(name), c_(c) {
-  if (before) f_=before;
-  if (after) af_=after;
-}
-
 PairsConstraint::PairsConstraint(PairModifier *before,
-                                           PairModifier *after,
+                                  PairDerivativeModifier *after,
                                            PairContainer *c,
                                            std::string name):
   Constraint(name), c_(c) {

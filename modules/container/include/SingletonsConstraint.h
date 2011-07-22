@@ -40,22 +40,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT SingletonsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<SingletonModifier> f_;
-  IMP::internal::OwnerPointer<SingletonModifier> af_;
+  IMP::internal::OwnerPointer<SingletonDerivativeModifier> af_;
   IMP::internal::OwnerPointer<SingletonContainer> c_;
 public:
-#ifndef IMP_DOXYGEN
-  /** \param[in] c The Container to hold the elements to process
-      \param[in] before The SingletonModifier to apply to all elements
-      before evaluate.
-      \param[in] after The SingletonModifier to apply to all elements
-      after evaluate.
-      \param[in] name The object name
-   */
-  SingletonsConstraint(SingletonContainer *c, SingletonModifier *before,
-                       SingletonModifier *after,
-                       std::string name="SingletonConstraint %1%");
-#endif
-
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The SingletonModifier to apply to all elements
       before evaluate.
@@ -64,12 +51,12 @@ public:
       \param[in] name The object name
    */
   SingletonsConstraint(SingletonModifier *before,
-                       SingletonModifier *after,
+                       SingletonDerivativeModifier *after,
                        SingletonContainer *c,
                        std::string name="SingletonConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(SingletonModifier* f) {
+  void set_after_evaluate_modifier(SingletonDerivativeModifier* f) {
     af_=f;
   }
 

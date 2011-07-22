@@ -99,7 +99,7 @@ void PairContainerSet::apply(const PairModifier *sm) {
   }
 }
 
-void PairContainerSet::apply(const PairModifier *sm,
+void PairContainerSet::apply(const PairDerivativeModifier *sm,
                                DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
     get_pair_container(i)->apply(sm, da);

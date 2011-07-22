@@ -128,19 +128,10 @@
     - IMP::TripletModifier::apply(IMP::Particle*)
     - IMP::TripletModifier::get_input_particles()
     - IMP::TripletModifier::get_output_particles()
-    \see IMP_TRIPLET_MODIFIER_DA()
 */
 #define IMP_TRIPLET_MODIFIER(Name)                                   \
-  void apply(const ParticleTriplet& a) const;                                \
-  void apply(const ParticleTriplet& a, DerivativeAccumulator&) const{        \
-    apply(a);                                                           \
-  }                                                                     \
+  void apply(const ParticleTriplet& a) const;                             \
   void apply(const ParticleTripletsTemp &ps) const {                      \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i]);                                               \
-    }                                                                   \
-  }                                                                     \
-  void apply(const ParticleTripletsTemp &ps, DerivativeAccumulator &) const { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
     }                                                                   \
@@ -151,27 +142,14 @@
   ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name)
 
-
-
 //! Declare the functions needed for a TripletModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::TripletModifier::apply(IMP::Particle*,
-    IMP::DerivativeAccumulator&)
-    - IMP::TripletModifier::get_input_particles()
-    - IMP::TripletModifier::get_output_particles()
-
-    \see IMP_TRIPLET_MODIFIER
+    - IMP::TripletDerivativeModifier::apply(IMP::Particle*)
+    - IMP::TripletDerivativeModifier::get_input_particles()
+    - IMP::TripletDerivativeModifier::get_output_particles()
 */
-#define IMP_TRIPLET_MODIFIER_DA(Name)                                \
-  void apply(const ParticleTriplet& a, DerivativeAccumulator &da) const;     \
-  void apply(const ParticleTriplet&) const{                                  \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
-  void apply(const ParticleTripletsTemp &) const {                        \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
+#define IMP_TRIPLET_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(const ParticleTriplet& a, DerivativeAccumulator&da) const;    \
   void apply(const ParticleTripletsTemp &ps,                              \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -193,7 +171,7 @@
   void apply(const TripletModifier *sm) {                             \
     template_apply(sm);                                                 \
   }                                                                     \
-  void apply(const TripletModifier *sm,                               \
+  void apply(const TripletDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) {                               \
     template_apply(sm, da);                                             \
   }                                                                     \

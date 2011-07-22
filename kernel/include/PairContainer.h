@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include "PairScore.h"
 #include "PairModifier.h"
+#include "PairDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -102,8 +103,9 @@ class IMPEXPORT PairContainer : public Container
                            DerivativeAccumulator *&da) {
     s->S::apply(a, da);
   }
-  static void call_apply(const PairModifier *s, const ParticlePair& a,
-                           DerivativeAccumulator &da) {
+  static void call_apply(const PairDerivativeModifier *s,
+                         const ParticlePair& a,
+                         DerivativeAccumulator &da) {
     s->apply(a, da);
   }
 #endif
@@ -150,7 +152,8 @@ public:
   virtual void apply(const PairModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const PairModifier *sm, DerivativeAccumulator &da)=0;
+  virtual void apply(const PairDerivativeModifier *sm,
+                     DerivativeAccumulator &da)=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const PairScore *s,

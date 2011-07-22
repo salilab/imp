@@ -40,22 +40,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT TripletsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<TripletModifier> f_;
-  IMP::internal::OwnerPointer<TripletModifier> af_;
+  IMP::internal::OwnerPointer<TripletDerivativeModifier> af_;
   IMP::internal::OwnerPointer<TripletContainer> c_;
 public:
-#ifndef IMP_DOXYGEN
-  /** \param[in] c The Container to hold the elements to process
-      \param[in] before The TripletModifier to apply to all elements
-      before evaluate.
-      \param[in] after The TripletModifier to apply to all elements
-      after evaluate.
-      \param[in] name The object name
-   */
-  TripletsConstraint(TripletContainer *c, TripletModifier *before,
-                       TripletModifier *after,
-                       std::string name="TripletConstraint %1%");
-#endif
-
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The TripletModifier to apply to all elements
       before evaluate.
@@ -64,12 +51,12 @@ public:
       \param[in] name The object name
    */
   TripletsConstraint(TripletModifier *before,
-                       TripletModifier *after,
+                       TripletDerivativeModifier *after,
                        TripletContainer *c,
                        std::string name="TripletConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(TripletModifier* f) {
+  void set_after_evaluate_modifier(TripletDerivativeModifier* f) {
     af_=f;
   }
 

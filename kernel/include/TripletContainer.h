@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include "TripletScore.h"
 #include "TripletModifier.h"
+#include "TripletDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -102,8 +103,9 @@ class IMPEXPORT TripletContainer : public Container
                            DerivativeAccumulator *&da) {
     s->S::apply(a, da);
   }
-  static void call_apply(const TripletModifier *s, const ParticleTriplet& a,
-                           DerivativeAccumulator &da) {
+  static void call_apply(const TripletDerivativeModifier *s,
+                         const ParticleTriplet& a,
+                         DerivativeAccumulator &da) {
     s->apply(a, da);
   }
 #endif
@@ -150,7 +152,8 @@ public:
   virtual void apply(const TripletModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const TripletModifier *sm, DerivativeAccumulator &da)=0;
+  virtual void apply(const TripletDerivativeModifier *sm,
+                     DerivativeAccumulator &da)=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const TripletScore *s,

@@ -17,17 +17,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-CLASSNAMEsConstraint::CLASSNAMEsConstraint(CLASSNAMEContainer *c,
-                                           CLASSNAMEModifier *before,
-                                           CLASSNAMEModifier *after,
-                                           std::string name):
-  Constraint(name), c_(c) {
-  if (before) f_=before;
-  if (after) af_=after;
-}
-
 CLASSNAMEsConstraint::CLASSNAMEsConstraint(CLASSNAMEModifier *before,
-                                           CLASSNAMEModifier *after,
+                                  CLASSNAMEDerivativeModifier *after,
                                            CLASSNAMEContainer *c,
                                            std::string name):
   Constraint(name), c_(c) {

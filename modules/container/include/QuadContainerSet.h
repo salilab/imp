@@ -61,7 +61,7 @@ class IMPCONTAINEREXPORT QuadContainerSet
   unsigned int get_number_of_particle_quads() const;
   ParticleQuad get_particle_quad(unsigned int i) const;
   void apply(const QuadModifier *sm);
-  void apply(const QuadModifier *sm,
+  void apply(const QuadDerivativeModifier *sm,
              DerivativeAccumulator &da);
   double evaluate(const QuadScore *s,
                   DerivativeAccumulator *da) const;

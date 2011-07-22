@@ -120,7 +120,7 @@ class PairContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= PairTestModifier(k)
         print "apply"
-        s= IMP.container.PairsConstraint(c, f, None)
+        s= IMP.container.PairsConstraint(f, None, c)
         print "add"
         m.add_score_state(s)
         m.evaluate(False)

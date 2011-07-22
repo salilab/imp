@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include "CLASSNAMEScore.h"
 #include "CLASSNAMEModifier.h"
+#include "CLASSNAMEDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -102,8 +103,9 @@ class IMPEXPORT CLASSNAMEContainer : public Container
                            DerivativeAccumulator *&da) {
     s->S::apply(a, da);
   }
-  static void call_apply(const CLASSNAMEModifier *s, ARGUMENTTYPE a,
-                           DerivativeAccumulator &da) {
+  static void call_apply(const CLASSNAMEDerivativeModifier *s,
+                         ARGUMENTTYPE a,
+                         DerivativeAccumulator &da) {
     s->apply(a, da);
   }
 #endif
@@ -150,7 +152,8 @@ public:
   virtual void apply(const CLASSNAMEModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const CLASSNAMEModifier *sm, DerivativeAccumulator &da)=0;
+  virtual void apply(const CLASSNAMEDerivativeModifier *sm,
+                     DerivativeAccumulator &da)=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const CLASSNAMEScore *s,

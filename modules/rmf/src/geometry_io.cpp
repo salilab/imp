@@ -231,7 +231,7 @@ namespace {
     NodeHandle cur= parent.get_node_handle_from_association(tag);
     IMP_TRY(display::SphereGeometry)
     else IMP_TRY(display::CylinderGeometry);
-    display::GeometriesTemp gt= g->get_components();
+    display::Geometries gt= g->get_components();
     if (gt.size()==1) {
       save_internal(parent, frame, tag, gt.front(),
                     IMP_HDF5_PASS_GEOMETRY_KEYS);

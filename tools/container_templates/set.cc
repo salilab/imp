@@ -99,7 +99,7 @@ void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm) {
   }
 }
 
-void CLASSNAMEContainerSet::apply(const CLASSNAMEModifier *sm,
+void CLASSNAMEContainerSet::apply(const CLASSNAMEDerivativeModifier *sm,
                                DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_CLASSFUNCTIONNAME_containers(); ++i) {
     get_CLASSFUNCTIONNAME_container(i)->apply(sm, da);

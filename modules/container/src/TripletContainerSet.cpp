@@ -99,7 +99,7 @@ void TripletContainerSet::apply(const TripletModifier *sm) {
   }
 }
 
-void TripletContainerSet::apply(const TripletModifier *sm,
+void TripletContainerSet::apply(const TripletDerivativeModifier *sm,
                                DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
     get_triplet_container(i)->apply(sm, da);

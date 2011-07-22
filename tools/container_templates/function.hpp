@@ -23,26 +23,16 @@ class Particle;
 /** The primary function of such a class is to change
     the passed particles.
 
-    A given CLASSNAMEModifier may only work when passed a
-    DerivativeAccumulator or when not passed one.
-
     \see IMP::CLASSNAMEFunctor
 
-    Implementors should see IMP_HEADERNAME_MODIFIER() and
-    IMP_HEADERNAME_MODIFIER_DA().
+    Implementors should see IMP_HEADERNAME_MODIFIER(). Also see
+    CLASSNAMEDerivativeModifier.
  */
 class IMPEXPORT CLASSNAMEModifier : public Object
 {
 public:
   typedef VARIABLETYPE Argument;
   CLASSNAMEModifier(std::string name="CLASSNAMEModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(ARGUMENTTYPE,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This CLASSNAMEModifier must be called without a"
-                << " DerivativeAccumulator.");
-  }
 
   /** Apply the function to a single value*/
   virtual void apply(ARGUMENTTYPE) const {
@@ -53,13 +43,6 @@ public:
   /** Apply the function to a collection of PLURALVARIABLETYPE */
   virtual void apply(const PLURALVARIABLETYPE &) const {
     IMP_FAILURE("This CLASSNAMEModifier must be called with a"
-                << " DerivativeAccumulator.");
-  }
-
-  /** Apply the function to a collection of PLURALVARIABLETYPE */
-  virtual void apply(const PLURALVARIABLETYPE &,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This CLASSNAMEModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
@@ -103,21 +86,11 @@ IMP_OBJECTS(CLASSNAMEModifier,CLASSNAMEModifiers);
  */
 class CLASSNAMEFunctor {
   Pointer<const CLASSNAMEModifier> f_;
-  DerivativeAccumulator *da_;
 public:
   //! Store the CLASSNAMEModifier and the optional DerivativeAccumulator
-  CLASSNAMEFunctor(const CLASSNAMEModifier *f): f_(f), da_(NULL){}
-  CLASSNAMEFunctor(const CLASSNAMEModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
+  CLASSNAMEFunctor(const CLASSNAMEModifier *f): f_(f){}
   void operator()( VARIABLETYPE p) const {
-    if (da_) {
-      f_->apply(p, *da_);
-    } else {
-      f_->apply(p);
-    }
+    f_->apply(p);
   }
 };
 

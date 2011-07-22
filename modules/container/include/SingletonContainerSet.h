@@ -61,7 +61,7 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   unsigned int get_number_of_particles() const;
   Particle* get_particle(unsigned int i) const;
   void apply(const SingletonModifier *sm);
-  void apply(const SingletonModifier *sm,
+  void apply(const SingletonDerivativeModifier *sm,
              DerivativeAccumulator &da);
   double evaluate(const SingletonScore *s,
                   DerivativeAccumulator *da) const;

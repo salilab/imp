@@ -17,17 +17,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-TripletsConstraint::TripletsConstraint(TripletContainer *c,
-                                           TripletModifier *before,
-                                           TripletModifier *after,
-                                           std::string name):
-  Constraint(name), c_(c) {
-  if (before) f_=before;
-  if (after) af_=after;
-}
-
 TripletsConstraint::TripletsConstraint(TripletModifier *before,
-                                           TripletModifier *after,
+                                  TripletDerivativeModifier *after,
                                            TripletContainer *c,
                                            std::string name):
   Constraint(name), c_(c) {

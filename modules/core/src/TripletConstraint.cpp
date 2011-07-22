@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 TripletConstraint::TripletConstraint(TripletModifier *before,
-                                         TripletModifier *after,
+                                TripletDerivativeModifier *after,
                                          const ParticleTriplet& vt,
                                          std::string name):
   Constraint(name), v_(vt){

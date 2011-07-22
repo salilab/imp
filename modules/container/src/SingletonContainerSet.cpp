@@ -99,7 +99,7 @@ void SingletonContainerSet::apply(const SingletonModifier *sm) {
   }
 }
 
-void SingletonContainerSet::apply(const SingletonModifier *sm,
+void SingletonContainerSet::apply(const SingletonDerivativeModifier *sm,
                                DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
     get_singleton_container(i)->apply(sm, da);

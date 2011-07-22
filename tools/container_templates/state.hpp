@@ -40,22 +40,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT CLASSNAMEsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEModifier> f_;
-  IMP::internal::OwnerPointer<CLASSNAMEModifier> af_;
+  IMP::internal::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
   IMP::internal::OwnerPointer<CLASSNAMEContainer> c_;
 public:
-#ifndef IMP_DOXYGEN
-  /** \param[in] c The Container to hold the elements to process
-      \param[in] before The CLASSNAMEModifier to apply to all elements
-      before evaluate.
-      \param[in] after The CLASSNAMEModifier to apply to all elements
-      after evaluate.
-      \param[in] name The object name
-   */
-  CLASSNAMEsConstraint(CLASSNAMEContainer *c, CLASSNAMEModifier *before,
-                       CLASSNAMEModifier *after,
-                       std::string name="CLASSNAMEConstraint %1%");
-#endif
-
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The CLASSNAMEModifier to apply to all elements
       before evaluate.
@@ -64,12 +51,12 @@ public:
       \param[in] name The object name
    */
   CLASSNAMEsConstraint(CLASSNAMEModifier *before,
-                       CLASSNAMEModifier *after,
+                       CLASSNAMEDerivativeModifier *after,
                        CLASSNAMEContainer *c,
                        std::string name="CLASSNAMEConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(CLASSNAMEModifier* f) {
+  void set_after_evaluate_modifier(CLASSNAMEDerivativeModifier* f) {
     af_=f;
   }
 

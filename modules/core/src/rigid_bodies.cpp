@@ -61,10 +61,10 @@ namespace {
       \see UpdateRigidBodyMembers
   */
   class AccumulateRigidBodyDerivatives:
-    public SingletonModifier {
+    public SingletonDerivativeModifier {
   public:
     AccumulateRigidBodyDerivatives(){}
-    IMP_SINGLETON_MODIFIER_DA(AccumulateRigidBodyDerivatives);
+    IMP_SINGLETON_DERIVATIVE_MODIFIER(AccumulateRigidBodyDerivatives);
   };
 
 

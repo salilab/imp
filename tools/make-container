@@ -4,7 +4,8 @@ import os
 
 def filter((function_name, type_name, class_name, variable_type, argument_type, return_type,
             storage_type,
-            plural_variable_type, plural_argument_type, plural_storage_type),
+            plural_variable_type, plural_argument_type, plural_storage_type,
+            index_type, plural_index_type, pass_index_type),
            infile, minmax="", comp=""):
     header_guard_class_name=class_name.upper()
     header_guard_minmax= minmax.upper()
@@ -20,6 +21,9 @@ def filter((function_name, type_name, class_name, variable_type, argument_type, 
         .replace("CLASSNAME", class_name)\
         .replace("PLURALVARIABLETYPE", plural_variable_type)\
         .replace("PLURALARGUMENTTYPE", plural_argument_type)\
+        .replace("PLURALINDEXTYPE", plural_index_type)\
+        .replace("PASSINDEXTYPE", pass_index_type)\
+        .replace("INDEXTYPE", index_type)\
         .replace("RETURNTYPE", return_type)\
         .replace("VARIABLETYPE", variable_type)\
         .replace("PLURALSTORAGETYPE", plural_storage_type)\
@@ -32,7 +36,8 @@ def filter((function_name, type_name, class_name, variable_type, argument_type, 
 def make_one(params, test=True):
     (function_name, type_name, class_name, variable_type, argument_type, return_type,
      storage_type,
-     plural_variable_type, plural_argument_type, plural_storage_type)= params
+     plural_variable_type, plural_argument_type, plural_storage_type,
+      index_type, plural_index_type, pass_index_type)= params
     path= os.getcwd()+"/"
     multi= class_name
     plural_multi= multi+"s"
@@ -113,6 +118,12 @@ def make_one(params, test=True):
               ("kernel/src/"+multi + "Modifier.cpp",
                path+"/tools/container_templates/function.cc"),
 
+
+              ("kernel/include/"+multi + "DerivativeModifier.h",
+               path+"/tools/container_templates/derivfunction.hpp"),
+              ("kernel/src/"+multi + "DerivativeModifier.cpp",
+               path+"/tools/container_templates/derivfunction.cc"),
+
               ("kernel/include/"+multi + "Filter.h",
                path+"/tools/container_templates/filter.hpp"),
               ("kernel/src/"+multi + "Filter.cpp",
@@ -170,16 +181,20 @@ def main():
     #        plural_variable_type, plural_argument_type, plural_storage_type)
     make_one(("particle", "Particle", "Singleton", "Particle*", "Particle*",
               "Particle*", "Pointer<Particle>",
-              "ParticlesTemp", "ParticlesTemp", "Particles"))
+              "ParticlesTemp", "ParticlesTemp", "Particles",
+              "ParticleIndex", "ParticleIndexes", "ParticleIndex"))
     make_one(("particle_pair", "ParticlePair", "Pair", "ParticlePair", "const ParticlePair&",
               "const ParticlePair", "ParticlePair",
-              "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs"))
+              "ParticlePairsTemp", "ParticlePairsTemp", "ParticlePairs",
+              "ParticleIndexPair", "ParticleIndexPairs", "const ParticleIndexPair&"))
     make_one(("particle_triplet", "ParticleTriplet", "Triplet", "ParticleTriplet", "const ParticleTriplet&",
               "const ParticleTriplet", "ParticleTriplet",
-              "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets"), test=False)
+              "ParticleTripletsTemp", "ParticleTripletsTemp", "ParticleTriplets",
+              "ParticleIndexTriplet", "ParticleIndexTriplets", "const ParticleIndexTriplet&"), test=False)
     make_one(("particle_quad", "ParticleQuad", "Quad", "ParticleQuad", "const ParticleQuad&",
               "const ParticleQuad", "ParticleQuad",
-              "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads"), test=False)
+              "ParticleQuadsTemp", "ParticleQuadsTemp", "ParticleQuads",
+              "ParticleIndexQuad", "ParticleIndexQuads", "const ParticleIndexQuad&"), test=False)
     #make_one("particle tuple", "ParticlesTemp", "const ParticlesTemp&", "Particles",
     #         "Tuple", "particle tuples", "ParticlesList", "Tuples", test=False)
 

@@ -60,10 +60,12 @@ IMP_SWIG_BASE_OBJECT(IMP,OptimizerState, OptimizerStates);
 IMP_SWIG_BASE_OBJECT(IMP,PairContainer, PairContainers);
 IMP_SWIG_BASE_OBJECT(IMP,PairFilter, PairFilters);
 IMP_SWIG_BASE_OBJECT(IMP,PairModifier, PairModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,PairDerivativeModifier, PairDerivativeModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,PairScore, PairScores);
 IMP_SWIG_BASE_OBJECT(IMP,QuadContainer, QuadContainers);
 IMP_SWIG_BASE_OBJECT(IMP,QuadFilter, QuadFilters);
 IMP_SWIG_BASE_OBJECT(IMP,QuadModifier, QuadModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,QuadDerivativeModifier, QuadDerivativeModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,QuadScore, QuadScores);
 IMP_SWIG_BASE_OBJECT(IMP,Refiner, Refiners);
 IMP_SWIG_BASE_OBJECT(IMP,Restraint, Restraints);
@@ -72,10 +74,12 @@ IMP_SWIG_BASE_OBJECT(IMP,ScoreState, ScoreStates);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonContainer, SingletonContainers);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonFilter, SingletonFilters);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonModifier, SingletonModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,SingletonDerivativeModifier, SingletonDerivativeModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,SingletonScore, SingletonScores);
 IMP_SWIG_BASE_OBJECT(IMP,TripletContainer, TripletContainers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletFilter, TripletFilters);
 IMP_SWIG_BASE_OBJECT(IMP,TripletModifier, TripletModifiers);
+IMP_SWIG_BASE_OBJECT(IMP,TripletDerivativeModifier, TripletDerivativeModifiers);
 IMP_SWIG_BASE_OBJECT(IMP,TripletScore, TripletScores);
 IMP_SWIG_BASE_OBJECT(IMP,UnaryFunction, UnaryFunctions);
 IMP_SWIG_OBJECT(IMP,ConfigurationSet, ConfigurationSets);
@@ -293,7 +297,9 @@ namespace IMP {
 %include "IMP/SingletonScore.h"
 %include "IMP/PairScore.h"
 %include "IMP/SingletonModifier.h"
+%include "IMP/SingletonDerivativeModifier.h"
 %include "IMP/PairModifier.h"
+%include "IMP/PairDerivativeModifier.h"
 %include "IMP/SingletonContainer.h"
 %include "IMP/PairContainer.h"
 %include "IMP/SingletonFilter.h"
@@ -301,7 +307,9 @@ namespace IMP {
 %include "IMP/TripletScore.h"
 %include "IMP/QuadScore.h"
 %include "IMP/TripletModifier.h"
+%include "IMP/TripletDerivativeModifier.h"
 %include "IMP/QuadModifier.h"
+%include "IMP/QuadDerivativeModifier.h"
 %include "IMP/TripletContainer.h"
 %include "IMP/QuadContainer.h"
 %include "IMP/TripletFilter.h"

@@ -26,7 +26,7 @@ IMPCORE_BEGIN_NAMESPACE
  \pythonexample{cover_particles}
  */
 class IMPCOREEXPORT DerivativesToRefined:
-public SingletonModifier
+public SingletonDerivativeModifier
 {
   IMP::internal::OwnerPointer<Refiner> refiner_;
   FloatKeys ks_;
@@ -36,7 +36,7 @@ public:
                        FloatKeys ks
                        = XYZ::get_xyz_keys());
 
-  IMP_SINGLETON_MODIFIER_DA(DerivativesToRefined);
+  IMP_SINGLETON_DERIVATIVE_MODIFIER(DerivativesToRefined);
 };
 
 IMPCORE_END_NAMESPACE
