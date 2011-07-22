@@ -17,15 +17,15 @@ class TestBL(IMP.test.TestCase):
         b= IMP.atom.create_custom_bond(b0, b1, 1,1)
 
         pc= IMP.atom.BondedPairFilter()
-        print pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0))
-        self.assertTrue(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p1)))
+        print pc.get_contains(IMP.ParticlePair(p0,p0))
+        self.assertTrue(pc.get_contains(IMP.ParticlePair(p0,p1)))
         print 0
-        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p2,p0)))
+        self.assertFalse(pc.get_contains(IMP.ParticlePair(p2,p0)))
         print 1
-        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p2,p2)))
+        self.assertFalse(pc.get_contains(IMP.ParticlePair(p2,p2)))
         print 2
-        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p0)))
-        self.assertFalse(pc.get_contains_particle_pair(IMP.ParticlePair(p0,p3)))
+        self.assertFalse(pc.get_contains(IMP.ParticlePair(p0,p0)))
+        self.assertFalse(pc.get_contains(IMP.ParticlePair(p0,p3)))
 
 
 if __name__ == '__main__':
