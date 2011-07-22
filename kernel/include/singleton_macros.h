@@ -214,7 +214,7 @@
     }                                                                   \
   }                                                                     \
   void apply(Model *m, ParticleIndex a) const {            \
-    return Name::apply(get_particle(m,a));                              \
+    return Name::apply(IMP::internal::get_particle(m,a));               \
   }                                                                     \
   void apply(Model *m, const ParticleIndexes &ps) const {               \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
