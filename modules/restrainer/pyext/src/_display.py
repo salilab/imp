@@ -84,7 +84,7 @@ class _DisplayNode(object):
             atoms = IMP.atom.get_by_type(self.model_decorator,
                 IMP.atom.XYZR_TYPE)
             for atomh in atoms:
-                for atom in atomh.get_leaves():
+                for atom in IMP.atom.get_leaves(atomh):
                     atom_list.append(atom)
         if len(atom_list) >0:
             c = IMP.container.ListSingletonContainer(atom_list)
