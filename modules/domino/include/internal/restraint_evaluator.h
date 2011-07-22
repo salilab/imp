@@ -51,8 +51,7 @@ class RestraintData {
   mutable int filter_attempts_;
   mutable int filter_passes_;
 public:
-  RestraintData(Restraint *r,
-                double weight): r_(r), weight_(weight),
+  RestraintData(Restraint *r): r_(r),
                                 max_(std::numeric_limits<double>::max()){
     filter_attempts_=0;
     filter_passes_=0;
@@ -79,8 +78,7 @@ public:
     } else {
       load_particle_states(ps.begin(), ps.end(), state, pst);
       RestraintsTemp rs(1, r_);
-      Floats weights(1,weight_);
-      double score= r_->get_model()->evaluate_if_good(rs, weights, false)[0];
+      double score= r_->get_model()->evaluate_if_good(rs, false)[0];
       if (Filter) {
         ++filter_attempts_;
         if (score >max_) {

@@ -31,7 +31,6 @@ void ModelData::set_use_caching(bool tf) {
 
 namespace {
   void handle_restraint(Restraint *r,
-                                 double weight,
                         const IMP::compatibility::map<Particle*,
                         ParticlesTemp> &idm,
       const IMP::compatibility::map<Restraint*,
@@ -67,7 +66,7 @@ namespace {
       std::sort(oip[i].begin(), oip[i].end());
       oip[i].erase(std::unique(oip[i].begin(), oip[i].end()), oip[i].end());
       dependencies.push_back(Subset(oip[i], true));
-      RestraintData ret(r, weight);
+      RestraintData ret(r);
       if (preload.find(r) != preload.end()){
         const ModelData::PreloadData &data= preload.find(r)->second;
         IMP_USAGE_CHECK(dependencies.back() == data.s,
@@ -104,8 +103,7 @@ void ModelData::initialize() {
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
-    double weight=rs_->get_model()->get_weight(*rit);
-    handle_restraint(*rit, weight, idm, preload_,
+    handle_restraint(*rit, idm, preload_,
                      dependencies_, ip,
                      rdata_, index, cache_);
   }
