@@ -14,7 +14,7 @@
 #include "VectorD.h"
 #include "IMP/base_types.h"
 #include "IMP/exception.h"
-#include <IMP/VectorOfRefCounted.h>
+#include <IMP/Object.h>
 #include <complex>
 
 IMPALGEBRA_BEGIN_NAMESPACE
@@ -399,9 +399,8 @@ typedef Matrix2D<double> Matrix2D_d;
 typedef Matrix2D< std::complex<double> > Matrix2D_c;
 
 //! A vector of reference counted pointers to 2D Matrices of doubles
-typedef VectorOfRefCounted<Matrix2D_d *> Matrix2Ds_d;
-
-typedef VectorOfRefCounted<Matrix2D_c *> Matrix2Ds_c;
+IMP_OBJECTS(Matrix2D_d, Matrix2Ds_d);
+IMP_OBJECTS(Matrix2D_c, Matrix2Ds_c);
 
 IMPALGEBRA_END_NAMESPACE
 
