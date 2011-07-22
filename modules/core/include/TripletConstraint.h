@@ -14,6 +14,7 @@
 
 #include "core_config.h"
 #include <IMP/TripletModifier.h>
+#include <IMP/TripletDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 

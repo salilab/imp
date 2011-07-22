@@ -14,6 +14,7 @@
 
 #include "core_config.h"
 #include <IMP/QuadModifier.h>
+#include <IMP/QuadDerivativeModifier.h>
 #include <IMP/Constraint.h>
 #include <IMP/Particle.h>
 
