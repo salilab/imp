@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SingletonConstraint::SingletonConstraint(SingletonModifier *before,
-                                         SingletonModifier *after,
+                                SingletonDerivativeModifier *after,
                                          Particle* vt,
                                          std::string name):
   Constraint(name), v_(vt){

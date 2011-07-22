@@ -128,19 +128,10 @@
     - IMP::SingletonModifier::apply(IMP::Particle*)
     - IMP::SingletonModifier::get_input_particles()
     - IMP::SingletonModifier::get_output_particles()
-    \see IMP_SINGLETON_MODIFIER_DA()
 */
 #define IMP_SINGLETON_MODIFIER(Name)                                   \
-  void apply(Particle* a) const;                                \
-  void apply(Particle* a, DerivativeAccumulator&) const{        \
-    apply(a);                                                           \
-  }                                                                     \
+  void apply(Particle* a) const;                             \
   void apply(const ParticlesTemp &ps) const {                      \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i]);                                               \
-    }                                                                   \
-  }                                                                     \
-  void apply(const ParticlesTemp &ps, DerivativeAccumulator &) const { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
     }                                                                   \
@@ -151,27 +142,14 @@
   ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name)
 
-
-
 //! Declare the functions needed for a SingletonModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::SingletonModifier::apply(IMP::Particle*,
-    IMP::DerivativeAccumulator&)
-    - IMP::SingletonModifier::get_input_particles()
-    - IMP::SingletonModifier::get_output_particles()
-
-    \see IMP_SINGLETON_MODIFIER
+    - IMP::SingletonDerivativeModifier::apply(IMP::Particle*)
+    - IMP::SingletonDerivativeModifier::get_input_particles()
+    - IMP::SingletonDerivativeModifier::get_output_particles()
 */
-#define IMP_SINGLETON_MODIFIER_DA(Name)                                \
-  void apply(Particle* a, DerivativeAccumulator &da) const;     \
-  void apply(Particle*) const{                                  \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
-  void apply(const ParticlesTemp &) const {                        \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
+#define IMP_SINGLETON_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(Particle* a, DerivativeAccumulator&da) const;    \
   void apply(const ParticlesTemp &ps,                              \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -193,7 +171,7 @@
   void apply(const SingletonModifier *sm) {                             \
     template_apply(sm);                                                 \
   }                                                                     \
-  void apply(const SingletonModifier *sm,                               \
+  void apply(const SingletonDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) {                               \
     template_apply(sm, da);                                             \
   }                                                                     \

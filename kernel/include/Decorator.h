@@ -290,7 +290,8 @@ public:
   private:                                                              \
   static ObjectKey get_constraint_key();                                \
   static void set_constraint(SingletonModifier* before,                 \
-                             SingletonModifier *after, Particle *p);    \
+                             SingletonDerivativeModifier *after,        \
+                             Particle *p);                              \
 public:                                                                 \
  Constraint *get_constraint() const {                                   \
    return dynamic_cast<Constraint*>(get_particle()                      \
@@ -305,7 +306,7 @@ public:                                                                 \
     return ret;                                                         \
   }                                                                     \
   void Name::set_constraint(SingletonModifier* before,                  \
-                            SingletonModifier *after,                   \
+                            SingletonDerivativeModifier *after,         \
                             Particle *p) {                              \
     if (!after && !before ) {                                           \
       if (p->has_attribute(get_constraint_key())) {                     \

@@ -223,7 +223,7 @@ protected:
   void apply(const SingletonModifier *sm) {
     sm->apply(data_);
   }
-  void apply(const SingletonModifier *sm,
+  void apply(const SingletonDerivativeModifier *sm,
              DerivativeAccumulator &da) {
     sm->apply(data_, da);
   }

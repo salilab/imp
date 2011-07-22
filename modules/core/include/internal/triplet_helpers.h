@@ -223,7 +223,7 @@ protected:
   void apply(const TripletModifier *sm) {
     sm->apply(data_);
   }
-  void apply(const TripletModifier *sm,
+  void apply(const TripletDerivativeModifier *sm,
              DerivativeAccumulator &da) {
     sm->apply(data_, da);
   }

@@ -223,7 +223,7 @@ protected:
   void apply(const PairModifier *sm) {
     sm->apply(data_);
   }
-  void apply(const PairModifier *sm,
+  void apply(const PairDerivativeModifier *sm,
              DerivativeAccumulator &da) {
     sm->apply(data_, da);
   }

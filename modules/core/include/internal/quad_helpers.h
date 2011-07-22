@@ -223,7 +223,7 @@ protected:
   void apply(const QuadModifier *sm) {
     sm->apply(data_);
   }
-  void apply(const QuadModifier *sm,
+  void apply(const QuadDerivativeModifier *sm,
              DerivativeAccumulator &da) {
     sm->apply(data_, da);
   }

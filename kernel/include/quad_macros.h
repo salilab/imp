@@ -128,19 +128,10 @@
     - IMP::QuadModifier::apply(IMP::Particle*)
     - IMP::QuadModifier::get_input_particles()
     - IMP::QuadModifier::get_output_particles()
-    \see IMP_QUAD_MODIFIER_DA()
 */
 #define IMP_QUAD_MODIFIER(Name)                                   \
-  void apply(const ParticleQuad& a) const;                                \
-  void apply(const ParticleQuad& a, DerivativeAccumulator&) const{        \
-    apply(a);                                                           \
-  }                                                                     \
+  void apply(const ParticleQuad& a) const;                             \
   void apply(const ParticleQuadsTemp &ps) const {                      \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i]);                                               \
-    }                                                                   \
-  }                                                                     \
-  void apply(const ParticleQuadsTemp &ps, DerivativeAccumulator &) const { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
     }                                                                   \
@@ -151,27 +142,14 @@
   ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name)
 
-
-
 //! Declare the functions needed for a QuadModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::QuadModifier::apply(IMP::Particle*,
-    IMP::DerivativeAccumulator&)
-    - IMP::QuadModifier::get_input_particles()
-    - IMP::QuadModifier::get_output_particles()
-
-    \see IMP_QUAD_MODIFIER
+    - IMP::QuadDerivativeModifier::apply(IMP::Particle*)
+    - IMP::QuadDerivativeModifier::get_input_particles()
+    - IMP::QuadDerivativeModifier::get_output_particles()
 */
-#define IMP_QUAD_MODIFIER_DA(Name)                                \
-  void apply(const ParticleQuad& a, DerivativeAccumulator &da) const;     \
-  void apply(const ParticleQuad&) const{                                  \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
-  void apply(const ParticleQuadsTemp &) const {                        \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
+#define IMP_QUAD_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(const ParticleQuad& a, DerivativeAccumulator&da) const;    \
   void apply(const ParticleQuadsTemp &ps,                              \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -193,7 +171,7 @@
   void apply(const QuadModifier *sm) {                             \
     template_apply(sm);                                                 \
   }                                                                     \
-  void apply(const QuadModifier *sm,                               \
+  void apply(const QuadDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) {                               \
     template_apply(sm, da);                                             \
   }                                                                     \

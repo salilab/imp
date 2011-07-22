@@ -128,19 +128,10 @@
     - IMP::PairModifier::apply(IMP::Particle*)
     - IMP::PairModifier::get_input_particles()
     - IMP::PairModifier::get_output_particles()
-    \see IMP_PAIR_MODIFIER_DA()
 */
 #define IMP_PAIR_MODIFIER(Name)                                   \
-  void apply(const ParticlePair& a) const;                                \
-  void apply(const ParticlePair& a, DerivativeAccumulator&) const{        \
-    apply(a);                                                           \
-  }                                                                     \
+  void apply(const ParticlePair& a) const;                             \
   void apply(const ParticlePairsTemp &ps) const {                      \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i]);                                               \
-    }                                                                   \
-  }                                                                     \
-  void apply(const ParticlePairsTemp &ps, DerivativeAccumulator &) const { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
     }                                                                   \
@@ -151,27 +142,14 @@
   ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name)
 
-
-
 //! Declare the functions needed for a PairModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::PairModifier::apply(IMP::Particle*,
-    IMP::DerivativeAccumulator&)
-    - IMP::PairModifier::get_input_particles()
-    - IMP::PairModifier::get_output_particles()
-
-    \see IMP_PAIR_MODIFIER
+    - IMP::PairDerivativeModifier::apply(IMP::Particle*)
+    - IMP::PairDerivativeModifier::get_input_particles()
+    - IMP::PairDerivativeModifier::get_output_particles()
 */
-#define IMP_PAIR_MODIFIER_DA(Name)                                \
-  void apply(const ParticlePair& a, DerivativeAccumulator &da) const;     \
-  void apply(const ParticlePair&) const{                                  \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
-  void apply(const ParticlePairsTemp &) const {                        \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
+#define IMP_PAIR_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(const ParticlePair& a, DerivativeAccumulator&da) const;    \
   void apply(const ParticlePairsTemp &ps,                              \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -193,7 +171,7 @@
   void apply(const PairModifier *sm) {                             \
     template_apply(sm);                                                 \
   }                                                                     \
-  void apply(const PairModifier *sm,                               \
+  void apply(const PairDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) {                               \
     template_apply(sm, da);                                             \
   }                                                                     \

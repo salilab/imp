@@ -99,7 +99,7 @@ void QuadContainerSet::apply(const QuadModifier *sm) {
   }
 }
 
-void QuadContainerSet::apply(const QuadModifier *sm,
+void QuadContainerSet::apply(const QuadDerivativeModifier *sm,
                                DerivativeAccumulator &da) {
   for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
     get_quad_container(i)->apply(sm, da);

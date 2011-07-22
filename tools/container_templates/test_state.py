@@ -120,7 +120,7 @@ class CLASSNAMEContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= CLASSNAMETestModifier(k)
         print "apply"
-        s= IMP.container.CLASSNAMEsConstraint(c, f, None)
+        s= IMP.container.CLASSNAMEsConstraint(f, None, c)
         print "add"
         m.add_score_state(s)
         m.evaluate(False)

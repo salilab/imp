@@ -223,7 +223,7 @@ protected:
   void apply(const CLASSNAMEModifier *sm) {
     sm->apply(data_);
   }
-  void apply(const CLASSNAMEModifier *sm,
+  void apply(const CLASSNAMEDerivativeModifier *sm,
              DerivativeAccumulator &da) {
     sm->apply(data_, da);
   }

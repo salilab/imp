@@ -23,26 +23,16 @@ class Particle;
 /** The primary function of such a class is to change
     the passed particles.
 
-    A given QuadModifier may only work when passed a
-    DerivativeAccumulator or when not passed one.
-
     \see IMP::QuadFunctor
 
-    Implementors should see IMP_QUAD_MODIFIER() and
-    IMP_QUAD_MODIFIER_DA().
+    Implementors should see IMP_QUAD_MODIFIER(). Also see
+    QuadDerivativeModifier.
  */
 class IMPEXPORT QuadModifier : public Object
 {
 public:
   typedef ParticleQuad Argument;
   QuadModifier(std::string name="QuadModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(const ParticleQuad&,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This QuadModifier must be called without a"
-                << " DerivativeAccumulator.");
-  }
 
   /** Apply the function to a single value*/
   virtual void apply(const ParticleQuad&) const {
@@ -53,13 +43,6 @@ public:
   /** Apply the function to a collection of ParticleQuadsTemp */
   virtual void apply(const ParticleQuadsTemp &) const {
     IMP_FAILURE("This QuadModifier must be called with a"
-                << " DerivativeAccumulator.");
-  }
-
-  /** Apply the function to a collection of ParticleQuadsTemp */
-  virtual void apply(const ParticleQuadsTemp &,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This QuadModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
@@ -103,21 +86,11 @@ IMP_OBJECTS(QuadModifier,QuadModifiers);
  */
 class QuadFunctor {
   Pointer<const QuadModifier> f_;
-  DerivativeAccumulator *da_;
 public:
   //! Store the QuadModifier and the optional DerivativeAccumulator
-  QuadFunctor(const QuadModifier *f): f_(f), da_(NULL){}
-  QuadFunctor(const QuadModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
+  QuadFunctor(const QuadModifier *f): f_(f){}
   void operator()( ParticleQuad p) const {
-    if (da_) {
-      f_->apply(p, *da_);
-    } else {
-      f_->apply(p);
-    }
+    f_->apply(p);
   }
 };
 

@@ -35,18 +35,19 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT PairConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<PairModifier> f_;
-  IMP::internal::OwnerPointer<PairModifier> af_;
+  IMP::internal::OwnerPointer<PairDerivativeModifier> af_;
   ParticlePair v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
   PairConstraint(PairModifier *before,
-                      PairModifier *after, const ParticlePair& vt,
+                      PairDerivativeModifier *after,
+                      const ParticlePair& vt,
                       std::string name="PairConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(PairModifier* f) {
+  void set_after_evaluate_modifier(PairDerivativeModifier* f) {
     af_=f;
   }
 

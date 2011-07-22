@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include "QuadScore.h"
 #include "QuadModifier.h"
+#include "QuadDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -102,8 +103,9 @@ class IMPEXPORT QuadContainer : public Container
                            DerivativeAccumulator *&da) {
     s->S::apply(a, da);
   }
-  static void call_apply(const QuadModifier *s, const ParticleQuad& a,
-                           DerivativeAccumulator &da) {
+  static void call_apply(const QuadDerivativeModifier *s,
+                         const ParticleQuad& a,
+                         DerivativeAccumulator &da) {
     s->apply(a, da);
   }
 #endif
@@ -150,7 +152,8 @@ public:
   virtual void apply(const QuadModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const QuadModifier *sm, DerivativeAccumulator &da)=0;
+  virtual void apply(const QuadDerivativeModifier *sm,
+                     DerivativeAccumulator &da)=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const QuadScore *s,

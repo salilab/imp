@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 QuadConstraint::QuadConstraint(QuadModifier *before,
-                                         QuadModifier *after,
+                                QuadDerivativeModifier *after,
                                          const ParticleQuad& vt,
                                          std::string name):
   Constraint(name), v_(vt){

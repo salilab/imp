@@ -23,26 +23,16 @@ class Particle;
 /** The primary function of such a class is to change
     the passed particles.
 
-    A given TripletModifier may only work when passed a
-    DerivativeAccumulator or when not passed one.
-
     \see IMP::TripletFunctor
 
-    Implementors should see IMP_TRIPLET_MODIFIER() and
-    IMP_TRIPLET_MODIFIER_DA().
+    Implementors should see IMP_TRIPLET_MODIFIER(). Also see
+    TripletDerivativeModifier.
  */
 class IMPEXPORT TripletModifier : public Object
 {
 public:
   typedef ParticleTriplet Argument;
   TripletModifier(std::string name="TripletModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(const ParticleTriplet&,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This TripletModifier must be called without a"
-                << " DerivativeAccumulator.");
-  }
 
   /** Apply the function to a single value*/
   virtual void apply(const ParticleTriplet&) const {
@@ -53,13 +43,6 @@ public:
   /** Apply the function to a collection of ParticleTripletsTemp */
   virtual void apply(const ParticleTripletsTemp &) const {
     IMP_FAILURE("This TripletModifier must be called with a"
-                << " DerivativeAccumulator.");
-  }
-
-  /** Apply the function to a collection of ParticleTripletsTemp */
-  virtual void apply(const ParticleTripletsTemp &,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This TripletModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
@@ -103,21 +86,11 @@ IMP_OBJECTS(TripletModifier,TripletModifiers);
  */
 class TripletFunctor {
   Pointer<const TripletModifier> f_;
-  DerivativeAccumulator *da_;
 public:
   //! Store the TripletModifier and the optional DerivativeAccumulator
-  TripletFunctor(const TripletModifier *f): f_(f), da_(NULL){}
-  TripletFunctor(const TripletModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
+  TripletFunctor(const TripletModifier *f): f_(f){}
   void operator()( ParticleTriplet p) const {
-    if (da_) {
-      f_->apply(p, *da_);
-    } else {
-      f_->apply(p);
-    }
+    f_->apply(p);
   }
 };
 

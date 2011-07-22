@@ -40,22 +40,9 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT PairsConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<PairModifier> f_;
-  IMP::internal::OwnerPointer<PairModifier> af_;
+  IMP::internal::OwnerPointer<PairDerivativeModifier> af_;
   IMP::internal::OwnerPointer<PairContainer> c_;
 public:
-#ifndef IMP_DOXYGEN
-  /** \param[in] c The Container to hold the elements to process
-      \param[in] before The PairModifier to apply to all elements
-      before evaluate.
-      \param[in] after The PairModifier to apply to all elements
-      after evaluate.
-      \param[in] name The object name
-   */
-  PairsConstraint(PairContainer *c, PairModifier *before,
-                       PairModifier *after,
-                       std::string name="PairConstraint %1%");
-#endif
-
   /** \param[in] c The Container to hold the elements to process
       \param[in] before The PairModifier to apply to all elements
       before evaluate.
@@ -64,12 +51,12 @@ public:
       \param[in] name The object name
    */
   PairsConstraint(PairModifier *before,
-                       PairModifier *after,
+                       PairDerivativeModifier *after,
                        PairContainer *c,
                        std::string name="PairConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(PairModifier* f) {
+  void set_after_evaluate_modifier(PairDerivativeModifier* f) {
     af_=f;
   }
 

@@ -5,6 +5,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                   show_exceptions=[# decorator, RefCounted arer just a base classes
                                    'Decorator', 'RefCounted',
                                    'PairFunctor', 'QuadFunctor', 'SingletonFunctor', 'TripletFunctor',
+                      'PairDerivativeFunctor', 'QuadDerivativeFunctor', 'SingletonDerivativeFunctor', 'TripletDerivativeFunctor',
                                    'RandomNumberGenerator',
                                    # these are just constuctors for python tuples
                                    "ParticlePair", "ParticleTriplet", "ParticleQuad"],
@@ -14,6 +15,7 @@ env.IMPModuleTest(python_tests= env.IMPModuleGetPythonTests(),
                                            'InternalException', 'ModelException', 'PairFunctor',
                                            'QuadFunctor', 'RandomNumberGenerator', 'RefCounted',
                                            'SingletonFunctor', 'TripletFunctor', 'UsageException',
+                                           'PairDerivativeFunctor', 'QuadDerivativeFunctor', 'SingletonDerivativeFunctor', 'TripletDerivativeFunctor',
                                            'ValueException', 'WarningContext', 'DerivativeAccumulator',
                                            'FailureHandlerBase'],
                   spelling_exceptions=['altgraph'])

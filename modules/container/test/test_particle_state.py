@@ -120,7 +120,7 @@ class SingletonContainerTest(IMP.test.TestCase):
         k= IMP.IntKey("thevalue")
         f= SingletonTestModifier(k)
         print "apply"
-        s= IMP.container.SingletonsConstraint(c, f, None)
+        s= IMP.container.SingletonsConstraint(f, None, c)
         print "add"
         m.add_score_state(s)
         m.evaluate(False)

@@ -17,17 +17,8 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-QuadsConstraint::QuadsConstraint(QuadContainer *c,
-                                           QuadModifier *before,
-                                           QuadModifier *after,
-                                           std::string name):
-  Constraint(name), c_(c) {
-  if (before) f_=before;
-  if (after) af_=after;
-}
-
 QuadsConstraint::QuadsConstraint(QuadModifier *before,
-                                           QuadModifier *after,
+                                  QuadDerivativeModifier *after,
                                            QuadContainer *c,
                                            std::string name):
   Constraint(name), c_(c) {

@@ -61,7 +61,7 @@ class IMPCONTAINEREXPORT PairContainerSet
   unsigned int get_number_of_particle_pairs() const;
   ParticlePair get_particle_pair(unsigned int i) const;
   void apply(const PairModifier *sm);
-  void apply(const PairModifier *sm,
+  void apply(const PairDerivativeModifier *sm,
              DerivativeAccumulator &da);
   double evaluate(const PairScore *s,
                   DerivativeAccumulator *da) const;

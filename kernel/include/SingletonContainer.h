@@ -20,6 +20,7 @@
 #include "ParticleTuple.h"
 #include "SingletonScore.h"
 #include "SingletonModifier.h"
+#include "SingletonDerivativeModifier.h"
 #include "macros.h"
 
 IMP_BEGIN_NAMESPACE
@@ -102,8 +103,9 @@ class IMPEXPORT SingletonContainer : public Container
                            DerivativeAccumulator *&da) {
     s->S::apply(a, da);
   }
-  static void call_apply(const SingletonModifier *s, Particle* a,
-                           DerivativeAccumulator &da) {
+  static void call_apply(const SingletonDerivativeModifier *s,
+                         Particle* a,
+                         DerivativeAccumulator &da) {
     s->apply(a, da);
   }
 #endif
@@ -150,7 +152,8 @@ public:
   virtual void apply(const SingletonModifier *sm)=0;
 
   //! Apply a SingletonModifier to the contents
-  virtual void apply(const SingletonModifier *sm, DerivativeAccumulator &da)=0;
+  virtual void apply(const SingletonDerivativeModifier *sm,
+                     DerivativeAccumulator &da)=0;
 
   //! Evaluate a score on the contents
   virtual double evaluate(const SingletonScore *s,

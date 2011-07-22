@@ -128,19 +128,10 @@
     - IMP::CLASSNAMEModifier::apply(IMP::Particle*)
     - IMP::CLASSNAMEModifier::get_input_particles()
     - IMP::CLASSNAMEModifier::get_output_particles()
-    \see IMP_HEADERNAME_MODIFIER_DA()
 */
 #define IMP_HEADERNAME_MODIFIER(Name)                                   \
-  void apply(ARGUMENTTYPE a) const;                                \
-  void apply(ARGUMENTTYPE a, DerivativeAccumulator&) const{        \
-    apply(a);                                                           \
-  }                                                                     \
+  void apply(ARGUMENTTYPE a) const;                             \
   void apply(const PLURALVARIABLETYPE &ps) const {                      \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i]);                                               \
-    }                                                                   \
-  }                                                                     \
-  void apply(const PLURALVARIABLETYPE &ps, DerivativeAccumulator &) const { \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
       Name::apply(ps[i]);                                               \
     }                                                                   \
@@ -151,27 +142,14 @@
   ContainersTemp get_output_containers(Particle*) const;                \
   IMP_OBJECT(Name)
 
-
-
 //! Declare the functions needed for a CLASSNAMEModifier
 /** In addition to the methods done by IMP_OBJECT, it declares
-    - IMP::CLASSNAMEModifier::apply(IMP::Particle*,
-    IMP::DerivativeAccumulator&)
-    - IMP::CLASSNAMEModifier::get_input_particles()
-    - IMP::CLASSNAMEModifier::get_output_particles()
-
-    \see IMP_HEADERNAME_MODIFIER
+    - IMP::CLASSNAMEDerivativeModifier::apply(IMP::Particle*)
+    - IMP::CLASSNAMEDerivativeModifier::get_input_particles()
+    - IMP::CLASSNAMEDerivativeModifier::get_output_particles()
 */
-#define IMP_HEADERNAME_MODIFIER_DA(Name)                                \
-  void apply(ARGUMENTTYPE a, DerivativeAccumulator &da) const;     \
-  void apply(ARGUMENTTYPE) const{                                  \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
-  void apply(const PLURALVARIABLETYPE &) const {                        \
-    IMP_LOG(VERBOSE, "This modifier requires a derivative accumulator " \
-            << *this << std::endl);                                     \
-  }                                                                     \
+#define IMP_HEADERNAME_DERIVATIVE_MODIFIER(Name)                        \
+  void apply(ARGUMENTTYPE a, DerivativeAccumulator&da) const;    \
   void apply(const PLURALVARIABLETYPE &ps,                              \
              DerivativeAccumulator &da) const {                         \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
@@ -193,7 +171,7 @@
   void apply(const CLASSNAMEModifier *sm) {                             \
     template_apply(sm);                                                 \
   }                                                                     \
-  void apply(const CLASSNAMEModifier *sm,                               \
+  void apply(const CLASSNAMEDerivativeModifier *sm,                     \
              DerivativeAccumulator &da) {                               \
     template_apply(sm, da);                                             \
   }                                                                     \

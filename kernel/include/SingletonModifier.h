@@ -23,26 +23,16 @@ class Particle;
 /** The primary function of such a class is to change
     the passed particles.
 
-    A given SingletonModifier may only work when passed a
-    DerivativeAccumulator or when not passed one.
-
     \see IMP::SingletonFunctor
 
-    Implementors should see IMP_SINGLETON_MODIFIER() and
-    IMP_SINGLETON_MODIFIER_DA().
+    Implementors should see IMP_SINGLETON_MODIFIER(). Also see
+    SingletonDerivativeModifier.
  */
 class IMPEXPORT SingletonModifier : public Object
 {
 public:
   typedef Particle* Argument;
   SingletonModifier(std::string name="SingletonModifier %1%");
-
-  /** Apply the function to a single value*/
-  virtual void apply(Particle*,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This SingletonModifier must be called without a"
-                << " DerivativeAccumulator.");
-  }
 
   /** Apply the function to a single value*/
   virtual void apply(Particle*) const {
@@ -53,13 +43,6 @@ public:
   /** Apply the function to a collection of ParticlesTemp */
   virtual void apply(const ParticlesTemp &) const {
     IMP_FAILURE("This SingletonModifier must be called with a"
-                << " DerivativeAccumulator.");
-  }
-
-  /** Apply the function to a collection of ParticlesTemp */
-  virtual void apply(const ParticlesTemp &,
-                     DerivativeAccumulator &) const {
-    IMP_FAILURE("This SingletonModifier must be called without a"
                 << " DerivativeAccumulator.");
   }
 
@@ -103,21 +86,11 @@ IMP_OBJECTS(SingletonModifier,SingletonModifiers);
  */
 class SingletonFunctor {
   Pointer<const SingletonModifier> f_;
-  DerivativeAccumulator *da_;
 public:
   //! Store the SingletonModifier and the optional DerivativeAccumulator
-  SingletonFunctor(const SingletonModifier *f): f_(f), da_(NULL){}
-  SingletonFunctor(const SingletonModifier *f,
-                   DerivativeAccumulator *da): f_(f), da_(da){
-    IMP_USAGE_CHECK(da_,
-                    "The passed derivative accumulator should not be null.");
-  }
+  SingletonFunctor(const SingletonModifier *f): f_(f){}
   void operator()( Particle* p) const {
-    if (da_) {
-      f_->apply(p, *da_);
-    } else {
-      f_->apply(p);
-    }
+    f_->apply(p);
   }
 };
 

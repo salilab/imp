@@ -35,18 +35,19 @@ IMPCORE_BEGIN_NAMESPACE
 class IMPCOREEXPORT TripletConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<TripletModifier> f_;
-  IMP::internal::OwnerPointer<TripletModifier> af_;
+  IMP::internal::OwnerPointer<TripletDerivativeModifier> af_;
   ParticleTriplet v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.
    */
   TripletConstraint(TripletModifier *before,
-                      TripletModifier *after, const ParticleTriplet& vt,
+                      TripletDerivativeModifier *after,
+                      const ParticleTriplet& vt,
                       std::string name="TripletConstraint %1%");
 
   //! Apply this modifier to all the elements after an evaluate
-  void set_after_evaluate_modifier(TripletModifier* f) {
+  void set_after_evaluate_modifier(TripletDerivativeModifier* f) {
     af_=f;
   }
 

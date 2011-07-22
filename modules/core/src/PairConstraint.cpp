@@ -16,7 +16,7 @@
 IMPCORE_BEGIN_NAMESPACE
 
 PairConstraint::PairConstraint(PairModifier *before,
-                                         PairModifier *after,
+                                PairDerivativeModifier *after,
                                          const ParticlePair& vt,
                                          std::string name):
   Constraint(name), v_(vt){
