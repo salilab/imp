@@ -43,7 +43,7 @@ class ParticleIndexTuple
 public:
   static unsigned int get_dimension() {return D;};
   ParticleIndexTuple(){
-    for (unsigned int i=0; i< D; ++i) {P::operator[](i)=NULL;}
+    for (unsigned int i=0; i< D; ++i) {P::operator[](i)=-1;}
   }
   ParticleIndexTuple(ParticleIndex x, ParticleIndex y) {
     IMP_USAGE_CHECK(D==2, "Need " << D << " to construct a "
