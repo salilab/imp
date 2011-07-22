@@ -58,7 +58,7 @@ int do_benchmark() {
   ff->add_well_depths(prot);
 
   // Get a list of all atoms in the protein, and put it in a container
-  atom::HierarchiesTemp atoms = get_by_type(prot, ATOM_TYPE);
+  atom::Hierarchies atoms = get_by_type(prot, ATOM_TYPE);
   IMP_NEW(ListSingletonContainer, cont, (atoms));
 
   /* Add a restraint for the Lennard-Jones interaction. This is built from

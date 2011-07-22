@@ -21,13 +21,13 @@ int main(int argc, char *[]) {
   ::Hierarchy h= read_pdb(IMP::benchmark::get_data_path("small_protein.pdb"),m);
   add_radii(h);
   ReferenceFrame3Ds vs;
-  HierarchiesTemp residues= get_by_type(h, RESIDUE_TYPE);
+  Hierarchies residues= get_by_type(h, RESIDUE_TYPE);
   while (residues.size() > 80) {
     residues.pop_back();
   }
-  HierarchiesTemp leaves;
+  Hierarchies leaves;
   for (unsigned int i=0; i< residues.size(); ++i) {
-    HierarchiesTemp l= get_leaves(residues[i]);
+    Hierarchies l= get_leaves(residues[i]);
     for (unsigned int j=0; j< l.size(); ++j) {
       leaves.push_back(l[j].get_particle());
     }

@@ -269,11 +269,12 @@ characters.
       IMP::SingletonContainer (or other type of Container) to store the set of
       IMP::Particle objects that they act on.
 
-- Store collections of IMP::Object-derived or IMP::Decorator-derived
+- Store collections of IMP::Object-derived
   objects of type \c Name using a \c Names. Declare functions that
   accept them to take a \c NamesTemp (\c Names is a \c NamesTemp). \c
   Names are reference counted (see IMP::RefCounted for details), \c
-  NamesTemp are not.
+  NamesTemp are not. Store collections of particles using a
+  \c Particles object, rather than decorators.
 
 \subsection display Display
 

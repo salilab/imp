@@ -1,5 +1,6 @@
 /** \page recent Change History
 \par Summer 2011
+- Temp and non-temp decorator lists have been merged in C++. This was done to simplifity code since no one was using the non-temp variants. Now all decorator lists are temp (non-reference counted) variants.
 - restraints and restraint sets are now evaluated only using "canonical" weights. That is, each restraint has one weight for the model (the total over all the restraint sets it is contained in and will always be evaluated with that weight). This allows the evaluation of simple restraints to be faster.
 - The IMP_LIST() macros have been changed slightly. If your usage needs to take action upon addition, removal or changes to the list, use the IMP_LIST_ACTION() variant in your header. The IMP_LIST_IMPL() macro no longer takes the actions, and the last three (generally empty arguments) will have to be removed from the call to get it to work. This is needed to move towards more flexible and efficient passing of lists of values.
 - IMP::rmf::create_hdf5_file() and IMP::rmf::open_hdf5_file() were added to avoid the dangerous and unclear bool paramter on the HDF5Group constructor. That constructor has been deprecated.

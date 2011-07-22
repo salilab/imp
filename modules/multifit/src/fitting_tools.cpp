@@ -17,7 +17,7 @@ FittingSolutionRecords get_close_to_point(
   Float dist2 = dist*dist;
   IMP::algebra::Vector3D ap_centroid = IMP::core::XYZ(ap).get_coordinates();
   IMP::algebra::Vector3D mh_centroid =
-    IMP::core::get_centroid(IMP::core::XYZsTemp(IMP::core::get_leaves(mh)));
+    IMP::core::get_centroid(IMP::core::XYZs(IMP::core::get_leaves(mh)));
   for(FittingSolutionRecords::const_iterator it = fit_sols.begin();
       it != fit_sols.end();it++) {
     if (IMP::algebra::get_squared_distance(

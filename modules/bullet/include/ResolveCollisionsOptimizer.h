@@ -38,7 +38,7 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
   core::XYZRs ps_;
   typedef std::pair<std::vector<btScalar>, Ints > Obstacle;
   mutable std::vector<Obstacle> obstacles_;
-  void set_xyzrs_internal(const core::XYZRsTemp &ps);
+  void set_xyzrs_internal(const core::XYZRs &ps);
   double local_;
   double damp_;
   IMP::internal::OwnerPointer<display::Writer> debug_writer_;
@@ -49,7 +49,7 @@ public:
   ResolveCollisionsOptimizer(Model *m);
   ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
   void set_xyzrs(const ParticlesTemp &ps) {
-    set_xyzrs_internal(core::XYZRsTemp(ps));
+    set_xyzrs_internal(core::XYZRs(ps));
   }
 
   void add_obstacle(display::SurfaceMeshGeometry *sg);

@@ -14,7 +14,7 @@ long get_number_of_particles_outside_of_the_density(DensityMap *dmap,
   IMP_LOG(IMP::VERBOSE,"start calculating the how many particles out of "
          <<ps.size()<<" in density"<< std::endl);
   long out_of_dens=0;
-  core::XYZsTemp xyz = core::XYZsTemp(ps);
+  core::XYZs xyz = core::XYZs(ps);
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP::algebra::Vector3D vec = t.get_transformed(xyz[i].get_coordinates());
     if (!dmap->is_part_of_volume(vec)) {
@@ -51,7 +51,7 @@ double get_percentage_of_voxels_covered_by_particles(
   int iminx, iminy, iminz, imaxx, imaxy, imaxz,ivoxz,ivoxy,ivoxx,znxny,ivox;
   int nxny=dmap->get_header()->get_nx()*dmap->get_header()->get_ny();
   int nx=dmap->get_header()->get_nx();
-  core::XYZsTemp xyz = core::XYZsTemp(ps);
+  core::XYZs xyz = core::XYZs(ps);
   for (unsigned int i = 0; i < ps.size(); ++i) {
     IMP::algebra::Vector3D vec = t.get_transformed(xyz[i].get_coordinates());
      calc_local_bounding_box(

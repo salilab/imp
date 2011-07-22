@@ -378,7 +378,9 @@ namespace {
     // get BondDecorator of the bond particles, output bond section
     // get_mol2bond_line should be in bond_decorators.h, .cpp - to be improved
     Bonds bonds(get_internal_bonds(chd));
-    bonds.sort(Less());
+    std::vector<Bond> bds(bonds.begin(), bonds.end());
+    std::sort(bds.begin(), bds.end(), Less());
+    bonds= Bonds(bds.begin(), bds.end());
     mol2_file << "@<TRIPOS>BOND" << std::endl;
     for (unsigned int i=0; i< bonds.size(); i++) {
       mol2_file << mol2_string(bonds[i], i);
@@ -433,7 +435,7 @@ Hierarchy read_mol2(TextInput mol2_file,
 
 // argv[1] file_name_type should contain file type e.g. ".mol2"
 void write_mol2(Hierarchy rhd, TextOutput file) {
-  HierarchiesTemp hs= get_by_type(rhd, RESIDUE_TYPE);
+  Hierarchies hs= get_by_type(rhd, RESIDUE_TYPE);
   for(unsigned int i=0; i<hs.size(); ++i) {
     write_molecule_mol2(hs[i], file);
   }

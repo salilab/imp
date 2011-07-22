@@ -247,7 +247,7 @@ Hierarchy create_protein(Model *m,
 namespace {
 
   // create a particle which approximates the input set
-  Hierarchy create_approximation_of_residues(const HierarchiesTemp &t) {
+  Hierarchy create_approximation_of_residues(const Hierarchies &t) {
     static WarningContext wc;
     IMP_IF_CHECK(USAGE) {
       for (unsigned int i=0; i< t.size(); ++i) {
@@ -269,7 +269,7 @@ namespace {
                       "Computing volume for non-standard residue "
                       << rt, wc);
         algebra::Sphere3Ds ss;
-        HierarchiesTemp gl= get_leaves(t[i]);
+        Hierarchies gl= get_leaves(t[i]);
         for (unsigned int i=0; i< gl.size(); ++i) {
           ss.push_back(core::XYZR(gl[i]).get_sphere());
         }
@@ -280,7 +280,7 @@ namespace {
     Particle *p= new Particle(mm);
     ParticlesTemp children;
     for (unsigned int i=0; i< t.size(); ++i) {
-      HierarchiesTemp cur= t[i].get_children();
+      Hierarchies cur= t[i].get_children();
       children.insert(children.end(), cur.begin(), cur.end());
     }
     setup_as_approximation_internal(p, children,
@@ -338,7 +338,7 @@ create_simplified_along_backbone(Chain in,
     IMP_LOG(VERBOSE, std::endl);
   }
   unsigned int cur_segment=0;
-  HierarchiesTemp cur;
+  Hierarchies cur;
   Hierarchy root=create_clone_one(in);
   for (unsigned int i=0; i< in.get_number_of_children(); ++i) {
     Hierarchy child=in.get_child(i);

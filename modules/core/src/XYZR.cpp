@@ -19,7 +19,7 @@ void XYZR::show(std::ostream &out) const
 }
 
 
-algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp &v) {
+algebra::SphereD<3> get_enclosing_sphere(const XYZs &v) {
   std::vector<algebra::SphereD<3> > ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZ d(v[i]);
@@ -34,7 +34,7 @@ algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp &v) {
 }
 
 void set_enclosing_sphere(XYZR out,
-                          const XYZsTemp &v,
+                          const XYZs &v,
                           double slack)
 {
   algebra::SphereD<3> s= get_enclosing_sphere(v);
@@ -44,7 +44,7 @@ void set_enclosing_sphere(XYZR out,
 
 
 void set_enclosing_radius(XYZR out,
-                          const XYZsTemp &v)
+                          const XYZs &v)
 {
   double r=0;
   for (unsigned int i=0; i< v.size(); ++i) {

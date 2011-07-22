@@ -20,7 +20,7 @@ using namespace IMP::container;
 namespace {
 void test_one(std::string name,
               Model *m,
-              RigidBodiesTemp rbs,
+              RigidBodies rbs,
               float side,
               double ) {
   VectorD<3> minc(0,0,0), maxc(side, side, side);
@@ -55,7 +55,7 @@ void test_one(std::string name,
 }
 
 
-Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
+Model * setup(bool rpcpf,RigidBodies &rbs) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   Model *m=new Model();
@@ -98,7 +98,7 @@ Model * setup(bool rpcpf,RigidBodiesTemp &rbs) {
 
 int main() {
   {
-    RigidBodiesTemp rbs;
+    RigidBodies rbs;
     IMP::internal::OwnerPointer<Model> m
       = setup(false, rbs);
     //std::cout << "Quadratic:" << std::endl;
@@ -106,7 +106,7 @@ int main() {
     test_one("quadratic", m, rbs, 30, 1.919732);
   }
   {
-    RigidBodiesTemp rbs;
+    RigidBodies rbs;
     IMP::internal::OwnerPointer<Model> m
       = setup(true, rbs);
     //std::cout << "Hierarchy:" << std::endl;

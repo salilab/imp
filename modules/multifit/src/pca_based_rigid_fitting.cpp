@@ -50,7 +50,7 @@ em::FittingSolutions pca_based_rigid_fitting(
   core::XYZs ps_xyz =  core::XYZs(ps);
   algebra::Transformation3D move2center_trans = algebra::Transformation3D(
      algebra::get_identity_rotation_3d(),
-     dens_pca.get_centroid()-core::get_centroid(core::XYZsTemp(ps_xyz)));
+     dens_pca.get_centroid()-core::get_centroid(core::XYZs(ps_xyz)));
   for(unsigned int i=0;i<ps_xyz.size();i++){
     ps_xyz[i].set_coordinates(
              move2center_trans.get_transformed(ps_xyz[i].get_coordinates()));

@@ -94,7 +94,7 @@ IMP_DECORATOR_ARRAY_DECL().
 
 \advanceddoc Lists of decorators are reference counted even though the
 individual decorators are not. For more efficiency
-you can use the non-reference counted version, IMP::core::XYZsTemp
+you can use the non-reference counted version, IMP::core::XYZs
 instead. This should only
 be done when it is known to be safe. If you can't figure out
 that it is, don't do it.

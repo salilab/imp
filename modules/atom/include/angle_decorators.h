@@ -61,7 +61,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Angle);
 
-IMP_DECORATORS(Angle,Angles, Particles);
+IMP_DECORATORS(Angle,Angles, ParticlesTemp);
 
 //! A particle that describes a dihedral angle between four particles.
 /** An Angle decorator is a simple container of four particles, together
@@ -121,7 +121,7 @@ public:
 
 IMP_OUTPUT_OPERATOR(Dihedral);
 
-IMP_DECORATORS(Dihedral,Dihedrals, Particles);
+IMP_DECORATORS(Dihedral,Dihedrals, ParticlesTemp);
 
 IMPATOM_END_NAMESPACE
 

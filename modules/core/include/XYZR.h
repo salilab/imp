@@ -117,7 +117,7 @@ inline double get_distance(XYZR a, XYZR b) {
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
-                                        const XYZsTemp &v,
+                                        const XYZs &v,
                                         double slack=0);
 
 //! Set the radius of the first to enclose the list
@@ -129,7 +129,7 @@ IMPCOREEXPORT void set_enclosing_sphere(XYZR b,
     \relatesalso XYZR
  */
 IMPCOREEXPORT void set_enclosing_radius(XYZR b,
-                                        const XYZsTemp &v);
+                                        const XYZs &v);
 
 //! Get a sphere enclosing the set of XYZRs
 /** \param[in] v The one whose radius should be set
@@ -138,7 +138,7 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
 
     \relatesalso XYZR
  */
-IMPCOREEXPORT algebra::SphereD<3> get_enclosing_sphere(const XYZsTemp& v);
+IMPCOREEXPORT algebra::SphereD<3> get_enclosing_sphere(const XYZs& v);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.

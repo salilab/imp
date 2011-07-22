@@ -22,12 +22,12 @@ IMPCORE_BEGIN_NAMESPACE
 //! Get the centroid
 /** Compute the centroid (mean) of a set of particles.
  */
-IMPCOREEXPORT algebra::VectorD<3> get_centroid(const XYZsTemp &ps);
+IMPCOREEXPORT algebra::VectorD<3> get_centroid(const XYZs &ps);
 
 //! Get the bounding box
 /** Compute the boudning box of a set of particles
  */
-IMPCOREEXPORT algebra::BoundingBoxD<3> get_bounding_box(const XYZRsTemp &ps);
+IMPCOREEXPORT algebra::BoundingBoxD<3> get_bounding_box(const XYZRs &ps);
 
 IMPCORE_END_NAMESPACE
 

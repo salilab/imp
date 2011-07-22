@@ -44,7 +44,7 @@ int main(int , char **) {
   IMP_NEW(Model, m, ());
   IMP_NEW(LeavesRefiner, lr, (atom::Hierarchy::get_traits()));
   lr->set_was_used(true);
-  atom::HierarchiesTemp hs;
+  atom::Hierarchies hs;
   for (unsigned int i=0; i< 10; ++i) {
     hs.push_back(
             read_pdb(benchmark::get_data_path("huge_protein.pdb"), m));

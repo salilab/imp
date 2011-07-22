@@ -239,13 +239,13 @@ void visit_depth_first(Hierarchy d, HierarchyVisitor *f)
 namespace IMP {
 namespace core {
 algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const ParticlesTemp &b) {
-return IMP::algebra::get_transformation_aligning_first_to_second(XYZsTemp(a),XYZsTemp(b));
+return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a),XYZs(b));
 }
 algebra::Transformation3D get_transformation_aligning_first_to_second(const ParticlesTemp &a, const std::vector<algebra::VectorD<3> > &b) {
-return IMP::algebra::get_transformation_aligning_first_to_second(XYZsTemp(a), b);
+return IMP::algebra::get_transformation_aligning_first_to_second(XYZs(a), b);
 }
 algebra::Transformation3D get_transformation_aligning_first_to_second(const std::vector<algebra::VectorD<3> > &a, const ParticlesTemp &b) {
-return algebra::get_transformation_aligning_first_to_second(a, XYZsTemp(b));
+return algebra::get_transformation_aligning_first_to_second(a, XYZs(b));
 }
 }
 }

@@ -47,7 +47,7 @@ ParticlesTemp LeavesRefiner::get_input_particles(Particle *) const {
 }
 
 ContainersTemp LeavesRefiner::get_input_containers(Particle *p) const {
-  GenericHierarchiesTemp t=get_all_descendants(Hierarchy(p, traits_));
+  GenericHierarchies t=get_all_descendants(Hierarchy(p, traits_));
   return ContainersTemp(t.begin(), t.end());
 }
 

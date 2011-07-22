@@ -385,7 +385,7 @@ namespace {
       Particle *rb= core::RigidMember(h).get_rigid_body();
       rigid_bodies[rb].push_back(h);
     }
-    atom::HierarchiesTemp children= h.get_children();
+    atom::Hierarchies children= h.get_children();
     for (unsigned int i=0; i < children.size(); ++i) {
       load_internal(file, children[i], frame, rigid_bodies,
                     IMP_HDF5_PASS_MOLECULE_KEYS);

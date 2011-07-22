@@ -260,7 +260,7 @@ void add_dope_score_data(Atom atom) {
 }
 
 void add_dope_score_data(Hierarchy h) {
-  HierarchiesTemp atoms= get_by_type(h, ATOM_TYPE);
+  Hierarchies atoms= get_by_type(h, ATOM_TYPE);
   for (unsigned int i= 0; i< atoms.size(); ++i) {
     add_dope_score_data(Atom(atoms[i]));
   }

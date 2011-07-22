@@ -84,7 +84,7 @@ void FitRestraint::initialize_model_density_map(
       //density map, resample in this transformation and then move
       //the rigid body back to its correct position.
       algebra::Vector3D rb_centroid =
-        core::get_centroid(core::XYZsTemp(members));
+        core::get_centroid(core::XYZs(members));
       algebra::Transformation3D move2map_center(
                           algebra::get_identity_rotation_3d(),
                           target_dens_map_->get_centroid()-rb_centroid);

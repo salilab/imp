@@ -85,7 +85,7 @@ public:
   }
 };
 
-IMP_DECORATORS(_TrivialDecorator, _TrivialDecorators, Particles);
+IMP_DECORATORS(_TrivialDecorator, _TrivialDecorators, ParticlesTemp);
 IMP_DECORATORS(_TrivialDerivedDecorator,
                _TrivialDerivedDecorators, _TrivialDecorators);
 

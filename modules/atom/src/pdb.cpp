@@ -59,7 +59,7 @@ struct TypeCompare {
 namespace {
 
   void sort_residues(Chain c) {
-    HierarchiesTemp dchildren =c.get_children();
+    Hierarchies dchildren =c.get_children();
     ParticlesTemp children(dchildren.begin(), dchildren.end());
     std::sort(children.begin(), children.end(), IndexCompare());
     c.clear_children();
@@ -69,7 +69,7 @@ namespace {
   }
   /*
   void sort_atoms(Residue c) {
-    HierarchiesTemp dchildren =c.get_children();
+    Hierarchies dchildren =c.get_children();
     ParticlesTemp children(dchildren.begin(), dchildren.end());
     std::sort(children.begin(), children.end(), TypeCompare());
     c.clear_children();
@@ -416,7 +416,7 @@ Hierarchies read_multimodel_pdb(TextInput in, Model *model)
 bool check_arbond(Particle* atom_p);
 
 namespace {
-  void write_pdb(const Particles& ps, TextOutput out)
+  void write_pdb(const ParticlesTemp& ps, TextOutput out)
 {
   IMP_FUNCTION_LOG;
   int last_index=0;
@@ -474,7 +474,7 @@ namespace {
   void write_model(const Hierarchies& hs, TextOutput out, unsigned int model) {
     out.get_stream() << boost::format("MODEL%1$9d")%model << std::endl;
     for (unsigned int i=0; i< hs.size(); ++i) {
-      write_pdb(get_leaves(hs[i]), out);
+      write_pdb(get_as<ParticlesTemp>(get_leaves(hs[i])), out);
     }
     out.get_stream() << "ENDMDL" << std::endl;
   }

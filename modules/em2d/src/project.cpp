@@ -117,7 +117,7 @@ void do_project_particles(const ParticlesTemp &ps,
   }
   // Centroid
   unsigned long n_particles = ps.size();
-  core::XYZRsTemp xyzrs(ps);
+  core::XYZRs xyzrs(ps);
   algebra::Vector3D centroid = core::get_centroid(xyzrs);
 
   // clear data before creating a new projection
@@ -367,7 +367,7 @@ Images create_evenly_distributed_projections(const ParticlesTemp &ps,
 
   // Sphere that encloses_the_particles
   IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
-  core::XYZsTemp xyzs(ps);
+  core::XYZs xyzs(ps);
   unsigned int size = get_enclosing_image_size(ps, options.pixel_size, 4);
   RegistrationResults regs = get_evenly_distributed_registration_results(n);
   Images projections = get_projections(ps, regs, size, size, options);
@@ -378,7 +378,7 @@ unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
                                       double pixel_size,
                                       unsigned int slack) {
   IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
-  core::XYZsTemp xyzs(ps);
+  core::XYZs xyzs(ps);
   double diameter = 2 * core::get_enclosing_sphere(xyzs).get_radius();
   unsigned int size = static_cast<unsigned int>(diameter/pixel_size) + 2*slack;
   return size;
