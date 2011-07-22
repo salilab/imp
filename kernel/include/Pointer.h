@@ -136,6 +136,22 @@ public:
   }
 };
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+template <class T>
+std::ostream &operator<<(std::ostream &out,
+                         const std::vector<Pointer<T> > &data) {
+  out << "[";
+  for (unsigned int i=0; i< data.size(); ++i) {
+    if (i != 0) {
+      out << ", ";
+    }
+    out << data[i]->get_name();
+  }
+  out << "]";
+  return out;
+}
+#endif
+
 IMP_END_NAMESPACE
 
 #endif  /* IMP_POINTER_H */
