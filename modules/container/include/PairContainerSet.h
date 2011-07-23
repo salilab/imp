@@ -15,6 +15,7 @@
 #include <IMP/PairContainer.h>
 #include <IMP/container_macros.h>
 #include <IMP/internal/container_helpers.h>
+#include <IMP/scoped.h>
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
