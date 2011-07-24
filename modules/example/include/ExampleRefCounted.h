@@ -13,6 +13,9 @@
 #include <IMP/RefCounted.h>
 #include <IMP/macros.h>
 #include <IMP/Object.h>
+#include <IMP/Pointer.h>
+#include <IMP/WeakPointer.h>
+#include <vector>
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
