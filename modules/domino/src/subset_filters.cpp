@@ -63,6 +63,14 @@ int RestraintScoreSubsetFilter::get_next_state(int pos,
   return num;
 }
 
+
+double RestraintScoreSubsetFilter::get_score(const Assignment& state) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  const double score=data_.get_score(state);
+  return score;
+}
+
 RestraintScoreSubsetFilterTable::StatsPrinter::~StatsPrinter() {
   IMP_IF_LOG(TERSE) {
     IMP_LOG(TERSE, "Resraint filtration statistics (attempts, passes):\n");
