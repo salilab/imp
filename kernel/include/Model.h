@@ -148,7 +148,7 @@ public:
                     << " of particle " << particle);
     return data_[k.get_index()][particle];
   }
-  typename Traits::Value& access_attribute(Key k,
+  typename Traits::Container::reference access_attribute(Key k,
                                            ParticleIndex particle) {
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Requested invalid attribute: " << k
