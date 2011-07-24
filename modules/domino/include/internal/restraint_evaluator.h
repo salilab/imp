@@ -22,7 +22,7 @@ IMPDOMINO_BEGIN_INTERNAL_NAMESPACE
 
 template <class It>
 inline void load_particle_states(It b, It e, const Assignment &ss,
-                          const ParticleStatesTable *pst) {
+                                 const ParticleStatesTable *pst) {
   IMP_USAGE_CHECK(std::distance(b,e)
                   == static_cast< typename std::iterator_traits<It>
                   ::difference_type>(ss.size()),
@@ -40,7 +40,7 @@ inline void load_particle_states(It b, It e, const Assignment &ss,
   - mapping of restraint subset for each subset
   data for each restraint:
   - cache of scores for subset state
- */
+*/
 class RestraintData {
   typedef IMP::compatibility::map<Assignment, double> Scores;
   mutable Scores scores_;
@@ -52,7 +52,7 @@ class RestraintData {
   mutable int filter_passes_;
 public:
   RestraintData(Restraint *r): r_(r),
-                                max_(std::numeric_limits<double>::max()){
+                               max_(std::numeric_limits<double>::max()){
     filter_attempts_=0;
     filter_passes_=0;
     cache_=true;
@@ -120,7 +120,7 @@ class IMPDOMINOEXPORT SubsetData {
   std::vector< std::vector<Ints> > set_indices_;
   std::vector<Floats> set_weights_;
   Subset s_;
-public:
+ public:
   SubsetData(){}
   SubsetData(const ModelData *md,
              const Ints &ris,
@@ -132,8 +132,8 @@ public:
     indices_(indices),
     set_ris_(set_ris), set_indices_(set_indices), set_weights_(set_weights),
     s_(s){}
-  double get_score(const Assignment &state) const;
-  bool get_is_ok(const Assignment &state, double max) const;
+  double get_score(const Assignment &state) const ;
+  bool get_is_ok(const Assignment &state, double max) const ;
   unsigned int get_number_of_restraints() const {
     return ris_.size();
   }
@@ -200,6 +200,71 @@ struct IMPDOMINOEXPORT ModelData: public RefCounted {
   IMP_REF_COUNTED_DESTRUCTOR(ModelData);
 };
 
+
+
+
+inline double SubsetData::get_score(const Assignment &state) const {
+  double score=0;
+  for (unsigned int i=0; i< ris_.size(); ++i) {
+    Ints ssi(indices_[i].size());
+    for (unsigned int j=0; j< ssi.size();++j) {
+      ssi[j]= state[indices_[i][j]];
+    }
+    Assignment ss(ssi);
+    ParticlesTemp ps(ss.size());
+    for (unsigned int j=0; j< ss.size(); ++j) {
+      ps[j]= s_[indices_[i][j]];
+    }
+    double ms=md_->rdata_[ris_[i]].get_score<false>(md_->pst_,
+                                                    ps, ss);
+    score+= ms;
+  }
+  return score;
+}
+inline bool SubsetData::get_is_ok(const Assignment &state, double max) const {
+  double total=0;
+  for (unsigned int i=0; i< ris_.size(); ++i) {
+    Ints ssi(indices_[i].size());
+    for (unsigned int j=0; j< ssi.size();++j) {
+      ssi[j]= state[indices_[i][j]];
+    }
+    Assignment ss(ssi);
+    ParticlesTemp ps(ss.size());
+    for (unsigned int j=0; j< ss.size(); ++j) {
+      ps[j]= s_[indices_[i][j]];
+    }
+    double ms=md_->rdata_[ris_[i]].get_score<true>(md_->pst_,
+                                                   ps, ss);
+    if (ms >= std::numeric_limits<double>::max()) {
+      return false;
+    }
+    total+=ms;
+    if (total > max) {
+      return false;
+    }
+  }
+  for (unsigned int h=0; h < set_ris_.size(); ++h) {
+    double set_total=0;
+    for (unsigned int i=0; i< set_ris_[h].second.size(); ++i) {
+      Ints ssi(set_indices_[h][i].size());
+      for (unsigned int j=0; j< ssi.size();++j) {
+        ssi[j]= state[set_indices_[h][i][j]];
+      }
+      Assignment ss(ssi);
+      ParticlesTemp ps(ss.size());
+      for (unsigned int j=0; j< ss.size(); ++j) {
+        ps[j]= s_[set_indices_[h][i][j]];
+      }
+      double ms=md_->rdata_[set_ris_[h].second[i]].get_score<true>(md_->pst_,
+                                                                   ps, ss);
+      set_total+=ms *set_weights_[h][i];
+      if (set_total > set_ris_[h].first) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 IMPDOMINO_END_INTERNAL_NAMESPACE
 
 #endif  /* IMPDOMINO_INTERNAL_RESTRAINT_EVALUATOR_H */

@@ -118,6 +118,7 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilter: public SubsetFilter {
 public:
   IMP_SUBSET_FILTER(RestraintScoreSubsetFilter);
   int get_next_state(int pos, const Assignment& state) const;
+  double get_score(const Assignment& state) const;
 };
 
 
