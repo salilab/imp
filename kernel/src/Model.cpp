@@ -174,7 +174,7 @@ void Model::remove_particle(Particle *p) {
             = ParticleAttributeTable::get_attribute_keys(cur);
           for (unsigned int j=0; j< keys.size(); ++j) {
             if (get_has_attribute(keys[j], cur)) {
-              IMP_USAGE_CHECK(get_attribute(keys[i], cur) != pi,
+              IMP_USAGE_CHECK(get_attribute(keys[j], cur) != pi,
                               "There is still a reference to"
                               << " removed particle in"
                               " particle "
