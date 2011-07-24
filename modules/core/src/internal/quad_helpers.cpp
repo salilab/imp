@@ -14,38 +14,12 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-unsigned int ListLikeQuadContainer
-::get_number_of_particle_quads() const {
-  IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(get_is_up_to_date(),
-                  "Attempting to use container "
-                  << get_name() << " that is not up to date."
-                  << " Call Model::evaluate() first, or something is broken.");
-  return data_.size();
-}
-bool ListLikeQuadContainer
-::get_contains_particle_quad(const ParticleQuad& vt) const {
-  IMP_CHECK_OBJECT(this);
-  update_index();
-  return index_.find(vt)!= index_.end();
-}
-
-ParticleQuad ListLikeQuadContainer
-::get_particle_quad(unsigned int i) const {
-  IMP_CHECK_OBJECT(this);
-  return data_[i];
-}
-
 void ListLikeQuadContainer
 ::do_show(std::ostream &out) const {
   out << "contains " << data_.size() << std::endl;
 }
 
 
-ParticlesTemp ListLikeQuadContainer
-::get_contained_particles() const {
-  return IMP::internal::flatten(data_);
-}
 
 
 QuadContainerPair ListLikeQuadContainer

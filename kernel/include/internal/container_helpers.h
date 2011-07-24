@@ -159,12 +159,34 @@ ParticleTuple<D> get_particle(Model *m, const ParticleIndexTuple<D> &in) {
   ParticleTuple<D> ret;
   for (unsigned int i=0; i< D; ++i) {
     ret[i]= get_particle(m, in[i]);
+    IMP_CHECK_OBJECT(ret[i]);
+  }
+  return ret;
+}
+
+inline ParticlesTemp
+get_particle(Model *m, const ParticleIndexes &ps) {
+  ParticlesTemp ret(ps.size());
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    ret[i]= get_particle(m, ps[i]);
+  }
+  return ret;
+}
+
+template <unsigned int D>
+inline
+std::vector<ParticleTuple<D> > get_particle(Model *m,
+                const std::vector<ParticleIndexTuple<D> > &ps) {
+  std::vector<ParticleTuple<D> > ret(ps.size());
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    ret[i]= get_particle(m, ps[i]);
   }
   return ret;
 }
 
 inline
 ParticleIndex get_index(Particle*p) {
+  IMP_CHECK_OBJECT(p);
   return p->get_index();
 }
 template <unsigned int D>
@@ -175,6 +197,29 @@ ParticleIndexTuple<D> get_index(const ParticleTuple<D> &in) {
   }
   return ret;
 }
+
+inline
+ParticleIndexes get_index(const ParticlesTemp& p) {
+  ParticleIndexes ret(p.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ret[i]= get_index(p[i]);
+  }
+  return ret;
+}
+template <unsigned int D>
+std::vector<ParticleIndexTuple<D> >
+get_index(const std::vector<ParticleTuple<D> > &in) {
+  std::vector<ParticleIndexTuple<D> > ret(in.size());
+  for (unsigned int i=0; i< ret.size(); ++i) {
+    ParticleIndexTuple<D> c;
+    for (unsigned int j=0; j< D; ++j) {
+      c[j]= get_index(in[i][j]);
+    }
+    ret[i]=c;
+  }
+  return ret;
+}
+
 
 inline Model *get_model(Particle*p) {
   return p->get_model();
@@ -202,7 +247,8 @@ public:
   GetContains(const Filter *n): back_(n){}
   template <class T>
   bool operator()(const T &p) const {
-    return back_->get_contains(p);
+    return back_->get_contains(get_model(p),
+                               IMP::internal::get_index(p));
   }
 };
 

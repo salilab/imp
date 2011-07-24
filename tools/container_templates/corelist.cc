@@ -46,49 +46,10 @@ void CoreListCLASSNAMEContainer::do_show(std::ostream &out) const {
 
 
 
-void CoreListCLASSNAMEContainer::set_FUNCTIONNAMEs(PLURALARGUMENTTYPE sc) {
-  update_list(sc);
-}
-
-
-void CoreListCLASSNAMEContainer::clear_FUNCTIONNAMEs() {
-  PLURALVARIABLETYPE t;
-  update_list(t);
-}
-
-
-void CoreListCLASSNAMEContainer::add_FUNCTIONNAME(ARGUMENTTYPE vt) {
-  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                  "Passed CLASSNAME cannot be NULL (or None)");
-  add_to_list(vt);
-  IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                  || !get_removed_container()
-                  ->get_contains(vt),
-                  "You cannot remove and add the same item in one time step.");
-}
-
-void
-CoreListCLASSNAMEContainer::add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
-  if (c.empty()) return;
-  PLURALVARIABLETYPE cp= c;
-  add_to_list(cp);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed CLASSNAME cannot be NULL (or None)");
-      IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                      || !get_removed_container()
-                      ->get_contains(c[i]),
-            "You cannot remove and add the same item in one time step.");
-
-    }
-  }
-}
-
 void CoreListCLASSNAMEContainer
 ::remove_FUNCTIONNAMEs(const PLURALVARIABLETYPE &c) {
   if (c.empty()) return;
-  PLURALVARIABLETYPE cp= c;
+  PLURALINDEXTYPE cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {

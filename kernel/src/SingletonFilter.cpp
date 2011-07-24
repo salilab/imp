@@ -27,4 +27,12 @@ void SingletonFilter
 
 }
 
+void SingletonFilter
+::filter_in_place(Model *m, ParticleIndexes &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          internal::GetContainsIndex<SingletonFilter>(this, m)),
+           ps.end());
+
+}
+
 IMP_END_NAMESPACE

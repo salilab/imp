@@ -108,6 +108,56 @@ class IMPEXPORT CLASSNAMEContainer : public Container
                          DerivativeAccumulator &da) {
     s->apply(a, da);
   }
+
+
+
+  template <class S>
+    static double call_evaluate(const S *s, Model *m,
+                                PASSINDEXTYPE a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(m, a, da);
+  }
+  static double call_evaluate(const CLASSNAMEScore *s, Model *m,
+                              PASSINDEXTYPE a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(m, a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        Model *m,
+                                        PASSINDEXTYPE a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(m, a, da, max);
+  }
+  static double call_evaluate_if_good(const CLASSNAMEScore *s,
+                                      Model *m,
+                                      PASSINDEXTYPE a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(m, a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, Model *m,
+                              PASSINDEXTYPE a) {
+    s->S::apply(m, a);
+  }
+  static void call_apply(const CLASSNAMEModifier *s, Model *m,
+                         PASSINDEXTYPE a) {
+    s->apply(m, a);
+  }
+  template <class S>
+    static void call_apply(const S *s, Model *m,
+                           PASSINDEXTYPE a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(m, a, da);
+  }
+  static void call_apply(const CLASSNAMEDerivativeModifier *s,
+                         Model *m,
+                         PASSINDEXTYPE a,
+                         DerivativeAccumulator &da) {
+    s->apply(m, a, da);
+  }
 #endif
 public:
   typedef VARIABLETYPE ContainedType;
@@ -217,9 +267,18 @@ public:
     return get_contains_FUNCTIONNAME(v);
   }
   unsigned int get_number() const {return get_number_of_FUNCTIONNAMEs();}
+#ifndef SWIG
   virtual bool get_provides_access() const {return false;}
-  virtual const PLURALVARIABLETYPE& get_access() const {
+  virtual const PLURALINDEXTYPE& get_access() const {
     IMP_THROW("Object not implemented properly.", IndexException);
+  }
+#endif
+  virtual PLURALINDEXTYPE get_indexes() const {
+    PLURALINDEXTYPE ret(get_number());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= IMP::internal::get_index(get(i));
+    }
+    return ret;
   }
 #endif
 

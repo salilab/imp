@@ -83,13 +83,15 @@ inline bool get_has_required_attributes_for_body(Model *m,
 
 
 inline bool
-get_has_required_attributes_for_member(Particle *p) {
-  if (!p->has_attribute(rigid_body_data().body_)) return false;
+get_has_required_attributes_for_member(Model *m, ParticleIndex p) {
+  if (!m->get_has_attribute(rigid_body_data().body_, p)) return false;
   for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(rigid_body_data().child_keys_[i])) return false;
+    if (!m->get_has_attribute(rigid_body_data().child_keys_[i], p)){
+      return false;
+    }
   }
   for (unsigned int i=0; i< 3; ++i) {
-    if (!p->has_attribute(XYZ::get_coordinate_key(i)))
+    if (!m->get_has_attribute(XYZ::get_coordinate_key(i), p))
       return false;
   }
   return true;
@@ -101,7 +103,7 @@ get_has_required_attributes_for_body_member(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     if (!p->has_attribute(rigid_body_data().lquaternion_[i])) return false;
   }
-  return get_has_required_attributes_for_member(p);
+  return get_has_required_attributes_for_member(p->get_model(), p->get_index());
 }
 
 inline void add_required_attributes_for_body(Particle *p) {

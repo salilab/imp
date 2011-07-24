@@ -24,6 +24,12 @@ class IMPCOREEXPORT GridClosePairsFinder : public ClosePairsFinder
   GridClosePairsFinder();
 
   IMP_CLOSE_PAIRS_FINDER(GridClosePairsFinder);
+  ParticleIndexPairs get_close_pairs(Model *m,
+                                     const ParticleIndexes &pc) const;
+  ParticleIndexPairs get_close_pairs(Model *m,
+                                     const ParticleIndexes &pca,
+                                     const ParticleIndexes &pcb) const;
+
 };
 
 IMPCORE_END_NAMESPACE

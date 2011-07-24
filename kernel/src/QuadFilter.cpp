@@ -27,4 +27,12 @@ void QuadFilter
 
 }
 
+void QuadFilter
+::filter_in_place(Model *m, ParticleIndexQuads &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          internal::GetContainsIndex<QuadFilter>(this, m)),
+           ps.end());
+
+}
+
 IMP_END_NAMESPACE

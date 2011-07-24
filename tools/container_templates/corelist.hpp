@@ -22,18 +22,50 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 
 class IMPCOREEXPORT CoreListCLASSNAMEContainer:
-public internal::ListLikeCLASSNAMEContainer
+  public internal::ListLikeCLASSNAMEContainer
 {
   IMP_ACTIVE_CONTAINER_DECL(CoreListCLASSNAMEContainer);
-public:
+ public:
   CoreListCLASSNAMEContainer(Model *m, std::string name);
   CoreListCLASSNAMEContainer(Model *m, const char *name);
   CoreListCLASSNAMEContainer();
-  void add_FUNCTIONNAME(ARGUMENTTYPE vt);
-  void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
+  void add_FUNCTIONNAME(ARGUMENTTYPE vt) {
+    IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
+                    "Passed CLASSNAME cannot be NULL (or None)");
+    add_to_list(IMP::internal::get_index(vt));
+    IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
+                    || !get_removed_container()
+                    ->get_contains(vt),
+      "You cannot remove and add the same item in one time step.");
+  }
+  void add_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c) {
+    if (c.empty()) return;
+    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
+    add_to_list(cp);
+    IMP_IF_CHECK(USAGE) {
+      for (unsigned int i=0; i< c.size(); ++i) {
+        IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
+                        "Passed CLASSNAME cannot be NULL (or None)");
+        IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
+                        || !get_removed_container()
+                        ->get_contains(c[i]),
+        "You cannot remove and add the same item in one time step.");
+
+      }
+    }
+  }
   void remove_FUNCTIONNAMEs(const PLURALARGUMENTTYPE &c);
-  void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c);
-  void clear_FUNCTIONNAMEs();
+  void set_FUNCTIONNAMEs(PLURALARGUMENTTYPE c) {
+    PLURALINDEXTYPE cp= IMP::internal::get_index(c);
+    update_list(cp);
+  }
+  void set_FUNCTIONNAMEs(PLURALINDEXTYPE cp) {
+    update_list(cp);
+  }
+  void clear_FUNCTIONNAMEs() {
+    PLURALINDEXTYPE t;
+    update_list(t);
+  }
   bool get_is_up_to_date() const {
     return true;
   }

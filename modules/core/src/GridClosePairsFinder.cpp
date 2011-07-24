@@ -83,6 +83,44 @@ IntPairs GridClosePairsFinder
 }
 
 
+ParticleIndexPairs GridClosePairsFinder
+::get_close_pairs(Model *m,
+                  const ParticleIndexes &c) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  IMP_LOG(TERSE, "Rebuilding NBL with Grid and cutoff "
+          << get_distance() << std::endl );
+  ParticleIndexPairs out;
+  internal::ParticleIndexHelper
+    ::fill_close_pairs(internal::ParticleIndexHelper
+                       ::get_particle_set(c.begin(),
+                                          c.end(),0),
+                        internal::ParticleIndexTraits(m,
+                                                 get_distance()),
+                        internal::ParticleIndexPairSink(m, out));
+  return out;
+}
+ParticleIndexPairs GridClosePairsFinder
+::get_close_pairs(Model *m,
+                  const ParticleIndexes &ca,
+                  const ParticleIndexes &cb) const {
+  IMP_OBJECT_LOG;
+  set_was_used(true);
+  ParticleIndexPairs out;
+  internal::ParticleIndexHelper
+    ::fill_close_pairs( internal::ParticleIndexHelper
+                        ::get_particle_set(ca.begin(),
+                                           ca.end(),0),
+                        internal::ParticleIndexHelper
+                        ::get_particle_set(cb.begin(),
+                                           cb.end(), 1),
+                        internal::ParticleIndexTraits(m,
+                                                 get_distance()),
+                        internal::ParticleIndexPairSink(m,
+                                                   out));
+  return out;
+}
+
 void GridClosePairsFinder::do_show(std::ostream &out) const {
   out << "distance " << get_distance() << std::endl;
 }

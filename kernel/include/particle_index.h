@@ -111,6 +111,7 @@ typedef std::vector<ParticleIndexTriplet> ParticleIndexTriplets;
 typedef std::vector<ParticleIndexQuad> ParticleIndexQuads;
 
 
+
 #endif
 IMP_END_NAMESPACE
 

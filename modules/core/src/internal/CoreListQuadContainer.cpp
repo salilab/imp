@@ -46,49 +46,10 @@ void CoreListQuadContainer::do_show(std::ostream &out) const {
 
 
 
-void CoreListQuadContainer::set_particle_quads(ParticleQuadsTemp sc) {
-  update_list(sc);
-}
-
-
-void CoreListQuadContainer::clear_particle_quads() {
-  ParticleQuadsTemp t;
-  update_list(t);
-}
-
-
-void CoreListQuadContainer::add_particle_quad(const ParticleQuad& vt) {
-  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                  "Passed Quad cannot be NULL (or None)");
-  add_to_list(vt);
-  IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                  || !get_removed_container()
-                  ->get_contains(vt),
-                  "You cannot remove and add the same item in one time step.");
-}
-
-void
-CoreListQuadContainer::add_particle_quads(const ParticleQuadsTemp &c) {
-  if (c.empty()) return;
-  ParticleQuadsTemp cp= c;
-  add_to_list(cp);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Quad cannot be NULL (or None)");
-      IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                      || !get_removed_container()
-                      ->get_contains(c[i]),
-            "You cannot remove and add the same item in one time step.");
-
-    }
-  }
-}
-
 void CoreListQuadContainer
 ::remove_particle_quads(const ParticleQuadsTemp &c) {
   if (c.empty()) return;
-  ParticleQuadsTemp cp= c;
+  ParticleIndexQuads cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {

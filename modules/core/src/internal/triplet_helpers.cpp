@@ -14,38 +14,12 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-unsigned int ListLikeTripletContainer
-::get_number_of_particle_triplets() const {
-  IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(get_is_up_to_date(),
-                  "Attempting to use container "
-                  << get_name() << " that is not up to date."
-                  << " Call Model::evaluate() first, or something is broken.");
-  return data_.size();
-}
-bool ListLikeTripletContainer
-::get_contains_particle_triplet(const ParticleTriplet& vt) const {
-  IMP_CHECK_OBJECT(this);
-  update_index();
-  return index_.find(vt)!= index_.end();
-}
-
-ParticleTriplet ListLikeTripletContainer
-::get_particle_triplet(unsigned int i) const {
-  IMP_CHECK_OBJECT(this);
-  return data_[i];
-}
-
 void ListLikeTripletContainer
 ::do_show(std::ostream &out) const {
   out << "contains " << data_.size() << std::endl;
 }
 
 
-ParticlesTemp ListLikeTripletContainer
-::get_contained_particles() const {
-  return IMP::internal::flatten(data_);
-}
 
 
 TripletContainerPair ListLikeTripletContainer

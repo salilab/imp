@@ -54,6 +54,7 @@ public:
   /** @} */
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void filter_in_place(Model *m, PLURALINDEXTYPE& ps) const;
   virtual void filter_in_place(PLURALVARIABLETYPE& ps) const;
 #endif
 

@@ -352,7 +352,11 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
   //! return true if it is a rigid member
   static bool particle_is_instance(Particle *p) {
-    return internal::get_has_required_attributes_for_member(p);
+    return particle_is_instance(p->get_model(), p->get_index());
+  }
+    //! return true if it is a rigid member
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
+    return internal::get_has_required_attributes_for_member(m, p);
   }
 };
 

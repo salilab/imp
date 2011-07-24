@@ -31,22 +31,30 @@ inline CoreListPairContainer *get_list(PairContainer *pc) {
 
 
 template <class C>
-inline void filter_close_pairs(C *c, ParticlePairsTemp &ps) {
+inline void filter_close_pairs(C *c, ParticleIndexPairs &ps) {
   for (typename C::PairFilterConstIterator it=c->pair_filters_begin();
        it != c->pair_filters_end(); ++it) {
-    (*it)->filter_in_place(ps);
+    (*it)->filter_in_place(c->get_model(), ps);
   }
 }
 
 
+inline void fix_order(ParticleIndexPairs &pips) {
+  for (unsigned int i=0; i< pips.size(); ++i) {
+    if (pips[i][0] > pips[i][1]) {
+      std::swap(pips[i][0], pips[i][1]);
+    }
+  }
+}
+
 // Check that they are unique by checking order
 struct SameParticle {
-  ParticlesTemp ppt_;
-  SameParticle(const ParticlesTemp &ppt): ppt_(ppt){
+  ParticleIndexes ppt_;
+  SameParticle(const ParticleIndexes &ppt): ppt_(ppt){
     std::sort(ppt_.begin(), ppt_.end());
   }
   SameParticle(){}
-  bool operator()(ParticlePair pp) {
+  bool operator()(const ParticleIndexPair& pp) {
     if (ppt_.empty()) {
       return pp[0] == pp[1];
     } else {
@@ -62,26 +70,26 @@ struct SameParticle {
 
 
 
-inline void filter_same(ParticlePairsTemp &c,
-                        const ParticlesTemp &moved) {
+inline void filter_same(ParticleIndexPairs &c,
+                        const ParticleIndexes &moved) {
   c.erase(std::remove_if(c.begin(), c.end(),
                          SameParticle(moved)),
           c.end());
 }
 
-inline void filter_same(ParticlePairsTemp &c) {
+inline void filter_same(ParticleIndexPairs &c) {
   c.erase(std::remove_if(c.begin(), c.end(),
                          SameParticle()),
           c.end());
 }
 
 
-inline bool get_are_close(Particle *a, Particle *b,
+inline bool get_are_close(Model *m, ParticleIndex a, ParticleIndex b,
                           double distance) {
-  XYZ da(a);
-  XYZ db(b);
-  Float ra= XYZR(a).get_radius();
-  Float rb= XYZR(b).get_radius();
+  XYZ da(m, a);
+  XYZ db(m, b);
+  Float ra= XYZR(m, a).get_radius();
+  Float rb= XYZR(m, b).get_radius();
   Float sr= ra+rb+distance;
   for (unsigned int i=0; i< 3; ++i) {
     double delta=std::abs(da.get_coordinate(i) - db.get_coordinate(i));
@@ -96,15 +104,16 @@ inline bool get_are_close(Particle *a, Particle *b,
 
 struct FarParticle {
   double d_;
-  FarParticle(double d): d_(d){}
-  bool operator()(const ParticlePair& pp) const {
-    return !get_are_close(pp[0], pp[1], d_);
+  Model *m_;
+  FarParticle( Model *m, double d): d_(d), m_(m){}
+  bool operator()(const ParticleIndexPair& pp) const {
+    return !get_are_close(m_, pp[0], pp[1], d_);
   }
 };
 
-inline void filter_far(ParticlePairsTemp &c, double d) {
+inline void filter_far(Model *m, ParticleIndexPairs &c, double d) {
   c.erase(std::remove_if(c.begin(), c.end(),
-                         FarParticle(d)),
+                         FarParticle(m, d)),
           c.end());
 }
 

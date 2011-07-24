@@ -46,49 +46,10 @@ void CoreListSingletonContainer::do_show(std::ostream &out) const {
 
 
 
-void CoreListSingletonContainer::set_particles(ParticlesTemp sc) {
-  update_list(sc);
-}
-
-
-void CoreListSingletonContainer::clear_particles() {
-  ParticlesTemp t;
-  update_list(t);
-}
-
-
-void CoreListSingletonContainer::add_particle(Particle* vt) {
-  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                  "Passed Singleton cannot be NULL (or None)");
-  add_to_list(vt);
-  IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                  || !get_removed_container()
-                  ->get_contains(vt),
-                  "You cannot remove and add the same item in one time step.");
-}
-
-void
-CoreListSingletonContainer::add_particles(const ParticlesTemp &c) {
-  if (c.empty()) return;
-  ParticlesTemp cp= c;
-  add_to_list(cp);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Singleton cannot be NULL (or None)");
-      IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                      || !get_removed_container()
-                      ->get_contains(c[i]),
-            "You cannot remove and add the same item in one time step.");
-
-    }
-  }
-}
-
 void CoreListSingletonContainer
 ::remove_particles(const ParticlesTemp &c) {
   if (c.empty()) return;
-  ParticlesTemp cp= c;
+  ParticleIndexes cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {

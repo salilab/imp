@@ -14,38 +14,12 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-unsigned int ListLikeCLASSNAMEContainer
-::get_number_of_FUNCTIONNAMEs() const {
-  IMP_CHECK_OBJECT(this);
-  IMP_USAGE_CHECK(get_is_up_to_date(),
-                  "Attempting to use container "
-                  << get_name() << " that is not up to date."
-                  << " Call Model::evaluate() first, or something is broken.");
-  return data_.size();
-}
-bool ListLikeCLASSNAMEContainer
-::get_contains_FUNCTIONNAME(ARGUMENTTYPE vt) const {
-  IMP_CHECK_OBJECT(this);
-  update_index();
-  return index_.find(vt)!= index_.end();
-}
-
-VARIABLETYPE ListLikeCLASSNAMEContainer
-::get_FUNCTIONNAME(unsigned int i) const {
-  IMP_CHECK_OBJECT(this);
-  return data_[i];
-}
-
 void ListLikeCLASSNAMEContainer
 ::do_show(std::ostream &out) const {
   out << "contains " << data_.size() << std::endl;
 }
 
 
-ParticlesTemp ListLikeCLASSNAMEContainer
-::get_contained_particles() const {
-  return IMP::internal::flatten(data_);
-}
 
 
 CLASSNAMEContainerPair ListLikeCLASSNAMEContainer
