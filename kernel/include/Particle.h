@@ -126,7 +126,10 @@ class IMPEXPORT Particle : public Container
  public:
 
   //! Construct a particle and add it to the Model
-  Particle(Model *m, std::string name="P%1%");
+  Particle(Model *m, std::string name);
+
+  //! Construct a particle and add it to the Model
+  Particle(Model *m);
 
 
 #ifdef IMP_DOXYGEN

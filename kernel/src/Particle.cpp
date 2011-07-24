@@ -22,7 +22,13 @@ IMP_BEGIN_NAMESPACE
 Particle::Particle(Model *m, std::string name):
   Container(m, name)
 {
-  m->add_particle_internal(this);
+  m->add_particle_internal(this, false);
+}
+
+Particle::Particle(Model *m):
+  Container(m, "none")
+{
+  m->add_particle_internal(this, true);
 }
 
 void Particle::do_show(std::ostream& out) const
