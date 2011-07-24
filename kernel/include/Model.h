@@ -827,7 +827,7 @@ public:
     get_extra_dependency_edges() const {
     return extra_edges_;
   }
-  void add_particle_internal(Particle *p);
+  void add_particle_internal(Particle *p, bool set_name);
 #endif
 /** @name Methods to debug particles
       It is sometimes useful to inspect the list of all particles when

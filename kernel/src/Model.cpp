@@ -15,7 +15,7 @@
 #include "IMP/RestraintSet.h"
 #include "IMP/dependency_graph.h"
 #include "IMP/compatibility/set.h"
-
+#include <boost/format.hpp>
 
 IMP_BEGIN_NAMESPACE
 
@@ -103,7 +103,7 @@ ParticlesTemp Model::get_particles() const {
 }
 
 
-void Model::add_particle_internal(Particle *p) {
+void Model::add_particle_internal(Particle *p, bool set_name) {
     IMP_CHECK_OBJECT(this);
     IMP_CHECK_OBJECT(p);
     p->set_was_used(true);
@@ -120,6 +120,12 @@ void Model::add_particle_internal(Particle *p) {
                        static_cast<size_t>(p->id_+1));
     particle_index_.resize(maxp);
     particle_index_[p->id_]=p;
+    if (set_name) {
+      std::ostringstream oss;
+      oss << boost::format("P%1%")
+        % id;
+      p->set_name(oss.str());
+    }
   }
 
 
@@ -158,6 +164,48 @@ void Model::remove_particle(Particle *p) {
   ObjectsAttributeTable::clear_attributes(pi);
   ParticleAttributeTable::clear_attributes(pi);
   ParticlesAttributeTable::clear_attributes(pi);
+  IMP_IF_CHECK(USAGE) {
+    ParticlesTemp cp= get_particles();
+    for (unsigned int i=0; i< particle_index_.size(); ++i) {
+      if (particle_index_[i]) {
+        ParticleIndex cur=i;
+        {
+          ParticleKeys keys
+            = ParticleAttributeTable::get_attribute_keys(cur);
+          for (unsigned int j=0; j< keys.size(); ++j) {
+            if (get_has_attribute(keys[j], cur)) {
+              IMP_USAGE_CHECK(get_attribute(keys[i], cur) != pi,
+                              "There is still a reference to"
+                              << " removed particle in"
+                              " particle "
+                              << particle_index_[i]->get_name()
+                              << " attribute "
+                              << keys[j]);
+            }
+          }
+        }
+        {
+          ParticlesKeys keys
+            = ParticlesAttributeTable::get_attribute_keys(cur);
+          for (unsigned int j=0; j< keys.size(); ++j) {
+            if (get_has_attribute(keys[j], cur)) {
+              ParticleIndexes pis
+                = get_attribute(keys[j], cur);
+              for (unsigned int k=0; k< pis.size(); ++k) {
+                IMP_USAGE_CHECK(pis[k] != pi,
+                                "There is still a reference to "
+                                << "removed particle in"
+                                << " particle "
+                                << particle_index_[i]->get_name()
+                                << " attribute "
+                                << keys[j]);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 
 
