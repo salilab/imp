@@ -41,14 +41,16 @@
   IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const;   \
   IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,          \
                            const algebra::BoundingBox3Ds &bbs) const;   \
-  ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {     \
+  using ClosePairsFinder::get_close_pairs;                              \
+  IMP_NO_SWIG(ParticlePairsTemp                                         \
+              get_close_pairs(SingletonContainer *pc) const {           \
     return get_close_pairs(pc->get_particles());                        \
   } /* swig doesn't support using */                                    \
   ParticlePairsTemp get_close_pairs(SingletonContainer *pca,            \
                                     SingletonContainer *pcb) {          \
   return get_close_pairs(pca->get_particles(),                          \
                          pcb->get_particles());                         \
-  }                                                                     \
+  })                                                                    \
   IMP_OBJECT(Name)
 
 #endif  /* IMPCORE_MACROS_H */

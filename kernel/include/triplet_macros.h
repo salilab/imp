@@ -319,14 +319,15 @@ public:                                                                 \
  }                                                                      \
  ParticlesTemp get_input_particles(Particle* t) const;                  \
  ContainersTemp get_input_containers(Particle* t) const;                \
- void filter_in_place(ParticleTripletsTemp &ps) const {                   \
+ void filter_in_place(Model *m, ParticleIndexTriplets &ps) const {            \
    ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                           IMP::internal::GetContains<Name>(this)),     \
+                           IMP::internal::GetContainsIndex<Name>(this,  \
+                                                                 m)),   \
             ps.end());                                                  \
  }                                                                      \
- void filter_in_place(Model *m, ParticleIndexTriplets &ps) const {             \
+ void filter_in_place(ParticleTripletsTemp &ps) const {                \
    ps.erase(std::remove_if(ps.begin(), ps.end(),                        \
-                IMP::internal::GetContainsIndex<Name>(this, m)), \
+                           IMP::internal::GetContains<Name>(this)),   \
             ps.end());                                                  \
  }                                                                      \
  IMP_OBJECT(Name)
@@ -351,23 +352,47 @@ public:                                                                 \
     \endcode
 */
 #define IMP_FOREACH_TRIPLET(sequence, operation)                     \
+  unsigned int imp_foreach_size                                         \
+  = sequence->get_number_of_particle_triplets();                            \
+  for (unsigned int _2=0;                                               \
+       _2 != imp_foreach_size;                                          \
+       ++_2) {                                                          \
+    IMP::ParticleTriplet _1= sequence->get_particle_triplet(_2);               \
+    bool imp_foreach_break=false;                                       \
+    operation                                                           \
+      if (imp_foreach_break) break;                                     \
+  }                                                                     \
+
+
+
+/** These macros avoid various inefficiencies.
+
+    The macros take the name of the sequence and the operation to
+    peform. The item in the sequence is called _1, it's index is _2.
+    Use it like
+    \code
+    IMP_FOREACH_PARTICLE(sc, std::cout << "Item " << _2
+                         << " is _1->get_name() << std::endl);
+    \endcode
+*/
+#define IMP_FOREACH_TRIPLET_INDEX(sequence, operation)               \
   do {                                                                  \
     if (sequence->get_provides_access()) {                              \
-      const ParticleTripletsTemp &imp_foreach_access                      \
+      const ParticleIndexTriplets &imp_foreach_access                         \
         =sequence->get_access();                                        \
       for (unsigned int _2=0; _2< imp_foreach_access.size(); ++_2) {    \
-        IMP::ParticleTriplet _1= imp_foreach_access[_2];                   \
+        IMP::ParticleIndexTriplet _1= imp_foreach_access[_2];          \
         bool imp_foreach_break=false;                                   \
         operation                                                       \
           if (imp_foreach_break) { break;}                              \
       }                                                                 \
     } else {                                                            \
-      unsigned int imp_foreach_size                                     \
-        = sequence->get_number_of_particle_triplets();                      \
+      ParticleIndexTriplets imp_foreach_indexes              \
+        =sequence->get_indexes();                                       \
       for (unsigned int _2=0;                                           \
-           _2 != imp_foreach_size;                                      \
+           _2 != imp_foreach_indexes.size();                            \
            ++_2) {                                                      \
-        IMP::ParticleTriplet _1= sequence->get_particle_triplet(_2);           \
+        IMP::ParticleIndexTriplet _1= imp_foreach_indexes[_2];            \
         bool imp_foreach_break=false;                                   \
         operation                                                       \
           if (imp_foreach_break) break;                                 \

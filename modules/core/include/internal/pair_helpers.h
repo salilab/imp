@@ -33,15 +33,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 class IMPCOREEXPORT ListLikePairContainer: public PairContainer {
 private:
-  ParticlePairs data_;
-  typedef IMP::compatibility::set<ParticlePair> Index;
-  mutable Index index_;
-  void update_index() const {
-    if (index_.size()==data_.size()) return;
-    else {
-      index_= Index(data_.begin(), data_.end());
-    }
-  }
+  ParticleIndexPairs data_;
 protected:
   ListLikePairContainer *get_added() const {
     if (get_has_added_and_removed_containers()) {
@@ -56,19 +48,11 @@ protected:
       (get_removed_container());
   }
   ListLikePairContainer(){}
-  void update_list(ParticlePairsTemp &cur) {
-    index_.clear();
-    IMP_IF_CHECK(USAGE) {
-      for (unsigned int i=0; i< cur.size(); ++i) {
-        IMP_USAGE_CHECK(
-         IMP::internal::is_valid(cur[i]),
-         "Passed Pair cannot be NULL (or None)");
-      }
-    }
+  void update_list(ParticleIndexPairs &cur) {
     if (get_added()) {
       std::sort(cur.begin(), cur.end());
-      std::sort(data_.begin(), data_.end());
-      ParticlePairsTemp added, removed;
+      //std::sort(data_.begin(), data_.end());
+      ParticleIndexPairs added, removed;
       std::set_difference(cur.begin(), cur.end(),
                           data_.begin(), data_.end(),
                           std::back_inserter(added));
@@ -78,16 +62,17 @@ protected:
       get_added()->data_=added;
       get_removed()->data_=removed;
     }
+    std::sort(cur.begin(), cur.end());
     swap(data_, cur);
   }
-  void add_to_list(ParticlePairsTemp &cur) {
+  void add_to_list(ParticleIndexPairs &cur) {
     std::sort(cur.begin(), cur.end());
-    ParticlePairsTemp newlist;
+    ParticleIndexPairs newlist;
     std::set_union(cur.begin(), cur.end(),
                         data_.begin(), data_.end(),
                         std::back_inserter(newlist));
     if (get_added()) {
-      ParticlePairsTemp added;
+      ParticleIndexPairs added;
       std::set_intersection(newlist.begin(), newlist.end(),
                             cur.begin(), cur.end(),
                             std::back_inserter(added));
@@ -97,47 +82,9 @@ protected:
     swap(data_, newlist);
   }
 
-  template <class Table>
-    bool has_permutation(const Table &t, Particle *p) const {
-    return t.find(p) != t.end();
-  }
-  template <class Table>
-   bool has_permutation(const Table &t, const ParticlePair &p) const {
-    return t.find(p) != t.end() || t.find(ParticlePair(p[1], p[0])) != t.end();
-  }
-  template <class Table>
-   bool has_permutation(const Table &t, const ParticleTriplet &p) const {
-    return t.find(p) != t.end()
-      || t.find(ParticleTriplet(p[0], p[2], p[1])) != t.end()
-      || t.find(ParticleTriplet(p[1], p[0], p[2])) != t.end()
-      || t.find(ParticleTriplet(p[1], p[2], p[0])) != t.end()
-      || t.find(ParticleTriplet(p[2], p[0], p[1])) != t.end()
-      || t.find(ParticleTriplet(p[2], p[1], p[0])) != t.end();
-  }
-  template <class Table>
-   bool has_permutation(const Table &, const ParticleQuad &) const {
-    IMP_NOT_IMPLEMENTED;
-    return false;
-  }
-
-  void add_unordered_to_list(const ParticlePairsTemp &cur) {
-    update_index();
-    ParticlePairsTemp added;
-    for (unsigned int i=0; i<cur.size(); ++i) {
-      if (has_permutation(index_, cur[i])) {
-      } else {
-        index_.insert(cur[i]);
-        data_.push_back(cur[i]);
-        if (get_added()) {
-          added.push_back(cur[i]);
-        }
-      }
-    }
-  }
-  void remove_from_list(ParticlePairsTemp &cur) {
-    index_.clear();
+  void remove_from_list(ParticleIndexPairs &cur) {
     std::sort(cur.begin(), cur.end());
-    ParticlePairsTemp newlist;
+    ParticleIndexPairs newlist;
     std::set_difference(data_.begin(), data_.end(),
                         cur.begin(), cur.end(),
                         std::back_inserter(newlist));
@@ -150,30 +97,33 @@ protected:
   template <class F>
     struct AccIf {
     F f_;
-    mutable ParticlePairsTemp rem_;
-    AccIf(F f, ParticlePairsTemp &rem): f_(f), rem_(rem){}
-    bool operator()(const ParticlePair& cur) const {
+    mutable ParticleIndexPairs rem_;
+    AccIf(F f, ParticleIndexPairs &rem): f_(f), rem_(rem){}
+    bool operator()(const ParticleIndexPair& cur) const {
       if (f_(cur)) {
         rem_.push_back(cur);
         return true;
-      } return false;
+      }
+      return false;
     }
   };
   template <class F>
   void remove_from_list_if(F f) {
-    index_.clear();
     if (get_has_added_and_removed_containers()) {
-      ParticlePairsTemp removed;
-      data_.remove_if(AccIf<F>(f, removed));
+      ParticleIndexPairs removed;
+      data_.erase(std::remove_if(data_.begin(),
+                                data_.end(), AccIf<F>(f, removed)),
+                 data_.end());
       ListLikePairContainer* ac=get_removed();
       ac->data_.insert(ac->data_.end(), removed.begin(), removed.end());
     } else {
-      data_.remove_if(f);
+      data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
     }
   }
-  void add_to_list(const ParticlePair& cur) {
+  void add_to_list(const ParticleIndexPair& cur) {
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
-      data_.push_back(cur);
+      data_.insert(std::lower_bound(data_.begin(), data_.end(),
+                                   cur), cur);
       if (get_added()) {
         ListLikePairContainer* ac=get_added();
         ac->data_.push_back(cur);
@@ -188,13 +138,13 @@ protected:
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
      for (unsigned int i=0; i< data_.size(); ++i) {
-       call_appky(sm, data_[i], da);
+       call_appky(sm, get_model(), data_[i], da);
      }
  }
   template <class SM>
   void template_apply(const SM *sm) {
     for (unsigned int i=0; i< data_.size(); ++i) {
-      call_apply(sm, data_[i]);
+      call_apply(sm, get_model(), data_[i]);
     }
   }
   template <class SS>
@@ -202,7 +152,7 @@ protected:
                            DerivativeAccumulator *da) const {
     double ret=0;
     for (unsigned int i=0; i< data_.size(); ++i) {
-      double cur=call_evaluate(s, data_[i], da);
+      double cur=call_evaluate(s, get_model(), data_[i], da);
       ret+=cur;
     }
     return ret;
@@ -213,7 +163,7 @@ protected:
                                    double max) const {
     double ret=0;
     for (unsigned int i=0; i< data_.size(); ++i) {
-      double cur= call_evaluate_if_good(s, data_[i], da, max);
+      double cur= call_evaluate_if_good(s, get_model(), data_[i], da, max);
       max-=cur;
       ret+=cur;
       if (max <0) break;
@@ -221,35 +171,37 @@ protected:
     return ret;
   }
   void apply(const PairModifier *sm) {
-    sm->apply(data_);
+    sm->apply(get_model(), data_);
   }
   void apply(const PairDerivativeModifier *sm,
              DerivativeAccumulator &da) {
-    sm->apply(data_, da);
+    sm->apply(get_model(), data_, da);
   }
   double evaluate(const PairScore *s,
                   DerivativeAccumulator *da) const {
-    return s->evaluate(data_, da);
+    return s->evaluate(get_model(), data_, da);
   }
   double evaluate_if_good(const PairScore *s,
                           DerivativeAccumulator *da,
                           double max) const {
-    return s->evaluate_if_good(data_, da, max);
+    return s->evaluate_if_good(get_model(), data_, da, max);
   }
-  ParticlesTemp get_contained_particles() const;
+  ParticlesTemp get_contained_particles() const {
+    return IMP::internal::flatten(IMP::internal::get_particle(get_model(),
+                                                              data_));
+  }
   PairContainerPair get_added_and_removed_containers() const;
-  bool get_contains_particle_pair(const ParticlePair& p) const;
-  unsigned int get_number_of_particle_pairs() const;
-  ParticlePair get_particle_pair(unsigned int i) const;
+  bool get_contains_particle_pair(const ParticlePair& p) const {
+    ParticleIndexPair it= IMP::internal::get_index(p);
+    return std::binary_search(data_.begin(), data_.end(), it);
+  }
+  unsigned int get_number_of_particle_pairs() const {
+    return data_.size();
+  }
+  ParticlePair get_particle_pair(unsigned int i) const {
+    return IMP::internal::get_particle(get_model(), data_[i]);
+  }
   IMP_OBJECT(ListLikePairContainer);
-  typedef ParticlePairs::const_iterator ParticlePairIterator;
-  ParticlePairIterator particle_pairs_begin() const {
-    return data_.begin();
-  }
-  ParticlePairIterator particle_pairs_end() const {
-    return data_.end();
-  }
-  ObjectsTemp get_input_objects() const;
   void do_after_evaluate() {
     if (get_added()) {
       get_added()->data_.clear();
@@ -257,14 +209,14 @@ protected:
     }
   }
   void do_before_evaluate() {
-    std::remove_if(data_.begin(), data_.end(),
-         IMP::internal::IsInactive());
   }
   bool get_is_up_to_date() const {return true;}
+
+  ParticleIndexPairs get_indexes() const {
+    return data_;
+  }
   bool get_provides_access() const {return true;}
-  const ParticlePairsTemp& get_access() const {
-    IMP_INTERNAL_CHECK(get_is_up_to_date(),
-                       "Container is out of date");
+  const ParticleIndexPairs& get_access() const {
     return data_;
   }
 };

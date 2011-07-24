@@ -27,4 +27,12 @@ void CLASSNAMEFilter
 
 }
 
+void CLASSNAMEFilter
+::filter_in_place(Model *m, PLURALINDEXTYPE &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          internal::GetContainsIndex<CLASSNAMEFilter>(this, m)),
+           ps.end());
+
+}
+
 IMP_END_NAMESPACE

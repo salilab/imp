@@ -16,10 +16,10 @@ class TestBL(IMP.test.TestCase):
     def _compare_lists(self, m, pc, d, out):
         print "comparing"
         print m.get_number_of_score_states()
-        m.evaluate(True)
+        m.update()
         print "list is " + str(out.get_number_of_particle_pairs())
-        for p in out.get_particle_pairs():
-            print p
+        print [(p[0].get_name(), p[1].get_name()) for p in out.get_particle_pairs()]
+        print [(p[0].get_index(), p[1].get_index()) for p in out.get_particle_pairs()]
         for i in range(0, pc.get_number_of_particles()):
             for j in range(0, i):
                 a= pc.get_particle(i)

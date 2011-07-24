@@ -32,7 +32,7 @@ namespace {
   typedef boost::vector_property_map<unsigned int> LIndex;
   typedef LIndex Parent;
   typedef boost::disjoint_sets<LIndex,Parent> UF;
-  void build_graph(SingletonContainer *sc, ParticlePairsTemp &out, UF &uf) {
+  void build_graph(SingletonContainer *sc, ParticleIndexPairs &out, UF &uf) {
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
     IMP_FOREACH_SINGLETON(sc,
                           vs[_2]= core::XYZ(_1).get_coordinates(););
@@ -46,8 +46,8 @@ namespace {
         unsigned int sj= uf.find_set(ni[j]);
         if (sj != si) {
           uf.union_set(si, sj); // more efficient call
-          out.push_back(ParticlePair(sc->get_particle(i),
-                                     sc->get_particle(ni[j])));
+          out.push_back(ParticleIndexPair(sc->get_particle(i)->get_index(),
+                                     sc->get_particle(ni[j])->get_index()));
           break;
         }
       }
@@ -57,8 +57,8 @@ namespace {
       int si=uf.find_set(i);
       int si0= uf.find_set(0);
       if (si != si0) {
-        out.push_back(ParticlePair(sc->get_particle(si),
-                                   sc->get_particle(si0)));
+        out.push_back(ParticleIndexPair(sc->get_particle(si)->get_index(),
+                                        sc->get_particle(si0)->get_index()));
         uf.union_set(si, si0);
       }
     }
@@ -77,7 +77,7 @@ namespace {
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
   void compute_mst(const SingletonContainer *sc,
-                   ParticlePairsTemp &out) {
+                   ParticleIndexPairs &out) {
     static unsigned int nnn=10;
 
     std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
@@ -102,7 +102,8 @@ namespace {
     for (unsigned int index=0; index< mst.size(); ++index) {
       int i= boost::target(mst[index], g);
       int j= boost::source(mst[index], g);
-      out.push_back(ParticlePair(sc->get_particle(i), sc->get_particle(j)));
+      out.push_back(ParticleIndexPair(sc->get_particle(i)->get_index(),
+                                      sc->get_particle(j)->get_index()));
     }
   }
 
@@ -145,7 +146,7 @@ ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
 void ConnectingPairContainer::fill_list(bool /*first*/) {
   // if we have a list and nothing moved further than error do nothing
   // otherwise rebuild
-  ParticlePairsTemp new_list;
+  ParticleIndexPairs new_list;
 
   if (mst_) {
     compute_mst(sc_, new_list);

@@ -101,7 +101,8 @@ get_close_pairs(const algebra::BoundingBox3Ds &bbs) const {
 
 
 bool QuadraticClosePairsFinder::get_are_close(Particle *a, Particle *b) const {
-  return internal::get_are_close(a,b, get_distance());
+  return internal::get_are_close(a->get_model(), a->get_index(),
+                                 b->get_index(), get_distance());
 }
 
 

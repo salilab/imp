@@ -108,6 +108,56 @@ class IMPEXPORT SingletonContainer : public Container
                          DerivativeAccumulator &da) {
     s->apply(a, da);
   }
+
+
+
+  template <class S>
+    static double call_evaluate(const S *s, Model *m,
+                                ParticleIndex a,
+                                DerivativeAccumulator *da) {
+    return s->S::evaluate(m, a, da);
+  }
+  static double call_evaluate(const SingletonScore *s, Model *m,
+                              ParticleIndex a,
+                              DerivativeAccumulator *da) {
+    return s->evaluate(m, a, da);
+  }
+  template <class S>
+    static double call_evaluate_if_good(const S *s,
+                                        Model *m,
+                                        ParticleIndex a,
+                                        DerivativeAccumulator *da,
+                                        double max) {
+    return s->S::evaluate_if_good(m, a, da, max);
+  }
+  static double call_evaluate_if_good(const SingletonScore *s,
+                                      Model *m,
+                                      ParticleIndex a,
+                                      DerivativeAccumulator *da,
+                                      double max) {
+    return s->evaluate_if_good(m, a, da, max);
+  }
+  template <class S>
+    static void call_apply(const S *s, Model *m,
+                              ParticleIndex a) {
+    s->S::apply(m, a);
+  }
+  static void call_apply(const SingletonModifier *s, Model *m,
+                         ParticleIndex a) {
+    s->apply(m, a);
+  }
+  template <class S>
+    static void call_apply(const S *s, Model *m,
+                           ParticleIndex a,
+                           DerivativeAccumulator *&da) {
+    s->S::apply(m, a, da);
+  }
+  static void call_apply(const SingletonDerivativeModifier *s,
+                         Model *m,
+                         ParticleIndex a,
+                         DerivativeAccumulator &da) {
+    s->apply(m, a, da);
+  }
 #endif
 public:
   typedef Particle* ContainedType;
@@ -217,9 +267,18 @@ public:
     return get_contains_particle(v);
   }
   unsigned int get_number() const {return get_number_of_particles();}
+#ifndef SWIG
   virtual bool get_provides_access() const {return false;}
-  virtual const ParticlesTemp& get_access() const {
+  virtual const ParticleIndexes& get_access() const {
     IMP_THROW("Object not implemented properly.", IndexException);
+  }
+#endif
+  virtual ParticleIndexes get_indexes() const {
+    ParticleIndexes ret(get_number());
+    for (unsigned int i=0; i< ret.size(); ++i) {
+      ret[i]= IMP::internal::get_index(get(i));
+    }
+    return ret;
   }
 #endif
 

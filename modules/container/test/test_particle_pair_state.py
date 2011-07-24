@@ -18,14 +18,22 @@ class SingletonTestModifier(IMP.SingletonModifier):
     def do_show(self, fh):
         fh.write("Test Particle")
     def apply(self, a0, a1=None):
-        if str(type(a0)) == "<class 'IMP.Particle'>":
-            if a0.has_attribute(self.k):
-                pass
+        if a1==None:
+            if type(a0)==type([]):
+                for p in a0:
+                    self.apply(p)
             else:
-                a0.add_attribute(self.k, 1)
+                if a0.has_attribute(self.k):
+                    pass
+                else:
+                    a0.add_attribute(self.k, 1)
         else:
-            for p in a0:
-                self.apply(p, a1)
+            if type(a1)==type([]):
+                for p in a1:
+                    self.apply(a0, p)
+            else:
+                p= a0.get_particle(a1)
+                self.apply(p)
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
@@ -38,17 +46,26 @@ class PairTestModifier(IMP.PairModifier):
     def __init__(self, k):
         IMP.PairModifier.__init__(self)
         self.k=k
+        self.sm= SingletonTestModifier(k)
     def do_show(self, fh):
         fh.write("Test Particle")
-    def apply(self, a0, a2=None):
-        for p in a0:
-            if type(p) == tuple:
-                for q in p:
-                    if not q.has_attribute(self.k):
-                        q.add_attribute(self.k, 1)
+    def apply(self, a0, a1=None):
+        if a1==None:
+            if type(a0)==type([]):
+                for p in a0:
+                    self.apply(p)
             else:
-                if not p.has_attribute(self.k):
-                    p.add_attribute(self.k, 1)
+                self.sm.apply(a0[0])
+                self.sm.apply(a1[0])
+        else:
+            if type(a1)==type([]):
+                for p in a1:
+                    self.apply(a0, p)
+            else:
+                p0= a0.get_particle(a1[0])
+                p1= a0.get_particle(a1[1])
+                self.sm.apply(p0)
+                self.sm.apply(p1)
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):

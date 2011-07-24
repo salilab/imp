@@ -17,6 +17,7 @@
 #include <IMP/core/internal/close_pairs_helpers.h>
 #include <IMP/algebra/internal/tnt_array2d.h>
 #include <IMP/PairModifier.h>
+#include <IMP/utility.h>
 #include <algorithm>
 
 
@@ -73,7 +74,7 @@ IMP_ACTIVE_CONTAINER_DEF(CoreClosePairContainer,
 void CoreClosePairContainer::set_slack(double s) {
   slack_=s;
   cpf_->set_distance(distance_+2*slack_);
-  ParticlePairsTemp et;
+  ParticleIndexPairs et;
   update_list(et);
   first_call_=true;
 }
@@ -113,79 +114,81 @@ void CoreClosePairContainer::check_duplicates_input() const {
 
 void CoreClosePairContainer::check_list(bool check_slack) const {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-  IMP::compatibility::set<ParticlePair> existings(particle_pairs_begin(),
-                                             particle_pairs_end());
-  unsigned int num= std::distance(particle_pairs_begin(),
-                                  particle_pairs_end());
-  if(0) std::cout << num;
-  for (ParticlePairIterator it=particle_pairs_begin();
-       it != particle_pairs_end(); ++it) {
-    for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
-      IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains(*it),
-                         "Pair " << *it
-                         << " should have been filtered by filter "
-                         << get_pair_filter(i)->get_name());
-      IMP_INTERNAL_CHECK(!get_pair_filter(i)
-                         ->get_contains(ParticlePair((*it)[0],
-                                                                   (*it)[1])),
-                         "Filter is not symmetric on pair " << *it
-                         << get_pair_filter(i)->get_name());
+    ParticleIndexPairs cur= get_access();
+    IMP::compatibility::set<ParticleIndexPair> existings(cur.begin(),
+                                                         cur.end());
+    unsigned int num=cur.size();
+    if(0) std::cout << num;
+    for (unsigned int j=0; j< num; ++j) {
+      for (unsigned int i=0; i< get_number_of_pair_filters(); ++i) {
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)->get_contains(get_model(),
+                                                             cur[j]),
+                           "Pair " << cur[j]
+                           << " should have been filtered by filter "
+                           << get_pair_filter(i)->get_name());
+        IMP_INTERNAL_CHECK(!get_pair_filter(i)
+                           ->get_contains(get_model(),
+                                          ParticleIndexPair((cur[j])[0],
+                                                            (cur[j])[1])),
+                           "Filter is not symmetric on pair " << cur[j]
+                           << get_pair_filter(i)->get_name());
+      }
+      IMP_INTERNAL_CHECK(existings.find(ParticleIndexPair((cur[j])[1],
+                                                          (cur[j])[0]))
+                         == existings.end(),
+                         "Can't have both a pair and its reverse in the list"
+                         << cur[j]);
     }
-    IMP_INTERNAL_CHECK(existings.find(ParticlePair((*it)[1], (*it)[0]))
-                       == existings.end(),
-                       "Can't have both a pair and its reverse in the list"
-                       << *it);
-  }
-  IMP_INTERNAL_CHECK(existings.size() == num,
-                     "Not all particle pairs in list are unique: "
-                     << num
-                     << " vs " << existings.size() << std::endl);
-  double threshold=distance_-.1;
-  if (check_slack) {
-    threshold+=2*slack_;
-  }
-  for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
-    for (unsigned int j=0; j< i; ++j) {
-      XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
-      double d= core::get_distance(a,b);
-      if (d < threshold) {
-        if (RigidMember::particle_is_instance(a)
-            && RigidMember::particle_is_instance(b)
-            && RigidMember(a).get_rigid_body()
-            == RigidMember(b).get_rigid_body())
-          continue;
-        ParticlePair pp(a,b);
-        ParticlePairsTemp pps(1, pp);
-        internal::filter_close_pairs(this, pps);
-        IMP_INTERNAL_CHECK(pps.empty()
-                           || existings.find(pp) != existings.end()
-                           || existings.find(ParticlePair(pp[1], pp[0]))
-                           != existings.end(), "Particle pair "
-                           << a->get_name()
-                           << " and " << b->get_name()
-                           << " not found in list: "
-                           << IMP::core::XYZR(a) << std::endl
-                           << IMP::core::XYZR(b)
+    IMP_INTERNAL_CHECK(existings.size() == num,
+                       "Not all particle pairs in list are unique: "
+                       << num
+                       << " vs " << existings.size() << std::endl);
+    double threshold=distance_-.1;
+    if (check_slack) {
+      threshold+=2*slack_;
+    }
+    for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
+      for (unsigned int j=0; j< i; ++j) {
+        XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
+        double d= core::get_distance(a,b);
+        if (d < threshold) {
+          if (RigidMember::particle_is_instance(a)
+              && RigidMember::particle_is_instance(b)
+              && RigidMember(a).get_rigid_body()
+              == RigidMember(b).get_rigid_body())
+            continue;
+          ParticleIndexPair pp(a->get_index(),b->get_index());
+          ParticleIndexPairs pps(1, pp);
+          internal::filter_close_pairs(this, pps);
+          IMP_INTERNAL_CHECK(pps.empty()
+                             || existings.find(pp) != existings.end()
+                             || existings.find(ParticleIndexPair(pp[1], pp[0]))
+                             != existings.end(), "Particle pair "
+                             << a->get_name()
+                             << " and " << b->get_name()
+                             << " not found in list: "
+                             << IMP::core::XYZR(a) << std::endl
+                             << IMP::core::XYZR(b)
                            << " distance "
-                           << core::get_distance(a, b)
-                           << " vs " << distance_ << ". "
-                           << " info " << moved_->get_distance_moved(a)
-                           << " and " << moved_->get_distance_moved(b));
+                             << core::get_distance(a, b)
+                             << " vs " << distance_ << ". "
+                             << " info " << moved_->get_distance_moved(a)
+                             << " and " << moved_->get_distance_moved(b));
+        }
       }
     }
-  }
-  if (dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
-    for (ParticlePairIterator it=particle_pairs_begin();
-         it != particle_pairs_end(); ++it) {
-      if (RigidMember::particle_is_instance((*it)[0])
-          && RigidMember::particle_is_instance((*it)[1])) {
-        IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
-                           != RigidMember((*it)[1]).get_rigid_body(),
-                           "Pair should not have two particles from the same "
-                           << "rigid body");
+    if (dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
+      for (ParticlePairIterator it=particle_pairs_begin();
+           it != particle_pairs_end(); ++it) {
+        if (RigidMember::particle_is_instance((*it)[0])
+            && RigidMember::particle_is_instance((*it)[1])) {
+          IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
+                             != RigidMember((*it)[1]).get_rigid_body(),
+                             "Pair should not have two particles from the same "
+                             << "rigid body");
+        }
       }
     }
-  }
   }
 }
 
@@ -216,22 +219,25 @@ void CoreClosePairContainer::do_first_call() {
 }
 
 void CoreClosePairContainer::do_incremental() {
-  ParticlesTemp moved=moved_->get_particles();
+  ParticleIndexes moved=moved_->get_indexes();
   IMP_LOG(TERSE, "Handling incremental update of ClosePairContainer"
           << std::endl);
+  using IMP::operator<<;
   IMP_LOG(VERBOSE, "Moved " << moved << std::endl);
-  ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles(),
-                                               moved);
-  ParticlePairsTemp ret1= cpf_->get_close_pairs(moved);
+  ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(),
+                                                c_->get_indexes(),
+                                                moved);
+  ParticleIndexPairs ret1= cpf_->get_close_pairs(get_model(), moved);
   ret.insert(ret.begin(), ret1.begin(), ret1.end());
+  internal::fix_order(ret);
   // make one pass
   internal::filter_close_pairs(this, ret);
   if (false) {
-    internal::filter_same(ret, moved_->get_particles());
+    /*internal::filter_same(ret, moved_->get_particles());
     //internal::filter_far(ret, get_distance());
     remove_from_list_if(Found(moved_->get_particles()));
     IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-    add_to_list(ret);
+    add_to_list(ret);*/
   } else {
     internal::filter_same(ret);
     moved_count_+=moved.size();
@@ -239,11 +245,11 @@ void CoreClosePairContainer::do_incremental() {
       /*InList il= InList::create(moved);
         remove_from_list_if(il);
         InList::destroy(il);*/
-      remove_from_list_if(FarParticle(distance_+2*slack_));
+      remove_from_list_if(FarParticle(get_model(), distance_+2*slack_));
       moved_count_=0;
     }
     IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-    add_unordered_to_list(ret);
+    add_to_list(ret);
   }
   moved_->reset_moved();
   IMP_LOG(TERSE, "Count is now "
@@ -253,7 +259,10 @@ void CoreClosePairContainer::do_incremental() {
 void CoreClosePairContainer::do_rebuild() {
   IMP_LOG(TERSE, "Handling full update of ClosePairContainer."
           << std::endl);
-  ParticlePairsTemp ret= cpf_->get_close_pairs(c_->get_particles());
+  ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(), c_->get_indexes());
+  internal::fix_order(ret);
+  IMP_LOG(TERSE, "Found before filtering " << ret.size()
+          << " pairs." << std::endl);
   internal::filter_close_pairs(this, ret);
   IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
   update_list(ret);

@@ -46,49 +46,10 @@ void CoreListTripletContainer::do_show(std::ostream &out) const {
 
 
 
-void CoreListTripletContainer::set_particle_triplets(ParticleTripletsTemp sc) {
-  update_list(sc);
-}
-
-
-void CoreListTripletContainer::clear_particle_triplets() {
-  ParticleTripletsTemp t;
-  update_list(t);
-}
-
-
-void CoreListTripletContainer::add_particle_triplet(const ParticleTriplet& vt) {
-  IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
-                  "Passed Triplet cannot be NULL (or None)");
-  add_to_list(vt);
-  IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                  || !get_removed_container()
-                  ->get_contains(vt),
-                  "You cannot remove and add the same item in one time step.");
-}
-
-void
-CoreListTripletContainer::add_particle_triplets(const ParticleTripletsTemp &c) {
-  if (c.empty()) return;
-  ParticleTripletsTemp cp= c;
-  add_to_list(cp);
-  IMP_IF_CHECK(USAGE) {
-    for (unsigned int i=0; i< c.size(); ++i) {
-      IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                    "Passed Triplet cannot be NULL (or None)");
-      IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                      || !get_removed_container()
-                      ->get_contains(c[i]),
-            "You cannot remove and add the same item in one time step.");
-
-    }
-  }
-}
-
 void CoreListTripletContainer
 ::remove_particle_triplets(const ParticleTripletsTemp &c) {
   if (c.empty()) return;
-  ParticleTripletsTemp cp= c;
+  ParticleIndexTriplets cp= IMP::internal::get_index(c);
   remove_from_list(cp);
   IMP_IF_CHECK(USAGE) {
     for (unsigned int i=0; i< c.size(); ++i) {

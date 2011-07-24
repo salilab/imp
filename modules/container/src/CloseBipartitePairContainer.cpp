@@ -123,7 +123,9 @@ void CloseBipartitePairContainer::do_before_evaluate() {
   IMP_CHECK_OBJECT(cpf_);
   core::internal::ListLikePairContainer::do_before_evaluate();
   if (first_call_) {
-    ParticlePairsTemp t= cpf_->get_close_pairs(a_, b_);
+    ParticleIndexPairs t= cpf_->get_close_pairs(get_model(),
+                                                a_->get_indexes(),
+                                                b_->get_indexes());
     core::internal::filter_close_pairs(this, t);
     moveda_->reset();
     movedb_->reset();
@@ -136,10 +138,16 @@ void CloseBipartitePairContainer::do_before_evaluate() {
            + movedb_->get_number_of_particles())
           < a_->get_number_of_particles()*.1
           + b_->get_number_of_particles()*.1) {
-        ParticlePairsTemp ret0= cpf_->get_close_pairs(moveda_, movedb_);
-        ParticlePairsTemp ret1= cpf_->get_close_pairs(moveda_, b_);
-        ParticlePairsTemp ret2= cpf_->get_close_pairs(a_, movedb_);
-        ParticlePairsTemp ret; ret.reserve(ret0.size()
+        ParticleIndexPairs ret0= cpf_->get_close_pairs(get_model(),
+                                                       moveda_->get_indexes(),
+                                                       movedb_->get_indexes());
+        ParticleIndexPairs ret1= cpf_->get_close_pairs(get_model(),
+                                                       moveda_->get_indexes(),
+                                                       b_->get_indexes());
+        ParticleIndexPairs ret2= cpf_->get_close_pairs(get_model(),
+                                                       a_->get_indexes(),
+                                                       movedb_->get_indexes());
+        ParticleIndexPairs ret; ret.reserve(ret0.size()
                                            + ret1.size()+ret2.size());
         ret.insert(ret.end(), ret0.begin(), ret0.end());
         ret.insert(ret.end(), ret1.begin(), ret1.end());
@@ -149,7 +157,9 @@ void CloseBipartitePairContainer::do_before_evaluate() {
         moveda_->reset_moved();
         movedb_->reset_moved();
       } else {
-        ParticlePairsTemp ret= cpf_->get_close_pairs(a_, b_);
+        ParticleIndexPairs ret= cpf_->get_close_pairs(get_model(),
+                                                      a_->get_indexes(),
+                                                      b_->get_indexes());
         core::internal::filter_close_pairs(this, ret);
         update_list(ret);
         moveda_->reset();

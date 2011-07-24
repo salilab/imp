@@ -54,11 +54,11 @@ void MovedSingletonContainer::do_before_evaluate()
     IMP_LOG(TERSE, "First call" << std::endl);
     reset();
     if (first_call_) {
-      ParticlesTemp pt=pc_->get_particles();
+      ParticleIndexes pt=pc_->get_indexes();
       update_list(pt);
     }
   } else {
-    ParticlesTemp mved= do_get_moved();
+    ParticleIndexes mved= do_get_moved();
     add_to_list(mved);
   }
 }
@@ -75,7 +75,7 @@ ContainersTemp MovedSingletonContainer::get_state_input_containers() const {
 void MovedSingletonContainer::reset()
 {
   do_reset_all();
-  ParticlesTemp t;
+  ParticleIndexes t;
   update_list(t);
   first_call_=false;
 }
@@ -84,7 +84,7 @@ void MovedSingletonContainer::reset()
 void MovedSingletonContainer::reset_moved()
 {
   do_reset_moved();
-  ParticlesTemp t;
+  ParticleIndexes t;
   update_list(t);
 }
 
@@ -116,11 +116,12 @@ void XYZRMovedSingletonContainer::do_reset_moved() {
   }
   moved_.clear();
 }
-ParticlesTemp XYZRMovedSingletonContainer::do_get_moved() {
+ParticleIndexes XYZRMovedSingletonContainer::do_get_moved() {
     IMP_OBJECT_LOG;
-    ParticlesTemp ret;
-    IMP_FOREACH_SINGLETON(get_singleton_container(),{
-        XYZR d(_1);
+    ParticleIndexes ret;
+    Model *m= get_model();
+    IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),{
+        XYZR d(m, _1);
         double dr= std::abs(d.get_radius()- backup_[_2].get_radius());
         if (!algebra::get_interiors_intersect(
                algebra::Sphere3D(d.get_coordinates(),0),
@@ -162,19 +163,23 @@ XYZRMovedSingletonContainer
 
 void RigidMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
-  ParticlesTemp normal;
+  ParticleIndexes normal;
   rbs_.clear();
   rbs_backup_.clear();
   rbs_members_.clear();
-  IMP_FOREACH_SINGLETON(get_singleton_container(),
+  IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),
                         {
-         if (core::RigidMember::particle_is_instance(_1)) {
-           core::RigidBody rb= core::RigidMember(_1).get_rigid_body();
-              if (rbs_members_.find(rb) == rbs_members_.end()) {
-                rbs_.push_back(rb);
-                rbs_backup_.push_back(get_data(rb));
+                          if (core::RigidMember
+                              ::particle_is_instance(get_model(),
+                                                     _1)) {
+                            core::RigidBody rb
+                              = core::RigidMember(get_model(),
+                                                  _1).get_rigid_body();
+              if (rbs_members_.find(_1) == rbs_members_.end()) {
+                rbs_.push_back(rb.get_particle_index());
+                rbs_backup_.push_back(get_data(rb.get_particle_index()));
               }
-              rbs_members_[rb].push_back(_1);
+              rbs_members_[rb.get_particle_index()].push_back(_1);
          } else {
            normal.push_back(_1);
          }
@@ -194,13 +199,14 @@ void RigidMovedSingletonContainer::do_reset_moved() {
 }
 
 
-ParticlesTemp RigidMovedSingletonContainer::do_get_moved() {
+ParticleIndexes RigidMovedSingletonContainer::do_get_moved() {
     IMP_OBJECT_LOG;
-    ParticlesTemp ret= normal_->get_particles();
+    ParticleIndexes ret= normal_->get_indexes();
     for (unsigned int i=0; i< rbs_.size(); ++i) {
-      RigidBody rb(rbs_[i]);
+      RigidBody rb(get_model(), rbs_[i]);
       if (get_distance_estimate(rbs_[i]) > get_threshold()) {
-        ret.insert(ret.end(), rbs_members_[rb].begin(), rbs_members_[rb].end());
+        ret.insert(ret.end(), rbs_members_[rbs_[i]].begin(),
+                   rbs_members_[rbs_[i]].end());
         rbs_moved_.push_back(i);
       }
     }
@@ -212,7 +218,7 @@ double RigidMovedSingletonContainer
   Particle *p=get_singleton_container()->get_particle(i);
   if (core::RigidMember::particle_is_instance(p)) {
     core::RigidBody rb = core::RigidMember(p).get_rigid_body();
-    return get_distance_estimate(rb);
+    return get_distance_estimate(rb.get_particle_index());
   } else {
     return normal_moved_->get_distance_moved(p);
   }

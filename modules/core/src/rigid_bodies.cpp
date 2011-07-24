@@ -279,7 +279,9 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
     Particle *mp= members[i];
     IMP_USAGE_CHECK(mp != p, "A rigid body cannot have itself as a member "
                     << p->get_name());
-    IMP_USAGE_CHECK(!internal::get_has_required_attributes_for_member(p),
+    IMP_USAGE_CHECK(!internal
+                    ::get_has_required_attributes_for_member(p->get_model(),
+                                                             p->get_index()),
                     "Particle " << p->get_name() << " is already part of "
                     << "a conflicting rigid body");
     ds.push_back(XYZ(mp));

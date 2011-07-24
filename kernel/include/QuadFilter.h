@@ -54,6 +54,7 @@ public:
   /** @} */
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  virtual void filter_in_place(Model *m, ParticleIndexQuads& ps) const;
   virtual void filter_in_place(ParticleQuadsTemp& ps) const;
 #endif
 

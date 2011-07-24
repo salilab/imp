@@ -27,4 +27,12 @@ void PairFilter
 
 }
 
+void PairFilter
+::filter_in_place(Model *m, ParticleIndexPairs &ps) const {
+  ps.erase(std::remove_if(ps.begin(), ps.end(),
+                          internal::GetContainsIndex<PairFilter>(this, m)),
+           ps.end());
+
+}
+
 IMP_END_NAMESPACE

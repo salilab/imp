@@ -14,6 +14,7 @@
 
 #include <IMP/RefCounted.h>
 #include <IMP/SingletonContainer.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 
@@ -47,11 +48,11 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       indexing the input list(s).
       @{
    */
-  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {
+  ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {
     return get_close_pairs(pc->get_particles());
   }
 
-  virtual ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
+  ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
                                     SingletonContainer *pcb) {
     return get_close_pairs(pca->get_particles(),
                            pcb->get_particles());
@@ -59,7 +60,20 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const =0;
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
                                             const ParticlesTemp &pcb) const =0;
-
+#ifndef SWIG
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pc) const {
+    return IMP::internal::
+      get_index(get_close_pairs(IMP::internal::get_particle(m, pc)));
+  }
+  virtual ParticleIndexPairs get_close_pairs(Model *m,
+                                             const ParticleIndexes &pca,
+                                             const ParticleIndexes &pcb) const {
+    return IMP::internal::
+      get_index(get_close_pairs(IMP::internal::get_particle(m, pca),
+                                IMP::internal::get_particle(m, pcb)));
+  }
+#endif
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bbs) const=0;
   virtual IntPairs get_close_pairs(const algebra::BoundingBox3Ds &bas,
                                    const algebra::BoundingBox3Ds &bbs) const=0;

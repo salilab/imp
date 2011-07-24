@@ -31,7 +31,7 @@ class IMPCOREEXPORT MovedSingletonContainer: public ListLikeSingletonContainer
   Pointer<SingletonContainer> pc_, ac_, rc_;
   bool first_call_;
   IMP_ACTIVE_CONTAINER_DECL(MovedSingletonContainer);
-  virtual ParticlesTemp do_get_moved()=0;
+  virtual ParticleIndexes do_get_moved()=0;
   virtual void do_reset_all()=0;
   virtual void do_reset_moved()=0;
   virtual double do_get_distance_moved(unsigned int i) const=0;
@@ -81,7 +81,7 @@ class IMPCOREEXPORT XYZRMovedSingletonContainer:
 {
   std::vector<algebra::Sphere3D> backup_;
   Ints moved_;
-  virtual ParticlesTemp do_get_moved();
+  virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
   virtual double do_get_distance_moved(unsigned int i) const;
@@ -98,20 +98,20 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
   IMP::internal::OwnerPointer<CoreListSingletonContainer> normal_;
   IMP::internal::OwnerPointer<XYZRMovedSingletonContainer> normal_moved_;
   std::vector<std::pair<algebra::Sphere3D, algebra::Rotation3D> > rbs_backup_;
-  ParticlesTemp rbs_;
+  ParticleIndexes rbs_;
   Ints rbs_moved_;
-  IMP::compatibility::map<RigidBody, Particles> rbs_members_;
-  virtual ParticlesTemp do_get_moved();
+  IMP::compatibility::map<ParticleIndex, ParticleIndexes> rbs_members_;
+  virtual ParticleIndexes do_get_moved();
   virtual void do_reset_all();
   virtual void do_reset_moved();
   virtual double do_get_distance_moved(unsigned int i) const;
-  double get_distance_estimate(Particle *p) const {
+  double get_distance_estimate(ParticleIndex p) const {
     unsigned int i;
     for (i=0; i< rbs_.size(); ++i) {
       if (rbs_[i]==p) break;
     }
-    core::XYZR xyz(p);
-    core::RigidBody rb(p);
+    core::XYZR xyz(get_model(), p);
+    core::RigidBody rb(get_model(), p);
     double dr= std::abs(xyz.get_radius()- rbs_backup_[i].first.get_radius());
     double dx= (xyz.get_coordinates()
                 -rbs_backup_[i].first.get_center()).get_magnitude();
@@ -123,9 +123,9 @@ class IMPCOREEXPORT RigidMovedSingletonContainer:
     return dr+dx+drot;
   }
   std::pair<algebra::Sphere3D, algebra::Rotation3D>
-    get_data(Particle *p) const {
-    return std::make_pair(core::XYZR(p).get_sphere(),
-      core::RigidBody(p).get_reference_frame()
+    get_data(ParticleIndex p) const {
+    return std::make_pair(core::XYZR(get_model(), p).get_sphere(),
+        core::RigidBody(get_model(), p).get_reference_frame()
                           .get_transformation_to().get_rotation());
   }
   ContainersTemp get_state_input_containers() const;
