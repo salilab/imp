@@ -124,6 +124,8 @@ class Decorators: public ParentDecorators {
     }
   };
   Proxy get_proxy(unsigned int i) {
+    IMP_USAGE_CHECK(i < ParentDecorators::size(), "Out of range: "
+                    << " >= " <<  ParentDecorators::size());
     if (ParentDecorators::operator[](i)) {
       return Proxy(ParentDecorators::operator[](i));
     } else {
@@ -226,6 +228,8 @@ typename boost::enable_if<typename WrappedDecorator::DecoratorHasTraits>::type >
     }
   };
   Proxy get_proxy(unsigned int i) {
+    IMP_USAGE_CHECK(i <  ParentDecorators::size(), "Out of range: "
+                    << " >= " <<  ParentDecorators::size());
     if (ParentDecorators::operator[](i)) {
       return Proxy(ParentDecorators::operator[](i), tr_, has_traits_);
     } else {
