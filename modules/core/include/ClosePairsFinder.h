@@ -48,15 +48,6 @@ class IMPCOREEXPORT ClosePairsFinder : public Object
       indexing the input list(s).
       @{
    */
-  ParticlePairsTemp get_close_pairs(SingletonContainer *pc) const {
-    return get_close_pairs(pc->get_particles());
-  }
-
-  ParticlePairsTemp get_close_pairs(SingletonContainer *pca,
-                                    SingletonContainer *pcb) {
-    return get_close_pairs(pca->get_particles(),
-                           pcb->get_particles());
-  }
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pc) const =0;
   virtual ParticlePairsTemp get_close_pairs(const ParticlesTemp &pca,
                                             const ParticlesTemp &pcb) const =0;

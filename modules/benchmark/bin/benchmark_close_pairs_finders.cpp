@@ -26,18 +26,38 @@ void test_one(std::string name,
     VectorD<3> minc(0,0,0), maxc(10,10,10);
     IMP_NEW(Model, m, ());
     Particles ps = create_xyzr_particles(m, n, rmin);
+    ParticleIndexes psi= IMP::internal::get_index(ps);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i=0; i< ps.size(); ++i) {
       XYZ(ps[i])
         .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
       XYZR(ps[i]).set_radius(rand(random_number_generator));
     }
-    IMP_NEW(ListSingletonContainer, lsc, (ps));
     cpf->set_distance(0);
     double result=0;
     double runtime;
     IMP_TIME({
-        result+=cpf->get_close_pairs(lsc).size();
+        result+=cpf->get_close_pairs(m, psi).size();
+      }, runtime);
+    std::ostringstream oss;
+    oss << "cpf " << name << " " << n << " " << rmax;
+    report(oss.str(), runtime, result);
+  }
+{
+    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    IMP_NEW(Model, m, ());
+    Particles ps = create_xyzr_particles(m, n, rmin);
+    ::boost::uniform_real<> rand(rmin, rmax);
+    for (unsigned int i=0; i< ps.size(); ++i) {
+      XYZ(ps[i])
+        .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
+      XYZR(ps[i]).set_radius(rand(random_number_generator));
+    }
+    cpf->set_distance(0);
+    double result=0;
+    double runtime;
+    IMP_TIME({
+        result+=cpf->get_close_pairs(ps).size();
       }, runtime);
     std::ostringstream oss;
     oss << "cpf " << name << " " << n << " " << rmax;
@@ -48,6 +68,8 @@ void test_one(std::string name,
     IMP_NEW(Model, m, ());
     Particles ps0 = create_xyzr_particles(m, n, rmin);
     Particles ps1 = create_xyzr_particles(m, n, rmin);
+    ParticleIndexes ps0i= IMP::internal::get_index(ps0);
+    ParticleIndexes ps1i= IMP::internal::get_index(ps1);
     ::boost::uniform_real<> rand(rmin, rmax);
     for (unsigned int i=0; i< ps0.size(); ++i) {
       XYZ(ps0[i])
@@ -59,13 +81,11 @@ void test_one(std::string name,
         .set_coordinates(get_random_vector_in(BoundingBox3D(minc, maxc)));
       XYZR(ps1[i]).set_radius(rand(random_number_generator));
     }
-    IMP_NEW(ListSingletonContainer, lsc0, (ps0));
-    IMP_NEW(ListSingletonContainer, lsc1, (ps1));
     cpf->set_distance(0);
     double result=0;
     double runtime;
     IMP_TIME({
-        result+=cpf->get_close_pairs(lsc0, lsc1).size();
+        result+=cpf->get_close_pairs(m, ps0i, ps1i).size();
       }, runtime);
     std::ostringstream oss;
     oss << "bcpf " << name << " " << n << " " << rmax;
