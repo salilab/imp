@@ -24,17 +24,22 @@ VersionInfo get_module_version_info() {
 class ConstPairScore: public PairScore {
 public:
   ConstPairScore(){}
-  IMP_SIMPLE_PAIR_SCORE(ConstPairScore);
+  IMP_INDEX_PAIR_SCORE(ConstPairScore);
 };
 
-double ConstPairScore::evaluate(const ParticlePair &,
+  double ConstPairScore::evaluate(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const {
   return 1;
 }
 void ConstPairScore::do_show(std::ostream &) const {
 }
 }
-
+ParticlesTemp ConstPairScore::get_input_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+ContainersTemp ConstPairScore::get_input_containers(Particle *) const {
+  return ContainersTemp();
+}
 
 namespace {
 
