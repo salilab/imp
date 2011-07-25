@@ -54,7 +54,7 @@ public:
   double get_stiffness() const {
     return k_;
   }
-  IMP_SIMPLE_PAIR_SCORE(HarmonicUpperBoundSphereDistancePairScore);
+  IMP_INDEX_PAIR_SCORE(HarmonicUpperBoundSphereDistancePairScore);
 };
 
 IMP_OBJECTS(HarmonicUpperBoundSphereDistancePairScore,
@@ -79,7 +79,7 @@ public:
   double get_stiffness() const {
     return k_;
   }
-  IMP_SIMPLE_PAIR_SCORE(HarmonicSphereDistancePairScore);
+  IMP_INDEX_PAIR_SCORE(HarmonicSphereDistancePairScore);
 };
 
 IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
@@ -89,9 +89,10 @@ IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 
 
 #ifndef IMP_DOXYGEN
-inline double HarmonicSphereDistancePairScore::evaluate(const ParticlePair &p,
-                            DerivativeAccumulator *da) const {
-  XYZR d0(p[0]), d1(p[1]);
+inline double HarmonicSphereDistancePairScore::evaluate(Model *m,
+                                const ParticleIndexPair& p,
+           DerivativeAccumulator *da) const {
+  XYZR d0(m, p[0]), d1(m, p[1]);
   algebra::VectorD<3> delta;
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
@@ -112,9 +113,10 @@ inline double HarmonicSphereDistancePairScore::evaluate(const ParticlePair &p,
 }
 
 inline double
-HarmonicUpperBoundSphereDistancePairScore::evaluate(const ParticlePair &p,
-                            DerivativeAccumulator *da) const {
-  XYZR d0(p[0]), d1(p[1]);
+HarmonicUpperBoundSphereDistancePairScore::evaluate(Model *m,
+                                  const ParticleIndexPair& p,
+           DerivativeAccumulator *da) const {
+  XYZR d0(m, p[0]), d1(m, p[1]);
   algebra::VectorD<3> delta;
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);

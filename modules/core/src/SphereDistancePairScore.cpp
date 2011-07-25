@@ -60,6 +60,17 @@ void HarmonicSphereDistancePairScore::do_show(std::ostream &out) const {
   out << "x0=" << x0_ << " and k=" << k_ << std::endl;
 }
 
+ParticlesTemp HarmonicSphereDistancePairScore
+::get_input_particles(Particle*p) const {
+  return ParticlesTemp(1, p);
+}
+
+ContainersTemp HarmonicSphereDistancePairScore
+::get_input_containers(Particle*) const {
+  return ContainersTemp();
+}
+
+
 
 HarmonicUpperBoundSphereDistancePairScore
 ::HarmonicUpperBoundSphereDistancePairScore(double d0, double k):
@@ -69,6 +80,17 @@ void HarmonicUpperBoundSphereDistancePairScore
 ::do_show(std::ostream &out) const {
   out << "x0=" << x0_ << " and k=" << k_ << std::endl;
 }
+
+ParticlesTemp HarmonicUpperBoundSphereDistancePairScore
+::get_input_particles(Particle*p) const {
+  return ParticlesTemp(1, p);
+}
+
+ContainersTemp HarmonicUpperBoundSphereDistancePairScore
+::get_input_containers(Particle*) const {
+  return ContainersTemp();
+}
+
 
 
 NormalizedSphereDistancePairScore
