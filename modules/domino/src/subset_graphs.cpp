@@ -35,9 +35,9 @@ namespace {
                               boost::vertex_name_t>::type IGVertexMap;
   typedef boost::property_map<InteractionGraph,
                               boost::edge_name_t>::type IGEdgeMap;
- typedef boost::property_map<InteractionGraph,
+  typedef boost::property_map<InteractionGraph,
                               boost::vertex_name_t>::const_type
- IGVertexConstMap;
+  IGVertexConstMap;
   typedef boost::property_map<InteractionGraph,
                               boost::edge_name_t>::const_type IGEdgeConstMap;
 
@@ -52,36 +52,38 @@ namespace {
 
 
 
-  typedef boost::adjacency_list<boost::vecS, boost::vecS,
-                                boost::undirectedS,
-                                boost::property<boost::vertex_name_t,
-                                                std::string>,
-                                boost::property<boost::edge_weight_t,
-                                                double> > CliqueGraph;
-typedef boost::graph_traits<CliqueGraph> CGTraits;
-typedef CGTraits::vertex_descriptor CGVertex;
-typedef CGTraits::edge_descriptor CGEdge;
-typedef boost::property_map<CliqueGraph,
-                            boost::vertex_name_t>::type CGVertexMap;
+  /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
+    boost::undirectedS,
+    boost::property<boost::vertex_name_t,
+    std::string>,
+    boost::property<boost::edge_weight_t,
+    double> > CliqueGraph;*/
+  typedef boost::graph_traits<CliqueGraph> CGTraits;
+  typedef CGTraits::vertex_descriptor CGVertex;
+  typedef CGTraits::edge_descriptor CGEdge;
+  typedef boost::property_map<CliqueGraph,
+                              boost::vertex_name_t>::type CGVertexMap;
+  typedef boost::property_map<CliqueGraph,
+             boost::vertex_name_t>::const_type CGVertexConstMap;
 
 
-typedef boost::property_map<SubsetGraph,
-                            boost::vertex_name_t>::type SGVertexMap;
-typedef boost::property_map<SubsetGraph,
-                            boost::vertex_name_t>::const_type SGConstVertexMap;
-typedef boost::graph_traits<SubsetGraph> SGTraits;
+  typedef boost::property_map<SubsetGraph,
+                              boost::vertex_name_t>::type SGVertexMap;
+  typedef boost::property_map<SubsetGraph,
+                    boost::vertex_name_t>::const_type SGConstVertexMap;
+  typedef boost::graph_traits<SubsetGraph> SGTraits;
 
 }
 
 Subsets get_subsets(const SubsetGraph &g){
-    boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
-      subset_map= boost::get(boost::vertex_name, g);
-    Subsets output;
-    for (unsigned int vi = 0;vi < boost::num_vertices(g);vi++) {
-      output.push_back(boost::get(subset_map,vi));
+  boost::property_map< SubsetGraph, boost::vertex_name_t>::const_type
+    subset_map= boost::get(boost::vertex_name, g);
+  Subsets output;
+  for (unsigned int vi = 0;vi < boost::num_vertices(g);vi++) {
+    output.push_back(boost::get(subset_map,vi));
   }
-    return output;
-  }
+  return output;
+}
 
 
 
@@ -144,18 +146,18 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
             << " is " << s << " from " << os << std::endl);
     pm[i]=s;
   }
-                  /*ScoreStatesTemp ss= get_required_score_states(rs);
-  for (ScoreStatesTemp::const_iterator it= ss.begin();
-       it != ss.end(); ++it) {
+  /*ScoreStatesTemp ss= get_required_score_states(rs);
+    for (ScoreStatesTemp::const_iterator it= ss.begin();
+    it != ss.end(); ++it) {
     ParticlesTemp pl= (*it)->get_input_particles();
     add_edges(ps, pl, map, *it, ret);
     ParticlesTemp opl= (*it)->get_output_particles();
     add_edges(ps, opl, map, *it, ret);
-  }
-  IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
-                     "Wrong number of vertices "
-                     << boost::num_vertices(ret)
-                     << " vs " << ps.size());*/
+    }
+    IMP_INTERNAL_CHECK(boost::num_vertices(ret) == ps.size(),
+    "Wrong number of vertices "
+    << boost::num_vertices(ret)
+    << " vs " << ps.size());*/
   for (unsigned int i=0; i< boost::num_vertices(ret); ++i) {
     for (unsigned int j=0; j< i; ++j) {
       if (get_intersection(pm[i], pm[j]).size() >0) {
@@ -171,7 +173,45 @@ SubsetGraph get_restraint_graph(RestraintSet *irs,
 
 
 
-
+IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& cig) {
+  IGVertexConstMap pm= boost::get(boost::vertex_name, cig);
+  typedef std::vector<IGVertex> Clique;
+  std::vector<Clique> cliques;
+  internal::maximal_cliques(cig, std::back_inserter(cliques));
+  for (unsigned int i=0; i< cliques.size(); ++i) {
+    /*std::cout << "Clique is ";
+      for (unsigned int j=0; j< cliques[i].size(); ++j) {
+      std::cout << cliques[i][j] << " ";
+      }*/
+    std::sort(cliques[i].begin(), cliques[i].end());
+  }
+  CliqueGraph cg(cliques.size());
+  CGVertexMap cm
+    = boost::get(boost::vertex_name, cg);
+  for (unsigned int i=0; i< cliques.size(); ++i) {
+    Particles cur;
+    for (unsigned int j=0; j< cliques[i].size(); ++j) {
+      cur.push_back(pm[cliques[i][j]]);
+    }
+    Subset ss(cur);
+    cm[i]=ss;
+  }
+  for (unsigned int i=0; i< cliques.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      Subset intersection= get_intersection(cm[i], cm[j]);
+      if (intersection.size() >0) {
+        double minus_weight=intersection.size();
+        /*std::cout << "edge " << i << " " << j
+          << " has weight "
+          << -static_cast<int>(intersection.size()) << std::endl;*/
+        boost::add_edge(i, j,
+                        CliqueGraph::edge_property_type(-minus_weight),
+                        cg);
+      }
+    }
+  }
+  return cg;
+}
 
 
 namespace {
@@ -184,7 +224,7 @@ namespace {
   };
   void triangulate(InteractionGraph &ig) {
     typedef std::pair<IGTraits::adjacency_iterator,
-      IGTraits::adjacency_iterator>
+                      IGTraits::adjacency_iterator>
       AdjacencyRange;
     typedef std::pair<IGTraits::vertex_iterator, IGTraits::vertex_iterator>
       VertexRange;
@@ -266,59 +306,27 @@ namespace {
 
 }
 
-
-
-SubsetGraph get_junction_tree(const InteractionGraph &ig) {
-  IMP_FUNCTION_LOG;
+InteractionGraph get_triangulated(const InteractionGraph& ig) {
   InteractionGraph cig;
-  IGVertexMap pm= boost::get(boost::vertex_name, cig);
   boost::copy_graph(ig, cig);
   /*std::cout << "Input graph is " << std::endl;
     IMP::internal::show_as_graphviz(ig, std::cout);*/
   triangulate(cig);
   IMP_LOG(VERBOSE, "Triangulated graph is " << std::endl);
   IMP_LOG_WRITE(VERBOSE, IMP::internal::show_as_graphviz(cig, IMP_STREAM));
-  typedef std::vector<IGVertex> Clique;
-  std::vector<Clique> cliques;
-  internal::maximal_cliques(cig, std::back_inserter(cliques));
-  for (unsigned int i=0; i< cliques.size(); ++i) {
-    /*std::cout << "Clique is ";
-      for (unsigned int j=0; j< cliques[i].size(); ++j) {
-      std::cout << cliques[i][j] << " ";
-      }*/
-    std::sort(cliques[i].begin(), cliques[i].end());
-  }
-  CliqueGraph cg(cliques.size());
-  for (unsigned int i=0; i< cliques.size(); ++i) {
-    for (unsigned int j=0; j< i; ++j) {
-      Clique intersection;
-      std::set_intersection(cliques[i].begin(),
-                            cliques[i].end(),
-                            cliques[j].begin(),
-                            cliques[j].end(),
-                            std::back_inserter(intersection));
-      if (!intersection.empty()) {
-        double minus_weight=intersection.size();
-        /*std::cout << "edge " << i << " " << j
-          << " has weight "
-          << -static_cast<int>(intersection.size()) << std::endl;*/
-        boost::add_edge(i, j,
-                        CliqueGraph::edge_property_type(-minus_weight),
-                        cg);
-      }
-    }
-  }
+  return cig;
+
+}
+
+
+SubsetGraph get_minimum_spanning_tree(const CliqueGraph& cg) {
   std::vector<CGEdge> mst;
   boost::kruskal_minimum_spanning_tree(cg, std::back_inserter(mst));
-  SubsetGraph jt(cliques.size());
+  SubsetGraph jt(boost::num_vertices(cg));
   SGVertexMap cm= boost::get(boost::vertex_name, jt);
-  for (unsigned int i=0; i< cliques.size(); ++i) {
-    ParticlesTemp ps;
-    for (unsigned int j=0; j< cliques[i].size(); ++j) {
-      ps.push_back(boost::get(pm, cliques[i][j]));
-    }
-    Subset lsc(ps);
-    boost::put(cm, i, lsc);
+  CGVertexConstMap cgm= boost::get(boost::vertex_name, cg);
+  for (unsigned int i=0; i< boost::num_vertices(cg); ++i) {
+    cm[i]= cgm[i];
   }
   for (unsigned int i=0; i< mst.size(); ++i) {
     boost::add_edge(boost::source(mst[i], cg),
@@ -332,22 +340,30 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
     Index index;
     Parent parent;
     UF uf(index, parent);
-    for (unsigned int i=0; i< cliques.size(); ++i) {
+    for (unsigned int i=0; i< boost::num_vertices(cg); ++i) {
       uf.make_set(i);
     }
     for (std::pair<SGTraits::edge_iterator,
-           SGTraits::edge_iterator> be= boost::edges(jt);
+                   SGTraits::edge_iterator> be= boost::edges(jt);
          be.first != be.second; ++be.first) {
       uf.union_set(boost::source(*be.first, jt),
                    boost::target(*be.first, jt));
     }
-    for (unsigned int i=1; i< cliques.size(); ++i) {
+    for (unsigned int i=1; i< boost::num_vertices(cg); ++i) {
       if (uf.find_set(i) != uf.find_set(i-1)) {
         boost::add_edge(i,i-1, jt);
         uf.union_set(i,i-1);
       }
     }
   }
+  return jt;
+}
+
+SubsetGraph get_junction_tree(const InteractionGraph &ig) {
+  IMP_FUNCTION_LOG;
+  InteractionGraph cig = get_triangulated(ig);
+  CliqueGraph cg= get_clique_graph(cig);
+  SubsetGraph jt= get_minimum_spanning_tree(cg);
 
   /*std::cout << "JT graph is " << std::endl;
     IMP::internal::show_as_graphviz(jt, std::cout);
@@ -367,45 +383,45 @@ SubsetGraph get_junction_tree(const InteractionGraph &ig) {
 namespace {
 
 
-bool get_has_edge(InteractionGraph &graph,
-                  IGVertex va,
-                  IGVertex vb) {
-  std::pair<IGTraits::out_edge_iterator,
-    IGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
-  for (; edges.first != edges.second;++edges.first) {
-    if (boost::target(*edges.first, graph) == vb) return true;
+  bool get_has_edge(InteractionGraph &graph,
+                    IGVertex va,
+                    IGVertex vb) {
+    std::pair<IGTraits::out_edge_iterator,
+              IGTraits::out_edge_iterator> edges= boost::out_edges(va, graph);
+    for (; edges.first != edges.second;++edges.first) {
+      if (boost::target(*edges.first, graph) == vb) return true;
+    }
+    return false;
   }
-  return false;
-}
 
   void add_edges( const Subset &ps,
                   ParticlesTemp pt,
                   const IMP::compatibility::map<Particle*, int> &map,
-                Object *blame,
-                InteractionGraph &g) {
-  IGEdgeMap om= boost::get(boost::edge_name, g);
-  std::sort(pt.begin(), pt.end());
-  pt.erase(std::unique(pt.begin(), pt.end()), pt.end());
-  for (unsigned int i=0; i< pt.size(); ++i) {
-    if (map.find(pt[i]) == map.end()) continue;
-    int vj=map.find(pt[i])->second;
-    for (unsigned int k=0; k< i; ++k) {
-      if (map.find(pt[k]) == map.end()) continue;
-      int vk= map.find(pt[k])->second;
-      if (vj != vk && !get_has_edge(g, vj, vk)) {
-        IMP_LOG(VERBOSE, "Adding edge between \"" << ps[vj]->get_name()
-                << "\" and \"" << ps[vk]->get_name()
-                << "\" due to \"" << blame->get_name() << "\"" << std::endl);
-        IGEdge e;
-        bool inserted;
-        boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
-        if (inserted) {
-          om[e]=blame;
+                  Object *blame,
+                  InteractionGraph &g) {
+    IGEdgeMap om= boost::get(boost::edge_name, g);
+    std::sort(pt.begin(), pt.end());
+    pt.erase(std::unique(pt.begin(), pt.end()), pt.end());
+    for (unsigned int i=0; i< pt.size(); ++i) {
+      if (map.find(pt[i]) == map.end()) continue;
+      int vj=map.find(pt[i])->second;
+      for (unsigned int k=0; k< i; ++k) {
+        if (map.find(pt[k]) == map.end()) continue;
+        int vk= map.find(pt[k])->second;
+        if (vj != vk && !get_has_edge(g, vj, vk)) {
+          IMP_LOG(VERBOSE, "Adding edge between \"" << ps[vj]->get_name()
+                  << "\" and \"" << ps[vk]->get_name()
+                  << "\" due to \"" << blame->get_name() << "\"" << std::endl);
+          IGEdge e;
+          bool inserted;
+          boost::tie(e, inserted)= boost::add_edge(vj, vk, g);
+          if (inserted) {
+            om[e]=blame;
+          }
         }
       }
     }
   }
-}
 
 }
 
@@ -526,41 +542,41 @@ get_subset_graph_geometry(const SubsetGraph &ig) {
 
 /* DFV
    on end child:
-    union sets
-    create child node with cur union
-    link created child node to child being visited
+   union sets
+   create child node with cur union
+   link created child node to child being visited
    on visit:
-    look up cur node in map
+   look up cur node in map
 
 
- */
+*/
 
 
 namespace {
-typedef boost::graph_traits<MergeTree> MTTraits;
-typedef CGTraits::vertex_descriptor MTVertex;
-typedef CGTraits::edge_descriptor MTEdge;
-typedef boost::property_map<MergeTree,
-                            boost::vertex_name_t>::type MTVertexMap;
+  typedef boost::graph_traits<MergeTree> MTTraits;
+  typedef CGTraits::vertex_descriptor MTVertex;
+  typedef CGTraits::edge_descriptor MTEdge;
+  typedef boost::property_map<MergeTree,
+                              boost::vertex_name_t>::type MTVertexMap;
 
 
 
   int create_set_node(const Subset &s,
                       MergeTree& merge_tree,
                       boost::property_map<MergeTree,
-                                    boost::vertex_name_t>::type &mt_sets) {
+                      boost::vertex_name_t>::type &mt_sets) {
     int vi= boost::add_vertex(merge_tree);
     mt_sets[vi]=s;
     return vi;
   }
   int create_merge_tree_internal(const SubsetGraph& junction_tree,
                                  const  boost::property_map<SubsetGraph,
-                                   boost::vertex_name_t>::const_type &jt_sets,
+                                 boost::vertex_name_t>::const_type &jt_sets,
                                  int cur_jt,
                                  int last_jt, // avoid parent
                                  MergeTree& merge_tree,
                                  boost::property_map<MergeTree,
-                                        boost::vertex_name_t>::type &mt_sets) {
+                                 boost::vertex_name_t>::type &mt_sets) {
     Subset cur_subset=jt_sets[cur_jt];
     int cur_merge= create_set_node(cur_subset, merge_tree, mt_sets);
     for (std::pair<SGTraits::out_edge_iterator,
@@ -594,29 +610,29 @@ MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
   }
   int start =0;
   MergeTree merge_tree;
-   boost::property_map<MergeTree,
-                       boost::vertex_name_t>::type mt_sets
-     =boost::get(boost::vertex_name, merge_tree);
+  boost::property_map<MergeTree,
+    boost::vertex_name_t>::type mt_sets
+    =boost::get(boost::vertex_name, merge_tree);
   unsigned int root= create_merge_tree_internal(junction_tree,
-                                       boost::get(boost::vertex_name,
-                                                  junction_tree),
-                                       start, -1,
-                                       merge_tree,
-                                       mt_sets);
+                                                boost::get(boost::vertex_name,
+                                                           junction_tree),
+                                                start, -1,
+                                                merge_tree,
+                                                mt_sets);
   IMP_USAGE_CHECK(root== boost::num_vertices(merge_tree)-1,
                   "Root is not last vertex");
   // create dfv
   // add first node to jt/merge map/merge graph with all particles
   // do dft add nodes and computing graph as we go
   IMP_INTERNAL_CHECK(get_is_merge_tree(merge_tree, mt_sets[root], true),
-                  "Returned tree is not merge tree");
+                     "Returned tree is not merge tree");
   return merge_tree;
 }
 
 namespace {
   bool get_is_merge_tree(const MergeTree& tree,
                          const boost::property_map<MergeTree,
-                                             boost::vertex_name_t>::const_type&
+                         boost::vertex_name_t>::const_type&
                          mt_sets,
                          bool verbose,
                          int cur, int parent) {
@@ -653,7 +669,7 @@ namespace {
 
 bool get_is_merge_tree(const MergeTree& tree, Subset all, bool verbose) {
   boost::property_map<MergeTree,
-                      boost::vertex_name_t>::const_type mt_sets
+    boost::vertex_name_t>::const_type mt_sets
     = boost::get(boost::vertex_name, tree);
   int nv= boost::num_vertices(tree);
   Subset maybeall= mt_sets[nv-1];
@@ -714,8 +730,8 @@ namespace {
     IMP_INTERNAL_CHECK(source!=target,
                        "Can't handle self edges");
     boost::property_map<StableSubsetGraph,
-                      boost::vertex_name_t>::type jt_sets
-    = boost::get(boost::vertex_name, jt);
+      boost::vertex_name_t>::type jt_sets
+      = boost::get(boost::vertex_name, jt);
     typedef boost::graph_traits<StableSubsetGraph>::adjacency_iterator AIt;
     std::pair<AIt, AIt> be  = boost::adjacent_vertices(target, jt);
     const std::vector< SSGVD> neighbors(be.first, be.second);
@@ -740,10 +756,10 @@ MergeTree get_balanced_merge_tree( const SubsetGraph& jti) {
   boost::copy_graph(jti, junction_tree);
   MergeTree ret;
   boost::property_map<StableSubsetGraph,
-                      boost::vertex_name_t>::type jt_sets
+    boost::vertex_name_t>::type jt_sets
     = boost::get(boost::vertex_name, junction_tree);
   boost::property_map<MergeTree,
-                      boost::vertex_name_t>::type mt_sets
+    boost::vertex_name_t>::type mt_sets
     = boost::get(boost::vertex_name, ret);
   compatibility::map<SSGVD,int> vertex_map;
   for (unsigned int i=0; i< boost::num_vertices(junction_tree); ++i) {

@@ -44,24 +44,31 @@ class DOMINOTests(IMP.test.TestCase):
         """Testing random junction tree"""
         m= IMP.Model()
         ps=[]
-        np=40
-        ne=40
+        np=20
+        ne=np*3
         ig= IMP.domino.InteractionGraph()
-        vs={}
+        vs=[]
         for i in range(0,np):
             ps.append(IMP.Particle(m))
-            vs[ps[-1]]=ig.add_vertex(ps[-1])
+            vs.append(ig.add_vertex(ps[-1]))
         for i in range(1, np):
-            ig.add_edge(vs[ps[i-1]], vs[ps[i]])
+            ig.add_edge(vs[i-1], vs[i])
         for i in range(0, ne):
-            p0= random.choice(ps)
-            p1= random.choice(ps)
-            if p0 != p1:
-                ig.add_edge(vs[p0], vs[p1])
-        ig.show()
-        jt= IMP.domino.get_junction_tree(ig)
-        jt.show()
+            p0= random.choice(vs)
+            p1= random.choice(vs)
+            if p0 != p1 and p1 not in ig.get_in_neighbors(p0):
+                ig.add_edge(p0, p1)
+        #IMP.show_graphviz(ig)
+        cig = IMP.domino.get_triangulated(ig)
+        #IMP.show_graphviz(cig)
+        cg= IMP.domino.get_clique_graph(cig)
+        #IMP.show_graphviz(cg)
+        jt= IMP.domino.get_minimum_spanning_tree(cg)
+        #IMP.show_graphviz(jt)
+        jt2= IMP.domino.get_junction_tree(ig)
+        #IMP.show_graphviz(jt2)
         self._check_jt_property(jt)
+        self._check_jt_property(jt2)
 
     def test_global_min0(self):
         """Testing junction tree algorithm"""

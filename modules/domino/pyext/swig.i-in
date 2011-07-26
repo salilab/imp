@@ -26,6 +26,7 @@ IMP_SWIG_BASE_OBJECT(IMP::domino, AssignmentsTable, AssignmentsTables);
 IMP_SWIG_BASE_OBJECT(IMP::domino, AssignmentContainer, AssignmentContainers);
 IMP_SWIG_GRAPH(IMP::domino, InteractionGraph, InteractionGraph, IMP::Particle*);
 IMP_SWIG_GRAPH(IMP::domino, SubsetGraph, SubsetGraph, IMP::domino::Subset );
+IMP_SWIG_GRAPH(IMP::domino, CliqueGraph, CliqueGraph, IMP::domino::Subset );
 IMP_SWIG_GRAPH(IMP::domino, MergeTree, MergeTree, IMP::domino::Subset );
 IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundSampler, BranchAndBoundSamplers);
 IMP_SWIG_OBJECT(IMP::domino, BranchAndBoundAssignmentsTable, BranchAndBoundAssignmentsTables);
