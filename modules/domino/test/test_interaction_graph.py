@@ -55,8 +55,7 @@ class DOMINOTests(IMP.test.TestCase):
         cpf= IMP.core.QuadraticClosePairsFinder()
         cpf.set_distance(0.0)
         print len(IMP.atom.get_leaves(p)), "leaves"
-        lsc= IMP.container.ListSingletonContainer(IMP.atom.get_leaves(p))
-        cp= cpf.get_close_pairs(lsc)
+        cp= cpf.get_close_pairs(IMP.atom.get_leaves(p))
         for pr in cp:
             r=IMP.core.PairRestraint(IMP.core.DistancePairScore(IMP.core.HarmonicLowerBound(0,1)), pr)
             m.add_restraint(r)
