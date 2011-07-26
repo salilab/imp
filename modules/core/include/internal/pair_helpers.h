@@ -137,38 +137,22 @@ protected:
   template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
-     for (unsigned int i=0; i< data_.size(); ++i) {
-       call_appky(sm, get_model(), data_[i], da);
-     }
+    sm->apply(get_model(), data_, da);
  }
   template <class SM>
   void template_apply(const SM *sm) {
-    for (unsigned int i=0; i< data_.size(); ++i) {
-      call_apply(sm, get_model(), data_[i]);
-    }
+    sm->apply(get_model(), data_);
   }
   template <class SS>
   double template_evaluate(const SS *s,
                            DerivativeAccumulator *da) const {
-    double ret=0;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-      double cur=call_evaluate(s, get_model(), data_[i], da);
-      ret+=cur;
-    }
-    return ret;
+    return s->evaluate(get_model(), data_, da);
   }
   template <class SS>
   double template_evaluate_if_good(const SS *s,
                                    DerivativeAccumulator *da,
                                    double max) const {
-    double ret=0;
-    for (unsigned int i=0; i< data_.size(); ++i) {
-      double cur= call_evaluate_if_good(s, get_model(), data_[i], da, max);
-      max-=cur;
-      ret+=cur;
-      if (max <0) break;
-    }
-    return ret;
+    return s->evaluate_if_good(get_model(), data_, da, max);
   }
   void apply(const PairModifier *sm) {
     sm->apply(get_model(), data_);

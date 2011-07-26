@@ -7,21 +7,19 @@
 
 #include "IMP/container/ConsecutivePairContainer.h"
 #include <IMP/PairModifier.h>
+#include <IMP/internal/container_helpers.h>
 #include <algorithm>
 
 
 IMPCONTAINER_BEGIN_NAMESPACE
-#if IMP_CPC_METHOD==0
 namespace {
   // problem with multiple models
   unsigned int count=0;
 }
-#endif
 ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
                                                    bool no_overlaps):
   PairContainer(ps[0]->get_model(),"ConsecutivePairContainer %1%"),
-  ps_(ps){
-#if IMP_CPC_METHOD==0
+  ps_(IMP::internal::get_index(ps)){
   if (!no_overlaps) {
     std::ostringstream oss;
     oss << "CPC cache " << count;
@@ -36,11 +34,6 @@ ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
                     << "saved model");
     ps[i]->add_attribute(key_, i);
   }
-#elif IMP_CPC_METHOD==1
-  for (unsigned int i=0; i< ps.size(); ++i) {
-    index_[ps[i]]=i;
-  }
-#endif
 }
 
 PairContainerPair
@@ -62,7 +55,7 @@ void ConsecutivePairContainer::do_show(std::ostream &out) const {
 }
 
 ParticlesTemp ConsecutivePairContainer::get_contained_particles() const {
-  return ps_;
+  return IMP::internal::get_particle(get_model(), ps_);
 }
 
 IMPCONTAINER_END_NAMESPACE

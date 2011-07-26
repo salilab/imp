@@ -33,8 +33,7 @@ void CLASSNAMEsOptimizerState::update()
   IMP_LOG(TERSE, "Begin CLASSNAMEsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  PLURALVARIABLETYPE set =c_->get_FUNCTIONNAMEs();
-  f_->apply(set);
+  c_->apply(f_);
 
   IMP_LOG(TERSE, "End CLASSNAMEsOptimizerState::update" << std::endl);
 }

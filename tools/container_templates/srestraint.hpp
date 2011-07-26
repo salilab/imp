@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/CLASSNAMEScore.h>
 #include "internal/HELPERNAME_helpers.h"
+#include <IMP/internal/container_helpers.h>
 
 #include <iostream>
 
@@ -31,7 +32,7 @@ class IMPCOREEXPORT CLASSNAMERestraint :
   public CLASSNAMEScoreRestraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEScore> ss_;
-  STORAGETYPE v_;
+  INDEXTYPE v_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -45,7 +46,7 @@ public:
     return ss_;
   }
   VARIABLETYPE get_argument() const {
-    return v_;
+    return IMP::internal::get_particle(get_model(), v_);
   }
 
   IMP_RESTRAINT(CLASSNAMERestraint);

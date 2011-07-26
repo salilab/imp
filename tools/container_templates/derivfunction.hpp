@@ -39,13 +39,6 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(ARGUMENTTYPE,
                      DerivativeAccumulator &da) const=0;
-  /** Apply the function to a collection of PLURALVARIABLETYPE */
-  virtual void apply(const PLURALVARIABLETYPE &o,
-                     DerivativeAccumulator &da) const {
-    for (unsigned int i=0; i< o.size(); ++i) {
-      apply(o[i], da);
-    }
-  }
 
  /** Apply the function to a single value*/
   virtual void apply(Model *m, PASSINDEXTYPE v,

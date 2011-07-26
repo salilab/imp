@@ -33,50 +33,18 @@ class IMPATOMEXPORT BondPairContainer :
   IMP_CONTAINER_DEPENDENCIES(BondPairContainer, ret.push_back(back_->sc_););
   BondPairContainer(SingletonContainer *sc, bool);
 
-  template <class SM>
-  void template_apply(const SM *sm,
-                      DerivativeAccumulator &da) {
-    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-    for (unsigned int i=0; i< sz; ++i) {
-      ParticlePair p= BondPairContainer::get_particle_pair(i);
-      call_apply(sm, p, da);
-    }
-  }
-  template <class SM>
-  void template_apply(const SM *sm) {
-    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-    for (unsigned int i=0; i< sz; ++i) {
-      ParticlePair p= BondPairContainer::get_particle_pair(i);
-      call_apply(sm, p);
-    }
-  }
-  template <class SS>
-  double template_evaluate(const SS *s,
-                           DerivativeAccumulator *da) const {
-    double ret=0;
-    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-    for (unsigned int i=0; i< sz; ++i) {
-      ParticlePair p= BondPairContainer::get_particle_pair(i);
-      double cur=call_evaluate(s, p, da);
-      ret+=cur;
-    }
-    return ret;
-  }
-  template <class SS>
-  double template_evaluate_if_good(const SS *s,
-                                   DerivativeAccumulator *da,
-                                   double max) const {
-    double ret=0;
-    unsigned int sz= BondPairContainer::get_number_of_particle_pairs();
-    for (unsigned int i=0; i< sz; ++i) {
-      ParticlePair p= BondPairContainer::get_particle_pair(i);
-      double cur=call_evaluate_if_good(s, p, da, max);
-      ret+=cur;
-      max-=cur;
-      if (max < 0) return ret;
-    }
-    return ret;
-  }
+#define IMP_BP_LOOP(body)                                               \
+  IMP_FOREACH_SINGLETON_INDEX(sc_, {                                    \
+    Bond bp(get_model(), _1);                                           \
+    ParticleIndexPair item(bp.get_bonded(0).get_particle_index(),       \
+                           bp.get_bonded(1).get_particle_index());      \
+    body;                                                               \
+    }                                                                   \
+    );
+ IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(BondPairContainer,
+                                               IMP_BP_LOOP);
+
+#undef IMP_BP_LOOP
 public:
   //! The container containing the bonds
   BondPairContainer(SingletonContainer *sc);

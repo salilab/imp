@@ -33,8 +33,7 @@ void SingletonsOptimizerState::update()
   IMP_LOG(TERSE, "Begin SingletonsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  ParticlesTemp set =c_->get_particles();
-  f_->apply(set);
+  c_->apply(f_);
 
   IMP_LOG(TERSE, "End SingletonsOptimizerState::update" << std::endl);
 }

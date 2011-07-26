@@ -37,7 +37,7 @@ class IMPCOREEXPORT SingletonConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<SingletonModifier> f_;
   IMP::internal::OwnerPointer<SingletonDerivativeModifier> af_;
-  Pointer<Particle> v_;
+  ParticleIndex v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.

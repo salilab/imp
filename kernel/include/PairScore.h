@@ -49,31 +49,6 @@ class IMPEXPORT PairScore : public Object
   }
 
 
-  //! Compute the score and the derivative if needed.
-  virtual double evaluate_if_good(const ParticlePair& vt,
-                                  DerivativeAccumulator *da,
-                                  double max) const {
-    IMP_UNUSED(max);
-    return evaluate(vt, da);
-  }
-
-  /** Implementations
-      for these are provided by the IMP_PAIR_SCORE()
-      macro.
-  */
-  virtual double evaluate_if_good(const ParticlePairsTemp &o,
-                                  DerivativeAccumulator *da,
-                                  double max) const {
-    double ret=0;
-    for (unsigned int i=0; i< o.size(); ++i) {
-      double cur= evaluate(o[i], da);
-      max-=cur;
-      ret+=cur;
-      if (max<0) break;
-    }
-    return ret;
-  }
-
 
   //! Compute the score and the derivative if needed.
   virtual double evaluate(Model *m, const ParticleIndexPair& vt,

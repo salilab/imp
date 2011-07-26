@@ -39,13 +39,6 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(Particle*,
                      DerivativeAccumulator &da) const=0;
-  /** Apply the function to a collection of ParticlesTemp */
-  virtual void apply(const ParticlesTemp &o,
-                     DerivativeAccumulator &da) const {
-    for (unsigned int i=0; i< o.size(); ++i) {
-      apply(o[i], da);
-    }
-  }
 
  /** Apply the function to a single value*/
   virtual void apply(Model *m, ParticleIndex v,

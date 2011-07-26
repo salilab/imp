@@ -38,58 +38,19 @@ class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
   friend class AllBipartitePairContainer;
   AllPairContainer(SingletonContainer *c, bool);
 
-  template <class F>
-    void template_apply(F* f) const {
-    unsigned int szc=c_->get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= c_->get_particle(i);
-      for (unsigned int j=0; j< i; ++j) {
-        ParticlePair p(a, c_->get_particle(j));
-        call_apply(f, p);
-      }
-    }
+#define IMP_AP_LOOP(body)                       \
+  ParticleIndexes pis= c_->get_indexes();       \
+  for (unsigned int i=0; i< pis.size(); ++i) {  \
+    for (unsigned int j=0; j< i; ++j) {         \
+      ParticleIndexPair item(pis[i], pis[j]);   \
+      body;                                     \
+    }                                           \
   }
-  template <class F>
-    void template_apply(F* f, DerivativeAccumulator &da) const {
-    unsigned int szc=c_->get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= c_->get_particle(i);
-      for (unsigned int j=0; j< i; ++j) {
-        ParticlePair p(a, c_->get_particle(j));
-        call_apply(f, p, da);
-      }
-    }
-  }
-  template <class F>
-    double template_evaluate(F* f, DerivativeAccumulator *da) const {
-    double ret=0;
-    unsigned int szc=c_->get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= c_->get_particle(i);
-      for (unsigned int j=0; j< i; ++j) {
-        ParticlePair p(a, c_->get_particle(j));
-        ret+=call_evaluate(f, p, da);
-      }
-    }
-    return ret;
-  }
-  template <class F>
-    double template_evaluate_if_good(F* f, DerivativeAccumulator *da,
-                                     double max) const {
-    double ret=0;
-    unsigned int szc=c_->get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= c_->get_particle(i);
-      for (unsigned int j=0; j< i; ++j) {
-        ParticlePair p(a, c_->get_particle(j));
-        double cur=call_evaluate_if_good(f, p, da, max);
-        ret+=cur;
-        max-=cur;
-        if (max<0) return cur;
-      }
-    }
-    return ret;
-  }
+
+  IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(AllPairContainer,
+                                               IMP_AP_LOOP);
+
+#undef IMP_AP_LOOP
 
 public:
   //! Get the individual particles from the passed SingletonContainer

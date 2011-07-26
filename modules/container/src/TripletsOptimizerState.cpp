@@ -33,8 +33,7 @@ void TripletsOptimizerState::update()
   IMP_LOG(TERSE, "Begin TripletsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  ParticleTripletsTemp set =c_->get_particle_triplets();
-  f_->apply(set);
+  c_->apply(f_);
 
   IMP_LOG(TERSE, "End TripletsOptimizerState::update" << std::endl);
 }

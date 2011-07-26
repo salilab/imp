@@ -38,13 +38,6 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(const ParticleQuad&) const =0;
 
-  /** Apply the function to a collection of ParticleQuadsTemp */
-  virtual void apply(const ParticleQuadsTemp &o) const {
-    for (unsigned int i=0; i < o.size(); ++i) {
-      apply(o[i]);
-    }
-  }
-
  /** Apply the function to a single value*/
   virtual void apply(Model *m, const ParticleIndexQuad& v) const {
     apply(internal::get_particle(m, v));

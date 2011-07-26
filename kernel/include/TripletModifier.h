@@ -38,13 +38,6 @@ public:
   /** Apply the function to a single value*/
   virtual void apply(const ParticleTriplet&) const =0;
 
-  /** Apply the function to a collection of ParticleTripletsTemp */
-  virtual void apply(const ParticleTripletsTemp &o) const {
-    for (unsigned int i=0; i < o.size(); ++i) {
-      apply(o[i]);
-    }
-  }
-
  /** Apply the function to a single value*/
   virtual void apply(Model *m, const ParticleIndexTriplet& v) const {
     apply(internal::get_particle(m, v));
