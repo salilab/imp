@@ -75,8 +75,11 @@ for(int i=0;i<mydata.num_cells;++i){
 // trajectory file
 std::string trajname="traj.rmf";
 rmf::RootHandle rh = rmf::RootHandle(trajname,true);
-//atom::HierarchiesTemp hs=all.get_children();
-//for(int i=0;i<hs.size();++i) {rmf::add_hierarchy(rh, hs[i]);}
+for(unsigned int i=0;i<h_CP.size();++i){
+ atom::HierarchiesTemp hs=h_CP[i].get_children();
+ for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
+}
+//
 
 // CREATING RESTRAINTS
 std::cout << "Creating restraints" << std::endl;
@@ -129,6 +132,16 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  double myscore=m->evaluate(false);
  logfile << imc << " " << myscore << " " <<
   mc->get_number_of_forward_steps() << "\n";
+
+// save configuration to file
+ if(imc%mydata.MC.nwrite==0){
+  for(unsigned int i=0;i<h_CP.size();++i){
+   atom::HierarchiesTemp hs=h_CP[i].get_children();
+   for(unsigned int j=0;j<hs.size();++j){
+    rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[j]);
+   }
+  }
+ }
 
 }
 

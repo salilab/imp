@@ -51,15 +51,19 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,
   dom->set_name(name+out1.str()+"-"+out2.str());
   core::XYZR  d=core::XYZR::setup_particle(pp);
   d.set_radius(rg);
+  d.set_coordinates_are_optimized(true);
   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
   protein.add_child(dom);
  }
  if(nbeads>1 && copy==0){
-  //con=IMP.atom.create_connectivity_restraint([IMP.atom.Selection(c) \
-  //                             for c in protein.get_children()],1.0)
-  //con.set_name("Connectivity Restraint for "+name)
-  //model.add_restraint(con)
-  //model.set_maximum_score(con, error_bound)
+  atom::Selections ss=atom::Selections();
+  atom::HierarchiesTemp hs=protein.get_children();
+  for(unsigned int i=0;i<hs.size();++i){
+   ss.push_back(atom::Selection(hs[i]));
+  }
+  Restraint *con=atom::create_connectivity_restraint(ss,1.0);
+  con->set_name("Connectivity Restraint for "+name);
+  m->add_restraint(con);
  }
  return protein;
 }
