@@ -479,6 +479,21 @@ _value_types.append(#Name)
 
 
 
+%define IMP_SWIG_VALUE_TUPLE(Namespace, Name, PluralName)
+IMP_SWIG_VALUE_CHECKS(Namespace, Name, SWIGTYPE);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, ParticleIndex, PluralName, const&);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, ParticleIndex, PluralName,);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, ParticleIndex, Name, const&);
+IMP_SWIG_SEQUENCE_TYPEMAP(Namespace, ParticleIndex, Name,);
+%pythoncode %{
+PluralName=list
+_plural_types.append(#PluralName)
+_value_types.append(#Name)
+%}
+%feature("valuewrapper") PluralName;
+%enddef
+ //SWIGTYPE_p_##SwigNamespace##Name
+
 
 
 
