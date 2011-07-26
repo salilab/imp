@@ -48,7 +48,27 @@ IMPDOMINOEXPORT SubsetGraph
 get_junction_tree(const InteractionGraph &ig);
 
 
+#ifndef IMP_DOMINO
+/** \name Debugging Junction Trees
+    @{ */
+IMPDOMINOEXPORT InteractionGraph get_triangulated(const InteractionGraph& in);
 
+#if defined(SWIG) || defined(IMP_DOXYGEN)
+IMP_GRAPH(CliqueGraph, undirected, Subset, double);
+#else
+  typedef boost::adjacency_list<boost::vecS, boost::vecS,
+                                boost::undirectedS,
+                                boost::property<boost::vertex_name_t, Subset>,
+                                boost::property<boost::edge_weight_t,
+                                                double> > CliqueGraph;
+#endif
+IMPDOMINOEXPORT CliqueGraph get_clique_graph(const InteractionGraph& in);
+
+IMPDOMINOEXPORT SubsetGraph get_minimum_spanning_tree(const CliqueGraph& in);
+
+
+/** @} */
+#endif
 
 /** The restraint graph is formed by having one node per restraint
     and an edge connecting two restraints if they share input
