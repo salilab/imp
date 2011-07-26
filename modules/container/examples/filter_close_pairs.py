@@ -24,8 +24,9 @@ print "without",[(x[0].get_name(), x[1].get_name()) for x in cpc.get_particle_pa
 class ConsecutiveFilter(IMP.PairFilter):
     def __init__(self):
         IMP.PairFilter.__init__(self)
-    def get_contains(self, pp):
-        diff= pp[0].get_value(ik)-pp[1].get_value(ik)
+    def get_contains(self, m, pp):
+        diff= m.get_particle(pp[0]).get_value(ik)\
+              - m.get_particle(pp[1]).get_value(ik)
         if diff==-1 or diff ==1:
             return True
         return False
