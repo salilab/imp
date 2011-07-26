@@ -70,93 +70,48 @@ class IMPEXPORT SingletonContainer : public Container
                      std::string name="SingletonContainer %1%");
 #ifndef IMP_DOXYGEN
   template <class S>
-    static double call_evaluate(const S *s, Particle* a,
-                                DerivativeAccumulator *da) {
-    return s->S::evaluate(a, da);
+    double call_evaluate(const S *s,
+                         ParticleIndex a,
+                         DerivativeAccumulator *da) const {
+    return s->S::evaluate(get_model(), a, da);
   }
-  static double call_evaluate(const SingletonScore *s, Particle* a,
-                              DerivativeAccumulator *da) {
-    return s->evaluate(a, da);
-  }
-  template <class S>
-    static double call_evaluate_if_good(const S *s,
-                                        Particle* a,
-                                        DerivativeAccumulator *da,
-                                        double max) {
-    return s->S::evaluate_if_good(a, da, max);
-  }
-  static double call_evaluate_if_good(const SingletonScore *s,
-                                      Particle* a,
-                                      DerivativeAccumulator *da,
-                                      double max) {
-    return s->evaluate_if_good(a, da, max);
-  }
-  template <class S>
-    static void call_apply(const S *s, Particle* a) {
-    s->S::apply(a);
-  }
-  static void call_apply(const SingletonModifier *s, Particle* a) {
-    s->apply(a);
-  }
-  template <class S>
-    static void call_apply(const S *s, Particle* a,
-                           DerivativeAccumulator *&da) {
-    s->S::apply(a, da);
-  }
-  static void call_apply(const SingletonDerivativeModifier *s,
-                         Particle* a,
-                         DerivativeAccumulator &da) {
-    s->apply(a, da);
-  }
-
-
-
-  template <class S>
-    static double call_evaluate(const S *s, Model *m,
-                                ParticleIndex a,
-                                DerivativeAccumulator *da) {
-    return s->S::evaluate(m, a, da);
-  }
-  static double call_evaluate(const SingletonScore *s, Model *m,
+  double call_evaluate(const SingletonScore *s,
                               ParticleIndex a,
-                              DerivativeAccumulator *da) {
-    return s->evaluate(m, a, da);
+                              DerivativeAccumulator *da) const {
+    return s->evaluate(get_model(), a, da);
   }
   template <class S>
-    static double call_evaluate_if_good(const S *s,
-                                        Model *m,
-                                        ParticleIndex a,
-                                        DerivativeAccumulator *da,
-                                        double max) {
-    return s->S::evaluate_if_good(m, a, da, max);
+    double call_evaluate_if_good(const S *s,
+                                 ParticleIndex a,
+                                 DerivativeAccumulator *da,
+                                 double max) const {
+    return s->S::evaluate_if_good(get_model(), a, da, max);
   }
-  static double call_evaluate_if_good(const SingletonScore *s,
-                                      Model *m,
+  double call_evaluate_if_good(const SingletonScore *s,
                                       ParticleIndex a,
                                       DerivativeAccumulator *da,
-                                      double max) {
-    return s->evaluate_if_good(m, a, da, max);
+                                      double max) const {
+    return s->evaluate_if_good(get_model(), a, da, max);
   }
   template <class S>
-    static void call_apply(const S *s, Model *m,
-                              ParticleIndex a) {
-    s->S::apply(m, a);
+    void call_apply(const S *s,
+                    ParticleIndex a) const {
+    s->S::apply(get_model(), a);
   }
-  static void call_apply(const SingletonModifier *s, Model *m,
-                         ParticleIndex a) {
-    s->apply(m, a);
+  void call_apply(const SingletonModifier *s,
+                         ParticleIndex a) const {
+    s->apply(get_model(), a);
   }
   template <class S>
-    static void call_apply(const S *s, Model *m,
+    void call_apply(const S *s,
                            ParticleIndex a,
-                           DerivativeAccumulator *&da) {
-    s->S::apply(m, a, da);
+                           DerivativeAccumulator *&da) const {
+    s->S::apply(get_model(), a, da);
   }
-  static void call_apply(const SingletonDerivativeModifier *s,
-                         Model *m,
-                         ParticleIndex a,
-                         DerivativeAccumulator &da) {
-    s->apply(m, a, da);
+  void call_apply(const SingletonDerivativeModifier *s,
+                  ParticleIndex a,
+                  DerivativeAccumulator &da) const {
+    s->apply(get_model(), a, da);
   }
 #endif
 public:

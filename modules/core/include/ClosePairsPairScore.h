@@ -17,6 +17,7 @@
 #include <IMP/UnaryFunction.h>
 #include <IMP/Pointer.h>
 #include <IMP/Refiner.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPCORE_BEGIN_NAMESPACE
 /** Apply the score to either the k closest pairs (sphere distance). The
@@ -31,13 +32,20 @@ class IMPCOREEXPORT KClosePairsPairScore : public PairScore
   int k_;
   mutable double last_distance_;
   IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
+  ParticleIndexPairs get_close_pairs(Model *m,
+                                     const ParticleIndexPair &pp) const;
+
 public:
   /** only score the k closest pairs.
    */
   KClosePairsPairScore(PairScore *f, Refiner *r,
                       int k=1);
 
-  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
+  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const {
+    return IMP::internal::get_particle(pp[0]->get_model(),
+                         get_close_pairs(pp[0]->get_model(),
+                                         IMP::internal::get_index(pp)));
+  }
 
   Restraints get_instant_decomposition(const ParticlePair &vt) const;
 
@@ -57,6 +65,8 @@ class IMPCOREEXPORT ClosePairsPairScore : public PairScore
   IMP::internal::OwnerPointer<PairScore> f_;
   Float th_;
   IMP::internal::OwnerPointer<RigidClosePairsFinder> cpf_;
+   ParticleIndexPairs get_close_pairs(Model *m,
+                                     const ParticleIndexPair &pp) const;
 public:
   /** \param[in] r The Refiner to call on each particle
       \param[in] f The pair score to apply to the generated pairs
@@ -66,11 +76,14 @@ public:
   ClosePairsPairScore(PairScore *f, Refiner *r,
                       Float max_distance);
 
-  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const;
-
+  ParticlePairsTemp get_close_pairs(const ParticlePair &pp) const {
+    return IMP::internal::get_particle(pp[0]->get_model(),
+                                       get_close_pairs(pp[0]->get_model(),
+                                 IMP::internal::get_index(pp)));
+  }
   Restraints get_instant_decomposition(const ParticlePair &vt) const;
 
-  IMP_PAIR_SCORE(ClosePairsPairScore);
+  IMP_COMPOSITE_PAIR_SCORE(ClosePairsPairScore);
 };
 
 IMPCORE_END_NAMESPACE

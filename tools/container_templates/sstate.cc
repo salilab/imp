@@ -19,7 +19,7 @@ CLASSNAMEConstraint::CLASSNAMEConstraint(CLASSNAMEModifier *before,
                                 CLASSNAMEDerivativeModifier *after,
                                          ARGUMENTTYPE vt,
                                          std::string name):
-  Constraint(name), v_(vt){
+  Constraint(name), v_(IMP::internal::get_index(vt)){
   if (before) f_=before;
   if (after) af_=after;
 }
@@ -31,7 +31,7 @@ void CLASSNAMEConstraint::do_update_attributes()
   if (!f_) return;
   IMP_LOG(TERSE, "Begin CLASSNAMEsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
-  f_->apply(v_);
+  f_->apply(get_model(), v_);
   IMP_LOG(TERSE, "End CLASSNAMEsConstraint::update" << std::endl);
 }
 
@@ -41,7 +41,7 @@ void CLASSNAMEConstraint::do_update_derivatives(DerivativeAccumulator *da)
   if (!af_) return;
   IMP_LOG(TERSE, "Begin CLASSNAMEsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
-  af_->apply(v_, *da);
+  af_->apply(get_model(),v_, *da);
   IMP_LOG(TERSE, "End CLASSNAMEsConstraint::after_evaluate" << std::endl);
 }
 
@@ -56,13 +56,14 @@ ContainersTemp CLASSNAMEConstraint::get_output_containers() const {
 
 ParticlesTemp CLASSNAMEConstraint::get_input_particles() const {
   ParticlesTemp ret;
+  STORAGETYPE vi= IMP::internal::get_particle(get_model(), v_);
   if (f_) {
-    ret= IMP::internal::get_input_particles(f_.get(), v_);
-    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(), v_);
+    ret= IMP::internal::get_input_particles(f_.get(), vi);
+    ParticlesTemp o= IMP::internal::get_output_particles(f_.get(), vi);
     ret.insert(ret.end(), o.begin(), o.end());
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), v_);
+        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), vi);
         std::sort(ret.begin(), ret.end());
         std::sort(oret.begin(), oret.end());
         ParticlesTemp t;
@@ -77,19 +78,20 @@ ParticlesTemp CLASSNAMEConstraint::get_input_particles() const {
       }
     }
   } else {
-    ret=IMP::internal::get_output_particles(af_.get(), v_);
+    ret=IMP::internal::get_output_particles(af_.get(), vi);
   }
   return ret;
 }
 
 ParticlesTemp CLASSNAMEConstraint::get_output_particles() const {
   ParticlesTemp ret;
+  STORAGETYPE vi= IMP::internal::get_particle(get_model(), v_);
   if (f_) {
-    ret= IMP::internal::get_output_particles(f_.get(), v_);
+    ret= IMP::internal::get_output_particles(f_.get(), vi);
     IMP_IF_CHECK(USAGE) {
       if (af_) {
-        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), v_);
-        ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(), v_);
+        ParticlesTemp oret= IMP::internal::get_input_particles(af_.get(), vi);
+        ParticlesTemp iret=IMP::internal::get_input_particles(f_.get(), vi);
         iret.insert(iret.end(), ret.begin(), ret.end());
         std::sort(iret.begin(), iret.end());
         std::sort(oret.begin(), oret.end());
@@ -103,13 +105,13 @@ ParticlesTemp CLASSNAMEConstraint::get_output_particles() const {
       }
     }
   } else {
-    ret= IMP::internal::get_input_particles(af_.get(), v_);
+    ret= IMP::internal::get_input_particles(af_.get(), vi);
   }
   return ret;
 }
 
 void CLASSNAMEConstraint::do_show(std::ostream &out) const {
-  out << "on " << IMP::internal::streamable(v_) << std::endl;
+  out << "on " << v_ << std::endl;
   if (f_) out << "before " << *f_ << std::endl;
   if (af_) out << "after " << *af_ << std::endl;
 }

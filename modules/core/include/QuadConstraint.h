@@ -37,7 +37,7 @@ class IMPCOREEXPORT QuadConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<QuadModifier> f_;
   IMP::internal::OwnerPointer<QuadDerivativeModifier> af_;
-  ParticleQuad v_;
+  ParticleIndexQuad v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.

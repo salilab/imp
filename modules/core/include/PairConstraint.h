@@ -37,7 +37,7 @@ class IMPCOREEXPORT PairConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<PairModifier> f_;
   IMP::internal::OwnerPointer<PairDerivativeModifier> af_;
-  ParticlePair v_;
+  ParticleIndexPair v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.

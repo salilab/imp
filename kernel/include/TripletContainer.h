@@ -70,93 +70,48 @@ class IMPEXPORT TripletContainer : public Container
                      std::string name="TripletContainer %1%");
 #ifndef IMP_DOXYGEN
   template <class S>
-    static double call_evaluate(const S *s, const ParticleTriplet& a,
-                                DerivativeAccumulator *da) {
-    return s->S::evaluate(a, da);
+    double call_evaluate(const S *s,
+                         const ParticleIndexTriplet& a,
+                         DerivativeAccumulator *da) const {
+    return s->S::evaluate(get_model(), a, da);
   }
-  static double call_evaluate(const TripletScore *s, const ParticleTriplet& a,
-                              DerivativeAccumulator *da) {
-    return s->evaluate(a, da);
-  }
-  template <class S>
-    static double call_evaluate_if_good(const S *s,
-                                        const ParticleTriplet& a,
-                                        DerivativeAccumulator *da,
-                                        double max) {
-    return s->S::evaluate_if_good(a, da, max);
-  }
-  static double call_evaluate_if_good(const TripletScore *s,
-                                      const ParticleTriplet& a,
-                                      DerivativeAccumulator *da,
-                                      double max) {
-    return s->evaluate_if_good(a, da, max);
-  }
-  template <class S>
-    static void call_apply(const S *s, const ParticleTriplet& a) {
-    s->S::apply(a);
-  }
-  static void call_apply(const TripletModifier *s, const ParticleTriplet& a) {
-    s->apply(a);
-  }
-  template <class S>
-    static void call_apply(const S *s, const ParticleTriplet& a,
-                           DerivativeAccumulator *&da) {
-    s->S::apply(a, da);
-  }
-  static void call_apply(const TripletDerivativeModifier *s,
-                         const ParticleTriplet& a,
-                         DerivativeAccumulator &da) {
-    s->apply(a, da);
-  }
-
-
-
-  template <class S>
-    static double call_evaluate(const S *s, Model *m,
-                                const ParticleIndexTriplet& a,
-                                DerivativeAccumulator *da) {
-    return s->S::evaluate(m, a, da);
-  }
-  static double call_evaluate(const TripletScore *s, Model *m,
+  double call_evaluate(const TripletScore *s,
                               const ParticleIndexTriplet& a,
-                              DerivativeAccumulator *da) {
-    return s->evaluate(m, a, da);
+                              DerivativeAccumulator *da) const {
+    return s->evaluate(get_model(), a, da);
   }
   template <class S>
-    static double call_evaluate_if_good(const S *s,
-                                        Model *m,
-                                        const ParticleIndexTriplet& a,
-                                        DerivativeAccumulator *da,
-                                        double max) {
-    return s->S::evaluate_if_good(m, a, da, max);
+    double call_evaluate_if_good(const S *s,
+                                 const ParticleIndexTriplet& a,
+                                 DerivativeAccumulator *da,
+                                 double max) const {
+    return s->S::evaluate_if_good(get_model(), a, da, max);
   }
-  static double call_evaluate_if_good(const TripletScore *s,
-                                      Model *m,
+  double call_evaluate_if_good(const TripletScore *s,
                                       const ParticleIndexTriplet& a,
                                       DerivativeAccumulator *da,
-                                      double max) {
-    return s->evaluate_if_good(m, a, da, max);
+                                      double max) const {
+    return s->evaluate_if_good(get_model(), a, da, max);
   }
   template <class S>
-    static void call_apply(const S *s, Model *m,
-                              const ParticleIndexTriplet& a) {
-    s->S::apply(m, a);
+    void call_apply(const S *s,
+                    const ParticleIndexTriplet& a) const {
+    s->S::apply(get_model(), a);
   }
-  static void call_apply(const TripletModifier *s, Model *m,
-                         const ParticleIndexTriplet& a) {
-    s->apply(m, a);
+  void call_apply(const TripletModifier *s,
+                         const ParticleIndexTriplet& a) const {
+    s->apply(get_model(), a);
   }
   template <class S>
-    static void call_apply(const S *s, Model *m,
+    void call_apply(const S *s,
                            const ParticleIndexTriplet& a,
-                           DerivativeAccumulator *&da) {
-    s->S::apply(m, a, da);
+                           DerivativeAccumulator *&da) const {
+    s->S::apply(get_model(), a, da);
   }
-  static void call_apply(const TripletDerivativeModifier *s,
-                         Model *m,
-                         const ParticleIndexTriplet& a,
-                         DerivativeAccumulator &da) {
-    s->apply(m, a, da);
+  void call_apply(const TripletDerivativeModifier *s,
+                  const ParticleIndexTriplet& a,
+                  DerivativeAccumulator &da) const {
+    s->apply(get_model(), a, da);
   }
 #endif
 public:

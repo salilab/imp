@@ -18,6 +18,7 @@
 #include <IMP/Pointer.h>
 #include <IMP/QuadScore.h>
 #include "internal/quad_helpers.h"
+#include <IMP/internal/container_helpers.h>
 
 #include <iostream>
 
@@ -31,7 +32,7 @@ class IMPCOREEXPORT QuadRestraint :
   public QuadScoreRestraint
 {
   IMP::internal::OwnerPointer<QuadScore> ss_;
-  ParticleQuad v_;
+  ParticleIndexQuad v_;
 public:
   //! Create the restraint.
   /** This function takes the function to apply to the
@@ -45,7 +46,7 @@ public:
     return ss_;
   }
   ParticleQuad get_argument() const {
-    return v_;
+    return IMP::internal::get_particle(get_model(), v_);
   }
 
   IMP_RESTRAINT(QuadRestraint);

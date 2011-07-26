@@ -33,8 +33,7 @@ void QuadsOptimizerState::update()
   IMP_LOG(TERSE, "Begin QuadsOptimizerState::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
   IMP_CHECK_OBJECT(c_);
-  ParticleQuadsTemp set =c_->get_particle_quads();
-  f_->apply(set);
+  c_->apply(f_);
 
   IMP_LOG(TERSE, "End QuadsOptimizerState::update" << std::endl);
 }

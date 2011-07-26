@@ -17,23 +17,11 @@ class SingletonTestModifier(IMP.SingletonModifier):
         self.k=k
     def do_show(self, fh):
         fh.write("Test Particle")
-    def apply(self, a0, a1=None):
-        if a1==None:
-            if type(a0)==type([]):
-                for p in a0:
-                    self.apply(p)
-            else:
-                if a0.has_attribute(self.k):
-                    pass
-                else:
-                    a0.add_attribute(self.k, 1)
+    def apply(self, a0, da=None):
+        if a0.has_attribute(self.k):
+            pass
         else:
-            if type(a1)==type([]):
-                for p in a1:
-                    self.apply(a0, p)
-            else:
-                p= a0.get_particle(a1)
-                self.apply(p)
+            a0.add_attribute(self.k, 1)
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):
@@ -49,23 +37,9 @@ class PairTestModifier(IMP.PairModifier):
         self.sm= SingletonTestModifier(k)
     def do_show(self, fh):
         fh.write("Test Particle")
-    def apply(self, a0, a1=None):
-        if a1==None:
-            if type(a0)==type([]):
-                for p in a0:
-                    self.apply(p)
-            else:
-                self.sm.apply(a0[0])
-                self.sm.apply(a1[0])
-        else:
-            if type(a1)==type([]):
-                for p in a1:
-                    self.apply(a0, p)
-            else:
-                p0= a0.get_particle(a1[0])
-                p1= a0.get_particle(a1[1])
-                self.sm.apply(p0)
-                self.sm.apply(p1)
+    def apply(self, a0, da=None):
+        self.sm.apply(a0[0])
+        self.sm.apply(a0[1])
     def get_version_info(self):
         return 1
     def get_input_particles(self, p):

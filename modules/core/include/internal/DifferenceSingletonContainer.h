@@ -27,7 +27,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
     Returns the set b-a.
  */
-class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
+class IMPCOREEXPORT DifferenceSingletonContainer: public SingletonContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> a_, b_;
   IMP_CONTAINER_DEPENDENCIES(DifferenceSingletonContainer,
@@ -35,43 +35,20 @@ class IMPCOREEXPORT DifferenceSingletonContainer : public SingletonContainer
                                ret[0]=back_->a_;
                                ret[1]=back_->b_;
                              });
-  template <class F>
-    void template_apply(F* f) const {
-    unsigned int szc=get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= get_particle(i);
-      call_apply(f, a);
-    }
-  }
-   template <class F>
-     void template_apply(F* f, DerivativeAccumulator &da) const {
-    unsigned int szc=get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= get_particle(i);
-      call_apply(f, a, da);
-    }
-  }
-  template <class F>
-    double template_evaluate(F* f, DerivativeAccumulator *da) const {
-    double ret=0;
-    unsigned int szc=get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= get_particle(i);
-      ret+=call_evaluate(f, a, da);
-    }
-    return ret;
-  }
-  template <class F>
-    double template_evaluate_if_good(F* f, DerivativeAccumulator *da,
-                                     double max) const {
-    double ret=0;
-    unsigned int szc=get_number_of_particles();
-    for (unsigned int i=0; i< szc; ++i) {
-      Particle *a= get_particle(i);
-      ret+=call_evaluate_if_good(f, a, da, max);
-    }
-    return ret;
-  }
+#define IMP_DSC_LOOP(body)                                              \
+  ParticleIndexes pisb= b_->get_indexes();                              \
+  std::sort(pisb.begin(), pisb.end());                                  \
+  IMP_FOREACH_SINGLETON_INDEX(a_, {                                     \
+    if (std::binary_search(pisb.begin(),                                \
+                           pisb.end(), _1)) continue;                   \
+    ParticleIndex item= _1;                                             \
+    body;                                                               \
+  }                                                                     \
+    );
+
+  IMP_IMPLEMENT_SINGLETON_CONTAINER_OPERATIONS(DifferenceSingletonContainer,
+                                               IMP_DSC_LOOP);
+#undef IMP_DSC_LOOP
  public:
   DifferenceSingletonContainer(SingletonContainer *a, SingletonContainer *b);
 

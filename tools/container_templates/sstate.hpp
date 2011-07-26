@@ -37,7 +37,7 @@ class IMPCOREEXPORT CLASSNAMEConstraint : public Constraint
 {
   IMP::internal::OwnerPointer<CLASSNAMEModifier> f_;
   IMP::internal::OwnerPointer<CLASSNAMEDerivativeModifier> af_;
-  STORAGETYPE v_;
+  INDEXTYPE v_;
 public:
   /** before and after are the modifiers to apply before and after
       evaluate.

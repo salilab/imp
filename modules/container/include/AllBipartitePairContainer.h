@@ -36,62 +36,18 @@ class IMPCONTAINEREXPORT AllBipartitePairContainer : public PairContainer
                              });
   AllBipartitePairContainer(SingletonContainer *a,
                                  SingletonContainer *b, bool);
-  template <class F>
-    void template_apply(F* f) const {
-    unsigned int sza=a_->get_number_of_particles();
-    unsigned int szb=b_->get_number_of_particles();
-    for (unsigned int i=0; i< sza; ++i) {
-      Particle *a= a_->get_particle(i);
-      for (unsigned int j=0; j< szb; ++j) {
-        ParticlePair p(a, b_->get_particle(j));
-        call_apply(f, p);
-      }
-    }
-  }
-  template <class F>
-    void template_apply(F* f, DerivativeAccumulator &da) const {
-    unsigned int sza=a_->get_number_of_particles();
-    unsigned int szb=b_->get_number_of_particles();
-    for (unsigned int i=0; i< sza; ++i) {
-      Particle *a= a_->get_particle(i);
-      for (unsigned int j=0; j< szb; ++j) {
-        ParticlePair p(a, b_->get_particle(j));
-        call_apply(f, p, da);
-      }
-    }
-  }
-  template <class F>
-    double template_evaluate(F* f, DerivativeAccumulator *da) const {
-    double ret=0;
-    unsigned int sza=a_->get_number_of_particles();
-    unsigned int szb=b_->get_number_of_particles();
-    for (unsigned int i=0; i< sza; ++i) {
-      Particle *a= a_->get_particle(i);
-      for (unsigned int j=0; j< szb; ++j) {
-        ParticlePair p(a, b_->get_particle(j));
-        ret+=call_evaluate(f, p, da);
-      }
-    }
-    return ret;
-  }
-  template <class F>
-    double template_evaluate_if_good(F* f, DerivativeAccumulator *da,
-                                     double max) const {
-    double ret=0;
-    unsigned int sza=a_->get_number_of_particles();
-    unsigned int szb=b_->get_number_of_particles();
-    for (unsigned int i=0; i< sza; ++i) {
-      Particle *a= a_->get_particle(i);
-      for (unsigned int j=0; j< szb; ++j) {
-        ParticlePair p(a, b_->get_particle(j));
-        double cur=call_evaluate(f, p, da);
-        ret+=cur;
-        max-=cur;
-        if (max<0) return ret;
-      }
-    }
-    return ret;
-  }
+#define IMP_ABP_LOOP(body)                              \
+  ParticleIndexes ib= b_->get_indexes();                \
+  IMP_FOREACH_SINGLETON_INDEX(a_, {                     \
+      for (unsigned int j=0; j < ib.size(); ++j) {      \
+        ParticleIndexPair item(_1, ib[j]);              \
+        body;                                           \
+      }                                                 \
+    }                                                   \
+    );
+  IMP_IMPLEMENT_PAIR_CONTAINER_OPERATIONS(AllBipartitePairContainer,
+                                               IMP_ABP_LOOP);
+#undef IMP_ABP_LOOP
 public:
   AllBipartitePairContainer(SingletonContainer *a,
                             SingletonContainer *b,

@@ -23,12 +23,8 @@ PairRestraint
                      std::string name):
   PairScoreRestraint(name),
   ss_(ss),
-  v_(vt)
+  v_(IMP::internal::get_index(vt))
 {
-  IMP_IF_CHECK(USAGE) {
-    // check the arguments are OK
-    ss_->evaluate(v_, NULL);
-  }
 }
 
 double PairRestraint
@@ -36,7 +32,7 @@ double PairRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return ss_->evaluate(v_, accum);
+  return ss_->evaluate(get_model(), v_, accum);
 }
 
 double PairRestraint
@@ -45,30 +41,37 @@ double PairRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return ss_->evaluate_if_good(v_, accum, max);
+  return ss_->evaluate_if_good(get_model(), v_, accum, max);
 }
 
 
 
 ParticlesTemp PairRestraint::get_input_particles() const
 {
-  return IMP::internal::get_input_particles(ss_.get(), v_);
+  ParticlePair vi= IMP::internal::get_particle(get_model(), v_);
+  return IMP::internal::get_input_particles(ss_.get(),
+                                            vi);
 }
 
 ContainersTemp PairRestraint::get_input_containers() const
 {
-  return IMP::internal::get_input_containers(ss_.get(), v_);
+  ParticlePair vi= IMP::internal::get_particle(get_model(), v_);
+  return IMP::internal::get_input_containers(ss_.get(),
+                                             vi);
 }
 
 
 Restraints PairRestraint::get_instant_decomposition() const {
-  return ss_->get_instant_decomposition(v_);
+  ParticlePair vi= IMP::internal::get_particle(get_model(), v_);
+  return ss_->get_instant_decomposition(vi);
 }
 
 void PairRestraint::do_show(std::ostream& out) const
 {
   out << "score " << ss_->get_name() << std::endl;
-  out << "data " << IMP::internal::streamable(v_) << std::endl;
+  out << "data "
+      << IMP::internal::streamable(IMP::internal::get_particle(get_model(),v_))
+      << std::endl;
 }
 
 IMPCORE_END_NAMESPACE
