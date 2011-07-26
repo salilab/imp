@@ -166,8 +166,8 @@ public:
     ret.second=ret.first;
     for (unsigned int i=1; i< data_[k.get_index()].size(); ++i) {
       if (Traits::get_is_valid(data_[k.get_index()][i])) {
-        ret.first=std::min(ret.first, data_[k.get_index()][i]);
-        ret.second=std::min(ret.second, data_[k.get_index()][i]);
+        ret.first=Traits::min(ret.first, data_[k.get_index()][i]);
+        ret.second=Traits::max(ret.second, data_[k.get_index()][i]);
       }
     }
     return ret;

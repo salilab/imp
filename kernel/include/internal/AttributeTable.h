@@ -32,6 +32,12 @@ struct DefaultTraits
   typedef T Value;
   typedef T PassValue;
   typedef K Key;
+  static const T &max(const T &a, const T &b) {
+    return std::max(a,b);
+  }
+  static const T &min(const T &a, const T &b) {
+    return std::min(a,b);
+  }
 };
 
 template <class T, class K >
@@ -46,6 +52,12 @@ struct ArrayTraits
   }
   static bool get_is_valid(const Value &v) {
     return !v.empty();
+  }
+  static const Value &max(const Value &a, const Value &b) {
+    return a;
+  }
+  static const Value &min(const Value &a, const Value &b) {
+    return b;
   }
 };
 
