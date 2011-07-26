@@ -249,13 +249,23 @@ class ParticleTests(IMP.test.TestCase):
                     "set_is_ref_counted",
                     "get_is_ref_counted",
                     "get_live_object_names",
-                    "add_cache_attribute"
+                    "add_cache_attribute",
+                    "get_index",
+                    'get_float_keys',
+                    'get_index',
+                    'get_int_keys',
+                    'get_object_keys',
+                    'get_particle_keys',
+                    'get_string_keys'
                     ]
         md= dir(IMP._TrivialDecorator)
+        missing=[]
         for m in dir(IMP.Particle):
             if not m in md and m not in exclusions and not m.startswith("_"):
                 print m
-                self.fail(m+" not found")
+                missing.append(m)
+        self.assertEqual(len(missing)==0,
+                         "The following methods are not found in decorators: "+str(missing))
 
 if __name__ == '__main__':
     IMP.test.main()
