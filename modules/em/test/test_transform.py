@@ -1,11 +1,10 @@
 import IMP.test
 import IMP.em
-import os
 import random,math
 from IMP.algebra import *
 
 class DensityTransformTest(IMP.test.TestCase):
-    def test_tramsfrom(self):
+    def test_transform(self):
         """Check transforming a density map"""
         m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
         #tr= Transformation3D(get_random_rotation_3d(), Vector3D(0,0,0))
@@ -38,7 +37,7 @@ class DensityTransformTest(IMP.test.TestCase):
                 errors=errors+1
         self.assertLess(errors, .1 *m.get_number_of_voxels(), errors)
 
-    def test_tramsfromed_into(self):
+    def test_transformed_into(self):
         """Check functionality of the get_transformed_into function"""
         IMP.set_log_level(IMP.TERSE)
         from_m= IMP.em.read_map(self.get_input_file_name('1z5s.mrc'))
