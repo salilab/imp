@@ -31,7 +31,7 @@ void CLASSNAMEConstraint::do_update_attributes()
   if (!f_) return;
   IMP_LOG(TERSE, "Begin CLASSNAMEsConstraint::update" << std::endl);
   IMP_CHECK_OBJECT(f_);
-  f_->apply(get_model(), v_);
+  f_->apply_index(get_model(), v_);
   IMP_LOG(TERSE, "End CLASSNAMEsConstraint::update" << std::endl);
 }
 
@@ -41,7 +41,7 @@ void CLASSNAMEConstraint::do_update_derivatives(DerivativeAccumulator *da)
   if (!af_) return;
   IMP_LOG(TERSE, "Begin CLASSNAMEsConstraint::after_evaluate" << std::endl);
   IMP_CHECK_OBJECT(af_);
-  af_->apply(get_model(),v_, *da);
+  af_->apply_index(get_model(),v_, *da);
   IMP_LOG(TERSE, "End CLASSNAMEsConstraint::after_evaluate" << std::endl);
 }
 

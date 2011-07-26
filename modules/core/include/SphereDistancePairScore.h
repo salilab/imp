@@ -89,7 +89,7 @@ IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 
 
 #ifndef IMP_DOXYGEN
-inline double HarmonicSphereDistancePairScore::evaluate(Model *m,
+inline double HarmonicSphereDistancePairScore::evaluate_index(Model *m,
                                 const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
   XYZR d0(m, p[0]), d1(m, p[1]);
@@ -113,7 +113,7 @@ inline double HarmonicSphereDistancePairScore::evaluate(Model *m,
 }
 
 inline double
-HarmonicUpperBoundSphereDistancePairScore::evaluate(Model *m,
+HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
                                   const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
   XYZR d0(m, p[0]), d1(m, p[1]);
@@ -193,7 +193,7 @@ IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
 
 #ifndef IMP_DOXYGEN
 inline double SoftSpherePairScore
-::evaluate(Model *m, const ParticleIndexPair& pp,
+::evaluate_index(Model *m, const ParticleIndexPair& pp,
            DerivativeAccumulator *da) const {
   algebra::VectorD<3> delta;
   for (int i = 0; i < 3; ++i) {

@@ -137,38 +137,38 @@ protected:
   template <class SM>
   void template_apply(const SM *sm,
                       DerivativeAccumulator &da) {
-    sm->apply(get_model(), data_, da);
+    sm->apply_indexes(get_model(), data_, da);
  }
   template <class SM>
   void template_apply(const SM *sm) {
-    sm->apply(get_model(), data_);
+    sm->apply_indexes(get_model(), data_);
   }
   template <class SS>
   double template_evaluate(const SS *s,
                            DerivativeAccumulator *da) const {
-    return s->evaluate(get_model(), data_, da);
+    return s->evaluate_indexes(get_model(), data_, da);
   }
   template <class SS>
   double template_evaluate_if_good(const SS *s,
                                    DerivativeAccumulator *da,
                                    double max) const {
-    return s->evaluate_if_good(get_model(), data_, da, max);
+    return s->evaluate_if_good_indexes(get_model(), data_, da, max);
   }
   void apply(const TripletModifier *sm) {
-    sm->apply(get_model(), data_);
+    sm->apply_indexes(get_model(), data_);
   }
   void apply(const TripletDerivativeModifier *sm,
              DerivativeAccumulator &da) {
-    sm->apply(get_model(), data_, da);
+    sm->apply_indexes(get_model(), data_, da);
   }
   double evaluate(const TripletScore *s,
                   DerivativeAccumulator *da) const {
-    return s->evaluate(get_model(), data_, da);
+    return s->evaluate_indexes(get_model(), data_, da);
   }
   double evaluate_if_good(const TripletScore *s,
                           DerivativeAccumulator *da,
                           double max) const {
-    return s->evaluate_if_good(get_model(), data_, da, max);
+    return s->evaluate_if_good_indexes(get_model(), data_, da, max);
   }
   ParticlesTemp get_contained_particles() const {
     return IMP::internal::flatten(IMP::internal::get_particle(get_model(),

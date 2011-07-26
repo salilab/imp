@@ -131,8 +131,8 @@ struct ParticleIndexPairSinkWithMax: public ParticleIndexPairSink {
     ssps_(ssps), da_(da) {}
   bool operator()(ParticleIndex a, ParticleIndex b) {
     ParticleIndexPairSink::operator()(a,b);
-    double cur= ssps_->PS::evaluate(ParticleIndexPairSink::m_,
-                                    ParticleIndexPair(a,b), da_);
+    double cur= ssps_->PS::evaluate_index(ParticleIndexPairSink::m_,
+                                          ParticleIndexPair(a,b), da_);
     max_-=cur;
     score_+=cur;
     if (max_ < 0) {

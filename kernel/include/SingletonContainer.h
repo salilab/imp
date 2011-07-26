@@ -70,48 +70,48 @@ class IMPEXPORT SingletonContainer : public Container
                      std::string name="SingletonContainer %1%");
 #ifndef IMP_DOXYGEN
   template <class S>
-    double call_evaluate(const S *s,
+    double call_evaluate_index(const S *s,
                          ParticleIndex a,
                          DerivativeAccumulator *da) const {
-    return s->S::evaluate(get_model(), a, da);
+    return s->S::evaluate_index(get_model(), a, da);
   }
-  double call_evaluate(const SingletonScore *s,
+  double call_evaluate_index(const SingletonScore *s,
                               ParticleIndex a,
                               DerivativeAccumulator *da) const {
-    return s->evaluate(get_model(), a, da);
+    return s->evaluate_index(get_model(), a, da);
   }
   template <class S>
-    double call_evaluate_if_good(const S *s,
+    double call_evaluate_if_good_index(const S *s,
                                  ParticleIndex a,
                                  DerivativeAccumulator *da,
                                  double max) const {
-    return s->S::evaluate_if_good(get_model(), a, da, max);
+    return s->S::evaluate_if_good_index(get_model(), a, da, max);
   }
-  double call_evaluate_if_good(const SingletonScore *s,
+  double call_evaluate_if_good_index(const SingletonScore *s,
                                       ParticleIndex a,
                                       DerivativeAccumulator *da,
                                       double max) const {
-    return s->evaluate_if_good(get_model(), a, da, max);
+    return s->evaluate_if_good_index(get_model(), a, da, max);
   }
   template <class S>
-    void call_apply(const S *s,
+    void call_apply_index(const S *s,
                     ParticleIndex a) const {
-    s->S::apply(get_model(), a);
+    s->S::apply_index(get_model(), a);
   }
   void call_apply(const SingletonModifier *s,
                          ParticleIndex a) const {
-    s->apply(get_model(), a);
+    s->apply_index(get_model(), a);
   }
   template <class S>
-    void call_apply(const S *s,
+    void call_apply_index(const S *s,
                            ParticleIndex a,
                            DerivativeAccumulator *&da) const {
-    s->S::apply(get_model(), a, da);
+    s->S::apply_index(get_model(), a, da);
   }
-  void call_apply(const SingletonDerivativeModifier *s,
+  void call_apply_index(const SingletonDerivativeModifier *s,
                   ParticleIndex a,
                   DerivativeAccumulator &da) const {
-    s->apply(get_model(), a, da);
+    s->apply_index(get_model(), a, da);
   }
 #endif
 public:

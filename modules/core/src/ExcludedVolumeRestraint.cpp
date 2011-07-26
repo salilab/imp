@@ -261,7 +261,7 @@ unprotected_evaluate(DerivativeAccumulator *da) const {
   }
   double ret=0;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    ret+=ssps_->evaluate(get_model(), ParticleIndexPair(cur_list_[i][0],
+    ret+=ssps_->evaluate_index(get_model(), ParticleIndexPair(cur_list_[i][0],
                                                         cur_list_[i][1]), da);
   }
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
@@ -331,7 +331,8 @@ unprotected_evaluate_if_good(DerivativeAccumulator *da, double max) const {
     });
   double cur=0;
   for (unsigned int i=0; i< cur_list_.size(); ++i) {
-    double c=ssps_->evaluate(get_model(), ParticleIndexPair(cur_list_[i][0],
+    double c=ssps_->evaluate_index(get_model(),
+                                   ParticleIndexPair(cur_list_[i][0],
                                                        cur_list_[i][1]), da);
     cur+=c;
     max-=c;

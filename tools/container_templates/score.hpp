@@ -51,8 +51,8 @@ class IMPEXPORT CLASSNAMEScore : public Object
 
 
   //! Compute the score and the derivative if needed.
-  virtual double evaluate(Model *m, PASSINDEXTYPE vt,
-                          DerivativeAccumulator *da) const {
+  virtual double evaluate_index(Model *m, PASSINDEXTYPE vt,
+                                DerivativeAccumulator *da) const {
     return evaluate(internal::get_particle(m, vt), da);
   }
 
@@ -60,36 +60,37 @@ class IMPEXPORT CLASSNAMEScore : public Object
       for these are provided by the IMP_HEADERNAME_SCORE()
       macro.
   */
-  virtual double evaluate(Model *m,
-                          const PLURALINDEXTYPE &o,
-                          DerivativeAccumulator *da) const {
+  virtual double evaluate_indexes(Model *m,
+                                  const PLURALINDEXTYPE &o,
+                                  DerivativeAccumulator *da) const {
     double ret=0;
     for (unsigned int i=0; i< o.size(); ++i) {
-      ret+= evaluate(m, o[i], da);
+      ret+= evaluate_index(m, o[i], da);
     }
     return ret;
   }
 
 
   //! Compute the score and the derivative if needed.
-  virtual double evaluate_if_good(Model *m, PASSINDEXTYPE vt,
-                                  DerivativeAccumulator *da,
-                                  double max) const {
+  virtual double evaluate_if_good_index(Model *m,
+                                        PASSINDEXTYPE vt,
+                                        DerivativeAccumulator *da,
+                                        double max) const {
     IMP_UNUSED(max);
-    return evaluate(m, vt, da);
+    return evaluate_index(m, vt, da);
   }
 
   /** Implementations
       for these are provided by the IMP_HEADERNAME_SCORE()
       macro.
   */
-  virtual double evaluate_if_good(Model *m,
-                                  const PLURALINDEXTYPE &o,
-                                  DerivativeAccumulator *da,
-                                  double max) const {
+  virtual double evaluate_if_good_indexes(Model *m,
+                                          const PLURALINDEXTYPE &o,
+                                          DerivativeAccumulator *da,
+                                          double max) const {
     double ret=0;
     for (unsigned int i=0; i< o.size(); ++i) {
-      double cur= evaluate(m, o[i], da);
+      double cur= evaluate_index(m, o[i], da);
       max-=cur;
       ret+=cur;
       if (max<0) break;
