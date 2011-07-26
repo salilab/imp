@@ -1,0 +1,9 @@
+%pythoncode %{
+
+from manager import Manager
+from errors import *
+from slave import Slave
+from local_slave import LocalSlave
+from sge import SGEQsubSlaveArray, SGEPESlaveArray
+
+%}
