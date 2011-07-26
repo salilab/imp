@@ -21,20 +21,20 @@
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate(Model *m, const PLURALINDEXTYPE &ps,                  \
+  double evaluate_indexes(Model *m, const PLURALINDEXTYPE &ps,          \
                   DerivativeAccumulator *da) const {                    \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      ret+=Name::evaluate(m, ps[i], da);                                \
+      ret+=Name::evaluate_index(m, ps[i], da);                          \
     }                                                                   \
     return ret;                                                         \
   }                                                                     \
-  double evaluate_if_good(Model *m, const PLURALINDEXTYPE &ps,          \
+  double evaluate_if_good_indexes(Model *m, const PLURALINDEXTYPE &ps,  \
                           DerivativeAccumulator *da,                    \
                           double max) const {                           \
     double ret=0;                                                       \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      double cur=Name::evaluate(m, ps[i], da);                          \
+      double cur=Name::evaluate_if_good_index(m, ps[i], da, max);       \
       max-=cur;                                                         \
       ret+=cur;                                                         \
       if (max <0) break;                                                \
@@ -62,16 +62,16 @@
 #define IMP_HEADERNAME_SCORE(Name)                                      \
   double evaluate(ARGUMENTTYPE p,                              \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate(Model *m, PASSINDEXTYPE p,                     \
+  double evaluate_index(Model *m, PASSINDEXTYPE p,         \
                   DerivativeAccumulator *da) const {                    \
     return evaluate(IMP::internal::get_particle(m,p), da);              \
   }                                                                     \
-  double evaluate_if_good(Model *m,                                     \
+  double evaluate_if_good_index(Model *m,                               \
                           PASSINDEXTYPE p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const{                            \
     IMP_UNUSED(max);                                                    \
-    return evaluate(m, p, da);                                          \
+    return evaluate_index(m, p, da);                                    \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*p) const ;                 \
   ContainersTemp get_input_containers(Particle *) const ;               \
@@ -92,12 +92,12 @@
                   DerivativeAccumulator *da) const {                    \
     return evaluate(IMP::internal::get_particle(m,p), da);              \
   }                                                                     \
-  double evaluate_if_good(Model *m,                                     \
+  double evaluate_if_good_index(Model *m,                               \
                           PASSINDEXTYPE p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const{                            \
     IMP_UNUSED(max);                                                    \
-    return evaluate(m, p, da);                                          \
+    return evaluate_index(m, p, da);                                    \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*p) const {                 \
     return ParticlesTemp(1,p);                                          \
@@ -121,12 +121,12 @@
   ContainersTemp get_input_containers(Particle *p) const;               \
   double evaluate(ARGUMENTTYPE p,                     \
                   DerivativeAccumulator *da) const {                    \
-  return evaluate(IMP::internal::get_model(p),                          \
+    return evaluate_index(IMP::internal::get_model(p),                  \
                   IMP::internal::get_index(p), da);                     \
   }                                                                     \
-  double evaluate(Model *m, PASSINDEXTYPE p,                     \
-                  DerivativeAccumulator *da) const;                     \
-  double evaluate_if_good(Model *m,                                     \
+  double evaluate_index(Model *m, PASSINDEXTYPE p,          \
+                  DerivativeAccumulator *da) const;                  \
+  double evaluate_if_good_index(Model *m,                               \
                           PASSINDEXTYPE p,                       \
                           DerivativeAccumulator *da,                    \
                           double max) const;                            \
@@ -144,18 +144,18 @@
   ContainersTemp get_input_containers(Particle *p) const;               \
   double evaluate(ARGUMENTTYPE p,                             \
                   DerivativeAccumulator *da) const {                    \
-    return evaluate(IMP::internal::get_model(p),                        \
+    return evaluate_index(IMP::internal::get_model(p),                  \
                   IMP::internal::get_index(p),                          \
                   da);                                                  \
   }                                                                     \
-  double evaluate(Model *m, PASSINDEXTYPE p,                   \
+  double evaluate_index(Model *m, PASSINDEXTYPE p,               \
                   DerivativeAccumulator *da) const;                     \
-  double evaluate_if_good(Model *m,                                     \
+  double evaluate_if_good_index(Model *m,                               \
                           PASSINDEXTYPE p,                      \
                           DerivativeAccumulator *da,                    \
                           double max) const {                           \
     IMP_UNUSED(max);                                                    \
-    return evaluate(m, p, da);                                          \
+    return evaluate_index(m, p, da);                                    \
   }                                                                     \
   IMP_HEADERNAME_SCORE_BASE(Name)
 
@@ -172,13 +172,8 @@
 */
 #define IMP_HEADERNAME_MODIFIER(Name)                                   \
   void apply(ARGUMENTTYPE a) const;                             \
-  void apply(Model *m, PASSINDEXTYPE a) const {            \
+  void apply_index(Model *m, PASSINDEXTYPE a) const {        \
     return Name::apply(IMP::internal::get_particle(m,a));               \
-  }                                                                     \
-  void apply(Model *m, const PLURALINDEXTYPE &ps) const {               \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(m, ps[i]);                                            \
-    }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
   ParticlesTemp get_output_particles(Particle*) const;                  \
@@ -194,20 +189,14 @@
 */
 #define IMP_HEADERNAME_DERIVATIVE_MODIFIER(Name)                        \
   void apply(ARGUMENTTYPE a, DerivativeAccumulator&da) const;    \
-  void apply(const PLURALVARIABLETYPE &ps,                              \
-             DerivativeAccumulator &da) const {                         \
-    for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(ps[i], da);                                           \
-    }                                                                   \
-  }                                                                     \
-  void apply(Model *m, PASSINDEXTYPE a,\
-             DerivativeAccumulator&da) const {                          \
+  void apply_index(Model *m, PASSINDEXTYPE a,              \
+             DerivativeAccumulator&da) const {               \
     return Name::apply(IMP::internal::get_particle(m,a), da);           \
   }                                                                     \
-  void apply(Model *m, const PLURALINDEXTYPE &ps,                       \
+  void apply_indexes(Model *m, const PLURALINDEXTYPE &ps,      \
              DerivativeAccumulator&da) const {                          \
     for (unsigned int i=0; i< ps.size(); ++i) {                         \
-      Name::apply(m, ps[i], da);                                        \
+      Name::apply_index(m, ps[i], da);                                  \
     }                                                                   \
   }                                                                     \
   ParticlesTemp get_input_particles(Particle*) const;                   \
@@ -252,18 +241,18 @@
   template <class SM>                                                   \
   void template_apply(const SM *sm,                                     \
                       DerivativeAccumulator &da) {                      \
-    LOOP(call_apply(sm, item, da));                                     \
+    LOOP(call_apply_index(sm, item, da));                               \
   }                                                                     \
   template <class SM>                                                   \
   void template_apply(const SM *sm) {                                   \
-    LOOP(call_apply(sm, item));                                         \
+    LOOP(call_apply_index(sm, item));                                   \
   }                                                                     \
   template <class SS>                                                   \
   double template_evaluate(const SS *s,                                 \
                            DerivativeAccumulator *da) const {           \
     double ret=0;                                                       \
     LOOP({                                                              \
-      double cur=call_evaluate(s, item, da);                           \
+        double cur=call_evaluate_index(s, item, da);                    \
       ret+=cur;                                                         \
       });                                                               \
     return ret;                                                         \
@@ -274,7 +263,7 @@
                                    double max) const {                  \
     double ret=0;                                                       \
     LOOP({                                                              \
-      double cur=call_evaluate_if_good(s, item, da, max);              \
+        double cur=call_evaluate_if_good_index(s, item, da, max);       \
       ret+=cur;                                                         \
       max-=cur;                                                         \
       if (max < 0) return ret;                                          \

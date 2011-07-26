@@ -39,14 +39,14 @@ public:
   virtual void apply(const ParticleQuad&) const =0;
 
  /** Apply the function to a single value*/
-  virtual void apply(Model *m, const ParticleIndexQuad& v) const {
+  virtual void apply_index(Model *m, const ParticleIndexQuad& v) const {
     apply(internal::get_particle(m, v));
   }
 
   /** Apply the function to a collection of ParticleQuadsTemp */
-  virtual void apply(Model *m, const ParticleIndexQuads &o) const {
+  virtual void apply_indexes(Model *m, const ParticleIndexQuads &o) const {
     for (unsigned int i=0; i < o.size(); ++i) {
-      apply(m, o[i]);
+      apply_index(m, o[i]);
     }
   }
 

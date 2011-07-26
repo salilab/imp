@@ -39,14 +39,14 @@ public:
   virtual void apply(ARGUMENTTYPE) const =0;
 
  /** Apply the function to a single value*/
-  virtual void apply(Model *m, PASSINDEXTYPE v) const {
+  virtual void apply_index(Model *m, PASSINDEXTYPE v) const {
     apply(internal::get_particle(m, v));
   }
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
-  virtual void apply(Model *m, const PLURALINDEXTYPE &o) const {
+  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o) const {
     for (unsigned int i=0; i < o.size(); ++i) {
-      apply(m, o[i]);
+      apply_index(m, o[i]);
     }
   }
 

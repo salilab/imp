@@ -32,7 +32,7 @@ double SingletonRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return ss_->evaluate(get_model(), v_, accum);
+  return ss_->evaluate_index(get_model(), v_, accum);
 }
 
 double SingletonRestraint
@@ -41,7 +41,7 @@ double SingletonRestraint
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(ss_);
-  return ss_->evaluate_if_good(get_model(), v_, accum, max);
+  return ss_->evaluate_if_good_index(get_model(), v_, accum, max);
 }
 
 

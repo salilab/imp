@@ -41,16 +41,16 @@ public:
                      DerivativeAccumulator &da) const=0;
 
  /** Apply the function to a single value*/
-  virtual void apply(Model *m, PASSINDEXTYPE v,
-                     DerivativeAccumulator &da) const {
+  virtual void apply_index(Model *m, PASSINDEXTYPE v,
+                           DerivativeAccumulator &da) const {
     apply(internal::get_particle(m, v), da);
   }
 
   /** Apply the function to a collection of PLURALVARIABLETYPE */
-  virtual void apply(Model *m, const PLURALINDEXTYPE &o,
-                     DerivativeAccumulator &da) const {
+  virtual void apply_indexes(Model *m, const PLURALINDEXTYPE &o,
+                             DerivativeAccumulator &da) const {
     for (unsigned int i=0; i < o.size(); ++i) {
-      apply(m, o[i], da);
+      apply_index(m, o[i], da);
     }
   }
 
