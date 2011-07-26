@@ -264,7 +264,7 @@ class ParticleTests(IMP.test.TestCase):
             if not m in md and m not in exclusions and not m.startswith("_"):
                 print m
                 missing.append(m)
-        self.assertEqual(len(missing)==0,
+        self.assertEqual(len(missing),0,
                          "The following methods are not found in decorators: "+str(missing))
 
 if __name__ == '__main__':
