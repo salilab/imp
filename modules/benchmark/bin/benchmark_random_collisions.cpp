@@ -27,7 +27,7 @@ public:
   IMP_INDEX_PAIR_SCORE(ConstPairScore);
 };
 
-  double ConstPairScore::evaluate(Model *, const ParticleIndexPair &,
+  double ConstPairScore::evaluate_index(Model *, const ParticleIndexPair &,
                                 DerivativeAccumulator *) const {
   return 1;
 }
