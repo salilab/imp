@@ -39,6 +39,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  OPTION(double, mc_dang);
  OPTION(double, kappa);
  OPTION(double, side);
+ OPTION(double, resolution);
  OPTION(double, wte_w0);
  OPTION(double, wte_sigma);
  OPTION(double, wte_gamma);
@@ -59,6 +60,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  CHECK(double, mc_dang);
  CHECK(double, kappa);
  CHECK(double, side);
+ CHECK(double, resolution);
  CHECK(double, wte_w0);
  CHECK(double, wte_sigma);
  CHECK(double, wte_gamma);
@@ -93,6 +95,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.kappa=kappa;
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
+ ret.resolution=resolution;
 
 // cell dependent parameters
  if(cell_type=="rhombus"){

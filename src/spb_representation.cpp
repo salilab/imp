@@ -10,6 +10,7 @@
 #include <IMP/algebra.h>
 #include <IMP/container.h>
 #include <IMP/membrane.h>
+#include <IMP/display.h>
 #include <string>
 using namespace IMP;
 using namespace IMP::membrane;
@@ -30,8 +31,8 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
  return hs;
 }
 
-atom::Molecule create_protein(Model *m,std::string name,double mass,
- int nbeads,int copy,int start_residue,int length)
+atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
+ display::Color colore,int copy,double kappa,int start_residue,int length)
 {
  if(length==-1) {length=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
@@ -53,6 +54,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,
   d.set_radius(rg);
   d.set_coordinates_are_optimized(true);
   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
+  display::Colored cc=display::Colored::setup_particle(pp,colore);
   protein.add_child(dom);
  }
  if(nbeads>1 && copy==0){
@@ -61,7 +63,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,
   for(unsigned int i=0;i<hs.size();++i){
    ss.push_back(atom::Selection(hs[i]));
   }
-  Restraint *con=atom::create_connectivity_restraint(ss,1.0);
+  Restraint *con=atom::create_connectivity_restraint(ss,kappa);
   con->set_name("Connectivity Restraint for "+name);
   m->add_restraint(con);
  }
@@ -70,13 +72,13 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,
 
 atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecule protein_a,
-atom::Molecule protein_b,int copy,double dist)
+atom::Molecule protein_b,int copy,double kappa,double dist)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
  if (copy==0 and dist >=0.0){
-   add_internal_restraint(m,name,protein_a,protein_b,dist);
+   add_internal_restraint(m,name,protein_a,protein_b,kappa,dist);
  }
  ParticlesTemp psa=protein_a.get_leaves();
  for(int i=0;i<psa.size();++i){

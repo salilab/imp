@@ -9,6 +9,7 @@
 #include <IMP/atom.h>
 #include <IMP/membrane.h>
 #include <IMP/rmf.h>
+#include <IMP/display.h>
 #include <boost/scoped_array.hpp>
 #include <time.h>
 #include <fstream>
@@ -51,23 +52,45 @@ atom::Hierarchies h_CP=create_hierarchies(m,mydata.num_cells,"Central Plaque");
 for(int i=0;i<mydata.num_cells;++i){
  for(int j=0;j<mydata.num_copies;++j){
   //Spc42p_n, 2 copies, 1 bead
-  atom::Molecule Spc42p_n_0=create_protein(m,"Spc42p_n", 7, 1, i);
-  atom::Molecule Spc42p_n_1=create_protein(m,"Spc42p_n", 7, 1, i);
+  atom::Molecule Spc42p_n_0=
+   create_protein(m,"Spc42p_n",7,1,
+                    display::Color(175./255.,238./255.,238./255.),
+                    i,mydata.kappa);
+  atom::Molecule Spc42p_n_1=
+   create_protein(m,"Spc42p_n",7,1,
+                    display::Color(175./255.,238./255.,238./255.),
+                    i,mydata.kappa);
   h_CP[i].add_child(Spc42p_n_0);
   h_CP[i].add_child(Spc42p_n_1);
   //Spc29p, 2 beads
-  atom::Molecule Spc29p_n=create_protein(m,"Spc29p_n", 14.5, 1, i);
-  atom::Molecule Spc29p_c=create_protein(m,"Spc29p_c", 14.5, 1, i, 132);
+  atom::Molecule Spc29p_n=
+   create_protein(m,"Spc29p_n",14.5,1,
+                    display::Color(255./255.,165./255.,0.),
+                    i,mydata.kappa);
+  atom::Molecule Spc29p_c=
+   create_protein(m,"Spc29p_c",14.5,1,
+                    display::Color(255./255.,140./255.,0.),
+                    i,mydata.kappa,132);
   atom::Molecule Spc29p=
-   create_merged_protein(m,"Spc29p",Spc29p_n,Spc29p_c,i,0.0);
+   create_merged_protein(m,"Spc29p",Spc29p_n,Spc29p_c,i,mydata.kappa,0.0);
   h_CP[i].add_child(Spc29p);
   //Spc110p_c, 3 beads
-  atom::Molecule Spc110p_c=create_protein(m,"Spc110p_c", 26, 1, i, 627+164);
+  atom::Molecule Spc110p_c=
+   create_protein(m,"Spc110p_c",26,1,
+                    display::Color(255./255.,0.,0.),
+                    i,mydata.kappa,627+164);
   h_CP[i].add_child(Spc110p_c);
   //Cmd1p, 1 bead
-  atom::Molecule Cmd1p_n=create_protein(m,"Cmd1p_n", 8, 1, i);
-  atom::Molecule Cmd1p_c=create_protein(m,"Cmd1p_c", 8, 1, i, 80);
-  atom::Molecule Cmd1p=create_merged_protein(m,"Cmd1p",Cmd1p_n,Cmd1p_c,i,0.0);
+  atom::Molecule Cmd1p_n=
+   create_protein(m,"Cmd1p_n",8,1,
+                    display::Color(255./255.,255./255.,0.),
+                    i,mydata.kappa);
+  atom::Molecule Cmd1p_c=
+   create_protein(m,"Cmd1p_c",8,1,
+                    display::Color(255./255.,215./255.,0.),
+                    i,mydata.kappa, 80);
+  atom::Molecule Cmd1p=
+   create_merged_protein(m,"Cmd1p",Cmd1p_n,Cmd1p_c,i,mydata.kappa,0.0);
   h_CP[i].add_child(Cmd1p);
  }
 }
@@ -84,6 +107,10 @@ for(unsigned int i=0;i<h_CP.size();++i){
 // CREATING RESTRAINTS
 std::cout << "Creating restraints" << std::endl;
 //
+// Excluded volume
+//
+add_SPBexcluded_volume(m,h_CP,mydata.kappa);
+//
 // Symmetry
 //
 add_symmetry_restraint(m,h_CP,mydata);
@@ -91,29 +118,36 @@ add_symmetry_restraint(m,h_CP,mydata);
 // FRET
 //
 // intra-CP
-add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Cmd1p",     "C", 1.69);
-add_fret_restraint(m,h_CP, "Spc29p",   "N", h_CP, "Cmd1p",     "C", 1.75);
-add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Spc110p_c", "C", 1.37);
-add_fret_restraint(m,h_CP, "Spc29p",   "C", h_CP, "Spc42p_n",  "N", 2.05);
-add_fret_restraint(m,h_CP, "Cmd1p",    "C", h_CP, "Spc42p_n",  "N", 2.07);
-add_fret_restraint(m,h_CP, "Cmd1p",    "C", h_CP, "Spc110p_c", "C", 2.15);
-add_fret_restraint(m,h_CP, "Spc42p_n", "N", h_CP, "Spc110p_c", "C", 2.02);
+add_fret_restraint(m,h_CP, "Spc29p",   "C",
+                     h_CP, "Cmd1p",     "C", 1.69, mydata.kappa);
+add_fret_restraint(m,h_CP, "Spc29p",   "N",
+                     h_CP, "Cmd1p",     "C", 1.75, mydata.kappa);
+add_fret_restraint(m,h_CP, "Spc29p",   "C",
+                     h_CP, "Spc110p_c", "C", 1.37, mydata.kappa);
+add_fret_restraint(m,h_CP, "Spc29p",   "C",
+                     h_CP, "Spc42p_n",  "N", 2.05, mydata.kappa);
+add_fret_restraint(m,h_CP, "Cmd1p",    "C",
+                     h_CP, "Spc42p_n",  "N", 2.07, mydata.kappa);
+add_fret_restraint(m,h_CP, "Cmd1p",    "C",
+                     h_CP, "Spc110p_c", "C", 2.15, mydata.kappa);
+add_fret_restraint(m,h_CP, "Spc42p_n", "N",
+                     h_CP, "Spc110p_c", "C", 2.02, mydata.kappa);
 //
 // TWO-HYBRID SCREENING
 //
 // CP
 add_y2h_restraint(m,h_CP, "Cmd1p",      "ALL",
-                    h_CP, "Spc110p_c", IntRange(900,1020));
+                    h_CP, "Spc110p_c", IntRange(900,1020), mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc42p_n",     "N",
-                    h_CP, "Spc110p_c",    "C");
+                    h_CP, "Spc110p_c",    "C", mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc29p",       "ALL",
-                    h_CP, "Spc110p_c", IntRange(811,944));
+                    h_CP, "Spc110p_c", IntRange(811,944), mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc110p_c",    "C",
-                    h_CP, "Spc110p_c",    "C");
+                    h_CP, "Spc110p_c",    "C", mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
-                    h_CP, "Spc29p",       "ALL");
+                    h_CP, "Spc29p",       "ALL", mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
-                    h_CP, "Spc42p_n", IntRange(1,138));
+                    h_CP, "Spc42p_n", IntRange(1,138), mydata.kappa);
 
 
 std::cout << "Setup sampler" << std::endl;

@@ -19,12 +19,12 @@ IMPMEMBRANEEXPORT atom::Hierarchies
  create_hierarchies(Model *m,int ncells,std::string name);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
-(Model *m,std::string name,double mass,
- int nbeads,int copy,int start_residue=-1,int length=-1);
+(Model *m,std::string name,double mass,int nbeads,display::Color color,
+int copy,double kappa,int start_residue=-1,int length=-1);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecule protein_a,
-atom::Molecule protein_b,int copy,double dist=-1.0);
+atom::Molecule protein_b,int copy,double kappa,double dist=-1.0);
 
 IMPMEMBRANE_END_NAMESPACE
 

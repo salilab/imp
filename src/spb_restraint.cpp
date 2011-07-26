@@ -15,24 +15,38 @@ using namespace IMP;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-core::DistancePairScore* get_pair_score(FloatRange dist)
+core::DistancePairScore*
+ get_pair_score(FloatRange dist, double kappa)
 {
- IMP_NEW(core::HarmonicWell,hw,(dist,1.0));
+ IMP_NEW(core::HarmonicWell,hw,(dist,kappa));
  IMP_NEW(core::DistancePairScore,ps,(hw));
  return ps.release();
 }
 
-core::SphereDistancePairScore* get_sphere_pair_score(FloatRange dist)
+core::SphereDistancePairScore*
+ get_sphere_pair_score(FloatRange dist, double kappa)
 {
- IMP_NEW(core::HarmonicWell,hw,(dist,1.0));
+ IMP_NEW(core::HarmonicWell,hw,(dist,kappa));
  IMP_NEW(core::SphereDistancePairScore,ps,(hw));
  return ps.release();
 }
 
-void add_internal_restraint(Model *m,std::string name,
-atom::Molecule protein_a,atom::Molecule protein_b,double dist)
+void add_SPBexcluded_volume (Model *m,atom::Hierarchies hs,double kappa)
 {
- core::DistancePairScore* ps=get_pair_score(FloatRange(-500.0, dist));
+ IMP_NEW(container::ListSingletonContainer,lsc,(m));
+ for(unsigned int i=0;i<hs.size();++i){
+  lsc->add_particles(hs[i].get_leaves());
+ }
+ IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa));
+ evr->set_name("Excluded Volume");
+ m->add_restraint(evr);
+}
+
+void add_internal_restraint(Model *m,std::string name,
+atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist)
+{
+ core::SphereDistancePairScore*
+ ps=get_sphere_pair_score(FloatRange(0.0, dist),kappa);
  atom::Selection sa=atom::Selection(protein_a);
  atom::Selection sb=atom::Selection(protein_b);
  sa.set_terminus(atom::Selection::C);
@@ -47,7 +61,7 @@ atom::Molecule protein_a,atom::Molecule protein_b,double dist)
 FloatRange get_range_from_fret_class(std::string r_class)
 {
  FloatRange range;
- if (r_class=="High")   {range=FloatRange(-500.0,  41.0);}
+ if (r_class=="High")   {range=FloatRange(0.0,  41.0);}
  if (r_class=="Mod")    {range=FloatRange(41.0, 55.5);}
  if (r_class=="Low")    {range=FloatRange(55.5, 66.0);}
  if (r_class=="Lowest") {range=FloatRange(66.0, 70.0);}
@@ -123,7 +137,7 @@ void do_allpairs_mindist(Model *m,Particles ps,
 void add_fret_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies hb, std::string protein_b, std::string residues_b,
- double r_value)
+ double r_value, double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -136,7 +150,7 @@ void add_fret_restraint
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
  FloatRange range=get_range_from_fret_value(r_value);
- core::DistancePairScore* ps=get_pair_score(range);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range,kappa);
  if(protein_a != protein_b){
   do_bipartite_mindist(m,p1,p2,ps);
  }else if(protein_a==protein_b && residues_a==residues_b){
@@ -148,7 +162,7 @@ void add_fret_restraint
 
 void add_y2h_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,IntRange residues_b)
+ atom::Hierarchies hb,std::string protein_b,IntRange residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -162,8 +176,8 @@ void add_y2h_restraint
  sb.set_residue_indexes(r_b);
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- FloatRange range=FloatRange(-500,0.0);
- core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ FloatRange range=FloatRange(0.0,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range,kappa);
  if(protein_a != protein_b){
   do_bipartite_mindist(m,p1,p2,ps);
  }else if(protein_a==protein_b && residues_a==residues_b){
@@ -175,7 +189,8 @@ void add_y2h_restraint
 
 void add_y2h_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb, std::string protein_b, std::string residues_b)
+ atom::Hierarchies hb, std::string protein_b,
+ std::string residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -187,8 +202,8 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- FloatRange range=FloatRange(-500,0.0);
- core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ FloatRange range=FloatRange(0.0,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range,kappa);
  if(protein_a != protein_b){
   do_bipartite_mindist(m,p1,p2,ps);
  }else if(protein_a==protein_b && residues_a==residues_b){
@@ -200,7 +215,8 @@ void add_y2h_restraint
 
 void add_y2h_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,std::string residues_b)
+ atom::Hierarchies hb,std::string protein_b,
+ std::string residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -213,16 +229,17 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
- FloatRange range=FloatRange(-500,0.0);
- core::SphereDistancePairScore* ps=get_sphere_pair_score(range);
+ FloatRange range=FloatRange(0.0,0.0);
+ core::SphereDistancePairScore* ps=get_sphere_pair_score(range,kappa);
  do_bipartite_mindist(m,p1,p2,ps);
 }
 
 void add_y2h_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb,std::string protein_b,IntRange residues_b)
+ atom::Hierarchies hb,std::string protein_b,
+ IntRange residues_b, double kappa)
 {
- add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a);
+ add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
 }
 
 void add_symmetry_restraint

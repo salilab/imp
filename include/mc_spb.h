@@ -18,6 +18,7 @@ struct SPBParameters {
  MCParameters   MC;
  double         side;
  double         kappa;
+ double         resolution;
  std::string    cell_type;
  int            num_cells;
  int            num_copies;
