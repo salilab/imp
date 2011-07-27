@@ -52,6 +52,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
   dom->set_name(name+out1.str()+"-"+out2.str());
   core::XYZR  d=core::XYZR::setup_particle(pp);
   d.set_radius(rg);
+  d.set_coordinates(algebra::Vector3D(0.1,0.1,0.1));
   d.set_coordinates_are_optimized(true);
   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
   display::Colored cc=display::Colored::setup_particle(pp,colore);

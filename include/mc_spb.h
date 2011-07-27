@@ -17,6 +17,9 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 struct SPBParameters {
  MCParameters   MC;
  double         side;
+ double         CP_thickness;
+ double         CP_IL2_gap;
+ double         IL2_thickness;
  double         kappa;
  double         resolution;
  std::string    cell_type;

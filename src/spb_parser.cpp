@@ -39,6 +39,9 @@ SPBParameters get_SPBParameters(TextInput in) {
  OPTION(double, mc_dang);
  OPTION(double, kappa);
  OPTION(double, side);
+ OPTION(double, CP_thickness);
+ OPTION(double, CP_IL2_gap);
+ OPTION(double, IL2_thickness);
  OPTION(double, resolution);
  OPTION(double, wte_w0);
  OPTION(double, wte_sigma);
@@ -59,6 +62,9 @@ SPBParameters get_SPBParameters(TextInput in) {
  CHECK(double, mc_dx);
  CHECK(double, mc_dang);
  CHECK(double, kappa);
+ CHECK(double, CP_thickness);
+ CHECK(double, CP_IL2_gap);
+ CHECK(double, IL2_thickness);
  CHECK(double, side);
  CHECK(double, resolution);
  CHECK(double, wte_w0);
@@ -92,6 +98,9 @@ SPBParameters get_SPBParameters(TextInput in) {
 
 // General Parameters
  ret.side=side;
+ ret.CP_thickness=CP_thickness;
+ ret.CP_IL2_gap=CP_IL2_gap;
+ ret.IL2_thickness=IL2_thickness;
  ret.kappa=kappa;
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
@@ -108,6 +117,8 @@ SPBParameters get_SPBParameters(TextInput in) {
   ret.num_cells=9;
   ret.num_copies=6;
   ret.side=sqrt(1.5*pow(side,2)*sqrt(3.0));
+ }else{
+  IMP_FAILURE("Unknown cell type!");
  }
 
  return ret;

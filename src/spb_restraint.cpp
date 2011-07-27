@@ -134,6 +134,21 @@ void do_allpairs_mindist(Model *m,Particles ps,
  m->add_restraint(mpr);
 }
 
+void add_surface_restraint(Model *m, atom::Hierarchy h,
+ std::string name,std::string residues, double zeta, double kappa)
+{
+ atom::Selection s=atom::Selection(h);
+ s.set_molecule(name);
+ if(residues=="C") {s.set_terminus(atom::Selection::C);}
+ if(residues=="N") {s.set_terminus(atom::Selection::N);}
+ Particles ps=s.get_selected_particles();
+ IMP_NEW(core::Harmonic,ha,(zeta,kappa));
+ IMP_NEW(core::AttributeSingletonScore,asc,(ha,FloatKey("z")));
+ IMP_NEW(container::ListSingletonContainer,lsc,(ps));
+ IMP_NEW(container::SingletonsRestraint,sr,(asc, lsc));
+ m->add_restraint(sr);
+}
+
 void add_fret_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies hb, std::string protein_b, std::string residues_b,

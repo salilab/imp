@@ -115,6 +115,15 @@ add_SPBexcluded_volume(m,h_CP,mydata.kappa);
 //
 add_symmetry_restraint(m,h_CP,mydata);
 //
+// Surface restraint
+//
+add_surface_restraint(m, h_CP[0], "Cmd1p", "C",
+                         mydata.CP_thickness/2.0, mydata.kappa);
+add_surface_restraint(m, h_CP[0], "Cmd1p", "N",
+                         mydata.CP_thickness/2.0, mydata.kappa);
+add_surface_restraint(m, h_CP[0], "Spc110p_c", "C",
+                         -mydata.CP_thickness/2.0, mydata.kappa);
+//
 // FRET
 //
 // intra-CP
@@ -153,7 +162,8 @@ add_y2h_restraint(m,h_CP, "Spc42p_n", IntRange(1,138),
 std::cout << "Setup sampler" << std::endl;
 atom::Hierarchies hs;
 hs.push_back(h_CP[0]);
-core::MonteCarlo* mc=setup_SPBMonteCarlo(m,hs,mydata.MC.tmin,mydata.MC);
+//hs.push_back(h_IL2[0]);
+core::MonteCarlo* mc=setup_SPBMonteCarlo(m,hs,mydata.MC.tmin,mydata);
 
 std::cout << "Sampling" << std::endl;
 // Monte Carlo loop

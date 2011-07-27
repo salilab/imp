@@ -17,7 +17,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT core::MonteCarlo* setup_SPBMonteCarlo
-(Model *m, atom::Hierarchies hs, double temp, MCParameters myparam);
+(Model *m, atom::Hierarchies hs, double temp, SPBParameters myparam);
 
 IMPMEMBRANE_END_NAMESPACE
 
