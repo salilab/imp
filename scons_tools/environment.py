@@ -50,7 +50,7 @@ class _WineEnvironment(Environment):
         # Make sure we get the same Windows C/C++ library as Modeller, and
         # enable C++ exception handling
         self.Append(CFLAGS="/MD")
-        self.Append(CXXFLAGS=["/MD", "/GR", "/EHsc"])
+        self.Append(CXXFLAGS=["/MD", "/GR", "/EHsc", "/DNOMINMAX"])
         self.Append(IMP_PYTHON_CXXFLAGS=["/MD", "/GR", "/EHsc"])
 
     def _fix_scons_msvc_detect(self):
