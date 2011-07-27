@@ -5,7 +5,7 @@ files = [
          'medium_protein.pdb',
          'large_protein.pdb',
          'huge_protein.pdb',
-         'brownian.imp',
+         'brownian.rmf',
          "toph19.inp",
          "param19.inp",
          "extended.pdb",
