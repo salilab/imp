@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_LN_H
-#define IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_LN_H
+#ifndef IMPISD_SAXS_RESTRAINT_MARGINAL_LN_H
+#define IMPISD_SAXS_RESTRAINT_MARGINAL_LN_H
 
 #include "isd_config.h"
 
@@ -23,17 +23,20 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-//! Calculate score based on fit to SAXS profile. Marginal of the Normal model
-//  with respect to the standard deviation. Empirical Bayes.
+//! Calculate score based on fit to SAXS profile. Marginal of the lognormal
+//model with respect to the standard deviation and gamma.
 /** \ingroup exp_restraint
 
-    The likelihood of this model is an improper Student t distribution. Assume M
-    data points.  
+    Assuming M data points, the posterior is
     \f[p(D | X, I) \propto 
-    \left(
+    \left( s^2W
+    \right)^{-\frac{M-1}{2}}
+    P\left(\frac{M-1}{2},\frac{s^2W}{2}\right)
+    \f]
+    \f[
+    s^2W = 
     \sum{q=q_{min}}^{q_{max}} w(q)
     \log^2 \left( \frac{I_{exp}(q)}{\hat{\gamma}I_{calc}(q)} \right)
-    \right)^{-\frac{M-1}{2}}
     \f]
     \f[ \hat{\gamma} = \frac{1}{W}
     \prod{q=q_{min}}^{q_{max}} \left( \frac{I_{exp}(q)}{I_{calc}(q)} 
@@ -42,6 +45,8 @@ IMPISD_BEGIN_NAMESPACE
     W = \sum{q=q_{min}}^{q_{max}} w(q)
     \quad w_X(q) = \frac{1}{\sigma^2_{exp}(q)}
     \f]
+
+    where P is the regularized incomplete gamma function.
 
     The restraint takes rigid bodies into account, in order
     to speed up the calculations. Rigid body should be gived as single
@@ -55,7 +60,7 @@ IMPISD_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
+class IMPISDEXPORT SAXSRestraint_marginal_LN : public ISDRestraint
 {
  public:
   //! Constructor
@@ -67,10 +72,10 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  SAXSRestraint_empirical_marginal_LN(const Particles& particles,
+  SAXSRestraint_marginal_LN(const Particles& particles,
           const saxs::Profile& exp_profile, saxs::FormFactorType ff_type = saxs::HEAVY_ATOMS);
 
-  IMP_RESTRAINT(SAXSRestraint_empirical_marginal_LN);
+  IMP_RESTRAINT(SAXSRestraint_marginal_LN);
 
   double get_probability() const { return std::exp(-unprotected_evaluate(NULL));}
 
@@ -90,6 +95,7 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
   saxs::Profile rigid_bodies_profile_; // non-changing part of the profile
   saxs::Profile exp_profile_; // experimental profile
   saxs::FormFactorType ff_type_; // type of the form factors to use
+  std::vector<double> w_;
   double W_,loggammahat_,SS_;
   
   void set_W(double W) { W_=W; }
@@ -101,4 +107,4 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_LN : public ISDRestraint
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_LN_H */
+#endif  /* IMPISD_SAXS_RESTRAINT_MARGINAL_LN_H */

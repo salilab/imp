@@ -1,12 +1,14 @@
 /**
- *  \file SAXSRestraint_empirical_marginal_LN.h
+ *  \file SAXSRestraint_marginal_LN.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/isd/SAXSRestraint_empirical_marginal_LN.h>
+#include <IMP/isd/SAXSRestraint_marginal_LN.h>
+
+#include <boost/math/special_functions/gamma.hpp>
 
 #include <IMP/log.h>
 
@@ -15,7 +17,7 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SAXSRestraint_empirical_marginal_LN::SAXSRestraint_empirical_marginal_LN(const Particles& particles,
+SAXSRestraint_marginal_LN::SAXSRestraint_marginal_LN(const Particles& particles,
         const saxs::Profile& exp_profile, saxs::FormFactorType ff_type) :
   exp_profile_(exp_profile), ff_type_(ff_type) {
 
@@ -40,10 +42,31 @@ SAXSRestraint_empirical_marginal_LN::SAXSRestraint_empirical_marginal_LN(const P
   }
   IMP_LOG(TERSE, "SAXS Restraint constructor: " << particles_.size()
           << " atom particles " << rigid_bodies_.size() << " rigid bodies\n");
+
+  /* compute Icalc */
+  saxs::Profile model_profile(exp_profile.get_min_q(),
+                            exp_profile.get_max_q(),
+                            exp_profile.get_delta_q());
+  const_cast<SAXSRestraint_marginal_LN*>(this)->compute_profile(model_profile);
+
+  unsigned int profile_size = std::min(model_profile.size(), exp_profile.size());
+
+  double W=0;
+  //compute weights
+  for (unsigned iq=0; iq< profile_size; ++iq)
+  {
+      double Iexp = exp_profile.get_intensity(iq);
+      double error = exp_profile.get_error(iq);
+      double weight = square(Iexp/error);
+      w_.push_back(weight);
+      W += weight;
+  }
+  //const_cast<SAXSRestraint_marginal_LN*>(this)->set_W(Wx);
+  set_W(W);
 }
 
 
-ParticlesTemp SAXSRestraint_empirical_marginal_LN::get_input_particles() const
+ParticlesTemp SAXSRestraint_marginal_LN::get_input_particles() const
 {
   ParticlesTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
@@ -61,12 +84,12 @@ ParticlesTemp SAXSRestraint_empirical_marginal_LN::get_input_particles() const
 }
 
 
-ContainersTemp SAXSRestraint_empirical_marginal_LN::get_input_containers() const
+ContainersTemp SAXSRestraint_marginal_LN::get_input_containers() const
 {
   return ContainersTemp();
 }
 
-void SAXSRestraint_empirical_marginal_LN::compute_profile(saxs::Profile& model_profile) {
+void SAXSRestraint_marginal_LN::compute_profile(saxs::Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
   saxs::Profile profile(model_profile.get_min_q(),
@@ -97,46 +120,37 @@ void SAXSRestraint_empirical_marginal_LN::compute_profile(saxs::Profile& model_p
     \return score associated with this restraint for the given state of
             the model.
 */
-double SAXSRestraint_empirical_marginal_LN::unprotected_evaluate(DerivativeAccumulator *acc) const
+double SAXSRestraint_marginal_LN::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXSRestraint_empirical_marginal_LN::unprotected_evaluate\n");
+  IMP_LOG(TERSE, "SAXSRestraint_marginal_LN::unprotected_evaluate\n");
 
   /* compute Icalc */
   saxs::Profile model_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->compute_profile(model_profile);
+  const_cast<SAXSRestraint_marginal_LN*>(this)->compute_profile(model_profile);
 
   unsigned int profile_size = std::min(model_profile.size(), exp_profile_.size());
-  std::vector<double> wx;
-  double Wx=0;
-  //compute weights
-  for (unsigned iq=0; iq< profile_size; ++iq)
-  {
-      double error = exp_profile_.get_error(iq);
-      double weight = square(1.0/error);
-      wx.push_back(weight);
-      Wx += weight;
-  }
-  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_W(Wx);
   //compute gammahat
   double loggammahat=0;
+  double W = get_W();
   for (unsigned iq=0; iq<profile_size; ++iq)
   {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      loggammahat += log(Iexp/Icalc) * wx[iq]/Wx;
+      loggammahat += log(Iexp/Icalc) * w_[iq]/W;
   }
-  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_log_gammahat(loggammahat);
-  //compute posterior
-  double score=0;
+  const_cast<SAXSRestraint_marginal_LN*>(this)->set_log_gammahat(loggammahat);
+  //compute s^2W
+  double s2W=0;
   for (unsigned int iq=0; iq<profile_size; iq++) {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      score += wx[iq]*square(log(Iexp/Icalc) -loggammahat);
+      s2W += w_[iq]*square(log(Iexp/Icalc) -loggammahat);
       }
-  const_cast<SAXSRestraint_empirical_marginal_LN*>(this)->set_SS(score);
-  score = 0.5*(profile_size - 1 )*log(score);
+  const_cast<SAXSRestraint_marginal_LN*>(this)->set_SS(s2W);
+  double score = 0.5*(profile_size - 1 )*log(s2W) 
+        - log(boost::math::gamma_p(0.5*(profile_size - 1 ), s2W/2.));
 
   if (!acc) return score;
 
@@ -145,9 +159,9 @@ double SAXSRestraint_empirical_marginal_LN::unprotected_evaluate(DerivativeAccum
 
   }
 
-void SAXSRestraint_empirical_marginal_LN::do_show(std::ostream& out) const
+void SAXSRestraint_marginal_LN::do_show(std::ostream& out) const
 {
-   out << "SAXSRestraint_empirical_marginal_LN: for " << particles_.size() << " particles " <<std::endl;
+   out << "SAXSRestraint_marginal_LN: for " << particles_.size() << " particles " <<std::endl;
 }
 
 IMPISD_END_NAMESPACE
