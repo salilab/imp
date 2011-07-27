@@ -128,6 +128,10 @@ class IMPCOREEXPORT XYZ: public Decorator
     return p->has_attribute(get_coordinate_key(2));
   }
 
+  static bool particle_is_instance(Model *m, ParticleIndex pi) {
+    return m->get_has_attribute(get_coordinate_key(2), pi);
+  }
+
   //! Get a vector containing the keys for x,y,z
   /** This is quite handy for initializing movers and things.
    */

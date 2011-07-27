@@ -92,22 +92,20 @@ IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 inline double HarmonicSphereDistancePairScore::evaluate_index(Model *m,
                                 const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
-  XYZR d0(m, p[0]), d1(m, p[1]);
-  algebra::VectorD<3> delta;
-  for (int i = 0; i < 3; ++i) {
-    delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
-  }
+  algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
+    - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();
   double distance=std::sqrt(distance2);
-  double shifted_distance = distance- x0_- d0.get_radius() - d1.get_radius();
+  double shifted_distance = distance- x0_
+    - m->get_sphere(p[0]).get_radius()
+    - m->get_sphere(p[1]).get_radius();
   double score= .5*k_*square(shifted_distance);
-  if (!da || distance < MIN_DISTANCE) return score;
-  double deriv= k_*shifted_distance;
-  algebra::Vector3D uv= delta/distance;
-  if (da) {
-    d0.add_to_derivatives(uv*deriv, *da);
-    d1.add_to_derivatives(-uv*deriv, *da);
+  if (da && distance > MIN_DISTANCE) {
+    double deriv= k_*shifted_distance;
+    algebra::Vector3D uv= delta/distance;
+    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
+    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
   }
   return score;
 }
@@ -116,25 +114,22 @@ inline double
 HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
                                   const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
-  XYZR d0(m, p[0]), d1(m, p[1]);
-  algebra::VectorD<3> delta;
-  for (int i = 0; i < 3; ++i) {
-    delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
-  }
+  algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
+    - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();
   double distance=std::sqrt(distance2);
-  double shifted_distance = distance- x0_- d0.get_radius() - d1.get_radius();
+  double shifted_distance = distance- x0_
+    - m->get_sphere(p[0]).get_radius()
+    - m->get_sphere(p[1]).get_radius();
   if (shifted_distance < 0) return 0;
   double score= .5*k_*square(shifted_distance);
-  if (!da || distance < MIN_DISTANCE) return score;
-  double deriv= k_*shifted_distance;
-  algebra::Vector3D uv= delta/distance;
-  if (da) {
-    d0.add_to_derivatives(uv*deriv, *da);
-    d1.add_to_derivatives(-uv*deriv, *da);
+  if (da && distance > MIN_DISTANCE) {
+    double deriv= k_*shifted_distance;
+    algebra::Vector3D uv= delta/distance;
+    m->add_to_coordinate_derivatives(p[0], uv*deriv, *da);
+    m->add_to_coordinate_derivatives(p[1], -uv*deriv, *da);
   }
-
   return score;
 }
 #endif
@@ -195,11 +190,8 @@ IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
 inline double SoftSpherePairScore
 ::evaluate_index(Model *m, const ParticleIndexPair& pp,
            DerivativeAccumulator *da) const {
-  algebra::VectorD<3> delta;
-  for (int i = 0; i < 3; ++i) {
-    delta[i] = m->get_sphere(pp[0]).get_center()[i]
-      - m->get_sphere(pp[1]).get_center()[i];
-  }
+  algebra::VectorD<3> delta=m->get_sphere(pp[0]).get_center()
+    - m->get_sphere(pp[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();
   double rs= m->get_sphere(pp[0]).get_radius()
@@ -209,9 +201,8 @@ inline double SoftSpherePairScore
   double shifted_distance = distance- rs;
   double deriv= k_*shifted_distance;
   double score= .5*deriv*shifted_distance;
-  if (!da || distance < MIN_DISTANCE) return score;
-  algebra::Vector3D uv= delta/distance;
-  if (da) {
+  if (da && distance > MIN_DISTANCE) {
+    algebra::Vector3D uv= delta/distance;
     m->add_to_coordinate_derivatives(pp[0], uv*deriv, *da);
     m->add_to_coordinate_derivatives(pp[1], -uv*deriv, *da);
   }

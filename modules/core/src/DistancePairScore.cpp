@@ -40,4 +40,15 @@ void HarmonicDistancePairScore::do_show(std::ostream &out) const {
   out << "x0=" << x0_ << " and k=" << k_ << std::endl;
 }
 
+ParticlesTemp HarmonicDistancePairScore
+::get_input_particles(Particle*p) const {
+  return ParticlesTemp(1, p);
+}
+
+ContainersTemp HarmonicDistancePairScore
+::get_input_containers(Particle*) const {
+  return ContainersTemp();
+}
+
+
 IMPCORE_END_NAMESPACE
