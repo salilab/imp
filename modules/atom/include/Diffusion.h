@@ -73,6 +73,11 @@ class IMPATOMEXPORT Diffusion:
       && p->has_attribute(get_d_key());
   }
 
+  //! Return true if the particle is an instance of an Diffusion
+  static bool particle_is_instance(Model *m, ParticleIndex p) {
+    return m->get_has_attribute(get_d_key(), p);
+  }
+
 #ifndef SWIG
 #ifndef IMP_DOXYGEN
   unit::SquareCentimeterPerSecond get_d() const {

@@ -76,6 +76,7 @@ public:
       appropriate particles.
   */
   ParticlesTemp get_simulation_particles() const;
+  ParticleIndexes get_simulation_particle_indexes() const;
   /** \name Explicitly specifying particles
 
       One can explicitly specify which particles should be used for
@@ -90,17 +91,17 @@ public:
 protected:
   /** A Simulator class can perform setup operations before a series
       of simulation steps is taken. */
-  virtual void setup(const ParticlesTemp &) {};
+  virtual void setup(const ParticleIndexes &) {};
 
   /** Perform a single time step and return the amount that time
       should be advanced. A maximum time step value is passed.
   */
-  virtual double do_step(const ParticlesTemp &sc, double dt)=0;
+  virtual double do_step(const ParticleIndexes &sc, double dt)=0;
 
   /** Return true if the passed particle is appropriate for
       the simulation.
   */
-  virtual bool get_is_simulation_particle(Particle*p) const=0;
+  virtual bool get_is_simulation_particle(ParticleIndex p) const=0;
  private:
   double temperature_;
   double max_time_step_;

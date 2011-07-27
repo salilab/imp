@@ -21,7 +21,7 @@ Simulator::Simulator(Model *m,
 double Simulator::simulate(double time) {
   IMP_FUNCTION_LOG;
   set_was_used(true);
-  ParticlesTemp ps= get_simulation_particles();
+  ParticleIndexes ps= get_simulation_particle_indexes();
 
   setup(ps);
   double target= current_time_+time;
@@ -33,21 +33,26 @@ double Simulator::simulate(double time) {
   return Optimizer::evaluate(false);
 }
 
-ParticlesTemp Simulator::get_simulation_particles() const {
+ParticleIndexes Simulator::get_simulation_particle_indexes() const {
   IMP_FUNCTION_LOG;
-  ParticlesTemp ps;
+  ParticleIndexes ps;
   if (get_number_of_particles()==0) {
     for (Model::ParticleIterator it = get_model()->particles_begin();
        it != get_model()->particles_end(); ++it) {
-      Particle *p = *it;
-      if (get_is_simulation_particle(p)) {
-        ps.push_back(p);
+      if (get_is_simulation_particle((*it)->get_index())) {
+        ps.push_back((*it)->get_index());
       }
     }
   } else {
-    ps= ParticlesTemp(particles_begin(), particles_end());
+    ps= IMP::internal::get_index(ParticlesTemp(particles_begin(),
+                                               particles_end()));
   }
   return ps;
+}
+
+ParticlesTemp Simulator::get_simulation_particles() const {
+  ParticleIndexes p= get_simulation_particle_indexes();
+  return IMP::internal::get_particle(get_model(), p);
 }
 
 double Simulator::do_optimize(unsigned int ns) {
