@@ -66,8 +66,13 @@ void BoxedMover::propose_move(Float f) {
    } else if(cell_type_=="rhombus"){
     if(newcoord[0]<-side_/2.0 || newcoord[0]>side_) {continue;}
     double thr1=std::min(sqrt3/2.0*side_,-sqrt3*(newcoord[0]-side_));
-    double thr2=std::max(0.0,-sqrt3*(newcoord[0]+side_));
+    double thr2=std::max(0.0,-sqrt3*newcoord[0]);
     if(newcoord[1]<thr1 && newcoord[1]>thr2) {outside=false;}
+// triangular cell
+   } else if(cell_type_=="triangle"){
+    if(newcoord[0]<0.0 || newcoord[0]>side_) {continue;}
+    double thr=std::min(sqrt3*newcoord[0],-sqrt3*(newcoord[0]-side_));
+    if(newcoord[1]<thr && newcoord[1]>0.0) {outside=false;}
 // square cell
    } else if(cell_type_=="square"){
     if(fabs(newcoord[0])<side_/2.0 && fabs(newcoord[1])<side_/2.0){

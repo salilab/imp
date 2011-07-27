@@ -107,7 +107,10 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.resolution=resolution;
 
 // cell dependent parameters
- if(cell_type=="rhombus"){
+ if(cell_type=="triangle"){
+  ret.num_cells=42;
+  ret.num_copies=1;
+ } else if(cell_type=="rhombus"){
   ret.num_cells=21;
   ret.num_copies=2;
  }else if(cell_type=="hexagon"){

@@ -34,7 +34,7 @@ SPBParameters mydata=get_SPBParameters("config.ini");
 
 
 std::cout << "Creating representation" << std::endl;
-//
+//44
 //h_CP: list of molecular hierarchies, containing
 //proteins in the primitive cell  h_CP[0]
 //proteins in the i-th      cell  h_CP[i]
@@ -117,13 +117,10 @@ add_symmetry_restraint(m,h_CP,mydata);
 //
 // Surface restraint
 //
-add_surface_restraint(m, h_CP[0], "Cmd1p", "C",
-                         mydata.CP_thickness/2.0, mydata.kappa);
-add_surface_restraint(m, h_CP[0], "Cmd1p", "N",
-                         mydata.CP_thickness/2.0, mydata.kappa);
-add_surface_restraint(m, h_CP[0], "Spc110p_c", "C",
-                         -mydata.CP_thickness/2.0, mydata.kappa);
-//
+//add_surface_restraint(m, h_CP[0], "Spc110p_c", "C",
+//                         mydata.CP_thickness/2.0, mydata.kappa);
+
+
 // FRET
 //
 // intra-CP
@@ -146,7 +143,7 @@ add_fret_restraint(m,h_CP, "Spc42p_n", "N",
 //
 // CP
 add_y2h_restraint(m,h_CP, "Cmd1p",      "ALL",
-                    h_CP, "Spc110p_c", IntRange(900,1020), mydata.kappa);
+                    h_CP, "Spc110p_c", IntRange(900,944), mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc42p_n",     "N",
                     h_CP, "Spc110p_c",    "C", mydata.kappa);
 add_y2h_restraint(m,h_CP, "Spc29p",       "ALL",
