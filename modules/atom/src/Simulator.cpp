@@ -7,6 +7,7 @@
 
 #include <IMP/atom/Simulator.h>
 #include <IMP/internal/constants.h>
+#include <IMP/internal/container_helpers.h>
 
 IMPATOM_BEGIN_NAMESPACE
 Simulator::Simulator(Model *m,
