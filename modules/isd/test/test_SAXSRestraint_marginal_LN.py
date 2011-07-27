@@ -3,18 +3,19 @@
 #standard imports
 import random
 from math import *
+from scipy.special import gammainc
 
 #IMP
 import IMP
 import IMP.core
 import IMP.saxs
 import IMP.atom
-from IMP.isd import Scale,SAXSRestraint_empirical_marginal_LN
+from IMP.isd import Scale,SAXSRestraint_marginal_LN
 
 #unit testing framework
 import IMP.test
 
-class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
+class SAXSRestraint_marginal_LN_Test(IMP.test.TestCase):
     """test the ISD SAXS empirical Normal restraint"""
 
     def setUp(self):
@@ -35,7 +36,7 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
         #ISD SAXS restraint
         self.particles = IMP.atom.get_by_type(self.prot, IMP.atom.ATOM_TYPE)
         particles=self.particles
-        self.sr = IMP.isd.SAXSRestraint_empirical_marginal_LN(particles, exp_profile)
+        self.sr = IMP.isd.SAXSRestraint_marginal_LN(particles, exp_profile)
         self.m.add_restraint(self.sr)
 
     def perturb_particles(self):
@@ -48,38 +49,40 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
         "compute likelihood of current model"
         model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
         model_profile.calculate_profile(self.particles)
-        wx = [(1.0/self.exp_profile.get_error(i))**2
+        wx = [(self.exp_profile.get_intensity(i)/self.exp_profile.get_error(i))**2
                 for i in xrange(self.exp_profile.size())]
         gammahat=1.0
         W=sum(wx)
         for i in xrange(self.exp_profile.size()):
                 gammahat *= (self.exp_profile.get_intensity(i)/
                         model_profile.get_intensity(i))**(wx[i]/W)
-        expected = 0.0
+        s2W = 0.0
         for i in xrange(self.exp_profile.size()):
             iexp=self.exp_profile.get_intensity(i)
             icalc=model_profile.get_intensity(i)
-            expected += wx[i]*log(iexp/(icalc*gammahat))**2
-        expected = expected**(-(self.exp_profile.size()-1)/2.0)
+            s2W += wx[i]*log(iexp/(icalc*gammahat))**2
+        expected = s2W**(-(self.exp_profile.size()-1)/2.0)* \
+            gammainc((self.exp_profile.size()-1)/2., s2W/2.)
         return expected
 
     def compute_ene(self):
         "compute log-likelihood of current model"
         model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
         model_profile.calculate_profile(self.particles)
-        wx = [(1.0/self.exp_profile.get_error(i))**2
+        wx = [(self.exp_profile.get_intensity(i)/self.exp_profile.get_error(i))**2
                 for i in xrange(self.exp_profile.size())]
         gammahat=1.0
         W=sum(wx)
         for i in xrange(self.exp_profile.size()):
                 gammahat *= (self.exp_profile.get_intensity(i)/
                         model_profile.get_intensity(i))**(wx[i]/W)
-        expected = 0.0
+        s2W = 0.0
         for i in xrange(self.exp_profile.size()):
             iexp=self.exp_profile.get_intensity(i)
             icalc=model_profile.get_intensity(i)
-            expected += wx[i]*log(iexp/(icalc*gammahat))**2
-        expected = log(expected)*((self.exp_profile.size()-1)/2.0)
+            s2W += wx[i]*log(iexp/(icalc*gammahat))**2
+        expected = log(s2W)*((self.exp_profile.size()-1)/2.0) - \
+                log(gammainc((self.exp_profile.size()-1)/2., s2W/2.))
         return expected
 
     def test_contribs(self):
@@ -93,7 +96,7 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
     def test_W(self):
         "compute W of current model"
         self.perturb_particles()
-        wx = [(1.0/self.exp_profile.get_error(i))**2
+        wx = [(self.exp_profile.get_intensity(i)/self.exp_profile.get_error(i))**2
                 for i in xrange(self.exp_profile.size())]
         gammahat=0.0
         W=sum(wx)
@@ -108,7 +111,8 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
             self.perturb_particles()
             model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
             model_profile.calculate_profile(self.particles)
-            wx = [(1.0/self.exp_profile.get_error(i))**2
+            wx = [(self.exp_profile.get_intensity(i)
+                        /self.exp_profile.get_error(i))**2
                     for i in xrange(self.exp_profile.size())]
             gammahat=0.0
             W=sum(wx)
@@ -126,7 +130,8 @@ class SAXSRestraint_empirical_marginal_LN_Test(IMP.test.TestCase):
             self.perturb_particles()
             model_profile = IMP.saxs.Profile(self.qmin, self.qmax, self.dq)
             model_profile.calculate_profile(self.particles)
-            wx = [(1.0/self.exp_profile.get_error(i))**2
+            wx = [(self.exp_profile.get_intensity(i)
+                /self.exp_profile.get_error(i))**2
                     for i in xrange(self.exp_profile.size())]
             gammahat=0.0
             W=sum(wx)
