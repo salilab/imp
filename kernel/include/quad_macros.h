@@ -238,6 +238,7 @@
     the current item should be in a variable named item at that time.
  */
 #define IMP_IMPLEMENT_QUAD_CONTAINER_OPERATIONS(Name, LOOP)       \
+  public:                                                               \
   template <class SM>                                                   \
   void template_apply(const SM *sm,                                     \
                       DerivativeAccumulator &da) {                      \
