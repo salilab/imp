@@ -54,9 +54,10 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
 
   IMP_RESTRAINT(Restraint);
 
- private:
+ protected:
   void compute_profile(Profile& model_profile);
- private:
+
+ protected:
   Particles particles_; // non-rigid bodies particles
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
