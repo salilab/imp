@@ -122,8 +122,7 @@ namespace {
       IMP_NEW(ConsecutivePairContainer, cpc,(cur, true));
       // since they all use the same key
       if (i==0) pfs.push_back(new Filter(cpc));
-      IMP_NEW(PairsRestraint, pr, (link, cpc));
-      ret.m->add_restraint(pr);
+      ret.m->add_restraint(container::create_restraint(link, cpc));
     }
     ret.lsc=new ListSingletonContainer(all);
     IMP_NEW(ClosePairContainer, cpc, (ret.lsc, 0, ret.sp->get_value(sk)));
@@ -192,7 +191,7 @@ namespace {
       in =argv[0];
     } else {
       IMP_CATCH_AND_TERMINATE(in
-                              =IMP::benchmark::get_data_path("brownian.imp"));
+                              =IMP::benchmark::get_data_path("brownian.rmf"));
     }
     It o= create_particles(in);
     It it= create_restraints<PR>(link, lb, bottom, o);
@@ -221,7 +220,7 @@ namespace {
       in =argv[0];
     } else {
       IMP_CATCH_AND_TERMINATE(in
-                              =IMP::benchmark::get_data_path("brownian.imp"));
+                              =IMP::benchmark::get_data_path("brownian.rmf"));
     }
     It o= create_particles(in);
     It it= create_restraints<PR>(link, lb, bottom, o);
@@ -277,7 +276,7 @@ int main(int argc , char **argv) {
   } else if (argc >=2 && std::string(argv[1])=="-t") {
     It cur;
     if (argc <=2) {
-      cur= create_particles(IMP::benchmark::get_data_path("brownian.imp"));
+      cur= create_particles(IMP::benchmark::get_data_path("brownian.rmf"));
     } else {
       cur= create_particles(argv[2]);
     }
