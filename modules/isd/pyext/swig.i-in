@@ -26,10 +26,8 @@ IMP_SWIG_OBJECT(IMP::isd, MaintainScaleOrderConstraint, MaintainScaleOrderConstr
 IMP_SWIG_OBJECT(IMP::isd, RepulsiveDistancePairScore, RepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, RegularRepulsiveDistancePairScore, RegularRepulsiveDistancePairScores);
 IMP_SWIG_OBJECT(IMP::isd, AmbiguousRestraint, AmbiguousRestraints);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1LN, SAXSRestraint_1LNs);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_1N, SAXSRestraint_1Ns);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_N, SAXSRestraint_empirical_Ns);
-IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_LN, SAXSRestraint_empirical_LNs);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_N, SAXSRestraint_Ns);
+IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_LN, SAXSRestraint_LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_N, SAXSRestraint_sliding_Ns);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_sliding_LN, SAXSRestraint_sliding_LNs);
 IMP_SWIG_OBJECT(IMP::isd, SAXSRestraint_empirical_marginal_N, SAXSRestraint_empirical_marginal_Ns);
@@ -76,10 +74,8 @@ def create_model_and_particles():
 %include "IMP/isd/RepulsiveDistancePairScore.h"
 %include "IMP/isd/RegularRepulsiveDistancePairScore.h"
 %include "IMP/isd/AmbiguousRestraint.h"
-%include "IMP/isd/SAXSRestraint_1LN.h"
-%include "IMP/isd/SAXSRestraint_1N.h"
-%include "IMP/isd/SAXSRestraint_empirical_N.h"
-%include "IMP/isd/SAXSRestraint_empirical_LN.h"
+%include "IMP/isd/SAXSRestraint_N.h"
+%include "IMP/isd/SAXSRestraint_LN.h"
 %include "IMP/isd/SAXSRestraint_sliding_N.h"
 %include "IMP/isd/SAXSRestraint_sliding_LN.h"
 %include "IMP/isd/SAXSRestraint_empirical_marginal_N.h"

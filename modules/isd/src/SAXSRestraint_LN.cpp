@@ -1,12 +1,12 @@
 /**
- *  \file SAXSRestraint_empirical_LN.h
+ *  \file SAXSRestraint_LN.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/isd/SAXSRestraint_empirical_LN.h>
+#include <IMP/isd/SAXSRestraint_LN.h>
 #include <IMP/isd/FNormal.h>
 
 #include <IMP/log.h>
@@ -16,9 +16,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SAXSRestraint_empirical_LN::SAXSRestraint_empirical_LN(const Particles& particles, const Scale& sigma,
+SAXSRestraint_LN::SAXSRestraint_LN(const Particles& particles, const Scale& alpha,
         const Scale& gamma, const saxs::Profile& exp_profile, saxs::FormFactorType ff_type) :
-  sigma_(sigma), gamma_(gamma),  exp_profile_(exp_profile), ff_type_(ff_type) {
+  alpha_(alpha), gamma_(gamma),  exp_profile_(exp_profile), ff_type_(ff_type) {
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
@@ -44,7 +44,7 @@ SAXSRestraint_empirical_LN::SAXSRestraint_empirical_LN(const Particles& particle
 }
 
 
-ParticlesTemp SAXSRestraint_empirical_LN::get_input_particles() const
+ParticlesTemp SAXSRestraint_LN::get_input_particles() const
 {
   ParticlesTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
@@ -58,20 +58,20 @@ ParticlesTemp SAXSRestraint_empirical_LN::get_input_particles() const
       pts.push_back(atom::Hierarchy(rigid_bodies_[i][j]).get_parent());
     }
   }
-  pts.push_back(sigma_);
+  pts.push_back(alpha_);
   pts.push_back(gamma_);
   return pts;
 }
 
 
-ContainersTemp SAXSRestraint_empirical_LN::get_input_containers() const
+ContainersTemp SAXSRestraint_LN::get_input_containers() const
 {
   return ContainersTemp();
 }
 
 
 
-void SAXSRestraint_empirical_LN::compute_profile(saxs::Profile& model_profile) {
+void SAXSRestraint_LN::compute_profile(saxs::Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
   saxs::Profile profile(model_profile.get_min_q(),
@@ -102,34 +102,60 @@ void SAXSRestraint_empirical_LN::compute_profile(saxs::Profile& model_profile) {
     \return score associated with this restraint for the given state of
             the model.
 */
-double SAXSRestraint_empirical_LN::unprotected_evaluate(DerivativeAccumulator *acc) const
+double SAXSRestraint_LN::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXSRestraint_empirical_LN::unprotected_evaluate\n");
+  IMP_LOG(TERSE, "SAXSRestraint_LN::unprotected_evaluate\n");
 
   /* compute Icalc */
   saxs::Profile model_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  const_cast<SAXSRestraint_empirical_LN*>(this)->compute_profile(model_profile);
+  const_cast<SAXSRestraint_LN*>(this)->compute_profile(model_profile);
 
-  // compute Scales
-  double gamma_val=gamma_.get_scale();
-  double sigma_val=sigma_.get_scale();
-
-  /* Loop over SAXS curve and get lognormal */
-  IMP_NEW(FNormal, lognormal, (0,0,0,0)); //(FA,JA,FM,sigma_val));
-  lognormal->set_was_used(true); // get rid of warning
-  double score=0;
+  //compute W
+  std::vector<double> wx;
+  double W=0;
   unsigned int profile_size = std::min(model_profile.size(), exp_profile_.size());
+  for (unsigned int iq=0; iq<profile_size; iq++) {
+      double err = exp_profile_.get_error(iq);
+      double iexp = exp_profile_.get_intensity(iq);
+      double val= square(iexp/err);
+      wx.push_back(val);
+      W += val;
+  }
+  //compute log(gammahat) and store logs
+  double log_gammahat=0;
+  std::vector<double> logs;
   for (unsigned int iq=0; iq<profile_size; iq++) {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      lognormal->set_FA(log(Iexp));
-      lognormal->set_FM(log(gamma_val*Icalc));
-      lognormal->set_JA(1.0/Iexp);
-      lognormal->set_sigma(sigma_val*exp_profile_.get_error(iq));
-      score += lognormal->evaluate();
-      }
+      double val = log(Iexp/Icalc);
+      logs.push_back(val);
+      log_gammahat += wx[iq]*val;
+  }
+  log_gammahat = log_gammahat/W;
+
+  //compute s^2
+  double s2=0;
+  for (unsigned int iq=0; iq<profile_size; iq++) {
+      s2 += wx[iq] * square(logs[iq]-log_gammahat);
+  }
+  s2 = s2/W;
+
+  // compute Scales
+  double gamma_val=gamma_.get_scale();
+  double alpha_val=alpha_.get_scale();
+
+  //compute energy
+  double score=0;
+  score += profile_size*log(alpha_val);
+  score += 0.5*profile_size*log(2*IMP::PI);
+  for (unsigned int iq=0; iq<profile_size; iq++) {
+      double err = exp_profile_.get_error(iq);
+      score += log(err);
+  }
+  score += W/(2*square(alpha_val))*(square(log(gamma_val)-log_gammahat)+s2);
+
   if (!acc) return score;
 
   IMP_LOG(TERSE, "SAXS Restraint::compute derivatives\n");
@@ -189,9 +215,9 @@ double SAXSRestraint_empirical_LN::unprotected_evaluate(DerivativeAccumulator *a
 */
 }
 
-void SAXSRestraint_empirical_LN::do_show(std::ostream&) const
+void SAXSRestraint_LN::do_show(std::ostream&) const
 {
-//   out << "SAXSRestraint_empirical_LN: for " << particles_.size() << " particles "
+//   out << "SAXSRestraint_LN: for " << particles_.size() << " particles "
 //       << rigid_bodies_.size() << " rigid_bodies with sigma="  << sigma_ 
 //       << " gamma=" << gamma_ << std::endl;
 }

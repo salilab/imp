@@ -1,12 +1,12 @@
 /**
- *  \file SAXSRestraint_empirical_N.h
+ *  \file SAXSRestraint_N.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/isd/SAXSRestraint_empirical_N.h>
+#include <IMP/isd/SAXSRestraint_N.h>
 #include <IMP/isd/FNormal.h>
 
 #include <IMP/log.h>
@@ -16,9 +16,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SAXSRestraint_empirical_N::SAXSRestraint_empirical_N(const Particles& particles, const Scale& sigma,
+SAXSRestraint_N::SAXSRestraint_N(const Particles& particles, const Scale& alpha,
         const Scale& gamma, const saxs::Profile& exp_profile, saxs::FormFactorType ff_type) :
-  sigma_(sigma), gamma_(gamma),  exp_profile_(exp_profile), ff_type_(ff_type) {
+  alpha_(alpha), gamma_(gamma),  exp_profile_(exp_profile), ff_type_(ff_type) {
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
@@ -44,7 +44,7 @@ SAXSRestraint_empirical_N::SAXSRestraint_empirical_N(const Particles& particles,
 }
 
 
-ParticlesTemp SAXSRestraint_empirical_N::get_input_particles() const
+ParticlesTemp SAXSRestraint_N::get_input_particles() const
 {
   ParticlesTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
@@ -58,20 +58,20 @@ ParticlesTemp SAXSRestraint_empirical_N::get_input_particles() const
       pts.push_back(atom::Hierarchy(rigid_bodies_[i][j]).get_parent());
     }
   }
-  pts.push_back(sigma_);
+  pts.push_back(alpha_);
   pts.push_back(gamma_);
   return pts;
 }
 
 
-ContainersTemp SAXSRestraint_empirical_N::get_input_containers() const
+ContainersTemp SAXSRestraint_N::get_input_containers() const
 {
   return ContainersTemp();
 }
 
 
 
-void SAXSRestraint_empirical_N::compute_profile(saxs::Profile& model_profile) {
+void SAXSRestraint_N::compute_profile(saxs::Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
   saxs::Profile profile(model_profile.get_min_q(),
@@ -102,22 +102,22 @@ void SAXSRestraint_empirical_N::compute_profile(saxs::Profile& model_profile) {
     \return score associated with this restraint for the given state of
             the model.
 */
-double SAXSRestraint_empirical_N::unprotected_evaluate(DerivativeAccumulator *acc) const
+double SAXSRestraint_N::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXSRestraint_empirical_N::unprotected_evaluate\n");
+  IMP_LOG(TERSE, "SAXSRestraint_N::unprotected_evaluate\n");
 
   /* compute Icalc */
   saxs::Profile model_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  const_cast<SAXSRestraint_empirical_N*>(this)->compute_profile(model_profile);
+  const_cast<SAXSRestraint_N*>(this)->compute_profile(model_profile);
 
   // compute Scales
   double gamma_val=gamma_.get_scale();
-  double sigma_val=sigma_.get_scale();
+  double alpha_val=alpha_.get_scale();
 
   /* Loop over SAXS curve and get normal */
-  IMP_NEW(FNormal, normal, (0,1.0,0,0)); //(FA,JA,FM,sigma_val));
+  IMP_NEW(FNormal, normal, (0,1.0,0,0)); //(FA,JA,FM,alpha_val));
   normal->set_was_used(true); // get rid of warning
   double score=0;
   unsigned int profile_size = std::min(model_profile.size(), exp_profile_.size());
@@ -126,7 +126,7 @@ double SAXSRestraint_empirical_N::unprotected_evaluate(DerivativeAccumulator *ac
       double Icalc = model_profile.get_intensity(iq);
       normal->set_FA(Iexp);
       normal->set_FM(gamma_val*Icalc);
-      normal->set_sigma(sigma_val*exp_profile_.get_error(iq));
+      normal->set_sigma(alpha_val*exp_profile_.get_error(iq));
       score += normal->evaluate();
       }
   if (!acc) return score;
@@ -188,9 +188,9 @@ double SAXSRestraint_empirical_N::unprotected_evaluate(DerivativeAccumulator *ac
 */
 }
 
-void SAXSRestraint_empirical_N::do_show(std::ostream&) const
+void SAXSRestraint_N::do_show(std::ostream&) const
 {
-//   out << "SAXSRestraint_empirical_N: for " << particles_.size() << " particles "
+//   out << "SAXSRestraint_N: for " << particles_.size() << " particles "
 //       << rigid_bodies_.size() << " rigid_bodies with sigma="  << sigma_ 
 //       << " gamma=" << gamma_ << std::endl;
 }
