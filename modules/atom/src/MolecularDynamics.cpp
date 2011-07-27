@@ -42,7 +42,8 @@ void MolecularDynamics::initialize() {
 }
 
 
-bool MolecularDynamics::get_is_simulation_particle(Particle *p) const {
+bool MolecularDynamics::get_is_simulation_particle(ParticleIndex pi) const {
+  Particle *p=get_model()->get_particle(pi);
   bool ret=IMP::core::XYZ::particle_is_instance(p)
     && IMP::core::XYZ(p).get_coordinates_are_optimized()
     && Mass::particle_is_instance(p);
@@ -57,7 +58,7 @@ bool MolecularDynamics::get_is_simulation_particle(Particle *p) const {
 }
 
 
-void MolecularDynamics::setup(const ParticlesTemp &ps)
+void MolecularDynamics::setup(const ParticleIndexes &ps)
 {
   // Get starting score and derivatives, for first dynamics step velocities
   evaluate(true);
@@ -66,7 +67,7 @@ void MolecularDynamics::setup(const ParticlesTemp &ps)
 }
 
 
-void MolecularDynamics::setup_degrees_of_freedom(const ParticlesTemp &ps)
+void MolecularDynamics::setup_degrees_of_freedom(const ParticleIndexes &ps)
 {
   degrees_of_freedom_ = 3*ps.size();
 
@@ -82,7 +83,7 @@ void MolecularDynamics::setup_degrees_of_freedom(const ParticlesTemp &ps)
 }
 
 //! Perform a single dynamics step.
-double MolecularDynamics::do_step(const ParticlesTemp &ps,
+double MolecularDynamics::do_step(const ParticleIndexes &ps,
                                   double ts)
 {
   // Get coordinates at t+(delta t) and velocities at t+(delta t/2)
@@ -97,25 +98,23 @@ double MolecularDynamics::do_step(const ParticlesTemp &ps,
   return ts;
 }
 
-void MolecularDynamics::propagate_coordinates(const ParticlesTemp &ps,
+void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
                                               double ts)
 {
-  for (ParticlesTemp::const_iterator iter = ps.begin();
-       iter != ps.end(); ++iter) {
-    Particle *p = *iter;
-    Float invmass = 1.0 / Mass(p).get_mass();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
     for (unsigned i = 0; i < 3; ++i) {
-      core::XYZ d(p);
+      core::XYZ d(get_model(), ps[i]);
 
       Float coord = d.get_coordinate(i);
       Float dcoord = d.get_derivative(i);
 
       // calculate velocity at t+(delta t/2) from that at t
-      Float velocity = p->get_value(vs_[i]);
+      Float velocity = get_model()->get_attribute(vs_[i], ps[i]);
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
 
       cap_velocity_component(velocity);
-      p->set_value(vs_[i], velocity);
+      get_model()->set_attribute(vs_[i], ps[i], velocity);
 
       // calculate position at t+(delta t) from that at t
       coord += velocity * ts;
@@ -124,22 +123,20 @@ void MolecularDynamics::propagate_coordinates(const ParticlesTemp &ps,
   }
 }
 
-void MolecularDynamics::propagate_velocities(const ParticlesTemp &ps,
+void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
                                              double ts)
 {
-  for (ParticlesTemp::const_iterator iter = ps.begin();
-       iter != ps.end(); ++iter) {
-    Particle *p = *iter;
-    Float invmass = 1.0 / Mass(p).get_mass();
+  for (unsigned int i=0; i< ps.size(); ++i) {
+    Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
     for (unsigned i = 0; i < 3; ++i) {
-      core::XYZ d(p);
+      core::XYZ d(get_model(), ps[i]);
       Float dcoord = d.get_derivative(i);
 
       // calculate velocity at t+(delta t) from that at t+(delta t/2)
-      Float velocity = p->get_value(vs_[i]);
+      Float velocity = get_model()->get_attribute(vs_[i], ps[i]);
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
 
-      p->set_value(vs_[i], velocity);
+      get_model()->set_attribute(vs_[i], ps[i], velocity);
     }
   }
 }
@@ -181,8 +178,9 @@ Float MolecularDynamics::get_kinetic_temperature(Float ekinetic) const
 
 void MolecularDynamics::assign_velocities(Float temperature)
 {
-  ParticlesTemp ps=get_simulation_particles();
-  setup_degrees_of_freedom(ps);
+  ParticleIndexes ips=get_simulation_particle_indexes();
+  setup_degrees_of_freedom(ips);
+  ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
 
   boost::normal_distribution<Float> mrng(0., 1.);
   boost::variate_generator<RandomNumberGenerator&,

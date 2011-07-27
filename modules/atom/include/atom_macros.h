@@ -52,11 +52,11 @@
 
 /** Add the methods needed for a Simulator
  */
-#define IMP_SIMULATOR(Name)                                     \
-  private:                                                      \
-  virtual void setup(const ParticlesTemp &ps);                  \
-  virtual double do_step(const ParticlesTemp &sc, double dt);   \
-  virtual bool get_is_simulation_particle(Particle*p) const;    \
+#define IMP_SIMULATOR(Name)                                       \
+  private:                                                        \
+  virtual void setup(const ParticleIndexes &ps);                  \
+  virtual double do_step(const ParticleIndexes &sc, double dt);   \
+  virtual bool get_is_simulation_particle(ParticleIndex p) const; \
 public:
 
 #endif  /* IMPATOM_MACROS_H */

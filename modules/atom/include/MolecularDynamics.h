@@ -61,13 +61,13 @@ public:
 private:
   void initialize();
 
-  void setup_degrees_of_freedom(const ParticlesTemp &ps);
+  void setup_degrees_of_freedom(const ParticleIndexes &ps);
 
   //! First part of velocity Verlet (update coordinates and half-step velocity)
-  void propagate_coordinates(const ParticlesTemp &ps, double step_size);
+  void propagate_coordinates(const ParticleIndexes &ps, double step_size);
 
   //! Second part of velocity Verlet (update velocity)
-  void propagate_velocities(const ParticlesTemp &ps, double step_size);
+  void propagate_velocities(const ParticleIndexes &ps, double step_size);
 
   //! Cap a velocity component to the maximum value.
   inline void cap_velocity_component(Float &vel) {

@@ -51,17 +51,17 @@ BrownianDynamics::BrownianDynamics(Model *m) :
  */
 
 
-bool BrownianDynamics::get_is_simulation_particle(Particle *p) const {
-  return (Diffusion::particle_is_instance(p)
-          && IMP::core::XYZ::particle_is_instance(p)
-          && IMP::core::XYZ(p).get_coordinates_are_optimized());
+bool BrownianDynamics::get_is_simulation_particle(ParticleIndex pi) const {
+  return (Diffusion::particle_is_instance(get_model(), pi)
+          && IMP::core::XYZ::particle_is_instance(get_model(), pi)
+          && IMP::core::XYZ(get_model(), pi).get_coordinates_are_optimized());
 }
 
 namespace {
-  unit::Angstrom get_force(Particle *p, unsigned int i,
+  unit::Angstrom get_force(Model *m, ParticleIndex p, unsigned int i,
                            unit::Divide<unit::Femtosecond,
                                         unit::Femtojoule>::type dtikt) {
-    Diffusion d(p);
+    Diffusion d(m, p);
     unit::KilocaloriePerAngstromPerMol
       cforce( -d.get_derivative(i));
     unit::Femtonewton nforce
@@ -76,13 +76,14 @@ namespace {
       }*/
     return force_term;
   }
-  unit::Angstrom get_sigma(Particle *p, unit::Femtosecond dtfs) {
-    return sqrt(2.0*Diffusion(p).get_d()*dtfs);
+  unit::Angstrom get_sigma(Model *m, ParticleIndex p, unit::Femtosecond dtfs) {
+    return sqrt(2.0*Diffusion(m, p).get_d()*dtfs);
   }
 }
 
-void BrownianDynamics::setup(const ParticlesTemp& ps) {
+void BrownianDynamics::setup(const ParticleIndexes& ips) {
   IMP_IF_LOG(TERSE) {
+    ParticlesTemp ps= IMP::internal::get_particle(get_model(), ips);
     unit::Femtosecond dtfs=unit::Femtosecond(get_maximum_time_step());
     unit::Divide<unit::Femtosecond,
                  unit::Femtojoule>::type dtikt
@@ -92,18 +93,19 @@ void BrownianDynamics::setup(const ParticlesTemp& ps) {
     double mf=0;
     evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      double c= strip_units(get_sigma(ps[i],
+      double c= strip_units(get_sigma(get_model(),
+                                      ips[i],
                                       dtfs));
       ms= std::max(ms, c);
       for (unsigned int j=0; j< 3; ++j) {
-        double f= strip_units(get_force(ps[i], j, dtikt));
+        double f= strip_units(get_force(get_model(), ips[i], j, dtikt));
         mf=std::max(mf, f);
       }
     }
     IMP_LOG(TERSE, "Maximum sigma is " << ms << std::endl);
     IMP_LOG(TERSE, "Maximum force is " << mf << std::endl);
   }
-  forces_.resize(ps.size());
+  forces_.resize(ips.size());
 }
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 
@@ -123,7 +125,7 @@ namespace {
 /**
     dx= D/2kT*(F(x0)+F(x0+D/kTF(x0)dt +R)dt +R
  */
-double BrownianDynamics::do_step(const ParticlesTemp &ps,
+double BrownianDynamics::do_step(const ParticleIndexes &ps,
                                  double dt) {
   unit::Femtosecond dtfs(dt);
   unit::Divide<unit::Femtosecond,
@@ -132,15 +134,18 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
     /IMP::unit::Femtojoule(IMP::internal::KB*unit::Kelvin(get_temperature()));
   evaluate(true);
   for (unsigned int i=0; i< ps.size(); ++i) {
-    Diffusion d(ps[i]);
-    core::XYZ xd(ps[i]);
-    double sigma= get_sigma(ps[i], dtfs).get_value();
+    Diffusion d(get_model(), ps[i]);
+    core::XYZ xd(get_model(), ps[i]);
+    double sigma= get_sigma(get_model(), ps[i], dtfs).get_value();
     algebra::Vector3D random(sigma*sampler_(),
                              sigma*sampler_(),
                              sigma*sampler_());
-    algebra::Vector3D force(get_force(ps[i], 0, dtikt).get_value(),
-                            get_force(ps[i], 1, dtikt).get_value(),
-                            get_force(ps[i], 2, dtikt).get_value());
+    algebra::Vector3D force(get_force(get_model(), ps[i], 0,
+                                      dtikt).get_value(),
+                            get_force(get_model(), ps[i], 1,
+                                      dtikt).get_value(),
+                            get_force(get_model(), ps[i], 2,
+                                      dtikt).get_value());
     if (srk_) {
       forces_[i]=force;
     }
@@ -153,12 +158,15 @@ double BrownianDynamics::do_step(const ParticlesTemp &ps,
   if (srk_) {
     evaluate(true);
     for (unsigned int i=0; i< ps.size(); ++i) {
-      Diffusion d(ps[i]);
-      core::XYZ xd(ps[i]);
-      unit::Angstrom sigma= get_sigma(ps[i], dtfs);
-      algebra::Vector3D force(get_force(ps[i], 0, dtikt).get_value(),
-                              get_force(ps[i], 1, dtikt).get_value(),
-                              get_force(ps[i], 2, dtikt).get_value());
+      Diffusion d(get_model(), ps[i]);
+      core::XYZ xd(get_model(), ps[i]);
+      unit::Angstrom sigma= get_sigma(get_model(), ps[i], dtfs);
+      algebra::Vector3D force(get_force(get_model(), ps[i],
+                                        0, dtikt).get_value(),
+                              get_force(get_model(), ps[i],
+                                        1, dtikt).get_value(),
+                              get_force(get_model(), ps[i],
+                                        2, dtikt).get_value());
       algebra::Vector3D delta=(force-forces_[i])/2.0;
       check_delta(delta, max_step_);
       xd.set_coordinates(xd.get_coordinates()+delta);
