@@ -6,8 +6,8 @@
  *
  */
 
-#ifndef IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_N_H
-#define IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_N_H
+#ifndef IMPISD_SAXS_RESTRAINT_MARGINAL_N_H
+#define IMPISD_SAXS_RESTRAINT_MARGINAL_N_H
 
 #include "isd_config.h"
 
@@ -24,16 +24,18 @@
 IMPISD_BEGIN_NAMESPACE
 
 //! Calculate score based on fit to SAXS profile. Marginal of the Normal model
-//  with respect to the standard deviation. Empirical Bayes.
+//  with respect to the standard deviation.
 /** \ingroup exp_restraint
 
-    The likelihood of this model is an improper Student t distribution. Assume M
-    data points.  
+    For M data points, the posterior of this model is
     \f[p(D | X, I) = 
-    \left(
-    \sum{q=q_{min}}^{q_{max}} w_X(q)
+    \left(s^2W_X\right)^{-\frac{M-1}{2}}
+    W_X^{-\frac{1}{2}}
+    P\left(\frac{M-1}{2}, \frac{s^2W_X}{2}\right)
+    \f]
+    \f[
+    s^2 W_X = \sum{q=q_{min}}^{q_{max}} w_X(q)
     \left[ \frac{I_{exp}(q)}{I_{calc}(q)} - \hat{\gamma} \right]^2
-    \right)^{-\frac{M-1}{2}}
     \f]
     \f[ \hat{\gamma} = \frac{1}{W_X}
     \sum{q=q_{min}}^{q_{max}} w_X(q) \frac{I_{exp}(q)}{I_{calc}(q)}
@@ -54,7 +56,7 @@ IMPISD_BEGIN_NAMESPACE
     The distances between the atoms of rigid body do not change, therefore
     their contribution to the profile is pre-computed and stored.
  */
-class IMPISDEXPORT SAXSRestraint_empirical_marginal_N : public ISDRestraint
+class IMPISDEXPORT SAXSRestraint_marginal_N : public ISDRestraint
 {
  public:
   //! Constructor
@@ -66,10 +68,10 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_N : public ISDRestraint
                 HEAVY_ATOMS - no hydrogens, all other atoms included
                 CA_ATOMS - residue level, residue represented by CA
   */
-  SAXSRestraint_empirical_marginal_N(const Particles& particles,
+  SAXSRestraint_marginal_N(const Particles& particles,
           const saxs::Profile& exp_profile, saxs::FormFactorType ff_type = saxs::HEAVY_ATOMS);
 
-  IMP_RESTRAINT(SAXSRestraint_empirical_marginal_N);
+  IMP_RESTRAINT(SAXSRestraint_marginal_N);
 
   double get_probability() const { return std::exp(-unprotected_evaluate(NULL));}
 
@@ -85,4 +87,4 @@ class IMPISDEXPORT SAXSRestraint_empirical_marginal_N : public ISDRestraint
 
 IMPISD_END_NAMESPACE
 
-#endif  /* IMPISD_SAXS_RESTRAINT_EMPIRICAL_MARGINAL_N_H */
+#endif  /* IMPISD_SAXS_RESTRAINT_MARGINAL_N_H */

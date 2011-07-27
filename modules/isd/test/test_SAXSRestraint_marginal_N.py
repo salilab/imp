@@ -3,18 +3,19 @@
 #standard imports
 import random
 from math import *
+from scipy.special import gammainc
 
 #IMP
 import IMP
 import IMP.core
 import IMP.saxs
 import IMP.atom
-from IMP.isd import Scale,SAXSRestraint_empirical_marginal_N
+from IMP.isd import Scale,SAXSRestraint_marginal_N
 
 #unit testing framework
 import IMP.test
 
-class SAXSRestraint_empirical_marginal_N_Test(IMP.test.TestCase):
+class SAXSRestraint_marginal_N_Test(IMP.test.TestCase):
     """test the ISD SAXS empirical Normal restraint"""
 
     def setUp(self):
@@ -35,7 +36,7 @@ class SAXSRestraint_empirical_marginal_N_Test(IMP.test.TestCase):
         #ISD SAXS restraint
         self.particles = IMP.atom.get_by_type(self.prot, IMP.atom.ATOM_TYPE)
         particles=self.particles
-        self.sr = IMP.isd.SAXSRestraint_empirical_marginal_N(particles, exp_profile)
+        self.sr = IMP.isd.SAXSRestraint_marginal_N(particles, exp_profile)
         self.m.add_restraint(self.sr)
 
     def perturb_particles(self):
@@ -54,12 +55,14 @@ class SAXSRestraint_empirical_marginal_N_Test(IMP.test.TestCase):
                         model_profile.get_intensity(i))
                         for i in xrange(self.exp_profile.size())]) \
                                 /sum(wx)
-        expected = 0.0
+        s2Wx=0
         for i in xrange(self.exp_profile.size()):
             iexp=self.exp_profile.get_intensity(i)
             icalc=model_profile.get_intensity(i)
-            expected += wx[i]*(iexp/icalc - gammahat)**2
-        expected = expected**(-(self.exp_profile.size()-1)/2.0)
+            s2Wx += wx[i]*(iexp/icalc - gammahat)**2
+        expected = s2Wx**(-(self.exp_profile.size()-1)/2.0) \
+                        *sum(wx)**(-1/2.) \
+                        *gammainc((self.exp_profile.size()-1)/2.,s2Wx/2.)
         return expected
 
     def compute_ene(self):
@@ -72,12 +75,14 @@ class SAXSRestraint_empirical_marginal_N_Test(IMP.test.TestCase):
                         model_profile.get_intensity(i))
                         for i in xrange(self.exp_profile.size())]) \
                                 /sum(wx)
-        expected = 0.0
+        s2Wx = 0
         for i in xrange(self.exp_profile.size()):
             iexp=self.exp_profile.get_intensity(i)
             icalc=model_profile.get_intensity(i)
-            expected += wx[i]*(iexp/icalc - gammahat)**2
-        expected = log(expected)*(self.exp_profile.size()-1)/2.0
+            s2Wx += wx[i]*(iexp/icalc - gammahat)**2
+        expected = log(s2Wx)*(self.exp_profile.size()-1)/2.0 \
+                + 0.5*log(sum(wx)) \
+                - log(gammainc((self.exp_profile.size()-1)/2.,s2Wx/2.))
         return expected
 
     def testSanityPE(self):
