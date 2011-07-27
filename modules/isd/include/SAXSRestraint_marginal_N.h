@@ -44,6 +44,8 @@ IMPISD_BEGIN_NAMESPACE
     \quad w_X(q) = \frac{I^2_{calc}(q)}{\sigma^2_{exp}(q)}
     \f]
 
+    where P is the regularized lower incomplete gamma function.
+
     The restraint takes rigid bodies into account, in order
     to speed up the calculations. Rigid body should be gived as single
     RigidBody Particle. Other, non-rigid body Particles can also be given.
