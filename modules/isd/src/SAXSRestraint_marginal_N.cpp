@@ -1,12 +1,14 @@
 /**
- *  \file SAXSRestraint_empirical_marginal_N.h
+ *  \file SAXSRestraint_marginal_N.h
  *  \brief Calculate score based on fit to SAXS profile.
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#include <IMP/isd/SAXSRestraint_empirical_marginal_N.h>
+#include <IMP/isd/SAXSRestraint_marginal_N.h>
+
+#include <boost/math/special_functions/gamma.hpp>
 
 #include <IMP/log.h>
 
@@ -15,9 +17,9 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-SAXSRestraint_empirical_marginal_N::SAXSRestraint_empirical_marginal_N(const Particles& particles,
-        const saxs::Profile& exp_profile, saxs::FormFactorType ff_type) :
-  exp_profile_(exp_profile), ff_type_(ff_type) {
+SAXSRestraint_marginal_N::SAXSRestraint_marginal_N(const Particles&
+        particles, const saxs::Profile& exp_profile, saxs::FormFactorType
+        ff_type) : exp_profile_(exp_profile), ff_type_(ff_type) {
 
   // for now just use a LeavesRefiner. It should, eventually, be a parameter
   // or a (not yet existing) AtomsRefiner.
@@ -43,7 +45,7 @@ SAXSRestraint_empirical_marginal_N::SAXSRestraint_empirical_marginal_N(const Par
 }
 
 
-ParticlesTemp SAXSRestraint_empirical_marginal_N::get_input_particles() const
+ParticlesTemp SAXSRestraint_marginal_N::get_input_particles() const
 {
   ParticlesTemp pts(particles_.begin(), particles_.end());
   unsigned int sz=pts.size();
@@ -61,14 +63,14 @@ ParticlesTemp SAXSRestraint_empirical_marginal_N::get_input_particles() const
 }
 
 
-ContainersTemp SAXSRestraint_empirical_marginal_N::get_input_containers() const
+ContainersTemp SAXSRestraint_marginal_N::get_input_containers() const
 {
   return ContainersTemp();
 }
 
 
 
-void SAXSRestraint_empirical_marginal_N::compute_profile(saxs::Profile& model_profile) {
+void SAXSRestraint_marginal_N::compute_profile(saxs::Profile& model_profile) {
   // add non-changing profile
   model_profile.add(rigid_bodies_profile_);
   saxs::Profile profile(model_profile.get_min_q(),
@@ -99,15 +101,15 @@ void SAXSRestraint_empirical_marginal_N::compute_profile(saxs::Profile& model_pr
     \return score associated with this restraint for the given state of
             the model.
 */
-double SAXSRestraint_empirical_marginal_N::unprotected_evaluate(DerivativeAccumulator *acc) const
+double SAXSRestraint_marginal_N::unprotected_evaluate(DerivativeAccumulator *acc) const
 {
-  IMP_LOG(TERSE, "SAXSRestraint_empirical_marginal_N::unprotected_evaluate\n");
+  IMP_LOG(TERSE, "SAXSRestraint_marginal_N::unprotected_evaluate\n");
 
   /* compute Icalc */
   saxs::Profile model_profile(exp_profile_.get_min_q(),
                             exp_profile_.get_max_q(),
                             exp_profile_.get_delta_q());
-  const_cast<SAXSRestraint_empirical_marginal_N*>(this)->compute_profile(model_profile);
+  const_cast<SAXSRestraint_marginal_N*>(this)->compute_profile(model_profile);
 
   unsigned int profile_size = std::min(model_profile.size(), exp_profile_.size());
   std::vector<double> wx;
@@ -126,14 +128,20 @@ double SAXSRestraint_empirical_marginal_N::unprotected_evaluate(DerivativeAccumu
   }
   gammahat = gammahat/Wx;
 
-  //compute posterior
-  double score=0;
+
+  //compute s^2 W_X
+  double s2Wx=0;
   for (unsigned int iq=0; iq<profile_size; iq++) {
       double Iexp = exp_profile_.get_intensity(iq);
       double Icalc = model_profile.get_intensity(iq);
-      score += wx[iq]*square(Iexp/Icalc - gammahat);
+      s2Wx += wx[iq]*square(Iexp/Icalc - gammahat);
       }
-  score = 0.5*(profile_size - 1 )*log(score);
+
+  // compute incomplete gamma truncation term
+  double P = boost::math::gamma_p((profile_size-1)/2.,s2Wx/2.);
+
+  //compute minus log-posterior
+  double score= (profile_size-1)/2. * log(s2Wx) + 0.5*log(Wx) - log(P);
 
   if (!acc) return score;
 
@@ -142,9 +150,9 @@ double SAXSRestraint_empirical_marginal_N::unprotected_evaluate(DerivativeAccumu
 
   }
 
-void SAXSRestraint_empirical_marginal_N::do_show(std::ostream& out) const
+void SAXSRestraint_marginal_N::do_show(std::ostream& out) const
 {
-   out << "SAXSRestraint_empirical_marginal_N: for " << particles_.size() << " particles " <<std::endl;
+   out << "SAXSRestraint_marginal_N: for " << particles_.size() << " particles " <<std::endl;
 }
 
 IMPISD_END_NAMESPACE
