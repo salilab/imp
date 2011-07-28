@@ -17,21 +17,21 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print "radius"
         rb0= IMP.core.RigidBody(p0.get_particle())
         rb0.set_coordinates_are_optimized(True)
-        sc= IMP.container.ListSingletonContainer(m)
         fps=[]
+        sc=[]
         for i in range(0,10):
             p= IMP.Particle(m)
             d= IMP.core.XYZR.setup_particle(p)
             d.set_radius(10)
-            sc.add_particle(p)
+            sc.append(p)
             fps.append(d)
             d.set_coordinates_are_optimized(True)
-        for p in sc.get_particles():
+        for p in sc:
             d= IMP.core.XYZ(p)
             d.set_coordinates(IMP.algebra.get_random_vector_in(IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),
                                                                IMP.algebra.Vector3D(5,5,5))))
-        sc.add_particles(IMP.core.get_leaves(p0))
-        r= IMP.core.ExcludedVolumeRestraint(sc)
+        sc.extend(IMP.core.get_leaves(p0))
+        r= IMP.core.ExcludedVolumeRestraint(IMP.container.ListSingletonContainer(sc))
         r.set_log_level(IMP.SILENT)
         m.add_restraint(r)
         return (m, r, sc)
@@ -47,8 +47,8 @@ class ExcludedVolumeRestraintTests(IMP.test.TestCase):
         print "opt"
         print o.optimize(10)
         print "inspect"
-        for p in sc.get_particles():
-            for q in sc.get_particles():
+        for p in sc:
+            for q in sc:
                 if p==q:
                     continue
                 if IMP.core.RigidMember.particle_is_instance(p) \

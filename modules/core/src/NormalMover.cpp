@@ -14,13 +14,22 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-NormalMover::NormalMover(SingletonContainer *sc,
+NormalMover::NormalMover(const ParticlesTemp &sc,
                          const FloatKeys &vars,
-                         Float max): MoverBase(sc)
+                         Float max):
+  MoverBase(sc, vars, "NormalMover%1%")
 {
-  add_float_keys(vars);
   set_sigma(max);
 }
+
+NormalMover::NormalMover(const ParticlesTemp &sc,
+                         Float max):
+  MoverBase(sc, XYZ::get_xyz_keys(), "NormalMover%1%")
+{
+  set_sigma(max);
+}
+
+
 IMP_GCC_DISABLE_WARNING("-Wuninitialized")
 void NormalMover::do_move(Float probability)
 {
@@ -31,10 +40,10 @@ void NormalMover::do_move(Float probability)
                           sampler(random_number_generator, mrng);
 
   for (unsigned int i = 0;
-       i < get_container()->get_number_of_particles(); ++i) {
+       i < get_number_of_particles(); ++i) {
     if (rand(random_number_generator) > probability) continue;
-    for (unsigned int j = 0; j < get_number_of_float_keys(); ++j) {
-      Float c = get_float(i, j);
+    for (unsigned int j = 0; j < get_number_of_keys(); ++j) {
+      Float c = get_value(i, j);
       Float r = sampler();
       // Check for NaN (x!=x when x==NaN) (can only use std::isnan with C99)
       IMP_INTERNAL_CHECK(!is_nan(r), "Bad random");
