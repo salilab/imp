@@ -103,22 +103,22 @@ void MolecularDynamics::propagate_coordinates(const ParticleIndexes &ps,
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
-    for (unsigned i = 0; i < 3; ++i) {
+    for (unsigned j = 0; j < 3; ++j) {
       core::XYZ d(get_model(), ps[i]);
 
-      Float coord = d.get_coordinate(i);
-      Float dcoord = d.get_derivative(i);
+      Float coord = d.get_coordinate(j);
+      Float dcoord = d.get_derivative(j);
 
       // calculate velocity at t+(delta t/2) from that at t
-      Float velocity = get_model()->get_attribute(vs_[i], ps[i]);
+      Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
 
       cap_velocity_component(velocity);
-      get_model()->set_attribute(vs_[i], ps[i], velocity);
+      get_model()->set_attribute(vs_[j], ps[i], velocity);
 
       // calculate position at t+(delta t) from that at t
       coord += velocity * ts;
-      d.set_coordinate(i, coord);
+      d.set_coordinate(j, coord);
     }
   }
 }
@@ -128,15 +128,15 @@ void MolecularDynamics::propagate_velocities(const ParticleIndexes &ps,
 {
   for (unsigned int i=0; i< ps.size(); ++i) {
     Float invmass = 1.0 / Mass(get_model(), ps[i]).get_mass();
-    for (unsigned i = 0; i < 3; ++i) {
+    for (unsigned j = 0; j < 3; ++j) {
       core::XYZ d(get_model(), ps[i]);
-      Float dcoord = d.get_derivative(i);
+      Float dcoord = d.get_derivative(j);
 
       // calculate velocity at t+(delta t) from that at t+(delta t/2)
-      Float velocity = get_model()->get_attribute(vs_[i], ps[i]);
+      Float velocity = get_model()->get_attribute(vs_[j], ps[i]);
       velocity += 0.5 * dcoord * deriv_to_acceleration * invmass * ts;
 
-      get_model()->set_attribute(vs_[i], ps[i], velocity);
+      get_model()->set_attribute(vs_[j], ps[i], velocity);
     }
   }
 }
