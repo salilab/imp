@@ -65,8 +65,7 @@ class MCOptimizerTest(IMP.test.TestCase):
             p = IMP.Particle(model)
             p.add_attribute(self.xkey, value, True)
         fk=IMP.FloatKeys([self.xkey])
-        ls= IMP.container.ListSingletonContainer(model.get_particles())
-        mod= IMP.core.BallMover(ls, fk, .25)
+        mod= IMP.core.BallMover(model.get_particles(), fk, .25)
         opt.add_mover(mod)
 
         rsr = WoodsFunc()

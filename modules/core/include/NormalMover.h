@@ -17,16 +17,19 @@ IMPCORE_BEGIN_NAMESPACE
 //! Modify a set of continuous variables using a normal distribution.
 /** \see MonteCarlo
  */
-class IMPCOREEXPORT NormalMover :public MoverBase
+class IMPCOREEXPORT NormalMover : public MoverBase
 {
 public:
   /**  \param[in] sc The set of particles to perturb.
        \param[in] vars The variables to use (normally the keys for x,y,z)
        \param[in] sigma The standard deviation to use.
    */
-  NormalMover(SingletonContainer *sc,
+  NormalMover(const ParticlesTemp &sc,
               const FloatKeys &vars,
               Float sigma);
+
+  NormalMover(const ParticlesTemp &sc,
+              Float radius);
   void set_sigma(Float sigma) {
     IMP_USAGE_CHECK(sigma > 0, "Sigma must be positive");
     stddev_=sigma;

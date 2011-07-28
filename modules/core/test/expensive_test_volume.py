@@ -22,11 +22,11 @@ class Volume(IMP.test.TestCase):
             p.set_is_optimized(FloatKey("x"), True)
             p.set_is_optimized(FloatKey("y"), True)
             p.set_is_optimized(FloatKey("z"), True)
-        sc= ListSingletonContainer(ps)
+        sc= IMP.container.ListSingletonContainer(ps)
         vr= VolumeRestraint(Harmonic(0,1), sc, 4**3*3.1415*4.0/3.0*len(ps))
         m.add_restraint(vr)
         mc= MonteCarloWithLocalOptimization(ConjugateGradients(m), 10)
-        mc.add_mover(BallMover(sc, 4))
+        mc.add_mover(BallMover(ps, 4))
         mc.set_score_threshold(.2)
         for i in range(5):
             try:

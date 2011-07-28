@@ -20,7 +20,7 @@ IMPCORE_BEGIN_NAMESPACE
     given radius.
     \see MonteCarlo
  */
-class IMPCOREEXPORT BallMover :public MoverBase
+class IMPCOREEXPORT BallMover: public MoverBase
 {
 public:
   /** The attributes are perturbed within a ball whose dimensionality is
@@ -29,14 +29,14 @@ public:
       \param[in] vars The variables to use (normally the keys for x,y,z)
       \param[in] radius The radius deviation to use.
    */
-  BallMover(SingletonContainer *sc, const FloatKeys &vars,
+  BallMover(const ParticlesTemp &sc, const FloatKeys &vars,
             Float radius);
 
   /** The x,y,z coordinates are perturbed within a ball.
       \param[in] sc The set of particles to perturb.
       \param[in] radius The radius deviation to use.
    */
-  BallMover(SingletonContainer *sc,
+  BallMover(const ParticlesTemp &sc,
             Float radius);
   void set_radius(Float radius) {
     IMP_USAGE_CHECK(radius > 0, "The radius must be positive");
