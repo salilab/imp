@@ -13,6 +13,7 @@
 
 #include <IMP/saxs/Score.h>
 #include <IMP/saxs/Profile.h>
+#include <IMP/saxs/DerivativeCalculator.h>
 
 #include <IMP/core/rigid_bodies.h>
 
@@ -62,7 +63,8 @@ class IMPSAXSEXPORT Restraint : public IMP::Restraint
   std::vector<core::RigidBody> rigid_bodies_decorators_; //rigid bodies
   std::vector<Particles> rigid_bodies_; // rigid bodies particles
   Profile rigid_bodies_profile_; // non-changing part of the profile
-  Pointer<Score> saxs_score_; // computes profiles and derivatives
+  Pointer<Score> saxs_score_; // computes profiles
+  Pointer<DerivativeCalculator> derivative_calculator_; // computes derivatives
   FormFactorType ff_type_; // type of the form factors to use
 };
 

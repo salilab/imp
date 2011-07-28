@@ -1,6 +1,7 @@
 Import('env')
 
 files = [
+         'DerivativeCalculator.h',
          'Distribution.h',
          'FormFactorTable.h',
          'Profile.h',

@@ -9,13 +9,14 @@
 #define IMPSAXS_SCORE_H
 
 #include "saxs_config.h"
-#include "Distribution.h"
 #include "Profile.h"
 
 #include <IMP/Model.h>
 
 #include <iostream>
 #include <vector>
+
+#define IMP_SAXS_DELTA_LIMIT  1.0e-15
 
 IMPSAXS_BEGIN_NAMESPACE
 
@@ -98,50 +99,10 @@ public:
                            const Float chi_square,
                            const Float c=1, const Float offset=0) const;
 
-
-  // helper function for derivatives
-  void compute_profile_difference(const Profile& model_profile,
-                                  const Float c, const Float offset,
-                                  Floats& profile_diff) const;
-
-  // helper function for derivatives
-  void compute_sinc_cos(Float pr_resolution, Float max_distance,
-                        const Profile& model_profile,
-                        std::vector<Floats>& output_values) const;
   IMP_REF_COUNTED_DESTRUCTOR(Score);
-  friend class Restraint;
-  //! compute derivatives for particles1 with respect to particles2
-  /**
-     This method is needed for rigid bodies when particles1 and particles2
-     are particles of two rigid bodies. In this case the particles of the
-     same rigid body are ignored.
-     \param[in] model_profile The current profile of particles
-     \param[in] particles1 Derivative will be computed for each particle
-     \param[in] particles2 Derivative will be computed relative to this set
-     \param[in] derivatives Output vector
-     \param[in] use_offset if true, non zero offset for fitting is used
-     \return chi square score for current particle setup
-  */
-  void compute_chi_derivative(const Profile& model_profile,
-                              const Particles& particles1,
-                              const Particles& particles2,
-                              std::vector<algebra::VectorD<3> >& derivatives,
-                              bool use_offset = false) const;
-  void compute_chi_derivative(const Profile& model_profile,
-                              const Particles& particles,
-                              std::vector<algebra::VectorD<3> >& derivatives,
-                              bool use_offset = false) const {
-    return compute_chi_derivative(model_profile, particles, particles,
-                                  derivatives, use_offset);
-  }
-  // compute derivatives for each particle
-  void compute_chi_real_derivative(const Profile& model_profile,
-                                   const Particles& particles1,
-                                   const Particles& particles2,
-                              std::vector<algebra::VectorD<3> >& derivatives,
-                                   bool use_offset) const;
+  friend class DerivativeCalculator;
 
-
+ private:
   const Profile exp_profile_;   //  experimental saxs profile
 };
 
