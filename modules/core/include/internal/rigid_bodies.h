@@ -109,6 +109,8 @@ get_has_required_attributes_for_body_member(Particle *p) {
 inline void add_required_attributes_for_body(Particle *p) {
   for (unsigned int i=0; i< 4; ++i) {
     p->add_attribute(rigid_body_data().quaternion_[i], 0);
+    p->get_model()->set_range(rigid_body_data().quaternion_[i],
+                              FloatRange(0,1));
   }
   for (unsigned int i=0; i< 3; ++i) {
     p->add_attribute(rigid_body_data().torque_[i], 0);
