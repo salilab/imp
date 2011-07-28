@@ -28,7 +28,6 @@ files = [
          'LangevinThermostatOptimizerState.cpp',
          'LennardJones.cpp',
          'LennardJonesPairScore.cpp',
-         'MDMover.cpp',
          'Mass.cpp',
          'MolecularDynamics.cpp',
          'Molecule.cpp',

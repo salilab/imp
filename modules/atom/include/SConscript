@@ -28,7 +28,6 @@ files = [
          'LangevinThermostatOptimizerState.h',
          'LennardJones.h',
          'LennardJonesPairScore.h',
-         'MDMover.h',
          'Mass.h',
          'MolecularDynamics.h',
          'Molecule.h',
