@@ -106,23 +106,75 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.use_structure=use_structure;
  ret.resolution=resolution;
 
+ algebra::Vector3D CP_center;
+ algebra::Vector3D IL2_center;
+ double dz=CP_IL2_gap+IL2_thickness/2.0+CP_thickness/2.0;
 // cell dependent parameters
  if(cell_type=="triangle"){
   ret.num_cells=42;
   ret.num_copies=1;
+  CP_center=algebra::Vector3D(side/2.0,side/2.0/sqrt(3.0),0.0);
+  IL2_center=algebra::Vector3D(side/2.0,side/2.0/sqrt(3.0),dz);
  } else if(cell_type=="rhombus"){
   ret.num_cells=21;
   ret.num_copies=2;
+  CP_center=algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),0.0);
+  IL2_center=algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),dz);
  }else if(cell_type=="hexagon"){
   ret.num_cells=7;
   ret.num_copies=6;
+  CP_center=algebra::Vector3D(0.0,0.0,0.0);
+  IL2_center=algebra::Vector3D(0.0,0.0,dz);
  }else if(cell_type=="square"){
   ret.num_cells=9;
   ret.num_copies=6;
-  ret.side=sqrt(1.5*pow(side,2)*sqrt(3.0));
+  side=sqrt(1.5*pow(side,2)*sqrt(3.0));
+  ret.side=side;
+  CP_center=algebra::Vector3D(0.0,0.0,0.0);
+  IL2_center=algebra::Vector3D(0.0,0.0,dz);
  }else{
   IMP_FAILURE("Unknown cell type!");
  }
+
+// storing cell centers and transformations
+ algebra::Vector3Ds translations;
+ int num_rotations;
+ double angle;
+
+ if(cell_type!="square"){
+  translations.push_back(algebra::Vector3D(0.0,0.0,0.0));
+  translations.push_back(algebra::Vector3D(0.0,side*sqrt(3.0),0.0));
+  translations.push_back(algebra::Vector3D(1.5*side,side*sqrt(3.0)/2.0,0.0));
+  translations.push_back(algebra::Vector3D(1.5*side,-side*sqrt(3.0)/2.0,0.0));
+  translations.push_back(algebra::Vector3D(0.0,-side*sqrt(3.0),0.0));
+  translations.push_back(algebra::Vector3D(-1.5*side,-side*sqrt(3.0)/2.0,0.0));
+  translations.push_back(algebra::Vector3D(-1.5*side,side*sqrt(3.0)/2.0,0.0));
+  num_rotations=ret.num_cells/7;
+  angle=2.0*IMP::PI/(double)num_rotations;
+ }else{
+  translations.push_back(algebra::Vector3D(0.0,0.0,0.0));
+  translations.push_back(algebra::Vector3D(0.0,side,0.0));
+  translations.push_back(algebra::Vector3D(0.0,-side,0.0));
+  translations.push_back(algebra::Vector3D(side,0.0,0.0));
+  translations.push_back(algebra::Vector3D(side,side,0.0));
+  translations.push_back(algebra::Vector3D(side,-side,0.0));
+  translations.push_back(algebra::Vector3D(-side,0.0,0.0));
+  translations.push_back(algebra::Vector3D(-side,side,0.0));
+  translations.push_back(algebra::Vector3D(-side,-side,0.0));
+  num_rotations=1;
+  angle=0.0;
+ }
+ for(int i=0;i<translations.size();++i){
+  for(int j=0;j<num_rotations;++j){
+   algebra::Rotation3D rot=algebra::get_rotation_about_axis
+   (algebra::Vector3D(0.0,0.0,1.0), (double) j * angle);
+   algebra::Transformation3D tr=algebra::Transformation3D(rot,translations[i]);
+   ret.trs.push_back(tr);
+   ret.CP_centers.push_back(tr.get_transformed(CP_center));
+   ret.IL2_centers.push_back(tr.get_transformed(IL2_center));
+  }
+ }
+
 
  return ret;
 #else

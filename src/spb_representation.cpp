@@ -32,7 +32,8 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
 }
 
 atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
- display::Color colore,int copy,double kappa,int start_residue,int length)
+ display::Color colore,int copy,double kappa,
+ algebra::Vector3D x0, int start_residue,int length)
 {
  if(length==-1) {length=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
@@ -52,7 +53,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
   dom->set_name(name+out1.str()+"-"+out2.str());
   core::XYZR  d=core::XYZR::setup_particle(pp);
   d.set_radius(rg);
-  d.set_coordinates(algebra::Vector3D(0.1,0.1,0.1));
+  d.set_coordinates(x0);
   d.set_coordinates_are_optimized(true);
   atom::Mass mm=atom::Mass::setup_particle(pp,ms);
   display::Colored cc=display::Colored::setup_particle(pp,colore);
@@ -78,7 +79,7 @@ atom::Molecule protein_b,int copy,double kappa,double dist)
  IMP_NEW(Particle,p,(m));
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
- if (copy==0 and dist >=0.0){
+ if (copy==0 and dist>=0.0){
    add_internal_restraint(m,name,protein_a,protein_b,kappa,dist);
  }
  ParticlesTemp psa=protein_a.get_leaves();

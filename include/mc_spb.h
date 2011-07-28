@@ -25,6 +25,9 @@ struct SPBParameters {
  std::string    cell_type;
  int            num_cells;
  int            num_copies;
+ algebra::Vector3Ds CP_centers;
+ algebra::Vector3Ds IL2_centers;
+ algebra::Transformation3Ds trs;
  bool           use_structure;
 };
 

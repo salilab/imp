@@ -34,29 +34,24 @@ core::MonteCarlo* setup_SPBMonteCarlo
  mc->set_return_best(false);
 
 // create movers
-// first hierarchy is CP
- Particles ps0=hs[0].get_leaves();
- for(unsigned int j=0;j<ps0.size();++j){
-   IMP_NEW(membrane::BoxedMover,mv, (ps0[j],mc_dx_,myparam.side,
-                                     myparam.CP_thickness,
-                                     algebra::Vector3D(0.0,0.0,0.0),
-                                     myparam.cell_type));
-   mc->add_mover(mv);
+// first hierarchy hs[0] is CP
+ atom::HierarchiesTemp hhs=hs[0].get_children();
+ for(unsigned int j=0;j<hhs.size();++j){
+  Particles ps0=hhs[j].get_leaves();
+// particle 0 is special
+  IMP_NEW(membrane::PbcBoxedMover,mv,
+         (ps0[0],mc_dx_,myparam.CP_centers,myparam.trs));
+  mc->add_mover(mv);
+// for the others normal Ball Mover
+  IMP_NEW(container::ListSingletonContainer,lsc,(m));
+  for(unsigned int k=1;k<ps0.size();++k) {lsc->add_particle(ps0[k]);}
+  IMP_NEW(core::BallMover,bmv,(lsc,mc_dx_));
+  mc->add_mover(bmv);
  }
 
 // second hierarchy is IL2
-/*
- Particles ps1=hs[1].get_leaves();
- double dz=
-  myparam.CP_IL2_gap+myparam.CP_thickness/2.0+myparam.IL2_thickness/2.0;
- for(unsigned int j=0;j<ps1.size();++j){
-   IMP_NEW(membrane::BoxedMover,mv, (ps1[j],mc_dx_,myparam.side,
-                                     myparam.IL2_thickness,
-                                     algebra::Vector3D(0.0,0.0,dz),
-                                     myparam.cell_type));
-   mc->add_mover(mv);
- }
-*/
+// TO DO
+
  return mc.release();
 }
 

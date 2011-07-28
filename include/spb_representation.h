@@ -20,7 +20,8 @@ IMPMEMBRANEEXPORT atom::Hierarchies
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
-int copy,double kappa,int start_residue=-1,int length=-1);
+int copy,double kappa,algebra::Vector3D x0,
+int start_residue=-1,int length=-1);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecule protein_a,

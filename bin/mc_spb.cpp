@@ -50,27 +50,28 @@ atom::Hierarchies h_CP=create_hierarchies(m,mydata.num_cells,"Central Plaque");
 //
 
 for(int i=0;i<mydata.num_cells;++i){
+ algebra::Vector3D x0=mydata.CP_centers[i];
  for(int j=0;j<mydata.num_copies;++j){
   //Spc42p_n, 2 copies, 1 bead
   atom::Molecule Spc42p_n_0=
    create_protein(m,"Spc42p_n",7,1,
                     display::Color(175./255.,238./255.,238./255.),
-                    i,mydata.kappa);
+                    i,mydata.kappa,x0);
   atom::Molecule Spc42p_n_1=
    create_protein(m,"Spc42p_n",7,1,
                     display::Color(175./255.,238./255.,238./255.),
-                    i,mydata.kappa);
+                    i,mydata.kappa,x0);
   h_CP[i].add_child(Spc42p_n_0);
   h_CP[i].add_child(Spc42p_n_1);
   //Spc29p, 2 beads
   atom::Molecule Spc29p_n=
    create_protein(m,"Spc29p_n",14.5,1,
                     display::Color(255./255.,165./255.,0.),
-                    i,mydata.kappa);
+                    i,mydata.kappa,x0);
   atom::Molecule Spc29p_c=
    create_protein(m,"Spc29p_c",14.5,1,
                     display::Color(255./255.,140./255.,0.),
-                    i,mydata.kappa,132);
+                    i,mydata.kappa,x0,132);
   atom::Molecule Spc29p=
    create_merged_protein(m,"Spc29p",Spc29p_n,Spc29p_c,i,mydata.kappa,0.0);
   h_CP[i].add_child(Spc29p);
@@ -78,17 +79,17 @@ for(int i=0;i<mydata.num_cells;++i){
   atom::Molecule Spc110p_c=
    create_protein(m,"Spc110p_c",26,1,
                     display::Color(255./255.,0.,0.),
-                    i,mydata.kappa,627+164);
+                    i,mydata.kappa,x0,627+164);
   h_CP[i].add_child(Spc110p_c);
   //Cmd1p, 1 bead
   atom::Molecule Cmd1p_n=
    create_protein(m,"Cmd1p_n",8,1,
                     display::Color(255./255.,255./255.,0.),
-                    i,mydata.kappa);
+                    i,mydata.kappa,x0);
   atom::Molecule Cmd1p_c=
    create_protein(m,"Cmd1p_c",8,1,
                     display::Color(255./255.,215./255.,0.),
-                    i,mydata.kappa, 80);
+                    i,mydata.kappa,x0,80);
   atom::Molecule Cmd1p=
    create_merged_protein(m,"Cmd1p",Cmd1p_n,Cmd1p_c,i,mydata.kappa,0.0);
   h_CP[i].add_child(Cmd1p);
@@ -113,12 +114,13 @@ add_SPBexcluded_volume(m,h_CP,mydata.kappa);
 //
 // Symmetry
 //
-add_symmetry_restraint(m,h_CP,mydata);
+add_symmetry_restraint(m,h_CP,mydata.trs);
 //
-// Surface restraint
+// Layer restraint
 //
-//add_surface_restraint(m, h_CP[0], "Spc110p_c", "C",
-//                         mydata.CP_thickness/2.0, mydata.kappa);
+add_layer_restraint(m, h_CP[0],
+ FloatRange(-mydata.CP_thickness/2.0,mydata.CP_thickness/2.0),
+ mydata.kappa);
 
 
 // FRET

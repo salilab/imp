@@ -9,6 +9,7 @@
 #include <IMP/core.h>
 #include <IMP/algebra.h>
 #include <IMP/algebra/Vector3D.h>
+#include <IMP/atom.h>
 #include <iostream>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
@@ -40,7 +41,7 @@ void PbcBoxedMover::propose_move(Float f) {
      = algebra::get_random_vector_in(algebra::Sphere3D
                 (algebra::Vector3D(0.0,0.0,0.0),max_tr_));
 
-   algebra::Vector3D newcoord=XYZ(p_).get_coordinates()+tr_x;
+   algebra::Vector3D newcoord=core::XYZ(p_).get_coordinates()+tr_x;
 
 // find cell
    double mindist=10000.0;
@@ -64,7 +65,6 @@ void PbcBoxedMover::propose_move(Float f) {
 
 }
 
-
 void PbcBoxedMover::reset_move() {
  for(unsigned int i=0;i<ps_.size();++i){
     algebra::Vector3D oldcoord=oldtrans_.get_transformed(
@@ -72,7 +72,6 @@ void PbcBoxedMover::reset_move() {
     core::XYZ(ps_[i]).set_coordinates(oldcoord);
    }
 }
-
 
 void PbcBoxedMover::do_show(std::ostream &out) const {
   out << "max translation: " << max_tr_ << "\n";

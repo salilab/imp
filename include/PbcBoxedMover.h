@@ -41,7 +41,7 @@ private:
   algebra::Transformation3D oldtrans_;
   algebra::Vector3D oldtr_x_;
   Particle *p_;
-  Particles *ps_;
+  Particles ps_;
 };
 
 IMPMEMBRANE_END_NAMESPACE

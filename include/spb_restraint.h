@@ -43,8 +43,8 @@ IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
 IMPMEMBRANEEXPORT void do_allpairs_mindist(Model *m,Particles ps,
  core::SphereDistancePairScore* dps,bool filter=false);
 
-IMPMEMBRANEEXPORT void add_surface_restraint(Model *m, atom::Hierarchy h,
- std::string name,std::string residues, double zeta, double kappa);
+IMPMEMBRANEEXPORT void add_layer_restraint(Model *m, atom::Hierarchy h,
+ FloatRange range, double kappa);
 
 IMPMEMBRANEEXPORT void add_fret_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
@@ -72,7 +72,7 @@ IMPMEMBRANEEXPORT void add_y2h_restraint
  double kappa);
 
 IMPMEMBRANEEXPORT void add_symmetry_restraint
- (Model *m,atom::Hierarchies hs,SPBParameters myparam);
+ (Model *m,atom::Hierarchies hs,algebra::Transformation3Ds transformations);
 
 IMPMEMBRANE_END_NAMESPACE
 

@@ -134,21 +134,6 @@ void do_allpairs_mindist(Model *m,Particles ps,
  m->add_restraint(mpr);
 }
 
-void add_surface_restraint(Model *m, atom::Hierarchy h,
- std::string name,std::string residues, double zeta, double kappa)
-{
- atom::Selection s=atom::Selection(h);
- s.set_molecule(name);
- if(residues=="C") {s.set_terminus(atom::Selection::C);}
- if(residues=="N") {s.set_terminus(atom::Selection::N);}
- Particles ps=s.get_selected_particles();
- IMP_NEW(core::Harmonic,ha,(zeta,kappa));
- IMP_NEW(core::AttributeSingletonScore,asc,(ha,FloatKey("z")));
- IMP_NEW(container::ListSingletonContainer,lsc,(ps));
- IMP_NEW(container::SingletonsRestraint,sr,(asc, lsc));
- m->add_restraint(sr);
-}
-
 void add_fret_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
  atom::Hierarchies hb, std::string protein_b, std::string residues_b,
@@ -257,51 +242,11 @@ void add_y2h_restraint
  add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
 }
 
-void add_symmetry_restraint
- (Model *m,atom::Hierarchies hs,SPBParameters myparam)
+void add_symmetry_restraint (Model *m,
+ atom::Hierarchies hs,algebra::Transformation3Ds transformations)
 {
- algebra::Vector3Ds translations=algebra::Vector3Ds();
- algebra::Transformation3Ds transformations=
- algebra::Transformation3Ds();
- int num_rotations;
- double angle;
-// save parameters in local variables
- double side=myparam.side;
- std::string cell_type=myparam.cell_type;
- int num_cells=myparam.num_cells;
-
- if(cell_type!="square"){
-  translations.push_back(algebra::Vector3D(0.0,0.0,0.0));
-  translations.push_back(algebra::Vector3D(0.0,side*sqrt(3.0),0.0));
-  translations.push_back(algebra::Vector3D(1.5*side,side*sqrt(3.0)/2.0,0.0));
-  translations.push_back(algebra::Vector3D(1.5*side,-side*sqrt(3.0)/2.0,0.0));
-  translations.push_back(algebra::Vector3D(0.0,-side*sqrt(3.0),0.0));
-  translations.push_back(algebra::Vector3D(-1.5*side,-side*sqrt(3.0)/2.0,0.0));
-  translations.push_back(algebra::Vector3D(-1.5*side,side*sqrt(3.0)/2.0,0.0));
-  num_rotations=num_cells/7;
-  angle=2.0*IMP::PI/(double)num_rotations;
- }else{
-  translations.push_back(algebra::Vector3D(0.0,0.0,0.0));
-  translations.push_back(algebra::Vector3D(0.0,side,0.0));
-  translations.push_back(algebra::Vector3D(0.0,-side,0.0));
-  translations.push_back(algebra::Vector3D(side,0.0,0.0));
-  translations.push_back(algebra::Vector3D(side,side,0.0));
-  translations.push_back(algebra::Vector3D(side,-side,0.0));
-  translations.push_back(algebra::Vector3D(-side,0.0,0.0));
-  translations.push_back(algebra::Vector3D(-side,side,0.0));
-  translations.push_back(algebra::Vector3D(-side,-side,0.0));
-  num_rotations=1;
-  angle=0.0;
- }
- for(int i=0;i<translations.size();++i){
-  for(int j=0;j<num_rotations;++j){
-   algebra::Rotation3D rot=algebra::get_rotation_about_axis
-   (algebra::Vector3D(0.0,0.0,1.0), (double) j * angle);
-   transformations.push_back(algebra::Transformation3D(rot,translations[i]));
-  }
- }
  Particles ps0=hs[0].get_leaves();
- for(int i=1;i<num_cells;++i){
+ for(int i=1;i<transformations.size();++i){
   IMP_NEW(core::TransformationSymmetry,sm,(transformations[i]));
   Particles ps1=hs[i].get_leaves();
   for(int j=0;j<ps1.size();++j){
@@ -311,6 +256,17 @@ void add_symmetry_restraint
   IMP_NEW(container::SingletonsConstraint,c,(sm,NULL,lc));
   m->add_score_state(c);
  }
+}
+
+void add_layer_restraint(Model *m, atom::Hierarchy h,
+ FloatRange range, double kappa)
+{
+ Particles ps=h.get_leaves();
+ IMP_NEW(core::HarmonicWell,hw,(range,kappa));
+ IMP_NEW(core::AttributeSingletonScore,asc,(hw,FloatKey("z")));
+ IMP_NEW(container::ListSingletonContainer,lsc,(ps));
+ IMP_NEW(container::SingletonsRestraint,sr,(asc, lsc));
+ m->add_restraint(sr);
 }
 
 IMPMEMBRANE_END_NAMESPACE
