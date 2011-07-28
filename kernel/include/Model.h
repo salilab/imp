@@ -351,6 +351,8 @@ public:
   }
   void set_attribute(FloatKey k, ParticleIndex particle,
                      double v) {
+    IMP_USAGE_CHECK(internal::FloatAttributeTableTraits::get_is_valid(v),
+                    "Can't set attribute to invalid value");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't set attribute that is not there");
     if (k.get_index() <4) {
