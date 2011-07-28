@@ -51,8 +51,6 @@ ConfigurationSetXYZEmbedding
                                bool align):
   Embedding("ConfiguringEmbedding"),
   cs_(cs), sc_(sc), align_(align){
-  IMP_USAGE_CHECK(sc->get_number_of_particles()>0,
-                  "No particles in container");
 }
 
 algebra::VectorKD
@@ -61,26 +59,26 @@ ConfigurationSetXYZEmbedding::get_point(unsigned int a) const {
   if (align_) {
     cs_->load_configuration(0);
     algebra::Vector3Ds vs0;
-    for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-      vs0.push_back(get_coordinates(sc_->get_particle(i)));
-    }
+    IMP_FOREACH_SINGLETON(sc_, {
+        vs0.push_back(get_coordinates(_1));
+      });
     cs_->load_configuration(a);
     algebra::Vector3Ds vsc;
-    for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
-      vsc.push_back(get_coordinates(sc_->get_particle(i)));
-    }
+    IMP_FOREACH_SINGLETON(sc_, {
+        vsc.push_back(get_coordinates(_1));
+      });
     tr= get_transformation_aligning_first_to_second(vsc, vs0);
   } else {
     cs_->load_configuration(a);
   }
-  Floats ret(sc_->get_number_of_particles()*3);
-  for (unsigned int i=0; i< sc_->get_number_of_particles(); ++i) {
+  Floats ret;
+  IMP_FOREACH_SINGLETON(sc_, {
     algebra::Vector3D v
-      = tr.get_transformed(get_coordinates(sc_->get_particle(i)));
-    ret[3*i]= v[0];
-    ret[3*i+1]= v[1];
-    ret[3*i+2]= v[2];
-  }
+      = tr.get_transformed(get_coordinates(_1));
+    ret.push_back(v[0]);
+    ret.push_back(v[1]);
+    ret.push_back(v[2]);
+    });
   return algebra::VectorKD(ret.begin(), ret.end());
 }
 

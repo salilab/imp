@@ -3,7 +3,8 @@ import IMP.display
 import IMP.core
 
 m= IMP.Model()
-c= IMP.container.ListSingletonContainer(IMP.core.create_xyzr_particles(m, 20, 5))
+ps=IMP.core.create_xyzr_particles(m, 20, 5)
+c= IMP.container.ListSingletonContainer(ps)
 
 # write it to a series of files, if the file name did not contain %1%, then
 # it would concatenate the outputs into a single file instead. Concatenating the
@@ -20,7 +21,7 @@ r= IMP.core.ExcludedVolumeRestraint(c)
 m.add_restraint(r)
 
 o= IMP.core.MonteCarlo(m)
-mv= IMP.core.BallMover(c, 10)
+mv= IMP.core.BallMover(ps, 10)
 o.add_mover(mv)
 o.add_optimizer_state(log)
 
