@@ -225,6 +225,11 @@ inline Model *get_model(Particle*p) {
   return p->get_model();
 }
 
+inline Model *get_model(const ParticlesTemp&p) {
+  IMP_USAGE_CHECK(p.size() >0, "Empty particles list");
+  return get_model(p[0]);
+}
+
 template <unsigned int D>
 inline Model *get_model(const ParticleTuple<D>& p) {
   return p[0]->get_model();
