@@ -157,51 +157,10 @@ protected:                                                              \
   Name##sGeometry(SingletonContainer* sc): SingletonsGeometry(sc){}     \
   Geometries get_components() const {                                   \
     Geometries ret;                                                     \
-    for (unsigned int i=0;                                              \
-         i< get_container()->get_number_of_particles();                 \
-         ++i) {                                                         \
-      Decorator d(get_container()->get_particle(i));                    \
-      action;                                                           \
-    }                                                                   \
-    return ret;                                                         \
-  }                                                                     \
-  IMP_OBJECT_INLINE(Name##sGeometry,                                    \
-                    out <<  get_container() << std::endl;,{});          \
-  }
-
-
-#define IMP_PARTICLE_TRAITS_GEOMETRY(Name, Decorator, TraitsName,       \
-                                     traits_name,action)                \
-  /** Display a particle.*/                                             \
-  class Name##Geometry: public SingletonGeometry {                      \
-    TraitsName traits_;                                                 \
-  public:                                                               \
-  Name##Geometry(Decorator d): SingletonGeometry(d),                    \
-    traits_(d.get_##traits_name()){}                                    \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
-    Decorator d(get_particle(), traits_);                               \
-    action;                                                             \
-    return ret;                                                         \
-  }                                                                     \
-  IMP_OBJECT_INLINE(Name##Geometry,                                     \
-                    out <<  Decorator(get_particle(), traits_)          \
-                    << std::endl;,{});                                  \
-  };                                                                    \
-  /** Display multiple particles.*/                                     \
-  class Name##sGeometry: public SingletonsGeometry {                    \
-    TraitsName traits_;                                                 \
-  public:                                                               \
-  Name##sGeometry(SingletonContainer* sc, TraitsName tr):               \
-  SingletonsGeometry(sc), traits_(tr){}                                 \
-  Geometries get_components() const {                                   \
-    Geometries ret;                                                     \
-    for (unsigned int i=0;                                              \
-         i< get_container()->get_number_of_particles();                 \
-         ++i) {                                                         \
-      Decorator d(get_container()->get_particle(i), traits_);           \
-      action;                                                           \
-    }                                                                   \
+    IMP_FOREACH_SINGLETON(get_container(), {                            \
+        Decorator d(_1);                                                \
+        action;                                                         \
+      });                                                               \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
@@ -233,13 +192,11 @@ protected:                                                              \
   Name##sGeometry(PairContainer* sc): PairsGeometry(sc){}               \
   Geometries get_components() const {                                   \
     Geometries ret;                                                     \
-    for (unsigned int i=0;                                              \
-         i< get_container()->get_number_of_particle_pairs();            \
-         ++i) {                                                         \
-      Decorator d0(get_container()->get_particle_pair(i)[0]);           \
-      Decorator d1(get_container()->get_particle_pair(i)[1]);           \
-      action;                                                           \
-    }                                                                   \
+    IMP_FOREACH_PAIR(get_container(),{                                  \
+        Decorator d0(_1[0]);                                            \
+        Decorator d1(_1[1]);                                            \
+        action;                                                         \
+      });                                                               \
     return ret;                                                         \
   }                                                                     \
   IMP_OBJECT_INLINE(Name##sGeometry,                                    \
