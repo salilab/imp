@@ -336,7 +336,7 @@ public:                                                                 \
                          << " is _1->get_name() << std::endl);
     \endcode
 */
-#define IMP_FOREACH_TRIPLET(sequence, operation)                     \
+#define IMP_FOREACH_TRIPLET(sequence, operation) do {                \
   unsigned int imp_foreach_size                                         \
   = sequence->get_number_of_particle_triplets();                            \
   for (unsigned int _2=0;                                               \
@@ -347,6 +347,7 @@ public:                                                                 \
     operation                                                           \
       if (imp_foreach_break) break;                                     \
   }                                                                     \
+  } while (false)
 
 
 
