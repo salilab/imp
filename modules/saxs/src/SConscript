@@ -1,5 +1,6 @@
 Import('env')
 files = [
+         'DerivativeCalculator.cpp',
          'Distribution.cpp',
          'FormFactorTable.cpp',
          'Profile.cpp',
