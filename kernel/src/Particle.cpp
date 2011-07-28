@@ -34,7 +34,8 @@ Particle::Particle(Model *m):
 void Particle::do_show(std::ostream& out) const
 {
   internal::PrefixStream preout(&out);
-  preout << (get_is_active()? " (active)":" (dead)");
+  preout << "index: " << get_index()
+         << (get_is_active()? " (active)":" (dead)");
   preout << std::endl;
 
   if (get_has_model()) {
@@ -65,8 +66,33 @@ void Particle::do_show(std::ostream& out) const
       out << "string attributes:" << std::endl;
       preout.set_prefix("  ");
       StringKeys fks= get_string_keys();
-      for (StringKeys::const_iterator it= fks.begin(); it != fks.end(); ++it) {
+      for (StringKeys::const_iterator it= fks.begin();
+           it != fks.end(); ++it) {
         preout << *it << ": " << get_value(*it) << std::endl;
+      }
+    }
+    {
+      preout.set_prefix("");
+      out << "particle attributes:" << std::endl;
+      preout.set_prefix("  ");
+      ParticleKeys fks
+        = get_model()->ParticleAttributeTable::get_attribute_keys(id_);
+      for (ParticleKeys::const_iterator it= fks.begin();
+           it != fks.end(); ++it) {
+        preout << *it << ": "
+               << get_value(*it)->get_name() << std::endl;
+      }
+    }
+    {
+      preout.set_prefix("");
+      out << "particles attributes:" << std::endl;
+      preout.set_prefix("  ");
+      ParticlesKeys fks
+        =  get_model()->ParticlesAttributeTable::get_attribute_keys(id_);
+      for (ParticlesKeys::const_iterator it= fks.begin();
+           it != fks.end(); ++it) {
+        preout << *it << ": " << get_model()->get_attribute(*it, id_).size()
+               << std::endl;
       }
     }
   }
