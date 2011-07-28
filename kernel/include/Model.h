@@ -159,15 +159,20 @@ public:
             typename Traits::Value> get_range_internal(Key k) const {
     std::pair<typename Traits::Value,
               typename Traits::Value>  ret;
-    IMP_USAGE_CHECK(data_.size() > k.get_index(),
+    IMP_USAGE_CHECK(data_.size() > k.get_index()
+                    || data_[k.get_index()].size()==0,
                     "Cannot request range of an unused key.");
-    if (data_[k.get_index()].size()==0) return ret;
-    ret.first=data_[k.get_index()][0];
-    ret.second=ret.first;
-    for (unsigned int i=1; i< data_[k.get_index()].size(); ++i) {
+    bool init=false;
+    for (unsigned int i=0; i< data_[k.get_index()].size(); ++i) {
       if (Traits::get_is_valid(data_[k.get_index()][i])) {
-        ret.first=Traits::min(ret.first, data_[k.get_index()][i]);
-        ret.second=Traits::max(ret.second, data_[k.get_index()][i]);
+        if (!init) {
+          ret.first= data_[k.get_index()][i];
+          ret.second= data_[k.get_index()][i];
+          init=true;
+        } else {
+          ret.first=Traits::min(ret.first, data_[k.get_index()][i]);
+          ret.second=Traits::max(ret.second, data_[k.get_index()][i]);
+        }
       }
     }
     return ret;
