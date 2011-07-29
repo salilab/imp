@@ -122,7 +122,7 @@ protected:
 protected:
   //! kernel handling
   KernelParameters kernel_params_;
-  DistanceMask distance_mask_;
+  //  DistanceMask distance_mask_;
   Particles ps_;
   core::XYZRs xyzr_; //each voxel decorator would contain X,Y,Z,R
   FloatKey weight_key_;
