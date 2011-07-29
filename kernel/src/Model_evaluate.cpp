@@ -14,6 +14,7 @@
 #include "IMP/ScoreState.h"
 #include <boost/timer.hpp>
 #include "IMP/compatibility/set.h"
+#include <IMP/internal/static.h>
 #include <numeric>
 
 
@@ -45,6 +46,9 @@ IMP_BEGIN_NAMESPACE
 
 
 void Model::before_evaluate(const ScoreStatesTemp &states) const {
+#if IMP_BUILD < IMP_FAST
+  internal::check_live_objects();
+#endif
   IMP_USAGE_CHECK(cur_stage_== internal::NOT_EVALUATING,
                   "Can only call Model::before_evaluate() when not evaluating");
   CreateLogContext clc("update_score_states");

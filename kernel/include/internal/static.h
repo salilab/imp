@@ -33,6 +33,10 @@ extern IMPEXPORT unsigned int log_indent;
 IMP_CHECK_CODE(extern IMPEXPORT double initialized);
 extern IMPEXPORT internal::LogStream stream;
 
+#if IMP_BUILD < IMP_FAST
+IMPEXPORT void check_live_objects();
+#endif
+
 IMP_END_INTERNAL_NAMESPACE
 
 #endif  /* IMP_INTERNAL_STATIC_H */
