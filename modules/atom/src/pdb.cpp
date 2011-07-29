@@ -371,8 +371,9 @@ namespace {
 }
 
 Hierarchy read_pdb(TextInput in, Model *model) {
+  IMP_NEW(NonWaterPDBSelector, sel, ());
   Hierarchies ret= read_pdb(in,nicename(in.get_name()), model,
-                            new NonWaterPDBSelector(), true, false, false);
+                            sel, true, false, false);
   if (ret.empty()) {
     IMP_THROW("No molecule read from file " << in.get_name(),
               ValueException);
