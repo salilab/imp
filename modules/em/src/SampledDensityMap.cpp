@@ -17,7 +17,7 @@ SampledDensityMap::SampledDensityMap(const DensityHeader &header):
   y_key_=IMP::core::XYZ::get_coordinate_key(1);
   z_key_=IMP::core::XYZ::get_coordinate_key(2);
   kernel_params_ = KernelParameters(header_.get_resolution());
-  distance_mask_ = DistanceMask(&header_);
+  //  distance_mask_ = DistanceMask(&header_);
 }
 
 IMP::algebra::BoundingBox3D
@@ -81,7 +81,7 @@ SampledDensityMap::SampledDensityMap(const IMP::Particles &ps,
   header_.set_resolution(resolution);
   //set up the sampling parameters
   kernel_params_ = KernelParameters(resolution);
-  distance_mask_ = DistanceMask(&header_);
+  //  distance_mask_ = DistanceMask(&header_);
   resample();
 }
 
