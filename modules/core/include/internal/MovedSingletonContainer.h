@@ -56,11 +56,11 @@ public:
     return threshold_;
   }
   double get_distance_moved(Particle *p) const {
-    for (unsigned int i=0; i< pc_->get_number_of_particles(); ++i) {
-      if (pc_->get_particle(i)==p) {
-        return do_get_distance_moved(i);
-      }
-    }
+    IMP_FOREACH_SINGLETON_INDEX(pc_, {
+        if (_1==p->get_index()) {
+          return do_get_distance_moved(_2);
+        }
+      });
     return -1;
   }
 #ifndef IMP_DOXYGEN
