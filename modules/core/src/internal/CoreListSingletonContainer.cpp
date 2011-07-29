@@ -19,10 +19,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListSingletonContainer,);
 
-CoreListSingletonContainer
-::CoreListSingletonContainer():
-  internal::ListLikeSingletonContainer(){}
-
 
 CoreListSingletonContainer
 ::CoreListSingletonContainer(Model *m, std::string name):

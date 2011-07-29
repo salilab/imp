@@ -37,19 +37,6 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   static SingletonContainerSet* get_set(SingletonContainer* c) {
     return dynamic_cast<SingletonContainerSet*>(c);
   }
-  // to not have added and removed
-  SingletonContainerSet();
-  SingletonContainerPair get_added_and_removed_containers() const {
-    SingletonContainerSet *added= create_untracked_container();
-    SingletonContainerSet *removed=create_untracked_container();
-    for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
-      added->add_singleton_container(get_singleton_container(i)
-                                     ->get_added_container());
-      removed->add_singleton_container(get_singleton_container(i)
-                                       ->get_removed_container());
-    }
-    return SingletonContainerPair(added, removed);
-  }
  public:
   //! Construct and empty set
   SingletonContainerSet(Model *m,
@@ -105,6 +92,12 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   }
 
   ParticlesTemp get_contained_particles() const;
+  bool get_contents_changed() const {
+    for (unsigned int i=0; i< get_number_of_singleton_containers(); ++i) {
+      if (get_singleton_container(i)->get_contents_changed()) return true;
+    }
+    return false;
+  }
   IMP_OBJECT(SingletonContainerSet);
 
   /** @name Methods to control the nested container
@@ -116,26 +109,12 @@ class IMPCONTAINEREXPORT SingletonContainerSet
   IMP_LIST_ACTION(public, SingletonContainer, SingletonContainers,
                   singleton_container, singleton_containers,
                   SingletonContainer*, SingletonContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_singleton_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_singleton_container(obj
-                       ->get_removed_container());
-              });
+                  {
+                    obj->set_was_used(true);
+                  },{},
+                  );
   /**@}*/
 
-  static SingletonContainerSet *create_untracked_container() {
-    SingletonContainerSet *lsc = new SingletonContainerSet();
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;

@@ -17,9 +17,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ListSingletonContainer
-::ListSingletonContainer():
-  P(){}
 
 ListSingletonContainer
 ::ListSingletonContainer(const ParticlesTemp &ps):

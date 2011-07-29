@@ -21,11 +21,4 @@ void ListLikeSingletonContainer
 
 
 
-
-SingletonContainerPair ListLikeSingletonContainer
-::get_added_and_removed_containers() const {
-  return SingletonContainerPair(new ListLikeSingletonContainer(),
-                                new ListLikeSingletonContainer());
-}
-
 IMPCORE_END_INTERNAL_NAMESPACE

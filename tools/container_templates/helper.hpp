@@ -34,65 +34,39 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT ListLikeCLASSNAMEContainer: public CLASSNAMEContainer {
 private:
   PLURALINDEXTYPE data_;
+  bool sorted_;
+  bool dirty_;
+  void sort() const {
+    std::sort(const_cast<PLURALINDEXTYPE&>(data_).begin(),
+              const_cast<PLURALINDEXTYPE&>(data_).end());
+    const_cast<bool&>(sorted_)=true;
+  }
 protected:
-  ListLikeCLASSNAMEContainer *get_added() const {
-    if (get_has_added_and_removed_containers()) {
-      return dynamic_cast<ListLikeCLASSNAMEContainer*>
-        (get_added_container());
-    } else {
-      return NULL;
-    }
-  }
-  ListLikeCLASSNAMEContainer *get_removed() const {
-    return dynamic_cast<ListLikeCLASSNAMEContainer*>
-      (get_removed_container());
-  }
-  ListLikeCLASSNAMEContainer(){}
   void update_list(PLURALINDEXTYPE &cur) {
-    if (get_added()) {
-      std::sort(cur.begin(), cur.end());
-      //std::sort(data_.begin(), data_.end());
-      PLURALINDEXTYPE added, removed;
-      std::set_difference(cur.begin(), cur.end(),
-                          data_.begin(), data_.end(),
-                          std::back_inserter(added));
-      std::set_difference(data_.begin(), data_.end(),
-                          cur.begin(), cur.end(),
-                          std::back_inserter(removed));
-      get_added()->data_=added;
-      get_removed()->data_=removed;
-    }
-    std::sort(cur.begin(), cur.end());
+    dirty_=true;
     swap(data_, cur);
+    sorted_=false;
   }
   void add_to_list(PLURALINDEXTYPE &cur) {
+    if (!sorted_) sort();
     std::sort(cur.begin(), cur.end());
     PLURALINDEXTYPE newlist;
     std::set_union(cur.begin(), cur.end(),
                         data_.begin(), data_.end(),
                         std::back_inserter(newlist));
-    if (get_added()) {
-      PLURALINDEXTYPE added;
-      std::set_intersection(newlist.begin(), newlist.end(),
-                            cur.begin(), cur.end(),
-                            std::back_inserter(added));
-      ListLikeCLASSNAMEContainer* ac=get_added();
-      ac->data_.insert(ac->data_.end(), added.begin(), added.end());
-    }
     swap(data_, newlist);
+    dirty_=true;
   }
 
   void remove_from_list(PLURALINDEXTYPE &cur) {
+    if (!sorted_) sort();
     std::sort(cur.begin(), cur.end());
     PLURALINDEXTYPE newlist;
     std::set_difference(data_.begin(), data_.end(),
                         cur.begin(), cur.end(),
                         std::back_inserter(newlist));
     swap(data_, newlist);
-    if (get_has_added_and_removed_containers()) {
-      ListLikeCLASSNAMEContainer* ac=get_removed();
-      ac->data_.insert(ac->data_.end(), cur.begin(), cur.end());
-    }
+    dirty_=true;
   }
   template <class F>
     struct AccIf {
@@ -109,29 +83,19 @@ protected:
   };
   template <class F>
   void remove_from_list_if(F f) {
-    if (get_has_added_and_removed_containers()) {
-      PLURALINDEXTYPE removed;
-      data_.erase(std::remove_if(data_.begin(),
-                                data_.end(), AccIf<F>(f, removed)),
-                 data_.end());
-      ListLikeCLASSNAMEContainer* ac=get_removed();
-      ac->data_.insert(ac->data_.end(), removed.begin(), removed.end());
-    } else {
-      data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
-    }
+    data_.erase(std::remove_if(data_.begin(), data_.end(), f), data_.end());
+    dirty_=true;
   }
   void add_to_list(PASSINDEXTYPE cur) {
+    if (!sorted_) sort();
     if (!std::binary_search(data_.begin(), data_.end(), cur)) {
       data_.insert(std::lower_bound(data_.begin(), data_.end(),
                                    cur), cur);
-      if (get_added()) {
-        ListLikeCLASSNAMEContainer* ac=get_added();
-        ac->data_.push_back(cur);
-      }
+      dirty_=true;
     }
   }
   ListLikeCLASSNAMEContainer(Model *m, std::string name):
-    CLASSNAMEContainer(m,name){
+    CLASSNAMEContainer(m,name), sorted_(false), dirty_(false){
   }
  public:
   template <class SM>
@@ -174,8 +138,8 @@ protected:
     return IMP::internal::flatten(IMP::internal::get_particle(get_model(),
                                                               data_));
   }
-  CLASSNAMEContainerPair get_added_and_removed_containers() const;
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const {
+    if (!sorted_) sort();
     INDEXTYPE it= IMP::internal::get_index(p);
     return std::binary_search(data_.begin(), data_.end(), it);
   }
@@ -185,12 +149,12 @@ protected:
   VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const {
     return IMP::internal::get_particle(get_model(), data_[i]);
   }
+  bool get_contents_changed() const {
+    return dirty_;
+  }
   IMP_OBJECT(ListLikeCLASSNAMEContainer);
   void do_after_evaluate() {
-    if (get_added()) {
-      get_added()->data_.clear();
-      get_removed()->data_.clear();
-    }
+    dirty_=false;
   }
   void do_before_evaluate() {
   }

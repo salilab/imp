@@ -37,19 +37,6 @@ class IMPCONTAINEREXPORT QuadContainerSet
   static QuadContainerSet* get_set(QuadContainer* c) {
     return dynamic_cast<QuadContainerSet*>(c);
   }
-  // to not have added and removed
-  QuadContainerSet();
-  QuadContainerPair get_added_and_removed_containers() const {
-    QuadContainerSet *added= create_untracked_container();
-    QuadContainerSet *removed=create_untracked_container();
-    for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
-      added->add_quad_container(get_quad_container(i)
-                                     ->get_added_container());
-      removed->add_quad_container(get_quad_container(i)
-                                       ->get_removed_container());
-    }
-    return QuadContainerPair(added, removed);
-  }
  public:
   //! Construct and empty set
   QuadContainerSet(Model *m,
@@ -105,6 +92,12 @@ class IMPCONTAINEREXPORT QuadContainerSet
   }
 
   ParticlesTemp get_contained_particles() const;
+  bool get_contents_changed() const {
+    for (unsigned int i=0; i< get_number_of_quad_containers(); ++i) {
+      if (get_quad_container(i)->get_contents_changed()) return true;
+    }
+    return false;
+  }
   IMP_OBJECT(QuadContainerSet);
 
   /** @name Methods to control the nested container
@@ -116,26 +109,12 @@ class IMPCONTAINEREXPORT QuadContainerSet
   IMP_LIST_ACTION(public, QuadContainer, QuadContainers,
                   quad_container, quad_containers,
                   QuadContainer*, QuadContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_quad_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_quad_container(obj
-                       ->get_removed_container());
-              });
+                  {
+                    obj->set_was_used(true);
+                  },{},
+                  );
   /**@}*/
 
-  static QuadContainerSet *create_untracked_container() {
-    QuadContainerSet *lsc = new QuadContainerSet();
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;

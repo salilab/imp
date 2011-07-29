@@ -37,19 +37,6 @@ class IMPCONTAINEREXPORT PairContainerSet
   static PairContainerSet* get_set(PairContainer* c) {
     return dynamic_cast<PairContainerSet*>(c);
   }
-  // to not have added and removed
-  PairContainerSet();
-  PairContainerPair get_added_and_removed_containers() const {
-    PairContainerSet *added= create_untracked_container();
-    PairContainerSet *removed=create_untracked_container();
-    for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
-      added->add_pair_container(get_pair_container(i)
-                                     ->get_added_container());
-      removed->add_pair_container(get_pair_container(i)
-                                       ->get_removed_container());
-    }
-    return PairContainerPair(added, removed);
-  }
  public:
   //! Construct and empty set
   PairContainerSet(Model *m,
@@ -105,6 +92,12 @@ class IMPCONTAINEREXPORT PairContainerSet
   }
 
   ParticlesTemp get_contained_particles() const;
+  bool get_contents_changed() const {
+    for (unsigned int i=0; i< get_number_of_pair_containers(); ++i) {
+      if (get_pair_container(i)->get_contents_changed()) return true;
+    }
+    return false;
+  }
   IMP_OBJECT(PairContainerSet);
 
   /** @name Methods to control the nested container
@@ -116,26 +109,12 @@ class IMPCONTAINEREXPORT PairContainerSet
   IMP_LIST_ACTION(public, PairContainer, PairContainers,
                   pair_container, pair_containers,
                   PairContainer*, PairContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_pair_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_pair_container(obj
-                       ->get_removed_container());
-              });
+                  {
+                    obj->set_was_used(true);
+                  },{},
+                  );
   /**@}*/
 
-  static PairContainerSet *create_untracked_container() {
-    PairContainerSet *lsc = new PairContainerSet();
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;

@@ -283,7 +283,7 @@
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_PAIR_CONTAINER(Name)                                  \
-  PairContainerPair get_added_and_removed_containers() const;      \
+  bool get_contents_changed() const;                                    \
   bool get_contains_particle_pair(const ParticlePair& p) const;      \
   unsigned int get_number_of_particle_pairs() const;                     \
   ParticlePair get_particle_pair(unsigned int i) const;                  \

@@ -17,9 +17,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ListCLASSNAMEContainer
-::ListCLASSNAMEContainer():
-  P(){}
 
 ListCLASSNAMEContainer
 ::ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps):

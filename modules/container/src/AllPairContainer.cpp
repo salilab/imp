@@ -9,7 +9,6 @@
  */
 
 #include "IMP/container/AllPairContainer.h"
-#include <IMP/core/internal/DifferenceSingletonContainer.h>
 #include <IMP/container/AllBipartitePairContainer.h>
 #include <IMP/container/PairContainerSet.h>
 #include <IMP/PairModifier.h>
@@ -38,37 +37,9 @@ AllPairContainer::AllPairContainer(SingletonContainer *c,
 
 
 
-PairContainerPair
-AllPairContainer::get_added_and_removed_containers() const {
-  IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, old,
-          (c_, c_->get_removed_container()));
-  IMP::Pointer<PairContainerSet> removed
-    = PairContainerSet::create_untracked_container();
-  {
-    IMP_NEW(AllPairContainer, all,
-            (c_->get_removed_container(),
-             false));
-    removed->add_pair_container(all);
-    IMP_NEW(AllBipartitePairContainer, leftr,
-            (c_->get_removed_container(),
-             old,
-             false));
-    removed->add_pair_container(leftr);
-  }
-  IMP::Pointer<PairContainerSet> added
-    = PairContainerSet::create_untracked_container();
-  {
-    IMP_NEW(AllPairContainer,all,
-            (c_->get_added_container(),
-             false));
-    added->add_pair_container(all);
-    IMP_NEW(AllBipartitePairContainer,leftr,
-            (c_->get_added_container(),
-             old,
-             false));
-    added->add_pair_container(leftr);
-  }
-  return PairContainerPair(added, removed);
+bool
+AllPairContainer::get_contents_changed() const {
+  return c_->get_contents_changed();
 }
 
 

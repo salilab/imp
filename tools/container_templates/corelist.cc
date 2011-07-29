@@ -19,10 +19,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListCLASSNAMEContainer,);
 
-CoreListCLASSNAMEContainer
-::CoreListCLASSNAMEContainer():
-  internal::ListLikeCLASSNAMEContainer(){}
-
 
 CoreListCLASSNAMEContainer
 ::CoreListCLASSNAMEContainer(Model *m, std::string name):

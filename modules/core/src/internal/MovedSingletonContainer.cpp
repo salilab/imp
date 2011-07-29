@@ -27,8 +27,7 @@ MovedSingletonContainer::MovedSingletonContainer(SingletonContainer *pc,
   internal::ListLikeSingletonContainer(pc->get_model(),
                                        "MovedSingletonContainer%1%"),
   threshold_(threshold),
-  pc_(pc), ac_(pc_->get_added_container()),
-  rc_(pc_->get_removed_container())
+  pc_(pc)
 {
   initialize_active_container(pc->get_model());
   first_call_=true;
@@ -48,9 +47,7 @@ void MovedSingletonContainer::do_before_evaluate()
 {
   IMP_OBJECT_LOG;
   IMP_CHECK_OBJECT(pc_);
-  if (first_call_
-      || ac_->get_number_of_particles() != 0
-      || rc_->get_number_of_particles() != 0) {
+  if (first_call_ || pc_->get_contents_changed()) {
     IMP_LOG(TERSE, "First call" << std::endl);
     reset();
     if (first_call_) {
@@ -103,9 +100,9 @@ IMP_ACTIVE_CONTAINER_DEF(MovedSingletonContainer,);
 void XYZRMovedSingletonContainer::do_reset_all() {
   IMP_OBJECT_LOG;
   //backup_.clear();
-  backup_.resize(get_singleton_container()->get_number_of_particles());
+  //backup_.resize(get_singleton_container()->get_number_of_particles());
   IMP_FOREACH_SINGLETON(get_singleton_container(),{
-      backup_[_2]= XYZR(_1).get_sphere();
+      backup_.push_back(XYZR(_1).get_sphere());
     });
 }
 void XYZRMovedSingletonContainer::do_reset_moved() {
@@ -167,8 +164,10 @@ void RigidMovedSingletonContainer::do_reset_all() {
   rbs_.clear();
   rbs_backup_.clear();
   rbs_members_.clear();
+  int count=0;
   IMP_FOREACH_SINGLETON_INDEX(get_singleton_container(),
                         {
+                          ++count;
                           if (core::RigidMember
                               ::particle_is_instance(get_model(),
                                                      _1)) {
@@ -187,7 +186,7 @@ void RigidMovedSingletonContainer::do_reset_all() {
   normal_->set_particles(normal);
   normal_moved_->reset();
   //backup_.clear();
-  rbs_backup_.resize(get_singleton_container()->get_number_of_particles());
+  rbs_backup_.resize(count);
 }
 void RigidMovedSingletonContainer::do_reset_moved() {
   IMP_OBJECT_LOG;

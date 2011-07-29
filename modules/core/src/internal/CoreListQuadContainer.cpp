@@ -19,10 +19,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListQuadContainer,);
 
-CoreListQuadContainer
-::CoreListQuadContainer():
-  internal::ListLikeQuadContainer(){}
-
 
 CoreListQuadContainer
 ::CoreListQuadContainer(Model *m, std::string name):

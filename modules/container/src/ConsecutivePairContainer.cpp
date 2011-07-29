@@ -36,12 +36,9 @@ ConsecutivePairContainer::ConsecutivePairContainer(const ParticlesTemp &ps,
   }
 }
 
-PairContainerPair
-ConsecutivePairContainer::get_added_and_removed_containers() const {
-    return PairContainerPair(container::ListPairContainer
-                             ::create_untracked_container(),
-                             container::ListPairContainer
-                             ::create_untracked_container());
+bool
+ConsecutivePairContainer::get_contents_changed() const {
+  return false;
 }
 
 unsigned int ConsecutivePairContainer::get_number_of_particle_pairs() const {

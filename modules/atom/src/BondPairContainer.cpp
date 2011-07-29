@@ -23,12 +23,9 @@ BondPairContainer
 }
 
 
-PairContainerPair
-BondPairContainer::get_added_and_removed_containers() const {
-    return PairContainerPair(create_untracked_container(sc_
-                                       ->get_removed_container()),
-                             create_untracked_container(sc_
-                                       ->get_added_container()));
+bool
+BondPairContainer::get_contents_changed() const {
+  return sc_->get_contents_changed();
 }
 
 

@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
-QuadContainerSet
-::QuadContainerSet() {
-}
-
 QuadContainerSet
 ::QuadContainerSet(Model *m, std::string name):
   QuadContainer(m, name),

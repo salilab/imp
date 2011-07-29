@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
-CLASSNAMEContainerSet
-::CLASSNAMEContainerSet() {
-}
-
 CLASSNAMEContainerSet
 ::CLASSNAMEContainerSet(Model *m, std::string name):
   CLASSNAMEContainer(m, name),
