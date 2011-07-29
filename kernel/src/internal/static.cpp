@@ -78,3 +78,16 @@ void Object::remove_live_object(Object*o) {
 }
 #endif
 IMP_END_NAMESPACE
+
+#if IMP_BUILD < IMP_FAST
+
+IMP_BEGIN_INTERNAL_NAMESPACE
+void check_live_objects() {
+  for (compatibility::set<Object*>::const_iterator it= live_.begin();
+       it != live_.end(); ++it) {
+    IMP_USAGE_CHECK((*it)->get_ref_count()>0,
+                    "Object " << (*it)->get_name() << " is not ref counted.");
+  }
+}
+IMP_END_INTERNAL_NAMESPACE
+#endif
