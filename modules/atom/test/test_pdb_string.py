@@ -20,6 +20,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
                                m, IMP.atom.CAlphaPDBSelector())
         os.unlink(name)
         self.assertEqual(len(IMP.core.get_leaves(mp)),5)
+        m.evaluate(False)
 
     def test_no_mangle(self):
         """Test that PDB atom names are not mangled"""
@@ -37,6 +38,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
 
             s = StringIO()
             IMP.atom.write_pdb(pdb, s)
+            m.evaluate(False)
             print s.getvalue()
             self.assertEqual(s.getvalue()[15+12:15+16].strip(), atom)
 
