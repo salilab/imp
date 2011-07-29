@@ -286,10 +286,10 @@ void MCCGSampler::randomize(const Parameters &pms,
        algebra::VectorD<3>(pms.bounds_.find(XK)->second.second,
                          pms.bounds_.find(YK)->second.second,
                          pms.bounds_.find(ZK)->second.second));
-  for (unsigned int i=0; i< sc->get_number_of_particles(); ++i) {
-    XYZ d(sc->get_particle(i));
+  IMP_FOREACH_SINGLETON(sc,{
+      XYZ d(_1);
     d.set_coordinates(algebra::get_random_vector_in(bb));
-  }
+    });
 }
 
 
@@ -354,10 +354,12 @@ ConfigurationSet *MCCGSampler::do_sample() const {
   pms.local_opt_->set_log_level(mll);
   mc->set_return_best(true);
   Pointer<internal::CoreListSingletonContainer> sc=set_up_movers(pms, mc);
-  if (sc->get_number_of_particles()==0) {
-    IMP_WARN("There are no particles with optimized cartesian coordinates."
-             << std::endl);
-    return NULL;
+  IMP_IF_CHECK(USAGE) {
+    if (sc->get_indexes().size()==0) {
+      IMP_WARN("There are no particles with optimized cartesian coordinates."
+               << std::endl);
+      return NULL;
+    }
   }
   IMP_CHECK_OBJECT(sc);
   int failures=0;
