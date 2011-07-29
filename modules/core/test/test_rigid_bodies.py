@@ -84,7 +84,7 @@ class RBDTests(IMP.test.TestCase):
             m.add_restraint(r)
         cg= IMP.core.ConjugateGradients()
         cg.set_model(m)
-        cg.optimize(100)
+        cg.optimize(600)
         ntr= rb.get_reference_frame().get_transformation_to()
         print ntr
         print tr
