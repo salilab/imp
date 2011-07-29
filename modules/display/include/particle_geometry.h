@@ -264,16 +264,14 @@ class HierarchiesGeometry: public SingletonsGeometry {
     SingletonsGeometry(sc), res_(resolution){}
   Geometries get_components() const {
     Geometries ret;
-    for (unsigned int i=0;
-         i< get_container()->get_number_of_particles();
-         ++i) {
-      if (components_.find(get_container()->get_particle(i))
-          == components_.end()) {
-        IMP_NEW(HierarchyGeometry, g, (get_container()->get_particle(i), res_));
-        components_[get_container()->get_particle(i)]= g;
-      }
-      ret.push_back(components_.find(get_container()->get_particle(i))->second);
-    }
+    IMP_FOREACH_SINGLETON(get_container(), {
+        if (components_.find(_1)
+            == components_.end()) {
+          IMP_NEW(HierarchyGeometry, g, (_1, res_));
+          components_[_1]= g;
+        }
+        ret.push_back(components_.find(_1)->second);
+      });
     return ret;
   }
   IMP_OBJECT_INLINE(HierarchiesGeometry,

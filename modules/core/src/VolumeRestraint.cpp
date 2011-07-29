@@ -39,6 +39,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   std::vector<int> volumes(sc_->get_number_of_particles(), 0),
     areas(sc_->get_number_of_particles(), 0);
   bool is_zero=false;
+  int count=0;
   if (ms >.0001) {
     algebra::VectorD<3> vms(ms,ms,ms);
     bb3= algebra::BoundingBox3D(bb3.get_corner(0)-.1*vms,
@@ -53,6 +54,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
                             {0,0,1},
                             {0,0,-1}};
     IMP_FOREACH_SINGLETON(sc_, {
+        ++count;
         XYZR d(_1);
         algebra::SphereD<3> s= d.get_sphere();
         algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
@@ -104,14 +106,14 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     }
   } else {
     std::vector<int> os[3];
-    std::vector<int> rs(sc_->get_number_of_particles(), 0);
+    std::vector<int> rs(count, 0);
     double volume;
     if (is_zero) {
       volume=0;
       std::fill(rs.begin(), rs.end(), 1);
     } else {
       for (unsigned int i=0; i< 3; ++i) {
-        os[i].resize(sc_->get_number_of_particles(), 0);
+        os[i].resize(count, 0);
       }
       for (Grid::AllIndexIterator it= grid_.all_indexes_begin();
            it != grid_.all_indexes_end(); ++it) {
@@ -133,6 +135,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
               int c= j/2;
               os[c][s]+=dir;
               if (!ri) {
+                IMP_INTERNAL_CHECK(s < rs.size(), "Out of range");
                 ++rs[s];
                 ri=true;
               }
