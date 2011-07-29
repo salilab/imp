@@ -433,7 +433,7 @@ Float compute_fitting_score(const Particles &ps,
   algebra::BoundingBox3D union_bb=algebra::get_union(
                              em_bb,
                              core::get_bounding_box(core::XYZRs(ps)));
-  em::DensityMap *union_map =
+  Pointer<em::DensityMap> union_map =
     create_density_map(union_bb,
                        em_map->get_spacing());
   union_map->get_header_writable()->set_resolution(
@@ -441,8 +441,6 @@ Float compute_fitting_score(const Particles &ps,
   //create a sampled map
   IMP_NEW(em::SampledDensityMap,model_dens_map,
           (*(union_map->get_header())));
-  // IMP::em::SampledDensityMap *model_dens_map =
-    //   new IMP::em::SampledDensityMap(*(em_map->get_header()));
   model_dens_map->set_particles(ps,wei_key);
   model_dens_map->resample();
   //extend the density map to the new dimentions (use the union map)
@@ -479,9 +477,10 @@ Float compute_fitting_score(const Particles &ps,
   }
   union_map->calcRMS();
   model_dens_map->calcRMS();
-  double score = em::CoarseCC::calc_score(union_map, model_dens_map,
-                                  1.0,true,false);
+   double score = em::CoarseCC::calc_score(union_map, model_dens_map,
+                               1.0,true,false);
   union_map=NULL;
+  model_dens_map=NULL;
   return score;
 }
 
