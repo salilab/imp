@@ -29,7 +29,9 @@
     The selected argument should return true or false and use
     a string called pdb_line.
  */
-#define IMP_PDB_SELECTOR(Name, selected, show)                   \
+#define IMP_PDB_SELECTOR(Name, parent, selected, show)           \
+  Name(std::string name): parent(name){}                         \
+  Name(): parent(std::string(#Name)+"%1%"){}                     \
   bool get_is_selected(const std::string &pdb_line) const {      \
     selected;                                                    \
   }                                                              \

@@ -38,7 +38,7 @@ IMPATOM_BEGIN_NAMESPACE
 */
 class IMPATOMEXPORT PDBSelector: public Object {
  public:
-  PDBSelector(): Object("PDBSelector%1%"){}
+  PDBSelector(std::string name): Object(name){}
   //! Return true if the line should be processed
   virtual bool get_is_selected(const std::string& pdb_line) const=0;
   virtual ~PDBSelector();
@@ -49,7 +49,7 @@ IMP_OBJECTS(PDBSelector, PDBSelectors);
 //! Select all ATOM and HETATM records which are not alternatives
 class NonAlternativePDBSelector : public PDBSelector {
  public:
-  IMP_PDB_SELECTOR(NonAlternativePDBSelector,
+  IMP_PDB_SELECTOR(NonAlternativePDBSelector, PDBSelector,
                    return (internal::atom_alt_loc_indicator(pdb_line) == ' '
                            || internal::atom_alt_loc_indicator(pdb_line)
                            == 'A'),out << "");
@@ -58,7 +58,7 @@ class NonAlternativePDBSelector : public PDBSelector {
 //! Select all non-alternative ATOM records
 class ATOMPDBSelector: public NonAlternativePDBSelector {
 public:
-  IMP_PDB_SELECTOR(ATOMPDBSelector,
+  IMP_PDB_SELECTOR(ATOMPDBSelector,  NonAlternativePDBSelector,
                    return NonAlternativePDBSelector::get_is_selected(pdb_line)
                    && internal::is_ATOM_rec(pdb_line),out << "");
 };
@@ -67,7 +67,7 @@ public:
 //! Select all CA ATOM records
 class CAlphaPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(CAlphaPDBSelector,
+  IMP_PDB_SELECTOR(CAlphaPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
@@ -79,7 +79,7 @@ class CAlphaPDBSelector : public NonAlternativePDBSelector {
 //! Select all CB ATOM records
 class CBetaPDBSelector: public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(CBetaPDBSelector,
+  IMP_PDB_SELECTOR(CBetaPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)){
                      return false;
                    }
@@ -91,7 +91,7 @@ class CBetaPDBSelector: public NonAlternativePDBSelector {
 //! Select all C (not CA or CB) ATOM records
 class CPDBSelector: public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(CPDBSelector,
+  IMP_PDB_SELECTOR(CPDBSelector,NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
@@ -104,7 +104,7 @@ class CPDBSelector: public NonAlternativePDBSelector {
 //! Select all N ATOM records
 class NPDBSelector: public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(NPDBSelector,
+  IMP_PDB_SELECTOR(NPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
@@ -117,24 +117,29 @@ class NPDBSelector: public NonAlternativePDBSelector {
 //! Defines a selector that will pick every ATOM and HETATM record
 class AllPDBSelector : public PDBSelector {
 public:
-  IMP_PDB_SELECTOR(AllPDBSelector, return true || pdb_line.empty(),
+  IMP_PDB_SELECTOR(AllPDBSelector, PDBSelector,
+                   return true || pdb_line.empty(),
                    out << "");
 };
 
 //! Select all ATOM and HETATMrecords with the given chain ids
 class ChainPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(ChainPDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                     return false;
-                   }
-                   for(int i=0; i < (int)chains_.length(); i++) {
-                     if(internal::atom_chain_id(pdb_line) == chains_[i])
-                       return true;
-                   }
-                   return false,out << chains_);
-  //! The chain id can be any character in chains
-  ChainPDBSelector(const std::string &chains): chains_(chains) {}
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    for(int i=0; i < (int)chains_.length(); i++) {
+      if(internal::atom_chain_id(pdb_line) == chains_[i])
+        return true;
+    }
+    return false;
+  }
+  IMP_OBJECT_INLINE(ChainPDBSelector,out << chains_,);
+   //! The chain id can be any character in chains
+  ChainPDBSelector(const std::string &chains,
+                   std::string name="ChainPDBSelector%1%"):
+    NonAlternativePDBSelector(name), chains_(chains) {}
  private:
   std::string chains_;
 };
@@ -142,7 +147,7 @@ class ChainPDBSelector : public NonAlternativePDBSelector {
 //! Select all non-water ATOM and HETATMrecords
 class WaterPDBSelector : public NonAlternativePDBSelector {
  public:
-  IMP_PDB_SELECTOR(WaterPDBSelector,
+  IMP_PDB_SELECTOR(WaterPDBSelector, NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
@@ -189,7 +194,7 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
             (atom_name[0] == 'H' || atom_name[0] == 'D'));
   }
  public:
-  IMP_PDB_SELECTOR(HydrogenPDBSelector,
+  IMP_PDB_SELECTOR(HydrogenPDBSelector, NonAlternativePDBSelector,
                    return is_hydrogen(pdb_line);,
                    out << "");
 };
@@ -198,34 +203,46 @@ class HydrogenPDBSelector : public NonAlternativePDBSelector {
 class NonWaterNonHydrogenPDBSelector : public NonAlternativePDBSelector {
   IMP::internal::OwnerPointer<PDBSelector> ws_, hs_;
  public:
-  NonWaterNonHydrogenPDBSelector(): ws_(new WaterPDBSelector()),
-                                    hs_(new HydrogenPDBSelector()){}
-  IMP_PDB_SELECTOR(NonWaterNonHydrogenPDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                     return false;
-                   }
-                   return (! ws_->get_is_selected(pdb_line)
-                           && ! hs_->get_is_selected(pdb_line)),
-                   out << "");
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    return (! ws_->get_is_selected(pdb_line)
+            && ! hs_->get_is_selected(pdb_line));
+  }
+  IMP_OBJECT_INLINE(NonWaterNonHydrogenPDBSelector,out << *ws_,);
+  NonWaterNonHydrogenPDBSelector(std::string name):
+    NonAlternativePDBSelector(name),
+    ws_(new WaterPDBSelector()),
+    hs_(new HydrogenPDBSelector()){}
+  NonWaterNonHydrogenPDBSelector():
+    NonAlternativePDBSelector("NonWaterPDBSelector%1%"),
+    ws_(new WaterPDBSelector()),
+    hs_(new HydrogenPDBSelector()){}
 };
 
 //! Select all non-water non-alternative ATOM and HETATM records
 class NonWaterPDBSelector : public NonAlternativePDBSelector {
   IMP::internal::OwnerPointer<PDBSelector> ws_;
  public:
-  NonWaterPDBSelector(): ws_(new WaterPDBSelector()){}
-  IMP_PDB_SELECTOR(NonWaterPDBSelector,
-                   if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
-                     return false;
-                   }
-                   return( ! ws_->get_is_selected(pdb_line)),
-                   out << *ws_);
+  bool get_is_selected(const std::string &pdb_line) const {
+    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
+      return false;
+    }
+    return( ! ws_->get_is_selected(pdb_line));
+  }
+  IMP_OBJECT_INLINE(NonWaterPDBSelector,out << *ws_,);
+  NonWaterPDBSelector(std::string name): NonAlternativePDBSelector(name),
+                                         ws_(new WaterPDBSelector()){}
+  NonWaterPDBSelector(): NonAlternativePDBSelector("NonWaterPDBSelector%1%"),
+                         ws_(new WaterPDBSelector()){}
 };
 
 //! Select all P ATOM records
 class PPDBSelector : public NonAlternativePDBSelector {
  public:
   IMP_PDB_SELECTOR(PPDBSelector,
+                   NonAlternativePDBSelector,
                    if (!NonAlternativePDBSelector::get_is_selected(pdb_line)) {
                      return false;
                    }
@@ -244,11 +261,13 @@ class PPDBSelector : public NonAlternativePDBSelector {
 class AndPDBSelector: public PDBSelector {
   const IMP::internal::OwnerPointer<PDBSelector> a_, b_;
 public:
-  IMP_PDB_SELECTOR(AndPDBSelector,
-                   return a_->get_is_selected(pdb_line)
-                   && b_->get_is_selected(pdb_line),
-                   out << *a_ << " and " << *b_);
-  AndPDBSelector( PDBSelector *a, PDBSelector *b): a_(a), b_(b){}
+  bool get_is_selected(const std::string &pdb_line) const {
+   return a_->get_is_selected(pdb_line)
+     && b_->get_is_selected(pdb_line);
+  }
+  IMP_OBJECT_INLINE(AndPDBSelector,out << *a_ << " and " << *b_,);
+  AndPDBSelector( PDBSelector *a, PDBSelector *b):
+    PDBSelector("AndPDBSelector%1%"), a_(a), b_(b){}
 };
 
 //! Select atoms which are selected by either selector
@@ -260,11 +279,13 @@ public:
 class OrPDBSelector: public PDBSelector {
   const IMP::internal::OwnerPointer<PDBSelector> a_, b_;
 public:
-  IMP_PDB_SELECTOR(OrPDBSelector,
-                   return a_->get_is_selected(pdb_line)
-                   || b_->get_is_selected(pdb_line),
-                   out << *a_ << " or " << *b_);
-  OrPDBSelector( PDBSelector *a, PDBSelector *b): a_(a), b_(b){}
+  bool get_is_selected(const std::string &pdb_line) const {
+   return a_->get_is_selected(pdb_line)
+     || b_->get_is_selected(pdb_line);
+  }
+  IMP_OBJECT_INLINE(OrPDBSelector,out << *a_ << " or " << *b_,);
+  OrPDBSelector( PDBSelector *a, PDBSelector *b):
+    PDBSelector("OrPDBSelector%1%"), a_(a), b_(b){}
 };
 
 //! Select atoms which not selected by a given selector
@@ -276,10 +297,12 @@ public:
 class NotPDBSelector: public PDBSelector {
   const IMP::internal::OwnerPointer<PDBSelector> a_;
 public:
-  IMP_PDB_SELECTOR(NotPDBSelector,
-                   return !a_->get_is_selected(pdb_line),
-                   out << "not " << *a_);
-  NotPDBSelector( PDBSelector *a): a_(a){}
+  bool get_is_selected(const std::string &pdb_line) const {
+    return !a_->get_is_selected(pdb_line);
+  }
+  IMP_OBJECT_INLINE(NotPDBSelector,out << "not" << *a_,);
+  NotPDBSelector( PDBSelector *a): PDBSelector("NotPDBSelector%1%"),
+                                   a_(a){}
 };
 
 
