@@ -9,7 +9,6 @@ files = [
          'CoreQuadsRestraint.h',
          'CoreSingletonsRestraint.h',
          'CoreTripletsRestraint.h',
-         'DifferenceSingletonContainer.h',
          'MovedSingletonContainer.h',
          'PMFTable.h',
          'angle_helpers.h',
@@ -18,6 +17,7 @@ files = [
          'evaluate_distance_pair_score.h',
          'generic_impl.h',
          'graph_base.h',
+         'grid_close_pairs_impl.h',
          'hierarchy_helpers.h',
          'pair_helpers.h',
          'quad_helpers.h',
@@ -25,10 +25,9 @@ files = [
          'rigid_bodies.h',
          'rigid_body_tree.h',
          'singleton_helpers.h',
+         'sinks.h',
          'triplet_helpers.h',
-         'grid_close_pairs_impl.h',
          'truncated_harmonic.h',
-         'sinks.h'
         ]
 
 files = [File(x) for x in files]

@@ -37,19 +37,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
   static TripletContainerSet* get_set(TripletContainer* c) {
     return dynamic_cast<TripletContainerSet*>(c);
   }
-  // to not have added and removed
-  TripletContainerSet();
-  TripletContainerPair get_added_and_removed_containers() const {
-    TripletContainerSet *added= create_untracked_container();
-    TripletContainerSet *removed=create_untracked_container();
-    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
-      added->add_triplet_container(get_triplet_container(i)
-                                     ->get_added_container());
-      removed->add_triplet_container(get_triplet_container(i)
-                                       ->get_removed_container());
-    }
-    return TripletContainerPair(added, removed);
-  }
  public:
   //! Construct and empty set
   TripletContainerSet(Model *m,
@@ -105,6 +92,12 @@ class IMPCONTAINEREXPORT TripletContainerSet
   }
 
   ParticlesTemp get_contained_particles() const;
+  bool get_contents_changed() const {
+    for (unsigned int i=0; i< get_number_of_triplet_containers(); ++i) {
+      if (get_triplet_container(i)->get_contents_changed()) return true;
+    }
+    return false;
+  }
   IMP_OBJECT(TripletContainerSet);
 
   /** @name Methods to control the nested container
@@ -116,26 +109,12 @@ class IMPCONTAINEREXPORT TripletContainerSet
   IMP_LIST_ACTION(public, TripletContainer, TripletContainers,
                   triplet_container, triplet_containers,
                   TripletContainer*, TripletContainers,
-              {
-                if (get_has_added_and_removed_containers()) {
-                  get_set(get_added_container())
-                    ->add_triplet_container(obj
-                           ->get_added_container());
-                }
-                obj->set_was_used(true);
-              },{},
-              if (container
-                  && container->get_has_added_and_removed_containers()) {
-                get_set(container->get_removed_container())
-                  ->add_triplet_container(obj
-                       ->get_removed_container());
-              });
+                  {
+                    obj->set_was_used(true);
+                  },{},
+                  );
   /**@}*/
 
-  static TripletContainerSet *create_untracked_container() {
-    TripletContainerSet *lsc = new TripletContainerSet();
-    return lsc;
-  }
 #ifndef IMP_DOXYGEN
   bool get_is_up_to_date() const {
     for (unsigned int i=0;

@@ -9,7 +9,6 @@ files = [
          'CoreQuadsRestraint.cpp',
          'CoreSingletonsRestraint.cpp',
          'CoreTripletsRestraint.cpp',
-         'DifferenceSingletonContainer.cpp',
          'MovedSingletonContainer.cpp',
          'evaluate_distance_pair_score.cpp',
          'graph_base.cpp',

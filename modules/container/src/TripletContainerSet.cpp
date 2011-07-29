@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
-TripletContainerSet
-::TripletContainerSet() {
-}
-
 TripletContainerSet
 ::TripletContainerSet(Model *m, std::string name):
   TripletContainer(m, name),

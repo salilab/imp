@@ -52,19 +52,6 @@ class IMPEXPORT SingletonContainer : public Container
     SingletonContainer* o_;
   };
  protected:
-  /** Containers must have containers that keep track of the particles
-      which have been added or since the last step. These containers
-      must be registered with the parent SingletonContainer.
-
-      Containers which are themselves returned by the get_added/removed
-      functions do not have to register such containers.
-  */
-  virtual SingletonContainerPair
-    get_added_and_removed_containers() const =0;
-  bool get_has_added_and_removed_containers() const {
-    return (added_ && added_->get_is_shared())
-      || (removed_ && removed_->get_is_shared());
-  }
   SingletonContainer(){}
   SingletonContainer(Model *m,
                      std::string name="SingletonContainer %1%");
@@ -170,47 +157,10 @@ public:
                                   double max) const=0;
 
 
-  /** \name Tracking changes
-      The container can keep track of the changes since the last
-      Model::evaluate() call. To use this, make sure to call
-      get_removed_container() or get_added_container() before
-      Model::evaluate() so the container knows to track changes.
-      @{
+  /** Return true if the contents of the container changed since the last
+      evaluate.
   */
-  SingletonContainer* get_removed_container() const {
-    // must not be an added or removed container
-    get_model();
-    if (!added_) {
-      std::pair<SingletonContainer*, SingletonContainer*>
-        cp= get_added_and_removed_containers();
-      added_=cp.first;
-      removed_=cp.second;
-    }
-    IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_container() do not "
-                    << " track their own added and removed contents.");
-    SingletonContainer *ret= dynamic_cast<SingletonContainer*>(removed_.get());
-    IMP_INTERNAL_CHECK(ret, "Cannot cast object " << removed_->get_name()
-                       << " to a SingletonContainer.");
-    return ret;
-  }
-  SingletonContainer* get_added_container() const {
-    // must not be an added or removed container
-    if (!added_) {
-      std::pair<SingletonContainer*, SingletonContainer*>
-        cp= get_added_and_removed_containers();
-      added_=cp.first;
-      removed_=cp.second;
-    }
-    IMP_USAGE_CHECK(added_, "The containers returned by "
-                    << " get_added_container() do not "
-                    << " track their own added and removed contents.");
-    SingletonContainer *ret= dynamic_cast<SingletonContainer*>(added_.get());
-    IMP_INTERNAL_CHECK(ret, "Cannot cast object " << added_->get_name()
-                       << " to a SingletonContainer.");
-    return ret;
-  }
-  /** @} */
+  virtual bool get_contents_changed() const=0;
 
 #ifndef IMP_DOXYGEN
   typedef Particle* value_type;

@@ -21,11 +21,4 @@ void ListLikeCLASSNAMEContainer
 
 
 
-
-CLASSNAMEContainerPair ListLikeCLASSNAMEContainer
-::get_added_and_removed_containers() const {
-  return CLASSNAMEContainerPair(new ListLikeCLASSNAMEContainer(),
-                                new ListLikeCLASSNAMEContainer());
-}
-
 IMPCORE_END_INTERNAL_NAMESPACE

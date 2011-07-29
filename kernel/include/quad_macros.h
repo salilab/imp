@@ -283,7 +283,7 @@
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_QUAD_CONTAINER(Name)                                  \
-  QuadContainerPair get_added_and_removed_containers() const;      \
+  bool get_contents_changed() const;                                    \
   bool get_contains_particle_quad(const ParticleQuad& p) const;      \
   unsigned int get_number_of_particle_quads() const;                     \
   ParticleQuad get_particle_quad(unsigned int i) const;                  \

@@ -28,31 +28,15 @@ class IMPCOREEXPORT CoreListSingletonContainer:
  public:
   CoreListSingletonContainer(Model *m, std::string name);
   CoreListSingletonContainer(Model *m, const char *name);
-  CoreListSingletonContainer();
   void add_particle(Particle* vt) {
     IMP_USAGE_CHECK(IMP::internal::is_valid(vt),
                     "Passed Singleton cannot be NULL (or None)");
     add_to_list(IMP::internal::get_index(vt));
-    IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                    || !get_removed_container()
-                    ->get_contains(vt),
-      "You cannot remove and add the same item in one time step.");
   }
   void add_particles(const ParticlesTemp &c) {
     if (c.empty()) return;
     ParticleIndexes cp= IMP::internal::get_index(c);
     add_to_list(cp);
-    IMP_IF_CHECK(USAGE) {
-      for (unsigned int i=0; i< c.size(); ++i) {
-        IMP_USAGE_CHECK(IMP::internal::is_valid(c[i]),
-                        "Passed Singleton cannot be NULL (or None)");
-        IMP_USAGE_CHECK(!get_has_added_and_removed_containers()
-                        || !get_removed_container()
-                        ->get_contains(c[i]),
-        "You cannot remove and add the same item in one time step.");
-
-      }
-    }
   }
   void remove_particles(const ParticlesTemp &c);
   void set_particles(ParticlesTemp c) {

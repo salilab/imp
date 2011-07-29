@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
-PairContainerSet
-::PairContainerSet() {
-}
-
 PairContainerSet
 ::PairContainerSet(Model *m, std::string name):
   PairContainer(m, name),

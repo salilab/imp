@@ -15,11 +15,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-
-SingletonContainerSet
-::SingletonContainerSet() {
-}
-
 SingletonContainerSet
 ::SingletonContainerSet(Model *m, std::string name):
   SingletonContainer(m, name),

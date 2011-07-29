@@ -9,7 +9,6 @@
  */
 
 #include "IMP/container/ConnectingPairContainer.h"
-#include <IMP/core/internal/DifferenceSingletonContainer.h>
 #include <IMP/container/ListPairContainer.h>
 #include <IMP/core/internal/pair_helpers.h>
 #include <IMP/core/internal/close_pairs_helpers.h>

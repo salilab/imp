@@ -283,7 +283,7 @@
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_TRIPLET_CONTAINER(Name)                                  \
-  TripletContainerPair get_added_and_removed_containers() const;      \
+  bool get_contents_changed() const;                                    \
   bool get_contains_particle_triplet(const ParticleTriplet& p) const;      \
   unsigned int get_number_of_particle_triplets() const;                     \
   ParticleTriplet get_particle_triplet(unsigned int i) const;                  \

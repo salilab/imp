@@ -283,7 +283,7 @@
     - IMP::Interaction::get_input_objects()
 */
 #define IMP_SINGLETON_CONTAINER(Name)                                  \
-  SingletonContainerPair get_added_and_removed_containers() const;      \
+  bool get_contents_changed() const;                                    \
   bool get_contains_particle(Particle* p) const;      \
   unsigned int get_number_of_particles() const;                     \
   Particle* get_particle(unsigned int i) const;                  \

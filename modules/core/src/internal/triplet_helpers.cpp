@@ -21,11 +21,4 @@ void ListLikeTripletContainer
 
 
 
-
-TripletContainerPair ListLikeTripletContainer
-::get_added_and_removed_containers() const {
-  return TripletContainerPair(new ListLikeTripletContainer(),
-                                new ListLikeTripletContainer());
-}
-
 IMPCORE_END_INTERNAL_NAMESPACE

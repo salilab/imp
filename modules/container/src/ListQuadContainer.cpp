@@ -17,9 +17,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ListQuadContainer
-::ListQuadContainer():
-  P(){}
 
 ListQuadContainer
 ::ListQuadContainer(const ParticleQuadsTemp &ps):

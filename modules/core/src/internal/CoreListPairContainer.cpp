@@ -19,10 +19,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListPairContainer,);
 
-CoreListPairContainer
-::CoreListPairContainer():
-  internal::ListLikePairContainer(){}
-
 
 CoreListPairContainer
 ::CoreListPairContainer(Model *m, std::string name):

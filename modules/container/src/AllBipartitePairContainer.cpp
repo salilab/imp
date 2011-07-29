@@ -9,7 +9,6 @@
  */
 
 #include "IMP/container/AllBipartitePairContainer.h"
-#include <IMP/core/internal/DifferenceSingletonContainer.h>
 #include <IMP/PairModifier.h>
 #include <IMP/SingletonModifier.h>
 #include <IMP/PairScore.h>
@@ -37,53 +36,9 @@ AllBipartitePairContainer
 
 
 
-PairContainerPair
-AllBipartitePairContainer::get_added_and_removed_containers() const {
-IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, olda,
-          (a_,
-           a_->get_removed_container()));
-  IMP_NEW(IMP::core::internal::DifferenceSingletonContainer, oldb,
-          (b_,
-           b_->get_removed_container()));
-
-  Pointer<PairContainerSet> removed
-    = PairContainerSet::create_untracked_container();
-  {
-    Pointer<PairContainer> all
-      = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_removed_container(),
-                                   b_->get_removed_container());
-    removed->add_pair_container(all);
-    Pointer<PairContainer> leftr
-      = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_removed_container(),
-                                   oldb);
-    removed->add_pair_container(leftr);
-    Pointer<PairContainer> rightr
-      = AllBipartitePairContainer::create_untracked_container(olda,
-                                   b_->get_removed_container());
-    removed->add_pair_container(rightr);
-  }
-  Pointer<PairContainerSet> added
-    = PairContainerSet::create_untracked_container();
-  {
-    Pointer<PairContainer> all
-      =AllBipartitePairContainer
-      ::create_untracked_container(a_->get_added_container(),
-                                   b_->get_added_container());
-    added->add_pair_container(all);
-    Pointer<PairContainer> leftr
-      = AllBipartitePairContainer
-      ::create_untracked_container(a_->get_added_container(),
-                                   oldb);
-    added->add_pair_container(leftr);
-    Pointer<PairContainer> rightr
-      = AllBipartitePairContainer
-      ::create_untracked_container(olda,
-                                   b_->get_added_container());
-    added->add_pair_container(rightr);
-  }
-  return PairContainerPair(added, removed);
+bool
+AllBipartitePairContainer::get_contents_changed() const {
+  return a_->get_contents_changed() || b_->get_contents_changed();
 }
 
 unsigned int

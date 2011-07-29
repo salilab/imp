@@ -19,10 +19,6 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 IMP_ACTIVE_CONTAINER_DEF(CoreListTripletContainer,);
 
-CoreListTripletContainer
-::CoreListTripletContainer():
-  internal::ListLikeTripletContainer(){}
-
 
 CoreListTripletContainer
 ::CoreListTripletContainer(Model *m, std::string name):

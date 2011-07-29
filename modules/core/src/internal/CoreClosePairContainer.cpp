@@ -9,7 +9,6 @@
  */
 
 #include "IMP/core/internal/CoreClosePairContainer.h"
-#include <IMP/core/internal/DifferenceSingletonContainer.h>
 #include <IMP/core/BoxSweepClosePairsFinder.h>
 #include <IMP/core/GridClosePairsFinder.h>
 #include <IMP/core/internal/CoreListPairContainer.h>

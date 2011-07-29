@@ -17,9 +17,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ListPairContainer
-::ListPairContainer():
-  P(){}
 
 ListPairContainer
 ::ListPairContainer(const ParticlePairsTemp &ps):

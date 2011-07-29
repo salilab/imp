@@ -17,9 +17,6 @@
 
 IMPCONTAINER_BEGIN_NAMESPACE
 
-ListTripletContainer
-::ListTripletContainer():
-  P(){}
 
 ListTripletContainer
 ::ListTripletContainer(const ParticleTripletsTemp &ps):

@@ -91,19 +91,21 @@ namespace {
                    Graph &g,
                    std::vector<Edge> &mst) {
     try {
-      for (unsigned int i=0; i< a->get_number_of_particles(); ++i) {
+      ParticleIndexes pis = a->get_indexes();
+      for (unsigned int i=0; i< pis.size(); ++i) {
         for (unsigned int j=0; j<i; ++j) {
-          double d= ps->evaluate(ParticlePair(a->get_particle(i),
-                                              a->get_particle(j)), NULL);
+          double d= ps->evaluate_index(a->get_model(),
+                                       ParticleIndexPair(pis[i],
+                                                         pis[j]), NULL);
           IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-                  << a->get_particle(i)->get_name() << " and "
-                  << a->get_particle(j)->get_name() << " with weight "
+                  << ParticleIndexPair(pis[i],
+                                       pis[j]) << " with weight "
                   << d << std::endl);
           /*Edge e =*/ boost::add_edge(i, j, Weight(d), g);
           //boost::put(boost::edge_weight_t(), g, e, d);
         }
       }
-      mst.resize(a->get_number_of_particles()-1);
+      mst.resize(pis.size()-1);
     } catch (std::bad_alloc&c) {
       IMP_FAILURE("Out of memory in ConnectivityRestraint.");
     }
