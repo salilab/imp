@@ -62,8 +62,8 @@ bool MonteCarlo::do_accept_or_reject_move(double score) {
   } else {
     IMP_LOG(VERBOSE, "Reject: " << score
             << " current score stays " << last_energy_ << std::endl);
-    for (MoverIterator it = movers_begin(); it != movers_end(); ++it) {
-      (*it)->reset_move();
+    for (int i= get_number_of_movers()-1; i>=0; --i) {
+      get_mover(i)->reset_move();
     }
     ++stat_num_failures_;
     return false;
