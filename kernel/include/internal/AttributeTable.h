@@ -132,9 +132,11 @@ struct ObjectsAttributeTableTraits
     return !f.empty();
   }
   static Value min(Value a, Value b) {
+    IMP_UNUSED(b);
     return a;
   }
   static Value max(Value a, Value b) {
+    IMP_UNUSED(a);
     return b;
   }
 };
