@@ -68,6 +68,59 @@ public:
 
 IMP_OUTPUT_OPERATOR(TripletModifier);
 
+#ifdef IMP_DOXYGEN
+/** Create a modifier from a functor. C++ only. The function should take
+    a Triplet as an argument.
+    This is intended to be used as a temporary object and not stored.
+    A reference to the functor is saved.
+ */
+template <class Functor>
+TripletModifier *create_particle_triplet_modifier(const Functor& f);
+#elif !defined(SWIG)
+template <class Functor>
+class FunctorTripletModifier: public TripletModifier {
+  const Functor &f_;
+public:
+  FunctorTripletModifier(const Functor& f):
+    TripletModifier("FunctorModifier %1%"),
+    f_(f){}
+  IMP_TRIPLET_MODIFIER(FunctorTripletModifier);
+};
+
+template <class Functor>
+void FunctorTripletModifier<Functor>::apply(const ParticleTriplet& v) const {
+  f_(v);
+}
+
+template <class Functor>
+ ParticlesTemp
+FunctorTripletModifier<Functor>::get_input_particles(Particle* p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ParticlesTemp
+FunctorTripletModifier<Functor>::get_output_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ContainersTemp
+FunctorTripletModifier<Functor>::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+template <class Functor>
+ContainersTemp
+FunctorTripletModifier<Functor>::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+/** Create a modifier from a functor. C++ only.*/
+template <class Functor>
+inline FunctorTripletModifier<Functor> *
+create_particle_triplet_modifier(const Functor& f) {
+  return new FunctorTripletModifier<Functor>(f);
+}
+
+#endif
 
 IMP_OBJECTS(TripletModifier,TripletModifiers);
 

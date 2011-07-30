@@ -68,6 +68,59 @@ public:
 
 IMP_OUTPUT_OPERATOR(SingletonModifier);
 
+#ifdef IMP_DOXYGEN
+/** Create a modifier from a functor. C++ only. The function should take
+    a Singleton as an argument.
+    This is intended to be used as a temporary object and not stored.
+    A reference to the functor is saved.
+ */
+template <class Functor>
+SingletonModifier *create_particle_modifier(const Functor& f);
+#elif !defined(SWIG)
+template <class Functor>
+class FunctorSingletonModifier: public SingletonModifier {
+  const Functor &f_;
+public:
+  FunctorSingletonModifier(const Functor& f):
+    SingletonModifier("FunctorModifier %1%"),
+    f_(f){}
+  IMP_SINGLETON_MODIFIER(FunctorSingletonModifier);
+};
+
+template <class Functor>
+void FunctorSingletonModifier<Functor>::apply(Particle* v) const {
+  f_(v);
+}
+
+template <class Functor>
+ ParticlesTemp
+FunctorSingletonModifier<Functor>::get_input_particles(Particle* p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ParticlesTemp
+FunctorSingletonModifier<Functor>::get_output_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ContainersTemp
+FunctorSingletonModifier<Functor>::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+template <class Functor>
+ContainersTemp
+FunctorSingletonModifier<Functor>::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+/** Create a modifier from a functor. C++ only.*/
+template <class Functor>
+inline FunctorSingletonModifier<Functor> *
+create_particle_modifier(const Functor& f) {
+  return new FunctorSingletonModifier<Functor>(f);
+}
+
+#endif
 
 IMP_OBJECTS(SingletonModifier,SingletonModifiers);
 

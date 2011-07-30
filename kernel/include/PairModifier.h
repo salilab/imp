@@ -68,6 +68,59 @@ public:
 
 IMP_OUTPUT_OPERATOR(PairModifier);
 
+#ifdef IMP_DOXYGEN
+/** Create a modifier from a functor. C++ only. The function should take
+    a Pair as an argument.
+    This is intended to be used as a temporary object and not stored.
+    A reference to the functor is saved.
+ */
+template <class Functor>
+PairModifier *create_particle_pair_modifier(const Functor& f);
+#elif !defined(SWIG)
+template <class Functor>
+class FunctorPairModifier: public PairModifier {
+  const Functor &f_;
+public:
+  FunctorPairModifier(const Functor& f):
+    PairModifier("FunctorModifier %1%"),
+    f_(f){}
+  IMP_PAIR_MODIFIER(FunctorPairModifier);
+};
+
+template <class Functor>
+void FunctorPairModifier<Functor>::apply(const ParticlePair& v) const {
+  f_(v);
+}
+
+template <class Functor>
+ ParticlesTemp
+FunctorPairModifier<Functor>::get_input_particles(Particle* p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ParticlesTemp
+FunctorPairModifier<Functor>::get_output_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ContainersTemp
+FunctorPairModifier<Functor>::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+template <class Functor>
+ContainersTemp
+FunctorPairModifier<Functor>::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+/** Create a modifier from a functor. C++ only.*/
+template <class Functor>
+inline FunctorPairModifier<Functor> *
+create_particle_pair_modifier(const Functor& f) {
+  return new FunctorPairModifier<Functor>(f);
+}
+
+#endif
 
 IMP_OBJECTS(PairModifier,PairModifiers);
 

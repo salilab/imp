@@ -68,6 +68,59 @@ public:
 
 IMP_OUTPUT_OPERATOR(CLASSNAMEModifier);
 
+#ifdef IMP_DOXYGEN
+/** Create a modifier from a functor. C++ only. The function should take
+    a CLASSNAME as an argument.
+    This is intended to be used as a temporary object and not stored.
+    A reference to the functor is saved.
+ */
+template <class Functor>
+CLASSNAMEModifier *create_FUNCTIONNAME_modifier(const Functor& f);
+#elif !defined(SWIG)
+template <class Functor>
+class FunctorCLASSNAMEModifier: public CLASSNAMEModifier {
+  const Functor &f_;
+public:
+  FunctorCLASSNAMEModifier(const Functor& f):
+    CLASSNAMEModifier("FunctorModifier %1%"),
+    f_(f){}
+  IMP_HEADERNAME_MODIFIER(FunctorCLASSNAMEModifier);
+};
+
+template <class Functor>
+void FunctorCLASSNAMEModifier<Functor>::apply(ARGUMENTTYPE v) const {
+  f_(v);
+}
+
+template <class Functor>
+ ParticlesTemp
+FunctorCLASSNAMEModifier<Functor>::get_input_particles(Particle* p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ParticlesTemp
+FunctorCLASSNAMEModifier<Functor>::get_output_particles(Particle *p) const {
+  return ParticlesTemp(1,p);
+}
+template <class Functor>
+ContainersTemp
+FunctorCLASSNAMEModifier<Functor>::get_input_containers(Particle *p) const {
+  return ContainersTemp();
+}
+template <class Functor>
+ContainersTemp
+FunctorCLASSNAMEModifier<Functor>::get_output_containers(Particle *p) const {
+  return ContainersTemp();
+}
+
+/** Create a modifier from a functor. C++ only.*/
+template <class Functor>
+inline FunctorCLASSNAMEModifier<Functor> *
+create_FUNCTIONNAME_modifier(const Functor& f) {
+  return new FunctorCLASSNAMEModifier<Functor>(f);
+}
+
+#endif
 
 IMP_OBJECTS(CLASSNAMEModifier,CLASSNAMEModifiers);
 
