@@ -84,7 +84,7 @@ s=create_sampler(m, pst)
 
 print "sampling"
 # not currently supported
-exit(0)
+exit()
 cs=s.get_sample()
 
 print "found ", cs.get_number_of_configurations(), "solutions"
