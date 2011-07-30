@@ -24,8 +24,6 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Float max_tr,
   centers_ = centers;
   ps_ = atom::Hierarchy(p).get_parent().get_leaves();
   transformations_ = transformations;
-  oldtr_x_=algebra::Vector3D(0.0,0.0,0.0);
-  oldtrans_=algebra::get_identity_transformation_3d();
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
@@ -44,7 +42,7 @@ void PbcBoxedMover::propose_move(Float f) {
    algebra::Vector3D newcoord=core::XYZ(p_).get_coordinates()+tr_x;
 
 // find cell
-   double mindist=10000.0;
+   double mindist=1.0e+24;
    unsigned icell=0;
    for(unsigned int i=0;i<centers_.size();++i){
     double dist=algebra::get_l2_norm(newcoord-centers_[i]);
@@ -54,12 +52,14 @@ void PbcBoxedMover::propose_move(Float f) {
     }
    }
 
-   oldtrans_=transformations_[icell];
-   oldtr_x_=tr_x;
+   algebra::Transformation3D trans=transformations_[icell].get_inverse();
 
+   oldcoords_.clear();
    for(unsigned int i=0;i<ps_.size();++i){
-    newcoord=(oldtrans_.get_inverse()).get_transformed(
-     core::XYZ(ps_[i]).get_coordinates()+tr_x);
+    oldcoords_.push_back(core::XYZ(ps_[i]).get_coordinates());
+    algebra::Vector3D trr_x=algebra::Vector3D(0.0,0.0,0.0);
+    if(ps_[i]==p_) trr_x=tr_x;
+    newcoord=trans.get_transformed(oldcoords_[i]+trr_x);
     core::XYZ(ps_[i]).set_coordinates(newcoord);
    }
 
@@ -67,10 +67,8 @@ void PbcBoxedMover::propose_move(Float f) {
 
 void PbcBoxedMover::reset_move() {
  for(unsigned int i=0;i<ps_.size();++i){
-    algebra::Vector3D oldcoord=oldtrans_.get_transformed(
-     core::XYZ(ps_[i]).get_coordinates())-oldtr_x_;
-    core::XYZ(ps_[i]).set_coordinates(oldcoord);
-   }
+    core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
+ }
 }
 
 void PbcBoxedMover::do_show(std::ostream &out) const {

@@ -32,26 +32,30 @@ core::MonteCarlo* setup_SPBMonteCarlo
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
+ mc->set_kt(temp);
 
 // create movers
+ core::Movers mvs;
 // first hierarchy hs[0] is CP
  atom::HierarchiesTemp hhs=hs[0].get_children();
  for(unsigned int j=0;j<hhs.size();++j){
-  Particles ps0=hhs[j].get_leaves();
+  Particles ps=hhs[j].get_leaves();
 // particle 0 is special
   IMP_NEW(membrane::PbcBoxedMover,mv,
-         (ps0[0],mc_dx_,myparam.CP_centers,myparam.trs));
-  mc->add_mover(mv);
-// for the others normal Ball Mover
-  IMP_NEW(container::ListSingletonContainer,lsc,(m));
-  for(unsigned int k=1;k<ps0.size();++k) {lsc->add_particle(ps0[k]);}
-  IMP_NEW(core::BallMover,bmv,(lsc,mc_dx_));
-  mc->add_mover(bmv);
+         (ps[0],mc_dx_,myparam.CP_centers,myparam.trs));
+  mvs.push_back(mv);
+ //for the others new Ball Mover
+  for(unsigned int k=1;k<ps.size();++k) {
+   IMP_NEW(membrane::NewBallMover,bmv,(ps[k],mc_dx_));
+   mvs.push_back(bmv);
+  }
  }
 
 // second hierarchy is IL2
 // TO DO
 
+ IMP_NEW(membrane::MoversMover,mvmv,(mvs));
+ mc->add_mover(mvmv);
  return mc.release();
 }
 

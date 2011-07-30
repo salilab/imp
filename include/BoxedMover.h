@@ -29,18 +29,14 @@ public:
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
-  BoxedMover(Particle *p, Float max_tr,
-             Float side, Float thick, algebra::VectorD<3> center,
-             std::string cell_type);
+  BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
   void reset_move();
   void propose_move(Float f);
   IMP_OBJECT(BoxedMover);
 private:
   Float max_tr_;
-  Float side_;
-  Float thick_;
-  algebra::VectorD<3> center_, oldcoord_;
-  std::string cell_type_;
+  algebra::Vector3Ds centers_;
+  algebra::Vector3D oldcoord_;
   Particle *p_;
 };
 

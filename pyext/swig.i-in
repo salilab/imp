@@ -14,6 +14,8 @@ IMP_SWIG_OBJECT(IMP::membrane, RigidBodyNewMover, RigidBodyNewMovers);
 IMP_SWIG_OBJECT(IMP::membrane, TiltSingletonScore, TiltSingletonScores);
 IMP_SWIG_OBJECT(IMP::membrane, RigidBodyGridStates, RigidBodyGridStatess); 
 IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
+IMP_SWIG_OBJECT(IMP::membrane, PbcBoxedMover, PbcBoxedMovers);
+IMP_SWIG_OBJECT(IMP::membrane, NewBallMover, NewBallMovers); 
 
 /* Wrap our own classes. Each header in the module should be listed here with a
    %include line.*/
@@ -25,3 +27,5 @@ IMP_SWIG_OBJECT(IMP::membrane, MonteCarloWithWte, MonteCarloWithWtes);
 %include "IMP/membrane/RigidBodyNewMover.h"
 %include "IMP/membrane/RigidBodyGridStates.h"
 %include "IMP/membrane/MonteCarloWithWte.h"
+%include "IMP/membrane/PbcBoxedMover.h"
+%include "IMP/membrane/NewBallMover.h"
