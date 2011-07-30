@@ -111,6 +111,12 @@ struct ObjectAttributeTableTraits
   static bool get_is_valid(const Value& f) {
     return f;
   }
+  static Value min(Value a, Value b) {
+    return std::min(a,b);
+  }
+  static Value max(Value a, Value b) {
+    return std::max(a,b);
+  }
 };
 
 struct ObjectsAttributeTableTraits
@@ -124,6 +130,12 @@ struct ObjectsAttributeTableTraits
   }
   static bool get_is_valid(const Value& f) {
     return !f.empty();
+  }
+  static Value min(Value a, Value b) {
+    return a;
+  }
+  static Value max(Value a, Value b) {
+    return b;
   }
 };
 
