@@ -290,6 +290,13 @@ IMPALGEBRAEXPORT Rotation3D get_random_rotation_3d(const Rotation3D &center,
 IMPALGEBRAEXPORT Rotation3Ds
 get_uniform_cover_rotations_3d(unsigned int num_points);
 
+//! Generates a nondegenerate set of Euler angles with a delta resolution
+/**
+\param[input] delta sample every delta angles in degrees.
+ */
+IMPALGEBRAEXPORT
+algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta);
+
 //! Compute a rotatation from an unnormalized quaternion
 /** \relatesalso Rotation3D */
 inline Rotation3D get_rotation_from_vector4d(const VectorD<4> &v) {
@@ -396,6 +403,35 @@ public:
 IMP_VALUES(FixedZYZ, FixedZYZs);
 
 
+
+
+//! A simple class for returning ZXZ Euler angles
+/**
+   \ingroup uninitialized_default
+*/
+class FixedZXZ {
+  double v_[3];
+public:
+  FixedZXZ(){}
+  FixedZXZ(double psi, double theta, double phi)
+  {v_[0]=psi; v_[1]= theta; v_[2]=phi;}
+  double get_psi() const {
+    return v_[0];
+  }
+  double get_theta() const {
+    return v_[1];
+  }
+  double get_phi() const {
+    return v_[2];
+  }
+  IMP_SHOWABLE_INLINE(FixedZXZ,
+                      {out << v_[0] << " " << v_[1]
+                           << " " << v_[2];});
+};
+
+IMP_VALUES(FixedZXZ, FixedZXZs);
+
+
 //! A simple class for returning XYZ Euler angles
 /**
    \ingroup uninitialized_default
@@ -430,6 +466,14 @@ IMP_VALUES(FixedXYZ, FixedXYZs);
 */
 IMPALGEBRAEXPORT FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r);
 
+
+//! The inverse of rotation_from_fixed_zyz()
+/**
+   \see rotation_from_fixed_zxz()
+   \relatesalso Rotation3D
+   \relatesalso FixedZXZ
+*/
+IMPALGEBRAEXPORT FixedZXZ get_fixed_zxz_from_rotation(const Rotation3D &r);
 
 //! The inverse of rotation_from_fixed_xyz()
 /**
@@ -470,6 +514,8 @@ Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
 */
 IMPALGEBRAEXPORT
 std::pair<VectorD<3>,double> get_axis_and_angle(const Rotation3D &rot);
+
+
 
 typedef std::pair<VectorD<3>,double> AxisAnglePair;
 #ifndef IMP_DOXYGEN

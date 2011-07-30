@@ -269,6 +269,18 @@ Rotation3D get_rotation_from_fixed_zyz(double Rot, double Tilt, double Psi) {
   return rot;
 }
 
+FixedZXZ get_fixed_zxz_from_rotation(const Rotation3D &r) {
+
+  Vector4D q = r.get_quaternion();
+  double q0=q[0];
+  double q1=q[1];
+  double q2=q[2];
+  double q3=q[3];
+  double phi=std::atan2((2*(q0*q3+q1*q2)),(1-2*(q2*q2+q3*q3)));
+  double theta=std::asin(2*((q0*q2)-(q3*q1)));
+  double psi=std::atan2((2*(q0*q1+q2*q3)),(1-2*(q1*q1+q2*q2)));
+  return FixedZXZ(phi,theta,psi);
+}
 
 FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   // double d22 = c2
@@ -312,8 +324,6 @@ FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
                "The input and output rotations are far apart " << r
                << " and " << rrot << std::endl);
   }
-  //if (rot > PI/2) rot=rot-PI;
-  //if (psi > PI/2) psi= psi-PI;
   return FixedZYZ(rot, tilt, psi);
 }
 
@@ -394,5 +404,47 @@ std::pair<VectorD<3>,double> get_axis_and_angle(
   VectorD<3> axis(b/s,c/s,d/s);
   return std::pair<VectorD<3>,double>(axis.get_unit_vector(),angle);
 }
+
+
+
+
+//! Generates a nondegenerate set of Euler angles with a delta resolution
+algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta) {
+  Vector3D eu_start(0.,0.,0.);//psi,theta,phi
+  Vector3D eu_end(360.,180.,360.);
+  Vector3D eu_range=eu_end-eu_start;
+  double phi_steps       = rint((eu_range[2]/delta) + 0.499);
+  double phi_real_dist   = eu_range[2] / phi_steps;
+  double theta_steps     = rint((eu_range[1]/delta) + 0.499);
+  double theta_real_dist = eu_range[1] / theta_steps;
+  double angle2rad=PI/180.;
+  double psi_steps,psi_ang_dist,psi_real_dist;
+
+  algebra::Rotation3Ds ret;
+  for (double phi=eu_start[2]; phi < eu_end[2];  phi+=phi_real_dist) {
+    for (double theta=eu_start[1]; theta <= eu_end[1]; theta+=theta_real_dist) {
+      if (theta == 0.0 || theta == 180.0) {
+        psi_steps = 1;
+      }
+      else {
+        psi_steps = rint(360.0*std::cos((90.0-theta)*angle2rad)/delta);
+      }
+      psi_ang_dist  = 360.0/psi_steps;
+      psi_real_dist = eu_range[0] / (ceil(eu_range[0]/psi_ang_dist));
+      for (double psi=eu_start[0]; psi < eu_end[0];  psi+=psi_real_dist)  {
+        ret.push_back(get_rotation_from_fixed_zxz(
+                                                  phi*angle2rad,
+                                                  theta*angle2rad,
+                                                  psi*angle2rad));
+      }}}
+  return ret;
+}
+
+
+
+
+
+
+
 
 IMPALGEBRA_END_NAMESPACE
