@@ -3,7 +3,7 @@ import IMP
 import IMP.test
 import IMP.atom
 
-class PDBReadWriteTest(IMP.test.TestCase):
+class PDBTests(IMP.test.TestCase):
     def _test_round_trip(self, name, selector):
         m= IMP.Model()
         p= IMP.atom.read_pdb(self.get_input_file_name(name),
@@ -92,6 +92,8 @@ class PDBReadWriteTest(IMP.test.TestCase):
     def test_pyimpl(self):
         """Test PDBSelectors implemented in Python"""
         class my_selector(IMP.atom.PDBSelector):
+            def __init__(self):
+                IMP.atom.PDBSelector.__init__(self, "my selector")
             def get_is_selected(self, ln):
                 return ln.startswith("ATOM")
 
@@ -131,6 +133,7 @@ class PDBReadWriteTest(IMP.test.TestCase):
         ln= IMP.atom.get_leaves(h)
         print len(ln)
         self.assert_(len(ln) < 1000)
+
 
 if __name__ == '__main__':
     IMP.test.main()
