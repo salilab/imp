@@ -30,6 +30,7 @@ core::MonteCarlo* setup_MonteCarlo(Model *m,
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
+ core::Movers mvs;
  for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);
   s.set_molecule(myparam->TM.name[i]);
@@ -37,17 +38,19 @@ core::MonteCarlo* setup_MonteCarlo(Model *m,
   core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
   if(i==0){
    IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,0.0,0.0,mc_dx_,mc_dang_));
-   mc->add_mover(mv);
+   mvs.push_back(mv);
   }
   if(i==1){
    IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,mc_dx_,0.0,mc_dx_,mc_dang_));
-   mc->add_mover(mv);
+   mvs.push_back(mv);
   }
   if(i>1){
    IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,mc_dx_,mc_dx_,mc_dx_,mc_dang_));
-   mc->add_mover(mv);
+   mvs.push_back(mv);
   }
  }
+ IMP_NEW(membrane::MoversMover,mvmv,(mvs));
+ mc->add_mover(mvmv);
  return mc.release();
 }
 

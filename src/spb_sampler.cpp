@@ -44,7 +44,7 @@ core::MonteCarlo* setup_SPBMonteCarlo
   IMP_NEW(membrane::PbcBoxedMover,mv,
          (ps[0],mc_dx_,myparam.CP_centers,myparam.trs));
   mvs.push_back(mv);
- //for the others new Ball Mover
+ //for the other particles standard BallMover
   for(unsigned int k=1;k<ps.size();++k) {
    Particles pps;
    pps.push_back(ps[k]);
