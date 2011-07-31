@@ -43,6 +43,7 @@ IMP_SWIG_VALUE(IMP::algebra, LinearFit, LinearFits);
 IMP_SWIG_VALUE(IMP::algebra, ParabolicFit, ParabolicFits);
 IMP_SWIG_VALUE(IMP::algebra, FixedZYZ, FixedZYZs);
 IMP_SWIG_VALUE(IMP::algebra, FixedXYZ, FixedXYZs);
+IMP_SWIG_VALUE(IMP::algebra, FixedZXZ, FixedZXZs);
 
 namespace boost {
 template <class T, int D> class multi_array{};
