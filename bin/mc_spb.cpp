@@ -104,7 +104,7 @@ for(int i=0;i<mydata.num_cells;++i){
 std::string trajname="traj.rmf";
 rmf::RootHandle rh = rmf::RootHandle(trajname,true);
 for(unsigned int i=0;i<h_CP.size();++i){
- atom::HierarchiesTemp hs=h_CP[i].get_children();
+ atom::Hierarchies hs=h_CP[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
 }
 
@@ -181,7 +181,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){
   for(unsigned int i=0;i<h_CP.size();++i){
-   atom::HierarchiesTemp hs=h_CP[i].get_children();
+   atom::Hierarchies hs=h_CP[i].get_children();
    for(unsigned int j=0;j<hs.size();++j){
     rmf::save_frame(rh,imc/mydata.MC.nwrite,hs[j]);
    }

@@ -35,7 +35,7 @@ void add_SPBexcluded_volume (Model *m,atom::Hierarchies hs,double kappa)
 {
  IMP_NEW(container::ListSingletonContainer,lsc,(m));
  for(unsigned int i=0;i<hs.size();++i){
-  lsc->add_particles(hs[i].get_leaves());
+  lsc->add_particles(atom::get_leaves(hs[i]));
  }
  IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa));
  evr->set_name("Excluded Volume");
@@ -245,10 +245,10 @@ void add_y2h_restraint
 void add_symmetry_restraint (Model *m,
  atom::Hierarchies hs,algebra::Transformation3Ds transformations)
 {
- Particles ps0=hs[0].get_leaves();
+ Particles ps0=atom::get_leaves(hs[0]);
  for(int i=1;i<transformations.size();++i){
   IMP_NEW(core::TransformationSymmetry,sm,(transformations[i]));
-  Particles ps1=hs[i].get_leaves();
+  Particles ps1=atom::get_leaves(hs[i]);
   for(int j=0;j<ps1.size();++j){
    core::Reference::setup_particle(ps1[j],ps0[j]);
   }
@@ -261,7 +261,7 @@ void add_symmetry_restraint (Model *m,
 void add_layer_restraint(Model *m, atom::Hierarchy h,
  FloatRange range, double kappa)
 {
- Particles ps=h.get_leaves();
+ Particles ps=atom::get_leaves(h);
  IMP_NEW(core::HarmonicWell,hw,(range,kappa));
  IMP_NEW(core::AttributeSingletonScore,asc,(hw,FloatKey("z")));
  IMP_NEW(container::ListSingletonContainer,lsc,(ps));

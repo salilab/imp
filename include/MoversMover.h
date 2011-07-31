@@ -16,17 +16,14 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-//! Move a particle and keep it in a box
-/** The transformation of a rigid body is moved in a ball of given
-    size. The probability distribution is uniform over the ball.
-    \see MonteCarlo
+//! Apply a list of movers one at a time
+/**
  */
 class IMPMEMBRANEEXPORT MoversMover : public core::Mover
 {
 public:
-  /** The particle is moved withing a (hexagonal or cubic) box
-      \param[in] p is the particle
-      \param[in] max_tr is the maximum translation during a step
+  /** The Movers are applied one at a time
+      \param[in] mvs list of Movers
    */
   MoversMover(core::Movers mvs);
   void reset_move();

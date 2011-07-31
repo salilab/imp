@@ -1,6 +1,6 @@
 /**
  *  \file MoversMover.cpp
- *  \brief A mover that applied other movers one at a time
+ *  \brief A mover that apply other movers one at a time
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *

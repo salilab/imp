@@ -61,7 +61,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
  }
  if(nbeads>1 && copy==0){
   atom::Selections ss=atom::Selections();
-  atom::HierarchiesTemp hs=protein.get_children();
+  atom::Hierarchies hs=protein.get_children();
   for(unsigned int i=0;i<hs.size();++i){
    ss.push_back(atom::Selection(hs[i]));
   }
@@ -79,15 +79,15 @@ atom::Molecule protein_b,int copy,double kappa,double dist)
  IMP_NEW(Particle,p,(m));
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
- if (copy==0 and dist>=0.0){
+ if (copy==0 && dist>=0.0){
    add_internal_restraint(m,name,protein_a,protein_b,kappa,dist);
  }
- ParticlesTemp psa=protein_a.get_leaves();
+ Particles psa=atom::get_leaves(protein_a);
  for(int i=0;i<psa.size();++i){
   protein_a.remove_child(atom::Domain(psa[i]));
   h.add_child(atom::Domain(psa[i]));
  }
- ParticlesTemp psb=protein_b.get_leaves();
+ Particles psb=atom::get_leaves(protein_b);
  for(int i=0;i<psb.size();++i){
   protein_b.remove_child(atom::Domain(psb[i]));
   h.add_child(atom::Domain(psb[i]));

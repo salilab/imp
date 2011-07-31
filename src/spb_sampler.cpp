@@ -37,16 +37,18 @@ core::MonteCarlo* setup_SPBMonteCarlo
 // create movers
  core::Movers mvs;
 // first hierarchy hs[0] is CP
- atom::HierarchiesTemp hhs=hs[0].get_children();
+ atom::Hierarchies hhs=hs[0].get_children();
  for(unsigned int j=0;j<hhs.size();++j){
-  Particles ps=hhs[j].get_leaves();
+  Particles ps=atom::get_leaves(hhs[j]);
 // particle 0 is special
   IMP_NEW(membrane::PbcBoxedMover,mv,
          (ps[0],mc_dx_,myparam.CP_centers,myparam.trs));
   mvs.push_back(mv);
  //for the others new Ball Mover
   for(unsigned int k=1;k<ps.size();++k) {
-   IMP_NEW(membrane::NewBallMover,bmv,(ps[k],mc_dx_));
+   Particles pps;
+   pps.push_back(ps[k]);
+   IMP_NEW(core::BallMover,bmv,(pps,mc_dx_));
    mvs.push_back(bmv);
   }
  }

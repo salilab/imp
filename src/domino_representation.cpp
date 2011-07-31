@@ -40,7 +40,7 @@ for(int i=0;i<TM->num;++i){
  if(read_struct){
   IMP_NEW(atom::CAlphaPDBSelector,sel,());
   helixpdb=atom::read_pdb(TM->struct_file[i],m,sel);
-  ps=helixpdb.get_leaves();
+  ps=atom::get_leaves(helixpdb);
   if(ps.size()!=nres) IMP_FAILURE("Check number of residues in your pdb!");
  }
 // cycle on the number of residues

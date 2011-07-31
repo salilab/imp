@@ -116,7 +116,7 @@ core::TableRefiner* tbr=generate_TM(m,all,&mydata);
 // trajectory file
 std::string trajname="traj"+out.str()+".rmf";
 rmf::RootHandle rh = rmf::RootHandle(trajname,true);
-atom::HierarchiesTemp hs=all.get_children();
+atom::Hierarchies hs=all.get_children();
 for(int i=0;i<hs.size();++i) {rmf::add_hierarchy(rh, hs[i]);}
 
 // create restraints

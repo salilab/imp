@@ -22,7 +22,7 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Float max_tr,
   p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
-  ps_ = atom::Hierarchy(p).get_parent().get_leaves();
+  ps_ = atom::get_leaves(atom::Hierarchy(p).get_parent());
   transformations_ = transformations;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }

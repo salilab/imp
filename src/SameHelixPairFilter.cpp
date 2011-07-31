@@ -15,7 +15,7 @@ SameHelixPairFilter
 ::SameHelixPairFilter(){
 }
 
-bool SameHelixPairFilter::get_contains_particle_pair(const ParticlePair &pp)
+bool SameHelixPairFilter::get_contains(const ParticlePair &pp)
  const {
      return core::RigidMember(pp[0]).get_rigid_body() ==
             core::RigidMember(pp[1]).get_rigid_body();

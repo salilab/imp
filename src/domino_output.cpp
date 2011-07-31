@@ -29,7 +29,7 @@ domino::Assignments* ass, Parameters *myparam)
 // writing configurations
 if(myparam->traj_file.length()>0.0){
  rmf::RootHandle rh=rmf::RootHandle(myparam->traj_file, true);
- atom::HierarchiesTemp hs = protein.get_children();
+ atom::Hierarchies hs = protein.get_children();
  for(unsigned int i=0;i<hs.size();++i){
   rmf::add_hierarchy(rh, hs[i]);
  }
