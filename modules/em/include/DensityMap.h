@@ -421,9 +421,9 @@ public:
   Float get_spacing() const {return header_.get_spacing();}
   //! Calculates the coordinates that correspond to all voxels.
   void calc_all_voxel2loc();
-  IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
   //! copy map into this map
   void copy_map(const DensityMap *other);
+  IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
   //! Convolution a kernel with the map
   /**
@@ -431,7 +431,8 @@ public:
                    order, Z is the slowest.
 \param[in] dim_len the array leght
    */
-  void convolute_kernel(double *kernel, int dim_len);
+  void convolute_kernel(DensityMap *other,
+                        double *kernel, int dim_len);
 #endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
@@ -470,6 +471,10 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
                                        m->get_spacing()*h->get_ny(),
                                        m->get_spacing()*h->get_nz()));
 }
+
+//! create a copy of another map
+IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
+
 //! Create an empty density map from a boudning box
 IMPEMEXPORT DensityMap *create_density_map(
                                            const algebra::BoundingBox3D &bb,
