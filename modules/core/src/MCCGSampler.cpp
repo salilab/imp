@@ -117,7 +117,7 @@ ScoreWeightedIncrementalBallMover
   }
 }
 
-void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
+ParticlesTemp ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
   // damnit, why didn't these functions make it into the standard
   /*std::random_sample(sc_->particles_begin(), sc_->particles_end(),
     moved_.begin(), moved_.end());*/
@@ -143,7 +143,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
   // if the score is tiny, give up
   moved_.clear();
   old_coords_.clear();
-  if (total < .0001) return;
+  if (total < .0001) return ParticlesTemp();
   for (unsigned int i=0; i< weights.size(); ++i) {
     weights[i]/=(total/n_);
   }
@@ -185,6 +185,7 @@ void ScoreWeightedIncrementalBallMover::propose_move(Float /*size*/) {
     std::cout <<moved_[i]->get_name() << " ";
   }
   std::cout << std::endl;*/
+  return moved_;
 }
 
 

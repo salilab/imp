@@ -15,7 +15,7 @@
     - IMP::core::Mover::reset_move()
  */
 #define IMP_MOVER(Name)                                 \
-  virtual void propose_move(Float size);                \
+  virtual ParticlesTemp propose_move(Float size);       \
   virtual void reset_move();                            \
   IMP_OBJECT(Name)
 

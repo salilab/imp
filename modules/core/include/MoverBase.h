@@ -37,7 +37,7 @@ public:
 
   /** This sets everything up and then calls the generate_move method.
    */
-  virtual void propose_move(Float f);
+  virtual ParticlesTemp propose_move(Float f);
 
 protected:
   unsigned int get_number_of_particles() const {
@@ -84,7 +84,7 @@ protected:
 };
 
 
-inline void MoverBase::propose_move(Float f)
+inline ParticlesTemp MoverBase::propose_move(Float f)
 {
   values_.resize(particles_.size(),
                  std::vector<Float>(keys_.size(), 0));
@@ -94,6 +94,7 @@ inline void MoverBase::propose_move(Float f)
     }
   }
   do_move(f);
+  return IMP::internal::get_particle(m_, particles_);
 }
 
 

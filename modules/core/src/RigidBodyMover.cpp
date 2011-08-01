@@ -19,12 +19,12 @@ RigidBodyMover::RigidBodyMover(RigidBody d,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-void RigidBodyMover::propose_move(Float f) {
+ParticlesTemp RigidBodyMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"RigidBodyMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
     double fc =rand(random_number_generator);
-    if (fc > f) return;
+    if (fc > f) return ParticlesTemp();
   }
   last_transformation_= d_.get_reference_frame().get_transformation_to();
   algebra::VectorD<3> translation
@@ -44,6 +44,7 @@ void RigidBodyMover::propose_move(Float f) {
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"RigidBodyMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
+  return ParticlesTemp(1, d_);
 }
 
 

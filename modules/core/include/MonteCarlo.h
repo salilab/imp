@@ -22,8 +22,9 @@ IMPCORE_BEGIN_NAMESPACE
 
 //! A Monte Carlo optimizer.
 /** The optimizer uses a set of Mover objects to propose steps. Currently
-    each Mover is called at each Monte Carlo iteration. This may change in
-    the future. The movers propose some modification, which is then
+    each Mover is called at each Monte Carlo iteration. If you only want to
+    use one mover at a time, use a SerialMover.
+    The movers propose some modification, which is then
     accepted or rejected based on the Metropolis criteria. Optionally, a
     number of local optimization steps are taken before the MonteCarlo step
     is accepted or rejected.
@@ -131,7 +132,7 @@ public:
       optimizer states will be updated.
   */
   bool do_accept_or_reject_move(double score);
-  void do_move(double probability);
+  ParticlesTemp do_move(double probability);
   //! a class that inherits from this should override this method
   virtual void do_step();
   //! Get the current energy
@@ -139,8 +140,11 @@ public:
       no maximum allowed difference or Optimizer::evaluate_if_below()
       if there is. Classes which override this method should be
       similarly aware for efficiency.
+
+      The list of moved particles is passed.
    */
-  virtual double do_evaluate() const {
+  virtual double do_evaluate(const ParticlesTemp &moved) const {
+    IMP_UNUSED(moved);
     if (get_maximum_difference()
         < std::numeric_limits<double>::max()) {
       return evaluate_if_below(false, last_energy_+max_difference_);

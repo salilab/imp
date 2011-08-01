@@ -43,8 +43,11 @@ public:
   /** \param[in] size A number between 0 and 1 used to scale the proposed
       moves. This number can be either used to scale a continuous move
       or affect the probability of a discrete move.
+
+      The method should return the list of all particles that were
+      actually moved.
    */
-  virtual void propose_move(Float size)=0;
+  virtual ParticlesTemp propose_move(Float size)=0;
 
   //! Roll back any changes made to the Particles
   virtual void reset_move()=0;
