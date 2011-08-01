@@ -29,7 +29,7 @@ public:
   IMP_MOVER(SerialMover);
 private:
   core::Movers mvs_;
-  int imov_;
+  unsigned int imov_;
 };
 
 IMPCORE_END_NAMESPACE
