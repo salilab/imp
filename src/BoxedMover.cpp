@@ -25,12 +25,12 @@ BoxedMover::BoxedMover(Particle *p, Float max_tr,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-void BoxedMover::propose_move(Float f) {
+ParticlesTemp BoxedMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"BoxedMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
     double fc =rand(random_number_generator);
-    if (fc > f) return;
+    if (fc > f) return ParticlesTemp();
   }
 
    oldcoord_ = core::XYZ(p_).get_coordinates();
@@ -60,6 +60,10 @@ void BoxedMover::propose_move(Float f) {
    }
 
    core::XYZ(p_).set_coordinates(newcoord);
+
+   ParticlesTemp ret;
+   ret.push_back(p_);
+   return ret;
 }
 
 void BoxedMover::reset_move() {

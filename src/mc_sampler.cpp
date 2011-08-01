@@ -49,7 +49,7 @@ core::MonteCarlo* setup_MonteCarlo(Model *m,
    mvs.push_back(mv);
   }
  }
- IMP_NEW(membrane::MoversMover,mvmv,(mvs));
+ IMP_NEW(core::SerialMover,mvmv,(mvs));
  mc->add_mover(mvmv);
  return mc.release();
 }

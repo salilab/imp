@@ -27,12 +27,12 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Float max_tr,
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }
 
-void PbcBoxedMover::propose_move(Float f) {
+ParticlesTemp PbcBoxedMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"PbcBoxedMover:: propose move f is  : " << f <<std::endl);
   {
     ::boost::uniform_real<> rand(0,1);
     double fc =rand(random_number_generator);
-    if (fc > f) return;
+    if (fc > f) return ParticlesTemp();
   }
 
    algebra::Vector3D tr_x
@@ -53,6 +53,9 @@ void PbcBoxedMover::propose_move(Float f) {
    }
 
    algebra::Transformation3D trans=transformations_[icell].get_inverse();
+   ParticlesTemp ret;
+   if(icell==0) ret.push_back(p_);
+   else ret=ps_;
 
    oldcoords_.clear();
    for(unsigned int i=0;i<ps_.size();++i){
@@ -63,6 +66,7 @@ void PbcBoxedMover::propose_move(Float f) {
     core::XYZ(ps_[i]).set_coordinates(newcoord);
    }
 
+ return ret;
 }
 
 void PbcBoxedMover::reset_move() {

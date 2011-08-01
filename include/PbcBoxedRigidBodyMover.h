@@ -1,13 +1,13 @@
 /**
- *  \file RigidBodyNewMover.h
+ *  \file PbcBoxedRigidBodyMover.h
  *  \brief A mover that transform a rigid body
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H
-#define IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H
+#ifndef IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H
+#define IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H
 
 #include "membrane_config.h"
 #include <IMP/core/MonteCarlo.h>
@@ -23,7 +23,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
     size. The probability distribution is uniform over the ball.
     \see MonteCarlo
  */
-class IMPMEMBRANEEXPORT RigidBodyNewMover : public core::Mover
+class IMPMEMBRANEEXPORT PbcBoxedRigidBodyMover : public core::Mover
 {
 public:
   /** The rigid body is rotated and translated to move
@@ -31,21 +31,19 @@ public:
       \param[in] max_translation maximum translation during a step
       \param[in] max_rotation maximum rotation angle in radians
    */
-  RigidBodyNewMover(core::RigidBody d, Float max_x_translation,
-                 Float max_y_translation, Float max_z_translation,
-                 Float max_rot);
-  void reset_move();
-  ParticlesTemp propose_move(Float f);
-  IMP_OBJECT(RigidBodyNewMover);
+  PbcBoxedRigidBodyMover(core::RigidBody d,Float max_translation,
+                 Float max_rotation, algebra::Vector3Ds centers,
+                 algebra::Transformation3Ds transformations);
+  IMP_MOVER(PbcBoxedRigidBodyMover);
 private:
   algebra::Transformation3D last_transformation_;
-  Float max_x_translation_;
-  Float max_y_translation_;
-  Float max_z_translation_;
+  Float max_translation_;
   Float max_angle_;
+  algebra::Vector3Ds centers_;
+  algebra::Transformation3Ds transformations_;
   core::RigidBody d_;
 };
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_RIGID_BODY_NEW_MOVER_H */
+#endif  /* IMPMEMBRANE_PBC_BOXED_RIGID_BODY_MOVER_H */

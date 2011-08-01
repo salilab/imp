@@ -50,53 +50,70 @@ atom::Hierarchies h_CP=create_hierarchies(m,mydata.num_cells,"Central Plaque");
 //
 
 for(int i=0;i<mydata.num_cells;++i){
- algebra::Vector3D x0=mydata.CP_centers[i];
+
+ algebra::Vector3D CP_x0=mydata.CP_centers[i];
+ algebra::Vector3D IL2_x0=mydata.IL2_centers[i];
+
  for(int j=0;j<mydata.num_copies;++j){
 
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecule Spc42p_n_0=
    create_protein(m,"Spc42p_n",7,1,
                     display::Color(175./255.,238./255.,238./255.),
-                    i,mydata.kappa,x0);
+                    i,mydata.kappa,CP_x0);
   atom::Molecule Spc42p_n_1=
    create_protein(m,"Spc42p_n",7,1,
                     display::Color(175./255.,238./255.,238./255.),
-                    i,mydata.kappa,x0);
+                    i,mydata.kappa,CP_x0);
   h_CP[i].add_child(Spc42p_n_0);
   h_CP[i].add_child(Spc42p_n_1);
-  //Spc29p, 2 beads
+
+  //Spc29p, 2 beads for N, 2 beads for C
+  atom::Molecules Spc29p_all;
   atom::Molecule Spc29p_n=
    create_protein(m,"Spc29p_n",14.5,1,
                     display::Color(255./255.,165./255.,0.),
-                    i,mydata.kappa,x0);
+                    i,mydata.kappa,CP_x0);
+  Spc29p_all.push_back(Spc29p_n);
   atom::Molecule Spc29p_c=
    create_protein(m,"Spc29p_c",14.5,1,
                     display::Color(255./255.,140./255.,0.),
-                    i,mydata.kappa,x0,132);
+                    i,mydata.kappa,CP_x0,132);
+  Spc29p_all.push_back(Spc29p_c);
   atom::Molecule Spc29p=
-   create_merged_protein(m,"Spc29p",Spc29p_n,Spc29p_c,i,mydata.kappa,0.0);
+   create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
   h_CP[i].add_child(Spc29p);
 
   //Spc110p_c, 3 beads
   atom::Molecule Spc110p_c=
    create_protein(m,"Spc110p_c",26,1,
                     display::Color(255./255.,0.,0.),
-                    i,mydata.kappa,x0,627+164);
+                    i,mydata.kappa,CP_x0,627+164);
   h_CP[i].add_child(Spc110p_c);
 
- //Cmd1p, 1 bead
-  atom::Molecule Cmd1p_n=
-   create_protein(m,"Cmd1p_n",8,1,
+ //Cmd1p, 1 bead for N, 1 bead for C
+  if(!mydata.use_structure){
+   atom::Molecules Cmd1p_all;
+   atom::Molecule Cmd1p_n=
+    create_protein(m,"Cmd1p_n",8,1,
                     display::Color(255./255.,255./255.,0.),
-                    i,mydata.kappa,x0);
-  atom::Molecule Cmd1p_c=
-   create_protein(m,"Cmd1p_c",8,1,
+                    i,mydata.kappa,CP_x0);
+   Cmd1p_all.push_back(Cmd1p_n);
+   atom::Molecule Cmd1p_c=
+    create_protein(m,"Cmd1p_c",8,1,
                     display::Color(255./255.,215./255.,0.),
-                    i,mydata.kappa,x0,80);
-  atom::Molecule Cmd1p=
-   create_merged_protein(m,"Cmd1p",Cmd1p_n,Cmd1p_c,i,mydata.kappa,0.0);
-  h_CP[i].add_child(Cmd1p);
-
+                    i,mydata.kappa,CP_x0,80);
+   Cmd1p_all.push_back(Cmd1p_c);
+   atom::Molecule Cmd1p=
+    create_merged_protein(m,"Cmd1p",Cmd1p_all,i,mydata.kappa,0.0);
+   h_CP[i].add_child(Cmd1p);
+  }else{
+   atom::Molecule Cmd1p=
+    create_protein(m,"Cmd1p","3CLN.pdb",143,
+                    display::Color(255./255.,255./255.,0.),
+                    i,CP_x0,5);
+   h_CP[i].add_child(Cmd1p);
+  }
  }
 }
 

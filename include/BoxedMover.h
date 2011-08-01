@@ -31,7 +31,7 @@ public:
    */
   BoxedMover(Particle *p, Float max_tr, algebra::Vector3Ds centers);
   void reset_move();
-  void propose_move(Float f);
+  ParticlesTemp propose_move(Float f);
   IMP_OBJECT(BoxedMover);
 private:
   Float max_tr_;

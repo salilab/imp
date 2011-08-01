@@ -21,11 +21,16 @@ IMPMEMBRANEEXPORT atom::Hierarchies
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
 int copy,double kappa,algebra::Vector3D x0,
-int start_residue=-1,int length=-1);
+int start_residue=1,int length=-1);
+
+IMPMEMBRANEEXPORT atom::Molecule create_protein
+(Model *m,std::string name,std::string filename,int nbeads,
+ display::Color colore,int copy,algebra::Vector3D x0,
+ int start_residue=1);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
-(Model *m,std::string name,atom::Molecule protein_a,
-atom::Molecule protein_b,int copy,double kappa,double dist=-1.0);
+(Model *m,std::string name,atom::Molecules proteins,
+ int copy,double kappa,double dist=-1.0);
 
 IMPMEMBRANE_END_NAMESPACE
 

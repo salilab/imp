@@ -72,25 +72,88 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
  return protein;
 }
 
+atom::Molecule create_protein(Model *m,std::string name,
+ std::string filename,int nbeads,display::Color colore,int copy,
+ algebra::Vector3D x0,int start_residue)
+{
+ IMP_NEW(Particle,p,(m));
+ atom::Molecule protein=atom::Molecule::setup_particle(p);
+ protein->set_name(name);
+ IMP_NEW(atom::CAlphaPDBSelector,sel,());
+ atom::Hierarchy hpdb=atom::read_pdb(filename,m,sel);
+ Particles ps=atom::get_leaves(hpdb);
+ int nres=ps.size();
+ core::XYZRs rbps;
+ for(int i=0;i<nbeads;++i){
+  IMP_NEW(Particle,pp,(m));
+  int first=start_residue+i*(int)(nres/nbeads);
+  int last=start_residue+(i+1)*(int)(nres/nbeads);
+  std::stringstream out1,out2;
+  out1 << i;
+  out2 << copy;
+  atom::Domain dom=atom::Domain::setup_particle(pp, IntRange(first, last));
+  dom->set_name(name+out1.str()+"-"+out2.str());
+  core::XYZR  d=core::XYZR::setup_particle(pp);
+// calculate enclosing sphere and mass
+  double ms=0.0;
+  core::XYZRs xyz;
+  for(int j=i*(int)(nres/nbeads);j<(i+1)*(int)(nres/nbeads);++j){
+   xyz.push_back(core::XYZR(ps[j]));
+   ms+=atom::Mass(ps[j]).get_mass();
+  }
+  algebra::Sphere3D sph=core::get_enclosing_sphere(xyz);
+  d.set_radius(sph.get_radius());
+  d.set_coordinates(sph.get_center());
+  d.set_coordinates_are_optimized(true);
+  atom::Mass mm=atom::Mass::setup_particle(pp,ms);
+  display::Colored cc=display::Colored::setup_particle(pp,colore);
+  protein.add_child(dom);
+  rbps.push_back(d);
+ }
+ atom::destroy(hpdb);
+ IMP_NEW(Particle,prb,(m));
+ core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+ rb->set_name(name);
+ // Check orientation of x-axis and topology
+ double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
+ double ee = (core::RigidMember(rbps[nres-1]).get_internal_coordinates())[0];
+ if (ee-bb<0.0){
+  for(unsigned int k=0;k<rbps.size();++k){
+   algebra::Vector3D coord=
+   core::RigidMember(rbps[k]).get_internal_coordinates();
+   algebra::Rotation3D rot=
+    algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+   algebra::Transformation3D tr=
+    algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
+   core::RigidMember(rbps[k]).set_internal_coordinates
+    (tr.get_transformed(coord));
+  }
+ }
+ rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
+      (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+       x0)));
+ return protein;
+}
+
+
 atom::Molecule create_merged_protein
-(Model *m,std::string name,atom::Molecule protein_a,
-atom::Molecule protein_b,int copy,double kappa,double dist)
+(Model *m,std::string name,atom::Molecules proteins,
+ int copy,double kappa,double dist)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
  if (copy==0 && dist>=0.0){
-   add_internal_restraint(m,name,protein_a,protein_b,kappa,dist);
+  for(int j=0;j<proteins.size()-1;++j){
+   add_internal_restraint(m,name,proteins[j],proteins[j+1],kappa,dist);
+  }
  }
- Particles psa=atom::get_leaves(protein_a);
- for(int i=0;i<psa.size();++i){
-  protein_a.remove_child(atom::Domain(psa[i]));
-  h.add_child(atom::Domain(psa[i]));
- }
- Particles psb=atom::get_leaves(protein_b);
- for(int i=0;i<psb.size();++i){
-  protein_b.remove_child(atom::Domain(psb[i]));
-  h.add_child(atom::Domain(psb[i]));
+ for(int j=0;j<proteins.size();++j){
+  Particles ps=atom::get_leaves(proteins[j]);
+  for(int i=0;i<ps.size();++i){
+   proteins[j].remove_child(atom::Domain(ps[i]));
+   h.add_child(atom::Domain(ps[i]));
+  }
  }
  return h;
 }

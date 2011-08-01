@@ -33,7 +33,7 @@ public:
                 algebra::Vector3Ds centers,
                 algebra::Transformation3Ds transformations);
   void reset_move();
-  void propose_move(Float f);
+  ParticlesTemp propose_move(Float f);
   IMP_OBJECT(PbcBoxedMover);
 private:
   Float max_tr_;
