@@ -193,6 +193,7 @@ void SampledDensityMap::project (const Particles &ps,
 
   reset_data();
 
+  float x_loc,y_loc,z_loc;
   int nx_half=header_.get_nx()/2;
   int ny_half=header_.get_ny()/2;
   int nz_half=header_.get_nz()/2;
@@ -204,6 +205,7 @@ void SampledDensityMap::project (const Particles &ps,
 
   for (core::XYZs::const_iterator it = ps_xyz.begin();
             it != ps_xyz.end(); it++) {
+
     algebra::Vector3D loc=it->get_coordinates()+shift;
     x0 = get_dim_index_by_location(loc,0);
     y0 = get_dim_index_by_location(loc,1);
@@ -218,7 +220,7 @@ void SampledDensityMap::project (const Particles &ps,
     is_valid = is_valid & (z0<upper_margin[2]) & (z1 >= lower_margin[2]);
     if (!is_valid) {
       IMP_WARN("particle:"<<it->get_particle()->get_name()
-                          <<" is not interpolated \n");
+               <<" is not interpolated \n");
       continue;
     }
     //interpolate
