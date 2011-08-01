@@ -1169,11 +1169,6 @@ int DensityMap::get_dim_index_by_location(const algebra::VectorD<3> &v,
 }
 
 
-DensityMap* get_segment(DensityMap *map_to_segment,
-                        DensityMap *mask,
-                        float mas_threshold) {
-}
-
 IMPEMEXPORT DensityMap* get_segment(DensityMap *from_map,
                                     int nx_start,int nx_end,
                                     int ny_start,int ny_end,
@@ -1334,7 +1329,6 @@ DensityMap* get_max_map(DensityMaps maps){
 DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
                         DensityMap *mask,
                         float mask_threshold) {
-  const DensityHeader *header=map_to_segment->get_header();
   DensityMap *bin_map= binarize(mask,mask_threshold);
   //clean isotlated zeros - to that with conn_comp
   DensityMap *ret =  multiply(map_to_segment,bin_map);
@@ -1372,5 +1366,28 @@ DensityMap* get_segment(DensityMap *map_to_segment,
   }
   return ret.release();
 }
+void DensityMap::convolute_kernel(double *kernel, int dim_len){
+    //todo - add a test that lenght is even
+    IMP_USAGE_CHECK((dim_len*dim_len*dim_len)>1,"The input lenght is wrong\n");
+    unsigned int margin=(dim_len-1)/2;
+    //smooth the density using the kernel
+    float val;
+    int kernel_ind,map_ind;
+    for (unsigned int iz=margin;iz<header_.get_nz()-margin;iz++) {
+      for (unsigned int iy=margin;iy<header_.get_ny()-margin;iy++) {
+        for (unsigned int ix=margin;ix<header_.get_nx()-margin;ix++) {
+          map_ind = iz*header_.get_ny()*header_.get_nx()+iy*header_.get_nx()+ix;
+          val = data_[map_ind];
+          if (val>EPS) { //smooth this value
+            for (int iz2=-margin;iz2<=static_cast<int>(margin);iz2++) {
+              for (int iy2=-margin;iy2<=static_cast<int>(margin);iy2++){
+                kernel_ind=(iz2+margin)*dim_len*dim_len+(iy2+margin)*dim_len;
+                for (int ix2=-margin;ix2<=static_cast<int>(margin);ix2++) {
+                  data_[map_ind+iz2*dim_len*dim_len+iy2*dim_len+ix2]+=
+                    val*kernel[kernel_ind+ix2+margin];
+             }}} // for iz2,iy2,ix2
+          }//if val>EPS
+      }}} // for iz,iy,ix
+  }
 
 IMPEM_END_NAMESPACE

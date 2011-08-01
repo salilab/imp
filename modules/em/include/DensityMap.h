@@ -431,32 +431,7 @@ public:
                    order, Z is the slowest.
 \param[in] dim_len the array leght
    */
-  void convolute_kernel(double *kernel, int dim_len){
-    //todo - add a test that lenght is even
-    IMP_USAGE_CHECK((dim_len*dim_len*dim_len)>1,"The input lenght is wrong\n");
-    unsigned int margin=(dim_len-1)/2;
-    //smooth the density using the kernel
-    float val;
-    int kernel_ind,map_ind;
-  for (unsigned int iz=margin;iz<header_.get_nz()-margin;iz++) {
-    map_ind=iz*header_.get_ny()*header_.get_nx();
-    for (unsigned int iy=margin;iy<header_.get_ny()-margin;iy++) {
-      map_ind+=iy*header_.get_nx();
-      for (unsigned int ix=margin;ix<header_.get_nx()-margin;ix++) {
-        map_ind += ix;
-        val = data_[map_ind];
-        if (val>EPS) { //smooth this value
-         for (int iz2=-margin;iz2<=static_cast<int>(margin);iz2++) {
-            kernel_ind=iz2*dim_len*dim_len;
-            for (int iy2=-margin;iy2<=static_cast<int>(margin);iy2++){
-             kernel_ind+=iy2*dim_len;
-             for (int ix2=-margin;ix2<=static_cast<int>(margin);ix2++) {
-                kernel_ind+=ix2;
-                data_[map_ind]+=val*kernel[kernel_ind];
-             }}} // for iz2,iy2,ix2
-          }//if val>EPS
-      }}} // for iz,iy,ix
-  }
+  void convolute_kernel(double *kernel, int dim_len);
 #endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
