@@ -53,7 +53,8 @@ protected:
 
 
   // map between imp_atom_type and force_field parameters (atom_type, charge)
-  typedef std::map<AtomType, std::pair<std::string, float> > AtomTypeMap;
+  typedef std::pair<std::string, double> ChargePair;
+  typedef std::map<AtomType, ChargePair > AtomTypeMap;
 
   // hash that maps between residue and atom name to force_field atom type
   // key1=imp_residue_type, key2= imp_atom_type, value=pair(atom_type, charge)
@@ -64,7 +65,7 @@ protected:
 
   // map that holds force_field parameters according to force_field atom types
   // key=force_field_atom_type, value=(epsilon,radius)
-  std::map<String, std::pair<float, float> > force_field_2_vdW_;
+  std::map<String, FloatPair > force_field_2_vdW_;
 
  private:
   WarningContext warn_context_;
