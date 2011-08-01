@@ -193,7 +193,6 @@ void SampledDensityMap::project (const Particles &ps,
 
   reset_data();
 
-  float x_loc,y_loc,z_loc;
   int nx_half=header_.get_nx()/2;
   int ny_half=header_.get_ny()/2;
   int nz_half=header_.get_nz()/2;
@@ -205,14 +204,10 @@ void SampledDensityMap::project (const Particles &ps,
 
   for (core::XYZs::const_iterator it = ps_xyz.begin();
             it != ps_xyz.end(); it++) {
-    //find the position of the protein in the density
-    //assuming it is in the center
-    x_loc = nx_half + (it->get_x()+shift[0]) / spacing;
-    y_loc = ny_half + (it->get_y()+shift[1]) / spacing;
-    z_loc = nz_half + (it->get_z()+shift[2]) / spacing;
-    x0=static_cast<int>(floor(x_loc));
-    y0=static_cast<int>(floor(y_loc));
-    z0=static_cast<int>(floor(z_loc));
+    algebra::Vector3D loc=it->get_coordinates()+shift;
+    x0 = get_dim_index_by_location(loc,0);
+    y0 = get_dim_index_by_location(loc,1);
+    z0 = get_dim_index_by_location(loc,2);
     x1=x0+1;
     y1=y0+1;
     z1=z0+1;

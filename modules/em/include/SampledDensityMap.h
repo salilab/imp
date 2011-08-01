@@ -72,8 +72,6 @@ public:
 
 //! Project particles on the grid by their mass value
 /**
-\note the function assumes that the particles are centered with
-      respect to the map
 \param[in] x_margin sampling is restricted to [x_margin,nx-x_maring]
 \param[in] y_margin sampling is restricted to [y_margin,ny-y_maring]
 \param[in] z_margin sampling is restricted to [z_margin,nz-z_maring]
@@ -82,7 +80,8 @@ public:
  */
 void project (const Particles &ps,
        int x_margin,int y_margin,int z_margin,
-       algebra::Vector3D shift,FloatKey mass_key=atom::Mass::get_mass_key());
+              algebra::Vector3D shift=algebra::Vector3D(0.,0.,0.),
+              FloatKey mass_key=atom::Mass::get_mass_key());
 
 //!setting particles in case they were not set by the constructor
  void set_particles(const IMP::Particles &ps,
