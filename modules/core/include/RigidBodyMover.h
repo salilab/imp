@@ -33,9 +33,7 @@ public:
    */
   RigidBodyMover(RigidBody d,Float max_translation,
                  Float max_rotation);
-  void reset_move();
-  void propose_move(Float f);
-  IMP_OBJECT(RigidBodyMover);
+  IMP_MOVER(RigidBodyMover);
 private:
   algebra::Transformation3D last_transformation_;
   Float max_translation_;
