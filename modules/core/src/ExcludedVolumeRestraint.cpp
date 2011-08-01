@@ -41,8 +41,7 @@ void ExcludedVolumeRestraint::
 initialize() const {
   IMP_OBJECT_LOG;
   IMP_LOG(TERSE, "Initializing ExcludedVolumeRestraint with "
-          << sc_->get_number_of_particles() << " particles"
-          << std::endl);
+          << sc_->get_name()  << std::endl);
   IMP_FOREACH_SINGLETON(sc_, {
       if (RigidMember::particle_is_instance(_1)) {
         RigidBody rb=RigidMember(_1).get_rigid_body();
@@ -132,7 +131,7 @@ fill_list() const {
   IMP_OBJECT_LOG;
   IMP_INTERNAL_CHECK(slack_>=0, "Slack must not be negative");
   IMP_LOG(VERBOSE, "filling particle list with slack " << slack_
-          << " on " << sc_->get_number_of_particles() << " partcles");
+          << " on " << sc_->get_name());
     xyzrs_backup_.clear();
   rbs_backup_.clear();
   cur_list_.clear();

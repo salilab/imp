@@ -24,7 +24,7 @@ DiameterRestraint::DiameterRestraint(UnaryFunction *f,
                                      SingletonContainer *sc,
                                      Float diameter):diameter_(diameter),
                                                      sc_(sc), f_(f){
-  IMP_USAGE_CHECK(sc->get_number_of_particles()>=2,
+  IMP_USAGE_CHECK(sc->get_indexes().size()>=2,
             "Need at least two particles to restrain diameter");
   IMP_USAGE_CHECK(diameter>0, "The diameter must be positive");
 }
@@ -83,7 +83,7 @@ void DiameterRestraint::do_show(std::ostream &out) const {
 }
 
 ParticlesTemp DiameterRestraint::get_input_particles() const {
-  ParticlesTemp t(sc_->particles_begin(), sc_->particles_end());
+  ParticlesTemp t=sc_->get_particles();
   t.push_back(p_);
   return t;
 }
