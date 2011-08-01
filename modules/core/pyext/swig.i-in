@@ -7,6 +7,7 @@ IMP_SWIG_OBJECT( IMP::core, AngleRestraint, AngleRestraints);
 IMP_SWIG_OBJECT( IMP::core, AngleTripletScore, AngleTripletScores);
 IMP_SWIG_OBJECT( IMP::core, AttributeSingletonScore, AttributeSingletonScores);
 IMP_SWIG_OBJECT( IMP::core, BallMover, BallMovers);
+IMP_SWIG_OBJECT( IMP::core, SerialMover, SerialMovers);
 IMP_SWIG_OBJECT( IMP::core, BoundingBox3DSingletonScore, BoundingBox3DSingletonScores);
 #ifdef IMP_CORE_USE_IMP_CGAL
 IMP_SWIG_OBJECT( IMP::core, BoxSweepClosePairsFinder, BoxSweepClosePairsFinders);
@@ -121,6 +122,7 @@ IMP_SWIG_OBJECT_TEMPLATE( IMP::core, TruncatedHarmonic);
 %include "IMP/core/AngleTripletScore.h"
 %include "IMP/core/AttributeSingletonScore.h"
 %include "IMP/core/BallMover.h"
+%include "IMP/core/SerialMover.h"
 %include "IMP/core/BoxSweepClosePairsFinder.h"
 %include "IMP/core/CentroidOfRefined.h"
 %include "IMP/core/ChecksScoreState.h"
