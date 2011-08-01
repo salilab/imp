@@ -86,15 +86,15 @@ namespace {
   typedef Graph::edge_property_type Weight;
   typedef boost::graph_traits<Graph>::vertex_descriptor Vertex;
 
-  void compute_mst(const SingletonContainer *a,
+  void compute_mst(Model *m,
+                   const ParticleIndexes &pis,
                    PairScore *ps,
                    Graph &g,
                    std::vector<Edge> &mst) {
     try {
-      ParticleIndexes pis = a->get_indexes();
       for (unsigned int i=0; i< pis.size(); ++i) {
         for (unsigned int j=0; j<i; ++j) {
-          double d= ps->evaluate_index(a->get_model(),
+          double d= ps->evaluate_index(m,
                                        ParticleIndexPair(pis[i],
                                                          pis[j]), NULL);
           IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
@@ -123,6 +123,23 @@ namespace {
       }*/
   }
 
+  ParticleIndexPairs get_edges(const SingletonContainer *a,
+                              PairScore *ps) {
+    ParticleIndexes pis= a->get_indexes();
+    Graph g(pis.size());
+    std::vector<Edge> mst;
+    compute_mst(a->get_model(), pis, ps, g, mst);
+    ParticleIndexPairs ret(mst.size());
+    for (unsigned int index=0; index< mst.size(); ++index) {
+      int i= boost::target(mst[index], g);
+      int j= boost::source(mst[index], g);
+      IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
+            << pis[i]
+            << " and " << pis[j] << std::endl);
+      ret[index]= ParticleIndexPair(pis[i], pis[j]);
+    }
+    return ret;
+  }
 }
 
 
@@ -133,25 +150,10 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   IMP_OBJECT_LOG;
   std::vector<Edge> mst;
   if (!sc_) return 0;
-  Graph g(sc_->get_number_of_particles());
-  compute_mst(sc_, ps_, g, mst);
-  double sum=0;
-  // could be more clever if accum is NULL
-  for (unsigned int index=0; index< mst.size(); ++index) {
-    int i= boost::target(mst[index], g);
-    int j= boost::source(mst[index], g);
-    IMP_LOG(VERBOSE, "ConnectivityRestraint edge between "
-            << sc_->get_particle(i)->get_name()
-            << " and " << sc_->get_particle(j)->get_name() << std::endl);
-    if (accum) {
-      sum+= ps_->evaluate(ParticlePair(sc_->get_particle(i),
-                                       sc_->get_particle(j)),
-                          accum);
-    } else {
-      sum += boost::get(boost::edge_weight_t(), g, mst[index]);
-    }
-  }
-  return sum;
+  ParticleIndexPairs edges= get_edges(sc_, ps_);
+  return ps_->evaluate_indexes(get_model(),
+                            edges,
+                            accum);
 }
 
 
@@ -171,17 +173,8 @@ Restraints ConnectivityRestraint::get_instant_decomposition() const {
 
 ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
-  std::vector<Edge> mst;
-  Graph g(sc_->get_number_of_particles());
-  compute_mst(sc_, ps_, g, mst);
-  ParticlePairs ret(mst.size());
-  for (unsigned int index=0; index< mst.size(); ++index) {
-    int i= boost::target(mst[index], g);
-    int j= boost::source(mst[index], g);
-    ret.set(index, ParticlePair(sc_->get_particle(i),
-                                sc_->get_particle(j)));
-  }
-  return ret;
+  ParticleIndexPairs edges= get_edges(sc_, ps_);
+  return IMP::internal::get_particle(get_model(), edges);
 }
 
 ParticlesTemp ConnectivityRestraint::get_input_particles() const {
