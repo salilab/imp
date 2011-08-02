@@ -61,11 +61,11 @@ namespace grids {
     }
     IMP_COMPARISONS(ExtendedGridIndexD);
     //! Get the ith component (i=0,1,2)
-    IMP_CONST_BRACKET(int, unsigned int,
-                      i <get_dimension(),
-                      IMP_USAGE_CHECK(!data_.get_is_null(),
-                                      "Using uninitialized grid index");
-                      return data_.get_data()[i]);
+    IMP_BRACKET(int, unsigned int,
+                i <get_dimension(),
+                IMP_USAGE_CHECK(!data_.get_is_null(),
+                                "Using uninitialized grid index");
+                return data_.get_data()[i]);
     IMP_SHOWABLE_INLINE(ExtendedGridIndexD, {
         out << "(";
         for (unsigned int i=0; i< get_dimension(); ++i) {
@@ -1239,7 +1239,6 @@ inline BoundingBoxD<D> get_bounding_box(const
   return g.get_bounding_box();
 }
 IMPALGEBRA_END_NAMESPACE
-
 
 
 #endif  /* IMPALGEBRA_GRID_D_H */

@@ -213,6 +213,7 @@ IMPALGEBRA_END_NAMESPACE
   }                                                                     \
 
 
+
 /** Iterate over each voxel in a subset of the grid that are less than
     center. The voxel index is unsigned int voxel_index[3]. Use this if,
     for example you want to find nearby pairs of voxels once each.
