@@ -91,6 +91,7 @@ for(int i=0;i<TM->num;++i){
  rb->set_name(TM->name[i]);
  // TableRefiner
  tbr->add_particle(prb,atoms);
+
  // Check orientation of x-axis and topology
  bb = (core::RigidMember(atoms[0]).get_internal_coordinates())[0];
  ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];

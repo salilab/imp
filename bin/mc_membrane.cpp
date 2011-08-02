@@ -132,7 +132,7 @@ if(myrank==0) {std::cout << "Sampling" << std::endl;}
 
 // high temperature short run
 mc->set_kt(mydata.MC.tmax);
-mc->optimize(mydata.MC.nhot);
+if(mydata.MC.nhot>0) mc->optimize(mydata.MC.nhot);
 // reset temperature
 mc->set_kt(temp[index[myrank]]);
 
