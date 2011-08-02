@@ -44,7 +44,6 @@ double
                    target_dens_map_,ps_,core::XYZR(ps_[0]).get_radius(),
                    IMP::algebra::get_identity_transformation_3d(),
                    threshold_);
-  std::cout<<"Percentage covered:"<<covered_percentage<<std::endl;
   ret_score=1.-covered_percentage;
   if (accum != NULL) {
     IMP_WARN(
