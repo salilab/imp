@@ -71,12 +71,12 @@ for(int i=0;i<mydata.num_cells;++i){
   //Spc29p, 2 beads for N, 2 beads for C
   atom::Molecules Spc29p_all;
   atom::Molecule Spc29p_n=
-   create_protein(m,"Spc29p_n",14.5,1,
+   create_protein(m,"Spc29p_n",14.5,2,
                     display::Color(255./255.,165./255.,0.),
                     i,mydata.kappa,CP_x0);
   Spc29p_all.push_back(Spc29p_n);
   atom::Molecule Spc29p_c=
-   create_protein(m,"Spc29p_c",14.5,1,
+   create_protein(m,"Spc29p_c",14.5,2,
                     display::Color(255./255.,140./255.,0.),
                     i,mydata.kappa,CP_x0,132);
   Spc29p_all.push_back(Spc29p_c);
@@ -86,7 +86,7 @@ for(int i=0;i<mydata.num_cells;++i){
 
   //Spc110p_c, 3 beads
   atom::Molecule Spc110p_c=
-   create_protein(m,"Spc110p_c",26,1,
+   create_protein(m,"Spc110p_c",26,3,
                     display::Color(255./255.,0.,0.),
                     i,mydata.kappa,CP_x0,627+164);
   h_CP[i].add_child(Spc110p_c);
@@ -109,7 +109,7 @@ for(int i=0;i<mydata.num_cells;++i){
    h_CP[i].add_child(Cmd1p);
   }else{
    atom::Molecule Cmd1p=
-    create_protein(m,"Cmd1p","3CLN.pdb",15,
+    create_protein(m,"Cmd1p","3CLN.pdb",30,
                     display::Color(255./255.,255./255.,0.),
                     i,CP_x0,5);
    h_CP[i].add_child(Cmd1p);
