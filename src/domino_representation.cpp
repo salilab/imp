@@ -17,7 +17,8 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 core::TableRefiner* generate_TM(Model *m,
  atom::Hierarchy protein, Parameters *myparam)
 {
-int nres,jseq;
+int jseq;
+unsigned nres;
 double x,y,z;
 double vol,rg,bb,ee;
 algebra::Rotation3D rot;

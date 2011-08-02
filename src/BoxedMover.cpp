@@ -56,7 +56,7 @@ ParticlesTemp BoxedMover::propose_move(Float f) {
       icell=i;
      }
     }
-    if(icell=0) outside=false;
+    if(icell==0) outside=false;
    }
 
    core::XYZ(p_).set_coordinates(newcoord);
