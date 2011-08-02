@@ -51,6 +51,7 @@ void test_one(std::string name,
   VectorD<3> minc(0,0,0), maxc(10,10,10);
   Model *m= new Model();
   Particles ps = create_xyzr_particles(m, n, rmin);
+  ParticleIndexes pis = IMP::internal::get_index(ps);
   ::boost::uniform_real<> rand(rmin, rmax);
   for (unsigned int i=0; i< ps.size(); ++i) {
     XYZR(ps[i]).set_radius(rand(random_number_generator));
@@ -60,16 +61,16 @@ void test_one(std::string name,
   m->add_restraint(new PairsRestraint(new ConstPairScore(), cpc));
   double setuptime;
   IMP_TIME({
-      for (unsigned int i=0; i< ps.size(); ++i) {
-        XYZ(ps[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
+      for (unsigned int i=0; i< pis.size(); ++i) {
+        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
                                                                       maxc)));
       }
     }, setuptime);
   double runtime;
   double result=0;
   IMP_TIME({
-      for (unsigned int i=0; i< ps.size(); ++i) {
-        XYZ(ps[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
+      for (unsigned int i=0; i< pis.size(); ++i) {
+        XYZ(m, pis[i]).set_coordinates(get_random_vector_in(BoundingBox3D(minc,
                                                                       maxc)));
       }
       result+= m->evaluate(false);
