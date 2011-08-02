@@ -109,7 +109,7 @@ for(int i=0;i<mydata.num_cells;++i){
    h_CP[i].add_child(Cmd1p);
   }else{
    atom::Molecule Cmd1p=
-    create_protein(m,"Cmd1p","3CLN.pdb",143,
+    create_protein(m,"Cmd1p","3CLN.pdb",4,
                     display::Color(255./255.,255./255.,0.),
                     i,CP_x0,5);
    h_CP[i].add_child(Cmd1p);
@@ -146,6 +146,7 @@ add_layer_restraint(m, h_CP[0],
 // FRET
 //
 // intra-CP
+
 add_fret_restraint(m,h_CP, "Spc29p",   "C",
                      h_CP, "Cmd1p",     "C", 1.69, mydata.kappa);
 add_fret_restraint(m,h_CP, "Spc29p",   "N",

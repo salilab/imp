@@ -246,10 +246,10 @@ void add_symmetry_restraint (Model *m,
  atom::Hierarchies hs,algebra::Transformation3Ds transformations)
 {
  Particles ps0=atom::get_leaves(hs[0]);
- for(int i=1;i<transformations.size();++i){
+ for(unsigned int i=1;i<transformations.size();++i){
   IMP_NEW(core::TransformationSymmetry,sm,(transformations[i]));
   Particles ps1=atom::get_leaves(hs[i]);
-  for(int j=0;j<ps1.size();++j){
+  for(unsigned int j=0;j<ps1.size();++j){
    core::Reference::setup_particle(ps1[j],ps0[j]);
   }
   IMP_NEW(container::ListSingletonContainer,lc,(ps1));

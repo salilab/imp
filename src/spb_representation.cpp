@@ -98,6 +98,11 @@ atom::Molecule create_protein(Model *m,std::string name,
   double ms=0.0;
   core::XYZRs xyz;
   for(int j=i*(int)(nres/nbeads);j<(i+1)*(int)(nres/nbeads);++j){
+   atom::ResidueType restype=
+    atom::Residue(atom::Atom(ps[j]).get_parent()).get_residue_type();
+   double vol=atom::get_volume_from_residue_type(restype);
+   double rg=algebra::get_ball_radius_from_volume_3d(vol);
+   core::XYZR(ps[j]).set_radius(rg);
    xyz.push_back(core::XYZR(ps[j]));
    ms+=atom::Mass(ps[j]).get_mass();
   }
@@ -116,7 +121,7 @@ atom::Molecule create_protein(Model *m,std::string name,
  rb->set_name(name);
  // Check orientation of x-axis and topology
  double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
- double ee = (core::RigidMember(rbps[nres-1]).get_internal_coordinates())[0];
+ double ee = (core::RigidMember(rbps[nbeads-1]).get_internal_coordinates())[0];
  if (ee-bb<0.0){
   for(unsigned int k=0;k<rbps.size();++k){
    algebra::Vector3D coord=
@@ -144,13 +149,13 @@ atom::Molecule create_merged_protein
  atom::Molecule h=atom::Molecule::setup_particle(p);
  h->set_name(name);
  if (copy==0 && dist>=0.0){
-  for(int j=0;j<proteins.size()-1;++j){
+  for(unsigned int j=0;j<proteins.size()-1;++j){
    add_internal_restraint(m,name,proteins[j],proteins[j+1],kappa,dist);
   }
  }
- for(int j=0;j<proteins.size();++j){
+ for(unsigned int j=0;j<proteins.size();++j){
   Particles ps=atom::get_leaves(proteins[j]);
-  for(int i=0;i<ps.size();++i){
+  for(unsigned int i=0;i<ps.size();++i){
    proteins[j].remove_child(atom::Domain(ps[i]));
    h.add_child(atom::Domain(ps[i]));
   }

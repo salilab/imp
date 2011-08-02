@@ -164,7 +164,7 @@ SPBParameters get_SPBParameters(TextInput in) {
   num_rotations=1;
   angle=0.0;
  }
- for(int i=0;i<translations.size();++i){
+ for(unsigned int i=0;i<translations.size();++i){
   for(int j=0;j<num_rotations;++j){
    algebra::Rotation3D rot=algebra::get_rotation_about_axis
    (algebra::Vector3D(0.0,0.0,1.0), (double) j * angle);
