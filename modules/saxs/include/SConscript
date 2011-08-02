@@ -6,6 +6,7 @@ files = [
          'FormFactorTable.h',
          'Profile.h',
          'Restraint.h',
+         'RadiusOfGyrationRestraint.h',
          'Score.h',
          'SolventAccessibleSurface.h',
          'utility.h'
