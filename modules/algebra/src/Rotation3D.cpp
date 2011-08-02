@@ -8,7 +8,7 @@
 #include "IMP/algebra/Rotation3D.h"
 #include "IMP/algebra/VectorD.h"
 #include "IMP/algebra/vector_generators.h"
-#include <math.h>
+#include "IMP/algebra/utility.h"
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
@@ -414,9 +414,9 @@ algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta) {
   Vector3D eu_start(0.,0.,0.);//psi,theta,phi
   Vector3D eu_end(360.,180.,360.);
   Vector3D eu_range=eu_end-eu_start;
-  double phi_steps       = lround((eu_range[2]/delta) + 0.499);
+  double phi_steps       = get_rounded((eu_range[2]/delta) + 0.499);
   double phi_real_dist   = eu_range[2] / phi_steps;
-  double theta_steps     = lround((eu_range[1]/delta) + 0.499);
+  double theta_steps     = get_rounded((eu_range[1]/delta) + 0.499);
   double theta_real_dist = eu_range[1] / theta_steps;
   double angle2rad=PI/180.;
   double psi_steps,psi_ang_dist,psi_real_dist;
@@ -428,7 +428,7 @@ algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta) {
         psi_steps = 1;
       }
       else {
-        psi_steps = rint(360.0*std::cos((90.0-theta)*angle2rad)/delta);
+        psi_steps = get_rounded(360.0*std::cos((90.0-theta)*angle2rad)/delta);
       }
       psi_ang_dist  = 360.0/psi_steps;
       psi_real_dist = eu_range[0] / (ceil(eu_range[0]/psi_ang_dist));
