@@ -109,7 +109,7 @@ for(int i=0;i<mydata.num_cells;++i){
    h_CP[i].add_child(Cmd1p);
   }else{
    atom::Molecule Cmd1p=
-    create_protein(m,"Cmd1p","3CLN.pdb",4,
+    create_protein(m,"Cmd1p","3CLN.pdb",15,
                     display::Color(255./255.,255./255.,0.),
                     i,CP_x0,5);
    h_CP[i].add_child(Cmd1p);

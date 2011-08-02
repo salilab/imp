@@ -32,16 +32,10 @@ IMPMEMBRANEEXPORT FloatRange get_range_from_fret_class(std::string r_class);
 IMPMEMBRANEEXPORT FloatRange get_range_from_fret_value(double r_value);
 
 IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
- core::DistancePairScore* dps,bool filter=false);
+ core::SphereDistancePairScore* sps,bool filter=true);
 
 IMPMEMBRANEEXPORT void do_allpairs_mindist(Model *m,Particles ps,
- core::DistancePairScore* dps,bool filter=false);
-
-IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
- core::SphereDistancePairScore* dps,bool filter=false);
-
-IMPMEMBRANEEXPORT void do_allpairs_mindist(Model *m,Particles ps,
- core::SphereDistancePairScore* dps,bool filter=false);
+ core::SphereDistancePairScore* sps,bool filter=true);
 
 IMPMEMBRANEEXPORT void add_layer_restraint(Model *m, atom::Hierarchy h,
  FloatRange range, double kappa);
