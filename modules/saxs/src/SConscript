@@ -5,6 +5,7 @@ files = [
          'FormFactorTable.cpp',
          'Profile.cpp',
          'Restraint.cpp',
+         'RadiusOfGyrationRestraint.cpp',
          'Score.cpp',
          'SolventAccessibleSurface.cpp'
         ]
