@@ -171,37 +171,6 @@ struct Helper {
     return ii;
   }
 
-
-  static std::vector<typename Grid::Index> get_nearby(const Grid &g,
-                                  typename Grid::ExtendedIndex center,
-                                                      double half) {
-    std::vector<typename Grid::Index> out;
-    typename Grid::ExtendedIndex lb(center.get_offset(-1, -1, -1)),
-      ub(center.get_offset(1, 1, 1));
-    if (half) {
-      IMP_GRID3D_FOREACH_SMALLER_EXTENDED_INDEX_RANGE(g, center, lb, ub,
-                                                      {
-                                           typename Grid::ExtendedIndex
-                                                          ei(voxel_index[0],
-                                                             voxel_index[1],
-                                                             voxel_index[2]);
-                                             if (g.get_has_index(ei)) {
-                                        out.push_back(g.get_index(ei));
-                                                        }
-                                                      }
-                                                      );
-    } else {
-      for (typename Grid::ExtendedIndexIterator it
-             = g.extended_indexes_begin(lb, ub);
-           it != g.extended_indexes_end(lb, ub); ++it) {
-        if (g.get_has_index(*it)) {
-          out.push_back(g.get_index(*it));
-        }
-      }
-    }
-    return out;
-  }
-
   template <class It>
   static double get_max_radius(const ParticleSet<It> &ps0, const Traits &tr) {
     double maxr=0;
@@ -340,59 +309,65 @@ struct Helper {
                                   typename Grid::Index index,
                                   const IDs &qps,
                                   bool half, const Traits &tr, Out& out) {
-    const std::vector<typename Grid::Index> ids
-      = get_nearby(gg, gg.get_extended_index(index), half);
-    for (unsigned int i=0; i< ids.size(); ++i) {
-      const IDs& ppt= gg[ids[i]];
-      IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
-              << ": " << do_show(ppt)
-              << " and " << index
-              << " which is " << do_show(qps) << std::endl);
-      IMP_INTERNAL_CHECK(!half || ids[i] != index,
-                         "Index returned by get nearby");
-      if (!do_fill_close_pairs_from_lists(ppt.begin(),
-                                          ppt.end(),
-                                          qps.begin(), qps.end(),
-                                          tr, out)) {
-        return false;
-      }
-    }
+    IMP::algebra::grids::ExtendedGridIndexD<3>
+      imp_min(std::max(0, index[0]-1),
+              std::max(0, index[1]-1),
+              std::max(0, index[2]-1));
+    IMP::algebra::grids::ExtendedGridIndexD<3>
+      imp_max(std::min(gg.get_number_of_voxels(0),
+                       static_cast<unsigned int>(index[0]+1)),
+              std::min(gg.get_number_of_voxels(1),
+                       static_cast<unsigned int>(index[1]+1)),
+              std::min(gg.get_number_of_voxels(2),
+                       static_cast<unsigned int>(index[2]+1)));
+    IMP::algebra::grids::ExtendedGridIndexD<3>
+      imp_cur(0,0,0);
     if (half) {
-      IMP_LOG(VERBOSE, "Checking pair " << index << " " << index
-              << std::endl);
-      if (!do_fill_close_pairs_from_list(gg[index].begin(),
-                                         gg[index].end(),
-                                         tr, out)) {
-        return false;
+      for (imp_cur[0]=imp_min[0];imp_cur[0] <= index[0]; ++imp_cur[0]) {
+        for (imp_cur[1]=imp_min[1];
+             imp_cur[1] <= imp_max[1]; ++imp_cur[1]) {
+          if (imp_cur[0] == index[0]
+              && imp_cur[1] > index[1]) break;
+          for (imp_cur[2]=imp_min[2];imp_cur[2] <= imp_max[2]; ++imp_cur[2]) {
+            if (imp_cur[0] == index[0] && imp_cur[1] == index[1]
+                && imp_cur[2] >= index[2]) break;
+            if (gg.get_has_index(imp_cur)) {
+              IMP::algebra::grids::GridIndexD<3> _1=gg.get_index(imp_cur);
+              IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
+                      << ": " << do_show(gg[_1])
+                      << " and " << index
+                      << " which is " << do_show(qps) << std::endl);
+              IMP_INTERNAL_CHECK(_1 != index,
+                                 "Index returned by get nearby");
+              if (!do_fill_close_pairs_from_lists(gg[_1].begin(),
+                                                  gg[_1].end(),
+                                                  qps.begin(), qps.end(),
+                                                  tr, out)) {
+                return false;
+              }
+            }
+          }
+        }
       }
-    }
-    return true;
-  }
-
-  template <class Out>
-  static bool do_fill_close_pairs(const Grid &gg,
-                                  typename Grid::Index index,
-                                  const IDs &qps,
-                                  const algebra::BoundingBox3D &bb,
-                                  bool half, const Traits& tr,
-                                  Out& out) {
-    typename Grid::ExtendedIndex bblb
-      = gg.get_extended_index(bb.get_corner(0));
-    typename Grid::ExtendedIndex bbub
-      = gg.get_extended_index(bb.get_corner(1));
-    const std::vector<typename Grid::Index> ids
-      = get_nearby(gg, gg.get_extended_index(index),
-                   bblb, bbub, half);
-    for (unsigned int i=0; i< ids.size(); ++i) {
-      IMP_LOG(VERBOSE, "Checking pair " << ids[i] << " " << index
-              << ": " << do_show(gg[ids[i]])
-              << " and " << do_show(gg[index])
-              << " which is " << do_show(qps) << std::endl);
-      if (!do_fill_close_pairs_from_lists(gg[ids[i]].begin(),
-                                          gg[ids[i]].end(),
-                                          qps.begin(), qps.end(),
-                                          tr, out)) {
-        return false;
+    } else {
+      for (imp_cur[0]=imp_min[0];imp_cur[0] <= imp_max[0]; ++imp_cur[0]) {
+        for (imp_cur[1]=imp_min[1];imp_cur[1] <= imp_max[1]; ++imp_cur[1]) {
+          for (imp_cur[2]=imp_min[2];imp_cur[2] <= imp_max[2]; ++imp_cur[2]) {
+            if (gg.get_has_index(imp_cur)) {
+              IMP::algebra::grids::GridIndexD<3> _1=gg.get_index(imp_cur);
+              IMP_LOG(VERBOSE, "Checking pair " << _1 << " " << index
+                      << ": " << do_show(gg[_1])
+                      << " and " << index
+                      << " which is " << do_show(qps) << std::endl);
+              if (!do_fill_close_pairs_from_lists(gg[_1].begin(),
+                                                  gg[_1].end(),
+                                                  qps.begin(), qps.end(),
+                                                  tr, out)) {
+                return false;
+              }
+            }
+          }
+        }
       }
     }
     if (half) {
