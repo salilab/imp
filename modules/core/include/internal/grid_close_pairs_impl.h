@@ -411,7 +411,7 @@ struct Helper {
     }
     for (unsigned int i=0; i< bin_contents_g.size(); ++i) {
       if (bin_contents_g[i].empty()) continue;
-      if (bin_contents_g[i].size() < 10) {
+      if (bin_contents_g[i].size() < 100) {
         if (!do_fill_close_pairs_from_list(bin_contents_g[i].begin(),
                                            bin_contents_g[i].end(),
                                            tr, out)) {
@@ -447,22 +447,33 @@ struct Helper {
 
       for (unsigned int j=0; j< i; ++j) {
         if (bin_contents_g[j].empty()) continue;
-        algebra::BoundingBox3D bb= bbs[i]+bbs[j];
-        IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
-                << " with bb " << bb << " and side "
-                << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
-                << std::endl);
-        Grid ggi, ggj;
-        ggi= create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]);
-        ggj=ggi;
-        fill_grid(bin_contents_g[i], tr, ggi);
-        fill_grid(bin_contents_g[j], tr, ggj);
-        for (typename Grid::AllConstIterator it
-               = ggj.all_begin();
-             it != ggj.all_end(); ++it) {
-          if (!do_fill_close_pairs(ggi, it->first, it->second,
-                                   false, tr, out)) {
+        if (bin_contents_g[i].size() < 100
+            && bin_contents_g[j].size() < 100) {
+          if (!do_fill_close_pairs_from_lists(bin_contents_g[i].begin(),
+                                              bin_contents_g[i].end(),
+                                              bin_contents_g[j].begin(),
+                                              bin_contents_g[j].end(),
+                                              tr, out)) {
             return false;
+          }
+        } else {
+          algebra::BoundingBox3D bb= bbs[i]+bbs[j];
+          IMP_LOG(VERBOSE, "Building grids for " << i << " and " << j
+                  << " with bb " << bb << " and side "
+                  << tr.get_distance()+bin_ubs[i]+bin_ubs[j]
+                  << std::endl);
+          Grid ggi, ggj;
+          ggi= create_grid(bb, tr.get_distance()+bin_ubs[i]+bin_ubs[j]);
+          ggj=ggi;
+          fill_grid(bin_contents_g[i], tr, ggi);
+          fill_grid(bin_contents_g[j], tr, ggj);
+          for (typename Grid::AllConstIterator it
+                 = ggj.all_begin();
+               it != ggj.all_end(); ++it) {
+            if (!do_fill_close_pairs(ggi, it->first, it->second,
+                                     false, tr, out)) {
+              return false;
+            }
           }
         }
 
