@@ -210,38 +210,63 @@ add_layer_restraint(m, IL2_ps,
 // FRET
 //
 // intra-CP
-/*
-add_fret_restraint(m,h_CP_IL2, "Spc29p",   "C",
+
+add_fret_restraint(m,h_CP_IL2, "Spc29p",    "C",
                      h_CP_IL2, "Cmd1p",     "C", 1.69, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Spc29p",   "N",
+add_fret_restraint(m,h_CP_IL2, "Spc29p",    "N",
                      h_CP_IL2, "Cmd1p",     "C", 1.75, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Spc29p",   "C",
+add_fret_restraint(m,h_CP_IL2, "Spc29p",    "C",
                      h_CP_IL2, "Spc110p_c", "C", 1.37, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Spc29p",   "C",
-                     h_CP_IL2, "Spc42p_n",  "N", 2.05, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Cmd1p",    "C",
-                     h_CP_IL2, "Spc42p_n",  "N", 2.07, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Cmd1p",    "C",
+add_fret_restraint(m,h_CP_IL2, "Spc29p",    "C",
+                     h_CP_IL2, "Spc42p",    "N", 2.05, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Cmd1p",     "C",
+                     h_CP_IL2, "Spc42p",    "N", 2.07, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Cmd1p",     "C",
                      h_CP_IL2, "Spc110p_c", "C", 2.15, mydata.kappa);
-add_fret_restraint(m,h_CP_IL2, "Spc42p_n", "N",
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "N",
                      h_CP_IL2, "Spc110p_c", "C", 2.02, mydata.kappa);
+
+// inter CP-IL2
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "C",
+                     h_CP_IL2, "Spc110p_c", "C", 1.07, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Cnm67p_c",  "C",
+                     h_CP_IL2, "Cmd1p",     "C", 1.09, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "C",
+                     h_CP_IL2, "Cmd1p",     "C", 1.1,  mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Cnm67p_c",  "C",
+                     h_CP_IL2, "Spc29p",    "C", 1.1,  mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Cnm67p_c",  "C",
+                     h_CP_IL2, "Spc42p",    "N", 1.13, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "C",
+                     h_CP_IL2, "Spc29p",    "C", 1.17, mydata.kappa);
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "C",
+                     h_CP_IL2, "Spc42p",    "N", 1.27, mydata.kappa);
+
+// intra-IL2
+add_fret_restraint(m,h_CP_IL2, "Spc42p",    "C",
+                     h_CP_IL2, "Cnm67p_c",  "C", 2.29, mydata.kappa);
+
 //
 // TWO-HYBRID SCREENING
 //
 // CP
 add_y2h_restraint(m,h_CP_IL2, "Cmd1p",      "ALL",
-                    h_CP_IL2, "Spc110p_c", IntRange(900,944), mydata.kappa);
-add_y2h_restraint(m,h_CP_IL2, "Spc42p_n",     "N",
-                    h_CP_IL2, "Spc110p_c",    "C", mydata.kappa);
-add_y2h_restraint(m,h_CP_IL2, "Spc29p",       "ALL",
-                    h_CP_IL2, "Spc110p_c", IntRange(811,944), mydata.kappa);
-add_y2h_restraint(m,h_CP_IL2, "Spc110p_c",    "C",
-                    h_CP_IL2, "Spc110p_c",    "C", mydata.kappa);
-add_y2h_restraint(m,h_CP_IL2, "Spc42p_n", IntRange(1,138),
-                    h_CP_IL2, "Spc29p",       "ALL", mydata.kappa);
-add_y2h_restraint(m,h_CP_IL2, "Spc42p_n", IntRange(1,138),
-                    h_CP_IL2, "Spc42p_n", IntRange(1,138), mydata.kappa);
-*/
+                    h_CP_IL2, "Spc110p_c",  IntRange(900,944), mydata.kappa);
+add_y2h_restraint(m,h_CP_IL2, "Spc42p",     "N",
+                    h_CP_IL2, "Spc110p_c",  "C", mydata.kappa);
+add_y2h_restraint(m,h_CP_IL2, "Spc29p",     "ALL",
+                    h_CP_IL2, "Spc110p_c",  IntRange(811,944), mydata.kappa);
+add_y2h_restraint(m,h_CP_IL2, "Spc110p_c",  "C",
+                    h_CP_IL2, "Spc110p_c",  "C", mydata.kappa);
+add_y2h_restraint(m,h_CP_IL2, "Spc42p",     IntRange(1,138),
+                    h_CP_IL2, "Spc29p",     "ALL", mydata.kappa);
+add_y2h_restraint(m,h_CP_IL2, "Spc42p",     IntRange(1,138),
+                    h_CP_IL2, "Spc42p",     IntRange(1,138), mydata.kappa);
+
+// IL2
+add_y2h_restraint(m,h_CP_IL2, "Cnm67p_c",   "C",
+                    h_CP_IL2, "Spc42p",     "C", mydata.kappa);
+
 std::cout << "Setup sampler" << std::endl;
 atom::Hierarchies hs;
 hs.push_back(h_CP_IL2[0]);

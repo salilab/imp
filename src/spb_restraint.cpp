@@ -135,7 +135,11 @@ void add_fret_restraint
  Particles p2=sb.get_selected_particles();
  FloatRange range=get_range_from_fret_value(r_value);
  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
- do_bipartite_mindist(m,p1,p2,sps);
+ if(protein_a==protein_b && residues_a==residues_b){
+  do_allpairs_mindist(m,p1,sps);
+ }else{
+  do_bipartite_mindist(m,p1,p2,sps);
+ }
 }
 
 void add_y2h_restraint
