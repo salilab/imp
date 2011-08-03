@@ -687,7 +687,7 @@ Restraint* create_connectivity_restraint(const Selections &s,
       }
       IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
       IMP_NEW(container::ListSingletonContainer, lsc, (particles));
-      IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1));
+      IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
       Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
       return cr.release();
     } else {
@@ -731,7 +731,7 @@ Restraint* create_internal_connectivity_restraint(const Selection &ss,
   } else {
     IMP_NEW(core::HarmonicUpperBoundSphereDistancePairScore, hdps, (x0,k));
     IMP_NEW(container::ListSingletonContainer, lsc, (s));
-    IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 1.0/k));
+    IMP_NEW(container::ConnectingPairContainer, cpc, (lsc, 0));
     Pointer<Restraint> cr= container::create_restraint(hdps, cpc);
     return cr.release();
   }
