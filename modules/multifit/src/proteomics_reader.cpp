@@ -45,9 +45,6 @@ bool is_interaction_line(const std::string &line) {
 }
 
 
-
-
-
 bool is_xlink_line(const std::string &line) {
   std::cout<<"XLINK LINE:"<<line;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
@@ -68,7 +65,6 @@ void parse_xlink_line(
      const std::string &line,
      ProteomicsData *dp){
   std::cout<<"parse_xlink_line:"<<line<<std::endl;
-  std::vector<int> inter_prots;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 2,
      "no data to parse. the last two tabs should contain header data\n");
@@ -80,20 +76,20 @@ void parse_xlink_line(
     boost::bind( &std::string::empty, _1 ) ),line_split.end() );
   std::cout<<"PARSE:"<<line_split.size()<<std::endl;
   std::string name1 =  boost::lexical_cast<std::string>(line_split[0]);
-  int index1 = dp->find(name1);
+  int prot1_ind = dp->find(name1);
+  int res1_ind= boost::lexical_cast<int>(line_split[1]);
   std::string name2 =  boost::lexical_cast<std::string>(line_split[2]);
-  int index2 = dp->find(name2);
+  int prot2_ind = dp->find(name2);
+  int res2_ind= boost::lexical_cast<int>(line_split[3]);
   std::cout<<"XLINK between "<<name1<<" "<<name2<<std::endl;
-  IMP_USAGE_CHECK(index1 != -1,
+  IMP_USAGE_CHECK(prot1_ind != -1,
                   "The protein "<<name1<<
                   " was not specified in the proteins list"<<std::endl);
-  IMP_USAGE_CHECK(index2 != -1,
+  IMP_USAGE_CHECK(prot2_ind != -1,
                   "The protein "<<name2<<
                   " was not specified in the proteins list"<<std::endl);
-  inter_prots.push_back(index1);
-  inter_prots.push_back(index2);
   //todo - for now the residue index is not used
-  dp->add_interaction(inter_prots);
+  dp->add_xlink_interaction(prot1_ind,res1_ind,prot2_ind,res2_ind);
 }
 
 

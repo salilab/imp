@@ -93,13 +93,23 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   void add_interaction(const Ints &ii) {
     interactions_.push_back(ii);
   }
+  void add_xlink_interaction(Int prot1,Int res1,Int prot2,Int res2){
+    xlinks_.push_back(std::make_pair(IntPair(prot1,res1),IntPair(prot2,res2)));
+  }
   int get_number_of_proteins() const {return prot_data_.size();}
   int get_number_of_interactions() const {return interactions_.size();}
-
   Ints get_interaction(int interaction_ind) const {
     IMP_USAGE_CHECK(interaction_ind<(int)interactions_.size(),
                     "index out of range\n");
     return interactions_[interaction_ind];}
+
+  int get_number_of_xlinks() const {return xlinks_.size();}
+  std::pair<IntPair,IntPair> get_xlink(int xlink_ind) const {
+    IMP_USAGE_CHECK(xlink_ind<(int)xlinks_.size(),
+                    "index out of range\n");
+    return xlinks_[xlink_ind];
+  }
+
   std::string get_protein_name(int protein_ind) const {
         IMP_USAGE_CHECK(protein_ind<(int)prot_data_.size(),
                         "index out of range\n");
@@ -171,6 +181,7 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
   std::vector<ProteinRecordData> prot_data_;
   std::map<std::string,int> prot_map_;
   std::vector<Ints>interactions_;
+  std::vector<std::pair<IntPair,IntPair> > xlinks_;
 };
 
 //! Proteomics reader
