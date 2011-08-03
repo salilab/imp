@@ -1261,6 +1261,29 @@ DensityMap* binarize(DensityMap *orig_map,
   return bin_map;
 }
 
+DensityMap* get_threshold_map(DensityMap *orig_map,
+                     float threshold) {
+  const DensityHeader *header = orig_map->get_header();
+  //create a new map
+  DensityMap * ret =
+    create_density_map(header->get_nx(),
+                       header->get_ny(),header->get_nz(),
+                       header->get_spacing());
+  ret->set_origin(orig_map->get_origin());
+  emreal *orig_data=orig_map->get_data();
+  emreal *ret_data=ret->get_data();
+  for(long i=0;i<header->get_number_of_voxels();i++){
+    if (orig_data[i]<threshold) {
+      ret_data[i]=0.;
+    } else {
+      ret_data[i]=orig_data[i];
+    }
+  }
+  return ret;
+}
+
+
+
 double convolute(const DensityMap *m1,const DensityMap *m2){
   const DensityHeader *h1=m1->get_header();
   const DensityHeader *h2=m2->get_header();
@@ -1408,5 +1431,80 @@ void DensityMap::convolute_kernel(DensityMap *other,
         }//if val>EPS
       }}} // for iz,iy,ix
   }
+
+DensityMap* interpolate_map (DensityMap *in_map,double new_spacing) {
+  const DensityHeader *in_header = in_map->get_header();
+  double in_spacing = in_header->get_spacing();
+  double *in_data=in_map->get_data();
+  algebra::Vector3D in_orig=in_map->get_origin();
+  int in_nx=in_header->get_nx();
+  int in_ny=in_header->get_ny();
+  int in_nz=in_header->get_nz();
+
+  //round origin voxel index for ret
+  int round_ret_orig_x = ceil(in_orig[0]/new_spacing);
+  int round_ret_orig_y = ceil(in_orig[1]/new_spacing);
+  int round_ret_orig_z = ceil(in_orig[2]/new_spacing);
+
+  //rount top voxel index for ret
+  int round_ret_top_x = floor((in_orig[0]+in_spacing*(in_nx-1))/new_spacing);
+  int round_ret_top_y = floor((in_orig[1]+in_spacing*(in_ny-1))/new_spacing);
+  int round_ret_top_z = floor((in_orig[2]+in_spacing*(in_nz-1))/new_spacing);
+  // update grid size
+  int ret_nx = round_ret_top_x-round_ret_orig_x+1;
+  int ret_ny = round_ret_top_y-round_ret_orig_y+1;
+  int ret_nz = round_ret_top_z-round_ret_orig_z+1;
+  IMP_INTERNAL_CHECK((ret_nx>2 && ret_ny>2 && ret_nz>2),
+                     "Grid too small to interpolate");
+
+  Pointer<DensityMap> ret=create_density_map(ret_nx,ret_ny,ret_nz,new_spacing);
+  ret->set_origin(round_ret_orig_x*new_spacing,
+                  round_ret_orig_y*new_spacing,
+                  round_ret_orig_z*new_spacing);
+
+  //get origin shift
+  algebra::Vector3D orig_shift=ret->get_origin()-in_orig;
+
+  emreal *ret_data=ret->get_data();
+  double ret_x_pos, ret_y_pos, ret_z_pos;
+  double in_x_ind,in_y_ind,in_z_ind, a, b, c;
+  int x0,y0,z0,x1,y1,z1;
+  int ret_nyx=ret_ny*ret_nx;
+  int in_nyx=in_ny*in_nx;
+
+  for (int iz=0;iz<ret_nz;iz++){
+    for (int iy=0;iy<ret_ny;iy++){
+      for (int ix=0;ix<ret_nx;ix++){
+        //position of ret voxel relative to start of in_map
+        ret_x_pos = orig_shift[0] + ix * new_spacing;
+        ret_y_pos = orig_shift[1] + iy * new_spacing;
+        ret_z_pos = orig_shift[2] + iz * new_spacing;
+
+        //index of ret location in the in_map
+        in_x_ind= (ret_x_pos/in_spacing);
+        in_y_ind = (ret_y_pos/in_spacing);
+        in_z_ind = (ret_z_pos/in_spacing);
+        x0 = floor(in_x_ind);
+        x1 = ceil(in_x_ind);
+        y0 = floor(in_y_ind);
+        y1 = ceil(in_y_ind);
+        z0 = floor(in_z_ind);
+        z1 = ceil(in_z_ind);
+        a = in_x_ind-x0;
+        b = in_y_ind-y0;
+        c = in_z_ind-z0;
+        //interpolate
+        ret_data[iz*ret_nyx+iy*ret_nx+ix]=
+          a * b * c * in_data[z1*in_nyx+y1*in_nx+x1] +
+          (1-a) * b * c * in_data[z1*in_nyx+y1*in_nx+x0] +
+          a * (1-b) * c * in_data[z1*in_nyx+y0*in_nx+x1] +
+          a * b * (1-c) * in_data[z0*in_nyx+y1*in_nx+x1] +
+          a * (1-b) * (1-c) * in_data[z0*in_nyx+y0*in_nx+x1] +
+          (1-a) * b * (1-c) * in_data[z0*in_nyx+y1*in_nx+x0] +
+          (1-a) * (1-b) * c * in_data[z1*in_nyx+y0*in_nx+x0] +
+          (1-a) * (1-b) * (1-c) * in_data[z0*in_nyx+y0*in_nx+x0];
+      }}}
+  return ret.release();
+}
 
 IMPEM_END_NAMESPACE

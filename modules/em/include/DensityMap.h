@@ -619,6 +619,17 @@ IMPEMEXPORT DensityMap* get_segment_by_masking(DensityMap *map_to_segment,
  */
 IMPEMEXPORT DensityMap* binarize(DensityMap *orig_map,
                                  float threshold,bool reverse=false);
+
+
+//! Return a map with 0 for all voxels below the
+//! threshold
+/**
+\param[in] orig_map the map to binarize
+\param[in] threshold values below the threshold are set to 0 and 1 otherwise
+ */
+IMPEMEXPORT DensityMap* get_threshold_map(DensityMap *orig_map,
+                                 float threshold);
+
 //! Return a density map for which voxel i contains the result of
 //! m1[i]*m2[i]. The function assumes m1 and m2 are of the same dimensions.
 IMPEMEXPORT DensityMap* multiply(const DensityMap *m1,
@@ -635,6 +646,10 @@ IMPEMEXPORT double get_sum(const DensityMap *m1);
  */
 IMPEMEXPORT DensityMap* get_max_map(DensityMaps maps);
 
+//! Return a new map with an updated spacing and interpolate input
+//! data accordinly
+IMPEMEXPORT
+DensityMap* interpolate_map(DensityMap *in_map,double new_spacing);
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_DENSITY_MAP_H */
