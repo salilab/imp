@@ -64,7 +64,7 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
  core::PairRestraint* lrb=
- add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
+  add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
  rset->add_restraint(lrb);
 }
 for(unsigned int i=0;i<TM->inter.size();++i){

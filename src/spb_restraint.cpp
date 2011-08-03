@@ -232,13 +232,11 @@ void add_symmetry_restraint (Model *m,
  }
 }
 
-void add_layer_restraint(Model *m, atom::Hierarchy h,
+void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
  FloatRange range, double kappa)
 {
- Particles ps=atom::get_leaves(h);
  IMP_NEW(core::HarmonicWell,hw,(range,kappa));
  IMP_NEW(core::AttributeSingletonScore,asc,(hw,FloatKey("z")));
- IMP_NEW(container::ListSingletonContainer,lsc,(ps));
  IMP_NEW(container::SingletonsRestraint,sr,(asc, lsc));
  m->add_restraint(sr);
 }

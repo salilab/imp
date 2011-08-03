@@ -37,8 +37,8 @@ IMPMEMBRANEEXPORT void do_bipartite_mindist(Model *m,Particles p1,Particles p2,
 IMPMEMBRANEEXPORT void do_allpairs_mindist(Model *m,Particles ps,
  core::SphereDistancePairScore* sps,bool filter=true);
 
-IMPMEMBRANEEXPORT void add_layer_restraint(Model *m, atom::Hierarchy h,
- FloatRange range, double kappa);
+IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
+container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 
 IMPMEMBRANEEXPORT void add_fret_restraint
 (Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
