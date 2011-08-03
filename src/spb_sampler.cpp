@@ -32,11 +32,9 @@ core::MonteCarlo* setup_SPBMonteCarlo
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
- mc->set_kt(temp);
 
 // create movers
  core::Movers mvs;
-// first hierarchy hs[0] is CP
  atom::Hierarchies hhs=hs[0].get_children();
  for(unsigned int j=0;j<hhs.size();++j){
   Particles ps=atom::get_leaves(hhs[j]);
@@ -76,9 +74,6 @@ core::MonteCarlo* setup_SPBMonteCarlo
    mvs.push_back(prbmv);
   }
  }
-
-// second hierarchy is IL2
-// TO DO
 
  IMP_NEW(core::SerialMover,mvmv,(mvs));
  mc->add_mover(mvmv);

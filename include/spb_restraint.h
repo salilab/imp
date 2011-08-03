@@ -21,6 +21,9 @@ IMPMEMBRANEEXPORT core::DistancePairScore*
 IMPMEMBRANEEXPORT core::SphereDistancePairScore*
  get_sphere_pair_score(FloatRange dist, double kappa);
 
+IMPMEMBRANEEXPORT core::SphereDistancePairScore*
+ get_sphere_pair_score(double dist, double kappa);
+
 IMPMEMBRANEEXPORT void add_SPBexcluded_volume
  (Model *m,atom::Hierarchies hs,double kappa);
 

@@ -46,8 +46,8 @@ for(int i=0;i<mydata.num_cells;++i){
 
  algebra::Vector3D CP_x0=mydata.CP_centers[i];
  algebra::Vector3D IL2_x0=mydata.IL2_centers[i];
- //for(int j=0;j<mydata.num_copies;++j){
- for(int j=0;j<1;++j){
+ for(int j=0;j<mydata.num_copies;++j){
+ //for(int j=0;j<1;++j){
 
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecule Spc42p_n_0=
@@ -150,11 +150,11 @@ for(int i=0;i<mydata.num_cells;++i){
    atom::Molecule Spc42p_c_0=
    create_protein(m,"Spc42p_c",13,2,
                     display::Color(175./255.,218./255.,238./255.),
-                    i,mydata.kappa,IL2_x0,77+60);
+                    i,mydata.kappa,IL2_x0,139);
   atom::Molecule Spc42p_c_1=
    create_protein(m,"Spc42p_c",13,2,
                     display::Color(175./255.,218./255.,238./255.),
-                    i,mydata.kappa,IL2_x0,77+60);
+                    i,mydata.kappa,IL2_x0,139);
   //h_CP_IL2[i].add_child(Spc42p_c_0);
   //h_CP_IL2[i].add_child(Spc42p_c_1);
   if(i==0){
@@ -210,7 +210,6 @@ add_layer_restraint(m, IL2_ps,
 // FRET
 //
 // intra-CP
-
 add_fret_restraint(m,h_CP_IL2, "Spc29p",    "C",
                      h_CP_IL2, "Cmd1p",     "C", 1.69, mydata.kappa);
 add_fret_restraint(m,h_CP_IL2, "Spc29p",    "N",
@@ -270,8 +269,12 @@ add_y2h_restraint(m,h_CP_IL2, "Cnm67p_c",   "C",
 std::cout << "Setup sampler" << std::endl;
 atom::Hierarchies hs;
 hs.push_back(h_CP_IL2[0]);
-//hs.push_back(h_IL2[0]);
 core::MonteCarlo* mc=setup_SPBMonteCarlo(m,hs,mydata.MC.tmin,mydata);
+
+// hot steps
+mc->set_kt(mydata.MC.tmax);
+mc->optimize(mydata.MC.nhot);
+mc->set_kt(mydata.MC.tmin);
 
 std::cout << "Sampling" << std::endl;
 // Monte Carlo loop
