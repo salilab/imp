@@ -11,12 +11,15 @@
 
 #include "rmf_config.h"
 #include "hdf5_types.h"
+#include "hdf5_handle.h"
+#include "internal/utility.h"
 #include <IMP/base_types.h>
 #include <boost/scoped_ptr.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <algorithm>
 #include <IMP/Pointer.h>
 #include <boost/shared_array.hpp>
+#include <boost/smart_ptr/intrusive_ptr.hpp>
 
 
 IMPRMF_BEGIN_NAMESPACE
@@ -75,10 +78,10 @@ class HDF5DataSet {
   friend class HDF5Group;
   HDF5DataSet(HDF5SharedHandle* parent, std::string name,  int num_dims):
     data_(new Data()) {
-    IMP_USAGE_CHECK(num_dims <= max_dims, "Currently it only supports "
+    IMP_RMF_USAGE_CHECK(num_dims <= max_dims, "Currently it only supports "
                     << max_dims << " dims");
     //std::cout << "Creating data set " << name << std::endl;
-    IMP_USAGE_CHECK(!H5Lexists(parent->get_hid(),
+    IMP_RMF_USAGE_CHECK(!H5Lexists(parent->get_hid(),
                               name.c_str(), H5P_DEFAULT),
                     "Data set " << name << " already exists");
     hsize_t dims[max_dims]={0};
@@ -94,7 +97,7 @@ class HDF5DataSet {
     HDF5Handle ds(H5Screate_simple(num_dims, dims, maxs), &H5Sclose);
     HDF5Handle plist(H5Pcreate(H5P_DATASET_CREATE), &H5Pclose);
     IMP_HDF5_CALL(H5Pset_chunk(plist, num_dims, cdims));
-    IMP_HDF5_CALL(H5Pset_fill_value(plist, TypeTraits::get_hdf5_type(),
+    IMP_HDF5_CALL(H5Pset_fill_value(plist, TypeTraits::get_hdf5_fill_type(),
                                     &TypeTraits::get_fill_value()));
     IMP_HDF5_CALL(H5Pset_fill_time(plist, H5D_FILL_TIME_IFSET));
     IMP_HDF5_CALL(H5Pset_alloc_time(plist, H5D_ALLOC_TIME_LATE));
@@ -104,7 +107,7 @@ class HDF5DataSet {
     //std::cout << "creating..." << name << std::endl;
     data_->h_.open(H5Dcreate(parent->get_hid(),
                              name.c_str(),
-                             TypeTraits::get_hdf5_type(),
+                             TypeTraits::get_hdf5_disk_type(),
                              ds, H5P_DEFAULT, plist, H5P_DEFAULT),
                    &H5Dclose);
     data_->dim_=num_dims;
@@ -112,7 +115,7 @@ class HDF5DataSet {
     //std::cout << "done..." << std::endl;
   }
   HDF5DataSet(HDF5SharedHandle* parent, std::string name): data_(new Data()) {
-    IMP_USAGE_CHECK(H5Lexists(parent->get_hid(),
+    IMP_RMF_USAGE_CHECK(H5Lexists(parent->get_hid(),
                               name.c_str(), H5P_DEFAULT),
                     "Data set " << name << " does not exist");
     data_->h_.open(H5Dopen(parent->get_hid(),
@@ -125,11 +128,11 @@ class HDF5DataSet {
   }
   void check_index(const Ints &ijk) const {
     Ints sz= get_size();
-    IMP_USAGE_CHECK(ijk.size()==sz.size(), "Index dimensions don't match: "
+    IMP_RMF_USAGE_CHECK(ijk.size()==sz.size(), "Index dimensions don't match: "
                     << sz.size() << " != " << ijk.size());
     for (unsigned int i=0; i< sz.size(); ++i) {
-      IMP_USAGE_CHECK(ijk[i] >=0, "Index is negative: " << ijk[i]);
-      IMP_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
+      IMP_RMF_USAGE_CHECK(ijk[i] >=0, "Index is negative: " << ijk[i]);
+      IMP_RMF_USAGE_CHECK(ijk[i] < sz[i], "Index is out of range: "
                       << ijk[i] << " >= " << sz[i]);
     }
   }
@@ -248,6 +251,8 @@ typedef HDF5DataSet<IntTraits> HDF5IntDataSet;
 typedef HDF5DataSet<IndexTraits> HDF5IndexDataSet;
 typedef HDF5DataSet<NodeIDTraits> HDF5NodeIDDataSet;
 typedef HDF5DataSet<DataSetTraits> HDF5DataSetDataSet;
+typedef HDF5DataSet<IntsTraits> HDF5IntsDataSet;
+typedef HDF5DataSet<IntsTraits> HDF5NodeIDsDataSet;
 #ifndef IMP_DOXYGEN
 typedef std::vector<HDF5FloatDataSet> HDF5FloatDataSets;
 typedef std::vector<HDF5StringDataSet> HDF5StringDataSets;
@@ -255,27 +260,28 @@ typedef std::vector<HDF5IntDataSet> HDF5IntDataSets;
 typedef std::vector<HDF5IndexDataSet> HDF5IndexDataSets;
 typedef std::vector<HDF5NodeIDDataSet> HDF5NodeIDDataSets;
 typedef std::vector<HDF5DataSetDataSet> HDF5DataSetDataSets;
+typedef std::vector<HDF5IntsDataSet> HDF5IntsDataSets;
+typedef std::vector<HDF5NodeIDsDataSet> HDF5NodeIDsDataSets;
 #endif
 
 
 /** Wrap an HDF5 Group. */
 class IMPRMFEXPORT HDF5Group {
-  Pointer<HDF5SharedHandle> h_;
+  boost::intrusive_ptr<HDF5SharedHandle> h_;
   unsigned int get_number_of_links() const {
     H5G_info_t info;
     IMP_HDF5_CALL(H5Gget_info(h_->get_hid(), &info));
     unsigned int n= info.nlinks;
     return n;
   }
+#ifndef SWIG
+ protected:
+  HDF5Group(HDF5SharedHandle *h);
+#endif
  public:
   void show(std::ostream &out) const {
     out << "HDF5Group";
   }
-
-#ifndef IMP_DOXYGEN
-  // create as root of file
-  HDF5Group(std::string name, bool clear);
-#endif
 
   // create from an existing group
   HDF5Group(HDF5Group parent, std::string name);
@@ -283,16 +289,16 @@ class IMPRMFEXPORT HDF5Group {
   template <class TypeTraits>
     HDF5DataSet<TypeTraits> add_child_data_set(std::string name,
                                     int dim) {
-    return HDF5DataSet<TypeTraits>(h_, name, dim);
+    return HDF5DataSet<TypeTraits>(h_.get(), name, dim);
   }
   template <class TypeTraits>
     HDF5DataSet<TypeTraits> get_child_data_set(std::string name) const {
-    return HDF5DataSet<TypeTraits>(h_, name);
+    return HDF5DataSet<TypeTraits>(h_.get(), name);
   }
   template <class TypeTraits>
     HDF5DataSet<TypeTraits> get_child_data_set(std::string name, int dim) {
     if (get_has_child(name)) {
-      return HDF5DataSet<TypeTraits>(h_, name);
+      return HDF5DataSet<TypeTraits>(h_.get(), name);
     } else {
       return add_child_data_set<TypeTraits>(name, dim);
     }
@@ -317,6 +323,7 @@ class IMPRMFEXPORT HDF5Group {
   IMP_HDF5_DATA_SET_METHODS(string, String);
   IMP_HDF5_DATA_SET_METHODS(data_set, DataSet);
   IMP_HDF5_DATA_SET_METHODS(node_id, NodeID);
+  IMP_HDF5_DATA_SET_METHODS(ints, Ints);
   unsigned int get_number_of_children() const;
   std::string get_child_name(unsigned int i) const;
   bool get_has_child(std::string name) const;
@@ -352,7 +359,7 @@ class IMPRMFEXPORT HDF5Group {
         hsize_t max=H5S_UNLIMITED;
         IMP_HDF5_CALL(H5Sset_extent_simple(s, 1, &dim, &max));
         HDF5Handle a(H5Acreate2(h_->get_hid(), name.c_str(),
-                                TypeTraits::get_hdf5_type(),
+                                TypeTraits::get_hdf5_disk_type(),
                                 s, H5P_DEFAULT, H5P_DEFAULT),
                      &H5Aclose);
       }
@@ -400,20 +407,31 @@ class IMPRMFEXPORT HDF5Group {
   IMP_HDF5_ATTRIBUTE(index, Index);
 };
 
+
+class IMPRMFEXPORT HDF5File: public HDF5Group {
+ public:
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+  HDF5File(HDF5SharedHandle *h);
+#endif
+  void flush();
+  ~HDF5File();
+};
+
 /** Create a new hdf5 file, clearing any existing file with the same
     name if needed.
 */
-inline HDF5Group create_hdf5_file(std::string name) {
-  return HDF5Group(name, true);
-}
+IMPRMFEXPORT HDF5File create_hdf5_file(std::string name);
 
 /** Open an existing hdf5 file.
 */
-inline HDF5Group open_hdf5_file(std::string name) {
-  return HDF5Group(name, false);
-}
+IMPRMFEXPORT HDF5File open_hdf5_file(std::string name);
+
+/** Open an existing hdf5 file.
+*/
+IMPRMFEXPORT HDF5File open_hdf5_file_read_only(std::string name);
 
 IMP_VALUES(HDF5Group, HDF5Groups);
+IMP_VALUES(HDF5File, HDF5Files);
 
 
 inline int get_number_of_open_hdf5_handles() {

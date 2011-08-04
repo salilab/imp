@@ -15,6 +15,7 @@
 #include "hdf5_types.h"
 #include "NodeID.h"
 #include <boost/graph/adjacency_list.hpp>
+#include <boost/smart_ptr/intrusive_ptr.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 #ifdef SWIG
@@ -57,10 +58,10 @@ class RootHandle;
 class IMPRMFEXPORT NodeHandle {
   int node_;
   friend class RootHandle;
-  Pointer<internal::SharedData> shared_;
+  boost::intrusive_ptr<internal::SharedData> shared_;
   NodeHandle(int node, internal::SharedData *shared);
  public:
-  IMP_COMPARISONS_2(NodeHandle, node_, shared_);
+  IMP_COMPARISONS_2(NodeHandle, node_, shared_.get());
   IMP_HASHABLE_INLINE(NodeHandle, return node_);
   NodeHandle():node_(-1){}
   /** Create a new node as a child of this one.
@@ -145,6 +146,7 @@ class IMPRMFEXPORT NodeHandle {
   IMP_HDF5_NODE_KEY_TYPE_METHODS(index, Index);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(node_id, NodeID);
   IMP_HDF5_NODE_KEY_TYPE_METHODS(data_set, DataSet);
+  IMP_HDF5_NODE_KEY_TYPE_METHODS(node_ids, NodeIDs);
   /** @} */
   void show(std::ostream &out= std::cout) const {
     out << get_name() << "(" << get_type() << ", " << node_ << ")";

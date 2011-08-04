@@ -12,6 +12,19 @@
 #include <boost/shared_array.hpp>
 IMPRMF_BEGIN_NAMESPACE
 
+#define  IMP_HDF5_CREATE_RESTRAINT_KEYS(node)                           \
+  RootHandle imp_f=node.get_root_handle();                              \
+  FloatKey sk= get_or_add_key<FloatTraits>(imp_f, Feature, "score",     \
+                                           true);                       \
+  NodeIDsKey nk                                                         \
+  = get_or_add_key<NodeIDsTraits>(imp_f, Feature, "representation");
+
+#define IMP_HDF5_ACCEPT_RESTRAINT_KEYS\
+  FloatKey sk, NodeIDsKey nk
+
+#define IMP_HDF5_PASS_RESTRAINT_KEYS\
+  sk, nk
+
 namespace {
 
   class  Subset {
@@ -85,28 +98,19 @@ namespace {
 
   typedef IMP::compatibility::map<Subset, NodeHandle> Index;
   void build_index(NodeHandle parent,
-                   NodeIDKeys &fks,
-                   Index &nodes) {
+                   Index &nodes,
+                   IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
+    IMP_UNUSED(sk);
     NodeHandles children= parent.get_children();
     for (unsigned int i=0; i< children.size(); ++i) {
       ParticlesTemp pt;
-      unsigned int j=0;
-      while (true) {
-        if (fks.size() <= j) {
-          std::ostringstream oss;
-          oss << "representation" << j;
-          fks.push_back(get_or_add_key<NodeIDTraits>(parent.get_root_handle(),
-                                                     Feature, oss.str(),
-                                                     false));
-        }
-        if (children[i].get_has_value(fks[j])) {
-          NodeID id= children[i].get_value(fks[j]);
-          NodeHandle nh= parent.get_root_handle().get_node_handle_from_id(id);
+      if (children[i].get_has_value(nk)) {
+        NodeIDs ids= children[i].get_value(nk);
+        for (unsigned int j=0; j< ids.size(); ++j) {
+          NodeHandle nh
+            = parent.get_root_handle().get_node_handle_from_id(ids[j]);
           Particle *p= reinterpret_cast<Particle*>(nh.get_association());
           pt.push_back(p);
-          ++j;
-        } else {
-          break;
         }
       }
       IMP_USAGE_CHECK(!pt.empty(), "No used particles found. Not so good: "
@@ -120,25 +124,22 @@ namespace {
   }
 
   void set_particles(NodeHandle nh,
-                     NodeIDKeys &fks,
-                     const ParticlesTemp& ps) {
+                     const ParticlesTemp& ps,
+                     IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
+    IMP_UNUSED(sk);
+    NodeIDs ids(ps.size());
     for (unsigned int i=0; i< ps.size(); ++i) {
-      if (fks.size() <= i) {
-        std::ostringstream oss;
-        oss << "representation" << i;
-        fks.push_back(get_or_add_key<NodeIDTraits>(nh.get_root_handle(),
-                                                   Feature, oss.str(), false));
-      }
       NodeID id
         =nh.get_root_handle().get_node_handle_from_association(ps[i]).get_id();
-      nh.set_value(fks[i], id);
+      ids[i]=id;
     }
+    nh.set_value(nk, ids);
   }
 
   NodeHandle get_child(NodeHandle parent,
-                       NodeIDKeys &fks,
                        Restraint *r,
-                       Index &nodes) {
+                       Index &nodes,
+                       IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
     ParticlesTemp ip= r->get_input_particles();
     Subset s(ip);
     if (nodes.find(s) == nodes.end()) {
@@ -147,7 +148,7 @@ namespace {
         << " under " << parent.get_name() << std::endl;*/
       nodes[s]=c;
       c.set_association(r);
-      set_particles(c, fks, ip);
+      set_particles(c, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
       return c;
     } else {
       return nodes[s];
@@ -156,9 +157,8 @@ namespace {
 
 
   void add_restraint_internal(Restraint *r,
-                              NodeIDKeys &fks,
-                              FloatKey sk,
-                              NodeHandle parent) {
+                              NodeHandle parent,
+                              IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
     NodeHandle cur= parent.add_child(r->get_name(), FEATURE);
     cur.set_association(r);
     //
@@ -172,33 +172,31 @@ namespace {
       for (unsigned int i=0; i< rd.size(); ++i) {
         //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rd[i]->set_was_used(true);
-        NodeHandle rc=get_child(cur, fks, &*rd[i], index);
+        NodeHandle rc=get_child(cur, &*rd[i], index,
+                                IMP_HDF5_PASS_RESTRAINT_KEYS);
         double score = rd[i]->unprotected_evaluate(NULL);
         rc.set_value(sk, score, 0);
       }
     }
-    set_particles(cur, fks, ip);
+    set_particles(cur, ip, IMP_HDF5_PASS_RESTRAINT_KEYS);
   }
 }
 
 void add_restraint(RootHandle parent, Restraint *r) {
   IMP_FUNCTION_LOG;
-  NodeIDKeys fks;
-  FloatKey sk= get_or_add_key<FloatTraits>(parent.get_root_handle(),
-                                           Feature, "score", true);
-  add_restraint_internal(r, fks, sk, parent);
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(parent);
+  add_restraint_internal(r, parent, IMP_HDF5_PASS_RESTRAINT_KEYS);
 }
 
 namespace {
 
   void save_restraint_internal(Restraint *r,
                                RootHandle f,
-                               NodeIDKeys &fks,
-                               FloatKey sk,
-                               int frame) {
+                               int frame,
+                               IMP_HDF5_ACCEPT_RESTRAINT_KEYS) {
     NodeHandle rn= f.get_node_handle_from_association(r);
     Index index;
-    build_index(rn, fks, index);
+    build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
     rn.set_value(sk, s, frame);
     Restraints rd= r->get_instant_decomposition();
@@ -206,7 +204,8 @@ namespace {
       for (unsigned int i=0; i< rd.size(); ++i) {
         //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
         rd[i]->set_was_used(true);
-        NodeHandle rc=get_child(rn, fks, &*rd[i], index);
+        NodeHandle rc=get_child(rn, &*rd[i], index,
+                                IMP_HDF5_PASS_RESTRAINT_KEYS);
         double score = rd[i]->unprotected_evaluate(NULL);
         rc.set_value(sk, score, frame);
       }
@@ -216,76 +215,42 @@ namespace {
 
 void save_frame(RootHandle f, int frame, Restraint *r) {
   IMP_FUNCTION_LOG;
-  NodeIDKeys fks;
-  FloatKey sk= get_or_add_key<FloatTraits>(f,
-                                           Feature, "score", true);
-
-  save_restraint_internal(r, f, fks, sk, frame);
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  save_restraint_internal(r, f, frame, IMP_HDF5_PASS_RESTRAINT_KEYS);
 }
 
 ParticlesTemp get_restraint_particles(NodeHandle f,
-                                      NodeIDKeys &ks,
                                       int frame) {
   IMP_FUNCTION_LOG;
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
   IMP_USAGE_CHECK(f.get_type()== FEATURE,
                   "Get restraint particles called on non-restraint node "
                   << f.get_name());
   RootHandle rh=f.get_root_handle();
-  if (ks.empty()) {
-    do {
-      std::ostringstream oss;
-      oss << "representation" << ks.size();
-      if (rh.get_has_key<NodeIDTraits>(Feature, oss.str())) {
-        ks.push_back(rh.get_key<NodeIDTraits>(Feature, oss.str()));
-      } else {
-        break;
-      }
-    } while (true);
-  }
-  ParticlesTemp ret;
-  for (unsigned int i=0; i< ks.size(); ++i) {
-    if (!f.get_has_value(ks[i], frame)) {
-      break;
-    } else {
-      NodeID id= f.get_value(ks[i], frame);
-      NodeHandle nh= rh.get_node_handle_from_id(id);
-      Particle *p= reinterpret_cast<Particle*>(nh.get_association());
-      ret.push_back(p);
-    }
+  NodeIDs ids= f.get_value(nk, frame);
+  ParticlesTemp ret(ids.size());
+  for (unsigned int i=0; i< ids.size(); ++i) {
+    NodeHandle nh= rh.get_node_handle_from_id(ids[i]);
+    Particle *p= reinterpret_cast<Particle*>(nh.get_association());
+    ret[i]=p;
   }
   return ret;
 }
 
 
-ParticlesTemp get_restraint_particles(NodeHandle f,
-                                      int frame) {
-  IMP_FUNCTION_LOG;
-  NodeIDKeys t;
-  return get_restraint_particles(f, t, frame);
-}
 
 double get_restraint_score(NodeHandle f,
-                           FloatKey &fk,
                            int frame) {
   IMP_FUNCTION_LOG;
-  if (fk== FloatKey()) {
-    fk= get_or_add_key<FloatTraits>(f.get_root_handle(),
-                                    Feature, "score", true);
-  }
-  if (f.get_has_value(fk, frame)) {
-    return f.get_value(fk, frame);
+  IMP_HDF5_CREATE_RESTRAINT_KEYS(f);
+  if (f.get_has_value(sk, frame)) {
+    return f.get_value(sk, frame);
   } else {
     return -std::numeric_limits<double>::infinity();
   }
 }
 
 
-double get_restraint_score(NodeHandle f,
-                           int frame) {
-  IMP_FUNCTION_LOG;
-  FloatKey sk;
-  return get_restraint_score(f, sk, frame);
-}
 
 
 IMPRMF_END_NAMESPACE

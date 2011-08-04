@@ -10,27 +10,16 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-
-HDF5Group::HDF5Group(std::string name, bool clear) {
-  bool exists= (!clear && boost::filesystem::exists(name));
-  HDF5Handle plist(H5Pcreate(H5P_FILE_ACCESS), &H5Pclose);
-  IMP_HDF5_CALL(H5Pset_sieve_buf_size(plist, 1000000));
-  IMP_HDF5_CALL(H5Pset_cache(plist, 0, 1000, 1000000, 0.0));
-  if (exists) {
-    h_= new HDF5SharedHandle(H5Fopen(name.c_str(), H5F_ACC_RDWR, plist),
-                             &H5Fclose);
-  } else {
-    h_= new HDF5SharedHandle(H5Fcreate(name.c_str(), H5F_ACC_TRUNC, H5P_DEFAULT,
-                                       plist), &H5Fclose);
-  }
+HDF5Group::HDF5Group(HDF5SharedHandle *h): h_(h) {
 }
+
 // create from possibly group
 HDF5Group::HDF5Group(HDF5Group parent, std::string name) {
   h_= new HDF5SharedHandle(H5Gopen(parent.h_->get_hid(), name.c_str(),
                                    H5P_DEFAULT), &H5Gclose);
 }
 HDF5Group HDF5Group::add_child(std::string name) {
-  IMP_USAGE_CHECK(!H5Lexists(h_->get_hid(), name.c_str(), H5P_DEFAULT),
+  IMP_RMF_USAGE_CHECK(!H5Lexists(h_->get_hid(), name.c_str(), H5P_DEFAULT),
                   "Child named " << name << " already exists");
   HDF5Handle(H5Gcreate2(h_->get_hid(), name.c_str(),
                         H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT),
@@ -75,4 +64,48 @@ bool HDF5Group::get_child_is_data_set(unsigned int i) const {
 bool HDF5Group::get_has_attribute(std::string nm) const {
   return H5Aexists_by_name(h_->get_hid(), ".", nm.c_str(), H5P_DEFAULT) > 0;
 }
+
+
+
+namespace {
+hid_t get_parameters() {
+  hid_t plist= H5Pcreate(H5P_FILE_ACCESS);
+  IMP_HDF5_CALL(H5Pset_sieve_buf_size(plist, 1000000));
+  IMP_HDF5_CALL(H5Pset_cache(plist, 0, 1000, 1000000, 0.0));
+  return plist;
+}
+}
+
+HDF5File create_hdf5_file(std::string name) {
+  HDF5Handle plist(get_parameters(), H5Pclose);
+  return HDF5File(new HDF5SharedHandle(H5Fcreate(name.c_str(),
+                                                 H5F_ACC_TRUNC, H5P_DEFAULT,
+                                                 plist), &H5Fclose));
+}
+
+HDF5File open_hdf5_file(std::string name) {
+  HDF5Handle plist(get_parameters(), H5Pclose);
+  return HDF5File(new HDF5SharedHandle(H5Fopen(name.c_str(),
+                                               H5F_ACC_RDWR, plist),
+                                       &H5Fclose));
+}
+
+HDF5File open_hdf5_file_read_only(std::string name) {
+  HDF5Handle plist(get_parameters(), H5Pclose);
+  return HDF5File(new HDF5SharedHandle(H5Fopen(name.c_str(),
+                                               H5F_ACC_RDONLY, plist),
+                                       &H5Fclose));
+}
+
+HDF5File::HDF5File(HDF5SharedHandle *h): HDF5Group(h){}
+
+void HDF5File::flush() {
+  IMP_HDF5_CALL(H5Fflush(get_handle(), H5F_SCOPE_LOCAL));
+}
+
+HDF5File::~HDF5File() {
+  IMP_LOG(TERSE, "Closing file." <<std::endl );
+}
+
+
 IMPRMF_END_NAMESPACE

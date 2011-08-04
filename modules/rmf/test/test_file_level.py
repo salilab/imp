@@ -10,7 +10,7 @@ class GenericTest(IMP.test.TestCase):
     """Test the python code"""
     def test_perturbed(self):
         """Test creating a simple hierarchy file"""
-        f= IMP.rmf.RootHandle(self.get_tmp_file_name("test_file.mh"), True)
+        f= IMP.rmf.create_rmf_file(self.get_tmp_file_name("test_file.mh"))
         r= f
         print r.get_type()
         ik= f.add_int_key(IMP.rmf.Sequence, "ik0", False)
