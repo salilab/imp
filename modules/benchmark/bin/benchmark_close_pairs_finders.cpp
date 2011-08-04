@@ -40,7 +40,7 @@ void test_one(std::string name,
         result+=cpf->get_close_pairs(m, psi).size();
       }, runtime);
     std::ostringstream oss;
-    oss << "cpf " << name << " " << n << " " << rmax;
+    oss << "cpf index " << name << " " << n << " " << rmax;
     report(oss.str(), runtime, result);
   }
 {
