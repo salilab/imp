@@ -103,9 +103,10 @@ inline compatibility::map<Base*, int> get_graph_index(const Graph &g) {
 
 
 
-struct AncestorException{
+struct IMPEXPORT AncestorException{
   Object *o;
   AncestorException(Object *oi): o(oi){};
+  virtual ~AncestorException();
 };
 
 // gcc 4.2 objects if this does not have external linkage
