@@ -100,9 +100,10 @@ for(int i=0;i<mydata.num_cells;++i){
    }
    // Coiled-Coil
    atom::Molecules Spc42p_CC=
-    create_coiled_coil(m,"Spc42_CC","2Q6Q_A.pdb", "2Q6Q_B.pdb",30,
-                      display::Color(175./255.,208./255.,238./255.),
-                      i, CC_x0,67);
+    create_coiled_coil(m,"Spc42_CC","2Q6Q_A.pdb", "2Q6Q_B.pdb",
+                       mydata.resolution,
+                       display::Color(175./255.,208./255.,238./255.),
+                       i, CC_x0,67);
    if(i==0){
     Particles ps_Spc42p_n_0=atom::get_leaves(Spc42p_n_0);
     Particles ps_Spc42p_c_0=atom::get_leaves(Spc42p_c_0);
@@ -221,7 +222,7 @@ for(int i=0;i<mydata.num_cells;++i){
     }
    }else{
     atom::Molecule Cmd1p=
-     create_protein(m,"Cmd1p","3CLN.pdb",30,
+     create_protein(m,"Cmd1p","3CLN.pdb",mydata.resolution,
                      display::Color(255./255.,255./255.,0.),
                      i,CP_x0,5);
     all_mol.add_child(Cmd1p);
@@ -259,7 +260,7 @@ for(int i=0;i<mydata.num_cells;++i){
     }
    } else {
     atom::Molecule Cnm67p_c=
-     create_protein(m,"Cnm67p_c","3OA7.pdb",30,
+     create_protein(m,"Cnm67p_c","3OA7.pdb",mydata.resolution,
                       display::Color(50./255.,205./255.,50./255.),
                       i,IL2_x0,429);
     all_mol.add_child(Cnm67p_c);

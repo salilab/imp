@@ -46,7 +46,7 @@ atom::Hierarchies all_mol=
  create_representation(m,mydata,CP_ps,IL2_ps,mvs);
 
 //
-// trajectory file
+// Prepare output file
 std::string trajname="traj.rmf";
 rmf::RootHandle rh = rmf::RootHandle(trajname,true);
 for(unsigned int i=0;i<all_mol.size();++i){
@@ -129,8 +129,9 @@ if(mydata.add_y2h){
                      all_mol, "Spc110p_c",  "C", mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
                      all_mol, "Spc29p",     "ALL", mydata.kappa);
- add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
-                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
+// Having a rigid coiled-coil, this is always satisfied
+// add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
+//                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
 // IL2
  add_y2h_restraint(m,all_mol, "Cnm67p_c",   "C",
                      all_mol, "Spc42p",     "C", mydata.kappa);
