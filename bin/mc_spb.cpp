@@ -37,14 +37,17 @@ SPBParameters mydata=get_SPBParameters("config.ini");
 //
 std::cout << "Creating representation" << std::endl;
 // List of particles for layer restraint
+IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC
 core::Movers mvs;
 
 atom::Hierarchies all_mol=
- create_representation(m,mydata,CP_ps,IL2_ps,mvs);
+ create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
 
+// RESTART from individual rmf file
+// TO DO
 //
 // Prepare output file
 std::string trajname="traj.rmf";
@@ -68,9 +71,14 @@ add_symmetry_restraint(m,all_mol,mydata.trs);
 //
 // Layer restraint
 //
+// CP and below
+add_layer_restraint(m, bCP_ps,
+ FloatRange(-1.0e+34,mydata.CP_thickness/2.0),mydata.kappa);
+// inside CP
 add_layer_restraint(m, CP_ps,
  FloatRange(-mydata.CP_thickness/2.0,mydata.CP_thickness/2.0),
  mydata.kappa);
+// inside IL2
 double dz=mydata.IL2_centers[0][2];
 add_layer_restraint(m, IL2_ps,
  FloatRange(-mydata.IL2_thickness/2.0+dz,mydata.IL2_thickness/2.0+dz),

@@ -19,6 +19,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
+container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps, core::Movers& mvs)
 {
@@ -33,13 +34,14 @@ for(int i=0;i<mydata.num_cells;++i){
  std::stringstream out;
  out << i;
  all_mol->set_name("Cell " + out.str() + " Hierarchy");
- hs.push_back(all_mol);
 
 // useful vectors
  algebra::Vector3D CP_x0=mydata.CP_centers[i];
  algebra::Vector3D IL2_x0=mydata.IL2_centers[i];
  double ddz=mydata.CP_thickness/2.0+mydata.CP_IL2_gap/2.0;
  algebra::Vector3D CC_x0=algebra::Vector3D(CP_x0[0],CP_x0[1],ddz);
+ algebra::Vector3D CC2_x0=
+  algebra::Vector3D(CP_x0[0],CP_x0[1],-mydata.CP_thickness);
 
  for(int j=0;j<mydata.num_copies;++j){
 
@@ -168,28 +170,6 @@ for(int i=0;i<mydata.num_cells;++i){
     }
    }
   }
-  if(mydata.add_Spc110p){
-  //Spc110p_c, 3 beads
-   atom::Molecule Spc110p_c=
-    create_protein(m,"Spc110p_c",26,3,
-                     display::Color(255./255.,0.,0.),
-                     i,mydata.kappa,CP_x0,627+164);
-   all_mol.add_child(Spc110p_c);
-   if(i==0){
-    Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c);
-    CP_ps->add_particles(ps_Spc110p_c);
-    IMP_NEW(membrane::PbcBoxedMover,mv,
-           (ps_Spc110p_c[0],ps_Spc110p_c,mydata.MC.dx,
-           mydata.CP_centers,mydata.trs));
-    mvs.push_back(mv);
-    for(unsigned int k=1;k<ps_Spc110p_c.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc110p_c[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
-    }
-   }
-  }
   if(mydata.add_Cmd1p){
  //Cmd1p, 1 bead for N, 1 bead for C
    if(!mydata.use_structure){
@@ -276,6 +256,76 @@ for(int i=0;i<mydata.num_cells;++i){
    }
   }
  } // cycle on copies
+
+ if(mydata.add_Spc110p){
+ // For Spc110 I need something different
+  for(int j=0;j<mydata.num_copies/2;++j){
+ //Spc110p_c, 3 beads for C terminus
+   atom::Molecule Spc110p_c_0=
+    create_protein(m,"Spc110p_c",26,4,
+                     display::Color(255./255.,0.,0.),
+                     i,mydata.kappa,CP_x0,799);
+   atom::Molecule Spc110p_c_1=
+    create_protein(m,"Spc110p_c",26,4,
+                     display::Color(255./255.,0.,0.),
+                     i,mydata.kappa,CP_x0,799);
+   if(i==0){
+    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c_0);
+    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c_1);
+    CP_ps->add_particles(ps_Spc110p_c_0);
+    CP_ps->add_particles(ps_Spc110p_c_1);
+    for(unsigned int k=0;k<ps_Spc110p_c_0.size();++k){
+     Particles pps;
+     pps.push_back(ps_Spc110p_c_0[k]);
+     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+     mvs.push_back(bmv);
+    }
+    for(unsigned int k=0;k<ps_Spc110p_c_1.size();++k){
+     Particles pps;
+     pps.push_back(ps_Spc110p_c_1[k]);
+     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+     mvs.push_back(bmv);
+    }
+   }
+      // Coiled-Coil
+   atom::Molecules Spc110p_CC=
+    create_coiled_coil(m,"Spc110_CC","CC_120_A.pdb","CC_120_B.pdb",
+                       mydata.resolution,
+                       display::Color(255./255.,0.,0.),
+                       i, CC2_x0,678);
+   if(i==0){
+    bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[0]));
+    bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[1]));
+    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c_0);
+    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c_1);
+    Particles ps_Spc110p;
+    ps_Spc110p.insert(ps_Spc110p.end(),
+     ps_Spc110p_c_0.begin(),ps_Spc110p_c_0.end());
+    ps_Spc110p.insert(ps_Spc110p.end(),
+     ps_Spc110p_c_1.begin(),ps_Spc110p_c_1.end());
+    Particle *ps_tmp=atom::get_leaves(Spc110p_CC[0])[0];
+    core::RigidBody prb=core::RigidMember(ps_tmp).get_rigid_body();
+    IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
+     (prb,ps_Spc110p,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+    mvs.push_back(rbmv);
+   }
+// now create the merge
+   atom::Molecules Spc110p_0_all,Spc110p_1_all;
+   Spc110p_0_all.push_back(Spc110p_CC[0]);
+   Spc110p_0_all.push_back(Spc110p_c_0);
+   Spc110p_1_all.push_back(Spc110p_CC[1]);
+   Spc110p_1_all.push_back(Spc110p_c_1);
+
+   atom::Molecule Spc110p_0=
+     create_merged_protein(m,"Spc110p",Spc110p_0_all,i,mydata.kappa,0.0);
+   atom::Molecule Spc110p_1=
+     create_merged_protein(m,"Spc110p",Spc110p_1_all,i,mydata.kappa,0.0);
+   all_mol.add_child(Spc110p_0);
+   all_mol.add_child(Spc110p_1);
+  }
+ }
+// add the hierarchy of the current unit cell to hs
+ hs.push_back(all_mol);
 } // cycle on cells
 return hs;
 }

@@ -132,12 +132,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  algebra::Vector3D IL2_center;
  double dz=CP_IL2_gap+IL2_thickness/2.0+CP_thickness/2.0;
 // cell dependent parameters
- if(cell_type=="triangle"){
-  ret.num_cells=42;
-  ret.num_copies=1;
-  CP_center=algebra::Vector3D(side/2.0,side/2.0/sqrt(3.0),0.0);
-  IL2_center=algebra::Vector3D(side/2.0,side/2.0/sqrt(3.0),dz);
- } else if(cell_type=="rhombus"){
+ if(cell_type=="rhombus"){
   ret.num_cells=21;
   ret.num_copies=2;
   CP_center=algebra::Vector3D(side/4.0,side/4.0*sqrt(3.0),0.0);

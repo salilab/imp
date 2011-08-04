@@ -17,6 +17,7 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT atom::Hierarchies create_representation
 (Model *m, SPBParameters mydata,
+container::ListSingletonContainer *bCP_ps,
 container::ListSingletonContainer *CP_ps,
 container::ListSingletonContainer *IL2_ps, core::Movers& mvs);
 
