@@ -97,20 +97,10 @@ RestraintsAndWeights get_restraints_and_weights(const RestraintsTemp &rs,
 }
 
 
-RestraintsAndWeights get_restraints_and_weights(const RestraintSet *rs) {
-  return get_restraints_and_weights(rs->restraints_begin(),
-                                    rs->restraints_end(),
-                                    rs->get_weight());
-}
-
 RestraintsTemp get_restraints(const RestraintsTemp &rs) {
   return get_restraints(rs.begin(), rs.end());
 }
 
-
-RestraintsTemp get_restraints(const RestraintSet *rs) {
-  return get_restraints(rs->restraints_begin(), rs->restraints_end());
-}
 
 namespace {
   unsigned int num_children(Restraint*r) {

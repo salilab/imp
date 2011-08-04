@@ -79,12 +79,7 @@ IMPEXPORT RestraintsAndWeights
 get_restraints_and_weights(const RestraintsTemp &rs,
                            double initial_weight=1);
 
-IMPEXPORT RestraintsAndWeights
-get_restraints_and_weights(const RestraintSet *rs);
-
 IMPEXPORT RestraintsTemp get_restraints(const RestraintsTemp &rs);
-
-IMPEXPORT RestraintsTemp get_restraints(const RestraintSet *rs);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
 namespace {
