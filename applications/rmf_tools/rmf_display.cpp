@@ -24,9 +24,8 @@ void print_help() {
 }
 
 IMP::core::XYZRs get_xyzr_particles(IMP::rmf::NodeHandle nh,
-                                    IMP::rmf::NodeIDKeys &niks,
                                     int frame) {
-  IMP::ParticlesTemp ps= IMP::rmf::get_restraint_particles(nh, niks, frame);
+  IMP::ParticlesTemp ps= IMP::rmf::get_restraint_particles(nh, frame);
   IMP::core::XYZRs ret;
   for (unsigned int i=0; i< ps.size(); ++i) {
     if (IMP::core::XYZR::particle_is_instance(ps[i])) {
@@ -51,22 +50,20 @@ void set_color(IMP::rmf::NodeHandle nh,
 }
 
 IMP::display::Geometry *create_restraint_geometry(IMP::rmf::NodeHandle nh,
-                                                  IMP::rmf::NodeIDKeys &niks,
-                                                  IMP::rmf::FloatKey &rsk,
                                                   int frame) {
-  double score=IMP::rmf::get_restraint_score(nh, rsk, frame);
+  double score=IMP::rmf::get_restraint_score(nh, frame);
   if (score < -std::numeric_limits<double>::max()) return NULL;
   IMP::rmf::NodeHandles children=nh.get_children();
   IMP::display::Geometries gs;
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g
-      = create_restraint_geometry(children[i], niks, rsk, frame);
+      = create_restraint_geometry(children[i], frame);
     if (g) {
       IMP::Pointer<IMP::display::Geometry> gp(g);
       gs.push_back(g);
     }
   }
-  IMP::core::XYZRs ds= get_xyzr_particles(nh, niks, frame);
+  IMP::core::XYZRs ds= get_xyzr_particles(nh, frame);
   if (ds.size()==2) {
     IMP::algebra::Segment3D s(ds[0].get_coordinates(), ds[1].get_coordinates());
     gs.push_back(new IMP::display::SegmentGeometry(s));
@@ -94,12 +91,9 @@ IMP::display::Geometry *create_restraint_geometry(IMP::rmf::NodeHandle nh,
 void add_restraints(IMP::rmf::RootHandle rh,
                     int frame,
                     IMP::display::Writer *w) {
-  IMP::rmf::NodeIDKeys niks;
-  IMP::rmf::FloatKey rsk;
   IMP::rmf::NodeHandles children = rh.get_children();
   for (unsigned int i=0; i< children.size(); ++i) {
     IMP::display::Geometry* g= create_restraint_geometry(children[i],
-                                                         niks, rsk,
                                                          frame);
     if (g) {
       IMP::Pointer<IMP::display::Geometry> gp(g);
