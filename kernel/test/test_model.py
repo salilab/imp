@@ -163,6 +163,16 @@ class ModelTests(IMP.test.TestCase):
         #self.assertRaises(IndexError, m.get_restraint,1);
         for s in m.get_restraints():
             s.show()
+    def test_temp_restraints(self):
+        """Check temporary restraint methods"""
+        m = IMP.Model()
+        #self.assertRaises(IndexError, m.get_restraint, 0);
+        self.assertEqual(m.get_number_of_restraints(), 0)
+        r = DummyRestraint()
+        m.add_temporary_restraint(r)
+        print r.evaluate(False)
+        del r
+        m.evaluate(False)
 
     def test_refcount_director_restraints(self):
         """Refcounting should prevent director Restraints from being deleted"""
