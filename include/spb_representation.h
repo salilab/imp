@@ -15,8 +15,10 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT atom::Hierarchies
- create_hierarchies(Model *m,int ncells);
+IMPMEMBRANEEXPORT atom::Hierarchies create_representation
+(Model *m, SPBParameters mydata,
+container::ListSingletonContainer *CP_ps,
+container::ListSingletonContainer *IL2_ps, core::Movers& mvs);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
