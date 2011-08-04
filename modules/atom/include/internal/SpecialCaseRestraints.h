@@ -37,10 +37,10 @@ IMPATOM_BEGIN_INTERNAL_NAMESPACE
   value of true means they have been handled and should be removed.
 */
 class IMPATOMEXPORT SpecialCaseRestraints {
-  boost::ptr_vector< ScopedRemoveRestraint,
-                     boost::view_clone_allocator> restraints_;
   ParticlesTemp ps_;
   DependencyGraph dg_;
+  Pointer<RestraintSet> parent_;
+  Restraints actual_restraints_;
 
   bool get_harmonic_info(PairScore*ps, const ParticlePair &pp,
                          double &x0,
@@ -120,8 +120,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
   }
 
   template <class Harmonic, class EV>
-    void handle_pair_score_restraint(PairScoreRestraint* pr,
-                                     RestraintSet *rs,
+    bool handle_pair_score_restraint(PairScoreRestraint* pr,
                                      Harmonic fh,
                                      EV) {
     PairScore *ps= pr->get_score();
@@ -129,13 +128,13 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     if (get_harmonic_info(ps, pr->get_argument(), x0, k)) {
       ParticlePair pp=pr->get_argument();
       if (fh(pp, x0, k)) {
-        restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+        return true;
       }
     }
+    return false;
   }
   template <class Harmonic, class EV>
-  void handle_pairs_score_restraint(PairsScoreRestraint *pr,
-                                     RestraintSet *rs,
+  bool handle_pairs_score_restraint(PairsScoreRestraint *pr,
                                      Harmonic fh,
                                     EV fev) {
     ContainersTemp ct= pr->get_input_containers();
@@ -162,7 +161,7 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         }
       }
       if (handled) {
-        restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+        return true;
       } else {
         IMP_LOG(VERBOSE, "Can't handle static pairs score, no harmonic: "
                 << ppts.size() << std::endl);
@@ -172,18 +171,18 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         IMP_LOG(TERSE, "Handling restraint " << pr->get_name()
                 << std::endl);
         if (fev()) {
-          restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+          return true;
         }
       } else {
         IMP_LOG(VERBOSE, "Can't handle dynamic pairs score restraint"
                 << std::endl);
       }
     }
+    return false;
   }
 
  template <class Harmonic, class EV>
-    void handle_singleton_score_restraint(SingletonScoreRestraint* pr,
-                                     RestraintSet *rs,
+   bool handle_singleton_score_restraint(SingletonScoreRestraint* pr,
                                      Harmonic fh,
                                      EV) {
     SingletonScore *ps= pr->get_score();
@@ -191,13 +190,13 @@ class IMPATOMEXPORT SpecialCaseRestraints {
     ParticlePair pp;
     if (get_harmonic_info(ps, pr->get_argument(), pp, x0, k)) {
       if (fh(pp, x0, k)) {
-        restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+        return true;
       }
     }
+    return false;
   }
   template <class Harmonic, class EV>
-    void handle_singletons_score_restraint(SingletonsScoreRestraint *pr,
-                                     RestraintSet *rs,
+    bool handle_singletons_score_restraint(SingletonsScoreRestraint *pr,
                                      Harmonic fh,
                                     EV) {
     ContainersTemp ct= pr->get_input_containers();
@@ -215,54 +214,78 @@ class IMPATOMEXPORT SpecialCaseRestraints {
         }
       }
       if (handled) {
-        restraints_.push_back(new ScopedRemoveRestraint(pr,rs));
+        return true;
       }
     }
+    return false;
   }
  public:
+  const Restraints &get_restraints() const {
+    return actual_restraints_;
+  }
   SpecialCaseRestraints(Model *m, const ParticlesTemp &ps);
   template <class Harmonic, class EV>
-    void add_restraint_set(RestraintSet *rs,
-                           Harmonic fh,
-                           EV fev) {
+    void add_restraint(Restraint *r,
+                       Harmonic fh,
+                       EV fev) {
     IMP_FUNCTION_LOG;
-    Restraints rss(rs->restraints_begin(), rs->restraints_end());
-    for (unsigned int i=0; i < rss.size(); ++i) {
-      IMP_LOG(VERBOSE, "Inspecting restraint " << rss[i]->get_name()
+    if (dynamic_cast<RestraintSet*>(r)) {
+      RestraintSet* rs= dynamic_cast<RestraintSet*>(r);
+      for (unsigned int i=0; i< rs->get_number_of_restraints(); ++i) {
+        add_restraint(rs->get_restraint(i), fh, fev);
+      }
+    } else {
+      IMP_LOG(VERBOSE, "Inspecting restraint " << r->get_name()
               << std::endl);
-      Restraint *r= rss[i];
-      if (dynamic_cast<PairScoreRestraint*>(r)) {
-        handle_pair_score_restraint(dynamic_cast<PairScoreRestraint*>(r),
-                                   rs, fh, fev);
-      } else if (dynamic_cast<PairsScoreRestraint*>(r)) {
-        IMP_LOG(VERBOSE, "PairsScoreRestraint found." << std::endl);
-        handle_pairs_score_restraint(dynamic_cast<PairsScoreRestraint*>(r),
-                                     rs, fh, fev);
-      } else if (dynamic_cast<SingletonScoreRestraint*>(r)) {
-        handle_singleton_score_restraint(
+      if (dynamic_cast<PairScoreRestraint*>(r)
+          && handle_pair_score_restraint(dynamic_cast<PairScoreRestraint*>(r),
+                                         fh, fev)){
+      } else if (dynamic_cast<PairsScoreRestraint*>(r)
+        && handle_pairs_score_restraint(dynamic_cast<PairsScoreRestraint*>(r),
+                                                 fh, fev)) {
+      } else if (dynamic_cast<SingletonScoreRestraint*>(r)
+                 && handle_singleton_score_restraint(
                        dynamic_cast<SingletonScoreRestraint*>(r),
-                                          rs, fh, fev);
-      } else if (dynamic_cast<SingletonsScoreRestraint*>(r)) {
-        handle_singletons_score_restraint(
+                       fh, fev)) {
+      } else if (dynamic_cast<SingletonsScoreRestraint*>(r)
+                 && handle_singletons_score_restraint(
                         dynamic_cast<SingletonsScoreRestraint*>(r),
-                                          rs, fh, fev);
-      } else if (dynamic_cast<RestraintSet*>(r)) {
-        add_restraint_set(dynamic_cast<RestraintSet*>(r),
-                          fh, fev);
+                        fh, fev)) {
       } else {
         IMP_LOG(VERBOSE, "No casts accepted." << std::endl);
+        actual_restraints_.push_back(r);
       }
     }
   }
-  ~SpecialCaseRestraints() {
-    for (boost::ptr_vector< ScopedRemoveRestraint,
-                            boost::view_clone_allocator>::iterator it=
-           restraints_.begin(); it != restraints_.end(); ++it) {
-      delete &*it;
-    }
-  }
+  ~SpecialCaseRestraints();
 };
 
+
+
+
+
+SpecialCaseRestraints::SpecialCaseRestraints(Model *m,
+                                             const ParticlesTemp &ps): ps_(ps) {
+  SetLogState ss(SILENT); // don't print all the dep graph crap
+  RestraintsTemp rs
+    = IMP::get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
+  dg_=get_dependency_graph(rs);
+}
+SpecialCaseRestraints::~SpecialCaseRestraints() {
+}
+
+template <class Harmonic, class EV>
+inline Restraints create_special_case_restraints(const RestraintsTemp &rs,
+                                          const ParticlesTemp &ps,
+                                          Harmonic fh,
+                                          EV fev) {
+  if (rs.size()==0) return Restraints();
+  SpecialCaseRestraints srs(rs[0]->get_model(), ps);
+  for (unsigned int i=0; i< rs.size(); ++i) {
+    srs.add_restraint(rs[i], fh, fev);
+  }
+  return srs.get_restraints();
+}
 
 IMPATOM_END_INTERNAL_NAMESPACE
 

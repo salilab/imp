@@ -27,7 +27,7 @@ class AngleRestraintTests(IMP.test.TestCase):
         m.add_restraint(r)
         bo= IMP.bullet.ResolveCollisionsOptimizer(m)
         bo.optimize(1)
-        self.assertEqual(len(IMP.get_restraints(m.get_root_restraint_set())), 1)
+        self.assertEqual(len(IMP.get_restraints([m.get_root_restraint_set()])), 1)
 
 
 if __name__ == '__main__':
