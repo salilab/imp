@@ -75,67 +75,66 @@ double dz=mydata.IL2_centers[0][2];
 add_layer_restraint(m, IL2_ps,
  FloatRange(-mydata.IL2_thickness/2.0+dz,mydata.IL2_thickness/2.0+dz),
  mydata.kappa);
-/*
+
 //
 // FRET
 //
+if(mydata.add_fret){
 // intra-CP
-add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                     all_mol, "Cmd1p",     "C", 1.69, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc29p",    "N",
-                     all_mol, "Cmd1p",     "C", 1.75, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                     all_mol, "Spc110p_c", "C", 1.37, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                     all_mol, "Spc42p",    "N", 2.05, mydata.kappa);
-add_fret_restraint(m,all_mol, "Cmd1p",     "C",
-                     all_mol, "Spc42p",    "N", 2.07, mydata.kappa);
-add_fret_restraint(m,all_mol, "Cmd1p",     "C",
-                     all_mol, "Spc110p_c", "C", 2.15, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc42p",    "N",
-                     all_mol, "Spc110p_c", "C", 2.02, mydata.kappa);
-
+ add_fret_restraint(m,all_mol, "Spc29p",    "C",
+                      all_mol, "Cmd1p",     "C", 1.69, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc29p",    "N",
+                      all_mol, "Cmd1p",     "C", 1.75, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc29p",    "C",
+                      all_mol, "Spc110p_c", "C", 1.37, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc29p",    "C",
+                      all_mol, "Spc42p",    "N", 2.05, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Cmd1p",     "C",
+                      all_mol, "Spc42p",    "N", 2.07, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Cmd1p",     "C",
+                      all_mol, "Spc110p_c", "C", 2.15, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",    "N",
+                      all_mol, "Spc110p_c", "C", 2.02, mydata.kappa);
 // inter CP-IL2
-add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                     all_mol, "Spc110p_c", "C", 1.07, mydata.kappa);
-add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                     all_mol, "Cmd1p",     "C", 1.09, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                     all_mol, "Cmd1p",     "C", 1.1,  mydata.kappa);
-add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                     all_mol, "Spc29p",    "C", 1.1,  mydata.kappa);
-add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
-                     all_mol, "Spc42p",    "N", 1.13, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                     all_mol, "Spc29p",    "C", 1.17, mydata.kappa);
-add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                     all_mol, "Spc42p",    "N", 1.27, mydata.kappa);
-
+ add_fret_restraint(m,all_mol, "Spc42p",    "C",
+                      all_mol, "Spc110p_c", "C", 1.07, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
+                      all_mol, "Cmd1p",     "C", 1.09, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",    "C",
+                      all_mol, "Cmd1p",     "C", 1.1,  mydata.kappa);
+ add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
+                      all_mol, "Spc29p",    "C", 1.1,  mydata.kappa);
+ add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
+                      all_mol, "Spc42p",    "N", 1.13, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",    "C",
+                      all_mol, "Spc29p",    "C", 1.17, mydata.kappa);
+ add_fret_restraint(m,all_mol, "Spc42p",    "C",
+                      all_mol, "Spc42p",    "N", 1.27, mydata.kappa);
 // intra-IL2
-add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                     all_mol, "Cnm67p_c",  "C", 2.29, mydata.kappa);
-
+ add_fret_restraint(m,all_mol, "Spc42p",    "C",
+                      all_mol, "Cnm67p_c",  "C", 2.29, mydata.kappa);
+}
+if(mydata.add_y2h){
 //
 // TWO-HYBRID SCREENING
 //
 // CP
-add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
-                    all_mol, "Spc110p_c",  IntRange(900,944), mydata.kappa);
-add_y2h_restraint(m,all_mol, "Spc42p",     "N",
-                    all_mol, "Spc110p_c",  "C", mydata.kappa);
-add_y2h_restraint(m,all_mol, "Spc29p",     "ALL",
-                    all_mol, "Spc110p_c",  IntRange(811,944), mydata.kappa);
-add_y2h_restraint(m,all_mol, "Spc110p_c",  "C",
-                    all_mol, "Spc110p_c",  "C", mydata.kappa);
-add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
-                    all_mol, "Spc29p",     "ALL", mydata.kappa);
-add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
-                    all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
-
+ add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
+                     all_mol, "Spc110p_c",  IntRange(900,944), mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc42p",     "N",
+                     all_mol, "Spc110p_c",  "C", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc29p",     "ALL",
+                     all_mol, "Spc110p_c",  IntRange(811,944), mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc110p_c",  "C",
+                     all_mol, "Spc110p_c",  "C", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
+                     all_mol, "Spc29p",     "ALL", mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
+                     all_mol, "Spc42p",     IntRange(1,138), mydata.kappa);
 // IL2
-add_y2h_restraint(m,all_mol, "Cnm67p_c",   "C",
-                    all_mol, "Spc42p",     "C", mydata.kappa);
-*/
+ add_y2h_restraint(m,all_mol, "Cnm67p_c",   "C",
+                     all_mol, "Spc42p",     "C", mydata.kappa);
+}
 //
 //
 std::cout << "Setup sampler" << std::endl;

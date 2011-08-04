@@ -143,6 +143,7 @@ void add_fret_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) return;
  FloatRange range=get_range_from_fret_value(r_value);
  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
  if(protein_a==protein_b && residues_a==residues_b){
@@ -168,6 +169,7 @@ void add_y2h_restraint
  sb.set_residue_indexes(r_b);
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) return;
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  if(protein_a==protein_b && residues_a==residues_b){
   do_allpairs_mindist(m,p1,sps);
@@ -191,6 +193,7 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) return;
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  if(protein_a==protein_b && residues_a==residues_b){
   do_allpairs_mindist(m,p1,sps);
@@ -215,6 +218,7 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) return;
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  do_bipartite_mindist(m,p1,p2,sps);
 }

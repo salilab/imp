@@ -29,6 +29,13 @@ struct SPBParameters {
  algebra::Vector3Ds IL2_centers;
  algebra::Transformation3Ds trs;
  bool           use_structure;
+ bool           add_Spc42p;
+ bool           add_Spc29p;
+ bool           add_Spc110p;
+ bool           add_Cmd1p;
+ bool           add_Cnm67p_c;
+ bool           add_fret;
+ bool           add_y2h;
 };
 
 IMPMEMBRANE_END_NAMESPACE

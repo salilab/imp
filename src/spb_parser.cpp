@@ -27,11 +27,26 @@ SPBParameters get_SPBParameters(TextInput in) {
  using namespace boost::program_options;
  options_description desc;
  bool do_wte,use_structure;
+ bool add_Spc42p;
+ bool add_Spc29p;
+ bool add_Spc110p;
+ bool add_Cmd1p;
+ bool add_Cnm67p_c;
+ bool add_fret, add_y2h;
  std::string cell_type;
 
  desc.add_options()("do_wte",       value< bool >(&do_wte),           "ciao");
  desc.add_options()("use_structure",value< bool >(&use_structure),    "ciao");
  desc.add_options()("cell_type",    value< std::string >(&cell_type), "ciao");
+ desc.add_options()("add_Spc42p",   value< bool >(&add_Spc42p),       "ciao");
+ desc.add_options()("add_Spc29p",   value< bool >(&add_Spc29p),       "ciao");
+ desc.add_options()("add_Spc110p",  value< bool >(&add_Spc110p),      "ciao");
+ desc.add_options()("add_Cmd1p",    value< bool >(&add_Cmd1p),        "ciao");
+ desc.add_options()("add_Cnm67p_c", value< bool >(&add_Cnm67p_c),     "ciao");
+ desc.add_options()("add_fret",     value< bool >(&add_fret),         "ciao");
+ desc.add_options()("add_y2h",      value< bool >(&add_y2h),          "ciao");
+
+
 
  OPTION(double, mc_tmin);
  OPTION(double, mc_tmax);
@@ -105,6 +120,13 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
  ret.resolution=resolution;
+ ret.add_Spc42p=add_Spc42p;
+ ret.add_Spc29p=add_Spc29p;
+ ret.add_Spc110p=add_Spc110p;
+ ret.add_Cmd1p=add_Cmd1p;
+ ret.add_Cnm67p_c=add_Cnm67p_c;
+ ret.add_fret=add_fret;
+ ret.add_y2h=add_y2h;
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
