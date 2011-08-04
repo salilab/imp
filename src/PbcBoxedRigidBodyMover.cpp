@@ -11,6 +11,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
+                               Particles ps,
                                Float max_translation, Float max_angle,
                                algebra::Vector3Ds centers,
                                algebra::Transformation3Ds transformations)
@@ -19,6 +20,7 @@ PbcBoxedRigidBodyMover::PbcBoxedRigidBodyMover(core::RigidBody d,
   max_translation_=max_translation;
   max_angle_ =max_angle;
   d_= d;
+  ps_ = ps;
   centers_ = centers;
   transformations_ = transformations;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
@@ -47,6 +49,9 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
    }
   }
 
+  ParticlesTemp ret=ParticlesTemp(1, d_);
+  if(icell!=0){ret.insert(ret.end(), ps_.begin(), ps_.end());}
+
   algebra::Transformation3D trans=transformations_[icell].get_inverse();
   translation=trans.get_transformed(translation);
 
@@ -65,16 +70,25 @@ ParticlesTemp PbcBoxedRigidBodyMover::propose_move(Float f) {
   algebra::Transformation3D t(rc, translation);
   IMP_LOG(VERBOSE,"PbcBoxedRigidBodyMover:: propose move : " << t << std::endl);
   d_.set_reference_frame(algebra::ReferenceFrame3D(t));
-  return ParticlesTemp(1, d_);
+
+// move also the other particles
+  oldcoords_.clear();
+  for(unsigned int i=0;i<ps_.size();++i){
+   oldcoords_.push_back(core::XYZ(ps_[i]).get_coordinates());
+   algebra::Vector3D newcoord=trans.get_transformed(oldcoords_[i]);
+   core::XYZ(ps_[i]).set_coordinates(newcoord);
+  }
+
+  return ret;
 }
-
-
 
 void PbcBoxedRigidBodyMover::reset_move() {
-  d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
-  last_transformation_= algebra::Transformation3D();
+ d_.set_reference_frame(algebra::ReferenceFrame3D(last_transformation_));
+ last_transformation_= algebra::Transformation3D();
+ for(unsigned int i=0;i<ps_.size();++i){
+   core::XYZ(ps_[i]).set_coordinates(oldcoords_[i]);
+ }
 }
-
 
 void PbcBoxedRigidBodyMover::do_show(std::ostream &out) const {
   out << "max translation: " << max_translation_ << "\n";

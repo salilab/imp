@@ -29,7 +29,7 @@ public:
       \param[in] p is the particle
       \param[in] max_tr is the maximum translation during a step
    */
-  PbcBoxedMover(Particle *p, Float max_tr,
+  PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                 algebra::Vector3Ds centers,
                 algebra::Transformation3Ds transformations);
   void reset_move();

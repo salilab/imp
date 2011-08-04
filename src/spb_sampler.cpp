@@ -16,7 +16,7 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 core::MonteCarlo* setup_SPBMonteCarlo
- (Model *m,atom::Hierarchies hs, double temp, SPBParameters myparam)
+ (Model *m, core::Movers mvs, double temp, SPBParameters myparam)
 {
  double mc_dx_=myparam.MC.dx;
  double mc_dang_=myparam.MC.dang;
@@ -32,48 +32,7 @@ core::MonteCarlo* setup_SPBMonteCarlo
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
-
-// create movers
- core::Movers mvs;
- atom::Hierarchies hhs=hs[0].get_children();
- for(unsigned int j=0;j<hhs.size();++j){
-  Particles ps=atom::get_leaves(hhs[j]);
-// check which particles are members of a rigid body
-  std::vector<unsigned> irigid,inotrigid;
-  for(unsigned int k=0;k<ps.size();++k){
-   if(core::RigidMember::particle_is_instance(ps[k])){
-    irigid.push_back(k);
-   } else {
-    inotrigid.push_back(k);
-   }
-  }
-// if this protein is not a single rigid body
-  if(inotrigid.size()>0){
-  // choose a special particle
-   IMP_NEW(membrane::PbcBoxedMover,mv,
-          (ps[inotrigid[0]],mc_dx_,myparam.CP_centers,myparam.trs));
-   mvs.push_back(mv);
-  //for the other particles standard BallMover
-   for(unsigned int k=1;k<inotrigid.size();++k) {
-    Particles pps;
-    pps.push_back(ps[inotrigid[k]]);
-    IMP_NEW(core::BallMover,bmv,(pps,mc_dx_));
-    mvs.push_back(bmv);
-   }
-  // rigidbody mover if needed
-   if(irigid.size()>0){
-    core::RigidBody prb=core::RigidMember(ps[irigid[0]]).get_rigid_body();
-    IMP_NEW(core::RigidBodyMover,rbmv,(prb,mc_dx_,mc_dang_));
-    mvs.push_back(rbmv);
-   }
-  } else {
-// this protein is a single rigid body
-   core::RigidBody prb=core::RigidMember(ps[irigid[0]]).get_rigid_body();
-   IMP_NEW(membrane::PbcBoxedRigidBodyMover,prbmv,
-    (prb,mc_dx_,mc_dang_,myparam.CP_centers,myparam.trs));
-   mvs.push_back(prbmv);
-  }
- }
+ mc->set_kt(temp);
 
  IMP_NEW(core::SerialMover,mvmv,(mvs));
  mc->add_mover(mvmv);

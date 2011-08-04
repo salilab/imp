@@ -31,17 +31,20 @@ public:
       \param[in] max_translation maximum translation during a step
       \param[in] max_rotation maximum rotation angle in radians
    */
-  PbcBoxedRigidBodyMover(core::RigidBody d,Float max_translation,
+  PbcBoxedRigidBodyMover(core::RigidBody d, Particles ps,
+                 Float max_translation,
                  Float max_rotation, algebra::Vector3Ds centers,
                  algebra::Transformation3Ds transformations);
   IMP_MOVER(PbcBoxedRigidBodyMover);
 private:
   algebra::Transformation3D last_transformation_;
+  algebra::Vector3Ds oldcoords_;
   Float max_translation_;
   Float max_angle_;
   algebra::Vector3Ds centers_;
   algebra::Transformation3Ds transformations_;
   core::RigidBody d_;
+  Particles ps_;
 };
 
 IMPMEMBRANE_END_NAMESPACE

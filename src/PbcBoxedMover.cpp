@@ -14,7 +14,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-PbcBoxedMover::PbcBoxedMover(Particle *p, Float max_tr,
+PbcBoxedMover::PbcBoxedMover(Particle *p, Particles ps, Float max_tr,
                              algebra::Vector3Ds centers,
                              algebra::Transformation3Ds transformations)
 {
@@ -22,7 +22,7 @@ PbcBoxedMover::PbcBoxedMover(Particle *p, Float max_tr,
   p_ = p;
   max_tr_ = max_tr;
   centers_ = centers;
-  ps_ = atom::get_leaves(atom::Hierarchy(p).get_parent());
+  ps_ = ps;
   transformations_ = transformations;
   IMP_LOG(VERBOSE,"finish mover construction" << std::endl);
 }

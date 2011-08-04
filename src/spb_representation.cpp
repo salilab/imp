@@ -17,7 +17,7 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
+atom::Hierarchies create_hierarchies(Model *m,int ncells)
 {
  atom::Hierarchies hs=atom::Hierarchies();
  for(int i=0;i<ncells;++i){
@@ -25,7 +25,7 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
   atom::Hierarchy h=atom::Hierarchy::setup_particle(p);
   std::stringstream out;
   out << i;
-  h->set_name(name+" hierarchy, cell " + out.str());
+  h->set_name("Cell " + out.str() + " Hierarchy");
   hs.push_back(h);
  }
  return hs;
@@ -33,7 +33,7 @@ atom::Hierarchies create_hierarchies(Model *m,int ncells,std::string name)
 
 atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
  display::Color colore,int copy,double kappa,
- algebra::Vector3D x0, int start_residue,int length)
+ algebra::Vector3D x0, int start_residue, int length)
 {
  if(length==-1) {length=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
@@ -74,7 +74,7 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
 
 atom::Molecule create_protein(Model *m,std::string name,
  std::string filename,int nbeads,display::Color colore,int copy,
- algebra::Vector3D x0,int start_residue)
+ algebra::Vector3D x0,int start_residue, bool recenter)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
@@ -119,24 +119,26 @@ atom::Molecule create_protein(Model *m,std::string name,
  IMP_NEW(Particle,prb,(m));
  core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
  rb->set_name(name);
- // Check orientation of x-axis and topology
- double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
- double ee = (core::RigidMember(rbps[nbeads-1]).get_internal_coordinates())[0];
- if (ee-bb<0.0){
-  for(unsigned int k=0;k<rbps.size();++k){
-   algebra::Vector3D coord=
-   core::RigidMember(rbps[k]).get_internal_coordinates();
-   algebra::Rotation3D rot=
-    algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
-   algebra::Transformation3D tr=
-    algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
-   core::RigidMember(rbps[k]).set_internal_coordinates
-    (tr.get_transformed(coord));
+ if(recenter){
+  // Check orientation of x-axis and topology
+  double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
+  double ee = (core::RigidMember(rbps[nbeads-1]).get_internal_coordinates())[0];
+  if (ee-bb<0.0){
+   for(unsigned int k=0;k<rbps.size();++k){
+    algebra::Vector3D coord=
+    core::RigidMember(rbps[k]).get_internal_coordinates();
+    algebra::Rotation3D rot=
+     algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+    algebra::Transformation3D tr=
+     algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
+    core::RigidMember(rbps[k]).set_internal_coordinates
+     (tr.get_transformed(coord));
+   }
   }
- }
- rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
+  rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
       (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
        x0)));
+ }
  return protein;
 }
 
@@ -161,6 +163,59 @@ atom::Molecule create_merged_protein
   }
  }
  return h;
+}
+
+atom::Molecules create_coiled_coil
+(Model *m,std::string name,std::string filename_A, std::string filename_B,
+int nbeads,display::Color colore,int copy,
+algebra::Vector3D x0,int start_residue)
+{
+
+ atom::Molecule coil_A=create_protein(m,name,filename_A,
+  nbeads,colore,copy,x0,start_residue,false);
+
+ atom::Molecule coil_B=create_protein(m,name,filename_B,
+  nbeads,colore,copy,x0,start_residue,false);
+
+
+// now I need to destroy the two rigid bodies
+ Particles psA=atom::get_leaves(coil_A);
+ Particles psB=atom::get_leaves(coil_B);
+ core::RigidBody::teardown_particle(core::RigidMember(psA[0]).get_rigid_body());
+ core::RigidBody::teardown_particle(core::RigidMember(psB[0]).get_rigid_body());
+// and make a new one
+ core::XYZRs rbps;
+ for(unsigned int i=0;i<psA.size();++i){rbps.push_back(core::XYZR(psA[i]));}
+ for(unsigned int i=0;i<psB.size();++i){rbps.push_back(core::XYZR(psB[i]));}
+ IMP_NEW(Particle,prb,(m));
+ core::RigidBody rb=core::RigidBody::setup_particle(prb,rbps);
+ rb->set_name(name);
+
+ // Check orientation of x-axis and topology
+ double bb = (core::RigidMember(rbps[0]).get_internal_coordinates())[0];
+ double ee = (core::RigidMember(rbps[psA.size()-1]).
+  get_internal_coordinates())[0];
+ if (ee-bb<0.0){
+  for(unsigned int k=0;k<rbps.size();++k){
+    algebra::Vector3D coord=
+    core::RigidMember(rbps[k]).get_internal_coordinates();
+    algebra::Rotation3D rot=
+     algebra::get_rotation_about_axis(algebra::Vector3D(0,0,1),IMP::PI);
+    algebra::Transformation3D tr=
+     algebra::Transformation3D(rot,algebra::Vector3D(0,0,0));
+    core::RigidMember(rbps[k]).set_internal_coordinates
+     (tr.get_transformed(coord));
+  }
+ }
+
+ rb.set_reference_frame(algebra::ReferenceFrame3D(algebra::Transformation3D
+      (algebra::get_rotation_about_axis(algebra::Vector3D(0,1,0),-IMP::PI/2.0),
+       x0)));
+
+ atom::Molecules ret;
+ ret.push_back(coil_A);
+ ret.push_back(coil_B);
+ return ret;
 }
 
 IMPMEMBRANE_END_NAMESPACE

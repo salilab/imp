@@ -16,7 +16,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT atom::Hierarchies
- create_hierarchies(Model *m,int ncells,std::string name);
+ create_hierarchies(Model *m,int ncells);
 
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,double mass,int nbeads,display::Color color,
@@ -26,11 +26,16 @@ int start_residue=1,int length=-1);
 IMPMEMBRANEEXPORT atom::Molecule create_protein
 (Model *m,std::string name,std::string filename,int nbeads,
  display::Color colore,int copy,algebra::Vector3D x0,
- int start_residue=1);
+ int start_residue=1,bool recenter=true);
 
 IMPMEMBRANEEXPORT atom::Molecule create_merged_protein
 (Model *m,std::string name,atom::Molecules proteins,
  int copy,double kappa,double dist=-1.0);
+
+IMPMEMBRANEEXPORT atom::Molecules create_coiled_coil
+(Model *m,std::string name,std::string filename_A, std::string filename_B,
+int nbeads,display::Color colore,int copy,
+algebra::Vector3D x0,int start_residue);
 
 IMPMEMBRANE_END_NAMESPACE
 
