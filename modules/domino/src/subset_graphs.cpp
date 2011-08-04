@@ -94,7 +94,7 @@ Subsets get_subsets(const SubsetGraph &g){
 SubsetGraph get_restraint_graph(RestraintSet *irs,
                                 const ParticleStatesTable *pst) {
   OptimizeRestraints ro(irs, pst);
-  RestraintsTemp rs= get_restraints(irs);
+  RestraintsTemp rs= get_restraints(RestraintsTemp(1, irs));
   //ScoreStatesTemp ss= get_required_score_states(rs);
   SubsetGraph ret(rs.size());// + ss.size());
   IMP_LOG(TERSE, "Creating restraint graph on "
@@ -429,7 +429,7 @@ InteractionGraph get_interaction_graph(RestraintSet *irs,
                                        const ParticleStatesTable* pst) {
   Subset ps = pst->get_subset();
   InteractionGraph ret(ps.size());
-  RestraintsTemp rs= get_restraints(irs);
+  RestraintsTemp rs= get_restraints(RestraintsTemp(1,irs));
   //Model *m= ps[0]->get_model();
   IMP::compatibility::map<Particle*, int> map;
   IGVertexMap pm= boost::get(boost::vertex_name, ret);
