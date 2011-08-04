@@ -62,8 +62,8 @@ void Optimizer::set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o)
 }
 
 
-void Optimizer::set_restraints(const RestraintSetsTemp &rs) {
-  restraints_=RestraintSets(rs.begin(), rs.end());
+void Optimizer::set_restraints(const RestraintsTemp &rs) {
+  restraints_=Restraints(rs.begin(), rs.end());
 }
 
 double Optimizer::evaluate(bool compute_derivatives) const {
@@ -84,7 +84,8 @@ double Optimizer::evaluate_if_below(bool compute_derivatives,
   RestraintsTemp rs= flattened_restraints_;
   if (rs.empty()) {
     rs
-      = IMP::get_restraints(get_model()->get_root_restraint_set());
+      = IMP::get_restraints(RestraintsTemp(1, get_model()
+                                           ->get_root_restraint_set()));
   }
   IMP::Floats ret= get_model()->evaluate_if_below(rs,
                                                   compute_derivatives, max);
@@ -93,9 +94,9 @@ double Optimizer::evaluate_if_below(bool compute_derivatives,
 }
 
 
-RestraintSets Optimizer::get_restraints() const {
+RestraintsTemp Optimizer::get_restraints() const {
   if (restraints_.empty()) {
-    return RestraintSets(1, model_->get_root_restraint_set());
+    return RestraintsTemp(1, model_->get_root_restraint_set());
   } else {
     return restraints_;
   }
