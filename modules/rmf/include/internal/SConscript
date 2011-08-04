@@ -1,6 +1,0 @@
-files = [
-         'shared.h',
-        ]
-
-files = [File(x) for x in files]
-Return('files')

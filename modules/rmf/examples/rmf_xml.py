@@ -38,7 +38,7 @@ def show_xml(nh):
         print "</child>"
 
 # open the file, and don't clear the contents
-rh= IMP.rmf.RootHandle(file_name, False);
+rh= IMP.rmf.open_rmf_file(file_name);
 print "<?xml version=\"1.0\"?>"
 print "<rmf>"
 print "<description>"

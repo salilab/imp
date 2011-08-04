@@ -36,11 +36,6 @@ IMPRMFEXPORT void save_frame(RootHandle parent, int frame, Restraint *r);
     moment.*/
 IMPRMFEXPORT ParticlesTemp get_restraint_particles(NodeHandle f,
                                                     int frame);
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-IMPRMFEXPORT ParticlesTemp get_restraint_particles(NodeHandle f,
-                                                    NodeIDKeys &fks,
-                                                    int frame);
-#endif
 
 /** Return the restraint score, if available (or -inf if it is not).
     This is not
@@ -48,12 +43,6 @@ IMPRMFEXPORT ParticlesTemp get_restraint_particles(NodeHandle f,
     moment.*/
 IMPRMFEXPORT double get_restraint_score(NodeHandle f,
                                          int frame);
-
-#if !defined(SWIG) && !defined(IMP_DOXYGEN)
-IMPRMFEXPORT double get_restraint_score(NodeHandle f,
-                                         FloatKey &fk,
-                                         int frame);
-#endif
 
 /** @} */
 IMPRMF_END_NAMESPACE

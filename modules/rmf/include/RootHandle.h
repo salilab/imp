@@ -31,11 +31,11 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
  public:
   //! Empty root handle, no open file.
   RootHandle(){}
-  /** \param[in] name The name of the file to open.
-      \param[in] clear If clear is true and the file exists, the current
-      contents are cleared before the file is opened.
-  */
-  RootHandle(std::string name, bool clear);
+
+#ifndef IMP_DOXYGEN
+  RootHandle(HDF5Group group, bool create);
+#endif
+
   /** Get an existing key that has the given name of the
       given type.
   */
@@ -161,6 +161,22 @@ class IMPRMFEXPORT RootHandle: public NodeHandle {
   /** @} */
 };
 IMP_VALUES(RootHandle, RootHandles);
+
+
+/** Create an RMF from a file system path.*/
+inline RootHandle create_rmf_file(std::string path) {
+  return RootHandle(create_hdf5_file(path), true);
+}
+
+/** Open an RMF from a file system path.*/
+inline RootHandle open_rmf_file(std::string path) {
+  return RootHandle(open_hdf5_file(path), false);
+}
+
+/** Open an RMF from a file system path.*/
+inline RootHandle open_rmf_file_read_only(std::string path) {
+  return RootHandle(open_hdf5_file_read_only(path), false);
+}
 
 IMPRMF_END_NAMESPACE
 

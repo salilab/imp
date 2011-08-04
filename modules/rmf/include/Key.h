@@ -80,6 +80,9 @@ IMP_VALUES(NodeIDKey, NodeIDKeys);
 */
 typedef Key<DataSetTraits> DataSetKey;
 IMP_VALUES(DataSetKey, DataSetKeys);
+//! Store a list of IDs of nodes in the file
+typedef Key<NodeIDsTraits> NodeIDsKey;
+IMP_VALUES(NodeIDsKey, NodeIDsKeys);
 
 
 IMPRMF_END_NAMESPACE

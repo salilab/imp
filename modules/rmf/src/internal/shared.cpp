@@ -11,8 +11,8 @@
 
 IMPRMF_BEGIN_INTERNAL_NAMESPACE
 
-SharedData::SharedData(std::string name, bool clear):
-  file_(name, clear),
+SharedData::SharedData(HDF5Group g, bool create):
+  file_(g),
   names_(file_.get_child_data_set<StringTraits>(get_node_name_data_set_name(),
                                                 1)),
 node_data_(file_.get_child_data_set<IndexTraits>(get_node_data_data_set_name(),
@@ -22,6 +22,14 @@ bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
   frames_hint_(0),
   last_node_(-1), last_vi_(-1)
 {
+  if (create) {
+    file_.set_attribute<CharTraits>("version", std::string("rmf 1"));
+  } else {
+    std::string version=file_.get_attribute<CharTraits>("version");
+    IMP_USAGE_CHECK(version== "rmf 1",
+                    "Unsupported rmf version string found: \""
+                    << version << "\" expected \"" << "rmf 1" << "\"");
+  }
   Ints dim= node_data_.get_size();
   for ( int i=0; i< dim[0]; ++i) {
     if (IndexTraits::get_is_null_value(node_data_.get_value(make_index(i,
@@ -37,9 +45,13 @@ bond_data_(file_.get_child_data_set<IndexTraits>(get_bond_data_data_set_name(),
       free_bonds_.push_back(i);
     }
   }
-
-  if (!file_.get_has_child("root")) {
+  if (create) {
+    IMP_USAGE_CHECK(!file_.get_has_child("root"),
+                    "Already has a root Group");
     add_node("root", ROOT);
+  } else {
+    IMP_USAGE_CHECK(get_name(0)=="root",
+                    "Root node is not so named");
   }
 }
 
@@ -49,31 +61,31 @@ SharedData::~SharedData() {
 
 void SharedData::audit_key_name(std::string name) const {
   if (name.empty()) {
-    IMP_THROW("Empty key name", ValueException);
+    IMP_RMF_THROW("Empty key name", ValueException);
   }
   static const char *illegal="\\:=()[]{}\"'";
   const char *cur=illegal;
   while (*cur != '\0') {
     if (name.find(*cur) != std::string::npos) {
-      IMP_THROW("Key names can't contain "<< *cur, ValueException);
+      IMP_RMF_THROW("Key names can't contain "<< *cur, ValueException);
     }
     ++cur;
   }
   if (name.find("  ") != std::string::npos) {
-    IMP_THROW("Key names can't contain two consecutive spaces",
+    IMP_RMF_THROW("Key names can't contain two consecutive spaces",
               ValueException);
   }
 }
 
 void SharedData::audit_node_name(std::string name) const {
   if (name.empty()) {
-    IMP_THROW("Empty key name", ValueException);
+    IMP_RMF_THROW("Empty key name", ValueException);
   }
   static const char *illegal="\"";
   const char *cur=illegal;
   while (*cur != '\0') {
     if (name.find(*cur) != std::string::npos) {
-      IMP_THROW("Node names names can't contain \""<< *cur
+      IMP_RMF_THROW("Node names names can't contain \""<< *cur
                 << "\", but \"" << name << "\" does.", ValueException);
     }
     ++cur;

@@ -17,7 +17,7 @@ NodeHandle::NodeHandle(int node, internal::SharedData *shared):
 }
 
 NodeHandle NodeHandle::add_child(std::string name, NodeType t) {
-  return NodeHandle(shared_->add_child(node_, name, t), shared_);
+  return NodeHandle(shared_->add_child(node_, name, t), shared_.get());
 }
 
 
@@ -29,14 +29,14 @@ void* NodeHandle::get_association() const {
 }
 
 RootHandle NodeHandle::get_root_handle() const {
-  return RootHandle(shared_);
+  return RootHandle(shared_.get());
 }
 
 std::vector<NodeHandle> NodeHandle::get_children() const {
   Ints children= shared_->get_children(node_);
   std::vector<NodeHandle> ret(children.size());
   for (unsigned int i=0; i< ret.size(); ++i) {
-    ret[i]= NodeHandle(children[ret.size()-i-1], shared_);
+    ret[i]= NodeHandle(children[ret.size()-i-1], shared_.get());
   }
   return ret;
 }

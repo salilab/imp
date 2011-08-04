@@ -12,9 +12,6 @@
 
 IMPRMF_BEGIN_NAMESPACE
 
-hid_t FloatTraits::get_hdf5_type() {
-  return H5T_NATIVE_DOUBLE;
-}
 void FloatTraits::write_value_dataset(hid_t d, hid_t is,
                                         hid_t s,
                                         double v) {
@@ -26,7 +23,7 @@ double FloatTraits::read_value_dataset(hid_t d, hid_t is,
                                         hid_t sp) {
   double ret;
   IMP_HDF5_CALL(H5Dread(d,
-                        get_hdf5_type(),
+                        H5T_NATIVE_DOUBLE,
                         is, sp, H5P_DEFAULT, &ret));
   return ret;
 }
@@ -42,7 +39,7 @@ std::vector<double> FloatTraits::read_values_dataset(hid_t d, hid_t is,
                                                     unsigned int sz) {
   std::vector<double> ret(sz);
   IMP_HDF5_CALL(H5Dread(d,
-                        get_hdf5_type(),
+                        H5T_NATIVE_DOUBLE,
                         is, sp, H5P_DEFAULT, &ret[0]));
   return ret;
 }
@@ -50,48 +47,37 @@ std::vector<double> FloatTraits::read_values_dataset(hid_t d, hid_t is,
 std::vector<double>
 FloatTraits::read_values_attribute(hid_t a, unsigned int size) {
   std::vector<double> v(size);
-  IMP_HDF5_CALL(H5Aread(a, get_hdf5_type(), &v[0]));
+  IMP_HDF5_CALL(H5Aread(a, H5T_NATIVE_DOUBLE, &v[0]));
   return v;
 }
 void FloatTraits::write_values_attribute(hid_t a,
                                          const std::vector<double> &v) {
-  IMP_HDF5_CALL(H5Awrite(a, get_hdf5_type(), &v[0]));
-}
-const double& FloatTraits::get_null_value() {
-  static const double ret= std::numeric_limits<double>::max();
-  return ret;
-}
-const double& FloatTraits::get_fill_value() {
-  return get_null_value();
+  IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_DOUBLE, &v[0]));
 }
 std::string FloatTraits::get_name() {
   return std::string("float");
 }
 
 
-
-hid_t IntTraits::get_hdf5_type() {
-  return H5T_NATIVE_INT;
-}
 void IntTraits::write_value_dataset(hid_t d, hid_t is,
                                       hid_t s,
                                       int v) {
   IMP_HDF5_CALL(H5Dwrite(d,
-                         get_hdf5_type(), is, s,
+                         H5T_NATIVE_INT, is, s,
                          H5P_DEFAULT, &v));
 }
 int IntTraits::read_value_dataset(hid_t d, hid_t is,
                                     hid_t sp) {
   int ret;
   IMP_HDF5_CALL(H5Dread(d,
-                        get_hdf5_type(), is, sp, H5P_DEFAULT, &ret));
+                        H5T_NATIVE_INT, is, sp, H5P_DEFAULT, &ret));
   return ret;
 }
 void IntTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
                                        const std::vector<int>& v) {
   IMP_HDF5_CALL(H5Dwrite(d,
-                         get_hdf5_type(), is, s,
+                         H5T_NATIVE_INT, is, s,
                          H5P_DEFAULT, &v[0]));
 }
 std::vector<int> IntTraits::read_values_dataset(hid_t d, hid_t is,
@@ -99,37 +85,24 @@ std::vector<int> IntTraits::read_values_dataset(hid_t d, hid_t is,
                                                 unsigned int sz) {
   std::vector<int> ret(sz);
   IMP_HDF5_CALL(H5Dread(d,
-                        get_hdf5_type(),
+                        H5T_NATIVE_INT,
                         is, sp, H5P_DEFAULT, &ret[0]));
   return ret;
 }
 std::vector<int> IntTraits::read_values_attribute(hid_t a,
                                                   unsigned int size) {
   std::vector<int> v(size);
-  IMP_HDF5_CALL(H5Aread(a, get_hdf5_type(), &v[0]));
+  IMP_HDF5_CALL(H5Aread(a, H5T_NATIVE_INT, &v[0]));
   return v;
 }
 void IntTraits::write_values_attribute(hid_t a, const std::vector<int> &v){
-  IMP_HDF5_CALL(H5Awrite(a, get_hdf5_type(), &v[0]));
-}
-const int& IntTraits::get_null_value() {
-  static const int ret= std::numeric_limits<int>::max();
-  return ret;
-}
-const int& IntTraits::get_fill_value() {
-  return get_null_value();
+  IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_INT, &v[0]));
 }
 std::string IntTraits::get_name() {
   return std::string("int");
 }
 
 
-
-
-
-hid_t CharTraits::get_hdf5_type() {
-  return H5T_NATIVE_CHAR;
-}
 /*
 void CharTraits::write_value_dataset(hid_t d, hid_t is,
                                       hid_t s,
@@ -164,17 +137,11 @@ std::vector<int> CharTraits::read_values_dataset(hid_t d, hid_t is,
 std::string CharTraits::read_values_attribute(hid_t a,
                                               unsigned int size) {
   std::vector<char> v(size);
-  IMP_HDF5_CALL(H5Aread(a, get_hdf5_type(), &v[0]));
+  IMP_HDF5_CALL(H5Aread(a, H5T_NATIVE_CHAR, &v[0]));
   return std::string(v.begin(), v.end());
 }
 void CharTraits::write_values_attribute(hid_t a, std::string v){
-  IMP_HDF5_CALL(H5Awrite(a, get_hdf5_type(), v.c_str()));
-}
-char CharTraits::get_null_value() {
-  return '\0';
-}
-char CharTraits::get_fill_value() {
-  return '\0';
+  IMP_HDF5_CALL(H5Awrite(a, H5T_NATIVE_CHAR, v.c_str()));
 }
 std::string CharTraits::get_name() {
   return std::string("char");
@@ -184,49 +151,53 @@ std::string CharTraits::get_name() {
 
 
 
-
-const int& IndexTraits::get_null_value() {
-  static const int ret=-1;
-  return ret;
-}
-const int& IndexTraits::get_fill_value() {
-  return get_null_value();
-}
 std::string IndexTraits::get_name() {
   return std::string("index");
 }
 
 
 
-namespace {
-  const size_t max_length=40;
-  hid_t get_string_type() {
-    hid_t r= H5Tcopy(H5T_C_S1);
-    IMP_HDF5_CALL(H5Tset_size(r, max_length));
-    IMP_HDF5_CALL(H5Tset_strpad(r, H5T_STR_NULLTERM));
-    return r;
-  }
-  HDF5Handle string_type(get_string_type(), H5Tclose);
-}
-hid_t StringTraits::get_hdf5_type() {
-  return string_type;
-}
 void StringTraits::write_value_dataset(hid_t d, hid_t is,
-                                         hid_t s, std::string str) {
-  char buf[max_length]={'\0'};
-  std::copy(str.begin(), str.begin()+std::min(max_length-1, str.size()),
-            buf);
-  IMP_HDF5_CALL(H5Dwrite(d,
-                         get_hdf5_type(), is, s,
-                         H5P_DEFAULT, &buf));
-}
+                                         hid_t s, std::string v) {
+  /*hvl_t data;
+    data.len=v.size();
+    data.p= const_cast<char*>(&v[0]);
+    IMP_HDF5_CALL(H5Dwrite(d,
+                           get_hdf5_type(), is, s,
+                           H5P_DEFAULT, &data));*/
+  char *c;
+  if (!v.empty()) {
+    c= const_cast<char*>(v.c_str());
+  } else {
+    static char empty='\0';
+    c=&empty;
+  }
+  IMP_HDF5_CALL(H5Dwrite(d, get_hdf5_memory_type(), is, s,
+                         H5P_DEFAULT, &c));
+ }
 std::string StringTraits::read_value_dataset(hid_t d,
                                                hid_t is,
                                                hid_t sp) {
-  char buf[max_length]={'\0'};
-  IMP_HDF5_CALL(H5Dread(d,
-                        get_hdf5_type(), is, sp, H5P_DEFAULT, &buf));
-  return std::string(buf);
+  /*hvl_t data;
+    H5Dread (d, get_hdf5_type(), is, sp, H5P_DEFAULT, &data);
+    Type ret(static_cast<char*>(data.p), data.len);
+    H5Dvlen_reclaim(get_hdf5_type(), is, H5P_DEFAULT, &data);
+    return ret;*/
+  char *c=NULL;
+  HDF5Handle mt(create_string_type(),
+                H5Tclose);
+  IMP_HDF5_CALL(H5Dread(d,  mt, is, sp, H5P_DEFAULT, &c));
+  std::string ret;
+  if (c) {
+    ret=std::string(c);
+  }
+  //std::cout << "read " << ret << std::endl;
+  //HDF5Handle space(H5Dget_space (d), H5Sclose);
+  //IMP_HDF5_CALL(H5Dvlen_reclaim (get_hdf5_type(), space, H5P_DEFAULT, &c));
+  /*IMP_INTERNAL_CHECK(c==NULL,
+    "Non-check was not stomped on " << c);*/
+  free(c);
+  return ret;
 }
 void StringTraits::write_values_dataset(hid_t d, hid_t is,
                                        hid_t s,
@@ -248,38 +219,15 @@ std::vector<std::string> StringTraits::read_values_dataset(hid_t d, hid_t is,
 }
 
 void StringTraits::write_values_attribute(hid_t d,
-                                const std::vector<std::string> &values) {
-  boost::scoped_array<char> buf(new char[values.size()*max_length]);
-  std::fill(buf.get(), buf.get()+values.size()*max_length, '\0');
-  for (unsigned int i=0; i< values.size(); ++i) {
-    std::copy(values[i].begin(), values[i].begin()+std::min(max_length-1,
-                                                            values[i].size()),
-              &buf[i*max_length]);
-  }
-  char *ptr= buf.get();
-  IMP_HDF5_CALL(H5Awrite(d,
-                         get_hdf5_type(), ptr));
+                                const std::vector<std::string> &) {
+  IMP_UNUSED(d);
+  IMP_NOT_IMPLEMENTED;
 }
 std::vector<std::string> StringTraits::read_values_attribute(hid_t d,
                                                              unsigned int num) {
-  boost::scoped_array<char> buf(new char[num*max_length]);
-  std::fill(buf.get(), buf.get()+num*max_length, '\0');
-  char *ptr= buf.get();
-  IMP_HDF5_CALL(H5Aread(d,
-                        get_hdf5_type(), ptr));
-  std::vector<std::string> ret(num);
-  for (unsigned int i=0; i< num; ++i) {
-    ret[i]= std::string(&buf[i*max_length]);
-  }
-  return ret;
-}
-const char*& StringTraits::get_null_value() {
-  static const char buf[max_length]={'\0'};
-  static const char *ptr=buf;
-  return ptr;
-}
-const char& StringTraits::get_fill_value() {
-  return *get_null_value();
+  IMP_UNUSED(d);
+  IMP_UNUSED(num);
+  IMP_NOT_IMPLEMENTED;
 }
 
 std::string StringTraits::get_name() {
@@ -293,11 +241,6 @@ std::string DataSetTraits::get_name() {
 
 
 
-
-
-hid_t NodeIDTraits::get_hdf5_type() {
-  return IndexTraits::get_hdf5_type();
-}
 void NodeIDTraits::write_value_dataset(hid_t d, hid_t is,
                                          hid_t s, NodeID str) {
   return IndexTraits::write_value_dataset(d, is, s, str.get_index());
@@ -345,14 +288,6 @@ std::vector<NodeID> NodeIDTraits::read_values_attribute(hid_t d,
   }
   return ret;
 }
-const NodeID& NodeIDTraits::get_null_value() {
-  static NodeID n;
-  return n;
-}
-const NodeID& NodeIDTraits::get_fill_value() {
-  return get_null_value();
-}
-
 std::string NodeIDTraits::get_name() {
   return std::string("node id");
 }

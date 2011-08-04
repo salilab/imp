@@ -2,10 +2,10 @@ import IMP.display
 import IMP.rmf
 
 # create a temporary file
-tfn= IMP.create_temporary_file_name("hdf5_geometry", "hdf5")
+tfn= IMP.create_temporary_file_name("rmf_geometry", "rmf")
 
 # open the hdf5, clearing any existing contents
-f= IMP.rmf.RootHandle(tfn, True)
+f= IMP.rmf.create_rmf_file(tfn)
 
 # creating a box geometry
 bb= IMP.algebra.BoundingBox3D(IMP.algebra.Vector3D(0,0,0),

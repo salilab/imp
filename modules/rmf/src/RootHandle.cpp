@@ -12,13 +12,13 @@ IMPRMF_BEGIN_NAMESPACE
 
 RootHandle::RootHandle(internal::SharedData *shared): NodeHandle(0, shared) {}
 
-RootHandle::RootHandle(std::string name, bool clear):
-  NodeHandle( 0, new internal::SharedData(name, clear))  {
+RootHandle::RootHandle(HDF5Group root, bool create):
+  NodeHandle( 0, new internal::SharedData(root, create))  {
 }
 
 NodeHandle RootHandle::get_node_handle_from_id(NodeID id) const {
   //IMP_USAGE_CHECK( id >=0, "Invalid id " << id);
-  return NodeHandle(id.get_index(), shared_);
+  return NodeHandle(id.get_index(), shared_.get());
 }
 
 
@@ -26,7 +26,7 @@ NodeHandle RootHandle::get_node_handle_from_association(void*d) const {
   if (! shared_->get_has_association(d)) {
     return NodeHandle();
   } else {
-    return NodeHandle(shared_->get_association(d), shared_);
+    return NodeHandle(shared_->get_association(d), shared_.get());
   }
 }
 
