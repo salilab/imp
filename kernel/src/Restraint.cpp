@@ -23,6 +23,14 @@ Restraint::Restraint(std::string name):
 {
 }
 
+Restraint::~Restraint()
+{
+  if (model_) {
+    IMP_CHECK_OBJECT(model_);
+    model_->remove_temporary_restraint(this);
+  }
+}
+
 
 void Restraint::set_model(Model* model)
 {
@@ -37,12 +45,7 @@ void Restraint::set_model(Model* model)
 namespace {
   void fill_restraints(RestraintsTemp &restraints,
                        const Restraint *me) {
-    if (dynamic_cast<const RestraintSet*>(me)) {
-      restraints=
-        get_restraints(dynamic_cast<const RestraintSet*>(me));
-    } else {
-      restraints.push_back(const_cast<Restraint*>(me));
-    }
+    restraints= get_restraints(RestraintsTemp(1, const_cast<Restraint*>(me)));
     if (restraints.size() >1) {
       IMP_LOG(VERBOSE, "Evaluating "<< restraints.size()
               << " restraints in set.\n");

@@ -159,7 +159,7 @@ public:
     return object_cast<Restraint>(o);
   }
 
-  IMP_REF_COUNTED_DESTRUCTOR(Restraint);
+  IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Restraint);
 private:
   /* This pointer should never be ref counted as Model has a
      pointer to this object.
