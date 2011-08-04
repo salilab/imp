@@ -47,7 +47,7 @@ class IMPBULLETEXPORT ResolveCollisionsOptimizer: public Optimizer
     boxes_;
 public:
   ResolveCollisionsOptimizer(Model *m);
-  ResolveCollisionsOptimizer(const RestraintSetsTemp &rss);
+  ResolveCollisionsOptimizer(const RestraintsTemp &rss);
   void set_xyzrs(const ParticlesTemp &ps) {
     set_xyzrs_internal(core::XYZRs(ps));
   }
@@ -76,9 +76,10 @@ IMP_OBJECTS(ResolveCollisionsOptimizer, ResolveCollisionsOptimizers);
 
 /** Show information about how the restraints will be special cased
     in the optimizer. */
-IMPBULLETEXPORT void show_restraint_handling(RestraintSets rs,
-                                             Model *m, ParticlesTemp ps,
-                                             std::ostream &out=std::cout);
+IMPBULLETEXPORT Restraints
+show_restraint_handling(const RestraintsTemp& rs,
+                        const ParticlesTemp& ps,
+                        std::ostream &out=std::cout);
 
 IMPBULLET_END_NAMESPACE
 

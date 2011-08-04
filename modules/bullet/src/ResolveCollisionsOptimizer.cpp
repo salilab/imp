@@ -351,7 +351,7 @@ namespace {
 */
 
 ResolveCollisionsOptimizer
-::ResolveCollisionsOptimizer(const RestraintSetsTemp &rs):
+::ResolveCollisionsOptimizer(const RestraintsTemp &rs):
   Optimizer(rs[0]->get_model(), "ResolveCollisionsOptimizer %1%"),
   local_(0), damp_(40){
   Optimizer::set_restraints(rs);
@@ -428,19 +428,19 @@ bool handle_ev() {
   Must pass rbs + normal particles to special case
 */
 
-void show_restraint_handling(RestraintSets rs, Model *m, ParticlesTemp ps,
-                             std::ostream &out) {
+Restraints show_restraint_handling(const RestraintsTemp& rs,
+                                   const ParticlesTemp& ps,
+                                   std::ostream &) {
   boost::scoped_ptr<SetLogState> sll(new SetLogState(SILENT));
-  IMP::atom::internal::SpecialCaseRestraints scr(m, ps);
+  IMP::atom::internal::SpecialCaseRestraints scr(rs[0]->get_model(),
+                                                 ps);
   sll.reset(NULL);
   for (unsigned int i=0; i< rs.size(); ++i) {
-    scr.add_restraint_set(rs[i],
-                          dont_handle_harmonic,
-                          handle_ev);
-    for (unsigned int j=0; j< rs[i]->get_number_of_restraints(); ++j) {
-      out << rs[i]->get_restraint(j)->get_name() << " remains" << std::endl;
-    }
+    scr.add_restraint(rs[i],
+                      dont_handle_harmonic,
+                      handle_ev);
   }
+  return scr.get_restraints();
 }
 
 
@@ -448,7 +448,7 @@ void show_restraint_handling(RestraintSets rs, Model *m, ParticlesTemp ps,
 double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   IMP_OBJECT_LOG;
   test_cast();
-  RestraintSets before_sets= get_restraints();
+  RestraintsTemp before_sets= get_restraints();
   Restraints before_restraints= IMP::get_restraints(before_sets.begin(),
                                                     before_sets.end());
   {
@@ -523,9 +523,9 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       root_particles.push_back(it->first);
     }
     IMP::atom::internal::SpecialCaseRestraints scr(get_model(), root_particles);
-    RestraintSets rs= Optimizer::get_restraint_sets();
+    RestraintsTemp rs= Optimizer::get_restraints();
     for (unsigned int i=0; i< rs.size(); ++i) {
-      scr.add_restraint_set(rs[i],
+      scr.add_restraint(rs[i],
                             boost::bind(handle_harmonic, dynamicsWorld.get(),
                                         map, &memory, _1, _2, _3, damp_),
                             handle_ev);
@@ -552,12 +552,12 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       }
       unsigned int rrs=0;
       for (unsigned int i=0; i< rs.size(); ++i) {
-        rrs+=IMP::get_restraints(rs[i]).size();
+        rrs+=IMP::get_restraints(RestraintsTemp(1, rs[i])).size();
       }
       IMP_LOG(TERSE, "Remaining " << rrs << " restraints: ");
       {
         for (unsigned int i=0; i< rs.size(); ++i) {
-          Restraints crs= IMP::get_restraints(rs[i]);
+          Restraints crs= IMP::get_restraints(RestraintsTemp(1, rs[i]));
           for (unsigned int j=0; j< crs.size(); ++j) {
             IMP_LOG(TERSE, crs[j]->get_name() <<" ");
           }
@@ -577,7 +577,8 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       if (get_model()->get_number_of_restraints() > 0
           || get_number_of_optimizer_states() > 0) {
         internal::copy_back_coordinates(map);
-        get_model()->evaluate(get_model()->get_number_of_restraints() >0);
+        get_model()->evaluate(scr.get_restraints(),
+                              get_model()->get_number_of_restraints() >0);
         update_states();
         for (internal::RigidBodyMap::const_iterator
                it = map.begin(); it != map.end(); ++it) {
@@ -622,7 +623,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
   update_states();
 
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    RestraintSets after_sets= get_restraints();
+    RestraintsTemp after_sets= get_restraints();
     Restraints after_restraints= IMP::get_restraints(after_sets.begin(),
                                                    after_sets.end());\
     RestraintsTemp bt= before_restraints;
