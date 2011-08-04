@@ -24,86 +24,6 @@
 IMPDOMINO_BEGIN_NAMESPACE
 
 
-
-template <class Graph>
-class DirectCollectVisitor: public boost::default_dfs_visitor {
-  typename boost::property_map<Graph,
-                      boost::vertex_name_t>::const_type vm_;
-  ParticlesTemp &vals_;
-public:
-  const ParticlesTemp &get_collected() {
-    std::sort(vals_.begin(), vals_.end());
-    vals_.erase(std::unique(vals_.begin(), vals_.end()), vals_.end());
-    return vals_;
-  }
-  DirectCollectVisitor(const Graph &g, ParticlesTemp &vals): vals_(vals)
-    {
-      vm_=boost::get(boost::vertex_name, g);
-    }
-  void discover_vertex(typename boost::graph_traits<Graph>::vertex_descriptor u,
-                       const Graph&) {
-    Object *o= vm_[u];
-    //std::cout << "Visiting " << o->get_name() << std::endl;
-    Particle *p=dynamic_cast<Particle*>(o);
-    if (p) {
-      vals_.push_back(p);
-    }
-  }
-};
-
-
-namespace {
- typedef boost::graph_traits<DependencyGraph> DGTraits;
-  typedef DGTraits::vertex_descriptor DGVertex;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::type DGVertexMap;
-  typedef boost::property_map<DependencyGraph,
-                              boost::vertex_name_t>::const_type
-  DGConstVertexMap;
-}
-
-
-
-
-
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all,
-                                      const DependencyGraph &dg) {
-  // find p in graph, ick
-  DGConstVertexMap dpm= boost::get(boost::vertex_name, dg);
-  std::pair<DGTraits::vertex_iterator, DGTraits::vertex_iterator> be
-    = boost::vertices(dg);
-  IMP::compatibility::set<Object*> block(all.begin(), all.end());
-  boost::vector_property_map<int> color(boost::num_vertices(dg));
-  int start=-1;
-  for (; be.first != be.second; ++be.first) {
-    if (dpm[*be.first]==p) {
-      start=*be.first;
-    } else if (block.find(dpm[*be.first]) != block.end()) {
-      // block traversal though the other nodes
-      color[*be.first]= boost::color_traits<int>::black();
-    }
-  }
-  if (start==-1) {
-    return ParticlesTemp();
-  }
-  ParticlesTemp pt;
-  DirectCollectVisitor<DependencyGraph> cv(dg, pt);
-  boost::depth_first_visit(dg, start, cv, color);
-  return cv.get_collected();
-}
-
-ParticlesTemp get_dependent_particles(Particle *p,
-                                      const ParticlesTemp &all) {
-  Model *m= p->get_model();
-  DependencyGraph dg
-    = get_dependency_graph(get_restraints(m->restraints_begin(),
-                                          m->restraints_end()));
-  return get_dependent_particles(p, all, dg);
-}
-
-
-
 void load_particle_states(const Subset &s,
                           const Assignment &ss,
                           const ParticleStatesTable *pst) {
@@ -117,7 +37,7 @@ RestraintsAndWeights get_restraints_and_weights(const Subset &s,
                               const ParticleStatesTable *pst,
                               const DependencyGraph &dg,
                               RestraintSet *rs) {
-  RestraintsAndWeights rw= get_restraints_and_weights(rs);
+  RestraintsAndWeights rw= get_restraints_and_weights(RestraintsTemp(1, rs));
   Subset other=pst->get_subset();
   ParticlesTemp oms;
   std::set_difference(other.begin(), other.end(),
