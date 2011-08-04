@@ -123,7 +123,7 @@ class IMPEXPORT Optimizer: public Object
       These restraints must all be part of the model. Passing
       an empty list will revert to using the whole model.
   */
-  void set_restraints(const RestraintSetsTemp &rs);
+  void set_restraints(const RestraintsTemp &rs);
 
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(Optimizer);
@@ -138,13 +138,6 @@ class IMPEXPORT Optimizer: public Object
   double evaluate_if_below(bool compute_derivatives,
                           double max) const;
 
-  RestraintSets get_restraint_sets() const {
-    if (!restraints_.empty()) {
-      return restraints_;
-    } else {
-      return RestraintSets(1, get_model()->get_root_restraint_set());
-    }
-  }
 
   //! override this function to do actual optimization
   virtual double do_optimize(unsigned int ns) =0;
@@ -230,7 +223,7 @@ class IMPEXPORT Optimizer: public Object
   //! Return the restraint sets used in evaluation.
   /** Use IMP::get_restraints() to get the actual restraints used.
    */
-  RestraintSets get_restraints() const;
+  RestraintsTemp get_restraints() const;
 
  private:
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
@@ -239,7 +232,7 @@ class IMPEXPORT Optimizer: public Object
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;
-  RestraintSets restraints_;
+  Restraints restraints_;
   RestraintsTemp flattened_restraints_;
   mutable double last_score_;
 };
