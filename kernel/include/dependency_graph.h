@@ -10,6 +10,7 @@
 
 #include "kernel_config.h"
 #include "Model.h"
+#include "Restraint.h"
 #include <boost/graph/adjacency_list.hpp>
 
 IMP_BEGIN_NAMESPACE
@@ -42,6 +43,11 @@ IMP_GRAPH(DependencyGraph, bidirectional, Object*, int);
 IMPEXPORT DependencyGraph
 get_dependency_graph(const RestraintsTemp &rs);
 
+/** \copydoc get_dependency_graph(const RestraintsTemp&)*/
+IMPEXPORT DependencyGraph
+get_dependency_graph(const ScoreStatesTemp &ss,
+                     const RestraintsTemp &rs);
+
 /** \name Pruned dependency graphs
 
     The pruned dependency graph merges all particles which have the
@@ -58,6 +64,34 @@ get_pruned_dependency_graph(const RestraintsTemp &rs);
 /** Get the score states required by the passed restraints.*/
 IMPEXPORT ScoreStatesTemp
 get_required_score_states(const RestraintsTemp &rs);
+
+
+/** Returns the subset of particles that depend on p as input. This
+    will include p. The variable all is the set of all other particles
+    of interest, they will block dependency propagation.
+
+    \note This function is here to aid in debugging of optimization
+    protocols that use Domino2. As a result, its signature and
+    functionality may change without notice.
+ */
+IMPEXPORT ParticlesTemp get_dependent_particles(Particle *p,
+                                                const ParticlesTemp &all);
+
+/** \copydoc get_dependent_particles(Particle*,const ParticlesTemp&)
+ */
+IMPEXPORT ParticlesTemp
+get_dependent_particles(Particle *p,
+                        const ParticlesTemp &all,
+                        const DependencyGraph &dg);
+
+
+/** Return all the restraints that depend on p as an input, even indirectly.
+ */
+IMPEXPORT RestraintsTemp
+get_dependent_restraints(Particle *p,
+                        const ParticlesTemp &all,
+                        const DependencyGraph &dg);
+
 
 #ifndef IMP_DOXYGEN
 class Container;

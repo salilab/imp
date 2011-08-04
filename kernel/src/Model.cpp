@@ -76,6 +76,18 @@ Model::RestraintConstIterator Model::restraints_end() const {
   return rs_->restraints_end();
 }
 
+void Model::add_temporary_restraint(Restraint *r) {
+  reset_dependencies();
+  r->set_model(this);
+  temp_restraints_.push_back(r);
+}
+void Model::remove_temporary_restraint(Restraint *r) {
+  reset_dependencies();
+  r->set_model(NULL);
+  temp_restraints_.erase(std::find(temp_restraints_.begin(),
+                                   temp_restraints_.end(), r));
+}
+
 IMP_LIST_ACTION_IMPL(Model, ScoreState, ScoreStates, score_state,
                      score_states, ScoreState*,
                      ScoreStates);
