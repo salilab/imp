@@ -533,6 +533,7 @@ private:
   mutable internal::Stage cur_stage_;
   unsigned int eval_count_;
   internal::OwnerPointer<RestraintSet> rs_;
+  RestraintsTemp temp_restraints_;
   bool first_call_;
   double max_score_;
   mutable bool has_good_score_;
@@ -685,6 +686,15 @@ public:
     return rs_;
   }
   /**@}*/
+ /** \name Temporary Restraints
+
+      Temporary restraints are ones that are not part of the scoring function
+      but that well be evaluated at some point. Restraints that are part of
+      these sets cannot be part of non-temporary sets or other temporary sets.
+  */
+  void add_temporary_restraint(Restraint *r);
+  void remove_temporary_restraint(Restraint *r);
+  /** @} */
  public:
 
   /** \name Filtering
