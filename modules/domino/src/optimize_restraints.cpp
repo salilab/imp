@@ -315,7 +315,7 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
   //IMP::internal::show_as_graphviz(m->get_dependency_graph(), std::cout);
   {
     const DependencyGraph dg
-      =get_dependency_graph(get_restraints(m));
+      =get_dependency_graph(get_restraints(RestraintsTemp(1, m)));
     DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
     IMP::compatibility::map<Object*, unsigned int> index;
     unsigned int nv=boost::num_vertices(dg);
@@ -334,7 +334,7 @@ void OptimizeRestraints::optimize_model(RestraintSet *m,
 
   {
     const DependencyGraph dg
-      =get_dependency_graph(get_restraints(m));
+      =get_dependency_graph(get_restraints(RestraintsTemp(1,m)));
     IMP::compatibility::map<Object*, unsigned int> index;
     // now do restraints
     DGConstVertexMap vm= boost::get(boost::vertex_name,dg);
