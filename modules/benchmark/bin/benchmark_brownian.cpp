@@ -165,7 +165,7 @@ namespace {
       std::cout << "Estimating slack " << std::endl;
       SetLogState sl(IMP::VERBOSE);
       slack= get_slack_estimate(it.lsc->get_particles(), 100, 1,
-                                get_restraints(it.m->get_root_restraint_set()),
+           get_restraints(RestraintsTemp(1, it.m->get_root_restraint_set())),
                                 true,
                                 it.bd,
                                 it.cpc);
