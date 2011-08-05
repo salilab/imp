@@ -12,18 +12,20 @@
 IMPCORE_BEGIN_NAMESPACE
 
 SerialMover::SerialMover(const MoversTemp& mvs):
-             mvs_(mvs), imov_(-1) {};
+  mvs_(mvs), imov_(-1) {
+}
 
 ParticlesTemp SerialMover::propose_move(Float f) {
   IMP_LOG(VERBOSE,"SerialMover:: propose move f is  : " << f <<std::endl);
   ++imov_;
-  if(imov_==mvs_.size()) imov_=0;
+  if(imov_==static_cast<int>(mvs_.size())) imov_=0;
 
   return mvs_[imov_]->propose_move(f);
 }
 
 void SerialMover::reset_move() {
- mvs_[imov_]->reset_move();
+  IMP_USAGE_CHECK(imov_ >=0, "No move has been proposed to reset");
+  mvs_[imov_]->reset_move();
 }
 
 void SerialMover::do_show(std::ostream &out) const {
