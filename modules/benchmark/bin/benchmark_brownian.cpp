@@ -206,8 +206,8 @@ namespace {
              }, runtime);
     IMP::benchmark::report(std::string("bd ")+name, runtime, total);
     if (argc>2) {
-      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::rmf::RootHandle(argv[2],
-                                                                        true),
+      IMP_CATCH_AND_TERMINATE(write_particles(it,
+                                          IMP::rmf::create_rmf_file(argv[2]),
                                               0));
     }
   }
@@ -246,8 +246,8 @@ namespace {
     }
 
     if (argc>2) {
-      IMP_CATCH_AND_TERMINATE(write_particles(it, IMP::rmf::RootHandle(argv[2],
-                                                                        true),
+      IMP_CATCH_AND_TERMINATE(write_particles(it,
+                                            IMP::rmf::create_rmf_file(argv[2]),
                                               0));
     }
   }
