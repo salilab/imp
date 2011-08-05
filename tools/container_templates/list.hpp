@@ -27,8 +27,6 @@ public core::internal::CoreListCLASSNAMEContainer
 #endif
 {
   typedef core::internal::CoreListCLASSNAMEContainer P;
-  // for the change versions
-  ListCLASSNAMEContainer();
 public:
   ListCLASSNAMEContainer(const PLURALVARIABLETYPE &ps);
 
@@ -61,10 +59,6 @@ public:
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_HEADERNAME_CONTAINER(ListCLASSNAMEContainer);
 #else
-  static ListCLASSNAMEContainer *create_untracked_container() {
-    ListCLASSNAMEContainer *lsc = new ListCLASSNAMEContainer();
-    return lsc;
-  }
   IMP_OBJECT(ListCLASSNAMEContainer);
 #endif
 };

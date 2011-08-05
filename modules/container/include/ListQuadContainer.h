@@ -27,8 +27,6 @@ public core::internal::CoreListQuadContainer
 #endif
 {
   typedef core::internal::CoreListQuadContainer P;
-  // for the change versions
-  ListQuadContainer();
 public:
   ListQuadContainer(const ParticleQuadsTemp &ps);
 
