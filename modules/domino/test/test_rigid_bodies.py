@@ -78,7 +78,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst.set_particle_states(rbs[1], pstate)
         pst.set_particle_states(rbs[2], pstate)
         occ= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
-        allr= IMP.get_restraints(m.get_root_restraint_set())
+        allr= IMP.get_restraints([m.get_root_restraint_set()])
         for r in allr:
             print r.get_name()
         self.assertEqual(len(allr), 2)
@@ -108,7 +108,7 @@ class DOMINOTests(IMP.test.TestCase):
         pst.set_particle_states(rbs[1], pstate)
         pst.set_particle_states(rbs[2], pstate)
         occ= IMP.domino.OptimizeRestraints(m.get_root_restraint_set(), pst)
-        allr= IMP.get_restraints(m.get_root_restraint_set())
+        allr= IMP.get_restraints([m.get_root_restraint_set()])
         for r in allr:
             print r.get_name()
         self.assertEqual(len(allr), 2)
