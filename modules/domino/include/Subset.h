@@ -62,7 +62,7 @@ class IMPDOMINOEXPORT Subset {
   Subset(): sz_(0){}
   /** Construct a subset from a non-empty list of particles.
    */
-  Subset(ParticlesTemp ps):
+  explicit Subset(ParticlesTemp ps):
     ps_(new Particle*[ps.size()]),
     sz_(ps.size()) {
     IMP_USAGE_CHECK(!ps.empty(), "Do not create empty subsets");
