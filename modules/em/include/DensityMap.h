@@ -655,13 +655,17 @@ DensityMap* interpolate_map(DensityMap *in_map,double new_spacing);
     as well as the same bounding box.
 */
 IMPEMEXPORT
-algebra::DenseGrid3D<float> get_grid(DensityMap *in);
+algebra::grids::GridD<3,
+algebra::grids::DenseGridStorageD<3, float>, float >
+get_grid(DensityMap *in);
 
 
 /** Return a density map with the values taken from the grid.
 */
 IMPEMEXPORT
-DensityMap* create_density_map(const algebra::DenseGrid3D<float>& grid);
+DensityMap* create_density_map(const algebra::grids::GridD<3,
+                     algebra::grids::DenseGridStorageD<3, float>,
+                               float >& grid);
 
 
 IMPEM_END_NAMESPACE

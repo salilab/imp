@@ -1507,10 +1507,13 @@ DensityMap* interpolate_map (DensityMap *in_map,double new_spacing) {
   return ret.release();
 }
 
-algebra::DenseGrid3D<float> get_grid(DensityMap *in) {
+algebra::grids::GridD<3,
+                     algebra::grids::DenseGridStorageD<3, float>, float >
+ get_grid(DensityMap *in) {
   IMP_FUNCTION_LOG;
   IMP_CHECK_OBJECT(in);
-  typedef algebra::DenseGrid3D<float> G;
+  typedef algebra::grids::GridD<3,
+                     algebra::grids::DenseGridStorageD<3, float>, float > G;
   G ret(in->get_header()->get_spacing(), get_bounding_box(in));
   IMP_USAGE_CHECK(ret.get_number_of_voxels(0)==
                   static_cast<unsigned int>(in->get_header()->get_nx()),
@@ -1535,9 +1538,12 @@ algebra::DenseGrid3D<float> get_grid(DensityMap *in) {
 }
 
 
-DensityMap* create_density_map(const algebra::DenseGrid3D<float> &arg) {
+DensityMap* create_density_map(const algebra::grids::GridD<3,
+                     algebra::grids::DenseGridStorageD<3, float>,
+                                                           float > &arg) {
   IMP_FUNCTION_LOG;
-  typedef algebra::DenseGrid3D<float> G;
+  typedef algebra::grids::GridD<3,
+                     algebra::grids::DenseGridStorageD<3, float>, float > G;
   IMP_USAGE_CHECK(std::abs(arg.get_unit_cell()[0]-arg.get_unit_cell()[1]) < .01,
                   "The passed grid does not seem to have cubic voxels");
   Pointer<DensityMap> ret= create_density_map(algebra::get_bounding_box(arg),
