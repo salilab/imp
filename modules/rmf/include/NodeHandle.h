@@ -15,7 +15,7 @@
 #include "hdf5_types.h"
 #include "NodeID.h"
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 IMPRMF_BEGIN_NAMESPACE
 #ifdef SWIG
