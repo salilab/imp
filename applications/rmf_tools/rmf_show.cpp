@@ -35,7 +35,7 @@ int main(int argc, char **argv) {
     print_help();
     return 1;
   }
-  IMP::rmf::RootHandle rh(input, false);
+  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
   std::string descr= rh.get_description();
   if (!descr.empty()) {
     std::cout << descr << std::endl;

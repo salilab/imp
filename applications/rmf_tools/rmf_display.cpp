@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
     }
   }
 
-  IMP::rmf::RootHandle rh(input, false);
+  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
   IMP_NEW(IMP::Model, m, ());
   IMP::atom::Hierarchies hs= IMP::rmf::create_hierarchies(rh, m);
   IMP::ParticlesTemp ps= IMP::rmf::create_particles(rh, m);

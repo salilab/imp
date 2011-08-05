@@ -151,7 +151,7 @@ int main(int argc, char **argv) {
     print_help();
     return 1;
   }
-  IMP::rmf::RootHandle rh(input, false);
+  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(input);
   std::ofstream out(output.c_str());
   if (!out) {
     std::cerr << "Error opening file " << output << std::endl;
