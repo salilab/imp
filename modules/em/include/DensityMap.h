@@ -650,6 +650,20 @@ IMPEMEXPORT DensityMap* get_max_map(DensityMaps maps);
 //! data accordinly
 IMPEMEXPORT
 DensityMap* interpolate_map(DensityMap *in_map,double new_spacing);
+
+/** Return a dense grid containing the voxels of the passed density map
+    as well as the same bounding box.
+*/
+IMPEMEXPORT
+algebra::DenseGrid3D<float> get_grid(DensityMap *in);
+
+
+/** Return a density map with the values taken from the grid.
+*/
+IMPEMEXPORT
+DensityMap* create_density_map(const algebra::DenseGrid3D<float>& grid);
+
+
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_DENSITY_MAP_H */
