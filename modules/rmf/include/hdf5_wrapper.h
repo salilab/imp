@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <IMP/Pointer.h>
 #include <boost/shared_array.hpp>
-#include <boost/smart_ptr/intrusive_ptr.hpp>
+#include <boost/intrusive_ptr.hpp>
 
 
 IMPRMF_BEGIN_NAMESPACE
