@@ -50,6 +50,23 @@ class RestraintData {
   bool cache_;
   mutable int filter_attempts_;
   mutable int filter_passes_;
+  template <bool Filter>
+  double compute_score(ParticleStatesTable *pst,
+                       const ParticlesTemp &ps,
+                       const Assignment &state) const {
+    load_particle_states(ps.begin(), ps.end(), state, pst);
+    RestraintsTemp rs(1, r_);
+    double score= r_->get_model()->evaluate_if_good(rs, false)[0];
+    if (Filter) {
+      if (score >max_) {
+        score=std::numeric_limits<double>::max();
+      } else {
+      }
+    }
+    /*std::cout << "Computed score for " << r_->get_name()
+      << " on " << state << "= " << score << std::endl;*/
+    return score;
+  }
 public:
   RestraintData(Restraint *r): r_(r),
                                max_(std::numeric_limits<double>::max()){
@@ -74,15 +91,30 @@ public:
       /*std::cout << "Found cached score for " << r_->get_name()
         << " on " << state << "= " << it->second
         << "(" << it->first << ")" << std::endl;*/
-      return it->second;
+      double score= it->second;
+      IMP_IF_CHECK(USAGE_AND_INTERNAL) {
+        double cscore= compute_score<Filter>(pst, ps, state);
+        IMP_INTERNAL_CHECK(score >= max_ && cscore >= max_
+                           || score < max_ && cscore < max_
+                           || (score-cscore) < .01,
+                           "Scores don't match their side of max: "
+                           << score << " vs " << cscore);
+        if (score < max_) {
+          IMP_INTERNAL_CHECK((score-cscore) < .1*(score+cscore) +.1,
+                             "Scores don't match: " << score
+                             << " vs " << cscore);
+        }
+      }
+      return score;
     } else {
-      load_particle_states(ps.begin(), ps.end(), state, pst);
-      RestraintsTemp rs(1, r_);
-      double score= r_->get_model()->evaluate_if_good(rs, false)[0];
+      double score= compute_score<Filter>(pst, ps, state);
+      IMP_LOG(VERBOSE, "State " << state << " of particles "
+              << Particles(ps) << " has score "
+              << score << " for restraint " << r_->get_name()
+              << std::endl);
       if (Filter) {
         ++filter_attempts_;
         if (score >max_) {
-          score=std::numeric_limits<double>::max();
         } else {
           ++filter_passes_;
         }
@@ -90,12 +122,6 @@ public:
       if (cache_) {
         scores_[state]=score;
       }
-      IMP_LOG(VERBOSE, "State " << state << " of particles "
-              << Particles(ps) << " has score "
-              << score << " for restraint " << r_->get_name()
-              << std::endl);
-      /*std::cout << "Computed score for " << r_->get_name()
-        << " on " << state << "= " << score << std::endl;*/
       return score;
     }
   }
