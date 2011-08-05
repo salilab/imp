@@ -1507,4 +1507,62 @@ DensityMap* interpolate_map (DensityMap *in_map,double new_spacing) {
   return ret.release();
 }
 
+algebra::DenseGrid3D<float> get_grid(DensityMap *in) {
+  IMP_FUNCTION_LOG;
+  IMP_CHECK_OBJECT(in);
+  typedef algebra::DenseGrid3D<float> G;
+  G ret(in->get_header()->get_spacing(), get_bounding_box(in));
+  IMP_USAGE_CHECK(ret.get_number_of_voxels(0)==
+                  static_cast<unsigned int>(in->get_header()->get_nx()),
+                  "X voxels don't match");
+  IMP_USAGE_CHECK(ret.get_number_of_voxels(1)==
+                  static_cast<unsigned int>(in->get_header()->get_ny()),
+                  "Y voxels don't match");
+  IMP_USAGE_CHECK(ret.get_number_of_voxels(2)==
+                  static_cast<unsigned int>(in->get_header()->get_nz()),
+                  "Z voxels don't match");
+  for (unsigned int i=0; i< ret.get_number_of_voxels(0); ++i) {
+    for (unsigned int j=0; j< ret.get_number_of_voxels(1); ++j) {
+      for (unsigned int k=0; k< ret.get_number_of_voxels(2); ++k) {
+        G::ExtendedIndex ei(i,j,k);
+        G::Index gi= ret.get_index(ei);
+        long vi= in->get_voxel_by_location(i,j,k);
+        ret[gi]= in->get_value(vi);
+      }
+    }
+  }
+  return ret;
+}
+
+
+DensityMap* create_density_map(const algebra::DenseGrid3D<float> &arg) {
+  IMP_FUNCTION_LOG;
+  typedef algebra::DenseGrid3D<float> G;
+  IMP_USAGE_CHECK(std::abs(arg.get_unit_cell()[0]-arg.get_unit_cell()[1]) < .01,
+                  "The passed grid does not seem to have cubic voxels");
+  Pointer<DensityMap> ret= create_density_map(algebra::get_bounding_box(arg),
+                                              arg.get_unit_cell()[0]);
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(0)==
+                  static_cast<unsigned int>(ret->get_header()->get_nx()),
+                  "X voxels don't match");
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(1)==
+                  static_cast<unsigned int>(ret->get_header()->get_ny()),
+                  "Y voxels don't match");
+  IMP_USAGE_CHECK(arg.get_number_of_voxels(2)==
+                  static_cast<unsigned int>(ret->get_header()->get_nz()),
+                  "Z voxels don't match");
+  for (unsigned int i=0; i< arg.get_number_of_voxels(0); ++i) {
+    for (unsigned int j=0; j< arg.get_number_of_voxels(1); ++j) {
+      for (unsigned int k=0; k< arg.get_number_of_voxels(2); ++k) {
+        G::ExtendedIndex ei(i,j,k);
+        G::Index gi= arg.get_index(ei);
+        long vi= ret->get_voxel_by_location(i,j,k);
+        ret->set_value(vi, arg[gi]);
+      }
+    }
+  }
+  return ret.release();
+}
+
+
 IMPEM_END_NAMESPACE
