@@ -61,10 +61,6 @@ public:
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_QUAD_CONTAINER(ListQuadContainer);
 #else
-  static ListQuadContainer *create_untracked_container() {
-    ListQuadContainer *lsc = new ListQuadContainer();
-    return lsc;
-  }
   IMP_OBJECT(ListQuadContainer);
 #endif
 };

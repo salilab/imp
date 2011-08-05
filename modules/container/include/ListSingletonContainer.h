@@ -61,10 +61,6 @@ public:
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_SINGLETON_CONTAINER(ListSingletonContainer);
 #else
-  static ListSingletonContainer *create_untracked_container() {
-    ListSingletonContainer *lsc = new ListSingletonContainer();
-    return lsc;
-  }
   IMP_OBJECT(ListSingletonContainer);
 #endif
 };
