@@ -146,9 +146,10 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
     if (check_slack) {
       threshold+=2*slack_;
     }
-    for (unsigned int i=0; i< c_->get_number_of_particles(); ++i) {
+    ParticlesTemp all= c_->get_particles();
+    for (unsigned int i=0; i< all.size(); ++i) {
       for (unsigned int j=0; j< i; ++j) {
-        XYZR a(c_->get_particle(i)), b(c_->get_particle(j));
+        XYZR a(all[i]), b(all[j]);
         double d= core::get_distance(a,b);
         if (d < threshold) {
           if (RigidMember::particle_is_instance(a)
@@ -266,7 +267,6 @@ void CoreClosePairContainer::do_rebuild() {
   IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
   update_list(ret);
   moved_->reset();
-  check_list(true);
 }
 
 void CoreClosePairContainer::do_before_evaluate() {
@@ -281,14 +281,18 @@ void CoreClosePairContainer::do_before_evaluate() {
   try {
     if (first_call_) {
       do_first_call();
+      check_list(true);
     } else if (moved_->get_number_of_particles() != 0) {
       if (moved_->get_particles().size() < c_->get_number_of_particles()*.2) {
         do_incremental();
+        check_list(false);
       } else {
         do_rebuild();
+        check_list(true);
       }
     } else {
       IMP_LOG(TERSE, "No particles moved more than " << slack_ << std::endl);
+      check_list(false);
     }
   } catch (std::bad_alloc&) {
     IMP_THROW("Ran out of memory when computing close pairs."
