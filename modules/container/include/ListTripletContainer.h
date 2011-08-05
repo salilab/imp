@@ -61,10 +61,6 @@ public:
   IMP_NO_DOXYGEN(bool get_is_up_to_date() const);
   IMP_TRIPLET_CONTAINER(ListTripletContainer);
 #else
-  static ListTripletContainer *create_untracked_container() {
-    ListTripletContainer *lsc = new ListTripletContainer();
-    return lsc;
-  }
   IMP_OBJECT(ListTripletContainer);
 #endif
 };
