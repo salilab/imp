@@ -63,7 +63,7 @@ int main(int argc, char **argv) {
     IMP_CATCH_AND_TERMINATE(inhs= IMP::atom::read_multimodel_pdb(input, m));
     nframes=inhs.size();
   } else {
-    IMP_CATCH_AND_TERMINATE(rh= IMP::rmf::RootHandle(input, false));
+    IMP_CATCH_AND_TERMINATE(rh= IMP::rmf::open_rmf_file(input));
     inhs= IMP::rmf::create_hierarchies(rh, m);
     IMP::rmf::FloatKey xk
       =rh.get_key<IMP::rmf::FloatTraits>(IMP::rmf::Physics, "cartesian x");
@@ -100,7 +100,7 @@ int main(int argc, char **argv) {
       IMP_CATCH_AND_TERMINATE(IMP::atom::write_pdb(inhs, out, outframe));
     } else {
       if (outframe==0) {
-        rho= IMP::rmf::RootHandle(output, true);
+        rho= IMP::rmf::create_rmf_file(output);
         for (unsigned int i=0; i< cur.size(); ++i) {
           IMP::rmf::add_hierarchy(rh, cur[i]);
         }

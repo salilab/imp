@@ -66,7 +66,7 @@ namespace {
 
 double traverse(std::string name) {
   double ret=0;
-  IMP::rmf::RootHandle rh(name, false);
+  IMP::rmf::RootHandle rh= IMP::rmf::open_rmf_file(name);
   ret+=show_xml(rh);
   if (rh.get_number_of_bonds() >0) {
     for (unsigned int i=0; i< rh.get_number_of_bonds(); ++i) {

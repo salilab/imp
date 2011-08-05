@@ -88,7 +88,7 @@ namespace {
   }
 
   It create_particles(std::string name) {
-    IMP::rmf::RootHandle r(name, false);
+    IMP::rmf::RootHandle r= IMP::rmf::open_rmf_file(name);
     It ret;
     ret.m= new Model();
     ret.chains= IMP::rmf::create_hierarchies(r, ret.m);
@@ -266,12 +266,12 @@ int main(int argc , char **argv) {
                                     new AttributeSingletonScore(new HLB(0,kk),
                                                                 xk), o);
     {
-      IMP::rmf::RootHandle fh(argv[2], true);
+      IMP::rmf::RootHandle fh= IMP::rmf::create_rmf_file(argv[2]);
       write_particles(it, fh, 0);
     }
     std::cout << it.m->evaluate(false) << " is the score " << std::endl;
     initialize(it);
-    IMP::rmf::RootHandle fh(argv[2], true);
+    IMP::rmf::RootHandle fh= IMP::rmf::create_rmf_file(argv[2]);
     write_particles(it, fh, 0);
   } else if (argc >=2 && std::string(argv[1])=="-t") {
     It cur;
