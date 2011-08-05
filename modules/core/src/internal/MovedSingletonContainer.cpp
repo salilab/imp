@@ -50,10 +50,9 @@ void MovedSingletonContainer::do_before_evaluate()
   if (first_call_ || pc_->get_contents_changed()) {
     IMP_LOG(TERSE, "First call" << std::endl);
     reset();
-    if (first_call_) {
-      ParticleIndexes pt=pc_->get_indexes();
-      update_list(pt);
-    }
+    ParticleIndexes pt=pc_->get_indexes();
+    update_list(pt);
+    first_call_=false;
   } else {
     ParticleIndexes mved= do_get_moved();
     add_to_list(mved);
@@ -74,7 +73,6 @@ void MovedSingletonContainer::reset()
   do_reset_all();
   ParticleIndexes t;
   update_list(t);
-  first_call_=false;
 }
 
 
