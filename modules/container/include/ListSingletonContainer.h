@@ -27,8 +27,6 @@ public core::internal::CoreListSingletonContainer
 #endif
 {
   typedef core::internal::CoreListSingletonContainer P;
-  // for the change versions
-  ListSingletonContainer();
 public:
   ListSingletonContainer(const ParticlesTemp &ps);
 

@@ -27,8 +27,6 @@ public core::internal::CoreListPairContainer
 #endif
 {
   typedef core::internal::CoreListPairContainer P;
-  // for the change versions
-  ListPairContainer();
 public:
   ListPairContainer(const ParticlePairsTemp &ps);
 

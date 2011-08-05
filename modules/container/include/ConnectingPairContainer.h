@@ -51,7 +51,6 @@ public IMP::core::internal::ListLikePairContainer
   bool mst_;
   IMP_ACTIVE_CONTAINER_DECL(ConnectingPairContainer);
   void initialize(SingletonContainer *sc);
-  void fill_list(bool first);
 public:
   /** For efficiency, the set of edges is only updated occasionally. The
    error parameter determines how far particles need to move before

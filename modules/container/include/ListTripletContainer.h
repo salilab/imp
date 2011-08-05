@@ -27,8 +27,6 @@ public core::internal::CoreListTripletContainer
 #endif
 {
   typedef core::internal::CoreListTripletContainer P;
-  // for the change versions
-  ListTripletContainer();
 public:
   ListTripletContainer(const ParticleTripletsTemp &ps);
 
