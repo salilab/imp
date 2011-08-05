@@ -39,7 +39,7 @@ public:
   Model *mdl_;
   Float predicted_rog_;
   Float scale_;
-  core::HarmonicUpperBound *hub_;
+  Pointer<core::HarmonicUpperBound> hub_;
 };
 
 IMPMULTIFITEXPORT
