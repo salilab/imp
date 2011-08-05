@@ -39,7 +39,7 @@ class DOMINOTests(IMP.test.TestCase):
         del dor
         print "after delete"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
-        self.assertEqual(len(IMP.get_restraints(m.get_root_restraint_set())),
+        self.assertEqual(len(IMP.get_restraints([m.get_root_restraint_set()])),
                          1)
 
     def test_global_min3(self):
@@ -79,7 +79,7 @@ class DOMINOTests(IMP.test.TestCase):
         del dor
         print "after delete"
         IMP.show_restraint_hierarchy(m.get_root_restraint_set())
-        self.assertEqual(len(IMP.get_restraints(m.get_root_restraint_set())),
+        self.assertEqual(len(IMP.get_restraints([m.get_root_restraint_set()])),
                          1)
 
 if __name__ == '__main__':
