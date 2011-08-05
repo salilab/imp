@@ -31,40 +31,6 @@ namespace {
   typedef boost::vector_property_map<unsigned int> LIndex;
   typedef LIndex Parent;
   typedef boost::disjoint_sets<LIndex,Parent> UF;
-  void build_graph(SingletonContainer *sc, ParticleIndexPairs &out, UF &uf) {
-    std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
-    IMP_FOREACH_SINGLETON(sc,
-                          vs[_2]= core::XYZ(_1).get_coordinates(););
-    IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
-    unsigned int nnn=static_cast<unsigned int>(
-                                std::sqrt(static_cast<double>(vs.size()))+1);
-    for (unsigned int i=0; i< vs.size(); ++i) {
-      Ints ni=nn->get_nearest_neighbors(i, nnn);
-      unsigned int si= uf.find_set(i);
-      for (unsigned int j=0; j< ni.size(); ++j) {
-        unsigned int sj= uf.find_set(ni[j]);
-        if (sj != si) {
-          uf.union_set(si, sj); // more efficient call
-          out.push_back(ParticleIndexPair(sc->get_particle(i)->get_index(),
-                                     sc->get_particle(ni[j])->get_index()));
-          break;
-        }
-      }
-    }
-    //if (uf.count_sets() > 1) {
-    for (unsigned int i=1; i< vs.size(); ++i) {
-      int si=uf.find_set(i);
-      int si0= uf.find_set(0);
-      if (si != si0) {
-        out.push_back(ParticleIndexPair(sc->get_particle(si)->get_index(),
-                                        sc->get_particle(si0)->get_index()));
-        uf.union_set(si, si0);
-      }
-    }
-    //}
-  }
-
-
 
   /*typedef boost::adjacency_list<boost::vecS, boost::vecS,
                         boost::undirectedS, boost::no_property,
@@ -121,7 +87,9 @@ ConnectingPairContainer::ConnectingPairContainer(SingletonContainer *c,
 
 void ConnectingPairContainer::initialize(SingletonContainer *sc) {
   sc_=sc;
-  fill_list(true);
+  ParticleIndexPairs new_list;
+  compute_mst(sc_, new_list);
+  update_list(new_list);
   Model *m=sc->get_particle(0)->get_model();
   mv_= new core::internal::XYZRMovedSingletonContainer(sc, error_);
   initialize_active_container(m);
@@ -142,29 +110,11 @@ ContainersTemp ConnectingPairContainer::get_state_input_containers() const {
 }
 
 
-void ConnectingPairContainer::fill_list(bool /*first*/) {
-  // if we have a list and nothing moved further than error do nothing
-  // otherwise rebuild
-  ParticleIndexPairs new_list;
-
-  if (mst_) {
-    compute_mst(sc_, new_list);
-  } else {
-    LIndex index;
-    Parent parent;
-    UF uf(index, parent);
-    unsigned int sz= sc_->get_number_of_particles();
-    for (unsigned int i=0; i< sz; ++i) {
-      uf.make_set(i);
-    }
-    build_graph(sc_, new_list, uf);
-  }
-  update_list(new_list);
-}
-
 void ConnectingPairContainer::do_before_evaluate() {
   if (mv_->get_number_of_particles() != 0) {
-    fill_list(false);
+    ParticleIndexPairs new_list;
+    compute_mst(sc_, new_list);
+    update_list(new_list);
     mv_->reset();
   }
 }
