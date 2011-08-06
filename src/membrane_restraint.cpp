@@ -57,13 +57,11 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
  double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
- if(RST->add_endtoend)
-  core::PairRestraint* lr=add_distance_restraint(m,p0,p1,length,kappa);
+ if(RST->add_endtoend) {add_distance_restraint(m,p0,p1,length,kappa);}
 // COM-COM distance restraint
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
- core::PairRestraint* lrb=
-  add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
+ add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
 }
 for(unsigned int i=0;i<TM->inter.size();++i){
  int i0=TM->inter[i].first;
@@ -76,8 +74,7 @@ for(unsigned int i=0;i<TM->inter.size();++i){
  core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
  core::RigidBody rb1=
  core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
- core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr,
-                         RST->d0_inter,kappa);
+ add_interacting_restraint(m,rb0,rb1,tbr,RST->d0_inter,kappa);
 }
 }
 
@@ -100,7 +97,7 @@ IMP_NEW(container::ListSingletonContainer,lsc,(m));
 atom::Selection s=atom::Selection(protein);
 s.set_atom_type(atom::AT_CA);
 lsc->add_particles(s.get_selected_particles());
-IMP_NEW(container::ClosePairContainer,cpc,(lsc, 1000.0));
+IMP_NEW(container::ClosePairContainer,cpc,(lsc, 15.0));
 IMP_NEW(SameHelixPairFilter,f,());
 cpc->add_pair_filter(f);
 IMP_NEW(atom::DopePairScore,dps,(15.0,atom::get_data_path(sname)));
@@ -155,7 +152,7 @@ prs->set_name("Packing restraint");
 m->add_restraint(prs);
 }
 
-core::PairRestraint* add_distance_restraint
+void add_distance_restraint
  (Model *m,Particle *p0,Particle *p1,double x0,double kappa_)
 {
 IMP_NEW(core::HarmonicUpperBound,hub,(x0,kappa_));
@@ -163,7 +160,6 @@ IMP_NEW(core::DistancePairScore,df,(hub));
 IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(p0, p1)));
 dr->set_name("Distance restraint");
 m->add_restraint(dr);
-return dr.release();
 }
 
 void add_depth_restraint
@@ -188,7 +184,7 @@ m->add_restraint(sr);
 sr->set_name("Tilt restraint");
 }
 
-core::PairRestraint* add_interacting_restraint
+void add_interacting_restraint
 (Model *m,Particle *rb0,Particle *rb1,core::TableRefiner *tbr,
 double d0_inter_,double kappa_)
 {
@@ -198,7 +194,6 @@ IMP_NEW(core::KClosePairsPairScore,kc,(sd,tbr,1));
 IMP_NEW(core::PairRestraint,ir,(kc,ParticlePair(rb0,rb1)));
 ir->set_name("Interacting restraint");
 m->add_restraint(ir);
-return ir.release();
 }
 
 void add_diameter_restraint

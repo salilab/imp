@@ -12,7 +12,7 @@
 #include <IMP.h>
 #include <IMP/atom.h>
 #include <IMP/domino.h>
-
+#include <IMP/membrane/membrane_main.h>
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 

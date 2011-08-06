@@ -28,13 +28,13 @@ IMPMEMBRANEEXPORT void add_packing_restraint
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,
  HelixData *TM,double kappa);
 
-IMPMEMBRANEEXPORT core::PairRestraint* add_distance_restraint
+IMPMEMBRANEEXPORT void add_distance_restraint
 (Model *m,Particle *p0,Particle *p1,double x0,double kappa);
 
 IMPMEMBRANEEXPORT void add_depth_restraint
 (Model *m,Particle *p,FloatRange zrange,double kappa);
 
-IMPMEMBRANEEXPORT core::PairRestraint* add_interacting_restraint
+IMPMEMBRANEEXPORT void add_interacting_restraint
 (Model *m,Particle *rb0,Particle *rb1,
  core::TableRefiner *tbr,double dist,double kappa);
 

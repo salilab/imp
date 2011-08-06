@@ -18,7 +18,7 @@ using namespace IMP::membrane;
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 domino::ListSubsetFilterTable* create_states
-(atom::Hierarchy protein,Parameters *myparam,domino::ParticleStatesTable* pst)
+(atom::Hierarchy protein, Parameters *myparam,domino::ParticleStatesTable* pst)
 {
 GridParameters *gg=&(myparam->grid);
 //double b[]={-gg->xmax,-gg->xmax,-gg->zmax,0.0,0.0,0.0};
