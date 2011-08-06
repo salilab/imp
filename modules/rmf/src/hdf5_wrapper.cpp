@@ -104,7 +104,6 @@ void HDF5File::flush() {
 }
 
 HDF5File::~HDF5File() {
-  IMP_LOG(TERSE, "Closing file." <<std::endl );
 }
 
 
