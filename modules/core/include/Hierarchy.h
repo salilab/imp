@@ -290,12 +290,12 @@ public:
 
 #if !defined (SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
-  template <class F, class Out, bool Slice=false>
-struct Gather: public HierarchyVisitor
+  template <class H, class F, class Out, bool Slice=false>
+struct Gather
 {
   //! initialize with the function and the container
   Gather(F f, Out out): f_(f), out_(out) {}
-  bool operator()(Hierarchy p) {
+  bool operator()(H p) {
     if (f_(p)) {
       *out_=p;
       ++out_;
@@ -489,10 +489,10 @@ IMP_VALUES(HierarchyCounter, HierarchyCounters);
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
-template <class Out, class F>
-inline Out gather(Hierarchy h, F f, Out out)
+template <class H, class Out, class F>
+inline Out gather(H h, F f, Out out)
 {
-  internal::Gather<F,Out> gather(f,out);
+  internal::Gather<H, F,Out> gather(f,out);
   visit_depth_first(h, gather);
   return gather.get_out();
 }
@@ -505,10 +505,10 @@ inline Out gather(Hierarchy h, F f, Out out)
     \ingroup hierarchy
     \relatesalso Hierarchy
  */
-template <class Out, class F>
-inline Out gather_slice(Hierarchy h, F f, Out out)
+template <class H, class Out, class F>
+inline Out gather_slice(H h, F f, Out out)
 {
-  internal::Gather<F,Out,true> gather(f,out);
+  internal::Gather<H, F,Out,true> gather(f,out);
   visit_depth_first(h, gather);
   return gather.get_out();
 }
@@ -518,10 +518,10 @@ inline Out gather_slice(Hierarchy h, F f, Out out)
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
-template <class Out, class K, class V>
-inline Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
+template <class H, class Out, class K, class V>
+inline Out gather_by_attribute(H h, K k, V v, Out out)
 {
-  internal::Gather<internal::MatchAttribute<K, V>,Out>
+  internal::Gather<H, internal::MatchAttribute<K, V>,Out>
     gather(internal::MatchAttribute<K,V>(k,v),
            out);
   visit_depth_first(h, gather);
@@ -535,11 +535,11 @@ inline Out gather_by_attribute(Hierarchy h, K k, V v, Out out)
 /** \ingroup hierarchy
     \relatesalso Hierarchy
  */
-template <class Out, class K0, class V0, class K1, class V1>
-inline Out gather_by_attributes(Hierarchy h, K0 k0,
+template <class H, class Out, class K0, class V0, class K1, class V1>
+inline Out gather_by_attributes(H h, K0 k0,
                          V0 v0, K1 k1, V1 v1, Out out)
 {
-  internal::Gather<internal::MatchAttributes<K0, V0, K1, V1>,Out>
+  internal::Gather<H, internal::MatchAttributes<K0, V0, K1, V1>,Out>
     gather(internal::MatchAttributes<K0,V0, K1, V1>(k0,v0, k1, v1),
            out);
   visit_depth_first(h, gather);
