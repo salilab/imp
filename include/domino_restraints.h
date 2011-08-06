@@ -15,7 +15,7 @@
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-IMPMEMBRANEEXPORT RestraintSet* create_restraints
+IMPMEMBRANEEXPORT void create_restraints
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,Parameters* myparam);
 
 IMPMEMBRANEEXPORT void add_excluded_volume
