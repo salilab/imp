@@ -75,7 +75,8 @@ class IMPDISPLAYEXPORT Writer: public GeometryProcessor, public Object
   }
   /** @} */
 
-#if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
+  // vc includes the protection level in the function signature
+#if defined(SWIG) || defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
  public:
 #else
  protected:
@@ -107,7 +108,8 @@ class IMPDISPLAYEXPORT TextWriter: public Writer
   TextOutput out_;
  protected:
   void open();
-#if defined(SWIG) || defined(IMP_SWIG_WRAPPER)
+// vc includes the protection level in the function signature
+#if defined(SWIG) || defined(IMP_SWIG_WRAPPER) || defined(_MSC_VER)
  public:
 #else
  protected:
