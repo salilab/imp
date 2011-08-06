@@ -50,6 +50,8 @@ protected:
   void add_to_list(ParticleIndexes &cur) {
     if (!sorted_) sort();
     std::sort(cur.begin(), cur.end());
+    // set union assumes things are unique
+    cur.erase(std::unique(cur.begin(), cur.end()), cur.end());
     ParticleIndexes newlist;
     std::set_union(cur.begin(), cur.end(),
                         data_.begin(), data_.end(),
