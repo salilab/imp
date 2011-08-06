@@ -117,8 +117,7 @@ HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
   algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
     - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
-  double distance2= delta.get_squared_magnitude();
-  double distance=std::sqrt(distance2);
+  double distance= delta.get_magnitude();
   double shifted_distance = distance- x0_
     - m->get_sphere(p[0]).get_radius()
     - m->get_sphere(p[1]).get_radius();
