@@ -1,13 +1,13 @@
 /**
- *  \file  membrane.h
+ *  \file  membrane_main.h
  *  \brief Membrane sampling stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_MEMBRANE_H
-#define IMPMEMBRANE_MEMBRANE_H
+#ifndef IMPMEMBRANE_MEMBRANE_MAIN_H
+#define IMPMEMBRANE_MEMBRANE_MAIN_H
 #include "membrane_config.h"
 #include <IMP.h>
 #include <string>
@@ -83,13 +83,10 @@ struct Parameters {
  std::string    traj_file;
 };
 
-//general parameters for restraints
-const double max_score_=0.01;
-
 // packing restraint cluster stuff
 const int packing_nsig_=3;
 const int packing_ncl_=13;
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_MEMBRANE_H */
+#endif  /* IMPMEMBRANE_MEMBRANE_MAIN_H */

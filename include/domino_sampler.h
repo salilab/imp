@@ -17,7 +17,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT domino::ListSubsetFilterTable* create_states
-(atom::Hierarchy protein, Parameters *myparam,
+(atom::Hierarchy protein, membrane::Parameters *myparam,
  domino::ParticleStatesTable* pst);
 
 IMPMEMBRANEEXPORT domino::DominoSampler* create_sampler
