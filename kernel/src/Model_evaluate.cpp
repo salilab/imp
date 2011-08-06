@@ -27,19 +27,58 @@ namespace {
       *t_= T(V);
     }
   };
+
+  struct ResetBitset {
+    boost::dynamic_bitset<> &bs_;
+    bool val_;
+    ResetBitset(boost::dynamic_bitset<> &bs,
+                bool val): bs_(bs), val_(val){}
+    ~ResetBitset() {
+      if (val_) {
+        bs_.set();
+      } else {
+        bs_.reset();
+      }
+    }
+  };
 }
 
 #if IMP_BUILD < IMP_FAST
-#define WRAP_UPDATE_CALL(restraint, expr, exchange)                     \
-  expr
+#define SET_ONLY(mask, particles)                       \
+  {                                                     \
+    ParticlesTemp cur=particles;                        \
+    mask.reset();                                       \
+    for (unsigned int i=0; i< cur.size(); ++i) {        \
+      mask.set(cur[i]->get_index());                    \
+    }                                                   \
+  }
+
+#define SET_ONLY_2(mask, particles, particlestwo)                       \
+  {                                                                     \
+    ParticlesTemp curout=particles;                                     \
+    ParticlesTemp tcurout=particlestwo;                                 \
+    curout.insert(curout.end(), tcurout.begin(), tcurout.end());        \
+    SET_ONLY(mask, curout);                                             \
+  }
+
+
 
 #define WRAP_EVALUATE_CALL(restraint, expr)                             \
-  expr
+  {                                                                     \
+    ResetBitset rbr(Masks::read_mask_, true);                           \
+    ResetBitset rbw(Masks::write_mask_, true);                          \
+    ResetBitset rbar(Masks::add_remove_mask_, true);                    \
+    ResetBitset rbrd(Masks::read_derivatives_mask_, true);              \
+    ResetBitset rbwd(Masks::write_derivatives_mask_, true);             \
+    Masks::write_mask_.reset();                                         \
+    Masks::add_remove_mask_.reset();                                    \
+    Masks::read_derivatives_mask_.reset();                              \
+    SET_ONLY(Masks::read_mask_, restraint->get_input_particles());      \
+    expr;                                                               \
+  }
 
 #else
-#define WRAP_UPDATE_CALL(restraint, expr, exchange) expr
 #define WRAP_EVALUATE_CALL(restraint, expr) expr
-
 #endif
 
 IMP_BEGIN_NAMESPACE
@@ -60,7 +99,21 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       IMP_CHECK_OBJECT(ss);
       IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
       if (gather_statistics_) timer.restart();
-      WRAP_UPDATE_CALL(ss, ss->before_evaluate(), false);
+      {
+        ResetBitset rbr(Masks::read_mask_, true);
+        ResetBitset rbw(Masks::write_mask_, true);
+        ResetBitset rbar(Masks::add_remove_mask_, true);
+        ResetBitset rbrd(Masks::read_derivatives_mask_, true);
+        ResetBitset rbwd(Masks::write_derivatives_mask_, true);
+        ParticlesTemp input=ss->get_input_particles();
+        ParticlesTemp output=ss->get_output_particles();
+        Masks::read_derivatives_mask_.reset();
+        Masks::write_derivatives_mask_.reset();
+        SET_ONLY_2(Masks::read_mask_, input, output);
+        SET_ONLY(Masks::write_mask_, output);
+        SET_ONLY(Masks::add_remove_mask_, output);
+        ss->before_evaluate();
+      }
       if (gather_statistics_) {
         add_to_update_before_time(ss, timer.elapsed());
       }
@@ -81,7 +134,22 @@ void Model::after_evaluate(const ScoreStatesTemp &states,
       IMP_CHECK_OBJECT(ss);
       IMP_LOG(TERSE, "Post updating \"" << ss->get_name() << "\"" << std::endl);
       if (gather_statistics_) timer.restart();
-      WRAP_UPDATE_CALL(ss, ss->after_evaluate(calc_derivs?&accum:NULL), true);
+      {
+#if IMP_BUILD < IMP_FAST
+        ResetBitset rbr(Masks::read_mask_, true);
+        ResetBitset rbw(Masks::write_mask_, true);
+        ResetBitset rbar(Masks::add_remove_mask_, true);
+        ResetBitset rbrd(Masks::read_derivatives_mask_, true);
+        ResetBitset rbwd(Masks::write_derivatives_mask_, true);
+        ParticlesTemp input=ss->get_input_particles();
+        ParticlesTemp output=ss->get_output_particles();
+        Masks::write_mask_.reset();
+        SET_ONLY_2(Masks::read_mask_, input, output);
+        SET_ONLY_2(Masks::read_derivatives_mask_,input, output);
+        SET_ONLY_2(Masks::write_derivatives_mask_,input, output);
+#endif
+        ss->after_evaluate(calc_derivs?&accum:NULL);
+      }
       if (gather_statistics_) {
         add_to_update_after_time(ss, timer.elapsed());
       }

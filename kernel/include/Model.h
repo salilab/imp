@@ -29,6 +29,13 @@
 
 #include <limits>
 
+#define IMP_CHECK_MASK(mask, particle_index, message)           \
+  IMP_USAGE_CHECK(!mask || mask->size() >                       \
+                  static_cast<unsigned int>(particle_index),    \
+                  "For some reason the mask is too small.");    \
+  IMP_USAGE_CHECK(!mask || (*mask)[particle_index],             \
+                  message << " at particle " << particle_index)
+
 IMP_BEGIN_NAMESPACE
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
 namespace internal {
@@ -77,12 +84,18 @@ public:
 
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
+
+typedef boost::dynamic_bitset<> Mask;
+
 template <class Traits>
 class BasicAttributeTable {
 public:
   typedef typename Traits::Key Key;
 private:
   typename std::vector<typename Traits::Container > data_;
+#if IMP_BUILD < IMP_FAST
+  WeakPointer<Mask > read_mask_, write_mask_, add_remove_mask_;
+#endif
   compatibility::set<Key> caches_;
 
    void do_add_attribute(Key k, ParticleIndex particle,
@@ -102,10 +115,23 @@ public:
     IMP_SWAP_MEMBER(data_);
     IMP_SWAP_MEMBER(caches_);
   }
+
+#if IMP_BUILD < IMP_FAST
+  void set_masks(Mask *read_mask,
+                 Mask *write_mask,
+                 Mask *add_remove_mask) {
+    read_mask_=read_mask;
+    write_mask_=write_mask;
+    add_remove_mask_=add_remove_mask;
+  }
+#endif
+
   BasicAttributeTable(){}
 
   void add_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
+    IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Changing the attributes is not permitted now");
     do_add_attribute(k, particle, value);
   }
   void add_cache_attribute(Key k, ParticleIndex particle,
@@ -124,6 +150,8 @@ public:
     }
   }
   void remove_attribute(Key k, ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Changing the attributes is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't remove attribute if it isn't there");
     data_[k.get_index()][particle]=Traits::get_invalid();
@@ -136,6 +164,8 @@ public:
   }
   void set_attribute(Key k, ParticleIndex particle,
                      typename Traits::PassValue value) {
+    IMP_CHECK_MASK(write_mask_, particle,
+                   "Changing the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Setting invalid attribute: " << k
                     << " of particle " << particle);
@@ -143,6 +173,8 @@ public:
   }
   typename Traits::PassValue get_attribute(Key k,
                                            ParticleIndex particle) const {
+    IMP_CHECK_MASK(read_mask_, particle,
+                   "Reading the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Requested invalid attribute: " << k
                     << " of particle " << particle);
@@ -150,6 +182,8 @@ public:
   }
   typename Traits::Container::reference access_attribute(Key k,
                                            ParticleIndex particle) {
+    IMP_CHECK_MASK(write_mask_, particle,
+                   "Writing the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Requested invalid attribute: " << k
                     << " of particle " << particle);
@@ -178,6 +212,8 @@ public:
     return ret;
   }
   void clear_attributes(ParticleIndex particle) {
+    IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Clearing the attribute values is not permitted now");
     for (unsigned int i=0; i< data_.size(); ++i) {
       if (data_[i].size() > static_cast<unsigned int>(particle)) {
         data_[i][particle]= Traits::get_invalid();
@@ -217,11 +253,16 @@ class FloatAttributeTable {
   // make use bitset
   BasicAttributeTable<internal::BoolAttributeTableTraits> optimizeds_;
   std::vector<FloatRange> ranges_;
+#if IMP_BUILD < IMP_FAST
+  WeakPointer<Mask > read_mask_, write_mask_,add_remove_mask_,
+                read_derivatives_mask_, write_derivatives_mask_;
+#endif
   algebra::SphereD<3> get_invalid_sphere() const {
     double iv= internal::FloatAttributeTableTraits::get_invalid();
     algebra::SphereD<3> ivs(algebra::VectorD<3>(iv, iv, iv), iv);
     return ivs;
   }
+
 public:
   void swap_with(FloatAttributeTable&o) {
     using IMP::swap;
@@ -233,15 +274,36 @@ public:
     IMP_SWAP_MEMBER(optimizeds_);
   }
   FloatAttributeTable(){}
+#if IMP_BUILD < IMP_FAST
+  void set_masks(Mask *read_mask,
+                 Mask *write_mask,
+                 Mask *add_remove_mask,
+                 Mask *read_derivatives_mask,
+                 Mask *write_derivatives_mask) {
+    data_.set_masks(read_mask, write_mask, add_remove_mask);
+    derivatives_.set_masks(read_derivatives_mask, write_derivatives_mask,
+                           add_remove_mask);
+    optimizeds_.set_masks(read_mask, write_mask, add_remove_mask);
+    read_mask_=read_mask;
+    write_mask_=write_mask;
+    add_remove_mask_=add_remove_mask_;
+    read_derivatives_mask_=read_derivatives_mask;
+    write_derivatives_mask_=write_derivatives_mask;
+  }
+#endif
 
   // make sure you know what you are doing
   algebra::Sphere3D& get_sphere(ParticleIndex particle) {
+    IMP_CHECK_MASK(read_mask_, particle,
+                   "Reading the attribute values is not permitted now");
     return spheres_[particle];
   }
 
   void add_to_coordinate_derivatives(ParticleIndex particle,
                                      const algebra::Vector3D &v,
                                      const DerivativeAccumulator &da) {
+    IMP_CHECK_MASK(write_derivatives_mask_, particle,
+                   "Changing the attribute derivatives is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates");
     sphere_derivatives_[particle][0]+=da(v[0]);
@@ -250,6 +312,8 @@ public:
   }
   const algebra::Vector3D&
   get_coordinate_derivatives(ParticleIndex particle) const {
+    IMP_CHECK_MASK(read_derivatives_mask_, particle,
+                   "Reading the attribute derivatives is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(FloatKey(0), particle),
                     "Particle does not have coordinates");
     return sphere_derivatives_[particle].get_center();
@@ -269,9 +333,11 @@ public:
     IMP_NOT_IMPLEMENTED;
   }
   void remove_attribute(FloatKey k, ParticleIndex particle) {
-    IMP_USAGE_CHECK(get_has_attribute(k, particle),
-                    "Can't remove attribute that isn't there");
+    IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Changing the attributes is not permitted now");
     if (k.get_index() < 4) {
+      IMP_CHECK_MASK(add_remove_mask_, particle,
+                   "Changing attributes is not permitted now");
       spheres_[particle][k.get_index()]
         = internal::FloatAttributeTableTraits::get_invalid();
       sphere_derivatives_[particle][k.get_index()]
@@ -300,6 +366,8 @@ public:
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there");
     if (k.get_index() < 4) {
+      IMP_CHECK_MASK(read_derivatives_mask_, particle,
+                     "Reading the derivatives is not permitted now");
       return sphere_derivatives_[particle][k.get_index()];
     } else {
       return derivatives_.get_attribute(FloatKey(k.get_index()-4), particle);
@@ -311,6 +379,8 @@ public:
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get derivative that isn't there");
     if (k.get_index() < 4) {
+      IMP_CHECK_MASK(write_derivatives_mask_, particle,
+                     "Writing the derivatives is not permitted now");
       sphere_derivatives_[particle][k.get_index()]+=da(v);;
     } else {
       FloatKey nk(k.get_index()-4);
@@ -321,6 +391,8 @@ public:
   }
   void add_attribute(FloatKey k, ParticleIndex particle, double v,
                      bool opt=false) {
+    IMP_CHECK_MASK(add_remove_mask_, particle,
+                     "Changing the attributes is not permitted now");
     IMP_USAGE_CHECK(!get_has_attribute(k, particle),
                     "Can't add attribute that is there");
     if (k.get_index() <4) {
@@ -356,6 +428,8 @@ public:
   }
   void set_attribute(FloatKey k, ParticleIndex particle,
                      double v) {
+    IMP_CHECK_MASK(write_mask_, particle,
+                     "Changing the attribute values is not permitted now");
     IMP_USAGE_CHECK(internal::FloatAttributeTableTraits::get_is_valid(v),
                     "Can't set attribute to invalid value");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
@@ -368,6 +442,8 @@ public:
   }
   double get_attribute(FloatKey k,
                        ParticleIndex particle) const {
+    IMP_CHECK_MASK(read_mask_, particle,
+                   "Reading the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there");
     if (k.get_index()<4) {
@@ -378,6 +454,8 @@ public:
   }
   double& access_attribute(FloatKey k,
                        ParticleIndex particle) {
+    IMP_CHECK_MASK(write_mask_, particle,
+                   "Writing the attribute values is not permitted now");
     IMP_USAGE_CHECK(get_has_attribute(k, particle),
                     "Can't get attribute that is not there");
     if (k.get_index()<4) {
@@ -466,6 +544,14 @@ typedef BasicAttributeTable<internal::ParticleAttributeTableTraits>
 ParticleAttributeTable;
 typedef BasicAttributeTable<internal::ParticlesAttributeTableTraits>
 ParticlesAttributeTable;
+
+
+struct Masks {
+#if IMP_BUILD < IMP_FAST
+  mutable Mask read_mask_, write_mask_, add_remove_mask_,
+    read_derivatives_mask_, write_derivatives_mask_;
+#endif
+};
 #endif
 
 IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
@@ -481,7 +567,8 @@ IMP_VALUES(RestraintStatistics, RestraintStatisticsList);
 class IMPEXPORT Model:
   public Object
 #if !defined(SWIG) && !defined(IMP_DOXYGEN)
-  , public FloatAttributeTable,
+  , public Masks,
+  public FloatAttributeTable,
   public StringAttributeTable,
   public IntAttributeTable,
   public ObjectAttributeTable,
@@ -542,7 +629,6 @@ private:
   Ints free_particles_;
   unsigned int next_particle_;
   std::vector<Pointer<Particle> > particle_index_;
-
  private:
   // statistics
   bool gather_statistics_;
