@@ -539,10 +539,11 @@ struct True {
 };
 
 void destroy(Hierarchy d) {
-  Hierarchies all;
+  ParticlesTemp allp;
   core::Hierarchy h=d;
 
-  core::gather(d, True(), std::back_inserter(all));
+  core::gather(d, True(), std::back_inserter(allp));
+  Hierarchies all= IMP::get_as<Hierarchies>(allp);
   for (unsigned int i=0; i< all.size(); ++i) {
     if (Bonded::particle_is_instance(all[i])) {
      Bonded b(all[i]);

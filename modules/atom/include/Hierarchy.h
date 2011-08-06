@@ -234,8 +234,9 @@ public:
   }
 
   //! The traits must match
-  Hierarchy(IMP::core::Hierarchy h): H(h) {
-    IMP_USAGE_CHECK(h.get_traits() == get_traits(),
+  explicit Hierarchy(IMP::core::Hierarchy h): H(h) {
+    IMP_USAGE_CHECK(h != IMP::core::Hierarchy()
+                    || h.get_traits() == get_traits(),
               "Cannot construct a IMP.atom.Hierarchy from a general "
               " IMP.core.Hierarchy");
   }
