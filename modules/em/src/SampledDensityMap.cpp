@@ -171,9 +171,10 @@ void SampledDensityMap::set_particles(const IMP::Particles &ps,
 }
 
 
-void SampledDensityMap::project (const Particles &ps,
+void SampledDensityMap::project(const Particles &ps,
        int x_margin,int y_margin,int z_margin,
-       algebra::Vector3D shift,FloatKey mass_key){
+       algebra::Vector3D shift,
+       FloatKey mass_key){
 
   int lower_margin[3];
   int upper_margin[3];
@@ -192,21 +193,20 @@ void SampledDensityMap::project (const Particles &ps,
   upper_margin[2]=header_.get_nz()-lower_margin[2];
 
   reset_data();
-
-  float x_loc,y_loc,z_loc;
-  int nx_half=header_.get_nx()/2;
-  int ny_half=header_.get_ny()/2;
-  int nz_half=header_.get_nz()/2;
   core::XYZs ps_xyz(ps);
-  float spacing = header_.get_spacing();
   int x0,y0,z0,x1,y1,z1;
   double a, b, c;
   double ab, ab1, a1b, a1b1;
-
+  algebra::Vector3D orig=get_origin();
+  double spacing=header_.get_spacing();
   for (core::XYZs::const_iterator it = ps_xyz.begin();
             it != ps_xyz.end(); it++) {
 
     algebra::Vector3D loc=it->get_coordinates()+shift;
+    //get the float position on the grid
+    double x_find=(loc[0]-orig[0])/spacing;
+    double y_find=(loc[1]-orig[1])/spacing;
+    double z_find=(loc[2]-orig[2])/spacing;
     x0 = get_dim_index_by_location(loc,0);
     y0 = get_dim_index_by_location(loc,1);
     z0 = get_dim_index_by_location(loc,2);
@@ -224,9 +224,9 @@ void SampledDensityMap::project (const Particles &ps,
       continue;
     }
     //interpolate
-    a = x1-x_loc;
-    b = y1-y_loc;
-    c = z1-z_loc;
+    a = x1-x_find;
+    b = y1-y_find;
+    c = z1-z_find;
     ab= a*b;
     ab1=a * (1-b);
     a1b=(1-a) * b;
@@ -235,23 +235,22 @@ void SampledDensityMap::project (const Particles &ps,
     float mass = (it->get_particle())->get_value(mass_key);
     long ind;
     ind=xyz_ind2voxel(x0,y0,z0);
-    set_value(ind,get_value(ind)+ab*c*mass);
+    data_[ind]+=ab*c*mass;
     ind=xyz_ind2voxel(x0,y0,z1);
-    set_value(ind,get_value(ind)+ab*a*mass);
+    data_[ind]+=ab*a*mass;
     ind=xyz_ind2voxel(x0,y1,z0);
-    set_value(ind,get_value(ind)+ab1*c*mass);
+    data_[ind]+=ab1*c*mass;
     ind=xyz_ind2voxel(x0,y1,z1);
-    set_value(ind,get_value(ind)+ab1*a*mass);
+    data_[ind]+=ab1*a*mass;
     ind=xyz_ind2voxel(x1,y0,z0);
-    set_value(ind,get_value(ind)+a1b*c*mass);
+    data_[ind]+=a1b*c*mass;
     ind=xyz_ind2voxel(x1,y0,z1);
-    set_value(ind,get_value(ind)+a1b*a*mass);
+    data_[ind]+=a1b*a*mass;
     ind=xyz_ind2voxel(x1,y1,z0);
-    set_value(ind,get_value(ind)+a1b1*c*mass);
+    data_[ind]+=a1b1*c*mass;
     ind=xyz_ind2voxel(x1,y1,z1);
-    set_value(ind,get_value(ind)+a1b1*a*mass);
-
-    }
+    data_[ind]+=a1b1*a*mass;
+  }
 }
 
 void SampledDensityMap::determine_grid_size(emreal resolution,
