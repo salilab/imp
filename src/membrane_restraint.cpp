@@ -1,6 +1,6 @@
 /**
- *  \file domino_restraints.cpp
- *  \brief Membrane domino stuff
+ *  \file membrane_restraints.cpp
+ *  \brief Membrane stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *

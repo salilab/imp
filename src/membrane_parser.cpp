@@ -1,6 +1,6 @@
 /**
- *  \file domino_parse.cpp
- *  \brief Membrane domino stuff
+ *  \file  membrane_parser.cpp
+ *  \brief Membrane stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *

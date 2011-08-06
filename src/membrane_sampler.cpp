@@ -1,5 +1,5 @@
 /**
- *  \file mc_sampler.cpp
+ *  \file membrane_sampler.cpp
  *  \brief Membrane MonteCarlo
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
