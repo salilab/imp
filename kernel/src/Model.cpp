@@ -21,8 +21,10 @@ IMP_BEGIN_NAMESPACE
 
 
 //! Constructor
-Model::Model(std::string name): Object(name),
-                                rs_(new RestraintSet())
+Model::Model(std::string name):
+  Object(name),
+  //#if IMP_BUILD < IMP_FAST
+  rs_(new RestraintSet())
 {
   cur_stage_=internal::NOT_EVALUATING;
   gather_statistics_=false;
@@ -32,8 +34,35 @@ Model::Model(std::string name): Object(name),
   first_call_=true;
   max_score_ =std::numeric_limits<double>::max();
   has_good_score_=false;
-
   next_particle_=0;
+#if IMP_BUILD < IMP_FAST
+  FloatAttributeTable::set_masks(&this->Masks::read_mask_,
+                                 &this->Masks::write_mask_,
+                                 &this->Masks::add_remove_mask_,
+                                 &this->Masks::read_derivatives_mask_,
+                                 &this->Masks::write_derivatives_mask_);
+  StringAttributeTable::set_masks(&this->Masks::read_mask_,
+                                  &this->Masks::write_mask_,
+                                  &this->Masks::add_remove_mask_);
+  IntAttributeTable::set_masks(&this->Masks::read_mask_,
+                               &this->Masks::write_mask_,
+                               &this->Masks::add_remove_mask_);
+  ObjectAttributeTable::set_masks(&this->Masks::read_mask_,
+                                  &this->Masks::write_mask_,
+                                  &this->Masks::add_remove_mask_);
+  IntsAttributeTable::set_masks(&this->Masks::read_mask_,
+                                &this->Masks::write_mask_,
+                                &this->Masks::add_remove_mask_);
+  ObjectsAttributeTable::set_masks(&this->Masks::read_mask_,
+                                   &this->Masks::write_mask_,
+                                   &this->Masks::add_remove_mask_);
+  ParticleAttributeTable::set_masks(&this->Masks::read_mask_,
+                                    &this->Masks::write_mask_,
+                                    &this->Masks::add_remove_mask_);
+  ParticlesAttributeTable::set_masks(&this->Masks::read_mask_,
+                                     &this->Masks::write_mask_,
+                                     &this->Masks::add_remove_mask_);
+#endif
 }
 
 
@@ -138,6 +167,14 @@ void Model::add_particle_internal(Particle *p, bool set_name) {
         % id;
       p->set_name(oss.str());
     }
+#if IMP_BUILD < IMP_FAST
+    //xstd::cout << "Resizing to " << particle_index_.size() << std::endl;
+    Masks::read_mask_.resize(particle_index_.size(), true);
+    Masks::write_mask_.resize(particle_index_.size(), true);
+    Masks::add_remove_mask_.resize(particle_index_.size(), true);
+    Masks::read_derivatives_mask_.resize(particle_index_.size(), true);
+    Masks::write_derivatives_mask_.resize(particle_index_.size(), true);
+#endif
   }
 
 
