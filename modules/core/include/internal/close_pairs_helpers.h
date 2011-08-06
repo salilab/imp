@@ -46,7 +46,7 @@ inline void fix_order(ParticleIndexPairs &pips) {
     }
   }
 }
-
+/*
 // Check that they are unique by checking order
 struct SameParticle {
   ParticleIndexes ppt_;
@@ -66,16 +66,25 @@ struct SameParticle {
       }
     }
   }
+  };*/
+
+// Check that they are unique by checking order
+struct SameParticle {
+  SameParticle(){
+  }
+  bool operator()(const ParticleIndexPair& pp) {
+    return pp[0] == pp[1];
+  }
 };
 
-
+/*
 
 inline void filter_same(ParticleIndexPairs &c,
                         const ParticleIndexes &moved) {
   c.erase(std::remove_if(c.begin(), c.end(),
                          SameParticle(moved)),
           c.end());
-}
+          }*/
 
 inline void filter_same(ParticleIndexPairs &c) {
   c.erase(std::remove_if(c.begin(), c.end(),
