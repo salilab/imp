@@ -309,7 +309,7 @@ struct IMPRMFEXPORT CharTraits {
 
 /** Store an array of integers.*/
 template <class BaseTraits>
-struct IMPRMFEXPORT ArrayTraits {
+struct ArrayTraits {
  private:
  static hid_t get_hdf5_memory_type() {
     static HDF5Handle
