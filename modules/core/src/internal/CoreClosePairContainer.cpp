@@ -132,16 +132,17 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
                            "Filter is not symmetric on pair " << cur[j]
                            << get_pair_filter(i)->get_name());
       }
-      IMP_INTERNAL_CHECK(existings.find(ParticleIndexPair((cur[j])[1],
-                                                          (cur[j])[0]))
-                         == existings.end(),
-                         "Can't have both a pair and its reverse in the list"
-                         << cur[j]);
+      IMP_INTERNAL_CHECK(cur[j][0] < cur[j][1],
+                         "Pair " << cur[j] << " is not ordered");
     }
     IMP_INTERNAL_CHECK(existings.size() == num,
                        "Not all particle pairs in list are unique: "
                        << num
-                       << " vs " << existings.size() << std::endl);
+                       << " vs " << existings.size()
+                       << " lists " << get_access()
+                       << " vs " << ParticleIndexPairs(existings.begin(),
+                                                       existings.end())
+                       << std::endl);
     double threshold=distance_-.1;
     if (check_slack) {
       threshold+=2*slack_;
@@ -231,26 +232,17 @@ void CoreClosePairContainer::do_incremental() {
   ret.insert(ret.begin(), ret1.begin(), ret1.end());
   internal::fix_order(ret);
   // make one pass
-  internal::filter_close_pairs(this, ret);
-  if (false) {
-    /*internal::filter_same(ret, moved_->get_particles());
-    //internal::filter_far(ret, get_distance());
-    remove_from_list_if(Found(moved_->get_particles()));
-    IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-    add_to_list(ret);*/
-  } else {
-    internal::filter_same(ret);
-    moved_count_+=moved.size();
-    if (moved_count_ > .2 *c_->get_number_of_particles()) {
-      /*InList il= InList::create(moved);
-        remove_from_list_if(il);
-        InList::destroy(il);*/
-      remove_from_list_if(FarParticle(get_model(), distance_+2*slack_));
-      moved_count_=0;
-    }
-    IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
-    add_to_list(ret);
+  internal::filter_same(ret);
+  moved_count_+=moved.size();
+  if (moved_count_ > .2 *c_->get_number_of_particles()) {
+    /*InList il= InList::create(moved);
+      remove_from_list_if(il);
+      InList::destroy(il);*/
+    remove_from_list_if(FarParticle(get_model(), distance_+2*slack_));
+    moved_count_=0;
   }
+  IMP_LOG(TERSE, "Found " << ret.size() << " pairs." << std::endl);
+  add_to_list(ret);
   moved_->reset_moved();
   IMP_LOG(TERSE, "Count is now "
           << std::distance(particle_pairs_begin(),
