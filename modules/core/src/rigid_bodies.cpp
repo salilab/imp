@@ -188,9 +188,33 @@ namespace {
   IMP_SINGLETON_MODIFIER_FROM_REFINED(AccumulateRigidBodyDerivatives,
                                       internal::get_rigid_members_refiner());
 
-  IMP_SINGLETON_MODIFIER_TO_REFINED(UpdateRigidBodyMembers,
-                                    internal::get_rigid_members_refiner());
 
+  ParticlesTemp UpdateRigidBodyMembers::get_input_particles(Particle *p) const {
+    return ParticlesTemp(1, p);
+  }
+  ParticlesTemp
+  UpdateRigidBodyMembers::get_output_particles(Particle *p) const {
+    RigidBody rb(p);
+    ParticlesTemp ret
+      = IMP::internal::get_particle(p->get_model(),
+                                    rb.get_member_particle_indexes());
+    ParticlesTemp ret2
+      = IMP::internal::get_particle(p->get_model(),
+                                    rb.get_body_member_particle_indexes());
+    ret.insert(ret.end(), ret2.begin(), ret2.end());
+    ret.push_back(p);
+    return ret;
+  }
+  ContainersTemp
+  UpdateRigidBodyMembers::get_input_containers(Particle *p) const {
+    return ContainersTemp(1,p);
+  }
+  ContainersTemp
+  UpdateRigidBodyMembers::get_output_containers(Particle *) const {
+    return ContainersTemp();
+  }
+  void UpdateRigidBodyMembers::do_show(std::ostream &out) const {
+  }
 }
 
 typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
