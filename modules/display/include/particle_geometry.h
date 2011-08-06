@@ -267,7 +267,7 @@ class HierarchiesGeometry: public SingletonsGeometry {
     IMP_FOREACH_SINGLETON(get_container(), {
         if (components_.find(_1)
             == components_.end()) {
-          IMP_NEW(HierarchyGeometry, g, (_1, res_));
+          IMP_NEW(HierarchyGeometry, g, (atom::Hierarchy(_1), res_));
           components_[_1]= g;
         }
         ret.push_back(components_.find(_1)->second);
