@@ -53,10 +53,11 @@ ContainersTemp BondSingletonScore::get_input_containers(Particle *p) const {
 }
 
 ParticlesTemp BondSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(2);
+  ParticlesTemp ret(3);
   Bond bd(p);
   ret[0]= bd.get_bonded(0);
   ret[1]= bd.get_bonded(1);
+  ret[2]=p;
   return ret;
 }
 
