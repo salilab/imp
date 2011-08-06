@@ -16,13 +16,12 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-RestraintSet* create_restraints
+void create_restraints
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,Parameters* myparam)
 {
 HelixData *TM=&(myparam->TM);
 RstParameters *RST=&(myparam->RST);
 
-IMP_NEW(RestraintSet,rset,());
 FloatRange z_range = FloatRange(-RST->zeta,RST->zeta);
 FloatRange tilt_range = FloatRange(0.0,RST->tilt);
 double kappa=RST->kappa;
@@ -65,7 +64,6 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
  core::PairRestraint* lrb=
   add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
- rset->add_restraint(lrb);
 }
 for(unsigned int i=0;i<TM->inter.size();++i){
  int i0=TM->inter[i].first;
@@ -80,9 +78,7 @@ for(unsigned int i=0;i<TM->inter.size();++i){
  core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
  core::PairRestraint* ir=add_interacting_restraint(m,rb0,rb1,tbr,
                          RST->d0_inter,kappa);
- rset->add_restraint(ir);
 }
-return rset.release();
 }
 
 void add_excluded_volume
@@ -95,7 +91,6 @@ lsc->add_particles(s.get_selected_particles());
 IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa_));
 evr->set_name("Excluded Volume");
 m->add_restraint(evr);
-m->set_maximum_score(evr, max_score_);
 }
 
 void add_DOPE(Model *m,atom::Hierarchy protein,std::string sname)
@@ -105,14 +100,13 @@ IMP_NEW(container::ListSingletonContainer,lsc,(m));
 atom::Selection s=atom::Selection(protein);
 s.set_atom_type(atom::AT_CA);
 lsc->add_particles(s.get_selected_particles());
-IMP_NEW(container::ClosePairContainer,cpc,(lsc, 15.0));
+IMP_NEW(container::ClosePairContainer,cpc,(lsc, 1000.0));
 IMP_NEW(SameHelixPairFilter,f,());
 cpc->add_pair_filter(f);
 IMP_NEW(atom::DopePairScore,dps,(15.0,atom::get_data_path(sname)));
 IMP_NEW(container::PairsRestraint,dope,(dps,cpc));
 dope->set_name("DOPE scoring function");
 m->add_restraint(dope);
-m->set_maximum_score(dope, max_score_);
 }
 
 void add_packing_restraint
@@ -159,7 +153,6 @@ IMP_NEW(RigidBodyPackingScore,ps,(tbr,om_b,om_e,dd_b,dd_e,kappa_));
 IMP_NEW(container::PairsRestraint,prs,(ps,nrb));
 prs->set_name("Packing restraint");
 m->add_restraint(prs);
-m->set_maximum_score(prs,max_score_);
 }
 
 core::PairRestraint* add_distance_restraint
@@ -170,7 +163,6 @@ IMP_NEW(core::DistancePairScore,df,(hub));
 IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(p0, p1)));
 dr->set_name("Distance restraint");
 m->add_restraint(dr);
-m->set_maximum_score(dr, max_score_);
 return dr.release();
 }
 
@@ -182,7 +174,6 @@ IMP_NEW(core::AttributeSingletonScore,ass,(well,FloatKey("z")));
 IMP_NEW(core::SingletonRestraint, sr, (ass, p));
 sr->set_name("Depth restraint");
 m->add_restraint(sr);
-m->set_maximum_score(sr, max_score_);
 }
 
 void add_tilt_restraint
@@ -195,7 +186,6 @@ IMP_NEW(TiltSingletonScore,tss,(well, laxis, zaxis));
 IMP_NEW(core::SingletonRestraint,sr,(tss, p));
 m->add_restraint(sr);
 sr->set_name("Tilt restraint");
-m->set_maximum_score(sr, max_score_);
 }
 
 core::PairRestraint* add_interacting_restraint
@@ -208,7 +198,6 @@ IMP_NEW(core::KClosePairsPairScore,kc,(sd,tbr,1));
 IMP_NEW(core::PairRestraint,ir,(kc,ParticlePair(rb0,rb1)));
 ir->set_name("Interacting restraint");
 m->add_restraint(ir);
-m->set_maximum_score(ir, max_score_);
 return ir.release();
 }
 
@@ -228,7 +217,6 @@ IMP_NEW(core::HarmonicUpperBound,hub,(0.0,kappa_));
 IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter_));
 dr->set_name("Diameter restraint");
 m->add_restraint(dr);
-m->set_maximum_score(dr, max_score_);
 }
 
 IMPMEMBRANE_END_NAMESPACE

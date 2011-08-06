@@ -14,40 +14,41 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-core::MonteCarlo* setup_MonteCarlo(Model *m,
+Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
  atom::Hierarchy protein,double temp,Parameters *myparam)
 {
- MCParameters *MC=&(myparam->MC);
- double mc_dx_=MC->dx;
- double mc_dang_=MC->dang;
-
+ MCParameters* MCp=&(myparam->MC);
  Pointer<core::MonteCarlo> mc;
- if (MC->do_wte){
-  double w0=MC->wte_w0*temp/MC->tmin;
-  mc= new membrane::MonteCarloWithWte(m,MC->wte_emin,MC->wte_emax,
-                                      MC->wte_sigma,MC->wte_gamma,w0);
+
+ if (MCp->do_wte){
+  double w0=MCp->wte_w0*temp/MCp->tmin;
+  mc= new membrane::MonteCarloWithWte(m,MCp->wte_emin,MCp->wte_emax,
+                                      MCp->wte_sigma,MCp->wte_gamma,w0);
  }else{
   mc= new core::MonteCarlo(m);
  }
  mc->set_return_best(false);
+
  core::Movers mvs;
  for(int i=0;i<myparam->TM.num;++i){
   atom::Selection s=atom::Selection(protein);
   s.set_molecule(myparam->TM.name[i]);
   core::RigidBody rb=
   core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
+  double dx_,dy_;
   if(i==0){
-   IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,0.0,0.0,mc_dx_,mc_dang_));
-   mvs.push_back(mv);
+   dx_=0.0;
+   dy_=0.0;
+  } else if (i==1) {
+   dx_=MCp->dx;
+   dy_=0.0;
+  } else {
+   dx_=MCp->dx;
+   dy_=MCp->dx;
   }
-  if(i==1){
-   IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,mc_dx_,0.0,mc_dx_,mc_dang_));
-   mvs.push_back(mv);
-  }
-  if(i>1){
-   IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,mc_dx_,mc_dx_,mc_dx_,mc_dang_));
-   mvs.push_back(mv);
-  }
+  IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,dx_,dy_,MCp->dx,MCp->dang));
+  //mc->add_mover(mv);
+  mvs.push_back(mv);
  }
  IMP_NEW(core::SerialMover,mvmv,(mvs));
  mc->add_mover(mvmv);

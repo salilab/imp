@@ -83,36 +83,6 @@ Parameters get_parameters(TextInput in) {
  store(parse_config_file(in.get_stream(), desc, false), vm);
  notify(vm);
 
- CHECK(double, grid_dtilt);
- CHECK(double, grid_dswing);
- CHECK(double, grid_drot);
- CHECK(double, grid_dx);
- CHECK(double, grid_tiltmax);
- CHECK(double, grid_swingmax);
- CHECK(double, grid_rotmax);
- CHECK(double, grid_zmax);
- CHECK(double, mc_tmin);
- CHECK(double, mc_tmax);
- CHECK(double, mc_dx);
- CHECK(double, mc_dang);
- CHECK(double, diameter);
- CHECK(double, tiltrange);
- CHECK(double, zetarange);
- CHECK(double, kappa);
- CHECK(double, kappa2);
- CHECK(double, cm_dist);
- CHECK(double, d0_inter);
- CHECK(double, wte_w0);
- CHECK(double, wte_sigma);
- CHECK(double, wte_gamma);
- CHECK(double, wte_emin);
- CHECK(double, wte_emax);
- CHECK(int,    number);
- CHECK(int,    mc_nexc);
- CHECK(int,    mc_nsteps);
- CHECK(int,    mc_nhot);
- CHECK(int,    mc_nwrite);
-
  Parameters ret;
 
 // General Parameters
