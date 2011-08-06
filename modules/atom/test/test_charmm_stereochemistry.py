@@ -55,7 +55,7 @@ class CHARMMStereochemistry(IMP.test.TestCase):
         """Test CHARMMStereochemistryRestraint input particles"""
         r, m, pdb = self.setup_restraint()
         ps = r.get_input_particles()
-        self.assertEqual(len(ps), 153)
+        self.assertEqual(len(ps), 163)
 
 if __name__ == '__main__':
     IMP.test.main()
