@@ -78,15 +78,16 @@ public:
                return seed;);
   IMP_COMPARISONS(ParticleIndexTuple<D>);
   std::string get_name() const {
-    std::string ret="\"";
+    std::ostringstream out;
+    out << "(";
     for (unsigned int i=0; i< D; ++i) {
       if (i>0) {
-        ret+= "\" and \"";
+        out << ", ";
       }
-      ret+=P::operator[](i);
+      out << P::operator[](i);
     }
-    ret+="\"";
-    return ret;
+    out << ")";
+    return out.str();
   }
   IMP_SHOWABLE_INLINE(ParticleIndexTuple, {
       out << get_name();
