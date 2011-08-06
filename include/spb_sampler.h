@@ -17,7 +17,7 @@
 IMPMEMBRANE_BEGIN_NAMESPACE
 
 IMPMEMBRANEEXPORT core::MonteCarlo* setup_SPBMonteCarlo
-(Model *m, core::Movers mvs, double temp, SPBParameters myparam);
+(Model *m, core::Movers& mvs, double temp, SPBParameters myparam);
 
 IMPMEMBRANE_END_NAMESPACE
 

@@ -1,13 +1,13 @@
 /**
- *  \file domino_enumerate.h
- *  \brief Membrane domino stuff
+ *  \file  membrane.h
+ *  \brief Membrane sampling stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_DOMINO_ENUMERATE_H
-#define IMPMEMBRANE_DOMINO_ENUMERATE_H
+#ifndef IMPMEMBRANE_MEMBRANE_H
+#define IMPMEMBRANE_MEMBRANE_H
 #include "membrane_config.h"
 #include <IMP.h>
 #include <string>
@@ -92,4 +92,4 @@ const int packing_ncl_=13;
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_DOMINO_ENUMERATE_H */
+#endif  /* IMPMEMBRANE_MEMBRANE_H */

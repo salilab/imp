@@ -1,13 +1,13 @@
 /**
- *  \file domino_representation.h
- *  \brief Membrane domino stuff
+ *  \file  membrane_representation.h
+ *  \brief Membrane stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_DOMINO_REPRESENTATION_H
-#define IMPMEMBRANE_DOMINO_REPRESENTATION_H
+#ifndef IMPMEMBRANE_MEMBRANE_REPRESENTATION_H
+#define IMPMEMBRANE_MEMBRANE_REPRESENTATION_H
 #include "membrane_config.h"
 #include <IMP.h>
 #include <IMP/core.h>
@@ -22,4 +22,4 @@ IMPMEMBRANEEXPORT core::TableRefiner*
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_DOMINO_REPRESENTATION_H */
+#endif  /* IMPMEMBRANE_MEMBRANE_REPRESENTATION_H */

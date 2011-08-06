@@ -1,13 +1,13 @@
 /**
- *  \file domino_restraints.h
- *  \brief Membrane domino stuff
+ *  \file  membrane_restraint.h
+ *  \brief Membrane stuff
  *
  *  Copyright 2011 IMP Inventors. All rights reserved.
  *
  */
 
-#ifndef IMPMEMBRANE_DOMINO_RESTRAINTS_H
-#define IMPMEMBRANE_DOMINO_RESTRAINTS_H
+#ifndef IMPMEMBRANE_MEMBRANE_RESTRAINT_H
+#define IMPMEMBRANE_MEMBRANE_RESTRAINT_H
 #include "membrane_config.h"
 #include <IMP.h>
 #include <IMP/core.h>
@@ -47,4 +47,4 @@ IMPMEMBRANEEXPORT void add_tilt_restraint
 
 IMPMEMBRANE_END_NAMESPACE
 
-#endif  /* IMPMEMBRANE_DOMINO_RESTRAINTS_H */
+#endif  /* IMPMEMBRANE_MEMBRANE_RESTRAINT_H */
