@@ -294,7 +294,7 @@
 /** Swap the member \c var_name of the two objects (this and o).
  */
 #define IMP_SWAP_MEMBER(var_name)               \
-  std::swap(var_name, o.var_name)
+  swap(var_name, o.var_name)
 
 
 
