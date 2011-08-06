@@ -51,7 +51,7 @@ atom::Hierarchies all_mol=
 //
 // Prepare output file
 std::string trajname="traj.rmf";
-rmf::RootHandle rh = rmf::RootHandle(trajname,true);
+rmf::RootHandle rh = rmf::create_rmf_file(trajname);
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
  for(unsigned int j=0;j<hs.size();++j) {rmf::add_hierarchy(rh, hs[j]);}
