@@ -100,6 +100,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
       IMP_LOG(TERSE, "Updating \"" << ss->get_name() << "\"" << std::endl);
       if (gather_statistics_) timer.restart();
       {
+#if IMP_BUILD < IMP_FAST
         ResetBitset rbr(Masks::read_mask_, true);
         ResetBitset rbw(Masks::write_mask_, true);
         ResetBitset rbar(Masks::add_remove_mask_, true);
@@ -112,6 +113,7 @@ void Model::before_evaluate(const ScoreStatesTemp &states) const {
         SET_ONLY_2(Masks::read_mask_, input, output);
         SET_ONLY(Masks::write_mask_, output);
         SET_ONLY(Masks::add_remove_mask_, output);
+#endif
         ss->before_evaluate();
       }
       if (gather_statistics_) {
