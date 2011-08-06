@@ -78,10 +78,10 @@ public:
 \param[in] shift the positions of all particles are shifted by
                  this value before projection
  */
-void project (const Particles &ps,
+void project(const Particles &ps,
        int x_margin,int y_margin,int z_margin,
-              algebra::Vector3D shift=algebra::Vector3D(0.,0.,0.),
-              FloatKey mass_key=atom::Mass::get_mass_key());
+             algebra::Vector3D shift=algebra::Vector3D(0.,0.,0.),
+             FloatKey mass_key=atom::Mass::get_mass_key());
 
 //!setting particles in case they were not set by the constructor
  void set_particles(const IMP::Particles &ps,
