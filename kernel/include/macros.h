@@ -565,7 +565,7 @@ public:                                                                 \
 }                                                                       \
  Name(const TraitsType &tr):                                            \
    traits_(tr) {}                                                       \
- Name(::IMP::Particle *p,                                               \
+ explicit Name(::IMP::Particle *p,                                      \
       const TraitsType &tr=default_traits):                             \
    Parent(p), traits_(tr) {                                             \
    IMP_INTERNAL_CHECK(particle_is_instance(p, tr),                      \
