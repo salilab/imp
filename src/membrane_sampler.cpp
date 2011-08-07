@@ -47,7 +47,6 @@ Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
    dy_=MCp->dx;
   }
   IMP_NEW(membrane::RigidBodyNewMover,mv,(rb,dx_,dy_,MCp->dx,MCp->dang));
-  //mc->add_mover(mv);
   mvs.push_back(mv);
  }
  IMP_NEW(core::SerialMover,mvmv,(mvs));

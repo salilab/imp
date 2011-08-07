@@ -32,15 +32,6 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 {
   // turn on logging for this method
   // IMP_OBJECT_LOG;
-  // assume they have an helix decorator
-  membrane::HelixDecorator d0(p[0]);
-  membrane::HelixDecorator d1(p[1]);
-  double omega, dist;
-  algebra::VectorD<3> b0,e0,b1,e1,t0,t1;
-  algebra::Transformation3D tr0,tr1;
-  algebra::Segment3D segment;
-  ParticlesTemp ps0, ps1;
-  unsigned int close;
 
   // check if derivatives are requested
   IMP_USAGE_CHECK(!da, "Derivatives not available");
@@ -52,30 +43,36 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
                   "Particle is not a rigid body");
 
   // check if rigid bodies are close enough
-  ps0=tbr_->get_refined(p[0]);
-  ps1=tbr_->get_refined(p[1]);
+  Particles ps0=tbr_->get_refined(p[0]);
+  Particles ps1=tbr_->get_refined(p[1]);
 
-  close = 0;
-  for(unsigned int i=0;i<ps0.size();i++){
-     for(unsigned int j=0;j<ps1.size();j++){
-        if(core::get_distance(core::XYZR(ps0[i]), core::XYZR(ps1[j])) < 0.6)
-           close++;
-        if(close >= 3) break;
+  unsigned int close = 0;
+  for(unsigned int i=0;i<ps0.size();++i){
+     for(unsigned int j=0;j<ps1.size();++j){
+        if(core::get_distance(core::XYZR(ps0[i]),core::XYZR(ps1[j]))<0.6){
+           ++close;
+        }
+        if(close >= 3) {break;}
      }
-     if(close >= 3) break;
+     if(close >= 3) {break;}
   }
 
-  if (close < 3) return 0.;
+  if (close < 3) {return 0.;}
 
+  // assume they have an helix decorator
+  membrane::HelixDecorator d0(p[0]);
+  membrane::HelixDecorator d1(p[1]);
   // begin and end point
-  b0=algebra::VectorD<3>(d0.get_begin(),0.0,0.0);
-  e0=algebra::VectorD<3>(d0.get_end(),0.0,0.0);
-  b1=algebra::VectorD<3>(d1.get_begin(),0.0,0.0);
-  e1=algebra::VectorD<3>(d1.get_end(),0.0,0.0);
+  algebra::Vector3D b0=algebra::Vector3D(d0.get_begin(),0.0,0.0);
+  algebra::Vector3D e0=algebra::Vector3D(d0.get_end(),0.0,0.0);
+  algebra::Vector3D b1=algebra::Vector3D(d1.get_begin(),0.0,0.0);
+  algebra::Vector3D e1=algebra::Vector3D(d1.get_end(),0.0,0.0);
 
   // get rigid body transformation
-  tr0=core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
-  tr1=core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
+  algebra::Transformation3D tr0=
+   core::RigidBody(p[0]).get_reference_frame().get_transformation_to();
+  algebra::Transformation3D tr1=
+   core::RigidBody(p[1]).get_reference_frame().get_transformation_to();
 
   // and apply it to vectors
   b0=tr0.get_transformed(b0);
@@ -86,14 +83,15 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
   //std::cout << b0 << " " << e0 << " " << b1 << " " << e1 <<std::endl;
 
   // get shortest segment
-  segment=algebra::get_shortest_segment(algebra::Segment3D(b0,e0),
-                                        algebra::Segment3D(b1,e1));
-  t0=segment.get_point(0);
-  t1=segment.get_point(1);
+  algebra::Segment3D segment=
+   algebra::get_shortest_segment(algebra::Segment3D(b0,e0),
+                                 algebra::Segment3D(b1,e1));
+  algebra::Vector3D t0=segment.get_point(0);
+  algebra::Vector3D t1=segment.get_point(1);
 
   double sign = 1.0;
-  algebra::VectorD<3> tmp0=e0;
-  algebra::VectorD<3> tmp1=e1;
+  algebra::Vector3D tmp0=e0;
+  algebra::Vector3D tmp1=e1;
 
   // choose more convenient points for dihedral calculation
   if ((e0-t0).get_magnitude() < (b0-t0).get_magnitude()){
@@ -107,17 +105,15 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 
   //std::cout << tmp0 << " " << t0 << " " << t1 << " " << tmp1 <<std::endl;
 
-  double pi=acos(-1.0);
-
-  omega=core::internal::dihedral(tmp0,t0,t1,tmp1,NULL,NULL,NULL,NULL);
+  double omega=core::internal::dihedral(tmp0,t0,t1,tmp1,NULL,NULL,NULL,NULL);
 
   //std::cout << omega << std::endl;
 
   // correction for having changed dihedral points
-  omega += (sign-1.0)*pi/2.0;
-  if ( omega < -pi ) omega += 2.0*pi;
+  omega += (sign-1.0)*IMP::PI/2.0;
+  if ( omega < -IMP::PI ) {omega += 2.0*IMP::PI;}
 
-  dist =segment.get_length();
+  double dist =segment.get_length();
 
   //std::cout << " OMEGA " << omega << " LENGTH " << dist << std::endl;
 
@@ -127,9 +123,10 @@ Float RigidBodyPackingScore::evaluate(const ParticlePair &p,
 
   // calculate the score
   double score=kappa_;
-  for(unsigned int i=0;i<omb_.size();i++)
+  for(unsigned int i=0;i<omb_.size();++i){
    if(omega >= omb_[i] && omega <= ome_[i] &&
-      dist >= ddb_[i] && dist <= dde_[i]) score=0.;
+      dist >= ddb_[i] && dist <= dde_[i]) {score=0.;}
+  }
 
   return score;
 }
@@ -148,7 +145,7 @@ ContainersTemp RigidBodyPackingScore::get_input_containers(Particle *p) const {
 
 
 void RigidBodyPackingScore::do_show(std::ostream &out) const {
-  for(unsigned int i=0;i<omb_.size();i++)
+  for(unsigned int i=0;i<omb_.size();++i)
    out << "i" << i << "omb_=" << omb_[i] << "ome_=" << ome_[i] << std::endl;
 }
 
