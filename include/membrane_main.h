@@ -67,9 +67,7 @@ struct RstParameters {
  double         cm_dist;
  std::string    score_name;
  bool           add_dope;
- bool           add_pack;
  bool           use_volume;
- bool           add_endtoend;
  double         k_depth;
  double         k_tilt;
  double         k_volume;

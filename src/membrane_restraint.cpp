@@ -19,8 +19,8 @@ IMPMEMBRANE_BEGIN_NAMESPACE
 void create_restraints(Model *m,atom::Hierarchy protein,
  core::TableRefiner *tbr,Parameters* myparam) {
 
-HelixData *TM=&(myparam->TM);
-RstParameters *RST=&(myparam->RST);
+HelixData* TM=&(myparam->TM);
+RstParameters* RST=&(myparam->RST);
 
 // single-body restraints
 for(int i=0;i<TM->num;++i){
@@ -28,15 +28,18 @@ for(int i=0;i<TM->num;++i){
  s.set_molecule(TM->name[i]);
  core::RigidBody rb=
  core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
- add_depth_restraint(m,rb,FloatRange(-RST->zeta,RST->zeta),RST->k_depth);
- add_tilt_restraint(m,rb,FloatRange(0.0,RST->tilt),RST->k_tilt);
+ if(RST->k_depth>0.)
+  add_depth_restraint(m,rb,FloatRange(-RST->zeta,RST->zeta),RST->k_depth);
+ if(RST->k_tilt>0.)
+  add_tilt_restraint(m,rb,FloatRange(0.0,RST->tilt),RST->k_tilt);
 }
 
 // multi-body restraints
-add_excluded_volume(m,protein,RST->k_volume);
-if(RST->add_dope) add_DOPE(m,protein,RST->score_name);
-if(RST->add_pack) add_packing_restraint(m,protein,tbr,TM,RST->k_pack);
-add_diameter_restraint(m,protein,RST->diameter,TM,RST->k_diameter);
+if(RST->k_volume>0.) add_excluded_volume(m,protein,RST->k_volume);
+if(RST->add_dope)    add_DOPE(m,protein,RST->score_name);
+if(RST->k_pack>0.)   add_packing_restraint(m,protein,tbr,TM,RST->k_pack);
+if(RST->k_diameter>0.)
+ add_diameter_restraint(m,protein,RST->diameter,TM,RST->k_diameter);
 
 // two-body restraints
 for(unsigned int i=0;i<TM->loop.size();++i){
@@ -52,11 +55,12 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
  double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
- if(RST->add_endtoend) add_distance_restraint(m,p0,p1,length,RST->k_endtoend);
+ if(RST->k_endtoend>0.) add_distance_restraint(m,p0,p1,length,RST->k_endtoend);
 // COM-COM distance restraint
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
- add_distance_restraint(m,rb0,rb1,RST->cm_dist,RST->k_cmdist);
+ if(RST->k_cmdist>0.)
+  add_distance_restraint(m,rb0,rb1,RST->cm_dist,RST->k_cmdist);
 }
 for(unsigned int i=0;i<TM->inter.size();++i){
  int i0=TM->inter[i].first;
@@ -69,7 +73,8 @@ for(unsigned int i=0;i<TM->inter.size();++i){
  core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
  core::RigidBody rb1=
  core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
- add_interacting_restraint(m,rb0,rb1,tbr,RST->d0_inter,RST->k_inter);
+ if(RST->k_inter>0.)
+  add_interacting_restraint(m,rb0,rb1,tbr,RST->d0_inter,RST->k_inter);
 }
 }
 
