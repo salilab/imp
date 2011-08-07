@@ -19,6 +19,7 @@ IMPEM2D_BEGIN_NAMESPACE
    em_images_ = em_images;
    finder_->set_subjects(em_images_);
    for (unsigned int i=0;i<em_images_.size();++i) {
+
      em_images_[i]->set_was_used(true);
    }
  }
@@ -31,8 +32,8 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 void Em2DRestraint::set_fast_mode(unsigned int n) {
-  fast_optimization_mode_=true;
-  number_of_optimized_projections_=n;
+  fast_optimization_mode_ = true;
+  number_of_optimized_projections_ = n;
 }
 
 
@@ -45,7 +46,7 @@ Em2DRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   model = get_model();
   // Project the model
   RegistrationResults regs = get_evenly_distributed_registration_results(
-                                  n_projections_for_coarse_registration_);
+                                  params_.n_projections);
   unsigned int rows =  em_images_[0]->get_header().get_number_of_rows();
   unsigned int cols =  em_images_[0]->get_header().get_number_of_columns();
   IMP_NEW(SpiderImageReaderWriter, srw, ());

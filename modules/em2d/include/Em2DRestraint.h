@@ -26,6 +26,7 @@ IMPEM2D_BEGIN_NAMESPACE
 
 
 
+
 //! This restraint ensures that a set of particles are similar to a set
 //! of EM images
 /*!
@@ -47,8 +48,7 @@ class IMPEM2DEXPORT Em2DRestraint : public Restraint
 
   //! Projection Masks to fast model projection
   em2d::Images em_images_;
-  unsigned int n_projections_for_coarse_registration_,
-               number_of_optimized_projections_;
+  unsigned int number_of_optimized_projections_;
   bool fast_optimization_mode_;
   bool only_coarse_registration_;
   Em2DRestraintParameters params_;

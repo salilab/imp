@@ -125,11 +125,14 @@ void RigidBodiesImageFitRestraint::set_orientations(const core::RigidBody &rb,
   algebra::Rotation3D R0i = R0.get_inverse();
 
   for (unsigned int i=0; i < rots.size(); ++i) {
-    // I treat the orientations in the parameter rots as absolute. The rotation
-    // specified by rots[i] is the rotation of the reference frame.
+    // I treat the orientations in the parameter rots as absolute rotations of
+    // the reference frames.
+    // To project in the direction the absolute reference frame rot[i], first
+    // I need to find the relative rotation to apply to the object, as it
+    // has a reference frame already. The solution is simple: first invert
+    // the rotation in the reference frame of the object (R0i), and then apply
+    // the absolute rotation desired (rot[i]).
     Ints ints = get_unique_index(rots[i]);
-    // To project from the absolute rotation given by rot[i], I have
-    // to account for the intial rotation in the reference frame, R0.
     algebra::Rotation3D rotation_for_projecting=algebra::compose(rots[i], R0i);
     algebra::Vector2D v(0., 0.);
     RegistrationResult reg(rotation_for_projecting, v);
