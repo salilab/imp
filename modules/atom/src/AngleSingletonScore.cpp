@@ -54,11 +54,12 @@ ContainersTemp AngleSingletonScore::get_input_containers(Particle *p) const {
 }
 
 ParticlesTemp AngleSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(3);
+  ParticlesTemp ret(4);
   Angle ad(p);
   ret[0]= ad.get_particle(0);
   ret[1]= ad.get_particle(1);
   ret[2]= ad.get_particle(2);
+  ret[3]= p;
   return ret;
 }
 
