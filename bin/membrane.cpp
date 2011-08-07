@@ -176,7 +176,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
             (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
-
 // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
