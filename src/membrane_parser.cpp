@@ -64,10 +64,16 @@ Parameters get_parameters(TextInput in) {
  OPTION(double, diameter);
  OPTION(double, tiltrange);
  OPTION(double, zetarange);
- OPTION(double, kappa);
- OPTION(double, kappa2);
  OPTION(double, cm_dist);
  OPTION(double, d0_inter);
+ OPTION(double, k_depth)
+ OPTION(double, k_tilt)
+ OPTION(double, k_volume)
+ OPTION(double, k_pack)
+ OPTION(double, k_diameter)
+ OPTION(double, k_endtoend)
+ OPTION(double, k_cmdist)
+ OPTION(double, k_inter)
  OPTION(double, wte_w0);
  OPTION(double, wte_sigma);
  OPTION(double, wte_gamma);
@@ -114,10 +120,17 @@ Parameters get_parameters(TextInput in) {
  ret.RST.use_volume=use_volume;
  ret.RST.tilt=radians(tiltrange);
  ret.RST.zeta=zetarange;
- ret.RST.kappa=kappa;
- ret.RST.kappa2=kappa2;
  ret.RST.cm_dist=cm_dist;
  ret.RST.d0_inter=d0_inter;
+ // kappa
+ ret.RST.k_depth=k_depth;
+ ret.RST.k_tilt=k_tilt;
+ ret.RST.k_volume=k_volume;
+ ret.RST.k_pack=k_pack;
+ ret.RST.k_diameter=k_diameter;
+ ret.RST.k_endtoend=k_endtoend;
+ ret.RST.k_cmdist=k_cmdist;
+ ret.RST.k_inter=k_inter;
 
 // Grid Parameters
  ret.grid.tilt=radians(grid_dtilt);

@@ -63,8 +63,6 @@ struct RstParameters {
  double         diameter;
  double         tilt;
  double         zeta;
- double         kappa;
- double         kappa2;
  double         d0_inter;
  double         cm_dist;
  std::string    score_name;
@@ -72,6 +70,14 @@ struct RstParameters {
  bool           add_pack;
  bool           use_volume;
  bool           add_endtoend;
+ double         k_depth;
+ double         k_tilt;
+ double         k_volume;
+ double         k_pack;
+ double         k_diameter;
+ double         k_endtoend;
+ double         k_cmdist;
+ double         k_inter;
 };
 
 struct Parameters {

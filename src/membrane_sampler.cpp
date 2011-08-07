@@ -14,8 +14,8 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-Pointer<core::MonteCarlo> setup_MonteCarlo(Model *m,
- atom::Hierarchy protein,double temp,Parameters *myparam)
+core::MonteCarlo* setup_MonteCarlo(Model *m,
+ atom::Hierarchy protein,double temp,Parameters* myparam)
 {
  MCParameters* MCp=&(myparam->MC);
  Pointer<core::MonteCarlo> mc;

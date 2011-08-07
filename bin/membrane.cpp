@@ -125,8 +125,7 @@ create_restraints(m,all,tbr,&mydata);
 
 // create sampler
 if(myrank==0) {std::cout << "Creating sampler" << std::endl;}
-Pointer<core::MonteCarlo> mc=
- setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
+core::MonteCarlo* mc=setup_MonteCarlo(m,all,temp[index[myrank]],&mydata);
 
 // sampling
 if(myrank==0) {std::cout << "Sampling" << std::endl;}
@@ -145,7 +144,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // print statistics
  double myscore=m->evaluate(false);
-
  int    myindex=index[myrank];
  logfile << imc << " " << myindex << " " << myscore << " "
  << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
@@ -167,10 +165,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
  double delta_wte=0.0;
-/*
+
  if(mydata.MC.do_wte){
-  Pointer<membrane::MonteCarloWithWte> ptr=
-   dynamic_cast< Pointer<membrane::MonteCarloWithWte> >(mc);
+  membrane::MonteCarloWithWte* ptr=
+   dynamic_cast<membrane::MonteCarloWithWte*>(mc);
   double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
   double U_fbias[2];
   MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
@@ -178,7 +176,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
             (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
-*/
+
 // calculate acceptance
  bool do_accept=get_acceptance(myscore,fscore,delta_wte,
                                temp[myindex],temp[findex]);
@@ -186,10 +184,10 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
  if(do_accept){
   myindex=findex;
   mc->set_kt(temp[myindex]);
-/*
+
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
-   membrane::MonteCarloWithWte *ptr=
+   membrane::MonteCarloWithWte* ptr=
     dynamic_cast<membrane::MonteCarloWithWte*>(mc);
    ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
    int     nbins=ptr->get_nbin();
@@ -201,7 +199,6 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    ptr->set_bias(val);
    delete fbias;
   }
-*/
  }
 
 // in any case, update index vector

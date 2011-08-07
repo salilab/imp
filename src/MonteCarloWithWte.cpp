@@ -71,7 +71,7 @@ void MonteCarloWithWte::update_bias(double score)
 }
 
 void MonteCarloWithWte::do_step() {
-  do_move(get_move_probability());
+  ParticlesTemp moved=do_move(get_move_probability());
   double energy= evaluate(false);
   bool do_accept=do_accept_or_reject_move(energy+get_bias(energy));
   if(do_accept) update_bias(energy);

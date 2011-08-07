@@ -16,16 +16,11 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-void create_restraints
-(Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,Parameters* myparam)
-{
+void create_restraints(Model *m,atom::Hierarchy protein,
+ core::TableRefiner *tbr,Parameters* myparam) {
+
 HelixData *TM=&(myparam->TM);
 RstParameters *RST=&(myparam->RST);
-
-FloatRange z_range = FloatRange(-RST->zeta,RST->zeta);
-FloatRange tilt_range = FloatRange(0.0,RST->tilt);
-double kappa=RST->kappa;
-double kappa2=RST->kappa2;
 
 // single-body restraints
 for(int i=0;i<TM->num;++i){
@@ -33,15 +28,15 @@ for(int i=0;i<TM->num;++i){
  s.set_molecule(TM->name[i]);
  core::RigidBody rb=
  core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
- add_depth_restraint(m,rb,z_range,kappa2);
- add_tilt_restraint(m,rb,tilt_range,kappa2);
+ add_depth_restraint(m,rb,FloatRange(-RST->zeta,RST->zeta),RST->k_depth);
+ add_tilt_restraint(m,rb,FloatRange(0.0,RST->tilt),RST->k_tilt);
 }
 
 // multi-body restraints
-add_excluded_volume(m,protein,kappa);
+add_excluded_volume(m,protein,RST->k_volume);
 if(RST->add_dope) add_DOPE(m,protein,RST->score_name);
-if(RST->add_pack) add_packing_restraint(m,protein,tbr,TM,kappa);
-add_diameter_restraint(m,protein,RST->diameter,TM,kappa);
+if(RST->add_pack) add_packing_restraint(m,protein,tbr,TM,RST->k_pack);
+add_diameter_restraint(m,protein,RST->diameter,TM,RST->k_diameter);
 
 // two-body restraints
 for(unsigned int i=0;i<TM->loop.size();++i){
@@ -57,11 +52,11 @@ for(unsigned int i=0;i<TM->loop.size();++i){
  Particle *p1=s1.get_selected_particles()[0];
 // End-to-End distance restraint
  double length=1.6*(double(TM->resid[i1].first-TM->resid[i0].second+1))+7.4;
- if(RST->add_endtoend) {add_distance_restraint(m,p0,p1,length,kappa);}
+ if(RST->add_endtoend) add_distance_restraint(m,p0,p1,length,RST->k_endtoend);
 // COM-COM distance restraint
  core::RigidBody rb0=core::RigidMember(p0).get_rigid_body();
  core::RigidBody rb1=core::RigidMember(p1).get_rigid_body();
- add_distance_restraint(m,rb0,rb1,RST->cm_dist,kappa);
+ add_distance_restraint(m,rb0,rb1,RST->cm_dist,RST->k_cmdist);
 }
 for(unsigned int i=0;i<TM->inter.size();++i){
  int i0=TM->inter[i].first;
@@ -74,18 +69,17 @@ for(unsigned int i=0;i<TM->inter.size();++i){
  core::RigidMember(s0.get_selected_particles()[0]).get_rigid_body();
  core::RigidBody rb1=
  core::RigidMember(s1.get_selected_particles()[0]).get_rigid_body();
- add_interacting_restraint(m,rb0,rb1,tbr,RST->d0_inter,kappa);
+ add_interacting_restraint(m,rb0,rb1,tbr,RST->d0_inter,RST->k_inter);
 }
 }
 
-void add_excluded_volume
-(Model *m,atom::Hierarchy protein,double kappa_)
+void add_excluded_volume(Model *m,atom::Hierarchy protein,double kappa)
 {
 IMP_NEW(container::ListSingletonContainer,lsc,(m));
 atom::Selection s=atom::Selection(protein);
 s.set_atom_type(atom::AT_CA);
 lsc->add_particles(s.get_selected_particles());
-IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa_));
+IMP_NEW(core::ExcludedVolumeRestraint,evr,(lsc,kappa));
 evr->set_name("Excluded Volume");
 m->add_restraint(evr);
 }
@@ -108,7 +102,7 @@ m->add_restraint(dope);
 
 void add_packing_restraint
 (Model *m,atom::Hierarchy protein,core::TableRefiner *tbr,
-HelixData *TM,double kappa_)
+ HelixData *TM,double kappa)
 {
 //if the helices are interacting, apply a filter on the crossing angle
 //first define the allowed intervals, by specifying the center
@@ -146,49 +140,49 @@ for(int i=0;i<TM->num;++i){
  lrb->add_particle(rb);
 }
 IMP_NEW(container::ClosePairContainer,nrb,(lrb, 25.0));
-IMP_NEW(RigidBodyPackingScore,ps,(tbr,om_b,om_e,dd_b,dd_e,kappa_));
+IMP_NEW(RigidBodyPackingScore,ps,(tbr,om_b,om_e,dd_b,dd_e,kappa));
 IMP_NEW(container::PairsRestraint,prs,(ps,nrb));
 prs->set_name("Packing restraint");
 m->add_restraint(prs);
 }
 
 void add_distance_restraint
- (Model *m,Particle *p0,Particle *p1,double x0,double kappa_)
+ (Model *m,Particle *p0,Particle *p1,double x0,double kappa)
 {
-IMP_NEW(core::HarmonicUpperBound,hub,(x0,kappa_));
+IMP_NEW(core::HarmonicUpperBound,hub,(x0,kappa));
 IMP_NEW(core::DistancePairScore,df,(hub));
-IMP_NEW(core::PairRestraint,dr,(df, ParticlePair(p0, p1)));
+IMP_NEW(core::PairRestraint,dr,(df,ParticlePair(p0,p1)));
 dr->set_name("Distance restraint");
 m->add_restraint(dr);
 }
 
 void add_depth_restraint
-(Model *m, Particle *p,FloatRange z_range_,double kappa_)
+ (Model *m, Particle *p,FloatRange z_range,double kappa)
 {
-IMP_NEW(core::HarmonicWell,well,(z_range_,kappa_));
+IMP_NEW(core::HarmonicWell,well,(z_range,kappa));
 IMP_NEW(core::AttributeSingletonScore,ass,(well,FloatKey("z")));
-IMP_NEW(core::SingletonRestraint, sr, (ass, p));
+IMP_NEW(core::SingletonRestraint,sr,(ass,p));
 sr->set_name("Depth restraint");
 m->add_restraint(sr);
 }
 
 void add_tilt_restraint
-(Model *m,Particle *p,FloatRange tilt_range_,double kappa_)
+ (Model *m,Particle *p,FloatRange tilt_range,double kappa)
 {
 algebra::Vector3D laxis=algebra::Vector3D(1.0,0.0,0.0);
 algebra::Vector3D zaxis=algebra::Vector3D(0.0,0.0,1.0);
-IMP_NEW(core::HarmonicWell,well,(tilt_range_, kappa_));
-IMP_NEW(TiltSingletonScore,tss,(well, laxis, zaxis));
-IMP_NEW(core::SingletonRestraint,sr,(tss, p));
+IMP_NEW(core::HarmonicWell,well,(tilt_range, kappa));
+IMP_NEW(TiltSingletonScore,tss,(well,laxis,zaxis));
+IMP_NEW(core::SingletonRestraint,sr,(tss,p));
 m->add_restraint(sr);
 sr->set_name("Tilt restraint");
 }
 
 void add_interacting_restraint
 (Model *m,Particle *rb0,Particle *rb1,core::TableRefiner *tbr,
-double d0_inter_,double kappa_)
+double d0_inter,double kappa)
 {
-IMP_NEW(core::HarmonicUpperBound,hub,(d0_inter_, kappa_));
+IMP_NEW(core::HarmonicUpperBound,hub,(d0_inter, kappa));
 IMP_NEW(core::DistancePairScore,sd,(hub));
 IMP_NEW(core::KClosePairsPairScore,kc,(sd,tbr,1));
 IMP_NEW(core::PairRestraint,ir,(kc,ParticlePair(rb0,rb1)));
@@ -197,8 +191,8 @@ m->add_restraint(ir);
 }
 
 void add_diameter_restraint
-(Model *m,atom::Hierarchy protein,double diameter_,
-HelixData *TM,double kappa_)
+(Model *m,atom::Hierarchy protein,double diameter,
+ HelixData *TM,double kappa)
 {
 IMP_NEW(container::ListSingletonContainer,lrb,(m));
 for(int i=0;i<TM->num;++i){
@@ -208,8 +202,8 @@ for(int i=0;i<TM->num;++i){
  =core::RigidMember(s.get_selected_particles()[0]).get_rigid_body();
  lrb->add_particle(rb);
 }
-IMP_NEW(core::HarmonicUpperBound,hub,(0.0,kappa_));
-IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter_));
+IMP_NEW(core::HarmonicUpperBound,hub,(0.0,kappa));
+IMP_NEW(core::DiameterRestraint,dr,(hub, lrb, diameter));
 dr->set_name("Diameter restraint");
 m->add_restraint(dr);
 }
