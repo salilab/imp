@@ -33,7 +33,8 @@ class ProjectTests(IMP.test.TestCase):
         resolution = 5
         pixel_size = 1.5
         options = em2d.ProjectingOptions(pixel_size, resolution)
-        em2d.get_projection(img, prot.get_leaves(), reg, options)
+        ls = core.get_leaves(prot)
+        em2d.get_projection(img, ls, reg, options)
         # img.write("rbfit_test_image.spi",srw)
         # set restraint
         score_function = em2d.EM2DScore()
@@ -54,7 +55,8 @@ class ProjectTests(IMP.test.TestCase):
 
         # Calculate the positions of the rigid bodies respect to the centroid
         # of the entire molecule
-        xyzs = core.XYZs(prot.get_leaves())
+        ls = core.get_leaves(prot)
+        xyzs = core.XYZs(ls)
         centroid = core.get_centroid(xyzs)
 
         coords = [rb.get_coordinates() - centroid for rb in components_rbs]
