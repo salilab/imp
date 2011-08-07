@@ -25,7 +25,7 @@ class IMPMEMBRANEEXPORT MonteCarloWithWte: public core::MonteCarlo
   double  spline(double score, int index) const;
 
 private:
-  double do_evaluate() const;
+  double do_evaluate(const ParticlesTemp &moved) const;
 
 public:
   MonteCarloWithWte(Model *m, double emin,  double emax,

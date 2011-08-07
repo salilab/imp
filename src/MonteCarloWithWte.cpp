@@ -77,7 +77,7 @@ void MonteCarloWithWte::do_step() {
   if(do_accept) update_bias(energy);
 }
 
-double MonteCarloWithWte::do_evaluate() const {
+double MonteCarloWithWte::do_evaluate(const ParticlesTemp &moved) const {
    double score=evaluate(false);
    return score+get_bias(score);
 }
