@@ -264,14 +264,14 @@ class IMPATOMEXPORT SpecialCaseRestraints {
 
 
 
-SpecialCaseRestraints::SpecialCaseRestraints(Model *m,
+inline SpecialCaseRestraints::SpecialCaseRestraints(Model *m,
                                              const ParticlesTemp &ps): ps_(ps) {
   SetLogState ss(SILENT); // don't print all the dep graph crap
   RestraintsTemp rs
     = IMP::get_restraints(RestraintsTemp(1, m->get_root_restraint_set()));
   dg_=get_dependency_graph(rs);
 }
-SpecialCaseRestraints::~SpecialCaseRestraints() {
+inline SpecialCaseRestraints::~SpecialCaseRestraints() {
 }
 
 template <class Harmonic, class EV>
