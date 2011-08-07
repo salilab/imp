@@ -18,10 +18,6 @@ IMPMEMBRANE_BEGIN_NAMESPACE
  type name=-1;                                              \
  desc.add_options()(#name, value< type >(&name), #name);
 
-#define CHECK(type, name)                                    \
- IMP_USAGE_CHECK(name >=0, #name << " is " << name);
-
-
 SPBParameters get_SPBParameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
@@ -71,26 +67,6 @@ SPBParameters get_SPBParameters(TextInput in) {
  variables_map vm;
  store(parse_config_file(in.get_stream(), desc, false), vm);
  notify(vm);
-
- CHECK(double, mc_tmin);
- CHECK(double, mc_tmax);
- CHECK(double, mc_dx);
- CHECK(double, mc_dang);
- CHECK(double, kappa);
- CHECK(double, CP_thickness);
- CHECK(double, CP_IL2_gap);
- CHECK(double, IL2_thickness);
- CHECK(double, side);
- CHECK(double, resolution);
- CHECK(double, wte_w0);
- CHECK(double, wte_sigma);
- CHECK(double, wte_gamma);
- CHECK(double, wte_emin);
- CHECK(double, wte_emax);
- CHECK(int,    mc_nexc);
- CHECK(int,    mc_nsteps);
- CHECK(int,    mc_nhot);
- CHECK(int,    mc_nwrite);
 
  SPBParameters ret;
 
