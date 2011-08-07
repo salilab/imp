@@ -233,6 +233,7 @@ void CoreClosePairContainer::do_incremental() {
   internal::fix_order(ret);
   // make one pass
   internal::filter_same(ret);
+  internal::filter_close_pairs(this, ret);
   moved_count_+=moved.size();
   if (moved_count_ > .2 *c_->get_number_of_particles()) {
     /*InList il= InList::create(moved);
