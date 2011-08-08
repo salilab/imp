@@ -43,13 +43,14 @@ double MonteCarloWithWte::spline(double score, int index) const
   double X2=X*X;
   double X3=X2*X;
   double yy;
-  if(fabs(bias_[index+shift])<0.0000001){
+  int indexx=std::min(index+shift,nbin-1);
+  if(fabs(bias_[indexx])<0.0000001){
    yy=0.0;
   }else{
-   yy=bias_[index+shift+nbin_]/bias_[index+shift];
+   yy=bias_[indexx+nbin_]/bias_[indexx];
   }
   double ff=(1.0-3.0*X2+2.0*X3)-(double)(shift?-1:1)*yy*(X-2.0*X2+X3)*dx_;
-  spline+=bias_[index+shift]*ff;
+  spline+=bias_[indexx]*ff;
  }
  return spline;
 }
