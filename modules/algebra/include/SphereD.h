@@ -153,10 +153,13 @@ namespace internal {
     const SphereD<D> &v_;
     SphereSpacesIO(const SphereD<D> &v): v_(v){}
   };
-  template <unsigned int D>
-  inline std::ostream &operator<<(std::ostream &out, const SphereD<D> &s)
+  template <int D>
+  inline std::ostream &operator<<(std::ostream &out, const SphereSpacesIO<D> &s)
   {
-    out << spaces_io(s.get_center()) << " " << s.get_radius();
+    for (unsigned int i=0; i< s.v_.get_center().get_dimension(); ++i) {
+      out << s.v_.get_center()[i] << " ";
+    }
+    out << s.v_.get_radius();
     return out;
   }
 }
