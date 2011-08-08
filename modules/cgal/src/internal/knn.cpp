@@ -25,6 +25,7 @@ struct Construct_coord_iterator {
   { return p.get_data(); }
   const double* operator()(const algebra::VectorKD& p, int)  const
   { return p.get_data()+p.get_dimension(); }
+  typedef const double* result_type;
 };
 struct Distance {
   typedef algebra::VectorKD Query_item;
