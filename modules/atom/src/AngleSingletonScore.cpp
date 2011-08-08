@@ -13,7 +13,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-AngleSingletonScore::AngleSingletonScore(UnaryFunction *f): f_(f){}
+AngleSingletonScore::AngleSingletonScore(UnaryFunction *f):
+  SingletonScore("AngleSingletonScore%1%"),
+  f_(f)
+{}
 
 double AngleSingletonScore::evaluate(Particle *b,
                                      DerivativeAccumulator *da) const

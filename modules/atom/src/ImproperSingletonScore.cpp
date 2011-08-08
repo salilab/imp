@@ -56,12 +56,13 @@ ContainersTemp ImproperSingletonScore::get_input_containers(Particle *p) const {
 }
 
 ParticlesTemp ImproperSingletonScore::get_input_particles(Particle *p) const {
-  ParticlesTemp ret(4);
+  ParticlesTemp ret(5);
   Dihedral bd(p);
   ret[0]= bd.get_particle(0);
   ret[1]= bd.get_particle(1);
   ret[2]= bd.get_particle(2);
   ret[3]= bd.get_particle(3);
+  ret[4]= p;
   return ret;
 }
 
