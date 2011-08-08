@@ -22,6 +22,7 @@ MonteCarloWithWte::MonteCarloWithWte(Model *m, double emin,  double emax,
   dx_    = sigma / 3.0;
   nbin_  = floor((emax-emin)/dx_)+1;
   bias_.reset(new double[2*nbin_]);
+  for(unsigned int i=0;i<2*nbin_;++i) {bias_[i]=0.0;}
   }
 
 double MonteCarloWithWte::get_bias(double score) const
