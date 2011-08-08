@@ -41,7 +41,7 @@ IMPALGEBRAEXPORT std::vector<VectorD<3> > read_pts(TextInput in);
 /** \see read_pts
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT void write_spheres(const std::vector<VectorD<3> > &vs,
+IMPALGEBRAEXPORT void write_spheres(const std::vector<SphereD<3> > &vs,
                                     TextOutput out);
 
 //! Read a set of 3d spheres from a file
