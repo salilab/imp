@@ -14,7 +14,8 @@
 
 IMPATOM_BEGIN_NAMESPACE
 
-DihedralSingletonScore::DihedralSingletonScore() {}
+DihedralSingletonScore::DihedralSingletonScore():
+  SingletonScore("DihedralSingletonScore%1%"){}
 
 double DihedralSingletonScore::evaluate(Particle *b,
                                         DerivativeAccumulator *da) const
