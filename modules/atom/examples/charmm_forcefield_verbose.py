@@ -58,22 +58,25 @@ impropers = topology.add_impropers(prot)
 #   container and scores each one in turn.
 cont = IMP.container.ListSingletonContainer(bonds, "bonds")
 bss = IMP.atom.BondSingletonScore(IMP.core.Harmonic(0, 1))
-m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+r=IMP.container.SingletonsRestraint(bss, cont, "bonds")
+m.add_restraint(r)
 
 # Score angles, dihedrals, and impropers. In the CHARMM forcefield, angles and
 # impropers are harmonically restrained, so this is the same as for bonds.
 # Dihedrals are scored internally by a periodic (cosine) function.
 cont = IMP.container.ListSingletonContainer(angles, "angles")
 bss = IMP.atom.AngleSingletonScore(IMP.core.Harmonic(0,1))
-m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+r=IMP.container.SingletonsRestraint(bss, cont, "angles")
+m.add_restraint(r)
 
 cont = IMP.container.ListSingletonContainer(dihedrals, "dihedrals")
 bss = IMP.atom.DihedralSingletonScore()
-m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+r=IMP.container.SingletonsRestraint(bss, cont, "dihedrals")
+m.add_restraint(r)
 
 cont = IMP.container.ListSingletonContainer(impropers, "impropers")
 bss = IMP.atom.ImproperSingletonScore(IMP.core.Harmonic(0,1))
-m.add_restraint(IMP.container.SingletonsRestraint(bss, cont))
+m.add_restraint(IMP.container.SingletonsRestraint(bss, cont, "improppers"))
 
 # Add non-bonded interaction (in this case, Lennard-Jones). This needs to
 # know the radii and well depths for each atom, so add them from the forcefield
