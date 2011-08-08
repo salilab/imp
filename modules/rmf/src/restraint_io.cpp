@@ -143,7 +143,9 @@ namespace {
     ParticlesTemp ip= r->get_input_particles();
     Subset s(ip);
     if (nodes.find(s) == nodes.end()) {
-      NodeHandle c= parent.add_child(s.get_name(), FEATURE);
+      std::ostringstream oss;
+      oss << "Feature " << nodes.size();
+      NodeHandle c= parent.add_child(oss.str(), FEATURE);
       /*std::cout << "Created node for " << s
         << " under " << parent.get_name() << std::endl;*/
       nodes[s]=c;
