@@ -39,7 +39,7 @@ core::SphereDistancePairScore*
  return ps.release();
 }
 
-void add_SPBexcluded_volume (Model *m,atom::Hierarchies hs,double kappa)
+void add_SPBexcluded_volume (Model *m,atom::Hierarchies& hs,double kappa)
 {
  IMP_NEW(container::ListSingletonContainer,lsc,(m));
  for(unsigned int i=0;i<hs.size();++i){
@@ -129,8 +129,8 @@ void do_allpairs_mindist(Model *m,Particles ps,
 }
 
 void add_fret_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb, std::string protein_b, std::string residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value, double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -154,8 +154,8 @@ void add_fret_restraint
 }
 
 void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,IntRange residues_b,double kappa)
+(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
+ atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -179,8 +179,8 @@ void add_y2h_restraint
 }
 
 void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb, std::string protein_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b,
  std::string residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -203,8 +203,8 @@ void add_y2h_restraint
 }
 
 void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
+ atom::Hierarchies& hb,std::string protein_b,
  std::string residues_b,double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
@@ -224,15 +224,15 @@ void add_y2h_restraint
 }
 
 void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb,std::string protein_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb,std::string protein_b,
  IntRange residues_b, double kappa)
 {
  add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
 }
 
 void add_symmetry_restraint (Model *m,
- atom::Hierarchies hs,algebra::Transformation3Ds transformations)
+ atom::Hierarchies& hs,algebra::Transformation3Ds transformations)
 {
  Particles ps0=atom::get_leaves(hs[0]);
  for(unsigned int i=1;i<transformations.size();++i){

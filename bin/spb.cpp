@@ -42,12 +42,14 @@ IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,IL2_ps,(m));
 // List of Movers for MC
 core::Movers mvs;
-
 atom::Hierarchies all_mol=
  create_representation(m,mydata,bCP_ps,CP_ps,IL2_ps,mvs);
-
+//
 // RESTART from individual rmf file
-// TO DO
+if(mydata.file_list.size()>0){
+ std::cout << "Restart from file" << std::endl;
+ load_restart(all_mol,mydata);
+}
 //
 // Prepare output file
 std::string trajname="traj.rmf";
@@ -94,18 +96,18 @@ if(mydata.add_fret){
  add_fret_restraint(m,all_mol, "Spc29p",    "N",
                       all_mol, "Cmd1p",     "C", 1.75, mydata.kappa);
  add_fret_restraint(m,all_mol, "Spc29p",    "C",
-                      all_mol, "Spc110p_c", "C", 1.37, mydata.kappa);
+                      all_mol, "Spc110p",   "C", 1.37, mydata.kappa);
  add_fret_restraint(m,all_mol, "Spc29p",    "C",
                       all_mol, "Spc42p",    "N", 2.05, mydata.kappa);
  add_fret_restraint(m,all_mol, "Cmd1p",     "C",
                       all_mol, "Spc42p",    "N", 2.07, mydata.kappa);
  add_fret_restraint(m,all_mol, "Cmd1p",     "C",
-                      all_mol, "Spc110p_c", "C", 2.15, mydata.kappa);
+                      all_mol, "Spc110p",   "C", 2.15, mydata.kappa);
  add_fret_restraint(m,all_mol, "Spc42p",    "N",
-                      all_mol, "Spc110p_c", "C", 2.02, mydata.kappa);
+                      all_mol, "Spc110p",   "C", 2.02, mydata.kappa);
 // inter CP-IL2
  add_fret_restraint(m,all_mol, "Spc42p",    "C",
-                      all_mol, "Spc110p_c", "C", 1.07, mydata.kappa);
+                      all_mol, "Spc110p",   "C", 1.07, mydata.kappa);
  add_fret_restraint(m,all_mol, "Cnm67p_c",  "C",
                       all_mol, "Cmd1p",     "C", 1.09, mydata.kappa);
  add_fret_restraint(m,all_mol, "Spc42p",    "C",
@@ -128,13 +130,13 @@ if(mydata.add_y2h){
 //
 // CP
  add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
-                     all_mol, "Spc110p_c",  IntRange(900,944), mydata.kappa);
+                     all_mol, "Spc110p",    IntRange(900,944), mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",     "N",
-                     all_mol, "Spc110p_c",  "C", mydata.kappa);
+                     all_mol, "Spc110p",    "C", mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc29p",     "ALL",
-                     all_mol, "Spc110p_c",  IntRange(811,944), mydata.kappa);
- add_y2h_restraint(m,all_mol, "Spc110p_c",  "C",
-                     all_mol, "Spc110p_c",  "C", mydata.kappa);
+                     all_mol, "Spc110p",    IntRange(811,944), mydata.kappa);
+ add_y2h_restraint(m,all_mol, "Spc110p",    "C",
+                     all_mol, "Spc110p",    "C", mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",     IntRange(1,138),
                      all_mol, "Spc29p",     "ALL", mydata.kappa);
 // Having a rigid coiled-coil, this is always satisfied
@@ -152,7 +154,7 @@ core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);
 // hot steps
 std::cout << "High temperature initialization" << std::endl;
 mc->set_kt(mydata.MC.tmax);
-mc->optimize(mydata.MC.nhot);
+if(mydata.MC.nhot>0) {mc->optimize(mydata.MC.nhot);}
 mc->set_kt(mydata.MC.tmin);
 
 std::cout << "Sampling" << std::endl;

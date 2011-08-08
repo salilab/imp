@@ -40,6 +40,9 @@ IMPMEMBRANEEXPORT atom::Molecules create_coiled_coil
 int nbeads,display::Color colore,int copy,
 algebra::Vector3D x0,int start_residue);
 
+IMPMEMBRANEEXPORT void load_restart
+ (atom::Hierarchies& all_mol,SPBParameters mydata);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_REPRESENTATION_H */

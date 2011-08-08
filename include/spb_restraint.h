@@ -25,7 +25,7 @@ IMPMEMBRANEEXPORT core::SphereDistancePairScore*
  get_sphere_pair_score(double dist, double kappa);
 
 IMPMEMBRANEEXPORT void add_SPBexcluded_volume
- (Model *m,atom::Hierarchies hs,double kappa);
+ (Model *m,atom::Hierarchies& hs,double kappa);
 
 IMPMEMBRANEEXPORT void add_internal_restraint(Model *m,std::string name,
 atom::Molecule protein_a,atom::Molecule protein_b,double kappa,double dist);
@@ -44,32 +44,32 @@ IMPMEMBRANEEXPORT void add_layer_restraint(Model *m,
 container::ListSingletonContainer *lsc, FloatRange range, double kappa);
 
 IMPMEMBRANEEXPORT void add_fret_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb, std::string protein_b, std::string residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value,double kappa);
 
 IMPMEMBRANEEXPORT void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,IntRange residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
+ atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,
  double kappa);
 
 IMPMEMBRANEEXPORT void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb, std::string protein_b, std::string residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double kappa);
 
 IMPMEMBRANEEXPORT void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies hb,std::string protein_b,std::string residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
+ atom::Hierarchies& hb,std::string protein_b,std::string residues_b,
  double kappa);
 
 IMPMEMBRANEEXPORT void add_y2h_restraint
-(Model *m,atom::Hierarchies ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies hb,std::string protein_b,IntRange residues_b,
+(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+ atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,
  double kappa);
 
 IMPMEMBRANEEXPORT void add_symmetry_restraint
- (Model *m,atom::Hierarchies hs,algebra::Transformation3Ds transformations);
+ (Model *m,atom::Hierarchies& hs,algebra::Transformation3Ds transformations);
 
 IMPMEMBRANE_END_NAMESPACE
 

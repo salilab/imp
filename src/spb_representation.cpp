@@ -11,7 +11,11 @@
 #include <IMP/container.h>
 #include <IMP/membrane.h>
 #include <IMP/display.h>
+#include <IMP/rmf.h>
 #include <string>
+#include <list>
+#include <map>
+
 using namespace IMP;
 using namespace IMP::membrane;
 
@@ -45,7 +49,7 @@ for(int i=0;i<mydata.num_cells;++i){
 
  for(int j=0;j<mydata.num_copies;++j){
 
-  if(mydata.add_Spc42p){
+  if(mydata.protein_list["Spc42p"]){
   //Spc42p_n, 2 copies, 1 bead
    atom::Molecule Spc42p_n_0=
     create_protein(m,"Spc42p_n",7,1,
@@ -139,7 +143,7 @@ for(int i=0;i<mydata.num_cells;++i){
    all_mol.add_child(Spc42p_1);
   }
 
-  if(mydata.add_Spc29p){
+  if(mydata.protein_list["Spc29p"]){
   //Spc29p, 2 beads for N, 2 beads for C
    atom::Molecules Spc29p_all;
    atom::Molecule Spc29p_n=
@@ -170,7 +174,7 @@ for(int i=0;i<mydata.num_cells;++i){
     }
    }
   }
-  if(mydata.add_Cmd1p){
+  if(mydata.protein_list["Cmd1p"]){
  //Cmd1p, 1 bead for N, 1 bead for C
    if(!mydata.use_structure){
     atom::Molecules Cmd1p_all;
@@ -217,7 +221,7 @@ for(int i=0;i<mydata.num_cells;++i){
     }
    }
   }
-  if(mydata.add_Cnm67p_c){
+  if(mydata.protein_list["Cnm67p_c"]){
  //Cnm67p_c, 2 beads
    if(!mydata.use_structure){
     atom::Molecule Cnm67p_c=
@@ -257,7 +261,7 @@ for(int i=0;i<mydata.num_cells;++i){
   }
  } // cycle on copies
 
- if(mydata.add_Spc110p){
+ if(mydata.protein_list["Spc110p"]){
  // For Spc110 I need something different
   for(int j=0;j<mydata.num_copies/2;++j){
  //Spc110p_c, 3 beads for C terminus
@@ -516,6 +520,38 @@ algebra::Vector3D x0,int start_residue)
  ret.push_back(coil_A);
  ret.push_back(coil_B);
  return ret;
+}
+
+void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)
+{
+ std::map<std::string,std::string>::iterator it;
+ std::list<std::string>::iterator iit;
+ std::list<std::string> file_list;
+
+ for (it = mydata.file_list.begin(); it != mydata.file_list.end(); it++){
+  file_list.push_back((*it).second);
+ }
+// eliminate duplicates from file_list
+ file_list.unique();
+// now cycle on file list
+ for (iit = file_list.begin(); iit != file_list.end(); iit++){
+  rmf::RootHandle rh = rmf::open_rmf_file(*iit);
+  atom::Hierarchies hs;
+  for(unsigned int i=0;i<all_mol.size();++i){
+   atom::Hierarchies hhs=all_mol[i].get_children();
+   for(unsigned int j=0;j<hhs.size();++j){
+    if(mydata.file_list[hhs[j]->get_name()]==*iit){
+     hs.push_back(hhs[j]);
+    }
+   }
+  }
+  rmf::set_hierarchies(rh, hs);
+// reload last frame
+  for(unsigned int i=0;i<hs.size();++i){
+   unsigned int iframe=rmf::get_number_of_frames(rh,hs[i]);
+   rmf::load_frame(rh,iframe-1,hs[i]);
+  }
+ }
 }
 
 IMPMEMBRANE_END_NAMESPACE

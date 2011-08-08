@@ -30,6 +30,12 @@ SPBParameters get_SPBParameters(TextInput in) {
  bool add_Cnm67p_c;
  bool add_fret, add_y2h;
  std::string cell_type;
+ std::string load_Spc42p;
+ std::string load_Spc29p;
+ std::string load_Spc110p;
+ std::string load_Cmd1p;
+ std::string load_Cnm67p_c;
+ std::map<std::string,std::string> file_list;
 
  desc.add_options()("do_wte",       value< bool >(&do_wte),           "ciao");
  desc.add_options()("use_structure",value< bool >(&use_structure),    "ciao");
@@ -41,7 +47,11 @@ SPBParameters get_SPBParameters(TextInput in) {
  desc.add_options()("add_Cnm67p_c", value< bool >(&add_Cnm67p_c),     "ciao");
  desc.add_options()("add_fret",     value< bool >(&add_fret),         "ciao");
  desc.add_options()("add_y2h",      value< bool >(&add_y2h),          "ciao");
-
+ desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
+ desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
+ desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
+ desc.add_options()("load_Cmd1p",value<std::string>(&load_Cmd1p), "ciao");
+ desc.add_options()("load_Cnm67p_c",value<std::string>(&load_Cnm67p_c),"ciao");
 
 
  OPTION(double, mc_tmin);
@@ -96,13 +106,21 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
  ret.resolution=resolution;
- ret.add_Spc42p=add_Spc42p;
- ret.add_Spc29p=add_Spc29p;
- ret.add_Spc110p=add_Spc110p;
- ret.add_Cmd1p=add_Cmd1p;
- ret.add_Cnm67p_c=add_Cnm67p_c;
+// restraint
  ret.add_fret=add_fret;
  ret.add_y2h=add_y2h;
+// protein_list
+ ret.protein_list["Spc42p"]=add_Spc42p;
+ ret.protein_list["Spc29p"]=add_Spc29p;
+ ret.protein_list["Spc110p"]=add_Spc110p;
+ ret.protein_list["Cmd1p"]=add_Cmd1p;
+ ret.protein_list["Cnm67p_c"]=add_Cnm67p_c;
+// file map
+ if(load_Spc42p.length()>0.0)   ret.file_list["Spc42p"]=load_Spc42p;
+ if(load_Spc29p.length()>0.0)   ret.file_list["Spc29p"]=load_Spc29p;
+ if(load_Spc110p.length()>0.0)  ret.file_list["Spc110p"]=load_Spc110p;
+ if(load_Cmd1p.length()>0.0)    ret.file_list["Cmd1p"]=load_Cmd1p;
+ if(load_Cnm67p_c.length()>0.0) ret.file_list["Cnm67p_c"]=load_Cnm67p_c;
 
  algebra::Vector3D CP_center;
  algebra::Vector3D IL2_center;
