@@ -38,7 +38,8 @@ std::vector<VectorD<3> > read_pts(TextInput oin) {
   return ret;
 }
 
-void write_spheres(const std::vector<SphereD<3> > &vs, TextOutput out) {
+void write_spheres(const std::vector<SphereD<3> > &vs,
+                   TextOutput out) {
   for (unsigned int i=0; i< vs.size(); ++i) {
     out.get_stream() << spaces_io(vs[i]) << "\n";
   }
