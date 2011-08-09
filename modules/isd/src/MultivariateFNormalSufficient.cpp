@@ -17,74 +17,88 @@
 
 IMPISD_BEGIN_NAMESPACE
 
-  MultivariateFNormalSufficient::MultivariateFNormalSufficient(
-          algebra::internal::TNT::Array2D<double> FA, double JA, 
-          algebra::internal::TNT::Array1D<double> FM,
-          algebra::internal::TNT::Array2D<double> P) 
+using IMP::algebra::internal::TNT::Array1D;
+using IMP::algebra::internal::TNT::Array2D;
+
+  MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double> FX, 
+          double JF, Array1D<double> FM, Array2D<double> Sigma) 
     {
-        M_=P.dim1();
-        N_=FA.dim1();
+        N_=FX.dim1();
+        M_=FX.dim2();
         if (N_ <= 0){
             IMP_THROW("please provide at least one observation per dimension", ModelException);
         }
         if (M_ <= 0){
-            IMP_THROW("please provide a nonempty mean vector", ModelException);
+            IMP_THROW("please provide at least one variable", ModelException);
         }
         FM_=FM.copy();
-        FA_=FA.copy();
-        set_JA(JA);
-        compute_sufficient_statistics_matrix();
-        set_P(P);
+        set_FX(FX); //also computes W, Fbar and epsilon.
+        set_JF(JF);
+        set_Sigma(Sigma); //computes the LU decomp.
     }
+
+MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double> Fbar, double JF, 
+            Array1D<double> FM, int Nobs,  Array2D<double> W, Array2D<double> Sigma)
+    {
+        N_=Nobs;
+        M_=Fbar.dim1();
+        if (N_ <= 0){
+            IMP_THROW("please provide at least one observation per dimension", ModelException);
+        }
+        if (M_ <= 0){
+            IMP_THROW("please provide at least one variable", ModelException);
+        }
+        FM_=FM.copy();
+        set_Fbar(Fbar); //also computes epsilon
+        set_W(W);
+        set_JF(JF);
+        set_Sigma(Sigma);
+    }
+
 
   /* probability density function */
   double MultivariateFNormalSufficient::density() const
   { 
-      return norm_*JA_*exp(-0.5*trace_PS());
+      return norm_*JF_*exp(-0.5*(trace_WP() + N_ * mean_dist()));
   }
  
   /* energy (score) functions, aka -log(p) */
   double MultivariateFNormalSufficient::evaluate() const 
   { 
-      return lnorm_ + lJA_ + 0.5*trace_PS();
+      return lnorm_ + lJF_ + 0.5*( trace_WP() + N_*mean_dist()) ;
   }
 
-  algebra::internal::TNT::Array1D<double> 
-   MultivariateFNormalSufficient::evaluate_derivative_FM() const
+  Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
   { 
-      // d(-log(p))/d(FM) = - P * trans(epsilon) * J_N  (J_N is a vector of ones).
-      algebra::internal::TNT::Array1D<double> intval(M_);
-      algebra::internal::TNT::Array1D<double> retval(M_);
-      for (int i=0; i<M_; i++) {
-          intval[i]=0.0;
-          for (int j=0; j<N_; j++) {
-              intval[i] += epsilon_[j][i];
-          }
-      }
+      // d(-log(p))/d(FM) = - N * P * epsilon
+      Array1D<double> retval(M_);
       for (int i=0; i<M_; i++) {
           retval[i]=0.0;
           for (int j=0; j<M_; j++) {
-              retval[i] += - P_[i][j]*intval[j];
+              retval[i] += - N_*P_[i][j]*epsilon_[j];
           }
       }
       return retval;
   }
 
-  algebra::internal::TNT::Array2D<double> 
-   MultivariateFNormalSufficient::evaluate_derivative_P() const
+  Array2D<double> MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
   { 
-      //d(-log(p))/dP = 1/2 * ( S - N*Sigma )
-      algebra::internal::TNT::Array2D<double> R(M_, M_);
+      //d(-log(p))/dSigma = 1/2 (N P - N P epsilon transpose(epsilon) P - P W P)
+      Array2D<double> ptp(compute_PTP());  //O(M^2)
+      Array2D<double> pwp(compute_PWP()); //O(M^4), can be easily optimized
+      Array2D<double> R(M_,M_);
       for (int i=0; i<M_; i++){
           for (int j=0; j<M_; j++){
-              R[i][j] = 0.5*(S_[i][j]-N_*Sigma_[i][j]);
+              R[i][j] = 0.5*(N_*(P_[i][j] - ptp[i][j]) - pwp[i][j]);
           }
       }
       return R;
+
   }
   
-  bool MultivariateFNormalSufficient::are_equal(algebra::internal::TNT::Array1D<double> A,
-                 algebra::internal::TNT::Array1D<double> B) const {
+  bool MultivariateFNormalSufficient::are_equal(Array1D<double> A,
+                 Array1D<double> B) const 
+   {
       if (A.dim1() != B.dim1()) return false;
       for (int i=0; i<A.dim1(); i++){
               if (A[i] != B[i]) return false;
@@ -92,8 +106,9 @@ IMPISD_BEGIN_NAMESPACE
       return true;
   }
 
-  bool MultivariateFNormalSufficient::are_equal(algebra::internal::TNT::Array2D<double> A,
-                 algebra::internal::TNT::Array2D<double> B) const {
+  bool MultivariateFNormalSufficient::are_equal(Array2D<double> A,
+                 Array2D<double> B) const 
+   {
       if (A.dim1() != B.dim1()) return false;
       if (A.dim2() != B.dim2()) return false;
       for (int i=0; i<A.dim1(); i++){
@@ -104,81 +119,160 @@ IMPISD_BEGIN_NAMESPACE
       return true;
   }
 
-  void MultivariateFNormalSufficient::set_FA(algebra::internal::TNT::Array2D<double> FA) {
-    if (!are_equal(FA,FA_)){
-        if (FA_.dim1() != N_) {
-            IMP_THROW("size mismatch for FA in the number of repetitions", ModelException);
+  void MultivariateFNormalSufficient::set_FX(Array2D<double> FX) 
+  {
+    if (!are_equal(FX,FX_)){
+        if (FX_.dim1() != N_) {
+            IMP_THROW("size mismatch for FX in the number of repetitions", ModelException);
             }
-        if (FA_.dim2() != M_) {
-            IMP_THROW("size mismatch for FA and P", ModelException);
+        if (FX_.dim2() != M_) {
+            IMP_THROW("size mismatch for FX in the number of variables", ModelException);
             }
-        FA_=FA.copy();
-        compute_sufficient_statistics_matrix();
+        FX_=FX.copy();
+        compute_sufficient_statistics();
     }
   }
 
-  void MultivariateFNormalSufficient::set_JA(double f) {
-    JA_=f;
-    lJA_=-log(JA_);
+  void MultivariateFNormalSufficient::set_JF(double f) 
+  {
+    JF_=f;
+    lJF_=-log(JF_);
   }
 
-  void MultivariateFNormalSufficient::set_FM(algebra::internal::TNT::Array1D<double> FM) {
+  void MultivariateFNormalSufficient::set_FM(Array1D<double> FM) 
+  {
     if (!are_equal(FM,FM_)){
         if (FM_.dim1() != M_) {
-            IMP_THROW("size mismatch for FM and P", ModelException);
+            IMP_THROW("size mismatch for FM", ModelException);
             }
         FM_=FM.copy();
-        compute_sufficient_statistics_matrix();
+        compute_epsilon();
     }
   }
 
-  void MultivariateFNormalSufficient::set_P(algebra::internal::TNT::Array2D<double> P)  
+  void MultivariateFNormalSufficient::set_Fbar(Array1D<double> Fbar) 
   {
-    if (!are_equal(P,P_)) {
-        if (P.dim2() != P.dim1()) {
+    if (!are_equal(Fbar,Fbar_)){
+        if (Fbar_.dim1() != M_) {
+            IMP_THROW("size mismatch for Fbar", ModelException);
+            }
+        Fbar_=Fbar.copy();
+        compute_epsilon();
+    }
+  }
+
+  void MultivariateFNormalSufficient::set_Sigma(Array2D<double> Sigma)  
+  {
+    if (!are_equal(Sigma,Sigma_)) {
+        if (Sigma.dim2() != Sigma.dim1()) {
             IMP_THROW("need a square matrix!", ModelException);
             }
-        P_=P;
+        Sigma_=Sigma;
         // compute LU decomposition for determinant and inverse
-        LUP_.reset(new algebra::internal::JAMA::LU<double> (P_));
+        LUSigma_.reset(new algebra::internal::JAMA::LU<double> (Sigma_));
         // determinant and derived constants
-        double detP=LUP_->det();
-        norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) * pow(detP, double(N_)/2.0);
-        lnorm_=double(N_*M_)/2 * log(2*IMP::PI) - double(N_)/2 * log(detP);
+        double detSigma=LUSigma_->det();
+        norm_=pow(2*IMP::PI, -double(N_*M_)/2.0) * pow(detSigma, -double(N_)/2.0);
+        lnorm_=double(N_*M_)/2 * log(2*IMP::PI) + double(N_)/2 * log(detSigma);
         //inverse (taken from TNT website)
-        algebra::internal::TNT::Array2D<double> id(M_, M_, 0.0);
+        Array2D<double> id(M_, M_, 0.0);
         for (int i=0; i<M_; i++) id[i][i] = 1.0;
-        Sigma_=LUP_->solve(id);
+        P_=LUSigma_->solve(id);
     }
   }
 
-  double MultivariateFNormalSufficient::trace_PS() const {
+  double MultivariateFNormalSufficient::trace_WP() const 
+  {
       double trace=0;
       for (int i=0; i<M_; i++){
           for (int j=0; j<M_; j++){
-              trace += P_[i][j]*S_[i][j];
+              trace += W_[i][j]*P_[i][j];
           }
       }
       return trace;
   }
-
-  void MultivariateFNormalSufficient::compute_sufficient_statistics_matrix()
+ 
+  double MultivariateFNormalSufficient::mean_dist() const
 {
-    //std::cout << "computing matrix with N= " << N_ << " and M= " << M_ << std::endl;
-    epsilon_ = algebra::internal::TNT::Array2D<double>(N_,M_); // deviations matrix
-    for (int i=0; i<N_; i++){
+    double dist=0;
+    for (int i=0; i<M_; i++){
         for (int j=0; j<M_; j++){
-            epsilon_[i][j] = FA_[i][j] - FM_[j];
-            //std::cout << "epsilon " << i << " " << j << " " << epsilon_[i][j] << std::endl;
+            dist += epsilon_[i]*P_[i][j]*epsilon_[j];
         }
     }
-    S_ = matmult(transpose(epsilon_),epsilon_);
+    return dist;
+}
 
-    //for (int i=0; i<M_; i++){
-    //    for (int j=0; j<M_; j++){
-    //        std::cout << "S " << i << " " << j << " " << S_[i][j] << std::endl;
-    //    }
-    //}
+  Array2D<double> MultivariateFNormalSufficient::compute_PTP() const 
+{
+  //compute P*epsilon
+  Array1D<double> peps(M_);
+  for (int i=0; i<M_; i++){
+      peps[i] = 0.0;
+      for (int j=0; j<M_; j++){
+          peps[i] += P_[i][j]*epsilon_[j];
+      }
+  }
+  //compute peps*trans(peps)
+  Array2D<double> R(M_,M_);
+  for (int i=0; i<M_; i++){
+      for (int j=0; j<M_; j++){
+          R[i][j] = peps[i]*peps[j];
+      }
+  }
+  return R;
+}
+
+Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
+{
+      //compute PWP
+      Array2D<double> R(M_,M_);
+      for (int i=0; i<M_; i++){
+        for (int j=0; j<M_; j++){
+            R[i][j] = 0.0;
+            for (int k=0; k<M_; k++){
+                for (int l=0; l<M_; l++){
+                    R[i][j] += P_[i][k]*W_[k][l]*P_[l][j];
+                }
+            }
+        }
+      }
+      return R;
+}
+
+  void MultivariateFNormalSufficient::compute_sufficient_statistics()
+{
+    Fbar_ = Array1D<double> (M_,0.0);
+    for (int j=0; j<M_; j++){
+        for (int i=0; i<N_; i++){
+            Fbar_[j] += FX_[i][j];
+        }
+        Fbar_[j] = Fbar_[j]/N_;
+    }
+    compute_epsilon();
+    //
+    W_ = Array2D<double> (M_,M_,0.0);
+    for (int k=0; k<N_; k++){
+        for (int i=0; i<M_; i++){
+            int aik = FX_[k][i] - Fbar_[i];
+            for (int j=0; j<=i; j++){
+                int ajk=FX_[k][j] - Fbar_[j];
+                W_[i][j] += aik*ajk;
+            }
+        }
+    }
+    for (int i=0; i<M_; i++){
+        for (int j=i+1; j<M_; j++){
+            W_[i][j] = W_[j][i];
+        }
+    }
+}
+
+void MultivariateFNormalSufficient::compute_epsilon(){
+    epsilon_ = Array1D<double> (M_);
+    for (int i=0; i<M_; i++){
+        epsilon_[i] = Fbar_[i] - FM_[i];
+    }
 }
 
 IMPISD_END_NAMESPACE
