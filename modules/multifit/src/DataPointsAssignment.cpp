@@ -8,6 +8,7 @@
 
 #include <IMP/multifit/DataPointsAssignment.h>
 #include <IMP/em/MRCReaderWriter.h>
+#include <IMP/em/converters.h>
 #include <IMP/container/ListSingletonContainer.h>
 #include <IMP/container/ClosePairContainer.h>
 #include <IMP/core/RigidClosePairsFinder.h>
@@ -97,20 +98,45 @@ void DataPointsAssignment::set_clusters() {
   }
 }
 
-void DataPointsAssignment::set_edges() {
-  //create bounding boxes for particles
-  algebra::BoundingBox3Ds bb;
+void DataPointsAssignment::set_edges(double voxel_size) {
+  //create projects density maps for each cluster
+  std::vector<Pointer<em::SampledDensityMap> > dmaps;
+  std::vector<algebra::BoundingBox3D> boxes;
+  Pointer<Model> mdl = new Model();
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
-    bb.push_back(algebra::BoundingBox3D(get_cluster_vectors(i)));
-  }
+    algebra::Vector3Ds vecs =get_cluster_vectors(i);
+    Particles ps(vecs.size());
+    for(unsigned int j=0;j<vecs.size();j++) {
+      core::XYZR x = core::XYZR::setup_particle(new Particle(mdl),
+                          algebra::Sphere3D(vecs[j],voxel_size));
+      atom::Mass::setup_particle(x,3.);
+      ps[j]=x;
+    }
+    boxes.push_back(core::get_bounding_box(core::XYZRs(ps)));
+    Pointer<em::SampledDensityMap> segment_map =
+      em::particles2density(ps,voxel_size*1.5,voxel_size);
+    dmaps.push_back(segment_map);
+  }//end create maps
+
   //define edges
   for(int i=0;i<cluster_engine_->get_number_of_clusters();i++) {
     for(int j=i+1;j<cluster_engine_->get_number_of_clusters();j++) {
-      if (algebra::get_interiors_intersect(bb[i],bb[j])){
+      if (!algebra::get_interiors_intersect(boxes[i],boxes[j]))
+        continue;
+      algebra::Vector3Ds vecs = get_cluster_vectors(j);
+      //check if the vectors are inside the i'th map
+      bool touching=false;
+      for(unsigned int k=0;(k<vecs.size())&&(!touching);k++) {
+        if (!dmaps[i]->is_part_of_volume(vecs[k]))
+          continue;
+        if (dmaps[i]->get_value(vecs[k])>0.01)
+          touching=true;
+      }
+      if (touching) {
         edges_.push_back(IntPair(i,j));
       }
-    }
-  }
+    }//for j
+  }//for i
 }
 
 
