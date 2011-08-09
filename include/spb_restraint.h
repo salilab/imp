@@ -75,6 +75,9 @@ IMPMEMBRANEEXPORT void add_link
  (Model *m, atom::Hierarchies& h, std::string protein_a, std::string residues_a,
   std::string protein_b, IntRange residues_b, double kappa);
 
+IMPMEMBRANEEXPORT void add_tilt
+(Model *m, atom::Hierarchies& hs, std::string name, double tilt, double kappa);
+
 IMPMEMBRANE_END_NAMESPACE
 
 #endif  /* IMPMEMBRANE_SPB_RESTRAINT_H */

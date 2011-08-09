@@ -22,6 +22,7 @@ struct SPBParameters {
  double         CP_IL2_gap;
  double         IL2_thickness;
  double         kappa;
+ double         tilt;
  double         resolution;
  std::string    cell_type;
  int            num_cells;

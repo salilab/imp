@@ -280,4 +280,24 @@ void add_layer_restraint(Model *m, container::ListSingletonContainer *lsc,
  m->add_restraint(sr);
 }
 
+void add_tilt (Model *m, atom::Hierarchies& hs,
+ std::string name, double tilt, double kappa)
+{
+ std::list<core::RigidBody> rbs;
+ std::list<core::RigidBody>::iterator iit;
+
+ atom::Selection s=atom::Selection(hs[0]);
+ s.set_molecule(name);
+ Particles ps=s.get_selected_particles();
+ for(unsigned int i=0;i<ps.size();++i){
+  if(core::RigidMember::particle_is_instance(ps[i])){
+   rbs.push_back(core::RigidMember(ps[i]).get_rigid_body());
+  }
+ }
+ rbs.unique();
+ for (iit = rbs.begin(); iit != rbs.end(); iit++){
+  add_tilt_restraint(m,*iit,FloatRange(0.0,tilt),kappa);
+ }
+}
+
 IMPMEMBRANE_END_NAMESPACE

@@ -85,7 +85,10 @@ double dz=mydata.IL2_centers[0][2];
 add_layer_restraint(m, IL2_ps,
  FloatRange(-mydata.IL2_thickness/2.0+dz,mydata.IL2_thickness/2.0+dz),
  mydata.kappa);
-
+//
+// TILT restraint
+//
+add_tilt(m,all_mol,"Spc110p",mydata.tilt,mydata.kappa);
 //
 // FRET
 //

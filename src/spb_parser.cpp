@@ -59,6 +59,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  OPTION(double, mc_dx);
  OPTION(double, mc_dang);
  OPTION(double, kappa);
+ OPTION(double, tilt);
  OPTION(double, side);
  OPTION(double, CP_thickness);
  OPTION(double, CP_IL2_gap);
@@ -102,7 +103,8 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.CP_thickness=CP_thickness;
  ret.CP_IL2_gap=CP_IL2_gap;
  ret.IL2_thickness=IL2_thickness;
- ret.kappa=kappa;
+ ret.kappa=radians(kappa);
+ ret.tilt=tilt;
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
  ret.resolution=resolution;
