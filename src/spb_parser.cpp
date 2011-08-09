@@ -103,8 +103,8 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.CP_thickness=CP_thickness;
  ret.CP_IL2_gap=CP_IL2_gap;
  ret.IL2_thickness=IL2_thickness;
- ret.kappa=radians(kappa);
- ret.tilt=tilt;
+ ret.kappa=kappa;
+ ret.tilt=radians(tilt);
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
  ret.resolution=resolution;
