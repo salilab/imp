@@ -9,7 +9,7 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 
@@ -29,7 +29,7 @@ IMPISD_BEGIN_NAMESPACE
  *  program will not check for that.
  */
 
-class IMPISDEXPORT FNormal : public Object
+class IMPISDEXPORT FNormal : public RefCounted //Object
 {
  public:
   FNormal(double FA, double JA, double FM, double sigma): 
@@ -78,8 +78,8 @@ class IMPISDEXPORT FNormal : public Object
     sigma_=f;
   }
 
-  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
-                            << ", " << FM_ << ", " << sigma_ <<std::endl, {});
+  //IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
+  //                          << ", " << FM_ << ", " << sigma_ <<std::endl, {});
 
  private:
   double FA_,JA_,FM_,sigma_;
