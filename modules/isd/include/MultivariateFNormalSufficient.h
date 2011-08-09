@@ -27,7 +27,7 @@ using IMP::algebra::internal::TNT::Array2D;
 /** Probability density function and -log(p) of multivariate normal
  * distribution of N M-variate observations.
  *
- * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = (2\pi|\Sigma|)^{-N/2} J(F) 
+ * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = \left((2\pi)^{-M/2}|\Sigma|\right)^{-N/2} J(F) 
  *  \exp\left(-\frac{1}{2}
  *   \sum_{i=1}^N {}^t(F(\mu) - F(x_i))\Sigma^{-1}(F(\mu)-F(x_i))
  *      \right) 
@@ -35,7 +35,7 @@ using IMP::algebra::internal::TNT::Array2D;
  *  which is implemented as
  * \f[ p(x_1,\cdots,x_N|\mu,F,\Sigma) = (2\pi|\Sigma|)^{-N/2} J(F) 
  *  \exp\left(-\frac{N}{2} {}^t\epsilon \Sigma^{-1} \epsilon\right)
- *  \eps\left(-|frac{1}{2} \tr(W\Sigma^{-1})\right)
+ *  \eps\left(-\frac{1}{2} \tr(W\Sigma^{-1})\right)
  *  \f]
  *  where
  *  \f[\epsilon = (F(\mu)- \overline{F(x)}) \quad 
