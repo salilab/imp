@@ -117,7 +117,8 @@ void do_project_particles(const ParticlesTemp &ps,
   }
   // Centroid
   unsigned long n_particles = ps.size();
-  core::XYZRsTemp xyzrs(ps);
+  //core::XYZRsTemp xyzrs(ps);
+  core::XYZRs xyzrs(ps);
   algebra::Vector3D centroid = core::get_centroid(xyzrs);
 
   // clear data before creating a new projection
@@ -379,7 +380,8 @@ unsigned int get_enclosing_image_size(const ParticlesTemp &ps,
                                       double pixel_size,
                                       unsigned int slack) {
   IMP_NEW(Particle, p, (ps[0]->get_model(), "cover Particle") );
-  core::XYZsTemp xyzs(ps);
+  // core::XYZsTemp xyzs(ps);
+  core::XYZs xyzs(ps);
   double diameter = 2 * core::get_enclosing_sphere(xyzs).get_radius();
   unsigned int size = static_cast<unsigned int>(diameter/pixel_size) + 2*slack;
   return size;
