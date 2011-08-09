@@ -48,7 +48,7 @@ protected:
   algebra::Vector3Ds set_cluster(int cluster_ind);
   void set_clusters();
   void connect_clusters(int c1, int c2);
-  void set_edges();
+  void set_edges(double voxel_size=3.);
   /*  bool are_particles_close(core::RigidBody rb1,
       core::RigidBody rb2);*/
   Pointer<const XYZDataPoints> data_;
