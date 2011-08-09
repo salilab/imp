@@ -20,13 +20,14 @@ IMPISD_BEGIN_NAMESPACE
 using IMP::algebra::internal::TNT::Array1D;
 using IMP::algebra::internal::TNT::Array2D;
 
-  MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double> FX, 
+MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double> FX, 
           double JF, Array1D<double> FM, Array2D<double> Sigma) 
-    {
+{
         N_=FX.dim1();
         M_=FX.dim2();
         if (N_ <= 0){
-            IMP_THROW("please provide at least one observation per dimension", ModelException);
+            IMP_THROW("please provide at least one observation per dimension",
+                    ModelException);
         }
         if (M_ <= 0){
             IMP_THROW("please provide at least one variable", ModelException);
@@ -35,15 +36,17 @@ using IMP::algebra::internal::TNT::Array2D;
         set_FX(FX); //also computes W, Fbar and epsilon.
         set_JF(JF);
         set_Sigma(Sigma); //computes the LU decomp.
-    }
+}
 
-MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double> Fbar, double JF, 
-            Array1D<double> FM, int Nobs,  Array2D<double> W, Array2D<double> Sigma)
-    {
+MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
+        Fbar, double JF, Array1D<double> FM, int Nobs,  Array2D<double> W,
+        Array2D<double> Sigma)
+{
         N_=Nobs;
         M_=Fbar.dim1();
         if (N_ <= 0){
-            IMP_THROW("please provide at least one observation per dimension", ModelException);
+            IMP_THROW("please provide at least one observation per dimension",
+                    ModelException); 
         }
         if (M_ <= 0){
             IMP_THROW("please provide at least one variable", ModelException);
@@ -53,23 +56,23 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double> Fba
         set_W(W);
         set_JF(JF);
         set_Sigma(Sigma);
-    }
+}
 
 
   /* probability density function */
-  double MultivariateFNormalSufficient::density() const
+double MultivariateFNormalSufficient::density() const
   { 
       return norm_*JF_*exp(-0.5*(trace_WP() + N_ * mean_dist()));
   }
  
   /* energy (score) functions, aka -log(p) */
-  double MultivariateFNormalSufficient::evaluate() const 
+double MultivariateFNormalSufficient::evaluate() const 
   { 
       return lnorm_ + lJF_ + 0.5*( trace_WP() + N_*mean_dist()) ;
   }
 
-  Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
-  { 
+Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
+{ 
       // d(-log(p))/d(FM) = - N * P * epsilon
       Array1D<double> retval(M_);
       for (int i=0; i<M_; i++) {
@@ -79,7 +82,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double> Fba
           }
       }
       return retval;
-  }
+}
 
   Array2D<double> MultivariateFNormalSufficient::evaluate_derivative_Sigma() const
   { 
@@ -122,10 +125,10 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double> Fba
   void MultivariateFNormalSufficient::set_FX(Array2D<double> FX) 
   {
     if (!are_equal(FX,FX_)){
-        if (FX_.dim1() != N_) {
+        if (FX.dim1() != N_) {
             IMP_THROW("size mismatch for FX in the number of repetitions", ModelException);
             }
-        if (FX_.dim2() != M_) {
+        if (FX.dim2() != M_) {
             IMP_THROW("size mismatch for FX in the number of variables", ModelException);
             }
         FX_=FX.copy();
@@ -268,7 +271,8 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
     }
 }
 
-void MultivariateFNormalSufficient::compute_epsilon(){
+void MultivariateFNormalSufficient::compute_epsilon()
+{
     epsilon_ = Array1D<double> (M_);
     for (int i=0; i<M_; i++){
         epsilon_[i] = Fbar_[i] - FM_[i];
