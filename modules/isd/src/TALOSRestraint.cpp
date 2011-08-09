@@ -34,7 +34,7 @@ TALOSRestraint::TALOSRestraint(Particles p, Floats data, Particle *kappa) :kappa
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
-  mises_->set_was_used(true);
+  //mises_->set_was_used(true);
   }
 
 TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
@@ -50,7 +50,7 @@ TALOSRestraint::TALOSRestraint(Particles p, unsigned N, double R0, double
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
-  mises_->set_was_used(true);
+  //mises_->set_was_used(true);
   }
 
 TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4, 
@@ -63,7 +63,7 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particl
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, data, kappaval);
-  mises_->set_was_used(true);
+  //mises_->set_was_used(true);
 }
 
 TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particle *p4,
@@ -76,7 +76,7 @@ TALOSRestraint::TALOSRestraint(Particle* p1, Particle* p2, Particle* p3, Particl
   // create von Mises
   double kappaval=Scale(kappa_).get_scale();
   mises_ = new vonMisesSufficient(0, N, R0, chiexp, kappaval);
-  mises_->set_was_used(true);
+  //mises_->set_was_used(true);
 }
 
 //! Calculate the score for this dihedral restraint.

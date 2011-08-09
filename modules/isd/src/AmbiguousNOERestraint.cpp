@@ -54,7 +54,7 @@ AmbiguousNOERestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
   double FM = log(Icalc);
   double JA = 1.0/Vexp_;
   IMP_NEW(FNormal, lognormal, (FA,JA,FM,sigma_val));
-  lognormal->set_was_used(true); // get rid of warning
+  //lognormal->set_was_used(true); // get rid of warning
   /* get score */
   double score= lognormal->evaluate();
   const_cast<AmbiguousNOERestraint *>(this)->set_chi(FA-FM);
