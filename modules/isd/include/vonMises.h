@@ -9,7 +9,7 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -25,7 +25,7 @@ IMPISD_BEGIN_NAMESPACE
  *  and \f$\kappa = 1/\sigma^2\f$.
  */
 
-class vonMises : public Object
+class vonMises : public RefCounted //Object
 {
  public:
   vonMises(double x, double mu, double kappa): x_(x), mu_(mu) 
@@ -70,8 +70,8 @@ class vonMises : public Object
     }
   }
 
-  IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
-                            << ", " << kappa_  <<std::endl, {});
+  //IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
+  //                          << ", " << kappa_  <<std::endl, {});
 
  private:
   double x_,mu_,kappa_,I0_,I1_,logterm_;

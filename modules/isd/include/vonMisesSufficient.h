@@ -9,7 +9,7 @@
 
 #include "isd_config.h"
 #include <IMP/macros.h>
-#include <IMP/Object.h>
+#include <IMP/Model.h>
 #include <IMP/constants.h>
 #include <math.h>
 #include <boost/math/special_functions/bessel.hpp>
@@ -30,7 +30,7 @@ IMPISD_BEGIN_NAMESPACE
     \note derivative with respect to the mean \f$\chi_{exp}\f$ is not provided.
  */
 
-class vonMisesSufficient : public Object
+class vonMisesSufficient : public RefCounted //Object
 {
  public:
   /** compute von Mises given the sufficient statistics
@@ -146,9 +146,9 @@ class vonMisesSufficient : public Object
         return retval;
     }
 
-  IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_ << ", " << N_
-          << ", " << R0_ << ", " << chiexp_ <<
-                            ", " << kappa_  <<std::endl, {});
+  //IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_ << ", " << N_
+  //        << ", " << R0_ << ", " << chiexp_ <<
+  //                          ", " << kappa_  <<std::endl, {});
 
  private:
   double x_,R0_,chiexp_,kappa_,I0_,I1_,logterm_,I0N_;
