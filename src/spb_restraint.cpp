@@ -231,6 +231,30 @@ void add_y2h_restraint
  add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
 }
 
+void add_link
+ (Model *m,atom::Hierarchies& h,std::string protein_a,std::string residues_a,
+  std::string protein_b, IntRange residues_b, double kappa)
+{
+ atom::Hierarchies hs=h[0].get_children();
+ std::vector<unsigned int> index_a,index_b;
+ for(unsigned int i=0;i<hs.size();++i){
+  if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
+  if(hs[i]->get_name()==protein_b) {index_b.push_back(i);}
+ }
+ if(index_a.size()!=index_b.size()){
+  std::cout << "Cannot create link restraint!" << std::endl;
+  return;
+ }
+ for(unsigned int i=0;i<index_a.size();++i){
+  atom::Hierarchies hha, hhb;
+  for(unsigned int j=0;j<h.size();++j){
+   hha.push_back(h[j].get_children()[index_a[i]]);
+   hhb.push_back(h[j].get_children()[index_b[i]]);
+  }
+  add_y2h_restraint(m,hha,protein_a,residues_a,hhb,protein_b,residues_b,kappa);
+ }
+}
+
 void add_symmetry_restraint (Model *m,
  atom::Hierarchies& hs,algebra::Transformation3Ds transformations)
 {

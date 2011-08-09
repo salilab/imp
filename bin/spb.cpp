@@ -129,8 +129,9 @@ if(mydata.add_y2h){
 // TWO-HYBRID SCREENING
 //
 // CP
- add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
-                     all_mol, "Spc110p",    IntRange(900,944), mydata.kappa);
+ // substitued by a all-pairs link
+ //add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
+ //                    all_mol, "Spc110p",    IntRange(900,927), mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",     "N",
                      all_mol, "Spc110p",    "C", mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc29p",     "ALL",
@@ -147,6 +148,8 @@ if(mydata.add_y2h){
                      all_mol, "Spc42p",     "C", mydata.kappa);
 }
 //
+// Add link between Spc110p_C and Cmd1p
+add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
 //
 std::cout << "Setup sampler" << std::endl;
 core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);
