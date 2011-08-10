@@ -94,8 +94,8 @@ public:
       double score= it->second;
       IMP_IF_CHECK(USAGE_AND_INTERNAL) {
         double cscore= compute_score<Filter>(pst, ps, state);
-        IMP_INTERNAL_CHECK(score >= max_ && cscore >= max_
-                           || score < max_ && cscore < max_
+        IMP_INTERNAL_CHECK((score >= max_ && cscore >= max_)
+                           || (score < max_ && cscore < max_)
                            || (score-cscore) < .01,
                            "Scores don't match their side of max: "
                            << score << " vs " << cscore);
