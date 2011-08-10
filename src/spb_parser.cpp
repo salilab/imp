@@ -22,7 +22,7 @@ SPBParameters get_SPBParameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- bool do_wte,use_structure;
+ bool do_wte,use_structure,use_compact_Cmd1p;
  bool add_Spc42p;
  bool add_Spc29p;
  bool add_Spc110p;
@@ -37,16 +37,18 @@ SPBParameters get_SPBParameters(TextInput in) {
  std::string load_Cnm67p_c;
  std::map<std::string,std::string> file_list;
 
- desc.add_options()("do_wte",       value< bool >(&do_wte),           "ciao");
- desc.add_options()("use_structure",value< bool >(&use_structure),    "ciao");
- desc.add_options()("cell_type",    value< std::string >(&cell_type), "ciao");
- desc.add_options()("add_Spc42p",   value< bool >(&add_Spc42p),       "ciao");
- desc.add_options()("add_Spc29p",   value< bool >(&add_Spc29p),       "ciao");
- desc.add_options()("add_Spc110p",  value< bool >(&add_Spc110p),      "ciao");
- desc.add_options()("add_Cmd1p",    value< bool >(&add_Cmd1p),        "ciao");
- desc.add_options()("add_Cnm67p_c", value< bool >(&add_Cnm67p_c),     "ciao");
- desc.add_options()("add_fret",     value< bool >(&add_fret),         "ciao");
- desc.add_options()("add_y2h",      value< bool >(&add_y2h),          "ciao");
+ desc.add_options()("do_wte",       value<bool>(&do_wte),           "ciao");
+ desc.add_options()("use_structure",value<bool>(&use_structure),    "ciao");
+ desc.add_options()("use_compact_Cmd1p",value<bool>(&use_compact_Cmd1p),
+  "ciao");
+ desc.add_options()("cell_type",    value<std::string >(&cell_type), "ciao");
+ desc.add_options()("add_Spc42p",   value<bool>(&add_Spc42p),       "ciao");
+ desc.add_options()("add_Spc29p",   value<bool>(&add_Spc29p),       "ciao");
+ desc.add_options()("add_Spc110p",  value<bool>(&add_Spc110p),      "ciao");
+ desc.add_options()("add_Cmd1p",    value<bool>(&add_Cmd1p),        "ciao");
+ desc.add_options()("add_Cnm67p_c", value<bool>(&add_Cnm67p_c),     "ciao");
+ desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
+ desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
  desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
  desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
  desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
@@ -107,6 +109,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.tilt=radians(tilt);
  ret.cell_type=cell_type;
  ret.use_structure=use_structure;
+ ret.use_compact_Cmd1p=use_compact_Cmd1p;
  ret.resolution=resolution;
 // restraint
  ret.add_fret=add_fret;

@@ -205,10 +205,19 @@ for(int i=0;i<mydata.num_cells;++i){
      }
     }
    }else{
+    int ires;
+    std::string filename;
+    if(mydata.use_compact_Cmd1p){
+     ires=1;
+     filename="1PRW.pdb";
+    } else {
+     ires=5;
+     filename="3CLN.pdb";
+    }
     atom::Molecule Cmd1p=
-     create_protein(m,"Cmd1p","3CLN.pdb",mydata.resolution,
+     create_protein(m,"Cmd1p",filename,mydata.resolution,
                      display::Color(255./255.,255./255.,0.),
-                     i,CP_x0,5);
+                     i,CP_x0,ires);
     all_mol.add_child(Cmd1p);
     if(i==0){
      Particles ps_Cmd1p=atom::get_leaves(Cmd1p);
