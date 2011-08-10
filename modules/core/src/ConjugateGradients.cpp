@@ -301,7 +301,7 @@ Float ConjugateGradients::do_optimize(unsigned int max_steps)
 
   // Initialize optimization variables
   int ifun = 0;
-  int nrst, nflag = 0;
+  int nrst;
   NT dg1, xsq, dxsq, alpha, step, u1, u2, u3, u4;
   NT f = 0., dg = 1., w1 = 0., w2 = 0., rtst, bestf;
   bool gradient_direction;
@@ -377,10 +377,8 @@ g40:
     /* If the line search failed, it was either because the maximum number
        of iterations was exceeded, or the minimum could not be found */
     if (static_cast<unsigned int>(ifun) > max_steps) {
-      nflag = 1;
       goto end;
     } else if (gradient_direction) {
-      nflag = 2;
       goto end;
     } else {
       goto g20;
@@ -490,7 +488,6 @@ g40:
   }
 
   /* ROUNDOFF HAS PRODUCED A BAD DIRECTION. */
-  nflag = 3;
 
 end:
   // If the 'best current estimate' is better than the current state, return
