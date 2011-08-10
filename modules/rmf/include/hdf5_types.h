@@ -81,7 +81,7 @@ struct IMPRMFEXPORT FloatTraits {
     static const double ret= std::numeric_limits<double>::max();
     return ret;
   }
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return H5T_NATIVE_DOUBLE;
   }
   static const double& get_fill_value() {
@@ -118,7 +118,7 @@ struct IMPRMFEXPORT IntTraits {
                                               unsigned int sz);
   static std::vector<int> read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a, const std::vector<int> &v);
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return H5T_NATIVE_INT;
   }
   static const int& get_fill_value() {
@@ -198,7 +198,7 @@ struct IMPRMFEXPORT StringTraits {
   static std::string  get_null_value() {
     return std::string();
   }
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return get_hdf5_memory_type();
   }
   static char*&  get_fill_value() {
@@ -243,7 +243,7 @@ struct IMPRMFEXPORT NodeIDTraits {
     static NodeID n;
     return n;
   }
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return IntTraits::get_hdf5_fill_type();
   }
   static const int& get_fill_value() {
@@ -289,7 +289,7 @@ struct IMPRMFEXPORT CharTraits {
                                          unsigned int sz);*/
   static std::string read_values_attribute(hid_t a, unsigned int size);
   static void write_values_attribute(hid_t a, std::string v);
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return H5T_NATIVE_CHAR;
   }
   static char get_fill_value() {
@@ -366,7 +366,7 @@ struct ArrayTraits {
   static void write_values_attribute(hid_t a, const Types &v) {
     IMP_NOT_IMPLEMENTED;
   }
-  static const hid_t get_hdf5_fill_type() {
+  static hid_t get_hdf5_fill_type() {
     return get_hdf5_memory_type();
   }
   static hvl_t& get_fill_value() {
