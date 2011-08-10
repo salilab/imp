@@ -32,7 +32,6 @@ PairsRestraintGeometry::PairsRestraintGeometry(container::PairsRestraint*r):
 IMP::display::Geometries PairRestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
   IMP::display::Geometries ret;
-  bool non_empty=false;
   algebra::Vector3D mp;
   {
     ParticlePair pp= r_->get_argument();
@@ -40,7 +39,6 @@ IMP::display::Geometries PairRestraintGeometry::get_components() const {
     algebra::Vector3D v1=core::XYZ(pp[1]).get_coordinates();
     algebra::Segment3D s(v0, v1);
     ret.push_back(new SegmentGeometry(s));
-    non_empty=true;
     mp=.5*(v0+v1);
   }
   double s= r_->unprotected_evaluate(NULL);
@@ -57,14 +55,12 @@ void PairRestraintGeometry::do_show(std::ostream &out) const {
 IMP::display::Geometries PairsRestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
   IMP::display::Geometries ret;
-  bool non_empty=false;
   algebra::Vector3D mp;
   IMP_FOREACH_PAIR(r_->get_container(), {
         algebra::Vector3D v0=core::XYZ(_1[0]).get_coordinates();
         algebra::Vector3D v1=core::XYZ(_1[1]).get_coordinates();
         algebra::Segment3D s(v0, v1);
         ret.push_back(new SegmentGeometry(s));
-        non_empty=true;
         mp=.5*(v0+v1);
     });
   double s= r_->evaluate(NULL);

@@ -160,7 +160,6 @@ double BrownianDynamics::do_step(const ParticleIndexes &ps,
     for (unsigned int i=0; i< ps.size(); ++i) {
       Diffusion d(get_model(), ps[i]);
       core::XYZ xd(get_model(), ps[i]);
-      unit::Angstrom sigma= get_sigma(get_model(), ps[i], dtfs);
       algebra::Vector3D force(get_force(get_model(), ps[i],
                                         0, dtikt).get_value(),
                               get_force(get_model(), ps[i],

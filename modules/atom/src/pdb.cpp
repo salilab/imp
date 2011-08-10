@@ -197,9 +197,7 @@ Particle* residue_particle(Model *m, const std::string& pdb_line)
   ResidueType residue_name = ResidueType(rn);
 
   // residue decorator
-  Residue rd =
-    Residue::setup_particle(p, residue_name,
-                             residue_index, (int)residue_icode);
+  Residue::setup_particle(p, residue_name, residue_index, (int)residue_icode);
   p->set_name(residue_name.get_string());
   return p;
 }
