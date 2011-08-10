@@ -213,7 +213,7 @@ namespace {
   UpdateRigidBodyMembers::get_output_containers(Particle *) const {
     return ContainersTemp();
   }
-  void UpdateRigidBodyMembers::do_show(std::ostream &out) const {
+  void UpdateRigidBodyMembers::do_show(std::ostream &) const {
   }
 }
 
