@@ -106,76 +106,6 @@ bool test_sanity(){
     return true;
 }
 
-//test when M=1 and N>=1
-bool test_1D(int N){
-    //observation matrix: N values between 0 and 10
-    Array2D<double> FA(N,1);
-    for (int i=0; i<N; i++){
-        FA[i][0]=rand()*10;
-    }
-    //Jacobian: normal distribution.
-    double JA =1.0;
-    //mean vector
-    Array1D<double> FM(1,rand()*10);
-    //Covariance matrix
-    Array2D<double> Sigma(1,1,rand()*10);
-
-    IMP_NEW(IMP::isd::FNormal, fn, (FA[0][0],JA,FM[0],sqrt(Sigma[0][0])));
-    //fn->set_was_used(true);
-    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
-    //mv->set_was_used(true);
-
-    //compute sufficient statistics
-    double sample_mean = 0;
-    for (int i=0; i<N; i++){
-        sample_mean += FA[i][0]/double(N);
-    }
-    double sum_squares = 0;
-    for (int i=0; i<N; i++){
-        sum_squares += IMP::square(FA[i][0] - sample_mean);
-    }
-
-    {
-    //test evaluate()
-    double observed=mv->evaluate();
-    double sigma=sqrt(Sigma[0][0]);
-    double expected=(double)N*log((sqrt(2*IMP::PI)*sigma)) + 
-        1/(2*sigma*sigma) * ((double)N*IMP::square(sample_mean - FM[0]) + sum_squares);
-    //PRINT("evaluate " << observed << " " << expected );
-    //if (naeq(observed,expected)) FAIL("evaluate");
-    }
-
-    {
-    //test density()
-    double observed = mv->density();
-    double expected=pow(2*IMP::PI*Sigma[0][0],N/2.0) * exp(
-            -0.5/Sigma[0][0]*( (double)N*IMP::square(sample_mean - FM[0]) + sum_squares ));
-    //PRINT("density " << observed << " " << expected );
-    //if (naeq(observed,expected)) FAIL("density");
-    }
-
-    {
-    //test evaluate_derivative_FM()
-    Array1D<double> observed = mv->evaluate_derivative_FM();
-    double expected = -double(N)/Sigma[0][0]*(sample_mean - FM[0]);
-    //PRINT("FM " << observed[0] << " " << expected );
-    if (naeq(observed[0],expected)) FAIL("evaluate_derivative_FM");
-    }
-
-    {
-    //test evaluate_derivative_Sigma()
-    Array2D<double> observed = mv->evaluate_derivative_Sigma();
-    double expected = (double)N/(2.0*Sigma[0][0]) 
-        - 0.5 / IMP::square(Sigma[0][0]) 
-            * ((double)N*IMP::square(sample_mean - FM[0]) + sum_squares);
-    PRINT("Sigma " << observed[0][0] << " " << expected << " " << fn->evaluate_derivative_sigma()/(2*sqrt(Sigma[0][0])));
-    //if (naeq(observed[0][0],expected)) FAIL("evaluate_derivative_Sigma");
-    }
-    
-    //all tests succeeded.
-    return true;
-}
-
 //the distribution should coincide with the normal distribution
 //when N=M=1
 bool test_degenerate(){
@@ -225,12 +155,208 @@ bool test_degenerate(){
     return true;
 }
 
-//test when M=2 and N=1
+//the distribution should coincide with two normal distributions
+//when N=2 and M=1
+bool test_degenerate_N2M1(){
+    //observation matrix
+    Array2D<double> FA(2,1);
+    FA[0][0] = rand()*10;
+    FA[1][0] = rand()*10;
+    //Jacobian
+    double JA =1.0;
+    //mean vector
+    Array1D<double> FM(1,rand()*10);
+    //Covariance matrix
+    Array2D<double> Sigma(1,1,1.0+rand());
+    
+    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
+    //double mean =(FA[0][0]+FA[1][0])/2.0;
+    //double ss = (IMP::square(FA[0][0] - mean) + IMP::square(FA[1][0] - mean));
+    //PRINT(" epsilon " << mean-FM[0] << " ss " << ss);
+    //mv->set_was_used(true);
+    IMP_NEW(IMP::isd::FNormal, fn, (FA[0][0],JA,FM[0],sqrt(Sigma[0][0])));
+    IMP_NEW(IMP::isd::FNormal, fn2, (FA[1][0],JA,FM[0],sqrt(Sigma[0][0])));
+    //fn->set_was_used(true);
+
+    {
+    //evaluate
+    double observed=mv->evaluate();
+    double expected=fn->evaluate()+fn2->evaluate();
+    //double mean =(FA[0][0]+FA[1][0])/2.0;
+    //double meandist = 2.0*IMP::square(mean-FM[0])/Sigma[0][0];
+    //double ss = (IMP::square(FA[0][0] - mean) + IMP::square(FA[1][0] - mean))/Sigma[0][0];
+    //PRINT(" eval " << observed << " " << expected << " " << meandist << " " << ss);
+    if (naeq(observed,expected)) FAIL("evaluate");
+    }
+    {
+    //density
+    double observed=mv->density();
+    double expected=fn->density()*fn2->density();
+    if (naeq(observed,expected)) FAIL("evaluate");
+    }
+
+    {
+    //evaluate_derivative_FM
+    double observed=mv->evaluate_derivative_FM()[0];
+    double expected=fn->evaluate_derivative_FM()+fn2->evaluate_derivative_FM();
+    if (naeq(observed,expected)) FAIL("evaluate_derivative_FM");
+    }
+
+    {
+    //evaluate_derivative_Sigma
+    double observed=mv->evaluate_derivative_Sigma()[0][0];
+    double expected=
+        fn->evaluate_derivative_sigma()/(2*sqrt(Sigma[0][0]))
+        + fn2->evaluate_derivative_sigma()/(2*sqrt(Sigma[0][0]));
+    if (naeq(observed,expected)) FAIL("evaluate_derivative_Sigma");
+    }
+    return true;
+}
+
+//the distribution should coincide with two normal distributions
+//when N=1 and M=2 in the absence of correlations
+bool test_degenerate_N1M2(){
+    //observation matrix
+    Array2D<double> FA(1,2);
+    FA[0][0] = rand()*10;
+    FA[0][1] = rand()*10;
+    //Jacobian
+    double JA =1.0;
+    //mean vector
+    Array1D<double> FM(2);
+    FM[0]=rand()*10;
+    FM[1]=rand()*10;
+    //Covariance matrix
+    Array2D<double> Sigma(2,2,0.0);
+    Sigma[0][0]=1.0+rand();
+    Sigma[1][1]=1.0+rand();
+    
+    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
+    //double mean =(FA[0][0]+FA[1][0])/2.0;
+    //double ss = (IMP::square(FA[0][0] - mean) + IMP::square(FA[1][0] - mean));
+    //PRINT(" epsilon " << mean-FM[0] << " ss " << ss);
+    //mv->set_was_used(true);
+    IMP_NEW(IMP::isd::FNormal, fn, (FA[0][0],JA,FM[0],sqrt(Sigma[0][0])));
+    IMP_NEW(IMP::isd::FNormal, fn2, (FA[0][1],JA,FM[1],sqrt(Sigma[1][1])));
+    //fn->set_was_used(true);
+
+    {
+    //evaluate
+    double observed=mv->evaluate();
+    double expected=fn->evaluate()+fn2->evaluate();
+    //double mean =(FA[0][0]+FA[1][0])/2.0;
+    //double meandist = 2.0*IMP::square(mean-FM[0])/Sigma[0][0];
+    //double ss = (IMP::square(FA[0][0] - mean) + IMP::square(FA[1][0] - mean))/Sigma[0][0];
+    //PRINT(" eval " << observed << " " << expected << " " << meandist << " " << ss);
+    if (naeq(observed,expected)) FAIL("evaluate");
+    }
+    {
+    //density
+    double observed=mv->density();
+    double expected=fn->density()*fn2->density();
+    if (naeq(observed,expected)) FAIL("evaluate");
+    }
+
+    {
+    //evaluate_derivative_FM
+    Array1D<double> observed=mv->evaluate_derivative_FM();
+    double expected=fn->evaluate_derivative_FM();
+    if (naeq(observed[0],expected)) FAIL("evaluate_derivative_FM 1");
+    expected=fn2->evaluate_derivative_FM();
+    if (naeq(observed[1],expected)) FAIL("evaluate_derivative_FM 2");
+    }
+
+    {
+    //evaluate_derivative_Sigma
+    Array2D<double> observed=mv->evaluate_derivative_Sigma();
+    double expected=fn->evaluate_derivative_sigma()/(2*sqrt(Sigma[0][0]));
+    if (naeq(observed[0][0],expected)) FAIL("evaluate_derivative_Sigma 1 1");
+    expected=fn2->evaluate_derivative_sigma()/(2*sqrt(Sigma[1][1]));
+    if (naeq(observed[1][1],expected)) FAIL("evaluate_derivative_Sigma 2 2");
+    }
+    return true;
+}
+
+//test when M=1 and N>=1
+bool test_1D(int N){
+    //observation matrix: N values between 0 and 10
+    Array2D<double> FA(N,1);
+    for (int i=0; i<N; i++){
+        FA[i][0]=rand()*10;
+    }
+    //Jacobian: normal distribution.
+    double JA =1.0;
+    //mean vector
+    Array1D<double> FM(1,rand()*10);
+    //Covariance matrix
+    Array2D<double> Sigma(1,1,rand()*10);
+
+    IMP_NEW(IMP::isd::FNormal, fn, (FA[0][0],JA,FM[0],sqrt(Sigma[0][0])));
+    IMP_NEW(IMP::isd::FNormal, fn2, (FA[0][1],JA,FM[1],sqrt(Sigma[0][0])));
+    //fn->set_was_used(true);
+    IMP_NEW(IMP::isd::MultivariateFNormalSufficient, mv, (FA,JA,FM,Sigma));
+    //mv->set_was_used(true);
+
+    //compute sufficient statistics
+    double sample_mean = 0;
+    for (int i=0; i<N; i++){
+        sample_mean += FA[i][0]/double(N);
+    }
+    double sum_squares = 0;
+    for (int i=0; i<N; i++){
+        sum_squares += IMP::square(FA[i][0] - sample_mean);
+    }
+
+    {
+    //test evaluate()
+    double observed=mv->evaluate();
+    double sigma=sqrt(Sigma[0][0]);
+    double expected=double(N)*log((sqrt(2*IMP::PI)*sigma)) + 
+        1/(2*sigma*sigma) * (double(N)*IMP::square(sample_mean - FM[0]) + sum_squares);
+    //PRINT("evaluate " << observed << " " << expected << " " << fn->evaluate() +
+    //        fn2->evaluate());
+    if (naeq(observed,expected)) FAIL("evaluate");
+    }
+
+    {
+    //test density()
+    double observed = mv->density();
+    double expected=pow(2*IMP::PI*Sigma[0][0],-N/2.0) * exp(
+            -0.5/Sigma[0][0]*( (double)N*IMP::square(sample_mean - FM[0]) + sum_squares ));
+    //PRINT("density " << observed << " " << expected << " " << fn->density());
+    if (naeq(observed,expected)) FAIL("density");
+    }
+
+    {
+    //test evaluate_derivative_FM()
+    Array1D<double> observed = mv->evaluate_derivative_FM();
+    double expected = -double(N)/Sigma[0][0]*(sample_mean - FM[0]);
+    //PRINT("FM " << observed[0] << " " << expected );
+    if (naeq(observed[0],expected)) FAIL("evaluate_derivative_FM");
+    }
+
+    {
+    //test evaluate_derivative_Sigma() 
+    Array2D<double> observed = mv->evaluate_derivative_Sigma();
+    double expected = (double)N/(2.0*Sigma[0][0]) 
+        - 0.5 / IMP::square(Sigma[0][0]) 
+            * ((double)N*IMP::square(sample_mean - FM[0]) + sum_squares);
+    //PRINT("Sigma " << observed[0][0] << " " << expected << " " << fn->evaluate_derivative_sigma()/(2*sqrt(Sigma[0][0])));
+    if (naeq(observed[0][0],expected)) FAIL("evaluate_derivative_Sigma");
+    }
+    
+    //all tests succeeded.
+    return true;
+}
+
+//test when M=2 and N=2
 bool test_2D(){
     //observation matrix
     Array2D<double> FA(1,2);
     FA[0][0]=0.5;
     FA[0][1]=1.0;
+    FA[1][0]=0.7;
+    FA[1][1]=1.2;
     //Jacobian
     double JA =1.0;
     //mean vector
@@ -289,19 +415,20 @@ bool test_2D(){
     double eps2=FA[0][1]-FM[1];
     Array2D<double> observed=mv->evaluate_derivative_Sigma();
     double expected=0.5/IMP::square(det) 
-        * (   IMP::square(Sigma[1][1]) * (Sigma[0][0] - eps1) 
-            - IMP::square(Sigma[0][1]) * (Sigma[1][1] + eps2)
+        * (   IMP::square(Sigma[1][1]) * (Sigma[0][0] - IMP::square(eps1)) 
+            - IMP::square(Sigma[0][1]) * (Sigma[1][1] + IMP::square(eps2))
             + 2*Sigma[0][1]*Sigma[1][1]*eps1*eps2 );
-    if (naeq(observed[0][0],expected)) FAIL("derivative_P[0][0]");
+    if (naeq(observed[0][0],expected)) FAIL("derivative_Sigma[0][0]");
     expected=0.5/IMP::square(det)
-        * (   IMP::square(Sigma[0][0]) * (Sigma[1][1] - eps2) 
+        * (   IMP::square(Sigma[0][0]) * (Sigma[1][1] - IMP::square(eps2)) 
+            - IMP::square(Sigma[1][0]) * (Sigma[0][0] + IMP::square(eps1))
             + 2*Sigma[1][0]*Sigma[0][0]*eps2*eps1 );
-    if (naeq(observed[1][1],expected)) FAIL("derivative_P[1][1]");
-    expected=1.0/IMP::square(det)
-        * ( Sigma[0][1]*(det+Sigma[1][1]*IMP::square(eps1)+Sigma[0][0]*IMP::square(eps2))
+    if (naeq(observed[1][1],expected)) FAIL("derivative_Sigma[1][1]");
+    expected=0.5/IMP::square(det)
+        * ( Sigma[0][1]*(-det+Sigma[1][1]*IMP::square(eps1)+Sigma[0][0]*IMP::square(eps2))
             - eps1*eps2*(IMP::square(Sigma[1][0])+Sigma[0][0]*Sigma[1][1]) );
-    if (naeq(observed[0][1],expected)) FAIL("derivative_P[0][1]");
-    if (naeq(observed[1][0],expected)) FAIL("derivative_P[1][0]");
+    if (naeq(observed[0][1],expected)) FAIL("derivative_Sigma[0][1]");
+    if (naeq(observed[1][0],expected)) FAIL("derivative_Sigma[1][0]");
     }
     return true;
 }
@@ -637,6 +764,12 @@ int main(int, char *[]) {
     //return 0;
     PRINT("sanity");
     RUNTEST(test_sanity,100);
+    PRINT("degenerate N=1 M=1");
+    RUNTEST(test_degenerate,100);
+    PRINT("degenerate N=2 M=1");
+    RUNTEST(test_degenerate_N2M1,100);
+    PRINT("degenerate N=1 M=2");
+    RUNTEST(test_degenerate_N1M2,100);
     PRINT("1D 1");
     RUNTEST_N(test_1D,100,1);
     PRINT("1D 2");
@@ -645,10 +778,6 @@ int main(int, char *[]) {
     RUNTEST_N(test_1D,100,10);
     PRINT("1D 100");
     RUNTEST_N(test_1D,100,100);
-    PRINT("degenerate");
-    RUNTEST(test_degenerate,100);
-    //PRINT("degenerate N=2");
-    //RUNTEST_N(test_degenerate_2,100,2);
     //return 0;
     //PRINT("degenerate N=10");
     //RUNTEST_N(test_degenerate_N,100,10);
