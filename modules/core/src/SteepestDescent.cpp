@@ -50,10 +50,10 @@ double SteepestDescent::do_optimize(unsigned int max_steps)
 
     // store the old values
     for (int i = 0; i < opt_var_cnt; i++) {
-      FloatIndex fi = float_indexes[0];
+      FloatIndex fi = float_indexes[i];
 
-      temp_vals[i] = get_value(float_indexes[i]);
-      temp_derivs[i] = get_derivative(float_indexes[i]);
+      temp_vals[i] = get_value(fi);
+      temp_derivs[i] = get_derivative(fi);
     }
 
     bool done = false;
