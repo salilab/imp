@@ -68,7 +68,9 @@ double MultivariateFNormalSufficient::density() const
   /* energy (score) functions, aka -log(p) */
 double MultivariateFNormalSufficient::evaluate() const 
   { 
-      return lnorm_ + lJF_ + 0.5*( trace_WP() + N_*mean_dist()) ;
+      //std::cout << " mean " << double(N_)*mean_dist();
+      //std::cout << " WP " << trace_WP();
+      return lnorm_ + lJF_ + 0.5*( trace_WP() + double(N_)*mean_dist()) ;
   }
 
 Array1D<double> MultivariateFNormalSufficient::evaluate_derivative_FM() const
@@ -257,9 +259,9 @@ Array2D<double> MultivariateFNormalSufficient::compute_PWP() const
     W_ = Array2D<double> (M_,M_,0.0);
     for (int k=0; k<N_; k++){
         for (int i=0; i<M_; i++){
-            int aik = FX_[k][i] - Fbar_[i];
+            double aik = FX_[k][i] - Fbar_[i];
             for (int j=0; j<=i; j++){
-                int ajk=FX_[k][j] - Fbar_[j];
+                double ajk=FX_[k][j] - Fbar_[j];
                 W_[i][j] += aik*ajk;
             }
         }
