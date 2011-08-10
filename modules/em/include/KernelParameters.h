@@ -8,8 +8,8 @@
 
 #ifndef IMPEM_KERNEL_PARAMETERS_H
 #define IMPEM_KERNEL_PARAMETERS_H
-
 #include "def.h"
+#include <boost/scoped_array.hpp>
 #include <IMP/exception.h>
 #include <IMP/log.h>
 #include <map>
@@ -140,6 +140,38 @@ protected:
 
 IMP_VALUES(KernelParameters, KernelParametersList);
 
+#if !defined(IMP_DOXYGEN) && !defined(SWIG)
+class IMPEMEXPORT Kernel3D {
+public:
+  Kernel3D(){}
+  Kernel3D(const Kernel3D &other) {
+    size_=other.size_;
+    dim_ext_=other.dim_ext_;
+    data_.reset(new double[size_]);
+    std::copy(other.data_.get(),other.data_.get()+size_,data_.get());
+  }
+  Kernel3D(int size,int ext) {
+    size_=size;dim_ext_=ext;
+    data_.reset(new double[size_]);
+    IMP_INTERNAL_CHECK(data_!=NULL,"Can not allocate vector\n");
+    for(int i=0;i<size_;i++) data_[i]=0.;
+  }
+  double *get_data() const {return data_.get();}
+  int get_size() const {return size_;}
+  int get_extent() const {return dim_ext_;}
+protected:
+  boost::scoped_array<double> data_;
+  int size_;
+  int dim_ext_;
+};
+IMPEMEXPORT
+Kernel3D create_3d_gaussian (double sigma,double sigma_factor);
+IMPEMEXPORT
+Kernel3D create_3d_laplacian();
+//! Truncate a kernel according to an input sigma
+IMPEMEXPORT
+Kernel3D get_truncated(double *data,int extent,double sigmap,double sigma_fac);
+#endif
 IMPEM_END_NAMESPACE
 
 #endif  /* IMPEM_KERNEL_PARAMETERS_H */
