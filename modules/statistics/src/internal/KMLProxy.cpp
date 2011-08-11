@@ -13,10 +13,10 @@ KMLProxy::KMLProxy() {
   is_init_ = false;
 }
 void KMLProxy::initialize(Model *m,const Particles &ps,
-    const std::vector<FloatKey> &atts,unsigned int num_centers){
+    const FloatKeys &atts,unsigned int num_centers){
   for(Particles::const_iterator it = ps.begin(); it != ps.end();it++)
   {ps_.push_back(*it);}
-  for(std::vector<FloatKey>::const_iterator it = atts.begin();
+  for(FloatKeys::const_iterator it = atts.begin();
       it != atts.end();it++)
   {atts_.push_back(*it);}
   m_ = m;
