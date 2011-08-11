@@ -9,7 +9,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-OpenCubicSpline::OpenCubicSpline(const std::vector<Float> &values,
+OpenCubicSpline::OpenCubicSpline(const Floats &values,
                                  Float minrange, Float spacing,
                                  bool extend) :
   spacing_(spacing), inverse_spacing_(1.0/spacing_),
