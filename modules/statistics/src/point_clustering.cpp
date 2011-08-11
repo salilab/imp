@@ -226,7 +226,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
     int c=-1;
     double d= std::numeric_limits<double>::max();
     for (unsigned int j=0; j< clusters[i].size(); ++j) {
-      Floats dc=*data[clusters[i][j]];
+      std::vector<double> dc=*data[clusters[i][j]];
       double cd
         = algebra::get_distance(algebra::VectorKD(dc.begin(),
                                                   dc.end()),
