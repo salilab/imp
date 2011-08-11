@@ -292,7 +292,7 @@ get_uniform_cover_rotations_3d(unsigned int num_points);
 
 //! Generates a nondegenerate set of Euler angles with a delta resolution
 /**
-\param[input] delta sample every delta angles in degrees.
+\param[in] delta sample every delta angles in radians.
  */
 IMPALGEBRAEXPORT
 algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta);

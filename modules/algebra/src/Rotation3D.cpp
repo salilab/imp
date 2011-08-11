@@ -410,7 +410,8 @@ std::pair<VectorD<3>,double> get_axis_and_angle(
 
 
 //! Generates a nondegenerate set of Euler angles with a delta resolution
-algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta) {
+algebra::Rotation3Ds get_uniformly_sampled_rotations(double delta_rad) {
+  double delta= delta_rad/IMP::PI*180.0;
   Vector3D eu_start(0.,0.,0.);//psi,theta,phi
   Vector3D eu_end(360.,180.,360.);
   Vector3D eu_range=eu_end-eu_start;
