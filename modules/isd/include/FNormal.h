@@ -29,10 +29,11 @@ IMPISD_BEGIN_NAMESPACE
  *  program will not check for that.
  */
 
-class IMPISDEXPORT FNormal : public RefCounted //Object
+class IMPISDEXPORT FNormal : public Object
 {
  public:
   FNormal(double FA, double JA, double FM, double sigma): 
+    Object("FNormal %1%"),
     FA_(FA),
     JA_(JA),
     FM_(FM),
@@ -78,8 +79,8 @@ class IMPISDEXPORT FNormal : public RefCounted //Object
     sigma_=f;
   }
 
-  //IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
-  //                          << ", " << FM_ << ", " << sigma_ <<std::endl, {});
+  IMP_OBJECT_INLINE(FNormal, out << "FNormal: " << FA_ << ", " << JA_
+                            << ", " << FM_ << ", " << sigma_ <<std::endl, {});
 
  private:
   double FA_,JA_,FM_,sigma_;

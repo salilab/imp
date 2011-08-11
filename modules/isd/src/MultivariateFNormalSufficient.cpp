@@ -20,8 +20,9 @@ IMPISD_BEGIN_NAMESPACE
 using IMP::algebra::internal::TNT::Array1D;
 using IMP::algebra::internal::TNT::Array2D;
 
-MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double> FX, 
-          double JF, Array1D<double> FM, Array2D<double> Sigma) 
+MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double>
+        FX, double JF, Array1D<double> FM, Array2D<double> Sigma) :
+    Object("Multivariate Normal distribution %1%")
 {
         N_=FX.dim1();
         M_=FX.dim2();
@@ -40,7 +41,7 @@ MultivariateFNormalSufficient::MultivariateFNormalSufficient( Array2D<double> FX
 
 MultivariateFNormalSufficient::MultivariateFNormalSufficient(Array1D<double>
         Fbar, double JF, Array1D<double> FM, int Nobs,  Array2D<double> W,
-        Array2D<double> Sigma)
+        Array2D<double> Sigma) : Object("Multivariate Normal distribution %1%")
 {
         N_=Nobs;
         M_=Fbar.dim1();

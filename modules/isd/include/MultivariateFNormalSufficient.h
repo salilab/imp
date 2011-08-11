@@ -49,6 +49,11 @@ using IMP::algebra::internal::TNT::Array2D;
  *  Example: if F is the log function, the multivariate F-normal distribution is the
  *  multivariate lognormal distribution with mean \f$\mu\f$ and standard deviation \f$\Sigma\f$.
  *
+ *  \note This is an implementation of the matrix normal distribution for F(X),
+ *  where rows of F(X) are independent and homoscedastic (they represent
+ *  repetitions of the same experiment), but columns might be correlated, though
+ *  the provided matrix.
+ *
  *  \note For now, F must be monotonically increasing, so that J(F) > 0. The
  *  program will not check for that. The inverse of \f$\Sigma\f$ is computed at
  *  creation time, along with the sufficient statistics and \f$\epsilon\f$.
@@ -70,7 +75,7 @@ using IMP::algebra::internal::TNT::Array2D;
  *
  */
 
-class IMPISDEXPORT MultivariateFNormalSufficient : public RefCounted //Object
+class IMPISDEXPORT MultivariateFNormalSufficient : public Object
 {
  public:
      /** Initialize with all observed data
@@ -121,7 +126,7 @@ class IMPISDEXPORT MultivariateFNormalSufficient : public RefCounted //Object
   void set_Sigma(Array2D<double> f);
 
   /* remaining stuff */
-  //IMP_OBJECT_INLINE(MultivariateFNormalSufficient, out << "MultivariateFNormalSufficient: " << N_ << " observations of " <<  M_ << " variables " <<std::endl, {});
+  IMP_OBJECT_INLINE(MultivariateFNormalSufficient, out << "MultivariateFNormalSufficient: " << N_ << " observations of " <<  M_ << " variables " <<std::endl, {});
 
  private:
 
