@@ -109,12 +109,24 @@ void TupleConstraint<Before, After>
 
 template <class Before, class After>
 ContainersTemp TupleConstraint<Before, After>::get_input_containers() const {
-  return ContainersTemp();
+  ContainersTemp ret;
+  if (f_) {
+    ret= f_->get_input_containers(v_);
+  } else if (af_) {
+    ret= af_->get_output_containers(v_);
+  }
+  return ret;
 }
 
 template <class Before, class After>
 ContainersTemp TupleConstraint<Before, After>::get_output_containers() const {
-  return ContainersTemp();
+  ContainersTemp ret;
+  if (f_) {
+    ret= f_->get_output_containers(v_);
+  } else if (af_) {
+    ret= af_->get_input_containers(v_);
+  }
+  return ret;
 }
 
 template <class Before, class After>
