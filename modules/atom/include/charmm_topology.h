@@ -95,7 +95,7 @@ protected:
 public:
   CHARMMConnection(const IMP::Strings &atoms) {
     IMP_INTERNAL_CHECK(atoms.size() == D, "wrong number of bond endpoints");
-    for (std::vector<std::string>::const_iterator it = atoms.begin();
+    for (Strings::const_iterator it = atoms.begin();
          it != atoms.end(); ++it) {
       endpoints_.push_back(CHARMMBondEndpoint(*it));
     }
