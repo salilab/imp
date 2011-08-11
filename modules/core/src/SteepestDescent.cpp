@@ -23,8 +23,8 @@ void SteepestDescent::do_show(std::ostream &) const {
 
 double SteepestDescent::do_optimize(unsigned int max_steps)
 {
-  std::vector<Float> temp_vals;
-  std::vector<Float> temp_derivs;
+  Floats temp_vals;
+  Floats temp_derivs;
   Float last_score, new_score = 0.0;
 
   // set up the indexes
