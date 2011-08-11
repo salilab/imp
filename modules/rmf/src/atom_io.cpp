@@ -212,16 +212,6 @@ namespace {
       atom::Copy::setup_particle(cur, dv);
     }
   }
-
-#if 0
-  atom::Hierarchy get_hierarchy(int id, std::vector<Particle*> &map, Model *m) {
-    if (map.size() > static_cast<unsigned int>(id) && map[id]) {
-      return atom::Hierarchy(map[id]);
-    } else {
-      return atom::Hierarchy::setup_particle(new Particle(m));
-    }
-  }
-#endif
 }
 
 
