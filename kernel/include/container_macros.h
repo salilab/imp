@@ -117,6 +117,13 @@
 /** A version of IMP_LIST() for types where the spelling of the plural is
     irregular (eg geometry-> geometries) and where actions can be taken
     upon addition and removal:
+    \param[in] protection The level of protection for the container
+    (public, private).
+    \param[in] Ucname The name of the type of container in uppercase.
+    \param[in] lcname The name of the type of container in lower case.
+    \param[in] Data The type of the data to store.
+    \param[in] PluralData The plural of the data name. This should be a
+    container type.
     \param[in] OnAdd Code to modify the passed in object. The object is obj
     and its index index.
     \param[in] OnChanged Code to get executed when the container changes.

@@ -234,7 +234,7 @@
 
 /** Implement the needed template functions for a container.
     \param[in] Name the name
-    \param[in] loop do the loop. There should be a line IMP_OPERATION and
+    \param[in] LOOP do the loop. There should be a line IMP_OPERATION and
     the current item should be in a variable named item at that time.
  */
 #define IMP_IMPLEMENT_HEADERNAME_CONTAINER_OPERATIONS(Name, LOOP)       \
