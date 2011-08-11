@@ -36,7 +36,7 @@ void BallMover::do_move(Float scale)
           get_number_of_particles() << std::endl);
   for (unsigned int i = 0;
        i < get_number_of_particles(); ++i) {
-    std::vector<Float> center(get_number_of_keys());
+    Floats center(get_number_of_keys());
     for (unsigned int j = 0; j < get_number_of_keys(); ++j) {
       center[j] = get_value(i, j);
     }
