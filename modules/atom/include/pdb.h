@@ -432,8 +432,6 @@ IMPATOMEXPORT std::string get_pdb_conect_record_string(int,int);
     each time to the same file.
     \class WritePDBFailureHandler
     Write a PDB when an error occurs.
-
-    \requires{class WriteBinaryFailureHandler, NetCDF}
 */
 IMP_MODEL_SAVE(WritePDB, (const atom::Hierarchies& mh, std::string file_name),
                atom::Hierarchies mh_;,
