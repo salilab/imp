@@ -65,6 +65,8 @@ namespace {
     for (unsigned int i=0; i< oip.size(); ++i) {
       std::sort(oip[i].begin(), oip[i].end());
       oip[i].erase(std::unique(oip[i].begin(), oip[i].end()), oip[i].end());
+      IMP_USAGE_CHECK(!oip.empty(), "Restraint "<< r->get_name()
+                      << " does not depend on any of the optimized particles.");
       dependencies.push_back(Subset(oip[i], true));
       RestraintData ret(r);
       if (preload.find(r) != preload.end()){
