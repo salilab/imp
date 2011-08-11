@@ -28,7 +28,7 @@ IMPCORE_BEGIN_NAMESPACE
  */
 class IMPCOREEXPORT MoverBase: public Mover
 {
-  std::vector<std::vector<Float> > values_;
+  std::vector<Floats > values_;
   std::vector<FloatKey> keys_;
   Model *m_;
   ParticleIndexes particles_;
@@ -87,7 +87,7 @@ protected:
 inline ParticlesTemp MoverBase::propose_move(Float f)
 {
   values_.resize(particles_.size(),
-                 std::vector<Float>(keys_.size(), 0));
+                 Floats(keys_.size(), 0));
   for (unsigned int i=0; i< particles_.size(); ++i) {
     for (unsigned int j=0; j< keys_.size(); ++j) {
       values_[i][j]= get_value(i,j);
