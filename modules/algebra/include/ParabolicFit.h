@@ -23,7 +23,7 @@ public:
      \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values
    */
-  ParabolicFit(const std::vector<VectorD<2> >& data);
+  ParabolicFit(const Vector2Ds& data);
 
   //! fit error
   double get_fit_error() const { return error_; }
@@ -43,8 +43,8 @@ public:
     });
 
  private:
-  void find_regression(const std::vector<VectorD<2> >& data);
-  void evaluate_error(const std::vector<VectorD<2> >& data);
+  void find_regression(const Vector2Ds& data);
+  void evaluate_error(const Vector2Ds& data);
 
  private:
   double a_, b_, c_;
