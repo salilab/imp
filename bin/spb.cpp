@@ -88,7 +88,9 @@ add_layer_restraint(m, IL2_ps,
 //
 // TILT restraint
 //
-add_tilt(m,all_mol,"Spc110p",mydata.tilt,mydata.kappa);
+if(mydata.add_tilt && mydata.protein_list["Spc110p"]){
+ add_tilt(m,all_mol,"Spc110p",mydata.tilt,mydata.kappa);
+}
 //
 // FRET
 //
@@ -152,7 +154,9 @@ if(mydata.add_y2h){
 }
 //
 // Add link between Spc110p_C and Cmd1p
-add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
+if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
+ add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
+}
 //
 std::cout << "Setup sampler" << std::endl;
 core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);

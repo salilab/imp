@@ -31,9 +31,11 @@ struct SPBParameters {
  algebra::Vector3Ds IL2_centers;
  algebra::Transformation3Ds trs;
  bool           use_structure;
+ bool           use_compact_Cmd1p;
  std::map<std::string,bool> protein_list;
  bool           add_fret;
  bool           add_y2h;
+ bool           add_tilt;
  std::map<std::string,std::string> file_list;
 };
 

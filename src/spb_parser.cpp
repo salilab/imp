@@ -22,13 +22,17 @@ SPBParameters get_SPBParameters(TextInput in) {
 #if BOOST_VERSION >= 104100
  using namespace boost::program_options;
  options_description desc;
- bool do_wte,use_structure,use_compact_Cmd1p;
+ bool do_wte;
+ bool use_structure;
+ bool use_compact_Cmd1p;
  bool add_Spc42p;
  bool add_Spc29p;
  bool add_Spc110p;
  bool add_Cmd1p;
  bool add_Cnm67p_c;
- bool add_fret, add_y2h;
+ bool add_fret;
+ bool add_y2h;
+ bool add_tilt;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -49,6 +53,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  desc.add_options()("add_Cnm67p_c", value<bool>(&add_Cnm67p_c),     "ciao");
  desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
  desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
+ desc.add_options()("add_tilt",     value<bool>(&add_tilt),         "ciao");
  desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
  desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
  desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
@@ -114,6 +119,7 @@ SPBParameters get_SPBParameters(TextInput in) {
 // restraint
  ret.add_fret=add_fret;
  ret.add_y2h=add_y2h;
+ ret.add_tilt=add_tilt;
 // protein_list
  ret.protein_list["Spc42p"]=add_Spc42p;
  ret.protein_list["Spc29p"]=add_Spc29p;

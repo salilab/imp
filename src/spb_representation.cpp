@@ -396,11 +396,12 @@ atom::Molecule create_protein(Model *m,std::string name,
  atom::Hierarchy hpdb=atom::read_pdb(filename,m,sel);
  Particles ps=atom::get_leaves(hpdb);
  int nres=ps.size();
+ int nres_bead=(int)(nres/nbeads)+1;
  core::XYZRs rbps;
  for(int i=0;i<nbeads;++i){
   IMP_NEW(Particle,pp,(m));
-  int first=start_residue+i*(int)(nres/nbeads);
-  int last=start_residue+(i+1)*(int)(nres/nbeads);
+  int first=start_residue+i*nres_bead;
+  int last=std::min(start_residue+(i+1)*nres_bead,start_residue+nres);
   std::stringstream out1,out2;
   out1 << i;
   out2 << copy;
@@ -410,7 +411,7 @@ atom::Molecule create_protein(Model *m,std::string name,
 // calculate enclosing sphere and mass
   double ms=0.0;
   core::XYZRs xyz;
-  for(int j=i*(int)(nres/nbeads);j<(i+1)*(int)(nres/nbeads);++j){
+  for(int j=i*nres_bead;j<std::min((i+1)*nres_bead,nres);++j){
    atom::ResidueType restype=
     atom::Residue(atom::Atom(ps[j]).get_parent()).get_residue_type();
    double vol=atom::get_volume_from_residue_type(restype);
