@@ -12,7 +12,7 @@
 
 IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
-RawOpenCubicSpline::RawOpenCubicSpline(const std::vector<Float> &values,
+RawOpenCubicSpline::RawOpenCubicSpline(const Floats &values,
                                        double spacing,
                                        double inverse_spacing):
   values_(values) {
@@ -22,7 +22,7 @@ RawOpenCubicSpline::RawOpenCubicSpline(const std::vector<Float> &values,
   // Precalculate second derivatives for a natural cubic spline (open) by
   // inversion of the tridiagonal matrix (Thomas algorithm)
   second_derivs_.resize(npoints);
-  std::vector<Float> tmp(npoints);
+  Floats tmp(npoints);
 
   // Forward elimination phase
   second_derivs_[0] = 0.;
