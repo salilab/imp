@@ -86,7 +86,10 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   static RigidBody internal_setup_particle(Particle *p,
                                            const XYZs &members);
   void on_change();
-  IMP_CONSTRAINT_DECORATOR_DECL(RigidBody);
+  static void setup_constraints(Particle *p);
+  static void teardown_constraints(Particle *p);
+  static ObjectKey get_constraint_key_0();
+  static ObjectKey get_constraint_key_1();
 public:
 
   RigidMembers get_members() const;
