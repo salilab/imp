@@ -25,10 +25,11 @@ IMPISD_BEGIN_NAMESPACE
  *  and \f$\kappa = 1/\sigma^2\f$.
  */
 
-class vonMises : public RefCounted //Object
+class vonMises : public Object
 {
  public:
-  vonMises(double x, double mu, double kappa): x_(x), mu_(mu) 
+  vonMises(double x, double mu, double kappa): Object("von Mises %1%"), x_(x),
+    mu_(mu) 
     {
         set_kappa(kappa);
     }
@@ -70,8 +71,8 @@ class vonMises : public RefCounted //Object
     }
   }
 
-  //IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
-  //                          << ", " << kappa_  <<std::endl, {});
+  IMP_OBJECT_INLINE(vonMises, out << "vonMises: " << x_ << ", " << mu_
+                            << ", " << kappa_  <<std::endl, {});
 
  private:
   double x_,mu_,kappa_,I0_,I1_,logterm_;

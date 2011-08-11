@@ -30,7 +30,7 @@ IMPISD_BEGIN_NAMESPACE
     \note derivative with respect to the mean \f$\chi_{exp}\f$ is not provided.
  */
 
-class vonMisesSufficient : public RefCounted //Object
+class vonMisesSufficient : public Object
 {
  public:
   /** compute von Mises given the sufficient statistics
@@ -41,7 +41,8 @@ class vonMisesSufficient : public RefCounted //Object
     \param[in] \f$\kappa\f$ concentration
   */
   vonMisesSufficient(double chi, unsigned N, double R0, double chiexp, double kappa): 
-      x_(chi), R0_(R0), chiexp_(chiexp)
+      Object("von Mises sufficient %1%"), x_(chi), R0_(R0), chiexp_(chiexp)
+
     {
         N_=N;
         set_kappa(kappa);
@@ -54,7 +55,8 @@ class vonMisesSufficient : public RefCounted //Object
     \param[in] obs a list of observed angles (in radians).
     \param[in] \f$\kappa\f$ concentration
   */
-  vonMisesSufficient(double chi, Floats obs, double kappa) : x_(chi)
+  vonMisesSufficient(double chi, Floats obs, double kappa) : 
+      Object("von Mises sufficient %1%"), x_(chi)
     {
         Floats stats = get_sufficient_statistics(obs);
         N_= stats[0];
@@ -146,9 +148,9 @@ class vonMisesSufficient : public RefCounted //Object
         return retval;
     }
 
-  //IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_ << ", " << N_
-  //        << ", " << R0_ << ", " << chiexp_ <<
-  //                          ", " << kappa_  <<std::endl, {});
+  IMP_OBJECT_INLINE(vonMisesSufficient, out << "vonMisesSufficient: " << x_ << ", " << N_
+          << ", " << R0_ << ", " << chiexp_ <<
+                            ", " << kappa_  <<std::endl, {});
 
  private:
   double x_,R0_,chiexp_,kappa_,I0_,I1_,logterm_,I0N_;
