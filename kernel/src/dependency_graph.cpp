@@ -202,9 +202,9 @@ namespace {
                   }
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
-          if (!get_has_edge(dg, rv, cv)) {
-            add_edge(dg, cv, rv);
-          }
+          //if (!get_has_edge(dg, rv, cv)) {
+          add_edge(dg, cv, rv);
+          //}
         }
       }
       {
@@ -214,9 +214,9 @@ namespace {
           }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
-          if (!get_has_edge(dg, rv, cv)) {
-            add_edge(dg, cv, rv);
-          }
+          //if (!get_has_edge(dg, rv, cv)) {
+          add_edge(dg, cv, rv);
+          //}
         }
       }
       IMP_LOG(VERBOSE, std::endl);
@@ -241,7 +241,9 @@ namespace {
         }
         for (unsigned int j=0; j < ct.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, ct[j]);
-          add_edge(dg, rv, cv);
+          if (!get_has_edge(dg, cv, rv)) {
+            add_edge(dg, rv, cv);
+          }
         }
       }
       {
@@ -249,10 +251,12 @@ namespace {
         if (!pt.empty()) {
           IMP_LOG(VERBOSE, ", particles are "
                   << Particles(pt));
-                  }
+        }
         for (unsigned int j=0; j < pt.size(); ++j) {
           DGTraits::vertex_descriptor cv= get_vertex(dg, dgi, pt[j]);
-           add_edge(dg, rv, cv);
+          if (!get_has_edge(dg, cv, rv)) {
+            add_edge(dg, rv, cv);
+          }
         }
       }
       IMP_LOG(VERBOSE, std::endl);
@@ -277,8 +281,8 @@ get_dependency_graph(const ScoreStatesTemp &ss,
     vm[i+ss.size()]= rs[i];
     index[rs[i]]=i+ss.size();
   }
-  build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
+  build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
   std::vector<std::pair<Object*, Object*> > extra;
   if (!ss.empty()) {
