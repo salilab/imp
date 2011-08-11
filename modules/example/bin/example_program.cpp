@@ -17,8 +17,8 @@ int main(){
   core::XYZ d1= core::XYZ::setup_particle(p1);
   example::ExampleRestraint *r0= new example::ExampleRestraint(p0, 1);
   example::ExampleRestraint *r1= new example::ExampleRestraint(p1, 1);
-  d0.set_coordinates(algebra::VectorD<3>(0,0,2));
-  d1.set_coordinates(algebra::VectorD<3>(0,0,3));
+  d0.set_coordinates(algebra::Vector3D(0,0,2));
+  d1.set_coordinates(algebra::Vector3D(0,0,3));
 
   m->add_restraint(r0);
   m->add_restraint(r1);

@@ -30,7 +30,7 @@ void RemoveTranslationOptimizerState::remove_translation() const
 {
   Particle *p0 = *pis_.begin();
   core::XYZ d0(p0);
-  algebra::VectorD<3> coords = d0.get_coordinates();
+  algebra::Vector3D coords = d0.get_coordinates();
 
   for (Particles::const_iterator pi = pis_.begin(); pi != pis_.end(); ++pi) {
     Particle *p = *pi;

@@ -14,7 +14,7 @@ HighDensityEmbedding::HighDensityEmbedding(em::DensityMap *dm,
   statistics::Embedding("HighDensityEmbedding of "+dm->get_name()) {
   for (int i=0; i< dm->get_number_of_voxels(); ++i) {
     if (dm->get_value(i) > threshold) {
-      algebra::VectorD<3> v(dm->get_location_in_dim_by_voxel(i, 0),
+      algebra::Vector3D v(dm->get_location_in_dim_by_voxel(i, 0),
                           dm->get_location_in_dim_by_voxel(i, 1),
                           dm->get_location_in_dim_by_voxel(i, 2));
       points_.push_back(v);

@@ -47,17 +47,17 @@ public:
   /**
   * \param[in] o a 2D vector to be rotated
   */
-   VectorD<2> get_rotated(const  VectorD<2> &o) const {
+   Vector2D get_rotated(const  Vector2D &o) const {
     IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
     return get_rotated(o[0],o[1]);
   }
 
   //! rotates a 2D point
-   VectorD<2> get_rotated(const double x,const double y) const {
+   Vector2D get_rotated(const double x,const double y) const {
     IMP_INTERNAL_CHECK(!is_nan(angle_),
                "Attempting to use uninitialized rotation");
-    return  VectorD<2>(c_*x-s_*y , s_*x+c_*y);
+    return  Vector2D(c_*x-s_*y , s_*x+c_*y);
   }
 
   //! Returns the matrix for the inverse rotation
@@ -106,7 +106,7 @@ inline Rotation2D get_random_rotation_2d() {
 
 //! Builds the rotation that transforms the vector X of the origin
 //! of coordinates into the given vector
-inline Rotation2D get_rotation_to_x_axis(const VectorD<2> &v) {
+inline Rotation2D get_rotation_to_x_axis(const Vector2D &v) {
   return Rotation2D(atan2(v[1],v[0]));
 }
 

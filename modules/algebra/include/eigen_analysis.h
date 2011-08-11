@@ -21,15 +21,15 @@ class IMPALGEBRAEXPORT PrincipalComponentAnalysis {
   PrincipalComponentAnalysis(){
     initialized_=false;}
   PrincipalComponentAnalysis(
-    const VectorD<3> &pc1,const VectorD<3> &pc2,
-    const VectorD<3> &pc3,VectorD<3> values,
+    const Vector3D &pc1,const Vector3D &pc2,
+    const Vector3D &pc3,Vector3D values,
     Vector3D centroid) : eigen_values_(values), centroid_(centroid){
     eigen_vecs_.push_back(pc1.get_unit_vector());
     eigen_vecs_.push_back(pc2.get_unit_vector());
     eigen_vecs_.push_back(pc3.get_unit_vector());
     initialized_=true;
   }
-  VectorD<3> get_principal_component(unsigned int i) const {
+  Vector3D get_principal_component(unsigned int i) const {
     if (!initialized_){
       IMP_WARN("the PCA was not initialized"<<std::endl);}
     IMP_INTERNAL_CHECK(i<3, "index is not between 0, 1 or 2");
@@ -60,8 +60,8 @@ protected:
       return -1;
     }
   }
-  std::vector<VectorD<3> > eigen_vecs_;
-  VectorD<3> eigen_values_;
+  std::vector<Vector3D > eigen_vecs_;
+  Vector3D eigen_values_;
   Vector3D centroid_;
   bool initialized_;
 };
@@ -72,7 +72,7 @@ IMP_VALUES(PrincipalComponentAnalysis, PrincipalComponentAnalyses);
 /** \relatesalso PrincipalComponentAnalysis
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis get_principal_components(
-                              const std::vector<VectorD<3> > &ps);
+                              const std::vector<Vector3D > &ps);
 //! Get all possible alignments of the first principle
 //! component system to the second one
 IMPALGEBRAEXPORT Transformation3Ds get_alignments_from_first_to_second(

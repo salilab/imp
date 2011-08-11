@@ -18,26 +18,26 @@ IMPALGEBRA_BEGIN_NAMESPACE
 class Plane3D {
 public:
   Plane3D(){}
-  Plane3D(const VectorD<3>& point_on_plane,const VectorD<3> &normal_to_plane) {
+  Plane3D(const Vector3D& point_on_plane,const Vector3D &normal_to_plane) {
     normal_ = normal_to_plane;
     distance_= normal_*point_on_plane;
     IMP_USAGE_CHECK(std::abs(normal_.get_squared_magnitude()-1) < .05,
                     "The normal vector must be normalized");
   }
-  Plane3D(double distance_to_plane ,const VectorD<3> &normal_to_plane):
+  Plane3D(double distance_to_plane ,const Vector3D &normal_to_plane):
     distance_(distance_to_plane),
     normal_(normal_to_plane){
     IMP_USAGE_CHECK(std::abs(normal_.get_squared_magnitude()-1) < .05,
                     "The normal vector must be normalized");
   }
-  VectorD<3> get_point_on_plane() const {return normal_*distance_;}
-  const VectorD<3> &get_normal() const {return normal_;}
+  Vector3D get_point_on_plane() const {return normal_*distance_;}
+  const Vector3D &get_normal() const {return normal_;}
   //! Project the point onto the plane
-  VectorD<3> get_projected(const VectorD<3> &p) const  {
+  Vector3D get_projected(const Vector3D &p) const  {
     return p-normal_*(normal_*p-distance_);
   }
 #ifndef IMP_DOXYGEN
-  VectorD<3> get_projection(const VectorD<3> &p) const  {
+  Vector3D get_projection(const Vector3D &p) const  {
     return get_projected(p);
   }
 #endif
@@ -46,14 +46,14 @@ public:
        these as they aren't very reliable.
        @{
   */
-  bool get_is_above(const VectorD<3> &p) const {
+  bool get_is_above(const Vector3D &p) const {
     return get_height(p) > 0;
   }
-  bool get_is_below(const VectorD<3> &p) const {
+  bool get_is_below(const Vector3D &p) const {
     return get_height(p) < 0;
   }
   /** @} */
-  double get_height(const VectorD<3> &p) const {
+  double get_height(const Vector3D &p) const {
     return normal_*p-distance_;
   }
   IMP_SHOWABLE_INLINE(Plane3D, {
@@ -70,20 +70,20 @@ public:
   }
 private:
   double distance_;
-  VectorD<3> normal_; //normal to plane
+  Vector3D normal_; //normal to plane
 };
 
 
 //! Return the distance between a plane and a point in 3D
 /** \relatesalso Plane3D */
-inline double get_distance(const Plane3D& pln, const VectorD<3> &p) {
+inline double get_distance(const Plane3D& pln, const Vector3D &p) {
   return (pln.get_projection(p)-p).get_magnitude();
 }
 
 
 //! return the point reflected about the plane
-inline VectorD<3> get_reflected(const Plane3D &pln, const VectorD<3> &p) {
-  VectorD<3> proj= pln.get_projected(p);
+inline Vector3D get_reflected(const Plane3D &pln, const Vector3D &p) {
+  Vector3D proj= pln.get_projected(p);
   return p+2*(proj-p);
 }
 
@@ -93,7 +93,7 @@ IMP_AREA_GEOMETRY_METHODS(Plane3D, plane_3d,
                           return std::numeric_limits<double>::infinity(),
                           {
                             if (0) std::cout << g;
-                            VectorD<3> ip
+                            Vector3D ip
                               = get_ones_vector_d<3>(
                                    std::numeric_limits<double>::infinity());
                             return BoundingBoxD<3>(ip)+ BoundingBox3D(-ip);

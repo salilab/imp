@@ -121,13 +121,13 @@ inline double evaluate_distance_pair_score(W0 d0, W1 d1,
                                     const UF *f, SD sd,
                                     double deriv_multiplier = 1.0)
 {
-  algebra::VectorD<3> delta;
+  algebra::Vector3D delta;
 
   for (int i = 0; i < 3; ++i) {
     delta[i] = d0.get_coordinate(i) - d1.get_coordinate(i);
   }
 
-  algebra::VectorD<3> d;
+  algebra::Vector3D d;
   double score= compute_distance_pair_score(delta, f, (da? &d : NULL), sd,
                                             deriv_multiplier);
 

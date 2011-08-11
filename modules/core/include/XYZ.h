@@ -42,8 +42,8 @@ class IMPCOREEXPORT XYZ: public Decorator
 
   /** Create a decorator with the passed coordinates. */
   static XYZ setup_particle(Particle *p,
-                    const algebra::VectorD<3> &v=
-                    algebra::VectorD<3>(0,0,0)) {
+                    const algebra::Vector3D &v=
+                    algebra::Vector3D(0,0,0)) {
     p->add_attribute(get_coordinate_key(0),v[0]);
     p->add_attribute(get_coordinate_key(1),v[1]);
     p->add_attribute(get_coordinate_key(2),v[2]);
@@ -58,7 +58,7 @@ class IMPCOREEXPORT XYZ: public Decorator
     get_model()->get_sphere(get_particle_index())[i]=v;
   }
   //! set all coordinates from a vector
-  void set_coordinates(const algebra::VectorD<3> &v) {
+  void set_coordinates(const algebra::Vector3D &v) {
     get_model()->get_sphere(get_particle_index())[0]=v[0];
     get_model()->get_sphere(get_particle_index())[1]=v[1];
     get_model()->get_sphere(get_particle_index())[2]=v[2];
@@ -78,7 +78,7 @@ class IMPCOREEXPORT XYZ: public Decorator
     get_particle()->add_to_derivative(get_coordinate_key(i), v, d);
   }
   //! Add something to the derivative of the coordinates
-  void add_to_derivatives(const algebra::VectorD<3>& v,
+  void add_to_derivatives(const algebra::Vector3D& v,
                           DerivativeAccumulator &d) {
     get_model()->add_to_coordinate_derivatives(get_particle_index(),
                                                v, d);
@@ -99,21 +99,21 @@ class IMPCOREEXPORT XYZ: public Decorator
   }
 
   //! Get the vector from this particle to another
-  algebra::VectorD<3> get_vector_to(const XYZ &b) const {
+  algebra::Vector3D get_vector_to(const XYZ &b) const {
     return b.get_coordinates()-get_coordinates();;
   }
 
   //! Convert it to a vector.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  const algebra::VectorD<3>& get_coordinates() const {
+  const algebra::Vector3D& get_coordinates() const {
     return get_model()->get_sphere(get_particle_index()).get_center();
   }
 
   //! Get the vector of derivatives.
   /** Somewhat suspect based on wanting a Point/Vector differentiation
       but we don't have points */
-  algebra::VectorD<3> get_derivatives() const {
+  algebra::Vector3D get_derivatives() const {
     return get_model()->get_coordinate_derivatives(get_particle_index());
   }
 
@@ -163,11 +163,11 @@ inline double get_dihedral(XYZ a, XYZ b, XYZ c, XYZ d) {
 IMPCOREEXPORT void transform(XYZ a, const algebra::Transformation3D &tr);
 
 /** \genericgeometry */
-inline const algebra::VectorD<3> get_vector_d_geometry(XYZ d) {
+inline const algebra::Vector3D get_vector_d_geometry(XYZ d) {
   return d.get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_d_geometry(XYZ d, const algebra::VectorD<3> &v) {
+inline void set_vector_d_geometry(XYZ d, const algebra::Vector3D &v) {
   d.set_coordinates(v);
 }
 
@@ -183,11 +183,11 @@ IMPCORE_END_NAMESPACE
 // it will do the conversion implicitly anyway
 IMP_BEGIN_NAMESPACE
 /** \genericgeometry */
-inline const algebra::VectorD<3> get_vector_d_geometry(Particle *p) {
+inline const algebra::Vector3D get_vector_d_geometry(Particle *p) {
   return core::XYZ(p).get_coordinates();
 }
 /** \genericgeometry */
-inline void set_vector_d_geometry(Particle *p, const algebra::VectorD<3> &v) {
+inline void set_vector_d_geometry(Particle *p, const algebra::Vector3D &v) {
   core::XYZ(p).set_coordinates(v);
 }
 

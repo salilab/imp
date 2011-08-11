@@ -28,27 +28,27 @@ IMPALGEBRA_BEGIN_NAMESPACE
 /** \see read_pts
     \relatesalso VectorD
 */
-IMPALGEBRAEXPORT void write_pts(const std::vector<VectorD<3> > &vs,
+IMPALGEBRAEXPORT void write_pts(const std::vector<Vector3D > &vs,
                                 TextOutput out);
 
 //! Read a set of 3D vectors from a file
 /** \see write_pts
     \relatesalso VectorD
 */
-IMPALGEBRAEXPORT std::vector<VectorD<3> > read_pts(TextInput in);
+IMPALGEBRAEXPORT std::vector<Vector3D > read_pts(TextInput in);
 
 //! Write a set of 3d spheres to a file
 /** \see read_pts
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT void write_spheres(const std::vector<SphereD<3> > &vs,
+IMPALGEBRAEXPORT void write_spheres(const std::vector<Sphere3D > &vs,
                                     TextOutput out);
 
 //! Read a set of 3d spheres from a file
 /** \see write_pts
     \relatesalso SphereD
 */
-IMPALGEBRAEXPORT std::vector<SphereD<3> > read_spheres(TextInput in);
+IMPALGEBRAEXPORT std::vector<Sphere3D > read_spheres(TextInput in);
 
 /** @} */
 

@@ -14,27 +14,27 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso SphereD<3>
+/** \relatesalso Sphere3D
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
  */
-IMPALGEBRAEXPORT SphereD<3>
-get_enclosing_sphere(const std::vector<SphereD<3> > &ss);
+IMPALGEBRAEXPORT Sphere3D
+get_enclosing_sphere(const std::vector<Sphere3D > &ss);
 
 //! Return a sphere containing the listed spheres
-/** \relatesalso SphereD<3>
-    \relatesalso VectorD<3>
+/** \relatesalso Sphere3D
+    \relatesalso Vector3D
     \note This method produces tighter bounding spheres if CGAL
     is used.
     \ingroup CGAL
  */
-IMPALGEBRAEXPORT SphereD<3>
-get_enclosing_sphere(const std::vector<VectorD<3> > &ss);
+IMPALGEBRAEXPORT Sphere3D
+get_enclosing_sphere(const std::vector<Vector3D > &ss);
 
 
 //! Return the radius of a sphere with a given volume
-/** \relatesalso SphereD<3>
+/** \relatesalso Sphere3D
  */
 inline double get_ball_radius_from_volume_3d(double volume) {
   IMP_USAGE_CHECK(volume>=0, "Volume can't be negative");
@@ -48,7 +48,7 @@ inline double get_ball_radius_from_volume_3d(double volume) {
 */
 IMPALGEBRAEXPORT
 FloatPair
-get_surface_area_and_volume(const std::vector<algebra::SphereD<3> > &ss);
+get_surface_area_and_volume(const std::vector<algebra::Sphere3D > &ss);
 #endif
 
 IMPALGEBRA_END_NAMESPACE

@@ -28,9 +28,9 @@ domino1::TransformationMappedDiscreteSet*
   for(unsigned int i=0;i<components.size();i++) {
     IMP_LOG(VERBOSE,"working on component:" <<i<< std::endl);
     Particle *comp=components[i];
-    algebra::VectorD<3> comp_cent=
+    algebra::Vector3D comp_cent=
     core::get_centroid(core::XYZs(core::get_leaves(atom::Hierarchy(comp))));
-    algebra::VectorD<3> mapped_ap=
+    algebra::Vector3D mapped_ap=
       core::XYZ(asmb_ap[mapping[i]]).get_coordinates();
     IMP_IF_LOG(VERBOSE) {
       IMP_LOG(VERBOSE,"component center:" <<std::endl);

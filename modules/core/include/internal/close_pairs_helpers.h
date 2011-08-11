@@ -106,9 +106,9 @@ inline bool get_are_close(Model *m, ParticleIndex a, ParticleIndex b,
       return false;
     }
   }
-  return get_interiors_intersect(algebra::SphereD<3>(da.get_coordinates(),
+  return get_interiors_intersect(algebra::Sphere3D(da.get_coordinates(),
                                                      ra+distance),
-                                 algebra::SphereD<3>(db.get_coordinates(), rb));
+                                 algebra::Sphere3D(db.get_coordinates(), rb));
 }
 
 struct FarParticle {

@@ -109,7 +109,7 @@ get_uniform_surface_cover(const SphereD<D> &s, unsigned int n) {
 /** \relatesalso VectorD
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT std::vector<VectorD<3> >
+IMPALGEBRAEXPORT std::vector<Vector3D >
 get_uniform_surface_cover(const Cylinder3D &cyl,
                           int number_of_points);
 
@@ -128,7 +128,7 @@ get_uniform_upper_hemisphere_cover(const SphereD<D> &s, unsigned int n) {
 /** \relatesalso Vector3D
     \relatesalso Cylinder3D
 */
-IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+IMPALGEBRAEXPORT  std::vector<Vector3D >
 get_grid_surface_cover(const Cylinder3D &cyl,
                        int number_of_cycles,
                        int number_of_points_on_cycle);
@@ -141,14 +141,14 @@ get_grid_surface_cover(const Cylinder3D &cyl,
    \relatesalso SpherePatch3D
    \relatesalso VectorD
  */
-IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+IMPALGEBRAEXPORT  std::vector<Vector3D >
 get_uniform_surface_cover(const SpherePatch3D &sph,
                           unsigned int number_of_points);
 
 /** \relatesalso VectorD
     \relatesalso Cone3D
 */
-IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+IMPALGEBRAEXPORT  std::vector<Vector3D >
 get_uniform_surface_cover(const Cone3D &cone,
                           unsigned int number_of_points);
 
@@ -206,11 +206,11 @@ get_grid_interior_cover_by_spacing(const BoundingBoxD<D> &bb, double s) {
     \note The current implementation is not very clever and can be made
     more clever if needed.
  */
-IMPALGEBRAEXPORT  std::vector<VectorD<3> >
+IMPALGEBRAEXPORT  std::vector<Vector3D >
 get_random_chain(unsigned int n, double r,
-                 const VectorD<3> &start
+                 const Vector3D &start
                  = Vector3D(0,0,0),
-                 const std::vector<SphereD<3> > &obstacles
+                 const std::vector<Sphere3D > &obstacles
                  =Sphere3Ds());
 
 /** @} */

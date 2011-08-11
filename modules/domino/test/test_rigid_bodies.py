@@ -43,10 +43,11 @@ class DOMINOTests(IMP.test.TestCase):
         #rg.show_dotty()
         print "ig"
         ig= IMP.domino.get_interaction_graph(m.get_root_restraint_set(), pst)
-        #ig.show_dotty()
+        IMP.show_graphviz(ig)
         print "dg"
+        IMP.set_log_level(IMP.VERBOSE)
         dg= IMP.get_dependency_graph([m.get_root_restraint_set()])
-        #dg.show_dotty()
+        IMP.show_graphviz(dg)
         print "jt"
         jt= IMP.domino.get_junction_tree(ig)
         #jt.show_dotty()

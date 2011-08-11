@@ -92,7 +92,7 @@ IMP_OBJECTS(HarmonicSphereDistancePairScore, HarmonicSphereDistancePairScores);
 inline double HarmonicSphereDistancePairScore::evaluate_index(Model *m,
                                 const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
-  algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
+  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
     - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();
@@ -114,7 +114,7 @@ inline double
 HarmonicUpperBoundSphereDistancePairScore::evaluate_index(Model *m,
                                   const ParticleIndexPair& p,
            DerivativeAccumulator *da) const {
-  algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
+  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
     - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance= delta.get_magnitude();
@@ -189,7 +189,7 @@ IMP_OBJECTS(SoftSpherePairScore, SoftSpherePairScores);
 inline double SoftSpherePairScore
 ::evaluate_index(Model *m, const ParticleIndexPair& pp,
            DerivativeAccumulator *da) const {
-  algebra::VectorD<3> delta=m->get_sphere(pp[0]).get_center()
+  algebra::Vector3D delta=m->get_sphere(pp[0]).get_center()
     - m->get_sphere(pp[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();

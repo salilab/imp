@@ -14,19 +14,19 @@ IMPALGEBRA_BEGIN_NAMESPACE
 namespace {
   // the projection of v onto the line through s is s[0]+f*(s[1]-s[0])
   double get_f(const Segment3D &s,
-               const algebra::VectorD<3> &p) {
-    algebra::VectorD<3> vs= s.get_point(1)- s.get_point(0);
-    algebra::VectorD<3> vps= p- s.get_point(0);
+               const algebra::Vector3D &p) {
+    algebra::Vector3D vs= s.get_point(1)- s.get_point(0);
+    algebra::Vector3D vps= p- s.get_point(0);
     double f= vps*vs/(vs*vs);
     return f;
   }
-  VectorD<3> get_point(const Segment3D &s, double f) {
+  Vector3D get_point(const Segment3D &s, double f) {
     return s.get_point(0)+ f*(s.get_point(1)-s.get_point(0));
   }
   Segment3D get_reversed(const Segment3D &s) {
     return Segment3D(s.get_point(1), s.get_point(0));
   }
-  VectorD<3> get_clipped_point(const Segment3D &s, double f) {
+  Vector3D get_clipped_point(const Segment3D &s, double f) {
     if (f<= 0) return s.get_point(0);
     else if (f>=1) return s.get_point(1);
     else {
@@ -67,7 +67,7 @@ namespace {
 }
 
 Segment3D get_shortest_segment(const Segment3D &s,
-                               const algebra::VectorD<3> &p) {
+                               const algebra::Vector3D &p) {
   double f= get_f(s, p);
   return Segment3D(get_clipped_point(s, f), p);
 }
@@ -82,8 +82,8 @@ Segment3D get_shortest_segment(const Segment3D &s,
 Segment3D get_shortest_segment(const Segment3D &sa,
                                const Segment3D &sb) {
   const double eps= .0001;
-  algebra::VectorD<3> va= sa.get_point(1) - sa.get_point(0);
-  algebra::VectorD<3> vb= sb.get_point(1) - sb.get_point(0);
+  algebra::Vector3D va= sa.get_point(1) - sa.get_point(0);
+  algebra::Vector3D vb= sb.get_point(1) - sb.get_point(0);
   double ma= va*va;
   double mb= vb*vb;
   // if one of them is too short to have a well defined direction
@@ -96,7 +96,7 @@ Segment3D get_shortest_segment(const Segment3D &sa,
     return get_shortest_segment(sa, sb.get_point(0));
   }
 
-  algebra::VectorD<3> vfirst = sa.get_point(0)- sb.get_point(0);
+  algebra::Vector3D vfirst = sa.get_point(0)- sb.get_point(0);
 
   IMP_LOG(VERBOSE, vfirst << " | " << va << " | " << vb << std::endl);
 
@@ -129,8 +129,8 @@ Segment3D get_shortest_segment(const Segment3D &sa,
     pb->z = p3.z + *mub * p43.z;
   */
 
-  algebra::VectorD<3> ra=get_clipped_point(sa, fa);
-  algebra::VectorD<3> rb=get_clipped_point(sb, fb);
+  algebra::Vector3D ra=get_clipped_point(sa, fa);
+  algebra::Vector3D rb=get_clipped_point(sb, fb);
 
   IMP_LOG(VERBOSE, fa << " " << fb << std::endl);
 

@@ -23,13 +23,13 @@ void test_one(std::string name,
               RigidBodies rbs,
               float side,
               double ) {
-  VectorD<3> minc(0,0,0), maxc(side, side, side);
+  Vector3D minc(0,0,0), maxc(side, side, side);
   m->evaluate(false);
   double runtime, inittime;
   IMP_TIME(
            {
              for (unsigned int i=0; i< rbs.size(); ++i) {
-               VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
+               Vector3D t= get_random_vector_in(BoundingBox3D(minc, maxc));
                Rotation3D r= get_random_rotation_3d();
                ReferenceFrame3D tr(Transformation3D(r, t));
                rbs[i].set_reference_frame(tr);
@@ -39,7 +39,7 @@ void test_one(std::string name,
   IMP_TIME(
            {
              for (unsigned int i=0; i< rbs.size(); ++i) {
-               VectorD<3> t= get_random_vector_in(BoundingBox3D(minc, maxc));
+               Vector3D t= get_random_vector_in(BoundingBox3D(minc, maxc));
                Rotation3D r= get_random_rotation_3d();
                Transformation3D tr(r, t);
                rbs[i].set_reference_frame(ReferenceFrame3D(tr));

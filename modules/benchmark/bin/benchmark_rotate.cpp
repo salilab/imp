@@ -18,7 +18,7 @@ using namespace IMP::atom;
 int main(int , char **) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  std::vector<VectorD<3> > vs(10000);
+  std::vector<Vector3D > vs(10000);
   for (unsigned int i=0; i< vs.size(); ++i) {
     vs[i]= get_random_vector_in(get_unit_sphere_d<3>());
   }
@@ -37,7 +37,7 @@ int main(int , char **) {
              }, runtime);
     IMP::benchmark::report("rotation (cache)", runtime, sum);
   }
-  VectorD<3> sum(0,0,0);
+  Vector3D sum(0,0,0);
   for (unsigned int i=0; i< vs.size(); ++i) {
     sum+= vs[i];
   }

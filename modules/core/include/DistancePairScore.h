@@ -56,7 +56,7 @@ inline double HarmonicDistancePairScore
 ::evaluate_index(Model *m,
                  const ParticleIndexPair &p,
                  DerivativeAccumulator *da) const {
-  algebra::VectorD<3> delta=m->get_sphere(p[0]).get_center()
+  algebra::Vector3D delta=m->get_sphere(p[0]).get_center()
     - m->get_sphere(p[1]).get_center();
   static const double MIN_DISTANCE = .00001;
   double distance2= delta.get_squared_magnitude();

@@ -45,19 +45,19 @@ Rotation3D compose(const Rotation3D &a, const Rotation3D &b) ;
 class IMPALGEBRAEXPORT Rotation3D {
   VectorD<4> v_;
   mutable bool has_cache_;
-  mutable VectorD<3> matrix_[3];
+  mutable Vector3D matrix_[3];
   IMP_NO_SWIG(friend Rotation3D compose(const Rotation3D &a,
                                         const Rotation3D &b));
   void fill_cache() const {
     if (has_cache_) return;
     has_cache_=true;
-    matrix_[0]= VectorD<3>(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
+    matrix_[0]= Vector3D(v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3],
                            2*(v_[1]*v_[2]-v_[0]*v_[3]),
                            2*(v_[1]*v_[3]+v_[0]*v_[2]));
-    matrix_[1]= VectorD<3>(2*(v_[1]*v_[2]+v_[0]*v_[3]),
+    matrix_[1]= Vector3D(2*(v_[1]*v_[2]+v_[0]*v_[3]),
                            v_[0]*v_[0]-v_[1]*v_[1]+v_[2]*v_[2]-v_[3]*v_[3],
                            2*(v_[2]*v_[3]-v_[0]*v_[1]));
-    matrix_[2]= VectorD<3>(2*(v_[1]*v_[3]-v_[0]*v_[2]),
+    matrix_[2]= Vector3D(2*(v_[1]*v_[3]-v_[0]*v_[2]),
                            2*(v_[2]*v_[3]+v_[0]*v_[1]),
                            v_[0]*v_[0]-v_[1]*v_[1]-v_[2]*v_[2]+v_[3]*v_[3]);
   }
@@ -88,8 +88,8 @@ class IMPALGEBRAEXPORT Rotation3D {
 
 
 #ifndef IMP_DOXYGEN
-  VectorD<3> get_rotated_no_cache(const VectorD<3> &o) const {
-    return VectorD<3>((v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
+  Vector3D get_rotated_no_cache(const Vector3D &o) const {
+    return Vector3D((v_[0]*v_[0]+v_[1]*v_[1]-v_[2]*v_[2]-v_[3]*v_[3])*o[0]
                       + 2*(v_[1]*v_[2]-v_[0]*v_[3])*o[1]
                       + 2*(v_[1]*v_[3]+v_[0]*v_[2])*o[2],
                       2*(v_[1]*v_[2]+v_[0]*v_[3])*o[0]
@@ -101,7 +101,7 @@ class IMPALGEBRAEXPORT Rotation3D {
   }
 
   //! Gets only the requested rotation coordinate of the vector
-  double get_rotated_one_coordinate_no_cache(const VectorD<3> &o,
+  double get_rotated_one_coordinate_no_cache(const Vector3D &o,
                                              unsigned int coord) const {
     switch(coord) {
     case 0:
@@ -127,17 +127,17 @@ class IMPALGEBRAEXPORT Rotation3D {
   }
 #endif
   //! Rotate a vector around the origin
-  VectorD<3> get_rotated(const VectorD<3> &o) const {
+  Vector3D get_rotated(const Vector3D &o) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
                     "Attempting to apply uninitialized rotation");
     fill_cache();
-    return VectorD<3>(o*matrix_[0],
+    return Vector3D(o*matrix_[0],
                       o*matrix_[1],
                       o*matrix_[2]);
   }
 
   //! Gets only the requested rotation coordinate of the vector
-  double get_rotated_one_coordinate(const VectorD<3> &o,
+  double get_rotated_one_coordinate(const Vector3D &o,
                                     unsigned int coord) const {
     IMP_USAGE_CHECK(v_.get_squared_magnitude() >0,
                     "Attempting to apply uninitialized rotation");
@@ -146,10 +146,10 @@ class IMPALGEBRAEXPORT Rotation3D {
   }
 
   //! Rotate a vector around the origin
-  VectorD<3> operator*(const VectorD<3> &v) const {
+  Vector3D operator*(const Vector3D &v) const {
     return get_rotated(v);
   }
-  VectorD<3> get_rotation_matrix_row(int i) const {
+  Vector3D get_rotation_matrix_row(int i) const {
     IMP_USAGE_CHECK((i>=0)&&(i<=2),"row index out of range");
     fill_cache();
     return matrix_[i];
@@ -190,7 +190,7 @@ class IMPALGEBRAEXPORT Rotation3D {
 
   /** \brief Return the derivative of the position x with respect to
       internal variable i. */
-  const VectorD<3> get_derivative(const VectorD<3> &o, unsigned int i) const;
+  const Vector3D get_derivative(const Vector3D &o, unsigned int i) const;
 };
 
 IMP_VALUES(Rotation3D, Rotation3Ds);
@@ -236,15 +236,15 @@ inline double get_distance(const Rotation3D &r0,
    \relatesalso Rotation3D
 */
 IMPALGEBRAEXPORT
-Rotation3D get_rotation_about_axis(const VectorD<3>& axis,
+Rotation3D get_rotation_about_axis(const Vector3D& axis,
                                    double angle);
 
 //! Create a rotation from the first vector to the second one.
 /** \relatesalso Rotation3D
  */
 IMPALGEBRAEXPORT
-Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
-                                               const VectorD<3> &v2);
+Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,
+                                               const Vector3D &v2);
 
 //! Generate a Rotation3D object from a rotation matrix
 /**
@@ -502,8 +502,8 @@ inline Rotation3D get_interpolated(const Rotation3D &a,
     The two axis must be perpendicular unit vectors.
 */
 IMPALGEBRAEXPORT
-Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
-                                      const VectorD<3> &y);
+Rotation3D get_rotation_from_x_y_axes(const Vector3D &x,
+                                      const Vector3D &y);
 
 //! Decompose a Rotation3D object into a rotation around an axis
 /**
@@ -513,11 +513,11 @@ Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
    \relatesalso Rotation3D
 */
 IMPALGEBRAEXPORT
-std::pair<VectorD<3>,double> get_axis_and_angle(const Rotation3D &rot);
+std::pair<Vector3D,double> get_axis_and_angle(const Rotation3D &rot);
 
 
 
-typedef std::pair<VectorD<3>,double> AxisAnglePair;
+typedef std::pair<Vector3D,double> AxisAnglePair;
 #ifndef IMP_DOXYGEN
 typedef std::vector<AxisAnglePair> AxisAnglePairs;
 #endif

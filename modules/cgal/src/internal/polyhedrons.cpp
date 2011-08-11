@@ -85,13 +85,13 @@ namespace {
   };
 
   template <class K>
-  algebra::VectorD<3> trp(const typename CGAL::Point_3<K> pt) {
-    return algebra::VectorD<3>(CGAL::to_double(pt[0]),
+  algebra::Vector3D trp(const typename CGAL::Point_3<K> pt) {
+    return algebra::Vector3D(CGAL::to_double(pt[0]),
                                CGAL::to_double(pt[1]),
                                CGAL::to_double(pt[2]));
   }
   template <class K>
-  typename K::Point_3 trp(const algebra::VectorD<3> pt) {
+  typename K::Point_3 trp(const algebra::Vector3D pt) {
     return typename K::Point_3(pt[0], pt[1], pt[2]);
   }
   template <class K>
@@ -103,16 +103,16 @@ namespace {
   }
 
   template <class K>
-  std::vector<std::vector<algebra::VectorD<3> > >
+  std::vector<std::vector<algebra::Vector3D > >
   get_facets(  CGAL::Nef_polyhedron_3<K> &np) {
     typename CGAL::Polyhedron_3<K> p;
     np.convert_to_polyhedron(p);
     CGAL_postcondition( p.is_valid());
     typename std::vector<typename
-                         std::vector<typename algebra::VectorD<3> > > ret;
+                         std::vector<typename algebra::Vector3D > > ret;
     for (typename CGAL::Polyhedron_3<K>::Face_iterator it= p.facets_begin();
          it != p.facets_end(); ++it) {
-      ret.push_back(typename std::vector<typename algebra::VectorD<3> >());
+      ret.push_back(typename std::vector<typename algebra::Vector3D >());
       typename CGAL::Polyhedron_3<K>
         ::Facet::Halfedge_around_facet_circulator c= it->facet_begin();
       do {
@@ -125,11 +125,11 @@ namespace {
 
 
   template <class K>
-  std::pair<std::vector<algebra::VectorD<3> >,Ints >
+  std::pair<std::vector<algebra::Vector3D >,Ints >
   get_indexed_facets(  CGAL::Polyhedron_3<K> &p) {
     //CGAL_precondition( p.is_valid(true));
     Ints faces;
-    std::vector<algebra::VectorD<3> > coords;
+    std::vector<algebra::Vector3D > coords;
     typename std::map<typename CGAL::Polyhedron_3<K>::Vertex_handle,
                       int, AddressLess> vertices;
     //std::map<Polyhedron::Vertex_handle, int> vertices;
@@ -154,7 +154,7 @@ namespace {
   }
 
   template <class K>
-  std::pair<std::vector<algebra::VectorD<3> >,Ints >
+  std::pair<std::vector<algebra::Vector3D >,Ints >
   get_indexed_facets(typename CGAL::Nef_polyhedron_3<K> &np) {
     typename CGAL::Polyhedron_3<K> p;
     np.convert_to_polyhedron(p);
@@ -231,7 +231,7 @@ CGAL::Nef_polyhedron_3<K> create_nef(const algebra::BoundingBoxD<3> &bb,
 }
 }
 
-std::vector<std::vector<algebra::VectorD<3> > >
+std::vector<std::vector<algebra::Vector3D > >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
                       const std::vector< algebra::Plane3D > &outer,
                       const std::vector< algebra::Plane3D > &hole) {
@@ -241,7 +241,7 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
   return get_facets(diff);
 }
 
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
                               const std::vector< algebra::Plane3D > &outer,
                               const std::vector< algebra::Plane3D > &hole) {
@@ -252,7 +252,7 @@ get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
 }
 
 
-std::vector<std::vector<algebra::VectorD<3> > >
+std::vector<std::vector<algebra::Vector3D > >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
                       const std::vector< algebra::Plane3D > &outer) {
   CGAL::Nef_polyhedron_3<EKernel> pouter= create_nef<EKernel>(bb, outer);
@@ -261,8 +261,8 @@ get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
 
 
 
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
-get_skin_surface(const std::vector<algebra::SphereD<3> > &ss) {
+std::pair<std::vector<algebra::Vector3D >,Ints >
+get_skin_surface(const std::vector<algebra::Sphere3D > &ss) {
   IMP_FUNCTION_LOG;
   typedef IKernel::Point_3                                     Bare_point;
   typedef CGAL::Weighted_point<Bare_point,IKernel::RT>         Weighted_point;
@@ -341,7 +341,7 @@ namespace {
         return Sphere_3(Point_3(0,0,0), 0);
       }
     done:
-      std::vector<algebra::VectorD<3> > vt
+      std::vector<algebra::Vector3D > vt
         = algebra::get_vertices(algebra::get_bounding_box(grid_));
       double max2=0;
       for (unsigned int i=0; i< vt.size(); ++i) {
@@ -439,12 +439,12 @@ namespace {
 
 
   template <class Grid>
-  std::pair<std::vector<algebra::VectorD<3> >,Ints >
+  std::pair<std::vector<algebra::Vector3D >,Ints >
   get_iso_surface_t(const Grid &grid, double iso_level) {
     Tr tr;            // 3D-Delaunay triangulation
     C2t3 c2t3 (tr);   // 2D-complex in 3D-Delaunay triangulation
     cgal_triangulate_surface(grid, iso_level, c2t3);
-    /*std::pair<std::vector<algebra::VectorD<3> >,Ints > ret;
+    /*std::pair<std::vector<algebra::Vector3D >,Ints > ret;
     std::map<C2t3::Vertex_handle, int> map;
     for (C2t3::Vertex_iterator it= c2t3.vertices_begin();
          it != c2t3.vertices_end(); ++it) {
@@ -488,7 +488,7 @@ namespace {
 
 
 
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                                    algebra::grids::DenseGridStorageD<3,
                             double>, double > &grid, double iso_level) {
@@ -497,7 +497,7 @@ get_iso_surface(const algebra::grids::GridD<3,
 }
 
 
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                                algebra::grids::DenseGridStorageD<3,
                                     float>, float > &grid, double iso_level) {

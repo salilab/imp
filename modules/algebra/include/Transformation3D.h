@@ -33,18 +33,18 @@ public:
   Transformation3D(){}
   /** basic constructor*/
   Transformation3D(const Rotation3D& r,
-                   const VectorD<3>& t=VectorD<3>(0,0,0)):
+                   const Vector3D& t=Vector3D(0,0,0)):
     trans_(t), rot_(r){}
   /** Construct a transformation with an identity rotation.*/
-  Transformation3D(const VectorD<3>& t):
+  Transformation3D(const Vector3D& t):
     trans_(t), rot_(get_identity_rotation_3d()){}
   ~Transformation3D();
   //! transform
-  VectorD<3> get_transformed(const VectorD<3> &o) const {
+  Vector3D get_transformed(const Vector3D &o) const {
     return rot_.get_rotated(o) + trans_;
   }
   //! apply transformation (rotate and then translate)
-  VectorD<3> operator*(const VectorD<3> &v) const {
+  Vector3D operator*(const Vector3D &v) const {
     return get_transformed(v);
   }
   /** compose two rigid transformation such that for any vector v
@@ -73,7 +73,7 @@ public:
   const Rotation3D& get_rotation() const {
     return rot_;
   }
-  const VectorD<3>& get_translation()const{return trans_;}
+  const Vector3D& get_translation()const{return trans_;}
 
   IMP_SHOWABLE_INLINE(Transformation3D, {
       rot_.show(out);
@@ -82,7 +82,7 @@ public:
     );
   Transformation3D get_inverse() const;
 private:
-  VectorD<3> trans_; //tranlation
+  Vector3D trans_; //tranlation
   Rotation3D rot_;  //rotation
 };
 
@@ -92,7 +92,7 @@ IMP_VALUES(Transformation3D, Transformation3Ds);
 //! Return a transformation that does not do anything
 /** \relatesalso Transformation3D */
 inline Transformation3D get_identity_transformation_3d() {
-  return Transformation3D(get_identity_rotation_3d(),VectorD<3>(0.0,0.0,0.0));
+  return Transformation3D(get_identity_rotation_3d(),Vector3D(0.0,0.0,0.0));
 }
 
 //! Generate a Transformation3D object from a rotation around a point
@@ -103,7 +103,7 @@ inline Transformation3D get_identity_transformation_3d() {
   \relatesalso Transformation3D
 */
 inline Transformation3D
-get_rotation_about_point(const VectorD<3> &point,
+get_rotation_about_point(const Vector3D &point,
                      const Rotation3D &rotation) {
   return Transformation3D(rotation, (rotation*(-point)+point));
 }

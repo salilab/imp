@@ -10,9 +10,9 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-std::vector<algebra::VectorD<3> > density2vectors(DensityMap *dmap,
+std::vector<algebra::Vector3D > density2vectors(DensityMap *dmap,
                                                   Float threshold) {
-  std::vector<algebra::VectorD<3> > vecs;
+  std::vector<algebra::Vector3D > vecs;
   const DensityHeader* header=dmap->get_header();
   long ind;
   for(int i=0;i<header->get_nx();i++){
@@ -51,7 +51,7 @@ Particles density2particles(DensityMap *dmap, Float threshold,
           x = dmap->get_location_in_dim_by_voxel(ind,0);
           y = dmap->get_location_in_dim_by_voxel(ind,1);
           z = dmap->get_location_in_dim_by_voxel(ind,2);
-          Voxel::setup_particle(p,IMP::algebra::VectorD<3>(x,y,z),r,val);
+          Voxel::setup_particle(p,IMP::algebra::Vector3D(x,y,z),r,val);
           atom::Mass::setup_particle(p,val);
           ps.push_back(p);
         }

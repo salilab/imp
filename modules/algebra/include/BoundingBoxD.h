@@ -170,7 +170,7 @@ inline BoundingBoxD<3> get_transformed(const BoundingBoxD<3> &bb,
   for (unsigned int i=0; i< 2; ++i) {
     for (unsigned int j=0; j< 2; ++j) {
       for (unsigned int k=0; k< 2; ++k) {
-        algebra::VectorD<3> v(bb.get_corner(i)[0],
+        algebra::Vector3D v(bb.get_corner(i)[0],
                             bb.get_corner(j)[1],
                             bb.get_corner(k)[2]);
         nbb+= tr.get_transformed(v);
@@ -236,12 +236,12 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 
 
 //! Return a list of the 8 bounding points for the bounding box
-inline std::vector<VectorD<3> > get_vertices(const BoundingBoxD<3> &bb) {
-  std::vector<VectorD<3> > ret; ret.reserve(8);
+inline std::vector<Vector3D > get_vertices(const BoundingBoxD<3> &bb) {
+  std::vector<Vector3D > ret; ret.reserve(8);
   for (unsigned int i=0; i< 2; ++i) {
     for (unsigned int j=0; j< 2; ++j) {
       for (unsigned int k=0; k< 2; ++k) {
-        ret.push_back(VectorD<3>(bb.get_corner(i)[0],
+        ret.push_back(Vector3D(bb.get_corner(i)[0],
                                  bb.get_corner(j)[1],
                                  bb.get_corner(k)[2]));
       }

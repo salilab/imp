@@ -128,7 +128,7 @@ IMP_VALUES(FittingSolutions, FittingSolutionsList);
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_point(
  Particle *p, Refiner *refiner,
    const FloatKey &weight_key,
-   DensityMap *dmap, const algebra::VectorD<3> &anchor_centroid,
+   DensityMap *dmap, const algebra::Vector3D &anchor_centroid,
    OptimizerStates display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,
@@ -207,7 +207,7 @@ inline FittingSolutions local_rigid_fitting(
 IMPEMEXPORT FittingSolutions local_rigid_fitting_around_points(
    Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
-   DensityMap *dmap, const std::vector<algebra::VectorD<3> > &anchor_centroids,
+   DensityMap *dmap, const std::vector<algebra::Vector3D > &anchor_centroids,
    OptimizerStates display_log,
    Int number_of_optimization_runs = 5, Int number_of_mc_steps = 10,
    Int number_of_cg_steps=100,

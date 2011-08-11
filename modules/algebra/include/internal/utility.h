@@ -15,8 +15,8 @@ IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 // defined in eigen analysis
 IMPALGEBRAEXPORT TNT::Array2D<double>
-   get_covariance_matrix( const std::vector<VectorD<3> > &vs,
-                          const VectorD<3>& mean);
+   get_covariance_matrix( const std::vector<Vector3D > &vs,
+                          const Vector3D& mean);
 
 
 

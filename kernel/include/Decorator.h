@@ -68,7 +68,7 @@ More abstractly, decorators can be used to
 - maintain invariants: e.g. an IMP::atom::Bond particle always connects
   two other particles, both of which are IMP::atom::Bonded particles.
 - add functionality: e.g. you can get the coordinates as an
-  IMP::algebra::VectorD<3>
+  IMP::algebra::Vector3D
 - provide uniform names for attributes: so you do not use \quote{x} some places
 and \quote{X} other places
 

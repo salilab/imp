@@ -11,8 +11,8 @@
 #include <vector>
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
-IMPCGALEXPORT algebra::SphereD<3>
-get_enclosing_sphere(const std::vector<algebra::SphereD<3> > &ss);
+IMPCGALEXPORT algebra::Sphere3D
+get_enclosing_sphere(const std::vector<algebra::Sphere3D > &ss);
 
 
 

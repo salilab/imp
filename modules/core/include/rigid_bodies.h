@@ -79,7 +79,7 @@ class IMPCOREEXPORT RigidBody: public XYZ {
   /** This method computes the coordinates of p given its internal coordinates
       and the current position and orientation of the rigid body.
    */
-  algebra::VectorD<3> get_coordinates(RigidMember p) const;
+  algebra::Vector3D get_coordinates(RigidMember p) const;
 
   void add_member_internal(XYZ d,
                            const algebra::ReferenceFrame3D &rf);
@@ -188,7 +188,7 @@ public:
 
   // swig doesn't support using, so the method is wrapped
   //! Get the coordinates of the particle
-  algebra::VectorD<3> get_coordinates() const {
+  algebra::Vector3D get_coordinates() const {
     return XYZ::get_coordinates();
   }
 
@@ -272,8 +272,8 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   RigidBody get_rigid_body() const;
 
   //! Return the current orientation of the body
-  algebra::VectorD<3> get_internal_coordinates() const {
-    return algebra::VectorD<3>(get_model()
+  algebra::Vector3D get_internal_coordinates() const {
+    return algebra::Vector3D(get_model()
                                ->get_attribute(internal::rigid_body_data()
                                                .child_keys_[0],
                                                get_particle_index()),
@@ -288,7 +288,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
   }
 
   //! set the internal coordinates for this member
-  void set_internal_coordinates(const algebra::VectorD<3> &v) const {
+  void set_internal_coordinates(const algebra::Vector3D &v) const {
     get_particle()->set_value(internal::rigid_body_data().child_keys_[0],
                               v[0]);
     get_particle()->set_value(internal::rigid_body_data().child_keys_[1],
@@ -324,7 +324,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
      get_particle()->has_attribute(internal::rigid_body_data().lquaternion_[0]),
      "Can only set the internal transformation if member is a "
      << "rigid body itself.");
-    algebra::VectorD<3>
+    algebra::Vector3D
       tr(get_particle()->get_value(internal::rigid_body_data().child_keys_[0]),
          get_particle()->get_value(internal::rigid_body_data().child_keys_[1]),
          get_particle()->get_value(internal::rigid_body_data().child_keys_[2]));
@@ -342,7 +342,7 @@ class IMPCOREEXPORT RigidMember: public XYZ {
 
   //! XYZ::set_coordiantes()
   // this is here since swig does like using statements
-  void set_coordinates(const algebra::VectorD<3> &center) {
+  void set_coordinates(const algebra::Vector3D &center) {
     XYZ::set_coordinates(center);
   }
 #ifndef IMP_DOXYGEN

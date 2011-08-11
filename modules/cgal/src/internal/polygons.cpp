@@ -41,8 +41,8 @@ namespace {
   };
 }
 
-std::vector<algebra::VectorD<3> >
-get_intersection(const algebra::VectorD<3> &normal,
+std::vector<algebra::Vector3D >
+get_intersection(const algebra::Vector3D &normal,
                  double d,
                  const algebra::BoundingBoxD<3> &bb) {
   typedef CGAL::Exact_predicates_inexact_constructions_kernel Kernel;
@@ -54,7 +54,7 @@ get_intersection(const algebra::VectorD<3> &normal,
   typedef Kernel::Segment_3 Segment_3;
   Plane_3 plane(tr<Point_3>(normal*d), tr<Direction_3>(normal));
   std::cout << "plane " << plane << std::endl;
-  std::vector<algebra::VectorD<3> > corners= algebra::get_vertices(bb);
+  std::vector<algebra::Vector3D > corners= algebra::get_vertices(bb);
   IntPairs edges= algebra::get_edges(bb);
   std::vector<Point_2> intersections;
   for (unsigned int i=0; i< edges.size(); ++i) {
@@ -69,11 +69,11 @@ get_intersection(const algebra::VectorD<3> &normal,
   std::vector<Point_2> ch;
   CGAL::ch_graham_andrew(intersections.begin(), intersections.end(),
                          std::back_inserter(ch));
-  std::vector<algebra::VectorD<3> > ret;
+  std::vector<algebra::Vector3D > ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
     std::cout << "found " << ch[i] << " is "
               << plane.to_3d(ch[i]) << std::endl;
-    ret.push_back(tr<algebra::VectorD<3> >(plane.to_3d(ch[i])));
+    ret.push_back(tr<algebra::Vector3D >(plane.to_3d(ch[i])));
   }
   return ret;
 }
@@ -82,7 +82,7 @@ get_intersection(const algebra::VectorD<3> &normal,
 
 Ints
 get_convex_polygons(const Ints &indexes,
-                    const std::vector<algebra::VectorD<3> > &vertices) {
+                    const std::vector<algebra::Vector3D > &vertices) {
   if (indexes.size() <3) {
     IMP_THROW("Polygon must at least be a triangle", ValueException);
   }

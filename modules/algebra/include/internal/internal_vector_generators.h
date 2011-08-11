@@ -116,11 +116,11 @@ uniform_cover_sphere(unsigned int n,
 }
 
 
-inline std::vector<VectorD<3> >
+inline std::vector<Vector3D >
 uniform_cover_sphere(unsigned int N,
-                     const VectorD<3> &center,
+                     const Vector3D &center,
                      double r, bool ALL) {
-  std::vector<VectorD<3> > ret(N);
+  std::vector<Vector3D > ret(N);
   double f=1;
   if (!ALL) {
     f=2.0;
@@ -149,11 +149,11 @@ uniform_cover_sphere(unsigned int N,
 }
 
 
-inline std::vector<VectorD<2> >
+inline std::vector<Vector2D >
 uniform_cover_sphere(unsigned int N,
-                     const VectorD<2> &center,
+                     const Vector2D &center,
                      double r, bool ALL) {
-  std::vector<VectorD<2> > ret(N);
+  std::vector<Vector2D > ret(N);
   for (unsigned int i=0; i< N; ++i) {
     double f;
     if (ALL) {
@@ -161,7 +161,7 @@ uniform_cover_sphere(unsigned int N,
     } else {
       f= static_cast<double>(i)/(2*N+2);
     }
-    ret[i]= center+r*VectorD<2>(sin(f), cos(f));
+    ret[i]= center+r*Vector2D(sin(f), cos(f));
   }
   return ret;
 }

@@ -56,9 +56,9 @@ class StatisticalPairScore: public PairScore {
   core::internal::PMFTable<BIPARTITE, INTERPOLATE, SPARSE> table_;
   double threshold_;
   IntKey key_;
-  inline double evaluate(const algebra::VectorD<3> &protein_v,
+  inline double evaluate(const algebra::Vector3D &protein_v,
                          int iptype,
-                         const algebra::VectorD<3> &ligand_v,
+                         const algebra::Vector3D &ligand_v,
                          int iltype,
                          core::XYZ pxyz, core::XYZ lxyz,
                          DerivativeAccumulator *da) const{
@@ -72,8 +72,8 @@ class StatisticalPairScore: public PairScore {
     } else {
       DerivativePair dp= table_.get_score_with_derivative(iptype,
                                                           iltype, distance);
-      algebra::VectorD<3> diff= protein_v-ligand_v;
-      algebra::VectorD<3> norm= diff.get_unit_vector();
+      algebra::Vector3D diff= protein_v-ligand_v;
+      algebra::Vector3D norm= diff.get_unit_vector();
       pxyz.add_to_derivatives(dp.second*norm, *da);
       lxyz.add_to_derivatives(-dp.second*norm, *da);
       return dp.first;
@@ -132,7 +132,7 @@ double StatisticalPairScore<Key, BIPARTITE, INTERPOLATE, SPARSE>
   int lt= pp[1]->get_value(key_);
   core::XYZ pxyz(pp[0]);
   core::XYZ lxyz(pp[1]);
-  algebra::VectorD<3> pv(pxyz.get_coordinates()),
+  algebra::Vector3D pv(pxyz.get_coordinates()),
     lv(lxyz.get_coordinates());
   if (pt==-1 || lt==-1) return 0;
   return evaluate(pv, pt, lv,lt, pxyz, lxyz, da);

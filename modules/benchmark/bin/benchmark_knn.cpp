@@ -14,7 +14,7 @@ using namespace IMP::benchmark;
 namespace {
 template <class KNN>
 void test(std::string name,
-          const std::vector<VectorD<3> > &pts,
+          const std::vector<Vector3D > &pts,
           const KNN &knn,
           double eps) {
   double result=0;
@@ -36,9 +36,9 @@ void test_uniform(std::string name,
                   unsigned int n, double eps, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  BoundingBox3D bb(VectorD<3>(0,0,0),
-                   VectorD<3>(10,10,10));
-  std::vector<VectorD<3> > pts;
+  BoundingBox3D bb(Vector3D(0,0,0),
+                   Vector3D(10,10,10));
+  std::vector<Vector3D > pts;
   for (unsigned int i=0; i< n; ++i) {
     pts.push_back(get_random_vector_in(bb));
   }

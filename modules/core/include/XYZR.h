@@ -56,7 +56,7 @@ public:
      \param[in] s The sphere to use to set the position and radius
    */
   static XYZR setup_particle(Particle *p,
-                     const algebra::SphereD<3> &s) {
+                     const algebra::Sphere3D &s) {
     XYZ::setup_particle(p, s.get_center());
     p->add_attribute(get_radius_key(), s.get_radius(), false);
     return XYZR(p);
@@ -75,12 +75,12 @@ public:
 
 
   //! Return a sphere object
-  const algebra::SphereD<3>& get_sphere() const {
+  const algebra::Sphere3D& get_sphere() const {
     return get_model()->get_sphere(get_particle_index());
   }
 
   //! Set the attributes from a sphere
-  void set_sphere(const algebra::SphereD<3> &s) {
+  void set_sphere(const algebra::Sphere3D &s) {
     get_model()->get_sphere(get_particle_index())=s;
   }
   //! Get the default radius key.
@@ -138,7 +138,7 @@ IMPCOREEXPORT void set_enclosing_radius(XYZR b,
 
     \relatesalso XYZR
  */
-IMPCOREEXPORT algebra::SphereD<3> get_enclosing_sphere(const XYZs& v);
+IMPCOREEXPORT algebra::Sphere3D get_enclosing_sphere(const XYZs& v);
 
 //! Create a set of particles which random coordinates
 /** This function is mostly to be used to keep demo code brief.
@@ -157,12 +157,12 @@ IMPCOREEXPORT XYZRs create_xyzr_particles(Model *m,
                                           Float box_side=10);
 
 /** \genericgeometry */
-inline const algebra::SphereD<3> get_sphere_d_geometry(XYZR d) {
+inline const algebra::Sphere3D get_sphere_d_geometry(XYZR d) {
   return d.get_sphere();
 }
 
 /** \genericgeometry */
-inline void set_sphere_d_geometry(XYZR d, const algebra::SphereD<3> &v) {
+inline void set_sphere_d_geometry(XYZR d, const algebra::Sphere3D &v) {
   d.set_sphere(v);
 }
 
@@ -173,12 +173,12 @@ IMPCORE_END_NAMESPACE
 // it will do the conversion implicitly anyway
 IMP_BEGIN_NAMESPACE
 /** \genericgeometry */
-inline const algebra::SphereD<3> get_sphere_d_geometry(Particle *p) {
+inline const algebra::Sphere3D get_sphere_d_geometry(Particle *p) {
   return core::XYZR(p).get_sphere();
 }
 
 /** \genericgeometry */
-inline void set_sphere_d_geometry(Particle *p, const algebra::SphereD<3> &v) {
+inline void set_sphere_d_geometry(Particle *p, const algebra::Sphere3D &v) {
   core::XYZR(p).set_sphere(v);
 }
 

@@ -21,20 +21,20 @@ static const unsigned int MAX_LEAF_SIZE=10;
 
 
 RigidBodyHierarchy::SpheresSplit
-RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
+RigidBodyHierarchy::divide_spheres(const std::vector<algebra::Sphere3D > &ss,
                                    const SphereIndexes &s) {
-  algebra::VectorD<3> centroid(0,0,0);
+  algebra::Vector3D centroid(0,0,0);
   for (unsigned int i=0; i< s.size(); ++i) {
     centroid += ss[s[i]].get_center();
   }
   centroid/= s.size();
-  std::vector<algebra::VectorD<3> > pts(s.size());
+  std::vector<algebra::Vector3D > pts(s.size());
   for (unsigned int i=0; i< s.size(); ++i) {
     pts[i]= ss[s[i]].get_center()-centroid;
   }
   algebra::PrincipalComponentAnalysis pca
     = algebra::get_principal_components(pts);
-  algebra::VectorD<3> v0=pca.get_principal_component(0),
+  algebra::Vector3D v0=pca.get_principal_component(0),
     v1= pca.get_principal_component(1),
     v2= pca.get_principal_component(2);
   double det = v0[0]*(v1[1]*v2[2]- v1[2]*v2[1])
@@ -47,7 +47,7 @@ RigidBodyHierarchy::divide_spheres(const std::vector<algebra::SphereD<3> > &ss,
                                                            v1[0], v1[1], v1[2],
                                                            v2[0], v2[1], v2[2])
     .get_inverse();
-  algebra::VectorD<3> minc(std::numeric_limits<double>::max(),
+  algebra::Vector3D minc(std::numeric_limits<double>::max(),
                          std::numeric_limits<double>::max(),
                          std::numeric_limits<double>::max()),
     maxc(-std::numeric_limits<double>::max(),
@@ -118,12 +118,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(constituents_.size() > 0,
                   "Rigid body has no members.");
-  std::vector<algebra::SphereD<3> > spheres(constituents_.size());
+  std::vector<algebra::Sphere3D > spheres(constituents_.size());
   for (unsigned int i=0; i< spheres.size(); ++i) {
     ParticleIndex rp= constituents_[i];
     double r =XYZR(m, rp).get_radius();
-    algebra::VectorD<3> v= RigidMember(m, rp).get_internal_coordinates();
-    spheres[i]= algebra::SphereD<3>(v, r);
+    algebra::Vector3D v= RigidMember(m, rp).get_internal_coordinates();
+    spheres[i]= algebra::Sphere3D(v, r);
   }
   // call internal setup on spheres, 0, all indexes
   SphereIndexes leaves(spheres.size());
@@ -141,12 +141,12 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     std::swap(cur,stack.back());
     stack.pop_back();
     IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
-    std::vector<algebra::SphereD<3> > ss(cur.second.size());
+    std::vector<algebra::Sphere3D > ss(cur.second.size());
     for (unsigned int i=0; i< cur.second.size(); ++i) {
       ss[i]= spheres[cur.second[i]];
     }
-    algebra::SphereD<3> ec= algebra::get_enclosing_sphere(ss);
-    algebra::SphereD<3> bs=algebra::SphereD<3>(ec.get_center(),
+    algebra::Sphere3D ec= algebra::get_enclosing_sphere(ss);
+    algebra::Sphere3D bs=algebra::Sphere3D(ec.get_center(),
                                                ec.get_radius()*EXPANSION
                                                +.1);
     set_sphere(cur.first, bs);
@@ -178,7 +178,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
 
 
 void RigidBodyHierarchy::set_sphere(unsigned int ni,
-                                    const algebra::SphereD<3> &s) {
+                                    const algebra::Sphere3D &s) {
   IMP_INTERNAL_CHECK(ni < tree_.size(), "Out of range");
   tree_[ni].s_=s;
 }
@@ -264,9 +264,9 @@ void RigidBodyHierarchy::do_show(std::ostream &out) const {
   }
 }
 
-std::vector<algebra::SphereD<3> >
+std::vector<algebra::Sphere3D >
 RigidBodyHierarchy::get_tree() const {
-  std::vector<algebra::SphereD<3> > ret;
+  std::vector<algebra::Sphere3D > ret;
   for (unsigned int i=0; i< tree_.size(); ++i) {
     ret.push_back(get_sphere(i));
   }

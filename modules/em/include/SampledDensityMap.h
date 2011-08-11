@@ -112,8 +112,8 @@ protected:
   //! Determine the size of the grid as a function of the particles
   //! and the resolution.
   void determine_grid_size(emreal resolution, emreal voxel_size,int sig_cutoff);
-  void set_header(const algebra::VectorD<3> &lower_bound,
-                  const algebra::VectorD<3> &upper_bound,
+  void set_header(const algebra::Vector3D &lower_bound,
+                  const algebra::Vector3D &upper_bound,
                   emreal maxradius, emreal resolution, emreal voxel_size,
                   int sig_offset);
  protected:

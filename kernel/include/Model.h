@@ -246,8 +246,8 @@ IMP_SWAP_1(BasicAttributeTable);
 class FloatAttributeTable {
   //std::vector<algebra::Sphere3D> spheres_;
   //std::vector<algebra::Sphere3D> sphere_derivatives_;
-  std::vector<algebra::SphereD<3> > spheres_;
-  std::vector<algebra::SphereD<3> > sphere_derivatives_;
+  std::vector<algebra::Sphere3D > spheres_;
+  std::vector<algebra::Sphere3D > sphere_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
@@ -257,9 +257,9 @@ class FloatAttributeTable {
   WeakPointer<Mask > read_mask_, write_mask_,add_remove_mask_,
                 read_derivatives_mask_, write_derivatives_mask_;
 #endif
-  algebra::SphereD<3> get_invalid_sphere() const {
+  algebra::Sphere3D get_invalid_sphere() const {
     double iv= internal::FloatAttributeTableTraits::get_invalid();
-    algebra::SphereD<3> ivs(algebra::VectorD<3>(iv, iv, iv), iv);
+    algebra::Sphere3D ivs(algebra::Vector3D(iv, iv, iv), iv);
     return ivs;
   }
 
@@ -324,7 +324,7 @@ public:
     // make more efficient
     std::fill(sphere_derivatives_.begin(),
               sphere_derivatives_.end(),
-              algebra::SphereD<3>(algebra::VectorD<3>(0,0,0),0));
+              algebra::Sphere3D(algebra::Vector3D(0,0,0),0));
     derivatives_.fill(0);
   }
   void clear_caches(ParticleIndex ) {

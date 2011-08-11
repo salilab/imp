@@ -500,7 +500,7 @@ void write_multimodel_pdb(const Hierarchies& mhd, TextOutput oout)
 
 
 // change atom type to string for Hao's hetatom code
-std::string get_pdb_string(const algebra::VectorD<3>& v, int index,
+std::string get_pdb_string(const algebra::Vector3D& v, int index,
                        AtomType at, ResidueType rt,
                        char chain, int res_index,
                        char res_icode, double occupancy,

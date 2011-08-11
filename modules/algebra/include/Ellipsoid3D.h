@@ -25,7 +25,7 @@ public:
     radii_[0]= std::numeric_limits<double>::quiet_NaN();
 #endif
   }
-  Ellipsoid3D(const VectorD<3>& center,double radius_x,
+  Ellipsoid3D(const Vector3D& center,double radius_x,
               double radius_y, double radius_z,
               const Rotation3D &rot);
   double get_radius(unsigned int i) const {
@@ -33,7 +33,7 @@ public:
               "Attempt to use uninitialized ellipsoid.");
     return radii_[i];
   }
-  const VectorD<3> &get_center() const {return center_;}
+  const Vector3D &get_center() const {return center_;}
   const Rotation3D &get_rotation() const {
     return rot_;
   }
@@ -46,7 +46,7 @@ public:
           << ")";
     });
 private:
-  VectorD<3> center_;
+  Vector3D center_;
   double radii_[3];
   Rotation3D rot_;
 };
@@ -56,7 +56,7 @@ IMP_VOLUME_GEOMETRY_METHODS(Ellipsoid3D, ellipsoid_3d,
                             return 4.0/3.0 * PI *g.get_radius(0)
                             *g.get_radius(1)*g.get_radius(2),
                             {
-                              VectorD<3> v(g.get_radius(0),
+                              Vector3D v(g.get_radius(0),
                                          g.get_radius(1),
                                          g.get_radius(2));
                               BoundingBoxD<3> b(-v, v);

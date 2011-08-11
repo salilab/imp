@@ -46,7 +46,7 @@ DensityMap *create_density_map(const algebra::BoundingBox3D &bb,
                                  double spacing) {
     Pointer<DensityMap> ret(new DensityMap());
     unsigned int n[3];
-    algebra::VectorD<3> wid= bb.get_corner(1)-bb.get_corner(0);
+    algebra::Vector3D wid= bb.get_corner(1)-bb.get_corner(0);
     for (unsigned int i=0; i< 3; ++i) {
       n[i]= static_cast<int>(std::ceil(wid[i]/spacing));
     }
@@ -534,7 +534,7 @@ bool DensityMap::same_voxel_size(const DensityMap *other) const
   return false;
 }
 
-algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
+algebra::Vector3D DensityMap::get_centroid(emreal threshold)  const{
   IMP_LOG(VERBOSE,
           "Max value:"<<get_max_value()<<" thre:"<<threshold<<std::endl);
   IMP_CHECK_CODE(emreal max_val = get_max_value());
@@ -560,7 +560,7 @@ algebra::VectorD<3> DensityMap::get_centroid(emreal threshold)  const{
   x_centroid /= counter;
   y_centroid /= counter;
   z_centroid /= counter;
-  return algebra::VectorD<3>(x_centroid,y_centroid,z_centroid);
+  return algebra::Vector3D(x_centroid,y_centroid,z_centroid);
 }
 emreal DensityMap::get_max_value() const{
   emreal max_val = -1.0 * INT_MAX;
@@ -747,9 +747,9 @@ Float approximate_molecular_mass(DensityMap* d, Float threshold) {
 
 /* Daniel's helpers */
 namespace {
-  inline algebra::VectorD<3> get_voxel_center(const DensityMap *map,
+  inline algebra::Vector3D get_voxel_center(const DensityMap *map,
                                      unsigned int v) {
-    return algebra::VectorD<3>(map->get_location_in_dim_by_voxel(v,0),
+    return algebra::Vector3D(map->get_location_in_dim_by_voxel(v,0),
                              map->get_location_in_dim_by_voxel(v,1),
                              map->get_location_in_dim_by_voxel(v,2));
   }
@@ -785,8 +785,8 @@ namespace {
     }
   }
 
-  inline void compute_voxel(const DensityMap *m, const algebra::VectorD<3> &v,
-                            int *ivox, algebra::VectorD<3> &remainder) {
+  inline void compute_voxel(const DensityMap *m, const algebra::Vector3D &v,
+                            int *ivox, algebra::Vector3D &remainder) {
     const double iside= 1.0/m->get_spacing();
     for (unsigned int i=0; i< 3; ++i) {
       double fvox= (v[i]- m->get_origin()[i])*iside;
@@ -821,7 +821,7 @@ algebra::BoundingBox3D get_bounding_box(const DensityMap* d,Float threshold) {
   algebra::BoundingBox3D ret;
   for(long l=0;l<d->get_number_of_voxels();l++) {
     if (d->get_value(l) > threshold) {
-      algebra::VectorD<3> v(get_voxel_center(d, l));
+      algebra::Vector3D v(get_voxel_center(d, l));
       ret+= v;
      }
   }
@@ -830,7 +830,7 @@ algebra::BoundingBox3D get_bounding_box(const DensityMap* d,Float threshold) {
 }
 
 
-double get_density(const DensityMap *m, const algebra::VectorD<3> &v) {
+double get_density(const DensityMap *m, const algebra::Vector3D &v) {
   // trilirp in z, y, x
   const double side= m->get_spacing();
   const double halfside= side/2.0;
@@ -843,7 +843,7 @@ double get_density(const DensityMap *m, const algebra::VectorD<3> &v) {
   }
 
   int ivox[3];
-  algebra::VectorD<3> r;
+  algebra::Vector3D r;
   compute_voxel(m, v, ivox, r);
   double is[4];
   for (unsigned int i=0; i< 4; ++i) {
@@ -869,8 +869,8 @@ void get_transformed_internal(const DensityMap *in,
   const algebra::Transformation3D &tri= tr.get_inverse();
   unsigned int size=ret->get_number_of_voxels();
   for (unsigned int i=0; i< size; ++i) {
-    algebra::VectorD<3> tpt=get_voxel_center(ret, i);
-    algebra::VectorD<3> pt= tri.get_transformed(tpt);
+    algebra::Vector3D tpt=get_voxel_center(ret, i);
+    algebra::Vector3D pt= tri.get_transformed(tpt);
     double d = get_density(in, pt);
     ret->set_value(i, d);
   }
@@ -910,7 +910,7 @@ DensityMap* get_resampled(DensityMap *in, double scaling) {
                                          -std::numeric_limits<float>::max());
   Pointer<DensityMap> ret=create_density_map(obb, in->get_spacing()*scaling);
   for (int i=0; i< ret->get_number_of_voxels(); ++i) {
-    algebra::VectorD<3> v= get_voxel_center(ret, i);
+    algebra::Vector3D v= get_voxel_center(ret, i);
     double d= get_density(in, v);
     ret->set_value(i, d);
   }
@@ -1170,7 +1170,7 @@ int DensityMap::get_dim_index_by_location(float loc_val,
   return static_cast<int>(std::floor((loc_val-get_origin()[ind])
                                      /header_.get_spacing()));
 }
-int DensityMap::get_dim_index_by_location(const algebra::VectorD<3> &v,
+int DensityMap::get_dim_index_by_location(const algebra::Vector3D &v,
                                           int ind) const {
   IMP_INTERNAL_CHECK((ind>-1) && (ind<3),"index out of range\n");
   IMP_INTERNAL_CHECK(is_part_of_volume(v),

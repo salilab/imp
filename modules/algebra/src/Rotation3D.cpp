@@ -20,9 +20,9 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
                                     double m21,double m22,double m23,
                                     double m31,double m32,double m33) {
   IMP_IF_CHECK(USAGE_AND_INTERNAL) {
-    VectorD<3> v0(m11, m12, m13);
-    VectorD<3> v1(m21, m22, m23);
-    VectorD<3> v2(m31, m32, m33);
+    Vector3D v0(m11, m12, m13);
+    Vector3D v1(m21, m22, m23);
+    Vector3D v2(m31, m32, m33);
     IMP_USAGE_CHECK(std::abs(v0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (row 0).");
     IMP_USAGE_CHECK(std::abs(v1.get_squared_magnitude()-1) < .1,
@@ -35,9 +35,9 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
               "The passed matrix is not a rotation matrix (row 0, row 2).");
     IMP_USAGE_CHECK(std::abs(v1 *v2) < .1,
               "The passed matrix is not a rotation matrix (row 1, row 2).");
-    VectorD<3> c0(m11, m21, m31);
-    VectorD<3> c1(m12, m22, m32);
-    VectorD<3> c2(m13, m23, m33);
+    Vector3D c0(m11, m21, m31);
+    Vector3D c1(m12, m22, m32);
+    Vector3D c2(m13, m23, m33);
     IMP_USAGE_CHECK(std::abs(c0.get_squared_magnitude()-1) < .1,
               "The passed matrix is not a rotation matrix (col 0).");
     IMP_USAGE_CHECK(std::abs(c1.get_squared_magnitude()-1) < .1,
@@ -90,7 +90,7 @@ Rotation3D get_rotation_from_matrix(double m11,double m12,double m13,
 }
 
 
-const VectorD<3> Rotation3D::get_derivative(const VectorD<3> &o,
+const Vector3D Rotation3D::get_derivative(const Vector3D &o,
                                             unsigned int i) const {
     /* The computation was derived in maple. Source code is probably in
        modules/algebra/tools
@@ -149,25 +149,25 @@ const VectorD<3> Rotation3D::get_derivative(const VectorD<3> &o,
 
     switch (i) {
     case 0:
-      return VectorD<3>(t11 - 2*t27*v_[0],
+      return Vector3D(t11 - 2*t27*v_[0],
                         t35 - 2*t47*v_[0],
                         t55 - 2*t65*v_[0]);
     case 1:
-      return VectorD<3>(t73 - 2*t27*v_[1],
+      return Vector3D(t73 - 2*t27*v_[1],
                         -2*t54*t10 - 2*t47*v_[1],
                         t35 - 2*t65*v_[1]);
     case 2:
-      return VectorD<3>(t55 - 2*t27*v_[2],
+      return Vector3D(t55 - 2*t27*v_[2],
                         t73 - 2*t47*v_[2],
                         -2*t4*t10 - 2*t65*v_[2]);
     case 3:
-      return VectorD<3>(-2*t34*t10 - 2*t27*v_[3],
+      return Vector3D(-2*t34*t10 - 2*t27*v_[3],
                         t11 - 2*t47*v_[3],
                         t73 - 2*t65*v_[3]);
     default:
       throw IndexException("Invalid derivative component");
     };
-    return VectorD<3>(0,0,0);
+    return Vector3D(0,0,0);
   }
 
 Rotation3D get_random_rotation_3d() {
@@ -285,15 +285,15 @@ FixedZXZ get_fixed_zxz_from_rotation(const Rotation3D &r) {
 
 FixedZYZ get_fixed_zyz_from_rotation(const Rotation3D &r) {
   // double d22 = c2
-  double cos_tilt= r.get_rotated(VectorD<3>(0,0,1))[2];
+  double cos_tilt= r.get_rotated(Vector3D(0,0,1))[2];
   // double d12 = s2 * s3;
-  double sin_tilt_sin_psi= r.get_rotated(VectorD<3>(0,0,1))[1];
+  double sin_tilt_sin_psi= r.get_rotated(Vector3D(0,0,1))[1];
   // double d21 = s1 * s2;
-  double sin_rot_sin_tilt= r.get_rotated(VectorD<3>(0,1,0))[2];
+  double sin_rot_sin_tilt= r.get_rotated(Vector3D(0,1,0))[2];
   // double d02 = c3 * s2;
-  double cos_psi_sin_tilt = r.get_rotated(VectorD<3>(0,0,1))[0];
+  double cos_psi_sin_tilt = r.get_rotated(Vector3D(0,0,1))[0];
   //double d20 = (-1.0) * c1 * s2;
-  double cos_rot_sin_tilt = -r.get_rotated(VectorD<3>(1,0,0))[2];
+  double cos_rot_sin_tilt = -r.get_rotated(Vector3D(1,0,0))[2];
   double psi= std::atan2(sin_tilt_sin_psi, cos_psi_sin_tilt);
   if (std::abs(sin(psi)) < .01) {
     IMP_THROW("Attempting to divide by 0 in get_fixed_zyz_from_rotation"
@@ -345,11 +345,11 @@ FixedXYZ get_fixed_xyz_from_rotation(const Rotation3D &r) {
      std::atan2(mat21, mat11));
 }
 
-Rotation3D get_rotation_about_axis(const VectorD<3>& axis,
+Rotation3D get_rotation_about_axis(const Vector3D& axis,
                                    double angle)
 {
   //normalize the vector
-  VectorD<3> axis_norm = axis.get_unit_vector();
+  Vector3D axis_norm = axis.get_unit_vector();
   double s = std::sin(angle/2);
   double a,b,c,d;
   a = std::cos(angle/2);
@@ -359,12 +359,12 @@ Rotation3D get_rotation_about_axis(const VectorD<3>& axis,
   return Rotation3D(a,b,c,d);
 }
 
-Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
-                                               const VectorD<3> &v2) {
-  VectorD<3> v1_norm = v1.get_unit_vector();
-  VectorD<3> v2_norm = v2.get_unit_vector();
+Rotation3D get_rotation_taking_first_to_second(const Vector3D &v1,
+                                               const Vector3D &v2) {
+  Vector3D v1_norm = v1.get_unit_vector();
+  Vector3D v2_norm = v2.get_unit_vector();
   //get a vector that is perpendicular to the plane containing v1 and v2
-  VectorD<3> vv = get_vector_product(v1_norm,v2_norm);
+  Vector3D vv = get_vector_product(v1_norm,v2_norm);
   //get the angle between v1 and v2
   double dot = v1_norm*v2_norm;
   dot = ( dot < -1.0 ? -1.0 : ( dot > 1.0 ? 1.0 : dot ) );
@@ -379,22 +379,22 @@ Rotation3D get_rotation_taking_first_to_second(const VectorD<3> &v1,
 }
 
 
-Rotation3D get_rotation_from_x_y_axes(const VectorD<3> &x,
-                                             const VectorD<3> &y) {
+Rotation3D get_rotation_from_x_y_axes(const Vector3D &x,
+                                             const Vector3D &y) {
   IMP_USAGE_CHECK(std::abs(x.get_squared_magnitude()-1.0) < .1,
                   "The x vector is not a unit vector.");
   IMP_USAGE_CHECK(std::abs(y.get_squared_magnitude()-1.0) < .1,
                   "The y vector is not a unit vector.");
   IMP_USAGE_CHECK(std::abs(x*y) < .1,
                   "The x and y vectors are not perpendicular.");
-  VectorD<3> z = get_vector_product(x,y);
+  Vector3D z = get_vector_product(x,y);
   Rotation3D rot = get_rotation_from_matrix(x[0],y[0], z[0],
                                             x[1], y[1], z[1],
                                             x[2],y[2],z[2]);
   return rot;
 }
 
-std::pair<VectorD<3>,double> get_axis_and_angle(
+std::pair<Vector3D,double> get_axis_and_angle(
                                       const Rotation3D &rot) {
   VectorD<4> q = rot.get_quaternion();
   double a,b,c,d;
@@ -402,8 +402,8 @@ std::pair<VectorD<3>,double> get_axis_and_angle(
 
   double angle = std::acos(a)*2;
   double s = std::sin(angle/2);
-  VectorD<3> axis(b/s,c/s,d/s);
-  return std::pair<VectorD<3>,double>(axis.get_unit_vector(),angle);
+  Vector3D axis(b/s,c/s,d/s);
+  return std::pair<Vector3D,double>(axis.get_unit_vector(),angle);
 }
 
 

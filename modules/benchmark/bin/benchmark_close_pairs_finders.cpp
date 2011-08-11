@@ -23,7 +23,7 @@ void test_one(std::string name,
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
   {
-    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    Vector3D minc(0,0,0), maxc(10,10,10);
     IMP_NEW(Model, m, ());
     Particles ps = create_xyzr_particles(m, n, rmin);
     ParticleIndexes psi= IMP::internal::get_index(ps);
@@ -44,7 +44,7 @@ void test_one(std::string name,
     report(oss.str(), runtime, result);
   }
 {
-    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    Vector3D minc(0,0,0), maxc(10,10,10);
     IMP_NEW(Model, m, ());
     Particles ps = create_xyzr_particles(m, n, rmin);
     ::boost::uniform_real<> rand(rmin, rmax);
@@ -64,7 +64,7 @@ void test_one(std::string name,
     report(oss.str(), runtime, result);
   }
   if (!nobi) {
-    VectorD<3> minc(0,0,0), maxc(10,10,10);
+    Vector3D minc(0,0,0), maxc(10,10,10);
     IMP_NEW(Model, m, ());
     Particles ps0 = create_xyzr_particles(m, n, rmin);
     Particles ps1 = create_xyzr_particles(m, n, rmin);

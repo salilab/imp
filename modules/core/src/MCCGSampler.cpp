@@ -281,10 +281,10 @@ MCCGSampler::set_up_movers(const Parameters &pms,
 void MCCGSampler::randomize(const Parameters &pms,
                             internal::CoreListSingletonContainer *sc) const {
   algebra::BoundingBox3D
-    bb(algebra::VectorD<3>(pms.bounds_.find(XK)->second.first,
+    bb(algebra::Vector3D(pms.bounds_.find(XK)->second.first,
                          pms.bounds_.find(YK)->second.first,
                          pms.bounds_.find(ZK)->second.first),
-       algebra::VectorD<3>(pms.bounds_.find(XK)->second.second,
+       algebra::Vector3D(pms.bounds_.find(XK)->second.second,
                          pms.bounds_.find(YK)->second.second,
                          pms.bounds_.find(ZK)->second.second));
   IMP_FOREACH_SINGLETON(sc,{
