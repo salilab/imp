@@ -65,7 +65,7 @@ void add_particle(RootHandle fh, Particle* ps) {
 }
 
 ParticlesTemp create_particles(RootHandle fh, Model *m) {
-  std::vector<NodeHandle> ch= fh.get_children();
+  NodeHandles ch= fh.get_children();
   ParticlesTemp ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
     NodeHandle cur= ch[i];
@@ -74,7 +74,7 @@ ParticlesTemp create_particles(RootHandle fh, Model *m) {
       IMP_NEW(Particle, p, (m));
       ch[i].set_association(p);
       {
-        std::vector<FloatKey> fks= fh.get_keys<FloatTraits>(IMP);
+        FloatKeys fks= fh.get_keys<FloatTraits>(IMP);
         for (unsigned int i=0; i< fks.size(); ++i) {
           if (cur.get_has_value(fks[i])) {
             has_data=true;
