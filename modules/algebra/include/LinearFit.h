@@ -22,7 +22,7 @@ public:
      \param[in] data vector of pairs (VectorD<2>) with x and their
      corresponding y values
    */
-  LinearFit(const std::vector<algebra::VectorD<2> >& data);
+  LinearFit(const Vector2Ds& data);
 
   //! fit error
   double get_fit_error() const { return error_; }
@@ -40,8 +40,8 @@ public:
                       });
 
  private:
-  void find_regression(const std::vector<algebra::VectorD<2> >& data);
-  void evaluate_error(const std::vector<algebra::VectorD<2> >& data);
+  void find_regression(const Vector2Ds>& data);
+  void evaluate_error(const Vector2Ds& data);
   double a_, b_;
   double error_;
 };
