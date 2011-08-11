@@ -84,7 +84,7 @@ public:
       the description.
 
      \note At the moment, Subset must be equal to
-     ParticleStatesTable::get_particles().
+     Subset(ParticleStatesTable::get_particles()).
    */
   Assignments get_sample_assignments(const Subset &s) const;
 
