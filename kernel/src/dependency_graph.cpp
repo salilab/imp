@@ -281,6 +281,7 @@ get_dependency_graph(const ScoreStatesTemp &ss,
     vm[i+ss.size()]= rs[i];
     index[rs[i]]=i+ss.size();
   }
+  // Very important to do inputs first
   build_inputs_graph(ss.begin(), ss.end(), ret, index);
   build_outputs_graph(ss.begin(), ss.end(), ret, index);
   build_inputs_graph(rs.begin(), rs.end(), ret, index);
