@@ -1,5 +1,6 @@
 /**
- *  \file RadiusOfGyrationRestraint.h    \brief radius of gyration restraint.
+ *  \file multifit/RadiusOfGyrationRestraint.h
+ *    \brief radius of gyration restraint.
  *
  *  Restrict max distance between every pair of particle
  *

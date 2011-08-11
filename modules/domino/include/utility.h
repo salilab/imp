@@ -102,7 +102,7 @@ IMPDOMINOEXPORT Ints get_partial_index(const ParticlesTemp &particles,
     @{
 */
 /** The existing data set is completely rewritten.
-    See \ref hdfio "HDF5 I/O".
+    See IMP::rmf.
  */
 IMPDOMINOEXPORT void save_assignments(AssignmentContainer *ac,
                                       const Subset &s,
