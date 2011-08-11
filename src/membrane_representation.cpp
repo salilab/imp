@@ -126,8 +126,8 @@ for(int i=0;i<TM->num;++i){
  ee = (core::RigidMember(atoms[nres-1]).get_internal_coordinates())[0];
  membrane::HelixDecorator d_rbs=
  membrane::HelixDecorator::setup_particle(prb,bb,ee);
-}
 
+}
 return tbr.release();
 }
 

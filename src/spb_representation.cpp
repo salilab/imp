@@ -15,6 +15,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <math.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
@@ -343,22 +344,23 @@ for(int i=0;i<mydata.num_cells;++i){
 return hs;
 }
 
-
-atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
- display::Color colore,int copy,double kappa,
+atom::Molecule create_protein(Model *m,std::string name,double mass,
+int nbeads, display::Color colore,int copy,double kappa,
  algebra::Vector3D x0, int start_residue, int length)
 {
  if(length==-1) {length=(int) (mass*1000.0/110.0);}
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
  protein->set_name(name);
- double vol=atom::get_volume_from_mass(1000.0*mass)/(double)nbeads;
+ int nres_bead=(int) (length/nbeads);
+ if(length%nbeads!=0) ++nres_bead;
  double ms=1000.0*mass/(double)nbeads;
+ double vol=atom::get_volume_from_mass(ms);
  double rg=algebra::get_ball_radius_from_volume_3d(vol);
  for(int i=0;i<nbeads;++i){
   IMP_NEW(Particle,pp,(m));
-  int first=start_residue+i*(int)(length/nbeads);
-  int last=start_residue+(i+1)*(int)(length/nbeads);
+  int first=start_residue+i*nres_bead;
+  int last=std::min(start_residue+(i+1)*nres_bead,start_residue+length);
   std::stringstream out1,out2;
   out1 << i;
   out2 << copy;
@@ -386,8 +388,8 @@ atom::Molecule create_protein(Model *m,std::string name,double mass,int nbeads,
 }
 
 atom::Molecule create_protein(Model *m,std::string name,
- std::string filename,int nbeads,display::Color colore,int copy,
- algebra::Vector3D x0,int start_residue, bool recenter)
+ std::string filename,int nres_bead,display::Color colore,
+ int copy,algebra::Vector3D x0,int start_residue,bool recenter)
 {
  IMP_NEW(Particle,p,(m));
  atom::Molecule protein=atom::Molecule::setup_particle(p);
@@ -396,7 +398,8 @@ atom::Molecule create_protein(Model *m,std::string name,
  atom::Hierarchy hpdb=atom::read_pdb(filename,m,sel);
  Particles ps=atom::get_leaves(hpdb);
  int nres=ps.size();
- int nres_bead=(int)(nres/nbeads)+1;
+ int nbeads=(int) (nres/nres_bead);
+ if(nres%nres_bead!=0) ++nbeads;
  core::XYZRs rbps;
  for(int i=0;i<nbeads;++i){
   IMP_NEW(Particle,pp,(m));
