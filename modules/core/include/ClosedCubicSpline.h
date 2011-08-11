@@ -30,8 +30,8 @@ public:
                     double spacing);
   IMP_UNARY_FUNCTION(ClosedCubicSpline);
 private:
-  std::vector<Float> values_;
-  std::vector<Float> second_derivs_;
+  Floats values_;
+  Floats second_derivs_;
   Float minrange_;
   Float maxrange_;
   Float spacing_;

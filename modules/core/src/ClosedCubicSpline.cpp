@@ -9,7 +9,7 @@
 
 IMPCORE_BEGIN_NAMESPACE
 
-ClosedCubicSpline::ClosedCubicSpline(const std::vector<double> &values,
+ClosedCubicSpline::ClosedCubicSpline(const Floats &values,
                                      double minrange, double spacing) :
     values_(values), minrange_(minrange), spacing_(spacing)
 {
