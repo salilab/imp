@@ -19,7 +19,7 @@ class UniformRotationSmaplingTest(IMP.test.TestCase):
         rot1=IMP.algebra.get_rotation_from_fixed_zxz(phi1,theta1,psi1)
         self.assertAlmostEqual(IMP.algebra.get_distance(rot,rot1),0,3)
     def test_euler_sampling(self):
-        rots = IMP.algebra.get_uniformly_sampled_rotations(30)
+        rots = IMP.algebra.get_uniformly_sampled_rotations(math.radians(30))
         print "number of rots",len(rots)
         self.assertEqual(552,len(rots))
 
