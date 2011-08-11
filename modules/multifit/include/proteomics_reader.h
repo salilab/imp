@@ -151,9 +151,9 @@ class IMPMULTIFITEXPORT ProteomicsData {//: public Object {
     }
     out<<std::endl;
     out<<"Interactions:"<<std::endl;
-    for(std::vector<std::vector<int> >::const_iterator
+    for(std::vector<Ints >::const_iterator
           it = interactions_.begin();it != interactions_.end();it++){
-      for(std::vector<int>::const_iterator it1 = it->begin();
+      for(Ints::const_iterator it1 = it->begin();
           it1 != it->end();it1++){
         out<<prot_data_[*it1].name_<<",";
       }

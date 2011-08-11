@@ -136,7 +136,7 @@ void parse_interaction_line(
      const std::string &line,
      ProteomicsData *dp){
   std::cout<<"parse_interaction_line:"<<line<<std::endl;
-  std::vector<int> inter_prots;
+  Ints inter_prots;
   typedef boost::split_iterator<std::string::iterator> string_split_iterator;
   IMP_USAGE_CHECK(line.size() > 2,
      "no data to parse. the last two tabs should contain header data\n");
