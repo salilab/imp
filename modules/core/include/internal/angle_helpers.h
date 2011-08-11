@@ -20,16 +20,16 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 
 //! Calculate the angle between the given three XYZ particles.
 /** \return the angle.
-    If derv0 is non-NULL, all three algebra::VectorD<3> parameters are filled
+    If derv0 is non-NULL, all three algebra::Vector3D parameters are filled
     in on return with the derivatives with respect to the XYZ particles.
  */
 template <class P>
 inline double angle(const P &d0, const P &d1, const P &d2,
-                    algebra::VectorD<3> *derv0, algebra::VectorD<3> *derv1,
-                    algebra::VectorD<3> *derv2)
+                    algebra::Vector3D *derv0, algebra::Vector3D *derv1,
+                    algebra::Vector3D *derv2)
 {
-  algebra::VectorD<3> rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
-  algebra::VectorD<3> rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
+  algebra::Vector3D rij = get_vector_d_geometry(d0)-get_vector_d_geometry(d1);
+  algebra::Vector3D rkj = get_vector_d_geometry(d2)-get_vector_d_geometry(d1);
 
   double scalar_product = rij*rkj;
   double mag_rij = rij.get_magnitude();
@@ -47,8 +47,8 @@ inline double angle(const P &d0, const P &d1, const P &d2,
   double angle = std::acos(cosangle);
 
   if (derv0) {
-    algebra::VectorD<3> unit_rij = rij.get_unit_vector();
-    algebra::VectorD<3> unit_rkj = rkj.get_unit_vector();
+    algebra::Vector3D unit_rij = rij.get_unit_vector();
+    algebra::Vector3D unit_rkj = rkj.get_unit_vector();
 
     double sinangle = std::abs(std::sin(angle));
 

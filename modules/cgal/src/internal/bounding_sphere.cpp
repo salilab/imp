@@ -1,5 +1,5 @@
 /**
- *  \file  SphereD<3>.cpp
+ *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.
@@ -13,8 +13,8 @@
 
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
-algebra::SphereD<3>
-get_enclosing_sphere(const std::vector<algebra::SphereD<3> > &ss) {
+algebra::Sphere3D
+get_enclosing_sphere(const std::vector<algebra::Sphere3D > &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
                   "Must pass some spheres to have a bounding sphere");
   typedef CGAL::Exact_predicates_inexact_constructions_kernel             K;
@@ -33,7 +33,7 @@ get_enclosing_sphere(const std::vector<algebra::SphereD<3> > &ss) {
                              (ss[i].get_radius())));
   }
   Min_sphere ms(spheres.begin(), spheres.end());
-  algebra::SphereD<3> s(algebra::VectorD<3>(*ms.center_cartesian_begin(),
+  algebra::Sphere3D s(algebra::Vector3D(*ms.center_cartesian_begin(),
                       *(ms.center_cartesian_begin()+1),
                       *(ms.center_cartesian_begin()+2)),
               ms.radius());

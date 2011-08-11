@@ -19,16 +19,16 @@ Transformation3D Transformation3D::get_inverse() const{
 Transformation3D get_transformation_3d(const Transformation2D &t2d) {
   Rotation3D R = get_rotation_from_fixed_zyz(
                           t2d.get_rotation().get_angle(),0.0,0.0);
-  VectorD<3> t(t2d.get_translation()[0],t2d.get_translation()[1],0);
+  Vector3D t(t2d.get_translation()[0],t2d.get_translation()[1],0);
   return Transformation3D(R,t);
 }
 Transformation3D get_random_local_transformation(Vector3D origin,
                        float max_translation,
                        float max_angle_in_rad) {
-  algebra::VectorD<3> translation
+  algebra::Vector3D translation
     = algebra::get_random_vector_in(algebra::Sphere3D(algebra::Vector3D(0,0,0),
                                                       max_translation));
-  algebra::VectorD<3> axis =
+  algebra::Vector3D axis =
     algebra::get_random_vector_on(algebra::Sphere3D(origin,1.));
   ::boost::uniform_real<> rand(-max_angle_in_rad,
                                max_angle_in_rad);

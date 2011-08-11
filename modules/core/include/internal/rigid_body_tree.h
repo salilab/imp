@@ -21,24 +21,24 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   RigidBody rb_;
   struct Data {
     std::vector<int> children_;
-    algebra::SphereD<3> s_;
+    algebra::Sphere3D s_;
   };
   std::vector<Data> tree_;
   ParticleIndexes constituents_;
 
   typedef std::vector<unsigned int> SphereIndexes;
   typedef std::vector<SphereIndexes> SpheresSplit;
-  SpheresSplit divide_spheres(const std::vector< algebra::SphereD<3> > &ss,
+  SpheresSplit divide_spheres(const std::vector< algebra::Sphere3D > &ss,
                               const SphereIndexes &s);
-  void set_sphere(unsigned int ni, const algebra::SphereD<3> &s);
+  void set_sphere(unsigned int ni, const algebra::Sphere3D &s);
   void set_leaf(unsigned int ni, const ParticleIndexes &ids);
   unsigned int add_children(unsigned int ni, unsigned int num_children);
   void validate_internal(Model *m, int cur, algebra::Sphere3Ds bounds) const;
  public:
-  algebra::SphereD<3> get_sphere(unsigned int i) const {
+  algebra::Sphere3D get_sphere(unsigned int i) const {
     IMP_INTERNAL_CHECK(i < tree_.size(), "Out of spheres vector");
     IMP_CHECK_OBJECT(rb_.get_particle());
-    algebra::SphereD<3> ret(rb_.get_reference_frame()
+    algebra::Sphere3D ret(rb_.get_reference_frame()
                                .get_global_coordinates(tree_[i]
                                                        .s_.get_center()),
                             tree_[i].s_.get_radius());
@@ -82,9 +82,9 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
     ParticleIndex index(std::abs(tree_[ni].children_[i])-1);
     return index;
   }
-  std::vector<algebra::SphereD<3> > get_all_spheres() const;
+  std::vector<algebra::Sphere3D > get_all_spheres() const;
   RigidBodyHierarchy(RigidBody rb, const ParticleIndexes &constituents);
-  std::vector<algebra::SphereD<3> > get_tree() const;
+  std::vector<algebra::Sphere3D > get_tree() const;
   bool get_constituents_match(const ParticleIndexes& ps) const {
     if (ps.size() != constituents_.size()) return false;
     ParticleIndexes un;
@@ -137,7 +137,7 @@ struct LessFirst {
 inline double
 distance_bound(Model *m, const RigidBodyHierarchy *da, unsigned int i,
                ParticleIndex b) {
-  algebra::SphereD<3> s= da->get_sphere(i);
+  algebra::Sphere3D s= da->get_sphere(i);
   double rd= algebra::get_distance(s, m->get_sphere(b));
   return rd;
 }
@@ -145,8 +145,8 @@ distance_bound(Model *m, const RigidBodyHierarchy *da, unsigned int i,
 inline double
 distance_bound(Model *, const RigidBodyHierarchy *da, unsigned int i,
                const RigidBodyHierarchy *db, unsigned int j) {
-  algebra::SphereD<3> sa= da->get_sphere(i);
-  algebra::SphereD<3> sb= db->get_sphere(j);
+  algebra::Sphere3D sa= da->get_sphere(i);
+  algebra::Sphere3D sb= db->get_sphere(j);
   double rd= algebra::get_distance(sa, sb);
   return rd;
 }

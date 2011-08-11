@@ -48,7 +48,7 @@ void test_one(std::string name,
               float rmin, float rmax, double) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  VectorD<3> minc(0,0,0), maxc(10,10,10);
+  Vector3D minc(0,0,0), maxc(10,10,10);
   Model *m= new Model();
   Particles ps = create_xyzr_particles(m, n, rmin);
   ParticleIndexes pis = IMP::internal::get_index(ps);

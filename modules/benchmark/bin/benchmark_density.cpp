@@ -19,7 +19,7 @@ void do_benchmark() {
     m[i]= new DensityMap();
     unsigned int n[3];
     double spacing=(i+3.0)/100.0;
-    algebra::VectorD<3> wid(i+3,i+3,i+3);
+    algebra::Vector3D wid(i+3,i+3,i+3);
     for (unsigned int j=0; j< 3; ++j) {
       n[j]= static_cast<int>(std::ceil(wid[j]/spacing));
     }

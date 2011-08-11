@@ -11,8 +11,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 namespace {
 //! Return true if the vectors are paralel
-bool get_are_parallel(const VectorD<3> &v1,
-                               const VectorD<3> &v2) {
+bool get_are_parallel(const Vector3D &v1,
+                               const Vector3D &v2) {
   float dot_p = v1*v2;
   float det1 = v1.get_magnitude();
   float det2 = v2.get_magnitude();
@@ -22,7 +22,7 @@ bool get_are_parallel(const VectorD<3> &v1,
 
 bool
 get_are_colinear(
-         const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3){
+         const Vector3D &p1,const Vector3D &p2,const Vector3D &p3){
   //check that the three points are not on the same line
   algebra::Vector3D v1=p1-p2;
   algebra::Vector3D v2=p1-p3;
@@ -30,7 +30,7 @@ get_are_colinear(
 }
 
 Triangle3D::Triangle3D(
-      const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3) {
+      const Vector3D &p1,const Vector3D &p2,const Vector3D &p3) {
   p_[0]=p1;
   p_[1]=p2;
   p_[2]=p3;

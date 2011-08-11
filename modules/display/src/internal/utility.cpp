@@ -107,7 +107,7 @@ namespace {
   template <class It>
   algebra::Vector3D get_normal(It b, It e, const algebra::Vector3Ds &vertices) {
     IMP_USAGE_CHECK(std::distance(b,e)==3, "Not a triangle");
-    algebra::VectorD<3> n=
+    algebra::Vector3D n=
       get_vector_product(vertices.at(*(b+1))-vertices.at(*b),
                          vertices.at(*(b+2))-vertices.at(*b)).get_unit_vector();
     return n;

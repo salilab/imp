@@ -36,8 +36,8 @@ IMPALGEBRA_BEGIN_NAMESPACE
 //! A Cartesian vector in D-dimensions.
 /** Store a vector of Cartesian coordinates. It supports all expected
     mathematical operators, including using * for the dot product.
-    \see VectorD<3>
-    \see VectorD<2>
+    \see Vector3D
+    \see Vector2D
 
     \geometry
  */
@@ -376,7 +376,7 @@ inline double get_distance(const VectorD<D> &v1, const VectorD<D> &v2) {
 /** Return the unit vector pointing in the direction of the requested
     coordinate. That is
     \code
-    get_basis_vector_d<3>(2)== VectorD<3>(0,0,1);
+    get_basis_vector_d<3>(2)== Vector3D(0,0,1);
     \endcode
     \relatesalso VectorD
  */

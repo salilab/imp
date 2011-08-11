@@ -1,5 +1,5 @@
 /**
- *  \file  SphereD<3>.cpp
+ *  \file  Sphere3D.cpp
  *  \brief simple implementation of spheres in 3D
  *
  *  Copyright 2007-2011 IMP Inventors. All rights reserved.

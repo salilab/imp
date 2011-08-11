@@ -33,7 +33,7 @@ inline double get_rmsd(const Vecto3DsOrXYZs0& m1 ,const Vecto3DsOrXYZs1& m2,
   typename Vecto3DsOrXYZs0::const_iterator it0= m1.begin();
   typename Vecto3DsOrXYZs1::const_iterator it1= m2.begin();
   for(; it0!= m1.end(); ++it0, ++it1) {
-    algebra::VectorD<3> tred
+    algebra::Vector3D tred
       =tr_for_second.get_transformed(get_vector_d_geometry(*it1));
     rmsd += algebra::get_squared_distance(get_vector_d_geometry(*it0),
                                       tred);

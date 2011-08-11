@@ -15,7 +15,7 @@ IMPATOM_BEGIN_NAMESPACE
 IMPATOMEXPORT std::pair<double,double> get_placement_score(
   const core::XYZs& from ,const core::XYZs& to) {
   //calculate the best fit bewteen the two placements
-  std::vector<algebra::VectorD<3> > from_v,to_v;
+  std::vector<algebra::Vector3D > from_v,to_v;
   for(core::XYZs::const_iterator it = from.begin(); it != from.end(); it++) {
     from_v.push_back(it->get_coordinates());
   }
@@ -34,7 +34,7 @@ double get_pairwise_rmsd_score(
       const core::XYZs& mdl1 ,const core::XYZs& mdl2) {
   //calculate the best fit bewteen the reference and model
   //of the first component
-  /*std::vector<algebra::VectorD<3> > from_v1,to_v1;
+  /*std::vector<algebra::Vector3D > from_v1,to_v1;
   for(core::XYZs::const_iterator it = mdl1.begin(); it != mdl1.end(); it++) {
     from_v1.push_back(it->get_coordinates());
   }
@@ -52,7 +52,7 @@ std::pair<double,double> get_component_placement_score(
       const core::XYZs& mdl1 ,const core::XYZs& mdl2) {
   //calculate the best fit bewteen the reference and model
   //of the first component
-  std::vector<algebra::VectorD<3> > from_v1,to_v1,from_v2,to_v2;
+  std::vector<algebra::Vector3D > from_v1,to_v1,from_v2,to_v2;
   for(core::XYZs::const_iterator it = mdl1.begin(); it != mdl1.end(); it++) {
     from_v1.push_back(it->get_coordinates());
   }
@@ -68,7 +68,7 @@ std::pair<double,double> get_component_placement_score(
   algebra::Transformation3D t =
     algebra::get_transformation_aligning_first_to_second(from_v1,to_v1);
   //now transform the model of component 2 according to the transformation
-  for(std::vector<algebra::VectorD<3> >::iterator it = from_v2.begin();
+  for(std::vector<algebra::Vector3D >::iterator it = from_v2.begin();
                                  it != from_v2.end(); it++) {
     *it=t.get_transformed(*it);
   }

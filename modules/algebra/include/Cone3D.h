@@ -32,11 +32,11 @@ class IMPALGEBRAEXPORT Cone3D
   // A cone with a top at s.get_point(0) and the given base radius
   Cone3D(const Segment3D &s,double radius);
   //!Get the vertex of the cone
-  VectorD<3> get_tip() const {return seg_.get_point(0);}
+  Vector3D get_tip() const {return seg_.get_point(0);}
   //!Get the direction of the axis of the cone
   /** This vector points from the tip into the occupied volume.
    */
-  VectorD<3> get_direction() const {return seg_.get_direction();}
+  Vector3D get_direction() const {return seg_.get_direction();}
   double get_height() const {return seg_.get_length();}
   /** The opening angle of a cone is the vertex angle made by a cross section
       through the apex and center of the base.*/
@@ -45,7 +45,7 @@ class IMPALGEBRAEXPORT Cone3D
   }
   //! get the radius of the base circle
   double get_radius() const {return radius_;}
-  bool get_contains(const VectorD<3> &v) const;
+  bool get_contains(const Vector3D &v) const;
   //! Get the plane supporting the base of the cone
   /** The cone is on the positive side of the plane.
    */

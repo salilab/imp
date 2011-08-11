@@ -54,14 +54,14 @@
    Creating a grid with a given cell size and upper and lower
    bounds
    \code
-   BoundingBox3D bb(VectorD<3>(10,10,10), VectorD<3>(100,100,100));
+   BoundingBox3D bb(Vector3D(10,10,10), Vector3D(100,100,100));
    typedef Grid3D<Ints> Grid;
    Grid grid(5, bb, 0.0);
    \endcode
 
    Iterate over the set of voxels incident on a bounding box:
    \code
-   BoundingBoxD<3> bb(VectorD<3>(20.2,20.3,20.5), VectorD<3>(31.3,32.5,38.9));
+   BoundingBoxD<3> bb(Vector3D(20.2,20.3,20.5), Vector3D(31.3,32.5,38.9));
    for (Grid::IndexIterator it= grid.voxels_begin(bb);
         it != grid.voxels_end(bb); ++it) {
         it->push_back(1);
@@ -81,12 +81,12 @@ template <class Storage>
 inline const typename Storage::Value
 get_trilinearly_interpolated(const grids::GridD<3, Storage,
                              typename Storage::Value> &g,
-                             const VectorD<3> &v,
+                             const Vector3D &v,
                              const typename Storage::Value& outside=0) {
   // trilirp in z, y, x
-  const VectorD<3> halfside= g.get_unit_cell()*.5;
-  const VectorD<3> bottom_sample= g.get_bounding_box().get_corner(0)+halfside;
-  const VectorD<3> top_sample= g.get_bounding_box().get_corner(1)-halfside;
+  const Vector3D halfside= g.get_unit_cell()*.5;
+  const Vector3D bottom_sample= g.get_bounding_box().get_corner(0)+halfside;
+  const Vector3D top_sample= g.get_bounding_box().get_corner(1)-halfside;
   for (unsigned int i=0; i< 3; ++i){
     if (v[i] < bottom_sample[i]
         || v[i] >= top_sample[i]) {
@@ -96,7 +96,7 @@ get_trilinearly_interpolated(const grids::GridD<3, Storage,
   }
   using namespace internal::trilep_helpers;
   int ivox[3];
-  algebra::VectorD<3> r;
+  algebra::Vector3D r;
   internal::trilep_helpers::compute_voxel(g, v, ivox, r);
   typename Storage::Value is[4];
   for (unsigned int i=0; i< 4; ++i) {
@@ -177,7 +177,7 @@ IMPALGEBRA_END_NAMESPACE
 
 /** Iterate over each voxel in grid. The voxel index is
     unsigned int voxel_index[3] and the coordinates of the center is
-    VectorD<3> voxel_center and the index of the voxel is
+    Vector3D voxel_center and the index of the voxel is
     loop_voxel_index.
     \relatesalso Grid3D
  */
@@ -191,7 +191,7 @@ IMPALGEBRA_END_NAMESPACE
     const IMP::algebra::Vector3D macro_map_origin                       \
       =g.get_origin();                                                  \
     unsigned int voxel_index[3];                                        \
-    IMP::algebra::VectorD<3> voxel_center;                              \
+    IMP::algebra::Vector3D voxel_center;                              \
     for (voxel_index[0]=0; voxel_index[0]< macro_map_nx;                \
          ++voxel_index[0]) {                                            \
       voxel_center[0]= macro_map_origin[0]                              \

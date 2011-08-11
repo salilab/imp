@@ -15,9 +15,9 @@ namespace trilep_helpers {
   template <class Storage>
   void compute_voxel(const grids::GridD<3, Storage,
                      typename Storage::Value> &g,
-                     const VectorD<3> &v,
+                     const Vector3D &v,
                      int *ivox,
-                     VectorD<3> &remainder) {
+                     Vector3D &remainder) {
     //std::cout << "getting " << v << std::endl;
     for (unsigned int i=0; i< 3; ++i) {
       double fvox= (v[i]- g.get_bounding_box().get_corner(0)[i])

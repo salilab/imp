@@ -167,7 +167,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     algebra::Transformation3D otr
       = d.get_reference_frame().get_transformation_to();
     algebra::VectorD<4> rderiv= d.get_rotational_derivatives();
-    algebra::VectorD<3> tderiv= d.get_derivatives();
+    algebra::Vector3D tderiv= d.get_derivatives();
     algebra::VectorD<4> rot = otr.get_rotation().get_quaternion();
     IMP_LOG(TERSE, "Old rotation was " << rot << std::endl);
     Float scale=.1;
@@ -183,7 +183,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
     FloatRange xr= d.get_particle()->get_model()
       ->get_range(core::XYZ::get_xyz_keys()[0]);
     Float wid= xr.second-xr.first;
-    algebra::VectorD<3> stderiv= scale*tderiv*wid;
+    algebra::Vector3D stderiv= scale*tderiv*wid;
     algebra::Transformation3D ntr(algebra::Rotation3D(rot[0], rot[1],
                                                       rot[2], rot[3]),
                                   stderiv+otr.get_translation());
@@ -195,7 +195,7 @@ IMP_PARTICLE_GEOMETRY(RigidBodyDerivative, core::RigidBody, {
                               /*xyzcolor_*/
                               Color(1,0,0));
       ret.push_back(tr);
-      algebra::VectorD<3> ic= r.get_rotated(dm.get_internal_coordinates())
+      algebra::Vector3D ic= r.get_rotated(dm.get_internal_coordinates())
       + d.get_coordinates();
       SegmentGeometry *rtr
         = new SegmentGeometry(algebra::Segment3D(dm.get_coordinates(),

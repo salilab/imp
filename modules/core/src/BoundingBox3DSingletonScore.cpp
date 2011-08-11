@@ -26,7 +26,7 @@ double BoundingBox3DSingletonScore::evaluate(Particle *p,
                                            DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   core::XYZ d(p);
-  algebra::VectorD<3> cp;
+  algebra::Vector3D cp;
   bool outside=false;
   for (unsigned int i=0; i< 3; ++i) {
     if (bb_.get_corner(0)[i] > d.get_coordinate(i)) {
@@ -42,7 +42,7 @@ double BoundingBox3DSingletonScore::evaluate(Particle *p,
   if (outside) {
     IMP_LOG(VERBOSE, "Particle " << p->get_name() << " is outside box: "
             << d << " of " << bb_ << std::endl);
-    algebra::VectorD<3> deriv;
+    algebra::Vector3D deriv;
     double v= internal::compute_distance_pair_score(d.get_coordinates()-cp,
                                                     f_.get(),&deriv,
                                                     boost::lambda::_1);

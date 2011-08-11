@@ -22,9 +22,9 @@ class IMPALGEBRAEXPORT Segment3D
 {
  public:
   Segment3D(){}
-  Segment3D(const VectorD<3> &start,const VectorD<3> &end);
+  Segment3D(const Vector3D &start,const Vector3D &end);
   //! Get the start=0/end=1 point of the segment
-  const VectorD<3>& get_point(unsigned int i) const {
+  const Vector3D& get_point(unsigned int i) const {
 #if defined(IMP_SWIG_WRAPPER)
     IMP_USAGE_CHECK(i<2,"invalid point index");
 #else
@@ -32,18 +32,18 @@ class IMPALGEBRAEXPORT Segment3D
 #endif
     return p_[i];
   }
-  VectorD<3> get_middle_point() const {
+  Vector3D get_middle_point() const {
     return .5*p_[0]+ .5*p_[1];
   }
   /** \brief Get a normalized direction vector pointing from
       get_point(0) to get_point(1).
   */
-  VectorD<3> get_direction() const {return (p_[1]-p_[0]).get_unit_vector();}
+  Vector3D get_direction() const {return (p_[1]-p_[0]).get_unit_vector();}
   double get_length() const;
   IMP_SHOWABLE_INLINE(Segment3D,
                       {out << spaces_io(p_[0]) << ": " << spaces_io(p_[1]);});
  private:
-  VectorD<3> p_[2];
+  Vector3D p_[2];
 };
 
 IMP_LINEAR_GEOMETRY_METHODS(Segment3D, segment_3d,
@@ -54,7 +54,7 @@ IMP_LINEAR_GEOMETRY_METHODS(Segment3D, segment_3d,
 
 //! Get the distance between a segment and a point
 /** \relatesalso Segment3D */
-IMPALGEBRAEXPORT double get_distance(const Segment3D &s, const VectorD<3> &p);
+IMPALGEBRAEXPORT double get_distance(const Segment3D &s, const Vector3D &p);
 
 //! Get the distance between two segments
 /** \relatesalso Segment3D */

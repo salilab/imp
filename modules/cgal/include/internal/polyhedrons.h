@@ -21,36 +21,36 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
     the various planes
  */
 IMPCGALEXPORT
-std::vector<std::vector<algebra::VectorD<3> > >
+std::vector<std::vector<algebra::Vector3D > >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
                       const std::vector< algebra::Plane3D > &outer,
                       const std::vector< algebra::Plane3D > &hole);
 
 
 IMPCGALEXPORT
-std::vector<std::vector<algebra::VectorD<3> > >
+std::vector<std::vector<algebra::Vector3D > >
 get_polyhedron_facets(const algebra::BoundingBoxD<3> &bb,
                       const std::vector< algebra::Plane3D > &outer);
 
 IMPCGALEXPORT
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_polyhedron_indexed_facets(const algebra::BoundingBoxD<3> &bb,
                               const std::vector< algebra::Plane3D > &outer,
                               const std::vector< algebra::Plane3D > &hole);
 
 
 IMPCGALEXPORT
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
-get_skin_surface(const std::vector<algebra::SphereD<3> > &ss);
+std::pair<std::vector<algebra::Vector3D >,Ints >
+get_skin_surface(const std::vector<algebra::Sphere3D > &ss);
 
 IMPCGALEXPORT
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                     algebra::grids::DenseGridStorageD<3,
                                 double>, double > &grid, double iso_level);
 
 IMPCGALEXPORT
-std::pair<std::vector<algebra::VectorD<3> >,Ints >
+std::pair<std::vector<algebra::Vector3D >,Ints >
 get_iso_surface(const algebra::grids::GridD<3,
                    algebra::grids::DenseGridStorageD<3,
                                    float>, float > &grid, double iso_level);

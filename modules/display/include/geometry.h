@@ -83,7 +83,7 @@ class IMPDISPLAYEXPORT CompoundGeometry: public Geometry {
 
 /** \brief Display a sphere.
 */
-IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::SphereD<3>);
+IMP_DISPLAY_GEOMETRY_DECL(SphereGeometry, algebra::Sphere3D);
 /** \brief Display a cylinder.
 */
 IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, algebra::Cylinder3D);
@@ -92,7 +92,7 @@ IMP_DISPLAY_GEOMETRY_DECL(CylinderGeometry, algebra::Cylinder3D);
 IMP_DISPLAY_GEOMETRY_DECL(EllipsoidGeometry, algebra::Ellipsoid3D);
 /** \brief Display a point.
 */
-IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::VectorD<3>);
+IMP_DISPLAY_GEOMETRY_DECL(PointGeometry, algebra::Vector3D);
 /** \brief Display a segment.
 */
 IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
@@ -100,7 +100,7 @@ IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
     used. Otherwise, the polygons should be simple, planar and convex.
 */
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
-                          std::vector<algebra::VectorD<3> >);
+                          std::vector<algebra::Vector3D >);
 /** \brief Display a triangule.
 */
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,

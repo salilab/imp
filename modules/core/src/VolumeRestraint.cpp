@@ -17,8 +17,8 @@ VolumeRestraint::VolumeRestraint(UnaryFunction *f,
                                  double volume):
   sc_(sc), f_(f), volume_(volume),
   grid_(40,40,40,
-        algebra::BoundingBox3D(algebra::VectorD<3>(0,0,0),
-                               algebra::VectorD<3>(1,1,1)),
+        algebra::BoundingBox3D(algebra::Vector3D(0,0,0),
+                               algebra::Vector3D(1,1,1)),
         -1)
 {
 }
@@ -34,14 +34,14 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       XYZR d(_1);
       bb3+= algebra::get_bounding_box(d.get_sphere());
     });
-  algebra::VectorD<3> diag= bb3.get_corner(1)-bb3.get_corner(0);
+  algebra::Vector3D diag= bb3.get_corner(1)-bb3.get_corner(0);
   double ms= std::max(diag[0], std::max(diag[1], diag[2]));
   std::vector<int> volumes(sc_->get_number_of_particles(), 0),
     areas(sc_->get_number_of_particles(), 0);
   bool is_zero=false;
   int count=0;
   if (ms >.0001) {
-    algebra::VectorD<3> vms(ms,ms,ms);
+    algebra::Vector3D vms(ms,ms,ms);
     bb3= algebra::BoundingBox3D(bb3.get_corner(0)-.1*vms,
                                 bb3.get_corner(0)+1.2*vms);
     IMP_LOG(VERBOSE, "Bounding box is " << bb3 << std::endl);
@@ -56,7 +56,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     IMP_FOREACH_SINGLETON(sc_, {
         ++count;
         XYZR d(_1);
-        algebra::SphereD<3> s= d.get_sphere();
+        algebra::Sphere3D s= d.get_sphere();
         algebra::BoundingBox3D bb= algebra::get_bounding_box(d.get_sphere());
         Grid::ExtendedIndex vl
           = grid_.get_extended_index(bb.get_corner(0));
@@ -66,7 +66,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
         for (Grid::IndexIterator it= grid_.indexes_begin(vl, vu);
              it != grid_.indexes_end(vl, vu); ++it) {
           //std::cout << "Inspecting " << *it << std::endl;
-          algebra::VectorD<3> c= grid_.get_center(*it);
+          algebra::Vector3D c= grid_.get_center(*it);
           if (s.get_contains(c)) {
             grid_[*it]= _2;
             ++volumes[_2];
@@ -86,7 +86,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   } else {
     is_zero=true;
   }
-  algebra::VectorD<3> v= grid_.get_unit_cell();
+  algebra::Vector3D v= grid_.get_unit_cell();
   double vc=v[0]*v[1]*v[2];
   unsigned int filled=0;
   if (!da) {

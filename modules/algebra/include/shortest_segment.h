@@ -22,11 +22,11 @@ IMPALGEBRA_BEGIN_NAMESPACE
     the second.
 */
 /** \relatesalso Segment3D
-    \relatesalso VectorD<3>
+    \relatesalso Vector3D
 */
 IMPALGEBRAEXPORT
 Segment3D get_shortest_segment(const Segment3D &s,
-                               const VectorD<3> &p);
+                               const Vector3D &p);
 
 /** \relatesalso Segment3D
  */

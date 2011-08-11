@@ -27,11 +27,11 @@ ParticlesTemp RigidBodyMover::propose_move(Float f) {
     if (fc > f) return ParticlesTemp();
   }
   last_transformation_= d_.get_reference_frame().get_transformation_to();
-  algebra::VectorD<3> translation
+  algebra::Vector3D translation
     = algebra::get_random_vector_in(algebra::Sphere3D(d_.get_coordinates(),
                                                       max_translation_));
-  algebra::VectorD<3> axis =
-    algebra::get_random_vector_on(algebra::Sphere3D(algebra::VectorD<3>(0.0,
+  algebra::Vector3D axis =
+    algebra::get_random_vector_on(algebra::Sphere3D(algebra::Vector3D(0.0,
                                                                         0.0,
                                                                         0.0),
                                                     1.));

@@ -67,7 +67,7 @@ public:
      The default is "radius".
    */
   static CustomXYZR setup_particle(Particle *p,
-                     const algebra::SphereD<3> &s,
+                     const algebra::Sphere3D &s,
                      FloatKey radius_key= get_default_radius_key()) {
     XYZ::setup_particle(p, s.get_center());
     p->add_attribute(radius_key, s.get_radius(), false);
@@ -83,12 +83,12 @@ public:
 
 
   //! Return a sphere object
-  algebra::SphereD<3> get_sphere() const {
-    return algebra::SphereD<3>(get_coordinates(), get_radius());
+  algebra::Sphere3D get_sphere() const {
+    return algebra::Sphere3D(get_coordinates(), get_radius());
   }
 
   //! Set the attributes from a sphere
-  void set_sphere(const algebra::SphereD<3> &s) {
+  void set_sphere(const algebra::Sphere3D &s) {
     set_coordinates(s.get_center());
     set_radius(s.get_radius());
   }
@@ -117,12 +117,12 @@ inline double get_distance(CustomXYZR a, CustomXYZR b) {
 }
 
 /** \genericgeometry */
-inline const algebra::SphereD<3> get_sphere_d_geometry(CustomXYZR d) {
+inline const algebra::Sphere3D get_sphere_d_geometry(CustomXYZR d) {
   return d.get_sphere();
 }
 
 /** \genericgeometry */
-inline void set_sphere_d_geometry(CustomXYZR d, const algebra::SphereD<3> &v) {
+inline void set_sphere_d_geometry(CustomXYZR d, const algebra::Sphere3D &v) {
   d.set_sphere(v);
 }
 

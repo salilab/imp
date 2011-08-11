@@ -11,15 +11,15 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-void write_pts(const std::vector<VectorD<3> > &vs, TextOutput out) {
+void write_pts(const std::vector<Vector3D > &vs, TextOutput out) {
   for (unsigned int i=0; i< vs.size(); ++i) {
     out.get_stream() << spaces_io(vs[i]) << "\n";
   }
 }
 
-std::vector<VectorD<3> > read_pts(TextInput oin) {
+std::vector<Vector3D > read_pts(TextInput oin) {
   std::istream &in= oin;
-  std::vector<VectorD<3> > ret;
+  std::vector<Vector3D > ret;
   while (true) {
     char buf[2000];
     in.getline(buf, 2000);
@@ -32,21 +32,21 @@ std::vector<VectorD<3> > read_pts(TextInput oin) {
       throw IMP::ValueException((std::string("Unable to parse line ")
                                  + buf).c_str());
     }
-    VectorD<3> v(x,y,z);
+    Vector3D v(x,y,z);
     ret.push_back(v);
   }
   return ret;
 }
 
-void write_spheres(const std::vector<SphereD<3> > &vs,
+void write_spheres(const std::vector<Sphere3D > &vs,
                    TextOutput out) {
   for (unsigned int i=0; i< vs.size(); ++i) {
     out.get_stream() << spaces_io(vs[i]) << "\n";
   }
 }
 
-std::vector<SphereD<3> > read_spheres(TextInput oin) {
-  std::vector<SphereD<3> > ret;
+std::vector<Sphere3D > read_spheres(TextInput oin) {
+  std::vector<Sphere3D > ret;
   std::istream &in=oin;
   while (true) {
     char buf[2000];
@@ -60,7 +60,7 @@ std::vector<SphereD<3> > read_spheres(TextInput oin) {
       throw IMP::ValueException((std::string("Unable to parse line ")
                                  + buf).c_str());
     }
-    SphereD<3> v(VectorD<3>(x,y,z), r);
+    Sphere3D v(Vector3D(x,y,z), r);
     ret.push_back(v);
   }
   return ret;

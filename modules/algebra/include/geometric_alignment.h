@@ -37,7 +37,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \genericgeometry
 
     \relatesalso Transformation3D
-    \see VectorD<3>
+    \see Vector3D
  */
 template <class Vector3DsOrXYZs0,
           class Vector3DsOrXYZs1>
@@ -56,7 +56,7 @@ const Vector3DsOrXYZs1 &to
   // compute the centroid of the points and transform
   // pointsets so that their centroids coinside
 
-  VectorD<3> center_from(0,0,0), center_to(0,0,0);
+  Vector3D center_from(0,0,0), center_to(0,0,0);
   for (unsigned int i=0; i< from.size(); ++i) {
     //double x= p_it->x();
     center_from+= get_vector_d_geometry(from[i]);
@@ -69,7 +69,7 @@ const Vector3DsOrXYZs1 &to
 
   IMP_LOG(VERBOSE, "Centers are (" << center_from << ") (" << center_to
           << ")\n");
-  std::vector<VectorD<3> > shifted_from(from.size()), shifted_to(to.size());
+  std::vector<Vector3D > shifted_from(from.size()), shifted_to(to.size());
   for (unsigned int i=0; i< from.size(); ++i) {
     shifted_from[i]=get_vector_d_geometry(from[i])-center_from;
     shifted_to[i]= get_vector_d_geometry(to[i])-center_to;
@@ -155,7 +155,7 @@ const Vector3DsOrXYZs1 &to
                                rot[1][0], rot[1][1], rot[1][2],
                                rot[2][0], rot[2][1], rot[2][2]);
   IMP_LOG(VERBOSE, "Rotation is " << rotation << std::endl);
-  VectorD<3> translation=center_to - rotation.get_rotated(center_from);
+  Vector3D translation=center_to - rotation.get_rotated(center_from);
 
   Transformation3D ret(rotation, translation);
   return ret;
@@ -170,8 +170,8 @@ const Vector3DsOrXYZs1 &to
   are conserved.
 **/
 IMPALGEBRAEXPORT Transformation2D get_transformation_aligning_pair(
-                       const std::vector<VectorD<2> >& set_from,
-                       const std::vector<VectorD<2> >& set_to);
+                       const std::vector<Vector2D >& set_from,
+                       const std::vector<Vector2D >& set_to);
 
 // implemented in Transformation2D
 

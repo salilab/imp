@@ -27,26 +27,26 @@ IMPALGEBRA_BEGIN_NAMESPACE
 */
 
 //! Returns the vector product (cross product) of two vectors.
-/** \relatesalso VectorD<3>
+/** \relatesalso Vector3D
  */
-inline VectorD<3> get_vector_product(const VectorD<3>& p1,
-                                     const VectorD<3>& p2) {
-  return VectorD<3>(p1[1]*p2[2]-p1[2]*p2[1],
+inline Vector3D get_vector_product(const Vector3D& p1,
+                                     const Vector3D& p2) {
+  return Vector3D(p1[1]*p2[2]-p1[2]*p2[1],
                   p1[2]*p2[0]-p1[0]*p2[2],
                   p1[0]*p2[1]-p1[1]*p2[0]);
 }
 //! Return a vector that is perpendicular to the given vector
 /** Or, if you are Israeli, it is a vertical vector.
-    \relatesalso VectorD<3>
+    \relatesalso Vector3D
 */
-inline VectorD<3> get_orthogonal_vector(const VectorD<3> &v) {
+inline Vector3D get_orthogonal_vector(const Vector3D &v) {
   unsigned int maxi=0;
   if (std::abs(v[1]) > std::abs(v[0])) maxi=1;
   if (std::abs(v[2]) > std::abs(v[maxi])) maxi=2;
   if (std::abs(v[maxi]) < .0001) {
-    return VectorD<3>(0.0,0.0,0.0);
+    return Vector3D(0.0,0.0,0.0);
   } else {
-    VectorD<3> ret= get_ones_vector_d<3>();
+    Vector3D ret= get_ones_vector_d<3>();
     ret[maxi]=(-v[(maxi+1)%3]-v[(maxi+2)%3])/v[maxi];
     IMP_INTERNAL_CHECK(ret*v < .0001, "Vectors are not perpendicular");
     return ret;
@@ -54,9 +54,9 @@ inline VectorD<3> get_orthogonal_vector(const VectorD<3> &v) {
 }
 
 //! Returns the centroid of a set of vectors
-/** \relatesalso VectorD<3>
+/** \relatesalso Vector3D
  */
-inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
+inline Vector3D get_centroid(const std::vector<Vector3D > &ps) {
   return std::accumulate(ps.begin(), ps.end(),
                          get_zero_vector_d<3>())/ps.size();
 }
@@ -65,7 +65,7 @@ inline VectorD<3> get_centroid(const std::vector<VectorD<3> > &ps) {
 /**
    \see IMP::atom::get_radius_of_gyration()
  */
-inline double get_radius_of_gyration(const std::vector<VectorD<3> > &ps) {
+inline double get_radius_of_gyration(const std::vector<Vector3D > &ps) {
   algebra::Vector3D centroid= get_centroid(ps);
   double rg = 0;
   for (unsigned int i = 0; i < ps.size(); i++) {

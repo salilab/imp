@@ -30,11 +30,11 @@ public:
   void compute_chi_derivative(const Profile& model_profile,
                               const Particles& particles1,
                               const Particles& particles2,
-                              std::vector<algebra::VectorD<3> >& derivatives,
+                              std::vector<algebra::Vector3D >& derivatives,
                               bool use_offset = false) const;
   void compute_chi_derivative(const Profile& model_profile,
                               const Particles& particles,
-                              std::vector<algebra::VectorD<3> >& derivatives,
+                              std::vector<algebra::Vector3D >& derivatives,
                               bool use_offset = false) const {
     return compute_chi_derivative(model_profile, particles, particles,
                                   derivatives, use_offset);

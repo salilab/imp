@@ -122,7 +122,7 @@ namespace {
    double m=0;
    algebra::Sphere3Ds ss;
    Ints inds;
-   algebra::VectorD<3> vv(0,0,0);
+   algebra::Vector3D vv(0,0,0);
    for (unsigned int i=0; i< other.size(); ++i) {
      m+= get_mass(Selection(Hierarchy(other[i])));
      gather_residue_indices(Hierarchy(other[i]), inds);
@@ -153,15 +153,15 @@ namespace {
    } else {
      Mass(p).set_mass(m);
    }
-   algebra::SphereD<3> s;
+   algebra::Sphere3D s;
    algebra::Vector3D center= vv/other.size();
    if (volume>=0) {
-     s=algebra::SphereD<3>(center,
+     s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(volume));
    } else {
      IMP_LOG(VERBOSE, "Approximating volume." << std::endl);
      double v= get_volume_measurement(ss, resolution);
-     s=algebra::SphereD<3>(center,
+     s=algebra::Sphere3D(center,
                            algebra::get_ball_radius_from_volume_3d(v));
    }
 

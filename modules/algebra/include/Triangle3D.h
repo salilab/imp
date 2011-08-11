@@ -24,9 +24,9 @@ class IMPALGEBRAEXPORT Triangle3D
  public:
   Triangle3D(){}
   //! The passed points must not be colinear
-  Triangle3D(const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
+  Triangle3D(const Vector3D &p1,const Vector3D &p2,const Vector3D &p3);
   //! Get the start=0/end=1 point of the segment
-  const VectorD<3>& get_point(unsigned int i) const {
+  const Vector3D& get_point(unsigned int i) const {
     IMP_USAGE_CHECK(i<3,"invalid point index");
     return p_[i];
   }
@@ -34,7 +34,7 @@ class IMPALGEBRAEXPORT Triangle3D
                       << p_[1] << ", " << p_[2] << ")");
   Floats get_edge_lengths() const;
  private:
-  VectorD<3> p_[3];
+  Vector3D p_[3];
 };
 
 IMP_VALUES(Triangle3D, Triangle3Ds);
@@ -50,7 +50,7 @@ IMPALGEBRAEXPORT Transformation3D
 //! Return true if the three points are co-linear
 IMPALGEBRAEXPORT bool
 get_are_colinear(
-      const VectorD<3> &p1,const VectorD<3> &p2,const VectorD<3> &p3);
+      const Vector3D &p1,const Vector3D &p2,const Vector3D &p3);
 
 IMPALGEBRA_END_NAMESPACE
 

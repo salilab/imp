@@ -138,7 +138,7 @@ namespace {
     ins >> atom_number >> atom_name_field >> x_coord >> y_coord >> z_coord
         >> type_field >> molecule_number >> molecule_name_field
         >> atom_charge;
-    algebra::VectorD<3> v(x_coord, y_coord, z_coord);
+    algebra::Vector3D v(x_coord, y_coord, z_coord);
 
     std::pair<AtomType, internal::Subtype> atom_type
       = internal::get_atom_type_from_mol2(type_field);

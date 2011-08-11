@@ -495,7 +495,7 @@ algebra::BoundingBoxD<3> get_bounding_box(const Hierarchy &h);
     \relatesalso Hierarchy
  */
 IMPATOMEXPORT
-algebra::SphereD<3> get_bounding_sphere(const Hierarchy &h);
+algebra::Sphere3D get_bounding_sphere(const Hierarchy &h);
 
 
 IMPATOM_END_NAMESPACE

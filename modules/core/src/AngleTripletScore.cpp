@@ -32,7 +32,7 @@ Float AngleTripletScore::evaluate(const ParticleTriplet &p,
   Float score;
 
   if (da) {
-    algebra::VectorD<3> derv0, derv1, derv2;
+    algebra::Vector3D derv0, derv1, derv2;
     double angle = internal::angle(d0, d1, d2, &derv0, &derv1, &derv2);
 
     Float deriv;

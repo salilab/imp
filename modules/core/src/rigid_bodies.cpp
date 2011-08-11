@@ -121,13 +121,13 @@ namespace {
     const ParticleIndexes &rbis= rb.get_member_particle_indexes();
     for (unsigned int i=0; i< rbis.size(); ++i) {
       RigidMember d(rb.get_model(), rbis[i]);
-      algebra::VectorD<3> dv= rot*d.get_derivatives();
+      algebra::Vector3D dv= rot*d.get_derivatives();
       rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
     }
     const ParticleIndexes &rbbis= rb.get_body_member_particle_indexes();
     for (unsigned int i=0; i< rbbis.size(); ++i) {
       RigidMember d(rb.get_model(), rbbis[i]);
-      algebra::VectorD<3> dv= rot*d.get_derivatives();
+      algebra::Vector3D dv= rot*d.get_derivatives();
       rb.add_to_derivatives(dv, d.get_internal_coordinates(), da);
     }
     IMP_LOG(TERSE, "Rigid body derivative is "
@@ -147,15 +147,15 @@ namespace {
       algebra::Rotation3D rot= rb.get_reference_frame()
         .get_transformation_to().get_rotation();
       //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
-      algebra::VectorD<3> v(0,0,0);
+      algebra::Vector3D v(0,0,0);
       algebra::VectorD<4> q(0,0,0,0);
       for (unsigned int i=0; i< rb.get_number_of_members(); ++i) {
         RigidMember d= rb.get_member(i);
-        algebra::VectorD<3> dv= d.get_derivatives();
+        algebra::Vector3D dv= d.get_derivatives();
         v+=dv;
         //IMP_LOG(TERSE, "Adding " << dv << " to derivative" << std::endl);
         for (unsigned int j=0; j< 4; ++j) {
-          algebra::VectorD<3> v
+          algebra::Vector3D v
             = rot.get_derivative(d.get_internal_coordinates(),
                                  j);
           /*IMP_LOG(VERBOSE, "Adding " << dv*v << " to quaternion deriv " << j
@@ -280,14 +280,14 @@ typedef IMP::algebra::internal::TNT::Array2D<double> Matrix;
 
 namespace {
 Matrix compute_I(const XYZs &ds,
-                 const algebra::VectorD<3> &center,
+                 const algebra::Vector3D &center,
                  const IMP::algebra::Rotation3D &rot) {
   Matrix I(3,3, 0.0);
   for (unsigned int i=0; i< ds.size(); ++i) {
     XYZ cm= ds[i];
     double m=1;
     double r=0;
-    algebra::VectorD<3> cv=rot.get_rotated(cm.get_coordinates()-center);
+    algebra::Vector3D cv=rot.get_rotated(cm.get_coordinates()-center);
 
     Matrix Is(3,3, 0.0);
     for (unsigned int i=0; i<3; ++i) {
@@ -369,7 +369,7 @@ RigidBody RigidBody::internal_setup_particle(Particle *p,
   }
 
   // compute center of mass
-  algebra::VectorD<3> v(0,0,0);
+  algebra::Vector3D v(0,0,0);
   Float mass=0;
   for (unsigned int i=0; i< ds.size(); ++i) {
     XYZ cm= ds[i];
@@ -477,8 +477,8 @@ RigidBody RigidBody::setup_particle(Particle *p,
     RigidMembers ds(members);
     for (unsigned int i=0; i< ds.size(); ++i) {
       RigidMember cm= RigidMember(ds[i]);
-      algebra::VectorD<3> v= cm.get_coordinates();
-      algebra::VectorD<3> nv= d.get_coordinates(cm);
+      algebra::Vector3D v= cm.get_coordinates();
+      algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
                          "Bad initial orientation "
                          << d.get_reference_frame() << std::endl
@@ -506,8 +506,8 @@ RigidBody RigidBody::setup_particle(Particle *p,
     RigidMembers ds(members);
     for (unsigned int i=0; i< ds.size(); ++i) {
       RigidMember cm= RigidMember(ds[i]);
-      algebra::VectorD<3> v= cm.get_coordinates();
-      algebra::VectorD<3> nv= d.get_coordinates(cm);
+      algebra::Vector3D v= cm.get_coordinates();
+      algebra::Vector3D nv= d.get_coordinates(cm);
       IMP_INTERNAL_CHECK((v-nv).get_squared_magnitude() < .1,
                          "Bad initial orientation "
                          << d.get_reference_frame() << std::endl
@@ -672,7 +672,7 @@ void RigidBody::add_member_internal(XYZ d,
                                get_particle_index(),
                                ParticleIndexes(1, d.get_particle_index()));
   }
-  algebra::VectorD<3> lc=ref.get_local_coordinates(d.get_coordinates());
+  algebra::Vector3D lc=ref.get_local_coordinates(d.get_coordinates());
   cm.set_internal_coordinates(lc);
 }
 
@@ -749,9 +749,9 @@ RigidMember RigidBody::get_member(unsigned int i) const {
   }
 }
 
-algebra::VectorD<3> RigidBody::get_coordinates(RigidMember p)
+algebra::Vector3D RigidBody::get_coordinates(RigidMember p)
   const {
-  algebra::VectorD<3> lp= p.get_internal_coordinates();
+  algebra::Vector3D lp= p.get_internal_coordinates();
   return get_reference_frame().get_global_coordinates(lp);
 }
 
@@ -807,7 +807,7 @@ void RigidBody::add_to_derivatives(const algebra::Vector3D &deriv_local,
   //IMP_LOG(TERSE, "Accumulating rigid body derivatives" << std::endl);
   algebra::VectorD<4> q(0,0,0,0);
   for (unsigned int j=0; j< 4; ++j) {
-    algebra::VectorD<3> v= rot.get_derivative(local, j);
+    algebra::Vector3D v= rot.get_derivative(local, j);
     q[j]= deriv_global*v;
   }
   XYZ::add_to_derivatives(deriv_global, da);

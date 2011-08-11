@@ -45,7 +45,7 @@ namespace {
                    ParticleIndexPairs &out) {
     static unsigned int nnn=10;
 
-    std::vector<algebra::VectorD<3> > vs(sc->get_number_of_particles());
+    std::vector<algebra::Vector3D > vs(sc->get_number_of_particles());
     IMP_FOREACH_SINGLETON(sc,
                           vs[_2]= core::XYZ(_1).get_coordinates(););
     IMP_NEW(algebra::NearestNeighborD<3>, nn, (vs));
