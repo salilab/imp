@@ -117,7 +117,7 @@ inline Constraint* create_constraint(Before *b, After *a,
     if (b) name+= " and  "+b->get_name();
     if (a) name+= " and " +a->get_name();
   }
-  return new TupleConstraint<Before, After>(b, a, t);
+  return new TupleConstraint<Before, After>(b, a, t, name);
 }
 
 
