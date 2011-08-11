@@ -52,7 +52,7 @@ class IMPCOREEXPORT RawOpenCubicSpline {
   }
 public:
   RawOpenCubicSpline(){}
-  RawOpenCubicSpline(const std::vector<Float> &values,
+  RawOpenCubicSpline(const Floats &values,
                      double spacing,
                      double inverse_spacing);
 
