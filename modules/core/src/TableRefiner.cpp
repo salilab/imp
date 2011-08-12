@@ -19,10 +19,10 @@ void TableRefiner::do_show(std::ostream &out) const {
 }
 
 void TableRefiner::add_particle(Particle *p,
-                                        const Particles &ps) {
+                                const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(map_.find(p) == map_.end(),
             "Particle " << p->get_name() << " already in map.");
-  map_[p]=ps;
+  map_[p]=Particles(ps);
 }
 
 void TableRefiner::remove_particle(Particle *p) {
@@ -31,10 +31,11 @@ void TableRefiner::remove_particle(Particle *p) {
   map_.erase(p);
 }
 
-void TableRefiner::set_particle(Particle *p, const Particles &ps) {
+void TableRefiner::set_particle(Particle *p,
+                                const ParticlesTemp &ps) {
   IMP_USAGE_CHECK(map_.find(p) != map_.end(),
             "Particle " << p->get_name() << " not found in map.");
-  map_[p]=ps;
+  map_[p]=Particles(ps);
 }
 
 bool TableRefiner::get_can_refine(Particle *p) const {
