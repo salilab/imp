@@ -13,7 +13,9 @@ files = [
          'optimize_restraints.h',
          'particle_states.h',
          'subset_filters.h',
+         'HeapAssignmentContainer.h',
          'subset_graphs.h',
+         'analysis.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')
