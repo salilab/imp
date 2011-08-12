@@ -119,9 +119,9 @@ void DensitySegmentationByCommunities::build_density_graph(float edge_threshold)
             }
           }}}
   }
-  std::cout<<"Graph with "<<boost::num_vertices(g_)
-           <<" vertices and " << boost::num_edges(g_)<<" edges"<< std::endl;
-  std::cout<<"dens t:"<<dens_t_<<std::endl;
+  IMP_LOG(TERSE,"Graph with "<<boost::num_vertices(g_)
+          <<" vertices and " << boost::num_edges(g_)<<" edges"<< std::endl);
+  IMP_LOG(TERSE,"dens t:"<<dens_t_<<std::endl);
 }
 
 class clustering_threshold : public boost::bc_clustering_threshold<double>
@@ -136,8 +136,8 @@ class clustering_threshold : public boost::bc_clustering_threshold<double>
   bool operator()(double max_centrality, DGEdge e,
                   const DensityGraph& g)
   {
-    std::cout << "Iter: " << iter << " Max Centrality: "
-              << (max_centrality / dividend) << std::endl;
+    IMP_LOG(TERSE,"Iter: " << iter << " Max Centrality: "
+            << (max_centrality / dividend) << std::endl);
     ++iter;
     return inherited::operator()(max_centrality, e, g);
   }
@@ -150,9 +150,7 @@ domino::IntsList
   DensitySegmentationByCommunities::calculate_communities(int num_clusters) {
   //calculate the connected components
   std::vector<int> component(num_vertices(g_));
-  std::cout<<"component analysis"<<std::endl;
   int num = boost::connected_components(g_, &component[0]);
-  std::cout<<"after"<<std::endl;
   //get the largest connected components
   compatibility::map<int,int> max_comp_list;
   for(int i=0;i<num;i++){
@@ -163,14 +161,13 @@ domino::IntsList
   for(int i=0;i<num;i++){
     if (max_comp_list[i]>max_comp_list[max_comp]){max_comp=i;}
   }
-  std::cout<<"max is:"<<max_comp<<":"<<max_comp_list[max_comp]<<std::endl;
   //remove all nodes not path of the first component
   Ints not_first_comp_indexes;
   for(int i=0;i<(int)component.size();i++) {
     if (component[i] != max_comp) not_first_comp_indexes.push_back(i);
   }
-  std::cout<<"removing vertices, starting with "
-           <<boost::num_vertices(g_)<<std::endl;
+  IMP_LOG(VERBOSE,"removing vertices, starting with "
+          <<boost::num_vertices(g_)<<std::endl);
   boost::graph_traits<DensityGraph>::vertex_iterator vi, vi_end, next;
   boost::tie(vi, vi_end) = boost::vertices(g_);
   std::pair<boost::graph_traits<DensityGraph>::out_edge_iterator,
@@ -186,17 +183,15 @@ domino::IntsList
       boost::remove_edge(ei.first,g_);
     }
   }
-  std::cout<<"rank0 nodes:"<<rank0_nodes
-           <<" not in first cc:"<<not_first_comp_indexes.size()<<std::endl;
-  std::cout<<"clustering"<<std::endl;
+  IMP_LOG(VERBOSE,"rank0 nodes:"<<rank0_nodes
+          <<" not in first cc:"<<not_first_comp_indexes.size()<<std::endl);
   boost::property_map<DensityGraph, boost::edge_centrality_t>::type m
     = boost::get(boost::edge_centrality, g_);
   unsigned int n=boost::num_vertices(g_);
-  std::cout<<"==="<<std::endl;
   boost::betweenness_centrality_clustering(
                  g_, Done(num_clusters+rank0_nodes, n),
                  m);//we add all the new rank0 nodes
-  std::cout<<"preparing output"<<std::endl;
+  IMP_LOG(TERSE,"preparing output"<<std::endl);
   std::vector<int> rank(n), parent(n);
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g_, ds);
@@ -222,7 +217,6 @@ std::vector<Ints>
   std::vector<int> component(num_vertices(g_));
   int num = boost::connected_components(g_, &component[0]);
   std::vector<int>::size_type i;
-  std::cout << "Total number of components: " << num << std::endl;
   std::vector<Ints> cc_inds;
   cc_inds.insert(cc_inds.end(),num,Ints());
   for (i = 0; i != component.size(); ++i) {
@@ -267,15 +261,11 @@ em::DensityMap* remove_background(em::DensityMap *dmap,
   int max_ind=0;
   for(int i=0;i<(int)cc_inds.size();i++) {
     sizes.push_back(cc_inds[i].size());
-    if (sizes[i]>10){
-    std::cout<<"Component "<<i<<" of size:"<<sizes[i]<<std::endl;
-  }
     if (i>1){if (sizes[i]>sizes[max_ind]) max_ind=i;}
   }
   return get_segment_by_indexes(dmap,cc_inds[max_ind]);
 }
 
-//TODO - implement
 domino::IntsList get_connected_components(
                                           em::DensityMap *dmap,
                                           float threshold,float edge_threshold)

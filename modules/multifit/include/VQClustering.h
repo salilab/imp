@@ -14,11 +14,54 @@
 #include "ClusteringEngine.h"
 #include "multifit_config.h"
 IMPMULTIFIT_BEGIN_NAMESPACE
+
+
+class IMPMULTIFITEXPORT VQClusteringParameters {
+ public:
+  int dim_;
+  bool show_status_bar_;
+  int k_;//number of centers
+  int number_of_runs_;
+  int number_of_steps_;
+  double  ei_,ef_;// parameters for epsilon updates
+  double  li_,lf_;// parameters for lamda updates
+  double random_offset_; //random offset for point sampling
+  bool eq_clusters_;//should the clusters have equal size
+  void show(std::ostream& out=std::cout) const {
+    out<<"Dimension      : "<<dim_<<std::endl;
+    out<<"Number of runs : "<<number_of_runs_<<std::endl;
+    out<<"Number of steps: "<<number_of_steps_<<std::endl;
+    out<<"Epsilon updates: "<<ei_<<" "<<ef_<<std::endl;
+    out<<"Lamda updates  : "<<li_<<" "<<lf_<<std::endl;
+    out<<"Random offset  : "<<random_offset_<<std::endl;
+  }
+  VQClusteringParameters(int dim,int k) : dim_(dim),k_(k) {
+    init();
+  }
+  VQClusteringParameters() {
+    dim_=0;
+    k_=1;
+    init();
+  }
+ private:
+  void init() {
+    number_of_runs_ =15;
+    number_of_steps_ = 100000;
+    ei_ = 0.1;
+    ef_ = 0.001;
+    li_ = 0.2 * k_;
+    lf_ = 0.02;
+    eq_clusters_=false;
+  }
+};
+
+
 class IMPMULTIFITEXPORT VQClustering : public ClusteringEngine {
 public:
   VQClustering();
   VQClustering(DataPoints *data, int k);
   ~VQClustering() {}
+  void set_equal_clusters(bool v) {par_.eq_clusters_=v;}
 
   void run(DataPoints *starting_centers=NULL);
 
@@ -41,7 +84,7 @@ public:
     return centers_[center_ind];
   }
   int get_number_of_clusters() const {return k_;}
-  void set_random_offset(double o){random_offset_=o;}
+  void set_random_offset(double o){par_.random_offset_=o;}
   const DataPoints *get_full_data() const {return full_data_;}
   void set_fast_clustering();
   void set_status_bar(bool status) {show_status_bar_=status;}
@@ -76,23 +119,20 @@ protected:
 \param[in] centers  the final centers
  */
   void clustering(Array1DD_VEC *tracking, Array1DD_VEC *centers);
+  void get_eq_centers(Array1DD_VEC *centers,
+                      Array1DD_VEC *eq_centers);
   void set_assignments();
   //void set_centers_as_particles();
   void sample_data_point(Array1DD &p);
   //sample initial centers from the data
   void center_sampling( Array1DD_VEC *centers_sample);
   int dim_;
+  VQClusteringParameters par_;
   bool show_status_bar_;
   int k_;//number of centers
   bool is_set_; //is_set_ is true if the clustering was preformed
   const Array1DD_VEC * data_;
   Pointer<DataPoints> full_data_;
-  //exe parameters
-  int number_of_runs_;
-  int number_of_steps_;
-  double  ei_,ef_;// parameters for epsilon updates
-  double  li_,lf_;// parameters for lamda updates
-  double random_offset_; //random offset for point sampling
   Array1DD_VEC centers_;
   std::vector<int> assignment_;//the assignment of data points to clusters
 };
