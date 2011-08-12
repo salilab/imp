@@ -11,6 +11,7 @@
 #include "utility.h"
 #include "exception.h"
 #include "macros.h"
+#include "base_types.h"
 
 #include <iostream>
 #include <vector>
