@@ -8,7 +8,7 @@
 
 #ifndef IMPEM_DENSITY_MAP_H
 #define IMPEM_DENSITY_MAP_H
-
+#include <IMP/Pointer.h>
 #include "em_config.h"
 #include "DensityHeader.h"
 #include "MapReaderWriter.h"
@@ -26,6 +26,18 @@
 IMPEM_BEGIN_NAMESPACE
 
 class DensityMap;
+
+//! create a copy of another map
+IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
+
+//! Create an empty density map from a boudning box
+IMPEMEXPORT DensityMap *create_density_map(
+                                           const algebra::BoundingBox3D &bb,
+                                           double spacing);
+//! Create an empty density map
+IMPEMEXPORT DensityMap *create_density_map(
+                                           int nx,int ny,int nz,
+                                           double spacing);
 
 /** Read a density map from a file and return it.
     \relatesalso DensityMap
@@ -94,7 +106,6 @@ class IMPEMEXPORT DensityMap: public Object
 
 public:
   DensityMap(std::string name= "DensityMap%1%");
-  //DensityMap(const DensityMap &other);
   //! Construct a density map as intructed in the input header
   DensityMap(const DensityHeader &header, std::string name= "DensityMap%1%");
   void release(){
@@ -425,21 +436,35 @@ public:
   void copy_map(const DensityMap *other);
   IMP_OBJECT_INLINE(DensityMap, header_.show(out),release(););
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  //! Convolution a kernel with the map
+  //! Convolution a kernel with a map and write results into current map
   /**
-\param[in] kernel an array of kernel values. The data is in ZYX
-                   order, Z is the slowest.
-\param[in] dim_len the array leght
+     \param[in] other the map to convolute
+     \param[in] kernel an array of kernel values. The data is in ZYX
+     order, Z is the slowest.
+     \param[in] dim_len the kernel array
    */
   void convolute_kernel(DensityMap *other,
                         double *kernel, int dim_len);
+  //! Convolution a kernel with this map and write results to this map
+  /**
+     \param[in] kernel an array of kernel values. The data is in ZYX
+     order, Z is the slowest.
+     \param[in] dim_len the kernel array
+   */
+  void convolute_kernel(
+                        double *kernel, int dim_len) {
+    Pointer<DensityMap> cmap = em::create_density_map(this);
+    cmap->set_was_used(true);
+    convolute_kernel(cmap,kernel,dim_len);
+    cmap=NULL;
+  }
 #endif
   int lower_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   int upper_voxel_shift(emreal loc, emreal kdist, emreal orig, int ndim) const;
   inline bool get_rms_calculated() const {return rms_calculated_;}
-protected:
   int get_dim_index_by_location(float loc_val,
                               int ind) const;
+protected:
   //!update the header values  -- still in work
   void update_header();
   void reset_all_voxel2loc();
@@ -471,18 +496,6 @@ inline algebra::BoundingBoxD<3> get_bounding_box(const DensityMap *m) {
                                        m->get_spacing()*h->get_ny(),
                                        m->get_spacing()*h->get_nz()));
 }
-
-//! create a copy of another map
-IMPEMEXPORT DensityMap *create_density_map(const DensityMap *other);
-
-//! Create an empty density map from a boudning box
-IMPEMEXPORT DensityMap *create_density_map(
-                                           const algebra::BoundingBox3D &bb,
-                                           double spacing);
-//! Create an empty density map
-IMPEMEXPORT DensityMap *create_density_map(
-                                           int nx,int ny,int nz,
-                                           double spacing);
 
 #if !defined(IMP_DOXYGEN) && !defined(SWIG)
  //! Calculate a bounding box around a 3D point within the EM grid
@@ -666,7 +679,6 @@ IMPEMEXPORT
 DensityMap* create_density_map(const algebra::grids::GridD<3,
                      algebra::grids::DenseGridStorageD<3, float>,
                                float >& grid);
-
 
 IMPEM_END_NAMESPACE
 

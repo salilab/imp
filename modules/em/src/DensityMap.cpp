@@ -11,9 +11,6 @@
 #include <IMP/em/XplorReaderWriter.h>
 #include <IMP/em/EMReaderWriter.h>
 #include <IMP/em/SpiderReaderWriter.h>
-#include <IMP/Pointer.h>
-//#include <boost/algorithm/string/predicate.hpp>
-//#include <climits>
 
 IMPEM_BEGIN_NAMESPACE
 namespace {
@@ -455,11 +452,11 @@ void DensityMap::std_normalize()
 
 emreal DensityMap::calcRMS()
 {
-
+  std::cout<<"in calc rms"<<std::endl;
   if (rms_calculated_) {
     return header_.rms;
   }
-
+  std::cout<<"number of voxels:"<<get_number_of_voxels()<<std::endl;
   long  nvox = get_number_of_voxels();
   emreal meanval = .0;
   emreal stdval = .0;
@@ -468,10 +465,10 @@ emreal DensityMap::calcRMS()
     meanval += data_[ii];
     stdval += data_[ii] * data_[ii];
   }
-
+  std::cout<<"meanval:"<<meanval<<" stdval:"<<stdval<<std::endl;
   header_.dmin=get_min_value();
   header_.dmax=get_max_value();
-
+  std::cout<<"min:"<< header_.dmin<<" max:"<< header_.dmax<<std::endl;
 
   meanval /=  nvox;
   header_.dmean = meanval;
@@ -1235,11 +1232,8 @@ DensityMap* binarize(DensityMap *orig_map,
                      float threshold,bool reverse) {
   const DensityHeader *header = orig_map->get_header();
   //create a new map
-  DensityMap * bin_map =
-    create_density_map(header->get_nx(),
-                       header->get_ny(),header->get_nz(),
-                       header->get_spacing());
-  bin_map->set_origin(orig_map->get_origin());
+  Pointer<DensityMap> bin_map = create_density_map(orig_map);
+  bin_map->reset_data(0.);
   emreal *orig_data=orig_map->get_data();
   emreal *bin_data=bin_map->get_data();
   for(long i=0;i<header->get_number_of_voxels();i++){
@@ -1258,7 +1252,7 @@ DensityMap* binarize(DensityMap *orig_map,
       }
     }
   }
-  return bin_map;
+  return bin_map.release();
 }
 
 DensityMap* get_threshold_map(DensityMap *orig_map,
@@ -1413,11 +1407,9 @@ void DensityMap::convolute_kernel(DensityMap *other,
   nx=header_.get_nx();
   ny=header_.get_ny();
   for (unsigned int iz=margin;iz<header_.get_nz()-margin;iz++) {
-    map_ind_z = iz*ny*nx;
     for (unsigned int iy=margin;iy<header_.get_ny()-margin;iy++) {
-      map_ind_zy=map_ind_z+iy*nx;
       for (unsigned int ix=margin;ix<header_.get_nx()-margin;ix++) {
-        map_ind = map_ind_zy+ix;
+        map_ind = iz*ny*nx+iy*nx+ix;
         val = other_data[map_ind];
         if (val>EPS) { //smooth this value
           for (int iz2=-margin;iz2<=static_cast<int>(margin);iz2++) {
