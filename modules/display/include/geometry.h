@@ -60,7 +60,7 @@ public:
   }
 
   //! Return a set of geometry composing this one
-  virtual Geometries get_components() const {return GeometriesTemp();}
+  virtual Geometries get_components() const {return Geometries();}
 
   IMP_REF_COUNTED_DESTRUCTOR(Geometry);
 };
