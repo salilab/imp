@@ -15,27 +15,51 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <mpi.h>
 
 using namespace IMP;
 using namespace IMP::membrane;
 
 int main(int argc, char* argv[])
 {
+
+int myrank,nproc;
+MPI_Status  status;
+MPI_Request request;
+MPI_Init(&argc, &argv);
+MPI_Comm_size(MPI_COMM_WORLD,&nproc);
+MPI_Comm_rank(MPI_COMM_WORLD,&myrank);
+
+// initialize seed
+unsigned int iseed = time(NULL);
+// broadcast seed
+MPI_Bcast(&iseed, 1, MPI_UNSIGNED, 0, MPI_COMM_WORLD);
+// initialize random generator
+srand (iseed);
+
 // log file
 std::ofstream logfile;
-logfile.open("log");
+std::stringstream out;
+out << myrank;
+std::string names="log"+out.str();
+char* name=(char*)malloc( sizeof( char ) *(names.length() +1) );;
+strcpy(name, names.c_str());
+logfile.open(name);
+
+// parsing input
+if(myrank==0) {std::cout << "Parsing input file" << std::endl;}
+SPBParameters mydata=get_SPBParameters("config.ini");
+
+// create temperature and index array
+double* temp=create_temperatures(mydata.MC.tmin,mydata.MC.tmax,nproc);
+int*    index=create_indexes(nproc);
 
 // create a new model
 IMP_NEW(Model,m,());
-
-// parsing input
-std::cout << "Parsing input file" << std::endl;
-SPBParameters mydata=get_SPBParameters("config.ini");
-
 //
 // PROTEIN REPRESENTATION
 //
-std::cout << "Creating representation" << std::endl;
+if(myrank==0) {std::cout << "Creating representation" << std::endl;}
 // List of particles for layer restraint
 IMP_NEW(container::ListSingletonContainer,bCP_ps,(m));
 IMP_NEW(container::ListSingletonContainer,CP_ps,(m));
@@ -47,12 +71,12 @@ atom::Hierarchies all_mol=
 //
 // RESTART from individual rmf file
 if(mydata.file_list.size()>0){
- std::cout << "Restart from file" << std::endl;
+ if(myrank==0){std::cout << "Restart from file" << std::endl;}
  load_restart(all_mol,mydata);
 }
 //
 // Prepare output file
-std::string trajname="traj.rmf";
+std::string trajname="traj"+out.str()+".rmf";
 rmf::RootHandle rh = rmf::create_rmf_file(trajname);
 for(unsigned int i=0;i<all_mol.size();++i){
  atom::Hierarchies hs=all_mol[i].get_children();
@@ -61,7 +85,7 @@ for(unsigned int i=0;i<all_mol.size();++i){
 
 //
 // CREATING RESTRAINTS
-std::cout << "Creating restraints" << std::endl;
+if(myrank==0) {std::cout << "Creating restraints" << std::endl;}
 //
 // Excluded volume
 //
@@ -158,16 +182,18 @@ if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
  add_link(m,all_mol,"Cmd1p","ALL","Spc110p",IntRange(900,927),mydata.kappa);
 }
 //
-std::cout << "Setup sampler" << std::endl;
+if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);
 
 // hot steps
-std::cout << "High temperature initialization" << std::endl;
+if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
 mc->set_kt(mydata.MC.tmax);
-if(mydata.MC.nhot>0) {mc->optimize(mydata.MC.nhot);}
-mc->set_kt(mydata.MC.tmin);
+if(mydata.MC.nhot>0) mc->optimize(mydata.MC.nhot);
+// reset temperature
+mc->set_kt(temp[index[myrank]]);
 
-std::cout << "Sampling" << std::endl;
+// GO!
+if(myrank==0) {std::cout << "Sampling" << std::endl;}
 // Monte Carlo loop
 for(int imc=0;imc<mydata.MC.nsteps;++imc)
 {
@@ -176,8 +202,9 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // print statistics
  double myscore=m->evaluate(false);
- logfile << imc << " " << myscore << " " <<
-  mc->get_number_of_forward_steps() << "\n";
+ int    myindex=index[myrank];
+ logfile << imc << " " << myindex << " " << myscore << " "
+ << mydata.MC.nexc << " " << mc->get_number_of_forward_steps() << "\n";
 
 // save configuration to file
  if(imc%mydata.MC.nwrite==0){
@@ -189,8 +216,58 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   }
  }
 
+// now it's time to try an exchange
+ int    frank=get_friend(index,myrank,imc,nproc);
+ int    findex=index[frank];
+ double fscore;
+// send and receive score
+ MPI_Isend(&myscore, 1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+ MPI_Recv(&fscore,   1, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+
+// if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
+ double delta_wte=0.0;
+
+ if(mydata.MC.do_wte){
+  membrane::MonteCarloWithWte* ptr=
+   dynamic_cast<membrane::MonteCarloWithWte*>(mc);
+  double U_mybias[2]={ptr->get_bias(myscore),ptr->get_bias(fscore)};
+  double U_fbias[2];
+  MPI_Isend(U_mybias, 2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+  MPI_Recv(U_fbias,   2, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+  delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
+            (U_fbias[0] -U_fbias[1])/ temp[findex];
+ }
+// calculate acceptance
+ bool do_accept=get_acceptance(myscore,fscore,delta_wte,
+                               temp[myindex],temp[findex]);
+// if accepted exchange what is needed
+ if(do_accept){
+  myindex=findex;
+  mc->set_kt(temp[myindex]);
+
+// if WTE, rescale W0 and exchange bias
+  if(mydata.MC.do_wte){
+   membrane::MonteCarloWithWte* ptr=
+    dynamic_cast<membrane::MonteCarloWithWte*>(mc);
+   ptr->set_w0(mydata.MC.wte_w0*temp[myindex]/mydata.MC.tmin);
+   int     nbins=ptr->get_nbin();
+   double* mybias=ptr->get_bias_buffer();
+   double* fbias=new double[2*nbins];
+   MPI_Isend(mybias, 2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &request);
+   MPI_Recv(fbias,   2*nbins, MPI_DOUBLE, frank, 123, MPI_COMM_WORLD, &status);
+   Floats val(fbias, fbias+2*nbins);
+   ptr->set_bias(val);
+  }
+ }
+
+// in any case, update index vector
+ int buf[nproc];
+ for(int i=0; i<nproc; ++i) {buf[i]=0;}
+ buf[myrank]=myindex;
+ MPI_Allreduce(buf,index,nproc,MPI_INT,MPI_SUM,MPI_COMM_WORLD);
 }
 
 logfile.close();
+MPI_Finalize();
 return 0;
 }

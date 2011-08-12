@@ -4,7 +4,6 @@ files = [
          'multiscale.cpp',
          'predict.cpp',
          'reload.cpp',
-         'spb.cpp'
         ]
 
 # Not all .cpp files are built into an application
