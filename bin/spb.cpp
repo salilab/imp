@@ -186,9 +186,11 @@ if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
 core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);
 
 // hot steps
-if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
-mc->set_kt(mydata.MC.tmax);
-if(mydata.MC.nhot>0) mc->optimize(mydata.MC.nhot);
+if(mydata.MC.nhot>0){
+ if(myrank==0) {std::cout << "High temperature initialization" << std::endl;}
+ mc->set_kt(mydata.MC.tmax);
+ mc->optimize(mydata.MC.nhot);
+}
 // reset temperature
 mc->set_kt(temp[index[myrank]]);
 
