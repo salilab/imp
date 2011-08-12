@@ -74,4 +74,5 @@ IMP_SWIG_VALUE(IMP::domino, Assignment, Assignments);
 %include "IMP/domino/utility.h"
 %include "IMP/domino/analysis.h"
 %include "IMP/domino/DependencyScoreState.h"
+%include "IMP/domino/HeapAssignmentContainer.h"
 

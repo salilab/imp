@@ -43,7 +43,7 @@ class DOMINOTests(IMP.test.TestCase):
         all_states=[]
         for state in ss:
             print state
-            #print all_states
+            print all_states
             self.assertNotIn(state, all_states)
             all_states.append(state)
 
@@ -55,6 +55,51 @@ class DOMINOTests(IMP.test.TestCase):
             sac.add_assignment(ass)
         self.assertEqual(sac.get_number_of_assignments(), 10)
         print sac.get_assignments()
+
+    def test_heap_container(self):
+        """Testing heap sample container"""
+
+        #create particles
+        m= IMP.Model()
+        m.set_log_level(IMP.SILENT)
+        ps=[]
+        for i in range(0,3):
+            p= IMP.Particle(m)
+            d= IMP.core.XYZR.setup_particle(p,IMP.algebra.Sphere3D(IMP.algebra.Vector3D(0,0,0),5))
+            ps.append(p)
+
+        pts=[IMP.algebra.Vector3D(0,0,0),
+             IMP.algebra.Vector3D(1,0,0),
+             IMP.algebra.Vector3D(2,0,0),
+             IMP.algebra.Vector3D(3,0,0)]
+        particle_state= IMP.domino.XYZStates(pts)
+        pst= IMP.domino.ParticleStatesTable()
+        for p in ps:
+            pst.set_particle_states(p, particle_state)
+        m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[0], ps[1]))
+        m.add_restraint(IMP.core.DistanceRestraint(IMP.core.Harmonic(1,1), ps[1], ps[2]))
+        print 5
+        sampler= IMP.domino.DominoSampler(m, pst)
+        rssft= IMP.domino.RestraintScoreSubsetFilterTable(m, pst)
+        s=IMP.domino.Subset(pst.get_particles())
+        rssf=rssft.get_restraint_score_subset_filter(s,[])
+        assignments=sampler.get_sample_assignments(s);
+        print "number of assignments:",len(assignments)
+        scores=[]
+        for i in range(len(assignments)):
+            print assignments[i],rssf.get_score(assignments[i])
+            scores.append(rssf.get_score(assignments[i]))
+        scores.sort()
+        hac= IMP.domino.HeapAssignmentContainer(10,rssf)
+        for a in assignments:
+            hac.add_assignment(a)
+        self.assertEqual(hac.get_number_of_assignments(), 10)
+        #check that you have the top 10
+        print "top ten"
+        for a in hac.get_assignments():
+            self.assertLess(rssf.get_score(a),scores[9]+0.01)
+            print a,rssf.get_score(a)
+
 
 
 if __name__ == '__main__':

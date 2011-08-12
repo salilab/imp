@@ -148,6 +148,12 @@ class IMPDOMINOEXPORT RestraintScoreSubsetFilterTable:
       case and the memory usage can be quite high.
   */
   void set_use_caching(bool tf);
+  RestraintScoreSubsetFilter* get_restraint_score_subset_filter(
+                                 const Subset &s,
+                                 const Subsets &prior_subsets) {
+    return dynamic_cast<RestraintScoreSubsetFilter*>(
+                        get_subset_filter(s,prior_subsets));
+  }
   IMP_SUBSET_FILTER_TABLE(RestraintScoreSubsetFilterTable);
 };
 
