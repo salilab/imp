@@ -20,7 +20,7 @@ void XYZR::show(std::ostream &out) const
 
 
 algebra::Sphere3D get_enclosing_sphere(const XYZs &v) {
-  std::vector<algebra::Sphere3D > ss(v.size());
+  algebra::Sphere3Ds ss(v.size());
   for (unsigned int i=0; i< v.size(); ++i) {
     XYZ d(v[i]);
     Float r=0;

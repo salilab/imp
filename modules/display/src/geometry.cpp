@@ -27,7 +27,7 @@ Geometry::Geometry(Color c, std::string name): Object(name){
 
 
 inline std::ostream &operator<<(std::ostream &out,
-                         const std::vector<algebra::Vector3D > &pts) {
+                         const algebra::Vector3Ds &pts) {
   for (unsigned int i=0; i< pts.size(); ++i) {
     out << pts[i] << ": ";
   }
@@ -123,7 +123,7 @@ IMP_DISPLAY_GEOMETRY_DECOMPOSABLE_DEF(ReferenceFrameGeometry,
 
 IMP_DISPLAY_GEOMETRY_DEF(PointGeometry, algebra::Vector3D);
 IMP_DISPLAY_GEOMETRY_DEF(SegmentGeometry, algebra::Segment3D);
-IMP_DISPLAY_GEOMETRY_DEF(PolygonGeometry, std::vector<algebra::Vector3D >);
+IMP_DISPLAY_GEOMETRY_DEF(PolygonGeometry, algebra::Vector3Ds);
 IMP_DISPLAY_GEOMETRY_DEF(TriangleGeometry, algebra::Triangle3D);
 
 

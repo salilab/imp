@@ -19,7 +19,7 @@ IMPEM_BEGIN_NAMESPACE
     which are above a certain threshold.
  */
 class IMPEMEXPORT HighDensityEmbedding: public statistics::Embedding {
-  std::vector<algebra::Vector3D > points_;
+  algebra::Vector3Ds points_;
 public:
   HighDensityEmbedding(DensityMap *dm,
                        double threshold);

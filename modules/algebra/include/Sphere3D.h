@@ -48,7 +48,7 @@ inline double get_ball_radius_from_volume_3d(double volume) {
 */
 IMPALGEBRAEXPORT
 FloatPair
-get_surface_area_and_volume(const std::vector<algebra::Sphere3D > &ss);
+get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
 #endif
 
 IMPALGEBRA_END_NAMESPACE

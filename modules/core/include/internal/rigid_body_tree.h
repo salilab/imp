@@ -82,9 +82,9 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
     ParticleIndex index(std::abs(tree_[ni].children_[i])-1);
     return index;
   }
-  std::vector<algebra::Sphere3D > get_all_spheres() const;
+  algebra::Sphere3Ds get_all_spheres() const;
   RigidBodyHierarchy(RigidBody rb, const ParticleIndexes &constituents);
-  std::vector<algebra::Sphere3D > get_tree() const;
+  algebra::Sphere3Ds get_tree() const;
   bool get_constituents_match(const ParticleIndexes& ps) const {
     if (ps.size() != constituents_.size()) return false;
     ParticleIndexes un;

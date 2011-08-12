@@ -10,9 +10,9 @@
 IMPEM_BEGIN_NAMESPACE
 
 
-std::vector<algebra::Vector3D > density2vectors(DensityMap *dmap,
+algebra::Vector3Ds density2vectors(DensityMap *dmap,
                                                   Float threshold) {
-  std::vector<algebra::Vector3D > vecs;
+  algebra::Vector3Ds vecs;
   const DensityHeader* header=dmap->get_header();
   long ind;
   for(int i=0;i<header->get_nx();i++){

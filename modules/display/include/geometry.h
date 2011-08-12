@@ -100,7 +100,7 @@ IMP_DISPLAY_GEOMETRY_DECL(SegmentGeometry, algebra::Segment3D);
     used. Otherwise, the polygons should be simple, planar and convex.
 */
 IMP_DISPLAY_GEOMETRY_DECL(PolygonGeometry,
-                          std::vector<algebra::Vector3D >);
+                          algebra::Vector3Ds);
 /** \brief Display a triangule.
 */
 IMP_DISPLAY_GEOMETRY_DECL(TriangleGeometry,

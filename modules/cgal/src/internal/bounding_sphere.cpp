@@ -14,7 +14,7 @@
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 algebra::Sphere3D
-get_enclosing_sphere(const std::vector<algebra::Sphere3D > &ss) {
+get_enclosing_sphere(const algebra::Sphere3Ds &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
                   "Must pass some spheres to have a bounding sphere");
   typedef CGAL::Exact_predicates_inexact_constructions_kernel             K;

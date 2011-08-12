@@ -46,7 +46,7 @@ type Float.
 \return a set of vector3Ds corresponding to the positions of all voxels
         above the threshold
  */
-IMPEMEXPORT std::vector<algebra::Vector3D >
+IMPEMEXPORT algebra::Vector3Ds
     density2vectors(DensityMap *dmap, Float threshold);
 
 //! Resample a set of particles into a density grid

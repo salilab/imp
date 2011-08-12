@@ -12,7 +12,7 @@
 IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 IMPCGALEXPORT algebra::Sphere3D
-get_enclosing_sphere(const std::vector<algebra::Sphere3D > &ss);
+get_enclosing_sphere(const algebra::Sphere3Ds &ss);
 
 
 

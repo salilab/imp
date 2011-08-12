@@ -604,7 +604,7 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
 
 algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
   Particles rep= get_leaves(h);
-  std::vector<algebra::Sphere3D > ss;
+  algebra::Sphere3Ds ss;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
     if (xyzr) {

@@ -179,7 +179,7 @@ FittingSolutions local_rigid_fitting_around_point(
 FittingSolutions local_rigid_fitting_around_points(
    Particle *p,Refiner *refiner,
    const FloatKey &wei_key,
-   DensityMap *dmap, const std::vector<algebra::Vector3D > &anchor_centroids,
+   DensityMap *dmap, const algebra::Vector3Ds &anchor_centroids,
    OptimizerStates display_log,
    Int number_of_optimization_runs, Int number_of_mc_steps,
    Int number_of_cg_steps, Float max_translation, Float max_rotation) {
@@ -197,7 +197,7 @@ FittingSolutions local_rigid_fitting_around_points(
    core::MonteCarlo *opt = set_optimizer(model, display_log, p,refiner,
                            number_of_cg_steps,max_translation, max_rotation);
 
-   for(std::vector<algebra::Vector3D >::const_iterator it
+   for(algebra::Vector3Ds::const_iterator it
          = anchor_centroids.begin();
        it != anchor_centroids.end(); it++) {
      IMP_INTERNAL_CHECK(dmap->is_part_of_volume(*it),
