@@ -193,7 +193,7 @@ Geometries PlaneGeometry::get_components() const {
     = cgal::internal::get_intersection(plane_.get_normal(),
                              plane_.get_distance_from_origin(),
                              bb_);
-  return Geometries(new PolygonGeometry(poly));
+  return Geometries(1, new PolygonGeometry(poly));
 }
 
 PlaneGeometry::PlaneGeometry(const algebra::Plane3D &loc,
