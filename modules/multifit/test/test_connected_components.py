@@ -36,8 +36,12 @@ class ConnectedComponentsTest(IMP.test.TestCase):
                     IMP.atom.Mass.setup_particle(p,1)
                     ps.append(p)
             dmap=IMP.em.particles2density(ps,1,1)
-        con_comp=IMP.multifit.get_connected_components(dmap,0.001,0.5)
-        self.assertEqual(len(con_comp),i+1)
+            con_comp=IMP.multifit.get_connected_components(dmap,0.001,0.5)
+            for c in con_comp:
+                for ind in c:
+                    self.assertLess(ind,dmap.get_number_of_voxels())
+
+            self.assertEqual(len(con_comp),i+1)
 
 if __name__ == '__main__':
     IMP.test.main()
