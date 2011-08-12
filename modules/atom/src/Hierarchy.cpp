@@ -322,10 +322,11 @@ create_fragment(const Hierarchies &ps)
 
 Bonds get_internal_bonds(Hierarchy mhd)
 {
-  Particles ps= core::get_all_descendants(mhd);
+  ParticlesTemp ps= core::get_all_descendants(mhd);
   IMP::compatibility::set<Particle*> sps(ps.begin(), ps.end());
   Bonds ret;
-  for (Particles::iterator pit = ps.begin(); pit != ps.end(); ++pit) {
+  for (ParticlesTemp::iterator pit = ps.begin();
+       pit != ps.end(); ++pit) {
     Particle *p = *pit;
     if (Bonded::particle_is_instance(p)) {
       Bonded b(p);
@@ -367,7 +368,7 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
   core::RigidBody rbd
     = core::RigidBody::setup_particle(h, leaves);
   rbd.set_coordinates_are_optimized(true);
-  Particles internal= core::get_internal(h);
+  ParticlesTemp internal= core::get_internal(h);
   for (unsigned int i=0; i< internal.size(); ++i) {
     if (internal[i] != h) {
       core::RigidMembers leaves(get_leaves(Hierarchy(internal[i])));
@@ -383,8 +384,8 @@ core::RigidBody setup_as_rigid_body(Hierarchy h) {
 
 namespace {
   ParticlesTemp rb_process(Hierarchy h) {
-    Particles internal= core::get_internal(h);
-    Particles all=get_leaves(h);
+    ParticlesTemp internal= core::get_internal(h);
+    ParticlesTemp all=get_leaves(h);
     for (unsigned int i=0; i< internal.size(); ++i) {
       ParticlesTemp leaves(get_leaves(Hierarchy(internal[i])));
       if (!leaves.empty() && !core::XYZR::particle_is_instance(internal[i])) {
@@ -587,7 +588,7 @@ bool get_is_heterogen(Hierarchy h) {
 
 
 algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
-  Particles rep= get_leaves(h);
+  ParticlesTemp rep= get_leaves(h);
   algebra::BoundingBox3D bb;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
@@ -603,7 +604,7 @@ algebra::BoundingBox3D get_bounding_box(const Hierarchy &h) {
 
 
 algebra::Sphere3D get_bounding_sphere(const Hierarchy &h) {
-  Particles rep= get_leaves(h);
+  ParticlesTemp rep= get_leaves(h);
   algebra::Sphere3Ds ss;
   for (unsigned int i=0; i< rep.size(); ++i) {
     core::XYZR xyzr= core::XYZR::decorate_particle(rep[i]);
