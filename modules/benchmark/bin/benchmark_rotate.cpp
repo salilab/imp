@@ -18,7 +18,7 @@ using namespace IMP::atom;
 int main(int , char **) {
   set_log_level(SILENT);
   set_check_level(IMP::NONE);
-  std::vector<Vector3D > vs(10000);
+  Vector3Ds vs(10000);
   for (unsigned int i=0; i< vs.size(); ++i) {
     vs[i]= get_random_vector_in(get_unit_sphere_d<3>());
   }

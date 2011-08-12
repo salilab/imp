@@ -60,7 +60,7 @@ protected:
       return -1;
     }
   }
-  std::vector<Vector3D > eigen_vecs_;
+  Vector3Ds eigen_vecs_;
   Vector3D eigen_values_;
   Vector3D centroid_;
   bool initialized_;
@@ -72,7 +72,7 @@ IMP_VALUES(PrincipalComponentAnalysis, PrincipalComponentAnalyses);
 /** \relatesalso PrincipalComponentAnalysis
  */
 IMPALGEBRAEXPORT PrincipalComponentAnalysis get_principal_components(
-                              const std::vector<Vector3D > &ps);
+                              const Vector3Ds &ps);
 //! Get all possible alignments of the first principle
 //! component system to the second one
 IMPALGEBRAEXPORT Transformation3Ds get_alignments_from_first_to_second(

@@ -69,7 +69,7 @@ const Vector3DsOrXYZs1 &to
 
   IMP_LOG(VERBOSE, "Centers are (" << center_from << ") (" << center_to
           << ")\n");
-  std::vector<Vector3D > shifted_from(from.size()), shifted_to(to.size());
+  Vector3Ds shifted_from(from.size()), shifted_to(to.size());
   for (unsigned int i=0; i< from.size(); ++i) {
     shifted_from[i]=get_vector_d_geometry(from[i])-center_from;
     shifted_to[i]= get_vector_d_geometry(to[i])-center_to;
@@ -170,8 +170,8 @@ const Vector3DsOrXYZs1 &to
   are conserved.
 **/
 IMPALGEBRAEXPORT Transformation2D get_transformation_aligning_pair(
-                       const std::vector<Vector2D >& set_from,
-                       const std::vector<Vector2D >& set_to);
+                       const Vector2Ds& set_from,
+                       const Vector2Ds& set_to);
 
 // implemented in Transformation2D
 

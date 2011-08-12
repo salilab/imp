@@ -41,9 +41,9 @@ Vector3D get_random_vector_in(const Sphere3D &s);
 Vector3D get_random_vector_in(const BoundingBox3D &s);
 Vector4D get_random_vector_in(const Sphere4D &s);
 Vector4D get_random_vector_in(const BoundingBox4D &s);
-std::vector<Vector2D > get_uniform_surface_cover(const Sphere2D &s,
+Vector2Ds get_uniform_surface_cover(const Sphere2D &s,
                                                  unsigned int n);
-std::vector<Vector3D > get_uniform_surface_cover(const Sphere3D &s,
+Vector3Ds get_uniform_surface_cover(const Sphere3D &s,
                                                  unsigned int n);
 std::vector<Vector4D > get_uniform_surface_cover(const Sphere4D &s,
                                                  unsigned int n);

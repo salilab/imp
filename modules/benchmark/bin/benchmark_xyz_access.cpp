@@ -193,10 +193,10 @@ double compute_distances_class_access(
 
 // TEST 3
 double compute_distances_direct_access(
-                   const std::vector<Vector3D >& coordinates) ATTRIBUTES;
+                   const Vector3Ds& coordinates) ATTRIBUTES;
 
 double compute_distances_direct_access(
-   const std::vector<Vector3D >& coordinates){
+   const Vector3Ds& coordinates){
   double tdist=0;
   for (unsigned int i = 0; i < coordinates.size(); i++) {
     for (unsigned int j = 0; j < coordinates.size(); j++) {

@@ -13,7 +13,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
 
 
 PrincipalComponentAnalysis get_principal_components(
-const std::vector<Vector3D > &ps){
+const Vector3Ds &ps){
 
   Vector3D m = std::accumulate(ps.begin(), ps.end(),
                                  get_zero_vector_d<3>())/ps.size();;
