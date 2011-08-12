@@ -20,7 +20,7 @@ IMPALGEBRA_BEGIN_NAMESPACE
     \ingroup CGAL
  */
 IMPALGEBRAEXPORT Sphere3D
-get_enclosing_sphere(const std::vector<Sphere3D > &ss);
+get_enclosing_sphere(const Sphere3Ds &ss);
 
 //! Return a sphere containing the listed spheres
 /** \relatesalso Sphere3D
@@ -30,7 +30,7 @@ get_enclosing_sphere(const std::vector<Sphere3D > &ss);
     \ingroup CGAL
  */
 IMPALGEBRAEXPORT Sphere3D
-get_enclosing_sphere(const std::vector<Vector3D > &ss);
+get_enclosing_sphere(const Vector3Ds &ss);
 
 
 //! Return the radius of a sphere with a given volume

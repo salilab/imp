@@ -56,7 +56,7 @@ inline Vector3D get_orthogonal_vector(const Vector3D &v) {
 //! Returns the centroid of a set of vectors
 /** \relatesalso Vector3D
  */
-inline Vector3D get_centroid(const std::vector<Vector3D > &ps) {
+inline Vector3D get_centroid(const Vector3Ds &ps) {
   return std::accumulate(ps.begin(), ps.end(),
                          get_zero_vector_d<3>())/ps.size();
 }
@@ -65,7 +65,7 @@ inline Vector3D get_centroid(const std::vector<Vector3D > &ps) {
 /**
    \see IMP::atom::get_radius_of_gyration()
  */
-inline double get_radius_of_gyration(const std::vector<Vector3D > &ps) {
+inline double get_radius_of_gyration(const Vector3Ds &ps) {
   algebra::Vector3D centroid= get_centroid(ps);
   double rg = 0;
   for (unsigned int i = 0; i < ps.size(); i++) {

@@ -236,8 +236,8 @@ inline double get_maximum_length(const BoundingBoxD<D> &a) {
 
 
 //! Return a list of the 8 bounding points for the bounding box
-inline std::vector<Vector3D > get_vertices(const BoundingBoxD<3> &bb) {
-  std::vector<Vector3D > ret; ret.reserve(8);
+inline Vector3Ds get_vertices(const BoundingBoxD<3> &bb) {
+  Vector3Ds ret; ret.reserve(8);
   for (unsigned int i=0; i< 2; ++i) {
     for (unsigned int j=0; j< 2; ++j) {
       for (unsigned int k=0; k< 2; ++k) {

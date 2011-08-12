@@ -9,7 +9,7 @@
 IMPALGEBRA_BEGIN_INTERNAL_NAMESPACE
 
 TNT::Array2D<double> get_covariance_matrix(
-   const std::vector<Vector3D > &vs,
+   const Vector3Ds &vs,
    const Vector3D& mean) {
 
   double varx,vary,varz;
@@ -18,7 +18,7 @@ TNT::Array2D<double> get_covariance_matrix(
   varxy=varxz=varyz=0.0;
 
   // calculcate variance
-  for (std::vector<Vector3D >::const_iterator it = vs.begin();
+  for (Vector3Ds::const_iterator it = vs.begin();
                                              it != vs.end(); it++) {
     varx+=(mean[0]-(*it)[0])*(mean[0]-(*it)[0]);
     vary+=(mean[1]-(*it)[1])*(mean[1]-(*it)[1]);

@@ -14,7 +14,7 @@
 
 IMPALGEBRA_BEGIN_NAMESPACE
 
-Sphere3D get_enclosing_sphere(const std::vector<Sphere3D > &ss) {
+Sphere3D get_enclosing_sphere(const Sphere3Ds &ss) {
   IMP_USAGE_CHECK(!ss.empty(),
                   "Must pass some spheres to have a bounding sphere");
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
@@ -35,8 +35,8 @@ Sphere3D get_enclosing_sphere(const std::vector<Sphere3D > &ss) {
 #endif
 }
 
-Sphere3D get_enclosing_sphere(const std::vector<Vector3D > &vs) {
-  std::vector<Sphere3D > ss(vs.size());
+Sphere3D get_enclosing_sphere(const Vector3Ds &vs) {
+  Sphere3Ds ss(vs.size());
   for (unsigned int i=0; i< vs.size(); ++i) {
     ss[i]= Sphere3D(vs[i], 0);
   }
