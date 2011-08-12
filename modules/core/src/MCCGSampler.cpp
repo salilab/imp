@@ -63,12 +63,12 @@ namespace {
 class ScoreWeightedIncrementalBallMover :public Mover
 {
 public:
-  ScoreWeightedIncrementalBallMover(const Particles &ps,
+  ScoreWeightedIncrementalBallMover(const ParticlesTemp &ps,
                                     unsigned int n,
                                     Float radius);
   IMP_MOVER(ScoreWeightedIncrementalBallMover);
 private:
-  const Particles ps_;
+  const ParticlesTemp ps_;
   unsigned int n_;
   Float radius_;
   ParticlesTemp moved_;
@@ -78,7 +78,7 @@ private:
 
 
 ScoreWeightedIncrementalBallMover
-::ScoreWeightedIncrementalBallMover(const Particles& sc,
+::ScoreWeightedIncrementalBallMover(const ParticlesTemp& sc,
                                     unsigned int n,
                                     Float radius): ps_(sc),
                                                    n_(n),
