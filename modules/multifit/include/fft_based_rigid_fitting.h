@@ -127,6 +127,12 @@ class IMPMULTIFITEXPORT FFTFitting {
                        const algebra::Rotation3Ds &rots,
                        int num_fits_to_report);
 };
+//! FFT fit a rigid body (mol2fit) in a density map
+IMPMULTIFITEXPORT
+multifit::FittingSolutionRecords fft_based_rigid_fitting(
+   atom::Hierarchy mol2fit,
+   em::DensityMap *dmap,
+   const algebra::Rotation3Ds &rots);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H */

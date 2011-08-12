@@ -913,4 +913,13 @@ void FFTFitting::prepare_poslist (em::DensityMap *dmap) {
   mask_inside2=NULL;
 }
 
+FittingSolutionRecords fft_based_rigid_fitting(
+   atom::Hierarchy mol2fit,
+   em::DensityMap *dmap,
+   const algebra::Rotation3Ds &rots) {
+  multifit::FFTFitting ff;
+  multifit::FFTFittingOutput fits =
+    ff.fit(dmap,mol2fit,rots,rots.size());
+  return fits.best_fits_;
+}
 IMPMULTIFIT_END_NAMESPACE
