@@ -20,29 +20,10 @@
 #include <IMP/em/Voxel.h>
 #include <IMP/atom/Hierarchy.h>
 #include <IMP/core/LeavesRefiner.h>
+#include <IMP/multifit/density_analysis.h>
 #include <algorithm>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
-
-
-// std::vector<display::SphereGeometry *> display_helper(
-//      const DataPointsAssignment &dpa) {
-//   std::vector<display::SphereGeometry *> gs;
-//   for( int i=0;i<dpa.get_number_of_clusters();i++) {
-//     Array1DD xyz = dpa.get_cluster_engine()->get_center(i);
-//     algebra::Sphere3D sph=
-//       algebra::get_enclosing_sphere(dpa.get_cluster_vectors(i));
-//     sph.set_center(algebra::Vector3D(xyz[0],xyz[1],xyz[2]));
-//     IMP_NEW(display::SphereGeometry,g,(sph));
-//     //    g->set_color(display::get_display_color(10*i));
-//     std::stringstream ss;
-//     ss<<"cluster_"<<i;
-//     g->set_name(ss.str());
-//     gs.push_back(g);
-//   }
-//   return gs;
-// }
-
 
 bool sort_data_points_first_larger_than_second(
             const std::pair<float,algebra::Vector3D> &a,
@@ -74,11 +55,38 @@ DataPointsAssignment::get_cluster_vectors(int cluster_id) const {
 
 algebra::Vector3Ds
   DataPointsAssignment::set_cluster(int cluster_ind) {
-  algebra::Vector3Ds cluster_set;
+
+  //remove outliers
+  Pointer<Model> mdl = new Model();
+  Particles full_set;//all points of the cluster
   for (int i=0;i<data_->get_number_of_data_points();i++) {
     if (cluster_engine_->is_part_of_cluster(i,cluster_ind)) {
-      cluster_set.push_back(data_->get_vector(i));
+      core::XYZR x = core::XYZR::setup_particle(new Particle(mdl),
+                                 algebra::Sphere3D(data_->get_vector(i),1));
+      atom::Mass::setup_particle(x,1);
+      full_set.push_back(x);
     }
+  }
+  Pointer<em::DensityMap> full_map = em::particles2density(full_set,3,1.5);
+  //map the particles to their voxels
+  std::map<long,algebra::Vector3D> voxel_particle_map;
+  for(int i=0;i<full_set.size();i++) {
+    algebra::Vector3D v=core::XYZ(full_set[i]).get_coordinates();
+    voxel_particle_map[
+                       full_map->get_voxel_by_location(v)]=v;
+  }
+  full_map->set_was_used(true);
+  domino::IntsList conn_comp=get_connected_components(full_map,0.001,0.8);
+  //use only connected components that consist of at least 40% of the density
+  algebra::Vector3Ds cluster_set;
+  for(unsigned int i=0;i<conn_comp.size();i++) {
+    if (conn_comp[i].size()<0.4*full_set.size())
+      continue;
+    for (unsigned int j=0;j<conn_comp[i].size();j++) {
+      if (voxel_particle_map.find(conn_comp[i][j]) != voxel_particle_map.end())
+        {
+          cluster_set.push_back(voxel_particle_map[conn_comp[i][j]]);
+        }}
   }
   //here we assume properties are only xyz
   Array1DD cen=cluster_engine_->get_center(cluster_ind);

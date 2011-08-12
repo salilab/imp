@@ -139,8 +139,8 @@ IMPMULTIFITEXPORT em::DensityMap* remove_background(em::DensityMap *dmap,
 /**
    \param[in] dmap the density map to analyze
    \param[in] threshold consider only voxels above this threshold
-   \param[in] edge_threshold voxels are neighbors
-                             if above this threshold
+   \param[in] edge_threshold an edge is added between
+     two neighboring voxels if their density difference is below this threshold
    \return List of indexes for each connected component
 */
 IMPMULTIFITEXPORT
