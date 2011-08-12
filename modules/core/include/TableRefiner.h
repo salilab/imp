@@ -27,13 +27,13 @@ public:
   TableRefiner();
 
   //! Add a mapping to the table
-  void add_particle(Particle *p, const Particles &ps);
+  void add_particle(Particle *p, const ParticlesTemp &ps);
 
   //! Remove a mapping from the table
   void remove_particle(Particle *p);
 
   //! Set the mapping for a particular particle
-  void set_particle(Particle *p, const Particles &ps);
+  void set_particle(Particle *p, const ParticlesTemp &ps);
 
   IMP_REFINER(TableRefiner);
 };
