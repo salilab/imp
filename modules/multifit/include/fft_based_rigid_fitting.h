@@ -8,248 +8,125 @@
 #ifndef IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H
 #define IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H
 
-#include <IMP/multifit/DataPoints.h>
-#include <IMP/em/DensityMap.h>
-#include <IMP/em/SampledDensityMap.h>
-#include <IMP/atom/Hierarchy.h>
-#include <IMP/multifit/FittingSolutionRecord.h>
-#include <IMP/algebra/Transformation3D.h>
-#include <IMP/em/rigid_fitting.h>
 #include "fftw3.h"
 #include "multifit_config.h"
-#include <IMP/Object.h>
-#include "internal/FFTWGrid.h"
-#include "internal/FFTWPlan.h"
+#include <IMP/atom/Hierarchy.h>
+#include <IMP/base_types.h>
+#include <IMP/multifit/internal/FFTWGrid.h>
+#include <IMP/multifit/FittingSolutionRecord.h>
+#include <IMP/multifit/internal/FFTWPlan.h>
+#include <IMP/em/DensityMap.h>
+#include <IMP/em/SampledDensityMap.h>
+#include <IMP/em/KernelParameters.h>
 
 IMPMULTIFIT_BEGIN_NAMESPACE
 
-typedef std::pair<algebra::Transformation3D,float> TransScore;
-typedef std::vector<TransScore> TransScores;
+class IMPMULTIFITEXPORT FFTFittingOutput {
+ public:
+  //here put all intermediate and final output
+  multifit::FittingSolutionRecords best_fits_;
+};
+
+typedef struct {
+  unsigned long ifft;
+  unsigned long ireal;
+  unsigned int ix;
+  unsigned int iy;
+  unsigned int iz;
+} FFTScore;
+typedef std::vector<FFTScore> FFTScores;
+
+typedef struct {
+  unsigned int rot_ind_;
+  double score_;
+} RotScore;
+typedef std::vector<RotScore> RotScores;
+
 
 class IMPMULTIFITEXPORT FFTFitting {
-public:
-  FFTFitting(em::DensityMap *dmap,core::RigidBody rb,Refiner *rb_refiner,
-     IMP::FloatKey mass_key = IMP::atom::Mass::get_mass_key());
-  ~FFTFitting();
-  void prepare(float threshold);
-  //! The function calcaultes the correlation between the density
-  //! and the protein
-  /**
-  /note The results are stored in fftw_r_grid_cc_.
-   The meaning of a correlation value X at position (x,y,z) is that
-   if you position the center of the protein at C+(x,y,z)
-   the correlation score is X, where C is the center of the density map.
-   */
-  void calculate_correlation();
-  //! Caclculate local correlation
-  /**
-     /note According to Rath et al, JSB 2003
-   */
-  void calculate_local_correlation();
-  TransScores search_for_best_translations(
-             int num_solutions, bool gmm_based=true);
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-//! get the unwrapped index
-/**
-The convolution result is in a wrapped around order,
-which indicates the translation to apply
-Wrapped around: (0,1,2,.,N,-N,..-2, -1)
+ protected:
+  algebra::Transformation3D cen_trans_;
+  /* map and kernel related global variables */
+  atom::Hierarchy high_mol_;
+  double resolution_;
+  unsigned int nx_,ny_,nz_; //extent
+  unsigned long nvox_;   //total number of voxels
+  unsigned int nx_half_,ny_half_,nz_half_;// half of the map extent
+  double spacing_;                      //map voxel size
+  double origx_,origy_,origz_;// map origin
+  multifit::internal::FFTWGrid<double> low_map_data_;   // low resolution map
+  Pointer<em::DensityMap> low_map_;
+  Pointer<em::SampledDensityMap> sampled_map_;//sampled from protein
+  multifit::internal::FFTWGrid<double> sampled_map_data_;
+  // high resolution map
+  multifit::internal::FFTWGrid<double> reversed_fftw_data_;
+  boost::scoped_array<double>  kernel_filter_;
+  unsigned kernel_filter_ext_;
+  double* gauss_kernel_;   // low-pass (Gaussian) kernel
+  unsigned int gauss_kernel_ext_;  //Gaussian kernel extent
+  unsigned long gauss_kernel_nvox_; //Gaussian kernel number of voxels
+  double* filtered_kernel_;  //filtered low-pass kernel
+  unsigned long filtered_kernel_nvox_;
+  //number of voxels in the filtered kernel
+  unsigned filtered_kernel_ext_; //filtered low-pass kernel extent
 
-The function returns the index of the centroid
-after applying the displacement indicated by
-the convolution
- */
-//Given indexes in wrapped order (result of FFTW), return
-//the unwrapped indexes
-/*
-\param[in] wx wrapped index in X dimension
-\param[in] wy wrapped index in Y dimension
-\param[in] wz wrapped index in Z dimension
-\param[out] x unwrapped index in X dimension
-\param[out] y unwrapped index in Y dimension
-\param[out] z unwrapped index in Z dimension
-**/
-  void get_unwrapped_index(int wx,int wy,int wz,
-                           int &x,int &y,int &z) const;
-  //for python
-  int get_unwrapped_index(int wx,int wy,int wz,int ind) const {
-    int x,y,z;
-    get_unwrapped_index(wx,wy,wz,x,y,z);
-    if (ind==0) return x;
-    if (ind==1) return y;
-    return z;
-  }
+  double sampled_norm_, asmb_norm_; //normalization factors for both maps
+  algebra::Vector3D map_cen_;
+  //FFT variables
+ unsigned long fftw_nvox_r2c_;        /* FFTW real to complex voxel count */
+ unsigned long fftw_nvox_c2r_;        /* FFTW complex to real voxel count */
+ multifit::internal::FFTWGrid<fftw_complex> fftw_grid_lo_,fftw_grid_hi_;
+ multifit::internal::FFTWPlan fftw_plan_forward_lo_,fftw_plan_forward_hi_;
+ multifit::internal::FFTWPlan fftw_plan_reverse_hi_;
+ double fftw_scale_; //eq to 1./nvox_
 
-//! get the wrapped index
-/**
-The convolution result is in a wrapped around order,
-which indicates the translation to apply
-Wrapped around: (1,2,3,.,N,-(N-1),..-2, -1,0)
+  //molecule to fit
+  atom::Hierarchy orig_mol_;
+  core::RigidBody orig_rb_;
 
-The function returns the original index in its wrapped order
- */
-/*
-\param[in] x unwrapped index in X dimension
-\param[in] y unwrapped index in Y dimension
-\param[in] z unwrapped index in Z dimension
-\param[out] wx wrapped index in X dimension
-\param[out] wy wrapped index in Y dimension
-\param[out] wz wrapped index in Z dimension
-**/
-  void get_wrapped_index(int x,int y,int z,
-                         int &wx,int &wy,int &wz) const;
-#endif
+ int num_fits_reported_;
+ double low_cutoff_;
+ int corr_mode_;
 
-  //for python
-  int get_wrapped_index(int x,int y,int z,int ind) const {
-    int wx,wy,wz;
-    get_wrapped_index(x,y,z,wx,wy,wz);
-    if (ind==0) return wx;
-    if (ind==1) return wy;
-    return wz;
-  }
-  void test_wrapping_correction();
-  void recalculate_molecule(){
-    resmooth_mol();
-  }
-  //!Returns the correlation scores for postitions of the
-  //!center of the molecule
-  em::DensityMap* get_variance_map() const;
-  em::DensityMap* get_padded_asmb_map() const {return padded_asmb_map_;}
-  em::DensityMap* get_padded_mol_map() const {return mol_map_;}
-#if !defined(IMP_DOXYGEN) && !defined(SWIG)
-  //note the map is returned as is, in a wrapped order
-  double* get_wrapped_correlation_map(int &nx,int &ny,int &nz) const {
-    nx=fftw_nx_;ny=fftw_ny_; nz=fftw_nz_; return fftw_r_grid_cc_;}
-#endif
-  //! Get a density map which is the result of moving to Fourier space and back
-  /**
-   \note This function is used for testing normalization issuses
-   */
-  em::DensityMap *get_padded_mol_map_after_fftw_round_trip();
-protected:
-  DensGrid get_correlation_hit_map();
-  algebra::Vector3Ds gmm_based_search_for_best_translations(
-                  DensGrid *hit_map, int num_solutions);
-  algebra::Vector3Ds heap_based_search_for_best_translations(
-                  DensGrid *hit_map, int num_solutions);
-  void create_map_from_array(double *arr,em::DensityMap *) const;
-  void mask_norm_mol_map();
-  void prepare_std_data();
-  void set_mol_mask();
-  void resmooth_mol();
-  void smooth_mol();
-  //! create a padded asmb map
-  void create_padded_asmb_map();
-  void create_padded_asmb_map_sqr();
-  //! Set FFTW data for the molecule
-  /**
-  \brief the data that is being set are the grids and the plans.
-   */
-  void set_fftw_for_mol();
-  //! Set FFTW data for the assembly density map
-  /**
-  \brief the data that is being set are the grids
-    and the plans. As the density map is not changing we also execute the
-    plans to get the values in Fourier space.
-   */
-  void set_fftw_for_asmb();
-  void set_fftw_for_asmb_sqr();
-  void set_fftw_for_cc();
-  void set_fftw_for_mol_mask();
-  void calculate_local_stds();
-  void copy_density_data(em::DensityMap *dmap,double *data_array);
-  em::DensityMap* copy_array_to_density(double *data_array);
+ //paddding
+ double fftw_pad_factor_;  // grid size expansion factor for FFT padding
+ unsigned int fftw_zero_padding_extent_[3]; // padding extent
+ unsigned margin_ignored_in_conv_[3]; // margin that can be ignored
+ //in convolution
+ RotScores fits_hash_; //stores best fits
+ multifit::FittingSolutionRecords best_fits_;
+ FFTScores fft_scores_;
+ unsigned int inside_num_;
+ unsigned int inside_num_flipped_;
+ FFTScores fft_scores_flipped_;
+ algebra::Rotation3Ds rots_;
 
-  void set_fftw_grid_sizes();
-  /**
-   \breif In FFTW 3, the particular arrays to work on are set in planning time.
-   The planner overwrite input/output arrays unless FFTW_ESTIME is used.
-   This is the reason we need to use it.
-   \todo change to guru:
-   http://www.fftw.org/doc/Guru-Real_002ddata-DFTs.html#Guru-Real_002ddata-DFTs
-   In FFTW 3, all plans are of type fftw_plan_dft_3d and all
-   are destroyed by fftw_destroy_plan(plan).
-   */
-  //! Set parameters required by fftw
-  void set_parameters();
-  void allocate_fftw_grids_memory();
-  unsigned long fftw_nvox_r2c_;  // FFTW real to complex voxel count
-  unsigned long fftw_nvox_c2r_;  // FFTW complex to real voxel count
-  int fftw_nz_,fftw_ny_,fftw_nx_; // FFTW extent in z,y and x
-  unsigned int fftw_zero_padding_extent_[3];
-  long mask_nvox_;
-  //fftw grids
-  internal::FFTWGrid<double> fftw_r_grid_asmb_, fftw_r_grid_mol_,
-                             fftw_r_grid_cc_, fftw_r_grid_mol_mask_,
-                             fftw_r_grid_std_upper_, fftw_r_grid_std_lower_,
-                             fftw_r_grid_asmb_sqr_;
-  internal::FFTWGrid<fftw_complex> fftw_c_grid_asmb_, fftw_c_grid_mol_,
-                                   fftw_c_grid_cc_, fftw_c_grid_mol_mask_,
-                                   fftw_c_grid_std_upper_,
-                                   fftw_c_grid_std_lower_,
-                                   fftw_c_grid_asmb_sqr_;
-  //fftw plans
-  internal::FFTWPlan fftw_plan_r2c_asmb_, fftw_plan_r2c_mol_,
-                     fftw_plan_r2c_mol_mask_, fftw_plan_r2c_asmb_sqr_;
-  //fftw_plan_r2c_std_upper_,fftw_plan_r2c_std_lower_,
-  internal::FFTWPlan fftw_plan_c2r_cc_, fftw_plan_c2r_std_upper_,
-                     fftw_plan_c2r_std_lower_;
-  //normalization grid
-  internal::FFTWGrid<double> std_norm_grid_, std_upper_, std_lower_;
-  Pointer<em::DensityMap> asmb_map_;
-  Pointer<em::DensityMap> padded_asmb_map_, asmb_map_mask_;
-  Pointer<em::DensityMap> padded_asmb_map_sqr_;
-  Pointer<em::DensityMap> mol_mask_map_;
-  Pointer<em::SampledDensityMap> mol_map_;
-  Particles mol_map_ps_;//keep a copy of the rigid body particles
-  Pointer<Model> mdl_;//model that holds the mol_map_ps_
-  // for the resampling
-  core::RigidBody rb_;
-  Pointer<Refiner> rb_refiner_;
-  bool is_initialized_;
-  //parameters
-  float pad_factor_;//percentage of the extent (x) to be margin;
-                //the total value will be after padding (1.+2*pad_factor_)*x
-  float low_pass_kernel_ext_; //kernel size for smoothing
-  float fftw_scale_;//
-  //Gaussian kernel
-  boost::scoped_array<double> gauss_kernel_;
-  int gauss_ext_;
-  //sampling transformations
-  algebra::Transformation3D center_trans_;
-  algebra::Vector3D orig_prot_center_;
-  algebra::Vector3D map_center_;
-  float orig_avg_,orig_std_;
-  float input_threshold_;
-  FloatKey mass_key_;
-  double fftw_norm_;//normalization for FFTW operations
-  double fftw_norm_r2c_;//normalization for FFTW operations
-  double fftw_norm_c2r_;//normalization for FFTW operations
-};
-
-
-class IMPMULTIFITEXPORT FFTFittingResults {
+ void prepare_probe(atom::Hierarchy mol2fit);
+ void prepare_lowres_map (em::DensityMap *dmap);
+ void prepare_kernels();
+ void copy_density_data(em::DensityMap *dmap,double *data_array);
+ void get_unwrapped_index (int wx, int wy, int wz,
+                           int &ix, int &iy, int &iz);
+ void prepare_poslist_flipped (em::DensityMap *dmap);
+ void prepare_poslist(em::DensityMap *dmap);
+ void pad_resolution_map();
+ em::DensityMap* crop_margin(em::DensityMap *in_map);
+ void fftw_translational_search(const algebra::Rotation3D &rot,int i);
+ //! Detect the top fits
+ multifit::FittingSolutionRecords detect_top_fits(const RotScores &rot_scores);
  public:
-  FFTFittingResults(){
-    max_cc_map_=NULL;
-  }
-  void set_max_cc_map(em::DensityMap* d) {max_cc_map_=d;}
-  em::DensityMap* get_max_cc_map() {return max_cc_map_;}
-  em::FittingSolutions get_solutions() {return sols_;}
-  void set_solutions(const em::FittingSolutions &sols) {sols_=sols;}
- private:
-  em::FittingSolutions sols_;
-  em::DensityMap *max_cc_map_;
+  FFTFitting() {}
+  ~FFTFitting();
+  //! Fit a molecule inside its density
+  /**
+     \param[in] dmap the density map to fit into
+     \param[in] mol2fit the molecule to fit. The molecule has to be a rigid body
+   */
+  FFTFittingOutput fit(em::DensityMap *dmap,
+                       atom::Hierarchy mol2fit,
+                       const algebra::Rotation3Ds &rots,
+                       int num_fits_to_report);
 };
-
-IMPMULTIFITEXPORT FFTFittingResults fft_based_rigid_fitting(
-   core::RigidBody rb,Refiner *rb_refiner,
-   em::DensityMap *dmap, Float threshold,
-   const algebra::Rotation3Ds &rots,
-   int num_top_fits_to_store_for_each_rotation=10,
-   bool local=false,
-   bool pick_search_by_gmm=true);
 
 IMPMULTIFIT_END_NAMESPACE
 #endif  /* IMPMULTIFIT_FFT_BASED_RIGID_FITTING_H */
