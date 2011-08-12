@@ -19,7 +19,7 @@
 IMPDOMINO_BEGIN_NAMESPACE
 AssignmentsTable::~AssignmentsTable(){}
 
-typedef std::vector<int> Ints;
+typedef Ints Ints;
 
 namespace {
 

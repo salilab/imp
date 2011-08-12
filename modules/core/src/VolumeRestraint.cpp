@@ -36,7 +36,7 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
     });
   algebra::Vector3D diag= bb3.get_corner(1)-bb3.get_corner(0);
   double ms= std::max(diag[0], std::max(diag[1], diag[2]));
-  std::vector<int> volumes(sc_->get_number_of_particles(), 0),
+  Ints volumes(sc_->get_number_of_particles(), 0),
     areas(sc_->get_number_of_particles(), 0);
   bool is_zero=false;
   int count=0;
@@ -105,8 +105,8 @@ VolumeRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
       return rv;
     }
   } else {
-    std::vector<int> os[3];
-    std::vector<int> rs(count, 0);
+    Ints os[3];
+    Ints rs(count, 0);
     double volume;
     if (is_zero) {
       volume=0;

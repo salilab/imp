@@ -190,7 +190,7 @@ void Model::reset_dependencies() {
 void Model::compute_dependencies() const {
   IMP_OBJECT_LOG;
   IMP_LOG(VERBOSE, "Ordering score states. Input list is: ");
-  std::vector<double> weights;
+  Floats weights;
   boost::tie(ordered_restraints_,
              weights)
     = get_restraints_and_weights(restraints_begin(),
@@ -201,7 +201,7 @@ void Model::compute_dependencies() const {
   RestraintsTemp all_restraints=ordered_restraints_;
   for (unsigned int i=0; i< temp_restraints_.size(); ++i) {
     RestraintsTemp curr;
-    std::vector<double> curw;
+    Floats curw;
     boost::tie(curr, curw)
       = get_restraints_and_weights(RestraintsTemp(1, temp_restraints_[i]));
     for (unsigned int i=0; i< curr.size(); ++i) {
@@ -316,7 +316,7 @@ Floats Model::do_external_evaluate(const RestraintsTemp &restraints,
     }
   }
   ScoreStatesTemp ss= get_score_states(restraints);
-  std::vector<double> max_scores(restraints.size());
+  Floats max_scores(restraints.size());
   /*for (unsigned int i=0; i< max_scores.size(); ++i) {
     if (max_scores_.find(restraints[i]) == max_scores_.end()) {
       max_scores[i]= std::numeric_limits<double>::max();

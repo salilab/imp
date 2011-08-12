@@ -127,7 +127,7 @@ inline bool get_is_log_output(LogLevel l)
 
    \code
    IMP_IF_LOG(VERBOSE) {
-     std::vector<double> testp(input.begin(), input.end());
+     Floats testp(input.begin(), input.end());
      std::sort(testp.begin(), testp.end());
      IMP_LOG(VERBOSE, "Sorted order is ");
      IMP_LOG_WRITE(VERBOSE, std::copy(testp.begin(), testp.end(),

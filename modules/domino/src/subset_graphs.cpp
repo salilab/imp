@@ -604,7 +604,7 @@ namespace {
 
 MergeTree get_merge_tree(const SubsetGraph& junction_tree/*, int start*/) {
   IMP_IF_CHECK(USAGE) {
-    std::vector<int> comp(boost::num_vertices(junction_tree));
+    Ints comp(boost::num_vertices(junction_tree));
     int cc= boost::connected_components(junction_tree, &comp[0]);
     IMP_USAGE_CHECK(cc==1, "Graph is not connected: " << cc);
   }

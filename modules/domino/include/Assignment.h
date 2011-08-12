@@ -183,7 +183,7 @@ IMP_OBJECTS(AssignmentContainer, AssignmentContainers);
  */
 class IMPDOMINOEXPORT PackedAssignmentContainer: public AssignmentContainer {
   // store all as one vector
-  std::vector<int> d_;
+  Ints d_;
   int width_;
  public:
   PackedAssignmentContainer(std::string name="PackedAssignmentsContainer %1%");
@@ -256,7 +256,7 @@ inline void ListAssignmentContainer::add_assignment(Assignment a) {
  */
 class IMPDOMINOEXPORT SampleAssignmentContainer: public AssignmentContainer {
   // store all as one vector
-  std::vector<int> d_;
+  Ints d_;
   int width_;
   unsigned int k_;
   unsigned int i_;

@@ -208,7 +208,7 @@ namespace {
             << ", " << bd->get_maximum_time_step() << ")" << std::endl);
     IMP_USAGE_CHECK((step- bd->get_maximum_time_step()) < .001,
                     "In and out don't match " << bd->get_maximum_time_step());
-    std::vector<double> es;
+    Floats es;
     unsigned int ns=100;
     std::vector<algebra::Vector3Ds>
       coords(ns, algebra::Vector3Ds(ps.size()));
@@ -218,7 +218,7 @@ namespace {
         coords[i][j]= core::XYZ(ps[j]).get_coordinates();
       }
     }
-    std::vector<double> max_dist(es.size()-1, 0);
+    Floats max_dist(es.size()-1, 0);
     for (unsigned int i=0; i< ns-1; ++i) {
       for (unsigned int j=0; j< coords[i].size(); ++j) {
         max_dist[i]= std::max(max_dist[i],

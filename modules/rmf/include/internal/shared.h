@@ -43,8 +43,8 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
   HDF5DataSet<StringTraits> names_;
   HDF5DataSet<IndexTraits> node_data_;
   HDF5DataSet<IndexTraits> bond_data_;
-  std::vector<int> free_ids_;
-  std::vector<int> free_bonds_;
+  Ints free_ids_;
+  Ints free_bonds_;
   std::vector<void*> association_;
   IMP::compatibility::map<void*, int> back_association_;
   unsigned int frames_hint_;
@@ -158,7 +158,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
       }
     }
   };
-  mutable std::vector<int> max_cache_;
+  mutable Ints max_cache_;
   mutable IMP::compatibility::set<std::string> known_data_sets_;
   mutable int last_node_;
   mutable KeyCategory last_category_;
@@ -234,7 +234,7 @@ class IMPRMFEXPORT SharedData: public boost::intrusive_ptr_object {
 
 
   enum Indexes {TYPE=0, CHILD=1, SIBLING=2, FIRST_KEY=3};
-  typedef std::vector<int> Ind;
+  typedef Ints Ind;
   static Ind make_index(int i) {
     return Ind(1, i);
   }

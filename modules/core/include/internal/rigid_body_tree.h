@@ -20,7 +20,7 @@ IMPCORE_BEGIN_INTERNAL_NAMESPACE
 class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   RigidBody rb_;
   struct Data {
-    std::vector<int> children_;
+    Ints children_;
     algebra::Sphere3D s_;
   };
   std::vector<Data> tree_;
@@ -100,7 +100,7 @@ class IMPCOREEXPORT RigidBodyHierarchy: public Object {
   // for testing
   ParticleIndexes get_particles(unsigned int i) const {
     ParticleIndexes ret;
-    std::vector<int> stack(1, i);
+    Ints stack(1, i);
     do {
       unsigned int i= stack.back();
       stack.pop_back();

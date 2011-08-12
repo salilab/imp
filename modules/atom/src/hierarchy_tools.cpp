@@ -367,7 +367,7 @@ create_simplified_along_backbone(Chain in,
   double cv= get_volume(root);
   double scale=1;
   ParticlesTemp rt= get_by_type(root, XYZR_TYPE);
-  std::vector<double> radii(rt.size());
+  Floats radii(rt.size());
   for (unsigned int i=0; i< rt.size(); ++i) {
     core::XYZR d(rt[i]);
     radii[i]=d.get_radius();

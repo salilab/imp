@@ -42,7 +42,7 @@ namespace {
               << std::endl);
       return false;
     } else {
-      std::vector<int> comp(boost::num_vertices(g));
+      Ints comp(boost::num_vertices(g));
       int cc= boost::connected_components(g, &comp[0]);
       IMP_LOG(TERSE, "Graph has " << cc
               << " components"
@@ -145,7 +145,7 @@ Assignments DominoSampler
 
 void DominoSampler::set_subset_graph(const SubsetGraph &sg) {
   IMP_IF_CHECK(USAGE) {
-    std::vector<int> comp(boost::num_vertices(sg));
+    Ints comp(boost::num_vertices(sg));
     IMP_CHECK_CODE(int cc= boost::connected_components(sg, &comp[0]));
     IMP_USAGE_CHECK(cc==1, "Graph must have exactly one connected component."
                     << " It has " << cc);

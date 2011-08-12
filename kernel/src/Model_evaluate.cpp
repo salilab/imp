@@ -239,7 +239,7 @@ Floats Model::do_evaluate(const RestraintsTemp &restraints,
   if (calc_derivs) {
     zero_derivatives();
   }
-  std::vector<double> ret= do_evaluate_restraints(restraints,
+  Floats ret= do_evaluate_restraints(restraints,
                                                   calc_derivs,
                                                   if_good, if_max,
                                                   max);

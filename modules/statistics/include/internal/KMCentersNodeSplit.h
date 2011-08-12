@@ -55,10 +55,10 @@ public:
    */
   void compute_sums();
  //! Compute neighbors for centers
- void get_neighbors(const std::vector<int> &cands,
-     KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights);
- void get_assignments(const std::vector<int> &cands,
-                      std::vector<int> &close_center);
+ void get_neighbors(const Ints &cands,
+     KMPointArray *sums, KMPoint *sum_sqs,Ints *weights);
+ void get_assignments(const Ints &cands,
+                      Ints &close_center);
   /** Let m denote the number of data points
       descended from this node.  Then with probability 1/(2m-1), this cell is
       chosen.  Otherwise, let mL and mR denote the number of points associated

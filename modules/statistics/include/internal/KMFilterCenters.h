@@ -42,12 +42,12 @@ public:
     return sums_;
   }
   // Returns sums of squares
-  std::vector<double>* get_sum_sqs(bool auto_update = true){
+  Floats* get_sum_sqs(bool auto_update = true){
     if (auto_update && !valid_) compute_distortion();
     return &sum_sqs_;
   }
   //! Return weights
-  std::vector<int>* get_weights(bool auto_update = true){
+  Ints* get_weights(bool auto_update = true){
     if (auto_update && !valid_) compute_distortion();
     return &weights_;
   }
@@ -62,7 +62,7 @@ public:
     return curr_dist_/double(get_number_of_points());
   }
   //! Returns individual distortions
-  std::vector<double>* get_distortions(bool auto_update = true) {
+  Floats* get_distortions(bool auto_update = true) {
     if (auto_update && !valid_) compute_distortion();
     return &dists_;
   }
@@ -73,7 +73,7 @@ public:
   Thus, we do not change the validation status.
   \param[in] close_center will contain the closest center to each data point
   */
-  void get_assignments(std::vector<int> &close_center);
+  void get_assignments(Ints &close_center);
 
 //! Generate random centers
   virtual void generate_random_centers(int k);
@@ -113,7 +113,7 @@ protected:
 protected:
   KMPointArray *sums_;// vector sum of points
   KMPoint sum_sqs_;// sum of squares
-  std::vector<int> weights_; //number of data points assigned to each point
+  Ints weights_; //number of data points assigned to each point
   KMPointArray *ini_cen_arr_; //initial guess of centers
   KMPoint dists_;// individual distortions
   double curr_dist_;// current total distortion
@@ -140,7 +140,7 @@ public:
     sums_ = new KMPointArray();
     copy_points(full.get_sums(),sums_);
     copy_point(full.get_sum_sqs(),&sum_sqs_);
-    std::vector<int> *w = full.get_weights();
+    Ints *w = full.get_weights();
     weights_.clear();
     for(unsigned int i=0;i<w->size();i++) {
       weights_.push_back((*w)[i]);
@@ -191,11 +191,11 @@ public:
     return sums_;
   }
   // Returns sums of squares
-  const std::vector<double>* get_sum_sqs() const {
+  const Floats* get_sum_sqs() const {
     return &sum_sqs_;
   }
   //! Return weights
-  const std::vector<int>* get_weights() const {
+  const Ints* get_weights() const {
     return &weights_;
   }
   //! Returns total distortion
@@ -207,11 +207,11 @@ public:
     return curr_dist_/double(get_number_of_points());
   }
   //! Returns individual distortions
-  const std::vector<double>* get_distortions() const {
+  const Floats* get_distortions() const {
     return &dists_;
   }
   //! Get the assignment of points to centers
-  const std::vector<int> * get_assignments() const {
+  const Ints * get_assignments() const {
     return &close_center_;
   }
 
@@ -227,10 +227,10 @@ public:
 protected:
   KMPointArray *sums_;// vector sum of points
   KMPoint sum_sqs_;// sum of squares
-  std::vector<int> weights_; //number of data points assigned to each point
+  Ints weights_; //number of data points assigned to each point
   KMPoint dists_;// individual distortions
   double curr_dist_;// current total distortion
-  std::vector<int> close_center_;
+  Ints close_center_;
 };
 
 #endif

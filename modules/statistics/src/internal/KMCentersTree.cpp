@@ -12,7 +12,7 @@ IMPSTATISTICS_BEGIN_INTERNAL_NAMESPACE
 KMCentersTree::KMCentersTree( KMData *data_points,KMCenters *centers,
   KMPoint *bb_lo, KMPoint *bb_hi) : centers_(centers){
   data_points_ = data_points;
-  std::vector<int> pid;
+  Ints pid;
   skeleton_tree(pid,bb_lo, bb_hi);
   root_ = build_tree(0, data_points_->get_number_of_points()-1,0);
   IMP_LOG(VERBOSE,"KMCentersTree const end build tree "<< std::endl);
@@ -52,12 +52,12 @@ void KMCentersTree::show(std::ostream &out) {
    root_->show(out);
  }
 }
-void KMCentersTree::get_assignments(std::vector<int> &close_center)
+void KMCentersTree::get_assignments(Ints &close_center)
 {
   IMP_LOG(VERBOSE,"KMCentersTree::get_assignments for "
   << centers_->get_number_of_centers() << " centers "<<std::endl);
   close_center.clear();
-  std::vector<int> candidate_centers;
+  Ints candidate_centers;
   for (int j = 0; j < centers_->get_number_of_centers(); j++) {
     candidate_centers.push_back(j);
   }
@@ -68,7 +68,7 @@ void KMCentersTree::get_assignments(std::vector<int> &close_center)
   root_->get_assignments(candidate_centers,close_center);
 }
 
-void KMCentersTree::skeleton_tree(const std::vector<int> &p_id,
+void KMCentersTree::skeleton_tree(const Ints &p_id,
   KMPoint *bb_lo,KMPoint *bb_hi) {
   //TODO: where do get n from ?
   IMP_INTERNAL_CHECK(data_points_ != NULL,
@@ -99,7 +99,7 @@ KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
   IMP_LOG(VERBOSE,"build tree for point indexes: " <<
           start_ind << " to " << end_ind << std::endl);
   if (end_ind-start_ind<=1){
-    std::vector<int> curr_inds;
+    Ints curr_inds;
     for(int i=start_ind;i<=end_ind;i++) {
       curr_inds.push_back(i);
     }
@@ -133,8 +133,8 @@ KMCentersNode *KMCentersTree::build_tree(int start_ind,int end_ind,
   return ptr;
 }
 void KMCentersTree::get_neighbors(KMPointArray *sums,
-   std::vector<double> *sum_sqs,std::vector<int> *weights) {
-  std::vector<int> cand_ind;
+   Floats *sum_sqs,Ints *weights) {
+  Ints cand_ind;
   IMP_LOG(VERBOSE,"KMCentersTree::get_neighbors start number of centers: "
          << centers_->get_number_of_centers() << "\n");
   for (int j = 0; j < centers_->get_number_of_centers(); j++) {

@@ -10,6 +10,7 @@
 #define IMPRMF_HDF_5_TYPES_H
 
 #include "rmf_config.h"
+#include <IMP/base_types.h>
 #include "NodeID.h"
 #include "hdf5_handle.h"
 #include "internal/utility.h"
@@ -37,8 +38,8 @@ IMPRMF_BEGIN_NAMESPACE
                                    double v)
  - static double read_value_dataset(hid_t d, hid_t is,
                                   hid_t sp)
- - static std::vector<double> read_values_attribute(hid_t a, unsigned int size)
- - static void write_values_attribute(hid_t a, const std::vector<double> &v)
+ - static Floats read_values_attribute(hid_t a, unsigned int size)
+ - static void write_values_attribute(hid_t a, const Floats &v)
  - static const double& get_null_value()
  - static std::string get_name()
  - static unsigned int get_index()
@@ -57,7 +58,7 @@ IMPRMF_BEGIN_NAMESPACE
 /** Store floating point numbers as doubles. */
 struct IMPRMFEXPORT FloatTraits {
   typedef double Type;
-  typedef std::vector<double> Types;
+  typedef Floats Types;
   static hid_t get_hdf5_disk_type() {
     return H5T_IEEE_F64LE;
   }
@@ -71,12 +72,12 @@ struct IMPRMFEXPORT FloatTraits {
                                    hid_t sp);
   static void write_values_dataset(hid_t d, hid_t is,
                                    hid_t s,
-                                   const std::vector<double>& v);
-  static std::vector<double> read_values_dataset(hid_t d, hid_t is,
+                                   const Floats& v);
+  static Floats read_values_dataset(hid_t d, hid_t is,
                                                  hid_t sp,
                                                  unsigned int sz);
-  static std::vector<double> read_values_attribute(hid_t a, unsigned int size);
-  static void write_values_attribute(hid_t a, const std::vector<double> &v);
+  static Floats read_values_attribute(hid_t a, unsigned int size);
+  static void write_values_attribute(hid_t a, const Floats &v);
   static const double& get_null_value() {
     static const double ret= std::numeric_limits<double>::max();
     return ret;
@@ -98,7 +99,7 @@ struct IMPRMFEXPORT FloatTraits {
 /** Store integers.*/
 struct IMPRMFEXPORT IntTraits {
   typedef int Type;
-  typedef std::vector<int> Types;
+  typedef Ints Types;
   static hid_t get_hdf5_disk_type() {
     return H5T_STD_I64LE;
   }
@@ -112,12 +113,12 @@ struct IMPRMFEXPORT IntTraits {
                                 hid_t sp);
   static void write_values_dataset(hid_t d, hid_t is,
                                    hid_t s,
-                                   const std::vector<int>& v);
-  static std::vector<int> read_values_dataset(hid_t d, hid_t is,
+                                   const Ints& v);
+  static Ints read_values_dataset(hid_t d, hid_t is,
                                               hid_t sp,
                                               unsigned int sz);
-  static std::vector<int> read_values_attribute(hid_t a, unsigned int size);
-  static void write_values_attribute(hid_t a, const std::vector<int> &v);
+  static Ints read_values_attribute(hid_t a, unsigned int size);
+  static void write_values_attribute(hid_t a, const Ints &v);
   static hid_t get_hdf5_fill_type() {
     return H5T_NATIVE_INT;
   }
@@ -283,7 +284,7 @@ struct IMPRMFEXPORT CharTraits {
                                 hid_t sp);
   static void write_values_dataset(hid_t d, hid_t is,
                                    hid_t s,
-                                   const std::vector<int>& v);
+                                   const Ints& v);
   static std::string read_values_dataset(hid_t d, hid_t is,
                                          hid_t sp,
                                          unsigned int sz);*/

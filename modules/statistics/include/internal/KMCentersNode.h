@@ -46,11 +46,11 @@ public:
  const KMPoint * get_sums() const {return &sum_;}
  double get_sum_sq() const {return sum_sq_;}
  //! Compute neighbors for centers - TODO should cands be const & ?
-  virtual void get_neighbors(const std::vector<int> &cands,
-       KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights)=0;
+  virtual void get_neighbors(const Ints &cands,
+       KMPointArray *sums, KMPoint *sum_sqs,Ints *weights)=0;
  //! get assignments for leaf node
- virtual void get_assignments(const std::vector<int> &cands,
-        std::vector<int> &close_center)=0;
+ virtual void get_assignments(const Ints &cands,
+        Ints &close_center)=0;
  // sample a center point c
  virtual KMPoint sample_center()=0;
  //Print node
@@ -60,7 +60,7 @@ protected:
   /**
    \param[in] cands a set of center indexes, one of which should be the closest
   */
-  int mid_center(const std::vector<int> &cands);
+  int mid_center(const Ints &cands);
   //! Determine if a candidate center is close enough
   /** \param[in] candidate_centers_inds the indexes of the candidate centers
     \param[in] close_centers_inds returned subset of candidate_centers_inds
@@ -73,14 +73,14 @@ protected:
   if (p-c).(p-c) < (p-c').(p-c') -> (c-c').(c-c') < 2(p-c').(c-c').
   */
   void compute_close_centers(
-   const std::vector<int> &candidate_centers_inds,
-   std::vector<int> *close_centers_inds);
+   const Ints &candidate_centers_inds,
+   Ints *close_centers_inds);
 
   void post_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
-    std::vector<int> *weights,int center_ind);
+    Ints *weights,int center_ind);
 
   void post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
-        std::vector<int> *weights,int center_ind, const KMPoint &p);
+        Ints *weights,int center_ind, const KMPoint &p);
   int n_data_; // number of data points associated with the node
   KMPoint sum_; //sum of points for each dimension
   double  sum_sq_; // sum of squares
