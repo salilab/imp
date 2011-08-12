@@ -289,8 +289,8 @@ namespace {
   PairContainer *create_pair_container(Hierarchy a,
                                        Hierarchy b,
                                        double threshold) {
-    Particles aa= get_by_type(a, ATOM_TYPE);
-    Particles ba= get_by_type(b, ATOM_TYPE);
+    ParticlesTemp aa= get_by_type(a, ATOM_TYPE);
+    ParticlesTemp ba= get_by_type(b, ATOM_TYPE);
     IMP_NEW(container::ListSingletonContainer, lsca, (aa));
     IMP_NEW(container::ListSingletonContainer, lscb, (ba));
     IMP_NEW(container::CloseBipartitePairContainer,

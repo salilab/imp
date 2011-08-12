@@ -366,7 +366,7 @@ namespace {
 
     // get AtomDecorator of the atom particles, output atom section
     // get_mol2atom_line should be in AtomDecorator.h, .cpp - to be improved
-    Particles atoms = get_leaves(chd);
+    ParticlesTemp atoms = get_leaves(chd);
     mol2_file << "@<TRIPOS>ATOM" << std::endl;
     for (unsigned int i=0; i< atoms.size(); i++) {
       if (Atom::particle_is_instance(atoms[i])) {
