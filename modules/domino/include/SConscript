@@ -15,7 +15,6 @@ files = [
          'subset_filters.h',
          'HeapAssignmentContainer.h',
          'subset_graphs.h',
-         'analysis.h',
          'utility.h',
         ] \
         + SConscript('internal/SConscript')
