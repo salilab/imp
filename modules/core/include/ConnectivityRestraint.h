@@ -64,7 +64,7 @@ public:
       the get_connected_pairs() call, not the set at the time of the last
       evaluate() call.
   */
-  ParticlePairs get_connected_pairs() const;
+  ParticlePairsTemp get_connected_pairs() const;
 
   //! Return the pair score used for scoring
   PairScore *get_pair_score() const {

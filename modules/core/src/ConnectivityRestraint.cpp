@@ -158,7 +158,7 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 
 
 Restraints ConnectivityRestraint::get_instant_decomposition() const {
-  ParticlePairs pp= get_connected_pairs();
+  ParticlePairsTemp pp= get_connected_pairs();
   Restraints ret(pp.size());
   for (unsigned int i=0; i< pp.size(); ++i) {
     IMP_NEW(PairRestraint, pr, (ps_, pp[i]));
@@ -171,7 +171,7 @@ Restraints ConnectivityRestraint::get_instant_decomposition() const {
 }
 
 
-ParticlePairs ConnectivityRestraint::get_connected_pairs() const {
+ParticlePairsTemp ConnectivityRestraint::get_connected_pairs() const {
   IMP_CHECK_OBJECT(ps_.get());
   ParticleIndexPairs edges= get_edges(sc_, ps_);
   return IMP::internal::get_particle(get_model(), edges);
