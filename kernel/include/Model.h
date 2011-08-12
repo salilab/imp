@@ -865,7 +865,7 @@ public:
       large score if the total score at any point exceeds max or if
       any of the restraints exceed their Restraint::get_maximum().
 
-      See evaluate(RestraintsTemp,std::vector<double>,bool) for more
+      See evaluate(RestraintsTemp,Floats,bool) for more
       information.
   */
   Floats evaluate_if_good( RestraintsTemp restraints,

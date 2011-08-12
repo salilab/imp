@@ -40,7 +40,7 @@ class IMPSTATISTICSEXPORT Histogram {
   IMP_SHOWABLE(Histogram);
  private:
   double start_,end_,interval_size_;
-  std::vector<int> freq_;
+  Ints freq_;
 };
 
 IMP_VALUES(Histogram, Histograms);

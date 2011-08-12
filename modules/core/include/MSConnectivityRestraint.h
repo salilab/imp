@@ -211,7 +211,7 @@ public:
     };
 
     std::vector<ParticleData> particles_;
-    std::vector<double> dist_matrix_;
+    Floats dist_matrix_;
     std::vector< std::vector<size_t> > order_;
     std::vector< std::vector<size_t> > protein_by_class_;
     double min_distance_;

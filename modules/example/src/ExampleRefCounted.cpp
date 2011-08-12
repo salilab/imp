@@ -12,7 +12,7 @@
 
 IMPEXAMPLE_BEGIN_NAMESPACE
 
-ExampleRefCounted::ExampleRefCounted(const std::vector<double> &data ):
+ExampleRefCounted::ExampleRefCounted(const Floats &data ):
   data_(data){
 }
 namespace {
@@ -22,7 +22,7 @@ namespace {
 #endif
 
 void usage_example() {
-  std::vector<double> data(1000, -1);
+  Floats data(1000, -1);
 
   // this would not compile
   // ExampleRefCounted rcstack;

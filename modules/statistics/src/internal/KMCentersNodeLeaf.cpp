@@ -39,8 +39,8 @@ void KMCentersNodeLeaf::show(std::ostream& out) const{
   out << ">" << " sum=";  print_point(sum_, out);
   out << " ss=" << sum_sq_ << std::endl;
 }
-void KMCentersNodeLeaf::get_neighbors(const std::vector<int> &cands,
-    KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights)
+void KMCentersNodeLeaf::get_neighbors(const Ints &cands,
+    KMPointArray *sums, KMPoint *sum_sqs,Ints *weights)
 {
   IMP_LOG(VERBOSE,
   "KMCentersNodeLeaf::get_neighbors for " << cands.size() << " candidates\n");
@@ -72,8 +72,8 @@ void KMCentersNodeLeaf::get_neighbors(const std::vector<int> &cands,
     post_one_neighbor(sums, sum_sqs, weights, cands[min_k],*data_p);
   }
 }
-void KMCentersNodeLeaf::get_assignments(const std::vector<int> &cands,
-  std::vector<int> &close_center){
+void KMCentersNodeLeaf::get_assignments(const Ints &cands,
+  Ints &close_center){
   KMData *data = centers_->get_data();
   for (int i = 0; i < n_data_; i++) {
     //find the closest center to each data point associated to the node

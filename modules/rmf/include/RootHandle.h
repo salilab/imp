@@ -23,7 +23,7 @@ typedef std::vector<BondPair> BondPairs;
 
 /** A handle for an hdf5 root */
 class IMPRMFEXPORT RootHandle: public NodeHandle {
-  void gather_ids(NodeHandle n, std::vector<int> &ids,
+  void gather_ids(NodeHandle n, Ints &ids,
                   std::vector<std::string> &paths,
                   std::string path) const;
   friend class NodeHandle;

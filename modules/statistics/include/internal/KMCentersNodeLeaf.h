@@ -37,7 +37,7 @@ public:
 \param[in]
    */
   KMCentersNodeLeaf(int level,const KMRectangle &bb, KMCenters *centers,
-    const std::vector<int> &data_inds) :  KMCentersNode(bb,centers,level) {
+    const Ints &data_inds) :  KMCentersNode(bb,centers,level) {
     IMP_LOG(VERBOSE, "add a new center node leaf with " <<
             data_inds.size() << " points" <<std::endl);
    IMP_INTERNAL_CHECK(data_inds.size()>=1,
@@ -54,17 +54,17 @@ public:
   */
  void compute_sums();
  //! Compute neighbors for centers
- void get_neighbors(const std::vector<int> &cands,KMPointArray *sums,
- KMPoint *sum_sqs,std::vector<int> *weights);
+ void get_neighbors(const Ints &cands,KMPointArray *sums,
+ KMPoint *sum_sqs,Ints *weights);
    //! Get assignments for leaf node
- void get_assignments(const std::vector<int> &cands,
-                      std::vector<int> &close_center);
+ void get_assignments(const Ints &cands,
+                      Ints &close_center);
 
     //! Sample a center point c
  KMPoint sample_center();
  void show(std::ostream&out=std::cout) const ;
 protected:
-  std::vector<int> data_ps_; //the indexes of data points
+  Ints data_ps_; //the indexes of data points
                              //which are part of the leaf
 };
 

@@ -57,7 +57,7 @@ public:
   center.
   */
   void get_neighbors(
-  KMPointArray *sums, std::vector<double> *sum_sqs,std::vector<int> *weights);
+  KMPointArray *sums, Floats *sum_sqs,Ints *weights);
 
   //! Compute assignment of data points to closest center
   /** A structural copy of the procedure get_neighbors, but rather than
@@ -69,7 +69,7 @@ public:
   \param[out] close_center  will contain the closest center index for
               each of the data points
   */
-  void get_assignments(std::vector<int> &close_center);
+  void get_assignments(Ints &close_center);
 
   ~KMCentersTree();
   //! sample a center point c
@@ -99,7 +99,7 @@ protected:
   /note If p_id is NULL then the constructor should initialize the array of
         indices
   */
-  void skeleton_tree(const std::vector<int> &pi,
+  void skeleton_tree(const Ints &pi,
    KMPoint *bb_lo=NULL, KMPoint *bb_hi=NULL);
    //!Recursive construction of the tree from a set of points.
    /**
@@ -174,7 +174,7 @@ number of nodes.
 
   KMData *data_points_; //all of the data points
   KMCenters *centers_;
-  std::vector<int> p_id_; //the indexes of the data points sorted by
+  Ints p_id_; //the indexes of the data points sorted by
                            //the plane splitting algorithm
   KMCentersNode *root_;
   KMRectangle *bnd_box_;

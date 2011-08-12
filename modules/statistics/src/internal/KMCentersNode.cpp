@@ -32,8 +32,8 @@ KMCentersNode::~KMCentersNode()
 {}
 
 void KMCentersNode::compute_close_centers(
-   const std::vector<int> &candidate_centers_inds,
-   std::vector<int> *close_centers_inds) {
+   const Ints &candidate_centers_inds,
+   Ints *close_centers_inds) {
   const KMPoint *l,*h;
   l = bnd_box_.get_point(0);
   h = bnd_box_.get_point(1);
@@ -43,7 +43,7 @@ void KMCentersNode::compute_close_centers(
   KMPoint *mid_cen = (*centers_)[mid_center_ind];
   double box_dot = 0.; // holds (p-c').(c-c')
   double cc_dot = 0.;  // holds (c-c').(c-c')
-  for(std::vector<int>::const_iterator it = candidate_centers_inds.begin();
+  for(Ints::const_iterator it = candidate_centers_inds.begin();
       it != candidate_centers_inds.end(); it++) {
     if (*it == mid_center_ind) {
       close_centers_inds->push_back(*it);
@@ -78,7 +78,7 @@ void KMCentersNode::compute_close_centers(
 /param[in] ctrInd center index
 */
 void KMCentersNode::post_neighbor(
-   KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights,
+   KMPointArray *sums, KMPoint *sum_sqs,Ints *weights,
    int center_ind) {
   IMP_INTERNAL_CHECK((unsigned int)center_ind<sums->size(),
              "the center index is out of range\n");
@@ -97,7 +97,7 @@ void KMCentersNode::post_neighbor(
 }
 
 void KMCentersNode::post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
-     std::vector<int> *weights,int center_ind, const KMPoint &p) {
+     Ints *weights,int center_ind, const KMPoint &p) {
  IMP_INTERNAL_CHECK((unsigned int)center_ind<sums->size(),
              "the center index is out of range\n");
   // increment sums and sums sq
@@ -111,7 +111,7 @@ void KMCentersNode::post_one_neighbor(KMPointArray *sums, KMPoint *sum_sqs,
  (*weights)[center_ind] += 1;
 }
 
-int KMCentersNode::mid_center(const std::vector<int> &cands) {
+int KMCentersNode::mid_center(const Ints &cands) {
   KMPoint *lo,*hi,mid;
   lo = bnd_box_.get_point(0);
   hi = bnd_box_.get_point(1);

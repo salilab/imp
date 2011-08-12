@@ -29,9 +29,9 @@ IMPEXAMPLE_BEGIN_NAMESPACE
  */
 class IMPEXAMPLEEXPORT ExampleRefCounted: public RefCounted
 {
-  std::vector<double> data_;
+  Floats data_;
 public:
-  ExampleRefCounted(const std::vector<double> &data);
+  ExampleRefCounted(const Floats &data);
 
   double get_data(unsigned int i) const {
     IMP_USAGE_CHECK(i < data_.size(), "Index " << i

@@ -566,7 +566,7 @@ double ResolveCollisionsOptimizer::do_optimize(unsigned int iter) {
       }
     }
     RestraintsTemp utrestraints;
-    std::vector<double> weights;
+    Floats weights;
     boost::tie(utrestraints, weights)
       = get_restraints_and_weights(rs.begin(), rs.end());
     if (debug_writer_ && (0)%debug_period_==0) {

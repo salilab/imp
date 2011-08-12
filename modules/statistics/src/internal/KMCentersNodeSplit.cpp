@@ -61,8 +61,8 @@ void KMCentersNodeSplit::show(std::ostream &out) const {
   children_[0]->show();
 }
 
-void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
-     KMPointArray *sums, KMPoint *sum_sqs,std::vector<int> *weights)
+void KMCentersNodeSplit::get_neighbors(const Ints &cands,
+     KMPointArray *sums, KMPoint *sum_sqs,Ints *weights)
 {
   if (cands.size() == 1) {
     IMP_LOG(VERBOSE,"KMCentersNodeSplit::get_neighbors the data points are"
@@ -72,7 +72,7 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
   }
   //get cloest candidate to the box represented by the node
   else {
-    std::vector<int> new_cands;
+    Ints new_cands;
     IMP_LOG(VERBOSE,
     "KMCentersNodeSplit::get_neighbors compute close centers for node:\n");
     IMP_LOG_WRITE(VERBOSE,show(IMP_STREAM));
@@ -90,14 +90,14 @@ void KMCentersNodeSplit::get_neighbors(const std::vector<int> &cands,
     children_[1]->get_neighbors(new_cands,sums,sum_sqs,weights);
   }
 }
-void KMCentersNodeSplit::get_assignments(const std::vector<int> &cands,
- std::vector<int> &close_center){
+void KMCentersNodeSplit::get_assignments(const Ints &cands,
+ Ints &close_center){
   if (cands.size() == 1) {
     children_[0]->get_assignments(cands,close_center);
     children_[1]->get_assignments(cands,close_center);
   }
   else {// get closest cand to box
-    std::vector<int> new_cands;
+    Ints new_cands;
     compute_close_centers(cands,&new_cands);
     // apply to children
     children_[0]->get_assignments(new_cands,close_center);

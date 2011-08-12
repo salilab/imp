@@ -193,7 +193,7 @@ struct Helper {
   static void partition_points(const ParticleSet<It> &ps,
                                const Traits &tr,
                                typename std::vector<IDs > &bin_contents,
-                               typename std::vector<double> &bin_ubs) {
+                               Floats &bin_ubs) {
     bin_contents.push_back(IDs(ps.which_));
     for (It c= ps.b_; c != ps.e_; ++c) {
       double cr= tr.get_radius(tr.get_id(*c, ps.which_), ps.which_)+0;
@@ -389,7 +389,7 @@ struct Helper {
                                Out out) {
     double maxr=get_max_radius(ps, tr);
     std::vector<IDs > bin_contents_g;
-    std::vector<double> bin_ubs;
+    Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
     partition_points(ps, tr, bin_contents_g, bin_ubs);
@@ -515,7 +515,7 @@ struct Helper {
                                Out out) {
     double maxr=std::max(get_max_radius(psg, tr), get_max_radius(psq, tr));
     std::vector<IDs > bin_contents_g, bin_contents_q;
-    std::vector<double> bin_ubs;
+    Floats bin_ubs;
     bin_ubs.push_back(maxr);
 
     partition_points(psg, tr, bin_contents_g, bin_ubs);

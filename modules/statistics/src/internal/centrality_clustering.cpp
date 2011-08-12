@@ -47,7 +47,7 @@ namespace {
   struct Done {
     typedef double centrality_type;
     int k_;
-    std::vector<int> rank_, parent_;
+    Ints rank_, parent_;
     Done(int k, int n): k_(k), rank_(n), parent_(n){}
     template <class B>
     bool operator()(centrality_type c, const B & e, const Graph &g) {
@@ -72,7 +72,7 @@ PartitionalClustering *get_centrality_clustering(CentralityGraph &g,
   unsigned int n=boost::num_vertices(g);
   boost::betweenness_centrality_clustering(g, Done(k, n),
                                            m);
-  std::vector<int> rank(n), parent(n);
+  Ints rank(n), parent(n);
   DS ds(&rank[0], &parent[0]);
   boost::initialize_incremental_components(g, ds);
   boost::incremental_components(g, ds);

@@ -97,7 +97,7 @@ void KMFilterCenters::compute_distortion()
   validate();
 }
 
-void KMFilterCenters::get_assignments(std::vector<int> &close_center)
+void KMFilterCenters::get_assignments(Ints &close_center)
 {
   IMP_INTERNAL_CHECK(tree_ != NULL,"The tree is NULL");
   tree_->get_assignments(close_center);

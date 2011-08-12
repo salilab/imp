@@ -409,14 +409,14 @@ inline VectorD<-1> get_basis_vector_kd( int D,
 template <int D>
 inline VectorD<D> get_zero_vector_d() {
   IMP_USAGE_CHECK(D>0, "D must be positive");
-  std::vector<double> vs(D, 0);
+  Floats vs(D, 0);
   return VectorD<D>(vs.begin(), vs.end());
 }
 
 //! Return a dynamically sized vector of zeros
 inline VectorD<-1> get_zero_vector_kd( int D) {
   IMP_USAGE_CHECK(D>0, "D must be positive");
-  std::vector<double> vs(D, 0);
+  Floats vs(D, 0);
   return VectorD<-1>(vs.begin(), vs.end());
 }
 

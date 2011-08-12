@@ -213,7 +213,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
   //array of number of all points
   //TODO - return this
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
-  const std::vector<int> &close_center = *best_clusters.get_assignments();
+  const Ints &close_center = *best_clusters.get_assignments();
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
   std::vector<Ints> clusters(k);
   for (unsigned int i=0;i<names.size();i++) {
@@ -226,7 +226,7 @@ create_lloyds_kmeans(const Ints &names, Embedding *metric,
     int c=-1;
     double d= std::numeric_limits<double>::max();
     for (unsigned int j=0; j< clusters[i].size(); ++j) {
-      std::vector<double> dc=*data[clusters[i][j]];
+      Floats dc=*data[clusters[i][j]];
       double cd
         = algebra::get_distance(algebra::VectorKD(dc.begin(),
                                                   dc.end()),

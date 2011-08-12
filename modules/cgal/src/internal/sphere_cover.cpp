@@ -55,7 +55,7 @@ refine_unit_sphere_cover_d(std::vector<algebra::VectorD<D> > &ret,
       }
     }
     std::vector<algebra::VectorD<D> > sums(n, algebra::get_zero_vector_d<D>());
-    std::vector<double> counts(n, 0);
+    Floats counts(n, 0);
     for (CH::Facet_iterator it= ch.facets_begin();
          it != ch.facets_end(); ++it) {
       for (unsigned int i=0; i< D; ++i ) {

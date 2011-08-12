@@ -93,7 +93,7 @@ get_slack_estimate(const ParticlesTemp& ps,
   int ns=100;
   int last_ns=1;
   int opt_i=-1;
-  std::vector<std::vector<double> > dists(1, std::vector<double>(1,0.0));
+  std::vector<Floats > dists(1, Floats(1,0.0));
   std::vector< std::vector<algebra::Vector3D> >
     pos(1, std::vector<algebra::Vector3D>(ps.size()));
   for (unsigned int j=0; j< ps.size(); ++j) {
@@ -101,7 +101,7 @@ get_slack_estimate(const ParticlesTemp& ps,
   }
   do {
     IMP_LOG(VERBOSE, "Stepping from " << last_ns << " to " << ns << std::endl);
-    dists.resize(ns, std::vector<double>(ns, 0.0));
+    dists.resize(ns, Floats(ns, 0.0));
     for ( int i=0; i< last_ns; ++i) {
       dists[i].resize(ns, 0.0);
     }

@@ -22,7 +22,7 @@ ClosedCubicSpline::ClosedCubicSpline(const Floats &values,
   // Adapted from Spath "Spline Algorithms for Curves and Surfaces" pp 19--21.
   second_derivs_.resize(npoints);
   double z;
-  std::vector<double> w(npoints), v(npoints), t(npoints);
+  Floats w(npoints), v(npoints), t(npoints);
 
   v[1] = w[1] = z = 0.25;
   t[0] = z * 6.0 * ((values[1] - values[0]) / spacing

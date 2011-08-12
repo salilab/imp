@@ -30,7 +30,7 @@ typedef enum { // distributions
   N_DISTRIBS}
   DistributionType;
 
-typedef std::vector<double> KMPoint;
+typedef Floats KMPoint;
 typedef std::vector<KMPoint *> KMPointArray;
 //! Holds the data points to cluster
 /**

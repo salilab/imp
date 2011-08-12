@@ -208,7 +208,7 @@ struct RandomVectorOnBB {
     }
     unsigned int coord= (side>=bb.get_dimension()
                          ? side-bb.get_dimension(): side);
-    std::vector<double> fmin(bb.get_dimension()-1), fmax(bb.get_dimension()-1);
+    Floats fmin(bb.get_dimension()-1), fmax(bb.get_dimension()-1);
     for (unsigned int i=1; i< bb.get_dimension(); ++i) {
       fmin[i-1]= 0;
       fmax[i-1]= ub[(coord+i)%bb.get_dimension()]
@@ -219,7 +219,7 @@ struct RandomVectorOnBB {
     VectorD<internal::DMinus1<D>::D> sv=
       get_random_vector_in(BoundingBoxD<internal::DMinus1<D>::D>(vfmin, vfmax));
 
-    std::vector<double> ret(bb.get_dimension());
+    Floats ret(bb.get_dimension());
     //std::cout << "Side is " << side << std::endl;
     if (side >=bb.get_dimension()) {
       std::copy(ub.coordinates_begin(), ub.coordinates_end(), ret.begin());

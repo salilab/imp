@@ -228,7 +228,7 @@ class IMPEXPORT Optimizer: public Object
  private:
   static void set_optimizer_state_optimizer(OptimizerState *os, Optimizer *o);
 
-  mutable std::vector<double> widths_;
+  mutable Floats widths_;
   Pointer<Model> model_;
   double min_score_;
   bool stop_on_good_score_;

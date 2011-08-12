@@ -89,7 +89,7 @@ void KMLProxy::run(Particles *initial_centers) {
   //array of number of all points
   //TODO - return this
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments \n");
-  const std::vector<int> *close_center = best_clusters.get_assignments();
+  const Ints *close_center = best_clusters.get_assignments();
   IMP_LOG(VERBOSE,"KMLProxy::run get assignments 2\n");
   for (int i=0;i<data_->get_number_of_points();i++) {
     //std::cout<<"ps number i: " << i << " close center : "

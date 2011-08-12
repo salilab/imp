@@ -365,7 +365,7 @@ bool Assignment::next()
 
 bool is_connected(NNGraph &G)
 {
-  std::vector<int> components(num_vertices(G));
+  Ints components(num_vertices(G));
   return boost::connected_components(G, &components[0]) == 1;
 }
 
@@ -459,7 +459,7 @@ void MSConnectivityScore::add_edges_to_set(NNGraph &G, EdgeSet &edge_set) const
     size_t i_to = vertex_id_to_n[(*p).second];
     add_edge(i_from, i_to, ng);
   }
-  std::vector<int> components(num_vertices(ng));
+  Ints components(num_vertices(ng));
   int ncomp = boost::connected_components(ng, &components[0]);
   if ( ncomp == 1 )
     return;

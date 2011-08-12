@@ -100,7 +100,7 @@ public:
    * \endcode
    */
   void centered_start() {
-    std::vector<int> idx(D);
+    Ints idx(D);
     for (unsigned int i = 0;i < D;i++) {
       idx[i] =(-1) * (int)this->shape()[i]/2;
     }
