@@ -40,7 +40,7 @@ public:
                       });
 
  private:
-  void find_regression(const Vector2Ds>& data);
+  void find_regression(const Vector2Ds& data);
   void evaluate_error(const Vector2Ds& data);
   double a_, b_;
   double error_;
