@@ -25,7 +25,7 @@ IMP::algebra::BoundingBox3D
   IMP_INTERNAL_CHECK(ps.size()>0,
     "Can not calculate a particles bounding box for zero particles"<<std::endl);
   //read the points and determine the dimentions of the map
-  std::vector<algebra::Vector3D > all_points;
+  algebra::Vector3Ds all_points;
   for(IMP::Particles::const_iterator it = ps.begin(); it != ps.end(); it++ ){
     all_points.push_back(IMP::core::XYZ(*it).get_coordinates());
   }
@@ -255,7 +255,7 @@ void SampledDensityMap::project(const Particles &ps,
 
 void SampledDensityMap::determine_grid_size(emreal resolution,
                         emreal voxel_size,int sig_cutoff) {
-  std::vector<algebra::Vector3D > all_points;
+  algebra::Vector3Ds all_points;
   float max_radius = -1;
   for(core::XYZRs::const_iterator it = xyzr_.begin(); it != xyzr_.end(); it++ ){
     all_points.push_back(it->get_coordinates());

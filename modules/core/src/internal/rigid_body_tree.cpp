@@ -21,14 +21,14 @@ static const unsigned int MAX_LEAF_SIZE=10;
 
 
 RigidBodyHierarchy::SpheresSplit
-RigidBodyHierarchy::divide_spheres(const std::vector<algebra::Sphere3D > &ss,
+RigidBodyHierarchy::divide_spheres(const algebra::Sphere3Ds &ss,
                                    const SphereIndexes &s) {
   algebra::Vector3D centroid(0,0,0);
   for (unsigned int i=0; i< s.size(); ++i) {
     centroid += ss[s[i]].get_center();
   }
   centroid/= s.size();
-  std::vector<algebra::Vector3D > pts(s.size());
+  algebra::Vector3Ds pts(s.size());
   for (unsigned int i=0; i< s.size(); ++i) {
     pts[i]= ss[s[i]].get_center()-centroid;
   }
@@ -118,7 +118,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
   // build spheres on internal coordinates
   IMP_USAGE_CHECK(constituents_.size() > 0,
                   "Rigid body has no members.");
-  std::vector<algebra::Sphere3D > spheres(constituents_.size());
+  algebra::Sphere3Ds spheres(constituents_.size());
   for (unsigned int i=0; i< spheres.size(); ++i) {
     ParticleIndex rp= constituents_[i];
     double r =XYZR(m, rp).get_radius();
@@ -141,7 +141,7 @@ RigidBodyHierarchy::RigidBodyHierarchy(RigidBody d,
     std::swap(cur,stack.back());
     stack.pop_back();
     IMP_INTERNAL_CHECK(!cur.second.empty(), "Don't call me with no spheres");
-    std::vector<algebra::Sphere3D > ss(cur.second.size());
+    algebra::Sphere3Ds ss(cur.second.size());
     for (unsigned int i=0; i< cur.second.size(); ++i) {
       ss[i]= spheres[cur.second[i]];
     }
@@ -264,9 +264,9 @@ void RigidBodyHierarchy::do_show(std::ostream &out) const {
   }
 }
 
-std::vector<algebra::Sphere3D >
+algebra::Sphere3Ds
 RigidBodyHierarchy::get_tree() const {
-  std::vector<algebra::Sphere3D > ret;
+  algebra::Sphere3Ds ret;
   for (unsigned int i=0; i< tree_.size(); ++i) {
     ret.push_back(get_sphere(i));
   }

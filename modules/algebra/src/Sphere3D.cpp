@@ -45,7 +45,7 @@ Sphere3D get_enclosing_sphere(const Vector3Ds &vs) {
 
 #ifdef IMP_ALGEBRA_USE_IMP_CGAL
 std::pair<double, double>
-get_surface_area_and_volume(const std::vector<algebra::Sphere3D > &ss) {
+get_surface_area_and_volume(const algebra::Sphere3Ds &ss) {
   return IMP::cgal::internal::get_surface_area_and_volume(ss);
 }
 #endif

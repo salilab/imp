@@ -41,7 +41,7 @@ namespace {
   };
 }
 
-std::vector<algebra::Vector3D >
+algebra::Vector3Ds
 get_intersection(const algebra::Vector3D &normal,
                  double d,
                  const algebra::BoundingBoxD<3> &bb) {
@@ -54,7 +54,7 @@ get_intersection(const algebra::Vector3D &normal,
   typedef Kernel::Segment_3 Segment_3;
   Plane_3 plane(tr<Point_3>(normal*d), tr<Direction_3>(normal));
   std::cout << "plane " << plane << std::endl;
-  std::vector<algebra::Vector3D > corners= algebra::get_vertices(bb);
+  algebra::Vector3Ds corners= algebra::get_vertices(bb);
   IntPairs edges= algebra::get_edges(bb);
   std::vector<Point_2> intersections;
   for (unsigned int i=0; i< edges.size(); ++i) {
@@ -69,7 +69,7 @@ get_intersection(const algebra::Vector3D &normal,
   std::vector<Point_2> ch;
   CGAL::ch_graham_andrew(intersections.begin(), intersections.end(),
                          std::back_inserter(ch));
-  std::vector<algebra::Vector3D > ret;
+  algebra::Vector3Ds ret;
   for (unsigned int i=0; i< ch.size(); ++i) {
     std::cout << "found " << ch[i] << " is "
               << plane.to_3d(ch[i]) << std::endl;
@@ -82,7 +82,7 @@ get_intersection(const algebra::Vector3D &normal,
 
 Ints
 get_convex_polygons(const Ints &indexes,
-                    const std::vector<algebra::Vector3D > &vertices) {
+                    const algebra::Vector3Ds &vertices) {
   if (indexes.size() <3) {
     IMP_THROW("Polygon must at least be a triangle", ValueException);
   }

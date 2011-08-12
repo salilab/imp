@@ -17,7 +17,7 @@ IMPCGAL_BEGIN_INTERNAL_NAMESPACE
 
 IMPCGALEXPORT
 std::pair<double, double>
-get_surface_area_and_volume(const std::vector<algebra::Sphere3D > &ss);
+get_surface_area_and_volume(const algebra::Sphere3Ds &ss);
 
 IMPCGAL_END_INTERNAL_NAMESPACE
 

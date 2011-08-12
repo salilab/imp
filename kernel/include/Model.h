@@ -246,8 +246,8 @@ IMP_SWAP_1(BasicAttributeTable);
 class FloatAttributeTable {
   //std::vector<algebra::Sphere3D> spheres_;
   //std::vector<algebra::Sphere3D> sphere_derivatives_;
-  std::vector<algebra::Sphere3D > spheres_;
-  std::vector<algebra::Sphere3D > sphere_derivatives_;
+  algebra::Sphere3Ds spheres_;
+  algebra::Sphere3Ds sphere_derivatives_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> data_;
   BasicAttributeTable<internal::FloatAttributeTableTraits> derivatives_;
   // make use bitset
