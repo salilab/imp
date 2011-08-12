@@ -25,7 +25,7 @@ class IMPCOREEXPORT FixedRefiner: public Refiner
   ParticlesTemp ps_;
 public:
   //! Store the set of particles
-  FixedRefiner(const Particles &ps);
+  FixedRefiner(const ParticlesTemp &ps);
 
   IMP_REFINER(FixedRefiner);
 };
