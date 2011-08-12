@@ -100,8 +100,9 @@ void ModelData::initialize() {
     }
   }
   IMP::compatibility::map<Restraint*, Ints> index;
-  Restraints restraints= get_restraints(rs_->restraints_begin(),
-                                        rs_->restraints_end());
+  RestraintsTemp restraints
+    = get_restraints(rs_->restraints_begin(),
+                     rs_->restraints_end());
   for (Restraints::const_iterator rit= restraints.begin();
        rit != restraints.end(); ++rit) {
     ParticlesTemp ip= (*rit)->get_input_particles();
@@ -109,8 +110,9 @@ void ModelData::initialize() {
                      dependencies_, ip,
                      rdata_, index, cache_);
   }
-  RestraintSets restraint_sets= get_restraint_sets(rs_->restraints_begin(),
-                                                   rs_->restraints_end());
+  RestraintSetsTemp restraint_sets
+    = get_restraint_sets(rs_->restraints_begin(),
+                         rs_->restraints_end());
   restraint_sets.push_back(rs_);
   for (unsigned int i=0; i< restraint_sets.size(); ++i) {
     double max=restraint_sets[i]
