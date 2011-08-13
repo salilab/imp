@@ -28,18 +28,18 @@ MinimumPairRestraint
 namespace {
   typedef algebra::internal::MinimalSet<double,
           ParticlePair, std::less<double> > PairMinimumMS;
-  template <class It, class F>
-  PairMinimumMS find_minimal_set_PairMinimum(It b, It e, F *f,
+  template <class C, class F>
+  PairMinimumMS find_minimal_set_PairMinimum(C* c, F *f,
                                                          unsigned int n) {
     IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
-            << std::distance(b,e) << std::endl);
+            << c->get_number() << std::endl);
     PairMinimumMS bestn(n);
-    for (It it= b; it != e; ++it) {
-      double score= f->evaluate(*it, NULL);
-      IMP_LOG(VERBOSE, "Found " << score << " for "
-              << *it << std::endl);
-      bestn.insert(score, *it);
-    }
+    IMP_FOREACH_PAIR(c, {
+        double score= f->evaluate(_1, NULL);
+        IMP_LOG(VERBOSE, "Found " << score << " for "
+                << _1 << std::endl);
+        bestn.insert(score, _1);
+      });
     return bestn;
   }
 }
@@ -48,8 +48,7 @@ double MinimumPairRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   PairMinimumMS bestn
-    = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
-                                         c_->particle_pairs_end(),
+    = find_minimal_set_PairMinimum(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -68,8 +67,7 @@ double MinimumPairRestraint
                                double max) const {
   IMP_OBJECT_LOG;
   PairMinimumMS bestn
-    = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
-                                         c_->particle_pairs_end(),
+    = find_minimal_set_PairMinimum(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -88,8 +86,7 @@ Restraints MinimumPairRestraint
 ::get_instant_decomposition() const {
   IMP_OBJECT_LOG;
   PairMinimumMS bestn
-    = find_minimal_set_PairMinimum(c_->particle_pairs_begin(),
-                                         c_->particle_pairs_end(),
+    = find_minimal_set_PairMinimum(c_.get(),
                                          f_.get(), n_);
 
   Restraints ret;
