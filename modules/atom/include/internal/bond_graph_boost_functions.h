@@ -64,29 +64,25 @@ inline
 std::pair<BondGraph::vertex_iterator,
           BondGraph::vertex_iterator>
 vertices(const BondGraph &g) {
-  container::ListSingletonContainer *lsc
-    = const_cast<container::ListSingletonContainer*>(g.sc_.get());
   return
-    std::make_pair(BondGraph::vertex_iterator(lsc->particles_begin(),
+    std::make_pair(BondGraph::vertex_iterator(g.sc_.begin(),
                                               internal::MakeBonded()),
-                   BondGraph::vertex_iterator(lsc->particles_end(),
+                   BondGraph::vertex_iterator(g.sc_.end(),
                                               internal::MakeBonded()));
 }
 
 inline unsigned int num_vertices(const BondGraph &g) {
-  return g.sc_->get_number_of_particles();
+  return g.sc_.size();
 }
 
 inline std::pair<BondGraph::edge_iterator,
           BondGraph::edge_iterator>
 edges(const BondGraph &g) {
-  container::ListSingletonContainer *sc
-    = const_cast<container::ListSingletonContainer*>(g.sc_.get());
   return
-    std::make_pair(BondGraph::edge_iterator(sc->particles_begin(),
-                                            sc->particles_end()),
-                   BondGraph::edge_iterator(sc->particles_end(),
-                                            sc->particles_end()));
+    std::make_pair(BondGraph::edge_iterator(g.sc_.begin(),
+                                            g.sc_.end()),
+                   BondGraph::edge_iterator(g.sc_.end(),
+                                            g.sc_.end()));
 }
 
 inline unsigned int

@@ -54,7 +54,7 @@ struct MakeInEdgeDescriptor {
 
 struct NestedTraits {
   typedef Bonded::BondIterator Inner;
-  typedef container::ListSingletonContainer::ParticleIterator Outer;
+  typedef Particles::iterator Outer;
   struct Get_inner {
     std::pair<Inner, Inner> operator()(Outer out) const {
       Bonded bd(*out);

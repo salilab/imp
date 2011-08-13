@@ -24,12 +24,10 @@
 
 IMPATOM_BEGIN_NAMESPACE
 BondGraph::BondGraph(Hierarchy bd):
-  sc_(new container::ListSingletonContainer(get_leaves(bd))) {
-   for (container::ListSingletonContainer::ParticleIterator
-         it= sc_->particles_begin();
-       it != sc_->particles_end(); ++it) {
-    if (!Bonded::particle_is_instance(*it)) {
-      Bonded::setup_particle(*it);
+  sc_(get_leaves(bd)) {
+  for (unsigned int i=0; i< sc_.size(); ++i) {
+    if (!Bonded::particle_is_instance(sc_[i])) {
+      Bonded::setup_particle(sc_[i]);
     }
   }
 }
@@ -40,11 +38,7 @@ BondGraph::VertexIntPropertyMap BondGraph::get_vertex_index_map() const {
     oss << this << " bond graph index";
     index_key_= IntKey(oss.str().c_str());
     int last=0;
-    container::ListSingletonContainer *sc
-      = const_cast<container::ListSingletonContainer*>(sc_.get());
-    for (container::ListSingletonContainer::ParticleIterator
-           it= sc->particles_begin();
-         it != sc->particles_end(); ++it) {
+    for (Particles::const_iterator it= sc_.begin(); it != sc_.end(); ++it) {
       (*it)->add_attribute(index_key_, last);
       ++last;
     }
@@ -54,11 +48,9 @@ BondGraph::VertexIntPropertyMap BondGraph::get_vertex_index_map() const {
 
 
 BondGraph::~BondGraph() {
-  if (sc_ && index_key_ != IntKey()) {
-    for (container::ListSingletonContainer::ParticleIterator
-           it= sc_->particles_begin();
-         it != sc_->particles_end(); ++it) {
-      (*it)->remove_attribute(index_key_);
+  if (index_key_ != IntKey()) {
+    for (unsigned int i=0; i<sc_.size(); ++i) {
+      sc_[i]->remove_attribute(index_key_);
     }
   }
 }
