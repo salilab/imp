@@ -16,7 +16,7 @@
 
 IMPMULTIFIT_BEGIN_INTERNAL_NAMESPACE
 
-class FFTWPlan : public boost::noncopyable
+class IMPMULTIFITEXPORT FFTWPlan : public boost::noncopyable
 {
 private:
   fftw_plan data_;
