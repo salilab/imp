@@ -50,6 +50,9 @@ def get_assignments(vertex):
         # we have a leaf
         ret= ds.load_vertex_assignments(vertex, mine)
     else:
+        if on[0] > on[1]:
+            # the get_vertex_assignment methods expects the children in sorted order
+            on=[on[1], on[0]]
         # recurse on the two children
         a0= get_assignments(on[0])
         a1= get_assignments(on[1])
