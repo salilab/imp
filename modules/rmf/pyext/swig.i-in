@@ -45,7 +45,8 @@ IMP_SWIG_OBJECT(IMP::rmf, RMFWriter, RMFWriters);
             + self.get_float_keys(kc)\
             + self.get_index_keys(kc)\
             + self.get_node_id_keys(kc)\
-            + self.get_data_set_keys(kc)
+            + self.get_data_set_keys(kc)\
+            + self.get_node_ids_keys(kc)\
         return ret
   %}
 }
