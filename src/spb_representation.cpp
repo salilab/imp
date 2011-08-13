@@ -89,15 +89,13 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(175./255.,208./255.,238./255.),
                        i, CC_x0,67);
    if(i==0){
-    Particles ps_Spc42p_n_0=atom::get_leaves(Spc42p_n[0]);
-    Particles ps_Spc42p_c_0=atom::get_leaves(Spc42p_c[0]);
-    Particles ps_Spc42p_n_1=atom::get_leaves(Spc42p_n[1]);
-    Particles ps_Spc42p_c_1=atom::get_leaves(Spc42p_c[1]);
     Particles ps_Spc42p;
-    ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n_0.begin(),ps_Spc42p_n_0.end());
-    ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c_0.begin(),ps_Spc42p_c_0.end());
-    ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n_1.begin(),ps_Spc42p_n_1.end());
-    ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c_1.begin(),ps_Spc42p_c_1.end());
+    for(unsigned int k=0;k<2;++k){
+     Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
+     Particles ps_Spc42p_c=atom::get_leaves(Spc42p_c[k]);
+     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n.begin(),ps_Spc42p_n.end());
+     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c.begin(),ps_Spc42p_c.end());
+    }
     Particle *ps_tmp=atom::get_leaves(Spc42p_CC[0])[0];
     core::RigidBody prb=core::RigidMember(ps_tmp).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
@@ -282,15 +280,13 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(255./255.,0.,0.),
                        i, CC2_x0,678);
    if(i==0){
-    bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[0]));
-    bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[1]));
-    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c[0]);
-    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c[1]);
     Particles ps_Spc110p;
-    ps_Spc110p.insert(ps_Spc110p.end(),
-     ps_Spc110p_c_0.begin(),ps_Spc110p_c_0.end());
-    ps_Spc110p.insert(ps_Spc110p.end(),
-     ps_Spc110p_c_1.begin(),ps_Spc110p_c_1.end());
+    for(unsigned int k=0;k<2;++k){
+     bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[k]));
+     Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c[k]);
+     ps_Spc110p.insert(ps_Spc110p.end(),
+     ps_Spc110p_c.begin(),ps_Spc110p_c.end());
+    }
     Particle *ps_tmp=atom::get_leaves(Spc110p_CC[0])[0];
     core::RigidBody prb=core::RigidMember(ps_tmp).get_rigid_body();
     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
