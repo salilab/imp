@@ -210,7 +210,7 @@ ParticlesTemp pt= c_->get_particles();
         }
       }
     }
-    Restraints rs= r->get_decomposition();
+    Restraints rs= r->create_decomposition();
     if (rs.size()==0 || (rs.size() >=1 && rs[0] != r)) {
       IMP_LOG(TERSE, "Restraint \"" << r->get_name()
               << "\" is being decompsed into " << rs.size() << " restraints"
@@ -289,7 +289,7 @@ ParticlesTemp pt= c_->get_particles();
         }
       }
     }
-    ScoreStates sss= ss->get_decomposition();
+    ScoreStates sss= ss->create_decomposition();
     if (sss.size() >1) {
       Model *m= ss->get_model();
       IMP_LOG(TERSE, "Decomposing state " << ss->get_name()
