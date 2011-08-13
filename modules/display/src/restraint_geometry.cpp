@@ -151,7 +151,7 @@ RestraintGeometry::RestraintGeometry(Restraint*r, Model *m):
 IMP::display::Geometries RestraintGeometry::get_components() const {
   IMP_CHECK_OBJECT(r_);
   m_->update();
-  Restraints rs= r_->get_instant_decomposition();
+  Restraints rs= r_->create_current_decomposition();
   IMP::display::Geometries ret;
   if (rs.size()==1 && rs[0]== r_) {
     ParticlesTemp ps= r_->get_input_particles();
