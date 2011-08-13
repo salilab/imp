@@ -42,17 +42,18 @@ bool BondPairContainer
   return sc_->get_contains_particle(bd);
 }
 
-unsigned int BondPairContainer
-::get_number_of_particle_pairs() const {
-  return sc_->get_number_of_particles();
-}
 
-ParticlePair BondPairContainer
-::get_particle_pair(unsigned int i) const {
-  Bond bd(sc_->get_particle(i));
-  return ParticlePair(bd.get_bonded(0), bd.get_bonded(1));
+ParticleIndexPairs
+BondPairContainer::get_indexes() const {
+  ParticleIndexes ia= sc_->get_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size());
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    Bond b(get_model(), ia[i]);
+    ret.push_back(ParticleIndexPair(b.get_bonded(0).get_particle_index(),
+                                    b.get_bonded(1).get_particle_index()));
+  }
+  return ret;
 }
-
 
 void BondPairContainer::do_show(std::ostream &out) const {
   out << "container " << *sc_ << std::endl;

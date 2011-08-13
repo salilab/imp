@@ -145,12 +145,6 @@ protected:
     ParticleIndex it= IMP::internal::get_index(p);
     return std::binary_search(data_.begin(), data_.end(), it);
   }
-  unsigned int get_number_of_particles() const {
-    return data_.size();
-  }
-  Particle* get_particle(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(), data_[i]);
-  }
   bool get_contents_changed() const {
     return dirty_;
   }
@@ -168,6 +162,14 @@ protected:
   bool get_provides_access() const {return true;}
   const ParticleIndexes& get_access() const {
     return data_;
+  }
+
+  typedef ParticleIndexes::const_iterator const_iterator;
+  const_iterator begin() const {
+    return data_.begin();
+  }
+  const_iterator end() const {
+    return data_.end();
   }
 };
 

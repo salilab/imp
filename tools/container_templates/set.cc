@@ -56,30 +56,16 @@ void CLASSNAMEContainerSet::do_show(std::ostream &out) const {
       << " containers" << std::endl;
 }
 
-unsigned int
-CLASSNAMEContainerSet::get_number_of_FUNCTIONNAMEs() const {
-  unsigned int sum=0;
+
+PLURALINDEXTYPE CLASSNAMEContainerSet::get_indexes() const {
+  PLURALINDEXTYPE sum;
   for (CLASSNAMEContainerConstIterator it= CLASSFUNCTIONNAME_containers_begin();
        it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    sum+= (*it)->get_number_of_FUNCTIONNAMEs();
+    PLURALINDEXTYPE cur=(*it)->get_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
 }
-
-VARIABLETYPE
-CLASSNAMEContainerSet::get_FUNCTIONNAME(unsigned int i) const {
-  for (CLASSNAMEContainerConstIterator it= CLASSFUNCTIONNAME_containers_begin();
-       it != CLASSFUNCTIONNAME_containers_end(); ++it) {
-    if ( i >= (*it)->get_number_of_FUNCTIONNAMEs()) {
-      i-= (*it)->get_number_of_FUNCTIONNAMEs();
-    } else {
-      return (*it)->get_FUNCTIONNAME(i);
-    }
-  }
-  throw IndexException("out of range");
-}
-
-
 
 IMP_LIST_IMPL(CLASSNAMEContainerSet,
               CLASSNAMEContainer,

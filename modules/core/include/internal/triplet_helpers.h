@@ -145,12 +145,6 @@ protected:
     ParticleIndexTriplet it= IMP::internal::get_index(p);
     return std::binary_search(data_.begin(), data_.end(), it);
   }
-  unsigned int get_number_of_particle_triplets() const {
-    return data_.size();
-  }
-  ParticleTriplet get_particle_triplet(unsigned int i) const {
-    return IMP::internal::get_particle(get_model(), data_[i]);
-  }
   bool get_contents_changed() const {
     return dirty_;
   }
@@ -168,6 +162,14 @@ protected:
   bool get_provides_access() const {return true;}
   const ParticleIndexTriplets& get_access() const {
     return data_;
+  }
+
+  typedef ParticleIndexTriplets::const_iterator const_iterator;
+  const_iterator begin() const {
+    return data_.begin();
+  }
+  const_iterator end() const {
+    return data_.end();
   }
 };
 

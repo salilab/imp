@@ -33,7 +33,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 class IMPCONTAINEREXPORT AllPairContainer : public PairContainer
 {
   IMP::internal::OwnerPointer<SingletonContainer> c_;
-  mutable int a_, b_, i_;
   IMP_CONTAINER_DEPENDENCIES(AllPairContainer, ret.push_back(back_->c_););
   friend class AllBipartitePairContainer;
   AllPairContainer(SingletonContainer *c, bool);

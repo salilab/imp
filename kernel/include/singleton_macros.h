@@ -285,8 +285,7 @@
 #define IMP_SINGLETON_CONTAINER(Name)                                  \
   bool get_contents_changed() const;                                    \
   bool get_contains_particle(Particle* p) const;      \
-  unsigned int get_number_of_particles() const;                     \
-  Particle* get_particle(unsigned int i) const;                  \
+  ParticleIndexes get_indexes() const;                     \
   IMP_IMPLEMENT_SINGLETON_CONTAINER(Name)
 
 
@@ -337,12 +336,11 @@ public:                                                                 \
     \endcode
 */
 #define IMP_FOREACH_SINGLETON(sequence, operation) do {                \
-  unsigned int imp_foreach_size                                         \
-  = sequence->get_number_of_particles();                            \
+    IMP::ParticlesTemp imp_all=sequence->get();   \
   for (unsigned int _2=0;                                               \
-       _2 != imp_foreach_size;                                          \
+       _2 != imp_all.size();                                            \
        ++_2) {                                                          \
-    IMP::Particle* _1= sequence->get_particle(_2);               \
+    IMP::Particle* _1= imp_all[_2];               \
     bool imp_foreach_break=false;                                       \
     operation                                                           \
       if (imp_foreach_break) break;                                     \

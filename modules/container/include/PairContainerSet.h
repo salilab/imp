@@ -46,8 +46,6 @@ class IMPCONTAINEREXPORT PairContainerSet
                         std::string name="PairContainerSet %1%");
 
   bool get_contains_particle_pair(const ParticlePair&) const;
-  unsigned int get_number_of_particle_pairs() const;
-  ParticlePair get_particle_pair(unsigned int i) const;
   void apply(const PairModifier *sm);
   void apply(const PairDerivativeModifier *sm,
              DerivativeAccumulator &da);
@@ -123,6 +121,7 @@ class IMPCONTAINEREXPORT PairContainerSet
     }
     return true;
   }
+  ParticleIndexPairs get_indexes() const;
 #endif
 };
 

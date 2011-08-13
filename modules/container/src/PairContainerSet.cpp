@@ -56,30 +56,16 @@ void PairContainerSet::do_show(std::ostream &out) const {
       << " containers" << std::endl;
 }
 
-unsigned int
-PairContainerSet::get_number_of_particle_pairs() const {
-  unsigned int sum=0;
+
+ParticleIndexPairs PairContainerSet::get_indexes() const {
+  ParticleIndexPairs sum;
   for (PairContainerConstIterator it= pair_containers_begin();
        it != pair_containers_end(); ++it) {
-    sum+= (*it)->get_number_of_particle_pairs();
+    ParticleIndexPairs cur=(*it)->get_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
 }
-
-ParticlePair
-PairContainerSet::get_particle_pair(unsigned int i) const {
-  for (PairContainerConstIterator it= pair_containers_begin();
-       it != pair_containers_end(); ++it) {
-    if ( i >= (*it)->get_number_of_particle_pairs()) {
-      i-= (*it)->get_number_of_particle_pairs();
-    } else {
-      return (*it)->get_particle_pair(i);
-    }
-  }
-  throw IndexException("out of range");
-}
-
-
 
 IMP_LIST_IMPL(PairContainerSet,
               PairContainer,

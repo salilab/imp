@@ -46,8 +46,6 @@ class IMPCONTAINEREXPORT SingletonContainerSet
                         std::string name="SingletonContainerSet %1%");
 
   bool get_contains_particle(Particle*) const;
-  unsigned int get_number_of_particles() const;
-  Particle* get_particle(unsigned int i) const;
   void apply(const SingletonModifier *sm);
   void apply(const SingletonDerivativeModifier *sm,
              DerivativeAccumulator &da);
@@ -123,6 +121,7 @@ class IMPCONTAINEREXPORT SingletonContainerSet
     }
     return true;
   }
+  ParticleIndexes get_indexes() const;
 #endif
 };
 

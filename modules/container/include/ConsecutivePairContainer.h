@@ -50,14 +50,6 @@ public:
 IMP_OBJECTS(ConsecutivePairContainer,ConsecutivePairContainers);
 
 
-inline ParticlePair
-ConsecutivePairContainer::get_particle_pair(unsigned int i) const {
-  unsigned int ip1= i+1;
-  Particle *p0= IMP::internal::get_particle(get_model(), ps_[i]);
-  Particle *p1= IMP::internal::get_particle(get_model(), ps_[ip1]);
-  return ParticlePair(p0, p1);
-}
-
 inline bool
 ConsecutivePairContainer
 ::get_contains_particle_pair(const ParticlePair &p) const {

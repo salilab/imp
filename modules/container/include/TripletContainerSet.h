@@ -46,8 +46,6 @@ class IMPCONTAINEREXPORT TripletContainerSet
                         std::string name="TripletContainerSet %1%");
 
   bool get_contains_particle_triplet(const ParticleTriplet&) const;
-  unsigned int get_number_of_particle_triplets() const;
-  ParticleTriplet get_particle_triplet(unsigned int i) const;
   void apply(const TripletModifier *sm);
   void apply(const TripletDerivativeModifier *sm,
              DerivativeAccumulator &da);
@@ -123,6 +121,7 @@ class IMPCONTAINEREXPORT TripletContainerSet
     }
     return true;
   }
+  ParticleIndexTriplets get_indexes() const;
 #endif
 };
 

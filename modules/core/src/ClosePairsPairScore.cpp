@@ -286,7 +286,7 @@ void KClosePairsPairScore::do_show(std::ostream &out) const
 
 
 Restraints ClosePairsPairScore
-::get_instant_decomposition(const ParticlePair &pp) const {
+::create_current_decomposition(const ParticlePair &pp) const {
   ParticleIndexPairs ppt= get_close_pairs(IMP::internal::get_model(pp),
                                           IMP::internal::get_index(pp));
   Restraints ret(ppt.size());
@@ -300,7 +300,7 @@ Restraints ClosePairsPairScore
 
 
 Restraints KClosePairsPairScore
-::get_instant_decomposition(const ParticlePair &pp) const {
+::create_current_decomposition(const ParticlePair &pp) const {
   ParticleIndexPairs ppt= get_close_pairs(IMP::internal::get_model(pp),
                                           IMP::internal::get_index(pp));
   Restraints ret(ppt.size());

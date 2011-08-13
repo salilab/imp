@@ -46,8 +46,6 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
                         std::string name="CLASSNAMEContainerSet %1%");
 
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE) const;
-  unsigned int get_number_of_FUNCTIONNAMEs() const;
-  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;
   void apply(const CLASSNAMEModifier *sm);
   void apply(const CLASSNAMEDerivativeModifier *sm,
              DerivativeAccumulator &da);
@@ -123,6 +121,7 @@ class IMPCONTAINEREXPORT CLASSNAMEContainerSet
     }
     return true;
   }
+  PLURALINDEXTYPE get_indexes() const;
 #endif
 };
 

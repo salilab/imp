@@ -46,8 +46,6 @@ class IMPCONTAINEREXPORT QuadContainerSet
                         std::string name="QuadContainerSet %1%");
 
   bool get_contains_particle_quad(const ParticleQuad&) const;
-  unsigned int get_number_of_particle_quads() const;
-  ParticleQuad get_particle_quad(unsigned int i) const;
   void apply(const QuadModifier *sm);
   void apply(const QuadDerivativeModifier *sm,
              DerivativeAccumulator &da);
@@ -123,6 +121,7 @@ class IMPCONTAINEREXPORT QuadContainerSet
     }
     return true;
   }
+  ParticleIndexQuads get_indexes() const;
 #endif
 };
 

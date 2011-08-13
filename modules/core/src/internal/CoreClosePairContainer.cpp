@@ -179,16 +179,15 @@ void CoreClosePairContainer::check_list(bool check_slack) const {
       }
     }
     if (dynamic_cast<RigidClosePairsFinder*>(cpf_.get())) {
-      for (ParticlePairIterator it=particle_pairs_begin();
-           it != particle_pairs_end(); ++it) {
-        if (RigidMember::particle_is_instance((*it)[0])
-            && RigidMember::particle_is_instance((*it)[1])) {
-          IMP_INTERNAL_CHECK(RigidMember((*it)[0]).get_rigid_body()
-                             != RigidMember((*it)[1]).get_rigid_body(),
+      IMP_FOREACH_PAIR(this, {
+        if (RigidMember::particle_is_instance((_1)[0])
+            && RigidMember::particle_is_instance((_1)[1])) {
+          IMP_INTERNAL_CHECK(RigidMember((_1)[0]).get_rigid_body()
+                             != RigidMember((_1)[1]).get_rigid_body(),
                              "Pair should not have two particles from the same "
                              << "rigid body");
         }
-      }
+        });
     }
   }
 }
@@ -246,8 +245,7 @@ void CoreClosePairContainer::do_incremental() {
   add_to_list(ret);
   moved_->reset_moved();
   IMP_LOG(TERSE, "Count is now "
-          << std::distance(particle_pairs_begin(),
-                           particle_pairs_end()) << std::endl);
+          << get_access().size() << std::endl);
 }
 void CoreClosePairContainer::do_rebuild() {
   IMP_LOG(TERSE, "Handling full update of ClosePairContainer."

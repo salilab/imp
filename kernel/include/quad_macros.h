@@ -285,8 +285,7 @@
 #define IMP_QUAD_CONTAINER(Name)                                  \
   bool get_contents_changed() const;                                    \
   bool get_contains_particle_quad(const ParticleQuad& p) const;      \
-  unsigned int get_number_of_particle_quads() const;                     \
-  ParticleQuad get_particle_quad(unsigned int i) const;                  \
+  ParticleIndexQuads get_indexes() const;                     \
   IMP_IMPLEMENT_QUAD_CONTAINER(Name)
 
 
@@ -337,12 +336,11 @@ public:                                                                 \
     \endcode
 */
 #define IMP_FOREACH_QUAD(sequence, operation) do {                \
-  unsigned int imp_foreach_size                                         \
-  = sequence->get_number_of_particle_quads();                            \
+    IMP::ParticleQuadsTemp imp_all=sequence->get();   \
   for (unsigned int _2=0;                                               \
-       _2 != imp_foreach_size;                                          \
+       _2 != imp_all.size();                                            \
        ++_2) {                                                          \
-    IMP::ParticleQuad _1= sequence->get_particle_quad(_2);               \
+    IMP::ParticleQuad _1= imp_all[_2];               \
     bool imp_foreach_break=false;                                       \
     operation                                                           \
       if (imp_foreach_break) break;                                     \
