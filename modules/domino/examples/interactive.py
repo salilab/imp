@@ -41,6 +41,9 @@ def get_assignments(vertex):
         ret= ds.get_vertex_assignments(vertex)
     else:
         # recurse on the two children
+        if on[0] > on[1]:
+            # the get_vertex_assignment methods expects the children in sorted order
+            on=[on[1], on[0]]
         a0= get_assignments(on[0])
         a1= get_assignments(on[1])
         ret= ds.get_vertex_assignments(vertex, a0, a1)
