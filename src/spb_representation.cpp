@@ -542,9 +542,9 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
  container::ListSingletonContainer *lsc, algebra::Vector3D x0,
  core::Movers& mvs, SPBParameters mydata)
 {
-//if(!mydata.use_GFP_structure){
+if(!mydata.use_GFP_structure){
     atom::Molecule gfp=
-     create_protein(m,name,4,1,
+     create_protein(m,name,27,4,
                       display::Color(124./255.,252./255.,0./255.),
                       copy,mydata.kappa,x0);
     if(copy==0){
@@ -561,10 +561,22 @@ atom::Molecule create_GFP(Model *m, std::string name, int copy,
      }
     }
     return gfp;
-//   } else {
-//    // TO DO
-
-//   }
+   } else {
+    atom::Molecule gfp=
+     create_protein(m,name,"1EMA.pdb",mydata.resolution,
+                      display::Color(124./255.,252./255.,0./255.),
+                      copy,x0,2);
+    if(copy==0){
+     Particles ps_gfp=atom::get_leaves(gfp);
+     Particles fake;
+     lsc->add_particles(ps_gfp);
+     core::RigidBody prb=core::RigidMember(ps_gfp[0]).get_rigid_body();
+     IMP_NEW(membrane::PbcBoxedRigidBodyMover,rbmv,
+       (prb,fake,mydata.MC.dx,mydata.MC.dang,mydata.CP_centers,mydata.trs));
+     mvs.push_back(rbmv);
+    }
+    return gfp;
+   }
 }
 
 void load_restart(atom::Hierarchies& all_mol,SPBParameters mydata)

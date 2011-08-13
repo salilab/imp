@@ -173,7 +173,7 @@ if(mydata.add_y2h){
 // TWO-HYBRID SCREENING
 //
 // CP
- // substitued by a all-pairs link
+ // substitued by link restraint
  //add_y2h_restraint(m,all_mol, "Cmd1p",      "ALL",
  //                    all_mol, "Spc110p",    IntRange(900,927), mydata.kappa);
  add_y2h_restraint(m,all_mol, "Spc42p",                 "N",
@@ -197,11 +197,11 @@ if(mydata.add_y2h){
 // Add link with GFPs
 if(mydata.add_GFP){
   add_link(m,all_mol, "Spc110p", "C",  "Spc110p-C-GFP", "N", mydata.kappa);
-  add_link(m,all_mol,   "Cmd1p", "N",    "Cmd1p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,   "Cmd1p", "N",    "Cmd1p-N-GFP", "C", mydata.kappa);
   add_link(m,all_mol,   "Cmd1p", "C",    "Cmd1p-C-GFP", "N", mydata.kappa);
-  add_link(m,all_mol,  "Spc42p", "N",   "Spc42p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc42p", "N",   "Spc42p-N-GFP", "C", mydata.kappa);
   add_link(m,all_mol,  "Spc42p", "C",   "Spc42p-C-GFP", "N", mydata.kappa);
-  add_link(m,all_mol,  "Spc29p", "N",   "Spc29p-N-GFP", "N", mydata.kappa);
+  add_link(m,all_mol,  "Spc29p", "N",   "Spc29p-N-GFP", "C", mydata.kappa);
   add_link(m,all_mol,  "Spc29p", "C",   "Spc29p-C-GFP", "N", mydata.kappa);
   add_link(m,all_mol,"Cnm67p_c", "C", "Cnm67p_c-C-GFP", "N", mydata.kappa);
 }

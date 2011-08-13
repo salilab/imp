@@ -128,35 +128,41 @@ void do_allpairs_mindist(Model *m,Particles ps,
  m->add_restraint(mpr);
 }
 
-void add_fret_restraint
-(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
+void add_fret_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
  atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
  double r_value, double kappa, bool use_GFP)
 {
  atom::Selection sa=atom::Selection(ha);
- if(use_GFP) {protein_a=protein_a+"-"+residues_a+"-GFP";}
+ if(use_GFP){
+  protein_a=protein_a+"-"+residues_a+"-GFP";
+  sa.set_residue_index(65);
+ } else {
+  if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
+  if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
+ }
  sa.set_molecule(protein_a);
- if(residues_a=="C") {sa.set_terminus(atom::Selection::C);}
- if(residues_a=="N") {sa.set_terminus(atom::Selection::N);}
  atom::Selection sb=atom::Selection(hb);
- if(use_GFP) {protein_b=protein_b+"-"+residues_b+"-GFP";}
+ if(use_GFP){
+  protein_b=protein_b+"-"+residues_b+"-GFP";
+  sb.set_residue_index(65);
+ } else {
+  if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
+  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
+ }
  sb.set_molecule(protein_b);
- if(residues_b=="C") {sb.set_terminus(atom::Selection::C);}
- if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return;}
  FloatRange range=get_range_from_fret_value(r_value);
  core::SphereDistancePairScore* sps=get_sphere_pair_score(range,kappa);
- if(protein_a==protein_b && residues_a==residues_b){
-  do_allpairs_mindist(m,p1,sps);
- }else{
-  do_bipartite_mindist(m,p1,p2,sps);
- }
+ do_bipartite_mindist(m,p1,p2,sps);
 }
 
-void add_y2h_restraint
-(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies& hb,std::string protein_b,IntRange residues_b,double kappa)
+void add_y2h_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, IntRange residues_a,
+ atom::Hierarchies& hb, std::string protein_b, IntRange residues_b,
+ double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -170,6 +176,7 @@ void add_y2h_restraint
  sb.set_residue_indexes(r_b);
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return;}
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  if(protein_a==protein_b && residues_a==residues_b){
   do_allpairs_mindist(m,p1,sps);
@@ -178,10 +185,10 @@ void add_y2h_restraint
  }
 }
 
-void add_y2h_restraint
-(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies& hb, std::string protein_b,
- std::string residues_b,double kappa)
+void add_y2h_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -193,6 +200,7 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return;}
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  if(protein_a==protein_b && residues_a==residues_b){
   do_allpairs_mindist(m,p1,sps);
@@ -201,10 +209,10 @@ void add_y2h_restraint
  }
 }
 
-void add_y2h_restraint
-(Model *m,atom::Hierarchies& ha,std::string protein_a,IntRange residues_a,
- atom::Hierarchies& hb,std::string protein_b,
- std::string residues_b,double kappa)
+void add_y2h_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a,    IntRange residues_a,
+ atom::Hierarchies& hb, std::string protein_b, std::string residues_b,
+ double kappa)
 {
  atom::Selection sa=atom::Selection(ha);
  sa.set_molecule(protein_a);
@@ -217,21 +225,22 @@ void add_y2h_restraint
  if(residues_b=="N") {sb.set_terminus(atom::Selection::N);}
  Particles p1=sa.get_selected_particles();
  Particles p2=sb.get_selected_particles();
+ if(p1.size()==0 || p2.size()==0) {return;}
  core::SphereDistancePairScore* sps=get_sphere_pair_score(0.0,kappa);
  do_bipartite_mindist(m,p1,p2,sps);
 }
 
-void add_y2h_restraint
-(Model *m,atom::Hierarchies& ha,std::string protein_a,std::string residues_a,
- atom::Hierarchies& hb,std::string protein_b,
- IntRange residues_b, double kappa)
+void add_y2h_restraint (Model *m,
+ atom::Hierarchies& ha, std::string protein_a, std::string residues_a,
+ atom::Hierarchies& hb, std::string protein_b,    IntRange residues_b,
+ double kappa)
 {
  add_y2h_restraint(m,hb,protein_b,residues_b,ha,protein_a,residues_a,kappa);
 }
 
-void add_link
- (Model *m,atom::Hierarchies& h,std::string protein_a,std::string residues_a,
-  std::string protein_b, IntRange residues_b, double kappa)
+void add_link (Model *m, atom::Hierarchies& h,
+ std::string protein_a, std::string residues_a,
+ std::string protein_b,    IntRange residues_b, double kappa)
 {
  atom::Hierarchies hs=h[0].get_children();
  std::vector<unsigned int> index_a,index_b;
@@ -239,9 +248,7 @@ void add_link
   if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
   if(hs[i]->get_name()==protein_b) {index_b.push_back(i);}
  }
- if(index_a.size()!=index_b.size() || index_a.size()==0){
-  return;
- }
+ if(index_a.size()!=index_b.size() || index_a.size()==0){return;}
  for(unsigned int i=0;i<index_a.size();++i){
   atom::Hierarchies hha, hhb;
   for(unsigned int j=0;j<h.size();++j){
@@ -252,9 +259,9 @@ void add_link
  }
 }
 
-void add_link
- (Model *m,atom::Hierarchies& h,std::string protein_a,std::string residues_a,
-  std::string protein_b, std::string residues_b, double kappa)
+void add_link (Model *m,atom::Hierarchies& h,
+ std::string protein_a, std::string residues_a,
+ std::string protein_b, std::string residues_b, double kappa)
 {
  atom::Hierarchies hs=h[0].get_children();
  std::vector<unsigned int> index_a,index_b;
@@ -262,9 +269,7 @@ void add_link
   if(hs[i]->get_name()==protein_a) {index_a.push_back(i);}
   if(hs[i]->get_name()==protein_b) {index_b.push_back(i);}
  }
- if(index_a.size()!=index_b.size() || index_a.size()==0){
-  return;
- }
+ if(index_a.size()!=index_b.size() || index_a.size()==0){return;}
  for(unsigned int i=0;i<index_a.size();++i){
   atom::Hierarchies hha, hhb;
   for(unsigned int j=0;j<h.size();++j){
