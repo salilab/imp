@@ -36,6 +36,7 @@ struct SPBParameters {
  bool           add_fret;
  bool           add_y2h;
  bool           add_tilt;
+ bool           add_GFP;
  std::map<std::string,std::string> file_list;
 };
 

@@ -183,7 +183,8 @@ if(mydata.protein_list["Spc110p"] && mydata.protein_list["Cmd1p"]){
 }
 //
 if(myrank==0) {std::cout << "Setup sampler" << std::endl;}
-core::MonteCarlo* mc=setup_SPBMonteCarlo(m,mvs,mydata.MC.tmin,mydata);
+Pointer<core::MonteCarlo> mc=
+ setup_SPBMonteCarlo(m,mvs,temp[index[myrank]],mydata);
 
 // hot steps
 if(mydata.MC.nhot>0){
@@ -191,7 +192,7 @@ if(mydata.MC.nhot>0){
  mc->set_kt(mydata.MC.tmax);
  mc->optimize(mydata.MC.nhot);
 }
-// reset temperature
+// set temperature
 mc->set_kt(temp[index[myrank]]);
 
 // GO!
@@ -228,7 +229,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
 
 // if WTE, calculate U_mybias(myscore) and U_mybias(fscore) and exchange
  double delta_wte=0.0;
-
+/*
  if(mydata.MC.do_wte){
   membrane::MonteCarloWithWte* ptr=
    dynamic_cast<membrane::MonteCarloWithWte*>(mc);
@@ -239,14 +240,16 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
   delta_wte=(U_mybias[0]-U_mybias[1])/temp[myindex]+
             (U_fbias[0] -U_fbias[1])/ temp[findex];
  }
+ */
 // calculate acceptance
- bool do_accept=get_acceptance(myscore,fscore,delta_wte,
-                               temp[myindex],temp[findex]);
+ bool do_accept=
+  get_acceptance(myscore,fscore,delta_wte,temp[myindex],temp[findex]);
+
 // if accepted exchange what is needed
  if(do_accept){
   myindex=findex;
   mc->set_kt(temp[myindex]);
-
+/*
 // if WTE, rescale W0 and exchange bias
   if(mydata.MC.do_wte){
    membrane::MonteCarloWithWte* ptr=
@@ -260,6 +263,7 @@ for(int imc=0;imc<mydata.MC.nsteps;++imc)
    Floats val(fbias, fbias+2*nbins);
    ptr->set_bias(val);
   }
+*/
  }
 
 // in any case, update index vector

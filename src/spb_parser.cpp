@@ -33,6 +33,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  bool add_fret;
  bool add_y2h;
  bool add_tilt;
+ bool add_GFP;
  std::string cell_type;
  std::string load_Spc42p;
  std::string load_Spc29p;
@@ -54,6 +55,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  desc.add_options()("add_fret",     value<bool>(&add_fret),         "ciao");
  desc.add_options()("add_y2h",      value<bool>(&add_y2h),          "ciao");
  desc.add_options()("add_tilt",     value<bool>(&add_tilt),         "ciao");
+ desc.add_options()("add_GFP",      value<bool>(&add_GFP),          "ciao");
  desc.add_options()("load_Spc42p",value<std::string>(&load_Spc42p), "ciao");
  desc.add_options()("load_Spc29p",value<std::string>(&load_Spc29p), "ciao");
  desc.add_options()("load_Spc110p",value<std::string>(&load_Spc110p),"ciao");
@@ -126,6 +128,7 @@ SPBParameters get_SPBParameters(TextInput in) {
  ret.protein_list["Spc110p"]=add_Spc110p;
  ret.protein_list["Cmd1p"]=add_Cmd1p;
  ret.protein_list["Cnm67p_c"]=add_Cnm67p_c;
+ ret.add_GFP=add_GFP;
 // file map
  if(load_Spc42p.length()>0.0)   ret.file_list["Spc42p"]=load_Spc42p;
  if(load_Spc29p.length()>0.0)   ret.file_list["Spc29p"]=load_Spc29p;

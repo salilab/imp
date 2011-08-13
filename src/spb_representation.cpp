@@ -52,57 +52,34 @@ for(int i=0;i<mydata.num_cells;++i){
 
   if(mydata.protein_list["Spc42p"]){
   //Spc42p_n, 2 copies, 1 bead
-   atom::Molecule Spc42p_n_0=
-    create_protein(m,"Spc42p_n",7,1,
-                     display::Color(175./255.,238./255.,238./255.),
-                     i,mydata.kappa,CP_x0);
-   atom::Molecule Spc42p_n_1=
-    create_protein(m,"Spc42p_n",7,1,
-                     display::Color(175./255.,238./255.,238./255.),
-                     i,mydata.kappa,CP_x0);
-   if(i==0){
-    Particles ps_Spc42p_n_0=atom::get_leaves(Spc42p_n_0);
-    Particles ps_Spc42p_n_1=atom::get_leaves(Spc42p_n_1);
-    CP_ps->add_particles(ps_Spc42p_n_0);
-    CP_ps->add_particles(ps_Spc42p_n_1);
-    for(unsigned int k=0;k<ps_Spc42p_n_0.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc42p_n_0[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
+   atom::Molecules Spc42p_n, Spc42p_c;
+   for(unsigned int k=0;k<2;++k){
+    Spc42p_n.push_back(create_protein(m,"Spc42p_n",7,1,
+                       display::Color(175./255.,238./255.,238./255.),
+                       i,mydata.kappa,CP_x0));
+    if(i==0){
+     Particles ps_Spc42p_n=atom::get_leaves(Spc42p_n[k]);
+     CP_ps->add_particles(ps_Spc42p_n);
+     for(unsigned int kk=0;kk<ps_Spc42p_n.size();++kk){
+      Particles pps;
+      pps.push_back(ps_Spc42p_n[kk]);
+      IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+      mvs.push_back(bmv);
+     }
     }
-    for(unsigned int k=0;k<ps_Spc42p_n_1.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc42p_n_1[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
-    }
-   }
   //Spc42p_c, 2 copies, 2 beads
-   atom::Molecule Spc42p_c_0=
-    create_protein(m,"Spc42p_c",13,2,
-                     display::Color(175./255.,218./255.,238./255.),
-                     i,mydata.kappa,IL2_x0,139);
-   atom::Molecule Spc42p_c_1=
-    create_protein(m,"Spc42p_c",13,2,
-                     display::Color(175./255.,218./255.,238./255.),
-                     i,mydata.kappa,IL2_x0,139);
-   if(i==0){
-    Particles ps_Spc42p_c_0=atom::get_leaves(Spc42p_c_0);
-    Particles ps_Spc42p_c_1=atom::get_leaves(Spc42p_c_1);
-    IL2_ps->add_particles(ps_Spc42p_c_0);
-    IL2_ps->add_particles(ps_Spc42p_c_1);
-    for(unsigned int k=0;k<ps_Spc42p_c_0.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc42p_c_0[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
-    }
-    for(unsigned int k=0;k<ps_Spc42p_c_1.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc42p_c_1[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
+    Spc42p_c.push_back(create_protein(m,"Spc42p_c",13,2,
+                       display::Color(175./255.,218./255.,238./255.),
+                       i,mydata.kappa,IL2_x0,139));
+    if(i==0){
+     Particles ps_Spc42p_c=atom::get_leaves(Spc42p_c[k]);
+     IL2_ps->add_particles(ps_Spc42p_c);
+     for(unsigned int kk=0;kk<ps_Spc42p_c.size();++kk){
+      Particles pps;
+      pps.push_back(ps_Spc42p_c[kk]);
+      IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+      mvs.push_back(bmv);
+     }
     }
    }
    // Coiled-Coil
@@ -112,10 +89,10 @@ for(int i=0;i<mydata.num_cells;++i){
                        display::Color(175./255.,208./255.,238./255.),
                        i, CC_x0,67);
    if(i==0){
-    Particles ps_Spc42p_n_0=atom::get_leaves(Spc42p_n_0);
-    Particles ps_Spc42p_c_0=atom::get_leaves(Spc42p_c_0);
-    Particles ps_Spc42p_n_1=atom::get_leaves(Spc42p_n_1);
-    Particles ps_Spc42p_c_1=atom::get_leaves(Spc42p_c_1);
+    Particles ps_Spc42p_n_0=atom::get_leaves(Spc42p_n[0]);
+    Particles ps_Spc42p_c_0=atom::get_leaves(Spc42p_c[0]);
+    Particles ps_Spc42p_n_1=atom::get_leaves(Spc42p_n[1]);
+    Particles ps_Spc42p_c_1=atom::get_leaves(Spc42p_c[1]);
     Particles ps_Spc42p;
     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_n_0.begin(),ps_Spc42p_n_0.end());
     ps_Spc42p.insert(ps_Spc42p.end(),ps_Spc42p_c_0.begin(),ps_Spc42p_c_0.end());
@@ -128,20 +105,22 @@ for(int i=0;i<mydata.num_cells;++i){
     mvs.push_back(rbmv);
    }
 // now create the merge
-   atom::Molecules Spc42p_0_all,Spc42p_1_all;
-   Spc42p_0_all.push_back(Spc42p_n_0);
-   Spc42p_0_all.push_back(Spc42p_CC[0]);
-   Spc42p_0_all.push_back(Spc42p_c_0);
-   Spc42p_1_all.push_back(Spc42p_n_1);
-   Spc42p_1_all.push_back(Spc42p_CC[1]);
-   Spc42p_1_all.push_back(Spc42p_c_1);
+   for(unsigned int k=0;k<2;++k){
+    atom::Molecules Spc42p_all;
+    Spc42p_all.push_back(Spc42p_n[k]);
+    Spc42p_all.push_back(Spc42p_CC[k]);
+    Spc42p_all.push_back(Spc42p_c[k]);
+    atom::Molecule Spc42p=
+     create_merged_protein(m,"Spc42p",Spc42p_all,i,mydata.kappa,0.0);
+    all_mol.add_child(Spc42p);
+   }
 
-   atom::Molecule Spc42p_0=
-     create_merged_protein(m,"Spc42p",Spc42p_0_all,i,mydata.kappa,0.0);
-   atom::Molecule Spc42p_1=
-     create_merged_protein(m,"Spc42p",Spc42p_1_all,i,mydata.kappa,0.0);
-   all_mol.add_child(Spc42p_0);
-   all_mol.add_child(Spc42p_1);
+//   if(mydata.add_GFP){
+//     add_GFP(m,all_mol,"Spc42p-N-GFP",i,CP_x0,mydata,mvs);
+//     add_GFP(m,all_mol,"Spc42p-N-GFP",i,CP_x0,mydata,mvs);
+//     add_GFP(m,all_mol,"Spc42p-C-GFP",i,IL2_x0,mydata,mvs);
+//     add_GFP(m,all_mol,"Spc42p-C-GFP",i,IL2_x0,mydata,mvs);
+//   }
   }
 
   if(mydata.protein_list["Spc29p"]){
@@ -160,7 +139,6 @@ for(int i=0;i<mydata.num_cells;++i){
    atom::Molecule Spc29p=
     create_merged_protein(m,"Spc29p",Spc29p_all,i,mydata.kappa,0.0);
    all_mol.add_child(Spc29p);
-
    if(i==0){
     Particles ps_Spc29p=atom::get_leaves(Spc29p);
     CP_ps->add_particles(ps_Spc29p);
@@ -174,7 +152,13 @@ for(int i=0;i<mydata.num_cells;++i){
      mvs.push_back(bmv);
     }
    }
+
+//   if(mydata.add_GFP){
+//     add_GFP(m,all_mol,"Spc29-N-GFP",i,CP_x0,mydata,mvs);
+//     add_GFP(m,all_mol,"Spc29-C-GFP",i,CP_x0,mydata,mvs);
+//   }
   }
+
   if(mydata.protein_list["Cmd1p"]){
  //Cmd1p, 1 bead for N, 1 bead for C
    if(!mydata.use_structure){
@@ -272,36 +256,26 @@ for(int i=0;i<mydata.num_cells;++i){
  } // cycle on copies
 
  if(mydata.protein_list["Spc110p"]){
- // For Spc110 I need something different
+ // For Spc110 we need something different
   for(int j=0;j<mydata.num_copies/2;++j){
- //Spc110p_c, 3 beads for C terminus
-   atom::Molecule Spc110p_c_0=
-    create_protein(m,"Spc110p_c",26,4,
-                     display::Color(255./255.,0.,0.),
-                     i,mydata.kappa,CP_x0,799);
-   atom::Molecule Spc110p_c_1=
-    create_protein(m,"Spc110p_c",26,4,
-                     display::Color(255./255.,0.,0.),
-                     i,mydata.kappa,CP_x0,799);
-   if(i==0){
-    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c_0);
-    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c_1);
-    CP_ps->add_particles(ps_Spc110p_c_0);
-    CP_ps->add_particles(ps_Spc110p_c_1);
-    for(unsigned int k=0;k<ps_Spc110p_c_0.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc110p_c_0[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
-    }
-    for(unsigned int k=0;k<ps_Spc110p_c_1.size();++k){
-     Particles pps;
-     pps.push_back(ps_Spc110p_c_1[k]);
-     IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
-     mvs.push_back(bmv);
+ //Spc110p_c, 4 beads for C terminus
+   atom::Molecules Spc110p_c;
+   for(unsigned int kk=0;kk<2;++kk){
+    Spc110p_c.push_back(create_protein(m,"Spc110p_c",26,4,
+                        display::Color(255./255.,0.,0.),
+                        i,mydata.kappa,CP_x0,799));
+    if(i==0){
+     Particles ps_Spc110p_c=atom::get_leaves(Spc110p_c[kk]);
+     CP_ps->add_particles(ps_Spc110p_c);
+     for(unsigned int k=0;k<ps_Spc110p_c.size();++k){
+      Particles pps;
+      pps.push_back(ps_Spc110p_c[k]);
+      IMP_NEW(core::BallMover,bmv,(pps,mydata.MC.dx));
+      mvs.push_back(bmv);
+     }
     }
    }
-      // Coiled-Coil
+   // Coiled-Coil
    atom::Molecules Spc110p_CC=
     create_coiled_coil(m,"Spc110_CC","CC_120_A.pdb","CC_120_B.pdb",
                        mydata.resolution,
@@ -310,8 +284,8 @@ for(int i=0;i<mydata.num_cells;++i){
    if(i==0){
     bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[0]));
     bCP_ps->add_particles(atom::get_leaves(Spc110p_CC[1]));
-    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c_0);
-    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c_1);
+    Particles ps_Spc110p_c_0=atom::get_leaves(Spc110p_c[0]);
+    Particles ps_Spc110p_c_1=atom::get_leaves(Spc110p_c[1]);
     Particles ps_Spc110p;
     ps_Spc110p.insert(ps_Spc110p.end(),
      ps_Spc110p_c_0.begin(),ps_Spc110p_c_0.end());
@@ -324,23 +298,21 @@ for(int i=0;i<mydata.num_cells;++i){
     mvs.push_back(rbmv);
    }
 // now create the merge
-   atom::Molecules Spc110p_0_all,Spc110p_1_all;
-   Spc110p_0_all.push_back(Spc110p_CC[0]);
-   Spc110p_0_all.push_back(Spc110p_c_0);
-   Spc110p_1_all.push_back(Spc110p_CC[1]);
-   Spc110p_1_all.push_back(Spc110p_c_1);
-
-   atom::Molecule Spc110p_0=
-     create_merged_protein(m,"Spc110p",Spc110p_0_all,i,mydata.kappa,0.0);
-   atom::Molecule Spc110p_1=
-     create_merged_protein(m,"Spc110p",Spc110p_1_all,i,mydata.kappa,0.0);
-   all_mol.add_child(Spc110p_0);
-   all_mol.add_child(Spc110p_1);
+   for(unsigned int k=0;k<2;++k){
+    atom::Molecules Spc110p_all;
+    Spc110p_all.push_back(Spc110p_CC[k]);
+    Spc110p_all.push_back(Spc110p_c[k]);
+    atom::Molecule Spc110p=
+      create_merged_protein(m,"Spc110p",Spc110p_all,i,mydata.kappa,0.0);
+    all_mol.add_child(Spc110p);
+   }
   }
  }
+
 // add the hierarchy of the current unit cell to hs
  hs.push_back(all_mol);
 } // cycle on cells
+
 return hs;
 }
 

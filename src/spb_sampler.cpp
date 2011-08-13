@@ -15,7 +15,7 @@ using namespace IMP::membrane;
 
 IMPMEMBRANE_BEGIN_NAMESPACE
 
-core::MonteCarlo* setup_SPBMonteCarlo
+Pointer<core::MonteCarlo> setup_SPBMonteCarlo
  (Model *m, core::Movers& mvs, double temp, SPBParameters myparam)
 {
  Pointer<core::MonteCarlo> mc;
