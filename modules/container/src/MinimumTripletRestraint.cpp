@@ -28,18 +28,18 @@ MinimumTripletRestraint
 namespace {
   typedef algebra::internal::MinimalSet<double,
           ParticleTriplet, std::less<double> > TripletMinimumMS;
-  template <class It, class F>
-  TripletMinimumMS find_minimal_set_TripletMinimum(It b, It e, F *f,
+  template <class C, class F>
+  TripletMinimumMS find_minimal_set_TripletMinimum(C* c, F *f,
                                                          unsigned int n) {
     IMP_LOG(VERBOSE, "Finding Minimum " << n << " of "
-            << std::distance(b,e) << std::endl);
+            << c->get_number() << std::endl);
     TripletMinimumMS bestn(n);
-    for (It it= b; it != e; ++it) {
-      double score= f->evaluate(*it, NULL);
-      IMP_LOG(VERBOSE, "Found " << score << " for "
-              << *it << std::endl);
-      bestn.insert(score, *it);
-    }
+    IMP_FOREACH_TRIPLET(c, {
+        double score= f->evaluate(_1, NULL);
+        IMP_LOG(VERBOSE, "Found " << score << " for "
+                << _1 << std::endl);
+        bestn.insert(score, _1);
+      });
     return bestn;
   }
 }
@@ -48,8 +48,7 @@ double MinimumTripletRestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   TripletMinimumMS bestn
-    = find_minimal_set_TripletMinimum(c_->particle_triplets_begin(),
-                                         c_->particle_triplets_end(),
+    = find_minimal_set_TripletMinimum(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -68,8 +67,7 @@ double MinimumTripletRestraint
                                double max) const {
   IMP_OBJECT_LOG;
   TripletMinimumMS bestn
-    = find_minimal_set_TripletMinimum(c_->particle_triplets_begin(),
-                                         c_->particle_triplets_end(),
+    = find_minimal_set_TripletMinimum(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -88,8 +86,7 @@ Restraints MinimumTripletRestraint
 ::get_instant_decomposition() const {
   IMP_OBJECT_LOG;
   TripletMinimumMS bestn
-    = find_minimal_set_TripletMinimum(c_->particle_triplets_begin(),
-                                         c_->particle_triplets_end(),
+    = find_minimal_set_TripletMinimum(c_.get(),
                                          f_.get(), n_);
 
   Restraints ret;
