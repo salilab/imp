@@ -53,7 +53,7 @@ public:
     return ss_;
   }
 
-  Restraints get_decomposition() const;
+  Restraints create_decomposition() const;
 };
 
 

@@ -55,7 +55,7 @@ ContainersTemp ContainerRestraint<Score, C>
 
 
 template <class Score, class C>
-Restraints ContainerRestraint<Score, C>::get_decomposition() const {
+Restraints ContainerRestraint<Score, C>::create_decomposition() const {
   Restraints ret(pc_->get_number());
   for (unsigned int i=0; i< ret.size(); ++i) {
     ret[i]= core::create_restraint(ss_.get(), pc_->get(i));

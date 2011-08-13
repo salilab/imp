@@ -157,7 +157,7 @@ ConnectivityRestraint::unprotected_evaluate(DerivativeAccumulator *accum) const
 }
 
 
-Restraints ConnectivityRestraint::get_instant_decomposition() const {
+Restraints ConnectivityRestraint::create_current_decomposition() const {
   ParticlePairsTemp pp= get_connected_pairs();
   Restraints ret(pp.size());
   for (unsigned int i=0; i< pp.size(); ++i) {

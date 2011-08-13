@@ -861,7 +861,7 @@ MSConnectivityRestraint::unprotected_evaluate(
 }
 
 
-Restraints MSConnectivityRestraint::get_instant_decomposition() const {
+Restraints MSConnectivityRestraint::create_current_decomposition() const {
   ParticlePairs pp= get_connected_pairs();
   Restraints ret(pp.size());
   for (unsigned int i=0; i< pp.size(); ++i) {

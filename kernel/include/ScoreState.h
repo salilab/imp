@@ -96,7 +96,7 @@ public:
       simple parts as possible. For many restraints, the simplest
       part is simply the restraint itself.
    */
-  virtual ScoreStates get_decomposition() const {
+  virtual ScoreStates create_decomposition() const {
     return ScoreStates(1, const_cast<ScoreState*>(this));
   }
 

@@ -122,17 +122,17 @@ public:
       simple parts as possible. For many restraints, the simplest
       part is simply the restraint itself.
    */
-  virtual Restraints get_decomposition() const {
+  virtual Restraints create_decomposition() const {
     return Restraints(1, const_cast<Restraint*>(this));
   }
   //! Decompose this restraint into constituent terms for the current conf
   /** Return a decomposition that is value for the current conformation,
       but will not necessarily be valid if any of the particles are
-      changed. This is the same as get_decomposition() for
+      changed. This is the same as create_decomposition() for
       non-conditional restraints.
    */
-  virtual Restraints get_instant_decomposition() const {
-    return get_decomposition();
+  virtual Restraints create_current_decomposition() const {
+    return create_decomposition();
   }
   void set_weight(Float weight);
   Float get_weight() const { return weight_; }
