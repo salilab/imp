@@ -168,7 +168,7 @@ namespace {
     double s=r->evaluate(false);
     cur.set_value(sk, s, 0);
 
-    Restraints rd= r->get_instant_decomposition();
+    Restraints rd= r->create_current_decomposition();
     if (rd.size() >=1 && rd[0] != r) {
       Index index;
       for (unsigned int i=0; i< rd.size(); ++i) {
@@ -201,7 +201,7 @@ namespace {
     build_index(rn, index, IMP_HDF5_PASS_RESTRAINT_KEYS);
     double s=r->evaluate(false);
     rn.set_value(sk, s, frame);
-    Restraints rd= r->get_instant_decomposition();
+    Restraints rd= r->create_current_decomposition();
     if (rd.size() >1) {
       for (unsigned int i=0; i< rd.size(); ++i) {
         //ScopedRestraint sr(rd[i], r->get_model()->get_root_restraint_set());
