@@ -40,8 +40,7 @@ void ExampleComplexRestraint::set_model(Model *m) {
     d.set_coordinates_are_optimized(false);
     Pointer<core::CoverRefined> cr
       = new core::CoverRefined(
-             new core::FixedRefiner(Particles(sc_->particles_begin(),
-                                              sc_->particles_end())),
+              new core::FixedRefiner(sc_->get_particles()),
              0);
     ss_= new core::SingletonConstraint(cr, NULL, p_);
     m->add_score_state(ss_);
@@ -66,13 +65,12 @@ ExampleComplexRestraint::unprotected_evaluate(DerivativeAccumulator *da) const {
   double v=0;
   core::XYZ dp(p_);
   double radius= diameter_/2.0;
-  for (SingletonContainer::ParticleIterator pit= sc_->particles_begin();
-       pit != sc_->particles_end(); ++pit) {
+  IMP_FOREACH_SINGLETON(sc_,
     v+= core::internal::evaluate_distance_pair_score(dp,
-                                               core::XYZ(*pit),
+                                               core::XYZ(_1),
                                                da, f_.get(),
                                                boost::lambda::_1-radius);
-  }
+                        );
   return v;
 }
 
@@ -81,8 +79,7 @@ void ExampleComplexRestraint::do_show(std::ostream &out) const {
 }
 
 ParticlesTemp ExampleComplexRestraint::get_input_particles() const {
-  ParticlesTemp ret(sc_->particles_begin(),
-                    sc_->particles_end());
+  ParticlesTemp ret(sc_->get_particles());
   ret.push_back(p_);
   return ret;
 }
