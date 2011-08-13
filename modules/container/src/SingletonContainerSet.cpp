@@ -56,30 +56,16 @@ void SingletonContainerSet::do_show(std::ostream &out) const {
       << " containers" << std::endl;
 }
 
-unsigned int
-SingletonContainerSet::get_number_of_particles() const {
-  unsigned int sum=0;
+
+ParticleIndexes SingletonContainerSet::get_indexes() const {
+  ParticleIndexes sum;
   for (SingletonContainerConstIterator it= singleton_containers_begin();
        it != singleton_containers_end(); ++it) {
-    sum+= (*it)->get_number_of_particles();
+    ParticleIndexes cur=(*it)->get_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
 }
-
-Particle*
-SingletonContainerSet::get_particle(unsigned int i) const {
-  for (SingletonContainerConstIterator it= singleton_containers_begin();
-       it != singleton_containers_end(); ++it) {
-    if ( i >= (*it)->get_number_of_particles()) {
-      i-= (*it)->get_number_of_particles();
-    } else {
-      return (*it)->get_particle(i);
-    }
-  }
-  throw IndexException("out of range");
-}
-
-
 
 IMP_LIST_IMPL(SingletonContainerSet,
               SingletonContainer,

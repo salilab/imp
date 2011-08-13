@@ -56,30 +56,16 @@ void QuadContainerSet::do_show(std::ostream &out) const {
       << " containers" << std::endl;
 }
 
-unsigned int
-QuadContainerSet::get_number_of_particle_quads() const {
-  unsigned int sum=0;
+
+ParticleIndexQuads QuadContainerSet::get_indexes() const {
+  ParticleIndexQuads sum;
   for (QuadContainerConstIterator it= quad_containers_begin();
        it != quad_containers_end(); ++it) {
-    sum+= (*it)->get_number_of_particle_quads();
+    ParticleIndexQuads cur=(*it)->get_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
 }
-
-ParticleQuad
-QuadContainerSet::get_particle_quad(unsigned int i) const {
-  for (QuadContainerConstIterator it= quad_containers_begin();
-       it != quad_containers_end(); ++it) {
-    if ( i >= (*it)->get_number_of_particle_quads()) {
-      i-= (*it)->get_number_of_particle_quads();
-    } else {
-      return (*it)->get_particle_quad(i);
-    }
-  }
-  throw IndexException("out of range");
-}
-
-
 
 IMP_LIST_IMPL(QuadContainerSet,
               QuadContainer,

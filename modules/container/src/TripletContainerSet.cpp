@@ -56,30 +56,16 @@ void TripletContainerSet::do_show(std::ostream &out) const {
       << " containers" << std::endl;
 }
 
-unsigned int
-TripletContainerSet::get_number_of_particle_triplets() const {
-  unsigned int sum=0;
+
+ParticleIndexTriplets TripletContainerSet::get_indexes() const {
+  ParticleIndexTriplets sum;
   for (TripletContainerConstIterator it= triplet_containers_begin();
        it != triplet_containers_end(); ++it) {
-    sum+= (*it)->get_number_of_particle_triplets();
+    ParticleIndexTriplets cur=(*it)->get_indexes();
+    sum.insert(sum.end(), cur.begin(), cur.end());
   }
   return sum;
 }
-
-ParticleTriplet
-TripletContainerSet::get_particle_triplet(unsigned int i) const {
-  for (TripletContainerConstIterator it= triplet_containers_begin();
-       it != triplet_containers_end(); ++it) {
-    if ( i >= (*it)->get_number_of_particle_triplets()) {
-      i-= (*it)->get_number_of_particle_triplets();
-    } else {
-      return (*it)->get_particle_triplet(i);
-    }
-  }
-  throw IndexException("out of range");
-}
-
-
 
 IMP_LIST_IMPL(TripletContainerSet,
               TripletContainer,

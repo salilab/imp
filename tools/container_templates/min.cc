@@ -28,18 +28,18 @@ MINORMAXCLASSNAMERestraint
 namespace {
   typedef algebra::internal::MinimalSet<double,
           VARIABLETYPE, std::COMPARATOR<double> > CLASSNAMEMINORMAXMS;
-  template <class It, class F>
-  CLASSNAMEMINORMAXMS find_minimal_set_CLASSNAMEMINORMAX(It b, It e, F *f,
+  template <class C, class F>
+  CLASSNAMEMINORMAXMS find_minimal_set_CLASSNAMEMINORMAX(C* c, F *f,
                                                          unsigned int n) {
     IMP_LOG(VERBOSE, "Finding MINORMAX " << n << " of "
-            << std::distance(b,e) << std::endl);
+            << c->get_number() << std::endl);
     CLASSNAMEMINORMAXMS bestn(n);
-    for (It it= b; it != e; ++it) {
-      double score= f->evaluate(*it, NULL);
-      IMP_LOG(VERBOSE, "Found " << score << " for "
-              << *it << std::endl);
-      bestn.insert(score, *it);
-    }
+    IMP_FOREACH_HEADERNAME(c, {
+        double score= f->evaluate(_1, NULL);
+        IMP_LOG(VERBOSE, "Found " << score << " for "
+                << _1 << std::endl);
+        bestn.insert(score, _1);
+      });
     return bestn;
   }
 }
@@ -48,8 +48,7 @@ double MINORMAXCLASSNAMERestraint
 ::unprotected_evaluate(DerivativeAccumulator *da) const {
   IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
-    = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
-                                         c_->FUNCTIONNAMEs_end(),
+    = find_minimal_set_CLASSNAMEMINORMAX(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -68,8 +67,7 @@ double MINORMAXCLASSNAMERestraint
                                double max) const {
   IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
-    = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
-                                         c_->FUNCTIONNAMEs_end(),
+    = find_minimal_set_CLASSNAMEMINORMAX(c_.get(),
                                          f_.get(), n_);
 
   double score=0;
@@ -88,8 +86,7 @@ Restraints MINORMAXCLASSNAMERestraint
 ::get_instant_decomposition() const {
   IMP_OBJECT_LOG;
   CLASSNAMEMINORMAXMS bestn
-    = find_minimal_set_CLASSNAMEMINORMAX(c_->FUNCTIONNAMEs_begin(),
-                                         c_->FUNCTIONNAMEs_end(),
+    = find_minimal_set_CLASSNAMEMINORMAX(c_.get(),
                                          f_.get(), n_);
 
   Restraints ret;

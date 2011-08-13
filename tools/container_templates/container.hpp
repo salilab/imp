@@ -37,20 +37,6 @@ typedef std::pair<CLASSNAMEContainer*,
  */
 class IMPEXPORT CLASSNAMEContainer : public Container
 {
-  mutable internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor {
-    typedef VARIABLETYPE result_type;
-    typedef unsigned int argument_type;
-    result_type operator()(argument_type i) const {
-      return o_->get_FUNCTIONNAME(i);
-    }
-    Accessor(CLASSNAMEContainer *pc): o_(pc){}
-    Accessor(): o_(NULL){}
-    IMP_COMPARISONS_1(Accessor, o_);
-  private:
-    // This should be ref counted, but swig memory management is broken
-    CLASSNAMEContainer* o_;
-  };
  protected:
   CLASSNAMEContainer(){}
   CLASSNAMEContainer(Model *m,
@@ -107,37 +93,23 @@ public:
       bounds of your particular container.
    */
   virtual bool get_contains_FUNCTIONNAME(ARGUMENTTYPE v) const =0;
+
+  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const {
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes());
+  }
+#ifndef IMP_DOXGEN
   //! return the number of CLASSNAMEs in the container
   /** \note this isn't always constant time
    */
-  virtual unsigned int get_number_of_FUNCTIONNAMEs() const =0;
-
-  PLURALVARIABLETYPE get_FUNCTIONNAMEs() const {
-    return PLURALVARIABLETYPE(FUNCTIONNAMEs_begin(),
-                              FUNCTIONNAMEs_end());
+  virtual unsigned int get_number_of_FUNCTIONNAMEs() const {
+    return get_number();
   }
-  virtual VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const=0;
 
-#ifdef IMP_DOXYGEN
-  //! An iterator through the contents of the container
-  class TYPENAMEIterator;
-#else
-  typedef internal::IndexingIterator<Accessor> TYPENAMEIterator;
-#endif
-#ifndef SWIG
-  //! begin iterating through the CLASSNAMEs
-  TYPENAMEIterator FUNCTIONNAMEs_begin() const {
-    // Since I can't make the count mutable in Object
-    return
-      TYPENAMEIterator(Accessor(const_cast<CLASSNAMEContainer*>(this)),
-                        0);
+  virtual VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const {
+    return get(i);
   }
-  //! iterate through the CLASSNAMEs
-  TYPENAMEIterator FUNCTIONNAMEs_end() const {
-    return
-      TYPENAMEIterator(Accessor(const_cast<CLASSNAMEContainer*>(this)),
-                        get_number_of_FUNCTIONNAMEs());
-    }
+
 #endif
 
   //! Apply a SingletonModifier to the contents
@@ -156,7 +128,6 @@ public:
                                   DerivativeAccumulator *da,
                                   double max) const=0;
 
-
   /** Return true if the contents of the container changed since the last
       evaluate.
   */
@@ -164,27 +135,24 @@ public:
 
 #ifndef IMP_DOXYGEN
   typedef VARIABLETYPE value_type;
-  VARIABLETYPE get(unsigned int i) const {return get_FUNCTIONNAME(i);}
+  VARIABLETYPE get(unsigned int i) const {
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes()[i]);
+  }
   PLURALVARIABLETYPE get() const {
-    return get_FUNCTIONNAMEs();
+    return IMP::internal::get_particle(get_model(), get_indexes());
   }
   bool get_contains(ARGUMENTTYPE v) const {
     return get_contains_FUNCTIONNAME(v);
   }
-  unsigned int get_number() const {return get_number_of_FUNCTIONNAMEs();}
+  unsigned int get_number() const {return get_indexes().size();}
+  virtual PLURALINDEXTYPE get_indexes() const=0;
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
   virtual const PLURALINDEXTYPE& get_access() const {
     IMP_THROW("Object not implemented properly.", IndexException);
   }
 #endif
-  virtual PLURALINDEXTYPE get_indexes() const {
-    PLURALINDEXTYPE ret(get_number());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= IMP::internal::get_index(get(i));
-    }
-    return ret;
-  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(CLASSNAMEContainer);

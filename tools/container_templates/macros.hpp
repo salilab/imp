@@ -285,8 +285,7 @@
 #define IMP_HEADERNAME_CONTAINER(Name)                                  \
   bool get_contents_changed() const;                                    \
   bool get_contains_FUNCTIONNAME(ARGUMENTTYPE p) const;      \
-  unsigned int get_number_of_FUNCTIONNAMEs() const;                     \
-  VARIABLETYPE get_FUNCTIONNAME(unsigned int i) const;                  \
+  PLURALINDEXTYPE get_indexes() const;                     \
   IMP_IMPLEMENT_HEADERNAME_CONTAINER(Name)
 
 
@@ -337,12 +336,11 @@ public:                                                                 \
     \endcode
 */
 #define IMP_FOREACH_HEADERNAME(sequence, operation) do {                \
-  unsigned int imp_foreach_size                                         \
-  = sequence->get_number_of_FUNCTIONNAMEs();                            \
+    IMP::PLURALVARIABLETYPE imp_all=sequence->get();   \
   for (unsigned int _2=0;                                               \
-       _2 != imp_foreach_size;                                          \
+       _2 != imp_all.size();                                            \
        ++_2) {                                                          \
-    IMP::VARIABLETYPE _1= sequence->get_FUNCTIONNAME(_2);               \
+    IMP::VARIABLETYPE _1= imp_all[_2];               \
     bool imp_foreach_break=false;                                       \
     operation                                                           \
       if (imp_foreach_break) break;                                     \

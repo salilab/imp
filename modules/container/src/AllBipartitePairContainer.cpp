@@ -41,16 +41,17 @@ AllBipartitePairContainer::get_contents_changed() const {
   return a_->get_contents_changed() || b_->get_contents_changed();
 }
 
-unsigned int
-AllBipartitePairContainer::get_number_of_particle_pairs() const {
-  return a_->get_number_of_particles()*b_->get_number_of_particles();
-}
-
-ParticlePair AllBipartitePairContainer
-::get_particle_pair(unsigned int i) const {
-  unsigned int a= i%a_->get_number_of_particles();
-  unsigned int b= i/a_->get_number_of_particles();
-  return ParticlePair(a_->get_particle(a), b_->get_particle(b));
+ParticleIndexPairs
+AllBipartitePairContainer::get_indexes() const {
+  ParticleIndexes ia= a_->get_indexes();
+  ParticleIndexes ib= b_->get_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size()*ib.size());
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    for (unsigned int j=0; j< ib.size(); ++j) {
+      ret.push_back(ParticleIndexPair(ia[i], ib[j]));
+    }
+  }
+  return ret;
 }
 
 bool

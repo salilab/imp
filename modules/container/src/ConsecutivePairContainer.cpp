@@ -41,8 +41,12 @@ ConsecutivePairContainer::get_contents_changed() const {
   return false;
 }
 
-unsigned int ConsecutivePairContainer::get_number_of_particle_pairs() const {
-  return ps_.size()-1;
+ParticleIndexPairs ConsecutivePairContainer::get_indexes() const {
+  ParticleIndexPairs ret(ps_.size()-1);
+  for (unsigned int i=1; i< ps_.size(); ++i) {
+    ret[i]= ParticleIndexPair(ps_[i-1], ps_[i]);
+  }
+  return ret;
 }
 
 

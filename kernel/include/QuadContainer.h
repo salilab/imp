@@ -37,20 +37,6 @@ typedef std::pair<QuadContainer*,
  */
 class IMPEXPORT QuadContainer : public Container
 {
-  mutable internal::OwnerPointer<Container> added_, removed_;
-  struct Accessor {
-    typedef ParticleQuad result_type;
-    typedef unsigned int argument_type;
-    result_type operator()(argument_type i) const {
-      return o_->get_particle_quad(i);
-    }
-    Accessor(QuadContainer *pc): o_(pc){}
-    Accessor(): o_(NULL){}
-    IMP_COMPARISONS_1(Accessor, o_);
-  private:
-    // This should be ref counted, but swig memory management is broken
-    QuadContainer* o_;
-  };
  protected:
   QuadContainer(){}
   QuadContainer(Model *m,
@@ -107,37 +93,23 @@ public:
       bounds of your particular container.
    */
   virtual bool get_contains_particle_quad(const ParticleQuad& v) const =0;
+
+  ParticleQuadsTemp get_particle_quads() const {
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes());
+  }
+#ifndef IMP_DOXGEN
   //! return the number of Quads in the container
   /** \note this isn't always constant time
    */
-  virtual unsigned int get_number_of_particle_quads() const =0;
-
-  ParticleQuadsTemp get_particle_quads() const {
-    return ParticleQuadsTemp(particle_quads_begin(),
-                              particle_quads_end());
+  virtual unsigned int get_number_of_particle_quads() const {
+    return get_number();
   }
-  virtual ParticleQuad get_particle_quad(unsigned int i) const=0;
 
-#ifdef IMP_DOXYGEN
-  //! An iterator through the contents of the container
-  class ParticleQuadIterator;
-#else
-  typedef internal::IndexingIterator<Accessor> ParticleQuadIterator;
-#endif
-#ifndef SWIG
-  //! begin iterating through the Quads
-  ParticleQuadIterator particle_quads_begin() const {
-    // Since I can't make the count mutable in Object
-    return
-      ParticleQuadIterator(Accessor(const_cast<QuadContainer*>(this)),
-                        0);
+  virtual ParticleQuad get_particle_quad(unsigned int i) const {
+    return get(i);
   }
-  //! iterate through the Quads
-  ParticleQuadIterator particle_quads_end() const {
-    return
-      ParticleQuadIterator(Accessor(const_cast<QuadContainer*>(this)),
-                        get_number_of_particle_quads());
-    }
+
 #endif
 
   //! Apply a SingletonModifier to the contents
@@ -156,7 +128,6 @@ public:
                                   DerivativeAccumulator *da,
                                   double max) const=0;
 
-
   /** Return true if the contents of the container changed since the last
       evaluate.
   */
@@ -164,27 +135,24 @@ public:
 
 #ifndef IMP_DOXYGEN
   typedef ParticleQuad value_type;
-  ParticleQuad get(unsigned int i) const {return get_particle_quad(i);}
+  ParticleQuad get(unsigned int i) const {
+    return IMP::internal::get_particle(get_model(),
+                                       get_indexes()[i]);
+  }
   ParticleQuadsTemp get() const {
-    return get_particle_quads();
+    return IMP::internal::get_particle(get_model(), get_indexes());
   }
   bool get_contains(const ParticleQuad& v) const {
     return get_contains_particle_quad(v);
   }
-  unsigned int get_number() const {return get_number_of_particle_quads();}
+  unsigned int get_number() const {return get_indexes().size();}
+  virtual ParticleIndexQuads get_indexes() const=0;
 #ifndef SWIG
   virtual bool get_provides_access() const {return false;}
   virtual const ParticleIndexQuads& get_access() const {
     IMP_THROW("Object not implemented properly.", IndexException);
   }
 #endif
-  virtual ParticleIndexQuads get_indexes() const {
-    ParticleIndexQuads ret(get_number());
-    for (unsigned int i=0; i< ret.size(); ++i) {
-      ret[i]= IMP::internal::get_index(get(i));
-    }
-    return ret;
-  }
 #endif
 
   IMP_REF_COUNTED_NONTRIVIAL_DESTRUCTOR(QuadContainer);

@@ -20,9 +20,6 @@ IMPCONTAINER_BEGIN_NAMESPACE
 AllPairContainer::AllPairContainer(SingletonContainer *c,
                                              bool):
   c_(c){
-  a_=1;
-  b_=0;
-  i_=0;
 }
 
 AllPairContainer::AllPairContainer(SingletonContainer *c,
@@ -30,9 +27,6 @@ AllPairContainer::AllPairContainer(SingletonContainer *c,
   PairContainer(c->get_model(), name),
   c_(c),
   deps_(new DependenciesScoreState(this), c->get_model()){
-  a_=1;
-  b_=0;
-  i_=0;
 }
 
 
@@ -42,32 +36,18 @@ AllPairContainer::get_contents_changed() const {
   return c_->get_contents_changed();
 }
 
-
-unsigned int AllPairContainer::get_number_of_particle_pairs() const {
-  unsigned int n= c_->get_number_of_particles();
-  return n*(n-1)/2;
-}
-
-//!
-ParticlePair AllPairContainer::get_particle_pair(unsigned int i) const {
-  IMP_INTERNAL_CHECK(i <  get_number_of_particle_pairs(),
-                     "Invalid pair requested");
-  // dumb method, just increase the current pair until we get to the desired one
-  if (static_cast<int>(i) < i_) {
-    a_=1;
-    b_=0;
-    i_=0;
-  }
-  while (i_ < static_cast<int>(i)) {
-    ++b_;
-    if (b_==a_) {
-      ++a_;
-      b_=0;
+ParticleIndexPairs
+AllPairContainer::get_indexes() const {
+  ParticleIndexes ia= c_->get_indexes();
+  ParticleIndexPairs ret; ret.reserve(ia.size()*(ia.size()-1)/2);
+  for (unsigned int i=0; i< ia.size(); ++i) {
+    for (unsigned int j=0; j< i; ++j) {
+      ret.push_back(ParticleIndexPair(ia[i], ia[j]));
     }
-    ++i_;
   }
-  return ParticlePair(c_->get_particle(a_), c_->get_particle(b_));
+  return ret;
 }
+
 
 bool
 AllPairContainer::get_contains_particle_pair(const ParticlePair &p) const {
