@@ -92,8 +92,8 @@ class IMPDOMINOEXPORT DominoSampler : public DiscreteSampler
                                      unsigned int max_states
                                      =std::numeric_limits<int>::max()) const;
   //! Fill in assignments for an internal node
-  /** The passed assignments, the ordering for the children is based
-      on the node index for the children.
+  /** The passed assignments, the ordering for the children is
+      the node index for the children.
   */
   Assignments get_vertex_assignments(unsigned int node_index,
                                          const Assignments &first,
