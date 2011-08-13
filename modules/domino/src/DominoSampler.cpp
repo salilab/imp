@@ -281,7 +281,8 @@ void DominoSampler::load_vertex_assignments(unsigned int node_index,
       = boost::adjacent_vertices(node_index, mt_);
   IMP_USAGE_CHECK(std::distance(be.first, be.second)==2,
                   "Not a binary tree node");
-  int firsti= *be.first, secondi= *(++be.first);
+  int firsti= *be.first;
+  int secondi= *(++be.first);
   if (firsti > secondi) {
     std::swap(firsti, secondi);
   }
